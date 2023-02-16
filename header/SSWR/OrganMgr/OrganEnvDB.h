@@ -49,7 +49,7 @@ namespace SSWR
 			virtual Bool IsBookSpeciesExist(const UTF8Char *sName, Text::StringBuilderUTF8 *sb);
 			virtual Bool AddSpecies(OrganSpecies *sp);
 			virtual Bool DelSpecies(OrganSpecies *sp);
-			virtual FileStatus AddSpeciesFile(OrganSpecies *sp, const UTF8Char *fileName, Bool firstPhoto, Bool moveFile, Int32 *fileId);
+			virtual FileStatus AddSpeciesFile(OrganSpecies *sp, Text::CString fileName, Bool firstPhoto, Bool moveFile, Int32 *fileId);
 			virtual FileStatus AddSpeciesWebFile(OrganSpecies *sp, Text::String *srcURL, Text::String *imgURL, IO::Stream *stm, UTF8Char *webFileName);
 			FileStatus AddSpeciesWebFileOld(OrganSpecies *sp, Text::String *srcURL, Text::String *imgURL, IO::Stream *stm, UTF8Char *webFileName);
 			virtual Bool UpdateSpeciesWebFile(OrganSpecies *sp, WebFileInfo *wfile, Text::String *srcURL, Text::String *location);

@@ -1098,5 +1098,5 @@ Data::DateTimeUtil::Weekday Data::DateTime::GetWeekday()
 
 Data::Timestamp Data::DateTime::ToTimestamp()
 {
-	return Data::Timestamp(this->ToTicks(), this->tzQhr);
+	return Data::Timestamp(Data::TimeInstant(this->ToUnixTimestamp(), this->ns), this->tzQhr);
 }

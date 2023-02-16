@@ -46,6 +46,7 @@ void __stdcall SSWR::AVIRead::AVIRImageViewerForm::OnMoveToNext(void *userObj)
 	{
 		IO::IStreamData *fd;
 		UTF8Char sbuff[512];
+		UTF8Char *sptr;
 		UOSInt i;
 		UOSInt j;
 		IO::ParsedObject *pobj;
@@ -56,8 +57,8 @@ void __stdcall SSWR::AVIRead::AVIRImageViewerForm::OnMoveToNext(void *userObj)
 		{
 			if (me->pkgFile->GetItemType(i) == IO::PackageFile::PackObjectType::StreamData)
 			{
-				me->pkgFile->GetItemName(sbuff, i);
-				if (IsImageFileName(sbuff))
+				sptr = me->pkgFile->GetItemName(sbuff, i);
+				if (IsImageFileName(CSTRP(sbuff, sptr)))
 				{
 					fd = me->pkgFile->GetItemStmDataNew(i);
 					if (fd)
@@ -85,8 +86,8 @@ void __stdcall SSWR::AVIRead::AVIRImageViewerForm::OnMoveToNext(void *userObj)
 		{
 			if (me->pkgFile->GetItemType(i) == IO::PackageFile::PackObjectType::StreamData)
 			{
-				me->pkgFile->GetItemName(sbuff, i);
-				if (IsImageFileName(sbuff))
+				sptr = me->pkgFile->GetItemName(sbuff, i);
+				if (IsImageFileName(CSTRP(sbuff, sptr)))
 				{
 					fd = me->pkgFile->GetItemStmDataNew(i);
 					if (fd)
@@ -115,6 +116,7 @@ void __stdcall SSWR::AVIRead::AVIRImageViewerForm::OnMoveToPrev(void *userObj)
 	{
 		IO::IStreamData *fd;
 		UTF8Char sbuff[512];
+		UTF8Char *sptr;
 		UOSInt i;
 		IO::ParsedObject *pobj;
 		Bool found = false;
@@ -123,8 +125,8 @@ void __stdcall SSWR::AVIRead::AVIRImageViewerForm::OnMoveToPrev(void *userObj)
 		{
 			if (me->pkgFile->GetItemType(i) == IO::PackageFile::PackObjectType::StreamData)
 			{
-				me->pkgFile->GetItemName(sbuff, i);
-				if (IsImageFileName(sbuff))
+				sptr = me->pkgFile->GetItemName(sbuff, i);
+				if (IsImageFileName(CSTRP(sbuff, sptr)))
 				{
 					fd = me->pkgFile->GetItemStmDataNew(i);
 					if (fd)
@@ -151,8 +153,8 @@ void __stdcall SSWR::AVIRead::AVIRImageViewerForm::OnMoveToPrev(void *userObj)
 		{
 			if (me->pkgFile->GetItemType(i) == IO::PackageFile::PackObjectType::StreamData)
 			{
-				me->pkgFile->GetItemName(sbuff, i);
-				if (IsImageFileName(sbuff))
+				sptr = me->pkgFile->GetItemName(sbuff, i);
+				if (IsImageFileName(CSTRP(sbuff, sptr)))
 				{
 					fd = me->pkgFile->GetItemStmDataNew(i);
 					if (fd)
@@ -219,16 +221,18 @@ Bool __stdcall SSWR::AVIRead::AVIRImageViewerForm::OnMouseMove(void *userObj, Ma
 	return false;
 }
 
-Bool SSWR::AVIRead::AVIRImageViewerForm::IsImageFileName(const UTF8Char *fileName)
+Bool SSWR::AVIRead::AVIRImageViewerForm::IsImageFileName(Text::CString fileName)
 {
-	UOSInt fileNameLen = Text::StrCharCnt(fileName);
-	if (Text::StrEndsWithICaseC(fileName, fileNameLen, UTF8STRC(".jpg"))) return true;
-	if (Text::StrEndsWithICaseC(fileName, fileNameLen, UTF8STRC(".png"))) return true;
-	if (Text::StrEndsWithICaseC(fileName, fileNameLen, UTF8STRC(".tif"))) return true;
-	if (Text::StrEndsWithICaseC(fileName, fileNameLen, UTF8STRC(".bmp"))) return true;
-	if (Text::StrEndsWithICaseC(fileName, fileNameLen, UTF8STRC(".gif"))) return true;
-	if (Text::StrEndsWithICaseC(fileName, fileNameLen, UTF8STRC(".ico"))) return true;
-	if (Text::StrEndsWithICaseC(fileName, fileNameLen, UTF8STRC(".pcx"))) return true;
+	if (fileName.EndsWithICase(UTF8STRC(".jpg"))) return true;
+	if (fileName.EndsWithICase(UTF8STRC(".png"))) return true;
+	if (fileName.EndsWithICase(UTF8STRC(".tif"))) return true;
+	if (fileName.EndsWithICase(UTF8STRC(".bmp"))) return true;
+	if (fileName.EndsWithICase(UTF8STRC(".gif"))) return true;
+	if (fileName.EndsWithICase(UTF8STRC(".ico"))) return true;
+	if (fileName.EndsWithICase(UTF8STRC(".pcx"))) return true;
+	if (fileName.EndsWithICase(UTF8STRC(".heic"))) return true;
+	if (fileName.EndsWithICase(UTF8STRC(".heif"))) return true;
+	if (fileName.EndsWithICase(UTF8STRC(".avif"))) return true;
 	return false;
 }
 
@@ -433,6 +437,7 @@ Bool SSWR::AVIRead::AVIRImageViewerForm::ParseFile(IO::IStreamData *fd)
 	IO::ParserType pt;
 	IO::IStreamData *fd2;
 	UTF8Char sbuff[512];
+	UTF8Char *sptr;
 
 	pobj = this->core->GetParserList()->ParseFileType(fd, IO::ParserType::ImageList);
 	if (pobj)
@@ -457,8 +462,8 @@ Bool SSWR::AVIRead::AVIRImageViewerForm::ParseFile(IO::IStreamData *fd)
 		{
 			if (pf->GetItemType(i) == IO::PackageFile::PackObjectType::StreamData)
 			{
-				pf->GetItemName(sbuff, i);
-				if (IsImageFileName(sbuff))
+				sptr = pf->GetItemName(sbuff, i);
+				if (IsImageFileName(CSTRP(sbuff, sptr)))
 				{
 					fd2 = pf->GetItemStmDataNew(i);
 					if (fd2)

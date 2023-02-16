@@ -885,7 +885,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImageClipboardClicked(void *user
 								sarr[0].v = sbuff;
 								sarr[0].leng = (UOSInt)(sptr - sbuff);
 							}
-							fs = me->env->AddSpeciesFile((OrganSpecies*)gi, sarr[0].v, firstPhoto, false, 0);
+							fs = me->env->AddSpeciesFile((OrganSpecies*)gi, sarr[0].ToCString(), firstPhoto, false, 0);
 							if (fs == OrganEnv::FS_SUCCESS)
 							{
 								if (!chg)
@@ -3447,7 +3447,7 @@ void SSWR::OrganMgr::OrganMainForm::DropData(UI::GUIDropData *data, OSInt x, OSI
 								sarr[0].v = sbuff;
 								sarr[0].leng = (UOSInt)(sptr - sbuff);
 							}
-							fs = this->env->AddSpeciesFile((OrganSpecies*)gi, sarr[0].v, firstPhoto, false, 0);
+							fs = this->env->AddSpeciesFile((OrganSpecies*)gi, sarr[0].ToCString(), firstPhoto, false, 0);
 							if (fs == OrganEnv::FS_SUCCESS)
 							{
 								if (!chg)

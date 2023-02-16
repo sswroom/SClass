@@ -1389,6 +1389,8 @@ Data/ByteTool.h: ../../src/Data/ByteTool.cpp
 @ByteTool.o
 Data/Chart.h: ../../src/Data/Chart.cpp
 @Chart.o
+Data/CircularByteBuff.h: ../../src/Data/CircularByteBuff.cpp
+@CircularByteBuff.o
 Data/Class.h: ../../src/Data/Class.cpp
 @Class.o
 Data/Comparator.h:
@@ -1675,6 +1677,8 @@ IO/CortexControl.h: ../../src/IO/CortexControl.cpp
 @CortexControl.o
 IO/CyclicLogBuffer.h: ../../src/IO/CyclicLogBuffer.cpp
 @CyclicLogBuffer.o
+IO/DataCaptureStream.h: ../../src/IO/DataCaptureStream.cpp
+@DataCaptureStream.o
 IO/DeviceDB.h: ../../src/IO/DeviceDB.cpp
 @DeviceDB.o
 IO/DirectoryPackage.h: ../../src/IO/DirectoryPackage.cpp
@@ -4553,6 +4557,7 @@ ByteOrderLSB.o: ../../src/Data/ByteOrderLSB.cpp
 ByteOrderMSB.o: ../../src/Data/ByteOrderMSB.cpp
 ByteTool.o: ../../src/Data/ByteTool.cpp
 Chart.o: ../../src/Data/Chart.cpp
+CircularByteBuff.o: ../../src/Data/CircularByteBuff.cpp
 Class.o: ../../src/Data/Class.cpp
 DataComparer.o: ../../src/Data/DataComparer.cpp
 DateTime.o: ../../src/Data/DateTime.cpp
@@ -4678,6 +4683,7 @@ ConsoleInput.o: ../../src/IO/ConsoleInput.cpp
 ConsoleLogHandler.o: ../../src/IO/ConsoleLogHandler.cpp
 CortexControl.o: ../../src/IO/CortexControl.cpp
 CyclicLogBuffer.o: ../../src/IO/CyclicLogBuffer.cpp
+DataCaptureStream.o: ../../src/IO/DataCaptureStream.cpp
 DeviceDB.o: ../../src/IO/DeviceDB.cpp
 DirectoryPackage.o: ../../src/IO/DirectoryPackage.cpp
 ED516Sim.o: ../../src/IO/ED516Sim.cpp

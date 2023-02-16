@@ -754,7 +754,7 @@ Data::NamedClass<LamppostData> *LamppostData::CreateClass()
 
 Int32 MyMain(Core::IProgControl *progCtrl)
 {
-	const UTF8Char *key = (const UTF8Char*)"WEBnAPI";
+	Text::CString key = CSTR("WEBnAPI");
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	IO::ConsoleWriter console;
@@ -764,7 +764,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	Text::StringBuilderUTF8 sb;
 	if (cfg)
 	{
-		Crypto::JasyptEncryptor jasypt(Crypto::JasyptEncryptor::KA_PBEWITHHMACSHA512, Crypto::JasyptEncryptor::CA_AES256, key, Text::StrCharCnt(key));
+		Crypto::JasyptEncryptor jasypt(Crypto::JasyptEncryptor::KA_PBEWITHHMACSHA512, Crypto::JasyptEncryptor::CA_AES256, key.v, key.leng);
 		jasypt.Decrypt(cfg);
 		DB::DBTool *db = DB::JavaDBUtil::OpenJDBC(cfg->GetValue(CSTR("spring.datasource.url")),
 			cfg->GetValue(CSTR("spring.datasource.username")),

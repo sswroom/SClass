@@ -365,6 +365,7 @@ Bool Net::OpenSSLEngine::SetRequireClientCert(ClientCertType cliCert)
 	case ClientCertType::MustExist:
 		mode = SSL_VERIFY_PEER | SSL_VERIFY_FAIL_IF_NO_PEER_CERT;
 		break;
+	case ClientCertType::None:
 	default:
 		mode = SSL_VERIFY_NONE;
 		break;
@@ -381,7 +382,7 @@ Bool Net::OpenSSLEngine::SetClientCA(Text::CString clientCA)
 	}
 	STACK_OF(X509_NAME) *names = sk_X509_NAME_new_null();
 	X509_NAME *name = X509_NAME_new();
-	if (!X509_NAME_add_entry_by_txt(name, "CN", MBSTRING_ASC, clientCA.v, clientCA.leng, -1, 0))
+	if (!X509_NAME_add_entry_by_txt(name, "CN", MBSTRING_ASC, clientCA.v, (int)clientCA.leng, -1, 0))
 	{
 		X509_NAME_free(name);
 		sk_X509_NAME_free(names);

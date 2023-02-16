@@ -1,5 +1,7 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRMODBUSMASTERFORM
 #define _SM_SSWR_AVIREAD_AVIRMODBUSMASTERFORM
+#include "Data/CircularByteBuff.h"
+#include "IO/DataCaptureStream.h"
 #include "IO/MemoryStream.h"
 #include "IO/MODBUSController.h"
 #include "IO/MODBUSDevice.h"
@@ -53,10 +55,17 @@ namespace SSWR
 			} MODBUSEntry;
 		private:
 			SSWR::AVIRead::AVIRCore *core;
-			IO::Stream *stm;
+			IO::DataCaptureStream *stm;
+			IO::Stream *devStm;
 			IO::MODBUSMaster *modbus;
 			IO::MODBUSController *modbusCtrl;
 			Data::ArrayList<MODBUSEntry*> entryList;
+			Sync::Mutex recvMut;
+			Data::CircularByteBuff recvBuff;
+			Bool recvUpdated;
+			Sync::Mutex sendMut;
+			Data::CircularByteBuff sendBuff;
+			Bool sendUpdated;
 
 			UI::GUIGroupBox *grpStream;
 			UI::GUILabel *lblStream;
@@ -111,6 +120,11 @@ namespace SSWR
 			UI::GUIButton *btnDeviceAdd;
 			UI::GUIListView *lvDevice;
 
+			UI::GUITabPage *tpRAWSend;
+			UI::GUITextBox *txtRAWSend;
+
+			UI::GUITabPage *tpRAWRecv;
+			UI::GUITextBox *txtRAWRecv;
 		private:
 			static void __stdcall OnStreamClicked(void *userObj);
 			static void __stdcall OnU8GetClicked(void *userObj);
@@ -121,6 +135,8 @@ namespace SSWR
 			static void __stdcall OnSetU8HighClicked(void *userObj);
 			static void __stdcall OnDeviceAddClicked(void *userObj);
 			static void __stdcall OnTimerTick(void *userObj);
+			static void __stdcall OnDataRecv(void *userObj, const UInt8 *data, UOSInt dataSize);
+			static void __stdcall OnDataSend(void *userObj, const UInt8 *data, UOSInt dataSize);
 
 			static void __stdcall OnMODBUSEntry(void *userObj, Text::CString name, UInt8 devAddr, UInt32 regAddr, IO::MODBUSController::DataType dt, Math::Unit::UnitBase::ValueType vt, Int32 unit, Int32 denorm);
 			void StopStream(Bool clearUI);

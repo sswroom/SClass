@@ -329,6 +329,7 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(void *userObj)
 	case IO::StreamType::RS232GPIO:
 	case IO::StreamType::WindowsCOM:
 	case IO::StreamType::MemoryReading:
+	case IO::StreamType::DataCapture:
 		break;
 	}
 }

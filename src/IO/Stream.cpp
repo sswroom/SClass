@@ -137,6 +137,8 @@ Text::CString IO::StreamTypeGetName(StreamType st)
 		return CSTR("Windows COM");
 	case StreamType::MemoryReading:
 		return CSTR("MemoryReading");
+	case StreamType::DataCapture:
+		return CSTR("DataCapture");
 	case StreamType::Unknown:
 	default:
 		return CSTR("Unknown");

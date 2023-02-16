@@ -176,16 +176,15 @@ Bool DB::DBManager::GetConnStr(DB::DBTool *db, Text::StringBuilderUTF8 *connStr)
 
 DB::DBTool *DB::DBManager::OpenConn(Text::String *connStr, IO::LogTool *log, Net::SocketFactory *sockf)
 {
-	return OpenConn(connStr->v, log, sockf);
+	return OpenConn(connStr->ToCString(), log, sockf);
 }
 
-DB::DBTool *DB::DBManager::OpenConn(const UTF8Char *connStr, IO::LogTool *log, Net::SocketFactory *sockf)
+DB::DBTool *DB::DBManager::OpenConn(Text::CString connStr, IO::LogTool *log, Net::SocketFactory *sockf)
 {
 	DB::DBTool *db;
-	UOSInt connStrLen = Text::StrCharCnt(connStr);
-	if (Text::StrStartsWithC(connStr, connStrLen, UTF8STRC("odbc:")))
+	if (connStr.StartsWith(UTF8STRC("odbc:")))
 	{
-		if (Text::StrStartsWithC(connStr + 5, connStrLen - 5, UTF8STRC("DSN=")))
+		if (connStr.Substring(5).StartsWith(UTF8STRC("DSN=")))
 		{
 			Text::StringBuilderUTF8 sb;
 			Text::String *dsn = 0;
@@ -193,7 +192,7 @@ DB::DBTool *DB::DBManager::OpenConn(const UTF8Char *connStr, IO::LogTool *log, N
 			Text::String *pwd = 0;
 			Text::String *schema = 0;
 			UOSInt cnt;
-			sb.AppendC(connStr + 5, connStrLen - 5);
+			sb.Append(connStr.Substring(5));
 			Text::PString sarr[2];
 			sarr[1] = sb;
 			while (true)
@@ -237,7 +236,7 @@ DB::DBTool *DB::DBManager::OpenConn(const UTF8Char *connStr, IO::LogTool *log, N
 		else
 		{
 			DB::ODBCConn *conn;
-			NEW_CLASS(conn, DB::ODBCConn({connStr + 5, connStrLen - 5}, CSTR("ODBCConn"), log));
+			NEW_CLASS(conn, DB::ODBCConn(connStr.Substring(5), CSTR("ODBCConn"), log));
 			if (conn->GetConnError() == DB::ODBCConn::CE_NONE)
 			{
 				NEW_CLASS(db, DB::DBTool(conn, true, log, DBPREFIX));
@@ -246,7 +245,7 @@ DB::DBTool *DB::DBManager::OpenConn(const UTF8Char *connStr, IO::LogTool *log, N
 			DEL_CLASS(conn);
 		}
 	}
-	else if (Text::StrStartsWithC(connStr, connStrLen, UTF8STRC("mysql:")))
+	else if (connStr.StartsWith(UTF8STRC("mysql:")))
 	{
 		Text::StringBuilderUTF8 sb;
 		Text::String *server = 0;
@@ -254,7 +253,7 @@ DB::DBTool *DB::DBManager::OpenConn(const UTF8Char *connStr, IO::LogTool *log, N
 		Text::String *pwd = 0;
 		Text::String *schema = 0;
 		UOSInt cnt;
-		sb.AppendC(connStr + 6, connStrLen - 6);
+		sb.Append(connStr.Substring(6));
 		Text::PString sarr[2];
 		sarr[1] = sb;
 		while (true)
@@ -295,22 +294,22 @@ DB::DBTool *DB::DBManager::OpenConn(const UTF8Char *connStr, IO::LogTool *log, N
 			return db;
 		}
 	}
-	else if (Text::StrStartsWithC(connStr, connStrLen, UTF8STRC("sqlite:")))
+	else if (connStr.StartsWith(UTF8STRC("sqlite:")))
 	{
-		if (Text::StrStartsWithICaseC(connStr + 7, connStrLen - 7, UTF8STRC("FILE=")))
+		if (connStr.Substring(7).StartsWithICase(UTF8STRC("FILE=")))
 		{
-			db = DB::SQLiteFile::CreateDBTool({connStr + 12, connStrLen - 12}, log, DBPREFIX);
+			db = DB::SQLiteFile::CreateDBTool(connStr.Substring(12), log, DBPREFIX);
 			if (db)
 			{
 				return db;
 			}
 		}
 	}
-	else if (Text::StrStartsWithC(connStr, connStrLen, UTF8STRC("wmi:")))
+	else if (connStr.StartsWith(UTF8STRC("wmi:")))
 	{
-		if (Text::StrStartsWithICaseC(connStr + 4, connStrLen, UTF8STRC("NS=")))
+		if (connStr.Substring(4).StartsWithICase(UTF8STRC("NS=")))
 		{
-			const WChar *ns = Text::StrToWCharNew(connStr + 7);
+			const WChar *ns = Text::StrToWCharNew(connStr.v + 7);
 			Win32::WMIQuery *wmi;
 			NEW_CLASS(wmi, Win32::WMIQuery(ns));
 			if (wmi->IsError())
@@ -324,9 +323,9 @@ DB::DBTool *DB::DBManager::OpenConn(const UTF8Char *connStr, IO::LogTool *log, N
 			}
 		}
 	}
-	else if (Text::StrStartsWithC(connStr, connStrLen, UTF8STRC("oledb:")))
+	else if (connStr.StartsWith(UTF8STRC("oledb:")))
 	{
-		const WChar *cstr = Text::StrToWCharNew(connStr + 6);
+		const WChar *cstr = Text::StrToWCharNew(connStr.v + 6);
 		DB::OLEDBConn *oledb;
 		NEW_CLASS(oledb, DB::OLEDBConn(cstr, log));
 		if (oledb->GetConnError() != DB::OLEDBConn::CE_NONE)
@@ -339,7 +338,7 @@ DB::DBTool *DB::DBManager::OpenConn(const UTF8Char *connStr, IO::LogTool *log, N
 			return db;
 		}
 	}
-	else if (Text::StrStartsWithC(connStr, connStrLen, UTF8STRC("mysqltcp:")))
+	else if (connStr.StartsWith(UTF8STRC("mysqltcp:")))
 	{
 		Text::StringBuilderUTF8 sb;
 		Net::SocketUtil::AddressInfo addr;
@@ -349,7 +348,7 @@ DB::DBTool *DB::DBManager::OpenConn(const UTF8Char *connStr, IO::LogTool *log, N
 		Text::String *schema = 0;
 		addr.addrType = Net::AddrType::Unknown;
 		UOSInt cnt;
-		sb.AppendC(connStr + 9, connStrLen - 9);
+		sb.Append(connStr.Substring(9));
 		Text::PString sarr[2];
 		sarr[1] = sb;
 		while (true)
@@ -398,7 +397,7 @@ DB::DBTool *DB::DBManager::OpenConn(const UTF8Char *connStr, IO::LogTool *log, N
 			return db;
 		}
 	}
-	else if (Text::StrStartsWithC(connStr, connStrLen, UTF8STRC("postgresql:")))
+	else if (connStr.StartsWith(UTF8STRC("postgresql:")))
 	{
 		Text::StringBuilderUTF8 sb;
 		Text::String *server = 0;
@@ -407,7 +406,7 @@ DB::DBTool *DB::DBManager::OpenConn(const UTF8Char *connStr, IO::LogTool *log, N
 		Text::String *pwd = 0;
 		Text::String *schema = 0;
 		UOSInt cnt;
-		sb.AppendC(connStr + 11, connStrLen - 11);
+		sb.Append(connStr.Substring(11));
 		Text::PString sarr[2];
 		sarr[1] = sb;
 		while (true)
@@ -523,7 +522,7 @@ Bool DB::DBManager::RestoreConn(Text::CString fileName, Data::ArrayList<DB::DBTo
 	{
 		UInt8 *fileBuff = MemAlloc(UInt8, (UOSInt)len);
 		UInt8 *decBuff = MemAlloc(UInt8, (UOSInt)len + 1);
-		UTF8Char *sarr[2];
+		Text::PString sarr[2];
 		fs->Read(fileBuff, (UOSInt)len);
 		UInt8 keyBuff[32];
 		UOSInt cnt;
@@ -537,13 +536,13 @@ Bool DB::DBManager::RestoreConn(Text::CString fileName, Data::ArrayList<DB::DBTo
 		Crypto::Encrypt::AES256 aes(keyBuff);
 		aes.Decrypt(fileBuff, (UOSInt)len, decBuff, 0);
 		decBuff[(UOSInt)len] = 0;
-		sarr[1] = decBuff;
+		sarr[1] = Text::PString(decBuff, (UOSInt)len);
 		while (true)
 		{
-			cnt = Text::StrSplitLine(sarr, 2, sarr[1]);
-			if (sarr[0][0])
+			cnt = Text::StrSplitLineP(sarr, 2, sarr[1]);
+			if (sarr[0].leng > 0)
 			{
-				db = OpenConn(sarr[0], log, sockf);
+				db = OpenConn(sarr[0].ToCString(), log, sockf);
 				if (db)
 				{
 					dbList->Add(db);

@@ -1,6 +1,8 @@
 BUILD_OS := WINDOWS
 INCLUDEPATH+=:../../ThirdParty/KSSample
 
+WinDebug.h:
+
 Crypto/Cert/TrustStore.h: ../../src/Crypto/Cert/TrustStore_Win.cpp
 @TrustStore.o
 Crypto/Cert/WinHttpCert.h: ../../src/Crypto/Cert/WinHttpCert.cpp

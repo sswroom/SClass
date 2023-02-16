@@ -15,16 +15,17 @@
 void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnStreamClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRMODBUSMasterForm *me = (SSWR::AVIRead::AVIRMODBUSMasterForm *)userObj;
-	if (me->stm)
+	if (me->devStm)
 	{
 		me->StopStream(true);
 	}
 	else
 	{
 		IO::StreamType st;
-		me->stm = me->core->OpenStream(&st, me, 0, false);
-		if (me->stm)
+		me->devStm = me->core->OpenStream(&st, me, 0, false);
+		if (me->devStm)
 		{
+			NEW_CLASS(me->stm, IO::DataCaptureStream(me->devStm, OnDataRecv, OnDataSend, me));
 			if (me->radMODBUSTCP->IsSelected())
 			{
 				NEW_CLASS(me->modbus, IO::MODBUSTCPMaster(me->stm));
@@ -431,6 +432,40 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnTimerTick(void *userObj)
 			i++;
 		}
 	}
+	if (me->recvUpdated)
+	{
+		Text::StringBuilderUTF8 sb;
+		Sync::MutexUsage mutUsage(&me->recvMut);
+		me->recvBuff.ToString(&sb);
+		me->recvUpdated = false;
+		mutUsage.EndUse();
+		me->txtRAWRecv->SetText(sb.ToCString());
+	}
+	if (me->sendUpdated)
+	{
+		Text::StringBuilderUTF8 sb;
+		Sync::MutexUsage mutUsage(&me->sendMut);
+		me->sendBuff.ToString(&sb);
+		me->sendUpdated = false;
+		mutUsage.EndUse();
+		me->txtRAWSend->SetText(sb.ToCString());
+	}
+}
+
+void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnDataRecv(void *userObj, const UInt8 *data, UOSInt dataSize)
+{
+	SSWR::AVIRead::AVIRMODBUSMasterForm *me = (SSWR::AVIRead::AVIRMODBUSMasterForm*)userObj;
+	Sync::MutexUsage mutUsage(&me->recvMut);
+	me->recvBuff.AppendBytes(data, dataSize);
+	me->recvUpdated = true;
+}
+
+void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnDataSend(void *userObj, const UInt8 *data, UOSInt dataSize)
+{
+	SSWR::AVIRead::AVIRMODBUSMasterForm *me = (SSWR::AVIRead::AVIRMODBUSMasterForm*)userObj;
+	Sync::MutexUsage mutUsage(&me->sendMut);
+	me->sendBuff.AppendBytes(data, dataSize);
+	me->sendUpdated = true;
 }
 
 void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnMODBUSEntry(void *userObj, Text::CString name, UInt8 devAddr, UInt32 regAddr, IO::MODBUSController::DataType dt, Math::Unit::UnitBase::ValueType vt, Int32 unit, Int32 denorm)
@@ -463,7 +498,9 @@ void SSWR::AVIRead::AVIRMODBUSMasterForm::StopStream(Bool clearUI)
 		DEL_CLASS(this->modbusCtrl);
 		DEL_CLASS(this->modbus);
 		DEL_CLASS(this->stm);
+		DEL_CLASS(this->devStm);
 		this->stm = 0;
+		this->devStm = 0;
 		if (clearUI)
 		{
 			this->txtStream->SetText(CSTR("-"));
@@ -472,13 +509,15 @@ void SSWR::AVIRead::AVIRMODBUSMasterForm::StopStream(Bool clearUI)
 	}
 }
 
-SSWR::AVIRead::AVIRMODBUSMasterForm::AVIRMODBUSMasterForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 576, 480, ui)
+SSWR::AVIRead::AVIRMODBUSMasterForm::AVIRMODBUSMasterForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 576, 480, ui), recvBuff(4096), sendBuff(4096)
 {
 	this->SetText(CSTR("MODBUS Master"));
 	this->SetFont(0, 0, 8.25, false);
 	
 	this->core = core;
 	this->stm = 0;
+	this->recvUpdated = false;
+	this->sendUpdated = false;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	NEW_CLASS(this->grpStream, UI::GUIGroupBox(ui, this, CSTR("Stream")));
@@ -609,6 +648,16 @@ SSWR::AVIRead::AVIRMODBUSMasterForm::AVIRMODBUSMasterForm(UI::GUIClientControl *
 	this->lvDevice->AddColumn(CSTR("RegAddr"), 60);
 	this->lvDevice->AddColumn(CSTR("Name"), 150);
 	this->lvDevice->AddColumn(CSTR("Value"), 150);
+
+	this->tpRAWSend = this->tcMain->AddTabPage(CSTR("RAW Send"));
+	NEW_CLASS(this->txtRAWSend, UI::GUITextBox(ui, this->tpRAWSend, CSTR(""), true));
+	this->txtRAWSend->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->txtRAWSend->SetReadOnly(true);
+	
+	this->tpRAWRecv = this->tcMain->AddTabPage(CSTR("RAW Recv"));
+	NEW_CLASS(this->txtRAWRecv, UI::GUITextBox(ui, this->tpRAWRecv, CSTR(""), true));
+	this->txtRAWRecv->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->txtRAWRecv->SetReadOnly(true);
 
 	this->AddTimer(10000, OnTimerTick, this);
 }

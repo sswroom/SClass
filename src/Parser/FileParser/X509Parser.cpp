@@ -371,7 +371,7 @@ Crypto::Cert::X509File *Parser::FileParser::X509Parser::ParseBuff(const UInt8 *b
 		else
 			return file;
 	}
-	else
+	else if (buff[0] == 0x30)
 	{
 		if (fileName->EndsWithICase(UTF8STRC(".P12")))
 		{
@@ -386,6 +386,10 @@ Crypto::Cert::X509File *Parser::FileParser::X509Parser::ParseBuff(const UInt8 *b
 			NEW_CLASS(ret, Crypto::Cert::X509Cert(fileName, buff, buffSize));
 		}
 		else if (fileName->EndsWithICase(UTF8STRC(".CER")))
+		{
+			NEW_CLASS(ret, Crypto::Cert::X509Cert(fileName, buff, buffSize));
+		}
+		else if (fileName->EndsWithICase(UTF8STRC(".CRT")))
 		{
 			NEW_CLASS(ret, Crypto::Cert::X509Cert(fileName, buff, buffSize));
 		}

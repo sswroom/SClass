@@ -155,7 +155,10 @@ void __stdcall SSWR::AVIRead::AVIRASN1DataForm::OnVerifySignInfoClicked(void *us
 	}
 	else
 	{
-		me->txtVerifyStatus->SetText(CSTR("Cannot decrypt signature"));
+		sb.ClearStr();
+		sb.AppendC(UTF8STRC("Cannot decrypt signature, sign len = "));
+		sb.AppendUOSInt(signLen);
+		me->txtVerifyStatus->SetText(sb.ToCString());
 	}
 	DEL_CLASS(ssl);
 	DEL_CLASS(key);

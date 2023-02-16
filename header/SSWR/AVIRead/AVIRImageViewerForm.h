@@ -32,7 +32,7 @@ namespace SSWR
 			static void __stdcall OnTimerTick(void *userObj);
 			static void __stdcall OnAniTimerTick(void *userObj);
 			static Bool __stdcall OnMouseMove(void *userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn);
-			static Bool IsImageFileName(const UTF8Char *fileName);
+			static Bool IsImageFileName(Text::CString fileName);
 		public:
 			AVIRImageViewerForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRImageViewerForm();

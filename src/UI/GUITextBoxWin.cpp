@@ -113,6 +113,14 @@ void UI::GUITextBox::HandleKeyDown(UI::KeyEvent hdlr, void *userObj)
 	this->keyDownObjs.Add(userObj);
 }
 
+void UI::GUITextBox::SetWordWrap(Bool wordWrap)
+{
+/*	if (wordWrap)
+	{
+		SendMessage((HWND)this->hwnd, EM_SETWORDBREAKPROC, 0, GUITextBox_WordBreakProc);
+	}*/
+}
+
 void UI::GUITextBox::SelectAll()
 {
 	SendMessage((HWND)this->hwnd, EM_SETSEL, 0, -1);

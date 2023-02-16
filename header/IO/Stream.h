@@ -35,7 +35,8 @@ namespace IO
 		LZWEnc,
 		RS232GPIO,
 		WindowsCOM,
-		MemoryReading
+		MemoryReading,
+		DataCapture
 	};
 
 

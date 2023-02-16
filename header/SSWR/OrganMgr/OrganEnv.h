@@ -234,7 +234,7 @@ namespace SSWR
 			virtual Bool IsBookSpeciesExist(const UTF8Char *sName, Text::StringBuilderUTF8 *sb) = 0;
 			virtual Bool AddSpecies(OrganSpecies *sp) = 0;
 			virtual Bool DelSpecies(OrganSpecies *sp) = 0;
-			virtual FileStatus AddSpeciesFile(OrganSpecies *sp, const UTF8Char *fileName, Bool firstPhoto, Bool moveFile, Int32 *fileId) = 0;
+			virtual FileStatus AddSpeciesFile(OrganSpecies *sp, Text::CString fileName, Bool firstPhoto, Bool moveFile, Int32 *fileId) = 0;
 			virtual FileStatus AddSpeciesWebFile(OrganSpecies *sp, Text::String *srcURL, Text::String *imgURL, IO::Stream *stm, UTF8Char *webFileName) = 0;
 			virtual Bool UpdateSpeciesWebFile(OrganSpecies *sp, WebFileInfo *wfile, Text::String *srcURL, Text::String *location) = 0;
 			Bool SetSpeciesImg(OrganSpecies *sp, OrganImageItem *img);
