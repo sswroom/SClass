@@ -14,6 +14,12 @@ Data::CircularByteBuff::~CircularByteBuff()
 	MemFree(this->buff);
 }
 
+void Data::CircularByteBuff::Clear()
+{
+	this->indexBegin = 0;
+	this->indexEnd = 0;
+}
+
 void Data::CircularByteBuff::AppendBytes(const UInt8 *buff, UOSInt buffSize)
 {
 	if (buffSize >= this->buffSize - 1)

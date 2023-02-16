@@ -11,6 +11,7 @@
 #include "SSWR/AVIRead/AVIRMODBUSMasterForm.h"
 #include "Sync/Thread.h"
 #include "Text/MyStringFloat.h"
+#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnStreamClicked(void *userObj)
 {
@@ -25,6 +26,11 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnStreamClicked(void *userOb
 		me->devStm = me->core->OpenStream(&st, me, 0, false);
 		if (me->devStm)
 		{
+			me->recvBuff.Clear();
+			me->recvUpdated = true;
+			me->sendBuff.Clear();
+			me->sendUpdated = true;
+			me->log.LogMessage(CSTR("Stream Started"), IO::ILogHandler::LogLevel::Action);
 			NEW_CLASS(me->stm, IO::DataCaptureStream(me->devStm, OnDataRecv, OnDataSend, me));
 			if (me->radMODBUSTCP->IsSelected())
 			{
@@ -35,6 +41,7 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnStreamClicked(void *userOb
 				NEW_CLASS(me->modbus, IO::MODBUSRTUMaster(me->stm));
 			}
 			NEW_CLASS(me->modbusCtrl, IO::MODBUSController(me->modbus));
+			me->txtTimeout->SetText(CSTR("200"));
 			me->txtStream->SetText(IO::StreamTypeGetName(st));
 			me->btnStream->SetText(CSTR("&Close"));
 		}
@@ -270,6 +277,29 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnDeviceAddClicked(void *use
 	}
 }
 
+void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnTimeoutClicked(void *userObj)
+{
+	SSWR::AVIRead::AVIRMODBUSMasterForm *me = (SSWR::AVIRead::AVIRMODBUSMasterForm *)userObj;
+	if (me->modbusCtrl == 0)
+	{
+		UI::MessageDialog::ShowDialog(CSTR("You must open the stream first"), CSTR("MODBUS Master"), me);
+	}
+	else
+	{
+		Text::StringBuilderUTF8 sb;
+		me->txtTimeout->GetText(&sb);
+		UInt32 timeout;
+		if (sb.ToUInt32(&timeout))
+		{
+			me->modbusCtrl->SetTimeout(timeout);
+		}
+		else
+		{
+			UI::MessageDialog::ShowDialog(CSTR("Timeout value is not valid number"), CSTR("MODBUS Master"), me);
+		}
+	}
+}
+
 void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnTimerTick(void *userObj)
 {
 	SSWR::AVIRead::AVIRMODBUSMasterForm *me = (SSWR::AVIRead::AVIRMODBUSMasterForm *)userObj;
@@ -455,6 +485,12 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnTimerTick(void *userObj)
 void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnDataRecv(void *userObj, const UInt8 *data, UOSInt dataSize)
 {
 	SSWR::AVIRead::AVIRMODBUSMasterForm *me = (SSWR::AVIRead::AVIRMODBUSMasterForm*)userObj;
+	Text::StringBuilderUTF8 sb;
+	sb.AppendC(UTF8STRC("Data Received: "));
+	sb.AppendUOSInt(dataSize);
+	sb.AppendC(UTF8STRC(" bytes"));
+	me->log.LogMessage(sb.ToCString(), IO::ILogHandler::LogLevel::Raw);
+
 	Sync::MutexUsage mutUsage(&me->recvMut);
 	me->recvBuff.AppendBytes(data, dataSize);
 	me->recvUpdated = true;
@@ -463,6 +499,12 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnDataRecv(void *userObj, co
 void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnDataSend(void *userObj, const UInt8 *data, UOSInt dataSize)
 {
 	SSWR::AVIRead::AVIRMODBUSMasterForm *me = (SSWR::AVIRead::AVIRMODBUSMasterForm*)userObj;
+	Text::StringBuilderUTF8 sb;
+	sb.AppendC(UTF8STRC("Data Sent: "));
+	sb.AppendUOSInt(dataSize);
+	sb.AppendC(UTF8STRC(" bytes"));
+	me->log.LogMessage(sb.ToCString(), IO::ILogHandler::LogLevel::Raw);
+
 	Sync::MutexUsage mutUsage(&me->sendMut);
 	me->sendBuff.AppendBytes(data, dataSize);
 	me->sendUpdated = true;
@@ -521,20 +563,27 @@ SSWR::AVIRead::AVIRMODBUSMasterForm::AVIRMODBUSMasterForm(UI::GUIClientControl *
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	NEW_CLASS(this->grpStream, UI::GUIGroupBox(ui, this, CSTR("Stream")));
-	this->grpStream->SetRect(0, 0, 100, 72, false);
+	this->grpStream->SetRect(0, 0, 100, 96, false);
 	this->grpStream->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblStream, UI::GUILabel(ui, this->grpStream, CSTR("Stream Type")));
 	this->lblStream->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtStream, UI::GUITextBox(ui, this->grpStream, CSTR("-")));
 	this->txtStream->SetRect(104, 4, 200, 23, false);
 	this->txtStream->SetReadOnly(true);
+	NEW_CLASS(this->btnStream, UI::GUIButton(ui, this->grpStream, CSTR("&Open")));
+	this->btnStream->SetRect(304, 4, 75, 23, false);
+	this->btnStream->HandleButtonClick(OnStreamClicked, this);
 	NEW_CLASS(this->radMODBUSRTU, UI::GUIRadioButton(ui, this->grpStream, CSTR("MODBUS RTU"), true));
 	this->radMODBUSRTU->SetRect(104, 28, 100, 23, false);
 	NEW_CLASS(this->radMODBUSTCP, UI::GUIRadioButton(ui, this->grpStream, CSTR("MODBUS TCP"), false));
 	this->radMODBUSTCP->SetRect(204, 28, 100, 23, false);
-	NEW_CLASS(this->btnStream, UI::GUIButton(ui, this->grpStream, CSTR("&Open")));
-	this->btnStream->SetRect(304, 4, 75, 23, false);
-	this->btnStream->HandleButtonClick(OnStreamClicked, this);
+	NEW_CLASS(this->lblTimeout, UI::GUILabel(ui, this->grpStream, CSTR("Timeout(ms)")));
+	this->lblTimeout->SetRect(4, 52, 100, 23, false);
+	NEW_CLASS(this->txtTimeout, UI::GUITextBox(ui, this->grpStream, CSTR("200")));
+	this->txtTimeout->SetRect(104, 52, 100, 23, false);
+	NEW_CLASS(this->btnTimeout, UI::GUIButton(ui, this->grpStream, CSTR("Set")));
+	this->btnTimeout->SetRect(204, 52, 75, 23, false);
+	this->btnTimeout->HandleButtonClick(OnTimeoutClicked, this);
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 	
@@ -659,6 +708,18 @@ SSWR::AVIRead::AVIRMODBUSMasterForm::AVIRMODBUSMasterForm(UI::GUIClientControl *
 	this->txtRAWRecv->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->txtRAWRecv->SetReadOnly(true);
 
+	this->tpLog = this->tcMain->AddTabPage(CSTR("Log"));
+	NEW_CLASS(this->txtLog, UI::GUITextBox(ui, this->tpLog, CSTR("")));
+	this->txtLog->SetRect(0, 0, 100, 23, false);
+	this->txtLog->SetReadOnly(true);
+	this->txtLog->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	NEW_CLASS(this->lbLog, UI::GUIListBox(ui, this->tpLog, false));
+	this->lbLog->SetDockType(UI::GUIControl::DOCK_FILL);
+
+	NEW_CLASS(this->logger, UI::ListBoxLogger(this, this->lbLog, 500, false));
+	this->logger->SetTimeFormat("yyyy-MM-dd HH:mm:ss.fffffff");
+	this->log.AddLogHandler(this->logger, IO::ILogHandler::LogLevel::Raw);
+
 	this->AddTimer(10000, OnTimerTick, this);
 }
 
@@ -673,6 +734,8 @@ SSWR::AVIRead::AVIRMODBUSMasterForm::~AVIRMODBUSMasterForm()
 		entry->name->Release();
 		MemFree(entry);
 	}
+	this->log.RemoveLogHandler(this->logger);
+	DEL_CLASS(this->logger);
 }
 
 void SSWR::AVIRead::AVIRMODBUSMasterForm::OnMonitorChanged()

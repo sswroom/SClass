@@ -14,12 +14,14 @@
 #include "UI/GUIHSplitter.h"
 #include "UI/GUIForm.h"
 #include "UI/GUILabel.h"
+#include "UI/GUIListBox.h"
 #include "UI/GUIListView.h"
 #include "UI/GUIPanel.h"
 #include "UI/GUIRadioButton.h"
 #include "UI/GUITabControl.h"
 #include "UI/GUITabPage.h"
 #include "UI/GUITextBox.h"
+#include "UI/ListBoxLogger.h"
 
 namespace SSWR
 {
@@ -66,13 +68,18 @@ namespace SSWR
 			Sync::Mutex sendMut;
 			Data::CircularByteBuff sendBuff;
 			Bool sendUpdated;
+			IO::LogTool log;
+			UI::ListBoxLogger *logger;
 
 			UI::GUIGroupBox *grpStream;
 			UI::GUILabel *lblStream;
 			UI::GUITextBox *txtStream;
+			UI::GUIButton *btnStream;
 			UI::GUIRadioButton *radMODBUSRTU;
 			UI::GUIRadioButton *radMODBUSTCP;
-			UI::GUIButton *btnStream;
+			UI::GUILabel *lblTimeout;
+			UI::GUITextBox *txtTimeout;
+			UI::GUIButton *btnTimeout;
 			UI::GUITabControl *tcMain;
 
 			UI::GUITabPage *tpGetValue;
@@ -125,6 +132,10 @@ namespace SSWR
 
 			UI::GUITabPage *tpRAWRecv;
 			UI::GUITextBox *txtRAWRecv;
+
+			UI::GUITabPage *tpLog;
+			UI::GUITextBox *txtLog;
+			UI::GUIListBox *lbLog;
 		private:
 			static void __stdcall OnStreamClicked(void *userObj);
 			static void __stdcall OnU8GetClicked(void *userObj);
@@ -134,6 +145,7 @@ namespace SSWR
 			static void __stdcall OnSetU8LowClicked(void *userObj);
 			static void __stdcall OnSetU8HighClicked(void *userObj);
 			static void __stdcall OnDeviceAddClicked(void *userObj);
+			static void __stdcall OnTimeoutClicked(void *userObj);
 			static void __stdcall OnTimerTick(void *userObj);
 			static void __stdcall OnDataRecv(void *userObj, const UInt8 *data, UOSInt dataSize);
 			static void __stdcall OnDataSend(void *userObj, const UInt8 *data, UOSInt dataSize);
