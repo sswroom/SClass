@@ -136,6 +136,8 @@ util.h:
 
 Net/HTTPOSClient.h: ../../src/Net/HTTPOSClientW.cpp
 @HTTPOSClient.o
+@WinSSLEngine.o
+@WinSSLClient.o
 Net/SSLEngineFactory.h: ../../src/Net/SSLEngineFactoryWin.cpp
 @SSLEngineFactory.o
 Net/WinSSLClient.h: ../../src/Net/WinSSLClient.cpp

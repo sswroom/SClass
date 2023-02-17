@@ -19,6 +19,9 @@
 #endif
 #endif
 
+extern void SecBuffer_Set(SecBuffer *buff, UInt32 type, UInt8 *inpBuff, UInt32 leng);
+extern void SecBufferDesc_Set(SecBufferDesc *desc, SecBuffer *buffs, UInt32 nBuffs);
+
 struct Net::WinSSLClient::ClassData
 {
 	CredHandle *hCred;
@@ -35,20 +38,6 @@ struct Net::WinSSLClient::ClassData
 	UOSInt readSize;
 	Data::ArrayList<Crypto::Cert::Certificate *> *remoteCerts;
 };
-
-void SecBuffer_Set(SecBuffer *buff, UInt32 type, UInt8 *inpBuff, UInt32 leng)
-{
-	buff->BufferType = type;
-	buff->pvBuffer = inpBuff;
-	buff->cbBuffer = leng;
-}
-
-void SecBufferDesc_Set(SecBufferDesc *desc, SecBuffer *buffs, UInt32 nBuffs)
-{
-	desc->ulVersion = SECBUFFER_VERSION;
-	desc->pBuffers = buffs;
-	desc->cBuffers = nBuffs;
-}
 
 Net::WinSSLClient::WinSSLClient(Net::SocketFactory *sockf, Socket *s, void *ctxt) : SSLClient(sockf, s)
 {

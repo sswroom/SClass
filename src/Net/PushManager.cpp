@@ -203,13 +203,23 @@ Bool Net::PushManager::Send(Data::ArrayList<Text::String*> *userNames, Text::Str
 			this->log->LogMessage(CSTR("Send: Device not found"), IO::ILogHandler::LogLevel::Error);
 		return false;
 	}
-	Text::StringBuilderUTF8 sbResult;
-	sbResult.AppendC(UTF8STRC("Send Message result: "));
-	Bool ret = Net::GoogleFCM::SendMessage(this->sockf, this->ssl, this->fcmKey->ToCString(), &tokenList, message->ToCString(), &sbResult);
-	if (this->log)
-		this->log->LogMessage(sbResult.ToCString(), IO::ILogHandler::LogLevel::Action);
-	LIST_FREE_STRING(&tokenList);
-	return ret;
+	else
+	{
+		Bool ret = false;
+		Text::StringBuilderUTF8 sbResult;
+		i = 0;
+		j = tokenList.GetCount();
+		while (i < j)
+		{
+			sbResult.AppendC(UTF8STRC("Send Message result: "));
+			ret |= Net::GoogleFCM::SendMessage(this->sockf, this->ssl, this->fcmKey->ToCString(), tokenList.GetItem(i)->ToCString(), message->ToCString(), &sbResult);
+			if (this->log)
+				this->log->LogMessage(sbResult.ToCString(), IO::ILogHandler::LogLevel::Action);
+			i++;
+		}
+		LIST_FREE_STRING(&tokenList);
+		return ret;
+	}
 }
 
 UOSInt Net::PushManager::GetUsers(Data::ArrayList<Text::String*> *users, Sync::MutexUsage *mutUsage)

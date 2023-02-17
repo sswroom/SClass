@@ -35,8 +35,19 @@ struct Net::WinSSLEngine::ClassData
 	Method method;
 };
 
-extern void SecBuffer_Set(SecBuffer *buff, UInt32 type, UInt8 *inpBuff, UInt32 leng);
-extern void SecBufferDesc_Set(SecBufferDesc *desc, SecBuffer *buffs, UInt32 nBuffs);
+void SecBuffer_Set(SecBuffer *buff, UInt32 type, UInt8 *inpBuff, UInt32 leng)
+{
+	buff->BufferType = type;
+	buff->pvBuffer = inpBuff;
+	buff->cbBuffer = leng;
+}
+
+void SecBufferDesc_Set(SecBufferDesc *desc, SecBuffer *buffs, UInt32 nBuffs)
+{
+	desc->ulVersion = SECBUFFER_VERSION;
+	desc->pBuffers = buffs;
+	desc->cBuffers = nBuffs;
+}
 
 void WinSSLEngine_PrintCERT_CONTEXT(PCCERT_CONTEXT cert)
 {
