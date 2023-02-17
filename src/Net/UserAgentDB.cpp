@@ -1165,7 +1165,7 @@ void Net::UserAgentDB::ParseUserAgent(Net::UserAgentDB::UAEntry *ent, Text::CStr
 					ent->osVer = Text::StrCopyNewC(&strs2[j].v[15], strs2[j].leng - 15);
 					ent->osVerLen = strs2[j].leng - 15;
 				}
-				else if (Text::StrEqualsC(strs2[j].v ,strs[j].leng, UTF8STRC("Trident/7.0")))
+				else if (Text::StrEqualsC(strs2[j].v ,strs2[j].leng, UTF8STRC("Trident/7.0")))
 				{
 					ent->browser = Net::BrowserInfo::BT_IE;
 					SDEL_TEXT(ent->browserVer);
@@ -1178,7 +1178,7 @@ void Net::UserAgentDB::ParseUserAgent(Net::UserAgentDB::UAEntry *ent, Text::CStr
 				else if (Text::StrEqualsC(strs2[j].v, strs2[j].leng, UTF8STRC("SE 2.X MetaSr 1.0"))) //Sugou Browser
 				{
 				}
-				else if (ent->browser == Net::BrowserInfo::BT_UNKNOWN && Text::StrEqualsC(strs2[j].v, strs[j].leng, UTF8STRC("Indy Library")))
+				else if (ent->browser == Net::BrowserInfo::BT_UNKNOWN && Text::StrEqualsC(strs2[j].v, strs2[j].leng, UTF8STRC("Indy Library")))
 				{
 					ent->browser = Net::BrowserInfo::BT_INDY;
 				}

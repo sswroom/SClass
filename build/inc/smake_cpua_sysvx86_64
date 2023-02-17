@@ -33,7 +33,8 @@ Base64_CPP.o: ../../src/Crypto/Encrypt/Base64_SysV64.asm
 CRC16_CPP.o: ../../src/Crypto/Hash/CRC16_SysV64.asm
 CRC16R_CPP.o: ../../src/Crypto/Hash/CRC16R_CPP.cpp
 CRC32_CPP.o: ../../src/Crypto/Hash/CRC32_CPP.cpp
-CRC32R_CPP.o: ../../src/Crypto/Hash/CRC32R_SysV64.asm
+#CRC32R_CPP.o: ../../src/Crypto/Hash/CRC32R_SysV64.asm
+CRC32R_CPP.o: ../../src/Crypto/Hash/CRC32R_CPP.cpp
 MD5_CPP.o: ../../src/Crypto/Hash/MD5_SysV64.asm
 SHA1_CPP.o: ../../src/Crypto/Hash/SHA1_SysV64.asm
 LZODecompressor_CPP.o: ../../src/Data/Compress/LZODecompressor_cpp.cpp
