@@ -22,7 +22,7 @@ void __stdcall SSWR::AVIRead::AVIRGISSearchForm::OnResultSelChg(void *userObj)
 	if (i != INVALID_INDEX)
 	{
 		Math::Coord2DDbl center;
-		void *sess;
+		Map::GetObjectSess *sess;
 		Text::String *s = me->lbResults->GetItemTextNew(i);
 
 		sess = me->layer->BeginGetObject();
@@ -95,7 +95,7 @@ SSWR::AVIRead::AVIRGISSearchForm::AVIRGISSearchForm(UI::GUIClientControl *parent
 	this->lbResults->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lbResults->HandleSelectionChange(OnResultSelChg, this);
 
-	void *nameArr;
+	Map::NameArray *nameArr;
 	NEW_CLASS(this->dispList, Data::ArrayListString());
 	NEW_CLASS(this->objIds, Data::ArrayListInt64());
 	this->layer->GetAllObjectIds(this->objIds, &nameArr);

@@ -359,7 +359,7 @@ void Map::VectorLayer::SetMixedData(MixedData mixedData)
 	this->mixedData = mixedData;
 }
 
-UOSInt Map::VectorLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, void **nameArr)
+UOSInt Map::VectorLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, NameArray **nameArr)
 {
 	UOSInt i = 0;
 	UOSInt j = this->vectorList.GetCount();
@@ -390,12 +390,12 @@ UOSInt Map::VectorLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, void **na
 	}
 }
 
-UOSInt Map::VectorLayer::GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
+UOSInt Map::VectorLayer::GetObjectIds(Data::ArrayListInt64 *outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
 {
 	return GetObjectIdsMapXY(outArr, nameArr, rect.ToDouble() / mapRate, keepEmpty);
 }
 
-UOSInt Map::VectorLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
+UOSInt Map::VectorLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
 	Math::RectAreaDbl vBounds;
 	UOSInt recCnt = 0;
@@ -445,11 +445,11 @@ Int64 Map::VectorLayer::GetObjectIdMax()
 	return (Int64)this->vectorList.GetCount() - 1;
 }
 
-void Map::VectorLayer::ReleaseNameArr(void *nameArr)
+void Map::VectorLayer::ReleaseNameArr(NameArray *nameArr)
 {
 }
 
-UTF8Char *Map::VectorLayer::GetString(UTF8Char *buff, UOSInt buffSize, void *nameArr, Int64 id, UOSInt strIndex)
+UTF8Char *Map::VectorLayer::GetString(UTF8Char *buff, UOSInt buffSize, NameArray *nameArr, Int64 id, UOSInt strIndex)
 {
 	if (id < 0 || (UInt64)id >= this->strList.GetCount())
 	{
@@ -555,16 +555,16 @@ Bool Map::VectorLayer::GetBounds(Math::RectAreaDbl *bounds)
 	return this->min.x != 0 || this->min.y != 0 || this->max.x != 0 || this->max.y != 0;
 }
 
-void *Map::VectorLayer::BeginGetObject()
+Map::GetObjectSess *Map::VectorLayer::BeginGetObject()
 {
-	return (void*)-1;
+	return (Map::GetObjectSess*)-1;
 }
 
-void Map::VectorLayer::EndGetObject(void *session)
+void Map::VectorLayer::EndGetObject(Map::GetObjectSess *session)
 {
 }
 
-Math::Geometry::Vector2D *Map::VectorLayer::GetNewVectorById(void *session, Int64 id)
+Math::Geometry::Vector2D *Map::VectorLayer::GetNewVectorById(Map::GetObjectSess *session, Int64 id)
 {
 	Math::Geometry::Vector2D *vec = this->vectorList.GetItem((UOSInt)id);
 	if (vec)

@@ -118,7 +118,7 @@ Bool Exporter::SPKExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 			IO::SPackageFile *spkg;
 			Map::OruxDBLayer *orux = (Map::OruxDBLayer*)layer;
 			Math::RectAreaDbl bounds;
-			void *nameArr;
+			Map::NameArray *nameArr;
 			Data::ArrayListInt64 objIds;
 			Int32 xAdd;
 			Int32 yAdd;

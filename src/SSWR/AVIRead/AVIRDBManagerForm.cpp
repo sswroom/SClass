@@ -161,7 +161,7 @@ Bool __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnMapMouseUp(void *userObj, Mat
 	{
 		if (me->mapDownPos == scnPos)
 		{
-			void *sess;
+			Map::GetObjectSess *sess;
 			Int64 id;
 			UOSInt i;
 			UOSInt j;
@@ -184,7 +184,7 @@ Bool __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnMapMouseUp(void *userObj, Mat
 			else
 			{
 				Data::ArrayListInt64 arr;
-				void *nameArr;
+				Map::NameArray *nameArr;
 				me->dbLayer->GetObjectIdsMapXY(&arr, &nameArr, Math::RectAreaDbl(mapPt, mapPt), true);
 				i = 0;
 				j = me->dbLayer->GetColumnCnt();

@@ -372,7 +372,7 @@ Map::DrawLayerType Map::WebImageLayer::GetLayerType()
 	return Map::DRAW_LAYER_IMAGE;
 }
 
-UOSInt Map::WebImageLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, void **nameArr)
+UOSInt Map::WebImageLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, NameArray **nameArr)
 {
 	UOSInt retCnt = 0;
 	UOSInt i;
@@ -396,12 +396,12 @@ UOSInt Map::WebImageLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, void **
 	return retCnt;
 }
 
-UOSInt Map::WebImageLayer::GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
+UOSInt Map::WebImageLayer::GetObjectIds(Data::ArrayListInt64 *outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
 {
 	return GetObjectIdsMapXY(outArr, nameArr, rect.ToDouble() / mapRate, keepEmpty);
 }
 
-UOSInt Map::WebImageLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
+UOSInt Map::WebImageLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
 	UOSInt retCnt = 0;
 	ImageStat *stat;
@@ -490,11 +490,11 @@ Int64 Map::WebImageLayer::GetObjectIdMax()
 	return maxId;
 }
 
-void Map::WebImageLayer::ReleaseNameArr(void *nameArr)
+void Map::WebImageLayer::ReleaseNameArr(NameArray *nameArr)
 {
 }
 
-UTF8Char *Map::WebImageLayer::GetString(UTF8Char *buff, UOSInt buffSize, void *nameArr, Int64 id, UOSInt colIndex)
+UTF8Char *Map::WebImageLayer::GetString(UTF8Char *buff, UOSInt buffSize, NameArray *nameArr, Int64 id, UOSInt colIndex)
 {
 	if (colIndex != 0)
 		return 0;
@@ -559,16 +559,16 @@ Bool Map::WebImageLayer::GetBounds(Math::RectAreaDbl *bounds)
 	return this->min.x != 0 || this->min.y != 0 || this->max.x != 0 || this->max.y != 0;
 }
 
-void *Map::WebImageLayer::BeginGetObject()
+Map::GetObjectSess *Map::WebImageLayer::BeginGetObject()
 {
 	return 0;
 }
 
-void Map::WebImageLayer::EndGetObject(void *session)
+void Map::WebImageLayer::EndGetObject(GetObjectSess *session)
 {
 }
 
-Math::Geometry::Vector2D *Map::WebImageLayer::GetNewVectorById(void *session, Int64 id)
+Math::Geometry::Vector2D *Map::WebImageLayer::GetNewVectorById(GetObjectSess *session, Int64 id)
 {
 	ImageStat *stat = this->GetImageStat((Int32)id);
 	if (stat)

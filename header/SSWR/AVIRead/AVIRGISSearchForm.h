@@ -26,7 +26,7 @@ namespace SSWR
 			Text::SearchIndexer *searching;
 			Data::ArrayListString *dispList;
 			Data::ArrayListInt64 *objIds;
-			void *nameArr;
+			Map::NameArray *nameArr;
 			UOSInt strIndex;
 			Int32 flags;
 

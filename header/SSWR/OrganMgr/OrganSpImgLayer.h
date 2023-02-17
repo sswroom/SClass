@@ -19,12 +19,12 @@ namespace SSWR
 			virtual ~OrganSpImgLayer();
 
 			virtual Map::DrawLayerType GetLayerType();
-			virtual UOSInt GetAllObjectIds(Data::ArrayListInt64 *outArr, void **nameArr);
-			virtual UOSInt GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty);
-			virtual UOSInt GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void **nameArr, Math::RectAreaDbl rect, Bool keepEmpty);
+			virtual UOSInt GetAllObjectIds(Data::ArrayListInt64 *outArr, Map::NameArray **nameArr);
+			virtual UOSInt GetObjectIds(Data::ArrayListInt64 *outArr, Map::NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty);
+			virtual UOSInt GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, Map::NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty);
 			virtual Int64 GetObjectIdMax();
-			virtual void ReleaseNameArr(void *nameArr);
-			virtual UTF8Char *GetString(UTF8Char *buff, UOSInt buffSize, void *nameArr, Int64 id, UOSInt strIndex);
+			virtual void ReleaseNameArr(Map::NameArray *nameArr);
+			virtual UTF8Char *GetString(UTF8Char *buff, UOSInt buffSize, Map::NameArray *nameArr, Int64 id, UOSInt strIndex);
 			virtual UOSInt GetColumnCnt();
 			virtual UTF8Char *GetColumnName(UTF8Char *buff, UOSInt colIndex);
 			virtual DB::DBUtil::ColType GetColumnType(UOSInt colIndex, UOSInt *colSize);
@@ -32,9 +32,9 @@ namespace SSWR
 			virtual UInt32 GetCodePage();
 			virtual Bool GetBounds(Math::RectAreaDbl *bounds);
 
-			virtual void *BeginGetObject();
-			virtual void EndGetObject(void *session);
-			virtual Math::Geometry::Vector2D *GetNewVectorById(void *session, Int64 id);
+			virtual Map::GetObjectSess *BeginGetObject();
+			virtual void EndGetObject(Map::GetObjectSess *session);
+			virtual Math::Geometry::Vector2D *GetNewVectorById(Map::GetObjectSess *session, Int64 id);
 
 			virtual ObjectClass GetObjectClass();
 

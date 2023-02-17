@@ -130,8 +130,8 @@ Map::VectorLayer *Map::LayerTools::CombineLayers(Data::ArrayList<Map::IMapDrawLa
 			namesArr[l] = 0;
 		}
 
-		void *lyrNameArr;
-		void *sess;
+		Map::NameArray *lyrNameArr;
+		Map::GetObjectSess *sess;
 		UTF8Char *sptr2;
 		Int64 id;
 

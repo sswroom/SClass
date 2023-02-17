@@ -324,7 +324,7 @@ Map::DrawLayerType Map::TileMapLayer::GetLayerType()
 	return Map::DRAW_LAYER_IMAGE;
 }
 
-UOSInt Map::TileMapLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, void **nameArr)
+UOSInt Map::TileMapLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, NameArray **nameArr)
 {
 	UOSInt retCnt;
 	UOSInt level = this->tileMap->GetNearestLevel(scale);
@@ -347,7 +347,7 @@ UOSInt Map::TileMapLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, void **n
 	return retCnt;
 }
 
-UOSInt Map::TileMapLayer::GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
+UOSInt Map::TileMapLayer::GetObjectIds(Data::ArrayListInt64 *outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
 {
 	UOSInt retCnt;
 	UOSInt level = this->tileMap->GetNearestLevel(scale);
@@ -371,7 +371,7 @@ UOSInt Map::TileMapLayer::GetObjectIds(Data::ArrayListInt64 *outArr, void **name
 	return retCnt;
 }
 
-UOSInt Map::TileMapLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
+UOSInt Map::TileMapLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
 	UOSInt retCnt;
 	UOSInt level = this->tileMap->GetNearestLevel(scale);
@@ -400,11 +400,11 @@ Int64 Map::TileMapLayer::GetObjectIdMax()
 	return 0;
 }
 
-void Map::TileMapLayer::ReleaseNameArr(void *nameArr)
+void Map::TileMapLayer::ReleaseNameArr(NameArray *nameArr)
 {
 }
 
-UTF8Char *Map::TileMapLayer::GetString(UTF8Char *buff, UOSInt buffSize, void *nameArr, Int64 id, UOSInt strIndex)
+UTF8Char *Map::TileMapLayer::GetString(UTF8Char *buff, UOSInt buffSize, NameArray *nameArr, Int64 id, UOSInt strIndex)
 {
 	switch (strIndex)
 	{
@@ -497,16 +497,16 @@ Bool Map::TileMapLayer::GetBounds(Math::RectAreaDbl *bounds)
 	return this->tileMap->GetBounds(bounds);
 }
 
-void *Map::TileMapLayer::BeginGetObject()
+Map::GetObjectSess *Map::TileMapLayer::BeginGetObject()
 {
-	return (void*)-1;
+	return (GetObjectSess*)-1;
 }
 
-void Map::TileMapLayer::EndGetObject(void *session)
+void Map::TileMapLayer::EndGetObject(GetObjectSess *session)
 {
 }
 
-Math::Geometry::Vector2D *Map::TileMapLayer::GetNewVectorById(void *session, Int64 id)
+Math::Geometry::Vector2D *Map::TileMapLayer::GetNewVectorById(GetObjectSess *session, Int64 id)
 {
 	CachedImage *cimg;
 	Math::Geometry::VectorImage *vimg;

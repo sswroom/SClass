@@ -27,6 +27,7 @@
 #include "SSWR/AVIRead/AVIRGISCSysForm.h"
 #include "SSWR/AVIRead/AVIRGISDistanceForm.h"
 #include "SSWR/AVIRead/AVIRGISEditImageForm.h"
+#include "SSWR/AVIRead/AVIRGISEditVectorForm.h"
 #include "SSWR/AVIRead/AVIRGISForm.h"
 #include "SSWR/AVIRead/AVIRGISGroupQueryForm.h"
 #include "SSWR/AVIRead/AVIRGISHKTDTonnesForm.h"
@@ -1058,9 +1059,16 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 		{
 			Map::IMapDrawLayer *lyr = ((Map::MapEnv::LayerItem*)((UI::GUIMapTreeView::ItemIndex*)this->popNode->GetItemObj())->item)->layer;
 			Map::DrawLayerType lyrType = lyr->GetLayerType();
-			if (lyrType == Map::DRAW_LAYER_IMAGE && lyr->GetObjectClass() == Map::IMapDrawLayer::OC_VECTOR_LAYER)
+			if (lyr->GetObjectClass() == Map::IMapDrawLayer::OC_VECTOR_LAYER)
 			{
-				this->SetCtrlForm(NEW_CLASS_D(SSWR::AVIRead::AVIRGISEditImageForm(0, this->ui, this->core, (Map::VectorLayer*)lyr, this)), this->popNode);
+				if (lyrType == Map::DRAW_LAYER_IMAGE)
+				{
+					this->SetCtrlForm(NEW_CLASS_D(SSWR::AVIRead::AVIRGISEditImageForm(0, this->ui, this->core, (Map::VectorLayer*)lyr, this)), this->popNode);
+				}
+				else if (lyrType == Map::DRAW_LAYER_MIXED || lyrType == Map::DRAW_LAYER_POLYGON)
+				{
+					this->SetCtrlForm(NEW_CLASS_D(SSWR::AVIRead::AVIRGISEditVectorForm(0, this->ui, this->core, (Map::VectorLayer*)lyr, this)), this->popNode);
+				}
 			}
 		}
 		break;

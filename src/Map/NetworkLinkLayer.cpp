@@ -326,7 +326,7 @@ Map::DrawLayerType Map::NetworkLinkLayer::GetLayerType()
 	return this->innerLayerType;
 }
 
-UOSInt Map::NetworkLinkLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, void **nameArr)
+UOSInt Map::NetworkLinkLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, NameArray **nameArr)
 {
 	UOSInt i;
 	UOSInt j;
@@ -361,7 +361,7 @@ UOSInt Map::NetworkLinkLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, void
 	return ret;
 }
 
-UOSInt Map::NetworkLinkLayer::GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
+UOSInt Map::NetworkLinkLayer::GetObjectIds(Data::ArrayListInt64 *outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
 {
 	{
 		Sync::MutexUsage mutUsage(&this->dispMut);
@@ -408,7 +408,7 @@ UOSInt Map::NetworkLinkLayer::GetObjectIds(Data::ArrayListInt64 *outArr, void **
 	return ret;
 }
 
-UOSInt Map::NetworkLinkLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
+UOSInt Map::NetworkLinkLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
 	{
 		Sync::MutexUsage mutUsage(&this->dispMut);
@@ -472,14 +472,14 @@ Int64 Map::NetworkLinkLayer::GetObjectIdMax()
 	}
 	return currId - 1;
 }
-void Map::NetworkLinkLayer::ReleaseNameArr(void *nameArr)
+void Map::NetworkLinkLayer::ReleaseNameArr(NameArray *nameArr)
 {
 /*	Map::IMapDrawLayer *lyr = this->innerLayer;
 	if (lyr)
 		lyr->ReleaseNameArr(nameArr);*/
 }
 
-UTF8Char *Map::NetworkLinkLayer::GetString(UTF8Char *buff, UOSInt buffSize, void *nameArr, Int64 id, UOSInt strIndex)
+UTF8Char *Map::NetworkLinkLayer::GetString(UTF8Char *buff, UOSInt buffSize, NameArray *nameArr, Int64 id, UOSInt strIndex)
 {
 	UOSInt i;
 	UOSInt j;
@@ -586,7 +586,7 @@ void Map::NetworkLinkLayer::SetDispSize(Math::Size2D<Double> size, Double dpi)
 #endif
 }
 
-void *Map::NetworkLinkLayer::BeginGetObject()
+Map::GetObjectSess *Map::NetworkLinkLayer::BeginGetObject()
 {
 	UOSInt i;
 	this->linkMut.LockRead();
@@ -599,9 +599,9 @@ void *Map::NetworkLinkLayer::BeginGetObject()
 			link->sess = link->innerLayer->BeginGetObject();
 		}
 	}
-	return this;
+	return (Map::GetObjectSess*)this;
 }
-void Map::NetworkLinkLayer::EndGetObject(void *session)
+void Map::NetworkLinkLayer::EndGetObject(GetObjectSess *session)
 {
 	UOSInt i;
 	i = this->links.GetCount();
@@ -616,7 +616,7 @@ void Map::NetworkLinkLayer::EndGetObject(void *session)
 	this->linkMut.UnlockRead();
 }
 
-Math::Geometry::Vector2D *Map::NetworkLinkLayer::GetNewVectorById(void *session, Int64 id)
+Math::Geometry::Vector2D *Map::NetworkLinkLayer::GetNewVectorById(GetObjectSess *session, Int64 id)
 {
 	UOSInt i;
 	UOSInt j;

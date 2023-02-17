@@ -28,7 +28,7 @@ namespace Map
 			Map::IMapDrawLayer *innerLayer;
 			Map::DrawLayerType innerLayerType;
 			Data::Timestamp lastUpdated;
-			void *sess;
+			GetObjectSess *sess;
 		};
 	private:
 		Net::WebBrowser *browser;
@@ -69,12 +69,12 @@ namespace Map
 		virtual Int64 GetTimeEndTS();
 
 		virtual DrawLayerType GetLayerType();
-		virtual UOSInt GetAllObjectIds(Data::ArrayListInt64 *outArr, void **nameArr);
-		virtual UOSInt GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty);
-		virtual UOSInt GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void **nameArr, Math::RectAreaDbl rect, Bool keepEmpty);
+		virtual UOSInt GetAllObjectIds(Data::ArrayListInt64 *outArr, NameArray **nameArr);
+		virtual UOSInt GetObjectIds(Data::ArrayListInt64 *outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty);
+		virtual UOSInt GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty);
 		virtual Int64 GetObjectIdMax();
-		virtual void ReleaseNameArr(void *nameArr);
-		virtual UTF8Char *GetString(UTF8Char *buff, UOSInt buffSize, void *nameArr, Int64 id, UOSInt strIndex);
+		virtual void ReleaseNameArr(NameArray *nameArr);
+		virtual UTF8Char *GetString(UTF8Char *buff, UOSInt buffSize, NameArray *nameArr, Int64 id, UOSInt strIndex);
 		virtual UOSInt GetColumnCnt();
 		virtual UTF8Char *GetColumnName(UTF8Char *buff, UOSInt colIndex);
 		virtual DB::DBUtil::ColType GetColumnType(UOSInt colIndex, UOSInt *colSize);
@@ -83,9 +83,9 @@ namespace Map
 		virtual Bool GetBounds(Math::RectAreaDbl *bounds);
 		virtual void SetDispSize(Math::Size2D<Double> size, Double dpi);
 
-		virtual void *BeginGetObject();
-		virtual void EndGetObject(void *session);
-		virtual Math::Geometry::Vector2D *GetNewVectorById(void *session, Int64 id);
+		virtual GetObjectSess *BeginGetObject();
+		virtual void EndGetObject(GetObjectSess *session);
+		virtual Math::Geometry::Vector2D *GetNewVectorById(GetObjectSess *session, Int64 id);
 		virtual UOSInt GetNameCol();
 		virtual void SetNameCol(UOSInt nameCol);
 

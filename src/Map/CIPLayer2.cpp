@@ -212,7 +212,7 @@ Map::DrawLayerType Map::CIPLayer2::GetLayerType()
 	return lyrType;
 }
 
-UOSInt Map::CIPLayer2::GetAllObjectIds(Data::ArrayListInt64 *outArr, void **nameArr)
+UOSInt Map::CIPLayer2::GetAllObjectIds(Data::ArrayListInt64 *outArr, NameArray **nameArr)
 {
 	UOSInt textSize;
 	UOSInt i;
@@ -223,7 +223,7 @@ UOSInt Map::CIPLayer2::GetAllObjectIds(Data::ArrayListInt64 *outArr, void **name
 	{
 		Data::FastMap<Int32, UTF16Char*> *tmpArr;
 		NEW_CLASS(tmpArr, Data::Int32FastMap<UTF16Char*>());
-		*nameArr = tmpArr;
+		*nameArr = (NameArray*)tmpArr;
 		UTF8Char fileName[256];
 		UTF8Char *sptr;
 		sptr = this->layerName->ConcatTo(fileName);
@@ -307,7 +307,7 @@ UOSInt Map::CIPLayer2::GetAllObjectIds(Data::ArrayListInt64 *outArr, void **name
 	return l;
 }
 
-UOSInt Map::CIPLayer2::GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
+UOSInt Map::CIPLayer2::GetObjectIds(Data::ArrayListInt64 *outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
 {
 	rect.tl.x = Double2Int32(rect.tl.x * 200000.0 / mapRate);
 	rect.tl.y = Double2Int32(rect.tl.y * 200000.0 / mapRate);
@@ -372,7 +372,7 @@ UOSInt Map::CIPLayer2::GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr
 	{
 		Data::FastMap<Int32, UTF16Char*> *tmpArr;
 		NEW_CLASS(tmpArr, Data::Int32FastMap<UTF16Char*>());
-		*nameArr = tmpArr;
+		*nameArr = (NameArray*)tmpArr;
 		UTF8Char fileName[256];
 		UTF8Char *sptr;
 		IO::FileStream *cis;
@@ -475,7 +475,7 @@ UOSInt Map::CIPLayer2::GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr
 	return l;
 }
 
-UOSInt Map::CIPLayer2::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
+UOSInt Map::CIPLayer2::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
 	rect = rect * 200000;
 	return GetObjectIds(outArr, nameArr, 200000.0, Math::RectArea<Int32>(Math::Coord2D<Int32>(Double2Int32(rect.tl.x), Double2Int32(rect.tl.y)),
@@ -487,7 +487,7 @@ Int64 Map::CIPLayer2::GetObjectIdMax()
 	return this->maxId;
 }
 
-void Map::CIPLayer2::ReleaseNameArr(void *nameArr)
+void Map::CIPLayer2::ReleaseNameArr(NameArray *nameArr)
 {
 	Data::FastMap<Int32, UTF16Char*> *tmpMap = (Data::FastMap<Int32, UTF16Char*>*)nameArr;
 	UOSInt i = tmpMap->GetCount();
@@ -498,7 +498,7 @@ void Map::CIPLayer2::ReleaseNameArr(void *nameArr)
 	DEL_CLASS(tmpMap);
 }
 
-UTF8Char *Map::CIPLayer2::GetString(UTF8Char *buff, UOSInt buffSize, void *nameArr, Int64 id, UOSInt strIndex)
+UTF8Char *Map::CIPLayer2::GetString(UTF8Char *buff, UOSInt buffSize, NameArray *nameArr, Int64 id, UOSInt strIndex)
 {
 	Data::FastMap<Int32, UTF16Char*> *tmpMap = (Data::FastMap<Int32, UTF16Char*>*)nameArr;
 	if (strIndex != 0)
@@ -689,7 +689,7 @@ void Map::CIPLayer2::ReleaseFileObjs(Data::FastMap<Int32, Map::CIPLayer2::CIPFil
 	objs->Clear();
 }
 
-void *Map::CIPLayer2::BeginGetObject()
+Map::GetObjectSess *Map::CIPLayer2::BeginGetObject()
 {
 	UTF8Char fileName[256];
 	UTF8Char *sptr;
@@ -702,10 +702,10 @@ void *Map::CIPLayer2::BeginGetObject()
 		NEW_CLASS(this->currObjs, Data::Int32FastMap<Map::CIPLayer2::CIPFileObject*>());
 	}
 	NEW_CLASS(cip, IO::FileStream({fileName, (UOSInt)(sptr - fileName)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	return cip;
+	return (GetObjectSess*)cip;
 }
 
-void Map::CIPLayer2::EndGetObject(void *session)
+void Map::CIPLayer2::EndGetObject(GetObjectSess *session)
 {
 	IO::FileStream *cip = (IO::FileStream*)session;
 	DEL_CLASS(cip);
@@ -720,7 +720,7 @@ void Map::CIPLayer2::EndGetObject(void *session)
 	this->mut.Unlock();
 }
 
-Math::Geometry::Vector2D *Map::CIPLayer2::GetNewVectorById(void *session, Int64 id)
+Math::Geometry::Vector2D *Map::CIPLayer2::GetNewVectorById(GetObjectSess *session, Int64 id)
 {
 	Map::CIPLayer2::CIPFileObject *fobj = this->GetFileObject(session, (Int32)id);
 	if (fobj == 0)

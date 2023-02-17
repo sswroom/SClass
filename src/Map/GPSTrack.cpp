@@ -88,7 +88,7 @@ Map::DrawLayerType Map::GPSTrack::GetLayerType()
 	}
 }
 
-UOSInt Map::GPSTrack::GetAllObjectIds(Data::ArrayListInt64 *outArr, void **nameArr)
+UOSInt Map::GPSTrack::GetAllObjectIds(Data::ArrayListInt64 *outArr, NameArray **nameArr)
 {
 	Sync::MutexUsage mutUsage(&this->recMut);
 	UOSInt i = 0;
@@ -111,12 +111,12 @@ UOSInt Map::GPSTrack::GetAllObjectIds(Data::ArrayListInt64 *outArr, void **nameA
 	}
 }
 
-UOSInt Map::GPSTrack::GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
+UOSInt Map::GPSTrack::GetObjectIds(Data::ArrayListInt64 *outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
 {
 	return GetObjectIdsMapXY(outArr, nameArr, rect.ToDouble() / mapRate, keepEmpty);
 }
 
-UOSInt Map::GPSTrack::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
+UOSInt Map::GPSTrack::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
 	Sync::MutexUsage mutUsage(&this->recMut);
 	rect = rect.Reorder();
@@ -157,11 +157,11 @@ Int64 Map::GPSTrack::GetObjectIdMax()
 	}
 }
 
-void Map::GPSTrack::ReleaseNameArr(void *nameArr)
+void Map::GPSTrack::ReleaseNameArr(NameArray *nameArr)
 {
 }
 
-UTF8Char *Map::GPSTrack::GetString(UTF8Char *buff, UOSInt buffSize, void *nameArr, Int64 id, UOSInt strIndex)
+UTF8Char *Map::GPSTrack::GetString(UTF8Char *buff, UOSInt buffSize, NameArray *nameArr, Int64 id, UOSInt strIndex)
 {
 	if (strIndex >= 3)
 		return 0;
@@ -333,16 +333,16 @@ Bool Map::GPSTrack::GetBounds(Math::RectAreaDbl *bounds)
 	return this->minLon != 0 || this->minLat != 0 || this->maxLon != 0 || this->maxLat != 0;
 }
 
-void *Map::GPSTrack::BeginGetObject()
+Map::GetObjectSess *Map::GPSTrack::BeginGetObject()
 {
-	return (void*)-1;
+	return (Map::GetObjectSess*)-1;
 }
 
-void Map::GPSTrack::EndGetObject(void *session)
+void Map::GPSTrack::EndGetObject(Map::GetObjectSess *session)
 {
 }
 
-Math::Geometry::Vector2D *Map::GPSTrack::GetNewVectorById(void *session, Int64 id)
+Math::Geometry::Vector2D *Map::GPSTrack::GetNewVectorById(Map::GetObjectSess *session, Int64 id)
 {
 	UOSInt i;
 	UOSInt j;

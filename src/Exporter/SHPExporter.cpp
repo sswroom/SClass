@@ -81,8 +81,8 @@ Bool Exporter::SHPExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 	IO::FileStream *shx;
 	Data::ArrayListInt64 *objIds;
 	Exporter::DBFExporter *exporter;
-	void *nameArr;
-	void *sess;
+	Map::NameArray *nameArr;
+	Map::GetObjectSess *sess;
 	if (layerType != Map::DRAW_LAYER_POINT && layerType != Map::DRAW_LAYER_POINT3D && layerType != Map::DRAW_LAYER_POLYLINE && layerType != Map::DRAW_LAYER_POLYLINE3D && layerType != Map::DRAW_LAYER_POLYGON)
 	{
 		return false;

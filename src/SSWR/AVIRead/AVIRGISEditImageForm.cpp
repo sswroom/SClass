@@ -23,7 +23,7 @@ void SSWR::AVIRead::AVIRGISEditImageForm::UpdateImgStat()
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
 	Math::RectAreaDbl bounds;
-	void *sess = this->lyr->BeginGetObject();
+	Map::GetObjectSess *sess = this->lyr->BeginGetObject();
 	Math::Geometry::Vector2D *vec = this->lyr->GetNewVectorById(sess, this->currImage);
 	if (vec)
 	{
@@ -97,7 +97,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseUp(void *userObj, Mat
 		Double y2;
 		Math::Coord2DDbl pt1 = me->navi->ScnXY2MapXY(scnPos);
 
-		void *sess = me->lyr->BeginGetObject();
+		Map::GetObjectSess *sess = me->lyr->BeginGetObject();
 		Math::Geometry::VectorImage *img = (Math::Geometry::VectorImage*)me->lyr->GetNewVectorById(sess, me->currImage);
 		if (img)
 		{
@@ -130,7 +130,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseUp(void *userObj, Mat
 		Double y2;
 		Math::Coord2DDbl pt1 = me->navi->ScnXY2MapXY(scnPos);
 
-		void *sess = me->lyr->BeginGetObject();
+		Map::GetObjectSess *sess = me->lyr->BeginGetObject();
 		Math::Geometry::VectorImage *img = (Math::Geometry::VectorImage*)me->lyr->GetNewVectorById(sess, me->currImage);
 		if (img)
 		{
@@ -170,7 +170,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseUp(void *userObj, Mat
 		Double y2;
 		Math::Coord2DDbl pt1 = me->navi->ScnXY2MapXY(scnPos);
 
-		void *sess = me->lyr->BeginGetObject();
+		Map::GetObjectSess *sess = me->lyr->BeginGetObject();
 		Math::Geometry::VectorImage *img = (Math::Geometry::VectorImage*)me->lyr->GetNewVectorById(sess, me->currImage);
 		if (img)
 		{
@@ -203,7 +203,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseUp(void *userObj, Mat
 		Double y2;
 		Math::Coord2DDbl pt1 = me->navi->ScnXY2MapXY(scnPos);
 
-		void *sess = me->lyr->BeginGetObject();
+		Map::GetObjectSess *sess = me->lyr->BeginGetObject();
 		Math::Geometry::VectorImage *img = (Math::Geometry::VectorImage*)me->lyr->GetNewVectorById(sess, me->currImage);
 		if (img)
 		{
@@ -243,7 +243,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseUp(void *userObj, Mat
 		Double y2;
 		Math::Coord2DDbl pt1 = me->navi->ScnXY2MapXY(scnPos);
 
-		void *sess = me->lyr->BeginGetObject();
+		Map::GetObjectSess *sess = me->lyr->BeginGetObject();
 		Math::Geometry::VectorImage *img = (Math::Geometry::VectorImage*)me->lyr->GetNewVectorById(sess, me->currImage);
 		if (img)
 		{
@@ -276,7 +276,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseUp(void *userObj, Mat
 		Double y2;
 		Math::Coord2DDbl pt1 = me->navi->ScnXY2MapXY(scnPos);
 
-		void *sess = me->lyr->BeginGetObject();
+		Map::GetObjectSess *sess = me->lyr->BeginGetObject();
 		Math::Geometry::VectorImage *img = (Math::Geometry::VectorImage*)me->lyr->GetNewVectorById(sess, me->currImage);
 		if (img)
 		{
@@ -316,7 +316,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseUp(void *userObj, Mat
 		Double y2;
 		Math::Coord2DDbl pt1 = me->navi->ScnXY2MapXY(scnPos);
 
-		void *sess = me->lyr->BeginGetObject();
+		Map::GetObjectSess *sess = me->lyr->BeginGetObject();
 		Math::Geometry::VectorImage *img = (Math::Geometry::VectorImage*)me->lyr->GetNewVectorById(sess, me->currImage);
 		if (img)
 		{
@@ -349,7 +349,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseUp(void *userObj, Mat
 		Double y2;
 		Math::Coord2DDbl pt1 = me->navi->ScnXY2MapXY(scnPos);
 
-		void *sess = me->lyr->BeginGetObject();
+		Map::GetObjectSess *sess = me->lyr->BeginGetObject();
 		Math::Geometry::VectorImage *img = (Math::Geometry::VectorImage*)me->lyr->GetNewVectorById(sess, me->currImage);
 		if (img)
 		{
@@ -388,7 +388,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseUp(void *userObj, Mat
 		Math::Coord2DDbl pt1 = me->navi->ScnXY2MapXY(Math::Coord2D<OSInt>(0, 0));
 		Math::Coord2DDbl pt2 = me->navi->ScnXY2MapXY(scnPos - me->downPos);
 
-		void *sess = me->lyr->BeginGetObject();
+		Map::GetObjectSess *sess = me->lyr->BeginGetObject();
 		Math::Geometry::VectorImage *img = (Math::Geometry::VectorImage*)me->lyr->GetNewVectorById(sess, me->currImage);
 		if (img)
 		{
@@ -781,7 +781,7 @@ SSWR::AVIRead::AVIRGISEditImageForm::AVIRGISEditImageForm(UI::GUIClientControl *
 	this->txtBottom->SetReadOnly(true);
 
 	Data::ArrayListInt64 objIds;
-	void *nameArr;
+	Map::NameArray *nameArr;
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
 	UOSInt cnt = lyr->GetColumnCnt();

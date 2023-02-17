@@ -20,7 +20,7 @@ Map::DrawLayerType SSWR::OrganMgr::OrganTimeAdjLayer::GetLayerType()
 	return Map::DRAW_LAYER_POINT;
 }
 
-UOSInt SSWR::OrganMgr::OrganTimeAdjLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, void **nameArr)
+UOSInt SSWR::OrganMgr::OrganTimeAdjLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, Map::NameArray **nameArr)
 {
 	UOSInt i = 0;
 	UOSInt j = this->userFileList->GetCount();
@@ -32,12 +32,12 @@ UOSInt SSWR::OrganMgr::OrganTimeAdjLayer::GetAllObjectIds(Data::ArrayListInt64 *
 	return j;
 }
 
-UOSInt SSWR::OrganMgr::OrganTimeAdjLayer::GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
+UOSInt SSWR::OrganMgr::OrganTimeAdjLayer::GetObjectIds(Data::ArrayListInt64 *outArr, Map::NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
 {
 	return GetObjectIdsMapXY(outArr, nameArr, rect.ToDouble() / mapRate, keepEmpty);
 }
 
-UOSInt SSWR::OrganMgr::OrganTimeAdjLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
+UOSInt SSWR::OrganMgr::OrganTimeAdjLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, Map::NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
 	UOSInt cnt = 0;
 	UOSInt i;
@@ -63,11 +63,11 @@ Int64 SSWR::OrganMgr::OrganTimeAdjLayer::GetObjectIdMax()
 	return (Int64)userFileList->GetCount() - 1;
 }
 
-void SSWR::OrganMgr::OrganTimeAdjLayer::ReleaseNameArr(void *nameArr)
+void SSWR::OrganMgr::OrganTimeAdjLayer::ReleaseNameArr(Map::NameArray *nameArr)
 {
 }
 
-UTF8Char *SSWR::OrganMgr::OrganTimeAdjLayer::GetString(UTF8Char *buff, UOSInt buffSize, void *nameArr, Int64 id, UOSInt strIndex)
+UTF8Char *SSWR::OrganMgr::OrganTimeAdjLayer::GetString(UTF8Char *buff, UOSInt buffSize, Map::NameArray *nameArr, Int64 id, UOSInt strIndex)
 {
 	return 0;
 }
@@ -102,17 +102,17 @@ Bool SSWR::OrganMgr::OrganTimeAdjLayer::GetBounds(Math::RectAreaDbl *bounds)
 	return this->gpsTrk->GetBounds(bounds);
 }
 
-void *SSWR::OrganMgr::OrganTimeAdjLayer::BeginGetObject()
+Map::GetObjectSess *SSWR::OrganMgr::OrganTimeAdjLayer::BeginGetObject()
 {
-	return (void*)1;
+	return (Map::GetObjectSess*)1;
 }
 
-void SSWR::OrganMgr::OrganTimeAdjLayer::EndGetObject(void *session)
+void SSWR::OrganMgr::OrganTimeAdjLayer::EndGetObject(Map::GetObjectSess *session)
 {
 
 }
 
-Math::Geometry::Vector2D *SSWR::OrganMgr::OrganTimeAdjLayer::GetNewVectorById(void *session, Int64 id)
+Math::Geometry::Vector2D *SSWR::OrganMgr::OrganTimeAdjLayer::GetNewVectorById(Map::GetObjectSess *session, Int64 id)
 {
 	UserFileInfo *ufile = this->userFileList->GetItem((UOSInt)id);
 	if (ufile == 0)

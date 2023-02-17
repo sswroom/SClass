@@ -391,7 +391,7 @@ Map::DrawLayerType Map::SHPData::GetLayerType()
 	return this->layerType;
 }
 
-UOSInt Map::SHPData::GetAllObjectIds(Data::ArrayListInt64 *outArr, void **nameArr)
+UOSInt Map::SHPData::GetAllObjectIds(Data::ArrayListInt64 *outArr, NameArray **nameArr)
 {
 	UOSInt i;
 	UOSInt j;
@@ -423,12 +423,12 @@ UOSInt Map::SHPData::GetAllObjectIds(Data::ArrayListInt64 *outArr, void **nameAr
 	}
 }
 
-UOSInt Map::SHPData::GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
+UOSInt Map::SHPData::GetObjectIds(Data::ArrayListInt64 *outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
 {
 	return GetObjectIdsMapXY(outArr, nameArr, rect.ToDouble() / mapRate, keepEmpty);
 }
 
-UOSInt Map::SHPData::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
+UOSInt Map::SHPData::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
 	UOSInt retCnt = 0;
 	UOSInt i = 0;
@@ -492,11 +492,11 @@ Int64 Map::SHPData::GetObjectIdMax()
 	}
 }
 
-void Map::SHPData::ReleaseNameArr(void *nameArr)
+void Map::SHPData::ReleaseNameArr(NameArray *nameArr)
 {
 }
 
-UTF8Char *Map::SHPData::GetString(UTF8Char *buff, UOSInt buffSize, void *nameArr, Int64 id, UOSInt strIndex)
+UTF8Char *Map::SHPData::GetString(UTF8Char *buff, UOSInt buffSize, NameArray *nameArr, Int64 id, UOSInt strIndex)
 {
 	UTF8Char *sptr = this->dbf->GetRecord(buff, (UOSInt)id, strIndex);
 	return Text::StrTrimC(buff, (UOSInt)(sptr - buff));
@@ -533,16 +533,16 @@ Bool Map::SHPData::GetBounds(Math::RectAreaDbl *bounds)
 	return this->min.x != 0 || this->min.y != 0 || this->max.x != 0 || this->max.y != 0;
 }
 
-void *Map::SHPData::BeginGetObject()
+Map::GetObjectSess *Map::SHPData::BeginGetObject()
 {
-	return (void*)-1;
+	return (GetObjectSess*)-1;
 }
 
-void Map::SHPData::EndGetObject(void *session)
+void Map::SHPData::EndGetObject(GetObjectSess *session)
 {
 }
 
-Math::Geometry::Vector2D *Map::SHPData::GetNewVectorById(void *session, Int64 id)
+Math::Geometry::Vector2D *Map::SHPData::GetNewVectorById(GetObjectSess *session, Int64 id)
 {
 	Map::SHPData::RecHdr *rec;
 	UOSInt nPoint;

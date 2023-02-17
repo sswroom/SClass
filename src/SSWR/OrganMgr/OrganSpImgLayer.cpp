@@ -17,7 +17,7 @@ Map::DrawLayerType SSWR::OrganMgr::OrganSpImgLayer::GetLayerType()
 	return Map::DRAW_LAYER_POINT;
 }
 
-UOSInt SSWR::OrganMgr::OrganSpImgLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, void **nameArr)
+UOSInt SSWR::OrganMgr::OrganSpImgLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, Map::NameArray **nameArr)
 {
 	UOSInt i = 0;
 	UOSInt j = this->objList.GetCount();
@@ -29,12 +29,12 @@ UOSInt SSWR::OrganMgr::OrganSpImgLayer::GetAllObjectIds(Data::ArrayListInt64 *ou
 	return j;
 }
 
-UOSInt SSWR::OrganMgr::OrganSpImgLayer::GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
+UOSInt SSWR::OrganMgr::OrganSpImgLayer::GetObjectIds(Data::ArrayListInt64 *outArr, Map::NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
 {
 	return GetObjectIdsMapXY(outArr, nameArr, rect.ToDouble() / mapRate, keepEmpty);
 }
 
-UOSInt SSWR::OrganMgr::OrganSpImgLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
+UOSInt SSWR::OrganMgr::OrganSpImgLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, Map::NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
 	UOSInt cnt = 0;
 	UOSInt i;
@@ -60,11 +60,11 @@ Int64 SSWR::OrganMgr::OrganSpImgLayer::GetObjectIdMax()
 	return (Int64)this->objList.GetCount() - 1;
 }
 
-void SSWR::OrganMgr::OrganSpImgLayer::ReleaseNameArr(void *nameArr)
+void SSWR::OrganMgr::OrganSpImgLayer::ReleaseNameArr(Map::NameArray *nameArr)
 {
 }
 
-UTF8Char *SSWR::OrganMgr::OrganSpImgLayer::GetString(UTF8Char *buff, UOSInt buffSize, void *nameArr, Int64 id, UOSInt strIndex)
+UTF8Char *SSWR::OrganMgr::OrganSpImgLayer::GetString(UTF8Char *buff, UOSInt buffSize, Map::NameArray *nameArr, Int64 id, UOSInt strIndex)
 {
 	UserFileInfo *ufile;
 	ufile = this->objList.GetItem((UOSInt)id);
@@ -137,17 +137,17 @@ Bool SSWR::OrganMgr::OrganSpImgLayer::GetBounds(Math::RectAreaDbl *bounds)
 	return this->min.x != 0 || this->min.y != 0 || this->max.x != 0 || this->max.y != 0;
 }
 
-void *SSWR::OrganMgr::OrganSpImgLayer::BeginGetObject()
+Map::GetObjectSess *SSWR::OrganMgr::OrganSpImgLayer::BeginGetObject()
 {
-	return (void*)1;
+	return (Map::GetObjectSess*)1;
 }
 
-void SSWR::OrganMgr::OrganSpImgLayer::EndGetObject(void *session)
+void SSWR::OrganMgr::OrganSpImgLayer::EndGetObject(Map::GetObjectSess *session)
 {
 
 }
 
-Math::Geometry::Vector2D *SSWR::OrganMgr::OrganSpImgLayer::GetNewVectorById(void *session, Int64 id)
+Math::Geometry::Vector2D *SSWR::OrganMgr::OrganSpImgLayer::GetNewVectorById(Map::GetObjectSess *session, Int64 id)
 {
 	UserFileInfo *ufile = this->objList.GetItem((UOSInt)id);
 	if (ufile == 0)

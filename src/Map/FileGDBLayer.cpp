@@ -187,11 +187,11 @@ Map::DrawLayerType Map::FileGDBLayer::GetLayerType()
 	return this->layerType;
 }
 
-UOSInt Map::FileGDBLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, void **nameArr)
+UOSInt Map::FileGDBLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, NameArray **nameArr)
 {
 	if (nameArr)
 	{
-		*nameArr = ReadNameArr();
+		*nameArr = (NameArray*)ReadNameArr();
 	}
 	UOSInt i = 0;
 	UOSInt j = this->objects.GetCount();
@@ -203,16 +203,16 @@ UOSInt Map::FileGDBLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, void **n
 	return j;
 }
 
-UOSInt Map::FileGDBLayer::GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
+UOSInt Map::FileGDBLayer::GetObjectIds(Data::ArrayListInt64 *outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
 {
 	return GetObjectIdsMapXY(outArr, nameArr, rect.ToDouble() / mapRate, keepEmpty);
 }
 
-UOSInt Map::FileGDBLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
+UOSInt Map::FileGDBLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
 	if (nameArr)
 	{
-		*nameArr = ReadNameArr();
+		*nameArr = (NameArray*)ReadNameArr();
 	}
 	UOSInt cnt = 0;
 	Math::RectAreaDbl bounds;
@@ -240,7 +240,7 @@ Int64 Map::FileGDBLayer::GetObjectIdMax()
 	return this->objects.GetKey(this->objects.GetCount() - 1);
 }
 
-void Map::FileGDBLayer::ReleaseNameArr(void *nameArr)
+void Map::FileGDBLayer::ReleaseNameArr(NameArray *nameArr)
 {
 	Data::FastMap<Int32, const UTF8Char **> *names = (Data::FastMap<Int32, const UTF8Char **> *)nameArr;
 	UOSInt i = names->GetCount();
@@ -261,7 +261,7 @@ void Map::FileGDBLayer::ReleaseNameArr(void *nameArr)
 	DEL_CLASS(names);
 }
 
-UTF8Char *Map::FileGDBLayer::GetString(UTF8Char *buff, UOSInt buffSize, void *nameArr, Int64 id, UOSInt strIndex)
+UTF8Char *Map::FileGDBLayer::GetString(UTF8Char *buff, UOSInt buffSize, NameArray *nameArr, Int64 id, UOSInt strIndex)
 {
 	Data::FastMap<Int32, const UTF8Char **> *names = (Data::FastMap<Int32, const UTF8Char **> *)nameArr;
 	if (names == 0)
@@ -313,16 +313,16 @@ Bool Map::FileGDBLayer::GetBounds(Math::RectAreaDbl *rect)
 	return !this->minPos.IsZero() || !this->maxPos.IsZero();
 }
 
-void *Map::FileGDBLayer::BeginGetObject()
+Map::GetObjectSess *Map::FileGDBLayer::BeginGetObject()
 {
-	return (void*)-1;
+	return (GetObjectSess*)-1;
 }
 
-void Map::FileGDBLayer::EndGetObject(void *session)
+void Map::FileGDBLayer::EndGetObject(GetObjectSess *session)
 {
 }
 
-Math::Geometry::Vector2D *Map::FileGDBLayer::GetNewVectorById(void *session, Int64 id)
+Math::Geometry::Vector2D *Map::FileGDBLayer::GetNewVectorById(GetObjectSess *session, Int64 id)
 {
 	Math::Geometry::Vector2D *vec = this->objects.Get((Int32)id);
 	if (vec)

@@ -9,12 +9,12 @@ Map::HKTDVehRestrict::HKTDVehRestrict(Map::IMapDrawLayer *routeLyr, DB::DBTool *
 {
 	this->db = db;
 	this->csys = routeLyr->GetCoordinateSystem()->Clone();
-	void *sess = routeLyr->BeginGetObject();
+	Map::GetObjectSess *sess = routeLyr->BeginGetObject();
 	if (sess)
 	{
 		UTF8Char sbuff[512];
 		UTF8Char *sptr;
-		void *nameArr;
+		Map::NameArray *nameArr;
 		Data::ArrayListInt64 idArr;
 		UOSInt colCnt;
 		UOSInt i;

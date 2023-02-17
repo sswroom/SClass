@@ -3618,6 +3618,8 @@ SSWR/AVIRead/AVIRGISDistanceForm.h: ../../src/SSWR/AVIRead/AVIRGISDistanceForm.c
 @AVIRGISDistanceForm.o
 SSWR/AVIRead/AVIRGISEditImageForm.h: ../../src/SSWR/AVIRead/AVIRGISEditImageForm.cpp
 @AVIRGISEditImageForm.o
+SSWR/AVIRead/AVIRGISEditVectorForm.h: ../../src/SSWR/AVIRead/AVIRGISEditVectorForm.cpp
+@AVIRGISEditVectorForm.o
 SSWR/AVIRead/AVIRGISForm.h: ../../src/SSWR/AVIRead/AVIRGISForm.cpp
 @AVIRGISForm.o
 SSWR/AVIRead/AVIRGISFontEditForm.h: ../../src/SSWR/AVIRead/AVIRGISFontEditForm.cpp
@@ -5589,6 +5591,7 @@ AVIRGISCombineForm.o: ../../src/SSWR/AVIRead/AVIRGISCombineForm.cpp
 AVIRGISCSysForm.o: ../../src/SSWR/AVIRead/AVIRGISCSysForm.cpp
 AVIRGISDistanceForm.o: ../../src/SSWR/AVIRead/AVIRGISDistanceForm.cpp
 AVIRGISEditImageForm.o: ../../src/SSWR/AVIRead/AVIRGISEditImageForm.cpp
+AVIRGISEditVectorForm.o: ../../src/SSWR/AVIRead/AVIRGISEditVectorForm.cpp
 AVIRGISFontEditForm.o: ../../src/SSWR/AVIRead/AVIRGISFontEditForm.cpp
 AVIRGISFontForm.o: ../../src/SSWR/AVIRead/AVIRGISFontForm.cpp
 AVIRGISFontStyleForm.o: ../../src/SSWR/AVIRead/AVIRGISFontStyleForm.cpp

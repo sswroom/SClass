@@ -1528,7 +1528,7 @@ void Map::DrawMapRenderer::DrawLayers(Map::DrawMapRenderer::DrawEnv *denv, Map::
 void Map::DrawMapRenderer::DrawShapes(Map::DrawMapRenderer::DrawEnv *denv, Map::IMapDrawLayer *layer, UOSInt lineStyle, UInt32 fillStyle, UOSInt lineThick, UInt32 lineColor)
 {
 	UOSInt i;
-	void *session;
+	Map::GetObjectSess *session;
 	Media::DrawPen *p;
 	Media::DrawBrush *b;
 	Int64 lastId;
@@ -1656,7 +1656,7 @@ void Map::DrawMapRenderer::DrawShapesPoint(Map::DrawMapRenderer::DrawEnv *denv, 
 	Data::ArrayListInt64 arri;
 	Math::Geometry::Vector2D *vec;
 	UOSInt i;
-	void *session;
+	Map::GetObjectSess *session;
 	Math::Coord2DDbl tl;
 	Math::Coord2DDbl br;
 	Math::RectAreaDbl rect = denv->view->GetVerticalRect();
@@ -1820,7 +1820,7 @@ void Map::DrawMapRenderer::DrawShapesPoint(Map::DrawMapRenderer::DrawEnv *denv, 
 
 void Map::DrawMapRenderer::DrawLabel(DrawEnv *denv, Map::IMapDrawLayer *layer, UOSInt fontStyle, UOSInt labelCol, Int32 priority, Int32 flags, UOSInt imgWidth, UOSInt imgHeight, Map::MapEnv::FontType fontType)
 {
-	void *arr;
+	Map::NameArray *arr;
 	Data::ArrayListInt64 arri;
 	UOSInt i;
 	Math::Geometry::Vector2D *vec;
@@ -1830,7 +1830,7 @@ void Map::DrawMapRenderer::DrawLabel(DrawEnv *denv, Map::IMapDrawLayer *layer, U
 	UTF8Char *sptr;
 	UTF8Char *sptrEnd;
 	UTF8Char lblStr[256];
-	void *session;
+	Map::GetObjectSess *session;
 	UOSInt maxLabel = denv->env->GetNString();
 	Bool csysConv = false;;
 	Math::Coord2DDbl tl;
@@ -2039,7 +2039,7 @@ void Map::DrawMapRenderer::DrawImageLayer(DrawEnv *denv, Map::IMapDrawLayer *lay
 	UOSInt j;
 	Math::CoordinateSystem *coord = layer->GetCoordinateSystem();
 	Bool geoConv;
-	void *sess;
+	Map::GetObjectSess *sess;
 	geoConv = !denv->env->GetCoordinateSystem()->Equals(coord);
 
 	Data::ArrayListInt64 arri;

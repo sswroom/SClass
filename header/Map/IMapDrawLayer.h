@@ -17,6 +17,8 @@
 namespace Map
 {
 	class VectorLayer;
+	struct GetObjectSess;
+	struct NameArray;
 
 	typedef enum
 	{
@@ -96,12 +98,12 @@ namespace Map
 
 		virtual DrawLayerType GetLayerType() = 0;
 		virtual void SetMixedData(MixedData MixedData);
-		virtual UOSInt GetAllObjectIds(Data::ArrayListInt64 *outArr, void **nameArr) = 0;
-		virtual UOSInt GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty) = 0;
-		virtual UOSInt GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void **nameArr, Math::RectAreaDbl rect, Bool keepEmpty) = 0;
+		virtual UOSInt GetAllObjectIds(Data::ArrayListInt64 *outArr, NameArray **nameArr) = 0;
+		virtual UOSInt GetObjectIds(Data::ArrayListInt64 *outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty) = 0;
+		virtual UOSInt GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty) = 0;
 		virtual Int64 GetObjectIdMax() = 0;
-		virtual void ReleaseNameArr(void *nameArr) = 0;
-		virtual UTF8Char *GetString(UTF8Char *buff, UOSInt buffSize, void *nameArr, Int64 id, UOSInt strIndex) = 0;
+		virtual void ReleaseNameArr(NameArray *nameArr) = 0;
+		virtual UTF8Char *GetString(UTF8Char *buff, UOSInt buffSize, NameArray *nameArr, Int64 id, UOSInt strIndex) = 0;
 		virtual UOSInt GetColumnCnt() = 0;
 		virtual UTF8Char *GetColumnName(UTF8Char *buff, UOSInt colIndex) = 0;
 		virtual DB::DBUtil::ColType GetColumnType(UOSInt colIndex, UOSInt *colSize) = 0;
@@ -110,9 +112,9 @@ namespace Map
 		virtual Bool GetBounds(Math::RectAreaDbl *rect) = 0;
 		virtual void SetDispSize(Math::Size2D<Double> size, Double dpi);
 
-		virtual void *BeginGetObject() = 0;
-		virtual void EndGetObject(void *session) = 0;
-		virtual Math::Geometry::Vector2D *GetNewVectorById(void *session, Int64 id) = 0;
+		virtual GetObjectSess *BeginGetObject() = 0;
+		virtual void EndGetObject(GetObjectSess *session) = 0;
+		virtual Math::Geometry::Vector2D *GetNewVectorById(GetObjectSess *session, Int64 id) = 0;
 		virtual void AddUpdatedHandler(UpdatedHandler hdlr, void *obj);
 		virtual void RemoveUpdatedHandler(UpdatedHandler hdlr, void *obj);
 
@@ -141,15 +143,15 @@ namespace Map
 		virtual Bool CanQuery();
 		virtual Bool QueryInfos(Math::Coord2DDbl coord, Data::ArrayList<Math::Geometry::Vector2D*> *vecList, Data::ArrayList<UOSInt> *valueOfstList, Data::ArrayList<Text::String*> *nameList, Data::ArrayList<Text::String*> *valueList);
 
-		Int64 GetNearestObjectId(void *session, Math::Coord2DDbl pt, Math::Coord2DDbl *nearPt);
-		OSInt GetNearObjects(void *session, Data::ArrayList<ObjectInfo*> *objList, Math::Coord2DDbl pt, Double maxDist); //return nearest object if no object within distance
+		Int64 GetNearestObjectId(GetObjectSess *session, Math::Coord2DDbl pt, Math::Coord2DDbl *nearPt);
+		OSInt GetNearObjects(GetObjectSess *session, Data::ArrayList<ObjectInfo*> *objList, Math::Coord2DDbl pt, Double maxDist); //return nearest object if no object within distance
 		void FreeObjects(Data::ArrayList<ObjectInfo*> *objList);
 		Map::VectorLayer *CreateEditableLayer();
 
 		Text::SearchIndexer *CreateSearchIndexer(Text::TextAnalyzer *ta, UOSInt strIndex);
-		UOSInt SearchString(Data::ArrayListString *outArr, Text::SearchIndexer *srchInd, void *nameArr, const UTF8Char *srchStr, UOSInt maxResult, UOSInt strIndex);
+		UOSInt SearchString(Data::ArrayListString *outArr, Text::SearchIndexer *srchInd, NameArray *nameArr, const UTF8Char *srchStr, UOSInt maxResult, UOSInt strIndex);
 		void ReleaseSearchStr(Data::ArrayListString *strArr);
-		Math::Geometry::Vector2D *GetVectorByStr(Text::SearchIndexer *srchInd, void *nameArr, void *session, const UTF8Char *srchStr, UOSInt strIndex);
+		Math::Geometry::Vector2D *GetVectorByStr(Text::SearchIndexer *srchInd, NameArray *nameArr, GetObjectSess *session, const UTF8Char *srchStr, UOSInt strIndex);
 
 		Bool HasLineStyle();
 		Bool HasPGStyle();
@@ -174,7 +176,7 @@ namespace Map
 	protected:
 		IMapDrawLayer *layer;
 		Data::ArrayListInt64 *objIds; 
-		void *nameArr;
+		NameArray *nameArr;
 		OSInt currIndex;
 
 		Int64 GetCurrObjId();

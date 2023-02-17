@@ -310,7 +310,7 @@ Map::DrawLayerType Map::HKTrafficLayer2::GetLayerType()
 	return Map::DRAW_LAYER_POLYLINE;
 }
 
-UOSInt Map::HKTrafficLayer2::GetAllObjectIds(Data::ArrayListInt64 *outArr, void **nameArr)
+UOSInt Map::HKTrafficLayer2::GetAllObjectIds(Data::ArrayListInt64 *outArr, NameArray **nameArr)
 {
 	UOSInt ret = 0;
 	UOSInt i;
@@ -332,12 +332,12 @@ UOSInt Map::HKTrafficLayer2::GetAllObjectIds(Data::ArrayListInt64 *outArr, void 
 	return ret;
 }
 
-UOSInt Map::HKTrafficLayer2::GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
+UOSInt Map::HKTrafficLayer2::GetObjectIds(Data::ArrayListInt64 *outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
 {
 	return GetObjectIdsMapXY(outArr, nameArr, rect.ToDouble() / mapRate, keepEmpty);
 }
 
-UOSInt Map::HKTrafficLayer2::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
+UOSInt Map::HKTrafficLayer2::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
 	UOSInt retCnt = 0;
 	RoadInfo *road;
@@ -366,11 +366,11 @@ Int64 Map::HKTrafficLayer2::GetObjectIdMax()
 	return this->roadMap.GetKey(this->roadMap.GetCount() - 1);
 }
 
-void Map::HKTrafficLayer2::ReleaseNameArr(void *nameArr)
+void Map::HKTrafficLayer2::ReleaseNameArr(NameArray *nameArr)
 {
 }
 
-UTF8Char *Map::HKTrafficLayer2::GetString(UTF8Char *buff, UOSInt buffSize, void *nameArr, Int64 id, UOSInt strIndex)
+UTF8Char *Map::HKTrafficLayer2::GetString(UTF8Char *buff, UOSInt buffSize, NameArray *nameArr, Int64 id, UOSInt strIndex)
 {
 	////////////////////////////
 	return 0;
@@ -411,16 +411,16 @@ Bool Map::HKTrafficLayer2::GetBounds(Math::RectAreaDbl *bounds)
 	return true;
 }
 
-void *Map::HKTrafficLayer2::BeginGetObject()
+Map::GetObjectSess *Map::HKTrafficLayer2::BeginGetObject()
 {
-	return (void*)-1;
+	return (GetObjectSess*)-1;
 }
 
-void Map::HKTrafficLayer2::EndGetObject(void *session)
+void Map::HKTrafficLayer2::EndGetObject(GetObjectSess *session)
 {
 }
 
-Math::Geometry::Vector2D *Map::HKTrafficLayer2::GetNewVectorById(void *session, Int64 id)
+Math::Geometry::Vector2D *Map::HKTrafficLayer2::GetNewVectorById(GetObjectSess *session, Int64 id)
 {
 	RoadInfo *road;
 	Math::Geometry::Vector2D *vec = 0;

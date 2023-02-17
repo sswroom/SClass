@@ -152,17 +152,17 @@ Map::DrawLayerType Map::DrawMapServiceLayer::GetLayerType()
 	return Map::DRAW_LAYER_IMAGE;
 }
 
-UOSInt Map::DrawMapServiceLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, void **nameArr)
+UOSInt Map::DrawMapServiceLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, NameArray **nameArr)
 {
 	return 0;
 }
 
-UOSInt Map::DrawMapServiceLayer::GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
+UOSInt Map::DrawMapServiceLayer::GetObjectIds(Data::ArrayListInt64 *outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
 {
 	return this->GetObjectIdsMapXY(outArr, nameArr, rect.ToDouble() / mapRate, keepEmpty);
 }
 
-UOSInt Map::DrawMapServiceLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
+UOSInt Map::DrawMapServiceLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
 	Sync::MutexUsage mutUsage(&this->dispMut);
 	if (this->dispBounds == rect)
@@ -201,11 +201,11 @@ Int64 Map::DrawMapServiceLayer::GetObjectIdMax()
 	return 0;
 }
 
-void Map::DrawMapServiceLayer::ReleaseNameArr(void *nameArr)
+void Map::DrawMapServiceLayer::ReleaseNameArr(NameArray *nameArr)
 {
 }
 
-UTF8Char *Map::DrawMapServiceLayer::GetString(UTF8Char *buff, UOSInt buffSize, void *nameArr, Int64 id, UOSInt strIndex)
+UTF8Char *Map::DrawMapServiceLayer::GetString(UTF8Char *buff, UOSInt buffSize, NameArray *nameArr, Int64 id, UOSInt strIndex)
 {
 	switch (strIndex)
 	{
@@ -284,16 +284,16 @@ void Map::DrawMapServiceLayer::SetDispSize(Math::Size2D<Double> size, Double dpi
 	}	
 }
 
-void *Map::DrawMapServiceLayer::BeginGetObject()
+Map::GetObjectSess *Map::DrawMapServiceLayer::BeginGetObject()
 {
-	return (void*)-1;
+	return (GetObjectSess*)-1;
 }
 
-void Map::DrawMapServiceLayer::EndGetObject(void *session)
+void Map::DrawMapServiceLayer::EndGetObject(GetObjectSess *session)
 {
 }
 
-Math::Geometry::Vector2D *Map::DrawMapServiceLayer::GetNewVectorById(void *session, Int64 id)
+Math::Geometry::Vector2D *Map::DrawMapServiceLayer::GetNewVectorById(GetObjectSess *session, Int64 id)
 {
 	Sync::MutexUsage mutUsage(&this->dispMut);
 	if (this->dispId == id && this->dispImage)

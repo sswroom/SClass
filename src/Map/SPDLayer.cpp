@@ -165,7 +165,7 @@ Map::DrawLayerType Map::SPDLayer::GetLayerType()
 	return lyrType;
 }
 
-UOSInt Map::SPDLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, void **nameArr)
+UOSInt Map::SPDLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, NameArray **nameArr)
 {
 	UOSInt textSize;
 	UOSInt i;
@@ -178,7 +178,7 @@ UOSInt Map::SPDLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, void **nameA
 	{
 		Data::ArrayList<WChar *> *tmpArr;
 		NEW_CLASS(tmpArr, Data::ArrayList<WChar *>());
-		*nameArr = tmpArr;
+		*nameArr = (NameArray*)tmpArr;
 		UTF8Char fileName[256];
 		UTF8Char *sptr;
 		IO::FileStream *cis;
@@ -232,7 +232,7 @@ UOSInt Map::SPDLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, void **nameA
 	return l;
 }
 
-UOSInt Map::SPDLayer::GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
+UOSInt Map::SPDLayer::GetObjectIds(Data::ArrayListInt64 *outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
 {
 	rect.tl.x = Double2Int32(rect.tl.x * 200000.0 / mapRate);
 	rect.tl.y = Double2Int32(rect.tl.y * 200000.0 / mapRate);
@@ -298,7 +298,7 @@ UOSInt Map::SPDLayer::GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr,
 	{
 		Data::ArrayList<WChar *> *tmpArr;
 		NEW_CLASS(tmpArr, Data::ArrayList<WChar *>());
-		*nameArr = tmpArr;
+		*nameArr = (NameArray*)tmpArr;
 		UTF8Char fileName[256];
 		UTF8Char *sptr;
 		IO::FileStream *cis;
@@ -368,7 +368,7 @@ UOSInt Map::SPDLayer::GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr,
 	return l;
 }
 
-UOSInt Map::SPDLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
+UOSInt Map::SPDLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
 	rect = rect * 200000;
 	return GetObjectIds(outArr, nameArr, 200000.0, Math::RectArea<Int32>(Math::Coord2D<Int32>(Double2Int32(rect.tl.x), Double2Int32(rect.tl.y)),
@@ -380,7 +380,7 @@ Int64 Map::SPDLayer::GetObjectIdMax()
 	return this->maxId;
 }
 
-void Map::SPDLayer::ReleaseNameArr(void *nameArr)
+void Map::SPDLayer::ReleaseNameArr(NameArray *nameArr)
 {
 	Data::ArrayList<WChar *>*tmpArr = (Data::ArrayList<WChar*>*)nameArr;
 	UOSInt i = tmpArr->GetCount();
@@ -391,7 +391,7 @@ void Map::SPDLayer::ReleaseNameArr(void *nameArr)
 	DEL_CLASS(tmpArr);
 }
 
-UTF8Char *Map::SPDLayer::GetString(UTF8Char *buff, UOSInt buffSize, void *nameArr, Int64 id, UOSInt strIndex)
+UTF8Char *Map::SPDLayer::GetString(UTF8Char *buff, UOSInt buffSize, NameArray *nameArr, Int64 id, UOSInt strIndex)
 {
 	Data::ArrayList<WChar*> *tmpArr = (Data::ArrayList<WChar*>*)nameArr;
 	if (strIndex != 0)
@@ -511,7 +511,7 @@ Bool Map::SPDLayer::GetBounds(Math::RectAreaDbl *bounds)
 	}
 }
 
-void *Map::SPDLayer::BeginGetObject()
+Map::GetObjectSess *Map::SPDLayer::BeginGetObject()
 {
 	UTF8Char fileName[256];
 	UTF8Char *sptr;
@@ -520,17 +520,17 @@ void *Map::SPDLayer::BeginGetObject()
 	sptr = Text::StrConcat(fileName, this->layerName);
 	sptr = Text::StrConcatC(sptr, UTF8STRC(".spd"));
 	NEW_CLASS(cip, IO::FileStream({fileName, (UOSInt)(sptr - fileName)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	return cip;
+	return (Map::GetObjectSess*)cip;
 }
 
-void Map::SPDLayer::EndGetObject(void *session)
+void Map::SPDLayer::EndGetObject(Map::GetObjectSess *session)
 {
 	IO::FileStream *cip = (IO::FileStream*)session;
 	DEL_CLASS(cip);
 //	this->mut->Unlock();
 }
 
-Math::Geometry::Vector2D *Map::SPDLayer::GetNewVectorById(void *session, Int64 id)
+Math::Geometry::Vector2D *Map::SPDLayer::GetNewVectorById(Map::GetObjectSess *session, Int64 id)
 {
 	Int32 buff[3];
 

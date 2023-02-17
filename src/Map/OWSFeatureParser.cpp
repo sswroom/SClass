@@ -120,12 +120,12 @@ Bool Map::OWSFeatureParser::ParseGML(Text::CString txt, UInt32 srid, Bool swapXY
 		if (pobj->GetParserType() == IO::ParserType::MapLayer)
 		{
 			Map::IMapDrawLayer *layer = (Map::IMapDrawLayer*)pobj;
-			void *nameArr = 0;
+			Map::NameArray *nameArr = 0;
 			Data::ArrayListInt64 idArr;
 			layer->GetAllObjectIds(&idArr, &nameArr);
 			if (idArr.GetCount() > 0)
 			{
-				void *sess = layer->BeginGetObject();
+				Map::GetObjectSess *sess = layer->BeginGetObject();
 				UOSInt i = 0;
 				UOSInt j = idArr.GetCount();
 				while (i < j)
@@ -152,6 +152,7 @@ Bool Map::OWSFeatureParser::ParseGML(Text::CString txt, UInt32 srid, Bool swapXY
 					}
 					i++;
 				}
+				layer->EndGetObject(sess);
 				layer->ReleaseNameArr(nameArr);
 				DEL_CLASS(pobj);
 				return vecList->GetCount() > 0;

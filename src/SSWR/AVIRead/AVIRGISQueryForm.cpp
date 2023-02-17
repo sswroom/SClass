@@ -17,7 +17,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseUp(void *userObj, Math::C
 	SSWR::AVIRead::AVIRGISQueryForm *me = (SSWR::AVIRead::AVIRGISQueryForm*)userObj;
 	if (me->downPos == scnPos)
 	{
-		void *sess;
+		Map::GetObjectSess *sess;
 		UOSInt i;
 		UOSInt i2;
 		UOSInt j;
@@ -94,7 +94,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseUp(void *userObj, Math::C
 			Map::IMapDrawLayer::ObjectInfo *obj;
 			Math::Geometry::Vector2D *vec = 0;
 			Data::ArrayListInt64 arr;
-			void *nameArr;
+			Map::NameArray *nameArr;
 			me->lyr->GetObjectIdsMapXY(&arr, &nameArr, Math::RectAreaDbl(mapPt, mapPt), true);
 			j = 0;
 			k = objList.GetCount();

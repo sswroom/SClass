@@ -109,8 +109,8 @@ Bool Exporter::KMLExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 	IO::BufferedOutputStream *cstm;
 	IO::StreamWriter *writer;
 	Data::ArrayListInt64 *ids;
-	void *nameArr;
-	void *sess;
+	Map::NameArray *nameArr;
+	Map::GetObjectSess *sess;
 	Math::Geometry::Vector2D *vec;
 	Text::Encoding enc(this->codePage);
 	Text::StringBuilderUTF8 sb;

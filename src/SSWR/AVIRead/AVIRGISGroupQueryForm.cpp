@@ -23,7 +23,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISGroupQueryForm::OnMouseUp(void *userObj, Ma
 		UOSInt pgNearInd = 0;
 		Int64 pgNearId = -1;
 		Math::Coord2DDbl nearPos;
-		void *sess;
+		Map::GetObjectSess *sess;
 		Int64 id;
 		UOSInt i;
 		UOSInt j;
@@ -108,7 +108,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISGroupQueryForm::OnMouseUp(void *userObj, Ma
 		else
 		{
 			Data::ArrayListInt64 arr;
-			void *nameArr;
+			Map::NameArray *nameArr;
 			me->txtLayer->SetText(lyr->GetName()->ToCString());
 			sess = lyr->BeginGetObject();
 			lyr->GetObjectIdsMapXY(&arr, &nameArr, Math::RectAreaDbl(mapPos, mapPos), true);

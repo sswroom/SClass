@@ -156,7 +156,7 @@ Map::DrawLayerType Map::MapLayerCollection::GetLayerType()
 	return lyrType;
 }
 
-UOSInt Map::MapLayerCollection::GetAllObjectIds(Data::ArrayListInt64 *outArr, void **nameArr)
+UOSInt Map::MapLayerCollection::GetAllObjectIds(Data::ArrayListInt64 *outArr, NameArray **nameArr)
 {
 	Map::IMapDrawLayer *lyr;
 	Data::ArrayListInt64 tmpArr;
@@ -190,7 +190,7 @@ UOSInt Map::MapLayerCollection::GetAllObjectIds(Data::ArrayListInt64 *outArr, vo
 	return ret;
 }
 
-UOSInt Map::MapLayerCollection::GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
+UOSInt Map::MapLayerCollection::GetObjectIds(Data::ArrayListInt64 *outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
 {
 	Map::IMapDrawLayer *lyr;
 	Data::ArrayListInt64 tmpArr;
@@ -223,7 +223,7 @@ UOSInt Map::MapLayerCollection::GetObjectIds(Data::ArrayListInt64 *outArr, void 
 	return ret;
 }
 
-UOSInt Map::MapLayerCollection::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
+UOSInt Map::MapLayerCollection::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
 	Map::IMapDrawLayer *lyr;
 	Data::ArrayListInt64 tmpArr;
@@ -276,11 +276,11 @@ Int64 Map::MapLayerCollection::GetObjectIdMax()
 	return currId - 1;
 }
 
-void Map::MapLayerCollection::ReleaseNameArr(void *nameArr)
+void Map::MapLayerCollection::ReleaseNameArr(NameArray *nameArr)
 {
 }
 
-UTF8Char *Map::MapLayerCollection::GetString(UTF8Char *buff, UOSInt buffSize, void *nameArr, Int64 id, UOSInt strIndex)
+UTF8Char *Map::MapLayerCollection::GetString(UTF8Char *buff, UOSInt buffSize, NameArray *nameArr, Int64 id, UOSInt strIndex)
 {
 	UOSInt k;
 	UOSInt l;
@@ -371,16 +371,16 @@ Bool Map::MapLayerCollection::GetBounds(Math::RectAreaDbl *bounds)
 	}
 }
 
-void *Map::MapLayerCollection::BeginGetObject()
+Map::GetObjectSess *Map::MapLayerCollection::BeginGetObject()
 {
-	return this;
+	return (GetObjectSess*)this;
 }
 
-void Map::MapLayerCollection::EndGetObject(void *session)
+void Map::MapLayerCollection::EndGetObject(GetObjectSess *session)
 {
 }
 
-Math::Geometry::Vector2D *Map::MapLayerCollection::GetNewVectorById(void *session, Int64 id)
+Math::Geometry::Vector2D *Map::MapLayerCollection::GetNewVectorById(GetObjectSess *session, Int64 id)
 {
 	UOSInt k;
 	UOSInt l;

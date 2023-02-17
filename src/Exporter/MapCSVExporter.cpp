@@ -155,7 +155,7 @@ Bool Exporter::MapCSVExporter::ExportFile(IO::SeekableStream *stm, Text::CString
 		Math::Coord2DDbl *points;
 		Int32 currInd = 1;
 		Data::ArrayListInt64 *objIds;
-		void *nameArr;
+		Map::NameArray *nameArr;
 		UOSInt i;
 		UOSInt j;
 		UOSInt k;
@@ -164,7 +164,7 @@ Bool Exporter::MapCSVExporter::ExportFile(IO::SeekableStream *stm, Text::CString
 		writer->WriteLineC(UTF8STRC("INDEX, LATITUDE, N/S, LONGITUDE, E/W"));
 
 		NEW_CLASS(objIds, Data::ArrayListInt64());
-		void *sess = layer->BeginGetObject();
+		Map::GetObjectSess *sess = layer->BeginGetObject();
 		layer->GetBounds(&minMax);
 		layer->GetObjectIdsMapXY(objIds, &nameArr, minMax, true);
 		i = 0;

@@ -1024,3 +1024,32 @@ void Math::GeometryTool::CalcHVAngleDeg(Math::Coord2DDbl ptCurr, Math::Coord2DDb
 	*hAngle = *hAngle * 180 / Math::PI;
 	*vAngle = *vAngle * 180 / Math::PI;
 }
+
+Math::Geometry::Polygon *Math::GeometryTool::CreateCircularPolygonWGS84(Math::Coord2DDbl pt, Double radiusMeter, UOSInt nPoints)
+{
+	Math::CoordinateSystem *csys4326 = Math::CoordinateSystemManager::SRCreateCSys(4326);
+	Math::CoordinateSystem *csys3857 = Math::CoordinateSystemManager::SRCreateCSys(3857);
+	Double outX;
+	Double outY;
+	Double outZ;
+	CoordinateSystem::ConvertXYZ(csys4326, csys3857, pt.x, pt.y, 0, &outX, &outY, &outZ);
+	Math::Geometry::Polygon *pg;
+	NEW_CLASS(pg, Math::Geometry::Polygon(3857, 1, nPoints + 1, false, false));
+	UOSInt pgNPt;
+	Math::Coord2DDbl *ptArr = pg->GetPointList(&pgNPt);
+	Double pi2 = Math::PI * 2;
+	Double angle;
+	UOSInt i = 0;
+	while (i < nPoints)
+	{
+		angle = UOSInt2Double(i) * pi2 / UOSInt2Double(nPoints);
+		ptArr[i].x = outX + Math_Sin(angle) * radiusMeter;
+		ptArr[i].y = outY + Math_Cos(angle) * radiusMeter;
+		i++;
+	}
+	ptArr[nPoints] = ptArr[0];
+	pg->ConvCSys(csys3857, csys4326);
+	DEL_CLASS(csys3857);
+	DEL_CLASS(csys4326);
+	return pg;
+}

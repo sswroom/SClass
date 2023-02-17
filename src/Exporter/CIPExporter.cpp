@@ -102,8 +102,8 @@ Bool Exporter::CIPExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 	Data::ArrayList<CIPStrRecord*> *strs;
 	CIPStrRecord *strRec;
 	CIPBlock *theBlk;
-	void *sess;
-	void *nameArr;
+	Map::GetObjectSess *sess;
+	Map::NameArray *nameArr;
 	UOSInt stmPos = 8;
 	UOSInt i;
 	UOSInt j;

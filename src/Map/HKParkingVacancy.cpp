@@ -276,7 +276,7 @@ Map::DrawLayerType Map::HKParkingVacancy::GetLayerType()
 	return Map::DRAW_LAYER_POINT;
 }
 
-UOSInt Map::HKParkingVacancy::GetAllObjectIds(Data::ArrayListInt64 *outArr, void **nameArr)
+UOSInt Map::HKParkingVacancy::GetAllObjectIds(Data::ArrayListInt64 *outArr, NameArray **nameArr)
 {
 	UOSInt i = 0;
 	UOSInt j = this->parkingMap.GetCount();
@@ -288,12 +288,12 @@ UOSInt Map::HKParkingVacancy::GetAllObjectIds(Data::ArrayListInt64 *outArr, void
 	return j;
 }
 
-UOSInt Map::HKParkingVacancy::GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
+UOSInt Map::HKParkingVacancy::GetObjectIds(Data::ArrayListInt64 *outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
 {
 	return GetObjectIdsMapXY(outArr, nameArr, rect.ToDouble() * mapRate, keepEmpty);
 }
 
-UOSInt Map::HKParkingVacancy::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
+UOSInt Map::HKParkingVacancy::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
 	ParkingInfo *parking;
 	UOSInt i = 0;
@@ -315,11 +315,11 @@ Int64 Map::HKParkingVacancy::GetObjectIdMax()
 	return (Int64)this->parkingMap.GetCount() - 1;
 }
 
-void Map::HKParkingVacancy::ReleaseNameArr(void *nameArr)
+void Map::HKParkingVacancy::ReleaseNameArr(NameArray *nameArr)
 {
 }
 
-UTF8Char *Map::HKParkingVacancy::GetString(UTF8Char *buff, UOSInt buffSize, void *nameArr, Int64 id, UOSInt strIndex)
+UTF8Char *Map::HKParkingVacancy::GetString(UTF8Char *buff, UOSInt buffSize, NameArray *nameArr, Int64 id, UOSInt strIndex)
 {
 	Sync::MutexUsage mutUsage(&this->parkingMut);
 	ParkingInfo *parking = this->parkingMap.GetItem((UOSInt)id);
@@ -536,16 +536,16 @@ Bool Map::HKParkingVacancy::GetBounds(Math::RectAreaDbl *rect)
 	return true;
 }
 
-void *Map::HKParkingVacancy::BeginGetObject()
+Map::GetObjectSess *Map::HKParkingVacancy::BeginGetObject()
 {
-	return (void*)-1;
+	return (GetObjectSess*)-1;
 }
 
-void Map::HKParkingVacancy::EndGetObject(void *session)
+void Map::HKParkingVacancy::EndGetObject(GetObjectSess *session)
 {
 }
 
-Math::Geometry::Vector2D *Map::HKParkingVacancy::GetNewVectorById(void *session, Int64 id)
+Math::Geometry::Vector2D *Map::HKParkingVacancy::GetNewVectorById(GetObjectSess *session, Int64 id)
 {
 	Sync::MutexUsage mutUsage(&this->parkingMut);
 	ParkingInfo *parking = this->parkingMap.GetItem((UOSInt)id);

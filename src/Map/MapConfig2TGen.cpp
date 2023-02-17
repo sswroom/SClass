@@ -2424,7 +2424,7 @@ void Map::MapConfig2TGen::DrawPoints(Media::DrawImage *img, MapLayerStyle *lyrs,
 	Int32 pts[2];
 	Double *objPtr = &objBounds[4 * *objCnt];
 #endif
-	void *session;
+	Map::GetObjectSess *session;
 
 #ifndef NOSCH
 	sch->SetDrawType(lyrs->lyr, 0, 0, lyrs->img, UOSInt2Double(lyrs->img->GetWidth()) * 0.5, UOSInt2Double(lyrs->img->GetHeight()) * 0.5, isLayerEmpty);
@@ -2503,7 +2503,7 @@ void Map::MapConfig2TGen::DrawPoints(Media::DrawImage *img, MapLayerStyle *lyrs,
 
 void Map::MapConfig2TGen::DrawString(Media::DrawImage *img, MapLayerStyle *lyrs, Map::MapView *view, Data::ArrayList<MapFontStyle*> **fonts, MapLabels2 *labels, UOSInt maxLabels, UOSInt *labelCnt, Bool *isLayerEmpty)
 {
-	void *arr;
+	Map::NameArray *arr;
 	UOSInt i;
 	Math::Geometry::Vector2D *vec;
 	Double scaleW;
@@ -2512,7 +2512,7 @@ void Map::MapConfig2TGen::DrawString(Media::DrawImage *img, MapLayerStyle *lyrs,
 	UTF8Char *sptr;
 	UTF8Char *sptrEnd;
 	UTF8Char lblStr[128];
-	void *session;
+	Map::GetObjectSess *session;
 	UOSInt imgWidth;
 	UOSInt imgHeight;
 
@@ -4881,7 +4881,7 @@ WChar *Map::MapConfig2TGen::DrawMap(Media::DrawImage *img, Map::MapView *view, B
 	index = 0;
 	while (index < layerCnt)
 	{
-		void *session;
+		Map::GetObjectSess *session;
 		lyrs = (Map::MapLayerStyle*)this->drawList->GetItem(index++);
 		if (thisScale > lyrs->minScale && thisScale <= lyrs->maxScale)
 		{

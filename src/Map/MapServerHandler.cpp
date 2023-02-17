@@ -75,13 +75,13 @@ Bool __stdcall Map::MapServerHandler::GetLayerDataFunc(Net::WebServer::IWebReque
 			Data::ArrayListInt64 objIds;
 			Int64 objId;
 			Text::String *s;
-			void *nameArr;
+			Map::NameArray *nameArr;
 			sb.AppendUTF8Char('[');
 			layer->GetAllObjectIds(&objIds, &nameArr);
 			if (objIds.GetCount() > 0)
 			{
 				Math::CoordinateSystem *csys = layer->GetCoordinateSystem();
-				void *sess = layer->BeginGetObject();
+				Map::GetObjectSess *sess = layer->BeginGetObject();
 				i = 0;
 				j = objIds.GetCount();
 				while (i < j)
@@ -174,14 +174,14 @@ Bool __stdcall Map::MapServerHandler::GetLayerDataFunc(Net::WebServer::IWebReque
 			UOSInt l;
 			Data::ArrayListInt64 objIds;
 			Int64 objId;
-			void *nameArr;
+			Map::NameArray *nameArr;
 			layer->GetAllObjectIds(&objIds, &nameArr);
 			if (objIds.GetCount() > 0)
 			{
 				Math::CoordinateSystem *csys = layer->GetCoordinateSystem();
 				Math::CoordinateSystem *wgs84 = Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84);
 				Bool needConv = (csys != 0) && !wgs84->Equals(csys);
-				void *sess = layer->BeginGetObject();
+				Map::GetObjectSess *sess = layer->BeginGetObject();
 				i = 0;
 				j = objIds.GetCount();
 				while (i < j)

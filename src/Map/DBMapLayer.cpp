@@ -82,7 +82,7 @@ void Map::DBMapLayer::SetMixedData(MixedData mixedData)
 	this->mixedData = mixedData;
 }
 
-UOSInt Map::DBMapLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, void **nameArr)
+UOSInt Map::DBMapLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, NameArray **nameArr)
 {
 	UOSInt initCnt = outArr->GetCount();
 	if (this->mixedData != MixedData::AllData)
@@ -105,16 +105,16 @@ UOSInt Map::DBMapLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, void **nam
 		this->vecMap.AddKeysTo(outArr);
 	}
 	if (nameArr)
-		*nameArr = InitNameArr();
+		*nameArr = (NameArray*)InitNameArr();
 	return outArr->GetCount() - initCnt;
 }
 
-UOSInt Map::DBMapLayer::GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
+UOSInt Map::DBMapLayer::GetObjectIds(Data::ArrayListInt64 *outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
 {
 	return GetObjectIdsMapXY(outArr, nameArr, rect.ToDouble() / mapRate, keepEmpty);
 }
 
-UOSInt Map::DBMapLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
+UOSInt Map::DBMapLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
 	UOSInt initCnt = outArr->GetCount();
 	Math::Geometry::Vector2D *vec;
@@ -151,7 +151,7 @@ UOSInt Map::DBMapLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void **n
 		}
 	}
 	if (nameArr)
-		*nameArr = InitNameArr();
+		*nameArr = (NameArray*)InitNameArr();
 	return outArr->GetCount() - initCnt;
 }
 
@@ -160,7 +160,7 @@ Int64 Map::DBMapLayer::GetObjectIdMax()
 	return this->vecMap.GetKey(this->vecMap.GetCount() - 1);
 }
 
-void Map::DBMapLayer::ReleaseNameArr(void *nameArr)
+void Map::DBMapLayer::ReleaseNameArr(NameArray *nameArr)
 {
 	if (nameArr)
 	{
@@ -175,7 +175,7 @@ void Map::DBMapLayer::ReleaseNameArr(void *nameArr)
 	}
 }
 
-UTF8Char *Map::DBMapLayer::GetString(UTF8Char *buff, UOSInt buffSize, void *nameArr, Int64 id, UOSInt strIndex)
+UTF8Char *Map::DBMapLayer::GetString(UTF8Char *buff, UOSInt buffSize, NameArray *nameArr, Int64 id, UOSInt strIndex)
 {
 	if (nameArr)
 	{
@@ -287,16 +287,16 @@ Bool Map::DBMapLayer::GetBounds(Math::RectAreaDbl *rect)
 	return true;
 }
 
-void *Map::DBMapLayer::BeginGetObject()
+Map::GetObjectSess *Map::DBMapLayer::BeginGetObject()
 {
-	return (void*)-1;
+	return (GetObjectSess*)-1;
 }
 
-void Map::DBMapLayer::EndGetObject(void *session)
+void Map::DBMapLayer::EndGetObject(GetObjectSess *session)
 {
 }
 
-Math::Geometry::Vector2D *Map::DBMapLayer::GetNewVectorById(void *session, Int64 id)
+Math::Geometry::Vector2D *Map::DBMapLayer::GetNewVectorById(GetObjectSess *session, Int64 id)
 {
 	Math::Geometry::Vector2D *vec = this->vecMap.Get(id);
 	if (vec)

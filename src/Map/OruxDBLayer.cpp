@@ -121,7 +121,7 @@ Map::DrawLayerType Map::OruxDBLayer::GetLayerType()
 	return Map::DRAW_LAYER_IMAGE;
 }
 
-UOSInt Map::OruxDBLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, void **nameArr)
+UOSInt Map::OruxDBLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, NameArray **nameArr)
 {
 	Map::OruxDBLayer::LayerInfo *lyr = this->layerMap.Get(this->currLayer);
 	if (lyr)
@@ -147,12 +147,12 @@ UOSInt Map::OruxDBLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, void **na
 	}
 }
 
-UOSInt Map::OruxDBLayer::GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
+UOSInt Map::OruxDBLayer::GetObjectIds(Data::ArrayListInt64 *outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
 {
 	return GetObjectIdsMapXY(outArr, nameArr, rect.ToDouble() / mapRate, keepEmpty);
 }
 
-UOSInt Map::OruxDBLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
+UOSInt Map::OruxDBLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
 	Int32 minX;
 	Int32 minY;
@@ -218,11 +218,11 @@ Int64 Map::OruxDBLayer::GetObjectIdMax()
 	}
 }
 
-void Map::OruxDBLayer::ReleaseNameArr(void *nameArr)
+void Map::OruxDBLayer::ReleaseNameArr(NameArray *nameArr)
 {
 }
 
-UTF8Char *Map::OruxDBLayer::GetString(UTF8Char *buff, UOSInt buffSize, void *nameArr, Int64 id, UOSInt strIndex)
+UTF8Char *Map::OruxDBLayer::GetString(UTF8Char *buff, UOSInt buffSize, NameArray *nameArr, Int64 id, UOSInt strIndex)
 {
 	return 0;
 }
@@ -267,16 +267,16 @@ Bool Map::OruxDBLayer::GetBounds(Math::RectAreaDbl *bounds)
 	}
 }
 
-void *Map::OruxDBLayer::BeginGetObject()
+Map::GetObjectSess *Map::OruxDBLayer::BeginGetObject()
 {
-	return (void*)-1;
+	return (GetObjectSess*)-1;
 }
 
-void Map::OruxDBLayer::EndGetObject(void *session)
+void Map::OruxDBLayer::EndGetObject(GetObjectSess *session)
 {
 }
 
-Math::Geometry::Vector2D *Map::OruxDBLayer::GetNewVectorById(void *session, Int64 id)
+Math::Geometry::Vector2D *Map::OruxDBLayer::GetNewVectorById(GetObjectSess *session, Int64 id)
 {
 	if (this->db == 0)
 		return 0;

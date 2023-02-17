@@ -908,12 +908,12 @@ Bool Map::HKTrafficLayer::AddRoadLayer(Map::IMapDrawLayer *roadLayer)
 	CenterlineInfo *lineInfo;
 	Bool isFirst = false;
 	Math::RectAreaDbl minMax;
-	void *nameArr;
+	Map::NameArray *nameArr;
 	if (this->minX == 0 && this->minY == 0)
 	{
 		isFirst = true;
 	}
-	void *sess = roadLayer->BeginGetObject();
+	Map::GetObjectSess *sess = roadLayer->BeginGetObject();
 	roadLayer->GetAllObjectIds(&idArr, &nameArr);
 	colCnt = roadLayer->GetColumnCnt();
 	i = 0;
@@ -1124,7 +1124,7 @@ Map::DrawLayerType Map::HKTrafficLayer::GetLayerType()
 	return Map::DRAW_LAYER_POLYLINE;
 }
 
-UOSInt Map::HKTrafficLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, void **nameArr)
+UOSInt Map::HKTrafficLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, NameArray **nameArr)
 {
 	UOSInt ret = 0;
 	UOSInt i;
@@ -1146,12 +1146,12 @@ UOSInt Map::HKTrafficLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, void *
 	return ret;
 }
 
-UOSInt Map::HKTrafficLayer::GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
+UOSInt Map::HKTrafficLayer::GetObjectIds(Data::ArrayListInt64 *outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
 {
 	return GetObjectIdsMapXY(outArr, nameArr, rect.ToDouble() / mapRate, keepEmpty);
 }
 
-UOSInt Map::HKTrafficLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
+UOSInt Map::HKTrafficLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
 	UOSInt retCnt = 0;
 	RoadInfo *road;
@@ -1180,11 +1180,11 @@ Int64 Map::HKTrafficLayer::GetObjectIdMax()
 	return this->roadMap.GetKey(this->roadMap.GetCount() - 1);
 }
 
-void Map::HKTrafficLayer::ReleaseNameArr(void *nameArr)
+void Map::HKTrafficLayer::ReleaseNameArr(NameArray *nameArr)
 {
 }
 
-UTF8Char *Map::HKTrafficLayer::GetString(UTF8Char *buff, UOSInt buffSize, void *nameArr, Int64 id, UOSInt strIndex)
+UTF8Char *Map::HKTrafficLayer::GetString(UTF8Char *buff, UOSInt buffSize, NameArray *nameArr, Int64 id, UOSInt strIndex)
 {
 	////////////////////////////
 	return 0;
@@ -1225,16 +1225,16 @@ Bool Map::HKTrafficLayer::GetBounds(Math::RectAreaDbl *bounds)
 	return this->minX != 0 || this->minY != 0 || this->maxX != 0 || this->maxY != 0;
 }
 
-void *Map::HKTrafficLayer::BeginGetObject()
+Map::GetObjectSess *Map::HKTrafficLayer::BeginGetObject()
 {
-	return (void*)-1;
+	return (GetObjectSess*)-1;
 }
 
-void Map::HKTrafficLayer::EndGetObject(void *session)
+void Map::HKTrafficLayer::EndGetObject(GetObjectSess *session)
 {
 }
 
-Math::Geometry::Vector2D *Map::HKTrafficLayer::GetNewVectorById(void *session, Int64 id)
+Math::Geometry::Vector2D *Map::HKTrafficLayer::GetNewVectorById(GetObjectSess *session, Int64 id)
 {
 	RoadInfo *road;
 	Math::Geometry::Vector2D *vec = 0;

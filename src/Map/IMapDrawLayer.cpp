@@ -292,8 +292,8 @@ UTF8Char *Map::IMapDrawLayer::GetPGLabel(UTF8Char *buff, UOSInt buffSize, Math::
 	if (layerType != DRAW_LAYER_POLYGON && layerType != DRAW_LAYER_MIXED)
 		return retVal;
 
-	void *sess = BeginGetObject();
-	void *names;
+	Map::GetObjectSess *sess = BeginGetObject();
+	Map::NameArray *names;
 	Data::ArrayListInt64 *arr;
 	Int64 lastId;
 	UOSInt i;
@@ -344,9 +344,9 @@ UTF8Char *Map::IMapDrawLayer::GetPLLabel(UTF8Char *buff, UOSInt buffSize, Math::
 	if (layerType != DRAW_LAYER_POLYLINE && layerType != DRAW_LAYER_POINT && layerType != DRAW_LAYER_MIXED && layerType != DRAW_LAYER_POINT3D && layerType != DRAW_LAYER_POLYLINE3D)
 		return retVal;
 
-	void *sess = BeginGetObject();
+	Map::GetObjectSess *sess = BeginGetObject();
 	tmpBuff = MemAlloc(UTF8Char, buffSize);
-	void *names;
+	Map::NameArray *names;
 	Data::ArrayListInt64 arr;
 	Int64 lastId;
 	Int64 thisId;
@@ -403,7 +403,7 @@ Bool Map::IMapDrawLayer::QueryInfos(Math::Coord2DDbl coord, Data::ArrayList<Math
 	return false;
 }
 
-Int64 Map::IMapDrawLayer::GetNearestObjectId(void *session, Math::Coord2DDbl pt, Math::Coord2DDbl *nearPt)
+Int64 Map::IMapDrawLayer::GetNearestObjectId(GetObjectSess *session, Math::Coord2DDbl pt, Math::Coord2DDbl *nearPt)
 {
 	Data::ArrayListInt64 *objIds;
 	NEW_CLASS(objIds, Data::ArrayListInt64());
@@ -448,7 +448,7 @@ Int64 Map::IMapDrawLayer::GetNearestObjectId(void *session, Math::Coord2DDbl pt,
 	return nearObjId;
 }
 
-OSInt Map::IMapDrawLayer::GetNearObjects(void *session, Data::ArrayList<ObjectInfo*> *objList, Math::Coord2DDbl pt, Double maxDist)
+OSInt Map::IMapDrawLayer::GetNearObjects(GetObjectSess *session, Data::ArrayList<ObjectInfo*> *objList, Math::Coord2DDbl pt, Double maxDist)
 {
 	Data::ArrayListInt64 *objIds;
 	NEW_CLASS(objIds, Data::ArrayListInt64());
@@ -535,8 +535,8 @@ Map::VectorLayer *Map::IMapDrawLayer::CreateEditableLayer()
 	Map::VectorLayer *lyr;
 	Data::ArrayListInt64 *objIds;
 	Math::Geometry::Vector2D *vec;
-	void *nameArr;
-	void *sess;
+	NameArray *nameArr;
+	GetObjectSess *sess;
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
@@ -620,7 +620,7 @@ Text::SearchIndexer *Map::IMapDrawLayer::CreateSearchIndexer(Text::TextAnalyzer 
 
 	Text::SearchIndexer *searching;
 	Data::ArrayListInt64 *objIds;
-	void *nameArr;
+	NameArray *nameArr;
 	UTF8Char sbuff[256];
 	UOSInt i;
 
@@ -640,7 +640,7 @@ Text::SearchIndexer *Map::IMapDrawLayer::CreateSearchIndexer(Text::TextAnalyzer 
 	return searching;
 }
 
-UOSInt Map::IMapDrawLayer::SearchString(Data::ArrayListString *outArr, Text::SearchIndexer *srchInd, void *nameArr, const UTF8Char *srchStr, UOSInt maxResult, UOSInt strIndex)
+UOSInt Map::IMapDrawLayer::SearchString(Data::ArrayListString *outArr, Text::SearchIndexer *srchInd, NameArray *nameArr, const UTF8Char *srchStr, UOSInt maxResult, UOSInt strIndex)
 {
 	Data::ArrayListInt64 *objIds;
 	Data::ArrayListICaseString *strList;
@@ -690,7 +690,7 @@ void Map::IMapDrawLayer::ReleaseSearchStr(Data::ArrayListString *strArr)
 	LIST_FREE_STRING(strArr);
 }
 
-Math::Geometry::Vector2D *Map::IMapDrawLayer::GetVectorByStr(Text::SearchIndexer *srchInd, void *nameArr, void *session, const UTF8Char *srchStr, UOSInt strIndex)
+Math::Geometry::Vector2D *Map::IMapDrawLayer::GetVectorByStr(Text::SearchIndexer *srchInd, Map::NameArray *nameArr, Map::GetObjectSess *session, const UTF8Char *srchStr, UOSInt strIndex)
 {
 	UTF8Char sbuff[256];
 	Data::ArrayListInt64 *objIds;
@@ -985,7 +985,7 @@ Math::Geometry::Vector2D *Map::MapLayerReader::GetVector(UOSInt colIndex)
 		return 0;
 	if ((UOSInt)this->currIndex >= this->objIds->GetCount() || this->currIndex < 0)
 		return 0;
-	void *sess = this->layer->BeginGetObject();
+	GetObjectSess *sess = this->layer->BeginGetObject();
 	Math::Geometry::Vector2D *vec = this->layer->GetNewVectorById(sess, this->GetCurrObjId());
 	this->layer->EndGetObject(sess);
 	return vec;

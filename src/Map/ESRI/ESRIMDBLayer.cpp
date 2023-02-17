@@ -218,11 +218,11 @@ Map::DrawLayerType Map::ESRI::ESRIMDBLayer::GetLayerType()
 	return this->layerType;
 }
 
-UOSInt Map::ESRI::ESRIMDBLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, void **nameArr)
+UOSInt Map::ESRI::ESRIMDBLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, NameArray **nameArr)
 {
 	if (nameArr)
 	{
-		*nameArr = ReadNameArr();
+		*nameArr = (NameArray*)ReadNameArr();
 	}
 	UOSInt i = 0;
 	UOSInt j = this->objects.GetCount();
@@ -234,16 +234,16 @@ UOSInt Map::ESRI::ESRIMDBLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, vo
 	return j;
 }
 
-UOSInt Map::ESRI::ESRIMDBLayer::GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
+UOSInt Map::ESRI::ESRIMDBLayer::GetObjectIds(Data::ArrayListInt64 *outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
 {
 	return GetObjectIdsMapXY(outArr, nameArr, rect.ToDouble() / mapRate, keepEmpty);
 }
 
-UOSInt Map::ESRI::ESRIMDBLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
+UOSInt Map::ESRI::ESRIMDBLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
 	if (nameArr)
 	{
-		*nameArr = ReadNameArr();
+		*nameArr = (NameArray*)ReadNameArr();
 	}
 	UOSInt cnt = 0;
 	Math::RectAreaDbl minMax;
@@ -271,7 +271,7 @@ Int64 Map::ESRI::ESRIMDBLayer::GetObjectIdMax()
 	return this->objects.GetKey(this->objects.GetCount() - 1);
 }
 
-void Map::ESRI::ESRIMDBLayer::ReleaseNameArr(void *nameArr)
+void Map::ESRI::ESRIMDBLayer::ReleaseNameArr(NameArray *nameArr)
 {
 	Data::FastMap<Int32, const UTF8Char **> *names = (Data::FastMap<Int32, const UTF8Char **> *)nameArr;
 	UOSInt i = names->GetCount();
@@ -292,7 +292,7 @@ void Map::ESRI::ESRIMDBLayer::ReleaseNameArr(void *nameArr)
 	DEL_CLASS(names);
 }
 
-UTF8Char *Map::ESRI::ESRIMDBLayer::GetString(UTF8Char *buff, UOSInt buffSize, void *nameArr, Int64 id, UOSInt strIndex)
+UTF8Char *Map::ESRI::ESRIMDBLayer::GetString(UTF8Char *buff, UOSInt buffSize, NameArray *nameArr, Int64 id, UOSInt strIndex)
 {
 	Data::FastMap<Int32, const UTF8Char **> *names = (Data::FastMap<Int32, const UTF8Char **> *)nameArr;
 	if (names == 0)
@@ -341,16 +341,16 @@ Bool Map::ESRI::ESRIMDBLayer::GetBounds(Math::RectAreaDbl *bounds)
 	return this->min.x != 0 || this->min.y != 0 || this->max.x != 0 || this->max.y != 0;
 }
 
-void *Map::ESRI::ESRIMDBLayer::BeginGetObject()
+Map::GetObjectSess *Map::ESRI::ESRIMDBLayer::BeginGetObject()
 {
-	return (void*)-1;
+	return (GetObjectSess*)-1;
 }
 
-void Map::ESRI::ESRIMDBLayer::EndGetObject(void *session)
+void Map::ESRI::ESRIMDBLayer::EndGetObject(GetObjectSess *session)
 {
 }
 
-Math::Geometry::Vector2D *Map::ESRI::ESRIMDBLayer::GetNewVectorById(void *session, Int64 id)
+Math::Geometry::Vector2D *Map::ESRI::ESRIMDBLayer::GetNewVectorById(GetObjectSess *session, Int64 id)
 {
 	Math::Geometry::Vector2D *vec = this->objects.Get((Int32)id);
 	if (vec)
