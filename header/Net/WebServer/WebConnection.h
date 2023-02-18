@@ -7,6 +7,7 @@
 #include "Net/WebServer/WebListener.h"
 #include "Net/WebServer/WebRequest.h"
 #include "Net/WebServer/WebServerBase.h"
+#include "Sync/Mutex.h"
 #include "Text/StringBuilderUTF8.h"
 
 namespace Net
@@ -29,6 +30,7 @@ namespace Net
 			UOSInt buffSize;
 			Net::WebServer::WebRequest *currReq;
 			KeepAlive keepAlive;
+			Sync::Mutex procMut;
 
 			Bool allowProxy;
 			Bool proxyMode;

@@ -7,6 +7,8 @@
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 
+#include "Crypto/Hash/CRC32RIEEE.h"
+
 UInt32 __stdcall SSWR::DataSync::SyncClient::RecvThread(void *userObj)
 {
 	SSWR::DataSync::SyncClient *me = (SSWR::DataSync::SyncClient*)userObj;
@@ -248,5 +250,8 @@ void SSWR::DataSync::SyncClient::DataSkipped(IO::Stream *stm, void *stmObj, cons
 
 void SSWR::DataSync::SyncClient::AddUserData(const UInt8 *data, UOSInt dataSize)
 {
+	Crypto::Hash::CRC32RIEEE crc;
+	crc.CalcDirect(data, dataSize);
+	
 	this->dataMgr.AddUserData(data, dataSize);
 }
