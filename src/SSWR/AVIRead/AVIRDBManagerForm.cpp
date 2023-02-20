@@ -64,7 +64,8 @@ typedef enum
 void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnConnSelChg(void *userObj)
 {
 	SSWR::AVIRead::AVIRDBManagerForm *me = (SSWR::AVIRead::AVIRDBManagerForm*)userObj;
-	me->currDB = (DB::DBTool*)me->lbConn->GetSelectedItem();
+	DB::DBManagerCtrl *ctrl = (DB::DBManagerCtrl*)me->lbConn->GetSelectedItem();
+	me->currDB = ctrl->GetDB();
 	me->lvVariable->ClearItems();
 	me->lvSvrConn->ClearItems();
 	me->UpdateDatabaseList();
@@ -80,6 +81,23 @@ Bool __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnConnRClicked(void *userObj, M
 		me->mnuConn->ShowMenu(me->lbConn, scnPos);
 	}
 	return false;
+}
+
+void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnConnDblClicked(void *userObj)
+{
+	SSWR::AVIRead::AVIRDBManagerForm *me = (SSWR::AVIRead::AVIRDBManagerForm*)userObj;
+	DB::DBManagerCtrl *ctrl = (DB::DBManagerCtrl*)me->lbConn->GetSelectedItem();
+	if (ctrl)
+	{
+		if (ctrl->Connect())
+		{
+			OnConnSelChg(me);
+		}
+		else
+		{
+			UI::MessageDialog::ShowDialog(CSTR("Error in connecting to database"), CSTR("DB Manager"), me);
+		}
+	}
 }
 
 void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnSchemaSelChg(void *userObj)
@@ -856,6 +874,7 @@ SSWR::AVIRead::AVIRDBManagerForm::AVIRDBManagerForm(UI::GUIClientControl *parent
 	this->lbConn->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbConn->HandleSelectionChange(OnConnSelChg, this);
 	this->lbConn->HandleRightClicked(OnConnRClicked, this);
+	this->lbConn->HandleDoubleClicked(OnConnDblClicked, this);
 	NEW_CLASS(this->hspConn, UI::GUIHSplitter(ui, this, 3, false));
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
@@ -1048,15 +1067,15 @@ SSWR::AVIRead::AVIRDBManagerForm::AVIRDBManagerForm(UI::GUIClientControl *parent
 	if (DB::DBManager::RestoreConn(CSTRP(sbuff, sptr), &this->dbList, &this->log, this->core->GetSocketFactory()))
 	{
 		Text::StringBuilderUTF8 sb;
-		DB::DBTool *db;
+		DB::DBManagerCtrl *ctrl;
 		UOSInt i = 0;
 		UOSInt j = this->dbList.GetCount();
 		while (i < j)
 		{
-			db = this->dbList.GetItem(i);
+			ctrl = this->dbList.GetItem(i);
 			sb.ClearStr();
-			db->GetConn()->GetConnName(&sb);
-			this->lbConn->AddItem(sb.ToCString(), db);
+			ctrl->GetConnName(&sb);
+			this->lbConn->AddItem(sb.ToCString(), ctrl);
 
 			i++;
 		}
@@ -1083,11 +1102,11 @@ SSWR::AVIRead::AVIRDBManagerForm::~AVIRDBManagerForm()
 	sptr = IO::Path::AppendPath(sbuff, sptr, DBCONNFILE);
 	DB::DBManager::StoreConn(CSTRP(sbuff, sptr), &this->dbList);
 	UOSInt i = this->dbList.GetCount();
-	DB::DBTool *db;
+	DB::DBManagerCtrl *ctrl;
 	while (i-- > 0)
 	{
-		db = this->dbList.GetItem(i);
-		DEL_CLASS(db);
+		ctrl = this->dbList.GetItem(i);
+		DEL_CLASS(ctrl);
 	}
 	SDEL_CLASS(this->ssl);
 }
@@ -1164,8 +1183,8 @@ void SSWR::AVIRead::AVIRDBManagerForm::EventMenuClicked(UInt16 cmdId)
 			UOSInt i = this->lbConn->GetSelectedIndex();
 			if (i != INVALID_INDEX)
 			{
-				DB::DBTool *db = this->dbList.RemoveAt(i);
-				DEL_CLASS(db);
+				DB::DBManagerCtrl *ctrl = this->dbList.RemoveAt(i);
+				DEL_CLASS(ctrl);
 				this->lbConn->RemoveItem(i);
 			}
 		}
@@ -1173,13 +1192,13 @@ void SSWR::AVIRead::AVIRDBManagerForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_CONN_COPY_STR:
 		{
 			Text::StringBuilderUTF8 sb;
-			DB::DBTool *db = (DB::DBTool*)this->lbConn->GetSelectedItem();
-			if (db)
+			DB::DBManagerCtrl *ctrl = (DB::DBManagerCtrl*)this->lbConn->GetSelectedItem();
+			if (ctrl)
 			{
-				Text::StringBuilderUTF8 connStr;
-				if (DB::DBManager::GetConnStr(db, &connStr))
+				Text::String *connStr = ctrl->GetConnStr();
+				if (connStr)
 				{
-					UI::Clipboard::SetString(this->GetHandle(), connStr.ToCString());
+					UI::Clipboard::SetString(this->GetHandle(), connStr->ToCString());
 				}
 				else
 				{
@@ -1346,8 +1365,9 @@ void SSWR::AVIRead::AVIRDBManagerForm::ConnAdd(DB::DBConn *conn)
 {
 	DB::DBTool *db;
 	NEW_CLASS(db, DB::DBTool(conn, true, &this->log, CSTR("DB: ")));
-	this->dbList.Add(db);
+	DB::DBManagerCtrl *ctrl = DB::DBManagerCtrl::Create(db, &this->log, this->core->GetSocketFactory());
+	this->dbList.Add(ctrl);
 	Text::StringBuilderUTF8 sb;
 	conn->GetConnName(&sb);
-	this->lbConn->AddItem(sb.ToCString(), db);
+	this->lbConn->AddItem(sb.ToCString(), ctrl);
 }

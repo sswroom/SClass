@@ -460,7 +460,152 @@ DB::DBTool *DB::DBManager::OpenConn(Text::CString connStr, IO::LogTool *log, Net
 	return 0;
 }
 
-Bool DB::DBManager::StoreConn(Text::CString fileName, Data::ArrayList<DB::DBTool*> *dbList)
+void DB::DBManager::GetConnName(Text::CString connStr, Text::StringBuilderUTF8 *sbOut)
+{
+	if (connStr.StartsWith(UTF8STRC("odbc:")))
+	{
+		sbOut->AppendC(UTF8STRC("odbc:"));
+		if (connStr.Substring(5).StartsWith(UTF8STRC("DSN=")))
+		{
+			Text::StringBuilderUTF8 sb;
+			sb.Append(connStr.Substring(5));
+			UOSInt cnt;
+			Text::PString sarr[2];
+			sarr[1] = sb;
+			while (true)
+			{
+				cnt = Text::StrSplitP(sarr, 2, sarr[1], ';');
+				if (sarr[0].StartsWithICase(UTF8STRC("DSN=")))
+				{
+					sbOut->Append(sarr[0].ToCString().Substring(4));
+				}
+				else if (sarr[0].StartsWithICase(UTF8STRC("SCHEMA=")))
+				{
+					sbOut->AppendC(UTF8STRC(", "));
+					sbOut->Append(sarr[0].ToCString().Substring(7));
+				}
+				if (cnt != 2)
+				{
+					break;
+				}
+			}
+		}
+		else
+		{
+			sbOut->Append(connStr.Substring(5));
+		}
+	}
+	else if (connStr.StartsWith(UTF8STRC("mysql:")))
+	{
+		sbOut->AppendC(UTF8STRC("mysql:"));
+		Text::StringBuilderUTF8 sb;
+		UOSInt cnt;
+		sb.Append(connStr.Substring(6));
+		Text::PString sarr[2];
+		sarr[1] = sb;
+		while (true)
+		{
+			cnt = Text::StrSplitP(sarr, 2, sarr[1], ';');
+			if (sarr[0].StartsWithICase(UTF8STRC("SERVER=")))
+			{
+				sbOut->Append(sarr[0].ToCString().Substring(7));
+			}
+			else if (sarr[0].StartsWithICase(UTF8STRC("DATABASE=")))
+			{
+				sbOut->AppendC(UTF8STRC(", "));
+				sbOut->Append(sarr[0].ToCString().Substring(9));
+			}
+			if (cnt != 2)
+			{
+				break;
+			}
+		}
+	}
+	else if (connStr.StartsWith(UTF8STRC("sqlite:")))
+	{
+		sbOut->AppendC(UTF8STRC("sqlite:"));
+		if (connStr.Substring(7).StartsWithICase(UTF8STRC("FILE=")))
+		{
+			sbOut->Append(connStr.Substring(12));
+		}
+	}
+	else if (connStr.StartsWith(UTF8STRC("wmi:")))
+	{
+		sbOut->AppendC(UTF8STRC("wmi:"));
+		if (connStr.Substring(4).StartsWithICase(UTF8STRC("NS=")))
+		{
+			sbOut->Append(connStr.Substring(7));
+		}
+	}
+	else if (connStr.StartsWith(UTF8STRC("oledb:")))
+	{
+		sbOut->Append(connStr);
+	}
+	else if (connStr.StartsWith(UTF8STRC("mysqltcp:")))
+	{
+		sbOut->AppendC(UTF8STRC("mysqltcp:"));
+		Text::StringBuilderUTF8 sb;
+		UOSInt cnt;
+		sb.Append(connStr.Substring(9));
+		Text::PString sarr[2];
+		sarr[1] = sb;
+		while (true)
+		{
+			cnt = Text::StrSplitP(sarr, 2, sarr[1], ';');
+			if (sarr[0].StartsWithICase(UTF8STRC("SERVER=")))
+			{
+				sbOut->Append(sarr[0].ToCString().Substring(7));
+			}
+			else if (sarr[0].StartsWithICase(UTF8STRC("PORT=")))
+			{
+				sbOut->AppendUTF8Char(':');
+				sbOut->Append(sarr[0].ToCString().Substring(5));
+			}
+			else if (sarr[0].StartsWithICase(UTF8STRC("DATABASE=")))
+			{
+				sbOut->AppendUTF8Char(',');
+				sbOut->Append(sarr[0].ToCString().Substring(9));
+			}
+			if (cnt != 2)
+			{
+				break;
+			}
+		}
+	}
+	else if (connStr.StartsWith(UTF8STRC("postgresql:")))
+	{
+		sbOut->AppendC(UTF8STRC("pgsql:"));
+		Text::StringBuilderUTF8 sb;
+		UOSInt cnt;
+		sb.Append(connStr.Substring(11));
+		Text::PString sarr[2];
+		sarr[1] = sb;
+		while (true)
+		{
+			cnt = Text::StrSplitP(sarr, 2, sarr[1], ';');
+			if (sarr[0].StartsWithICase(UTF8STRC("SERVER=")))
+			{
+				sbOut->Append(sarr[0].ToCString().Substring(7));
+			}
+			else if (sarr[0].StartsWithICase(UTF8STRC("PORT=")))
+			{
+				sbOut->AppendUTF8Char(':');
+				sbOut->Append(sarr[0].ToCString().Substring(5));
+			}
+			else if (sarr[0].StartsWithICase(UTF8STRC("DATABASE=")))
+			{
+				sbOut->AppendUTF8Char(',');
+				sbOut->Append(sarr[0].ToCString().Substring(9));
+			}
+			if (cnt != 2)
+			{
+				break;
+			}
+		}
+	}
+}
+
+Bool DB::DBManager::StoreConn(Text::CString fileName, Data::ArrayList<DB::DBManagerCtrl*> *ctrlList)
 {
 	IO::FileStream *fs;
 	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
@@ -470,19 +615,22 @@ Bool DB::DBManager::StoreConn(Text::CString fileName, Data::ArrayList<DB::DBTool
 		return false;
 	}
 
-	if (dbList->GetCount() > 0)
+	if (ctrlList->GetCount() > 0)
 	{
 		Text::StringBuilderUTF8 sb;
-		DB::DBTool *db;
+		DB::DBManagerCtrl *ctrl;
+		Text::String *connStr;
 		UOSInt i;
 		UOSInt j;
 		i = 0;
-		j = dbList->GetCount();
+		j = ctrlList->GetCount();
 		while (i < j)
 		{
-			db = dbList->GetItem(i);
-			if (GetConnStr(db, &sb))
+			ctrl = ctrlList->GetItem(i);
+			connStr = ctrl->GetConnStr();
+			if (connStr)
 			{
+				sb.Append(connStr);
 				sb.AppendC(UTF8STRC("\r\n"));
 			}
 			i++;
@@ -507,7 +655,7 @@ Bool DB::DBManager::StoreConn(Text::CString fileName, Data::ArrayList<DB::DBTool
 	return true;
 }
 
-Bool DB::DBManager::RestoreConn(Text::CString fileName, Data::ArrayList<DB::DBTool*> *dbList, IO::LogTool *log, Net::SocketFactory *sockf)
+Bool DB::DBManager::RestoreConn(Text::CString fileName, Data::ArrayList<DB::DBManagerCtrl*> *ctrlList, IO::LogTool *log, Net::SocketFactory *sockf)
 {
 	IO::FileStream *fs;
 	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
@@ -526,7 +674,6 @@ Bool DB::DBManager::RestoreConn(Text::CString fileName, Data::ArrayList<DB::DBTo
 		fs->Read(fileBuff, (UOSInt)len);
 		UInt8 keyBuff[32];
 		UOSInt cnt;
-		DB::DBTool *db;
 		Crypto::Hash::MD5 md5;
 		md5.Calc((const UInt8*)ENCKEY, ENCKEYLEN);
 		md5.GetValue(keyBuff);
@@ -542,11 +689,7 @@ Bool DB::DBManager::RestoreConn(Text::CString fileName, Data::ArrayList<DB::DBTo
 			cnt = Text::StrSplitLineP(sarr, 2, sarr[1]);
 			if (sarr[0].leng > 0)
 			{
-				db = OpenConn(sarr[0].ToCString(), log, sockf);
-				if (db)
-				{
-					dbList->Add(db);
-				}
+				ctrlList->Add(DB::DBManagerCtrl::Create(sarr[0].ToCString(), log, sockf));
 			}
 			if (cnt != 2)
 			{

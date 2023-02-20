@@ -1,6 +1,6 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRDBCOPYTABLESFORM
 #define _SM_SSWR_AVIREAD_AVIRDBCOPYTABLESFORM
-#include "DB/DBTool.h"
+#include "DB/DBManagerCtrl.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "UI/GUIButton.h"
 #include "UI/GUICheckBox.h"
@@ -41,7 +41,7 @@ namespace SSWR
 			UI::GUIButton *btnCopy;
 
 			SSWR::AVIRead::AVIRCore *core;
-			Data::ArrayList<DB::DBTool*> *dbList;
+			Data::ArrayList<DB::DBManagerCtrl*> *dbList;
 
 			DB::DBTool *dataConn;
 			Text::String *dataSchema;
@@ -52,7 +52,7 @@ namespace SSWR
 			static void __stdcall OnDestDBChg(void *userObj);
 			static void __stdcall OnCopyClicked(void *userObj);
 		public:
-			AVIRDBCopyTablesForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Data::ArrayList<DB::DBTool*> *dbList);
+			AVIRDBCopyTablesForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Data::ArrayList<DB::DBManagerCtrl*> *dbList);
 			virtual ~AVIRDBCopyTablesForm();
 
 			virtual void OnMonitorChanged();

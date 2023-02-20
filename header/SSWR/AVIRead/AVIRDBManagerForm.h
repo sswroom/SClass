@@ -1,6 +1,6 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRDBMANAGERFORM
 #define _SM_SSWR_AVIREAD_AVIRDBMANAGERFORM
-#include "DB/DBTool.h"
+#include "DB/DBManagerCtrl.h"
 #include "Map/DBMapLayer.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "UI/GUIForm.h"
@@ -85,7 +85,7 @@ namespace SSWR
 
 			SSWR::AVIRead::AVIRCore *core;
 			UI::ListBoxLogger *logger;
-			Data::ArrayList<DB::DBTool*> dbList;
+			Data::ArrayList<DB::DBManagerCtrl*> dbList;
 			Net::SSLEngine *ssl;
 			IO::LogTool log;
 			DB::DBTool *currDB;
@@ -96,6 +96,7 @@ namespace SSWR
 
 			static void __stdcall OnConnSelChg(void *userObj);
 			static Bool __stdcall OnConnRClicked(void *userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn);
+			static void __stdcall OnConnDblClicked(void *userObj);
 			static void __stdcall OnSchemaSelChg(void *userObj);
 			static Bool __stdcall OnSchemaRClicked(void *userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn);
 			static void __stdcall OnTableSelChg(void *userObj);

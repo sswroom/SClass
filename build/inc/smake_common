@@ -1511,6 +1511,8 @@ DB/DBList.h: ../../src/DB/DBList.cpp
 @DBList.o
 DB/DBManager.h: ../../src/DB/DBManager.cpp
 @DBManager.o
+DB/DBManagerCtrl.h: ../../src/DB/DBManagerCtrl.cpp
+@DBManagerCtrl.o
 DB/DBModel.h: ../../src/DB/DBModel.cpp
 @DBModel.o
 DB/DBMS.h: ../../src/DB/DBMS.cpp
@@ -4604,6 +4606,7 @@ DBFFile.o: ../../src/DB/DBFFile.cpp
 DBFFixWriter.o: ../../src/DB/DBFFixWriter.cpp
 DBList.o: ../../src/DB/DBList.cpp
 DBManager.o: ../../src/DB/DBManager.cpp
+DBManagerCtrl.o: ../../src/DB/DBManagerCtrl.cpp
 DBModel.o: ../../src/DB/DBModel.cpp
 DBMS.o: ../../src/DB/DBMS.cpp
 DBQueue.o: ../../src/DB/DBQueue.cpp
