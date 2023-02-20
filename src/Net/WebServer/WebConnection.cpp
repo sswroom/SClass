@@ -107,16 +107,19 @@ void Net::WebServer::WebConnection::ReceivedData(const UInt8 *buff, UOSInt size)
 		i = 0;
 		lineStart = 0;
 
-		if (this->currReq && this->currReq->DataStarted())
 		{
-			i += this->currReq->DataPut(buff, size);
-			if (!this->currReq->DataFull())
+			Sync::MutexUsage mutUsage(&this->procMut);
+			if (this->currReq && this->currReq->DataStarted())
 			{
-				this->buffSize = 0;
-				return;
-			}
+				i += this->currReq->DataPut(buff, size);
+				if (!this->currReq->DataFull())
+				{
+					this->buffSize = 0;
+					return;
+				}
 
-			this->ProcessResponse();
+				this->ProcessResponse();
+			}
 		}
 
 		while (i < j)
@@ -144,6 +147,7 @@ void Net::WebServer::WebConnection::ReceivedData(const UInt8 *buff, UOSInt size)
 							}
 						}
 
+						Sync::MutexUsage mutUsage(&this->procMut);
 						this->ProcessResponse();
 					}
 				}
