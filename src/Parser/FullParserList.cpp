@@ -62,6 +62,7 @@
 #include "Parser/FileParser/MP2Parser.h"
 #include "Parser/FileParser/MPGParser.h"
 #include "Parser/FileParser/MRGParser.h"
+#include "Parser/FileParser/MTKGPSParser.h"
 #include "Parser/FileParser/NFPParser.h"
 #include "Parser/FileParser/NOAParser.h"
 #include "Parser/FileParser/NS2Parser.h"
@@ -355,6 +356,8 @@ Parser::FullParserList::FullParserList() : Parser::ParserList()
 	NEW_CLASS(parser, Parser::FileParser::SMakeParser());
 	this->AddFileParser(parser);
 	NEW_CLASS(parser, Parser::FileParser::ASN1Parser());
+	this->AddFileParser(parser);
+	NEW_CLASS(parser, Parser::FileParser::MTKGPSParser());
 	this->AddFileParser(parser);
 
 	IO::IObjectParser *oparser;
