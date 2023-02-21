@@ -98,6 +98,8 @@ Media/OCREngine.h: ../../src/Media/OCREngine_Null.cpp
 @OCREngine.o
 Media/Printer.h: ../../src/Media/PrinterW.cpp
 @Printer.o
+Media/ZXingWriter.h: ../../src/Media/ZXingWriter_Null.cpp
+@ZXingWriter.o
 Media/Decoder/FFMPEGDecoder.h: ../../src/Media/Decoder/FFMPEGDecoder.cpp
 @FFMPEGDecoder.o
 Media/DShow/DShowInit.h:
@@ -228,6 +230,7 @@ Printer.o: ../../src/Media/PrinterW.cpp
 !-lwinspool
 !-lgdi32
 !-lcomdlg32
+ZXingWriter.o: ../../src/Media/ZXingWriter_Null.cpp
 FFMPEGDecoder.o: ../../src/Media/Decoder/FFMPEGDecoder.cpp
 $-I ../../../ffmpeg-3.3.1-win64-dev/include
 #!-L ../../../ffmpeg-3.3.1-win64-dev/lib

@@ -58,6 +58,8 @@ Media/OCREngine.h: ../../src/Media/OCREngine.cpp
 @OCREngine.o
 Media/Printer.h: ../../src/Media/PrinterCUPS.cpp
 @Printer.o
+Media/ZXingWriter.h: ../../src/Media/ZXingWriter.cpp
+@ZXingWriter.o
 Media/Decoder/FFMPEGDecoder.h: ../../src/Media/Decoder/FFMPEGDecoder.cpp
 @FFMPEGDecoder.o
 Media/OpenCV/OCVFrame.h: ../../src/Media/OpenCV/OCVFrame.cpp
@@ -147,6 +149,8 @@ OCREngine.o: ../../src/Media/OCREngine.cpp
 Printer.o: ../../src/Media/PrinterCUPS.cpp
 $`pkg-config --cflags --libs cairo` `cups-config --cflags`
 !`cups-config --libs`
+ZXingWriter.o: ../../src/Media/ZXingWriter.cpp
+!-lZXing
 FFMPEGDecoder.o: ../../src/Media/Decoder/FFMPEGDecoder.cpp
 !-lavutil
 !-lavcodec

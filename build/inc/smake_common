@@ -2620,6 +2620,8 @@ Media/CodeImageGen/EAN8CodeImageGen.h: ../../src/Media/CodeImageGen/EAN8CodeImag
 @EAN8CodeImageGen.o
 Media/CodeImageGen/EAN13CodeImageGen.h: ../../src/Media/CodeImageGen/EAN13CodeImageGen.cpp
 @EAN13CodeImageGen.o
+Media/CodeImageGen/QRCodeImageGen.h: ../../src/Media/CodeImageGen/QRCodeImageGen.cpp
+@QRCodeImageGen.o
 Media/CS/CSAYUV_RGB8.h: ../../src/Media/CS/CSAYUV_RGB8.cpp
 @CSAYUV_RGB8.o
 @CSAYUV_RGB8_CPP.o
@@ -5119,6 +5121,7 @@ EAN2CodeImageGen.o: ../../src/Media/CodeImageGen/EAN2CodeImageGen.cpp
 EAN5CodeImageGen.o: ../../src/Media/CodeImageGen/EAN5CodeImageGen.cpp
 EAN8CodeImageGen.o: ../../src/Media/CodeImageGen/EAN8CodeImageGen.cpp
 EAN13CodeImageGen.o: ../../src/Media/CodeImageGen/EAN13CodeImageGen.cpp
+QRCodeImageGen.o: ../../src/Media/CodeImageGen/QRCodeImageGen.cpp
 CSAYUV_RGB8.o: ../../src/Media/CS/CSAYUV_RGB8.cpp
 CSAYUV444_10_LRGBC.o: ../../src/Media/CS/CSAYUV444_10_LRGBC.cpp
 CSAYUV444_10_RGB32C.o: ../../src/Media/CS/CSAYUV444_10_RGB32C.cpp

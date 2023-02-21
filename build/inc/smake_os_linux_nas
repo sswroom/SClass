@@ -63,6 +63,8 @@ Media/OCREngine.h: ../../src/Media/OCREngine_Null.cpp
 @OCREngine.o
 Media/Printer.h: ../../src/Media/PrinterNull.cpp
 @Printer.o
+Media/ZXingWriter.h: ../../src/Media/ZXingWriter_Null.cpp
+@ZXingWriter.o
 Media/Decoder/FFMPEGDecoder.h: ../../src/Media/Decoder/FFMPEGDecoderNull.cpp
 @FFMPEGDecoder.o
 Media/OpenCV/OCVFrame.h: ../../src/Media/OpenCV/OCVFrame.cpp
@@ -131,6 +133,7 @@ FBMonitorSurfaceMgr.o: ../../src/Media/FBMonitorSurfaceMgr.cpp
 FBSurface.o: ../../src/Media/FBSurface.cpp
 OCREngine.o: ../../src/Media/OCREngine_Null.cpp
 Printer.o: ../../src/Media/PrinterNull.cpp
+ZXingWriter.o: ../../src/Media/ZXingWriter_Null.cpp
 FFMPEGDecoder.o: ../../src/Media/Decoder/FFMPEGDecoderNull.cpp
 OCVFrame.o: ../../src/Media/OpenCV/OCVFrameNull.cpp
 OCVFrameFeeder.o: ../../src/Media/OpenCV/OCVFrameFeeder.cpp

@@ -5,6 +5,7 @@
 #include "Media/CodeImageGen/EAN2CodeImageGen.h"
 #include "Media/CodeImageGen/EAN5CodeImageGen.h"
 #include "Media/CodeImageGen/EAN8CodeImageGen.h"
+#include "Media/CodeImageGen/QRCodeImageGen.h"
 
 Media::CodeImageGen::CodeImageGen::~CodeImageGen()
 {
@@ -27,6 +28,9 @@ Media::CodeImageGen::CodeImageGen *Media::CodeImageGen::CodeImageGen::CreateGene
 	case Media::CodeImageGen::CodeImageGen::CT_EAN2:
 		NEW_CLASS(codeImgGen, Media::CodeImageGen::EAN2CodeImageGen());
 		break;
+	case Media::CodeImageGen::CodeImageGen::CT_QRCODE:
+		NEW_CLASS(codeImgGen, Media::CodeImageGen::QRCodeImageGen());
+		break;
 	}
 	return codeImgGen;
 }
@@ -43,6 +47,8 @@ Text::CString Media::CodeImageGen::CodeImageGen::GetCodeName(CodeType codeType)
 		return CSTR("EAN-5");
 	case Media::CodeImageGen::CodeImageGen::CT_EAN2:
 		return CSTR("EAN-2");
+	case Media::CodeImageGen::CodeImageGen::CT_QRCODE:
+		return CSTR("QR Code");
 	default:
 		return CSTR("Unknown");
 	}

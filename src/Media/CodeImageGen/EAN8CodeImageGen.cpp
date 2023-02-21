@@ -27,16 +27,16 @@ UOSInt Media::CodeImageGen::EAN8CodeImageGen::GetMaxLength()
 	return 8;
 }
 
-Media::DrawImage *Media::CodeImageGen::EAN8CodeImageGen::GenCode(const UTF8Char *code, UOSInt codeWidth, Media::DrawEngine *eng)
+Media::DrawImage *Media::CodeImageGen::EAN8CodeImageGen::GenCode(Text::CString code, UOSInt codeWidth, Media::DrawEngine *eng)
 {
 	UTF8Char sbuff[2];
-	if (code == 0)
+	if (code.v == 0)
 		return 0;
 
 	UOSInt i = 8;
 	UOSInt j = 0;
 	UOSInt k;
-	const UTF8Char *tmpStr = code;
+	const UTF8Char *tmpStr = code.v;
 	UTF8Char c;
 	while (i-- > 0)
 	{
@@ -57,6 +57,7 @@ Media::DrawImage *Media::CodeImageGen::EAN8CodeImageGen::GenCode(const UTF8Char 
 	if ((j % 10) != 0)
 		return 0;
 
+	const UTF8Char *codePtr = code.v;
 	UInt8 bitCode[67];
 	bitCode[0] = 1;
 	bitCode[1] = 0;
@@ -65,7 +66,7 @@ Media::DrawImage *Media::CodeImageGen::EAN8CodeImageGen::GenCode(const UTF8Char 
 	i = 4;
 	while (i-- > 0)
 	{
-		switch (*code++) //L-code
+		switch (*codePtr++) //L-code
 		{
 		case '0':
 			bitCode[j + 0] = 0;
@@ -169,7 +170,7 @@ Media::DrawImage *Media::CodeImageGen::EAN8CodeImageGen::GenCode(const UTF8Char 
 	i = 4;
 	while (i-- > 0)
 	{
-		switch (*code++) //R-code
+		switch (*codePtr++) //R-code
 		{
 		case '0':
 			bitCode[j + 0] = 1;
@@ -268,7 +269,7 @@ Media::DrawImage *Media::CodeImageGen::EAN8CodeImageGen::GenCode(const UTF8Char 
 	bitCode[j + 1] = 0;
 	bitCode[j + 2] = 1;
 	j += 3;
-	code = code - 8;
+	codePtr = codePtr - 8;
 
 	UOSInt h = codeWidth * 70;
 	UOSInt y = h - codeWidth;
@@ -327,7 +328,7 @@ Media::DrawImage *Media::CodeImageGen::EAN8CodeImageGen::GenCode(const UTF8Char 
 	j = 4;
 	while (j-- > 0)
 	{
-		sbuff[0] = *code++;
+		sbuff[0] = *codePtr++;
 		dimg->DrawString((Double)i, UOSInt2Double(y) - fh, {sbuff, 1}, f, b);
 		i += 7 * codeWidth;
 	}
@@ -335,7 +336,7 @@ Media::DrawImage *Media::CodeImageGen::EAN8CodeImageGen::GenCode(const UTF8Char 
 	j = 4;
 	while (j-- > 0)
 	{
-		sbuff[0] = *code++;
+		sbuff[0] = *codePtr++;
 		dimg->DrawString((Double)i, UOSInt2Double(y) - fh, {sbuff, 1}, f, b);
 		i += 7 * codeWidth;
 	}

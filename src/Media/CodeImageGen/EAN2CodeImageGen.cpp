@@ -27,16 +27,16 @@ UOSInt Media::CodeImageGen::EAN2CodeImageGen::GetMaxLength()
 	return 2;
 }
 
-Media::DrawImage *Media::CodeImageGen::EAN2CodeImageGen::GenCode(const UTF8Char *code, UOSInt codeWidth, Media::DrawEngine *eng)
+Media::DrawImage *Media::CodeImageGen::EAN2CodeImageGen::GenCode(Text::CString code, UOSInt codeWidth, Media::DrawEngine *eng)
 {
 	UTF8Char sbuff[2];
-	if (code == 0)
+	if (code.v == 0)
 		return 0;
 
 	UOSInt i = 2;
 	UOSInt j;
 	UOSInt k;
-	const UTF8Char *tmpStr = code;
+	const UTF8Char *tmpStr = code.v;
 	UTF8Char c;
 	while (i-- > 0)
 	{
@@ -46,8 +46,9 @@ Media::DrawImage *Media::CodeImageGen::EAN2CodeImageGen::GenCode(const UTF8Char 
 	}
 	if (*tmpStr != 0)
 		return 0;
-	j = Text::StrToUInt32(code);
+	j = Text::StrToUInt32(code.v);
 
+	const UTF8Char *codePtr = code.v;
 	UInt8 bitCode[21];
 	bitCode[0] = 0;
 	bitCode[1] = 1;
@@ -75,7 +76,7 @@ Media::DrawImage *Media::CodeImageGen::EAN2CodeImageGen::GenCode(const UTF8Char 
 	{
 		if (*tmpStr++ == 'L') //L-code
 		{
-			switch (*code++)
+			switch (*codePtr++)
 			{
 			case '0':
 				bitCode[j + 0] = 0;
@@ -172,7 +173,7 @@ Media::DrawImage *Media::CodeImageGen::EAN2CodeImageGen::GenCode(const UTF8Char 
 		}
 		else //G-code
 		{
-			switch (*code++)
+			switch (*codePtr++)
 			{
 			case '0':
 				bitCode[j + 0] = 0;
@@ -278,7 +279,7 @@ Media::DrawImage *Media::CodeImageGen::EAN2CodeImageGen::GenCode(const UTF8Char 
 			break;
 		}
 	}
-	code = code - 2;
+	codePtr = codePtr - 2;
 
 	UOSInt h = codeWidth * 70;
 	UOSInt y = h - codeWidth;
@@ -316,10 +317,10 @@ Media::DrawImage *Media::CodeImageGen::EAN2CodeImageGen::GenCode(const UTF8Char 
 
 	f = dimg->NewFontPx(CSTR("Arial"), fh, Media::DrawEngine::DFS_NORMAL, 0);
 	b = dimg->NewBrushARGB(0xff000000);
-	sbuff[0] = *code++;
+	sbuff[0] = *codePtr++;
 	sbuff[1] = 0;
 	dimg->DrawString((Double)(2 + 5) * UOSInt2Double(codeWidth), (Double)codeWidth, {sbuff, 1}, f, b);
-	sbuff[0] = *code++;
+	sbuff[0] = *codePtr++;
 	dimg->DrawString((Double)(2 + 5 + 7 + 2) * UOSInt2Double(codeWidth), (Double)codeWidth, {sbuff, 1}, f, b);
 
 	dimg->DelBrush(b);

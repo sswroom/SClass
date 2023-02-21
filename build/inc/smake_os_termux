@@ -60,6 +60,8 @@ Media/OCREngine.h: ../../src/Media/OCREngine.cpp
 @OCREngine.o
 Media/Printer.h: ../../src/Media/PrinterNull.cpp
 @Printer.o
+Media/ZXingWriter.h: ../../src/Media/ZXingWriter.cpp
+@ZXingWriter.o
 Media/Decoder/FFMPEGDecoder.h: ../../src/Media/Decoder/FFMPEGDecoderNull.cpp
 @FFMPEGDecoder.o
 Media/OpenCV/OCVFrame.h: ../../src/Media/OpenCV/OCVFrameNull.cpp
@@ -132,6 +134,8 @@ OCREngine.o: ../../src/Media/OCREngine.cpp
 !-llept
 !-ltesseract
 Printer.o: ../../src/Media/PrinterNull.cpp
+ZXingWriter.o: ../../src/Media/ZXingWriter.cpp
+!-lZXing
 FFMPEGDecoder.o: ../../src/Media/Decoder/FFMPEGDecoderNull.cpp
 OCVFrame.o: ../../src/Media/OpenCV/OCVFrameNull.cpp
 OCVFrameFeeder.o: ../../src/Media/OpenCV/OCVFrameFeeder.cpp

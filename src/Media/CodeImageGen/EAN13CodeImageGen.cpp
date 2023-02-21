@@ -27,16 +27,16 @@ UOSInt Media::CodeImageGen::EAN13CodeImageGen::GetMaxLength()
 	return 13;
 }
 
-Media::DrawImage *Media::CodeImageGen::EAN13CodeImageGen::GenCode(const UTF8Char *code, UOSInt codeWidth, Media::DrawEngine *eng)
+Media::DrawImage *Media::CodeImageGen::EAN13CodeImageGen::GenCode(Text::CString code, UOSInt codeWidth, Media::DrawEngine *eng)
 {
 	UTF8Char sbuff[2];
-	if (code == 0)
+	if (code.v == 0)
 		return 0;
 
 	UOSInt i = 13;
 	UOSInt j = 0;
 	UOSInt k;
-	const UTF8Char *tmpStr = code;
+	const UTF8Char *tmpStr = code.v;
 	WChar c;
 	while (i-- > 0)
 	{
@@ -57,12 +57,13 @@ Media::DrawImage *Media::CodeImageGen::EAN13CodeImageGen::GenCode(const UTF8Char
 	if ((j % 10) != 0)
 		return 0;
 
+	const UTF8Char *codePtr = code.v;
 	UInt8 bitCode[95];
 	bitCode[0] = 1;
 	bitCode[1] = 0;
 	bitCode[2] = 1;
 	j = 3;
-	switch (*code++)
+	switch (*codePtr++)
 	{
 	case '0':
 		tmpStr = (const UTF8Char*)"LLLLLL";
@@ -100,7 +101,7 @@ Media::DrawImage *Media::CodeImageGen::EAN13CodeImageGen::GenCode(const UTF8Char
 	{
 		if (*tmpStr++ == 'L') //L-code
 		{
-			switch (*code++)
+			switch (*codePtr++)
 			{
 			case '0':
 				bitCode[j + 0] = 0;
@@ -197,7 +198,7 @@ Media::DrawImage *Media::CodeImageGen::EAN13CodeImageGen::GenCode(const UTF8Char
 		}
 		else //G-code
 		{
-			switch (*code++)
+			switch (*codePtr++)
 			{
 			case '0':
 				bitCode[j + 0] = 0;
@@ -302,7 +303,7 @@ Media::DrawImage *Media::CodeImageGen::EAN13CodeImageGen::GenCode(const UTF8Char
 	i = 6;
 	while (i-- > 0)
 	{
-		switch (*code++) //R-code
+		switch (*codePtr++) //R-code
 		{
 		case '0':
 			bitCode[j + 0] = 1;
@@ -401,7 +402,7 @@ Media::DrawImage *Media::CodeImageGen::EAN13CodeImageGen::GenCode(const UTF8Char
 	bitCode[j + 1] = 0;
 	bitCode[j + 2] = 1;
 	j += 3;
-	code = code - 13;
+	codePtr = codePtr - 13;
 
 	UOSInt h = codeWidth * 70;
 	UOSInt y = h - codeWidth;
@@ -455,14 +456,14 @@ Media::DrawImage *Media::CodeImageGen::EAN13CodeImageGen::GenCode(const UTF8Char
 
 	f = dimg->NewFontPx(CSTR("Arial"), fh, Media::DrawEngine::DFS_NORMAL, 0);
 	b = dimg->NewBrushARGB(0xff000000);
-	sbuff[0] = *code++;
+	sbuff[0] = *codePtr++;
 	sbuff[1] = 0;
 	dimg->DrawString((Double)codeWidth, UOSInt2Double(y) - fh, {sbuff, 1}, f, b);
 	i = codeWidth * (5 + 9);
 	j = 6;
 	while (j-- > 0)
 	{
-		sbuff[0] = *code++;
+		sbuff[0] = *codePtr++;
 		dimg->DrawString((Double)i, UOSInt2Double(y) - fh, {sbuff, 1}, f, b);
 		i += 7 * codeWidth;
 	}
@@ -470,7 +471,7 @@ Media::DrawImage *Media::CodeImageGen::EAN13CodeImageGen::GenCode(const UTF8Char
 	j = 6;
 	while (j-- > 0)
 	{
-		sbuff[0] = *code++;
+		sbuff[0] = *codePtr++;
 		dimg->DrawString((Double)i, UOSInt2Double(y) - fh, {sbuff, 1}, f, b);
 		i += 7 * codeWidth;
 	}

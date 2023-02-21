@@ -16,9 +16,10 @@ namespace Media
 				CT_EAN8,
 				CT_EAN5,
 				CT_EAN2,
+				CT_QRCODE,
 
 				CT_FIRST = CT_EAN13,
-				CT_LAST = CT_EAN2
+				CT_LAST = CT_QRCODE
 			} CodeType;
 		public:
 			virtual ~CodeImageGen();
@@ -26,7 +27,7 @@ namespace Media
 			virtual CodeType GetCodeType() = 0;
 			virtual UOSInt GetMinLength() = 0;
 			virtual UOSInt GetMaxLength() = 0;
-			virtual Media::DrawImage *GenCode(const UTF8Char *code, UOSInt codeWidth, Media::DrawEngine *eng) = 0;
+			virtual Media::DrawImage *GenCode(Text::CString code, UOSInt codeWidth, Media::DrawEngine *eng) = 0;
 		public:
 			static CodeImageGen *CreateGenerator(CodeType codeType);
 			static Text::CString GetCodeName(CodeType codeType);

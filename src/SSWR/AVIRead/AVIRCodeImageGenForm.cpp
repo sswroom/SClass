@@ -33,7 +33,7 @@ void __stdcall SSWR::AVIRead::AVIRCodeImageGenForm::OnCodeGenClicked(void *userO
 		{
 			sb.ClearStr();
 			me->txtCode->GetText(&sb);
-			Media::DrawImage *dimg = me->codeImgGen->GenCode(sb.ToString(), codeWidth, me->core->GetDrawEngine());
+			Media::DrawImage *dimg = me->codeImgGen->GenCode(sb.ToCString(), codeWidth, me->core->GetDrawEngine());
 			if (dimg)
 			{
 				Media::StaticImage *simg = dimg->ToStaticImage();

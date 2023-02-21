@@ -27,16 +27,16 @@ UOSInt Media::CodeImageGen::EAN5CodeImageGen::GetMaxLength()
 	return 5;
 }
 
-Media::DrawImage *Media::CodeImageGen::EAN5CodeImageGen::GenCode(const UTF8Char *code, UOSInt codeWidth, Media::DrawEngine *eng)
+Media::DrawImage *Media::CodeImageGen::EAN5CodeImageGen::GenCode(Text::CString code, UOSInt codeWidth, Media::DrawEngine *eng)
 {
 	UTF8Char sbuff[2];
-	if (code == 0)
+	if (code.v == 0)
 		return 0;
 
 	UOSInt i = 5;
 	UOSInt j = 0;
 	UOSInt k;
-	const UTF8Char *tmpStr = code;
+	const UTF8Char *tmpStr = code.v;
 	UTF8Char c;
 	while (i-- > 0)
 	{
@@ -54,6 +54,7 @@ Media::DrawImage *Media::CodeImageGen::EAN5CodeImageGen::GenCode(const UTF8Char 
 	}
 	if (*tmpStr != 0)
 		return 0;
+	const UTF8Char *codePtr = code.v;
 	UInt8 bitCode[48];
 	bitCode[0] = 0;
 	bitCode[1] = 1;
@@ -99,7 +100,7 @@ Media::DrawImage *Media::CodeImageGen::EAN5CodeImageGen::GenCode(const UTF8Char 
 	{
 		if (*tmpStr++ == 'L') //L-code
 		{
-			switch (*code++)
+			switch (*codePtr++)
 			{
 			case '0':
 				bitCode[j + 0] = 0;
@@ -196,7 +197,7 @@ Media::DrawImage *Media::CodeImageGen::EAN5CodeImageGen::GenCode(const UTF8Char 
 		}
 		else //G-code
 		{
-			switch (*code++)
+			switch (*codePtr++)
 			{
 			case '0':
 				bitCode[j + 0] = 0;
@@ -298,7 +299,7 @@ Media::DrawImage *Media::CodeImageGen::EAN5CodeImageGen::GenCode(const UTF8Char 
 			j += 2;
 		}
 	}
-	code = code - 5;
+	codePtr = codePtr - 5;
 
 	UOSInt h = codeWidth * 70;
 	UOSInt y = h - codeWidth;
@@ -341,7 +342,7 @@ Media::DrawImage *Media::CodeImageGen::EAN5CodeImageGen::GenCode(const UTF8Char 
 	j = 5;
 	while (j-- > 0)
 	{
-		sbuff[0] = *code++;
+		sbuff[0] = *codePtr++;
 		dimg->DrawString((Double)i, (Double)codeWidth, {sbuff, 1}, f, b);
 		i += 9 * codeWidth;
 	}
