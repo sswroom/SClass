@@ -117,7 +117,7 @@ DB::TableDef *DB::DBFFile::GetTableDef(Text::CString schemaName, Text::CString t
 	DB::TableDef *tab;
 	UOSInt i;
 	UOSInt j;
-	NEW_CLASS(tab, DB::TableDef(tableName));
+	NEW_CLASS(tab, DB::TableDef(schemaName, tableName));
 	i = 0;
 	j = this->GetColCount();
 	while (i < j)
@@ -310,7 +310,7 @@ Bool DB::DBFFile::GetColumnDef(UOSInt colIndex, DB::ColDef *colDef)
 	colDef->SetColDP(this->cols[colIndex].colDP);
 	colDef->SetNotNull(false);
 	colDef->SetPK(false);
-	colDef->SetAutoInc(false);
+	colDef->SetAutoIncNone();
 	colDef->SetDefVal(CSTR_NULL);
 	colDef->SetAttr(CSTR_NULL);
 	return true;

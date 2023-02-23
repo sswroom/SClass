@@ -36,7 +36,7 @@ namespace SSWR
 			UI::GUILabel *lblDestSchema;
 			UI::GUIComboBox *cboDestSchema;
 			UI::GUILabel *lblDestOptions;
-			UI::GUICheckBox *chkDestCreateTable;
+			UI::GUIComboBox *cboDestTableType;
 			UI::GUICheckBox *chkDestCopyData;
 			UI::GUIButton *btnCopy;
 

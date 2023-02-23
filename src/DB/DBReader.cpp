@@ -96,13 +96,13 @@ Bool DB::DBReader::GetVariItem(UOSInt colIndex, Data::VariItem *item)
 	}
 }
 
-DB::TableDef *DB::DBReader::GenTableDef(Text::CString tableName)
+DB::TableDef *DB::DBReader::GenTableDef(Text::CString schemaName, Text::CString tableName)
 {
 	DB::TableDef *table;
 	DB::ColDef *colDef;
 	UOSInt i;
 	UOSInt j;
-	NEW_CLASS(table, DB::TableDef(tableName));
+	NEW_CLASS(table, DB::TableDef(schemaName, tableName));
 	i = 0;
 	j = this->ColCount();
 	while (i < j)

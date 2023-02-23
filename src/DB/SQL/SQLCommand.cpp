@@ -83,7 +83,7 @@ DB::SQL::SQLCommand *DB::SQL::SQLCommand::Parse(const UTF8Char *sql, DB::DBUtil:
 			else
 			{
 				DB::TableDef *tab;
-				NEW_CLASS(tab, DB::TableDef(sb.ToCString()));
+				NEW_CLASS(tab, DB::TableDef(CSTR_NULL, sb.ToCString()));
 				sql = ParseNextWord(sql, &sb, sqlType);
 				if (sb.Equals(UTF8STRC("(")))
 				{
@@ -311,7 +311,7 @@ DB::SQL::SQLCommand *DB::SQL::SQLCommand::Parse(const UTF8Char *sql, DB::DBUtil:
 								}
 								else if (sb.EqualsICase(UTF8STRC("autoincrement")))
 								{
-									col->SetAutoInc(true);
+									col->SetAutoInc(DB::ColDef::AutoIncType::Default, 1, 1);
 									sql = ParseNextWord(sql, &sb, sqlType);
 								}
 								else if (sb.EqualsICase(UTF8STRC("UNIQUE")))

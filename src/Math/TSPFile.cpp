@@ -112,7 +112,7 @@ DB::TableDef *Math::TSPFile::GetTableDef(Text::CString schemaName, Text::CString
 	UOSInt j;
 	DB::TableDef *tab;
 	DB::ColDef *col;
-	NEW_CLASS(tab, DB::TableDef(tableName));
+	NEW_CLASS(tab, DB::TableDef(schemaName, tableName));
 	if (tableName.v != 0 && tableName.Equals(UTF8STRC("StationSetup")))
 	{
 		i = 0;

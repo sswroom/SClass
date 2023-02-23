@@ -567,7 +567,7 @@ Bool Map::CIPLayer2::GetColumnDef(UOSInt colIndex, DB::ColDef *colDef)
 	colDef->SetDefVal(CSTR_NULL);
 	colDef->SetNotNull(false);
 	colDef->SetPK(false);
-	colDef->SetAutoInc(false);
+	colDef->SetAutoIncNone();
 	colDef->SetAttr(CSTR_NULL);
 	return true;
 }

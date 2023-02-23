@@ -150,7 +150,7 @@ DB::DBReader *Map::IMapDrawLayer::QueryTableData(Text::CString schemaName, Text:
 DB::TableDef *Map::IMapDrawLayer::GetTableDef(Text::CString schemaName, Text::CString tableName)
 {
 	DB::TableDef *tab;
-	NEW_CLASS(tab, DB::TableDef(tableName));
+	NEW_CLASS(tab, DB::TableDef(schemaName, tableName));
 	DB::ColDef *col;
 	UOSInt i = 0;
 	UOSInt j = this->GetColumnCnt();
@@ -1034,7 +1034,7 @@ Bool Map::MapLayerReader::GetColDefV(UOSInt colIndex, DB::ColDef *colDef, Map::I
 		colDef->SetColSize(0x7fffffff);
 		colDef->SetAttr(CSTR(""));
 		colDef->SetDefVal(CSTR_NULL);
-		colDef->SetAutoInc(false);
+		colDef->SetAutoIncNone();
 		colDef->SetNotNull(true);
 		colDef->SetPK(false);
 		return true;

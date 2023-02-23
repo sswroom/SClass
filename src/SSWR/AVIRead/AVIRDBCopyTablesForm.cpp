@@ -46,7 +46,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnSourceDBChg(void *userObj)
 void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnSourceSelectClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRDBCopyTablesForm *me = (SSWR::AVIRead::AVIRDBCopyTablesForm*)userObj;
-	DB::DBTool *db = (DB::DBTool*)me->cboSourceDB->GetSelectedItem();
+	DB::DBManagerCtrl *db = (DB::DBManagerCtrl*)me->cboSourceDB->GetSelectedItem();
 	if (db == 0)
 		return;
 	UTF8Char sbuff[512];
@@ -55,14 +55,14 @@ void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnSourceSelectClicked(void *
 	if (sptr == 0)
 		return;
 	Data::ArrayList<Text::String*> tableNames;
-	db->QueryTableNames(CSTRP(sbuff, sptr), &tableNames);
+	db->GetDB()->QueryTableNames(CSTRP(sbuff, sptr), &tableNames);
 	if (tableNames.GetCount() == 0)
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Tables not found"), CSTR("Copy Tables"), me);
 	}
 	else
 	{
-		me->dataConn = db;
+		me->dataConn = db->GetDB();
 		SDEL_STRING(me->dataSchema);
 		LIST_FREE_STRING(&me->dataTables);
 		me->dataSchema = Text::String::NewP(sbuff, sptr);
@@ -139,7 +139,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnCopyClicked(void *userObj)
 		UI::MessageDialog::ShowDialog(CSTR("Please select a destination Schema first"), CSTR("Copy Tables"), me);
 		return;
 	}
-	Bool createTable = me->chkDestCreateTable->IsChecked();
+	UOSInt destTableType = me->cboDestTableType->GetSelectedIndex();
 	Bool copyData = me->chkDestCopyData->IsChecked();
 	DB::SQLBuilder sql(destDB->GetDB());
 	Text::StringBuilderUTF8 sb;
@@ -152,9 +152,9 @@ void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnCopyClicked(void *userObj)
 	{
 		Bool succ = true;
 		tableName = me->dataTables.GetItem(i);
-		if (succ && createTable)
+		tabDef = me->dataConn->GetTableDef(STR_CSTR(me->dataSchema), tableName->ToCString());
+		if (succ && destTableType == 0)
 		{
-			tabDef = me->dataConn->GetTableDef(STR_CSTR(me->dataSchema), tableName->ToCString());
 			if (tabDef == 0)
 			{
 				me->lvData->SetSubItem(i, 1, CSTR("Error in getting table definition"));
@@ -163,7 +163,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnCopyClicked(void *userObj)
 			else
 			{
 				sql.Clear();
-				if (!DB::SQLGenerator::GenCreateTableCmd(&sql, CSTRP(destSchema, destSchemaEnd), tableName->ToCString(), tabDef))
+				if (!DB::SQLGenerator::GenCreateTableCmd(&sql, CSTRP(destSchema, destSchemaEnd), tableName->ToCString(), tabDef, false))
 				{
 					me->lvData->SetSubItem(i, 1, CSTR("Error in generating create command"));
 					succ = false;
@@ -179,7 +179,14 @@ void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnCopyClicked(void *userObj)
 				{
 					me->lvData->SetSubItem(i, 1, CSTR("Table created"));
 				}
-				DEL_CLASS(tabDef);
+			}
+		}
+		else if (succ && destTableType == 1)
+		{
+			succ = destDB->GetDB()->DeleteTableData(CSTRP(destSchema, destSchemaEnd), tableName->ToCString());
+			if (!succ)
+			{
+				me->lvData->SetSubItem(i, 1, CSTR("Error in deleting table data"));
 			}
 		}
 		if (succ && copyData)
@@ -194,8 +201,11 @@ void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnCopyClicked(void *userObj)
 				while (r->ReadNext())
 				{
 					sql.Clear();
-					DB::SQLGenerator::GenInsertCmd(&sql, CSTRP(destSchema, destSchemaEnd), tableName->ToCString(), r);
-					UOSInt k = sql.ToCString().IndexOf(UTF8STRC(") values ("));
+					if (tabDef)
+						DB::SQLGenerator::GenInsertCmd(&sql, CSTRP(destSchema, destSchemaEnd), tableName->ToCString(), tabDef, r);
+					else
+						DB::SQLGenerator::GenInsertCmd(&sql, CSTRP(destSchema, destSchemaEnd), tableName->ToCString(), r);
+					UOSInt k = sql.ToCString().IndexOf(UTF8STRC(" values ("));
 					if (k == INVALID_INDEX)
 					{
 						if (destDB->GetDB()->ExecuteNonQuery(sql.ToCString()) != 1)
@@ -222,7 +232,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnCopyClicked(void *userObj)
 					else
 					{
 						sbInsert.AppendUTF8Char(',');
-						sbInsert.Append(sql.ToCString().Substring(k + 9));
+						sbInsert.Append(sql.ToCString().Substring(k + 8));
 						nInsert++;
 
 						if (nInsert >= 250)
@@ -276,6 +286,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnCopyClicked(void *userObj)
 				me->lvData->SetSubItem(i, 1, sb.ToCString());
 			}
 		}
+		SDEL_CLASS(tabDef);
 		i++;
 	}
 }
@@ -328,8 +339,12 @@ SSWR::AVIRead::AVIRDBCopyTablesForm::AVIRDBCopyTablesForm(UI::GUIClientControl *
 	this->cboDestSchema->SetRect(104, 28, 200, 23, false);
 	NEW_CLASS(this->lblDestOptions, UI::GUILabel(ui, this->grpDest, CSTR("Options")));
 	this->lblDestOptions->SetRect(4, 52, 100, 23, false);
-	NEW_CLASS(this->chkDestCreateTable, UI::GUICheckBox(ui, this->grpDest, CSTR("Create Table"), true));
-	this->chkDestCreateTable->SetRect(104, 52, 100, 23, false);
+	NEW_CLASS(this->cboDestTableType, UI::GUIComboBox(ui, this->grpDest, false));
+	this->cboDestTableType->SetRect(104, 52, 100, 23, false);
+	this->cboDestTableType->AddItem(CSTR("Create Table"), 0);
+	this->cboDestTableType->AddItem(CSTR("Remove existing"), 0);
+	this->cboDestTableType->AddItem(CSTR("Append Data"), 0);
+	this->cboDestTableType->SetSelectedIndex(0);
 	NEW_CLASS(this->chkDestCopyData, UI::GUICheckBox(ui, this->grpDest, CSTR("Copy Data"), true));
 	this->chkDestCopyData->SetRect(204, 52, 100, 23, false);
 	NEW_CLASS(this->btnCopy, UI::GUIButton(ui, this->grpDest, CSTR("Copy")));
@@ -338,11 +353,16 @@ SSWR::AVIRead::AVIRDBCopyTablesForm::AVIRDBCopyTablesForm(UI::GUIClientControl *
 
 	Text::StringBuilderUTF8 sb;
 	DB::DBManagerCtrl *ctrl;
+	UOSInt firstActive = INVALID_INDEX;
 	UOSInt i = 0;
 	UOSInt j = this->dbList->GetCount();
 	while (i < j)
 	{
 		ctrl = this->dbList->GetItem(i);
+		if (firstActive == INVALID_INDEX && ctrl->GetStatus() == DB::DBManagerCtrl::ConnStatus::Connected)
+		{
+			firstActive = i;
+		}
 		sb.ClearStr();
 		ctrl->GetConnName(&sb);
 		this->cboSourceDB->AddItem(sb.ToCString(), ctrl);
@@ -351,8 +371,10 @@ SSWR::AVIRead::AVIRDBCopyTablesForm::AVIRDBCopyTablesForm(UI::GUIClientControl *
 	}
 	if (j > 0)
 	{
-		this->cboSourceDB->SetSelectedIndex(0);
-		this->cboDestDB->SetSelectedIndex(0);
+		if (firstActive == INVALID_INDEX)
+			firstActive = 0;
+		this->cboSourceDB->SetSelectedIndex(firstActive);
+		this->cboDestDB->SetSelectedIndex(firstActive);
 	}
 }
 

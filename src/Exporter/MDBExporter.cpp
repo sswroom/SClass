@@ -87,7 +87,7 @@ Bool Exporter::MDBExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 		r = srcDB->QueryTableData(CSTR_NULL, tables.GetItem(i)->ToCString(), 0, 0, 0, CSTR_NULL, 0);
 		if (r)
 		{
-			DB::TableDef tabDef(tables.GetItem(i)->ToCString());
+			DB::TableDef tabDef(CSTR_NULL, tables.GetItem(i)->ToCString());
 			k = 0;
 			l = r->ColCount();
 			while (k < l)
@@ -98,7 +98,7 @@ Bool Exporter::MDBExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 				k++;
 			}
 			sql.Clear();
-			DB::SQLGenerator::GenCreateTableCmd(&sql, CSTR_NULL, tables.GetItem(i)->ToCString(), &tabDef);
+			DB::SQLGenerator::GenCreateTableCmd(&sql, CSTR_NULL, tables.GetItem(i)->ToCString(), &tabDef, false);
 			if (mdb->ExecuteNonQuery(sql.ToCString()) <= -2)
 			{
 /*				IO::FileStream *debugFS;

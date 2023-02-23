@@ -231,7 +231,7 @@ public:
 		colDef->SetAttr(CSTR_NULL);
 		colDef->SetColDP(0);
 		colDef->SetDefVal(CSTR_NULL);
-		colDef->SetAutoInc(false);
+		colDef->SetAutoIncNone();
 		colDef->SetNotNull(false);
 		colDef->SetPK(false);
 		return true;
@@ -340,7 +340,7 @@ DB::TableDef *DB::TextDB::GetTableDef(Text::CString schemaName, Text::CString ta
 	}
 	DB::TableDef *tab;
 	DB::ColDef *colDef;
-	NEW_CLASS(tab, DB::TableDef(data->name->ToCString()));
+	NEW_CLASS(tab, DB::TableDef(schemaName, data->name->ToCString()));
 	UOSInt i = 0;
 	UOSInt j = data->colList.GetCount();
 	while (i < j)
@@ -352,7 +352,7 @@ DB::TableDef *DB::TextDB::GetTableDef(Text::CString schemaName, Text::CString ta
 		colDef->SetAttr(CSTR_NULL);
 		colDef->SetColDP(0);
 		colDef->SetDefVal(CSTR_NULL);
-		colDef->SetAutoInc(false);
+		colDef->SetAutoIncNone();
 		colDef->SetNotNull(false);
 		colDef->SetPK(false);
 		tab->AddCol(colDef);

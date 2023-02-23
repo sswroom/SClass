@@ -683,6 +683,10 @@ Bool DB::DBManager::RestoreConn(Text::CString fileName, Data::ArrayList<DB::DBMa
 		Crypto::Encrypt::AES256 aes(keyBuff);
 		aes.Decrypt(fileBuff, (UOSInt)len, decBuff, 0);
 		decBuff[(UOSInt)len] = 0;
+		while (len > 0 && decBuff[(UOSInt)len - 1] == 0)
+		{
+			len--;
+		}
 		sarr[1] = Text::PString(decBuff, (UOSInt)len);
 		while (true)
 		{

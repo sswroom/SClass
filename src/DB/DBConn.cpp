@@ -48,7 +48,7 @@ DB::TableDef *DB::DBConn::GetTableDef(Text::CString schemaName, Text::CString ta
 		if (r->ReadNext())
 		{
 			ptr = r->GetStr(0, buff, sizeof(buff));
-			NEW_CLASS(tab, DB::TableDef(CSTRP(buff, ptr)));
+			NEW_CLASS(tab, DB::TableDef(CSTR_NULL, CSTRP(buff, ptr)));
 			ptr = r->GetStr(1, buff, sizeof(buff));
 			tab->SetEngine(CSTRP(buff, ptr));
 			if (r->GetStr(17, buff, sizeof(buff)))
@@ -102,7 +102,7 @@ DB::TableDef *DB::DBConn::GetTableDef(Text::CString schemaName, Text::CString ta
 				{
 					if (Text::StrEqualsC(buff, (UOSInt)(ptr - buff), UTF8STRC("auto_increment")))
 					{
-						col->SetAutoInc(true);
+						col->SetAutoInc(DB::ColDef::AutoIncType::Default, 1, 1);
 						col->SetAttr(CSTR_NULL);
 					}
 					else
@@ -157,7 +157,7 @@ DB::TableDef *DB::DBConn::GetTableDef(Text::CString schemaName, Text::CString ta
 			return 0;
 
 		DB::TableDef *tab;
-		NEW_CLASS(tab, DB::TableDef(tableName));
+		NEW_CLASS(tab, DB::TableDef(schemaName, tableName));
 		tab->SetEngine(CSTR_NULL);
 		tab->SetComments(0);
 		tab->SetAttr(0);
@@ -188,7 +188,7 @@ DB::TableDef *DB::DBConn::GetTableDef(Text::CString schemaName, Text::CString ta
 			ptr = r->GetStr(5, buff, sizeof(buff));
 			if (Text::StrEndsWithC(buff, (UOSInt)(ptr - buff), UTF8STRC(" identity")))
 			{
-				col->SetAutoInc(true);
+				col->SetAutoInc(DB::ColDef::AutoIncType::Default, 1, 1);
 				ptr -= 9;
 				*ptr = 0;
 			}
@@ -275,7 +275,7 @@ DB::TableDef *DB::DBConn::GetTableDef(Text::CString schemaName, Text::CString ta
 	case DB::DBUtil::SQLType::PostgreSQL:
 	{
 		DB::SQLBuilder sql(DB::DBUtil::SQLType::PostgreSQL, this->GetTzQhr());
-		sql.AppendCmdC(CSTR("select column_name, column_default, is_nullable, udt_name, character_maximum_length, datetime_precision, is_identity from information_schema.columns where table_name="));
+		sql.AppendCmdC(CSTR("select column_name, column_default, is_nullable, udt_name, character_maximum_length, datetime_precision, is_identity, identity_generation, identity_start, identity_increment from information_schema.columns where table_name="));
 		sql.AppendStrC(tableName);
 		sql.AppendCmdC(CSTR(" and table_schema = "));
 		if (schemaName.leng == 0)
@@ -297,7 +297,7 @@ DB::TableDef *DB::DBConn::GetTableDef(Text::CString schemaName, Text::CString ta
 		DB::ColDef *col;
 		Text::String *s;
 		UOSInt sizeCol;
-		NEW_CLASS(tab, DB::TableDef(tableName));
+		NEW_CLASS(tab, DB::TableDef(schemaName, tableName));
 		while (r->ReadNext())
 		{
 			s = r->GetNewStr(0);
@@ -310,8 +310,25 @@ DB::TableDef *DB::DBConn::GetTableDef(Text::CString schemaName, Text::CString ta
 			col->SetNotNull((s != 0) && s->Equals(UTF8STRC("NO")));
 			SDEL_STRING(s);
 			s = r->GetNewStr(6);
-			col->SetAutoInc((s != 0) && s->Equals(UTF8STRC("YES")));
-			SDEL_STRING(s);
+			if (s == 0 || !s->Equals(UTF8STRC("YES")))
+			{
+				SDEL_STRING(s);
+				col->SetAutoIncNone();
+			}
+			else
+			{
+				SDEL_STRING(s);
+				s = r->GetNewStr(7);
+				if (s && s->Equals(UTF8STRC("ALWAYS")))
+				{
+					col->SetAutoInc(DB::ColDef::AutoIncType::Always, r->GetInt64(8), r->GetInt64(9));
+				}
+				else
+				{
+					col->SetAutoInc(DB::ColDef::AutoIncType::Default, r->GetInt64(8), r->GetInt64(9));
+				}
+				SDEL_STRING(s);
+			}
 			s = r->GetNewStr(3);
 			sizeCol = 4;
 			if (s)
@@ -378,17 +395,17 @@ DB::TableDef *DB::DBConn::GetTableDef(Text::CString schemaName, Text::CString ta
 				else if (s->Equals(UTF8STRC("smallserial")))
 				{
 					col->SetColType(DB::DBUtil::CT_Int16);
-					col->SetAutoInc(true);
+					col->SetAutoInc(DB::ColDef::AutoIncType::Default, 1, 1);
 				}
 				else if (s->Equals(UTF8STRC("serial")))
 				{
 					col->SetColType(DB::DBUtil::CT_Int32);
-					col->SetAutoInc(true);
+					col->SetAutoInc(DB::ColDef::AutoIncType::Default, 1, 1);
 				}
 				else if (s->Equals(UTF8STRC("bigserial")))
 				{
 					col->SetColType(DB::DBUtil::CT_Int64);
-					col->SetAutoInc(true);
+					col->SetAutoInc(DB::ColDef::AutoIncType::Default, 1, 1);
 				}
 				else if (s->Equals(UTF8STRC("text")))
 				{

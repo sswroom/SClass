@@ -103,14 +103,14 @@ DB::TableDef *DB::MongoDB::GetTableDef(Text::CString schemaName, Text::CString t
 {
 	DB::ColDef *colDef;
 	DB::TableDef *tab;
-	NEW_CLASS(tab, DB::TableDef(tableName));
+	NEW_CLASS(tab, DB::TableDef(schemaName, tableName));
 	NEW_CLASS(colDef, DB::ColDef(CSTR("Data")));
 	colDef->SetColType(DB::DBUtil::CT_VarUTF8Char);
 	colDef->SetColSize(65536);
 	colDef->SetColDP(0);
 	colDef->SetDefVal(CSTR_NULL);
 	colDef->SetAttr(CSTR_NULL);
-	colDef->SetAutoInc(false);
+	colDef->SetAutoIncNone();
 	colDef->SetNotNull(true);
 	colDef->SetPK(false);
 	tab->AddCol(colDef);
@@ -388,7 +388,7 @@ Bool DB::MongoDBReader::GetColDef(UOSInt colIndex, DB::ColDef *colDef)
 	colDef->SetColDP(0);
 	colDef->SetDefVal(CSTR_NULL);
 	colDef->SetAttr(CSTR_NULL);
-	colDef->SetAutoInc(false);
+	colDef->SetAutoIncNone();
 	colDef->SetNotNull(true);
 	colDef->SetPK(false);
 	return true;

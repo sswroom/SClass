@@ -109,7 +109,7 @@ DB::TableDef *DB::CSVFile::GetTableDef(Text::CString schemaName, Text::CString t
 	{
 		DB::TableDef *tab;
 		DB::ColDef *col;
-		NEW_CLASS(tab, DB::TableDef(tableName));
+		NEW_CLASS(tab, DB::TableDef(schemaName, tableName));
 		UOSInt i = 0;
 		UOSInt j = r->ColCount();
 		while (i < j)
@@ -935,7 +935,7 @@ Bool DB::CSVReader::GetColDef(UOSInt colIndex, DB::ColDef *colDef)
 	colDef->SetColDP(0);
 	colDef->SetNotNull(true);
 	colDef->SetPK(false);
-	colDef->SetAutoInc(false);
+	colDef->SetAutoInc(DB::ColDef::AutoIncType::None, 1, 1);
 	colDef->SetDefVal(CSTR_NULL);
 	colDef->SetAttr(CSTR_NULL);
 	return true;

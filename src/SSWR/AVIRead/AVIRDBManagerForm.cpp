@@ -715,7 +715,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::CopyTableCreate(DB::DBUtil::SQLType sqlTy
 	DB::TableDef *tabDef = this->currDB->GetTableDef(STR_CSTR(schemaName), tableName->ToCString());
 	if (tabDef)
 	{
-		if (!DB::SQLGenerator::GenCreateTableCmd(&sql, STR_CSTR(schemaName), tableName->ToCString(), tabDef))
+		if (!DB::SQLGenerator::GenCreateTableCmd(&sql, STR_CSTR(schemaName), tableName->ToCString(), tabDef, true))
 		{
 			UI::MessageDialog::ShowDialog(CSTR("Error in generating Create SQL command"), CSTR("DB Manager"), this);
 		}

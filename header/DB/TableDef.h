@@ -13,6 +13,7 @@ namespace DB
 	{
 	private:
 		Text::String *databaseName;
+		Text::String *schemaName;
 		Text::String *tableName;
 		Text::String *engine;
 		Text::String *charset;
@@ -23,10 +24,11 @@ namespace DB
 		Data::ArrayList<ColDef*> cols;
 
 	public:
-		TableDef(Text::CString tableName);
+		TableDef(Text::CString schemaName, Text::CString tableName);
 		~TableDef();
 
 		Text::String *GetDatabaseName() const;
+		Text::String *GetSchemaName() const;
 		Text::String *GetTableName() const;
 		Text::String *GetEngine() const;
 		Text::String *GetCharset() const;
@@ -39,6 +41,7 @@ namespace DB
 
 		TableDef *AddCol(DB::ColDef *col);
 		TableDef *SetDatabaseName(Text::CString databaseName);
+		TableDef *SetSchemaName(Text::CString schemaName);
 		TableDef *SetTableName(Text::CString tableName);
 		TableDef *SetEngine(Text::CString engine);
 		TableDef *SetCharset(Text::CString charset);

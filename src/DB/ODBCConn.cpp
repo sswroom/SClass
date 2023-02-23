@@ -2420,7 +2420,7 @@ Bool DB::ODBCReader::GetColDef(UOSInt colIndex, DB::ColDef *colDef)
 	colDef->SetColDP((UInt16)decimalDigit);
 	colDef->SetNotNull(notNull == SQL_NO_NULLS);
 	colDef->SetPK(false);
-	colDef->SetAutoInc(false);
+	colDef->SetAutoIncNone();
 	colDef->SetDefVal(CSTR_NULL);
 	colDef->SetAttr(CSTR_NULL);
 	return true;

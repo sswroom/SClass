@@ -264,6 +264,19 @@ Bool DB::DBTool::DeleteSchema(Text::CString schemaName)
 	}
 }
 
+Bool DB::DBTool::DeleteTableData(Text::CString schemaName, Text::CString tableName)
+{
+	DB::SQLBuilder sql(this->sqlType, this->GetTzQhr());
+	DB::SQLGenerator::GenTruncateTableCmd(&sql, schemaName, tableName);
+	if (this->ExecuteNonQuery(sql.ToCString()) >= -1)
+	{
+		return true;
+	}
+	sql.Clear();
+	DB::SQLGenerator::GenDeleteTableDataCmd(&sql, schemaName, tableName);
+	return this->ExecuteNonQuery(sql.ToCString()) >= -1;
+}
+
 Bool DB::DBTool::KillConnection(Int32 id)
 {
 	Bool ret = false;

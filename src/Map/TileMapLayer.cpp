@@ -481,7 +481,7 @@ Bool Map::TileMapLayer::GetColumnDef(UOSInt colIndex, DB::ColDef *colDef)
 		colDef->SetColSize(colSize);
 		colDef->SetColDP(0);
 		colDef->SetNotNull(true);
-		colDef->SetAutoInc(false);
+		colDef->SetAutoIncNone();
 		return true;
 	}
 	return false;

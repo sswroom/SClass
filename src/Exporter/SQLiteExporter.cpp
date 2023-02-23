@@ -106,7 +106,7 @@ Bool Exporter::SQLiteExporter::ExportFile(IO::SeekableStream *stm, Text::CString
 			r = sDB->QueryTableData(CSTR_NULL, tables.GetItem(i)->ToCString(), 0, 0, 0, CSTR_NULL, 0);
 			if (r)
 			{
-				tabDef = r->GenTableDef(tables.GetItem(i)->ToCString());
+				tabDef = r->GenTableDef(CSTR_NULL, tables.GetItem(i)->ToCString());
 			}
 			else
 			{
@@ -116,7 +116,7 @@ Bool Exporter::SQLiteExporter::ExportFile(IO::SeekableStream *stm, Text::CString
 		if (r)
 		{
 			sql.Clear();
-			DB::SQLGenerator::GenCreateTableCmd(&sql, CSTR_NULL, tables.GetItem(i)->ToCString(), tabDef);
+			DB::SQLGenerator::GenCreateTableCmd(&sql, CSTR_NULL, tables.GetItem(i)->ToCString(), tabDef, false);
 			if (destDB->ExecuteNonQuery(sql.ToCString()) <= -2)
 			{
 				{

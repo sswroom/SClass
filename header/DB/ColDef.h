@@ -9,6 +9,13 @@ namespace DB
 {
 	class ColDef
 	{
+	public:
+		enum class AutoIncType
+		{
+			None,
+			Default,
+			Always
+		};
 	private:
 		Text::String *colName;
 		DB::DBUtil::ColType colType;
@@ -17,7 +24,9 @@ namespace DB
 		UOSInt colDP;
 		Bool notNull;
 		Bool pk;
-		Bool autoInc;
+		AutoIncType autoInc;
+		Int64 autoIncStartIndex;
+		Int64 autoIncStep;
 		Text::String *defVal;
 		Text::String *attr;
 
@@ -35,6 +44,9 @@ namespace DB
 		Bool IsNotNull() const;
 		Bool IsPK() const;
 		Bool IsAutoInc() const;
+		AutoIncType GetAutoIncType() const;
+		Int64 GetAutoIncStartIndex() const;
+		Int64 GetAutoIncStep() const;
 		Text::String *GetDefVal() const;
 		Text::String *GetAttr() const;
 		Bool GetDefVal(DB::SQLBuilder *sql) const;
@@ -49,7 +61,8 @@ namespace DB
 		void SetColDP(UOSInt colDP);
 		void SetNotNull(Bool notNull);
 		void SetPK(Bool pk);
-		void SetAutoInc(Bool autoInc);
+		void SetAutoIncNone();
+		void SetAutoInc(AutoIncType autoInc, Int64 startIndex, Int64 incStep);
 		void SetDefVal(Text::CString defVal);
 		void SetDefVal(Text::String *defVal);
 		void SetAttr(Text::CString attr);

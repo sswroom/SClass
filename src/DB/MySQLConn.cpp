@@ -728,7 +728,14 @@ Bool DB::MySQLReader::GetColDef(UOSInt colIndex, DB::ColDef *colDef)
 		colDef->SetDefVal(CSTR_NULL);
 	}
 	colDef->SetAttr(CSTR_NULL);
-	colDef->SetAutoInc((field->flags & AUTO_INCREMENT_FLAG) != 0);
+	if (field->flags & AUTO_INCREMENT_FLAG)
+	{
+		colDef->SetAutoInc(DB::ColDef::AutoIncType::Default, 1, 1);
+	}
+	else
+	{
+		colDef->SetAutoIncNone();
+	}
 	colDef->SetNotNull((field->flags & NOT_NULL_FLAG) != 0);
 	colDef->SetPK((field->flags & PRI_KEY_FLAG) != 0);
 	return true;

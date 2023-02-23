@@ -459,7 +459,7 @@ Bool Map::SPDLayer::GetColumnDef(UOSInt colIndex, DB::ColDef *colDef)
 	colDef->SetDefVal(CSTR_NULL);
 	colDef->SetNotNull(false);
 	colDef->SetPK(false);
-	colDef->SetAutoInc(false);
+	colDef->SetAutoInc(DB::ColDef::AutoIncType::None, 1, 1);
 	colDef->SetAttr(CSTR_NULL);
 	return true;
 }

@@ -67,7 +67,7 @@ void __stdcall SSWR::AVIRead::AVIRDBForm::OnTableSelChg(void *userObj)
 		r = me->db->QueryTableData(STR_CSTR(schemaName), CSTRP(sbuff, sptr), 0, 0, MAX_ROW_CNT, CSTR_NULL, 0);
 		if (r)
 		{
-			tabDef = r->GenTableDef(CSTRP(sbuff, sptr));
+			tabDef = r->GenTableDef(STR_CSTR(schemaName), CSTRP(sbuff, sptr));
 		}
 	}
 	SDEL_STRING(schemaName);
@@ -277,7 +277,7 @@ void SSWR::AVIRead::AVIRDBForm::CopyTableCreate(DB::DBUtil::SQLType sqlType)
 	DB::TableDef *tabDef = this->dbt->GetTableDef(STR_CSTR(schemaName), tableName->ToCString());
 	if (tabDef)
 	{
-		if (!DB::SQLGenerator::GenCreateTableCmd(&sql, STR_CSTR(schemaName), tableName->ToCString(), tabDef))
+		if (!DB::SQLGenerator::GenCreateTableCmd(&sql, STR_CSTR(schemaName), tableName->ToCString(), tabDef, true))
 		{
 			UI::MessageDialog::ShowDialog(CSTR("Error in generating Create SQL command"), CSTR("DB Manager"), this);
 		}

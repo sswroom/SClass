@@ -66,7 +66,7 @@ DB::TableDef *Map::ESRI::FileGDBDir::GetTableDef(Text::CString schemaName, Text:
 	}
 	DB::TableDef *tab;
 	DB::DBReader *r;
-	NEW_CLASS(tab, DB::TableDef(tableName));
+	NEW_CLASS(tab, DB::TableDef(schemaName, tableName));
 	r = table->OpenReader(0, 0, 0, CSTR_NULL, 0);
 	tab->ColFromReader(r);
 	this->CloseReader(r);

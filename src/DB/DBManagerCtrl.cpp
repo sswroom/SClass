@@ -67,13 +67,13 @@ DB::DBTool *DB::DBManagerCtrl::GetDB()
 
 void DB::DBManagerCtrl::GetConnName(Text::StringBuilderUTF8 *sb)
 {
-	if (this->db)
-	{
-		this->db->GetConn()->GetConnName(sb);
-	}
-	else if (this->connStr)
+	if (this->connStr)
 	{
 		DB::DBManager::GetConnName(this->connStr->ToCString(), sb);		
+	}
+	else if (this->db)
+	{
+		this->db->GetConn()->GetConnName(sb);
 	}
 }
 

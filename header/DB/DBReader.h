@@ -77,7 +77,7 @@ namespace DB
 		virtual DB::DBUtil::ColType GetColType(UOSInt colIndex, UOSInt *colSize) = 0;
 		virtual Bool GetColDef(UOSInt colIndex, DB::ColDef *colDef) = 0;
 
-		TableDef *GenTableDef(Text::CString tableName);
+		TableDef *GenTableDef(Text::CString schemaName, Text::CString tableName);
 		Data::VariObject *CreateVariObject();
 		Data::Class *CreateClass();
 	};

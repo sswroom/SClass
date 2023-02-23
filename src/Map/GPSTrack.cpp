@@ -292,7 +292,7 @@ Bool Map::GPSTrack::GetColumnDef(UOSInt colIndex, DB::ColDef *colDef)
 		colDef->SetDefVal(CSTR_NULL);
 		colDef->SetNotNull(false);
 		colDef->SetPK(false);
-		colDef->SetAutoInc(false);
+		colDef->SetAutoIncNone();
 		colDef->SetAttr(CSTR_NULL);
 		return true;
 	case 1:
@@ -303,7 +303,7 @@ Bool Map::GPSTrack::GetColumnDef(UOSInt colIndex, DB::ColDef *colDef)
 		colDef->SetDefVal(CSTR_NULL);
 		colDef->SetNotNull(false);
 		colDef->SetPK(false);
-		colDef->SetAutoInc(false);
+		colDef->SetAutoIncNone();
 		colDef->SetAttr(CSTR_NULL);
 		return true;
 	case 2:
@@ -314,7 +314,7 @@ Bool Map::GPSTrack::GetColumnDef(UOSInt colIndex, DB::ColDef *colDef)
 		colDef->SetDefVal(CSTR_NULL);
 		colDef->SetNotNull(false);
 		colDef->SetPK(false);
-		colDef->SetAutoInc(false);
+		colDef->SetAutoIncNone();
 		colDef->SetAttr(CSTR_NULL);
 		return true;
 	default:
@@ -544,7 +544,7 @@ DB::TableDef *Map::GPSTrack::GetTableDef(Text::CString schemaName, Text::CString
 		{
 			j = 16;
 		}
-		NEW_CLASS(tab, DB::TableDef(tableName));
+		NEW_CLASS(tab, DB::TableDef(schemaName, tableName));
 		while (i < j)
 		{
 			NEW_CLASS(col, DB::ColDef(0));
@@ -556,7 +556,7 @@ DB::TableDef *Map::GPSTrack::GetTableDef(Text::CString schemaName, Text::CString
 	else
 	{
 		j = 4;
-		NEW_CLASS(tab, DB::TableDef(tableName));
+		NEW_CLASS(tab, DB::TableDef(schemaName, tableName));
 		while (i < j)
 		{
 			NEW_CLASS(col, DB::ColDef(0));
@@ -1494,7 +1494,7 @@ Bool Map::GPSDataReader::GetColDefV(UOSInt colIndex, DB::ColDef *colDef, Bool ha
 {
 	colDef->SetNotNull(true);
 	colDef->SetPK(false);
-	colDef->SetAutoInc(false);
+	colDef->SetAutoIncNone();
 	colDef->SetDefVal(CSTR_NULL);
 	colDef->SetAttr(CSTR_NULL);
 	switch (colIndex)

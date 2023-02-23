@@ -5,9 +5,10 @@
 #include "DB/TableDef.h"
 #include "Text/MyString.h"
 
-DB::TableDef::TableDef(Text::CString tableName)
+DB::TableDef::TableDef(Text::CString schemaName, Text::CString tableName)
 {
 	this->databaseName = 0;
+	this->schemaName = Text::String::NewOrNull(schemaName);
 	this->tableName = Text::String::New(tableName);
 	this->engine = 0;
 	this->charset = 0;
@@ -20,6 +21,7 @@ DB::TableDef::~TableDef()
 {
 	UOSInt i;
 	SDEL_STRING(this->databaseName);
+	SDEL_STRING(this->schemaName);
 	SDEL_STRING(this->tableName);
 	SDEL_STRING(this->engine);
 	SDEL_STRING(this->charset);
@@ -35,6 +37,11 @@ DB::TableDef::~TableDef()
 Text::String *DB::TableDef::GetDatabaseName() const
 {
 	return this->databaseName;
+}
+
+Text::String *DB::TableDef::GetSchemaName() const
+{
+	return this->schemaName;
 }
 
 Text::String *DB::TableDef::GetTableName() const
@@ -112,6 +119,13 @@ DB::TableDef *DB::TableDef::SetDatabaseName(Text::CString databaseName)
 	return this;
 }
 
+DB::TableDef *DB::TableDef::SetSchemaName(Text::CString schemaName)
+{
+	SDEL_STRING(this->schemaName);
+	this->schemaName = Text::String::NewOrNull(schemaName);
+	return this;
+}
+
 DB::TableDef *DB::TableDef::SetTableName(Text::CString tableName)
 {
 	SDEL_STRING(this->tableName);
@@ -170,7 +184,7 @@ void DB::TableDef::ColFromReader(DB::DBReader *r)
 DB::TableDef *DB::TableDef::Clone() const
 {
 	DB::TableDef *newObj;
-	NEW_CLASS(newObj, DB::TableDef(this->tableName->ToCString()));
+	NEW_CLASS(newObj, DB::TableDef(STR_CSTR(this->schemaName), this->tableName->ToCString()));
 	newObj->SetDatabaseName(STR_CSTR(this->databaseName));
 	newObj->SetEngine(STR_CSTR(this->engine));
 	newObj->SetCharset(STR_CSTR(this->charset));

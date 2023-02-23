@@ -1679,7 +1679,14 @@ Bool DB::OLEDBReader::GetColDef(UOSInt colIndex, DB::ColDef *colDef)
 	colDef->SetColDP(data->dbColInfo[colIndex].bPrecision);
 	colDef->SetNotNull((data->dbColInfo[colIndex].dwFlags & DBCOLUMNFLAGS_ISNULLABLE) == 0);
 	colDef->SetPK((data->dbColInfo[colIndex].dwFlags & DBCOLUMNFLAGS_ISROWID) != 0);
-	colDef->SetAutoInc((data->dbColInfo[colIndex].dwFlags & DBCOLUMNFLAGS_ISROWVER) != 0);
+	if ((data->dbColInfo[colIndex].dwFlags & DBCOLUMNFLAGS_ISROWVER) != 0)
+	{
+		colDef->SetAutoInc(DB::ColDef::AutoIncType::Default, 1, 1);
+	}
+	else
+	{
+		colDef->SetAutoIncNone();
+	}
 
 	return true;
 }

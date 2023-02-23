@@ -1494,7 +1494,14 @@ Bool Map::ESRI::FileGDBReader::GetColDef(UOSInt colIndex, DB::ColDef *colDef)
 	}
 	colDef->SetNotNull((field->flags & 1) == 0);
 	colDef->SetPK(field->fieldType == 6);
-	colDef->SetAutoInc(field->fieldType == 6);
+	if (field->fieldType == 6)
+	{
+		colDef->SetAutoInc(DB::ColDef::AutoIncType::Default, 1, 1);
+	}
+	else
+	{
+		colDef->SetAutoIncNone();
+	}
 	if (field->srsValue)
 	{
 		Text::StringBuilderUTF8 sb;

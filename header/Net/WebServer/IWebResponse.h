@@ -45,17 +45,13 @@ namespace Net
 
 			Bool AddCacheControl(OSInt cacheAge)
 			{
-				if (cacheAge == -2)
+				if (cacheAge < 0)
 				{
-					return this->AddHeader(CSTR("Cache-Control"), CSTR("public"));
-				}
-				else if (cacheAge == -1)
-				{
-					return this->AddHeader(CSTR("Cache-Control"), CSTR("private"));
+					return this->AddHeader(CSTR("Cache-Control"), CSTR("public, max-age, immutable"));
 				}
 				else if (cacheAge == 0)
 				{
-					return this->AddHeader(CSTR("Cache-Control"), CSTR("no-cache"));
+					return this->AddHeader(CSTR("Cache-Control"), CSTR("no-cache, no-store, must-revalidate"));
 				}
 				else
 				{

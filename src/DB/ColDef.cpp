@@ -69,7 +69,9 @@ DB::ColDef::ColDef(Text::CString colName)
 	this->colSize = 0;
 	this->notNull = false;
 	this->pk = false;
-	this->autoInc = false;
+	this->autoInc = AutoIncType::None;
+	this->autoIncStartIndex = 1;
+	this->autoIncStep = 1;
 	this->defVal = 0;
 	this->attr = 0;
 }
@@ -82,7 +84,9 @@ DB::ColDef::ColDef(Text::String *colName)
 	this->colSize = 0;
 	this->notNull = false;
 	this->pk = false;
-	this->autoInc = false;
+	this->autoInc = AutoIncType::None;
+	this->autoIncStartIndex = 1;
+	this->autoIncStep = 1;
 	this->defVal = 0;
 	this->attr = 0;
 }
@@ -132,7 +136,22 @@ Bool DB::ColDef::IsPK() const
 
 Bool DB::ColDef::IsAutoInc() const
 {
+	return this->autoInc != AutoIncType::None;
+}
+
+DB::ColDef::AutoIncType DB::ColDef::GetAutoIncType() const
+{
 	return this->autoInc;
+}
+
+Int64 DB::ColDef::GetAutoIncStartIndex() const
+{
+	return this->autoIncStartIndex;
+}
+
+Int64 DB::ColDef::GetAutoIncStep() const
+{
+	return this->autoIncStep;
 }
 
 Text::String *DB::ColDef::GetDefVal() const
@@ -223,9 +242,18 @@ void DB::ColDef::SetPK(Bool pk)
 	this->pk = pk;
 }
 
-void DB::ColDef::SetAutoInc(Bool autoInc)
+void DB::ColDef::SetAutoIncNone()
+{
+	this->autoInc = AutoIncType::None;
+	this->autoIncStartIndex = 1;
+	this->autoIncStep = 1;
+}
+
+void DB::ColDef::SetAutoInc(AutoIncType autoInc, Int64 startIndex, Int64 incStep)
 {
 	this->autoInc = autoInc;
+	this->autoIncStartIndex = startIndex;
+	this->autoIncStep = incStep;
 }
 
 void DB::ColDef::SetDefVal(Text::CString defVal)
@@ -261,7 +289,7 @@ void DB::ColDef::Set(const ColDef *colDef)
 	this->SetColDP(colDef->colDP);
 	this->SetNotNull(colDef->notNull);
 	this->SetPK(colDef->pk);
-	this->SetAutoInc(colDef->autoInc);
+	this->SetAutoInc(colDef->autoInc, colDef->autoIncStartIndex, colDef->autoIncStep);
 	this->SetDefVal(colDef->defVal);
 	this->SetAttr(colDef->attr);
 }
