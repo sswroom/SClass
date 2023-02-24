@@ -1837,10 +1837,17 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(void *userObj)
 								me->cmdEvt.Set();
 								break;
 							case CmdResultType::BinaryResultReady:
-								me->SendStmtClose(((MySQLTCPBinaryReader*)me->cmdReader)->GetStmtId());
-								me->cmdResultType = CmdResultType::ResultEnd;
-								((MySQLTCPBinaryReader*)me->cmdReader)->EndData();
-								me->cmdEvt.Set();
+								if (me->cmdReader)
+								{
+									me->SendStmtClose(((MySQLTCPBinaryReader*)me->cmdReader)->GetStmtId());
+									me->cmdResultType = CmdResultType::ResultEnd;
+									((MySQLTCPBinaryReader*)me->cmdReader)->EndData();
+									me->cmdEvt.Set();
+								}
+								else
+								{
+									me->cmdResultType = CmdResultType::ResultEnd;
+								}
 								break;
 							case CmdResultType::ResultEnd:
 							case CmdResultType::ResultReady:

@@ -166,10 +166,9 @@ void Net::WebServer::WebConnection::ReceivedData(const UInt8 *buff, UOSInt size)
 							UInt16 cliPort = this->cli->GetRemotePort();
 							UInt16 svrPort = this->cli->GetLocalPort();
 
-							if (this->currReq)
 							{
-								DEL_CLASS(this->currReq);
-								this->currReq = 0;
+								Sync::MutexUsage mutUsage(&this->procMut);
+								SDEL_CLASS(this->currReq);
 							}
 
 							Net::WebUtil::RequestMethod reqMeth = Net::WebUtil::Str2RequestMethod(sarr[0].v, sarr[0].leng);
@@ -226,10 +225,9 @@ void Net::WebServer::WebConnection::ReceivedData(const UInt8 *buff, UOSInt size)
 							UInt16 cliPort = this->cli->GetRemotePort();
 							UInt16 svrPort = this->cli->GetLocalPort();
 
-							if (this->currReq)
 							{
-								DEL_CLASS(this->currReq);
-								this->currReq = 0;
+								Sync::MutexUsage mutUsage(&this->procMut);
+								SDEL_CLASS(this->currReq);
 							}
 
 							Net::WebUtil::RequestMethod reqMeth = Net::WebUtil::Str2RequestMethod(sarr[0].v, sarr[0].leng);
