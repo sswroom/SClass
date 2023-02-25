@@ -39,7 +39,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPForwarderForm::OnStartClick(void *userObj)
 		}
 		ssl = me->ssl;
 		Crypto::Cert::X509Cert *issuerCert = Crypto::Cert::CertUtil::FindIssuer(me->sslCert);
-		if (!ssl->SetServerCertsASN1(me->sslCert, me->sslKey, issuerCert))
+		if (!ssl->ServerSetCertsASN1(me->sslCert, me->sslKey, issuerCert))
 		{
 			SDEL_CLASS(issuerCert);
 			UI::MessageDialog::ShowDialog(CSTR("Error in initializing Cert/Key"), CSTR("HTTP Forwarder"), me);

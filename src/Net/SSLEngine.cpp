@@ -105,7 +105,7 @@ Net::SSLEngine::~SSLEngine()
 	}
 }
 
-Bool Net::SSLEngine::SetServerCerts(Text::CString certFile, Text::CString keyFile)
+Bool Net::SSLEngine::ServerSetCerts(Text::CString certFile, Text::CString keyFile)
 {
 	Parser::FileParser::X509Parser parser;
 	Crypto::Cert::X509File *certASN1 = 0;
@@ -131,7 +131,7 @@ Bool Net::SSLEngine::SetServerCerts(Text::CString certFile, Text::CString keyFil
 		}
 	}
 	Crypto::Cert::X509Cert *issuerCert = Crypto::Cert::CertUtil::FindIssuer((Crypto::Cert::X509Cert*)certASN1);
-	Bool ret = this->SetServerCertsASN1((Crypto::Cert::X509Cert*)certASN1, keyASN1, issuerCert);
+	Bool ret = this->ServerSetCertsASN1((Crypto::Cert::X509Cert*)certASN1, keyASN1, issuerCert);
 	SDEL_CLASS(issuerCert);
 	SDEL_CLASS(certASN1);
 	SDEL_CLASS(keyASN1);

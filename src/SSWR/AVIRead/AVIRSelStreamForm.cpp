@@ -183,7 +183,7 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(void *userObj)
 			}
 			Net::SSLEngine::ErrorType err;
 			Net::SSLClient *cli;
-			cli = me->ssl->Connect(sb.ToCString(), port, &err);
+			cli = me->ssl->ClientConnect(sb.ToCString(), port, &err);
 			if (cli == 0)
 			{
 				sb.ClearStr();

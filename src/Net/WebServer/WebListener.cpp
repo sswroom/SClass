@@ -107,6 +107,10 @@ Net::WebServer::WebListener::WebListener(Net::SocketFactory *sockf, Net::SSLEngi
 	this->accLog = 0;
 	this->reqLog = 0;
 	this->ssl = ssl;
+	if (this->ssl)
+	{
+		this->ssl->ServerAddALPNSupport(CSTR("http/1.1"));
+	}
 	this->allowProxy = allowProxy;
 	this->keepAlive = keepAlive;
 	this->timeoutHdlr = 0;

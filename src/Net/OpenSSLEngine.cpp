@@ -32,6 +32,7 @@ struct Net::OpenSSLEngine::ClassData
 	SSL_CTX *ctx;
 	Crypto::Cert::X509File *cliCert;
 	Crypto::Cert::X509File *cliKey;
+	Data::FastStringMap<Bool> *alpnSupports;
 };
 
 Net::SSLClient *Net::OpenSSLEngine::CreateServerConn(Socket *s)
@@ -245,6 +246,7 @@ Net::OpenSSLEngine::OpenSSLEngine(Net::SocketFactory *sockf, Method method) : Ne
 	this->clsData->ctx = SSL_CTX_new(m);
 	this->clsData->cliCert = 0;
 	this->clsData->cliKey = 0;
+	this->clsData->alpnSupports = 0;
 	this->skipCertCheck = false;
 }
 
@@ -256,13 +258,9 @@ Net::OpenSSLEngine::~OpenSSLEngine()
 	}
 	SDEL_CLASS(this->clsData->cliCert);
 	SDEL_CLASS(this->clsData->cliKey);
+	SDEL_CLASS(this->clsData->alpnSupports);
 	MemFree(this->clsData);
 	Net::OpenSSLCore::Deinit();
-}
-
-void Net::OpenSSLEngine::SetSkipCertCheck(Bool skipCertCheck)
-{
-	this->skipCertCheck = skipCertCheck;
 }
 
 Bool Net::OpenSSLEngine::IsError()
@@ -270,7 +268,7 @@ Bool Net::OpenSSLEngine::IsError()
 	return this->clsData->ctx == 0;
 }
 
-Bool Net::OpenSSLEngine::SetServerCertsASN1(Crypto::Cert::X509Cert *certASN1, Crypto::Cert::X509File *keyASN1, Crypto::Cert::X509Cert *caCert)
+Bool Net::OpenSSLEngine::ServerSetCertsASN1(Crypto::Cert::X509Cert *certASN1, Crypto::Cert::X509File *keyASN1, Crypto::Cert::X509Cert *caCert)
 {
 	if (this->clsData->ctx == 0)
 	{
@@ -350,7 +348,7 @@ static int OpenSSLEngine_verify_cb(int preverify_ok, X509_STORE_CTX *x509_ctx)
 	return 1;
 }
 
-Bool Net::OpenSSLEngine::SetRequireClientCert(ClientCertType cliCert)
+Bool Net::OpenSSLEngine::ServerSetRequireClientCert(ClientCertType cliCert)
 {
 	if (this->clsData->ctx == 0)
 	{
@@ -374,7 +372,7 @@ Bool Net::OpenSSLEngine::SetRequireClientCert(ClientCertType cliCert)
 	return true;
 }
 
-Bool Net::OpenSSLEngine::SetClientCA(Text::CString clientCA)
+Bool Net::OpenSSLEngine::ServerSetClientCA(Text::CString clientCA)
 {
 	if (this->clsData->ctx == 0)
 	{
@@ -393,7 +391,44 @@ Bool Net::OpenSSLEngine::SetClientCA(Text::CString clientCA)
 	return true;
 }
 
-Bool Net::OpenSSLEngine::SetClientCertASN1(Crypto::Cert::X509Cert *certASN1, Crypto::Cert::X509File *keyASN1)
+int OpenSSLEngine_alpn_select_cb(SSL *ssl, const unsigned char **out, unsigned char *outlen, const unsigned char *in, unsigned int inlen, void *arg)
+{
+	Net::OpenSSLEngine::ClassData *clsData = (Net::OpenSSLEngine::ClassData *)arg;
+	const unsigned char *inEnd = in + inlen;
+	while (in < inEnd)
+	{
+		if (clsData->alpnSupports->GetC(Text::CString(in + 1, in[0])))
+		{
+			*out = in;
+			*outlen = in[0] + 1;
+			return SSL_TLSEXT_ERR_OK;
+		}
+		in += in[0] + 1;
+	}
+	return SSL_TLSEXT_ERR_NOACK;
+}
+
+Bool Net::OpenSSLEngine::ServerAddALPNSupport(Text::CString proto)
+{
+#if OPENSSL_VERSION_NUMBER >= 0x10002000L
+	if (this->clsData->ctx == 0)
+	{
+		return false;
+	}
+	if (this->clsData->alpnSupports == 0)
+	{
+		NEW_CLASS(this->clsData->alpnSupports, Data::FastStringMap<Bool>());
+		SSL_CTX_set_alpn_select_cb(this->clsData->ctx, OpenSSLEngine_alpn_select_cb, this->clsData);
+	}
+	this->clsData->alpnSupports->PutC(proto, true);
+	return true;
+#else
+	return false;
+#endif
+}
+
+
+Bool Net::OpenSSLEngine::ClientSetCertASN1(Crypto::Cert::X509Cert *certASN1, Crypto::Cert::X509File *keyASN1)
 {
 	SDEL_CLASS(this->clsData->cliCert);
 	SDEL_CLASS(this->clsData->cliKey);
@@ -408,19 +443,13 @@ Bool Net::OpenSSLEngine::SetClientCertASN1(Crypto::Cert::X509Cert *certASN1, Cry
 	return true;
 }
 
-UTF8Char *Net::OpenSSLEngine::GetErrorDetail(UTF8Char *sbuff)
+void Net::OpenSSLEngine::ClientSetSkipCertCheck(Bool skipCertCheck)
 {
-	UInt32 err = (UInt32)ERR_get_error();
-	if (err == 0)
-	{
-		*sbuff = 0;
-		return sbuff;
-	}
-	ERR_error_string(err, (char*)sbuff);
-	return &sbuff[Text::StrCharCnt(sbuff)];
+	this->skipCertCheck = skipCertCheck;
 }
 
-Net::SSLClient *Net::OpenSSLEngine::Connect(Text::CString hostName, UInt16 port, ErrorType *err)
+
+Net::SSLClient *Net::OpenSSLEngine::ClientConnect(Text::CString hostName, UInt16 port, ErrorType *err)
 {
 	Net::SocketUtil::AddressInfo addr[1];
 	UOSInt addrCnt = this->sockf->DNSResolveIPs(hostName, addr, 1);
@@ -508,6 +537,18 @@ Net::SSLClient *Net::OpenSSLEngine::ClientInit(Socket *s, Text::CString hostName
 		SSL_use_PrivateKey_ASN1(EVP_PKEY_RSA, ssl, this->clsData->cliKey->GetASN1Buff(), (int)(OSInt)this->clsData->cliKey->GetASN1BuffSize());
 	}
 	return CreateClientConn(ssl, s, hostName, err);
+}
+
+UTF8Char *Net::OpenSSLEngine::GetErrorDetail(UTF8Char *sbuff)
+{
+	UInt32 err = (UInt32)ERR_get_error();
+	if (err == 0)
+	{
+		*sbuff = 0;
+		return sbuff;
+	}
+	ERR_error_string(err, (char*)sbuff);
+	return &sbuff[Text::StrCharCnt(sbuff)];
 }
 
 Bool Net::OpenSSLEngine::GenerateCert(Text::CString country, Text::CString company, Text::CString commonName, Crypto::Cert::X509Cert **certASN1, Crypto::Cert::X509File **keyASN1)

@@ -20,9 +20,6 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnFolderClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRImageBatchForm *me = (SSWR::AVIRead::AVIRImageBatchForm*)userObj;
 	Text::String *path;
-	UTF8Char sbuff[512];
-	UTF8Char *sptr;
-	UTF8Char *sptr2;
 	path = me->icMain->GetFolder();
 	UI::FolderDialog dlg(L"SSWR", L"AVIRead", L"ImageBatch");
 	if (path)
@@ -31,35 +28,7 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnFolderClicked(void *userObj)
 	}
 	if (dlg.ShowDialog(me->GetHandle()))
 	{
-		path = dlg.GetFolder();
-		sptr = path->ConcatTo(sbuff);
-		if (sptr[-1] != IO::Path::PATH_SEPERATOR)
-		{
-			*sptr++ = IO::Path::PATH_SEPERATOR;
-		}
-		sptr2 = Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
-		UOSInt fileCnt = 0;
-		IO::Path::FindFileSession *sess = IO::Path::FindFile(CSTRP(sbuff, sptr2));
-		if (sess)
-		{
-			IO::Path::PathType pt;
-			while (IO::Path::FindNextFile(sptr, sess, 0, &pt, 0))
-			{
-				if (pt == IO::Path::PathType::File)
-				{
-					fileCnt++;
-				}
-			}
-			IO::Path::FindFileClose(sess);
-		}
-		me->selCnt = fileCnt;
-		me->prgMain->ProgressStart(CSTR("Loading"), fileCnt);
-		me->icMain->SetFolder(path->ToCString());
-		me->lblFolder->SetText(path->ToCString());
-		me->pbMain->SetImage(0, false);
-		SDEL_CLASS(me->dispImage);
-		SDEL_CLASS(me->previewImage);
-		SDEL_CLASS(me->filteredImage);
+		me->OpenFolder(dlg.GetFolder());
 	}
 }
 
@@ -207,6 +176,50 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnGammaResetClicked(void *user
 	me->hsbGamma->SetPos(100);
 }
 
+void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnFilesDrop(void *userObj, Text::String **files, UOSInt nFiles)
+{
+	SSWR::AVIRead::AVIRImageBatchForm *me = (SSWR::AVIRead::AVIRImageBatchForm*)userObj;
+	if (nFiles == 1 && IO::Path::GetPathType(files[0]->ToCString()) == IO::Path::PathType::Directory)
+	{
+		me->OpenFolder(files[0]);
+	}
+}
+
+void SSWR::AVIRead::AVIRImageBatchForm::OpenFolder(Text::String *folder)
+{
+	UTF8Char sbuff[512];
+	UTF8Char *sptr;
+	UTF8Char *sptr2;
+	sptr = folder->ConcatTo(sbuff);
+	if (sptr[-1] != IO::Path::PATH_SEPERATOR)
+	{
+		*sptr++ = IO::Path::PATH_SEPERATOR;
+	}
+	sptr2 = Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
+	UOSInt fileCnt = 0;
+	IO::Path::FindFileSession *sess = IO::Path::FindFile(CSTRP(sbuff, sptr2));
+	if (sess)
+	{
+		IO::Path::PathType pt;
+		while (IO::Path::FindNextFile(sptr, sess, 0, &pt, 0))
+		{
+			if (pt == IO::Path::PathType::File)
+			{
+				fileCnt++;
+			}
+		}
+		IO::Path::FindFileClose(sess);
+	}
+	this->selCnt = fileCnt;
+	this->prgMain->ProgressStart(CSTR("Loading"), fileCnt);
+	this->icMain->SetFolder(folder->ToCString());
+	this->lblFolder->SetText(folder->ToCString());
+	this->pbMain->SetImage(0, false);
+	SDEL_CLASS(this->dispImage);
+	SDEL_CLASS(this->previewImage);
+	SDEL_CLASS(this->filteredImage);
+}
+
 void SSWR::AVIRead::AVIRImageBatchForm::UpdatePreview()
 {
 	if (this->filteredImage)
@@ -324,6 +337,8 @@ SSWR::AVIRead::AVIRImageBatchForm::AVIRImageBatchForm(UI::GUIClientControl *pare
 	mnu->AddItem(CSTR("Select All"), MNU_SEL_ALL, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_A);
 	this->SetMenu(mmnu);
 	this->SetClosingHandler(OnFormClosing, this);
+
+	this->HandleDropFiles(OnFilesDrop, this);
 }
 
 SSWR::AVIRead::AVIRImageBatchForm::~AVIRImageBatchForm()

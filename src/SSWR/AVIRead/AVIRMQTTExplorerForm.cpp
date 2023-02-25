@@ -64,7 +64,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnStartClicked(void *userObj
 		{
 			if (me->cliCert && me->cliKey)
 			{
-				ssl->SetClientCertASN1(me->cliCert, me->cliKey);
+				ssl->ClientSetCertASN1(me->cliCert, me->cliKey);
 			}
 		}
 		NEW_CLASS(me->client, Net::MQTTConn(me->core->GetSocketFactory(), useSSL?ssl:0, sb.ToCString(), (UInt16)port, 0, 0));

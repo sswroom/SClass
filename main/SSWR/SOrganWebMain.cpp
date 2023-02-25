@@ -62,7 +62,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 							console.WriteLineC(UTF8STRC("SSLKey not found"));
 							SDEL_CLASS(ssl);
 						}
-						else if (!ssl->SetServerCerts(certFile->ToCString(), keyFile->ToCString()))
+						else if (!ssl->ServerSetCerts(certFile->ToCString(), keyFile->ToCString()))
 						{
 							console.WriteLineC(UTF8STRC("Error in loading SSL Cert/key"));
 							SDEL_CLASS(ssl);

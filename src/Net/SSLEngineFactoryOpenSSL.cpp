@@ -11,6 +11,6 @@ Net::SSLEngine *Net::SSLEngineFactory::Create(Net::SocketFactory *sockf, Bool sk
 		DEL_CLASS(ssl);
 		return 0;
 	}
-	ssl->SetSkipCertCheck(skipCertCheck);
+	ssl->ClientSetSkipCertCheck(skipCertCheck);
 	return ssl;
 }

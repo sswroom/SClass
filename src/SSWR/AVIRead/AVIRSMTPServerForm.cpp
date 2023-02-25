@@ -42,7 +42,7 @@ void __stdcall SSWR::AVIRead::AVIRSMTPServerForm::OnSMTPStartClicked(void *userO
 		if (me->sslCert && me->sslKey)
 		{
 			Crypto::Cert::X509Cert *issuerCert = Crypto::Cert::CertUtil::FindIssuer(me->sslCert);
-			me->ssl->SetServerCertsASN1(me->sslCert, me->sslKey, issuerCert);
+			me->ssl->ServerSetCertsASN1(me->sslCert, me->sslKey, issuerCert);
 			SDEL_CLASS(issuerCert);
 		}
 		Net::Email::SMTPConn::ConnType connType = (Net::Email::SMTPConn::ConnType)(OSInt)me->cboSMTPType->GetSelectedItem();
@@ -89,7 +89,7 @@ void __stdcall SSWR::AVIRead::AVIRSMTPServerForm::OnPOP3StartClicked(void *userO
 			}
 			ssl = me->ssl;
 			Crypto::Cert::X509Cert *issuerCert = Crypto::Cert::CertUtil::FindIssuer(me->sslCert);
-			ssl->SetServerCertsASN1(me->sslCert, me->sslKey, issuerCert);
+			ssl->ServerSetCertsASN1(me->sslCert, me->sslKey, issuerCert);
 			SDEL_CLASS(issuerCert);
 		}
 		NEW_CLASS(me->pop3Svr, Net::Email::POP3Server(me->core->GetSocketFactory(), ssl, port, &me->log, CSTR("Welcome to SSWR POP3 Server"), me, true));

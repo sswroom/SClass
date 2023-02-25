@@ -88,23 +88,26 @@ namespace Net
 		virtual ~SSLEngine();
 		
 		virtual Bool IsError() = 0;
-		virtual Bool SetServerCertsASN1(Crypto::Cert::X509Cert *certASN1, Crypto::Cert::X509File *keyASN1, Crypto::Cert::X509Cert *caCert) = 0;
-		virtual Bool SetRequireClientCert(ClientCertType cliCert) = 0;
-		virtual Bool SetClientCA(Text::CString clientCA) = 0;
-		virtual Bool SetClientCertASN1(Crypto::Cert::X509Cert *certASN1, Crypto::Cert::X509File *keyASN1) = 0;
-		virtual void SetSkipCertCheck(Bool skipCertCheck) = 0;
-		virtual UTF8Char *GetErrorDetail(UTF8Char *sbuff) = 0;
-		virtual Net::SSLClient *Connect(Text::CString hostName, UInt16 port, ErrorType *err) = 0;
+
+		virtual Bool ServerSetCertsASN1(Crypto::Cert::X509Cert *certASN1, Crypto::Cert::X509File *keyASN1, Crypto::Cert::X509Cert *caCert) = 0;
+		virtual Bool ServerSetRequireClientCert(ClientCertType cliCert) = 0;
+		virtual Bool ServerSetClientCA(Text::CString clientCA) = 0;
+		virtual Bool ServerAddALPNSupport(Text::CString proto) = 0;
+		Bool ServerSetCerts(Text::CString certFile, Text::CString keyFile);
+		void ServerInit(Socket *s, ClientReadyHandler readyHdlr, void *userObj);
+
+		virtual Bool ClientSetCertASN1(Crypto::Cert::X509Cert *certASN1, Crypto::Cert::X509File *keyASN1) = 0;
+		virtual Net::SSLClient *ClientConnect(Text::CString hostName, UInt16 port, ErrorType *err) = 0;
 		virtual Net::SSLClient *ClientInit(Socket *s, Text::CString hostName, ErrorType *err) = 0;
+		virtual void ClientSetSkipCertCheck(Bool skipCertCheck) = 0;
+
+		virtual UTF8Char *GetErrorDetail(UTF8Char *sbuff) = 0;
 		virtual Bool GenerateCert(Text::CString country, Text::CString company, Text::CString commonName, Crypto::Cert::X509Cert **certASN1, Crypto::Cert::X509File **keyASN1) = 0;
 		virtual Crypto::Cert::X509Key *GenerateRSAKey() = 0;
 		virtual Bool Signature(Crypto::Cert::X509Key *key, Crypto::Hash::HashType hashType, const UInt8 *payload, UOSInt payloadLen, UInt8 *signData, UOSInt *signLen) = 0;
 		virtual Bool SignatureVerify(Crypto::Cert::X509Key *key, Crypto::Hash::HashType hashType, const UInt8 *payload, UOSInt payloadLen, const UInt8 *signData, UOSInt signLen) = 0;
 		virtual UOSInt Encrypt(Crypto::Cert::X509Key *key, UInt8 *encData, const UInt8 *payload, UOSInt payloadLen, Crypto::Encrypt::RSACipher::Padding rsaPadding) = 0;
 		virtual UOSInt Decrypt(Crypto::Cert::X509Key *key, UInt8 *decData, const UInt8 *payload, UOSInt payloadLen, Crypto::Encrypt::RSACipher::Padding rsaPadding) = 0;
-
-		Bool SetServerCerts(Text::CString certFile, Text::CString keyFile);
-		void ServerInit(Socket *s, ClientReadyHandler readyHdlr, void *userObj);
 
 		Crypto::Cert::CertStore *GetTrustStore();
 

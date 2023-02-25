@@ -1278,17 +1278,12 @@ Net::WinSSLEngine::~WinSSLEngine()
 	MemFree(this->clsData);
 }
 
-void Net::WinSSLEngine::SetSkipCertCheck(Bool skipCertCheck)
-{
-	this->skipCertCheck = skipCertCheck;
-}
-
 Bool Net::WinSSLEngine::IsError()
 {
 	return false;
 }
 
-Bool Net::WinSSLEngine::SetServerCertsASN1(Crypto::Cert::X509Cert *certASN1, Crypto::Cert::X509File *keyASN1, Crypto::Cert::X509Cert *caCert)
+Bool Net::WinSSLEngine::ServerSetCertsASN1(Crypto::Cert::X509Cert *certASN1, Crypto::Cert::X509File *keyASN1, Crypto::Cert::X509Cert *caCert)
 {
 	if (this->clsData->svrInit)
 	{
@@ -1358,18 +1353,28 @@ Bool Net::WinSSLEngine::SetServerCertsASN1(Crypto::Cert::X509Cert *certASN1, Cry
 	return true;
 }
 
-Bool Net::WinSSLEngine::SetRequireClientCert(ClientCertType cliCert)
+Bool Net::WinSSLEngine::ServerSetRequireClientCert(ClientCertType cliCert)
 {
 	this->cliCert = cliCert;
 	return true;
 }
 
-Bool Net::WinSSLEngine::SetClientCA(Text::CString clientCA)
+Bool Net::WinSSLEngine::ServerSetClientCA(Text::CString clientCA)
 {
 	return false;
 }
 
-Bool Net::WinSSLEngine::SetClientCertASN1(Crypto::Cert::X509Cert *certASN1, Crypto::Cert::X509File *keyASN1)
+Bool Net::WinSSLEngine::ServerAddALPNSupport(Text::CString proto)
+{
+	return false;
+}
+
+void Net::WinSSLEngine::ClientSetSkipCertCheck(Bool skipCertCheck)
+{
+	this->skipCertCheck = skipCertCheck;
+}
+
+Bool Net::WinSSLEngine::ClientSetCertASN1(Crypto::Cert::X509Cert *certASN1, Crypto::Cert::X509File *keyASN1)
 {
 	if (certASN1 == 0 || keyASN1 == 0)
 	{
@@ -1419,13 +1424,7 @@ Bool Net::WinSSLEngine::SetClientCertASN1(Crypto::Cert::X509Cert *certASN1, Cryp
 	return true;
 }
 
-UTF8Char *Net::WinSSLEngine::GetErrorDetail(UTF8Char *sbuff)
-{
-	*sbuff = 0;
-	return sbuff;
-}
-
-Net::SSLClient *Net::WinSSLEngine::Connect(Text::CString hostName, UInt16 port, ErrorType *err)
+Net::SSLClient *Net::WinSSLEngine::ClientConnect(Text::CString hostName, UInt16 port, ErrorType *err)
 {
 	if (!this->clsData->cliInit)
 	{
@@ -1505,6 +1504,12 @@ Net::SSLClient *Net::WinSSLEngine::ClientInit(Socket *s, Text::CString hostName,
 		this->clsData->cliInit = true;
 	}
 	return this->CreateClientConn(0, s, hostName, err);
+}
+
+UTF8Char *Net::WinSSLEngine::GetErrorDetail(UTF8Char *sbuff)
+{
+	*sbuff = 0;
+	return sbuff;
 }
 
 Bool Net::WinSSLEngine::GenerateCert(Text::CString country, Text::CString company, Text::CString commonName, Crypto::Cert::X509Cert **certASN1, Crypto::Cert::X509File **keyASN1)

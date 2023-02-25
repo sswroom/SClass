@@ -62,7 +62,9 @@ namespace SSWR
 			static void __stdcall OnKeyDown(void *userObj, UI::GUIControl::GUIKey key);
 			static void __stdcall OnBrightResetClicked(void *userObj);
 			static void __stdcall OnGammaResetClicked(void *userObj);
+			static void __stdcall OnFilesDrop(void *userObj, Text::String **files, UOSInt nFiles);
 
+			void OpenFolder(Text::String *folder);
 			void UpdatePreview();
 		public:
 			AVIRImageBatchForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);

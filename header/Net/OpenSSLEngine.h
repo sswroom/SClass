@@ -6,8 +6,9 @@ namespace Net
 {
 	class OpenSSLEngine : public Net::SSLEngine
 	{
-	private:
+	public:
 		struct ClassData;
+	private:
 		struct ClassData *clsData;
 		Bool skipCertCheck;
 
@@ -19,15 +20,19 @@ namespace Net
 		OpenSSLEngine(Net::SocketFactory *sockf, Method method);
 		virtual ~OpenSSLEngine();
 		
-		virtual void SetSkipCertCheck(Bool skipCertCheck);
 		virtual Bool IsError();
-		virtual Bool SetServerCertsASN1(Crypto::Cert::X509Cert *certASN1, Crypto::Cert::X509File *keyASN1, Crypto::Cert::X509Cert *caCert);
-		virtual Bool SetRequireClientCert(ClientCertType cliCert);
-		virtual Bool SetClientCA(Text::CString clientCA);
-		virtual Bool SetClientCertASN1(Crypto::Cert::X509Cert *certASN1, Crypto::Cert::X509File *keyASN1);
-		virtual UTF8Char *GetErrorDetail(UTF8Char *sbuff);
-		virtual Net::SSLClient *Connect(Text::CString hostName, UInt16 port, ErrorType *err);
+
+		virtual Bool ServerSetCertsASN1(Crypto::Cert::X509Cert *certASN1, Crypto::Cert::X509File *keyASN1, Crypto::Cert::X509Cert *caCert);
+		virtual Bool ServerSetRequireClientCert(ClientCertType cliCert);
+		virtual Bool ServerSetClientCA(Text::CString clientCA);
+		virtual Bool ServerAddALPNSupport(Text::CString proto);
+
+		virtual Bool ClientSetCertASN1(Crypto::Cert::X509Cert *certASN1, Crypto::Cert::X509File *keyASN1);
+		virtual void ClientSetSkipCertCheck(Bool skipCertCheck);
+		virtual Net::SSLClient *ClientConnect(Text::CString hostName, UInt16 port, ErrorType *err);
 		virtual Net::SSLClient *ClientInit(Socket *s, Text::CString hostName, ErrorType *err);
+
+		virtual UTF8Char *GetErrorDetail(UTF8Char *sbuff);
 		virtual Bool GenerateCert(Text::CString country, Text::CString company, Text::CString commonName, Crypto::Cert::X509Cert **certASN1, Crypto::Cert::X509File **keyASN1);
 		virtual Crypto::Cert::X509Key *GenerateRSAKey();
 		virtual Bool Signature(Crypto::Cert::X509Key *key, Crypto::Hash::HashType hashType, const UInt8 *payload, UOSInt payloadLen, UInt8 *signData, UOSInt *signLen);

@@ -148,7 +148,7 @@ Net::Email::POP3Conn::POP3Conn(Net::SocketFactory *sockf, Net::SSLEngine *ssl, T
 	if (connType == CT_SSL)
 	{
 		Net::SSLEngine::ErrorType err;
-		this->cli = ssl->Connect(host, port, &err);
+		this->cli = ssl->ClientConnect(host, port, &err);
 	}
 	else if (connType == CT_STARTTLS)
 	{

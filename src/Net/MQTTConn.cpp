@@ -190,7 +190,7 @@ Net::MQTTConn::MQTTConn(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CS
 	{
 		Net::SSLEngine::ErrorType err;
 		this->sockf->ReloadDNS();
-		this->cli = this->ssl->Connect(host, port, &err);
+		this->cli = this->ssl->ClientConnect(host, port, &err);
 #ifdef DEBUG_PRINT
 	printf("MQTTConn: Connect to MQTTS: err = %d\r\n", (UInt32)err);
 #endif

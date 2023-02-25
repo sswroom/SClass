@@ -59,7 +59,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		sptr1 = IO::Path::AppendPath(sbuff1, sptr1, CSTR("ADFSCert.crt"));
 		sptr2 = IO::Path::GetProcessFileName(sbuff2);
 		sptr2 = IO::Path::AppendPath(sbuff2, sptr2, CSTR("ADFSCert.key"));
-		if (ssl->SetServerCerts(CSTRP(sbuff1, sptr1), CSTRP(sbuff2, sptr2)))
+		if (ssl->ServerSetCerts(CSTRP(sbuff1, sptr1), CSTRP(sbuff2, sptr2)))
 		{
 			Parser::FileParser::X509Parser parser;
 			IO::ParsedObject *pobj = parser.ParseFilePath(CSTRP(sbuff1, sptr1));

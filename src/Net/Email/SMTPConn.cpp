@@ -129,7 +129,7 @@ Net::Email::SMTPConn::SMTPConn(Net::SocketFactory *sockf, Net::SSLEngine *ssl, T
 	if (connType == ConnType::SSL)
 	{
 		Net::SSLEngine::ErrorType err;
-		this->cli = ssl->Connect(host, port, &err);
+		this->cli = ssl->ClientConnect(host, port, &err);
 	}
 	else if (connType == ConnType::STARTTLS)
 	{

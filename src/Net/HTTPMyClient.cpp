@@ -703,7 +703,7 @@ Bool Net::HTTPMyClient::Connect(Text::CString url, Net::WebUtil::RequestMethod m
 			if (secure)
 			{
 				Net::SSLEngine::ErrorType err;
-				this->cli = this->ssl->Connect(this->cliHost->ToCString(), port, &err);
+				this->cli = this->ssl->ClientConnect(this->cliHost->ToCString(), port, &err);
 #if defined(SHOWDEBUG)
 				if (this->cli == 0)
 				{
@@ -1197,7 +1197,7 @@ Bool Net::HTTPMyClient::SetClientCert(Crypto::Cert::X509Cert *cert, Crypto::Cert
 {
 	if (this->ssl == 0)
 		return false;
-	return this->ssl->SetClientCertASN1(cert, key);
+	return this->ssl->ClientSetCertASN1(cert, key);
 }
 
 const Data::ReadingList<Crypto::Cert::Certificate *> *Net::HTTPMyClient::GetServerCerts()

@@ -30,7 +30,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		console->WriteLineC(UTF8STRC("Error in initializing SSL"));
 		succ = false;
 	}
-	else if (!ssl->SetServerCerts(sslCert, sslKey))
+	else if (!ssl->ServerSetCerts(sslCert, sslKey))
 	{
 		console->WriteLineC(UTF8STRC("Error in loading Cert/Key"));
 		sptr = ssl->GetErrorDetail(sbuff);
