@@ -7729,16 +7729,16 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpeciesPOI(Net::WebServer::IW
 	Text::StringBuilderUTF8 sb;
 	sb.AppendUTF8Char('[');
 	Int32 speciesId;
-	if (env.user != 0 && req->GetQueryValueI32(CSTR("id"), &speciesId))
+	if (req->GetQueryValueI32(CSTR("id"), &speciesId))
 	{
 		me->dataMut.LockRead();
 		SpeciesInfo *poiSpecies = me->spMap.Get(speciesId);
 		if (poiSpecies)
 		{
-			if (env.user->userType == 0)
-				me->AddSpeciesPOI(&sb, poiSpecies, 0, false);
-			else
+			if (env.user != 0)
 				me->AddSpeciesPOI(&sb, poiSpecies, env.user->id, me->GroupIsPublic(poiSpecies->groupId));
+			else
+				me->AddSpeciesPOI(&sb, poiSpecies, 0, me->GroupIsPublic(poiSpecies->groupId));
 			if (sb.GetLength() > 1)
 			{
 				sb.RemoveChars(3);
