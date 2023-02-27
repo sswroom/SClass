@@ -9,7 +9,7 @@
 
 #include <libheif/heif.h>
 
-#define VERBOSE
+//#define VERBOSE
 #if defined(VERBOSE)
 #include <stdio.h>
 #endif
