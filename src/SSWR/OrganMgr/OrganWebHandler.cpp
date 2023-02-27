@@ -7512,7 +7512,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcIndex(Net::WebServer::IWebReq
 	me->WriteHeader(&writer, (const UTF8Char*)"Index", env.user, env.isMobile);
 	writer.WriteLineC(UTF8STRC("<script type=\"application/javascript\">\r\n"
 								"async function submitFile() {\r\n"
-								"\tvar url = \"photoupload2.html\""
+								"\tvar url = \"photoupload2.html\";\r\n"
 								"\tvar fileupload = document.getElementById(\"file\");\r\n"
 								"\tvar i = 0;\r\n"
 								"\tvar j = fileupload.files.length;\r\n"
