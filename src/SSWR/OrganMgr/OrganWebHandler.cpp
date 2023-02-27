@@ -2282,6 +2282,24 @@ Bool SSWR::OrganMgr::OrganWebHandler::GroupSetPhotoGroup(Int32 groupId, Int32 ph
 	return false;
 }
 
+Bool SSWR::OrganMgr::OrganWebHandler::GroupIsPublic(Int32 groupId)
+{
+	if (groupId == 0)
+	{
+		return false;
+	}
+	else if (groupId == 21593)
+	{
+		return true;
+	}
+	GroupInfo *group = this->groupMap.Get(groupId);
+	if (group == 0)
+	{
+		return false;
+	}
+	return GroupIsPublic(group->parentId);
+}
+
 Net::WebServer::IWebSession *SSWR::OrganMgr::OrganWebHandler::ParseRequestEnv(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, SSWR::OrganMgr::OrganWebHandler::RequestEnv *env, Bool keepSess)
 {
 	env->scnWidth = this->scnSize;
@@ -2755,7 +2773,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroup(Net::WebServer::IWebReq
 		sb.AppendC(UTF8STRC("</a><br/>"));
 		writer.WriteLineC(sb.ToString(), sb.GetLength());
 
-		if (env.user != 0)
+		if (env.user != 0 || me->GroupIsPublic(group->id))
 		{
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("<a href=\"map/index.html?group="));
@@ -3448,7 +3466,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpecies(Net::WebServer::IWebR
 		writer.WriteLineC(UTF8STRC("</td><td>"));
 		me->WriteLocator(&writer, group, cate);
 		writer.WriteLineC(UTF8STRC("</td></tr></table>"));
-		if (env.user != 0)
+		if (env.user != 0 || me->GroupIsPublic(group->id))
 		{
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("<a href=\"map/index.html?species="));
@@ -7644,10 +7662,12 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcFavicon(Net::WebServer::IWebR
 Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPublicPOI(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq, Net::WebServer::WebServiceHandler *parent)
 {
 	SSWR::OrganMgr::OrganWebHandler *me = (SSWR::OrganMgr::OrganWebHandler*)parent;
+	me->dataMut.LockRead();
 	GroupInfo *poiGroup = me->groupMap.Get(21593);
 	Text::StringBuilderUTF8 sb;
 	sb.AppendUTF8Char('[');
-	AddGroupPOI(&sb, poiGroup, 0);
+	me->AddGroupPOI(&sb, poiGroup, 0);
+	me->dataMut.UnlockRead();
 	if (sb.GetLength() > 1)
 	{
 		sb.RemoveChars(3);
@@ -7670,19 +7690,21 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroupPOI(Net::WebServer::IWeb
 	Int32 groupId;
 	if (env.user != 0 && req->GetQueryValueI32(CSTR("id"), &groupId))
 	{
+		me->dataMut.LockRead();
 		GroupInfo *poiGroup = me->groupMap.Get(groupId);
 		if (poiGroup)
 		{
 
 			if (env.user->userType == 0)
-				AddGroupPOI(&sb, poiGroup, 0);
+				me->AddGroupPOI(&sb, poiGroup, 0);
 			else
-				AddGroupPOI(&sb, poiGroup, env.user->id);
+				me->AddGroupPOI(&sb, poiGroup, env.user->id);
 			if (sb.GetLength() > 1)
 			{
 				sb.RemoveChars(3);
 			}
 		}
+		me->dataMut.UnlockRead();
 	}
 	sb.AppendUTF8Char(']');
 	resp->AddDefHeaders(req);
@@ -7702,18 +7724,20 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpeciesPOI(Net::WebServer::IW
 	Int32 speciesId;
 	if (env.user != 0 && req->GetQueryValueI32(CSTR("id"), &speciesId))
 	{
+		me->dataMut.LockRead();
 		SpeciesInfo *poiSpecies = me->spMap.Get(speciesId);
 		if (poiSpecies)
 		{
 			if (env.user->userType == 0)
-				AddSpeciesPOI(&sb, poiSpecies, 0);
+				AddSpeciesPOI(&sb, poiSpecies, 0, false);
 			else
-				AddSpeciesPOI(&sb, poiSpecies, env.user->id);
+				AddSpeciesPOI(&sb, poiSpecies, env.user->id, me->GroupIsPublic(poiSpecies->groupId));
 			if (sb.GetLength() > 1)
 			{
 				sb.RemoveChars(3);
 			}
 		}
+		me->dataMut.UnlockRead();
 	}
 	sb.AppendUTF8Char(']');
 	resp->AddDefHeaders(req);
@@ -7736,12 +7760,12 @@ void SSWR::OrganMgr::OrganWebHandler::AddGroupPOI(Text::StringBuilderUTF8 *sb, G
 	j = group->species.GetCount();
 	while (i < j)
 	{
-		AddSpeciesPOI(sb, group->species.GetItem(i), userId);
+		AddSpeciesPOI(sb, group->species.GetItem(i), userId, this->GroupIsPublic(group->id));
 		i++;
 	}
 }
 
-void SSWR::OrganMgr::OrganWebHandler::AddSpeciesPOI(Text::StringBuilderUTF8 *sb, SpeciesInfo *species, Int32 userId)
+void SSWR::OrganMgr::OrganWebHandler::AddSpeciesPOI(Text::StringBuilderUTF8 *sb, SpeciesInfo *species, Int32 userId, Bool publicGroup)
 {
 	Data::DateTime dt;
 	UserFileInfo *file;
@@ -7752,7 +7776,7 @@ void SSWR::OrganMgr::OrganWebHandler::AddSpeciesPOI(Text::StringBuilderUTF8 *sb,
 	while (k < l)
 	{
 		file = species->files.GetItem(k);
-		if ((file->lat != 0 || file->lon != 0) && (userId == 0 || file->webuserId == userId))
+		if ((file->lat != 0 || file->lon != 0) && (publicGroup || userId == 0 || file->webuserId == userId))
 		{
 			sb->AppendUTF8Char('{');
 			sb->AppendC(UTF8STRC("\"id\":\""));

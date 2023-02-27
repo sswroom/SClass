@@ -328,6 +328,7 @@ namespace SSWR
 			Bool GroupAddCounts(Int32 groupId, UOSInt totalCount, UOSInt photoCount, UOSInt myPhotoCount);
 			Bool GroupSetPhotoSpecies(Int32 groupId, Int32 photoSpeciesId);
 			Bool GroupSetPhotoGroup(Int32 groupId, Int32 photoGroupId);
+			Bool GroupIsPublic(Int32 groupId);
 
 			Net::WebServer::IWebSession *ParseRequestEnv(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, RequestEnv *env, Bool keepSess);
 			static Bool __stdcall SvcPhoto(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq, Net::WebServer::WebServiceHandler *parent);
@@ -360,8 +361,8 @@ namespace SSWR
 			static Bool __stdcall SvcGroupPOI(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq, Net::WebServer::WebServiceHandler *parent);
 			static Bool __stdcall SvcSpeciesPOI(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq, Net::WebServer::WebServiceHandler *parent);
 
-			static void AddGroupPOI(Text::StringBuilderUTF8 *sb, GroupInfo *group, Int32 userId);
-			static void AddSpeciesPOI(Text::StringBuilderUTF8 *sb, SpeciesInfo *species, Int32 userId);
+			void AddGroupPOI(Text::StringBuilderUTF8 *sb, GroupInfo *group, Int32 userId);
+			static void AddSpeciesPOI(Text::StringBuilderUTF8 *sb, SpeciesInfo *species, Int32 userId, Bool publicGroup);
 
 			void ResponsePhoto(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, WebUserInfo *user, Bool isMobile, Int32 speciesId, Int32 cateId, UInt32 imgWidth, UInt32 imgHeight, const UTF8Char *fileName);
 			void ResponsePhotoId(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, WebUserInfo *user, Bool isMobile, Int32 speciesId, Int32 cateId, UInt32 imgWidth, UInt32 imgHeight, Int32 photoId);
