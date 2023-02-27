@@ -2403,7 +2403,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDown(Net::WebServer::IWe
 		me->dataMut.LockRead();
 		sp = me->spMap.Get(spId);
 		userFile = me->userFileMap.Get(fileId);
-		if (sp && sp->cateId == cateId && env.user && userFile && userFile->webuserId == env.user->id)
+		if (sp && sp->cateId == cateId && env.user && userFile && (env.user->userType == 0 || userFile->webuserId == env.user->id))
 		{
 			Data::DateTime dt;
 			dt.SetTicks(userFile->fileTimeTicks);

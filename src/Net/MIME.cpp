@@ -26,6 +26,8 @@ Net::MIME::MIMEEntry Net::MIME::mimeList[] = {
 	{UTF8STRC("glb"),  UTF8STRC("model/gltf-binary")},
 	{UTF8STRC("gpx"),  UTF8STRC("application/gpx+xml")},
 	{UTF8STRC("gz"),   UTF8STRC("application/x-gzip")},
+	{UTF8STRC("heic"),  UTF8STRC("image/heic")},
+	{UTF8STRC("heif"),  UTF8STRC("image/heif")},
 	{UTF8STRC("htm"),  UTF8STRC("text/html")},
 	{UTF8STRC("html"), UTF8STRC("text/html")},
 	{UTF8STRC("ico"),  UTF8STRC("image/vnd.microsoft.icon")},
