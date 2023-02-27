@@ -2434,6 +2434,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDown(Net::WebServer::IWe
 			buff = MemAlloc(UInt8, buffSize);
 			fd.GetRealData(0, buffSize, buff);
 			resp->AddDefHeaders(req);
+			resp->AddContentDisposition(false, userFile->oriFileName->v, req->GetBrowser());
 			resp->AddContentLength(buffSize);
 			if (userFile->fileType == 3)
 			{
