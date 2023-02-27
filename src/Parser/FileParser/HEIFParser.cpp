@@ -415,3 +415,94 @@ IO::ParsedObject *Parser::FileParser::HEIFParser::ParseFileHdr(IO::IStreamData *
 	MemFree(fileBuff);
 	return imgList;
 }
+
+Bool Parser::FileParser::HEIFParser::ParseHeaders(IO::IStreamData *fd, Media::EXIFData **exif, Text::XMLDocument **xmf, Media::ICCProfile **icc, UInt32 *width, UInt32 *height)
+{
+	UInt8 hdr[12];
+	if (fd->GetRealData(0, 12, hdr) != 12)
+		return false;
+	if (ReadNInt32(&hdr[4]) != *(Int32*)"ftyp" || (ReadNInt32(&hdr[8]) != *(Int32*)"mif1" && ReadNInt32(&hdr[8]) != *(Int32*)"heic"))
+		return false;
+	
+	UInt64 fileLen = fd->GetDataSize();
+	if (fileLen < 100 || fileLen > 104857600)
+		return 0;
+	UInt8 *fileBuff = MemAlloc(UInt8, (UOSInt)fileLen);
+	if (fd->GetRealData(0, (UOSInt)fileLen, fileBuff) != fileLen)
+	{
+		MemFree(fileBuff);
+		return 0;
+	}
+	Bool succ = false;
+	heif_context *ctx = heif_context_alloc();
+#if LIBHEIF_HAVE_VERSION(1, 3, 0)
+	heif_error err = heif_context_read_from_memory_without_copy(ctx, fileBuff, (size_t)fileLen, 0);
+#else
+	heif_error err = heif_context_read_from_memory(ctx, fileBuff, (size_t)fileLen, 0);
+#endif
+	if (err.code == heif_error_Ok)
+	{
+		heif_image_handle *imgHdlr;
+		int nImages = heif_context_get_number_of_top_level_images(ctx);
+		if (nImages == 1)
+		{
+			heif_context_get_primary_image_handle(ctx, &imgHdlr);
+			*xmf = 0;
+			*icc = 0;
+			*exif = 0;
+			*width = (UInt32)heif_image_handle_get_ispe_width(imgHdlr);
+			*height = (UInt32)heif_image_handle_get_ispe_height(imgHdlr);
+
+			heif_color_profile_type cpType = heif_image_handle_get_color_profile_type(imgHdlr);
+			switch (cpType)
+			{
+			case heif_color_profile_type_nclx:
+				break;
+			case heif_color_profile_type_prof:
+			case heif_color_profile_type_rICC:
+			{
+				UOSInt iccSize = (UInt32)heif_image_handle_get_raw_color_profile_size(imgHdlr);
+				UInt8 *buff = MemAlloc(UInt8, iccSize);
+				struct heif_error error = heif_image_handle_get_raw_color_profile(imgHdlr, buff);
+				if (error.code == heif_error_Ok)
+				{
+					*icc = Media::ICCProfile::Parse(buff, iccSize);
+				}
+				MemFree(buff);
+				break;
+			}
+			case heif_color_profile_type_not_present:
+			default:
+				break;
+			}
+
+			heif_item_id metaIds[32];
+			int n = heif_image_handle_get_list_of_metadata_block_IDs(imgHdlr, 0, metaIds, 32);
+			if (n > 0)
+			{
+				int i = 0;
+				while (i < n)
+				{
+					size_t exifSize = heif_image_handle_get_metadata_size(imgHdlr, metaIds[i]);
+					const char *type = heif_image_handle_get_metadata_type(imgHdlr, metaIds[i]);
+					if (Text::StrEquals(type, "Exif"))
+					{
+						UInt8* exifData = MemAlloc(UInt8, (UOSInt)exifSize);
+						struct heif_error error = heif_image_handle_get_metadata(imgHdlr, metaIds[i], exifData);
+						if (error.code == heif_error_Ok)
+						{
+							*exif = Media::EXIFData::ParseExif(exifData, (UOSInt)exifSize);
+						}
+						MemFree(exifData);
+					}
+					i++;
+				}
+			}
+			heif_image_handle_release(imgHdlr);
+			succ = true;
+		}
+	}
+	heif_context_free(ctx);
+	MemFree(fileBuff);
+	return succ;
+}
