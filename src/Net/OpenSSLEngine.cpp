@@ -399,8 +399,8 @@ int OpenSSLEngine_alpn_select_cb(SSL *ssl, const unsigned char **out, unsigned c
 	{
 		if (clsData->alpnSupports->GetC(Text::CString(in + 1, in[0])))
 		{
-			*out = in;
-			*outlen = in[0] + 1;
+			*out = in + 1;
+			*outlen = in[0];
 			return SSL_TLSEXT_ERR_OK;
 		}
 		in += in[0] + 1;
@@ -408,9 +408,18 @@ int OpenSSLEngine_alpn_select_cb(SSL *ssl, const unsigned char **out, unsigned c
 	return SSL_TLSEXT_ERR_NOACK;
 }
 
+int OpenSSLEngine_next_proto_select_cb(SSL *s, unsigned char **out, unsigned char *outlen, const unsigned char *in, unsigned int inlen, void *arg)
+{
+	Net::OpenSSLEngine::ClassData *clsData = (Net::OpenSSLEngine::ClassData *)arg;
+	Text::StringBuilderUTF8 sb;
+	sb.AppendHexBuff(in, inlen, ' ', Text::LineBreakType::CRLF);
+	printf("OpenSSLEngine_next_proto_select_cb: %s\r\n", sb.ToString());
+	return SSL_TLSEXT_ERR_NOACK;
+}
+
 Bool Net::OpenSSLEngine::ServerAddALPNSupport(Text::CString proto)
 {
-#if 0 && OPENSSL_VERSION_NUMBER >= 0x10002000L
+#if OPENSSL_VERSION_NUMBER >= 0x10002000L
 	if (this->clsData->ctx == 0)
 	{
 		return false;
@@ -419,6 +428,7 @@ Bool Net::OpenSSLEngine::ServerAddALPNSupport(Text::CString proto)
 	{
 		NEW_CLASS(this->clsData->alpnSupports, Data::FastStringMap<Bool>());
 		SSL_CTX_set_alpn_select_cb(this->clsData->ctx, OpenSSLEngine_alpn_select_cb, this->clsData);
+		SSL_CTX_set_next_proto_select_cb(this->clsData->ctx, OpenSSLEngine_next_proto_select_cb, this->clsData);
 	}
 	this->clsData->alpnSupports->PutC(proto, true);
 	return true;

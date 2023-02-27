@@ -13,6 +13,7 @@
 #include "Sync/MutexUsage.h"
 #include "Sync/RWMutexUsage.h"
 #include "Sync/Thread.h"
+#include "Text/JSText.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 #include "Text/UTF8Reader.h"
@@ -903,6 +904,16 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 						}
 						fileId++;
 					}
+					if (req->GetQueryValue(CSTR("uploadDirect")) != 0)
+					{
+						resp->EnableWriteBuffer();
+						resp->AddDefHeaders(req);
+						resp->AddContentType(CSTR("text/plain"));
+						AddCacheHeader(resp);
+						resp->AddContentLength(2);
+						resp->Write((const UInt8*)"ok", 2);
+						return true;
+					}
 				}
 
 				resp->EnableWriteBuffer();
@@ -912,12 +923,38 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 
 				Bool isRoot = false;
 				Text::String *s;
+				Text::String *s2;
 				sbOut.AppendNE(UTF8STRC("<html><head><title>Index of "));
 				Text::TextBinEnc::URIEncoding::URIDecode(sbuff, sb2.ToString());
 				s = Text::XML::ToNewHTMLElementText(sbuff);
 				sbOut.AppendNE(s);
-				sbOut.AppendNE2(UTF8STRC("</title></head>\r\n<body>\r\n"),
-							   UTF8STRC("<h2>Index Of "));
+				sbOut.AppendNE(UTF8STRC("</title><script type=\"application/javascript\">\r\n"
+							    		"async function submitFile() {\r\n"
+										"\tvar url = "));
+				s2 = Text::JSText::ToNewJSTextDQuote(req->GetRequestURI()->v);
+				sbOut.AppendNE(s2);
+				s2->Release();
+				sbOut.AppendNE(UTF8STRC(";\r\n"
+							    		"\tif (url.indexOf(\"?\") >= 0)\r\n"
+										"\t\turl = url + \"&uploadDirect=1\";\r\n"
+										"\telse\r\n"
+										"\t\turl = url + \"?uploadDirect=1\";\r\n"
+							    		"\tvar fileupload = document.getElementById(\"uploadfile\");\r\n"
+										"\tvar i = 0;\r\n"
+										"\tvar j = fileupload.files.length;\r\n"
+										"\twhile (i < j) {\r\n"
+										"\t\tvar formData = new FormData();\r\n"
+										"\t\tformData.append(\"uploadfile\", fileupload.files[i]);\r\n"
+										"\t\tawait fetch(url, {\r\n"
+										"\t\t\tmethod: \"POST\", \r\n"
+										"\t\t\tbody: formData\r\n"
+										"\t\t});\r\n"
+										"\t\ti++;\r\n"
+										"\t}\r\n"
+										"\tdocument.location.reload();\r\n"
+							    		"}\r\n"
+										"</script></head>\r\n<body>\r\n"
+							   			"<h2>Index Of "));
 				sbOut.AppendNE(s);
 				s->Release();
 				sbOut.AppendNE(UTF8STRC("</h2>\r\n"));
@@ -936,7 +973,9 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 					sbOut.AppendNE(s);
 					sbOut.AppendNE(UTF8STRC(" enctype=\"multipart/form-data\">"));
 					s->Release();
-					sbOut.AppendNE2(UTF8STRC("Upload: <input type=\"file\" name=\"uploadfile\" multiple/><br/><input type=\"submit\"/>"),
+//					sbOut.AppendNE2(UTF8STRC("Upload: <input type=\"file\" id=\"uploadfile\" name=\"uploadfile\" multiple/><br/><input type=\"submit\"/>"),
+//								   UTF8STRC("</form>"));
+					sbOut.AppendNE2(UTF8STRC("Upload: <input type=\"file\" id=\"uploadfile\" name=\"uploadfile\" multiple/><br/><input type=\"button\" value=\"Upload\" onclick=\"submitFile()\"/>"),
 								   UTF8STRC("</form>"));
 				}
 

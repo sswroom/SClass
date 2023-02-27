@@ -6262,6 +6262,44 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoUpload(Net::WebServer::I
 	return true;
 }
 
+Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoUpload2(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq, Net::WebServer::WebServiceHandler *parent)
+{
+	SSWR::OrganMgr::OrganWebHandler *me = (SSWR::OrganMgr::OrganWebHandler*)parent;
+	SSWR::OrganMgr::OrganWebHandler::RequestEnv env;
+	me->ParseRequestEnv(req, resp, &env, false);
+
+	if (env.user == 0)
+	{
+		resp->ResponseError(req, Net::WebStatus::SC_FORBIDDEN);
+		return true;
+	}
+	UOSInt i = 0;
+	UOSInt fileSize;
+	UTF8Char fileName[512];
+	UTF8Char *fileNameEnd;
+	const UInt8 *fileCont;
+	req->ParseHTTPForm();
+
+	while (true)
+	{
+		fileCont = req->GetHTTPFormFile(CSTR("file"), i, fileName, sizeof(fileName), &fileNameEnd, &fileSize);
+		if (fileCont == 0)
+		{
+			break;
+		}
+		me->dataMut.LockWrite();
+		me->UserfileAdd(env.user->id, env.user->unorganSpId, CSTRP(fileName, fileNameEnd), fileCont, fileSize);
+		me->dataMut.UnlockWrite();
+
+		i++;
+	}
+
+	IO::MemoryStream mstm;
+	mstm.Write((const UInt8*)"ok", 2);
+	ResponseMstm(req, resp, &mstm, CSTR("text/plain"));
+	return true;
+}
+
 Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoUploadD(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq, Net::WebServer::WebServiceHandler *parent)
 {
 	SSWR::OrganMgr::OrganWebHandler *me = (SSWR::OrganMgr::OrganWebHandler*)parent;
@@ -7472,6 +7510,24 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcIndex(Net::WebServer::IWebReq
 	Text::UTF8Writer writer(&mstm);
 
 	me->WriteHeader(&writer, (const UTF8Char*)"Index", env.user, env.isMobile);
+	writer.WriteLineC(UTF8STRC("<script type=\"application/javascript\">\r\n"
+								"async function submitFile() {\r\n"
+								"\tvar url = \"photoupload2.html\""
+								"\tvar fileupload = document.getElementById(\"file\");\r\n"
+								"\tvar i = 0;\r\n"
+								"\tvar j = fileupload.files.length;\r\n"
+								"\twhile (i < j) {\r\n"
+								"\t\tvar formData = new FormData();\r\n"
+								"\t\tformData.append(\"file\", fileupload.files[i]);\r\n"
+								"\t\tawait fetch(url, {\r\n"
+								"\t\t\tmethod: \"POST\", \r\n"
+								"\t\t\tbody: formData\r\n"
+								"\t\t});\r\n"
+								"\t\ti++;\r\n"
+								"\t}\r\n"
+								"\tdocument.location.reload();\r\n"
+								"}\r\n"
+								"</script>"));
 	writer.WriteLineC(UTF8STRC("<center><h1>Index</h1></center>"));
 
 	me->dataMut.LockRead();
@@ -7549,8 +7605,8 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcIndex(Net::WebServer::IWebReq
 		}
 		writer.WriteLineC(UTF8STRC("<hr/>"));
 		writer.WriteLineC(UTF8STRC("<h3>Photo Upload</h3>"));
-		writer.WriteLineC(UTF8STRC("<form name=\"upload\" method=\"POST\" action=\"photoupload.html\" enctype=\"multipart/form-data\">Files:<input type=\"file\" name=\"file\" multiple/>"));
-		writer.WriteLineC(UTF8STRC("<input type=\"submit\"></form>"));
+		writer.WriteLineC(UTF8STRC("<form name=\"upload\" method=\"POST\" action=\"photoupload.html\" enctype=\"multipart/form-data\">Files:<input type=\"file\" id=\"file\" name=\"file\" multiple/>"));
+		writer.WriteLineC(UTF8STRC("<input type=\"button\" value=\"Upload\" onclick=\"submitFile()\"/></form>"));
 	}
 	writer.WriteLineC(UTF8STRC("<hr/>"));
 	writer.WriteStrC(UTF8STRC("<a href=\"booklist.html?id="));
@@ -9627,6 +9683,7 @@ SSWR::OrganMgr::OrganWebHandler::OrganWebHandler(Net::SocketFactory *sockf, Net:
 		this->AddService(CSTR("/photoyear.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcPhotoYear);
 		this->AddService(CSTR("/photoday.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcPhotoDay);
 		this->AddService(CSTR("/photoupload.html"), Net::WebUtil::RequestMethod::HTTP_POST, SvcPhotoUpload);
+		this->AddService(CSTR("/photoupload2.html"), Net::WebUtil::RequestMethod::HTTP_POST, SvcPhotoUpload2);
 		this->AddService(CSTR("/photouploadd.html"), Net::WebUtil::RequestMethod::HTTP_POST, SvcPhotoUploadD);
 		this->AddService(CSTR("/searchinside.html"), Net::WebUtil::RequestMethod::HTTP_POST, SvcSearchInside);
 		this->AddService(CSTR("/searchinsidemores.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcSearchInsideMoreS);
