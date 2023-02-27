@@ -131,6 +131,7 @@ nodeps:
 @MonitorInfoTest
 @NearestNeighbourResizer32_32Test
 @OCRTest
+@PhotoInfoTest
 @PrinterTest
 #@RASPStillCaptureTest
 @VideoCaptureTest
@@ -488,6 +489,9 @@ NearestNeighbourResizer32_32Test:
 @ConsoleStartup.o
 OCRTest:
 @OCRTest.o
+@ConsoleStartup.o
+PhotoInfoTest:
+@PhotoInfoTest.o
 @ConsoleStartup.o
 PrinterTest:
 @PrinterTest.o
@@ -1030,6 +1034,7 @@ ImageResizeMain.o: ../../main/Media/ImageResizeMain.cpp
 MonitorInfoTest.o: ../../main/Media/MonitorInfoTest.cpp
 NearestNeighbourResizer32_32Test.o: ../../main/Media/NearestNeighbourResizer32_32Test.cpp
 OCRTest.o: ../../main/Media/OCRTest.cpp
+PhotoInfoTest.o: ../../main/Media/PhotoInfoTest.cpp
 PrinterTest.o: ../../main/Media/PrinterTest.cpp
 RASPStillCaptureTest.o: ../../main/Media/RASPStillCaptureTest.cpp
 VideoCaptureTest.o: ../../main/Media/VideoCaptureTest.cpp

@@ -16,6 +16,7 @@ namespace Media
 	public:
 		enum class RotateType
 		{
+			NoRotate,
 			CW90,
 			CW180,
 			CW270

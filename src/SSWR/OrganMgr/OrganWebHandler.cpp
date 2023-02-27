@@ -1410,6 +1410,7 @@ Int32 SSWR::OrganMgr::OrganWebHandler::UserfileAdd(Int32 userId, Int32 spId, Tex
 		Data::Timestamp fileTime = Data::Timestamp(0, Data::DateTimeUtil::GetLocalTzQhr());
 		Double lat = 0;
 		Double lon = 0;
+		Int32 rotType = 0;
 		SSWR::OrganMgr::OrganWebHandler::UserFileInfo *userFile;
 		Text::String *camera = 0;
 		UInt32 crcVal = 0;
@@ -1464,6 +1465,10 @@ Int32 SSWR::OrganMgr::OrganWebHandler::UserfileAdd(Int32 userId, Int32 spId, Tex
 						{
 							camera = Text::String::New(cstr2);
 						}
+						Double altitude;
+						Int64 gpsTimeTick;
+						exif->GetPhotoLocation(&lat, &lon, &altitude, &gpsTimeTick);
+						rotType = (Int32)exif->GetRotateType();
 					}
 				}
 
@@ -1546,7 +1551,7 @@ Int32 SSWR::OrganMgr::OrganWebHandler::UserfileAdd(Int32 userId, Int32 spId, Tex
 				if (succ)
 				{
 					DB::SQLBuilder sql(this->db);
-					sql.AppendCmdC(CSTR("insert into userfile (fileType, oriFileName, fileTime, lat, lon, webuser_id, species_id, captureTime, dataFileName, crcVal, camera, cropLeft, cropTop, cropRight, cropBottom) values ("));
+					sql.AppendCmdC(CSTR("insert into userfile (fileType, oriFileName, fileTime, lat, lon, webuser_id, species_id, captureTime, dataFileName, crcVal, rotType, camera, cropLeft, cropTop, cropRight, cropBottom) values ("));
 					sql.AppendInt32(fileType);
 					sql.AppendCmdC(CSTR(", "));
 					sql.AppendStrC(fileName);
@@ -1566,6 +1571,8 @@ Int32 SSWR::OrganMgr::OrganWebHandler::UserfileAdd(Int32 userId, Int32 spId, Tex
 					sql.AppendStrUTF8(dataFileName);
 					sql.AppendCmdC(CSTR(", "));
 					sql.AppendInt32((Int32)crcVal);
+					sql.AppendCmdC(CSTR(", "));
+					sql.AppendInt32(rotType);
 					sql.AppendCmdC(CSTR(", "));
 					sql.AppendStr(camera);
 					sql.AppendCmdC(CSTR(", "));
@@ -1591,7 +1598,7 @@ Int32 SSWR::OrganMgr::OrganWebHandler::UserfileAdd(Int32 userId, Int32 spId, Tex
 						userFile->captureTimeTicks = userFile->fileTimeTicks;
 						userFile->dataFileName = Text::String::NewP(dataFileName, sptr);
 						userFile->crcVal = crcVal;
-						userFile->rotType = 0;
+						userFile->rotType = rotType;
 						userFile->prevUpdated = 0;
 						//userFile->camera = camera;
 						userFile->cropLeft = 0;

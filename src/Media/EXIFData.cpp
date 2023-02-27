@@ -2274,7 +2274,10 @@ Bool Media::EXIFData::GetPhotoLocation(Double *lat, Double *lon, Double *altitud
 		}
 		else
 		{
-			succ = false;
+			if (altitude)
+			{
+				*altitude = 0;
+			}
 		}
 		item1 = subExif->GetExifItem(7);
 		item2 = subExif->GetExifItem(29);
