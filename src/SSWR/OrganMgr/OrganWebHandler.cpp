@@ -1378,6 +1378,14 @@ Int32 SSWR::OrganMgr::OrganWebHandler::UserfileAdd(Int32 userId, Int32 spId, Tex
 	{
 		fileType = 1;
 	}
+	else if (Text::StrEqualsICaseC(&fileName.v[i + 1], fileNameLen - i - 1, UTF8STRC("HEIC")))
+	{
+		fileType = 1;
+	}
+	else if (Text::StrEqualsICaseC(&fileName.v[i + 1], fileNameLen - i - 1, UTF8STRC("HEIF")))
+	{
+		fileType = 1;
+	}
 	else if (Text::StrEqualsICaseC(&fileName.v[i + 1], fileNameLen - i - 1, UTF8STRC("AVI")))
 	{
 		fileType = 2;

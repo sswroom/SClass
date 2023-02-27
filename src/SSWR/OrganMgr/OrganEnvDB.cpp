@@ -815,7 +815,11 @@ UOSInt SSWR::OrganMgr::OrganEnvDB::GetSpeciesImages(Data::ArrayList<OrganImageIt
 					newFlags |= 1;
 					retCnt++;
 				}
-				else if (Text::StrEqualsICaseC(&sptr[i], (UOSInt)(sptr2 - &sptr[i]), UTF8STRC(".PCX")) || Text::StrEqualsICaseC(&sptr[i], (UOSInt)(sptr2 - &sptr[i]), UTF8STRC(".GIF")) == 0 || Text::StrEqualsICaseC(&sptr[i], (UOSInt)(sptr2 - &sptr[i]), UTF8STRC(".PNG")))
+				else if (Text::StrEqualsICaseC(&sptr[i], (UOSInt)(sptr2 - &sptr[i]), UTF8STRC(".PCX")) ||
+					Text::StrEqualsICaseC(&sptr[i], (UOSInt)(sptr2 - &sptr[i]), UTF8STRC(".GIF")) ||
+					Text::StrEqualsICaseC(&sptr[i], (UOSInt)(sptr2 - &sptr[i]), UTF8STRC(".HEIC")) ||
+					Text::StrEqualsICaseC(&sptr[i], (UOSInt)(sptr2 - &sptr[i]), UTF8STRC(".HEIF")) ||
+					 Text::StrEqualsICaseC(&sptr[i], (UOSInt)(sptr2 - &sptr[i]), UTF8STRC(".PNG")))
 				{
 					NEW_CLASS(imgItem, OrganImageItem(this->userId));
 					imgItem->SetDispName(CSTRP(sptr, sptr2));
@@ -1446,6 +1450,14 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 		fileType = 1;
 	}
 	else if (fileName.EndsWithICase(UTF8STRC(".PNG")))
+	{
+		fileType = 1;
+	}
+	else if (fileName.EndsWithICase(UTF8STRC(".HEIC")))
+	{
+		fileType = 1;
+	}
+	else if (fileName.EndsWithICase(UTF8STRC(".HEIF")))
 	{
 		fileType = 1;
 	}

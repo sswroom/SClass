@@ -410,7 +410,7 @@ int OpenSSLEngine_alpn_select_cb(SSL *ssl, const unsigned char **out, unsigned c
 
 Bool Net::OpenSSLEngine::ServerAddALPNSupport(Text::CString proto)
 {
-#if OPENSSL_VERSION_NUMBER >= 0x10002000L
+#if 0 && OPENSSL_VERSION_NUMBER >= 0x10002000L
 	if (this->clsData->ctx == 0)
 	{
 		return false;
