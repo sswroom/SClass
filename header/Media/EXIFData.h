@@ -5,6 +5,7 @@
 #include "Data/FastMap.h"
 #include "IO/IStreamData.h"
 #include "IO/FileAnalyse/FrameDetailHandler.h"
+#include "Media/FrameInfo.h"
 #include "Text/CString.h"
 #include "Text/StringBuilderUTF8.h"
 
@@ -28,14 +29,6 @@ namespace Media
 			ET_SRATIONAL,
 			ET_DOUBLE
 		} EXIFType;
-
-		typedef enum
-		{
-			RT_NONE,
-			RT_CW90,
-			RT_CW180,
-			RT_CW270
-		} RotateType;
 
 		typedef struct
 		{
@@ -130,6 +123,7 @@ namespace Media
 		Bool GetPhotoLocation(Double *lat, Double *lon, Double *altitude, Int64 *gpsTimeTick) const;
 		Bool GetGeoBounds(UOSInt imgW, UOSInt imgH, UInt32 *srid, Double *minX, Double *minY, Double *maxX, Double *maxY) const;
 		RotateType GetRotateType() const;
+		void SetRotateType(RotateType rotateType);
 		Double GetHDPI() const;
 		Double GetVDPI() const;
 		void SetWidth(UInt32 width);

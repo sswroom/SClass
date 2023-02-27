@@ -54,6 +54,7 @@ Media::StaticImage *HEIFParser_DecodeImage(heif_image_handle *imgHdlr)
 	int width = heif_image_handle_get_ispe_width(imgHdlr);
 	int height = heif_image_handle_get_ispe_height(imgHdlr);
 	int stride;
+	Bool removeRotate = false;
 	const uint8_t *data;
 	Media::ColorProfile color(Media::ColorProfile::CPT_PUNKNOWN);
 	heif_decoding_options *options = heif_decoding_options_alloc();
@@ -62,17 +63,35 @@ Media::StaticImage *HEIFParser_DecodeImage(heif_image_handle *imgHdlr)
 	{
 		if (hasAlpha)
 		{
-			NEW_CLASS(simg, Media::StaticImage((UOSInt)width, (UOSInt)height, 0, 32, Media::PF_R8G8B8A8, (UOSInt)width * (UOSInt)height * 4, &color, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 			heif_decode_image(imgHdlr, &img, heif_colorspace_RGB, heif_chroma_interleaved_RGBA, options);
 			data = heif_image_get_plane_readonly(img, heif_channel_interleaved, &stride);
-			ImageCopy_ImgCopyR(data, simg->data, (UOSInt)width * 4, (UOSInt)height, (UOSInt)stride, simg->GetDataBpl(), false);
+			if (stride == height * 4 && width != height)
+			{
+				NEW_CLASS(simg, Media::StaticImage((UOSInt)height, (UOSInt)width, 0, 32, Media::PF_R8G8B8A8, (UOSInt)width * (UOSInt)height * 4, &color, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+				ImageCopy_ImgCopyR(data, simg->data, (UOSInt)height * 4, (UOSInt)width, (UOSInt)stride, simg->GetDataBpl(), false);
+				removeRotate = true;
+			}
+			else
+			{
+				NEW_CLASS(simg, Media::StaticImage((UOSInt)width, (UOSInt)height, 0, 32, Media::PF_R8G8B8A8, (UOSInt)width * (UOSInt)height * 4, &color, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+				ImageCopy_ImgCopyR(data, simg->data, (UOSInt)width * 4, (UOSInt)height, (UOSInt)stride, simg->GetDataBpl(), false);
+			}
 		}
 		else
 		{
-			NEW_CLASS(simg, Media::StaticImage((UOSInt)width, (UOSInt)height, 0, 24, Media::PF_R8G8B8, (UOSInt)width * (UOSInt)height * 3, &color, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 			heif_decode_image(imgHdlr, &img, heif_colorspace_RGB, heif_chroma_interleaved_RGB, options);
 			data = heif_image_get_plane_readonly(img, heif_channel_interleaved, &stride);
-			ImageCopy_ImgCopyR(data, simg->data, (UOSInt)width * 3, (UOSInt)height, (UOSInt)stride, simg->GetDataBpl(), false);
+			if (stride == height * 4 && width != height)
+			{
+				NEW_CLASS(simg, Media::StaticImage((UOSInt)height, (UOSInt)width, 0, 24, Media::PF_R8G8B8, (UOSInt)width * (UOSInt)height * 3, &color, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+				ImageCopy_ImgCopyR(data, simg->data, (UOSInt)height * 3, (UOSInt)width, (UOSInt)stride, simg->GetDataBpl(), false);
+				removeRotate = true;
+			}
+			else
+			{
+				NEW_CLASS(simg, Media::StaticImage((UOSInt)width, (UOSInt)height, 0, 24, Media::PF_R8G8B8, (UOSInt)width * (UOSInt)height * 3, &color, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+				ImageCopy_ImgCopyR(data, simg->data, (UOSInt)width * 3, (UOSInt)height, (UOSInt)stride, simg->GetDataBpl(), false);
+			}
 		}
 	}
 #if LIBHEIF_HAVE_VERSION(1, 4, 0)
@@ -80,17 +99,17 @@ Media::StaticImage *HEIFParser_DecodeImage(heif_image_handle *imgHdlr)
 	{
 		if (hasAlpha)
 		{
-			NEW_CLASS(simg, Media::StaticImage((UOSInt)width, (UOSInt)height, 0, 64, Media::PF_LE_B16G16R16A16, (UOSInt)width * (UOSInt)height * 8, &color, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 			heif_decode_image(imgHdlr, &img, heif_colorspace_RGB, heif_chroma_interleaved_RRGGBBAA_LE, options);
 			data = heif_image_get_plane_readonly(img, heif_channel_interleaved, &stride);
+			NEW_CLASS(simg, Media::StaticImage((UOSInt)width, (UOSInt)height, 0, 64, Media::PF_LE_B16G16R16A16, (UOSInt)width * (UOSInt)height * 8, &color, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 			ImageCopy_ImgCopyR(data, simg->data, (UOSInt)width * 8, (UOSInt)height, (UOSInt)stride, simg->GetDataBpl(), false);
 			ImageUtil_SwapRGB(simg->data, (UOSInt)width * (UOSInt)height, 64);
 		}
 		else
 		{
-			NEW_CLASS(simg, Media::StaticImage((UOSInt)width, (UOSInt)height, 0, 48, Media::PF_R8G8B8, (UOSInt)width * (UOSInt)height * 6, &color, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 			heif_decode_image(imgHdlr, &img, heif_colorspace_RGB, heif_chroma_interleaved_RRGGBB_LE, options);
 			data = heif_image_get_plane_readonly(img, heif_channel_interleaved, &stride);
+			NEW_CLASS(simg, Media::StaticImage((UOSInt)width, (UOSInt)height, 0, 48, Media::PF_R8G8B8, (UOSInt)width * (UOSInt)height * 6, &color, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 			ImageCopy_ImgCopyR(data, simg->data, (UOSInt)width * 6, (UOSInt)height, (UOSInt)stride, simg->GetDataBpl(), false);
 			ImageUtil_SwapRGB(simg->data, (UOSInt)width * (UOSInt)height, 48);
 		}
@@ -330,6 +349,10 @@ Media::StaticImage *HEIFParser_DecodeImage(heif_image_handle *imgHdlr)
 					Media::EXIFData *exif = Media::EXIFData::ParseExif(exifData, (UOSInt)exifSize);
 					if (exif)
 					{
+						if (removeRotate)
+						{
+							exif->SetRotateType(Media::RotateType::None);
+						}
 						exif = simg->SetEXIFData(exif);
 						SDEL_CLASS(exif);
 					}

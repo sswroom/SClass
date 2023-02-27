@@ -505,21 +505,21 @@ void UI::GUIPictureBoxDD::SetImage(Media::Image *currImage, Bool sameImg)
 	}
 	if (this->currImage)
 	{
-		Media::EXIFData::RotateType rotType = Media::EXIFData::RT_NONE;
+		Media::RotateType rotType = Media::RotateType::None;
 		this->currImageW = this->currImage->info.dispWidth;
 		this->currImageH = this->currImage->info.dispHeight;
 		if (this->currImage->exif)
 		{
 			rotType = this->currImage->exif->GetRotateType();
-			if (rotType == Media::EXIFData::RT_CW90)
+			if (rotType == Media::RotateType::CW_90)
 			{
 				this->currImageH = this->currImage->info.dispWidth;
 				this->currImageW = this->currImage->info.dispHeight;
 			}
-			else if (rotType == Media::EXIFData::RT_CW180)
+			else if (rotType == Media::RotateType::CW_180)
 			{
 			}
-			else if (rotType == Media::EXIFData::RT_CW270)
+			else if (rotType == Media::RotateType::CW_270)
 			{
 				this->currImageH = this->currImage->info.dispWidth;
 				this->currImageW = this->currImage->info.dispHeight;
@@ -558,21 +558,21 @@ void UI::GUIPictureBoxDD::SetImage(Media::Image *currImage, Bool sameImg)
 				LRGBLimiter_LimitImageLRGB(this->imgBuff, this->currImage->info.dispWidth, this->currImage->info.dispHeight);
 			}
 
-			if (rotType == Media::EXIFData::RT_CW90)
+			if (rotType == Media::RotateType::CW_90)
 			{
 				UInt8 *tmpBuff = MemAllocA(UInt8, this->currImageW * this->currImageH * 8);
 				ImageUtil_Rotate64_CW90(this->imgBuff, tmpBuff, this->currImageH, this->currImageW, this->currImageH << 3, this->currImageW << 3);
 				MemFreeA(this->imgBuff);
 				this->imgBuff = tmpBuff;
 			}
-			else if (rotType == Media::EXIFData::RT_CW180)
+			else if (rotType == Media::RotateType::CW_180)
 			{
 				UInt8 *tmpBuff = MemAllocA(UInt8, this->currImageW * this->currImageH * 8);
 				ImageUtil_Rotate64_CW180(this->imgBuff, tmpBuff, this->currImageW, this->currImageH, this->currImageW << 3, this->currImageW << 3);
 				MemFreeA(this->imgBuff);
 				this->imgBuff = tmpBuff;
 			}
-			else if (rotType == Media::EXIFData::RT_CW270)
+			else if (rotType == Media::RotateType::CW_270)
 			{
 				UInt8 *tmpBuff = MemAllocA(UInt8, this->currImageW * this->currImageH * 8);
 				ImageUtil_Rotate64_CW270(this->imgBuff, tmpBuff, this->currImageH, this->currImageW, this->currImageH << 3, this->currImageW << 3);
@@ -594,13 +594,13 @@ void UI::GUIPictureBoxDD::YUVParamChanged(const Media::IColorHandler::YUVPARAM *
 {
 	if (this->currImage && this->csconv)
 	{
-		Media::EXIFData::RotateType rotType = Media::EXIFData::RT_NONE;
+		Media::RotateType rotType = Media::RotateType::None;
 		UInt8 *imgBuff;
 		if (this->currImage->exif)
 		{
 			rotType = this->currImage->exif->GetRotateType();
 		}
-		if (rotType == Media::EXIFData::RT_NONE)
+		if (rotType == Media::RotateType::None)
 		{
 			imgBuff = this->imgBuff;
 		}
@@ -623,17 +623,17 @@ void UI::GUIPictureBoxDD::YUVParamChanged(const Media::IColorHandler::YUVPARAM *
 		{
 			LRGBLimiter_LimitImageLRGB(imgBuff, this->currImage->info.dispWidth, this->currImage->info.dispHeight);
 		}
-		if (rotType == Media::EXIFData::RT_CW90)
+		if (rotType == Media::RotateType::CW_90)
 		{
 			ImageUtil_Rotate64_CW90(imgBuff, this->imgBuff, this->currImageH, this->currImageW, this->currImageH << 3, this->currImageW << 3);
 			MemFreeA(imgBuff);
 		}
-		else if (rotType == Media::EXIFData::RT_CW180)
+		else if (rotType == Media::RotateType::CW_180)
 		{
 			ImageUtil_Rotate64_CW180(imgBuff, this->imgBuff, this->currImageW, this->currImageH, this->currImageW << 3, this->currImageW << 3);
 			MemFreeA(imgBuff);
 		}
-		else if (rotType == Media::EXIFData::RT_CW270)
+		else if (rotType == Media::RotateType::CW_270)
 		{
 			ImageUtil_Rotate64_CW270(imgBuff, this->imgBuff, this->currImageH, this->currImageW, this->currImageH << 3, this->currImageW << 3);
 			MemFreeA(imgBuff);
@@ -647,13 +647,13 @@ void UI::GUIPictureBoxDD::RGBParamChanged(const Media::IColorHandler::RGBPARAM2 
 {
 	if (this->currImage && this->csconv)
 	{
-		Media::EXIFData::RotateType rotType = Media::EXIFData::RT_NONE;
+		Media::RotateType rotType = Media::RotateType::None;
 		UInt8 *imgBuff;
 		if (this->currImage->exif)
 		{
 			rotType = this->currImage->exif->GetRotateType();
 		}
-		if (rotType == Media::EXIFData::RT_NONE)
+		if (rotType == Media::RotateType::None)
 		{
 			imgBuff = this->imgBuff;
 		}
@@ -676,17 +676,17 @@ void UI::GUIPictureBoxDD::RGBParamChanged(const Media::IColorHandler::RGBPARAM2 
 		{
 			LRGBLimiter_LimitImageLRGB(imgBuff, this->currImage->info.dispWidth, this->currImage->info.dispHeight);
 		}
-		if (rotType == Media::EXIFData::RT_CW90)
+		if (rotType == Media::RotateType::CW_90)
 		{
 			ImageUtil_Rotate64_CW90(imgBuff, this->imgBuff, this->currImageH, this->currImageW, this->currImageH << 3, this->currImageW << 3);
 			MemFreeA(imgBuff);
 		}
-		else if (rotType == Media::EXIFData::RT_CW180)
+		else if (rotType == Media::RotateType::CW_180)
 		{
 			ImageUtil_Rotate64_CW180(imgBuff, this->imgBuff, this->currImageW, this->currImageH, this->currImageW << 3, this->currImageW << 3);
 			MemFreeA(imgBuff);
 		}
-		else if (rotType == Media::EXIFData::RT_CW270)
+		else if (rotType == Media::RotateType::CW_270)
 		{
 			ImageUtil_Rotate64_CW270(imgBuff, this->imgBuff, this->currImageH, this->currImageW, this->currImageH << 3, this->currImageW << 3);
 			MemFreeA(imgBuff);

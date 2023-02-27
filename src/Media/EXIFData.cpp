@@ -2414,13 +2414,13 @@ Bool Media::EXIFData::GetGeoBounds(UOSInt imgW, UOSInt imgH, UInt32 *srid, Doubl
 	return false;
 }
 
-Media::EXIFData::RotateType Media::EXIFData::GetRotateType() const
+Media::RotateType Media::EXIFData::GetRotateType() const
 {
 	Media::EXIFData::EXIFItem *item;
 	item = this->exifMap.Get(274);
 	if (item == 0)
 	{
-		return Media::EXIFData::RT_NONE;
+		return Media::RotateType::None;
 	}
 	UInt32 v;
 	if (item->type == Media::EXIFData::ET_UINT16)
@@ -2433,17 +2433,39 @@ Media::EXIFData::RotateType Media::EXIFData::GetRotateType() const
 	}
 	if (v == 6)
 	{
-		return Media::EXIFData::RT_CW90;
+		return Media::RotateType::CW_90;
 	}
 	else if (v == 3)
 	{
-		return Media::EXIFData::RT_CW180;
+		return Media::RotateType::CW_180;
 	}
 	else if (v == 8)
 	{
-		return Media::EXIFData::RT_CW270;
+		return Media::RotateType::CW_270;
 	}
-	return Media::EXIFData::RT_NONE;
+	return Media::RotateType::None;
+}
+
+void Media::EXIFData::SetRotateType(RotateType rotType)
+{
+	UInt32 v;
+	switch (rotType)
+	{
+	case RotateType::CW_90:
+		v = 6;
+		break;
+	case RotateType::CW_180:
+		v = 3;
+		break;
+	case RotateType::CW_270:
+		v = 8;
+		break;
+	case RotateType::None:
+	default:
+		v = 0;
+		break;
+	}
+	this->AddUInt32(274, 1, &v);
 }
 
 Double Media::EXIFData::GetHDPI() const
