@@ -7696,17 +7696,16 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroupPOI(Net::WebServer::IWeb
 	Text::StringBuilderUTF8 sb;
 	sb.AppendUTF8Char('[');
 	Int32 groupId;
-	if (env.user != 0 && req->GetQueryValueI32(CSTR("id"), &groupId))
+	if (req->GetQueryValueI32(CSTR("id"), &groupId))
 	{
 		me->dataMut.LockRead();
 		GroupInfo *poiGroup = me->groupMap.Get(groupId);
 		if (poiGroup)
 		{
-
-			if (env.user->userType == 0)
-				me->AddGroupPOI(&sb, poiGroup, 0);
-			else
+			if (env.user != 0)
 				me->AddGroupPOI(&sb, poiGroup, env.user->id);
+			else
+				me->AddGroupPOI(&sb, poiGroup, 0);
 			if (sb.GetLength() > 1)
 			{
 				sb.RemoveChars(3);
@@ -7737,9 +7736,9 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpeciesPOI(Net::WebServer::IW
 		if (poiSpecies)
 		{
 			if (env.user->userType == 0)
-				AddSpeciesPOI(&sb, poiSpecies, 0, false);
+				me->AddSpeciesPOI(&sb, poiSpecies, 0, false);
 			else
-				AddSpeciesPOI(&sb, poiSpecies, env.user->id, me->GroupIsPublic(poiSpecies->groupId));
+				me->AddSpeciesPOI(&sb, poiSpecies, env.user->id, me->GroupIsPublic(poiSpecies->groupId));
 			if (sb.GetLength() > 1)
 			{
 				sb.RemoveChars(3);
@@ -7779,12 +7778,22 @@ void SSWR::OrganMgr::OrganWebHandler::AddSpeciesPOI(Text::StringBuilderUTF8 *sb,
 	UserFileInfo *file;
 	UOSInt k;
 	UOSInt l;
+	WebUserInfo *user = 0;
+	Bool adminUser = false;
+	if (userId != 0)
+	{
+		user = this->userMap.Get(userId);
+		if (user && user->userType == 0)
+		{
+			adminUser = true;
+		}
+	}
 	k = 0;
 	l = species->files.GetCount();
 	while (k < l)
 	{
 		file = species->files.GetItem(k);
-		if ((file->lat != 0 || file->lon != 0) && (publicGroup || userId == 0 || file->webuserId == userId))
+		if ((file->lat != 0 || file->lon != 0) && (publicGroup || adminUser || file->webuserId == userId))
 		{
 			sb->AppendUTF8Char('{');
 			sb->AppendC(UTF8STRC("\"id\":\""));
