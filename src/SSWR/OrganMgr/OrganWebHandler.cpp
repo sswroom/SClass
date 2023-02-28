@@ -1347,7 +1347,7 @@ Bool SSWR::OrganMgr::OrganWebHandler::SpeciesModify(Int32 speciesId, Text::CStri
 	}
 }
 
-Int32 SSWR::OrganMgr::OrganWebHandler::UserfileAdd(Int32 userId, Int32 spId, Text::CString fileName, const UInt8 *fileCont, UOSInt fileSize)
+Int32 SSWR::OrganMgr::OrganWebHandler::UserfileAdd(Int32 userId, Int32 spId, Text::CString fileName, const UInt8 *fileCont, UOSInt fileSize, Bool mustHaveCamera)
 {
 	UOSInt j;
 	UOSInt i;
@@ -1423,7 +1423,7 @@ Int32 SSWR::OrganMgr::OrganWebHandler::UserfileAdd(Int32 userId, Int32 spId, Tex
 		{
 			if (t == IO::ParserType::ImageList)
 			{
-				valid = true;
+				valid = !mustHaveCamera;
 
 				Media::ImageList *imgList = (Media::ImageList*)pobj;
 				Media::Image *img = imgList->GetImage(0, 0);
@@ -1432,6 +1432,7 @@ Int32 SSWR::OrganMgr::OrganWebHandler::UserfileAdd(Int32 userId, Int32 spId, Tex
 					Media::EXIFData *exif = img->exif;
 					if (exif)
 					{
+						valid = true;
 						exif->GetPhotoDate(&fileTime);
 						fileTime = fileTime.SetTimeZoneQHR(Data::DateTimeUtil::GetLocalTzQhr());
 						if (fileTime.ToUnixTimestamp() >= 946684800) //Y2000
@@ -1464,6 +1465,10 @@ Int32 SSWR::OrganMgr::OrganWebHandler::UserfileAdd(Int32 userId, Int32 spId, Tex
 						else if (cstr2.v)
 						{
 							camera = Text::String::New(cstr2);
+						}
+						else if (mustHaveCamera)
+						{
+							valid = false;
 						}
 						Double altitude;
 						Int64 gpsTimeTick;
@@ -6222,7 +6227,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoUpload(Net::WebServer::I
 		writer.WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
 		writer.WriteStrC(UTF8STRC("</td><td>"));
 		me->dataMut.LockWrite();
-		Int32 ret = me->UserfileAdd(env.user->id, env.user->unorganSpId, CSTRP(fileName, fileNameEnd), fileCont, fileSize);
+		Int32 ret = me->UserfileAdd(env.user->id, env.user->unorganSpId, CSTRP(fileName, fileNameEnd), fileCont, fileSize, true);
 		me->dataMut.UnlockWrite();
 		if (ret == 0)
 		{
@@ -6285,6 +6290,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoUpload2(Net::WebServer::
 	UTF8Char fileName[512];
 	UTF8Char *fileNameEnd;
 	const UInt8 *fileCont;
+	Bool succ = true;
 	req->ParseHTTPForm();
 
 	while (true)
@@ -6295,14 +6301,22 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoUpload2(Net::WebServer::
 			break;
 		}
 		me->dataMut.LockWrite();
-		me->UserfileAdd(env.user->id, env.user->unorganSpId, CSTRP(fileName, fileNameEnd), fileCont, fileSize);
+		if (!me->UserfileAdd(env.user->id, env.user->unorganSpId, CSTRP(fileName, fileNameEnd), fileCont, fileSize, true))
+			succ = false;
 		me->dataMut.UnlockWrite();
 
 		i++;
 	}
 
 	IO::MemoryStream mstm;
-	mstm.Write((const UInt8*)"ok", 2);
+	if (succ)
+	{
+		mstm.Write((const UInt8*)"ok", 2);
+	}
+	else
+	{
+		mstm.Write((const UInt8*)"fail", 4);
+	}
 	ResponseMstm(req, resp, &mstm, CSTR("text/plain"));
 	return true;
 }
@@ -6335,7 +6349,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoUploadD(Net::WebServer::
 	}
 
 	me->dataMut.LockWrite();
-	Int32 ret = me->UserfileAdd(env.user->id, env.user->unorganSpId, sb.ToCString(), imgData, dataSize);
+	Int32 ret = me->UserfileAdd(env.user->id, env.user->unorganSpId, sb.ToCString(), imgData, dataSize, true);
 	me->dataMut.UnlockWrite();
 
 	if (ret == 0)
@@ -7519,20 +7533,33 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcIndex(Net::WebServer::IWebReq
 	me->WriteHeader(&writer, (const UTF8Char*)"Index", env.user, env.isMobile);
 	writer.WriteLineC(UTF8STRC("<script type=\"application/javascript\">\r\n"
 								"async function submitFile() {\r\n"
+								"\tdocument.getElementById(\"uploadStatus\").disabled = true;\r\n"
 								"\tvar url = \"photoupload2.html\";\r\n"
 								"\tvar fileupload = document.getElementById(\"file\");\r\n"
+								"\tvar uploadStatus = document.getElementById(\"uploadStatus\");\r\n"
+								"\tvar failList = new Array();\r\n"
+								"\tvar statusText;\r\n"
 								"\tvar i = 0;\r\n"
 								"\tvar j = fileupload.files.length;\r\n"
 								"\twhile (i < j) {\r\n"
+								"\t\tstatusText = \"Uploading \"+(i + 1)+\" of \"+j;\r\n"
+								"\t\tif (failList.length > 0) statusText = statusText+\"<br/>Failed Files:<br/>\"+failList.join(\"<br/>\");\r\n"
+								"\t\tuploadStatus.innerHTML = statusText;\r\n"
 								"\t\tvar formData = new FormData();\r\n"
 								"\t\tformData.append(\"file\", fileupload.files[i]);\r\n"
-								"\t\tawait fetch(url, {\r\n"
+								"\t\tconst resp = await fetch(url, {\r\n"
 								"\t\t\tmethod: \"POST\", \r\n"
 								"\t\t\tbody: formData\r\n"
 								"\t\t});\r\n"
+								"\t\tif (resp.text() != \"ok\") {\r\n"
+								"\t\t\tfailList.push(fileupload.files[i].name);\r\n"
+								"\t\t}\r\n"
 								"\t\ti++;\r\n"
 								"\t}\r\n"
-								"\tdocument.location.reload();\r\n"
+								"\tif (failList.length > 0) statusText = \"Failed Files:<br/>\"+failList.join(\"<br/>\");\r\n"
+								"\telse statusText = \"Upload Success\";\r\n"
+								"\tuploadStatus.innerHTML = statusText;\r\n"
+								"\tdocument.getElementById(\"uploadStatus\").disabled = false;\r\n"
 								"}\r\n"
 								"</script>"));
 	writer.WriteLineC(UTF8STRC("<center><h1>Index</h1></center>"));
@@ -7613,7 +7640,8 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcIndex(Net::WebServer::IWebReq
 		writer.WriteLineC(UTF8STRC("<hr/>"));
 		writer.WriteLineC(UTF8STRC("<h3>Photo Upload</h3>"));
 		writer.WriteLineC(UTF8STRC("<form name=\"upload\" method=\"POST\" action=\"photoupload.html\" enctype=\"multipart/form-data\">Files:<input type=\"file\" id=\"file\" name=\"file\" multiple/>"));
-		writer.WriteLineC(UTF8STRC("<input type=\"button\" value=\"Upload\" onclick=\"submitFile()\"/></form>"));
+		writer.WriteLineC(UTF8STRC("<input type=\"button\" id=\"uploadButton\" value=\"Upload\" onclick=\"submitFile()\"/></form>"));
+		writer.WriteLineC(UTF8STRC("<div id=\"uploadStatus\"></div>"));
 	}
 	writer.WriteLineC(UTF8STRC("<hr/>"));
 	writer.WriteStrC(UTF8STRC("<a href=\"booklist.html?id="));
