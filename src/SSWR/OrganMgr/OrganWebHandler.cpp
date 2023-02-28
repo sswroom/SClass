@@ -5637,6 +5637,22 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetailD(Net::WebServer::
 					writer.WriteStrC(sbuff2, (UOSInt)(sptr2 - sbuff2));
 					writer.WriteStrC(UTF8STRC("<br/>"));
 				}
+				sb.ClearStr();
+				sb.AppendC(UTF8STRC("photodown.html?id="));
+				sb.AppendI32(species->speciesId);
+				sb.AppendC(UTF8STRC("&cateId="));
+				sb.AppendI32(species->cateId);
+				sb.AppendC(UTF8STRC("&fileId="));
+				sb.AppendI32(userFile->id);
+				s = Text::XML::ToNewAttrText(sb.ToString());
+				sb.ClearStr();
+				sb.AppendC(UTF8STRC("<a href="));
+				sb.Append(s);
+				s->Release();
+				sb.AppendC(UTF8STRC(">"));
+				sb.Append(LangGetValue(lang, UTF8STRC("Download")));
+				sb.AppendC(UTF8STRC("</a>"));
+				writer.WriteLineC(sb.ToString(), sb.GetLength());
 			}
 
 			sb.ClearStr();
@@ -6099,6 +6115,26 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDay(Net::WebServer::IWeb
 			}
 			writer.WriteStrC(UTF8STRC("<br/>"));
 			writer.WriteStr(userFile->oriFileName->ToCString());
+			if (env.user->userType == 0 && sp)
+			{
+				sb.ClearStr();
+				sb.AppendC(UTF8STRC("<br/><a href=\"species.html?id="));
+				sb.AppendI32(sp->speciesId);
+				sb.AppendC(UTF8STRC("&amp;cateId="));
+				sb.AppendI32(sp->cateId);
+				sb.AppendC(UTF8STRC("\">"));
+				writer.WriteLineC(sb.ToString(), sb.GetLength());
+				sb.ClearStr();
+				sb.Append(sp->sciName);
+				sb.AppendC(UTF8STRC(" "));
+				sb.Append(sp->chiName);
+				sb.AppendC(UTF8STRC(" "));
+				sb.Append(sp->engName);
+				s = Text::XML::ToNewHTMLBodyText(sb.ToString());
+				writer.WriteStrC(s->v, s->leng);
+				s->Release();
+				writer.WriteLineC(UTF8STRC("</a>"));
+			}
 
 	/*		Data::Int64Map<SSWR::OrganMgr::OrganWebHandler::TripInfo*> *tripCate = user->tripCates->Get(sp->cateId);
 			if (tripCate)
@@ -7544,7 +7580,6 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcIndex(Net::WebServer::IWebReq
 								"\tvar fileupload = document.getElementById(\"file\");\r\n"
 								"\tvar uploadStatus = document.getElementById(\"uploadStatus\");\r\n"
 								"\tvar failList = new Array();\r\n"
-								"\tvar failFiles = new Array();\r\n"
 								"\tvar statusText;\r\n"
 								"\tvar i = 0;\r\n"
 								"\tvar j = fileupload.files.length;\r\n"
@@ -7561,13 +7596,11 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcIndex(Net::WebServer::IWebReq
 								"\t\tconst respText = await resp.text();\r\n"
 								"\t\tif (respText != \"ok\") {\r\n"
 								"\t\t\tfailList.push(fileupload.files[i].name);\r\n"
-								"\t\t\tfailFiles.push(fileupload.files[i]);\r\n"
 								"\t\t}\r\n"
 								"\t\ti++;\r\n"
 								"\t}\r\n"
 								"\tif (failList.length > 0) {\r\n"
 								"\t\tstatusText = \"Failed Files:<br/>\"+failList.join(\"<br/>\");\r\n"
-								"\t\tfileupload.files = failFiles;\r\n"
 								"\t} else {\r\n"
 								"\t\tstatusText = \"Upload Success\";\r\n"
 								"\t\tfileupload.value = null;\r\n"
