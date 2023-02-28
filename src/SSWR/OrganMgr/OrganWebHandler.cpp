@@ -7551,6 +7551,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcIndex(Net::WebServer::IWebReq
 								"\t\t\tmethod: \"POST\", \r\n"
 								"\t\t\tbody: formData\r\n"
 								"\t\t});\r\n"
+								"\t\tconsole.log(resp.text());\r\n"
 								"\t\tif (resp.text() != \"ok\") {\r\n"
 								"\t\t\tfailList.push(fileupload.files[i].name);\r\n"
 								"\t\t}\r\n"
