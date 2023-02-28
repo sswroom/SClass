@@ -7552,7 +7552,6 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcIndex(Net::WebServer::IWebReq
 								"\t\t\tbody: formData\r\n"
 								"\t\t});\r\n"
 								"\t\tconst respText = await resp.text();\r\n"
-								"\t\tconsole.log(respText);\r\n"
 								"\t\tif (respText != \"ok\") {\r\n"
 								"\t\t\tfailList.push(fileupload.files[i].name);\r\n"
 								"\t\t}\r\n"
