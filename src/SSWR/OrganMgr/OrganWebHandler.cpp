@@ -5806,8 +5806,10 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoYear(Net::WebServer::IWe
 						s->Release();
 						i++;
 					}
-
-					writer.WriteLineC(UTF8STRC("</center></td>"));
+					writer.WriteStrC(UTF8STRC(" ("));
+					sptr = Text::StrOSInt(sbuff, (startIndex - dayStartIndex));
+					writer.WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
+					writer.WriteLineC(UTF8STRC(")</center></td>"));
 
 					currColumn++;
 					if (currColumn >= colCount)
@@ -7538,6 +7540,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcIndex(Net::WebServer::IWebReq
 								"\tvar fileupload = document.getElementById(\"file\");\r\n"
 								"\tvar uploadStatus = document.getElementById(\"uploadStatus\");\r\n"
 								"\tvar failList = new Array();\r\n"
+								"\tvar failFiles = new Array();\r\n"
 								"\tvar statusText;\r\n"
 								"\tvar i = 0;\r\n"
 								"\tvar j = fileupload.files.length;\r\n"
@@ -7554,11 +7557,17 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcIndex(Net::WebServer::IWebReq
 								"\t\tconst respText = await resp.text();\r\n"
 								"\t\tif (respText != \"ok\") {\r\n"
 								"\t\t\tfailList.push(fileupload.files[i].name);\r\n"
+								"\t\t\tfailFiles.push(fileupload.files[i]);\r\n"
 								"\t\t}\r\n"
 								"\t\ti++;\r\n"
 								"\t}\r\n"
-								"\tif (failList.length > 0) statusText = \"Failed Files:<br/>\"+failList.join(\"<br/>\");\r\n"
-								"\telse statusText = \"Upload Success\";\r\n"
+								"\tif (failList.length > 0) {\r\n"
+								"\t\tstatusText = \"Failed Files:<br/>\"+failList.join(\"<br/>\");\r\n"
+								"\t\tfileupload.files = failFiles;\r\n"
+								"\t} else {\r\n"
+								"\t\tstatusText = \"Upload Success\";\r\n"
+								"\t\tfileupload.value = null;\r\n"
+								"\t}\r\n"
 								"\tuploadStatus.innerHTML = statusText;\r\n"
 								"\tdocument.getElementById(\"uploadStatus\").disabled = false;\r\n"
 								"}\r\n"
