@@ -5934,8 +5934,10 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoYear(Net::WebServer::IWe
 				s->Release();
 				i++;
 			}
-
-			writer.WriteLineC(UTF8STRC("</center></td>"));
+			writer.WriteStrC(UTF8STRC(" ("));
+			sptr = Text::StrOSInt(sbuff, (startIndex - dayStartIndex));
+			writer.WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
+			writer.WriteLineC(UTF8STRC(")</center></td>"));
 
 			currColumn++;
 			if (currColumn >= colCount)
@@ -6095,6 +6097,8 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDay(Net::WebServer::IWeb
 				writer.WriteStrC(s->v, s->leng);
 				s->Release();
 			}
+			writer.WriteStrC(UTF8STRC("<br/>"));
+			writer.WriteStr(userFile->oriFileName->ToCString());
 
 	/*		Data::Int64Map<SSWR::OrganMgr::OrganWebHandler::TripInfo*> *tripCate = user->tripCates->Get(sp->cateId);
 			if (tripCate)
