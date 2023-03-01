@@ -1,12 +1,12 @@
 #ifndef _SM_PARSER_OBJPARSER_ITMPARSER
 #define _SM_PARSER_OBJPARSER_ITMPARSER
-#include "IO/IObjectParser.h"
+#include "IO/ObjectParser.h"
 
 namespace Parser
 {
 	namespace ObjParser
 	{
-		class ITMParser : public IO::IObjectParser
+		class ITMParser : public IO::ObjectParser
 		{
 		private:
 			Parser::ParserList *parsers;
@@ -17,7 +17,7 @@ namespace Parser
 
 			virtual Int32 GetName();
 			virtual void SetParserList(Parser::ParserList *parsers);
-			virtual void PrepareSelector(IO::IFileSelector *selector, IO::ParserType t);
+			virtual void PrepareSelector(IO::FileSelector *selector, IO::ParserType t);
 			virtual IO::ParserType GetParserType();
 			virtual IO::ParsedObject *ParseObject(IO::ParsedObject *pobj, IO::PackageFile *pkgFile, IO::ParserType targetType);
 		};

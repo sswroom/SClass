@@ -184,7 +184,7 @@ Media::ImageList *Map::MercatorTileMap::LoadTileImage(UOSInt level, Math::Coord2
 	Data::Timestamp ts;
 	Data::Timestamp currTS;
 	Net::HTTPClient *cli;
-	IO::IStreamData *fd;
+	IO::StreamData *fd;
 	IO::ParsedObject *pobj;
 	if (level < this->minLevel || level > this->maxLevel)
 		return 0;
@@ -354,7 +354,7 @@ Media::ImageList *Map::MercatorTileMap::LoadTileImage(UOSInt level, Math::Coord2
 	return 0;
 }
 
-IO::IStreamData *Map::MercatorTileMap::LoadTileImageData(UOSInt level, Math::Coord2D<Int32> tileId, Math::RectAreaDbl *bounds, Bool localOnly, ImageType *it)
+IO::StreamData *Map::MercatorTileMap::LoadTileImageData(UOSInt level, Math::Coord2D<Int32> tileId, Math::RectAreaDbl *bounds, Bool localOnly, ImageType *it)
 {
 	UOSInt readSize;
 	UTF8Char url[1024];
@@ -367,7 +367,7 @@ IO::IStreamData *Map::MercatorTileMap::LoadTileImageData(UOSInt level, Math::Coo
 	Data::DateTime dt;
 	Data::DateTime currTime;
 	Net::HTTPClient *cli;
-	IO::IStreamData *fd;
+	IO::StreamData *fd;
 	if (level > this->maxLevel)
 		return 0;
 	Double x1 = TileX2Lon(tileId.x, level);

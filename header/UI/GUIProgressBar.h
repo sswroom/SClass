@@ -1,11 +1,11 @@
 #ifndef _SM_UI_GUIPROGRESSBAR
 #define _SM_UI_GUIPROGRESSBAR
 #include "UI/GUIClientControl.h"
-#include "IO/IProgressHandler.h"
+#include "IO/ProgressHandler.h"
 
 namespace UI
 {
-	class GUIProgressBar : public GUIControl, public IO::IProgressHandler
+	class GUIProgressBar : public GUIControl, public IO::ProgressHandler
 	{
 	private:
 		void *clsData;

@@ -99,7 +99,7 @@ UOSInt IO::FileAnalyse::QTFileAnalyse::GetFrameIndex(UOSInt lev, UInt64 ofst)
 	return INVALID_INDEX;
 }
 
-IO::FileAnalyse::QTFileAnalyse::QTFileAnalyse(IO::IStreamData *fd)
+IO::FileAnalyse::QTFileAnalyse::QTFileAnalyse(IO::StreamData *fd)
 {
 	UInt8 buff[8];
 	this->fd = 0;

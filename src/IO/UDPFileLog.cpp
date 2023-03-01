@@ -5,7 +5,7 @@
 #include "Net/SocketFactory.h"
 #include "Text/Encoding.h"
 
-IO::UDPFileLog::UDPFileLog(IO::IStreamData *fd) : IO::UDPLog(fd->GetFullName())
+IO::UDPFileLog::UDPFileLog(IO::StreamData *fd) : IO::UDPLog(fd->GetFullName())
 {
 	UInt8 *buff;
 

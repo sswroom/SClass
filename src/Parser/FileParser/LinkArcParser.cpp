@@ -20,7 +20,7 @@ Int32 Parser::FileParser::LinkArcParser::GetName()
 	return *(Int32*)"LARC";
 }
 
-void Parser::FileParser::LinkArcParser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
+void Parser::FileParser::LinkArcParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::PackageFile)
 	{
@@ -33,7 +33,7 @@ IO::ParserType Parser::FileParser::LinkArcParser::GetParserType()
 	return IO::ParserType::PackageFile;
 }
 
-IO::ParsedObject *Parser::FileParser::LinkArcParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::LinkArcParser::ParseFileHdr(IO::StreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	UInt64 currOfst;
 	UInt8 nameSize;

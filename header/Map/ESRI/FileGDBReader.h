@@ -2,7 +2,7 @@
 #define _SM_MAP_ESRI_FILEGDBREADER
 #include "Data/QueryConditions.h"
 #include "DB/DBReader.h"
-#include "IO/IStreamData.h"
+#include "IO/StreamData.h"
 #include "Map/ESRI/FileGDBUtil.h"
 
 namespace Map
@@ -12,7 +12,7 @@ namespace Map
 		class FileGDBReader : public DB::DBReader, public Data::ObjectGetter
 		{
 		private:
-			IO::IStreamData *fd;
+			IO::StreamData *fd;
 			UInt64 currOfst;
 			FileGDBTableInfo *tableInfo;
 			UOSInt rowSize;
@@ -31,7 +31,7 @@ namespace Map
 			
 			UOSInt GetFieldIndex(UOSInt colIndex);
 		public:
-			FileGDBReader(IO::IStreamData *fd, UInt64 ofst, FileGDBTableInfo *tableInfo, Data::ArrayList<Text::String*> *columnNames, UOSInt dataOfst, UOSInt maxCnt, Data::QueryConditions *conditions);
+			FileGDBReader(IO::StreamData *fd, UInt64 ofst, FileGDBTableInfo *tableInfo, Data::ArrayList<Text::String*> *columnNames, UOSInt dataOfst, UOSInt maxCnt, Data::QueryConditions *conditions);
 			virtual ~FileGDBReader();
 
 			virtual Bool ReadNext();
@@ -59,7 +59,7 @@ namespace Map
 			virtual DB::DBUtil::ColType GetColType(UOSInt colIndex, UOSInt *colSize);
 			virtual Bool GetColDef(UOSInt colIndex, DB::ColDef *colDef);
 
-			void SetIndex(IO::IStreamData *fd, UOSInt indexCnt);
+			void SetIndex(IO::StreamData *fd, UOSInt indexCnt);
 		};
 	}
 }

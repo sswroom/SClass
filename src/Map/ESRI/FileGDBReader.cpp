@@ -30,7 +30,7 @@ UOSInt Map::ESRI::FileGDBReader::GetFieldIndex(UOSInt colIndex)
 	}
 }
 
-Map::ESRI::FileGDBReader::FileGDBReader(IO::IStreamData *fd, UInt64 ofst, FileGDBTableInfo *tableInfo, Data::ArrayList<Text::String*> *columnNames, UOSInt dataOfst, UOSInt maxCnt, Data::QueryConditions *conditions)
+Map::ESRI::FileGDBReader::FileGDBReader(IO::StreamData *fd, UInt64 ofst, FileGDBTableInfo *tableInfo, Data::ArrayList<Text::String*> *columnNames, UOSInt dataOfst, UOSInt maxCnt, Data::QueryConditions *conditions)
 {
 	this->indexCnt = 0;
 	this->indexNext = 0;
@@ -1562,7 +1562,7 @@ Bool Map::ESRI::FileGDBReader::GetColDef(UOSInt colIndex, DB::ColDef *colDef)
 	return true;
 }
 
-void Map::ESRI::FileGDBReader::SetIndex(IO::IStreamData *fd, UOSInt indexCnt)
+void Map::ESRI::FileGDBReader::SetIndex(IO::StreamData *fd, UOSInt indexCnt)
 {
 	if (this->indexBuff == 0)
 	{

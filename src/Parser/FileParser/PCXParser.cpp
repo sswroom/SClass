@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Data/ByteTool.h"
 #include "IO/FileStream.h"
-#include "IO/IStreamData.h"
+#include "IO/StreamData.h"
 #include "Media/FrameInfo.h"
 #include "Media/IImgResizer.h"
 #include "Media/ImageList.h"
@@ -22,7 +22,7 @@ Int32 Parser::FileParser::PCXParser::GetName()
 	return *(Int32*)"PCXP";
 }
 
-void Parser::FileParser::PCXParser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
+void Parser::FileParser::PCXParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::ImageList)
 	{
@@ -35,7 +35,7 @@ IO::ParserType Parser::FileParser::PCXParser::GetParserType()
 	return IO::ParserType::ImageList;
 }
 
-IO::ParsedObject *Parser::FileParser::PCXParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::PCXParser::ParseFileHdr(IO::StreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	UInt8 *dataBuff;
 	UInt8 *lineBuff;

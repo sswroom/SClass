@@ -23,7 +23,7 @@ void Parser::ObjParser::ITMParser::SetParserList(Parser::ParserList *parsers)
 	this->parsers = parsers;
 }
 
-void Parser::ObjParser::ITMParser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
+void Parser::ObjParser::ITMParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::ReadingDB)
 	{
@@ -57,7 +57,7 @@ IO::ParsedObject *Parser::ObjParser::ITMParser::ParseObject(IO::ParsedObject *po
 		{
 			if (pkg->GetItemType(i) == IO::PackageFile::PackObjectType::StreamData)
 			{
-				IO::IStreamData *fd = pkg->GetItemStmDataNew(i);
+				IO::StreamData *fd = pkg->GetItemStmDataNew(i);
 				IO::ParsedObject *pobj2 = parsers->ParseFile(fd, &pt);
 				DEL_CLASS(fd);
 				if (pobj2)

@@ -233,7 +233,7 @@ Text::IMIMEObj *Text::MIMEObj::MailMessage::GetRAWContent() const
 	return this->content;
 }
 
-Text::MIMEObj::MailMessage *Text::MIMEObj::MailMessage::ParseFile(IO::IStreamData *fd)
+Text::MIMEObj::MailMessage *Text::MIMEObj::MailMessage::ParseFile(IO::StreamData *fd)
 {
 	Text::MIMEObj::MailMessage *mail;
 	NEW_CLASS(mail, Text::MIMEObj::MailMessage());

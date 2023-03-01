@@ -1,12 +1,12 @@
 #ifndef _SM_PARSER_OBJPARSER_DBITPARSER
 #define _SM_PARSER_OBJPARSER_DBITPARSER
-#include "IO/IObjectParser.h"
+#include "IO/ObjectParser.h"
 
 namespace Parser
 {
 	namespace ObjParser
 	{
-		class DBITParser : public IO::IObjectParser
+		class DBITParser : public IO::ObjectParser
 		{
 		private:
 			typedef struct
@@ -24,7 +24,7 @@ namespace Parser
 			virtual ~DBITParser();
 
 			virtual Int32 GetName();
-			virtual void PrepareSelector(IO::IFileSelector *selector, IO::ParserType t);
+			virtual void PrepareSelector(IO::FileSelector *selector, IO::ParserType t);
 			virtual IO::ParserType GetParserType();
 			virtual IO::ParsedObject *ParseObject(IO::ParsedObject *pobj, IO::PackageFile *pkgFile, IO::ParserType targetType);
 		};

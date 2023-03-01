@@ -576,7 +576,7 @@ Bool SSWR::DiscDB::DiscDBEnv::NewMovies(const UTF8Char *discId, UOSInt fileId, c
 	return this->db->ExecuteNonQuery(sql.ToCString()) > 0;
 }
 
-Bool SSWR::DiscDB::DiscDBEnv::AddMD5(IO::IStreamData *fd)
+Bool SSWR::DiscDB::DiscDBEnv::AddMD5(IO::StreamData *fd)
 {
 	Parser::FileParser::MD5Parser parser;
 	parser.SetCodePage(65001);

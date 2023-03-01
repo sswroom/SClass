@@ -16,7 +16,7 @@ Int32 Parser::FileParser::TSPParser::GetName()
 	return *(Int32*)"TSPP";
 }
 
-void Parser::FileParser::TSPParser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
+void Parser::FileParser::TSPParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::ReadingDB)
 	{
@@ -29,7 +29,7 @@ IO::ParserType Parser::FileParser::TSPParser::GetParserType()
 	return IO::ParserType::ReadingDB;
 }
 
-IO::ParsedObject *Parser::FileParser::TSPParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::TSPParser::ParseFileHdr(IO::StreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	if (*(Int64*)hdr != *(Int64*)"SmTS____" && *(Int64*)hdr != *(Int64*)"SmTS___A" && *(Int64*)hdr != *(Int64*)"SmTS___B")
 	{

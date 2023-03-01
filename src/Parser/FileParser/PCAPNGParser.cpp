@@ -3,7 +3,7 @@
 #include "Data/ByteTool.h"
 #include "IO/BTScanLog.h"
 #include "IO/FileStream.h"
-#include "IO/IStreamData.h"
+#include "IO/StreamData.h"
 #include "IO/FileAnalyse/PCapngFileAnalyse.h"
 #include "Net/EthernetAnalyzer.h"
 #include "Parser/FileParser/PCAPNGParser.h"
@@ -21,7 +21,7 @@ Int32 Parser::FileParser::PCAPNGParser::GetName()
 	return *(Int32*)"PCAN";
 }
 
-void Parser::FileParser::PCAPNGParser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
+void Parser::FileParser::PCAPNGParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::EthernetAnalyzer)
 	{
@@ -34,7 +34,7 @@ IO::ParserType Parser::FileParser::PCAPNGParser::GetParserType()
 	return IO::ParserType::EthernetAnalyzer;
 }
 
-IO::ParsedObject *Parser::FileParser::PCAPNGParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::PCAPNGParser::ParseFileHdr(IO::StreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	UInt8 *packetBuff;
 	UInt32 maxSize = 65536;

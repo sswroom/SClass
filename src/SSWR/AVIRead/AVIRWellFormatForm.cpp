@@ -7,7 +7,7 @@
 #include "Text/XMLReader.h"
 #include "UI/FileDialog.h"
 
-void SSWR::AVIRead::AVIRWellFormatForm::AddFilters(IO::IFileSelector *selector)
+void SSWR::AVIRead::AVIRWellFormatForm::AddFilters(IO::FileSelector *selector)
 {
 	selector->AddFilter(CSTR("*.json"), CSTR("JSON File"));
 	selector->AddFilter(CSTR("*.html"), CSTR("HTML File"));

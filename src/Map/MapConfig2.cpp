@@ -5,7 +5,7 @@
 #include "IO/Console.h"
 #include "IO/FileStream.h"
 #include "IO/FileParser.h"
-#include "IO/IStreamData.h"
+#include "IO/StreamData.h"
 #include "IO/Path.h"
 #include "IO/Stream.h"
 #include "IO/StreamReader.h"

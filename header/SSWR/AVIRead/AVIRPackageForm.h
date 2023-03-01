@@ -19,7 +19,7 @@ namespace SSWR
 {
 	namespace AVIRead
 	{
-		class AVIRPackageForm : public UI::GUIForm, public IO::IProgressHandler
+		class AVIRPackageForm : public UI::GUIForm, public IO::ProgressHandler
 		{
 		private:
 			typedef enum

@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Data/ByteTool.h"
 #include "IO/FileStream.h"
-#include "IO/IStreamData.h"
+#include "IO/StreamData.h"
 #include "Net/EthernetAnalyzer.h"
 #include "Parser/FileParser/PCAPParser.h"
 
@@ -19,7 +19,7 @@ Int32 Parser::FileParser::PCAPParser::GetName()
 	return *(Int32*)"PCAP";
 }
 
-void Parser::FileParser::PCAPParser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
+void Parser::FileParser::PCAPParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::EthernetAnalyzer)
 	{
@@ -32,7 +32,7 @@ IO::ParserType Parser::FileParser::PCAPParser::GetParserType()
 	return IO::ParserType::EthernetAnalyzer;
 }
 
-IO::ParsedObject *Parser::FileParser::PCAPParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::PCAPParser::ParseFileHdr(IO::StreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	UInt8 *packetBuff;
 	UInt32 maxSize = 65536;

@@ -3,12 +3,12 @@
 #include "Handles.h"
 #include "Data/ArrayListString.h"
 #include "Data/ArrayListStrUTF8.h"
-#include "IO/IFileSelector.h"
+#include "IO/FileSelector.h"
 #include "IO/Registry.h"
 
 namespace UI
 {
-	class FileDialog : public IO::IFileSelector
+	class FileDialog : public IO::FileSelector
 	{
 	private:
 		IO::Registry *reg;

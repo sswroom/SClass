@@ -1,7 +1,7 @@
 #ifndef _SM_NET_RAWCAPTURE
 #define _SM_NET_RAWCAPTURE
 #include "IO/Stream.h"
-#include "IO/IFileSelector.h"
+#include "IO/FileSelector.h"
 #include "Net/SocketMonitor.h"
 #include "Sync/Mutex.h"
 #include "Text/CString.h"
@@ -52,7 +52,7 @@ namespace Net
 		static Int32 CaptureTypeGetLinkType(CaptureType type);
 		static Text::CString FileFormatGetName(FileFormat format);
 		static Text::CString FileFormatGetExt(FileFormat format);
-		static void AddFilters(IO::IFileSelector *selector);
+		static void AddFilters(IO::FileSelector *selector);
 	};
 }
 #endif

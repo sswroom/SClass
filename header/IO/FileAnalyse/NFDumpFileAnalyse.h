@@ -2,7 +2,7 @@
 #define _SM_IO_FILEANALYSE_NFDUMPFILEANALYSE
 #include "Data/FastMap.h"
 #include "Data/SyncArrayList.h"
-#include "IO/IStreamData.h"
+#include "IO/StreamData.h"
 #include "IO/FileAnalyse/IFileAnalyse.h"
 #include "Text/StringBuilderUTF8.h"
 
@@ -20,7 +20,7 @@ namespace IO
 				Int32 packType;
 			} PackInfo;
 		private:
-			IO::IStreamData *fd;
+			IO::StreamData *fd;
 			Data::SyncArrayList<PackInfo*> packs;
 			Data::FastMap<Int32, UInt8*> extMap;
 			Bool hasLZODecomp;
@@ -32,7 +32,7 @@ namespace IO
 			static UInt32 __stdcall ParseThread(void *userObj);
 			UOSInt LZODecompBlock(UInt8 *srcBlock, UOSInt srcSize, UInt8 *outBlock, UOSInt maxOutSize);
 		public:
-			NFDumpFileAnalyse(IO::IStreamData *fd);
+			NFDumpFileAnalyse(IO::StreamData *fd);
 			virtual ~NFDumpFileAnalyse();
 
 			virtual Text::CString GetFormatName();

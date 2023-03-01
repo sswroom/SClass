@@ -3,7 +3,7 @@
 #include "Data/ByteTool.h"
 #include "Data/Compress/LZWDecStream.h"
 #include "IO/BitReaderLSB.h"
-#include "IO/IStreamData.h"
+#include "IO/StreamData.h"
 #include "IO/MemoryStream.h"
 #include "IO/StreamDataStream.h"
 #include "Media/FrameInfo.h"
@@ -25,7 +25,7 @@ Int32 Parser::FileParser::GIFParser::GetName()
 	return *(Int32*)"GIFP";
 }
 
-void Parser::FileParser::GIFParser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
+void Parser::FileParser::GIFParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::ImageList)
 	{
@@ -38,7 +38,7 @@ IO::ParserType Parser::FileParser::GIFParser::GetParserType()
 	return IO::ParserType::ImageList;
 }
 
-IO::ParsedObject *Parser::FileParser::GIFParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::GIFParser::ParseFileHdr(IO::StreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 //	UInt8 ver;
 

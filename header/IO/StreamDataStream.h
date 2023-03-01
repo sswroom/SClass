@@ -1,6 +1,6 @@
 #ifndef _SM_IO_STREAMDATASTREAM
 #define _SM_IO_STREAMDATASTREAM
-#include "IO/IStreamData.h"
+#include "IO/StreamData.h"
 #include "IO/SeekableStream.h"
 
 namespace IO
@@ -8,12 +8,12 @@ namespace IO
 	class StreamDataStream : public IO::SeekableStream
 	{
 	private:
-		IO::IStreamData *data;
+		IO::StreamData *data;
 		UInt64 currOfst;
 		UInt64 stmDataLeng;
 
 	public:
-		StreamDataStream(IO::IStreamData *data);
+		StreamDataStream(IO::StreamData *data);
 		virtual ~StreamDataStream();
 
 		virtual Bool IsDown() const;

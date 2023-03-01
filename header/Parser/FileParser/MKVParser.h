@@ -14,7 +14,7 @@ namespace Parser
 		private:
 			typedef struct
 			{
-				IO::IStreamData *fd;
+				IO::StreamData *fd;
 				UInt64 nextReadOfst;
 				UInt8 *buff;
 				UOSInt buffSize;
@@ -26,9 +26,9 @@ namespace Parser
 			virtual ~MKVParser();
 
 			virtual Int32 GetName();
-			virtual void PrepareSelector(IO::IFileSelector *selector, IO::ParserType t);
+			virtual void PrepareSelector(IO::FileSelector *selector, IO::ParserType t);
 			virtual IO::ParserType GetParserType();
-			virtual IO::ParsedObject *ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr);
+			virtual IO::ParsedObject *ParseFileHdr(IO::StreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr);
 		private:
 			static UOSInt ReadDataSize(MKVStatus *status, UInt64 *dataSize);
 			static UOSInt ReadID(MKVStatus *status, UInt32 *eleId);

@@ -110,7 +110,7 @@ void IO::SPackageFile::AddPackageInner(IO::PackageFile *pkg, UTF8Char pathSepera
 		}
 		else if (pt == IO::PackageFile::PackObjectType::StreamData)
 		{
-			IO::IStreamData *fd = pkg->GetItemStmDataNew(i);
+			IO::StreamData *fd = pkg->GetItemStmDataNew(i);
 			if (fd)
 			{
 				this->AddFile(fd, {pathStart, (UOSInt)(sptr - pathStart)}, pkg->GetItemModTime(i));
@@ -440,7 +440,7 @@ IO::SPackageFile::~SPackageFile()
 	}
 }
 
-Bool IO::SPackageFile::AddFile(IO::IStreamData *fd, Text::CString fileName, const Data::Timestamp &modTime)
+Bool IO::SPackageFile::AddFile(IO::StreamData *fd, Text::CString fileName, const Data::Timestamp &modTime)
 {
 	UInt8 dataBuff[512];
 	UInt64 dataSize = fd->GetDataSize();
@@ -680,9 +680,9 @@ void IO::SPackageFile::PauseCommit(Bool pauseCommit)
 	this->pauseCommit = pauseCommit;
 }
 
-IO::IStreamData *IO::SPackageFile::CreateStreamData(Text::CString fileName)
+IO::StreamData *IO::SPackageFile::CreateStreamData(Text::CString fileName)
 {
-	IO::IStreamData *fd = 0;
+	IO::StreamData *fd = 0;
 	Sync::MutexUsage mutUsage(&this->mut);
 	FileInfo *file = this->fileMap.Get(fileName);
 	if (file)

@@ -49,7 +49,7 @@ void Parser::FileParser::ZIPParser::SetEncFactory(Text::EncodingFactory *encFact
 	this->encFact = encFact;
 }
 
-void Parser::FileParser::ZIPParser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
+void Parser::FileParser::ZIPParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::PackageFile)
 	{
@@ -76,7 +76,7 @@ typedef struct
 	UInt32 commentSize;
 } ZIPInfoEntry;
 
-IO::ParsedObject *Parser::FileParser::ZIPParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::ZIPParser::ParseFileHdr(IO::StreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
@@ -468,7 +468,7 @@ IO::ParsedObject *Parser::FileParser::ZIPParser::ParseFileHdr(IO::IStreamData *f
 			sptr = pf->GetItemName(sbuff, ui);
 			if (Text::StrEndsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC(".kml")) && pf->GetItemType(ui) == IO::PackageFile::PackObjectType::StreamData)
 			{
-				IO::IStreamData *stmData = pf->GetItemStmDataNew(ui);
+				IO::StreamData *stmData = pf->GetItemStmDataNew(ui);
 				Parser::FileParser::XMLParser xmlParser;
 				xmlParser.SetParserList(this->parsers);
 				xmlParser.SetEncFactory(this->encFact);
@@ -503,7 +503,7 @@ IO::ParsedObject *Parser::FileParser::ZIPParser::ParseFileHdr(IO::IStreamData *f
 	return pf;
 }
 
-UOSInt Parser::FileParser::ZIPParser::ParseCentDir(IO::PackageFile *pf, Text::Encoding *enc, IO::IStreamData *fd, const UInt8 *buff, UOSInt buffSize, UInt64 ofst)
+UOSInt Parser::FileParser::ZIPParser::ParseCentDir(IO::PackageFile *pf, Text::Encoding *enc, IO::StreamData *fd, const UInt8 *buff, UOSInt buffSize, UInt64 ofst)
 {
 	Data::DateTime dt;
 	IO::PackageFile *pf2;

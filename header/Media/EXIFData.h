@@ -3,7 +3,7 @@
 #include "Data/ByteOrder.h"
 #include "Data/DateTime.h"
 #include "Data/FastMap.h"
-#include "IO/IStreamData.h"
+#include "IO/StreamData.h"
 #include "IO/FileAnalyse/FrameDetailHandler.h"
 #include "Media/FrameInfo.h"
 #include "Text/CString.h"
@@ -145,9 +145,9 @@ namespace Media
 		static Text::CString GetEXIFTypeName(EXIFType type);
 		static Text::CString GetFieldTypeName(UInt32 ftype);
 		static EXIFData *ParseIFD(const UInt8 *buff, UOSInt buffSize, Data::ByteOrder *byteOrder, UInt32 *nextOfst, EXIFMaker exifMaker, const UInt8 *basePtr);
-		static EXIFData *ParseIFD(IO::IStreamData *fd, UInt64 ofst, Data::ByteOrder *byteOrder, UInt32 *nextOfst, UInt64 readBase);
-		static Bool ParseEXIFFrame(IO::FileAnalyse::FrameDetailHandler *frame, UOSInt frameOfst, IO::IStreamData *fd, UInt64 ofst);
-		static Bool ParseFrame(IO::FileAnalyse::FrameDetailHandler *frame, UOSInt frameOfst, IO::IStreamData *fd, UInt64 ofst, Data::ByteOrder *byteOrder, UInt32 *nextOfst, UInt32 ifdId, UInt64 readBase);
+		static EXIFData *ParseIFD(IO::StreamData *fd, UInt64 ofst, Data::ByteOrder *byteOrder, UInt32 *nextOfst, UInt64 readBase);
+		static Bool ParseEXIFFrame(IO::FileAnalyse::FrameDetailHandler *frame, UOSInt frameOfst, IO::StreamData *fd, UInt64 ofst);
+		static Bool ParseFrame(IO::FileAnalyse::FrameDetailHandler *frame, UOSInt frameOfst, IO::StreamData *fd, UInt64 ofst, Data::ByteOrder *byteOrder, UInt32 *nextOfst, UInt32 ifdId, UInt64 readBase);
 		static EXIFData *ParseExif(const UInt8 *buff, UOSInt buffSize);
 	};
 }

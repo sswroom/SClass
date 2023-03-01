@@ -163,11 +163,11 @@ typedef struct
 {
 	IO::FileStream *destStm;
 	UInt64 writeSize;
-	IO::IProgressHandler *progHdlr;
+	IO::ProgressHandler *progHdlr;
 	UInt64 fileSize;
 } CopySess;
 
-Bool IO::FileUtil::CopyFile(Text::CString file1, Text::CString file2, FileExistAction fea, IO::IProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt)
+Bool IO::FileUtil::CopyFile(Text::CString file1, Text::CString file2, FileExistAction fea, IO::ProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt)
 {
 	IO::FileStream *fs1;
 	IO::FileStream *fs2;
@@ -305,7 +305,7 @@ Bool IO::FileUtil::CopyFile(Text::CString file1, Text::CString file2, FileExistA
 	return writeSize == fileSize;
 }
 
-/*Bool IO::FileUtil::CopyFile(const WChar *file1, const WChar *file2, FileExistAction fea, IO::IProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt)
+/*Bool IO::FileUtil::CopyFile(const WChar *file1, const WChar *file2, FileExistAction fea, IO::ProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt)
 {
 	IO::FileStream *fs1;
 	IO::FileStream *fs2;
@@ -445,7 +445,7 @@ Bool IO::FileUtil::CopyFile(Text::CString file1, Text::CString file2, FileExistA
 	return writeSize == fileSize;
 }*/
 
-Bool IO::FileUtil::CopyDir(Text::CString srcDir, Text::CString destDir, FileExistAction fea, IO::IProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt)
+Bool IO::FileUtil::CopyDir(Text::CString srcDir, Text::CString destDir, FileExistAction fea, IO::ProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt)
 {
 	UTF8Char sbuff[512];
 	UTF8Char dbuff[512];
@@ -514,7 +514,7 @@ Bool IO::FileUtil::CopyDir(Text::CString srcDir, Text::CString destDir, FileExis
 	}
 }
 
-/*Bool IO::FileUtil::CopyDir(const WChar *srcDir, const WChar *destDir, FileExistAction fea, IO::IProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt)
+/*Bool IO::FileUtil::CopyDir(const WChar *srcDir, const WChar *destDir, FileExistAction fea, IO::ProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt)
 {
 	UTF8Char sbuff[512];
 	UTF8Char dbuff[512];
@@ -581,7 +581,7 @@ Bool IO::FileUtil::CopyDir(Text::CString srcDir, Text::CString destDir, FileExis
 	}
 }*/
 
-Bool IO::FileUtil::MoveFile(Text::CString srcFile, Text::CString destFile, FileExistAction fea, IO::IProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt)
+Bool IO::FileUtil::MoveFile(Text::CString srcFile, Text::CString destFile, FileExistAction fea, IO::ProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt)
 {
 	Bool samePart = IO::FileUtil::IsSamePartition(srcFile.v, destFile.v);
 	if (samePart)
@@ -612,7 +612,7 @@ Bool IO::FileUtil::MoveFile(Text::CString srcFile, Text::CString destFile, FileE
 	}
 }
 
-/*Bool IO::FileUtil::MoveFile(const WChar *srcFile, const WChar *destFile, FileExistAction fea, IO::IProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt)
+/*Bool IO::FileUtil::MoveFile(const WChar *srcFile, const WChar *destFile, FileExistAction fea, IO::ProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt)
 {
 	Bool samePart = IO::FileUtil::IsSamePartition(srcFile, destFile);
 	if (samePart)
@@ -643,7 +643,7 @@ Bool IO::FileUtil::MoveFile(Text::CString srcFile, Text::CString destFile, FileE
 	}
 }*/
 
-Bool IO::FileUtil::MoveDir(Text::CString srcDir, Text::CString destDir, FileExistAction fea, IO::IProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt)
+Bool IO::FileUtil::MoveDir(Text::CString srcDir, Text::CString destDir, FileExistAction fea, IO::ProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt)
 {
 	UTF8Char sbuff[512];
 	UTF8Char dbuff[512];
@@ -723,7 +723,7 @@ Bool IO::FileUtil::MoveDir(Text::CString srcDir, Text::CString destDir, FileExis
 	return succ;
 }
 
-/*Bool IO::FileUtil::MoveDir(const WChar *srcDir, const WChar *destDir, FileExistAction fea, IO::IProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt)
+/*Bool IO::FileUtil::MoveDir(const WChar *srcDir, const WChar *destDir, FileExistAction fea, IO::ProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt)
 {
 	UTF8Char sbuff[512];
 	UTF8Char dbuff[512];

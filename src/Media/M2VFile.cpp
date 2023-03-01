@@ -31,7 +31,7 @@ UInt32 __stdcall Media::M2VFile::PlayThread(void *userData)
 	return 0;
 }
 
-Media::M2VFile::M2VFile(IO::IStreamData *stmData) : Media::MediaFile(stmData->GetFullName())
+Media::M2VFile::M2VFile(IO::StreamData *stmData) : Media::MediaFile(stmData->GetFullName())
 {
 	this->stmData = stmData->GetPartialData(0, this->fleng = stmData->GetDataSize());
 	this->readOfst = 0;

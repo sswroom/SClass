@@ -5,6 +5,7 @@
 #include "Math/CoordinateSystemManager.h"
 #include "Math/Geometry/LineString.h"
 #include "Math/Geometry/MultiPolygon.h"
+#include "Math/Geometry/Point.h"
 #include "Math/Geometry/PointZ.h"
 
 Map::IMapDrawLayer *Map::GMLXML::ParseFeatureCollection(Text::XMLReader *reader, Text::CString fileName)
@@ -34,7 +35,7 @@ Map::IMapDrawLayer *Map::GMLXML::ParseFeatureCollection(Text::XMLReader *reader,
 		}
 		else if (reader->GetNodeType() == Text::XMLNode::NodeType::Element)
 		{
-			if (reader->GetNodeText()->Equals(UTF8STRC("gml:featureMember")) || reader->GetNodeText()->Equals(UTF8STRC("gml:featureMembers")))
+			if (reader->GetNodeText()->EndsWith(UTF8STRC(":featureMember")) || reader->GetNodeText()->Equals(UTF8STRC(":featureMembers")))
 			{
 				while (reader->ReadNext())
 				{
@@ -129,9 +130,9 @@ Map::IMapDrawLayer *Map::GMLXML::ParseFeatureCollection(Text::XMLReader *reader,
 								}
 								else if (nodeText->EndsWith(UTF8STRC(":geometryProperty")) || nodeText->EndsWith(UTF8STRC(":geom")))
 								{
-									if (layerType == Map::DRAW_LAYER_UNKNOWN || layerType == Map::DRAW_LAYER_POLYGON)
+									if (layerType == Map::DRAW_LAYER_UNKNOWN || layerType == Map::DRAW_LAYER_MIXED)
 									{
-										layerType = Map::DRAW_LAYER_POLYGON;
+										layerType = Map::DRAW_LAYER_MIXED;
 										while (reader->ReadNext())
 										{
 											if (reader->GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
@@ -256,7 +257,7 @@ Math::Geometry::Vector2D *Map::GMLXML::ParseGeometry(Text::XMLReader *reader, Pa
 		Data::ArrayListDbl xPts;
 		Data::ArrayListDbl yPts;
 		Data::ArrayListDbl zPts;
-		Math::Geometry::PointZ *pt;
+		Math::Geometry::Point *pt;
 		Text::StringBuilderUTF8 sb;
 		while (reader->ReadNext())
 		{
@@ -274,12 +275,14 @@ Math::Geometry::Vector2D *Map::GMLXML::ParseGeometry(Text::XMLReader *reader, Pa
 					while (true)
 					{
 						i = Text::StrSplit(sarr, 4, sarr[3], ' ');
-						if (i < 3)
+						if (i < 2)
 						{
 							break;
 						}
 						xPts.Add(Text::StrToDouble(sarr[1]));
 						yPts.Add(Text::StrToDouble(sarr[0]));
+						if (i < 3)
+							break;
 						zPts.Add(Text::StrToDouble(sarr[2]));
 						if (i < 4)
 							break;
@@ -287,7 +290,14 @@ Math::Geometry::Vector2D *Map::GMLXML::ParseGeometry(Text::XMLReader *reader, Pa
 
 					if (xPts.GetCount() == 1)
 					{
-						NEW_CLASS(pt, Math::Geometry::PointZ(env->srid, xPts.GetItem(0), yPts.GetItem(0), zPts.GetItem(0)));
+						if (zPts.GetCount() == 1)
+						{
+							NEW_CLASS(pt, Math::Geometry::PointZ(env->srid, xPts.GetItem(0), yPts.GetItem(0), zPts.GetItem(0)));
+						}
+						else
+						{
+							NEW_CLASS(pt, Math::Geometry::Point(env->srid, xPts.GetItem(0), yPts.GetItem(0)));
+						}
 						SDEL_CLASS(vec);
 						vec = pt;
 					}

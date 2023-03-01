@@ -15,7 +15,7 @@ Bool Data::Compress::LZODecompressor::Decompress(UInt8 *destBuff, UOSInt *destBu
 	return LZODecompressor_Decompress(srcBuff, srcBuffSize, destBuff, destBuffSize);
 }
 
-Bool Data::Compress::LZODecompressor::Decompress(IO::Stream *destStm, IO::IStreamData *srcData)
+Bool Data::Compress::LZODecompressor::Decompress(IO::Stream *destStm, IO::StreamData *srcData)
 {
 	UInt64 srcSize = srcData->GetDataSize();
 	UInt8 *srcBuff = MemAlloc(UInt8, (UOSInt)srcSize);

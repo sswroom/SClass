@@ -165,7 +165,7 @@ Text::String *Text::MIMEObj::MIMEMessage::GetHeaderValue(UOSInt index) const
 	return this->headerValue.GetItem(index);
 }
 
-Bool Text::MIMEObj::MIMEMessage::ParseFromData(IO::IStreamData *fd)
+Bool Text::MIMEObj::MIMEMessage::ParseFromData(IO::StreamData *fd)
 {
 	UInt8 *buff;
 	UOSInt buffSize;
@@ -328,7 +328,7 @@ Bool Text::MIMEObj::MIMEMessage::ParseFromData(IO::IStreamData *fd)
 	{
 		if (Text::StrToUInt64(contentLen->v) == fd->GetDataSize() - contentOfst)
 		{
-			IO::IStreamData *data = fd->GetPartialData(contentOfst, Text::StrToUInt64(contentLen->v));
+			IO::StreamData *data = fd->GetPartialData(contentOfst, Text::StrToUInt64(contentLen->v));
 			Text::String *contType = this->GetHeader(UTF8STRC("Content-Type"));
 			Text::IMIMEObj *obj = Text::IMIMEObj::ParseFromData(data, STR_CSTR(contType));
 			DEL_CLASS(data);
@@ -340,7 +340,7 @@ Bool Text::MIMEObj::MIMEMessage::ParseFromData(IO::IStreamData *fd)
 	}
 	else
 	{
-		IO::IStreamData *data = fd->GetPartialData(contentOfst, fd->GetDataSize() - contentOfst);
+		IO::StreamData *data = fd->GetPartialData(contentOfst, fd->GetDataSize() - contentOfst);
 		Text::String *contType = this->GetHeader(UTF8STRC("Content-Type"));
 		Text::IMIMEObj *obj = Text::IMIMEObj::ParseFromData(data, STR_CSTR(contType));
 		DEL_CLASS(data);

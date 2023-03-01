@@ -12,10 +12,10 @@ typedef struct
 	Crypto::Hash::IHash *hash;
 	UInt64 readSize;
 	UInt64 fileSize;
-	IO::IProgressHandler *progress;
+	IO::ProgressHandler *progress;
 } ReadSess;
 
-IO::FileCheck *IO::FileCheck::CreateCheck(Text::CString path, Crypto::Hash::HashType chkType, IO::IProgressHandler *progress, Bool skipError)
+IO::FileCheck *IO::FileCheck::CreateCheck(Text::CString path, Crypto::Hash::HashType chkType, IO::ProgressHandler *progress, Bool skipError)
 {
 	UTF8Char sbuff[1024];
 	UInt8 hashBuff[32];
@@ -140,7 +140,7 @@ void __stdcall IO::FileCheck::CheckData(const UInt8 *buff, UOSInt buffSize, void
 	}
 }
 
-Bool IO::FileCheck::CheckDir(UTF8Char *fullPath, UTF8Char *hashPath, Crypto::Hash::IHash *hash, IO::FileCheck *fchk, IO::IProgressHandler *progress, Bool skipError)
+Bool IO::FileCheck::CheckDir(UTF8Char *fullPath, UTF8Char *hashPath, Crypto::Hash::IHash *hash, IO::FileCheck *fchk, IO::ProgressHandler *progress, Bool skipError)
 {
 	UTF8Char *sptr = &hashPath[Text::StrCharCnt(hashPath)];
 	UTF8Char *sptr2;

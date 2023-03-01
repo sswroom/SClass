@@ -1709,8 +1709,11 @@ IO/FileFindRecur.h: ../../src/IO/FileFindRecur.cpp
 IO/FileLog.h: ../../src/IO/FileLog.cpp
 @FileLog.o
 IO/FileMode.h:
+IO/FileParser.h: ../../src/IO/FileParser.cpp
+@FileParser.o
 IO/FileSectorData.h: ../../src/IO/FileSectorData.cpp
 @FileSectorData.o
+IO/FileSelector.h:
 IO/GPIOPin.h: ../../src/IO/GPIOPin.cpp
 @GPIOPin.o
 IO/GPSDevType.h:
@@ -1726,24 +1729,18 @@ IO/I2CChannel.h:
 IO/I2CMODBUS.h: ../../src/IO/I2CMODBUS.cpp
 @I2CMODBUS.o
 IO/IFileBuffer.h:
-IO/FileParser.h: ../../src/IO/FileParser.cpp
-@FileParser.o
-IO/IFileSelector.h:
 IO/IGPUControl.h:
 IO/IniFile.h: ../../src/IO/IniFile.cpp
 @IniFile.o
-IO/IObjectParser.h:
+IO/ObjectParser.h:
 IO/IOPin.h:
 IO/IOPinCapture.h: ../../src/IO/IOPinCapture.cpp
 @IOPinCapture.o
 IO/IOTool.h: ../../src/IO/IOTool.cpp
 @IOTool.o
-IO/IParser.h:
-IO/IProgressHandler.h:
 IO/IProtocolHandler.h:
 IO/IProtocolParser.h:
 IO/ISectorData.h:
-IO/IStreamData.h:
 IO/JavaClass.h: ../../src/IO/JavaClass.cpp
 @JavaClass.o
 IO/JavaProperties.h: ../../src/IO/JavaProperties.cpp
@@ -1794,10 +1791,12 @@ IO/PackageFile.h: ../../src/IO/PackageFile.cpp
 @PackageFile.o
 IO/ParsedObject.h: ../../src/IO/ParsedObject.cpp
 @ParsedObject.o
+IO/ParserBase.h:
 IO/PrintMODBUSDevSim.h: ../../src/IO/PrintMODBUSDevSim.cpp
 @PrintMODBUSDevSim.o
 IO/ProgramLink.h: ../../src/IO/ProgramLink.cpp
 @ProgramLink.o
+IO/ProgressHandler.h:
 IO/RadioSignalLogger.h: ../../src/IO/RadioSignalLogger.cpp
 @RadioSignalLogger.o
 IO/RAWMonitor.h: ../../src/IO/RAWMonitor.cpp
@@ -1834,6 +1833,7 @@ IO/SPackageFile.h: ../../src/IO/SPackageFile.cpp
 @SPackageFile.o
 IO/Stream.h: ../../src/IO/Stream.cpp
 @Stream.o
+IO/StreamData.h:
 IO/StreamDataStream.h: ../../src/IO/StreamDataStream.cpp
 @StreamDataStream.o
 IO/StreamLogger.h: ../../src/IO/StreamLogger.cpp

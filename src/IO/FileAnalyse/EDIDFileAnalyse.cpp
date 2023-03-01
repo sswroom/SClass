@@ -205,7 +205,7 @@ void IO::FileAnalyse::EDIDFileAnalyse::RemoveNonASCII(UTF8Char *sbuff, UTF8Char 
 	}
 }
 
-IO::FileAnalyse::EDIDFileAnalyse::EDIDFileAnalyse(IO::IStreamData *fd)
+IO::FileAnalyse::EDIDFileAnalyse::EDIDFileAnalyse(IO::StreamData *fd)
 {
 	UInt8 buff[128];
 	if (fd->GetRealData(0, 128, buff) != 128 || ReadMInt32(buff) != 0xFFFFFF || ReadUInt32(&buff[4]) != 0xFFFFFF || (((UOSInt)buff[126] + 1) << 7) > fd->GetDataSize() || (fd->GetDataSize() & 127))

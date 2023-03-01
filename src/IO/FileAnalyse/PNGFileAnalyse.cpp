@@ -52,7 +52,7 @@ UInt32 __stdcall IO::FileAnalyse::PNGFileAnalyse::ParseThread(void *userObj)
 	return 0;
 }
 
-IO::FileAnalyse::PNGFileAnalyse::PNGFileAnalyse(IO::IStreamData *fd)
+IO::FileAnalyse::PNGFileAnalyse::PNGFileAnalyse(IO::StreamData *fd)
 {
 	UInt8 buff[256];
 	this->fd = 0;
@@ -274,7 +274,7 @@ Bool IO::FileAnalyse::PNGFileAnalyse::GetFrameDetail(UOSInt index, Text::StringB
 			sb->AppendC(UTF8STRC("\r\nCheck value = 0x"));
 			sb->AppendHex32(ReadMUInt32(&tagData[tag->size - 8]));
 
-			IO::IStreamData *stmData = this->fd->GetPartialData(tag->ofst + i + 3, tag->size - i - 12);
+			IO::StreamData *stmData = this->fd->GetPartialData(tag->ofst + i + 3, tag->size - i - 12);
 			Data::Compress::Inflate comp(false);
 			IO::MemoryStream mstm;
 			if (!comp.Decompress(&mstm, stmData))
@@ -462,7 +462,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::PNGFileAnalyse::GetFrameDetail(UO
 			frame->AddHex32(tag->size - 8, CSTR("Check value"), ReadMUInt32(&tagData[tag->size - 8]));
 
 /*			IO::MemoryStream *mstm;
-			IO::IStreamData *stmData = this->fd->GetPartialData(tag->ofst + i + 3, tag->size - i - 12);
+			IO::StreamData *stmData = this->fd->GetPartialData(tag->ofst + i + 3, tag->size - i - 12);
 			Data::Compress::Inflate comp;
 			NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"IO.FileAnalyse.PNGFileAnalyse"));
 			if (!comp.Decompress(mstm, stmData))

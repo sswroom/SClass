@@ -20,7 +20,7 @@ Int32 Parser::FileParser::SPREDParser::GetName()
 	return *(Int32*)"SRED";
 }
 
-void Parser::FileParser::SPREDParser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
+void Parser::FileParser::SPREDParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::MapLayer)
 	{
@@ -33,7 +33,7 @@ IO::ParserType Parser::FileParser::SPREDParser::GetParserType()
 	return IO::ParserType::MapLayer;
 }
 
-IO::ParsedObject *Parser::FileParser::SPREDParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::SPREDParser::ParseFileHdr(IO::StreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	Data::ArrayList<Map::GPSTrack::GPSRecord3*> *currDev = 0;
 	Int32 currDevId = -1;

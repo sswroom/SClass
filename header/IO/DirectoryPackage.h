@@ -26,7 +26,7 @@ namespace IO
 		virtual UOSInt GetCount() const;
 		virtual PackObjectType GetItemType(UOSInt index) const;
 		virtual UTF8Char *GetItemName(UTF8Char *sbuff, UOSInt index) const;
-		virtual IO::IStreamData *GetItemStmDataNew(UOSInt index) const;
+		virtual IO::StreamData *GetItemStmDataNew(UOSInt index) const;
 		virtual IO::PackageFile *GetItemPackNew(UOSInt index) const;
 		virtual IO::ParsedObject *GetItemPObj(UOSInt index, Bool *needRelease) const;
 		virtual Data::Timestamp GetItemModTime(UOSInt index) const;
@@ -37,10 +37,10 @@ namespace IO
 		virtual Data::Compress::Decompressor::CompressMethod GetItemComp(UOSInt index) const;
 		virtual PackageFile *Clone() const;
 		virtual Bool AllowWrite() const;
-		virtual Bool CopyFrom(Text::CString fileName, IO::IProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt);
-		virtual Bool MoveFrom(Text::CString fileName, IO::IProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt);
-		virtual Bool RetryCopyFrom(Text::CString fileName, IO::IProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt);
-		virtual Bool RetryMoveFrom(Text::CString fileName, IO::IProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt);
+		virtual Bool CopyFrom(Text::CString fileName, IO::ProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt);
+		virtual Bool MoveFrom(Text::CString fileName, IO::ProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt);
+		virtual Bool RetryCopyFrom(Text::CString fileName, IO::ProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt);
+		virtual Bool RetryMoveFrom(Text::CString fileName, IO::ProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt);
 
 		Bool Sort();
 	};

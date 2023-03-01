@@ -4,7 +4,7 @@
 #include "IO/FileAnalyse/TSFileAnalyse.h"
 #include "Sync/Thread.h"
 
-IO::FileAnalyse::TSFileAnalyse::TSFileAnalyse(IO::IStreamData *fd)
+IO::FileAnalyse::TSFileAnalyse::TSFileAnalyse(IO::StreamData *fd)
 {
 	UInt8 buff[256];
 	this->fd = 0;

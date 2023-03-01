@@ -1,7 +1,7 @@
 #ifndef _SM_TEXT_MIMEOBJ_MIMEMESSAGE
 #define _SM_TEXT_MIMEOBJ_MIMEMESSAGE
 #include "Data/ArrayList.h"
-#include "IO/IStreamData.h"
+#include "IO/StreamData.h"
 #include "Text/IMIMEObj.h"
 #include "Text/String.h"
 
@@ -39,7 +39,7 @@ namespace Text
 			Text::String *GetHeaderName(UOSInt index) const;
 			Text::String *GetHeaderValue(UOSInt index) const;
 
-			Bool ParseFromData(IO::IStreamData *fd);
+			Bool ParseFromData(IO::StreamData *fd);
 
 			static UTF8Char *ParseHeaderStr(UTF8Char *sbuff, const UTF8Char *value);
 		};

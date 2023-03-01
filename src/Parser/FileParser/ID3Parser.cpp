@@ -25,7 +25,7 @@ void Parser::FileParser::ID3Parser::SetCodePage(UInt32 codePage)
 	this->codePage = codePage;
 }
 
-void Parser::FileParser::ID3Parser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
+void Parser::FileParser::ID3Parser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::MediaFile)
 	{
@@ -38,7 +38,7 @@ IO::ParserType Parser::FileParser::ID3Parser::GetParserType()
 	return IO::ParserType::MediaFile;
 }
 
-IO::ParsedObject *Parser::FileParser::ID3Parser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::ID3Parser::ParseFileHdr(IO::StreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	UInt32 headerSize;
 	if (hdr[0] != 'I' || hdr[1] != 'D' || hdr[2] != '3')
@@ -48,7 +48,7 @@ IO::ParsedObject *Parser::FileParser::ID3Parser::ParseFileHdr(IO::IStreamData *f
 	Media::AudioBlockSource *src = 0;
 	Media::MediaFile *vid;
 	Media::BlockParser::MP3BlockParser mp3Parser;
-	IO::IStreamData *data = fd->GetPartialData(headerSize + 10, fd->GetDataSize() - headerSize - 10);
+	IO::StreamData *data = fd->GetPartialData(headerSize + 10, fd->GetDataSize() - headerSize - 10);
 	src = mp3Parser.ParseStreamData(data);
 	DEL_CLASS(data);
 	if (src)

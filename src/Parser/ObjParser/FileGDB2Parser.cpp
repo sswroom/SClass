@@ -21,7 +21,7 @@ Int32 Parser::ObjParser::FileGDB2Parser::GetName()
 	return *(Int32*)"FGDB";
 }
 
-void Parser::ObjParser::FileGDB2Parser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
+void Parser::ObjParser::FileGDB2Parser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::ReadingDB || t == IO::ParserType::Unknown)
 	{

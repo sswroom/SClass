@@ -182,7 +182,7 @@ void Exporter::SPKExporter::ExportPackageFile(IO::SPackageFile *spkg, IO::Packag
 	UOSInt i;
 	UOSInt j;
 	UTF8Char *sptr;
-	IO::IStreamData *fd;
+	IO::StreamData *fd;
 	IO::PackageFile::PackObjectType pot;
 	IO::PackageFile *subPkg;
 	i = 0;

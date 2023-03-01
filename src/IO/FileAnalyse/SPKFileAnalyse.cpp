@@ -127,7 +127,7 @@ void IO::FileAnalyse::SPKFileAnalyse::FreePackInfo(IO::FileAnalyse::SPKFileAnaly
 	MemFree(pack);
 }
 
-IO::FileAnalyse::SPKFileAnalyse::SPKFileAnalyse(IO::IStreamData *fd)
+IO::FileAnalyse::SPKFileAnalyse::SPKFileAnalyse(IO::StreamData *fd)
 {
 	UInt8 buff[256];
 	this->fd = 0;

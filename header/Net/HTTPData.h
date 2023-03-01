@@ -1,6 +1,6 @@
 #ifndef _SM_NET_HTTPDATA
 #define _SM_NET_HTTPDATA
-#include "IO/IStreamData.h"
+#include "IO/StreamData.h"
 #include "IO/FileStream.h"
 #include "Net/HTTPClient.h"
 #include "Net/HTTPQueue.h"
@@ -9,7 +9,7 @@
 
 namespace Net
 {
-	class HTTPData : public IO::IStreamData
+	class HTTPData : public IO::StreamData
 	{
 	private:
 		struct HTTPDATAHANDLE
@@ -52,7 +52,7 @@ namespace Net
 		virtual UInt64 GetDataSize();
 		virtual const UInt8 *GetPointer();
 
-		virtual IO::IStreamData *GetPartialData(UInt64 offset, UInt64 length);
+		virtual IO::StreamData *GetPartialData(UInt64 offset, UInt64 length);
 		virtual Bool IsFullFile();
 		virtual Bool IsLoading();
 		virtual UOSInt GetSeekCount();

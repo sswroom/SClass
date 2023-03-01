@@ -125,7 +125,7 @@ UInt32 __stdcall IO::FileAnalyse::LNKFileAnalyse::ParseThread(void* userObj)
 	return 0;
 }
 
-IO::FileAnalyse::LNKFileAnalyse::LNKFileAnalyse(IO::IStreamData* fd)
+IO::FileAnalyse::LNKFileAnalyse::LNKFileAnalyse(IO::StreamData* fd)
 {
 	UInt8 buff[40];
 	this->fd = 0;

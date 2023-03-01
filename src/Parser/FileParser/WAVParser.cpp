@@ -5,7 +5,7 @@
 #include "Data/ByteTool.h"
 #include "IO/Stream.h"
 #include "IO/FileStream.h"
-#include "IO/IStreamData.h"
+#include "IO/StreamData.h"
 #include "Media/IMediaSource.h"
 #include "Media/IAudioSource.h"
 #include "Media/MediaFile.h"
@@ -31,7 +31,7 @@ Int32 Parser::FileParser::WAVParser::GetName()
 	return *(Int32*)"WAVP";
 }
 
-void Parser::FileParser::WAVParser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
+void Parser::FileParser::WAVParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::MediaFile)
 	{
@@ -44,7 +44,7 @@ IO::ParserType Parser::FileParser::WAVParser::GetParserType()
 	return IO::ParserType::MediaFile;
 }
 
-IO::ParsedObject *Parser::FileParser::WAVParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::WAVParser::ParseFileHdr(IO::StreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	UInt8 chunkBuff[16];
 	UInt32 fileSize;
@@ -99,7 +99,7 @@ IO::ParsedObject *Parser::FileParser::WAVParser::ParseFileHdr(IO::IStreamData *f
 				{
 					Media::AudioBlockSource *src;
 					Media::BlockParser::AC3BlockParser ac3Parser;
-					IO::IStreamData *data = fd->GetPartialData(currPos + 8, ReadUInt32(&chunkBuff[4]));
+					IO::StreamData *data = fd->GetPartialData(currPos + 8, ReadUInt32(&chunkBuff[4]));
 					src = ac3Parser.ParseStreamData(data);
 					DEL_CLASS(data);
 					if (src)
@@ -119,7 +119,7 @@ IO::ParsedObject *Parser::FileParser::WAVParser::ParseFileHdr(IO::IStreamData *f
 				{
 					Media::AudioBlockSource *src;
 					Media::BlockParser::MP3BlockParser mp3Parser;
-					IO::IStreamData *data = fd->GetPartialData(currPos + 8, ReadUInt32(&chunkBuff[4]));
+					IO::StreamData *data = fd->GetPartialData(currPos + 8, ReadUInt32(&chunkBuff[4]));
 					src = mp3Parser.ParseStreamData(data);
 					DEL_CLASS(data);
 					if (src)
@@ -139,7 +139,7 @@ IO::ParsedObject *Parser::FileParser::WAVParser::ParseFileHdr(IO::IStreamData *f
 				{
 					Media::AudioBlockSource *src;
 					Media::BlockParser::MP2BlockParser mp2Parser;
-					IO::IStreamData *data = fd->GetPartialData(currPos + 8, ReadUInt32(&chunkBuff[4]));
+					IO::StreamData *data = fd->GetPartialData(currPos + 8, ReadUInt32(&chunkBuff[4]));
 					src = mp2Parser.ParseStreamData(data);
 					DEL_CLASS(data);
 					if (src)

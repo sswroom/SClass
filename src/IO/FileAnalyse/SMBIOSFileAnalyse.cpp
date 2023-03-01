@@ -7,7 +7,7 @@
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
 
-IO::FileAnalyse::SMBIOSFileAnalyse::SMBIOSFileAnalyse(IO::IStreamData *fd)
+IO::FileAnalyse::SMBIOSFileAnalyse::SMBIOSFileAnalyse(IO::StreamData *fd)
 {
 	UInt8 *buff;
 	UOSInt leng = (UOSInt)fd->GetDataSize();

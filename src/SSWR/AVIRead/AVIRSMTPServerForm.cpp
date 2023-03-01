@@ -126,7 +126,7 @@ void __stdcall SSWR::AVIRead::AVIRSMTPServerForm::OnEmailDblClicked(void *userOb
 	if (email)
 	{
 		Text::MIMEObj::MailMessage *mail;
-		IO::IStreamData *fd = me->store->OpenEmailData(email->id);
+		IO::StreamData *fd = me->store->OpenEmailData(email->id);
 		if (fd)
 		{
 			mail = Text::MIMEObj::MailMessage::ParseFile(fd);
@@ -465,7 +465,7 @@ Bool SSWR::AVIRead::AVIRSMTPServerForm::GetMessageContent(Int32 userId, UInt32 m
 	Net::Email::EmailStore::EmailInfo *email = this->store->GetEmailByIndex(STR_CSTR(userName), msgId);
 	if (email == 0)
 		return false;
-	IO::IStreamData *fd = this->store->OpenEmailData(email->id);
+	IO::StreamData *fd = this->store->OpenEmailData(email->id);
 	if (fd == 0)
 		return false;
 	

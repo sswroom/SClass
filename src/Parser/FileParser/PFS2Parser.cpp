@@ -19,7 +19,7 @@ Int32 Parser::FileParser::PFS2Parser::GetName()
 	return *(Int32*)"PFS2";
 }
 
-void Parser::FileParser::PFS2Parser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
+void Parser::FileParser::PFS2Parser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::PackageFile)
 	{
@@ -40,7 +40,7 @@ typedef struct
 	UInt32 recCnt;
 } PF2Header;
 
-IO::ParsedObject *Parser::FileParser::PFS2Parser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::PFS2Parser::ParseFileHdr(IO::StreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	Text::String *fileName = fd->GetFullName();
 	if (!fileName->EndsWithICase(UTF8STRC(".pfs")))

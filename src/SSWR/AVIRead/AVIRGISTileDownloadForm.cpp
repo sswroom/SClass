@@ -158,7 +158,7 @@ void SSWR::AVIRead::AVIRGISTileDownloadForm::SaveTiles(const WChar *folderName)
 	Map::TileMap::ImageType it;
 	Int32 blockX;
 	Int32 blockY;
-	IO::IStreamData *fd;
+	IO::StreamData *fd;
 	Double bounds[4];
 	Int64 fileSize;
 	OSInt i;
@@ -423,7 +423,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::ProcThread(void *userOb
 	UInt8 *fileBuff = 0;
 	UOSInt fileBuffSize = 0;
 	Map::TileMap::ImageType it;
-	IO::IStreamData *fd;
+	IO::StreamData *fd;
 	Math::RectAreaDbl bounds;
 	UInt64 fileSize;
 	OSInt j;

@@ -30,7 +30,7 @@ Int32 Parser::FileParser::X509Parser::GetName()
 	return *(Int32*)"X509";
 }
 
-void Parser::FileParser::X509Parser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
+void Parser::FileParser::X509Parser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::ASN1Data)
 	{
@@ -51,7 +51,7 @@ IO::ParserType Parser::FileParser::X509Parser::GetParserType()
 	return IO::ParserType::ASN1Data;
 }
 
-IO::ParsedObject *Parser::FileParser::X509Parser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::X509Parser::ParseFileHdr(IO::StreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	UInt8 buff[10240];
 	UInt64 len = fd->GetDataSize();

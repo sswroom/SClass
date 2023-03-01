@@ -17,7 +17,7 @@ Int32 Parser::FileParser::LUTParser::GetName()
 	return *(Int32*)"LUTP";
 }
 
-void Parser::FileParser::LUTParser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
+void Parser::FileParser::LUTParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::LUT)
 	{
@@ -30,7 +30,7 @@ IO::ParserType Parser::FileParser::LUTParser::GetParserType()
 	return IO::ParserType::LUT;
 }
 
-IO::ParsedObject *Parser::FileParser::LUTParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::LUTParser::ParseFileHdr(IO::StreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	if (*(Int32*)&hdr[0] != *(Int32*)"3DLT" || ReadInt32(&hdr[4]) != 1 || ReadInt32(&hdr[84]) != 0)
 	{

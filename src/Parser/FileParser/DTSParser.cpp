@@ -18,7 +18,7 @@ Int32 Parser::FileParser::DTSParser::GetName()
 	return *(Int32*)"DTSP";
 }
 
-void Parser::FileParser::DTSParser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
+void Parser::FileParser::DTSParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::MediaFile)
 	{
@@ -31,7 +31,7 @@ IO::ParserType Parser::FileParser::DTSParser::GetParserType()
 	return IO::ParserType::MediaFile;
 }
 
-IO::ParsedObject *Parser::FileParser::DTSParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::DTSParser::ParseFileHdr(IO::StreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	if (ReadUInt32(&hdr[0]) != 0x180FE7F || (hdr[4] & 0xfc) != 0xfc)
 	{
@@ -41,7 +41,7 @@ IO::ParsedObject *Parser::FileParser::DTSParser::ParseFileHdr(IO::IStreamData *f
 	Media::AudioBlockSource *src = 0;
 	Media::MediaFile *vid;
 	Media::BlockParser::DTSBlockParser dtsParser;
-	IO::IStreamData *data = fd->GetPartialData(0, fd->GetDataSize());
+	IO::StreamData *data = fd->GetPartialData(0, fd->GetDataSize());
 	src = dtsParser.ParseStreamData(data);
 	if (src)
 	{

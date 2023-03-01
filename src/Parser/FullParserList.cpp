@@ -360,7 +360,7 @@ Parser::FullParserList::FullParserList() : Parser::ParserList()
 	NEW_CLASS(parser, Parser::FileParser::MTKGPSParser());
 	this->AddFileParser(parser);
 
-	IO::IObjectParser *oparser;
+	IO::ObjectParser *oparser;
 	NEW_CLASS(oparser, Parser::ObjParser::MPGXAParser());
 	this->AddObjectParser(oparser);
 	NEW_CLASS(oparser, Parser::ObjParser::DBITParser());

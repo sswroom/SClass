@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Data/ByteTool.h"
 #include "IO/FileStream.h"
-#include "IO/IStreamData.h"
+#include "IO/StreamData.h"
 #include "Math/Unit/Distance.h"
 #include "Media/FrameInfo.h"
 #include "Media/ICCProfile.h"
@@ -12,7 +12,7 @@
 #include "Parser/ParserList.h"
 #include "Parser/FileParser/BMPParser.h"
 
-void BMPParser_ReadPal(Media::StaticImage *img, IO::IStreamData *fd, UOSInt palStart, Int32 palType, UOSInt colorUsed)
+void BMPParser_ReadPal(Media::StaticImage *img, IO::StreamData *fd, UOSInt palStart, Int32 palType, UOSInt colorUsed)
 {
 	UOSInt maxColor = (UOSInt)1 << img->info.storeBPP;
 	if (palType == 0)
@@ -73,7 +73,7 @@ void Parser::FileParser::BMPParser::SetParserList(Parser::ParserList *parsers)
 	this->parsers = parsers;
 }
 
-void Parser::FileParser::BMPParser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
+void Parser::FileParser::BMPParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::ImageList)
 	{
@@ -87,7 +87,7 @@ IO::ParserType Parser::FileParser::BMPParser::GetParserType()
 	return IO::ParserType::ImageList;
 }
 
-IO::ParsedObject *Parser::FileParser::BMPParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::BMPParser::ParseFileHdr(IO::StreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	UInt32 imgWidth;
 	Int32 imgHeight;
@@ -381,7 +381,7 @@ IO::ParsedObject *Parser::FileParser::BMPParser::ParseFileHdr(IO::IStreamData *f
 		if (this->parsers)
 		{
 			UInt32 currOfst = ReadUInt32(&hdr[10]);
-			IO::IStreamData *innerFd = fd->GetPartialData(currOfst, fd->GetDataSize() - currOfst);
+			IO::StreamData *innerFd = fd->GetPartialData(currOfst, fd->GetDataSize() - currOfst);
 			pobj = this->parsers->ParseFile(innerFd, &pt);
 			DEL_CLASS(innerFd);
 			return pobj;

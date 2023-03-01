@@ -24,7 +24,7 @@ void Parser::ObjParser::KMZParser::SetParserList(Parser::ParserList *parsers)
 	this->parsers = parsers;
 }
 
-void Parser::ObjParser::KMZParser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
+void Parser::ObjParser::KMZParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::MapLayer)
 	{
@@ -48,7 +48,7 @@ IO::ParsedObject *Parser::ObjParser::KMZParser::ParseObject(IO::ParsedObject *po
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
 	Data::ArrayList<IO::ParsedObject*> *pobjList;
-	IO::IStreamData *fd;
+	IO::StreamData *fd;
 	IO::ParsedObject *pobj2;
 	NEW_CLASS(pobjList, Data::ArrayList<IO::ParsedObject*>());
 	UOSInt i;

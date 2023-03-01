@@ -78,12 +78,12 @@ namespace SSWR
 
 			void OpenGSMModem(IO::Stream *modemPort);
 			IO::Stream *OpenStream(IO::StreamType *st, UI::GUIForm *ownerFrm, Int32 defBaudRate, Bool allowReadOnly);
-			void OpenHex(IO::IStreamData *fd, IO::FileAnalyse::IFileAnalyse *fileAnalyse);
+			void OpenHex(IO::StreamData *fd, IO::FileAnalyse::IFileAnalyse *fileAnalyse);
 
 			void BeginLoad();
 			void EndLoad();
-			Bool LoadData(IO::IStreamData *data, IO::PackageFile *pkgFile);
-			Bool LoadDataType(IO::IStreamData *data, IO::PackageFile *pkgFile, IO::ParserType targetType);
+			Bool LoadData(IO::StreamData *data, IO::PackageFile *pkgFile);
+			Bool LoadDataType(IO::StreamData *data, IO::PackageFile *pkgFile, IO::ParserType targetType);
 
 			Parser::ParserList *GetParserList();
 			Map::MapManager *GetMapManager();

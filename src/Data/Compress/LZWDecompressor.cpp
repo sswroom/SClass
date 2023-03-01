@@ -31,7 +31,7 @@ Bool Data::Compress::LZWDecompressor::Decompress(UInt8 *destBuff, UOSInt *destBu
 	return true;
 }
 
-Bool Data::Compress::LZWDecompressor::Decompress(IO::Stream *destStm, IO::IStreamData *srcData)
+Bool Data::Compress::LZWDecompressor::Decompress(IO::Stream *destStm, IO::StreamData *srcData)
 {
 	IO::StreamDataStream *srcStm;
 	UInt8 *tmpBuff = MemAlloc(UInt8, 65536);

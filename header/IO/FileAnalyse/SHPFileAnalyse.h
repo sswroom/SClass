@@ -1,7 +1,7 @@
 #ifndef _SM_IO_FILEANALYSE_SHPFILEANALYSE
 #define _SM_IO_FILEANALYSE_SHPFILEANALYSE
 #include "Data/SyncArrayList.h"
-#include "IO/IStreamData.h"
+#include "IO/StreamData.h"
 #include "IO/FileAnalyse/IFileAnalyse.h"
 #include "Text/StringBuilderUTF8.h"
 
@@ -18,7 +18,7 @@ namespace IO
 				UOSInt packSize;
 			};
 		private:
-			IO::IStreamData *fd;
+			IO::StreamData *fd;
 			Data::SyncArrayList<PackInfo*> packs;
 
 			Bool pauseParsing;
@@ -29,7 +29,7 @@ namespace IO
 			static Text::CString ShapeTypeGetName(UInt32 shapeType);
 			static UInt32 __stdcall ParseThread(void *userObj);
 		public:
-			SHPFileAnalyse(IO::IStreamData *fd);
+			SHPFileAnalyse(IO::StreamData *fd);
 			virtual ~SHPFileAnalyse();
 
 			virtual Text::CString GetFormatName();

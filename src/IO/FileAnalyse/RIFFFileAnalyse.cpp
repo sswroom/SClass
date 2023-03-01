@@ -98,7 +98,7 @@ UOSInt IO::FileAnalyse::RIFFFileAnalyse::GetFrameIndex(UOSInt lev, UInt64 ofst)
 	return INVALID_INDEX;
 }
 
-IO::FileAnalyse::RIFFFileAnalyse::RIFFFileAnalyse(IO::IStreamData *fd)
+IO::FileAnalyse::RIFFFileAnalyse::RIFFFileAnalyse(IO::StreamData *fd)
 {
 	UInt8 buff[256];
 	this->fd = 0;

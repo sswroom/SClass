@@ -19,7 +19,7 @@ Int32 Parser::FileParser::MLHParser::GetName()
 	return *(Int32*)"MLHP";
 }
 
-void Parser::FileParser::MLHParser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
+void Parser::FileParser::MLHParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::PackageFile)
 	{
@@ -41,7 +41,7 @@ typedef struct
 	Int32 unk;
 } MLHFileInfo;
 
-IO::ParsedObject *Parser::FileParser::MLHParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::MLHParser::ParseFileHdr(IO::StreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 //	UInt32 fileSize;
 	UInt32 fileCnt;

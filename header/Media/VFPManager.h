@@ -1,7 +1,7 @@
 #ifndef _SM_MEDIA_VFPMANAGER
 #define _SM_MEDIA_VFPMANAGER
 #include "Data/ArrayList.h"
-#include "IO/IFileSelector.h"
+#include "IO/FileSelector.h"
 #include "Media/IMediaSource.h"
 #include "Sync/Mutex.h"
 
@@ -37,7 +37,7 @@ namespace Media
 		VFPManager();
 		UOSInt LoadFile(const UTF8Char *fileName, Data::ArrayList<Media::IMediaSource*> *outArr);
 		void Release();
-		void PrepareSelector(IO::IFileSelector *selector);
+		void PrepareSelector(IO::FileSelector *selector);
 
 	private:
 		~VFPManager();

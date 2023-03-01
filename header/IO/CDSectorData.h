@@ -1,7 +1,7 @@
 #ifndef _SM_IO_CDSECTORDATA
 #define _SM_IO_CDSECTORDATA
 #include "IO/ISectorData.h"
-#include "IO/IStreamData.h"
+#include "IO/StreamData.h"
 
 namespace IO
 {
@@ -22,11 +22,11 @@ namespace IO
 		virtual UOSInt GetBytesPerSector() const;
 		virtual Bool ReadSector(UInt64 sectorNum, UInt8 *sectorBuff);
 		virtual ISectorData *GetPartialData(UInt64 startSector, UInt64 sectorCount) const;
-		virtual IO::IStreamData *GetStreamData(UInt64 startSector, UInt64 dataSize) const;
+		virtual IO::StreamData *GetStreamData(UInt64 startSector, UInt64 dataSize) const;
 		virtual UOSInt GetSeekCount() const;
 	};
 
-	class CDSectorStreamData : public IO::IStreamData
+	class CDSectorStreamData : public IO::StreamData
 	{
 	private:
 		IO::ISectorData *data;
@@ -43,7 +43,7 @@ namespace IO
 		virtual UInt64 GetDataSize();
 		virtual const UInt8 *GetPointer();
 
-		virtual IStreamData *GetPartialData(UInt64 offset, UInt64 length);
+		virtual StreamData *GetPartialData(UInt64 offset, UInt64 length);
 		virtual Bool IsFullFile();
 		virtual Bool IsLoading();
 		virtual UOSInt GetSeekCount();

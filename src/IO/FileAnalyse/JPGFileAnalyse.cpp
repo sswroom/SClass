@@ -183,7 +183,7 @@ UInt32 __stdcall IO::FileAnalyse::JPGFileAnalyse::ParseThread(void *userObj)
 	return 0;
 }
 
-IO::FileAnalyse::JPGFileAnalyse::JPGFileAnalyse(IO::IStreamData *fd)
+IO::FileAnalyse::JPGFileAnalyse::JPGFileAnalyse(IO::StreamData *fd)
 {
 	UInt8 buff[256];
 	this->fd = 0;

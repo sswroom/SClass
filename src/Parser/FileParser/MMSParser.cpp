@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "IO/IStreamData.h"
+#include "IO/StreamData.h"
 #include "IO/PackageFile.h"
 #include "Parser/FileParser/MMSParser.h"
 #include "Text/Encoding.h"
@@ -18,7 +18,7 @@ Int32 Parser::FileParser::MMSParser::GetName()
 	return *(Int32*)"MMSP";
 }
 
-void Parser::FileParser::MMSParser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
+void Parser::FileParser::MMSParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::PackageFile)
 	{
@@ -31,7 +31,7 @@ IO::ParserType Parser::FileParser::MMSParser::GetParserType()
 	return IO::ParserType::PackageFile;
 }
 
-IO::ParsedObject *Parser::FileParser::MMSParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::MMSParser::ParseFileHdr(IO::StreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	IO::PackageFile *pf;
 	UInt32 fileCnt;

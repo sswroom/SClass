@@ -82,7 +82,7 @@ Bool SSWR::AVIRead::AVIRGLBViewerForm::LoadFile(Text::String *fileName)
 	}
 }
 
-Bool SSWR::AVIRead::AVIRGLBViewerForm::LoadData(IO::IStreamData *jsonFD, IO::IStreamData *binBuffFD)
+Bool SSWR::AVIRead::AVIRGLBViewerForm::LoadData(IO::StreamData *jsonFD, IO::StreamData *binBuffFD)
 {
 	UOSInt jsonLen = (UOSInt)jsonFD->GetDataSize();
 	UInt8 *jsonBuff = MemAlloc(UInt8, jsonLen);

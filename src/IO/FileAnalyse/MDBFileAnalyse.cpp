@@ -44,7 +44,7 @@ UInt32 __stdcall IO::FileAnalyse::MDBFileAnalyse::ParseThread(void *userObj)
 	return 0;
 }
 
-IO::FileAnalyse::MDBFileAnalyse::MDBFileAnalyse(IO::IStreamData *fd)
+IO::FileAnalyse::MDBFileAnalyse::MDBFileAnalyse(IO::StreamData *fd)
 {
 	UInt8 buff[256];
 	this->fd = 0;

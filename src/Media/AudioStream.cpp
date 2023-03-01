@@ -6,11 +6,11 @@
 #include "Sync/Mutex.h"
 #include "Media/IAudioFilter.h"
 #include "Media/AudioStream.h"
-#include "IO/IStreamData.h"
+#include "IO/StreamData.h"
 #include "IO/StmData/FileData.h"
 #include "IO/DataSegment.h"
 
-AudioStream::AudioStream(WAVEFORMATEX *fmt, Data::ArrayList<IO::IStreamData*>* dList, WChar *name, Int32 audDelay)
+AudioStream::AudioStream(WAVEFORMATEX *fmt, Data::ArrayList<IO::StreamData*>* dList, WChar *name, Int32 audDelay)
 {
 	audioSource = MemAlloc(AUDIOSOURCE, 1);
 	Int32 i;
@@ -50,7 +50,7 @@ AudioStream::AudioStream(WAVEFORMATEX *fmt, Data::ArrayList<IO::IStreamData*>* d
 	//addAudioStream(this);
 }
 
-AudioStream::AudioStream(WAVEFORMATEX *fmt, Data::ArrayList<IO::IStreamData*>* dList, Data::ArrayList<Int32> *blockList, WChar *name)
+AudioStream::AudioStream(WAVEFORMATEX *fmt, Data::ArrayList<IO::StreamData*>* dList, Data::ArrayList<Int32> *blockList, WChar *name)
 {
 }
 

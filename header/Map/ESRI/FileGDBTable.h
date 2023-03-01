@@ -1,7 +1,7 @@
 #ifndef _SM_MAP_ESRI_FILEGDBTABLE
 #define _SM_MAP_ESRI_FILEGDBTABLE
 #include "DB/DBReader.h"
-#include "IO/IStreamData.h"
+#include "IO/StreamData.h"
 #include "Map/ESRI/FileGDBUtil.h"
 
 namespace Map
@@ -12,13 +12,13 @@ namespace Map
 		{
 		private:
 			Text::String *tableName;
-			IO::IStreamData *gdbtableFD;
-			IO::IStreamData *gdbtablxFD;
+			IO::StreamData *gdbtableFD;
+			IO::StreamData *gdbtablxFD;
 			UOSInt indexCnt;
 			UInt64 dataOfst;
 			FileGDBTableInfo *tableInfo;
 		public:
-			FileGDBTable(Text::CString tableName, IO::IStreamData *gdbtableFD, IO::IStreamData *gdbtablxFD);
+			FileGDBTable(Text::CString tableName, IO::StreamData *gdbtableFD, IO::StreamData *gdbtablxFD);
 			~FileGDBTable();
 
 			Bool IsError();

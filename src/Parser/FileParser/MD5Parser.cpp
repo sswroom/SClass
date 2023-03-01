@@ -26,7 +26,7 @@ void Parser::FileParser::MD5Parser::SetCodePage(UInt32 codePage)
 	this->codePage = codePage;
 }
 
-void Parser::FileParser::MD5Parser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
+void Parser::FileParser::MD5Parser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::FileCheck)
 	{
@@ -39,7 +39,7 @@ IO::ParserType Parser::FileParser::MD5Parser::GetParserType()
 	return IO::ParserType::FileCheck;
 }
 
-IO::ParsedObject *Parser::FileParser::MD5Parser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::MD5Parser::ParseFileHdr(IO::StreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;

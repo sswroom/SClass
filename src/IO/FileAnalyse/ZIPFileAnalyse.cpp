@@ -469,7 +469,7 @@ UInt32 __stdcall IO::FileAnalyse::ZIPFileAnalyse::ParseThread(void *userObj)
 	return 0;
 }
 
-IO::FileAnalyse::ZIPFileAnalyse::ZIPFileAnalyse(IO::IStreamData *fd)
+IO::FileAnalyse::ZIPFileAnalyse::ZIPFileAnalyse(IO::StreamData *fd)
 {
 	UInt8 buff[256];
 	this->fd = 0;

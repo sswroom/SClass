@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "IO/StreamDataStream.h"
 
-IO::StreamDataStream::StreamDataStream(IO::IStreamData *data) : IO::SeekableStream(data->GetFullName())
+IO::StreamDataStream::StreamDataStream(IO::StreamData *data) : IO::SeekableStream(data->GetFullName())
 {
 	this->currOfst = 0;
 	this->stmDataLeng = data->GetDataSize();

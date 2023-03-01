@@ -82,7 +82,7 @@ UInt32 __stdcall IO::FileAnalyse::SHPFileAnalyse::ParseThread(void *userObj)
 	return 0;
 }
 
-IO::FileAnalyse::SHPFileAnalyse::SHPFileAnalyse(IO::IStreamData *fd)
+IO::FileAnalyse::SHPFileAnalyse::SHPFileAnalyse(IO::StreamData *fd)
 {
 	UInt8 buff[256];
 	this->fd = 0;

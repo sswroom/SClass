@@ -1,7 +1,7 @@
 #ifndef _SM_IO_FILEANALYSE_FGDBFILEANALYSE
 #define _SM_IO_FILEANALYSE_FGDBFILEANALYSE
 #include "Data/SyncArrayList.h"
-#include "IO/IStreamData.h"
+#include "IO/StreamData.h"
 #include "IO/FileAnalyse/IFileAnalyse.h"
 #include "Map/ESRI/FileGDBUtil.h"
 #include "Sync/Mutex.h"
@@ -30,7 +30,7 @@ namespace IO
 				UOSInt size;
 			};
 		private:
-			IO::IStreamData *fd;
+			IO::StreamData *fd;
 			Data::SyncArrayList<TagInfo*> tags;
 			Map::ESRI::FileGDBTableInfo *tableInfo;
 
@@ -41,7 +41,7 @@ namespace IO
 
 			static UInt32 __stdcall ParseThread(void *userObj);
 		public:
-			FGDBFileAnalyse(IO::IStreamData *fd);
+			FGDBFileAnalyse(IO::StreamData *fd);
 			virtual ~FGDBFileAnalyse();
 
 			virtual Text::CString GetFormatName();

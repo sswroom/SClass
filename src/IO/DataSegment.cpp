@@ -3,7 +3,7 @@
 #include "Sync/Event.h"
 #include "IO/Stream.h"
 #include "IO/FileStream.h"
-#include "IO/IStreamData.h"
+#include "IO/StreamData.h"
 #include "IO/StmData/FileData.h"
 #include "IO/DataSegment.h"
 

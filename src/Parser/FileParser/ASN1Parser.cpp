@@ -18,7 +18,7 @@ Int32 Parser::FileParser::ASN1Parser::GetName()
 	return *(Int32*)"ASN1";
 }
 
-void Parser::FileParser::ASN1Parser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
+void Parser::FileParser::ASN1Parser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::ASN1Data)
 	{
@@ -31,7 +31,7 @@ IO::ParserType Parser::FileParser::ASN1Parser::GetParserType()
 	return IO::ParserType::ASN1Data;
 }
 
-IO::ParsedObject *Parser::FileParser::ASN1Parser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::ASN1Parser::ParseFileHdr(IO::StreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	if (!fd->IsFullFile())
 		return 0;

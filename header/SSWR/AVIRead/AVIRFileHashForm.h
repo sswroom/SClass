@@ -18,7 +18,7 @@ namespace SSWR
 {
 	namespace AVIRead
 	{
-		class AVIRFileHashForm : public UI::GUIForm, public IO::IProgressHandler
+		class AVIRFileHashForm : public UI::GUIForm, public IO::ProgressHandler
 		{
 		private:
 			typedef struct

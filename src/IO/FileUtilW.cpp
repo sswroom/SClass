@@ -180,11 +180,11 @@ typedef struct
 {
 	IO::FileStream *destStm;
 	UInt64 writeSize;
-	IO::IProgressHandler *progHdlr;
+	IO::ProgressHandler *progHdlr;
 	UInt64 fileSize;
 } CopySess;
 
-/*Bool FileUtil_CopyFile(const WChar *file1, const WChar *file2, IO::FileUtil::FileExistAction fea, IO::IProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt)
+/*Bool FileUtil_CopyFile(const WChar *file1, const WChar *file2, IO::FileUtil::FileExistAction fea, IO::ProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt)
 {
 	IO::FileStream *fs1;
 	IO::FileStream *fs2;
@@ -324,7 +324,7 @@ typedef struct
 	return writeSize == fileSize;
 }*/
 
-Bool IO::FileUtil::CopyFile(Text::CString file1, Text::CString file2, FileExistAction fea, IO::IProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt)
+Bool IO::FileUtil::CopyFile(Text::CString file1, Text::CString file2, FileExistAction fea, IO::ProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt)
 {
 	IO::FileStream *fs1;
 	IO::FileStream *fs2;
@@ -467,7 +467,7 @@ Bool IO::FileUtil::CopyFile(Text::CString file1, Text::CString file2, FileExistA
 	return writeSize == fileSize;
 }
 
-/*Bool FileUtil_CopyDir(const WChar *srcDir, const WChar *destDir, FileExistAction fea, IO::IProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt)
+/*Bool FileUtil_CopyDir(const WChar *srcDir, const WChar *destDir, FileExistAction fea, IO::ProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt)
 {
 	WChar wbuff[512];
 	WChar dbuff[512];
@@ -534,7 +534,7 @@ Bool IO::FileUtil::CopyFile(Text::CString file1, Text::CString file2, FileExistA
 	}
 }*/
 
-Bool IO::FileUtil::CopyDir(Text::CString srcDir, Text::CString destDir, FileExistAction fea, IO::IProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt)
+Bool IO::FileUtil::CopyDir(Text::CString srcDir, Text::CString destDir, FileExistAction fea, IO::ProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt)
 {
 	UTF8Char sbuff[512];
 	UTF8Char dbuff[512];
@@ -610,7 +610,7 @@ Bool IO::FileUtil::CopyDir(Text::CString srcDir, Text::CString destDir, FileExis
 	}
 }
 
-/*Bool FileUtil_MoveFile(const WChar *srcFile, const WChar *destFile, FileExistAction fea, IO::IProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt)
+/*Bool FileUtil_MoveFile(const WChar *srcFile, const WChar *destFile, FileExistAction fea, IO::ProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt)
 {
 	Bool samePart = IsSamePartition(srcFile, destFile);
 	if (samePart)
@@ -642,7 +642,7 @@ Bool IO::FileUtil::CopyDir(Text::CString srcDir, Text::CString destDir, FileExis
 	}
 }*/
 
-Bool IO::FileUtil::MoveFile(Text::CString srcFile, Text::CString destFile, FileExistAction fea, IO::IProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt)
+Bool IO::FileUtil::MoveFile(Text::CString srcFile, Text::CString destFile, FileExistAction fea, IO::ProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt)
 {
 	Bool samePart = IsSamePartition(srcFile.v, destFile.v);
 	if (samePart)
@@ -678,7 +678,7 @@ Bool IO::FileUtil::MoveFile(Text::CString srcFile, Text::CString destFile, FileE
 	}
 }
 
-/*Bool FileUtil_MoveDir(const WChar *srcDir, const WChar *destDir, FileExistAction fea, IO::IProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt)
+/*Bool FileUtil_MoveDir(const WChar *srcDir, const WChar *destDir, FileExistAction fea, IO::ProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt)
 {
 	WChar wbuff[512];
 	WChar dbuff[512];
@@ -756,7 +756,7 @@ Bool IO::FileUtil::MoveFile(Text::CString srcFile, Text::CString destFile, FileE
 	return succ;
 }*/
 
-Bool IO::FileUtil::MoveDir(Text::CString srcDir, Text::CString destDir, FileExistAction fea, IO::IProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt)
+Bool IO::FileUtil::MoveDir(Text::CString srcDir, Text::CString destDir, FileExistAction fea, IO::ProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt)
 {
 	UTF8Char sbuff[512];
 	UTF8Char dbuff[512];

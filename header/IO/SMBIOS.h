@@ -1,7 +1,7 @@
 #ifndef _SM_IO_SMBIOS
 #define _SM_IO_SMBIOS
 #include "Data/ArrayList.h"
-#include "IO/IStreamData.h"
+#include "IO/StreamData.h"
 #include "Text/StringBuilderUTF8.h"
 
 namespace IO
@@ -99,7 +99,7 @@ namespace IO
 		UTF8Char *GetPlatformSN(UTF8Char *buff) const;
 		Int32 GetChassisType() const;
 		Bool ToString(Text::StringBuilderUTF8 *sb) const;
-		IO::IStreamData *CreateStreamData() const;
+		IO::StreamData *CreateStreamData() const;
 
 		static Text::CString GetProcessorFamily(UInt32 family);
 		static Text::CString GetConnectorType(UInt8 type);

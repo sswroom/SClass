@@ -1,6 +1,6 @@
 #ifndef _SM_MEDIA_M2VFILE
 #define _SM_MEDIA_M2VFILE
-#include "IO/IStreamData.h"
+#include "IO/StreamData.h"
 #include "Media/IStreamControl.h"
 #include "Media/MediaFile.h"
 namespace Media
@@ -9,7 +9,7 @@ namespace Media
 	class M2VFile : public Media::MediaFile, public Media::IStreamControl
 	{
 	private:
-		IO::IStreamData *stmData;
+		IO::StreamData *stmData;
 		UInt8 *readBuff;
 		UInt64 readOfst;
 		UInt64 bitRate;
@@ -23,7 +23,7 @@ namespace Media
 
 		static UInt32 __stdcall PlayThread(void *userData);
 	public:
-		M2VFile(IO::IStreamData *stmData);
+		M2VFile(IO::StreamData *stmData);
 		virtual ~M2VFile();
 		
 		virtual UOSInt AddSource(Media::IMediaSource *src, Int32 syncTime);

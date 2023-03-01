@@ -74,7 +74,7 @@ UInt32 __stdcall IO::FileAnalyse::JMVL01FileAnalyse::ParseThread(void *userObj)
 	return 0;
 }
 
-IO::FileAnalyse::JMVL01FileAnalyse::JMVL01FileAnalyse(IO::IStreamData *fd)
+IO::FileAnalyse::JMVL01FileAnalyse::JMVL01FileAnalyse(IO::StreamData *fd)
 {
 	UInt8 buff[256];
 	this->fd = 0;

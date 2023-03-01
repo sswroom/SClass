@@ -1,6 +1,6 @@
 #ifndef _SM_MEDIA_PHOTOINFO
 #define _SM_MEDIA_PHOTOINFO
-#include "IO/IStreamData.h"
+#include "IO/StreamData.h"
 #include "Text/StringBuilderUTF8.h"
 #include "Text/XMLDOM.h"
 
@@ -24,7 +24,7 @@ namespace Media
 		void ParseXMF(Text::XMLDocument *xmf);
 		Double ParseFraction(Text::String *s);
 	public:
-		PhotoInfo(IO::IStreamData *fd);
+		PhotoInfo(IO::StreamData *fd);
 		~PhotoInfo();
 
 		Bool HasInfo() const;

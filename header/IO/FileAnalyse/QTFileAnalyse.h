@@ -1,7 +1,7 @@
 #ifndef _SM_IO_FILEANALYSE_QTFILEANALYSE
 #define _SM_IO_FILEANALYSE_QTFILEANALYSE
 #include "Data/SyncArrayList.h"
-#include "IO/IStreamData.h"
+#include "IO/StreamData.h"
 #include "IO/FileAnalyse/IFileAnalyse.h"
 #include "Text/StringBuilderUTF8.h"
 
@@ -20,7 +20,7 @@ namespace IO
 				Int32 packType;
 			} PackInfo;
 		private:
-			IO::IStreamData *fd;
+			IO::StreamData *fd;
 			Data::SyncArrayList<PackInfo*> packs;
 
 			Bool pauseParsing;
@@ -33,7 +33,7 @@ namespace IO
 			static UInt32 __stdcall ParseThread(void *userObj);
 			UOSInt GetFrameIndex(UOSInt lev, UInt64 ofst);
 		public:
-			QTFileAnalyse(IO::IStreamData *fd);
+			QTFileAnalyse(IO::StreamData *fd);
 			virtual ~QTFileAnalyse();
 
 			virtual Text::CString GetFormatName();

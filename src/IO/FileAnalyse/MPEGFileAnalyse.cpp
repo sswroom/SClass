@@ -111,7 +111,7 @@ UInt32 __stdcall IO::FileAnalyse::MPEGFileAnalyse::ParseThread(void *userObj)
 	return 0;
 }
 
-IO::FileAnalyse::MPEGFileAnalyse::MPEGFileAnalyse(IO::IStreamData *fd)
+IO::FileAnalyse::MPEGFileAnalyse::MPEGFileAnalyse(IO::StreamData *fd)
 {
 	UInt8 buff[256];
 	this->fd = 0;

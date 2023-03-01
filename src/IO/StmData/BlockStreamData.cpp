@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "IO/StmData/BlockStreamData.h"
 
-IO::StmData::BlockStreamData::BlockStreamData(IO::IStreamData *sd)
+IO::StmData::BlockStreamData::BlockStreamData(IO::StreamData *sd)
 {
 	this->sd = sd->GetPartialData(0, sd->GetDataSize());
 	NEW_CLASS(this->dataOfstList, Data::ArrayListUInt64());
@@ -80,7 +80,7 @@ const UInt8 *IO::StmData::BlockStreamData::GetPointer()
 	return 0;
 }
 
-IO::IStreamData *IO::StmData::BlockStreamData::GetPartialData(UInt64 offset, UInt64 length)
+IO::StreamData *IO::StmData::BlockStreamData::GetPartialData(UInt64 offset, UInt64 length)
 {
 	IO::StmData::BlockStreamData *data;
 	NEW_CLASS(data, IO::StmData::BlockStreamData(this->sd));

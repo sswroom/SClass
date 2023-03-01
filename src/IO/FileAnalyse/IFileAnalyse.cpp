@@ -40,7 +40,7 @@ Bool IO::FileAnalyse::IFileAnalyse::GetFrameDetail(UOSInt index, Text::StringBui
 	return true;
 }
 
-IO::FileAnalyse::IFileAnalyse *IO::FileAnalyse::IFileAnalyse::AnalyseFile(IO::IStreamData *fd)
+IO::FileAnalyse::IFileAnalyse *IO::FileAnalyse::IFileAnalyse::AnalyseFile(IO::StreamData *fd)
 {
 	UInt8 buff[256];
 	UOSInt buffSize;
@@ -147,7 +147,7 @@ IO::FileAnalyse::IFileAnalyse *IO::FileAnalyse::IFileAnalyse::AnalyseFile(IO::IS
 	return analyse;
 }
 
-void IO::FileAnalyse::IFileAnalyse::AddFilters(IO::IFileSelector *selector)
+void IO::FileAnalyse::IFileAnalyse::AddFilters(IO::FileSelector *selector)
 {
 	selector->AddFilter(CSTR("*.mpg"), CSTR("MPEG System Stream"));
 	selector->AddFilter(CSTR("*.avi"), CSTR("RIFF AVI"));

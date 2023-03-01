@@ -108,7 +108,7 @@ UInt32 __stdcall IO::FileAnalyse::DWGFileAnalyse::ParseThread(void *userObj)
 	return 0;
 }
 
-IO::FileAnalyse::DWGFileAnalyse::DWGFileAnalyse(IO::IStreamData *fd)
+IO::FileAnalyse::DWGFileAnalyse::DWGFileAnalyse(IO::StreamData *fd)
 {
 	UInt8 buff[8];
 	this->fd = 0;

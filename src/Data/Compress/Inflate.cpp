@@ -26,7 +26,7 @@ Bool Data::Compress::Inflate::Decompress(UInt8 *destBuff, UOSInt *destBuffSize, 
 	return false;
 }
 
-Bool Data::Compress::Inflate::Decompress(IO::Stream *destStm, IO::IStreamData *srcData)
+Bool Data::Compress::Inflate::Decompress(IO::Stream *destStm, IO::StreamData *srcData)
 {
 	UInt64 srcOfst = 0;
 	UInt64 srcLen = srcData->GetDataSize();

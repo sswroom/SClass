@@ -3,7 +3,7 @@
 #include "Data/ArrayList.h"
 #include "DB/DBReader.h"
 #include "DB/ReadingDB.h"
-#include "IO/IStreamData.h"
+#include "IO/StreamData.h"
 #include "Sync/Mutex.h"
 #include "Text/Encoding.h"
 #include "Text/StringBuilderUTF8.h"
@@ -24,7 +24,7 @@ namespace DB
 
 	private:
 		//IO::SeekableStream *stm;
-		IO::IStreamData *stmData;
+		IO::StreamData *stmData;
 		Text::Encoding enc;
 //		Sync::Mutex *mut;
 		UInt64 refPos;
@@ -35,7 +35,7 @@ namespace DB
 		Text::String *name;
 
 	public:
-		DBFFile(IO::IStreamData *stmData, UInt32 codePage);
+		DBFFile(IO::StreamData *stmData, UInt32 codePage);
 		virtual ~DBFFile();
 
 		virtual UOSInt QueryTableNames(Text::CString schemaName, Data::ArrayList<Text::String*> *names);

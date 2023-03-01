@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "IO/FileSectorData.h"
 
-IO::FileSectorData::FileSectorData(IO::IStreamData *data, UInt64 ofst, UInt64 dataSize, UInt32 sectorSize) : IO::ISectorData(data->GetFullName())
+IO::FileSectorData::FileSectorData(IO::StreamData *data, UInt64 ofst, UInt64 dataSize, UInt32 sectorSize) : IO::ISectorData(data->GetFullName())
 {
 	this->data = data->GetPartialData(ofst, dataSize);
 	this->sectorSize = sectorSize;
@@ -35,7 +35,7 @@ IO::ISectorData *IO::FileSectorData::GetPartialData(UInt64 startSector, UInt64 s
 	return data;
 }
 
-IO::IStreamData *IO::FileSectorData::GetStreamData(UInt64 startSector, UInt64 dataSize) const
+IO::StreamData *IO::FileSectorData::GetStreamData(UInt64 startSector, UInt64 dataSize) const
 {
 	return this->data->GetPartialData(startSector * sectorSize, dataSize);
 }

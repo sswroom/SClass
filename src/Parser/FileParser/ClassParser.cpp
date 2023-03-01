@@ -17,7 +17,7 @@ Int32 Parser::FileParser::ClassParser::GetName()
 	return *(Int32*)"JCLS";
 }
 
-void Parser::FileParser::ClassParser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
+void Parser::FileParser::ClassParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::JavaClass)
 	{
@@ -30,7 +30,7 @@ IO::ParserType Parser::FileParser::ClassParser::GetParserType()
 	return IO::ParserType::JavaClass;
 }
 
-IO::ParsedObject *Parser::FileParser::ClassParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::ClassParser::ParseFileHdr(IO::StreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	if (ReadMUInt32(&hdr[0]) != 0xCAFEBABE)
 	{

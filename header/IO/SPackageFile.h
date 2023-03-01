@@ -1,7 +1,7 @@
 #ifndef _SM_IO_SPACKAGEFILE
 #define _SM_IO_SPACKAGEFILE
 #include "Data/BTreeUTF8Map.h"
-#include "IO/IStreamData.h"
+#include "IO/StreamData.h"
 #include "IO/MemoryStream.h"
 #include "IO/PackageFile.h"
 #include "IO/SeekableStream.h"
@@ -41,14 +41,14 @@ namespace IO
 		SPackageFile(Text::CString fileName);
 		~SPackageFile();
 
-		Bool AddFile(IO::IStreamData *fd, Text::CString fileName, const Data::Timestamp &modTime);
+		Bool AddFile(IO::StreamData *fd, Text::CString fileName, const Data::Timestamp &modTime);
 		Bool AddFile(const UInt8 *fileBuff, UOSInt fileSize, Text::CString fileName, const Data::Timestamp &modTime);
 		Bool AddPackage(IO::PackageFile *pkg, UTF8Char pathSeperator);
 		Bool Commit();
 		Bool OptimizeFile(Text::CString newFile);
 		void PauseCommit(Bool pauseCommit);
 
-		IO::IStreamData *CreateStreamData(Text::CString fileName);
+		IO::StreamData *CreateStreamData(Text::CString fileName);
 	};
 }
 #endif

@@ -13,9 +13,9 @@ namespace Parser
 			virtual ~EVTXParser();
 
 			virtual Int32 GetName();
-			virtual void PrepareSelector(IO::IFileSelector *selector, IO::ParserType t);
+			virtual void PrepareSelector(IO::FileSelector *selector, IO::ParserType t);
 			virtual IO::ParserType GetParserType();
-			virtual IO::ParsedObject *ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr);
+			virtual IO::ParsedObject *ParseFileHdr(IO::StreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr);
 
 			static UOSInt ParseBinXML(const UInt8 *chunk, UOSInt ofst, UOSInt endOfst, Text::StringBuilderUTF8 *sb, const UTF16Char *elementName, UOSInt nNameChar);
 		};

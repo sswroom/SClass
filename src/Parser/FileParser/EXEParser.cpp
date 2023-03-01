@@ -20,7 +20,7 @@ Int32 Parser::FileParser::EXEParser::GetName()
 	return *(Int32*)"EXEP";
 }
 
-void Parser::FileParser::EXEParser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
+void Parser::FileParser::EXEParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::EXEFile)
 	{
@@ -35,7 +35,7 @@ IO::ParserType Parser::FileParser::EXEParser::GetParserType()
 	return IO::ParserType::EXEFile;
 }
 
-IO::ParsedObject *Parser::FileParser::EXEParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::EXEParser::ParseFileHdr(IO::StreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	if (*(Int16*)&hdr[0] != *(Int16*)"MZ")
 	{

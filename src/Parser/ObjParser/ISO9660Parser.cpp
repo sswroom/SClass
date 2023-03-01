@@ -21,7 +21,7 @@ Int32 Parser::ObjParser::ISO9660Parser::GetName()
 	return *(Int32*)"ISO9";
 }
 
-void Parser::ObjParser::ISO9660Parser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
+void Parser::ObjParser::ISO9660Parser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::PackageFile)
 	{
@@ -211,7 +211,7 @@ void Parser::ObjParser::ISO9660Parser::ParseDir(IO::PackageFile *pkgFile, IO::IS
 		UOSInt fileRecSize;
 		UInt32 sectorNum;
 		UInt32 fileSize;
-		IO::IStreamData *fd;
+		IO::StreamData *fd;
 		UTF8Char *sptr;
 		Text::Encoding enc(codePage);
 

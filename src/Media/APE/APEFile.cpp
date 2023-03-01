@@ -2,7 +2,7 @@
 #include "Media/APE/APEAudioSource.h"
 #include "Media/APE/APEFile.h"
 
-Media::MediaFile *Media::APE::APEFile::ParseData(IO::IStreamData *data)
+Media::MediaFile *Media::APE::APEFile::ParseData(IO::StreamData *data)
 {
 	Media::APE::APEIO *io;
 	Int32 err;

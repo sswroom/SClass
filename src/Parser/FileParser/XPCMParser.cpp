@@ -4,7 +4,7 @@
 #include "Data/ArrayListInt32.h"
 #include "Data/ByteTool.h"
 #include "IO/FileStream.h"
-#include "IO/IStreamData.h"
+#include "IO/StreamData.h"
 #include "IO/Stream.h"
 #include "Media/IAudioSource.h"
 #include "Media/IMediaSource.h"
@@ -27,7 +27,7 @@ Int32 Parser::FileParser::XPCMParser::GetName()
 	return *(Int32*)"XPCM";
 }
 
-void Parser::FileParser::XPCMParser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
+void Parser::FileParser::XPCMParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::MediaFile)
 	{
@@ -40,7 +40,7 @@ IO::ParserType Parser::FileParser::XPCMParser::GetParserType()
 	return IO::ParserType::MediaFile;
 }
 
-IO::ParsedObject *Parser::FileParser::XPCMParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::XPCMParser::ParseFileHdr(IO::StreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	if (*(Int32*)&hdr[0] != *(Int32*)"XPCM")
 		return 0;

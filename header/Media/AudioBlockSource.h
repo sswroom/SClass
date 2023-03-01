@@ -1,7 +1,7 @@
 #ifndef _SM_MEDIA_AUDIOBLOCKSOURCE
 #define _SM_MEDIA_AUDIOBLOCKSOURCE
 #include "Sync/Event.h"
-#include "IO/IStreamData.h"
+#include "IO/StreamData.h"
 #include "Media/IMediaSource.h"
 #include "Media/IAudioSource.h"
 
@@ -18,7 +18,7 @@ namespace Media
 
 	private:
 		Media::AudioFormat format;
-		IO::IStreamData *data;
+		IO::StreamData *data;
 		Text::String *name;
 
 		UInt32 readBlock;
@@ -30,7 +30,7 @@ namespace Media
 		UInt32 samplePerBlock;
 		UOSInt maxBlockSize;
 	public:
-		AudioBlockSource(IO::IStreamData *fd, Media::AudioFormat *format, Text::String *name, UInt32 samplePerBlock);
+		AudioBlockSource(IO::StreamData *fd, Media::AudioFormat *format, Text::String *name, UInt32 samplePerBlock);
 		virtual ~AudioBlockSource();
 
 		virtual UTF8Char *GetSourceName(UTF8Char *buff);

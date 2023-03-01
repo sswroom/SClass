@@ -24,7 +24,7 @@ namespace Map
 		} RecHdr;
 
 		DB::DBFFile *dbf;
-		IO::IStreamData *shpData;
+		IO::StreamData *shpData;
 
 		Map::DrawLayerType layerType;
 		Data::ArrayListDbl *ptX;
@@ -39,7 +39,7 @@ namespace Map
 		Double mapRate;
 
 	public:
-		SHPData(const UInt8 *hdr, IO::IStreamData *data, UInt32 codePage);
+		SHPData(const UInt8 *hdr, IO::StreamData *data, UInt32 codePage);
 		virtual ~SHPData();
 
 		Bool IsError();

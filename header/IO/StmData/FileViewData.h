@@ -1,6 +1,6 @@
 #ifndef _SM_IO_STMDATA_FILEVIEWDATA
 #define _SM_IO_STMDATA_FILEVIEWDATA
-#include "IO/IStreamData.h"
+#include "IO/StreamData.h"
 #include "IO/ViewFileBuffer.h"
 #include "Sync/Mutex.h"
 
@@ -8,7 +8,7 @@ namespace IO
 {
 	namespace StmData
 	{
-		class FileViewData : public IO::IStreamData
+		class FileViewData : public IO::StreamData
 		{
 		private:
 			struct FILEVIEWDATAHANDLE
@@ -40,7 +40,7 @@ namespace IO
 			virtual UInt64 GetDataSize();
 			virtual const UInt8 *GetPointer();
 
-			virtual IO::IStreamData *GetPartialData(UInt64 offset, UInt64 length);
+			virtual IO::StreamData *GetPartialData(UInt64 offset, UInt64 length);
 			virtual Bool IsFullFile();
 			virtual Bool IsLoading();
 			virtual UOSInt GetSeekCount();

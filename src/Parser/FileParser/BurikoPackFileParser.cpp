@@ -19,7 +19,7 @@ Int32 Parser::FileParser::BurikoPackFileParser::GetName()
 	return *(Int32*)"BPAC";
 }
 
-void Parser::FileParser::BurikoPackFileParser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
+void Parser::FileParser::BurikoPackFileParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::PackageFile)
 	{
@@ -32,7 +32,7 @@ IO::ParserType Parser::FileParser::BurikoPackFileParser::GetParserType()
 	return IO::ParserType::PackageFile;
 }
 
-IO::ParsedObject *Parser::FileParser::BurikoPackFileParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::BurikoPackFileParser::ParseFileHdr(IO::StreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	UInt32 dataOfst;
 	UInt32 recCnt;

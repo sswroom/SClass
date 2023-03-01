@@ -1,7 +1,7 @@
 #ifndef _SM_IO_FILEANALYSE_JPGFILEANALYSE
 #define _SM_IO_FILEANALYSE_JPGFILEANALYSE
 #include "Data/SyncArrayList.h"
-#include "IO/IStreamData.h"
+#include "IO/StreamData.h"
 #include "IO/FileAnalyse/IFileAnalyse.h"
 #include "Text/CString.h"
 #include "Text/StringBuilder.h"
@@ -20,7 +20,7 @@ namespace IO
 				UOSInt size;
 			} JPGTag;
 		private:
-			IO::IStreamData *fd;
+			IO::StreamData *fd;
 			Data::SyncArrayList<JPGTag*> tags;
 
 			Bool pauseParsing;
@@ -31,7 +31,7 @@ namespace IO
 			static Text::CString GetTagName(UInt8 tagType);
 			static UInt32 __stdcall ParseThread(void *userObj);
 		public:
-			JPGFileAnalyse(IO::IStreamData *fd);
+			JPGFileAnalyse(IO::StreamData *fd);
 			virtual ~JPGFileAnalyse();
 
 			virtual Text::CString GetFormatName();

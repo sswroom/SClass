@@ -1,6 +1,6 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRGLBVIEWERFORM
 #define _SM_SSWR_AVIREAD_AVIRGLBVIEWERFORM
-#include "IO/IStreamData.h"
+#include "IO/StreamData.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "UI/GUIButton.h"
 #include "UI/GUIForm.h"
@@ -29,7 +29,7 @@ namespace SSWR
 
 			static void __stdcall OnFileDrop(void *userObj, Text::String **files, UOSInt nFiles);
 			Bool LoadFile(Text::String *fileName);
-			Bool LoadData(IO::IStreamData *jsonFD, IO::IStreamData *binBuffFD);
+			Bool LoadData(IO::StreamData *jsonFD, IO::StreamData *binBuffFD);
 		public:
 			AVIRGLBViewerForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRGLBViewerForm();

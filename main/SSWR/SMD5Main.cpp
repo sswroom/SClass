@@ -20,7 +20,7 @@
 IO::ConsoleWriter *console;
 Bool showHelp;
 
-class ProgressHandler : public IO::IProgressHandler
+class ProgressHandler : public IO::ProgressHandler
 {
 private:
 	Sync::Mutex *mut;

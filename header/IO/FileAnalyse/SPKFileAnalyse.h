@@ -1,7 +1,7 @@
 #ifndef _SM_IO_FILEANALYSE_SPKFILEANALYSE
 #define _SM_IO_FILEANALYSE_SPKFILEANALYSE
 #include "Data/SyncArrayList.h"
-#include "IO/IStreamData.h"
+#include "IO/StreamData.h"
 #include "IO/FileAnalyse/IFileAnalyse.h"
 #include "Text/StringBuilderUTF8.h"
 
@@ -27,7 +27,7 @@ namespace IO
 				Text::String *fileName;
 			} PackInfo;
 		private:
-			IO::IStreamData *fd;
+			IO::StreamData *fd;
 			Data::SyncArrayList<PackInfo*> packs;
 
 			Bool pauseParsing;
@@ -40,7 +40,7 @@ namespace IO
 			static UInt32 __stdcall ParseThread(void *userObj);
 			static void FreePackInfo(PackInfo *pack);
 		public:
-			SPKFileAnalyse(IO::IStreamData *fd);
+			SPKFileAnalyse(IO::StreamData *fd);
 			virtual ~SPKFileAnalyse();
 
 			virtual Text::CString GetFormatName();

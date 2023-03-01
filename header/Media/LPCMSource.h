@@ -1,6 +1,6 @@
 #ifndef _SM_MEDIA_LPCMSOURCE
 #define _SM_MEDIA_LPCMSOURCE
-#include "IO/IStreamData.h"
+#include "IO/StreamData.h"
 #include "Media/IAudioSource.h"
 
 namespace Media
@@ -9,7 +9,7 @@ namespace Media
 	{
 	protected:
 		AudioFormat format;
-		IO::IStreamData *data;
+		IO::StreamData *data;
 		Text::String *name;
 
 		UInt64 readOfst;
@@ -18,10 +18,10 @@ namespace Media
 	protected:
 		LPCMSource(Text::String *name);
 		LPCMSource(Text::CString name);
-		void SetData(IO::IStreamData *fd, UInt64 ofst, UInt64 length, Media::AudioFormat *format);
+		void SetData(IO::StreamData *fd, UInt64 ofst, UInt64 length, Media::AudioFormat *format);
 	public:
-		LPCMSource(IO::IStreamData *fd, UInt64 ofst, UInt64 length, Media::AudioFormat *format, Text::String *name);
-		LPCMSource(IO::IStreamData *fd, UInt64 ofst, UInt64 length, Media::AudioFormat *format, Text::CString name);
+		LPCMSource(IO::StreamData *fd, UInt64 ofst, UInt64 length, Media::AudioFormat *format, Text::String *name);
+		LPCMSource(IO::StreamData *fd, UInt64 ofst, UInt64 length, Media::AudioFormat *format, Text::CString name);
 		virtual ~LPCMSource();
 
 		virtual UTF8Char *GetSourceName(UTF8Char *buff);

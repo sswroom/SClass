@@ -1,7 +1,7 @@
 #ifndef _SM_MEDIA_AUDIOFIXBLOCKSOURCE
 #define _SM_MEDIA_AUDIOFIXBLOCKSOURCE
 #include "Sync/Event.h"
-#include "IO/IStreamData.h"
+#include "IO/StreamData.h"
 #include "Media/IMediaSource.h"
 #include "Media/IAudioSource.h"
 
@@ -11,13 +11,13 @@ namespace Media
 	{
 	private:
 		Media::AudioFormat format;
-		IO::IStreamData *data;
+		IO::StreamData *data;
 		Text::String *name;
 
 		UInt64 readOfst;
 		Sync::Event *readEvt;
 	public:
-		AudioFixBlockSource(IO::IStreamData *fd, UInt64 ofst, UInt64 length, Media::AudioFormat *format, Text::String *name);
+		AudioFixBlockSource(IO::StreamData *fd, UInt64 ofst, UInt64 length, Media::AudioFormat *format, Text::String *name);
 		virtual ~AudioFixBlockSource();
 
 		virtual UTF8Char *GetSourceName(UTF8Char *buff);

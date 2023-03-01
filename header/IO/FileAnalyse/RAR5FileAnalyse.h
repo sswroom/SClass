@@ -1,7 +1,7 @@
 #ifndef _SM_IO_FILEANALYSE_RAR5FILEANALYSE
 #define _SM_IO_FILEANALYSE_RAR5FILEANALYSE
 #include "Data/SyncArrayList.h"
-#include "IO/IStreamData.h"
+#include "IO/StreamData.h"
 #include "IO/FileAnalyse/IFileAnalyse.h"
 #include "Text/StringBuilderUTF8.h"
 
@@ -20,7 +20,7 @@ namespace IO
 				UInt64 dataSize;
 			} BlockInfo;
 		private:
-			IO::IStreamData *fd;
+			IO::StreamData *fd;
 			Data::SyncArrayList<BlockInfo*> packs;
 
 			Bool pauseParsing;
@@ -34,7 +34,7 @@ namespace IO
 			static const UInt8 *AddVHex(IO::FileAnalyse::FrameDetail *frame, UOSInt ofst, Text::CString name, const UInt8 *buffPtr, UInt64 *val);
 			static UInt32 __stdcall ParseThread(void *userObj);
 		public:
-			RAR5FileAnalyse(IO::IStreamData *fd);
+			RAR5FileAnalyse(IO::StreamData *fd);
 			virtual ~RAR5FileAnalyse();
 
 			virtual Text::CString GetFormatName();

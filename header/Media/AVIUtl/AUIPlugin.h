@@ -1,7 +1,7 @@
 #ifndef _SM_MEDIA_AVIUTL_AUIPLUGIN
 #define _SM_MEDIA_AVIUTL_AUIPLUGIN
 #include "Data/ArrayList.h"
-#include "IO/IFileSelector.h"
+#include "IO/FileSelector.h"
 #include "Media/AudioFormat.h"
 #include "Media/FrameInfo.h"
 #include "Media/IMediaSource.h"
@@ -45,7 +45,7 @@ namespace Media
 			UOSInt GetAudioData(void *hand, UOSInt startSample, UOSInt sampleLength, UInt8 *buff);
 			Bool IsVideoKeyFrame(void *hand, UInt32 frameNum);
 			Bool ConfigInput(void *hInst, void *hWnd);
-			void PrepareSelector(IO::IFileSelector *selector);
+			void PrepareSelector(IO::FileSelector *selector);
 
 			static AUIPlugin *LoadPlugin(const WChar *fileName);
 		};

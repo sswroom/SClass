@@ -1,7 +1,7 @@
 #ifndef _SM_IO_FILEANALYSE_PCAPNGFILEANALYSE
 #define _SM_IO_FILEANALYSE_PCAPNGFILEANALYSE
 #include "Data/SyncArrayList.h"
-#include "IO/IStreamData.h"
+#include "IO/StreamData.h"
 #include "IO/FileAnalyse/IFileAnalyse.h"
 #include "Text/StringBuilderUTF8.h"
 
@@ -21,7 +21,7 @@ namespace IO
 				Int8 timeResol;
 			} BlockInfo;
 		private:
-			IO::IStreamData *fd;
+			IO::StreamData *fd;
 			Bool isBE;
 			Data::SyncArrayList<BlockInfo *> blockList;
 			UInt8 *packetBuff;
@@ -33,7 +33,7 @@ namespace IO
 
 			static UInt32 __stdcall ParseThread(void *userObj);
 		public:
-			PCapngFileAnalyse(IO::IStreamData *fd);
+			PCapngFileAnalyse(IO::StreamData *fd);
 			virtual ~PCapngFileAnalyse();
 
 			virtual Text::CString GetFormatName();

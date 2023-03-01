@@ -3,7 +3,7 @@
 #include "Media/APE/APEIO.h"
 #include "Text/MyString.h"
 
-Media::APE::APEIO::APEIO(IO::IStreamData *data)
+Media::APE::APEIO::APEIO(IO::StreamData *data)
 {
 	this->data = data->GetPartialData(0, data->GetDataSize());
 	this->currPos = 0;
@@ -93,7 +93,7 @@ int Media::APE::APEIO::GetName(WChar * pBuffer)
 	return 0;
 }
 
-IO::IStreamData *Media::APE::APEIO::GetData()
+IO::StreamData *Media::APE::APEIO::GetData()
 {
 	return this->data;
 }

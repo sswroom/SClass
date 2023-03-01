@@ -105,7 +105,7 @@ UInt32 __stdcall IO::FileAnalyse::RAR5FileAnalyse::ParseThread(void *userObj)
 	return 0;
 }
 
-IO::FileAnalyse::RAR5FileAnalyse::RAR5FileAnalyse(IO::IStreamData *fd)
+IO::FileAnalyse::RAR5FileAnalyse::RAR5FileAnalyse(IO::StreamData *fd)
 {
 	UInt8 buff[256];
 	this->fd = 0;

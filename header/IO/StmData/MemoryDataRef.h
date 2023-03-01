@@ -1,12 +1,12 @@
 #ifndef _SM_IO_STMDATA_MEMORYDATAREF
 #define _SM_IO_STMDATA_MEMORYDATAREF
-#include "IO/IStreamData.h"
+#include "IO/StreamData.h"
 
 namespace IO
 {
 	namespace StmData
 	{
-		class MemoryDataRef : public IO::IStreamData
+		class MemoryDataRef : public IO::StreamData
 		{
 		private:
 			const UInt8 *data;
@@ -22,7 +22,7 @@ namespace IO
 			virtual UInt64 GetDataSize();
 			virtual const UInt8 *GetPointer();
 
-			virtual IO::IStreamData *GetPartialData(UInt64 offset, UInt64 length);
+			virtual IO::StreamData *GetPartialData(UInt64 offset, UInt64 length);
 			virtual Bool IsFullFile();
 			virtual Bool IsLoading();
 			virtual UOSInt GetSeekCount();

@@ -385,7 +385,7 @@ void __stdcall SSWR::AVIRead::AVIRPackageForm::LVDblClick(void *userObj, UOSInt 
 	}
 	else if (pot == IO::PackageFile::PackObjectType::StreamData)
 	{
-		IO::IStreamData *data = me->packFile->GetItemStmDataNew(index);
+		IO::StreamData *data = me->packFile->GetItemStmDataNew(index);
 		if (data)
 		{
 			me->core->LoadData(data, me->packFile);

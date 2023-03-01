@@ -1,7 +1,7 @@
 #ifndef _SM_IO_FILEANALYSE_FLVFILEANALYSE
 #define _SM_IO_FILEANALYSE_FLVFILEANALYSE
 #include "Data/SyncArrayList.h"
-#include "IO/IStreamData.h"
+#include "IO/StreamData.h"
 #include "IO/FileAnalyse/IFileAnalyse.h"
 #include "Sync/Mutex.h"
 #include "Text/StringBuilderUTF8.h"
@@ -20,7 +20,7 @@ namespace IO
 				UOSInt size;
 			} FLVTag;
 		private:
-			IO::IStreamData *fd;
+			IO::StreamData *fd;
 			Data::SyncArrayList<FLVTag*> tags;
 			UOSInt hdrSize;
 
@@ -33,7 +33,7 @@ namespace IO
 			void ParseScriptData(UInt8 *data, UOSInt ofst, UOSInt endOfst, UOSInt frameOfst, IO::FileAnalyse::FrameDetailHandler *frame);
 			static UInt32 __stdcall ParseThread(void *userObj);
 		public:
-			FLVFileAnalyse(IO::IStreamData *fd);
+			FLVFileAnalyse(IO::StreamData *fd);
 			virtual ~FLVFileAnalyse();
 
 			virtual Text::CString GetFormatName();

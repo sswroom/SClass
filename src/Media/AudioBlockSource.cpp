@@ -3,7 +3,7 @@
 #include "Text/MyString.h"
 #include "Media/AudioBlockSource.h"
 
-Media::AudioBlockSource::AudioBlockSource(IO::IStreamData *fd, Media::AudioFormat *format, Text::String *name, UInt32 samplePerBlock)
+Media::AudioBlockSource::AudioBlockSource(IO::StreamData *fd, Media::AudioFormat *format, Text::String *name, UInt32 samplePerBlock)
 {
 	this->format.FromAudioFormat(format);
 

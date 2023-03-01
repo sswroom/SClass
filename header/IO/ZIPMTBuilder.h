@@ -1,7 +1,7 @@
 #ifndef _SM_IO_ZIPMTBUILDER
 #define _SM_IO_ZIPMTBUILDER
 #include "Data/SyncLinkedList.h"
-#include "IO/IStreamData.h"
+#include "IO/StreamData.h"
 #include "IO/ZIPBuilder.h"
 #include "Sync/Event.h"
 
@@ -49,7 +49,7 @@ namespace IO
 		~ZIPMTBuilder();
 
 		Bool AddFile(Text::CString fileName, IO::SeekableStream *stm, Int64 fileTimeTicks, Data::Compress::Inflate::CompressionLevel compLevel);
-		Bool AddFile(Text::CString fileName, IO::IStreamData *fd, Int64 fileTimeTicks, Data::Compress::Inflate::CompressionLevel compLevel);
+		Bool AddFile(Text::CString fileName, IO::StreamData *fd, Int64 fileTimeTicks, Data::Compress::Inflate::CompressionLevel compLevel);
 	};
 }
 #endif

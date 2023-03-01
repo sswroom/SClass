@@ -12,7 +12,7 @@
 #include "Text/MyStringFloat.h"
 #include "Text/MyStringW.h"
 
-DB::DBFFile::DBFFile(IO::IStreamData *stmData, UInt32 codePage) : DB::ReadingDB(stmData->GetFullName()), enc(codePage)
+DB::DBFFile::DBFFile(IO::StreamData *stmData, UInt32 codePage) : DB::ReadingDB(stmData->GetFullName()), enc(codePage)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;

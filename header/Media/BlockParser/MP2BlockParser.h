@@ -12,7 +12,7 @@ namespace Media
 			MP2BlockParser();
 			virtual ~MP2BlockParser();
 
-			virtual Media::AudioBlockSource *ParseStreamData(IO::IStreamData *stmData);
+			virtual Media::AudioBlockSource *ParseStreamData(IO::StreamData *stmData);
 			Bool ParseStreamFormat(UInt8 *buff, UOSInt buffSize, Media::AudioFormat *fmt);
 		};
 	}

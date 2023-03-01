@@ -68,7 +68,7 @@ const UInt8 *IO::StmData::MemoryDataCopy::GetPointer()
 	return this->data;
 }
 
-IO::IStreamData *IO::StmData::MemoryDataCopy::GetPartialData(UInt64 offset, UInt64 length)
+IO::StreamData *IO::StmData::MemoryDataCopy::GetPartialData(UInt64 offset, UInt64 length)
 {
 	IO::StmData::MemoryDataCopy *data;
 	if (offset >= this->dataLength)

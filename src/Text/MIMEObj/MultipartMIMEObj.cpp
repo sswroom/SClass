@@ -335,7 +335,7 @@ UOSInt Text::MIMEObj::MultipartMIMEObj::GetPartCount() const
 	return this->parts.GetCount();
 }
 
-Text::MIMEObj::MultipartMIMEObj *Text::MIMEObj::MultipartMIMEObj::ParseFile(Text::CString contentType, IO::IStreamData *data)
+Text::MIMEObj::MultipartMIMEObj *Text::MIMEObj::MultipartMIMEObj::ParseFile(Text::CString contentType, IO::StreamData *data)
 {
 	UOSInt j;
 	if (contentType.StartsWith(UTF8STRC("multipart/mixed;")))

@@ -1,10 +1,10 @@
-#ifndef _SM_IO_IPROGRESSHANDLER
-#define _SM_IO_IPROGRESSHANDLER
+#ifndef _SM_IO_PROGRESSHANDLER
+#define _SM_IO_PROGRESSHANDLER
 #include "Text/CString.h"
 
 namespace IO
 {
-	class IProgressHandler
+	class ProgressHandler
 	{
 	public:
 		virtual void ProgressStart(Text::CString name, UInt64 count) = 0;

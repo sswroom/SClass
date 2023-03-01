@@ -145,7 +145,7 @@ UTF8Char *IO::DirectoryPackage::GetItemName(UTF8Char *sbuff, UOSInt index) const
 	return Text::StrConcat(sbuff, &fileName->v[i + 1]);
 }
 
-IO::IStreamData *IO::DirectoryPackage::GetItemStmDataNew(UOSInt index) const
+IO::StreamData *IO::DirectoryPackage::GetItemStmDataNew(UOSInt index) const
 {
 	Text::String *fileName = this->files.GetItem(index);
 	if (fileName == 0)
@@ -243,7 +243,7 @@ Bool IO::DirectoryPackage::AllowWrite() const
 	return true;
 }
 
-Bool IO::DirectoryPackage::CopyFrom(Text::CString fileName, IO::IProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt)
+Bool IO::DirectoryPackage::CopyFrom(Text::CString fileName, IO::ProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt)
 {
 	IO::Path::PathType pt;
 	Bool ret;
@@ -287,7 +287,7 @@ Bool IO::DirectoryPackage::CopyFrom(Text::CString fileName, IO::IProgressHandler
 	return false;
 }
 
-Bool IO::DirectoryPackage::MoveFrom(Text::CString fileName, IO::IProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt)
+Bool IO::DirectoryPackage::MoveFrom(Text::CString fileName, IO::ProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt)
 {
 	IO::Path::PathType pt;
 	Bool ret;
@@ -331,7 +331,7 @@ Bool IO::DirectoryPackage::MoveFrom(Text::CString fileName, IO::IProgressHandler
 	return false;
 }
 
-Bool IO::DirectoryPackage::RetryCopyFrom(Text::CString fileName, IO::IProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt)
+Bool IO::DirectoryPackage::RetryCopyFrom(Text::CString fileName, IO::ProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt)
 {
 	IO::Path::PathType pt;
 	Bool ret;
@@ -375,7 +375,7 @@ Bool IO::DirectoryPackage::RetryCopyFrom(Text::CString fileName, IO::IProgressHa
 	return false;
 }
 
-Bool IO::DirectoryPackage::RetryMoveFrom(Text::CString fileName, IO::IProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt)
+Bool IO::DirectoryPackage::RetryMoveFrom(Text::CString fileName, IO::ProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt)
 {
 	IO::Path::PathType pt;
 	Bool ret;

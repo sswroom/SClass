@@ -84,7 +84,7 @@ void Map::NetworkLinkLayer::CheckLinks(Bool manualRequest)
 
 void Map::NetworkLinkLayer::LoadLink(LinkInfo *link)
 {
-	IO::IStreamData *data = 0;
+	IO::StreamData *data = 0;
 	if (link->viewFormat == 0)
 	{
 #if defined(VERBOSE)

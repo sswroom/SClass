@@ -5,7 +5,7 @@
 #include "Data/ByteTool.h"
 #include "Data/ICaseStringMap.h"
 #include "IO/FileStream.h"
-#include "IO/IStreamData.h"
+#include "IO/StreamData.h"
 #include "IO/PackageFile.h"
 #include "IO/Path.h"
 #include "IO/StmData/FileData.h"
@@ -95,7 +95,7 @@ IO::ParserType IO::PackageFile::GetParserType() const
 	return IO::ParserType::PackageFile;
 }
 
-void IO::PackageFile::AddData(IO::IStreamData *fd, UInt64 ofst, UInt64 length, Text::CString name, const Data::Timestamp &modTime)
+void IO::PackageFile::AddData(IO::StreamData *fd, UInt64 ofst, UInt64 length, Text::CString name, const Data::Timestamp &modTime)
 {
 	PackFileItem *item;
 	item = MemAlloc(PackFileItem, 1);
@@ -132,7 +132,7 @@ void IO::PackageFile::AddObject(IO::ParsedObject *pobj, Text::CString name, cons
 	this->namedItems->Put(item->name, item);
 }
 
-void IO::PackageFile::AddCompData(IO::IStreamData *fd, UInt64 ofst, UInt64 length, IO::PackFileItem::CompressInfo *compInfo, Text::CString name, const Data::Timestamp &modTime)
+void IO::PackageFile::AddCompData(IO::StreamData *fd, UInt64 ofst, UInt64 length, IO::PackFileItem::CompressInfo *compInfo, Text::CString name, const Data::Timestamp &modTime)
 {
 	PackFileItem *item;
 	item = MemAlloc(PackFileItem, 1);
@@ -177,7 +177,7 @@ IO::PackageFile *IO::PackageFile::GetPackFile(Text::CString name) const
 	return 0;
 }
 
-Bool IO::PackageFile::UpdateCompInfo(const UTF8Char *name, IO::IStreamData *fd, UInt64 ofst, Int32 crc, UOSInt compSize, UInt32 decSize)
+Bool IO::PackageFile::UpdateCompInfo(const UTF8Char *name, IO::StreamData *fd, UInt64 ofst, Int32 crc, UOSInt compSize, UInt32 decSize)
 {
 	UOSInt i;
 	IO::PackFileItem *item;
@@ -272,13 +272,13 @@ IO::PackageFile::PackObjectType IO::PackageFile::GetPItemType(const PackFileItem
 	}
 }
 
-IO::IStreamData *IO::PackageFile::GetPItemStmDataNew(const PackFileItem *item) const
+IO::StreamData *IO::PackageFile::GetPItemStmDataNew(const PackFileItem *item) const
 {
 	if (item != 0)
 	{
 		if (item->itemType == IO::PackFileItem::PackItemType::Uncompressed)
 		{
-			IO::IStreamData *data = item->fd->GetPartialData(0, item->fd->GetDataSize());
+			IO::StreamData *data = item->fd->GetPartialData(0, item->fd->GetDataSize());
 			Text::StringBuilderUTF8 sb;
 			sb.Append(this->sourceName);
 			sb.AppendC(UTF8STRC("\\"));
@@ -431,13 +431,13 @@ UTF8Char *IO::PackageFile::GetItemName(UTF8Char *sbuff, UOSInt index) const
 	}
 }
 
-IO::IStreamData *IO::PackageFile::GetItemStmDataNew(UOSInt index) const
+IO::StreamData *IO::PackageFile::GetItemStmDataNew(UOSInt index) const
 {
 	IO::PackFileItem *item = this->items->GetItem(index);
 	return GetPItemStmDataNew(item);
 }
 
-IO::IStreamData *IO::PackageFile::GetItemStmDataNew(const UTF8Char* name, UOSInt nameLen) const
+IO::StreamData *IO::PackageFile::GetItemStmDataNew(const UTF8Char* name, UOSInt nameLen) const
 {
 	UOSInt index = GetItemIndex({name, nameLen});
 	if (index == INVALID_INDEX)
@@ -587,22 +587,22 @@ Bool IO::PackageFile::AllowWrite() const
 	return false;
 }
 
-Bool IO::PackageFile::CopyFrom(Text::CString fileName, IO::IProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt)
+Bool IO::PackageFile::CopyFrom(Text::CString fileName, IO::ProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt)
 {
 	return false;
 }
 
-Bool IO::PackageFile::MoveFrom(Text::CString fileName, IO::IProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt)
+Bool IO::PackageFile::MoveFrom(Text::CString fileName, IO::ProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt)
 {
 	return false;
 }
 
-Bool IO::PackageFile::RetryCopyFrom(Text::CString fileName, IO::IProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt)
+Bool IO::PackageFile::RetryCopyFrom(Text::CString fileName, IO::ProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt)
 {
 	return this->CopyFrom(fileName, progHdlr, bnt);
 }
 
-Bool IO::PackageFile::RetryMoveFrom(Text::CString fileName, IO::IProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt)
+Bool IO::PackageFile::RetryMoveFrom(Text::CString fileName, IO::ProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt)
 {
 	return this->MoveFrom(fileName, progHdlr, bnt);
 }
@@ -758,14 +758,14 @@ Bool IO::PackageFile::CopyTo(UOSInt index, Text::CString destPath, Bool fullFile
 	return false;
 }
 
-IO::IStreamData *IO::PackageFile::OpenStreamData(Text::CString fileName) const
+IO::StreamData *IO::PackageFile::OpenStreamData(Text::CString fileName) const
 {
 	if (fileName.IndexOf(':') != INVALID_INDEX)
 	{
 		return 0;
 	}
 
-	IO::IStreamData *retFD = 0;
+	IO::StreamData *retFD = 0;
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	UOSInt i;

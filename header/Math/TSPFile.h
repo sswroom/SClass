@@ -2,7 +2,7 @@
 #define _SM_MATH_TSPFILE
 #include "DB/DBReader.h"
 #include "DB/ReadingDB.h"
-#include "IO/IStreamData.h"
+#include "IO/StreamData.h"
 
 namespace Math
 {
@@ -16,7 +16,7 @@ namespace Math
 		Int32 fileType;
 
 	public:
-		TSPFile(IO::IStreamData *fd);
+		TSPFile(IO::StreamData *fd);
 		virtual ~TSPFile();
 
 		virtual UOSInt QueryTableNames(Text::CString schemaName, Data::ArrayList<Text::String*> *names);

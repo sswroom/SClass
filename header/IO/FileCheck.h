@@ -2,7 +2,7 @@
 #define _SM_IO_FILECHECK
 #include "Data/ArrayListString.h"
 #include "IO/ParsedObject.h"
-#include "IO/IProgressHandler.h"
+#include "IO/ProgressHandler.h"
 #include "Crypto/Hash/IHash.h"
 
 namespace IO
@@ -17,10 +17,10 @@ namespace IO
 		UOSInt hashSize;
 
 	public:
-		static FileCheck *CreateCheck(Text::CString path, Crypto::Hash::HashType chkType, IO::IProgressHandler *progress, Bool skipError);
+		static FileCheck *CreateCheck(Text::CString path, Crypto::Hash::HashType chkType, IO::ProgressHandler *progress, Bool skipError);
 	private:
 		static void __stdcall CheckData(const UInt8 *buff, UOSInt buffSize, void *userData);
-		static Bool CheckDir(UTF8Char *fullPath, UTF8Char *hashPath, Crypto::Hash::IHash *hash, IO::FileCheck *fchk, IO::IProgressHandler *progress, Bool skipError); //true = error
+		static Bool CheckDir(UTF8Char *fullPath, UTF8Char *hashPath, Crypto::Hash::IHash *hash, IO::FileCheck *fchk, IO::ProgressHandler *progress, Bool skipError); //true = error
 
 	public:
 		FileCheck(Text::String *name, Crypto::Hash::HashType chkType);

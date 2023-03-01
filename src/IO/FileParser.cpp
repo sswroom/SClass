@@ -7,7 +7,7 @@
 
 #define HDRSIZE 512
 
-IO::ParsedObject *IO::FileParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
+IO::ParsedObject *IO::FileParser::ParseFile(IO::StreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
 	UInt8 hdr[HDRSIZE];
 	fd->GetRealData(0, HDRSIZE, hdr);

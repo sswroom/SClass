@@ -21,7 +21,7 @@ Int32 Parser::FileParser::M2VParser::GetName()
 	return *(Int32*)"M2VP";
 }
 
-void Parser::FileParser::M2VParser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
+void Parser::FileParser::M2VParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::MediaFile)
 	{
@@ -34,7 +34,7 @@ IO::ParserType Parser::FileParser::M2VParser::GetParserType()
 	return IO::ParserType::MediaFile;
 }
 
-IO::ParsedObject *Parser::FileParser::M2VParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::M2VParser::ParseFile(IO::StreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
 	UInt8 tmpBuff[1024];
 	OSInt readSize = fd->GetRealData(0, 1024, tmpBuff);

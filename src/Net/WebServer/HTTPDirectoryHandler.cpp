@@ -385,7 +385,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ResponsePackageFileItem(Net::WebServe
 			return true;
 		}
 	}
-	IO::IStreamData *stmData = packageFile->GetPItemStmDataNew(pitem);
+	IO::StreamData *stmData = packageFile->GetPItemStmDataNew(pitem);
 	if (stmData)
 	{
 		UOSInt dataLen = (UOSInt)stmData->GetDataSize();
@@ -636,7 +636,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 						const IO::PackFileItem *pitem2 = innerPF->GetPackFileItem((const UTF8Char*)"index.html");
 						if (pitem2 && innerPF->GetPItemType(pitem2) == IO::PackageFile::PackObjectType::StreamData)
 						{
-							IO::IStreamData *stmData = innerPF->GetPItemStmDataNew(pitem2);
+							IO::StreamData *stmData = innerPF->GetPItemStmDataNew(pitem2);
 							if (stmData)
 							{
 								UOSInt dataLen = (UOSInt)stmData->GetDataSize();

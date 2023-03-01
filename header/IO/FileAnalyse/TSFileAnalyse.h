@@ -1,7 +1,7 @@
 #ifndef _SM_IO_FILEANALYSE_TSFILEANALYSE
 #define _SM_IO_FILEANALYSE_TSFILEANALYSE
 #include "Data/ArrayList.h"
-#include "IO/IStreamData.h"
+#include "IO/StreamData.h"
 #include "IO/FileAnalyse/IFileAnalyse.h"
 #include "Sync/Mutex.h"
 #include "Text/StringBuilderUTF8.h"
@@ -13,13 +13,13 @@ namespace IO
 		class TSFileAnalyse : public IO::FileAnalyse::IFileAnalyse
 		{
 		private:
-			IO::IStreamData *fd;
+			IO::StreamData *fd;
 			UInt32 packSize;
 			UInt64 fileSize;
 			Bool hasTime;
 
 		public:
-			TSFileAnalyse(IO::IStreamData *fd);
+			TSFileAnalyse(IO::StreamData *fd);
 			virtual ~TSFileAnalyse();
 
 			virtual Text::CString GetFormatName();

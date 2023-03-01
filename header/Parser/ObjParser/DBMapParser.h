@@ -1,12 +1,12 @@
 #ifndef _SM_PARSER_OBJPARSER_DBMAPPARSER
 #define _SM_PARSER_OBJPARSER_DBMAPPARSER
-#include "IO/IObjectParser.h"
+#include "IO/ObjectParser.h"
 
 namespace Parser
 {
 	namespace ObjParser
 	{
-		class DBMapParser : public IO::IObjectParser
+		class DBMapParser : public IO::ObjectParser
 		{
 		private:
 			typedef struct
@@ -24,7 +24,7 @@ namespace Parser
 			virtual ~DBMapParser();
 
 			virtual Int32 GetName();
-			virtual void PrepareSelector(IO::IFileSelector *selector, IO::ParserType t);
+			virtual void PrepareSelector(IO::FileSelector *selector, IO::ParserType t);
 			virtual IO::ParserType GetParserType();
 			virtual IO::ParsedObject *ParseObject(IO::ParsedObject *pobj, IO::PackageFile *pkgFile, IO::ParserType targetType);
 		};

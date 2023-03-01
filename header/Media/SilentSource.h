@@ -1,6 +1,6 @@
 #ifndef _SM_MEDIA_SILENTSOURCE
 #define _SM_MEDIA_SILENTSOURCE
-#include "IO/IStreamData.h"
+#include "IO/StreamData.h"
 #include "Media/IAudioSource.h"
 
 namespace Media

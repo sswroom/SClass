@@ -94,8 +94,8 @@ void Map::ESRI::FileGDBDir::AddTable(FileGDBTable *table)
 
 Map::ESRI::FileGDBDir *Map::ESRI::FileGDBDir::OpenDir(IO::PackageFile *pkg)
 {
-	IO::IStreamData *tableFD = pkg->GetItemStmDataNew(UTF8STRC("a00000001.gdbtable"));
-	IO::IStreamData *indexFD = pkg->GetItemStmDataNew(UTF8STRC("a00000001.gdbtablx"));
+	IO::StreamData *tableFD = pkg->GetItemStmDataNew(UTF8STRC("a00000001.gdbtable"));
+	IO::StreamData *indexFD = pkg->GetItemStmDataNew(UTF8STRC("a00000001.gdbtablx"));
 	FileGDBTable *table;
 	if (tableFD == 0)
 	{

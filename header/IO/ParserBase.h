@@ -1,8 +1,8 @@
-#ifndef _SM_IO_IPARSER
-#define _SM_IO_IPARSER
-#include "IO/IFileSelector.h"
-#include "IO/IProgressHandler.h"
-#include "IO/IStreamData.h"
+#ifndef _SM_IO_PARSERBASE
+#define _SM_IO_PARSERBASE
+#include "IO/FileSelector.h"
+#include "IO/ProgressHandler.h"
+#include "IO/StreamData.h"
 #include "IO/ParsedObject.h"
 
 namespace Map
@@ -25,10 +25,10 @@ namespace Text
 }
 namespace IO
 {
-	class IParser
+	class ParserBase
 	{
 	public:
-		virtual ~IParser(){};
+		virtual ~ParserBase(){};
 
 		virtual Int32 GetName() = 0;
 		virtual void SetCodePage(UInt32 codePage) {};
@@ -36,10 +36,10 @@ namespace IO
 		virtual void SetWebBrowser(Net::WebBrowser *browser) {};
 		virtual void SetMapManager(Map::MapManager *mapMgr) {};
 		virtual void SetEncFactory(Text::EncodingFactory *encFact) {};
-		virtual void SetProgressHandler(IO::IProgressHandler *progHdlr) {};
+		virtual void SetProgressHandler(IO::ProgressHandler *progHdlr) {};
 		virtual void SetSocketFactory(Net::SocketFactory *sockf) {};
 		virtual void SetSSLEngine(Net::SSLEngine *ssl) {};
-		virtual void PrepareSelector(IO::IFileSelector *selector, IO::ParserType t) = 0;
+		virtual void PrepareSelector(IO::FileSelector *selector, IO::ParserType t) = 0;
 		virtual IO::ParserType GetParserType() = 0;
 	};
 }

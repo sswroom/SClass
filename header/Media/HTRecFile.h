@@ -2,7 +2,7 @@
 #define _SM_MEDIA_HTRECFILE
 #include "DB/DBReader.h"
 #include "DB/ReadingDB.h"
-#include "IO/IStreamData.h"
+#include "IO/StreamData.h"
 #include "Text/CString.h"
 #include "Text/StringBuilderUTF8.h"
 
@@ -67,7 +67,7 @@ namespace Media
 		UInt32 adjRecInterval;
 
 	public:
-		HTRecFile(IO::IStreamData *stmData);
+		HTRecFile(IO::StreamData *stmData);
 		virtual ~HTRecFile();
 
 		virtual UOSInt QueryTableNames(Text::CString schemaName, Data::ArrayList<Text::String*> *names);

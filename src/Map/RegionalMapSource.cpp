@@ -279,7 +279,7 @@ Map::IMapDrawLayer *Map::RegionalMapSource::OpenMap(const MapInfo *map, Net::Soc
 	}
 	case MapType::File:
 	{
-		IO::IStreamData *fd = browser->GetData(Text::CString(map->url, map->urlLen), false, 0);
+		IO::StreamData *fd = browser->GetData(Text::CString(map->url, map->urlLen), false, 0);
 		if (fd)
 		{
 			IO::ParserType pt;

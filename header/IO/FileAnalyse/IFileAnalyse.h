@@ -1,8 +1,8 @@
 #ifndef _SM_IO_FILEANALYSE_IFILEANALYSE
 #define _SM_IO_FILEANALYSE_IFILEANALYSE
 #include "Data/ArrayList.h"
-#include "IO/IFileSelector.h"
-#include "IO/IStreamData.h"
+#include "IO/FileSelector.h"
+#include "IO/StreamData.h"
 #include "IO/FileAnalyse/FrameDetail.h"
 #include "Sync/Mutex.h"
 #include "Text/CString.h"
@@ -28,8 +28,8 @@ namespace IO
 			virtual Bool IsParsing() = 0;
 			virtual Bool TrimPadding(Text::CString outputFile) = 0;
 
-			static IFileAnalyse *AnalyseFile(IO::IStreamData *fd);
-			static void AddFilters(IO::IFileSelector *selector);
+			static IFileAnalyse *AnalyseFile(IO::StreamData *fd);
+			static void AddFilters(IO::FileSelector *selector);
 		};
 	}
 }

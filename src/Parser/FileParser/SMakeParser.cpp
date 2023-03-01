@@ -17,7 +17,7 @@ Int32 Parser::FileParser::SMakeParser::GetName()
 	return *(Int32*)"TXTP";
 }
 
-void Parser::FileParser::SMakeParser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
+void Parser::FileParser::SMakeParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::Smake)
 	{
@@ -30,7 +30,7 @@ IO::ParserType Parser::FileParser::SMakeParser::GetParserType()
 	return IO::ParserType::Smake;
 }
 
-IO::ParsedObject *Parser::FileParser::SMakeParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::SMakeParser::ParseFileHdr(IO::StreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	if (!fd->IsFullFile())
 	{

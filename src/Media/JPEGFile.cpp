@@ -12,7 +12,7 @@
 //http://stackoverflow.com/questions/662565/how-to-create-huffman-tree-from-ffc4-dht-header-in-jpeg-file
 //http://u88.n24.queensu.ca/exiftool/forum/index.php?topic=4898.0 FLIR
 
-Bool Media::JPEGFile::ParseJPEGHeader(IO::IStreamData *fd, Media::Image *img, Media::ImageList *imgList, Parser::ParserList *parsers)
+Bool Media::JPEGFile::ParseJPEGHeader(IO::StreamData *fd, Media::Image *img, Media::ImageList *imgList, Parser::ParserList *parsers)
 {
 	UInt64 ofst;
 	UInt32 nextOfst;
@@ -240,7 +240,7 @@ Bool Media::JPEGFile::ParseJPEGHeader(IO::IStreamData *fd, Media::Image *img, Me
 	return ret;
 }
 
-Media::EXIFData *Media::JPEGFile::ParseJPEGExif(IO::IStreamData *fd)
+Media::EXIFData *Media::JPEGFile::ParseJPEGExif(IO::StreamData *fd)
 {
 	UInt64 ofst;
 	UInt32 nextOfst;
@@ -307,7 +307,7 @@ Media::EXIFData *Media::JPEGFile::ParseJPEGExif(IO::IStreamData *fd)
 	}
 }
 
-Bool Media::JPEGFile::ParseJPEGHeaders(IO::IStreamData *fd, Media::EXIFData **exif, Text::XMLDocument **xmf, Media::ICCProfile **icc, UInt32 *width, UInt32 *height)
+Bool Media::JPEGFile::ParseJPEGHeaders(IO::StreamData *fd, Media::EXIFData **exif, Text::XMLDocument **xmf, Media::ICCProfile **icc, UInt32 *width, UInt32 *height)
 {
 	UInt64 ofst;
 	UInt32 nextOfst;

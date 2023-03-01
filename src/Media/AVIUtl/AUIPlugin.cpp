@@ -289,7 +289,7 @@ Bool Media::AVIUtl::AUIPlugin::ConfigInput(void *hInst, void *hWnd)
 	return pluginTab->func_config((HWND)hWnd, (HINSTANCE)hInst) == TRUE;
 }
 
-void Media::AVIUtl::AUIPlugin::PrepareSelector(IO::IFileSelector *selector)
+void Media::AVIUtl::AUIPlugin::PrepareSelector(IO::FileSelector *selector)
 {
 	INPUT_PLUGIN_TABLE *pluginTab = (INPUT_PLUGIN_TABLE*)this->plugin->pluginTable;
 	Text::Encoding enc(932);

@@ -1,7 +1,7 @@
 #ifndef _SM_IO_FILEANALYSE_ZIPFILEANALYSE
 #define _SM_IO_FILEANALYSE_ZIPFILEANALYSE
 #include "Data/SyncArrayList.h"
-#include "IO/IStreamData.h"
+#include "IO/StreamData.h"
 #include "IO/FileAnalyse/IFileAnalyse.h"
 #include "Text/CString.h"
 #include "Text/StringBuilder.h"
@@ -20,7 +20,7 @@ namespace IO
 				UInt64 size;
 			};
 		private:
-			IO::IStreamData *fd;
+			IO::StreamData *fd;
 			Data::SyncArrayList<ZIPRecord*> tags;
 
 			Bool pauseParsing;
@@ -34,7 +34,7 @@ namespace IO
 			UOSInt AddCentDir(const UInt8 *buff, UOSInt buffSize, UInt64 ofst);
 			static UInt32 __stdcall ParseThread(void *userObj);
 		public:
-			ZIPFileAnalyse(IO::IStreamData *fd);
+			ZIPFileAnalyse(IO::StreamData *fd);
 			virtual ~ZIPFileAnalyse();
 
 			virtual Text::CString GetFormatName();

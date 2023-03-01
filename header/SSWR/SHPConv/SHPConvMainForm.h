@@ -1,7 +1,7 @@
 #ifndef _SM_SSWR_SHPCONV_SHPCONVMAINFORM
 #define _SM_SSWR_SHPCONV_SHPCONVMAINFORM
 #include "DB/DBFFile.h"
-#include "IO/IProgressHandler.h"
+#include "IO/ProgressHandler.h"
 #include "Media/DrawEngine.h"
 #include "Media/MonitorMgr.h"
 #include "SSWR/SHPConv/IMapEng.h"
@@ -18,7 +18,7 @@ namespace SSWR
 {
 	namespace SHPConv
 	{
-		class SHPConvMainForm : public UI::GUIForm, public IO::IProgressHandler, public SSWR::SHPConv::IMapEng
+		class SHPConvMainForm : public UI::GUIForm, public IO::ProgressHandler, public SSWR::SHPConv::IMapEng
 		{
 		public:
 			typedef struct
@@ -102,8 +102,8 @@ namespace SSWR
 			static void __stdcall OnPreviewClicked(void *userObj);
 			static void __stdcall OnConvertClicked(void *userObj);
 
-			Int32 GroupConvert(Text::CString sourceFile, Text::CString outFilePrefix, Data::ArrayList<const UTF8Char*> *dbCols, Int32 blkScale, Data::ArrayList<MapFilter*> *filters, IO::IProgressHandler *progress, UOSInt groupCol, Data::ArrayList<const UTF8Char*> *outNames, Data::ArrayList<UInt32> *dbCols2);
-			Int32 ConvertShp(Text::CString sourceFile, Text::CString outFilePrefix, Data::ArrayList<const UTF8Char*> *dbCols, Int32 blkScale, Data::ArrayList<MapFilter*> *filters, IO::IProgressHandler *progress, Data::ArrayList<UInt32> *dbCols2);
+			Int32 GroupConvert(Text::CString sourceFile, Text::CString outFilePrefix, Data::ArrayList<const UTF8Char*> *dbCols, Int32 blkScale, Data::ArrayList<MapFilter*> *filters, IO::ProgressHandler *progress, UOSInt groupCol, Data::ArrayList<const UTF8Char*> *outNames, Data::ArrayList<UInt32> *dbCols2);
+			Int32 ConvertShp(Text::CString sourceFile, Text::CString outFilePrefix, Data::ArrayList<const UTF8Char*> *dbCols, Int32 blkScale, Data::ArrayList<MapFilter*> *filters, IO::ProgressHandler *progress, Data::ArrayList<UInt32> *dbCols2);
 			Int32 LoadShape(Text::CString fileName, Bool updateTxt);
 			void ClearFilter();
 

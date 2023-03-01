@@ -1,6 +1,6 @@
 #ifndef _SM_IO_FILEANALYSE_EDIDFILEANALYSE
 #define _SM_IO_FILEANALYSE_EDIDFILEANALYSE
-#include "IO/IStreamData.h"
+#include "IO/StreamData.h"
 #include "IO/FileAnalyse/IFileAnalyse.h"
 
 namespace IO
@@ -11,12 +11,12 @@ namespace IO
 		{
 		private:
 			UOSInt blockCnt;
-			IO::IStreamData *fd;
+			IO::StreamData *fd;
 
 			static void ParseDescriptor(FrameDetail *frame, const UInt8 *buff, UOSInt ofst);
 			static void RemoveNonASCII(UTF8Char *sbuff, UTF8Char *sbuffEnd);
 		public:
-			EDIDFileAnalyse(IO::IStreamData *fd);
+			EDIDFileAnalyse(IO::StreamData *fd);
 			virtual ~EDIDFileAnalyse();
 
 			virtual Text::CString GetFormatName();

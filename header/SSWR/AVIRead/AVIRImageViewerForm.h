@@ -42,7 +42,7 @@ namespace SSWR
 			virtual void OnMonitorChanged();
 
 			void SetImage(Media::ImageList *imgList, Bool sameDir);
-			Bool ParseFile(IO::IStreamData *fd);
+			Bool ParseFile(IO::StreamData *fd);
 		};
 	}
 }

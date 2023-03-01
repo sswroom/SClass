@@ -22,7 +22,7 @@ Int32 Parser::FileParser::EVTXParser::GetName()
 	return *(Int32*)"EVTX";
 }
 
-void Parser::FileParser::EVTXParser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
+void Parser::FileParser::EVTXParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::LogFile)
 	{
@@ -35,7 +35,7 @@ IO::ParserType Parser::FileParser::EVTXParser::GetParserType()
 	return IO::ParserType::LogFile;
 }
 
-IO::ParsedObject *Parser::FileParser::EVTXParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::EVTXParser::ParseFileHdr(IO::StreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	if (*(UInt64*)hdr != *(UInt64*)"ElfFile" || ReadUInt32(&hdr[32]) != 128 || ReadUInt16(&hdr[40]) != 4096)
 	{

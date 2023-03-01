@@ -968,7 +968,7 @@ UOSInt Map::WebMapTileServiceSource::GetTileImageIDs(UOSInt level, Math::RectAre
 Media::ImageList *Map::WebMapTileServiceSource::LoadTileImage(UOSInt level, Math::Coord2D<Int32> tileId, Parser::ParserList *parsers, Math::RectAreaDbl *bounds, Bool localOnly)
 {
 	ImageType it;
-	IO::IStreamData *fd;
+	IO::StreamData *fd;
 	IO::ParsedObject *pobj;
 	fd = this->LoadTileImageData(level, tileId, bounds, localOnly, &it);
 	if (fd)
@@ -1009,7 +1009,7 @@ UTF8Char *Map::WebMapTileServiceSource::GetTileImageURL(UTF8Char *sbuff, UOSInt 
 	return 0;
 }
 
-IO::IStreamData *Map::WebMapTileServiceSource::LoadTileImageData(UOSInt level, Math::Coord2D<Int32> tileId, Math::RectAreaDbl *bounds, Bool localOnly, ImageType *it)
+IO::StreamData *Map::WebMapTileServiceSource::LoadTileImageData(UOSInt level, Math::Coord2D<Int32> tileId, Math::RectAreaDbl *bounds, Bool localOnly, ImageType *it)
 {
 	UTF8Char filePathU[512];
 	UTF8Char sbuff[64];
@@ -1020,7 +1020,7 @@ IO::IStreamData *Map::WebMapTileServiceSource::LoadTileImageData(UOSInt level, M
 	Data::DateTime dt;
 	Data::DateTime currTime;
 	Net::HTTPClient *cli;
-	IO::IStreamData *fd;
+	IO::StreamData *fd;
 	TileMatrix *tileMatrix = this->GetTileMatrix(level);
 	if (tileMatrix == 0)
 		return 0;

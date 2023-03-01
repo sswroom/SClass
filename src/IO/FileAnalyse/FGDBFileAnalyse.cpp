@@ -73,7 +73,7 @@ UInt32 __stdcall IO::FileAnalyse::FGDBFileAnalyse::ParseThread(void *userObj)
 	return 0;
 }
 
-IO::FileAnalyse::FGDBFileAnalyse::FGDBFileAnalyse(IO::IStreamData *fd)
+IO::FileAnalyse::FGDBFileAnalyse::FGDBFileAnalyse(IO::StreamData *fd)
 {
 	UInt8 buff[40];
 	this->fd = 0;

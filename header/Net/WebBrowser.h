@@ -1,7 +1,7 @@
 #ifndef _SM_NET_WEBBROWSER
 #define _SM_NET_WEBBROWSER
 #include "Crypto/Hash/CRC32RIEEE.h"
-#include "IO/IStreamData.h"
+#include "IO/StreamData.h"
 #include "Net/HTTPQueue.h"
 #include "Net/SocketFactory.h"
 #include "Net/SSLEngine.h"
@@ -24,7 +24,7 @@ namespace Net
 		WebBrowser(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CString cacheDir);
 		~WebBrowser();
 
-		IO::IStreamData *GetData(Text::CString url, Bool forceReload, UTF8Char *contentType);
+		IO::StreamData *GetData(Text::CString url, Bool forceReload, UTF8Char *contentType);
 	};
 }
 #endif

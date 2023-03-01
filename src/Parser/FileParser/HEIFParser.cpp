@@ -26,7 +26,7 @@ Int32 Parser::FileParser::HEIFParser::GetName()
 	return *(Int32*)"HEIF";
 }
 
-void Parser::FileParser::HEIFParser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
+void Parser::FileParser::HEIFParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::ImageList)
 	{
@@ -363,7 +363,7 @@ Media::StaticImage *HEIFParser_DecodeImage(heif_image_handle *imgHdlr)
 	return simg;
 }
 
-IO::ParsedObject *Parser::FileParser::HEIFParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::HEIFParser::ParseFileHdr(IO::StreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	if (ReadNInt32(&hdr[4]) != *(Int32*)"ftyp" || (ReadNInt32(&hdr[8]) != *(Int32*)"mif1" && ReadNInt32(&hdr[8]) != *(Int32*)"heic"))
 		return 0;
@@ -427,7 +427,7 @@ IO::ParsedObject *Parser::FileParser::HEIFParser::ParseFileHdr(IO::IStreamData *
 	return imgList;
 }
 
-Bool Parser::FileParser::HEIFParser::ParseHeaders(IO::IStreamData *fd, Media::EXIFData **exif, Text::XMLDocument **xmf, Media::ICCProfile **icc, UInt32 *width, UInt32 *height)
+Bool Parser::FileParser::HEIFParser::ParseHeaders(IO::StreamData *fd, Media::EXIFData **exif, Text::XMLDocument **xmf, Media::ICCProfile **icc, UInt32 *width, UInt32 *height)
 {
 	UInt8 hdr[12];
 	if (fd->GetRealData(0, 12, hdr) != 12)

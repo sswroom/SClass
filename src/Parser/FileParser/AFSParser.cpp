@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/ByteTool.h"
-#include "IO/IStreamData.h"
+#include "IO/StreamData.h"
 #include "IO/PackageFile.h"
 #include "Parser/FileParser/AFSParser.h"
 #include "Text/Encoding.h"
@@ -19,7 +19,7 @@ Int32 Parser::FileParser::AFSParser::GetName()
 	return *(Int32*)"AFSP";
 }
 
-void Parser::FileParser::AFSParser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
+void Parser::FileParser::AFSParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::PackageFile)
 	{
@@ -32,7 +32,7 @@ IO::ParserType Parser::FileParser::AFSParser::GetParserType()
 	return IO::ParserType::PackageFile;
 }
 
-IO::ParsedObject *Parser::FileParser::AFSParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::AFSParser::ParseFileHdr(IO::StreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	IO::PackageFile *pf;
 	UTF8Char sbuff[9];

@@ -134,7 +134,7 @@ UInt32 __stdcall IO::FileAnalyse::PCapngFileAnalyse::ParseThread(void *userObj)
 	return 0;
 }
 
-IO::FileAnalyse::PCapngFileAnalyse::PCapngFileAnalyse(IO::IStreamData *fd)
+IO::FileAnalyse::PCapngFileAnalyse::PCapngFileAnalyse(IO::StreamData *fd)
 {
 	UInt8 buff[16];
 	this->fd = 0;

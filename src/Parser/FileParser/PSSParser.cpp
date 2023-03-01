@@ -28,7 +28,7 @@ Int32 Parser::FileParser::PSSParser::GetName()
 	return *(Int32*)"PSSP";
 }
 
-void Parser::FileParser::PSSParser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
+void Parser::FileParser::PSSParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::MediaFile)
 	{
@@ -41,7 +41,7 @@ IO::ParserType Parser::FileParser::PSSParser::GetParserType()
 	return IO::ParserType::MediaFile;
 }
 
-IO::ParsedObject *Parser::FileParser::PSSParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::PSSParser::ParseFileHdr(IO::StreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr2;
@@ -78,7 +78,7 @@ IO::ParsedObject *Parser::FileParser::PSSParser::ParseFileHdr(IO::IStreamData *f
 //	Int32 scr_ext = 0;
 
 	Media::FrameInfo frameInfo;
-	IO::IStreamData *concatFile = 0;
+	IO::StreamData *concatFile = 0;
 	UInt32 i;
 	UInt64 currOfst;
 

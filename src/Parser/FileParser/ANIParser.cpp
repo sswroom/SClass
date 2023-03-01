@@ -18,7 +18,7 @@ Int32 Parser::FileParser::ANIParser::GetName()
 	return *(Int32*)"ANIP";
 }
 
-void Parser::FileParser::ANIParser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
+void Parser::FileParser::ANIParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::ImageList)
 	{
@@ -31,7 +31,7 @@ IO::ParserType Parser::FileParser::ANIParser::GetParserType()
 	return IO::ParserType::ImageList;
 }
 
-IO::ParsedObject *Parser::FileParser::ANIParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::ANIParser::ParseFileHdr(IO::StreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	UTF8Char sbuff[256];
 	UInt8 riffHdr[24];
@@ -110,7 +110,7 @@ IO::ParsedObject *Parser::FileParser::ANIParser::ParseFileHdr(IO::IStreamData *f
 						imgList->AddImage(img, MulDivU32(displayRate, 1000, 60));
 						DEL_CLASS(currImage);
 					}
-					IO::IStreamData *data = fd->GetPartialData(currOfst + 20 + buffOfst, *(UInt32*)&buff[4]);
+					IO::StreamData *data = fd->GetPartialData(currOfst + 20 + buffOfst, *(UInt32*)&buff[4]);
 					currImage = (Media::ImageList *)this->icop.ParseFile(data, pkgFile, IO::ParserType::ImageList);
 					DEL_CLASS(data);
 				}

@@ -56,7 +56,7 @@ UOSInt Media::AVIUtl::AUIManager::LoadFile(const UTF8Char *fileName, Data::Array
 	return 0;
 }
 
-void Media::AVIUtl::AUIManager::PrepareSelector(IO::IFileSelector *selector)
+void Media::AVIUtl::AUIManager::PrepareSelector(IO::FileSelector *selector)
 {
 	UOSInt i;
 	i = this->plugins->GetCount();

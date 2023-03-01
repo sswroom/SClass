@@ -4,7 +4,7 @@
 #include "Data/ArrayListInt32.h"
 #include "Sync/Event.h"
 #include "Text/MyString.h"
-#include "IO/IStreamData.h"
+#include "IO/StreamData.h"
 #include "Media/IMediaSource.h"
 #include "Media/MediaFile.h"
 

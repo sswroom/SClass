@@ -12,7 +12,7 @@
 #include "IO/ConsoleWriter.h"
 #include "IO/FileStream.h"
 #include "IO/FileParser.h"
-#include "IO/IStreamData.h"
+#include "IO/StreamData.h"
 #include "IO/StmData/FileData.h"
 
 #include "Media/AudioDevice.h"

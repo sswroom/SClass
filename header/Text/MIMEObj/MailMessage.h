@@ -2,7 +2,7 @@
 #define _SM_TEXT_MIMEOBJ_MAILMESSAGE
 #include "Data/ArrayList.h"
 #include "Data/DateTime.h"
-#include "IO/IStreamData.h"
+#include "IO/StreamData.h"
 #include "Text/EncodingFactory.h"
 #include "Text/IMIMEObj.h"
 #include "Text/String.h"
@@ -50,7 +50,7 @@ namespace Text
 			
 			Text::IMIMEObj *GetRAWContent() const;
 
-			static MailMessage *ParseFile(IO::IStreamData *fd);
+			static MailMessage *ParseFile(IO::StreamData *fd);
 
 		private:
 			UOSInt ParseAddrList(const UTF8Char *hdr, UOSInt hdrLen, Data::ArrayList<MailAddress*> *recpList, AddressType type) const;

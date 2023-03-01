@@ -23,7 +23,7 @@ IO::ParserType Parser::FileParser::ADXParser::GetParserType()
 	return IO::ParserType::MediaFile;
 }
 
-void Parser::FileParser::ADXParser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
+void Parser::FileParser::ADXParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::MediaFile)
 	{
@@ -31,7 +31,7 @@ void Parser::FileParser::ADXParser::PrepareSelector(IO::IFileSelector *selector,
 	}
 }
 
-IO::ParsedObject *Parser::FileParser::ADXParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::ADXParser::ParseFileHdr(IO::StreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	UInt32 startOfst;
 	UInt8 buff[2048];

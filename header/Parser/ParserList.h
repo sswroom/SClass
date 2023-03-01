@@ -2,9 +2,9 @@
 #define _SM_PARSER_PARSERLIST
 #include "Data/ArrayList.h"
 #include "IO/FileParser.h"
-#include "IO/IFileSelector.h"
-#include "IO/IObjectParser.h"
-#include "IO/IStreamData.h"
+#include "IO/FileSelector.h"
+#include "IO/ObjectParser.h"
+#include "IO/StreamData.h"
 #include "IO/ParsedObject.h"
 
 namespace Parser
@@ -13,7 +13,7 @@ namespace Parser
 	{
 	private:
 		Data::ArrayList<IO::FileParser*> filePArr;
-		Data::ArrayList<IO::IObjectParser*> objPArr;
+		Data::ArrayList<IO::ObjectParser*> objPArr;
 
 	protected:
 		ParserList();
@@ -21,20 +21,20 @@ namespace Parser
 		virtual ~ParserList();
 
 		void AddFileParser(IO::FileParser *parser);
-		void AddObjectParser(IO::IObjectParser *parser);
+		void AddObjectParser(IO::ObjectParser *parser);
 
 		void SetCodePage(UInt32 codePage);
 		void SetMapManager(Map::MapManager *mapMgr);
 		void SetEncFactory(Text::EncodingFactory *encFact);
 		void SetWebBrowser(Net::WebBrowser *browser);
-		void SetProgressHandler(IO::IProgressHandler *progHdlr);
+		void SetProgressHandler(IO::ProgressHandler *progHdlr);
 		void SetSocketFactory(Net::SocketFactory *sockf);
 		void SetSSLEngine(Net::SSLEngine *ssl);
-		void PrepareSelector(IO::IFileSelector *selector, IO::ParserType t);
-		IO::ParsedObject *ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType *t, IO::ParserType targetType);
-		IO::ParsedObject *ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType *t);
-		IO::ParsedObject *ParseFile(IO::IStreamData *fd, IO::ParserType *t);
-		IO::ParsedObject *ParseFileType(IO::IStreamData *fd, IO::ParserType t);
+		void PrepareSelector(IO::FileSelector *selector, IO::ParserType t);
+		IO::ParsedObject *ParseFile(IO::StreamData *fd, IO::PackageFile *pkgFile, IO::ParserType *t, IO::ParserType targetType);
+		IO::ParsedObject *ParseFile(IO::StreamData *fd, IO::PackageFile *pkgFile, IO::ParserType *t);
+		IO::ParsedObject *ParseFile(IO::StreamData *fd, IO::ParserType *t);
+		IO::ParsedObject *ParseFileType(IO::StreamData *fd, IO::ParserType t);
 		IO::ParsedObject *ParseObject(IO::ParsedObject *pobj, IO::ParserType *t);
 		IO::ParsedObject *ParseObjectType(IO::ParsedObject *pobj, IO::ParserType *t, IO::ParserType targetType);
 	};

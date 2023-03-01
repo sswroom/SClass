@@ -44,7 +44,7 @@ void __stdcall SSWR::AVIRead::AVIRImageViewerForm::OnMoveToNext(void *userObj)
 	SSWR::AVIRead::AVIRImageViewerForm *me = (SSWR::AVIRead::AVIRImageViewerForm *)userObj;
 	if (me->pkgFile && me->fileIndex != (UOSInt)-1)
 	{
-		IO::IStreamData *fd;
+		IO::StreamData *fd;
 		UTF8Char sbuff[512];
 		UTF8Char *sptr;
 		UOSInt i;
@@ -114,7 +114,7 @@ void __stdcall SSWR::AVIRead::AVIRImageViewerForm::OnMoveToPrev(void *userObj)
 	SSWR::AVIRead::AVIRImageViewerForm *me = (SSWR::AVIRead::AVIRImageViewerForm *)userObj;
 	if (me->pkgFile && me->fileIndex != (UOSInt)-1)
 	{
-		IO::IStreamData *fd;
+		IO::StreamData *fd;
 		UTF8Char sbuff[512];
 		UTF8Char *sptr;
 		UOSInt i;
@@ -431,11 +431,11 @@ void SSWR::AVIRead::AVIRImageViewerForm::SetImage(Media::ImageList *imgList, Boo
 	}
 }
 
-Bool SSWR::AVIRead::AVIRImageViewerForm::ParseFile(IO::IStreamData *fd)
+Bool SSWR::AVIRead::AVIRImageViewerForm::ParseFile(IO::StreamData *fd)
 {
 	IO::ParsedObject *pobj;
 	IO::ParserType pt;
-	IO::IStreamData *fd2;
+	IO::StreamData *fd2;
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 

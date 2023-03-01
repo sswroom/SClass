@@ -1,7 +1,7 @@
 #ifndef _SM_IO_FILEANALYSE_PCAPFILEANALYSE
 #define _SM_IO_FILEANALYSE_PCAPFILEANALYSE
 #include "Data/ArrayList.h"
-#include "IO/IStreamData.h"
+#include "IO/StreamData.h"
 #include "IO/FileAnalyse/IFileAnalyse.h"
 #include "Sync/Mutex.h"
 #include "Text/StringBuilderUTF8.h"
@@ -13,7 +13,7 @@ namespace IO
 		class PCapFileAnalyse : public IO::FileAnalyse::IFileAnalyse
 		{
 		private:
-			IO::IStreamData *fd;
+			IO::StreamData *fd;
 			Bool isBE;
 			UInt32 linkType;
 			Data::ArrayList<UInt64> ofstList;
@@ -28,7 +28,7 @@ namespace IO
 
 			static UInt32 __stdcall ParseThread(void *userObj);
 		public:
-			PCapFileAnalyse(IO::IStreamData *fd);
+			PCapFileAnalyse(IO::StreamData *fd);
 			virtual ~PCapFileAnalyse();
 
 			virtual Text::CString GetFormatName();

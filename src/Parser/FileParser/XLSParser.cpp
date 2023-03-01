@@ -21,7 +21,7 @@ Int32 Parser::FileParser::XLSParser::GetName()
 	return *(Int32*)"XLSP";
 }
 
-void Parser::FileParser::XLSParser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
+void Parser::FileParser::XLSParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::Workbook)
 	{
@@ -34,7 +34,7 @@ IO::ParserType Parser::FileParser::XLSParser::GetParserType()
 	return IO::ParserType::Workbook;
 }
 
-IO::ParsedObject *Parser::FileParser::XLSParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::XLSParser::ParseFileHdr(IO::StreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	UInt8 buff[4096];
 	IO::ParsedObject *pobj = 0;
@@ -143,7 +143,7 @@ IO::ParsedObject *Parser::FileParser::XLSParser::ParseFileHdr(IO::IStreamData *f
 	return pobj;
 }
 
-Bool Parser::FileParser::XLSParser::ParseWorkbook(IO::IStreamData *fd, UInt64 ofst, UInt64 ofstRef, Text::SpreadSheet::Workbook *wb)
+Bool Parser::FileParser::XLSParser::ParseWorkbook(IO::StreamData *fd, UInt64 ofst, UInt64 ofstRef, Text::SpreadSheet::Workbook *wb)
 {
 	Bool eofFound = false;
 	Bool bofFound = false;
@@ -751,7 +751,7 @@ Bool Parser::FileParser::XLSParser::ParseWorkbook(IO::IStreamData *fd, UInt64 of
 	return eofFound;
 }
 
-Bool Parser::FileParser::XLSParser::ParseWorksheet(IO::IStreamData *fd, UInt64 ofst, Text::SpreadSheet::Workbook *wb, Text::SpreadSheet::Worksheet *ws, WorkbookStatus *status)
+Bool Parser::FileParser::XLSParser::ParseWorksheet(IO::StreamData *fd, UInt64 ofst, Text::SpreadSheet::Workbook *wb, Text::SpreadSheet::Worksheet *ws, WorkbookStatus *status)
 {
 	Bool eofFound = false;
 	Bool bofFound = false;

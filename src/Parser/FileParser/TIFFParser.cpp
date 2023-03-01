@@ -7,7 +7,7 @@
 #include "Data/Compress/PackBits.h"
 #include "Data/Compress/LZWDecompressor.h"
 #include "IO/FileStream.h"
-#include "IO/IStreamData.h"
+#include "IO/StreamData.h"
 #include "IO/Path.h"
 #include "IO/StreamReader.h"
 #include "Map/VectorLayer.h"
@@ -45,7 +45,7 @@ void Parser::FileParser::TIFFParser::SetParserList(Parser::ParserList *parsers)
 	this->parsers = parsers;
 }
 
-void Parser::FileParser::TIFFParser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
+void Parser::FileParser::TIFFParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::ImageList)
 	{
@@ -59,7 +59,7 @@ IO::ParserType Parser::FileParser::TIFFParser::GetParserType()
 	return IO::ParserType::ImageList;
 }
 
-IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(IO::StreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	Data::ByteOrder *bo;
 
@@ -241,7 +241,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(IO::IStreamData *
 			if (nStrip == 1)
 			{
 				Media::ImageList *innerImgList = 0;
-				IO::IStreamData *jpgFd = fd->GetPartialData(stripOfst, stripLeng);
+				IO::StreamData *jpgFd = fd->GetPartialData(stripOfst, stripLeng);
 				if (this->parsers)
 				{
 					innerImgList = (Media::ImageList*)this->parsers->ParseFileType(jpgFd, IO::ParserType::ImageList); 

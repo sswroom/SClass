@@ -1,6 +1,6 @@
 #ifndef _SM_IO_FILEANALYSE_SMBIOSFILEANALYSE
 #define _SM_IO_FILEANALYSE_SMBIOSFILEANALYSE
-#include "IO/IStreamData.h"
+#include "IO/StreamData.h"
 #include "IO/FileAnalyse/IFileAnalyse.h"
 #include "Text/StringBuilderUTF8.h"
 
@@ -18,11 +18,11 @@ namespace IO
 				UInt8 packType;
 			} PackInfo;
 		private:
-			IO::IStreamData *fd;
+			IO::StreamData *fd;
 			Data::ArrayList<PackInfo*> packs;
 
 		public:
-			SMBIOSFileAnalyse(IO::IStreamData *fd);
+			SMBIOSFileAnalyse(IO::StreamData *fd);
 			virtual ~SMBIOSFileAnalyse();
 
 			virtual Text::CString GetFormatName();

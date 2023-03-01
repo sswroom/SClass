@@ -1,6 +1,6 @@
 #ifndef _SM_IO_STMDATA_BLOCKSTREAMDATA
 #define _SM_IO_STMDATA_BLOCKSTREAMDATA
-#include "IO/IStreamData.h"
+#include "IO/StreamData.h"
 #include "IO/FileStream.h"
 #include "Data/ArrayListUInt32.h"
 #include "Data/ArrayListUInt64.h"
@@ -9,17 +9,17 @@ namespace IO
 {
 	namespace StmData
 	{
-		class BlockStreamData : public IO::IStreamData
+		class BlockStreamData : public IO::StreamData
 		{
 		private:
-			IO::IStreamData *sd;
+			IO::StreamData *sd;
 			Data::ArrayListUInt64 *dataOfstList;
 			Data::ArrayListUInt64 *stmOfstList;
 			Data::ArrayListUInt32 *lengthList;
 			UInt64 totalSize;
 
 		public:
-			BlockStreamData(IO::IStreamData *sd);
+			BlockStreamData(IO::StreamData *sd);
 			virtual ~BlockStreamData();
 
 			virtual UOSInt GetRealData(UInt64 offset, UOSInt length, UInt8 *buffer);
@@ -28,7 +28,7 @@ namespace IO
 			virtual UInt64 GetDataSize();
 			virtual const UInt8 *GetPointer();
 
-			virtual IO::IStreamData *GetPartialData(UInt64 offset, UInt64 length);
+			virtual IO::StreamData *GetPartialData(UInt64 offset, UInt64 length);
 			virtual Bool IsFullFile();
 			virtual Bool IsLoading();
 			virtual UOSInt GetSeekCount();

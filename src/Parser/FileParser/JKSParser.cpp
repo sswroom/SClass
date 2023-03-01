@@ -21,7 +21,7 @@ Int32 Parser::FileParser::JKSParser::GetName()
 	return *(Int32*)"JKSP";
 }
 
-void Parser::FileParser::JKSParser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
+void Parser::FileParser::JKSParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::SectorData)
 	{
@@ -34,7 +34,7 @@ IO::ParserType Parser::FileParser::JKSParser::GetParserType()
 	return IO::ParserType::PackageFile;
 }
 
-IO::ParsedObject *Parser::FileParser::JKSParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::JKSParser::ParseFileHdr(IO::StreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	UInt64 fileSize = fd->GetDataSize();
 	if (ReadMUInt32(&hdr[0]) != 0xFEEDFEED)

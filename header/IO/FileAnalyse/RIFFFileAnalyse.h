@@ -1,7 +1,7 @@
 #ifndef _SM_IO_FILEANALYSE_RIFFFILEANALYSE
 #define _SM_IO_FILEANALYSE_RIFFFILEANALYSE
 #include "Data/SyncArrayList.h"
-#include "IO/IStreamData.h"
+#include "IO/StreamData.h"
 #include "IO/FileAnalyse/IFileAnalyse.h"
 #include "Text/StringBuilderUTF8.h"
 
@@ -21,7 +21,7 @@ namespace IO
 				Int32 subPackType;
 			} PackInfo;
 		private:
-			IO::IStreamData *fd;
+			IO::StreamData *fd;
 			Data::SyncArrayList<PackInfo*> packs;
 			Int32 mpgVer;
 
@@ -35,7 +35,7 @@ namespace IO
 			static UInt32 __stdcall ParseThread(void *userObj);
 			UOSInt GetFrameIndex(UOSInt lev, UInt64 ofst);
 		public:
-			RIFFFileAnalyse(IO::IStreamData *fd);
+			RIFFFileAnalyse(IO::StreamData *fd);
 			virtual ~RIFFFileAnalyse();
 
 			virtual Text::CString GetFormatName();

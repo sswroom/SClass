@@ -13,7 +13,7 @@ void __stdcall SSWR::AVIRead::AVIRRSSItemForm::OnImageSelChg(void *userObj)
 		return;
 	sptr = me->cboImage->GetItemText(sbuff, i);
 	Net::WebBrowser *browser = me->core->GetWebBrowser();
-	IO::IStreamData *fd = browser->GetData(CSTRP(sbuff, sptr), false, sbuff);
+	IO::StreamData *fd = browser->GetData(CSTRP(sbuff, sptr), false, sbuff);
 	if (fd)
 	{
 		Media::ImageList *imgList = (Media::ImageList*)me->core->GetParserList()->ParseFile(fd, 0, 0, IO::ParserType::ImageList);

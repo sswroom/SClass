@@ -458,7 +458,7 @@ UOSInt Map::TileMapServiceSource::GetTileImageIDs(UOSInt level, Math::RectAreaDb
 Media::ImageList *Map::TileMapServiceSource::LoadTileImage(UOSInt level, Math::Coord2D<Int32> tileId, Parser::ParserList *parsers, Math::RectAreaDbl *bounds, Bool localOnly)
 {
 	ImageType it;
-	IO::IStreamData *fd;
+	IO::StreamData *fd;
 	IO::ParsedObject *pobj;
 	fd = this->LoadTileImageData(level, tileId, bounds, localOnly, &it);
 	if (fd)
@@ -495,7 +495,7 @@ UTF8Char *Map::TileMapServiceSource::GetTileImageURL(UTF8Char *sbuff, UOSInt lev
 	return 0;
 }
 
-IO::IStreamData *Map::TileMapServiceSource::LoadTileImageData(UOSInt level, Math::Coord2D<Int32> tileId, Math::RectAreaDbl *bounds, Bool localOnly, ImageType *it)
+IO::StreamData *Map::TileMapServiceSource::LoadTileImageData(UOSInt level, Math::Coord2D<Int32> tileId, Math::RectAreaDbl *bounds, Bool localOnly, ImageType *it)
 {
 	UTF8Char filePathU[512];
 	UTF8Char sbuff[64];
@@ -506,7 +506,7 @@ IO::IStreamData *Map::TileMapServiceSource::LoadTileImageData(UOSInt level, Math
 	Data::DateTime dt;
 	Data::DateTime currTime;
 	Net::HTTPClient *cli;
-	IO::IStreamData *fd;
+	IO::StreamData *fd;
 	TileLayer *layer = this->layers.GetItem(level);
 	if (layer == 0)
 		return 0;

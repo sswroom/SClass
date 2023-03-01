@@ -1,7 +1,7 @@
 #ifndef _SM_IO_FILEANALYSE_MDBFILEANALYSE
 #define _SM_IO_FILEANALYSE_MDBFILEANALYSE
 #include "Data/SyncArrayList.h"
-#include "IO/IStreamData.h"
+#include "IO/StreamData.h"
 #include "IO/FileAnalyse/IFileAnalyse.h"
 #include "Text/CString.h"
 #include "Text/StringBuilder.h"
@@ -20,7 +20,7 @@ namespace IO
 				UInt16 packType;
 			} PackInfo;
 		private:
-			IO::IStreamData *fd;
+			IO::StreamData *fd;
 			Data::SyncArrayList<PackInfo*> packs;
 			UInt32 fileFormat;
 			UInt32 fileVer;
@@ -31,7 +31,7 @@ namespace IO
 			Bool threadStarted;
 			static UInt32 __stdcall ParseThread(void *userObj);
 		public:
-			MDBFileAnalyse(IO::IStreamData *fd);
+			MDBFileAnalyse(IO::StreamData *fd);
 			virtual ~MDBFileAnalyse();
 
 			virtual Text::CString GetFormatName();

@@ -251,7 +251,7 @@ UTF8Char *Map::ESRI::ESRITileMap::GetTileImageURL(UTF8Char *sbuff, UOSInt level,
 	return this->esriMap->TileGetURL(sbuff, level, tileId.x, tileId.y);
 }
 
-IO::IStreamData *Map::ESRI::ESRITileMap::LoadTileImageData(UOSInt level, Math::Coord2D<Int32> tileId, Math::RectAreaDbl *bounds, Bool localOnly, ImageType *it)
+IO::StreamData *Map::ESRI::ESRITileMap::LoadTileImageData(UOSInt level, Math::Coord2D<Int32> tileId, Math::RectAreaDbl *bounds, Bool localOnly, ImageType *it)
 {
 	UTF8Char filePath[512];
 	UTF8Char *sptr;

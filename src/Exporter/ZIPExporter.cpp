@@ -52,7 +52,7 @@ Bool Exporter::ZIPExporter::ExportPackage(IO::ZIPMTBuilder *zip, UTF8Char *buffS
 	UOSInt j;
 	UTF8Char *sptr;
 	IO::PackageFile::PackObjectType itemType;
-	IO::IStreamData *fd;
+	IO::StreamData *fd;
 	i = 0;
 	j = pkg->GetCount();
 	while (i < j)

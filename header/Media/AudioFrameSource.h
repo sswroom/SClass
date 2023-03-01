@@ -1,6 +1,6 @@
 #ifndef _SM_MEDIA_AUDIOFRAMESOURCE
 #define _SM_MEDIA_AUDIOFRAMESOURCE
-#include "IO/IStreamData.h"
+#include "IO/StreamData.h"
 #include "Media/IAudioFrameSource.h"
 #include "Sync/Event.h"
 
@@ -19,7 +19,7 @@ namespace Media
 
 	protected:
 		Media::AudioFormat format;
-		IO::IStreamData *data;
+		IO::StreamData *data;
 		Text::String *name;
 
 		UOSInt readBlock;
@@ -33,8 +33,8 @@ namespace Media
 		UOSInt totalSampleCnt;
 		UInt64 totalSize;
 	public:
-		AudioFrameSource(IO::IStreamData *fd, Media::AudioFormat *format, Text::String *name);
-		AudioFrameSource(IO::IStreamData *fd, Media::AudioFormat *format, Text::CString name);
+		AudioFrameSource(IO::StreamData *fd, Media::AudioFormat *format, Text::String *name);
+		AudioFrameSource(IO::StreamData *fd, Media::AudioFormat *format, Text::CString name);
 		virtual ~AudioFrameSource();
 
 		virtual UTF8Char *GetSourceName(UTF8Char *buff);

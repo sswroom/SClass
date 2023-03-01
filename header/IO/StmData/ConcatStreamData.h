@@ -1,19 +1,19 @@
 #ifndef _SM_IO_STMDATA_CONCATSTREAMDATA
 #define _SM_IO_STMDATA_CONCATSTREAMDATA
 #include "Data/ArrayListUInt64.h"
-#include "IO/IStreamData.h"
+#include "IO/StreamData.h"
 #include "Sync/Mutex.h"
 
 namespace IO
 {
 	namespace StmData
 	{
-		class ConcatStreamData : public IO::IStreamData
+		class ConcatStreamData : public IO::StreamData
 		{
 		private:
 			struct CONCATDATABASE
 			{
-				Data::ArrayList<IO::IStreamData *> dataList;
+				Data::ArrayList<IO::StreamData *> dataList;
 				Data::ArrayListUInt64 ofstList;
 
 				UInt64 totalSize;
@@ -40,12 +40,12 @@ namespace IO
 			virtual UInt64 GetDataSize();
 			virtual const UInt8 *GetPointer();
 
-			virtual IO::IStreamData *GetPartialData(UInt64 offset, UInt64 length);
+			virtual IO::StreamData *GetPartialData(UInt64 offset, UInt64 length);
 			virtual Bool IsFullFile();
 			virtual Bool IsLoading();
 			virtual UOSInt GetSeekCount();
 
-			void AddData(IO::IStreamData *data);
+			void AddData(IO::StreamData *data);
 		};
 	}
 }

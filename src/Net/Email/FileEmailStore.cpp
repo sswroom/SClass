@@ -250,7 +250,7 @@ Bool Net::Email::FileEmailStore::NewEmail(Int64 id, const Net::SocketUtil::Addre
 	return true;
 }
 
-IO::IStreamData *Net::Email::FileEmailStore::OpenEmailData(Int64 id)
+IO::StreamData *Net::Email::FileEmailStore::OpenEmailData(Int64 id)
 {
 	FileInfo *fileInfo = this->GetFileInfo(id);
 	if (fileInfo == 0)

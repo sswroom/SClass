@@ -1638,7 +1638,7 @@ Map::IMapDrawLayer *Map::KMLXML::ParseKMLPlacemarkLyr(Text::XMLReader *reader, D
 				{
 					if (style->img == 0)
 					{
-						IO::IStreamData *fd = 0;
+						IO::StreamData *fd = 0;
 						if (basePF)
 						{
 							fd = basePF->OpenStreamData(style->iconURL->ToCString());

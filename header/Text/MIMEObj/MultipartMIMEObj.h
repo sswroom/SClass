@@ -1,7 +1,7 @@
 #ifndef _SM_TEXT_MIMEOBJ_MULTIPARTMIMEOBJ
 #define _SM_TEXT_MIMEOBJ_MULTIPARTMIMEOBJ
 #include "Data/ArrayList.h"
-#include "IO/IStreamData.h"
+#include "IO/StreamData.h"
 #include "Text/IMIMEObj.h"
 #include "Text/MIMEObj/MIMEMessage.h"
 
@@ -37,7 +37,7 @@ namespace Text
 			MIMEMessage *GetPart(UOSInt partIndex) const;
 			UOSInt GetPartCount() const;
 
-			static MultipartMIMEObj *ParseFile(Text::CString contentType, IO::IStreamData *data);
+			static MultipartMIMEObj *ParseFile(Text::CString contentType, IO::StreamData *data);
 		};
 	}
 }

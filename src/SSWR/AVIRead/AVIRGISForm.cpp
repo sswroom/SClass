@@ -548,7 +548,7 @@ Bool SSWR::AVIRead::AVIRGISForm::ParseObject(IO::ParsedObject *pobj)
 void SSWR::AVIRead::AVIRGISForm::OpenURL(Text::CString url, Text::CString customName)
 {
 	Net::WebBrowser *browser = this->core->GetWebBrowser();
-	IO::IStreamData *fd = browser->GetData(url, false, 0);
+	IO::StreamData *fd = browser->GetData(url, false, 0);
 	if (fd)
 	{
 		if (customName.leng > 0)

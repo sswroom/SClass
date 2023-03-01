@@ -19,7 +19,7 @@ Int32 Parser::FileParser::MajiroArcParser::GetName()
 	return *(Int32*)"MARC";
 }
 
-void Parser::FileParser::MajiroArcParser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
+void Parser::FileParser::MajiroArcParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::PackageFile)
 	{
@@ -47,7 +47,7 @@ IO::ParserType Parser::FileParser::MajiroArcParser::GetParserType()
 	UInt32 recSize;
 } ARCRecord;*/
 
-IO::ParsedObject *Parser::FileParser::MajiroArcParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::MajiroArcParser::ParseFileHdr(IO::StreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	UInt8 *recBuff;
 	UInt8 *fileNameBuff;

@@ -2,7 +2,7 @@
 #define _SM_MEDIA_FILEVIDEOSOURCE
 #include "Data/ArrayListUInt32.h"
 #include "Data/ArrayListUInt64.h"
-#include "IO/IStreamData.h"
+#include "IO/StreamData.h"
 #include "Media/VideoSourceBase.h"
 #include "Sync/Mutex.h"
 
@@ -23,7 +23,7 @@ namespace Media
 			Media::YCOffset ycOfst;
 		} OutputFrameInfo;
 	private:
-		IO::IStreamData *data;
+		IO::StreamData *data;
 		Media::FrameInfo frameInfo;
 		UInt32 frameRateNorm;
 		UInt32 frameRateDenorm;
@@ -60,7 +60,7 @@ namespace Media
 		static UInt32 __stdcall PlayThread(void *userObj);
 		static UInt32 __stdcall OutputThread(void *userObj);
 	public:
-		FileVideoSource(IO::IStreamData *data, Media::FrameInfo *frameInfo, UInt32 frameRateNorm, UInt32 frameRateDenorm, Bool timeBased);
+		FileVideoSource(IO::StreamData *data, Media::FrameInfo *frameInfo, UInt32 frameRateNorm, UInt32 frameRateDenorm, Bool timeBased);
 		virtual ~FileVideoSource();
 
 		void AddNewFrame(UInt64 frameOfst, UInt32 frameSize, Bool isKey, UInt32 frameTime);

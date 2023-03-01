@@ -8,9 +8,9 @@
 #include "Data/Timestamp.h"
 #include "Data/Compress/Decompressor.h"
 #include "IO/ActiveStreamReader.h"
-#include "IO/IProgressHandler.h"
-#include "IO/IStreamData.h"
 #include "IO/ParsedObject.h"
+#include "IO/ProgressHandler.h"
+#include "IO/StreamData.h"
 #include "Text/CString.h"
 #include "Text/StringBuilderUTF8.h"
 
@@ -37,7 +37,7 @@ namespace IO
 		};
 
 		Text::String *name;
-		IO::IStreamData *fd;
+		IO::StreamData *fd;
 		IO::ParsedObject *pobj;
 		PackItemType itemType;
 		CompressInfo *compInfo;
@@ -83,23 +83,23 @@ namespace IO
 
 		virtual IO::ParserType GetParserType() const;
 
-		void AddData(IStreamData *fd, UInt64 ofst, UInt64 length, Text::CString name, const Data::Timestamp &modTime);
+		void AddData(StreamData *fd, UInt64 ofst, UInt64 length, Text::CString name, const Data::Timestamp &modTime);
 		void AddObject(IO::ParsedObject *pobj, Text::CString name, const Data::Timestamp &modTime);
-		void AddCompData(IStreamData *fd, UInt64 ofst, UInt64 length, PackFileItem::CompressInfo *compInfo, Text::CString name, const Data::Timestamp &modTime);
+		void AddCompData(StreamData *fd, UInt64 ofst, UInt64 length, PackFileItem::CompressInfo *compInfo, Text::CString name, const Data::Timestamp &modTime);
 		void AddPack(IO::PackageFile *pkg, Text::CString name, const Data::Timestamp &modTime);
 		IO::PackageFile *GetPackFile(Text::CString name) const;
-		Bool UpdateCompInfo(const UTF8Char *name, IO::IStreamData *fd, UInt64 ofst, Int32 crc, UOSInt compSize, UInt32 decSize);
+		Bool UpdateCompInfo(const UTF8Char *name, IO::StreamData *fd, UInt64 ofst, Int32 crc, UOSInt compSize, UInt32 decSize);
 
 		virtual const PackFileItem *GetPackFileItem(const UTF8Char *name) const;
 		virtual PackObjectType GetPItemType(const PackFileItem *itemObj) const;
-		virtual IO::IStreamData *GetPItemStmDataNew(const PackFileItem *itemObj) const;
+		virtual IO::StreamData *GetPItemStmDataNew(const PackFileItem *itemObj) const;
 		virtual IO::PackageFile *GetPItemPackNew(const PackFileItem *itemObj) const;
 
 		virtual UOSInt GetCount() const;
 		virtual PackObjectType GetItemType(UOSInt index) const;
 		virtual UTF8Char *GetItemName(UTF8Char *sbuff, UOSInt index) const;
-		virtual IO::IStreamData *GetItemStmDataNew(UOSInt index) const;
-		IO::IStreamData *GetItemStmDataNew(const UTF8Char* name, UOSInt nameLen) const;
+		virtual IO::StreamData *GetItemStmDataNew(UOSInt index) const;
+		IO::StreamData *GetItemStmDataNew(const UTF8Char* name, UOSInt nameLen) const;
 		virtual IO::PackageFile *GetItemPackNew(UOSInt index) const;
 		virtual IO::ParsedObject *GetItemPObj(UOSInt index, Bool *needRelease) const;
 		virtual Data::Timestamp GetItemModTime(UOSInt index) const;
@@ -110,12 +110,12 @@ namespace IO
 		virtual Data::Compress::Decompressor::CompressMethod GetItemComp(UOSInt index) const;
 		virtual PackageFile *Clone() const;
 		virtual Bool AllowWrite() const;
-		virtual Bool CopyFrom(Text::CString fileName, IO::IProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt);
-		virtual Bool MoveFrom(Text::CString fileName, IO::IProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt);
-		virtual Bool RetryCopyFrom(Text::CString fileName, IO::IProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt);
-		virtual Bool RetryMoveFrom(Text::CString fileName, IO::IProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt);
+		virtual Bool CopyFrom(Text::CString fileName, IO::ProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt);
+		virtual Bool MoveFrom(Text::CString fileName, IO::ProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt);
+		virtual Bool RetryCopyFrom(Text::CString fileName, IO::ProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt);
+		virtual Bool RetryMoveFrom(Text::CString fileName, IO::ProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt);
 		virtual Bool CopyTo(UOSInt index, Text::CString destPath, Bool fullFileName);
-		virtual IO::IStreamData *OpenStreamData(Text::CString fileName) const;
+		virtual IO::StreamData *OpenStreamData(Text::CString fileName) const;
 
 		void SetInfo(InfoType infoType, const UTF8Char *val);
 		void GetInfoText(Text::StringBuilderUTF8 *sb) const;

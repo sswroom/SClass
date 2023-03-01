@@ -1,22 +1,22 @@
 #ifndef _SM_IO_STMDATA_BUFFEREDSTREAMDATA
 #define _SM_IO_STMDATA_BUFFEREDSTREAMDATA
-#include "IO/IStreamData.h"
+#include "IO/StreamData.h"
 
 namespace IO
 {
 	namespace StmData
 	{
-		class BufferedStreamData : public IO::IStreamData
+		class BufferedStreamData : public IO::StreamData
 		{
 		private:
-			IO::IStreamData *stmData;
+			IO::StreamData *stmData;
 			UInt64 buffOfst;
 			UOSInt buffLength;
 			UInt8 *buff;
 			UInt64 dataLength;
 
 		public:
-			BufferedStreamData(IO::IStreamData *stmData);
+			BufferedStreamData(IO::StreamData *stmData);
 			virtual ~BufferedStreamData();
 
 			virtual UOSInt GetRealData(UInt64 offset, UOSInt length, UInt8 *buffer);
@@ -26,7 +26,7 @@ namespace IO
 			virtual UInt64 GetDataSize();
 			virtual const UInt8 *GetPointer();
 
-			virtual IO::IStreamData *GetPartialData(UInt64 offset, UInt64 length);
+			virtual IO::StreamData *GetPartialData(UInt64 offset, UInt64 length);
 			virtual Bool IsFullFile();
 			virtual Text::String *GetFullFileName();
 			virtual Bool IsLoading();

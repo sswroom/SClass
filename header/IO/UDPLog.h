@@ -2,7 +2,7 @@
 #define _SM_IO_UDPLOG
 #include "Data/ArrayListInt32.h"
 #include "Data/ArrayListInt64.h"
-#include "IO/IStreamData.h"
+#include "IO/StreamData.h"
 #include "IO/LogFile.h"
 
 namespace IO

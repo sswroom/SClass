@@ -10,8 +10,8 @@ namespace Media
 		AudioBlockParser();
 		virtual ~AudioBlockParser();
 
-		virtual Media::AudioBlockSource *ParseStreamData(IO::IStreamData *stmData) = 0;
-		static Media::AudioBlockParser *CreateParser(IO::IStreamData *stmData);
+		virtual Media::AudioBlockSource *ParseStreamData(IO::StreamData *stmData) = 0;
+		static Media::AudioBlockParser *CreateParser(IO::StreamData *stmData);
 	};
 };
 #endif

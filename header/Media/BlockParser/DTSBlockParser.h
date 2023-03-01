@@ -12,7 +12,7 @@ namespace Media
 			DTSBlockParser();
 			virtual ~DTSBlockParser();
 
-			virtual Media::AudioBlockSource *ParseStreamData(IO::IStreamData *stmData);
+			virtual Media::AudioBlockSource *ParseStreamData(IO::StreamData *stmData);
 		};
 	};
 };

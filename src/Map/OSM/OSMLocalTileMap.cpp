@@ -392,7 +392,7 @@ UOSInt Map::OSM::OSMLocalTileMap::GetTileImageIDs(UOSInt level, Math::RectAreaDb
 Media::ImageList *Map::OSM::OSMLocalTileMap::LoadTileImage(UOSInt level, Math::Coord2D<Int32> tileId, Parser::ParserList *parsers, Math::RectAreaDbl *bounds, Bool localOnly)
 {
 	ImageType it;
-	IO::IStreamData *fd;
+	IO::StreamData *fd;
 	IO::ParsedObject *pobj;
 	fd = this->LoadTileImageData(level, tileId, bounds, localOnly, &it);
 	if (fd)
@@ -432,7 +432,7 @@ UTF8Char *Map::OSM::OSMLocalTileMap::GetTileImageURL(UTF8Char *sbuff, UOSInt lev
 	return sptr;
 }
 
-/*IO::IStreamData *Map::OSM::OSMLocalTileMap::LoadTileImageData(OSInt level, Int64 imgId, Double *boundsXY, Bool localOnly, Int32 *blockX, Int32 *blockY, ImageType *it)
+/*IO::StreamData *Map::OSM::OSMLocalTileMap::LoadTileImageData(OSInt level, Int64 imgId, Double *boundsXY, Bool localOnly, Int32 *blockX, Int32 *blockY, ImageType *it)
 {
 	WChar filePath[512];
 	WChar *wptr;
@@ -478,11 +478,11 @@ UTF8Char *Map::OSM::OSMLocalTileMap::GetTileImageURL(UTF8Char *sbuff, UOSInt lev
 }
 */
 
-IO::IStreamData *Map::OSM::OSMLocalTileMap::LoadTileImageData(UOSInt level, Math::Coord2D<Int32> tileId, Math::RectAreaDbl *bounds, Bool localOnly, ImageType *it)
+IO::StreamData *Map::OSM::OSMLocalTileMap::LoadTileImageData(UOSInt level, Math::Coord2D<Int32> tileId, Math::RectAreaDbl *bounds, Bool localOnly, ImageType *it)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	IO::IStreamData *fd;
+	IO::StreamData *fd;
 	if (level < 0 || level > this->maxLevel)
 		return 0;
 	Double x1 = Map::OSM::OSMTileMap::TileX2Lon(tileId.x, level);

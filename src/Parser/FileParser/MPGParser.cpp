@@ -20,7 +20,7 @@ Int32 Parser::FileParser::MPGParser::GetName()
 	return *(Int32*)"MPGP";
 }
 
-void Parser::FileParser::MPGParser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
+void Parser::FileParser::MPGParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::MediaFile)
 	{
@@ -35,9 +35,9 @@ IO::ParserType Parser::FileParser::MPGParser::GetParserType()
 	return IO::ParserType::MediaFile;
 }
 
-IO::ParsedObject *Parser::FileParser::MPGParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::MPGParser::ParseFileHdr(IO::StreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
-	IO::IStreamData *concatFile = 0;
+	IO::StreamData *concatFile = 0;
 
 	if (ReadMInt32(&hdr[0]) != 0x000001ba)
 		return 0;

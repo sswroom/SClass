@@ -76,7 +76,7 @@ namespace SSWR
 
 			virtual void OnMonitorChanged();
 
-			void SetData(IO::IStreamData *fd, IO::FileAnalyse::IFileAnalyse *fileAnalyse);
+			void SetData(IO::StreamData *fd, IO::FileAnalyse::IFileAnalyse *fileAnalyse);
 		};
 	}
 }

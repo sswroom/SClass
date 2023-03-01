@@ -20,7 +20,7 @@ namespace Map
 			Int32 id;
 			Text::String *url;
 			Media::SharedImage *simg;
-			IO::IStreamData *data;
+			IO::StreamData *data;
 			const UTF8Char *name;
 			Int64 timeStart;
 			Int64 timeEnd;

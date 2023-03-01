@@ -1,7 +1,7 @@
 #ifndef _SM_IO_FILEANALYSE_EXEFILEANALYSE
 #define _SM_IO_FILEANALYSE_EXEFILEANALYSE
 #include "Data/SyncArrayList.h"
-#include "IO/IStreamData.h"
+#include "IO/StreamData.h"
 #include "IO/FileAnalyse/IFileAnalyse.h"
 #include "Sync/Mutex.h"
 #include "Text/CString.h"
@@ -21,7 +21,7 @@ namespace IO
 				Int32 packType;
 			} PackInfo;
 		private:
-			IO::IStreamData *fd;
+			IO::StreamData *fd;
 			Data::SyncArrayList<PackInfo*> packs;
 			UInt8 *imageBuff;
 			UOSInt imageSize;
@@ -33,7 +33,7 @@ namespace IO
 
 			static UInt32 __stdcall ParseThread(void *userObj);
 		public:
-			EXEFileAnalyse(IO::IStreamData *fd);
+			EXEFileAnalyse(IO::StreamData *fd);
 			virtual ~EXEFileAnalyse();
 
 			virtual Text::CString GetFormatName();

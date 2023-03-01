@@ -1,7 +1,7 @@
 #ifndef _SM_MEDIA_MPGFILE
 #define _SM_MEDIA_MPGFILE
 #include "Data/FastMap.h"
-#include "IO/IStreamData.h"
+#include "IO/StreamData.h"
 #include "Media/IAudioSource.h"
 #include "Media/IMediaStream.h"
 #include "Media/IStreamControl.h"
@@ -12,7 +12,7 @@ namespace Media
 	class MPGFile : public Media::MediaFile, public Media::IStreamControl
 	{
 	private:
-		IO::IStreamData *stmData;
+		IO::StreamData *stmData;
 		UInt8 *readBuff;
 		UInt64 readOfst;
 		UInt64 bitRate;
@@ -33,7 +33,7 @@ namespace Media
 		Bool StartPlay();
 		Bool StopPlay();
 	public:
-		MPGFile(IO::IStreamData *stmData);
+		MPGFile(IO::StreamData *stmData);
 		virtual ~MPGFile();
 		
 		virtual UOSInt AddSource(Media::IMediaSource *src, Int32 syncTime);

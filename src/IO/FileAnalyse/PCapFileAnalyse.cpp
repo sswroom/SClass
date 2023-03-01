@@ -45,7 +45,7 @@ UInt32 __stdcall IO::FileAnalyse::PCapFileAnalyse::ParseThread(void *userObj)
 	return 0;
 }
 
-IO::FileAnalyse::PCapFileAnalyse::PCapFileAnalyse(IO::IStreamData *fd)
+IO::FileAnalyse::PCapFileAnalyse::PCapFileAnalyse(IO::StreamData *fd)
 {
 	UInt8 buff[24];
 	this->fd = 0;

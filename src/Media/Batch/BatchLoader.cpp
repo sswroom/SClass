@@ -230,7 +230,7 @@ void Media::Batch::BatchLoader::AddFileName(Text::CString fileName)
 	mutUsage.EndUse();
 }
 
-void Media::Batch::BatchLoader::AddImageData(IO::IStreamData *data, const UTF8Char *fileId)
+void Media::Batch::BatchLoader::AddImageData(IO::StreamData *data, const UTF8Char *fileId)
 {
 	DataInfo *info;
 	info = MemAlloc(DataInfo, 1);

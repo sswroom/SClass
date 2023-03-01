@@ -4109,9 +4109,9 @@ Bool IO::SMBIOS::ToString(Text::StringBuilderUTF8 *sb) const
 	return true;
 }
 
-IO::IStreamData *IO::SMBIOS::CreateStreamData() const
+IO::StreamData *IO::SMBIOS::CreateStreamData() const
 {
-	IO::IStreamData *ret;
+	IO::StreamData *ret;
 	NEW_CLASS(ret, IO::StmData::MemoryDataCopy(this->smbiosBuff, this->smbiosBuffSize));
 	return ret;
 }

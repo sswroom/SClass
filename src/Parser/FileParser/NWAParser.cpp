@@ -5,7 +5,7 @@
 #include "Data/ByteTool.h"
 #include "IO/Stream.h"
 #include "IO/FileStream.h"
-#include "IO/IStreamData.h"
+#include "IO/StreamData.h"
 #include "Media/MediaFile.h"
 #include "Media/LPCMSource.h"
 #include "Media/NWASource.h"
@@ -24,7 +24,7 @@ Int32 Parser::FileParser::NWAParser::GetName()
 	return *(Int32*)"NWAP";
 }
 
-void Parser::FileParser::NWAParser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
+void Parser::FileParser::NWAParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::MediaFile)
 	{
@@ -37,7 +37,7 @@ IO::ParserType Parser::FileParser::NWAParser::GetParserType()
 	return IO::ParserType::MediaFile;
 }
 
-IO::ParsedObject *Parser::FileParser::NWAParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::NWAParser::ParseFileHdr(IO::StreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	Int32 compLevel;
 	UInt32 nBlocks;

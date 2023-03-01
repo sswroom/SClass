@@ -1,7 +1,7 @@
 #ifndef _SM_IO_FILEANALYSE_EBMLFILEANALYSE
 #define _SM_IO_FILEANALYSE_EBMLFILEANALYSE
 #include "Data/SyncArrayList.h"
-#include "IO/IStreamData.h"
+#include "IO/StreamData.h"
 #include "IO/FileAnalyse/IFileAnalyse.h"
 #include "Sync/Mutex.h"
 #include "Text/StringBuilderUTF8.h"
@@ -42,7 +42,7 @@ namespace IO
 				Text::CString elementName;
 			} ElementInfo;
 		private:
-			IO::IStreamData *fd;
+			IO::StreamData *fd;
 			Data::SyncArrayList<PackInfo*> packs;
 
 			Bool pauseParsing;
@@ -59,7 +59,7 @@ namespace IO
 			static UInt32 __stdcall ParseThread(void *userObj);
 			UOSInt GetFrameIndex(UOSInt lev, UInt64 ofst);
 		public:
-			EBMLFileAnalyse(IO::IStreamData *fd);
+			EBMLFileAnalyse(IO::StreamData *fd);
 			virtual ~EBMLFileAnalyse();
 
 			virtual Text::CString GetFormatName();

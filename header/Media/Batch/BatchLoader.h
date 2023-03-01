@@ -15,7 +15,7 @@ namespace Media
 		private:
 			typedef struct
 			{
-				IO::IStreamData *data;
+				IO::StreamData *data;
 				const UTF8Char *fileId;
 			} DataInfo;
 
@@ -45,7 +45,7 @@ namespace Media
 			~BatchLoader();
 			
 			void AddFileName(Text::CString fileName);
-			void AddImageData(IO::IStreamData *data, const UTF8Char *fileId);
+			void AddImageData(IO::StreamData *data, const UTF8Char *fileId);
 			Bool IsProcessing();
 		};
 	};

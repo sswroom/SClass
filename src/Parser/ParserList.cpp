@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/ArrayList.h"
-#include "IO/IStreamData.h"
+#include "IO/StreamData.h"
 #include "Media/IImgResizer.h"
 #include "Media/FrameInfo.h"
 #include "Media/Image.h"
@@ -13,7 +13,7 @@ Parser::ParserList::ParserList()
 
 Parser::ParserList::~ParserList()
 {
-	IO::IParser *parser;
+	IO::ParserBase *parser;
 	UOSInt i = this->filePArr.GetCount();
 	while (i-- > 0)
 	{
@@ -34,7 +34,7 @@ void Parser::ParserList::AddFileParser(IO::FileParser *parser)
 	parser->SetParserList(this);
 }
 
-void Parser::ParserList::AddObjectParser(IO::IObjectParser *parser)
+void Parser::ParserList::AddObjectParser(IO::ObjectParser *parser)
 {
 	this->objPArr.Add(parser);
 	parser->SetParserList(this);
@@ -42,7 +42,7 @@ void Parser::ParserList::AddObjectParser(IO::IObjectParser *parser)
 
 void Parser::ParserList::SetCodePage(UInt32 codePage)
 {
-	IO::IParser *parser;
+	IO::ParserBase *parser;
 	UOSInt i = this->filePArr.GetCount();
 	while (i-- > 0)
 	{
@@ -59,7 +59,7 @@ void Parser::ParserList::SetCodePage(UInt32 codePage)
 
 void Parser::ParserList::SetMapManager(Map::MapManager *mapMgr)
 {
-	IO::IParser *parser;
+	IO::ParserBase *parser;
 	UOSInt i = this->filePArr.GetCount();
 	while (i-- > 0)
 	{
@@ -76,7 +76,7 @@ void Parser::ParserList::SetMapManager(Map::MapManager *mapMgr)
 
 void Parser::ParserList::SetEncFactory(Text::EncodingFactory *encFact)
 {
-	IO::IParser *parser;
+	IO::ParserBase *parser;
 	UOSInt i = this->filePArr.GetCount();
 	while (i-- > 0)
 	{
@@ -93,7 +93,7 @@ void Parser::ParserList::SetEncFactory(Text::EncodingFactory *encFact)
 
 void Parser::ParserList::SetWebBrowser(Net::WebBrowser *browser)
 {
-	IO::IParser *parser;
+	IO::ParserBase *parser;
 	UOSInt i = this->filePArr.GetCount();
 	while (i-- > 0)
 	{
@@ -110,7 +110,7 @@ void Parser::ParserList::SetWebBrowser(Net::WebBrowser *browser)
 
 void Parser::ParserList::SetSocketFactory(Net::SocketFactory *sockf)
 {
-	IO::IParser *parser;
+	IO::ParserBase *parser;
 	UOSInt i = this->filePArr.GetCount();
 	while (i-- > 0)
 	{
@@ -127,7 +127,7 @@ void Parser::ParserList::SetSocketFactory(Net::SocketFactory *sockf)
 
 void Parser::ParserList::SetSSLEngine(Net::SSLEngine *ssl)
 {
-	IO::IParser *parser;
+	IO::ParserBase *parser;
 	UOSInt i = this->filePArr.GetCount();
 	while (i-- > 0)
 	{
@@ -142,9 +142,9 @@ void Parser::ParserList::SetSSLEngine(Net::SSLEngine *ssl)
 	}
 }
 
-void Parser::ParserList::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
+void Parser::ParserList::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
 {
-	IO::IParser *parser;
+	IO::ParserBase *parser;
 	UOSInt i;
 	UOSInt j = this->filePArr.GetCount();
 	i = 0;
@@ -164,7 +164,7 @@ void Parser::ParserList::PrepareSelector(IO::IFileSelector *selector, IO::Parser
 	}
 }
 
-IO::ParsedObject *Parser::ParserList::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType *t, IO::ParserType targetType)
+IO::ParsedObject *Parser::ParserList::ParseFile(IO::StreamData *fd, IO::PackageFile *pkgFile, IO::ParserType *t, IO::ParserType targetType)
 {
 	UOSInt i = 0;
 	UOSInt j = this->filePArr.GetCount();
@@ -217,17 +217,17 @@ IO::ParsedObject *Parser::ParserList::ParseFile(IO::IStreamData *fd, IO::Package
 	return 0;
 }
 
-IO::ParsedObject *Parser::ParserList::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType *t)
+IO::ParsedObject *Parser::ParserList::ParseFile(IO::StreamData *fd, IO::PackageFile *pkgFile, IO::ParserType *t)
 {
 	return ParseFile(fd, pkgFile, t, IO::ParserType::Unknown);
 }
 
-IO::ParsedObject *Parser::ParserList::ParseFile(IO::IStreamData *fd, IO::ParserType *t)
+IO::ParsedObject *Parser::ParserList::ParseFile(IO::StreamData *fd, IO::ParserType *t)
 {
 	return ParseFile(fd, 0, t, IO::ParserType::Unknown);
 }
 
-IO::ParsedObject *Parser::ParserList::ParseFileType(IO::IStreamData *fd, IO::ParserType t)
+IO::ParsedObject *Parser::ParserList::ParseFileType(IO::StreamData *fd, IO::ParserType t)
 {
 	IO::ParserType pt;
 	IO::ParsedObject *pobj = this->ParseFile(fd, 0, &pt, t);
@@ -252,7 +252,7 @@ IO::ParsedObject *Parser::ParserList::ParseObjectType(IO::ParsedObject *pobj, IO
 {
 	UOSInt i = 0;
 	UOSInt j = this->objPArr.GetCount();
-	IO::IObjectParser *parser;
+	IO::ObjectParser *parser;
 	IO::ParsedObject *result;
 	while (i < j)
 	{

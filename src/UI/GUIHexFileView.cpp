@@ -419,7 +419,7 @@ Bool UI::GUIHexFileView::LoadFile(Text::CString fileName, Bool dynamicSize)
 	return true;
 }
 
-Bool UI::GUIHexFileView::LoadData(IO::IStreamData *data, IO::FileAnalyse::IFileAnalyse *fileAnalyse)
+Bool UI::GUIHexFileView::LoadData(IO::StreamData *data, IO::FileAnalyse::IFileAnalyse *fileAnalyse)
 {
 	SDEL_CLASS(this->analyse);
 	SDEL_CLASS(this->fs);

@@ -1,6 +1,6 @@
 #ifndef _SM_MEDIA_APE_APEIO
 #define _SM_MEDIA_APE_APEIO
-#include "IO/IStreamData.h"
+#include "IO/StreamData.h"
 #include <windows.h>
 #include "Media/APE/IO.h"
 
@@ -11,11 +11,11 @@ namespace Media
 		class APEIO : public CIO
 		{
 		private:
-			IO::IStreamData *data;
+			IO::StreamData *data;
 			Int64 currPos;
 
 		public:
-			APEIO(IO::IStreamData *data);
+			APEIO(IO::StreamData *data);
 			virtual ~APEIO();
 
 			virtual int Open(const WChar * pName, BOOL bOpenReadOnly = FALSE);
@@ -35,7 +35,7 @@ namespace Media
 			virtual int GetSize();
 			virtual int GetName(WChar * pBuffer);
 
-			IO::IStreamData *GetData();
+			IO::StreamData *GetData();
 		};
 	};
 };

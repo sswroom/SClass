@@ -3,7 +3,7 @@
 
 #define BUFFSIZE 65536
 
-IO::StmData::BufferedStreamData::BufferedStreamData(IO::IStreamData *stmData)
+IO::StmData::BufferedStreamData::BufferedStreamData(IO::StreamData *stmData)
 {
 	this->stmData = stmData;
 	this->buff = MemAlloc(UInt8, BUFFSIZE);
@@ -91,7 +91,7 @@ const UInt8 *IO::StmData::BufferedStreamData::GetPointer()
 	return this->stmData->GetPointer();
 }
 
-IO::IStreamData *IO::StmData::BufferedStreamData::GetPartialData(UInt64 offset, UInt64 length)
+IO::StreamData *IO::StmData::BufferedStreamData::GetPartialData(UInt64 offset, UInt64 length)
 {
 	return this->stmData->GetPartialData(offset, length);
 }

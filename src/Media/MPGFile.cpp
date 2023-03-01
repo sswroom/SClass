@@ -416,7 +416,7 @@ Bool Media::MPGFile::StopPlay()
 	return true;
 }
 
-Media::MPGFile::MPGFile(IO::IStreamData *stmData) : Media::MediaFile(stmData->GetFullName())
+Media::MPGFile::MPGFile(IO::StreamData *stmData) : Media::MediaFile(stmData->GetFullName())
 {
 	this->stmData = stmData->GetPartialData(0, this->fleng = stmData->GetDataSize());
 	this->bitRate = 0;

@@ -12,7 +12,7 @@ namespace UI
 		typedef void (__stdcall *OffsetChgHandler)(void *userObj, UInt64 offset);
 	private:
 		IO::FileStream *fs;
-		IO::IStreamData *fd;
+		IO::StreamData *fd;
 		IO::FileAnalyse::IFileAnalyse *analyse;
 		IO::FileAnalyse::FrameDetail *frame;
 		UInt64 fileSize;
@@ -45,7 +45,7 @@ namespace UI
 		virtual void UpdateCaretPos();
 
 		Bool LoadFile(Text::CString fileName, Bool dynamicSize);
-		Bool LoadData(IO::IStreamData *data, IO::FileAnalyse::IFileAnalyse *fileAnalyse);
+		Bool LoadData(IO::StreamData *data, IO::FileAnalyse::IFileAnalyse *fileAnalyse);
 		void GetTextPos(Double scnPosX, Double scnPosY, UInt64 *byteOfst);
 		void GoToOffset(UInt64 ofst);
 		UInt64 GetCurrOfst();

@@ -4,7 +4,7 @@
 #include "DB/DBConn.h"
 #include "DB/DBReader.h"
 #include "DB/DBTool.h"
-#include "IO/IStreamData.h"
+#include "IO/StreamData.h"
 #include "Text/StringBuilderUTF8.h"
 
 namespace DB

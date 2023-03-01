@@ -260,7 +260,7 @@ UInt32 __stdcall IO::FileAnalyse::EXEFileAnalyse::ParseThread(void *userObj)
 	return 0;
 }
 
-IO::FileAnalyse::EXEFileAnalyse::EXEFileAnalyse(IO::IStreamData *fd)
+IO::FileAnalyse::EXEFileAnalyse::EXEFileAnalyse(IO::StreamData *fd)
 {
 	UInt8 buff[8];
 	this->fd = 0;

@@ -1,6 +1,6 @@
 #ifndef _SM_TEXT_IMIMEOBJ
 #define _SM_TEXT_IMIMEOBJ
-#include "IO/IStreamData.h"
+#include "IO/StreamData.h"
 #include "IO/ParsedObject.h"
 #include "IO/Stream.h"
 #include "Text/CString.h"
@@ -21,7 +21,7 @@ namespace Text
 
 		virtual IO::ParserType GetParserType() const;
 
-		static Text::IMIMEObj *ParseFromData(IO::IStreamData *data, Text::CString contentType);
+		static Text::IMIMEObj *ParseFromData(IO::StreamData *data, Text::CString contentType);
 		static Text::IMIMEObj *ParseFromFile(Text::CString fileName);
 	};
 }

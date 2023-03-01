@@ -41,7 +41,7 @@ IO::StmData::ConcatStreamData::~ConcatStreamData()
 	mutUsage.EndUse();
 	if (cnt == 1)
 	{
-		IO::IStreamData *data;
+		IO::StreamData *data;
 		UOSInt i;
 		i = this->cdb->dataList.GetCount();
 		while (i-- > 0)
@@ -63,7 +63,7 @@ UOSInt IO::StmData::ConcatStreamData::GetRealData(UInt64 offset, UOSInt length, 
 	UInt64 endOfst = length + offset;
 	UInt64 thisSize = this->dataLength;
 	UOSInt readTotal = 0;
-	IO::IStreamData *data;
+	IO::StreamData *data;
 	if ((Int64)thisSize == -1)
 	{
 		thisSize = this->cdb->totalSize;
@@ -131,9 +131,9 @@ const UInt8 *IO::StmData::ConcatStreamData::GetPointer()
 	return 0;
 }
 
-IO::IStreamData *IO::StmData::ConcatStreamData::GetPartialData(UInt64 offset, UInt64 length)
+IO::StreamData *IO::StmData::ConcatStreamData::GetPartialData(UInt64 offset, UInt64 length)
 {
-	IO::IStreamData *data;
+	IO::StreamData *data;
 
 	UInt64 endOfst = length + offset;
 	UInt64 thisSize = this->dataLength;
@@ -170,7 +170,7 @@ Bool IO::StmData::ConcatStreamData::IsLoading()
 UOSInt IO::StmData::ConcatStreamData::GetSeekCount()
 {
 	UOSInt ret = 0;
-	IO::IStreamData *data;
+	IO::StreamData *data;
 	UOSInt i;
 	i = this->cdb->dataList.GetCount();
 	while (i-- > 0)
@@ -181,7 +181,7 @@ UOSInt IO::StmData::ConcatStreamData::GetSeekCount()
 	return ret;
 }
 
-void IO::StmData::ConcatStreamData::AddData(IO::IStreamData *data)
+void IO::StmData::ConcatStreamData::AddData(IO::StreamData *data)
 {
 	Sync::MutexUsage mutUsage(&this->cdb->mut);
 	this->cdb->dataList.Add(data);

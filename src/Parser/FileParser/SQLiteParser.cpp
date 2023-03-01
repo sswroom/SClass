@@ -24,7 +24,7 @@ Int32 Parser::FileParser::SQLiteParser::GetName()
 	return *(Int32*)"SQLI";
 }
 
-void Parser::FileParser::SQLiteParser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
+void Parser::FileParser::SQLiteParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::ReadingDB)
 	{
@@ -37,7 +37,7 @@ IO::ParserType Parser::FileParser::SQLiteParser::GetParserType()
 	return IO::ParserType::ReadingDB;
 }
 
-IO::ParsedObject *Parser::FileParser::SQLiteParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::SQLiteParser::ParseFileHdr(IO::StreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	if (!Text::StrStartsWithC(hdr, 32, UTF8STRC("SQLite format 3")))
 		return 0;
