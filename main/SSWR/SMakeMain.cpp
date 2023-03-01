@@ -36,7 +36,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	{
 		console.WriteLineC(UTF8STRC("Error in loading SMake.cfg"));
 		Text::StringBuilderUTF8 sb;
-		smake.GetErrorMsg(&sb);
+		smake.GetLastErrorMsg(&sb);
 		console.WriteLineC(sb.ToString(), sb.GetLength());
 	}
 	else
@@ -105,7 +105,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 						if (!smake.CompileProg({cmdLines[i], cmdLineLen}, asmListing))
 						{
 							Text::StringBuilderUTF8 sb;
-							smake.GetErrorMsg(&sb);
+							smake.GetLastErrorMsg(&sb);
 							console.SetTextColor(Text::StandardColor::Red);
 							console.WriteLineC(sb.ToString(), sb.GetLength());
 							console.ResetTextColor();

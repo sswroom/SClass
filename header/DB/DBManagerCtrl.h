@@ -2,6 +2,7 @@
 #define _SM_DB_DBMANAGERCTRL
 #include "DB/DBTool.h"
 #include "Net/SocketFactory.h"
+#include "Parser/ParserList.h"
 #include "Text/CString.h"
 
 namespace DB
@@ -18,11 +19,12 @@ namespace DB
 	private:
 		IO::LogTool *log;
 		Net::SocketFactory *sockf;
+		Parser::ParserList *parsers;
 		Text::String *connStr;
 		DB::DBTool *db;
 		ConnStatus status;
 
-		DBManagerCtrl(IO::LogTool *log, Net::SocketFactory *sockf);
+		DBManagerCtrl(IO::LogTool *log, Net::SocketFactory *sockf, Parser::ParserList *parsers);
 	public:
 		~DBManagerCtrl();
 
@@ -33,9 +35,9 @@ namespace DB
 		DB::DBTool *GetDB();
 		void GetConnName(Text::StringBuilderUTF8 *sb);
 
-		static DBManagerCtrl *Create(Text::String *connStr, IO::LogTool *log, Net::SocketFactory *sockf);
-		static DBManagerCtrl *Create(Text::CString connStr, IO::LogTool *log, Net::SocketFactory *sockf);
-		static DBManagerCtrl *Create(DB::DBTool *db, IO::LogTool *log, Net::SocketFactory *sockf);
+		static DBManagerCtrl *Create(Text::String *connStr, IO::LogTool *log, Net::SocketFactory *sockf, Parser::ParserList *parsers);
+		static DBManagerCtrl *Create(Text::CString connStr, IO::LogTool *log, Net::SocketFactory *sockf, Parser::ParserList *parsers);
+		static DBManagerCtrl *Create(DB::DBTool *db, IO::LogTool *log, Net::SocketFactory *sockf, Parser::ParserList *parsers);
 	};
 }
 #endif

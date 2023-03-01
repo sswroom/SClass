@@ -440,7 +440,7 @@ Bool Net::HTTPClient::LoadContent(Net::SocketFactory *sockf, Net::SSLEngine *ssl
 	}
 	UInt8 buff[2048];
 	UOSInt readSize;
-	while ((readSize = cli->Read(buff, sizeof(readSize))) > 0)
+	while ((readSize = cli->Read(buff, sizeof(buff))) > 0)
 	{
 		if (readSize > maxSize)
 		{
@@ -466,7 +466,7 @@ Bool Net::HTTPClient::LoadContent(Net::SocketFactory *sockf, Net::SSLEngine *ssl
 	}
 	UInt8 buff[2048];
 	UOSInt readSize;
-	while ((readSize = cli->Read(buff, sizeof(readSize))) > 0)
+	while ((readSize = cli->Read(buff, sizeof(buff))) > 0)
 	{
 		if (readSize > maxSize)
 		{

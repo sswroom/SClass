@@ -87,7 +87,7 @@ void __stdcall SSWR::AVIRead::AVIRMySQLClientForm::OnStartClicked(void *userObj)
 	{
 		sbUser.ClearStr();
 		sbUser.AppendC(UTF8STRC("Error in connecting to server: "));
-		me->cli->GetErrorMsg(&sbUser);
+		me->cli->GetLastErrorMsg(&sbUser);
 		DEL_CLASS(me->cli);
 		me->cli = 0;
 		UI::MessageDialog::ShowDialog(sbUser.ToCString(), CSTR("MySQL Client"), me);
@@ -124,7 +124,7 @@ void __stdcall SSWR::AVIRead::AVIRMySQLClientForm::OnQueryClicked(void *userObj)
 	else
 	{
 		sb.ClearStr();
-		me->cli->GetErrorMsg(&sb);
+		me->cli->GetLastErrorMsg(&sb);
 		me->txtQueryStatus->SetText(sb.ToCString());
 	}
 }
@@ -159,7 +159,7 @@ void __stdcall SSWR::AVIRead::AVIRMySQLClientForm::OnTimerTick(void *userObj)
 		{
 			Text::StringBuilderUTF8 sb;
 			sb.AppendC(UTF8STRC("Disconnected: "));
-			me->cli->GetErrorMsg(&sb);
+			me->cli->GetLastErrorMsg(&sb);
 			DEL_CLASS(me->cli);
 			me->cli = 0;
 			me->txtHost->SetReadOnly(false);

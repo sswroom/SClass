@@ -11,7 +11,7 @@
 
 namespace DB
 {
-	class ReadingDBTool
+	class ReadingDBTool : public ReadingDB
 	{
 	public:
 		typedef enum
@@ -71,12 +71,13 @@ namespace DB
 
 		void SetFailTrigger(SQLFailedFunc trig);
 		DB::DBReader *ExecuteReader(Text::CString sqlCmd);
-		void CloseReader(DB::DBReader *r);
+		virtual void CloseReader(DB::DBReader *r);
 		DB::DBUtil::SQLType GetSQLType();
 		Bool IsDataError(const UTF8Char *errCode);
-		void GetLastErrorMsg(Text::StringBuilderUTF8 *sb);
+		virtual void GetLastErrorMsg(Text::StringBuilderUTF8 *sb);
 		DB::DBConn *GetDBConn();
 		Int8 GetTzQhr();
+		virtual void Reconnect();
 		
 		UTF8Char *DBColUTF8(UTF8Char *sqlstr, const UTF8Char *colName);
 		UTF8Char *DBColW(UTF8Char *sqlstr, const WChar *colName);
@@ -93,10 +94,10 @@ namespace DB
 
 		UInt32 GetDataCnt();
 
-		DB::DBReader *QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
-		UOSInt QueryTableNames(Text::CString schemaName, Data::ArrayList<Text::String *> *arr);
-		UOSInt QuerySchemaNames(Data::ArrayList<Text::String *> *arr);
-		DB::TableDef *GetTableDef(Text::CString schemaName, Text::CString tableName);
+		virtual DB::DBReader *QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
+		virtual UOSInt QueryTableNames(Text::CString schemaName, Data::ArrayList<Text::String *> *arr);
+		virtual UOSInt QuerySchemaNames(Data::ArrayList<Text::String *> *arr);
+		virtual DB::TableDef *GetTableDef(Text::CString schemaName, Text::CString tableName);
 
 		UOSInt GetDatabaseNames(Data::ArrayList<Text::String*> *arr);
 		void ReleaseDatabaseNames(Data::ArrayList<Text::String*> *arr);

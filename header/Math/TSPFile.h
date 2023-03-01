@@ -23,7 +23,7 @@ namespace Math
 		virtual DB::DBReader *QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
 		virtual DB::TableDef *GetTableDef(Text::CString schemaName, Text::CString tableName);
 		virtual void CloseReader(DB::DBReader *r);
-		virtual void GetErrorMsg(Text::StringBuilderUTF8 *str);
+		virtual void GetLastErrorMsg(Text::StringBuilderUTF8 *str);
 		virtual void Reconnect();
 
 		UInt8 *GetRowPtr(UOSInt row) const;

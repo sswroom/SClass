@@ -40,7 +40,7 @@ namespace Win32
 		virtual UOSInt QueryTableNames(Text::CString schemaName, Data::ArrayList<Text::String*> *names);
 		virtual DB::DBReader *QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
 		virtual void CloseReader(DB::DBReader *reader);
-		virtual void GetErrorMsg(Text::StringBuilderUTF8 *str);
+		virtual void GetLastErrorMsg(Text::StringBuilderUTF8 *str);
 		virtual void Reconnect();
 
 		const WChar *GetNS();

@@ -169,7 +169,7 @@ void Map::MapDrawLayer::CloseReader(DB::DBReader *r)
 	DEL_CLASS(rdr);
 }
 
-void Map::MapDrawLayer::GetErrorMsg(Text::StringBuilderUTF8 *str)
+void Map::MapDrawLayer::GetLastErrorMsg(Text::StringBuilderUTF8 *str)
 {
 }
 

@@ -26,7 +26,7 @@ namespace DB
 		virtual DBReader *QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayList<Text::String*> *columNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
 		virtual TableDef *GetTableDef(Text::CString schemaName, Text::CString tableName);
 		virtual void CloseReader(DBReader *r);
-		virtual void GetErrorMsg(Text::StringBuilderUTF8 *str);
+		virtual void GetLastErrorMsg(Text::StringBuilderUTF8 *str);
 		virtual void Reconnect();
 
 		UOSInt GetDatabaseNames(Data::ArrayList<Text::String*> *names);

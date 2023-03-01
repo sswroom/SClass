@@ -67,7 +67,7 @@ namespace DB
 		virtual OSInt ExecuteNonQuery(Text::CString sql);
 		virtual DB::DBReader *ExecuteReader(Text::CString sql);
 		virtual void CloseReader(DB::DBReader *r);
-		virtual void GetErrorMsg(Text::StringBuilderUTF8 *str);
+		virtual void GetLastErrorMsg(Text::StringBuilderUTF8 *str);
 		virtual Bool IsLastDataError();
 		virtual void Reconnect();
 

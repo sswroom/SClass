@@ -1954,7 +1954,7 @@ void Net::MySQLTCPClient::SetLastError(Text::CString errMsg)
 	this->lastError = Text::String::New(errMsg);
 #if defined(VERBOSE)
 	Text::StringBuilderUTF8 sb;
-	this->GetErrorMsg(&sb);
+	this->GetLastErrorMsg(&sb);
 	UInt32 port;
 	if (this->cli)
 	{
@@ -2260,7 +2260,7 @@ void Net::MySQLTCPClient::CloseReader(DB::DBReader *r)
 	DEL_CLASS(reader);
 }
 
-void Net::MySQLTCPClient::GetErrorMsg(Text::StringBuilderUTF8 *str)
+void Net::MySQLTCPClient::GetLastErrorMsg(Text::StringBuilderUTF8 *str)
 {
 	if (this->lastError)
 	{

@@ -21,7 +21,7 @@ void DB::MySQLMaintance::RepairSchema(const UTF8Char *schema, Text::StringBuilde
 	Data::ArrayList<Text::String*> tableNames;
 	if (!this->cli->ChangeSchema(schema))
 	{
-		this->cli->GetErrorMsg(sb);
+		this->cli->GetLastErrorMsg(sb);
 		sb->AppendC(UTF8STRC("\r\n"));
 		return;
 	}
@@ -65,7 +65,7 @@ void DB::MySQLMaintance::RepairTable(Text::String *tableName, Text::StringBuilde
 		sb->AppendC(UTF8STRC("Error in executing SQL: "));
 		sb->AppendC(sql.ToString(), sql.GetLength());
 		sb->AppendC(UTF8STRC("\r\n"));
-		this->cli->GetErrorMsg(sb);
+		this->cli->GetLastErrorMsg(sb);
 		sb->AppendC(UTF8STRC("\r\n"));
 	}
 }

@@ -136,7 +136,7 @@ void DB::DBFFile::CloseReader(DBReader *r)
 	DEL_CLASS(rdr);
 }
 
-void DB::DBFFile::GetErrorMsg(Text::StringBuilderUTF8 *str)
+void DB::DBFFile::GetLastErrorMsg(Text::StringBuilderUTF8 *str)
 {
 }
 

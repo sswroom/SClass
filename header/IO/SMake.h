@@ -74,7 +74,7 @@ namespace IO
 		virtual IO::ParserType GetParserType() const;
 
 		Bool IsLoadFailed() const;
-		Bool GetErrorMsg(Text::StringBuilderUTF8 *sb) const;
+		Bool GetLastErrorMsg(Text::StringBuilderUTF8 *sb) const;
 		void SetMessageWriter(IO::Writer *messageWriter);
 		void SetCommandWriter(IO::Writer *cmdWriter);
 		void SetDebugObj(Text::CString debugObj);

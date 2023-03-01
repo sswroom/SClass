@@ -1362,7 +1362,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::NextSQL(Text::CString sql, SQLSession *s
 			return true;
 		}
 		Text::StringBuilderUTF8 sb;
-		db->GetErrorMsg(&sb);
+		db->GetLastErrorMsg(&sb);
 		UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("Check Table Changes"), this);
 		return false;
 	}
@@ -1383,7 +1383,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::NextSQL(Text::CString sql, SQLSession *s
 				else
 				{
 					Text::StringBuilderUTF8 sb;
-					db->GetErrorMsg(&sb);
+					db->GetLastErrorMsg(&sb);
 					UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("Check Table Changes"), this);
 					return false;
 				}
@@ -1411,7 +1411,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::NextSQL(Text::CString sql, SQLSession *s
 				else
 				{
 					Text::StringBuilderUTF8 sb;
-					db->GetErrorMsg(&sb);
+					db->GetLastErrorMsg(&sb);
 					UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("Check Table Changes"), this);
 					return false;
 				}
@@ -1425,7 +1425,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::NextSQL(Text::CString sql, SQLSession *s
 			return true;
 		}
 		Text::StringBuilderUTF8 sb;
-		db->GetErrorMsg(&sb);
+		db->GetLastErrorMsg(&sb);
 		UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("Check Table Changes"), this);
 		return false;
 	}

@@ -436,7 +436,7 @@ OSInt DB::OLEDBConn::ExecuteNonQuery(Text::CString sql)
 	return ret;
 }*/
 
-void DB::OLEDBConn::GetErrorMsg(Text::StringBuilderUTF8 *str)
+void DB::OLEDBConn::GetLastErrorMsg(Text::StringBuilderUTF8 *str)
 {
 	IErrorInfo *pIErrorInfoAll = 0;
 	GetErrorInfo(0, &pIErrorInfoAll);

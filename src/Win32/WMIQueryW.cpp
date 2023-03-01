@@ -226,7 +226,7 @@ void Win32::WMIQuery::CloseReader(DB::DBReader *reader)
 	DEL_CLASS(r);
 }
 
-void Win32::WMIQuery::GetErrorMsg(Text::StringBuilderUTF8 *str)
+void Win32::WMIQuery::GetLastErrorMsg(Text::StringBuilderUTF8 *str)
 {
 }
 

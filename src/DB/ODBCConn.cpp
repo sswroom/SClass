@@ -709,7 +709,7 @@ void DB::ODBCConn::CloseReader(DB::DBReader *r)
 	}
 }
 
-void DB::ODBCConn::GetErrorMsg(Text::StringBuilderUTF8 *str)
+void DB::ODBCConn::GetLastErrorMsg(Text::StringBuilderUTF8 *str)
 {
 	Int32 recNumber = 1;
 	SQLWCHAR state[6];

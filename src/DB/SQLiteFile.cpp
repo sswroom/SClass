@@ -173,7 +173,7 @@ void DB::SQLiteFile::CloseReader(DBReader *r)
 	DEL_CLASS(rdr);
 }
 
-void DB::SQLiteFile::GetErrorMsg(Text::StringBuilderUTF8 *str)
+void DB::SQLiteFile::GetLastErrorMsg(Text::StringBuilderUTF8 *str)
 {
 	if (this->lastErrMsg)
 	{

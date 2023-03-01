@@ -26,7 +26,7 @@ void DB::MySQLConn::Connect()
 	{
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("Error in connecting to database: "));
-		this->GetErrorMsg(&sb);
+		this->GetLastErrorMsg(&sb);
 		log->LogMessage(sb.ToCString(), IO::ILogHandler::LogLevel::Error);
 		mysql_close(mysql);
 		this->mysql = 0;
@@ -239,7 +239,7 @@ void DB::MySQLConn::CloseReader(DB::DBReader *r)
 	DEL_CLASS(rdr);
 }
 
-void DB::MySQLConn::GetErrorMsg(Text::StringBuilderUTF8 *str)
+void DB::MySQLConn::GetLastErrorMsg(Text::StringBuilderUTF8 *str)
 {
 	UTF8Char *errMsg = (UTF8Char *)mysql_error((MYSQL*)this->mysql);
 	str->AppendSlow(errMsg);

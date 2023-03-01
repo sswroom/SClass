@@ -81,7 +81,7 @@ namespace Net
 		DB::DBReader *ExecuteReaderText(Text::CString sql);
 		DB::DBReader *ExecuteReaderBinary(Text::CString sql);
 		virtual void CloseReader(DB::DBReader *r);
-		virtual void GetErrorMsg(Text::StringBuilderUTF8 *str);
+		virtual void GetLastErrorMsg(Text::StringBuilderUTF8 *str);
 		virtual Bool IsLastDataError();
 		virtual void Reconnect();
 

@@ -40,7 +40,7 @@ void __stdcall SSWR::AVIRead::AVIRAccessConnForm::OnOKClicked(void *userObj)
 	{
 		sbFileName.ClearStr();
 		sbFileName.AppendC(UTF8STRC("Error in opening ODBC connection\r\n"));
-		me->conn->GetErrorMsg(&sbFileName);
+		me->conn->GetLastErrorMsg(&sbFileName);
 		UI::MessageDialog::ShowDialog(sbFileName.ToCString(), CSTR("Access Conn"), me);
 		DEL_CLASS(me->conn);
 	}

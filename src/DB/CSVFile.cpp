@@ -130,7 +130,7 @@ void DB::CSVFile::CloseReader(DBReader *r)
 	DEL_CLASS(rdr);
 }
 
-void DB::CSVFile::GetErrorMsg(Text::StringBuilderUTF8 *str)
+void DB::CSVFile::GetLastErrorMsg(Text::StringBuilderUTF8 *str)
 {
 }
 

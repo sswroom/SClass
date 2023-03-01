@@ -31,7 +31,7 @@ void DB::MongoDB::CloseReader(DBReader *r)
 {
 }
 
-void DB::MongoDB::GetErrorMsg(Text::StringBuilderUTF8 *str)
+void DB::MongoDB::GetLastErrorMsg(Text::StringBuilderUTF8 *str)
 {
 }
 

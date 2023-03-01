@@ -153,7 +153,7 @@ void Math::TSPFile::CloseReader(DB::DBReader *r)
 	DEL_CLASS(reader);
 }
 
-void Math::TSPFile::GetErrorMsg(Text::StringBuilderUTF8 *str)
+void Math::TSPFile::GetLastErrorMsg(Text::StringBuilderUTF8 *str)
 {
 }
 

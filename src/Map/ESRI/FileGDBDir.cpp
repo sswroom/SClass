@@ -79,7 +79,7 @@ void Map::ESRI::FileGDBDir::CloseReader(DB::DBReader *r)
 	DEL_CLASS(reader);
 }
 
-void Map::ESRI::FileGDBDir::GetErrorMsg(Text::StringBuilderUTF8 *str)
+void Map::ESRI::FileGDBDir::GetLastErrorMsg(Text::StringBuilderUTF8 *str)
 {
 }
 

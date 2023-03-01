@@ -409,11 +409,11 @@ void Map::ESRI::ESRIMDBLayer::CloseReader(DB::DBReader *r)
 	this->currDB = 0;
 }
 
-void Map::ESRI::ESRIMDBLayer::GetErrorMsg(Text::StringBuilderUTF8 *str)
+void Map::ESRI::ESRIMDBLayer::GetLastErrorMsg(Text::StringBuilderUTF8 *str)
 {
 	if (this->lastDB)
 	{
-		this->lastDB->GetErrorMsg(str);
+		this->lastDB->GetLastErrorMsg(str);
 	}
 }
 

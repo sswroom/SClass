@@ -366,7 +366,7 @@ void DB::TextDB::CloseReader(DBReader *r)
 	DEL_CLASS(reader);
 }
 
-void DB::TextDB::GetErrorMsg(Text::StringBuilderUTF8 *str)
+void DB::TextDB::GetLastErrorMsg(Text::StringBuilderUTF8 *str)
 {
 
 }

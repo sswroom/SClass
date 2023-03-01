@@ -1064,7 +1064,7 @@ SSWR::AVIRead::AVIRDBManagerForm::AVIRDBManagerForm(UI::GUIClientControl *parent
 	UTF8Char *sptr;
 	sptr = IO::Path::GetProcessFileName(sbuff);
 	sptr = IO::Path::AppendPath(sbuff, sptr, DBCONNFILE);
-	if (DB::DBManager::RestoreConn(CSTRP(sbuff, sptr), &this->dbList, &this->log, this->core->GetSocketFactory()))
+	if (DB::DBManager::RestoreConn(CSTRP(sbuff, sptr), &this->dbList, &this->log, this->core->GetSocketFactory(), this->core->GetParserList()))
 	{
 		Text::StringBuilderUTF8 sb;
 		DB::DBManagerCtrl *ctrl;
@@ -1365,7 +1365,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::ConnAdd(DB::DBConn *conn)
 {
 	DB::DBTool *db;
 	NEW_CLASS(db, DB::DBTool(conn, true, &this->log, CSTR("DB: ")));
-	DB::DBManagerCtrl *ctrl = DB::DBManagerCtrl::Create(db, &this->log, this->core->GetSocketFactory());
+	DB::DBManagerCtrl *ctrl = DB::DBManagerCtrl::Create(db, &this->log, this->core->GetSocketFactory(), this->core->GetParserList());
 	this->dbList.Add(ctrl);
 	Text::StringBuilderUTF8 sb;
 	conn->GetConnName(&sb);

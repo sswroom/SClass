@@ -66,7 +66,7 @@ void __stdcall SSWR::AVIRead::AVIRODBCStrForm::OnOKClicked(void *userObj)
 	{
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("Error in opening ODBC connection\r\n"));
-		conn->GetErrorMsg(&sb);
+		conn->GetLastErrorMsg(&sb);
 		UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("ODBC String Connection"), me);
 		DEL_CLASS(conn);
 		return;

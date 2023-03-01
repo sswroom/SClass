@@ -71,7 +71,7 @@ DB::DBConn *DB::MSSQLConn::OpenConnTCP(Text::CString serverHost, UInt16 port, Te
 	{
 		if (errMsg)
 		{
-			conn->GetErrorMsg(errMsg);
+			conn->GetLastErrorMsg(errMsg);
 		}
 		DEL_CLASS(conn);
 		return 0;

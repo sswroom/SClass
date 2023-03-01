@@ -383,11 +383,11 @@ void Map::FileGDBLayer::CloseReader(DB::DBReader *r)
 	this->currDB = 0;
 }
 
-void Map::FileGDBLayer::GetErrorMsg(Text::StringBuilderUTF8 *str)
+void Map::FileGDBLayer::GetLastErrorMsg(Text::StringBuilderUTF8 *str)
 {
 	if (this->lastDB)
 	{
-		this->lastDB->GetErrorMsg(str);
+		this->lastDB->GetLastErrorMsg(str);
 	}
 }
 

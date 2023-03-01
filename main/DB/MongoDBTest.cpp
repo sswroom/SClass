@@ -32,7 +32,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	{
 		console->WriteLineC(UTF8STRC("Error in getting Database List:"));
 		sb.ClearStr();
-		mongoDB->GetErrorMsg(&sb);
+		mongoDB->GetLastErrorMsg(&sb);
 		console->WriteLineC(sb.ToString(), sb.GetLength());
 	}
 	else

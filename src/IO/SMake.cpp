@@ -1283,7 +1283,7 @@ Bool IO::SMake::IsLoadFailed() const
 	return this->errorMsg != 0;
 }
 
-Bool IO::SMake::GetErrorMsg(Text::StringBuilderUTF8 *sb) const
+Bool IO::SMake::GetLastErrorMsg(Text::StringBuilderUTF8 *sb) const
 {
 	Bool ret;
 	Sync::MutexUsage mutUsage(&this->errorMsgMut);

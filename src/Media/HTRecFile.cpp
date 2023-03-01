@@ -727,7 +727,7 @@ void Media::HTRecFile::CloseReader(DB::DBReader *r)
 	DEL_CLASS(reader);
 }
 
-void Media::HTRecFile::GetErrorMsg(Text::StringBuilderUTF8 *str)
+void Media::HTRecFile::GetLastErrorMsg(Text::StringBuilderUTF8 *str)
 {
 }
 

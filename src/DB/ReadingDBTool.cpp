@@ -44,7 +44,7 @@ void DB::ReadingDBTool::AddLogMsgC(const UTF8Char *msg, UOSInt msgLen, IO::ILogH
 	}
 }
 
-DB::ReadingDBTool::ReadingDBTool(DB::DBConn *db, Bool needRelease, IO::LogTool *log, Text::CString logPrefix)
+DB::ReadingDBTool::ReadingDBTool(DB::DBConn *db, Bool needRelease, IO::LogTool *log, Text::CString logPrefix) : ReadingDB(db->GetSourceNameObj())
 {
 	this->db = db;
 	this->currDBName = 0;
@@ -404,7 +404,7 @@ DB::DBReader *DB::ReadingDBTool::ExecuteReader(Text::CString sqlCmd)
 			logMsg.ClearStr();
 			logMsg.AppendC(UTF8STRC("Exception detail: "));
 			this->lastErrMsg.ClearStr();
-			this->db->GetErrorMsg(&this->lastErrMsg);
+			this->db->GetLastErrorMsg(&this->lastErrMsg);
 			logMsg.AppendSB(&this->lastErrMsg);
 			AddLogMsgC(logMsg.ToString(), logMsg.GetLength(), IO::ILogHandler::LogLevel::ErrorDetail);
 		}
@@ -479,6 +479,14 @@ Int8 DB::ReadingDBTool::GetTzQhr()
 	else
 	{
 		return 0;
+	}
+}
+
+void DB::ReadingDBTool::Reconnect()
+{
+	if (this->db)
+	{
+		this->db->Reconnect();
 	}
 }
 
@@ -599,7 +607,7 @@ DB::DBReader *DB::ReadingDBTool::QueryTableData(Text::CString schemaName, Text::
 			Text::StringBuilderUTF8 logMsg;
 			logMsg.AppendC(UTF8STRC("Exception detail: "));
 			this->lastErrMsg.ClearStr();
-			this->db->GetErrorMsg(&this->lastErrMsg);
+			this->db->GetLastErrorMsg(&this->lastErrMsg);
 			logMsg.AppendSB(&this->lastErrMsg);
 			AddLogMsgC(logMsg.ToString(), logMsg.GetLength(), IO::ILogHandler::LogLevel::ErrorDetail);
 		}

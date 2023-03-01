@@ -9,6 +9,8 @@
 #include "DB/SQLiteFile.h"
 #include "IO/FileStream.h"
 #include "IO/MemoryStream.h"
+#include "IO/Path.h"
+#include "IO/StmData/FileData.h"
 #include "Net/MySQLTCPClient.h"
 #include "Text/MyStringW.h"
 #include "Text/UTF8Reader.h"
@@ -174,12 +176,12 @@ Bool DB::DBManager::GetConnStr(DB::DBTool *db, Text::StringBuilderUTF8 *connStr)
 	return false;
 }
 
-DB::DBTool *DB::DBManager::OpenConn(Text::String *connStr, IO::LogTool *log, Net::SocketFactory *sockf)
+DB::DBTool *DB::DBManager::OpenConn(Text::String *connStr, IO::LogTool *log, Net::SocketFactory *sockf, Parser::ParserList *parsers)
 {
-	return OpenConn(connStr->ToCString(), log, sockf);
+	return OpenConn(connStr->ToCString(), log, sockf, parsers);
 }
 
-DB::DBTool *DB::DBManager::OpenConn(Text::CString connStr, IO::LogTool *log, Net::SocketFactory *sockf)
+DB::DBTool *DB::DBManager::OpenConn(Text::CString connStr, IO::LogTool *log, Net::SocketFactory *sockf, Parser::ParserList *parsers)
 {
 	DB::DBTool *db;
 	if (connStr.StartsWith(UTF8STRC("odbc:")))
@@ -457,6 +459,15 @@ DB::DBTool *DB::DBManager::OpenConn(Text::CString connStr, IO::LogTool *log, Net
 			return db;
 		}
 	}
+/*	else if (connStr.StartsWith(UTF8STRC("file:")))
+	{
+		IO::StmData::FileData fd(connStr.Substring(5), false);
+		DB::ReadingDB *rdb = (DB::ReadingDB*)parsers->ParseFileType(&fd, IO::ParserType::ReadingDB);
+		if (rdb)
+		{
+			NEW_CLASS(db, DB::ReadingDBTool(rdb, true, log, DBPREFIX));
+		}
+	}*/
 	return 0;
 }
 
@@ -603,6 +614,12 @@ void DB::DBManager::GetConnName(Text::CString connStr, Text::StringBuilderUTF8 *
 			}
 		}
 	}
+	else if (connStr.StartsWith(UTF8STRC("file:")))
+	{
+		sbOut->AppendC(UTF8STRC("file:"));
+		UOSInt i = connStr.LastIndexOf(IO::Path::PATH_SEPERATOR);
+		sbOut->Append(connStr.Substring(i + 1));
+	}
 }
 
 Bool DB::DBManager::StoreConn(Text::CString fileName, Data::ArrayList<DB::DBManagerCtrl*> *ctrlList)
@@ -655,7 +672,7 @@ Bool DB::DBManager::StoreConn(Text::CString fileName, Data::ArrayList<DB::DBMana
 	return true;
 }
 
-Bool DB::DBManager::RestoreConn(Text::CString fileName, Data::ArrayList<DB::DBManagerCtrl*> *ctrlList, IO::LogTool *log, Net::SocketFactory *sockf)
+Bool DB::DBManager::RestoreConn(Text::CString fileName, Data::ArrayList<DB::DBManagerCtrl*> *ctrlList, IO::LogTool *log, Net::SocketFactory *sockf, Parser::ParserList *parsers)
 {
 	IO::FileStream *fs;
 	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
@@ -693,7 +710,7 @@ Bool DB::DBManager::RestoreConn(Text::CString fileName, Data::ArrayList<DB::DBMa
 			cnt = Text::StrSplitLineP(sarr, 2, sarr[1]);
 			if (sarr[0].leng > 0)
 			{
-				ctrlList->Add(DB::DBManagerCtrl::Create(sarr[0].ToCString(), log, sockf));
+				ctrlList->Add(DB::DBManagerCtrl::Create(sarr[0].ToCString(), log, sockf, parsers));
 			}
 			if (cnt != 2)
 			{

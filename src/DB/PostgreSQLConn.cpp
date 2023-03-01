@@ -785,7 +785,7 @@ void DB::PostgreSQLConn::CloseReader(DB::DBReader *r)
 	DEL_CLASS(reader);
 }
 
-void DB::PostgreSQLConn::GetErrorMsg(Text::StringBuilderUTF8 *str)
+void DB::PostgreSQLConn::GetLastErrorMsg(Text::StringBuilderUTF8 *str)
 {
 	if (this->clsData->conn)
 	{

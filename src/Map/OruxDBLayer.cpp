@@ -356,9 +356,9 @@ void Map::OruxDBLayer::CloseReader(DB::DBReader *r)
 	return this->db->CloseReader(r);
 }
 
-void Map::OruxDBLayer::GetErrorMsg(Text::StringBuilderUTF8 *str)
+void Map::OruxDBLayer::GetLastErrorMsg(Text::StringBuilderUTF8 *str)
 {
-	this->db->GetErrorMsg(str);
+	this->db->GetLastErrorMsg(str);
 }
 
 void Map::OruxDBLayer::Reconnect()

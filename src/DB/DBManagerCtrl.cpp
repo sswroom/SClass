@@ -2,10 +2,11 @@
 #include "DB/DBManager.h"
 #include "DB/DBManagerCtrl.h"
 
-DB::DBManagerCtrl::DBManagerCtrl(IO::LogTool *log, Net::SocketFactory *sockf)
+DB::DBManagerCtrl::DBManagerCtrl(IO::LogTool *log, Net::SocketFactory *sockf, Parser::ParserList *parsers)
 {
 	this->log = log;
 	this->sockf = sockf;
+	this->parsers = parsers;
 	this->connStr = 0;
 	this->db = 0;
 	this->status = ConnStatus::NotConnected;
@@ -26,7 +27,7 @@ Bool DB::DBManagerCtrl::Connect()
 	else
 	{
 		SDEL_CLASS(this->db);
-		this->db = DB::DBManager::OpenConn(this->connStr->ToCString(), this->log, this->sockf);
+		this->db = DB::DBManager::OpenConn(this->connStr->ToCString(), this->log, this->sockf, this->parsers);
 		if (this->db)
 		{
 			this->status = ConnStatus::Connected;
@@ -77,27 +78,27 @@ void DB::DBManagerCtrl::GetConnName(Text::StringBuilderUTF8 *sb)
 	}
 }
 
-DB::DBManagerCtrl *DB::DBManagerCtrl::Create(Text::String *connStr, IO::LogTool *log, Net::SocketFactory *sockf)
+DB::DBManagerCtrl *DB::DBManagerCtrl::Create(Text::String *connStr, IO::LogTool *log, Net::SocketFactory *sockf, Parser::ParserList *parsers)
 {
 	DB::DBManagerCtrl *ctrl;
-	NEW_CLASS(ctrl, DB::DBManagerCtrl(log, sockf));
+	NEW_CLASS(ctrl, DB::DBManagerCtrl(log, sockf, parsers));
 	ctrl->connStr = connStr->Clone();
 	return ctrl;
 }
 
-DB::DBManagerCtrl *DB::DBManagerCtrl::Create(Text::CString connStr, IO::LogTool *log, Net::SocketFactory *sockf)
+DB::DBManagerCtrl *DB::DBManagerCtrl::Create(Text::CString connStr, IO::LogTool *log, Net::SocketFactory *sockf, Parser::ParserList *parsers)
 {
 	DB::DBManagerCtrl *ctrl;
-	NEW_CLASS(ctrl, DB::DBManagerCtrl(log, sockf));
+	NEW_CLASS(ctrl, DB::DBManagerCtrl(log, sockf, parsers));
 	ctrl->connStr = Text::String::New(connStr);
 	return ctrl;
 }
 
-DB::DBManagerCtrl *DB::DBManagerCtrl::Create(DB::DBTool *db, IO::LogTool *log, Net::SocketFactory *sockf)
+DB::DBManagerCtrl *DB::DBManagerCtrl::Create(DB::DBTool *db, IO::LogTool *log, Net::SocketFactory *sockf, Parser::ParserList *parsers)
 {
 	Text::StringBuilderUTF8 sb;
 	DB::DBManagerCtrl *ctrl;
-	NEW_CLASS(ctrl, DB::DBManagerCtrl(log, sockf));
+	NEW_CLASS(ctrl, DB::DBManagerCtrl(log, sockf, parsers));
 	if (DB::DBManager::GetConnStr(db, &sb))
 	{
 		ctrl->connStr = Text::String::New(sb.ToCString());

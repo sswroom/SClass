@@ -91,7 +91,7 @@ void DB::PostgreSQLConn::CloseReader(DB::DBReader *r)
 
 }
 
-void DB::PostgreSQLConn::GetErrorMsg(Text::StringBuilderUTF8 *str)
+void DB::PostgreSQLConn::GetLastErrorMsg(Text::StringBuilderUTF8 *str)
 {
 }
 
