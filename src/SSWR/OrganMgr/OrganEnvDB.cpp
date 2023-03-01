@@ -4983,7 +4983,7 @@ void SSWR::OrganMgr::OrganEnvDB::ExportLite(const UTF8Char *folder)
 	IO::Path::CreateDirectory(CSTRP(sbuff, sptr2));
 	Exporter::MDBExporter exporter;
 	sptr2 = Text::StrConcatC(sptr, UTF8STRC("OrganWeb.mdb"));
-	exporter.ExportFile(0, CSTRP(sbuff, sptr2), this->db->GetConn(), 0);
+	exporter.ExportFile(0, CSTRP(sbuff, sptr2), this->db->GetDBConn(), 0);
 
 	sptr2 = Text::StrConcatC(sptr, UTF8STRC("Image"));
 	IO::Path::CreateDirectory(CSTRP(sbuff, sptr2));

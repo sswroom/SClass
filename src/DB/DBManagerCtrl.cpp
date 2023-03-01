@@ -61,7 +61,7 @@ Text::String *DB::DBManagerCtrl::GetConnStr()
 	return this->connStr;
 }
 
-DB::DBTool *DB::DBManagerCtrl::GetDB()
+DB::ReadingDB *DB::DBManagerCtrl::GetDB()
 {
 	return this->db;
 }
@@ -74,7 +74,18 @@ void DB::DBManagerCtrl::GetConnName(Text::StringBuilderUTF8 *sb)
 	}
 	else if (this->db)
 	{
-		this->db->GetConn()->GetConnName(sb);
+		if (this->db->IsDBTool())
+		{
+			((DB::ReadingDBTool*)this->db)->GetDBConn()->GetConnName(sb);
+		}
+		else if (this->db->IsFullConn())
+		{
+			((DB::DBConn*)this->db)->GetConnName(sb);
+		}
+		else
+		{
+			sb->Append(this->db->GetSourceNameObj());
+		}
 	}
 }
 
@@ -103,6 +114,19 @@ DB::DBManagerCtrl *DB::DBManagerCtrl::Create(DB::DBTool *db, IO::LogTool *log, N
 	{
 		ctrl->connStr = Text::String::New(sb.ToCString());
 	}
+	ctrl->db = db;
+	ctrl->status = ConnStatus::Connected;
+	return ctrl;
+}
+
+DB::DBManagerCtrl *DB::DBManagerCtrl::CreateFromFile(DB::ReadingDB *db, Text::String *filePath, IO::LogTool *log, Net::SocketFactory *sockf, Parser::ParserList *parsers)
+{
+	Text::StringBuilderUTF8 sb;
+	DB::DBManagerCtrl *ctrl;
+	NEW_CLASS(ctrl, DB::DBManagerCtrl(log, sockf, parsers));
+	sb.AppendC(UTF8STRC("file:"));
+	sb.Append(filePath);
+	ctrl->connStr = Text::String::New(sb.ToCString());
 	ctrl->db = db;
 	ctrl->status = ConnStatus::Connected;
 	return ctrl;

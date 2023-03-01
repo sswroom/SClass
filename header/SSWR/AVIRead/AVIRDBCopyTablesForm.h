@@ -43,7 +43,7 @@ namespace SSWR
 			SSWR::AVIRead::AVIRCore *core;
 			Data::ArrayList<DB::DBManagerCtrl*> *dbList;
 
-			DB::DBTool *dataConn;
+			DB::ReadingDB *dataConn;
 			Text::String *dataSchema;
 			Data::ArrayList<Text::String*> dataTables;
 

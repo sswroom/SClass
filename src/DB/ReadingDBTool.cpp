@@ -490,6 +490,10 @@ void DB::ReadingDBTool::Reconnect()
 	}
 }
 
+Bool DB::ReadingDBTool::IsDBTool()
+{
+	return true;
+}
 
 UTF8Char *DB::ReadingDBTool::DBColUTF8(UTF8Char *sqlstr, const UTF8Char *colName)
 {
@@ -1194,4 +1198,9 @@ UOSInt DB::ReadingDBTool::SplitSQL(UTF8Char **outStrs, UOSInt maxCnt, UTF8Char *
 	{
 		return SplitUnkSQL(outStrs, maxCnt, oriStr);
 	}
+}
+
+Bool DB::ReadingDBTool::CanModify()
+{
+	return false;
 }

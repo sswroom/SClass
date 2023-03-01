@@ -30,7 +30,6 @@ namespace DB
 		void EndTrans(Bool toCommit);
 		Int32 GetLastIdentity32();
 		Int64 GetLastIdentity64();
-		DB::DBConn *GetConn();
 		Bool CreateDatabase(Text::CString databaseName);
 		Bool DeleteDatabase(Text::CString databaseName);
 		Bool CreateSchema(Text::CString schemaName);
@@ -38,6 +37,8 @@ namespace DB
 		Bool DeleteTableData(Text::CString schemaName, Text::CString tableName);
 	
 		Bool KillConnection(Int32 id);
+
+		virtual Bool CanModify();
 	};
 }
 #endif

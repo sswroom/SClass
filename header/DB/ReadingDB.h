@@ -27,9 +27,15 @@ namespace DB
 		virtual void GetLastErrorMsg(Text::StringBuilderUTF8 *str) = 0;
 		virtual void Reconnect() = 0;
 
+		virtual UOSInt GetDatabaseNames(Data::ArrayList<Text::String*> *arr);
+		virtual void ReleaseDatabaseNames(Data::ArrayList<Text::String*> *arr);
+		virtual Bool ChangeDatabase(Text::CString databaseName);
+		virtual Text::String *GetCurrDBName();
+
 		virtual IO::ParserType GetParserType() const;
 
 		virtual Bool IsFullConn(); //false = read only, true = DBConn
+		virtual Bool IsDBTool(); //true = ReadingDBTool
 
 		static Bool IsDBObj(IO::ParsedObject *pobj);
 	};

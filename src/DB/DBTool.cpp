@@ -159,11 +159,6 @@ Int64 DB::DBTool::GetLastIdentity64()
 	}
 }
 
-DB::DBConn *DB::DBTool::GetConn()
-{
-	return (DB::DBConn*)this->db;
-}
-
 Bool DB::DBTool::CreateDatabase(Text::CString databaseName)
 {
 	switch (this->sqlType)
@@ -311,4 +306,9 @@ Bool DB::DBTool::KillConnection(Int32 id)
 		}
 	}
 	return ret;	
+}
+
+Bool DB::DBTool::CanModify()
+{
+	return true;
 }

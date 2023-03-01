@@ -20,12 +20,37 @@ UOSInt DB::ReadingDB::QuerySchemaNames(Data::ArrayList<Text::String*> *names)
 	return 0;
 }
 
+UOSInt DB::ReadingDB::GetDatabaseNames(Data::ArrayList<Text::String*> *arr)
+{
+	return 0;
+}
+
+void DB::ReadingDB::ReleaseDatabaseNames(Data::ArrayList<Text::String*> *arr)
+{
+
+}
+
+Bool DB::ReadingDB::ChangeDatabase(Text::CString databaseName)
+{
+	return false;
+}
+
+Text::String *DB::ReadingDB::GetCurrDBName()
+{
+	return 0;
+}
+
 IO::ParserType DB::ReadingDB::GetParserType() const
 {
 	return IO::ParserType::ReadingDB;
 }
 
 Bool DB::ReadingDB::IsFullConn()
+{
+	return false;
+}
+
+Bool DB::ReadingDB::IsDBTool()
 {
 	return false;
 }

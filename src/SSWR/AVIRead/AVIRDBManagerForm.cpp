@@ -7,6 +7,7 @@
 #include "DB/SQLGenerator.h"
 #include "IO/FileStream.h"
 #include "IO/Path.h"
+#include "IO/StmData/FileData.h"
 #include "Map/BaseMapLayer.h"
 #include "Math/CoordinateSystemManager.h"
 #include "Math/Math.h"
@@ -247,30 +248,37 @@ void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnDatabaseDeleteClicked(void *u
 	SSWR::AVIRead::AVIRDBManagerForm *me = (SSWR::AVIRead::AVIRDBManagerForm*)userObj;
 	if (me->currDB)
 	{
-		Text::String *dbName = me->lbDatabase->GetSelectedItemTextNew();
-		if (dbName)
+		if (me->currDB->IsDBTool() && ((DB::ReadingDBTool*)me->currDB)->CanModify())
 		{
-			Text::StringBuilderUTF8 sb;
-			sb.AppendC(UTF8STRC("Are you sure to delete database "));
-			sb.Append(dbName);
-			sb.AppendC(UTF8STRC("? This process cannot be undo."));
-			if (UI::MessageDialog::ShowYesNoDialog(sb.ToCString(), CSTR("DB Manager"), me))
+			Text::String *dbName = me->lbDatabase->GetSelectedItemTextNew();
+			if (dbName)
 			{
-				if (me->currDB->DeleteDatabase(dbName->ToCString()))
+				Text::StringBuilderUTF8 sb;
+				sb.AppendC(UTF8STRC("Are you sure to delete database "));
+				sb.Append(dbName);
+				sb.AppendC(UTF8STRC("? This process cannot be undo."));
+				if (UI::MessageDialog::ShowYesNoDialog(sb.ToCString(), CSTR("DB Manager"), me))
 				{
-					me->UpdateDatabaseList();
+					if (((DB::DBTool*)me->currDB)->DeleteDatabase(dbName->ToCString()))
+					{
+						me->UpdateDatabaseList();
+					}
+					else
+					{
+						sb.ClearStr();
+						sb.AppendC(UTF8STRC("Error in deleting database "));
+						sb.Append(dbName);
+						sb.AppendC(UTF8STRC(": "));
+						me->currDB->GetLastErrorMsg(&sb);
+						UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("DB Manager"), me);
+					}
 				}
-				else
-				{
-					sb.ClearStr();
-					sb.AppendC(UTF8STRC("Error in deleting database "));
-					sb.Append(dbName);
-					sb.AppendC(UTF8STRC(": "));
-					me->currDB->GetLastErrorMsg(&sb);
-					UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("DB Manager"), me);
-				}
+				dbName->Release();
 			}
-			dbName->Release();
+		}
+		else
+		{
+			UI::MessageDialog::ShowDialog(CSTR("Selected database is read-only"), CSTR("DB Manager"), me);
 		}
 	}
 }
@@ -280,24 +288,31 @@ void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnDatabaseNewClicked(void *user
 	SSWR::AVIRead::AVIRDBManagerForm *me = (SSWR::AVIRead::AVIRDBManagerForm*)userObj;
 	if (me->currDB)
 	{
-		UtilUI::TextInputDialog dlg(0, me->ui, me->core->GetMonitorMgr(), CSTR("DB Manager"), CSTR("Please enter database name to create"));
-		if (dlg.ShowDialog(me))
+		if (me->currDB->IsDBTool() && ((DB::ReadingDBTool*)me->currDB)->CanModify())
 		{
-			Text::StringBuilderUTF8 sb;
-			if (dlg.GetInputString(&sb))
+			UtilUI::TextInputDialog dlg(0, me->ui, me->core->GetMonitorMgr(), CSTR("DB Manager"), CSTR("Please enter database name to create"));
+			if (dlg.ShowDialog(me))
 			{
-				if (me->currDB->CreateDatabase(sb.ToCString()))
+				Text::StringBuilderUTF8 sb;
+				if (dlg.GetInputString(&sb))
 				{
-					me->UpdateDatabaseList();
-				}
-				else
-				{
-					sb.ClearStr();
-					sb.AppendC(UTF8STRC("Error in creating database: "));
-					me->currDB->GetLastErrorMsg(&sb);
-					UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("DB Manager"), me);
+					if (((DB::DBTool*)me->currDB)->CreateDatabase(sb.ToCString()))
+					{
+						me->UpdateDatabaseList();
+					}
+					else
+					{
+						sb.ClearStr();
+						sb.AppendC(UTF8STRC("Error in creating database: "));
+						me->currDB->GetLastErrorMsg(&sb);
+						UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("DB Manager"), me);
+					}
 				}
 			}
+		}
+		else
+		{
+			UI::MessageDialog::ShowDialog(CSTR("Selected database is read-only"), CSTR("DB Manager"), me);
 		}
 	}
 }
@@ -307,33 +322,36 @@ void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnSQLExecClicked(void *userObj)
 	SSWR::AVIRead::AVIRDBManagerForm *me = (SSWR::AVIRead::AVIRDBManagerForm*)userObj;
 	if (me->currDB)
 	{
-		Text::StringBuilderUTF8 sb;
-		me->txtSQL->GetText(&sb);
-		if (sb.GetLength() > 0)
+		if (me->currDB->IsDBTool())
 		{
-			DB::DBReader *r = me->currDB->ExecuteReader(sb.ToCString());
-			if (r)
+			Text::StringBuilderUTF8 sb;
+			me->txtSQL->GetText(&sb);
+			if (sb.GetLength() > 0)
 			{
-				if (r->ColCount() == 0)
+				DB::DBReader *r = ((DB::ReadingDBTool*)me->currDB)->ExecuteReader(sb.ToCString());
+				if (r)
 				{
-					me->lvSQLResult->ClearAll();
-					me->lvSQLResult->ChangeColumnCnt(1);
-					me->lvSQLResult->AddColumn(CSTR("Row Changed"), 100);
-					sb.ClearStr();
-					sb.AppendOSInt(r->GetRowChanged());
-					me->lvSQLResult->AddItem(sb.ToCString(), 0);
+					if (r->ColCount() == 0)
+					{
+						me->lvSQLResult->ClearAll();
+						me->lvSQLResult->ChangeColumnCnt(1);
+						me->lvSQLResult->AddColumn(CSTR("Row Changed"), 100);
+						sb.ClearStr();
+						sb.AppendOSInt(r->GetRowChanged());
+						me->lvSQLResult->AddItem(sb.ToCString(), 0);
+					}
+					else
+					{
+						UpdateResult(r, me->lvSQLResult);
+					}
+					me->currDB->CloseReader(r);
 				}
 				else
 				{
-					UpdateResult(r, me->lvSQLResult);
+					sb.ClearStr();
+					me->currDB->GetLastErrorMsg(&sb);
+					UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("DB Manager"), me);
 				}
-				me->currDB->CloseReader(r);
-			}
-			else
-			{
-				sb.ClearStr();
-				me->currDB->GetLastErrorMsg(&sb);
-				UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("DB Manager"), me);
 			}
 		}
 	}
@@ -361,14 +379,37 @@ void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnSvrConnClicked(void *userObj)
 void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnSvrConnKillClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRDBManagerForm *me = (SSWR::AVIRead::AVIRDBManagerForm*)userObj;
-	UOSInt index = me->lvSvrConn->GetSelectedIndex();
-	if (index != INVALID_INDEX)
+	if (me->currDB->IsDBTool() && ((DB::ReadingDBTool*)me->currDB)->CanModify())
 	{
-		Int32 id = (Int32)(OSInt)me->lvSvrConn->GetItem(index);
-		if (me->currDB->KillConnection(id))
+		UOSInt index = me->lvSvrConn->GetSelectedIndex();
+		if (index != INVALID_INDEX)
 		{
-			me->UpdateSvrConnList();
+			Int32 id = (Int32)(OSInt)me->lvSvrConn->GetItem(index);
+			if (((DB::DBTool*)me->currDB)->KillConnection(id))
+			{
+				me->UpdateSvrConnList();
+			}
 		}
+	}
+}
+
+void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnFileHandler(void *userObj, Text::String **files, UOSInt nFiles)
+{
+	SSWR::AVIRead::AVIRDBManagerForm *me = (SSWR::AVIRead::AVIRDBManagerForm*)userObj;
+	UOSInt i = 0;
+	while (i < nFiles)
+	{
+		IO::StmData::FileData fd(files[i], false);
+		DB::ReadingDB *db = (DB::ReadingDB*)me->core->GetParserList()->ParseFileType(&fd, IO::ParserType::ReadingDB);
+		if (db)
+		{
+			DB::DBManagerCtrl *ctrl = DB::DBManagerCtrl::CreateFromFile(db, files[i], &me->log, me->core->GetSocketFactory(), me->core->GetParserList());
+			me->dbList.Add(ctrl);
+			Text::StringBuilderUTF8 sb;
+			ctrl->GetConnName(&sb);
+			me->lbConn->AddItem(sb.ToCString(), ctrl);
+		}
+		i++;
 	}
 }
 
@@ -644,44 +685,50 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateVariableList()
 {
 	Data::ArrayList<Data::TwinItem<Text::String*, Text::String*>> vars;
 	Data::TwinItem<Text::String*, Text::String*> item(0);
-	UOSInt i = 0;
-	UOSInt j = this->currDB->GetVariables(&vars);
 	this->lvVariable->ClearItems();
-	while (i < j)
+	if (this->currDB->IsDBTool())
 	{
-		item = vars.GetItem(i);
-		this->lvVariable->AddItem(item.key, 0);
-		if (item.value) this->lvVariable->SetSubItem(i, 1, item.value);
-		i++;
+		UOSInt i = 0;
+		UOSInt j = ((DB::ReadingDBTool*)this->currDB)->GetVariables(&vars);
+		while (i < j)
+		{
+			item = vars.GetItem(i);
+			this->lvVariable->AddItem(item.key, 0);
+			if (item.value) this->lvVariable->SetSubItem(i, 1, item.value);
+			i++;
+		}
+		((DB::ReadingDBTool*)this->currDB)->FreeVariables(&vars);
 	}
-	this->currDB->FreeVariables(&vars);
 }
 
 void SSWR::AVIRead::AVIRDBManagerForm::UpdateSvrConnList()
 {
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
-	Data::ArrayList<DB::ReadingDBTool::ConnectionInfo*> conns;
-	DB::ReadingDBTool::ConnectionInfo *conn;
-	UOSInt i = 0;
-	UOSInt j = this->currDB->GetConnectionInfo(&conns);
 	this->lvSvrConn->ClearItems();
-	while (i < j)
+	if (this->currDB->IsDBTool())
 	{
-		conn = conns.GetItem(i);
-		sptr = Text::StrInt32(sbuff, conn->id);
-		this->lvSvrConn->AddItem(CSTRP(sbuff, sptr), (void*)(OSInt)conn->id);
-		if (conn->status) this->lvSvrConn->SetSubItem(i, 1, conn->status);
-		if (conn->user) this->lvSvrConn->SetSubItem(i, 2, conn->user);
-		if (conn->clientHostName) this->lvSvrConn->SetSubItem(i, 3, conn->clientHostName);
-		if (conn->dbName) this->lvSvrConn->SetSubItem(i, 4, conn->dbName);
-		if (conn->cmd) this->lvSvrConn->SetSubItem(i, 5, conn->cmd);
-		sptr = Text::StrInt32(sbuff, conn->timeUsed);
-		this->lvSvrConn->SetSubItem(i, 6, CSTRP(sbuff, sptr));
-		if (conn->sql) this->lvSvrConn->SetSubItem(i, 7, conn->sql);
-		i++;
+		Data::ArrayList<DB::ReadingDBTool::ConnectionInfo*> conns;
+		DB::ReadingDBTool::ConnectionInfo *conn;
+		UOSInt i = 0;
+		UOSInt j = ((DB::ReadingDBTool*)this->currDB)->GetConnectionInfo(&conns);
+		while (i < j)
+		{
+			conn = conns.GetItem(i);
+			sptr = Text::StrInt32(sbuff, conn->id);
+			this->lvSvrConn->AddItem(CSTRP(sbuff, sptr), (void*)(OSInt)conn->id);
+			if (conn->status) this->lvSvrConn->SetSubItem(i, 1, conn->status);
+			if (conn->user) this->lvSvrConn->SetSubItem(i, 2, conn->user);
+			if (conn->clientHostName) this->lvSvrConn->SetSubItem(i, 3, conn->clientHostName);
+			if (conn->dbName) this->lvSvrConn->SetSubItem(i, 4, conn->dbName);
+			if (conn->cmd) this->lvSvrConn->SetSubItem(i, 5, conn->cmd);
+			sptr = Text::StrInt32(sbuff, conn->timeUsed);
+			this->lvSvrConn->SetSubItem(i, 6, CSTRP(sbuff, sptr));
+			if (conn->sql) this->lvSvrConn->SetSubItem(i, 7, conn->sql);
+			i++;
+		}
+		((DB::ReadingDBTool*)this->currDB)->FreeConnectionInfo(&conns);
 	}
-	this->currDB->FreeConnectionInfo(&conns);
 }
 
 Data::Class *SSWR::AVIRead::AVIRDBManagerForm::CreateTableClass(Text::CString schemaName, Text::CString tableName)
@@ -1084,6 +1131,7 @@ SSWR::AVIRead::AVIRDBManagerForm::AVIRDBManagerForm(UI::GUIClientControl *parent
 			this->lbConn->SetSelectedIndex(0);
 		}
 	}
+	this->HandleDropFiles(OnFileHandler, this);
 }
 
 SSWR::AVIRead::AVIRDBManagerForm::~AVIRDBManagerForm()
@@ -1208,7 +1256,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::EventMenuClicked(UInt16 cmdId)
 		}
 		break;
 	case MNU_SCHEMA_NEW:
-		if (this->currDB)
+		if (this->currDB && this->currDB->IsDBTool() && ((DB::ReadingDBTool*)this->currDB)->CanModify())
 		{
 			UtilUI::TextInputDialog dlg(0, this->ui, this->core->GetMonitorMgr(), CSTR("DB Manager"), CSTR("Please enter schema name to create"));
 			if (dlg.ShowDialog(this))
@@ -1216,7 +1264,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::EventMenuClicked(UInt16 cmdId)
 				Text::StringBuilderUTF8 sb;
 				if (dlg.GetInputString(&sb))
 				{
-					if (this->currDB->CreateSchema(sb.ToCString()))
+					if (((DB::DBTool*)this->currDB)->CreateSchema(sb.ToCString()))
 					{
 						this->UpdateSchemaList();
 					}
@@ -1232,7 +1280,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::EventMenuClicked(UInt16 cmdId)
 		}
 		break;
 	case MNU_SCHEMA_DELETE:
-		if (this->currDB)
+		if (this->currDB && this->currDB->IsDBTool() && ((DB::ReadingDBTool*)this->currDB)->CanModify())
 		{
 			Text::String *schemaName = this->lbSchema->GetSelectedItemTextNew();
 			if (schemaName)
@@ -1245,7 +1293,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::EventMenuClicked(UInt16 cmdId)
 					sb.AppendC(UTF8STRC("? This process cannot be undo."));
 					if (UI::MessageDialog::ShowYesNoDialog(sb.ToCString(), CSTR("DB Manager"), this))
 					{
-						if (this->currDB->DeleteSchema(schemaName->ToCString()))
+						if (((DB::DBTool*)this->currDB)->DeleteSchema(schemaName->ToCString()))
 						{
 							this->UpdateSchemaList();
 						}
@@ -1334,7 +1382,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::EventMenuClicked(UInt16 cmdId)
 		{
 			Text::String *schemaName = this->lbSchema->GetSelectedItemTextNew();
 			Text::String *tableName = this->lbTable->GetSelectedItemTextNew();
-			SSWR::AVIRead::AVIRDBExportForm dlg(0, ui, this->core, this->currDB->GetConn(), STR_CSTR(schemaName), tableName->ToCString());
+			SSWR::AVIRead::AVIRDBExportForm dlg(0, ui, this->core, this->currDB, STR_CSTR(schemaName), tableName->ToCString());
 			dlg.ShowDialog(this);
 			tableName->Release();
 			SDEL_STRING(schemaName);
@@ -1347,7 +1395,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::EventMenuClicked(UInt16 cmdId)
 		{
 			Text::String *schemaName = this->lbSchema->GetSelectedItemTextNew();
 			Text::String *tableName = this->lbTable->GetSelectedItemTextNew();
-			SSWR::AVIRead::AVIRDBCheckChgForm dlg(0, ui, this->core, this->currDB->GetConn(), STR_CSTR(schemaName), tableName->ToCString());
+			SSWR::AVIRead::AVIRDBCheckChgForm dlg(0, ui, this->core, this->currDB, STR_CSTR(schemaName), tableName->ToCString());
 			dlg.ShowDialog(this);
 			tableName->Release();
 			SDEL_STRING(schemaName);

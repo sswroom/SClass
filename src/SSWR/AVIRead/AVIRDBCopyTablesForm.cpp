@@ -132,6 +132,14 @@ void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnCopyClicked(void *userObj)
 		UI::MessageDialog::ShowDialog(CSTR("Error in connecting destination DB"), CSTR("Copy Tables"), me);
 		return;
 	}
+	DB::ReadingDB *destConn = destDB->GetDB();
+	DB::DBTool *destDBTool;
+	if (!destConn->IsDBTool() || !((DB::ReadingDBTool*)destConn)->CanModify())
+	{
+		UI::MessageDialog::ShowDialog(CSTR("Destination DB is read-onlyl"), CSTR("Copy Tables"), me);
+		return;
+	}
+	destDBTool = (DB::DBTool*)destConn;
 	UTF8Char destSchema[512];
 	UTF8Char *destSchemaEnd = me->cboDestSchema->GetSelectedItemText(destSchema);
 	if (destSchemaEnd == 0)
@@ -141,7 +149,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnCopyClicked(void *userObj)
 	}
 	UOSInt destTableType = me->cboDestTableType->GetSelectedIndex();
 	Bool copyData = me->chkDestCopyData->IsChecked();
-	DB::SQLBuilder sql(destDB->GetDB());
+	DB::SQLBuilder sql(destDBTool);
 	Text::StringBuilderUTF8 sb;
 	DB::TableDef *tabDef;
 	Text::String *tableName;
@@ -168,10 +176,10 @@ void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnCopyClicked(void *userObj)
 					me->lvData->SetSubItem(i, 1, CSTR("Error in generating create command"));
 					succ = false;
 				}
-				else if (destDB->GetDB()->ExecuteNonQuery(sql.ToCString()) <= -2)
+				else if (destDBTool->ExecuteNonQuery(sql.ToCString()) <= -2)
 				{
 					sb.ClearStr();
-					destDB->GetDB()->GetLastErrorMsg(&sb);
+					destDBTool->GetLastErrorMsg(&sb);
 					me->lvData->SetSubItem(i, 1, sb.ToCString());
 					succ = false;
 				}
@@ -183,7 +191,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnCopyClicked(void *userObj)
 		}
 		else if (succ && destTableType == 1)
 		{
-			succ = destDB->GetDB()->DeleteTableData(CSTRP(destSchema, destSchemaEnd), tableName->ToCString());
+			succ = destDBTool->DeleteTableData(CSTRP(destSchema, destSchemaEnd), tableName->ToCString());
 			if (!succ)
 			{
 				me->lvData->SetSubItem(i, 1, CSTR("Error in deleting table data"));
@@ -208,13 +216,13 @@ void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnCopyClicked(void *userObj)
 					UOSInt k = sql.ToCString().IndexOf(UTF8STRC(" values ("));
 					if (k == INVALID_INDEX)
 					{
-						if (destDB->GetDB()->ExecuteNonQuery(sql.ToCString()) != 1)
+						if (destDBTool->ExecuteNonQuery(sql.ToCString()) != 1)
 						{
 #if defined(VERBOSE)
 							printf("DBCopyTables: Error SQL: %s\r\n", sql.ToString());
 #endif
 							sb.ClearStr();
-							destDB->GetDB()->GetLastErrorMsg(&sb);
+							destDBTool->GetLastErrorMsg(&sb);
 							me->lvData->SetSubItem(i, 1, sb.ToCString());
 							succ = false;
 							break;
@@ -237,7 +245,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnCopyClicked(void *userObj)
 
 						if (nInsert >= 250)
 						{
-							if (destDB->GetDB()->ExecuteNonQuery(sbInsert.ToCString()) >= 0)
+							if (destDBTool->ExecuteNonQuery(sbInsert.ToCString()) >= 0)
 							{
 								rowCopied += nInsert;
 								nInsert = 0;
@@ -246,7 +254,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnCopyClicked(void *userObj)
 							else
 							{
 								sb.ClearStr();
-								destDB->GetDB()->GetLastErrorMsg(&sb);
+								destDBTool->GetLastErrorMsg(&sb);
 								me->lvData->SetSubItem(i, 1, sb.ToCString());
 								succ = false;
 								break;
@@ -257,7 +265,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnCopyClicked(void *userObj)
 				me->dataConn->CloseReader(r);
 				if (succ && nInsert > 0)
 				{
-					if (destDB->GetDB()->ExecuteNonQuery(sbInsert.ToCString()) >= 0)
+					if (destDBTool->ExecuteNonQuery(sbInsert.ToCString()) >= 0)
 					{
 						rowCopied += nInsert;
 						nInsert = 0;
@@ -266,7 +274,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnCopyClicked(void *userObj)
 					else
 					{
 						sb.ClearStr();
-						destDB->GetDB()->GetLastErrorMsg(&sb);
+						destDBTool->GetLastErrorMsg(&sb);
 						me->lvData->SetSubItem(i, 1, sb.ToCString());
 						succ = false;
 					}

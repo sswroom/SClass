@@ -9,7 +9,7 @@ namespace Map
 	class DBMapLayer : public Map::MapDrawLayer
 	{
 	private:
-		DB::DBTool *db;
+		DB::ReadingDB *db;
 		Text::String *schema;
 		Text::String *table;
 		Math::Coord2DDbl min;
@@ -56,7 +56,7 @@ namespace Map
 
 		virtual ObjectClass GetObjectClass();
 
-		Bool SetDatabase(DB::DBTool *db, Text::CString schemaName, Text::CString tableName);
+		Bool SetDatabase(DB::ReadingDB *db, Text::CString schemaName, Text::CString tableName);
 	};
 }
 #endif

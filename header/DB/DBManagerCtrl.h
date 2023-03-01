@@ -21,7 +21,7 @@ namespace DB
 		Net::SocketFactory *sockf;
 		Parser::ParserList *parsers;
 		Text::String *connStr;
-		DB::DBTool *db;
+		DB::ReadingDB *db;
 		ConnStatus status;
 
 		DBManagerCtrl(IO::LogTool *log, Net::SocketFactory *sockf, Parser::ParserList *parsers);
@@ -32,12 +32,13 @@ namespace DB
 		void Disconnect();
 		ConnStatus GetStatus();
 		Text::String *GetConnStr();
-		DB::DBTool *GetDB();
+		DB::ReadingDB *GetDB();
 		void GetConnName(Text::StringBuilderUTF8 *sb);
 
 		static DBManagerCtrl *Create(Text::String *connStr, IO::LogTool *log, Net::SocketFactory *sockf, Parser::ParserList *parsers);
 		static DBManagerCtrl *Create(Text::CString connStr, IO::LogTool *log, Net::SocketFactory *sockf, Parser::ParserList *parsers);
 		static DBManagerCtrl *Create(DB::DBTool *db, IO::LogTool *log, Net::SocketFactory *sockf, Parser::ParserList *parsers);
+		static DBManagerCtrl *CreateFromFile(DB::ReadingDB *db, Text::String *filePath, IO::LogTool *log, Net::SocketFactory *sockf, Parser::ParserList *parsers);
 	};
 }
 #endif

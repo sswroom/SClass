@@ -78,6 +78,8 @@ namespace DB
 		DB::DBConn *GetDBConn();
 		Int8 GetTzQhr();
 		virtual void Reconnect();
+
+		virtual Bool IsDBTool();
 		
 		UTF8Char *DBColUTF8(UTF8Char *sqlstr, const UTF8Char *colName);
 		UTF8Char *DBColW(UTF8Char *sqlstr, const WChar *colName);
@@ -99,10 +101,10 @@ namespace DB
 		virtual UOSInt QuerySchemaNames(Data::ArrayList<Text::String *> *arr);
 		virtual DB::TableDef *GetTableDef(Text::CString schemaName, Text::CString tableName);
 
-		UOSInt GetDatabaseNames(Data::ArrayList<Text::String*> *arr);
-		void ReleaseDatabaseNames(Data::ArrayList<Text::String*> *arr);
-		Bool ChangeDatabase(Text::CString databaseName);
-		Text::String *GetCurrDBName();
+		virtual UOSInt GetDatabaseNames(Data::ArrayList<Text::String*> *arr);
+		virtual void ReleaseDatabaseNames(Data::ArrayList<Text::String*> *arr);
+		virtual Bool ChangeDatabase(Text::CString databaseName);
+		virtual Text::String *GetCurrDBName();
 
 		UOSInt GetVariables(Data::ArrayList<Data::TwinItem<Text::String*, Text::String*>> *vars);
 		void FreeVariables(Data::ArrayList<Data::TwinItem<Text::String*, Text::String*>> *vars);
@@ -111,6 +113,8 @@ namespace DB
 		void FreeConnectionInfo(Data::ArrayList<ConnectionInfo *> *conns);
 
 		UOSInt SplitSQL(UTF8Char **outStrs, UOSInt maxCnt, UTF8Char *oriStr);
+
+		virtual Bool CanModify();
 	};
 }
 #endif

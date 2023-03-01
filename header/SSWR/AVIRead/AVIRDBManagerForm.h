@@ -88,7 +88,7 @@ namespace SSWR
 			Data::ArrayList<DB::DBManagerCtrl*> dbList;
 			Net::SSLEngine *ssl;
 			IO::LogTool log;
-			DB::DBTool *currDB;
+			DB::ReadingDB *currDB;
 			Media::ColorManagerSess *colorSess;
 			Map::MapEnv *mapEnv;
 			Map::DBMapLayer *dbLayer;
@@ -113,6 +113,7 @@ namespace SSWR
 			static void __stdcall OnVariableClicked(void *userObj);
 			static void __stdcall OnSvrConnClicked(void *userObj);
 			static void __stdcall OnSvrConnKillClicked(void *userObj);
+			static void __stdcall OnFileHandler(void *userObj, Text::String **files, UOSInt nFiles);
 
 			void UpdateDatabaseList();
 			void UpdateSchemaList();

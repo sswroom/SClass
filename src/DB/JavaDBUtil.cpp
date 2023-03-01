@@ -236,7 +236,7 @@ DB::DBTool *DB::JavaDBUtil::OpenJDBC(Text::String *url, Text::String *username, 
 	return 0;
 }
 
-Bool DB::JavaDBUtil::ToJavaEntity(Text::StringBuilderUTF8 *sb, Text::String *schemaName, Text::String *tableName, Text::String *databaseName, DB::ReadingDBTool *db)
+Bool DB::JavaDBUtil::ToJavaEntity(Text::StringBuilderUTF8 *sb, Text::String *schemaName, Text::String *tableName, Text::String *databaseName, DB::ReadingDB *db)
 {
 	Data::StringMap<Bool> importMap;
 	Text::StringBuilderUTF8 sbCode;

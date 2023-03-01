@@ -359,7 +359,7 @@ Map::MapDrawLayer::ObjectClass Map::DBMapLayer::GetObjectClass()
 	return OC_DB_MAP_LAYER;
 }
 
-Bool Map::DBMapLayer::SetDatabase(DB::DBTool *db, Text::CString schemaName, Text::CString tableName)
+Bool Map::DBMapLayer::SetDatabase(DB::ReadingDB *db, Text::CString schemaName, Text::CString tableName)
 {
 	this->ClearDB();
 	this->db = db;
