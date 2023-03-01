@@ -3,12 +3,12 @@
 #include "Data/ArrayListStrUTF8.h"
 #include "Data/FastMap.h"
 #include "DB/SharedReadingDB.h"
-#include "Map/IMapDrawLayer.h"
+#include "Map/MapDrawLayer.h"
 #include "Text/String.h"
 
 namespace Map
 {
-	class FileGDBLayer : public Map::IMapDrawLayer
+	class FileGDBLayer : public Map::MapDrawLayer
 	{
 	private:
 		DB::SharedReadingDB *conn;

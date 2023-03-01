@@ -256,9 +256,9 @@ const Map::RegionalMapSource::MapInfo *Map::RegionalMapSource::GetMapInfos(UOSIn
 	return maps;
 }
 
-Map::IMapDrawLayer *Map::RegionalMapSource::OpenMap(const MapInfo *map, Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, Parser::ParserList *parsers, Net::WebBrowser *browser)
+Map::MapDrawLayer *Map::RegionalMapSource::OpenMap(const MapInfo *map, Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, Parser::ParserList *parsers, Net::WebBrowser *browser)
 {
-	Map::IMapDrawLayer *layer;
+	Map::MapDrawLayer *layer;
 	switch (map->mapType)
 	{
 	case MapType::TMS:
@@ -289,7 +289,7 @@ Map::IMapDrawLayer *Map::RegionalMapSource::OpenMap(const MapInfo *map, Net::Soc
 			{
 				if (pt == IO::ParserType::MapLayer)
 				{
-					return (Map::IMapDrawLayer*)pobj;
+					return (Map::MapDrawLayer*)pobj;
 				}
 				DEL_CLASS(pobj);
 			}

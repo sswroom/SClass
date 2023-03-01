@@ -1,6 +1,6 @@
 #ifndef _SM_MAP_GMLXML
 #define _SM_MAP_GMLXML
-#include "Map/IMapDrawLayer.h"
+#include "Map/MapDrawLayer.h"
 #include "Math/Geometry/Vector2D.h"
 #include "Text/XMLReader.h"
 
@@ -15,7 +15,7 @@ namespace Map
 			UInt32 srid;
 		};
 	public:
-		static Map::IMapDrawLayer *ParseFeatureCollection(Text::XMLReader *reader, Text::CString fileName);
+		static Map::MapDrawLayer *ParseFeatureCollection(Text::XMLReader *reader, Text::CString fileName);
 	private:
 		static Math::Geometry::Vector2D *ParseGeometry(Text::XMLReader *reader, ParseEnv *env);
 	};

@@ -266,7 +266,7 @@ void Parser::FileParser::MEVParser::ReadItems(IO::StreamData *fd, Map::MapEnv *e
 				this->parsers->SetCodePage(ReadUInt32(&buff[12]));
 			}
 			Text::String *s = Text::String::NewNotNull(wbuff);
-			Map::IMapDrawLayer *layer = this->mapMgr->LoadLayer(s->ToCString(), this->parsers, env);
+			Map::MapDrawLayer *layer = this->mapMgr->LoadLayer(s->ToCString(), this->parsers, env);
 			s->Release();
 			if (layer)
 			{

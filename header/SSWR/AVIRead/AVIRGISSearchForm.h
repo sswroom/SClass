@@ -2,7 +2,7 @@
 #define _SM_SSWR_AVIREAD_AVIRGISSEARCHFORM
 #include "Data/ArrayListInt32.h"
 #include "Data/ArrayListStrUTF8.h"
-#include "Map/IMapDrawLayer.h"
+#include "Map/MapDrawLayer.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "SSWR/AVIRead/IMapNavigator.h"
 #include "Text/SearchIndexer.h"
@@ -22,7 +22,7 @@ namespace SSWR
 
 			SSWR::AVIRead::AVIRCore *core;
 			IMapNavigator *navi;
-			Map::IMapDrawLayer *layer;
+			Map::MapDrawLayer *layer;
 			Text::SearchIndexer *searching;
 			Data::ArrayListString *dispList;
 			Data::ArrayListInt64 *objIds;
@@ -37,7 +37,7 @@ namespace SSWR
 			void UpdateResults();
 
 		public:
-			AVIRGISSearchForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, IMapNavigator *navi, Map::IMapDrawLayer *layer, Text::SearchIndexer *searching, UOSInt strIndex, Int32 flags);
+			AVIRGISSearchForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, IMapNavigator *navi, Map::MapDrawLayer *layer, Text::SearchIndexer *searching, UOSInt strIndex, Int32 flags);
 			virtual ~AVIRGISSearchForm();
 
 			virtual void OnMonitorChanged();

@@ -3,7 +3,7 @@
 #include "Math/Geometry/Point.h"
 #include "SSWR/OrganMgr/OrganTimeAdjLayer.h"
 
-SSWR::OrganMgr::OrganTimeAdjLayer::OrganTimeAdjLayer(Map::GPSTrack *gpsTrk, Data::ArrayList<UserFileInfo *> *userFileList) : Map::IMapDrawLayer(CSTR("ImageLayer"), 0, CSTR_NULL)
+SSWR::OrganMgr::OrganTimeAdjLayer::OrganTimeAdjLayer(Map::GPSTrack *gpsTrk, Data::ArrayList<UserFileInfo *> *userFileList) : Map::MapDrawLayer(CSTR("ImageLayer"), 0, CSTR_NULL)
 {
 	this->gpsTrk = gpsTrk;
 	this->userFileList = userFileList;
@@ -131,9 +131,9 @@ Math::Geometry::Vector2D *SSWR::OrganMgr::OrganTimeAdjLayer::GetNewVectorById(Ma
 	return pt;
 }
 
-Map::IMapDrawLayer::ObjectClass SSWR::OrganMgr::OrganTimeAdjLayer::GetObjectClass()
+Map::MapDrawLayer::ObjectClass SSWR::OrganMgr::OrganTimeAdjLayer::GetObjectClass()
 {
-	return Map::IMapDrawLayer::OC_OTHER;
+	return Map::MapDrawLayer::OC_OTHER;
 }
 
 void SSWR::OrganMgr::OrganTimeAdjLayer::SetTimeAdj(Text::String *camera, Int32 timeAdj)

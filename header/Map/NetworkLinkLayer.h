@@ -1,6 +1,6 @@
 #ifndef _SM_MAP_NETWORKLINKLAYER
 #define _SM_MAP_NETWORKLINKLAYER
-#include "Map/IMapDrawLayer.h"
+#include "Map/MapDrawLayer.h"
 #include "Net/WebBrowser.h"
 #include "Parser/ParserList.h"
 #include "Sync/RWMutex.h"
@@ -8,7 +8,7 @@
 
 namespace Map
 {
-	class NetworkLinkLayer : public Map::IMapDrawLayer
+	class NetworkLinkLayer : public Map::MapDrawLayer
 	{
 	public:
 		enum class RefreshMode
@@ -25,7 +25,7 @@ namespace Map
 			Text::String *viewFormat;
 			RefreshMode mode;
 			Int32 reloadInterval;
-			Map::IMapDrawLayer *innerLayer;
+			Map::MapDrawLayer *innerLayer;
 			Map::DrawLayerType innerLayerType;
 			Data::Timestamp lastUpdated;
 			GetObjectSess *sess;

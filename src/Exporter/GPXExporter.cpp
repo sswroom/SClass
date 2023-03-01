@@ -28,8 +28,8 @@ IO::FileExporter::SupportType Exporter::GPXExporter::IsObjectSupported(IO::Parse
 	{
 		return IO::FileExporter::SupportType::NotSupported;
 	}
-	Map::IMapDrawLayer *layer = (Map::IMapDrawLayer *)pobj;
-	if (layer->GetObjectClass() != Map::IMapDrawLayer::OC_GPS_TRACK)
+	Map::MapDrawLayer *layer = (Map::MapDrawLayer *)pobj;
+	if (layer->GetObjectClass() != Map::MapDrawLayer::OC_GPS_TRACK)
 	{
 		return IO::FileExporter::SupportType::NotSupported;
 	}
@@ -58,8 +58,8 @@ Bool Exporter::GPXExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 	{
 		return false;
 	}
-	Map::IMapDrawLayer *layer = (Map::IMapDrawLayer *)pobj;
-	if (layer->GetObjectClass() != Map::IMapDrawLayer::OC_GPS_TRACK)
+	Map::MapDrawLayer *layer = (Map::MapDrawLayer *)pobj;
+	if (layer->GetObjectClass() != Map::MapDrawLayer::OC_GPS_TRACK)
 		return false;
 	Map::GPSTrack *track = (Map::GPSTrack*)layer;
 	UTF8Char sbuff[256];

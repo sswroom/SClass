@@ -1,7 +1,7 @@
 #ifndef _SM_MAP_HKROADNETWORK2
 #define _SM_MAP_HKROADNETWORK2
 #include "DB/ReadingDB.h"
-#include "Map/IMapDrawLayer.h"
+#include "Map/MapDrawLayer.h"
 #include "Math/CoordinateSystem.h"
 #include "Net/SSLEngine.h"
 #include "Text/CString.h"
@@ -25,7 +25,7 @@ namespace Map
 		DB::ReadingDB *GetDB();
 		Math::CoordinateSystem *CreateCoordinateSystem();
 		Map::HKSpeedLimit *CreateSpeedLimit();
-		Map::IMapDrawLayer *CreateTonnesSignLayer();
+		Map::MapDrawLayer *CreateTonnesSignLayer();
 		Map::HKTrafficLayer2 *CreateTrafficLayer(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact);
 
 		static Text::CString GetDownloadURL();

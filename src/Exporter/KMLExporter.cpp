@@ -3,7 +3,7 @@
 #include "Exporter/KMLExporter.h"
 #include "IO/BufferedOutputStream.h"
 #include "IO/StreamWriter.h"
-#include "Map/IMapDrawLayer.h"
+#include "Map/MapDrawLayer.h"
 #include "Math/CoordinateSystemManager.h"
 #include "Math/Math.h"
 #include "Math/ProjectedCoordinateSystem.h"
@@ -37,7 +37,7 @@ IO::FileExporter::SupportType Exporter::KMLExporter::IsObjectSupported(IO::Parse
 	{
 		return IO::FileExporter::SupportType::NotSupported;
 	}
-	Map::IMapDrawLayer *layer = (Map::IMapDrawLayer *)pobj;
+	Map::MapDrawLayer *layer = (Map::MapDrawLayer *)pobj;
 	Map::DrawLayerType layerType = layer->GetLayerType();
 	if (layerType == Map::DRAW_LAYER_POINT)
 	{
@@ -59,7 +59,7 @@ IO::FileExporter::SupportType Exporter::KMLExporter::IsObjectSupported(IO::Parse
 	{
 		return IO::FileExporter::SupportType::NormalStream;
 	}
-	else if (layerType == Map::DRAW_LAYER_IMAGE && layer->GetObjectClass() != Map::IMapDrawLayer::OC_TILE_MAP_LAYER)
+	else if (layerType == Map::DRAW_LAYER_IMAGE && layer->GetObjectClass() != Map::MapDrawLayer::OC_TILE_MAP_LAYER)
 	{
 		return IO::FileExporter::SupportType::NormalStream;
 	}
@@ -97,7 +97,7 @@ Bool Exporter::KMLExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 	UTF8Char sbuff[256];
 	UTF8Char sbuff2[512];
 	UTF8Char *sptr;
-	Map::IMapDrawLayer *layer = (Map::IMapDrawLayer *)pobj;
+	Map::MapDrawLayer *layer = (Map::MapDrawLayer *)pobj;
 	UOSInt nameCol = layer->GetNameCol();
 
 	UOSInt i;

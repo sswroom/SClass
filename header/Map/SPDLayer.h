@@ -2,12 +2,12 @@
 #define _SM_MAP_SPDLAYER
 #include "Data/ArrayList.h"
 #include "Data/ArrayListInt32.h"
-#include "Map/IMapDrawLayer.h"
+#include "Map/MapDrawLayer.h"
 #include "Sync/Mutex.h"
 
 namespace Map
 {
-	class SPDLayer : public IMapDrawLayer
+	class SPDLayer : public MapDrawLayer
 	{
 	private:
 		typedef struct

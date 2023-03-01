@@ -857,7 +857,7 @@ SSWR::AVIRead::AVIRDBManagerForm::AVIRDBManagerForm(UI::GUIClientControl *parent
 	this->ssl = Net::SSLEngineFactory::Create(core->GetSocketFactory(), true);
 	this->currDB = 0;
 	NEW_CLASS(this->mapEnv, Map::MapEnv(CSTR("DB"), 0xffc0c0ff, Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84)));
-	Map::IMapDrawLayer *layer = Map::BaseMapLayer::CreateLayer(Map::BaseMapLayer::BLT_OSM_TILE, this->core->GetSocketFactory(), this->ssl, this->core->GetParserList());
+	Map::MapDrawLayer *layer = Map::BaseMapLayer::CreateLayer(Map::BaseMapLayer::BLT_OSM_TILE, this->core->GetSocketFactory(), this->ssl, this->core->GetParserList());
 	this->mapEnv->AddLayer(0, layer, true);
 	NEW_CLASS(this->dbLayer, Map::DBMapLayer(CSTR("Database")));
 	UOSInt i = this->mapEnv->AddLayer(0, this->dbLayer, true);

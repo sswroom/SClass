@@ -2097,9 +2097,6 @@ Map/HKTrafficLayer2.h: ../../src/Map/HKTrafficLayer2.cpp
 Map/IAssistedReverseGeocoder.h:
 Map/ILocationService.h: ../../src/Map/ILocationService.cpp
 @ILocationService.o
-Map/IMapDrawLayer.h: ../../src/Map/IMapDrawLayer.cpp
-@IMapDrawLayer.o
-Map/IMapSearchLayer.h:
 Map/IReverseGeocoder.h:
 Map/KMLXML.h: ../../src/Map/KMLXML.cpp
 @KMLXML.o
@@ -2112,6 +2109,8 @@ Map/MapConfig2.h: ../../src/Map/MapConfig2.cpp
 Map/MapConfig2TGen.h: ../../src/Map/MapConfig2TGen.cpp
 @MapConfig2TGen.o
 Map/MapConfigBase.h:
+Map/MapDrawLayer.h: ../../src/Map/MapDrawLayer.cpp
+@MapDrawLayer.o
 Map/MapEnv.h: ../../src/Map/MapEnv.cpp
 @MapEnv.o
 Map/MapLayerCollection.h: ../../src/Map/MapLayerCollection.cpp
@@ -2127,6 +2126,7 @@ Map/MapScheduler.h: ../../src/Map/MapScheduler.cpp
 @MapScheduler.o
 Map/MapSearch.h: ../../src/Map/MapSearch.cpp
 @MapSearch.o
+Map/MapSearchLayer.h:
 Map/MapSearchManager.h: ../../src/Map/MapSearchManager.cpp
 @MapSearchManager.o
 Map/MapServerHandler.h: ../../src/Map/MapServerHandler.cpp
@@ -4889,7 +4889,7 @@ HKTDVehRestrict.o: ../../src/Map/HKTDVehRestrict.cpp
 HKTrafficLayer.o: ../../src/Map/HKTrafficLayer.cpp
 HKTrafficLayer2.o: ../../src/Map/HKTrafficLayer2.cpp
 ILocationService.o: ../../src/Map/ILocationService.cpp
-IMapDrawLayer.o: ../../src/Map/IMapDrawLayer.cpp
+MapDrawLayer.o: ../../src/Map/MapDrawLayer.cpp
 KMLXML.o: ../../src/Map/KMLXML.cpp
 LayerTools.o: ../../src/Map/LayerTools.cpp
 LeveledMapView.o: ../../src/Map/LeveledMapView.cpp

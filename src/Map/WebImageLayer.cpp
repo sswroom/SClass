@@ -227,7 +227,7 @@ UInt32 __stdcall Map::WebImageLayer::LoadThread(void *userObj)
 	return 0;
 }
 
-Map::WebImageLayer::WebImageLayer(Net::WebBrowser *browser, Parser::ParserList *parsers, Text::CString sourceName, Math::CoordinateSystem *csys, Text::CString layerName) : Map::IMapDrawLayer(sourceName, 0, layerName)
+Map::WebImageLayer::WebImageLayer(Net::WebBrowser *browser, Parser::ParserList *parsers, Text::CString sourceName, Math::CoordinateSystem *csys, Text::CString layerName) : Map::MapDrawLayer(sourceName, 0, layerName)
 {
 	this->browser = browser;
 	this->parsers = parsers;
@@ -592,9 +592,9 @@ Math::Geometry::Vector2D *Map::WebImageLayer::GetNewVectorById(GetObjectSess *se
 	}
 }
 
-Map::IMapDrawLayer::ObjectClass Map::WebImageLayer::GetObjectClass()
+Map::MapDrawLayer::ObjectClass Map::WebImageLayer::GetObjectClass()
 {
-	return Map::IMapDrawLayer::OC_WEB_IMAGE_LAYER;
+	return Map::MapDrawLayer::OC_WEB_IMAGE_LAYER;
 }
 
 void Map::WebImageLayer::AddUpdatedHandler(UpdatedHandler hdlr, void *obj)

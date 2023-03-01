@@ -6,7 +6,7 @@
 #include "DB/ColDef.h"
 #include "IO/BufferedInputStream.h"
 #include "IO/FileStream.h"
-#include "Map/IMapDrawLayer.h"
+#include "Map/MapDrawLayer.h"
 #include "Map/SPDLayer.h"
 #include "Math/CoordinateSystemManager.h"
 #include "Math/Math.h"
@@ -19,7 +19,7 @@
 #include "Text/MyString.h"
 #include "Text/MyStringW.h"
 
-Map::SPDLayer::SPDLayer(Text::CString layerName) : Map::IMapDrawLayer(layerName, 0, CSTR_NULL)
+Map::SPDLayer::SPDLayer(Text::CString layerName) : Map::MapDrawLayer(layerName, 0, CSTR_NULL)
 {
 	UTF8Char fname[256];
 	UTF8Char *sptr;
@@ -608,7 +608,7 @@ Math::Geometry::Vector2D *Map::SPDLayer::GetNewVectorById(Map::GetObjectSess *se
 	return ptColl;
 }
 
-Map::IMapDrawLayer::ObjectClass Map::SPDLayer::GetObjectClass()
+Map::MapDrawLayer::ObjectClass Map::SPDLayer::GetObjectClass()
 {
-	return Map::IMapDrawLayer::OC_SPD_LAYER;
+	return Map::MapDrawLayer::OC_SPD_LAYER;
 }

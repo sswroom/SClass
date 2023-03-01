@@ -227,7 +227,7 @@ Bool Map::ShortestPathFinder::SearchShortestPath(Data::ArrayList<Double> *pointL
 	}
 }
 
-Map::ShortestPathFinder::ShortestPathFinder(Map::IMapDrawLayer *layer, Bool toRelease, CoordinateUnit cu, OSInt nameCol, OSInt dirCol)
+Map::ShortestPathFinder::ShortestPathFinder(Map::MapDrawLayer *layer, Bool toRelease, CoordinateUnit cu, OSInt nameCol, OSInt dirCol)
 {
 	this->layer = layer;
 	this->toRelease = toRelease;
@@ -393,10 +393,10 @@ Math::Polyline *Map::ShortestPathFinder::GetPath(Double fromX, Double fromY, Dou
 	OSInt fromCnt;
 	OSInt toCnt;
 	UOSInt nPoints;
-	Data::ArrayList<Map::IMapDrawLayer::ObjectInfo *> fromObjs;
-	Data::ArrayList<Map::IMapDrawLayer::ObjectInfo *> toObjs;
-	Map::IMapDrawLayer::ObjectInfo *fromObj;
-	Map::IMapDrawLayer::ObjectInfo *toObj;
+	Data::ArrayList<Map::MapDrawLayer::ObjectInfo *> fromObjs;
+	Data::ArrayList<Map::MapDrawLayer::ObjectInfo *> toObjs;
+	Map::MapDrawLayer::ObjectInfo *fromObj;
+	Map::MapDrawLayer::ObjectInfo *toObj;
 	void *sess;
 	sess = this->layer->BeginGetObject();
 	if (this->cu == Map::ShortestPathFinder::CU_METER)

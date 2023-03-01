@@ -9,7 +9,7 @@
 #include "Math/Math.h"
 #include "Math/Geometry/Point.h"
 #include "Map/CIPLayer2.h"
-#include "Map/IMapDrawLayer.h"
+#include "Map/MapDrawLayer.h"
 #include "Map/ScaledMapView.h"
 #include "Map/SPDLayer.h"
 #include "Map/VectorLayer.h"
@@ -18,7 +18,7 @@
 #include "Text/MyStringFloat.h"
 #include "Text/MyStringW.h"
 
-OSInt __stdcall Map::IMapDrawLayer::ObjectCompare(void *obj1, void *obj2)
+OSInt __stdcall Map::MapDrawLayer::ObjectCompare(void *obj1, void *obj2)
 {
 	ObjectInfo *objInfo1 = (ObjectInfo*)obj1;
 	ObjectInfo *objInfo2 = (ObjectInfo*)obj2;
@@ -44,7 +44,7 @@ OSInt __stdcall Map::IMapDrawLayer::ObjectCompare(void *obj1, void *obj2)
 	}
 }
 
-Map::IMapDrawLayer::IMapDrawLayer(Text::String *sourceName, UOSInt nameCol, Text::String *layerName) : DB::ReadingDB(sourceName)//IO::ParsedObject(sourceName)
+Map::MapDrawLayer::MapDrawLayer(Text::String *sourceName, UOSInt nameCol, Text::String *layerName) : DB::ReadingDB(sourceName)//IO::ParsedObject(sourceName)
 {
 	this->nameCol = nameCol;
 	this->layerName = SCOPY_STRING(layerName);
@@ -59,7 +59,7 @@ Map::IMapDrawLayer::IMapDrawLayer(Text::String *sourceName, UOSInt nameCol, Text
 	this->flags = 0;
 }
 
-Map::IMapDrawLayer::IMapDrawLayer(Text::CString sourceName, UOSInt nameCol, Text::CString layerName) : DB::ReadingDB(sourceName)//IO::ParsedObject(sourceName)
+Map::MapDrawLayer::MapDrawLayer(Text::CString sourceName, UOSInt nameCol, Text::CString layerName) : DB::ReadingDB(sourceName)//IO::ParsedObject(sourceName)
 {
 	this->nameCol = nameCol;
 	this->layerName = Text::String::New(layerName.v, layerName.leng);
@@ -74,32 +74,32 @@ Map::IMapDrawLayer::IMapDrawLayer(Text::CString sourceName, UOSInt nameCol, Text
 	this->flags = 0;
 }
 
-Map::IMapDrawLayer::~IMapDrawLayer()
+Map::MapDrawLayer::~MapDrawLayer()
 {
 	SDEL_CLASS(this->csys);
 	SDEL_CLASS(this->iconImg);
 	SDEL_STRING(this->layerName);
 }
 
-void Map::IMapDrawLayer::SetCurrScale(Double scale)
+void Map::MapDrawLayer::SetCurrScale(Double scale)
 {
 }
 
-void Map::IMapDrawLayer::SetCurrTimeTS(Int64 timeStamp)
+void Map::MapDrawLayer::SetCurrTimeTS(Int64 timeStamp)
 {
 }
 
-Int64 Map::IMapDrawLayer::GetTimeStartTS()
-{
-	return 0;
-}
-
-Int64 Map::IMapDrawLayer::GetTimeEndTS()
+Int64 Map::MapDrawLayer::GetTimeStartTS()
 {
 	return 0;
 }
 
-Map::MapView *Map::IMapDrawLayer::CreateMapView(Math::Size2D<Double> scnSize)
+Int64 Map::MapDrawLayer::GetTimeEndTS()
+{
+	return 0;
+}
+
+Map::MapView *Map::MapDrawLayer::CreateMapView(Math::Size2D<Double> scnSize)
 {
 	Map::MapView *view;
 	Math::RectAreaDbl minMax;
@@ -115,24 +115,24 @@ Map::MapView *Map::IMapDrawLayer::CreateMapView(Math::Size2D<Double> scnSize)
 	return view;
 }
 
-void Map::IMapDrawLayer::SetMixedData(MixedData mixedData)
+void Map::MapDrawLayer::SetMixedData(MixedData mixedData)
 {
 }
 
-void Map::IMapDrawLayer::SetDispSize(Math::Size2D<Double> size, Double dpi)
+void Map::MapDrawLayer::SetDispSize(Math::Size2D<Double> size, Double dpi)
 {
 
 }
 
-void Map::IMapDrawLayer::AddUpdatedHandler(UpdatedHandler hdlr, void *obj)
+void Map::MapDrawLayer::AddUpdatedHandler(UpdatedHandler hdlr, void *obj)
 {
 }
 
-void Map::IMapDrawLayer::RemoveUpdatedHandler(UpdatedHandler hdlr, void *obj)
+void Map::MapDrawLayer::RemoveUpdatedHandler(UpdatedHandler hdlr, void *obj)
 {
 }
 
-UOSInt Map::IMapDrawLayer::QueryTableNames(Text::CString schemaName, Data::ArrayList<Text::String*> *names)
+UOSInt Map::MapDrawLayer::QueryTableNames(Text::CString schemaName, Data::ArrayList<Text::String*> *names)
 {
 	if (schemaName.leng != 0)
 		return 0;
@@ -140,14 +140,14 @@ UOSInt Map::IMapDrawLayer::QueryTableNames(Text::CString schemaName, Data::Array
 	return 1;
 }
 
-DB::DBReader *Map::IMapDrawLayer::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+DB::DBReader *Map::MapDrawLayer::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	DB::DBReader *r;
 	NEW_CLASS(r, Map::MapLayerReader(this));
 	return r;
 }
 
-DB::TableDef *Map::IMapDrawLayer::GetTableDef(Text::CString schemaName, Text::CString tableName)
+DB::TableDef *Map::MapDrawLayer::GetTableDef(Text::CString schemaName, Text::CString tableName)
 {
 	DB::TableDef *tab;
 	NEW_CLASS(tab, DB::TableDef(schemaName, tableName));
@@ -163,31 +163,31 @@ DB::TableDef *Map::IMapDrawLayer::GetTableDef(Text::CString schemaName, Text::CS
 	return tab;
 }
 
-void Map::IMapDrawLayer::CloseReader(DB::DBReader *r)
+void Map::MapDrawLayer::CloseReader(DB::DBReader *r)
 {
 	Map::MapLayerReader *rdr = (Map::MapLayerReader*)r;
 	DEL_CLASS(rdr);
 }
 
-void Map::IMapDrawLayer::GetErrorMsg(Text::StringBuilderUTF8 *str)
+void Map::MapDrawLayer::GetErrorMsg(Text::StringBuilderUTF8 *str)
 {
 }
 
-void Map::IMapDrawLayer::Reconnect()
+void Map::MapDrawLayer::Reconnect()
 {
 }
 
-UOSInt Map::IMapDrawLayer::GetNameCol()
+UOSInt Map::MapDrawLayer::GetNameCol()
 {
 	return this->nameCol;
 }
 
-void Map::IMapDrawLayer::SetNameCol(UOSInt nameCol)
+void Map::MapDrawLayer::SetNameCol(UOSInt nameCol)
 {
 	this->nameCol = nameCol;
 }
 
-Text::String *Map::IMapDrawLayer::GetName()
+Text::String *Map::MapDrawLayer::GetName()
 {
 	if (this->layerName && this->layerName->leng > 0)
 	{
@@ -199,37 +199,37 @@ Text::String *Map::IMapDrawLayer::GetName()
 	}
 }
 
-IO::ParserType Map::IMapDrawLayer::GetParserType() const
+IO::ParserType Map::MapDrawLayer::GetParserType() const
 {
 	return IO::ParserType::MapLayer;
 }
 
-Math::CoordinateSystem *Map::IMapDrawLayer::GetCoordinateSystem()
+Math::CoordinateSystem *Map::MapDrawLayer::GetCoordinateSystem()
 {
 	return this->csys;
 }
 
-void Map::IMapDrawLayer::SetCoordinateSystem(Math::CoordinateSystem *csys)
+void Map::MapDrawLayer::SetCoordinateSystem(Math::CoordinateSystem *csys)
 {
 	SDEL_CLASS(this->csys);
 	this->csys = csys;
 }
 
-Int32 Map::IMapDrawLayer::CalBlockSize()
+Int32 Map::MapDrawLayer::CalBlockSize()
 {
 	if (this->GetLayerType() == Map::DRAW_LAYER_POINT || this->GetLayerType() == Map::DRAW_LAYER_POINT3D)
 	{
 		return 5000;
 	}
-	else if (this->GetObjectClass() == Map::IMapDrawLayer::OC_CIP_LAYER)
+	else if (this->GetObjectClass() == Map::MapDrawLayer::OC_CIP_LAYER)
 	{
 		return ((Map::CIPLayer2*)this)->GetBlockSize();
 	}
-	else if (this->GetObjectClass() == Map::IMapDrawLayer::OC_SPD_LAYER)
+	else if (this->GetObjectClass() == Map::MapDrawLayer::OC_SPD_LAYER)
 	{
 		return ((Map::SPDLayer*)this)->GetBlockSize();
 	}
-	else if (this->GetObjectClass() == Map::IMapDrawLayer::OC_TILE_MAP_LAYER)
+	else if (this->GetObjectClass() == Map::MapDrawLayer::OC_TILE_MAP_LAYER)
 	{
 		return 5000;
 	}
@@ -273,18 +273,18 @@ Int32 Map::IMapDrawLayer::CalBlockSize()
 	}
 }
 
-void Map::IMapDrawLayer::SetLayerName(Text::CString name)
+void Map::MapDrawLayer::SetLayerName(Text::CString name)
 {
 	SDEL_STRING(this->layerName);
 	this->layerName = Text::String::New(name);
 }
 
-Bool Map::IMapDrawLayer::IsError()
+Bool Map::MapDrawLayer::IsError()
 {
 	return false;
 }
 
-UTF8Char *Map::IMapDrawLayer::GetPGLabel(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl coord, Math::Coord2DDbl *outCoord, UOSInt strIndex)
+UTF8Char *Map::MapDrawLayer::GetPGLabel(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl coord, Math::Coord2DDbl *outCoord, UOSInt strIndex)
 {
 	UTF8Char *retVal = 0;
 
@@ -336,7 +336,7 @@ UTF8Char *Map::IMapDrawLayer::GetPGLabel(UTF8Char *buff, UOSInt buffSize, Math::
 	return retVal;
 }
 
-UTF8Char *Map::IMapDrawLayer::GetPLLabel(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl coord, Math::Coord2DDbl *outCoord, UOSInt strIndex)
+UTF8Char *Map::MapDrawLayer::GetPLLabel(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl coord, Math::Coord2DDbl *outCoord, UOSInt strIndex)
 {
 	UTF8Char *retVal = 0;
 	UTF8Char *tmpBuff;
@@ -393,17 +393,17 @@ UTF8Char *Map::IMapDrawLayer::GetPLLabel(UTF8Char *buff, UOSInt buffSize, Math::
 	return retVal;
 }
 
-Bool Map::IMapDrawLayer::CanQuery()
+Bool Map::MapDrawLayer::CanQuery()
 {
 	return false;
 }
 
-Bool Map::IMapDrawLayer::QueryInfos(Math::Coord2DDbl coord, Data::ArrayList<Math::Geometry::Vector2D*> *vecList, Data::ArrayList<UOSInt> *valueOfstList, Data::ArrayList<Text::String*> *nameList, Data::ArrayList<Text::String*> *valueList)
+Bool Map::MapDrawLayer::QueryInfos(Math::Coord2DDbl coord, Data::ArrayList<Math::Geometry::Vector2D*> *vecList, Data::ArrayList<UOSInt> *valueOfstList, Data::ArrayList<Text::String*> *nameList, Data::ArrayList<Text::String*> *valueList)
 {
 	return false;
 }
 
-Int64 Map::IMapDrawLayer::GetNearestObjectId(GetObjectSess *session, Math::Coord2DDbl pt, Math::Coord2DDbl *nearPt)
+Int64 Map::MapDrawLayer::GetNearestObjectId(GetObjectSess *session, Math::Coord2DDbl pt, Math::Coord2DDbl *nearPt)
 {
 	Data::ArrayListInt64 *objIds;
 	NEW_CLASS(objIds, Data::ArrayListInt64());
@@ -448,7 +448,7 @@ Int64 Map::IMapDrawLayer::GetNearestObjectId(GetObjectSess *session, Math::Coord
 	return nearObjId;
 }
 
-OSInt Map::IMapDrawLayer::GetNearObjects(GetObjectSess *session, Data::ArrayList<ObjectInfo*> *objList, Math::Coord2DDbl pt, Double maxDist)
+OSInt Map::MapDrawLayer::GetNearObjects(GetObjectSess *session, Data::ArrayList<ObjectInfo*> *objList, Math::Coord2DDbl pt, Double maxDist)
 {
 	Data::ArrayListInt64 *objIds;
 	NEW_CLASS(objIds, Data::ArrayListInt64());
@@ -513,7 +513,7 @@ OSInt Map::IMapDrawLayer::GetNearObjects(GetObjectSess *session, Data::ArrayList
 	return ret;
 }
 
-void Map::IMapDrawLayer::FreeObjects(Data::ArrayList<ObjectInfo*> *objList)
+void Map::MapDrawLayer::FreeObjects(Data::ArrayList<ObjectInfo*> *objList)
 {
 	ObjectInfo *objInfo;
 	UOSInt i;
@@ -526,7 +526,7 @@ void Map::IMapDrawLayer::FreeObjects(Data::ArrayList<ObjectInfo*> *objList)
 	objList->Clear();
 }
 
-Map::VectorLayer *Map::IMapDrawLayer::CreateEditableLayer()
+Map::VectorLayer *Map::MapDrawLayer::CreateEditableLayer()
 {
 	UTF8Char *sbuff = MemAlloc(UTF8Char, 65536);
 	UTF8Char *sptr;
@@ -613,7 +613,7 @@ Map::VectorLayer *Map::IMapDrawLayer::CreateEditableLayer()
 	return lyr;
 }
 
-Text::SearchIndexer *Map::IMapDrawLayer::CreateSearchIndexer(Text::TextAnalyzer *ta, UOSInt strIndex)
+Text::SearchIndexer *Map::MapDrawLayer::CreateSearchIndexer(Text::TextAnalyzer *ta, UOSInt strIndex)
 {
 	if (strIndex >= this->GetColumnCnt())
 		return 0;
@@ -640,7 +640,7 @@ Text::SearchIndexer *Map::IMapDrawLayer::CreateSearchIndexer(Text::TextAnalyzer 
 	return searching;
 }
 
-UOSInt Map::IMapDrawLayer::SearchString(Data::ArrayListString *outArr, Text::SearchIndexer *srchInd, NameArray *nameArr, const UTF8Char *srchStr, UOSInt maxResult, UOSInt strIndex)
+UOSInt Map::MapDrawLayer::SearchString(Data::ArrayListString *outArr, Text::SearchIndexer *srchInd, NameArray *nameArr, const UTF8Char *srchStr, UOSInt maxResult, UOSInt strIndex)
 {
 	Data::ArrayListInt64 *objIds;
 	Data::ArrayListICaseString *strList;
@@ -685,12 +685,12 @@ UOSInt Map::IMapDrawLayer::SearchString(Data::ArrayListString *outArr, Text::Sea
 	return resCnt;
 }
 
-void Map::IMapDrawLayer::ReleaseSearchStr(Data::ArrayListString *strArr)
+void Map::MapDrawLayer::ReleaseSearchStr(Data::ArrayListString *strArr)
 {
 	LIST_FREE_STRING(strArr);
 }
 
-Math::Geometry::Vector2D *Map::IMapDrawLayer::GetVectorByStr(Text::SearchIndexer *srchInd, Map::NameArray *nameArr, Map::GetObjectSess *session, const UTF8Char *srchStr, UOSInt strIndex)
+Math::Geometry::Vector2D *Map::MapDrawLayer::GetVectorByStr(Text::SearchIndexer *srchInd, Map::NameArray *nameArr, Map::GetObjectSess *session, const UTF8Char *srchStr, UOSInt strIndex)
 {
 	UTF8Char sbuff[256];
 	Data::ArrayListInt64 *objIds;
@@ -725,33 +725,33 @@ Math::Geometry::Vector2D *Map::IMapDrawLayer::GetVectorByStr(Text::SearchIndexer
 	return vec;
 }
 
-Bool Map::IMapDrawLayer::HasLineStyle()
+Bool Map::MapDrawLayer::HasLineStyle()
 {
 	return this->lineWidth > 0;
 }
 
-Bool Map::IMapDrawLayer::HasPGStyle()
+Bool Map::MapDrawLayer::HasPGStyle()
 {
 	return this->pgColor != 0;
 }
 
-Bool Map::IMapDrawLayer::HasIconStyle()
+Bool Map::MapDrawLayer::HasIconStyle()
 {
 	return this->iconImg != 0;
 }
 
-void Map::IMapDrawLayer::SetLineStyle(UInt32 lineColor, UInt32 lineWidth)
+void Map::MapDrawLayer::SetLineStyle(UInt32 lineColor, UInt32 lineWidth)
 {
 	this->lineColor = lineColor;
 	this->lineWidth = lineWidth;
 }
 
-void Map::IMapDrawLayer::SetPGStyle(UInt32 pgColor)
+void Map::MapDrawLayer::SetPGStyle(UInt32 pgColor)
 {
 	this->pgColor = pgColor;
 }
 
-void Map::IMapDrawLayer::SetIconStyle(Media::SharedImage *iconImg, OSInt iconSpotX, OSInt iconSpotY)
+void Map::MapDrawLayer::SetIconStyle(Media::SharedImage *iconImg, OSInt iconSpotX, OSInt iconSpotY)
 {
 	SDEL_CLASS(this->iconImg);
 	if (iconImg)
@@ -762,42 +762,42 @@ void Map::IMapDrawLayer::SetIconStyle(Media::SharedImage *iconImg, OSInt iconSpo
 	this->iconSpotY = iconSpotY;
 }
 
-UInt32 Map::IMapDrawLayer::GetLineStyleColor()
+UInt32 Map::MapDrawLayer::GetLineStyleColor()
 {
 	return this->lineColor;
 }
 
-UInt32 Map::IMapDrawLayer::GetLineStyleWidth()
+UInt32 Map::MapDrawLayer::GetLineStyleWidth()
 {
 	return this->lineWidth;
 }
 
-UInt32 Map::IMapDrawLayer::GetPGStyleColor()
+UInt32 Map::MapDrawLayer::GetPGStyleColor()
 {
 	return this->pgColor;
 }
 
-Media::SharedImage *Map::IMapDrawLayer::GetIconStyleImg()
+Media::SharedImage *Map::MapDrawLayer::GetIconStyleImg()
 {
 	return this->iconImg;
 }
 
-OSInt Map::IMapDrawLayer::GetIconStyleSpotX()
+OSInt Map::MapDrawLayer::GetIconStyleSpotX()
 {
 	return this->iconSpotX;
 }
 
-OSInt Map::IMapDrawLayer::GetIconStyleSpotY()
+OSInt Map::MapDrawLayer::GetIconStyleSpotY()
 {
 	return this->iconSpotY;
 }
 
-Bool Map::IMapDrawLayer::IsLabelVisible()
+Bool Map::MapDrawLayer::IsLabelVisible()
 {
 	return this->flags & 1;
 }
 
-void Map::IMapDrawLayer::SetLabelVisible(Bool labelVisible)
+void Map::MapDrawLayer::SetLabelVisible(Bool labelVisible)
 {
 	if (labelVisible)
 	{
@@ -809,7 +809,7 @@ void Map::IMapDrawLayer::SetLabelVisible(Bool labelVisible)
 	}
 }
 
-Map::DrawLayerType Map::IMapDrawLayer::VectorType2LayerType(Math::Geometry::Vector2D::VectorType vtype)
+Map::DrawLayerType Map::MapDrawLayer::VectorType2LayerType(Math::Geometry::Vector2D::VectorType vtype)
 {
 	switch (vtype)
 	{
@@ -849,7 +849,7 @@ Int64 Map::MapLayerReader::GetCurrObjId()
 	return this->objIds->GetItem((UOSInt)this->currIndex);
 }
 
-Map::MapLayerReader::MapLayerReader(Map::IMapDrawLayer *layer) : DB::DBReader()
+Map::MapLayerReader::MapLayerReader(Map::MapDrawLayer *layer) : DB::DBReader()
 {
 	this->layer = layer;
 
@@ -1024,7 +1024,7 @@ Bool Map::MapLayerReader::GetColDef(UOSInt colIndex, DB::ColDef *colDef)
 	return GetColDefV(colIndex, colDef, this->layer);
 }
 
-Bool Map::MapLayerReader::GetColDefV(UOSInt colIndex, DB::ColDef *colDef, Map::IMapDrawLayer *layer)
+Bool Map::MapLayerReader::GetColDefV(UOSInt colIndex, DB::ColDef *colDef, Map::MapDrawLayer *layer)
 {
 	if (colIndex == 0)
 	{

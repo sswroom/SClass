@@ -22,7 +22,7 @@ namespace SSWR
 			UI::GUIComboBox *cboMapType;
 			UI::GUITextBox *txtDeclare;
 			UI::GUIButton *btnOK;
-			Map::IMapDrawLayer *layer;
+			Map::MapDrawLayer *layer;
 
 			static void __stdcall OnOKClicked(void *userObj);
 		public:
@@ -31,7 +31,7 @@ namespace SSWR
 
 			virtual void OnMonitorChanged();
 
-			Map::IMapDrawLayer *GetMapLayer();
+			Map::MapDrawLayer *GetMapLayer();
 		};
 	}
 }

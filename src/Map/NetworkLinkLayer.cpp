@@ -142,7 +142,7 @@ void Map::NetworkLinkLayer::LoadLink(LinkInfo *link)
 			UOSInt j;
 			Sync::RWMutexUsage mutUsage(&this->linkMut, true);
 			SDEL_CLASS(link->innerLayer);
-			link->innerLayer = (Map::IMapDrawLayer*)pobj;
+			link->innerLayer = (Map::MapDrawLayer*)pobj;
 			link->innerLayerType = link->innerLayer->GetLayerType();
 			link->innerLayer->AddUpdatedHandler(InnerUpdated, this);
 			j = this->updHdlrs.GetCount();
@@ -181,7 +181,7 @@ void Map::NetworkLinkLayer::LoadLink(LinkInfo *link)
 	}
 }
 
-Map::NetworkLinkLayer::NetworkLinkLayer(Text::CString fileName, Parser::ParserList *parsers, Net::WebBrowser *browser, Text::CString layerName) : Map::IMapDrawLayer(fileName, 0, layerName)
+Map::NetworkLinkLayer::NetworkLinkLayer(Text::CString fileName, Parser::ParserList *parsers, Net::WebBrowser *browser, Text::CString layerName) : Map::MapDrawLayer(fileName, 0, layerName)
 {
 	this->parsers = parsers;
 	this->browser = browser;
@@ -474,7 +474,7 @@ Int64 Map::NetworkLinkLayer::GetObjectIdMax()
 }
 void Map::NetworkLinkLayer::ReleaseNameArr(NameArray *nameArr)
 {
-/*	Map::IMapDrawLayer *lyr = this->innerLayer;
+/*	Map::MapDrawLayer *lyr = this->innerLayer;
 	if (lyr)
 		lyr->ReleaseNameArr(nameArr);*/
 }
@@ -655,9 +655,9 @@ void Map::NetworkLinkLayer::SetNameCol(UOSInt nameCol)
 {
 }
 
-Map::IMapDrawLayer::ObjectClass Map::NetworkLinkLayer::GetObjectClass()
+Map::MapDrawLayer::ObjectClass Map::NetworkLinkLayer::GetObjectClass()
 {
-	return Map::IMapDrawLayer::OC_NETWORKLINK_LAYER;
+	return Map::MapDrawLayer::OC_NETWORKLINK_LAYER;
 }
 
 Math::CoordinateSystem *Map::NetworkLinkLayer::GetCoordinateSystem()

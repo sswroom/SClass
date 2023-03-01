@@ -62,7 +62,7 @@ namespace SSWR
 			SSWR::AVIRead::AVIRGISForm *gisForm;
 
 			Bool batchLoad;
-			Data::ArrayList<Map::IMapDrawLayer*> *batchLyrs;
+			Data::ArrayList<Map::MapDrawLayer*> *batchLyrs;
 
 		protected:
 			static void __stdcall FormClosed(void *userObj, UI::GUIForm *frm);

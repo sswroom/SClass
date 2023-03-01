@@ -1,7 +1,7 @@
 #ifndef _SM_MAP_SHORTESTPATHFINDER
 #define _SM_MAP_SHORTESTPATHFINDER
 #include "Data/Int64Map.h"
-#include "Map/IMapDrawLayer.h"
+#include "Map/MapDrawLayer.h"
 #include "Math/Polyline.h"
 
 namespace Map
@@ -32,7 +32,7 @@ namespace Map
 			Data::ArrayList<NeighbourInfo*> *neighbours;
 		} NodeInfo;
 	private:
-		Map::IMapDrawLayer *layer;
+		Map::MapDrawLayer *layer;
 		void *nameArr;
 		Bool toRelease;
 		OSInt nameCol;
@@ -43,7 +43,7 @@ namespace Map
 		Int64 CoordToId(Double x, Double y);
 		Bool SearchShortestPath(Data::ArrayList<Double> *points, void *sess, Int64 fromObjId, Double fromX, Double fromY, Int64 toObjId, Double toX, Double toY);
 	public:
-		ShortestPathFinder(Map::IMapDrawLayer *layer, Bool toRelease, CoordinateUnit cu, OSInt nameCol, OSInt dirCol);
+		ShortestPathFinder(Map::MapDrawLayer *layer, Bool toRelease, CoordinateUnit cu, OSInt nameCol, OSInt dirCol);
 		~ShortestPathFinder();
 
 		Math::Polyline *GetPath(Double fromX, Double fromY, Double toX, Double toY, Bool sameName);

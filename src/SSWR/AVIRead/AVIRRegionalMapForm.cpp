@@ -70,7 +70,7 @@ void SSWR::AVIRead::AVIRRegionalMapForm::OnMonitorChanged()
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 }
 
-Map::IMapDrawLayer *SSWR::AVIRead::AVIRRegionalMapForm::GetMapLayer()
+Map::MapDrawLayer *SSWR::AVIRead::AVIRRegionalMapForm::GetMapLayer()
 {
 	return this->layer;
 }

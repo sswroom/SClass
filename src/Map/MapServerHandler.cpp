@@ -3,7 +3,7 @@
 #include "IO/MemoryStream.h"
 #include "IO/Path.h"
 #include "IO/StmData/FileData.h"
-#include "Map/IMapDrawLayer.h"
+#include "Map/MapDrawLayer.h"
 #include "Map/MapLayerCollection.h"
 #include "Map/MapServerHandler.h"
 #include "Math/CoordinateSystemManager.h"
@@ -51,7 +51,7 @@ Bool __stdcall Map::MapServerHandler::GetLayerDataFunc(Net::WebServer::IWebReque
 	Double z;
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
-	Map::IMapDrawLayer *layer;
+	Map::MapDrawLayer *layer;
 	if (name == 0)
 	{
 		layer = 0;
@@ -534,16 +534,16 @@ Bool Map::MapServerHandler::InSphereRange(Text::JSONBase *sphere, Double x1, Dou
 	return true;
 }
 
-void Map::MapServerHandler::AddLayer(Map::IMapDrawLayer *layer)
+void Map::MapServerHandler::AddLayer(Map::MapDrawLayer *layer)
 {
-	if (layer->GetObjectClass() == Map::IMapDrawLayer::OC_MAP_LAYER_COLL)
+	if (layer->GetObjectClass() == Map::MapDrawLayer::OC_MAP_LAYER_COLL)
 	{
 		Map::MapLayerCollection *layerColl = (Map::MapLayerCollection*)layer;
 		UOSInt i = 0;
 		UOSInt j = layerColl->GetCount();
 		while (i < j)
 		{
-			Map::IMapDrawLayer *sublayer = layerColl->GetItem(i);
+			Map::MapDrawLayer *sublayer = layerColl->GetItem(i);
 			this->AddLayer(sublayer);
 			i++;
 		}
@@ -605,7 +605,7 @@ Bool Map::MapServerHandler::AddAsset(Text::CString filePath)
 
 	if (t == IO::ParserType::MapLayer)
 	{
-		Map::IMapDrawLayer *layer = (Map::IMapDrawLayer*)pobj;
+		Map::MapDrawLayer *layer = (Map::MapDrawLayer*)pobj;
 		this->AddLayer(layer);
 		this->assets.Add(pobj);
 		return true;

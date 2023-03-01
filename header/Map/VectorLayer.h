@@ -1,12 +1,12 @@
 #ifndef _SM_MAP_VECTORLAYER
 #define _SM_MAP_VECTORLAYER
-#include "Map/IMapDrawLayer.h"
+#include "Map/MapDrawLayer.h"
 #include "Text/PString.h"
 #include "Text/String.h"
 
 namespace Map
 {
-	class VectorLayer : public Map::IMapDrawLayer
+	class VectorLayer : public Map::MapDrawLayer
 	{
 	private:
 		typedef struct

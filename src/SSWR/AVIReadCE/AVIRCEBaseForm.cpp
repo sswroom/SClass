@@ -283,7 +283,7 @@ void SSWR::AVIReadCE::AVIRCEBaseForm::EventMenuClicked(UInt16 cmdId)
 	WChar wbuff[512];
 	WChar wbuff2[16];
 	Map::TileMap *tileMap;
-	Map::IMapDrawLayer *mapLyr;
+	Map::MapDrawLayer *mapLyr;
 
 	switch (cmdId)
 	{

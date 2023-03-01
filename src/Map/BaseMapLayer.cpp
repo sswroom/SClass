@@ -56,11 +56,11 @@ Text::CString Map::BaseMapLayer::BaseLayerTypeGetName(BaseLayerType blt)
 	}
 }
 
-Map::IMapDrawLayer *Map::BaseMapLayer::CreateLayer(BaseLayerType blt, Net::SocketFactory *sockf, Net::SSLEngine *ssl, Parser::ParserList *parsers)
+Map::MapDrawLayer *Map::BaseMapLayer::CreateLayer(BaseLayerType blt, Net::SocketFactory *sockf, Net::SSLEngine *ssl, Parser::ParserList *parsers)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	Map::IMapDrawLayer *lyr;
+	Map::MapDrawLayer *lyr;
 	Map::TileMap *tileMap;
 	switch (blt)
 	{

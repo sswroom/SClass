@@ -3,7 +3,7 @@
 #include "IO/StmData/FileData.h"
 #include "UI/MSWindowUI.h"
 #include "SSWR/MapReplay/MapReplayForm.h"
-#include "Map/IMapDrawLayer.h"
+#include "Map/MapDrawLayer.h"
 #include "Map/DrawMapRenderer.h"
 #include "Map/OSM/OSMTileMap.h"
 #include "Map/ResizableTileMapRenderer.h"
@@ -63,7 +63,7 @@ void SSWR::MapReplay::MapReplayForm::UpdateList()
 		void *item = this->env->GetItem(0, i, &itemType);
 		if (itemType == Map::MapEnv::IT_LAYER)
 		{
-			Map::IMapDrawLayer *layer = (Map::IMapDrawLayer*)item;
+			Map::MapDrawLayer *layer = (Map::MapDrawLayer*)item;
 			name = layer->GetName();
 			this->lbLayers->AddItem(&name[Text::StrLastIndexOfChar(name, '\\') + 1], layer);
 		}
@@ -89,7 +89,7 @@ void __stdcall SSWR::MapReplay::MapReplayForm::OnFileDrop(void *userObj, const W
 		{
 			if (pt == IO::ParserType::MapLayer)
 			{
-				me->env->AddLayer(0, (Map::IMapDrawLayer*)pobj, true);
+				me->env->AddLayer(0, (Map::MapDrawLayer*)pobj, true);
 			}
 			else
 			{
@@ -109,8 +109,8 @@ void __stdcall SSWR::MapReplay::MapReplayForm::OnLayerDblClicked(void *userObj)
 	void *obj = me->lbLayers->GetSelectedItem();
 	if (obj)
 	{
-		Map::IMapDrawLayer *layer = (Map::IMapDrawLayer*)obj;
-		if (layer->GetObjectClass() != Map::IMapDrawLayer::OC_GPS_TRACK)
+		Map::MapDrawLayer *layer = (Map::MapDrawLayer*)obj;
+		if (layer->GetObjectClass() != Map::MapDrawLayer::OC_GPS_TRACK)
 			return;
 
 		if (me->replayForm)
@@ -213,7 +213,7 @@ void SSWR::MapReplay::MapReplayForm::HideMarker()
 	this->map->HideMarker();
 }
 
-void SSWR::MapReplay::MapReplayForm::AddLayer(Map::IMapDrawLayer *layer)
+void SSWR::MapReplay::MapReplayForm::AddLayer(Map::MapDrawLayer *layer)
 {
 	this->env->AddLayer(0, layer, true);
 	this->UpdateList();

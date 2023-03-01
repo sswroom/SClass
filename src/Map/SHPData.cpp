@@ -12,7 +12,7 @@
 #include "Sync/MutexUsage.h"
 #include "Text/MyString.h"
 
-Map::SHPData::SHPData(const UInt8 *shpHdr, IO::StreamData *data, UInt32 codePage) : Map::IMapDrawLayer(data->GetFullName(), 0, 0)
+Map::SHPData::SHPData(const UInt8 *shpHdr, IO::StreamData *data, UInt32 codePage) : Map::MapDrawLayer(data->GetFullName(), 0, 0)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
@@ -652,7 +652,7 @@ void Map::SHPData::Reconnect()
 	return this->dbf->Reconnect();
 }
 
-Map::IMapDrawLayer::ObjectClass Map::SHPData::GetObjectClass()
+Map::MapDrawLayer::ObjectClass Map::SHPData::GetObjectClass()
 {
-	return Map::IMapDrawLayer::OC_SHP_DATA;
+	return Map::MapDrawLayer::OC_SHP_DATA;
 }

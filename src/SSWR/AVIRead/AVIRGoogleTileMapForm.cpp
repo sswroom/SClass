@@ -63,7 +63,7 @@ void SSWR::AVIRead::AVIRGoogleTileMapForm::OnMonitorChanged()
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 }
 
-Map::IMapDrawLayer *SSWR::AVIRead::AVIRGoogleTileMapForm::GetMapLayer()
+Map::MapDrawLayer *SSWR::AVIRead::AVIRGoogleTileMapForm::GetMapLayer()
 {
 	return this->layer;
 }

@@ -5,7 +5,7 @@
 #include "Exporter/SHPExporter.h"
 #include "IO/FileStream.h"
 #include "IO/Path.h"
-#include "Map/IMapDrawLayer.h"
+#include "Map/MapDrawLayer.h"
 #include "Math/Geometry/PointZ.h"
 #include "Math/Geometry/Polyline.h"
 #include "Math/Geometry/Polygon.h"
@@ -34,7 +34,7 @@ IO::FileExporter::SupportType Exporter::SHPExporter::IsObjectSupported(IO::Parse
 	{
 		return IO::FileExporter::SupportType::NotSupported;
 	}
-	Map::IMapDrawLayer *layer = (Map::IMapDrawLayer *)pobj;
+	Map::MapDrawLayer *layer = (Map::MapDrawLayer *)pobj;
 	Map::DrawLayerType layerType = layer->GetLayerType();
 	if (layerType == Map::DRAW_LAYER_POINT || layerType == Map::DRAW_LAYER_POINT3D || layerType == Map::DRAW_LAYER_POLYLINE || layerType == Map::DRAW_LAYER_POLYLINE3D || layerType == Map::DRAW_LAYER_POLYGON)
 	{
@@ -68,7 +68,7 @@ Bool Exporter::SHPExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 	{
 		return false;
 	}
-	Map::IMapDrawLayer *layer = (Map::IMapDrawLayer *)pobj;
+	Map::MapDrawLayer *layer = (Map::MapDrawLayer *)pobj;
 	Map::DrawLayerType layerType = layer->GetLayerType();
 	UOSInt fileSize = 100;
 	UOSInt recCnt = 0;

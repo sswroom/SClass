@@ -13,7 +13,7 @@
 #include "Text/MyStringFloat.h"
 #include "Text/MyStringW.h"
 
-Map::GPSTrack::GPSTrack(Text::String *sourceName, Bool hasAltitude, UInt32 codePage, Text::String *layerName) : Map::IMapDrawLayer(sourceName, 0, layerName)
+Map::GPSTrack::GPSTrack(Text::String *sourceName, Bool hasAltitude, UInt32 codePage, Text::String *layerName) : Map::MapDrawLayer(sourceName, 0, layerName)
 {
 	this->codePage = codePage;
 	this->currTrackName = 0;
@@ -24,7 +24,7 @@ Map::GPSTrack::GPSTrack(Text::String *sourceName, Bool hasAltitude, UInt32 codeP
 	this->csys = Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84);
 }
 
-Map::GPSTrack::GPSTrack(Text::CString sourceName, Bool hasAltitude, UInt32 codePage, Text::CString layerName) : Map::IMapDrawLayer(sourceName, 0, layerName)
+Map::GPSTrack::GPSTrack(Text::CString sourceName, Bool hasAltitude, UInt32 codePage, Text::CString layerName) : Map::MapDrawLayer(sourceName, 0, layerName)
 {
 	this->codePage = codePage;
 	this->currTrackName = 0;
@@ -568,9 +568,9 @@ DB::TableDef *Map::GPSTrack::GetTableDef(Text::CString schemaName, Text::CString
 	return tab;
 }
 
-Map::IMapDrawLayer::ObjectClass Map::GPSTrack::GetObjectClass()
+Map::MapDrawLayer::ObjectClass Map::GPSTrack::GetObjectClass()
 {
-	return Map::IMapDrawLayer::OC_GPS_TRACK;
+	return Map::MapDrawLayer::OC_GPS_TRACK;
 }
 
 void Map::GPSTrack::NewTrack()

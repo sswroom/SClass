@@ -4,13 +4,13 @@
 #include "Data/FastMap.h"
 #include "DB/DBReader.h"
 #include "DB/SharedDBConn.h"
-#include "Map/IMapDrawLayer.h"
+#include "Map/MapDrawLayer.h"
 
 namespace Map
 {
 	namespace ESRI
 	{
-		class ESRIMDBLayer : public Map::IMapDrawLayer
+		class ESRIMDBLayer : public Map::MapDrawLayer
 		{
 		private:
 			DB::SharedDBConn *conn;

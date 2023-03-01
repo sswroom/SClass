@@ -63,7 +63,7 @@ void __stdcall SSWR::AVIRead::AVIRGISHKTDTonnesForm::OnOKClicked(void *userObj)
 	else
 	{
 		NEW_CLASS(fd, IO::StmData::FileData(sb.ToCString(), false));
-		Map::IMapDrawLayer *lyr = (Map::IMapDrawLayer*)me->core->GetParserList()->ParseFileType(fd, IO::ParserType::MapLayer);
+		Map::MapDrawLayer *lyr = (Map::MapDrawLayer*)me->core->GetParserList()->ParseFileType(fd, IO::ParserType::MapLayer);
 		DEL_CLASS(fd);
 		DB::DBTool *db = DB::MDBFileConn::CreateDBTool(sb2.ToCString(), 0, CSTR_NULL);
 		if (lyr && db)
@@ -154,7 +154,7 @@ void SSWR::AVIRead::AVIRGISHKTDTonnesForm::OnMonitorChanged()
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 }
 
-Map::IMapDrawLayer *SSWR::AVIRead::AVIRGISHKTDTonnesForm::GetMapLayer()
+Map::MapDrawLayer *SSWR::AVIRead::AVIRGISHKTDTonnesForm::GetMapLayer()
 {
 	return this->lyr;
 }

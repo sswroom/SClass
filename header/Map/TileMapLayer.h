@@ -3,12 +3,12 @@
 #include "Data/SyncLinkedList.h"
 #include "Media/SharedImage.h"
 #include "Map/MapRenderer.h"
-#include "Map/IMapDrawLayer.h"
+#include "Map/MapDrawLayer.h"
 #include "Map/TileMap.h"
 
 namespace Map
 {
-	class TileMapLayer : public Map::IMapDrawLayer
+	class TileMapLayer : public Map::MapDrawLayer
 	{
 	private:
 		typedef struct

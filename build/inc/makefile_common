@@ -784,7 +784,7 @@ HKTDVehRestrict.o: $(CLASSDIR)src/Map/HKTDVehRestrict.cpp
 HKTrafficLayer.o: $(CLASSDIR)src/Map/HKTrafficLayer.cpp
 	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
 
-IMapDrawLayer.o: $(CLASSDIR)src/Map/IMapDrawLayer.cpp
+MapDrawLayer.o: $(CLASSDIR)src/Map/MapDrawLayer.cpp
 	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
 
 LayerTools.o: $(CLASSDIR)src/Map/LayerTools.cpp

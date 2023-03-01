@@ -29,7 +29,7 @@ IO::FileExporter::SupportType Exporter::MapCSVExporter::IsObjectSupported(IO::Pa
 	{
 		return IO::FileExporter::SupportType::NotSupported;
 	}
-	Map::IMapDrawLayer *layer = (Map::IMapDrawLayer *)pobj;
+	Map::MapDrawLayer *layer = (Map::MapDrawLayer *)pobj;
 	if (layer->GetLayerType() != Map::DRAW_LAYER_POLYLINE && layer->GetLayerType() != Map::DRAW_LAYER_POLYLINE3D)
 	{
 		return IO::FileExporter::SupportType::NotSupported;
@@ -59,7 +59,7 @@ Bool Exporter::MapCSVExporter::ExportFile(IO::SeekableStream *stm, Text::CString
 	{
 		return false;
 	}
-	Map::IMapDrawLayer *layer = (Map::IMapDrawLayer *)pobj;
+	Map::MapDrawLayer *layer = (Map::MapDrawLayer *)pobj;
 	if (layer->GetLayerType() != Map::DRAW_LAYER_POLYLINE && layer->GetLayerType() != Map::DRAW_LAYER_POLYLINE3D)
 	{
 		return false;
@@ -73,7 +73,7 @@ Bool Exporter::MapCSVExporter::ExportFile(IO::SeekableStream *stm, Text::CString
 	NEW_CLASS(cstm, IO::BufferedOutputStream(stm, 65536));
 	NEW_CLASS(writer, IO::StreamWriter(cstm, &enc));
 	
-	if (layer->GetObjectClass() == Map::IMapDrawLayer::OC_GPS_TRACK)
+	if (layer->GetObjectClass() == Map::MapDrawLayer::OC_GPS_TRACK)
 	{
 		Map::GPSTrack *track = (Map::GPSTrack*)layer;
 		Map::GPSTrack::GPSRecord3 *rec;

@@ -3,13 +3,13 @@
 #include "Data/ArrayListInt32.h"
 #include "Data/ArrayListString.h"
 #include "IO/ParsedObject.h"
-#include "Map/IMapDrawLayer.h"
+#include "Map/MapDrawLayer.h"
 #include "Sync/Mutex.h"
 #include "Text/CString.h"
 
 namespace Map
 {
-	class GPSTrack : public IMapDrawLayer
+	class GPSTrack : public MapDrawLayer
 	{
 	public:
 		ASTRUCT GPSRecord3
@@ -75,7 +75,7 @@ namespace Map
 		GPSExtraParser *extraParser;
 
 		Sync::Mutex updMut;
-		Data::ArrayList<Map::IMapDrawLayer::UpdatedHandler> updHdlrs;
+		Data::ArrayList<Map::MapDrawLayer::UpdatedHandler> updHdlrs;
 		Data::ArrayList<void *> updObjs;
 
 	public:

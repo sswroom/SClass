@@ -4,11 +4,11 @@
 #include "Data/ArrayListDbl.h"
 #include "DB/DBFFile.h"
 #include "IO/FileStream.h"
-#include "Map/IMapDrawLayer.h"
+#include "Map/MapDrawLayer.h"
 
 namespace Map
 {
-	class SHPLayer : public IMapDrawLayer
+	class SHPLayer : public MapDrawLayer
 	{
 	private:
 		const WChar *shpName;

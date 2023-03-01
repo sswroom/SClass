@@ -119,7 +119,7 @@ Bool Map::OWSFeatureParser::ParseGML(Text::CString txt, UInt32 srid, Bool swapXY
 	{
 		if (pobj->GetParserType() == IO::ParserType::MapLayer)
 		{
-			Map::IMapDrawLayer *layer = (Map::IMapDrawLayer*)pobj;
+			Map::MapDrawLayer *layer = (Map::MapDrawLayer*)pobj;
 			Map::NameArray *nameArr = 0;
 			Data::ArrayListInt64 idArr;
 			layer->GetAllObjectIds(&idArr, &nameArr);

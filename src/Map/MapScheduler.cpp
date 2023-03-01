@@ -287,7 +287,7 @@ void Map::MapScheduler::SetMapView(Map::MapView *map, Media::DrawImage *img)
 	this->img = img;
 }
 
-void Map::MapScheduler::SetDrawType(Map::IMapDrawLayer *lyr, Media::DrawPen *p, Media::DrawBrush *b, Media::DrawImage *ico, Double icoSpotX, Double icoSpotY, Bool *isLayerEmpty)
+void Map::MapScheduler::SetDrawType(Map::MapDrawLayer *lyr, Media::DrawPen *p, Media::DrawBrush *b, Media::DrawImage *ico, Double icoSpotX, Double icoSpotY, Bool *isLayerEmpty)
 {
 	while (this->dt == ThreadState::Clearing)
 	{

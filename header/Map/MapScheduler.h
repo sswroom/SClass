@@ -1,7 +1,7 @@
 #ifndef _SM_MAP_MAPSCHEDULER
 #define _SM_MAP_MAPSCHEDULER
 #include "Data/ArrayList.h"
-#include "Map/IMapDrawLayer.h"
+#include "Map/MapDrawLayer.h"
 #include "Map/MapView.h"
 #include "Math/Geometry/Point.h"
 #include "Math/Geometry/Vector2D.h"
@@ -22,7 +22,7 @@ namespace Map
 
 	protected:
 		Map::MapView *map;
-		Map::IMapDrawLayer *lyr;
+		Map::MapDrawLayer *lyr;
 		Media::DrawImage *img;
 		Media::DrawPen *p;
 		Media::DrawBrush *b;
@@ -54,7 +54,7 @@ namespace Map
 		virtual ~MapScheduler();
 
 		void SetMapView(Map::MapView *map, Media::DrawImage *img);
-		void SetDrawType(Map::IMapDrawLayer *lyr, Media::DrawPen *p, Media::DrawBrush *b, Media::DrawImage *ico, Double icoSpotX, Double icoSpotY, Bool *isLayerEmpty);
+		void SetDrawType(Map::MapDrawLayer *lyr, Media::DrawPen *p, Media::DrawBrush *b, Media::DrawImage *ico, Double icoSpotX, Double icoSpotY, Bool *isLayerEmpty);
 		void SetDrawObjs(Math::RectAreaDbl *objBounds, UOSInt *objCnt, UOSInt maxCnt);
 		void Draw(Math::Geometry::Vector2D *vec);
 		void DrawNextType(Media::DrawPen *p, Media::DrawBrush *b);

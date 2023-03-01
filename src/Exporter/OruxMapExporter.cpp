@@ -6,7 +6,7 @@
 #include "Exporter/OruxMapExporter.h"
 #include "IO/FileStream.h"
 #include "IO/Path.h"
-#include "Map/IMapDrawLayer.h"
+#include "Map/MapDrawLayer.h"
 #include "Map/TileMapLayer.h"
 #include "Map/OSM/OSMLocalTileMap.h"
 #include "Map/OSM/OSMTileMap.h"
@@ -37,8 +37,8 @@ IO::FileExporter::SupportType Exporter::OruxMapExporter::IsObjectSupported(IO::P
 	{
 		return IO::FileExporter::SupportType::NotSupported;
 	}
-	Map::IMapDrawLayer *layer = (Map::IMapDrawLayer *)pobj;
-	if (layer->GetObjectClass() == Map::IMapDrawLayer::OC_TILE_MAP_LAYER)
+	Map::MapDrawLayer *layer = (Map::MapDrawLayer *)pobj;
+	if (layer->GetObjectClass() == Map::MapDrawLayer::OC_TILE_MAP_LAYER)
 	{
 		Map::TileMap *tileMap = ((Map::TileMapLayer*)layer)->GetTileMap();
 		Map::TileMap::TileType ttype = tileMap->GetTileType();
@@ -79,8 +79,8 @@ Bool Exporter::OruxMapExporter::ExportFile(IO::SeekableStream *stm, Text::CStrin
 	{
 		return false;
 	}
-	Map::IMapDrawLayer *layer = (Map::IMapDrawLayer*)pobj;
-	if (layer->GetObjectClass() != Map::IMapDrawLayer::OC_TILE_MAP_LAYER)
+	Map::MapDrawLayer *layer = (Map::MapDrawLayer*)pobj;
+	if (layer->GetObjectClass() != Map::MapDrawLayer::OC_TILE_MAP_LAYER)
 	{
 		return false;
 	}

@@ -100,7 +100,7 @@ IO::Stream *Map::HKTrafficLayer2::OpenURLStream()
 	}
 }
 
-Map::HKTrafficLayer2::HKTrafficLayer2(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, HKRoadNetwork2 *rn2) : Map::IMapDrawLayer(CSTR("HKTraffic2"), 0, CSTR("HKTraffic2"))
+Map::HKTrafficLayer2::HKTrafficLayer2(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, HKRoadNetwork2 *rn2) : Map::MapDrawLayer(CSTR("HKTraffic2"), 0, CSTR("HKTraffic2"))
 {
 	this->sockf = sockf;
 	this->ssl = ssl;
@@ -445,7 +445,7 @@ Math::Geometry::Vector2D *Map::HKTrafficLayer2::GetNewVectorById(GetObjectSess *
 	return vec;
 }
 
-Map::IMapDrawLayer::ObjectClass Map::HKTrafficLayer2::GetObjectClass()
+Map::MapDrawLayer::ObjectClass Map::HKTrafficLayer2::GetObjectClass()
 {
-	return Map::IMapDrawLayer::OC_HKTRAFFIC_LAYER2;
+	return Map::MapDrawLayer::OC_HKTRAFFIC_LAYER2;
 }

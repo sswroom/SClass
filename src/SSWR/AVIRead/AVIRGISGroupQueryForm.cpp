@@ -29,8 +29,8 @@ Bool __stdcall SSWR::AVIRead::AVIRGISGroupQueryForm::OnMouseUp(void *userObj, Ma
 		UOSInt j;
 		UTF8Char sbuff[512];
 		UTF8Char *sptr;
-		Data::ArrayList<Map::IMapDrawLayer*> layers;
-		Map::IMapDrawLayer *lyr;
+		Data::ArrayList<Map::MapDrawLayer*> layers;
+		Map::MapDrawLayer *lyr;
 		mapPos = me->navi->ScnXY2MapXY(scnPos);
 		me->env->GetLayersInGroup(me->group, &layers);
 		i = layers.GetCount();

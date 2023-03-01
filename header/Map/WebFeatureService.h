@@ -1,6 +1,6 @@
 #ifndef _SM_MAP_WEBFEATURESERVICE
 #define _SM_MAP_WEBFEATURESERVICE
-#include "Map/IMapDrawLayer.h"
+#include "Map/MapDrawLayer.h"
 #include "Math/RectAreaDbl.h"
 #include "Net/SSLEngine.h"
 #include "Text/EncodingFactory.h"
@@ -47,7 +47,7 @@ namespace Map
 		void SetFeature(UOSInt index);
 		UOSInt GetFeatureNames(Data::ArrayList<Text::String*> *nameList) const;
 
-		Map::IMapDrawLayer *LoadAsLayer();
+		Map::MapDrawLayer *LoadAsLayer();
 	};
 }
 #endif

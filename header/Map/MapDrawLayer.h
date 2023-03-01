@@ -1,12 +1,12 @@
-#ifndef _SM_MAP_IMAPDRAWLAYER
-#define _SM_MAP_IMAPDRAWLAYER
+#ifndef _SM_MAP_MAPDRAWLAYER
+#define _SM_MAP_MAPDRAWLAYER
 #include "Data/ArrayList.h"
 #include "Data/ArrayListInt64.h"
 #include "Data/ArrayListString.h"
 #include "DB/DBReader.h"
 #include "DB/ReadingDB.h"
 #include "IO/ParsedObject.h"
-#include "Map/IMapSearchLayer.h"
+#include "Map/MapSearchLayer.h"
 #include "Map/MapView.h"
 #include "Math/GeographicCoordinateSystem.h"
 #include "Math/RectArea.h"
@@ -32,7 +32,7 @@ namespace Map
 		DRAW_LAYER_MIXED = 101
 	} DrawLayerType;
 
-	class IMapDrawLayer : public DB::ReadingDB, public Map::IMapSearchLayer
+	class MapDrawLayer : public DB::ReadingDB, public Map::MapSearchLayer
 	{
 	public:
 		struct ObjectInfo
@@ -86,9 +86,9 @@ namespace Map
 
 		typedef void (__stdcall *UpdatedHandler)(void *userObj);
 
-		IMapDrawLayer(Text::String *sourceName, UOSInt nameCol, Text::String *layerName);
-		IMapDrawLayer(Text::CString sourceName, UOSInt nameCol, Text::CString layerName);
-		virtual ~IMapDrawLayer();
+		MapDrawLayer(Text::String *sourceName, UOSInt nameCol, Text::String *layerName);
+		MapDrawLayer(Text::CString sourceName, UOSInt nameCol, Text::CString layerName);
+		virtual ~MapDrawLayer();
 
 		virtual void SetCurrScale(Double scale);
 		virtual void SetCurrTimeTS(Int64 timeStamp);
@@ -174,14 +174,14 @@ namespace Map
 	class MapLayerReader : public DB::DBReader
 	{
 	protected:
-		IMapDrawLayer *layer;
+		MapDrawLayer *layer;
 		Data::ArrayListInt64 *objIds; 
 		NameArray *nameArr;
 		OSInt currIndex;
 
 		Int64 GetCurrObjId();
 	public:
-		MapLayerReader(IMapDrawLayer *layer);
+		MapLayerReader(MapDrawLayer *layer);
 		~MapLayerReader();
 
 		virtual Bool ReadNext();
@@ -207,7 +207,7 @@ namespace Map
 		virtual DB::DBUtil::ColType GetColType(UOSInt colIndex, UOSInt *colSize);
 		virtual Bool GetColDef(UOSInt colIndex, DB::ColDef *colDef);
 
-		static Bool GetColDefV(UOSInt colIndex, DB::ColDef *colDef, Map::IMapDrawLayer *layer);
+		static Bool GetColDefV(UOSInt colIndex, DB::ColDef *colDef, Map::MapDrawLayer *layer);
 	};
 }
 #endif

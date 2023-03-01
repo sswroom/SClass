@@ -108,8 +108,8 @@ namespace SSWR
 			virtual void OnMonitorChanged();
 			virtual void OnFocus();
 
-			void AddLayer(Map::IMapDrawLayer *layer);
-			void AddLayers(::Data::ArrayList<Map::IMapDrawLayer*> *layers);
+			void AddLayer(Map::MapDrawLayer *layer);
+			void AddLayers(::Data::ArrayList<Map::MapDrawLayer*> *layers);
 //			void AddLayerColl(Map::MapLayerCollection *lyrColl);
 			void AddSubForm(UI::GUIForm *frm);
 

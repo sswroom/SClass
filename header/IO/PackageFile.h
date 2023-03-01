@@ -121,5 +121,5 @@ namespace IO
 		void GetInfoText(Text::StringBuilderUTF8 *sb) const;
 		static Text::CString GetInfoTypeName(InfoType infoType);
 	};
-};
+}
 #endif

@@ -21,7 +21,7 @@
 #include "Text/MyStringW.h"
 #include "Text/StringBuilderW.h"
 
-Map::CIPLayer::CIPLayer(Text::CString layerName) : Map::IMapDrawLayer(layerName, 0, layerName)
+Map::CIPLayer::CIPLayer(Text::CString layerName) : Map::MapDrawLayer(layerName, 0, layerName)
 {
 	UTF8Char fname[256];
 	UTF8Char *sptr;
@@ -788,7 +788,7 @@ Math::Geometry::Vector2D *Map::CIPLayer::GetNewVectorById(void *session, Int64 i
 	return ptOfst;
 }
 
-Map::IMapDrawLayer::ObjectClass Map::CIPLayer::GetObjectClass()
+Map::MapDrawLayer::ObjectClass Map::CIPLayer::GetObjectClass()
 {
-	return Map::IMapDrawLayer::OC_CIP_LAYER;
+	return Map::MapDrawLayer::OC_CIP_LAYER;
 }

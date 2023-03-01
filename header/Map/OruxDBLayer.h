@@ -2,12 +2,12 @@
 #define _SM_MAP_ORUXDBLAYER
 #include "Data/FastMap.h"
 #include "DB/DBConn.h"
-#include "Map/IMapDrawLayer.h"
+#include "Map/MapDrawLayer.h"
 #include "Parser/ParserList.h"
 
 namespace Map
 {
-	class OruxDBLayer : public Map::IMapDrawLayer
+	class OruxDBLayer : public Map::MapDrawLayer
 	{
 	private:
 		typedef struct

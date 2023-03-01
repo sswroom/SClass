@@ -224,7 +224,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFileHdr(IO::StreamData *fd
 					return 0;
 				}
 				baseDirEnd = Text::StrConcatC(sarr[1].ConcatTo(fileName), UTF8STRC(".cip"));
-				Map::IMapDrawLayer *lyr = this->mapMgr->LoadLayer({baseDir, (UOSInt)(baseDirEnd - baseDir)}, this->parsers, env);
+				Map::MapDrawLayer *lyr = this->mapMgr->LoadLayer({baseDir, (UOSInt)(baseDirEnd - baseDir)}, this->parsers, env);
 				if (lyr)
 				{
 					i = env->AddLayer(currGroup, lyr, false);
@@ -249,7 +249,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFileHdr(IO::StreamData *fd
 				}
 
 				baseDirEnd = Text::StrConcatC(sarr[1].ConcatTo(fileName), UTF8STRC(".cip"));
-				Map::IMapDrawLayer *lyr = this->mapMgr->LoadLayer({baseDir, (UOSInt)(baseDirEnd - baseDir)}, this->parsers, env);
+				Map::MapDrawLayer *lyr = this->mapMgr->LoadLayer({baseDir, (UOSInt)(baseDirEnd - baseDir)}, this->parsers, env);
 				if (lyr)
 				{
 					i = env->AddLayer(currGroup, lyr, false);
@@ -275,7 +275,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFileHdr(IO::StreamData *fd
 					return 0;
 				}
 				baseDirEnd = Text::StrConcatC(sarr[1].ConcatTo(fileName), UTF8STRC(".cip"));
-				Map::IMapDrawLayer *lyr = this->mapMgr->LoadLayer({baseDir, (UOSInt)(baseDirEnd - baseDir)}, this->parsers, env);
+				Map::MapDrawLayer *lyr = this->mapMgr->LoadLayer({baseDir, (UOSInt)(baseDirEnd - baseDir)}, this->parsers, env);
 				if (lyr)
 				{
 					i = env->AddLayer(currGroup, lyr, false);
@@ -315,7 +315,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFileHdr(IO::StreamData *fd
 				}
 				OSInt si;
 				baseDirEnd = Text::StrConcatC(sarr[1].ConcatTo(fileName), UTF8STRC(".cip"));
-				Map::IMapDrawLayer *lyr = this->mapMgr->LoadLayer({baseDir, (UOSInt)(baseDirEnd - baseDir)}, this->parsers, env);
+				Map::MapDrawLayer *lyr = this->mapMgr->LoadLayer({baseDir, (UOSInt)(baseDirEnd - baseDir)}, this->parsers, env);
 				baseDirEnd = Text::StrConcat(sbuff3, sbuff2);
 				baseDirEnd = IO::Path::AppendPath(sbuff3, baseDirEnd, sarr[4].ToCString());
 				si = env->AddImage({sbuff3, (UOSInt)(baseDirEnd - sbuff3)}, this->parsers);

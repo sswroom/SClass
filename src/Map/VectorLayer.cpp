@@ -171,7 +171,7 @@ void Map::VectorLayer::UpdateMapRate()
 	}
 }
 
-Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, Text::String *sourceName, UOSInt strCnt, const UTF8Char **colNames, Math::CoordinateSystem *csys, UOSInt nameCol, Text::String *layerName) : Map::IMapDrawLayer(sourceName, nameCol, layerName)
+Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, Text::String *sourceName, UOSInt strCnt, const UTF8Char **colNames, Math::CoordinateSystem *csys, UOSInt nameCol, Text::String *layerName) : Map::MapDrawLayer(sourceName, nameCol, layerName)
 {
 	UOSInt i;
 	this->layerType = layerType;
@@ -200,7 +200,7 @@ Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, Text::String *source
 	}
 }
 
-Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, Text::CString sourceName, UOSInt strCnt, const UTF8Char **colNames, Math::CoordinateSystem *csys, UOSInt nameCol, Text::CString layerName) : Map::IMapDrawLayer(sourceName, nameCol, layerName)
+Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, Text::CString sourceName, UOSInt strCnt, const UTF8Char **colNames, Math::CoordinateSystem *csys, UOSInt nameCol, Text::CString layerName) : Map::MapDrawLayer(sourceName, nameCol, layerName)
 {
 	UOSInt i;
 	this->layerType = layerType;
@@ -229,7 +229,7 @@ Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, Text::CString source
 	}
 }
 
-Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, Text::String *sourceName, UOSInt strCnt, const UTF8Char **colNames, Math::CoordinateSystem *csys, DB::DBUtil::ColType *colTypes, UOSInt *colSize, UOSInt *colDP, UOSInt nameCol, Text::String *layerName) : Map::IMapDrawLayer(sourceName, nameCol, layerName)
+Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, Text::String *sourceName, UOSInt strCnt, const UTF8Char **colNames, Math::CoordinateSystem *csys, DB::DBUtil::ColType *colTypes, UOSInt *colSize, UOSInt *colDP, UOSInt nameCol, Text::String *layerName) : Map::MapDrawLayer(sourceName, nameCol, layerName)
 {
 	UOSInt i;
 	this->layerType = layerType;
@@ -261,7 +261,7 @@ Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, Text::String *source
 	}
 }
 
-Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, Text::CString sourceName, UOSInt strCnt, const UTF8Char **colNames, Math::CoordinateSystem *csys, DB::DBUtil::ColType *colTypes, UOSInt *colSize, UOSInt *colDP, UOSInt nameCol, Text::CString layerName) : Map::IMapDrawLayer(sourceName, nameCol, layerName)
+Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, Text::CString sourceName, UOSInt strCnt, const UTF8Char **colNames, Math::CoordinateSystem *csys, DB::DBUtil::ColType *colTypes, UOSInt *colSize, UOSInt *colDP, UOSInt nameCol, Text::CString layerName) : Map::MapDrawLayer(sourceName, nameCol, layerName)
 {
 	UOSInt i;
 	this->layerType = layerType;
@@ -577,9 +577,9 @@ Math::Geometry::Vector2D *Map::VectorLayer::GetNewVectorById(Map::GetObjectSess 
 	}
 }
 
-Map::IMapDrawLayer::ObjectClass Map::VectorLayer::GetObjectClass()
+Map::MapDrawLayer::ObjectClass Map::VectorLayer::GetObjectClass()
 {
-	return Map::IMapDrawLayer::OC_VECTOR_LAYER;
+	return Map::MapDrawLayer::OC_VECTOR_LAYER;
 }
 
 Bool Map::VectorLayer::VectorValid(Math::Geometry::Vector2D *vec)

@@ -3,7 +3,7 @@
 
 #include "Data/ArrayList.h"
 #include "Data/StringUTF8Map.h"
-#include "Map/IMapDrawLayer.h"
+#include "Map/MapDrawLayer.h"
 #include "Map/MapEnv.h"
 #include "Parser/ParserList.h"
 
@@ -14,7 +14,7 @@ namespace Map
 	private:
 		typedef struct
 		{
-			Map::IMapDrawLayer *layer;
+			Map::MapDrawLayer *layer;
 			Data::ArrayList<Map::MapEnv *> *envList;
 		} MapLayerInfo;
 
@@ -25,7 +25,7 @@ namespace Map
 		MapManager();
 		~MapManager();
 
-		Map::IMapDrawLayer *LoadLayer(Text::CString fileName, Parser::ParserList *parsers, Map::MapEnv *env);
+		Map::MapDrawLayer *LoadLayer(Text::CString fileName, Parser::ParserList *parsers, Map::MapEnv *env);
 		void ClearMap(Map::MapEnv *env);
 	};
 }

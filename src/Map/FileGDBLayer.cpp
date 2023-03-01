@@ -55,7 +55,7 @@ Data::FastMap<Int32, const UTF8Char **> *Map::FileGDBLayer::ReadNameArr()
 	}
 }
 
-Map::FileGDBLayer::FileGDBLayer(DB::SharedReadingDB *conn, Text::CString sourceName, Text::CString tableName) : Map::IMapDrawLayer(sourceName, 0, tableName)
+Map::FileGDBLayer::FileGDBLayer(DB::SharedReadingDB *conn, Text::CString sourceName, Text::CString tableName) : Map::MapDrawLayer(sourceName, 0, tableName)
 {
 	UInt8 *buff = 0; 
 	conn->UseObject();
@@ -148,7 +148,7 @@ Map::FileGDBLayer::FileGDBLayer(DB::SharedReadingDB *conn, Text::CString sourceN
 				}
 				if (this->layerType == Map::DRAW_LAYER_UNKNOWN)
 				{
-					this->layerType = Map::IMapDrawLayer::VectorType2LayerType(vec->GetVectorType());
+					this->layerType = Map::MapDrawLayer::VectorType2LayerType(vec->GetVectorType());
 				}
 			}
 		}
@@ -396,9 +396,9 @@ void Map::FileGDBLayer::Reconnect()
 	this->conn->Reconnect();
 }
 
-Map::IMapDrawLayer::ObjectClass Map::FileGDBLayer::GetObjectClass()
+Map::MapDrawLayer::ObjectClass Map::FileGDBLayer::GetObjectClass()
 {
-	return Map::IMapDrawLayer::OC_ESRI_MDB_LAYER;
+	return Map::MapDrawLayer::OC_ESRI_MDB_LAYER;
 }
 
 Map::FileGDBLReader::FileGDBLReader(DB::ReadingDB *conn, DB::DBReader *r, Sync::MutexUsage *mutUsage)

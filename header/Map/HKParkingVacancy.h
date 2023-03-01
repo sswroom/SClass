@@ -1,14 +1,14 @@
 #ifndef _SM_MAP_HKPARKINGVACANCY
 #define _SM_MAP_HKPARKINGVACANCY
 #include "Data/FastStringMap.h"
-#include "Map/IMapDrawLayer.h"
+#include "Map/MapDrawLayer.h"
 #include "Net/SSLEngine.h"
 #include "Sync/Mutex.h"
 #include "Text/String.h"
 
 namespace Map
 {
-	class HKParkingVacancy : public Map::IMapDrawLayer
+	class HKParkingVacancy : public Map::MapDrawLayer
 	{
 	private:
 		struct ParkingInfo

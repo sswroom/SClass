@@ -245,7 +245,7 @@ void UI::GUIMapTreeView::ExpandColl(UI::GUIMapTreeView::ItemIndex *ind)
 	if (ind->itemType == Map::MapEnv::IT_LAYER)
 	{
 		Map::MapEnv::LayerItem *lyr = (Map::MapEnv::LayerItem*)ind->item;
-		if (lyr->layer->GetObjectClass() == Map::IMapDrawLayer::OC_MAP_LAYER_COLL)
+		if (lyr->layer->GetObjectClass() == Map::MapDrawLayer::OC_MAP_LAYER_COLL)
 		{
 			Map::MapLayerCollection *lyrColl = (Map::MapLayerCollection*)lyr;
 			Map::MapEnv::GroupItem *grp;

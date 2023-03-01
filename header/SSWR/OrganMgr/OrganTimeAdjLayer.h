@@ -3,14 +3,14 @@
 
 #include "Data/StringMap.h"
 #include "Map/GPSTrack.h"
-#include "Map/IMapDrawLayer.h"
+#include "Map/MapDrawLayer.h"
 #include "SSWR/OrganMgr/OrganEnv.h"
 
 namespace SSWR
 {
 	namespace OrganMgr
 	{
-		class OrganTimeAdjLayer : public Map::IMapDrawLayer
+		class OrganTimeAdjLayer : public Map::MapDrawLayer
 		{
 		private:
 			Map::GPSTrack *gpsTrk;

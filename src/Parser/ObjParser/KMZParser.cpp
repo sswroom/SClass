@@ -106,7 +106,7 @@ IO::ParsedObject *Parser::ObjParser::KMZParser::ParseObject(IO::ParsedObject *po
 			pobj2 = pobjList->GetItem(i);
 			if (pobj2->GetParserType() == IO::ParserType::MapLayer)
 			{
-				mapLyrColl->Add((Map::IMapDrawLayer*)pobj2);
+				mapLyrColl->Add((Map::MapDrawLayer*)pobj2);
 			}
 			else
 			{

@@ -1,7 +1,7 @@
 #ifndef _SM_MAP_HKTRAFFICLAYER2
 #define _SM_MAP_HKTRAFFICLAYER2
 #include "Data/FastMap.h"
-#include "Map/IMapDrawLayer.h"
+#include "Map/MapDrawLayer.h"
 #include "Net/SocketFactory.h"
 #include "Net/SSLEngine.h"
 #include "Sync/Mutex.h"
@@ -11,7 +11,7 @@ namespace Map
 {
 	class HKRoadNetwork2;
 
-	class HKTrafficLayer2 : public Map::IMapDrawLayer
+	class HKTrafficLayer2 : public Map::MapDrawLayer
 	{
 	private:
 		struct RoadInfo

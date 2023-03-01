@@ -3,7 +3,7 @@
 #include "Math/Geometry/Point.h"
 #include "SSWR/OrganMgr/OrganSpImgLayer.h"
 
-SSWR::OrganMgr::OrganSpImgLayer::OrganSpImgLayer() : Map::IMapDrawLayer(CSTR("ImageLayer"), 0, CSTR_NULL)
+SSWR::OrganMgr::OrganSpImgLayer::OrganSpImgLayer() : Map::MapDrawLayer(CSTR("ImageLayer"), 0, CSTR_NULL)
 {
 	this->ClearItems();
 }
@@ -159,9 +159,9 @@ Math::Geometry::Vector2D *SSWR::OrganMgr::OrganSpImgLayer::GetNewVectorById(Map:
 	return pt;
 }
 
-Map::IMapDrawLayer::ObjectClass SSWR::OrganMgr::OrganSpImgLayer::GetObjectClass()
+Map::MapDrawLayer::ObjectClass SSWR::OrganMgr::OrganSpImgLayer::GetObjectClass()
 {
-	return Map::IMapDrawLayer::OC_OTHER;
+	return Map::MapDrawLayer::OC_OTHER;
 }
 
 void SSWR::OrganMgr::OrganSpImgLayer::ClearItems()

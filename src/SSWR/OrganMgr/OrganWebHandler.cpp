@@ -15,7 +15,7 @@
 #include "IO/StreamReader.h"
 #include "IO/StmData/FileData.h"
 #include "IO/StmData/MemoryDataRef.h"
-#include "Map/IMapDrawLayer.h"
+#include "Map/MapDrawLayer.h"
 #include "Math/Math.h"
 #include "Media/FrequencyGraph.h"
 #include "Media/IAudioSource.h"
@@ -1107,11 +1107,11 @@ Bool SSWR::OrganMgr::OrganWebHandler::UserGPSGetPos(Int32 userId, const Data::Ti
 			*sptr++ = IO::Path::PATH_SEPERATOR;
 			sptr = Text::StrConcat(sptr, dataFile->fileName);
 			NEW_CLASS(fd, IO::StmData::FileData(sbuff, false));
-			Map::IMapDrawLayer *lyr = (Map::IMapDrawLayer*)this->parsers->ParseFileType(fd, IO::ParserType::MapLayer);
+			Map::MapDrawLayer *lyr = (Map::MapDrawLayer*)this->parsers->ParseFileType(fd, IO::ParserType::MapLayer);
 			DEL_CLASS(fd);
 			if (lyr)
 			{
-				if (lyr->GetObjectClass() == Map::IMapDrawLayer::OC_GPS_TRACK)
+				if (lyr->GetObjectClass() == Map::MapDrawLayer::OC_GPS_TRACK)
 				{
 					this->gpsTrk = (Map::GPSTrack*)lyr;
 				}

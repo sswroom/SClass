@@ -1,11 +1,11 @@
 #ifndef _SM_MAP_CIPLAYER
 #define _SM_MAP_CIPLAYER
-#include "Map/IMapDrawLayer.h"
+#include "Map/MapDrawLayer.h"
 #include "Sync/Mutex.h"
 
 namespace Map
 {
-	class CIPLayer : public IMapDrawLayer
+	class CIPLayer : public MapDrawLayer
 	{
 	private:
 		typedef struct

@@ -296,7 +296,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 	}
 	else if (nodeText->Equals(UTF8STRC("osm")))
 	{
-		Map::IMapDrawLayer *lyr = Map::OSM::OSMParser::ParseLayerNode(&reader, fileName);
+		Map::MapDrawLayer *lyr = Map::OSM::OSMParser::ParseLayerNode(&reader, fileName);
 		if (lyr == 0)
 		{
 			return 0;

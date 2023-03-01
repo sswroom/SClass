@@ -5,7 +5,7 @@
 #include "Math/Geometry/Point.h"
 #include "Text/MyStringFloat.h"
 
-Map::HKTDVehRestrict::HKTDVehRestrict(Map::IMapDrawLayer *routeLyr, DB::DBTool *db)
+Map::HKTDVehRestrict::HKTDVehRestrict(Map::MapDrawLayer *routeLyr, DB::DBTool *db)
 {
 	this->db = db;
 	this->csys = routeLyr->GetCoordinateSystem()->Clone();
@@ -94,7 +94,7 @@ Map::HKTDVehRestrict::~HKTDVehRestrict()
 	}
 }
 
-Map::IMapDrawLayer *Map::HKTDVehRestrict::CreateTonnesSignLayer()
+Map::MapDrawLayer *Map::HKTDVehRestrict::CreateTonnesSignLayer()
 {
 	Map::DrawLayerType layerType = Map::DRAW_LAYER_POINT;
 	const UTF8Char *colNames[] = {(const UTF8Char*)"Id", (const UTF8Char*)"MaxWeight", (const UTF8Char*)"Remarks"};

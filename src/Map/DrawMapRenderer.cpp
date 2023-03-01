@@ -1473,17 +1473,17 @@ void Map::DrawMapRenderer::DrawLayers(Map::DrawMapRenderer::DrawEnv *denv, Map::
 						{
 							if (layer.lineType == 0)
 							{
-								layer.layer->SetMixedData(Map::IMapDrawLayer::MixedData::NonPointOnly);
+								layer.layer->SetMixedData(Map::MapDrawLayer::MixedData::NonPointOnly);
 								DrawShapes(denv, layer.layer, layer.lineStyle, layer.fillStyle, layer.lineThick, layer.lineColor);
 							}
 							else
 							{
-								layer.layer->SetMixedData(Map::IMapDrawLayer::MixedData::NonPointOnly);
+								layer.layer->SetMixedData(Map::MapDrawLayer::MixedData::NonPointOnly);
 								DrawShapes(denv, layer.layer, (UOSInt)-1, layer.fillStyle, layer.lineThick, layer.lineColor);
 							}
-							layer.layer->SetMixedData(Map::IMapDrawLayer::MixedData::PointOnly);
+							layer.layer->SetMixedData(Map::MapDrawLayer::MixedData::PointOnly);
 							DrawShapesPoint(denv, layer.layer, layer.imgIndex);
-							layer.layer->SetMixedData(Map::IMapDrawLayer::MixedData::AllData);
+							layer.layer->SetMixedData(Map::MapDrawLayer::MixedData::AllData);
 						}
 						if (layer.flags & Map::MapEnv::SFLG_SHOWLABEL)
 						{
@@ -1491,9 +1491,9 @@ void Map::DrawMapRenderer::DrawLayers(Map::DrawMapRenderer::DrawEnv *denv, Map::
 							{
 								if (layer.fontStyle < denv->fontStyleCnt)
 								{
-									layer.layer->SetMixedData(Map::IMapDrawLayer::MixedData::NonPointOnly);
+									layer.layer->SetMixedData(Map::MapDrawLayer::MixedData::NonPointOnly);
 									DrawLabel(denv, layer.layer, layer.fontStyle, layer.labelCol, layer.priority, layer.flags, 0, 0, layer.fontType);
-									layer.layer->SetMixedData(Map::IMapDrawLayer::MixedData::PointOnly);
+									layer.layer->SetMixedData(Map::MapDrawLayer::MixedData::PointOnly);
 									DrawLabel(denv, layer.layer, layer.fontStyle, layer.labelCol, layer.priority, layer.flags, 0, 0, layer.fontType);
 								}
 							}
@@ -1504,13 +1504,13 @@ void Map::DrawMapRenderer::DrawLayers(Map::DrawMapRenderer::DrawEnv *denv, Map::
 								Media::DrawBrush *b = denv->img->NewBrushARGB(this->colorConv->ConvRGB8(layer.fontColor));
 								denv->layerFont.Add(f);
 								denv->layerFontColor.Add(b);
-								layer.layer->SetMixedData(Map::IMapDrawLayer::MixedData::NonPointOnly);
+								layer.layer->SetMixedData(Map::MapDrawLayer::MixedData::NonPointOnly);
 								DrawLabel(denv, layer.layer, fs, layer.labelCol, layer.priority, layer.flags, 0, 0, layer.fontType);
-								layer.layer->SetMixedData(Map::IMapDrawLayer::MixedData::PointOnly);
+								layer.layer->SetMixedData(Map::MapDrawLayer::MixedData::PointOnly);
 								DrawLabel(denv, layer.layer, fs, layer.labelCol, layer.priority, layer.flags, 0, 0, layer.fontType);
 							}
 						}
-						layer.layer->SetMixedData(Map::IMapDrawLayer::MixedData::AllData);
+						layer.layer->SetMixedData(Map::MapDrawLayer::MixedData::AllData);
 					}
 					else if (layerType == Map::DRAW_LAYER_IMAGE)
 					{
@@ -1525,7 +1525,7 @@ void Map::DrawMapRenderer::DrawLayers(Map::DrawMapRenderer::DrawEnv *denv, Map::
 	mutUsage.EndUse();
 }
 
-void Map::DrawMapRenderer::DrawShapes(Map::DrawMapRenderer::DrawEnv *denv, Map::IMapDrawLayer *layer, UOSInt lineStyle, UInt32 fillStyle, UOSInt lineThick, UInt32 lineColor)
+void Map::DrawMapRenderer::DrawShapes(Map::DrawMapRenderer::DrawEnv *denv, Map::MapDrawLayer *layer, UOSInt lineStyle, UInt32 fillStyle, UOSInt lineThick, UInt32 lineColor)
 {
 	UOSInt i;
 	Map::GetObjectSess *session;
@@ -1651,7 +1651,7 @@ void Map::DrawMapRenderer::DrawShapes(Map::DrawMapRenderer::DrawEnv *denv, Map::
 	}
 }
 
-void Map::DrawMapRenderer::DrawShapesPoint(Map::DrawMapRenderer::DrawEnv *denv, Map::IMapDrawLayer *layer, UOSInt imgIndex)
+void Map::DrawMapRenderer::DrawShapesPoint(Map::DrawMapRenderer::DrawEnv *denv, Map::MapDrawLayer *layer, UOSInt imgIndex)
 {
 	Data::ArrayListInt64 arri;
 	Math::Geometry::Vector2D *vec;
@@ -1818,7 +1818,7 @@ void Map::DrawMapRenderer::DrawShapesPoint(Map::DrawMapRenderer::DrawEnv *denv, 
 	}
 }
 
-void Map::DrawMapRenderer::DrawLabel(DrawEnv *denv, Map::IMapDrawLayer *layer, UOSInt fontStyle, UOSInt labelCol, Int32 priority, Int32 flags, UOSInt imgWidth, UOSInt imgHeight, Map::MapEnv::FontType fontType)
+void Map::DrawMapRenderer::DrawLabel(DrawEnv *denv, Map::MapDrawLayer *layer, UOSInt fontStyle, UOSInt labelCol, Int32 priority, Int32 flags, UOSInt imgWidth, UOSInt imgHeight, Map::MapEnv::FontType fontType)
 {
 	Map::NameArray *arr;
 	Data::ArrayListInt64 arri;
@@ -2031,7 +2031,7 @@ void Map::DrawMapRenderer::DrawLabel(DrawEnv *denv, Map::IMapDrawLayer *layer, U
 	layer->ReleaseNameArr(arr);
 }
 
-void Map::DrawMapRenderer::DrawImageLayer(DrawEnv *denv, Map::IMapDrawLayer *layer)
+void Map::DrawMapRenderer::DrawImageLayer(DrawEnv *denv, Map::MapDrawLayer *layer)
 {
 	Math::Geometry::Vector2D *vec;
 	Math::Geometry::VectorImage *vimg;

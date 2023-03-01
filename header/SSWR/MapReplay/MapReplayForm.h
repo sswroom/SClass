@@ -53,7 +53,7 @@ namespace SSWR
 			virtual void PanToMap(Double lat, Double lon);
 			virtual void ShowMarker(Double lat, Double lon);
 			virtual void HideMarker();
-			virtual void AddLayer(Map::IMapDrawLayer *layer);
+			virtual void AddLayer(Map::MapDrawLayer *layer);
 			virtual void SetSelectedVector(Math::Geometry::Vector2D *vec);
 
 			virtual void SetKMapEnv(const WChar *kmapIP, Int32 kmapPort, Int32 lcid);

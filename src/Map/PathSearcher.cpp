@@ -73,7 +73,7 @@ Map::PathSearcher::PointNode *Map::PathSearcher::GetNode(Double x, Double y, Boo
 	}
 }
 
-Map::PathSearcher::PathSearcher(Map::IMapDrawLayer *layer, Double minAngleRad)
+Map::PathSearcher::PathSearcher(Map::MapDrawLayer *layer, Double minAngleRad)
 {
 	this->nodes = 0;
 	this->minAngleRad = minAngleRad;

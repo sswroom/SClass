@@ -243,7 +243,7 @@ void Map::HKParkingVacancy::ParkingInfoFree(ParkingInfo *parking)
 	MemFree(parking);
 }
 
-Map::HKParkingVacancy::HKParkingVacancy(Net::SocketFactory *sockf, Net::SSLEngine *ssl) : Map::IMapDrawLayer(CSTR("HKParkingVacancy"), 16, CSTR("HKParkingVacancy"))
+Map::HKParkingVacancy::HKParkingVacancy(Net::SocketFactory *sockf, Net::SSLEngine *ssl) : Map::MapDrawLayer(CSTR("HKParkingVacancy"), 16, CSTR("HKParkingVacancy"))
 {
 	this->sockf = sockf;
 	this->ssl = ssl;
@@ -558,7 +558,7 @@ Math::Geometry::Vector2D *Map::HKParkingVacancy::GetNewVectorById(GetObjectSess 
 	return 0;
 }
 
-Map::IMapDrawLayer::ObjectClass Map::HKParkingVacancy::GetObjectClass()
+Map::MapDrawLayer::ObjectClass Map::HKParkingVacancy::GetObjectClass()
 {
 	return ObjectClass::OC_OTHER;
 }

@@ -91,7 +91,7 @@ void Map::DrawMapServiceLayer::ClearDisp()
 	}
 }
 
-Map::DrawMapServiceLayer::DrawMapServiceLayer(Map::DrawMapService *mapService) : Map::IMapDrawLayer(mapService->GetName(), 0, 0)
+Map::DrawMapServiceLayer::DrawMapServiceLayer(Map::DrawMapService *mapService) : Map::MapDrawLayer(mapService->GetName(), 0, 0)
 {
 	this->mapService = mapService;
 	this->csys = mapService->GetCoordinateSystem()->Clone();
@@ -311,9 +311,9 @@ Math::Geometry::Vector2D *Map::DrawMapServiceLayer::GetNewVectorById(GetObjectSe
 	return 0;
 }
 
-Map::IMapDrawLayer::ObjectClass Map::DrawMapServiceLayer::GetObjectClass()
+Map::MapDrawLayer::ObjectClass Map::DrawMapServiceLayer::GetObjectClass()
 {
-	return Map::IMapDrawLayer::OC_DRAW_MAP_SERVICE_LAYER;
+	return Map::MapDrawLayer::OC_DRAW_MAP_SERVICE_LAYER;
 }
 
 Bool Map::DrawMapServiceLayer::CanQuery()

@@ -1,13 +1,13 @@
 #ifndef _SM_SSWR_ORGANMGR_ORGANSPIMGLAYER
 #define _SM_SSWR_ORGANMGR_ORGANSPIMGLAYER
-#include "Map/IMapDrawLayer.h"
+#include "Map/MapDrawLayer.h"
 #include "SSWR/OrganMgr/OrganImageItem.h"
 
 namespace SSWR
 {
 	namespace OrganMgr
 	{
-		class OrganSpImgLayer : public Map::IMapDrawLayer
+		class OrganSpImgLayer : public Map::MapDrawLayer
 		{
 		private:
 			Math::Coord2DDbl min;

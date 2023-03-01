@@ -71,7 +71,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseUp(void *userObj, Math::C
 			Math::CoordinateSystem::ConvertXYZ(csys, lyrCSys, mapPt2.x, mapPt2.y, 0, &mapPt2.x, &mapPt2.y, &tmp);
 		}
 		sess = me->lyr->BeginGetObject();
-		Data::ArrayList<Map::IMapDrawLayer::ObjectInfo*> objList;
+		Data::ArrayList<Map::MapDrawLayer::ObjectInfo*> objList;
 		me->lyr->GetNearObjects(sess, &objList, mapPt, mapPt2.x - mapPt.x);
 		if (!me->layerNames)
 		{
@@ -91,7 +91,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseUp(void *userObj, Math::C
 		}
 		else
 		{
-			Map::IMapDrawLayer::ObjectInfo *obj;
+			Map::MapDrawLayer::ObjectInfo *obj;
 			Math::Geometry::Vector2D *vec = 0;
 			Data::ArrayListInt64 arr;
 			Map::NameArray *nameArr;
@@ -302,7 +302,7 @@ void SSWR::AVIRead::AVIRGISQueryForm::SetQueryItem(UOSInt index)
 	this->currVec = vec;
 }
 
-SSWR::AVIRead::AVIRGISQueryForm::AVIRGISQueryForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Map::IMapDrawLayer *lyr, IMapNavigator *navi) : UI::GUIForm(parent, 416, 408, ui)
+SSWR::AVIRead::AVIRGISQueryForm::AVIRGISQueryForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Map::MapDrawLayer *lyr, IMapNavigator *navi) : UI::GUIForm(parent, 416, 408, ui)
 {
 	Text::StringBuilderUTF8 sb;
 	this->core = core;

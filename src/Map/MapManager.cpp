@@ -22,7 +22,7 @@ Map::MapManager::~MapManager()
 	}
 }
 
-Map::IMapDrawLayer *Map::MapManager::LoadLayer(Text::CString fileName, Parser::ParserList *parsers, Map::MapEnv *env)
+Map::MapDrawLayer *Map::MapManager::LoadLayer(Text::CString fileName, Parser::ParserList *parsers, Map::MapEnv *env)
 {
 	Map::MapManager::MapLayerInfo *info = this->layerArr.Get(fileName.v);
 	if (info)
@@ -47,8 +47,8 @@ Map::IMapDrawLayer *Map::MapManager::LoadLayer(Text::CString fileName, Parser::P
 			return 0;
 		}
 	}
-	Map::IMapDrawLayer *lyr;
-	lyr = (Map::IMapDrawLayer*)pobj;
+	Map::MapDrawLayer *lyr;
+	lyr = (Map::MapDrawLayer*)pobj;
 	info = MemAlloc(Map::MapManager::MapLayerInfo, 1);
 	NEW_CLASS(info->envList, Data::ArrayList<Map::MapEnv*>());
 	info->layer = lyr;

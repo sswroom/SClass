@@ -17,7 +17,7 @@ namespace SSWR
 
 			UI::GUITextBox *txtDesc;
 			UI::GUIListView *lvMaps;
-			Map::IMapDrawLayer *layer;
+			Map::MapDrawLayer *layer;
 
 			static void __stdcall OnMapsSelChg(void *userObj);
 			static void __stdcall OnMapsDblClk(void *userObj, UOSInt index);
@@ -27,7 +27,7 @@ namespace SSWR
 
 			virtual void OnMonitorChanged();
 
-			Map::IMapDrawLayer *GetMapLayer();
+			Map::MapDrawLayer *GetMapLayer();
 		};
 	}
 }

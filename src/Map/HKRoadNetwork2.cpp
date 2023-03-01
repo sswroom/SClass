@@ -49,7 +49,7 @@ Map::HKSpeedLimit *Map::HKRoadNetwork2::CreateSpeedLimit()
 	return 0;
 }
 
-Map::IMapDrawLayer *Map::HKRoadNetwork2::CreateTonnesSignLayer()
+Map::MapDrawLayer *Map::HKRoadNetwork2::CreateTonnesSignLayer()
 {
 	if (this->fgdb == 0)
 	{

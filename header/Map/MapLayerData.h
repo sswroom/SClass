@@ -1,12 +1,12 @@
 #ifndef _SM_MAP_MAPLAYERDATA
 #define _SM_MAP_MAPLAYERDATA
 #include "IO/IFileBuffer.h"
-#include "Map/IMapSearchLayer.h"
+#include "Map/MapSearchLayer.h"
 #include "Text/CString.h"
 
 namespace Map
 {
-	class MapLayerData : public Map::IMapSearchLayer
+	class MapLayerData : public Map::MapSearchLayer
 	{
 	public:
 		UInt8 *cipFile;

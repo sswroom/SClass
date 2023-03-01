@@ -908,7 +908,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 	UTF8Char *sptr;
 	UTF8Char *sptr2;
 	Map::TileMap *tileMap;
-	Map::IMapDrawLayer *mapLyr;
+	Map::MapDrawLayer *mapLyr;
 
 	switch (cmdId)
 	{

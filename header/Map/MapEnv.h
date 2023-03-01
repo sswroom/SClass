@@ -3,7 +3,7 @@
 #include "Data/ArrayList.h"
 #include "Data/RandomOS.h"
 #include "Data/StringMap.h"
-#include "Map/IMapDrawLayer.h"
+#include "Map/MapDrawLayer.h"
 #include "Map/MapLayerCollection.h"
 #include "Map/MapView.h"
 #include "Media/ImageList.h"
@@ -49,7 +49,7 @@ namespace Map
 
 		struct LayerItem : public MapItem
 		{
-			Map::IMapDrawLayer *layer;
+			Map::MapDrawLayer *layer;
 			Bool needRelease;
 			Int32 lineType;
 			UOSInt lineStyle;
@@ -132,9 +132,9 @@ namespace Map
 
 	private:
 		UInt8 GetRandomColor();
-		UOSInt GetLayersInList(Data::ArrayList<Map::IMapDrawLayer*> *layers, const Data::ArrayList<MapItem*> *list, Map::DrawLayerType lyrType) const;
-		void AddGroupUpdatedHandler(GroupItem *group, Map::IMapDrawLayer::UpdatedHandler hdlr, void *obj);
-		void RemoveGroupUpdatedHandler(GroupItem *group, Map::IMapDrawLayer::UpdatedHandler hdlr, void *obj);
+		UOSInt GetLayersInList(Data::ArrayList<Map::MapDrawLayer*> *layers, const Data::ArrayList<MapItem*> *list, Map::DrawLayerType lyrType) const;
+		void AddGroupUpdatedHandler(GroupItem *group, Map::MapDrawLayer::UpdatedHandler hdlr, void *obj);
+		void RemoveGroupUpdatedHandler(GroupItem *group, Map::MapDrawLayer::UpdatedHandler hdlr, void *obj);
 	public:
 		MapEnv(Text::CString fileName, UInt32 bgColor, Math::CoordinateSystem *csys);
 		virtual ~MapEnv();
@@ -167,8 +167,8 @@ namespace Map
 		Bool GetFontStyle(UOSInt index, Text::String **fontName, Double *fontSizePt, Bool *bold, UInt32 *fontColor, UOSInt *buffSize, UInt32 *buffColor) const;
 		Bool ChgFontStyle(UOSInt index, Text::String *fontName, Double fontSizePt, Bool bold, UInt32 fontColor, UOSInt buffSize, UInt32 buffColor);
 
-		UOSInt AddLayer(GroupItem *group, Map::IMapDrawLayer *layer, Bool needRelease);
-		Bool ReplaceLayer(GroupItem *group, UOSInt index, Map::IMapDrawLayer *layer, Bool needRelease);
+		UOSInt AddLayer(GroupItem *group, Map::MapDrawLayer *layer, Bool needRelease);
+		Bool ReplaceLayer(GroupItem *group, UOSInt index, Map::MapDrawLayer *layer, Bool needRelease);
 		GroupItem *AddGroup(GroupItem *group, Text::String *subgroupName);
 		GroupItem *AddGroup(GroupItem *group, Text::CString subgroupName);
 		void RemoveItem(GroupItem *group, UOSInt index);
@@ -195,16 +195,16 @@ namespace Map
 		Bool GetImageFileInfo(UOSInt index, Map::MapEnv::ImageInfo *info) const;
 		UOSInt GetImageFileIndex(UOSInt index) const;
 
-		UOSInt GetLayersOfType(Data::ArrayList<Map::IMapDrawLayer *> *layers, Map::DrawLayerType lyrType) const;
-		void AddUpdatedHandler(Map::IMapDrawLayer::UpdatedHandler hdlr, void *obj);
-		void RemoveUpdatedHandler(Map::IMapDrawLayer::UpdatedHandler hdlr, void *obj);
+		UOSInt GetLayersOfType(Data::ArrayList<Map::MapDrawLayer *> *layers, Map::DrawLayerType lyrType) const;
+		void AddUpdatedHandler(Map::MapDrawLayer::UpdatedHandler hdlr, void *obj);
+		void RemoveUpdatedHandler(Map::MapDrawLayer::UpdatedHandler hdlr, void *obj);
 
 		Int64 GetTimeEndTS(GroupItem *group) const;
 		Int64 GetTimeStartTS(GroupItem *group) const;
 		void SetCurrTimeTS(GroupItem *group, Int64 timeStamp);
 
-		Map::IMapDrawLayer *GetFirstLayer(GroupItem *group) const;
-		UOSInt GetLayersInGroup(Map::MapEnv::GroupItem *group, Data::ArrayList<Map::IMapDrawLayer *> *layers) const;
+		Map::MapDrawLayer *GetFirstLayer(GroupItem *group) const;
+		UOSInt GetLayersInGroup(Map::MapEnv::GroupItem *group, Data::ArrayList<Map::MapDrawLayer *> *layers) const;
 		Bool GetBounds(Map::MapEnv::GroupItem *group, Math::RectAreaDbl *bounds) const;
 		Map::MapView *CreateMapView(Math::Size2D<Double> scnSize) const;
 		Math::CoordinateSystem *GetCoordinateSystem() const;

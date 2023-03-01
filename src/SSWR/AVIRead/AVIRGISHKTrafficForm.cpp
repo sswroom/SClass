@@ -32,7 +32,7 @@ void __stdcall SSWR::AVIRead::AVIRGISHKTrafficForm::OnOKClicked(void *userObj)
 	me->txtRoadCenterline->GetText(&sb);
 	IO::StmData::FileData *fd;
 	NEW_CLASS(fd, IO::StmData::FileData(sb.ToCString(), false));
-	Map::IMapDrawLayer *lyr = (Map::IMapDrawLayer*)me->core->GetParserList()->ParseFileType(fd, IO::ParserType::MapLayer);
+	Map::MapDrawLayer *lyr = (Map::MapDrawLayer*)me->core->GetParserList()->ParseFileType(fd, IO::ParserType::MapLayer);
 	DEL_CLASS(fd);
 	if (lyr)
 	{
@@ -99,7 +99,7 @@ void SSWR::AVIRead::AVIRGISHKTrafficForm::OnMonitorChanged()
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 }
 
-Map::IMapDrawLayer *SSWR::AVIRead::AVIRGISHKTrafficForm::GetMapLayer()
+Map::MapDrawLayer *SSWR::AVIRead::AVIRGISHKTrafficForm::GetMapLayer()
 {
 	return this->lyr;
 }

@@ -1,6 +1,6 @@
 #ifndef _SM_EXPORTER_CIPEXPORTER
 #define _SM_EXPORTER_CIPEXPORTER
-#include "Map/IMapDrawLayer.h"
+#include "Map/MapDrawLayer.h"
 #include "IO/FileExporter.h"
 #include "Data/ArrayList.h"
 
@@ -11,7 +11,7 @@ namespace Exporter
 	private:
 		typedef struct
 		{
-			Map::IMapDrawLayer *layer;
+			Map::MapDrawLayer *layer;
 			UInt32 dispCol;
 			Int32 scale;
 		} CIPParam;

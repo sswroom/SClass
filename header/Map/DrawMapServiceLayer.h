@@ -2,13 +2,13 @@
 #define _SM_MAP_DRAWMAPSERVICELAYER
 #include "Data/SyncLinkedList.h"
 #include "Map/DrawMapService.h"
-#include "Map/IMapDrawLayer.h"
+#include "Map/MapDrawLayer.h"
 #include "Map/MapRenderer.h"
 #include "Media/SharedImage.h"
 
 namespace Map
 {
-	class DrawMapServiceLayer : public Map::IMapDrawLayer
+	class DrawMapServiceLayer : public Map::MapDrawLayer
 	{
 	private:
 		Map::DrawMapService *mapService;

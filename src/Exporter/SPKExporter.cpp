@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "Exporter/SPKExporter.h"
 #include "IO/Path.h"
-#include "Map/IMapDrawLayer.h"
+#include "Map/MapDrawLayer.h"
 #include "Map/OruxDBLayer.h"
 #include "Map/TileMapLayer.h"
 #include "Map/OSM/OSMTileMap.h"
@@ -29,9 +29,9 @@ IO::FileExporter::SupportType Exporter::SPKExporter::IsObjectSupported(IO::Parse
 	}
 	else if (pobj->GetParserType() == IO::ParserType::MapLayer)
 	{
-		Map::IMapDrawLayer *layer = (Map::IMapDrawLayer*)pobj;
-		Map::IMapDrawLayer::ObjectClass oc = layer->GetObjectClass();
-		if (oc == Map::IMapDrawLayer::OC_TILE_MAP_LAYER)
+		Map::MapDrawLayer *layer = (Map::MapDrawLayer*)pobj;
+		Map::MapDrawLayer::ObjectClass oc = layer->GetObjectClass();
+		if (oc == Map::MapDrawLayer::OC_TILE_MAP_LAYER)
 		{
 			Map::TileMapLayer *tileMapLayer = (Map::TileMapLayer*)layer;
 			Map::TileMap *tileMap = tileMapLayer->GetTileMap();
@@ -40,7 +40,7 @@ IO::FileExporter::SupportType Exporter::SPKExporter::IsObjectSupported(IO::Parse
 				return IO::FileExporter::SupportType::NormalStream;
 			}
 		}
-		else if (oc == Map::IMapDrawLayer::OC_ORUX_DB_LAYER)
+		else if (oc == Map::MapDrawLayer::OC_ORUX_DB_LAYER)
 		{
 			return IO::FileExporter::SupportType::NormalStream;
 		}
@@ -77,9 +77,9 @@ Bool Exporter::SPKExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 	}
 	else if (pobj->GetParserType() == IO::ParserType::MapLayer)
 	{
-		Map::IMapDrawLayer *layer = (Map::IMapDrawLayer*)pobj;
-		Map::IMapDrawLayer::ObjectClass oc = layer->GetObjectClass();
-		if (oc == Map::IMapDrawLayer::OC_TILE_MAP_LAYER)
+		Map::MapDrawLayer *layer = (Map::MapDrawLayer*)pobj;
+		Map::MapDrawLayer::ObjectClass oc = layer->GetObjectClass();
+		if (oc == Map::MapDrawLayer::OC_TILE_MAP_LAYER)
 		{
 			Map::TileMapLayer *tileMapLayer = (Map::TileMapLayer*)layer;
 			Map::TileMap *tileMap = tileMapLayer->GetTileMap();
@@ -113,7 +113,7 @@ Bool Exporter::SPKExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 				return true;
 			}
 		}
-		else if (oc == Map::IMapDrawLayer::OC_ORUX_DB_LAYER)
+		else if (oc == Map::MapDrawLayer::OC_ORUX_DB_LAYER)
 		{
 			IO::SPackageFile *spkg;
 			Map::OruxDBLayer *orux = (Map::OruxDBLayer*)layer;

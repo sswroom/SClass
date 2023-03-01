@@ -154,7 +154,7 @@ void Map::TileMapLayer::CheckCache(Data::ArrayListInt64 *currIDs)
 	idleMutUsage.EndUse();
 }
 
-Map::TileMapLayer::TileMapLayer(Map::TileMap *tileMap, Parser::ParserList *parsers) : Map::IMapDrawLayer(tileMap->GetName(), 0, CSTR_NULL)
+Map::TileMapLayer::TileMapLayer(Map::TileMap *tileMap, Parser::ParserList *parsers) : Map::MapDrawLayer(tileMap->GetName(), 0, CSTR_NULL)
 {
 	this->parsers = parsers;
 	this->tileMap = tileMap;
@@ -579,9 +579,9 @@ Math::Geometry::Vector2D *Map::TileMapLayer::GetNewVectorById(GetObjectSess *ses
 	}
 }
 
-Map::IMapDrawLayer::ObjectClass Map::TileMapLayer::GetObjectClass()
+Map::MapDrawLayer::ObjectClass Map::TileMapLayer::GetObjectClass()
 {
-	return Map::IMapDrawLayer::OC_TILE_MAP_LAYER;
+	return Map::MapDrawLayer::OC_TILE_MAP_LAYER;
 }
 
 Bool Map::TileMapLayer::CanQuery()

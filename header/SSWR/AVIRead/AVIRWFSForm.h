@@ -38,7 +38,7 @@ namespace SSWR
 
 			virtual void OnMonitorChanged();
 
-			Map::IMapDrawLayer *LoadLayer();
+			Map::MapDrawLayer *LoadLayer();
 		};
 	}
 }

@@ -344,7 +344,7 @@ UOSInt Map::WebFeatureService::GetFeatureNames(Data::ArrayList<Text::String*> *n
 	return j;
 }
 
-Map::IMapDrawLayer *Map::WebFeatureService::LoadAsLayer()
+Map::MapDrawLayer *Map::WebFeatureService::LoadAsLayer()
 {
 	Bool needSwapXY = false;
 	if (this->currFeature)
@@ -396,7 +396,7 @@ Map::IMapDrawLayer *Map::WebFeatureService::LoadAsLayer()
 				}
 				else
 				{
-					return (Map::IMapDrawLayer*)pobj;
+					return (Map::MapDrawLayer*)pobj;
 				}
 			}
 			DEL_CLASS(pobj);

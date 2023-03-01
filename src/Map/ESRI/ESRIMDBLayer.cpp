@@ -186,13 +186,13 @@ void Map::ESRI::ESRIMDBLayer::Init(DB::SharedDBConn *conn, UInt32 srid, Text::CS
 	this->csys = Math::CoordinateSystemManager::SRCreateCSys(srid);
 }
 
-Map::ESRI::ESRIMDBLayer::ESRIMDBLayer(DB::SharedDBConn *conn, UInt32 srid, Text::String *sourceName, Text::CString tableName) : Map::IMapDrawLayer(sourceName->ToCString(), 0, tableName)
+Map::ESRI::ESRIMDBLayer::ESRIMDBLayer(DB::SharedDBConn *conn, UInt32 srid, Text::String *sourceName, Text::CString tableName) : Map::MapDrawLayer(sourceName->ToCString(), 0, tableName)
 {
 	SDEL_STRING(this->layerName);
 	this->Init(conn, srid, tableName);
 }
 
-Map::ESRI::ESRIMDBLayer::ESRIMDBLayer(DB::SharedDBConn *conn, UInt32 srid, Text::CString sourceName, Text::CString tableName) : Map::IMapDrawLayer(sourceName, 0, tableName)
+Map::ESRI::ESRIMDBLayer::ESRIMDBLayer(DB::SharedDBConn *conn, UInt32 srid, Text::CString sourceName, Text::CString tableName) : Map::MapDrawLayer(sourceName, 0, tableName)
 {
 	this->Init(conn, srid, tableName);
 }
@@ -422,9 +422,9 @@ void Map::ESRI::ESRIMDBLayer::Reconnect()
 	this->conn->Reconnect();
 }
 
-Map::IMapDrawLayer::ObjectClass Map::ESRI::ESRIMDBLayer::GetObjectClass()
+Map::MapDrawLayer::ObjectClass Map::ESRI::ESRIMDBLayer::GetObjectClass()
 {
-	return Map::IMapDrawLayer::OC_ESRI_MDB_LAYER;
+	return Map::MapDrawLayer::OC_ESRI_MDB_LAYER;
 }
 
 Map::ESRI::ESRIMDBReader::ESRIMDBReader(DB::DBConn *conn, DB::DBReader *r, Sync::MutexUsage *mutUsage)

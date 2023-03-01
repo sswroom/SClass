@@ -1,6 +1,6 @@
 #ifndef _SM_MAP_PATHSEARCHER
 #define _SM_MAP_PATHSEARCHER
-#include "Map/IMapDrawLayer.h"
+#include "Map/MapDrawLayer.h"
 #include "Math/ShortestPath.h"
 #include "Math/Geometry/Polyline.h"
 
@@ -29,7 +29,7 @@ namespace Map
 	private:
 		Map::PathSearcher::PointNode *GetNode(Double x, Double y, Bool toAdd);
 	public:
-		PathSearcher(Map::IMapDrawLayer *layer, Double  minAngleRad);
+		PathSearcher(Map::MapDrawLayer *layer, Double  minAngleRad);
 		virtual ~PathSearcher();
 		
 		virtual Double CalNodeDistance(PathNode *node1, PathNode *node2);

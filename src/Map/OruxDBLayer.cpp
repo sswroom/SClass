@@ -13,7 +13,7 @@
 #include "Math/Geometry/VectorImage.h"
 #include "Media/SharedImage.h"
 
-Map::OruxDBLayer::OruxDBLayer(Text::CString sourceName, Text::CString layerName, Parser::ParserList *parsers) : Map::IMapDrawLayer(sourceName, 0, layerName)
+Map::OruxDBLayer::OruxDBLayer(Text::CString sourceName, Text::CString layerName, Parser::ParserList *parsers) : Map::MapDrawLayer(sourceName, 0, layerName)
 {
 	this->parsers = parsers;
 	this->currLayer = (UInt32)-1;
@@ -366,9 +366,9 @@ void Map::OruxDBLayer::Reconnect()
 	this->db->Reconnect();
 }
 
-Map::IMapDrawLayer::ObjectClass Map::OruxDBLayer::GetObjectClass()
+Map::MapDrawLayer::ObjectClass Map::OruxDBLayer::GetObjectClass()
 {
-	return Map::IMapDrawLayer::OC_ORUX_DB_LAYER;
+	return Map::MapDrawLayer::OC_ORUX_DB_LAYER;
 }
 
 Bool Map::OruxDBLayer::GetObjectData(Int64 objectId, IO::Stream *stm, Int32 *tileX, Int32 *tileY, Int64 *modTimeTicks)

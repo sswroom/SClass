@@ -1,7 +1,7 @@
 #ifndef _SM_MAP_HKTRAFFICLAYER
 #define _SM_MAP_HKTRAFFICLAYER
 #include "Data/FastMap.h"
-#include "Map/IMapDrawLayer.h"
+#include "Map/MapDrawLayer.h"
 #include "Net/SocketFactory.h"
 #include "Net/SSLEngine.h"
 #include "Sync/Mutex.h"
@@ -9,7 +9,7 @@
 
 namespace Map
 {
-	class HKTrafficLayer : public Map::IMapDrawLayer
+	class HKTrafficLayer : public Map::MapDrawLayer
 	{
 	private:
 		typedef enum
@@ -69,7 +69,7 @@ namespace Map
 		virtual ~HKTrafficLayer();
 
 		void SetURL(Text::String *url);
-		Bool AddRoadLayer(Map::IMapDrawLayer *roadLayer);
+		Bool AddRoadLayer(Map::MapDrawLayer *roadLayer);
 		void EndInit();
 		void ReloadData();
 
@@ -93,7 +93,7 @@ namespace Map
 
 		virtual ObjectClass GetObjectClass();
 
-		static Map::IMapDrawLayer *GetNodePoints();
+		static Map::MapDrawLayer *GetNodePoints();
 	};
 }
 #endif

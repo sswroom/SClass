@@ -13,15 +13,15 @@
 #include "Media/StaticImage.h"
 #include "Text/URLString.h"
 
-Map::IMapDrawLayer *Map::KMLXML::ParseKMLRoot(Text::XMLReader *reader, Text::CString fileName, Parser::ParserList *parsers, Net::WebBrowser *browser, IO::PackageFile *pkgFile)
+Map::MapDrawLayer *Map::KMLXML::ParseKMLRoot(Text::XMLReader *reader, Text::CString fileName, Parser::ParserList *parsers, Net::WebBrowser *browser, IO::PackageFile *pkgFile)
 {
 	if (reader->GetNodeType() != Text::XMLNode::NodeType::Element)
 		return 0;
 	if (!reader->GetNodeText()->Equals(UTF8STRC("kml")))
 		return 0;
 	Data::ICaseStringMap<KMLStyle*> styles;
-/*	Data::ArrayList<Map::IMapDrawLayer *> layers;
-	Map::IMapDrawLayer *lyr;
+/*	Data::ArrayList<Map::MapDrawLayer *> layers;
+	Map::MapDrawLayer *lyr;
 
 	while (reader->ReadNext())
 	{
@@ -45,7 +45,7 @@ Map::IMapDrawLayer *Map::KMLXML::ParseKMLRoot(Text::XMLReader *reader, Text::CSt
 			}
 		}
 	}*/
-	Map::IMapDrawLayer *lyr = ParseKMLContainer(reader, &styles, fileName, parsers, browser, pkgFile);
+	Map::MapDrawLayer *lyr = ParseKMLContainer(reader, &styles, fileName, parsers, browser, pkgFile);
 
 	const Data::ArrayList<KMLStyle*> *styleList = styles.GetValues();
 	KMLStyle *style;
@@ -93,7 +93,7 @@ Map::IMapDrawLayer *Map::KMLXML::ParseKMLRoot(Text::XMLReader *reader, Text::CSt
 }
 
 
-Map::IMapDrawLayer *Map::KMLXML::ParseKMLContainer(Text::XMLReader *reader, Data::ICaseStringMap<KMLStyle*> *styles, Text::CString sourceName, Parser::ParserList *parsers, Net::WebBrowser *browser, IO::PackageFile *basePF)
+Map::MapDrawLayer *Map::KMLXML::ParseKMLContainer(Text::XMLReader *reader, Data::ICaseStringMap<KMLStyle*> *styles, Text::CString sourceName, Parser::ParserList *parsers, Net::WebBrowser *browser, IO::PackageFile *basePF)
 {
 	KMLStyle *style;
 	UOSInt i;
@@ -102,12 +102,12 @@ Map::IMapDrawLayer *Map::KMLXML::ParseKMLContainer(Text::XMLReader *reader, Data
 	Data::DateTime dt;
 	UTF8Char sbuff[512];
 	UTF8Char *sbuffEnd;
-	Data::ArrayList<Map::IMapDrawLayer *> layers;
+	Data::ArrayList<Map::MapDrawLayer *> layers;
 
 	Map::WebImageLayer *imgLyr = 0;
 	Text::StringBuilderUTF8 containerNameSb;
 	containerNameSb.Append(sourceName);
-	Map::IMapDrawLayer *lyr;
+	Map::MapDrawLayer *lyr;
 	i = Text::StrLastIndexOfCharC(containerNameSb.ToString(), containerNameSb.GetLength(), '/');
 	if (i != INVALID_INDEX)
 	{
@@ -1448,13 +1448,13 @@ void Map::KMLXML::ParseKMLPlacemarkTrack(Text::XMLReader *reader, Map::GPSTrack 
 	}
 }
 
-Map::IMapDrawLayer *Map::KMLXML::ParseKMLPlacemarkLyr(Text::XMLReader *reader, Data::StringMap<KMLStyle*> *styles, Text::CString sourceName, Parser::ParserList *parsers, Net::WebBrowser *browser, IO::PackageFile *basePF)
+Map::MapDrawLayer *Map::KMLXML::ParseKMLPlacemarkLyr(Text::XMLReader *reader, Data::StringMap<KMLStyle*> *styles, Text::CString sourceName, Parser::ParserList *parsers, Net::WebBrowser *browser, IO::PackageFile *basePF)
 {
 	Text::StringBuilderUTF8 lyrNameSb;
 	Text::StringBuilderUTF8 sb;
 	lyrNameSb.AppendC(UTF8STRC("Layer"));
 	KMLStyle *style = 0;
-	Data::ArrayList<Map::IMapDrawLayer*> layers;
+	Data::ArrayList<Map::MapDrawLayer*> layers;
 	while (reader->ReadNext())
 	{
 		if (reader->GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
@@ -1790,7 +1790,7 @@ Map::IMapDrawLayer *Map::KMLXML::ParseKMLPlacemarkLyr(Text::XMLReader *reader, D
 		return layers.GetItem(0);
 	}
 	UOSInt i = layers.GetCount();
-	Map::IMapDrawLayer *lyr;
+	Map::MapDrawLayer *lyr;
 	while (i-- > 0)
 	{
 		lyr = layers.GetItem(i);

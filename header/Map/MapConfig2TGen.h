@@ -65,7 +65,7 @@ namespace Map
 		static void DrawCharsL(Media::DrawImage *img, Text::CString str1, Math::Coord2DDbl *mapPts, Math::Coord2D<Int32> *scnPts, UOSInt nPoints, UInt32 thisPt, Double scaleN, Double scaleD, Data::ArrayList<MapFontStyle*> *fontStyle, Math::RectAreaDbl *realBounds);
 		static void GetCharsSize(Media::DrawImage *img, Math::Coord2DDbl *size, Text::CString label, Data::ArrayList<MapFontStyle*> *fontStyle, Double scaleW, Double scaleH);
 		static UInt32 ToColor(const UTF8Char *str);
-		static Map::IMapDrawLayer *GetDrawLayer(Text::CString name, Data::ArrayList<Map::IMapDrawLayer*> *layerList, IO::Writer *errWriter);
+		static Map::MapDrawLayer *GetDrawLayer(Text::CString name, Data::ArrayList<Map::MapDrawLayer*> *layerList, IO::Writer *errWriter);
 		static void DrawPoints(Media::DrawImage *img, MapLayerStyle *lyrs, Map::MapView *view, Bool *isLayerEmpty, Map::MapScheduler *mapSch, Media::DrawEngine *eng, Media::IImgResizer *resizer, Math::RectAreaDbl *objBounds, UOSInt *objCnt, UOSInt maxObjCnt);
 		static void DrawString(Media::DrawImage *img, MapLayerStyle *lyrs, Map::MapView *view, Data::ArrayList<MapFontStyle*> **fonts, MapLabels2 *labels, UOSInt maxLabels, UOSInt *labelCnt, Bool *isLayerEmpty);
 		static UOSInt NewLabel(MapLabels2 *labels, UOSInt maxLabel, UOSInt *labelCnt, Int32 priority);
@@ -76,7 +76,7 @@ namespace Map
 		static void LoadLabels(Media::DrawImage *img, Map::MapConfig2TGen::MapLabels2 *labels, UOSInt maxLabel, UOSInt *labelCnt, Map::MapView *view, Data::ArrayList<MapFontStyle*> **fonts, Media::DrawEngine *drawEng, Math::RectAreaDbl *objBounds, UOSInt *objCnt, Text::CString fileName, Int32 xId, Int32 yId, Double xOfst, Double yOfst, IO::Stream *dbStream);
 
 	public:
-		MapConfig2TGen(Text::CString fileName, Media::DrawEngine *eng, Data::ArrayList<Map::IMapDrawLayer*> *layerList, Parser::ParserList *parserList, const UTF8Char *forceBase, IO::Writer *errWriter, Int32 maxScale, Int32 minScale);
+		MapConfig2TGen(Text::CString fileName, Media::DrawEngine *eng, Data::ArrayList<Map::MapDrawLayer*> *layerList, Parser::ParserList *parserList, const UTF8Char *forceBase, IO::Writer *errWriter, Int32 maxScale, Int32 minScale);
 		~MapConfig2TGen();
 
 		Bool IsError();
@@ -86,7 +86,7 @@ namespace Map
 		UInt32 GetBGColor();
 		Bool SupportMCC(Int32 mcc);
 		Int32 GetLocMCC(Int32 lat, Int32 lon);
-		static void ReleaseLayers(Data::ArrayList<Map::IMapDrawLayer*> *layerList);
+		static void ReleaseLayers(Data::ArrayList<Map::MapDrawLayer*> *layerList);
 	};
 }
 #endif

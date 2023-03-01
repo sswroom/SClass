@@ -15,17 +15,17 @@ namespace Map
 	{
 		Int32 searchType;
 		Double searchDist;
-		Map::IMapSearchLayer *mapLayer;
+		Map::MapSearchLayer *mapLayer;
 		Text::String *searchStr;
 		UOSInt strIndex;
-	} MapSearchLayer;
+	} MapSearchLayerInfo;
 
 	class MapSearch
 	{
 	private:
 		Text::String *baseDir;
 		Int32 concatType;
-		Data::ArrayList<Map::MapSearchLayer*> **layersArr;
+		Data::ArrayList<Map::MapSearchLayerInfo*> **layersArr;
 
 	public:
 		MapSearch(Text::CString fileName, Map::MapSearchManager *manager);

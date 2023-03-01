@@ -8,7 +8,7 @@
 #include "IO/FileStream.h"
 #include "IO/Stream.h"
 #include "Map/CIPLayer2.h"
-#include "Map/IMapDrawLayer.h"
+#include "Map/MapDrawLayer.h"
 #include "Math/CoordinateSystemManager.h"
 #include "Math/Math.h"
 #include "Math/Geometry/Point.h"
@@ -21,7 +21,7 @@
 #include "Text/MyString.h"
 #include "Text/MyStringW.h"
 
-Map::CIPLayer2::CIPLayer2(Text::CString layerName) : Map::IMapDrawLayer(layerName, 0, CSTR_NULL)
+Map::CIPLayer2::CIPLayer2(Text::CString layerName) : Map::MapDrawLayer(layerName, 0, CSTR_NULL)
 {
 	UTF8Char fname[256];
 	UTF8Char *sptr;
@@ -765,7 +765,7 @@ Math::Geometry::Vector2D *Map::CIPLayer2::GetNewVectorById(GetObjectSess *sessio
 	return 0;
 }
 
-Map::IMapDrawLayer::ObjectClass Map::CIPLayer2::GetObjectClass()
+Map::MapDrawLayer::ObjectClass Map::CIPLayer2::GetObjectClass()
 {
-	return Map::IMapDrawLayer::OC_CIP_LAYER;
+	return Map::MapDrawLayer::OC_CIP_LAYER;
 }

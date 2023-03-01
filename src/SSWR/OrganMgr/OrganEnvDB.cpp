@@ -3097,8 +3097,8 @@ Bool SSWR::OrganMgr::OrganEnvDB::AddDataFile(Text::CString fileName)
 	{
 		if (t == IO::ParserType::MapLayer)
 		{
-			Map::IMapDrawLayer *lyr = (Map::IMapDrawLayer*)pobj;
-			if (lyr->GetObjectClass() == Map::IMapDrawLayer::OC_GPS_TRACK)
+			Map::MapDrawLayer *lyr = (Map::MapDrawLayer*)pobj;
+			if (lyr->GetObjectClass() == Map::MapDrawLayer::OC_GPS_TRACK)
 			{
 				Bool found = false;
 				Map::GPSTrack *gpsTrk = (Map::GPSTrack*)lyr;
@@ -3344,11 +3344,11 @@ Bool SSWR::OrganMgr::OrganEnvDB::GetGPSPos(Int32 userId, const Data::Timestamp &
 			*sptr++ = IO::Path::PATH_SEPERATOR;
 			sptr = Text::StrConcatC(sptr, dataFile->fileName->v, dataFile->fileName->leng);
 			NEW_CLASS(fd, IO::StmData::FileData({sbuff, (UOSInt)(sptr - sbuff)}, false));
-			Map::IMapDrawLayer *lyr = (Map::IMapDrawLayer*)this->parsers.ParseFileType(fd, IO::ParserType::MapLayer);
+			Map::MapDrawLayer *lyr = (Map::MapDrawLayer*)this->parsers.ParseFileType(fd, IO::ParserType::MapLayer);
 			DEL_CLASS(fd);
 			if (lyr)
 			{
-				if (lyr->GetObjectClass() == Map::IMapDrawLayer::OC_GPS_TRACK)
+				if (lyr->GetObjectClass() == Map::MapDrawLayer::OC_GPS_TRACK)
 				{
 					this->gpsTrk = (Map::GPSTrack*)lyr;
 				}
@@ -3388,10 +3388,10 @@ Map::GPSTrack *SSWR::OrganMgr::OrganEnvDB::OpenGPSTrack(DataFileInfo *dataFile)
 	sptr = dataFile->fileName->ConcatTo(sptr);
 	NEW_CLASS(fd, IO::StmData::FileData(CSTRP(sbuff, sptr), false));
 	Map::GPSTrack *trk = 0;
-	Map::IMapDrawLayer *lyr = (Map::IMapDrawLayer*)this->parsers.ParseFileType(fd, IO::ParserType::MapLayer);
+	Map::MapDrawLayer *lyr = (Map::MapDrawLayer*)this->parsers.ParseFileType(fd, IO::ParserType::MapLayer);
 	if (lyr)
 	{
-		if (lyr->GetObjectClass() == Map::IMapDrawLayer::OC_GPS_TRACK)
+		if (lyr->GetObjectClass() == Map::MapDrawLayer::OC_GPS_TRACK)
 		{
 			trk = (Map::GPSTrack*)lyr;
 		}

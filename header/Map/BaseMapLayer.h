@@ -1,7 +1,7 @@
 #ifndef _SM_MAP_BASEMAPLAYER
 #define _SM_MAP_BASEMAPLAYER
 #include "Data/ArrayList.h"
-#include "Map/IMapDrawLayer.h"
+#include "Map/MapDrawLayer.h"
 #include "Net/SocketFactory.h"
 #include "Net/SSLEngine.h"
 #include "Parser/ParserList.h"
@@ -30,7 +30,7 @@ namespace Map
 	public:
 		static UOSInt GetLayerTypes(Data::ArrayList<BaseLayerType> *layerTypes);
 		static Text::CString BaseLayerTypeGetName(BaseLayerType blt);
-		static Map::IMapDrawLayer *CreateLayer(BaseLayerType blt, Net::SocketFactory *sockf, Net::SSLEngine *ssl, Parser::ParserList *parsers);
+		static Map::MapDrawLayer *CreateLayer(BaseLayerType blt, Net::SocketFactory *sockf, Net::SSLEngine *ssl, Parser::ParserList *parsers);
 	};
 }
 #endif

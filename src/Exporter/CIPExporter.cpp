@@ -26,7 +26,7 @@ IO::FileExporter::SupportType Exporter::CIPExporter::IsObjectSupported(IO::Parse
 	{
 		return IO::FileExporter::SupportType::NotSupported;
 	}
-	Map::IMapDrawLayer *layer = (Map::IMapDrawLayer *)pobj;
+	Map::MapDrawLayer *layer = (Map::MapDrawLayer *)pobj;
 	Map::DrawLayerType layerType = layer->GetLayerType();
 	if (layerType == Map::DRAW_LAYER_POINT || layerType == Map::DRAW_LAYER_POINT3D)
 	{
@@ -66,7 +66,7 @@ Bool Exporter::CIPExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 	{
 		return false;
 	}
-	Map::IMapDrawLayer *layer = (Map::IMapDrawLayer *)pobj;
+	Map::MapDrawLayer *layer = (Map::MapDrawLayer *)pobj;
 	Map::DrawLayerType layerType = layer->GetLayerType();
 	Int32 iLayerType;
 	if (layerType == Map::DRAW_LAYER_POINT || layerType == Map::DRAW_LAYER_POINT3D)
@@ -400,7 +400,7 @@ void *Exporter::CIPExporter::CreateParam(IO::ParsedObject *pobj)
 	{
 		Exporter::CIPExporter::CIPParam *param;
 		param = MemAlloc(Exporter::CIPExporter::CIPParam, 1);
-		param->layer = (Map::IMapDrawLayer *)pobj;
+		param->layer = (Map::MapDrawLayer *)pobj;
 		param->dispCol = 0;
 
 		if (param->layer->GetLayerType() == Map::DRAW_LAYER_POINT || param->layer->GetLayerType() == Map::DRAW_LAYER_POINT3D)

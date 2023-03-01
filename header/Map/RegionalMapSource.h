@@ -1,6 +1,6 @@
 #ifndef _SM_MAP_REGIONALMAPSOURCE
 #define _SM_MAP_REGIONALMAPSOURCE
-#include "Map/IMapDrawLayer.h"
+#include "Map/MapDrawLayer.h"
 #include "Net/SSLEngine.h"
 #include "Net/WebBrowser.h"
 #include "Parser/ParserList.h"
@@ -43,7 +43,7 @@ namespace Map
 		static MapInfo maps[];
 	public:
 		static const MapInfo *GetMapInfos(UOSInt *cnt);
-		static Map::IMapDrawLayer *OpenMap(const MapInfo *map, Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, Parser::ParserList *parsers, Net::WebBrowser *browser);
+		static Map::MapDrawLayer *OpenMap(const MapInfo *map, Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, Parser::ParserList *parsers, Net::WebBrowser *browser);
 	};
 }
 #endif

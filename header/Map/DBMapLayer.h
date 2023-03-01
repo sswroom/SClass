@@ -2,11 +2,11 @@
 #define _SM_MAP_DBMAPLAYER
 #include "Data/FastMap.h"
 #include "DB/DBTool.h"
-#include "Map/IMapDrawLayer.h"
+#include "Map/MapDrawLayer.h"
 
 namespace Map
 {
-	class DBMapLayer : public Map::IMapDrawLayer
+	class DBMapLayer : public Map::MapDrawLayer
 	{
 	private:
 		DB::DBTool *db;

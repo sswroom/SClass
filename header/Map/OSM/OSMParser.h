@@ -1,6 +1,6 @@
 #ifndef _SM_MAP_OSM_OSMPARSER
 #define _SM_MAP_OSM_OSMPARSER
-#include "Map/IMapDrawLayer.h"
+#include "Map/MapDrawLayer.h"
 #include "Text/CString.h"
 #include "Text/XMLReader.h"
 
@@ -11,7 +11,7 @@ namespace Map
 		class OSMParser
 		{
 		public:
-			static Map::IMapDrawLayer *ParseLayerNode(Text::XMLReader *reader, Text::CString fileName);
+			static Map::MapDrawLayer *ParseLayerNode(Text::XMLReader *reader, Text::CString fileName);
 		};
 	}
 }

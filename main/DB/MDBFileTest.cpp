@@ -39,7 +39,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		shpExp.SetCodePage(65001);
 
 		Map::MapLayerCollection *lyrColl = (Map::MapLayerCollection*)pobj;
-		Map::IMapDrawLayer *lyr;
+		Map::MapDrawLayer *lyr;
 		j = lyrColl->GetCount();
 		i = 0;
 		while (i < j)

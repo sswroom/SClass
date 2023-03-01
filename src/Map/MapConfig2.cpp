@@ -11,7 +11,7 @@
 #include "IO/StreamReader.h"
 #include "IO/StmData/FileData.h"
 #include "Manage/HiResClock.h"
-#include "Map/IMapDrawLayer.h"
+#include "Map/MapDrawLayer.h"
 #include "Map/MapView.h"
 #include "Map/MapConfig2.h"
 #include "Map/CIPLayer2.h"
@@ -2247,13 +2247,13 @@ UInt32 Map::MapConfig2::ToColor(const UTF8Char *str)
 	return 0xff000000 | ((v & 0xff) << 16) | (v & 0xff00) | ((v >> 16) & 0xff);
 }
 
-Map::IMapDrawLayer *Map::MapConfig2::GetDrawLayer(Text::CString name, Data::ArrayList<Map::IMapDrawLayer*> *layerList, IO::Writer *errWriter)
+Map::MapDrawLayer *Map::MapConfig2::GetDrawLayer(Text::CString name, Data::ArrayList<Map::MapDrawLayer*> *layerList, IO::Writer *errWriter)
 {
 	Map::CIPLayer2 *cip;
 	UOSInt i = layerList->GetCount();
 	while (i-- > 0)
 	{
-		Map::IMapDrawLayer *lyr;
+		Map::MapDrawLayer *lyr;
 		lyr = layerList->GetItem(i);
 		if (IO::Path::FileNameCompare(name.v, lyr->GetName()->v) == 0)
 		{
@@ -3815,7 +3815,7 @@ void Map::MapConfig2::DrawLabels(Media::DrawImage *img, MapLabels2 *labels, UInt
 		lastLbl->Release();
 }
 
-Map::MapConfig2::MapConfig2(Text::CString fileName, Media::DrawEngine *eng, Data::ArrayList<Map::IMapDrawLayer*> *layerList, Parser::ParserList *parserList, Text::CString forceBase, IO::Writer *errWriter, Int32 maxScale, Int32 minScale)
+Map::MapConfig2::MapConfig2(Text::CString fileName, Media::DrawEngine *eng, Data::ArrayList<Map::MapDrawLayer*> *layerList, Parser::ParserList *parserList, Text::CString forceBase, IO::Writer *errWriter, Int32 maxScale, Int32 minScale)
 {
 	UTF8Char lineBuff[1024];
 	UTF8Char layerName[512];
@@ -4315,7 +4315,7 @@ UTF8Char *Map::MapConfig2::DrawMap(Media::DrawImage *img, Map::MapView *view, Bo
 	UOSInt layerCnt = this->drawList->GetCount();
 	Data::ArrayList<MapFontStyle*> **myArrs;
 	Data::ArrayList<MapFontStyle*> *fontArr;
-	Map::IMapDrawLayer *lyr;
+	Map::MapDrawLayer *lyr;
 	Map::MapLayerStyle *lyrs;
 	Math::Geometry::Vector2D *vec;
 	Map::MapFontStyle *fnt;
@@ -4725,9 +4725,9 @@ Int32 Map::MapConfig2::QueryMCC(Math::Coord2DDbl pos)
 	return 0;
 }
 
-void Map::MapConfig2::ReleaseLayers(Data::ArrayList<Map::IMapDrawLayer*> *layerList)
+void Map::MapConfig2::ReleaseLayers(Data::ArrayList<Map::MapDrawLayer*> *layerList)
 {
-	Map::IMapDrawLayer *lyr;
+	Map::MapDrawLayer *lyr;
 	UOSInt i;
 	i = layerList->GetCount();
 	while (i-- > 0)

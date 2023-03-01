@@ -12,7 +12,7 @@
 #include "IO/StreamWriter.h"
 #include "IO/StmData/FileData.h"
 #include "Manage/HiResClock.h"
-#include "Map/IMapDrawLayer.h"
+#include "Map/MapDrawLayer.h"
 #include "Map/MapView.h"
 #include "Map/MapConfig2TGen.h"
 #include "Map/CIPLayer2.h"
@@ -2387,13 +2387,13 @@ UInt32 Map::MapConfig2TGen::ToColor(const UTF8Char *str)
 	return 0xff000000 | ((v & 0xff) << 16) | (v & 0xff00) | ((v >> 16) & 0xff);
 }
 
-Map::IMapDrawLayer *Map::MapConfig2TGen::GetDrawLayer(Text::CString name, Data::ArrayList<Map::IMapDrawLayer*> *layerList, IO::Writer *errWriter)
+Map::MapDrawLayer *Map::MapConfig2TGen::GetDrawLayer(Text::CString name, Data::ArrayList<Map::MapDrawLayer*> *layerList, IO::Writer *errWriter)
 {
 	Map::CIPLayer2 *cip;
 	UOSInt i = layerList->GetCount();
 	while (i-- > 0)
 	{
-		Map::IMapDrawLayer *lyr;
+		Map::MapDrawLayer *lyr;
 		lyr = layerList->GetItem(i);
 		if (IO::Path::FileNameCompare(name.v, lyr->GetName()->v) == 0)
 		{
@@ -4275,7 +4275,7 @@ void Map::MapConfig2TGen::LoadLabels(Media::DrawImage *img, Map::MapConfig2TGen:
 	}
 }
 
-Map::MapConfig2TGen::MapConfig2TGen(Text::CString fileName, Media::DrawEngine *eng, Data::ArrayList<Map::IMapDrawLayer*> *layerList, Parser::ParserList *parserList, const UTF8Char *forceBase, IO::Writer *errWriter, Int32 maxScale, Int32 minScale)
+Map::MapConfig2TGen::MapConfig2TGen(Text::CString fileName, Media::DrawEngine *eng, Data::ArrayList<Map::MapDrawLayer*> *layerList, Parser::ParserList *parserList, const UTF8Char *forceBase, IO::Writer *errWriter, Int32 maxScale, Int32 minScale)
 {
 	UTF8Char lineBuff[1024];
 	UTF8Char layerName[512];
@@ -4767,7 +4767,7 @@ WChar *Map::MapConfig2TGen::DrawMap(Media::DrawImage *img, Map::MapView *view, B
 	UOSInt layerCnt = this->drawList->GetCount();
 	Data::ArrayList<MapFontStyle*> **myArrs;
 	Data::ArrayList<MapFontStyle*> *fontArr;
-	Map::IMapDrawLayer *lyr;
+	Map::MapDrawLayer *lyr;
 	Map::MapLayerStyle *lyrs;
 	Math::Geometry::Vector2D *vec;
 	Map::MapFontStyle *fnt;
@@ -5152,9 +5152,9 @@ UInt32 Map::MapConfig2TGen::GetBGColor()
 	return this->bgColor;
 }
 
-void Map::MapConfig2TGen::ReleaseLayers(Data::ArrayList<Map::IMapDrawLayer*> *layerList)
+void Map::MapConfig2TGen::ReleaseLayers(Data::ArrayList<Map::MapDrawLayer*> *layerList)
 {
-	Map::IMapDrawLayer *lyr;
+	Map::MapDrawLayer *lyr;
 	UOSInt i;
 	i = layerList->GetCount();
 	while (i-- > 0)

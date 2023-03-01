@@ -45,7 +45,7 @@ void *Map::DBMapLayer::InitNameArr()
 	return 0;
 }
 
-Map::DBMapLayer::DBMapLayer(Text::String *layerName) : Map::IMapDrawLayer(layerName, 0, layerName)
+Map::DBMapLayer::DBMapLayer(Text::String *layerName) : Map::MapDrawLayer(layerName, 0, layerName)
 {
 	this->db = 0;
 	this->schema = 0;
@@ -56,7 +56,7 @@ Map::DBMapLayer::DBMapLayer(Text::String *layerName) : Map::IMapDrawLayer(layerN
 	this->mixedData = MixedData::AllData;
 }
 
-Map::DBMapLayer::DBMapLayer(Text::CString layerName) : Map::IMapDrawLayer(layerName, 0, layerName)
+Map::DBMapLayer::DBMapLayer(Text::CString layerName) : Map::MapDrawLayer(layerName, 0, layerName)
 {
 	this->db = 0;
 	this->schema = 0;
@@ -354,7 +354,7 @@ void Map::DBMapLayer::Reconnect()
 
 }
 
-Map::IMapDrawLayer::ObjectClass Map::DBMapLayer::GetObjectClass()
+Map::MapDrawLayer::ObjectClass Map::DBMapLayer::GetObjectClass()
 {
 	return OC_DB_MAP_LAYER;
 }

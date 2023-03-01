@@ -172,7 +172,7 @@ IO::ParsedObject *Parser::FileParser::MDBParser::ParseFileHdr(IO::StreamData *fd
 		LIST_FREE_STRING(&tableNames);
 		if (lyrColl->GetCount() == 1)
 		{
-			Map::IMapDrawLayer *lyr = lyrColl->GetItem(0);
+			Map::MapDrawLayer *lyr = lyrColl->GetItem(0);
 			lyrColl->RemoveAt(0);
 			DEL_CLASS(lyrColl);
 			return lyr;

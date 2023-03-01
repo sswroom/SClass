@@ -2,7 +2,7 @@
 #define _SM_MAP_HKTDVEHRESTRICT
 #include "Data/FastMap.h"
 #include "DB/DBTool.h"
-#include "Map/IMapDrawLayer.h"
+#include "Map/MapDrawLayer.h"
 
 namespace Map
 {
@@ -20,10 +20,10 @@ namespace Map
 		Data::FastMap<Int32, RouteInfo*> routeMap;
 
 	public:
-		HKTDVehRestrict(Map::IMapDrawLayer *routeLyr, DB::DBTool *db);
+		HKTDVehRestrict(Map::MapDrawLayer *routeLyr, DB::DBTool *db);
 		~HKTDVehRestrict();
 
-		Map::IMapDrawLayer *CreateTonnesSignLayer();
+		Map::MapDrawLayer *CreateTonnesSignLayer();
 	};
 }
 #endif

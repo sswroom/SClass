@@ -59,7 +59,7 @@ void __stdcall SSWR::AVIRead::AVIRGISCombineForm::OnCancelClick(void *userObj)
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 
-SSWR::AVIRead::AVIRGISCombineForm::AVIRGISCombineForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Data::ArrayList<Map::IMapDrawLayer*> *layers) : UI::GUIForm(parent, 456, 300, ui)
+SSWR::AVIRead::AVIRGISCombineForm::AVIRGISCombineForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Data::ArrayList<Map::MapDrawLayer*> *layers) : UI::GUIForm(parent, 456, 300, ui)
 {
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
@@ -67,7 +67,7 @@ SSWR::AVIRead::AVIRGISCombineForm::AVIRGISCombineForm(UI::GUIClientControl *pare
 	this->SetText(CSTR("Combine Layers"));
 	this->SetFont(0, 0, 8.25, false);
 
-	NEW_CLASS(this->selLayers, Data::ArrayList<Map::IMapDrawLayer*>());
+	NEW_CLASS(this->selLayers, Data::ArrayList<Map::MapDrawLayer*>());
 
 	UI::GUILabel *lbl;
 	UI::GUIPanel *pnl;
@@ -100,7 +100,7 @@ SSWR::AVIRead::AVIRGISCombineForm::AVIRGISCombineForm(UI::GUIClientControl *pare
 	UOSInt i = 0;
 	UOSInt cnt = this->layers->GetCount();
 	UOSInt j;
-	Map::IMapDrawLayer *lyr;
+	Map::MapDrawLayer *lyr;
 	Text::String *name;
 	this->lbLayers->ClearItems();
 	while (i < cnt)
@@ -130,7 +130,7 @@ void SSWR::AVIRead::AVIRGISCombineForm::OnMonitorChanged()
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 }
 
-Map::IMapDrawLayer *SSWR::AVIRead::AVIRGISCombineForm::GetCombinedLayer()
+Map::MapDrawLayer *SSWR::AVIRead::AVIRGISCombineForm::GetCombinedLayer()
 {
 	Map::VectorLayer *layer = 0;
 	Text::String *s = Text::String::New(UTF8STRC("CombinedLayer"));

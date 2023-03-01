@@ -4,11 +4,11 @@
 #include "Data/ArrayListDbl.h"
 #include "DB/DBFFile.h"
 #include "IO/StmData/FileData.h"
-#include "Map/IMapDrawLayer.h"
+#include "Map/MapDrawLayer.h"
 
 namespace Map
 {
-	class SHPData : public IMapDrawLayer
+	class SHPData : public MapDrawLayer
 	{
 	private:
 		typedef struct

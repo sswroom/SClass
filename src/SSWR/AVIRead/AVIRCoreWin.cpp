@@ -53,13 +53,13 @@ void SSWR::AVIRead::AVIRCoreWin::OpenObject(IO::ParsedObject *pobj)
 		{
 			if (this->batchLyrs == 0)
 			{
-				NEW_CLASS(this->batchLyrs, Data::ArrayList<Map::IMapDrawLayer*>());
+				NEW_CLASS(this->batchLyrs, Data::ArrayList<Map::MapDrawLayer*>());
 			}
-			this->batchLyrs->Add((Map::IMapDrawLayer *)pobj);
+			this->batchLyrs->Add((Map::MapDrawLayer *)pobj);
 		}
 		else
 		{
-			Map::IMapDrawLayer *lyr = (Map::IMapDrawLayer*)pobj;
+			Map::MapDrawLayer *lyr = (Map::MapDrawLayer*)pobj;
 			Map::MapEnv *env;
 			NEW_CLASS(env, Map::MapEnv(CSTR("Untitled"), 0xffc0c0ff, lyr->GetCoordinateSystem()->Clone()));
 			NEW_CLASS(frm, AVIRead::AVIRGISForm(0, this->ui, this, env, lyr->CreateMapView(Math::Size2D<Double>(320, 240))));

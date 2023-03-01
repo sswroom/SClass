@@ -2,7 +2,7 @@
 #define _SM_MAP_WEBIMAGELAYER
 #include "Data/ArrayList.h"
 #include "Data/IComparable.h"
-#include "Map/IMapDrawLayer.h"
+#include "Map/MapDrawLayer.h"
 #include "Media/SharedImage.h"
 #include "Net/WebBrowser.h"
 #include "Parser/ParserList.h"
@@ -11,7 +11,7 @@
 
 namespace Map
 {
-	class WebImageLayer : public Map::IMapDrawLayer
+	class WebImageLayer : public Map::MapDrawLayer
 	{
 	private:
 		class ImageStat : public Data::IComparable

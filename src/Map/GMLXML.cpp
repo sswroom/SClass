@@ -8,7 +8,7 @@
 #include "Math/Geometry/Point.h"
 #include "Math/Geometry/PointZ.h"
 
-Map::IMapDrawLayer *Map::GMLXML::ParseFeatureCollection(Text::XMLReader *reader, Text::CString fileName)
+Map::MapDrawLayer *Map::GMLXML::ParseFeatureCollection(Text::XMLReader *reader, Text::CString fileName)
 {
 	if (reader->GetNodeType() != Text::XMLNode::NodeType::Element || !reader->GetNodeText()->EndsWith(UTF8STRC(":FeatureCollection")))
 		return 0;

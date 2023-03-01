@@ -1,6 +1,6 @@
 #ifndef _SM_MAP_MAPCONFIGBASE
 #define _SM_MAP_MAPCONFIGBASE
-#include "Map/IMapDrawLayer.h"
+#include "Map/MapDrawLayer.h"
 #include "Media/DrawEngine.h"
 namespace Map
 {
@@ -32,7 +32,7 @@ namespace Map
 		UInt32 bkColor;
 		Int32 priority;
 		Media::DrawImage *img;
-		Map::IMapDrawLayer *lyr;
+		Map::MapDrawLayer *lyr;
 	} MapLayerStyle;
 }
 #endif
