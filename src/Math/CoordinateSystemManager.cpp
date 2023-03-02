@@ -194,6 +194,108 @@ Math::CoordinateSystemManager::ProjectedCSysInfo Math::CoordinateSystemManager::
 	{3857, Math::CoordinateSystem::CoordinateSystemType::Mercator1SPProjected, UTF8STRC("WGS 84 / Pseudo-Mercator"), 0, 0, 0, 0, 1, "WGS 84"}
 };
 
+//https://developers.arcgis.com/javascript/3/jshelp/gcs.html (3819-4126,4326)
+Math::CoordinateSystemManager::SRIDName Math::CoordinateSystemManager::geogNames[] = {
+	{ 4122, UTF8STRC("GCS_ATS_1977")},
+	{ 4001, UTF8STRC("GCS_Airy_1830")},
+	{ 4002, UTF8STRC("GCS_Airy_Modified")},
+	{ 4003, UTF8STRC("GCS_Australian")},
+	{ 4004, UTF8STRC("GCS_Bessel_1841")},
+	{ 4005, UTF8STRC("GCS_Bessel_Modified")},
+	{ 4006, UTF8STRC("GCS_Bessel_Namibia")},
+	{ 4007, UTF8STRC("GCS_Clarke_1858")},
+	{ 4008, UTF8STRC("GCS_Clarke_1866")},
+	{ 4009, UTF8STRC("GCS_Clarke_1866_Michigan")},
+	{ 4034, UTF8STRC("GCS_Clarke_1880")},
+	{ 4013, UTF8STRC("GCS_Clarke_1880_Arc")},
+	{ 4010, UTF8STRC("GCS_Clarke_1880_Benoit")},
+	{ 4011, UTF8STRC("GCS_Clarke_1880_IGN")},
+	{ 4012, UTF8STRC("GCS_Clarke_1880_RGS")},
+	{ 4014, UTF8STRC("GCS_Clarke_1880_SGA")},
+	{ 4042, UTF8STRC("GCS_Everest_1830")},
+	{ 4015, UTF8STRC("GCS_Everest_Adj_1937")},
+	{ 4018, UTF8STRC("GCS_Everest_Modified")},
+	{ 4044, UTF8STRC("GCS_Everest_def_1962")},
+	{ 4016, UTF8STRC("GCS_Everest_def_1967")},
+	{ 4045, UTF8STRC("GCS_Everest_def_1975")},
+	{ 4031, UTF8STRC("GCS_GEM_10C")},
+	{ 4121, UTF8STRC("GCS_GGRS_1987")},
+	{ 4019, UTF8STRC("GCS_GRS_1980")},
+	{ 4036, UTF8STRC("GCS_GRS_1967")},
+	{ 4120, UTF8STRC("GCS_Greek")},
+	{ 3819, UTF8STRC("GCS_HD1909")},
+	{ 4020, UTF8STRC("GCS_Helmert_1906")},
+	{ 4611, UTF8STRC("GCS_Hong_Kong_1980")},
+	{ 4054, UTF8STRC("GCS_Hughes_1980")},
+	{ 3889, UTF8STRC("GCS_IGRS")},
+	{ 4021, UTF8STRC("GCS_Indonesian")},
+	{ 4022, UTF8STRC("GCS_International_1924")},
+	{ 4123, UTF8STRC("GCS_KKJ")},
+	{ 4024, UTF8STRC("GCS_Krasovsky_1940")},
+	{ 4126, UTF8STRC("GCS_LKS_1994")},
+	{ 3906, UTF8STRC("GCS_MGI_1901")},
+	{ 4023, UTF8STRC("GCS_MOLDREF99")},
+	{ 4025, UTF8STRC("GCS_NWL_9D")},
+	{ 4032, UTF8STRC("GCS_OSU_86F")},
+	{ 4033, UTF8STRC("GCS_OSU_91A")},
+	{ 4027, UTF8STRC("GCS_Plessis_1817")},
+	{ 4081, UTF8STRC("GCS_REGCAN95")},
+	{ 4046, UTF8STRC("GCS_RGRDC_2005")},
+	{ 4124, UTF8STRC("GCS_RT_1990")},
+	{ 4075, UTF8STRC("GCS_SREF98")},
+	{ 4125, UTF8STRC("GCS_Samboja")},
+	{ 4035, UTF8STRC("GCS_Sphere")},
+	{ 4052, UTF8STRC("GCS_Sphere_Clarke_1866_Authalic")},
+	{ 4047, UTF8STRC("GCS_Sphere_GRS_1980_Authalic")},
+	{ 4053, UTF8STRC("GCS_Sphere_International_1924_Authalic")},
+	{ 4028, UTF8STRC("GCS_Struve_1860")},
+	{ 3821, UTF8STRC("GCS_TWD_1967")},
+	{ 3824, UTF8STRC("GCS_TWD_1997")},
+	{ 4326, UTF8STRC("GCS_WGS_1984")},
+	{ 4029, UTF8STRC("GCS_War_Office")},
+};
+
+//https://developers.arcgis.com/javascript/3/jshelp/pcs.html (2000-2035,2326)
+Math::CoordinateSystemManager::SRIDName Math::CoordinateSystemManager::projNames[] = {
+	{ 2000, UTF8STRC("Anguilla_1957_British_West_Indies_Grid")},
+	{ 2001, UTF8STRC("Antigua_1943_British_West_Indies_Grid")},
+	{ 2002, UTF8STRC("Dominica_1945_British_West_Indies_Grid")},
+	{ 2003, UTF8STRC("Grenada_1953_British_West_Indies_Grid")},
+	{ 2326, UTF8STRC("Hong_Kong_1980_Grid")},
+	{ 2004, UTF8STRC("Montserrat_1958_British_West_Indies_Grid")},
+	{ 2008, UTF8STRC("NAD_1927_CGQ77_MTM_2_SCoPQ")},
+	{ 2009, UTF8STRC("NAD_1927_CGQ77_MTM_3_SCoPQ")},
+	{ 2010, UTF8STRC("NAD_1927_CGQ77_MTM_4_SCoPQ")},
+	{ 2011, UTF8STRC("NAD_1927_CGQ77_MTM_5_SCoPQ")},
+	{ 2012, UTF8STRC("NAD_1927_CGQ77_MTM_6_SCoPQ")},
+	{ 2013, UTF8STRC("NAD_1927_CGQ77_MTM_7_SCoPQ")},
+	{ 2014, UTF8STRC("NAD_1927_CGQ77_MTM_8_SCoPQ")},
+	{ 2015, UTF8STRC("NAD_1927_CGQ77_MTM_9_SCoPQ")},
+	{ 2016, UTF8STRC("NAD_1927_CGQ77_MTM_10_SCoPQ")},
+	{ 2031, UTF8STRC("NAD_1927_CGQ77_UTM_Zone_17N")},
+	{ 2032, UTF8STRC("NAD_1927_CGQ77_UTM_Zone_18N")},
+	{ 2033, UTF8STRC("NAD_1927_CGQ77_UTM_Zone_19N")},
+	{ 2034, UTF8STRC("NAD_1927_CGQ77_UTM_Zone_20N")},
+	{ 2035, UTF8STRC("NAD_1927_CGQ77_UTM_Zone_21N")},
+	{ 2017, UTF8STRC("NAD_1927_DEF_1976_MTM_8")},
+	{ 2018, UTF8STRC("NAD_1927_DEF_1976_MTM_9")},
+	{ 2019, UTF8STRC("NAD_1927_DEF_1976_MTM_10")},
+	{ 2020, UTF8STRC("NAD_1927_DEF_1976_MTM_11")},
+	{ 2021, UTF8STRC("NAD_1927_DEF_1976_MTM_12")},
+	{ 2022, UTF8STRC("NAD_1927_DEF_1976_MTM_13")},
+	{ 2023, UTF8STRC("NAD_1927_DEF_1976_MTM_14")},
+	{ 2024, UTF8STRC("NAD_1927_DEF_1976_MTM_15")},
+	{ 2025, UTF8STRC("NAD_1927_DEF_1976_MTM_16")},
+	{ 2026, UTF8STRC("NAD_1927_DEF_1976_MTM_17")},
+	{ 2027, UTF8STRC("NAD_1927_DEF_1976_UTM_Zone_15N")},
+	{ 2028, UTF8STRC("NAD_1927_DEF_1976_UTM_Zone_16N")},
+	{ 2029, UTF8STRC("NAD_1927_DEF_1976_UTM_Zone_17N")},
+	{ 2030, UTF8STRC("NAD_1927_DEF_1976_UTM_Zone_18N")},
+	{ 2005, UTF8STRC("St_Kitts_1955_British_West_Indies_Grid")},
+	{ 2006, UTF8STRC("St_Lucia_1955_British_West_Indies_Grid")},
+	{ 2007, UTF8STRC("St_Vincent_1945_British_West_Indies_Grid")},
+};
+
 Math::CoordinateSystem *Math::CoordinateSystemManager::ParsePRJFile(Text::CString fileName)
 {
 	UInt8 buff[512];
@@ -491,6 +593,64 @@ Math::GeographicCoordinateSystem *Math::CoordinateSystemManager::SRCreateGeogCSy
 	return csys;
 }
 
+UInt32 Math::CoordinateSystemManager::GuessSRIDGeog(Text::CString name)
+{
+	OSInt i = 0;
+	OSInt j = (sizeof(geogNames) / sizeof(geogNames[0])) - 1;
+	OSInt k;
+	OSInt l;
+	while (i <= j)
+	{
+		k = (i + j) >> 1;
+		if (name.Equals(geogNames[k].name, geogNames[k].nameLen))
+			return geogNames[i].srid;
+		l = Text::StrCompareFastC(name.v, name.leng, geogNames[k].name, geogNames[k].nameLen);
+		if (l > 0)
+		{
+			i = k + 1;
+		}
+		else
+		{
+			j = k - 1;
+		}
+	}
+#if defined(VERBOSE)
+	Text::StringBuilderUTF8 sb;
+	sb.Append(name);
+	printf("GeogSRID Name = %s\r\n", sb.ToString());
+#endif
+	return 0;
+}
+
+UInt32 Math::CoordinateSystemManager::GuessSRIDProj(Text::CString name)
+{
+	OSInt i = 0;
+	OSInt j = (sizeof(projNames) / sizeof(projNames[0])) - 1;
+	OSInt k;
+	OSInt l;
+	while (i <= j)
+	{
+		k = (i + j) >> 1;
+		if (name.Equals(projNames[k].name, projNames[k].nameLen))
+			return projNames[i].srid;
+		l = Text::StrCompareFastC(name.v, name.leng, projNames[k].name, projNames[k].nameLen);
+		if (l > 0)
+		{
+			i = k + 1;
+		}
+		else
+		{
+			j = k - 1;
+		}
+	}
+#if defined(VERBOSE)
+	Text::StringBuilderUTF8 sb;
+	sb.Append(name);
+	printf("ProjSRID Name = %s\r\n", sb.ToString());
+#endif
+	return 0;
+}
+
 Math::CoordinateSystem *Math::CoordinateSystemManager::CreateFromName(Text::CString name)
 {
 	if (name.StartsWith(UTF8STRC("EPSG:")))
@@ -713,6 +873,7 @@ Math::CoordinateSystem *Math::CoordinateSystemManager::ParsePRJBuff(Text::CStrin
 		{
 			eet = Math::EarthEllipsoid::EET_INTL1924;
 		}
+		srid = GuessSRIDGeog(Text::CString(&prjBuff[nameOfst], nameLen - 2));
 		if (eet != Math::EarthEllipsoid::EET_OTHER)
 		{
 			Math::EarthEllipsoid ellipsoid(eet);
@@ -922,6 +1083,7 @@ Math::CoordinateSystem *Math::CoordinateSystemManager::ParsePRJBuff(Text::CStrin
 		{
 			*parsedSize = i;
 		}
+		srid = GuessSRIDProj(Text::CString(&prjBuff[nameOfst], nameLen - 2));
 		if (cst == Math::CoordinateSystem::CoordinateSystemType::MercatorProjected || cst == Math::CoordinateSystem::CoordinateSystemType::GausskrugerProjected)
 		{
 			NEW_CLASS(csys, Math::MercatorProjectedCoordinateSystem(sourceName, srid, {&prjBuff[nameOfst], nameLen - 2}, falseEasting, falseNorthing, centralMeridian, latitudeOfOrigin, scaleFactor, gcs, unit));

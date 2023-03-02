@@ -306,3 +306,69 @@ DB::ColDef *DB::ColDef::Clone() const
 	newObj->Set(this);
 	return newObj;
 }
+
+Text::CString DB::ColDef::GeometryTypeGetName(GeometryType geomType)
+{
+	switch (geomType)
+	{
+	default:
+	case GeometryType::Unknown:
+		return CSTR("Geometry");
+	case GeometryType::Any:
+		return CSTR("Geometry");
+	case GeometryType::AnyZ:
+		return CSTR("GeometryZ");
+	case GeometryType::AnyZM:
+		return CSTR("GeometryZM");
+	case GeometryType::AnyM:
+		return CSTR("GeometryM");
+	case GeometryType::Point:
+		return CSTR("Point");
+	case GeometryType::PointZ:
+		return CSTR("PointZ");
+	case GeometryType::PointZM:
+		return CSTR("PointZM");
+	case GeometryType::PointM:
+		return CSTR("PointM");
+	case GeometryType::Multipoint:
+		return CSTR("Multipoint");
+	case GeometryType::MultipointZ:
+		return CSTR("MultipointZ");
+	case GeometryType::MultipointZM:
+		return CSTR("MultipointZM");
+	case GeometryType::MultipointM:
+		return CSTR("MultipointM");
+	case GeometryType::Polyline:
+		return CSTR("Polyline");
+	case GeometryType::PolylineZ:
+		return CSTR("PolylineZ");
+	case GeometryType::PolylineZM:
+		return CSTR("PolylineZM");
+	case GeometryType::PolylineM:
+		return CSTR("PolylineM");
+	case GeometryType::Polygon:
+		return CSTR("Polygon");
+	case GeometryType::PolygonZ:
+		return CSTR("PolygonZ");
+	case GeometryType::PolygonZM:
+		return CSTR("PolygonZM");
+	case GeometryType::PolygonM:
+		return CSTR("PolygonM");
+	case GeometryType::Rectangle:
+		return CSTR("Rectangle");
+	case GeometryType::RectangleZ:
+		return CSTR("RectangleZ");
+	case GeometryType::RectangleZM:
+		return CSTR("RectangleZM");
+	case GeometryType::RectangleM:
+		return CSTR("RectangleM");
+	case GeometryType::Path:
+		return CSTR("Path");
+	case GeometryType::PathZ:
+		return CSTR("PathZ");
+	case GeometryType::PathZM:
+		return CSTR("PathZM");
+	case GeometryType::PathM:
+		return CSTR("PathM");
+	}
+}

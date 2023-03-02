@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/ByteTool.h"
+#include "DB/ColDef.h"
 #include "DB/DBUtil.h"
 #include "Math/Math.h"
 #include "Math/WKTWriter.h"
@@ -2495,7 +2496,16 @@ UTF8Char *DB::DBUtil::ColTypeGetString(UTF8Char *sbuff, DB::DBUtil::ColType colT
 	case DB::DBUtil::CT_Binary:
 		return Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("BINARY(")), colSize), UTF8STRC(")"));
 	case DB::DBUtil::CT_Vector:
-		return Text::StrConcatC(sbuff, UTF8STRC("GEOMETRY"));
+		if (colDP == 0 && colSize == 0)
+			return Text::StrConcatC(sbuff, UTF8STRC("GEOMETRY"));
+		else
+		{
+			sbuff = Text::StrConcatC(sbuff, UTF8STRC("GEOMETRY("));
+			sbuff = DB::ColDef::GeometryTypeGetName((DB::ColDef::GeometryType)colSize).ConcatTo(sbuff);
+			*sbuff++ = ',';
+			sbuff = Text::StrUOSInt(sbuff, colDP);
+			return Text::StrConcatC(sbuff, UTF8STRC(")"));
+		}
 	case DB::DBUtil::CT_UUID:
 		return Text::StrConcatC(sbuff, UTF8STRC("UUID"));
 	case DB::DBUtil::CT_Unknown:

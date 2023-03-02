@@ -16,6 +16,39 @@ namespace DB
 			Default,
 			Always
 		};
+
+		enum class GeometryType //colSize if colType = CT_Vector
+		{
+			Unknown,
+			Any,
+			AnyZ,
+			AnyZM,
+			AnyM,
+			Point,
+			PointZ,
+			PointZM,
+			PointM,
+			Multipoint,
+			MultipointZ,
+			MultipointZM,
+			MultipointM,
+			Polyline,
+			PolylineZ,
+			PolylineZM,
+			PolylineM,
+			Polygon,
+			PolygonZ,
+			PolygonZM,
+			PolygonM,
+			Rectangle,
+			RectangleZ,
+			RectangleZM,
+			RectangleM,
+			Path,
+			PathZ,
+			PathZM,
+			PathM
+		};
 	private:
 		Text::String *colName;
 		DB::DBUtil::ColType colType;
@@ -72,6 +105,8 @@ namespace DB
 
 		UTF8Char *ToColTypeStr(UTF8Char *sbuff) const;
 		ColDef *Clone() const;
+
+		static Text::CString GeometryTypeGetName(GeometryType geomType);
 	};
 }
 #endif

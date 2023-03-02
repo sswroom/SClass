@@ -781,7 +781,16 @@ void DB::SQLGenerator::AppendColType(DB::DBUtil::SQLType sqlType, DB::SQLBuilder
 			sql->AppendCmdC(CSTR("bytea"));
 			break;
 		case DB::DBUtil::CT_Vector:
-			sql->AppendCmdC(CSTR("geometry"));
+			if (colSize == 0 && colDP == 0)
+				sql->AppendCmdC(CSTR("geometry"));
+			else
+			{
+				sql->AppendCmdC(CSTR("geometry("));
+				sql->AppendCmdC(DB::ColDef::GeometryTypeGetName((DB::ColDef::GeometryType)colSize));
+				sql->AppendCmdC(CSTR(","));
+				sql->AppendUInt32((UInt32)colDP);
+				sql->AppendCmdC(CSTR(")"));
+			}
 			break;
 		case DB::DBUtil::CT_UUID:
 			sql->AppendCmdC(CSTR("uuid"));

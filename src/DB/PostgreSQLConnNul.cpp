@@ -3,8 +3,9 @@
 #include "Math/Geometry/Point.h"
 #include "Text/MyStringW.h"
 
-void DB::PostgreSQLConn::Connect()
+Bool DB::PostgreSQLConn::Connect()
 {
+	return false;
 }
 
 DB::PostgreSQLConn::PostgreSQLConn(Text::String *server, UInt16 port, Text::String *uid, Text::String *pwd, Text::String *database, IO::LogTool *log) : DBConn(server)
@@ -17,6 +18,7 @@ DB::PostgreSQLConn::PostgreSQLConn(Text::String *server, UInt16 port, Text::Stri
 	this->database = database->Clone();
 	this->uid = SCOPY_STRING(uid);
 	this->pwd = SCOPY_STRING(pwd);
+	this->geometryOid = 0;
 	this->Connect();
 }
 
@@ -30,6 +32,7 @@ DB::PostgreSQLConn::PostgreSQLConn(Text::CString server, UInt16 port, Text::CStr
 	this->database = Text::String::New(database);
 	this->uid = Text::String::NewOrNull(uid);
 	this->pwd = Text::String::NewOrNull(pwd);
+	this->geometryOid = 0;
 	this->Connect();
 }
 
@@ -276,6 +279,11 @@ Bool DB::PostgreSQLConn::ChangeDatabase(Text::CString databaseName)
 Text::CString DB::PostgreSQLConn::ExecStatusTypeGetName(OSInt status)
 {
 	return CSTR("Unknown");
+}
+
+UInt32 DB::PostgreSQLConn::GetGeometryOid()
+{
+	return this->geometryOid;
 }
 
 DB::DBUtil::ColType DB::PostgreSQLConn::DBType2ColType(UInt32 dbType)

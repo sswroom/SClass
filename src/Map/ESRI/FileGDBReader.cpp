@@ -11,6 +11,8 @@
 #include "Text/MyStringW.h"
 #include "Text/XLSUtil.h"
 
+#include <stdio.h>
+
 UOSInt Map::ESRI::FileGDBReader::GetFieldIndex(UOSInt colIndex)
 {
 	if (this->columnIndices)
@@ -1507,6 +1509,89 @@ Bool Map::ESRI::FileGDBReader::GetColDef(UOSInt colIndex, DB::ColDef *colDef)
 		Text::StringBuilderUTF8 sb;
 		sb.AppendUTF16((const UTF16Char*)field->srsValue, field->srsSize >> 1);
 		colDef->SetAttr(sb.ToCString());
+	}
+	if (colDef->GetColType() == DB::DBUtil::CT_Vector)
+	{
+		if (this->tableInfo->csys)
+		{
+			colDef->SetColDP(this->tableInfo->csys->GetSRID());
+		}
+		switch (this->tableInfo->geometryType)
+		{
+		default:
+			printf("FileGDBReader: geometryType not supported: %d\r\n", this->tableInfo->geometryType);
+		case 0:
+		case 7:
+			if ((this->tableInfo->geometryFlags & 0xC0) == 0x80)
+				colDef->SetColSize((UOSInt)DB::ColDef::GeometryType::AnyZ);
+			else if ((this->tableInfo->geometryFlags & 0xC0) == 0xC0)
+				colDef->SetColSize((UOSInt)DB::ColDef::GeometryType::AnyZM);
+			else if ((this->tableInfo->geometryFlags & 0xC0) == 0x40)
+				colDef->SetColSize((UOSInt)DB::ColDef::GeometryType::AnyM);
+			else
+				colDef->SetColSize((UOSInt)DB::ColDef::GeometryType::Any);
+			break;
+		case 1:
+			if ((this->tableInfo->geometryFlags & 0xC0) == 0x80)
+				colDef->SetColSize((UOSInt)DB::ColDef::GeometryType::PointZ);
+			else if ((this->tableInfo->geometryFlags & 0xC0) == 0xC0)
+				colDef->SetColSize((UOSInt)DB::ColDef::GeometryType::PointZM);
+			else if ((this->tableInfo->geometryFlags & 0xC0) == 0x40)
+				colDef->SetColSize((UOSInt)DB::ColDef::GeometryType::PointM);
+			else
+				colDef->SetColSize((UOSInt)DB::ColDef::GeometryType::Point);
+			break;
+		case 2:
+			if ((this->tableInfo->geometryFlags & 0xC0) == 0x80)
+				colDef->SetColSize((UOSInt)DB::ColDef::GeometryType::MultipointZ);
+			else if ((this->tableInfo->geometryFlags & 0xC0) == 0xC0)
+				colDef->SetColSize((UOSInt)DB::ColDef::GeometryType::MultipointZM);
+			else if ((this->tableInfo->geometryFlags & 0xC0) == 0x40)
+				colDef->SetColSize((UOSInt)DB::ColDef::GeometryType::MultipointM);
+			else
+				colDef->SetColSize((UOSInt)DB::ColDef::GeometryType::Multipoint);
+			break;
+		case 3:
+			if ((this->tableInfo->geometryFlags & 0xC0) == 0x80)
+				colDef->SetColSize((UOSInt)DB::ColDef::GeometryType::PolylineZ);
+			else if ((this->tableInfo->geometryFlags & 0xC0) == 0xC0)
+				colDef->SetColSize((UOSInt)DB::ColDef::GeometryType::PolylineZM);
+			else if ((this->tableInfo->geometryFlags & 0xC0) == 0x40)
+				colDef->SetColSize((UOSInt)DB::ColDef::GeometryType::PolylineM);
+			else
+				colDef->SetColSize((UOSInt)DB::ColDef::GeometryType::Polyline);
+			break;
+		case 4:
+			if ((this->tableInfo->geometryFlags & 0xC0) == 0x80)
+				colDef->SetColSize((UOSInt)DB::ColDef::GeometryType::PolygonZ);
+			else if ((this->tableInfo->geometryFlags & 0xC0) == 0xC0)
+				colDef->SetColSize((UOSInt)DB::ColDef::GeometryType::PolygonZM);
+			else if ((this->tableInfo->geometryFlags & 0xC0) == 0x40)
+				colDef->SetColSize((UOSInt)DB::ColDef::GeometryType::PolygonM);
+			else
+				colDef->SetColSize((UOSInt)DB::ColDef::GeometryType::Polygon);
+			break;
+		case 5:
+			if ((this->tableInfo->geometryFlags & 0xC0) == 0x80)
+				colDef->SetColSize((UOSInt)DB::ColDef::GeometryType::RectangleZ);
+			else if ((this->tableInfo->geometryFlags & 0xC0) == 0xC0)
+				colDef->SetColSize((UOSInt)DB::ColDef::GeometryType::RectangleZM);
+			else if ((this->tableInfo->geometryFlags & 0xC0) == 0x40)
+				colDef->SetColSize((UOSInt)DB::ColDef::GeometryType::RectangleM);
+			else
+				colDef->SetColSize((UOSInt)DB::ColDef::GeometryType::Rectangle);
+			break;
+		case 6:
+			if ((this->tableInfo->geometryFlags & 0xC0) == 0x80)
+				colDef->SetColSize((UOSInt)DB::ColDef::GeometryType::PathZ);
+			else if ((this->tableInfo->geometryFlags & 0xC0) == 0xC0)
+				colDef->SetColSize((UOSInt)DB::ColDef::GeometryType::PathZM);
+			else if ((this->tableInfo->geometryFlags & 0xC0) == 0x40)
+				colDef->SetColSize((UOSInt)DB::ColDef::GeometryType::PathM);
+			else
+				colDef->SetColSize((UOSInt)DB::ColDef::GeometryType::Path);
+			break;
+		}
 	}
 	if (field->defValue)
 	{

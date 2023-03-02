@@ -149,6 +149,13 @@ namespace Math
 			Math::EarthEllipsoid::EarthEllipsoidType eet;
 		} GeographicCSysInfo;
 
+		typedef struct
+		{
+			UInt32 srid;
+			const UTF8Char *name;
+			UOSInt nameLen;
+		} SRIDName;
+
 	private:
 		static SpheroidInfo spheroidSRID[];
 		static DatumInfo datumSRID[];
@@ -158,6 +165,8 @@ namespace Math
 		static DatumInfo datumList[];
 		static GeographicCSysInfo csysList[];
 		static ProjectedCSysInfo pcsysList[];
+		static SRIDName geogNames[];
+		static SRIDName projNames[];
 
 	public:
 		static Math::CoordinateSystem *ParsePRJFile(Text::CString fileName);
@@ -172,7 +181,9 @@ namespace Math
 		static Math::CoordinateSystem *SRCreateCSys(UInt32 epsgId);
 		static Math::ProjectedCoordinateSystem *SRCreateProjCSys(UInt32 epsgId);
 		static Math::GeographicCoordinateSystem *SRCreateGeogCSys(UInt32 epsgId);
-
+		
+		static UInt32 GuessSRIDGeog(Text::CString name);
+		static UInt32 GuessSRIDProj(Text::CString name);
 		static Math::CoordinateSystem *CreateFromName(Text::CString name);
 		static Math::CoordinateSystem *ParsePRJBuff(Text::CString sourceName, UTF8Char *prjBuff, UOSInt buffSize, UOSInt *parsedSize);
 

@@ -23,8 +23,10 @@ namespace DB
 		Text::String *pwd;
 		IO::LogTool *log;
 		Int8 tzQhr;
+		UInt32 geometryOid;
 
-		void Connect();
+		Bool Connect();
+		void InitConnection();
 
 	public:
 		PostgreSQLConn(Text::String *server, UInt16 port, Text::String *uid, Text::String *pwd, Text::String *database, IO::LogTool *log);
@@ -60,8 +62,10 @@ namespace DB
 		Text::String *GetConnPWD();
 		Bool ChangeDatabase(Text::CString databaseName);
 
+		UInt32 GetGeometryOid();
+		DB::DBUtil::ColType DBType2ColType(UInt32 dbType);
+
 		static Text::CString ExecStatusTypeGetName(OSInt status);
-		static DB::DBUtil::ColType DBType2ColType(UInt32 dbType);
 		static DBTool *CreateDBTool(Net::SocketFactory *sockf, Text::String *serverName, UInt16 port, Text::String *dbName, Text::String *uid, Text::String *pwd, IO::LogTool *log, Text::CString logPrefix);
 		static DBTool *CreateDBTool(Net::SocketFactory *sockf, Text::CString serverName, UInt16 port, Text::CString dbName, Text::CString uid, Text::CString pwd, IO::LogTool *log, Text::CString logPrefix);
 	};

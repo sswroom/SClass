@@ -275,7 +275,7 @@ DB::TableDef *DB::DBConn::GetTableDef(Text::CString schemaName, Text::CString ta
 	case DB::DBUtil::SQLType::PostgreSQL:
 	{
 		DB::SQLBuilder sql(DB::DBUtil::SQLType::PostgreSQL, this->GetTzQhr());
-		sql.AppendCmdC(CSTR("select column_name, column_default, is_nullable, udt_name, character_maximum_length, datetime_precision, is_identity, identity_generation, identity_start, identity_increment from information_schema.columns where table_name="));
+		sql.AppendCmdC(CSTR("select column_name, column_default, is_nullable, udt_name, character_maximum_length, datetime_precision, is_identity, identity_generation, identity_start, identity_increment, udt_schema from information_schema.columns where table_name="));
 		sql.AppendStrC(tableName);
 		sql.AppendCmdC(CSTR(" and table_schema = "));
 		if (schemaName.leng == 0)
@@ -295,6 +295,8 @@ DB::TableDef *DB::DBConn::GetTableDef(Text::CString schemaName, Text::CString ta
 		Data::FastStringMap<DB::ColDef*> colMap;
 		DB::TableDef *tab;
 		DB::ColDef *col;
+		Bool hasGeometry = false;
+		Text::String *geometrySchema = 0;
 		Text::String *s;
 		UOSInt sizeCol;
 		NEW_CLASS(tab, DB::TableDef(schemaName, tableName));
@@ -465,6 +467,13 @@ DB::TableDef *DB::DBConn::GetTableDef(Text::CString schemaName, Text::CString ta
 				else if (s->Equals(UTF8STRC("geometry")))
 				{
 					col->SetColType(DB::DBUtil::CT_Vector);
+					col->SetColDP(0);
+					col->SetColSize(0);
+					hasGeometry = true;
+					if (geometrySchema == 0)
+					{
+						geometrySchema = r->GetNewStr(10);
+					}
 				}
 				else if (s->Equals(UTF8STRC("_float4")))
 				{
@@ -582,6 +591,95 @@ DB::TableDef *DB::DBConn::GetTableDef(Text::CString schemaName, Text::CString ta
 			}
 			this->CloseReader(r);
 		}
+		if (hasGeometry)
+		{
+			sql.Clear();
+			sql.AppendCmdC(CSTR("SELECT f_geometry_column, coord_dimension, srid, type FROM "));
+			sql.AppendCol(geometrySchema->v);
+			sql.AppendCmdC(CSTR(".geometry_columns where f_table_name = "));
+			sql.AppendStrC(tableName);
+			sql.AppendCmdC(CSTR(" and f_table_schema = "));
+			if (schemaName.leng == 0)
+			{
+				sql.AppendStrC(CSTR("public"));
+			}
+			else
+			{
+				sql.AppendStrC(schemaName);
+			}
+			r = this->ExecuteReader(sql.ToCString());
+			if (r)
+			{
+				while (r->ReadNext())
+				{
+					Text::String *colName = r->GetNewStr(0);
+					Int32 dimension = r->GetInt32(1);
+					Int32 srid = r->GetInt32(2);
+					Text::String *t = r->GetNewStr(3);
+					col = colMap.Get(colName);
+					if (col)
+					{
+						col->SetColDP((UInt32)srid);
+						if (t == 0 || t->Equals(UTF8STRC("GEOMETRY")))
+						{
+							if (dimension == 3)
+								col->SetColSize((UOSInt)DB::ColDef::GeometryType::AnyZ);
+							else if (dimension == 4)
+								col->SetColSize((UOSInt)DB::ColDef::GeometryType::AnyZM);
+							else
+								col->SetColSize((UOSInt)DB::ColDef::GeometryType::Any);
+						}
+						else if (t->Equals(UTF8STRC("POINT")))
+						{
+							if (dimension == 3)
+								col->SetColSize((UOSInt)DB::ColDef::GeometryType::PointZ);
+							else if (dimension == 4)
+								col->SetColSize((UOSInt)DB::ColDef::GeometryType::PointZM);
+							else
+								col->SetColSize((UOSInt)DB::ColDef::GeometryType::Point);
+						}
+						else if (t->Equals(UTF8STRC("PATH")))
+						{
+							if (dimension == 3)
+								col->SetColSize((UOSInt)DB::ColDef::GeometryType::PathZ);
+							else if (dimension == 4)
+								col->SetColSize((UOSInt)DB::ColDef::GeometryType::PathZM);
+							else
+								col->SetColSize((UOSInt)DB::ColDef::GeometryType::Path);
+						}
+						else if (t->Equals(UTF8STRC("POLYGON")))
+						{
+							if (dimension == 3)
+								col->SetColSize((UOSInt)DB::ColDef::GeometryType::PolygonZ);
+							else if (dimension == 4)
+								col->SetColSize((UOSInt)DB::ColDef::GeometryType::PolygonZM);
+							else
+								col->SetColSize((UOSInt)DB::ColDef::GeometryType::Polygon);
+						}
+						else
+						{
+							printf("DBConn Postgresql: Unsupported type %s\r\n", t->v);
+							if (dimension == 3)
+								col->SetColSize((UOSInt)DB::ColDef::GeometryType::AnyZ);
+							else if (dimension == 4)
+								col->SetColSize((UOSInt)DB::ColDef::GeometryType::AnyZM);
+							else
+								col->SetColSize((UOSInt)DB::ColDef::GeometryType::Any);
+						}
+					}
+					SDEL_STRING(colName);
+					SDEL_STRING(t);
+				}
+				this->CloseReader(r);
+			}
+			else
+			{
+				Text::StringBuilderUTF8 sb;
+				this->GetLastErrorMsg(&sb);
+				printf("DBConn Postgresql: %s\r\n", sb.ToString());
+			}
+		}
+		SDEL_STRING(geometrySchema);
 		return tab;
 	}
 	case DB::DBUtil::SQLType::WBEM:

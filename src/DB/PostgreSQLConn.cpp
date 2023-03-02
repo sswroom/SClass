@@ -5,7 +5,7 @@
 #include "Text/MyStringW.h"
 #include <libpq-fe.h>
 
-//#define VERBOSE
+#define VERBOSE
 #if defined(VERBOSE)
 #include <stdio.h>
 #endif
@@ -23,12 +23,16 @@ private:
 	int ncol;
 	int nrow;
 	int currrow;
+	DB::PostgreSQLConn *conn;
+	UInt32 geometryOid;
 public:
-	PostgreSQLReader(PGresult *res, Int8 tzQhr) : DBReader()
+	PostgreSQLReader(PGresult *res, Int8 tzQhr, DB::PostgreSQLConn *conn) : DBReader()
 	{
 		this->tzQhr = tzQhr;
 		this->res = res;
 		this->currrow = -1;
+		this->conn = conn;
+		this->geometryOid = conn->GetGeometryOid();
 		this->ncol = PQnfields(this->res);
 		this->nrow = PQntuples(this->res);
 	}
@@ -220,6 +224,29 @@ public:
 			return true;
 		}
 		Oid colType = PQftype(this->res, (int)colIndex);
+		if (colType == geometryOid)
+		{
+			Text::StringBuilderUTF8 sb;
+			sb.AppendSlow((const UTF8Char*)PQgetvalue(this->res, this->currrow, (int)colIndex));
+/*			if (sb.ToString()[0] != '(' || !sb.EndsWith(')'))
+			{
+				return false;
+			}*/
+			UInt8 *wkb = MemAlloc(UInt8, sb.GetLength() >> 1);
+			UOSInt wkbLen = sb.Hex2Bytes(wkb);
+			Math::WKBReader reader(0);
+			Math::Geometry::Vector2D *vec = reader.ParseWKB(wkb, wkbLen, 0);
+			MemFree(wkb);
+			if (vec)
+			{
+				item->SetVectorDirect(vec);
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
 		switch (colType)
 		{
 		case 16: //bool
@@ -444,29 +471,6 @@ public:
 			item->SetVectorDirect(pt);
 			return true;
 		}
-		case 34122: //geometry
-		{
-			Text::StringBuilderUTF8 sb;
-			sb.AppendSlow((const UTF8Char*)PQgetvalue(this->res, this->currrow, (int)colIndex));
-/*			if (sb.ToString()[0] != '(' || !sb.EndsWith(')'))
-			{
-				return false;
-			}*/
-			UInt8 *wkb = MemAlloc(UInt8, sb.GetLength() >> 1);
-			UOSInt wkbLen = sb.Hex2Bytes(wkb);
-			Math::WKBReader reader(0);
-			Math::Geometry::Vector2D *vec = reader.ParseWKB(wkb, wkbLen, 0);
-			MemFree(wkb);
-			if (vec)
-			{
-				item->SetVectorDirect(vec);
-				return true;
-			}
-			else
-			{
-				return false;
-			}
-		}
 		case 22: //int2vector
 		{
 			Data::ArrayList<Int16> arr;
@@ -567,7 +571,7 @@ public:
 	virtual DB::DBUtil::ColType GetColType(UOSInt colIndex, UOSInt *colSize)
 	{
 		Oid oid = PQftype(this->res, (int)colIndex);
-		return DB::PostgreSQLConn::DBType2ColType(oid);
+		return this->conn->DBType2ColType(oid);
 	}
 
 	virtual Bool GetColDef(UOSInt colIndex, DB::ColDef *colDef)
@@ -582,7 +586,7 @@ public:
 			return false;
 		}
 		colDef->SetColName((const UTF8Char*)name);
-		colDef->SetColType(DB::PostgreSQLConn::DBType2ColType(PQftype(this->res, (int)colIndex)));
+		colDef->SetColType(this->conn->DBType2ColType(PQftype(this->res, (int)colIndex)));
 		int len = PQfsize(this->res, (int)colIndex);
 		if (len < 0)
 		{
@@ -597,7 +601,7 @@ public:
 	}
 };
 
-void DB::PostgreSQLConn::Connect()
+Bool DB::PostgreSQLConn::Connect()
 {
 	if (this->clsData->conn == 0)
 	{
@@ -620,24 +624,43 @@ void DB::PostgreSQLConn::Connect()
 		}
 		this->clsData->conn = PQconnectdb((const char*)sb.ToString());
 		this->isTran = false;
-		if (this->log)
+		if (PQstatus(this->clsData->conn) != CONNECTION_OK)
 		{
-			if (PQstatus(this->clsData->conn) != CONNECTION_OK)
+			if (this->log)
 			{
 				char *msg = PQerrorMessage(this->clsData->conn);
 				UOSInt msgLen = Text::StrCharCnt(msg);
 				this->log->LogMessage(Text::CString((const UTF8Char*)msg, msgLen), IO::ILogHandler::LogLevel::Error);
 #if defined(VERBOSE)
 				printf("PostgreSQL: Error, %s\r\n", msg);
-#endif				
-			}
-#if defined(VERBOSE)
-			else
-			{
-				printf("PostgreSQL: DB Connected\r\n");
-			}
 #endif
+			}
+			return false;
 		}
+		else
+		{
+#if defined(VERBOSE)
+			printf("PostgreSQL: DB Connected\r\n");
+#endif
+			return true;
+		}
+	}
+	else
+	{
+		return true;
+	}
+}
+
+void DB::PostgreSQLConn::InitConnection()
+{
+	DB::DBReader *r = this->ExecuteReader(CSTR("select oid, typname from pg_catalog.pg_type where typname = 'geometry'"));
+	if (r)
+	{
+		while (r->ReadNext())
+		{
+			this->geometryOid = (UInt32)r->GetInt32(0);
+		}
+		this->CloseReader(r);
 	}
 }
 
@@ -652,7 +675,8 @@ DB::PostgreSQLConn::PostgreSQLConn(Text::String *server, UInt16 port, Text::Stri
 	this->database = database->Clone();
 	this->uid = SCOPY_STRING(uid);
 	this->pwd = SCOPY_STRING(pwd);
-	this->Connect();
+	this->geometryOid = 0;
+	if (this->Connect()) this->InitConnection();
 }
 
 DB::PostgreSQLConn::PostgreSQLConn(Text::CString server, UInt16 port, Text::CString uid, Text::CString pwd, Text::CString database, IO::LogTool *log) : DBConn(server)
@@ -666,7 +690,8 @@ DB::PostgreSQLConn::PostgreSQLConn(Text::CString server, UInt16 port, Text::CStr
 	this->database = Text::String::New(database);
 	this->uid = Text::String::NewOrNull(uid);
 	this->pwd = Text::String::NewOrNull(pwd);
-	this->Connect();
+	this->geometryOid = 0;
+	if (this->Connect()) this->InitConnection();
 }
 
 DB::PostgreSQLConn::~PostgreSQLConn()
@@ -776,7 +801,7 @@ DB::DBReader *DB::PostgreSQLConn::ExecuteReader(Text::CString sql)
 		PQclear(res);
 		return 0;
 	}
-	return NEW_CLASS_D(PostgreSQLReader(res, this->tzQhr));
+	return NEW_CLASS_D(PostgreSQLReader(res, this->tzQhr, this));
 }
 
 void DB::PostgreSQLConn::CloseReader(DB::DBReader *r)
@@ -802,7 +827,10 @@ Bool DB::PostgreSQLConn::IsLastDataError()
 void DB::PostgreSQLConn::Reconnect()
 {
 	this->Close();
-	this->Connect();
+	if (this->Connect())
+	{
+		this->InitConnection();
+	}
 }
 
 void *DB::PostgreSQLConn::BeginTransaction()
@@ -979,43 +1007,15 @@ Bool DB::PostgreSQLConn::ChangeDatabase(Text::CString databaseName)
 	}
 }
 
-Text::CString DB::PostgreSQLConn::ExecStatusTypeGetName(OSInt status)
+UInt32 DB::PostgreSQLConn::GetGeometryOid()
 {
-	switch (status)
-	{
-	case PGRES_EMPTY_QUERY:
-		return CSTR("PGRES_EMPTY_QUERY");
-	case PGRES_COMMAND_OK:
-		return CSTR("PGRES_COMMAND_OK");
-	case PGRES_TUPLES_OK:
-		return CSTR("PGRES_TUPLES_OK");
-	case PGRES_COPY_OUT:
-		return CSTR("PGRES_COPY_OUT");
-	case PGRES_COPY_IN:
-		return CSTR("PGRES_COPY_IN");
-	case PGRES_BAD_RESPONSE:
-		return CSTR("PGRES_BAD_RESPONSE");
-	case PGRES_NONFATAL_ERROR:
-		return CSTR("PGRES_NONFATAL_ERROR");
-	case PGRES_FATAL_ERROR:
-		return CSTR("PGRES_FATAL_ERROR");
-	case PGRES_COPY_BOTH:
-		return CSTR("PGRES_COPY_BOTH");
-	case PGRES_SINGLE_TUPLE:
-		return CSTR("PGRES_SINGLE_TUPLE");
-#if defined(LIBPQ_HAS_PIPELINING) && LIBPQ_HAS_PIPELINING
-	case PGRES_PIPELINE_SYNC:
-		return CSTR("PGRES_PIPELINE_SYNC");
-	case PGRES_PIPELINE_ABORTED:
-		return CSTR("PGRES_PIPELINE_ABORTED");
-#endif
-	default:
-		return CSTR("Unknown");
-	}
+	return this->geometryOid;
 }
 
 DB::DBUtil::ColType DB::PostgreSQLConn::DBType2ColType(UInt32 dbType)
 {
+	if (dbType == this->geometryOid)
+		return DB::DBUtil::CT_Vector;
 	switch (dbType)
 	{
 	case 16: //bool
@@ -1100,8 +1100,6 @@ DB::DBUtil::ColType DB::PostgreSQLConn::DBType2ColType(UInt32 dbType)
 		return DB::DBUtil::CT_VarUTF32Char;
 	case 34012: //citext
 		return DB::DBUtil::CT_VarUTF32Char;
-	case 34122: //geometry
-		return DB::DBUtil::CT_Vector;
 	default:
 #if defined(VERBOSE)
 		printf("PostgreSQL: Unknown type %d\r\n", dbType);
@@ -1109,3 +1107,39 @@ DB::DBUtil::ColType DB::PostgreSQLConn::DBType2ColType(UInt32 dbType)
 		return DB::DBUtil::CT_Unknown;
 	}
 }
+
+Text::CString DB::PostgreSQLConn::ExecStatusTypeGetName(OSInt status)
+{
+	switch (status)
+	{
+	case PGRES_EMPTY_QUERY:
+		return CSTR("PGRES_EMPTY_QUERY");
+	case PGRES_COMMAND_OK:
+		return CSTR("PGRES_COMMAND_OK");
+	case PGRES_TUPLES_OK:
+		return CSTR("PGRES_TUPLES_OK");
+	case PGRES_COPY_OUT:
+		return CSTR("PGRES_COPY_OUT");
+	case PGRES_COPY_IN:
+		return CSTR("PGRES_COPY_IN");
+	case PGRES_BAD_RESPONSE:
+		return CSTR("PGRES_BAD_RESPONSE");
+	case PGRES_NONFATAL_ERROR:
+		return CSTR("PGRES_NONFATAL_ERROR");
+	case PGRES_FATAL_ERROR:
+		return CSTR("PGRES_FATAL_ERROR");
+	case PGRES_COPY_BOTH:
+		return CSTR("PGRES_COPY_BOTH");
+	case PGRES_SINGLE_TUPLE:
+		return CSTR("PGRES_SINGLE_TUPLE");
+#if defined(LIBPQ_HAS_PIPELINING) && LIBPQ_HAS_PIPELINING
+	case PGRES_PIPELINE_SYNC:
+		return CSTR("PGRES_PIPELINE_SYNC");
+	case PGRES_PIPELINE_ABORTED:
+		return CSTR("PGRES_PIPELINE_ABORTED");
+#endif
+	default:
+		return CSTR("Unknown");
+	}
+}
+
