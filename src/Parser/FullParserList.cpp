@@ -373,8 +373,15 @@ Parser::FullParserList::FullParserList() : Parser::ParserList()
 	this->AddObjectParser(oparser);
 	NEW_CLASS(oparser, Parser::ObjParser::KMZParser());
 	this->AddObjectParser(oparser);
+
+	this->SetArcGISPRJParser(&this->prjParser);
 }
 
 Parser::FullParserList::~FullParserList()
 {
+}
+
+Math::ArcGISPRJParser *Parser::FullParserList::GetPRJParser()
+{
+	return &this->prjParser;
 }

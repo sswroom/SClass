@@ -23,6 +23,11 @@ void Parser::FileParser::SHPParser::SetCodePage(UInt32 codePage)
 	this->codePage = codePage;
 }
 
+void Parser::FileParser::SHPParser::SetArcGISPRJParser(Math::ArcGISPRJParser *prjParser)
+{
+	this->prjParser = prjParser;
+}
+
 void Parser::FileParser::SHPParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::MapLayer)
@@ -46,7 +51,7 @@ IO::ParsedObject *Parser::FileParser::SHPParser::ParseFileHdr(IO::StreamData *fd
 	}
 
 	Map::SHPData *shp;
-	NEW_CLASS(shp, Map::SHPData(hdr, fd, this->codePage));
+	NEW_CLASS(shp, Map::SHPData(hdr, fd, this->codePage, this->prjParser));
 	if (shp->IsError())
 	{
 		DEL_CLASS(shp);

@@ -149,13 +149,6 @@ namespace Math
 			Math::EarthEllipsoid::EarthEllipsoidType eet;
 		} GeographicCSysInfo;
 
-		typedef struct
-		{
-			UInt32 srid;
-			const UTF8Char *name;
-			UOSInt nameLen;
-		} SRIDName;
-
 	private:
 		static SpheroidInfo spheroidSRID[];
 		static DatumInfo datumSRID[];
@@ -165,12 +158,8 @@ namespace Math
 		static DatumInfo datumList[];
 		static GeographicCSysInfo csysList[];
 		static ProjectedCSysInfo pcsysList[];
-		static SRIDName geogNames[];
-		static SRIDName projNames[];
 
 	public:
-		static Math::CoordinateSystem *ParsePRJFile(Text::CString fileName);
-
 		static const SpatialRefInfo *SRGetSpatialRef(UInt32 epsgId);
 		static const SpatialRefInfo *SRGetSpatialRefPrev(UInt32 epsgId);
 		static const SpatialRefInfo *SRGetSpatialRefNext(UInt32 epsgId);
@@ -182,10 +171,7 @@ namespace Math
 		static Math::ProjectedCoordinateSystem *SRCreateProjCSys(UInt32 epsgId);
 		static Math::GeographicCoordinateSystem *SRCreateGeogCSys(UInt32 epsgId);
 		
-		static UInt32 GuessSRIDGeog(Text::CString name);
-		static UInt32 GuessSRIDProj(Text::CString name);
 		static Math::CoordinateSystem *CreateFromName(Text::CString name);
-		static Math::CoordinateSystem *ParsePRJBuff(Text::CString sourceName, UTF8Char *prjBuff, UOSInt buffSize, UOSInt *parsedSize);
 
 		static const Math::CoordinateSystemManager::DatumInfo *GetDatumInfoByName(const UTF8Char *name);
 		static void FillDatumData(Math::GeographicCoordinateSystem::DatumData1 *data, const DatumInfo *datum, Text::CString name, Math::EarthEllipsoid *ee, const SpheroidInfo *spheroid);
@@ -200,9 +186,7 @@ namespace Math
 		static Math::GeographicCoordinateSystem *CreateGeogCoordinateSystem(Text::CString sourceName, const UTF8Char *geoName);
 		static UOSInt GetGeogCoordinateSystems(Data::ArrayList<GeoCoordSysType> *csysList);
 		static const GeographicCSysInfo *GetGeogCoordinateSystemInfo(const UTF8Char *geoName);
-	private:
-		static Bool ParsePRJString(UTF8Char *prjBuff, UOSInt *strSize);
-	public:
+
 		static Text::CString GeoCoordSysTypeGetName(GeoCoordSysType gcst);
 		static Text::CString ProjCoordSysTypeGetName(ProjCoordSysType pcst);
 	};

@@ -11,7 +11,7 @@
 #define HAS_M_FLAG 4
 #define HAS_Z_FLAG 2
 
-Map::ESRI::FileGDBTableInfo *Map::ESRI::FileGDBUtil::ParseFieldDesc(const UInt8 *fieldDesc)
+Map::ESRI::FileGDBTableInfo *Map::ESRI::FileGDBUtil::ParseFieldDesc(const UInt8 *fieldDesc, Math::ArcGISPRJParser *prjParser)
 {
 	UTF8Char sbuff[1024];
 	UTF8Char *sptr;
@@ -91,7 +91,7 @@ Map::ESRI::FileGDBTableInfo *Map::ESRI::FileGDBUtil::ParseFieldDesc(const UInt8 
 			field->srsValue = MemAlloc(UInt8, srsLen);
 			MemCopyNO(field->srsValue, &fieldDesc[ofst + 2], srsLen);
 			UOSInt csysLen = (UOSInt)(sptr - sbuff);
-			table->csys = Math::CoordinateSystemManager::ParsePRJBuff(CSTR("FileGDB"), sbuff, csysLen, &csysLen);
+			table->csys = prjParser->ParsePRJBuff(CSTR("FileGDB"), sbuff, csysLen, &csysLen);
 			ofst += 2 + srsLen;
 			UInt8 flags = fieldDesc[ofst];
 			ofst += 1;

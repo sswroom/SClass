@@ -33,6 +33,7 @@ namespace IO
 			IO::StreamData *fd;
 			Data::SyncArrayList<TagInfo*> tags;
 			Map::ESRI::FileGDBTableInfo *tableInfo;
+			Math::ArcGISPRJParser prjParser;
 
 			Bool pauseParsing;
 			Bool threadRunning;

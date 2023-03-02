@@ -9,6 +9,11 @@ namespace Map
 {
 	class MapManager;
 }
+
+namespace Math
+{
+	class ArcGISPRJParser;
+}
 namespace Net
 {
 	class SocketFactory;
@@ -39,6 +44,7 @@ namespace IO
 		virtual void SetProgressHandler(IO::ProgressHandler *progHdlr) {};
 		virtual void SetSocketFactory(Net::SocketFactory *sockf) {};
 		virtual void SetSSLEngine(Net::SSLEngine *ssl) {};
+		virtual void SetArcGISPRJParser(Math::ArcGISPRJParser *prjParser) {};
 		virtual void PrepareSelector(IO::FileSelector *selector, IO::ParserType t) = 0;
 		virtual IO::ParserType GetParserType() = 0;
 	};

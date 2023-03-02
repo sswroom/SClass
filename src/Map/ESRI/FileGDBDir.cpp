@@ -92,7 +92,7 @@ void Map::ESRI::FileGDBDir::AddTable(FileGDBTable *table)
 	this->tables.Add(table);
 }
 
-Map::ESRI::FileGDBDir *Map::ESRI::FileGDBDir::OpenDir(IO::PackageFile *pkg)
+Map::ESRI::FileGDBDir *Map::ESRI::FileGDBDir::OpenDir(IO::PackageFile *pkg, Math::ArcGISPRJParser *prjParser)
 {
 	IO::StreamData *tableFD = pkg->GetItemStmDataNew(UTF8STRC("a00000001.gdbtable"));
 	IO::StreamData *indexFD = pkg->GetItemStmDataNew(UTF8STRC("a00000001.gdbtablx"));
@@ -102,7 +102,7 @@ Map::ESRI::FileGDBDir *Map::ESRI::FileGDBDir::OpenDir(IO::PackageFile *pkg)
 		SDEL_CLASS(indexFD);
 		return 0;
 	}
-	NEW_CLASS(table, FileGDBTable(CSTR("GDB_SystemCatalog"), tableFD, indexFD));
+	NEW_CLASS(table, FileGDBTable(CSTR("GDB_SystemCatalog"), tableFD, indexFD, prjParser));
 	DEL_CLASS(tableFD);
 	SDEL_CLASS(indexFD);
 	if (table->IsError())
@@ -139,7 +139,7 @@ Map::ESRI::FileGDBDir *Map::ESRI::FileGDBDir::OpenDir(IO::PackageFile *pkg)
 			indexFD = pkg->GetItemStmDataNew(sbuff, (UOSInt)(sptr - sbuff));
 			if (tableFD)
 			{
-				NEW_CLASS(innerTable, FileGDBTable(sb.ToCString(), tableFD, indexFD));
+				NEW_CLASS(innerTable, FileGDBTable(sb.ToCString(), tableFD, indexFD, prjParser));
 				DEL_CLASS(tableFD);
 				if (innerTable->IsError())
 				{

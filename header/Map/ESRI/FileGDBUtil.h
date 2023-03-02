@@ -1,6 +1,7 @@
 #ifndef _SM_MAP_ESRI_FILEGDBUTIL
 #define _SM_MAP_ESRI_FILEGDBUTIL
 #include "Data/ArrayList.h"
+#include "Math/ArcGISPRJParser.h"
 #include "Math/CoordinateSystem.h"
 #include "Text/CString.h"
 #include "Text/String.h"
@@ -56,7 +57,7 @@ namespace Map
 		class FileGDBUtil
 		{
 		public:
-			static FileGDBTableInfo *ParseFieldDesc(const UInt8 *fieldDesc);
+			static FileGDBTableInfo *ParseFieldDesc(const UInt8 *fieldDesc, Math::ArcGISPRJParser *prjParser);
 			static void FreeFieldInfo(FileGDBFieldInfo *fieldInfo);
 			static void FreeTableInfo(FileGDBTableInfo *tableInfo);
 			static FileGDBFieldInfo *FieldInfoClone(FileGDBFieldInfo *tableInfo);

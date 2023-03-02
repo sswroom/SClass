@@ -2214,6 +2214,10 @@ Map/OSM/OSMParser.h: ../../src/Map/OSM/OSMParser.cpp
 Map/OSM/OSMTileMap.h: ../../src/Map/OSM/OSMTileMap.cpp
 @OSMTileMap.o
 
+Math/ArcGISCSys.h: ../../src/Math/ArcGISCSys.cpp
+@ArcGISCSys.o
+Math/ArcGISPRJParser.h: ../../src/Math/ArcGISPRJParser.cpp
+@ArcGISPRJParser.o
 Math/BigIntLSB.h: ../../src/Math/BigIntLSB.cpp
 @BigIntLSB.o
 Math/CesiumEntityWriter.h: ../../src/Math/CesiumEntityWriter.cpp
@@ -4943,6 +4947,8 @@ OSMCacheHandler.o: ../../src/Map/OSM/OSMCacheHandler.cpp
 OSMLocalTileMap.o: ../../src/Map/OSM/OSMLocalTileMap.cpp
 OSMParser.o: ../../src/Map/OSM/OSMParser.cpp
 OSMTileMap.o: ../../src/Map/OSM/OSMTileMap.cpp
+ArcGISCSys.o: ../../src/Math/ArcGISCSys.cpp
+ArcGISPRJParser.o: ../../src/Math/ArcGISPRJParser.cpp
 BigIntLSB.o: ../../src/Math/BigIntLSB.cpp
 CesiumEntityWriter.o: ../../src/Math/CesiumEntityWriter.cpp
 ComplexNumber.o: ../../src/Math/ComplexNumber.cpp

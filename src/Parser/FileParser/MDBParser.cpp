@@ -7,6 +7,7 @@
 #include "DB/MDBFileConn.h"
 #include "Map/ESRI/ESRIMDBLayer.h"
 #include "Map/MapLayerCollection.h"
+#include "Math/ArcGISPRJParser.h"
 #include "Math/CoordinateSystemManager.h"
 #include "Parser/FileParser/MDBParser.h"
 #include "Text/Encoding.h"
@@ -28,6 +29,11 @@ Int32 Parser::FileParser::MDBParser::GetName()
 void Parser::FileParser::MDBParser::SetCodePage(UInt32 codePage)
 {
 	this->codePage = codePage;
+}
+
+void Parser::FileParser::MDBParser::SetArcGISPRJParser(Math::ArcGISPRJParser *prjParser)
+{
+	this->prjParser = prjParser;
 }
 
 void Parser::FileParser::MDBParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
@@ -140,7 +146,7 @@ IO::ParsedObject *Parser::FileParser::MDBParser::ParseFileHdr(IO::StreamData *fd
 						{
 							Text::StringBuilderUTF8 sb;
 							rdr->GetStr(1, &sb);
-							csys = Math::CoordinateSystemManager::ParsePRJBuff(fd->GetFullFileName()->ToCString(), sb.v, sb.GetLength(), 0);
+							csys = this->prjParser->ParsePRJBuff(fd->GetFullFileName()->ToCString(), sb.v, sb.GetLength(), 0);
 							if (csys)
 							{
 								srid = csys->GetSRID();

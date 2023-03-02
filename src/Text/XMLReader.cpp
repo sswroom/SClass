@@ -1561,6 +1561,19 @@ Bool Text::XMLReader::ReadNodeText(Text::StringBuilderUTF8 *sb)
 	}
 }
 
+Bool Text::XMLReader::NextElement()
+{
+	while (true)
+	{
+		if (!this->ReadNext())
+			return false;
+		if (this->nt == Text::XMLNode::NodeType::Element)
+			return true;
+		if (this->nt == Text::XMLNode::NodeType::ElementEnd)
+			return false;
+	}
+}
+
 Bool Text::XMLReader::SkipElement()
 {
 	if (this->nt == Text::XMLNode::NodeType::Element)

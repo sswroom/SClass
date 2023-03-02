@@ -3,7 +3,7 @@
 #include "Map/ESRI/FileGDBReader.h"
 #include "Map/ESRI/FileGDBTable.h"
 
-Map::ESRI::FileGDBTable::FileGDBTable(Text::CString tableName, IO::StreamData *gdbtableFD, IO::StreamData *gdbtablxFD)
+Map::ESRI::FileGDBTable::FileGDBTable(Text::CString tableName, IO::StreamData *gdbtableFD, IO::StreamData *gdbtablxFD, Math::ArcGISPRJParser *prjParser)
 {
 	this->tableName = Text::String::New(tableName);
 	this->gdbtableFD = gdbtableFD->GetPartialData(0, gdbtableFD->GetDataSize());
@@ -11,6 +11,7 @@ Map::ESRI::FileGDBTable::FileGDBTable(Text::CString tableName, IO::StreamData *g
 	this->indexCnt = 0;
 	this->tableInfo = 0;
 	this->dataOfst = 0;
+	this->prjParser = prjParser;
 
 	UInt8 hdrBuff[44];
 	if (gdbtablxFD && gdbtablxFD->GetRealData(0, 16, hdrBuff) == 16)
@@ -39,7 +40,7 @@ Map::ESRI::FileGDBTable::FileGDBTable(Text::CString tableName, IO::StreamData *g
 		UInt32 fieldSize = ReadUInt32(&hdrBuff[40]);
 		UInt8 *fieldDesc = MemAlloc(UInt8, fieldSize + 4);
 		this->gdbtableFD->GetRealData(40, fieldSize + 4, fieldDesc);
-		this->tableInfo = Map::ESRI::FileGDBUtil::ParseFieldDesc(fieldDesc);
+		this->tableInfo = Map::ESRI::FileGDBUtil::ParseFieldDesc(fieldDesc, this->prjParser);
 		MemFree(fieldDesc);
 		this->dataOfst = 40 + 4 + fieldSize;
 	}
@@ -51,7 +52,7 @@ Map::ESRI::FileGDBTable::FileGDBTable(Text::CString tableName, IO::StreamData *g
 		{
 			UInt8 *fieldDesc = MemAlloc(UInt8, fieldSize + 4);
 			this->gdbtableFD->GetRealData(fieldDescOfst, fieldSize + 4, fieldDesc);
-			this->tableInfo = Map::ESRI::FileGDBUtil::ParseFieldDesc(fieldDesc);
+			this->tableInfo = Map::ESRI::FileGDBUtil::ParseFieldDesc(fieldDesc, this->prjParser);
 			MemFree(fieldDesc);
 			this->dataOfst = fieldDescOfst + 4 + fieldSize;
 		}

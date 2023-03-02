@@ -30,6 +30,7 @@ namespace Parser
 		void SetProgressHandler(IO::ProgressHandler *progHdlr);
 		void SetSocketFactory(Net::SocketFactory *sockf);
 		void SetSSLEngine(Net::SSLEngine *ssl);
+		void SetArcGISPRJParser(Math::ArcGISPRJParser *prjParser);
 		void PrepareSelector(IO::FileSelector *selector, IO::ParserType t);
 		IO::ParsedObject *ParseFile(IO::StreamData *fd, IO::PackageFile *pkgFile, IO::ParserType *t, IO::ParserType targetType);
 		IO::ParsedObject *ParseFile(IO::StreamData *fd, IO::PackageFile *pkgFile, IO::ParserType *t);

@@ -10,6 +10,7 @@ namespace Parser
 		{
 		private:
 			UInt32 codePage;
+			Math::ArcGISPRJParser *prjParser;
 		public:
 			MDBParser();
 			virtual ~MDBParser();
@@ -17,6 +18,7 @@ namespace Parser
 			virtual void SetCodePage(UInt32 codePage);
 
 			virtual Int32 GetName();
+			virtual void SetArcGISPRJParser(Math::ArcGISPRJParser *prjParser);
 			virtual void PrepareSelector(IO::FileSelector *selector, IO::ParserType t);
 			virtual IO::ParserType GetParserType();
 			virtual IO::ParsedObject *ParseFileHdr(IO::StreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr);

@@ -3,6 +3,7 @@
 #include "Data/ByteTool.h"
 #include "IO/Path.h"
 #include "Map/SHPData.h"
+#include "Math/ArcGISPRJParser.h"
 #include "Math/CoordinateSystemManager.h"
 #include "Math/Math.h"
 #include "Math/Geometry/Polyline.h"
@@ -12,7 +13,7 @@
 #include "Sync/MutexUsage.h"
 #include "Text/MyString.h"
 
-Map::SHPData::SHPData(const UInt8 *shpHdr, IO::StreamData *data, UInt32 codePage) : Map::MapDrawLayer(data->GetFullName(), 0, 0)
+Map::SHPData::SHPData(const UInt8 *shpHdr, IO::StreamData *data, UInt32 codePage, Math::ArcGISPRJParser *prjParser) : Map::MapDrawLayer(data->GetFullName(), 0, 0)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
@@ -51,7 +52,7 @@ Map::SHPData::SHPData(const UInt8 *shpHdr, IO::StreamData *data, UInt32 codePage
 		this->SetLayerName(CSTRP(&sbuff[i + 1], sptr));
 		sptr = Text::StrConcatC(sptr, UTF8STRC(".prj"));
 	}
-	this->csys = Math::CoordinateSystemManager::ParsePRJFile({sbuff, (UOSInt)(sptr - sbuff)});
+	this->csys = prjParser->ParsePRJFile({sbuff, (UOSInt)(sptr - sbuff)});
 
 	Text::StrConcatC(&sptr[-3], UTF8STRC("dbf"));
 

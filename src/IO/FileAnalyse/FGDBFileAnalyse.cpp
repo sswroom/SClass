@@ -40,7 +40,7 @@ UInt32 __stdcall IO::FileAnalyse::FGDBFileAnalyse::ParseThread(void *userObj)
 
 	UInt8 *fieldBuff = MemAlloc(UInt8, tag->size);
 	me->fd->GetRealData(40, tag->size, fieldBuff);
-	me->tableInfo = Map::ESRI::FileGDBUtil::ParseFieldDesc(fieldBuff);
+	me->tableInfo = Map::ESRI::FileGDBUtil::ParseFieldDesc(fieldBuff, &me->prjParser);
 	MemFree(fieldBuff);
 
 	ofst = 40 + tag->size;
@@ -267,7 +267,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::FGDBFileAnalyse::GetFrameDetail(U
 					*sptr = 0;
 					frame->AddField(ofst + 2, srsLen, CSTR("SRS"), CSTRP(sbuff, sptr));
 					UOSInt csysLen = (UOSInt)(sptr - sbuff);
-					Math::CoordinateSystem *csys = Math::CoordinateSystemManager::ParsePRJBuff(this->fd->GetFullName()->ToCString(), sbuff, csysLen, &csysLen);
+					Math::CoordinateSystem *csys = this->prjParser.ParsePRJBuff(this->fd->GetFullName()->ToCString(), sbuff, csysLen, &csysLen);
 					if (csys)
 					{
 						Text::StringBuilderUTF8 sb;

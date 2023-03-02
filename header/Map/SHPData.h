@@ -5,6 +5,7 @@
 #include "DB/DBFFile.h"
 #include "IO/StmData/FileData.h"
 #include "Map/MapDrawLayer.h"
+#include "Math/ArcGISPRJParser.h"
 
 namespace Map
 {
@@ -39,7 +40,7 @@ namespace Map
 		Double mapRate;
 
 	public:
-		SHPData(const UInt8 *hdr, IO::StreamData *data, UInt32 codePage);
+		SHPData(const UInt8 *hdr, IO::StreamData *data, UInt32 codePage, Math::ArcGISPRJParser *prjParser);
 		virtual ~SHPData();
 
 		Bool IsError();

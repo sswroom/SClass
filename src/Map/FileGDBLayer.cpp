@@ -55,7 +55,7 @@ Data::FastMap<Int32, const UTF8Char **> *Map::FileGDBLayer::ReadNameArr()
 	}
 }
 
-Map::FileGDBLayer::FileGDBLayer(DB::SharedReadingDB *conn, Text::CString sourceName, Text::CString tableName) : Map::MapDrawLayer(sourceName, 0, tableName)
+Map::FileGDBLayer::FileGDBLayer(DB::SharedReadingDB *conn, Text::CString sourceName, Text::CString tableName, Math::ArcGISPRJParser *prjParser) : Map::MapDrawLayer(sourceName, 0, tableName)
 {
 	UInt8 *buff = 0; 
 	conn->UseObject();
@@ -98,7 +98,7 @@ Map::FileGDBLayer::FileGDBLayer(DB::SharedReadingDB *conn, Text::CString sourceN
 					else
 					{
 						UOSInt tmp;
-						csys2 = Math::CoordinateSystemManager::ParsePRJBuff(tableName, prj->v, prj->leng, &tmp);
+						csys2 = prjParser->ParsePRJBuff(tableName, prj->v, prj->leng, &tmp);
 					}
 					if (csys2)
 					{

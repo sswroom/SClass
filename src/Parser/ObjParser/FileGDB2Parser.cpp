@@ -21,6 +21,11 @@ Int32 Parser::ObjParser::FileGDB2Parser::GetName()
 	return *(Int32*)"FGDB";
 }
 
+void Parser::ObjParser::FileGDB2Parser::SetArcGISPRJParser(Math::ArcGISPRJParser *prjParser)
+{
+	this->prjParser = prjParser;
+}
+
 void Parser::ObjParser::FileGDB2Parser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::ReadingDB || t == IO::ParserType::Unknown)
@@ -51,7 +56,7 @@ IO::ParsedObject *Parser::ObjParser::FileGDB2Parser::ParseObject(IO::ParsedObjec
 		SDEL_CLASS(relObj);
 		return 0;
 	}
-	Map::ESRI::FileGDBDir *fgdb = Map::ESRI::FileGDBDir::OpenDir(pkg);
+	Map::ESRI::FileGDBDir *fgdb = Map::ESRI::FileGDBDir::OpenDir(pkg, this->prjParser);
 	if (fgdb == 0)
 	{
 		SDEL_CLASS(relObj);
@@ -95,7 +100,7 @@ IO::ParsedObject *Parser::ObjParser::FileGDB2Parser::ParseObject(IO::ParsedObjec
 				while (i < j)
 				{
 					layerName = layers.GetItem(i);
-					NEW_CLASS(layer, Map::FileGDBLayer(db, layerName->ToCString(), layerName->ToCString()));
+					NEW_CLASS(layer, Map::FileGDBLayer(db, layerName->ToCString(), layerName->ToCString(), this->prjParser));
 					layerColl->Add(layer);
 					layerName->Release();
 					i++;

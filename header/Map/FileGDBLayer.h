@@ -4,6 +4,7 @@
 #include "Data/FastMap.h"
 #include "DB/SharedReadingDB.h"
 #include "Map/MapDrawLayer.h"
+#include "Math/ArcGISPRJParser.h"
 #include "Text/String.h"
 
 namespace Map
@@ -26,7 +27,7 @@ namespace Map
 	private:
 		Data::FastMap<Int32, const UTF8Char **> *ReadNameArr();
 	public:
-		FileGDBLayer(DB::SharedReadingDB *conn, Text::CString sourceName, Text::CString tableName);
+		FileGDBLayer(DB::SharedReadingDB *conn, Text::CString sourceName, Text::CString tableName, Math::ArcGISPRJParser *prjParser);
 		virtual ~FileGDBLayer();
 
 		virtual DrawLayerType GetLayerType();

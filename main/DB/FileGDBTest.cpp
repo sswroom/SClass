@@ -945,7 +945,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	IO::DirectoryPackage *dir;
 	NEW_CLASS(dir, IO::DirectoryPackage(CSTR("~/Progs/Temp/E20210522_PLIS.gdb")));
 	Map::ESRI::FileGDBDir *fileGDB;
-	fileGDB = Map::ESRI::FileGDBDir::OpenDir(dir);
+	Math::ArcGISPRJParser prjParser;
+	fileGDB = Map::ESRI::FileGDBDir::OpenDir(dir, &prjParser);
 	DEL_CLASS(dir);
 	if (fileGDB)
 	{
