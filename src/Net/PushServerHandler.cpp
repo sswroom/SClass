@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "Net/PushServerHandler.h"
+#include "Text/Builder/HTMLDocumentBuilder.h"
 #include "Text/JSONBuilder.h"
 
 Bool __stdcall Net::PushServerHandler::SendHandler(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq, WebServiceHandler *svc)
@@ -78,7 +79,7 @@ Bool __stdcall Net::PushServerHandler::SubscribeHandler(Net::WebServer::IWebRequ
 			}
 			if (succ)
 			{
-				me->mgr->Subscribe(sToken->ToCString(), sUser->ToCString(), devType);
+				me->mgr->Subscribe(sToken->ToCString(), sUser->ToCString(), devType, req->GetClientAddr(), req->GetDevModel());
 			}
 		}
 		json->EndUse();
@@ -141,6 +142,32 @@ Bool __stdcall Net::PushServerHandler::UsersHandler(Net::WebServer::IWebRequest 
 	return true;
 }
 
+Bool __stdcall Net::PushServerHandler::ListDevicesHandler(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq, WebServiceHandler *svc)
+{
+	Net::PushServerHandler *me = (Net::PushServerHandler*)svc;
+	Text::Builder::HTMLDocumentBuilder builder(Text::Builder::HTMLDocumentBuilder::DocType::HTML5, CSTR("Devices"));
+	Text::Builder::HTMLBodyBuilder *body = builder.StartBody(CSTR_NULL);
+	body->BeginTable();
+	body->BeginTableRow();
+	body->AddTableHeader(CSTR("UserName"));
+	body->AddTableHeader(CSTR("DevModel"));
+	body->AddTableHeader(CSTR("Address"));
+	body->AddTableHeader(CSTR("Time"));
+	body->AddTableHeader(CSTR("DevType"));
+	body->AddTableHeader(CSTR("Token"));
+	body->EndElement();
+	///////////////////////////
+	body->EndElement();
+	Text::CString content = builder.Build();
+
+	resp->AddDefHeaders(req);
+	resp->AddCacheControl(0);
+	resp->AddContentType(CSTR("text/html"));
+	resp->AddContentLength(content.leng);
+	resp->Write(content.v, content.leng);
+	return true;
+}
+
 void Net::PushServerHandler::ParseJSONSend(Text::JSONBase *sendJson)
 {
 	Text::JSONBase *usersBase = sendJson->GetValue(CSTR("users"));
@@ -184,6 +211,7 @@ Net::PushServerHandler::PushServerHandler(PushManager *mgr)
 	this->AddService(CSTR("/subscribe"), Net::WebUtil::RequestMethod::HTTP_POST, SubscribeHandler);
 	this->AddService(CSTR("/unsubscribe"), Net::WebUtil::RequestMethod::HTTP_POST, UnsubscribeHandler);
 	this->AddService(CSTR("/users"), Net::WebUtil::RequestMethod::HTTP_GET, UsersHandler);
+	this->AddService(CSTR("/listDevices"), Net::WebUtil::RequestMethod::HTTP_GET, ListDevicesHandler);
 }
 
 Net::PushServerHandler::~PushServerHandler()

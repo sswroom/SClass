@@ -4606,7 +4606,7 @@ UTF8Char* Text::StrUTF16_UTF8C(UTF8Char *bytes, const UTF16Char *wstr, UOSInt st
 			*bytes++ = (UTF8Char)(0xc0 | (c >> 6));
 			*bytes++ = (UTF8Char)(0x80 | (c & 0x3f));
 		}
-		else if (c >= 0xd800 && c < 0xdc00 && wstr[0] >= 0xdc00 && wstr[0] < 0xe000 && strLen > 0)
+		else if (strLen > 0 && c >= 0xd800 && c < 0xdc00 && wstr[0] >= 0xdc00 && wstr[0] < 0xe000)
 		{
 			code = (UTF32Char)(0x10000 + ((c - 0xd800) << 10) + (wstr[0] - 0xdc00));
 			wstr++;
@@ -4698,7 +4698,7 @@ UOSInt Text::StrUTF16_UTF8CntC(const UTF16Char *stri, UOSInt strLen)
 			byteCnt++;
 		else if (c < 0x800)
 			byteCnt += 2;
-		else if (c >= 0xd800 && c < 0xdc00 && stri[0] >= 0xdc00 && stri[0] < 0xe000 && strLen > 0)
+		else if (strLen > 0 && c >= 0xd800 && c < 0xdc00 && stri[0] >= 0xdc00 && stri[0] < 0xe000)
 		{
 			code = (UTF32Char)(0x10000 + ((c - 0xd800) << 10) + (stri[0] - 0xdc00));
 			stri++;
@@ -4872,6 +4872,235 @@ UOSInt Text::StrUTF32_UTF8CntC(const UTF32Char *stri, UOSInt strLen)
 		else
 			byteCnt += 6;
 	}
+	return byteCnt;
+}
+
+UTF8Char *Text::StrUTF16BE_UTF8(UTF8Char *bytes, const UInt8 *u16Buff)
+{
+	UTF16Char c;
+	UTF16Char c2;
+	UTF32Char code;
+	while (true)
+	{
+		c = ReadMUInt16(u16Buff);
+		u16Buff += 2;
+		if (c == 0)
+		{
+			*bytes = 0;
+			break;
+		}
+		if (c < 0x80)
+		{
+			*bytes++ = (UTF8Char)c;
+		}
+		else if (c < 0x800)
+		{
+			*bytes++ = (UTF8Char)(0xc0 | (c >> 6));
+			*bytes++ = (UTF8Char)(0x80 | (c & 0x3f));
+		}
+		else
+		{
+			c2 = ReadMUInt16(u16Buff);
+			if (c >= 0xd800 && c < 0xdc00 && c2 >= 0xdc00 && c2 < 0xe000)
+			{
+				code = 0x10000 + ((UTF32Char)(c - 0xd800) << 10) + (UTF32Char)(c2 - 0xdc00);
+				u16Buff += 2;
+				if (code < 0x200000)
+				{
+					*bytes++ = (UTF8Char)(0xf0 | (code >> 18));
+					*bytes++ = (UTF8Char)(0x80 | ((code >> 12) & 0x3f));
+					*bytes++ = (UTF8Char)(0x80 | ((code >> 6) & 0x3f));
+					*bytes++ = (UTF8Char)(0x80 | (code & 0x3f));
+				}
+				else if (code < 0x4000000)
+				{
+					*bytes++ = (UTF8Char)(0xf8 | (code >> 24));
+					*bytes++ = (UTF8Char)(0x80 | ((code >> 18) & 0x3f));
+					*bytes++ = (UTF8Char)(0x80 | ((code >> 12) & 0x3f));
+					*bytes++ = (UTF8Char)(0x80 | ((code >> 6) & 0x3f));
+					*bytes++ = (UTF8Char)(0x80 | (code & 0x3f));
+				}
+				else
+				{
+					*bytes++ = (UTF8Char)(0xfc | (code >> 30));
+					*bytes++ = (UTF8Char)(0x80 | ((code >> 24) & 0x3f));
+					*bytes++ = (UTF8Char)(0x80 | ((code >> 18) & 0x3f));
+					*bytes++ = (UTF8Char)(0x80 | ((code >> 12) & 0x3f));
+					*bytes++ = (UTF8Char)(0x80 | ((code >> 6) & 0x3f));
+					*bytes++ = (UTF8Char)(0x80 | (code & 0x3f));
+				}
+			}
+			else
+			{
+				*bytes++ = (UTF8Char)(0xe0 | (c >> 12));
+				*bytes++ = (UTF8Char)(0x80 | ((c >> 6) & 0x3f));
+				*bytes++ = (UTF8Char)(0x80 | (c & 0x3f));
+			}
+		}
+	}
+	return bytes;
+}
+
+UTF8Char *Text::StrUTF16BE_UTF8C(UTF8Char *bytes, const UInt8 *u16Buff, UOSInt utf16Cnt)
+{
+	UTF16Char c;
+	UTF16Char c2;
+	UTF32Char code;
+	while (utf16Cnt-- > 0)
+	{
+		c = ReadMUInt16(u16Buff);
+		u16Buff += 2;
+		if (c < 0x80)
+		{
+			*bytes++ = (UTF8Char)c;
+		}
+		else if (c < 0x800)
+		{
+			*bytes++ = (UTF8Char)(0xc0 | (c >> 6));
+			*bytes++ = (UTF8Char)(0x80 | (c & 0x3f));
+		}
+		else if (utf16Cnt > 0)
+		{
+			c2 = ReadMUInt16(u16Buff);
+			if (c >= 0xd800 && c < 0xdc00 && c2 >= 0xdc00 && c2 < 0xe000)
+			{
+				code = (UTF32Char)(0x10000 + ((c - 0xd800) << 10) + (c2 - 0xdc00));
+				u16Buff += 2;
+				utf16Cnt--;
+				if (code < 0x200000)
+				{
+					*bytes++ = (UTF8Char)(0xf0 | (code >> 18));
+					*bytes++ = (UTF8Char)(0x80 | ((code >> 12) & 0x3f));
+					*bytes++ = (UTF8Char)(0x80 | ((code >> 6) & 0x3f));
+					*bytes++ = (UTF8Char)(0x80 | (code & 0x3f));
+				}
+				else if (code < 0x4000000)
+				{
+					*bytes++ = (UTF8Char)(0xf8 | (code >> 24));
+					*bytes++ = (UTF8Char)(0x80 | ((code >> 18) & 0x3f));
+					*bytes++ = (UTF8Char)(0x80 | ((code >> 12) & 0x3f));
+					*bytes++ = (UTF8Char)(0x80 | ((code >> 6) & 0x3f));
+					*bytes++ = (UTF8Char)(0x80 | (code & 0x3f));
+				}
+				else
+				{
+					*bytes++ = (UTF8Char)(0xfc | (code >> 30));
+					*bytes++ = (UTF8Char)(0x80 | ((code >> 24) & 0x3f));
+					*bytes++ = (UTF8Char)(0x80 | ((code >> 18) & 0x3f));
+					*bytes++ = (UTF8Char)(0x80 | ((code >> 12) & 0x3f));
+					*bytes++ = (UTF8Char)(0x80 | ((code >> 6) & 0x3f));
+					*bytes++ = (UTF8Char)(0x80 | (code & 0x3f));
+				}
+			}
+			else
+			{
+				*bytes++ = (UTF8Char)(0xe0 | (c >> 12));
+				*bytes++ = (UTF8Char)(0x80 | ((c >> 6) & 0x3f));
+				*bytes++ = (UTF8Char)(0x80 | (c & 0x3f));
+			}
+		}
+		else
+		{
+			*bytes++ = (UTF8Char)(0xe0 | (c >> 12));
+			*bytes++ = (UTF8Char)(0x80 | ((c >> 6) & 0x3f));
+			*bytes++ = (UTF8Char)(0x80 | (c & 0x3f));
+		}
+	}
+	return bytes;
+}
+
+UOSInt Text::StrUTF16BE_UTF8Cnt(const UInt8 *u16Buff)
+{
+	UTF16Char c;
+	UTF16Char c2;
+	UOSInt byteCnt;
+	UTF32Char code;
+	byteCnt = 0;
+	while (true)
+	{
+		c = ReadMUInt16(u16Buff);
+		u16Buff += 2;
+		if (c == 0)
+			break;
+		if (c < 0x80)
+			byteCnt++;
+		else if (c < 0x800)
+			byteCnt += 2;
+		else
+		{
+			c2 = ReadMUInt16(u16Buff);
+			if (c >= 0xd800 && c < 0xdc00 && c2 >= 0xdc00 && c2 < 0xe000)
+			{
+				code = (UTF32Char)(0x10000 + ((c - 0xd800) << 10) + (c2 - 0xdc00));
+				u16Buff += 2;
+				if (code < 0x200000)
+				{
+					byteCnt += 4;
+				}
+				else if (code < 0x4000000)
+				{
+					byteCnt += 5;
+				}
+				else
+				{
+					byteCnt += 6;
+				}
+			}
+			else
+			{
+				byteCnt += 3;
+			}
+		}
+	}
+	return byteCnt;	
+}
+
+UOSInt Text::StrUTF16BE_UTF8CntC(const UInt8 *u16Buff, UOSInt utf16Cnt)
+{
+	UTF16Char c;
+	UTF16Char c2;
+	UOSInt byteCnt;
+	UTF32Char code;
+	byteCnt = 0;
+	while (utf16Cnt-- > 0)
+	{
+		c = ReadMUInt16(u16Buff);
+		u16Buff += 2;
+		if (c < 0x80)
+			byteCnt++;
+		else if (c < 0x800)
+			byteCnt += 2;
+		else if (utf16Cnt > 0)
+		{
+			c2 = ReadMUInt16(u16Buff);
+			if (c >= 0xd800 && c < 0xdc00 && c2 >= 0xdc00 && c2 < 0xe000)
+			{
+				code = (UTF32Char)(0x10000 + ((c - 0xd800) << 10) + (c2 - 0xdc00));
+				u16Buff += 2;
+				utf16Cnt--;
+				if (code < 0x200000)
+				{
+					byteCnt += 4;
+				}
+				else if (code < 0x4000000)
+				{
+					byteCnt += 5;
+				}
+				else
+				{
+					byteCnt += 6;
+				}
+			}
+			else
+			{
+				byteCnt += 3;
+			}
+		}
+		else
+		{
+			byteCnt += 3;
+		}
+ 	}
 	return byteCnt;
 }
 

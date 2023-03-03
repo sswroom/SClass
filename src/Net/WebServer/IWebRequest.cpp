@@ -42,6 +42,11 @@ void Net::WebServer::IWebRequest::ParseUserAgent()
 		{
 			this->reqOSVer = CSTR_NULL;
 		}
+		if (ent->devName)
+		{
+			this->reqDevModel.v = Text::StrCopyNewC(ent->devName, ent->devNameLen);
+			this->reqDevModel.leng = ent->devNameLen;
+		}
 		return;
 	}
 	Net::UserAgentDB::UAEntry ua;
@@ -50,11 +55,7 @@ void Net::WebServer::IWebRequest::ParseUserAgent()
 	this->reqBrowserVer = {ua.browserVer, ua.browserVerLen};
 	this->reqOS = ua.os;
 	this->reqOSVer = {ua.osVer, ua.osVerLen};
-/*	if (ua.osVerLen > 100)
-	{
-		printf("UA parse error: %s\r\n", uaHdr->v);
-	}*/
-	SDEL_TEXT(ua.devName);
+	this->reqDevModel = {ua.devName, ua.devNameLen};
 }
 
 Net::WebServer::IWebRequest::IWebRequest()
@@ -64,12 +65,14 @@ Net::WebServer::IWebRequest::IWebRequest()
 	this->reqBrowserVer = CSTR_NULL;
 	this->reqOS = Manage::OSInfo::OT_UNKNOWN;
 	this->reqOSVer = CSTR_NULL;
+	this->reqDevModel = CSTR_NULL;
 }
 
 Net::WebServer::IWebRequest::~IWebRequest()
 {
 	SDEL_TEXT(this->reqBrowserVer.v);
 	SDEL_TEXT(this->reqOSVer.v);
+	SDEL_TEXT(this->reqDevModel.v);
 }
 
 Bool Net::WebServer::IWebRequest::GetRefererDomain(Text::StringBuilderUTF8 *sb)

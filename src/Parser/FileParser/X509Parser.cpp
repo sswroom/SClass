@@ -42,6 +42,7 @@ void Parser::FileParser::X509Parser::PrepareSelector(IO::FileSelector *selector,
 		selector->AddFilter(CSTR("*.pem"), CSTR("PEM File"));
 		selector->AddFilter(CSTR("*.der"), CSTR("DER File"));
 		selector->AddFilter(CSTR("*.cer"), CSTR("CER File"));
+		selector->AddFilter(CSTR("*.req"), CSTR("PKCS 10 Request File"));
 		selector->AddFilter(CSTR("*.crl"), CSTR("Certification Revocation List"));
 	}
 }
@@ -310,6 +311,40 @@ Crypto::Cert::X509File *Parser::FileParser::X509Parser::ParseBuff(const UInt8 *b
 						return 0;
 					}
 					if (Text::StrEqualsC(dataBuff, (UOSInt)(sptr - dataBuff), UTF8STRC("-----END CERTIFICATE REQUEST-----")))
+					{
+						break;
+					}
+					else
+					{
+						sb.AppendP(dataBuff, sptr);
+					}
+				}
+				dataLen = b64.DecodeBin(sb.ToString(), sb.GetLength(), dataBuff);
+				if (file)
+				{
+					NEW_CLASS(fileList, Crypto::Cert::X509FileList(fileName, (Crypto::Cert::X509Cert*)file));
+					file = 0;
+				}
+				NEW_CLASS(file, Crypto::Cert::X509CertReq(fileName, dataBuff, dataLen));
+				if (fileList)
+				{
+					fileList->AddFile(file);
+					file = 0;
+				}
+			}
+			else if (Text::StrEqualsC(dataBuff, (UOSInt)(sptr - dataBuff), UTF8STRC("-----BEGIN NEW CERTIFICATE REQUEST-----")))
+			{
+				sb.ClearStr();
+				while (true)
+				{
+					sptr = reader.ReadLine(dataBuff, sizeof(dataBuff) - 1);
+					if (sptr == 0)
+					{
+						SDEL_CLASS(fileList);
+						SDEL_CLASS(file);
+						return 0;
+					}
+					if (Text::StrEqualsC(dataBuff, (UOSInt)(sptr - dataBuff), UTF8STRC("-----END NEW CERTIFICATE REQUEST-----")))
 					{
 						break;
 					}

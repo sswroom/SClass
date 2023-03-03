@@ -29,24 +29,53 @@ void Net::PushManager::LoadData()
 	IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 	if (!fs.IsError())
 	{
+		Net::SocketUtil::AddressInfo addr;
+		MemClear(&addr, sizeof(addr));
+		addr.addrType = Net::AddrType::Unknown;
 		Text::StringBuilderUTF8 sb;
 		Text::UTF8Reader reader(&fs);
-		Text::PString sarr[3];
+		Text::PString sarr[5];
 		DeviceType devType;
 		this->loading = true;
 		while (reader.ReadLine(&sb, 1024))
 		{
 			if (Text::StrSplitP(sarr, 3, sb, ',') == 3)
 			{
-				if (sarr[1].Equals(UTF8STRC("ios")))
+				if (sarr[0].leng < 20)
 				{
-					devType = DeviceType::IOS;
+					if (Text::StrSplitP(&sarr[2], 3, sarr[2], ',') == 3)
+					{
+						if (sarr[3].Equals(UTF8STRC("ios")))
+						{
+							devType = DeviceType::IOS;
+						}
+						else
+						{
+							devType = DeviceType::Android;
+						}
+						this->Subscribe(sarr[2].ToCString(), sarr[4].ToCString(), devType, &addr, sarr[1].ToCString());
+						{
+							Sync::MutexUsage mutUsage(&this->dataMut);
+							DeviceInfo2 *dev = this->devMap.GetC(sarr[1].ToCString());
+							if (dev)
+							{
+								dev->lastSubscribeTime = Data::Timestamp(sarr[0].ToInt64(), Data::DateTimeUtil::GetLocalTzQhr());
+							}
+						}
+					}
 				}
 				else
 				{
-					devType = DeviceType::Android;
+					if (sarr[1].Equals(UTF8STRC("ios")))
+					{
+						devType = DeviceType::IOS;
+					}
+					else
+					{
+						devType = DeviceType::Android;
+					}
+					this->Subscribe(sarr[0].ToCString(), sarr[2].ToCString(), devType, &addr, 0);
 				}
-				this->Subscribe(sarr[0].ToCString(), sarr[2].ToCString(), devType);
 			}
 
 			sb.ClearStr();
@@ -65,7 +94,7 @@ void Net::PushManager::SaveData()
 	if (!fs.IsError())
 	{
 		Text::StringBuilderUTF8 sb;
-		DeviceInfo *dev;
+		DeviceInfo2 *dev;
 		Text::UTF8Writer writer(&fs);
 		Sync::MutexUsage mutUsage(&this->dataMut);
 		UOSInt i = 0;
@@ -74,6 +103,17 @@ void Net::PushManager::SaveData()
 		{
 			dev = this->devMap.GetItem(i);
 			sb.ClearStr();
+			sb.AppendI64(dev->lastSubscribeTime.ToTicks());
+			sb.AppendUTF8Char(',');
+			if (dev->devModel)
+			{
+				if (dev->devModel->IndexOf(',') != INVALID_INDEX)
+				{
+					dev->devModel->Replace(',', '_');
+				}
+				sb.Append(dev->devModel);
+			}
+			sb.AppendUTF8Char(',');
 			sb.Append(dev->token);
 			if (dev->devType == DeviceType::IOS)
 			{
@@ -113,18 +153,19 @@ Net::PushManager::~PushManager()
 	i = this->devMap.GetCount();
 	while (i-- > 0)
 	{
-		DeviceInfo *dev = this->devMap.GetItem(i);
+		DeviceInfo2 *dev = this->devMap.GetItem(i);
 		dev->token->Release();
 		dev->userName->Release();
+		SDEL_STRING(dev->devModel);
 		MemFree(dev);
 	}
 	this->fcmKey->Release();
 }
 
-Bool Net::PushManager::Subscribe(Text::CString token, Text::CString userName, DeviceType devType)
+Bool Net::PushManager::Subscribe(Text::CString token, Text::CString userName, DeviceType devType, const Net::SocketUtil::AddressInfo *remoteAddr, Text::CString devModel)
 {
 	Sync::MutexUsage mutUsage(&this->dataMut);
-	DeviceInfo *dev = this->devMap.GetC(token);
+	DeviceInfo2 *dev = this->devMap.GetC(token);
 	UserInfo *user;
 	if (dev)
 	{
@@ -139,14 +180,31 @@ Bool Net::PushManager::Subscribe(Text::CString token, Text::CString userName, De
 	}
 	else
 	{
-		dev = MemAlloc(DeviceInfo, 1);
+		dev = MemAlloc(DeviceInfo2, 1);
 		dev->token = Text::String::New(token);
 		dev->userName = 0;
 		dev->devType = devType;
+		dev->subscribeAddr.addrType = Net::AddrType::Unknown;
+		dev->devModel = 0;
+		dev->lastSubscribeTime = 0;
 		this->devMap.Put(dev->token, dev);
 	}
 	user = this->GetUser(userName);
 	dev->userName = user->userName->Clone();
+	dev->lastSubscribeTime = Data::Timestamp::Now();
+	dev->subscribeAddr = *remoteAddr;
+	if (devModel.leng > 0)
+	{
+		if (dev->devModel == 0)
+		{
+			dev->devModel = Text::String::New(devModel);
+		}
+		else if (!dev->devModel->Equals(devModel.v, devModel.leng))
+		{
+			SDEL_STRING(dev->devModel);
+			dev->devModel = Text::String::New(devModel);
+		}
+	}
 	user->devMap.Put(dev->token, dev);
 	if (!this->loading)
 		this->SaveData();
@@ -156,7 +214,7 @@ Bool Net::PushManager::Subscribe(Text::CString token, Text::CString userName, De
 Bool Net::PushManager::Unsubscribe(Text::CString token)
 {
 	Sync::MutexUsage mutUsage(&this->dataMut);
-	DeviceInfo *dev = this->devMap.RemoveC(token);
+	DeviceInfo2 *dev = this->devMap.RemoveC(token);
 	UserInfo *user;
 	if (dev)
 	{
@@ -167,6 +225,7 @@ Bool Net::PushManager::Unsubscribe(Text::CString token)
 		}
 		dev->userName->Release();
 		dev->token->Release();
+		SDEL_STRING(dev->devModel);
 		MemFree(dev);
 		this->SaveData();
 		return true;

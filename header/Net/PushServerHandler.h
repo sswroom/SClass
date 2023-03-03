@@ -16,6 +16,7 @@ namespace Net
 		static Bool __stdcall SubscribeHandler(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq, WebServiceHandler *me);
 		static Bool __stdcall UnsubscribeHandler(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq, WebServiceHandler *me);
 		static Bool __stdcall UsersHandler(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq, WebServiceHandler *me);
+		static Bool __stdcall ListDevicesHandler(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq, WebServiceHandler *me);
 
 		void ParseJSONSend(Text::JSONBase *sendJson);
 	public:

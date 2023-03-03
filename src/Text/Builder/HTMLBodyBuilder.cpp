@@ -51,6 +51,18 @@ void Text::Builder::HTMLBodyBuilder::BeginHeading4()
 	this->elements.Add(CSTR("h4"));
 }
 
+void Text::Builder::HTMLBodyBuilder::BeginTable()
+{
+	this->sb->AppendC(UTF8STRC("<table>"));
+	this->elements.Add(CSTR("table"));
+}
+
+void Text::Builder::HTMLBodyBuilder::BeginTableRow()
+{
+	this->sb->AppendC(UTF8STRC("<tr>"));
+	this->elements.Add(CSTR("tr"));
+}
+
 void Text::Builder::HTMLBodyBuilder::EndElement()
 {
 	UOSInt i = this->elements.GetCount();
@@ -60,6 +72,20 @@ void Text::Builder::HTMLBodyBuilder::EndElement()
 		this->sb->Append(this->elements.RemoveAt(i));
 		this->sb->AppendUTF8Char('>');
 	}	
+}
+
+void Text::Builder::HTMLBodyBuilder::AddTableHeader(Text::CString content)
+{
+	this->sb->AppendC(UTF8STRC("<th>"));
+	this->WriteStr(content);
+	this->sb->AppendC(UTF8STRC("</th>"));
+}
+
+void Text::Builder::HTMLBodyBuilder::AddTableData(Text::CString content)
+{
+	this->sb->AppendC(UTF8STRC("<td>"));
+	this->WriteStr(content);
+	this->sb->AppendC(UTF8STRC("</td>"));
 }
 
 void Text::Builder::HTMLBodyBuilder::WriteHeading1(Text::CString content)

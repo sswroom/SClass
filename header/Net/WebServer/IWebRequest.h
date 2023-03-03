@@ -33,6 +33,7 @@ namespace Net
 			Text::CString reqBrowserVer;
 			Manage::OSInfo::OSType reqOS;
 			Text::CString reqOSVer;
+			Text::CString reqDevModel;
 
 			void ParseUserAgent();
 		public:
@@ -85,6 +86,7 @@ namespace Net
 			Text::CString GetBrowserVer() { if (!this->uaParsed) this->ParseUserAgent(); return this->reqBrowserVer; }
 			Manage::OSInfo::OSType GetOS() { if (!this->uaParsed) this->ParseUserAgent(); return this->reqOS; }
 			Text::CString GetOSVer() { if (!this->uaParsed) this->ParseUserAgent(); return this->reqOSVer; }
+			Text::CString GetDevModel() { if (!this->uaParsed) this->ParseUserAgent(); return this->reqDevModel; }
 
 			static Text::CString RequestProtocolGetName(RequestProtocol reqProto);
 		};

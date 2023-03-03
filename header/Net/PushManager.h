@@ -16,19 +16,23 @@ namespace Net
 			Android,
 			IOS
 		};
-	private:
 
-		struct DeviceInfo
+		struct DeviceInfo2
 		{
 			Text::String *token;
 			Text::String *userName;
 			DeviceType devType;
+			Net::SocketUtil::AddressInfo subscribeAddr;
+			Text::String *devModel;
+			Data::Timestamp lastSubscribeTime;
 		};
+
+	private:
 
 		struct UserInfo
 		{
 			Text::String *userName;
-			Data::FastStringMap<DeviceInfo*> devMap;
+			Data::FastStringMap<DeviceInfo2*> devMap;
 		};
 
 		Net::SocketFactory *sockf;
@@ -39,7 +43,7 @@ namespace Net
 		Sync::Mutex dataMut;
 		Bool loading;
 		Data::FastStringMap<UserInfo*> userMap;
-		Data::FastStringMap<DeviceInfo*> devMap;
+		Data::FastStringMap<DeviceInfo2*> devMap;
 
 		UserInfo *GetUser(Text::CString userName);
 		void LoadData();
@@ -48,7 +52,7 @@ namespace Net
 		PushManager(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CString fcmKey, IO::LogTool *log);
 		~PushManager();
 
-		Bool Subscribe(Text::CString token, Text::CString userName, DeviceType devType);
+		Bool Subscribe(Text::CString token, Text::CString userName, DeviceType devType, const Net::SocketUtil::AddressInfo *remoteAddr, Text::CString devModel);
 		Bool Unsubscribe(Text::CString token);
 		Bool Send(Data::ArrayList<Text::String*> *userNames, Text::String *message);
 		UOSInt GetUsers(Data::ArrayList<Text::String*> *users, Sync::MutexUsage *mutUsage);

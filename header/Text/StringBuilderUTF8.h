@@ -49,9 +49,10 @@ namespace Text
 		StringBuilderUTF8 *AppendW(const WChar *s);
 		StringBuilderUTF8 *AppendW(const WChar *s, UOSInt len);
 		StringBuilderUTF8 *AppendUTF16(const UTF16Char *s);
-		StringBuilderUTF8 *AppendUTF16(const UTF16Char *s, UOSInt len);
+		StringBuilderUTF8 *AppendUTF16(const UTF16Char *s, UOSInt utf16Cnt);
+		StringBuilderUTF8 *AppendUTF16BE(const UInt8 *s, UOSInt utf16Cnt);
 		StringBuilderUTF8 *AppendUTF32(const UTF32Char *s);
-		StringBuilderUTF8 *AppendUTF32(const UTF32Char *s, UOSInt len);
+		StringBuilderUTF8 *AppendUTF32(const UTF32Char *s, UOSInt utf32Cnt);
 		StringBuilderUTF8 *AppendSlow(const UTF8Char *s);
 
 		StringBuilderUTF8 *AppendS(const UTF8Char *s, UOSInt maxLen);

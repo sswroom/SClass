@@ -265,6 +265,11 @@ namespace Text
 	UOSInt StrUTF32_UTF8Cnt(const UTF32Char *stri);
 	UOSInt StrUTF32_UTF8CntC(const UTF32Char *stri, UOSInt strLen);
 
+	UTF8Char *StrUTF16BE_UTF8(UTF8Char *bytes, const UInt8 *u16Buff);
+	UTF8Char *StrUTF16BE_UTF8C(UTF8Char *bytes, const UInt8 *u16Buff, UOSInt utf16Cnt);
+	UOSInt StrUTF16BE_UTF8Cnt(const UInt8 *u16Buff);
+	UOSInt StrUTF16BE_UTF8CntC(const UInt8 *u16Buff, UOSInt utf16Cnt);
+
 	FORCEINLINE UTF16Char *StrUTF8_UTF16(UTF16Char *oriStr, const UTF8Char *strToJoin) { return StrUTF8_UTF16(oriStr, strToJoin, 0); }
 	FORCEINLINE UTF32Char *StrUTF8_UTF32(UTF32Char *oriStr, const UTF8Char *strToJoin) { return StrUTF8_UTF32(oriStr, strToJoin, 0); }
 	UTF32Char *StrUTF16_UTF32(UTF32Char *oriStr, const UTF16Char *strToJoin);

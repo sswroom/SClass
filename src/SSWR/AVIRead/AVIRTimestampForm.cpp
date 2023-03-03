@@ -7,9 +7,23 @@ void __stdcall SSWR::AVIRead::AVIRTimestampForm::OnEpochSecClicked(void *userObj
 	Text::StringBuilderUTF8 sb;
 	Int64 v;
 	me->txtValue->GetText(&sb);
+	UInt32 ns = 0;
+	UOSInt i = sb.IndexOf('.');
+	if (i != INVALID_INDEX)
+	{
+		Text::CString decimals = sb.ToCString().Substring(i + 1);
+		ns = decimals.ToUInt32();
+		sb.TrimToLength(i);
+		i = decimals.leng;
+		while (i < 9)
+		{
+			ns *= 10;
+			i++;
+		}
+	}
 	if (sb.ToInt64(&v))
 	{
-		me->DisplayTime(Data::Timestamp::FromEpochSec(v, 0));
+		me->DisplayTime(Data::Timestamp(Data::TimeInstant(v, ns), 0));
 	}
 }
 

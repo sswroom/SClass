@@ -21,7 +21,11 @@ namespace Text
 			void BeginHeading2();
 			void BeginHeading3();
 			void BeginHeading4();
+			void BeginTable();
+			void BeginTableRow();
 			void EndElement();
+			void AddTableHeader(Text::CString content);
+			void AddTableData(Text::CString content);
 
 			void WriteHeading1(Text::CString content);
 		};
