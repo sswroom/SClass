@@ -13,7 +13,6 @@ Map::MapDrawLayer *Map::GMLXML::ParseFeatureCollection(Text::XMLReader *reader, 
 	if (reader->GetNodeType() != Text::XMLNode::NodeType::Element || !reader->GetNodeText()->EndsWith(UTF8STRC(":FeatureCollection")))
 		return 0;
 	
-	Text::XMLNode::NodeType nodeType;
 	Text::String *nodeText;
 	ParseEnv env;
 	env.csys = 0;
@@ -27,196 +26,149 @@ Map::MapDrawLayer *Map::GMLXML::ParseFeatureCollection(Text::XMLReader *reader, 
 	const UTF8Char **ccols;
 	UOSInt i;
 	Math::Geometry::Vector2D *newVec;
-	while (reader->ReadNext())
+	while (reader->NextElement())
 	{
-		if (reader->GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
+		nodeText = reader->GetNodeText();
+		if (nodeText->EndsWith(UTF8STRC(":featureMember")) || nodeText->EndsWith(UTF8STRC(":featureMembers")))
 		{
-			break;
-		}
-		else if (reader->GetNodeType() == Text::XMLNode::NodeType::Element)
-		{
-			if (reader->GetNodeText()->EndsWith(UTF8STRC(":featureMember")) || reader->GetNodeText()->Equals(UTF8STRC(":featureMembers")))
+			while (reader->NextElement())
 			{
-				while (reader->ReadNext())
+				Math::Geometry::Vector2D *vec = 0;
+				while (reader->NextElement())
 				{
-					nodeType = reader->GetNodeType();
-					if (nodeType == Text::XMLNode::NodeType::ElementEnd)
+					nodeText = reader->GetNodeText();
+					if (nodeText->Equals(UTF8STRC("gml:pointProperty")))
 					{
-						break;
-					}
-					else if (nodeType == Text::XMLNode::NodeType::Element)
-					{
-						Math::Geometry::Vector2D *vec = 0;
-
-						while (reader->ReadNext())
+						if (layerType == Map::DRAW_LAYER_UNKNOWN || layerType == Map::DRAW_LAYER_POINT3D)
 						{
-							nodeType = reader->GetNodeType();
-							if (nodeType == Text::XMLNode::NodeType::ElementEnd)
+							layerType = Map::DRAW_LAYER_POINT3D;
+							while (reader->NextElement())
 							{
-								break;
-							}
-							else if (nodeType == Text::XMLNode::NodeType::Element)
-							{
-								nodeText = reader->GetNodeText();
-								if (nodeText->Equals(UTF8STRC("gml:pointProperty")))
+								if ((newVec = ParseGeometry(reader, &env)) != 0)
 								{
-									if (layerType == Map::DRAW_LAYER_UNKNOWN || layerType == Map::DRAW_LAYER_POINT3D)
-									{
-										layerType = Map::DRAW_LAYER_POINT3D;
-										while (reader->ReadNext())
-										{
-											if (reader->GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
-											{
-												break;
-											}
-											else if (reader->GetNodeType() == Text::XMLNode::NodeType::Element)
-											{
-												if ((newVec = ParseGeometry(reader, &env)) != 0)
-												{
-													SDEL_CLASS(vec);
-													vec = newVec;
-												}
-											}
-										}
-									}
-									else
-									{
-										reader->SkipElement();
-									}
-								}
-								else if (nodeText->Equals(UTF8STRC("gml:surfaceProperty")))
-								{
-									if (layerType == Map::DRAW_LAYER_UNKNOWN || layerType == Map::DRAW_LAYER_POLYGON)
-									{
-										layerType = Map::DRAW_LAYER_POLYGON;
-										while (reader->ReadNext())
-										{
-											if (reader->GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
-											{
-												break;
-											}
-											else if (reader->GetNodeType() == Text::XMLNode::NodeType::Element)
-											{
-												if ((newVec = ParseGeometry(reader, &env)) != 0)
-												{
-													SDEL_CLASS(vec);
-													vec = newVec;
-												}
-											}
-										}
-									}
-								}
-								else if (nodeText->Equals(UTF8STRC("gml:curveProperty")))
-								{
-									if (layerType == Map::DRAW_LAYER_UNKNOWN || layerType == Map::DRAW_LAYER_POLYLINE3D)
-									{
-										layerType = Map::DRAW_LAYER_POLYLINE3D;
-										while (reader->ReadNext())
-										{
-											if (reader->GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
-											{
-												break;
-											}
-											else if (reader->GetNodeType() == Text::XMLNode::NodeType::Element)
-											{
-												if ((newVec = ParseGeometry(reader, &env)) != 0)
-												{
-													SDEL_CLASS(vec);
-													vec = newVec;
-												}
-											}
-										}
-									}
-								}
-								else if (nodeText->EndsWith(UTF8STRC(":geometryProperty")) || nodeText->EndsWith(UTF8STRC(":geom")))
-								{
-									if (layerType == Map::DRAW_LAYER_UNKNOWN || layerType == Map::DRAW_LAYER_MIXED)
-									{
-										layerType = Map::DRAW_LAYER_MIXED;
-										while (reader->ReadNext())
-										{
-											if (reader->GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
-											{
-												break;
-											}
-											else if (reader->GetNodeType() == Text::XMLNode::NodeType::Element)
-											{
-												if ((newVec = ParseGeometry(reader, &env)) != 0)
-												{
-													SDEL_CLASS(vec);
-													vec = newVec;
-												}
-											}
-										}
-									}
-								}
-								else
-								{
-									UOSInt i = nodeText->IndexOf(':');
-									if (i != INVALID_INDEX)
-									{
-										nameList.Add(Text::StrCopyNew(reader->GetNodeText()->v + i + 1));
-										sb.ClearStr();
-										reader->ReadNodeText(&sb);
-										if (sb.GetLength() > 0)
-										{
-											valList.Add(Text::String::New(sb.ToString(), sb.GetLength()));
-										}
-										else
-										{
-											valList.Add(0);
-										}
-									}
-									else 
-									{
-										reader->SkipElement();
-									}
+									SDEL_CLASS(vec);
+									vec = newVec;
 								}
 							}
 						}
-						if (vec)
+						else
 						{
-							if (lyr == 0)
+							reader->SkipElement();
+						}
+					}
+					else if (nodeText->Equals(UTF8STRC("gml:surfaceProperty")))
+					{
+						if (layerType == Map::DRAW_LAYER_UNKNOWN || layerType == Map::DRAW_LAYER_POLYGON)
+						{
+							layerType = Map::DRAW_LAYER_POLYGON;
+							while (reader->NextElement())
 							{
-								colCnt = nameList.GetCount();
-								ccols = nameList.GetArray(&i);
-								NEW_CLASS(lyr, Map::VectorLayer(layerType, fileName, colCnt, ccols, env.csys, 0, CSTR_NULL));
+								if ((newVec = ParseGeometry(reader, &env)) != 0)
+								{
+									SDEL_CLASS(vec);
+									vec = newVec;
+								}
 							}
-
-							if (colCnt == valList.GetCount())
+						}
+					}
+					else if (nodeText->Equals(UTF8STRC("gml:curveProperty")))
+					{
+						if (layerType == Map::DRAW_LAYER_UNKNOWN || layerType == Map::DRAW_LAYER_POLYLINE3D)
+						{
+							layerType = Map::DRAW_LAYER_POLYLINE3D;
+							while (reader->NextElement())
 							{
-								Text::String **scols;
-								scols = valList.GetArray(&i);
-								lyr->AddVector(vec, scols);
+								if ((newVec = ParseGeometry(reader, &env)) != 0)
+								{
+									SDEL_CLASS(vec);
+									vec = newVec;
+								}
+							}
+						}
+					}
+					else if (nodeText->EndsWith(UTF8STRC(":geometryProperty")) || nodeText->EndsWith(UTF8STRC(":geom")) || nodeText->EndsWith(UTF8STRC(":geometry")))
+					{
+						if (layerType == Map::DRAW_LAYER_UNKNOWN || layerType == Map::DRAW_LAYER_MIXED)
+						{
+							layerType = Map::DRAW_LAYER_MIXED;
+							while (reader->NextElement())
+							{
+								if ((newVec = ParseGeometry(reader, &env)) != 0)
+								{
+									SDEL_CLASS(vec);
+									vec = newVec;
+								}
+							}
+						}
+					}
+					else if (nodeText->Equals(UTF8STRC("gml:boundedBy")))
+					{
+						reader->SkipElement();
+					}
+					else
+					{
+						UOSInt i = nodeText->IndexOf(':');
+						if (i != INVALID_INDEX)
+						{
+							nameList.Add(Text::StrCopyNew(reader->GetNodeText()->v + i + 1));
+							sb.ClearStr();
+							reader->ReadNodeText(&sb);
+							if (sb.GetLength() > 0)
+							{
+								valList.Add(Text::String::New(sb.ToString(), sb.GetLength()));
 							}
 							else
 							{
-								DEL_CLASS(vec);
+								valList.Add(0);
 							}
 						}
-
-						i = nameList.GetCount();
-						while (i-- > 0)
+						else 
 						{
-							Text::StrDelNew(nameList.GetItem(i));
+							reader->SkipElement();
 						}
-						nameList.Clear();
-						i = valList.GetCount();
-						while (i-- > 0)
-						{
-							if (valList.GetItem(i))
-							{
-								valList.GetItem(i)->Release();
-							}
-						}
-						valList.Clear();
 					}
 				}
+				if (vec)
+				{
+					if (lyr == 0)
+					{
+						colCnt = nameList.GetCount();
+						ccols = nameList.GetArray(&i);
+						NEW_CLASS(lyr, Map::VectorLayer(layerType, fileName, colCnt, ccols, env.csys, 0, CSTR_NULL));
+					}
+
+					if (colCnt == valList.GetCount())
+					{
+						Text::String **scols;
+						scols = valList.GetArray(&i);
+						lyr->AddVector(vec, scols);
+					}
+					else
+					{
+						DEL_CLASS(vec);
+					}
+				}
+
+				i = nameList.GetCount();
+				while (i-- > 0)
+				{
+					Text::StrDelNew(nameList.GetItem(i));
+				}
+				nameList.Clear();
+				i = valList.GetCount();
+				while (i-- > 0)
+				{
+					if (valList.GetItem(i))
+					{
+						valList.GetItem(i)->Release();
+					}
+				}
+				valList.Clear();
 			}
-			else
-			{
-				reader->SkipElement();
-			}
+		}
+		else
+		{
+			reader->SkipElement();
 		}
 	}
 	return lyr;
@@ -254,6 +206,8 @@ Math::Geometry::Vector2D *Map::GMLXML::ParseGeometry(Text::XMLReader *reader, Pa
 	Text::String *nodeName = reader->GetNodeText();
 	if (nodeName->Equals(UTF8STRC("gml:Point")))
 	{
+		Double x;
+		Double y;
 		Data::ArrayListDbl xPts;
 		Data::ArrayListDbl yPts;
 		Data::ArrayListDbl zPts;
@@ -279,8 +233,18 @@ Math::Geometry::Vector2D *Map::GMLXML::ParseGeometry(Text::XMLReader *reader, Pa
 						{
 							break;
 						}
-						xPts.Add(Text::StrToDouble(sarr[1]));
-						yPts.Add(Text::StrToDouble(sarr[0]));
+						x = Text::StrToDouble(sarr[1]);
+						y = Text::StrToDouble(sarr[0]);
+						if (x > -90 && x < 90 && ((y >= 90 && y < 180) || (y > -180 && y <= -90)))
+						{
+							xPts.Add(y);
+							yPts.Add(x);
+						}
+						else
+						{
+							xPts.Add(x);
+							yPts.Add(y);
+						}
 						if (i < 3)
 							break;
 						zPts.Add(Text::StrToDouble(sarr[2]));

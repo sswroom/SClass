@@ -190,6 +190,7 @@ namespace Map
 		Media::StaticImage *GetImage(UOSInt index, UInt32 *imgDurMS) const;
 		OSInt AddImage(Text::CString fileName, Parser::ParserList *parserList); // -1 = fail
 		UOSInt AddImage(Text::CString fileName, Media::ImageList *imgList);
+		UOSInt AddImageSquare(UInt32 color, UOSInt size);
 		
 		UOSInt GetImageFileCnt() const;
 		Bool GetImageFileInfo(UOSInt index, Map::MapEnv::ImageInfo *info) const;

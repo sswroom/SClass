@@ -13,6 +13,7 @@
 #include "Map/ScaledMapView.h"
 #include "Map/SPDLayer.h"
 #include "Map/VectorLayer.h"
+#include "Math/WKTWriter.h"
 #include "Text/Encoding.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
@@ -895,7 +896,7 @@ Int32 Map::MapLayerReader::GetInt32(UOSInt colIndex)
 Int64 Map::MapLayerReader::GetInt64(UOSInt colIndex)
 {
 	UTF8Char sbuff[256];
-	if (colIndex <= 0)
+	if (colIndex == 0)
 		return 0;
 	this->layer->GetString(sbuff, sizeof(sbuff), this->nameArr, this->GetCurrObjId(), colIndex - 1);
 	return Text::StrToInt64(sbuff);
@@ -905,7 +906,20 @@ WChar *Map::MapLayerReader::GetStr(UOSInt colIndex, WChar *buff)
 {
 	UTF8Char sbuff[256];
 	if (colIndex <= 0)
-		return 0;
+	{
+		Math::Geometry::Vector2D *vec = this->GetVector(0);
+		if (vec == 0)
+			return 0;
+		Math::WKTWriter writer;
+		Text::StringBuilderUTF8 sb;
+		Bool succ = writer.ToText(&sb, vec);
+		DEL_CLASS(vec);
+		if (!succ)
+		{
+			return 0;
+		}
+		return Text::StrUTF8_WCharC(buff, sb.v, sb.leng, 0);
+	}
 	if (this->layer->GetString(sbuff, sizeof(sbuff), this->nameArr, this->GetCurrObjId(), colIndex - 1))
 	{
 		return Text::StrUTF8_WChar(buff, sbuff, 0);
@@ -918,8 +932,20 @@ Bool Map::MapLayerReader::GetStr(UOSInt colIndex, Text::StringBuilderUTF8 *sb)
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
 	if (colIndex <= 0)
-		return false;
+	{
+		Math::Geometry::Vector2D *vec = this->GetVector(0);
+		if (vec == 0)
+			return 0;
+		Math::WKTWriter writer;
+		Bool succ = writer.ToText(sb, vec);
+		DEL_CLASS(vec);
+		return succ;
+	}
 	sptr = this->layer->GetString(sbuff, sizeof(sbuff), this->nameArr, this->GetCurrObjId(), colIndex - 1);
+	if (sptr == 0)
+	{
+		return false;
+	}
 	sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
 	return true;
 }
@@ -929,7 +955,20 @@ Text::String *Map::MapLayerReader::GetNewStr(UOSInt colIndex)
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
 	if (colIndex <= 0)
-		return 0;
+	{
+		Math::Geometry::Vector2D *vec = this->GetVector(0);
+		if (vec == 0)
+			return 0;
+		Math::WKTWriter writer;
+		Text::StringBuilderUTF8 sb;
+		Bool succ = writer.ToText(&sb, vec);
+		DEL_CLASS(vec);
+		if (!succ)
+		{
+			return 0;
+		}
+		return Text::String::New(sb.ToCString());
+	}
 	sptr = this->layer->GetString(sbuff, sizeof(sbuff), this->nameArr, this->GetCurrObjId(), colIndex - 1);
 	return Text::String::NewP(sbuff, sptr);
 }
@@ -937,7 +976,20 @@ Text::String *Map::MapLayerReader::GetNewStr(UOSInt colIndex)
 UTF8Char *Map::MapLayerReader::GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSize)
 {
 	if (colIndex <= 0)
-		return 0;
+	{
+		Math::Geometry::Vector2D *vec = this->GetVector(0);
+		if (vec == 0)
+			return 0;
+		Math::WKTWriter writer;
+		Text::StringBuilderUTF8 sb;
+		Bool succ = writer.ToText(&sb, vec);
+		DEL_CLASS(vec);
+		if (!succ)
+		{
+			return 0;
+		}
+		return sb.ConcatToS(buff, buffSize);
+	}
 	return this->layer->GetString(buff, buffSize, this->nameArr, this->GetCurrObjId(), colIndex - 1);
 }
 
@@ -1028,10 +1080,36 @@ Bool Map::MapLayerReader::GetColDefV(UOSInt colIndex, DB::ColDef *colDef, Map::M
 {
 	if (colIndex == 0)
 	{
+		Math::CoordinateSystem *csys = layer->GetCoordinateSystem();
 		colDef->SetColType(DB::DBUtil::CT_Vector);
 		colDef->SetColName(CSTR("Shape"));
-		colDef->SetColDP(0);
-		colDef->SetColSize(0x7fffffff);
+		switch (layer->GetLayerType())
+		{
+		case Map::DRAW_LAYER_UNKNOWN:
+		case Map::DRAW_LAYER_MIXED:
+		default:
+			colDef->SetColSize((UOSInt)DB::ColDef::GeometryType::Any);
+			break;
+		case Map::DRAW_LAYER_POINT:
+			colDef->SetColSize((UOSInt)DB::ColDef::GeometryType::Point);
+			break;
+		case Map::DRAW_LAYER_POLYLINE:
+			colDef->SetColSize((UOSInt)DB::ColDef::GeometryType::Polyline);
+			break;
+		case Map::DRAW_LAYER_POLYGON:
+			colDef->SetColSize((UOSInt)DB::ColDef::GeometryType::Polygon);
+			break;
+		case Map::DRAW_LAYER_POINT3D:
+			colDef->SetColSize((UOSInt)DB::ColDef::GeometryType::PointZ);
+			break;
+		case Map::DRAW_LAYER_POLYLINE3D:
+			colDef->SetColSize((UOSInt)DB::ColDef::GeometryType::PolylineZ);
+			break;
+		case Map::DRAW_LAYER_IMAGE:
+			colDef->SetColSize((UOSInt)DB::ColDef::GeometryType::Any);
+			break;
+		}
+		colDef->SetColDP(csys?csys->GetSRID():0);
 		colDef->SetAttr(CSTR(""));
 		colDef->SetDefVal(CSTR_NULL);
 		colDef->SetAutoIncNone();

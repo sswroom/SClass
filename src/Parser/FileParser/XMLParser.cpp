@@ -138,17 +138,8 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 	Text::String *nodeText;
 	Text::XMLReader reader(encFact, stm, Text::XMLReader::PM_XML);
 
-	while (true)
-	{
-		if (!reader.ReadNext())
-		{
-			return 0;
-		}
-		if (reader.GetNodeType() == Text::XMLNode::NodeType::Element)
-		{
-			break;
-		}
-	}
+	if (!reader.NextElement())
+		return 0;
 	nodeText = reader.GetNodeText();
 	if (nodeText->Equals(UTF8STRC("kml")))
 	{

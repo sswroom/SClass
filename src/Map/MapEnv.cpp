@@ -7,6 +7,7 @@
 #include "Map/MapEnv.h"
 #include "Map/ScaledMapView.h"
 #include "Math/CoordinateSystemManager.h"
+#include "Media/ImageUtil.h"
 #include "Text/MyString.h"
 
 UInt8 Map::MapEnv::GetRandomColor()
@@ -615,6 +616,15 @@ UOSInt Map::MapEnv::AddLayer(Map::MapEnv::GroupItem *group, Map::MapDrawLayer *l
 		lyr->priority = 0;
 		lyr->imgIndex = 0;
 		
+		Map::DrawLayerType layerType = layer->GetLayerType();
+		if (layerType == Map::DRAW_LAYER_MIXED || layerType == Map::DRAW_LAYER_POINT3D || layerType == Map::DRAW_LAYER_POINT)
+		{
+			if (this->GetImageCnt() == 0)
+			{
+				this->AddImageSquare(0xff22b14c, 16);
+			}
+		}
+
 		if (group)
 		{
 			return group->subitems->Add(lyr);
@@ -1163,6 +1173,36 @@ UOSInt Map::MapEnv::AddImage(Text::CString fileName, Media::ImageList *imgList)
 			imgInfo->isAni = true;
 		}
 	}
+	this->images.Put(imgInfo->fileName, imgInfo);
+	this->imgList.Add(imgInfo);
+	return imgInfo->index;
+}
+
+UOSInt Map::MapEnv::AddImageSquare(UInt32 color, UOSInt size)
+{
+	UTF8Char sbuff[128];
+	UTF8Char *sptr;
+	ImageInfo *imgInfo;
+	Sync::MutexUsage mutUsage(&this->mut);
+	imgInfo = MemAlloc(ImageInfo, 1);
+	imgInfo->index = this->GetImageCnt();
+	sptr = Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Image")), imgInfo->index), UTF8STRC(".png"));
+	imgInfo->fileName = Text::String::NewP(sbuff, sptr);
+	imgInfo->cnt = 1;
+	NEW_CLASS(imgInfo->imgs, Media::ImageList(imgInfo->fileName));
+	imgInfo->isAni = false;
+	imgInfo->aniIndex = (UOSInt)-1;
+	imgInfo->aniLastTimeTick = 0;
+	Media::StaticImage *simg;
+	Media::AlphaType atype;
+	if ((color & 0xff000000) == 0xff000000)
+		atype = Media::AlphaType::AT_NO_ALPHA;
+	else
+		atype = Media::AlphaType::AT_ALPHA;
+	Media::ColorProfile colorProfile(Media::ColorProfile::CPT_SRGB);
+	NEW_CLASS(simg, Media::StaticImage(size, size, 0, 32, Media::PixelFormat::PF_B8G8R8A8, size * size * 4, &colorProfile, Media::ColorProfile::YUVT_BT601, atype, Media::YCOFST_C_CENTER_LEFT));
+	ImageUtil_ColorFill32(simg->data, size * size, color);
+	imgInfo->imgs->AddImage(simg, 0);
 	this->images.Put(imgInfo->fileName, imgInfo);
 	this->imgList.Add(imgInfo);
 	return imgInfo->index;
