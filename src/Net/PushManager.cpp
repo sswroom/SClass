@@ -56,7 +56,7 @@ void Net::PushManager::LoadData()
 						this->Subscribe(sarr[2].ToCString(), sarr[4].ToCString(), devType, &addr, sarr[1].ToCString());
 						{
 							Sync::MutexUsage mutUsage(&this->dataMut);
-							DeviceInfo2 *dev = this->devMap.GetC(sarr[1].ToCString());
+							DeviceInfo2 *dev = this->devMap.GetC(sarr[2].ToCString());
 							if (dev)
 							{
 								dev->lastSubscribeTime = Data::Timestamp(sarr[0].ToInt64(), Data::DateTimeUtil::GetLocalTzQhr());
@@ -74,6 +74,7 @@ void Net::PushManager::LoadData()
 					{
 						devType = DeviceType::Android;
 					}
+					sarr[2].Trim();
 					this->Subscribe(sarr[0].ToCString(), sarr[2].ToCString(), devType, &addr, 0);
 				}
 			}
@@ -170,7 +171,23 @@ Bool Net::PushManager::Subscribe(Text::CString token, Text::CString userName, De
 	if (dev)
 	{
 		if (dev->userName->Equals(userName.v, userName.leng))
+		{
+			dev->lastSubscribeTime = Data::Timestamp::Now();
+			dev->subscribeAddr = *remoteAddr;
+			if (devModel.leng > 0)
+			{
+				if (dev->devModel == 0)
+				{
+					dev->devModel = Text::String::New(devModel);
+				}
+				else if (!dev->devModel->Equals(devModel.v, devModel.leng))
+				{
+					SDEL_STRING(dev->devModel);
+					dev->devModel = Text::String::New(devModel);
+				}
+			}
 			return true;
+		}
 		user = this->userMap.Get(dev->userName);
 		if (user)
 		{
@@ -299,4 +316,28 @@ UOSInt Net::PushManager::GetUsers(Data::ArrayList<Text::String*> *users, Sync::M
 		i++;
 	}
 	return ret;
+}
+
+const Data::ReadingList<Net::PushManager::DeviceInfo2*> *Net::PushManager::GetDevices(Sync::MutexUsage *mutUsage)
+{
+	mutUsage->ReplaceMutex(&this->dataMut);
+	return &this->devMap;
+}
+
+void Net::PushManager::LogMessage(Text::CString msg, IO::ILogHandler::LogLevel logLev)
+{
+	this->log->LogMessage(msg, logLev);
+}
+
+Text::CString Net::PushManager::DeviceTypeGetName(DeviceType devType)
+{
+	switch (devType)
+	{
+	case DeviceType::Android:
+		return CSTR("Android");
+	case DeviceType::IOS:
+		return CSTR("iOS");
+	default:
+		return CSTR("Unknown");
+	}
 }

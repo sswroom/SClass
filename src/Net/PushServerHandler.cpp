@@ -63,6 +63,7 @@ Bool __stdcall Net::PushServerHandler::SubscribeHandler(Net::WebServer::IWebRequ
 		Text::String *sUser = json->GetValueString(CSTR("user"));
 		if (sToken && sType && sUser)
 		{
+			sUser->Trim();
 			Bool succ = true;
 			Net::PushManager::DeviceType devType = PushManager::DeviceType::Android;
 			if (sType->Equals(UTF8STRC("android")))
@@ -75,6 +76,10 @@ Bool __stdcall Net::PushServerHandler::SubscribeHandler(Net::WebServer::IWebRequ
 			}
 			else
 			{
+				Text::StringBuilderUTF8 sb;
+				sb.AppendC(UTF8STRC("Unknown type: "));
+				sb.Append(sType);
+				me->mgr->LogMessage(sb.ToCString(), IO::ILogHandler::LogLevel::Error);
 				succ = false;
 			}
 			if (succ)
@@ -82,7 +87,23 @@ Bool __stdcall Net::PushServerHandler::SubscribeHandler(Net::WebServer::IWebRequ
 				me->mgr->Subscribe(sToken->ToCString(), sUser->ToCString(), devType, req->GetClientAddr(), req->GetDevModel());
 			}
 		}
+		else if (sToken == 0)
+		{
+			me->mgr->LogMessage(CSTR("Token Missing"), IO::ILogHandler::LogLevel::Error);
+		}
+		else if (sType == 0)
+		{
+			me->mgr->LogMessage(CSTR("Type Missing"), IO::ILogHandler::LogLevel::Error);
+		}
+		else if (sUser == 0)
+		{
+			me->mgr->LogMessage(CSTR("User Missing"), IO::ILogHandler::LogLevel::Error);
+		}
 		json->EndUse();
+	}
+	else
+	{
+		me->mgr->LogMessage(CSTR("Not JSON"), IO::ILogHandler::LogLevel::Error);
 	}
 	resp->AddDefHeaders(req);
 	resp->AddCacheControl(0);
@@ -154,9 +175,33 @@ Bool __stdcall Net::PushServerHandler::ListDevicesHandler(Net::WebServer::IWebRe
 	body->AddTableHeader(CSTR("Address"));
 	body->AddTableHeader(CSTR("Time"));
 	body->AddTableHeader(CSTR("DevType"));
-	body->AddTableHeader(CSTR("Token"));
 	body->EndElement();
-	///////////////////////////
+	{
+		UTF8Char sbuff[128];
+		UTF8Char *sptr;
+		Sync::MutexUsage mutUsage;
+		const Data::ReadingList<Net::PushManager::DeviceInfo2*> *devList = me->mgr->GetDevices(&mutUsage);
+		Net::PushManager::DeviceInfo2 *dev;
+		UOSInt i = 0;
+		UOSInt j = devList->GetCount();
+		while (i < j)
+		{
+			dev = devList->GetItem(i);
+			body->BeginTableRow();
+			body->AddTableData(dev->userName->ToCString());
+			body->AddTableData(STR_CSTR(dev->devModel));
+			sptr = Net::SocketUtil::GetAddrName(sbuff, &dev->subscribeAddr);
+			body->AddTableData(CSTRP(sbuff, sptr));
+			sptr = dev->lastSubscribeTime.ToString(sbuff);
+			body->AddTableData(CSTRP(sbuff, sptr));
+			body->AddTableData(Net::PushManager::DeviceTypeGetName(dev->devType));
+			body->EndElement();
+			body->BeginTableRowPixelHeight(50);
+			body->AddTableData(dev->token->ToCString(), 5, 1, Text::HAlignment::Unknown, Text::VAlignment::Top);
+			body->EndElement();
+			i++;
+		}
+	}
 	body->EndElement();
 	Text::CString content = builder.Build();
 

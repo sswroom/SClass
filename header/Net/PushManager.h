@@ -56,6 +56,10 @@ namespace Net
 		Bool Unsubscribe(Text::CString token);
 		Bool Send(Data::ArrayList<Text::String*> *userNames, Text::String *message);
 		UOSInt GetUsers(Data::ArrayList<Text::String*> *users, Sync::MutexUsage *mutUsage);
+		const Data::ReadingList<DeviceInfo2*> *GetDevices(Sync::MutexUsage *mutUsage);
+		void LogMessage(Text::CString msg, IO::ILogHandler::LogLevel logLev);
+
+		static Text::CString DeviceTypeGetName(DeviceType devType);
 	};
 }
 #endif

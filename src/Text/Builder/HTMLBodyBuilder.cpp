@@ -63,6 +63,14 @@ void Text::Builder::HTMLBodyBuilder::BeginTableRow()
 	this->elements.Add(CSTR("tr"));
 }
 
+void Text::Builder::HTMLBodyBuilder::BeginTableRowPixelHeight(UOSInt pxHeight)
+{
+	this->sb->AppendC(UTF8STRC("<tr height=\""));
+	this->sb->AppendUOSInt(pxHeight);
+	this->sb->AppendC(UTF8STRC("px\">"));
+	this->elements.Add(CSTR("tr"));
+}
+
 void Text::Builder::HTMLBodyBuilder::EndElement()
 {
 	UOSInt i = this->elements.GetCount();
@@ -84,6 +92,61 @@ void Text::Builder::HTMLBodyBuilder::AddTableHeader(Text::CString content)
 void Text::Builder::HTMLBodyBuilder::AddTableData(Text::CString content)
 {
 	this->sb->AppendC(UTF8STRC("<td>"));
+	this->WriteStr(content);
+	this->sb->AppendC(UTF8STRC("</td>"));
+}
+
+void Text::Builder::HTMLBodyBuilder::AddTableData(Text::CString content, UOSInt colSpan, UOSInt rowSpan, HAlignment halign, VAlignment valign)
+{
+	this->sb->AppendC(UTF8STRC("<td"));
+	if (colSpan > 1)
+	{
+		this->sb->AppendC(UTF8STRC(" colspan=\""));
+		this->sb->AppendUOSInt(colSpan);
+		this->sb->AppendUTF8Char('\"');
+	}
+	if (rowSpan > 1)
+	{
+		this->sb->AppendC(UTF8STRC(" rowspan=\""));
+		this->sb->AppendUOSInt(rowSpan);
+		this->sb->AppendUTF8Char('\"');
+	}
+	switch (halign)
+	{
+	case HAlignment::Unknown:
+	case HAlignment::Fill:
+	default:
+		break;
+	case HAlignment::Left:
+		this->sb->AppendC(UTF8STRC(" align=\"left\""));
+		break;
+	case HAlignment::Center:
+		this->sb->AppendC(UTF8STRC(" align=\"center\""));
+		break;
+	case HAlignment::Right:
+		this->sb->AppendC(UTF8STRC(" align=\"right\""));
+		break;
+	case HAlignment::Justify:
+		this->sb->AppendC(UTF8STRC(" align=\"justify\""));
+		break;
+	}
+	switch (valign)
+	{
+	default:
+	case VAlignment::Unknown:
+	case VAlignment::Justify:
+		break;
+	case VAlignment::Top:
+		this->sb->AppendC(UTF8STRC(" valign=\"top\""));
+		break;
+	case VAlignment::Center:
+		this->sb->AppendC(UTF8STRC(" valign=\"middle\""));
+		break;
+	case VAlignment::Bottom:
+		this->sb->AppendC(UTF8STRC(" valign=\"bottom\""));
+		break;
+	}
+	this->sb->AppendUTF8Char('>');
 	this->WriteStr(content);
 	this->sb->AppendC(UTF8STRC("</td>"));
 }

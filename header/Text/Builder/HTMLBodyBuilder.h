@@ -2,6 +2,7 @@
 #define _SM_TEXT_BUILDER_HTMLBODYBUILDER
 #include "Data/ArrayList.h"
 #include "Text/StringBuilderUTF8.h"
+#include "Text/TextCommon.h"
 #include "Text/Builder/HTMLBuilder.h"
 
 namespace Text
@@ -23,9 +24,11 @@ namespace Text
 			void BeginHeading4();
 			void BeginTable();
 			void BeginTableRow();
+			void BeginTableRowPixelHeight(UOSInt pxHeight);
 			void EndElement();
 			void AddTableHeader(Text::CString content);
 			void AddTableData(Text::CString content);
+			void AddTableData(Text::CString content, UOSInt colSpan, UOSInt rowSpan, HAlignment halign, VAlignment valign);
 
 			void WriteHeading1(Text::CString content);
 		};

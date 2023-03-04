@@ -17,6 +17,9 @@
 
 			function roundTest()
 			{
+				this.temp = [22.450865, 114.220012];
+				console.log(sswr.math.roundToStr(22.450865, 5))
+				console.log(sswr.math.roundToFloat(this.temp[0], 5))
 				console.log(sswr.math.roundToFloat(89.687835, 5));
 				console.log(sswr.math.roundToStr(89.687835, 5));
 				console.log(sswr.math.roundToStr(0.000005, 5));
