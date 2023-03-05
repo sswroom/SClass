@@ -29,6 +29,7 @@ namespace Map
 		ColInfo *cols;
 		Double mapRate;
 		MixedData mixedData;
+		Text::String *tableName;
 
 	private:
 		const UTF8Char **CopyStrs(const UTF8Char **strs);
@@ -60,6 +61,9 @@ namespace Map
 		virtual GetObjectSess *BeginGetObject();
 		virtual void EndGetObject(GetObjectSess *session);
 		virtual Math::Geometry::Vector2D *GetNewVectorById(GetObjectSess *session, Int64 id);
+
+		void SetTableName(Text::String *tableName);
+		virtual UOSInt QueryTableNames(Text::CString schemaName, Data::ArrayList<Text::String*> *names);
 
 		virtual ObjectClass GetObjectClass();
 		Bool VectorValid(Math::Geometry::Vector2D *vec);

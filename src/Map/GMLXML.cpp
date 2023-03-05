@@ -33,6 +33,13 @@ Map::MapDrawLayer *Map::GMLXML::ParseFeatureCollection(Text::XMLReader *reader, 
 		{
 			while (reader->NextElement())
 			{
+				Text::String *tableName = 0;
+				nodeText = reader->GetNodeText();
+				i = nodeText->IndexOf(':');
+				if (i != INVALID_INDEX)
+				{
+					tableName = Text::String::New(nodeText->ToCString().Substring(i + 1));
+				}
 				Math::Geometry::Vector2D *vec = 0;
 				while (reader->NextElement())
 				{
@@ -164,6 +171,12 @@ Map::MapDrawLayer *Map::GMLXML::ParseFeatureCollection(Text::XMLReader *reader, 
 					}
 				}
 				valList.Clear();
+
+				if (lyr && tableName)
+				{
+					lyr->SetTableName(tableName);
+				}
+				SDEL_STRING(tableName);
 			}
 		}
 		else

@@ -183,6 +183,7 @@ Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, Text::String *source
 	this->thisStrLen = 0;
 	this->colNames = MemAlloc(const UTF8Char*, strCnt);
 	this->cols = 0;
+	this->tableName = 0;
 	this->mapRate = 10000000.0;
 	this->mixedData = MixedData::AllData;
 	i = strCnt;
@@ -212,6 +213,7 @@ Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, Text::CString source
 	this->thisStrLen = 0;
 	this->colNames = MemAlloc(const UTF8Char*, strCnt);
 	this->cols = 0;
+	this->tableName = 0;
 	this->mapRate = 10000000.0;
 	this->mixedData = MixedData::AllData;
 	i = strCnt;
@@ -241,6 +243,7 @@ Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, Text::String *source
 	this->thisStrLen = 0;
 	this->colNames = MemAlloc(const UTF8Char*, strCnt);
 	this->cols = MemAlloc(Map::VectorLayer::ColInfo, strCnt);
+	this->tableName = 0;
 	this->mapRate = 10000000.0;
 	this->mixedData = MixedData::AllData;
 	i = strCnt;
@@ -273,6 +276,7 @@ Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, Text::CString source
 	this->thisStrLen = 0;
 	this->colNames = MemAlloc(const UTF8Char*, strCnt);
 	this->cols = MemAlloc(Map::VectorLayer::ColInfo, strCnt);
+	this->tableName = 0;
 	this->mapRate = 10000000.0;
 	this->mixedData = MixedData::AllData;
 	i = strCnt;
@@ -347,6 +351,7 @@ Map::VectorLayer::~VectorLayer()
 	{
 		MemFree(this->cols);
 	}
+	SDEL_STRING(this->tableName);
 }
 
 Map::DrawLayerType Map::VectorLayer::GetLayerType()
@@ -575,6 +580,30 @@ Math::Geometry::Vector2D *Map::VectorLayer::GetNewVectorById(Map::GetObjectSess 
 	{
 		return 0;
 	}
+}
+
+void Map::VectorLayer::SetTableName(Text::String *tableName)
+{
+	SDEL_STRING(this->tableName);
+	if (tableName)
+	{
+		this->tableName = tableName->Clone();
+	}
+}
+
+UOSInt Map::VectorLayer::QueryTableNames(Text::CString schemaName, Data::ArrayList<Text::String*> *names)
+{
+	if (schemaName.leng != 0)
+		return 0;
+	if (this->tableName)
+	{
+		names->Add(this->tableName->Clone());
+	}
+	else
+	{
+		names->Add(this->sourceName->Clone());
+	}
+	return 1;
 }
 
 Map::MapDrawLayer::ObjectClass Map::VectorLayer::GetObjectClass()
