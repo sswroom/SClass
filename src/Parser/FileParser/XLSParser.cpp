@@ -1,7 +1,9 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/ByteTool.h"
+#include "DB/WorkbookDB.h"
 #include "IO/StmData/BlockStreamData.h"
+#include "Map/DBMapLayer.h"
 #include "Media/DrawEngine.h"
 #include "Parser/FileParser/XLSParser.h"
 #include "Text/MyStringW.h"
@@ -89,7 +91,7 @@ IO::ParsedObject *Parser::FileParser::XLSParser::ParseFileHdr(IO::StreamData *fd
 				modifyDt.SetValueSYSTEMTIME(&buff[i + 108]);
 			}
 
-			if (Text::StrEqualsICase((const UTF16Char *)&buff[i], U16STR("WORKBOOK")) == 0)
+			if (Text::StrEqualsICase((const UTF16Char *)&buff[i], U16STR("WORKBOOK")))
 			{
 				Text::SpreadSheet::Workbook *wb;
 				NEW_CLASS(wb, Text::SpreadSheet::Workbook());
@@ -140,6 +142,47 @@ IO::ParsedObject *Parser::FileParser::XLSParser::ParseFileHdr(IO::StreamData *fd
 		}
 	}
 	MemFree(fat);
+	if (pobj && targetType == IO::ParserType::ReadingDB)
+	{
+		DB::WorkbookDB *db;
+		NEW_CLASS(db, DB::WorkbookDB((Text::SpreadSheet::Workbook*)pobj));
+		return db;
+	}
+	else if (pobj && (targetType == IO::ParserType::MapLayer || targetType == IO::ParserType::Unknown))
+	{
+		Map::DBMapLayer *layer;
+		DB::WorkbookDB *db;
+		Text::SpreadSheet::Workbook *wb = (Text::SpreadSheet::Workbook*)pobj;
+		Text::SpreadSheet::Worksheet *sheet = wb->GetItem(0);
+		if (sheet == 0)
+		{
+			if (targetType == IO::ParserType::Unknown)
+			{
+				return wb;
+			}
+			else
+			{
+				DEL_CLASS(wb);
+				return 0;
+			}
+		}
+		NEW_CLASS(db, DB::WorkbookDB((Text::SpreadSheet::Workbook*)pobj));
+		NEW_CLASS(layer, Map::DBMapLayer(wb->GetSourceNameObj()));
+		if (layer->SetDatabase(db, CSTR_NULL, sheet->GetName()->ToCString(), true))
+		{
+			return layer;
+		}
+		DEL_CLASS(layer);
+		if (targetType == IO::ParserType::Unknown)
+		{
+			return db;
+		}
+		else
+		{
+			DEL_CLASS(db);
+			return 0;
+		}
+	}
 	return pobj;
 }
 

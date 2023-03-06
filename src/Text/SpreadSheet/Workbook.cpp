@@ -441,6 +441,19 @@ void Text::SpreadSheet::Workbook::RemoveAt(UOSInt index)
 	}
 }
 
+Text::SpreadSheet::Worksheet *Text::SpreadSheet::Workbook::GetWorksheetByName(Text::CString name)
+{
+	UOSInt i = this->sheets.GetCount();
+	Worksheet *sheet;
+	while (i-- > 0)
+	{
+		sheet = this->sheets.GetItem(i);
+		if (sheet->GetName()->Equals(name.v, name.leng))
+			return sheet;
+	}
+	return 0;
+}
+
 UOSInt Text::SpreadSheet::Workbook::GetFontCount()
 {
 	return this->fonts.GetCount();

@@ -158,6 +158,8 @@ namespace Text
 			Double GetColWidthPt(UOSInt col);
 			Double GetColWidth(UOSInt col, Math::Unit::Distance::DistanceUnit unit);
 
+			const CellData *GetCellDataRead(UOSInt row, UOSInt col) const;
+
 			UOSInt GetDrawingCount();
 			WorksheetDrawing *GetDrawing(UOSInt index);
 			WorksheetDrawing *CreateDrawing(Math::Unit::Distance::DistanceUnit unit, Double x, Double y, Double w, Double h);

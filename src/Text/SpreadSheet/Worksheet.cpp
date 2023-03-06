@@ -864,6 +864,44 @@ Double Text::SpreadSheet::Worksheet::GetColWidth(UOSInt col, Math::Unit::Distanc
 	return Math::Unit::Distance::Convert(Math::Unit::Distance::DU_POINT, unit, this->colWidthsPt->GetItem(col));
 }
 
+const Text::SpreadSheet::Worksheet::CellData *Text::SpreadSheet::Worksheet::GetCellDataRead(UOSInt row, UOSInt col) const
+{
+	RowData *rowData;
+	CellData *cell;
+	if (row >= this->rows->GetCount() + 65536)
+		return 0;
+	if (col >= 65536)
+		return 0;
+	if (col > this->maxCol)
+	{
+		return 0;
+	}
+	while (true)
+	{
+		rowData = this->rows->GetItem(row);
+		if (rowData == 0)
+			return 0;
+		cell = rowData->cells->GetItem(col);
+		if (cell == 0)
+		{
+			return 0;
+		}
+		if (cell->cdt == CellDataType::MergedLeft)
+		{
+			col--;
+		}
+		else if (cell->cdt == CellDataType::MergedUp)
+		{
+			row--;
+		}
+		else
+		{
+			break;
+		}
+	}
+	return cell;
+}
+
 UOSInt Text::SpreadSheet::Worksheet::GetDrawingCount()
 {
 	return this->drawings->GetCount();

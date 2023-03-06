@@ -1,6 +1,8 @@
 #include "Stdafx.h"
 #include "Map/DBMapLayer.h"
 #include "Math/CoordinateSystemManager.h"
+#include "Math/Geometry/Point.h"
+#include "Math/Geometry/PointZ.h"
 
 struct DBMapLayer_NameArr
 {
@@ -10,11 +12,21 @@ struct DBMapLayer_NameArr
 
 void Map::DBMapLayer::ClearDB()
 {
-	this->db = 0;
+	if (this->releaseDB)
+	{
+		SDEL_CLASS(this->db);
+	}
+	else
+	{
+		this->db = 0;
+	}
 	SDEL_STRING(this->schema);
 	SDEL_STRING(this->table);
 	this->idCol = INVALID_INDEX;
 	this->vecCol = INVALID_INDEX;
+	this->xCol = INVALID_INDEX;
+	this->yCol = INVALID_INDEX;
+	this->zCol = INVALID_INDEX;
 	SDEL_CLASS(this->tabDef);
 
 	Math::Geometry::Vector2D *vec;
@@ -47,22 +59,30 @@ void *Map::DBMapLayer::InitNameArr()
 
 Map::DBMapLayer::DBMapLayer(Text::String *layerName) : Map::MapDrawLayer(layerName, 0, layerName)
 {
+	this->releaseDB = false;
 	this->db = 0;
 	this->schema = 0;
 	this->table = 0;
 	this->idCol = INVALID_INDEX;
 	this->vecCol = INVALID_INDEX;
+	this->xCol = INVALID_INDEX;
+	this->yCol = INVALID_INDEX;
+	this->zCol = INVALID_INDEX;
 	this->tabDef = 0;
 	this->mixedData = MixedData::AllData;
 }
 
 Map::DBMapLayer::DBMapLayer(Text::CString layerName) : Map::MapDrawLayer(layerName, 0, layerName)
 {
+	this->releaseDB = false;
 	this->db = 0;
 	this->schema = 0;
 	this->table = 0;
 	this->idCol = INVALID_INDEX;
 	this->vecCol = INVALID_INDEX;
+	this->xCol = INVALID_INDEX;
+	this->yCol = INVALID_INDEX;
+	this->zCol = INVALID_INDEX;
 	this->tabDef = 0;
 	this->mixedData = MixedData::AllData;
 }
@@ -74,12 +94,33 @@ Map::DBMapLayer::~DBMapLayer()
 
 Map::DrawLayerType Map::DBMapLayer::GetLayerType()
 {
-	return Map::DRAW_LAYER_MIXED;
+	if (this->vecCol == INVALID_INDEX && this->xCol != INVALID_INDEX && this->yCol != INVALID_INDEX)
+	{
+		if (this->zCol != INVALID_INDEX)
+		{
+			return Map::DRAW_LAYER_POINT3D;
+		}
+		else
+		{
+			return Map::DRAW_LAYER_POINT;
+		}
+	}
+	else
+	{
+		return Map::DRAW_LAYER_MIXED;
+	}
 }
 
 void Map::DBMapLayer::SetMixedData(MixedData mixedData)
 {
-	this->mixedData = mixedData;
+	if (this->vecCol == INVALID_INDEX && this->xCol != INVALID_INDEX && this->yCol != INVALID_INDEX)
+	{
+		this->mixedData = MixedData::AllData;
+	}
+	else
+	{
+		this->mixedData = mixedData;
+	}
 }
 
 UOSInt Map::DBMapLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, NameArray **nameArr)
@@ -319,7 +360,7 @@ DB::DBReader *Map::DBMapLayer::QueryTableData(Text::CString schemaName, Text::CS
 {
 	if (this->db)
 	{
-		return this->QueryTableData(schemaName, tableName, columnNames, ofst, maxCnt, ordering, condition);
+		return this->db->QueryTableData(schemaName, tableName, columnNames, ofst, maxCnt, ordering, condition);
 	}
 	return 0;
 }
@@ -328,7 +369,7 @@ DB::TableDef *Map::DBMapLayer::GetTableDef(Text::CString schemaName, Text::CStri
 {
 	if (this->db)
 	{
-		return this->GetTableDef(schemaName, tableName);
+		return this->db->GetTableDef(schemaName, tableName);
 	}
 	return 0;
 }
@@ -359,14 +400,19 @@ Map::MapDrawLayer::ObjectClass Map::DBMapLayer::GetObjectClass()
 	return OC_DB_MAP_LAYER;
 }
 
-Bool Map::DBMapLayer::SetDatabase(DB::ReadingDB *db, Text::CString schemaName, Text::CString tableName)
+Bool Map::DBMapLayer::SetDatabase(DB::ReadingDB *db, Text::CString schemaName, Text::CString tableName, Bool releaseDB)
 {
 	this->ClearDB();
+	this->releaseDB = false;
 	this->db = db;
 	this->schema = Text::String::NewOrNull(schemaName);
 	this->table = Text::String::New(tableName);
 
 	this->tabDef = this->db->GetTableDef(schemaName, tableName);
+	UOSInt xCol = INVALID_INDEX;
+	UOSInt yCol = INVALID_INDEX;
+	UOSInt zCol = INVALID_INDEX;
+	UInt32 layerSrid = 0;
 	DB::ColDef *col;
 	UOSInt i = 0;
 	UOSInt j = this->tabDef->GetColCnt();
@@ -396,10 +442,38 @@ Bool Map::DBMapLayer::SetDatabase(DB::ReadingDB *db, Text::CString schemaName, T
 			}
 			this->vecCol = i;
 		}
+		else
+		{
+			Text::String *colName = col->GetColName();
+			if (colName->EqualsICase(UTF8STRC("LATITUDE")))
+			{
+				yCol = i;
+				layerSrid = 4326;
+			}
+			else if (colName->EqualsICase(UTF8STRC("LONGITUDE")))
+			{
+				xCol = i;
+				layerSrid = 4326;
+			}
+			else if (colName->EqualsICase(UTF8STRC("HEIGHT")))
+			{
+				zCol = i;
+			}
+		}
 		i++;
 	}
 
-	if (this->vecCol == INVALID_INDEX)
+	if (this->vecCol != INVALID_INDEX)
+	{
+		layerSrid = 0;
+	}
+	else if (xCol != INVALID_INDEX && yCol != INVALID_INDEX)
+	{
+		this->xCol = xCol;
+		this->yCol = yCol;
+		this->zCol = zCol;
+	}
+	else
 	{
 		return false;
 	}
@@ -413,7 +487,6 @@ Bool Map::DBMapLayer::SetDatabase(DB::ReadingDB *db, Text::CString schemaName, T
 	Int64 id;
 	Math::RectAreaDbl bounds;
 	Math::Geometry::Vector2D *vec;
-	UInt32 layerSrid = 0;
 	UInt32 vecSrid;
 	while (r->ReadNext())
 	{
@@ -426,24 +499,51 @@ Bool Map::DBMapLayer::SetDatabase(DB::ReadingDB *db, Text::CString schemaName, T
 		{
 			id = r->GetInt64(this->idCol);
 		}
-		vec = r->GetVector(this->vecCol);
-		if (vec != 0)
+		if (this->vecCol != INVALID_INDEX)
 		{
-			vec->GetBounds(&bounds);
+			vec = r->GetVector(this->vecCol);
+			if (vec != 0)
+			{
+				vec->GetBounds(&bounds);
+				if (this->vecMap.GetCount() == 0)
+				{
+					this->min = bounds.tl;
+					this->max = bounds.br;
+				}
+				else
+				{
+					this->min = this->min.Min(bounds.tl);
+					this->max = this->max.Max(bounds.br);
+				}
+				vecSrid = vec->GetSRID();
+				if (vecSrid != 0 && layerSrid != vecSrid)
+				{
+					layerSrid = vecSrid;
+				}
+				vec = this->vecMap.Put(id, vec);
+				SDEL_CLASS(vec);
+			}
+		}
+		else
+		{
+			Math::Coord2DDbl pos = Math::Coord2DDbl(r->GetDbl(xCol), r->GetDbl(yCol));
 			if (this->vecMap.GetCount() == 0)
 			{
-				this->min = bounds.tl;
-				this->max = bounds.br;
+				this->min = pos;
+				this->max = pos;
 			}
 			else
 			{
-				this->min = this->min.Min(bounds.tl);
-				this->max = this->max.Max(bounds.br);
+				this->min = this->min.Min(pos);
+				this->max = this->max.Max(pos);
 			}
-			vecSrid = vec->GetSRID();
-			if (vecSrid != 0 && layerSrid != vecSrid)
+			if (zCol == INVALID_INDEX)
 			{
-				layerSrid = vecSrid;
+				NEW_CLASS(vec, Math::Geometry::Point(layerSrid, pos));
+			}
+			else
+			{
+				NEW_CLASS(vec, Math::Geometry::PointZ(layerSrid, pos.x, pos.y, r->GetDbl(zCol)));
 			}
 			vec = this->vecMap.Put(id, vec);
 			SDEL_CLASS(vec);
@@ -462,6 +562,16 @@ Bool Map::DBMapLayer::SetDatabase(DB::ReadingDB *db, Text::CString schemaName, T
 		{
 			this->csys = Math::CoordinateSystemManager::SRCreateCSys(layerSrid);
 		}
-	} 
-	return this->vecMap.GetCount() > 0;
+	}
+	if (this->vecMap.GetCount() > 0)
+	{
+		this->releaseDB = releaseDB;
+		return true;
+	}
+	else
+	{
+		this->db = 0;
+		this->releaseDB = false;
+		return false;
+	}
 }

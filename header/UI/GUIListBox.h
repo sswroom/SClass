@@ -12,6 +12,7 @@ namespace UI
 		struct ClassData;
 		struct ItemData;
 
+		ClassData *clsData;
 	private:
 		Data::ArrayList<UI::UIEvent> selChgHdlrs;
 		Data::ArrayList<void *> selChgObjs;
@@ -20,7 +21,6 @@ namespace UI
 		Data::ArrayList<UI::GUIControl::MouseEventHandler> rightClickHdlrs;
 		Data::ArrayList<void *> rightClickObjs;
 		Data::ArrayList<ItemData *> items;
-		ClassData *clsData;
 		Bool mulSel;
 
 		static OSInt __stdcall LBWndProc(void *hWnd, UInt32 msg, UOSInt wParam, OSInt lParam);

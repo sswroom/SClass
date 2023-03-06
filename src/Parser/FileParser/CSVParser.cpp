@@ -316,7 +316,7 @@ IO::ParsedObject *Parser::FileParser::CSVParser::ParseFileHdr(IO::StreamData *fd
 				NEW_CLASS(pt, Math::Geometry::Point(csys->GetSRID(), Text::StrToDouble(tmpUArr2[lonCol]), Text::StrToDouble(tmpUArr2[latCol])));
 				lyr->AddVector(pt, (const UTF8Char**)tmpUArr2);
 			}
-		}		
+		}
 
 		MemFree(tmpcArr2);
 		return lyr;

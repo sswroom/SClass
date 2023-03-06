@@ -85,6 +85,7 @@ namespace Text
 			UOSInt GetCount();
 			Worksheet *GetItem(UOSInt index);
 			void RemoveAt(UOSInt index);
+			Worksheet *GetWorksheetByName(Text::CString name);
 
 			UOSInt GetFontCount();
 			WorkbookFont *GetFont(UOSInt index);

@@ -30,6 +30,7 @@ void GUIListBox_SelChange(GtkListBox *listBox, GtkListBoxRow *row, gpointer data
 gboolean GUIListBox_ButtonPress(GtkWidget *widget, GdkEvent *event, gpointer data)
 {
 	UI::GUIListBox *me = (UI::GUIListBox*)data;
+	me->clsData->showTime = 0;
 	if (event->button.type == GDK_2BUTTON_PRESS)
 	{
 		me->EventDoubleClick();
@@ -45,9 +46,7 @@ void GUIListBox_Show(GtkWidget *widget, gpointer user_data)
 {
 	UI::GUIListBox::ClassData *data = (UI::GUIListBox::ClassData*)user_data;
 	data->isShown = true;
-	Data::DateTime dt;
-	dt.SetCurrTimeUTC();
-	data->showTime = dt.ToTicks();
+	data->showTime = Data::DateTimeUtil::GetCurrTimeMillis();
 }
 
 UI::GUIListBox::GUIListBox(UI::GUICore *ui, UI::GUIClientControl *parent, Bool multiSelect) : UI::GUIControl(ui, parent)
@@ -96,9 +95,7 @@ void UI::GUIListBox::EventSelectionChange()
 	}
 	if (data->showTime != 0)
 	{
-		Data::DateTime dt;
-		dt.SetCurrTimeUTC();
-		Int64 t = dt.ToTicks();
+		Int64 t = Data::DateTimeUtil::GetCurrTimeMillis();
 		if (t - data->showTime < 2000)
 		{
 			return;

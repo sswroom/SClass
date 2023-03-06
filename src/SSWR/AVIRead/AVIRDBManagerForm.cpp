@@ -156,7 +156,7 @@ void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnMapTableSelChg(void *userObj)
 	Text::String *tableName = me->lbMapTable->GetSelectedItemTextNew();
 	if (schemaName && tableName)
 	{
-		me->dbLayer->SetDatabase(me->currDB, schemaName->ToCString(), tableName->ToCString());
+		me->dbLayer->SetDatabase(me->currDB, schemaName->ToCString(), tableName->ToCString(), false);
 		OnLayerUpdated(me);
 	}
 	SDEL_STRING(schemaName);

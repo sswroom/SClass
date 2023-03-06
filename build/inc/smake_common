@@ -1562,6 +1562,8 @@ DB/TableDef.h: ../../src/DB/TableDef.cpp
 @TableDef.o
 DB/TextDB.h: ../../src/DB/TextDB.cpp
 @TextDB.o
+DB/WorkbookDB.h: ../../src/DB/WorkbookDB.cpp
+@WorkbookDB.o
 DB/SQL/CreateTableCommand.h: ../../src/DB/SQL/CreateTableCommand.cpp
 @CreateTableCommand.o
 DB/SQL/SQLCommand.h: ../../src/DB/SQL/SQLCommand.cpp
@@ -4643,6 +4645,7 @@ SQLiteFile.o: ../../src/DB/SQLiteFile.cpp
 $-I ../../ThirdParty/sqlite3
 TableDef.o: ../../src/DB/TableDef.cpp
 TextDB.o: ../../src/DB/TextDB.cpp
+WorkbookDB.o: ../../src/DB/WorkbookDB.cpp
 CreateTableCommand.o: ../../src/DB/SQL/CreateTableCommand.cpp
 SQLCommand.o: ../../src/DB/SQL/SQLCommand.cpp
 BMPExporter.o: ../../src/Exporter/BMPExporter.cpp

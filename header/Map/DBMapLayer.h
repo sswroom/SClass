@@ -9,6 +9,7 @@ namespace Map
 	class DBMapLayer : public Map::MapDrawLayer
 	{
 	private:
+		Bool releaseDB;
 		DB::ReadingDB *db;
 		Text::String *schema;
 		Text::String *table;
@@ -16,6 +17,9 @@ namespace Map
 		Math::Coord2DDbl max;
 		UOSInt idCol;
 		UOSInt vecCol;
+		UOSInt xCol;
+		UOSInt yCol;
+		UOSInt zCol;
 		DB::TableDef *tabDef;
 		Data::FastMap<Int64, Math::Geometry::Vector2D*> vecMap;
 		Math::Geometry::Vector2D::VectorType mixedType;
@@ -56,7 +60,7 @@ namespace Map
 
 		virtual ObjectClass GetObjectClass();
 
-		Bool SetDatabase(DB::ReadingDB *db, Text::CString schemaName, Text::CString tableName);
+		Bool SetDatabase(DB::ReadingDB *db, Text::CString schemaName, Text::CString tableName, Bool releaseDB);
 	};
 }
 #endif
