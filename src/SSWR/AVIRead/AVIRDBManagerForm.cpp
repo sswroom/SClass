@@ -4,6 +4,7 @@
 #include "DB/ColDef.h"
 #include "DB/DBManager.h"
 #include "DB/JavaDBUtil.h"
+#include "DB/SQLFileReader.h"
 #include "DB/SQLGenerator.h"
 #include "IO/FileStream.h"
 #include "IO/Path.h"
@@ -353,6 +354,57 @@ void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnSQLExecClicked(void *userObj)
 					UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("DB Manager"), me);
 				}
 			}
+		}
+	}
+}
+
+void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnSQLFileClicked(void *userObj)
+{
+	SSWR::AVIRead::AVIRDBManagerForm *me = (SSWR::AVIRead::AVIRDBManagerForm*)userObj;
+	if (me->currDB && me->currDB->IsDBTool())
+	{
+		DB::ReadingDBTool *db = (DB::ReadingDBTool*)me->currDB;
+		UI::FileDialog dlg(L"sswr", L"AVIRead", L"DBManagerSQLFile", false);
+		dlg.SetAllowMultiSel(false);
+		dlg.AddFilter(CSTR("*.sql"), CSTR("SQL file"));
+		if (dlg.ShowDialog(me->GetHandle()))
+		{
+			Text::String *fileName = dlg.GetFileName();
+			IO::FileStream fs(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+			DB::SQLFileReader reader(&fs, db->GetSQLType(), true);
+			Text::StringBuilderUTF8 sb;
+			UOSInt rowsChanged = 0;
+			OSInt thisRows;
+			while (reader.NextSQL(&sb))
+			{
+				DB::DBReader *r = db->ExecuteReader(sb.ToCString());
+				if (r)
+				{
+					if (r->ColCount() == 0)
+					{
+						thisRows = r->GetRowChanged();
+						if (thisRows > 0)
+						{
+							rowsChanged += (UOSInt)thisRows;
+						}
+					}
+					me->currDB->CloseReader(r);
+				}
+				else
+				{
+					sb.ClearStr();
+					me->currDB->GetLastErrorMsg(&sb);
+					UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("DB Manager"), me);
+					break;
+				}
+				sb.ClearStr();
+			}
+			me->lvSQLResult->ClearAll();
+			me->lvSQLResult->ChangeColumnCnt(1);
+			me->lvSQLResult->AddColumn(CSTR("Row Changed"), 100);
+			sb.ClearStr();
+			sb.AppendUOSInt(rowsChanged);
+			me->lvSQLResult->AddItem(sb.ToCString(), 0);
 		}
 	}
 }
@@ -984,6 +1036,9 @@ SSWR::AVIRead::AVIRDBManagerForm::AVIRDBManagerForm(UI::GUIClientControl *parent
 	NEW_CLASS(this->btnSQLExec, UI::GUIButton(ui, this->pnlSQLCtrl, CSTR("Execute")));
 	this->btnSQLExec->SetRect(4, 4, 75, 23, false);
 	this->btnSQLExec->HandleButtonClick(OnSQLExecClicked, this);
+	NEW_CLASS(this->btnSQLFile, UI::GUIButton(ui, this->pnlSQLCtrl, CSTR("SQL File")));
+	this->btnSQLFile->SetRect(84, 4, 75, 23, false);
+	this->btnSQLFile->HandleButtonClick(OnSQLFileClicked, this);
 	NEW_CLASS(this->txtSQL, UI::GUITextBox(ui, this->pnlSQL, CSTR(""), true));
 	this->txtSQL->SetDockType(UI::GUIControl::DOCK_FILL);
 	NEW_CLASS(this->vspSQL, UI::GUIVSplitter(ui, this->tpSQL, 3, false));

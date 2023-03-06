@@ -53,6 +53,7 @@ namespace SSWR
 			UI::GUIPanel *pnlSQL;
 			UI::GUIPanel *pnlSQLCtrl;
 			UI::GUIButton *btnSQLExec;
+			UI::GUIButton *btnSQLFile;
 			UI::GUITextBox *txtSQL;
 			UI::GUIVSplitter *vspSQL;
 			UI::GUIListView *lvSQLResult;
@@ -109,6 +110,7 @@ namespace SSWR
 			static void __stdcall OnDatabaseDeleteClicked(void *userObj);
 			static void __stdcall OnDatabaseNewClicked(void *userObj);
 			static void __stdcall OnSQLExecClicked(void *userObj);
+			static void __stdcall OnSQLFileClicked(void *userObj);
 			static void __stdcall OnLayerUpdated(void *userObj);
 			static void __stdcall OnVariableClicked(void *userObj);
 			static void __stdcall OnSvrConnClicked(void *userObj);

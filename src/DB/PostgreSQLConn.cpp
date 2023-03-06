@@ -5,7 +5,7 @@
 #include "Text/MyStringW.h"
 #include <libpq-fe.h>
 
-#define VERBOSE
+//#define VERBOSE
 #if defined(VERBOSE)
 #include <stdio.h>
 #endif

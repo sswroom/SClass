@@ -1554,6 +1554,8 @@ DB/SortableDBReader.h: ../../src/DB/SortableDBReader.cpp
 @SortableDBReader.o
 DB/SQLBuilder.h: ../../src/DB/SQLBuilder.cpp
 @SQLBuilder.o
+DB/SQLFileReader.h: ../../src/DB/SQLFileReader.cpp
+@SQLFileReader.o
 DB/SQLGenerator.h: ../../src/DB/SQLGenerator.cpp
 @SQLGenerator.o
 DB/SQLiteFile.h: ../../src/DB/SQLiteFile.cpp
@@ -4640,6 +4642,7 @@ SharedDBConn.o: ../../src/DB/SharedDBConn.cpp
 SharedReadingDB.o: ../../src/DB/SharedReadingDB.cpp
 SortableDBReader.o: ../../src/DB/SortableDBReader.cpp
 SQLBuilder.o: ../../src/DB/SQLBuilder.cpp
+SQLFileReader.o: ../../src/DB/SQLFileReader.cpp
 SQLGenerator.o: ../../src/DB/SQLGenerator.cpp
 SQLiteFile.o: ../../src/DB/SQLiteFile.cpp
 $-I ../../ThirdParty/sqlite3
