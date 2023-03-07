@@ -809,7 +809,7 @@ UOSInt Net::WebServer::WebRequest::DataPut(const UInt8 *data, UOSInt dataSize)
 					break;
 				}
 			}
-			if (j == 0 || j > this->reqCurrSize - 2)
+			if (j == 0 || j + 2 > this->reqCurrSize)
 				break;
 		}
 		if (i >= this->reqCurrSize)
