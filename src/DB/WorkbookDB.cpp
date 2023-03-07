@@ -86,7 +86,8 @@ public:
 		{
 			return false;
 		}
-		return sb->Append(cell->cellValue);
+		sb->Append(cell->cellValue);
+		return true;
 	}
 
 	virtual Text::String *GetNewStr(UOSInt colIndex)
