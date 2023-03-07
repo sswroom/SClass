@@ -1534,6 +1534,8 @@ Text::CString SSWR::AVIRead::AVIRDBCheckChgForm::GetNullText()
 	{
 	case 1:
 		return CSTR("NULL");
+	case 2:
+		return CSTR("null");
 	default:
 		return CSTR("");
 	}
@@ -1574,6 +1576,7 @@ SSWR::AVIRead::AVIRDBCheckChgForm::AVIRDBCheckChgForm(UI::GUIClientControl *pare
 	this->cboNullCol->SetRect(100, 72, 200, 23, false);
 	this->cboNullCol->AddItem(CSTR("Empty"), 0);
 	this->cboNullCol->AddItem(CSTR("\"NULL\""), 0);
+	this->cboNullCol->AddItem(CSTR("\"null\""), 0);
 	this->cboNullCol->SetSelectedIndex(0);
 	NEW_CLASS(this->chkNoHeader, UI::GUICheckBox(ui, this, CSTR("No Header"), false));
 	this->chkNoHeader->SetRect(100, 96, 200, 23, false);
