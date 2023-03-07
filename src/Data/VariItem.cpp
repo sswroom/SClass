@@ -582,8 +582,12 @@ UTF8Char *Data::VariItem::GetAsStringS(UTF8Char *sbuff, UOSInt buffSize) const
 			return Text::StrHexBytes(sbuff, this->val.byteArr->GetArray(), (buffSize - 1) >> 1, 0);
 		}
 	case ItemType::Vector:
-		*sbuff = 0;
-		return sbuff;
+		{
+			Text::StringBuilderUTF8 sb;
+			Math::WKTWriter writer;
+			writer.ToText(&sb, this->val.vector);
+			return sb.ConcatToS(sbuff, buffSize);
+		}
 	case ItemType::UUID:
 		{
 			return Text::StrConcatC(this->val.uuid->ToString(Text::StrConcatC(sbuff, UTF8STRC("{"))), UTF8STRC("}"));
@@ -665,7 +669,12 @@ Text::String *Data::VariItem::GetAsNewString() const
 		s->leng = (UOSInt)(Text::StrHexBytes(s->v, this->val.byteArr->GetArray(), this->val.byteArr->GetCount(), 0) - s->v);
 		return s;
 	case ItemType::Vector:
-		return Text::String::NewEmpty();
+		{
+			Text::StringBuilderUTF8 sb;
+			Math::WKTWriter writer;
+			writer.ToText(&sb, this->val.vector);
+			return Text::String::New(sb.ToCString());
+		}
 	case ItemType::UUID:
 		s = Text::String::New(48);
 		s->leng = (UOSInt)(Text::StrConcatC(this->val.uuid->ToString(Text::StrConcatC(s->v, UTF8STRC("{"))), UTF8STRC("}")) - s->v);
