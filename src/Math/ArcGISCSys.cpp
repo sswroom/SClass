@@ -5664,14 +5664,16 @@ Math::ArcGISCSys::ArcGISCSys()
 	UOSInt j = sizeof(projList) / sizeof(projList[0]);
 	while (i < j)
 	{
-		this->projMap.PutC(Text::CString(projList[i].name, projList[i].nameLen), &projList[i]);
+		if (this->projMap.GetC(Text::CString(projList[i].name, projList[i].nameLen)) == 0)
+			this->projMap.PutC(Text::CString(projList[i].name, projList[i].nameLen), &projList[i]);
 		i++;
 	}
 	i = 0;
 	j = sizeof(geogList) / sizeof(geogList[0]);
 	while (i < j)
 	{
-		this->geogMap.PutC(Text::CString(geogList[i].name, geogList[i].nameLen), &geogList[i]);
+		if (this->geogMap.GetC(Text::CString(geogList[i].name, geogList[i].nameLen)) == 0)
+			this->geogMap.PutC(Text::CString(geogList[i].name, geogList[i].nameLen), &geogList[i]);
 		i++;
 	}
 }

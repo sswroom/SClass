@@ -7,10 +7,11 @@
 #include "Math/CoordinateSystemManager.h"
 #include "Parser/ObjParser/FileGDB2Parser.h"
 
-Map::HKRoadNetwork2::HKRoadNetwork2(Text::CString fgdbPath)
+Map::HKRoadNetwork2::HKRoadNetwork2(Text::CString fgdbPath, Math::ArcGISPRJParser *prjParser)
 {
 	IO::DirectoryPackage pkg(fgdbPath);
 	Parser::ObjParser::FileGDB2Parser parser;
+	parser.SetArcGISPRJParser(prjParser);
 	this->fgdb = (DB::ReadingDB*)parser.ParseObject(&pkg, 0, IO::ParserType::ReadingDB);
 	
 }
