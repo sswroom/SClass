@@ -2,6 +2,7 @@
 #define _SM_MAP_HKROADNETWORK2
 #include "DB/ReadingDB.h"
 #include "Map/MapDrawLayer.h"
+#include "Math/ArcGISPRJParser.h"
 #include "Math/CoordinateSystem.h"
 #include "Net/SSLEngine.h"
 #include "Text/CString.h"
