@@ -126,6 +126,8 @@ void Math::ProjectedCoordinateSystem::ToString(Text::StringBuilderUTF8 *sb) cons
 {
 	sb->AppendC(UTF8STRC("Projected File Name: "));
 	sb->Append(this->sourceName);
+	sb->AppendC(UTF8STRC("\r\nProjected SRID: "));
+	sb->AppendU32(this->srid);
 	sb->AppendC(UTF8STRC("\r\nProjected Name: "));
 	sb->Append(this->csysName);
 	sb->AppendC(UTF8STRC("\r\nProjection Type: "));

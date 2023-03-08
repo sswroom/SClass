@@ -108,7 +108,7 @@ void Math::GeographicCoordinateSystem::ToString(Text::StringBuilderUTF8 *sb) con
 {
 	sb->AppendC(UTF8STRC("Geographic File Name: "));
 	sb->Append(this->sourceName);
-	sb->AppendC(UTF8STRC("\r\nSRID: "));
+	sb->AppendC(UTF8STRC("\r\nGeographic SRID: "));
 	sb->AppendU32(this->srid);
 	sb->AppendC(UTF8STRC("\r\nGeographic Name: "));
 	sb->Append(this->csysName);

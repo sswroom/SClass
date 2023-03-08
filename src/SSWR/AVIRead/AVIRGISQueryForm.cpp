@@ -128,6 +128,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseUp(void *userObj, Math::C
 			me->SetQueryItem(0);
 			me->lyr->ReleaseNameArr(nameArr);
 			me->lyr->FreeObjects(&objList);
+			me->navi->SetSelectedVectors(&me->queryVecList);
 		}
 		me->lyr->EndGetObject(sess);
 	}
@@ -205,7 +206,6 @@ void SSWR::AVIRead::AVIRGISQueryForm::ShowLayerNames()
 
 void SSWR::AVIRead::AVIRGISQueryForm::ClearQueryResults()
 {
-	Math::Geometry::Vector2D *vec;
 	Text::String *value;
 	UOSInt i = this->queryNameList.GetCount();
 	while (i-- > 0)
@@ -217,15 +217,6 @@ void SSWR::AVIRead::AVIRGISQueryForm::ClearQueryResults()
 	{
 		value = this->queryValueList.GetItem(i);
 		SDEL_STRING(value);
-	}
-	if (this->layerNames)
-	{
-		i = this->queryVecList.GetCount();
-		while (i-- > 0)
-		{
-			vec = this->queryVecList.GetItem(i);
-			DEL_CLASS(vec);
-		}
 	}
 	this->queryNameList.Clear();
 	this->queryValueList.Clear();

@@ -15,7 +15,8 @@ Bool __stdcall SSWR::AVIRead::AVIRGISGroupQueryForm::OnMouseUp(void *userObj, Ma
 	SSWR::AVIRead::AVIRGISGroupQueryForm *me = (SSWR::AVIRead::AVIRGISGroupQueryForm*)userObj;
 	if (me->downPos == scnPos)
 	{
-		Math::Coord2DDbl mapPos;
+		Math::Coord2DDbl mapEnvPos;
+		Math::Coord2DDbl mapLyrPos;
 		Math::Coord2DDbl ptNear = {0, 0};
 		UOSInt ptNearInd = 0;
 		Double ptNearDist = 0;
@@ -31,7 +32,10 @@ Bool __stdcall SSWR::AVIRead::AVIRGISGroupQueryForm::OnMouseUp(void *userObj, Ma
 		UTF8Char *sptr;
 		Data::ArrayList<Map::MapDrawLayer*> layers;
 		Map::MapDrawLayer *lyr;
-		mapPos = me->navi->ScnXY2MapXY(scnPos);
+		Math::CoordinateSystem *csysEnv = me->navi->GetCoordinateSystem();
+		Math::CoordinateSystem *csysLyr;
+		Double zTemp;
+		mapEnvPos = me->navi->ScnXY2MapXY(scnPos);
 		me->env->GetLayersInGroup(me->group, &layers);
 		i = layers.GetCount();
 		while (i-- > 0)
@@ -39,13 +43,22 @@ Bool __stdcall SSWR::AVIRead::AVIRGISGroupQueryForm::OnMouseUp(void *userObj, Ma
 			lyr = layers.GetItem(i);
 			sess = lyr->BeginGetObject();
 			nearPos = {0, 0};
-			id = lyr->GetNearestObjectId(sess, mapPos, &nearPos);
+			csysLyr = lyr->GetCoordinateSystem();
+			if (csysEnv != 0 && csysLyr != 0 && !csysEnv->Equals(csysLyr))
+			{
+				Math::CoordinateSystem::ConvertXYZ(csysEnv, csysLyr, mapEnvPos.x, mapEnvPos.y, 0, &mapLyrPos.x, &mapLyrPos.y, &zTemp);
+			}
+			else
+			{
+				mapLyrPos = mapEnvPos;
+			}
+			id = lyr->GetNearestObjectId(sess, mapLyrPos, &nearPos);
 			if (id != -1)
 			{
 				Map::DrawLayerType lyrType = lyr->GetLayerType();
 				if (lyrType == Map::DRAW_LAYER_POINT3D || lyrType == Map::DRAW_LAYER_POINT || lyrType == Map::DRAW_LAYER_POLYLINE || lyrType == Map::DRAW_LAYER_POLYLINE3D)
 				{
-					Double dist = nearPos.CalcLengTo(mapPos);
+					Double dist = nearPos.CalcLengTo(mapLyrPos);
 					if (ptNearId == -1 || ptNearDist > dist)
 					{
 						ptNearId = id;
@@ -54,7 +67,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISGroupQueryForm::OnMouseUp(void *userObj, Ma
 						ptNear = nearPos;
 					}
 				}
-				else if (mapPos == nearPos)
+				else if (mapLyrPos == nearPos)
 				{
 					if (pgNearId == -1)
 					{
@@ -110,8 +123,17 @@ Bool __stdcall SSWR::AVIRead::AVIRGISGroupQueryForm::OnMouseUp(void *userObj, Ma
 			Data::ArrayListInt64 arr;
 			Map::NameArray *nameArr;
 			me->txtLayer->SetText(lyr->GetName()->ToCString());
+			csysLyr = lyr->GetCoordinateSystem();
+			if (csysEnv != 0 && csysLyr != 0 && !csysEnv->Equals(csysLyr))
+			{
+				Math::CoordinateSystem::ConvertXYZ(csysEnv, csysLyr, mapEnvPos.x, mapEnvPos.y, 0, &mapLyrPos.x, &mapLyrPos.y, &zTemp);
+			}
+			else
+			{
+				mapLyrPos = mapEnvPos;
+			}
 			sess = lyr->BeginGetObject();
-			lyr->GetObjectIdsMapXY(&arr, &nameArr, Math::RectAreaDbl(mapPos, mapPos), true);
+			lyr->GetObjectIdsMapXY(&arr, &nameArr, Math::RectAreaDbl(mapLyrPos, mapLyrPos), true);
 			i = 0;
 			j = lyr->GetColumnCnt();
 			while (i < j)
@@ -123,7 +145,12 @@ Bool __stdcall SSWR::AVIRead::AVIRGISGroupQueryForm::OnMouseUp(void *userObj, Ma
 				me->lvInfo->SetSubItem(i, 1, CSTRP(sbuff, sptr));
 				i++;
 			}
-			me->navi->SetSelectedVector(lyr->GetNewVectorById(sess, id));
+			Math::Geometry::Vector2D *vec = lyr->GetNewVectorById(sess, id);
+			if (csysEnv != 0 && csysLyr != 0 && !csysEnv->Equals(csysLyr))
+			{
+				vec->ConvCSys(csysLyr, csysEnv);
+			}
+			me->navi->SetSelectedVector(vec);
 			lyr->ReleaseNameArr(nameArr);
 			lyr->EndGetObject(sess);
 		}

@@ -685,6 +685,14 @@ void UI::GUIMapControl::DrawScnObjects(Media::DrawImage *img, Math::Coord2DDbl o
 			img->DelPen(p);
 			img->DelBrush(b);
 		}
+		else if (vecType == Math::Geometry::Vector2D::VectorType::Point)
+		{
+			Math::Geometry::Point *pt = (Math::Geometry::Point*)vec;
+			Math::Coord2DDbl coord = view->MapXYToScnXY(pt->GetCenter());
+			Media::DrawBrush *b = img->NewBrushARGB(0xffff0000);
+			img->DrawRect(coord.x - 8, coord.y - 8, 17, 17, 0, b);
+			img->DelBrush(b);
+		}
 		i++;
 	}
 }
