@@ -2,6 +2,7 @@
 #include "Data/Sort/ArtificialQuickSort.h"
 #include "DB/CSVFile.h"
 #include "DB/DBConn.h"
+#include "DB/DBTool.h"
 #include "DB/TableDef.h"
 #include "IO/FileStream.h"
 #include "IO/Path.h"
@@ -81,6 +82,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::OnSQLClicked(void *userObj)
 		sess.totalCnt = 0;
 		sess.startTime = Data::Timestamp::UtcNow();
 		sess.lastUpdateTime = sess.startTime;
+		sess.db = 0;
 		
 		{
 			IO::FileStream fs(dlg.GetFileName()->ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
@@ -116,6 +118,20 @@ void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::OnExecuteClicked(void *userObj
 		UI::MessageDialog::ShowDialog(CSTR("Please input CSV file first"), CSTR("Check Table Changes"), me);
 		return;
 	}
+	DB::DBConn *db;
+	if (me->db->IsFullConn())
+	{
+		db = (DB::DBConn*)me->db;
+	}
+	else if (me->db->IsDBTool())
+	{
+		db = ((DB::ReadingDBTool*)me->db)->GetDBConn();
+	}
+	else
+	{
+		UI::MessageDialog::ShowDialog(CSTR("Connection does not support SQL Execution"), CSTR("Check Table Changes"), me);
+		return;
+	}
 	DB::DBUtil::SQLType sqlType = (DB::DBUtil::SQLType)(OSInt)me->cboDBType->GetSelectedItem();
 	Bool succ;
 	SQLSession sess;
@@ -123,6 +139,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::OnExecuteClicked(void *userObj
 	sess.startTime = Data::Timestamp::UtcNow();
 	sess.lastUpdateTime = sess.startTime;
 	sess.stm = 0;
+	sess.db = db;
 	if (me->chkMultiRow->IsChecked())
 	{
 		Text::StringBuilderUTF8 sbInsert;
@@ -132,7 +149,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::OnExecuteClicked(void *userObj
 		succ = me->GenerateSQL(sb.ToCString(), sqlType, &sess);
 		if (succ && sess.nInsert > 0)
 		{
-			if (((DB::DBConn*)me->db)->ExecuteNonQuery(sess.sbInsert->ToCString()) >= 0)
+			if (db->ExecuteNonQuery(sess.sbInsert->ToCString()) >= 0)
 			{
 				sess.totalCnt += sess.nInsert;
 				sess.nInsert = 0;
@@ -1354,8 +1371,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::NextSQL(Text::CString sql, SQLSession *s
 	}
 	else if (sess->mode == 1)
 	{
-		DB::DBConn *db = (DB::DBConn*)this->db;
-		if (db->ExecuteNonQuery(sql) >= 0)
+		if (sess->db->ExecuteNonQuery(sql) >= 0)
 		{
 			sess->totalCnt++;
 			this->UpdateStatus(sess);
@@ -1368,13 +1384,12 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::NextSQL(Text::CString sql, SQLSession *s
 	}
 	else if (sess->mode == 2)
 	{
-		DB::DBConn *db = (DB::DBConn*)this->db;
 		if (sql.StartsWith(UTF8STRC("insert into ")))
 		{
 			UOSInt i = sql.IndexOf(UTF8STRC(") values ("));
 			if (i == INVALID_INDEX)
 			{
-				if (db->ExecuteNonQuery(sql) >= 0)
+				if (sess->db->ExecuteNonQuery(sql) >= 0)
 				{
 					sess->totalCnt++;
 					this->UpdateStatus(sess);
@@ -1383,7 +1398,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::NextSQL(Text::CString sql, SQLSession *s
 				else
 				{
 					Text::StringBuilderUTF8 sb;
-					db->GetLastErrorMsg(&sb);
+					sess->db->GetLastErrorMsg(&sb);
 					UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("Check Table Changes"), this);
 					return false;
 				}
@@ -1400,7 +1415,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::NextSQL(Text::CString sql, SQLSession *s
 			sess->nInsert++;
 			if (sess->nInsert >= 250)
 			{
-				if (db->ExecuteNonQuery(sess->sbInsert->ToCString()) >= 0)
+				if (sess->db->ExecuteNonQuery(sess->sbInsert->ToCString()) >= 0)
 				{
 					sess->totalCnt += sess->nInsert;
 					sess->nInsert = 0;
@@ -1418,7 +1433,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::NextSQL(Text::CString sql, SQLSession *s
 			}
 			return true;
 		}
-		else if (db->ExecuteNonQuery(sql) >= 0)
+		else if (sess->db->ExecuteNonQuery(sql) >= 0)
 		{
 			sess->totalCnt++;
 			this->UpdateStatus(sess);
@@ -1623,7 +1638,25 @@ SSWR::AVIRead::AVIRDBCheckChgForm::AVIRDBCheckChgForm(UI::GUIClientControl *pare
 	this->cboDBType->AddItem(CSTR("MySQL"), (void*)DB::DBUtil::SQLType::MySQL);
 	this->cboDBType->AddItem(CSTR("SQL Server"), (void*)DB::DBUtil::SQLType::MSSQL);
 	this->cboDBType->AddItem(CSTR("PostgreSQL"), (void*)DB::DBUtil::SQLType::PostgreSQL);
-	this->cboDBType->SetSelectedIndex(0);
+	DB::DBUtil::SQLType sqlType;
+	if (this->db->IsDBTool())
+	{
+		sqlType = ((DB::ReadingDBTool*)this->db)->GetSQLType();
+	}
+	else if (this->db->IsFullConn())
+	{
+		sqlType = ((DB::DBConn*)this->db)->GetSQLType();
+	}
+	else
+	{
+		sqlType = DB::DBUtil::SQLType::Unknown;
+	}
+	if (sqlType == DB::DBUtil::SQLType::MSSQL)
+		this->cboDBType->SetSelectedIndex(1);
+	else if (sqlType == DB::DBUtil::SQLType::PostgreSQL)
+		this->cboDBType->SetSelectedIndex(2);
+	else
+		this->cboDBType->SetSelectedIndex(0);
 	NEW_CLASS(this->chkMultiRow, UI::GUICheckBox(ui, this, CSTR("Multi-Row Insert"), true));
 	this->chkMultiRow->SetRect(100, 312, 150, 23, false);
 	NEW_CLASS(this->btnSQL, UI::GUIButton(ui, this, CSTR("Generate SQL")));

@@ -26,6 +26,7 @@ namespace SSWR
 				Data::Timestamp lastUpdateTime;
 				Text::StringBuilderUTF8 *sbInsert;
 				UOSInt nInsert;
+				DB::DBConn *db;
 			};
 		private:
 			UI::GUILabel *lblSchema;

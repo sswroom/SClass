@@ -364,16 +364,33 @@ void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnSQLFileClicked(void *userObj)
 	if (me->currDB && me->currDB->IsDBTool())
 	{
 		DB::ReadingDBTool *db = (DB::ReadingDBTool*)me->currDB;
-		UI::FileDialog dlg(L"sswr", L"AVIRead", L"DBManagerSQLFile", false);
-		dlg.SetAllowMultiSel(false);
-		dlg.AddFilter(CSTR("*.sql"), CSTR("SQL file"));
-		if (dlg.ShowDialog(me->GetHandle()))
+		Text::String *fileName;
 		{
-			Text::String *fileName = dlg.GetFileName();
+			UI::FileDialog dlg(L"sswr", L"AVIRead", L"DBManagerSQLFile", false);
+			dlg.SetAllowMultiSel(false);
+			dlg.AddFilter(CSTR("*.sql"), CSTR("SQL file"));
+			if (dlg.ShowDialog(me->GetHandle()))
+			{
+				fileName = dlg.GetFileName()->Clone();
+			}
+			else
+			{
+				return;
+			}
+		}
+		me->lvSQLResult->ClearAll();
+		me->lvSQLResult->ChangeColumnCnt(1);
+		me->lvSQLResult->AddColumn(CSTR("Row Changed"), 100);
+		me->lvSQLResult->AddItem(CSTR("0"), 0);
+		me->ui->ProcessMessages();
+		Text::StringBuilderUTF8 sb;
+		UOSInt rowsChanged = 0;
+		Int64 lastShowTime = Data::DateTimeUtil::GetCurrTimeMillis();
+		Int64 t;
+		{
 			IO::FileStream fs(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+			fileName->Release();
 			DB::SQLFileReader reader(&fs, db->GetSQLType(), true);
-			Text::StringBuilderUTF8 sb;
-			UOSInt rowsChanged = 0;
 			OSInt thisRows;
 			while (reader.NextSQL(&sb))
 			{
@@ -387,6 +404,15 @@ void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnSQLFileClicked(void *userObj)
 						{
 							rowsChanged += (UOSInt)thisRows;
 						}
+						t = Data::DateTimeUtil::GetCurrTimeMillis();
+						if (t - lastShowTime >= 1000)
+						{
+							lastShowTime = t;							
+							sb.ClearStr();
+							sb.AppendUOSInt(rowsChanged);
+							me->lvSQLResult->SetSubItem(0, 0, sb.ToCString());
+							me->ui->ProcessMessages();
+						}
 					}
 					me->currDB->CloseReader(r);
 				}
@@ -399,13 +425,11 @@ void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnSQLFileClicked(void *userObj)
 				}
 				sb.ClearStr();
 			}
-			me->lvSQLResult->ClearAll();
-			me->lvSQLResult->ChangeColumnCnt(1);
-			me->lvSQLResult->AddColumn(CSTR("Row Changed"), 100);
-			sb.ClearStr();
-			sb.AppendUOSInt(rowsChanged);
-			me->lvSQLResult->AddItem(sb.ToCString(), 0);
 		}
+		sb.ClearStr();
+		sb.AppendUOSInt(rowsChanged);
+		me->lvSQLResult->SetSubItem(0, 0, sb.ToCString());
+		me->ui->ProcessMessages();
 	}
 }
 
