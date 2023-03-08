@@ -556,6 +556,7 @@ Bool Net::HTTPOSClient::IsSecureConn()
 
 Bool Net::HTTPOSClient::SetClientCert(Crypto::Cert::X509Cert *cert, Crypto::Cert::X509File *key)
 {
+#if defined(CURLOPTTYPE_BLOB)
 	if (this->clsData->curl)
 	{
 		struct curl_blob blob;
@@ -571,6 +572,7 @@ Bool Net::HTTPOSClient::SetClientCert(Crypto::Cert::X509Cert *cert, Crypto::Cert
 		curl_easy_setopt(this->clsData->curl, CURLOPT_SSLKEY_BLOB, &blob);
 		return true;
 	}
+#endif
 	return false;
 }
 
