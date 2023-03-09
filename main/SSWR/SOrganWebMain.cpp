@@ -11,7 +11,7 @@
 #include "Net/MySQLTCPClient.h"
 #include "Net/OSSocketFactory.h"
 #include "Net/SSLEngineFactory.h"
-#include "SSWR/OrganMgr/OrganWebHandler.h"
+#include "SSWR/OrganMgr/OrganWebEnv.h"
 
 Int32 MyMain(Core::IProgControl *progCtrl)
 {
@@ -21,12 +21,12 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		IO::ConsoleWriter console;
 		UInt32 scnSize = 0;
 		Int32 unorganizedGroupId = 0;
-		SSWR::OrganMgr::OrganWebHandler *dataHdlr;
+		SSWR::OrganMgr::OrganWebEnv *env;
 		Net::OSSocketFactory sockf(true);
 		Net::SSLEngine *ssl = 0;
 		IO::LogTool log;
 		Text::String *s;
-		dataHdlr = 0;
+		env = 0;
 		Text::CString osmCacheDir;
 		UTF8Char sbuff[512];
 		UTF8Char *sptr;
@@ -107,10 +107,10 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("OSMTile"));
 				osmCacheDir = CSTRP(sbuff, sptr);
 			}
-			NEW_CLASS(dataHdlr, SSWR::OrganMgr::OrganWebHandler(&sockf, ssl, &log, db, cfg->GetValue(CSTR("ImageDir")), port, sslPort, cfg->GetValue(CSTR("CacheDir")), cfg->GetValue(CSTR("DataDir")), scnSize, cfg->GetValue(CSTR("ReloadPwd")), unorganizedGroupId, Media::DrawEngineFactory::CreateDrawEngine(), osmCacheDir));
+			NEW_CLASS(env, SSWR::OrganMgr::OrganWebEnv(&sockf, ssl, &log, db, cfg->GetValue(CSTR("ImageDir")), port, sslPort, cfg->GetValue(CSTR("CacheDir")), cfg->GetValue(CSTR("DataDir")), scnSize, cfg->GetValue(CSTR("ReloadPwd")), unorganizedGroupId, Media::DrawEngineFactory::CreateDrawEngine(), osmCacheDir));
 			DEL_CLASS(cfg);
 
-			if (dataHdlr->IsError())
+			if (env->IsError())
 			{
 				console.WriteLineC(UTF8STRC("Error in starting server"));
 			}
@@ -120,7 +120,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				progCtrl->WaitForExit(progCtrl);
 			}
 
-			DEL_CLASS(dataHdlr);
+			DEL_CLASS(env);
 		}
 
 		SDEL_CLASS(ssl);

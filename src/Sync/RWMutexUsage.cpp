@@ -55,7 +55,15 @@ void Sync::RWMutexUsage::EndUse()
 
 void Sync::RWMutexUsage::ReplaceMutex(Sync::RWMutex *mut, Bool writing)
 {
-	this->EndUse();
-	this->mut = mut;
-	this->BeginUse(writing);
+	if (!this->used)
+	{
+		this->mut = mut;
+		this->BeginUse(writing);
+	}
+	else if (this->mut != mut || (writing != this->writing))
+	{
+		this->EndUse();
+		this->mut = mut;
+		this->BeginUse(writing);
+	}
 }

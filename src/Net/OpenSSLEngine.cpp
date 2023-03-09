@@ -394,27 +394,37 @@ Bool Net::OpenSSLEngine::ServerSetClientCA(Text::CString clientCA)
 int OpenSSLEngine_alpn_select_cb(SSL *ssl, const unsigned char **out, unsigned char *outlen, const unsigned char *in, unsigned int inlen, void *arg)
 {
 	Net::OpenSSLEngine::ClassData *clsData = (Net::OpenSSLEngine::ClassData *)arg;
-	const unsigned char *inEnd = in + inlen;
-	while (in < inEnd)
+	while (true)
 	{
+		if ((UOSInt)in[0] + 1 > inlen)
+			return SSL_TLSEXT_ERR_NOACK;
 		if (clsData->alpnSupports->GetC(Text::CString(in + 1, in[0])))
 		{
 			*out = in + 1;
 			*outlen = in[0];
 			return SSL_TLSEXT_ERR_OK;
 		}
+		inlen -= in[0] + 1;
 		in += in[0] + 1;
 	}
-	return SSL_TLSEXT_ERR_NOACK;
 }
 
 int OpenSSLEngine_next_proto_select_cb(SSL *s, unsigned char **out, unsigned char *outlen, const unsigned char *in, unsigned int inlen, void *arg)
 {
 	Net::OpenSSLEngine::ClassData *clsData = (Net::OpenSSLEngine::ClassData *)arg;
-	Text::StringBuilderUTF8 sb;
-	sb.AppendHexBuff(in, inlen, ' ', Text::LineBreakType::CRLF);
-	printf("OpenSSLEngine_next_proto_select_cb: %s\r\n", sb.ToString());
-	return SSL_TLSEXT_ERR_NOACK;
+	while (true)
+	{
+		if ((UOSInt)in[0] + 1 > inlen)
+			return SSL_TLSEXT_ERR_NOACK;
+		if (clsData->alpnSupports->GetC(Text::CString(in + 1, in[0])))
+		{
+			*out = (unsigned char*)in + 1;
+			*outlen = in[0];
+			return SSL_TLSEXT_ERR_OK;
+		}
+		inlen -= in[0] + 1;
+		in += in[0] + 1;
+	}
 }
 
 Bool Net::OpenSSLEngine::ServerAddALPNSupport(Text::CString proto)

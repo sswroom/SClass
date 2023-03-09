@@ -9,7 +9,8 @@
 Int32 MyMain(Core::IProgControl *progCtrl)
 {
 	Text::CString path = CSTR("/home/sswroom/Progs/Temp/kmlTest/RdNet_IRNP.gdb");
-	Map::HKRoadNetwork2 roadNetwork(path);
+	Math::ArcGISPRJParser prjParser;
+	Map::HKRoadNetwork2 roadNetwork(path, &prjParser);
 	Map::HKSpeedLimit *spdLimit = roadNetwork.CreateSpeedLimit();
 	if (spdLimit)
 	{

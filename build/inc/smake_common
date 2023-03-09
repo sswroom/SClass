@@ -4137,6 +4137,9 @@ SSWR/OrganMgr/OrganUserEditForm.h: ../../src/SSWR/OrganMgr/OrganUserEditForm.cpp
 @OrganUserEditForm.o
 SSWR/OrganMgr/OrganUserForm.h: ../../src/SSWR/OrganMgr/OrganUserForm.cpp
 @OrganUserForm.o
+SSWR/OrganMgr/OrganWebCommon.h:
+SSWR/OrganMgr/OrganWebEnv.h: ../../src/SSWR/OrganMgr/OrganWebEnv.cpp
+@OrganWebEnv.o
 SSWR/OrganMgr/OrganWebHandler.h: ../../src/SSWR/OrganMgr/OrganWebHandler.cpp
 @OrganWebHandler.o
 SSWR/SDNSProxy/SDNSProxyCore.h: ../../src/SSWR/SDNSProxy/SDNSProxyCore.cpp
@@ -5866,6 +5869,7 @@ OrganTripForm.o: ../../src/SSWR/OrganMgr/OrganTripForm.cpp
 OrganTripList.o: ../../src/SSWR/OrganMgr/OrganTripList.cpp
 OrganUserEditForm.o: ../../src/SSWR/OrganMgr/OrganUserEditForm.cpp
 OrganUserForm.o: ../../src/SSWR/OrganMgr/OrganUserForm.cpp
+OrganWebEnv.o: ../../src/SSWR/OrganMgr/OrganWebEnv.cpp
 OrganWebHandler.o: ../../src/SSWR/OrganMgr/OrganWebHandler.cpp
 SDNSProxyCore.o: ../../src/SSWR/SDNSProxy/SDNSProxyCore.cpp
 SDNSProxyWebHandler.o: ../../src/SSWR/SDNSProxy/SDNSProxyWebHandler.cpp

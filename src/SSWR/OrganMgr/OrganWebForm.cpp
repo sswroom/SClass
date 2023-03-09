@@ -10,7 +10,7 @@
 void __stdcall SSWR::OrganMgr::OrganWebForm::OnReloadClicked(void *userObj)
 {
 	SSWR::OrganMgr::OrganWebForm *me = (SSWR::OrganMgr::OrganWebForm*)userObj;
-	me->dataHdlr->Reload();
+	me->env->Reload();
 }
 
 SSWR::OrganMgr::OrganWebForm::OrganWebForm(UI::GUIClientControl *parent, UI::GUICore *ui, Media::DrawEngine *eng) : UI::GUIForm(parent, 160, 100, ui)
@@ -19,7 +19,7 @@ SSWR::OrganMgr::OrganWebForm::OrganWebForm(UI::GUIClientControl *parent, UI::GUI
 	this->SetText(CSTR("OrganWeb"));
 	this->SetNoResize(true);
 
-	this->dataHdlr = 0;
+	this->env = 0;
 	NEW_CLASS(this->sockf, Net::OSSocketFactory(true));
 	NEW_CLASS(this->log, IO::LogTool());
 
@@ -54,18 +54,19 @@ SSWR::OrganMgr::OrganWebForm::OrganWebForm(UI::GUIClientControl *parent, UI::GUI
 		db = DB::ODBCConn::CreateDBTool(cfg->GetValue(CSTR("DBDSN")), cfg->GetValue(CSTR("DBUID")), cfg->GetValue(CSTR("DBPwd")), cfg->GetValue(CSTR("DBSchema")), this->log, CSTR("DB: "));
 	}
 	UInt16 port = 0;
+	UInt16 sslPort = 0;
 	s = cfg->GetValue(CSTR("SvrPort"));
 	if (s)
 	{
 		s->ToUInt16(&port);
 	}
-	NEW_CLASS(this->dataHdlr, OrganWebHandler(this->sockf, 0, this->log, db, cfg->GetValue(CSTR("ImageDir")), port, cfg->GetValue(CSTR("CacheDir")), cfg->GetValue(CSTR("DataDir")), scnSize, cfg->GetValue(CSTR("ReloadPwd")), 0, eng));
+	NEW_CLASS(this->env, OrganWebEnv(this->sockf, 0, this->log, db, cfg->GetValue(CSTR("ImageDir")), port, 0, cfg->GetValue(CSTR("CacheDir")), cfg->GetValue(CSTR("DataDir")), scnSize, cfg->GetValue(CSTR("ReloadPwd")), 0, eng, cfg->GetValue(CSTR("OSMCacheOath"))->ToCString()));
 	DEL_CLASS(cfg);
 
 	NEW_CLASS(this->btnReload, UI::GUIButton(ui, this, CSTR("&Reload")));
 	this->btnReload->SetRect(40, 16, 75, 23, false);
 	this->btnReload->HandleButtonClick(OnReloadClicked, this);
-	if (this->dataHdlr->IsError())
+	if (this->env->IsError())
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Error in starting server"), CSTR("Error"), this);
 	}
@@ -73,16 +74,16 @@ SSWR::OrganMgr::OrganWebForm::OrganWebForm(UI::GUIClientControl *parent, UI::GUI
 
 SSWR::OrganMgr::OrganWebForm::~OrganWebForm()
 {
-	SDEL_CLASS(this->dataHdlr);
+	SDEL_CLASS(this->env);
 	DEL_CLASS(this->sockf);
 	DEL_CLASS(this->log);
 }
 
 Bool SSWR::OrganMgr::OrganWebForm::IsError()
 {
-	if (this->dataHdlr == 0)
+	if (this->env == 0)
 		return true;
-	if (this->dataHdlr->IsError())
+	if (this->env->IsError())
 		return true;
 	return false;
 }

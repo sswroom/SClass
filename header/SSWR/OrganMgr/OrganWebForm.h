@@ -1,7 +1,7 @@
 #ifndef _SM_SSWR_ORGANMGR_ORGANWEBFORM
 #define _SM_SSWR_ORGANMGR_ORGANWEBFORM
 #include "Net/SocketFactory.h"
-#include "SSWR/OrganMgr/OrganWebHandler.h"
+#include "SSWR/OrganMgr/OrganWebEnv.h"
 #include "UI/GUIButton.h"
 #include "UI/GUIForm.h"
 
@@ -16,7 +16,7 @@ namespace SSWR
 
 			Net::SocketFactory *sockf;
 			IO::LogTool *log;
-			OrganWebHandler *dataHdlr;
+			OrganWebEnv *env;
 			
 			static void __stdcall OnReloadClicked(void *userObj);
 		public:
