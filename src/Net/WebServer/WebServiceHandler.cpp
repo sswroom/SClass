@@ -56,10 +56,22 @@ Bool Net::WebServer::WebServiceHandler::ProcessRequest(Net::WebServer::IWebReque
 			return true;
 		}
 	}
-	return this->DoRequest(req, resp, subReq);
+	if (this->DoRequest(req, resp, subReq))
+	{
+		return true;
+	}
+	if (this->rootDir && this->rootDir->leng > 0)
+	{
+		return this->DoFileRequest(req, resp, subReq);
+	}
+	return false;
 }
 
-Net::WebServer::WebServiceHandler::WebServiceHandler()
+Net::WebServer::WebServiceHandler::WebServiceHandler() : HTTPDirectoryHandler(CSTR(""), false, 0, false)
+{
+}
+
+Net::WebServer::WebServiceHandler::WebServiceHandler(Text::CString rootDir) : HTTPDirectoryHandler(rootDir, false, 0, false)
 {
 }
 

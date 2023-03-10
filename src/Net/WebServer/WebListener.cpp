@@ -229,7 +229,6 @@ void Net::WebServer::WebListener::LogAccess(Net::WebServer::IWebRequest *req, Ne
 
 		this->accLog->LogMessage(sb.ToCString(), this->accLogLev);
 	}
-	accLogMutUsage.EndUse();
 }
 
 void Net::WebServer::WebListener::LogMessageC(Net::WebServer::IWebRequest *req, const UTF8Char *msg, UOSInt msgLen)

@@ -46,8 +46,9 @@ namespace Net
 				Bool updated;
 			} StatInfo;
 			
-		private:
+		protected:
 			Text::String *rootDir;
+		private:
 			Bool allowBrowsing;
 			Bool allowUpload;
 			CacheType ctype;
@@ -76,6 +77,10 @@ namespace Net
 			virtual ~HTTPDirectoryHandler();
 		public:
 			virtual Bool ProcessRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq);
+
+			Bool DoFileRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq);
+
+			void SetRootDir(Text::String *rootDir);
 			void SetCacheType(CacheType ctype);
 			void SetExpirePeriod(Int32 periodSec);
 			void SetAllowOrigin(Text::CString origin);

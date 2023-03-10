@@ -535,6 +535,15 @@ Net::WebServer::HTTPDirectoryHandler::~HTTPDirectoryHandler()
 
 Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq)
 {
+	if (this->DoRequest(req, resp, subReq))
+	{
+		return true;
+	}
+	return this->DoFileRequest(req, resp, subReq);
+}
+
+Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq)
+{
 	UInt8 buff[2048];
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[1024];
@@ -546,11 +555,6 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 	//Data::DateTime t;
 	Text::CString mime;
 	UOSInt i;
-	if (this->DoRequest(req, resp, subReq))
-	{
-		return true;
-	}
-
 	if (req->GetProtocol() != Net::WebServer::IWebRequest::RequestProtocol::HTTP1_0 && req->GetProtocol() != Net::WebServer::IWebRequest::RequestProtocol::HTTP1_1)
 	{
 		resp->ResponseError(req, Net::WebStatus::SC_METHOD_NOT_ALLOWED);
@@ -751,10 +755,10 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 		Sync::Interlocked::Decrement(&this->fileCacheUsing);
 		return true;
 	}
-	mutUsage.EndUse();
-
 	sb.ClearStr();
 	sb.Append(this->rootDir);
+	mutUsage.EndUse();
+
 	sptr = sb.GetEndPtr();
 	if (sptr[-1] == '\\' || sptr[-1] == '/')
 	{
@@ -1480,6 +1484,13 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 	return false;
 }
 
+void Net::WebServer::HTTPDirectoryHandler::SetRootDir(Text::String *rootDir)
+{
+	Sync::MutexUsage mutUsage(&this->fileCacheMut);
+	this->rootDir->Release();
+	this->rootDir = rootDir->Clone();
+}
+
 void Net::WebServer::HTTPDirectoryHandler::SetCacheType(CacheType ctype)
 {
 	this->ctype = ctype;
@@ -1512,7 +1523,6 @@ void Net::WebServer::HTTPDirectoryHandler::ClearFileCache()
 	}
 	MemFree(cacheList);
 	this->fileCache.Clear();
-	mutUsage.EndUse();
 }
 
 void Net::WebServer::HTTPDirectoryHandler::ExpandPackageFiles(Parser::ParserList *parsers, Text::CString searchPattern)

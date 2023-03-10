@@ -132,6 +132,7 @@ void Net::WebServer::WebConnection::ReceivedData(const UInt8 *buff, UOSInt size)
 #endif		
 				if (lineStart == i)
 				{
+					Sync::MutexUsage mutUsage(&this->procMut);
 					if (this->currReq)
 					{
 						if (this->currReq->HasData())
@@ -147,7 +148,6 @@ void Net::WebServer::WebConnection::ReceivedData(const UInt8 *buff, UOSInt size)
 							}
 						}
 
-						Sync::MutexUsage mutUsage(&this->procMut);
 						this->ProcessResponse();
 					}
 				}

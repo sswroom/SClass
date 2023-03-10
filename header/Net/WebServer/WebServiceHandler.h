@@ -2,13 +2,13 @@
 #define _SM_NET_WEBSERVER_WEBSERVICEHANDLER
 #include "Data/FastMap.h"
 #include "Data/FastStringMap.h"
-#include "Net/WebServer/WebStandardHandler.h"
+#include "Net/WebServer/HTTPDirectoryHandler.h"
 
 namespace Net
 {
 	namespace WebServer
 	{
-		class WebServiceHandler : public Net::WebServer::WebStandardHandler
+		class WebServiceHandler : public Net::WebServer::HTTPDirectoryHandler
 		{
 		public:
 			typedef Bool (__stdcall *ServiceFunc)(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq, WebServiceHandler *me);
@@ -26,6 +26,7 @@ namespace Net
 			virtual Bool ProcessRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq);
 		public:
 			WebServiceHandler();
+			WebServiceHandler(Text::CString rootDir);
 
 			void AddService(Text::CString svcPath, Net::WebUtil::RequestMethod reqMeth, ServiceFunc func);
 		};
