@@ -2,6 +2,7 @@
 #define _SM_MAP_GPSTRACK
 #include "Data/ArrayListInt32.h"
 #include "Data/ArrayListString.h"
+#include "Data/TimeInstant.h"
 #include "IO/ParsedObject.h"
 #include "Map/MapDrawLayer.h"
 #include "Sync/Mutex.h"
@@ -15,7 +16,7 @@ namespace Map
 		ASTRUCT GPSRecord3
 		{
 			Math::Coord2DDbl pos;
-			Int64 utcTimeTicks;
+			Data::TimeInstant recTime;
 			Double altitude;
 			Double speed;
 			Double heading;

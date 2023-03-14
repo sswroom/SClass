@@ -257,7 +257,7 @@ IO::ParsedObject *Parser::FileParser::RLOCParser::ParseFileHdr(IO::StreamData *f
 		extInfo.devType = ReadInt32(&buff[4]);
 		rec.speed = ReadUInt16(&buff[8]) * 0.1;
 		rec.heading = ReadUInt16(&buff[10]) * 0.01;
-		rec.utcTimeTicks = ReadInt32(&buff[12]) * 1000LL;
+		rec.recTime = Data::TimeInstant(ReadInt32(&buff[12]), 0);
 		extInfo.funcs = ReadInt24(&buff[16]);
 		rec.nSateUsedGPS = buff[19];
 		rec.pos.lat = ReadInt32(&buff[20]) / 200000.0;

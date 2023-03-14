@@ -149,7 +149,7 @@ IO::ParsedObject *Parser::FileParser::SPREDParser::ParseFileHdr(IO::StreamData *
 				rec->pos.lon = (*(Int32*)&buff[i + 12]) / 200000.0;
 				rec->speed = *(Int32*)&buff[i + 16] * 0.0001;
 				rec->heading = *(UInt16*)&buff[i + 20] * 0.01;
-				rec->utcTimeTicks = 1000LL * *(UInt32*)&buff[i + 22];
+				rec->recTime = Data::TimeInstant(ReadUInt32(&buff[i + 22]), 0);
 				rec->altitude = *(Int32*)&buff[i + 26] * 0.01;
 				rec->valid = ((buff[i + 43] & 0x80) >> 7) != 0;
 				UInt16 nSateUsed = (*(UInt16*)&buff[i + 42]) & 0x7fff;

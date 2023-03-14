@@ -337,9 +337,9 @@ SSWR::OrganMgr::OrganTimeAdjForm::OrganTimeAdjForm(UI::GUIClientControl *parent,
 		i = 0;
 		while (i < j)
 		{
-			dt.SetTicks(records[i].utcTimeTicks);
+			dt.SetInstant(records[i].recTime);
 			dt.ToLocalTime();
-			sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
+			sptr = dt.ToStringNoZone(sbuff);
 			this->lbTrack->AddItem(CSTRP(sbuff, sptr), &records[i]);
 			i++;
 		}

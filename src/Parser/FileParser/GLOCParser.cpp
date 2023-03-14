@@ -314,7 +314,7 @@ IO::ParsedObject *Parser::FileParser::GLOCParser::ParseFileHdr(IO::StreamData *f
 		fd->GetRealData(currPos, 128, buff);
 		extInfo.termId = ReadUInt32(&buff[0]);
 		extInfo.devType = ReadInt32(&buff[4]);
-		rec.utcTimeTicks = ReadUInt32(&buff[8]) * 1000LL;
+		rec.recTime = Data::TimeInstant(ReadUInt32(&buff[8]), 0);
 		extInfo.recvTimeTS = ReadUInt32(&buff[12]);
 		rec.pos = Math::Coord2DDbl(ReadInt32(&buff[20]) / 10000000.0,  ReadInt32(&buff[16]) / 10000000.0);
 		rec.speed = ReadUInt16(&buff[24]) * 0.1;

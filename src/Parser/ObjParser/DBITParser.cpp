@@ -170,7 +170,7 @@ IO::ParsedObject *Parser::ObjParser::DBITParser::ParseObject(IO::ParsedObject *p
 					rec = wpMap.Get((Int32)i);
 					if (rec)
 					{
-						gpsRec.utcTimeTicks = rec->time * 1000LL;
+						gpsRec.recTime = Data::TimeInstant(rec->time, 0);
 						gpsRec.pos = Math::Coord2DDbl(rec->longitude, rec->latitude);
 						gpsRec.altitude = rec->altitude;
 						gpsRec.speed = rec->speed;

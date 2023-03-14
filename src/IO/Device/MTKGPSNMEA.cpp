@@ -597,10 +597,10 @@ Bool IO::Device::MTKGPSNMEA::ParseBlock(UInt8 *block, Map::GPSTrack *gps)
 	Data::DateTime currTime;
 	currTime.SetCurrTimeUTC();
 	currTime.SetYear((UInt16)(currTime.GetYear() - 5));
-	Int64 minTime = currTime.ToTicks();
+	Data::TimeInstant minTime = currTime.ToInstant();
 	currTime.SetCurrTimeUTC();
 	currTime.SetYear((UInt16)(currTime.GetYear() + 1));
-	Int64 maxTime = currTime.ToTicks();
+	Data::TimeInstant maxTime = currTime.ToInstant();
 
 	OSInt currOfst = 0x200;
 	OSInt recStart;
@@ -628,15 +628,15 @@ Bool IO::Device::MTKGPSNMEA::ParseBlock(UInt8 *block, Map::GPSTrack *gps)
 			recStart = currOfst;
 //			if (bitmask & 1) // UTC
 //			{
-				rec.utcTimeTicks = 1000LL * *(UInt32*)&block[currOfst];
+				rec.recTime = Data::TimeInstant(ReadUInt32(&block[currOfst]), 0);
 				currOfst += 4;
-				while (rec.utcTimeTicks < minTime)
+				while (rec.recTime < minTime)
 				{
-					rec.utcTimeTicks += 619315200000; //7168 days
+					rec.recTime.sec += 619315200; //7168 days
 				}
-				while (rec.utcTimeTicks > maxTime)
+				while (rec.recTime > maxTime)
 				{
-					rec.utcTimeTicks -= 619315200000; //7168 days
+					rec.recTime.sec -= 619315200; //7168 days
 				}
 //			}
 //			if (bitmask & 2) // VALID

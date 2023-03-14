@@ -203,20 +203,20 @@ IO::GPSNMEA::ParseStatus IO::GPSNMEA::ParseNMEALine(UTF8Char *line, UOSInt lineL
 			Data::DateTime dt;
 			dt.SetCurrTimeUTC();
 			dt.SetYear((UInt16)(dt.GetYear() - 5));
-			Int64 minTime = dt.ToTicks();
+			Data::TimeInstant minTime = dt.ToInstant();
 			dt.SetCurrTimeUTC();
 			dt.SetYear((UInt16)(dt.GetYear() + 1));
-			Int64 maxTime = dt.ToTicks();
+			Data::TimeInstant maxTime = dt.ToInstant();
 
 			dt.SetValue((UInt16)((d % 100) + 2000), d2 % 100, d3, t3, t2 % 100, it % 100, Double2Int32((t - it) * 1000));
-			record->utcTimeTicks = dt.ToTicks();
-			while (record->utcTimeTicks < minTime)
+			record->recTime = dt.ToInstant();
+			while (record->recTime < minTime)
 			{
-				record->utcTimeTicks += 619315200000; //7168 days
+				record->recTime.sec += 619315200; //7168 days
 			}
-			while (record->utcTimeTicks > maxTime)
+			while (record->recTime > maxTime)
 			{
-				record->utcTimeTicks -= 619315200000; //7168 days
+				record->recTime.sec -= 619315200; //7168 days
 			}
 
 			if ((sarr[4][0] == 'N' || sarr[4][0] == 'S') && (sarr[6][0] == 'E' || sarr[6][0] == 'W'))

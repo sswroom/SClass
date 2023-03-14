@@ -95,7 +95,7 @@ Bool Exporter::MapCSVExporter::ExportFile(IO::SeekableStream *stm, Text::CString
 			{
 				sptr = Text::StrInt32(sbuff, currInd);
 				sptr = Text::StrConcatC(sptr, UTF8STRC(", "));
-				d.SetTicks(rec[k].utcTimeTicks);
+				d.SetInstant(rec[k].recTime);
 				sptr = d.ToString(sptr, "yyyy/MM/dd, HH:mm:ss.fff");
 				if (rec[k].valid == 1)
 				{

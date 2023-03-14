@@ -67,8 +67,8 @@ void __stdcall SSWR::AVIRead::AVIRGISReplayForm::OnLbRecordChg(void *userObj)
 		UOSInt recCnt = 0;
 		Map::GPSTrack::GPSRecord3 *recs = me->track->GetTrack(me->currTrackId, &recCnt);
 		Data::DateTime dt;
-		dt.SetTicks(recs[i].utcTimeTicks);
-		sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
+		dt.SetInstant(recs[i].recTime);
+		sptr = dt.ToStringNoZone(sbuff);
 		me->txtGPSTime->SetText(CSTRP(sbuff, sptr));
 		sptr = Text::StrDouble(sbuff, recs[i].pos.lat);
 		me->txtLatitude->SetText(CSTRP(sbuff, sptr));
@@ -421,8 +421,8 @@ void SSWR::AVIRead::AVIRGISReplayForm::UpdateRecList()
 		this->lbRecord->ClearItems();
 		while (i < recCnt)
 		{
-			dt.SetTicks(recs[i].utcTimeTicks);
-			sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
+			dt.SetInstant(recs[i].recTime);
+			sptr = dt.ToStringNoZone(sbuff);
 			this->lbRecord->AddItem(CSTRP(sbuff, sptr), 0);
 			i++;
 		}

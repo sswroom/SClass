@@ -279,7 +279,7 @@ IO::ParsedObject *Parser::FileParser::SMDLParser::ParseFileHdr(IO::StreamData *f
 		Int32 procTime;
 		UInt32 extraSize;
 		fd->GetRealData(currPos, 96, buff);
-		rec.utcTimeTicks = ReadInt64(&buff[0]);
+		rec.recTime = Data::TimeInstant::FromTicks(ReadInt64(&buff[0]));
 		recvTimeTick = ReadInt64(&buff[8]);
 		rec.pos = Math::Coord2DDbl(ReadDouble(&buff[24]), ReadDouble(&buff[16]));
 		rec.altitude = ReadDouble(&buff[32]);

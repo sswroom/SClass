@@ -90,7 +90,9 @@ namespace Data
 		Int64 ToTicks();
 		Int64 ToDotNetTicks();
 		Int64 ToUnixTimestamp();
+		Data::TimeInstant ToInstant();
 		void SetTicks(Int64 ticks);
+		void SetInstant(Data::TimeInstant instant);
 		void SetDotNetTicks(Int64 ticks);
 		void SetUnixTimestamp(Int64 ticks);
 		void SetMSDOSTime(UInt16 date, UInt16 time);
@@ -103,6 +105,7 @@ namespace Data
 		Char *ToString(Char *buff);
 		Char *ToString(Char *buff, const Char *pattern);
 		UTF8Char *ToString(UTF8Char *buff);
+		UTF8Char *ToStringNoZone(UTF8Char *buff);
 		UTF8Char *ToString(UTF8Char *buff, const Char *pattern);
 		DateTime operator=(DateTime dt);
 		DateTime operator=(Int64 ticks);

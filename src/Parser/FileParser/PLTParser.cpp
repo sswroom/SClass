@@ -110,7 +110,7 @@ IO::ParsedObject *Parser::FileParser::PLTParser::ParseFileHdr(IO::StreamData *fd
 				tval = dval - (Int32)dval;
 				dt.AddDay((Int32)dval);
 				dt.AddMS(Double2Int32(tval * 86400000));
-				rec.utcTimeTicks = dt.ToTicks();
+				rec.recTime = dt.ToInstant();
 				track->AddRecord(&rec);
 			}
 		}

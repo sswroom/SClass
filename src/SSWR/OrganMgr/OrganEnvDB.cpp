@@ -3111,7 +3111,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::AddDataFile(Text::CString fileName)
 					k = 0;
 					while (k < l)
 					{
-						ts = Data::Timestamp(recArr[k].utcTimeTicks, 0);
+						ts = Data::Timestamp(recArr[k].recTime, 0);
 						if (found)
 						{
 							if (startTime.CompareTo(ts) > 0)

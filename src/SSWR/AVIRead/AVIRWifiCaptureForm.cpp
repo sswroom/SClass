@@ -99,8 +99,8 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(void *userObj)
 		me->txtGPSLon->SetText(CSTRP(sbuff, sptr));
 		sptr = Text::StrDouble(sbuff, me->currAlt);
 		me->txtGPSAlt->SetText(CSTRP(sbuff, sptr));
-		dt.SetTicks(me->currGPSTimeTick);
-		sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
+		dt.SetInstant(me->currGPSTime);
+		sptr = dt.ToStringNoZone(sbuff);
 		me->txtGPSTime->SetText(CSTRP(sbuff, sptr));
 		if (me->currActive)
 		{
@@ -785,7 +785,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnGPSData(void *userObj, Map:
 		mutUsage.EndUse();
 	}
 
-	me->currGPSTimeTick = record->utcTimeTicks;
+	me->currGPSTime = record->recTime;
 	me->currPos = record->pos;
 	me->currAlt = record->altitude;
 	me->currActive = record->valid != 0;
@@ -801,7 +801,7 @@ SSWR::AVIRead::AVIRWifiCaptureForm::AVIRWifiCaptureForm(UI::GUIClientControl *pa
 	this->motion = 0;
 	this->gpsChg = false;
 	this->lastTimeTick = 0;
-	this->currGPSTimeTick = 0;
+	this->currGPSTime = Data::TimeInstant(0, 0);
 	this->currPos = Math::Coord2DDbl(0, 0);
 	this->currAlt = 0;
 	this->locSvc = 0;

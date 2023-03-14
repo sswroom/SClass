@@ -75,6 +75,8 @@ IO::ParsedObject *Parser::FileParser::CSVParser::ParseFileHdr(IO::StreamData *fd
 	UOSInt headingCol = INVALID_INDEX;
 	UOSInt nSateCol = INVALID_INDEX;
 
+	UInt32 gloggerMatches = 0;
+
 	Data::ArrayListStrUTF8 colNames;
 	reader.ReadLine(sbuff, 1024);
 	colCnt = Text::StrCSVSplitP(tmpArr, 2, sbuff);
@@ -159,13 +161,91 @@ IO::ParsedObject *Parser::FileParser::CSVParser::ParseFileHdr(IO::StreamData *fd
 		{
 			nSateCol = currCol;
 		}
+		else if (tmpArr[0].Equals(UTF8STRC("1")))
+		{
+			if (currCol == 0)
+				gloggerMatches |= 1;
+		}
+		else if (tmpArr[0].Equals(UTF8STRC("0.0")))
+		{
+			if (currCol == 2)
+				gloggerMatches |= 2;
+			else if (currCol == 5)
+				gloggerMatches |= 4;
+			else if (currCol == 6)
+				gloggerMatches |= 8;
+		}
+		else if (tmpArr[0].leng == 0)
+		{
+			if (currCol == 8 && colCnt == 1)
+				gloggerMatches |= 16;
+		}
 		currCol += 1;
 		if (colCnt < 2)
 			break;
 		colCnt = Text::StrCSVSplitP(tmpArr, 2, tmpArr[1].v);
 	}
 
-	if (((dateCol != INVALID_INDEX && timeCol != INVALID_INDEX) || (dtCol != INVALID_INDEX)) && latCol != INVALID_INDEX && lonCol != INVALID_INDEX)
+	if (gloggerMatches == 31)
+	{
+		//id, track start, time passed, lat, lon, distance travelled, speed (knot), altitude, empty
+		stm.SeekFromBeginning(0);
+		Map::GPSTrack *track;
+		Map::GPSTrack::GPSRecord3 rec;
+		Text::PString sarr[10];
+		reader.ReadLine(sbuff, 1024);
+		if (Text::StrCSVSplitP(sarr, 10, sbuff) == 9)
+		{
+			Data::Timestamp startTime = Data::Timestamp::FromStr(sarr[1].ToCString(), Data::DateTimeUtil::GetLocalTzQhr());
+			Text::String *lastTime = 0;
+			NEW_CLASS(track, Map::GPSTrack(fd->GetFullName(), altCol != INVALID_INDEX, this->codePage, 0));
+			track->SetTrackName(fd->GetShortName());
+			
+			while (true)
+			{
+				if (lastTime == 0 || !lastTime->Equals(&sarr[1]))
+				{
+					SDEL_STRING(lastTime);
+					lastTime = Text::String::New(sarr[1].ToCString());
+					rec.recTime = Data::Timestamp::FromStr(lastTime->ToCString(), Data::DateTimeUtil::GetLocalTzQhr()).inst;
+				}
+				else
+				{
+					rec.recTime = startTime.AddSecondDbl(sarr[2].ToDouble()).inst;
+				}
+				rec.pos = Math::Coord2DDbl(sarr[4].ToDouble(), sarr[3].ToDouble());
+				rec.valid = true;
+				rec.altitude = sarr[7].ToDouble();
+				rec.speed = sarr[6].ToDouble();
+				rec.heading = 0;
+				rec.nSateUsedGPS = 0;
+				rec.nSateViewGPS = 0;
+				rec.nSateUsed = 0;
+				rec.nSateUsedGLO = 0;
+				rec.nSateUsedSBAS = 0;
+				rec.nSateViewGLO = 0;
+				rec.nSateViewGA = 0;
+				rec.nSateViewQZSS = 0;
+				rec.nSateViewBD = 0;
+				track->AddRecord(&rec);
+				if (reader.ReadLine(sbuff, 1024) == 0)
+				{
+					break;
+				}
+				if (Text::StrCSVSplitP(sarr, 10, sbuff) != 9)
+				{
+					break;
+				}
+			}
+			SDEL_STRING(lastTime);
+			return track;		
+		}
+		else
+		{
+			return 0;
+		}
+	}
+	else if (((dateCol != INVALID_INDEX && timeCol != INVALID_INDEX) || (dtCol != INVALID_INDEX)) && latCol != INVALID_INDEX && lonCol != INVALID_INDEX)
 	{
 		Map::GPSTrack *track;
 		Map::GPSTrack::GPSRecord3 rec;
@@ -187,7 +267,7 @@ IO::ParsedObject *Parser::FileParser::CSVParser::ParseFileHdr(IO::StreamData *fd
 					sptr2 = Text::StrConcatC(Text::StrConcatC(Text::StrConcatC(sbuff2, tmpArr2[dateCol].v, tmpArr2[dateCol].leng), UTF8STRC(" ")), tmpArr2[timeCol].v, tmpArr2[timeCol].leng);
 					dt.SetValue(CSTRP(sbuff2, sptr2));
 				}
-				rec.utcTimeTicks = dt.ToTicks();
+				rec.recTime = dt.ToInstant();
 				rec.pos = Math::Coord2DDbl(Text::StrToDouble(tmpArr2[lonCol].v), Text::StrToDouble(tmpArr2[latCol].v));
 				if (latDirCol != INVALID_INDEX)
 				{

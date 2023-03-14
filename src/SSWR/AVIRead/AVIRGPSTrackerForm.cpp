@@ -71,8 +71,8 @@ void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnTimerTick(void *userObj)
 	{
 		me->lastUpdateTime.SetCurrTimeUTC();
 		Sync::MutexUsage mutUsage(&me->recMut);
-		dt.SetTicks(me->recCurr.utcTimeTicks);
-		sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
+		dt.SetInstant(me->recCurr.recTime);
+		sptr = dt.ToStringNoZone(sbuff);
 		me->txtGPSTime->SetText(CSTRP(sbuff, sptr));
 		sptr = Text::StrDouble(sbuff, me->recCurr.pos.lat);
 		me->txtLatitude->SetText(CSTRP(sbuff, sptr));

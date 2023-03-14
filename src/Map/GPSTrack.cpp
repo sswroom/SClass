@@ -203,22 +203,22 @@ UTF8Char *Map::GPSTrack::GetString(UTF8Char *buff, UOSInt buffSize, NameArray *n
 		Map::GPSTrack::TrackRecord *track = this->currTracks.GetItem((UOSInt)id);
 		if (strIndex == 0)
 		{
-			dt.SetTicks(track->records[0].utcTimeTicks);
-			sptr = dt.ToString(buff, "yyyy-MM-dd HH:mm:ss.fff");
+			dt.SetInstant(track->records[0].recTime);
+			sptr = dt.ToStringNoZone(buff);
 			sptr = Text::StrConcatC(sptr, UTF8STRC(" - "));
-			dt.SetTicks(track->records[track->nRecords - 1].utcTimeTicks);
-			sptr = dt.ToString(sptr, "yyyy-MM-dd HH:mm:ss.fff");
+			dt.SetInstant(track->records[track->nRecords - 1].recTime);
+			sptr = dt.ToStringNoZone(sptr);
 			return sptr;
 		}
 		else if (strIndex == 1)
 		{
-			dt.SetTicks(track->records[0].utcTimeTicks);
-			return dt.ToString(buff, "yyyy-MM-dd HH:mm:ss.fff");
+			dt.SetInstant(track->records[0].recTime);
+			return dt.ToStringNoZone(buff);
 		}
 		else if (strIndex == 2)
 		{
-			dt.SetTicks(track->records[track->nRecords - 1].utcTimeTicks);
-			return dt.ToString(buff, "yyyy-MM-dd HH:mm:ss.fff");
+			dt.SetInstant(track->records[track->nRecords - 1].recTime);
+			return dt.ToStringNoZone(buff);
 		}
 		else
 		{
@@ -671,7 +671,7 @@ UOSInt Map::GPSTrack::AddRecord(Map::GPSTrack::GPSRecord3 *rec)
 	Map::GPSTrack::GPSRecord3 *newRec;
 	newRec = MemAllocA(Map::GPSTrack::GPSRecord3, 1);
 	MemCopyNO(newRec, rec, sizeof(Map::GPSTrack::GPSRecord3));
-	UOSInt i = this->currTimes.SortedInsert(rec->utcTimeTicks);
+	UOSInt i = this->currTimes.SortedInsert(rec->recTime.ToTicks());
 	this->currRecs.Insert(i, newRec);
 	this->currExtraData.Insert(i, 0);
 	this->currExtraSize.Insert(i, 0);
@@ -807,7 +807,7 @@ Bool Map::GPSTrack::GetTrackStartTime(UOSInt index, Data::DateTime *dt)
 	if (index < this->currTracks.GetCount())
 	{
 		Map::GPSTrack::TrackRecord *track = this->currTracks.GetItem(index);
-		dt->SetTicks(track->records[0].utcTimeTicks);
+		dt->SetInstant(track->records[0].recTime);
 		return true;
 	}
 	else if (index == this->currTracks.GetCount() && this->currTimes.GetCount() > 0)
@@ -826,7 +826,7 @@ Bool Map::GPSTrack::GetTrackEndTime(UOSInt index, Data::DateTime *dt)
 	if (index < this->currTracks.GetCount())
 	{
 		Map::GPSTrack::TrackRecord *track = this->currTracks.GetItem(index);
-		dt->SetTicks(track->records[track->nRecords - 1].utcTimeTicks);
+		dt->SetInstant(track->records[track->nRecords - 1].recTime);
 		return true;
 	}
 	else if (index == this->currTracks.GetCount() && this->currTimes.GetCount() > 0)
@@ -908,8 +908,8 @@ void Map::GPSTrack::GetPosByTicks(Int64 ticks, Math::Coord2DDbl *pos)
 				Int64 tDiff;
 				Map::GPSTrack::GPSRecord3 *rec1 = this->currRecs.GetItem((UOSInt)~si - 1);
 				Map::GPSTrack::GPSRecord3 *rec2 = this->currRecs.GetItem((UOSInt)~si);
-				tDiff = rec2->utcTimeTicks - rec1->utcTimeTicks;
-				*pos = (rec1->pos * (Double)(rec2->utcTimeTicks - ticks) + rec2->pos * (Double)(ticks - rec1->utcTimeTicks)) / (Double)tDiff;
+				tDiff = rec2->recTime.DiffMS(rec1->recTime);
+				*pos = (rec1->pos * (Double)(rec2->recTime.ToTicks() - ticks) + rec2->pos * (Double)(ticks - rec1->recTime.ToTicks())) / (Double)tDiff;
 				return;
 			}
 		}
@@ -923,16 +923,16 @@ void Map::GPSTrack::GetPosByTicks(Int64 ticks, Math::Coord2DDbl *pos)
 		while (i-- > 0)
 		{
 			rec = this->currTracks.GetItem(i);
-			if (ticks >= rec->records[0].utcTimeTicks && ticks <= rec->records[rec->nRecords - 1].utcTimeTicks)
+			if (ticks >= rec->records[0].recTime.ToTicks() && ticks <= rec->records[rec->nRecords - 1].recTime.ToTicks())
 			{
 				j = 0;
 				while (j < rec->nRecords)
 				{
-					if (ticks <= rec->records[j].utcTimeTicks)
+					if (ticks <= rec->records[j].recTime.ToTicks())
 						break;
 					j++;
 				}
-				if (ticks == rec->records[j].utcTimeTicks)
+				if (ticks == rec->records[j].recTime.ToTicks())
 				{
 					*pos = rec->records[j].pos;
 					return;
@@ -940,8 +940,8 @@ void Map::GPSTrack::GetPosByTicks(Int64 ticks, Math::Coord2DDbl *pos)
 				else
 				{
 					Int64 tDiff;
-					tDiff = rec->records[j].utcTimeTicks - rec->records[j - 1].utcTimeTicks;
-					*pos = (rec->records[j - 1].pos * (Double)(rec->records[j].utcTimeTicks - ticks) + rec->records[j].pos * (Double)(ticks - rec->records[j - 1].utcTimeTicks)) / (Double)tDiff;
+					tDiff = rec->records[j].recTime.DiffMS(rec->records[j - 1].recTime);
+					*pos = (rec->records[j - 1].pos * (Double)(rec->records[j].recTime.ToTicks() - ticks) + rec->records[j].pos * (Double)(ticks - rec->records[j - 1].recTime.ToTicks())) / (Double)tDiff;
 					return;
 				}
 			}
@@ -1256,7 +1256,7 @@ Data::Timestamp Map::GPSDataReader::GetTimestamp(UOSInt colIndex)
 		return Data::Timestamp(0);
 	if (colIndex == 0)
 	{
-		return Data::Timestamp(this->currRec->utcTimeTicks, Data::DateTimeUtil::GetLocalTzQhr());
+		return Data::Timestamp(this->currRec->recTime, Data::DateTimeUtil::GetLocalTzQhr());
 	}
 	return Data::Timestamp(0);
 }

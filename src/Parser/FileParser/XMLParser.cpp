@@ -1111,7 +1111,7 @@ Bool Parser::FileParser::XMLParser::ParseGPXPoint(Text::XMLReader *reader, Map::
 				Data::DateTime dt;
 				dt.SetValue(sb.ToCString());
 				sb.ClearStr();
-				rec->utcTimeTicks = dt.ToTicks();
+				rec->recTime = dt.ToInstant();
 			}
 			else if (reader->GetNodeText()->EqualsICase(UTF8STRC("SPEED")))
 			{

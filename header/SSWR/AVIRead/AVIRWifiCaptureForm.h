@@ -58,7 +58,7 @@ namespace SSWR
 			Data::FastMap<UInt64, WifiLog*> wifiLogMap;
 			Int32 lastMotion;
 			Bool gpsChg;
-			Int64 currGPSTimeTick;
+			Data::TimeInstant currGPSTime;
 			Math::Coord2DDbl currPos;
 			Double currAlt;
 			Bool currActive;

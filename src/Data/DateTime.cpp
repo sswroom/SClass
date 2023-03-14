@@ -832,6 +832,11 @@ Int64 Data::DateTime::ToUnixTimestamp()
 	return (this->ToTicks() / 1000LL);
 }
 
+Data::TimeInstant Data::DateTime::ToInstant()
+{
+	return Data::TimeInstant(this->ToUnixTimestamp(), this->ns);
+}
+
 void Data::DateTime::SetTicks(Int64 ticks)
 {
 	this->timeType = Data::DateTime::TimeType::Ticks;
@@ -850,6 +855,13 @@ void Data::DateTime::SetTicks(Int64 ticks)
 		this->val.secs = ticks / 1000;
 		this->ns = (UInt32)(ticks % 1000) * 1000000;
 	}
+}
+
+void Data::DateTime::SetInstant(Data::TimeInstant instant)
+{
+	this->timeType = Data::DateTime::TimeType::Ticks;
+	this->ns = instant.nanosec;
+	this->val.secs = instant.sec;
 }
 
 void Data::DateTime::SetDotNetTicks(Int64 ticks)
@@ -939,7 +951,42 @@ Char *Data::DateTime::ToString(Char *buff, const Char *pattern)
 
 UTF8Char *Data::DateTime::ToString(UTF8Char *buff)
 {
-	return ToString(buff, "yyyy-MM-dd HH:mm:ss.fff zzzz");
+	if (this->ns == 0)
+	{
+		return ToString(buff, "yyyy-MM-dd HH:mm:ss zzzz");
+	}
+	else if (this->ns % 1000000 == 0)
+	{
+		return ToString(buff, "yyyy-MM-dd HH:mm:ss.fff zzzz");
+	}
+	else if (this->ns % 1000 == 0)
+	{
+		return ToString(buff, "yyyy-MM-dd HH:mm:ss.ffffff zzzz");
+	}
+	else
+	{
+		return ToString(buff, "yyyy-MM-dd HH:mm:ss.fffffffff zzzz");
+	}
+}
+
+UTF8Char *Data::DateTime::ToStringNoZone(UTF8Char *buff)
+{
+	if (this->ns == 0)
+	{
+		return ToString(buff, "yyyy-MM-dd HH:mm:ss");
+	}
+	else if (this->ns % 1000000 == 0)
+	{
+		return ToString(buff, "yyyy-MM-dd HH:mm:ss.fff");
+	}
+	else if (this->ns % 1000 == 0)
+	{
+		return ToString(buff, "yyyy-MM-dd HH:mm:ss.ffffff");
+	}
+	else
+	{
+		return ToString(buff, "yyyy-MM-dd HH:mm:ss.fffffffff");
+	}
 }
 
 UTF8Char *Data::DateTime::ToString(UTF8Char *buff, const Char *pattern)

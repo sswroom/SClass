@@ -954,7 +954,7 @@ void Map::KMLXML::ParseKMLPlacemarkTrack(Text::XMLReader *reader, Map::GPSTrack 
 								{
 									Text::String *s = timeList.GetItem(i);
 									dt.SetValue(s->ToCString());
-									rec.utcTimeTicks = dt.ToTicks();
+									rec.recTime = dt.ToInstant();
 									
 									coordList.GetItem(i)->ConcatTo(sbuff);
 									if (Text::StrSplit(strs, 4, sbuff, ' ') == 3)
@@ -1123,7 +1123,7 @@ void Map::KMLXML::ParseKMLPlacemarkTrack(Text::XMLReader *reader, Map::GPSTrack 
 						{
 							Text::String *s = timeList.GetItem(i);
 							dt.SetValue(s->ToCString());
-							rec.utcTimeTicks = dt.ToTicks();
+							rec.recTime = dt.ToInstant();
 							
 							coordList.GetItem(i)->ConcatTo(sbuff);
 							if (Text::StrSplit(strs, 4, sbuff, ' ') == 3)
@@ -1214,7 +1214,7 @@ void Map::KMLXML::ParseKMLPlacemarkTrack(Text::XMLReader *reader, Map::GPSTrack 
 				{
 					Text::String *s = timeList.GetItem(i);
 					dt.SetValue(s->ToCString());
-					rec.utcTimeTicks = dt.ToTicks();
+					rec.recTime = dt.ToInstant();
 					
 					coordList.GetItem(i)->ConcatTo(sbuff);
 					if (Text::StrSplit(strs, 4, sbuff, ' ') == 3)

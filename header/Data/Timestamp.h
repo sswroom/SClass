@@ -96,6 +96,13 @@ namespace Data
 			return Timestamp(this->inst.AddSecond(val), this->tzQhr);
 		}
 
+		Timestamp AddSecondDbl(Double val) const
+		{
+			Int64 sec = (Int64)val;
+			Int64 ns = (Int64)((val - (Double)sec) * 1000000000);
+			return Timestamp(this->inst.AddSecond(sec).AddNS(ns), this->tzQhr);
+		}
+
 		Timestamp AddMS(OSInt val) const
 		{
 			return Timestamp(this->inst.AddMS(val), this->tzQhr);

@@ -109,7 +109,7 @@ Bool Exporter::GPXExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 			writer->WriteLineC(UTF8STRC("</ele>"));
 
 			writer->WriteStrC(UTF8STRC("<time>"));
-			dt.SetTicks(recs[k].utcTimeTicks);
+			dt.SetInstant(recs[k].recTime);
 			sptr = dt.ToString(sbuff, "yyyy-MM-ddTHH:mm:ssZ");
 			writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
 			writer->WriteLineC(UTF8STRC("</time>"));

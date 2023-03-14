@@ -161,6 +161,14 @@ UTF8Char *IO::StreamReader::ReadLine(UTF8Char *buff, UOSInt maxCharCnt)
 {
 	UTF8Char *dest = buff;
 	Bool tmp = false;
+	if (stm->CanSeek())
+	{
+		UInt64 currPos = ((IO::SeekableStream*)stm)->GetPosition();
+		if (this->lastPos != currPos)
+		{
+			this->FillBuffer();
+		}
+	}
 	UOSInt currPos = cPos;
 	UOSInt currSize = cSize;
 	UTF8Char c;

@@ -266,7 +266,7 @@ IO::ParsedObject *Parser::FileParser::SLOCParser::ParseFileHdr(IO::StreamData *f
 		rec.pos.lon = ReadInt32(&buff[12]) / 200000.0;
 		rec.speed = ReadUInt16(&buff[16]) * 0.01;
 		rec.heading = ReadUInt16(&buff[18]) * 0.01;
-		rec.utcTimeTicks = ReadUInt32(&buff[20]) * 1000LL;
+		rec.recTime = Data::TimeInstant(ReadUInt32(&buff[20]), 0);
 		rec.altitude = ReadInt16(&buff[24]);
 		extInfo.status = ReadUInt32(&buff[26]);
 		extInfo.inStatus = ReadUInt32(&buff[30]);
