@@ -3,7 +3,7 @@
 #include "IO/RadioSignalLogger.h"
 #include "Text/MyStringFloat.h"
 
-void __stdcall IO::RadioSignalLogger::OnWiFiUpdate(Net::WirelessLAN::BSSInfo *bss, Int64 scanTime, void *userObj)
+void __stdcall IO::RadioSignalLogger::OnWiFiUpdate(Net::WirelessLAN::BSSInfo *bss, const Data::Timestamp &scanTime, void *userObj)
 {
 	IO::RadioSignalLogger *me = (IO::RadioSignalLogger*)userObj;
 	if (me->fs)
@@ -13,9 +13,7 @@ void __stdcall IO::RadioSignalLogger::OnWiFiUpdate(Net::WirelessLAN::BSSInfo *bs
 		Data::DateTime dt;
 		Sync::MutexUsage mutUsage(&me->fsMut);
 		Text::StringBuilderUTF8 sb;
-		dt.SetTicks(scanTime);
-		dt.ToLocalTime();
-		sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
+		sptr = scanTime.ToLocalTime().ToStringNoZone(sbuff);
 		sb.AppendP(sbuff, sptr);
 		sb.AppendUTF8Char('\t');
 		sb.AppendC(UTF8STRC("wifi"));

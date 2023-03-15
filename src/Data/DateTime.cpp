@@ -112,6 +112,11 @@ Data::DateTime::DateTime(Int64 ticks, Int8 tzQhr)
 	this->SetValue(ticks, tzQhr);
 }
 
+Data::DateTime::DateTime(const Data::TimeInstant &instant, Int8 tzQhr)
+{
+	this->SetValue(instant, tzQhr);
+}
+
 Data::DateTime::DateTime(UInt16 year, UInt8 month, UInt8 day, UInt8 hour, UInt8 minute, UInt8 second)
 {
 	this->timeType = TimeType::Time;
@@ -203,18 +208,7 @@ Data::DateTime *Data::DateTime::SetCurrTime()
 #endif
 	return this;
 #elif !defined(CPU_AVR)
-	struct timeval tv;
-	if (gettimeofday(&tv, 0) == 0)
-	{
-		this->SetTicks(1000 * (Int64)tv.tv_sec + tv.tv_usec / 1000);
-	}
-	else
-	{
-		struct timespec ts;
-		clock_gettime(CLOCK_REALTIME, &ts);
-		this->SetTicks(1000 * (Int64)ts.tv_sec + (ts.tv_nsec / 1000000));
-	}
-	this->ToLocalTime();
+	this->SetValue(Data::TimeInstant::Now(), Data::DateTimeUtil::GetLocalTzQhr());
 	return this;
 #else
 	return this;
@@ -239,18 +233,7 @@ Data::DateTime *Data::DateTime::SetCurrTimeUTC()
 #endif
 	return this;
 #elif !defined(CPU_AVR)
-	this->tzQhr = 0;
-	struct timeval tv;
-	if (gettimeofday(&tv, 0) == 0)
-	{
-		this->SetTicks(1000 * (Int64)tv.tv_sec + tv.tv_usec / 1000);
-	}
-	else
-	{
-		struct timespec ts;
-		clock_gettime(CLOCK_REALTIME, &ts);
-		this->SetTicks(1000 * (Int64)ts.tv_sec + (ts.tv_nsec / 1000000));
-	}
+	this->SetValue(Data::TimeInstant::Now(), 0);
 	return this;
 #else
 	return this;
@@ -305,6 +288,12 @@ void Data::DateTime::SetValue(Int64 ticks, Int8 tzQhr)
 	this->tzQhr = tzQhr;
 }
 
+void Data::DateTime::SetValue(const Data::TimeInstant &instant, Int8 tzQhr)
+{
+	this->SetInstant(instant);
+	this->tzQhr = tzQhr;
+}
+
 void Data::DateTime::SetValueNoFix(UInt16 year, UInt8 month, UInt8 day, UInt8 hour, UInt8 minute, UInt8 second, UInt16 ms, Int8 tzQhr)
 {
 	Data::DateTimeUtil::TimeValue *tval = this->GetTimeValue();
@@ -345,7 +334,9 @@ void Data::DateTime::SetValueSYSTEMTIME(void *sysTime)
 
 void Data::DateTime::SetValueFILETIME(void *fileTime)
 {
-	this->SetTicks(ReadInt64((const UInt8*)fileTime) / 10000 - 11644473600000LL);
+	UInt32 nanosecs;
+	Int64 secs = Data::DateTimeUtil::FILETIME2Secs(fileTime, &nanosecs);
+	this->SetInstant(Data::TimeInstant(secs, nanosecs));
 }
 
 void Data::DateTime::SetValueVariTime(Double variTime)
@@ -866,12 +857,33 @@ void Data::DateTime::SetInstant(Data::TimeInstant instant)
 
 void Data::DateTime::SetDotNetTicks(Int64 ticks)
 {
-	SetTicks(ticks / 10000LL - 62135596800000LL);
+	UInt32 nanosec;
+	if (ticks < 0)
+	{
+		if (ticks % 10000000)
+		{
+			nanosec = (UInt32)((10000000 + (ticks % 10000000)) * 100);
+			ticks = ticks / 10000000 - 1;
+		}
+		else
+		{
+			nanosec = 0;
+			ticks = ticks / 10000000;
+		}
+	}
+	else
+	{
+		nanosec = (UInt32)(ticks % 10000000) * 100;
+		ticks = ticks / 10000000;
+	}
+	SetInstant(Data::TimeInstant(ticks, nanosec));
 }
 
 void Data::DateTime::SetUnixTimestamp(Int64 ticks)
 {
-	SetTicks(ticks * 1000LL);
+	this->ns = 0;
+	this->timeType = Data::DateTime::TimeType::Ticks;
+	this->val.secs = ticks;
 }
 
 void Data::DateTime::SetMSDOSTime(UInt16 date, UInt16 time)

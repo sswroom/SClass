@@ -3349,7 +3349,7 @@ Bool SSWR::OrganMgr::OrganEnvWeb::UpdateUserFilePos(UserFileInfo *userFile, Data
 	if (this->db->ExecuteNonQuery(sql.ToCString()) >= 0)
 	{
 		succ = true;
-		userFile->captureTimeTicks = captureTime->ToTicks();
+		userFile->captureTime = captureTime;
 		userFile->lat = lat;
 		userFile->lon = lon;
 	}
@@ -3359,7 +3359,7 @@ Bool SSWR::OrganMgr::OrganEnvWeb::UpdateUserFilePos(UserFileInfo *userFile, Data
 Bool SSWR::OrganMgr::OrganEnvWeb::GetUserFilePath(UserFileInfo *userFile, Text::StringBuilderUTF8 *sb)
 {
 	Data::DateTime dt;
-	dt.SetTicks(userFile->fileTimeTicks);
+	dt.SetTicks(userFile->fileTime);
 	dt.ToUTCTime();
 	sb->Append(this->cfgDataPath);
 	if (!sb->EndsWith(IO::Path::PATH_SEPERATOR))

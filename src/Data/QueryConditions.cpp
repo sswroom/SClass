@@ -37,7 +37,7 @@ void Data::QueryConditions::FieldCondition::GetFieldList(Data::ArrayList<Text::S
 	fieldList->Add(this->fieldName);
 }
 
-Data::QueryConditions::TimeBetweenCondition::TimeBetweenCondition(Text::CString fieldName, Int64 t1, Int64 t2) : FieldCondition(fieldName)
+Data::QueryConditions::TimeBetweenCondition::TimeBetweenCondition(Text::CString fieldName, const Data::Timestamp &t1, const Data::Timestamp &t2) : FieldCondition(fieldName)
 {
 	this->t1 = t1;
 	this->t2 = t2;
@@ -56,16 +56,13 @@ Bool Data::QueryConditions::TimeBetweenCondition::ToWhereClause(Text::StringBuil
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	Data::DateTime dt;
 	sptr = DB::DBUtil::SDBColUTF8(sbuff, this->fieldName->v, sqlType);
 	sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
 	sb->AppendC(UTF8STRC(" between "));
-	dt.SetTicks(this->t1);
-	sptr = DB::DBUtil::SDBDate(sbuff, &dt, sqlType, tzQhr);
+	sptr = DB::DBUtil::SDBTS(sbuff, this->t1, sqlType, tzQhr);
 	sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
 	sb->AppendC(UTF8STRC(" and "));
-	dt.SetTicks(this->t2);
-	sptr = DB::DBUtil::SDBDate(sbuff, &dt, sqlType, tzQhr);
+	sptr = DB::DBUtil::SDBTS(sbuff, this->t2, sqlType, tzQhr);
 	sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
 	return true;
 }
@@ -77,7 +74,7 @@ Bool Data::QueryConditions::TimeBetweenCondition::TestValid(Data::VariItem *item
 	{
 	case Data::VariItem::ItemType::Timestamp:
 		{
-			Int64 t = item->GetItemValue().ts.ToTicks();
+			Data::Timestamp t = item->GetItemValue().ts;
 			return t >= this->t1 && t <= this->t2;
 		}
 	case Data::VariItem::ItemType::F32:
@@ -1140,7 +1137,7 @@ void Data::QueryConditions::GetFieldList(Data::ArrayList<Text::String*> *fieldLi
 	}
 }
 
-Data::QueryConditions *Data::QueryConditions::TimeBetween(Text::CString fieldName, Int64 t1, Int64 t2)
+Data::QueryConditions *Data::QueryConditions::TimeBetween(Text::CString fieldName, const Data::Timestamp &t1, const Data::Timestamp &t2)
 {
 	this->conditionList.Add(NEW_CLASS_D(TimeBetweenCondition(fieldName, t1, t2)));
 	return this;

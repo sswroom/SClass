@@ -23,7 +23,7 @@ namespace Net
 			UInt64 neighbour[20];
 			UInt32 ieLen;
 			UInt8 *ieBuff;
-			Int64 lastScanTimeTicks;
+			Data::Timestamp lastScanTime;
 			Double lastRSSI;
 		} LogFileEntry;
 

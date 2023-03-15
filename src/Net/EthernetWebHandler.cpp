@@ -769,7 +769,6 @@ Bool __stdcall Net::EthernetWebHandler::DHCPReq(EthernetWebHandler *me, Net::Web
 		Net::EthernetAnalyzer::DHCPInfo *dhcp;
 		const Net::MACInfo::MACEntry *macInfo;
 		Text::StringBuilderUTF8 sb;
-		Data::DateTime dt;
 		AppendHeader(&sb);
 		me->AppendMenu(&sb);
 		sb.AppendC(UTF8STRC("<table border=\"1\"><tr>"));
@@ -835,9 +834,7 @@ Bool __stdcall Net::EthernetWebHandler::DHCPReq(EthernetWebHandler *me, Net::Web
 			sptr = Net::SocketUtil::GetIPv4Name(sbuff, dhcp->router);
 			sb.AppendP(sbuff, sptr);
 			sb.AppendC(UTF8STRC("</td><td>"));
-			dt.SetTicks(dhcp->ipAddrTime);
-			dt.ToLocalTime();
-			sb.AppendDate(&dt);
+			sb.AppendTS(dhcp->ipAddrTime.ToLocalTime());
 			sb.AppendC(UTF8STRC("</td><td>"));
 			sb.AppendU32(dhcp->ipAddrLease);
 			sb.AppendC(UTF8STRC("</td><td>"));

@@ -4,6 +4,7 @@
 #include "Data/Timestamp.h"
 #include "Text/CString.h"
 #include "Text/MyString.h"
+#include "Text/StringBuilderUTF8.h"
 
 namespace Net
 {
@@ -37,6 +38,7 @@ namespace Net
 		static Text::CString RequestMethodGetName(RequestMethod reqMeth);
 		static UTF8Char *Date2Str(UTF8Char *sbuff, Data::DateTime *dt);
 		static UTF8Char *Date2Str(UTF8Char *sbuff, const Data::Timestamp &ts);
+		static void Date2Str(Text::StringBuilderUTF8 *sb, const Data::Timestamp &ts);
 	};
 }
 #endif

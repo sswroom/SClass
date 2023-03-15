@@ -8,7 +8,7 @@ namespace Net
 	class WiFiCapturer
 	{
 	public:
-		typedef void (__stdcall *UpdateHandler)(Net::WirelessLAN::BSSInfo *bss, Int64 scanTime, void *userObj);
+		typedef void (__stdcall *UpdateHandler)(Net::WirelessLAN::BSSInfo *bss, const Data::Timestamp &scanTime, void *userObj);
 	private:
 		Net::WirelessLAN wlan;
 		Bool threadRunning;
@@ -17,7 +17,7 @@ namespace Net
 		Sync::Mutex logMut;
 		const UTF8Char *lastFileName;
 		Net::WirelessLAN::Interface *interf;
-		Int64 lastScanTimeTicks;
+		Data::Timestamp lastScanTime;
 		UpdateHandler hdlr;
 		void *hdlrObj;
 
@@ -28,7 +28,7 @@ namespace Net
 
 		Bool IsError();
 		Bool IsStarted();
-		Int64 GetLastScanTimeTicks();
+		Data::Timestamp GetLastScanTime();
 
 		Bool Start();
 		void Stop();

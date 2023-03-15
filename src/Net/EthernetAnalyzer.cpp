@@ -282,9 +282,8 @@ Bool Net::EthernetAnalyzer::DNSReqv4GetInfo(Text::CString req, Data::ArrayList<N
 	{
 		Sync::MutexUsage mutUsage(&result->mut);
 		Net::DNSClient::ParseAnswers(result->recBuff, result->recSize, ansList);
-		reqTime->SetTicks(result->reqTime);
+		reqTime->SetInstant(result->reqTime.inst);
 		*ttl = result->ttl;
-		mutUsage.EndUse();
 		return true;
 	}
 	else
@@ -316,9 +315,8 @@ Bool Net::EthernetAnalyzer::DNSReqv6GetInfo(Text::CString req, Data::ArrayList<N
 	{
 		Sync::MutexUsage mutUsage(&result->mut);
 		Net::DNSClient::ParseAnswers(result->recBuff, result->recSize, ansList);
-		reqTime->SetTicks(result->reqTime);
+		reqTime->SetInstant(result->reqTime.inst);
 		*ttl = result->ttl;
-		mutUsage.EndUse();
 		return true;
 	}
 	else
@@ -350,9 +348,8 @@ Bool Net::EthernetAnalyzer::DNSReqOthGetInfo(Text::CString req, Data::ArrayList<
 	{
 		Sync::MutexUsage mutUsage(&result->mut);
 		Net::DNSClient::ParseAnswers(result->recBuff, result->recSize, ansList);
-		reqTime->SetTicks(result->reqTime);
+		reqTime->SetInstant(result->reqTime.inst);
 		*ttl = result->ttl;
-		mutUsage.EndUse();
 		return true;
 	}
 	else
@@ -1090,8 +1087,7 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, UOSInt packetSize, U
 							{
 								DNSRequestResult *req;
 								Text::String *reqName;
-								Data::DateTime currTime;
-								currTime.SetCurrTimeUTC();
+								Data::Timestamp currTime = Data::Timestamp::UtcNow();
 								reqName = answers.GetItem(0)->name;
 								answer = answers.GetItem(answers.GetCount() - 1);
 								if (answer->recType == 1)
@@ -1106,7 +1102,7 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, UOSInt packetSize, U
 											req->status = 0;
 											req->recSize = ipDataSize - 8;
 											MemCopyNO(req->recBuff, &ipData[8], ipDataSize - 8);
-											req->reqTime = currTime.ToTicks();
+											req->reqTime = currTime;
 											req->ttl = Net::DNSClient::GetResponseTTL(req->recBuff, req->recSize);
 											mutUsage.EndUse();
 										}
@@ -1116,7 +1112,7 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, UOSInt packetSize, U
 											req->status = 0;
 											req->recSize = ipDataSize - 8;
 											MemCopyNO(req->recBuff, &ipData[8], ipDataSize - 8);
-											req->reqTime = currTime.ToTicks();
+											req->reqTime = currTime;
 											req->ttl = Net::DNSClient::GetResponseTTL(req->recBuff, req->recSize);
 											this->dnsReqv4Map.Put(reqName, req);
 										}
@@ -1180,7 +1176,7 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, UOSInt packetSize, U
 											req->status = 0;
 											req->recSize = ipDataSize - 8;
 											MemCopyNO(req->recBuff, &ipData[8], ipDataSize - 8);
-											req->reqTime = currTime.ToTicks();
+											req->reqTime = currTime;
 											req->ttl = Net::DNSClient::GetResponseTTL(req->recBuff, req->recSize);
 											mutUsage.EndUse();
 										}
@@ -1190,7 +1186,7 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, UOSInt packetSize, U
 											req->status = 0;
 											req->recSize = ipDataSize - 8;
 											MemCopyNO(req->recBuff, &ipData[8], ipDataSize - 8);
-											req->reqTime = currTime.ToTicks();
+											req->reqTime = currTime;
 											req->ttl = Net::DNSClient::GetResponseTTL(req->recBuff, req->recSize);
 											this->dnsReqv6Map.Put(reqName, req);
 										}
@@ -1209,7 +1205,7 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, UOSInt packetSize, U
 											req->status = 0;
 											req->recSize = ipDataSize - 8;
 											MemCopyNO(req->recBuff, &ipData[8], ipDataSize - 8);
-											req->reqTime = currTime.ToTicks();
+											req->reqTime = currTime;
 											req->ttl = Net::DNSClient::GetResponseTTL(req->recBuff, req->recSize);
 											mutUsage.EndUse();
 										}
@@ -1219,7 +1215,7 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, UOSInt packetSize, U
 											req->status = 0;
 											req->recSize = ipDataSize - 8;
 											MemCopyNO(req->recBuff, &ipData[8], ipDataSize - 8);
-											req->reqTime = currTime.ToTicks();
+											req->reqTime = currTime;
 											req->ttl = Net::DNSClient::GetResponseTTL(req->recBuff, req->recSize);
 											this->dnsReqOthMap.Put(reqName, req);
 										}

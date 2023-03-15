@@ -1438,10 +1438,10 @@ void IO::FileAnalyse::PCapngFileAnalyse::SetTime(Data::DateTime *dt, Int64 ts, I
 	switch (timeResol)
 	{
 	case 6:
-		dt->SetTicks(ts / 1000LL);
+		dt->SetInstant(Data::TimeInstant(ts / 1000000, (UInt32)(ts % 1000000) * 1000));
 		break;
 	case 9:
-		dt->SetTicks(ts / 1000000LL);
+		dt->SetInstant(Data::TimeInstant(ts / 1000000000, (UInt32)(ts % 1000000000)));
 		break;
 	default:
 		dt->SetTicks(ts);

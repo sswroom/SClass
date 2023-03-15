@@ -138,8 +138,7 @@ Text::CString Net::WebUtil::RequestMethodGetName(RequestMethod reqMeth)
 UTF8Char *Net::WebUtil::Date2Str(UTF8Char *sbuff, Data::DateTime *dt)
 {
 	const Char *wds[] = {"Sun, ", "Mon, ", "Tue, ", "Wed, ", "Thu, ", "Fri, ", "Sat, "};
-	Data::DateTime t;
-	t.SetValue(dt);
+	Data::DateTime t(dt);
 	t.ToUTCTime();
 	Int32 wd = (Int32)t.GetWeekday();
 	return Text::StrConcatC(t.ToString(Text::StrConcatC(sbuff, (const UTF8Char*)wds[wd], 5), "dd MMM yyyy HH:mm:ss"), UTF8STRC(" GMT"));
@@ -148,9 +147,20 @@ UTF8Char *Net::WebUtil::Date2Str(UTF8Char *sbuff, Data::DateTime *dt)
 UTF8Char *Net::WebUtil::Date2Str(UTF8Char *sbuff, const Data::Timestamp &ts)
 {
 	const Char *wds[] = {"Sun, ", "Mon, ", "Tue, ", "Wed, ", "Thu, ", "Fri, ", "Sat, "};
-	Data::DateTime t;
-	t.SetTicks(ts.ToTicks());
-	t.ToUTCTime();
+	Data::DateTime t(ts.inst, 0);
 	Int32 wd = (Int32)t.GetWeekday();
 	return Text::StrConcatC(t.ToString(Text::StrConcatC(sbuff, (const UTF8Char*)wds[wd], 5), "dd MMM yyyy HH:mm:ss"), UTF8STRC(" GMT"));	
+}
+
+void Net::WebUtil::Date2Str(Text::StringBuilderUTF8 *sb, const Data::Timestamp &ts)
+{
+	UTF8Char sbuff[32];
+	UTF8Char *sptr;
+	const Char *wds[] = {"Sun, ", "Mon, ", "Tue, ", "Wed, ", "Thu, ", "Fri, ", "Sat, "};
+	Data::DateTime t(ts.inst, 0);
+	Int32 wd = (Int32)t.GetWeekday();
+	sb->AppendC((const UTF8Char*)wds[wd], 5);
+	sptr = t.ToString(sbuff, "dd MMM yyyy HH:mm:ss");
+	sb->AppendP(sbuff, sptr);
+	sb->AppendC(UTF8STRC(" GMT"));
 }

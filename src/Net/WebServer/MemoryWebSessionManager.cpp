@@ -157,11 +157,8 @@ Net::WebServer::IWebSession *Net::WebServer::MemoryWebSessionManager::CreateSess
 	if (sess)
 		return sess;
 	Int64 sessId = this->GenSessId(req);
-	sptr = Text::StrConcatC(sbuff, UTF8STRC("WebSessId="));
-	sptr = Text::StrInt64(sptr, sessId);
-	sptr = Text::StrConcatC(sptr, UTF8STRC("; Path="));
-	sptr = this->path->ConcatTo(sptr);
-	resp->AddHeader(CSTR("Set-Cookie"), CSTRP(sbuff, sptr));
+	sptr = Text::StrInt64(sbuff, sessId);
+	resp->AddSetCookie(CSTR("WebSessId"), CSTRP(sbuff, sptr), this->path->ToCString(), true, req->IsSecure(), Net::WebServer::SameSiteType::Strict, 0);
 	UOSInt i;
 	NEW_CLASS(sess, Net::WebServer::MemoryWebSession(sessId, req->GetBrowser(), req->GetOS()));
 	Sync::MutexUsage mutUsage(&this->mut);
@@ -174,9 +171,6 @@ Net::WebServer::IWebSession *Net::WebServer::MemoryWebSessionManager::CreateSess
 
 void Net::WebServer::MemoryWebSessionManager::DeleteSession(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp)
 {
-	UTF8Char sbuff[512];
-	UTF8Char *sptr;
-
 	Int64 sessId = GetSessId(req);
 	OSInt i;
 	Net::WebServer::MemoryWebSession *sess;
@@ -198,16 +192,7 @@ void Net::WebServer::MemoryWebSessionManager::DeleteSession(Net::WebServer::IWeb
 			sess->EndUse();
 			DEL_CLASS(sess);
 		}
-
-		sptr = Text::StrConcatC(sbuff, UTF8STRC("WebSessId="));
-		sptr = Text::StrConcatC(sptr, UTF8STRC("; Path="));
-		sptr = this->path->ConcatTo(sptr);
-		sptr = Text::StrConcatC(sptr, UTF8STRC("; Expires="));
-		Data::DateTime dt;
-		dt.SetCurrTimeUTC();
-		dt.AddMonth(-12);
-		sptr = resp->ToTimeString(sptr, &dt);
-		resp->AddHeader(CSTR("Set-Cookie"), CSTRP(sbuff, sptr));
+		resp->AddSetCookie(CSTR("WebSessId"), CSTR(""), this->path->ToCString(), true, req->IsSecure(), Net::WebServer::SameSiteType::Strict, Data::Timestamp::UtcNow().AddMonth(-12));
 	}
 }
 

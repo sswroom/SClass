@@ -68,11 +68,11 @@ namespace Data
 		class TimeBetweenCondition : public FieldCondition
 		{
 		private:
-			Int64 t1;
-			Int64 t2;
+			Data::Timestamp t1;
+			Data::Timestamp t2;
 
 		public:
-			TimeBetweenCondition(Text::CString fieldName, Int64 t1, Int64 t2);
+			TimeBetweenCondition(Text::CString fieldName, const Data::Timestamp &t1, const Data::Timestamp &t2);
 			virtual ~TimeBetweenCondition();
 
 			virtual ConditionType GetType();
@@ -259,7 +259,7 @@ namespace Data
 		Data::ArrayList<Condition*> *GetList();
 		void GetFieldList(Data::ArrayList<Text::String*> *fieldList);
 
-		QueryConditions *TimeBetween(Text::CString fieldName, Int64 t1, Int64 t2);
+		QueryConditions *TimeBetween(Text::CString fieldName, const Data::Timestamp &t1, const Data::Timestamp &t2);
 		QueryConditions *Or();
 		QueryConditions *InnerCond(QueryConditions *cond);
 		QueryConditions *Int32Equals(Text::CString fieldName, Int32 val);

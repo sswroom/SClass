@@ -21,23 +21,23 @@ UInt32 __stdcall Net::WiFiCapturer::ScanThread(void *userObj)
 	Net::WiFiLogFile::LogFileEntry *entry;
 	UInt64 maxIMAC;
 	Int32 maxRSSI;
-	Int64 lastStoreTime;
-	Int64 currTime;
+	Data::Timestamp lastStoreTime;
+	Data::Timestamp currTime;
 
 	me->threadRunning = true;
 	{
 		Data::ArrayList<Net::WirelessLAN::BSSInfo *> bssList;
 		mac[0] = 0;
 		mac[1] = 0;
-		lastStoreTime = Data::DateTimeUtil::GetCurrTimeMillis();	
+		lastStoreTime = Data::Timestamp::Now();
 		while (!me->threadToStop)
 		{
 			if (interf->Scan())
 			{
 				Sync::Thread::Sleep(10000);
 				interf->GetBSSList(&bssList);
-				currTime = Data::DateTimeUtil::GetCurrTimeMillis();
-				me->lastScanTimeTicks = currTime;
+				currTime = Data::Timestamp::Now();
+				me->lastScanTime = currTime;
 				
 				maxIMAC = 0;
 				maxRSSI = -128;
@@ -61,7 +61,7 @@ UInt32 __stdcall Net::WiFiCapturer::ScanThread(void *userObj)
 					}
 					Sync::MutexUsage mutUsage(&me->logMut);
 					entry = me->wifiLog.AddBSSInfo(bss, &si);
-					entry->lastScanTimeTicks = currTime;
+					entry->lastScanTime = currTime;
 					mutUsage.EndUse();
 
 					if (me->hdlr)
@@ -142,8 +142,8 @@ UInt32 __stdcall Net::WiFiCapturer::ScanThread(void *userObj)
 			{
 				Sync::Thread::Sleep(5000);
 			}
-			currTime = Data::DateTimeUtil::GetCurrTimeMillis();
-			if ((currTime - lastStoreTime) >= 600000)
+			currTime = Data::Timestamp::Now();
+			if (currTime.DiffMS(lastStoreTime) >= 600000)
 			{
 				lastStoreTime = currTime;
 				me->StoreStatus();
@@ -162,7 +162,7 @@ Net::WiFiCapturer::WiFiCapturer()
 	this->interf = 0;
 	this->hdlr = 0;
 	this->hdlrObj = 0;
-	this->lastScanTimeTicks = 0;
+	this->lastScanTime = 0;
 }
 
 Net::WiFiCapturer::~WiFiCapturer()
@@ -182,9 +182,9 @@ Bool Net::WiFiCapturer::IsStarted()
 	return this->threadRunning;
 }
 
-Int64 Net::WiFiCapturer::GetLastScanTimeTicks()
+Data::Timestamp Net::WiFiCapturer::GetLastScanTime()
 {
-	return this->lastScanTimeTicks;
+	return this->lastScanTime;
 }
 
 Bool Net::WiFiCapturer::Start()

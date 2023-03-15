@@ -11,6 +11,14 @@ namespace Net
 {
 	namespace WebServer
 	{
+		enum class SameSiteType
+		{
+			Unspecified,
+			None,
+			Lax,
+			Strict
+		};
+
 		class IWebResponse : public IO::Stream
 		{
 		public:
@@ -66,14 +74,14 @@ namespace Net
 			Bool AddTimeHeader(Text::CString name, Data::DateTime *dt)
 			{
 				UTF8Char sbuff[256];
-				UTF8Char *sptr = ToTimeString(sbuff, dt);
+				UTF8Char *sptr = Net::WebUtil::Date2Str(sbuff, dt);
 				return this->AddHeader(name, CSTRP(sbuff, sptr));
 			}
 
 			Bool AddTimeHeader(Text::CString name, const Data::Timestamp &ts)
 			{
 				UTF8Char sbuff[256];
-				UTF8Char *sptr = ToTimeString(sbuff, ts);
+				UTF8Char *sptr = Net::WebUtil::Date2Str(sbuff, ts);
 				return this->AddHeader(name, CSTRP(sbuff, sptr));
 			}
 
@@ -149,8 +157,47 @@ namespace Net
 				return this->AddHeader(CSTR("Server"), server);
 			}
 
-			static UTF8Char *ToTimeString(UTF8Char *buff, Data::DateTime *dt);
-			static UTF8Char *ToTimeString(UTF8Char *buff, const Data::Timestamp &ts);
+			Bool AddSetCookie(Text::CString name, Text::CString value, Text::CString path, Bool httpOnly, Bool secure, SameSiteType sameSite, Data::Timestamp expires)
+			{
+				Text::StringBuilderUTF8 sb;
+				sb.Append(name);
+				sb.AppendUTF8Char('=');
+				sb.Append(value);
+				if (path.leng > 0)
+				{
+					sb.AppendC(UTF8STRC("; path="));
+					sb.Append(path);
+				}
+				if (secure)
+				{
+					sb.AppendC(UTF8STRC("; Secure"));
+				}
+				if (httpOnly)
+				{
+					sb.AppendC(UTF8STRC("; HttpOnly"));
+				}
+				switch (sameSite)
+				{
+				case SameSiteType::None:
+					sb.AppendC(UTF8STRC("; SameSite=None"));
+					break;
+				case SameSiteType::Lax:
+					sb.AppendC(UTF8STRC("; SameSite=Lax"));
+					break;
+				case SameSiteType::Strict:
+					sb.AppendC(UTF8STRC("; SameSite=Strict"));
+					break;
+				case SameSiteType::Unspecified:
+				default:
+					break;
+				}
+				if (!expires.IsNull())
+				{
+					sb.AppendC(UTF8STRC("; Expires="));
+					Net::WebUtil::Date2Str(&sb, expires);
+				}
+				return this->AddHeader(CSTR("Set-Cookie"), sb.ToCString());
+			}
 		};
 	}
 }

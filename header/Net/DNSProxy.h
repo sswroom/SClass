@@ -29,7 +29,7 @@ namespace Net
 		{
 			UInt8 recBuff[512];
 			UOSInt recSize;
-			Int64 reqTime;
+			Data::Timestamp reqTime;
 			UInt32 ttl;
 			NameStatus status;
 			Net::SocketUtil::AddressInfo customAddr;

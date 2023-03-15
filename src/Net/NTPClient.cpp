@@ -90,9 +90,8 @@ Bool Net::NTPClient::GetServerTime(const Net::SocketUtil::AddressInfo *addr, UIn
 	if (hasResult)
 	{
 		Data::Timestamp ts = this->resultTime.AddNS(Double2Int64(clk.GetTimeDiff() * 500000000));
-		svrTime->SetTicks(ts.ToTicks());
+		svrTime->SetInstant(ts.inst);
 	}
-	mutUsage.EndUse();
 	return hasResult;
 }
 

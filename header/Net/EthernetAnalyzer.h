@@ -84,7 +84,7 @@ namespace Net
 		{
 			UInt8 recBuff[512];
 			UOSInt recSize;
-			Int64 reqTime;
+			Data::Timestamp reqTime;
 			UInt32 ttl;
 			Int32 status; //0 = normal, 1 = blocked
 			Sync::Mutex mut;
@@ -109,7 +109,7 @@ namespace Net
 			UInt64 iMAC;
 			Bool updated;
 			Sync::Mutex mut;
-			Int64 ipAddrTime;
+			Data::Timestamp ipAddrTime;
 			UInt32 ipAddr;
 			UInt32 ipAddrLease;
 			UInt32 subnetMask;

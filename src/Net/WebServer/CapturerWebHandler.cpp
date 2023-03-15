@@ -14,17 +14,14 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::IndexFunc(Net::WebServer::IWe
 {
 	Net::WebServer::CapturerWebHandler *me = (Net::WebServer::CapturerWebHandler*)svc;
 	Text::StringBuilderUTF8 sb;
-	Data::DateTime dt;
 	sb.AppendC(UTF8STRC("<html><head><title>Capture Handler</title>\r\n"));
 	sb.AppendC(UTF8STRC("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"/>\r\n"));
 	sb.AppendC(UTF8STRC("</head><body>\r\n"));
 	if (me->wifiCapture)
 	{
-		Int64 lastScanTimeTicks = me->wifiCapture->GetLastScanTimeTicks();
-		dt.SetTicks(lastScanTimeTicks);
-		dt.ToLocalTime();
+		Data::Timestamp lastScanTime = me->wifiCapture->GetLastScanTime().ToLocalTime();
 		sb.AppendC(UTF8STRC("Wifi Last Scan Time = "));
-		sb.AppendDate(&dt);
+		sb.AppendTS(lastScanTime);
 		sb.AppendC(UTF8STRC("<br/>\r\n"));
 		Sync::MutexUsage mutUsage;
 		Data::ArrayList<Net::WiFiLogFile::LogFileEntry*> *logList = me->wifiCapture->GetLogList(&mutUsage);
@@ -36,7 +33,7 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::IndexFunc(Net::WebServer::IWe
 		UOSInt j = 0;
 		while (i-- > 0)
 		{
-			if (logList->GetItem(i)->lastScanTimeTicks == lastScanTimeTicks)
+			if (logList->GetItem(i)->lastScanTime == lastScanTime)
 			{
 				j++;
 			}
@@ -48,9 +45,7 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::IndexFunc(Net::WebServer::IWe
 	}
 	if (me->btCapture)
 	{
-		Int64 currTime;
-		dt.SetCurrTimeUTC();
-		currTime = dt.ToTicks();
+		Int64 currTime = Data::DateTimeUtil::GetCurrTimeMillis();
 		Sync::MutexUsage mutUsage;
 		IO::BTScanLog::ScanRecord3 *entry;
 		Data::ArrayList<IO::BTScanLog::ScanRecord3*> logList;
@@ -213,14 +208,11 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::WiFiCurrentFunc(Net::WebServe
 	sb.AppendC(UTF8STRC("<meta http-equiv=\"refresh\" content=\"10\">\r\n"));
 	sb.AppendC(UTF8STRC("</head><body>\r\n"));
 	sb.AppendC(UTF8STRC("<h2>Current WiFi List</h2>\r\n"));
-	Int64 lastScanTimeTicks = me->wifiCapture->GetLastScanTimeTicks();
-	Data::DateTime dt;
-	dt.SetTicks(lastScanTimeTicks);
-	dt.ToLocalTime();
+	Data::Timestamp lastScanTime = me->wifiCapture->GetLastScanTime().ToLocalTime();
 	sb.AppendC(UTF8STRC("Wifi Last Scan Time = "));
-	sb.AppendDate(&dt);
+	sb.AppendTS(lastScanTime);
 	sb.AppendC(UTF8STRC("<br/>\r\n"));
-	AppendWiFiTable(&sb, req, entryList, lastScanTimeTicks);
+	AppendWiFiTable(&sb, req, entryList, lastScanTime);
 	mutUsage.EndUse();
 	sb.AppendC(UTF8STRC("</body><html>"));
 
@@ -351,7 +343,7 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::WiFiDownloadFunc(Net::WebServ
 	return true;
 }
 
-void Net::WebServer::CapturerWebHandler::AppendWiFiTable(Text::StringBuilderUTF8 *sb, Net::WebServer::IWebRequest *req, Data::ArrayList<Net::WiFiLogFile::LogFileEntry*> *entryList, Int64 scanTime)
+void Net::WebServer::CapturerWebHandler::AppendWiFiTable(Text::StringBuilderUTF8 *sb, Net::WebServer::IWebRequest *req, Data::ArrayList<Net::WiFiLogFile::LogFileEntry*> *entryList, const Data::Timestamp &scanTime)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -387,7 +379,7 @@ void Net::WebServer::CapturerWebHandler::AppendWiFiTable(Text::StringBuilderUTF8
 	while (i < j)
 	{
 		entry = entryList->GetItem(i);
-		if (scanTime == 0 || scanTime == entry->lastScanTimeTicks)
+		if (scanTime.IsNull() || scanTime == entry->lastScanTime)
 		{
 			sb->AppendC(UTF8STRC("<tr><td>"));
 			sb->AppendHexBuff(entry->mac, 6, ':', Text::LineBreakType::None);
