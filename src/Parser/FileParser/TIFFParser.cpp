@@ -63,7 +63,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(IO::StreamData *f
 {
 	Data::ByteOrder *bo;
 
-	UInt32 nextOfst;
+	UInt64 nextOfst;
 	UOSInt i;
 
 	if (*(Int16*)&hdr[0] == *(Int16*)"MM")
@@ -78,23 +78,36 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(IO::StreamData *f
 	{
 		return 0;
 	}
-	if (bo->GetUInt16(&hdr[2]) != 42)
+	Media::ImageList *imgList;
+	Media::StaticImage *img;
+	Media::EXIFData *exif;
+	UInt16 fmt = bo->GetUInt16(&hdr[2]);
+	if (fmt == 42)
+	{
+		nextOfst = bo->GetUInt32(&hdr[4]);
+	}
+	else if (fmt == 43 && bo->GetUInt16(&hdr[4]) == 8 && bo->GetUInt16(&hdr[6]) == 0) //BigTIFF
+	{
+		nextOfst = bo->GetUInt64(&hdr[8]);
+	}
+	else
 	{
 		DEL_CLASS(bo);
 		return 0;
 	}
 	
-	nextOfst = bo->GetUInt32(&hdr[4]);
-	
-	Media::ImageList *imgList;
-	Media::StaticImage *img;
-	Media::EXIFData *exif;
-
 	NEW_CLASS(imgList, Media::ImageList(fd->GetFullName()));
 	while (nextOfst)
 	{
 		img = 0;
-		exif = Media::EXIFData::ParseIFD(fd, nextOfst, bo, &nextOfst, 0);
+		if (fmt == 42)
+		{
+			exif = Media::EXIFData::ParseIFD(fd, nextOfst, bo, &nextOfst, 0);
+		}
+		else
+		{
+			exif = Media::EXIFData::ParseIFD64(fd, nextOfst, bo, &nextOfst, 0);;
+		}
 		if (exif == 0)
 		{
 			DEL_CLASS(imgList);
@@ -114,7 +127,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(IO::StreamData *f
 		UInt32 photometricInterpretation = 0;
 		UInt32 planarConfiguration = 1;
 		UInt32 sampleFormat = 1;
-		UInt32 nStrip = 0;
+		UInt64 nStrip = 0;
 		UInt32 stripOfst = 0;
 		UInt32 stripLeng = 0;
 		UInt32 *stripOfsts = 0;

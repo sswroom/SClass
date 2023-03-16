@@ -15,7 +15,7 @@
 Bool Media::JPEGFile::ParseJPEGHeader(IO::StreamData *fd, Media::Image *img, Media::ImageList *imgList, Parser::ParserList *parsers)
 {
 	UInt64 ofst;
-	UInt32 nextOfst;
+	UInt64 nextOfst;
 	UInt32 j;
 	UInt8 buff[18];
 	UInt8 *tagBuff;
@@ -243,7 +243,7 @@ Bool Media::JPEGFile::ParseJPEGHeader(IO::StreamData *fd, Media::Image *img, Med
 Media::EXIFData *Media::JPEGFile::ParseJPEGExif(IO::StreamData *fd)
 {
 	UInt64 ofst;
-	UInt32 nextOfst;
+	UInt64 nextOfst;
 	UInt32 j;
 	UInt8 buff[18];
 	if (fd->GetRealData(0, 2, buff) != 2)
@@ -310,7 +310,7 @@ Media::EXIFData *Media::JPEGFile::ParseJPEGExif(IO::StreamData *fd)
 Bool Media::JPEGFile::ParseJPEGHeaders(IO::StreamData *fd, Media::EXIFData **exif, Text::XMLDocument **xmf, Media::ICCProfile **icc, UInt32 *width, UInt32 *height)
 {
 	UInt64 ofst;
-	UInt32 nextOfst;
+	UInt64 nextOfst;
 	UInt32 j;
 	UInt8 buff[30];
 	UInt8 *tagBuff;
@@ -518,8 +518,8 @@ void Media::JPEGFile::WriteJPGBuffer(IO::Stream *stm, const UInt8 *jpgBuff, UOSI
 					exif->Remove(33723); //IPTC/NAA
 					exif->Remove(34377); //PhotoshopImageResources
 					exif->Remove(34675); //ICC Profile
-					UInt32 exifSize;
-					UInt32 endOfst;
+					UInt64 exifSize;
+					UInt64 endOfst;
 					UInt32 k;
 					UInt32 l;
 

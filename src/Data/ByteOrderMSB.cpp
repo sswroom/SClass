@@ -15,14 +15,19 @@ Bool Data::ByteOrderMSB::IsBigEndian()
 	return true;
 }
 
-Int32 Data::ByteOrderMSB::GetInt32(const UInt8 *pVal) const
-{
-	return ReadMInt32(pVal);
-}
-
 Int16 Data::ByteOrderMSB::GetInt16(const UInt8 *pVal) const
 {
 	return ReadMInt16(pVal);
+}
+
+UInt16 Data::ByteOrderMSB::GetUInt16(const UInt8 *pVal) const
+{
+	return ReadMUInt16(pVal);
+}
+
+Int32 Data::ByteOrderMSB::GetInt32(const UInt8 *pVal) const
+{
+	return ReadMInt32(pVal);
 }
 
 UInt32 Data::ByteOrderMSB::GetUInt32(const UInt8 *pVal) const
@@ -30,9 +35,14 @@ UInt32 Data::ByteOrderMSB::GetUInt32(const UInt8 *pVal) const
 	return ReadMUInt32(pVal);
 }
 
-UInt16 Data::ByteOrderMSB::GetUInt16(const UInt8 *pVal) const
+Int64 Data::ByteOrderMSB::GetInt64(const UInt8 *pVal) const
 {
-	return ReadMUInt16(pVal);
+	return ReadMInt64(pVal);
+}
+
+UInt64 Data::ByteOrderMSB::GetUInt64(const UInt8 *pVal) const
+{
+	return ReadMUInt64(pVal);
 }
 
 Single Data::ByteOrderMSB::GetFloat16(const UInt8 *pVal) const

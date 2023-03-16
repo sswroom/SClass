@@ -1129,7 +1129,7 @@ void Media::EXIFData::ToExifBuff(UInt8 *buff, const Data::ReadingList<Media::EXI
 	UInt32 objCnt;
 	UOSInt i;
 	UInt32 j;
-	UInt32 k;
+	UInt64 k;
 	EXIFItem *exif;
 
 	objCnt = 0;
@@ -1139,142 +1139,136 @@ void Media::EXIFData::ToExifBuff(UInt8 *buff, const Data::ReadingList<Media::EXI
 	while (i < exifList->GetCount())
 	{
 		exif = exifList->GetItem(i);
-		if (exif->type == Media::EXIFData::ET_BYTES)
+		switch (exif->type)
 		{
+		case Media::EXIFData::ET_BYTES:
 			WriteInt16(&buff[j], exif->id);
 			WriteInt16(&buff[j + 2], 1);
-			WriteUInt32(&buff[j + 4], exif->cnt);
+			WriteUInt32(&buff[j + 4], (UInt32)exif->cnt);
 			if (exif->cnt <= 4)
 			{
 				WriteInt32(&buff[j + 8], 0);
-				MemCopyNO(&buff[j + 8], &exif->value, exif->cnt);
+				MemCopyNO(&buff[j + 8], &exif->value, (UOSInt)exif->cnt);
 				j += 12;
 			}
 			else
 			{
-				WriteUInt32(&buff[j + 8], k);
-				MemCopyNO(&buff[k], exif->dataBuff, exif->cnt);
+				WriteUInt32(&buff[j + 8], (UInt32)k);
+				MemCopyNO(&buff[k], exif->dataBuff, (UOSInt)exif->cnt);
 				k += exif->cnt;
 				j += 12;
 			}
 			objCnt++;
-		}
-		else if (exif->type == Media::EXIFData::ET_STRING)
-		{
+			break;
+		case Media::EXIFData::ET_STRING:
 			WriteInt16(&buff[j], exif->id);
 			WriteInt16(&buff[j + 2], 2);
-			WriteUInt32(&buff[j + 4], exif->cnt);
+			WriteUInt32(&buff[j + 4], (UInt32)exif->cnt);
 			if (exif->cnt <= 4)
 			{
 				WriteInt32(&buff[j + 8], 0);
-				MemCopyNO(&buff[j + 8], exif->dataBuff, exif->cnt);
+				MemCopyNO(&buff[j + 8], exif->dataBuff, (UOSInt)exif->cnt);
 				j += 12;
 			}
 			else
 			{
-				WriteUInt32(&buff[j + 8], k);
-				MemCopyNO(&buff[k], exif->dataBuff, exif->cnt);
+				WriteUInt32(&buff[j + 8], (UInt32)k);
+				MemCopyNO(&buff[k], exif->dataBuff, (UOSInt)exif->cnt);
 				k += exif->cnt;
 				j += 12;
 			}
 			objCnt++;
-		}
-		else if (exif->type == Media::EXIFData::ET_UINT16)
-		{
+			break;
+		case Media::EXIFData::ET_UINT16:
 			WriteInt16(&buff[j], exif->id);
 			WriteInt16(&buff[j + 2], 3);
-			WriteUInt32(&buff[j + 4], exif->cnt);
+			WriteUInt32(&buff[j + 4], (UInt32)exif->cnt);
 			if (exif->cnt <= 2)
 			{
 				WriteInt32(&buff[j + 8], 0);
-				MemCopyNO(&buff[j + 8], &exif->value, exif->cnt << 1);
+				MemCopyNO(&buff[j + 8], &exif->value, (UOSInt)exif->cnt << 1);
 				j += 12;
 			}
 			else
 			{
-				WriteUInt32(&buff[j + 8], k);
-				MemCopyNO(&buff[k], exif->dataBuff, exif->cnt << 1);
+				WriteUInt32(&buff[j + 8], (UInt32)k);
+				MemCopyNO(&buff[k], exif->dataBuff, (UOSInt)exif->cnt << 1);
 				k += exif->cnt << 1;
 				j += 12;
 			}
 			objCnt++;
-		}
-		else if (exif->type == Media::EXIFData::ET_UINT32)
-		{
+			break;
+		case Media::EXIFData::ET_UINT32:
 			WriteInt16(&buff[j], exif->id);
 			WriteInt16(&buff[j + 2], 4);
-			WriteUInt32(&buff[j + 4], exif->cnt);
+			WriteUInt32(&buff[j + 4], (UInt32)exif->cnt);
 			if (exif->cnt <= 1)
 			{
 				WriteInt32(&buff[j + 8], 0);
-				MemCopyNO(&buff[j + 8], &exif->value, exif->cnt << 2);
+				MemCopyNO(&buff[j + 8], &exif->value, (UOSInt)exif->cnt << 2);
 				j += 12;
 			}
 			else
 			{
-				WriteUInt32(&buff[j + 8], k);
-				MemCopyNO(&buff[k], exif->dataBuff, exif->cnt << 2);
+				WriteUInt32(&buff[j + 8], (UInt32)k);
+				MemCopyNO(&buff[k], exif->dataBuff, (UOSInt)exif->cnt << 2);
 				k += exif->cnt << 2;
 				j += 12;
 			}
 			objCnt++;
-		}
-		else if (exif->type == Media::EXIFData::ET_RATIONAL)
-		{
+			break;
+		case Media::EXIFData::ET_RATIONAL:
 			WriteInt16(&buff[j], exif->id);
 			WriteInt16(&buff[j + 2], 5);
-			WriteUInt32(&buff[j + 4], exif->cnt);
-			WriteUInt32(&buff[j + 8], k);
-			MemCopyNO(&buff[k], exif->dataBuff, exif->cnt << 3);
+			WriteUInt32(&buff[j + 4], (UInt32)exif->cnt);
+			WriteUInt32(&buff[j + 8], (UInt32)k);
+			MemCopyNO(&buff[k], exif->dataBuff, (UOSInt)exif->cnt << 3);
 			k += exif->cnt << 3;
 			j += 12;
 			objCnt++;
-		}
-		else if (exif->type == Media::EXIFData::ET_OTHER)
-		{
+			break;
+		case Media::EXIFData::ET_OTHER:
 			WriteInt16(&buff[j], exif->id);
 			WriteInt16(&buff[j + 2], 7);
-			WriteUInt32(&buff[j + 4], exif->cnt);
+			WriteUInt32(&buff[j + 4], (UInt32)exif->cnt);
 			if (exif->cnt <= 4)
 			{
 				WriteInt32(&buff[j + 8], 0);
-				MemCopyNO(&buff[j + 8], exif->dataBuff, exif->cnt);
+				MemCopyNO(&buff[j + 8], exif->dataBuff, (UOSInt)exif->cnt);
 				j += 12;
 			}
 			else
 			{
-				WriteUInt32(&buff[j + 8], k);
-				MemCopyNO(&buff[k], exif->dataBuff, exif->cnt);
+				WriteUInt32(&buff[j + 8], (UInt32)k);
+				MemCopyNO(&buff[k], exif->dataBuff, (UOSInt)exif->cnt);
 				k += exif->cnt;
 				j += 12;
 			}
 			objCnt++;
-		}
-		else if (exif->type == Media::EXIFData::ET_INT16)
-		{
+			break;
+		case Media::EXIFData::ET_INT16:
 			WriteInt16(&buff[j], exif->id);
 			WriteInt16(&buff[j + 2], 8);
-			WriteUInt32(&buff[j + 4], exif->cnt);
+			WriteUInt32(&buff[j + 4], (UInt32)exif->cnt);
 			if (exif->cnt <= 2)
 			{
 				WriteInt32(&buff[j + 8], 0);
-				MemCopyNO(&buff[j + 8], &exif->value, exif->cnt << 1);
+				MemCopyNO(&buff[j + 8], &exif->value, (UOSInt)exif->cnt << 1);
 				j += 12;
 			}
 			else
 			{
-				WriteUInt32(&buff[j + 8], k);
-				MemCopyNO(&buff[k], exif->dataBuff, exif->cnt << 1);
+				WriteUInt32(&buff[j + 8], (UInt32)k);
+				MemCopyNO(&buff[k], exif->dataBuff, (UOSInt)exif->cnt << 1);
 				k += exif->cnt << 1;
 				j += 12;
 			}
 			objCnt++;
-		}
-		else if (exif->type == Media::EXIFData::ET_INT32)
-		{
+			break;
+		case Media::EXIFData::ET_INT32:
 			WriteInt16(&buff[j], exif->id);
 			WriteInt16(&buff[j + 2], 9);
-			WriteUInt32(&buff[j + 4], exif->cnt);
+			WriteUInt32(&buff[j + 4], (UInt32)exif->cnt);
 			if (exif->cnt <= 1)
 			{
 				WriteInt32(&buff[j + 8], 0);
@@ -1283,43 +1277,63 @@ void Media::EXIFData::ToExifBuff(UInt8 *buff, const Data::ReadingList<Media::EXI
 			}
 			else
 			{
-				WriteUInt32(&buff[j + 8], k);
+				WriteUInt32(&buff[j + 8], (UInt32)k);
 				MemCopyNO(&buff[k], exif->dataBuff, exif->cnt << 2);
 				k += exif->cnt << 2;
 				j += 12;
 			}
 			objCnt++;
-		}
-		else if (exif->type == Media::EXIFData::ET_SUBEXIF)
-		{
+			break;
+		case Media::EXIFData::ET_SUBEXIF:
 			WriteInt16(&buff[j], exif->id);
 			WriteInt16(&buff[j + 2], 4);
 			WriteInt32(&buff[j + 4], 1);
 			exif->value = (Int32)j + 8;
 			j += 12;
 			objCnt++;
-		}
-		else if (exif->type == Media::EXIFData::ET_SRATIONAL)
-		{
+			break;
+		case Media::EXIFData::ET_SRATIONAL:
 			WriteInt16(&buff[j], exif->id);
 			WriteInt16(&buff[j + 2], 10);
-			WriteUInt32(&buff[j + 4], exif->cnt);
-			WriteUInt32(&buff[j + 8], k);
+			WriteUInt32(&buff[j + 4], (UInt32)exif->cnt);
+			WriteUInt32(&buff[j + 8], (UInt32)k);
 			MemCopyNO(&buff[k], exif->dataBuff, exif->cnt << 3);
 			k += exif->cnt << 3;
 			j += 12;
 			objCnt++;
-		}
-		else if (exif->type == Media::EXIFData::ET_DOUBLE)
-		{
+			break;
+		case Media::EXIFData::ET_DOUBLE:
 			WriteInt16(&buff[j], exif->id);
 			WriteInt16(&buff[j + 2], 12);
-			WriteUInt32(&buff[j + 4], exif->cnt);
-			WriteUInt32(&buff[j + 8], k);
+			WriteUInt32(&buff[j + 4], (UInt32)exif->cnt);
+			WriteUInt32(&buff[j + 8], (UInt32)k);
 			MemCopyNO(&buff[k], exif->dataBuff, exif->cnt << 3);
 			k += exif->cnt << 3;
 			j += 12;
 			objCnt++;
+			break;
+		case Media::EXIFData::ET_UINT64:
+			WriteInt16(&buff[j], exif->id);
+			WriteInt16(&buff[j + 2], 16);
+			WriteUInt32(&buff[j + 4], (UInt32)exif->cnt);
+			WriteUInt32(&buff[j + 8], (UInt32)k);
+			MemCopyNO(&buff[k], exif->dataBuff, exif->cnt << 3);
+			k += exif->cnt << 3;
+			j += 12;
+			objCnt++;
+			break;
+		case Media::EXIFData::ET_INT64:
+			WriteInt16(&buff[j], exif->id);
+			WriteInt16(&buff[j + 2], 17);
+			WriteUInt32(&buff[j + 4], (UInt32)exif->cnt);
+			WriteUInt32(&buff[j + 8], (UInt32)k);
+			MemCopyNO(&buff[k], exif->dataBuff, exif->cnt << 3);
+			k += exif->cnt << 3;
+			j += 12;
+			objCnt++;
+			break;
+		case Media::EXIFData::ET_UNKNOWN:
+			break;
 		}
 		i++;
 	}
@@ -1334,21 +1348,20 @@ void Media::EXIFData::ToExifBuff(UInt8 *buff, const Data::ReadingList<Media::EXI
 		if (exif->type == Media::EXIFData::ET_SUBEXIF)
 		{
 			WriteUInt32(&buff[exif->value], j);
-			((Media::EXIFData*)exif->dataBuff)->ToExifBuff(buff, &j, &k);
+			((Media::EXIFData*)exif->dataBuff)->ToExifBuff(buff, &j, otherOfst);
 		}
 		i++;
 	}
 	*startOfst = j;
-	*otherOfst = k;
 }
 
-void Media::EXIFData::GetExifBuffSize(const Data::ReadingList<EXIFItem*> *exifList, UInt32 *size, UInt32 *endOfst) const
+void Media::EXIFData::GetExifBuffSize(const Data::ReadingList<EXIFItem*> *exifList, UInt64 *size, UInt64 *endOfst) const
 {
-	UInt32 i = 6;
-	UInt32 j = 6;
+	UInt64 i = 6;
+	UInt64 j = 6;
 	UOSInt k;
-	UInt32 l;
-	UInt32 m;
+	UInt64 l;
+	UInt64 m;
 	EXIFItem *exif;
 
 	k = exifList->GetCount();
@@ -1544,6 +1557,12 @@ Media::EXIFData *Media::EXIFData::Clone() const
 		case ET_DOUBLE:
 			newExif->AddDouble(item->id, item->cnt, (Double*)item->dataBuff);
 			break;
+		case ET_UINT64:
+			newExif->AddUInt64(item->id, item->cnt, (UInt64*)item->dataBuff);
+			break;
+		case ET_INT64:
+			newExif->AddInt64(item->id, item->cnt, (Int64*)item->dataBuff);
+			break;
 		case ET_UNKNOWN:
 		default:
 			break;
@@ -1553,7 +1572,7 @@ Media::EXIFData *Media::EXIFData::Clone() const
 	return newExif;
 }
 
-void Media::EXIFData::AddBytes(UInt32 id, UInt32 cnt, const UInt8 *buff)
+void Media::EXIFData::AddBytes(UInt32 id, UInt64 cnt, const UInt8 *buff)
 {
 	EXIFItem *item = MemAlloc(EXIFItem, 1);
 	item->id = id;
@@ -1577,7 +1596,7 @@ void Media::EXIFData::AddBytes(UInt32 id, UInt32 cnt, const UInt8 *buff)
 	}
 }
 
-void Media::EXIFData::AddString(UInt32 id, UInt32 cnt, const Char *buff)
+void Media::EXIFData::AddString(UInt32 id, UInt64 cnt, const Char *buff)
 {
 	EXIFItem *item = MemAlloc(EXIFItem, 1);
 	item->id = id;
@@ -1593,7 +1612,7 @@ void Media::EXIFData::AddString(UInt32 id, UInt32 cnt, const Char *buff)
 	}
 }
 
-void Media::EXIFData::AddUInt16(UInt32 id, UInt32 cnt, const UInt16 *buff)
+void Media::EXIFData::AddUInt16(UInt32 id, UInt64 cnt, const UInt16 *buff)
 {
 	EXIFItem *item = MemAlloc(EXIFItem, 1);
 	item->id = id;
@@ -1617,7 +1636,7 @@ void Media::EXIFData::AddUInt16(UInt32 id, UInt32 cnt, const UInt16 *buff)
 	}
 }
 
-void Media::EXIFData::AddUInt32(UInt32 id, UInt32 cnt, const UInt32 *buff)
+void Media::EXIFData::AddUInt32(UInt32 id, UInt64 cnt, const UInt32 *buff)
 {
 	EXIFItem *item = MemAlloc(EXIFItem, 1);
 	item->id = id;
@@ -1641,7 +1660,7 @@ void Media::EXIFData::AddUInt32(UInt32 id, UInt32 cnt, const UInt32 *buff)
 	}
 }
 
-void Media::EXIFData::AddInt16(UInt32 id, UInt32 cnt, const Int16 *buff)
+void Media::EXIFData::AddInt16(UInt32 id, UInt64 cnt, const Int16 *buff)
 {
 	EXIFItem *item = MemAlloc(EXIFItem, 1);
 	item->id = id;
@@ -1665,7 +1684,7 @@ void Media::EXIFData::AddInt16(UInt32 id, UInt32 cnt, const Int16 *buff)
 	}
 }
 
-void Media::EXIFData::AddInt32(UInt32 id, UInt32 cnt, const Int32 *buff)
+void Media::EXIFData::AddInt32(UInt32 id, UInt64 cnt, const Int32 *buff)
 {
 	EXIFItem *item = MemAlloc(EXIFItem, 1);
 	item->id = id;
@@ -1689,7 +1708,7 @@ void Media::EXIFData::AddInt32(UInt32 id, UInt32 cnt, const Int32 *buff)
 	}
 }
 
-void Media::EXIFData::AddRational(UInt32 id, UInt32 cnt, const UInt32 *buff)
+void Media::EXIFData::AddRational(UInt32 id, UInt64 cnt, const UInt32 *buff)
 {
 	EXIFItem *item = MemAlloc(EXIFItem, 1);
 	item->id = id;
@@ -1706,7 +1725,7 @@ void Media::EXIFData::AddRational(UInt32 id, UInt32 cnt, const UInt32 *buff)
 	}
 }
 
-void Media::EXIFData::AddSRational(UInt32 id, UInt32 cnt, const Int32 *buff)
+void Media::EXIFData::AddSRational(UInt32 id, UInt64 cnt, const Int32 *buff)
 {
 	EXIFItem *item = MemAlloc(EXIFItem, 1);
 	item->id = id;
@@ -1723,7 +1742,7 @@ void Media::EXIFData::AddSRational(UInt32 id, UInt32 cnt, const Int32 *buff)
 	}
 }
 
-void Media::EXIFData::AddOther(UInt32 id, UInt32 cnt, const UInt8 *buff)
+void Media::EXIFData::AddOther(UInt32 id, UInt64 cnt, const UInt8 *buff)
 {
 	EXIFItem *item = MemAlloc(EXIFItem, 1);
 	item->id = id;
@@ -1755,7 +1774,7 @@ void Media::EXIFData::AddSubEXIF(UInt32 id, Media::EXIFData *exif)
 	}
 }
 
-void Media::EXIFData::AddDouble(UInt32 id, UInt32 cnt, const Double *buff)
+void Media::EXIFData::AddDouble(UInt32 id, UInt64 cnt, const Double *buff)
 {
 	EXIFItem *item = MemAlloc(EXIFItem, 1);
 	item->id = id;
@@ -1764,6 +1783,38 @@ void Media::EXIFData::AddDouble(UInt32 id, UInt32 cnt, const Double *buff)
 	item->value = 0;
 	item->dataBuff = MemAlloc(Double, cnt);
 	MemCopyNO(item->dataBuff, buff, cnt * sizeof(Double));
+	item = this->exifMap.Put(id, item);
+	if (item)
+	{
+		FreeItem(item);
+	}
+}
+
+void Media::EXIFData::AddUInt64(UInt32 id, UInt64 cnt, const UInt64 *buff)
+{
+	EXIFItem *item = MemAlloc(EXIFItem, 1);
+	item->id = id;
+	item->type = ET_UINT64;
+	item->cnt = cnt;
+	item->value = 0;
+	item->dataBuff = MemAlloc(UInt64, cnt);
+	MemCopyNO(item->dataBuff, buff, cnt * sizeof(UInt64));
+	item = this->exifMap.Put(id, item);
+	if (item)
+	{
+		FreeItem(item);
+	}
+}
+
+void Media::EXIFData::AddInt64(UInt32 id, UInt64 cnt, const Int64 *buff)
+{
+	EXIFItem *item = MemAlloc(EXIFItem, 1);
+	item->id = id;
+	item->type = ET_INT64;
+	item->cnt = cnt;
+	item->value = 0;
+	item->dataBuff = MemAlloc(Int64, cnt);
+	MemCopyNO(item->dataBuff, buff, cnt * sizeof(Int64));
 	item = this->exifMap.Put(id, item);
 	if (item)
 	{
@@ -1801,7 +1852,7 @@ Media::EXIFData::EXIFType Media::EXIFData::GetExifType(UInt32 id) const
 	return item->type;
 }
 
-UInt32 Media::EXIFData::GetExifCount(UInt32 id) const
+UInt64 Media::EXIFData::GetExifCount(UInt32 id) const
 {
 	Media::EXIFData::EXIFItem *item = this->exifMap.Get(id);
 	if (item == 0)
@@ -2614,7 +2665,7 @@ Bool Media::EXIFData::ToString(Text::StringBuilderUTF8 *sb, Text::CString linePr
 					sb->AppendC(UTF8STRC(", value = "));
 					if (subExItem->cnt > 1024)
 					{
-						sb->AppendU32(subExItem->cnt);
+						sb->AppendU64(subExItem->cnt);
 						sb->AppendC(UTF8STRC(" bytes: "));
 						sb->AppendHexBuff(valBuff, 256, ' ', Text::LineBreakType::CRLF);
 						sb->AppendC(UTF8STRC("\r\n...\r\n"));
@@ -2913,7 +2964,7 @@ Bool Media::EXIFData::ToString(Text::StringBuilderUTF8 *sb, Text::CString linePr
 			{
 				if (exItem->cnt > 1024)
 				{
-					sb->AppendU32(exItem->cnt);
+					sb->AppendU64(exItem->cnt);
 					sb->AppendC(UTF8STRC(" bytes: "));
 					sb->AppendHexBuff(valBuff, 256, ' ', Text::LineBreakType::CRLF);
 					sb->AppendC(UTF8STRC("\r\n...\r\n"));
@@ -3117,7 +3168,7 @@ Bool Media::EXIFData::ToString(Text::StringBuilderUTF8 *sb, Text::CString linePr
 	//			UInt8 *valBuff;
 	//			valBuff = (UInt8*)exItem->dataBuff;
 				sb->AppendC(UTF8STRC(", Other: size = "));
-				sb->AppendU32(exItem->cnt);
+				sb->AppendU64(exItem->cnt);
 	//			sb->AppendHex(valBuff, subExItem->cnt, ' ', Text::StringBuilder::LBT_CRLF);
 			}
 		}
@@ -3133,7 +3184,7 @@ Bool Media::EXIFData::ToString(Text::StringBuilderUTF8 *sb, Text::CString linePr
 				valBuff = (UInt8*)exItem->dataBuff;
 			}*/
 			sb->AppendC(UTF8STRC(", Unknown: size = "));
-			sb->AppendU32(exItem->cnt);
+			sb->AppendU64(exItem->cnt);
 //			sb->AppendHex(valBuff, subExItem->cnt, ' ', Text::StringBuilder::LBT_CRLF);
 		}
 
@@ -4447,7 +4498,7 @@ void Media::EXIFData::ToExifBuff(UInt8 *buff, UInt32 *startOfst, UInt32 *otherOf
 	ToExifBuff(buff, &this->exifMap, startOfst, otherOfst);
 }
 
-void Media::EXIFData::GetExifBuffSize(UInt32 *size, UInt32 *endOfst) const
+void Media::EXIFData::GetExifBuffSize(UInt64 *size, UInt64 *endOfst) const
 {
 	GetExifBuffSize(&this->exifMap, size, endOfst);
 }
@@ -4719,6 +4770,10 @@ Text::CString Media::EXIFData::GetEXIFTypeName(Media::EXIFData::EXIFType type)
 		return CSTR("SRational");
 	case ET_DOUBLE:
 		return CSTR("Double");
+	case ET_UINT64:
+		return CSTR("UInt64");
+	case ET_INT64:
+		return CSTR("Int64");
 	case ET_UNKNOWN:
 	default:
 		return CSTR("Unknown");
@@ -4758,7 +4813,7 @@ Text::CString Media::EXIFData::GetFieldTypeName(UInt32 ftype)
 	}
 }
 
-Media::EXIFData *Media::EXIFData::ParseIFD(const UInt8 *buff, UOSInt buffSize, Data::ByteOrder *bo, UInt32 *nextOfst, EXIFMaker exifMaker, const UInt8 *basePtr)
+Media::EXIFData *Media::EXIFData::ParseIFD(const UInt8 *buff, UOSInt buffSize, Data::ByteOrder *bo, UInt64 *nextOfst, EXIFMaker exifMaker, const UInt8 *basePtr)
 {
 	Media::EXIFData *exif;
 	const UInt8 *ifdEntries;
@@ -5123,7 +5178,7 @@ Media::EXIFData *Media::EXIFData::ParseIFD(const UInt8 *buff, UOSInt buffSize, D
 	return exif;
 }
 
-Media::EXIFData *Media::EXIFData::ParseIFD(IO::StreamData *fd, UInt64 ofst, Data::ByteOrder *bo, UInt32 *nextOfst, UInt64 readBase)
+Media::EXIFData *Media::EXIFData::ParseIFD(IO::StreamData *fd, UInt64 ofst, Data::ByteOrder *bo, UInt64 *nextOfst, UInt64 readBase)
 {
 	Media::EXIFData *exif;
 	UInt8 *ifdEntries;
@@ -5160,8 +5215,9 @@ Media::EXIFData *Media::EXIFData::ParseIFD(IO::StreamData *fd, UInt64 ofst, Data
 		ftype = bo->GetUInt16(&ifdEntries[ifdOfst + 2]);
 		fcnt = bo->GetUInt32(&ifdEntries[ifdOfst + 4]);
 
-		if (ftype == 1)
+		switch (ftype)
 		{
+		case 1:
 			if (fcnt <= 4)
 			{
 				exif->AddBytes(tag, fcnt, (UInt8*)&ifdEntries[ifdOfst + 8]);
@@ -5173,9 +5229,8 @@ Media::EXIFData *Media::EXIFData::ParseIFD(IO::StreamData *fd, UInt64 ofst, Data
 				exif->AddBytes(tag, fcnt, tmpBuff);
 				MemFree(tmpBuff);
 			}
-		}
-		else if (ftype == 2)
-		{
+			break;
+		case 2:
 			if (fcnt <= 4)
 			{
 				exif->AddString(tag, fcnt, (Char*)&ifdEntries[ifdOfst + 8]);
@@ -5187,8 +5242,8 @@ Media::EXIFData *Media::EXIFData::ParseIFD(IO::StreamData *fd, UInt64 ofst, Data
 				exif->AddString(tag, fcnt, (Char*)tmpBuff);
 				MemFree(tmpBuff);
 			}
-		}
-		else if (ftype == 3)
+			break;
+		case 3:
 		{
 			UInt16 tmp[2];
 			if (fcnt == 1)
@@ -5215,8 +5270,9 @@ Media::EXIFData *Media::EXIFData::ParseIFD(IO::StreamData *fd, UInt64 ofst, Data
 				exif->AddUInt16(tag, fcnt, (UInt16*)tmpBuff);
 				MemFree(tmpBuff);
 			}
+			break;
 		}
-		else if (ftype == 4)
+		case 4:
 		{
 			UInt32 tmp;
 			if (fcnt == 1)
@@ -5248,9 +5304,9 @@ Media::EXIFData *Media::EXIFData::ParseIFD(IO::StreamData *fd, UInt64 ofst, Data
 				exif->AddUInt32(tag, fcnt, (UInt32*)tmpBuff);
 				MemFree(tmpBuff);
 			}
+			break;
 		}
-		else if (ftype == 5)
-		{
+		case 5:
 			tmpBuff = MemAlloc(UInt8, fcnt << 3);
 			fd->GetRealData(bo->GetUInt32(&ifdEntries[ifdOfst + 8]) + readBase, fcnt << 3, tmpBuff);
 			j = fcnt << 3;
@@ -5262,9 +5318,8 @@ Media::EXIFData *Media::EXIFData::ParseIFD(IO::StreamData *fd, UInt64 ofst, Data
 			}
 			exif->AddRational(tag, fcnt, (UInt32*)tmpBuff);
 			MemFree(tmpBuff);
-		}
-		else if (ftype == 7)
-		{
+			break;
+		case 7:
 			if (fcnt <= 4)
 			{
 				exif->AddOther(tag, fcnt, (UInt8*)&ifdEntries[ifdOfst + 8]);
@@ -5276,8 +5331,8 @@ Media::EXIFData *Media::EXIFData::ParseIFD(IO::StreamData *fd, UInt64 ofst, Data
 				exif->AddOther(tag, fcnt, tmpBuff);
 				MemFree(tmpBuff);
 			}
-		}
-		else if (ftype == 8)
+			break;
+		case 8:
 		{
 			Int16 tmp;
 			if (fcnt == 1)
@@ -5298,20 +5353,347 @@ Media::EXIFData *Media::EXIFData::ParseIFD(IO::StreamData *fd, UInt64 ofst, Data
 				exif->AddInt16(tag, fcnt, (Int16*)tmpBuff);
 				MemFree(tmpBuff);
 			}
+			break;
 		}
-		else if (ftype == 12)
-		{
+		case 12:
 			tmpBuff = MemAlloc(UInt8, fcnt << 3);
 			fd->GetRealData(bo->GetUInt32(&ifdEntries[ifdOfst + 8]) + readBase, fcnt << 3, tmpBuff);
 			exif->AddDouble(tag, fcnt, (Double*)tmpBuff);
 			MemFree(tmpBuff);
-		}
-		else
-		{
+			break;
+		default:
+			printf("EXIFData.ParseIFD: Unsupported field type: %d\r\n", ftype);
 			j = 0;
+			break;
 		}
 
 		ifdOfst += 12;
+		i++;
+	}
+
+	if (nextOfst)
+	{
+		*nextOfst = bo->GetUInt32(&ifdEntries[ifdCnt * 12]);
+	}
+	MemFree(ifdEntries);
+	return exif;
+}
+
+Media::EXIFData *Media::EXIFData::ParseIFD64(IO::StreamData *fd, UInt64 ofst, Data::ByteOrder *bo, UInt64 *nextOfst, UInt64 readBase)
+{
+	Media::EXIFData *exif;
+	UInt8 *ifdEntries;
+	UInt8 ifdBuff[8];
+	UInt64 ifdCnt;
+	UOSInt i;
+	UOSInt readSize;
+	OSInt ifdOfst;
+	UInt32 tag;
+	UInt32 ftype;
+	UInt64 fcnt;
+	if (fd->GetRealData(ofst, 8, ifdBuff) != 8)
+	{
+		return 0;
+	}
+	ifdCnt = bo->GetUInt64(ifdBuff);
+
+	ifdEntries = MemAlloc(UInt8, readSize = ifdCnt * 20 + 8);
+	if (fd->GetRealData(ofst + 8, readSize, ifdEntries) != readSize)
+	{
+		MemFree(ifdEntries);
+		return 0;
+	}
+
+	UInt8 *tmpBuff;
+	UInt64 j;
+	NEW_CLASS(exif, Media::EXIFData(Media::EXIFData::EM_STANDARD));
+
+	ifdOfst = 0;
+	i = 0;
+	while (i < ifdCnt)
+	{
+		tag = bo->GetUInt16(&ifdEntries[ifdOfst]);
+		ftype = bo->GetUInt16(&ifdEntries[ifdOfst + 2]);
+		fcnt = bo->GetUInt64(&ifdEntries[ifdOfst + 4]);
+
+		switch (ftype)
+		{
+		case 1:
+			if (fcnt <= 8)
+			{
+				exif->AddBytes(tag, fcnt, (UInt8*)&ifdEntries[ifdOfst + 12]);
+			}
+			else
+			{
+				tmpBuff = MemAlloc(UInt8, fcnt);
+				fd->GetRealData(bo->GetUInt64(&ifdEntries[ifdOfst + 12]) + readBase, fcnt, tmpBuff);
+				exif->AddBytes(tag, fcnt, tmpBuff);
+				MemFree(tmpBuff);
+			}
+			break;
+		case 2:
+			if (fcnt <= 8)
+			{
+				exif->AddString(tag, fcnt, (Char*)&ifdEntries[ifdOfst + 12]);
+			}
+			else
+			{
+				tmpBuff = MemAlloc(UInt8, fcnt);
+				fd->GetRealData(bo->GetUInt64(&ifdEntries[ifdOfst + 12]) + readBase, fcnt, tmpBuff);
+				exif->AddString(tag, fcnt, (Char*)tmpBuff);
+				MemFree(tmpBuff);
+			}
+			break;
+		case 3:
+		{
+			UInt16 tmp[4];
+			if (fcnt == 1)
+			{
+				tmp[0] = bo->GetUInt16(&ifdEntries[ifdOfst + 12]);
+				exif->AddUInt16(tag, fcnt, tmp);
+			}
+			else if (fcnt == 2)
+			{
+				tmp[0] = bo->GetUInt16(&ifdEntries[ifdOfst + 12]);
+				tmp[1] = bo->GetUInt16(&ifdEntries[ifdOfst + 14]);
+				exif->AddUInt16(tag, fcnt, tmp);
+			}
+			else if (fcnt == 3)
+			{
+				tmp[0] = bo->GetUInt16(&ifdEntries[ifdOfst + 12]);
+				tmp[1] = bo->GetUInt16(&ifdEntries[ifdOfst + 14]);
+				tmp[2] = bo->GetUInt16(&ifdEntries[ifdOfst + 16]);
+				exif->AddUInt16(tag, fcnt, tmp);
+			}
+			else if (fcnt == 4)
+			{
+				tmp[0] = bo->GetUInt16(&ifdEntries[ifdOfst + 12]);
+				tmp[1] = bo->GetUInt16(&ifdEntries[ifdOfst + 14]);
+				tmp[2] = bo->GetUInt16(&ifdEntries[ifdOfst + 16]);
+				tmp[3] = bo->GetUInt16(&ifdEntries[ifdOfst + 18]);
+				exif->AddUInt16(tag, fcnt, tmp);
+			}
+			else
+			{
+				tmpBuff = MemAlloc(UInt8, fcnt << 1);
+				fd->GetRealData(bo->GetUInt64(&ifdEntries[ifdOfst + 12]) + readBase, fcnt << 1, tmpBuff);
+				j = fcnt << 1;
+				while (j > 0)
+				{
+					j -= 2;
+					*(UInt16*)&tmpBuff[j] = bo->GetUInt16(&tmpBuff[j]);
+				}
+				exif->AddUInt16(tag, fcnt, (UInt16*)tmpBuff);
+				MemFree(tmpBuff);
+			}
+			break;
+		}
+		case 4:
+		{
+			UInt32 tmp[2];
+			if (fcnt == 1)
+			{
+				tmp[0] = bo->GetUInt32(&ifdEntries[ifdOfst + 12]);
+				if (tag == 34665 || tag == 34853)
+				{
+					Media::EXIFData *subexif = ParseIFD(fd, tmp[0] + readBase, bo, 0, readBase);
+					if (subexif)
+					{
+						exif->AddSubEXIF(tag, subexif);
+					}
+				}
+				else
+				{
+					exif->AddUInt32(tag, fcnt, tmp);
+				}
+			}
+			else if (fcnt == 2)
+			{
+				tmp[0] = bo->GetUInt32(&ifdEntries[ifdOfst + 12]);
+				tmp[1] = bo->GetUInt32(&ifdEntries[ifdOfst + 16]);
+				exif->AddUInt32(tag, fcnt, tmp);
+			}
+			else
+			{
+				tmpBuff = MemAlloc(UInt8, fcnt << 2);
+				fd->GetRealData(bo->GetUInt64(&ifdEntries[ifdOfst + 12]) + readBase, fcnt << 2, tmpBuff);
+				j = fcnt << 2;
+				while (j > 0)
+				{
+					j -= 4;
+					*(UInt32*)&tmpBuff[j] = bo->GetUInt32(&tmpBuff[j]);
+				}
+				exif->AddUInt32(tag, fcnt, (UInt32*)tmpBuff);
+				MemFree(tmpBuff);
+			}
+			break;
+		}
+		case 5:
+			if (fcnt == 1)
+			{
+				UInt32 tmp[2];
+				tmp[0] = bo->GetUInt32(&ifdEntries[ifdOfst + 12]);
+				tmp[1] = bo->GetUInt32(&ifdEntries[ifdOfst + 16]);
+				exif->AddRational(tag, fcnt, tmp);
+			}
+			else
+			{
+				tmpBuff = MemAlloc(UInt8, fcnt << 3);
+				fd->GetRealData(bo->GetUInt64(&ifdEntries[ifdOfst + 12]) + readBase, fcnt << 3, tmpBuff);
+				j = fcnt << 3;
+				while (j > 0)
+				{
+					j -= 8;
+					*(UInt32*)&tmpBuff[j] = bo->GetUInt32(&tmpBuff[j]);
+					*(UInt32*)&tmpBuff[j + 4] = bo->GetUInt32(&tmpBuff[j + 4]);
+				}
+				exif->AddRational(tag, fcnt, (UInt32*)tmpBuff);
+				MemFree(tmpBuff);
+			}
+			break;
+		case 7:
+			if (fcnt <= 8)
+			{
+				exif->AddOther(tag, fcnt, (UInt8*)&ifdEntries[ifdOfst + 12]);
+			}
+			else
+			{
+				tmpBuff = MemAlloc(UInt8, fcnt);
+				fd->GetRealData(bo->GetUInt64(&ifdEntries[ifdOfst + 12]) + readBase, fcnt, tmpBuff);
+				exif->AddOther(tag, fcnt, tmpBuff);
+				MemFree(tmpBuff);
+			}
+			break;
+		case 8:
+		{
+			Int16 tmp[4];
+			if (fcnt == 1)
+			{
+				tmp[0] = bo->GetInt16(&ifdEntries[ifdOfst + 12]);
+				exif->AddInt16(tag, fcnt, tmp);
+			}
+			else if (fcnt == 2)
+			{
+				tmp[0] = bo->GetInt16(&ifdEntries[ifdOfst + 12]);
+				tmp[1] = bo->GetInt16(&ifdEntries[ifdOfst + 14]);
+				exif->AddInt16(tag, fcnt, tmp);
+			}
+			else if (fcnt == 3)
+			{
+				tmp[0] = bo->GetInt16(&ifdEntries[ifdOfst + 12]);
+				tmp[1] = bo->GetInt16(&ifdEntries[ifdOfst + 14]);
+				tmp[2] = bo->GetInt16(&ifdEntries[ifdOfst + 16]);
+				exif->AddInt16(tag, fcnt, tmp);
+			}
+			else if (fcnt == 4)
+			{
+				tmp[0] = bo->GetInt16(&ifdEntries[ifdOfst + 12]);
+				tmp[1] = bo->GetInt16(&ifdEntries[ifdOfst + 14]);
+				tmp[2] = bo->GetInt16(&ifdEntries[ifdOfst + 16]);
+				tmp[3] = bo->GetInt16(&ifdEntries[ifdOfst + 18]);
+				exif->AddInt16(tag, fcnt, tmp);
+			}
+			else
+			{
+				tmpBuff = MemAlloc(UInt8, fcnt << 1);
+				fd->GetRealData(bo->GetUInt64(&ifdEntries[ifdOfst + 12]) + readBase, fcnt << 1, tmpBuff);
+				j = fcnt << 1;
+				while (j > 0)
+				{
+					j -= 2;
+					*(Int16*)&tmpBuff[j] = bo->GetInt16(&tmpBuff[j]);
+				}
+				exif->AddInt16(tag, fcnt, (Int16*)tmpBuff);
+				MemFree(tmpBuff);
+			}
+			break;
+		}
+		case 12:
+			if (fcnt == 1)
+			{
+				Double tmp = bo->GetFloat64(&ifdEntries[ifdOfst + 12]);
+				exif->AddDouble(tag, fcnt, &tmp);
+			}
+			else
+			{
+				tmpBuff = MemAlloc(UInt8, fcnt << 3);
+				fd->GetRealData(bo->GetUInt64(&ifdEntries[ifdOfst + 12]) + readBase, fcnt << 3, tmpBuff);
+				j = fcnt << 3;
+				while (j > 0)
+				{
+					j -= 8;
+					*(Double*)&tmpBuff[j] = bo->GetFloat64(&tmpBuff[j]);
+				}
+				exif->AddDouble(tag, fcnt, (Double*)tmpBuff);
+				MemFree(tmpBuff);
+			}
+			break;
+		case 16: //TIFF_LONG8
+			if (fcnt == 1)
+			{
+				UInt64 tmp = bo->GetUInt64(&ifdEntries[ifdOfst + 12]);
+				exif->AddUInt64(tag, fcnt, &tmp);
+			}
+			else
+			{
+				tmpBuff = MemAlloc(UInt8, fcnt << 3);
+				fd->GetRealData(bo->GetUInt64(&ifdEntries[ifdOfst + 12]) + readBase, fcnt << 3, tmpBuff);
+				j = fcnt << 3;
+				while (j > 0)
+				{
+					j -= 8;
+					*(UInt64*)&tmpBuff[j] = bo->GetUInt64(&tmpBuff[j]);
+				}
+				exif->AddUInt64(tag, fcnt, (UInt64*)tmpBuff);
+				MemFree(tmpBuff);
+			}
+			break;
+		case 17: //TIFF_SLONG8
+			if (fcnt == 1)
+			{
+				Int64 tmp = bo->GetInt64(&ifdEntries[ifdOfst + 12]);
+				exif->AddInt64(tag, fcnt, &tmp);
+			}
+			else
+			{
+				tmpBuff = MemAlloc(UInt8, fcnt << 3);
+				fd->GetRealData(bo->GetUInt64(&ifdEntries[ifdOfst + 12]) + readBase, fcnt << 3, tmpBuff);
+				j = fcnt << 3;
+				while (j > 0)
+				{
+					j -= 8;
+					*(Int64*)&tmpBuff[j] = bo->GetInt64(&tmpBuff[j]);
+				}
+				exif->AddInt64(tag, fcnt, (Int64*)tmpBuff);
+				MemFree(tmpBuff);
+			}
+			break;
+		case 18: //TIFF_IFD8
+			if (fcnt == 1)
+			{
+				UInt64 tmp = bo->GetUInt64(&ifdEntries[ifdOfst + 12]);
+				Media::EXIFData *subexif = ParseIFD(fd, tmp + readBase, bo, 0, readBase);
+				if (subexif)
+				{
+					exif->AddSubEXIF(tag, subexif);
+				}
+				else
+				{
+					exif->AddUInt64(tag, fcnt, &tmp);
+				}
+			}
+			else
+			{
+				printf("EXIFData.ParseIFD64: Unsupported IFD8 type\r\n");
+			}
+			break;
+		default:
+			printf("EXIFData.ParseIFD64: Unsupported field type: %d\r\n", ftype);
+			j = 0;
+			break;
+		}
+
+		ifdOfst += 20;
 		i++;
 	}
 
@@ -5662,7 +6044,7 @@ Media::EXIFData *Media::EXIFData::ParseExif(const UInt8 *buff, UOSInt buffSize)
 		Media::EXIFData *ret = 0;
 		if (valid)
 		{
-			UInt32 nextOfst;
+			UInt64 nextOfst;
 			ret = ParseIFD(&buff[18], buffSize - 18, bo, &nextOfst, Media::EXIFData::EM_STANDARD, &buff[10]);
 		}
 		SDEL_CLASS(bo);

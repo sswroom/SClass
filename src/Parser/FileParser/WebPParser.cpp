@@ -130,7 +130,7 @@ IO::ParsedObject *Parser::FileParser::WebPParser::ParseFileHdr(IO::StreamData *f
 			{
 				DEL_CLASS(simg->exif);
 			}
-			UInt32 nextOfst;
+			UInt64 nextOfst;
 			simg->exif = Media::EXIFData::ParseIFD(buff + 8, chunk_iter.chunk.size - 8, bo, &nextOfst, Media::EXIFData::EM_STANDARD, buff);
 		}
 		SDEL_CLASS(bo);

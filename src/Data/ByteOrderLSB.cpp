@@ -15,14 +15,19 @@ Bool Data::ByteOrderLSB::IsBigEndian()
 	return false;
 }
 
-Int32 Data::ByteOrderLSB::GetInt32(const UInt8 *pVal) const
-{
-	return ReadInt32(pVal);
-}
-
 Int16 Data::ByteOrderLSB::GetInt16(const UInt8 *pVal) const
 {
 	return ReadInt16(pVal);
+}
+
+UInt16 Data::ByteOrderLSB::GetUInt16(const UInt8 *pVal) const
+{
+	return ReadUInt16(pVal);
+}
+
+Int32 Data::ByteOrderLSB::GetInt32(const UInt8 *pVal) const
+{
+	return ReadInt32(pVal);
 }
 
 UInt32 Data::ByteOrderLSB::GetUInt32(const UInt8 *pVal) const
@@ -30,9 +35,14 @@ UInt32 Data::ByteOrderLSB::GetUInt32(const UInt8 *pVal) const
 	return ReadUInt32(pVal);
 }
 
-UInt16 Data::ByteOrderLSB::GetUInt16(const UInt8 *pVal) const
+Int64 Data::ByteOrderLSB::GetInt64(const UInt8 *pVal) const
 {
-	return ReadUInt16(pVal);
+	return ReadInt64(pVal);
+}
+
+UInt64 Data::ByteOrderLSB::GetUInt64(const UInt8 *pVal) const
+{
+	return ReadUInt64(pVal);
 }
 
 Single Data::ByteOrderLSB::GetFloat16(const UInt8 *pVal) const
