@@ -1,9 +1,9 @@
 #include "Stdafx.h"
 
-extern "C" void NearestNeighbourResizer64_64_Resize(UInt8 *inPt, UInt8 *outPt, UOSInt dwidth, UOSInt dheight, OSInt dbpl, OSInt *xindex, OSInt *yindex)
+extern "C" void NearestNeighbourResizer64_64_Resize(const UInt8 *inPt, UInt8 *outPt, UOSInt dwidth, UOSInt dheight, OSInt dbpl, OSInt *xindex, OSInt *yindex)
 {
 	UOSInt i;
-	UInt8 *linePt;
+	const UInt8 *linePt;
 	OSInt *xindexTmp;
 	dbpl -= (OSInt)dwidth << 3;
 	while (dheight-- > 0)

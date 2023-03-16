@@ -101,7 +101,7 @@ Media::DrawImage *Media::GTKDrawEngine::ConvImage(Media::Image *img)
 	gimg->SetHDPI(img->info.hdpi);
 	gimg->SetVDPI(img->info.vdpi);
 	gimg->info.color->Set(img->info.color);
-	if (img->GetImageType() == Media::Image::IT_STATIC)
+	if (img->GetImageType() == Media::Image::ImageType::Static)
 	{
 		Media::StaticImage *simg = (Media::StaticImage*)img;
 		if (simg->To32bpp())
@@ -1164,7 +1164,7 @@ Media::Image *Media::GTKDrawImage::Clone() const
 
 Media::Image::ImageType Media::GTKDrawImage::GetImageType() const
 {
-	return Media::Image::IT_GUIIMAGE;
+	return Media::Image::ImageType::GUIImage;
 }
 
 void Media::GTKDrawImage::GetImageData(UInt8 *destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown, Media::RotateType destRotate) const

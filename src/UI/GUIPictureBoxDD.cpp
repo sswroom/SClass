@@ -542,7 +542,7 @@ void UI::GUIPictureBoxDD::SetImage(Media::Image *currImage, Bool sameImg)
 				this->csconv->SetPalette(this->currImage->pal);
 			}
 			this->imgBuff = MemAllocA(UInt8, this->currImageW * this->currImageH * 8);
-			if (this->currImage->GetImageType() == Media::Image::IT_STATIC)
+			if (this->currImage->GetImageType() == Media::Image::ImageType::Static)
 			{
 				this->csconv->ConvertV2(&((Media::StaticImage*)this->currImage)->data, this->imgBuff, this->currImage->info.dispWidth, this->currImage->info.dispHeight, this->currImage->info.storeWidth, this->currImage->info.storeHeight, (OSInt)this->currImage->info.dispWidth << 3, this->currImage->info.ftype, this->currImage->info.ycOfst);
 			}
@@ -608,7 +608,7 @@ void UI::GUIPictureBoxDD::YUVParamChanged(const Media::IColorHandler::YUVPARAM *
 		{
 			imgBuff = MemAllocA(UInt8, this->currImageW * this->currImageH * 8);
 		}
-		if (this->currImage->GetImageType() == Media::Image::IT_STATIC)
+		if (this->currImage->GetImageType() == Media::Image::ImageType::Static)
 		{
 			this->csconv->ConvertV2(&((Media::StaticImage*)this->currImage)->data, imgBuff, this->currImage->info.dispWidth, this->currImage->info.dispHeight, this->currImage->info.storeWidth, this->currImage->info.storeHeight, (OSInt)this->currImage->info.dispWidth << 3, this->currImage->info.ftype, this->currImage->info.ycOfst);
 		}
@@ -661,7 +661,7 @@ void UI::GUIPictureBoxDD::RGBParamChanged(const Media::IColorHandler::RGBPARAM2 
 		{
 			imgBuff = MemAllocA(UInt8, this->currImageW * this->currImageH * 8);
 		}
-		if (this->currImage->GetImageType() == Media::Image::IT_STATIC)
+		if (this->currImage->GetImageType() == Media::Image::ImageType::Static)
 		{
 			this->csconv->ConvertV2(&((Media::StaticImage*)this->currImage)->data, imgBuff, this->currImage->info.dispWidth, this->currImage->info.dispHeight, this->currImage->info.storeWidth, this->currImage->info.storeHeight, (OSInt)this->currImage->info.dispWidth << 3, this->currImage->info.ftype, this->currImage->info.ycOfst);
 		}

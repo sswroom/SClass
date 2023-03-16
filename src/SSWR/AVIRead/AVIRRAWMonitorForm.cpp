@@ -1017,9 +1017,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(void *userObj)
 				me->lvDHCP->SetSubItem(i, 6, CSTRP(sbuff, sptr));
 				sptr = Net::SocketUtil::GetIPv4Name(sbuff, dhcp->router);
 				me->lvDHCP->SetSubItem(i, 7, CSTRP(sbuff, sptr));
-				dt.SetTicks(dhcp->ipAddrTime);
-				dt.ToLocalTime();
-				sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
+				sptr = dhcp->ipAddrTime.ToLocalTime().ToStringNoZone(sbuff);
 				me->lvDHCP->SetSubItem(i, 8, CSTRP(sbuff, sptr));
 				sptr = Text::StrUInt32(sbuff, dhcp->ipAddrLease);
 				me->lvDHCP->SetSubItem(i, 9, CSTRP(sbuff, sptr));

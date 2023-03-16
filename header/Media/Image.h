@@ -12,12 +12,12 @@ namespace Media
 	class Image
 	{
 	public:
-		typedef enum
+		enum class ImageType
 		{
-			IT_STATIC,
-			IT_GUIIMAGE,
-			IT_MONITORSURFACE
-		} ImageType;
+			Static,
+			GUIImage,
+			MonitorSurface
+		};
 
 	public:
 		Media::FrameInfo info;

@@ -103,7 +103,7 @@ void Media::ImageList::SetImageType(UOSInt index, ImageType imgType)
 void Media::ImageList::ToStaticImage(UOSInt index)
 {
 	Media::Image *img = this->imgList.GetItem(index);
-	if (img == 0 || img->GetImageType() == Media::Image::IT_STATIC)
+	if (img == 0 || img->GetImageType() == Media::Image::ImageType::Static)
 		return;
 	Media::StaticImage *simg = img->CreateStaticImage();
 	this->imgList.SetItem(index, simg);

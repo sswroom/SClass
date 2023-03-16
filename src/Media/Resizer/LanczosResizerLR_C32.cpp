@@ -1127,7 +1127,7 @@ Media::Resizer::LanczosResizerLR_C32::~LanczosResizerLR_C32()
 	}
 }
 
-void Media::Resizer::LanczosResizerLR_C32::Resize(UInt8 *src, OSInt sbpl, Double swidth, Double sheight, Double xOfst, Double yOfst, UInt8 *dest, OSInt dbpl, UOSInt dwidth, UOSInt dheight)
+void Media::Resizer::LanczosResizerLR_C32::Resize(const UInt8 *src, OSInt sbpl, Double swidth, Double sheight, Double xOfst, Double yOfst, UInt8 *dest, OSInt dbpl, UOSInt dwidth, UOSInt dheight)
 {
 	LRHPARAMETER prm;
 	Double w;
@@ -1291,18 +1291,18 @@ void Media::Resizer::LanczosResizerLR_C32::SetSrcRefLuminance(Double srcRefLumin
 	}
 }
 
-Bool Media::Resizer::LanczosResizerLR_C32::IsSupported(Media::FrameInfo *srcInfo)
+Bool Media::Resizer::LanczosResizerLR_C32::IsSupported(const Media::FrameInfo *srcInfo)
 {
 	if (srcInfo->fourcc != *(UInt32*)"LRGB")
 		return false;
 	return true;
 }
 
-Media::StaticImage *Media::Resizer::LanczosResizerLR_C32::ProcessToNewPartial(Media::StaticImage *srcImage, Double srcX1, Double srcY1, Double srcX2, Double srcY2)
+Media::StaticImage *Media::Resizer::LanczosResizerLR_C32::ProcessToNewPartial(const Media::Image *srcImage, Double srcX1, Double srcY1, Double srcX2, Double srcY2)
 {
 	Media::FrameInfo destInfo;
 	Media::StaticImage *img;
-	if (!IsSupported(&srcImage->info))
+	if (srcImage->GetImageType() != Media::Image::ImageType::Static || !IsSupported(&srcImage->info))
 		return 0;
 	OSInt targetWidth = (OSInt)this->targetWidth;
 	OSInt targetHeight = (OSInt)this->targetHeight;
@@ -1329,7 +1329,7 @@ Media::StaticImage *Media::Resizer::LanczosResizerLR_C32::ProcessToNewPartial(Me
 	NEW_CLASS(img, Media::StaticImage(&destInfo));
 	Int32 tlx = (Int32)srcX1;
 	Int32 tly = (Int32)srcY1;
-	Resize(srcImage->data + (OSInt)srcImage->GetDataBpl() * tly + (tlx << 3), (OSInt)srcImage->GetDataBpl(), srcX2 - srcX1, srcY2 - srcY1, srcX1 - tlx, srcY1 - tly, img->data, (OSInt)img->GetDataBpl(), destInfo.dispWidth, destInfo.dispHeight);
+	Resize(((Media::StaticImage*)srcImage)->data + (OSInt)srcImage->GetDataBpl() * tly + (tlx << 3), (OSInt)srcImage->GetDataBpl(), srcX2 - srcX1, srcY2 - srcY1, srcX1 - tlx, srcY1 - tly, img->data, (OSInt)img->GetDataBpl(), destInfo.dispWidth, destInfo.dispHeight);
 	return img;
 }
 

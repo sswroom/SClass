@@ -120,7 +120,7 @@ Media::Image *Media::FBSurface::Clone() const
 
 Media::Image::ImageType Media::FBSurface::GetImageType() const
 {
-	return Media::Image::IT_MONITORSURFACE;
+	return Media::Image::ImageType::MonitorSurface;
 }
 
 void Media::FBSurface::GetImageData(UInt8 *destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown, Media::RotateType destRotate) const

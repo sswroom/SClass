@@ -44,7 +44,7 @@ Media::Image *Media::MemorySurface::Clone() const
 
 Media::Image::ImageType Media::MemorySurface::GetImageType() const
 {
-	return Media::Image::IT_MONITORSURFACE;
+	return Media::Image::ImageType::MonitorSurface;
 }
 
 void Media::MemorySurface::GetImageData(UInt8 *destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown, Media::RotateType destRotate) const

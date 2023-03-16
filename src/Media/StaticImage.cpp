@@ -51,7 +51,7 @@ Media::Image *Media::StaticImage::Clone() const
 
 Media::Image::ImageType Media::StaticImage::GetImageType() const
 {
-	return Media::Image::IT_STATIC;
+	return Media::Image::ImageType::Static;
 }
 
 void Media::StaticImage::GetImageData(UInt8 *destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown, Media::RotateType destRotate) const

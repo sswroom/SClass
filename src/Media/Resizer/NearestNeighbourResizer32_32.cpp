@@ -5,7 +5,7 @@
 
 extern "C"
 {
-	void NearestNeighbourResizer32_32_Resize(UInt8 *inPt, UInt8 *outPt, UOSInt dwidth, UOSInt dheight, OSInt dbpl, OSInt *xindex, OSInt *yindex);
+	void NearestNeighbourResizer32_32_Resize(const UInt8 *inPt, UInt8 *outPt, UOSInt dwidth, UOSInt dheight, OSInt dbpl, OSInt *xindex, OSInt *yindex);
 }
 
 Media::Resizer::NearestNeighbourResizer32_32::NearestNeighbourResizer32_32() : Media::IImgResizer(Media::AT_NO_ALPHA)
@@ -33,7 +33,7 @@ Media::Resizer::NearestNeighbourResizer32_32::~NearestNeighbourResizer32_32()
 	}
 }
 
-void Media::Resizer::NearestNeighbourResizer32_32::Resize(UInt8 *src, OSInt sbpl, Double swidth, Double sheight, Double xOfst, Double yOfst, UInt8 *dest, OSInt dbpl, UOSInt dwidth, UOSInt dheight)
+void Media::Resizer::NearestNeighbourResizer32_32::Resize(const UInt8 *src, OSInt sbpl, Double swidth, Double sheight, Double xOfst, Double yOfst, UInt8 *dest, OSInt dbpl, UOSInt dwidth, UOSInt dheight)
 {
 	UOSInt i;
 	UOSInt j;
@@ -91,7 +91,7 @@ void Media::Resizer::NearestNeighbourResizer32_32::Resize(UInt8 *src, OSInt sbpl
 	NearestNeighbourResizer32_32_Resize(src, dest, dwidth, dheight, dbpl, this->xindex, this->yindex);
 }
 
-Bool Media::Resizer::NearestNeighbourResizer32_32::Resize(Media::StaticImage *srcImg, Media::StaticImage *destImg)
+Bool Media::Resizer::NearestNeighbourResizer32_32::Resize(const Media::StaticImage *srcImg, Media::StaticImage *destImg)
 {
 	if (srcImg->info.fourcc != 0 && srcImg->info.fourcc != *(UInt32*)"DIB")
 		return false;
@@ -113,7 +113,7 @@ Bool Media::Resizer::NearestNeighbourResizer32_32::Resize(Media::StaticImage *sr
 	}
 }
 
-Bool Media::Resizer::NearestNeighbourResizer32_32::IsSupported(Media::FrameInfo *srcInfo)
+Bool Media::Resizer::NearestNeighbourResizer32_32::IsSupported(const Media::FrameInfo *srcInfo)
 {
 	if (srcInfo->fourcc != 0)
 		return false;
@@ -122,11 +122,11 @@ Bool Media::Resizer::NearestNeighbourResizer32_32::IsSupported(Media::FrameInfo 
 	return true;
 }
 
-Media::StaticImage *Media::Resizer::NearestNeighbourResizer32_32::ProcessToNewPartial(Media::StaticImage *srcImage, Double srcX1, Double srcY1, Double srcX2, Double srcY2)
+Media::StaticImage *Media::Resizer::NearestNeighbourResizer32_32::ProcessToNewPartial(const Media::Image *srcImage, Double srcX1, Double srcY1, Double srcX2, Double srcY2)
 {
 	Media::FrameInfo destInfo;
 	Media::StaticImage *newImage;
-	if (!IsSupported(&srcImage->info))
+	if (srcImage->GetImageType() != Media::Image::ImageType::Static || !IsSupported(&srcImage->info))
 	{
 		return 0;
 	}
@@ -146,7 +146,7 @@ Media::StaticImage *Media::Resizer::NearestNeighbourResizer32_32::ProcessToNewPa
 	NEW_CLASS(newImage, Media::StaticImage(&destInfo));
 	Int32 tlx = (Int32)srcX1;
 	Int32 tly = (Int32)srcY1;
-	Resize(srcImage->data + (tlx << 2) + tly * (OSInt)srcImage->GetDataBpl(), (OSInt)srcImage->GetDataBpl(), srcX2 - srcX1, srcY2 - srcY1, srcX1 - tlx, srcY1 - tly, newImage->data, (OSInt)newImage->GetDataBpl(), newImage->info.dispWidth, newImage->info.dispHeight);
+	Resize(((Media::StaticImage*)srcImage)->data + (tlx << 2) + tly * (OSInt)srcImage->GetDataBpl(), (OSInt)srcImage->GetDataBpl(), srcX2 - srcX1, srcY2 - srcY1, srcX1 - tlx, srcY1 - tly, newImage->data, (OSInt)newImage->GetDataBpl(), newImage->info.dispWidth, newImage->info.dispHeight);
 	return newImage;
 
 }

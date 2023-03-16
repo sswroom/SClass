@@ -22,10 +22,10 @@ namespace Media
 			NearestNeighbourResizer32_32();
 			virtual ~NearestNeighbourResizer32_32();
 
-			virtual void Resize(UInt8 *src, OSInt sbpl, Double swidth, Double sheight, Double xOfst, Double yOfst, UInt8 *dest, OSInt dbpl, UOSInt dwidth, UOSInt dheight);
-			virtual Bool Resize(Media::StaticImage *srcImg, Media::StaticImage *destImg);
-			virtual Bool IsSupported(Media::FrameInfo *srcInfo);
-			virtual Media::StaticImage *ProcessToNewPartial(Media::StaticImage *srcImage, Double srcX1, Double srcY1, Double srcX2, Double srcY2);
+			virtual void Resize(const UInt8 *src, OSInt sbpl, Double swidth, Double sheight, Double xOfst, Double yOfst, UInt8 *dest, OSInt dbpl, UOSInt dwidth, UOSInt dheight);
+			virtual Bool Resize(const Media::StaticImage *srcImg, Media::StaticImage *destImg);
+			virtual Bool IsSupported(const Media::FrameInfo *srcInfo);
+			virtual Media::StaticImage *ProcessToNewPartial(const Media::Image *srcImage, Double srcX1, Double srcY1, Double srcX2, Double srcY2);
 		};
 	}
 }

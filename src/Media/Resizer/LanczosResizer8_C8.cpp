@@ -19,14 +19,14 @@
 
 extern "C"
 {
-	void LanczosResizer8_C8_horizontal_filter_pa(UInt8 *inPt, UInt8 *outPt,UOSInt width, UOSInt height, UOSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep, UInt8 *rgbTable, UOSInt swidth, UInt8 *tmpbuff);
-	void LanczosResizer8_C8_horizontal_filter(UInt8 *inPt, UInt8 *outPt,UOSInt width, UOSInt height, UOSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep, UInt8 *rgbTable, UOSInt swidth, UInt8 *tmpbuff);
-	void LanczosResizer8_C8_vertical_filter(UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, UOSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep, UInt8 *rgbTable);
-	void LanczosResizer8_C8_expand(UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, OSInt sstep, OSInt dstep, UInt8 *rgbTable);
-	void LanczosResizer8_C8_expand_pa(UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, OSInt sstep, OSInt dstep, UInt8 *rgbTable);
-	void LanczosResizer8_C8_collapse(UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, OSInt sstep, OSInt dstep, UInt8 *rgbTable);
-	void LanczosResizer8_C8_imgcopy(UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, OSInt sstep, OSInt dstep, UInt8 *rgbTable);
-	void LanczosResizer8_C8_imgcopy_pa(UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, OSInt sstep, OSInt dstep, UInt8 *rgbTable);
+	void LanczosResizer8_C8_horizontal_filter_pa(const UInt8 *inPt, UInt8 *outPt,UOSInt width, UOSInt height, UOSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep, UInt8 *rgbTable, UOSInt swidth, UInt8 *tmpbuff);
+	void LanczosResizer8_C8_horizontal_filter(const UInt8 *inPt, UInt8 *outPt,UOSInt width, UOSInt height, UOSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep, UInt8 *rgbTable, UOSInt swidth, UInt8 *tmpbuff);
+	void LanczosResizer8_C8_vertical_filter(const UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, UOSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep, UInt8 *rgbTable);
+	void LanczosResizer8_C8_expand(const UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, OSInt sstep, OSInt dstep, UInt8 *rgbTable);
+	void LanczosResizer8_C8_expand_pa(const UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, OSInt sstep, OSInt dstep, UInt8 *rgbTable);
+	void LanczosResizer8_C8_collapse(const UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, OSInt sstep, OSInt dstep, UInt8 *rgbTable);
+	void LanczosResizer8_C8_imgcopy(const UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, OSInt sstep, OSInt dstep, UInt8 *rgbTable);
+	void LanczosResizer8_C8_imgcopy_pa(const UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, OSInt sstep, OSInt dstep, UInt8 *rgbTable);
 }
 
 void Media::Resizer::LanczosResizer8_C8::setup_interpolation_parameter(UOSInt nTap, Double source_length, OSInt source_max_pos, UOSInt result_length, Media::Resizer::LanczosResizer8_C8::LRHPARAMETER *out, OSInt indexSep, Double offsetCorr)
@@ -597,7 +597,7 @@ void Media::Resizer::LanczosResizer8_C8::setup_decimation_parameter_h(UOSInt nTa
 	MemFree(work);
 }
 
-void Media::Resizer::LanczosResizer8_C8::mt_horizontal_filter_pa(UInt8 *inPt, UInt8 *outPt, UOSInt dwidth, UOSInt height, UOSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep, UOSInt swidth)
+void Media::Resizer::LanczosResizer8_C8::mt_horizontal_filter_pa(const UInt8 *inPt, UInt8 *outPt, UOSInt dwidth, UOSInt height, UOSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep, UOSInt swidth)
 {
 #if defined(VERBOSE)
 	printf("LR8_C8: HFilterPA w = %d, h = %d, tap = %d\r\n", (UInt32)dwidth, (UInt32)height, (UInt32)tap);
@@ -630,7 +630,7 @@ void Media::Resizer::LanczosResizer8_C8::mt_horizontal_filter_pa(UInt8 *inPt, UI
 	this->ptask->WaitForIdle();
 }
 
-void Media::Resizer::LanczosResizer8_C8::mt_horizontal_filter(UInt8 *inPt, UInt8 *outPt, UOSInt dwidth, UOSInt height, UOSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep, UOSInt swidth)
+void Media::Resizer::LanczosResizer8_C8::mt_horizontal_filter(const UInt8 *inPt, UInt8 *outPt, UOSInt dwidth, UOSInt height, UOSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep, UOSInt swidth)
 {
 #if defined(VERBOSE)
 	printf("LR8_C8: HFilter w = %d, h = %d, tap = %d\r\n", (UInt32)dwidth, (UInt32)height, (UInt32)tap);
@@ -663,7 +663,7 @@ void Media::Resizer::LanczosResizer8_C8::mt_horizontal_filter(UInt8 *inPt, UInt8
 	this->ptask->WaitForIdle();
 }
 
-void Media::Resizer::LanczosResizer8_C8::mt_vertical_filter(UInt8 *inPt, UInt8 *outPt, UOSInt dwidth, UOSInt height, UOSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep)
+void Media::Resizer::LanczosResizer8_C8::mt_vertical_filter(const UInt8 *inPt, UInt8 *outPt, UOSInt dwidth, UOSInt height, UOSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep)
 {
 #if defined(VERBOSE)
 	printf("LR8_C8: VFilter w = %d, h = %d, tap = %d\r\n", (UInt32)dwidth, (UInt32)height, (UInt32)tap);
@@ -699,27 +699,27 @@ void Media::Resizer::LanczosResizer8_C8::mt_vertical_filter(UInt8 *inPt, UInt8 *
 	}
 }
 
-void Media::Resizer::LanczosResizer8_C8::mt_expand_pa(UInt8 *inPt, UInt8 *outPt, UOSInt dwidth, UOSInt height, OSInt sstep, OSInt dstep)
+void Media::Resizer::LanczosResizer8_C8::mt_expand_pa(const UInt8 *inPt, UInt8 *outPt, UOSInt dwidth, UOSInt height, OSInt sstep, OSInt dstep)
 {
 	LanczosResizer8_C8_expand_pa(inPt, outPt, dwidth, height, sstep, dstep, this->rgbTable);
 }
 
-void Media::Resizer::LanczosResizer8_C8::mt_expand(UInt8 *inPt, UInt8 *outPt, UOSInt dwidth, UOSInt height, OSInt sstep, OSInt dstep)
+void Media::Resizer::LanczosResizer8_C8::mt_expand(const UInt8 *inPt, UInt8 *outPt, UOSInt dwidth, UOSInt height, OSInt sstep, OSInt dstep)
 {
 	LanczosResizer8_C8_expand(inPt, outPt, dwidth, height, sstep, dstep, this->rgbTable);
 }
 
-void Media::Resizer::LanczosResizer8_C8::mt_collapse(UInt8 *inPt, UInt8 *outPt, UOSInt dwidth, UOSInt height, OSInt sstep, OSInt dstep)
+void Media::Resizer::LanczosResizer8_C8::mt_collapse(const UInt8 *inPt, UInt8 *outPt, UOSInt dwidth, UOSInt height, OSInt sstep, OSInt dstep)
 {
 	LanczosResizer8_C8_collapse(inPt, outPt, dwidth, height, sstep, dstep, this->rgbTable);
 }
 
-void Media::Resizer::LanczosResizer8_C8::mt_copy_pa(UInt8 *inPt, UInt8 *outPt, UOSInt dwidth, UOSInt height, OSInt sstep, OSInt dstep)
+void Media::Resizer::LanczosResizer8_C8::mt_copy_pa(const UInt8 *inPt, UInt8 *outPt, UOSInt dwidth, UOSInt height, OSInt sstep, OSInt dstep)
 {
 	LanczosResizer8_C8_imgcopy_pa(inPt, outPt, dwidth, height, sstep, dstep, this->rgbTable);
 }
 
-void Media::Resizer::LanczosResizer8_C8::mt_copy(UInt8 *inPt, UInt8 *outPt, UOSInt dwidth, UOSInt height, OSInt sstep, OSInt dstep)
+void Media::Resizer::LanczosResizer8_C8::mt_copy(const UInt8 *inPt, UInt8 *outPt, UOSInt dwidth, UOSInt height, OSInt sstep, OSInt dstep)
 {
 	LanczosResizer8_C8_imgcopy(inPt, outPt, dwidth, height, sstep, dstep, this->rgbTable);
 }
@@ -900,7 +900,7 @@ Media::Resizer::LanczosResizer8_C8::~LanczosResizer8_C8()
 	}
 }
 
-void Media::Resizer::LanczosResizer8_C8::Resize(UInt8 *src, OSInt sbpl, Double swidth, Double sheight, Double xOfst, Double yOfst, UInt8 *dest, OSInt dbpl, UOSInt dwidth, UOSInt dheight)
+void Media::Resizer::LanczosResizer8_C8::Resize(const UInt8 *src, OSInt sbpl, Double swidth, Double sheight, Double xOfst, Double yOfst, UInt8 *dest, OSInt dbpl, UOSInt dwidth, UOSInt dheight)
 {
 	Media::Resizer::LanczosResizer8_C8::LRHPARAMETER prm;
 	Double w;
@@ -1111,7 +1111,7 @@ void Media::Resizer::LanczosResizer8_C8::Resize(UInt8 *src, OSInt sbpl, Double s
 	}
 }
 
-Bool Media::Resizer::LanczosResizer8_C8::Resize(Media::StaticImage *srcImg, Media::StaticImage *destImg)
+Bool Media::Resizer::LanczosResizer8_C8::Resize(const Media::StaticImage *srcImg, Media::StaticImage *destImg)
 {
 	if (srcImg->info.fourcc != 0 && srcImg->info.fourcc != *(UInt32*)"DIB")
 		return false;
@@ -1174,7 +1174,7 @@ Media::AlphaType Media::Resizer::LanczosResizer8_C8::GetDestAlphaType()
 	}
 }
 
-Bool Media::Resizer::LanczosResizer8_C8::IsSupported(Media::FrameInfo *srcInfo)
+Bool Media::Resizer::LanczosResizer8_C8::IsSupported(const Media::FrameInfo *srcInfo)
 {
 	if (srcInfo->fourcc != 0)
 		return false;
@@ -1183,11 +1183,11 @@ Bool Media::Resizer::LanczosResizer8_C8::IsSupported(Media::FrameInfo *srcInfo)
 	return true;
 }
 
-Media::StaticImage *Media::Resizer::LanczosResizer8_C8::ProcessToNewPartial(Media::StaticImage *srcImage, Double srcX1, Double srcY1, Double srcX2, Double srcY2)
+Media::StaticImage *Media::Resizer::LanczosResizer8_C8::ProcessToNewPartial(const Media::Image *srcImage, Double srcX1, Double srcY1, Double srcX2, Double srcY2)
 {
 	Media::FrameInfo destInfo;
 	Media::StaticImage *newImage;
-	if (!IsSupported(&srcImage->info))
+	if (srcImage->GetImageType() != Media::Image::ImageType::Static || !IsSupported(&srcImage->info))
 	{
 		return 0;
 	}
@@ -1215,6 +1215,6 @@ Media::StaticImage *Media::Resizer::LanczosResizer8_C8::ProcessToNewPartial(Medi
 	NEW_CLASS(newImage, Media::StaticImage(&destInfo));
 	Int32 tlx = (Int32)srcX1;
 	Int32 tly = (Int32)srcY1;
-	Resize(srcImage->data + (tlx << 2) + tly * (OSInt)srcImage->GetDataBpl(), (OSInt)srcImage->GetDataBpl(), srcX2 - srcX1, srcY2 - srcY1, srcX1 - tlx, srcY1 - tly, newImage->data, (OSInt)newImage->GetDataBpl(), newImage->info.dispWidth, newImage->info.dispHeight);
+	Resize(((Media::StaticImage*)srcImage)->data + (tlx << 2) + tly * (OSInt)srcImage->GetDataBpl(), (OSInt)srcImage->GetDataBpl(), srcX2 - srcX1, srcY2 - srcY1, srcX1 - tlx, srcY1 - tly, newImage->data, (OSInt)newImage->GetDataBpl(), newImage->info.dispWidth, newImage->info.dispHeight);
 	return newImage;
 }

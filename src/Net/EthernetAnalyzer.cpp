@@ -1386,9 +1386,7 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, UOSInt packetSize, U
 									dhcp->ipAddr = ReadNUInt32(&ipData[24]);
 									dhcp->gwAddr = ReadNUInt32(&ipData[32]);
 									dhcp->ipAddrLease = ReadMUInt32(currPtr);
-									Data::DateTime dt;
-									dt.SetCurrTimeUTC();
-									dhcp->ipAddrTime = dt.ToTicks();
+									dhcp->ipAddrTime = Data::Timestamp::UtcNow();
 								}
 								else if (t == 58 && len == 4 && (msgType == 2 || msgType == 5))
 								{

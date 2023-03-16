@@ -276,7 +276,7 @@ void DotNet::MyPictureBox::SetImage(Media::Image *currImage)
 				this->csconv->SetPalette(this->currImage->pal);
 			}
 			this->imgBuff = MemAlloc(UInt8, this->currImage->info->width * this->currImage->info->height * 4);
-			if (this->currImage->GetImageType() == Media::Image::IT_STATIC)
+			if (this->currImage->GetImageType() == Media::Image::ImageType::Static)
 			{
 				this->csconv->Convert(((Media::StaticImage*)this->currImage)->data, this->imgBuff, this->currImage->info->width, this->currImage->info->height, this->currImage->GetBpl(), this->currImage->info->width << 2);
 			}
@@ -297,7 +297,7 @@ void DotNet::MyPictureBox::YUVParamChanged(const Media::IColorHandler::YUVPARAM 
 {
 	if (this->currImage && this->csconv)
 	{
-		if (this->currImage->GetImageType() == Media::Image::IT_STATIC)
+		if (this->currImage->GetImageType() == Media::Image::ImageType::Static)
 		{
 			this->csconv->Convert(((Media::StaticImage*)this->currImage)->data, this->imgBuff, this->currImage->info->width, this->currImage->info->height, this->currImage->info->width * (this->currImage->info->bpp >> 3), this->currImage->info->width << 2);
 		}
@@ -317,7 +317,7 @@ void DotNet::MyPictureBox::RGBParamChanged(const Media::IColorHandler::RGBPARAM 
 {
 	if (this->currImage && this->csconv)
 	{
-		if (this->currImage->GetImageType() == Media::Image::IT_STATIC)
+		if (this->currImage->GetImageType() == Media::Image::ImageType::Static)
 		{
 			this->csconv->Convert(((Media::StaticImage*)this->currImage)->data, this->imgBuff, this->currImage->info->width, this->currImage->info->height, this->currImage->info->width * (this->currImage->info->bpp >> 3), this->currImage->info->width << 2);
 		}

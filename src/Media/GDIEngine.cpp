@@ -482,7 +482,7 @@ Media::DrawImage *Media::GDIEngine::ConvImage(Media::Image *img)
 		return 0;
 	gimg->SetHDPI(img->info.hdpi);
 	gimg->SetVDPI(img->info.vdpi);
-	if (img->GetImageType() == Media::Image::IT_STATIC)
+	if (img->GetImageType() == Media::Image::ImageType::Static)
 	{
 		Media::StaticImage *simg = (Media::StaticImage*)img;
 		if (simg->To32bpp())
@@ -1993,7 +1993,7 @@ Bool Media::GDIImage::DrawImagePt(DrawImage *img, Double tlx, Double tly)
 
 Bool Media::GDIImage::DrawImagePt2(Media::StaticImage *img, Double tlx, Double tly)
 {
-	if (this->IsOffScreen() && img->GetImageType() == Media::Image::IT_STATIC)
+	if (this->IsOffScreen() && img->GetImageType() == Media::Image::ImageType::Static)
 	{
 		Media::StaticImage *simg = img;
 		simg->To32bpp();

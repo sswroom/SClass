@@ -65,13 +65,13 @@ namespace Media
 			LanczosResizerLR_C32(UOSInt hnTap, UOSInt vnTap, const Media::ColorProfile *destColor, Media::ColorManagerSess *colorSess, Media::AlphaType srcAlphaType, Double srcRefLuminance, Media::PixelFormat pf);
 			virtual ~LanczosResizerLR_C32();
 
-			virtual void Resize(UInt8 *src, OSInt sbpl, Double swidth, Double sheight, Double xOfst, Double yOfst, UInt8 *dest, OSInt dbpl, UOSInt dwidth, UOSInt dheight);
+			virtual void Resize(const UInt8 *src, OSInt sbpl, Double swidth, Double sheight, Double xOfst, Double yOfst, UInt8 *dest, OSInt dbpl, UOSInt dwidth, UOSInt dheight);
 			virtual void YUVParamChanged(const Media::IColorHandler::YUVPARAM *yuvParam);
 			virtual void RGBParamChanged(const Media::IColorHandler::RGBPARAM2 *rgbParam);
 			virtual void SetSrcRefLuminance(Double srcRefLuminance);
 
-			virtual Bool IsSupported(Media::FrameInfo *srcInfo);
-			virtual Media::StaticImage *ProcessToNewPartial(Media::StaticImage *srcImage, Double srcX1, Double srcY1, Double srcX2, Double srcY2);
+			virtual Bool IsSupported(const Media::FrameInfo *srcInfo);
+			virtual Media::StaticImage *ProcessToNewPartial(const Media::Image *srcImage, Double srcX1, Double srcY1, Double srcX2, Double srcY2);
 
 			Double GetHAvgTime();
 			Double GetVAvgTime();
