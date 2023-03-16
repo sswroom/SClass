@@ -172,13 +172,11 @@ IO::ParsedObject *Parser::FileParser::CSVParser::ParseFileHdr(IO::StreamData *fd
 				gloggerMatches |= 2;
 			else if (currCol == 5)
 				gloggerMatches |= 4;
-			else if (currCol == 6)
-				gloggerMatches |= 8;
 		}
 		else if (tmpArr[0].leng == 0)
 		{
 			if (currCol == 8 && colCnt == 1)
-				gloggerMatches |= 16;
+				gloggerMatches |= 8;
 		}
 		currCol += 1;
 		if (colCnt < 2)
@@ -186,7 +184,7 @@ IO::ParsedObject *Parser::FileParser::CSVParser::ParseFileHdr(IO::StreamData *fd
 		colCnt = Text::StrCSVSplitP(tmpArr, 2, tmpArr[1].v);
 	}
 
-	if (gloggerMatches == 31)
+	if (gloggerMatches == 15)
 	{
 		//id, track start, time passed, lat, lon, distance travelled, speed (knot), altitude, empty
 		stm.SeekFromBeginning(0);
