@@ -953,7 +953,6 @@ void UI::GUIMapControl::UpdateMap()
 			this->mapUpdHdlrs.GetItem(i)(this->mapUpdObjs.GetItem(i), center, t);
 		}
 	}
-	mutUsage.EndUse();
 }
 
 Math::Coord2DDbl UI::GUIMapControl::ScnXY2MapXY(Math::Coord2D<OSInt> scnPos)

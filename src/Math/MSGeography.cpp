@@ -8,6 +8,7 @@
 #include "Math/Geometry/PointZ.h"
 #include "Math/Geometry/Polygon.h"
 
+#define VERBOSE
 #include <stdio.h>
 // https://sqlprotocoldoc.blob.core.windows.net/productionsqlarchives/MS-SSCLRT/%5bMS-SSCLRT%5d.pdf
 
@@ -44,7 +45,7 @@ Math::Geometry::Vector2D *Math::MSGeography::ParseBinary(const UInt8 *buffPtr, U
 			NEW_CLASS(pt, Math::Geometry::PointZ(srid, ReadDouble(&buffPtr[6]), ReadDouble(&buffPtr[14]), ReadDouble(&buffPtr[22])));
 			return pt;
 		}
-		else if (buffPtr[5] == 4) //Shape 2D
+		else if (buffPtr[5] == 4 || buffPtr[5] == 0) //Shape 2D
 		{
 			UInt32 nPoints;
 			UInt32 nFigures;
@@ -672,6 +673,11 @@ Math::Geometry::Vector2D *Math::MSGeography::ParseBinary(const UInt8 *buffPtr, U
 		else
 		{
 			printf("MSGeography: Unsupported type %d\r\n", buffPtr[5]);
+#if defined(VERBOSE)
+			Text::StringBuilderUTF8 sb;
+			sb.AppendHexBuff(buffPtr, buffSize, ' ', Text::LineBreakType::CRLF);
+			printf("MSGeography: %s\r\n", sb.ToString());
+#endif
 		}
 	}
 	return 0;

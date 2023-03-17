@@ -158,6 +158,21 @@ void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnMapTableSelChg(void *userObj)
 	if (schemaName && tableName)
 	{
 		me->dbLayer->SetDatabase(me->currDB, schemaName->ToCString(), tableName->ToCString(), false);
+		Math::RectAreaDbl rect;
+		if (me->dbLayer->GetBounds(&rect))
+		{
+			Math::Coord2DDbl center = rect.GetCenter();
+			if (center.x != 0 || center.y != 0)
+			{
+				Math::CoordinateSystem *csysLayer = me->dbLayer->GetCoordinateSystem();
+				Math::CoordinateSystem *csysEnv = me->mapEnv->GetCoordinateSystem();
+				if (csysLayer != 0 && csysEnv != 0 && !csysLayer->Equals(csysEnv))
+				{
+					center = Math::CoordinateSystem::Convert(csysLayer, csysEnv, center);
+				}
+				me->mapMain->PanToMapXY(center);
+			}
+		}
 		OnLayerUpdated(me);
 	}
 	SDEL_STRING(schemaName);

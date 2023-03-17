@@ -26,6 +26,8 @@
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
 
+//https://www.awaresystems.be/imaging/tiff/bigtiff.html
+
 Parser::FileParser::TIFFParser::TIFFParser()
 {
 	this->parsers = 0;
