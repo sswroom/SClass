@@ -748,8 +748,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::JPGFileAnalyse::GetFrameDetail(UO
 		tagData = MemAlloc(UInt8, tag->size);
 		this->fd->GetRealData(tag->ofst, tag->size, tagData);
 		frame->AddUInt(2, 2, CSTR("Tag Length"), ReadMUInt16(&tagData[2]));
-		i = Text::StrCharCnt(&tagData[4]);
-		frame->AddStrC(4, i + 1, CSTR("Identifier"), &tagData[4]);
+		frame->AddStrZ(4, CSTR("Identifier"), &tagData[4]);
 		if (tagData[4] == 'J' && tagData[5] == 'F' && tagData[6] == 'I' && tagData[7] == 'F' && tagData[8] == 0)
 		{
 			frame->AddUInt(9, 1, CSTR("Major Version"), tagData[9]);
@@ -784,8 +783,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::JPGFileAnalyse::GetFrameDetail(UO
 		tagData = MemAlloc(UInt8, tag->size);
 		this->fd->GetRealData(tag->ofst, tag->size, tagData);
 		frame->AddUInt(2, 2, CSTR("Tag Length"), ReadMUInt16(&tagData[2]));
-		i = Text::StrCharCnt(&tagData[4]);
-		frame->AddStrC(4, i + 1, CSTR("Identifier"), &tagData[4]);
+		frame->AddStrZ(4, CSTR("Identifier"), &tagData[4]);
 		if (tagData[4] == 'E' && tagData[5] == 'x' && tagData[6] == 'i' && tagData[7] == 'f' && tagData[8] == 0)
 		{
 			Media::EXIFData::ParseEXIFFrame(frame, 10, fd, tag->ofst + 10);
@@ -801,8 +799,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::JPGFileAnalyse::GetFrameDetail(UO
 		tagData = MemAlloc(UInt8, tag->size);
 		this->fd->GetRealData(tag->ofst, tag->size, tagData);
 		frame->AddUInt(2, 2, CSTR("Tag Length"), ReadMUInt16(&tagData[2]));
-		i = Text::StrCharCnt(&tagData[4]);
-		frame->AddStrC(4, i + 1, CSTR("Identifier"), &tagData[4]);
+		frame->AddStrZ(4, CSTR("Identifier"), &tagData[4]);
 		if (Text::StrStartsWithC(&tagData[4], tag->size - 4, UTF8STRC("ICC_PROFILE")))
 		{
 			Media::ICCProfile::ParseFrame(frame, 18, &tagData[18], tag->size - 18);
@@ -814,8 +811,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::JPGFileAnalyse::GetFrameDetail(UO
 		tagData = MemAlloc(UInt8, tag->size);
 		this->fd->GetRealData(tag->ofst, tag->size, tagData);
 		frame->AddUInt(2, 2, CSTR("Tag Length"), ReadMUInt16(&tagData[2]));
-		i = Text::StrCharCnt(&tagData[4]);
-		frame->AddStrC(4, i + 1, CSTR("Identifier"), &tagData[4]);
+		frame->AddStrZ(4, CSTR("Identifier"), &tagData[4]);
 		MemFree(tagData);
 	}
 	else if (tag->tagType == 0xee) //APP14
@@ -823,8 +819,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::JPGFileAnalyse::GetFrameDetail(UO
 		tagData = MemAlloc(UInt8, tag->size);
 		this->fd->GetRealData(tag->ofst, tag->size, tagData);
 		frame->AddUInt(2, 2, CSTR("Tag Length"), ReadMUInt16(&tagData[2]));
-		i = Text::StrCharCnt(&tagData[4]);
-		frame->AddStrC(4, i + 1, CSTR("Identifier"), &tagData[4]);
+		frame->AddStrZ(4,CSTR("Identifier"), &tagData[4]);
 		MemFree(tagData);
 	}
 	return frame;

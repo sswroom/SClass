@@ -1341,6 +1341,7 @@ void Media::EXIFData::ToExifBuff(UInt8 *buff, const Data::ReadingList<Media::EXI
 	WriteInt16(&buff[*startOfst], objCnt);
 	j += 4;
 
+	UInt32 k32 = (UInt32)k;
 	i = 0;
 	while (i < exifList->GetCount())
 	{
@@ -1348,11 +1349,12 @@ void Media::EXIFData::ToExifBuff(UInt8 *buff, const Data::ReadingList<Media::EXI
 		if (exif->type == Media::EXIFData::ET_SUBEXIF)
 		{
 			WriteUInt32(&buff[exif->value], j);
-			((Media::EXIFData*)exif->dataBuff)->ToExifBuff(buff, &j, otherOfst);
+			((Media::EXIFData*)exif->dataBuff)->ToExifBuff(buff, &j, &k32);
 		}
 		i++;
 	}
 	*startOfst = j;
+	*otherOfst = k32;
 }
 
 void Media::EXIFData::GetExifBuffSize(const Data::ReadingList<EXIFItem*> *exifList, UInt64 *size, UInt64 *endOfst) const
@@ -4808,6 +4810,12 @@ Text::CString Media::EXIFData::GetFieldTypeName(UInt32 ftype)
 		return CSTR("FLOAT");
 	case 12:
 		return CSTR("DOUBLE");
+	case 16:
+		return CSTR("UINT64");
+	case 17:
+		return CSTR("INT64");
+	case 18:
+		return CSTR("IFD4");
 	default:
 		return CSTR("Unknown");
 	}
@@ -5355,6 +5363,19 @@ Media::EXIFData *Media::EXIFData::ParseIFD(IO::StreamData *fd, UInt64 ofst, Data
 			}
 			break;
 		}
+		case 10:
+			tmpBuff = MemAlloc(UInt8, fcnt << 3);
+			fd->GetRealData(bo->GetUInt32(&ifdEntries[ifdOfst + 8]) + readBase, fcnt << 3, tmpBuff);
+			j = fcnt << 3;
+			while (j > 0)
+			{
+				j -= 8;
+				*(Int32*)&tmpBuff[j] = bo->GetInt32(&tmpBuff[j]);
+				*(Int32*)&tmpBuff[j + 4] = bo->GetInt32(&tmpBuff[j + 4]);
+			}
+			exif->AddSRational(tag, fcnt, (Int32*)tmpBuff);
+			MemFree(tmpBuff);
+			break;
 		case 12:
 			tmpBuff = MemAlloc(UInt8, fcnt << 3);
 			fd->GetRealData(bo->GetUInt32(&ifdEntries[ifdOfst + 8]) + readBase, fcnt << 3, tmpBuff);
@@ -5362,7 +5383,7 @@ Media::EXIFData *Media::EXIFData::ParseIFD(IO::StreamData *fd, UInt64 ofst, Data
 			MemFree(tmpBuff);
 			break;
 		default:
-			printf("EXIFData.ParseIFD: Unsupported field type: %d\r\n", ftype);
+			printf("EXIFData.ParseIFD: Unsupported field type: %d, tag = %d\r\n", ftype, tag);
 			j = 0;
 			break;
 		}
@@ -5688,7 +5709,7 @@ Media::EXIFData *Media::EXIFData::ParseIFD64(IO::StreamData *fd, UInt64 ofst, Da
 			}
 			break;
 		default:
-			printf("EXIFData.ParseIFD64: Unsupported field type: %d\r\n", ftype);
+			printf("EXIFData.ParseIFD64: Unsupported field type: %d, tag = %d\r\n", ftype, tag);
 			j = 0;
 			break;
 		}
