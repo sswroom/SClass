@@ -39,8 +39,6 @@
 #include "Text/XML.h"
 #include "Text/TextBinEnc/URIEncoding.h"
 
-#include <stdio.h>
-
 #define SP_PER_PAGE_DESKTOP 100
 #define SP_PER_PAGE_MOBILE 90
 #define PREVIEW_SIZE 320
@@ -5912,7 +5910,6 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoId(Net::WebServer::IWebReques
 	{
 		if (sp->photoId == fileId && userFile->speciesId != sp->speciesId)
 		{
-			printf("ResponsePhotoId: UpdateDefPhoto %d\r\n", sp->speciesId);
 			this->env->SpeciesUpdateDefPhoto(&mutUsage, sp->speciesId);
 		}
 
