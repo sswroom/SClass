@@ -791,7 +791,7 @@ void SSWR::AVIRead::AVIRGSMModemForm::LoadSMS()
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
 #if _WCHAR_SIZE == 4
-	WChar wbuff[64];
+	WChar wbuff[256];
 #endif
 	UOSInt k;
 	UOSInt i;
