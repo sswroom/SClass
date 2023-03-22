@@ -39,6 +39,8 @@
 #include "Text/XML.h"
 #include "Text/TextBinEnc/URIEncoding.h"
 
+#include <stdio.h>
+
 #define SP_PER_PAGE_DESKTOP 100
 #define SP_PER_PAGE_MOBILE 90
 #define PREVIEW_SIZE 320
@@ -5910,6 +5912,7 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoId(Net::WebServer::IWebReques
 	{
 		if (sp->photoId == fileId && userFile->speciesId != sp->speciesId)
 		{
+			printf("ResponsePhotoId: UpdateDefPhoto %d\r\n", sp->speciesId);
 			this->env->SpeciesUpdateDefPhoto(&mutUsage, sp->speciesId);
 		}
 
@@ -6832,6 +6835,20 @@ void SSWR::OrganMgr::OrganWebHandler::WriteSpeciesTable(Sync::RWMutexUsage *mutU
 				writer->WriteLineC(UTF8STRC("<center>"));
 			}
 
+			if (sp->files.GetCount() > 0)
+			{
+				if ((sp->flags & SSWR::OrganMgr::SF_HAS_MYPHOTO) == 0)
+				{
+					this->env->SpeciesSetFlags(mutUsage, sp->speciesId, (SSWR::OrganMgr::SpeciesFlags)(sp->flags | SSWR::OrganMgr::SF_HAS_MYPHOTO));
+				}
+			}
+			else
+			{
+				if (sp->flags & SSWR::OrganMgr::SF_HAS_MYPHOTO)
+				{
+					this->env->SpeciesSetFlags(mutUsage, sp->speciesId, (SSWR::OrganMgr::SpeciesFlags)(sp->flags & ~SSWR::OrganMgr::SF_HAS_MYPHOTO));
+				}
+			}
 			if (sp->photoId != 0)
 			{
 				writer->WriteStrC(UTF8STRC("<img src="));
@@ -6923,20 +6940,6 @@ void SSWR::OrganMgr::OrganWebHandler::WriteSpeciesTable(Sync::RWMutexUsage *mutU
 				writer->WriteStrC(sb.ToString(), sb.GetLength());
 
 				sb.ClearStr();
-				if (sp->files.GetCount() > 0)
-				{
-					if ((sp->flags & SSWR::OrganMgr::SF_HAS_MYPHOTO) == 0)
-					{
-						this->env->SpeciesSetFlags(mutUsage, sp->speciesId, (SSWR::OrganMgr::SpeciesFlags)(sp->flags | SSWR::OrganMgr::SF_HAS_MYPHOTO));
-					}
-				}
-				else
-				{
-					if (sp->flags & SSWR::OrganMgr::SF_HAS_MYPHOTO)
-					{
-						this->env->SpeciesSetFlags(mutUsage, sp->speciesId, (SSWR::OrganMgr::SpeciesFlags)(sp->flags & ~SSWR::OrganMgr::SF_HAS_MYPHOTO));
-					}
-				}
 				sb.Append(sp->sciName);
 				sb.AppendC(UTF8STRC(" "));
 				sb.Append(sp->chiName);
