@@ -6840,6 +6840,7 @@ void SSWR::OrganMgr::OrganWebHandler::WriteSpeciesTable(Sync::RWMutexUsage *mutU
 				if ((sp->flags & SSWR::OrganMgr::SF_HAS_MYPHOTO) == 0)
 				{
 					this->env->SpeciesSetFlags(mutUsage, sp->speciesId, (SSWR::OrganMgr::SpeciesFlags)(sp->flags | SSWR::OrganMgr::SF_HAS_MYPHOTO));
+					this->env->GroupAddCounts(mutUsage, sp->groupId, 0, (sp->flags & SSWR::OrganMgr::SF_HAS_WEBPHOTO)?0:1, 1);
 				}
 			}
 			else
@@ -6847,6 +6848,7 @@ void SSWR::OrganMgr::OrganWebHandler::WriteSpeciesTable(Sync::RWMutexUsage *mutU
 				if (sp->flags & SSWR::OrganMgr::SF_HAS_MYPHOTO)
 				{
 					this->env->SpeciesSetFlags(mutUsage, sp->speciesId, (SSWR::OrganMgr::SpeciesFlags)(sp->flags & ~SSWR::OrganMgr::SF_HAS_MYPHOTO));
+					this->env->GroupAddCounts(mutUsage, sp->groupId, 0, (sp->flags & SSWR::OrganMgr::SF_HAS_WEBPHOTO)?0:(UOSInt)-1, (UOSInt)-1);
 				}
 			}
 			if (sp->photoId != 0)

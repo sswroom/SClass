@@ -1306,6 +1306,7 @@ Bool SSWR::OrganMgr::OrganWebEnv::SpeciesUpdateDefPhoto(Sync::RWMutexUsage *mutU
 			if (species->flags & SF_HAS_MYPHOTO)
 			{
 				this->SpeciesSetFlags(mutUsage, speciesId, (SpeciesFlags)(species->flags & ~SF_HAS_MYPHOTO));
+				this->GroupAddCounts(mutUsage, species->groupId, 0, (species->flags & SSWR::OrganMgr::SF_HAS_WEBPHOTO)?0:(UOSInt)-1, (UOSInt)-1);
 			}
 			GroupInfo *group = this->GroupGet(mutUsage, species->groupId);
 			Int32 parentGroupId = 0;
