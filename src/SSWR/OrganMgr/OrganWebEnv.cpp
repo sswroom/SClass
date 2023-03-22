@@ -1284,6 +1284,96 @@ Int32 SSWR::OrganMgr::OrganWebEnv::SpeciesAdd(Sync::RWMutexUsage *mutUsage, Text
 	}
 }
 
+Bool SSWR::OrganMgr::OrganWebEnv::SpeciesUpdateDefPhoto(Sync::RWMutexUsage *mutUsage, Int32 speciesId)
+{
+	mutUsage->ReplaceMutex(&this->dataMut, true);
+	SpeciesInfo *species = this->spMap.Get(speciesId);
+	if (species == 0)
+		return false;
+	if (species->files.GetCount() > 0)
+	{
+		UserFileInfo *file = species->files.GetItem(0);
+		if (species->photoId != file->id)
+		{
+			this->SpeciesSetPhotoId(mutUsage, speciesId, file->id);
+		}
+	}
+	else
+	{
+		if (species->photoId != 0)
+		{
+			this->SpeciesSetPhotoId(mutUsage, speciesId, 0);
+			if (species->flags & SF_HAS_MYPHOTO)
+			{
+				this->SpeciesSetFlags(mutUsage, speciesId, (SpeciesFlags)(species->flags & ~SF_HAS_MYPHOTO));
+			}
+			GroupInfo *group = this->GroupGet(mutUsage, species->groupId);
+			Int32 parentGroupId = 0;
+			Int32 photoSpId = 0;
+			SpeciesInfo *phSp;
+			GroupInfo *phGroup;
+			Bool found;
+			UOSInt i;
+			UOSInt j;
+			while (group)
+			{
+				if (group->photoSpecies != species->speciesId)
+					break;
+				
+				if (parentGroupId == 0)
+				{
+					found = false;
+					i = 0;
+					j = group->species.GetCount();
+					while (i < j)
+					{
+						phSp = group->species.GetItem(i);
+						if (phSp->flags != 0)
+						{
+							found = true;
+							photoSpId = phSp->speciesId;
+							this->GroupSetPhotoSpecies(mutUsage, group->id, photoSpId);
+							break;
+						}
+						i++;
+					}
+					if (!found)
+					{
+						this->GroupSetPhotoSpecies(mutUsage, group->id, 0);
+					}
+				}
+				else
+				{
+					if (photoSpId == 0)
+					{
+						UOSInt k = 0;
+						UOSInt l = group->groups.GetCount();
+						while (k < l)
+						{
+							phGroup = group->groups.GetItem(k);
+							if (phGroup->photoSpecies != 0)
+							{
+								photoSpId = phGroup->photoSpecies;
+								this->GroupSetPhotoGroup(mutUsage, group->id, phGroup->id);
+								break;
+							}
+							k++;
+						}
+						this->GroupSetPhotoSpecies(mutUsage, group->id, photoSpId);
+					}
+					else
+					{
+						this->GroupSetPhotoSpecies(mutUsage, group->id, photoSpId);
+					}
+				}
+				parentGroupId = group->id;
+				group = this->GroupGet(mutUsage, group->parentId);
+			}
+		}
+	}
+	return true;
+}
+
 Bool SSWR::OrganMgr::OrganWebEnv::SpeciesSetPhotoId(Sync::RWMutexUsage *mutUsage, Int32 speciesId, Int32 photoId)
 {
 	mutUsage->ReplaceMutex(&this->dataMut, true);

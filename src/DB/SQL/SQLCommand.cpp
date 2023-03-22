@@ -68,7 +68,13 @@ DB::SQL::SQLCommand *DB::SQL::SQLCommand::Parse(const UTF8Char *sql, DB::DBUtil:
 	sql = ParseNextWord(sql, &sb, sqlType);
 	if (sb.EqualsICase(UTF8STRC("CREATE")))
 	{
+		Bool isVirtual = false;
 		sql = ParseNextWord(sql, &sb, sqlType);
+		if (sb.EqualsICase(UTF8STRC("VIRTUAL")))
+		{
+			isVirtual = true;
+			sql = ParseNextWord(sql, &sb, sqlType);
+		}
 		if (sb.EqualsICase(UTF8STRC("TABLE")))
 		{
 			sql = ParseNextWord(sql, &sb, sqlType);
@@ -227,6 +233,7 @@ DB::SQL::SQLCommand *DB::SQL::SQLCommand::Parse(const UTF8Char *sql, DB::DBUtil:
 							{
 								colSize = 0;
 								colDP = 0;
+								col->SetNativeType(sb.ToCString());
 								DB::DBUtil::ColType colType = DB::DBUtil::ParseColType(sqlType, sb.ToString(), &colSize, &colDP);
 								if (colType == DB::DBUtil::CT_Unknown)
 								{
@@ -235,7 +242,6 @@ DB::SQL::SQLCommand *DB::SQL::SQLCommand::Parse(const UTF8Char *sql, DB::DBUtil:
 									break;
 								}
 								col->SetColType(colType);
-								col->SetNativeType(sb.ToCString());
 								col->SetColSize(colSize);
 								col->SetColDP(colDP);
 								sql = ParseNextWord(sql, &sb, sqlType);

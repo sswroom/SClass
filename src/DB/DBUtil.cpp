@@ -2377,6 +2377,11 @@ DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::DBUtil::SQLType sqlType, const 
 			*colSize = 4;
 			return DB::DBUtil::CT_Int32;
 		}
+		else if (Text::StrEqualsICaseC(typeName, typeNameLen, UTF8STRC("SMALLINT")))
+		{
+			*colSize = 2;
+			return DB::DBUtil::CT_Int16;
+		}
 		else if (Text::StrEqualsICaseC(typeName, typeNameLen, UTF8STRC("MEDIUMINT")))
 		{
 			*colSize = 2;
@@ -2386,6 +2391,21 @@ DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::DBUtil::SQLType sqlType, const 
 		{
 			*colSize = 1;
 			return DB::DBUtil::CT_Byte;
+		}
+		else if (Text::StrEqualsICaseC(typeName, typeNameLen, UTF8STRC("BIGINT")))
+		{
+			*colSize = 8;
+			return DB::DBUtil::CT_Int64;
+		}
+		else if (Text::StrEqualsICaseC(typeName, typeNameLen, UTF8STRC("INT2")))
+		{
+			*colSize = 2;
+			return DB::DBUtil::CT_Int16;
+		}
+		else if (Text::StrEqualsICaseC(typeName, typeNameLen, UTF8STRC("INT8")))
+		{
+			*colSize = 8;
+			return DB::DBUtil::CT_Int64;
 		}
 		else if (Text::StrEqualsICaseC(typeName, typeNameLen, UTF8STRC("REAL")))
 		{
@@ -2428,6 +2448,11 @@ DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::DBUtil::SQLType sqlType, const 
 			return DB::DBUtil::CT_Vector;
 		}
 		else if (Text::StrEqualsICaseC(typeName, typeNameLen, UTF8STRC("POLYGON")))
+		{
+			*colSize = 2147483647;
+			return DB::DBUtil::CT_Vector;
+		}
+		else if (Text::StrEqualsICaseC(typeName, typeNameLen, UTF8STRC("GEOMETRY")))
 		{
 			*colSize = 2147483647;
 			return DB::DBUtil::CT_Vector;
