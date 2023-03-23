@@ -768,14 +768,14 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroupMod(Net::WebServer::IWeb
 				}
 				else if (task->Equals(UTF8STRC("delete")) && modGroup != 0 && modGroup->groups.GetCount() == 0 && modGroup->species.GetCount() == 0)
 				{
-					Int32 id = modGroup->id;
+					Int32 parentId = modGroup->parentId;
 					Int32 cateId = modGroup->cateId;
 					if (me->env->GroupDelete(&mutUsage, modGroup->id))
 					{
 						mutUsage.EndUse();
 						sb.ClearStr();
 						sb.AppendC(UTF8STRC("group.html?id="));
-						sb.AppendI32(id);
+						sb.AppendI32(parentId);
 						sb.AppendC(UTF8STRC("&cateId="));
 						sb.AppendI32(cateId);
 
