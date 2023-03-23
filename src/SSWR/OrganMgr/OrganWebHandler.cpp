@@ -881,9 +881,13 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroupMod(Net::WebServer::IWeb
 			writer.WriteStrC(UTF8STRC("<input type=\"button\" value=\"Modify\" onclick=\"document.forms.newgroup.task.value='modify';document.forms.newgroup.submit();\"/>"));
 		}
 		writer.WriteStrC(UTF8STRC("<input type=\"button\" value=\"New\" onclick=\"document.forms.newgroup.task.value='new';document.forms.newgroup.submit();\"/>"));
-		if (group->species.GetCount() == 0 && group->groups.GetCount() == 0)
+		if (groupId != 0)
 		{
-			writer.WriteStrC(UTF8STRC("<input type=\"button\" value=\"Delete\" onclick=\"document.forms.newgroup.task.value='delete';document.forms.newgroup.submit();\"/>"));
+			GroupInfo *modGroup = me->env->GroupGet(&mutUsage, groupId);
+			if (modGroup && modGroup->species.GetCount() == 0 && modGroup->groups.GetCount() == 0)
+			{
+				writer.WriteStrC(UTF8STRC("<input type=\"button\" value=\"Delete\" onclick=\"document.forms.newgroup.task.value='delete';document.forms.newgroup.submit();\"/>"));
+			}
 		}
 		writer.WriteStrC(UTF8STRC("<a href=\"group.html?id="));
 		sb.ClearStr();
