@@ -1554,6 +1554,8 @@ Bool SSWR::OrganMgr::OrganWebEnv::SpeciesDelete(Sync::RWMutexUsage *mutUsage, In
 		SDEL_STRING(species->poiImg);
 		Int32 groupId = species->groupId;
 		this->spMap.Remove(speciesId);
+		GroupInfo *group = this->groupMap.Get(groupId);
+		group->species.Remove(species);
 		DEL_CLASS(species);
 		GroupAddCounts(mutUsage, groupId, (UOSInt)-1, 0, 0);
 		return true;
