@@ -1566,6 +1566,81 @@ Bool SSWR::OrganMgr::OrganWebEnv::SpeciesDelete(Sync::RWMutexUsage *mutUsage, In
 	}
 }
 
+Bool SSWR::OrganMgr::OrganWebEnv::SpeciesMerge(Sync::RWMutexUsage *mutUsage, Int32 srcSpeciesId, Int32 destSpeciesId, Int32 cateId)
+{
+	mutUsage->ReplaceMutex(&this->dataMut, true);
+	if (srcSpeciesId == destSpeciesId)
+		return false;
+	SpeciesInfo *srcSpecies = this->spMap.Get(srcSpeciesId);
+	SpeciesInfo *destSpecies = this->spMap.Get(destSpeciesId);
+	if (srcSpecies == 0 || destSpecies == 0)
+		return false;
+	UOSInt i;
+	DB::SQLBuilder sql(this->db);
+	if (srcSpecies->files.GetCount() > 0)
+	{
+		sql.Clear();
+		sql.AppendCmdC(CSTR("update userfile set species_id = "));
+		sql.AppendInt32(destSpeciesId);
+		sql.AppendCmdC(CSTR(" where species_id = "));
+		sql.AppendInt32(srcSpeciesId);
+		if (this->db->ExecuteNonQuery(sql.ToCString()) >= 0)
+		{
+			i = srcSpecies->files.GetCount();
+			while (i-- > 0)
+			{
+				srcSpecies->files.GetItem(i)->speciesId = destSpeciesId;
+			}
+			destSpecies->files.AddAll(&srcSpecies->files);
+			srcSpecies->files.Clear();
+		}
+		else
+		{
+			return false;
+		}
+	}
+	if (srcSpecies->wfiles.GetCount() > 0)
+	{
+		sql.Clear();
+		sql.AppendCmdC(CSTR("update webfile set species_id = "));
+		sql.AppendInt32(destSpeciesId);
+		sql.AppendCmdC(CSTR(" where species_id = "));
+		sql.AppendInt32(srcSpeciesId);
+		if (this->db->ExecuteNonQuery(sql.ToCString()) >= 0)
+		{
+			destSpecies->wfiles.PutAll(&srcSpecies->wfiles);
+			srcSpecies->wfiles.Clear();
+		}
+		else
+		{
+			return false;
+		}
+	}
+	if (srcSpecies->books.GetCount() > 0)
+	{
+		sql.Clear();
+		sql.AppendCmdC(CSTR("update species_book set species_id = "));
+		sql.AppendInt32(destSpeciesId);
+		sql.AppendCmdC(CSTR(" where species_id = "));
+		sql.AppendInt32(srcSpeciesId);
+		if (this->db->ExecuteNonQuery(sql.ToCString()) >= 0)
+		{
+			i = srcSpecies->books.GetCount();
+			while (i-- > 0)
+			{
+				srcSpecies->books.GetItem(i)->speciesId = destSpeciesId;
+			}
+			destSpecies->books.AddAll(&srcSpecies->books);
+			srcSpecies->books.Clear();
+		}
+		else
+		{
+			return false;
+		}
+	}
+	return this->SpeciesDelete(mutUsage, srcSpeciesId);
+}
+
 SSWR::OrganMgr::UserFileInfo *SSWR::OrganMgr::OrganWebEnv::UserfileGetCheck(Sync::RWMutexUsage *mutUsage, Int32 userfileId, Int32 speciesId, Int32 cateId, WebUserInfo *currUser, UTF8Char **filePathOut)
 {
 	mutUsage->ReplaceMutex(&this->dataMut, false);

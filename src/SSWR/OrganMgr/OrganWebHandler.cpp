@@ -568,7 +568,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroup(Net::WebServer::IWebReq
 			sb.AppendI32(id);
 			sb.AppendC(UTF8STRC("&cateId="));
 			sb.AppendI32(cateId);
-			me->WritePickObjs(&mutUsage, &writer, &env, sb.ToString());
+			me->WritePickObjs(&mutUsage, &writer, &env, sb.ToString(), false);
 		}
 
 		if (group->parentId == 0)
@@ -1051,6 +1051,36 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpecies(Net::WebServer::IWebR
 						{
 							env.pickObjs->RemoveAt(i);
 							i--;
+						}
+						i++;
+					}
+					if (env.pickObjs->GetCount() == 0)
+					{
+						env.pickObjType = POT_UNKNOWN;
+						webSess.GetSess()->SetValueInt32(UTF8STRC("PickObjType"), env.pickObjType);
+					}
+				}
+			}
+			else if (action && action->Equals(UTF8STRC("placemerge")))
+			{
+				if (env.pickObjType == POT_SPECIES)
+				{
+					i = 0;
+					j = env.pickObjs->GetCount();
+					while (i < j)
+					{
+						Int32 speciesId = env.pickObjs->GetItem(i);
+						sb.ClearStr();
+						sb.AppendC(UTF8STRC("species"));
+						sb.AppendI32(speciesId);
+						s = req->GetHTTPFormStr(sb.ToCString());
+						if (s && s->v[0] == '1')
+						{
+							if (me->env->SpeciesMerge(&mutUsage, speciesId, id, cateId))
+							{
+								env.pickObjs->RemoveAt(i);
+								i--;
+							}
 						}
 						i++;
 					}
@@ -1580,7 +1610,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpecies(Net::WebServer::IWebR
 			sb.AppendI32(id);
 			sb.AppendC(UTF8STRC("&cateId="));
 			sb.AppendI32(cateId);
-			me->WritePickObjs(&mutUsage, &writer, &env, sb.ToString());
+			me->WritePickObjs(&mutUsage, &writer, &env, sb.ToString(), true);
 		}
 
 		writer.WriteLineC(UTF8STRC("<br/>"));
@@ -7035,7 +7065,7 @@ void SSWR::OrganMgr::OrganWebHandler::WriteSpeciesTable(Sync::RWMutexUsage *mutU
 	}
 }
 
-void SSWR::OrganMgr::OrganWebHandler::WritePickObjs(Sync::RWMutexUsage *mutUsage, IO::Writer *writer, RequestEnv *env, const UTF8Char *url)
+void SSWR::OrganMgr::OrganWebHandler::WritePickObjs(Sync::RWMutexUsage *mutUsage, IO::Writer *writer, RequestEnv *env, const UTF8Char *url, Bool allowMerge)
 {
 	Text::StringBuilderUTF8 sb;
 	UOSInt i;
@@ -7226,6 +7256,10 @@ void SSWR::OrganMgr::OrganWebHandler::WritePickObjs(Sync::RWMutexUsage *mutUsage
 		WriteSpeciesTable(mutUsage, writer, &spList, scnSize, 0, true);
 		writer->WriteLineC(UTF8STRC("<input type=\"submit\" value=\"Place Selected\"/>"));
 		writer->WriteLineC(UTF8STRC("<input type=\"button\" value=\"Place All\" onclick=\"document.forms.pickfiles.action.value='placeall';document.forms.pickfiles.submit();\"/>"));
+		if (allowMerge)
+		{
+			writer->WriteLineC(UTF8STRC("<input type=\"button\" value=\"Place Merge\" onclick=\"document.forms.pickfiles.action.value='placemerge';document.forms.pickfiles.submit();\"/>"));
+		}
 		writer->WriteLineC(UTF8STRC("</form>"));
 		writer->WriteLineC(UTF8STRC("<hr/>"));
 	}
