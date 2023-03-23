@@ -117,6 +117,7 @@ namespace SSWR
 			Bool SpeciesSetFlags(Sync::RWMutexUsage *mutUsage, Int32 speciesId, SpeciesFlags flags);
 			Bool SpeciesMove(Sync::RWMutexUsage *mutUsage, Int32 speciesId, Int32 groupId, Int32 cateId);
 			Bool SpeciesModify(Sync::RWMutexUsage *mutUsage, Int32 speciesId, Text::CString engName, Text::CString chiName, Text::CString sciName, Text::CString description, Text::CString dirName);
+			Bool SpeciesDelete(Sync::RWMutexUsage *mutUsage, Int32 speciesId);
 			UserFileInfo *UserfileGetCheck(Sync::RWMutexUsage *mutUsage, Int32 userfileId, Int32 speciesId, Int32 cateId, WebUserInfo *currUser, UTF8Char **filePathOut);
 			UserFileInfo *UserfileGet(Sync::RWMutexUsage *mutUsage, Int32 id);
 			UTF8Char *UserfileGetPath(UTF8Char *sbuff, const UserFileInfo *userfile);

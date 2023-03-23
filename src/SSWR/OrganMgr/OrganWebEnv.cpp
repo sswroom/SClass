@@ -1532,6 +1532,38 @@ Bool SSWR::OrganMgr::OrganWebEnv::SpeciesModify(Sync::RWMutexUsage *mutUsage, In
 	}
 }
 
+Bool SSWR::OrganMgr::OrganWebEnv::SpeciesDelete(Sync::RWMutexUsage *mutUsage, Int32 speciesId)
+{
+	mutUsage->ReplaceMutex(&this->dataMut, true);
+	SpeciesInfo *species = this->spMap.Get(speciesId);
+	if (species == 0 || species->books.GetCount() != 0 || species->files.GetCount() != 0 || species->wfiles.GetCount() != 0)
+		return false;
+	DB::SQLBuilder sql(this->db);
+	sql.AppendCmdC(CSTR("delete from species where id = "));
+	sql.AppendInt32(speciesId);
+	if (this->db->ExecuteNonQuery(sql.ToCString()) >= 0)
+	{
+		this->spNameMap.Remove(species->sciName);
+		SDEL_STRING(species->engName);
+		SDEL_STRING(species->chiName);
+		SDEL_STRING(species->sciName);
+		SDEL_STRING(species->descript);
+		SDEL_STRING(species->dirName);
+		SDEL_STRING(species->photo);
+		SDEL_STRING(species->idKey);
+		SDEL_STRING(species->poiImg);
+		Int32 groupId = species->groupId;
+		this->spMap.Remove(speciesId);
+		DEL_CLASS(species);
+		GroupAddCounts(mutUsage, groupId, (UOSInt)-1, 0, 0);
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
 SSWR::OrganMgr::UserFileInfo *SSWR::OrganMgr::OrganWebEnv::UserfileGetCheck(Sync::RWMutexUsage *mutUsage, Int32 userfileId, Int32 speciesId, Int32 cateId, WebUserInfo *currUser, UTF8Char **filePathOut)
 {
 	mutUsage->ReplaceMutex(&this->dataMut, false);
@@ -2190,12 +2222,16 @@ Bool SSWR::OrganMgr::OrganWebEnv::UserfileMove(Sync::RWMutexUsage *mutUsage, Int
 			if (srcSpecies->files.GetItem(i) == userFile)
 			{
 				srcSpecies->files.RemoveAt(i);
+				if (srcSpecies->files.GetCount() == 0 || srcSpecies->photoId == userfileId)
+				{
+					this->SpeciesUpdateDefPhoto(mutUsage, srcSpecies->speciesId);
+				}
 				break;
 			}
 		}
 
 		destSpecies->files.Add(userFile);
-		if ((destSpecies->flags & 1) == 0)
+		if ((destSpecies->flags & SF_HAS_MYPHOTO) == 0)
 		{
 			this->SpeciesSetFlags(mutUsage, destSpecies->speciesId, (SpeciesFlags)(destSpecies->flags | SF_HAS_MYPHOTO));
 			this->GroupAddCounts(mutUsage, destSpecies->groupId, 0, 1, 1);

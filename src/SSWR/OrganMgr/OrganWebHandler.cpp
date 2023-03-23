@@ -1639,6 +1639,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpeciesMod(Net::WebServer::IW
 		Text::String *sname = 0;
 		Text::String *ename = 0;
 		Text::String *descr = 0;
+		Bool canDelete = false;
 		const UTF8Char *bookIgn = 0;
 		SpeciesInfo *species = 0;
 		if (req->GetQueryValueI32(CSTR("spId"), &spId))
@@ -1650,6 +1651,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpeciesMod(Net::WebServer::IW
 				sname = species->sciName;
 				ename = species->engName;
 				descr = species->descript;
+				canDelete = (species->files.GetCount() == 0 && species->books.GetCount() == 0 && species->wfiles.GetCount() == 0);
 			}
 		}
 		if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_POST)
@@ -1740,6 +1742,25 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpeciesMod(Net::WebServer::IW
 						{
 							msg.AppendC(UTF8STRC("Error in modifying species"));
 						}
+					}
+				}
+				else if (task->Equals(UTF8STRC("delete")) && species != 0 && species->files.GetCount() == 0 && species->books.GetCount() == 0 && species->wfiles.GetCount() == 0)
+				{
+					Int32 groupId = species->groupId;
+					if (me->env->SpeciesDelete(&mutUsage, species->speciesId))
+					{
+						sb.ClearStr();
+						sb.AppendC(UTF8STRC("group.html?id="));
+						sb.AppendI32(groupId);
+						sb.AppendC(UTF8STRC("&cateId="));
+						sb.AppendI32(cateId);
+
+						resp->RedirectURL(req, sb.ToCString(), 0);
+						return true;
+					}
+					else
+					{
+						msg.AppendC(UTF8STRC("Error in modifying species"));
 					}
 				}
 			}
@@ -1836,6 +1857,11 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpeciesMod(Net::WebServer::IW
 		writer.WriteStrC(UTF8STRC("\">"));
 		writer.WriteStr(LangGetValue(lang, UTF8STRC("Back")));
 		writer.WriteStrC(UTF8STRC("</a>"));
+		if (canDelete)
+		{
+			writer.WriteStrC(UTF8STRC("<br/><br/>"));
+			writer.WriteStrC(UTF8STRC("<input type=\"button\" value=\"Delete\" onclick=\"document.forms.newspecies.task.value='delete';document.forms.newspecies.submit();\"/>"));
+		}
 		writer.WriteLineC(UTF8STRC("</td></tr>"));
 		writer.WriteLineC(UTF8STRC("</table></form>"));
 		me->WriteFooter(&writer);
