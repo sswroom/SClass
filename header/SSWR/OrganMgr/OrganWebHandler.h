@@ -65,9 +65,11 @@ namespace SSWR
 			static Bool __stdcall SvcPublicPOI(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq, Net::WebServer::WebServiceHandler *parent);
 			static Bool __stdcall SvcGroupPOI(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq, Net::WebServer::WebServiceHandler *parent);
 			static Bool __stdcall SvcSpeciesPOI(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq, Net::WebServer::WebServiceHandler *parent);
+			static Bool __stdcall SvcDayPOI(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq, Net::WebServer::WebServiceHandler *parent);
 
 			void AddGroupPOI(Sync::RWMutexUsage *mutUsage, Text::StringBuilderUTF8 *sb, GroupInfo *group, Int32 userId);
 			void AddSpeciesPOI(Sync::RWMutexUsage *mutUsage, Text::StringBuilderUTF8 *sb, SpeciesInfo *species, Int32 userId, Bool publicGroup);
+			void AddUserfilePOI(Text::StringBuilderUTF8 *sb, SpeciesInfo *species, UserFileInfo *file);
 
 			void ResponsePhoto(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, WebUserInfo *user, Bool isMobile, Int32 speciesId, Int32 cateId, UInt32 imgWidth, UInt32 imgHeight, const UTF8Char *fileName);
 			void ResponsePhotoId(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, WebUserInfo *user, Bool isMobile, Int32 speciesId, Int32 cateId, UInt32 imgWidth, UInt32 imgHeight, Int32 photoId);
@@ -83,6 +85,7 @@ namespace SSWR
 			void WriteGroupTable(Sync::RWMutexUsage *mutUsage, IO::Writer *writer, const Data::ReadingList<GroupInfo *> *groupList, UInt32 scnWidth, Bool showSelect);
 			void WriteSpeciesTable(Sync::RWMutexUsage *mutUsage, IO::Writer *writer, const Data::ArrayList<SpeciesInfo *> *spList, UInt32 scnWidth, Int32 cateId, Bool showSelect);
 			void WritePickObjs(Sync::RWMutexUsage *mutUsage, IO::Writer *writer, RequestEnv *env, const UTF8Char *url, Bool allowMerge);
+			void WriteDataFiles(IO::Writer *writer, Data::FastMap<Data::Timestamp, DataFileInfo*> *fileMap, Int64 startTimeTicks, Int64 endTimeTicks);
 
 			static Bool __stdcall OnSessionDel(Net::WebServer::IWebSession* sess, void *userObj);
 			static Bool __stdcall OnSessionCheck(Net::WebServer::IWebSession* sess, void *userObj);

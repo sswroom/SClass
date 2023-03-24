@@ -3883,39 +3883,17 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDay(Net::WebServer::IWeb
 		writer.WriteLineC(UTF8STRC("</table><hr/>"));
 
 		writer.WriteStrC(UTF8STRC("Data Files:<br/>"));
-		startIndex = env.user->gpsDataFiles.GetIndex(Data::Timestamp(startTime, 0));
-		if (startIndex < 0)
-			startIndex = ~startIndex;
-		if (startIndex > 0 && env.user->gpsDataFiles.GetItem((UOSInt)startIndex - 1)->endTime.ToTicks() > startTime)
-			startIndex--;
-		endIndex = env.user->gpsDataFiles.GetIndex(Data::Timestamp(endTime, 0));
-		if (endIndex < 0)
-			endIndex = ~endIndex;
-		while (startIndex < endIndex)
-		{
-			DataFileInfo *dataFile = env.user->gpsDataFiles.GetItem((UOSInt)startIndex);
-			sb.ClearStr();
-			//sb.AppendC(UTF8STRC("<a href=\"datafile.html\">"));
-			if (dataFile->fileType == DataFileType::GPSTrack)
-			{
-				sb.AppendC(UTF8STRC("GPS: "));
-			}
-			else if (dataFile->fileType == DataFileType::Temperature)
-			{
-				sb.AppendC(UTF8STRC("Temp: "));
-			}
-			else
-			{
-				sb.AppendC(UTF8STRC("Other: "));
-			}
-			sb.AppendTS(dataFile->startTime);
-			sb.AppendC(UTF8STRC(" - "));
-			sb.AppendTS(dataFile->endTime);
-			sb.AppendC(UTF8STRC("<br/>"));
-			writer.WriteLineC(sb.ToString(), sb.GetLength());
-			startIndex++;
-		}
+		me->WriteDataFiles(&writer, &env.user->gpsDataFiles, startTime, endTime);
+		me->WriteDataFiles(&writer, &env.user->tempDataFiles, startTime, endTime);
 		writer.WriteLineC(UTF8STRC("<hr/>"));
+
+		sb.ClearStr();
+		sb.AppendC(UTF8STRC("<a href=\"map/index.html?day="));
+		sb.AppendI32(d);
+		sb.AppendC(UTF8STRC("\">"));
+		sb.AppendC(UTF8STRC("ShowMap"));
+		sb.AppendC(UTF8STRC("</a><br/>"));
+		writer.WriteLineC(sb.ToString(), sb.GetLength());
 
 		sptr = Text::StrUInt32(sbuff, dt.GetYear());
 		writer.WriteStrC(UTF8STRC("<a href=\"photoyear.html?y="));
@@ -5585,6 +5563,73 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpeciesPOI(Net::WebServer::IW
 	return true;
 }
 
+Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcDayPOI(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq, Net::WebServer::WebServiceHandler *parent)
+{
+	SSWR::OrganMgr::OrganWebHandler *me = (SSWR::OrganMgr::OrganWebHandler*)parent;
+	RequestEnv env;
+	me->ParseRequestEnv(req, resp, &env, false);
+	Text::StringBuilderUTF8 sb;
+	sb.AppendUTF8Char('[');
+	Int32 dayId;
+	if (env.user && req->GetQueryValueI32(CSTR("id"), &dayId))
+	{
+
+		Sync::RWMutexUsage mutUsage;
+		Int64 startTime;
+		Int64 endTime;
+		OSInt startIndex;
+		OSInt endIndex;
+		Text::StringBuilderUTF8 sb;
+		startTime = dayId * 86400000LL;
+		endTime = startTime + 86400000LL;
+
+		startIndex = env.user->userFileIndex.SortedIndexOf(startTime);
+		if (startIndex < 0)
+		{
+			startIndex = ~startIndex;
+		}
+		else
+		{
+			while (startIndex > 0 && env.user->userFileIndex.GetItem((UOSInt)startIndex - 1) == startTime)
+			{
+				startIndex--;
+			}
+		}
+		endIndex = env.user->userFileIndex.SortedIndexOf(endTime);
+		if (endIndex < 0)
+		{
+			endIndex = ~endIndex;
+		}
+		else
+		{
+			while (endIndex > 0 && env.user->userFileIndex.GetItem((UOSInt)endIndex - 1) == endTime)
+			{
+				endIndex--;
+			}
+		}
+		UserFileInfo *userFile;
+		SpeciesInfo *sp;
+			
+		while (startIndex < endIndex)
+		{
+			userFile = env.user->userFileObj.GetItem((UOSInt)startIndex);
+			sp = me->env->SpeciesGet(&mutUsage, userFile->speciesId);
+			me->AddUserfilePOI(&sb, sp, userFile);
+			startIndex++;
+		}
+		if (sb.GetLength() > 1)
+		{
+			sb.RemoveChars(3);
+		}
+	}
+	sb.AppendUTF8Char(']');
+	resp->AddDefHeaders(req);
+	resp->AddContentType(CSTR("application/json"));
+	resp->AddContentLength(sb.GetLength());
+	resp->Write(sb.ToString(), sb.GetLength());
+	return true;
+}
+
 void SSWR::OrganMgr::OrganWebHandler::AddGroupPOI(Sync::RWMutexUsage *mutUsage, Text::StringBuilderUTF8 *sb, GroupInfo *group, Int32 userId)
 {
 	UOSInt i = 0;
@@ -5605,7 +5650,6 @@ void SSWR::OrganMgr::OrganWebHandler::AddGroupPOI(Sync::RWMutexUsage *mutUsage, 
 
 void SSWR::OrganMgr::OrganWebHandler::AddSpeciesPOI(Sync::RWMutexUsage *mutUsage, Text::StringBuilderUTF8 *sb, SpeciesInfo *species, Int32 userId, Bool publicGroup)
 {
-	Data::DateTime dt;
 	UserFileInfo *file;
 	UOSInt k;
 	UOSInt l;
@@ -5626,59 +5670,62 @@ void SSWR::OrganMgr::OrganWebHandler::AddSpeciesPOI(Sync::RWMutexUsage *mutUsage
 		file = species->files.GetItem(k);
 		if ((file->lat != 0 || file->lon != 0) && (publicGroup || adminUser || file->webuserId == userId))
 		{
-			sb->AppendUTF8Char('{');
-			sb->AppendC(UTF8STRC("\"id\":\""));
-			sb->AppendI32(file->id);
-			sb->AppendC(UTF8STRC("\",\"name\":"));
-			if (file->descript && file->descript->leng > 0)
-			{
-				Text::JSText::ToJSTextDQuote(sb, file->descript->v);
-			}
-			else
-			{
-				Text::JSText::ToJSTextDQuote(sb, species->sciName->v);
-			}
-			sb->AppendC(UTF8STRC(",\"description\":\"<img src=\\\"/photo.html?id="));
-			sb->AppendI32(species->speciesId);
-			sb->AppendC(UTF8STRC("&cateId="));
-			sb->AppendI32(species->cateId);
-			sb->AppendC(UTF8STRC("&width="));
-			sb->AppendI32(PREVIEW_SIZE);
-			sb->AppendC(UTF8STRC("&height="));
-			sb->AppendI32(PREVIEW_SIZE);
-			sb->AppendC(UTF8STRC("&fileId="));
-			sb->AppendI32(file->id);
-			sb->AppendC(UTF8STRC("\\\" /><br/>"));
-			dt.SetTicks(file->captureTimeTicks);
-			dt.SetTimeZoneQHR(32);
-			sb->AppendDate(&dt);
-			sb->AppendC(UTF8STRC("\",\"lat\":"));
-			sb->AppendDouble(file->lat);
-			sb->AppendC(UTF8STRC(",\"lon\":"));
-			sb->AppendDouble(file->lon);
-			sb->AppendC(UTF8STRC(",\"imgUrl\":\"/photo.html?id="));
-			sb->AppendI32(species->speciesId);
-			sb->AppendC(UTF8STRC("&cateId="));
-			sb->AppendI32(species->cateId);
-			sb->AppendC(UTF8STRC("&width="));
-			sb->AppendI32(PREVIEW_SIZE);
-			sb->AppendC(UTF8STRC("&height="));
-			sb->AppendI32(PREVIEW_SIZE);
-			sb->AppendC(UTF8STRC("&fileId="));
-			sb->AppendI32(file->id);
-			sb->AppendC(UTF8STRC("\",\"poiUrl\":\"img/"));
-			if (species->poiImg)
-			{
-				sb->Append(species->poiImg);
-			}
-			else
-			{
-				sb->AppendC(UTF8STRC("poi.png"));
-			}
-			sb->AppendC(UTF8STRC("\"},\r\n"));
+			this->AddUserfilePOI(sb, species, file);
 		}
 		k++;
 	}
+}
+
+void SSWR::OrganMgr::OrganWebHandler::AddUserfilePOI(Text::StringBuilderUTF8 *sb, SpeciesInfo *species, UserFileInfo *file)
+{
+	sb->AppendUTF8Char('{');
+	sb->AppendC(UTF8STRC("\"id\":\""));
+	sb->AppendI32(file->id);
+	sb->AppendC(UTF8STRC("\",\"name\":"));
+	if (file->descript && file->descript->leng > 0)
+	{
+		Text::JSText::ToJSTextDQuote(sb, file->descript->v);
+	}
+	else
+	{
+		Text::JSText::ToJSTextDQuote(sb, species->sciName->v);
+	}
+	sb->AppendC(UTF8STRC(",\"description\":\"<img src=\\\"/photo.html?id="));
+	sb->AppendI32(species->speciesId);
+	sb->AppendC(UTF8STRC("&cateId="));
+	sb->AppendI32(species->cateId);
+	sb->AppendC(UTF8STRC("&width="));
+	sb->AppendI32(PREVIEW_SIZE);
+	sb->AppendC(UTF8STRC("&height="));
+	sb->AppendI32(PREVIEW_SIZE);
+	sb->AppendC(UTF8STRC("&fileId="));
+	sb->AppendI32(file->id);
+	sb->AppendC(UTF8STRC("\\\" /><br/>"));
+	sb->AppendTS(Data::Timestamp(file->captureTimeTicks, 32));
+	sb->AppendC(UTF8STRC("\",\"lat\":"));
+	sb->AppendDouble(file->lat);
+	sb->AppendC(UTF8STRC(",\"lon\":"));
+	sb->AppendDouble(file->lon);
+	sb->AppendC(UTF8STRC(",\"imgUrl\":\"/photo.html?id="));
+	sb->AppendI32(species->speciesId);
+	sb->AppendC(UTF8STRC("&cateId="));
+	sb->AppendI32(species->cateId);
+	sb->AppendC(UTF8STRC("&width="));
+	sb->AppendI32(PREVIEW_SIZE);
+	sb->AppendC(UTF8STRC("&height="));
+	sb->AppendI32(PREVIEW_SIZE);
+	sb->AppendC(UTF8STRC("&fileId="));
+	sb->AppendI32(file->id);
+	sb->AppendC(UTF8STRC("\",\"poiUrl\":\"img/"));
+	if (species->poiImg)
+	{
+		sb->Append(species->poiImg);
+	}
+	else
+	{
+		sb->AppendC(UTF8STRC("poi.png"));
+	}
+	sb->AppendC(UTF8STRC("\"},\r\n"));
 }
 
 void SSWR::OrganMgr::OrganWebHandler::ResponsePhoto(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, WebUserInfo *user, Bool isMobile, Int32 speciesId, Int32 cateId, UInt32 imgWidth, UInt32 imgHeight, const UTF8Char *fileName)
@@ -7330,6 +7377,45 @@ void SSWR::OrganMgr::OrganWebHandler::WritePickObjs(Sync::RWMutexUsage *mutUsage
 	}
 }
 
+void SSWR::OrganMgr::OrganWebHandler::WriteDataFiles(IO::Writer *writer, Data::FastMap<Data::Timestamp, DataFileInfo*> *fileMap, Int64 startTimeTicks, Int64 endTimeTicks)
+{
+	OSInt startIndex;
+	OSInt endIndex;
+	Text::StringBuilderUTF8 sb;
+	startIndex = fileMap->GetIndex(Data::Timestamp(startTimeTicks, 0));
+	if (startIndex < 0)
+		startIndex = ~startIndex;
+	if (startIndex > 0 && fileMap->GetItem((UOSInt)startIndex - 1)->endTime.ToTicks() > startTimeTicks)
+		startIndex--;
+	endIndex = fileMap->GetIndex(Data::Timestamp(endTimeTicks, 0));
+	if (endIndex < 0)
+		endIndex = ~endIndex;
+	while (startIndex < endIndex)
+	{
+		DataFileInfo *dataFile = fileMap->GetItem((UOSInt)startIndex);
+		sb.ClearStr();
+		//sb.AppendC(UTF8STRC("<a href=\"datafile.html\">"));
+		if (dataFile->fileType == DataFileType::GPSTrack)
+		{
+			sb.AppendC(UTF8STRC("GPS: "));
+		}
+		else if (dataFile->fileType == DataFileType::Temperature)
+		{
+			sb.AppendC(UTF8STRC("Temp: "));
+		}
+		else
+		{
+			sb.AppendC(UTF8STRC("Other: "));
+		}
+		sb.AppendTS(dataFile->startTime);
+		sb.AppendC(UTF8STRC(" - "));
+		sb.AppendTS(dataFile->endTime);
+		sb.AppendC(UTF8STRC("<br/>"));
+		writer->WriteLineC(sb.ToString(), sb.GetLength());
+		startIndex++;
+	}
+}
+
 Bool __stdcall SSWR::OrganMgr::OrganWebHandler::OnSessionDel(Net::WebServer::IWebSession* sess, void *userObj)
 {
 	Data::DateTime *t;
@@ -7414,6 +7500,7 @@ SSWR::OrganMgr::OrganWebHandler::OrganWebHandler(OrganWebEnv *env, UInt32 scnSiz
 	this->AddService(CSTR("/publicpoi"), Net::WebUtil::RequestMethod::HTTP_GET, SvcPublicPOI);
 	this->AddService(CSTR("/grouppoi"), Net::WebUtil::RequestMethod::HTTP_GET, SvcGroupPOI);
 	this->AddService(CSTR("/speciespoi"), Net::WebUtil::RequestMethod::HTTP_GET, SvcSpeciesPOI);
+	this->AddService(CSTR("/daypoi"), Net::WebUtil::RequestMethod::HTTP_GET, SvcDayPOI);
 }
 
 SSWR::OrganMgr::OrganWebHandler::~OrganWebHandler()
