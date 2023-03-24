@@ -5584,11 +5584,8 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcDayPOI(Net::WebServer::IWebRe
 		Int64 endTime;
 		OSInt startIndex;
 		OSInt endIndex;
-		Text::StringBuilderUTF8 sb;
 		startTime = dayId * 86400000LL;
 		endTime = startTime + 86400000LL;
-
-		printf("SvcDayPOI: dayId = %d\r\n", dayId);
 
 		startIndex = env.user->userFileIndex.SortedIndexOf(startTime);
 		if (startIndex < 0)
@@ -5617,7 +5614,6 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcDayPOI(Net::WebServer::IWebRe
 		UserFileInfo *userFile;
 		SpeciesInfo *sp;
 
-		printf("SvcDayPOI: startIndex = %d, endIndex = %d\r\n", (Int32)startIndex, (Int32) endIndex);
 		while (startIndex < endIndex)
 		{
 			userFile = env.user->userFileObj.GetItem((UOSInt)startIndex);
