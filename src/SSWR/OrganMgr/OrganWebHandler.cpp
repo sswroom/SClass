@@ -39,6 +39,8 @@
 #include "Text/XML.h"
 #include "Text/TextBinEnc/URIEncoding.h"
 
+#include <stdio.h>
+
 #define SP_PER_PAGE_DESKTOP 100
 #define SP_PER_PAGE_MOBILE 90
 #define PREVIEW_SIZE 320
@@ -5571,9 +5573,12 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcDayPOI(Net::WebServer::IWebRe
 	Text::StringBuilderUTF8 sb;
 	sb.AppendUTF8Char('[');
 	Int32 dayId;
-	if (env.user && req->GetQueryValueI32(CSTR("id"), &dayId))
+	if (env.user == 0)
 	{
-
+		printf("SvcDayPOI: user == null\r\n");
+	}
+	else if (req->GetQueryValueI32(CSTR("id"), &dayId))
+	{
 		Sync::RWMutexUsage mutUsage;
 		Int64 startTime;
 		Int64 endTime;
@@ -5582,6 +5587,8 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcDayPOI(Net::WebServer::IWebRe
 		Text::StringBuilderUTF8 sb;
 		startTime = dayId * 86400000LL;
 		endTime = startTime + 86400000LL;
+
+		printf("SvcDayPOI: dayId = %d\r\n", dayId);
 
 		startIndex = env.user->userFileIndex.SortedIndexOf(startTime);
 		if (startIndex < 0)
