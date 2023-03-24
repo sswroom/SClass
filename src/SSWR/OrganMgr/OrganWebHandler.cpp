@@ -5616,7 +5616,8 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcDayPOI(Net::WebServer::IWebRe
 		}
 		UserFileInfo *userFile;
 		SpeciesInfo *sp;
-			
+
+		printf("SvcDayPOI: startIndex = %d, endIndex = %d\r\n", (Int32)startIndex, (Int32) endIndex);
 		while (startIndex < endIndex)
 		{
 			userFile = env.user->userFileObj.GetItem((UOSInt)startIndex);
