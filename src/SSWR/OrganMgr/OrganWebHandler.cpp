@@ -3881,6 +3881,42 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDay(Net::WebServer::IWeb
 			writer.WriteLineC(UTF8STRC("</tr>"));
 		}
 		writer.WriteLineC(UTF8STRC("</table><hr/>"));
+
+		writer.WriteStrC(UTF8STRC("Data Files:<br/>"));
+		startIndex = env.user->gpsDataFiles.GetIndex(Data::Timestamp(startTime, 0));
+		if (startIndex < 0)
+			startIndex = ~startIndex;
+		if (startIndex > 0 && env.user->gpsDataFiles.GetItem((UOSInt)startIndex - 1)->endTime.ToTicks() > startTime)
+			startIndex--;
+		endIndex = env.user->gpsDataFiles.GetIndex(Data::Timestamp(endTime, 0));
+		if (endIndex < 0)
+			endIndex = ~endIndex;
+		while (startIndex < endIndex)
+		{
+			DataFileInfo *dataFile = env.user->gpsDataFiles.GetItem((UOSInt)startIndex);
+			sb.ClearStr();
+			//sb.AppendC(UTF8STRC("<a href=\"datafile.html\">"));
+			if (dataFile->fileType == DataFileType::GPSTrack)
+			{
+				sb.AppendC(UTF8STRC("GPS: "));
+			}
+			else if (dataFile->fileType == DataFileType::Temperature)
+			{
+				sb.AppendC(UTF8STRC("Temp: "));
+			}
+			else
+			{
+				sb.AppendC(UTF8STRC("Other: "));
+			}
+			sb.AppendTS(dataFile->startTime);
+			sb.AppendC(UTF8STRC(" - "));
+			sb.AppendTS(dataFile->endTime);
+			sb.AppendC(UTF8STRC("<br/>"));
+			writer.WriteLineC(sb.ToString(), sb.GetLength());
+			startIndex++;
+		}
+		writer.WriteLineC(UTF8STRC("<hr/>"));
+
 		sptr = Text::StrUInt32(sbuff, dt.GetYear());
 		writer.WriteStrC(UTF8STRC("<a href=\"photoyear.html?y="));
 		writer.WriteStrC(sbuff, (UOSInt)(sptr - sbuff));

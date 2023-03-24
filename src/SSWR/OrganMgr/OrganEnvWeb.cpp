@@ -1689,7 +1689,7 @@ SSWR::OrganMgr::OrganEnvWeb::FileStatus SSWR::OrganMgr::OrganEnvWeb::AddSpeciesF
 		crcVal = ReadMInt32(crcBuff);
 
 		NEW_CLASS(fd, IO::StmData::FileData(fileName, false));
-		pobj = this->parsers->ParseFile(fd, &t);
+		pobj = this->parsers.ParseFile(fd, &t);
 		DEL_CLASS(fd);
 		if (pobj)
 		{

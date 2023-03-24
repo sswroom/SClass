@@ -31,6 +31,13 @@ namespace SSWR
 			SF_HAS_WEBPHOTO = 8
 		} SpeciesFlags;
 
+		enum class DataFileType
+		{
+			Unknown,
+			GPSTrack,
+			Temperature
+		};
+
 		typedef struct
 		{
 			Int32 bookId;
@@ -108,6 +115,17 @@ namespace SSWR
 			Double cropBottom;
 		} WebFileInfo;
 
+		struct DataFileInfo
+		{
+			Int32 id;
+			DataFileType fileType;
+			Data::Timestamp startTime;
+			Data::Timestamp endTime;
+			Text::String *oriFileName;
+			Text::String *dataFileName;
+			Int32 webuserId;
+		};
+
 		typedef struct
 		{
 			Int32 id;
@@ -118,6 +136,8 @@ namespace SSWR
 			Data::ArrayListInt64 userFileIndex;
 			Data::ArrayList<UserFileInfo*> userFileObj;
 			Data::FastMap<Int32, Data::FastMap<Int64, TripInfo*>*> tripCates;
+			Data::FastMap<Data::Timestamp, DataFileInfo*> gpsDataFiles;
+			Data::FastMap<Data::Timestamp, DataFileInfo*> tempDataFiles;
 			Int32 unorganSpId;
 		} WebUserInfo;
 

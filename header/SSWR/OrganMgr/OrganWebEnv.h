@@ -62,6 +62,7 @@ namespace SSWR
 			Data::FastMap<Int32, UserFileInfo*> userFileMap;
 			Data::FastMap<UInt32, IO::ConfigFile*> langMap;
 			Data::FastMap<Int32, LocationInfo*> locMap;
+			Data::FastMap<Int32, DataFileInfo*> dataFileMap;
 			Text::Locale locale;
 
 			void LoadLangs();

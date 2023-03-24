@@ -439,6 +439,42 @@ void SSWR::OrganMgr::OrganWebEnv::LoadUsers(Sync::RWMutexUsage *mutUsage)
 		}
 	}
 
+	r = this->db->ExecuteReader(CSTR("select id, fileType, startTime, endTime, oriFileName, dataFileName, webuser_id from datafile order by webuser_id, startTime"));
+	if (r != 0)
+	{
+		DataFileInfo *dataFile;
+		user = 0;
+		while (r->ReadNext())
+		{
+			userId = r->GetInt32(6);
+			if (user == 0 || user->id != userId)
+			{
+				user = this->userMap.Get(userId);
+			}
+			dataFile = MemAlloc(DataFileInfo, 1);
+			dataFile->id = r->GetInt32(0);
+			dataFile->fileType = (DataFileType)r->GetInt32(1);
+			dataFile->startTime = r->GetTimestamp(2);
+			dataFile->endTime = r->GetTimestamp(3);
+			dataFile->oriFileName = r->GetNewStr(4);
+			dataFile->dataFileName = r->GetNewStr(5);
+			dataFile->webuserId = userId;
+			this->dataFileMap.Put(dataFile->id, dataFile);
+			if (user != 0)
+			{
+				if (dataFile->fileType == DataFileType::GPSTrack)
+				{
+					user->gpsDataFiles.Put(dataFile->startTime, dataFile);
+				}
+				else
+				{
+					user->tempDataFiles.Put(dataFile->startTime, dataFile);
+				}
+			}
+		}
+		this->db->CloseReader(r);
+	}
+
 	r = this->db->ExecuteReader(CSTR("select fromDate, toDate, locId, cate_id, webuser_id from trip"));
 	if (r != 0)
 	{
@@ -647,6 +683,7 @@ void SSWR::OrganMgr::OrganWebEnv::FreeUsers()
 {
 	WebUserInfo *user;
 	UserFileInfo *userFile;
+	DataFileInfo *dataFile;
 	const Data::FastMap<Int64, TripInfo*> *tripCate;
 	TripInfo *trip;
 	UOSInt i;
@@ -688,12 +725,23 @@ void SSWR::OrganMgr::OrganWebEnv::FreeUsers()
 	this->userMap.Clear();
 	this->userNameMap.Clear();
 	this->userFileMap.Clear();
+
+	i = this->dataFileMap.GetCount();
+	while (i-- > 0)
+	{
+		dataFile = this->dataFileMap.GetItem(i);
+		SDEL_STRING(dataFile->oriFileName);
+		SDEL_STRING(dataFile->dataFileName);
+		MemFree(dataFile);
+	}
+	this->dataFileMap.Clear();
 }
 
 void SSWR::OrganMgr::OrganWebEnv::ClearUsers()
 {
 	WebUserInfo *user;
 	UserFileInfo *userFile;
+	DataFileInfo *dataFile;
 	UOSInt i;
 	UOSInt j;
 	i = this->userMap.GetCount();
@@ -712,8 +760,20 @@ void SSWR::OrganMgr::OrganWebEnv::ClearUsers()
 		}
 		user->userFileIndex.Clear();
 		user->userFileObj.Clear();
+		user->gpsDataFiles.Clear();
+		user->tempDataFiles.Clear();
 	}
 	this->userFileMap.Clear();
+
+	i = this->dataFileMap.GetCount();
+	while (i-- > 0)
+	{
+		dataFile = this->dataFileMap.GetItem(i);
+		SDEL_STRING(dataFile->oriFileName);
+		SDEL_STRING(dataFile->dataFileName);
+		MemFree(dataFile);
+	}
+	this->dataFileMap.Clear();
 }
 
 SSWR::OrganMgr::OrganWebEnv::OrganWebEnv(Net::SocketFactory *sockf, Net::SSLEngine *ssl, IO::LogTool *log, DB::DBTool *db, Text::String *imageDir, UInt16 port, UInt16 sslPort, Text::String *cacheDir, Text::String *dataDir, UInt32 scnSize, Text::String *reloadPwd, Int32 unorganizedGroupId, Media::DrawEngine *eng, Text::CString osmCachePath)
