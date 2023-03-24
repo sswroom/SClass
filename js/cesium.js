@@ -116,6 +116,41 @@ sswr.cesium.addGeoJSON = function(viewer, geoJSON, color, extSize)
 	}
 }
 
+sswr.cesium.fromCartesian3Array = function(viewer, arr)
+{
+	var coordinates = new Array();
+	var points;
+	var ellipsoid = viewer.scene.globe.ellipsoid;
+	var cartoArr = ellipsoid.cartesianArrayToCartographicArray(arr);
+	var i = 0;
+	var j = cartoArr.length;
+	while (i < j)
+	{
+		points = new Array();
+		points.push(cartoArr[i].longitude * 180 / Math.PI);
+		points.push(cartoArr[i].latitude * 180 / Math.PI);
+		points.push(cartoArr[i].height);
+		coordinates.push(points);
+		i++;
+	}
+	return coordinates;
+}
+
+sswr.cesium.fromPolygonGraphics = function(viewer, pg)
+{
+	var coordinates = new Array();
+	var hierarchy = pg.hierarchy.getValue();
+	coordinates.push(sswr.cesium.fromCartesian3Array(viewer, hierarchy.positions));
+	var i = 0;
+	var j =hierarchy.holes.length;
+	while (i < j)
+	{
+		coordinates.push(sswr.cesium.fromCartesian3Array(viewer, hierarchy.holes[i].positions));
+		i++;
+	}
+	return new sswr.math.geometry.Polygon(4326, coordinates);
+}
+
 /*sswr.cesium.createPolygon = function(viewer, lats, lons, height)
 {
 	if (lats.length != lons.length)
