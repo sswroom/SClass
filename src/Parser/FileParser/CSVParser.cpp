@@ -401,11 +401,20 @@ IO::ParsedObject *Parser::FileParser::CSVParser::ParseFileHdr(IO::StreamData *fd
 	}
 	else
 	{
-		if (colNames.GetCount() > 1 && fd->IsFullFile())
-		{			
-			DB::CSVFile *csv;
-			NEW_CLASS(csv, DB::CSVFile(fd->GetFullFileName(), this->codePage));
-			return csv;
+		if (colNames.GetCount() > 1)
+		{
+			if (fd->IsFullFile())
+			{
+				DB::CSVFile *csv;
+				NEW_CLASS(csv, DB::CSVFile(fd->GetFullFileName(), this->codePage));
+				return csv;
+			}
+			else
+			{
+				DB::CSVFile *csv;
+				NEW_CLASS(csv, DB::CSVFile(fd, this->codePage));
+				return csv;
+			}
 		}
 		else
 		{

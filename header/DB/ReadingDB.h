@@ -20,7 +20,7 @@ namespace DB
 		virtual ~ReadingDB();
 
 		virtual UOSInt QuerySchemaNames(Data::ArrayList<Text::String*> *names);
-		virtual UOSInt QueryTableNames(Text::CString schemaName, Data::ArrayList<Text::String*> *names) = 0;
+		virtual UOSInt QueryTableNames(Text::CString schemaName, Data::ArrayList<Text::String*> *names) = 0; //Need Release
 		virtual DBReader *QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayList<Text::String*> *colNames, UOSInt dataOfst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition) = 0;
 		virtual TableDef *GetTableDef(Text::CString schemaName, Text::CString tableName) = 0;
 		virtual void CloseReader(DBReader *r) = 0;

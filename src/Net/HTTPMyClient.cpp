@@ -595,6 +595,7 @@ Bool Net::HTTPMyClient::Connect(Text::CString url, Net::WebUtil::RequestMethod m
 		return false;
 	}
 
+	this->SetSourceName(url);
 #ifdef SHOWDEBUG
 	printf("Request URL: %s %s\r\n", Net::WebUtil::RequestMethodGetName(method).v, url.v);
 #endif
@@ -1115,6 +1116,27 @@ void Net::HTTPMyClient::EndRequest(Double *timeReq, Double *timeResp)
 						else if (s->StartsWithICase(8, UTF8STRC("Type: text/event-stream")))
 						{
 							eventStream = true;
+						}
+						else if (s->StartsWithICase(8, UTF8STRC("Disposition: ")))
+						{
+							UOSInt i = s->IndexOf(UTF8STRC("filename="), 21);
+							if (i >= 0)
+							{
+								if (s->v[i + 9] == '"')
+								{
+									UOSInt j = s->IndexOf('"', i + 10);
+									if (j > 0)
+									{
+										Text::String *tmpS = Text::String::New(&s->v[i + 10], j - i - 10);
+										this->SetSourceName(tmpS->ToCString());
+										tmpS->Release();
+									}
+								}
+								else
+								{
+									this->SetSourceName(s->ToCString().Substring(i + 9));
+								}
+							}
 						}
 					}
 					else if (s->StartsWithICase(UTF8STRC("Keep-Alive: timeout=")))

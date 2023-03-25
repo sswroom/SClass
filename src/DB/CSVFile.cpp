@@ -6,6 +6,7 @@
 #include "DB/DBConn.h"
 #include "DB/TableDef.h"
 #include "IO/FileStream.h"
+#include "IO/StreamDataStream.h"
 #include "IO/StreamReader.h"
 #include "Math/MSGeography.h"
 #include "Text/MyString.h"
@@ -17,6 +18,7 @@ DB::CSVFile::CSVFile(Text::String *fileName, UInt32 codePage) : DB::ReadingDB(fi
 {
 	this->fileName = fileName->Clone();
 	this->stm = 0;
+	this->releaseStm = false;
 	this->codePage = codePage;
 	this->noHeader = false;
 	this->nullIfEmpty = false;
@@ -26,6 +28,7 @@ DB::CSVFile::CSVFile(Text::CString fileName, UInt32 codePage) : DB::ReadingDB(fi
 {
 	this->fileName = Text::String::New(fileName);
 	this->stm = 0;
+	this->releaseStm = false;
 	this->codePage = codePage;
 	this->noHeader = false;
 	this->nullIfEmpty = false;
@@ -35,6 +38,17 @@ DB::CSVFile::CSVFile(IO::SeekableStream *stm, UInt32 codePage) : DB::ReadingDB(s
 {
 	this->fileName = stm->GetSourceNameObj()->Clone();
 	this->stm = stm;
+	this->releaseStm = false;
+	this->codePage = codePage;
+	this->noHeader = false;
+	this->nullIfEmpty = false;
+}
+
+DB::CSVFile::CSVFile(IO::StreamData *fd, UInt32 codePage) : DB::ReadingDB(fd->GetFullName())
+{
+	this->fileName = fd->GetFullName()->Clone();
+	NEW_CLASS(this->stm, IO::StreamDataStream(fd));
+	this->releaseStm = true;
 	this->codePage = codePage;
 	this->noHeader = false;
 	this->nullIfEmpty = false;
@@ -43,6 +57,10 @@ DB::CSVFile::CSVFile(IO::SeekableStream *stm, UInt32 codePage) : DB::ReadingDB(s
 DB::CSVFile::~CSVFile()
 {
 	this->fileName->Release();
+	if (this->stm && this->releaseStm)
+	{
+		DEL_CLASS(this->stm);
+	}
 }
 
 UOSInt DB::CSVFile::QueryTableNames(Text::CString schemaName, Data::ArrayList<Text::String*> *names)

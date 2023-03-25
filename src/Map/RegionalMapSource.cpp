@@ -248,6 +248,18 @@ Map::RegionalMapSource::MapInfo Map::RegionalMapSource::maps[] = {
 		UTF8STRC("")},
 	{UTF8STRC("Traffic Speed"), UTF8STRC("Hong Kong"), UTF8STRC("Hong Kong Transport Department"), MapType::ESRIMap, 2326, UTF8STRC("https://www.map.gov.hk/arcgis2/rest/services/mbatsm_link__d00/MapServer"),
 		UTF8STRC("Information about the average traffic speed of major roads in Hong Kong as displayed in this app is provided by the Transport Department. This information is updated every 5 minutes.")},
+	{UTF8STRC("Auto Post Information"), UTF8STRC("Hong Kong"), UTF8STRC("Hongkong Post"), MapType::File, 0, UTF8STRC("https://www.hongkongpost.hk/opendata/auto-post.json"),
+		UTF8STRC("Auto Post locations, opening hours and facility")},
+	{UTF8STRC("iPostal Kiosk Information"), UTF8STRC("Hong Kong"), UTF8STRC("Hongkong Post"), MapType::File, 0, UTF8STRC("https://www.hongkongpost.hk/opendata/ipostal-kiosk.json"),
+		UTF8STRC("iPostal Kiosk locations and opening hours")},
+	{UTF8STRC("iPostal Station Information"), UTF8STRC("Hong Kong"), UTF8STRC("Hongkong Post"), MapType::File, 0, UTF8STRC("https://www.hongkongpost.hk/opendata/ipostal-station.json"),
+		UTF8STRC("iPostal Station locations and opening hours")},
+	{UTF8STRC("Mobile Post Office Information"), UTF8STRC("Hong Kong"), UTF8STRC("Hongkong Post"), MapType::File, 0, UTF8STRC("https://www.hongkongpost.hk/opendata/mobile-office.json"),
+		UTF8STRC("Mobile post office scheduled stopping time & location")},
+	{UTF8STRC("Post Office Information"), UTF8STRC("Hong Kong"), UTF8STRC("Hongkong Post"), MapType::File, 0, UTF8STRC("https://www.hongkongpost.hk/opendata/post-office.json"),
+		UTF8STRC("Post office location and opening hours")},
+	{UTF8STRC("Street Posting Box Information"), UTF8STRC("Hong Kong"), UTF8STRC("Hongkong Post"), MapType::File, 0, UTF8STRC("https://www.hongkongpost.hk/opendata/street-box.json"),
+		UTF8STRC("Street posting box locations and collection time")},
 };
 
 const Map::RegionalMapSource::MapInfo *Map::RegionalMapSource::GetMapInfos(UOSInt *cnt)

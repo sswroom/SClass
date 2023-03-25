@@ -1637,6 +1637,8 @@ Bool SSWR::OrganMgr::OrganWebEnv::SpeciesMerge(Sync::RWMutexUsage *mutUsage, Int
 		return false;
 	UOSInt i;
 	DB::SQLBuilder sql(this->db);
+	Bool hasFiles = false;
+	Bool hasWFiles = false;
 	if (srcSpecies->files.GetCount() > 0)
 	{
 		sql.Clear();
@@ -1653,6 +1655,7 @@ Bool SSWR::OrganMgr::OrganWebEnv::SpeciesMerge(Sync::RWMutexUsage *mutUsage, Int
 			}
 			destSpecies->files.AddAll(&srcSpecies->files);
 			srcSpecies->files.Clear();
+			hasFiles = true;
 		}
 		else
 		{
@@ -1670,6 +1673,7 @@ Bool SSWR::OrganMgr::OrganWebEnv::SpeciesMerge(Sync::RWMutexUsage *mutUsage, Int
 		{
 			destSpecies->wfiles.PutAll(&srcSpecies->wfiles);
 			srcSpecies->wfiles.Clear();
+			hasWFiles = true;
 		}
 		else
 		{
@@ -1697,6 +1701,10 @@ Bool SSWR::OrganMgr::OrganWebEnv::SpeciesMerge(Sync::RWMutexUsage *mutUsage, Int
 		{
 			return false;
 		}
+	}
+	if (hasFiles || hasWFiles)
+	{
+		this->GroupAddCounts(mutUsage, srcSpecies->groupId, 0, (UOSInt)-1, hasFiles?(UOSInt)-1:0);
 	}
 	return this->SpeciesDelete(mutUsage, srcSpeciesId);
 }

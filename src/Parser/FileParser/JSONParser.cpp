@@ -2,6 +2,8 @@
 #include "MyMemory.h"
 #include "Data/ArrayListA.h"
 #include "Data/ByteTool.h"
+#include "DB/JSONDB.h"
+#include "Map/DBMapLayer.h"
 #include "Map/VectorLayer.h"
 #include "Math/CoordinateSystemManager.h"
 #include "Math/Geometry/LineString.h"
@@ -52,11 +54,11 @@ IO::ParsedObject *Parser::FileParser::JSONParser::ParseFileHdr(IO::StreamData *f
 	if (!valid)
 		return 0;
 	UInt64 fileOfst;
-	if (hdr[0] == '{')
+	if (hdr[0] == '{' || hdr[0] == '[')
 	{
 		fileOfst = 0;
 	}
-	else if (hdr[0] == 0xEF && hdr[1] == 0xBB && hdr[2] == 0xBF && hdr[3] == '{')
+	else if (hdr[0] == 0xEF && hdr[1] == 0xBB && hdr[2] == 0xBF && (hdr[3] == '{' || hdr[3] == '['))
 	{
 		fileOfst = 3;
 	}
@@ -76,12 +78,12 @@ IO::ParsedObject *Parser::FileParser::JSONParser::ParseFileHdr(IO::StreamData *f
 		return 0;
 	}
 
-	pobj = ParseJSON(fileJSON, fd->GetFullName(), fd->GetShortName());
+	pobj = ParseJSON(fileJSON, fd->GetFullName(), fd->GetShortName(), targetType);
 	fileJSON->EndUse();
 	return pobj;
 }
 
-IO::ParsedObject *Parser::FileParser::JSONParser::ParseJSON(Text::JSONBase *fileJSON, Text::String *sourceName, Text::CString layerName)
+IO::ParsedObject *Parser::FileParser::JSONParser::ParseJSON(Text::JSONBase *fileJSON, Text::String *sourceName, Text::CString layerName, IO::ParserType targetType)
 {
 	UInt32 srid = 0;
 	IO::ParsedObject *pobj = 0;
@@ -203,9 +205,27 @@ IO::ParsedObject *Parser::FileParser::JSONParser::ParseJSON(Text::JSONBase *file
 			{
 				SDEL_CLASS(csys);
 			}
+			return pobj;
 		}
 	}
-	return pobj;
+	Text::JSONArray *dataArr = GetDataArray(fileJSON);
+	if (dataArr == 0)
+	{
+		return 0;
+	}
+	DB::JSONDB *db;
+	NEW_CLASS(db, DB::JSONDB(sourceName, layerName, dataArr));
+	if (targetType == IO::ParserType::Unknown || targetType == IO::ParserType::MapLayer)
+	{
+		Map::DBMapLayer *layer;
+		NEW_CLASS(layer, Map::DBMapLayer(sourceName));
+		if (layer->SetDatabase(db, CSTR_NULL, layerName, true))
+		{
+			return layer;
+		}
+
+	}
+	return db;
 }
 
 Math::Geometry::Vector2D *Parser::FileParser::JSONParser::ParseGeomJSON(Text::JSONObject *obj, UInt32 srid)
@@ -573,4 +593,43 @@ Math::Geometry::Vector2D *Parser::FileParser::JSONParser::ParseGeomJSON(Text::JS
 		}
 	}
 	return 0;
+}
+
+Text::JSONArray *Parser::FileParser::JSONParser::GetDataArray(Text::JSONBase *fileJSON)
+{
+	Text::JSONType type = fileJSON->GetType();
+	if (type == Text::JSONType::Array)
+	{
+		return (Text::JSONArray*)fileJSON;
+	}
+	else if (type != Text::JSONType::Object)
+	{
+		return 0;
+	}
+	Text::String *arrayName = 0;
+	Text::JSONObject *obj = (Text::JSONObject*)fileJSON;
+	Text::JSONBase *o;
+	Data::ArrayList<Text::String*> names;
+	obj->GetObjectNames(&names);
+	UOSInt i = names.GetCount();
+	while (i-- > 0)
+	{
+		o = obj->GetObjectValue(names.GetItem(i)->ToCString());
+		if (o && o->GetType() == Text::JSONType::Array)
+		{
+			if (arrayName == 0)
+			{
+				arrayName = names.GetItem(i);
+			}
+			else
+			{
+				return 0;
+			}
+		}
+	}
+	if (arrayName == 0)
+	{
+		return 0;
+	}
+	return (Text::JSONArray*)obj->GetObjectValue(arrayName->ToCString());
 }

@@ -1534,6 +1534,8 @@ DB/DBUtil.h: ../../src/DB/DBUtil.cpp
 @DBUtil.o
 DB/JavaDBUtil.h: ../../src/DB/JavaDBUtil.cpp
 @JavaDBUtil.o
+DB/JSONDB.h: ../../src/DB/JSONDB.cpp
+@JSONDB.o
 DB/MSSQLConn.h: ../../src/DB/MSSQLConn.cpp
 @MSSQLConn.o
 DB/MySQLMaintance.h: ../../src/DB/MySQLMaintance.cpp
@@ -4635,6 +4637,7 @@ DBRow.o: ../../src/DB/DBRow.cpp
 DBTool.o: ../../src/DB/DBTool.cpp
 DBUtil.o: ../../src/DB/DBUtil.cpp
 JavaDBUtil.o: ../../src/DB/JavaDBUtil.cpp
+JSONDB.o: ../../src/DB/JSONDB.cpp
 MSSQLConn.o: ../../src/DB/MSSQLConn.cpp
 MySQLMaintance.o: ../../src/DB/MySQLMaintance.cpp
 PageRequest.o: ../../src/DB/PageRequest.cpp

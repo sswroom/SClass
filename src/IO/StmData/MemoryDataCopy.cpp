@@ -18,6 +18,7 @@ IO::StmData::MemoryDataCopy::MemoryDataCopy(const UInt8 *data, UOSInt dataLength
 	this->stat->dataLength = dataLength;
 	MemCopyNO(this->stat->data, data, dataLength);
 	this->stat->useCnt = 1;
+	this->stat->fullName = 0;
 	this->data = this->stat->data;
 	this->dataLength = dataLength;
 }
@@ -27,6 +28,7 @@ IO::StmData::MemoryDataCopy::~MemoryDataCopy()
 	if (Sync::Interlocked::Decrement(&this->stat->useCnt) == 0)
 	{
 		MemFree(this->stat->data);
+		SDEL_STRING(this->stat->fullName);
 		MemFree(this->stat);
 	}
 }
@@ -50,12 +52,29 @@ UOSInt IO::StmData::MemoryDataCopy::GetRealData(UInt64 offset, UOSInt length, UI
 
 Text::String *IO::StmData::MemoryDataCopy::GetFullName()
 {
+	if (this->stat->fullName)
+		return this->stat->fullName;
 	return Text::String::NewEmpty();
 }
 
 Text::CString IO::StmData::MemoryDataCopy::GetShortName()
 {
+	if (this->stat->fullName)
+	{
+		UOSInt i = this->stat->fullName->LastIndexOf('/');
+		if (i != INVALID_INDEX)
+		{
+			return this->stat->fullName->ToCString().Substring(i + 1);
+		}
+		return this->stat->fullName->ToCString();
+	}
 	return CSTR("MemoryCopy");
+}
+
+void IO::StmData::MemoryDataCopy::SetFullName(Text::CString fullName)
+{
+	SDEL_STRING(this->stat->fullName);
+	this->stat->fullName = Text::String::New(fullName);
 }
 
 UInt64 IO::StmData::MemoryDataCopy::GetDataSize()

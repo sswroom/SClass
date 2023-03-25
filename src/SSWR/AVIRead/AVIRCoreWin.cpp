@@ -120,12 +120,12 @@ void SSWR::AVIRead::AVIRCoreWin::OpenObject(IO::ParsedObject *pobj)
 				mstm->Write(buff, thisSize);
 				totalSize += thisSize;
 			}
-			DEL_CLASS(pobj);
 			MemFree(buff);
 			buff = mstm->GetBuff(&thisSize);
 			if (thisSize > 0)
 			{
 				IO::StmData::MemoryDataCopy data(buff, thisSize);
+				data.SetFullName(stm->GetSourceNameObj()->ToCString());
 				DEL_CLASS(mstm);
 				this->LoadData(&data, 0);
 			}
@@ -133,6 +133,7 @@ void SSWR::AVIRead::AVIRCoreWin::OpenObject(IO::ParsedObject *pobj)
 			{
 				DEL_CLASS(mstm);
 			}
+			DEL_CLASS(pobj);
 			break;
 		}
 	case IO::ParserType::Playlist:

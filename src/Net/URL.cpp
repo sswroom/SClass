@@ -16,12 +16,32 @@ IO::ParsedObject *Net::URL::OpenObject(Text::CString url, Text::CString userAgen
 	{
 		Net::HTTPClient *cli = Net::HTTPClient::CreateClient(sockf, ssl, userAgent, true, false);
 		cli->Connect(url, Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, true);
+		if (cli->GetRespStatus() == Net::WebStatus::SC_MOVED_TEMPORARILY || cli->GetRespStatus() == Net::WebStatus::SC_MOVED_PERMANENTLY)
+		{
+			Text::CString newUrl = cli->GetRespHeader(CSTR("Location"));
+			if (newUrl.leng > 0 && !newUrl.Equals(url.v, url.leng) && (newUrl.StartsWith(UTF8STRC("http://")) || newUrl.StartsWith(UTF8STRC("https://"))))
+			{
+				pobj = OpenObject(newUrl, userAgent, sockf, ssl);
+				DEL_CLASS(cli);
+				return pobj;
+			}
+		}
 		return cli;
 	}
 	else if (url.StartsWithICase(UTF8STRC("https://")))
 	{
 		Net::HTTPClient *cli = Net::HTTPClient::CreateClient(sockf, ssl, userAgent, true, true);
 		cli->Connect(url, Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, true);
+		if (cli->GetRespStatus() == Net::WebStatus::SC_MOVED_TEMPORARILY || cli->GetRespStatus() == Net::WebStatus::SC_MOVED_PERMANENTLY)
+		{
+			Text::CString newUrl = cli->GetRespHeader(CSTR("Location"));
+			if (newUrl.leng > 0 && !newUrl.Equals(url.v, url.leng) && (newUrl.StartsWith(UTF8STRC("http://")) || newUrl.StartsWith(UTF8STRC("https://"))))
+			{
+				pobj = OpenObject(newUrl, userAgent, sockf, ssl);
+				DEL_CLASS(cli);
+				return pobj;
+			}
+		}
 		return cli;
 	}
 	else if (url.StartsWithICase(UTF8STRC("file:///")))

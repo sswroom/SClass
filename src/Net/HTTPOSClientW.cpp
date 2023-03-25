@@ -271,6 +271,7 @@ Bool Net::HTTPOSClient::Connect(Text::CString url, Net::WebUtil::RequestMethod m
 
 	SDEL_STRING(this->url);
 	this->url = Text::String::New(url.v, url.leng);
+	this->SetSourceName(this->url);
 	if (url.StartsWith(UTF8STRC("http://")))
 	{
 		ptr1 = &url.v[7];

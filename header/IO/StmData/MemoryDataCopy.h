@@ -14,6 +14,7 @@ namespace IO
 				UInt8 *data;
 				UOSInt dataLength;
 				Int32 useCnt;
+				Text::String *fullName;
 			} MemoryStats;
 			MemoryStats *stat;
 			const UInt8 *data;
@@ -27,6 +28,7 @@ namespace IO
 			virtual UOSInt GetRealData(UInt64 offset, UOSInt length, UInt8 *buffer);
 			virtual Text::String *GetFullName();
 			virtual Text::CString GetShortName();
+			virtual void SetFullName(Text::CString fullName);
 			virtual UInt64 GetDataSize();
 			virtual const UInt8 *GetPointer();
 

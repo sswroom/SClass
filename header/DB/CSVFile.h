@@ -3,6 +3,7 @@
 #include "DB/DBReader.h"
 #include "DB/ReadingDB.h"
 #include "IO/SeekableStream.h"
+#include "IO/StreamData.h"
 #include "IO/StreamReader.h"
 #include "Text/Encoding.h"
 
@@ -13,6 +14,7 @@ namespace DB
 	private:
 		Text::String *fileName;
 		IO::SeekableStream *stm;
+		Bool releaseStm;
 		UInt32 codePage;
 		Bool noHeader;
 		Bool nullIfEmpty;
@@ -21,6 +23,7 @@ namespace DB
 		CSVFile(Text::String *fileName, UInt32 codePage);
 		CSVFile(Text::CString fileName, UInt32 codePage);
 		CSVFile(IO::SeekableStream *stm, UInt32 codePage);
+		CSVFile(IO::StreamData *fd, UInt32 codePage);
 		virtual ~CSVFile();
 
 		virtual UOSInt QueryTableNames(Text::CString schemaName, Data::ArrayList<Text::String*> *names);

@@ -28,7 +28,7 @@ void Exporter::TIFFExporter::GenSubExifBuff(IO::SeekableStream *stm, UInt64 buff
 		exifId = ids.GetItem(i);
 		exifItem = exif->GetExifItem(exifId);
 		WriteInt16(&ifd[2 + i * 12], exifItem->id);
-		WriteUInt32(&ifd[6 + i * 12], exifItem->cnt);
+		WriteUInt32(&ifd[6 + i * 12], (UInt32)exifItem->cnt);
 		switch (exifItem->type)
 		{
 		case Media::EXIFData::ET_BYTES:
