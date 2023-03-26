@@ -1639,6 +1639,8 @@ Bool SSWR::OrganMgr::OrganWebEnv::SpeciesMerge(Sync::RWMutexUsage *mutUsage, Int
 	DB::SQLBuilder sql(this->db);
 	Bool hasFiles = false;
 	Bool hasWFiles = false;
+	Bool flagChg = false;
+	SpeciesFlags newFlags = destSpecies->flags;
 	if (srcSpecies->files.GetCount() > 0)
 	{
 		sql.Clear();
@@ -1655,6 +1657,11 @@ Bool SSWR::OrganMgr::OrganWebEnv::SpeciesMerge(Sync::RWMutexUsage *mutUsage, Int
 			}
 			destSpecies->files.AddAll(&srcSpecies->files);
 			srcSpecies->files.Clear();
+			if ((newFlags & SF_HAS_MYPHOTO) == 0)
+			{
+				newFlags = (SpeciesFlags)(newFlags | SF_HAS_MYPHOTO);
+				flagChg = true;
+			}
 			hasFiles = true;
 		}
 		else
@@ -1673,6 +1680,11 @@ Bool SSWR::OrganMgr::OrganWebEnv::SpeciesMerge(Sync::RWMutexUsage *mutUsage, Int
 		{
 			destSpecies->wfiles.PutAll(&srcSpecies->wfiles);
 			srcSpecies->wfiles.Clear();
+			if ((newFlags & SF_HAS_MYPHOTO) == 0)
+			{
+				newFlags = (SpeciesFlags)(newFlags | SF_HAS_WEBPHOTO);
+				flagChg = true;
+			}
 			hasWFiles = true;
 		}
 		else
@@ -1680,6 +1692,7 @@ Bool SSWR::OrganMgr::OrganWebEnv::SpeciesMerge(Sync::RWMutexUsage *mutUsage, Int
 			return false;
 		}
 	}
+
 	if (srcSpecies->books.GetCount() > 0)
 	{
 		sql.Clear();
@@ -1701,6 +1714,19 @@ Bool SSWR::OrganMgr::OrganWebEnv::SpeciesMerge(Sync::RWMutexUsage *mutUsage, Int
 		{
 			return false;
 		}
+	}
+	if (flagChg)
+	{
+		this->SpeciesSetFlags(mutUsage, destSpecies->speciesId, newFlags);
+	}
+	if (destSpecies->photoId == 0 && destSpecies->photo == 0 && destSpecies->photoWId == 0)
+	{
+		this->SpeciesUpdateDefPhoto(mutUsage, destSpecies->speciesId);
+	}
+	GroupInfo *group = this->groupMap.Get(destSpecies->groupId);
+	if (group && group->photoSpObj == 0)
+	{
+		group->photoSpObj = destSpecies;
 	}
 	if (hasFiles || hasWFiles)
 	{
