@@ -1434,6 +1434,8 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(void *userObj)
 									sb.ClearStr();
 									sb.AppendHexBuff(me->authPluginData, me->authPluginDataSize, ' ', Text::LineBreakType::None);
 									printf("MySQLTCP %d Auth Plugin Data = %s\r\n", me->cli->GetLocalPort(), sb.ToString());
+									printf("MySQLTCP %d Axis-Aware = %d\r\n", me->cli->GetLocalPort(), me->axisAware?1:0);
+									printf("MySQLTCP %d Axis-Aware = %d\r\n", me->cli->GetLocalPort(), me->axisAware?1:0);
 	#endif
 									readSize = 0;
 								}
@@ -1444,8 +1446,10 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(void *userObj)
 								sptr = Text::StrConcatS(sbuff, &buff[5], packetSize - 1);
 								ptrCurr = &buff[6] + (sptr - sbuff);
 								me->svrVer = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
+								me->axisAware = Net::MySQLUtil::IsAxisAware(me->svrVer->ToCString());
 	#if defined(VERBOSE)
 								printf("MySQLTCP %d Server ver = %s\r\n", me->cli->GetLocalPort(), me->svrVer->v);
+								printf("MySQLTCP %d Axis-Aware = %d\r\n", me->cli->GetLocalPort(), me->axisAware?1:0);
 	#endif
 								if (ptrEnd - ptrCurr >= 15)
 								{
