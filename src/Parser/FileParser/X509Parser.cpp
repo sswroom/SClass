@@ -56,9 +56,29 @@ IO::ParsedObject *Parser::FileParser::X509Parser::ParseFileHdr(IO::StreamData *f
 {
 	UInt8 buff[10240];
 	UInt64 len = fd->GetDataSize();
-	if (len > sizeof(buff) || (targetType != IO::ParserType::Unknown && targetType != IO::ParserType::ASN1Data))
+	if (targetType != IO::ParserType::Unknown && targetType != IO::ParserType::ASN1Data)
 	{
 		return 0;
+	}
+	Text::String *fileName = fd->GetFullFileName();
+	if (len > sizeof(buff))
+	{
+		if (fileName->EndsWithICase(UTF8STRC(".CRL")) && len <= 10485760)
+		{
+			UInt8 *tmpBuff = MemAlloc(UInt8, len);
+			if (fd->GetRealData(0, (UOSInt)len, tmpBuff) != len)
+			{
+				MemFree(tmpBuff);
+				return 0;
+			}
+			IO::ParsedObject *pobj = ParseBuff(tmpBuff, len, fileName);
+			MemFree(tmpBuff);
+			return pobj;
+		}
+		else
+		{
+			return 0;
+		}
 	}
 
 	fd->GetRealData(0, (UOSInt)len, buff);

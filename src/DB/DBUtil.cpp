@@ -1625,7 +1625,7 @@ UTF8Char *DB::DBUtil::SDBVector(UTF8Char *sqlstr, Math::Geometry::Vector2D *vec,
 		Text::StringBuilderUTF8 sb;
 		if (writer.ToText(&sb, vec))
 		{
-			sqlstr = Text::StrConcatC(sqlstr, UTF8STRC("GeomFromText('"));
+			sqlstr = Text::StrConcatC(sqlstr, UTF8STRC("ST_GeomFromText('"));
 			sqlstr = Text::StrConcatC(sqlstr, sb.ToString(), sb.GetLength());
 			sqlstr = Text::StrConcatC(sqlstr, UTF8STRC("', "));
 			sqlstr = Text::StrUInt32(sqlstr, vec->GetSRID());
@@ -1684,7 +1684,7 @@ UOSInt DB::DBUtil::SDBVectorLeng(Math::Geometry::Vector2D *vec, DB::DBUtil::SQLT
 		Text::StringBuilderUTF8 sb;
 		if (writer.ToText(&sb, vec))
 		{
-			UOSInt ret = 18 + sb.GetLength();
+			UOSInt ret = 21 + sb.GetLength();
 			sb.ClearStr();
 			sb.AppendU32(vec->GetSRID());
 			ret += sb.GetLength();
