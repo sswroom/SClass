@@ -881,7 +881,7 @@ UOSInt DB::PostgreSQLConn::QueryTableNames(Text::CString schemaName, Data::Array
 {
 	if (schemaName.leng == 0)
 		schemaName = CSTR("public");
-	DB::SQLBuilder sql(DB::DBUtil::SQLType::PostgreSQL, this->tzQhr);
+	DB::SQLBuilder sql(DB::DBUtil::SQLType::PostgreSQL, false, this->tzQhr);
 	sql.AppendCmdC(CSTR("select tablename from pg_catalog.pg_tables where schemaname = "));
 	sql.AppendStrC(schemaName);
 	UOSInt initCnt = names->GetCount();

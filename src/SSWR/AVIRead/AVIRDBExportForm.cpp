@@ -45,7 +45,7 @@ void __stdcall SSWR::AVIRead::AVIRDBExportForm::OnExportClicked(void *userObj)
 	dlg.SetFileName(CSTRP(sbuff, sptr));
 	if (dlg.ShowDialog(me->GetHandle()))
 	{
-		DB::SQLBuilder sql((DB::DBUtil::SQLType)(OSInt)me->cboDBType->GetSelectedItem(), 0);
+		DB::SQLBuilder sql((DB::DBUtil::SQLType)(OSInt)me->cboDBType->GetSelectedItem(), me->chkAxisAware->IsChecked(), 0);
 		Data::ArrayList<Text::String*> cols;
 		UOSInt i = 0;
 		UOSInt j = me->lvTables->GetCount();
@@ -105,6 +105,8 @@ SSWR::AVIRead::AVIRDBExportForm::AVIRDBExportForm(UI::GUIClientControl *parent, 
 	this->cboDBType->AddItem(CSTR("SQL Server"), (void*)DB::DBUtil::SQLType::MSSQL);
 	this->cboDBType->AddItem(CSTR("PostgreSQL"), (void*)DB::DBUtil::SQLType::PostgreSQL);
 	this->cboDBType->SetSelectedIndex(0);
+	NEW_CLASS(this->chkAxisAware, UI::GUICheckBox(ui, this->pnlMain, CSTR("Axis-Aware (MySQL >=8)"), false));
+	this->chkAxisAware->SetRect(200, 0, 150, 23, false);
 	NEW_CLASS(this->lblSchema, UI::GUILabel(ui, this->pnlMain, CSTR("Schema")));
 	this->lblSchema->SetRect(0, 24, 100, 23, false);
 	if (schema.v == 0)

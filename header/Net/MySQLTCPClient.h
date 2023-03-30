@@ -44,6 +44,7 @@ namespace Net
 		Text::String *database;
 		ClientMode mode;
 		Text::String *svrVer;
+		Bool axisAware;
 		UInt32 connId;
 		UInt8 authPluginData[20];
 		UOSInt authPluginDataSize;
@@ -52,7 +53,7 @@ namespace Net
 		UInt16 svrCS;
 		UInt16 connStatus;
 		Text::String *lastError;
-		
+
 		Sync::Mutex cmdMut;
 		Sync::Event cmdEvt;
 		UOSInt cmdSeqNum;
@@ -70,6 +71,7 @@ namespace Net
 		virtual ~MySQLTCPClient();
 
 		virtual DB::DBUtil::SQLType GetSQLType() const;
+		virtual Bool IsAxisAware() const;
 		virtual DB::DBConn::ConnType GetConnType() const;
 		virtual Int8 GetTzQhr() const;
 		virtual void ForceTz(Int8 tzQhr);

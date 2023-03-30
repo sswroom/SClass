@@ -41,6 +41,7 @@ namespace DB
 		Bool enableDebug;
 		Bool forceTz;
 		Int8 tzQhr;
+		Bool axisAware;
 
 	private:
 		void PrintError();
@@ -58,6 +59,7 @@ namespace DB
 		virtual ~ODBCConn();
 
 		virtual DB::DBUtil::SQLType GetSQLType() const;
+		virtual Bool IsAxisAware() const;
 		virtual ConnType GetConnType() const;
 		virtual Int8 GetTzQhr() const;
 		virtual void ForceTz(Int8 tzQhr);

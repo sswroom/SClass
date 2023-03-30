@@ -3,12 +3,13 @@
 #include "Data/ByteTool.h"
 #include "Data/DateTime.h"
 #include "DB/DBConn.h"
-#include "DB/ODBCConn.h"
 #include "DB/DBTool.h"
+#include "DB/ODBCConn.h"
 #include "Math/Math.h"
 #include "Math/MSGeography.h"
 #include "Math/WKTWriter.h"
 #include "Math/Geometry/Point.h"
+#include "Net/MySQLUtil.h"
 #include "Text/Encoding.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
@@ -115,6 +116,21 @@ void DB::ODBCConn::UpdateConnInfo()
 			Data::Timestamp ts2 = r->GetTimestamp(1);
 			this->CloseReader(r);
 			this->tzQhr = (Int8)((ts1.inst.sec - ts2.inst.sec) / 900);
+		}
+	}
+	else if (this->sqlType == DB::DBUtil::SQLType::MySQL)
+	{
+		DB::DBReader *r = this->ExecuteReader(CSTR("SELECT VERSION()"));
+		if (r)
+		{
+			r->ReadNext();
+			Text::String *s = r->GetNewStr(0);
+			this->CloseReader(r);
+			if (s)
+			{
+				this->axisAware = Net::MySQLUtil::IsAxisAware(s->ToCString());
+				s->Release();
+			}
 		}
 	}
 }
@@ -351,6 +367,7 @@ DB::ODBCConn::ODBCConn(Text::CString sourceName, IO::LogTool *log) : DB::DBConn(
 	this->enableDebug = false;
 	this->tzQhr = 0;
 	this->forceTz = false;
+	this->axisAware = false;
 }
 
 DB::ODBCConn::ODBCConn(Text::CString connStr, Text::CString sourceName, IO::LogTool *log) : DB::DBConn(sourceName)
@@ -371,6 +388,7 @@ DB::ODBCConn::ODBCConn(Text::CString connStr, Text::CString sourceName, IO::LogT
 	this->enableDebug = false;
 	this->tzQhr = 0;
 	this->forceTz = false;
+	this->axisAware = false;
 	Text::String *s = Text::String::New(connStr);
 	this->Connect(s);
 	s->Release();
@@ -392,6 +410,7 @@ DB::ODBCConn::ODBCConn(Text::String *dsn, Text::String *uid, Text::String *pwd, 
 	lastStmtHand = 0;
 	this->tzQhr = 0;
 	this->forceTz = false;
+	this->axisAware = false;
 	this->Connect(this->dsn, this->uid, this->pwd, this->schema);
 }
 
@@ -411,6 +430,7 @@ DB::ODBCConn::ODBCConn(Text::CString dsn, Text::CString uid, Text::CString pwd, 
 	lastStmtHand = 0;
 	this->tzQhr = 0;
 	this->forceTz = false;
+	this->axisAware = false;
 	this->Connect(this->dsn, this->uid, this->pwd, this->schema);
 }
 
@@ -428,6 +448,11 @@ DB::ODBCConn::~ODBCConn()
 DB::DBUtil::SQLType DB::ODBCConn::GetSQLType() const
 {
 	return sqlType;
+}
+
+Bool DB::ODBCConn::IsAxisAware() const
+{
+	return this->axisAware;
 }
 
 DB::DBConn::ConnType DB::ODBCConn::GetConnType() const

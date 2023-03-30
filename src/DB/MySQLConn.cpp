@@ -4,6 +4,7 @@
 #include "DB/DBConn.h"
 #include "DB/DBTool.h"
 #include "DB/MySQLConn.h"
+#include "Net/MySQLUtil.h"
 #include "Sync/Interlocked.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
@@ -35,6 +36,19 @@ void DB::MySQLConn::Connect()
 	{
 		log->LogMessage(CSTR("Driver is libmysql"), IO::ILogHandler::LogLevel::Action);
 		mysql_set_character_set((MYSQL*)this->mysql, "utf8");
+
+		DB::DBReader *r = this->ExecuteReader(CSTR("SELECT VERSION()"));
+		if (r)
+		{
+			r->ReadNext();
+			Text::String *s = r->GetNewStr(0);
+			this->CloseReader(r);
+			if (s)
+			{
+				this->axisAware = Net::MySQLUtil::IsAxisAware(s->ToCString());
+				s->Release();
+			}
+		}
 	}
 }
 
@@ -50,6 +64,7 @@ DB::MySQLConn::MySQLConn(Text::String *server, Text::String *uid, Text::String *
 	this->pwd = SCOPY_STRING(pwd);
 	this->database = SCOPY_STRING(database);
 	this->log = log;
+	this->axisAware = false;
 	Connect();
 }
 
@@ -65,6 +80,7 @@ DB::MySQLConn::MySQLConn(Text::CString server, Text::CString uid, Text::CString 
 	this->pwd = Text::String::NewOrNull(pwd);
 	this->database = Text::String::NewOrNull(database);
 	this->log = log;
+	this->axisAware = false;
 	Connect();
 }
 
@@ -80,6 +96,7 @@ DB::MySQLConn::MySQLConn(const WChar *server, const WChar *uid, const WChar *pwd
 	this->pwd = Text::String::NewOrNull(pwd);
 	this->database = Text::String::NewOrNull(database);
 	this->log = log;
+	this->axisAware = false;
 	Connect();
 }
 
@@ -99,6 +116,11 @@ DB::MySQLConn::~MySQLConn()
 DB::DBUtil::SQLType DB::MySQLConn::GetSQLType() const
 {
 	return DB::DBUtil::SQLType::MySQL;
+}
+
+Bool DB::MySQLConn::IsAxisAware() const
+{
+	return this->axisAware;
 }
 
 DB::DBConn::ConnType DB::MySQLConn::GetConnType() const

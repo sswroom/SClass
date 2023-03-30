@@ -5,16 +5,18 @@
 #include "DB/TableDef.h"
 #include "Text/MyStringW.h"
 
-DB::SQLBuilder::SQLBuilder(DB::DBUtil::SQLType sqlType, Int32 tzQhr)
+DB::SQLBuilder::SQLBuilder(DB::DBUtil::SQLType sqlType, Bool axisAware, Int32 tzQhr)
 {
 	this->sqlType = sqlType;
 	this->tzQhr = tzQhr;
+	this->axisAware = axisAware;
 }
 
 DB::SQLBuilder::SQLBuilder(DB::ReadingDBTool *db)
 {
 	this->sqlType = db->GetSQLType();
 	this->tzQhr = db->GetTzQhr();
+	this->axisAware = db->IsAxisAware();
 }
 
 DB::SQLBuilder::~SQLBuilder()
@@ -107,7 +109,7 @@ void DB::SQLBuilder::AppendBool(Bool val)
 void DB::SQLBuilder::AppendVector(Math::Geometry::Vector2D *vec)
 {
 	this->sb.AllocLeng(DB::DBUtil::SDBVectorLeng(vec, this->sqlType));
-	this->sb.SetEndPtr(DB::DBUtil::SDBVector(this->sb.GetEndPtr(), vec, this->sqlType));
+	this->sb.SetEndPtr(DB::DBUtil::SDBVector(this->sb.GetEndPtr(), vec, this->sqlType, this->axisAware));
 }
 
 void DB::SQLBuilder::AppendBinary(const UInt8 *buff, UOSInt buffSize)

@@ -171,7 +171,7 @@ Bool DB::DBTool::CreateDatabase(Text::CString databaseName)
 	case DB::DBUtil::SQLType::MDBTools:
 	case DB::DBUtil::SQLType::PostgreSQL:
 	{
-		DB::SQLBuilder sql(this->sqlType, this->GetTzQhr());
+		DB::SQLBuilder sql(this->sqlType, this->axisAware, this->GetTzQhr());
 		DB::SQLGenerator::GenCreateDatabaseCmd(&sql, databaseName);
 		return this->ExecuteNonQuery(sql.ToCString()) >= -1;
 	}
@@ -196,7 +196,7 @@ Bool DB::DBTool::DeleteDatabase(Text::CString databaseName)
 	case DB::DBUtil::SQLType::MDBTools:
 	case DB::DBUtil::SQLType::PostgreSQL:
 	{
-		DB::SQLBuilder sql(this->sqlType, this->GetTzQhr());
+		DB::SQLBuilder sql(this->sqlType, this->axisAware, this->GetTzQhr());
 		DB::SQLGenerator::GenDeleteDatabaseCmd(&sql, databaseName);
 		return this->ExecuteNonQuery(sql.ToCString()) >= -1;
 	}
@@ -216,7 +216,7 @@ Bool DB::DBTool::CreateSchema(Text::CString schemaName)
 	case DB::DBUtil::SQLType::MSSQL:
 	case DB::DBUtil::SQLType::PostgreSQL:
 	{
-		DB::SQLBuilder sql(this->sqlType, this->GetTzQhr());
+		DB::SQLBuilder sql(this->sqlType, this->axisAware, this->GetTzQhr());
 		DB::SQLGenerator::GenCreateSchemaCmd(&sql, schemaName);
 		return this->ExecuteNonQuery(sql.ToCString()) >= -1;
 	}
@@ -241,7 +241,7 @@ Bool DB::DBTool::DeleteSchema(Text::CString schemaName)
 	case DB::DBUtil::SQLType::MSSQL:
 	case DB::DBUtil::SQLType::PostgreSQL:
 	{
-		DB::SQLBuilder sql(this->sqlType, this->GetTzQhr());
+		DB::SQLBuilder sql(this->sqlType, this->axisAware, this->GetTzQhr());
 		DB::SQLGenerator::GenDeleteSchemaCmd(&sql, schemaName);
 		return this->ExecuteNonQuery(sql.ToCString()) >= -1;
 	}
@@ -261,7 +261,7 @@ Bool DB::DBTool::DeleteSchema(Text::CString schemaName)
 
 Bool DB::DBTool::DeleteTableData(Text::CString schemaName, Text::CString tableName)
 {
-	DB::SQLBuilder sql(this->sqlType, this->GetTzQhr());
+	DB::SQLBuilder sql(this->sqlType, this->axisAware, this->GetTzQhr());
 	DB::SQLGenerator::GenTruncateTableCmd(&sql, schemaName, tableName);
 	if (this->ExecuteNonQuery(sql.ToCString()) >= -1)
 	{
@@ -277,21 +277,21 @@ Bool DB::DBTool::KillConnection(Int32 id)
 	Bool ret = false;
 	if (this->sqlType == DB::DBUtil::SQLType::MySQL)
 	{
-		DB::SQLBuilder sql(this->sqlType, this->GetTzQhr());
+		DB::SQLBuilder sql(this->sqlType, this->axisAware, this->GetTzQhr());
 		sql.AppendCmdC(CSTR("kill "));
 		sql.AppendInt32(id);
 		ret = (this->ExecuteNonQuery(sql.ToCString()) >= -1);
 	}
 	else if (this->sqlType == DB::DBUtil::SQLType::MSSQL)
 	{
-		DB::SQLBuilder sql(this->sqlType, this->GetTzQhr());
+		DB::SQLBuilder sql(this->sqlType, this->axisAware, this->GetTzQhr());
 		sql.AppendCmdC(CSTR("kill "));
 		sql.AppendInt32(id);
 		ret = (this->ExecuteNonQuery(sql.ToCString()) >= -1);
 	}
 	else if (this->sqlType == DB::DBUtil::SQLType::PostgreSQL)
 	{
-		DB::SQLBuilder sql(this->sqlType, this->GetTzQhr());
+		DB::SQLBuilder sql(this->sqlType, this->axisAware, this->GetTzQhr());
 		sql.AppendCmdC(CSTR("SELECT pg_terminate_backend("));
 		sql.AppendInt32(id);
 		sql.AppendCmdC(CSTR(")"));

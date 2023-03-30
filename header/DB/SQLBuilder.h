@@ -17,9 +17,10 @@ namespace DB
 		Text::StringBuilderUTF8 sb;
 		DB::DBUtil::SQLType sqlType;
 		Int32 tzQhr;
+		Bool axisAware;
 
 	public:
-		SQLBuilder(DB::DBUtil::SQLType sqlType, Int32 tzQhr);
+		SQLBuilder(DB::DBUtil::SQLType sqlType, Bool axisAware, Int32 tzQhr);
 		SQLBuilder(DB::ReadingDBTool *db);
 		~SQLBuilder();
 

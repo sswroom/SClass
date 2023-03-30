@@ -60,6 +60,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::OnSQLClicked(void *userObj)
 		return;
 	}
 	DB::DBUtil::SQLType sqlType = (DB::DBUtil::SQLType)(OSInt)me->cboDBType->GetSelectedItem();
+	Bool axisAware = me->chkAxisAware->IsChecked();
 	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"DBCheckChgSQL", true);
 	dlg.SetAllowMultiSel(false);
 	dlg.AddFilter(CSTR("*.sql"), CSTR("SQL File"));
@@ -87,7 +88,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::OnSQLClicked(void *userObj)
 		{
 			IO::FileStream fs(dlg.GetFileName()->ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 			sess.stm = &fs;
-			succ = me->GenerateSQL(sb.ToCString(), sqlType, &sess);
+			succ = me->GenerateSQL(sb.ToCString(), sqlType, axisAware, &sess);
 		}
 		Double t = Data::Timestamp::UtcNow().DiffSecDbl(sess.startTime);
 		sptr = Text::StrDouble(sbuff, t);
@@ -133,6 +134,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::OnExecuteClicked(void *userObj
 		return;
 	}
 	DB::DBUtil::SQLType sqlType = (DB::DBUtil::SQLType)(OSInt)me->cboDBType->GetSelectedItem();
+	Bool axisAware = me->chkAxisAware->IsChecked();
 	Bool succ;
 	SQLSession sess;
 	sess.totalCnt = 0;
@@ -146,7 +148,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::OnExecuteClicked(void *userObj
 		sess.mode = 2;
 		sess.nInsert = 0;
 		sess.sbInsert = &sbInsert;
-		succ = me->GenerateSQL(sb.ToCString(), sqlType, &sess);
+		succ = me->GenerateSQL(sb.ToCString(), sqlType, axisAware, &sess);
 		if (succ && sess.nInsert > 0)
 		{
 			if (db->ExecuteNonQuery(sess.sbInsert->ToCString()) >= 0)
@@ -163,7 +165,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::OnExecuteClicked(void *userObj
 	else
 	{
 		sess.mode = 1;
-		succ = me->GenerateSQL(sb.ToCString(), sqlType, &sess);
+		succ = me->GenerateSQL(sb.ToCString(), sqlType, axisAware, &sess);
 	}
 	Double t = Data::Timestamp::UtcNow().DiffSecDbl(sess.startTime);
 	sb.ClearStr();
@@ -577,7 +579,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::LoadCSV(Text::CString fileName)
 	return true;
 }
 
-Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(Text::CString csvFileName, DB::DBUtil::SQLType sqlType, SQLSession *sess)
+Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(Text::CString csvFileName, DB::DBUtil::SQLType sqlType, Bool axisAware, SQLSession *sess)
 {
 	Int8 csvTZ = 0;
 	if (this->chkLocalTZ->IsChecked())
@@ -709,7 +711,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(Text::CString csvFileName, D
 			i++;
 		}
 	}
-	DB::SQLBuilder sql(sqlType, Data::DateTimeUtil::GetLocalTzQhr());
+	DB::SQLBuilder sql(sqlType, axisAware, Data::DateTimeUtil::GetLocalTzQhr());
 	Bool genInsert;
 	Bool colFound;
 	Text::String *s;
@@ -1657,6 +1659,8 @@ SSWR::AVIRead::AVIRDBCheckChgForm::AVIRDBCheckChgForm(UI::GUIClientControl *pare
 		this->cboDBType->SetSelectedIndex(2);
 	else
 		this->cboDBType->SetSelectedIndex(0);
+	NEW_CLASS(this->chkAxisAware, UI::GUICheckBox(ui, this, CSTR("Axis-Aware (MySQL >=8)"), false));
+	this->chkAxisAware->SetRect(300, 288, 150, 23, false);
 	NEW_CLASS(this->chkMultiRow, UI::GUICheckBox(ui, this, CSTR("Multi-Row Insert"), true));
 	this->chkMultiRow->SetRect(100, 312, 150, 23, false);
 	NEW_CLASS(this->btnSQL, UI::GUIButton(ui, this, CSTR("Generate SQL")));

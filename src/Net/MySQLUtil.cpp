@@ -283,3 +283,17 @@ UOSInt Net::MySQLUtil::BuildAuthen(UInt8 *buff, AuthenType authType, const UInt8
 	}
 	}
 }
+
+Bool Net::MySQLUtil::IsAxisAware(Text::CString svrVer)
+{
+	UTF8Char sbuff[32];
+	if (svrVer.IndexOf(UTF8STRC("-MariaDB")) != INVALID_INDEX)
+		return false;
+	UOSInt i = svrVer.IndexOf('.');
+	if (i != INVALID_INDEX && i < 10)
+	{
+		Text::StrConcatC(sbuff, svrVer.v, i);
+		return Text::StrToInt32(sbuff) >= 8;
+	}
+	return false;
+}

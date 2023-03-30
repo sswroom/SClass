@@ -15,7 +15,7 @@ void Math::WKTWriter::SetLastError(Text::CString lastError)
 	this->lastError = Text::String::New(lastError);
 }
 
-void Math::WKTWriter::AppendLineString(Text::StringBuilderUTF8 *sb, Math::Geometry::LineString *pl)
+void Math::WKTWriter::AppendLineString(Text::StringBuilderUTF8 *sb, Math::Geometry::LineString *pl, Bool reverseAxis)
 {
 	sb->AppendUTF8Char('(');
 	UOSInt nPoint;
@@ -31,9 +31,18 @@ void Math::WKTWriter::AppendLineString(Text::StringBuilderUTF8 *sb, Math::Geomet
 			while (i < nPoint)
 			{
 				if (i > 0) sb->AppendUTF8Char(',');
-				sb->AppendDouble(pointList[i].x, &Text::DoubleStyleC);
-				sb->AppendUTF8Char(' ');
-				sb->AppendDouble(pointList[i].y, &Text::DoubleStyleC);
+				if (reverseAxis)
+				{
+					sb->AppendDouble(pointList[i].y, &Text::DoubleStyleC);
+					sb->AppendUTF8Char(' ');
+					sb->AppendDouble(pointList[i].x, &Text::DoubleStyleC);
+				}
+				else
+				{
+					sb->AppendDouble(pointList[i].x, &Text::DoubleStyleC);
+					sb->AppendUTF8Char(' ');
+					sb->AppendDouble(pointList[i].y, &Text::DoubleStyleC);
+				}
 				sb->AppendUTF8Char(' ');
 				sb->AppendDouble(zArr[i], &Text::DoubleStyleC);
 				sb->AppendUTF8Char(' ');
@@ -47,11 +56,58 @@ void Math::WKTWriter::AppendLineString(Text::StringBuilderUTF8 *sb, Math::Geomet
 			while (i < nPoint)
 			{
 				if (i > 0) sb->AppendUTF8Char(',');
-				sb->AppendDouble(pointList[i].x, &Text::DoubleStyleC);
-				sb->AppendUTF8Char(' ');
-				sb->AppendDouble(pointList[i].y, &Text::DoubleStyleC);
+				if (reverseAxis)
+				{
+					sb->AppendDouble(pointList[i].y, &Text::DoubleStyleC);
+					sb->AppendUTF8Char(' ');
+					sb->AppendDouble(pointList[i].x, &Text::DoubleStyleC);
+				}
+				else
+				{
+					sb->AppendDouble(pointList[i].x, &Text::DoubleStyleC);
+					sb->AppendUTF8Char(' ');
+					sb->AppendDouble(pointList[i].y, &Text::DoubleStyleC);
+				}
 				sb->AppendC(UTF8STRC(" NaN "));
 				sb->AppendDouble(mArr[i], &Text::DoubleStyleC);
+				i++;
+			}
+		}
+		else
+		{
+			i = 0;
+			while (i < nPoint)
+			{
+				if (i > 0) sb->AppendUTF8Char(',');
+				if (reverseAxis)
+				{
+					sb->AppendDouble(pointList[i].y, &Text::DoubleStyleC);
+					sb->AppendUTF8Char(' ');
+					sb->AppendDouble(pointList[i].x, &Text::DoubleStyleC);
+				}
+				else
+				{
+					sb->AppendDouble(pointList[i].x, &Text::DoubleStyleC);
+					sb->AppendUTF8Char(' ');
+					sb->AppendDouble(pointList[i].y, &Text::DoubleStyleC);
+				}
+				sb->AppendUTF8Char(' ');
+				sb->AppendDouble(zArr[i], &Text::DoubleStyleC);
+				i++;
+			}
+		}
+	}
+	else
+	{
+		if (reverseAxis)
+		{
+			i = 0;
+			while (i < nPoint)
+			{
+				if (i > 0) sb->AppendUTF8Char(',');
+				sb->AppendDouble(pointList[i].y, &Text::DoubleStyleC);
+				sb->AppendUTF8Char(' ');
+				sb->AppendDouble(pointList[i].x, &Text::DoubleStyleC);
 				i++;
 			}
 		}
@@ -64,28 +120,14 @@ void Math::WKTWriter::AppendLineString(Text::StringBuilderUTF8 *sb, Math::Geomet
 				sb->AppendDouble(pointList[i].x, &Text::DoubleStyleC);
 				sb->AppendUTF8Char(' ');
 				sb->AppendDouble(pointList[i].y, &Text::DoubleStyleC);
-				sb->AppendUTF8Char(' ');
-				sb->AppendDouble(zArr[i], &Text::DoubleStyleC);
 				i++;
 			}
-		}
-	}
-	else
-	{
-		i = 0;
-		while (i < nPoint)
-		{
-			if (i > 0) sb->AppendUTF8Char(',');
-			sb->AppendDouble(pointList[i].x, &Text::DoubleStyleC);
-			sb->AppendUTF8Char(' ');
-			sb->AppendDouble(pointList[i].y, &Text::DoubleStyleC);
-			i++;
 		}
 	}
 	sb->AppendUTF8Char(')');
 }
 
-void Math::WKTWriter::AppendPolygon(Text::StringBuilderUTF8 *sb, Math::Geometry::Polygon *pg)
+void Math::WKTWriter::AppendPolygon(Text::StringBuilderUTF8 *sb, Math::Geometry::Polygon *pg, Bool reverseAxis)
 {
 	UOSInt nPtOfst;
 	UOSInt nPoint;
@@ -103,9 +145,18 @@ void Math::WKTWriter::AppendPolygon(Text::StringBuilderUTF8 *sb, Math::Geometry:
 		sb->AppendUTF8Char('(');
 		while (k < ptOfstList[i + 1])
 		{
-			sb->AppendDouble(pointList[k].x, &Text::DoubleStyleC);
-			sb->AppendUTF8Char(' ');
-			sb->AppendDouble(pointList[k].y, &Text::DoubleStyleC);
+			if (reverseAxis)
+			{
+				sb->AppendDouble(pointList[k].y, &Text::DoubleStyleC);
+				sb->AppendUTF8Char(' ');
+				sb->AppendDouble(pointList[k].x, &Text::DoubleStyleC);
+			}
+			else
+			{
+				sb->AppendDouble(pointList[k].x, &Text::DoubleStyleC);
+				sb->AppendUTF8Char(' ');
+				sb->AppendDouble(pointList[k].y, &Text::DoubleStyleC);
+			}
 			k++;
 			if (k < ptOfstList[i + 1])
 			{
@@ -119,9 +170,18 @@ void Math::WKTWriter::AppendPolygon(Text::StringBuilderUTF8 *sb, Math::Geometry:
 	sb->AppendUTF8Char('(');
 	while (k < nPoint)
 	{
-		sb->AppendDouble(pointList[k].x, &Text::DoubleStyleC);
-		sb->AppendUTF8Char(' ');
-		sb->AppendDouble(pointList[k].y, &Text::DoubleStyleC);
+		if (reverseAxis)
+		{
+			sb->AppendDouble(pointList[k].y, &Text::DoubleStyleC);
+			sb->AppendUTF8Char(' ');
+			sb->AppendDouble(pointList[k].x, &Text::DoubleStyleC);
+		}
+		else
+		{
+			sb->AppendDouble(pointList[k].x, &Text::DoubleStyleC);
+			sb->AppendUTF8Char(' ');
+			sb->AppendDouble(pointList[k].y, &Text::DoubleStyleC);
+		}
 		k++;
 		if (k < nPoint)
 		{
@@ -132,7 +192,7 @@ void Math::WKTWriter::AppendPolygon(Text::StringBuilderUTF8 *sb, Math::Geometry:
 	sb->AppendUTF8Char(')');
 }
 
-void Math::WKTWriter::AppendPolygonZ(Text::StringBuilderUTF8 *sb, Math::Geometry::Polygon *pg)
+void Math::WKTWriter::AppendPolygonZ(Text::StringBuilderUTF8 *sb, Math::Geometry::Polygon *pg, Bool reverseAxis)
 {
 	UOSInt nPtOfst;
 	UOSInt nPoint;
@@ -151,9 +211,18 @@ void Math::WKTWriter::AppendPolygonZ(Text::StringBuilderUTF8 *sb, Math::Geometry
 		sb->AppendUTF8Char('(');
 		while (k < ptOfstList[i + 1])
 		{
-			sb->AppendDouble(pointList[k].x, &Text::DoubleStyleC);
-			sb->AppendUTF8Char(' ');
-			sb->AppendDouble(pointList[k].y, &Text::DoubleStyleC);
+			if (reverseAxis)
+			{
+				sb->AppendDouble(pointList[k].y, &Text::DoubleStyleC);
+				sb->AppendUTF8Char(' ');
+				sb->AppendDouble(pointList[k].x, &Text::DoubleStyleC);
+			}
+			else
+			{
+				sb->AppendDouble(pointList[k].x, &Text::DoubleStyleC);
+				sb->AppendUTF8Char(' ');
+				sb->AppendDouble(pointList[k].y, &Text::DoubleStyleC);
+			}
 			sb->AppendUTF8Char(' ');
 			sb->AppendDouble(zList[k], &Text::DoubleStyleC);
 			k++;
@@ -169,9 +238,18 @@ void Math::WKTWriter::AppendPolygonZ(Text::StringBuilderUTF8 *sb, Math::Geometry
 	sb->AppendUTF8Char('(');
 	while (k < nPoint)
 	{
-		sb->AppendDouble(pointList[k].x, &Text::DoubleStyleC);
-		sb->AppendUTF8Char(' ');
-		sb->AppendDouble(pointList[k].y, &Text::DoubleStyleC);
+		if (reverseAxis)
+		{
+			sb->AppendDouble(pointList[k].y, &Text::DoubleStyleC);
+			sb->AppendUTF8Char(' ');
+			sb->AppendDouble(pointList[k].x, &Text::DoubleStyleC);
+		}
+		else
+		{
+			sb->AppendDouble(pointList[k].x, &Text::DoubleStyleC);
+			sb->AppendUTF8Char(' ');
+			sb->AppendDouble(pointList[k].y, &Text::DoubleStyleC);
+		}
 		sb->AppendUTF8Char(' ');
 		sb->AppendDouble(zList[k], &Text::DoubleStyleC);
 		k++;
@@ -184,7 +262,7 @@ void Math::WKTWriter::AppendPolygonZ(Text::StringBuilderUTF8 *sb, Math::Geometry
 	sb->AppendUTF8Char(')');
 }
 
-void Math::WKTWriter::AppendPolyline(Text::StringBuilderUTF8 *sb, Math::Geometry::Polyline *pl)
+void Math::WKTWriter::AppendPolyline(Text::StringBuilderUTF8 *sb, Math::Geometry::Polyline *pl, Bool reverseAxis)
 {
 	sb->AppendUTF8Char('(');
 	UOSInt nPtOfst;
@@ -202,9 +280,18 @@ void Math::WKTWriter::AppendPolyline(Text::StringBuilderUTF8 *sb, Math::Geometry
 		sb->AppendUTF8Char('(');
 		while (k < ptOfstList[i + 1])
 		{
-			sb->AppendDouble(pointList[k].x, &Text::DoubleStyleC);
-			sb->AppendUTF8Char(' ');
-			sb->AppendDouble(pointList[k].y, &Text::DoubleStyleC);
+			if (reverseAxis)
+			{
+				sb->AppendDouble(pointList[k].y, &Text::DoubleStyleC);
+				sb->AppendUTF8Char(' ');
+				sb->AppendDouble(pointList[k].x, &Text::DoubleStyleC);
+			}
+			else
+			{
+				sb->AppendDouble(pointList[k].x, &Text::DoubleStyleC);
+				sb->AppendUTF8Char(' ');
+				sb->AppendDouble(pointList[k].y, &Text::DoubleStyleC);
+			}
 			k++;
 			if (k < ptOfstList[i + 1])
 			{
@@ -218,9 +305,18 @@ void Math::WKTWriter::AppendPolyline(Text::StringBuilderUTF8 *sb, Math::Geometry
 	sb->AppendUTF8Char('(');
 	while (k < nPoint)
 	{
-		sb->AppendDouble(pointList[k].x, &Text::DoubleStyleC);
-		sb->AppendUTF8Char(' ');
-		sb->AppendDouble(pointList[k].y, &Text::DoubleStyleC);
+		if (reverseAxis)
+		{
+			sb->AppendDouble(pointList[k].y, &Text::DoubleStyleC);
+			sb->AppendUTF8Char(' ');
+			sb->AppendDouble(pointList[k].x, &Text::DoubleStyleC);
+		}
+		else
+		{
+			sb->AppendDouble(pointList[k].x, &Text::DoubleStyleC);
+			sb->AppendUTF8Char(' ');
+			sb->AppendDouble(pointList[k].y, &Text::DoubleStyleC);
+		}
 		k++;
 		if (k < nPoint)
 		{
@@ -231,7 +327,7 @@ void Math::WKTWriter::AppendPolyline(Text::StringBuilderUTF8 *sb, Math::Geometry
 	sb->AppendUTF8Char(')');
 }
 
-void Math::WKTWriter::AppendPolylineZ(Text::StringBuilderUTF8 *sb, Math::Geometry::Polyline *pl)
+void Math::WKTWriter::AppendPolylineZ(Text::StringBuilderUTF8 *sb, Math::Geometry::Polyline *pl, Bool reverseAxis)
 {
 	sb->AppendUTF8Char('(');
 	UOSInt nPtOfst;
@@ -250,9 +346,18 @@ void Math::WKTWriter::AppendPolylineZ(Text::StringBuilderUTF8 *sb, Math::Geometr
 		sb->AppendUTF8Char('(');
 		while (k < ptOfstList[i + 1])
 		{
-			sb->AppendDouble(pointList[k].x, &Text::DoubleStyleC);
-			sb->AppendUTF8Char(' ');
-			sb->AppendDouble(pointList[k].y, &Text::DoubleStyleC);
+			if (reverseAxis)
+			{
+				sb->AppendDouble(pointList[k].y, &Text::DoubleStyleC);
+				sb->AppendUTF8Char(' ');
+				sb->AppendDouble(pointList[k].x, &Text::DoubleStyleC);
+			}
+			else
+			{
+				sb->AppendDouble(pointList[k].x, &Text::DoubleStyleC);
+				sb->AppendUTF8Char(' ');
+				sb->AppendDouble(pointList[k].y, &Text::DoubleStyleC);
+			}
 			sb->AppendUTF8Char(' ');
 			sb->AppendDouble(zList[k], &Text::DoubleStyleC);
 			k++;
@@ -268,9 +373,18 @@ void Math::WKTWriter::AppendPolylineZ(Text::StringBuilderUTF8 *sb, Math::Geometr
 	sb->AppendUTF8Char('(');
 	while (k < nPoint)
 	{
-		sb->AppendDouble(pointList[k].x, &Text::DoubleStyleC);
-		sb->AppendUTF8Char(' ');
-		sb->AppendDouble(pointList[k].y, &Text::DoubleStyleC);
+		if (reverseAxis)
+		{
+			sb->AppendDouble(pointList[k].y, &Text::DoubleStyleC);
+			sb->AppendUTF8Char(' ');
+			sb->AppendDouble(pointList[k].x, &Text::DoubleStyleC);
+		}
+		else
+		{
+			sb->AppendDouble(pointList[k].x, &Text::DoubleStyleC);
+			sb->AppendUTF8Char(' ');
+			sb->AppendDouble(pointList[k].y, &Text::DoubleStyleC);
+		}
 		sb->AppendUTF8Char(' ');
 		sb->AppendDouble(zList[k], &Text::DoubleStyleC);
 		k++;
@@ -283,7 +397,7 @@ void Math::WKTWriter::AppendPolylineZ(Text::StringBuilderUTF8 *sb, Math::Geometr
 	sb->AppendUTF8Char(')');
 }
 
-void Math::WKTWriter::AppendPolylineZM(Text::StringBuilderUTF8 *sb, Math::Geometry::Polyline *pl)
+void Math::WKTWriter::AppendPolylineZM(Text::StringBuilderUTF8 *sb, Math::Geometry::Polyline *pl, Bool reverseAxis)
 {
 	sb->AppendUTF8Char('(');
 	UOSInt nPtOfst;
@@ -303,9 +417,18 @@ void Math::WKTWriter::AppendPolylineZM(Text::StringBuilderUTF8 *sb, Math::Geomet
 		sb->AppendUTF8Char('(');
 		while (k < ptOfstList[i + 1])
 		{
-			sb->AppendDouble(pointList[k].x, &Text::DoubleStyleC);
-			sb->AppendUTF8Char(' ');
-			sb->AppendDouble(pointList[k].y, &Text::DoubleStyleC);
+			if (reverseAxis)
+			{
+				sb->AppendDouble(pointList[k].y, &Text::DoubleStyleC);
+				sb->AppendUTF8Char(' ');
+				sb->AppendDouble(pointList[k].x, &Text::DoubleStyleC);
+			}
+			else
+			{
+				sb->AppendDouble(pointList[k].x, &Text::DoubleStyleC);
+				sb->AppendUTF8Char(' ');
+				sb->AppendDouble(pointList[k].y, &Text::DoubleStyleC);
+			}
 			sb->AppendUTF8Char(' ');
 			sb->AppendDouble(zList[k], &Text::DoubleStyleC);
 			sb->AppendUTF8Char(' ');
@@ -323,9 +446,18 @@ void Math::WKTWriter::AppendPolylineZM(Text::StringBuilderUTF8 *sb, Math::Geomet
 	sb->AppendUTF8Char('(');
 	while (k < nPoint)
 	{
-		sb->AppendDouble(pointList[k].x, &Text::DoubleStyleC);
-		sb->AppendUTF8Char(' ');
-		sb->AppendDouble(pointList[k].y, &Text::DoubleStyleC);
+		if (reverseAxis)
+		{
+			sb->AppendDouble(pointList[k].y, &Text::DoubleStyleC);
+			sb->AppendUTF8Char(' ');
+			sb->AppendDouble(pointList[k].x, &Text::DoubleStyleC);
+		}
+		else
+		{
+			sb->AppendDouble(pointList[k].x, &Text::DoubleStyleC);
+			sb->AppendUTF8Char(' ');
+			sb->AppendDouble(pointList[k].y, &Text::DoubleStyleC);
+		}
 		sb->AppendUTF8Char(' ');
 		sb->AppendDouble(zList[k], &Text::DoubleStyleC);
 		sb->AppendUTF8Char(' ');
@@ -340,7 +472,7 @@ void Math::WKTWriter::AppendPolylineZM(Text::StringBuilderUTF8 *sb, Math::Geomet
 	sb->AppendUTF8Char(')');
 }
 
-void Math::WKTWriter::AppendCompoundCurve(Text::StringBuilderUTF8 *sb, Math::Geometry::CompoundCurve *cc)
+void Math::WKTWriter::AppendCompoundCurve(Text::StringBuilderUTF8 *sb, Math::Geometry::CompoundCurve *cc, Bool reverseAxis)
 {
 	sb->AppendUTF8Char('(');
 	Math::Geometry::LineString *pl;
@@ -354,13 +486,13 @@ void Math::WKTWriter::AppendCompoundCurve(Text::StringBuilderUTF8 *sb, Math::Geo
 		{
 			sb->AppendC(UTF8STRC("CIRCULARSTRING"));
 		}
-		AppendLineString(sb, pl);
+		AppendLineString(sb, pl, reverseAxis);
 		i++;
 	}
 	sb->AppendUTF8Char(')');
 }
 
-void Math::WKTWriter::AppendCurvePolygon(Text::StringBuilderUTF8 *sb, Math::Geometry::CurvePolygon *cpg)
+void Math::WKTWriter::AppendCurvePolygon(Text::StringBuilderUTF8 *sb, Math::Geometry::CurvePolygon *cpg, Bool reverseAxis)
 {
 	sb->AppendUTF8Char('(');
 	Math::Geometry::Vector2D *geometry;
@@ -373,24 +505,24 @@ void Math::WKTWriter::AppendCurvePolygon(Text::StringBuilderUTF8 *sb, Math::Geom
 		Math::Geometry::Vector2D::VectorType t = geometry->GetVectorType();
 		if (t == Math::Geometry::Vector2D::VectorType::LineString)
 		{
-			AppendLineString(sb, (Math::Geometry::LineString*)geometry);
+			AppendLineString(sb, (Math::Geometry::LineString*)geometry, reverseAxis);
 		}
 		else if (t == Math::Geometry::Vector2D::VectorType::CircularString)
 		{
 			sb->AppendC(UTF8STRC("CIRCULARSTRING"));
-			AppendLineString(sb, (Math::Geometry::LineString*)geometry);
+			AppendLineString(sb, (Math::Geometry::LineString*)geometry, reverseAxis);
 		}
 		else if (t == Math::Geometry::Vector2D::VectorType::CompoundCurve)
 		{
 			sb->AppendC(UTF8STRC("COMPOUNDCURVE"));
-			AppendCompoundCurve(sb, (Math::Geometry::CompoundCurve*)geometry);
+			AppendCompoundCurve(sb, (Math::Geometry::CompoundCurve*)geometry, reverseAxis);
 		}
 		i++;
 	}
 	sb->AppendUTF8Char(')');
 }
 
-void Math::WKTWriter::AppendMultiSurface(Text::StringBuilderUTF8 *sb, Math::Geometry::MultiSurface *ms)
+void Math::WKTWriter::AppendMultiSurface(Text::StringBuilderUTF8 *sb, Math::Geometry::MultiSurface *ms, Bool reverseAxis)
 {
 	sb->AppendUTF8Char('(');
 	Math::Geometry::Vector2D *geometry;
@@ -404,18 +536,18 @@ void Math::WKTWriter::AppendMultiSurface(Text::StringBuilderUTF8 *sb, Math::Geom
 		if (t == Math::Geometry::Vector2D::VectorType::CurvePolygon)
 		{
 			sb->AppendC(UTF8STRC("CURVEPOLYGON"));
-			AppendCurvePolygon(sb, (Math::Geometry::CurvePolygon*)geometry);
+			AppendCurvePolygon(sb, (Math::Geometry::CurvePolygon*)geometry, reverseAxis);
 		}
 		else if (t == Math::Geometry::Vector2D::VectorType::Polygon)
 		{
 			sb->AppendC(UTF8STRC("POLYGON"));
 			if (geometry->HasZ())
 			{
-				AppendPolygonZ(sb, (Math::Geometry::Polygon*)geometry);
+				AppendPolygonZ(sb, (Math::Geometry::Polygon*)geometry, reverseAxis);
 			}
 			else
 			{
-				AppendPolygon(sb, (Math::Geometry::Polygon*)geometry);
+				AppendPolygon(sb, (Math::Geometry::Polygon*)geometry, reverseAxis);
 			}
 		}
 		i++;
@@ -444,6 +576,7 @@ Bool Math::WKTWriter::AppendGeometryCollection(Text::StringBuilderUTF8 *sb, Math
 Math::WKTWriter::WKTWriter()
 {
 	this->lastError = 0;
+	this->reverseAxis = false;
 }
 
 Math::WKTWriter::~WKTWriter()
@@ -474,9 +607,18 @@ Bool Math::WKTWriter::ToText(Text::StringBuilderUTF8 *sb, Math::Geometry::Vector
 			Double y;
 			Double z;
 			pt->GetPos3D(&x, &y, &z);
-			sb->AppendDouble(x, &Text::DoubleStyleC);
-			sb->AppendUTF8Char(' ');
-			sb->AppendDouble(y, &Text::DoubleStyleC);
+			if (this->reverseAxis)
+			{
+				sb->AppendDouble(y, &Text::DoubleStyleC);
+				sb->AppendUTF8Char(' ');
+				sb->AppendDouble(x, &Text::DoubleStyleC);
+			}
+			else
+			{
+				sb->AppendDouble(x, &Text::DoubleStyleC);
+				sb->AppendUTF8Char(' ');
+				sb->AppendDouble(y, &Text::DoubleStyleC);
+			}
 			sb->AppendUTF8Char(' ');
 			sb->AppendDouble(z, &Text::DoubleStyleC);
 			if (vec->HasM())
@@ -490,9 +632,18 @@ Bool Math::WKTWriter::ToText(Text::StringBuilderUTF8 *sb, Math::Geometry::Vector
 			Math::Geometry::Point *pt = (Math::Geometry::Point*)vec;
 			Math::Coord2DDbl coord;
 			coord = pt->GetCenter();
-			sb->AppendDouble(coord.x, &Text::DoubleStyleC);
-			sb->AppendUTF8Char(' ');
-			sb->AppendDouble(coord.y, &Text::DoubleStyleC);
+			if (this->reverseAxis)
+			{
+				sb->AppendDouble(coord.y, &Text::DoubleStyleC);
+				sb->AppendUTF8Char(' ');
+				sb->AppendDouble(coord.x, &Text::DoubleStyleC);
+			}
+			else
+			{
+				sb->AppendDouble(coord.x, &Text::DoubleStyleC);
+				sb->AppendUTF8Char(' ');
+				sb->AppendDouble(coord.y, &Text::DoubleStyleC);
+			}
 			if (vec->HasM())
 			{
 				sb->AppendC(UTF8STRC(" NULL "));
@@ -505,11 +656,11 @@ Bool Math::WKTWriter::ToText(Text::StringBuilderUTF8 *sb, Math::Geometry::Vector
 		sb->AppendC(UTF8STRC("POLYGON"));
 		if (vec->HasZ())
 		{
-			AppendPolygonZ(sb, (Math::Geometry::Polygon*)vec);
+			AppendPolygonZ(sb, (Math::Geometry::Polygon*)vec, this->reverseAxis);
 		}
 		else
 		{
-			AppendPolygon(sb, (Math::Geometry::Polygon*)vec);
+			AppendPolygon(sb, (Math::Geometry::Polygon*)vec, this->reverseAxis);
 		}
 		return true;
 	case Math::Geometry::Vector2D::VectorType::Polyline:
@@ -520,16 +671,16 @@ Bool Math::WKTWriter::ToText(Text::StringBuilderUTF8 *sb, Math::Geometry::Vector
 			{
 				if (pl->HasM())
 				{
-					AppendPolylineZM(sb, pl);
+					AppendPolylineZM(sb, pl, this->reverseAxis);
 				}
 				else
 				{
-					AppendPolylineZ(sb, pl);
+					AppendPolylineZ(sb, pl, this->reverseAxis);
 				}
 			}
 			else
 			{
-				AppendPolyline(sb, pl);
+				AppendPolyline(sb, pl, this->reverseAxis);
 			}
 		}
 		return true;
@@ -548,11 +699,11 @@ Bool Math::WKTWriter::ToText(Text::StringBuilderUTF8 *sb, Math::Geometry::Vector
 				}
 				if (mpg->HasZ())
 				{
-					AppendPolygonZ(sb, mpg->GetItem(i));
+					AppendPolygonZ(sb, mpg->GetItem(i), this->reverseAxis);
 				}
 				else
 				{
-					AppendPolygon(sb, mpg->GetItem(i));
+					AppendPolygon(sb, mpg->GetItem(i), this->reverseAxis);
 				}
 				i++;
 			}
@@ -561,23 +712,23 @@ Bool Math::WKTWriter::ToText(Text::StringBuilderUTF8 *sb, Math::Geometry::Vector
 		return true;
 	case Math::Geometry::Vector2D::VectorType::LineString:
 		sb->AppendC(UTF8STRC("LINESTRING"));
-		AppendLineString(sb, (Math::Geometry::LineString*)vec);
+		AppendLineString(sb, (Math::Geometry::LineString*)vec, this->reverseAxis);
 		return true;
 	case Math::Geometry::Vector2D::VectorType::CircularString:
 		sb->AppendC(UTF8STRC("CIRCULARSTRING"));
-		AppendLineString(sb, (Math::Geometry::LineString*)vec);
+		AppendLineString(sb, (Math::Geometry::LineString*)vec, this->reverseAxis);
 		return true;
 	case Math::Geometry::Vector2D::VectorType::CompoundCurve:
 		sb->AppendC(UTF8STRC("COMPOUNDCURVE"));
-		AppendCompoundCurve(sb, (Math::Geometry::CompoundCurve*)vec);
+		AppendCompoundCurve(sb, (Math::Geometry::CompoundCurve*)vec, this->reverseAxis);
 		return true;
 	case Math::Geometry::Vector2D::VectorType::CurvePolygon:
 		sb->AppendC(UTF8STRC("CURVEPOLYGON"));
-		AppendCurvePolygon(sb, (Math::Geometry::CurvePolygon*)vec);
+		AppendCurvePolygon(sb, (Math::Geometry::CurvePolygon*)vec, this->reverseAxis);
 		return true;
 	case Math::Geometry::Vector2D::VectorType::MultiSurface:
 		sb->AppendC(UTF8STRC("MULTISURFACE"));
-		AppendMultiSurface(sb, (Math::Geometry::MultiSurface*)vec);
+		AppendMultiSurface(sb, (Math::Geometry::MultiSurface*)vec, this->reverseAxis);
 		return true;
 	case Math::Geometry::Vector2D::VectorType::GeometryCollection:
 		sb->AppendC(UTF8STRC("GEOMETRYCOLLECTION"));
@@ -605,4 +756,9 @@ Bool Math::WKTWriter::ToText(Text::StringBuilderUTF8 *sb, Math::Geometry::Vector
 Text::String *Math::WKTWriter::GetLastError()
 {
 	return this->lastError;
+}
+
+void Math::WKTWriter::SetReverseAxis(Bool reverseAxis)
+{
+	this->reverseAxis = reverseAxis;
 }

@@ -55,6 +55,7 @@ namespace SSWR
 
 			UI::GUILabel *lblDBType;
 			UI::GUIComboBox *cboDBType;
+			UI::GUICheckBox *chkAxisAware;
 			UI::GUICheckBox *chkMultiRow;
 			UI::GUIButton *btnSQL;
 			UI::GUIButton *btnExecute;
@@ -74,7 +75,7 @@ namespace SSWR
 			static void __stdcall OnSQLClicked(void *userObj);
 			static void __stdcall OnExecuteClicked(void *userObj);
 			Bool LoadCSV(Text::CString fileName);
-			Bool GenerateSQL(Text::CString csvFileName, DB::DBUtil::SQLType sqlType, SQLSession *sess);
+			Bool GenerateSQL(Text::CString csvFileName, DB::DBUtil::SQLType sqlType, Bool axisAware, SQLSession *sess);
 			Bool NextSQL(Text::CString sql, SQLSession *sess);
 			void UpdateStatus(SQLSession *sess);
 			static void __stdcall AppendCol(DB::SQLBuilder *sql, DB::DBUtil::ColType colType, Text::String *s, Int8 tzQhr);

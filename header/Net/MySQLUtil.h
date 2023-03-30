@@ -85,6 +85,7 @@ namespace Net
 		static AuthenType AuthenTypeParse(Text::CString name);
 		static Text::CString AuthenTypeGetName(AuthenType authType);
 		static UOSInt BuildAuthen(UInt8 *buff, AuthenType authType, const UInt8 *nonce, UOSInt nonceSize, Text::CString password);
+		static Bool IsAxisAware(Text::CString svrVer);
 	};
 }
 #endif

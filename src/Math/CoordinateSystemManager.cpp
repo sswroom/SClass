@@ -55,15 +55,15 @@ Math::CoordinateSystemManager::DatumInfo Math::CoordinateSystemManager::datumSRI
 
 Math::CoordinateSystemManager::GeogcsSRInfo Math::CoordinateSystemManager::geogcsSRID[] = {
 //	{srid,  datum, name,    primem,   unit},
-	{3821,  1025,  UTF8STRC("TWD67"), Math::CoordinateSystem::PT_GREENWICH, Math::CoordinateSystem::UT_DEGREE, 0.0174532925199433},
-	{3824,  1026,  UTF8STRC("TWD97"), Math::CoordinateSystem::PT_GREENWICH, Math::CoordinateSystem::UT_DEGREE, 0.0174532925199433},
-	{4236,  6236,  UTF8STRC("Hu Tzu Shan 1950"), Math::CoordinateSystem::PT_GREENWICH, Math::CoordinateSystem::UT_DEGREE, 0.0174532925199433},
-	{4326,  6326,  UTF8STRC("WGS 84"), Math::CoordinateSystem::PT_GREENWICH, Math::CoordinateSystem::UT_DEGREE, 0.0174532925199433},
-	{4600,  6600,  UTF8STRC("Anguilla 1957"), Math::CoordinateSystem::PT_GREENWICH, Math::CoordinateSystem::UT_DEGREE, 0.0174532925199433},
-	{4601,  6601,  UTF8STRC("Antigua 1943"), Math::CoordinateSystem::PT_GREENWICH, Math::CoordinateSystem::UT_DEGREE, 0.0174532925199433},
-	{4602,  6602,  UTF8STRC("Dominica 1945"), Math::CoordinateSystem::PT_GREENWICH, Math::CoordinateSystem::UT_DEGREE, 0.0174532925199433},
-	{4603,  6603,  UTF8STRC("Grenada 1953"), Math::CoordinateSystem::PT_GREENWICH, Math::CoordinateSystem::UT_DEGREE, 0.0174532925199433},
-	{4611,  6611,  UTF8STRC("Hong Kong 1980"), Math::CoordinateSystem::PT_GREENWICH, Math::CoordinateSystem::UT_DEGREE, 0.0174532925199433},
+	{3821,  1025,  UTF8STRC("TWD67"), Math::CoordinateSystem::PT_GREENWICH, Math::CoordinateSystem::UT_DEGREE, 0.0174532925199433, true},
+	{3824,  1026,  UTF8STRC("TWD97"), Math::CoordinateSystem::PT_GREENWICH, Math::CoordinateSystem::UT_DEGREE, 0.0174532925199433, true},
+	{4236,  6236,  UTF8STRC("Hu Tzu Shan 1950"), Math::CoordinateSystem::PT_GREENWICH, Math::CoordinateSystem::UT_DEGREE, 0.0174532925199433, true},
+	{4326,  6326,  UTF8STRC("WGS 84"), Math::CoordinateSystem::PT_GREENWICH, Math::CoordinateSystem::UT_DEGREE, 0.0174532925199433, true},
+	{4600,  6600,  UTF8STRC("Anguilla 1957"), Math::CoordinateSystem::PT_GREENWICH, Math::CoordinateSystem::UT_DEGREE, 0.0174532925199433, true},
+	{4601,  6601,  UTF8STRC("Antigua 1943"), Math::CoordinateSystem::PT_GREENWICH, Math::CoordinateSystem::UT_DEGREE, 0.0174532925199433, true},
+	{4602,  6602,  UTF8STRC("Dominica 1945"), Math::CoordinateSystem::PT_GREENWICH, Math::CoordinateSystem::UT_DEGREE, 0.0174532925199433, true},
+	{4603,  6603,  UTF8STRC("Grenada 1953"), Math::CoordinateSystem::PT_GREENWICH, Math::CoordinateSystem::UT_DEGREE, 0.0174532925199433, true},
+	{4611,  6611,  UTF8STRC("Hong Kong 1980"), Math::CoordinateSystem::PT_GREENWICH, Math::CoordinateSystem::UT_DEGREE, 0.0174532925199433, true},
 };
 
 Math::CoordinateSystemManager::ProjcsSRInfo Math::CoordinateSystemManager::projcsSRID[] = {
@@ -390,6 +390,23 @@ const Math::CoordinateSystemManager::ProjcsSRInfo *Math::CoordinateSystemManager
 	printf("SRGetProjcsInfo(%d) not found\r\n", epsgId);
 #endif
 	return 0;	
+}
+
+Bool Math::CoordinateSystemManager::SRAxisReversed(UInt32 epsgId)
+{
+	const Math::CoordinateSystemManager::SpatialRefInfo *info = SRGetSpatialRef(epsgId);
+	if (info)
+	{
+		if (info->srType == SRT_GEOGCS)
+		{
+			const GeogcsSRInfo *geogcs = SRGetGeogcsInfo(epsgId);
+			if (geogcs)
+			{
+				return geogcs->reverseAxis;
+			}
+		}
+	}
+	return false;
 }
 
 Math::CoordinateSystem *Math::CoordinateSystemManager::SRCreateCSys(UInt32 epsgId)

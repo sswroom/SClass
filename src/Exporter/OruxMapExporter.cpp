@@ -130,7 +130,7 @@ Bool Exporter::OruxMapExporter::ExportFile(IO::SeekableStream *stm, Text::CStrin
 			Data::ArrayList<Math::Coord2D<Int32>> imgIds;
 			Map::TileMap::ImageType it;
 			IO::StreamData *fd;
-			DB::SQLBuilder sql(db->GetSQLType(), db->GetTzQhr());
+			DB::SQLBuilder sql(db->GetSQLType(), db->IsAxisAware(), db->GetTzQhr());
 			db->ExecuteNonQuery(CSTR("CREATE TABLE android_metadata (locale TEXT)"));
 			db->ExecuteNonQuery(CSTR("CREATE TABLE tiles (x int, y int, z int, image blob, PRIMARY KEY (x,y,z))"));
 			db->ExecuteNonQuery(CSTR("delete from android_metadata"));

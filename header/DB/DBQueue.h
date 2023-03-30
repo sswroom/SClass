@@ -144,11 +144,12 @@ namespace DB
 		void AddTrans(Priority priority, Int32 progId, DBToolHdlr hdlr, void *userData, void *userData2);
 		void GetDB(Priority priority, Int32 progId, DBToolHdlr hdlr, void *userData, void *userData2);
 		void RemoveSQLs(Int32 progId);
-		UOSInt GetDataCnt();
-		UOSInt GetQueueCnt();
-		UOSInt GetConnCnt();
-		DB::DBUtil::SQLType GetSQLType();
-		Int8 GetTzQhr();
+		UOSInt GetDataCnt() const;
+		UOSInt GetQueueCnt() const;
+		UOSInt GetConnCnt() const;
+		DB::DBUtil::SQLType GetSQLType() const;
+		Bool IsAxisAware() const;
+		Int8 GetTzQhr() const;
 		UTF8Char *ToString(UTF8Char *buff);
 		UOSInt GetNextCmds(IDBCmd **cmds); //max 200 cmds
 		UTF8Char *DBDate(UTF8Char *buff, Data::DateTime *dat);

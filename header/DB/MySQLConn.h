@@ -16,6 +16,7 @@ namespace DB
 
 		void *mysql;
 
+		Bool axisAware;
 		Bool isTran;
 		Text::String *server;
 		Text::String *database;
@@ -31,6 +32,7 @@ namespace DB
 		MySQLConn(const WChar *server, const WChar *uid, const WChar *pwd, const WChar *database, IO::LogTool *log);
 		virtual ~MySQLConn();
 		virtual DB::DBUtil::SQLType GetSQLType() const;
+		virtual Bool IsAxisAware() const;
 		virtual ConnType GetConnType() const;
 		virtual Int8 GetTzQhr() const;
 		virtual void ForceTz(Int8 tzQhr);

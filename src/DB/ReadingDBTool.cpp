@@ -60,6 +60,7 @@ DB::ReadingDBTool::ReadingDBTool(DB::DBConn *db, Bool needRelease, IO::LogTool *
 	this->trig = 0;
 	this->dataCnt = 0;
 	this->sqlType = db->GetSQLType();
+	this->axisAware = db->IsAxisAware();
 	switch (this->sqlType)
 	{
 	case DB::DBUtil::SQLType::Access:
@@ -447,6 +448,11 @@ DB::DBUtil::SQLType DB::ReadingDBTool::GetSQLType()
 	return this->sqlType;
 }
 
+Bool DB::ReadingDBTool::IsAxisAware()
+{
+	return this->axisAware;
+}
+
 Bool DB::ReadingDBTool::IsDataError(const UTF8Char *errCode)
 {
 	if (errCode == 0)
@@ -641,7 +647,7 @@ UOSInt DB::ReadingDBTool::QueryTableNames(Text::CString schemaName, Data::ArrayL
 	if (this->sqlType == DB::DBUtil::SQLType::MSSQL)
 	{
 		UOSInt ret = 0;
-		DB::SQLBuilder sql(DB::DBUtil::SQLType::MSSQL, this->GetTzQhr());
+		DB::SQLBuilder sql(DB::DBUtil::SQLType::MSSQL, this->axisAware, this->GetTzQhr());
 		sql.AppendCmdC(CSTR("select TABLE_SCHEMA, TABLE_NAME from INFORMATION_SCHEMA.TABLES where TABLE_TYPE='BASE TABLE' and TABLE_SCHEMA="));
 		if (schemaName.leng == 0)
 		{

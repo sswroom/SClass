@@ -82,6 +82,7 @@ namespace Math
 			Math::CoordinateSystem::PrimemType primem;
 			Math::CoordinateSystem::UnitType unit;
 			Double unitScale;
+			Bool reverseAxis;
 		} GeogcsSRInfo;
 
 		typedef struct
@@ -167,6 +168,7 @@ namespace Math
 		static const DatumInfo *SRGetDatum(UInt32 epsgId);
 		static const GeogcsSRInfo *SRGetGeogcsInfo(UInt32 epsgId);
 		static const ProjcsSRInfo *SRGetProjcsInfo(UInt32 epsgId);
+		static Bool SRAxisReversed(UInt32 epsgId);
 		static Math::CoordinateSystem *SRCreateCSys(UInt32 epsgId);
 		static Math::ProjectedCoordinateSystem *SRCreateProjCSys(UInt32 epsgId);
 		static Math::GeographicCoordinateSystem *SRCreateGeogCSys(UInt32 epsgId);

@@ -23,6 +23,11 @@ DB::DBConn::~DBConn()
 {
 }
 
+Bool DB::DBConn::IsAxisAware() const
+{
+	return false;
+}
+
 DB::TableDef *DB::DBConn::GetTableDef(Text::CString schemaName, Text::CString tableName)
 {
 	UTF8Char buff[256];
@@ -245,7 +250,7 @@ DB::TableDef *DB::DBConn::GetTableDef(Text::CString schemaName, Text::CString ta
 	}
 	case DB::DBUtil::SQLType::SQLite:
 	{
-		DB::SQLBuilder sql(DB::DBUtil::SQLType::SQLite, this->GetTzQhr());
+		DB::SQLBuilder sql(DB::DBUtil::SQLType::SQLite, false, this->GetTzQhr());
 		sql.AppendCmdC(CSTR("select sql from sqlite_master where type='table' and name="));
 		sql.AppendStrC(tableName);
 		DB::DBReader *r = this->ExecuteReader(sql.ToCString());
@@ -274,7 +279,7 @@ DB::TableDef *DB::DBConn::GetTableDef(Text::CString schemaName, Text::CString ta
 	}
 	case DB::DBUtil::SQLType::PostgreSQL:
 	{
-		DB::SQLBuilder sql(DB::DBUtil::SQLType::PostgreSQL, this->GetTzQhr());
+		DB::SQLBuilder sql(DB::DBUtil::SQLType::PostgreSQL, false, this->GetTzQhr());
 		sql.AppendCmdC(CSTR("select column_name, column_default, is_nullable, udt_name, character_maximum_length, datetime_precision, is_identity, identity_generation, identity_start, identity_increment, udt_schema from information_schema.columns where table_name="));
 		sql.AppendStrC(tableName);
 		sql.AppendCmdC(CSTR(" and table_schema = "));

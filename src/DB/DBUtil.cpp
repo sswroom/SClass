@@ -3,6 +3,7 @@
 #include "Data/ByteTool.h"
 #include "DB/ColDef.h"
 #include "DB/DBUtil.h"
+#include "Math/CoordinateSystemManager.h"
 #include "Math/Math.h"
 #include "Math/WKTWriter.h"
 #include "Math/Geometry/Point.h"
@@ -1594,7 +1595,7 @@ UOSInt DB::DBUtil::SDBBinLeng(const UInt8 *buff, UOSInt size, DB::DBUtil::SQLTyp
 	}
 }
 
-UTF8Char *DB::DBUtil::SDBVector(UTF8Char *sqlstr, Math::Geometry::Vector2D *vec, DB::DBUtil::SQLType sqlType)
+UTF8Char *DB::DBUtil::SDBVector(UTF8Char *sqlstr, Math::Geometry::Vector2D *vec, DB::DBUtil::SQLType sqlType, Bool axisAware)
 {
 	if (vec == 0)
 	{
@@ -1622,6 +1623,13 @@ UTF8Char *DB::DBUtil::SDBVector(UTF8Char *sqlstr, Math::Geometry::Vector2D *vec,
 	else if (sqlType == DB::DBUtil::SQLType::MySQL)
 	{
 		Math::WKTWriter writer;
+		if (axisAware)
+		{
+			if (Math::CoordinateSystemManager::SRAxisReversed(vec->GetSRID()))
+			{
+				writer.SetReverseAxis(true);
+			}
+		}
 		Text::StringBuilderUTF8 sb;
 		if (writer.ToText(&sb, vec))
 		{

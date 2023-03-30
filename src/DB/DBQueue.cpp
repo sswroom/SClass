@@ -396,7 +396,7 @@ void DB::DBQueue::RemoveSQLs(Int32 progId)
 	mutUsage.EndUse();
 }
 
-UOSInt DB::DBQueue::GetDataCnt()
+UOSInt DB::DBQueue::GetDataCnt() const
 {
 	UOSInt i = this->dbList.GetCount();
 	UOSInt cnt = 0;
@@ -407,7 +407,7 @@ UOSInt DB::DBQueue::GetDataCnt()
 	return cnt;
 }
 
-UOSInt DB::DBQueue::GetQueueCnt()
+UOSInt DB::DBQueue::GetQueueCnt() const
 {
 	UOSInt cnt = 0;
 	UOSInt i = (UOSInt)DB::DBQueue::Priority::Highest + 1;
@@ -421,7 +421,7 @@ UOSInt DB::DBQueue::GetQueueCnt()
 	return cnt;
 }
 
-UOSInt DB::DBQueue::GetConnCnt()
+UOSInt DB::DBQueue::GetConnCnt() const
 {
 	return this->dbList.GetCount();
 }
@@ -431,12 +431,17 @@ UTF8Char *DB::DBQueue::ToString(UTF8Char *buff)
 	return this->name->ConcatTo(buff);
 }
 
-DB::DBUtil::SQLType DB::DBQueue::GetSQLType()
+DB::DBUtil::SQLType DB::DBQueue::GetSQLType() const
 {
 	return this->db1->GetSQLType();
 }
 
-Int8 DB::DBQueue::GetTzQhr()
+Bool DB::DBQueue::IsAxisAware() const
+{
+	return this->db1->IsAxisAware();
+}
+
+Int8 DB::DBQueue::GetTzQhr() const
 {
 	return this->db1->GetTzQhr();
 }

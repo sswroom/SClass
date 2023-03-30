@@ -1426,6 +1426,7 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(void *userObj)
 									MemCopyNO(me->authPluginData, &buff[packetSize - 5], 8);
 									me->authPluginDataSize = 8;
 									me->mode = ClientMode::Authen;
+									me->axisAware = Net::MySQLUtil::IsAxisAware(me->svrVer->ToCString());
 									////////////////////////////////
 	#if defined(VERBOSE)
 									printf("MySQLTCP %d Server ver = %s\r\n", me->cli->GetLocalPort(), me->svrVer->v);
@@ -2024,6 +2025,7 @@ Net::MySQLTCPClient::MySQLTCPClient(Net::SocketFactory *sockf, const Net::Socket
 	this->port = port;
 	this->mode = ClientMode::Handshake;
 	this->svrVer = 0;
+	this->axisAware = false;
 	this->connId = 0;
 	this->authPluginDataSize = 0;
 	this->svrCap = 0;
@@ -2063,6 +2065,11 @@ Net::MySQLTCPClient::~MySQLTCPClient()
 DB::DBUtil::SQLType Net::MySQLTCPClient::GetSQLType() const
 {
 	return DB::DBUtil::SQLType::MySQL;
+}
+
+Bool Net::MySQLTCPClient::IsAxisAware() const
+{
+	return this->axisAware;
 }
 
 DB::DBConn::ConnType Net::MySQLTCPClient::GetConnType() const
@@ -2299,6 +2306,7 @@ void Net::MySQLTCPClient::Reconnect()
 	this->recvStarted = false;
 	this->mode = ClientMode::Handshake;
 	SDEL_STRING(this->svrVer);
+	this->axisAware = false;
 	NEW_CLASS(this->cli, Net::TCPClient(this->sockf, &this->addr, this->port));
 	if (this->cli->IsConnectError())
 	{

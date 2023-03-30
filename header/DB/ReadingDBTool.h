@@ -55,6 +55,7 @@ namespace DB
 		UInt32 dataCnt;
 
 		DBUtil::SQLType sqlType;
+		Bool axisAware;
 
 	public:
 		static ReadingDBTool *MongoDBSource(const UTF8Char *url, IO::LogTool *log, Text::CString logPrefix);
@@ -73,6 +74,7 @@ namespace DB
 		DB::DBReader *ExecuteReader(Text::CString sqlCmd);
 		virtual void CloseReader(DB::DBReader *r);
 		DB::DBUtil::SQLType GetSQLType();
+		Bool IsAxisAware();
 		Bool IsDataError(const UTF8Char *errCode);
 		virtual void GetLastErrorMsg(Text::StringBuilderUTF8 *sb);
 		DB::DBConn *GetDBConn();
