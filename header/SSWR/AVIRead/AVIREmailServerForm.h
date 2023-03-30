@@ -1,8 +1,10 @@
-#ifndef _SM_SSWR_AVIREAD_AVIRSMTPSERVERFORM
-#define _SM_SSWR_AVIREAD_AVIRSMTPSERVERFORM
+#ifndef _SM_SSWR_AVIREAD_AVIREMAILSERVERFORM
+#define _SM_SSWR_AVIREAD_AVIREMAILSERVERFORM
 #include "Net/Email/EmailStore.h"
 #include "Net/Email/POP3Server.h"
 #include "Net/Email/SMTPServer.h"
+#include "Net/WebServer/GCISNotifyHandler.h"
+#include "Net/WebServer/WebListener.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "Text/String.h"
 #include "UI/ListBoxLogger.h"
@@ -23,33 +25,44 @@ namespace SSWR
 {
 	namespace AVIRead
 	{
-		class AVIRSMTPServerForm : public UI::GUIForm, public Net::Email::MailController
+		class AVIREmailServerForm : public UI::GUIForm, public Net::Email::MailController
 		{
 		private:
 			SSWR::AVIRead::AVIRCore *core;
 
 			UI::GUITabControl *tcMain;
-			UI::GUITabPage *tpControl;
-			UI::GUITabPage *tpEmail;
-			UI::GUITabPage *tpLog;
 
-			UI::GUIButton *btnCertKey;
-			UI::GUILabel *lblCertKey;
-			UI::GUIGroupBox *grpSMTP;
+			UI::GUITabPage *tpSMTP;
+			UI::GUIButton *btnSMTPCertKey;
+			UI::GUILabel *lblSMTPCertKey;
 			UI::GUILabel *lblSMTPPort;
 			UI::GUITextBox *txtSMTPPort;
 			UI::GUILabel *lblSMTPType;
 			UI::GUIComboBox *cboSMTPType;
 			UI::GUIButton *btnSMTPStart;
-			UI::GUIGroupBox *grpPOP3;
+			UI::GUIButton *btnLogFile;
+
+			UI::GUITabPage *tpPOP3;
+			UI::GUIButton *btnPOP3CertKey;
+			UI::GUILabel *lblPOP3CertKey;
 			UI::GUILabel *lblPOP3Port;
 			UI::GUITextBox *txtPOP3Port;
 			UI::GUICheckBox *chkPOP3SSL;
 			UI::GUIButton *btnPOP3Start;
-			UI::GUIButton *btnLogFile;
 
+			UI::GUITabPage *tpGCIS;
+			UI::GUIButton *btnGCISCertKey;
+			UI::GUILabel *lblGCISCertKey;
+			UI::GUILabel *lblGCISPort;
+			UI::GUITextBox *txtGCISPort;
+			UI::GUILabel *lblGCISPath;
+			UI::GUITextBox *txtGCISPath;
+			UI::GUIButton *btnGCISStart;
+
+			UI::GUITabPage *tpEmail;
 			UI::GUIListView *lvEmail;
 
+			UI::GUITabPage *tpLog;
 			UI::GUITextBox *txtLog;
 			UI::GUIListBox *lbLog;
 
@@ -58,10 +71,18 @@ namespace SSWR
 			IO::LogTool log;
 			UI::ListBoxLogger *logger;
 			Net::SocketFactory *sockf;
-			Net::SSLEngine *ssl;
-			Crypto::Cert::X509Cert *sslCert;
-			Crypto::Cert::X509File *sslKey;
+			Net::SSLEngine *smtpSSL;
+			Crypto::Cert::X509Cert *smtpSSLCert;
+			Crypto::Cert::X509File *smtpSSLKey;
 			Net::Email::SMTPConn::ConnType smtpType;
+			Net::SSLEngine *pop3SSL;
+			Crypto::Cert::X509Cert *pop3SSLCert;
+			Crypto::Cert::X509File *pop3SSLKey;
+			Net::SSLEngine *gcisSSL;
+			Crypto::Cert::X509Cert *gcisSSLCert;
+			Crypto::Cert::X509File *gcisSSLKey;
+			Net::WebServer::WebListener *gcisListener;
+			Net::WebServer::GCISNotifyHandler *gcisHdlr;
 
 			Sync::Mutex userMut;
 			Data::FastStringMap<UOSInt> userMap;
@@ -74,19 +95,22 @@ namespace SSWR
 
 			static void __stdcall OnSMTPStartClicked(void *userObj);
 			static void __stdcall OnPOP3StartClicked(void *userObj);
+			static void __stdcall OnGCISStartClicked(void *userObj);
 			static void __stdcall OnLogFileClicked(void *userObj);
 			static void __stdcall OnEmailDblClicked(void *userObj, UOSInt index);
 			static UTF8Char *__stdcall OnMailReceived(UTF8Char *queryId, void *userObj, Net::TCPClient *cli, Net::Email::SMTPServer::MailStatus *mail);
 			static Bool __stdcall OnMailLogin(void *userObj, Text::CString userName, Text::CString pwd);
 			static void __stdcall OnTimerTick(void *userObj);
-			static void __stdcall OnCertKeyClicked(void *userObj);
+			static void __stdcall OnSMTPCertKeyClicked(void *userObj);
+			static void __stdcall OnPOP3CertKeyClicked(void *userObj);
+			static void __stdcall OnGCISCertKeyClicked(void *userObj);
 			static void __stdcall OnSMTPTypeSelChg(void *userObj);
 			static void __stdcall OnPOP3SSLChanged(void *userObj, Bool isChecked);
 
 			Text::String *GetUserName(Int32 userId);
 		public:
-			AVIRSMTPServerForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
-			virtual ~AVIRSMTPServerForm();
+			AVIREmailServerForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
+			virtual ~AVIREmailServerForm();
 
 			virtual void OnMonitorChanged();
 

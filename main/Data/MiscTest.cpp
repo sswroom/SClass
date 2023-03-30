@@ -4,6 +4,7 @@
 #include "IO/FileStream.h"
 #include "IO/ProtoHdlr/ProtoJMVL01Handler.h"
 #include "Text/CPPText.h"
+#include "Text/StringTool.h"
 #include "Text/UTF8Writer.h"
 #include "Text/XMLReader.h"
 #include <stdio.h>
@@ -131,7 +132,62 @@ Int32 Test1()
 	return 0;
 }
 
+Bool InZone(Data::ArrayList<Double> *lats, Data::ArrayList<Double> *lons, Math::Coord2DDbl pos)
+{
+	Double thisPtX;
+	Double thisPtY;
+	Double lastPtX;
+	Double lastPtY;
+	UOSInt j;
+	UOSInt l;
+	Int32 leftCnt = 0;
+	Double tmpX;
+
+	l = lons->GetCount();
+	lastPtX = lons->GetItem(0);
+	lastPtY = lats->GetItem(0);
+	while (l-- > 0)
+	{
+		thisPtX = lons->GetItem(l);
+		thisPtY = lats->GetItem(l);
+		j = 0;
+		if (lastPtY > pos.y)
+			j += 1;
+		if (thisPtY > pos.y)
+			j += 1;
+
+		printf("j = %d\r\n", (UInt32)j);
+		if (j == 1)
+		{
+			tmpX = lastPtX - (lastPtX - thisPtX) * (lastPtY - pos.y) / (lastPtY - thisPtY);
+			printf("tmpX = %lf, x = %lf\r\n", tmpX, pos.x);
+			if (tmpX < pos.x)
+				leftCnt++;
+		}
+		lastPtX = thisPtX;
+		lastPtY = thisPtY;
+	}
+
+	printf("leftCnt = %d\r\n", (UInt32)leftCnt);
+	return (leftCnt & 1) != 0;
+}
+
+Int32 InPolygonTest()
+{
+	Text::CString latStr = CSTR("22.362539668716,22.35545519929,22.354899539392,22.356447443597,22.361984037077,22.362738108049");
+	Text::CString lonStr = CSTR("114.08715410232,114.08588809966,114.09921331405,114.11195917129,114.11129398346,114.08721847534");
+	Double lat = 22.361138;
+	Double lon = 114.09073483333;
+	Data::ArrayList<Double> lats;
+	Data::ArrayList<Double> lons;
+	if (Text::StringTool::SplitAsDouble(latStr, ',', &lats) && Text::StringTool::SplitAsDouble(lonStr, ',', &lons))
+	{
+		printf("InPolygon = %d\r\n", InZone(&lats, &lons, Math::Coord2DDbl(lon, lat))?1:0);
+	}
+	return 0;
+}
+
 Int32 MyMain(Core::IProgControl *progCtrl)
 {
-	return Test1();
+	return InPolygonTest();
 }

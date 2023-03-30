@@ -247,3 +247,31 @@ const UTF8Char *Text::StringTool::Null2Empty(const UTF8Char *s)
 	if (s) return s;
 	return (const UTF8Char*)"";
 }
+
+Bool Text::StringTool::SplitAsDouble(Text::CString str, UTF8Char splitChar, Data::ArrayList<Double> *outArr)
+{
+	UTF8Char sbuff[128];
+	Double v;
+	UOSInt i = 0;
+	UOSInt j;
+	while (true)
+	{
+		j = str.IndexOf(splitChar, i);
+		if (j == INVALID_INDEX)
+		{
+			if (!Text::StrToDouble(&str.v[i], &v))
+				return false;
+			outArr->Add(v);
+			return true;
+		}
+		if (j - i >= sizeof(sbuff))
+		{
+			return false;
+		}
+		Text::StrConcatC(sbuff, &str.v[i], j - i);
+		if (!Text::StrToDouble(sbuff, &v))
+			return false;
+		outArr->Add(v);
+		i = j + 1;
+	}
+}

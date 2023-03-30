@@ -80,6 +80,7 @@
 #include "SSWR/AVIRead/AVIReGaugeSvrForm.h"
 #include "SSWR/AVIRead/AVIRElectronicScaleForm.h"
 #include "SSWR/AVIRead/AVIREmailAddrValidForm.h"
+#include "SSWR/AVIRead/AVIREmailServerForm.h"
 #include "SSWR/AVIRead/AVIREncryptForm.h"
 #include "SSWR/AVIRead/AVIREncryptMsgForm.h"
 #include "SSWR/AVIRead/AVIRESRIMapForm.h"
@@ -188,7 +189,6 @@
 #include "SSWR/AVIRead/AVIRSetLocationSvcForm.h"
 #include "SSWR/AVIRead/AVIRSMBIOSForm.h"
 #include "SSWR/AVIRead/AVIRSMTPClientForm.h"
-#include "SSWR/AVIRead/AVIRSMTPServerForm.h"
 #include "SSWR/AVIRead/AVIRSNBDongleForm.h"
 #include "SSWR/AVIRead/AVIRSNMPClientForm.h"
 #include "SSWR/AVIRead/AVIRSNMPManagerForm.h"
@@ -288,7 +288,7 @@ typedef enum
 	MNU_SET_DPI,
 	MNU_DNSCLIENT,
 	MNU_DNSPROXY,
-	MNU_SMTPSERVER,
+	MNU_EMAILSERVER,
 	MNU_FILEEX,
 	MNU_AUDIOFILTER,
 	MNU_NET_PING,
@@ -742,7 +742,7 @@ SSWR::AVIRead::AVIRBaseForm::AVIRBaseForm(UI::GUIClientControl *parent, UI::GUIC
 	mnu->AddItem(CSTR("WHOIS Client"), MNU_WHOISCLIENT, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("DHCP Server"), MNU_DHCPSERVER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2 = mnu->AddSubMenu(CSTR("Email"));
-	mnu2->AddItem(CSTR("SMTP Server"), MNU_SMTPSERVER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("Email Server"), MNU_EMAILSERVER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("Email Address Validator"), MNU_EMAIL_ADDR_VALID, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("SMTP Client"), MNU_SMTP_CLIENT, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2 = mnu->AddSubMenu(CSTR("NetBIOS"));
@@ -1254,10 +1254,10 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 			}
 		}
 		break;
-	case MNU_SMTPSERVER:
+	case MNU_EMAILSERVER:
 		{
-			SSWR::AVIRead::AVIRSMTPServerForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRSMTPServerForm(0, this->ui, this->core));
+			SSWR::AVIRead::AVIREmailServerForm *frm;
+			NEW_CLASS(frm, SSWR::AVIRead::AVIREmailServerForm(0, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;

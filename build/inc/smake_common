@@ -3171,6 +3171,8 @@ Net/Spring/SpringBootApplication.h: ../../src/Net/Spring/SpringBootApplication.c
 @SpringBootApplication.o
 Net/WebServer/CapturerWebHandler.h: ../../src/Net/WebServer/CapturerWebHandler.cpp
 @CapturerWebHandler.o
+Net/WebServer/GCISNotifyHandler.h: ../../src/Net/WebServer/GCISNotifyHandler.cpp
+@GCISNotifyHandler.o
 Net/WebServer/EGaugeHandler.h: ../../src/Net/WebServer/EGaugeHandler.cpp
 @EGaugeHandler.o
 Net/WebServer/HTTPDirectoryHandler.h: ../../src/Net/WebServer/HTTPDirectoryHandler.cpp
@@ -3595,6 +3597,8 @@ SSWR/AVIRead/AVIRElectronicScaleForm.h: ../../src/SSWR/AVIRead/AVIRElectronicSca
 @AVIRElectronicScaleForm.o
 SSWR/AVIRead/AVIREmailAddrValidForm.h: ../../src/SSWR/AVIRead/AVIREmailAddrValidForm.cpp
 @AVIREmailAddrValidForm.o
+SSWR/AVIRead/AVIREmailServerForm.h: ../../src/SSWR/AVIRead/AVIREmailServerForm.cpp
+@AVIREmailServerForm.o
 SSWR/AVIRead/AVIREncryptForm.h: ../../src/SSWR/AVIRead/AVIREncryptForm.cpp
 @AVIREncryptForm.o
 SSWR/AVIRead/AVIREncryptMsgForm.h: ../../src/SSWR/AVIRead/AVIREncryptMsgForm.cpp
@@ -3917,8 +3921,6 @@ SSWR/AVIRead/AVIRSMBIOSForm.h: ../../src/SSWR/AVIRead/AVIRSMBIOSForm.cpp
 @AVIRSMBIOSForm.o
 SSWR/AVIRead/AVIRSMTPClientForm.h: ../../src/SSWR/AVIRead/AVIRSMTPClientForm.cpp
 @AVIRSMTPClientForm.o
-SSWR/AVIRead/AVIRSMTPServerForm.h: ../../src/SSWR/AVIRead/AVIRSMTPServerForm.cpp
-@AVIRSMTPServerForm.o
 SSWR/AVIRead/AVIRSNBDongleForm.h: ../../src/SSWR/AVIRead/AVIRSNBDongleForm.cpp
 @AVIRSNBDongleForm.o
 SSWR/AVIRead/AVIRSNBHandlerForm.h: ../../src/SSWR/AVIRead/AVIRSNBHandlerForm.cpp
@@ -5394,6 +5396,7 @@ SNSTwitter.o: ../../src/Net/SNS/SNSTwitter.cpp
 SpringBootApplication.o: ../../src/Net/Spring/SpringBootApplication.cpp
 CapturerWebHandler.o: ../../src/Net/WebServer/CapturerWebHandler.cpp
 EGaugeHandler.o: ../../src/Net/WebServer/EGaugeHandler.cpp
+GCISNotifyHandler.o: ../../src/Net/WebServer/GCISNotifyHandler.cpp
 HTTPDirectoryHandler.o: ../../src/Net/WebServer/HTTPDirectoryHandler.cpp
 HTTPForwardHandler.o: ../../src/Net/WebServer/HTTPForwardHandler.cpp
 HTTPServerUtil.o: ../../src/Net/WebServer/HTTPServerUtil.cpp
@@ -5601,6 +5604,7 @@ AVIREDIDViewerForm.o: ../../src/SSWR/AVIRead/AVIREDIDViewerForm.cpp
 AVIReGaugeSvrForm.o: ../../src/SSWR/AVIRead/AVIReGaugeSvrForm.cpp
 AVIRElectronicScaleForm.o: ../../src/SSWR/AVIRead/AVIRElectronicScaleForm.cpp
 AVIREmailAddrValidForm.o: ../../src/SSWR/AVIRead/AVIREmailAddrValidForm.cpp
+AVIREmailServerForm.o: ../../src/SSWR/AVIRead/AVIREmailServerForm.cpp
 AVIREncryptForm.o: ../../src/SSWR/AVIRead/AVIREncryptForm.cpp
 AVIREncryptMsgForm.o: ../../src/SSWR/AVIRead/AVIREncryptMsgForm.cpp
 AVIRESRIMapForm.o: ../../src/SSWR/AVIRead/AVIRESRIMapForm.cpp
@@ -5762,7 +5766,6 @@ AVIRSetLocationSvcForm.o: ../../src/SSWR/AVIRead/AVIRSetLocationSvcForm.cpp
 AVIRSMakeForm.o: ../../src/SSWR/AVIRead/AVIRSMakeForm.cpp
 AVIRSMBIOSForm.o: ../../src/SSWR/AVIRead/AVIRSMBIOSForm.cpp
 AVIRSMTPClientForm.o: ../../src/SSWR/AVIRead/AVIRSMTPClientForm.cpp
-AVIRSMTPServerForm.o: ../../src/SSWR/AVIRead/AVIRSMTPServerForm.cpp
 AVIRSNBDongleForm.o: ../../src/SSWR/AVIRead/AVIRSNBDongleForm.cpp
 AVIRSNBHandlerForm.o: ../../src/SSWR/AVIRead/AVIRSNBHandlerForm.cpp
 AVIRSNMPClientForm.o: ../../src/SSWR/AVIRead/AVIRSNMPClientForm.cpp
