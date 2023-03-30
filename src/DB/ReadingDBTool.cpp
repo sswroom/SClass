@@ -71,6 +71,14 @@ DB::ReadingDBTool::ReadingDBTool(DB::DBConn *db, Bool needRelease, IO::LogTool *
 		break;
 	case DB::DBUtil::SQLType::MySQL:
 		this->AddLogMsgC(UTF8STRC("Server type is MySQL"), IO::ILogHandler::LogLevel::Command);
+		if (this->axisAware)
+		{
+			this->AddLogMsgC(UTF8STRC("DB is Axis-Aware"), IO::ILogHandler::LogLevel::Command);
+		}
+		else
+		{
+			this->AddLogMsgC(UTF8STRC("DB is not Axis-Aware"), IO::ILogHandler::LogLevel::Command);
+		}
 		break;
 	case DB::DBUtil::SQLType::Oracle:
 		this->AddLogMsgC(UTF8STRC("Server type is Oracle"), IO::ILogHandler::LogLevel::Command);
