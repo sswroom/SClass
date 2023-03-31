@@ -2809,7 +2809,7 @@ Media::Image *Media::GDIImage::Clone() const
 
 Media::Image::ImageType Media::GDIImage::GetImageType() const
 {
-	return IT_GUIIMAGE;
+	return Media::Image::ImageType::GUIImage;
 }
 
 void Media::GDIImage::GetImageData(UInt8 *destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown, Media::RotateType destRotate) const

@@ -34,3 +34,9 @@ IO::ParsedObject *Parser::FileParser::HEIFParser::ParseFileHdr(IO::StreamData *f
 {
 	return 0;
 }
+
+Bool Parser::FileParser::HEIFParser::ParseHeaders(IO::StreamData *fd, Media::EXIFData **exif, Text::XMLDocument **xmf, Media::ICCProfile **icc, UInt32 *width, UInt32 *height)
+{
+	return false;
+}
+

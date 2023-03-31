@@ -25,9 +25,7 @@ Bool IO::SensorLocationWin::ReadLocation(Map::GPSTrack::GPSRecord3 *loc)
 		PROPVARIANT var = {};
 		Bool ret = true;
 
-		Data::DateTime dt;
-		dt.SetCurrTimeUTC();
-		loc->utcTimeTicks = dt.ToTicks();
+		loc->recTime = Data::TimeInstant::Now();
 		if (SUCCEEDED(pReport->GetSensorValue(SENSOR_DATA_TYPE_LATITUDE_DEGREES, &var)) && var.vt == VT_R8)
 		{
 			loc->pos.lat = var.dblVal;

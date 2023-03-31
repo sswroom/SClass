@@ -453,7 +453,7 @@ BOOL WinSSLEngine_CryptAcquireContextW(HCRYPTPROV* phProv, LPCWSTR szContainer, 
 	{
 		return TRUE;
 	}
-	if (GetLastError() == NTE_BAD_KEYSET)
+	if (GetLastError() == (DWORD)NTE_BAD_KEYSET)
 	{
 		return CryptAcquireContextW(phProv, szContainer, szProvider, dwProvType, dwFlags | CRYPT_NEWKEYSET);
 	}

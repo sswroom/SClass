@@ -76,7 +76,7 @@ Media::Image *Media::DDrawSurface::Clone() const
 
 Media::Image::ImageType Media::DDrawSurface::GetImageType() const
 {
-	return IT_MONITORSURFACE;
+	return Media::Image::ImageType::MonitorSurface;
 }
 
 void Media::DDrawSurface::GetImageData(UInt8 *destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown, Media::RotateType destRotate) const

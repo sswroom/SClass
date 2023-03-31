@@ -156,17 +156,17 @@ Bool Exporter::GUIJPGExporter::ExportFile(IO::SeekableStream *stm, Text::CString
 				/////////////////////////////////////
 
 
-				UInt32 exifSize;
-				UInt32 endOfst;
+				UInt64 exifSize;
+				UInt64 endOfst;
 				UInt32 k;
 				UInt32 l;
 
 				UInt8 *exifBuff;
 				exif->GetExifBuffSize(&exifSize, &endOfst);
-				exifBuff = MemAlloc(UInt8, exifSize + 18);
+				exifBuff = MemAlloc(UInt8, (UOSInt)exifSize + 18);
 				exifBuff[0] = 0xff;
 				exifBuff[1] = 0xe1;
-				WriteMInt16(&exifBuff[2], exifSize + 16);
+				WriteMInt16(&exifBuff[2], (Int16)exifSize + 16);
 				WriteInt32(&exifBuff[4], ReadInt32("Exif"));
 				WriteInt16(&exifBuff[8], 0);
 				WriteInt16(&exifBuff[10], ReadInt16("II"));
