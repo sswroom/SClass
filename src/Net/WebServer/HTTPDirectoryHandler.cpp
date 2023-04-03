@@ -2,6 +2,7 @@
 #include "MyMemory.h"
 #include "Data/ByteTool.h"
 #include "Data/Sort/ArtificialQuickSortC.h"
+#include "IO/DirectoryPackage.h"
 #include "IO/FileStream.h"
 #include "IO/MemoryStream.h"
 #include "IO/Path.h"
@@ -1482,6 +1483,75 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(Net::WebServer::IWebReq
 		return true;
 	}
 	return false;
+}
+
+IO::PackageFile *Net::WebServer::HTTPDirectoryHandler::GetPackageFile(Text::CString path, Bool *needRelease)
+{
+	if (path.StartsWith('/'))
+	{
+		path = path.Substring(1);
+	}
+	Text::StringBuilderUTF8 sb;
+	if (this->packageMap)
+	{
+		UOSInt i = path.IndexOf('/');
+		PackageInfo *pkgInfo;
+		Text::CString pkgName;
+		if (i == INVALID_INDEX)
+		{
+			pkgName = path;
+		}
+		else
+		{
+			sb.ClearStr();
+			sb.AppendC(path.v, i);
+			pkgName = sb.ToCString();
+		}
+		UTF8Char sbuff[512];
+		UTF8Char *sptr;
+		Sync::RWMutexUsage packageMutUsage(this->packageMut, false);
+		pkgInfo = this->packageMap->GetC(pkgName);
+		packageMutUsage.EndUse();
+		if (pkgInfo)
+		{
+			IO::PackageFile *packageFile = pkgInfo->packageFile;
+			*needRelease = false;
+			if (packageFile->GetCount() == 1 && packageFile->GetItemType(0) == IO::PackageFile::PackObjectType::PackageFileType)
+			{
+				sptr = packageFile->GetItemName(sbuff, 0);
+				if (pkgName.Equals(sbuff, (UOSInt)(sptr - sbuff)))
+				{
+					packageFile = (IO::PackageFile*)packageFile->GetItemPObj(0, needRelease);
+				}
+			}
+			return packageFile;
+		}
+	}
+
+	sb.ClearStr();
+	sb.Append(this->rootDir);
+
+	if (sb.EndsWith('\\') || sb.EndsWith('/'))
+	{
+		sb.RemoveChars(1);
+	}
+	sb.AppendUTF8Char(IO::Path::PATH_SEPERATOR);
+	sb.Append(path);
+	if (IO::Path::PATH_SEPERATOR != '/')
+	{
+		sb.Replace('/', IO::Path::PATH_SEPERATOR);
+	}
+
+	IO::Path::PathType pt = IO::Path::GetPathType(sb.ToCString());
+	if (pt == IO::Path::PathType::Directory)
+	{
+		IO::DirectoryPackage *dpkg;
+		*needRelease = true;
+		NEW_CLASS(dpkg, IO::DirectoryPackage(sb.ToCString()));
+		return dpkg;
+	}
+	*needRelease = false;
+	return 0;
 }
 
 void Net::WebServer::HTTPDirectoryHandler::SetRootDir(Text::String *rootDir)

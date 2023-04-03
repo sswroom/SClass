@@ -588,7 +588,7 @@ Media::Decoder::FFMPEGDecoder::FFMPEGDecoder(IVideoSource *sourceVideo) : Media:
 		return;
 	}
 
-#if VERSION_FROM(55, 0, 0) //not sure
+#if VERSION_FROM(55, 0, 0) && !VERSION_FROM(60, 0, 0) //from not sure 
 	if ((data->codec->capabilities & AV_CODEC_CAP_TRUNCATED) != 0)
 	{
 		data->ctx->flags |= AV_CODEC_FLAG_TRUNCATED; // we do not send complete frames
@@ -1309,9 +1309,10 @@ public:
 		if (this->ctx == 0)
 			return;
 
+#if !VERSION_FROM(60, 0, 0)
 		if (this->codec->capabilities & AV_CODEC_CAP_TRUNCATED)
 			this->ctx->flags |= AV_CODEC_FLAG_TRUNCATED; // we do not send complete frames
-
+#endif
 		if (fmt.bitpersample == 16)
 		{
 			this->ctx->request_sample_fmt = AV_SAMPLE_FMT_S16;

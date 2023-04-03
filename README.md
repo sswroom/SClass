@@ -9,6 +9,7 @@ git submodule update --init
 cd ThirdParty/miniz
 cmake .
 
+For Windows version, please download [ffmpeg-master-latest-win64-gpl-shared.zip](https://github.com/BtbN/FFmpeg-Builds/releases/tag/latest) and extract to same directory as SClass.
 
 It uses 'smake' as the build system. smake can be compiled as follows:
 

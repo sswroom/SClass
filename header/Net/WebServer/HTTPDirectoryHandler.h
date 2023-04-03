@@ -79,6 +79,7 @@ namespace Net
 			virtual Bool ProcessRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq);
 
 			Bool DoFileRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq);
+			IO::PackageFile *GetPackageFile(Text::CString path, Bool *needRelease);
 
 			void SetRootDir(Text::String *rootDir);
 			void SetCacheType(CacheType ctype);

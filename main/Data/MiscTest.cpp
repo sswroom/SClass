@@ -2,6 +2,8 @@
 #include "Core/Core.h"
 #include "IO/ConsoleWriter.h"
 #include "IO/FileStream.h"
+#include "IO/FileUtil.h"
+#include "IO/Path.h"
 #include "IO/ProtoHdlr/ProtoJMVL01Handler.h"
 #include "Text/CPPText.h"
 #include "Text/StringTool.h"
@@ -187,7 +189,63 @@ Int32 InPolygonTest()
 	return 0;
 }
 
+Int32 RenameFileTest()
+{
+	Text::CString path = CSTR("/media/sswroom/Extreme SSD/PBG/3D_Mesh/");
+	UTF8Char sbuff[512];
+	UTF8Char sbuff2[512];
+	UTF8Char *sptr;
+	UTF8Char *sptrEnd;
+	UTF8Char *sptrEnd2;
+	UTF8Char *sptr2;
+	UTF8Char *sptr2End;
+	sptr = path.ConcatTo(sbuff);
+	sptrEnd = Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
+	IO::Path::FindFileSession *sess = IO::Path::FindFile(CSTRP(sbuff, sptrEnd));
+	IO::Path::FindFileSession *sess2;
+	if (sess)
+	{
+		IO::Path::PathType pt;
+		while ((sptrEnd = IO::Path::FindNextFile(sptr, sess, 0, &pt, 0)) != 0)
+		{
+			if (sptr[0] != '.' && pt == IO::Path::PathType::Directory)
+			{
+				sptr2 = sptrEnd;
+				*sptr2++ = IO::Path::PATH_SEPERATOR;
+				sptr2 = Text::StrConcatC(sptr2, UTF8STRC("Scene"));
+				if (IO::Path::GetPathType(CSTRP(sbuff, sptr2)) == IO::Path::PathType::Directory)
+				{
+					sptr2 = sptrEnd;
+					*sptr2++ = IO::Path::PATH_SEPERATOR;
+					sptr2 = Text::StrConcatC(sptr2, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
+					sess2 = IO::Path::FindFile(CSTRP(sbuff, sptr2));
+					if (sess2)
+					{
+						sptr2 = Text::StrConcatC(sbuff2, sbuff, (UOSInt)(sptrEnd - sbuff));
+						*sptr2++ = IO::Path::PATH_SEPERATOR;
+						sptr2 = Text::StrConcatC(sptr2, sptr, (UOSInt)(sptrEnd - sptr));
+						IO::Path::CreateDirectory(CSTRP(sbuff2, sptr2));
+						*sptrEnd++ = IO::Path::PATH_SEPERATOR;
+						*sptr2++ = IO::Path::PATH_SEPERATOR;
+						while ((sptrEnd2 = IO::Path::FindNextFile(sptrEnd, sess2, 0, &pt, 0)) != 0)
+						{
+							if (sptrEnd[0] != '.' && pt == IO::Path::PathType::Directory)
+							{
+								sptr2End = Text::StrConcatC(sptr2, sptrEnd, (UOSInt)(sptrEnd2 - sptrEnd));
+								IO::FileUtil::MoveDir(CSTRP(sbuff, sptrEnd2), CSTRP(sbuff2, sptr2End), IO::FileUtil::FileExistAction::Fail, 0, 0);
+							}
+						}
+						IO::Path::FindFileClose(sess2);
+					}
+				}
+			}
+		}
+		IO::Path::FindFileClose(sess);
+	}
+	return 0;
+}
+
 Int32 MyMain(Core::IProgControl *progCtrl)
 {
-	return InPolygonTest();
+	return RenameFileTest();
 }

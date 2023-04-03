@@ -232,8 +232,8 @@ Printer.o: ../../src/Media/PrinterW.cpp
 !-lcomdlg32
 ZXingWriter.o: ../../src/Media/ZXingWriter_Null.cpp
 FFMPEGDecoder.o: ../../src/Media/Decoder/FFMPEGDecoder.cpp
-$-I ../../../ffmpeg-3.3.1-win64-dev/include
-#!-L ../../../ffmpeg-3.3.1-win64-dev/lib
+$-I ../../../ffmpeg-master-latest-win64-gpl-shared/include
+#!-L ../../../ffmpeg-master-latest-win64-gpl-shared/lib
 #!-lavutil
 #!-lavcodec
 DShowVideoCapture.o: ../../src/Media/DShow/DShowVideoCapture.cpp
