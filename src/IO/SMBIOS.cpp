@@ -2496,7 +2496,7 @@ Bool IO::SMBIOS::ToString(Text::StringBuilderUTF8 *sb) const
 			}
 			sb->AppendC(UTF8STRC("\r\n"));
 			break;
-/*		case 18:
+		case 18:
 			sb->AppendC(UTF8STRC("SMBIOS Type 18 - 32-Bit Memory Error Information\r\n"));
 			sb->AppendC(UTF8STRC("Length: "));
 			sb->AppendU16(dataBuff[1]);
@@ -2504,8 +2504,131 @@ Bool IO::SMBIOS::ToString(Text::StringBuilderUTF8 *sb) const
 			sb->AppendC(UTF8STRC("Handle: 0x"));
 			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
 			sb->AppendC(UTF8STRC("\r\n"));
+			sb->AppendC(UTF8STRC("Error Type: "));
+			switch (dataBuff[4])
+			{
+			case 1:
+				sb->AppendC(UTF8STRC("Other"));
+				break;
+			case 2:
+				sb->AppendC(UTF8STRC("Unknown"));
+				break;
+			case 3:
+				sb->AppendC(UTF8STRC("OK"));
+				break;
+			case 4:
+				sb->AppendC(UTF8STRC("Bad read"));
+				break;
+			case 5:
+				sb->AppendC(UTF8STRC("Parity error"));
+				break;
+			case 6:
+				sb->AppendC(UTF8STRC("Single-bit error"));
+				break;
+			case 7:
+				sb->AppendC(UTF8STRC("Double-bit error"));
+				break;
+			case 8:
+				sb->AppendC(UTF8STRC("Multi-bit error"));
+				break;
+			case 9:
+				sb->AppendC(UTF8STRC("Nibble error"));
+				break;
+			case 10:
+				sb->AppendC(UTF8STRC("Checksum error"));
+				break;
+			case 11:
+				sb->AppendC(UTF8STRC("CRC error"));
+				break;
+			case 12:
+				sb->AppendC(UTF8STRC("Corrected single-bit error"));
+				break;
+			case 13:
+				sb->AppendC(UTF8STRC("Corrected error"));
+				break;
+			case 14:
+				sb->AppendC(UTF8STRC("Uncorrectable error"));
+				break;
+			default:
+				sb->AppendC(UTF8STRC("Undefined ("));
+				sb->AppendU16(dataBuff[4]);
+				sb->AppendC(UTF8STRC(")"));
+				break;
+			}
 			sb->AppendC(UTF8STRC("\r\n"));
-			break;*/
+			sb->AppendC(UTF8STRC("Error Granularity: "));
+			switch (dataBuff[5])
+			{
+			case 1:
+				sb->AppendC(UTF8STRC("Other"));
+				break;
+			case 2:
+				sb->AppendC(UTF8STRC("Unknown"));
+				break;
+			case 3:
+				sb->AppendC(UTF8STRC("Device level"));
+				break;
+			case 4:
+				sb->AppendC(UTF8STRC("Memory partition level"));
+				break;
+			default:
+				sb->AppendC(UTF8STRC("Undefined ("));
+				sb->AppendU16(dataBuff[5]);
+				sb->AppendC(UTF8STRC(")"));
+				break;
+			}
+			sb->AppendC(UTF8STRC("\r\n"));
+			sb->AppendC(UTF8STRC("Error Operation: "));
+			switch (dataBuff[6])
+			{
+			case 1:
+				sb->AppendC(UTF8STRC("Other"));
+				break;
+			case 2:
+				sb->AppendC(UTF8STRC("Unknown"));
+				break;
+			case 3:
+				sb->AppendC(UTF8STRC("Read"));
+				break;
+			case 4:
+				sb->AppendC(UTF8STRC("Write"));
+				break;
+			case 5:
+				sb->AppendC(UTF8STRC("Partial write"));
+				break;
+			default:
+				sb->AppendC(UTF8STRC("Undefined ("));
+				sb->AppendU16(dataBuff[6]);
+				sb->AppendC(UTF8STRC(")"));
+				break;
+			}
+			sb->AppendC(UTF8STRC("\r\n"));
+			if (dataBuff[1] >= 11)
+			{
+				sb->AppendC(UTF8STRC("Vendor Syndrome: 0x"));
+				sb->AppendHex32(ReadUInt32(&dataBuff[7]));
+				sb->AppendC(UTF8STRC("\r\n"));
+			}
+			if (dataBuff[1] >= 15)
+			{
+				sb->AppendC(UTF8STRC("Memory Array Error Address: 0x"));
+				sb->AppendHex32(ReadUInt32(&dataBuff[11]));
+				sb->AppendC(UTF8STRC("\r\n"));
+			}
+			if (dataBuff[1] >= 19)
+			{
+				sb->AppendC(UTF8STRC("Device Error Address: 0x"));
+				sb->AppendHex32(ReadUInt32(&dataBuff[15]));
+				sb->AppendC(UTF8STRC("\r\n"));
+			}
+			if (dataBuff[1] >= 23)
+			{
+				sb->AppendC(UTF8STRC("Error Resolution: 0x"));
+				sb->AppendHex32(ReadUInt32(&dataBuff[19]));
+				sb->AppendC(UTF8STRC("\r\n"));
+			}
+			sb->AppendC(UTF8STRC("\r\n"));
+			break;
 		case 19:
 			sb->AppendC(UTF8STRC("SMBIOS Type 19 - Memory Array Mapped Address\r\n"));
 			sb->AppendC(UTF8STRC("Length: "));
@@ -3952,6 +4075,70 @@ Bool IO::SMBIOS::ToString(Text::StringBuilderUTF8 *sb) const
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("OEM-defined: 0x"));
 				sb->AppendHex32(ReadUInt32(&dataBuff[27]));
+				sb->AppendC(UTF8STRC("\r\n"));
+			}
+			sb->AppendC(UTF8STRC("\r\n"));
+			break;
+		case 44:
+			sb->AppendC(UTF8STRC("SMBIOS Type 44 - Processor Additional Information\r\n"));
+			sb->AppendC(UTF8STRC("Length: "));
+			sb->AppendU16(dataBuff[1]);
+			sb->AppendC(UTF8STRC("\r\n"));
+			sb->AppendC(UTF8STRC("Handle: 0x"));
+			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
+			sb->AppendC(UTF8STRC("\r\n"));
+			sb->AppendC(UTF8STRC("Referenced Handle: 0x"));
+			sb->AppendHex16(ReadUInt16(&dataBuff[4]));
+			sb->AppendC(UTF8STRC("\r\n"));
+			sb->AppendC(UTF8STRC("Processor-specific Block Length: "));
+			sb->AppendU16(dataBuff[6]);
+			sb->AppendC(UTF8STRC("\r\n"));
+			sb->AppendC(UTF8STRC("Processor Type: "));
+			switch (dataBuff[7])
+			{
+			case 0:
+				sb->AppendC(UTF8STRC("Reserved"));
+				break;
+			case 1:
+				sb->AppendC(UTF8STRC("IA32 (x86)"));
+				break;
+			case 2:
+				sb->AppendC(UTF8STRC("x64 (x86-64, Intel64, AMD64, EM64T)"));
+				break;
+			case 3:
+				sb->AppendC(UTF8STRC("Intel Itanium architecture"));
+				break;
+			case 4:
+				sb->AppendC(UTF8STRC("32-bit ARM (Aarch32)"));
+				break;
+			case 5:
+				sb->AppendC(UTF8STRC("64-bit ARM (Aarch64)"));
+				break;
+			case 6:
+				sb->AppendC(UTF8STRC("32-bit RISC-V (RV32)"));
+				break;
+			case 7:
+				sb->AppendC(UTF8STRC("64-bit RISC-V (RV64)"));
+				break;
+			case 8:
+				sb->AppendC(UTF8STRC("128-bit RISC-V (RV128)"));
+				break;
+			case 9:
+				sb->AppendC(UTF8STRC("32-bit LoongArch (LoongArch32)"));
+				break;
+			case 10:
+				sb->AppendC(UTF8STRC("64-bit LoongArch (LoongArch64)"));
+				break;
+			default:
+				sb->AppendC(UTF8STRC("Undefined ("));
+				sb->AppendU16(dataBuff[7]);
+				sb->AppendC(UTF8STRC(")"));
+				break;
+			}
+			if (dataBuff[1] > 8)
+			{
+				sb->AppendC(UTF8STRC("Processor-Specific Data: "));
+				sb->AppendHexBuff(&dataBuff[8], dataBuff[1] - 8, ' ', Text::LineBreakType::None);
 				sb->AppendC(UTF8STRC("\r\n"));
 			}
 			sb->AppendC(UTF8STRC("\r\n"));
