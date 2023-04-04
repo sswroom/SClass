@@ -186,7 +186,9 @@ Manage::CPUDB::CPUSpecX86 Manage::CPUDB::amdCPU[] = {
 	{0x16, 0x00,  0,   0, 2000, 2200,  2,  2,   15,   0, 1970, 0, UTF8STRC("AMD E2-9010"), UTF8STR_NULL},
 
 
-	{0x17, 0x00,  0,   0,    0,    0,  0,  0,    0,   0, 1970, 0, UTF8STRC("Zen"), UTF8STR_NULL}
+	{0x17, 0x00,  0,   0,    0,    0,  0,  0,    0,   0, 1970, 0, UTF8STRC("Zen"), UTF8STR_NULL},
+
+	{0x19, 0x44,  1,  95, 3200, 4750,  8, 16,   54,   6, 2023, 1, UTF8STRC("AMD R7-7735HS"), UTF8STR_NULL}
 };
 
 Manage::CPUDB::CPUSpec Manage::CPUDB::cpuList[] = {
@@ -235,6 +237,7 @@ Manage::CPUDB::CPUSpec Manage::CPUDB::cpuList[] = {
 	{UTF8STRC("AM3357"),           Manage::ThreadContext::ContextType::ARM,    Manage::CPUVendor::CB_TI,        "Sitara AM3357",                 0,    0,   "Cortex-A8",    1,  300,  800,  32,  32, 0,              0,  0,    0,    0,   0,  0,              0,  0,    0,    0,   0,  256,  0,     0},
 	{UTF8STRC("AM3358"),           Manage::ThreadContext::ContextType::ARM,    Manage::CPUVendor::CB_TI,        "Sitara AM3358",                 0,    0,   "Cortex-A8",    1,  600,  1000, 32,  32, 0,              0,  0,    0,    0,   0,  0,              0,  0,    0,    0,   0,  256,  0,     "SGX530"},
 	{UTF8STRC("AM3359"),           Manage::ThreadContext::ContextType::ARM,    Manage::CPUVendor::CB_TI,        "Sitara AM3359",                 0,    0,   "Cortex-A8",    1,  600,  800,  32,  32, 0,              0,  0,    0,    0,   0,  0,              0,  0,    0,    0,   0,  256,  0,     "SGX530"},
+	{UTF8STRC("AMD R7-7735HS"),    Manage::ThreadContext::ContextType::X86_64, Manage::CPUVendor::CB_AMD,       "Ryzen 7 7735HS",                54,   6,   "x86 with HT",  8,  3200, 4750, 32,  32, 0,              0,  0,    0,    0,   0,  0,              0,  0,    0,    0,   0,  512,  16384, "Radeon 680M"},
 	{UTF8STRC("APQ8016"),          Manage::ThreadContext::ContextType::ARM64,  Manage::CPUVendor::CB_QUALCOMM,  "Snapdragon 410 APQ8016",        0,    28,  "Cortex-A53",   4,  1200, 1200, 0,   0,  0,              0,  0,    0,    0,   0,  0,              0,  0,    0,    0,   0,  0,    0,     "Adreno 306"},
 	{UTF8STRC("APQ8026"),          Manage::ThreadContext::ContextType::ARM,    Manage::CPUVendor::CB_QUALCOMM,  "Snapdragon 400 APQ8026",        0,    28,  "Cortex-A7",    4,  1200, 1200, 16,  16, 0,              0,  0,    0,    0,   0,  0,              0,  0,    0,    0,   0,  512,  0,     "Adreno 305"},
 	{UTF8STRC("APQ8028"),          Manage::ThreadContext::ContextType::ARM,    Manage::CPUVendor::CB_QUALCOMM,  "Snapdragon 400 APQ8028",        0,    28,  "Cortex-A7",    4,  1200, 1200, 16,  16, 0,              0,  0,    0,    0,   0,  0,              0,  0,    0,    0,   0,  512,  0,     "Adreno 305"},
@@ -699,6 +702,7 @@ Manage::CPUDB::CPUMapping Manage::CPUDB::cpuX86Map[] = {
 	{UTF8STRC("11th Gen Intel(R) Core(TM) i7-1165G7 @ 2.80GHz"),   UTF8STRC("Intel i7-1165G7")},
 	{UTF8STRC("AMD A10-9700E RADEON R7, 10 COMPUTE CORES 4C+6G"),  UTF8STRC("AD9700AHM44AB")},
 	{UTF8STRC("AMD Phenom(tm) 9650 Quad-Core Processor"),          UTF8STRC("HD9650WCGHBOX")},
+	{UTF8STRC("AMD Ryzen 7 7735HS with Radeon Graphics"),          UTF8STRC("AMD R7-7735HS")},
 	{UTF8STRC("AMD Turion(tm) Neo X2 Dual Core Processor L625"),   UTF8STRC("TMZL625OAX5DY")},
 	{UTF8STRC("Intel(R) Atom(TM) CPU  330   @ 1.60GHz"),           UTF8STRC("Intel 330")},
 	{UTF8STRC("Intel(R) Atom(TM) CPU N270   @ 1.60GHz"),           UTF8STRC("Intel N270")},
