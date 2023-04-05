@@ -147,7 +147,7 @@ namespace DB
 		UOSInt GetDataCnt() const;
 		UOSInt GetQueueCnt() const;
 		UOSInt GetConnCnt() const;
-		DB::DBUtil::SQLType GetSQLType() const;
+		DB::SQLType GetSQLType() const;
 		Bool IsAxisAware() const;
 		Int8 GetTzQhr() const;
 		UTF8Char *ToString(UTF8Char *buff);

@@ -11,7 +11,7 @@
 void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnSourceDBChg(void *userObj)
 {
 	SSWR::AVIRead::AVIRDBCopyTablesForm *me = (SSWR::AVIRead::AVIRDBCopyTablesForm*)userObj;
-	DB::DBManagerCtrl *ctrl = (DB::DBManagerCtrl*)me->cboSourceDB->GetSelectedItem();
+	DB::DBManagerCtrl *ctrl = (DB::DBManagerCtrl*)me->cboSourceConn->GetSelectedItem();
 	if (ctrl)
 	{
 		me->cboSourceSchema->ClearItems();
@@ -20,9 +20,32 @@ void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnSourceDBChg(void *userObj)
 			UI::MessageDialog::ShowDialog(CSTR("Error in connecting to database"), CSTR("Copy Tables"), me);
 			return;
 		}
+		DB::ReadingDB *db = ctrl->GetDB();
+		if (db->IsDBTool())
+		{
+			UTF8Char sbuff[128];
+			UTF8Char *sptr;
+			DB::ReadingDBTool *dbt = (DB::ReadingDBTool*)db;
+			DB::Collation collation;
+			me->txtSourceDB->SetText(dbt->GetCurrDBName()->ToCString());
+			if (dbt->GetDBCollation(dbt->GetCurrDBName()->ToCString(), &collation))
+			{
+				sptr = DB::DBUtil::SDBCollation(sbuff, &collation, dbt->GetSQLType());
+				me->txtSourceCollation->SetText(CSTRP(sbuff, sptr));
+			}
+			else
+			{
+				me->txtSourceCollation->SetText(CSTR(""));
+			}
+		}
+		else
+		{
+			me->txtSourceDB->SetText(CSTR(""));
+			me->txtSourceCollation->SetText(CSTR(""));
+		}
 		Data::ArrayList<Text::String*> schemaNames;
 		Text::String *s;
-		ctrl->GetDB()->QuerySchemaNames(&schemaNames);
+		db->QuerySchemaNames(&schemaNames);
 		UOSInt i = 0;
 		UOSInt j = schemaNames.GetCount();
 		if (j > 0)
@@ -46,7 +69,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnSourceDBChg(void *userObj)
 void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnSourceSelectClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRDBCopyTablesForm *me = (SSWR::AVIRead::AVIRDBCopyTablesForm*)userObj;
-	DB::DBManagerCtrl *db = (DB::DBManagerCtrl*)me->cboSourceDB->GetSelectedItem();
+	DB::DBManagerCtrl *db = (DB::DBManagerCtrl*)me->cboSourceConn->GetSelectedItem();
 	if (db == 0)
 		return;
 	UTF8Char sbuff[512];
@@ -149,11 +172,49 @@ void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnCopyClicked(void *userObj)
 	}
 	UOSInt destTableType = me->cboDestTableType->GetSelectedIndex();
 	Bool copyData = me->chkDestCopyData->IsChecked();
+	Bool createDB = me->chkDestCreateDDB->IsChecked();
 	DB::SQLBuilder sql(destDBTool);
 	Text::StringBuilderUTF8 sb;
 	DB::TableDef *tabDef;
 	Text::String *tableName;
 	DB::DBReader *r;
+	if (destDBTool->GetSQLType() == DB::SQLType::MySQL)
+	{
+		destDBTool->ExecuteNonQuery(CSTR("set sql_mode=CONCAT(@@Session.sql_mode,',NO_AUTO_VALUE_ON_ZERO')"));
+	}
+	if (createDB)
+	{
+		if (me->dataConn->IsDBTool())
+		{
+			DB::ReadingDBTool *dbt = (DB::ReadingDBTool*)me->dataConn;
+			DB::Collation collation;
+			Text::String *dbName = dbt->GetCurrDBName();
+			me->txtSourceDB->SetText(dbName->ToCString());
+			if (dbt->GetDBCollation(dbName->ToCString(), &collation))
+			{
+				if (!destDBTool->CreateDatabase(dbName->ToCString(), &collation))
+				{
+					UI::MessageDialog::ShowDialog(CSTR("Error in creating database"), CSTR("Copy Tables"), me);
+					return;
+				}
+				if (!destDBTool->ChangeDatabase(dbName->ToCString()))
+				{
+					UI::MessageDialog::ShowDialog(CSTR("Error in changing to new database"), CSTR("Copy Tables"), me);
+					return;
+				}
+			}
+			else
+			{
+				UI::MessageDialog::ShowDialog(CSTR("Error in parsing database collation"), CSTR("Copy Tables"), me);
+				return;
+			}
+		}
+		else
+		{
+			UI::MessageDialog::ShowDialog(CSTR("Source Database does not support getting database collation"), CSTR("Copy Tables"), me);
+			return;
+		}
+	}
 	UOSInt i = 0;
 	UOSInt j = me->dataTables.GetCount();
 	while (i < j)
@@ -313,18 +374,28 @@ SSWR::AVIRead::AVIRDBCopyTablesForm::AVIRDBCopyTablesForm(UI::GUIClientControl *
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpSource = this->tcMain->AddTabPage(CSTR("Source"));
-	NEW_CLASS(this->lblSourceDB, UI::GUILabel(ui, this->tpSource, CSTR("Connection")));
-	this->lblSourceDB->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->cboSourceDB, UI::GUIComboBox(ui, this->tpSource, false));
-	this->cboSourceDB->SetRect(104, 4, 400, 23, false);
-	this->cboSourceDB->HandleSelectionChange(OnSourceDBChg, this);
+	NEW_CLASS(this->lblSourceConn, UI::GUILabel(ui, this->tpSource, CSTR("Connection")));
+	this->lblSourceConn->SetRect(4, 4, 100, 23, false);
+	NEW_CLASS(this->cboSourceConn, UI::GUIComboBox(ui, this->tpSource, false));
+	this->cboSourceConn->SetRect(104, 4, 400, 23, false);
+	NEW_CLASS(this->lblSourceDB, UI::GUILabel(ui, this->tpSource, CSTR("Database")));
+	this->lblSourceDB->SetRect(4, 28, 100, 23, false);
+	NEW_CLASS(this->txtSourceDB, UI::GUITextBox(ui, this->tpSource, CSTR("")));
+	this->txtSourceDB->SetRect(104, 28, 200, 23, false);
+	this->txtSourceDB->SetReadOnly(true);
+	NEW_CLASS(this->lblSourceCollation, UI::GUILabel(ui, this->tpSource, CSTR("Collation")));
+	this->lblSourceCollation->SetRect(4, 52, 100, 23, false);
+	NEW_CLASS(this->txtSourceCollation, UI::GUITextBox(ui, this->tpSource, CSTR("")));
+	this->txtSourceCollation->SetRect(104, 52, 200, 23, false);
+	this->txtSourceCollation->SetReadOnly(true);
 	NEW_CLASS(this->lblSourceSchema, UI::GUILabel(ui, this->tpSource, CSTR("Schema")));
-	this->lblSourceSchema->SetRect(4, 28, 100, 23, false);
+	this->lblSourceSchema->SetRect(4, 76, 100, 23, false);
 	NEW_CLASS(this->cboSourceSchema, UI::GUIComboBox(ui, this->tpSource, false));
-	this->cboSourceSchema->SetRect(104, 28, 200, 23, false);
+	this->cboSourceSchema->SetRect(104, 76, 200, 23, false);
 	NEW_CLASS(this->btnSourceSelect, UI::GUIButton(ui, this->tpSource, CSTR("Select")));
-	this->btnSourceSelect->SetRect(104, 52, 75, 23, false);
+	this->btnSourceSelect->SetRect(104, 100, 75, 23, false);
 	this->btnSourceSelect->HandleButtonClick(OnSourceSelectClicked, this);	
+	this->cboSourceConn->HandleSelectionChange(OnSourceDBChg, this);
 
 	this->tpData = this->tcMain->AddTabPage(CSTR("Data"));
 	NEW_CLASS(this->grpDest, UI::GUIGroupBox(ui, this->tpData, CSTR("Destination")));
@@ -355,6 +426,8 @@ SSWR::AVIRead::AVIRDBCopyTablesForm::AVIRDBCopyTablesForm(UI::GUIClientControl *
 	this->cboDestTableType->SetSelectedIndex(0);
 	NEW_CLASS(this->chkDestCopyData, UI::GUICheckBox(ui, this->grpDest, CSTR("Copy Data"), true));
 	this->chkDestCopyData->SetRect(204, 52, 100, 23, false);
+	NEW_CLASS(this->chkDestCreateDDB, UI::GUICheckBox(ui, this->grpDest, CSTR("Create DB"), false));
+	this->chkDestCreateDDB->SetRect(304, 52, 100, 23, false);
 	NEW_CLASS(this->btnCopy, UI::GUIButton(ui, this->grpDest, CSTR("Copy")));
 	this->btnCopy->SetRect(104, 76, 75, 23, false);
 	this->btnCopy->HandleButtonClick(OnCopyClicked, this);
@@ -373,7 +446,7 @@ SSWR::AVIRead::AVIRDBCopyTablesForm::AVIRDBCopyTablesForm(UI::GUIClientControl *
 		}
 		sb.ClearStr();
 		ctrl->GetConnName(&sb);
-		this->cboSourceDB->AddItem(sb.ToCString(), ctrl);
+		this->cboSourceConn->AddItem(sb.ToCString(), ctrl);
 		this->cboDestDB->AddItem(sb.ToCString(), ctrl);
 		i++;
 	}
@@ -381,7 +454,7 @@ SSWR::AVIRead::AVIRDBCopyTablesForm::AVIRDBCopyTablesForm(UI::GUIClientControl *
 	{
 		if (firstActive == INVALID_INDEX)
 			firstActive = 0;
-		this->cboSourceDB->SetSelectedIndex(firstActive);
+		this->cboSourceConn->SetSelectedIndex(firstActive);
 		this->cboDestDB->SetSelectedIndex(firstActive);
 	}
 }
@@ -395,4 +468,9 @@ SSWR::AVIRead::AVIRDBCopyTablesForm::~AVIRDBCopyTablesForm()
 void SSWR::AVIRead::AVIRDBCopyTablesForm::OnMonitorChanged()
 {
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
+}
+
+void SSWR::AVIRead::AVIRDBCopyTablesForm::SetSourceDB(UOSInt index)
+{
+	this->cboSourceConn->SetSelectedIndex(index);
 }

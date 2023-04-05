@@ -78,7 +78,7 @@ Double Data::VariItem::GetAsF64() const
 	case ItemType::Str:
 		return Text::StrToDouble(this->val.str->v);
 	case ItemType::CStr:
-		return Text::StrToDouble(this->val.cstr.v);
+		return Text::CString(this->val.cstr.v, this->val.cstr.leng).ToDouble();
 	case ItemType::Timestamp:
 	case ItemType::ByteArr:
 	case ItemType::Vector:
@@ -845,6 +845,21 @@ void Data::VariItem::SetStr(const UTF8Char *str, UOSInt strLen)
 		this->val.cstr.v = str;
 		this->val.cstr.leng = strLen;
 		this->itemType = ItemType::CStr;
+	}
+	else
+	{
+		this->val.str = 0;
+		this->itemType = ItemType::Null;
+	}
+}
+
+void Data::VariItem::SetStrCopy(const UTF8Char *str, UOSInt strLen)
+{
+	this->FreeItem();
+	if (str)
+	{
+		this->val.str = Text::String::New(str, strLen);
+		this->itemType = ItemType::Str;
 	}
 	else
 	{

@@ -148,6 +148,7 @@ namespace Data
 		void SetNull();
 		void SetStrSlow(const UTF8Char *str);
 		void SetStr(const UTF8Char *str, UOSInt strLen);
+		void SetStrCopy(const UTF8Char *str, UOSInt strLen);
 		void SetStr(Text::String *str);
 		void SetDate(Data::DateTime *dt);
 		void SetDate(const Data::Timestamp &ts);

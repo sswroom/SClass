@@ -127,8 +127,8 @@ namespace SSWR
 			void UpdateSvrConnList();
 
 			Data::Class *CreateTableClass(Text::CString schemaName, Text::CString tableName);
-			void CopyTableCreate(DB::DBUtil::SQLType sqlType, Bool axisAware);
-			void ExportTableData(DB::DBUtil::SQLType sqlType, Bool axisAware);
+			void CopyTableCreate(DB::SQLType sqlType, Bool axisAware);
+			void ExportTableData(DB::SQLType sqlType, Bool axisAware);
 			void ExportTableCSV();
 		public:
 			AVIRDBManagerForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);

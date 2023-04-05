@@ -22,7 +22,7 @@ namespace DB
 		{
 			const Char *providerName;
 			const Char *displayName;
-			DB::DBUtil::SQLType sqlType;
+			DB::SQLType sqlType;
 		} ProviderInfo;
 
 		static ProviderInfo providerInfo[];
@@ -38,7 +38,7 @@ namespace DB
 		OLEDBConn(const WChar *connStr, IO::LogTool *log);
 		virtual ~OLEDBConn();
 
-		virtual DB::DBUtil::SQLType GetSQLType() const;
+		virtual DB::SQLType GetSQLType() const;
 		virtual ConnType GetConnType() const;
 		virtual Int8 GetTzQhr() const;
 		virtual void ForceTz(Int8 tzQhr);

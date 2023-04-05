@@ -45,7 +45,7 @@ void __stdcall SSWR::AVIRead::AVIRDBExportForm::OnExportClicked(void *userObj)
 	dlg.SetFileName(CSTRP(sbuff, sptr));
 	if (dlg.ShowDialog(me->GetHandle()))
 	{
-		DB::SQLBuilder sql((DB::DBUtil::SQLType)(OSInt)me->cboDBType->GetSelectedItem(), me->chkAxisAware->IsChecked(), 0);
+		DB::SQLBuilder sql((DB::SQLType)(OSInt)me->cboDBType->GetSelectedItem(), me->chkAxisAware->IsChecked(), 0);
 		Data::ArrayList<Text::String*> cols;
 		UOSInt i = 0;
 		UOSInt j = me->lvTables->GetCount();
@@ -101,9 +101,9 @@ SSWR::AVIRead::AVIRDBExportForm::AVIRDBExportForm(UI::GUIClientControl *parent, 
 	this->lblDBType->SetRect(0, 0, 100, 23, false);
 	NEW_CLASS(this->cboDBType, UI::GUIComboBox(ui, this->pnlMain, false));
 	this->cboDBType->SetRect(100, 0, 100, 23, false);
-	this->cboDBType->AddItem(CSTR("MySQL"), (void*)DB::DBUtil::SQLType::MySQL);
-	this->cboDBType->AddItem(CSTR("SQL Server"), (void*)DB::DBUtil::SQLType::MSSQL);
-	this->cboDBType->AddItem(CSTR("PostgreSQL"), (void*)DB::DBUtil::SQLType::PostgreSQL);
+	this->cboDBType->AddItem(CSTR("MySQL"), (void*)DB::SQLType::MySQL);
+	this->cboDBType->AddItem(CSTR("SQL Server"), (void*)DB::SQLType::MSSQL);
+	this->cboDBType->AddItem(CSTR("PostgreSQL"), (void*)DB::SQLType::PostgreSQL);
 	this->cboDBType->SetSelectedIndex(0);
 	NEW_CLASS(this->chkAxisAware, UI::GUICheckBox(ui, this->pnlMain, CSTR("Axis-Aware (MySQL >=8)"), false));
 	this->chkAxisAware->SetRect(200, 0, 150, 23, false);

@@ -117,7 +117,7 @@ void DB::DBTool::EndTrans(Bool toCommit)
 
 Int32 DB::DBTool::GetLastIdentity32()
 {
-	if (this->sqlType == DB::DBUtil::SQLType::MySQL || this->sqlType == DB::DBUtil::SQLType::MSSQL || this->sqlType == DB::DBUtil::SQLType::Access || this->sqlType == DB::DBUtil::SQLType::MDBTools)
+	if (this->sqlType == DB::SQLType::MySQL || this->sqlType == DB::SQLType::MSSQL || this->sqlType == DB::SQLType::Access || this->sqlType == DB::SQLType::MDBTools)
 	{
 		DB::DBReader *reader = this->ExecuteReader(CSTR("select @@identity"));
 		Int32 id = 0;
@@ -139,7 +139,7 @@ Int32 DB::DBTool::GetLastIdentity32()
 
 Int64 DB::DBTool::GetLastIdentity64()
 {
-	if (this->sqlType == DB::DBUtil::SQLType::MySQL || this->sqlType == DB::DBUtil::SQLType::MSSQL || this->sqlType == DB::DBUtil::SQLType::Access || this->sqlType == DB::DBUtil::SQLType::MDBTools)
+	if (this->sqlType == DB::SQLType::MySQL || this->sqlType == DB::SQLType::MSSQL || this->sqlType == DB::SQLType::Access || this->sqlType == DB::SQLType::MDBTools)
 	{
 		DB::DBReader *reader = this->ExecuteReader(CSTR("select @@identity"));
 		Int64 id = 0;
@@ -159,24 +159,24 @@ Int64 DB::DBTool::GetLastIdentity64()
 	}
 }
 
-Bool DB::DBTool::CreateDatabase(Text::CString databaseName)
+Bool DB::DBTool::CreateDatabase(Text::CString databaseName, const Collation *collation)
 {
 	switch (this->sqlType)
 	{
-	case DB::DBUtil::SQLType::MSSQL:
-	case DB::DBUtil::SQLType::MySQL:
-	case DB::DBUtil::SQLType::Oracle:
-	case DB::DBUtil::SQLType::Access:
-	case DB::DBUtil::SQLType::SQLite:
-	case DB::DBUtil::SQLType::MDBTools:
-	case DB::DBUtil::SQLType::PostgreSQL:
+	case DB::SQLType::MySQL:
+	case DB::SQLType::MSSQL:
+	case DB::SQLType::Oracle:
+	case DB::SQLType::Access:
+	case DB::SQLType::SQLite:
+	case DB::SQLType::MDBTools:
+	case DB::SQLType::PostgreSQL:
 	{
 		DB::SQLBuilder sql(this->sqlType, this->axisAware, this->GetTzQhr());
-		DB::SQLGenerator::GenCreateDatabaseCmd(&sql, databaseName);
+		DB::SQLGenerator::GenCreateDatabaseCmd(&sql, databaseName, collation);
 		return this->ExecuteNonQuery(sql.ToCString()) >= -1;
 	}
-	case DB::DBUtil::SQLType::WBEM:
-	case DB::DBUtil::SQLType::Unknown:
+	case DB::SQLType::WBEM:
+	case DB::SQLType::Unknown:
 	default:
 		this->lastErrMsg.ClearStr();
 		this->lastErrMsg.AppendC(UTF8STRC("Create database is not supported"));
@@ -188,20 +188,20 @@ Bool DB::DBTool::DeleteDatabase(Text::CString databaseName)
 {
 	switch (this->sqlType)
 	{
-	case DB::DBUtil::SQLType::MSSQL:
-	case DB::DBUtil::SQLType::MySQL:
-	case DB::DBUtil::SQLType::Oracle:
-	case DB::DBUtil::SQLType::Access:
-	case DB::DBUtil::SQLType::SQLite:
-	case DB::DBUtil::SQLType::MDBTools:
-	case DB::DBUtil::SQLType::PostgreSQL:
+	case DB::SQLType::MSSQL:
+	case DB::SQLType::MySQL:
+	case DB::SQLType::Oracle:
+	case DB::SQLType::Access:
+	case DB::SQLType::SQLite:
+	case DB::SQLType::MDBTools:
+	case DB::SQLType::PostgreSQL:
 	{
 		DB::SQLBuilder sql(this->sqlType, this->axisAware, this->GetTzQhr());
 		DB::SQLGenerator::GenDeleteDatabaseCmd(&sql, databaseName);
 		return this->ExecuteNonQuery(sql.ToCString()) >= -1;
 	}
-	case DB::DBUtil::SQLType::WBEM:
-	case DB::DBUtil::SQLType::Unknown:
+	case DB::SQLType::WBEM:
+	case DB::SQLType::Unknown:
 	default:
 		this->lastErrMsg.ClearStr();
 		this->lastErrMsg.AppendC(UTF8STRC("Delete database is not supported"));
@@ -213,20 +213,20 @@ Bool DB::DBTool::CreateSchema(Text::CString schemaName)
 {
 	switch (this->sqlType)
 	{
-	case DB::DBUtil::SQLType::MSSQL:
-	case DB::DBUtil::SQLType::PostgreSQL:
+	case DB::SQLType::MSSQL:
+	case DB::SQLType::PostgreSQL:
 	{
 		DB::SQLBuilder sql(this->sqlType, this->axisAware, this->GetTzQhr());
 		DB::SQLGenerator::GenCreateSchemaCmd(&sql, schemaName);
 		return this->ExecuteNonQuery(sql.ToCString()) >= -1;
 	}
-	case DB::DBUtil::SQLType::MySQL:
-	case DB::DBUtil::SQLType::Oracle:
-	case DB::DBUtil::SQLType::SQLite:
-	case DB::DBUtil::SQLType::MDBTools:
-	case DB::DBUtil::SQLType::Access:
-	case DB::DBUtil::SQLType::WBEM:
-	case DB::DBUtil::SQLType::Unknown:
+	case DB::SQLType::MySQL:
+	case DB::SQLType::Oracle:
+	case DB::SQLType::SQLite:
+	case DB::SQLType::MDBTools:
+	case DB::SQLType::Access:
+	case DB::SQLType::WBEM:
+	case DB::SQLType::Unknown:
 	default:
 		this->lastErrMsg.ClearStr();
 		this->lastErrMsg.AppendC(UTF8STRC("Delete schema is not supported"));
@@ -238,20 +238,20 @@ Bool DB::DBTool::DeleteSchema(Text::CString schemaName)
 {
 	switch (this->sqlType)
 	{
-	case DB::DBUtil::SQLType::MSSQL:
-	case DB::DBUtil::SQLType::PostgreSQL:
+	case DB::SQLType::MSSQL:
+	case DB::SQLType::PostgreSQL:
 	{
 		DB::SQLBuilder sql(this->sqlType, this->axisAware, this->GetTzQhr());
 		DB::SQLGenerator::GenDeleteSchemaCmd(&sql, schemaName);
 		return this->ExecuteNonQuery(sql.ToCString()) >= -1;
 	}
-	case DB::DBUtil::SQLType::MySQL:
-	case DB::DBUtil::SQLType::Oracle:
-	case DB::DBUtil::SQLType::SQLite:
-	case DB::DBUtil::SQLType::MDBTools:
-	case DB::DBUtil::SQLType::Access:
-	case DB::DBUtil::SQLType::WBEM:
-	case DB::DBUtil::SQLType::Unknown:
+	case DB::SQLType::MySQL:
+	case DB::SQLType::Oracle:
+	case DB::SQLType::SQLite:
+	case DB::SQLType::MDBTools:
+	case DB::SQLType::Access:
+	case DB::SQLType::WBEM:
+	case DB::SQLType::Unknown:
 	default:
 		this->lastErrMsg.ClearStr();
 		this->lastErrMsg.AppendC(UTF8STRC("Delete schema is not supported"));
@@ -275,21 +275,21 @@ Bool DB::DBTool::DeleteTableData(Text::CString schemaName, Text::CString tableNa
 Bool DB::DBTool::KillConnection(Int32 id)
 {
 	Bool ret = false;
-	if (this->sqlType == DB::DBUtil::SQLType::MySQL)
+	if (this->sqlType == DB::SQLType::MySQL)
 	{
 		DB::SQLBuilder sql(this->sqlType, this->axisAware, this->GetTzQhr());
 		sql.AppendCmdC(CSTR("kill "));
 		sql.AppendInt32(id);
 		ret = (this->ExecuteNonQuery(sql.ToCString()) >= -1);
 	}
-	else if (this->sqlType == DB::DBUtil::SQLType::MSSQL)
+	else if (this->sqlType == DB::SQLType::MSSQL)
 	{
 		DB::SQLBuilder sql(this->sqlType, this->axisAware, this->GetTzQhr());
 		sql.AppendCmdC(CSTR("kill "));
 		sql.AppendInt32(id);
 		ret = (this->ExecuteNonQuery(sql.ToCString()) >= -1);
 	}
-	else if (this->sqlType == DB::DBUtil::SQLType::PostgreSQL)
+	else if (this->sqlType == DB::SQLType::PostgreSQL)
 	{
 		DB::SQLBuilder sql(this->sqlType, this->axisAware, this->GetTzQhr());
 		sql.AppendCmdC(CSTR("SELECT pg_terminate_backend("));

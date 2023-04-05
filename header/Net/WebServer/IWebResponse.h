@@ -165,7 +165,7 @@ namespace Net
 				sb.Append(value);
 				if (path.leng > 0)
 				{
-					sb.AppendC(UTF8STRC("; path="));
+					sb.AppendC(UTF8STRC("; Path="));
 					sb.Append(path);
 				}
 				if (secure)

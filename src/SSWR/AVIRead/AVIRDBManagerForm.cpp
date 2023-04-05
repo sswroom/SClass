@@ -314,7 +314,7 @@ void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnDatabaseNewClicked(void *user
 				Text::StringBuilderUTF8 sb;
 				if (dlg.GetInputString(&sb))
 				{
-					if (((DB::DBTool*)me->currDB)->CreateDatabase(sb.ToCString()))
+					if (((DB::DBTool*)me->currDB)->CreateDatabase(sb.ToCString(), 0))
 					{
 						me->UpdateDatabaseList();
 					}
@@ -847,7 +847,7 @@ Data::Class *SSWR::AVIRead::AVIRDBManagerForm::CreateTableClass(Text::CString sc
 	return 0;
 }
 
-void SSWR::AVIRead::AVIRDBManagerForm::CopyTableCreate(DB::DBUtil::SQLType sqlType, Bool axisAware)
+void SSWR::AVIRead::AVIRDBManagerForm::CopyTableCreate(DB::SQLType sqlType, Bool axisAware)
 {
 	Text::String *schemaName = this->lbSchema->GetSelectedItemTextNew();
 	Text::String *tableName = this->lbTable->GetSelectedItemTextNew();
@@ -873,7 +873,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::CopyTableCreate(DB::DBUtil::SQLType sqlTy
 	SDEL_STRING(schemaName);
 }
 
-void SSWR::AVIRead::AVIRDBManagerForm::ExportTableData(DB::DBUtil::SQLType sqlType, Bool axisAware)
+void SSWR::AVIRead::AVIRDBManagerForm::ExportTableData(DB::SQLType sqlType, Bool axisAware)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -1321,6 +1321,11 @@ void SSWR::AVIRead::AVIRDBManagerForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_TOOL_COPY_TABLES:
 		{
 			SSWR::AVIRead::AVIRDBCopyTablesForm dlg(0, this->ui, this->core, &this->dbList);
+			UOSInt i = this->lbConn->GetSelectedIndex();
+			if (i != INVALID_INDEX)
+			{
+				dlg.SetSourceDB(i);
+			}
 			dlg.ShowDialog(this);
 		}
 		break;
@@ -1459,28 +1464,28 @@ void SSWR::AVIRead::AVIRDBManagerForm::EventMenuClicked(UInt16 cmdId)
 		}
 		break;
 	case MNU_TABLE_CREATE_MYSQL:
-		this->CopyTableCreate(DB::DBUtil::SQLType::MySQL, false);
+		this->CopyTableCreate(DB::SQLType::MySQL, false);
 		break;
 	case MNU_TABLE_CREATE_MYSQL8:
-		this->CopyTableCreate(DB::DBUtil::SQLType::MySQL, true);
+		this->CopyTableCreate(DB::SQLType::MySQL, true);
 		break;
 	case MNU_TABLE_CREATE_MSSQL:
-		this->CopyTableCreate(DB::DBUtil::SQLType::MSSQL, false);
+		this->CopyTableCreate(DB::SQLType::MSSQL, false);
 		break;
 	case MNU_TABLE_CREATE_POSTGRESQL:
-		this->CopyTableCreate(DB::DBUtil::SQLType::PostgreSQL, false);
+		this->CopyTableCreate(DB::SQLType::PostgreSQL, false);
 		break;
 	case MNU_TABLE_EXPORT_MYSQL:
-		this->ExportTableData(DB::DBUtil::SQLType::MySQL, false);
+		this->ExportTableData(DB::SQLType::MySQL, false);
 		break;
 	case MNU_TABLE_EXPORT_MYSQL8:
-		this->ExportTableData(DB::DBUtil::SQLType::MySQL, true);
+		this->ExportTableData(DB::SQLType::MySQL, true);
 		break;
 	case MNU_TABLE_EXPORT_MSSQL:
-		this->ExportTableData(DB::DBUtil::SQLType::MSSQL, false);
+		this->ExportTableData(DB::SQLType::MSSQL, false);
 		break;
 	case MNU_TABLE_EXPORT_POSTGRESQL:
-		this->ExportTableData(DB::DBUtil::SQLType::PostgreSQL, false);
+		this->ExportTableData(DB::SQLType::PostgreSQL, false);
 		break;
 	case MNU_TABLE_EXPORT_OPTION:
 		{

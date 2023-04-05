@@ -70,7 +70,7 @@ namespace Net
 		MySQLTCPClient(Net::SocketFactory *sockf, const Net::SocketUtil::AddressInfo *addr, UInt16 port, Text::CString userName, Text::CString password, Text::CString database);
 		virtual ~MySQLTCPClient();
 
-		virtual DB::DBUtil::SQLType GetSQLType() const;
+		virtual DB::SQLType GetSQLType() const;
 		virtual Bool IsAxisAware() const;
 		virtual DB::DBConn::ConnType GetConnType() const;
 		virtual Int8 GetTzQhr() const;

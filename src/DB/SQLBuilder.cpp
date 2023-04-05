@@ -5,7 +5,7 @@
 #include "DB/TableDef.h"
 #include "Text/MyStringW.h"
 
-DB::SQLBuilder::SQLBuilder(DB::DBUtil::SQLType sqlType, Bool axisAware, Int32 tzQhr)
+DB::SQLBuilder::SQLBuilder(DB::SQLType sqlType, Bool axisAware, Int32 tzQhr)
 {
 	this->sqlType = sqlType;
 	this->tzQhr = tzQhr;
@@ -187,7 +187,7 @@ Text::String *DB::SQLBuilder::ToNewString() const
 	return Text::String::New(this->sb.ToString(), this->sb.GetLength());
 }
 
-DB::DBUtil::SQLType DB::SQLBuilder::GetSQLType() const
+DB::SQLType DB::SQLBuilder::GetSQLType() const
 {
 	return this->sqlType;
 }

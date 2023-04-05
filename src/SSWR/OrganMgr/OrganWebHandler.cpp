@@ -5417,7 +5417,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcCate(Net::WebServer::IWebRequ
 		{
 			group = cate->groups.GetItem(i);
 			me->env->CalcGroupCount(&mutUsage, group);
-			if (group->totalCount > 0 && ((group->flags & 1) == 0 || !notAdmin))
+			if ((group->totalCount > 0 && (group->flags & 1) == 0) || !notAdmin)
 			{
 	/*			sb.ClearStr();
 				sb.AppendC(UTF8STRC("<a href=\"group.html?id="));

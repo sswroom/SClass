@@ -19,7 +19,7 @@ namespace DB
 	public:
 		SharedDBConn(DB::DBConn *conn);
 
-		DB::DBUtil::SQLType GetSQLType();
+		DB::SQLType GetSQLType();
 		void Reconnect();
 		void UseObject();
 		void UnuseObject();

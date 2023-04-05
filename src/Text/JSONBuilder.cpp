@@ -156,6 +156,20 @@ Bool Text::JSONBuilder::ArrayAddInt32(Int32 val)
 	return true;
 }
 
+Bool Text::JSONBuilder::ArrayAddInt64(Int64 val)
+{
+	if (this->currType != OT_ARRAY)
+		return false;
+	if (this->isFirst)
+		this->isFirst = false;
+	else
+	{
+		this->sb->AppendC(UTF8STRC(","));
+	}
+	this->sb->AppendI64(val);
+	return true;
+}
+
 Bool Text::JSONBuilder::ArrayAddFloat64(Double val)
 {
 	if (this->currType != OT_ARRAY)
@@ -167,6 +181,20 @@ Bool Text::JSONBuilder::ArrayAddFloat64(Double val)
 		this->sb->AppendC(UTF8STRC(","));
 	}
 	Text::SBAppendF64(this->sb, val);
+	return true;
+}
+
+Bool Text::JSONBuilder::ArrayAddBool(Bool val)
+{
+	if (this->currType != OT_ARRAY)
+		return false;
+	if (this->isFirst)
+		this->isFirst = false;
+	else
+	{
+		this->sb->AppendC(UTF8STRC(","));
+	}
+	this->sb->Append(val?CSTR("true"):CSTR("false"));
 	return true;
 }
 
@@ -208,6 +236,68 @@ Bool Text::JSONBuilder::ArrayAddStrUTF8(const UTF8Char *val)
 	else
 	{
 		this->AppendStrUTF8(val);
+	}
+	return true;
+}
+
+Bool Text::JSONBuilder::ArrayAddNull()
+{
+	if (this->currType != OT_ARRAY)
+		return false;
+	if (this->isFirst)
+		this->isFirst = false;
+	else
+	{
+		this->sb->AppendC(UTF8STRC(","));
+	}
+	this->sb->AppendC(UTF8STRC("null"));
+	return true;
+}
+
+Bool Text::JSONBuilder::ArrayAdd(Text::JSONArray *arr)
+{
+	if (this->currType != OT_ARRAY)
+		return false;
+	UOSInt i = 0;
+	UOSInt j = arr->GetArrayLength();
+	Text::JSONBase *json;
+	while (i < j)
+	{
+		json = arr->GetArrayValue(i);
+		switch (json->GetType())
+		{
+		case Text::JSONType::Object:
+			this->ArrayBeginObject();
+			this->ObjectAdd((Text::JSONObject*)json);
+			this->ObjectEnd();
+			break;
+		case Text::JSONType::Array:
+			this->ArrayBeginArray();
+			this->ArrayAdd((Text::JSONArray*)json);
+			this->ArrayEnd();
+			break;
+		case Text::JSONType::Number:
+			this->ArrayAddFloat64(((Text::JSONNumber*)json)->GetValue());
+			break;
+		case Text::JSONType::String:
+			this->ArrayAddStr(((Text::JSONString*)json)->GetValue());
+			break;
+		case Text::JSONType::BOOL:
+			this->ArrayAddBool(((Text::JSONBool*)json)->GetValue());
+			break;
+		case Text::JSONType::Null:
+			this->ArrayAddNull();
+			break;
+		case Text::JSONType::INT32:
+			this->ArrayAddInt32(((Text::JSONInt32*)json)->GetValue());
+			break;
+		case Text::JSONType::INT64:
+			this->ArrayAddInt64(((Text::JSONInt64*)json)->GetValue());
+			break;
+		case Text::JSONType::StringWO:
+			break;
+		}
+		i++;
 	}
 	return true;
 }
@@ -323,6 +413,22 @@ Bool Text::JSONBuilder::ObjectAddUInt64(Text::CString name, UInt64 val)
 	return true;
 }
 
+Bool Text::JSONBuilder::ObjectAddBool(Text::CString name, Bool val)
+{
+	if (this->currType != OT_OBJECT)
+		return false;
+	if (this->isFirst)
+		this->isFirst = false;
+	else
+	{
+		this->sb->AppendC(UTF8STRC(","));
+	}
+	this->AppendStr(name);
+	this->sb->AppendC(UTF8STRC(":"));
+	this->sb->Append(val?CSTR("true"):CSTR("false"));
+	return true;
+}
+
 Bool Text::JSONBuilder::ObjectAddStr(Text::CString name, Text::PString *val)
 {
 	if (this->currType != OT_OBJECT)
@@ -411,6 +517,73 @@ Bool Text::JSONBuilder::ObjectAddStrW(Text::CString name, const WChar *val)
 	else
 	{
 		this->AppendStrW(val);
+	}
+	return true;
+}
+
+Bool Text::JSONBuilder::ObjectAddNull(Text::CString name)
+{
+	if (this->currType != OT_OBJECT)
+		return false;
+	if (this->isFirst)
+		this->isFirst = false;
+	else
+	{
+		this->sb->AppendC(UTF8STRC(","));
+	}
+	this->AppendStr(name);
+	this->sb->AppendC(UTF8STRC(":null"));
+	return true;
+}
+
+Bool Text::JSONBuilder::ObjectAdd(Text::JSONObject *obj)
+{
+	if (this->currType != OT_OBJECT)
+		return false;
+	Data::ArrayList<Text::String*> names;
+	obj->GetObjectNames(&names);
+	UOSInt i = 0;
+	UOSInt j = names.GetCount();
+	Text::JSONBase *json;
+	Text::String *name;
+	while (i < j)
+	{
+		name = names.GetItem(i);
+		json = obj->GetObjectValue(name->ToCString());
+		switch (json->GetType())
+		{
+		case Text::JSONType::Object:
+			this->ObjectBeginObject(name->ToCString());
+			this->ObjectAdd((Text::JSONObject*)json);
+			this->ObjectEnd();
+			break;
+		case Text::JSONType::Array:
+			this->ObjectBeginArray(name->ToCString());
+			this->ArrayAdd((Text::JSONArray*)json);
+			this->ArrayEnd();
+			break;
+		case Text::JSONType::Number:
+			this->ObjectAddFloat64(name->ToCString(), ((Text::JSONNumber*)json)->GetValue());
+			break;
+		case Text::JSONType::String:
+			this->ObjectAddStr(name->ToCString(), ((Text::JSONString*)json)->GetValue());
+			break;
+		case Text::JSONType::BOOL:
+			this->ObjectAddBool(name->ToCString(), ((Text::JSONBool*)json)->GetValue());
+			break;
+		case Text::JSONType::Null:
+			this->ObjectAddNull(name->ToCString());
+			break;
+		case Text::JSONType::INT32:
+			this->ObjectAddInt32(name->ToCString(), ((Text::JSONInt32*)json)->GetValue());
+			break;
+		case Text::JSONType::INT64:
+			this->ObjectAddInt64(name->ToCString(), ((Text::JSONInt64*)json)->GetValue());
+			break;
+		case Text::JSONType::StringWO:
+			break;
+		}
+		i++;
 	}
 	return true;
 }

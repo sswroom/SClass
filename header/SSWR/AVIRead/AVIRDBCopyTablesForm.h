@@ -11,6 +11,7 @@
 #include "UI/GUIListView.h"
 #include "UI/GUITabControl.h"
 #include "UI/GUITabPage.h"
+#include "UI/GUITextBox.h"
 
 namespace SSWR
 {
@@ -22,8 +23,12 @@ namespace SSWR
 			UI::GUITabControl *tcMain;
 
 			UI::GUITabPage *tpSource;
+			UI::GUILabel *lblSourceConn;
+			UI::GUIComboBox *cboSourceConn;
 			UI::GUILabel *lblSourceDB;
-			UI::GUIComboBox *cboSourceDB;
+			UI::GUITextBox *txtSourceDB;
+			UI::GUILabel *lblSourceCollation;
+			UI::GUITextBox *txtSourceCollation;
 			UI::GUILabel *lblSourceSchema;
 			UI::GUIComboBox *cboSourceSchema;
 			UI::GUIButton *btnSourceSelect;
@@ -38,6 +43,7 @@ namespace SSWR
 			UI::GUILabel *lblDestOptions;
 			UI::GUIComboBox *cboDestTableType;
 			UI::GUICheckBox *chkDestCopyData;
+			UI::GUICheckBox *chkDestCreateDDB;
 			UI::GUIButton *btnCopy;
 
 			SSWR::AVIRead::AVIRCore *core;
@@ -56,6 +62,8 @@ namespace SSWR
 			virtual ~AVIRDBCopyTablesForm();
 
 			virtual void OnMonitorChanged();
+
+			void SetSourceDB(UOSInt index);
 		};
 	}
 }

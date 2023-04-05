@@ -15,12 +15,12 @@ namespace DB
 	{
 	private:
 		Text::StringBuilderUTF8 sb;
-		DB::DBUtil::SQLType sqlType;
+		DB::SQLType sqlType;
 		Int32 tzQhr;
 		Bool axisAware;
 
 	public:
-		SQLBuilder(DB::DBUtil::SQLType sqlType, Bool axisAware, Int32 tzQhr);
+		SQLBuilder(DB::SQLType sqlType, Bool axisAware, Int32 tzQhr);
 		SQLBuilder(DB::ReadingDBTool *db);
 		~SQLBuilder();
 
@@ -51,7 +51,7 @@ namespace DB
 		UOSInt GetLength() const;
 		Text::CString ToCString() const;
 		Text::String *ToNewString() const;
-		DB::DBUtil::SQLType GetSQLType() const;
+		DB::SQLType GetSQLType() const;
 	};
 }
 #endif

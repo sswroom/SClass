@@ -54,7 +54,7 @@ namespace DB
 
 		UInt32 dataCnt;
 
-		DBUtil::SQLType sqlType;
+		SQLType sqlType;
 		Bool axisAware;
 
 	public:
@@ -73,7 +73,7 @@ namespace DB
 		void SetFailTrigger(SQLFailedFunc trig);
 		DB::DBReader *ExecuteReader(Text::CString sqlCmd);
 		virtual void CloseReader(DB::DBReader *r);
-		DB::DBUtil::SQLType GetSQLType();
+		DB::SQLType GetSQLType();
 		Bool IsAxisAware();
 		Bool IsDataError(const UTF8Char *errCode);
 		virtual void GetLastErrorMsg(Text::StringBuilderUTF8 *sb);
@@ -107,6 +107,7 @@ namespace DB
 		virtual void ReleaseDatabaseNames(Data::ArrayList<Text::String*> *arr);
 		virtual Bool ChangeDatabase(Text::CString databaseName);
 		virtual Text::String *GetCurrDBName();
+		Bool GetDBCollation(Text::CString databaseName, Collation *collation);
 
 		UOSInt GetVariables(Data::ArrayList<Data::TwinItem<Text::String*, Text::String*>> *vars);
 		void FreeVariables(Data::ArrayList<Data::TwinItem<Text::String*, Text::String*>> *vars);

@@ -31,7 +31,7 @@ namespace DB
 		MySQLConn(Text::CString server, Text::CString uid, Text::CString pwd, Text::CString database, IO::LogTool *log);
 		MySQLConn(const WChar *server, const WChar *uid, const WChar *pwd, const WChar *database, IO::LogTool *log);
 		virtual ~MySQLConn();
-		virtual DB::DBUtil::SQLType GetSQLType() const;
+		virtual DB::SQLType GetSQLType() const;
 		virtual Bool IsAxisAware() const;
 		virtual ConnType GetConnType() const;
 		virtual Int8 GetTzQhr() const;

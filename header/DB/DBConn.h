@@ -37,7 +37,7 @@ namespace DB
 	public:
 		virtual ~DBConn();
 
-		virtual DB::DBUtil::SQLType GetSQLType() const = 0;
+		virtual DB::SQLType GetSQLType() const = 0;
 		virtual Bool IsAxisAware() const;
 		virtual ConnType GetConnType() const = 0;
 		virtual Int8 GetTzQhr() const = 0;

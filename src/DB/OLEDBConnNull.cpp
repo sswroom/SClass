@@ -43,9 +43,9 @@ DB::OLEDBConn::~OLEDBConn()
 	MemFree(this->clsData);
 }
 
-DB::DBUtil::SQLType DB::OLEDBConn::GetSQLType() const
+DB::SQLType DB::OLEDBConn::GetSQLType() const
 {
-	return DB::DBUtil::SQLType::Unknown;
+	return DB::SQLType::Unknown;
 }
 
 DB::DBConn::ConnType DB::OLEDBConn::GetConnType() const

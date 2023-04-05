@@ -271,7 +271,7 @@ Data::Class *SSWR::AVIRead::AVIRDBForm::CreateTableClass(Text::CString schemaNam
 }
 
 
-void SSWR::AVIRead::AVIRDBForm::CopyTableCreate(DB::DBUtil::SQLType sqlType, Bool axisAware)
+void SSWR::AVIRead::AVIRDBForm::CopyTableCreate(DB::SQLType sqlType, Bool axisAware)
 {
 	Text::String *schemaName = this->lbSchema->GetSelectedItemTextNew();
 	Text::String *tableName = this->lbTable->GetSelectedItemTextNew();
@@ -297,7 +297,7 @@ void SSWR::AVIRead::AVIRDBForm::CopyTableCreate(DB::DBUtil::SQLType sqlType, Boo
 	SDEL_STRING(schemaName);
 }
 
-void SSWR::AVIRead::AVIRDBForm::ExportTableData(DB::DBUtil::SQLType sqlType, Bool axisAware)
+void SSWR::AVIRead::AVIRDBForm::ExportTableData(DB::SQLType sqlType, Bool axisAware)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -679,28 +679,28 @@ void SSWR::AVIRead::AVIRDBForm::EventMenuClicked(UInt16 cmdId)
 		}
 		break;
 	case MNU_TABLE_CREATE_MYSQL:
-		this->CopyTableCreate(DB::DBUtil::SQLType::MySQL, false);
+		this->CopyTableCreate(DB::SQLType::MySQL, false);
 		break;
 	case MNU_TABLE_CREATE_MYSQL8:
-		this->CopyTableCreate(DB::DBUtil::SQLType::MySQL, true);
+		this->CopyTableCreate(DB::SQLType::MySQL, true);
 		break;
 	case MNU_TABLE_CREATE_MSSQL:
-		this->CopyTableCreate(DB::DBUtil::SQLType::MSSQL, false);
+		this->CopyTableCreate(DB::SQLType::MSSQL, false);
 		break;
 	case MNU_TABLE_CREATE_POSTGRESQL:
-		this->CopyTableCreate(DB::DBUtil::SQLType::PostgreSQL, false);
+		this->CopyTableCreate(DB::SQLType::PostgreSQL, false);
 		break;
 	case MNU_TABLE_EXPORT_MYSQL:
-		this->ExportTableData(DB::DBUtil::SQLType::MySQL, false);
+		this->ExportTableData(DB::SQLType::MySQL, false);
 		break;
 	case MNU_TABLE_EXPORT_MYSQL8:
-		this->ExportTableData(DB::DBUtil::SQLType::MySQL, true);
+		this->ExportTableData(DB::SQLType::MySQL, true);
 		break;
 	case MNU_TABLE_EXPORT_MSSQL:
-		this->ExportTableData(DB::DBUtil::SQLType::MSSQL, false);
+		this->ExportTableData(DB::SQLType::MSSQL, false);
 		break;
 	case MNU_TABLE_EXPORT_POSTGRESQL:
-		this->ExportTableData(DB::DBUtil::SQLType::PostgreSQL, false);
+		this->ExportTableData(DB::SQLType::PostgreSQL, false);
 		break;
 	case MNU_TABLE_EXPORT_OPTION:
 		{

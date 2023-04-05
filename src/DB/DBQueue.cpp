@@ -431,7 +431,7 @@ UTF8Char *DB::DBQueue::ToString(UTF8Char *buff)
 	return this->name->ConcatTo(buff);
 }
 
-DB::DBUtil::SQLType DB::DBQueue::GetSQLType() const
+DB::SQLType DB::DBQueue::GetSQLType() const
 {
 	return this->db1->GetSQLType();
 }

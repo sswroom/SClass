@@ -21,7 +21,7 @@ UTF8Char *DB::DBUtil::SDBStrUTF8(UTF8Char *sqlstr, const UTF8Char *val, SQLType 
 	if (val == 0)
 		return Text::StrConcatC(sqlstr, UTF8STRC("NULL"));
 
-	if (sqlType == DB::DBUtil::SQLType::MySQL)
+	if (sqlType == DB::SQLType::MySQL)
 	{
 		sptr = sqlstr;
 		*sptr++ = '\'';
@@ -106,7 +106,7 @@ UTF8Char *DB::DBUtil::SDBStrUTF8(UTF8Char *sqlstr, const UTF8Char *val, SQLType 
 		*sptr = 0;
 		return sptr;
 	}
-	else if (sqlType == DB::DBUtil::SQLType::SQLite)
+	else if (sqlType == DB::SQLType::SQLite)
 	{
 		sptr = sqlstr;
 		*sptr++ = '\'';
@@ -193,7 +193,7 @@ UTF8Char *DB::DBUtil::SDBStrUTF8(UTF8Char *sqlstr, const UTF8Char *val, SQLType 
 		*sptr = 0;
 		return sptr;
 	}
-	else if (sqlType == DB::DBUtil::SQLType::MSSQL)
+	else if (sqlType == DB::SQLType::MSSQL)
 	{
 		sptr = sqlstr;
 		*sptr++ = 'N';
@@ -256,7 +256,7 @@ UTF8Char *DB::DBUtil::SDBStrUTF8(UTF8Char *sqlstr, const UTF8Char *val, SQLType 
 		*sptr = 0;
 		return sptr;
 	}
-	else if (sqlType == DB::DBUtil::SQLType::Access)
+	else if (sqlType == DB::SQLType::Access)
 	{
 		sptr = sqlstr;
 		*sptr++ = '\'';
@@ -318,7 +318,7 @@ UTF8Char *DB::DBUtil::SDBStrUTF8(UTF8Char *sqlstr, const UTF8Char *val, SQLType 
 		*sptr = 0;
 		return sptr;
 	}
-	else if (sqlType == DB::DBUtil::SQLType::PostgreSQL)
+	else if (sqlType == DB::SQLType::PostgreSQL)
 	{
 		sptr = sqlstr;
 		*sptr++ = '\'';
@@ -444,14 +444,14 @@ UTF8Char *DB::DBUtil::SDBStrUTF8(UTF8Char *sqlstr, const UTF8Char *val, SQLType 
 	}
 }
 
-UOSInt DB::DBUtil::SDBStrUTF8Leng(const UTF8Char *val, DB::DBUtil::SQLType sqlType)
+UOSInt DB::DBUtil::SDBStrUTF8Leng(const UTF8Char *val, DB::SQLType sqlType)
 {
 	UOSInt leng = 0;
 	UTF8Char c;
 	if (val == 0)
 		return 4;
 
-	if (sqlType == DB::DBUtil::SQLType::MySQL)
+	if (sqlType == DB::SQLType::MySQL)
 	{
 		while ((c = *val++) != 0)
 		{
@@ -524,7 +524,7 @@ UOSInt DB::DBUtil::SDBStrUTF8Leng(const UTF8Char *val, DB::DBUtil::SQLType sqlTy
 		leng += 2;
 		return leng;
 	}
-	else if (sqlType == DB::DBUtil::SQLType::SQLite)
+	else if (sqlType == DB::SQLType::SQLite)
 	{
 		while ((c = *val++) != 0)
 		{
@@ -592,7 +592,7 @@ UOSInt DB::DBUtil::SDBStrUTF8Leng(const UTF8Char *val, DB::DBUtil::SQLType sqlTy
 		leng += 2;
 		return leng;
 	}
-	else if (sqlType == DB::DBUtil::SQLType::MSSQL)
+	else if (sqlType == DB::SQLType::MSSQL)
 	{
 		while ((c = *val++) != 0)
 		{
@@ -640,7 +640,7 @@ UOSInt DB::DBUtil::SDBStrUTF8Leng(const UTF8Char *val, DB::DBUtil::SQLType sqlTy
 		leng += 3;
 		return leng;
 	}
-	else if (sqlType == DB::DBUtil::SQLType::Access)
+	else if (sqlType == DB::SQLType::Access)
 	{
 		while ((c = *val++) != 0)
 		{
@@ -688,7 +688,7 @@ UOSInt DB::DBUtil::SDBStrUTF8Leng(const UTF8Char *val, DB::DBUtil::SQLType sqlTy
 		leng += 3;
 		return leng;
 	}
-	else if (sqlType == DB::DBUtil::SQLType::PostgreSQL)
+	else if (sqlType == DB::SQLType::PostgreSQL)
 	{
 		while ((c = *val++) != 0)
 		{
@@ -786,14 +786,14 @@ UOSInt DB::DBUtil::SDBStrUTF8Leng(const UTF8Char *val, DB::DBUtil::SQLType sqlTy
 	}
 }
 
-UTF8Char *DB::DBUtil::SDBStrW(UTF8Char *sqlstr, const WChar *val, DB::DBUtil::SQLType sqlType)
+UTF8Char *DB::DBUtil::SDBStrW(UTF8Char *sqlstr, const WChar *val, DB::SQLType sqlType)
 {
 	UTF8Char *sptr;
 	UTF32Char c;
 	if (val == 0)
 		return Text::StrConcatC(sqlstr, UTF8STRC("NULL"));
 
-	if (sqlType == DB::DBUtil::SQLType::MySQL)
+	if (sqlType == DB::SQLType::MySQL)
 	{
 		sptr = sqlstr;
 		*sptr++ = '\'';
@@ -860,7 +860,7 @@ UTF8Char *DB::DBUtil::SDBStrW(UTF8Char *sqlstr, const WChar *val, DB::DBUtil::SQ
 		*sptr = 0;
 		return sptr;
 	}
-	else if (sqlType == DB::DBUtil::SQLType::SQLite)
+	else if (sqlType == DB::SQLType::SQLite)
 	{
 		sptr = sqlstr;
 		*sptr++ = '\'';
@@ -885,7 +885,7 @@ UTF8Char *DB::DBUtil::SDBStrW(UTF8Char *sqlstr, const WChar *val, DB::DBUtil::SQ
 		*sptr = 0;
 		return sptr;
 	}
-	else if (sqlType == DB::DBUtil::SQLType::MSSQL)
+	else if (sqlType == DB::SQLType::MSSQL)
 	{
 		sptr = sqlstr;
 		*sptr++ = 'N';
@@ -911,7 +911,7 @@ UTF8Char *DB::DBUtil::SDBStrW(UTF8Char *sqlstr, const WChar *val, DB::DBUtil::SQ
 		*sptr = 0;
 		return sptr;
 	}
-	else if (sqlType == DB::DBUtil::SQLType::Access)
+	else if (sqlType == DB::SQLType::Access)
 	{
 		sptr = sqlstr;
 		*sptr++ = '\'';
@@ -936,7 +936,7 @@ UTF8Char *DB::DBUtil::SDBStrW(UTF8Char *sqlstr, const WChar *val, DB::DBUtil::SQ
 		*sptr = 0;
 		return sptr;
 	}
-	else if (sqlType == DB::DBUtil::SQLType::PostgreSQL)
+	else if (sqlType == DB::SQLType::PostgreSQL)
 	{
 		sptr = sqlstr;
 		*sptr++ = '\'';
@@ -988,14 +988,14 @@ UTF8Char *DB::DBUtil::SDBStrW(UTF8Char *sqlstr, const WChar *val, DB::DBUtil::SQ
 	}
 }
 
-UOSInt DB::DBUtil::SDBStrWLeng(const WChar *val, DB::DBUtil::SQLType sqlType)
+UOSInt DB::DBUtil::SDBStrWLeng(const WChar *val, DB::SQLType sqlType)
 {
 	UOSInt leng = 0;
 	UTF32Char c;
 	if (val == 0)
 		return 4;
 
-	if (sqlType == DB::DBUtil::SQLType::MySQL)
+	if (sqlType == DB::SQLType::MySQL)
 	{
 		while (true)
 		{
@@ -1067,7 +1067,7 @@ UOSInt DB::DBUtil::SDBStrWLeng(const WChar *val, DB::DBUtil::SQLType sqlType)
 		leng += 2;
 		return leng;
 	}
-	else if (sqlType == DB::DBUtil::SQLType::SQLite)
+	else if (sqlType == DB::SQLType::SQLite)
 	{
 		while (true)
 		{
@@ -1108,7 +1108,7 @@ UOSInt DB::DBUtil::SDBStrWLeng(const WChar *val, DB::DBUtil::SQLType sqlType)
 		leng += 2;
 		return leng;
 	}
-	else if (sqlType == DB::DBUtil::SQLType::MSSQL)
+	else if (sqlType == DB::SQLType::MSSQL)
 	{
 		while (true)
 		{
@@ -1149,7 +1149,7 @@ UOSInt DB::DBUtil::SDBStrWLeng(const WChar *val, DB::DBUtil::SQLType sqlType)
 		leng += 3;
 		return leng;
 	}
-	else if (sqlType == DB::DBUtil::SQLType::Access)
+	else if (sqlType == DB::SQLType::Access)
 	{
 		while (true)
 		{
@@ -1233,57 +1233,57 @@ UOSInt DB::DBUtil::SDBStrWLeng(const WChar *val, DB::DBUtil::SQLType sqlType)
 	}
 }
 
-UTF8Char *DB::DBUtil::SDBInt32(UTF8Char *sqlstr, Int32 val, DB::DBUtil::SQLType sqlType)
+UTF8Char *DB::DBUtil::SDBInt32(UTF8Char *sqlstr, Int32 val, DB::SQLType sqlType)
 {
 	return Text::StrInt32(sqlstr, val);
 }
 
-UOSInt DB::DBUtil::SDBInt32Leng(Int32 val, DB::DBUtil::SQLType sqlType)
+UOSInt DB::DBUtil::SDBInt32Leng(Int32 val, DB::SQLType sqlType)
 {
 	UTF8Char buff[12];
 	return (UOSInt)(Text::StrInt32(buff, val) - buff);
 }
 
-UTF8Char *DB::DBUtil::SDBInt64(UTF8Char *sqlstr, Int64 val, DB::DBUtil::SQLType sqlType)
+UTF8Char *DB::DBUtil::SDBInt64(UTF8Char *sqlstr, Int64 val, DB::SQLType sqlType)
 {
 	return Text::StrInt64(sqlstr, val);
 }
 
-UOSInt DB::DBUtil::SDBInt64Leng(Int64 val, DB::DBUtil::SQLType sqlType)
+UOSInt DB::DBUtil::SDBInt64Leng(Int64 val, DB::SQLType sqlType)
 {
 	UTF8Char buff[22];
 	return (UOSInt)(Text::StrInt64(buff, val) - buff);
 }
 
-UTF8Char *DB::DBUtil::SDBUInt32(UTF8Char *sqlstr, UInt32 val, DB::DBUtil::SQLType sqlType)
+UTF8Char *DB::DBUtil::SDBUInt32(UTF8Char *sqlstr, UInt32 val, DB::SQLType sqlType)
 {
 	return Text::StrUInt32(sqlstr, val);
 }
 
-UOSInt DB::DBUtil::SDBUInt32Leng(UInt32 val, DB::DBUtil::SQLType sqlType)
+UOSInt DB::DBUtil::SDBUInt32Leng(UInt32 val, DB::SQLType sqlType)
 {
 	UTF8Char buff[12];
 	return (UOSInt)(Text::StrUInt32(buff, val) - buff);
 }
 
-UTF8Char *DB::DBUtil::SDBUInt64(UTF8Char *sqlstr, UInt64 val, DB::DBUtil::SQLType sqlType)
+UTF8Char *DB::DBUtil::SDBUInt64(UTF8Char *sqlstr, UInt64 val, DB::SQLType sqlType)
 {
 	return Text::StrUInt64(sqlstr, val);
 }
 
-UOSInt DB::DBUtil::SDBUInt64Leng(UInt64 val, DB::DBUtil::SQLType sqlType)
+UOSInt DB::DBUtil::SDBUInt64Leng(UInt64 val, DB::SQLType sqlType)
 {
 	UTF8Char buff[22];
 	return (UOSInt)(Text::StrUInt64(buff, val) - buff);
 }
 
-UTF8Char *DB::DBUtil::SDBDate(UTF8Char *sqlstr, Data::DateTime *dat, DB::DBUtil::SQLType sqlType, Int8 tzQhr)
+UTF8Char *DB::DBUtil::SDBDate(UTF8Char *sqlstr, Data::DateTime *dat, DB::SQLType sqlType, Int8 tzQhr)
 {
 	UTF8Char *sptr;
 	if (dat == 0)
 		return Text::StrConcatC(sqlstr, UTF8STRC("NULL"));
 	Data::DateTime dt(dat);
-	if (sqlType == DB::DBUtil::SQLType::Access)
+	if (sqlType == DB::SQLType::Access)
 	{
 		dt.ToUTCTime();
 		sptr = sqlstr;
@@ -1293,7 +1293,7 @@ UTF8Char *DB::DBUtil::SDBDate(UTF8Char *sqlstr, Data::DateTime *dat, DB::DBUtil:
 		*sptr = 0;
 		return sptr;
 	}
-	else if (sqlType == DB::DBUtil::SQLType::MSSQL)
+	else if (sqlType == DB::SQLType::MSSQL)
 	{
 		dt.ConvertTimeZoneQHR(tzQhr);
 		sptr = sqlstr;
@@ -1303,7 +1303,7 @@ UTF8Char *DB::DBUtil::SDBDate(UTF8Char *sqlstr, Data::DateTime *dat, DB::DBUtil:
 		*sptr = 0;
 		return sptr;
 	}
-	else if (sqlType == DB::DBUtil::SQLType::SQLite)
+	else if (sqlType == DB::SQLType::SQLite)
 	{
 		dt.ToUTCTime();
 		sptr = sqlstr;
@@ -1313,7 +1313,7 @@ UTF8Char *DB::DBUtil::SDBDate(UTF8Char *sqlstr, Data::DateTime *dat, DB::DBUtil:
 		*sptr = 0;
 		return sptr;
 	}
-	else if (sqlType == DB::DBUtil::SQLType::Oracle)
+	else if (sqlType == DB::SQLType::Oracle)
 	{
 		dt.ToUTCTime();
 		sptr = sqlstr;
@@ -1323,7 +1323,7 @@ UTF8Char *DB::DBUtil::SDBDate(UTF8Char *sqlstr, Data::DateTime *dat, DB::DBUtil:
 		*sptr = 0;
 		return sptr;
 	}
-	else if (sqlType == DB::DBUtil::SQLType::MySQL)
+	else if (sqlType == DB::SQLType::MySQL)
 	{
 		dt.ToUTCTime();
 		sptr = sqlstr;
@@ -1345,25 +1345,25 @@ UTF8Char *DB::DBUtil::SDBDate(UTF8Char *sqlstr, Data::DateTime *dat, DB::DBUtil:
 	}
 }
 
-UOSInt DB::DBUtil::SDBDateLeng(Data::DateTime *dat, DB::DBUtil::SQLType sqlType)
+UOSInt DB::DBUtil::SDBDateLeng(Data::DateTime *dat, DB::SQLType sqlType)
 {
 	if (dat == 0)
 		return 4;
 
-	if (sqlType == DB::DBUtil::SQLType::Access)
+	if (sqlType == DB::SQLType::Access)
 	{
 		UTF8Char buff[100];
 		return (UOSInt)(dat->ToLocalStr(buff) - buff + 2);
 	}
-	else if (sqlType == DB::DBUtil::SQLType::MSSQL || sqlType == DB::DBUtil::SQLType::SQLite)
+	else if (sqlType == DB::SQLType::MSSQL || sqlType == DB::SQLType::SQLite)
 	{
 		return 25;
 	}
-	else if (sqlType == DB::DBUtil::SQLType::Oracle)
+	else if (sqlType == DB::SQLType::Oracle)
 	{
 		return 31;
 	}
-	else if (sqlType == DB::DBUtil::SQLType::MySQL)
+	else if (sqlType == DB::SQLType::MySQL)
 	{
 		return 25;
 	}
@@ -1378,7 +1378,7 @@ UTF8Char *DB::DBUtil::SDBTS(UTF8Char *sqlstr, const Data::Timestamp &ts, SQLType
 	UTF8Char *sptr;
 	if (ts.IsNull())
 		return Text::StrConcatC(sqlstr, UTF8STRC("NULL"));
-	if (sqlType == DB::DBUtil::SQLType::Access)
+	if (sqlType == DB::SQLType::Access)
 	{
 		sptr = sqlstr;
 		*sptr++ = '#';
@@ -1387,7 +1387,7 @@ UTF8Char *DB::DBUtil::SDBTS(UTF8Char *sqlstr, const Data::Timestamp &ts, SQLType
 		*sptr = 0;
 		return sptr;
 	}
-	else if (sqlType == DB::DBUtil::SQLType::MSSQL)
+	else if (sqlType == DB::SQLType::MSSQL)
 	{
 		sptr = sqlstr;
 		sptr = Text::StrConcatC(sptr, UTF8STRC("CAST('"));
@@ -1395,7 +1395,7 @@ UTF8Char *DB::DBUtil::SDBTS(UTF8Char *sqlstr, const Data::Timestamp &ts, SQLType
 		sptr = Text::StrConcatC(sptr, UTF8STRC("' as datetime2(7))"));
 		return sptr;
 	}
-	else if (sqlType == DB::DBUtil::SQLType::SQLite)
+	else if (sqlType == DB::SQLType::SQLite)
 	{
 		sptr = sqlstr;
 		*sptr++ = '\'';
@@ -1404,7 +1404,7 @@ UTF8Char *DB::DBUtil::SDBTS(UTF8Char *sqlstr, const Data::Timestamp &ts, SQLType
 		*sptr = 0;
 		return sptr;
 	}
-	else if (sqlType == DB::DBUtil::SQLType::Oracle)
+	else if (sqlType == DB::SQLType::Oracle)
 	{
 		sptr = sqlstr;
 		sptr = Text::StrConcatC(sptr, UTF8STRC("TIMESTAMP '"));
@@ -1413,7 +1413,7 @@ UTF8Char *DB::DBUtil::SDBTS(UTF8Char *sqlstr, const Data::Timestamp &ts, SQLType
 		*sptr = 0;
 		return sptr;
 	}
-	else if (sqlType == DB::DBUtil::SQLType::MySQL)
+	else if (sqlType == DB::SQLType::MySQL)
 	{
 		sptr = sqlstr;
 		*sptr++ = '\'';
@@ -1422,7 +1422,7 @@ UTF8Char *DB::DBUtil::SDBTS(UTF8Char *sqlstr, const Data::Timestamp &ts, SQLType
 		*sptr = 0;
 		return sptr;
 	}
-	else if (sqlType == DB::DBUtil::SQLType::PostgreSQL)
+	else if (sqlType == DB::SQLType::PostgreSQL)
 	{
 		sptr = sqlstr;
 		*sptr++ = '\'';
@@ -1448,27 +1448,27 @@ UOSInt DB::DBUtil::SDBTSLeng(const Data::Timestamp &ts, SQLType sqlType)
 		return 4;
 	switch (sqlType)
 	{
-	case DB::DBUtil::SQLType::Access:
-	case DB::DBUtil::SQLType::MDBTools:
+	case DB::SQLType::Access:
+	case DB::SQLType::MDBTools:
 		return 21;
-	case DB::DBUtil::SQLType::MSSQL:
+	case DB::SQLType::MSSQL:
 		return 51;
-	case DB::DBUtil::SQLType::Oracle:
+	case DB::SQLType::Oracle:
 		return 41;
-	case DB::DBUtil::SQLType::SQLite:
+	case DB::SQLType::SQLite:
 		return 25;
-	case DB::DBUtil::SQLType::MySQL:
+	case DB::SQLType::MySQL:
 		return 28;
-	case DB::DBUtil::SQLType::PostgreSQL:
+	case DB::SQLType::PostgreSQL:
 		return 28;
 	default:
-	case DB::DBUtil::SQLType::WBEM:
-	case DB::DBUtil::SQLType::Unknown:
+	case DB::SQLType::WBEM:
+	case DB::SQLType::Unknown:
 		return 21;
 	}
 }
 
-UTF8Char *DB::DBUtil::SDBDbl(UTF8Char *sqlstr, Double val, DB::DBUtil::SQLType sqlType)
+UTF8Char *DB::DBUtil::SDBDbl(UTF8Char *sqlstr, Double val, DB::SQLType sqlType)
 {
 	if (Math::IsInfinity(val) || Math::IsNAN(val))
 	{
@@ -1480,26 +1480,26 @@ UTF8Char *DB::DBUtil::SDBDbl(UTF8Char *sqlstr, Double val, DB::DBUtil::SQLType s
 	}
 }
 
-UOSInt DB::DBUtil::SDBDblLeng(Double val, DB::DBUtil::SQLType sqlType)
+UOSInt DB::DBUtil::SDBDblLeng(Double val, DB::SQLType sqlType)
 {
 	UTF8Char buff[128];
 	return (UOSInt)(Text::StrDouble(buff, val) - buff);
 }
 
-UTF8Char *DB::DBUtil::SDBSng(UTF8Char *sqlstr, Single val, DB::DBUtil::SQLType sqlType)
+UTF8Char *DB::DBUtil::SDBSng(UTF8Char *sqlstr, Single val, DB::SQLType sqlType)
 {
 	return Text::StrDouble(sqlstr, val);
 }
 
-UOSInt DB::DBUtil::SDBSngLeng(Single val, DB::DBUtil::SQLType sqlType)
+UOSInt DB::DBUtil::SDBSngLeng(Single val, DB::SQLType sqlType)
 {
 	UTF8Char buff[128];
 	return (UOSInt)(Text::StrDouble(buff, val) - buff);
 }
 
-UTF8Char *DB::DBUtil::SDBBool(UTF8Char *sqlStr, Bool val, DB::DBUtil::SQLType sqlType)
+UTF8Char *DB::DBUtil::SDBBool(UTF8Char *sqlStr, Bool val, DB::SQLType sqlType)
 {
-	if (sqlType == DB::DBUtil::SQLType::Oracle || sqlType == DB::DBUtil::SQLType::SQLite || sqlType == DB::DBUtil::SQLType::MSSQL)
+	if (sqlType == DB::SQLType::Oracle || sqlType == DB::SQLType::SQLite || sqlType == DB::SQLType::MSSQL)
 	{
 		if (val)
 		{
@@ -1532,9 +1532,9 @@ UTF8Char *DB::DBUtil::SDBBool(UTF8Char *sqlStr, Bool val, DB::DBUtil::SQLType sq
 	return sqlStr;
 }
 
-UOSInt DB::DBUtil::SDBBoolLeng(Bool val, DB::DBUtil::SQLType sqlType)
+UOSInt DB::DBUtil::SDBBoolLeng(Bool val, DB::SQLType sqlType)
 {
-	if (sqlType == DB::DBUtil::SQLType::Oracle)
+	if (sqlType == DB::SQLType::Oracle)
 	{
 		return 1;
 	}
@@ -1548,14 +1548,14 @@ UOSInt DB::DBUtil::SDBBoolLeng(Bool val, DB::DBUtil::SQLType sqlType)
 }
 
 
-UTF8Char *DB::DBUtil::SDBBin(UTF8Char *sqlstr, const UInt8 *buff, UOSInt size, DB::DBUtil::SQLType sqlType)
+UTF8Char *DB::DBUtil::SDBBin(UTF8Char *sqlstr, const UInt8 *buff, UOSInt size, DB::SQLType sqlType)
 {
 	UTF8Char *sptr;
 	if (buff == 0)
 	{
 		return Text::StrConcatC(sqlstr, UTF8STRC("NULL"));
 	}
-	if (sqlType == DB::DBUtil::SQLType::MySQL || sqlType == DB::DBUtil::SQLType::SQLite)
+	if (sqlType == DB::SQLType::MySQL || sqlType == DB::SQLType::SQLite)
 	{
 		sptr = sqlstr;
 		sptr = Text::StrConcatC(sptr, UTF8STRC("x'"));
@@ -1564,7 +1564,7 @@ UTF8Char *DB::DBUtil::SDBBin(UTF8Char *sqlstr, const UInt8 *buff, UOSInt size, D
 		*sptr = 0;
 		return sptr;
 	}
-	else if (sqlType == DB::DBUtil::SQLType::MSSQL)
+	else if (sqlType == DB::SQLType::MSSQL)
 	{
 		return Text::StrHexBytes(Text::StrConcatC(sqlstr, UTF8STRC("0x")), buff, size, 0);
 	}
@@ -1575,17 +1575,17 @@ UTF8Char *DB::DBUtil::SDBBin(UTF8Char *sqlstr, const UInt8 *buff, UOSInt size, D
 	}
 }
 
-UOSInt DB::DBUtil::SDBBinLeng(const UInt8 *buff, UOSInt size, DB::DBUtil::SQLType sqlType)
+UOSInt DB::DBUtil::SDBBinLeng(const UInt8 *buff, UOSInt size, DB::SQLType sqlType)
 {
 	if (buff == 0)
 	{
 		return 4;
 	}
-	if (sqlType == DB::DBUtil::SQLType::MySQL || sqlType == DB::DBUtil::SQLType::SQLite)
+	if (sqlType == DB::SQLType::MySQL || sqlType == DB::SQLType::SQLite)
 	{
 		return (size << 1) + 3;
 	}
-	else if (sqlType == DB::DBUtil::SQLType::MSSQL)
+	else if (sqlType == DB::SQLType::MSSQL)
 	{
 		return (size << 1) + 2;
 	}
@@ -1595,13 +1595,13 @@ UOSInt DB::DBUtil::SDBBinLeng(const UInt8 *buff, UOSInt size, DB::DBUtil::SQLTyp
 	}
 }
 
-UTF8Char *DB::DBUtil::SDBVector(UTF8Char *sqlstr, Math::Geometry::Vector2D *vec, DB::DBUtil::SQLType sqlType, Bool axisAware)
+UTF8Char *DB::DBUtil::SDBVector(UTF8Char *sqlstr, Math::Geometry::Vector2D *vec, DB::SQLType sqlType, Bool axisAware)
 {
 	if (vec == 0)
 	{
 		return Text::StrConcatC(sqlstr, UTF8STRC("NULL"));
 	}
-	if (sqlType == DB::DBUtil::SQLType::MSSQL)
+	if (sqlType == DB::SQLType::MSSQL)
 	{
 		if (vec->GetVectorType() == Math::Geometry::Vector2D::VectorType::Point)
 		{
@@ -1620,7 +1620,7 @@ UTF8Char *DB::DBUtil::SDBVector(UTF8Char *sqlstr, Math::Geometry::Vector2D *vec,
 			return sqlstr;
 		}
 	}
-	else if (sqlType == DB::DBUtil::SQLType::MySQL)
+	else if (sqlType == DB::SQLType::MySQL)
 	{
 		Math::WKTWriter writer;
 		if (axisAware)
@@ -1645,7 +1645,7 @@ UTF8Char *DB::DBUtil::SDBVector(UTF8Char *sqlstr, Math::Geometry::Vector2D *vec,
 			return sqlstr;
 		}
 	}
-	else if (sqlType == DB::DBUtil::SQLType::PostgreSQL)
+	else if (sqlType == DB::SQLType::PostgreSQL)
 	{
 		Math::WKTWriter writer;
 		Text::StringBuilderUTF8 sb;
@@ -1669,13 +1669,13 @@ UTF8Char *DB::DBUtil::SDBVector(UTF8Char *sqlstr, Math::Geometry::Vector2D *vec,
 	}
 }
 
-UOSInt DB::DBUtil::SDBVectorLeng(Math::Geometry::Vector2D *vec, DB::DBUtil::SQLType sqlType)
+UOSInt DB::DBUtil::SDBVectorLeng(Math::Geometry::Vector2D *vec, DB::SQLType sqlType)
 {
 	if (vec == 0)
 	{
 		return 4;
 	}
-	if (sqlType == DB::DBUtil::SQLType::MSSQL)
+	if (sqlType == DB::SQLType::MSSQL)
 	{
 		if (vec->GetVectorType() == Math::Geometry::Vector2D::VectorType::Point)
 		{
@@ -1686,7 +1686,7 @@ UOSInt DB::DBUtil::SDBVectorLeng(Math::Geometry::Vector2D *vec, DB::DBUtil::SQLT
 			return 0;
 		}
 	}
-	else if (sqlType == DB::DBUtil::SQLType::MySQL)
+	else if (sqlType == DB::SQLType::MySQL)
 	{
 		Math::WKTWriter writer;
 		Text::StringBuilderUTF8 sb;
@@ -1703,7 +1703,7 @@ UOSInt DB::DBUtil::SDBVectorLeng(Math::Geometry::Vector2D *vec, DB::DBUtil::SQLT
 			return 0;
 		}
 	}
-	else if (sqlType == DB::DBUtil::SQLType::PostgreSQL)
+	else if (sqlType == DB::SQLType::PostgreSQL)
 	{
 		Math::WKTWriter writer;
 		Text::StringBuilderUTF8 sb;
@@ -1726,13 +1726,13 @@ UOSInt DB::DBUtil::SDBVectorLeng(Math::Geometry::Vector2D *vec, DB::DBUtil::SQLT
 	}
 }
 
-UTF8Char *DB::DBUtil::SDBColUTF8(UTF8Char *sqlstr, const UTF8Char *colName, DB::DBUtil::SQLType sqlType)
+UTF8Char *DB::DBUtil::SDBColUTF8(UTF8Char *sqlstr, const UTF8Char *colName, DB::SQLType sqlType)
 {
 	UTF8Char *sptr;
 	UTF8Char c;
 	switch (sqlType)
 	{
-	case DB::DBUtil::SQLType::MySQL:
+	case DB::SQLType::MySQL:
 		sptr = sqlstr;
 		*sptr++ = '`';
 		while ((c = *colName++) != 0)
@@ -1750,8 +1750,8 @@ UTF8Char *DB::DBUtil::SDBColUTF8(UTF8Char *sqlstr, const UTF8Char *colName, DB::
 		*sptr++ = '`';
 		*sptr = 0;
 		return sptr;
-	case DB::DBUtil::SQLType::MSSQL:
-	case DB::DBUtil::SQLType::Access:
+	case DB::SQLType::MSSQL:
+	case DB::SQLType::Access:
 		sptr = sqlstr;
 		*sptr++ = '[';
 		while ((c = *colName++) != 0)
@@ -1775,7 +1775,7 @@ UTF8Char *DB::DBUtil::SDBColUTF8(UTF8Char *sqlstr, const UTF8Char *colName, DB::
 		*sptr++ = ']';
 		*sptr = 0;
 		return sptr;
-	case DB::DBUtil::SQLType::MDBTools:
+	case DB::SQLType::MDBTools:
 		sptr = sqlstr;
 		*sptr++ = '"';
 		while ((c = *colName++) != 0)
@@ -1793,7 +1793,7 @@ UTF8Char *DB::DBUtil::SDBColUTF8(UTF8Char *sqlstr, const UTF8Char *colName, DB::
 		*sptr++ = '"';
 		*sptr = 0;
 		return sptr;
-	case DB::DBUtil::SQLType::PostgreSQL:
+	case DB::SQLType::PostgreSQL:
 		sptr = sqlstr;
 		if (Text::StringTool::IsNonASCII(colName))
 		{
@@ -1825,22 +1825,22 @@ UTF8Char *DB::DBUtil::SDBColUTF8(UTF8Char *sqlstr, const UTF8Char *colName, DB::
 			*sptr = 0;
 		}
 		return sptr;
-	case DB::DBUtil::SQLType::Oracle:
-	case DB::DBUtil::SQLType::SQLite:
-	case DB::DBUtil::SQLType::Unknown:
-	case DB::DBUtil::SQLType::WBEM:
+	case DB::SQLType::Oracle:
+	case DB::SQLType::SQLite:
+	case DB::SQLType::Unknown:
+	case DB::SQLType::WBEM:
 	default:
 		return Text::StrConcat(sqlstr, colName);
 	}
 }
 
-UOSInt DB::DBUtil::SDBColUTF8Leng(const UTF8Char *colName, DB::DBUtil::SQLType sqlType)
+UOSInt DB::DBUtil::SDBColUTF8Leng(const UTF8Char *colName, DB::SQLType sqlType)
 {
 	UOSInt leng = 0;
 	UTF8Char c;
 	switch (sqlType)
 	{
-	case DB::DBUtil::SQLType::MySQL:
+	case DB::SQLType::MySQL:
 		while ((c = *colName++) != 0)
 		{
 			if (c == '`')
@@ -1854,8 +1854,8 @@ UOSInt DB::DBUtil::SDBColUTF8Leng(const UTF8Char *colName, DB::DBUtil::SQLType s
 		}
 		leng += 2;
 		return leng;
-	case DB::DBUtil::SQLType::MSSQL:
-	case DB::DBUtil::SQLType::Access:
+	case DB::SQLType::MSSQL:
+	case DB::SQLType::Access:
 		while ((c = *colName++) != 0)
 		{
 			if (c == ']')
@@ -1869,7 +1869,7 @@ UOSInt DB::DBUtil::SDBColUTF8Leng(const UTF8Char *colName, DB::DBUtil::SQLType s
 		}
 		leng += 2;
 		return leng;
-	case DB::DBUtil::SQLType::MDBTools:
+	case DB::SQLType::MDBTools:
 		while ((c = *colName++) != 0)
 		{
 			if (c == '\"')
@@ -1883,7 +1883,7 @@ UOSInt DB::DBUtil::SDBColUTF8Leng(const UTF8Char *colName, DB::DBUtil::SQLType s
 		}
 		leng += 2;
 		return leng;
-	case DB::DBUtil::SQLType::PostgreSQL:
+	case DB::SQLType::PostgreSQL:
 		if (Text::StringTool::IsNonASCII(colName))
 		{
 			UTF32Char c;
@@ -1908,16 +1908,16 @@ UOSInt DB::DBUtil::SDBColUTF8Leng(const UTF8Char *colName, DB::DBUtil::SQLType s
 			leng += Text::StrCharCnt(colName);
 			return leng;
 		}
-	case DB::DBUtil::SQLType::Oracle:
-	case DB::DBUtil::SQLType::SQLite:
-	case DB::DBUtil::SQLType::Unknown:
-	case DB::DBUtil::SQLType::WBEM:
+	case DB::SQLType::Oracle:
+	case DB::SQLType::SQLite:
+	case DB::SQLType::Unknown:
+	case DB::SQLType::WBEM:
 	default:
 		return Text::StrCharCnt(colName);
 	}
 }
 
-UTF8Char *DB::DBUtil::SDBColW(UTF8Char *sqlstr, const WChar *colName, DB::DBUtil::SQLType sqlType)
+UTF8Char *DB::DBUtil::SDBColW(UTF8Char *sqlstr, const WChar *colName, DB::SQLType sqlType)
 {
 	const UTF8Char *sptr = Text::StrToUTF8New(colName);
 	UTF8Char *ret = SDBColUTF8(sqlstr, sptr, sqlType);
@@ -1925,7 +1925,7 @@ UTF8Char *DB::DBUtil::SDBColW(UTF8Char *sqlstr, const WChar *colName, DB::DBUtil
 	return ret;
 }
 
-UOSInt DB::DBUtil::SDBColWLeng(const WChar *colName, DB::DBUtil::SQLType sqlType)
+UOSInt DB::DBUtil::SDBColWLeng(const WChar *colName, DB::SQLType sqlType)
 {
 	const UTF8Char *sptr = Text::StrToUTF8New(colName);
 	UOSInt ret = SDBColUTF8Leng(sptr, sqlType);
@@ -1933,9 +1933,9 @@ UOSInt DB::DBUtil::SDBColWLeng(const WChar *colName, DB::DBUtil::SQLType sqlType
 	return ret;
 }
 
-UTF8Char *DB::DBUtil::SDBTrim(UTF8Char *sqlstr, Text::CString val, DB::DBUtil::SQLType sqlType)
+UTF8Char *DB::DBUtil::SDBTrim(UTF8Char *sqlstr, Text::CString val, DB::SQLType sqlType)
 {
-	if (sqlType == DB::DBUtil::SQLType::MSSQL)
+	if (sqlType == DB::SQLType::MSSQL)
 	{
 		return Text::StrConcatC(val.ConcatTo(Text::StrConcatC(sqlstr, UTF8STRC("LTRIM(RTRIM("))), UTF8STRC("))"));
 	}
@@ -1945,9 +1945,9 @@ UTF8Char *DB::DBUtil::SDBTrim(UTF8Char *sqlstr, Text::CString val, DB::DBUtil::S
 	}
 }
 
-UOSInt DB::DBUtil::SDBTrimLeng(Text::CString val, DB::DBUtil::SQLType sqlType)
+UOSInt DB::DBUtil::SDBTrimLeng(Text::CString val, DB::SQLType sqlType)
 {
-	if (sqlType == DB::DBUtil::SQLType::MSSQL)
+	if (sqlType == DB::SQLType::MSSQL)
 	{
 		return val.leng + 14;
 	}
@@ -1957,7 +1957,7 @@ UOSInt DB::DBUtil::SDBTrimLeng(Text::CString val, DB::DBUtil::SQLType sqlType)
 	}
 }
 
-DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::DBUtil::SQLType sqlType, const UTF8Char *tName, UOSInt *colSize, UOSInt *colDP)
+DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::SQLType sqlType, const UTF8Char *tName, UOSInt *colSize, UOSInt *colDP)
 {
 	UTF8Char typeName[64];
 	UOSInt typeNameLen;
@@ -1973,7 +1973,7 @@ DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::DBUtil::SQLType sqlType, const 
 	}
 	typeNameLen = (UOSInt)(Text::StrConcat(typeName, tName) - typeName);
 
-	if (sqlType == DB::DBUtil::SQLType::MySQL)
+	if (sqlType == DB::SQLType::MySQL)
 	{
 		if (Text::StrStartsWithC(typeName, typeNameLen, UTF8STRC("varchar")))
 		{
@@ -2102,6 +2102,11 @@ DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::DBUtil::SQLType sqlType, const 
 			}
 			return DB::DBUtil::CT_DateTime;
 		}
+		else if (Text::StrStartsWithC(typeName, typeNameLen, UTF8STRC("date")))
+		{
+			*colSize = 0;
+			return DB::DBUtil::CT_Date;
+		}
 		else if (Text::StrStartsWithC(typeName, typeNameLen, UTF8STRC("double")))
 		{
 			*colSize = 8;
@@ -2115,6 +2120,11 @@ DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::DBUtil::SQLType sqlType, const 
 		else if (Text::StrStartsWithC(typeName, typeNameLen, UTF8STRC("longtext")))
 		{
 			*colSize = 0xffffffff;
+			return DB::DBUtil::CT_VarUTF32Char;
+		}
+		else if (Text::StrStartsWithC(typeName, typeNameLen, UTF8STRC("mediumtext")))
+		{
+			*colSize = 0xffffff;
 			return DB::DBUtil::CT_VarUTF32Char;
 		}
 		else if (Text::StrStartsWithC(typeName, typeNameLen, UTF8STRC("text")))
@@ -2162,6 +2172,11 @@ DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::DBUtil::SQLType sqlType, const 
 			*colSize = 3;
 			return DB::DBUtil::CT_Byte;
 		}
+		else if (Text::StrEqualsC(typeName, typeNameLen, UTF8STRC("tinyint(4)")))
+		{
+			*colSize = 4;
+			return DB::DBUtil::CT_Int16;
+		}
 		else if (Text::StrEqualsC(typeName, typeNameLen, UTF8STRC("bit(1)")))
 		{
 			*colSize = 1;
@@ -2182,7 +2197,7 @@ DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::DBUtil::SQLType sqlType, const 
 			return DB::DBUtil::CT_Unknown;
 		}
 	}
-	else if (sqlType == DB::DBUtil::SQLType::MSSQL)
+	else if (sqlType == DB::SQLType::MSSQL)
 	{
 		if (Text::StrEqualsC(typeName, typeNameLen, UTF8STRC("varchar")))
 		{
@@ -2373,7 +2388,7 @@ DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::DBUtil::SQLType sqlType, const 
 			return DB::DBUtil::CT_Unknown;
 		}
 	}
-	else if (sqlType == DB::DBUtil::SQLType::SQLite)
+	else if (sqlType == DB::SQLType::SQLite)
 	{
 		if (Text::StrEqualsICaseC(typeName, typeNameLen, UTF8STRC("INTEGER")))
 		{
@@ -2545,6 +2560,189 @@ UTF8Char *DB::DBUtil::ColTypeGetString(UTF8Char *sbuff, DB::DBUtil::ColType colT
 	default:
 		return Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("UNKNOWN(")), colSize), UTF8STRC(")"));
 	}
+}
+
+UTF8Char *DB::DBUtil::SDBCharset(UTF8Char *sqlstr, Charset charset, SQLType sqlType)
+{
+	switch (charset)
+	{
+	default:
+	case Charset::UTF8:
+		return Text::StrConcatC(sqlstr, UTF8STRC("utf8"));
+	case Charset::UTF8MB4:
+		if (sqlType == SQLType::MySQL)
+			return Text::StrConcatC(sqlstr, UTF8STRC("utf8mb4"));
+		else
+			return Text::StrConcatC(sqlstr, UTF8STRC("utf8"));
+	case Charset::Latin1:
+		return Text::StrConcatC(sqlstr, UTF8STRC("latin1"));
+	}
+}
+
+UTF8Char *DB::DBUtil::SDBCollationName(UTF8Char *sqlstr, Charset charset, Language lang, SQLType sqlType, Bool *requireAS)
+{
+	*requireAS = false;
+	sqlstr = SDBCharset(sqlstr, charset, sqlType);
+	switch (lang)
+	{
+	default:
+	case Language::General:
+		sqlstr = Text::StrConcatC(sqlstr, UTF8STRC("_general"));
+		break;
+	case Language::Swedish:
+		sqlstr = Text::StrConcatC(sqlstr, UTF8STRC("_swedish"));
+		break;
+	case Language::Unicode0900:
+		sqlstr = Text::StrConcatC(sqlstr, UTF8STRC("_0900"));
+		*requireAS = true;
+		break;
+	}
+	return sqlstr;
+}
+
+UTF8Char *DB::DBUtil::SDBCollation(UTF8Char *sqlstr, const Collation *collation, SQLType sqlType)
+{
+	if (sqlType == SQLType::MySQL)
+	{
+		Bool requireAS;
+		sqlstr = SDBCollationName(sqlstr, collation->charset, collation->lang, sqlType, &requireAS);
+		if (requireAS)
+		{
+			if (collation->accentSensitive)
+				sqlstr = Text::StrConcatC(sqlstr, UTF8STRC("_as"));
+			else
+				sqlstr = Text::StrConcatC(sqlstr, UTF8STRC("_ai"));
+		}
+		if (collation->caseSensitive)
+			sqlstr = Text::StrConcatC(sqlstr, UTF8STRC("_cs"));
+		else
+			sqlstr = Text::StrConcatC(sqlstr, UTF8STRC("_ci"));
+		return sqlstr;
+	}
+	else if (sqlType == SQLType::MSSQL)
+	{
+		Bool requireAS;
+		sqlstr = SDBCollationName(sqlstr, collation->charset, collation->lang, sqlType, &requireAS);
+		if (collation->caseSensitive)
+			sqlstr = Text::StrConcatC(sqlstr, UTF8STRC("_cs"));
+		else
+			sqlstr = Text::StrConcatC(sqlstr, UTF8STRC("_ci"));
+		if (collation->accentSensitive)
+			sqlstr = Text::StrConcatC(sqlstr, UTF8STRC("_as"));
+		else
+			sqlstr = Text::StrConcatC(sqlstr, UTF8STRC("_ai"));
+		if (collation->kanaSensitive)
+			sqlstr = Text::StrConcatC(sqlstr, UTF8STRC("_ks"));
+		if (collation->widthSensitive)
+			sqlstr = Text::StrConcatC(sqlstr, UTF8STRC("_ws"));
+		return sqlstr;
+	}
+	else
+	{
+		return sqlstr;
+	}
+}
+
+Bool DB::DBUtil::CollationParseMySQL(Text::CString collName, Collation *collation)
+{
+	UOSInt i;
+	UTF8Char sbuff[128];
+	UTF8Char *sptr;
+	if (collName.leng > 127)
+		return false;
+	sptr = collName.ConcatTo(sbuff);
+	collation->accentSensitive = false;
+	collation->caseSensitive = false;
+	collation->kanaSensitive = false;
+	collation->widthSensitive = false;
+	while (true)
+	{
+		if (Text::StrEndsWithICaseC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("_ws")))
+		{
+			collation->widthSensitive = true;
+			sptr -= 3;
+			*sptr = 0;
+			continue;
+		}
+		if (Text::StrEndsWithICaseC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("_ks")))
+		{
+			collation->kanaSensitive = true;
+			sptr -= 3;
+			*sptr = 0;
+			continue;
+		}
+		if (Text::StrEndsWithICaseC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("_cs")))
+		{
+			collation->caseSensitive = true;
+			sptr -= 3;
+			*sptr = 0;
+			continue;
+		}
+		if (Text::StrEndsWithICaseC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("_ci")))
+		{
+			collation->caseSensitive = false;
+			sptr -= 3;
+			*sptr = 0;
+			continue;
+		}
+		if (Text::StrEndsWithICaseC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("_as")))
+		{
+			collation->accentSensitive = true;
+			sptr -= 3;
+			*sptr = 0;
+			continue;
+		}
+		if (Text::StrEndsWithICaseC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("_ai")))
+		{
+			collation->accentSensitive = false;
+			sptr -= 3;
+			*sptr = 0;
+			continue;
+		}
+		break;
+	}
+	if (Text::StrStartsWithICaseC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("utf8_")))
+	{
+		i = 5;
+		collation->charset = Charset::UTF8;
+	}
+	else if (Text::StrStartsWithICaseC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("utf8mb4_")))
+	{
+		i = 8;
+		collation->charset = Charset::UTF8MB4;
+	}
+	else if (Text::StrStartsWithICaseC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("utf8mb3_")))
+	{
+		i = 8;
+		collation->charset = Charset::UTF8;
+	}
+	else if (Text::StrStartsWithICaseC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("latin1_")))
+	{
+		i = 7;
+		collation->charset = Charset::Latin1;
+	}
+	else
+	{
+		return false;
+	}
+
+	if (Text::StrEqualsICaseC(&sbuff[i], (UOSInt)(sptr - &sbuff[i]), UTF8STRC("general")))
+	{
+		collation->lang = Language::General;	
+	}
+	else if (Text::StrEqualsICaseC(&sbuff[i], (UOSInt)(sptr - &sbuff[i]), UTF8STRC("0900")))
+	{
+		collation->lang = Language::Unicode0900;	
+	}
+	else if (Text::StrEqualsICaseC(&sbuff[i], (UOSInt)(sptr - &sbuff[i]), UTF8STRC("swedish")))
+	{
+		collation->lang = Language::Swedish;	
+	}
+	else
+	{
+		return false;
+	}
+	return true;
 }
 
 UTF8Char *DB::DBUtil::DB2FieldName(UTF8Char *fieldNameBuff, const UTF8Char *dbName)

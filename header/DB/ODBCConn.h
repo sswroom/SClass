@@ -23,7 +23,7 @@ namespace DB
 			CE_CONNECT_ERR
 		} ConnError;
 	protected:
-		DBUtil::SQLType sqlType;
+		SQLType sqlType;
 	private:
 		void *envHand;
 		void *connHand;
@@ -58,7 +58,7 @@ namespace DB
 		ODBCConn(Text::CString connStr, Text::CString sourceName, IO::LogTool *log);
 		virtual ~ODBCConn();
 
-		virtual DB::DBUtil::SQLType GetSQLType() const;
+		virtual DB::SQLType GetSQLType() const;
 		virtual Bool IsAxisAware() const;
 		virtual ConnType GetConnType() const;
 		virtual Int8 GetTzQhr() const;

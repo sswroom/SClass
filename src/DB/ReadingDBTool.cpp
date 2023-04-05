@@ -63,13 +63,13 @@ DB::ReadingDBTool::ReadingDBTool(DB::DBConn *db, Bool needRelease, IO::LogTool *
 	this->axisAware = db->IsAxisAware();
 	switch (this->sqlType)
 	{
-	case DB::DBUtil::SQLType::Access:
+	case DB::SQLType::Access:
 		this->AddLogMsgC(UTF8STRC("Server type is Access"), IO::ILogHandler::LogLevel::Command);
 		break;
-	case DB::DBUtil::SQLType::MSSQL:
+	case DB::SQLType::MSSQL:
 		this->AddLogMsgC(UTF8STRC("Server type is MSSQL"), IO::ILogHandler::LogLevel::Command);
 		break;
-	case DB::DBUtil::SQLType::MySQL:
+	case DB::SQLType::MySQL:
 		this->AddLogMsgC(UTF8STRC("Server type is MySQL"), IO::ILogHandler::LogLevel::Command);
 		if (this->axisAware)
 		{
@@ -80,22 +80,22 @@ DB::ReadingDBTool::ReadingDBTool(DB::DBConn *db, Bool needRelease, IO::LogTool *
 			this->AddLogMsgC(UTF8STRC("DB is not Axis-Aware"), IO::ILogHandler::LogLevel::Command);
 		}
 		break;
-	case DB::DBUtil::SQLType::Oracle:
+	case DB::SQLType::Oracle:
 		this->AddLogMsgC(UTF8STRC("Server type is Oracle"), IO::ILogHandler::LogLevel::Command);
 		break;
-	case DB::DBUtil::SQLType::SQLite:
+	case DB::SQLType::SQLite:
 		this->AddLogMsgC(UTF8STRC("Server type is SQLite"), IO::ILogHandler::LogLevel::Command);
 		break;
-	case DB::DBUtil::SQLType::WBEM:
+	case DB::SQLType::WBEM:
 		this->AddLogMsgC(UTF8STRC("Server type is WBEM"), IO::ILogHandler::LogLevel::Command);
 		break;
-	case DB::DBUtil::SQLType::MDBTools:
+	case DB::SQLType::MDBTools:
 		this->AddLogMsgC(UTF8STRC("Server type is MDBTools"), IO::ILogHandler::LogLevel::Command);
 		break;
-	case DB::DBUtil::SQLType::PostgreSQL:
+	case DB::SQLType::PostgreSQL:
 		this->AddLogMsgC(UTF8STRC("Server type is PostgreSQL"), IO::ILogHandler::LogLevel::Command);
 		break;
-	case DB::DBUtil::SQLType::Unknown:
+	case DB::SQLType::Unknown:
 	default:
 		this->AddLogMsgC(UTF8STRC("Server type is Unknown"), IO::ILogHandler::LogLevel::Error);
 		break;
@@ -451,7 +451,7 @@ void DB::ReadingDBTool::CloseReader(DB::DBReader *r)
 	}
 }
 
-DB::DBUtil::SQLType DB::ReadingDBTool::GetSQLType()
+DB::SQLType DB::ReadingDBTool::GetSQLType()
 {
 	return this->sqlType;
 }
@@ -652,10 +652,10 @@ DB::DBReader *DB::ReadingDBTool::QueryTableData(Text::CString schemaName, Text::
 
 UOSInt DB::ReadingDBTool::QueryTableNames(Text::CString schemaName, Data::ArrayList<Text::String*> *arr)
 {
-	if (this->sqlType == DB::DBUtil::SQLType::MSSQL)
+	if (this->sqlType == DB::SQLType::MSSQL)
 	{
 		UOSInt ret = 0;
-		DB::SQLBuilder sql(DB::DBUtil::SQLType::MSSQL, this->axisAware, this->GetTzQhr());
+		DB::SQLBuilder sql(DB::SQLType::MSSQL, this->axisAware, this->GetTzQhr());
 		sql.AppendCmdC(CSTR("select TABLE_SCHEMA, TABLE_NAME from INFORMATION_SCHEMA.TABLES where TABLE_TYPE='BASE TABLE' and TABLE_SCHEMA="));
 		if (schemaName.leng == 0)
 		{
@@ -682,7 +682,7 @@ UOSInt DB::ReadingDBTool::QueryTableNames(Text::CString schemaName, Data::ArrayL
 		}
 		return ret;
 	}
-	else if (this->sqlType == DB::DBUtil::SQLType::MySQL)
+	else if (this->sqlType == DB::SQLType::MySQL)
 	{
 		if (schemaName.leng != 0)
 			return 0;
@@ -708,7 +708,7 @@ UOSInt DB::ReadingDBTool::QueryTableNames(Text::CString schemaName, Data::ArrayL
 			return 0;
 		}
 	}
-	else if (this->sqlType == DB::DBUtil::SQLType::SQLite)
+	else if (this->sqlType == DB::SQLType::SQLite)
 	{
 		if (schemaName.leng != 0)
 			return 0;
@@ -734,7 +734,7 @@ UOSInt DB::ReadingDBTool::QueryTableNames(Text::CString schemaName, Data::ArrayL
 			return 0;
 		}
 	}
-	else if (this->sqlType == DB::DBUtil::SQLType::Access || this->sqlType == DB::DBUtil::SQLType::MDBTools)
+	else if (this->sqlType == DB::SQLType::Access || this->sqlType == DB::SQLType::MDBTools)
 	{
 		if (schemaName.leng != 0)
 			return 0;
@@ -769,7 +769,7 @@ UOSInt DB::ReadingDBTool::QueryTableNames(Text::CString schemaName, Data::ArrayL
 
 UOSInt DB::ReadingDBTool::QuerySchemaNames(Data::ArrayList<Text::String *> *arr)
 {
-	if (this->sqlType == DB::DBUtil::SQLType::PostgreSQL)
+	if (this->sqlType == DB::SQLType::PostgreSQL)
 	{
 		DB::DBReader *r = this->ExecuteReader(CSTR("SELECT nspname FROM pg_catalog.pg_namespace"));
 		if (r)
@@ -793,7 +793,7 @@ UOSInt DB::ReadingDBTool::QuerySchemaNames(Data::ArrayList<Text::String *> *arr)
 			return 0;
 		}
 	}
-	else if (this->sqlType == DB::DBUtil::SQLType::MSSQL)
+	else if (this->sqlType == DB::SQLType::MSSQL)
 	{
 		DB::DBReader *r = this->ExecuteReader(CSTR("select s.name from sys.schemas s"));
 		if (r)
@@ -833,7 +833,7 @@ UOSInt DB::ReadingDBTool::GetDatabaseNames(Data::ArrayList<Text::String*> *arr)
 {
 	switch (this->sqlType)
 	{
-	case DB::DBUtil::SQLType::MSSQL:
+	case DB::SQLType::MSSQL:
 	{
 		DB::DBReader *r = this->ExecuteReader(CSTR("select name from master.dbo.sysdatabases"));
 		if (r)
@@ -857,7 +857,7 @@ UOSInt DB::ReadingDBTool::GetDatabaseNames(Data::ArrayList<Text::String*> *arr)
 			return 0;
 		}
 	}
-	case DB::DBUtil::SQLType::MySQL:
+	case DB::SQLType::MySQL:
 	{
 		DB::DBReader *r = this->ExecuteReader(CSTR("show databases"));
 		if (r)
@@ -881,7 +881,7 @@ UOSInt DB::ReadingDBTool::GetDatabaseNames(Data::ArrayList<Text::String*> *arr)
 			return 0;
 		}
 	}
-	case DB::DBUtil::SQLType::SQLite:
+	case DB::SQLType::SQLite:
 	{
 		Text::StringBuilderUTF8 sb;
 		Text::String *name = this->db->GetSourceNameObj();
@@ -895,7 +895,7 @@ UOSInt DB::ReadingDBTool::GetDatabaseNames(Data::ArrayList<Text::String*> *arr)
 		arr->Add(Text::String::New(sb.ToCString()));
 		return 1;
 	}
-	case DB::DBUtil::SQLType::PostgreSQL:
+	case DB::SQLType::PostgreSQL:
 	{
 		DB::DBReader *r = this->ExecuteReader(CSTR("SELECT datname FROM pg_database"));
 		if (r)
@@ -919,11 +919,11 @@ UOSInt DB::ReadingDBTool::GetDatabaseNames(Data::ArrayList<Text::String*> *arr)
 			return 0;
 		}
 	}
-	case DB::DBUtil::SQLType::Oracle:
-	case DB::DBUtil::SQLType::Unknown:
-	case DB::DBUtil::SQLType::Access:
-	case DB::DBUtil::SQLType::WBEM:
-	case DB::DBUtil::SQLType::MDBTools:
+	case DB::SQLType::Oracle:
+	case DB::SQLType::Unknown:
+	case DB::SQLType::Access:
+	case DB::SQLType::WBEM:
+	case DB::SQLType::MDBTools:
 	default:
 		return 0;
 	}
@@ -937,7 +937,7 @@ void DB::ReadingDBTool::ReleaseDatabaseNames(Data::ArrayList<Text::String*> *arr
 Bool DB::ReadingDBTool::ChangeDatabase(Text::CString databaseName)
 {
 	UTF8Char sbuff[256];
-	if (this->sqlType == DB::DBUtil::SQLType::MSSQL)
+	if (this->sqlType == DB::SQLType::MSSQL)
 	{
 		UTF8Char *sptr = this->DBColUTF8(Text::StrConcatC(sbuff, UTF8STRC("use ")), databaseName.v);
 		DB::DBReader *r = this->ExecuteReader(CSTRP(sbuff, sptr));
@@ -958,7 +958,7 @@ Bool DB::ReadingDBTool::ChangeDatabase(Text::CString databaseName)
 			return false;
 		}
 	}
-	else if (this->sqlType == DB::DBUtil::SQLType::MySQL)
+	else if (this->sqlType == DB::SQLType::MySQL)
 	{
 		UTF8Char *sptr = this->DBColUTF8(Text::StrConcatC(sbuff, UTF8STRC("use ")), databaseName.v);
 		DB::DBReader *r = this->ExecuteReader(CSTRP(sbuff, sptr));
@@ -979,7 +979,7 @@ Bool DB::ReadingDBTool::ChangeDatabase(Text::CString databaseName)
 			return false;
 		}
 	}
-	else if (this->sqlType == DB::DBUtil::SQLType::PostgreSQL)
+	else if (this->sqlType == DB::SQLType::PostgreSQL)
 	{
 		if (this->db && this->db->GetConnType() == DB::DBConn::CT_POSTGRESQL)
 		{
@@ -1022,11 +1022,39 @@ Text::String *DB::ReadingDBTool::GetCurrDBName()
 	return this->currDBName;
 }
 
+Bool DB::ReadingDBTool::GetDBCollation(Text::CString databaseName, Collation *collation)
+{
+	DB::DBReader *r;
+	if (this->sqlType == DB::SQLType::MySQL)
+	{
+		Bool succ = false;
+		DB::SQLBuilder sql(this->sqlType, this->axisAware, this->GetTzQhr());
+		sql.AppendCmdC(CSTR("select DEFAULT_COLLATION_NAME from information_schema.SCHEMATA where SCHEMA_NAME = "));
+		sql.AppendStrC(databaseName);
+		r = this->ExecuteReader(sql.ToCString());
+		if (r)
+		{
+			if (r->ReadNext())
+			{
+				Text::String *s = r->GetNewStr(0);
+				if (s)
+				{
+					succ = DB::DBUtil::CollationParseMySQL(s->ToCString(), collation);
+					s->Release();
+				}
+			}
+			this->CloseReader(r);
+			return succ;
+		}
+	}
+	return false;
+}
+
 UOSInt DB::ReadingDBTool::GetVariables(Data::ArrayList<Data::TwinItem<Text::String*, Text::String*>> *vars)
 {
 	UOSInt ret = 0;
 	DB::DBReader *r;
-	if (this->sqlType == DB::DBUtil::SQLType::MySQL)
+	if (this->sqlType == DB::SQLType::MySQL)
 	{
 		r = this->ExecuteReader(CSTR("show variables"));
 		if (r)
@@ -1039,7 +1067,7 @@ UOSInt DB::ReadingDBTool::GetVariables(Data::ArrayList<Data::TwinItem<Text::Stri
 			this->CloseReader(r);
 		}
 	}
-	else if (this->sqlType == DB::DBUtil::SQLType::MSSQL)
+	else if (this->sqlType == DB::SQLType::MSSQL)
 	{
 		r = this->ExecuteReader(CSTR("select @@CONNECTIONS, @@CPU_BUSY, @@IDLE, @@IO_BUSY, @@PACKET_ERRORS, @@PACK_RECEIVED, @@PACK_SENT, @@TIMETICKS, @@TOTAL_ERRORS, @@TOTAL_READ, @@TOTAL_WRITE, @@DATEFIRST, @@DBTS, @@LANGID, @@LANGUAGE, @@LOCK_TIMEOUT, @@MAX_CONNECTIONS, @@MAX_PRECISION, @@NESTLEVEL, @@OPTIONS, @@REMSERVER, @@SERVERNAME, @@SERVICENAME, @@SPID, @@TEXTSIZE, @@VERSION"));
 		if (r)
@@ -1077,7 +1105,7 @@ UOSInt DB::ReadingDBTool::GetVariables(Data::ArrayList<Data::TwinItem<Text::Stri
 			this->CloseReader(r);
 		}
 	}
-	else if (this->sqlType == DB::DBUtil::SQLType::PostgreSQL)
+	else if (this->sqlType == DB::SQLType::PostgreSQL)
 	{
 		r = this->ExecuteReader(CSTR("select name, setting from pg_Settings"));
 		if (r)
@@ -1111,7 +1139,7 @@ UOSInt DB::ReadingDBTool::GetConnectionInfo(Data::ArrayList<ConnectionInfo *> *c
 	UOSInt ret = 0;
 	ConnectionInfo *conn;
 	DB::DBReader *r;
-	if (this->sqlType == DB::DBUtil::SQLType::MySQL)
+	if (this->sqlType == DB::SQLType::MySQL)
 	{
 		r = this->ExecuteReader(CSTR("show processlist"));
 		if (r)
@@ -1133,7 +1161,7 @@ UOSInt DB::ReadingDBTool::GetConnectionInfo(Data::ArrayList<ConnectionInfo *> *c
 			this->CloseReader(r);
 		}
 	}
-	else if (this->sqlType == DB::DBUtil::SQLType::MSSQL)
+	else if (this->sqlType == DB::SQLType::MSSQL)
 	{
 		r = this->ExecuteReader(CSTR("exec sp_who"));
 		if (r)
@@ -1155,7 +1183,7 @@ UOSInt DB::ReadingDBTool::GetConnectionInfo(Data::ArrayList<ConnectionInfo *> *c
 			this->CloseReader(r);
 		}
 	}
-	else if (this->sqlType == DB::DBUtil::SQLType::PostgreSQL)
+	else if (this->sqlType == DB::SQLType::PostgreSQL)
 	{
 		r = this->ExecuteReader(CSTR("select pid, state, usename, client_addr, datname, wait_event, query from pg_stat_activity"));
 		if (r)
@@ -1200,11 +1228,11 @@ void DB::ReadingDBTool::FreeConnectionInfo(Data::ArrayList<ConnectionInfo *> *co
 
 UOSInt DB::ReadingDBTool::SplitSQL(UTF8Char **outStrs, UOSInt maxCnt, UTF8Char *oriStr)
 {
-	if (this->sqlType == DB::DBUtil::SQLType::MySQL)
+	if (this->sqlType == DB::SQLType::MySQL)
 	{
 		return SplitMySQL(outStrs, maxCnt, oriStr);
 	}
-	else if (this->sqlType == DB::DBUtil::SQLType::MSSQL)
+	else if (this->sqlType == DB::SQLType::MSSQL)
 	{
 		return SplitMSSQL(outStrs, maxCnt, oriStr);
 	}

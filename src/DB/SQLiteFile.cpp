@@ -69,9 +69,9 @@ DB::SQLiteFile::~SQLiteFile()
 	SDEL_STRING(this->lastErrMsg);
 }
 
-DB::DBUtil::SQLType DB::SQLiteFile::GetSQLType() const
+DB::SQLType DB::SQLiteFile::GetSQLType() const
 {
-	return DB::DBUtil::SQLType::SQLite;
+	return DB::SQLType::SQLite;
 }
 
 DB::DBConn::ConnType DB::SQLiteFile::GetConnType() const

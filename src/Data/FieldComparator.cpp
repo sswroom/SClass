@@ -61,7 +61,7 @@ Bool Data::FieldComparator::IsValid()
 	return this->fieldNames.GetCount() > 0;
 }
 
-Bool Data::FieldComparator::ToOrderClause(Text::StringBuilderUTF8 *sb, DB::DBUtil::SQLType sqlType)
+Bool Data::FieldComparator::ToOrderClause(Text::StringBuilderUTF8 *sb, DB::SQLType sqlType)
 {
 	if (this->fieldNames.GetCount() == 0)
 	{

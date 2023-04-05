@@ -45,9 +45,9 @@ DB::PostgreSQLConn::~PostgreSQLConn()
 	SDEL_STRING(this->pwd);
 }
 
-DB::DBUtil::SQLType DB::PostgreSQLConn::GetSQLType() const
+DB::SQLType DB::PostgreSQLConn::GetSQLType() const
 {
-	return DB::DBUtil::SQLType::PostgreSQL;
+	return DB::SQLType::PostgreSQL;
 }
 
 DB::DBConn::ConnType DB::PostgreSQLConn::GetConnType() const
@@ -157,7 +157,7 @@ UOSInt DB::PostgreSQLConn::QueryTableNames(Text::CString schemaName, Data::Array
 {
 	if (schemaName.leng == 0)
 		schemaName = CSTR("public");
-	DB::SQLBuilder sql(DB::DBUtil::SQLType::PostgreSQL, false, this->tzQhr);
+	DB::SQLBuilder sql(DB::SQLType::PostgreSQL, false, this->tzQhr);
 	sql.AppendCmdC(CSTR("select tablename from pg_catalog.pg_tables where schemaname = "));
 	sql.AppendStrC(schemaName);
 	UOSInt initCnt = names->GetCount();
@@ -196,7 +196,7 @@ DB::DBReader *DB::PostgreSQLConn::QueryTableData(Text::CString schemaName, Text:
 			{
 				sb.AppendUTF8Char(',');
 			}
-			sptr = DB::DBUtil::SDBColUTF8(sbuff, columnNames->GetItem(i)->v, DB::DBUtil::SQLType::PostgreSQL);
+			sptr = DB::DBUtil::SDBColUTF8(sbuff, columnNames->GetItem(i)->v, DB::SQLType::PostgreSQL);
 			sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 			i++;
 		}
@@ -208,12 +208,12 @@ DB::DBReader *DB::PostgreSQLConn::QueryTableData(Text::CString schemaName, Text:
 		j = Text::StrIndexOfChar(&tableName.v[i], '.');
 		if (j == INVALID_INDEX)
 		{
-			sptr = DB::DBUtil::SDBColUTF8(sbuff, &tableName.v[i], DB::DBUtil::SQLType::PostgreSQL);
+			sptr = DB::DBUtil::SDBColUTF8(sbuff, &tableName.v[i], DB::SQLType::PostgreSQL);
 			sb.AppendP(sbuff, sptr);
 			break;
 		}
 		sptr = Text::StrConcatC(sbuff, &tableName.v[i], (UOSInt)j);
-		sptr2 = DB::DBUtil::SDBColUTF8(sptr + 1, sbuff, DB::DBUtil::SQLType::PostgreSQL);
+		sptr2 = DB::DBUtil::SDBColUTF8(sptr + 1, sbuff, DB::SQLType::PostgreSQL);
 		sb.AppendP(sptr + 1, sptr2);
 		sb.AppendUTF8Char('.');
 		i += j + 1;
@@ -221,7 +221,7 @@ DB::DBReader *DB::PostgreSQLConn::QueryTableData(Text::CString schemaName, Text:
 	if (condition)
 	{
 		sb.AppendC(UTF8STRC(" where "));
-		condition->ToWhereClause(&sb, DB::DBUtil::SQLType::PostgreSQL, 0, 100, 0);
+		condition->ToWhereClause(&sb, DB::SQLType::PostgreSQL, 0, 100, 0);
 	}
 	if (ordering.leng > 0)
 	{

@@ -30,7 +30,7 @@ namespace DB
 		void EndTrans(Bool toCommit);
 		Int32 GetLastIdentity32();
 		Int64 GetLastIdentity64();
-		Bool CreateDatabase(Text::CString databaseName);
+		Bool CreateDatabase(Text::CString databaseName, const Collation *collation);
 		Bool DeleteDatabase(Text::CString databaseName);
 		Bool CreateSchema(Text::CString schemaName);
 		Bool DeleteSchema(Text::CString schemaName);

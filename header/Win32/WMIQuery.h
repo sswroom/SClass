@@ -21,7 +21,7 @@ namespace Win32
 
 		Bool IsError();
 
-		virtual DB::DBUtil::SQLType GetSQLType() const;
+		virtual DB::SQLType GetSQLType() const;
 		virtual ConnType GetConnType() const;
 		virtual Int8 GetTzQhr() const;
 		virtual void ForceTz(Int8 tzQhr);

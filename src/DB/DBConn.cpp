@@ -34,12 +34,12 @@ DB::TableDef *DB::DBConn::GetTableDef(Text::CString schemaName, Text::CString ta
 	UTF8Char *ptr;
 	switch (this->GetSQLType())
 	{
-	case DB::DBUtil::SQLType::MySQL:
+	case DB::SQLType::MySQL:
 	{
 		OSInt i = 4;
 		DB::DBReader *r = 0;
 		ptr = Text::StrConcatC(buff, UTF8STRC("show table status where Name = "));
-		ptr = DB::DBUtil::SDBStrUTF8(ptr, tableName.v, DB::DBUtil::SQLType::MySQL);
+		ptr = DB::DBUtil::SDBStrUTF8(ptr, tableName.v, DB::SQLType::MySQL);
 
 		while (i-- > 0 && r == 0)
 		{
@@ -55,7 +55,10 @@ DB::TableDef *DB::DBConn::GetTableDef(Text::CString schemaName, Text::CString ta
 			ptr = r->GetStr(0, buff, sizeof(buff));
 			NEW_CLASS(tab, DB::TableDef(CSTR_NULL, CSTRP(buff, ptr)));
 			ptr = r->GetStr(1, buff, sizeof(buff));
-			tab->SetEngine(CSTRP(buff, ptr));
+			if (ptr)
+			{
+				tab->SetEngine(CSTRP(buff, ptr));
+			}
 			if (r->GetStr(17, buff, sizeof(buff)))
 			{
 				tab->SetComments(buff);
@@ -72,7 +75,7 @@ DB::TableDef *DB::DBConn::GetTableDef(Text::CString schemaName, Text::CString ta
 			{
 				tab->SetAttr(0);
 			}
-			tab->SetSQLType(DB::DBUtil::SQLType::MySQL);
+			tab->SetSQLType(DB::SQLType::MySQL);
 			tab->SetCharset(CSTR_NULL);
 			this->CloseReader(r);
 		}
@@ -83,7 +86,7 @@ DB::TableDef *DB::DBConn::GetTableDef(Text::CString schemaName, Text::CString ta
 		}
 		DB::ColDef *col;
 		ptr = Text::StrConcatC(buff, UTF8STRC("desc "));
-		ptr = DB::DBUtil::SDBColUTF8(ptr, tableName.v, DB::DBUtil::SQLType::MySQL);
+		ptr = DB::DBUtil::SDBColUTF8(ptr, tableName.v, DB::SQLType::MySQL);
 		r = this->ExecuteReader(CSTRP(buff, ptr));
 		if (r)
 		{
@@ -123,7 +126,7 @@ DB::TableDef *DB::DBConn::GetTableDef(Text::CString schemaName, Text::CString ta
 				UOSInt colSize = 0;
 				UOSInt colDP = 0;
 				col->SetNativeType(CSTRP(buff, ptr));
-				col->SetColType(DB::DBUtil::ParseColType(DB::DBUtil::SQLType::MySQL, buff, &colSize, &colDP));
+				col->SetColType(DB::DBUtil::ParseColType(DB::SQLType::MySQL, buff, &colSize, &colDP));
 				col->SetColSize(colSize);
 				col->SetColDP(colDP);
 				if (col->GetColType() == DB::DBUtil::CT_DateTime)
@@ -132,6 +135,11 @@ DB::TableDef *DB::DBConn::GetTableDef(Text::CString schemaName, Text::CString ta
 					{
 						col->SetNotNull(false);
 					}
+					Text::String *defVal = col->GetDefVal();
+					if (defVal && defVal->StartsWith(UTF8STRC("0000-00-00 00:00:00")))
+					{
+						col->SetDefVal(0);
+					}
 				}
 				tab->AddCol(col);
 			}
@@ -139,20 +147,20 @@ DB::TableDef *DB::DBConn::GetTableDef(Text::CString schemaName, Text::CString ta
 		}
 		return tab;
 	}
-	case DB::DBUtil::SQLType::Oracle:
+	case DB::SQLType::Oracle:
 	{
 		return 0;
 	}
-	case DB::DBUtil::SQLType::MSSQL:
+	case DB::SQLType::MSSQL:
 	{
 		Int32 i = 4;
 		DB::DBReader *r = 0;
 		ptr = Text::StrConcatC(buff, UTF8STRC("exec sp_columns "));
-		ptr = DB::DBUtil::SDBStrUTF8(ptr, tableName.v, DB::DBUtil::SQLType::MSSQL);
+		ptr = DB::DBUtil::SDBStrUTF8(ptr, tableName.v, DB::SQLType::MSSQL);
 		if (schemaName.leng != 0)
 		{
 			ptr = Text::StrConcatC(ptr, UTF8STRC(", "));
-			ptr = DB::DBUtil::SDBStrUTF8(ptr, schemaName.v, DB::DBUtil::SQLType::MSSQL);
+			ptr = DB::DBUtil::SDBStrUTF8(ptr, schemaName.v, DB::SQLType::MSSQL);
 		}
 		while (i-- > 0 && r == 0)
 		{
@@ -167,7 +175,7 @@ DB::TableDef *DB::DBConn::GetTableDef(Text::CString schemaName, Text::CString ta
 		tab->SetComments(0);
 		tab->SetAttr(0);
 		tab->SetCharset(CSTR_NULL);
-		tab->SetSQLType(DB::DBUtil::SQLType::MSSQL);
+		tab->SetSQLType(DB::SQLType::MSSQL);
 
 		DB::ColDef *col;
 		while (r->ReadNext())
@@ -198,7 +206,7 @@ DB::TableDef *DB::DBConn::GetTableDef(Text::CString schemaName, Text::CString ta
 				*ptr = 0;
 			}
 			col->SetNativeType(CSTRP(buff, ptr));
-			col->SetColType(DB::DBUtil::ParseColType(DB::DBUtil::SQLType::MSSQL, buff, &colSize, &colDP));
+			col->SetColType(DB::DBUtil::ParseColType(DB::SQLType::MSSQL, buff, &colSize, &colDP));
 			col->SetColSize(colSize);
 			col->SetColDP(colDP);
 			tab->AddCol(col);
@@ -244,13 +252,13 @@ DB::TableDef *DB::DBConn::GetTableDef(Text::CString schemaName, Text::CString ta
 
 		return tab;
 	}
-	case DB::DBUtil::SQLType::Access:
+	case DB::SQLType::Access:
 	{
 		return 0;
 	}
-	case DB::DBUtil::SQLType::SQLite:
+	case DB::SQLType::SQLite:
 	{
-		DB::SQLBuilder sql(DB::DBUtil::SQLType::SQLite, false, this->GetTzQhr());
+		DB::SQLBuilder sql(DB::SQLType::SQLite, false, this->GetTzQhr());
 		sql.AppendCmdC(CSTR("select sql from sqlite_master where type='table' and name="));
 		sql.AppendStrC(tableName);
 		DB::DBReader *r = this->ExecuteReader(sql.ToCString());
@@ -266,7 +274,7 @@ DB::TableDef *DB::DBConn::GetTableDef(Text::CString schemaName, Text::CString ta
 		this->CloseReader(r);
 
 		DB::TableDef *tab = 0;
-		DB::SQL::SQLCommand *cmd = DB::SQL::SQLCommand::Parse(sb.ToString(), DB::DBUtil::SQLType::SQLite);
+		DB::SQL::SQLCommand *cmd = DB::SQL::SQLCommand::Parse(sb.ToString(), DB::SQLType::SQLite);
 		if (cmd)
 		{
 			if (cmd->GetCommandType() == DB::SQL::SQLCommand::CT_CREATE_TABLE)
@@ -277,9 +285,9 @@ DB::TableDef *DB::DBConn::GetTableDef(Text::CString schemaName, Text::CString ta
 		}
 		return tab;
 	}
-	case DB::DBUtil::SQLType::PostgreSQL:
+	case DB::SQLType::PostgreSQL:
 	{
-		DB::SQLBuilder sql(DB::DBUtil::SQLType::PostgreSQL, false, this->GetTzQhr());
+		DB::SQLBuilder sql(DB::SQLType::PostgreSQL, false, this->GetTzQhr());
 		sql.AppendCmdC(CSTR("select column_name, column_default, is_nullable, udt_name, character_maximum_length, datetime_precision, is_identity, identity_generation, identity_start, identity_increment, udt_schema from information_schema.columns where table_name="));
 		sql.AppendStrC(tableName);
 		sql.AppendCmdC(CSTR(" and table_schema = "));
@@ -687,9 +695,9 @@ DB::TableDef *DB::DBConn::GetTableDef(Text::CString schemaName, Text::CString ta
 		SDEL_STRING(geometrySchema);
 		return tab;
 	}
-	case DB::DBUtil::SQLType::WBEM:
-	case DB::DBUtil::SQLType::MDBTools:
-	case DB::DBUtil::SQLType::Unknown:
+	case DB::SQLType::WBEM:
+	case DB::SQLType::MDBTools:
+	case DB::SQLType::Unknown:
 	default:
 	{
 		return 0;

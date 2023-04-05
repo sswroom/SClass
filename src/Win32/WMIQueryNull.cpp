@@ -34,9 +34,9 @@ Bool Win32::WMIQuery::IsError()
 	return this->pService == 0;
 }
 
-DB::DBUtil::SQLType Win32::WMIQuery::GetSQLType() const
+DB::SQLType Win32::WMIQuery::GetSQLType() const
 {
-	return DB::DBUtil::SQLType::Unknown;
+	return DB::SQLType::Unknown;
 }
 
 DB::DBConn::ConnType Win32::WMIQuery::GetConnType() const

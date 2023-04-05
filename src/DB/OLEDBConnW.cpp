@@ -18,26 +18,26 @@ extern "C"
 #include <msdasc.h>
 
 DB::OLEDBConn::ProviderInfo DB::OLEDBConn::providerInfo[] = {
-	{"ADsDSOObject",                     "OLE DB Provider for Microsoft Directory Services",     DB::DBUtil::SQLType::Unknown},
-	{"EMPOLEDBVS71",                     "VSEE Versioning Enlistment Manager Proxy Data Source", DB::DBUtil::SQLType::Unknown},
-	{"ESRI.GeoDB.OLEDB",				 "Esri GeoDatabase OLE DB Provider",                     DB::DBUtil::SQLType::Unknown},
-	{"MediaCatalogDB",                   "MediaCatalogDB OLE DB Provider",                       DB::DBUtil::SQLType::Unknown},
-	{"MediaCatalogMergedDB",             "MediaCatalogMergedDB OLE DB Provider",                 DB::DBUtil::SQLType::Unknown},
-	{"MediaCatalogWebDB",                "MediaCatalogWebDB OLE DB Provider",                    DB::DBUtil::SQLType::Unknown},
-	{"Microsoft.SQLSERVER.CE.OLEDB.3.0", "SQL Server Compact OLE DB Provider",                   DB::DBUtil::SQLType::MSSQL},
-	{"Microsoft.SQLSERVER.CE.OLEDB.3.5", "SQL Server Compact OLE DB Provider",                   DB::DBUtil::SQLType::MSSQL},
-	{"Microsoft.SQLSERVER.CE.OLEDB.4.0", "SQL Server Compact OLE DB Provider",                   DB::DBUtil::SQLType::MSSQL},
-	{"Microsoft.Jet.OLEDB.4.0",          "Microsoft Jet 4.0 OLE DB Provider",                    DB::DBUtil::SQLType::Access},
-	{"MSDAORA",                          "Microsoft OLE DB Provider for Oracle",                 DB::DBUtil::SQLType::Oracle},
-	{"MSDAOSP",                          "Microsoft OLE DB Simple Provider",                     DB::DBUtil::SQLType::Unknown},
-	{"MSDataShape",                      "MSDataShape",                                          DB::DBUtil::SQLType::Unknown},
-	{"MSDMine",                          "Microsoft OLE DB Provider for Data Mining Services",   DB::DBUtil::SQLType::Unknown},
-	{"MSIDXS",                           "Microsoft OLE DB Provider for Indexing Services",      DB::DBUtil::SQLType::Unknown},
-	{"MSOLAP",                           "Microsoft OLE DB Provider for OLAP Services 8.0",      DB::DBUtil::SQLType::Unknown},
-	{"SQLNCLI",                          "SQL Native Client",                                    DB::DBUtil::SQLType::MSSQL},
-	{"SQLNCLI10",                        "SQL Server Native Client 10.0",                        DB::DBUtil::SQLType::MSSQL},
-	{"SQLNCLI11",                        "SQL Server Native Client 11.0",                        DB::DBUtil::SQLType::MSSQL},
-	{"SQLOLEDB",                         "Microsoft OLE DB Provider for SQL Server",             DB::DBUtil::SQLType::MSSQL}
+	{"ADsDSOObject",                     "OLE DB Provider for Microsoft Directory Services",     DB::SQLType::Unknown},
+	{"EMPOLEDBVS71",                     "VSEE Versioning Enlistment Manager Proxy Data Source", DB::SQLType::Unknown},
+	{"ESRI.GeoDB.OLEDB",				 "Esri GeoDatabase OLE DB Provider",                     DB::SQLType::Unknown},
+	{"MediaCatalogDB",                   "MediaCatalogDB OLE DB Provider",                       DB::SQLType::Unknown},
+	{"MediaCatalogMergedDB",             "MediaCatalogMergedDB OLE DB Provider",                 DB::SQLType::Unknown},
+	{"MediaCatalogWebDB",                "MediaCatalogWebDB OLE DB Provider",                    DB::SQLType::Unknown},
+	{"Microsoft.SQLSERVER.CE.OLEDB.3.0", "SQL Server Compact OLE DB Provider",                   DB::SQLType::MSSQL},
+	{"Microsoft.SQLSERVER.CE.OLEDB.3.5", "SQL Server Compact OLE DB Provider",                   DB::SQLType::MSSQL},
+	{"Microsoft.SQLSERVER.CE.OLEDB.4.0", "SQL Server Compact OLE DB Provider",                   DB::SQLType::MSSQL},
+	{"Microsoft.Jet.OLEDB.4.0",          "Microsoft Jet 4.0 OLE DB Provider",                    DB::SQLType::Access},
+	{"MSDAORA",                          "Microsoft OLE DB Provider for Oracle",                 DB::SQLType::Oracle},
+	{"MSDAOSP",                          "Microsoft OLE DB Simple Provider",                     DB::SQLType::Unknown},
+	{"MSDataShape",                      "MSDataShape",                                          DB::SQLType::Unknown},
+	{"MSDMine",                          "Microsoft OLE DB Provider for Data Mining Services",   DB::SQLType::Unknown},
+	{"MSIDXS",                           "Microsoft OLE DB Provider for Indexing Services",      DB::SQLType::Unknown},
+	{"MSOLAP",                           "Microsoft OLE DB Provider for OLAP Services 8.0",      DB::SQLType::Unknown},
+	{"SQLNCLI",                          "SQL Native Client",                                    DB::SQLType::MSSQL},
+	{"SQLNCLI10",                        "SQL Server Native Client 10.0",                        DB::SQLType::MSSQL},
+	{"SQLNCLI11",                        "SQL Server Native Client 11.0",                        DB::SQLType::MSSQL},
+	{"SQLOLEDB",                         "Microsoft OLE DB Provider for SQL Server",             DB::SQLType::MSSQL}
 };
 
 struct DB::OLEDBConn::ClassData
@@ -206,7 +206,7 @@ DB::OLEDBConn::~OLEDBConn()
 	MemFree(data);
 }
 
-DB::DBUtil::SQLType DB::OLEDBConn::GetSQLType() const
+DB::SQLType DB::OLEDBConn::GetSQLType() const
 {
 	ClassData *data = this->clsData;
 	if (data->connStr)
@@ -226,28 +226,28 @@ DB::DBUtil::SQLType DB::OLEDBConn::GetSQLType() const
 			}
 			if (sb.EqualsICase(UTF8STRC("SQLOLEDB")))
 			{
-				return DB::DBUtil::SQLType::MSSQL;
+				return DB::SQLType::MSSQL;
 			}
 			else if (sb.EqualsICase(UTF8STRC("Microsoft.SQLSERVER.CE.OLEDB.3.0")))
 			{
-				return DB::DBUtil::SQLType::MSSQL;
+				return DB::SQLType::MSSQL;
 			}
 			else if (sb.EqualsICase(UTF8STRC("Microsoft.SQLSERVER.CE.OLEDB.3.5")))
 			{
-				return DB::DBUtil::SQLType::MSSQL;
+				return DB::SQLType::MSSQL;
 			}
 			else if (sb.EqualsICase(UTF8STRC("Microsoft.SQLSERVER.CE.OLEDB.4.0")))
 			{
-				return DB::DBUtil::SQLType::MSSQL;
+				return DB::SQLType::MSSQL;
 			}
 			else if (sb.EqualsICase(UTF8STRC("Microsoft.Jet.OLEDB.4.0")))
 			{
-				return DB::DBUtil::SQLType::Access;
+				return DB::SQLType::Access;
 			}
-			return DB::DBUtil::SQLType::Unknown;
+			return DB::SQLType::Unknown;
 		}
 	}
-	return DB::DBUtil::SQLType::Unknown;
+	return DB::SQLType::Unknown;
 }
 
 DB::DBConn::ConnType DB::OLEDBConn::GetConnType() const

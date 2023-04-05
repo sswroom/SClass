@@ -56,57 +56,57 @@ void DB::ODBCConn::UpdateConnInfo()
 //		Text::StrToLowerC(buff, buff);
 		if (Text::StrStartsWithC(buff, (UOSInt)buffSize, UTF8STRC("myodbc")))
 		{
-			this->sqlType = DB::DBUtil::SQLType::MySQL;
+			this->sqlType = DB::SQLType::MySQL;
 		}
 		else if (Text::StrStartsWithC(buff, (UOSInt)buffSize, UTF8STRC("libmyodbc")))
 		{
-			this->sqlType = DB::DBUtil::SQLType::MySQL;
+			this->sqlType = DB::SQLType::MySQL;
 		}
 		else if (Text::StrStartsWithC(buff, (UOSInt)buffSize, UTF8STRC("SQLSVR")))
 		{
-			this->sqlType = DB::DBUtil::SQLType::MSSQL;
+			this->sqlType = DB::SQLType::MSSQL;
 		}
 		else if (Text::StrStartsWithC(buff, (UOSInt)buffSize, UTF8STRC("SQLSRV")))
 		{
-			this->sqlType = DB::DBUtil::SQLType::MSSQL;
+			this->sqlType = DB::SQLType::MSSQL;
 		}
 		else if (Text::StrStartsWithC(buff, (UOSInt)buffSize, UTF8STRC("SQORA")))
 		{
-			this->sqlType = DB::DBUtil::SQLType::Oracle;
+			this->sqlType = DB::SQLType::Oracle;
 		}
 		else if (Text::StrStartsWithICaseC(buff, (UOSInt)buffSize, UTF8STRC("sqlncli")))
 		{
-			this->sqlType = DB::DBUtil::SQLType::MSSQL;
+			this->sqlType = DB::SQLType::MSSQL;
 		}
 		else if (Text::StrIndexOfC(buff, (UOSInt)buffSize, UTF8STRC("sqlite")) != INVALID_INDEX)
 		{
-			this->sqlType = DB::DBUtil::SQLType::SQLite;
+			this->sqlType = DB::SQLType::SQLite;
 		}
 		else if (Text::StrIndexOfC(buff, (UOSInt)buffSize, UTF8STRC("odbcjt32")) != INVALID_INDEX)
 		{
-			this->sqlType = DB::DBUtil::SQLType::Access;
+			this->sqlType = DB::SQLType::Access;
 		}
 		else if (Text::StrStartsWithC(buff, (UOSInt)buffSize, UTF8STRC("ACEODBC")))
 		{
-			this->sqlType = DB::DBUtil::SQLType::Access;
+			this->sqlType = DB::SQLType::Access;
 		}
 		else if (Text::StrIndexOfC(buff, (UOSInt)buffSize, UTF8STRC("msodbcsql")) != INVALID_INDEX)
 		{
-			this->sqlType = DB::DBUtil::SQLType::MSSQL;
+			this->sqlType = DB::SQLType::MSSQL;
 		}
 		else
 		{
 		}
 	}
-	if (this->sqlType == DB::DBUtil::SQLType::Unknown)
+	if (this->sqlType == DB::SQLType::Unknown)
 	{
 		if (this->connStr->IndexOfICase(UTF8STRC("DRIVER=MDBTOOLS;")) != INVALID_INDEX)
 		{
-			this->sqlType = DB::DBUtil::SQLType::MDBTools;
+			this->sqlType = DB::SQLType::MDBTools;
 		}
 	}
 
-	if (this->sqlType == DB::DBUtil::SQLType::MSSQL)
+	if (this->sqlType == DB::SQLType::MSSQL)
 	{
 		DB::DBReader *r = this->ExecuteReader(CSTR("select getdate(), GETUTCDATE()"));
 		if (r)
@@ -118,7 +118,7 @@ void DB::ODBCConn::UpdateConnInfo()
 			this->tzQhr = (Int8)((ts1.inst.sec - ts2.inst.sec) / 900);
 		}
 	}
-	else if (this->sqlType == DB::DBUtil::SQLType::MySQL)
+	else if (this->sqlType == DB::SQLType::MySQL)
 	{
 		DB::DBReader *r = this->ExecuteReader(CSTR("SELECT VERSION()"));
 		if (r)
@@ -224,7 +224,7 @@ Bool DB::ODBCConn::Connect(Text::String *dsn, Text::String *uid, Text::String *p
 		this->connErr = CE_CONNECT_ERR;
 		return false;
 	}
-	this->sqlType = DB::DBUtil::SQLType::Unknown;
+	this->sqlType = DB::SQLType::Unknown;
 	envHand = hand;
 	connHand = hConn;
 	this->lastDataError = DE_NO_ERROR;
@@ -332,7 +332,7 @@ Bool DB::ODBCConn::Connect(Text::String *connStr)
 		this->connErr = CE_CONNECT_ERR;
 		return false;
 	}
-	this->sqlType = DB::DBUtil::SQLType::Unknown;
+	this->sqlType = DB::SQLType::Unknown;
 	envHand = hand;
 	connHand = hConn;
 	this->lastDataError = DE_NO_ERROR;
@@ -445,7 +445,7 @@ DB::ODBCConn::~ODBCConn()
 	SDEL_STRING(this->connStr);
 }
 
-DB::DBUtil::SQLType DB::ODBCConn::GetSQLType() const
+DB::SQLType DB::ODBCConn::GetSQLType() const
 {
 	return sqlType;
 }
@@ -855,7 +855,7 @@ void *DB::ODBCConn::BeginTransaction()
 	SQLRETURN ret = SQLSetConnectAttr(this->connHand, SQL_ATTR_AUTOCOMMIT, &mode, sizeof(mode));
 	if (ret == SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO)
 	{
-		if (this->sqlType == DB::DBUtil::SQLType::MSSQL)
+		if (this->sqlType == DB::SQLType::MSSQL)
 		{
 			this->ExecuteNonQuery(CSTR("BEGIN TRANSACTION"));
 		}
@@ -873,7 +873,7 @@ void DB::ODBCConn::Commit(void *tran)
 	if (!isTran)
 		return;
 
-	if (this->sqlType == DB::DBUtil::SQLType::MSSQL)
+	if (this->sqlType == DB::SQLType::MSSQL)
 	{
 		this->ExecuteNonQuery(CSTR("COMMIT"));
 	}
@@ -889,7 +889,7 @@ void DB::ODBCConn::Rollback(void *tran)
 	if (!isTran)
 		return;
 
-	if (this->sqlType == DB::DBUtil::SQLType::MSSQL)
+	if (this->sqlType == DB::SQLType::MSSQL)
 	{
 		this->ExecuteNonQuery(CSTR("ROLLBACK"));
 	}
@@ -923,15 +923,15 @@ void DB::ODBCConn::SetTraceFile(const WChar *fileName)
 
 UTF8Char *DB::ODBCConn::ShowTablesCmd(UTF8Char *sqlstr)
 {
-	if (this->sqlType == DB::DBUtil::SQLType::MySQL)
+	if (this->sqlType == DB::SQLType::MySQL)
 		return Text::StrConcatC(sqlstr, UTF8STRC("show Tables"));
-	else if (this->sqlType == DB::DBUtil::SQLType::MSSQL)
+	else if (this->sqlType == DB::SQLType::MSSQL)
 		return Text::StrConcatC(sqlstr, UTF8STRC("select TABLE_NAME from user_tables"));
-	else if (this->sqlType == DB::DBUtil::SQLType::Oracle)
+	else if (this->sqlType == DB::SQLType::Oracle)
 		return Text::StrConcatC(sqlstr, UTF8STRC("select table_name from user_tables"));
-	else if (this->sqlType == DB::DBUtil::SQLType::Access)
+	else if (this->sqlType == DB::SQLType::Access)
 		return Text::StrConcatC(sqlstr, UTF8STRC("select name from MSysObjects where type = 1"));
-	else if (this->sqlType == DB::DBUtil::SQLType::MDBTools)
+	else if (this->sqlType == DB::SQLType::MDBTools)
 		return Text::StrConcatC(sqlstr, UTF8STRC("select name from MSysObjects where type = 1"));
 	else
 		return Text::StrConcatC(sqlstr, UTF8STRC("show Tables"));
@@ -1013,7 +1013,7 @@ DB::DBReader *DB::ODBCConn::QueryTableData(Text::CString schemaName, Text::CStri
 	UOSInt j;
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("select "));
-	if (this->sqlType == DB::DBUtil::SQLType::MSSQL || this->sqlType == DB::DBUtil::SQLType::Access)
+	if (this->sqlType == DB::SQLType::MSSQL || this->sqlType == DB::SQLType::Access)
 	{
 		if (maxCnt > 0)
 		{
@@ -1050,7 +1050,7 @@ DB::DBReader *DB::ODBCConn::QueryTableData(Text::CString schemaName, Text::CStri
 	}
 	sptr = DB::DBUtil::SDBColUTF8(sbuff, tableName.v, this->sqlType);
 	sb.AppendP(sbuff, sptr);
-	if (this->sqlType == DB::DBUtil::SQLType::SQLite || this->sqlType == DB::DBUtil::SQLType::MySQL)
+	if (this->sqlType == DB::SQLType::SQLite || this->sqlType == DB::SQLType::MySQL)
 	{
 		if (maxCnt > 0)
 		{
@@ -2291,7 +2291,7 @@ Math::Geometry::Vector2D *DB::ODBCReader::GetVector(UOSInt colIndex)
 		return 0;
 	if (this->colDatas[colIndex].isNull)
 		return 0;
-	if (this->conn->GetSQLType() == DB::DBUtil::SQLType::MSSQL)
+	if (this->conn->GetSQLType() == DB::SQLType::MSSQL)
 	{
 		if (this->colDatas[colIndex].colType == DB::DBUtil::CT_Binary || this->colDatas[colIndex].colType == DB::DBUtil::CT_Vector)
 		{
@@ -2372,7 +2372,7 @@ Bool DB::ODBCReader::GetVariItem(UOSInt colIndex, Data::VariItem *item)
 		item->SetDate(*(Data::Timestamp*)this->colDatas[colIndex].colData);
 		return true;
 	case DB::DBUtil::CT_Vector:
-		if (this->conn->GetSQLType() == DB::DBUtil::SQLType::MSSQL)
+		if (this->conn->GetSQLType() == DB::SQLType::MSSQL)
 		{
 			UOSInt dataSize = (UOSInt)this->colDatas[colIndex].dataVal;
 			UInt8 *buffPtr = (UInt8*)this->colDatas[colIndex].colData;
@@ -2474,7 +2474,7 @@ DB::DBUtil::ColType DB::ODBCReader::ODBCType2DBType(Int16 odbcType, UOSInt colSi
 	case SQL_SMALLINT:
 		return DB::DBUtil::CT_Int16;
 	case SQL_INTEGER:
-		if (this->conn->GetSQLType() == DB::DBUtil::SQLType::MySQL)// && colSize == 10)
+		if (this->conn->GetSQLType() == DB::SQLType::MySQL)// && colSize == 10)
 		{
 			return DB::DBUtil::CT_Int32;
 		}

@@ -59,7 +59,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::OnSQLClicked(void *userObj)
 		UI::MessageDialog::ShowDialog(CSTR("Please input CSV file first"), CSTR("Check Table Changes"), me);
 		return;
 	}
-	DB::DBUtil::SQLType sqlType = (DB::DBUtil::SQLType)(OSInt)me->cboDBType->GetSelectedItem();
+	DB::SQLType sqlType = (DB::SQLType)(OSInt)me->cboDBType->GetSelectedItem();
 	Bool axisAware = me->chkAxisAware->IsChecked();
 	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"DBCheckChgSQL", true);
 	dlg.SetAllowMultiSel(false);
@@ -133,7 +133,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::OnExecuteClicked(void *userObj
 		UI::MessageDialog::ShowDialog(CSTR("Connection does not support SQL Execution"), CSTR("Check Table Changes"), me);
 		return;
 	}
-	DB::DBUtil::SQLType sqlType = (DB::DBUtil::SQLType)(OSInt)me->cboDBType->GetSelectedItem();
+	DB::SQLType sqlType = (DB::SQLType)(OSInt)me->cboDBType->GetSelectedItem();
 	Bool axisAware = me->chkAxisAware->IsChecked();
 	Bool succ;
 	SQLSession sess;
@@ -579,7 +579,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::LoadCSV(Text::CString fileName)
 	return true;
 }
 
-Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(Text::CString csvFileName, DB::DBUtil::SQLType sqlType, Bool axisAware, SQLSession *sess)
+Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(Text::CString csvFileName, DB::SQLType sqlType, Bool axisAware, SQLSession *sess)
 {
 	Int8 csvTZ = 0;
 	if (this->chkLocalTZ->IsChecked())
@@ -1637,10 +1637,10 @@ SSWR::AVIRead::AVIRDBCheckChgForm::AVIRDBCheckChgForm(UI::GUIClientControl *pare
 	this->lblDBType->SetRect(0, 288, 100, 23, false);
 	NEW_CLASS(this->cboDBType, UI::GUIComboBox(ui, this, false));
 	this->cboDBType->SetRect(100, 288, 200, 23, false);
-	this->cboDBType->AddItem(CSTR("MySQL"), (void*)DB::DBUtil::SQLType::MySQL);
-	this->cboDBType->AddItem(CSTR("SQL Server"), (void*)DB::DBUtil::SQLType::MSSQL);
-	this->cboDBType->AddItem(CSTR("PostgreSQL"), (void*)DB::DBUtil::SQLType::PostgreSQL);
-	DB::DBUtil::SQLType sqlType;
+	this->cboDBType->AddItem(CSTR("MySQL"), (void*)DB::SQLType::MySQL);
+	this->cboDBType->AddItem(CSTR("SQL Server"), (void*)DB::SQLType::MSSQL);
+	this->cboDBType->AddItem(CSTR("PostgreSQL"), (void*)DB::SQLType::PostgreSQL);
+	DB::SQLType sqlType;
 	if (this->db->IsDBTool())
 	{
 		sqlType = ((DB::ReadingDBTool*)this->db)->GetSQLType();
@@ -1651,11 +1651,11 @@ SSWR::AVIRead::AVIRDBCheckChgForm::AVIRDBCheckChgForm(UI::GUIClientControl *pare
 	}
 	else
 	{
-		sqlType = DB::DBUtil::SQLType::Unknown;
+		sqlType = DB::SQLType::Unknown;
 	}
-	if (sqlType == DB::DBUtil::SQLType::MSSQL)
+	if (sqlType == DB::SQLType::MSSQL)
 		this->cboDBType->SetSelectedIndex(1);
-	else if (sqlType == DB::DBUtil::SQLType::PostgreSQL)
+	else if (sqlType == DB::SQLType::PostgreSQL)
 		this->cboDBType->SetSelectedIndex(2);
 	else
 		this->cboDBType->SetSelectedIndex(0);

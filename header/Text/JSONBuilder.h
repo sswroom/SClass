@@ -1,6 +1,7 @@
 #ifndef _SM_TEXT_JSONBUILDER
 #define _SM_TEXT_JSONBUILDER
 #include "Data/ArrayList.h"
+#include "Text/JSON.h"
 #include "Text/StringBuilderUTF8.h"
 
 namespace Text
@@ -27,9 +28,13 @@ namespace Text
 		~JSONBuilder();
 
 		Bool ArrayAddInt32(Int32 val);
+		Bool ArrayAddInt64(Int64 val);
 		Bool ArrayAddFloat64(Double val);
+		Bool ArrayAddBool(Bool val);
 		Bool ArrayAddStr(Text::PString *val);
 		Bool ArrayAddStrUTF8(const UTF8Char *val);
+		Bool ArrayAddNull();
+		Bool ArrayAdd(Text::JSONArray *arr);
 		Bool ArrayBeginObject();
 		Bool ArrayBeginArray();
 		Bool ArrayEnd();
@@ -38,10 +43,13 @@ namespace Text
 		Bool ObjectAddInt32(Text::CString name, Int32 val);
 		Bool ObjectAddInt64(Text::CString name, Int64 val);
 		Bool ObjectAddUInt64(Text::CString name, UInt64 val);
+		Bool ObjectAddBool(Text::CString name, Bool val);
 		Bool ObjectAddStr(Text::CString name, Text::PString *val);
 		Bool ObjectAddStr(Text::CString name, Text::CString val);
 		Bool ObjectAddStrUTF8(Text::CString name, const UTF8Char *val);
 		Bool ObjectAddStrW(Text::CString name, const WChar *val);
+		Bool ObjectAddNull(Text::CString name);
+		Bool ObjectAdd(Text::JSONObject *obj);
 		Bool ObjectBeginArray(Text::CString name);
 		Bool ObjectBeginObject(Text::CString name);
 		Bool ObjectEnd();

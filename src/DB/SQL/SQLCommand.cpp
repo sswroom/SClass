@@ -7,7 +7,7 @@
 
 #include <stdio.h>
 
-const UTF8Char *DB::SQL::SQLCommand::ParseNextWord(const UTF8Char *sql, Text::StringBuilderUTF8 *sb, DB::DBUtil::SQLType sqlType)
+const UTF8Char *DB::SQL::SQLCommand::ParseNextWord(const UTF8Char *sql, Text::StringBuilderUTF8 *sb, DB::SQLType sqlType)
 {
 	sb->ClearStr();
 	const UTF8Char *strStart = 0;
@@ -60,7 +60,7 @@ Bool DB::SQL::SQLCommand::IsPunctuation(const UTF8Char *s)
 	return Text::CharUtil::IsPunctuation(s[0]) && s[1] == 0;
 }
 
-DB::SQL::SQLCommand *DB::SQL::SQLCommand::Parse(const UTF8Char *sql, DB::DBUtil::SQLType sqlType)
+DB::SQL::SQLCommand *DB::SQL::SQLCommand::Parse(const UTF8Char *sql, DB::SQLType sqlType)
 {
 	printf("SQLCommand: Cmd: %s\r\n", sql);
 	DB::SQL::SQLCommand *cmd = 0;
@@ -107,7 +107,7 @@ DB::SQL::SQLCommand *DB::SQL::SQLCommand::Parse(const UTF8Char *sql, DB::DBUtil:
 							printf("SQLCommand: Expected column name, now is %s\r\n", sb.ToString());
 							break;
 						}
-						if (sb.EqualsICase(UTF8STRC("PRIMARY")) && sqlType == DB::DBUtil::SQLType::SQLite)
+						if (sb.EqualsICase(UTF8STRC("PRIMARY")) && sqlType == DB::SQLType::SQLite)
 						{
 							sql = ParseNextWord(sql, &sb, sqlType);
 							if (!sb.EqualsICase(UTF8STRC("KEY")))
@@ -179,7 +179,7 @@ DB::SQL::SQLCommand *DB::SQL::SQLCommand::Parse(const UTF8Char *sql, DB::DBUtil:
 								break;
 							}
 						}
-						else if (sb.EqualsICase(UTF8STRC("CONSTRAINT")) && sqlType == DB::DBUtil::SQLType::SQLite)
+						else if (sb.EqualsICase(UTF8STRC("CONSTRAINT")) && sqlType == DB::SQLType::SQLite)
 						{
 							UOSInt brkCnt = 0;
 							while (true)
@@ -219,7 +219,7 @@ DB::SQL::SQLCommand *DB::SQL::SQLCommand::Parse(const UTF8Char *sql, DB::DBUtil:
 							UOSInt colDP;
 							NEW_CLASS(col, DB::ColDef(sb.ToCString()));
 							sql = ParseNextWord(sql, &sb, sqlType);
-							if (sqlType == DB::DBUtil::SQLType::SQLite && (sb.Equals(UTF8STRC(",")) || sb.Equals(UTF8STRC(")"))))
+							if (sqlType == DB::SQLType::SQLite && (sb.Equals(UTF8STRC(",")) || sb.Equals(UTF8STRC(")"))))
 							{
 
 							}

@@ -9,21 +9,46 @@
 #include "Text/StringBuilderUTF8.h"
 namespace DB
 {
+	enum class Charset
+	{
+		UTF8,
+		UTF8MB4,
+		Latin1
+	};
+
+	enum class Language
+	{
+		General,
+		Swedish,
+		Unicode0900
+	};
+
+	struct Collation
+	{
+		Charset charset;
+		Language lang;
+		Bool caseSensitive;
+		Bool accentSensitive;
+		Bool kanaSensitive;
+		Bool widthSensitive;
+	};
+
+	enum class SQLType
+	{
+		Unknown,
+		MSSQL,
+		MySQL,
+		Oracle,
+		Access,
+		SQLite,
+		WBEM,
+		MDBTools,
+		PostgreSQL
+	};
+
 	class DBUtil
 	{
 	public:
-		enum class SQLType
-		{
-			Unknown,
-			MSSQL,
-			MySQL,
-			Oracle,
-			Access,
-			SQLite,
-			WBEM,
-			MDBTools,
-			PostgreSQL
-		};
 
 		typedef enum
 		{
@@ -87,6 +112,10 @@ namespace DB
 		static UOSInt SDBTrimLeng(Text::CString val, SQLType sqlType);
 		static DB::DBUtil::ColType ParseColType(SQLType sqlType, const UTF8Char *typeName, UOSInt *colSize, UOSInt *colDP);
 		static UTF8Char *ColTypeGetString(UTF8Char *sbuff, DB::DBUtil::ColType colType, UOSInt colSize, UOSInt colDP);
+		static UTF8Char *SDBCharset(UTF8Char *sqlstr, Charset charset, SQLType sqlType);
+		static UTF8Char *SDBCollationName(UTF8Char *sqlstr, Charset charset, Language lang, SQLType sqlType, Bool *requireAS);
+		static UTF8Char *SDBCollation(UTF8Char *sqlstr, const Collation *collation, SQLType sqlType);
+		static Bool CollationParseMySQL(Text::CString collName, Collation *collation);
 
 		static UTF8Char *DB2FieldName(UTF8Char *fieldNameBuff, const UTF8Char *dbName);
 		static UTF8Char *Field2DBName(UTF8Char *dbNameBuff, const UTF8Char *fieldName);

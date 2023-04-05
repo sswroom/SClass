@@ -14,7 +14,7 @@ DB::TableDef::TableDef(Text::CString schemaName, Text::CString tableName)
 	this->charset = 0;
 	this->attr = 0;
 	this->comments = 0;
-	this->sqlType = DB::DBUtil::SQLType::Unknown;
+	this->sqlType = DB::SQLType::Unknown;
 }
 
 DB::TableDef::~TableDef()
@@ -69,7 +69,7 @@ const UTF8Char *DB::TableDef::GetComments() const
 	return this->comments;
 }
 
-DB::DBUtil::SQLType DB::TableDef::GetSQLType() const
+DB::SQLType DB::TableDef::GetSQLType() const
 {
 	return this->sqlType;
 }
@@ -161,7 +161,7 @@ DB::TableDef *DB::TableDef::SetComments(const UTF8Char *comments)
 	return this;
 }
 
-DB::TableDef *DB::TableDef::SetSQLType(DB::DBUtil::SQLType sqlType)
+DB::TableDef *DB::TableDef::SetSQLType(DB::SQLType sqlType)
 {
 	this->sqlType = sqlType;
 	return this;

@@ -4135,6 +4135,7 @@ Bool IO::SMBIOS::ToString(Text::StringBuilderUTF8 *sb) const
 				sb->AppendC(UTF8STRC(")"));
 				break;
 			}
+			sb->AppendC(UTF8STRC("\r\n"));
 			if (dataBuff[1] > 8)
 			{
 				sb->AppendC(UTF8STRC("Processor-Specific Data: "));

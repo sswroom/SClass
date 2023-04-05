@@ -3,7 +3,7 @@
 #include "Text/MyString.h"
 #include "DB/ColDef.h"
 
-void DB::ColDef::AppendDefVal(DB::SQLBuilder *sql, Text::CString defVal)
+void DB::ColDef::AppendDefVal(DB::SQLBuilder *sql, Text::CString defVal, UOSInt colSize)
 {
 	if (defVal.StartsWith(UTF8STRC("b'")))
 	{
@@ -13,43 +13,47 @@ void DB::ColDef::AppendDefVal(DB::SQLBuilder *sql, Text::CString defVal)
 	{
 		switch (sql->GetSQLType())
 		{
-		case DB::DBUtil::SQLType::MSSQL:
+		case DB::SQLType::MSSQL:
 			sql->AppendStrC(CSTR("CONVERT([datetime2](3),getutcdate())"));
 			break;
-		case DB::DBUtil::SQLType::PostgreSQL:
+		case DB::SQLType::PostgreSQL:
 			sql->AppendCmdC(CSTR("(current_timestamp(3) at time zone 'utc')"));
 			break;
-		case DB::DBUtil::SQLType::MySQL:
-			sql->AppendCmdC(CSTR("utc_timestamp(3)"));
+		case DB::SQLType::MySQL:
+			sql->AppendCmdC(CSTR("utc_timestamp("));
+			sql->AppendUInt32((UInt32)colSize);
+			sql->AppendCmdC(CSTR(")"));
 			break;
-		case DB::DBUtil::SQLType::Access:
-		case DB::DBUtil::SQLType::MDBTools:
-		case DB::DBUtil::SQLType::Oracle:
-		case DB::DBUtil::SQLType::SQLite:
-		case DB::DBUtil::SQLType::Unknown:
-		case DB::DBUtil::SQLType::WBEM:
+		case DB::SQLType::Access:
+		case DB::SQLType::MDBTools:
+		case DB::SQLType::Oracle:
+		case DB::SQLType::SQLite:
+		case DB::SQLType::Unknown:
+		case DB::SQLType::WBEM:
 		default:
 			sql->AppendStrC(CSTR("utcnow(3)"));
 			break;
 		}
 	}
-	else if (defVal.Equals(UTF8STRC("getdate()")))
+	else if (defVal.Equals(UTF8STRC("getdate()")) || defVal.Equals(UTF8STRC("current_timestamp()")))
 	{
 		switch (sql->GetSQLType())
 		{
-		case DB::DBUtil::SQLType::MSSQL:
+		case DB::SQLType::MSSQL:
 			sql->AppendStrC(CSTR("getdate()"));
 			break;
-		case DB::DBUtil::SQLType::MySQL:
-			sql->AppendCmdC(CSTR("now(6)"));
+		case DB::SQLType::MySQL:
+			sql->AppendCmdC(CSTR("now("));
+			sql->AppendUInt32((UInt32)colSize);
+			sql->AppendCmdC(CSTR(")"));
 			break;
-		case DB::DBUtil::SQLType::PostgreSQL:
-		case DB::DBUtil::SQLType::Access:
-		case DB::DBUtil::SQLType::MDBTools:
-		case DB::DBUtil::SQLType::Oracle:
-		case DB::DBUtil::SQLType::SQLite:
-		case DB::DBUtil::SQLType::Unknown:
-		case DB::DBUtil::SQLType::WBEM:
+		case DB::SQLType::PostgreSQL:
+		case DB::SQLType::Access:
+		case DB::SQLType::MDBTools:
+		case DB::SQLType::Oracle:
+		case DB::SQLType::SQLite:
+		case DB::SQLType::Unknown:
+		case DB::SQLType::WBEM:
 		default:
 			sql->AppendStrC(CSTR("now()"));
 			break;
@@ -177,11 +181,11 @@ Bool DB::ColDef::GetDefVal(DB::SQLBuilder *sql) const
 			sb.SetSubstr(1);
 			sb.RemoveChars(1);
 		}
-		AppendDefVal(sql, sb.ToCString());
+		AppendDefVal(sql, sb.ToCString(), this->colSize);
 	}
 	else
 	{
-		AppendDefVal(sql, this->defVal->ToCString());
+		AppendDefVal(sql, this->defVal->ToCString(), this->colSize);
 	}
 	return true;
 }
