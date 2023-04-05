@@ -6,6 +6,7 @@
 #include "IO/ConsoleWriter.h"
 #include "IO/IniFile.h"
 #include "IO/Path.h"
+#include "IO/WriterLogHandler.h"
 #include "Manage/ExceptionRecorder.h"
 #include "Media/DrawEngineFactory.h"
 #include "Net/MySQLTCPClient.h"
@@ -30,6 +31,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		Text::CString osmCacheDir;
 		UTF8Char sbuff[512];
 		UTF8Char *sptr;
+		IO::WriterLogHandler printLog(&console, false);
+		log.AddLogHandler(&printLog, IO::ILogHandler::LogLevel::Error);
 
 		IO::ConfigFile *cfg = IO::IniFile::ParseProgConfig(0);
 		if (cfg == 0)
