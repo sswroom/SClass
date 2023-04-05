@@ -32,7 +32,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		UTF8Char sbuff[512];
 		UTF8Char *sptr;
 		IO::WriterLogHandler printLog(&console, false);
-		log.AddLogHandler(&printLog, IO::ILogHandler::LogLevel::Error);
+		log.AddLogHandler(&printLog, IO::ILogHandler::LogLevel::ErrorDetail);
 
 		IO::ConfigFile *cfg = IO::IniFile::ParseProgConfig(0);
 		if (cfg == 0)
@@ -127,6 +127,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		}
 
 		SDEL_CLASS(ssl);
+		log.RemoveLogHandler(&printLog);
 	}
 	return 0;
 }
