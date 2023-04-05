@@ -205,6 +205,8 @@ namespace Text
 		void SetObjectString(Text::CString name, Text::String *val);
 		void SetObjectBool(Text::CString name, Bool val);
 		JSONBase *GetObjectValue(Text::CString name);
+		JSONArray *GetObjectArray(Text::CString name);
+		JSONObject *GetObjectObject(Text::CString name);
 		void GetObjectNames(Data::ArrayList<Text::String *> *names);
 		Text::String *GetObjectString(Text::CString name);
 		Text::String *GetObjectNewString(Text::CString name);
@@ -233,6 +235,7 @@ namespace Text
 		void SetArrayValue(UOSInt index, Text::JSONBase *val);
 		void AddArrayValue(Text::JSONBase *val);
 		JSONBase *GetArrayValue(UOSInt index);
+		JSONObject *GetArrayObject(UOSInt index);
 		Double GetArrayDouble(UOSInt index);
 		Text::String *GetArrayString(UOSInt index);
 		UOSInt GetArrayLength();

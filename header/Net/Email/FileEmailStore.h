@@ -25,12 +25,14 @@ namespace Net
 			UOSInt recvIndex;
 
 			FileInfo *GetFileInfo(Int64 id);
+			void AddMail(const Text::MIMEObj::MailMessage *mail, UTF8Char *filePath, UTF8Char *fileNameStart, UTF8Char *filePathEnd, UInt64 fileSize);
 		public:
 			FileEmailStore();
 			virtual ~FileEmailStore();
 
 			virtual Int64 NextEmailId();
 			virtual Bool NewEmail(Int64 id, const Net::SocketUtil::AddressInfo *remoteAddr, Text::CString serverName, const Net::Email::SMTPServer::MailStatus *mail);
+			virtual Bool NewEmail(Int64 id, const Net::SocketUtil::AddressInfo *remoteAddr, Text::CString serverName, const Text::MIMEObj::MailMessage *mail);
 			virtual IO::StreamData *OpenEmailData(Int64 id);
 			virtual const UTF8Char *GetEmailUid(Int64 id);
 			virtual UOSInt GetRcptList(Int64 id, Data::ArrayList<Text::String*> *rcptList);

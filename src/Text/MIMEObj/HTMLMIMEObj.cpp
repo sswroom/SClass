@@ -17,7 +17,7 @@ void Text::MIMEObj::HTMLMIMEObj::BuildContentType()
 	this->contType = Text::String::New(sbc.ToString(), sbc.GetLength());
 }
 
-Text::MIMEObj::HTMLMIMEObj::HTMLMIMEObj(UInt8 *textBuff, OSInt buffSize, Int32 codePage) : Text::IMIMEObj(CSTR("text/html"))
+Text::MIMEObj::HTMLMIMEObj::HTMLMIMEObj(const UInt8 *textBuff, UOSInt buffSize, UInt32 codePage) : Text::IMIMEObj(CSTR("text/html"))
 {
 	this->contType = 0;
 	this->codePage = codePage;
@@ -58,7 +58,7 @@ Text::IMIMEObj *Text::MIMEObj::HTMLMIMEObj::Clone() const
 void Text::MIMEObj::HTMLMIMEObj::GetText(Text::StringBuilderUTF8 *sb) const
 {
 	Text::Encoding enc(this->codePage);
-	OSInt strLen;
+	UOSInt strLen;
 	UTF8Char *sbuff;
 	UTF8Char* sptr;
 	strLen = enc.CountUTF8Chars(this->textBuff, this->buffSize);
@@ -68,7 +68,7 @@ void Text::MIMEObj::HTMLMIMEObj::GetText(Text::StringBuilderUTF8 *sb) const
 	MemFree(sbuff);
 }
 
-Int32 Text::MIMEObj::HTMLMIMEObj::GetCodePage() const
+UInt32 Text::MIMEObj::HTMLMIMEObj::GetCodePage() const
 {
 	return this->codePage;
 }

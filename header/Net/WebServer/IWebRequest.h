@@ -4,6 +4,7 @@
 #include "Data/ArrayList.h"
 #include "Manage/OSInfo.h"
 #include "Net/BrowserInfo.h"
+#include "Net/NetConnection.h"
 #include "Net/SocketFactory.h"
 #include "Net/WebUtil.h"
 #include "Text/CString.h"
@@ -75,9 +76,10 @@ namespace Net
 			Bool GetHTTPFormDouble(Text::CString name, Double *valOut);
 			virtual void GetRequestURLBase(Text::StringBuilderUTF8 *sb) = 0;
 
-			virtual const Net::SocketUtil::AddressInfo *GetClientAddr() = 0;
-			virtual UInt16 GetClientPort() = 0;
-			virtual Bool IsSecure() = 0;
+			virtual const Net::SocketUtil::AddressInfo *GetClientAddr() const = 0;
+			virtual Net::NetConnection *GetNetConn() const = 0;
+			virtual UInt16 GetClientPort() const = 0;
+			virtual Bool IsSecure() const = 0;
 			virtual Crypto::Cert::X509Cert *GetClientCert() = 0;
 			virtual const UInt8 *GetReqData(UOSInt *dataSize) = 0;
 

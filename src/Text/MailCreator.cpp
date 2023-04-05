@@ -18,7 +18,7 @@ void Text::MailCreator::AppendStr(Text::StringBuilderUTF8 *sbc, Text::CString s)
 	UTF8Char c;
 	Bool found = false;
 	sptr = s.v;
-	while (c = *sptr++)
+	while ((c = *sptr++) != 0)
 	{
 		if (c >= 0x80)
 		{
@@ -28,9 +28,9 @@ void Text::MailCreator::AppendStr(Text::StringBuilderUTF8 *sbc, Text::CString s)
 	}
 	if (found)
 	{
-		OSInt strLen;
+		UOSInt strLen;
 		UInt8 *b64Buff;
-		OSInt b64Size;
+		UOSInt b64Size;
 		Crypto::Encrypt::Base64 b64;
 		strLen = s.leng;
 		b64Size = (strLen / 3) * 4 + 4;
@@ -52,7 +52,7 @@ void Text::MailCreator::AppendStr(Text::StringBuilderUTF8 *sbc, const WChar *s)
 	WChar c;
 	Bool found = false;
 	wptr = s;
-	while (c = *wptr++)
+	while ((c = *wptr++) != 0)
 	{
 		if (c >= 0x80)
 		{
@@ -63,9 +63,9 @@ void Text::MailCreator::AppendStr(Text::StringBuilderUTF8 *sbc, const WChar *s)
 	if (found)
 	{
 		Text::String *str = Text::String::NewNotNull(s);
-		OSInt buffSize;
+		UOSInt buffSize;
 		UInt8 *b64Buff;
-		OSInt b64Size;
+		UOSInt b64Size;
 		Crypto::Encrypt::Base64 b64;
 		buffSize = str->leng;
 		b64Size = (buffSize / 3) * 4 + 4;
@@ -84,7 +84,7 @@ void Text::MailCreator::AppendStr(Text::StringBuilderUTF8 *sbc, const WChar *s)
 	}
 }
 
-Text::IMIMEObj *Text::MailCreator::ParseContentHTML(UInt8 *buff, UOSInt buffSize, UInt32 codePage, Text::CString htmlPath)
+Text::IMIMEObj *Text::MailCreator::ParseContentHTML(const UInt8 *buff, UOSInt buffSize, UInt32 codePage, Text::CString htmlPath)
 {
 	UOSInt j;
 	UOSInt endOfst = buffSize - 6;
@@ -157,7 +157,7 @@ Text::IMIMEObj *Text::MailCreator::ParseContentHTML(UInt8 *buff, UOSInt buffSize
 							imgs.Add(obj);
 							sbc.AppendC((const UTF8Char*)&buff[j], i - j);
 							sbc.AppendC(UTF8STRC("cid:image"));
-							sbc.AppendOSInt(imgs.GetCount());
+							sbc.AppendUOSInt(imgs.GetCount());
 							j = k;
 						}
 					}
@@ -175,14 +175,14 @@ Text::IMIMEObj *Text::MailCreator::ParseContentHTML(UInt8 *buff, UOSInt buffSize
 	
 	if (imgs.GetCount() == 0)
 	{
-		NEW_CLASS(obj, Text::MIMEObj::HTMLMIMEObj((UInt8*)sbc.ToString(), sbc.GetLength(), 65001));
+		NEW_CLASS(obj, Text::MIMEObj::HTMLMIMEObj(sbc.ToString(), sbc.GetLength(), 65001));
 		return obj;
 	}
 	else
 	{
 		Text::MIMEObj::MultipartMIMEObj *mpart;
 		NEW_CLASS(mpart, Text::MIMEObj::MultipartMIMEObj(CSTR("multipart/related"), CSTR_NULL));
-		NEW_CLASS(obj, Text::MIMEObj::HTMLMIMEObj((UInt8*)sbc.ToString(), sbc.GetLength(), 65001));
+		NEW_CLASS(obj, Text::MIMEObj::HTMLMIMEObj(sbc.ToString(), sbc.GetLength(), 65001));
 		i = mpart->AddPart(obj);
 		Text::CString contType = obj->GetContentType();
 		mpart->AddPartHeader(i, UTF8STRC("Content-Type"), contType.v, contType.leng);
@@ -199,7 +199,7 @@ Text::IMIMEObj *Text::MailCreator::ParseContentHTML(UInt8 *buff, UOSInt buffSize
 			mpart->AddPartHeader(k, UTF8STRC("Content-Transfer-Encoding"), UTF8STRC("base64"));
 			sbc.ClearStr();
 			sbc.AppendC(UTF8STRC("<image"));
-			sbc.AppendOSInt(i + 1);
+			sbc.AppendUOSInt(i + 1);
 			sbc.AppendC(UTF8STRC(">"));
 			mpart->AddPartHeader(k, UTF8STRC("Content-ID"), sbc.ToString(), sbc.GetLength());
 
@@ -224,7 +224,7 @@ Text::MailCreator::MailCreator()
 
 Text::MailCreator::~MailCreator()
 {
-	OSInt i;
+	UOSInt i;
 	Text::IMIMEObj *obj;
 
 	SDEL_STRING(this->from);
@@ -254,6 +254,31 @@ void Text::MailCreator::SetFrom(const WChar *name, const WChar *address)
 	{
 		Text::StringBuilderUTF8 sb;
 		if (name)
+		{
+			this->AppendStr(&sb, name);
+			sb.AppendC(UTF8STRC(" <"));
+			this->AppendStr(&sb, address);
+			sb.AppendC(UTF8STRC(">"));
+		}
+		else
+		{
+			this->AppendStr(&sb, address);
+		}
+		SDEL_STRING(this->from);
+		this->from = Text::String::New(sb.ToString(), sb.GetLength());
+	}
+}
+
+void Text::MailCreator::SetFrom(Text::CString name, Text::CString address)
+{
+	if (address.leng == 0)
+	{
+		SDEL_STRING(this->from);
+	}
+	else
+	{
+		Text::StringBuilderUTF8 sb;
+		if (name.leng != 0)
 		{
 			this->AppendStr(&sb, name);
 			sb.AppendC(UTF8STRC(" <"));
@@ -313,6 +338,25 @@ void Text::MailCreator::ToAdd(const WChar *name, const WChar *address)
 	}
 }
 
+void Text::MailCreator::ToAdd(Text::String *name, Text::String *address)
+{
+	if (this->toVals->GetLength() > 0)
+	{
+		this->toVals->AppendC(UTF8STRC(", "));
+	}
+	if (name)
+	{
+		this->AppendStr(this->toVals, name->ToCString());
+		this->toVals->AppendC(UTF8STRC(" <"));
+		this->AppendStr(this->toVals, address->ToCString());
+		this->toVals->AppendC(UTF8STRC(">"));
+	}
+	else
+	{
+		this->AppendStr(this->toVals, address->ToCString());
+	}
+}
+
 void Text::MailCreator::ToClear()
 {
 	this->toVals->ClearStr();
@@ -337,6 +381,25 @@ void Text::MailCreator::CCAdd(const WChar *name, const WChar *address)
 	}
 }
 
+void Text::MailCreator::CCAdd(Text::String *name, Text::String *address)
+{
+	if (this->ccVals->GetLength() > 0)
+	{
+		this->ccVals->AppendC(UTF8STRC(", "));
+	}
+	if (name)
+	{
+		this->AppendStr(this->ccVals, name->ToCString());
+		this->ccVals->AppendC(UTF8STRC(" <"));
+		this->AppendStr(this->ccVals, address->ToCString());
+		this->ccVals->AppendC(UTF8STRC(">"));
+	}
+	else
+	{
+		this->AppendStr(this->ccVals, address->ToCString());
+	}
+}
+
 void Text::MailCreator::CCClear()
 {
 	this->toVals->ClearStr();
@@ -346,6 +409,14 @@ void Text::MailCreator::SetSubject(const WChar *subj)
 {
 	Text::StringBuilderUTF8 sb;
 	this->AppendStr(&sb, subj);
+	SDEL_STRING(this->subject);
+	this->subject = Text::String::New(sb.ToString(), sb.GetLength());
+}
+
+void Text::MailCreator::SetSubject(Text::String *subj)
+{
+	Text::StringBuilderUTF8 sb;
+	this->AppendStr(&sb, subj->ToCString());
 	SDEL_STRING(this->subject);
 	this->subject = Text::String::New(sb.ToString(), sb.GetLength());
 }
@@ -366,6 +437,16 @@ void Text::MailCreator::SetContentHTML(const WChar *content, Text::CString htmlP
 	}
 }
 
+void Text::MailCreator::SetContentHTML(Text::String *content, Text::CString htmlPath)
+{
+	Text::IMIMEObj *obj = ParseContentHTML(content->v, content->leng, 65001, htmlPath);
+	if (obj)
+	{
+		SDEL_CLASS(this->content);
+		this->content = obj;
+	}
+}
+
 void Text::MailCreator::SetContentText(const WChar *content, UInt32 codePage)
 {
 	Text::MIMEObj::TextMIMEObj *obj;
@@ -374,10 +455,18 @@ void Text::MailCreator::SetContentText(const WChar *content, UInt32 codePage)
 	this->content = obj;
 }
 
+void Text::MailCreator::SetContentText(Text::String *content)
+{
+	Text::MIMEObj::TextMIMEObj *obj;
+	NEW_CLASS(obj, Text::MIMEObj::TextMIMEObj(content->v, content->leng, 65001));
+	SDEL_CLASS(this->content);
+	this->content = obj;
+}
+
 Bool Text::MailCreator::SetContentFile(Text::CString filePath)
 {
 	Text::IMIMEObj *obj;
-	OSInt buffSize;
+	UOSInt buffSize;
 	UInt8 *buff;
 	{
 		IO::FileStream fs(filePath, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
@@ -385,7 +474,7 @@ Bool Text::MailCreator::SetContentFile(Text::CString filePath)
 		{
 			return false;
 		}
-		buffSize = (OSInt)fs.GetLength();
+		buffSize = (UOSInt)fs.GetLength();
 		buff = MemAlloc(UInt8, buffSize);
 		fs.Read(buff, buffSize);
 	}

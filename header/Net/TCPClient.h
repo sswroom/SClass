@@ -1,13 +1,14 @@
 #ifndef _SM_NET_TCPCLIENT
 #define _SM_NET_TCPCLIENT
 #include "IO/Stream.h"
+#include "Net/NetConnection.h"
 #include "Net/SocketFactory.h"
 #include "Sync/Event.h"
 #include "Sync/Mutex.h"
 
 namespace Net
 {
-	class TCPClient : public IO::Stream
+	class TCPClient : public IO::Stream, public Net::NetConnection
 	{
 	protected:
 		Net::SocketFactory *sockf;
@@ -50,12 +51,12 @@ namespace Net
 
 		UOSInt GetRecvBuffSize();
 
-		UTF8Char *GetRemoteName(UTF8Char *buff);
-		UTF8Char *GetLocalName(UTF8Char *buff);
 		UInt64 GetCliId();
-		Bool GetRemoteAddr(Net::SocketUtil::AddressInfo *addr);
-		UInt16 GetRemotePort();
-		UInt16 GetLocalPort();
+		virtual UTF8Char *GetRemoteName(UTF8Char *buff) const;
+		virtual UTF8Char *GetLocalName(UTF8Char *buff) const;
+		virtual Bool GetRemoteAddr(Net::SocketUtil::AddressInfo *addr) const;
+		virtual UInt16 GetRemotePort() const;
+		virtual UInt16 GetLocalPort() const;
 
 		void SetNoDelay(Bool val);
 		virtual void ShutdownSend();

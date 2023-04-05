@@ -3010,6 +3010,7 @@ Net/NetBIOSScanner.h: ../../src/Net/NetBIOSScanner.cpp
 @NetBIOSScanner.o
 Net/NetBIOSUtil.h: ../../src/Net/NetBIOSUtil.cpp
 @NetBIOSUtil.o
+Net/NetConnection.h:
 Net/NTPClient.h: ../../src/Net/NTPClient.cpp
 @NTPClient.o
 Net/NTPServer.h: ../../src/Net/NTPServer.cpp
@@ -4242,6 +4243,8 @@ Text/Locale.h: ../../src/Text/Locale.cpp
 @Locale.o
 Text/MailBase64Stream.h: ../../src/Text/MailBase64Stream.cpp
 @MailBase64Stream.o
+Text/MailCreator.h: ../../src/Text/MailCreator.cpp
+@MailCreator.o
 Text/MyString.h: ../../src/Text/MyString.cpp
 @MyString.o
 @MyString_CPP.o
@@ -4337,6 +4340,8 @@ Text/Doc/DocValidator.h: ../../src/Text/Doc/DocValidator.cpp
 @DocValidator.o
 Text/Doc/TextDocument.h: ../../src/Text/Doc/TextDocument.cpp
 @TextDocument.o
+Text/MIMEObj/HTMLMIMEObj.h: ../../src/Text/MIMEObj/HTMLMIMEObj.cpp
+@HTMLMIMEObj.o
 Text/MIMEObj/MailMessage.h: ../../src/Text/MIMEObj/MailMessage.cpp
 @MailMessage.o
 Text/MIMEObj/MIMEMessage.h: ../../src/Text/MIMEObj/MIMEMessage.cpp
@@ -5920,6 +5925,7 @@ JSONBuilder.o: ../../src/Text/JSONBuilder.cpp
 JSText.o: ../../src/Text/JSText.cpp
 Locale.o: ../../src/Text/Locale.cpp
 MailBase64Stream.o: ../../src/Text/MailBase64Stream.cpp
+MailCreator.o: ../../src/Text/MailCreator.cpp
 MyString.o: ../../src/Text/MyString.cpp
 MyStringFloat.o: ../../src/Text/MyStringFloat.cpp
 MyStringW.o: ../../src/Text/MyStringW.cpp
@@ -5963,6 +5969,7 @@ DocSection.o: ../../src/Text/Doc/DocSection.cpp
 DocText.o: ../../src/Text/Doc/DocText.cpp
 DocValidator.o: ../../src/Text/Doc/DocValidator.cpp
 TextDocument.o: ../../src/Text/Doc/TextDocument.cpp
+HTMLMIMEObj.o: ../../src/Text/MIMEObj/HTMLMIMEObj.cpp
 MailMessage.o: ../../src/Text/MIMEObj/MailMessage.cpp
 MIMEMessage.o: ../../src/Text/MIMEObj/MIMEMessage.cpp
 MultipartMIMEObj.o: ../../src/Text/MIMEObj/MultipartMIMEObj.cpp

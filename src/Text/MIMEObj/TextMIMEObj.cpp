@@ -18,7 +18,7 @@ void Text::MIMEObj::TextMIMEObj::BuildContentType()
 	this->contType = Text::String::New(sbc.ToString(), sbc.GetLength());
 }
 
-Text::MIMEObj::TextMIMEObj::TextMIMEObj(UInt8 *textBuff, UOSInt buffSize, UInt32 codePage) : Text::IMIMEObj(CSTR("text/plain"))
+Text::MIMEObj::TextMIMEObj::TextMIMEObj(const UInt8 *textBuff, UOSInt buffSize, UInt32 codePage) : Text::IMIMEObj(CSTR("text/plain"))
 {
 	this->contType = 0;
 	this->codePage = codePage;

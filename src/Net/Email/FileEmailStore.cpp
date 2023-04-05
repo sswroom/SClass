@@ -12,6 +12,105 @@ Net::Email::FileEmailStore::FileInfo *Net::Email::FileEmailStore::GetFileInfo(In
 	return this->fileMap.Get(id);
 }
 
+void Net::Email::FileEmailStore::AddMail(const Text::MIMEObj::MailMessage *mail, UTF8Char *filePath, UTF8Char *fileNameStart, UTF8Char *filePathEnd, UInt64 fileSize)
+{
+	Data::ArrayList<Text::String*> rcptList;
+	Text::StringBuilderUTF8 sb;
+	Data::DateTime recvTime;
+	Text::String *remoteIP = 0;
+	Text::String *fromAddr = 0;
+	recvTime.SetTicks(0);
+	
+	UOSInt i = 0;
+	UOSInt j = mail->GetHeaderCount();
+	UOSInt k;
+	UOSInt l;
+	while (i < j)
+	{
+		Text::String *name = mail->GetHeaderName(i);
+		Text::String *value = mail->GetHeaderValue(i);
+
+		if (name->EqualsICase(UTF8STRC("Received")))
+		{
+			k = value->LastIndexOf(';');
+			if (k != INVALID_INDEX)
+			{
+				recvTime.SetValue(value->ToCString().Substring(k + 1).LTrim());
+			}
+			k = value->IndexOf(' ');
+			if (k != INVALID_INDEX)
+			{
+				l = value->IndexOf(' ', k + 1);
+				if (l != INVALID_INDEX)
+				{
+					SDEL_STRING(remoteIP);
+					remoteIP = Text::String::New(value->v + k + 1, l - k - 1);
+				}
+			}
+		}
+		else if (name->EqualsICase(UTF8STRC("X-Apparently-To")))
+		{
+			k = value->IndexOf(';');
+			sb.ClearStr();
+			sb.AppendC(UTF8STRC("RCPT TO: <"));
+			if (k > 0)
+			{
+				sb.AppendC(value->v, k);
+			}
+			else
+			{
+				sb.Append(value);
+			}
+			sb.AppendUTF8Char('>');
+			rcptList.Add(Text::String::New(sb.ToCString()));
+		}
+		else if (name->EqualsICase(UTF8STRC("From")))
+		{
+			fromAddr = value->Clone();
+		}
+		i++;
+	}
+
+	if (fromAddr != 0 && remoteIP != 0 && recvTime.ToTicks() != 0 && rcptList.GetCount() > 0)
+	{
+		Int64 id;
+		k = Text::StrIndexOfCharC(fileNameStart, (UOSInt)(filePathEnd - fileNameStart), '.');
+		sb.ClearStr();
+		sb.AppendC(fileNameStart, k);
+		id = sb.ToInt64();
+		EmailInfo *email;
+		email = MemAlloc(EmailInfo, 1);
+		email->id = id;
+		Net::SocketUtil::GetIPAddr(remoteIP->ToCString(), &email->remoteAddr);
+		email->fromAddr = fromAddr->Clone();
+		email->recvTime = recvTime.ToTicks();
+		email->isDeleted = false;
+		email->fileSize = (UOSInt)fileSize;
+
+		FileInfo *file;
+		NEW_CLASS(file, FileInfo());
+		file->id = id;
+		file->fileName = Text::String::NewP(filePath, filePathEnd);
+		file->uid = Text::StrCopyNewC(sb.ToString(), sb.GetLength());
+
+		k = 0;
+		l = rcptList.GetCount();
+		while (k < l)
+		{
+			file->rcptList.Add(rcptList.GetItem(k)->Clone());
+			k++;
+		}
+
+		Sync::MutexUsage mutUsage(&this->mailMut);
+		this->mailList.Add(email);
+		mutUsage.ReplaceMutex(&this->fileMut);
+		this->fileMap.Put(file->id, file);
+	}
+	SDEL_STRING(remoteIP);
+	SDEL_STRING(fromAddr);
+	LIST_FREE_STRING(&rcptList);
+}
+
 Net::Email::FileEmailStore::FileEmailStore()
 {
 	UTF8Char sbuff[512];
@@ -28,9 +127,6 @@ Net::Email::FileEmailStore::FileEmailStore()
 	IO::Path::FindFileSession *sess = IO::Path::FindFile(CSTRP(sbuff, sptr2));
 	if (sess)
 	{
-		Data::ArrayList<Text::String*> rcptList;
-		Text::StringBuilderUTF8 sb;
-		Data::DateTime recvTime;
 		IO::Path::PathType pt;
 		UInt64 fileSize;
 		while ((sptr2 = IO::Path::FindNextFile(sptr, sess, 0, &pt, &fileSize)) != 0)
@@ -39,99 +135,8 @@ Net::Email::FileEmailStore::FileEmailStore()
 			Text::MIMEObj::MailMessage *mail = Text::MIMEObj::MailMessage::ParseFile(&fd);
 			if (mail)
 			{
-				Text::String *remoteIP = 0;
-				Text::String *fromAddr = 0;
-				recvTime.SetTicks(0);
-				
-				UOSInt i = 0;
-				UOSInt j = mail->GetHeaderCount();
-				UOSInt k;
-				UOSInt l;
-				while (i < j)
-				{
-					Text::String *name = mail->GetHeaderName(i);
-					Text::String *value = mail->GetHeaderValue(i);
-
-					if (name->EqualsICase(UTF8STRC("Received")))
-					{
-						k = value->LastIndexOf(';');
-						if (k != INVALID_INDEX)
-						{
-							recvTime.SetValue(value->ToCString().Substring(k + 1).LTrim());
-						}
-						k = value->IndexOf(' ');
-						if (k != INVALID_INDEX)
-						{
-							l = value->IndexOf(' ', k + 1);
-							if (l != INVALID_INDEX)
-							{
-								SDEL_STRING(remoteIP);
-								remoteIP = Text::String::New(value->v + k + 1, l - k - 1);
-							}
-						}
-					}
-					else if (name->EqualsICase(UTF8STRC("X-Apparently-To")))
-					{
-						k = value->IndexOf(';');
-						sb.ClearStr();
-						sb.AppendC(UTF8STRC("RCPT TO: <"));
-						if (k > 0)
-						{
-							sb.AppendC(value->v, k);
-						}
-						else
-						{
-							sb.Append(value);
-						}
-						sb.AppendUTF8Char('>');
-						rcptList.Add(Text::String::New(sb.ToCString()));
-					}
-					else if (name->EqualsICase(UTF8STRC("From")))
-					{
-						fromAddr = value->Clone();
-					}
-					i++;
-				}
+				AddMail(mail, sbuff, sptr, sptr2, fileSize);
 				DEL_CLASS(mail);
-
-				if (fromAddr != 0 && remoteIP != 0 && recvTime.ToTicks() != 0 && rcptList.GetCount() > 0)
-				{
-					Int64 id;
-					k = Text::StrIndexOfCharC(sptr, (UOSInt)(sptr2 - sptr), '.');
-					sb.ClearStr();
-					sb.AppendC(sptr, k);
-					id = sb.ToInt64();
-					EmailInfo *email;
-					email = MemAlloc(EmailInfo, 1);
-					email->id = id;
-					Net::SocketUtil::GetIPAddr(remoteIP->ToCString(), &email->remoteAddr);
-					email->fromAddr = fromAddr->Clone();
-					email->recvTime = recvTime.ToTicks();
-					email->isDeleted = false;
-					email->fileSize = (UOSInt)fileSize;
-
-					FileInfo *file;
-					NEW_CLASS(file, FileInfo());
-					file->id = id;
-					file->fileName = Text::String::NewP(sbuff, sptr2);
-					file->uid = Text::StrCopyNewC(sb.ToString(), sb.GetLength());
-
-					k = 0;
-					l = rcptList.GetCount();
-					while (k < l)
-					{
-						file->rcptList.Add(rcptList.GetItem(k)->Clone());
-						k++;
-					}
-
-					Sync::MutexUsage mutUsage(&this->mailMut);
-					this->mailList.Add(email);
-					mutUsage.ReplaceMutex(&this->fileMut);
-					this->fileMap.Put(file->id, file);
-				}
-				SDEL_STRING(remoteIP);
-				SDEL_STRING(fromAddr);
-				LIST_FREE_STRING(&rcptList);
 			}
 		}
 		IO::Path::FindFileClose(sess);
@@ -243,6 +248,92 @@ Bool Net::Email::FileEmailStore::NewEmail(Int64 id, const Net::SocketUtil::Addre
 		fs.Write(buff, buffSize);
 	}
 
+	Sync::MutexUsage mutUsage(&this->mailMut);
+	this->mailList.Add(email);
+	mutUsage.ReplaceMutex(&this->fileMut);
+	this->fileMap.Put(file->id, file);
+	return true;
+}
+
+Bool Net::Email::FileEmailStore::NewEmail(Int64 id, const Net::SocketUtil::AddressInfo *remoteAddr, Text::CString serverName, const Text::MIMEObj::MailMessage *mail)
+{
+	Data::DateTime currTime;
+	UOSInt i;
+	UOSInt j;
+	UTF8Char sbuff[256];
+	UTF8Char *sptr;
+	Text::StringBuilderUTF8 sb;
+	IO::Path::GetProcessFileName(&sb);
+	IO::Path::AppendPath(&sb, UTF8STRC("SMTP"));
+	sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
+	sb.AppendI64(id);
+	sb.AppendC(UTF8STRC(".eml"));
+	currTime.SetCurrTimeUTC();
+
+	FileInfo *file;
+	NEW_CLASS(file, FileInfo());
+	file->id = id;
+	file->fileName = Text::String::New(sb.ToCString());
+	sptr = Text::StrInt64(sbuff, id);
+	file->uid = Text::StrCopyNewC(sbuff, (UOSInt)(sptr - sbuff));
+
+	sb.ClearStr();
+	sb.AppendC(UTF8STRC("Received: from "));
+	sptr = Net::SocketUtil::GetAddrName(sbuff, remoteAddr);
+	sb.AppendP(sbuff, sptr);
+	sb.AppendC(UTF8STRC("\r\n by "));
+	sb.Append(serverName);
+	sb.AppendC(UTF8STRC(" with "));
+	sb.AppendC(UTF8STRC("ESMTPS"));
+	sb.AppendC(UTF8STRC("; "));
+	sptr = Net::WebUtil::Date2Str(sbuff, &currTime);
+	sb.AppendP(sbuff, sptr);
+	sb.AppendC(UTF8STRC("\r\n"));
+
+	Data::ArrayList<Text::MIMEObj::MailMessage::MailAddress*> recpList;
+	mail->GetRecpList(&recpList);
+	i = 0;
+	j = recpList.GetCount();
+	while (i < j)
+	{
+		file->rcptList.Add(recpList.GetItem(i)->address->Clone());
+
+		sb.AppendC(UTF8STRC("X-Apparently-To: "));
+		Text::CString rcptTo = recpList.GetItem(i)->address->ToCString();
+		if (rcptTo.StartsWith(UTF8STRC("RCPT TO:")))
+		{
+			rcptTo = rcptTo.Substring(8).LTrim();
+		}
+		if (rcptTo.StartsWith('<') && rcptTo.EndsWith('>'))
+		{
+			sb.AppendC(rcptTo.v + 1, rcptTo.leng - 2);
+		}
+		else
+		{
+			sb.Append(rcptTo);
+		}
+		sb.AppendC(UTF8STRC("; "));
+		sb.AppendP(sbuff, sptr);
+		sb.AppendC(UTF8STRC("\r\n"));
+
+		i++;
+	}
+	UInt64 fileSize = sb.GetLength();
+	{
+		IO::FileStream fs(file->fileName, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+		fs.Write(sb.ToString(), sb.GetLength());
+		fileSize += mail->WriteStream(&fs);
+	}
+
+	EmailInfo *email;
+	email = MemAlloc(EmailInfo, 1);
+	email->id = id;
+	email->remoteAddr = *remoteAddr;
+	sptr = mail->GetFromAddr(sbuff);
+	email->fromAddr = Text::String::NewP(sbuff, sptr);
+	email->recvTime = currTime.ToTicks();
+	email->isDeleted = false;
+	email->fileSize = (UOSInt)fileSize;
 	Sync::MutexUsage mutUsage(&this->mailMut);
 	this->mailList.Add(email);
 	mutUsage.ReplaceMutex(&this->fileMut);

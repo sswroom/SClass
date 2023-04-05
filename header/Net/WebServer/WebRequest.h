@@ -69,9 +69,10 @@ namespace Net
 			virtual const UInt8 *GetHTTPFormFile(Text::CString formName, UOSInt index, UTF8Char *fileName, UOSInt fileNameBuffSize, UTF8Char **fileNameEnd, UOSInt *fileSize);
 			virtual void GetRequestURLBase(Text::StringBuilderUTF8 *sb);
 
-			virtual const Net::SocketUtil::AddressInfo *GetClientAddr();
-			virtual UInt16 GetClientPort();
-			virtual Bool IsSecure();
+			virtual const Net::SocketUtil::AddressInfo *GetClientAddr() const;
+			virtual Net::NetConnection *GetNetConn() const;
+			virtual UInt16 GetClientPort() const;
+			virtual Bool IsSecure() const;
 			virtual Crypto::Cert::X509Cert *GetClientCert();
 			virtual const UInt8 *GetReqData(UOSInt *dataSize);
 

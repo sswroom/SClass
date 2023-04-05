@@ -612,17 +612,22 @@ void Net::WebServer::WebRequest::GetRequestURLBase(Text::StringBuilderUTF8 *sb)
 	}
 }
 
-const Net::SocketUtil::AddressInfo *Net::WebServer::WebRequest::GetClientAddr()
+const Net::SocketUtil::AddressInfo *Net::WebServer::WebRequest::GetClientAddr() const
 {
 	return &this->cliAddr;
 }
 
-UInt16 Net::WebServer::WebRequest::GetClientPort()
+Net::NetConnection *Net::WebServer::WebRequest::GetNetConn() const
+{
+	return this->cli;
+}
+
+UInt16 Net::WebServer::WebRequest::GetClientPort() const
 {
 	return this->cliPort;
 }
 
-Bool Net::WebServer::WebRequest::IsSecure()
+Bool Net::WebServer::WebRequest::IsSecure() const
 {
 	return this->cli->IsSSL();
 }

@@ -11,13 +11,13 @@ namespace Text
 		{
 		private:
 			UInt8 *textBuff;
-			OSInt buffSize;
-			Int32 codePage;
+			UOSInt buffSize;
+			UInt32 codePage;
 			Text::String *contType;
 
 			void BuildContentType();
 		public:
-			HTMLMIMEObj(UInt8 *textBuff, OSInt buffSize, Int32 codePage);
+			HTMLMIMEObj(const UInt8 *textBuff, UOSInt buffSize, UInt32 codePage);
 			virtual ~HTMLMIMEObj();
 
 			virtual Text::CString GetClassName() const;
@@ -26,7 +26,7 @@ namespace Text
 			virtual IMIMEObj *Clone() const;
 
 			void GetText(Text::StringBuilderUTF8 *sb) const;
-			Int32 GetCodePage() const;
+			UInt32 GetCodePage() const;
 		};
 	}
 }

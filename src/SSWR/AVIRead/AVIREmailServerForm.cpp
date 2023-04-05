@@ -147,7 +147,7 @@ void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnGCISStartClicked(void *user
 		Crypto::Cert::X509Cert *issuerCert = Crypto::Cert::CertUtil::FindIssuer(me->gcisSSLCert);
 		ssl->ServerSetCertsASN1(me->gcisSSLCert, me->gcisSSLKey, issuerCert);
 		SDEL_CLASS(issuerCert);
-		NEW_CLASS(me->gcisHdlr, Net::WebServer::GCISNotifyHandler(sb.ToCString()));
+		NEW_CLASS(me->gcisHdlr, Net::WebServer::GCISNotifyHandler(sb.ToCString(), OnGCISMailReceived, me));
 		NEW_CLASS(me->gcisListener, Net::WebServer::WebListener(me->core->GetSocketFactory(), ssl, me->gcisHdlr, port, 60, 2, CSTR("SSWRGCIS/1.0"), false, Net::WebServer::KeepAlive::Default, true));
 		if (me->gcisListener->IsError())
 		{
@@ -232,6 +232,31 @@ UTF8Char *__stdcall SSWR::AVIRead::AVIREmailServerForm::OnMailReceived(UTF8Char 
 	me->mailChanged = true;
 	me->totalSize += (UOSInt)mail->dataStm->GetLength();
 	return Text::StrInt64(queryId, id);
+}
+
+void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnGCISMailReceived(void *userObj, Net::NetConnection *cli, Text::MIMEObj::MailMessage *mail)
+{
+	SSWR::AVIRead::AVIREmailServerForm *me = (SSWR::AVIRead::AVIREmailServerForm*)userObj;
+	UTF8Char sbuff[32];
+	UTF8Char *sptr;
+	Text::StringBuilderUTF8 sb;
+	sb.AppendC(UTF8STRC("Received email from "));
+	sptr = cli->GetRemoteName(sbuff);
+	sb.AppendP(sbuff, sptr);
+	Int64 id = me->store->NextEmailId();
+	sb.AppendC(UTF8STRC(", id = "));
+	sb.AppendI64(id);
+	me->log.LogMessage(sb.ToCString(), IO::ILogHandler::LogLevel::Command);
+
+	Net::SocketUtil::AddressInfo remoteAddr;
+	cli->GetRemoteAddr(&remoteAddr);
+	me->store->NewEmail(id, &remoteAddr, SERVER_DOMAIN, mail);
+	me->mailChanged = true;
+	{
+		IO::MemoryStream mstm;
+		mail->GetContent()->WriteStream(&mstm);
+		me->totalSize += (UOSInt)mstm.GetLength();
+	}
 }
 
 Bool __stdcall SSWR::AVIRead::AVIREmailServerForm::OnMailLogin(void *userObj, Text::CString userName, Text::CString pwd)

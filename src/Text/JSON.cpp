@@ -1322,6 +1322,22 @@ Text::JSONBase *Text::JSONObject::GetObjectValue(Text::CString name)
 	return this->objVals.GetC(name);
 }
 
+Text::JSONArray *Text::JSONObject::GetObjectArray(Text::CString name)
+{
+	Text::JSONBase *o = this->GetObjectValue(name);
+	if (o && o->GetType() == Text::JSONType::Array)
+		return (Text::JSONArray*)o;
+	return 0;
+}
+
+Text::JSONObject *Text::JSONObject::GetObjectObject(Text::CString name)
+{
+	Text::JSONBase *o = this->GetObjectValue(name);
+	if (o && o->GetType() == Text::JSONType::Object)
+		return (Text::JSONObject*)o;
+	return 0;
+}
+
 void Text::JSONObject::GetObjectNames(Data::ArrayList<Text::String *> *names)
 {
 	UOSInt i = 0;
@@ -1490,6 +1506,14 @@ void Text::JSONArray::AddArrayValue(Text::JSONBase *val)
 Text::JSONBase *Text::JSONArray::GetArrayValue(UOSInt index)
 {
 	return this->arrVals.GetItem(index);
+}
+
+Text::JSONObject *Text::JSONArray::GetArrayObject(UOSInt index)
+{
+	Text::JSONBase *o = this->GetArrayValue(index);
+	if (o && o->GetType() == Text::JSONType::Object)
+		return (Text::JSONObject*)o;
+	return 0;
 }
 
 Double Text::JSONArray::GetArrayDouble(UOSInt index)

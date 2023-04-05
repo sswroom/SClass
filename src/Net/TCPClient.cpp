@@ -417,7 +417,12 @@ UOSInt Net::TCPClient::GetRecvBuffSize()
 	}
 }
 
-UTF8Char *Net::TCPClient::GetRemoteName(UTF8Char *buff)
+UInt64 Net::TCPClient::GetCliId()
+{
+	return this->cliId;
+}
+
+UTF8Char *Net::TCPClient::GetRemoteName(UTF8Char *buff) const
 {
 	if (this->flags & 4)
 	{
@@ -432,27 +437,22 @@ UTF8Char *Net::TCPClient::GetRemoteName(UTF8Char *buff)
 	}
 }
 
-UTF8Char *Net::TCPClient::GetLocalName(UTF8Char *buff)
+UTF8Char *Net::TCPClient::GetLocalName(UTF8Char *buff) const
 {
 	return this->sockf->GetLocalName(buff, this->s);
 }
 
-UInt64 Net::TCPClient::GetCliId()
-{
-	return this->cliId;
-}
-
-Bool Net::TCPClient::GetRemoteAddr(Net::SocketUtil::AddressInfo *addr)
+Bool Net::TCPClient::GetRemoteAddr(Net::SocketUtil::AddressInfo *addr) const
 {
 	return this->sockf->GetRemoteAddr(this->s, addr, 0);
 }
 
-UInt16 Net::TCPClient::GetRemotePort()
+UInt16 Net::TCPClient::GetRemotePort() const
 {
 	return (UInt16)((this->cliId >> 32) & 0xffff);
 }
 
-UInt16 Net::TCPClient::GetLocalPort()
+UInt16 Net::TCPClient::GetLocalPort() const
 {
 	return (UInt16)((this->cliId >> 48) & 0xffff);
 }
