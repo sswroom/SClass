@@ -217,7 +217,10 @@ void SSWR::OrganMgr::OrganWebEnv::LoadGroups()
 	GroupInfo *pGroup;
 	CategoryInfo *cate;
 	UOSInt i;
-	DB::DBReader *r = this->db->ExecuteReader(CSTR("select id, group_type, eng_name, chi_name, description, parent_id, photo_group, photo_species, idKey, cate_id, flags from groups"));
+	DB::SQLBuilder sql(this->db);
+	sql.AppendCmdC(CSTR("select id, group_type, eng_name, chi_name, description, parent_id, photo_group, photo_species, idKey, cate_id, flags from "));
+	sql.AppendCol((const UTF8Char*)"groups");
+	DB::DBReader *r = this->db->ExecuteReader(sql.ToCString());
 	if (r != 0)
 	{
 		while (r->ReadNext())
