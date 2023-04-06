@@ -96,9 +96,12 @@ SSWR::AVIRead::AVIRTextHashForm::AVIRTextHashForm(UI::GUIClientControl *parent, 
 	while (currHash <= Crypto::Hash::HashType::Last)
 	{
 		hash = Crypto::Hash::HashCreator::CreateHash(currHash);
-		sptr = hash->GetName(sbuff);
-		this->cboHashType->AddItem(CSTRP(sbuff, sptr), (void*)currHash);
-		DEL_CLASS(hash);
+		if (hash)
+		{
+			sptr = hash->GetName(sbuff);
+			this->cboHashType->AddItem(CSTRP(sbuff, sptr), (void*)currHash);
+			DEL_CLASS(hash);
+		}
 		currHash = (Crypto::Hash::HashType)((OSInt)currHash + 1);
 	}
 	Data::ArrayList<Text::TextBinEnc::ITextBinEnc*> *encs = this->encList.GetEncList();

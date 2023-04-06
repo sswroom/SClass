@@ -47,9 +47,9 @@ SSWR::AVIRead::MIMEViewer::AVIRMailViewer::AVIRMailViewer(SSWR::AVIRead::AVIRCor
 
 	this->tpRAW = this->tcHeader->AddTabPage(CSTR("RAW Headers"));
 	NEW_CLASS(this->lvRAW, UI::GUIListView(ui, this->tpRAW, UI::GUIListView::LVSTYLE_TABLE, 2));
-	this->lvRAW->SetDockType(UI::GUIControl::DOCK_RIGHT);
+	this->lvRAW->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvRAW->AddColumn(CSTR("Name"), 100);
-	this->lvRAW->AddColumn(CSTR("Value"), 300);
+	this->lvRAW->AddColumn(CSTR("Value"), 600);
 	this->lvRAW->SetShowGrid(true);
 	this->lvRAW->SetFullRowSelect(true);
 

@@ -15,8 +15,6 @@
 SSWR::AVIRead::MIMEViewer::AVIRMultipartViewer::AVIRMultipartViewer(SSWR::AVIRead::AVIRCore *core, UI::GUICore *ui, UI::GUIClientControl *ctrl, Media::ColorManagerSess *sess, Text::MIMEObj::MultipartMIMEObj *obj) : SSWR::AVIRead::MIMEViewer::AVIRMIMEViewer(core, ctrl, obj)
 {
 	UInt8 hashBuff[64];
-	UInt8 encBuff[512];
-	UOSInt encSize;
 	UOSInt i;
 	UOSInt j;
 	Text::IMIMEObj *subObj;
@@ -116,27 +114,23 @@ SSWR::AVIRead::MIMEViewer::AVIRMultipartViewer::AVIRMultipartViewer(SSWR::AVIRea
 													sb.AppendC(UTF8STRC("Hash:\r\n"));
 													sb.AppendHexBuff(hashBuff, buffSize, ' ', Text::LineBreakType::CRLF);
 
-													Net::ASN1PDUBuilder builder;
-													builder.BeginSequence();
-														builder.BeginSequence();
-															if (hashType == Crypto::Hash::HashType::SHA256)
-															{
-																builder.AppendOIDString(UTF8STRC("2.16.840.1.101.3.4.2.1")); //id-sha256
-															}
-															builder.AppendNull();
-														builder.EndLevel();
-														builder.AppendOctetStringC(hashBuff, buffSize);
-													builder.EndLevel();
-
-													////////////////////////////////////////////
-													// See PKCS1 X509 Verify
-													encSize = ssl->Encrypt(key, encBuff, builder.GetBuff(&buffSize), builder.GetBuffSize(), Crypto::Encrypt::RSACipher::Padding::PKCS1);
-													sb.AppendC(UTF8STRC("\r\nMe:\r\n"));
-													sb.AppendHexBuff(encBuff, encSize, ' ', Text::LineBreakType::CRLF);
-													sb.AppendC(UTF8STRC("\r\nSign:\r\n"));
-													sb.AppendHexBuff(encDigestData, encLen, ' ', Text::LineBreakType::CRLF);
+													Crypto::Cert::DigestInfo digestInfo;
+													Bool match = false;
+													UInt8 decBuff[256];
+													UOSInt decLen = ssl->Decrypt(key, decBuff, encDigestData, encLen, Crypto::Encrypt::RSACipher::Padding::PKCS1);
+													if (decLen > 0)
+													{
+														if (Crypto::Cert::X509File::ParseDigestType(&digestInfo, decBuff, decBuff + decLen))
+														{
+															sb.AppendC(UTF8STRC("\r\nHash Type: "));
+															sb.Append(Crypto::Hash::HashTypeGetName(digestInfo.hashType));
+															sb.AppendC(UTF8STRC("\r\nHash Value:\r\n"));
+															sb.AppendHexBuff(digestInfo.hashVal, digestInfo.hashLen, ' ', Text::LineBreakType::CRLF);
+															match = Text::StrEqualsC(digestInfo.hashVal, digestInfo.hashLen, hashBuff, buffSize);
+														}
+													}
 													printf("%s\r\n", sb.ToString());
-													if (Text::StrEqualsC(encBuff, encSize, encDigestData, encLen))
+													if (match)
 													{
 														this->txtSignState->SetText(CSTR("Signature valid"));
 													}
