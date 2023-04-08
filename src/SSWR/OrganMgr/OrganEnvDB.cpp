@@ -354,7 +354,9 @@ UOSInt SSWR::OrganMgr::OrganEnvDB::GetGroupItems(Data::ArrayList<OrganGroupItem*
 	Text::StringBuilderUTF8 sb;
 	Bool found = false;
 	UOSInt retCnt = 0;
-	sql.AppendCmdC(CSTR("select id, group_type, eng_name, chi_name, description, photo_group, photo_species, idKey, flags from groups where parent_id = "));
+	sql.AppendCmdC(CSTR("select id, group_type, eng_name, chi_name, description, photo_group, photo_species, idKey, flags from "));
+	sql.AppendCol((const UTF8Char*)"groups");
+	sql.AppendCmdC(CSTR(" where parent_id = "));
 	sql.AppendInt32(grpId);
 	sql.AppendCmdC(CSTR(" and cate_id = "));
 	sql.AppendInt32(this->currCate->cateId);
@@ -930,7 +932,9 @@ UOSInt SSWR::OrganMgr::OrganEnvDB::GetGroupAllSpecies(Data::ArrayList<OrganSpeci
 	while (thisId.GetCount() > 0)
 	{
 		sql.Clear();
-		sql.AppendCmdC(CSTR("select id from groups where parent_id in ("));
+		sql.AppendCmdC(CSTR("select id from "));
+		sql.AppendCol((const UTF8Char*)"groups");
+		sql.AppendCmdC(CSTR(" where parent_id in ("));
 		i = 0;
 		j = thisId.GetCount();
 		while (i < j)
@@ -1037,7 +1041,9 @@ UOSInt SSWR::OrganMgr::OrganEnvDB::GetGroupAllUserFile(Data::ArrayList<UserFileI
 	while (thisId.GetCount() > 0)
 	{
 		sql.Clear();
-		sql.AppendCmdC(CSTR("select id from groups where parent_id in ("));
+		sql.AppendCmdC(CSTR("select id from "));
+		sql.AppendCol((const UTF8Char*)"groups");
+		sql.AppendCmdC(CSTR(" where parent_id in ("));
 		i = 0;
 		j = thisId.GetCount();
 		while (i < j)
@@ -1179,7 +1185,9 @@ SSWR::OrganMgr::OrganGroup *SSWR::OrganMgr::OrganEnvDB::GetGroup(Int32 groupId, 
 	Int32 photoGroup;
 	Int32 photoSpecies;
 	OrganGroup *foundGroup = 0;
-	sql.AppendCmdC(CSTR("select id, group_type, eng_name, chi_name, description, parent_id, photo_group, photo_species, idKey, flags from groups where id = "));
+	sql.AppendCmdC(CSTR("select id, group_type, eng_name, chi_name, description, parent_id, photo_group, photo_species, idKey, flags from "));
+	sql.AppendCol((const UTF8Char*)"groups");
+	sql.AppendCmdC(CSTR(" where id = "));
 	sql.AppendInt32(groupId);
 	r = this->db->ExecuteReader(sql.ToCString());
 	if (r)
@@ -1409,7 +1417,9 @@ Bool SSWR::OrganMgr::OrganEnvDB::DelSpecies(OrganSpecies *sp)
 	DB::SQLBuilder sql(this->db);
 	Bool succ = true;
 	sql.Clear();
-	sql.AppendCmdC(CSTR("update groups set photo_group=NULL, photo_species=NULL where photo_species="));
+	sql.AppendCmdC(CSTR("update "));
+	sql.AppendCol((const UTF8Char*)"groups");
+	sql.AppendCmdC(CSTR(" set photo_group=NULL, photo_species=NULL where photo_species="));
 	sql.AppendInt32(sp->GetSpeciesId());
 	if (this->db->ExecuteNonQuery(sql.ToCString()) < -1)
 		succ = false;
@@ -2378,7 +2388,9 @@ Bool SSWR::OrganMgr::OrganEnvDB::SaveGroup(OrganGroup *grp)
 		flags |= 1;
 	}
 	DB::SQLBuilder sql(this->db);
-	sql.AppendCmdC(CSTR("update groups set group_type="));
+	sql.AppendCmdC(CSTR("update "));
+	sql.AppendCol((const UTF8Char*)"groups");
+	sql.AppendCmdC(CSTR(" set group_type="));
 	sql.AppendInt32(grp->GetGroupType());
 	sql.AppendCmdC(CSTR(", eng_name="));
 	sql.AppendStr(grp->GetEName());
@@ -2399,7 +2411,9 @@ UOSInt SSWR::OrganMgr::OrganEnvDB::GetGroupCount(Int32 groupId)
 {
 	DB::SQLBuilder sql(this->db);
 	DB::DBReader *r;
-	sql.AppendCmdC(CSTR("select count(*) from groups where parent_id = "));
+	sql.AppendCmdC(CSTR("select count(*) from "));
+	sql.AppendCol((const UTF8Char*)"groups");
+	sql.AppendCmdC(CSTR(" where parent_id = "));
 	sql.AppendInt32(groupId);
 	sql.AppendCmdC(CSTR(" and cate_id = "));
 	sql.AppendInt32(this->currCate->cateId);
@@ -2453,7 +2467,9 @@ Bool SSWR::OrganMgr::OrganEnvDB::AddGroup(OrganGroup *grp, Int32 parGroupId)
 		flags |= 1;
 	}
 	DB::SQLBuilder sql(this->db);
-	sql.AppendCmdC(CSTR("insert into groups (group_type, eng_name, chi_name, description, parent_id, idKey, cate_id, flags) values ("));
+	sql.AppendCmdC(CSTR("insert into "));
+	sql.AppendCol((const UTF8Char*)"groups");
+	sql.AppendCmdC(CSTR(" (group_type, eng_name, chi_name, description, parent_id, idKey, cate_id, flags) values ("));
 	sql.AppendInt32(grp->GetGroupType());
 	sql.AppendCmdC(CSTR(", "));
 	sql.AppendStr(grp->GetEName());
@@ -2476,7 +2492,9 @@ Bool SSWR::OrganMgr::OrganEnvDB::AddGroup(OrganGroup *grp, Int32 parGroupId)
 Bool SSWR::OrganMgr::OrganEnvDB::DelGroup(Int32 groupId)
 {
 	DB::SQLBuilder sql(this->db);
-	sql.AppendCmdC(CSTR("delete from groups where id = "));
+	sql.AppendCmdC(CSTR("delete from "));
+	sql.AppendCol((const UTF8Char*)"groups");
+	sql.AppendCmdC(CSTR(" where id = "));
 	sql.AppendInt32(groupId);
 	sql.AppendCmdC(CSTR(" and cate_id = "));
 	sql.AppendInt32(this->currCate->cateId);
@@ -2491,17 +2509,21 @@ Bool SSWR::OrganMgr::OrganEnvDB::SetGroupDefSp(OrganGroup *grp, OrganImageItem *
 	grp->SetPhotoSpecies(img->->GetSpeciesId());
 	if (oldId == -1)
 	{
-		sql.AppendCmdC(CSTR("update groups set photo_group=NULL, photo_species=");
+		sql.AppendCmdC(CSTR("update "));
+		sql.AppendCol((const UTF8Char*)"groups");
+		sql.AppendCmdC(CSTR(" set photo_group=NULL, photo_species="));
 		sql.AppendInt32(sp->GetSpeciesId());
-		sql.AppendCmdC(CSTR(" where id=");
+		sql.AppendCmdC(CSTR(" where id="));
 		sql.AppendInt32(grp->GetGroupId());
 		this->db->ExecuteNonQuery(sql.ToCString());
 	}
 	else
 	{
-		sql.AppendCmdC(CSTR("update groups set photo_group=NULL, photo_species=");
+		sql.AppendCmdC(CSTR("update "));
+		sql.AppendCml((const UTF8Char*)"groups");
+		sql.AppendCmdC(CSTR(" set photo_group=NULL, photo_species="));
 		sql.AppendInt32(sp->GetSpeciesId());
-		sql.AppendCmdC(CSTR(" where photo_species=");
+		sql.AppendCmdC(CSTR(" where photo_species="));
 		sql.AppendInt32(oldId);
 		this->db->ExecuteNonQuery(sql.ToCString());
 	}
@@ -2517,7 +2539,9 @@ Bool SSWR::OrganMgr::OrganEnvDB::MoveGroups(Data::ArrayList<OrganGroup*> *grpLis
 	UOSInt j;
 	i = 0;
 	j = grpList->GetCount();
-	sql.AppendCmdC(CSTR("update groups set parent_id="));
+	sql.AppendCmdC(CSTR("update "));
+	sql.AppendCol((const UTF8Char*)"groups");
+	sql.AppendCmdC(CSTR(" set parent_id="));
 	sql.AppendInt32(destGroup->GetGroupId());
 	sql.AppendCmdC(CSTR(" where id in ("));
 	found = false;
@@ -2549,7 +2573,9 @@ Bool SSWR::OrganMgr::OrganEnvDB::MoveSpecies(Data::ArrayList<OrganSpecies*> *spL
 	sql.AppendCmdC(CSTR("update species set group_id="));
 	sql.AppendInt32(destGroup->GetGroupId());
 	sql.AppendCmdC(CSTR(" where id in ("));
-	sql2.AppendCmdC(CSTR("update groups set photo_group=NULL, photo_species=NULL where photo_species in ("));
+	sql2.AppendCmdC(CSTR("update "));
+	sql2.AppendCol((const UTF8Char*)"groups");
+	sql2.AppendCmdC(CSTR(" set photo_group=NULL, photo_species=NULL where photo_species in ("));
 	found = false;
 	i = 0;
 	j = spList->GetCount();
@@ -4261,12 +4287,16 @@ SSWR::OrganMgr::OrganGroup *SSWR::OrganMgr::OrganEnvDB::SearchObject(const UTF8C
 	sql.Clear();
 	if (found)
 	{
-		sql.AppendCmdC(CSTR("select id, group_type, eng_name, chi_name, description, parent_id, photo_group, photo_species, idKey, flags from groups where id = "));
+		sql.AppendCmdC(CSTR("select id, group_type, eng_name, chi_name, description, parent_id, photo_group, photo_species, idKey, flags from "));
+		sql.AppendCol((const UTF8Char*)"groups");
+		sql.AppendCmdC(CSTR(" where id = "));
 		sql.AppendInt32(*parentId);
 	}
 	else
 	{
-		sql.AppendCmdC(CSTR("select id, group_type, eng_name, chi_name, description, parent_id, photo_group, photo_species, idKey, flags from groups where eng_name like "));
+		sql.AppendCmdC(CSTR("select id, group_type, eng_name, chi_name, description, parent_id, photo_group, photo_species, idKey, flags from "));
+		sql.AppendCol((const UTF8Char*)"groups");
+		sql.AppendCmdC(CSTR(" where eng_name like "));
 		Text::StrConcatC(Text::StrConcatC(Text::StrConcatC(sbuff, UTF8STRC("%")), searchStr, searchStrLen), UTF8STRC("%"));
 		sql.AppendStrUTF8(sbuff);
 		sql.AppendCmdC(CSTR(" or chi_name like "));
@@ -4403,7 +4433,9 @@ Data::FastMap<Int32, Data::ArrayList<SSWR::OrganMgr::OrganGroup*>*> *SSWR::Organ
 
 	DB::SQLBuilder sql(this->db);
 	Text::StringBuilderUTF8 sb;
-	sql.AppendCmdC(CSTR("select id, group_type, eng_name, chi_name, description, photo_group, photo_species, idKey, parent_id, flags from groups where cate_id = "));
+	sql.AppendCmdC(CSTR("select id, group_type, eng_name, chi_name, description, photo_group, photo_species, idKey, parent_id, flags from "));
+	sql.AppendCol((const UTF8Char*)"groups");
+	sql.AppendCmdC(CSTR(" where cate_id = "));
 	sql.AppendInt32(this->currCate->cateId);
 	sql.AppendCmdC(CSTR(" order by parent_id, eng_name"));
 	r = this->db->ExecuteReader(sql.ToCString());

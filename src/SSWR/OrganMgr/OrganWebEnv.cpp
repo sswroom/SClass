@@ -2559,7 +2559,9 @@ Int32 SSWR::OrganMgr::OrganWebEnv::GroupAdd(Sync::RWMutexUsage *mutUsage, Text::
 	if (group == 0)
 		return 0;
 	DB::SQLBuilder sql(this->db);
-	sql.AppendCmdC(CSTR("insert into groups (group_type, eng_name, chi_name, description, parent_id, idKey, cate_id, flags) values ("));
+	sql.AppendCmdC(CSTR("insert into "));
+	sql.AppendCol((const UTF8Char*)"groups");
+	sql.AppendCmdC(CSTR(" (group_type, eng_name, chi_name, description, parent_id, idKey, cate_id, flags) values ("));
 	sql.AppendInt32(groupTypeId);
 	sql.AppendCmdC(CSTR(", "));
 	sql.AppendStrC(engName);
@@ -2611,7 +2613,9 @@ Bool SSWR::OrganMgr::OrganWebEnv::GroupModify(Sync::RWMutexUsage *mutUsage, Int3
 	if (group == 0)
 		return false;
 	DB::SQLBuilder sql(this->db);
-	sql.AppendCmdC(CSTR("update groups set group_type = "));
+	sql.AppendCmdC(CSTR("update "));
+	sql.AppendCol((const UTF8Char*)"groups");
+	sql.AppendCmdC(CSTR(" set group_type = "));
 	sql.AppendInt32(groupTypeId);
 	sql.AppendCmdC(CSTR(", eng_name = "));
 	sql.AppendStrC(engName);
@@ -2656,7 +2660,9 @@ Bool SSWR::OrganMgr::OrganWebEnv::GroupDelete(Sync::RWMutexUsage *mutUsage, Int3
 		return false;
 
 	DB::SQLBuilder sql(this->db);
-	sql.AppendCmdC(CSTR("delete from groups where id = "));
+	sql.AppendCmdC(CSTR("delete from "));
+	sql.AppendCol((const UTF8Char*)"groups");
+	sql.AppendCmdC(CSTR(" where id = "));
 	sql.AppendInt32(id);
 	if (this->db->ExecuteNonQuery(sql.ToCString()) == 1)
 	{
@@ -2689,7 +2695,9 @@ Bool SSWR::OrganMgr::OrganWebEnv::GroupMove(Sync::RWMutexUsage *mutUsage, Int32 
 		parentGroup = this->groupMap.Get(parentGroup->parentId);
 	}
 	DB::SQLBuilder sql(this->db);
-	sql.AppendCmdC(CSTR("update groups set parent_id = "));
+	sql.AppendCmdC(CSTR("update "));
+	sql.AppendCol((const UTF8Char*)"groups");
+	sql.AppendCmdC(CSTR(" set parent_id = "));
 	sql.AppendInt32(destGroupId);
 	sql.AppendCmdC(CSTR(", cate_id = "));
 	sql.AppendInt32(cateId);
@@ -2762,7 +2770,9 @@ Bool SSWR::OrganMgr::OrganWebEnv::GroupSetPhotoSpecies(Sync::RWMutexUsage *mutUs
 		return false;
 
 	DB::SQLBuilder sql(this->db);
-	sql.AppendCmdC(CSTR("update groups set photo_species = "));
+	sql.AppendCmdC(CSTR("update "));
+	sql.AppendCol((const UTF8Char*)"groups");
+	sql.AppendCmdC(CSTR(" set photo_species = "));
 	sql.AppendInt32(photoSpeciesId);
 	sql.AppendCmdC(CSTR(" where id = "));
 	sql.AppendInt32(groupId);
@@ -2794,7 +2804,9 @@ Bool SSWR::OrganMgr::OrganWebEnv::GroupSetPhotoGroup(Sync::RWMutexUsage *mutUsag
 		return false;
 
 	DB::SQLBuilder sql(this->db);
-	sql.AppendCmdC(CSTR("update groups set photo_group = "));
+	sql.AppendCmdC(CSTR("update "));
+	sql.AppendCol((const UTF8Char*)"groups");
+	sql.AppendCmdC(CSTR(" set photo_group = "));
 	sql.AppendInt32(photoGroupId);
 	sql.AppendCmdC(CSTR(" where id = "));
 	sql.AppendInt32(groupId);
