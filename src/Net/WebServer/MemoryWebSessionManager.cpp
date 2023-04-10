@@ -158,7 +158,7 @@ Net::WebServer::IWebSession *Net::WebServer::MemoryWebSessionManager::CreateSess
 		return sess;
 	Int64 sessId = this->GenSessId(req);
 	sptr = Text::StrInt64(sbuff, sessId);
-	resp->AddSetCookie(CSTR("WebSessId"), CSTRP(sbuff, sptr), this->path->ToCString(), true, req->IsSecure(), Net::WebServer::SameSiteType::Strict, 0);
+	resp->AddSetCookie(CSTR("WebSessId"), CSTRP(sbuff, sptr), this->path->ToCString(), true, req->IsSecure(), Net::WebServer::SameSiteType::Lax, 0);
 	UOSInt i;
 	NEW_CLASS(sess, Net::WebServer::MemoryWebSession(sessId, req->GetBrowser(), req->GetOS()));
 	Sync::MutexUsage mutUsage(&this->mut);
@@ -192,7 +192,7 @@ void Net::WebServer::MemoryWebSessionManager::DeleteSession(Net::WebServer::IWeb
 			sess->EndUse();
 			DEL_CLASS(sess);
 		}
-		resp->AddSetCookie(CSTR("WebSessId"), CSTR(""), this->path->ToCString(), true, req->IsSecure(), Net::WebServer::SameSiteType::Strict, Data::Timestamp::UtcNow().AddMonth(-12));
+		resp->AddSetCookie(CSTR("WebSessId"), CSTR(""), this->path->ToCString(), true, req->IsSecure(), Net::WebServer::SameSiteType::Lax, Data::Timestamp::UtcNow().AddMonth(-12));
 	}
 }
 
