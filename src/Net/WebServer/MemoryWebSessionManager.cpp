@@ -86,7 +86,7 @@ Int64 Net::WebServer::MemoryWebSessionManager::GetSessId(Net::WebServer::IWebReq
 		strCnt = Text::StrSplitTrimP(strs, 2, strs[1], ';');
 		if (Text::StrStartsWithC(strs[0].v, strs[0].leng, this->cookieName->v, this->cookieName->leng) && strs[0].v[this->cookieName->leng] == '=')
 		{
-			sessId = Text::StrToInt64(&strs[0].v[10]);
+			sessId = Text::StrToInt64(&strs[0].v[this->cookieName->leng + 1]);
 			break;
 		}
 	}
