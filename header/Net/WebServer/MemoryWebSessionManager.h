@@ -16,6 +16,7 @@ namespace Net
 			Data::ArrayList<Net::WebServer::MemoryWebSession*> sesses;
 			Sync::Mutex mut;
 			Text::String *path;
+			Text::String *cookieName;
 
 			Int32 chkInterval;
 			SessionHandler chkHdlr;
@@ -27,7 +28,7 @@ namespace Net
 			static UInt32 __stdcall CheckThread(void *userObj);
 			Int64 GetSessId(Net::WebServer::IWebRequest *req);
 		public:
-			MemoryWebSessionManager(Text::CString path, SessionHandler delHdlr, void *delHdlrObj, Int32 chkInterval, SessionHandler chkHdlr, void *chkHdlrObj);
+			MemoryWebSessionManager(Text::CString path, SessionHandler delHdlr, void *delHdlrObj, Int32 chkInterval, SessionHandler chkHdlr, void *chkHdlrObj, Text::CString cookieName);
 			virtual ~MemoryWebSessionManager();
 
 			virtual IWebSession *GetSession(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp);

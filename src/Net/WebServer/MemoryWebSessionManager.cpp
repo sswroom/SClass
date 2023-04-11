@@ -84,7 +84,7 @@ Int64 Net::WebServer::MemoryWebSessionManager::GetSessId(Net::WebServer::IWebReq
 	while (strCnt >= 2)
 	{
 		strCnt = Text::StrSplitTrimP(strs, 2, strs[1], ';');
-		if (Text::StrStartsWithC(strs[0].v, strs[0].leng, UTF8STRC("WebSessId=")))
+		if (Text::StrStartsWithC(strs[0].v, strs[0].leng, this->cookieName->v, this->cookieName->leng) && strs[0].v[this->cookieName->leng] == '=')
 		{
 			sessId = Text::StrToInt64(&strs[0].v[10]);
 			break;
@@ -95,9 +95,13 @@ Int64 Net::WebServer::MemoryWebSessionManager::GetSessId(Net::WebServer::IWebReq
 	return sessId;
 }
 
-Net::WebServer::MemoryWebSessionManager::MemoryWebSessionManager(Text::CString path, SessionHandler delHdlr, void *delHdlrObj, Int32 chkInterval, SessionHandler chkHdlr, void *chkHdlrObj) : Net::WebServer::IWebSessionManager(delHdlr, delHdlrObj)
+Net::WebServer::MemoryWebSessionManager::MemoryWebSessionManager(Text::CString path, SessionHandler delHdlr, void *delHdlrObj, Int32 chkInterval, SessionHandler chkHdlr, void *chkHdlrObj, Text::CString cookieName) : Net::WebServer::IWebSessionManager(delHdlr, delHdlrObj)
 {
 	this->path = Text::String::New(path);
+	if (cookieName.leng == 0)
+		this->cookieName = Text::String::New(UTF8STRC("WebSessId"));
+	else
+		this->cookieName = Text::String::New(cookieName);
 	this->chkInterval = chkInterval;
 	this->chkHdlr = chkHdlr;
 	this->chkHdlrObj = chkHdlrObj;
@@ -129,6 +133,7 @@ Net::WebServer::MemoryWebSessionManager::~MemoryWebSessionManager()
 		DEL_CLASS(sess);
 	}
 	this->path->Release();
+	this->cookieName->Release();
 }
 
 Net::WebServer::IWebSession *Net::WebServer::MemoryWebSessionManager::GetSession(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp)
@@ -158,7 +163,7 @@ Net::WebServer::IWebSession *Net::WebServer::MemoryWebSessionManager::CreateSess
 		return sess;
 	Int64 sessId = this->GenSessId(req);
 	sptr = Text::StrInt64(sbuff, sessId);
-	resp->AddSetCookie(CSTR("WebSessId"), CSTRP(sbuff, sptr), this->path->ToCString(), true, req->IsSecure(), Net::WebServer::SameSiteType::Strict, 0);
+	resp->AddSetCookie(this->cookieName->ToCString(), CSTRP(sbuff, sptr), this->path->ToCString(), true, req->IsSecure(), Net::WebServer::SameSiteType::Strict, 0);
 	UOSInt i;
 	NEW_CLASS(sess, Net::WebServer::MemoryWebSession(sessId, req->GetBrowser(), req->GetOS()));
 	Sync::MutexUsage mutUsage(&this->mut);
@@ -192,7 +197,7 @@ void Net::WebServer::MemoryWebSessionManager::DeleteSession(Net::WebServer::IWeb
 			sess->EndUse();
 			DEL_CLASS(sess);
 		}
-		resp->AddSetCookie(CSTR("WebSessId"), CSTR(""), this->path->ToCString(), true, req->IsSecure(), Net::WebServer::SameSiteType::Strict, Data::Timestamp::UtcNow().AddMonth(-12));
+		resp->AddSetCookie(this->cookieName->ToCString(), CSTR(""), this->path->ToCString(), true, req->IsSecure(), Net::WebServer::SameSiteType::Strict, Data::Timestamp::UtcNow().AddMonth(-12));
 	}
 }
 

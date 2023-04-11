@@ -2261,7 +2261,7 @@ SSWR::SMonitor::SMonitorWebHandler::SMonitorWebHandler(SSWR::SMonitor::ISMonitor
 {
 	this->core = core;
 	NEW_CLASS(this->reqMap, Data::FastStringMap<RequestHandler>());
-	NEW_CLASS(this->sessMgr, Net::WebServer::MemoryWebSessionManager(CSTR("/monitor"), OnSessDeleted, this, 60000, OnSessCheck, this));
+	NEW_CLASS(this->sessMgr, Net::WebServer::MemoryWebSessionManager(CSTR("/monitor"), OnSessDeleted, this, 60000, OnSessCheck, this, CSTR("SMonSessId")));
 	this->reqMap->PutC(CSTR(""), DefaultReq);
 	this->reqMap->PutC(CSTR("/index"), IndexReq);
 	this->reqMap->PutC(CSTR("/login"), LoginReq);
