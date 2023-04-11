@@ -147,7 +147,7 @@ void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnGCISStartClicked(void *user
 		Crypto::Cert::X509Cert *issuerCert = Crypto::Cert::CertUtil::FindIssuer(me->gcisSSLCert);
 		ssl->ServerSetCertsASN1(me->gcisSSLCert, me->gcisSSLKey, issuerCert);
 		SDEL_CLASS(issuerCert);
-		NEW_CLASS(me->gcisHdlr, Net::WebServer::GCISNotifyHandler(sb.ToCString(), OnGCISMailReceived, me));
+		NEW_CLASS(me->gcisHdlr, Net::WebServer::GCISNotifyHandler(sb.ToCString(), OnGCISMailReceived, me, &me->log));
 		NEW_CLASS(me->gcisListener, Net::WebServer::WebListener(me->core->GetSocketFactory(), ssl, me->gcisHdlr, port, 60, 2, CSTR("SSWRGCIS/1.0"), false, Net::WebServer::KeepAlive::Default, true));
 		if (me->gcisListener->IsError())
 		{

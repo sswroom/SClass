@@ -13,7 +13,7 @@
 #include <openssl/err.h>
 #include <openssl/ec.h>
 
-//#define SHOW_DEBUG
+#define SHOW_DEBUG
 #ifdef SHOW_DEBUG
 #if defined(DEBUGCON)
 #include <stdio.h>
@@ -41,8 +41,13 @@ Net::SSLClient *Net::OpenSSLEngine::CreateServerConn(Socket *s)
 	this->sockf->SetRecvTimeout(s, 2000);
 	this->sockf->SetNoDelay(s, true);
 	SSL_set_fd(ssl, this->sockf->SocketGetFD(s));
-	if (SSL_accept(ssl) <= 0)
+	int ret;
+	if ((ret = SSL_accept(ssl)) <= 0)
 	{
+#ifdef SHOW_DEBUG
+		int code = SSL_get_error(ssl, ret);
+		printf("SSL_accept: ret = %d, Error code = %d, %s\r\n", ret, code, ERR_error_string(ERR_get_error(), 0));
+#endif
 		SSL_free(ssl);
 		this->sockf->DestroySocket(s);
 		return 0;
@@ -247,6 +252,10 @@ Net::OpenSSLEngine::OpenSSLEngine(Net::SocketFactory *sockf, Method method) : Ne
 	this->clsData->cliCert = 0;
 	this->clsData->cliKey = 0;
 	this->clsData->alpnSupports = 0;
+	if (this->clsData->ctx)
+	{
+		SSL_CTX_set_options(this->clsData->ctx, SSL_OP_NO_TICKET);
+	}
 	this->skipCertCheck = false;
 }
 

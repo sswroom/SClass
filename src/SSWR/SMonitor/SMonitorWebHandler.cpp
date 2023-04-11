@@ -311,7 +311,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::LoginReq(SSWR::SMonitor::SMon
 					sess->EndUse();
 					me->core->UserFreeLogin(login);
 
-					return resp->RedirectURL(req, CSTR("index"), 0);
+					return resp->RedirectURL(req, CSTR("/monitor/index"), 0);
 				}
 				else
 				{
@@ -363,7 +363,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::LogoutReq(SSWR::SMonitor::SMo
 		sess->EndUse();
 		me->sessMgr->DeleteSession(req, resp);
 	}
-	return resp->RedirectURL(req, CSTR("index"), 0);
+	return resp->RedirectURL(req, CSTR("/monitor/index"), 0);
 }
 
 Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReq(SSWR::SMonitor::SMonitorWebHandler *me, Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp)
@@ -377,7 +377,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReq(SSWR::SMonitor::SMo
 	Net::WebServer::IWebSession *sess = me->sessMgr->GetSession(req, resp);
 	if (sess == 0)
 	{
-		return resp->RedirectURL(req, CSTR("index"), 0);
+		return resp->RedirectURL(req, CSTR("/monitor/index"), 0);
 	}
 	if (req->GetQueryValueI64(CSTR("photo"), &devId))
 	{
@@ -543,7 +543,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceEditReq(SSWR::SMonitor:
 	Net::WebServer::IWebSession *sess = me->sessMgr->GetSession(req, resp);
 	if (sess == 0)
 	{
-		return resp->RedirectURL(req, CSTR("index"), 0);
+		return resp->RedirectURL(req, CSTR("/monitor/index"), 0);
 	}
 	Text::String *cid = req->GetQueryValue(CSTR("id"));
 	Int64 cliId = 0;
@@ -554,12 +554,12 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceEditReq(SSWR::SMonitor:
 	if (cliId == 0)
 	{
 		sess->EndUse();
-		return resp->RedirectURL(req, CSTR("device"), 0);
+		return resp->RedirectURL(req, CSTR("/monitor/device"), 0);
 	}
 	if (!me->core->UserHasDevice(sess->GetValueInt32(UTF8STRC("UserId")), sess->GetValueInt32(UTF8STRC("UserType")), cliId))
 	{
 		sess->EndUse();
-		return resp->RedirectURL(req, CSTR("device"), 0);
+		return resp->RedirectURL(req, CSTR("/monitor/device"), 0);
 	}
 
 	if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_POST)
@@ -586,7 +586,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceEditReq(SSWR::SMonitor:
 				if (me->core->DeviceModify(cliId, devName->ToCString(), flags))
 				{
 					sess->EndUse();
-					return resp->RedirectURL(req, CSTR("device"), 0);
+					return resp->RedirectURL(req, CSTR("/monitor/device"), 0);
 				}
 			}
 		}
@@ -666,7 +666,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingReq(SSWR::SMonit
 	Net::WebServer::IWebSession *sess = me->sessMgr->GetSession(req, resp);
 	if (sess == 0)
 	{
-		return resp->RedirectURL(req, CSTR("index"), 0);
+		return resp->RedirectURL(req, CSTR("/monitor/index"), 0);
 	}
 	Text::String *cid = req->GetQueryValue(CSTR("id"));
 	Int64 cliId = 0;
@@ -677,12 +677,12 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingReq(SSWR::SMonit
 	if (cliId == 0)
 	{
 		sess->EndUse();
-		return resp->RedirectURL(req, CSTR("device"), 0);
+		return resp->RedirectURL(req, CSTR("/monitor/device"), 0);
 	}
 	if (!me->core->UserHasDevice(sess->GetValueInt32(UTF8STRC("UserId")), sess->GetValueInt32(UTF8STRC("UserType")), cliId))
 	{
 		sess->EndUse();
-		return resp->RedirectURL(req, CSTR("device"), 0);
+		return resp->RedirectURL(req, CSTR("/monitor/device"), 0);
 	}
 
 	dev = me->core->DeviceGet(cliId);
@@ -713,7 +713,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingReq(SSWR::SMonit
 			if (me->core->DeviceSetReadings(dev, sb.ToString()))
 			{
 				sess->EndUse();
-				return resp->RedirectURL(req, CSTR("device"), 0);
+				return resp->RedirectURL(req, CSTR("/monitor/device"), 0);
 			}
 		}
 	}
@@ -721,7 +721,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingReq(SSWR::SMonit
 	if (dev->nReading <= 0)
 	{
 		sess->EndUse();
-		return resp->RedirectURL(req, CSTR("device"), 0);
+		return resp->RedirectURL(req, CSTR("/monitor/device"), 0);
 	}
 
 	IO::MemoryStream mstm;
@@ -808,7 +808,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceDigitalsReq(SSWR::SMoni
 	Net::WebServer::IWebSession *sess = me->sessMgr->GetSession(req, resp);
 	if (sess == 0)
 	{
-		return resp->RedirectURL(req, CSTR("index"), 0);
+		return resp->RedirectURL(req, CSTR("/monitor/index"), 0);
 	}
 	Text::String *cid = req->GetQueryValue(CSTR("id"));
 	Int64 cliId = 0;
@@ -819,12 +819,12 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceDigitalsReq(SSWR::SMoni
 	if (cliId == 0)
 	{
 		sess->EndUse();
-		return resp->RedirectURL(req, CSTR("device"), 0);
+		return resp->RedirectURL(req, CSTR("/monitor/device"), 0);
 	}
 	if (!me->core->UserHasDevice(sess->GetValueInt32(UTF8STRC("UserId")), sess->GetValueInt32(UTF8STRC("UserType")), cliId))
 	{
 		sess->EndUse();
-		return resp->RedirectURL(req, CSTR("device"), 0);
+		return resp->RedirectURL(req, CSTR("/monitor/device"), 0);
 	}
 
 	dev = me->core->DeviceGet(cliId);
@@ -855,7 +855,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceDigitalsReq(SSWR::SMoni
 			if (me->core->DeviceSetDigitals(dev, sb.ToString()))
 			{
 				sess->EndUse();
-				return resp->RedirectURL(req, CSTR("device"), 0);
+				return resp->RedirectURL(req, CSTR("/monitor/device"), 0);
 			}
 		}
 	}
@@ -863,7 +863,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceDigitalsReq(SSWR::SMoni
 	if (dev->ndigital <= 0)
 	{
 		sess->EndUse();
-		return resp->RedirectURL(req, CSTR("device"), 0);
+		return resp->RedirectURL(req, CSTR("/monitor/device"), 0);
 	}
 
 	IO::MemoryStream mstm;
@@ -1799,7 +1799,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserPasswordReq(SSWR::SMonito
 	Text::CString msg = CSTR_NULL;
 	if (sess == 0)
 	{
-		return resp->RedirectURL(req, CSTR("index"), 0);
+		return resp->RedirectURL(req, CSTR("/monitor/index"), 0);
 	}
 
 	if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_POST)
@@ -1884,12 +1884,12 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UsersReq(SSWR::SMonitor::SMon
 	Net::WebServer::IWebSession *sess = me->sessMgr->GetSession(req, resp);
 	if (sess == 0)
 	{
-		return resp->RedirectURL(req, CSTR("index"), 0);
+		return resp->RedirectURL(req, CSTR("/monitor/index"), 0);
 	}
 	if (sess->GetValueInt32(UTF8STRC("UserType")) != 1)
 	{
 		sess->EndUse();
-		return resp->RedirectURL(req, CSTR("index"), 0);
+		return resp->RedirectURL(req, CSTR("/monitor/index"), 0);
 	}
 
 	Data::ArrayList<SSWR::SMonitor::ISMonitorCore::WebUser*> userList;
@@ -1950,12 +1950,12 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserAddReq(SSWR::SMonitor::SM
 	Net::WebServer::IWebSession *sess = me->sessMgr->GetSession(req, resp);
 	if (sess == 0)
 	{
-		return resp->RedirectURL(req, CSTR("index"), 0);
+		return resp->RedirectURL(req, CSTR("/monitor/index"), 0);
 	}
 	if (sess->GetValueInt32(UTF8STRC("UserType")) != 1)
 	{
 		sess->EndUse();
-		return resp->RedirectURL(req, CSTR("index"), 0);
+		return resp->RedirectURL(req, CSTR("/monitor/index"), 0);
 	}
 
 	if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_POST)
@@ -1973,7 +1973,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserAddReq(SSWR::SMonitor::SM
 				if (me->core->UserAdd(userName->v, userName->v, 2))
 				{
 					sess->EndUse();
-					return resp->RedirectURL(req, CSTR("users"), 0);
+					return resp->RedirectURL(req, CSTR("/monitor/users"), 0);
 				}
 			}
 		}
@@ -2022,21 +2022,21 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserAssignReq(SSWR::SMonitor:
 
 	if (!req->GetQueryValueI32(CSTR("id"), &userId))
 	{
-		return resp->RedirectURL(req, CSTR("users"), 0);
+		return resp->RedirectURL(req, CSTR("/monitor/users"), 0);
 	}
 	user = me->core->UserGet(userId);
 	if (user == 0 || user->userType != 2)
 	{
-		return resp->RedirectURL(req, CSTR("users"), 0);
+		return resp->RedirectURL(req, CSTR("/monitor/users"), 0);
 	}
 	if (sess == 0)
 	{
-		return resp->RedirectURL(req, CSTR("index"), 0);
+		return resp->RedirectURL(req, CSTR("/monitor/index"), 0);
 	}
 	if (sess->GetValueInt32(UTF8STRC("UserType")) != 1)
 	{
 		sess->EndUse();
-		return resp->RedirectURL(req, CSTR("index"), 0);
+		return resp->RedirectURL(req, CSTR("/monitor/index"), 0);
 	}
 
 	if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_POST)
@@ -2071,7 +2071,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserAssignReq(SSWR::SMonitor:
 			if (valid && me->core->UserAssign(userId, &devIds))
 			{
 				sess->EndUse();
-				return resp->RedirectURL(req, CSTR("users"), 0);
+				return resp->RedirectURL(req, CSTR("/monitor/users"), 0);
 			}
 		}
 	}
