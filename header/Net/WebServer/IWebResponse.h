@@ -41,6 +41,7 @@ namespace Net
 
 			Bool ResponseError(Net::WebServer::IWebRequest *req, Net::WebStatus::StatusCode code);
 			Bool RedirectURL(Net::WebServer::IWebRequest *req, Text::CString url, OSInt cacheAge);
+			Bool VirtualRedirectURL(Net::WebServer::IWebRequest *req, Text::CString url, OSInt cacheAge);
 			Bool ResponseNotModified(Net::WebServer::IWebRequest *req, OSInt cacheAge);
 			Bool ResponseText(Text::CString txt);
 			Bool ResponseText(Text::CString txt, Text::CString contentType);

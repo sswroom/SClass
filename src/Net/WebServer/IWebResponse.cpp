@@ -3,6 +3,7 @@
 #include "Data/DateTime.h"
 #include "Net/WebStatus.h"
 #include "Net/WebServer/IWebResponse.h"
+#include "Text/JSText.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 #include "Text/TextBinEnc/URIEncoding.h"
@@ -51,6 +52,27 @@ Bool Net::WebServer::IWebResponse::RedirectURL(Net::WebServer::IWebRequest *req,
 	this->AddCacheControl(cacheAge);
 	this->AddHeader(CSTR("Location"), url);
 	this->AddContentLength(0);
+	return true;
+}
+
+Bool Net::WebServer::IWebResponse::VirtualRedirectURL(Net::WebServer::IWebRequest *req, Text::CString url, OSInt cacheAge)
+{
+	this->AddDefHeaders(req);
+	this->AddCacheControl(cacheAge);
+	Text::StringBuilderUTF8 sb;
+	sb.AppendC(UTF8STRC("<html><head><title>Redirecting</title>\r\n"
+	"<script type=\"text/javascript\">\r\n"
+	"function afterLoad(){\r\n"
+	"	document.location.replace("));
+	Text::String *s = Text::JSText::ToNewJSText(url.v);
+	sb.Append(s);
+	s->Release();
+	sb.AppendC(UTF8STRC(");\r\n"
+	"}\r\n"
+	"</script>\r\n"
+	"</head><body onLoad=\"afterLoad()\"></body></html>"));
+	this->AddContentLength(sb.leng);
+	this->Write(sb.v, sb.leng);
 	return true;
 }
 

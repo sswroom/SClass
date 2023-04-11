@@ -311,7 +311,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::LoginReq(SSWR::SMonitor::SMon
 					sess->EndUse();
 					me->core->UserFreeLogin(login);
 
-					return resp->RedirectURL(req, CSTR("/monitor/index"), 0);
+					return resp->VirtualRedirectURL(req, CSTR("/monitor/index"), 0);
 				}
 				else
 				{
