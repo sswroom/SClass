@@ -73,6 +73,7 @@ Manage::CPUDB::CPUSpecX86 Manage::CPUDB::intelCPU[] = {
 	{0x06, 0x8C,  1, 100, 2400, 4200,  4,  8,   28,  10, 2020, 3, UTF8STRC("Intel Core i5-1135G7"), UTF8STRC("Intel i5-1135G7")},
 	{0x06, 0x8E, 12, 100, 1600, 3900,  4,  8,   15,  14, 2018, 3, UTF8STRC("Intel Core i5-8265U"), UTF8STRC("Intel i5-8265U")},
 	{0x06, 0x8E, 12, 100, 1600, 4200,  4,  8,   15,  14, 2019, 3, UTF8STRC("Intel Core i5-10210U"), UTF8STRC("Intel i5-10210U")},
+	{0x06, 0x9A,  3, 100, 1700, 4400, 12, 16,   28,   7, 2022, 1, UTF8STRC("Intel Core i5-1240P"), UTF8STRC("Intel i5-1240P")},
 	{0x06, 0x9C,  0, 105, 2000, 2700,  4,  4,   10,  10, 2021, 1, UTF8STRC("Intel Celeron N5105"), UTF8STRC("Intel N5105")},
 	{0x06, 0x9E,  9,  80, 2700, 3300,  4,  4,   35,  14, 2017, 1, UTF8STRC("Intel Core i5-7500T"), UTF8STRC("Intel i5-7500T")},
 	{0x06, 0x9E, 10, 100, 1600, 3400,  4,  8,   15,  14, 2017, 3, UTF8STRC("Intel Core i5-8250U"), UTF8STRC("Intel i5-8250U")},
@@ -192,8 +193,8 @@ Manage::CPUDB::CPUSpecX86 Manage::CPUDB::amdCPU[] = {
 };
 
 Manage::CPUDB::CPUSpec Manage::CPUDB::cpuList[] = {
-	//                                                                                                                                  [             clustor 1                ] [               clustor2               ] [                 clustor3             ]
-	//model                        contextType                       brand                            name                             tdp   nm   Type            cnt freq  max   L1I  L1D Type            cnt freq  max   L1I  L1D Type            cnt freq  max   L1I  L1D L2    L3     GPU
+	//                                                                                                                                                      [             clustor 1                ] [               clustor2               ] [                 clustor3             ]
+	//model                        contextType                                 brand                            name                             tdp   nm   Type            cnt freq  max   L1I  L1D Type            cnt freq  max   L1I  L1D Type            cnt freq  max   L1I  L1D L2    L3     GPU
 	{UTF8STRC("88F3710"),          Manage::ThreadContext::ContextType::ARM64,  Manage::CPUVendor::CB_MARVELL,   "Armada 3710 88F3710",           0,    0,   "Cortex-A53",   1,  0,    0,    0,   0,  0,              0,  0,    0,    0,   0,  0,              0,  0,    0,    0,   0,  0,    0,     0},
 	{UTF8STRC("88F3720"),          Manage::ThreadContext::ContextType::ARM64,  Manage::CPUVendor::CB_MARVELL,   "Armada 3720 88F3710",           0,    0,   "Cortex-A53",   1,  0,    0,    0,   0,  0,              0,  0,    0,    0,   0,  0,              0,  0,    0,    0,   0,  0,    0,     0},
 	{UTF8STRC("88F5082"),          Manage::ThreadContext::ContextType::ARM,    Manage::CPUVendor::CB_MARVELL,   "Orion 88F5082",                 0,    0,   "88fr331",      1,  0,    0,    0,   0,  0,              0,  0,    0,    0,   0,  0,              0,  0,    0,    0,   0,  0,    0,     0},
@@ -417,6 +418,7 @@ Manage::CPUDB::CPUSpec Manage::CPUDB::cpuList[] = {
 	{UTF8STRC("Intel i3-3220"),    Manage::ThreadContext::ContextType::X86_64, Manage::CPUVendor::CB_INTEL,     "Core i3-3220",                  55,   22,  "x86 with HT",  2,  3300, 3300, 32,  32, 0,              0,  0,    0,    0,   0,  0,              0,  0,    0,    0,   0,  256,  3072,  "HD Graphics 2500"},
 	{UTF8STRC("Intel i5-10210U"),  Manage::ThreadContext::ContextType::X86_64, Manage::CPUVendor::CB_INTEL,     "Core i5-10210U",                15,   14,  "x86 with HT",  4,  1600, 4200, 32,  32, 0,              0,  0,    0,    0,   0,  0,              0,  0,    0,    0,   0,  1024, 6144,  "HD Graphics 620"},
 	{UTF8STRC("Intel i5-1135G7"),  Manage::ThreadContext::ContextType::X86_64, Manage::CPUVendor::CB_INTEL,     "Core i5-1135G7",                28,   10,  "x86 with HT",  4,  2400, 4200, 32,  32, 0,              0,  0,    0,    0,   0,  0,              0,  0,    0,    0,   0,  5120, 8192,  "Iris Xe G7"},
+	{UTF8STRC("Intel i5-1240P"),   Manage::ThreadContext::ContextType::X86_64, Manage::CPUVendor::CB_INTEL,     "Core i5-1240P",                 28,    7,  "x86 with HT",  4,  1700, 4400, 32,  32, "x86",          8,  1700, 3300, 32,  32, 0,              0,  0,    0,    0,   0,  1024, 12288, "Iris Xe G7"},
 	{UTF8STRC("Intel i5-3550"),    Manage::ThreadContext::ContextType::X86_64, Manage::CPUVendor::CB_INTEL,     "Core i5-3550",                  77,   22,  "x86",          4,  3300, 3700, 32,  32, 0,              0,  0,    0,    0,   0,  0,              0,  0,    0,    0,   0,  256,  6144,  "HD Graphics 2500"},
 	{UTF8STRC("Intel i5-4460"),    Manage::ThreadContext::ContextType::X86_64, Manage::CPUVendor::CB_INTEL,     "Core i5-4460",                  84,   22,  "x86",          4,  3200, 3400, 32,  32, 0,              0,  0,    0,    0,   0,  0,              0,  0,    0,    0,   0,  256,  6144,  "HD Graphics 4600"},
 	{UTF8STRC("Intel i5-7500T"),   Manage::ThreadContext::ContextType::X86_64, Manage::CPUVendor::CB_INTEL,     "Core i5-7500T",                 35,   14,  "x86",          4,  2700, 3300, 32,  32, 0,              0,  0,    0,    0,   0,  0,              0,  0,    0,    0,   0,  1024, 6144,  "HD Graphics 4600"},
@@ -700,6 +702,7 @@ Manage::CPUDB::CPUSpec Manage::CPUDB::cpuList[] = {
 Manage::CPUDB::CPUMapping Manage::CPUDB::cpuX86Map[] = {
 	{UTF8STRC("11th Gen Intel(R) Core(TM) i5-1135G7 @ 2.40GHz"),   UTF8STRC("Intel i5-1135G7")},
 	{UTF8STRC("11th Gen Intel(R) Core(TM) i7-1165G7 @ 2.80GHz"),   UTF8STRC("Intel i7-1165G7")},
+	{UTF8STRC("12th Gen Intel(R) Core(TM) i5-1240P"),              UTF8STRC("Intel i5-1240P")},
 	{UTF8STRC("AMD A10-9700E RADEON R7, 10 COMPUTE CORES 4C+6G"),  UTF8STRC("AD9700AHM44AB")},
 	{UTF8STRC("AMD Phenom(tm) 9650 Quad-Core Processor"),          UTF8STRC("HD9650WCGHBOX")},
 	{UTF8STRC("AMD Ryzen 7 7735HS with Radeon Graphics"),          UTF8STRC("AMD R7-7735HS")},
