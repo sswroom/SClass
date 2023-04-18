@@ -138,6 +138,15 @@ void __stdcall Net::Email::SMTPServer::ClientData(Net::TCPClient *cli, void *use
 			MemCopyO(cliStatus->buff, &cliStatus->buff[j], cliStatus->buffSize - j);
 			cliStatus->buffSize -= j;
 		}
+		else if (cliStatus->buffSize == 4096)
+		{
+			if (cliStatus->dataMode)
+			{
+				me->ParseCmd(cli, cliStatus, &cliStatus->buff[0], 4095, Text::LineBreakType::None);
+			}
+			cliStatus->buff[0] = cliStatus->buff[4095];
+			cliStatus->buffSize = 1;
+		}
 	}
 }
 
