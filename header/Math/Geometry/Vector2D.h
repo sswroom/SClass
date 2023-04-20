@@ -50,7 +50,7 @@ namespace Math
 			virtual VectorType GetVectorType() const = 0;
 			virtual Math::Coord2DDbl GetCenter() const = 0;
 			virtual Math::Geometry::Vector2D *Clone() const = 0;
-			virtual void GetBounds(Math::RectAreaDbl *bounds) const = 0;
+			virtual Math::RectAreaDbl GetBounds() const = 0;
 			virtual Double CalBoundarySqrDistance(Math::Coord2DDbl pt, Math::Coord2DDbl *nearPt) const = 0;
 			virtual Double CalSqrDistance(Math::Coord2DDbl pt, Math::Coord2DDbl *nearPt) const;
 			virtual Bool JoinVector(Math::Geometry::Vector2D *vec) = 0;

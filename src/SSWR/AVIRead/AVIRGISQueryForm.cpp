@@ -272,8 +272,7 @@ void SSWR::AVIRead::AVIRGISQueryForm::SetQueryItem(UOSInt index)
 			i++;
 		}
 	}
-	Math::RectAreaDbl bounds;
-	vec->GetBounds(&bounds);
+	Math::RectAreaDbl bounds = vec->GetBounds();
 
 	Math::VectorTextWriter *writer = (Math::VectorTextWriter*)this->cboShapeFmt->GetSelectedItem();
 	Text::StringBuilderUTF8 sb;

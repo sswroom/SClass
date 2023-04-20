@@ -35,9 +35,9 @@ Math::Geometry::Vector2D *Math::Geometry::Point::Clone() const
 	return pt;
 }
 
-void Math::Geometry::Point::GetBounds(Math::RectAreaDbl *bounds) const
+Math::RectAreaDbl Math::Geometry::Point::GetBounds() const
 {
-	*bounds = Math::RectAreaDbl(this->pos, this->pos);
+	return Math::RectAreaDbl(this->pos, this->pos);
 }
 
 Double Math::Geometry::Point::CalBoundarySqrDistance(Math::Coord2DDbl pt, Math::Coord2DDbl *nearPt) const

@@ -114,15 +114,14 @@ IO::ParsedObject *Parser::FileParser::SQLiteParser::ParseAsMap(DB::DBConn *conn)
 	Data::Sort::ArtificialQuickSort::Sort(&tableNames, &comparator);
 	if (tableNames.SortedIndexOf(CSTR("gpkg_spatial_ref_sys")) < 0 ||
 		tableNames.SortedIndexOf(CSTR("gpkg_contents")) < 0 ||
-		tableNames.SortedIndexOf(CSTR("gpkg_ogr_contents")) < 0 ||
 		tableNames.SortedIndexOf(CSTR("gpkg_geometry_columns")) < 0 ||
 		tableNames.SortedIndexOf(CSTR("gpkg_tile_matrix_set")) < 0 ||
-		tableNames.SortedIndexOf(CSTR("gpkg_tile_matrix")) < 0 ||
-		tableNames.SortedIndexOf(CSTR("layers")) < 0)
+		tableNames.SortedIndexOf(CSTR("gpkg_tile_matrix")) < 0)
 	{
 		LIST_FREE_STRING(&tableNames);
 		return conn;
 	}
+	
 	printf("Valid GeoPackage file\r\n");
 	LIST_FREE_STRING(&tableNames);
 	return conn;

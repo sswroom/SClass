@@ -68,7 +68,7 @@ Math::Coord2DDbl Math::Geometry::PointCollection::GetCenter() const
 	}
 }
 
-void Math::Geometry::PointCollection::GetBounds(Math::RectAreaDbl *bounds) const
+Math::RectAreaDbl Math::Geometry::PointCollection::GetBounds() const
 {
 	UOSInt i = this->nPoint;
 	Math::Coord2DDbl min;
@@ -80,7 +80,7 @@ void Math::Geometry::PointCollection::GetBounds(Math::RectAreaDbl *bounds) const
 		min = min.Min(this->pointArr[i]);
 		max = max.Max(this->pointArr[i]);
 	}
-	*bounds = Math::RectAreaDbl(min, max);
+	return Math::RectAreaDbl(min, max);
 }
 
 void Math::Geometry::PointCollection::ConvCSys(Math::CoordinateSystem *srcCSys, Math::CoordinateSystem *destCSys)

@@ -34,7 +34,7 @@ void Map::HKTrafficLayer2::SetSpeedMap(Int32 segmentId, Double speed, Bool valid
 			road->vec = vec;
 			road->speed = speed;
 			road->valid = valid;
-			vec->GetBounds(&road->bounds);
+			road->bounds = vec->GetBounds();
 			this->roadMap.Put(segmentId, road);
 		}
 	}

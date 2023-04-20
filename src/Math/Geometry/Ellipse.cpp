@@ -33,9 +33,9 @@ Math::Geometry::Vector2D *Math::Geometry::Ellipse::Clone() const
 	return ellipse;
 }
 
-void Math::Geometry::Ellipse::GetBounds(Math::RectAreaDbl *bounds) const
+Math::RectAreaDbl Math::Geometry::Ellipse::GetBounds() const
 {
-	*bounds = Math::RectAreaDbl(this->tlx, this->tly, this->w, this->h);
+	return Math::RectAreaDbl(this->tlx, this->tly, this->w, this->h);
 }
 
 Double Math::Geometry::Ellipse::CalBoundarySqrDistance(Math::Coord2DDbl pt, Math::Coord2DDbl *nearPt) const

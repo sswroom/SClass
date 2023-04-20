@@ -884,7 +884,7 @@ void Media::VectorGraph::DrawTo(Media::DrawImage *dimg, UInt32 *imgDurMS)
 			Math::Geometry::VectorImage *vimg = (Math::Geometry::VectorImage*)vec;
 			Math::RectAreaDbl bounds;
 			UInt32 thisTimeMS;
-			vimg->GetBounds(&bounds);
+			bounds = vimg->GetBounds();
 			Media::StaticImage *simg = vimg->GetImage(&thisTimeMS);
 			dimg->DrawImagePt2(simg, bounds.tl.x * scale, bounds.tl.y * scale);
 			if (imgTimeMS == 0)
@@ -902,8 +902,7 @@ void Media::VectorGraph::DrawTo(Media::DrawImage *dimg, UInt32 *imgDurMS)
 		else if (vec->GetVectorType() == Math::Geometry::Vector2D::VectorType::Ellipse)
 		{
 			Math::Geometry::Ellipse *ellipse = (Math::Geometry::Ellipse*)vec;
-			Math::RectAreaDbl bounds;
-			ellipse->GetBounds(&bounds);
+			Math::RectAreaDbl bounds = ellipse->GetBounds();
 			bounds = bounds * scale;
 			dimg->DrawEllipse(bounds.tl.x, bounds.tl.y, bounds.GetWidth(), bounds.GetHeight(), p, b);
 		}

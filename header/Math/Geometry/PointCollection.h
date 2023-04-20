@@ -20,7 +20,7 @@ namespace Math
 			const Math::Coord2DDbl *GetPointListRead(UOSInt *nPoint) const { *nPoint = this->nPoint; return this->pointArr; }
 
 			virtual Math::Coord2DDbl GetCenter() const;
-			virtual void GetBounds(Math::RectAreaDbl *bounds) const;
+			virtual Math::RectAreaDbl GetBounds() const;
 			virtual void ConvCSys(Math::CoordinateSystem *srcCSys, Math::CoordinateSystem *destCSys);
 			virtual UOSInt GetCoordinates(Data::ArrayListA<Math::Coord2DDbl> *coordList) const;
 			virtual void SwapXY();

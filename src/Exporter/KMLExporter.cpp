@@ -552,7 +552,7 @@ Bool Exporter::KMLExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 						sb.Append(img->GetSourceAddr());
 						sb.AppendC(UTF8STRC("</href></Icon>"));
 
-						img->GetBounds(&bounds);
+						bounds = img->GetBounds();
 						sb.AppendC(UTF8STRC("<overlayXY x=\""));
 						Text::SBAppendF64(&sb, bounds.br.x);
 						sb.AppendC(UTF8STRC("\" y=\""));
@@ -632,7 +632,7 @@ Bool Exporter::KMLExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 						sb.AppendC(UTF8STRC("</href></Icon>"));
 						sb.AppendC(UTF8STRC("<LatLonBox>"));
 
-						img->GetBounds(&bounds);
+						bounds = img->GetBounds();
 						if (needConv)
 						{
 							Double z;

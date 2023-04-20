@@ -17,7 +17,7 @@ void Text::PString::RTrim()
 	while (len > 0)
 	{
 		UTF8Char c = this->v[len - 1];
-		if (c == ' ' || c == '\t')
+		if (c == ' ' || c == '\t' || c == 0)
 		{
 			len--;
 		}

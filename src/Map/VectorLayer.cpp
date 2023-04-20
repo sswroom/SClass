@@ -416,7 +416,7 @@ UOSInt Map::VectorLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, NameArr
 			vec = this->vectorList.GetItem(i);
 			if (Math::Geometry::Vector2D::VectorTypeIsPoint(vec->GetVectorType()) == (this->mixedData == MixedData::PointOnly))
 			{
-				vec->GetBounds(&vBounds);
+				vBounds = vec->GetBounds();
 				if (rect.tl.x <= vBounds.br.x && rect.tl.y <= vBounds.br.y && rect.br.x >= vBounds.tl.x && rect.br.y >= vBounds.tl.y)
 				{
 					recCnt++;
@@ -433,7 +433,7 @@ UOSInt Map::VectorLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, NameArr
 		while (i < j)
 		{
 			vec = this->vectorList.GetItem(i);
-			vec->GetBounds(&vBounds);
+			vBounds = vec->GetBounds();
 			if (rect.tl.x <= vBounds.br.x && rect.tl.y <= vBounds.br.y && rect.br.x >= vBounds.tl.x && rect.br.y >= vBounds.tl.y)
 			{
 				recCnt++;
@@ -663,7 +663,7 @@ Bool Map::VectorLayer::AddVector(Math::Geometry::Vector2D *vec, Text::String **s
 
 	Math::RectAreaDbl bounds;
 	Bool updated = false;
-	vec->GetBounds(&bounds);
+	bounds = vec->GetBounds();
 	if (this->vectorList.GetCount() == 0)
 	{
 		this->min = bounds.tl;
@@ -709,7 +709,7 @@ Bool Map::VectorLayer::AddVector(Math::Geometry::Vector2D *vec, Text::PString *s
 
 	Math::RectAreaDbl bounds;
 	Bool updated = false;
-	vec->GetBounds(&bounds);
+	bounds = vec->GetBounds();
 	if (this->vectorList.GetCount() == 0)
 	{
 		this->min = bounds.tl;
@@ -755,7 +755,7 @@ Bool Map::VectorLayer::AddVector(Math::Geometry::Vector2D *vec, const UTF8Char *
 
 	Math::RectAreaDbl bounds;
 	Bool updated = false;
-	vec->GetBounds(&bounds);
+	bounds = vec->GetBounds();
 	if (this->vectorList.GetCount() == 0)
 	{
 		this->min = bounds.tl;

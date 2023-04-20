@@ -44,6 +44,7 @@ UI::GUIComboBox::GUIComboBox(UI::GUICore *ui, UI::GUIClientControl *parent, Bool
 	this->allowEdit = allowEdit;
 	this->autoComplete = false;
 	this->nonUIEvent = false;
+	this->lastTextLeng = 0;
 	parent->AddChild(this);
 	this->Show();
 	g_signal_connect(this->hwnd, "changed", G_CALLBACK(GUIComboBox_EventChanged), this);

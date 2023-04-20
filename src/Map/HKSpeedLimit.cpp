@@ -152,7 +152,7 @@ Map::HKSpeedLimit::HKSpeedLimit(Map::HKRoadNetwork2 *roadNetwork)
 					route->routeId = r->GetInt32(routeIdCol);
 					route->speedLimit = 50;
 					route->vecOri = r->GetVector(shapeCol);
-					route->vecOri->GetBounds(&route->bounds);
+					route->bounds = route->vecOri->GetBounds();
 					route = this->routeMap.Put(route->routeId, route);
 					if (route)
 					{

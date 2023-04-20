@@ -81,6 +81,7 @@ namespace Map
 			OC_HKTRAFFIC_LAYER2,
 			OC_DB_MAP_LAYER,
 			OC_DRAW_MAP_SERVICE_LAYER,
+			OC_GEOPACKAGE,
 			OC_OTHER
 		} ObjectClass;
 

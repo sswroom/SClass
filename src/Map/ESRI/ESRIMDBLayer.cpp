@@ -131,7 +131,7 @@ void Map::ESRI::ESRIMDBLayer::Init(DB::SharedDBConn *conn, UInt32 srid, Text::CS
 			{
 				Math::RectAreaDbl thisBounds;
 				this->objects.Put(objId, vec);
-				vec->GetBounds(&thisBounds);
+				thisBounds = vec->GetBounds();
 				if (this->min.x == 0 && this->min.y == 0 && this->max.x == 0 && this->max.y == 0)
 				{
 					min = thisBounds.tl;
@@ -255,7 +255,7 @@ UOSInt Map::ESRI::ESRIMDBLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, 
 	while (i < j)
 	{
 		vec = this->objects.GetItem(i);
-		vec->GetBounds(&minMax);
+		minMax = vec->GetBounds();
 		if (rect.OverlapOrTouch(minMax))
 		{
 			outArr->Add(this->objects.GetKey(i));

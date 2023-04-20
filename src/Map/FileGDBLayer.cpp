@@ -135,7 +135,7 @@ Map::FileGDBLayer::FileGDBLayer(DB::SharedReadingDB *conn, Text::CString sourceN
 			{
 				this->objects.Put(objId, vec);
 
-				vec->GetBounds(&bounds);
+				bounds = vec->GetBounds();
 				if (this->minPos.IsZero() && this->maxPos.IsZero())
 				{
 					this->minPos = bounds.tl;
@@ -215,7 +215,6 @@ UOSInt Map::FileGDBLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, NameAr
 		*nameArr = (NameArray*)ReadNameArr();
 	}
 	UOSInt cnt = 0;
-	Math::RectAreaDbl bounds;
 	Math::Geometry::Vector2D *vec;
 	UOSInt i;
 	UOSInt j;
@@ -224,8 +223,7 @@ UOSInt Map::FileGDBLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, NameAr
 	while (i < j)
 	{
 		vec = this->objects.GetItem(i);
-		vec->GetBounds(&bounds);
-		if (rect.OverlapOrTouch(bounds))
+		if (rect.OverlapOrTouch(vec->GetBounds()))
 		{
 			outArr->Add(this->objects.GetKey(i));
 			cnt++;

@@ -170,6 +170,9 @@ void __stdcall SSWR::SHPConv::SHPConvMainForm::OnPreviewClicked(void *userObj)
 	SSWR::SHPConv::SHPConvMainForm *me = (SSWR::SHPConv::SHPConvMainForm*)userObj;
 	Text::StringBuilderUTF8 sb;
 	me->txtSource->GetText(&sb);
+	UOSInt i = sb.LastIndexOf('.');
+	sb.TrimToLength(i + 1);
+	sb.AppendC(UTF8STRC("dbf"));
 	IO::StmData::FileData fd(sb.ToCString(), false);
 	if (fd.GetDataSize() > 0)
 	{
@@ -229,6 +232,15 @@ void __stdcall SSWR::SHPConv::SHPConvMainForm::OnConvertClicked(void *userObj)
 	me->btnGroup->SetEnabled(true);
 	me->btnPreview->SetEnabled(true);
 	me->btnSBrowse->SetEnabled(true);
+}
+
+void __stdcall SSWR::SHPConv::SHPConvMainForm::OnFile(void *userObj, Text::String **files, UOSInt nFiles)
+{
+	SSWR::SHPConv::SHPConvMainForm *me = (SSWR::SHPConv::SHPConvMainForm*)userObj;
+	UTF8Char sbuff[16];
+	UTF8Char *sptr;
+	sptr = Text::StrInt32(sbuff, me->LoadShape(files[0]->ToCString(), true));
+	me->txtBlkScale->SetText(CSTRP(sbuff, sptr));
 }
 
 Int32 SSWR::SHPConv::SHPConvMainForm::GroupConvert(Text::CString sourceFile, Text::CString outFilePrefix, Data::ArrayList<const UTF8Char*> *dbCols, Int32 blkScale, Data::ArrayList<MapFilter*> *filters, IO::ProgressHandler *progress, UOSInt groupCol, Data::ArrayList<const UTF8Char*> *outNames, Data::ArrayList<UInt32> *dbCols2)
@@ -1479,6 +1491,8 @@ SSWR::SHPConv::SHPConvMainForm::SHPConvMainForm(UI::GUIClientControl *parent, UI
 	this->btnConvert->HandleButtonClick(OnConvertClicked, this);
 	NEW_CLASS(this->txtLabel, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtLabel->SetRect(16, 392, 520, 20, false);
+	NEW_CLASS(this->lblLabelLegend, UI::GUILabel(ui, this, CSTR("No prefix = To Capital, @ = Keep original, * = to integer, # = to integer")));
+	this->lblLabelLegend->SetRect(16, 416, 520, 23, false);
 	NEW_CLASS(this->lblProgress, UI::GUILabel(ui, this, CSTR("")));
 	this->lblProgress->SetRect(0, 416, 570, 23, false);
 	this->lblProgress->SetDockType(UI::GUIControl::DOCK_BOTTOM);
@@ -1526,6 +1540,8 @@ SSWR::SHPConv::SHPConvMainForm::SHPConvMainForm(UI::GUIClientControl *parent, UI
 		}
 		i++;
 	}
+
+	this->HandleDropFiles(OnFile, this);
 }
 
 SSWR::SHPConv::SHPConvMainForm::~SHPConvMainForm()

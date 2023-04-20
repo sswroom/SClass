@@ -169,7 +169,7 @@ UOSInt Map::DBMapLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, NameArra
 			vec = this->vecMap.GetItem(i);
 			if (Math::Geometry::Vector2D::VectorTypeIsPoint(vec->GetVectorType()) == (this->mixedData == MixedData::PointOnly))
 			{
-				vec->GetBounds(&bounds);
+				bounds = vec->GetBounds();
 				if (bounds.OverlapOrTouch(rect))
 				{
 					outArr->Add(this->vecMap.GetKey(i));
@@ -183,7 +183,7 @@ UOSInt Map::DBMapLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, NameArra
 		while (i < j)
 		{
 			vec = this->vecMap.GetItem(i);
-			vec->GetBounds(&bounds);
+			bounds = vec->GetBounds();
 			if (bounds.OverlapOrTouch(rect))
 			{
 				outArr->Add(this->vecMap.GetKey(i));
@@ -504,7 +504,7 @@ Bool Map::DBMapLayer::SetDatabase(DB::ReadingDB *db, Text::CString schemaName, T
 			vec = r->GetVector(this->vecCol);
 			if (vec != 0)
 			{
-				vec->GetBounds(&bounds);
+				bounds = vec->GetBounds();
 				if (this->vecMap.GetCount() == 0)
 				{
 					this->min = bounds.tl;

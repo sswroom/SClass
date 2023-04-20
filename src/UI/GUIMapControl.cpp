@@ -669,7 +669,7 @@ void UI::GUIMapControl::DrawScnObjects(Media::DrawImage *img, Math::Coord2DDbl o
 			}
 			else
 			{
-				vimg->GetBounds(&bounds);
+				bounds = vimg->GetBounds();
 				Math::Coord2DDbl pt1 = view->MapXYToScnXY(bounds.tl);
 				Math::Coord2DDbl pt2 = view->MapXYToScnXY(bounds.br);
 				pts[0] = pt1 + ofst;

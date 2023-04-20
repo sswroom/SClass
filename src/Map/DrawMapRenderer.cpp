@@ -2098,8 +2098,7 @@ void Map::DrawMapRenderer::DrawImageLayer(DrawEnv *denv, Map::MapDrawLayer *laye
 		}
 		else
 		{
-			Math::RectAreaDbl mapCoords;
-			vimg->GetBounds(&mapCoords);
+			Math::RectAreaDbl mapCoords = vimg->GetBounds();
 			Double t = mapCoords.tl.y;
 			mapCoords.tl.y = mapCoords.br.y;
 			mapCoords.br.y = t;

@@ -770,7 +770,7 @@ void Map::HKTrafficLayer::SetSpeedMap(Int32 fromId, Int32 toId, SaturationLevel 
 		{
 			road->vec = lineInfo->pl->Clone();
 			Math::RectAreaDbl bounds;
-			road->vec->GetBounds(&bounds);
+			bounds = road->vec->GetBounds();
 			road->minX = bounds.tl.x;
 			road->minY = bounds.tl.y;
 			road->maxX = bounds.br.x;
@@ -954,25 +954,25 @@ Bool Map::HKTrafficLayer::AddRoadLayer(Map::MapDrawLayer *roadLayer)
 					{
 						if (vec->GetVectorType() == Math::Geometry::Vector2D::VectorType::Polyline)
 						{
-							vec->GetBounds(&minMax);
+							minMax = vec->GetBounds();
 							if (isFirst)
 							{
 								isFirst = false;
-								this->minX = minX;
-								this->minY = minY;
-								this->maxX = maxX;
-								this->maxY = maxY;
+								this->minX = minMax.tl.x;
+								this->minY = minMax.tl.y;
+								this->maxX = minMax.br.x;
+								this->maxY = minMax.br.y;
 							}
 							else
 							{
-								if (minX < this->minX)
-									this->minX = minX;
-								if (minY < this->minY)
-									this->minY = minY;
-								if (maxX > this->maxX)
-									this->maxX = maxX;
-								if (maxY > this->maxY)
-									this->maxY = maxY;
+								if (minMax.tl.x < this->minX)
+									this->minX = minMax.tl.x;
+								if (minMax.tl.y < this->minY)
+									this->minY = minMax.tl.y;
+								if (minMax.br.x > this->maxX)
+									this->maxX = minMax.br.x;
+								if (minMax.br.y > this->maxY)
+									this->maxY = minMax.br.y;
 							}
 
 							lineInfo = MemAlloc(CenterlineInfo, 1);

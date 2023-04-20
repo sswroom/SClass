@@ -50,32 +50,29 @@ namespace Math
 
 			virtual Math::Coord2DDbl GetCenter() const
 			{
-				Math::RectAreaDbl bounds;
-				this->GetBounds(&bounds);
-				return (bounds.tl + bounds.br) * 0.5;
+				return this->GetBounds().GetCenter();
 			}
 
-			virtual void GetBounds(Math::RectAreaDbl *bounds) const
+			virtual Math::RectAreaDbl GetBounds() const
 			{
+				Math::RectAreaDbl bounds;
 				UOSInt i = 1;
 				UOSInt j = this->geometries.GetCount();
 				if (j == 0)
 				{
-					bounds->tl = Math::Coord2DDbl(0, 0);
-					bounds->br = Math::Coord2DDbl(0, 0);
+					bounds.tl = Math::Coord2DDbl(0, 0);
+					bounds.br = Math::Coord2DDbl(0, 0);
 				}
 				else
 				{
-					Math::RectAreaDbl thisBounds;
-					this->geometries.GetItem(0)->GetBounds(bounds);
+					bounds = this->geometries.GetItem(0)->GetBounds();
 					while (i < j)
 					{
-						this->geometries.GetItem(i)->GetBounds(&thisBounds);
-						bounds->tl = bounds->tl.Min(thisBounds.tl);
-						bounds->br = bounds->br.Max(thisBounds.br);
+						bounds = bounds.MergeArea(this->geometries.GetItem(i)->GetBounds());
 						i++;
 					}
 				}
+				return bounds;
 			}
 
 			virtual Double CalBoundarySqrDistance(Math::Coord2DDbl pt, Math::Coord2DDbl *nearPt) const

@@ -27,7 +27,7 @@ void SSWR::AVIRead::AVIRGISEditImageForm::UpdateImgStat()
 	Math::Geometry::Vector2D *vec = this->lyr->GetNewVectorById(sess, this->currImage);
 	if (vec)
 	{
-		vec->GetBounds(&bounds);
+		bounds = vec->GetBounds();
 		sptr = Text::StrDouble(sbuff,  bounds.tl.x);
 		this->txtLeft->SetText(CSTRP(sbuff, sptr));
 		sptr = Text::StrDouble(sbuff, bounds.tl.y);

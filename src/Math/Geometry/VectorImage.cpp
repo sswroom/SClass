@@ -147,9 +147,9 @@ Math::Geometry::Vector2D *Math::Geometry::VectorImage::Clone() const
 	return vimg;
 }
 
-void Math::Geometry::VectorImage::GetBounds(Math::RectAreaDbl *bounds) const
+Math::RectAreaDbl Math::Geometry::VectorImage::GetBounds() const
 {
-	*bounds = Math::RectAreaDbl(this->tl, this->br);
+	return Math::RectAreaDbl(this->tl, this->br);
 }
 
 Double Math::Geometry::VectorImage::CalBoundarySqrDistance(Math::Coord2DDbl pt, Math::Coord2DDbl *nearPt) const

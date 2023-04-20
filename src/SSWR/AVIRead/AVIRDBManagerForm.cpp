@@ -69,7 +69,14 @@ void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnConnSelChg(void *userObj)
 {
 	SSWR::AVIRead::AVIRDBManagerForm *me = (SSWR::AVIRead::AVIRDBManagerForm*)userObj;
 	DB::DBManagerCtrl *ctrl = (DB::DBManagerCtrl*)me->lbConn->GetSelectedItem();
-	me->currDB = ctrl->GetDB();
+	if (ctrl == 0)
+	{
+		me->currDB = 0;
+	}
+	else
+	{
+		me->currDB = ctrl->GetDB();
+	}
 	me->lvVariable->ClearItems();
 	me->lvSvrConn->ClearItems();
 	me->UpdateDatabaseList();

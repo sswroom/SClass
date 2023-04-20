@@ -275,3 +275,21 @@ Bool Text::StringTool::SplitAsDouble(Text::CString str, UTF8Char splitChar, Data
 		i = j + 1;
 	}
 }
+
+UOSInt Text::StringTool::SplitAsNewString(Text::CString str, UTF8Char splitChar, Data::ArrayList<Text::String*> *outArr)
+{
+	UOSInt initCnt = outArr->GetCount();
+	UOSInt i = 0;
+	UOSInt j;
+	while (true)
+	{
+		j = str.IndexOf(splitChar, i);
+		if (j == INVALID_INDEX)
+		{
+			outArr->Add(Text::String::New(str.Substring(i)));
+			return outArr->GetCount() - initCnt;
+		}
+		outArr->Add(Text::String::New(&str.v[i], j - i));
+		i = j + 1;
+	}
+}

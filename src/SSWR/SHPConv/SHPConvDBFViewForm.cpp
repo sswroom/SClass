@@ -51,9 +51,9 @@ SSWR::SHPConv::SHPConvDBFViewForm::SHPConvDBFViewForm(UI::GUIClientControl *pare
 		l = dbf->GetColCount();
 		while (k < l)
 		{
-			dbf->GetRecord(wbuff, k, i);
+			dbf->GetRecord(wbuff, i, k);
 			hkscs.FixString(wbuff);
-			this->lvDBF->SetSubItem(m, k, wbuff);
+			this->lvDBF->SetSubItem(m, k + 1, wbuff);
 			k++;
 		}
 		i++;
