@@ -3,7 +3,12 @@
 #include "Data/ArrayList.h"
 #include "Map/MapDrawLayer.h"
 #include "Map/MapView.h"
+#include "Math/Geometry/GeometryCollection.h"
+#include "Math/Geometry/LineString.h"
+#include "Math/Geometry/MultiPolygon.h"
 #include "Math/Geometry/Point.h"
+#include "Math/Geometry/Polygon.h"
+#include "Math/Geometry/Polyline.h"
 #include "Math/Geometry/Vector2D.h"
 #include "Media/DrawEngine.h"
 #include "Sync/Event.h"
@@ -47,8 +52,14 @@ namespace Map
 	private:
 		static UInt32 __stdcall MapThread(void *obj);
 
-	protected:
-		virtual void DrawPoints(Math::Geometry::Point *pt);
+	private:
+		void DrawVector(Math::Geometry::Vector2D *vec);
+		void DrawPoint(Math::Geometry::Point *pt);
+		void DrawLineString(Math::Geometry::LineString *pl);
+		void DrawPolyline(Math::Geometry::Polyline *pl);
+		void DrawPolygon(Math::Geometry::Polygon *pg);
+		void DrawMultiPolygon(Math::Geometry::MultiPolygon *mpg);
+		void DrawGeometryCollection(Math::Geometry::GeometryCollection *geomColl);
 	public:
 		MapScheduler();
 		virtual ~MapScheduler();

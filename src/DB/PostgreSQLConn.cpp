@@ -25,6 +25,7 @@ private:
 	int currrow;
 	DB::PostgreSQLConn *conn;
 	UInt32 geometryOid;
+	UInt32 citextOid;
 public:
 	PostgreSQLReader(PGresult *res, Int8 tzQhr, DB::PostgreSQLConn *conn) : DBReader()
 	{
@@ -33,6 +34,7 @@ public:
 		this->currrow = -1;
 		this->conn = conn;
 		this->geometryOid = conn->GetGeometryOid();
+		this->citextOid = conn->GetCitextOid();
 		this->ncol = PQnfields(this->res);
 		this->nrow = PQntuples(this->res);
 	}
@@ -247,6 +249,11 @@ public:
 				return false;
 			}
 		}
+		else if (colType == citextOid)
+		{
+			item->SetStrSlow((const UTF8Char*)PQgetvalue(this->res, this->currrow, (int)colIndex));
+			return true;
+		}
 		switch (colType)
 		{
 		case 16: //bool
@@ -264,7 +271,6 @@ public:
 		case 2277: //anyarray
 		case 3802: //jsonb ///////////////////////////////////
 		case 16468: //hstore ////////////////////////////////
-		case 34012: //citext
 			item->SetStrSlow((const UTF8Char*)PQgetvalue(this->res, this->currrow, (int)colIndex));
 			return true;
 		case 20: //int8
@@ -653,12 +659,22 @@ Bool DB::PostgreSQLConn::Connect()
 
 void DB::PostgreSQLConn::InitConnection()
 {
-	DB::DBReader *r = this->ExecuteReader(CSTR("select oid, typname from pg_catalog.pg_type where typname = 'geometry'"));
+	DB::DBReader *r = this->ExecuteReader(CSTR("select oid, typname from pg_catalog.pg_type"));
 	if (r)
 	{
+		Text::StringBuilderUTF8 sb;
 		while (r->ReadNext())
 		{
-			this->geometryOid = (UInt32)r->GetInt32(0);
+			sb.ClearStr();
+			r->GetStr(1, &sb);
+			if (sb.Equals(UTF8STRC("geometry")))
+			{
+				this->geometryOid = (UInt32)r->GetInt32(0);
+			}
+			else if (sb.Equals(UTF8STRC("citext")))
+			{
+				this->citextOid = (UInt32)r->GetInt32(0);
+			}
 		}
 		this->CloseReader(r);
 	}
@@ -676,6 +692,7 @@ DB::PostgreSQLConn::PostgreSQLConn(Text::String *server, UInt16 port, Text::Stri
 	this->uid = SCOPY_STRING(uid);
 	this->pwd = SCOPY_STRING(pwd);
 	this->geometryOid = 0;
+	this->citextOid = 0;
 	if (this->Connect()) this->InitConnection();
 }
 
@@ -691,6 +708,7 @@ DB::PostgreSQLConn::PostgreSQLConn(Text::CString server, UInt16 port, Text::CStr
 	this->uid = Text::String::NewOrNull(uid);
 	this->pwd = Text::String::NewOrNull(pwd);
 	this->geometryOid = 0;
+	this->citextOid = 0;
 	if (this->Connect()) this->InitConnection();
 }
 
@@ -1012,10 +1030,17 @@ UInt32 DB::PostgreSQLConn::GetGeometryOid()
 	return this->geometryOid;
 }
 
+UInt32 DB::PostgreSQLConn::GetCitextOid()
+{
+	return this->citextOid;
+}
+
 DB::DBUtil::ColType DB::PostgreSQLConn::DBType2ColType(UInt32 dbType)
 {
 	if (dbType == this->geometryOid)
 		return DB::DBUtil::CT_Vector;
+	if (dbType == this->citextOid)
+		return DB::DBUtil::CT_VarUTF32Char;
 	switch (dbType)
 	{
 	case 16: //bool
@@ -1097,8 +1122,6 @@ DB::DBUtil::ColType DB::PostgreSQLConn::DBType2ColType(UInt32 dbType)
 	case 12028: //_pg_statistic  ////////////////////////////////
 		return DB::DBUtil::CT_VarUTF32Char;
 	case 16468: //hstore ////////////////////////////////
-		return DB::DBUtil::CT_VarUTF32Char;
-	case 34012: //citext
 		return DB::DBUtil::CT_VarUTF32Char;
 	default:
 #if defined(VERBOSE)

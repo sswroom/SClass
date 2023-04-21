@@ -24,6 +24,7 @@ namespace DB
 		IO::LogTool *log;
 		Int8 tzQhr;
 		UInt32 geometryOid;
+		UInt32 citextOid;
 
 		Bool Connect();
 		void InitConnection();
@@ -63,6 +64,7 @@ namespace DB
 		Bool ChangeDatabase(Text::CString databaseName);
 
 		UInt32 GetGeometryOid();
+		UInt32 GetCitextOid();
 		DB::DBUtil::ColType DBType2ColType(UInt32 dbType);
 
 		static Text::CString ExecStatusTypeGetName(OSInt status);

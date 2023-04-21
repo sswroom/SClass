@@ -19,6 +19,7 @@ DB::PostgreSQLConn::PostgreSQLConn(Text::String *server, UInt16 port, Text::Stri
 	this->uid = SCOPY_STRING(uid);
 	this->pwd = SCOPY_STRING(pwd);
 	this->geometryOid = 0;
+	this->citextOid = 0;
 	this->Connect();
 }
 
@@ -33,6 +34,7 @@ DB::PostgreSQLConn::PostgreSQLConn(Text::CString server, UInt16 port, Text::CStr
 	this->uid = Text::String::NewOrNull(uid);
 	this->pwd = Text::String::NewOrNull(pwd);
 	this->geometryOid = 0;
+	this->citextOid = 0;
 	this->Connect();
 }
 
@@ -284,6 +286,11 @@ Text::CString DB::PostgreSQLConn::ExecStatusTypeGetName(OSInt status)
 UInt32 DB::PostgreSQLConn::GetGeometryOid()
 {
 	return this->geometryOid;
+}
+
+UInt32 DB::PostgreSQLConn::GetCitextOid()
+{
+	return this->citextOid;
 }
 
 DB::DBUtil::ColType DB::PostgreSQLConn::DBType2ColType(UInt32 dbType)

@@ -89,7 +89,15 @@ DB::SQL::SQLCommand *DB::SQL::SQLCommand::Parse(const UTF8Char *sql, DB::SQLType
 			else
 			{
 				DB::TableDef *tab;
-				NEW_CLASS(tab, DB::TableDef(CSTR_NULL, sb.ToCString()));
+				if (sqlType == DB::SQLType::SQLite && sb.StartsWith('\"') && sb.EndsWith('\"'))
+				{
+					sb.RemoveChars(1);
+					NEW_CLASS(tab, DB::TableDef(CSTR_NULL, sb.ToCString().Substring(1)));
+				}
+				else
+				{
+					NEW_CLASS(tab, DB::TableDef(CSTR_NULL, sb.ToCString()));
+				}
 				sql = ParseNextWord(sql, &sb, sqlType);
 				if (sb.Equals(UTF8STRC("(")))
 				{
@@ -217,7 +225,15 @@ DB::SQL::SQLCommand *DB::SQL::SQLCommand::Parse(const UTF8Char *sql, DB::SQLType
 						{
 							UOSInt colSize;
 							UOSInt colDP;
-							NEW_CLASS(col, DB::ColDef(sb.ToCString()));
+							if (sqlType == DB::SQLType::SQLite && sb.StartsWith('\"') && sb.EndsWith('\"'))
+							{
+								sb.RemoveChars(1);
+								NEW_CLASS(col, DB::ColDef(sb.ToCString().Substring(1)));
+							}
+							else
+							{
+								NEW_CLASS(col, DB::ColDef(sb.ToCString()));
+							}
 							sql = ParseNextWord(sql, &sb, sqlType);
 							if (sqlType == DB::SQLType::SQLite && (sb.Equals(UTF8STRC(",")) || sb.Equals(UTF8STRC(")"))))
 							{

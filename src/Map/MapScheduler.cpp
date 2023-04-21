@@ -64,146 +64,7 @@ UInt32 __stdcall Map::MapScheduler::MapThread(void *obj)
 					me->finishEvt.Set();
 					break;
 				}
-
-				switch (vec->GetVectorType())
-				{
-				case Math::Geometry::Vector2D::VectorType::Point:
-					me->DrawPoints((Math::Geometry::Point*)vec);
-					break;
-				case Math::Geometry::Vector2D::VectorType::Polyline:
-				{
-					Math::Geometry::Polyline *pl = (Math::Geometry::Polyline*)vec;
-					UOSInt nPoint;
-					Math::Coord2DDbl *pointArr = pl->GetPointList(&nPoint);
-					UOSInt nPtOfst;
-					UInt32 *ptOfstArr = pl->GetPtOfstList(&nPtOfst);
-					UOSInt k;
-					UOSInt l;
-					if (me->isFirst)
-					{
-						if (me->map->MapXYToScnXY(pointArr, pointArr, nPoint, Math::Coord2DDbl(0, 0)))
-							*me->isLayerEmpty = false;
-					}
-
-					if (pl->HasColor())
-					{
-						Media::DrawPen *p = me->img->NewPenARGB(pl->GetColor(), me->p->GetThick(), 0 ,0);
-						k = nPtOfst;
-						l = 1;
-						while (l < k)
-						{
-							me->img->DrawPolyline(&pointArr[ptOfstArr[l - 1]], ptOfstArr[l] - ptOfstArr[l - 1], p);
-							l++;
-						}
-						me->img->DrawPolyline(&pointArr[ptOfstArr[k - 1]], nPoint - ptOfstArr[k - 1], p);
-						me->img->DelPen(p);
-					}
-					else
-					{
-						k = nPtOfst;
-						l = 1;
-						while (l < k)
-						{
-							me->img->DrawPolyline(&pointArr[ptOfstArr[l - 1]], ptOfstArr[l] - ptOfstArr[l - 1], me->p);
-							l++;
-						}
-						me->img->DrawPolyline(&pointArr[ptOfstArr[k - 1]], nPoint - ptOfstArr[k - 1], me->p);
-					}
-					break;
-				}
-				case Math::Geometry::Vector2D::VectorType::LineString:
-				{
-					Math::Geometry::LineString *pl = (Math::Geometry::LineString*)vec;
-					UOSInt nPoint;
-					Math::Coord2DDbl *pointArr = pl->GetPointList(&nPoint);
-					if (me->isFirst)
-					{
-						if (me->map->MapXYToScnXY(pointArr, pointArr, nPoint, Math::Coord2DDbl(0, 0)))
-							*me->isLayerEmpty = false;
-					}
-
-					me->img->DrawPolyline(pointArr, nPoint, me->p);
-					break;
-				}
-				case Math::Geometry::Vector2D::VectorType::Polygon:
-				{
-					Math::Geometry::Polygon *pg = (Math::Geometry::Polygon*)vec;
-					UOSInt nPoint;
-					Math::Coord2DDbl *pointArr = pg->GetPointList(&nPoint);
-					UOSInt nPtOfst;
-					UInt32 *ptOfstArr = pg->GetPtOfstList(&nPtOfst);
-					if (me->isFirst)
-					{
-						UOSInt k;
-						UOSInt l;
-
-						if (me->map->MapXYToScnXY(pointArr, pointArr, nPoint, Math::Coord2DDbl(0, 0)))
-							*me->isLayerEmpty = false;
-						k = nPtOfst;
-						l = 1;
-						while (l < k)
-						{
-							ptOfstArr[l - 1] = ptOfstArr[l] - ptOfstArr[l - 1];
-							l++;
-						}
-						ptOfstArr[k - 1] = (UInt32)(nPoint - ptOfstArr[k - 1]);
-					}
-
-					me->img->DrawPolyPolygon(pointArr, ptOfstArr, nPtOfst, me->p, me->b);
-					break;
-				}
-				case Math::Geometry::Vector2D::VectorType::MultiPolygon:
-				{
-					Math::Geometry::MultiPolygon *mpg = (Math::Geometry::MultiPolygon*)vec;
-					UOSInt pgInd = mpg->GetCount();
-					while (pgInd-- > 0)
-					{
-						Math::Geometry::Polygon *pg = mpg->GetItem(pgInd);
-						UOSInt nPoint;
-						Math::Coord2DDbl *pointArr = pg->GetPointList(&nPoint);
-						UOSInt nPtOfst;
-						UInt32 *ptOfstArr = pg->GetPtOfstList(&nPtOfst);
-						if (me->isFirst)
-						{
-							UOSInt k;
-							UOSInt l;
-
-							if (me->map->MapXYToScnXY(pointArr, pointArr, nPoint, Math::Coord2DDbl(0, 0)))
-								*me->isLayerEmpty = false;
-							k = nPtOfst;
-							l = 1;
-							while (l < k)
-							{
-								ptOfstArr[l - 1] = ptOfstArr[l] - ptOfstArr[l - 1];
-								l++;
-							}
-							ptOfstArr[k - 1] = (UInt32)(nPoint - ptOfstArr[k - 1]);
-						}
-
-						me->img->DrawPolyPolygon(pointArr, ptOfstArr, nPtOfst, me->p, me->b);
-					}
-					break;
-				}
-				case Math::Geometry::Vector2D::VectorType::MultiPoint:
-				case Math::Geometry::Vector2D::VectorType::GeometryCollection:
-				case Math::Geometry::Vector2D::VectorType::CircularString:
-				case Math::Geometry::Vector2D::VectorType::CompoundCurve:
-				case Math::Geometry::Vector2D::VectorType::CurvePolygon:
-				case Math::Geometry::Vector2D::VectorType::MultiCurve:
-				case Math::Geometry::Vector2D::VectorType::MultiSurface:
-				case Math::Geometry::Vector2D::VectorType::Curve:
-				case Math::Geometry::Vector2D::VectorType::Surface:
-				case Math::Geometry::Vector2D::VectorType::PolyhedralSurface:
-				case Math::Geometry::Vector2D::VectorType::Tin:
-				case Math::Geometry::Vector2D::VectorType::Triangle:
-				case Math::Geometry::Vector2D::VectorType::Image:
-				case Math::Geometry::Vector2D::VectorType::String:
-				case Math::Geometry::Vector2D::VectorType::Ellipse:
-				case Math::Geometry::Vector2D::VectorType::PieArea:
-				case Math::Geometry::Vector2D::VectorType::Unknown:
-					printf("MapScheduler: unsupported type: %s\r\n", Math::Geometry::Vector2D::VectorTypeGetName(vec->GetVectorType()).v);
-					break;
-				}
+				me->DrawVector(vec);
 			}
 		}
 		me->taskEvt.Wait();
@@ -213,7 +74,50 @@ UInt32 __stdcall Map::MapScheduler::MapThread(void *obj)
 	return 0;
 }
 
-void Map::MapScheduler::DrawPoints(Math::Geometry::Point *pt)
+void Map::MapScheduler::DrawVector(Math::Geometry::Vector2D *vec)
+{
+	switch (vec->GetVectorType())
+	{
+	case Math::Geometry::Vector2D::VectorType::Point:
+		this->DrawPoint((Math::Geometry::Point*)vec);
+		break;
+	case Math::Geometry::Vector2D::VectorType::Polyline:
+		this->DrawPolyline((Math::Geometry::Polyline*)vec);
+		break;
+	case Math::Geometry::Vector2D::VectorType::LineString:
+		this->DrawLineString((Math::Geometry::LineString*)vec);
+		break;
+	case Math::Geometry::Vector2D::VectorType::Polygon:
+		this->DrawPolygon((Math::Geometry::Polygon*)vec);
+		break;
+	case Math::Geometry::Vector2D::VectorType::MultiPolygon:
+		this->DrawMultiPolygon((Math::Geometry::MultiPolygon*)vec);
+		break;
+	case Math::Geometry::Vector2D::VectorType::GeometryCollection:
+		this->DrawGeometryCollection((Math::Geometry::GeometryCollection*)vec);
+		break;
+	case Math::Geometry::Vector2D::VectorType::MultiPoint:
+	case Math::Geometry::Vector2D::VectorType::CircularString:
+	case Math::Geometry::Vector2D::VectorType::CompoundCurve:
+	case Math::Geometry::Vector2D::VectorType::CurvePolygon:
+	case Math::Geometry::Vector2D::VectorType::MultiCurve:
+	case Math::Geometry::Vector2D::VectorType::MultiSurface:
+	case Math::Geometry::Vector2D::VectorType::Curve:
+	case Math::Geometry::Vector2D::VectorType::Surface:
+	case Math::Geometry::Vector2D::VectorType::PolyhedralSurface:
+	case Math::Geometry::Vector2D::VectorType::Tin:
+	case Math::Geometry::Vector2D::VectorType::Triangle:
+	case Math::Geometry::Vector2D::VectorType::Image:
+	case Math::Geometry::Vector2D::VectorType::String:
+	case Math::Geometry::Vector2D::VectorType::Ellipse:
+	case Math::Geometry::Vector2D::VectorType::PieArea:
+	case Math::Geometry::Vector2D::VectorType::Unknown:
+		printf("MapScheduler: unsupported type: %s\r\n", Math::Geometry::Vector2D::VectorTypeGetName(vec->GetVectorType()).v);
+		break;
+	}
+}
+
+void Map::MapScheduler::DrawPoint(Math::Geometry::Point *pt)
 {
 	if (this->ico)
 	{
@@ -252,6 +156,125 @@ void Map::MapScheduler::DrawPoints(Math::Geometry::Point *pt)
 		pts = this->map->MapXYToScnXY(pt->GetCenter());
 		Double scale = this->img->GetHDPI() / 72;
 		this->img->DrawRect(pts.x - 6 * scale, pts.y - 6 * scale, 13 * scale, 13 * scale, 0, this->b);
+	}
+}
+
+void Map::MapScheduler::DrawLineString(Math::Geometry::LineString *pl)
+{
+	UOSInt nPoint;
+	Math::Coord2DDbl *pointArr = pl->GetPointList(&nPoint);
+	if (this->isFirst)
+	{
+		if (this->map->MapXYToScnXY(pointArr, pointArr, nPoint, Math::Coord2DDbl(0, 0)))
+			*this->isLayerEmpty = false;
+	}
+
+	this->img->DrawPolyline(pointArr, nPoint, this->p);
+}
+
+void Map::MapScheduler::DrawPolyline(Math::Geometry::Polyline *pl)
+{
+	UOSInt nPoint;
+	Math::Coord2DDbl *pointArr = pl->GetPointList(&nPoint);
+	UOSInt nPtOfst;
+	UInt32 *ptOfstArr = pl->GetPtOfstList(&nPtOfst);
+	UOSInt k;
+	UOSInt l;
+	if (this->isFirst)
+	{
+		if (this->map->MapXYToScnXY(pointArr, pointArr, nPoint, Math::Coord2DDbl(0, 0)))
+			*this->isLayerEmpty = false;
+	}
+
+	if (pl->HasColor())
+	{
+		Media::DrawPen *p = this->img->NewPenARGB(pl->GetColor(), this->p->GetThick(), 0 ,0);
+		k = nPtOfst;
+		l = 1;
+		while (l < k)
+		{
+			this->img->DrawPolyline(&pointArr[ptOfstArr[l - 1]], ptOfstArr[l] - ptOfstArr[l - 1], p);
+			l++;
+		}
+		this->img->DrawPolyline(&pointArr[ptOfstArr[k - 1]], nPoint - ptOfstArr[k - 1], p);
+		this->img->DelPen(p);
+	}
+	else
+	{
+		k = nPtOfst;
+		l = 1;
+		while (l < k)
+		{
+			this->img->DrawPolyline(&pointArr[ptOfstArr[l - 1]], ptOfstArr[l] - ptOfstArr[l - 1], this->p);
+			l++;
+		}
+		this->img->DrawPolyline(&pointArr[ptOfstArr[k - 1]], nPoint - ptOfstArr[k - 1], this->p);
+	}
+}
+
+void Map::MapScheduler::DrawPolygon(Math::Geometry::Polygon *pg)
+{
+	UOSInt nPoint;
+	Math::Coord2DDbl *pointArr = pg->GetPointList(&nPoint);
+	UOSInt nPtOfst;
+	UInt32 *ptOfstArr = pg->GetPtOfstList(&nPtOfst);
+	if (this->isFirst)
+	{
+		UOSInt k;
+		UOSInt l;
+
+		if (this->map->MapXYToScnXY(pointArr, pointArr, nPoint, Math::Coord2DDbl(0, 0)))
+			*this->isLayerEmpty = false;
+		k = nPtOfst;
+		l = 1;
+		while (l < k)
+		{
+			ptOfstArr[l - 1] = ptOfstArr[l] - ptOfstArr[l - 1];
+			l++;
+		}
+		ptOfstArr[k - 1] = (UInt32)(nPoint - ptOfstArr[k - 1]);
+	}
+
+	this->img->DrawPolyPolygon(pointArr, ptOfstArr, nPtOfst, this->p, this->b);
+}
+
+void Map::MapScheduler::DrawMultiPolygon(Math::Geometry::MultiPolygon *mpg)
+{
+	UOSInt pgInd = mpg->GetCount();
+	while (pgInd-- > 0)
+	{
+		Math::Geometry::Polygon *pg = mpg->GetItem(pgInd);
+		UOSInt nPoint;
+		Math::Coord2DDbl *pointArr = pg->GetPointList(&nPoint);
+		UOSInt nPtOfst;
+		UInt32 *ptOfstArr = pg->GetPtOfstList(&nPtOfst);
+		if (this->isFirst)
+		{
+			UOSInt k;
+			UOSInt l;
+
+			if (this->map->MapXYToScnXY(pointArr, pointArr, nPoint, Math::Coord2DDbl(0, 0)))
+				*this->isLayerEmpty = false;
+			k = nPtOfst;
+			l = 1;
+			while (l < k)
+			{
+				ptOfstArr[l - 1] = ptOfstArr[l] - ptOfstArr[l - 1];
+				l++;
+			}
+			ptOfstArr[k - 1] = (UInt32)(nPoint - ptOfstArr[k - 1]);
+		}
+
+		this->img->DrawPolyPolygon(pointArr, ptOfstArr, nPtOfst, this->p, this->b);
+	}
+}
+
+void Map::MapScheduler::DrawGeometryCollection(Math::Geometry::GeometryCollection *geomColl)
+{
+	UOSInt pgInd = geomColl->GetCount();
+	while (pgInd-- > 0)
+	{
+		this->DrawVector(geomColl->GetItem(pgInd));
 	}
 }
 

@@ -240,8 +240,28 @@ UOSInt DB::SQLiteFile::QueryTableNames(Text::CString schemaName, Data::ArrayList
 DB::DBReader *DB::SQLiteFile::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	Text::StringBuilderUTF8 sb;
-	sb.AppendC(UTF8STRC("select * from "));
-	sb.Append(tableName);
+	UTF8Char sbuff[512];
+	UTF8Char *sptr;
+	sb.AppendC(UTF8STRC("select "));
+	if (columnNames == 0 || columnNames->GetCount() == 0)
+	{
+		sb.AppendC(UTF8STRC("*"));
+	}
+	else
+	{
+		UOSInt i = 0;
+		UOSInt j = columnNames->GetCount();
+		while (i < j)
+		{
+			if (i > 0) sb.AppendC(UTF8STRC(","));
+			sptr = DB::DBUtil::SDBColUTF8(sbuff, columnNames->GetItem(i)->v, DB::SQLType::SQLite);
+			sb.Append(CSTRP(sbuff, sptr));
+			i++;
+		}
+	}
+	sb.AppendC(UTF8STRC(" from "));
+	sptr = DB::DBUtil::SDBColUTF8(sbuff, tableName.v, DB::SQLType::SQLite);
+	sb.Append(CSTRP(sbuff, sptr));
 	if (maxCnt > 0)
 	{
 		sb.AppendC(UTF8STRC(" LIMIT "));

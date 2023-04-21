@@ -1825,8 +1825,14 @@ UTF8Char *DB::DBUtil::SDBColUTF8(UTF8Char *sqlstr, const UTF8Char *colName, DB::
 			*sptr = 0;
 		}
 		return sptr;
-	case DB::SQLType::Oracle:
 	case DB::SQLType::SQLite:
+		sptr = sqlstr;
+		*sptr++ = '\"';
+		sptr = Text::StrConcat(sptr, colName);
+		*sptr++ = '\"';
+		*sptr = 0;
+		return sptr;
+	case DB::SQLType::Oracle:
 	case DB::SQLType::Unknown:
 	case DB::SQLType::WBEM:
 	default:
