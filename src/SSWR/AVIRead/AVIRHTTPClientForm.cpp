@@ -38,7 +38,10 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnUserAgentClicked(void *userO
 void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnRequestClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRHTTPClientForm *me = (SSWR::AVIRead::AVIRHTTPClientForm*)userObj;
-	UTF8Char sbuff[512];
+	UTF8Char sbuffLocal[512];
+	UTF8Char *sbuff = sbuffLocal;
+	UTF8Char *sbuffPtr = 0;
+	UOSInt sbuffLen = sizeof(sbuffLocal);
 	UTF8Char *sptr;
 	Text::StringBuilderUTF8 sb;
 	Text::StringBuilderUTF8 sbTmp;
@@ -97,6 +100,13 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnRequestClicked(void *userObj
 				sptr = Text::TextBinEnc::FormEncoding::FormEncode(sbuff, param->name->v);
 				sb2.AppendP(sbuff, sptr);
 				sb2.AppendUTF8Char('=');
+				if (param->value->leng * 3 + 1 > sbuffLen)
+				{
+					if (sbuffPtr) MemFree(sbuffPtr);
+					sbuffLen = param->value->leng * 3 + 1;
+					sbuffPtr = MemAlloc(UTF8Char, sbuffLen);
+					sbuff = sbuffPtr;
+				}
 				sptr = Text::TextBinEnc::FormEncoding::FormEncode(sbuff, param->value->v);
 				sb2.AppendP(sbuff, sptr);
 				i++;
@@ -110,7 +120,6 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnRequestClicked(void *userObj
 	else if (me->fileList.GetCount() == 1 && me->cboPostFormat->GetSelectedIndex() == 2)
 	{
 		Text::String *fileName = me->fileList.GetItem(0);
-		UTF8Char sbuff[32];
 		UTF8Char *sptr;
 		{
 			IO::FileStream fs(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
@@ -257,6 +266,13 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnRequestClicked(void *userObj
 			sptr = Text::TextBinEnc::FormEncoding::FormEncode(sbuff, param->name->v);
 			sb2.AppendP(sbuff, sptr);
 			sb2.AppendUTF8Char('=');
+			if (param->value->leng * 3 + 1 > sbuffLen)
+			{
+				if (sbuffPtr) MemFree(sbuffPtr);
+				sbuffLen = param->value->leng * 3 + 1;
+				sbuffPtr = MemAlloc(UTF8Char, sbuffLen);
+				sbuff = sbuffPtr;
+			}
 			sptr = Text::TextBinEnc::FormEncoding::FormEncode(sbuff, param->value->v);
 			sb2.AppendP(sbuff, sptr);
 			i++;
@@ -267,6 +283,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnRequestClicked(void *userObj
 	}
 	me->reqURL = Text::String::New(sb.ToString(), sb.GetLength());
 	me->threadEvt.Set();
+	if (sbuffPtr) MemFree(sbuffPtr);
 	while (me->threadRunning && me->reqURL && !me->respChanged)
 	{
 		Sync::Thread::Sleep(1);
@@ -378,12 +395,23 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnDataStrClicked(void *userObj
 	SSWR::AVIRead::AVIRHTTPClientForm *me = (SSWR::AVIRead::AVIRHTTPClientForm*)userObj;
 	Text::StringBuilderUTF8 sb;
 	SSWR::AVIRead::AVIRHTTPClientForm::ParamValue *param;
-	UTF8Char sbuff[512];
+	UTF8Char *sbuff;
+	UTF8Char sbuffLocal[512];
+	UTF8Char *sbuffPtr = 0;
 	me->txtDataStr->GetText(&sb);
 	me->ClearParams();
 	me->lvReqData->ClearItems();
 	if (sb.GetCharCnt() > 0)
 	{
+		if (sb.leng > 512)
+		{
+			sbuffPtr = MemAlloc(UTF8Char, sb.leng + 1);
+			sbuff = sbuffPtr;
+		}
+		else
+		{
+			sbuff = sbuffLocal;
+		}
 		UTF8Char *sptr = sb.v;
 		UTF8Char *sbuffEnd;
 		UOSInt spInd;
@@ -422,7 +450,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnDataStrClicked(void *userObj
 			}
 			sptr = &sptr[spInd + 1];
 		}
-
+		if (sbuffPtr) MemFree(sbuffPtr);
 	}
 }
 

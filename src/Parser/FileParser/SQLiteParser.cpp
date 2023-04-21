@@ -5,6 +5,7 @@
 #include "DB/SQLiteFile.h"
 #include "IO/FileStream.h"
 #include "IO/Path.h"
+#include "Map/GeoPackage.h"
 #include "Parser/FileParser/SQLiteParser.h"
 #include "Text/MyString.h"
 #include "Text/StringComparatorFast.h"
@@ -122,7 +123,11 @@ IO::ParsedObject *Parser::FileParser::SQLiteParser::ParseAsMap(DB::DBConn *conn)
 		return conn;
 	}
 	
-	printf("Valid GeoPackage file\r\n");
 	LIST_FREE_STRING(&tableNames);
-	return conn;
+
+	Map::GeoPackage *gpkg;
+	NEW_CLASS(gpkg, Map::GeoPackage(conn));
+	IO::ParsedObject *pobj = gpkg->CreateLayerCollection();
+	gpkg->Release();
+	return pobj;
 }

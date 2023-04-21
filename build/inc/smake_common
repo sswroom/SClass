@@ -2084,6 +2084,10 @@ Map/DrawMapServiceLayer.h: ../../src/Map/DrawMapServiceLayer.cpp
 @DrawMapServiceLayer.o
 Map/FileGDBLayer.h: ../../src/Map/FileGDBLayer.cpp
 @FileGDBLayer.o
+Map/GeoPackage.h: ../../src/Map/GeoPackage.cpp
+@GeoPackage.o
+Map/GeoPackageLayer.h: ../../src/Map/GeoPackageLayer.cpp
+@GeoPackageLayer.o
 Map/GMLXML.h: ../../src/Map/GMLXML.cpp
 @GMLXML.o
 Map/GPSTrack.h: ../../src/Map/GPSTrack.cpp
@@ -4903,6 +4907,8 @@ DBMapLayer.o: ../../src/Map/DBMapLayer.cpp
 DrawMapRenderer.o: ../../src/Map/DrawMapRenderer.cpp
 DrawMapServiceLayer.o: ../../src/Map/DrawMapServiceLayer.cpp
 FileGDBLayer.o: ../../src/Map/FileGDBLayer.cpp
+GeoPackage.o: ../../src/Map/GeoPackage.cpp
+GeoPackageLayer.o: ../../src/Map/GeoPackageLayer.cpp
 GMLXML.o: ../../src/Map/GMLXML.cpp
 GPSTrack.o: ../../src/Map/GPSTrack.cpp
 HKParkingVacancy.o: ../../src/Map/HKParkingVacancy.cpp

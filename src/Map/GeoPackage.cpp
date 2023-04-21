@@ -1,6 +1,8 @@
 #include "Stdafx.h"
 #include "DB/DBReader.h"
+#include "IO/Path.h"
 #include "Map/GeoPackage.h"
+#include "Map/GeoPackageLayer.h"
 #include "Sync/Interlocked.h"
 #include "Text/StringTool.h"
 
@@ -113,4 +115,24 @@ void Map::GeoPackage::GetLastErrorMsg(Text::StringBuilderUTF8 *str)
 void Map::GeoPackage::Reconnect()
 {
 	this->conn->Reconnect();
+}
+
+Map::MapLayerCollection *Map::GeoPackage::CreateLayerCollection()
+{
+	Map::MapLayerCollection *layerColl;
+	Text::String *sourceName = this->conn->GetSourceNameObj();
+	UOSInt i = sourceName->LastIndexOf(IO::Path::PATH_SEPERATOR);
+	UOSInt j;
+	Map::GeoPackageLayer *layer;
+	NEW_CLASS(layerColl, Map::MapLayerCollection(sourceName->ToCString(), sourceName->ToCString().Substring(i + 1)));
+	i = 0;
+	j = this->tableList.GetCount();
+	while (i < j)
+	{
+		NEW_CLASS(layer, Map::GeoPackageLayer(this, this->tableList.GetItem(i)));
+		Sync::Interlocked::Increment(&this->useCnt);
+		layerColl->Add(layer);
+		i++;
+	}
+	return layerColl;
 }

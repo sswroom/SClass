@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "DB/TableDef.h"
 #include "Map/GeoPackageLayer.h"
+#include "Math/CoordinateSystemManager.h"
 
 Map::GeoPackageLayer::GeoPackageLayer(Map::GeoPackage *gpkg, Map::GeoPackage::ContentInfo *layerContent) : Map::MapDrawLayer(gpkg->GetSourceNameObj(), 0, layerContent->tableName)
 {
@@ -9,9 +10,33 @@ Map::GeoPackageLayer::GeoPackageLayer(Map::GeoPackage *gpkg, Map::GeoPackage::Co
 	this->tabDef = this->gpkg->GetTableDef(CSTR_NULL, layerContent->tableName->ToCString());
 	this->geomCol = INVALID_INDEX;
 	this->mixedData = MixedData::AllData;
+	this->SetCoordinateSystem(Math::CoordinateSystemManager::SRCreateCSys((UInt32)this->layerContent->srsId));
 	if (this->tabDef)
 	{
-		/////////////////////////
+		DB::ColDef *col;
+		UOSInt i = this->tabDef->GetColCnt();
+		while (i-- > 0)
+		{
+			col = this->tabDef->GetCol(i);
+			if (col->GetColType() == DB::DBUtil::CT_Vector)
+			{
+				this->geomCol = i;
+				break;
+			}
+		}
+
+		if (this->geomCol != INVALID_INDEX)
+		{
+			DB::DBReader *r = this->gpkg->QueryTableData(CSTR_NULL, this->layerContent->tableName->ToCString(), 0, 0, 0, CSTR_NULL, 0);
+			if (r)
+			{
+				while (r->ReadNext())
+				{
+					this->vecList.Add(r->GetVector(this->geomCol));
+				}
+				this->gpkg->CloseReader(r);
+			}
+		}
 	}
 }
 
@@ -41,7 +66,7 @@ void Map::GeoPackageLayer::SetMixedData(MixedData mixedData)
 
 UOSInt Map::GeoPackageLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, NameArray **nameArr)
 {
-	*nameArr = 0;
+	if (nameArr) *nameArr = 0;
 	UOSInt i;
 	UOSInt j;
 	UOSInt initCnt;
@@ -92,7 +117,7 @@ UOSInt Map::GeoPackageLayer::GetObjectIds(Data::ArrayListInt64 *outArr, NameArra
 
 UOSInt Map::GeoPackageLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
-	*nameArr = 0;
+	if (nameArr) *nameArr = 0;
 	UOSInt i;
 	UOSInt j;
 	UOSInt initCnt;
@@ -141,7 +166,7 @@ UOSInt Map::GeoPackageLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, Nam
 
 Int64 Map::GeoPackageLayer::GetObjectIdMax()
 {
-	return this->vecList.GetCount() - 1;
+	return (Int64)(this->vecList.GetCount() - 1);
 }
 
 void Map::GeoPackageLayer::ReleaseNameArr(NameArray *nameArr)

@@ -2,6 +2,7 @@
 #define _SM_MAP_GEOPACKAGE
 #include "Data/FastStringMap.h"
 #include "DB/DBConn.h"
+#include "Map/MapLayerCollection.h"
 #include "Math/RectAreaDbl.h"
 
 namespace Map
@@ -36,6 +37,8 @@ namespace Map
 		void CloseReader(DB::DBReader *r);
 		void GetLastErrorMsg(Text::StringBuilderUTF8 *str);
 		void Reconnect();
+
+		Map::MapLayerCollection *CreateLayerCollection();
 	};
 }
 #endif
