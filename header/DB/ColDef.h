@@ -106,6 +106,7 @@ namespace DB
 		UTF8Char *ToColTypeStr(UTF8Char *sbuff) const;
 		ColDef *Clone() const;
 
+		static GeometryType GeometryTypeAdjust(GeometryType geomType, Bool hasZ, Bool hasM);
 		static Text::CString GeometryTypeGetName(GeometryType geomType);
 	};
 }

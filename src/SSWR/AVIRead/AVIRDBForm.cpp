@@ -66,8 +66,10 @@ void __stdcall SSWR::AVIRead::AVIRDBForm::OnTableSelChg(void *userObj)
 	}
 	else
 	{
+		tabDef = me->db->GetTableDef(STR_CSTR(schemaName), CSTRP(sbuff, sptr));
+
 		r = me->db->QueryTableData(STR_CSTR(schemaName), CSTRP(sbuff, sptr), 0, 0, MAX_ROW_CNT, CSTR_NULL, 0);
-		if (r)
+		if (r && tabDef == 0)
 		{
 			tabDef = r->GenTableDef(STR_CSTR(schemaName), CSTRP(sbuff, sptr));
 		}

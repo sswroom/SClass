@@ -24,6 +24,7 @@ namespace Math
 			virtual void ConvCSys(Math::CoordinateSystem *srcCSys, Math::CoordinateSystem *destCSys);
 			virtual UOSInt GetCoordinates(Data::ArrayListA<Math::Coord2DDbl> *coordList) const;
 			virtual void SwapXY();
+			virtual void MultiplyCoordinatesXY(Double v);
 		};
 	}
 }

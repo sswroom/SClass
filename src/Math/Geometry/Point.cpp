@@ -110,3 +110,8 @@ void Math::Geometry::Point::SwapXY()
 {
 	this->pos = this->pos.SwapXY();
 }
+
+void Math::Geometry::Point::MultiplyCoordinatesXY(Double v)
+{
+	this->pos = this->pos * v;
+}

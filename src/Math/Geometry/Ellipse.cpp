@@ -106,6 +106,14 @@ UOSInt Math::Geometry::Ellipse::GetCoordinates(Data::ArrayListA<Math::Coord2DDbl
 	return 4;
 }
 
+Bool Math::Geometry::Ellipse::InsideVector(Math::Coord2DDbl coord) const
+{
+	Math::Coord2DDbl cent = Math::Coord2DDbl(this->tlx + this->w * 0.5, this->tly + this->h * 0.5);
+	Double yDiff = (coord.y - cent.y) * this->w / this->h;
+	Double xDiff = (coord.x - cent.x);
+	return Math_Sqrt(xDiff * xDiff + yDiff * yDiff) <= this->w * 0.5;
+}
+
 void Math::Geometry::Ellipse::SwapXY()
 {
 	Double tmp = this->tlx;
@@ -116,12 +124,12 @@ void Math::Geometry::Ellipse::SwapXY()
 	this->h = tmp;
 }
 
-Bool Math::Geometry::Ellipse::InsideVector(Math::Coord2DDbl coord) const
+void Math::Geometry::Ellipse::MultiplyCoordinatesXY(Double v)
 {
-	Math::Coord2DDbl cent = Math::Coord2DDbl(this->tlx + this->w * 0.5, this->tly + this->h * 0.5);
-	Double yDiff = (coord.y - cent.y) * this->w / this->h;
-	Double xDiff = (coord.x - cent.x);
-	return Math_Sqrt(xDiff * xDiff + yDiff * yDiff) <= this->w * 0.5;
+	this->tlx = this->tlx * v;
+	this->tly = this->tly * v;
+	this->w = this->w * v;
+	this->h = this->h * v;
 }
 
 Math::Coord2DDbl Math::Geometry::Ellipse::GetTL()

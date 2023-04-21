@@ -57,6 +57,11 @@ void UtilUI::TextInputDialog::OnMonitorChanged()
 	this->SetDPI(this->monMgr->GetMonitorHDPI(this->GetHMonitor()), this->monMgr->GetMonitorDDPI(this->GetHMonitor()));
 }
 
+void UtilUI::TextInputDialog::SetInputString(Text::CString s)
+{
+	this->txtInput->SetText(s);
+}
+
 Bool UtilUI::TextInputDialog::GetInputString(Text::StringBuilderUTF8 *sb)
 {
 	if (this->retInput == 0)

@@ -8,6 +8,12 @@ namespace Map
 	class GeoPackageLayer : public Map::MapDrawLayer
 	{
 	private:
+		struct StringSession
+		{
+			DB::DBReader *r;
+			UOSInt thisId;
+		};
+
 		Map::GeoPackage *gpkg;
 		Map::GeoPackage::ContentInfo *layerContent;
 		DB::TableDef *tabDef;
@@ -15,6 +21,8 @@ namespace Map
 		UOSInt geomCol;
 		MixedData mixedData;
 
+		StringSession *StringSessCreate();
+		Bool StringSessGoRow(StringSession *sess, UOSInt index);
 	public:
 		GeoPackageLayer(Map::GeoPackage *gpkg, Map::GeoPackage::ContentInfo *layerContent);
 		~GeoPackageLayer();
@@ -46,6 +54,8 @@ namespace Map
 		virtual void Reconnect();
 
 		virtual ObjectClass GetObjectClass();
+
+		void MultiplyCoordinates(Double v);
 	};
 }
 #endif

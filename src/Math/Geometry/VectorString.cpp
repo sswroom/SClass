@@ -114,6 +114,11 @@ void Math::Geometry::VectorString::SwapXY()
 	this->pos = this->pos.SwapXY();
 }
 
+void Math::Geometry::VectorString::MultiplyCoordinatesXY(Double v)
+{
+	this->pos = this->pos * v;
+}
+
 Text::String *Math::Geometry::VectorString::GetString() const
 {
 	return this->s;

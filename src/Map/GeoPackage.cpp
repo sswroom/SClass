@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "DB/DBReader.h"
+#include "DB/TableDef.h"
 #include "IO/Path.h"
 #include "Map/GeoPackage.h"
 #include "Map/GeoPackageLayer.h"
@@ -22,6 +23,7 @@ Map::GeoPackage::GeoPackage(DB::DBConn *conn)
 {
 	this->conn = conn;
 	this->useCnt = 1;
+	Text::String *tableName;
 	Data::ArrayList<Text::String*> colList;
 	DB::DBReader *r;
 	Text::StringTool::SplitAsNewString(CSTR("table_name,data_type,min_x,min_y,max_x,max_y,srs_id"), ',', &colList);
@@ -37,10 +39,12 @@ Map::GeoPackage::GeoPackage(DB::DBConn *conn)
 	{
 		sb.ClearStr();
 		r->GetStr(1, &sb);
+		tableName = r->GetNewStr(0);
+		this->allTables.Add(tableName);
 		if (sb.Equals(UTF8STRC("features")))
 		{
 			cont = MemAlloc(ContentInfo, 1);
-			cont->tableName = r->GetNewStr(0);
+			cont->tableName = tableName->Clone();
 			cont->bounds.tl.x = r->GetDbl(2);
 			cont->bounds.tl.y = r->GetDbl(3);
 			cont->bounds.br.x = r->GetDbl(4);
@@ -89,7 +93,14 @@ Text::String *Map::GeoPackage::GetSourceNameObj()
 
 UOSInt Map::GeoPackage::QueryTableNames(Text::CString schemaName, Data::ArrayList<Text::String*> *names)
 {
-	return this->conn->QueryTableNames(schemaName, names);
+	UOSInt i = 0;
+	UOSInt j = this->allTables.GetCount();
+	while (i < j)
+	{
+		names->Add(this->allTables.GetItem(i)->Clone());
+		i++;
+	}
+	return j;
 }
 
 DB::DBReader *Map::GeoPackage::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
@@ -99,7 +110,25 @@ DB::DBReader *Map::GeoPackage::QueryTableData(Text::CString schemaName, Text::CS
 
 DB::TableDef *Map::GeoPackage::GetTableDef(Text::CString schemaName, Text::CString tableName)
 {
-	return this->conn->GetTableDef(schemaName, tableName);
+	DB::TableDef *tabDef = this->conn->GetTableDef(schemaName, tableName);
+	if (tabDef)
+	{
+		ContentInfo *cont = this->tableList.GetC(tableName);
+		if (cont)
+		{
+			UOSInt i = tabDef->GetColCnt();
+			while (i-- > 0)
+			{
+				DB::ColDef *col = tabDef->GetCol(i);
+				if (col->GetColType() == DB::DBUtil::CT_Vector)
+				{
+					col->SetColSize((UOSInt)DB::ColDef::GeometryTypeAdjust((DB::ColDef::GeometryType)col->GetColSize(), cont->hasZ, cont->hasM));
+					col->SetColDP((UInt32)cont->srsId);
+				}
+			}
+		}
+	}
+	return tabDef;
 }
 
 void Map::GeoPackage::CloseReader(DB::DBReader *r)

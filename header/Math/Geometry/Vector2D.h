@@ -62,6 +62,7 @@ namespace Math
 			virtual UOSInt GetCoordinates(Data::ArrayListA<Math::Coord2DDbl> *coordList) const = 0;
 			virtual Bool InsideVector(Math::Coord2DDbl coord) const;
 			virtual void SwapXY() = 0;
+			virtual void MultiplyCoordinatesXY(Double v) = 0;
 
 			UInt32 GetSRID() const;
 			void SetSRID(UInt32 srid);

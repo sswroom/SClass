@@ -33,6 +33,7 @@ namespace Math
 			virtual Bool EqualsNearly(Math::Geometry::Vector2D *vec) const;
 			virtual UOSInt GetCoordinates(Data::ArrayListA<Math::Coord2DDbl> *coordList) const;
 			virtual void SwapXY();
+			virtual void MultiplyCoordinatesXY(Double v);
 
 			Text::String *GetString() const;
 			Double GetAngleDegree() const;

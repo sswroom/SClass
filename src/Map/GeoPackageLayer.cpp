@@ -3,6 +3,55 @@
 #include "Map/GeoPackageLayer.h"
 #include "Math/CoordinateSystemManager.h"
 
+Map::GeoPackageLayer::StringSession *Map::GeoPackageLayer::StringSessCreate()
+{
+	StringSession *sess = MemAlloc(StringSession, 1);
+	sess->r = this->gpkg->QueryTableData(CSTR_NULL, this->layerContent->tableName->ToCString(), 0, 0, 0, CSTR_NULL, 0);
+	if (sess->r && sess->r->ReadNext())
+	{
+		sess->thisId = 0;
+	}
+	else
+	{
+		sess->thisId = INVALID_INDEX;
+	}
+	return sess;
+}
+
+Bool Map::GeoPackageLayer::StringSessGoRow(StringSession *sess, UOSInt index)
+{
+	if (sess->thisId == index)
+	{
+		return true;
+	}
+	else if (sess->thisId > index)
+	{
+		if (sess->r)
+			this->gpkg->CloseReader(sess->r);
+		sess->r = this->gpkg->QueryTableData(CSTR_NULL, this->layerContent->tableName->ToCString(), 0, index, 0, CSTR_NULL, 0);
+		if (sess->r && sess->r->ReadNext())
+		{
+			sess->thisId = index;
+			return true;
+		}
+		else
+		{
+			sess->thisId = INVALID_INDEX;
+			return false;
+		}
+	}
+	else
+	{
+		while (sess->r->ReadNext())
+		{
+			sess->thisId++;
+			if (sess->thisId == index)
+				return true;
+		}
+		return false;
+	}
+}
+
 Map::GeoPackageLayer::GeoPackageLayer(Map::GeoPackage *gpkg, Map::GeoPackage::ContentInfo *layerContent) : Map::MapDrawLayer(gpkg->GetSourceNameObj(), 0, layerContent->tableName)
 {
 	this->gpkg = gpkg;
@@ -55,7 +104,6 @@ Map::GeoPackageLayer::~GeoPackageLayer()
 
 Map::DrawLayerType Map::GeoPackageLayer::GetLayerType()
 {
-	///////////////////////
 	return Map::DRAW_LAYER_MIXED;	
 }
 
@@ -66,7 +114,7 @@ void Map::GeoPackageLayer::SetMixedData(MixedData mixedData)
 
 UOSInt Map::GeoPackageLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, NameArray **nameArr)
 {
-	if (nameArr) *nameArr = 0;
+	if (nameArr) *nameArr = (NameArray*)this->StringSessCreate();
 	UOSInt i;
 	UOSInt j;
 	UOSInt initCnt;
@@ -117,7 +165,7 @@ UOSInt Map::GeoPackageLayer::GetObjectIds(Data::ArrayListInt64 *outArr, NameArra
 
 UOSInt Map::GeoPackageLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
-	if (nameArr) *nameArr = 0;
+	if (nameArr) *nameArr = (NameArray*)this->StringSessCreate();
 	UOSInt i;
 	UOSInt j;
 	UOSInt initCnt;
@@ -171,12 +219,23 @@ Int64 Map::GeoPackageLayer::GetObjectIdMax()
 
 void Map::GeoPackageLayer::ReleaseNameArr(NameArray *nameArr)
 {
-	////////////////////////////
+	StringSession *sess = (StringSession*)nameArr;
+	if (sess)
+	{
+		if (sess->r) this->gpkg->CloseReader(sess->r);
+		MemFree(sess);
+	}
 }
 
 UTF8Char *Map::GeoPackageLayer::GetString(UTF8Char *buff, UOSInt buffSize, NameArray *nameArr, Int64 id, UOSInt strIndex)
 {
-	////////////////////////////
+	StringSession *sess = (StringSession*)nameArr;
+	if (sess && sess->r)
+	{
+		if (!StringSessGoRow(sess, (UOSInt)id))
+			return 0;
+		return sess->r->GetStr(strIndex, buff, buffSize);
+	}
 	return 0;
 }
 
@@ -280,4 +339,13 @@ void Map::GeoPackageLayer::Reconnect()
 Map::MapDrawLayer::ObjectClass Map::GeoPackageLayer::GetObjectClass()
 {
 	return Map::MapDrawLayer::ObjectClass::OC_GEOPACKAGE;
+}
+
+void Map::GeoPackageLayer::MultiplyCoordinates(Double v)
+{
+	UOSInt i = this->vecList.GetCount();
+	while (i-- > 0)
+	{
+		this->vecList.GetItem(i)->MultiplyCoordinatesXY(v);
+	}
 }

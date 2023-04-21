@@ -10,6 +10,7 @@
 #include "Map/CSVMapParser.h"
 #include "Map/DrawMapRenderer.h"
 #include "Map/DrawMapServiceLayer.h"
+#include "Map/GeoPackageLayer.h"
 #include "Map/HKParkingVacancy.h"
 #include "Map/VectorLayer.h"
 #include "Map/ESRI/ESRITileMap.h"
@@ -55,6 +56,7 @@
 #include "UI/Clipboard.h"
 #include "UI/FileDialog.h"
 #include "UI/MessageDialog.h"
+#include "UtilUI/TextInputDialog.h"
 
 #include <stdio.h>
 
@@ -90,6 +92,7 @@ typedef enum
 	MNU_LAYER_IMPORT_TILES,
 	MNU_LAYER_OPTIMIZE_FILE,
 	MNU_LAYER_QUERY,
+	MNU_LAYER_MUL_COORD,
 	MNU_MTK_GPS,
 	MNU_MTK_FILE,
 	MNU_GPS_TRACKER,
@@ -786,6 +789,7 @@ SSWR::AVIRead::AVIRGISForm::AVIRGISForm(UI::GUIClientControl *parent, UI::GUICor
 	this->mnuLayer->AddItem(CSTR("Expand Layer"), MNU_LAYER_EXPAND, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	this->mnuLayer->AddItem(CSTR("Convert to editable layer"), MNU_LAYER_CONV, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	this->mnuLayer->AddItem(CSTR("Edit Layer"), MNU_LAYER_EDIT, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	this->mnuLayer->AddItem(CSTR("Multiply Coordinates"), MNU_LAYER_MUL_COORD, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	this->mnuLayer->AddSeperator();
 	this->mnuLayer->AddItem(CSTR("Replay"), MNU_LAYER_REPLAY, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	this->mnuLayer->AddItem(CSTR("Open DB"), MNU_LAYER_OPENDB, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -1068,6 +1072,36 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 				else if (lyrType == Map::DRAW_LAYER_MIXED || lyrType == Map::DRAW_LAYER_POLYGON)
 				{
 					this->SetCtrlForm(NEW_CLASS_D(SSWR::AVIRead::AVIRGISEditVectorForm(0, this->ui, this->core, (Map::VectorLayer*)lyr, this)), this->popNode);
+				}
+			}
+		}
+		break;
+	case MNU_LAYER_MUL_COORD:
+		{
+			Map::MapDrawLayer *lyr = ((Map::MapEnv::LayerItem*)((UI::GUIMapTreeView::ItemIndex*)this->popNode->GetItemObj())->item)->layer;
+			if (lyr->GetObjectClass() == Map::MapDrawLayer::OC_GEOPACKAGE)
+			{
+				UtilUI::TextInputDialog dlg(0, this->ui, this->core->GetMonitorMgr(), CSTR("Multiply Coordinate"), CSTR("Please input value floating point value to multiply"));
+				dlg.SetInputString(CSTR("1.0"));
+				if (dlg.ShowDialog(this))
+				{
+					Text::StringBuilderUTF8 sb;
+					if (dlg.GetInputString(&sb))
+					{
+						Double v = sb.ToDouble();
+						if (v > 0)
+						{
+							((Map::GeoPackageLayer*)lyr)->MultiplyCoordinates(v);
+						}
+						else
+						{
+							UI::MessageDialog::ShowDialog(CSTR("Input is not valid floating point number"), CSTR("Multiply Coordinate"), this);
+						}
+					}
+					else
+					{
+						UI::MessageDialog::ShowDialog(CSTR("Error in getting input string"), CSTR("Multiply Coordinate"), this);
+					}
 				}
 			}
 		}

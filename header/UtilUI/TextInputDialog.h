@@ -27,6 +27,7 @@ namespace UtilUI
 		virtual void OnShow();
 		virtual void OnMonitorChanged();
 
+		void SetInputString(Text::CString s);
 		Bool GetInputString(Text::StringBuilderUTF8 *sb);
 	};
 }

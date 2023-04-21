@@ -311,6 +311,113 @@ DB::ColDef *DB::ColDef::Clone() const
 	return newObj;
 }
 
+DB::ColDef::GeometryType DB::ColDef::GeometryTypeAdjust(GeometryType geomType, Bool hasZ, Bool hasM)
+{
+	switch (geomType)
+	{
+	default:
+	case GeometryType::Unknown:
+	case GeometryType::Any:
+	case GeometryType::AnyZ:
+	case GeometryType::AnyZM:
+	case GeometryType::AnyM:
+		if (hasZ)
+			if (hasM)
+				return GeometryType::AnyZM;
+			else
+				return GeometryType::AnyZ;
+		else
+			if (hasM)
+				return GeometryType::AnyM;
+			else
+				return GeometryType::Any;
+	case GeometryType::Point:
+	case GeometryType::PointZ:
+	case GeometryType::PointZM:
+	case GeometryType::PointM:
+		if (hasZ)
+			if (hasM)
+				return GeometryType::PointZM;
+			else
+				return GeometryType::PointZ;
+		else
+			if (hasM)
+				return GeometryType::PointM;
+			else
+				return GeometryType::Point;
+	case GeometryType::Multipoint:
+	case GeometryType::MultipointZ:
+	case GeometryType::MultipointZM:
+	case GeometryType::MultipointM:
+		if (hasZ)
+			if (hasM)
+				return GeometryType::MultipointZM;
+			else
+				return GeometryType::MultipointZ;
+		else
+			if (hasM)
+				return GeometryType::MultipointM;
+			else
+				return GeometryType::Multipoint;
+	case GeometryType::Polyline:
+	case GeometryType::PolylineZ:
+	case GeometryType::PolylineZM:
+	case GeometryType::PolylineM:
+		if (hasZ)
+			if (hasM)
+				return GeometryType::PolylineZM;
+			else
+				return GeometryType::PolylineZ;
+		else
+			if (hasM)
+				return GeometryType::PolylineM;
+			else
+				return GeometryType::Polyline;
+	case GeometryType::Polygon:
+	case GeometryType::PolygonZ:
+	case GeometryType::PolygonZM:
+	case GeometryType::PolygonM:
+		if (hasZ)
+			if (hasM)
+				return GeometryType::PolygonZM;
+			else
+				return GeometryType::PolygonZ;
+		else
+			if (hasM)
+				return GeometryType::PolygonM;
+			else
+				return GeometryType::Polygon;
+	case GeometryType::Rectangle:
+	case GeometryType::RectangleZ:
+	case GeometryType::RectangleZM:
+	case GeometryType::RectangleM:
+		if (hasZ)
+			if (hasM)
+				return GeometryType::RectangleZM;
+			else
+				return GeometryType::RectangleZ;
+		else
+			if (hasM)
+				return GeometryType::RectangleM;
+			else
+				return GeometryType::Rectangle;
+	case GeometryType::Path:
+	case GeometryType::PathZ:
+	case GeometryType::PathZM:
+	case GeometryType::PathM:
+		if (hasZ)
+			if (hasM)
+				return GeometryType::PathZM;
+			else
+				return GeometryType::PathZ;
+		else
+			if (hasM)
+				return GeometryType::PathM;
+			else
+				return GeometryType::Path;
+	}
+}
+
 Text::CString DB::ColDef::GeometryTypeGetName(GeometryType geomType)
 {
 	switch (geomType)

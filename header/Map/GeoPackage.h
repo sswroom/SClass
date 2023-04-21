@@ -21,6 +21,7 @@ namespace Map
 	private:
 		DB::DBConn *conn;
 		Data::FastStringMap<ContentInfo*> tableList;
+		Data::ArrayList<Text::String*> allTables;
 		UInt32 useCnt;
 	private:
 		~GeoPackage();

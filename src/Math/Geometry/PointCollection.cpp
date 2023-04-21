@@ -102,3 +102,12 @@ void Math::Geometry::PointCollection::SwapXY()
 		this->pointArr[i] = this->pointArr[i].SwapXY();
 	}
 }
+
+void Math::Geometry::PointCollection::MultiplyCoordinatesXY(Double v)
+{
+	UOSInt i = this->nPoint;
+	while (i-- > 0)
+	{
+		this->pointArr[i] = this->pointArr[i] * v;
+	}
+}
