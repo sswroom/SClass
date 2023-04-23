@@ -19,9 +19,10 @@ namespace Net
 			IO::LogTool *log;
 
 			static Bool __stdcall NotifyFunc(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq, WebServiceHandler *me);
+			static Bool __stdcall BatchUplFunc(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq, WebServiceHandler *me);
 
 		public:
-			GCISNotifyHandler(Text::CString notifyPath, MailHandler hdlr, void *userObj, IO::LogTool *log);
+			GCISNotifyHandler(Text::CString notifyPath, Text::CString batchUplPath, MailHandler hdlr, void *userObj, IO::LogTool *log);
 			virtual ~GCISNotifyHandler();
 		};
 	}

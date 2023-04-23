@@ -3,6 +3,8 @@
 #include "Text/JSONBuilder.h"
 #include "Text/MailCreator.h"
 
+#include <stdio.h>
+
 Bool __stdcall Net::WebServer::GCISNotifyHandler::NotifyFunc(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq, WebServiceHandler *hdlr)
 {
 	GCISNotifyHandler *me = (GCISNotifyHandler*)hdlr;
@@ -200,13 +202,39 @@ Bool __stdcall Net::WebServer::GCISNotifyHandler::NotifyFunc(Net::WebServer::IWe
 	return true;
 }
 
-Net::WebServer::GCISNotifyHandler::GCISNotifyHandler(Text::CString notifyPath, MailHandler hdlr, void *userObj, IO::LogTool *log)
+Bool __stdcall Net::WebServer::GCISNotifyHandler::BatchUplFunc(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq, WebServiceHandler *me)
+{
+	UOSInt size;
+	const UInt8 *data = req->GetReqData(&size);
+	Text::StringBuilderUTF8 sb;
+	sb.AppendC(data, size);
+	printf("%s\r\n", sb.v);
+
+	UTF8Char sbuff[128];
+	UTF8Char *sptr;
+	sb.ClearStr();
+	{
+		Text::JSONBuilder builder(&sb, Text::JSONBuilder::OT_OBJECT);
+		sptr = Text::StrInt64(sbuff, Data::DateTimeUtil::GetCurrTimeMillis());
+		builder.ObjectAddStr(CSTR("UploadRefNum"), CSTRP(sbuff, sptr));
+		builder.ObjectAddStr(CSTR("ResultCd"), CSTR("0000"));
+	}
+	resp->AddDefHeaders(req);
+	resp->AddCacheControl(0);
+	resp->AddContentType(CSTR("application/json"));
+	resp->AddContentLength(sb.GetLength());
+	resp->Write(sb.v, sb.leng);
+	return true;
+}
+
+Net::WebServer::GCISNotifyHandler::GCISNotifyHandler(Text::CString notifyPath, Text::CString batchUplPath, MailHandler hdlr, void *userObj, IO::LogTool *log)
 {
 	this->hdlr = hdlr;
 	this->hdlrObj = userObj;
 	this->log = log;
 
 	this->AddService(notifyPath, Net::WebUtil::RequestMethod::HTTP_POST, NotifyFunc);
+	this->AddService(batchUplPath, Net::WebUtil::RequestMethod::HTTP_POST, BatchUplFunc);
 }
 
 Net::WebServer::GCISNotifyHandler::~GCISNotifyHandler()

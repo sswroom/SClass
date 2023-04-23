@@ -109,7 +109,8 @@ void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnGCISStartClicked(void *user
 		DEL_CLASS(me->gcisListener);
 		DEL_CLASS(me->gcisHdlr);
 		me->txtGCISPort->SetReadOnly(false);
-		me->txtGCISPath->SetReadOnly(false);
+		me->txtGCISNotifPath->SetReadOnly(false);
+		me->txtGCISBatchUplPath->SetReadOnly(false);
 		me->btnGCISStart->SetText(CSTR("Start"));
 		me->gcisListener = 0;
 		me->gcisHdlr = 0;
@@ -118,6 +119,7 @@ void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnGCISStartClicked(void *user
 	{
 		UInt16 port;
 		Text::StringBuilderUTF8 sb;
+		Text::StringBuilderUTF8 sb2;
 		me->txtGCISPort->GetText(&sb);
 		if (!sb.ToUInt16(&port))
 		{
@@ -130,10 +132,16 @@ void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnGCISStartClicked(void *user
 			return;
 		}
 		sb.ClearStr();
-		me->txtGCISPath->GetText(&sb);
+		me->txtGCISNotifPath->GetText(&sb);
 		if (!sb.StartsWith('/'))
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Please enter valid path"), CSTR("Error"), me);
+			UI::MessageDialog::ShowDialog(CSTR("Please enter valid Notif path"), CSTR("Error"), me);
+			return;
+		}
+		me->txtGCISBatchUplPath->GetText(&sb2);
+		if (!sb2.StartsWith('/'))
+		{
+			UI::MessageDialog::ShowDialog(CSTR("Please enter valid Batch Upload path"), CSTR("Error"), me);
 			return;
 		}
 		Net::SSLEngine *ssl = 0;
@@ -147,7 +155,7 @@ void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnGCISStartClicked(void *user
 		Crypto::Cert::X509Cert *issuerCert = Crypto::Cert::CertUtil::FindIssuer(me->gcisSSLCert);
 		ssl->ServerSetCertsASN1(me->gcisSSLCert, me->gcisSSLKey, issuerCert);
 		SDEL_CLASS(issuerCert);
-		NEW_CLASS(me->gcisHdlr, Net::WebServer::GCISNotifyHandler(sb.ToCString(), OnGCISMailReceived, me, &me->log));
+		NEW_CLASS(me->gcisHdlr, Net::WebServer::GCISNotifyHandler(sb.ToCString(), sb2.ToCString(), OnGCISMailReceived, me, &me->log));
 		NEW_CLASS(me->gcisListener, Net::WebServer::WebListener(me->core->GetSocketFactory(), ssl, me->gcisHdlr, port, 60, 2, CSTR("SSWRGCIS/1.0"), false, Net::WebServer::KeepAlive::Default, true));
 		if (me->gcisListener->IsError())
 		{
@@ -159,7 +167,8 @@ void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnGCISStartClicked(void *user
 		else
 		{
 			me->txtGCISPort->SetReadOnly(true);
-			me->txtGCISPath->SetReadOnly(true);
+			me->txtGCISNotifPath->SetReadOnly(true);
+			me->txtGCISBatchUplPath->SetReadOnly(true);
 			me->btnGCISStart->SetText(CSTR("Stop"));
 		}
 	}
@@ -520,12 +529,16 @@ SSWR::AVIRead::AVIREmailServerForm::AVIREmailServerForm(UI::GUIClientControl *pa
 	this->lblGCISPort->SetRect(0, 24, 100, 23, false);
 	NEW_CLASS(this->txtGCISPort, UI::GUITextBox(ui, this->tpGCIS, CSTR("9444")));
 	this->txtGCISPort->SetRect(100, 24, 100, 23, false);
-	NEW_CLASS(this->lblGCISPath, UI::GUILabel(ui, this->tpGCIS, CSTR("Path")));
-	this->lblGCISPath->SetRect(0, 48, 100, 23, false);
-	NEW_CLASS(this->txtGCISPath, UI::GUITextBox(ui, this->tpGCIS, CSTR("/messaging/ssl/RESTful/NotiSenderRest")));
-	this->txtGCISPath->SetRect(100, 48, 400, 23, false);
+	NEW_CLASS(this->lblGCISNotifPath, UI::GUILabel(ui, this->tpGCIS, CSTR("Notif Path")));
+	this->lblGCISNotifPath->SetRect(0, 48, 100, 23, false);
+	NEW_CLASS(this->txtGCISNotifPath, UI::GUITextBox(ui, this->tpGCIS, CSTR("/messaging/ssl/RESTful/NotiSenderRest")));
+	this->txtGCISNotifPath->SetRect(100, 48, 400, 23, false);
+	NEW_CLASS(this->lblGCISBatchUplPath, UI::GUILabel(ui, this->tpGCIS, CSTR("Batch Upload")));
+	this->lblGCISBatchUplPath->SetRect(0, 72, 100, 23, false);
+	NEW_CLASS(this->txtGCISBatchUplPath, UI::GUITextBox(ui, this->tpGCIS, CSTR("/messaging/ssl/RESTful/BatchUploadRest")));
+	this->txtGCISBatchUplPath->SetRect(100, 72, 400, 23, false);
 	NEW_CLASS(this->btnGCISStart, UI::GUIButton(ui, this->tpGCIS, CSTR("Start")));
-	this->btnGCISStart->SetRect(100, 72, 75, 23, false);
+	this->btnGCISStart->SetRect(100, 96, 75, 23, false);
 	this->btnGCISStart->HandleButtonClick(OnGCISStartClicked, this);
 
 	this->tpEmail = this->tcMain->AddTabPage(CSTR("Email"));

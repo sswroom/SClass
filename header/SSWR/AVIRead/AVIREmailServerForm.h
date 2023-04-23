@@ -55,8 +55,10 @@ namespace SSWR
 			UI::GUILabel *lblGCISCertKey;
 			UI::GUILabel *lblGCISPort;
 			UI::GUITextBox *txtGCISPort;
-			UI::GUILabel *lblGCISPath;
-			UI::GUITextBox *txtGCISPath;
+			UI::GUILabel *lblGCISNotifPath;
+			UI::GUITextBox *txtGCISNotifPath;
+			UI::GUILabel *lblGCISBatchUplPath;
+			UI::GUITextBox *txtGCISBatchUplPath;
 			UI::GUIButton *btnGCISStart;
 
 			UI::GUITabPage *tpEmail;
