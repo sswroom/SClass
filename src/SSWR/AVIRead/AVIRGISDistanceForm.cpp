@@ -182,7 +182,6 @@ SSWR::AVIRead::AVIRGISDistanceForm::~AVIRGISDistanceForm()
 	DEL_CLASS(this->ptList);
 	DEL_CLASS(this->csys);
 	this->navi->UnhandleMapMouse(this);
-	this->navi->SetSelectedVector(0);
 }
 
 void SSWR::AVIRead::AVIRGISDistanceForm::OnMonitorChanged()

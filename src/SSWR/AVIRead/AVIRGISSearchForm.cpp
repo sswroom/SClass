@@ -106,11 +106,9 @@ SSWR::AVIRead::AVIRGISSearchForm::AVIRGISSearchForm(UI::GUIClientControl *parent
 SSWR::AVIRead::AVIRGISSearchForm::~AVIRGISSearchForm()
 {
 	DEL_CLASS(this->searching);
-	//this->layer->ReleaseSearchStr(this->dispList);
 	this->layer->ReleaseNameArr(this->nameArr);
 	DEL_CLASS(this->dispList);
 	DEL_CLASS(this->objIds);
-	this->navi->SetSelectedVector(0);
 }
 
 void SSWR::AVIRead::AVIRGISSearchForm::OnMonitorChanged()

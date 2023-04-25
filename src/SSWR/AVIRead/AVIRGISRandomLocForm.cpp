@@ -149,8 +149,6 @@ SSWR::AVIRead::AVIRGISRandomLocForm::AVIRGISRandomLocForm(UI::GUIClientControl *
 
 SSWR::AVIRead::AVIRGISRandomLocForm::~AVIRGISRandomLocForm()
 {
-	this->navi->SetSelectedVector(0);
-	this->navi->HideMarker();
 	this->navi->UnhandleMapMouse(this);
 }
 

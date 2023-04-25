@@ -616,7 +616,6 @@ SSWR::AVIRead::AVIRGISTileDownloadForm::AVIRGISTileDownloadForm(UI::GUIClientCon
 
 SSWR::AVIRead::AVIRGISTileDownloadForm::~AVIRGISTileDownloadForm()
 {
-	this->navi->SetSelectedVector(0);
 	this->navi->UnhandleMapMouse(this);
 
 	UOSInt i;

@@ -100,8 +100,6 @@ SSWR::AVIRead::AVIRGISEditVectorForm::AVIRGISEditVectorForm(UI::GUIClientControl
 
 SSWR::AVIRead::AVIRGISEditVectorForm::~AVIRGISEditVectorForm()
 {
-	this->navi->HideMarker();
-	this->navi->SetSelectedVector(0);
 	this->navi->UnhandleMapMouse(this);
 }
 

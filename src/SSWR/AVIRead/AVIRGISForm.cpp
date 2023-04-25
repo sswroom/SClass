@@ -408,6 +408,11 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::OnCtrlFormClosed(void *userObj, UI::G
 {
 	SSWR::AVIRead::AVIRGISForm *me = (SSWR::AVIRead::AVIRGISForm*)userObj;
 	me->ctrlForm = 0;
+	if (!me->pauseUpdate)
+	{
+		me->mapCtrl->HideMarker();
+		me->mapCtrl->SetSelectedVector(0);
+	}
 }
 
 void __stdcall SSWR::AVIRead::AVIRGISForm::OnSubFormClosed(void *userObj, UI::GUIForm *frm)
@@ -1015,7 +1020,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 			Text::SearchIndexer *searching = layer->layer->CreateSearchIndexer(&this->ta, setting.labelCol);
 			if (searching)
 			{
-				this->AddSubForm(NEW_CLASS_D(AVIRGISSearchForm(0, ui, this->core, this, layer->layer, searching, setting.labelCol, setting.flags)));
+				this->SetCtrlForm(NEW_CLASS_D(AVIRGISSearchForm(0, ui, this->core, this, layer->layer, searching, setting.labelCol, setting.flags)), this->popNode);
 			}
 		}
 		break;
