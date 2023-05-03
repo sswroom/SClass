@@ -94,8 +94,6 @@ namespace SSWR
 		public:
 			OrganWebHandler(OrganWebEnv *env, UInt32 scnSize);
 			virtual ~OrganWebHandler();
-
-//			virtual void WebRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp);
 		};
 	}
 }

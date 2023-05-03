@@ -1093,6 +1093,10 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpecies(Net::WebServer::IWebR
 					}
 				}
 			}
+			else if (action && action->Equals(UTF8STRC("setphoto")))
+			{
+				me->env->GroupSetPhotoSpecies(&mutUsage, species->groupId, species->speciesId);
+			}
 		}
 
 		IO::MemoryStream mstm;
@@ -1625,6 +1629,13 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpecies(Net::WebServer::IWebR
 		writer.WriteStrC(UTF8STRC("\">"));
 		writer.WriteStr(LangGetValue(lang, UTF8STRC("Back")));
 		writer.WriteStrC(UTF8STRC("</a>"));
+
+		if (env.user != 0 && env.user->userType == 0)
+		{
+			writer.WriteLineC(UTF8STRC("<br/>"));
+
+			writer.WriteLineC(UTF8STRC("<input type=\"button\" value=\"Set Group Photo\" onclick=\"document.forms.userfiles.action.value='setphoto';document.forms.userfiles.submit();\"/>"));
+		}
 
 		me->WriteFooter(&writer);
 		mutUsage.EndUse();
