@@ -1979,6 +1979,8 @@ IO/FileAnalyse/SMBIOSFileAnalyse.h: ../../src/IO/FileAnalyse/SMBIOSFileAnalyse.c
 @SMBIOSFileAnalyse.o
 IO/FileAnalyse/SPKFileAnalyse.h: ../../src/IO/FileAnalyse/SPKFileAnalyse.cpp
 @SPKFileAnalyse.o
+IO/FileAnalyse/TIFFFileAnalyse.h: ../../src/IO/FileAnalyse/TIFFFileAnalyse.cpp
+@TIFFFileAnalyse.o
 IO/FileAnalyse/TSFileAnalyse.h: ../../src/IO/FileAnalyse/TSFileAnalyse.cpp
 @TSFileAnalyse.o
 IO/FileAnalyse/ZIPFileAnalyse.h: ../../src/IO/FileAnalyse/ZIPFileAnalyse.cpp
@@ -4858,6 +4860,7 @@ SBFrameDetail.o: ../../src/IO/FileAnalyse/SBFrameDetail.cpp
 SHPFileAnalyse.o: ../../src/IO/FileAnalyse/SHPFileAnalyse.cpp
 SMBIOSFileAnalyse.o: ../../src/IO/FileAnalyse/SMBIOSFileAnalyse.cpp
 SPKFileAnalyse.o: ../../src/IO/FileAnalyse/SPKFileAnalyse.cpp
+TIFFFileAnalyse.o: ../../src/IO/FileAnalyse/TIFFFileAnalyse.cpp
 TSFileAnalyse.o: ../../src/IO/FileAnalyse/TSFileAnalyse.cpp
 ZIPFileAnalyse.o: ../../src/IO/FileAnalyse/ZIPFileAnalyse.cpp
 BluetoothCtlProgCtrl.o: ../../src/IO/ProgCtrl/BluetoothCtlProgCtrl.cpp

@@ -473,9 +473,18 @@ Bool Net::ASN1Util::PDUToString(const UInt8 *pdu, const UInt8 *pduEnd, Text::Str
 			break;
 		case 0x1E:
 			sb->AppendChar('\t', level);
-			sb->AppendC(UTF8STRC("BMPString ("));
-			sb->AppendHexBuff(&pdu[ofst], len, ' ', Text::LineBreakType::None);
-			sb->AppendC(UTF8STRC(")\r\n"));
+			if (len & 1)
+			{
+				sb->AppendC(UTF8STRC("BMPString ("));
+				sb->AppendHexBuff(&pdu[ofst], len, ' ', Text::LineBreakType::None);
+				sb->AppendC(UTF8STRC(")\r\n"));
+			}
+			else
+			{
+				sb->AppendC(UTF8STRC("BMPString "));
+				sb->AppendUTF16BE(&pdu[ofst], len >> 1);
+				sb->AppendC(UTF8STRC("\r\n"));
+			}
 			pdu += ofst + len;
 			break;
 		case 0x0:

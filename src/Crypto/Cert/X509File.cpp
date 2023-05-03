@@ -1005,7 +1005,13 @@ void Crypto::Cert::X509File::AppendVersion(const UInt8 *pdu, const UInt8 *pduEnd
 
 void Crypto::Cert::X509File::AppendAlgorithmIdentifier(const UInt8 *pdu, const UInt8 *pduEnd, Text::StringBuilderUTF8 *sb, Text::CString varName, Bool pubKey, KeyType *keyTypeOut)
 {
+	UTF8Char sbuff[256];
+	UTF8Char *sptr;
+	const UInt8 *itemPDU;
+	UOSInt itemLen;
+	Net::ASN1Util::ItemType itemType;
 	KeyType keyType = KeyType::Unknown;
+	KeyType innerKeyType = KeyType::Unknown;
 	UOSInt algorithmLen;
 	Net::ASN1Util::ItemType algorithmType;
 	const UInt8 *algorithm = Net::ASN1Util::PDUGetItem(pdu, pduEnd, "1", &algorithmLen, &algorithmType);
@@ -1030,14 +1036,88 @@ void Crypto::Cert::X509File::AppendAlgorithmIdentifier(const UInt8 *pdu, const U
 	}
 	if (parameters)
 	{
-		sb->Append(varName);
-		sb->AppendUTF8Char('.');
-		sb->AppendC(UTF8STRC("parameters = "));
-		if (parametersType == Net::ASN1Util::IT_NULL)
+		if (Net::ASN1Util::OIDEqualsText(algorithm, algorithmLen, UTF8STRC("1.2.840.113549.1.5.13")) && parametersType == Net::ASN1Util::IT_SEQUENCE)
 		{
-			sb->AppendC(UTF8STRC("NULL"));
+			if ((itemPDU = Net::ASN1Util::PDUGetItem(parameters, parameters + parametersLen, "1", &itemLen, &itemType)) != 0)
+			{
+				if (itemType == Net::ASN1Util::IT_SEQUENCE)
+				{
+					sptr = Text::StrConcatC(varName.ConcatTo(sbuff), UTF8STRC(".pbes2.kdf"));
+					AppendAlgorithmIdentifier(itemPDU, itemPDU + itemLen, sb, CSTRP(sbuff, sptr), true, &innerKeyType);
+				}
+			}
+			if ((itemPDU = Net::ASN1Util::PDUGetItem(parameters, parameters + parametersLen, "2", &itemLen, &itemType)) != 0)
+			{
+				if (itemType == Net::ASN1Util::IT_SEQUENCE)
+				{
+					sptr = Text::StrConcatC(varName.ConcatTo(sbuff), UTF8STRC(".pbes2.encryptScheme"));
+					AppendAlgorithmIdentifier(itemPDU, itemPDU + itemLen, sb, CSTRP(sbuff, sptr), true, &innerKeyType);
+				}
+			}
 		}
-		sb->AppendC(UTF8STRC("\r\n"));
+		else if (Net::ASN1Util::OIDEqualsText(algorithm, algorithmLen, UTF8STRC("1.2.840.113549.1.5.12")) && parametersType == Net::ASN1Util::IT_SEQUENCE)
+		{
+			if ((itemPDU = Net::ASN1Util::PDUGetItem(parameters, parameters + parametersLen, "1", &itemLen, &itemType)) != 0)
+			{
+				if (itemType == Net::ASN1Util::IT_OCTET_STRING)
+				{
+					sb->Append(varName);
+					sb->AppendC(UTF8STRC(".pbkdf2.salt = "));
+					sb->AppendHexBuff(itemPDU, itemLen, ' ', Text::LineBreakType::None);
+					sb->AppendC(UTF8STRC("\r\n"));
+				}
+			}
+			if ((itemPDU = Net::ASN1Util::PDUGetItem(parameters, parameters + parametersLen, "2", &itemLen, &itemType)) != 0)
+			{
+				if (itemType == Net::ASN1Util::IT_INTEGER)
+				{
+					sb->Append(varName);
+					sb->AppendC(UTF8STRC(".pbkdf2.iterationCount = "));
+					Net::ASN1Util::IntegerToString(itemPDU, itemLen, sb);
+					sb->AppendC(UTF8STRC("\r\n"));
+				}
+			}
+			if ((itemPDU = Net::ASN1Util::PDUGetItem(parameters, parameters + parametersLen, "3", &itemLen, &itemType)) != 0)
+			{
+				if (itemType == Net::ASN1Util::IT_SEQUENCE)
+				{
+					sptr = Text::StrConcatC(varName.ConcatTo(sbuff), UTF8STRC(".pbkdf2.prf"));
+					AppendAlgorithmIdentifier(itemPDU, itemPDU + itemLen, sb, CSTRP(sbuff, sptr), true, &innerKeyType);
+				}
+			}
+		}
+		else if (Net::ASN1Util::OIDEqualsText(algorithm, algorithmLen, UTF8STRC("2.16.840.1.101.3.4.1.42")) && parametersType == Net::ASN1Util::IT_OCTET_STRING)
+		{
+			sb->Append(varName);
+			sb->AppendC(UTF8STRC(".aes256-cbc.iv = "));
+			sb->AppendHexBuff(parameters, parametersLen, ' ', Text::LineBreakType::None);
+			sb->AppendC(UTF8STRC("\r\n"));
+		}
+		else if (Net::ASN1Util::OIDEqualsText(algorithm, algorithmLen, UTF8STRC("1.2.840.10045.2.1")) && parametersType == Net::ASN1Util::IT_OID)
+		{
+			sb->Append(varName);
+			sb->AppendC(UTF8STRC(".ecPublicKey.parameters = "));
+			Net::ASN1Util::OIDToString(parameters, parametersLen, sb);
+			const Net::ASN1OIDDB::OIDInfo *oid = Net::ASN1OIDDB::OIDGetEntry(parameters, parametersLen);
+			if (oid)
+			{
+				sb->AppendC(UTF8STRC(" ("));
+				sb->AppendSlow((const UTF8Char*)oid->name);
+				sb->AppendUTF8Char(')');
+			}
+			sb->AppendC(UTF8STRC("\r\n"));
+		}
+		else
+		{
+			sb->Append(varName);
+			sb->AppendUTF8Char('.');
+			sb->AppendC(UTF8STRC("parameters = "));
+			if (parametersType == Net::ASN1Util::IT_NULL)
+			{
+				sb->AppendC(UTF8STRC("NULL"));
+			}
+			sb->AppendC(UTF8STRC("\r\n"));
+		}
 	}
 	if (keyTypeOut)
 	{

@@ -21,6 +21,7 @@
 #include "IO/FileAnalyse/RIFFFileAnalyse.h"
 #include "IO/FileAnalyse/SHPFileAnalyse.h"
 #include "IO/FileAnalyse/SPKFileAnalyse.h"
+#include "IO/FileAnalyse/TIFFFileAnalyse.h"
 #include "IO/FileAnalyse/TSFileAnalyse.h"
 #include "IO/FileAnalyse/ZIPFileAnalyse.h"
 
@@ -138,6 +139,14 @@ IO::FileAnalyse::IFileAnalyse *IO::FileAnalyse::IFileAnalyse::AnalyseFile(IO::St
 	{
 		NEW_CLASS(analyse, IO::FileAnalyse::EDIDFileAnalyse(fd));
 	}
+	else if (buffSize >= 128 && buff[0] == 'I' && buff[1] == 'I' && (ReadUInt16(&buff[2]) == 42 || ReadUInt16(&buff[2]) == 43))
+	{
+		NEW_CLASS(analyse, IO::FileAnalyse::TIFFFileAnalyse(fd));
+	}
+	else if (buffSize >= 128 && buff[0] == 'M' && buff[1] == 'M' && (ReadMUInt16(&buff[2]) == 42 || ReadMUInt16(&buff[2]) == 43))
+	{
+		NEW_CLASS(analyse, IO::FileAnalyse::TIFFFileAnalyse(fd));
+	}
 
 	if (analyse && analyse->IsError())
 	{
@@ -167,4 +176,7 @@ void IO::FileAnalyse::IFileAnalyse::AddFilters(IO::FileSelector *selector)
 	selector->AddFilter(CSTR("*.dwg"), CSTR("AutoCAD Drawing file"));
 	selector->AddFilter(CSTR("*.zip"), CSTR("ZIP file"));
 	selector->AddFilter(CSTR("*.jar"), CSTR("JAR file"));
+	selector->AddFilter(CSTR("*.tif"), CSTR("TIFF file"));
+	selector->AddFilter(CSTR("*.tf8"), CSTR("TIFF file"));
+	selector->AddFilter(CSTR("*.btf"), CSTR("TIFF file"));
 }

@@ -16,16 +16,15 @@ namespace IO
 			typedef enum
 			{
 				PT_HEADER,
-				PT_V1DIRECTORY,
-				PT_V2DIRECTORY,
-				PT_FILE
+				PT_RESERVED,
+				PT_IFD,
+				PT_IFD8
 			} PackType;
 			typedef struct
 			{
 				UInt64 fileOfst;
 				UOSInt packSize;
 				PackType packType;
-				Text::String *fileName;
 			} PackInfo;
 		private:
 			IO::StreamData *fd;
@@ -37,8 +36,6 @@ namespace IO
 			Bool threadToStop;
 			Bool threadStarted;
 
-			void ParseV1Directory(UInt64 dirOfst, UInt64 dirSize);
-			void ParseV2Directory(UInt64 dirOfst, UInt64 dirSize);
 			static UInt32 __stdcall ParseThread(void *userObj);
 			static void FreePackInfo(PackInfo *pack);
 		public:

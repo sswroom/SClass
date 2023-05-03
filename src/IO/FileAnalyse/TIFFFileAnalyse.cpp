@@ -6,64 +6,9 @@
 #include "IO/Path.h"
 #include "IO/FileAnalyse/TIFFFileAnalyse.h"
 #include "Manage/Process.h"
+#include "Media/EXIFData.h"
 #include "Net/SocketFactory.h"
 #include "Sync/Thread.h"
-
-void IO::FileAnalyse::TIFFFileAnalyse::ParseV1Directory(UInt64 dirOfst, UInt64 dirSize)
-{
-	if (dirSize < 26)
-		return;
-	UOSInt ofst = 0;
-	UInt8 *buff;
-	buff = MemAlloc(UInt8, (UOSInt)dirSize);
-	this->fd->GetRealData(dirOfst, (UOSInt)dirSize, buff);
-	while (dirSize - ofst >= 26)
-	{
-		UInt64 fileOfst = ReadUInt64(&buff[ofst]);
-		UInt64 fileSize = ReadUInt64(&buff[ofst + 8]);
-		UInt16 fileNameSize = ReadUInt16(&buff[ofst + 24]);
-		if (dirSize - ofst - 26 < fileNameSize)
-		{
-			break;
-		}
-
-		PackInfo *pack = MemAlloc(PackInfo, 1);
-		pack->fileOfst = fileOfst;
-		pack->packSize = (UOSInt)fileSize;
-		pack->packType = PT_FILE;
-		pack->fileName = Text::String::New(&buff[ofst + 26], fileNameSize);
-		this->packs.Add(pack);
-		ofst += 26 + (UOSInt)fileNameSize;
-	}
-	MemFree(buff);
-}
-
-void IO::FileAnalyse::TIFFFileAnalyse::ParseV2Directory(UInt64 dirOfst, UInt64 dirSize)
-{
-	if (dirOfst <= 0 || dirSize < 16)
-	{
-		return;
-	}
-	while (this->pauseParsing && !this->threadToStop)
-	{
-		Sync::Thread::Sleep(100);
-	}
-	if (this->threadToStop)
-	{
-		return;
-	}
-	UInt8 buff[16];
-	this->fd->GetRealData(dirOfst, 16, buff);
-	this->ParseV2Directory(ReadUInt64(&buff[0]), ReadUInt64(&buff[8]));
-	this->ParseV1Directory(dirOfst + 16, dirSize - 16);
-
-	PackInfo *pack = MemAlloc(PackInfo, 1);
-	pack->fileOfst = dirOfst;
-	pack->packSize = (UOSInt)dirSize;
-	pack->packType = PT_V2DIRECTORY;
-	pack->fileName = 0;
-	this->packs.Add(pack);
-}
 
 UInt32 __stdcall IO::FileAnalyse::TIFFFileAnalyse::ParseThread(void *userObj)
 {
@@ -77,14 +22,58 @@ UInt32 __stdcall IO::FileAnalyse::TIFFFileAnalyse::ParseThread(void *userObj)
 	UInt16 fmt = me->bo->GetUInt16(&buff[2]);
 	if (fmt == 42)
 	{
+		UOSInt nextOfst = me->bo->GetUInt16(&buff[4]);
+		pack = MemAlloc(PackInfo, 1);
+		pack->fileOfst = 0;
+		pack->packSize = 8;
+		pack->packType = PT_HEADER;
+		me->packs.Add(pack);
+		if (nextOfst > 8)
+		{
+			pack = MemAlloc(PackInfo, 1);
+			pack->fileOfst = 16;
+			pack->packSize = nextOfst - 16;
+			pack->packType = PT_RESERVED;
+			me->packs.Add(pack);
+		}
 	}
 	else if (fmt == 43 && me->bo->GetUInt16(&buff[4]) == 8 && me->bo->GetUInt16(&buff[6]) == 0) //BigTIFF
 	{
+		UInt64 nextOfst = me->bo->GetUInt16(&buff[8]);
+		pack = MemAlloc(PackInfo, 1);
+		pack->fileOfst = 0;
+		pack->packSize = 16;
+		pack->packType = PT_HEADER;
+		me->packs.Add(pack);
+		if (nextOfst > 16)
+		{
+			pack = MemAlloc(PackInfo, 1);
+			pack->fileOfst = 16;
+			pack->packSize = nextOfst - 16;
+			pack->packType = PT_RESERVED;
+			me->packs.Add(pack);
+		}
+		UInt64 thisOfst;
+		while (nextOfst != 0)
+		{
+			UInt64 nTags;
+			me->fd->GetRealData(nextOfst, 8, buff);
+			nTags = me->bo->GetUInt64(&buff[0]);
+			pack = MemAlloc(PackInfo, 1);
+			pack->fileOfst = nextOfst;
+			pack->packSize = nTags * 20 + 16;
+			pack->packType = PT_IFD8;
+			me->packs.Add(pack);
+			me->fd->GetRealData(nextOfst + nTags * 20 + 8, 8, buff);
+			thisOfst = nextOfst + nTags * 20 + 16;
+			nextOfst = me->bo->GetUInt64(&buff[0]);
+			if (nextOfst < thisOfst)
+				break;
+		}
 	}
 	else
 	{
 	}
-	
 
 	me->threadRunning = false;
 	return 0;
@@ -92,7 +81,6 @@ UInt32 __stdcall IO::FileAnalyse::TIFFFileAnalyse::ParseThread(void *userObj)
 
 void IO::FileAnalyse::TIFFFileAnalyse::FreePackInfo(PackInfo *pack)
 {
-	SDEL_STRING(pack->fileName);
 	MemFree(pack);
 }
 
@@ -171,29 +159,23 @@ Bool IO::FileAnalyse::TIFFFileAnalyse::GetFrameName(UOSInt index, Text::StringBu
 		return false;
 	sb->AppendU64(pack->fileOfst);
 	sb->AppendC(UTF8STRC(": Type="));
-	if (pack->packType == PT_HEADER)
+	switch (pack->packType)
 	{
+	case PT_HEADER:
 		sb->AppendC(UTF8STRC("File header"));
-	}
-	else if (pack->packType == PT_V1DIRECTORY)
-	{
-		sb->AppendC(UTF8STRC("V1 Directory"));
-	}
-	else if (pack->packType == PT_V2DIRECTORY)
-	{
-		sb->AppendC(UTF8STRC("V2 Directory"));
-	}
-	else if (pack->packType == PT_FILE)
-	{
-		sb->AppendC(UTF8STRC("Data Block"));
+		break;
+	case PT_RESERVED:
+		sb->AppendC(UTF8STRC("Reserved"));
+		break;
+	case PT_IFD:
+		sb->AppendC(UTF8STRC("IFD"));
+		break;
+	case PT_IFD8:
+		sb->AppendC(UTF8STRC("IFD8"));
+		break;
 	}
 	sb->AppendC(UTF8STRC(", size="));
 	sb->AppendI32((Int32)pack->packSize);
-	if (pack->fileName)
-	{
-		sb->AppendUTF8Char(' ');
-		sb->Append(pack->fileName);
-	}
 	return true;
 }
 
@@ -235,114 +217,66 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::TIFFFileAnalyse::GetFrameDetail(U
 		return 0;
 
 	NEW_CLASS(frame, IO::FileAnalyse::FrameDetail(pack->fileOfst, (UInt32)pack->packSize));
-	if (pack->packType == PT_HEADER)
+	switch (pack->packType)
 	{
+	case PT_HEADER:
 		frame->AddText(0, CSTR("Type=File header"));
-	}
-	else if (pack->packType == PT_V1DIRECTORY)
-	{
-		frame->AddText(0, CSTR("Type=V1 Directory"));
-	}
-	else if (pack->packType == PT_V2DIRECTORY)
-	{
-		frame->AddText(0, CSTR("Type=V2 Directory"));
-	}
-	else if (pack->packType == PT_FILE)
-	{
-		frame->AddText(0, CSTR("Type=Data Block"));
+		break;
+	case PT_RESERVED:
+		frame->AddText(0, CSTR("Type=Reserved"));
+		break;
+	case PT_IFD:
+		frame->AddText(0, CSTR("Type=IFD"));
+		break;
+	case PT_IFD8:
+		frame->AddText(0, CSTR("Type=IFD8"));
+		break;
 	}
 	sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Size=")), pack->packSize);
 	frame->AddText(0, CSTRP(sbuff, sptr));
 
-	if (pack->fileName)
-	{
-		Text::StringBuilderUTF8 sb;
-		sb.AppendC(UTF8STRC("File Name="));
-		sb.Append(pack->fileName);
-		frame->AddText(0, sb.ToCString());
-	}
-
 	if (pack->packType == PT_HEADER)
 	{
-		UInt32 flags;
-		UOSInt endOfst;
 		packBuff = MemAlloc(UInt8, pack->packSize);
 		this->fd->GetRealData(pack->fileOfst, pack->packSize, packBuff);
 
-		frame->AddHex32(4, CSTR("Flags"), flags = ReadUInt32(&packBuff[4]));
-		frame->AddUInt64(8, CSTR("Last Directory Offset"), ReadUInt64(&packBuff[8]));
-		endOfst = 16;
-		if (flags & 2)
-		{
-			frame->AddUInt64(16, CSTR("Last Directory Size"), ReadUInt64(&packBuff[16]));
-			endOfst = 24;
-		}
-		if (flags & 1)
-		{
-			Int32 customType;
-			UInt32 customSize;
-			frame->AddInt(endOfst, 4, CSTR("Custom Type"), customType = ReadInt32(&packBuff[endOfst]));
-			frame->AddUInt(endOfst + 4, 4, CSTR("Custom Size"), customSize = ReadUInt32(&packBuff[endOfst + 4]));
-			if (customType == 1)
-			{
-				UOSInt customOfst;
-				UInt8 urlCnt;
-				UInt8 urlI;
-				frame->AddText(endOfst + 8, CSTR("-OSM Tile:"));
-				frame->AddUInt(endOfst + 8, 1, CSTR("-Number of URL"), urlCnt = packBuff[endOfst + 8]);
-				urlI = 0;
-				customOfst = 1;
-				while (urlI < urlCnt)
-				{
-					sptr = Text::StrUInt16(Text::StrConcatC(sbuff, UTF8STRC("-Length")), urlI);
-					frame->AddUInt(endOfst + 8 + customOfst, 1, CSTRP(sbuff, sptr), packBuff[endOfst + 8 + customOfst]);
-					sptr = Text::StrUInt16(Text::StrConcatC(sbuff, UTF8STRC("-URL")), urlI);
-					frame->AddStrC(endOfst + 8 + customOfst + 1, packBuff[endOfst + 8 + customOfst], CSTRP(sbuff, sptr), &packBuff[endOfst + 8 + customOfst + 1]);
-					customOfst += (UOSInt)packBuff[endOfst + 8 + customOfst] + 1;
-					urlI++;
-				}
-			}
-			else
-			{
-				frame->AddHexBuff(endOfst + 8, customSize, CSTR("Custom data"), &packBuff[endOfst + 8], false);
-			}
-		}
+		UOSInt verNum = this->bo->GetUInt16(&packBuff[2]);
+		frame->AddStrC(0, 2, CSTR("Byte Order"), &packBuff[0]);
+		frame->AddUInt(2, 2, CSTR("Version Number"), verNum);
+		frame->AddUInt(4, 2, CSTR("Bytesize of offsets"), this->bo->GetUInt16(&packBuff[4]));
+		frame->AddUInt(6, 2, CSTR("Reserved"), this->bo->GetUInt16(&packBuff[6]));
+		frame->AddUInt64(8, CSTR("Offset to first IFD"), this->bo->GetUInt64(&packBuff[8]));
 		MemFree(packBuff);
 	}
-	else if (pack->packType == PT_V1DIRECTORY)
+	else if (pack->packType == PT_RESERVED)
 	{
 		packBuff = MemAlloc(UInt8, pack->packSize);
 		this->fd->GetRealData(pack->fileOfst, pack->packSize, packBuff);
+		frame->AddStrS(0, pack->packSize, CSTR("Reserved"), packBuff);
 		MemFree(packBuff);
 	}
-	else if (pack->packType == PT_V2DIRECTORY)
+	else if (pack->packType == PT_IFD8)
 	{
 		packBuff = MemAlloc(UInt8, pack->packSize);
 		this->fd->GetRealData(pack->fileOfst, pack->packSize, packBuff);
-		frame->AddUInt64(0, CSTR("Prev Directory Offset"), ReadUInt64(&packBuff[0]));
-		frame->AddUInt64(8, CSTR("Prev Directory Size"), ReadUInt64(&packBuff[8]));
+		UInt64 tagCnt = this->bo->GetUInt64(packBuff);
+		frame->AddUInt64(0, CSTR("Number of tags in IFD"), tagCnt);
+		UOSInt i = 0;
+		UOSInt ofst = 8;
+		while (i < tagCnt)
+		{
+			UInt16 dataType = this->bo->GetUInt16(&packBuff[ofst + 2]);
+			UInt16 tag = this->bo->GetUInt16(&packBuff[ofst]);
+			frame->AddUIntName(ofst, 2, CSTR("Tag Id"), tag, Media::EXIFData::GetEXIFName(Media::EXIFData::EM_STANDARD, tag));
+			frame->AddUIntName(ofst + 2, 2, CSTR("Data Type"), dataType, Media::EXIFData::GetFieldTypeName(dataType));
+			frame->AddUInt64(ofst + 4, CSTR("Number of values"), this->bo->GetUInt64(&packBuff[ofst + 4]));
+			frame->AddUInt64(ofst + 12, CSTR("Offset to tag data"), this->bo->GetUInt64(&packBuff[ofst + 12]));
+			i++;
+			ofst += 20;
+		}
+		frame->AddUInt64(ofst, CSTR("Offset to next IFD"), this->bo->GetUInt64(&packBuff[ofst]));
 		MemFree(packBuff);
-	}
-	else if (pack->packType == PT_FILE)
-	{
-		if (pack->packSize <= 64)
-		{
-			packBuff = MemAlloc(UInt8, pack->packSize);
-			this->fd->GetRealData(pack->fileOfst, pack->packSize, packBuff);
-			frame->AddHexBuff(0, pack->packSize, CSTR("FileData"), packBuff, true);
-			MemFree(packBuff);
-		}
-		else
-		{
-			UInt8 buff[32];
-			Text::StringBuilderUTF8 sb;
-			this->fd->GetRealData(pack->fileOfst, 32, buff);
-			sb.AppendHexBuff(buff, 32, ' ', Text::LineBreakType::CRLF);
-			sb.AppendC(UTF8STRC("\r\n...\r\n"));
-			this->fd->GetRealData(pack->fileOfst + pack->packSize - 32, 32, buff);
-			sb.AppendHexBuff(buff, 32, ' ', Text::LineBreakType::CRLF);
-			frame->AddField(0, pack->packSize, CSTR("FileData"), sb.ToCString());
-		}
+
 	}
 	return frame;
 }
