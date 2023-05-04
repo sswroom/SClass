@@ -545,7 +545,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroup(Net::WebServer::IWebReq
 				sp = group->species.GetItem(i);
 				species.Put(sp->sciName, sp);
 			}
-			me->WriteSpeciesTable(&mutUsage, &writer, species.GetValues(), env.scnWidth, group->cateId, !notAdmin);
+			me->WriteSpeciesTable(&mutUsage, &writer, species.GetValues(), env.scnWidth, group->cateId, !notAdmin, !notAdmin);
 			writer.WriteLineC(UTF8STRC("<hr/>"));
 			found = true;
 		}
@@ -2036,7 +2036,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcList(Net::WebServer::IWebRequ
 			species.Add(spList->GetItem(i));
 			i++;
 		}
-		me->WriteSpeciesTable(&mutUsage, &writer, &species, env.scnWidth, group->cateId, false);
+		me->WriteSpeciesTable(&mutUsage, &writer, &species, env.scnWidth, group->cateId, false, (env.user && env.user->userType == 0));
 		writer.WriteLineC(UTF8STRC("<hr/>"));
 
 		if (imageOnly)
@@ -4225,7 +4225,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSearchInside(Net::WebServer::
 			{
 				speciesList.Add(speciesObjs.GetItem(i));
 			}
-			me->WriteSpeciesTable(&mutUsage, &writer, &speciesList, env.scnWidth, group->cateId, false);
+			me->WriteSpeciesTable(&mutUsage, &writer, &speciesList, env.scnWidth, group->cateId, false, (env.user && env.user->userType == 0));
 			if (j > 0)
 			{
 				sptr = Text::TextBinEnc::URIEncoding::URIEncode(sbuff, searchStr->v);
@@ -4420,7 +4420,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSearchInsideMoreS(Net::WebSer
 			{
 				speciesList.Add(speciesObjs.GetItem(j));
 			}
-			me->WriteSpeciesTable(&mutUsage, &writer, &speciesList, env.scnWidth, group->cateId, false);
+			me->WriteSpeciesTable(&mutUsage, &writer, &speciesList, env.scnWidth, group->cateId, false, (env.user && env.user->userType == 0));
 			if (pageNo > 0)
 			{
 				sptr = Text::TextBinEnc::URIEncoding::URIEncode(sbuff, searchStr->v);
@@ -4710,6 +4710,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcBookList(Net::WebServer::IWeb
 
 		writer.WriteLineC(UTF8STRC("<table border=\"0\" width=\"100%\">"));
 		writer.WriteLineC(UTF8STRC("<tr>"));
+		writer.WriteLineC(UTF8STRC("<td>Count</td>"));
 		writer.WriteLineC(UTF8STRC("<td>Book Name</td>"));
 		writer.WriteLineC(UTF8STRC("<td>Author</td>"));
 		writer.WriteLineC(UTF8STRC("<td>Press</td>"));
@@ -4725,6 +4726,10 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcBookList(Net::WebServer::IWeb
 			book = sortBookMap.GetItem(i);
 
 			writer.WriteLineC(UTF8STRC("<tr>"));
+			writer.WriteStrC(UTF8STRC("<td>"));
+			sptr = Text::StrUOSInt(sbuff, book->species.GetCount());
+			writer.WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
+			writer.WriteStrC(UTF8STRC("</td>"));
 			writer.WriteStrC(UTF8STRC("<td><a href=\"book.html?id="));
 			sptr = Text::StrInt32(sbuff, book->id);
 			writer.WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
@@ -4835,6 +4840,10 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcBook(Net::WebServer::IWebRequ
 
 		sb.ClearStr();
 		sb.Append(cate->chiName);
+		sb.AppendC(UTF8STRC(" - "));
+		sb.Append(book->title);
+		sb.AppendC(UTF8STRC(" - Page "));
+		sb.AppendUOSInt(pageNo + 1);
 		me->WriteHeader(&writer, sb.ToString(), env.user, env.isMobile);
 		writer.WriteStrC(UTF8STRC("<center><h1>"));
 		s = Text::XML::ToNewHTMLBodyText(sb.ToString());
@@ -4955,7 +4964,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcBook(Net::WebServer::IWebRequ
 			i++;
 		}
 		writer.WriteLineC(UTF8STRC("<hr/>"));
-		me->WriteSpeciesTable(&mutUsage, &writer, &tempList, env.scnWidth, cateId, false);
+		me->WriteSpeciesTable(&mutUsage, &writer, &tempList, env.scnWidth, cateId, false, (env.user && env.user->userType == 0));
 		writer.WriteLineC(UTF8STRC("<hr/>"));
 
 		writer.WriteStrC(UTF8STRC("<a href=\"booklist.html?id="));
@@ -6945,7 +6954,7 @@ void SSWR::OrganMgr::OrganWebHandler::WriteGroupTable(Sync::RWMutexUsage *mutUsa
 	}
 }
 
-void SSWR::OrganMgr::OrganWebHandler::WriteSpeciesTable(Sync::RWMutexUsage *mutUsage, IO::Writer *writer, const Data::ArrayList<SpeciesInfo *> *spList, UInt32 scnWidth, Int32 cateId, Bool showSelect)
+void SSWR::OrganMgr::OrganWebHandler::WriteSpeciesTable(Sync::RWMutexUsage *mutUsage, IO::Writer *writer, const Data::ArrayList<SpeciesInfo *> *spList, UInt32 scnWidth, Int32 cateId, Bool showSelect, Bool showModify)
 {
 	SpeciesInfo *sp;
 	Text::String *s;
@@ -7083,19 +7092,21 @@ void SSWR::OrganMgr::OrganWebHandler::WriteSpeciesTable(Sync::RWMutexUsage *mutU
 				s->Release();
 				writer->WriteLineC(UTF8STRC("<br/>"));
 			}
-			if (showSelect)
+			if (showSelect || showModify)
 			{
 				writer->WriteLineC(UTF8STRC("</a>"));
-				sb.ClearStr();
-				sb.AppendC(UTF8STRC("<input type=\"checkbox\" name=\"species"));
-				sb.AppendI32(sp->speciesId);
-				sb.AppendC(UTF8STRC("\" id=\"species"));
-				sb.AppendI32(sp->speciesId);
-				sb.AppendC(UTF8STRC("\" value=\"1\"/><label for=\"species"));
-				sb.AppendI32(sp->speciesId);
-				sb.AppendC(UTF8STRC("\">"));
-				writer->WriteStrC(sb.ToString(), sb.GetLength());
-
+				if (showSelect)
+				{
+					sb.ClearStr();
+					sb.AppendC(UTF8STRC("<input type=\"checkbox\" name=\"species"));
+					sb.AppendI32(sp->speciesId);
+					sb.AppendC(UTF8STRC("\" id=\"species"));
+					sb.AppendI32(sp->speciesId);
+					sb.AppendC(UTF8STRC("\" value=\"1\"/><label for=\"species"));
+					sb.AppendI32(sp->speciesId);
+					sb.AppendC(UTF8STRC("\">"));
+					writer->WriteStrC(sb.ToString(), sb.GetLength());
+				}
 				sb.ClearStr();
 				sb.Append(sp->sciName);
 				sb.AppendC(UTF8STRC(" "));
@@ -7104,8 +7115,12 @@ void SSWR::OrganMgr::OrganWebHandler::WriteSpeciesTable(Sync::RWMutexUsage *mutU
 				sb.Append(sp->engName);
 				s = Text::XML::ToNewHTMLBodyText(sb.ToString());
 				writer->WriteStrC(s->v, s->leng);
-				writer->WriteLineC(UTF8STRC("</label>"));
 				s->Release();
+				if (showSelect)
+				{
+					writer->WriteLineC(UTF8STRC("</label>"));
+				}
+
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("<br/><a href=\"speciesmod.html?id="));
 				sb.AppendI32(sp->groupId);
@@ -7351,7 +7366,7 @@ void SSWR::OrganMgr::OrganWebHandler::WritePickObjs(Sync::RWMutexUsage *mutUsage
 			}
 			i++;
 		}
-		WriteSpeciesTable(mutUsage, writer, &spList, scnSize, 0, true);
+		WriteSpeciesTable(mutUsage, writer, &spList, scnSize, 0, true, true);
 		writer->WriteLineC(UTF8STRC("<input type=\"submit\" value=\"Place Selected\"/>"));
 		writer->WriteLineC(UTF8STRC("<input type=\"button\" value=\"Place All\" onclick=\"document.forms.pickfiles.action.value='placeall';document.forms.pickfiles.submit();\"/>"));
 		if (allowMerge)
