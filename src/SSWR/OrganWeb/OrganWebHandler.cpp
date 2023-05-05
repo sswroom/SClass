@@ -2,6 +2,8 @@
 //#include "SSWR/OrganWeb/OrganWebEnv.h"
 #include "SSWR/OrganWeb/OrganWebHandler.h"
 #include "SSWR/OrganWeb/OrganWebMainController.h"
+#include "SSWR/OrganWeb/OrganWebPhotoController.h"
+#include "SSWR/OrganWeb/OrganWebPOIController.h"
 
 Bool __stdcall SSWR::OrganWeb::OrganWebHandler::OnSessionDel(Net::WebServer::IWebSession* sess, void *userObj)
 {
@@ -32,6 +34,8 @@ SSWR::OrganWeb::OrganWebHandler::OrganWebHandler(OrganWebEnv *env, UInt32 scnSiz
 	NEW_CLASS(this->sessMgr, Net::WebServer::MemoryWebSessionManager(CSTR("/"), OnSessionDel, this, 30000, OnSessionCheck, this, CSTR("OrganSessId")));
 
 	this->AddController(NEW_CLASS_D(OrganWebMainController(this->sessMgr, env, scnSize)));
+	this->AddController(NEW_CLASS_D(OrganWebPhotoController(this->sessMgr, env, scnSize)));
+	this->AddController(NEW_CLASS_D(OrganWebPOIController(this->sessMgr, env, scnSize)));
 }
 
 SSWR::OrganWeb::OrganWebHandler::~OrganWebHandler()

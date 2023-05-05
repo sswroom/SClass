@@ -6,6 +6,11 @@
 
 #define PREVIEW_SIZE 320
 
+UOSInt SSWR::OrganWeb::OrganWebController::GetPreviewSize()
+{
+	return PREVIEW_SIZE;
+}
+
 Net::WebServer::IWebSession *SSWR::OrganWeb::OrganWebController::ParseRequestEnv(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, RequestEnv *env, Bool keepSess)
 {
 	env->scnWidth = this->scnSize;
