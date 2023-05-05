@@ -4161,6 +4161,10 @@ SSWR/OrganWeb/OrganWebHandler.h: ../../src/SSWR/OrganWeb/OrganWebHandler.cpp
 @OrganWebHandler.o
 SSWR/OrganWeb/OrganWebMainController.h: ../../src/SSWR/OrganWeb/OrganWebMainController.cpp
 @OrganWebMainController.o
+SSWR/OrganWeb/OrganWebPhotoController.h: ../../src/SSWR/OrganWeb/OrganWebPhotoController.cpp
+@OrganWebPhotoController.o
+SSWR/OrganWeb/OrganWebPOIController.h: ../../src/SSWR/OrganWeb/OrganWebPOIController.cpp
+@OrganWebPOIController.o
 SSWR/SDNSProxy/SDNSProxyCore.h: ../../src/SSWR/SDNSProxy/SDNSProxyCore.cpp
 @SDNSProxyCore.o
 SSWR/SDNSProxy/SDNSProxyWebHandler.h: ../../src/SSWR/SDNSProxy/SDNSProxyWebHandler.cpp
@@ -5903,6 +5907,8 @@ OrganWebController.o: ../../src/SSWR/OrganWeb/OrganWebController.cpp
 OrganWebEnv.o: ../../src/SSWR/OrganWeb/OrganWebEnv.cpp
 OrganWebHandler.o: ../../src/SSWR/OrganWeb/OrganWebHandler.cpp
 OrganWebMainController.o: ../../src/SSWR/OrganWeb/OrganWebMainController.cpp
+OrganWebPhotoController.o: ../../src/SSWR/OrganWeb/OrganWebPhotoController.cpp
+OrganWebPOIController.o: ../../src/SSWR/OrganWeb/OrganWebPOIController.cpp
 SDNSProxyCore.o: ../../src/SSWR/SDNSProxy/SDNSProxyCore.cpp
 SDNSProxyWebHandler.o: ../../src/SSWR/SDNSProxy/SDNSProxyWebHandler.cpp
 ElevationFilter.o: ../../src/SSWR/SHPConv/ElevationFilter.cpp
