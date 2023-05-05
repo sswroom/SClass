@@ -915,7 +915,9 @@ Text::CString SSWR::OrganWeb::OrganWebController::LangGetValue(IO::ConfigFile *l
 
 SSWR::OrganWeb::OrganWebController::OrganWebController(Net::WebServer::MemoryWebSessionManager *sessMgr, OrganWebEnv *env, UInt32 scnSize) : Net::WebServer::WebController(CSTR(""))
 {
-
+	this->sessMgr = sessMgr;
+	this->env = env;
+	this->scnSize = scnSize;
 }
 
 SSWR::OrganWeb::OrganWebController::~OrganWebController()
