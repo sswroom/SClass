@@ -1,5 +1,5 @@
-#ifndef _SM_SSWR_ORGANMGR_ORGANWEBENV
-#define _SM_SSWR_ORGANMGR_ORGANWEBENV
+#ifndef _SM_SSWR_ORGANWEB_ORGANWEBENV
+#define _SM_SSWR_ORGANWEB_ORGANWEBENV
 #include "Data/ArrayListDbl.h"
 #include "Data/FastMap.h"
 #include "Data/StringUTF8Map.h"
@@ -13,8 +13,8 @@
 #include "Net/WebServer/HTTPDirectoryHandler.h"
 #include "Net/WebServer/WebListener.h"
 #include "Parser/FullParserList.h"
-#include "SSWR/OrganMgr/OrganWebCommon.h"
-#include "SSWR/OrganMgr/OrganWebHandler.h"
+#include "SSWR/OrganWeb/OrganWebCommon.h"
+#include "SSWR/OrganWeb/OrganWebHandler.h"
 #include "Sync/RWMutex.h"
 #include "Sync/RWMutexUsage.h"
 #include "Text/Locale.h"
@@ -22,7 +22,7 @@
 
 namespace SSWR
 {
-	namespace OrganMgr
+	namespace OrganWeb
 	{
 		class OrganWebEnv
 		{
@@ -47,7 +47,7 @@ namespace SSWR
 			Media::DrawEngine *eng;
 			Map::OSM::OSMCacheHandler *osmHdlr;
 			Net::WebServer::HTTPDirectoryHandler *mapDirHdlr;
-			SSWR::OrganMgr::OrganWebHandler *webHdlr;
+			SSWR::OrganWeb::OrganWebHandler *webHdlr;
 
 			Data::FastStringMap<CategoryInfo*> cateSMap;
 			Data::FastMap<Int32, CategoryInfo*> cateMap;

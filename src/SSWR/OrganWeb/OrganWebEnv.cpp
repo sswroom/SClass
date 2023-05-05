@@ -10,9 +10,9 @@
 #include "Media/FrequencyGraph.h"
 #include "Media/ImageList.h"
 #include "Media/MediaFile.h"
-#include "SSWR/OrganMgr/OrganWebEnv.h"
+#include "SSWR/OrganWeb/OrganWebEnv.h"
 
-void SSWR::OrganMgr::OrganWebEnv::LoadLangs()
+void SSWR::OrganWeb::OrganWebEnv::LoadLangs()
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -58,7 +58,7 @@ void SSWR::OrganMgr::OrganWebEnv::LoadLangs()
 	}
 }
 
-void SSWR::OrganMgr::OrganWebEnv::LoadCategory()
+void SSWR::OrganWeb::OrganWebEnv::LoadCategory()
 {
 	Text::StringBuilderUTF8 sb;
 	CategoryInfo *cate;
@@ -134,7 +134,7 @@ void SSWR::OrganMgr::OrganWebEnv::LoadCategory()
 
 }
 
-void SSWR::OrganMgr::OrganWebEnv::LoadSpecies()
+void SSWR::OrganWeb::OrganWebEnv::LoadSpecies()
 {
 	FreeSpecies();
 
@@ -207,7 +207,7 @@ void SSWR::OrganMgr::OrganWebEnv::LoadSpecies()
 	}
 }
 
-void SSWR::OrganMgr::OrganWebEnv::LoadGroups()
+void SSWR::OrganWeb::OrganWebEnv::LoadGroups()
 {
 	FreeGroups();
 
@@ -281,7 +281,7 @@ void SSWR::OrganMgr::OrganWebEnv::LoadGroups()
 	}
 }
 
-void SSWR::OrganMgr::OrganWebEnv::LoadBooks()
+void SSWR::OrganWeb::OrganWebEnv::LoadBooks()
 {
 	FreeBooks();
 
@@ -291,7 +291,7 @@ void SSWR::OrganMgr::OrganWebEnv::LoadBooks()
 	BookSpInfo *bookSp;
 	Data::DateTime dt;
 
-	DB::DBReader *r = this->db->ExecuteReader(CSTR("select id, title, dispAuthor, press, publishDate, url from book"));
+	DB::DBReader *r = this->db->ExecuteReader(CSTR("select id, title, dispAuthor, press, publishDate, url, userfile_id from book"));
 	if (r != 0)
 	{
 		while (r->ReadNext())
@@ -303,6 +303,7 @@ void SSWR::OrganMgr::OrganWebEnv::LoadBooks()
 			book->press = r->GetNewStrB(3, &sb, false);
 			book->publishDate = r->GetTimestamp(4).ToTicks();
 			book->url = r->GetNewStrB(5, &sb, false);
+			book->userfileId = r->GetInt32(6);
 
 			this->bookMap.Put(book->id, book);
 		}
@@ -330,7 +331,7 @@ void SSWR::OrganMgr::OrganWebEnv::LoadBooks()
 	}
 }
 
-void SSWR::OrganMgr::OrganWebEnv::LoadUsers(Sync::RWMutexUsage *mutUsage)
+void SSWR::OrganWeb::OrganWebEnv::LoadUsers(Sync::RWMutexUsage *mutUsage)
 {
 	this->ClearUsers();
 
@@ -560,7 +561,7 @@ void SSWR::OrganMgr::OrganWebEnv::LoadUsers(Sync::RWMutexUsage *mutUsage)
 	}
 }
 
-void SSWR::OrganMgr::OrganWebEnv::LoadLocations()
+void SSWR::OrganWeb::OrganWebEnv::LoadLocations()
 {
 	LocationInfo *loc;
 	DB::DBReader *r = this->db->ExecuteReader(CSTR("select id, parentId, cname, ename, lat, lon, cate_id, locType from location"));
@@ -590,7 +591,7 @@ void SSWR::OrganMgr::OrganWebEnv::LoadLocations()
 	}
 }
 
-void SSWR::OrganMgr::OrganWebEnv::FreeSpecies()
+void SSWR::OrganWeb::OrganWebEnv::FreeSpecies()
 {
 	SpeciesInfo *sp;
 	WebFileInfo *wfile;
@@ -625,7 +626,7 @@ void SSWR::OrganMgr::OrganWebEnv::FreeSpecies()
 	this->spNameMap.Clear();
 }
 
-void SSWR::OrganMgr::OrganWebEnv::FreeGroups()
+void SSWR::OrganWeb::OrganWebEnv::FreeGroups()
 {
 	CategoryInfo *cate;
 	GroupInfo *group;
@@ -646,7 +647,7 @@ void SSWR::OrganMgr::OrganWebEnv::FreeGroups()
 	this->groupMap.Clear();
 }
 
-void SSWR::OrganMgr::OrganWebEnv::FreeGroup(GroupInfo *group)
+void SSWR::OrganWeb::OrganWebEnv::FreeGroup(GroupInfo *group)
 {
 	group->engName->Release();
 	group->chiName->Release();
@@ -655,7 +656,7 @@ void SSWR::OrganMgr::OrganWebEnv::FreeGroup(GroupInfo *group)
 	DEL_CLASS(group);
 }
 
-void SSWR::OrganMgr::OrganWebEnv::FreeBooks()
+void SSWR::OrganWeb::OrganWebEnv::FreeBooks()
 {
 	BookInfo *book;
 	BookSpInfo *bookSp;
@@ -682,7 +683,7 @@ void SSWR::OrganMgr::OrganWebEnv::FreeBooks()
 	this->bookMap.Clear();
 }
 
-void SSWR::OrganMgr::OrganWebEnv::FreeUsers()
+void SSWR::OrganWeb::OrganWebEnv::FreeUsers()
 {
 	WebUserInfo *user;
 	UserFileInfo *userFile;
@@ -740,7 +741,7 @@ void SSWR::OrganMgr::OrganWebEnv::FreeUsers()
 	this->dataFileMap.Clear();
 }
 
-void SSWR::OrganMgr::OrganWebEnv::ClearUsers()
+void SSWR::OrganWeb::OrganWebEnv::ClearUsers()
 {
 	WebUserInfo *user;
 	UserFileInfo *userFile;
@@ -779,7 +780,7 @@ void SSWR::OrganMgr::OrganWebEnv::ClearUsers()
 	this->dataFileMap.Clear();
 }
 
-SSWR::OrganMgr::OrganWebEnv::OrganWebEnv(Net::SocketFactory *sockf, Net::SSLEngine *ssl, IO::LogTool *log, DB::DBTool *db, Text::String *imageDir, UInt16 port, UInt16 sslPort, Text::String *cacheDir, Text::String *dataDir, UInt32 scnSize, Text::String *reloadPwd, Int32 unorganizedGroupId, Media::DrawEngine *eng, Text::CString osmCachePath)
+SSWR::OrganWeb::OrganWebEnv::OrganWebEnv(Net::SocketFactory *sockf, Net::SSLEngine *ssl, IO::LogTool *log, DB::DBTool *db, Text::String *imageDir, UInt16 port, UInt16 sslPort, Text::String *cacheDir, Text::String *dataDir, UInt32 scnSize, Text::String *reloadPwd, Int32 unorganizedGroupId, Media::DrawEngine *eng, Text::CString osmCachePath)
 {
 	this->imageDir = SCOPY_STRING(imageDir);
 	this->sockf = sockf;
@@ -820,7 +821,7 @@ SSWR::OrganMgr::OrganWebEnv::OrganWebEnv(Net::SocketFactory *sockf, Net::SSLEngi
 	}
 	else
 	{
-		NEW_CLASS(this->webHdlr, SSWR::OrganMgr::OrganWebHandler(this, this->scnSize));
+		NEW_CLASS(this->webHdlr, SSWR::OrganWeb::OrganWebHandler(this, this->scnSize));
 		this->webHdlr->HandlePath(CSTR("/map"), this->mapDirHdlr, false);
 		this->webHdlr->HandlePath(CSTR("/osm"), this->osmHdlr, false);
 
@@ -837,7 +838,7 @@ SSWR::OrganMgr::OrganWebEnv::OrganWebEnv(Net::SocketFactory *sockf, Net::SSLEngi
 	}
 }
 
-SSWR::OrganMgr::OrganWebEnv::~OrganWebEnv()
+SSWR::OrganWeb::OrganWebEnv::~OrganWebEnv()
 {
 	CategoryInfo *cate;
 	GroupTypeInfo *grpType;
@@ -902,7 +903,7 @@ SSWR::OrganMgr::OrganWebEnv::~OrganWebEnv()
 	SDEL_STRING(this->reloadPwd);
 }
 
-Bool SSWR::OrganMgr::OrganWebEnv::IsError()
+Bool SSWR::OrganWeb::OrganWebEnv::IsError()
 {
 	if (this->listener == 0)
 		return true;
@@ -913,7 +914,7 @@ Bool SSWR::OrganMgr::OrganWebEnv::IsError()
 	return false;
 }
 
-void SSWR::OrganMgr::OrganWebEnv::Reload()
+void SSWR::OrganWeb::OrganWebEnv::Reload()
 {
 	Sync::RWMutexUsage mutUsage(&this->dataMut, true);
 	this->LoadCategory();
@@ -924,48 +925,48 @@ void SSWR::OrganMgr::OrganWebEnv::Reload()
 	this->LoadUsers(&mutUsage);
 }
 
-void SSWR::OrganMgr::OrganWebEnv::Restart()
+void SSWR::OrganWeb::OrganWebEnv::Restart()
 {
 	///////////////////////////
 }
 
-IO::ParsedObject *SSWR::OrganMgr::OrganWebEnv::ParseFileType(IO::StreamData *fd, IO::ParserType targetType)
+IO::ParsedObject *SSWR::OrganWeb::OrganWebEnv::ParseFileType(IO::StreamData *fd, IO::ParserType targetType)
 {
 	Sync::MutexUsage mutUsage(&this->parserMut);
 	return this->parsers.ParseFileType(fd, targetType);
 }
 
-Bool SSWR::OrganMgr::OrganWebEnv::HasReloadPwd() const
+Bool SSWR::OrganWeb::OrganWebEnv::HasReloadPwd() const
 {
 	return this->reloadPwd != 0;
 }
 
-Bool SSWR::OrganMgr::OrganWebEnv::ReloadPwdMatches(Text::String *pwd) const
+Bool SSWR::OrganWeb::OrganWebEnv::ReloadPwdMatches(Text::String *pwd) const
 {
 	return this->reloadPwd->Equals(pwd);
 }
 
-Text::String *SSWR::OrganMgr::OrganWebEnv::GetCacheDir() const
+Text::String *SSWR::OrganWeb::OrganWebEnv::GetCacheDir() const
 {
 	return this->cacheDir;
 }
 
-Text::String *SSWR::OrganMgr::OrganWebEnv::GetDataDir() const
+Text::String *SSWR::OrganWeb::OrganWebEnv::GetDataDir() const
 {
 	return this->dataDir;
 }
 
-Media::ColorManagerSess *SSWR::OrganMgr::OrganWebEnv::GetColorSess() const
+Media::ColorManagerSess *SSWR::OrganWeb::OrganWebEnv::GetColorSess() const
 {
 	return this->colorSess;
 }
 
-Media::DrawEngine *SSWR::OrganMgr::OrganWebEnv::GetDrawEngine() const
+Media::DrawEngine *SSWR::OrganWeb::OrganWebEnv::GetDrawEngine() const
 {
 	return this->eng;
 }
 
-void SSWR::OrganMgr::OrganWebEnv::CalcGroupCount(Sync::RWMutexUsage *mutUsage, GroupInfo *group)
+void SSWR::OrganWeb::OrganWebEnv::CalcGroupCount(Sync::RWMutexUsage *mutUsage, GroupInfo *group)
 {
 	mutUsage->ReplaceMutex(&this->dataMut, true);
 	UOSInt i;
@@ -1015,7 +1016,7 @@ void SSWR::OrganMgr::OrganWebEnv::CalcGroupCount(Sync::RWMutexUsage *mutUsage, G
 	}
 }
 
-void SSWR::OrganMgr::OrganWebEnv::GetGroupSpecies(Sync::RWMutexUsage *mutUsage, GroupInfo *group, Data::DataMap<Text::String*, SpeciesInfo*> *spMap, WebUserInfo *user)
+void SSWR::OrganWeb::OrganWebEnv::GetGroupSpecies(Sync::RWMutexUsage *mutUsage, GroupInfo *group, Data::DataMap<Text::String*, SpeciesInfo*> *spMap, WebUserInfo *user)
 {
 	mutUsage->ReplaceMutex(&this->dataMut, false);
 	UOSInt i;
@@ -1041,7 +1042,7 @@ void SSWR::OrganMgr::OrganWebEnv::GetGroupSpecies(Sync::RWMutexUsage *mutUsage, 
 	}
 }
 
-void SSWR::OrganMgr::OrganWebEnv::SearchInGroup(Sync::RWMutexUsage *mutUsage, GroupInfo *group, const UTF8Char *searchStr, UOSInt searchStrLen, Data::ArrayListDbl *speciesIndice, Data::ArrayList<SpeciesInfo*> *speciesObjs, Data::ArrayListDbl *groupIndice, Data::ArrayList<GroupInfo*> *groupObjs, WebUserInfo *user)
+void SSWR::OrganWeb::OrganWebEnv::SearchInGroup(Sync::RWMutexUsage *mutUsage, GroupInfo *group, const UTF8Char *searchStr, UOSInt searchStrLen, Data::ArrayListDbl *speciesIndice, Data::ArrayList<SpeciesInfo*> *speciesObjs, Data::ArrayListDbl *groupIndice, Data::ArrayList<GroupInfo*> *groupObjs, WebUserInfo *user)
 {
 	mutUsage->ReplaceMutex(&this->dataMut, false);
 	SpeciesInfo *species;
@@ -1132,7 +1133,7 @@ e = c
 	}
 }
 
-Bool SSWR::OrganMgr::OrganWebEnv::GroupIsAdmin(GroupInfo *group)
+Bool SSWR::OrganWeb::OrganWebEnv::GroupIsAdmin(GroupInfo *group)
 {
 	while (group)
 	{
@@ -1145,7 +1146,7 @@ Bool SSWR::OrganMgr::OrganWebEnv::GroupIsAdmin(GroupInfo *group)
 	return false;
 }
 
-UTF8Char *SSWR::OrganMgr::OrganWebEnv::PasswordEnc(UTF8Char *buff, Text::CString pwd)
+UTF8Char *SSWR::OrganWeb::OrganWebEnv::PasswordEnc(UTF8Char *buff, Text::CString pwd)
 {
 	UInt8 md5Val[16];
 	Crypto::Hash::MD5 md5;
@@ -1154,13 +1155,13 @@ UTF8Char *SSWR::OrganMgr::OrganWebEnv::PasswordEnc(UTF8Char *buff, Text::CString
 	return Text::StrHexBytes(buff, md5Val, 16, 0);
 }
 
-SSWR::OrganMgr::BookInfo *SSWR::OrganMgr::OrganWebEnv::BookGet(Sync::RWMutexUsage *mutUsage, Int32 id)
+SSWR::OrganWeb::BookInfo *SSWR::OrganWeb::OrganWebEnv::BookGet(Sync::RWMutexUsage *mutUsage, Int32 id)
 {
 	mutUsage->ReplaceMutex(&this->dataMut, true);
 	return this->bookMap.Get(id);
 }
 
-UTF8Char *SSWR::OrganMgr::OrganWebEnv::BookGetPath(UTF8Char *sbuff, Int32 bookId)
+UTF8Char *SSWR::OrganWeb::OrganWebEnv::BookGetPath(UTF8Char *sbuff, Int32 bookId)
 {
 	sbuff = this->dataDir->ConcatTo(sbuff);
 	if (sbuff[-1] != IO::Path::PATH_SEPERATOR)
@@ -1174,7 +1175,7 @@ UTF8Char *SSWR::OrganMgr::OrganWebEnv::BookGetPath(UTF8Char *sbuff, Int32 bookId
 	return sbuff;
 }
 
-void SSWR::OrganMgr::OrganWebEnv::BookGetDateMap(Sync::RWMutexUsage *mutUsage, Data::FastMap<Int64, BookInfo*> *bookMap)
+void SSWR::OrganWeb::OrganWebEnv::BookGetDateMap(Sync::RWMutexUsage *mutUsage, Data::FastMap<Int64, BookInfo*> *bookMap)
 {
 	mutUsage->ReplaceMutex(&this->dataMut, false);
 	UOSInt i = 0;
@@ -1187,7 +1188,7 @@ void SSWR::OrganMgr::OrganWebEnv::BookGetDateMap(Sync::RWMutexUsage *mutUsage, D
 	}
 }
 
-Bool SSWR::OrganMgr::OrganWebEnv::BookFileExist(BookInfo *book)
+Bool SSWR::OrganWeb::OrganWebEnv::BookFileExist(BookInfo *book)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -1203,7 +1204,7 @@ Bool SSWR::OrganMgr::OrganWebEnv::BookFileExist(BookInfo *book)
 	return IO::Path::GetPathType(CSTRP(sbuff, sptr)) == IO::Path::PathType::File;
 }
 
-Bool SSWR::OrganMgr::OrganWebEnv::UserGPSGetPos(Sync::RWMutexUsage *mutUsage, Int32 userId, const Data::Timestamp &t, Double *lat, Double *lon)
+Bool SSWR::OrganWeb::OrganWebEnv::UserGPSGetPos(Sync::RWMutexUsage *mutUsage, Int32 userId, const Data::Timestamp &t, Double *lat, Double *lon)
 {
 	mutUsage->ReplaceMutex(&this->dataMut, false);
 /*	OSInt i;
@@ -1265,31 +1266,31 @@ Bool SSWR::OrganMgr::OrganWebEnv::UserGPSGetPos(Sync::RWMutexUsage *mutUsage, In
 //	}
 }
 
-SSWR::OrganMgr::WebUserInfo *SSWR::OrganMgr::OrganWebEnv::UserGet(Sync::RWMutexUsage *mutUsage, Int32 id)
+SSWR::OrganWeb::WebUserInfo *SSWR::OrganWeb::OrganWebEnv::UserGet(Sync::RWMutexUsage *mutUsage, Int32 id)
 {
 	mutUsage->ReplaceMutex(&this->dataMut, false);
 	return this->userMap.Get(id);
 }
 
-SSWR::OrganMgr::WebUserInfo *SSWR::OrganMgr::OrganWebEnv::UserGetByName(Sync::RWMutexUsage *mutUsage, Text::String *name)
+SSWR::OrganWeb::WebUserInfo *SSWR::OrganWeb::OrganWebEnv::UserGetByName(Sync::RWMutexUsage *mutUsage, Text::String *name)
 {
 	mutUsage->ReplaceMutex(&this->dataMut, false);
 	return this->userNameMap.Get(name);
 }
 
-SSWR::OrganMgr::SpeciesInfo *SSWR::OrganMgr::OrganWebEnv::SpeciesGet(Sync::RWMutexUsage *mutUsage, Int32 id)
+SSWR::OrganWeb::SpeciesInfo *SSWR::OrganWeb::OrganWebEnv::SpeciesGet(Sync::RWMutexUsage *mutUsage, Int32 id)
 {
 	mutUsage->ReplaceMutex(&this->dataMut, false);
 	return this->spMap.Get(id);
 }
 
-SSWR::OrganMgr::SpeciesInfo *SSWR::OrganMgr::OrganWebEnv::SpeciesGetByName(Sync::RWMutexUsage *mutUsage, Text::String *sname)
+SSWR::OrganWeb::SpeciesInfo *SSWR::OrganWeb::OrganWebEnv::SpeciesGetByName(Sync::RWMutexUsage *mutUsage, Text::String *sname)
 {
 	mutUsage->ReplaceMutex(&this->dataMut, false);
 	return this->spNameMap.Get(sname);
 }
 
-Int32 SSWR::OrganMgr::OrganWebEnv::SpeciesAdd(Sync::RWMutexUsage *mutUsage, Text::CString engName, Text::CString chiName, Text::CString sciName, Int32 groupId, Text::CString description, Text::CString dirName, Text::CString idKey, Int32 cateId)
+Int32 SSWR::OrganWeb::OrganWebEnv::SpeciesAdd(Sync::RWMutexUsage *mutUsage, Text::CString engName, Text::CString chiName, Text::CString sciName, Int32 groupId, Text::CString description, Text::CString dirName, Text::CString idKey, Int32 cateId)
 {
 	mutUsage->ReplaceMutex(&this->dataMut, true);
 	DB::SQLBuilder sql(this->db);
@@ -1347,7 +1348,7 @@ Int32 SSWR::OrganMgr::OrganWebEnv::SpeciesAdd(Sync::RWMutexUsage *mutUsage, Text
 	}
 }
 
-Bool SSWR::OrganMgr::OrganWebEnv::SpeciesUpdateDefPhoto(Sync::RWMutexUsage *mutUsage, Int32 speciesId)
+Bool SSWR::OrganWeb::OrganWebEnv::SpeciesUpdateDefPhoto(Sync::RWMutexUsage *mutUsage, Int32 speciesId)
 {
 	mutUsage->ReplaceMutex(&this->dataMut, true);
 	SpeciesInfo *species = this->spMap.Get(speciesId);
@@ -1369,7 +1370,7 @@ Bool SSWR::OrganMgr::OrganWebEnv::SpeciesUpdateDefPhoto(Sync::RWMutexUsage *mutU
 			if (species->flags & SF_HAS_MYPHOTO)
 			{
 				this->SpeciesSetFlags(mutUsage, speciesId, (SpeciesFlags)(species->flags & ~SF_HAS_MYPHOTO));
-				this->GroupAddCounts(mutUsage, species->groupId, 0, (species->flags & SSWR::OrganMgr::SF_HAS_WEBPHOTO)?0:(UOSInt)-1, (UOSInt)-1);
+				this->GroupAddCounts(mutUsage, species->groupId, 0, (species->flags & SSWR::OrganWeb::SF_HAS_WEBPHOTO)?0:(UOSInt)-1, (UOSInt)-1);
 			}
 			GroupInfo *group = this->GroupGet(mutUsage, species->groupId);
 			Int32 parentGroupId = 0;
@@ -1438,7 +1439,7 @@ Bool SSWR::OrganMgr::OrganWebEnv::SpeciesUpdateDefPhoto(Sync::RWMutexUsage *mutU
 	return true;
 }
 
-Bool SSWR::OrganMgr::OrganWebEnv::SpeciesSetPhotoId(Sync::RWMutexUsage *mutUsage, Int32 speciesId, Int32 photoId)
+Bool SSWR::OrganWeb::OrganWebEnv::SpeciesSetPhotoId(Sync::RWMutexUsage *mutUsage, Int32 speciesId, Int32 photoId)
 {
 	mutUsage->ReplaceMutex(&this->dataMut, true);
 	SpeciesInfo *species = this->spMap.Get(speciesId);
@@ -1464,7 +1465,7 @@ Bool SSWR::OrganMgr::OrganWebEnv::SpeciesSetPhotoId(Sync::RWMutexUsage *mutUsage
 	}
 }
 
-Bool SSWR::OrganMgr::OrganWebEnv::SpeciesSetFlags(Sync::RWMutexUsage *mutUsage, Int32 speciesId, SpeciesFlags flags)
+Bool SSWR::OrganWeb::OrganWebEnv::SpeciesSetFlags(Sync::RWMutexUsage *mutUsage, Int32 speciesId, SpeciesFlags flags)
 {
 	mutUsage->ReplaceMutex(&this->dataMut, true);
 	SpeciesInfo *species = this->spMap.Get(speciesId);
@@ -1490,7 +1491,7 @@ Bool SSWR::OrganMgr::OrganWebEnv::SpeciesSetFlags(Sync::RWMutexUsage *mutUsage, 
 	}
 }
 
-Bool SSWR::OrganMgr::OrganWebEnv::SpeciesMove(Sync::RWMutexUsage *mutUsage, Int32 speciesId, Int32 groupId, Int32 cateId)
+Bool SSWR::OrganWeb::OrganWebEnv::SpeciesMove(Sync::RWMutexUsage *mutUsage, Int32 speciesId, Int32 groupId, Int32 cateId)
 {
 	mutUsage->ReplaceMutex(&this->dataMut, true);
 	SpeciesInfo *species = this->spMap.Get(speciesId);
@@ -1551,7 +1552,7 @@ Bool SSWR::OrganMgr::OrganWebEnv::SpeciesMove(Sync::RWMutexUsage *mutUsage, Int3
 	}
 }
 
-Bool SSWR::OrganMgr::OrganWebEnv::SpeciesModify(Sync::RWMutexUsage *mutUsage, Int32 speciesId, Text::CString engName, Text::CString chiName, Text::CString sciName, Text::CString description, Text::CString dirName)
+Bool SSWR::OrganWeb::OrganWebEnv::SpeciesModify(Sync::RWMutexUsage *mutUsage, Int32 speciesId, Text::CString engName, Text::CString chiName, Text::CString sciName, Text::CString description, Text::CString dirName)
 {
 	mutUsage->ReplaceMutex(&this->dataMut, true);
 	SpeciesInfo *species = this->spMap.Get(speciesId);
@@ -1595,7 +1596,7 @@ Bool SSWR::OrganMgr::OrganWebEnv::SpeciesModify(Sync::RWMutexUsage *mutUsage, In
 	}
 }
 
-Bool SSWR::OrganMgr::OrganWebEnv::SpeciesDelete(Sync::RWMutexUsage *mutUsage, Int32 speciesId)
+Bool SSWR::OrganWeb::OrganWebEnv::SpeciesDelete(Sync::RWMutexUsage *mutUsage, Int32 speciesId)
 {
 	mutUsage->ReplaceMutex(&this->dataMut, true);
 	SpeciesInfo *species = this->spMap.Get(speciesId);
@@ -1629,7 +1630,7 @@ Bool SSWR::OrganMgr::OrganWebEnv::SpeciesDelete(Sync::RWMutexUsage *mutUsage, In
 	}
 }
 
-Bool SSWR::OrganMgr::OrganWebEnv::SpeciesMerge(Sync::RWMutexUsage *mutUsage, Int32 srcSpeciesId, Int32 destSpeciesId, Int32 cateId)
+Bool SSWR::OrganWeb::OrganWebEnv::SpeciesMerge(Sync::RWMutexUsage *mutUsage, Int32 srcSpeciesId, Int32 destSpeciesId, Int32 cateId)
 {
 	mutUsage->ReplaceMutex(&this->dataMut, true);
 	if (srcSpeciesId == destSpeciesId)
@@ -1738,7 +1739,7 @@ Bool SSWR::OrganMgr::OrganWebEnv::SpeciesMerge(Sync::RWMutexUsage *mutUsage, Int
 	return this->SpeciesDelete(mutUsage, srcSpeciesId);
 }
 
-SSWR::OrganMgr::UserFileInfo *SSWR::OrganMgr::OrganWebEnv::UserfileGetCheck(Sync::RWMutexUsage *mutUsage, Int32 userfileId, Int32 speciesId, Int32 cateId, WebUserInfo *currUser, UTF8Char **filePathOut)
+SSWR::OrganWeb::UserFileInfo *SSWR::OrganWeb::OrganWebEnv::UserfileGetCheck(Sync::RWMutexUsage *mutUsage, Int32 userfileId, Int32 speciesId, Int32 cateId, WebUserInfo *currUser, UTF8Char **filePathOut)
 {
 	mutUsage->ReplaceMutex(&this->dataMut, false);
 	SpeciesInfo *sp = this->spMap.Get(speciesId);
@@ -1781,13 +1782,13 @@ SSWR::OrganMgr::UserFileInfo *SSWR::OrganMgr::OrganWebEnv::UserfileGetCheck(Sync
 	}
 }
 
-SSWR::OrganMgr::UserFileInfo *SSWR::OrganMgr::OrganWebEnv::UserfileGet(Sync::RWMutexUsage *mutUsage, Int32 id)
+SSWR::OrganWeb::UserFileInfo *SSWR::OrganWeb::OrganWebEnv::UserfileGet(Sync::RWMutexUsage *mutUsage, Int32 id)
 {
 	mutUsage->ReplaceMutex(&this->dataMut, false);
 	return this->userFileMap.Get(id);
 }
 
-UTF8Char *SSWR::OrganMgr::OrganWebEnv::UserfileGetPath(UTF8Char *sbuff, const UserFileInfo *userFile)
+UTF8Char *SSWR::OrganWeb::OrganWebEnv::UserfileGetPath(UTF8Char *sbuff, const UserFileInfo *userFile)
 {
 	Data::DateTime dt;
 	sbuff = this->dataDir->ConcatTo(sbuff);
@@ -1806,7 +1807,7 @@ UTF8Char *SSWR::OrganMgr::OrganWebEnv::UserfileGetPath(UTF8Char *sbuff, const Us
 	return sbuff;
 }
 
-Int32 SSWR::OrganMgr::OrganWebEnv::UserfileAdd(Sync::RWMutexUsage *mutUsage, Int32 userId, Int32 spId, Text::CString fileName, const UInt8 *fileCont, UOSInt fileSize, Bool mustHaveCamera)
+Int32 SSWR::OrganWeb::OrganWebEnv::UserfileAdd(Sync::RWMutexUsage *mutUsage, Int32 userId, Int32 spId, Text::CString fileName, const UInt8 *fileCont, UOSInt fileSize, Bool mustHaveCamera)
 {
 	mutUsage->ReplaceMutex(&this->dataMut, true);
 	UOSInt j;
@@ -2363,7 +2364,7 @@ Int32 SSWR::OrganMgr::OrganWebEnv::UserfileAdd(Sync::RWMutexUsage *mutUsage, Int
 	}
 }
 
-Bool SSWR::OrganMgr::OrganWebEnv::UserfileMove(Sync::RWMutexUsage *mutUsage, Int32 userfileId, Int32 speciesId, Int32 cateId)
+Bool SSWR::OrganWeb::OrganWebEnv::UserfileMove(Sync::RWMutexUsage *mutUsage, Int32 userfileId, Int32 speciesId, Int32 cateId)
 {
 	mutUsage->ReplaceMutex(&this->dataMut, true);
 	UserFileInfo *userFile = this->userFileMap.Get(userfileId);
@@ -2425,7 +2426,7 @@ Bool SSWR::OrganMgr::OrganWebEnv::UserfileMove(Sync::RWMutexUsage *mutUsage, Int
 	return false;
 }
 
-Bool SSWR::OrganMgr::OrganWebEnv::UserfileUpdateDesc(Sync::RWMutexUsage *mutUsage, Int32 userfileId, Text::CString descr)
+Bool SSWR::OrganWeb::OrganWebEnv::UserfileUpdateDesc(Sync::RWMutexUsage *mutUsage, Int32 userfileId, Text::CString descr)
 {
 	mutUsage->ReplaceMutex(&this->dataMut, true);
 	UserFileInfo *userFile = this->userFileMap.Get(userfileId);
@@ -2455,7 +2456,7 @@ Bool SSWR::OrganMgr::OrganWebEnv::UserfileUpdateDesc(Sync::RWMutexUsage *mutUsag
 	return false;
 }
 
-Bool SSWR::OrganMgr::OrganWebEnv::UserfileUpdateRotType(Sync::RWMutexUsage *mutUsage, Int32 userfileId, Int32 rotType)
+Bool SSWR::OrganWeb::OrganWebEnv::UserfileUpdateRotType(Sync::RWMutexUsage *mutUsage, Int32 userfileId, Int32 rotType)
 {
 	mutUsage->ReplaceMutex(&this->dataMut, true);
 	UserFileInfo *userFile = this->userFileMap.Get(userfileId);
@@ -2487,7 +2488,7 @@ Bool SSWR::OrganMgr::OrganWebEnv::UserfileUpdateRotType(Sync::RWMutexUsage *mutU
 	return false;
 }
 
-Bool SSWR::OrganMgr::OrganWebEnv::SpeciesBookIsExist(Sync::RWMutexUsage *mutUsage, Text::CString speciesName, Text::StringBuilderUTF8 *bookNameOut)
+Bool SSWR::OrganWeb::OrganWebEnv::SpeciesBookIsExist(Sync::RWMutexUsage *mutUsage, Text::CString speciesName, Text::StringBuilderUTF8 *bookNameOut)
 {
 	mutUsage->ReplaceMutex(&this->dataMut, false);
 	BookInfo *book;
@@ -2514,7 +2515,7 @@ Bool SSWR::OrganMgr::OrganWebEnv::SpeciesBookIsExist(Sync::RWMutexUsage *mutUsag
 	return false;
 }
 
-void SSWR::OrganMgr::OrganWebEnv::UserFilePrevUpdated(Sync::RWMutexUsage *mutUsage, UserFileInfo *userFile)
+void SSWR::OrganWeb::OrganWebEnv::UserFilePrevUpdated(Sync::RWMutexUsage *mutUsage, UserFileInfo *userFile)
 {
 	mutUsage->ReplaceMutex(&this->dataMut, true);
 	if (userFile->prevUpdated)
@@ -2530,7 +2531,7 @@ void SSWR::OrganMgr::OrganWebEnv::UserFilePrevUpdated(Sync::RWMutexUsage *mutUsa
 	}
 }
 
-void SSWR::OrganMgr::OrganWebEnv::WebFilePrevUpdated(Sync::RWMutexUsage *mutUsage, WebFileInfo *wfile)
+void SSWR::OrganWeb::OrganWebEnv::WebFilePrevUpdated(Sync::RWMutexUsage *mutUsage, WebFileInfo *wfile)
 {
 	mutUsage->ReplaceMutex(&this->dataMut, true);
 	if (wfile->prevUpdated)
@@ -2546,13 +2547,13 @@ void SSWR::OrganMgr::OrganWebEnv::WebFilePrevUpdated(Sync::RWMutexUsage *mutUsag
 	}
 }
 
-SSWR::OrganMgr::GroupInfo *SSWR::OrganMgr::OrganWebEnv::GroupGet(Sync::RWMutexUsage *mutUsage, Int32 id)
+SSWR::OrganWeb::GroupInfo *SSWR::OrganWeb::OrganWebEnv::GroupGet(Sync::RWMutexUsage *mutUsage, Int32 id)
 {
 	mutUsage->ReplaceMutex(&this->dataMut, false);
 	return this->groupMap.Get(id);
 }
 
-Int32 SSWR::OrganMgr::OrganWebEnv::GroupAdd(Sync::RWMutexUsage *mutUsage, Text::CString engName, Text::CString chiName, Int32 parentId, Text::CString descr, Int32 groupTypeId, Int32 cateId, GroupFlags flags)
+Int32 SSWR::OrganWeb::OrganWebEnv::GroupAdd(Sync::RWMutexUsage *mutUsage, Text::CString engName, Text::CString chiName, Int32 parentId, Text::CString descr, Int32 groupTypeId, Int32 cateId, GroupFlags flags)
 {
 	mutUsage->ReplaceMutex(&this->dataMut, true);
 	GroupInfo *group = this->groupMap.Get(parentId);
@@ -2606,7 +2607,7 @@ Int32 SSWR::OrganMgr::OrganWebEnv::GroupAdd(Sync::RWMutexUsage *mutUsage, Text::
 	return 0;
 }
 
-Bool SSWR::OrganMgr::OrganWebEnv::GroupModify(Sync::RWMutexUsage *mutUsage, Int32 id, Text::CString engName, Text::CString chiName, Text::CString descr, Int32 groupTypeId, GroupFlags flags)
+Bool SSWR::OrganWeb::OrganWebEnv::GroupModify(Sync::RWMutexUsage *mutUsage, Int32 id, Text::CString engName, Text::CString chiName, Text::CString descr, Int32 groupTypeId, GroupFlags flags)
 {
 	mutUsage->ReplaceMutex(&this->dataMut, true);
 	GroupInfo *group = this->groupMap.Get(id);
@@ -2642,7 +2643,7 @@ Bool SSWR::OrganMgr::OrganWebEnv::GroupModify(Sync::RWMutexUsage *mutUsage, Int3
 	return false;
 }
 
-Bool SSWR::OrganMgr::OrganWebEnv::GroupDelete(Sync::RWMutexUsage *mutUsage, Int32 id)
+Bool SSWR::OrganWeb::OrganWebEnv::GroupDelete(Sync::RWMutexUsage *mutUsage, Int32 id)
 {
 	mutUsage->ReplaceMutex(&this->dataMut, true);
 	GroupInfo *group = this->groupMap.Get(id);
@@ -2675,7 +2676,7 @@ Bool SSWR::OrganMgr::OrganWebEnv::GroupDelete(Sync::RWMutexUsage *mutUsage, Int3
 	return false;
 }
 
-Bool SSWR::OrganMgr::OrganWebEnv::GroupMove(Sync::RWMutexUsage *mutUsage, Int32 groupId, Int32 destGroupId, Int32 cateId)
+Bool SSWR::OrganWeb::OrganWebEnv::GroupMove(Sync::RWMutexUsage *mutUsage, Int32 groupId, Int32 destGroupId, Int32 cateId)
 {
 	mutUsage->ReplaceMutex(&this->dataMut, true);
 	GroupInfo *group = this->groupMap.Get(groupId);
@@ -2741,7 +2742,7 @@ Bool SSWR::OrganMgr::OrganWebEnv::GroupMove(Sync::RWMutexUsage *mutUsage, Int32 
 	}
 }
 
-Bool SSWR::OrganMgr::OrganWebEnv::GroupAddCounts(Sync::RWMutexUsage *mutUsage, Int32 groupId, UOSInt totalCount, UOSInt photoCount, UOSInt myPhotoCount)
+Bool SSWR::OrganWeb::OrganWebEnv::GroupAddCounts(Sync::RWMutexUsage *mutUsage, Int32 groupId, UOSInt totalCount, UOSInt photoCount, UOSInt myPhotoCount)
 {
 	mutUsage->ReplaceMutex(&this->dataMut, true);
 	GroupInfo *group = this->groupMap.Get(groupId);
@@ -2759,7 +2760,7 @@ Bool SSWR::OrganMgr::OrganWebEnv::GroupAddCounts(Sync::RWMutexUsage *mutUsage, I
 }
 
 
-Bool SSWR::OrganMgr::OrganWebEnv::GroupSetPhotoSpecies(Sync::RWMutexUsage *mutUsage, Int32 groupId, Int32 photoSpeciesId)
+Bool SSWR::OrganWeb::OrganWebEnv::GroupSetPhotoSpecies(Sync::RWMutexUsage *mutUsage, Int32 groupId, Int32 photoSpeciesId)
 {
 	mutUsage->ReplaceMutex(&this->dataMut, true);
 	GroupInfo *group = this->groupMap.Get(groupId);
@@ -2793,7 +2794,7 @@ Bool SSWR::OrganMgr::OrganWebEnv::GroupSetPhotoSpecies(Sync::RWMutexUsage *mutUs
 	return false;
 }
 
-Bool SSWR::OrganMgr::OrganWebEnv::GroupSetPhotoGroup(Sync::RWMutexUsage *mutUsage, Int32 groupId, Int32 photoGroupId)
+Bool SSWR::OrganWeb::OrganWebEnv::GroupSetPhotoGroup(Sync::RWMutexUsage *mutUsage, Int32 groupId, Int32 photoGroupId)
 {
 	mutUsage->ReplaceMutex(&this->dataMut, true);
 	GroupInfo *group = this->groupMap.Get(groupId);
@@ -2827,7 +2828,7 @@ Bool SSWR::OrganMgr::OrganWebEnv::GroupSetPhotoGroup(Sync::RWMutexUsage *mutUsag
 	return false;
 }
 
-Bool SSWR::OrganMgr::OrganWebEnv::GroupIsPublic(Sync::RWMutexUsage *mutUsage, Int32 groupId)
+Bool SSWR::OrganWeb::OrganWebEnv::GroupIsPublic(Sync::RWMutexUsage *mutUsage, Int32 groupId)
 {
 	if (groupId == 0)
 	{
@@ -2846,25 +2847,25 @@ Bool SSWR::OrganMgr::OrganWebEnv::GroupIsPublic(Sync::RWMutexUsage *mutUsage, In
 	return GroupIsPublic(mutUsage, group->parentId);
 }
 
-SSWR::OrganMgr::CategoryInfo *SSWR::OrganMgr::OrganWebEnv::CateGet(Sync::RWMutexUsage *mutUsage, Int32 id)
+SSWR::OrganWeb::CategoryInfo *SSWR::OrganWeb::OrganWebEnv::CateGet(Sync::RWMutexUsage *mutUsage, Int32 id)
 {
 	mutUsage->ReplaceMutex(&this->dataMut, false);
 	return this->cateMap.Get(id);
 }
 
-SSWR::OrganMgr::CategoryInfo *SSWR::OrganMgr::OrganWebEnv::CateGetByName(Sync::RWMutexUsage *mutUsage, Text::String *name)
+SSWR::OrganWeb::CategoryInfo *SSWR::OrganWeb::OrganWebEnv::CateGetByName(Sync::RWMutexUsage *mutUsage, Text::String *name)
 {
 	mutUsage->ReplaceMutex(&this->dataMut, false);
 	return this->cateSMap.Get(name);
 }
 
-Data::ReadingList<SSWR::OrganMgr::CategoryInfo*> *SSWR::OrganMgr::OrganWebEnv::CateGetList(Sync::RWMutexUsage *mutUsage)
+Data::ReadingList<SSWR::OrganWeb::CategoryInfo*> *SSWR::OrganWeb::OrganWebEnv::CateGetList(Sync::RWMutexUsage *mutUsage)
 {
 	mutUsage->ReplaceMutex(&this->dataMut, false);
 	return &this->cateMap;
 }
 
-IO::ConfigFile *SSWR::OrganMgr::OrganWebEnv::LangGet(Net::WebServer::IWebRequest *req)
+IO::ConfigFile *SSWR::OrganWeb::OrganWebEnv::LangGet(Net::WebServer::IWebRequest *req)
 {
 	Text::StringBuilderUTF8 sb;
 	IO::ConfigFile *lang;

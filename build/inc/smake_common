@@ -3218,6 +3218,10 @@ Net/WebServer/SiteRootHandler.h: ../../src/Net/WebServer/SiteRootHandler.cpp
 @SiteRootHandler.o
 Net/WebServer/WebConnection.h: ../../src/Net/WebServer/WebConnection.cpp
 @WebConnection.o
+Net/WebServer/WebController.h: ../../src/Net/WebServer/WebController.cpp
+@WebController.o
+Net/WebServer/WebControllerHandler.h: ../../src/Net/WebServer/WebControllerHandler.cpp
+@WebControllerHandler.o
 Net/WebServer/WebListener.h: ../../src/Net/WebServer/WebListener.cpp
 @WebListener.o
 Net/WebServer/WebRequest.h: ../../src/Net/WebServer/WebRequest.cpp
@@ -4148,11 +4152,15 @@ SSWR/OrganMgr/OrganUserEditForm.h: ../../src/SSWR/OrganMgr/OrganUserEditForm.cpp
 @OrganUserEditForm.o
 SSWR/OrganMgr/OrganUserForm.h: ../../src/SSWR/OrganMgr/OrganUserForm.cpp
 @OrganUserForm.o
-SSWR/OrganMgr/OrganWebCommon.h:
-SSWR/OrganMgr/OrganWebEnv.h: ../../src/SSWR/OrganMgr/OrganWebEnv.cpp
+SSWR/OrganWeb/OrganWebCommon.h:
+SSWR/OrganWeb/OrganWebController.h: ../../src/SSWR/OrganWeb/OrganWebController.cpp
+@OrganWebController.o
+SSWR/OrganWeb/OrganWebEnv.h: ../../src/SSWR/OrganWeb/OrganWebEnv.cpp
 @OrganWebEnv.o
-SSWR/OrganMgr/OrganWebHandler.h: ../../src/SSWR/OrganMgr/OrganWebHandler.cpp
+SSWR/OrganWeb/OrganWebHandler.h: ../../src/SSWR/OrganWeb/OrganWebHandler.cpp
 @OrganWebHandler.o
+SSWR/OrganWeb/OrganWebMainController.h: ../../src/SSWR/OrganWeb/OrganWebMainController.cpp
+@OrganWebMainController.o
 SSWR/SDNSProxy/SDNSProxyCore.h: ../../src/SSWR/SDNSProxy/SDNSProxyCore.cpp
 @SDNSProxyCore.o
 SSWR/SDNSProxy/SDNSProxyWebHandler.h: ../../src/SSWR/SDNSProxy/SDNSProxyWebHandler.cpp
@@ -5428,6 +5436,8 @@ RESTfulHandler.o: ../../src/Net/WebServer/RESTfulHandler.cpp
 SAMLHandler.o: ../../src/Net/WebServer/SAMLHandler.cpp
 SiteRootHandler.o: ../../src/Net/WebServer/SiteRootHandler.cpp
 WebConnection.o: ../../src/Net/WebServer/WebConnection.cpp
+WebController.o: ../../src/Net/WebServer/WebController.cpp
+WebControllerHandler.o: ../../src/Net/WebServer/WebControllerHandler.cpp
 WebListener.o: ../../src/Net/WebServer/WebListener.cpp
 WebRequest.o: ../../src/Net/WebServer/WebRequest.cpp
 WebServiceHandler.o: ../../src/Net/WebServer/WebServiceHandler.cpp
@@ -5889,8 +5899,10 @@ OrganTripForm.o: ../../src/SSWR/OrganMgr/OrganTripForm.cpp
 OrganTripList.o: ../../src/SSWR/OrganMgr/OrganTripList.cpp
 OrganUserEditForm.o: ../../src/SSWR/OrganMgr/OrganUserEditForm.cpp
 OrganUserForm.o: ../../src/SSWR/OrganMgr/OrganUserForm.cpp
-OrganWebEnv.o: ../../src/SSWR/OrganMgr/OrganWebEnv.cpp
-OrganWebHandler.o: ../../src/SSWR/OrganMgr/OrganWebHandler.cpp
+OrganWebController.o: ../../src/SSWR/OrganWeb/OrganWebController.cpp
+OrganWebEnv.o: ../../src/SSWR/OrganWeb/OrganWebEnv.cpp
+OrganWebHandler.o: ../../src/SSWR/OrganWeb/OrganWebHandler.cpp
+OrganWebMainController.o: ../../src/SSWR/OrganWeb/OrganWebMainController.cpp
 SDNSProxyCore.o: ../../src/SSWR/SDNSProxy/SDNSProxyCore.cpp
 SDNSProxyWebHandler.o: ../../src/SSWR/SDNSProxy/SDNSProxyWebHandler.cpp
 ElevationFilter.o: ../../src/SSWR/SHPConv/ElevationFilter.cpp

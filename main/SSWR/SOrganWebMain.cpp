@@ -12,7 +12,7 @@
 #include "Net/MySQLTCPClient.h"
 #include "Net/OSSocketFactory.h"
 #include "Net/SSLEngineFactory.h"
-#include "SSWR/OrganMgr/OrganWebEnv.h"
+#include "SSWR/OrganWeb/OrganWebEnv.h"
 
 Int32 MyMain(Core::IProgControl *progCtrl)
 {
@@ -22,7 +22,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		IO::ConsoleWriter console;
 		UInt32 scnSize = 0;
 		Int32 unorganizedGroupId = 0;
-		SSWR::OrganMgr::OrganWebEnv *env;
+		SSWR::OrganWeb::OrganWebEnv *env;
 		Net::OSSocketFactory sockf(true);
 		Net::SSLEngine *ssl = 0;
 		IO::LogTool log;
@@ -110,7 +110,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("OSMTile"));
 				osmCacheDir = CSTRP(sbuff, sptr);
 			}
-			NEW_CLASS(env, SSWR::OrganMgr::OrganWebEnv(&sockf, ssl, &log, db, cfg->GetValue(CSTR("ImageDir")), port, sslPort, cfg->GetValue(CSTR("CacheDir")), cfg->GetValue(CSTR("DataDir")), scnSize, cfg->GetValue(CSTR("ReloadPwd")), unorganizedGroupId, Media::DrawEngineFactory::CreateDrawEngine(), osmCacheDir));
+			NEW_CLASS(env, SSWR::OrganWeb::OrganWebEnv(&sockf, ssl, &log, db, cfg->GetValue(CSTR("ImageDir")), port, sslPort, cfg->GetValue(CSTR("CacheDir")), cfg->GetValue(CSTR("DataDir")), scnSize, cfg->GetValue(CSTR("ReloadPwd")), unorganizedGroupId, Media::DrawEngineFactory::CreateDrawEngine(), osmCacheDir));
 			DEL_CLASS(cfg);
 
 			if (env->IsError())

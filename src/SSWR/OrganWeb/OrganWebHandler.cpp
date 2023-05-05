@@ -1,0 +1,40 @@
+#include "Stdafx.h"
+//#include "SSWR/OrganWeb/OrganWebEnv.h"
+#include "SSWR/OrganWeb/OrganWebHandler.h"
+#include "SSWR/OrganWeb/OrganWebMainController.h"
+
+Bool __stdcall SSWR::OrganWeb::OrganWebHandler::OnSessionDel(Net::WebServer::IWebSession* sess, void *userObj)
+{
+	Data::DateTime *t;
+	Data::ArrayListInt32 *pickObjs;
+	t = (Data::DateTime *)sess->GetValuePtr(UTF8STRC("LastUseTime"));
+	pickObjs = (Data::ArrayListInt32*)sess->GetValuePtr(UTF8STRC("PickObjs"));
+	DEL_CLASS(t);
+	DEL_CLASS(pickObjs);
+	return false;
+}
+
+Bool __stdcall SSWR::OrganWeb::OrganWebHandler::OnSessionCheck(Net::WebServer::IWebSession* sess, void *userObj)
+{
+	Data::DateTime *t;
+	Data::DateTime currTime;
+	t = (Data::DateTime*)sess->GetValuePtr(UTF8STRC("LastUseTime"));
+	currTime.SetCurrTimeUTC();
+	if (currTime.DiffMS(t) >= 1800000)
+		return true;
+	return false;
+}
+
+SSWR::OrganWeb::OrganWebHandler::OrganWebHandler(OrganWebEnv *env, UInt32 scnSize)
+{
+	this->env = env;
+	this->scnSize = scnSize;
+	NEW_CLASS(this->sessMgr, Net::WebServer::MemoryWebSessionManager(CSTR("/"), OnSessionDel, this, 30000, OnSessionCheck, this, CSTR("OrganSessId")));
+
+	this->AddController(NEW_CLASS_D(OrganWebMainController(this->sessMgr, env, scnSize)));
+}
+
+SSWR::OrganWeb::OrganWebHandler::~OrganWebHandler()
+{
+	SDEL_CLASS(this->sessMgr);
+}

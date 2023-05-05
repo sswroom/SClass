@@ -1,5 +1,5 @@
-#ifndef _SM_SSWR_ORGANMGR_ORGANWEBCOMMON
-#define _SM_SSWR_ORGANMGR_ORGANWEBCOMMON
+#ifndef _SM_SSWR_ORGANWEB_ORGANWEBCOMMON
+#define _SM_SSWR_ORGANWEB_ORGANWEBCOMMON
 #include "Data/ArrayListInt32.h"
 #include "Data/ArrayListInt64.h"
 #include "Data/Comparator.h"
@@ -8,7 +8,7 @@
 
 namespace SSWR
 {
-	namespace OrganMgr
+	namespace OrganWeb
 	{
 		typedef enum
 		{
@@ -54,6 +54,7 @@ namespace SSWR
 			Text::String *press;
 			Int64 publishDate;
 			Text::String *url;
+			Int32 userfileId;
 
 			Data::ArrayList<BookSpInfo*> species;
 		};
