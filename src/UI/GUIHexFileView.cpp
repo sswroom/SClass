@@ -532,6 +532,11 @@ UInt64 UI::GUIHexFileView::GetCurrOfst()
 	return this->currOfst;
 }
 
+UInt64 UI::GUIHexFileView::GetFileSize()
+{
+	return this->fileSize;
+}
+
 UOSInt UI::GUIHexFileView::GetFileData(UInt64 ofst, UOSInt size, UInt8 *outBuff)
 {
 	if (this->fd)

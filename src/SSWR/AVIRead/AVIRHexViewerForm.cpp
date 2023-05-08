@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "Data/ByteTool.h"
 #include "SSWR/AVIRead/AVIRHexViewerForm.h"
+#include "SSWR/AVIRead/AVIRHexViewerGoToForm.h"
 #include "Text/CharUtil.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
@@ -8,6 +9,11 @@
 #include "UI/FileDialog.h"
 #include "UI/FontDialog.h"
 #include "UI/MessageDialog.h"
+
+typedef enum
+{
+	MNU_GOTO = 101,
+} MenuItems;
 
 void __stdcall SSWR::AVIRead::AVIRHexViewerForm::OnFilesDrop(void *userObj, Text::String **files, UOSInt nFiles)
 {
@@ -211,6 +217,96 @@ void __stdcall SSWR::AVIRead::AVIRHexViewerForm::OnOpenFileClicked(void *userObj
 	}
 }
 
+void __stdcall SSWR::AVIRead::AVIRHexViewerForm::OnExtractBeginClicked(void *userObj)
+{
+	SSWR::AVIRead::AVIRHexViewerForm *me = (SSWR::AVIRead::AVIRHexViewerForm*)userObj;
+	UTF8Char sbuff[17];
+	UTF8Char *sptr;
+	sptr = Text::StrHexVal64V(sbuff, me->hexView->GetCurrOfst());
+	me->txtExtractBegin->SetText(CSTRP(sbuff, sptr));
+}
+
+void __stdcall SSWR::AVIRead::AVIRHexViewerForm::OnExtractEndClicked(void *userObj)
+{
+	SSWR::AVIRead::AVIRHexViewerForm *me = (SSWR::AVIRead::AVIRHexViewerForm*)userObj;
+	UTF8Char sbuff[17];
+	UTF8Char *sptr;
+	sptr = Text::StrHexVal64V(sbuff, me->hexView->GetCurrOfst());
+	me->txtExtractEnd->SetText(CSTRP(sbuff, sptr));
+}
+
+void __stdcall SSWR::AVIRead::AVIRHexViewerForm::OnExtractClicked(void *userObj)
+{
+	SSWR::AVIRead::AVIRHexViewerForm *me = (SSWR::AVIRead::AVIRHexViewerForm*)userObj;
+	UTF8Char sbuff[17];
+	UInt64 beginOfst;
+	UInt64 endOfst;
+	me->txtExtractBegin->GetText(sbuff);
+	if (!Text::StrHex2UInt64V(sbuff, &beginOfst))
+	{
+		UI::MessageDialog::ShowDialog(CSTR("Error in parsing begin offset"), CSTR("Hex Viewer"), me);
+		return;
+	}
+	me->txtExtractEnd->GetText(sbuff);
+	if (!Text::StrHex2UInt64V(sbuff, &endOfst))
+	{
+		UI::MessageDialog::ShowDialog(CSTR("Error in parsing end offset"), CSTR("Hex Viewer"), me);
+		return;
+	}
+	if (beginOfst >= endOfst)
+	{
+		UI::MessageDialog::ShowDialog(CSTR("Current Offsets are not valid to extract file"), CSTR("Hex Viewer"), me);
+		return;
+	}
+	endOfst -= beginOfst;
+	UInt8 *buff;
+	UOSInt buffSize;
+	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"HexViewerExtract", true);
+	dlg.AddFilter(CSTR("*.dat"), CSTR("Data File"));
+	if (dlg.ShowDialog(me->GetHandle()))
+	{
+		IO::FileStream fs(dlg.GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+		if (endOfst < 1048576)
+		{
+			buff = MemAlloc(UInt8, (UOSInt)endOfst);
+			buffSize = me->hexView->GetFileData(beginOfst, (UOSInt)endOfst, buff);
+			fs.Write(buff, buffSize);
+			MemFree(buff);
+		}
+		else
+		{
+			Bool hasError = false;
+			buff = MemAlloc(UInt8, 1048576);
+			while (endOfst >= 1048576)
+			{
+				buffSize = me->hexView->GetFileData(beginOfst, 1048576, buff);
+				fs.Write(buff, buffSize);
+				beginOfst += 1048576;
+				endOfst -= 1048576;
+				if (buffSize != 1048576)
+				{
+					hasError = true;
+					break;
+				}
+			}
+			if (!hasError && endOfst > 0)
+			{
+				buffSize = me->hexView->GetFileData(beginOfst, (UOSInt)endOfst, buff);
+				fs.Write(buff, buffSize);
+				beginOfst += endOfst;
+				if (buffSize != endOfst)
+				{
+					hasError = true;
+				}
+			}
+			if (hasError)
+			{
+				UI::MessageDialog::ShowDialog(CSTR("Error in reading from source file"), CSTR("Hex Viewer"), me);
+			}
+		}
+	}
+}
+
 Bool SSWR::AVIRead::AVIRHexViewerForm::LoadFile(Text::CString fileName, Bool dynamicSize)
 {
 	Bool succ = this->hexView->LoadFile(fileName, dynamicSize);
@@ -345,11 +441,54 @@ SSWR::AVIRead::AVIRHexViewerForm::AVIRHexViewerForm(UI::GUIClientControl *parent
 	this->txtFieldDetail->SetRect(104, 52, 500, 128, false);
 	this->txtFieldDetail->SetReadOnly(true);
 
+
+	this->tpExtract = this->tcMain->AddTabPage(CSTR("Extract"));
+	NEW_CLASS(this->lblExtractBegin, UI::GUILabel(ui, this->tpExtract, CSTR("Begin")));
+	this->lblExtractBegin->SetRect(4, 4, 100, 23, false);
+	NEW_CLASS(this->txtExtractBegin, UI::GUITextBox(ui, this->tpExtract, CSTR("0")));
+	this->txtExtractBegin->SetRect(104, 4, 200, 23, false);
+	this->txtExtractBegin->SetReadOnly(true);
+	NEW_CLASS(this->btnExtractBegin, UI::GUIButton(ui, this->tpExtract, CSTR("Set")));
+	this->btnExtractBegin->SetRect(304, 4, 75, 23, false);
+	this->btnExtractBegin->HandleButtonClick(OnExtractBeginClicked, this);
+	NEW_CLASS(this->lblExtractEnd, UI::GUILabel(ui, this->tpExtract, CSTR("End")));
+	this->lblExtractEnd->SetRect(4, 28, 100, 23, false);
+	NEW_CLASS(this->txtExtractEnd, UI::GUITextBox(ui, this->tpExtract, CSTR("0")));
+	this->txtExtractEnd->SetRect(104, 28, 200, 23, false);
+	this->txtExtractEnd->SetReadOnly(true);
+	NEW_CLASS(this->btnExtractEnd, UI::GUIButton(ui, this->tpExtract, CSTR("Set")));
+	this->btnExtractEnd->SetRect(304, 28, 75, 23, false);
+	this->btnExtractEnd->HandleButtonClick(OnExtractEndClicked, this);
+	NEW_CLASS(this->btnExtract, UI::GUIButton(ui, this->tpExtract, CSTR("Extract")));
+	this->btnExtract->SetRect(104, 52, 75, 23, false);
+	this->btnExtract->HandleButtonClick(OnExtractClicked, this);
+	
+	NEW_CLASS(this->mnuMain, UI::GUIMainMenu());
+	UI::GUIMenu *mnu = this->mnuMain->AddSubMenu(CSTR("Navigate"));
+	mnu->AddItem(CSTR("Go To..."), MNU_GOTO, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_G);
+	this->SetMenu(this->mnuMain);
+
 	this->HandleDropFiles(OnFilesDrop, this);
 }
 
 SSWR::AVIRead::AVIRHexViewerForm::~AVIRHexViewerForm()
 {
+}
+
+void SSWR::AVIRead::AVIRHexViewerForm::EventMenuClicked(UInt16 cmdId)
+{
+	switch (cmdId)
+	{
+	case MNU_GOTO:
+	{
+		SSWR::AVIRead::AVIRHexViewerGoToForm frm(0, this->ui, this->core, this->hexView->GetCurrOfst(), this->hexView->GetFileSize());
+		if (frm.ShowDialog(this))
+		{
+			this->hexView->GoToOffset(frm.GetOffset());
+		}
+		break;
+	}
+	}
 }
 
 void SSWR::AVIRead::AVIRHexViewerForm::OnMonitorChanged()

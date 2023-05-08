@@ -49,6 +49,7 @@ namespace UI
 		void GetTextPos(Double scnPosX, Double scnPosY, UInt64 *byteOfst);
 		void GoToOffset(UInt64 ofst);
 		UInt64 GetCurrOfst();
+		UInt64 GetFileSize();
 		UOSInt GetFileData(UInt64 ofst, UOSInt size, UInt8 *outBuff);
 
 		void HandleOffsetChg(OffsetChgHandler hdlr, void *hdlrObj);

@@ -40,7 +40,7 @@ void __stdcall SSWR::AVIRead::AVIRDBExportForm::OnExportClicked(void *userObj)
 	*sptr++ = '_';
 	sptr = Data::Timestamp::Now().ToString(sptr, "yyyyMMdd_HHmmss");
 	sptr = Text::StrConcatC(sptr, UTF8STRC(".sql"));
-	UI::FileDialog dlg(L"sswr", L"AVIRead", L"DBExport", true);
+	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"DBExport", true);
 	dlg.AddFilter(CSTR("*.sql"), CSTR("SQL File"));
 	dlg.SetFileName(CSTRP(sbuff, sptr));
 	if (dlg.ShowDialog(me->GetHandle()))

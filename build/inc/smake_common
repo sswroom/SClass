@@ -3714,6 +3714,8 @@ SSWR/AVIRead/AVIRHashTestForm.h: ../../src/SSWR/AVIRead/AVIRHashTestForm.cpp
 @AVIRHashTestForm.o
 SSWR/AVIRead/AVIRHexViewerForm.h: ../../src/SSWR/AVIRead/AVIRHexViewerForm.cpp
 @AVIRHexViewerForm.o
+SSWR/AVIRead/AVIRHexViewerGoToForm.h: ../../src/SSWR/AVIRead/AVIRHexViewerGoToForm.cpp
+@AVIRHexViewerGoToForm.o
 SSWR/AVIRead/AVIRHIDDeviceForm.h: ../../src/SSWR/AVIRead/AVIRHIDDeviceForm.cpp
 @AVIRHIDDeviceForm.o
 SSWR/AVIRead/AVIRHKOForecastForm.h: ../../src/SSWR/AVIRead/AVIRHKOForecastForm.cpp
@@ -5685,6 +5687,7 @@ AVIRGSMModemForm.o: ../../src/SSWR/AVIRead/AVIRGSMModemForm.cpp
 AVIRGUIEventForm.o: ../../src/SSWR/AVIRead/AVIRGUIEventForm.cpp
 AVIRHashTestForm.o: ../../src/SSWR/AVIRead/AVIRHashTestForm.cpp
 AVIRHexViewerForm.o: ../../src/SSWR/AVIRead/AVIRHexViewerForm.cpp
+AVIRHexViewerGoToForm.o: ../../src/SSWR/AVIRead/AVIRHexViewerGoToForm.cpp
 AVIRHIDDeviceForm.o: ../../src/SSWR/AVIRead/AVIRHIDDeviceForm.cpp
 AVIRHKOForecastForm.o: ../../src/SSWR/AVIRead/AVIRHKOForecastForm.cpp
 AVIRHKOLocalForecastForm.o: ../../src/SSWR/AVIRead/AVIRHKOLocalForecastForm.cpp

@@ -5064,7 +5064,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcReload(Net::WebServer:
 		me->WriteHeader(&writer, (const UTF8Char*)"Reload", env.user, env.isMobile);
 		writer.WriteLineC(UTF8STRC("<center><h1>Reload</h1></center>"));
 
-		Bool showPwd = true;;
+		Bool showPwd = true;
 		if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_POST)
 		{
 			Text::String *pwd;
@@ -5075,6 +5075,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcReload(Net::WebServer:
 				if (me->env->ReloadPwdMatches(pwd))
 				{
 					writer.WriteLineC(UTF8STRC("Reloaded<br/>"));
+					writer.WriteLineC(UTF8STRC("<a href=\"/\">Home</a>"));
 					showPwd = false;
 					me->env->Reload();
 				}

@@ -21,6 +21,8 @@ namespace SSWR
 		private:
 			SSWR::AVIRead::AVIRCore *core;
 
+			UI::GUIMainMenu *mnuMain;
+
 			UI::GUIHexFileView *hexView;
 			UI::GUITabControl *tcMain;
 			
@@ -63,17 +65,30 @@ namespace SSWR
 			UI::GUILabel *lblFieldDetail;
 			UI::GUITextBox *txtFieldDetail;
 
+			UI::GUITabPage *tpExtract;
+			UI::GUILabel *lblExtractBegin;
+			UI::GUITextBox *txtExtractBegin;
+			UI::GUIButton *btnExtractBegin;
+			UI::GUILabel *lblExtractEnd;
+			UI::GUITextBox *txtExtractEnd;
+			UI::GUIButton *btnExtractEnd;
+			UI::GUIButton *btnExtract;
+
 			static void __stdcall OnFilesDrop(void *userObj, Text::String **files, UOSInt nFiles);
 			static void __stdcall OnEndianChg(void *userObj, Bool newState);
 			static void __stdcall OnOffsetChg(void *userObj, UInt64 ofst);
 			static void __stdcall OnFontClicked(void *userObj);
 			static void __stdcall OnNextUnkClicked(void *userObj);
 			static void __stdcall OnOpenFileClicked(void *userObj);
+			static void __stdcall OnExtractBeginClicked(void *userObj);
+			static void __stdcall OnExtractEndClicked(void *userObj);
+			static void __stdcall OnExtractClicked(void *userObj);
 			Bool LoadFile(Text::CString fileName, Bool dynamicSize);
 		public:
 			AVIRHexViewerForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRHexViewerForm();
 
+			virtual void EventMenuClicked(UInt16 cmdId);
 			virtual void OnMonitorChanged();
 
 			void SetData(IO::StreamData *fd, IO::FileAnalyse::IFileAnalyse *fileAnalyse);

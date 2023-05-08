@@ -390,7 +390,7 @@ void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnSQLFileClicked(void *userObj)
 		DB::ReadingDBTool *db = (DB::ReadingDBTool*)me->currDB;
 		Text::String *fileName;
 		{
-			UI::FileDialog dlg(L"sswr", L"AVIRead", L"DBManagerSQLFile", false);
+			UI::FileDialog dlg(L"SSWR", L"AVIRead", L"DBManagerSQLFile", false);
 			dlg.SetAllowMultiSel(false);
 			dlg.AddFilter(CSTR("*.sql"), CSTR("SQL file"));
 			if (dlg.ShowDialog(me->GetHandle()))
@@ -896,7 +896,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::ExportTableData(DB::SQLType sqlType, Bool
 	*sptr++ = '_';
 	sptr = Data::Timestamp::Now().ToString(sptr, "yyyyMMdd_HHmmss");
 	sptr = Text::StrConcatC(sptr, UTF8STRC(".sql"));
-	UI::FileDialog dlg(L"sswr", L"AVIRead", L"DBManagerExportTable", true);
+	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"DBManagerExportTable", true);
 	dlg.AddFilter(CSTR("*.sql"), CSTR("SQL File"));
 	dlg.SetFileName(CSTRP(sbuff, sptr));
 	if (dlg.ShowDialog(this->GetHandle()))
@@ -941,7 +941,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::ExportTableCSV()
 	*sptr++ = '_';
 	sptr = Data::Timestamp::Now().ToString(sptr, "yyyyMMdd_HHmmss");
 	sptr = Text::StrConcatC(sptr, UTF8STRC(".csv"));
-	UI::FileDialog dlg(L"sswr", L"AVIRead", L"DBManagerExportCSV", true);
+	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"DBManagerExportCSV", true);
 	dlg.AddFilter(CSTR("*.csv"), CSTR("Comma-Seperated-Value File"));
 	dlg.SetFileName(CSTRP(sbuff, sptr));
 	if (dlg.ShowDialog(this->GetHandle()))
