@@ -1198,8 +1198,6 @@ Core/Core.h: ../../src/Core/Core.cpp
 
 Crypto/HOTP.h: ../../src/Crypto/HOTP.cpp
 @HOTP.o
-Crypto/JasyptEncryptor.h: ../../src/Crypto/JasyptEncryptor.cpp
-@JasyptEncryptor.o
 Crypto/OTP.h: ../../src/Crypto/OTP.cpp
 @OTP.o
 Crypto/PBKDF2.h: ../../src/Crypto/PBKDF2.cpp
@@ -1247,10 +1245,14 @@ Crypto/Encrypt/BlockCipher.h: ../../src/Crypto/Encrypt/BlockCipher.cpp
 Crypto/Encrypt/Blowfish.h: ../../src/Crypto/Encrypt/Blowfish.cpp
 @Blowfish.o
 Crypto/Encrypt/ICrypto.h:
+Crypto/Encrypt/JasyptEncryptor.h: ../../src/Crypto/Encrypt/JasyptEncryptor.cpp
+@JasyptEncryptor.o
 Crypto/Encrypt/RC2Cipher.h: ../../src/Crypto/Encrypt/RC2Cipher.cpp
 @RC2Cipher.o
 Crypto/Encrypt/RC4Cipher.h: ../../src/Crypto/Encrypt/RC4Cipher.cpp
 @RC4Cipher.o
+Crypto/Encrypt/RNCryptor.h: ../../src/Crypto/Encrypt/RNCryptor.cpp
+@RNCryptor.o
 Crypto/Encrypt/RSACipher.h: ../../src/Crypto/Encrypt/RSACipher.cpp
 @RSACipher.o
 Crypto/Encrypt/XOREnc.h: ../../src/Crypto/Encrypt/XOREnc.cpp
@@ -3908,6 +3910,8 @@ SSWR/AVIRead/AVIRRegionalMapForm.h: ../../src/SSWR/AVIRead/AVIRRegionalMapForm.c
 @AVIRRegionalMapForm.o
 SSWR/AVIRead/AVIRRESTfulForm.h: ../../src/SSWR/AVIRead/AVIRRESTfulForm.cpp
 @AVIRRESTfulForm.o
+SSWR/AVIRead/AVIRRNCryptorForm.h: ../../src/SSWR/AVIRead/AVIRRNCryptorForm.cpp
+@AVIRRNCryptorForm.o
 SSWR/AVIRead/AVIRRSSItemForm.h: ../../src/SSWR/AVIRead/AVIRRSSItemForm.cpp
 @AVIRRSSItemForm.o
 SSWR/AVIRead/AVIRRSSReaderForm.h: ../../src/SSWR/AVIRead/AVIRRSSReaderForm.cpp
@@ -4527,7 +4531,6 @@ UtilUI/TextViewerForm.h: ../../src/UtilUI/TextViewerForm.cpp
 
 Core.o: ../../src/Core/Core.cpp
 HOTP.o: ../../src/Crypto/HOTP.cpp
-JasyptEncryptor.o: ../../src/Crypto/JasyptEncryptor.cpp
 OTP.o: ../../src/Crypto/OTP.cpp
 PBKDF2.o: ../../src/Crypto/PBKDF2.cpp
 TOTP.o: ../../src/Crypto/TOTP.cpp
@@ -4550,8 +4553,10 @@ AESBase.o: ../../src/Crypto/Encrypt/AESBase.cpp
 Base64.o: ../../src/Crypto/Encrypt/Base64.cpp
 BlockCipher.o: ../../src/Crypto/Encrypt/BlockCipher.cpp
 Blowfish.o: ../../src/Crypto/Encrypt/Blowfish.cpp
+JasyptEncryptor.o: ../../src/Crypto/Encrypt/JasyptEncryptor.cpp
 RC2Cipher.o: ../../src/Crypto/Encrypt/RC2Cipher.cpp
 RC4Cipher.o: ../../src/Crypto/Encrypt/RC4Cipher.cpp
+RNCryptor.o: ../../src/Crypto/Encrypt/RNCryptor.cpp
 RSACipher.o: ../../src/Crypto/Encrypt/RSACipher.cpp
 XOREnc.o: ../../src/Crypto/Encrypt/XOREnc.cpp
 Adler32.o: ../../src/Crypto/Hash/Adler32.cpp
@@ -5794,6 +5799,7 @@ AVIRPushServerForm.o: ../../src/SSWR/AVIRead/AVIRPushServerForm.cpp
 AVIRRAWMonitorForm.o: ../../src/SSWR/AVIRead/AVIRRAWMonitorForm.cpp
 AVIRRegionalMapForm.o: ../../src/SSWR/AVIRead/AVIRRegionalMapForm.cpp
 AVIRRESTfulForm.o: ../../src/SSWR/AVIRead/AVIRRESTfulForm.cpp
+AVIRRNCryptorForm.o: ../../src/SSWR/AVIRead/AVIRRNCryptorForm.cpp
 AVIRRSSItemForm.o: ../../src/SSWR/AVIRead/AVIRRSSItemForm.cpp
 AVIRRSSReaderForm.o: ../../src/SSWR/AVIRead/AVIRRSSReaderForm.cpp
 AVIRSAMLDecryptForm.o: ../../src/SSWR/AVIRead/AVIRSAMLDecryptForm.cpp

@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "Crypto/JasyptEncryptor.h"
+#include "Crypto/Encrypt/JasyptEncryptor.h"
 #include "SSWR/AVIRead/AVIRJasyptForm.h"
 
 void __stdcall SSWR::AVIRead::AVIRJasyptForm::OnDecryptClicked(void *userObj)
@@ -13,8 +13,8 @@ void __stdcall SSWR::AVIRead::AVIRJasyptForm::OnDecryptClicked(void *userObj)
 	{
 		UInt8 *res = MemAlloc(UInt8, sb2.GetLength());
 		UOSInt resSize;
-		Crypto::JasyptEncryptor *enc;
-		NEW_CLASS(enc, Crypto::JasyptEncryptor((Crypto::JasyptEncryptor::KeyAlgorithm)(OSInt)me->cboKeyAlg->GetSelectedItem(), (Crypto::JasyptEncryptor::CipherAlgorithm)(OSInt)me->cboEncAlg->GetSelectedItem(), sb.ToString(), sb.GetLength()));
+		Crypto::Encrypt::JasyptEncryptor *enc;
+		NEW_CLASS(enc, Crypto::Encrypt::JasyptEncryptor((Crypto::Encrypt::JasyptEncryptor::KeyAlgorithm)(OSInt)me->cboKeyAlg->GetSelectedItem(), (Crypto::Encrypt::JasyptEncryptor::CipherAlgorithm)(OSInt)me->cboEncAlg->GetSelectedItem(), sb.ToString(), sb.GetLength()));
 		resSize = enc->DecryptB64(sb2.ToString(), sb2.GetLength(), res);
 		sb.ClearStr();
 		sb.AppendC(res, resSize);
@@ -33,8 +33,8 @@ void __stdcall SSWR::AVIRead::AVIRJasyptForm::OnEncryptClicked(void *userObj)
 	me->txtMessage->GetText(&sb2);
 	if (sb.GetLength() > 0 && sb2.GetLength() > 0)
 	{
-		Crypto::JasyptEncryptor *enc;
-		NEW_CLASS(enc, Crypto::JasyptEncryptor((Crypto::JasyptEncryptor::KeyAlgorithm)(OSInt)me->cboKeyAlg->GetSelectedItem(), (Crypto::JasyptEncryptor::CipherAlgorithm)(OSInt)me->cboEncAlg->GetSelectedItem(), sb.ToString(), sb.GetLength()));
+		Crypto::Encrypt::JasyptEncryptor *enc;
+		NEW_CLASS(enc, Crypto::Encrypt::JasyptEncryptor((Crypto::Encrypt::JasyptEncryptor::KeyAlgorithm)(OSInt)me->cboKeyAlg->GetSelectedItem(), (Crypto::Encrypt::JasyptEncryptor::CipherAlgorithm)(OSInt)me->cboEncAlg->GetSelectedItem(), sb.ToString(), sb.GetLength()));
 		sb.ClearStr();
 		enc->EncryptAsB64(&sb, sb2.ToString(), sb2.GetLength());
 		me->txtResult->SetText(sb.ToCString());
@@ -57,11 +57,11 @@ SSWR::AVIRead::AVIRJasyptForm::AVIRJasyptForm(UI::GUIClientControl *parent, UI::
 	this->lblKeyAlg->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->cboKeyAlg, UI::GUIComboBox(ui, this, false));
 	this->cboKeyAlg->SetRect(104, 4, 150, 23, false);
-	i = Crypto::JasyptEncryptor::KA_FIRST;
-	j = Crypto::JasyptEncryptor::KA_LAST;
+	i = Crypto::Encrypt::JasyptEncryptor::KA_FIRST;
+	j = Crypto::Encrypt::JasyptEncryptor::KA_LAST;
 	while (i <= j)
 	{
-		this->cboKeyAlg->AddItem(Crypto::JasyptEncryptor::GetKeyAlgorithmName((Crypto::JasyptEncryptor::KeyAlgorithm)i), (void*)i);
+		this->cboKeyAlg->AddItem(Crypto::Encrypt::JasyptEncryptor::GetKeyAlgorithmName((Crypto::Encrypt::JasyptEncryptor::KeyAlgorithm)i), (void*)i);
 		i++;
 	}
 	this->cboKeyAlg->SetSelectedIndex(0);
@@ -70,11 +70,11 @@ SSWR::AVIRead::AVIRJasyptForm::AVIRJasyptForm(UI::GUIClientControl *parent, UI::
 	this->lblEncAlg->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->cboEncAlg, UI::GUIComboBox(ui, this, false));
 	this->cboEncAlg->SetRect(104, 28, 150, 23, false);
-	i = Crypto::JasyptEncryptor::CA_FIRST;
-	j = Crypto::JasyptEncryptor::CA_LAST;
+	i = Crypto::Encrypt::JasyptEncryptor::CA_FIRST;
+	j = Crypto::Encrypt::JasyptEncryptor::CA_LAST;
 	while (i <= j)
 	{
-		this->cboEncAlg->AddItem(Crypto::JasyptEncryptor::GetCipherAlgorithmName((Crypto::JasyptEncryptor::CipherAlgorithm)i), (void*)i);
+		this->cboEncAlg->AddItem(Crypto::Encrypt::JasyptEncryptor::GetCipherAlgorithmName((Crypto::Encrypt::JasyptEncryptor::CipherAlgorithm)i), (void*)i);
 		i++;
 	}
 	this->cboEncAlg->SetSelectedIndex(0);

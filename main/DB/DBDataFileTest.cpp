@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "Core/Core.h"
-#include "Crypto/JasyptEncryptor.h"
+#include "Crypto/Encrypt/JasyptEncryptor.h"
 #include "Data/DateTime.h"
 #include "Data/NamedClass.h"
 #include "DB/DBClassReader.h"
@@ -764,7 +764,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	Text::StringBuilderUTF8 sb;
 	if (cfg)
 	{
-		Crypto::JasyptEncryptor jasypt(Crypto::JasyptEncryptor::KA_PBEWITHHMACSHA512, Crypto::JasyptEncryptor::CA_AES256, key.v, key.leng);
+		Crypto::Encrypt::JasyptEncryptor jasypt(Crypto::Encrypt::JasyptEncryptor::KA_PBEWITHHMACSHA512, Crypto::Encrypt::JasyptEncryptor::CA_AES256, key.v, key.leng);
 		jasypt.Decrypt(cfg);
 		DB::DBTool *db = DB::JavaDBUtil::OpenJDBC(cfg->GetValue(CSTR("spring.datasource.url")),
 			cfg->GetValue(CSTR("spring.datasource.username")),

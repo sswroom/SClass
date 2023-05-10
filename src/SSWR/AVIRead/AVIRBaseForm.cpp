@@ -176,6 +176,7 @@
 #include "SSWR/AVIRead/AVIRRAWMonitorForm.h"
 #include "SSWR/AVIRead/AVIRRegionalMapForm.h"
 #include "SSWR/AVIRead/AVIRRESTfulForm.h"
+#include "SSWR/AVIRead/AVIRRNCryptorForm.h"
 #include "SSWR/AVIRead/AVIRRSSReaderForm.h"
 #include "SSWR/AVIRead/AVIRSAMLDecryptForm.h"
 #include "SSWR/AVIRead/AVIRSAMLReqDecodeForm.h"
@@ -487,7 +488,8 @@ typedef enum
 	MNU_HTTPCLIENTCERTTEST,
 	MNU_HKO_FORECAST,
 	MNU_HKO_LOCAL_FORECAST,
-	MNU_HKO_WARNING_SUMMARY
+	MNU_HKO_WARNING_SUMMARY,
+	MNU_RNCRYPTOR
 } MenuItems;
 
 void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(void *userObj, Text::String **files, UOSInt nFiles)
@@ -630,6 +632,7 @@ SSWR::AVIRead::AVIRBaseForm::AVIRBaseForm(UI::GUIClientControl *parent, UI::GUIC
 	mnu2->AddItem(CSTR("One-Time Password (OTP)"), MNU_OTP, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("BCrypt"), MNU_BCRYPT, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("Encrypt Message"), MNU_ENCRYPT_MSG, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("RNCryptor"), MNU_RNCRYPTOR, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2 = mnu->AddSubMenu(CSTR("Certificates"));
 	mnu2->AddItem(CSTR("Cert Util"), MNU_CERT_UTIL, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("CA Util"), MNU_CA_UTIL, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -2797,6 +2800,13 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		{
 			SSWR::AVIRead::AVIRHKOWarningSummaryForm *frm;
 			NEW_CLASS(frm, SSWR::AVIRead::AVIRHKOWarningSummaryForm(0, this->ui, this->core));
+			this->core->ShowForm(frm);
+		}
+		break;
+	case MNU_RNCRYPTOR:
+		{
+			SSWR::AVIRead::AVIRRNCryptorForm *frm;
+			NEW_CLASS(frm, SSWR::AVIRead::AVIRRNCryptorForm(0, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
