@@ -2531,10 +2531,16 @@ Media/NWASource.h: ../../src/Media/NWASource.cpp
 @NWASource.o
 Media/PaperSize.h: ../../src/Media/PaperSize.cpp
 @PaperSize.o
-Media/Playlist.h: ../../src/Media/Playlist.cpp
-@Playlist.o
+Media/PDFDocument.h: ../../src/Media/PDFDocument.cpp
+@PDFDocument.o
+Media/PDFObject.h: ../../src/Media/PDFObject.cpp
+@PDFObject.o
+Media/PDFParameter.h: ../../src/Media/PDFParameter.cpp
+@PDFParameter.o
 Media/PhotoInfo.h: ../../src/Media/PhotoInfo.cpp
 @PhotoInfo.o
+Media/Playlist.h: ../../src/Media/Playlist.cpp
+@Playlist.o
 Media/ProfiledResizer.h: ../../src/Media/ProfiledResizer.cpp
 @ProfiledResizer.o
 Media/RGBColorFilter.h: ../../src/Media/RGBColorFilter.cpp
@@ -3385,6 +3391,8 @@ Parser/FileParser/PCAPParser.h: ../../src/Parser/FileParser/PCAPParser.cpp
 @PCAPParser.o
 Parser/FileParser/PCXParser.h: ../../src/Parser/FileParser/PCXParser.cpp
 @PCXParser.o
+Parser/FileParser/PDFParser.h: ../../src/Parser/FileParser/PDFParser.cpp
+@PDFParser.o
 Parser/FileParser/PFS2Parser.h: ../../src/Parser/FileParser/PFS2Parser.cpp
 @PFS2Parser.o
 Parser/FileParser/PLTParser.h: ../../src/Parser/FileParser/PLTParser.cpp
@@ -5122,6 +5130,9 @@ MSFontRenderer.o: ../../src/Media/MSFontRenderer.cpp
 NullRenderer.o: ../../src/Media/NullRenderer.cpp
 NWASource.o: ../../src/Media/NWASource.cpp
 PaperSize.o: ../../src/Media/PaperSize.cpp
+PDFDocument.o: ../../src/Media/PDFDocument.cpp
+PDFObject.o: ../../src/Media/PDFObject.cpp
+PDFParameter.o: ../../src/Media/PDFParameter.cpp
 PhotoInfo.o: ../../src/Media/PhotoInfo.cpp
 Playlist.o: ../../src/Media/Playlist.cpp
 ProfiledResizer.o: ../../src/Media/ProfiledResizer.cpp
@@ -5523,6 +5534,7 @@ PACParser.o: ../../src/Parser/FileParser/PACParser.cpp
 PCAPParser.o: ../../src/Parser/FileParser/PCAPParser.cpp
 PCAPNGParser.o: ../../src/Parser/FileParser/PCAPNGParser.cpp
 PCXParser.o: ../../src/Parser/FileParser/PCXParser.cpp
+PDFParser.o: ../../src/Parser/FileParser/PDFParser.cpp
 PFS2Parser.o: ../../src/Parser/FileParser/PFS2Parser.cpp
 PLTParser.o: ../../src/Parser/FileParser/PLTParser.cpp
 PNGParser.o: ../../src/Parser/FileParser/PNGParser.cpp

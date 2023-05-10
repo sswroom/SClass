@@ -240,6 +240,7 @@ void SSWR::AVIRead::AVIRCoreWin::OpenObject(IO::ParsedObject *pobj)
 			frm->Show();
 		}
 		break;
+	case IO::ParserType::PDFDocument:
 	case IO::ParserType::JasperReport:
 	case IO::ParserType::TextDocument:
 	case IO::ParserType::Workbook:

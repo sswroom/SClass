@@ -36,8 +36,9 @@ namespace IO
 		BTScanLog,
 		SystemInfoLog,
 		JasperReport,
+		PDFDocument,
 
-		LastType = JasperReport
+		LastType = PDFDocument
 	};
 
 	Text::CString ParserTypeGetName(ParserType pt);

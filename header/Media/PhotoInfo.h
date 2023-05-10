@@ -32,5 +32,5 @@ namespace Media
 
 		void ToString(Text::StringBuilderUTF8 *sb) const;
 	};
-};
+}
 #endif

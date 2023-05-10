@@ -60,6 +60,8 @@ Text::CString IO::ParserTypeGetName(ParserType pt)
 		return CSTR("SystemInfoLog");
 	case ParserType::JasperReport:
 		return CSTR("JasperReport");
+	case ParserType::PDFDocument:
+		return CSTR("PDFDocument");
 	case ParserType::Unknown:
 	default:
 		return CSTR("Unknwon");

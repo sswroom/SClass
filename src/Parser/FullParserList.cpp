@@ -74,6 +74,7 @@
 #include "Parser/FileParser/PCAPNGParser.h"
 #include "Parser/FileParser/PCAPParser.h"
 #include "Parser/FileParser/PCXParser.h"
+#include "Parser/FileParser/PDFParser.h"
 #include "Parser/FileParser/PFS2Parser.h"
 #include "Parser/FileParser/PLTParser.h"
 #include "Parser/FileParser/PNGParser.h"
@@ -358,6 +359,8 @@ Parser::FullParserList::FullParserList() : Parser::ParserList()
 	NEW_CLASS(parser, Parser::FileParser::ASN1Parser());
 	this->AddFileParser(parser);
 	NEW_CLASS(parser, Parser::FileParser::MTKGPSParser());
+	this->AddFileParser(parser);
+	NEW_CLASS(parser, Parser::FileParser::PDFParser());
 	this->AddFileParser(parser);
 
 	IO::ObjectParser *oparser;
