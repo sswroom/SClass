@@ -6,7 +6,7 @@
 typedef struct
 {
 	UInt8 devId[6];
-} StreamData;
+} JTT808StreamData;
 
 IO::ProtoHdlr::ProtoJTT808Handler::ProtoJTT808Handler(IO::IProtocolHandler::DataListener *listener, UInt64 devId)
 {
@@ -20,7 +20,7 @@ IO::ProtoHdlr::ProtoJTT808Handler::~ProtoJTT808Handler()
 
 void *IO::ProtoHdlr::ProtoJTT808Handler::CreateStreamData(IO::Stream *stm)
 {
-	StreamData *data = MemAlloc(StreamData, 1);
+	JTT808StreamData *data = MemAlloc(JTT808StreamData, 1);
 	UInt64 devId = this->devId;
 	data->devId[5] = Data::ByteTool::Int2BCDB((UInt32)(devId % 100));
 	devId = devId / 100;
@@ -38,13 +38,13 @@ void *IO::ProtoHdlr::ProtoJTT808Handler::CreateStreamData(IO::Stream *stm)
 
 void IO::ProtoHdlr::ProtoJTT808Handler::DeleteStreamData(IO::Stream *stm, void *stmData)
 {
-	StreamData *data = (StreamData*)stmData;
+	JTT808StreamData *data = (JTT808StreamData*)stmData;
 	MemFree(data);
 }
 
 UOSInt IO::ProtoHdlr::ProtoJTT808Handler::ParseProtocol(IO::Stream *stm, void *stmObj, void *stmData, const UInt8 *buff, UOSInt buffSize)
 {
-	StreamData *data = (StreamData*)stmData;
+	JTT808StreamData *data = (JTT808StreamData*)stmData;
 	UInt8 packetBuff[1044];
 	UOSInt firstIndex = (UOSInt)-1;
 	UOSInt parseOfst = 0;
@@ -138,7 +138,7 @@ UOSInt IO::ProtoHdlr::ProtoJTT808Handler::ParseProtocol(IO::Stream *stm, void *s
 
 UOSInt IO::ProtoHdlr::ProtoJTT808Handler::BuildPacket(UInt8 *buff, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize, void *stmData)
 {
-	StreamData *data = (StreamData*)stmData;
+	JTT808StreamData *data = (JTT808StreamData*)stmData;
 	UInt8 hdr[12];
 	if (cmdSize >= 1024)
 		return 0;

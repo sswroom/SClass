@@ -77,6 +77,32 @@ UInt64 IO::Stream::ReadToEnd(IO::Stream *stm, UOSInt buffSize)
 	return totalSize;
 }
 
+Bool IO::Stream::WriteFromData(IO::StreamData *data, UOSInt buffSize)
+{
+	UInt64 currOfst = 0;
+	UInt64 totalSize = 0;
+	UOSInt readSize;
+	UOSInt writeSize;
+	UInt8 *buff = MemAlloc(UInt8, buffSize);
+	while (true)
+	{
+		readSize = data->GetRealData(currOfst, buffSize, buff);
+		if (readSize <= 0)
+		{
+			break;
+		}
+		currOfst += readSize;
+		writeSize = this->Write(buff, readSize);
+		totalSize += writeSize;
+		if (readSize != writeSize)
+		{
+			break;
+		}
+	}
+	MemFree(buff);
+	return totalSize == data->GetDataSize();
+}
+
 Text::CString IO::StreamTypeGetName(StreamType st)
 {
 	switch (st)

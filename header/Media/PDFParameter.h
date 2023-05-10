@@ -7,7 +7,7 @@ namespace Media
 {
 	class PDFParameter
 	{
-	private:
+	public:
 		struct ParamEntry
 		{
 			Text::String *type;
@@ -20,7 +20,11 @@ namespace Media
 		~PDFParameter();
 
 		void AddEntry(Text::CString type, Text::CString value);
-		Text::String *GetEntry(Text::CString type);
+		Text::String *GetEntryValue(Text::CString type) const;
+		Bool ContainsEntry(Text::CString type) const;
+		ParamEntry *GetEntry(Text::CString type) const;
+		UOSInt GetCount() const;
+		ParamEntry *GetItem(UOSInt index) const;
 
 		static PDFParameter *Parse(Text::CString parameter);
 	};

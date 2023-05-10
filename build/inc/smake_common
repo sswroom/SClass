@@ -3876,6 +3876,8 @@ SSWR/AVIRead/AVIRPaintCntForm.h: ../../src/SSWR/AVIRead/AVIRPaintCntForm.cpp
 @AVIRPaintCntForm.o
 SSWR/AVIRead/AVIRPCIDeviceForm.h: ../../src/SSWR/AVIRead/AVIRPCIDeviceForm.cpp
 @AVIRPCIDeviceForm.o
+SSWR/AVIRead/AVIRPDFObjectForm.h: ../../src/SSWR/AVIRead/AVIRPDFObjectForm.cpp
+@AVIRPDFObjectForm.o
 SSWR/AVIRead/AVIRPerformanceLogForm.h: ../../src/SSWR/AVIRead/AVIRPerformanceLogForm.cpp
 @AVIRPerformanceLogForm.o
 SSWR/AVIRead/AVIRPingMonitorForm.h: ../../src/SSWR/AVIRead/AVIRPingMonitorForm.cpp
@@ -5776,6 +5778,7 @@ AVIROTPForm.o: ../../src/SSWR/AVIRead/AVIROTPForm.cpp
 AVIRPackageForm.o: ../../src/SSWR/AVIRead/AVIRPackageForm.cpp
 AVIRPaintCntForm.o: ../../src/SSWR/AVIRead/AVIRPaintCntForm.cpp
 AVIRPCIDeviceForm.o: ../../src/SSWR/AVIRead/AVIRPCIDeviceForm.cpp
+AVIRPDFObjectForm.o: ../../src/SSWR/AVIRead/AVIRPDFObjectForm.cpp
 AVIRPerformanceLogForm.o: ../../src/SSWR/AVIRead/AVIRPerformanceLogForm.cpp
 AVIRPingMonitorForm.o: ../../src/SSWR/AVIRead/AVIRPingMonitorForm.cpp
 AVIRPlaylistForm.o: ../../src/SSWR/AVIRead/AVIRPlaylistForm.cpp

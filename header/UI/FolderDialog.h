@@ -1,5 +1,6 @@
 #ifndef _SM_UI_FOLDERDIALOG
 #define _SM_UI_FOLDERDIALOG
+#include "Handles.h"
 #include "IO/Registry.h"
 #include "Text/String.h"
 
@@ -21,7 +22,7 @@ namespace UI
 		Text::String *GetFolder();
 		void SetMessage(const UTF8Char *message);
 
-		Bool ShowDialog(void *ownerHandle);
+		Bool ShowDialog(ControlHandle *ownerHandle);
 	};
 };
 #endif

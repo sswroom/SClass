@@ -23,6 +23,16 @@ IO::ParserType Media::PDFDocument::GetParserType() const
 	return IO::ParserType::PDFDocument;
 }
 
+UOSInt Media::PDFDocument::GetCount() const
+{
+	return this->objMap.GetCount();
+}
+
+Media::PDFObject *Media::PDFDocument::GetItem(UOSInt index) const
+{
+	return this->objMap.GetItem(index);
+}
+
 Media::PDFObject *Media::PDFDocument::AddObject(UInt32 id)
 {
 	Media::PDFObject *obj = this->objMap.Get(id);

@@ -41,7 +41,7 @@ void UI::FolderDialog::SetMessage(const UTF8Char *message)
 	this->message = Text::StrCopyNew(message);
 }
 
-Bool UI::FolderDialog::ShowDialog(void *ownerHandle)
+Bool UI::FolderDialog::ShowDialog(ControlHandle *ownerHandle)
 {
 	GtkWidget *dialog;
 	GtkFileChooser *chooser;

@@ -210,7 +210,7 @@ IO::ParsedObject *Parser::FileParser::PDFParser::ParseFileHdr(IO::StreamData *fd
 							break;
 						}
 						obj->SetParameter(param);
-						Text::String *leng = param->GetEntry(CSTR("Length"));
+						Text::String *leng = param->GetEntryValue(CSTR("Length"));
 						if (leng == 0)
 						{
 #if defined(VERBOSE)

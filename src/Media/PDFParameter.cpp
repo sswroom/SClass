@@ -27,7 +27,20 @@ void Media::PDFParameter::AddEntry(Text::CString type, Text::CString value)
 	this->entries.Add(entry);
 }
 
-Text::String *Media::PDFParameter::GetEntry(Text::CString type)
+Text::String *Media::PDFParameter::GetEntryValue(Text::CString type) const
+{
+	ParamEntry *entry = this->GetEntry(type);
+	if (entry)
+		return entry->value;
+	return 0;
+}
+
+Bool Media::PDFParameter::ContainsEntry(Text::CString type) const
+{
+	return this->GetEntry(type) != 0;
+}
+
+Media::PDFParameter::ParamEntry *Media::PDFParameter::GetEntry(Text::CString type) const
 {
 	ParamEntry *entry;
 	UOSInt i = 0;
@@ -36,10 +49,20 @@ Text::String *Media::PDFParameter::GetEntry(Text::CString type)
 	{
 		entry = this->entries.GetItem(i);
 		if (entry->type->Equals(type.v, type.leng))
-			return entry->value;
+			return entry;
 		i++;
 	}
 	return 0;
+}
+
+UOSInt Media::PDFParameter::GetCount() const
+{
+	return this->entries.GetCount();
+}
+
+Media::PDFParameter::ParamEntry *Media::PDFParameter::GetItem(UOSInt index) const
+{
+	return this->entries.GetItem(index);
 }
 
 Media::PDFParameter *Media::PDFParameter::Parse(Text::CString parameter)
@@ -52,11 +75,13 @@ Media::PDFParameter *Media::PDFParameter::Parse(Text::CString parameter)
 		return 0;
 	PDFParameter *param;
 	NEW_CLASS(param, PDFParameter());
+	Data::ArrayList<UTF8Char> endChars;
 	UOSInt startType = i;
+	UOSInt endType = 0;
 	UOSInt startValue = 0;
 	while (true)
 	{
-		if (i >= j || parameter.v[i] == '/')
+		if (i >= j || (endChars.GetCount() == 0 && parameter.v[i] == '/'))
 		{
 			if (startValue == 0)
 			{
@@ -64,16 +89,50 @@ Media::PDFParameter *Media::PDFParameter::Parse(Text::CString parameter)
 			}
 			else
 			{
-				param->AddEntry(Text::CString(&parameter.v[startType], startValue - startType - 1), Text::CString(&parameter.v[startValue], i - startValue));
+				param->AddEntry(Text::CString(&parameter.v[startType], endType - startType), Text::CString(&parameter.v[startValue], i - startValue));
 			}
 			startType = i + 1;
+			endType = 0;
 			startValue = 0;
 			if (i >= j)
 				break;
 		}
+		else if (parameter.v[i] == '<' && parameter.v[i + 1] == '<')
+		{
+			if (startValue == 0)
+			{
+				endType = i;
+				startValue = i;
+			}
+			endChars.Add('>');
+			endChars.Add('>');
+		}
+		else if (parameter.v[i] == '[')
+		{
+			if (startValue == 0)
+			{
+				endType = i;
+				startValue = i;
+			}
+			endChars.Add(']');
+		}
+		else if (parameter.v[i] == '(')
+		{
+			if (startValue == 0)
+			{
+				endType = i;
+				startValue = i;
+			}
+			endChars.Add(')');
+		}
 		else if (parameter.v[i] == ' ' && startValue == 0)
 		{
 			startValue = i + 1;
+			endType = i;
+		}
+		else if (endChars.GetCount() > 0 && parameter.v[i] == endChars.GetItem(endChars.GetCount() - 1))
+		{
+			endChars.RemoveAt(endChars.GetCount() - 1);
 		}
 		i++;
 	}

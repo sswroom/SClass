@@ -22,6 +22,7 @@
 #include "SSWR/AVIRead/AVIRMediaForm.h"
 #include "SSWR/AVIRead/AVIRMIMEViewerForm.h"
 #include "SSWR/AVIRead/AVIRPackageForm.h"
+#include "SSWR/AVIRead/AVIRPDFObjectForm.h"
 #include "SSWR/AVIRead/AVIRPlaylistForm.h"
 #include "SSWR/AVIRead/AVIRSectorForm.h"
 #include "SSWR/AVIRead/AVIRSelPrinterForm.h"
@@ -241,6 +242,13 @@ void SSWR::AVIRead::AVIRCoreWin::OpenObject(IO::ParsedObject *pobj)
 		}
 		break;
 	case IO::ParserType::PDFDocument:
+		{
+			SSWR::AVIRead::AVIRPDFObjectForm *frm;
+			NEW_CLASS(frm, SSWR::AVIRead::AVIRPDFObjectForm(0, this->ui, this, (Media::PDFDocument*)pobj));
+			InitForm(frm);
+			frm->Show();
+		}
+		break;
 	case IO::ParserType::JasperReport:
 	case IO::ParserType::TextDocument:
 	case IO::ParserType::Workbook:

@@ -1,4 +1,5 @@
 #include "Stdafx.h"
+#include "IO/FileStream.h"
 #include "Media/PDFObject.h"
 
 Media::PDFObject::PDFObject(UInt32 id)
@@ -35,7 +36,27 @@ void Media::PDFObject::SetParameter(PDFParameter *parameter)
 	this->parameter = parameter;
 }
 
-Media::PDFParameter *Media::PDFObject::GetParameter()
+Media::PDFParameter *Media::PDFObject::GetParameter() const
 {
 	return this->parameter;
+}
+
+UInt32 Media::PDFObject::GetId() const
+{
+	return this->id;
+}
+
+Bool Media::PDFObject::IsImage() const
+{
+	return this->parameter && this->parameter->ContainsEntry(CSTR("Image"));
+}
+
+Bool Media::PDFObject::SaveFile(Text::CString fileName)
+{
+	if (this->fd)
+	{
+		IO::FileStream fs(fileName, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+		return fs.WriteFromData(this->fd, 1048576);
+	}
+	return false;
 }

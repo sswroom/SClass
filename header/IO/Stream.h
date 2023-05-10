@@ -1,6 +1,7 @@
 #ifndef _SM_IO_STREAM
 #define _SM_IO_STREAM
 #include "IO/ParsedObject.h"
+#include "IO/StreamData.h"
 #include "Sync/Event.h"
 
 namespace IO
@@ -65,6 +66,7 @@ namespace IO
 
 		virtual IO::ParserType GetParserType() const;
 		UInt64 ReadToEnd(IO::Stream *stm, UOSInt buffSize);
+		Bool WriteFromData(IO::StreamData *data, UOSInt buffSize);
 	};
 
 	Text::CString StreamTypeGetName(StreamType st);
