@@ -35,6 +35,22 @@ Text::String *Media::PDFParameter::GetEntryValue(Text::CString type) const
 	return 0;
 }
 
+Text::String *Media::PDFParameter::GetEntryType(UOSInt index) const
+{
+	ParamEntry *entry = this->GetItem(index);
+	if (entry)
+		return entry->type;
+	return 0;
+}
+
+Text::String *Media::PDFParameter::GetEntryValue(UOSInt index) const
+{
+	ParamEntry *entry = this->GetItem(index);
+	if (entry)
+		return entry->value;
+	return 0;
+}
+
 Bool Media::PDFParameter::ContainsEntry(Text::CString type) const
 {
 	return this->GetEntry(type) != 0;
@@ -53,6 +69,21 @@ Media::PDFParameter::ParamEntry *Media::PDFParameter::GetEntry(Text::CString typ
 		i++;
 	}
 	return 0;
+}
+
+UOSInt Media::PDFParameter::GetEntryIndex(Text::CString type) const
+{
+	ParamEntry *entry;
+	UOSInt i = 0;
+	UOSInt j = this->entries.GetCount();
+	while (i < j)
+	{
+		entry = this->entries.GetItem(i);
+		if (entry->type->Equals(type.v, type.leng))
+			return i;
+		i++;
+	}
+	return INVALID_INDEX;
 }
 
 UOSInt Media::PDFParameter::GetCount() const

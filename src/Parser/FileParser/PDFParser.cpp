@@ -6,7 +6,7 @@
 #include "Media/PDFDocument.h"
 #include "Parser/FileParser/PDFParser.h"
 
-//#define VERBOSE
+#define VERBOSE
 #if defined(VERBOSE)
 #include <stdio.h>
 #endif
@@ -18,15 +18,18 @@ struct Parser::FileParser::PDFParser::PDFParseEnv
 	UOSInt currOfst;
 	UOSInt dataSize;
 	UInt64 dataOfst;
+	UInt64 fileSize;
 	IO::StreamData *fd;
 	UInt64 lineBegin;
+	Bool normalEnd;
+	Bool succ;
 };
 
 Bool Parser::FileParser::PDFParser::IsComment(const UTF8Char *buff, UOSInt size)
 {
 	if (buff[0] == '%')
 	{
-		if (Text::StrEqualsC(buff, size, UTF8STRC("%%EOF")))
+		if (Text::StrStartsWithC(buff, size, UTF8STRC("%%EOF")))
 			return false;
 		if (Text::StrStartsWithC(buff, size, UTF8STRC("%PDF-")))
 			return false;
@@ -40,17 +43,30 @@ Bool Parser::FileParser::PDFParser::NextLine(PDFParseEnv *env, Text::StringBuild
 	UOSInt i = env->currOfst;
 	while (i < env->dataSize)
 	{
-		if (env->buff[i] == '\n')
+		if (env->buff[i] == '\n' || env->buff[i] == '\r')
 		{
 			if (skipComment && IsComment(&env->buff[env->currOfst], i - env->currOfst))
 			{
 				env->lineBegin = env->dataOfst + env->currOfst;
 				env->currOfst = i + 1;
+				if (env->buff[env->currOfst] == '\n' && env->buff[env->currOfst - 1] == '\r')
+				{
+					env->currOfst++;
+				}
 				return NextLine(env, sb, true);
 			}
 			sb->AppendC(&env->buff[env->currOfst], i - env->currOfst);
 			env->lineBegin = env->dataOfst + env->currOfst;
 			env->currOfst = i + 1;
+			if (env->buff[env->currOfst] == '\n' && env->buff[env->currOfst - 1] == '\r')
+			{
+				env->currOfst++;
+			}
+			if (sb->EndsWith('\\'))
+			{
+				sb->RemoveChars(1);
+				return NextLine(env, sb, true);
+			}
 			return true;
 		}
 		i++;
@@ -66,20 +82,42 @@ Bool Parser::FileParser::PDFParser::NextLine(PDFParseEnv *env, Text::StringBuild
 	i = env->dataSize;
 	env->dataSize += env->fd->GetRealData(env->dataOfst + env->dataSize, env->buffSize - env->dataSize, &env->buff[env->dataSize]);
 	if (i == env->dataSize)
+	{
+		if (env->dataSize > 0 && env->fileSize == env->dataOfst + env->dataSize)
+		{
+			env->currOfst = env->dataSize;
+			env->lineBegin = env->dataOfst;
+			sb->AppendC(env->buff, env->dataSize);
+			return true;
+		}
 		return false;
+	}
 	while (i < env->dataSize)
 	{
-		if (env->buff[i] == '\n')
+		if (env->buff[i] == '\n' || env->buff[i] == '\r')
 		{
 			if (skipComment && IsComment(&env->buff[env->currOfst], i - env->currOfst))
 			{
 				env->lineBegin = env->dataOfst + env->currOfst;
 				env->currOfst = i + 1;
+				if (env->buff[env->currOfst] == '\n' && env->buff[env->currOfst - 1] == '\r')
+				{
+					env->currOfst++;
+				}
 				return NextLine(env, sb, true);
 			}
 			sb->AppendC(&env->buff[env->currOfst], i - env->currOfst);
 			env->lineBegin = env->dataOfst + env->currOfst;
 			env->currOfst = i + 1;
+			if (env->buff[env->currOfst] == '\n' && env->buff[env->currOfst - 1] == '\r')
+			{
+				env->currOfst++;
+			}
+			if (sb->EndsWith('\\'))
+			{
+				sb->RemoveChars(1);
+				return NextLine(env, sb, true);
+			}
 			return true;
 		}
 		i++;
@@ -96,6 +134,14 @@ Bool Parser::FileParser::PDFParser::NextLineFixed(PDFParseEnv *env, UOSInt size)
 			env->currOfst = env->currOfst + size + 1;
 			return true;
 		}
+		else if (env->buff[env->currOfst + size] == '\r')
+		{
+			if (env->buff[env->currOfst + size + 1] == '\n')
+				env->currOfst = env->currOfst + size + 2;
+			else
+				env->currOfst = env->currOfst + size + 1;
+			return true;
+		}
 		return false;
 	}
 	else
@@ -108,8 +154,216 @@ Bool Parser::FileParser::PDFParser::NextLineFixed(PDFParseEnv *env, UOSInt size)
 			env->currOfst++;
 			return true;
 		}
+		else if (env->buff[0] == '\r')
+		{
+			if (env->buff[1] == '\n')
+				env->currOfst = 2;
+			else
+				env->currOfst = 1;
+			return true;
+		}
 		return false;
 	}
+}
+
+void Parser::FileParser::PDFParser::ParseStartxref(PDFParseEnv *env, Text::StringBuilderUTF8 *sb)
+{
+	if (!sb->Equals(UTF8STRC("startxref")))
+	{
+#if defined(VERBOSE)
+		printf("PDFParser: startxref not present after trailer: %s\r\n", sb->ToString());
+#endif
+		env->normalEnd = true;
+		return;
+	}
+	sb->ClearStr();
+	if (!NextLine(env, sb, true))
+	{
+#if defined(VERBOSE)
+		printf("PDFParser: startxref offset not found\r\n");
+#endif
+		env->normalEnd = true;
+		return;
+	}
+	UInt64 ofst;
+	if (sb->ToUInt64(&ofst))
+	{
+#if defined(VERBOSE)
+		printf("PDFParser: startxref value = %lld\r\n", ofst);
+#endif
+	}
+	else
+	{
+#if defined(VERBOSE)
+		printf("PDFParser: startxref offset not valid: %s\r\n", sb->ToString());
+#endif
+		env->normalEnd = true;
+		return;
+	}
+	sb->ClearStr();
+	if (!NextLine(env, sb, true))
+	{
+#if defined(VERBOSE)
+		printf("PDFParser: unexpected end of file after startxref\r\n");
+#endif
+		env->normalEnd = true;
+		return;
+	}
+	if (sb->Equals(UTF8STRC("%%EOF")))
+	{
+#if defined(VERBOSE)
+		printf("PDFParser: EOF found, ofst = %lld\r\n", env->lineBegin);
+#endif
+		if (env->dataOfst + env->currOfst >= env->fileSize)
+		{
+			env->normalEnd = true;
+			env->succ = true;
+		}
+	}
+	else if (sb->StartsWith(UTF8STRC("%%EOF")))
+	{
+#if defined(VERBOSE)
+		printf("PDFParser: EOF found no EOL, ofst = %lld\r\n", env->lineBegin);
+#endif
+		env->currOfst = (UOSInt)(env->lineBegin + 5 - env->dataOfst);
+	}
+	else
+	{
+#if defined(VERBOSE)
+		printf("PDFParser: Unknown entry after startxref: %s\r\n", sb->ToString());
+#endif
+		env->normalEnd = true;
+	}
+}
+
+Bool Parser::FileParser::PDFParser::ParseObject(PDFParseEnv *env, Text::StringBuilderUTF8 *sb, Media::PDFDocument *doc)
+{
+	UInt32 id;
+	sb->RemoveChars(6);
+	if (!sb->ToUInt32(&id))
+	{
+#if defined(VERBOSE)
+		printf("PDFParser: Error in parsing object id: %s\r\n", sb->ToString());
+#endif
+		env->normalEnd = true;
+		return false;
+	}
+#if defined(VERBOSE)
+	printf("PDFParser: Object found, id = %d, ofst = %lld\r\n", id, env->lineBegin);
+#endif
+	sb->ClearStr();
+	Media::PDFParameter *param;
+	UInt64 dataOfst = 0;
+	Media::PDFObject *obj = doc->AddObject(id);
+	while (NextLine(env, sb, true))
+	{
+		if (sb->Equals(UTF8STRC("endobj")))
+		{
+			if (dataOfst != 0)
+			{
+				obj->SetData(env->fd, dataOfst, (UOSInt)(env->lineBegin - dataOfst));
+			}
+			return true;
+		}
+		else if (sb->StartsWith(UTF8STRC("<<")))
+		{
+			if (sb->EndsWith(UTF8STRC(">>stream")))
+			{
+				param = Media::PDFParameter::Parse(Text::CString(&sb->v[2], sb->leng - 10));
+				if (param == 0)
+				{
+#if defined(VERBOSE)
+					printf("PDFParser: Error in parsing object stream parameter: %s\r\n", sb->ToString());
+#endif
+					env->normalEnd = true;
+					break;
+				}
+				obj->SetParameter(param);
+				Text::String *leng = param->GetEntryValue(CSTR("Length"));
+				if (leng == 0)
+				{
+#if defined(VERBOSE)
+					printf("PDFParser: Length not found in stream filters: %s\r\n", sb->ToString());
+#endif
+					env->normalEnd = true;
+					break;
+				}
+				UOSInt iLeng;
+				if (!leng->ToUOSInt(&iLeng))
+				{
+#if defined(VERBOSE)
+					printf("PDFParser: Stream Length Filter is not valid: %s\r\n", leng->v);
+#endif
+					env->normalEnd = true;
+					break;
+				}
+				obj->SetStream(env->fd, env->dataOfst + env->currOfst, iLeng);
+				if (!NextLineFixed(env, iLeng))
+				{
+#if defined(VERBOSE)
+					printf("PDFParser: Stream is not ended by LF\r\n");
+#endif
+					env->normalEnd = true;
+					break;
+				}
+				sb->ClearStr();
+				if (!NextLine(env, sb, true))
+				{
+					break;
+				}
+				if (!sb->Equals(UTF8STRC("endstream")))
+				{
+#if defined(VERBOSE)
+					printf("PDFParser: End of stream not found: %s\r\n", sb->ToString());
+#endif
+					env->normalEnd = true;
+					break;
+				}
+			}
+			else if (sb->EndsWith(UTF8STRC(">>endobj")))
+			{
+				param = Media::PDFParameter::Parse(Text::CString(&sb->v[2], sb->leng - 8));
+				if (param == 0)
+				{
+#if defined(VERBOSE)
+					printf("PDFParser: Error in parsing object parameter: %s\r\n", sb->ToString());
+#endif
+					env->normalEnd = true;
+					break;
+				}
+				obj->SetParameter(param);
+				return true;
+			}
+			else if (sb->EndsWith(UTF8STRC(">>")))
+			{
+				param = Media::PDFParameter::Parse(Text::CString(&sb->v[2], sb->leng - 4));
+				if (param == 0)
+				{
+#if defined(VERBOSE)
+					printf("PDFParser: Error in parsing object parameter: %s\r\n", sb->ToString());
+#endif
+					env->normalEnd = true;
+					break;
+				}
+				obj->SetParameter(param);
+			}
+			else
+			{
+#if defined(VERBOSE)
+				printf("PDFParser: Unknown object content: %s\r\n", sb->ToString());
+#endif
+				env->normalEnd = true;
+				break;
+			}
+		}
+		else
+		{
+			if (dataOfst == 0)
+				dataOfst = env->lineBegin;
+		}
+		sb->ClearStr();
+	}
+	return false;
 }
 
 Parser::FileParser::PDFParser::PDFParser()
@@ -145,7 +399,6 @@ IO::ParsedObject *Parser::FileParser::PDFParser::ParseFileHdr(IO::StreamData *fd
 		return 0;
 	}
 
-	Media::PDFParameter *param;
 	Media::PDFDocument *doc = 0;
 	PDFParseEnv env;
 	env.buff = MemAlloc(UInt8, 1048576);
@@ -154,8 +407,9 @@ IO::ParsedObject *Parser::FileParser::PDFParser::ParseFileHdr(IO::StreamData *fd
 	env.dataOfst = 0;
 	env.dataSize = 0;
 	env.fd = fd;
-	Bool normalEnd = false;
-	Bool succ = false;
+	env.fileSize = fd->GetDataSize();
+	env.normalEnd = false;
+	env.succ = false;
 	Text::StringBuilderUTF8 sb;
 	if (!NextLine(&env, &sb, true))
 	{
@@ -168,122 +422,8 @@ IO::ParsedObject *Parser::FileParser::PDFParser::ParseFileHdr(IO::StreamData *fd
 	{
 		if (sb.EndsWith(UTF8STRC(" 0 obj")))
 		{
-			UInt32 id;
-			sb.RemoveChars(6);
-			if (!sb.ToUInt32(&id))
-			{
-#if defined(VERBOSE)
-				printf("PDFParser: Error in parsing object id: %s\r\n", sb.ToString());
-#endif
-				normalEnd = true;
+			if (!ParseObject(&env, &sb, doc))
 				break;
-			}
-#if defined(VERBOSE)
-			printf("PDFParser: Object found, id = %d, ofst = %lld\r\n", id, env.lineBegin);
-#endif
-			sb.ClearStr();
-			Bool endObj = false;
-			UInt64 dataOfst = 0;
-			Media::PDFObject *obj = doc->AddObject(id);
-			while (NextLine(&env, &sb, true))
-			{
-				if (sb.Equals(UTF8STRC("endobj")))
-				{
-					if (dataOfst != 0)
-					{
-						obj->SetData(env.fd, dataOfst, (UOSInt)(env.lineBegin - dataOfst));
-					}
-					endObj = true;
-					break;
-				}
-				else if (sb.StartsWith(UTF8STRC("<<")))
-				{
-					if (sb.EndsWith(UTF8STRC(">>stream")))
-					{
-						param = Media::PDFParameter::Parse(Text::CString(&sb.v[2], sb.leng - 10));
-						if (param == 0)
-						{
-#if defined(VERBOSE)
-							printf("PDFParser: Error in parsing object stream parameter: %s\r\n", sb.ToString());
-#endif
-							normalEnd = true;
-							break;
-						}
-						obj->SetParameter(param);
-						Text::String *leng = param->GetEntryValue(CSTR("Length"));
-						if (leng == 0)
-						{
-#if defined(VERBOSE)
-							printf("PDFParser: Length not found in stream filters: %s\r\n", sb.ToString());
-#endif
-							normalEnd = true;
-							break;
-						}
-						UOSInt iLeng;
-						if (!leng->ToUOSInt(&iLeng))
-						{
-#if defined(VERBOSE)
-							printf("PDFParser: Stream Length Filter is not valid: %s\r\n", leng->v);
-#endif
-							normalEnd = true;
-							break;
-						}
-						obj->SetStream(env.fd, env.dataOfst + env.currOfst, iLeng);
-						if (!NextLineFixed(&env, iLeng))
-						{
-#if defined(VERBOSE)
-							printf("PDFParser: Stream is not ended by LF\r\n");
-#endif
-							normalEnd = true;
-							break;
-						}
-						sb.ClearStr();
-						if (!NextLine(&env, &sb, true))
-						{
-							break;
-						}
-						if (!sb.Equals(UTF8STRC("endstream")))
-						{
-#if defined(VERBOSE)
-							printf("PDFParser: End of stream not found: %s\r\n", sb.ToString());
-#endif
-							normalEnd = true;
-							break;
-						}
-					}
-					else if (sb.EndsWith(UTF8STRC(">>")))
-					{
-						param = Media::PDFParameter::Parse(Text::CString(&sb.v[2], sb.leng - 4));
-						if (param == 0)
-						{
-#if defined(VERBOSE)
-							printf("PDFParser: Error in parsing object parameter: %s\r\n", sb.ToString());
-#endif
-							normalEnd = true;
-							break;
-						}
-						obj->SetParameter(param);
-					}
-					else
-					{
-#if defined(VERBOSE)
-						printf("PDFParser: Unknown object content: %s\r\n", sb.ToString());
-#endif
-						normalEnd = true;
-						break;
-					}
-				}
-				else
-				{
-					if (dataOfst == 0)
-						dataOfst = env.lineBegin;
-				}
-				sb.ClearStr();
-			}
-			if (!endObj)
-			{
-				break;
-			}
 		}
 		else if (sb.Equals(UTF8STRC("xref")))
 		{
@@ -298,7 +438,7 @@ IO::ParsedObject *Parser::FileParser::PDFParser::ParseFileHdr(IO::StreamData *fd
 #if defined(VERBOSE)
 					printf("PDFParser: xref count not found\r\n");
 #endif
-					normalEnd = true;
+					env.normalEnd = true;
 					break;
 				}
 				if (sb.Equals(UTF8STRC("trailer")))
@@ -312,7 +452,7 @@ IO::ParsedObject *Parser::FileParser::PDFParser::ParseFileHdr(IO::StreamData *fd
 #if defined(VERBOSE)
 						printf("PDFParser: trailer values not found\r\n");
 #endif
-						normalEnd = true;
+						env.normalEnd = true;
 						break;
 					}
 					if (!sb.StartsWith(UTF8STRC("<<")) || !sb.EndsWith(UTF8STRC(">>")))
@@ -320,7 +460,7 @@ IO::ParsedObject *Parser::FileParser::PDFParser::ParseFileHdr(IO::StreamData *fd
 #if defined(VERBOSE)
 						printf("PDFParser: trailer values is not valid format: %s\r\n", sb.ToString());
 #endif
-						normalEnd = true;
+						env.normalEnd = true;
 						break;
 					}
 					sb.ClearStr();
@@ -329,67 +469,11 @@ IO::ParsedObject *Parser::FileParser::PDFParser::ParseFileHdr(IO::StreamData *fd
 #if defined(VERBOSE)
 						printf("PDFParser: startxref not found\r\n");
 #endif
-						normalEnd = true;
+						env.normalEnd = true;
 						break;
 					}
-					if (!sb.Equals(UTF8STRC("startxref")))
-					{
-#if defined(VERBOSE)
-						printf("PDFParser: startxref not present after trailer: %s\r\n", sb.ToString());
-#endif
-						normalEnd = true;
-						break;
-					}
-					sb.ClearStr();
-					if (!NextLine(&env, &sb, true))
-					{
-#if defined(VERBOSE)
-						printf("PDFParser: startxref offset not found\r\n");
-#endif
-						normalEnd = true;
-						break;
-					}
-					UInt64 ofst;
-					if (sb.ToUInt64(&ofst))
-					{
-#if defined(VERBOSE)
-						printf("PDFParser: startxref offset = %lld\r\n", ofst);
-#endif
-					}
-					else
-					{
-#if defined(VERBOSE)
-						printf("PDFParser: startxref offset not valid: %s\r\n", sb.ToString());
-#endif
-						normalEnd = true;
-						break;
-					}
-					sb.ClearStr();
-					if (!NextLine(&env, &sb, true))
-					{
-#if defined(VERBOSE)
-						printf("PDFParser: unexpected end of file after startxref\r\n");
-#endif
-						normalEnd = true;
-						break;
-					}
-					if (sb.Equals(UTF8STRC("%%EOF")))
-					{
-#if defined(VERBOSE)
-						printf("PDFParser: EOF found, ofst = %lld\r\n", env.lineBegin);
-#endif
-						normalEnd = true;
-						succ = true;
-						break;
-					}
-					else
-					{
-#if defined(VERBOSE)
-						printf("PDFParser: Unknown entry after startxref: %s\r\n", sb.ToString());
-#endif
-						normalEnd = true;
-						break;
-					}
+					ParseStartxref(&env, &sb);
+					break;
 				}
 				else
 				{
@@ -401,7 +485,7 @@ IO::ParsedObject *Parser::FileParser::PDFParser::ParseFileHdr(IO::StreamData *fd
 #if defined(VERBOSE)
 						printf("PDFParser: xref count format is not valid: %s\r\n", sb.ToString());
 #endif
-						normalEnd = true;
+						env.normalEnd = true;
 						break;
 					}
 					sb.v[i] = 0;
@@ -411,7 +495,7 @@ IO::ParsedObject *Parser::FileParser::PDFParser::ParseFileHdr(IO::StreamData *fd
 #if defined(VERBOSE)
 						printf("PDFParser: xref count format is not valid 2: %s\r\n", sb.ToString());
 #endif
-						normalEnd = true;
+						env.normalEnd = true;
 						break;
 					}
 					j += i;
@@ -423,7 +507,7 @@ IO::ParsedObject *Parser::FileParser::PDFParser::ParseFileHdr(IO::StreamData *fd
 #if defined(VERBOSE)
 							printf("PDFParser: Error in reading xref value\r\n");
 #endif
-							normalEnd = true;
+							env.normalEnd = true;
 							break;
 						}
 						if ((sb.leng != 18 && sb.leng != 19) || sb.v[10] != ' ' || sb.v[16] != ' ')
@@ -431,35 +515,81 @@ IO::ParsedObject *Parser::FileParser::PDFParser::ParseFileHdr(IO::StreamData *fd
 #if defined(VERBOSE)
 							printf("PDFParser: xref value format invalid: %d, %d, %d, %s\r\n", (UInt32)sb.leng, sb.v[10], sb.v[16], sb.ToString());
 #endif
-							normalEnd = true;
+							env.normalEnd = true;
 							break;
 						}
 						i++;
 					}
-					if (normalEnd)
+					if (env.normalEnd)
 						break;
 				}
 			}
-			break;
+			if (env.normalEnd)
+				break;
+		}
+		else if (sb.Equals(UTF8STRC("startxref")))
+		{
+			ParseStartxref(&env, &sb);
+			if (env.normalEnd)
+				break;
+		}
+		else if (sb.IndexOf(UTF8STRC(" 0 obj ")) != INVALID_INDEX)
+		{
+			UOSInt i = sb.IndexOf(UTF8STRC(" 0 obj "));
+			sb.TrimToLength(i + 6);
+			env.currOfst = env.lineBegin + i + 7 - env.dataOfst;
+			if (!ParseObject(&env, &sb, doc))
+				break;
+		}
+		else if (sb.IndexOf(UTF8STRC(" 0 obj<<")) != INVALID_INDEX)
+		{
+			UOSInt i = sb.IndexOf(UTF8STRC(" 0 obj"));
+			sb.TrimToLength(i + 6);
+			env.currOfst = env.lineBegin + i + 6 - env.dataOfst;
+			if (!ParseObject(&env, &sb, doc))
+				break;
+		}
+		else if (sb.IndexOf(UTF8STRC(" 0 obj[")) != INVALID_INDEX)
+		{
+			UOSInt i = sb.IndexOf(UTF8STRC(" 0 obj"));
+			sb.TrimToLength(i + 6);
+			env.currOfst = env.lineBegin + i + 6 - env.dataOfst;
+			if (!ParseObject(&env, &sb, doc))
+				break;
+		}
+		else if (sb.IndexOf(UTF8STRC(" 0 obj/")) != INVALID_INDEX)
+		{
+			UOSInt i = sb.IndexOf(UTF8STRC(" 0 obj"));
+			sb.TrimToLength(i + 6);
+			env.currOfst = env.lineBegin + i + 6 - env.dataOfst;
+			if (!ParseObject(&env, &sb, doc))
+				break;
 		}
 		else
 		{
+			sb.Trim();
+			if (sb.GetLength() > 0)
+			{
 #if defined(VERBOSE)
-			printf("PDFParser: Unsupported line: %s\r\n", sb.ToString());
+				printf("PDFParser: Unsupported line: %s\r\n", sb.ToString());
 #endif
-			normalEnd = true;
-			break;
+				if (env.lineBegin >= 16)
+				{
+					env.normalEnd = true;
+					break;
+				}
+			}
 		}
 		sb.ClearStr();
 	}
 #if defined(VERBOSE)
-	if (!normalEnd)
+	if (!env.normalEnd)
 	{
 		printf("PDFParser: Error in parsing next line\r\n");
 	}
 #endif
 	MemFree(env.buff);
-	if (succ)
+	if (env.succ)
 		return doc;
 	SDEL_CLASS(doc);
 	return 0;

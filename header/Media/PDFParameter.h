@@ -21,8 +21,11 @@ namespace Media
 
 		void AddEntry(Text::CString type, Text::CString value);
 		Text::String *GetEntryValue(Text::CString type) const;
+		Text::String *GetEntryType(UOSInt index) const;
+		Text::String *GetEntryValue(UOSInt index) const;
 		Bool ContainsEntry(Text::CString type) const;
 		ParamEntry *GetEntry(Text::CString type) const;
+		UOSInt GetEntryIndex(Text::CString type) const;
 		UOSInt GetCount() const;
 		ParamEntry *GetItem(UOSInt index) const;
 

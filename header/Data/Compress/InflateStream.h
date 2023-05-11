@@ -14,8 +14,8 @@ namespace Data
 			UInt8 *writeBuff;
 			UOSInt headerSize;
 		public:
-			InflateStream(IO::Stream *outStm, UOSInt headerSize);
-			InflateStream(IO::Stream *outStm);
+			InflateStream(IO::Stream *outStm, UOSInt headerSize, Bool zlibHeader);
+			InflateStream(IO::Stream *outStm, Bool zlibHeader);
 			virtual ~InflateStream();
 
 			virtual Bool IsDown() const;

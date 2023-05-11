@@ -1,4 +1,5 @@
 #include "Stdafx.h"
+#include "Data/Compress/InflateStream.h"
 #include "IO/FileStream.h"
 #include "Media/PDFObject.h"
 
@@ -51,12 +52,51 @@ Bool Media::PDFObject::IsImage() const
 	return this->parameter && this->parameter->ContainsEntry(CSTR("Image"));
 }
 
+Text::String *Media::PDFObject::GetType() const
+{
+	if (this->parameter == 0)
+		return 0;
+	UOSInt i = this->parameter->GetEntryIndex(CSTR("Type"));
+	if (i != INVALID_INDEX)
+		return this->parameter->GetEntryType(i + 1);
+	return 0;
+}
+
+Text::String *Media::PDFObject::GetFilter() const
+{
+	if (this->parameter == 0)
+		return 0;
+	UOSInt i = this->parameter->GetEntryIndex(CSTR("Filter"));
+	if (i != INVALID_INDEX)
+		return this->parameter->GetEntryType(i + 1);
+	return 0;
+}
+
 Bool Media::PDFObject::SaveFile(Text::CString fileName)
 {
 	if (this->fd)
 	{
 		IO::FileStream fs(fileName, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-		return fs.WriteFromData(this->fd, 1048576);
+		return this->SaveStream(&fs);
 	}
 	return false;
 }
+
+Bool Media::PDFObject::SaveStream(IO::Stream *stm)
+{
+	if (this->fd)
+	{
+		Text::String *filter = this->GetFilter();
+		if (filter && filter->Equals(UTF8STRC("FlateDecode")))
+		{
+			Data::Compress::InflateStream infStm(stm, true);
+			return infStm.WriteFromData(this->fd, 1048576);
+		}
+		else
+		{
+			return stm->WriteFromData(this->fd, 1048576);
+		}
+	}
+	return false;
+}
+

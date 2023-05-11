@@ -5,9 +5,13 @@
 //#define _ftelli64 ftell
 #include "miniz.h"
 
+//#define VERBOSE
 #define BUFFSIZE 1048576
+#if defined(VERBOSE)
+#include <stdio.h>
+#endif
 
-Data::Compress::InflateStream::InflateStream(IO::Stream *outStm, UOSInt headerSize) : IO::Stream(CSTR("InflateStream"))
+Data::Compress::InflateStream::InflateStream(IO::Stream *outStm, UOSInt headerSize, Bool zlibHeader) : IO::Stream(CSTR("InflateStream"))
 {
 	this->outStm = outStm;
 	this->writeBuff = MemAlloc(UInt8, BUFFSIZE);
@@ -19,10 +23,13 @@ Data::Compress::InflateStream::InflateStream(IO::Stream *outStm, UOSInt headerSi
 	mzstm->avail_in = 0;
 	mzstm->next_out = this->writeBuff;
 	mzstm->avail_out = BUFFSIZE;
-	mz_inflateInit2(mzstm, -MZ_DEFAULT_WINDOW_BITS);
+	if (zlibHeader)
+		mz_inflateInit2(mzstm, MZ_DEFAULT_WINDOW_BITS);
+	else
+		mz_inflateInit2(mzstm, -MZ_DEFAULT_WINDOW_BITS);
 }
 
-Data::Compress::InflateStream::InflateStream(IO::Stream *outStm) : IO::Stream(CSTR("InflateStream"))
+Data::Compress::InflateStream::InflateStream(IO::Stream *outStm, Bool zlibHeader) : IO::Stream(CSTR("InflateStream"))
 {
 	this->outStm = outStm;
 	this->writeBuff = MemAlloc(UInt8, BUFFSIZE);
@@ -34,7 +41,10 @@ Data::Compress::InflateStream::InflateStream(IO::Stream *outStm) : IO::Stream(CS
 	mzstm->avail_in = 0;
 	mzstm->next_out = this->writeBuff;
 	mzstm->avail_out = BUFFSIZE;
-	mz_inflateInit2(mzstm, -MZ_DEFAULT_WINDOW_BITS);
+	if (zlibHeader)
+		mz_inflateInit2(mzstm, MZ_DEFAULT_WINDOW_BITS);
+	else
+		mz_inflateInit2(mzstm, -MZ_DEFAULT_WINDOW_BITS);
 }
 
 Data::Compress::InflateStream::~InflateStream()
@@ -80,9 +90,16 @@ UOSInt Data::Compress::InflateStream::Write(const UInt8 *buff, UOSInt size)
 	{
 //		lastSize = mzstm->avail_in;
 //		ret = mz_inflate(mzstm, MZ_SYNC_FLUSH);
+#if defined(VERBOSE)
+		int ret = mz_inflate(mzstm, MZ_SYNC_FLUSH);
+#else
 		mz_inflate(mzstm, MZ_SYNC_FLUSH);
+#endif
 		if (mzstm->avail_out == BUFFSIZE)
 		{
+#if defined(VERBOSE)
+			printf("InflateStream: Error = %d\r\n", ret);
+#endif
 //			error = true;
 			break;
 		}

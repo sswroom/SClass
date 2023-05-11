@@ -1,6 +1,7 @@
 #ifndef _SM_PARSER_FILEPARSER_PDFPARSER
 #define _SM_PARSER_FILEPARSER_PDFPARSER
 #include "IO/FileParser.h"
+#include "Media/PDFDocument.h"
 #include "Text/StringBuilderUTF8.h"
 
 namespace Parser
@@ -15,6 +16,8 @@ namespace Parser
 			Bool IsComment(const UTF8Char *buff, UOSInt size);
 			Bool NextLine(PDFParseEnv *env, Text::StringBuilderUTF8 *sb, Bool skipComment);
 			Bool NextLineFixed(PDFParseEnv *env, UOSInt size);
+			void ParseStartxref(PDFParseEnv *env, Text::StringBuilderUTF8 *sb);
+			Bool ParseObject(PDFParseEnv *env, Text::StringBuilderUTF8 *sb, Media::PDFDocument *doc);
 		public:
 			PDFParser();
 			virtual ~PDFParser();

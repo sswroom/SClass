@@ -2731,7 +2731,7 @@ IO::ParsedObject *Parser::FileParser::PNGParser::ParseFileHdr(IO::StreamData *fd
 				if (chunkData[i] == 0)
 				{
 					IO::MemoryStream mstm;
-					Data::Compress::InflateStream cstm(&mstm);
+					Data::Compress::InflateStream cstm(&mstm, false);
 					if (cstm.Write(&chunkData[i + 3], size - i - 7) == (size - i - 7))
 					{
 						UOSInt iccSize;
@@ -2857,7 +2857,7 @@ IO::ParsedObject *Parser::FileParser::PNGParser::ParseFileHdr(IO::StreamData *fd
 						{
 							NEW_CLASS(mstm, IO::MemoryStream());
 						}
-						NEW_CLASS(cstm, Data::Compress::InflateStream(mstm, 2));
+						NEW_CLASS(cstm, Data::Compress::InflateStream(mstm, 2, false));
 						NEW_CLASS(wcstm, IO::WriteCacheStream(cstm));
 						wcstm->Write(chunkData, size);
 					}
@@ -2910,7 +2910,7 @@ IO::ParsedObject *Parser::FileParser::PNGParser::ParseFileHdr(IO::StreamData *fd
 						{
 							NEW_CLASS(mstm, IO::MemoryStream());
 						}
-						NEW_CLASS(cstm, Data::Compress::InflateStream(mstm, 2));
+						NEW_CLASS(cstm, Data::Compress::InflateStream(mstm, 2, false));
 						NEW_CLASS(wcstm, IO::WriteCacheStream(cstm));
 						wcstm->Write(&chunkData[4], size - 4);
 					}

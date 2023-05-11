@@ -1,5 +1,6 @@
 #ifndef _SM_MEDIA_PDFOBJECT
 #define _SM_MEDIA_PDFOBJECT
+#include "IO/Stream.h"
 #include "IO/StreamData.h"
 #include "Media/PDFParameter.h"
 
@@ -22,7 +23,10 @@ namespace Media
 		PDFParameter *GetParameter() const;
 		UInt32 GetId() const;
 		Bool IsImage() const;
+		Text::String *GetType() const;
+		Text::String *GetFilter() const;
 		Bool SaveFile(Text::CString fileName);
+		Bool SaveStream(IO::Stream *stm);
 	};
 }
 #endif
