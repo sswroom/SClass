@@ -24,7 +24,13 @@ namespace Media
 		UInt32 GetId() const;
 		Bool IsImage() const;
 		Text::String *GetType() const;
+		Text::String *GetSubtype() const;
 		Text::String *GetFilter() const;
+		Text::String *GetColorSpace() const;
+		UOSInt GetBitPerComponent() const;
+		UOSInt GetWidth() const;
+		UOSInt GetHeight() const;
+		IO::StreamData *GetData() const;
 		Bool SaveFile(Text::CString fileName);
 		Bool SaveStream(IO::Stream *stm);
 	};

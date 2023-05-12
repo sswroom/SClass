@@ -38,26 +38,6 @@ Bool Data::Compress::Inflate::Decompress(IO::Stream *destStm, IO::StreamData *sr
 	readBuff = MemAlloc(UInt8, 1048576);
 	writeBuff = MemAlloc(UInt8, 1048576);
 
-/*	UInt32 destLeng;
-	readBuff[0] = 'a';
-	mz_compress(writeBuff, (mz_ulong*)&destLeng, &readBuff[0], 1);
-
-	readBuff[0] = 0x4b;
-	readBuff[1] = 0x04;
-	readBuff[2] = 0x00;
-	readBuff[3] = 0x43;
-	readBuff[4] = 0xbe;
-	readBuff[5] = 0xb7;
-	readBuff[6] = 0xe8;
-	readBuff[7] = 0x01;
-	readBuff[8] = 0x00;
-	readBuff[9] = 0x00;
-	readBuff[10] = 0x00;
-	srcSize = 11;
-	while (srcSize-- > 0)
-	{
-		mz_uncompress(writeBuff, (mz_ulong*)&destLeng, &readBuff[0], srcSize);
-	}*/
 	MemClear(&stm, sizeof(stm));
 	stm.next_in = readBuff;
 	stm.avail_in = 0;

@@ -62,14 +62,79 @@ Text::String *Media::PDFObject::GetType() const
 	return 0;
 }
 
+Text::String *Media::PDFObject::GetSubtype() const
+{
+	if (this->parameter == 0)
+		return 0;
+	UOSInt i = this->parameter->GetEntryIndex(CSTR("Subtype"));
+	if (i != INVALID_INDEX)
+		return this->parameter->GetEntryType(i + 1);
+	return 0;
+}
+
 Text::String *Media::PDFObject::GetFilter() const
 {
 	if (this->parameter == 0)
 		return 0;
 	UOSInt i = this->parameter->GetEntryIndex(CSTR("Filter"));
 	if (i != INVALID_INDEX)
+	{
+		Media::PDFParameter::ParamEntry *entry = this->parameter->GetItem(i);
+		if (entry->value)
+			return entry->value;
 		return this->parameter->GetEntryType(i + 1);
+	}
 	return 0;
+}
+
+Text::String *Media::PDFObject::GetColorSpace() const
+{
+	if (this->parameter == 0)
+		return 0;
+	UOSInt i = this->parameter->GetEntryIndex(CSTR("ColorSpace"));
+	if (i != INVALID_INDEX)
+	{
+		Media::PDFParameter::ParamEntry *entry = this->parameter->GetItem(i);
+		if (entry->value)
+			return entry->value;
+		return this->parameter->GetEntryType(i + 1);
+	}
+	return 0;
+}
+
+UOSInt Media::PDFObject::GetBitPerComponent() const
+{
+	if (this->parameter == 0)
+		return 0;
+	Text::String *s = this->parameter->GetEntryValue(CSTR("BitPerComponent"));
+	if (s)
+		return s->ToUOSInt();
+	return 0;
+}
+
+UOSInt Media::PDFObject::GetWidth() const
+{
+	if (this->parameter == 0)
+		return 0;
+	Text::String *s = this->parameter->GetEntryValue(CSTR("Width"));
+	if (s)
+		return s->ToUOSInt();
+	return 0;
+}
+
+UOSInt Media::PDFObject::GetHeight() const
+{
+	if (this->parameter == 0)
+		return 0;
+	Text::String *s = this->parameter->GetEntryValue(CSTR("Height"));
+	if (s)
+		return s->ToUOSInt();
+	return 0;
+}
+
+IO::StreamData *Media::PDFObject::GetData() const
+{
+	return this->fd;
 }
 
 Bool Media::PDFObject::SaveFile(Text::CString fileName)

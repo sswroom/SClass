@@ -35,6 +35,18 @@ void __stdcall SSWR::AVIRead::AVIRPDFObjectForm::OnObjectSelChg(void *userObj)
 	}
 }
 
+void __stdcall SSWR::AVIRead::AVIRPDFObjectForm::OnObjectDblClk(void *userObj)
+{
+	SSWR::AVIRead::AVIRPDFObjectForm *me = (SSWR::AVIRead::AVIRPDFObjectForm*)userObj;
+	Media::PDFObject *obj = (Media::PDFObject*)me->lbObject->GetSelectedItem();
+	if (obj && obj->IsImage())
+	{
+		Media::ImageList *imgList = me->doc->CreateImage(obj->GetId(), me->core->GetParserList());
+		if (imgList)
+			me->core->OpenObject(imgList);
+	}
+}
+
 SSWR::AVIRead::AVIRPDFObjectForm::AVIRPDFObjectForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Media::PDFDocument *doc) : UI::GUIForm(parent, 640, 480, ui)
 {
 	this->SetText(CSTR("PDF Objects"));
@@ -48,6 +60,7 @@ SSWR::AVIRead::AVIRPDFObjectForm::AVIRPDFObjectForm(UI::GUIClientControl *parent
 	this->lbObject->SetRect(0, 0, 100, 23, false);
 	this->lbObject->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbObject->HandleSelectionChange(OnObjectSelChg, this);
+	this->lbObject->HandleDoubleClicked(OnObjectDblClk, this);
 	NEW_CLASS(this->hspMain, UI::GUIHSplitter(ui, this, 3, false));
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
@@ -76,7 +89,12 @@ SSWR::AVIRead::AVIRPDFObjectForm::AVIRPDFObjectForm(UI::GUIClientControl *parent
 	{
 		obj = this->doc->GetItem(i);
 		sptr = Text::StrUInt32(sbuff, obj->GetId());
-		if ((type = obj->GetType()) != 0)
+		type = obj->GetType();
+		if (type && type->Equals(UTF8STRC("XObject")))
+		{
+			type = obj->GetSubtype();
+		}
+		if (type != 0)
 		{
 			*sptr++ = ' ';
 			sptr = type->ConcatTo(sptr);
