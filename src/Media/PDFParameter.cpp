@@ -98,8 +98,10 @@ Media::PDFParameter::ParamEntry *Media::PDFParameter::GetItem(UOSInt index) cons
 
 Media::PDFParameter *Media::PDFParameter::Parse(Text::CString parameter)
 {
+	parameter = parameter.LTrim();
 	UOSInt i = 1;
 	UOSInt j = parameter.leng;
+	UOSInt k;
 	if (j == 0)
 		return 0;
 	if (parameter.v[0] != '/')
@@ -114,13 +116,16 @@ Media::PDFParameter *Media::PDFParameter::Parse(Text::CString parameter)
 	{
 		if (i >= j || (endChars.GetCount() == 0 && parameter.v[i] == '/'))
 		{
-			if (startValue == 0)
+			k = i;
+			while (parameter.v[k - 1] == ' ')
+				k--;
+			if (startValue == 0 || k == endType)
 			{
-				param->AddEntry(Text::CString(&parameter.v[startType], i - startType), CSTR_NULL);
+				param->AddEntry(Text::CString(&parameter.v[startType], k - startType), CSTR_NULL);
 			}
 			else
 			{
-				param->AddEntry(Text::CString(&parameter.v[startType], endType - startType), Text::CString(&parameter.v[startValue], i - startValue));
+				param->AddEntry(Text::CString(&parameter.v[startType], endType - startType), Text::CString(&parameter.v[startValue], k - startValue));
 			}
 			startType = i + 1;
 			endType = 0;

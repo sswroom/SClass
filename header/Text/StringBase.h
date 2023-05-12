@@ -68,6 +68,9 @@ namespace Text
 		Bool ToUInt32S(UInt32 *outVal, UInt32 failVal) const;
 		UOSInt Hex2Bytes(UInt8 *buff) const;
 		UOSInt CountChar(UTF8Char c) const;
+		UOSInt CountStr(const UTF8Char *s, UOSInt len) const;
+		UOSInt CountStr(StringBase<UTF8Char> *s) const;
+		UOSInt CountStr(const StringBase<const UTF8Char> &s) const;
 		Bool Hex2UInt16(UInt16 *outVal) const;
 		Bool Hex2UInt32(UInt32 *outVal) const;
 
@@ -455,6 +458,21 @@ template<typename T> UOSInt Text::StringBase<T>::Hex2Bytes(UInt8 *buff) const
 template<typename T> UOSInt Text::StringBase<T>::CountChar(UTF8Char c) const
 {
 	return Text::StrCountChar(this->v, c);
+}
+
+template<typename T> UOSInt Text::StringBase<T>::CountStr(const UTF8Char *s, UOSInt len) const
+{
+	return Text::StrCountStr(this->v, this->leng, s, len);
+}
+
+template<typename T> UOSInt Text::StringBase<T>::CountStr(StringBase<UTF8Char> *s) const
+{
+	return Text::StrCountStr(this->v, this->leng, s->v, s->leng);
+}
+
+template<typename T> UOSInt Text::StringBase<T>::CountStr(const StringBase<const UTF8Char> &s) const
+{
+	return Text::StrCountStr(this->v, this->leng, s.v, s.leng);
 }
 
 template<typename T> Bool Text::StringBase<T>::Hex2UInt16(UInt16 *outVal) const

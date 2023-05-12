@@ -18,6 +18,7 @@ namespace Parser
 			Bool NextLineFixed(PDFParseEnv *env, UOSInt size);
 			void ParseStartxref(PDFParseEnv *env, Text::StringBuilderUTF8 *sb);
 			Bool ParseObject(PDFParseEnv *env, Text::StringBuilderUTF8 *sb, Media::PDFDocument *doc);
+			Bool ParseObjectStream(PDFParseEnv *env, Text::StringBuilderUTF8 *sb, Media::PDFObject *obj);
 		public:
 			PDFParser();
 			virtual ~PDFParser();

@@ -56,6 +56,7 @@ Bool Parser::FileParser::PDFParser::NextLine(PDFParseEnv *env, Text::StringBuild
 				return NextLine(env, sb, true);
 			}
 			sb->AppendC(&env->buff[env->currOfst], i - env->currOfst);
+			sb->RTrim();
 			env->lineBegin = env->dataOfst + env->currOfst;
 			env->currOfst = i + 1;
 			if (env->buff[env->currOfst] == '\n' && env->buff[env->currOfst - 1] == '\r')
@@ -88,6 +89,7 @@ Bool Parser::FileParser::PDFParser::NextLine(PDFParseEnv *env, Text::StringBuild
 			env->currOfst = env->dataSize;
 			env->lineBegin = env->dataOfst;
 			sb->AppendC(env->buff, env->dataSize);
+			sb->RTrim();
 			return true;
 		}
 		return false;
@@ -107,6 +109,7 @@ Bool Parser::FileParser::PDFParser::NextLine(PDFParseEnv *env, Text::StringBuild
 				return NextLine(env, sb, true);
 			}
 			sb->AppendC(&env->buff[env->currOfst], i - env->currOfst);
+			sb->RTrim();
 			env->lineBegin = env->dataOfst + env->currOfst;
 			env->currOfst = i + 1;
 			if (env->buff[env->currOfst] == '\n' && env->buff[env->currOfst - 1] == '\r')
@@ -251,6 +254,13 @@ Bool Parser::FileParser::PDFParser::ParseObject(PDFParseEnv *env, Text::StringBu
 #if defined(VERBOSE)
 	printf("PDFParser: Object found, id = %d, ofst = %lld\r\n", id, env->lineBegin);
 #endif
+	if (env->lineBegin == 651863)
+	{
+#if defined(VERBOSE)
+		printf("PDFParser: debug start\r\n");
+#endif
+
+	}
 	sb->ClearStr();
 	Media::PDFParameter *param;
 	UInt64 dataOfst = 0;
@@ -265,96 +275,85 @@ Bool Parser::FileParser::PDFParser::ParseObject(PDFParseEnv *env, Text::StringBu
 			}
 			return true;
 		}
+		else if (sb->Equals(UTF8STRC("stream")))
+		{
+			if (!ParseObjectStream(env, sb, obj))
+				break;
+		}
 		else if (sb->StartsWith(UTF8STRC("<<")))
 		{
-			if (sb->EndsWith(UTF8STRC(">>stream")))
+			Bool notBreak = false;
+			while (true)
 			{
-				param = Media::PDFParameter::Parse(Text::CString(&sb->v[2], sb->leng - 10));
-				if (param == 0)
+				if (sb->EndsWith(UTF8STRC(">>stream")))
 				{
+					param = Media::PDFParameter::Parse(Text::CString(&sb->v[2], sb->leng - 10));
+					if (param == 0)
+					{
 #if defined(VERBOSE)
-					printf("PDFParser: Error in parsing object stream parameter: %s\r\n", sb->ToString());
+						printf("PDFParser: Error in parsing object stream parameter: %s\r\n", sb->ToString());
 #endif
-					env->normalEnd = true;
+						env->normalEnd = true;
+						break;
+					}
+					obj->SetParameter(param);
+					notBreak = ParseObjectStream(env, sb, obj);
 					break;
 				}
-				obj->SetParameter(param);
-				Text::String *leng = param->GetEntryValue(CSTR("Length"));
-				if (leng == 0)
+				else if (sb->EndsWith(UTF8STRC(">>endobj")))
 				{
-#if defined(VERBOSE)
-					printf("PDFParser: Length not found in stream filters: %s\r\n", sb->ToString());
-#endif
-					env->normalEnd = true;
-					break;
+					param = Media::PDFParameter::Parse(Text::CString(&sb->v[2], sb->leng - 8));
+					if (param == 0)
+					{
+	#if defined(VERBOSE)
+						printf("PDFParser: Error in parsing object parameter: %s\r\n", sb->ToString());
+	#endif
+						env->normalEnd = true;
+						break;
+					}
+					obj->SetParameter(param);
+					return true;
 				}
-				UOSInt iLeng;
-				if (!leng->ToUOSInt(&iLeng))
+				else
 				{
+					sb->RTrim();
+					UOSInt startCnt = sb->CountStr(CSTR("<<"));
+					UOSInt endCnt = sb->CountStr(UTF8STRC(">>"));
+					if (startCnt > endCnt)
+					{
+						sb->AppendUTF8Char(' ');
+						if (!NextLine(env, sb, true))
+						{
+							break;
+						}
+					}
+ 					else if (sb->EndsWith(UTF8STRC(">>")))
+					{
+						param = Media::PDFParameter::Parse(Text::CString(&sb->v[2], sb->leng - 4));
+						if (param == 0)
+						{
 #if defined(VERBOSE)
-					printf("PDFParser: Stream Length Filter is not valid: %s\r\n", leng->v);
+							printf("PDFParser: Error in parsing object parameter: %s\r\n", sb->ToString());
 #endif
-					env->normalEnd = true;
-					break;
-				}
-				obj->SetStream(env->fd, env->dataOfst + env->currOfst, iLeng);
-				if (!NextLineFixed(env, iLeng))
-				{
+							env->normalEnd = true;
+							break;
+						}
+						obj->SetParameter(param);
+						notBreak = true;
+						break;
+					}
+					else
+					{
 #if defined(VERBOSE)
-					printf("PDFParser: Stream is not ended by LF\r\n");
+						printf("PDFParser: Unknown object content: %s\r\n", sb->ToString());
 #endif
-					env->normalEnd = true;
-					break;
-				}
-				sb->ClearStr();
-				if (!NextLine(env, sb, true))
-				{
-					break;
-				}
-				if (!sb->Equals(UTF8STRC("endstream")))
-				{
-#if defined(VERBOSE)
-					printf("PDFParser: End of stream not found: %s\r\n", sb->ToString());
-#endif
-					env->normalEnd = true;
-					break;
+						env->normalEnd = true;
+						break;
+					}
 				}
 			}
-			else if (sb->EndsWith(UTF8STRC(">>endobj")))
-			{
-				param = Media::PDFParameter::Parse(Text::CString(&sb->v[2], sb->leng - 8));
-				if (param == 0)
-				{
-#if defined(VERBOSE)
-					printf("PDFParser: Error in parsing object parameter: %s\r\n", sb->ToString());
-#endif
-					env->normalEnd = true;
-					break;
-				}
-				obj->SetParameter(param);
-				return true;
-			}
-			else if (sb->EndsWith(UTF8STRC(">>")))
-			{
-				param = Media::PDFParameter::Parse(Text::CString(&sb->v[2], sb->leng - 4));
-				if (param == 0)
-				{
-#if defined(VERBOSE)
-					printf("PDFParser: Error in parsing object parameter: %s\r\n", sb->ToString());
-#endif
-					env->normalEnd = true;
-					break;
-				}
-				obj->SetParameter(param);
-			}
-			else
-			{
-#if defined(VERBOSE)
-				printf("PDFParser: Unknown object content: %s\r\n", sb->ToString());
-#endif
-				env->normalEnd = true;
+			if (!notBreak)
 				break;
-			}
 		}
 		else
 		{
@@ -364,6 +363,60 @@ Bool Parser::FileParser::PDFParser::ParseObject(PDFParseEnv *env, Text::StringBu
 		sb->ClearStr();
 	}
 	return false;
+}
+
+Bool Parser::FileParser::PDFParser::ParseObjectStream(PDFParseEnv *env, Text::StringBuilderUTF8 *sb, Media::PDFObject *obj)
+{
+	Media::PDFParameter *param = obj->GetParameter();
+	if (param == 0)
+	{
+#if defined(VERBOSE)
+		printf("PDFParser: Object parameter not found for stream data\r\n");
+#endif
+		env->normalEnd = true;
+		return false;
+	}
+	Text::String *leng = param->GetEntryValue(CSTR("Length"));
+	if (leng == 0)
+	{
+#if defined(VERBOSE)
+		printf("PDFParser: Length not found in stream filters: %s\r\n", sb->ToString());
+#endif
+		env->normalEnd = true;
+		return false;
+	}
+	UOSInt iLeng;
+	if (!leng->ToUOSInt(&iLeng))
+	{
+#if defined(VERBOSE)
+		printf("PDFParser: Stream Length Filter is not valid: %s\r\n", leng->v);
+#endif
+		env->normalEnd = true;
+		return false;
+	}
+	obj->SetStream(env->fd, env->dataOfst + env->currOfst, iLeng);
+	if (!NextLineFixed(env, iLeng))
+	{
+#if defined(VERBOSE)
+		printf("PDFParser: Stream is not ended by LF\r\n");
+#endif
+		env->normalEnd = true;
+		return false;
+	}
+	sb->ClearStr();
+	if (!NextLine(env, sb, true))
+	{
+		return false;
+	}
+	if (!sb->Equals(UTF8STRC("endstream")))
+	{
+#if defined(VERBOSE)
+		printf("PDFParser: End of stream not found: %s\r\n", sb->ToString());
+#endif
+		env->normalEnd = true;
+		return false;
+	}
+	return true;
 }
 
 Parser::FileParser::PDFParser::PDFParser()
@@ -420,6 +473,7 @@ IO::ParsedObject *Parser::FileParser::PDFParser::ParseFileHdr(IO::StreamData *fd
 	sb.ClearStr();
 	while (NextLine(&env, &sb, true))
 	{
+		sb.Trim();
 		if (sb.EndsWith(UTF8STRC(" 0 obj")))
 		{
 			if (!ParseObject(&env, &sb, doc))
@@ -455,10 +509,35 @@ IO::ParsedObject *Parser::FileParser::PDFParser::ParseFileHdr(IO::StreamData *fd
 						env.normalEnd = true;
 						break;
 					}
-					if (!sb.StartsWith(UTF8STRC("<<")) || !sb.EndsWith(UTF8STRC(">>")))
+					if (!sb.StartsWith(UTF8STRC("<<")))
 					{
 #if defined(VERBOSE)
 						printf("PDFParser: trailer values is not valid format: %s\r\n", sb.ToString());
+#endif
+						env.normalEnd = true;
+						break;
+					}
+					while (true)
+					{
+						UOSInt startCnt = sb.CountStr(UTF8STRC("<<"));
+						UOSInt endCnt = sb.CountStr(UTF8STRC(">>"));
+						if (startCnt > endCnt)
+						{
+							sb.AppendUTF8Char(' ');
+							if (!NextLine(&env, &sb, true))
+							{
+								break;
+							}
+						}
+						else
+						{
+							break;
+						}
+					}
+					if (!sb.EndsWith(UTF8STRC(">>")))
+					{
+#if defined(VERBOSE)
+						printf("PDFParser: trailer values is not valid format2: %s\r\n", sb.ToString());
 #endif
 						env.normalEnd = true;
 						break;
@@ -567,11 +646,10 @@ IO::ParsedObject *Parser::FileParser::PDFParser::ParseFileHdr(IO::StreamData *fd
 		}
 		else
 		{
-			sb.Trim();
 			if (sb.GetLength() > 0)
 			{
 #if defined(VERBOSE)
-				printf("PDFParser: Unsupported line: %s\r\n", sb.ToString());
+				printf("PDFParser: Unsupported line: %s, ofst = %lld\r\n", sb.ToString(), env.lineBegin);
 #endif
 				if (env.lineBegin >= 16)
 				{

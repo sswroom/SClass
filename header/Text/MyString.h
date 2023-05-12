@@ -264,6 +264,7 @@ namespace Text
 	UOSInt StrCSVSplit(UTF8Char **strs, UOSInt maxStrs, UTF8Char *strToSplit);
 	UTF8Char *StrCSVJoin(UTF8Char *oriStr, const UTF8Char **strs, UOSInt nStrs);
 	UOSInt StrCountChar(const UTF8Char *str1, UTF8Char c);
+	UOSInt StrCountStr(const UTF8Char *str1, UOSInt strLen1, const UTF8Char *str2, UOSInt strLen2);
 	UTF8Char *StrRemoveANSIEscapes(UTF8Char *str1);
 
 	FORCEINLINE Char *StrConcat(Char *oriStr, const Char *strToJoin) { return (Char*)StrConcat((UTF8Char*)oriStr, (const UTF8Char*)strToJoin); }

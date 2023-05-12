@@ -3953,6 +3953,50 @@ UOSInt Text::StrCountChar(const UTF8Char *str1, UTF8Char c)
 	return cnt;
 }
 
+UOSInt Text::StrCountStr(const UTF8Char *str1, UOSInt strLen1, const UTF8Char *str2, UOSInt strLen2)
+{
+	if (strLen1 < strLen2)
+	{
+		return 0;
+	}
+	UOSInt i = 0;
+	if (strLen2 == 1)
+	{
+		UOSInt cnt = 0;
+		while (i < strLen1)
+		{
+			if (str1[i++] == *str2)
+				cnt++;
+		}
+		return cnt;
+	}
+	else if (strLen2 == 2)
+	{
+		UOSInt cnt = 0;
+		UInt16 val = ReadNUInt16(str2);
+		while (i < strLen1 - 1)
+		{
+			if (ReadNUInt16(&str1[i++]) == val)
+			{
+				cnt++;
+				i++;
+			}
+		}
+		return cnt;
+	}
+	else
+	{
+		UOSInt cnt = 0;
+		UOSInt j;
+		while ((j = Text::StrIndexOfC(str1 + i, strLen1 - i, str2, strLen2)) != INVALID_INDEX)
+		{
+			cnt++;
+			i += j + strLen2;
+		}
+		return cnt;
+	}
+}
+
 UTF8Char *Text::StrRemoveANSIEscapes(UTF8Char *str1)
 {
 	UTF8Char c;
