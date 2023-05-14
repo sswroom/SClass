@@ -22,6 +22,7 @@ namespace SSWR
 			UInt32 scnSize;
 
 			static UOSInt GetPreviewSize();
+			static UOSInt GetPerPage(Bool isMobile);
 			Net::WebServer::IWebSession *ParseRequestEnv(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, RequestEnv *env, Bool keepSess);
 
 			static void ResponseMstm(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, IO::MemoryStream *mstm, Text::CString contType);

@@ -5,10 +5,24 @@
 #include "Text/XML.h"
 
 #define PREVIEW_SIZE 320
+#define SP_PER_PAGE_DESKTOP 100
+#define SP_PER_PAGE_MOBILE 90
 
 UOSInt SSWR::OrganWeb::OrganWebController::GetPreviewSize()
 {
 	return PREVIEW_SIZE;
+}
+
+UOSInt SSWR::OrganWeb::OrganWebController::GetPerPage(Bool isMobile)
+{
+	if (isMobile)
+	{
+		return SP_PER_PAGE_MOBILE;
+	}
+	else
+	{
+		return SP_PER_PAGE_DESKTOP;
+	}
 }
 
 Net::WebServer::IWebSession *SSWR::OrganWeb::OrganWebController::ParseRequestEnv(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, RequestEnv *env, Bool keepSess)
