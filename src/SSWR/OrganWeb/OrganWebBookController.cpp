@@ -249,7 +249,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBook(Net::WebServer::I
 			}
 			i++;
 		}
-		UInt32 perPage = GetPerPage(env.isMobile);
+		UOSInt perPage = GetPerPage(env.isMobile);
 		writer.WriteLineC(UTF8STRC("<br/>"));
 		if (pageNo > 0)
 		{
@@ -262,7 +262,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBook(Net::WebServer::I
 			sb.AppendU32(pageNo - 1);
 			sb.AppendC(UTF8STRC("\">&lt;"));
 			sb.Append(LangGetValue(lang, UTF8STRC("Previous")));
-			sb.AppendU32(perPage);
+			sb.AppendUOSInt(perPage);
 			sb.Append(LangGetValue(lang, UTF8STRC("Items")));
 			sb.AppendC(UTF8STRC("</a>"));
 			writer.WriteLineC(sb.ToString(), sb.GetLength());
@@ -278,7 +278,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBook(Net::WebServer::I
 			sb.AppendU32(pageNo + 1);
 			sb.AppendC(UTF8STRC("\">"));
 			sb.Append(LangGetValue(lang, UTF8STRC("Next")));
-			sb.AppendU32(perPage);
+			sb.AppendUOSInt(perPage);
 			sb.Append(LangGetValue(lang, UTF8STRC("Items")));
 			sb.AppendC(UTF8STRC("&gt;</a>"));
 			writer.WriteLineC(sb.ToString(), sb.GetLength());

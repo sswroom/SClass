@@ -4168,6 +4168,8 @@ SSWR/OrganMgr/OrganUserEditForm.h: ../../src/SSWR/OrganMgr/OrganUserEditForm.cpp
 @OrganUserEditForm.o
 SSWR/OrganMgr/OrganUserForm.h: ../../src/SSWR/OrganMgr/OrganUserForm.cpp
 @OrganUserForm.o
+SSWR/OrganWeb/OrganWebBookController.h: ../../src/SSWR/OrganWeb/OrganWebBookController.cpp
+@OrganWebBookController.o
 SSWR/OrganWeb/OrganWebCommon.h:
 SSWR/OrganWeb/OrganWebController.h: ../../src/SSWR/OrganWeb/OrganWebController.cpp
 @OrganWebController.o
@@ -5927,6 +5929,7 @@ OrganTripForm.o: ../../src/SSWR/OrganMgr/OrganTripForm.cpp
 OrganTripList.o: ../../src/SSWR/OrganMgr/OrganTripList.cpp
 OrganUserEditForm.o: ../../src/SSWR/OrganMgr/OrganUserEditForm.cpp
 OrganUserForm.o: ../../src/SSWR/OrganMgr/OrganUserForm.cpp
+OrganWebBookController.o: ../../src/SSWR/OrganWeb/OrganWebBookController.cpp
 OrganWebController.o: ../../src/SSWR/OrganWeb/OrganWebController.cpp
 OrganWebEnv.o: ../../src/SSWR/OrganWeb/OrganWebEnv.cpp
 OrganWebHandler.o: ../../src/SSWR/OrganWeb/OrganWebHandler.cpp
