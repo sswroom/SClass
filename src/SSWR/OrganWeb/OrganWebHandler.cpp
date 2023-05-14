@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-//#include "SSWR/OrganWeb/OrganWebEnv.h"
+#include "SSWR/OrganWeb/OrganWebBookController.h"
 #include "SSWR/OrganWeb/OrganWebHandler.h"
 #include "SSWR/OrganWeb/OrganWebMainController.h"
 #include "SSWR/OrganWeb/OrganWebPhotoController.h"
@@ -36,6 +36,7 @@ SSWR::OrganWeb::OrganWebHandler::OrganWebHandler(OrganWebEnv *env, UInt32 scnSiz
 	this->AddController(NEW_CLASS_D(OrganWebMainController(this->sessMgr, env, scnSize)));
 	this->AddController(NEW_CLASS_D(OrganWebPhotoController(this->sessMgr, env, scnSize)));
 	this->AddController(NEW_CLASS_D(OrganWebPOIController(this->sessMgr, env, scnSize)));
+	this->AddController(NEW_CLASS_D(OrganWebBookController(this->sessMgr, env, scnSize)));
 }
 
 SSWR::OrganWeb::OrganWebHandler::~OrganWebHandler()
