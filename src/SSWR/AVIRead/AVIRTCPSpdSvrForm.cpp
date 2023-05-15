@@ -21,6 +21,7 @@ void __stdcall SSWR::AVIRead::AVIRTCPSpdSvrForm::OnStartClick(void *userObj)
 		me->svr = 0;
 		me->cliMgr = 0;
 		me->txtPort->SetReadOnly(false);
+		me->btnStart->SetText(CSTR("Start"));
 		return;
 	}
 	me->txtPort->GetText(&sb);
@@ -50,6 +51,7 @@ void __stdcall SSWR::AVIRead::AVIRTCPSpdSvrForm::OnStartClick(void *userObj)
 		return;
 	}
 	me->txtPort->SetReadOnly(true);
+	me->btnStart->SetText(CSTR("Stop"));
 }
 
 void __stdcall SSWR::AVIRead::AVIRTCPSpdSvrForm::OnClientConn(Socket *s, void *userObj)

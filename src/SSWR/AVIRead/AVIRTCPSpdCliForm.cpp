@@ -7,6 +7,9 @@
 #include "Text/StringBuilderUTF8.h"
 #include "UI/MessageDialog.h"
 
+#define SENDBUFFSIZE 65536//9000
+#define RECVBUFFSIZE 65536//9000
+
 void __stdcall SSWR::AVIRead::AVIRTCPSpdCliForm::OnConnClick(void *userObj)
 {
 	SSWR::AVIRead::AVIRTCPSpdCliForm *me = (SSWR::AVIRead::AVIRTCPSpdCliForm*)userObj;
@@ -110,7 +113,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRTCPSpdCliForm::ProcThread(void *userObj)
 	SSWR::AVIRead::AVIRTCPSpdCliForm *me = (SSWR::AVIRead::AVIRTCPSpdCliForm*)userObj;
 	UInt8 *sendBuff;
 	UOSInt sendSize;
-	UOSInt sendBuffSize = 9000;
+	UOSInt sendBuffSize = SENDBUFFSIZE;
 	me->procRunning = true;
 	me->mainEvt.Set();
 	sendBuff = MemAlloc(UInt8, sendBuffSize);
@@ -149,12 +152,12 @@ UInt32 __stdcall SSWR::AVIRead::AVIRTCPSpdCliForm::RecvThread(void *userObj)
 	UOSInt recvSize;
 	me->recvRunning = true;
 	me->mainEvt.Set();
-	recvBuff = MemAlloc(UInt8, 9000);
+	recvBuff = MemAlloc(UInt8, RECVBUFFSIZE);
 	while (!me->toStop)
 	{
 		if (me->cli)
 		{
-			recvSize = me->cli->Read(recvBuff, 9000);
+			recvSize = me->cli->Read(recvBuff, RECVBUFFSIZE);
 			if (recvSize > 0)
 			{
 				Sync::Interlocked::Add(&me->recvSize, recvSize);

@@ -432,25 +432,23 @@ UOSInt Net::OSSocketFactory::SendData(Socket *socket, const UInt8 *buff, UOSInt 
 	{
 		if (et)
 		{
-			if (errno == ECONNRESET)
+			switch (errno)
 			{
+			case ECONNRESET:
 				*et = ET_CONN_RESET;
-			}
-			else if (errno == ECONNRESET)
-			{
+				break;
+			case ECONNABORTED:
 				*et = ET_CONN_ABORT;
-			}
-			else if (errno == ENOTCONN)
-			{
+				break;
+			case ENOTCONN:
 				*et = ET_DISCONNECT;
-			}
-			else if (errno == ENOBUFS)
-			{
+				break;
+			case ENOBUFS:
 				*et = ET_SHUTDOWN;
-			}
-			else
-			{
+				break;
+			default:
 				*et = ET_UNKNOWN;
+				break;
 			}
 		}
 		return 0;
@@ -473,25 +471,23 @@ UOSInt Net::OSSocketFactory::ReceiveData(Socket *socket, UInt8 *buff, UOSInt buf
 	{
 		if (et)
 		{
-			if (errno == ECONNRESET)
+			switch (errno)
 			{
+			case ECONNRESET:
 				*et = ET_CONN_RESET;
-			}
-			else if (errno == ECONNRESET)
-			{
+				break;
+			case ECONNABORTED:
 				*et = ET_CONN_ABORT;
-			}
-			else if (errno == ENOTCONN)
-			{
+				break;
+			case ENOTCONN:
 				*et = ET_DISCONNECT;
-			}
-			else if (errno == ENOBUFS)
-			{
+				break;
+			case ENOBUFS:
 				*et = ET_SHUTDOWN;
-			}
-			else
-			{
+				break;
+			default:
 				*et = ET_UNKNOWN;
+				break;
 			}
 		}
 		return 0;
