@@ -73,7 +73,7 @@ Text::StringBuilderC *Text::StringBuilderC::AppendCSV(const Char **sarr, UOSInt 
 	{
 		s = Text::String::NewCSVRec((const UTF8Char*)sarr[i]);
 		if (i > 0)
-			this->Append(",");
+			this->AppendC(",", 1);
 		this->AppendC((const Char*)s->v, s->leng);
 		s->Release();
 		i++;

@@ -133,6 +133,7 @@ Media::StaticImage *HEIFParser_DecodeImage(heif_image_handle *imgHdlr)
 				case heif_color_primaries_SMPTE_240M:
 					simg->info.color->primaries.SetColorType(Media::ColorProfile::CT_SMPTE240M);
 					break;
+#if LIBHEIF_HAVE_VERSION(1, 8, 0)
 				case heif_color_primaries_generic_film:
 					simg->info.color->primaries.SetColorType(Media::ColorProfile::CT_GENERIC_FILM);
 					break;
@@ -151,6 +152,7 @@ Media::StaticImage *HEIFParser_DecodeImage(heif_image_handle *imgHdlr)
 				case heif_color_primaries_EBU_Tech_3213_E:
 					simg->info.color->primaries.SetColorType(Media::ColorProfile::CT_EBU3213);
 					break;
+#endif
 				case heif_color_primaries_unspecified:
 				default:
 					simg->info.color->primaries.SetColorType(Media::ColorProfile::CT_PUNKNOWN);
@@ -194,6 +196,7 @@ Media::StaticImage *HEIFParser_DecodeImage(heif_image_handle *imgHdlr)
 					simg->info.color->gtransfer.Set(Media::CS::TRANT_LINEAR, 1.0);
 					simg->info.color->btransfer.Set(Media::CS::TRANT_LINEAR, 1.0);
 					break;
+#if LIBHEIF_HAVE_VERSION(1, 8, 0)
 				case heif_transfer_characteristic_logarithmic_100:
 					simg->info.color->rtransfer.Set(Media::CS::TRANT_LOG100, 2.2);
 					simg->info.color->gtransfer.Set(Media::CS::TRANT_LOG100, 2.2);
@@ -204,6 +207,7 @@ Media::StaticImage *HEIFParser_DecodeImage(heif_image_handle *imgHdlr)
 					simg->info.color->gtransfer.Set(Media::CS::TRANT_LOGSQRT10, 2.2);
 					simg->info.color->btransfer.Set(Media::CS::TRANT_LOGSQRT10, 2.2);
 					break;
+#endif
 				case heif_transfer_characteristic_IEC_61966_2_4:
 					simg->info.color->rtransfer.Set(Media::CS::TRANT_BT709, 2.2);
 					simg->info.color->gtransfer.Set(Media::CS::TRANT_BT709, 2.2);
@@ -219,6 +223,7 @@ Media::StaticImage *HEIFParser_DecodeImage(heif_image_handle *imgHdlr)
 					simg->info.color->gtransfer.Set(Media::CS::TRANT_sRGB, 2.2);
 					simg->info.color->btransfer.Set(Media::CS::TRANT_sRGB, 2.2);
 					break;
+#if LIBHEIF_HAVE_VERSION(1, 8, 0)
 				case heif_transfer_characteristic_ITU_R_BT_2020_2_10bit:
 					simg->info.color->rtransfer.Set(Media::CS::TRANT_BT709, 2.2);
 					simg->info.color->gtransfer.Set(Media::CS::TRANT_BT709, 2.2);
@@ -244,6 +249,7 @@ Media::StaticImage *HEIFParser_DecodeImage(heif_image_handle *imgHdlr)
 					simg->info.color->gtransfer.Set(Media::CS::TRANT_HLG, 2.2);
 					simg->info.color->btransfer.Set(Media::CS::TRANT_HLG, 2.2);
 					break;
+#endif
 				}
 
 				switch (cp->matrix_coefficients)
@@ -270,17 +276,21 @@ Media::StaticImage *HEIFParser_DecodeImage(heif_image_handle *imgHdlr)
 				case heif_matrix_coefficients_SMPTE_240M:
 					simg->info.yuvType = Media::ColorProfile::YUVT_SMPTE240M;
 					break;
+#if LIBHEIF_HAVE_VERSION(1, 8, 0)
 				case heif_matrix_coefficients_ITU_R_BT_2020_2_constant_luminance:
 					simg->info.yuvType = Media::ColorProfile::YUVT_BT2020;
 					break;
 				case heif_matrix_coefficients_ITU_R_BT_2020_2_non_constant_luminance:
 					simg->info.yuvType = Media::ColorProfile::YUVT_BT2020;
 					break;
+#endif
 				case heif_matrix_coefficients_YCgCo:
+#if LIBHEIF_HAVE_VERSION(1, 8, 0)
 				case heif_matrix_coefficients_SMPTE_ST_2085:
 				case heif_matrix_coefficients_chromaticity_derived_non_constant_luminance:
 				case heif_matrix_coefficients_chromaticity_derived_constant_luminance:
 				case heif_matrix_coefficients_ICtCp:
+#endif
 					simg->info.yuvType = Media::ColorProfile::YUVT_UNKNOWN;
 					break;
 				}

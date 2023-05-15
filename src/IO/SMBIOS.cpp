@@ -4139,7 +4139,7 @@ Bool IO::SMBIOS::ToString(Text::StringBuilderUTF8 *sb) const
 			if (dataBuff[1] > 8)
 			{
 				sb->AppendC(UTF8STRC("Processor-Specific Data: "));
-				sb->AppendHexBuff(&dataBuff[8], dataBuff[1] - 8, ' ', Text::LineBreakType::None);
+				sb->AppendHexBuff(&dataBuff[8], (UOSInt)dataBuff[1] - 8, ' ', Text::LineBreakType::None);
 				sb->AppendC(UTF8STRC("\r\n"));
 			}
 			sb->AppendC(UTF8STRC("\r\n"));
