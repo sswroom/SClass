@@ -136,7 +136,6 @@ OCREngine.o: ../../src/Media/OCREngine.cpp
 Printer.o: ../../src/Media/PrinterNull.cpp
 ZXingWriter.o: ../../src/Media/ZXingWriter.cpp
 !-lZXing
-!-lZXingCore
 FFMPEGDecoder.o: ../../src/Media/Decoder/FFMPEGDecoderNull.cpp
 OCVFrame.o: ../../src/Media/OpenCV/OCVFrameNull.cpp
 OCVFrameFeeder.o: ../../src/Media/OpenCV/OCVFrameFeeder.cpp

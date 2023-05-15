@@ -143,7 +143,6 @@ $`pkg-config --cflags --libs cairo` `cups-config --cflags`
 !`cups-config --libs`
 ZXingWriter.o: ../../src/Media/ZXingWriter.cpp
 !-lZXing
-!-lZXingCore
 FFMPEGDecoder.o: ../../src/Media/Decoder/FFMPEGDecoder.cpp
 !-lavutil
 !-lavcodec
