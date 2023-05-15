@@ -1204,6 +1204,30 @@ Bool SSWR::OrganWeb::OrganWebEnv::BookFileExist(BookInfo *book)
 	return IO::Path::GetPathType(CSTRP(sbuff, sptr)) == IO::Path::PathType::File;
 }
 
+Bool SSWR::OrganWeb::OrganWebEnv::BookSetPhoto(Sync::RWMutexUsage *mutUsage, Int32 bookId, Int32 userfileId)
+{
+	BookInfo *book = this->BookGet(mutUsage, bookId);
+	UserFileInfo *userFile = this->UserfileGet(mutUsage, userfileId);
+	if (book == 0 || userFile == 0)
+		return false;
+	mutUsage->ReplaceMutex(&this->dataMut, true);
+
+	DB::SQLBuilder sql(this->db);
+	sql.AppendCmdC(CSTR("update book set userfile_id = "));
+	sql.AppendInt32(userfileId);
+	sql.AppendCmdC(CSTR(" where id = "));
+	sql.AppendInt32(book->id);
+	if (this->db->ExecuteNonQuery(sql.ToCString()) >= 0)
+	{
+		book->userfileId = userfileId;
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
 Bool SSWR::OrganWeb::OrganWebEnv::UserGPSGetPos(Sync::RWMutexUsage *mutUsage, Int32 userId, const Data::Timestamp &t, Double *lat, Double *lon)
 {
 	mutUsage->ReplaceMutex(&this->dataMut, false);

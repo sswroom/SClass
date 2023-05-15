@@ -184,6 +184,12 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBook(Net::WebServer::I
 		sb.AppendC(UTF8STRC(" - Page "));
 		sb.AppendUOSInt(pageNo + 1);
 		me->WriteHeader(&writer, sb.ToString(), env.user, env.isMobile);
+		writer.WriteStrC(UTF8STRC("<center><h1>"));
+		s = Text::XML::ToNewHTMLBodyText(sb.ToString());
+		writer.WriteStrC(s->v, s->leng);
+		s->Release();
+		writer.WriteLineC(UTF8STRC("</h1></center>"));
+
 		if (book->userfileId != 0)
 		{
 			UserFileInfo *userFile = me->env->UserfileGet(&mutUsage, book->userfileId);
@@ -211,11 +217,6 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBook(Net::WebServer::I
 				}
 			}
 		}
-		writer.WriteStrC(UTF8STRC("<center><h1>"));
-		s = Text::XML::ToNewHTMLBodyText(sb.ToString());
-		writer.WriteStrC(s->v, s->leng);
-		s->Release();
-		writer.WriteLineC(UTF8STRC("</h1></center>"));
 
 		writer.WriteStrC(UTF8STRC("<b>Book Name:</b> "));
 		s = Text::XML::ToNewHTMLBodyText(book->title->v);
@@ -260,6 +261,16 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBook(Net::WebServer::I
 				sb.AppendC(UTF8STRC("<b>View:</b> <a href=\"bookview.html?id="));
 				sb.AppendI32(id);
 				sb.AppendC(UTF8STRC("\">here</a><br/>"));
+				writer.WriteLineC(sb.ToString(), sb.GetLength());
+			}
+			if (env.pickObjType == PickObjType::POT_USERFILE)
+			{
+				sb.ClearStr();
+				sb.AppendC(UTF8STRC("<a href=\"bookphoto.html?id="));
+				sb.AppendI32(id);
+				sb.AppendC(UTF8STRC("&cateId="));
+				sb.AppendI32(cateId);
+				sb.AppendC(UTF8STRC("\">Modify Book Photo</a><br/>"));
 				writer.WriteLineC(sb.ToString(), sb.GetLength());
 			}
 		}
@@ -398,6 +409,231 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookView(Net::WebServe
 			resp->Write(sbuff, readSize);
 			sizeLeft -= readSize;
 		}
+		return true;
+	}
+	else
+	{
+		resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
+		return true;
+	}
+}
+
+
+Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookPhoto(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq, Net::WebServer::WebController *parent)
+{
+	SSWR::OrganWeb::OrganWebBookController *me = (SSWR::OrganWeb::OrganWebBookController*)parent;
+	RequestEnv env;
+	me->ParseRequestEnv(req, resp, &env, false);
+
+	Int32 id;
+	Int32 cateId;
+	if (req->GetQueryValueI32(CSTR("id"), &id) &&
+		req->GetQueryValueI32(CSTR("cateId"), &cateId))
+	{
+		UTF8Char sbuff[512];
+		UTF8Char *sptr;
+		BookInfo *book;
+		CategoryInfo *cate;
+		Sync::RWMutexUsage mutUsage;
+		book = me->env->BookGet(&mutUsage, id);
+		cate = me->env->CateGet(&mutUsage, cateId);
+		if (env.user == 0 || env.user->userType != 0)
+		{
+			mutUsage.EndUse();
+			resp->ResponseError(req, Net::WebStatus::SC_UNAUTHORIZED);
+			return true;
+		}
+		else if (book == 0 || cate == 0 || env.pickObjType != PickObjType::POT_USERFILE)
+		{
+			mutUsage.EndUse();
+			resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
+			return true;
+		}
+		Text::StringBuilderUTF8 sb;
+		Int32 fileId;
+		if (req->GetQueryValueI32(CSTR("fileId"), &fileId))
+		{
+			if (me->env->BookSetPhoto(&mutUsage, id, fileId))
+			{
+				sb.AppendC(UTF8STRC("book.html?id="));
+				sb.AppendI32(book->id);
+				sb.AppendC(UTF8STRC("&cateId="));
+				sb.AppendI32(cate->cateId);
+				resp->RedirectURL(req, sb.ToCString(), 0);
+			}
+		}
+		IO::MemoryStream mstm;
+		Text::UTF8Writer writer(&mstm);
+		Text::String *s;
+
+		sb.ClearStr();
+		sb.Append(cate->chiName);
+		sb.AppendC(UTF8STRC(" - "));
+		sb.Append(book->title);
+		me->WriteHeader(&writer, sb.ToString(), env.user, env.isMobile);
+		writer.WriteStrC(UTF8STRC("<center><h1>"));
+		s = Text::XML::ToNewHTMLBodyText(sb.ToString());
+		writer.WriteStrC(s->v, s->leng);
+		s->Release();
+		writer.WriteLineC(UTF8STRC("</h1></center>"));
+
+		if (book->userfileId != 0)
+		{
+			UserFileInfo *userFile = me->env->UserfileGet(&mutUsage, book->userfileId);
+			if (userFile)
+			{
+				SpeciesInfo *sp = me->env->SpeciesGet(&mutUsage, userFile->speciesId);
+				if (sp)
+				{
+					writer.WriteStrC(UTF8STRC("<img src="));
+					sb.ClearStr();
+					sb.AppendC(UTF8STRC("photo.html?id="));
+					sb.AppendI32(userFile->speciesId);
+					sb.AppendC(UTF8STRC("&cateId="));
+					sb.AppendI32(sp->cateId);
+					sb.AppendC(UTF8STRC("&width="));
+					sb.AppendUOSInt(GetPreviewSize());
+					sb.AppendC(UTF8STRC("&height="));
+					sb.AppendUOSInt(GetPreviewSize());
+					sb.AppendC(UTF8STRC("&fileId="));
+					sb.AppendI32(userFile->id);
+					s = Text::XML::ToNewAttrText(sb.ToString());
+					writer.WriteStrC(s->v, s->leng);
+					s->Release();
+					writer.WriteStrC(UTF8STRC(" border=\"0\" style=\"float: left;\"/>"));
+				}
+			}
+		}
+
+		writer.WriteStrC(UTF8STRC("<b>Book Name:</b> "));
+		s = Text::XML::ToNewHTMLBodyText(book->title->v);
+		sb.ClearStr();
+		sb.Append(s);
+		s->Release();
+		sb.ReplaceStr(UTF8STRC("[i]"), UTF8STRC("<i>"));
+		sb.ReplaceStr(UTF8STRC("[/i]"), UTF8STRC("</i>"));
+		writer.WriteStrC(sb.ToString(), sb.GetLength());
+		writer.WriteLineC(UTF8STRC("<br/>"));
+
+		writer.WriteStrC(UTF8STRC("<b>Author:</b> "));
+		s = Text::XML::ToNewHTMLBodyText(book->author->v);
+		writer.WriteStrC(s->v, s->leng);
+		s->Release();
+		writer.WriteLineC(UTF8STRC("<br/>"));
+
+		writer.WriteStrC(UTF8STRC("<b>Press:</b> "));
+		s = Text::XML::ToNewHTMLBodyText(book->press->v);
+		writer.WriteStrC(s->v, s->leng);
+		s->Release();
+		writer.WriteLineC(UTF8STRC("<br/>"));
+
+		if (book->url)
+		{
+			writer.WriteStrC(UTF8STRC("<b>URL:</b> <a href="));
+			s = Text::XML::ToNewAttrText(book->url->v);
+			writer.WriteStrC(s->v, s->leng);
+			s->Release();
+			writer.WriteStrC(UTF8STRC(">"));
+			s = Text::XML::ToNewHTMLBodyText(book->url->v);
+			writer.WriteStrC(s->v, s->leng);
+			s->Release();
+			writer.WriteLineC(UTF8STRC("</a><br/>"));
+		}
+
+		writer.WriteLineC(UTF8STRC("<hr/>"));
+		UserFileInfo *userFile;
+		UOSInt colCount = env.scnWidth / GetPreviewSize();
+		UOSInt colWidth = 100 / colCount;
+		UInt32 currColumn;
+		UOSInt i;
+		UOSInt j;
+		i = 0;
+		j = env.pickObjs->GetCount();
+		if (j > 0)
+		{
+			writer.WriteLineC(UTF8STRC("<table border=\"0\" width=\"100%\">"));
+			currColumn = 0;
+			while (i < j)
+			{
+				userFile = me->env->UserfileGet(&mutUsage, env.pickObjs->GetItem(i));
+				if (currColumn == 0)
+				{
+					writer.WriteLineC(UTF8STRC("<tr>"));
+				}
+				sb.ClearStr();
+				sb.AppendC(UTF8STRC("<td width=\""));
+				sb.AppendUOSInt(colWidth);
+				sb.AppendC(UTF8STRC("%\">"));
+				writer.WriteLineC(sb.ToString(), sb.GetLength());
+				sb.ClearStr();
+				sb.AppendC(UTF8STRC("<center><a href=\"bookphoto.html?id="));
+				sb.AppendI32(book->id);
+				sb.AppendC(UTF8STRC("&amp;cateId="));
+				sb.AppendI32(cate->cateId);
+				sb.AppendC(UTF8STRC("&amp;fileId="));
+				sb.AppendI32(userFile->id);
+				sb.AppendC(UTF8STRC("\">"));
+				writer.WriteLineC(sb.ToString(), sb.GetLength());
+
+				writer.WriteStrC(UTF8STRC("<img src="));
+				SpeciesInfo *sp = me->env->SpeciesGet(&mutUsage, userFile->speciesId);
+				sb.ClearStr();
+				sb.AppendC(UTF8STRC("photo.html?id="));
+				sb.AppendI32(userFile->speciesId);
+				sb.AppendC(UTF8STRC("&cateId="));
+				if (sp)
+					sb.AppendI32(sp->cateId);
+				else
+					sb.AppendI32(cate->cateId);
+				sb.AppendC(UTF8STRC("&width="));
+				sb.AppendUOSInt(GetPreviewSize());
+				sb.AppendC(UTF8STRC("&height="));
+				sb.AppendUOSInt(GetPreviewSize());
+				sb.AppendC(UTF8STRC("&fileId="));
+				sb.AppendI32(userFile->id);
+				s = Text::XML::ToNewAttrText(sb.ToString());
+				writer.WriteStrC(s->v, s->leng);
+				s->Release();
+				writer.WriteStrC(UTF8STRC(" border=\"0\""));
+				writer.WriteLineC(UTF8STRC("><br/>"));
+
+				writer.WriteLineC(UTF8STRC("</a>"));
+				writer.WriteLineC(UTF8STRC("</center></td>"));
+
+				currColumn++;
+				if (currColumn >= colCount)
+				{
+					writer.WriteLineC(UTF8STRC("</tr>"));
+					currColumn = 0;
+				}
+				i++;
+			}
+			if (currColumn != 0)
+			{
+				sb.ClearStr();
+				sb.AppendC(UTF8STRC("<td width=\""));
+				sb.AppendUOSInt(colWidth);
+				sb.AppendC(UTF8STRC("%\"></td>"));
+				while (currColumn < colCount)
+				{
+					writer.WriteLineC(sb.ToString(), sb.GetLength());
+					currColumn++;
+				}
+				writer.WriteLineC(UTF8STRC("</tr>"));
+			}
+			writer.WriteLineC(UTF8STRC("</table>"));
+		}
+		writer.WriteLineC(UTF8STRC("<hr/>"));
+
+		writer.WriteStrC(UTF8STRC("<a href=\"booklist.html?id="));
+		sptr = Text::StrInt32(sbuff, cate->cateId);
+		writer.WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
+		writer.WriteStrC(UTF8STRC("\">"));
+		writer.WriteStrC(UTF8STRC("Book List</a>"));
+
+		me->WriteFooter(&writer);
+		mutUsage.EndUse();
+		ResponseMstm(req, resp, &mstm, CSTR("text/html"));
 		return true;
 	}
 	else
