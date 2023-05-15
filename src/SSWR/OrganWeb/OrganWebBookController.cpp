@@ -648,6 +648,7 @@ SSWR::OrganWeb::OrganWebBookController::OrganWebBookController(Net::WebServer::M
 	this->AddService(CSTR("/booklist.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcBookList);
 	this->AddService(CSTR("/book.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcBook);
 	this->AddService(CSTR("/bookview.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcBookView);
+	this->AddService(CSTR("/bookphoto.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcBookPhoto);
 }
 
 SSWR::OrganWeb::OrganWebBookController::~OrganWebBookController()
