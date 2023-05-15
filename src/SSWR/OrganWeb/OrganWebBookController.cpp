@@ -197,7 +197,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBook(Net::WebServer::I
 					sb.AppendC(UTF8STRC("photo.html?id="));
 					sb.AppendI32(userFile->speciesId);
 					sb.AppendC(UTF8STRC("&cateId="));
-					sb.AppendI32(species->cateId);
+					sb.AppendI32(sp->cateId);
 					sb.AppendC(UTF8STRC("&width="));
 					sb.AppendUOSInt(GetPreviewSize());
 					sb.AppendC(UTF8STRC("&height="));
