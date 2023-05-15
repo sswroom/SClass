@@ -369,7 +369,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoId(Net::WebServer::IW
 	Sync::RWMutexUsage mutUsage;
 	sp = this->env->SpeciesGet(&mutUsage, speciesId);
 	userFile = this->env->UserfileGet(&mutUsage, fileId);
-	if (sp && sp->cateId == cateId && userFile && (userFile->fileType == 1 || userFile->fileType == 3))
+	if (sp && sp->cateId == cateId && userFile && userFile->speciesId == speciesId && (userFile->fileType == 1 || userFile->fileType == 3))
 	{
 		if (sp->photoId == fileId && userFile->speciesId != sp->speciesId)
 		{

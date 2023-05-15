@@ -184,6 +184,33 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBook(Net::WebServer::I
 		sb.AppendC(UTF8STRC(" - Page "));
 		sb.AppendUOSInt(pageNo + 1);
 		me->WriteHeader(&writer, sb.ToString(), env.user, env.isMobile);
+		if (book->userfileId != 0)
+		{
+			UserFileInfo *userFile = me->env->UserfileGet(&mutUsage, book->userfileId);
+			if (userFile)
+			{
+				SpeciesInfo *sp = me->env->SpeciesGet(&mutUsage, userFile->speciesId);
+				if (sp)
+				{
+					writer.WriteStrC(UTF8STRC("<img src="));
+					sb.ClearStr();
+					sb.AppendC(UTF8STRC("photo.html?id="));
+					sb.AppendI32(userFile->speciesId);
+					sb.AppendC(UTF8STRC("&cateId="));
+					sb.AppendI32(species->cateId);
+					sb.AppendC(UTF8STRC("&width="));
+					sb.AppendUOSInt(GetPreviewSize());
+					sb.AppendC(UTF8STRC("&height="));
+					sb.AppendUOSInt(GetPreviewSize());
+					sb.AppendC(UTF8STRC("&fileId="));
+					sb.AppendI32(userFile->id);
+					s = Text::XML::ToNewAttrText(sb.ToString());
+					writer.WriteStrC(s->v, s->leng);
+					s->Release();
+					writer.WriteStrC(UTF8STRC(" border=\"0\" style=\"float: left;\"/>"));
+				}
+			}
+		}
 		writer.WriteStrC(UTF8STRC("<center><h1>"));
 		s = Text::XML::ToNewHTMLBodyText(sb.ToString());
 		writer.WriteStrC(s->v, s->leng);

@@ -537,7 +537,7 @@ void SSWR::OrganWeb::OrganWebController::WriteSpeciesTable(Sync::RWMutexUsage *m
 				s->Release();
 				writer->WriteLineC(UTF8STRC("><br/>"));
 			}
-			else if (sp->photo)
+			else if (sp->photo && sp->photo->leng > 0)
 			{
 				writer->WriteStrC(UTF8STRC("<img src="));
 				sb.ClearStr();
