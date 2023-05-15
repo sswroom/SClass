@@ -16,6 +16,7 @@ namespace SSWR
 		class AVIRTCPSpdSvrForm : public UI::GUIForm
 		{
 		private:
+			Bool echo;
 			SSWR::AVIRead::AVIRCore *core;
 			Net::TCPServer *svr;
 			Net::TCPClientMgr *cliMgr;
@@ -24,6 +25,7 @@ namespace SSWR
 			UI::GUILabel *lblPort;
 			UI::GUITextBox *txtPort;
 			UI::GUICheckBox *chkMultiThread;
+			UI::GUICheckBox *chkEcho;
 			UI::GUIButton *btnStart;
 
 			static void __stdcall OnStartClick(void *userObj);

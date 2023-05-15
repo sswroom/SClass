@@ -67,6 +67,10 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookList(Net::WebServe
 			writer.WriteLineC(UTF8STRC("<tr>"));
 			writer.WriteStrC(UTF8STRC("<td>"));
 			sptr = Text::StrUOSInt(sbuff, book->species.GetCount());
+			if (book->userfileId != 0)
+			{
+				sptr = Text::StrConcatC(sptr, UTF8STRC(" *"));
+			}
 			writer.WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
 			writer.WriteStrC(UTF8STRC("</td>"));
 			writer.WriteStrC(UTF8STRC("<td><a href=\"book.html?id="));
@@ -107,6 +111,19 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookList(Net::WebServe
 
 		writer.WriteLineC(UTF8STRC("</table>"));
 		writer.WriteLineC(UTF8STRC("<br/>"));
+		if (env.user && env.user->userType == 0)
+		{
+			writer.WriteStrC(UTF8STRC("<a href="));
+			sb.ClearStr();
+			sb.AppendC(UTF8STRC("bookadd.html?id="));
+			sb.AppendI32(cate->cateId);
+			s = Text::XML::ToNewAttrText(sb.ToString());
+			writer.WriteStrC(s->v, s->leng);
+			s->Release();
+			writer.WriteStrC(UTF8STRC(">"));
+			writer.WriteStr(LangGetValue(lang, UTF8STRC("New Book")));
+			writer.WriteStrC(UTF8STRC("</a><br/>"));
+		}
 		writer.WriteStrC(UTF8STRC("<a href="));
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("cate.html?cateName="));
@@ -418,7 +435,6 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookView(Net::WebServe
 	}
 }
 
-
 Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookPhoto(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq, Net::WebServer::WebController *parent)
 {
 	SSWR::OrganWeb::OrganWebBookController *me = (SSWR::OrganWeb::OrganWebBookController*)parent;
@@ -643,12 +659,98 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookPhoto(Net::WebServ
 	}
 }
 
+Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookAdd(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq, Net::WebServer::WebController *parent)
+{
+	SSWR::OrganWeb::OrganWebBookController *me = (SSWR::OrganWeb::OrganWebBookController*)parent;
+	RequestEnv env;
+	me->ParseRequestEnv(req, resp, &env, false);
+
+	Int32 cateId;
+	if (req->GetQueryValueI32(CSTR("id"), &cateId))
+	{
+		UTF8Char sbuff[512];
+		UTF8Char *sptr;
+		CategoryInfo *cate;
+		Sync::RWMutexUsage mutUsage;
+		cate = me->env->CateGet(&mutUsage, cateId);
+		if (env.user == 0 || env.user->userType != 0)
+		{
+			mutUsage.EndUse();
+			resp->ResponseError(req, Net::WebStatus::SC_UNAUTHORIZED);
+			return true;
+		}
+		else if (cate == 0)
+		{
+			mutUsage.EndUse();
+			resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
+			return true;
+		}
+//		Text::StringBuilderUTF8 sb;
+/*		Int32 fileId;
+		if (req->GetQueryValueI32(CSTR("fileId"), &fileId))
+		{
+			if (me->env->BookSetPhoto(&mutUsage, id, fileId))
+			{
+				sb.AppendC(UTF8STRC("book.html?id="));
+				sb.AppendI32(book->id);
+				sb.AppendC(UTF8STRC("&cateId="));
+				sb.AppendI32(cate->cateId);
+				resp->RedirectURL(req, sb.ToCString(), 0);
+			}
+		}*/
+		IO::MemoryStream mstm;
+		Text::UTF8Writer writer(&mstm);
+		Text::String *s;
+
+		me->WriteHeader(&writer, cate->chiName->v, env.user, env.isMobile);
+		writer.WriteStrC(UTF8STRC("<center><h1>New Book"));
+		writer.WriteLineC(UTF8STRC("</h1></center>"));
+
+		writer.WriteStrC(UTF8STRC("<form name=\"newBook\" method=\"POST\" action=\"bookadd.html?id="));
+		sptr = Text::StrInt32(sbuff, cate->cateId);
+		writer.WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
+		writer.WriteStrC(UTF8STRC("\">"));
+
+		writer.WriteStrC(UTF8STRC("<b>Book Name:</b> <input type=\"text\" name=\"title\" />"));
+		writer.WriteLineC(UTF8STRC("<br/>"));
+
+		writer.WriteStrC(UTF8STRC("<b>Author:</b> <input type=\"text\" name=\"author\" />"));
+		writer.WriteLineC(UTF8STRC("<br/>"));
+
+		writer.WriteStrC(UTF8STRC("<b>Press:</b> <input type=\"text\" name=\"press\" />"));
+		writer.WriteLineC(UTF8STRC("<br/>"));
+
+		writer.WriteStrC(UTF8STRC("<b>URL:</b> <input type=\"text\" name=\"url\" />"));
+		writer.WriteLineC(UTF8STRC("<br/>"));
+
+		writer.WriteLineC(UTF8STRC("<input type=\"submit\"/></form>"));
+
+		writer.WriteStrC(UTF8STRC("<a href=\"booklist.html?id="));
+		sptr = Text::StrInt32(sbuff, cate->cateId);
+		writer.WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
+		writer.WriteStrC(UTF8STRC("\">"));
+		writer.WriteStrC(UTF8STRC("Book List</a>"));
+
+		me->WriteFooter(&writer);
+		mutUsage.EndUse();
+		ResponseMstm(req, resp, &mstm, CSTR("text/html"));
+		return true;
+	}
+	else
+	{
+		resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
+		return true;
+	}
+}
+
 SSWR::OrganWeb::OrganWebBookController::OrganWebBookController(Net::WebServer::MemoryWebSessionManager *sessMgr, OrganWebEnv *env, UInt32 scnSize) : OrganWebController(sessMgr, env, scnSize)
 {
 	this->AddService(CSTR("/booklist.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcBookList);
 	this->AddService(CSTR("/book.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcBook);
 	this->AddService(CSTR("/bookview.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcBookView);
 	this->AddService(CSTR("/bookphoto.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcBookPhoto);
+	this->AddService(CSTR("/bookadd.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcBookAdd);
+	this->AddService(CSTR("/bookadd.html"), Net::WebUtil::RequestMethod::HTTP_POST, SvcBookAdd);
 }
 
 SSWR::OrganWeb::OrganWebBookController::~OrganWebBookController()

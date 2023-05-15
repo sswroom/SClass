@@ -3,6 +3,12 @@
 #include "Sync/Thread.h"
 #include "UI/MessageDialog.h"
 
+struct ClientStatus
+{
+	Bool echo;
+	Net::TCPClient *cli;
+};
+
 void __stdcall SSWR::AVIRead::AVIRTCPSpdSvrForm::OnStartClick(void *userObj)
 {
 	SSWR::AVIRead::AVIRTCPSpdSvrForm *me = (SSWR::AVIRead::AVIRTCPSpdSvrForm*)userObj;
@@ -28,6 +34,7 @@ void __stdcall SSWR::AVIRead::AVIRTCPSpdSvrForm::OnStartClick(void *userObj)
 		UI::MessageDialog::ShowDialog(CSTR("Port is out of range"), CSTR("Error"), me);
 		return;
 	}
+	me->echo = me->chkEcho->IsChecked();
 	if (!me->chkMultiThread->IsChecked())
 	{
 		NEW_CLASS(me->cliMgr, Net::TCPClientMgr(60, OnClientEvent, OnClientData, me, 4, OnClientTimeout));
@@ -57,7 +64,10 @@ void __stdcall SSWR::AVIRead::AVIRTCPSpdSvrForm::OnClientConn(Socket *s, void *u
 	}
 	else
 	{
-		Sync::Thread::Create(RecvThread, cli);
+		ClientStatus *cliStatus = MemAlloc(ClientStatus, 1);
+		cliStatus->echo = me->echo;
+		cliStatus->cli = cli;
+		Sync::Thread::Create(RecvThread, cliStatus);
 	}
 }
 
@@ -72,8 +82,11 @@ void __stdcall SSWR::AVIRead::AVIRTCPSpdSvrForm::OnClientEvent(Net::TCPClient *c
 
 void __stdcall SSWR::AVIRead::AVIRTCPSpdSvrForm::OnClientData(Net::TCPClient *cli, void *userObj, void *cliData, const UInt8 *buff, UOSInt size)
 {
-//	SSWR::AVIRead::AVIRTCPSpdSvrForm *me = (SSWR::AVIRead::AVIRTCPSpdSvrForm*)userObj;
-	cli->Write(buff, size);
+	SSWR::AVIRead::AVIRTCPSpdSvrForm *me = (SSWR::AVIRead::AVIRTCPSpdSvrForm*)userObj;
+	if (me->echo)
+	{
+		cli->Write(buff, size);
+	}
 }
 
 void __stdcall SSWR::AVIRead::AVIRTCPSpdSvrForm::OnClientTimeout(Net::TCPClient *cli, void *userObj, void *cliData)
@@ -82,21 +95,24 @@ void __stdcall SSWR::AVIRead::AVIRTCPSpdSvrForm::OnClientTimeout(Net::TCPClient 
 
 UInt32 __stdcall SSWR::AVIRead::AVIRTCPSpdSvrForm::RecvThread(void *userObj)
 {
-	Net::TCPClient *cli = (Net::TCPClient*)userObj;
+	ClientStatus *cliStatus = (ClientStatus*)userObj;
 	UInt8 *recvBuff = MemAlloc(UInt8, 9000);
 	UOSInt recvSize;
 	while (true)
 	{
-		recvSize = cli->Read(recvBuff, 9000);
+		recvSize = cliStatus->cli->Read(recvBuff, 9000);
 		if (recvSize <= 0)
 			break;
-		cli->Write(recvBuff, recvSize);
+		if (cliStatus->echo)
+			cliStatus->cli->Write(recvBuff, recvSize);
 	}
 	MemFree(recvBuff);
+	DEL_CLASS(cliStatus->cli);
+	MemFree(cliStatus);
 	return 0;
 }
 
-SSWR::AVIRead::AVIRTCPSpdSvrForm::AVIRTCPSpdSvrForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 320, 120, ui)
+SSWR::AVIRead::AVIRTCPSpdSvrForm::AVIRTCPSpdSvrForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 320, 144, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("TCP Speed Server"));
@@ -113,8 +129,10 @@ SSWR::AVIRead::AVIRTCPSpdSvrForm::AVIRTCPSpdSvrForm(UI::GUIClientControl *parent
 	this->txtPort->SetRect(104, 4, 100, 23, false);
 	NEW_CLASS(this->chkMultiThread, UI::GUICheckBox(ui, this, CSTR("Multi-Thread"), false));
 	this->chkMultiThread->SetRect(104, 28, 100, 23, false);
+	NEW_CLASS(this->chkEcho, UI::GUICheckBox(ui, this, CSTR("Echo"), true));
+	this->chkEcho->SetRect(104, 52, 100, 23, false);
 	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this, CSTR("Start")));
-	this->btnStart->SetRect(104, 52, 75, 23, false);
+	this->btnStart->SetRect(104, 76, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClick, this);
 }
 
