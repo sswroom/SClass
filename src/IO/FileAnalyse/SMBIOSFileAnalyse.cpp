@@ -428,7 +428,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::SMBIOSFileAnalyse::GetFrameDetail
 		AddString(frame, 4, packBuff, carr, CSTR("Socket Designation"));
 		if (packBuff[1] > 5)
 		{
-			frame->AddHex8(5, CSTR("Bank Connections 1"), (UOSInt)packBuff[5] >> 4);
+			frame->AddHex8(5, CSTR("Bank Connections 1"), (UInt8)(packBuff[5] >> 4));
 			frame->AddHex8(5, CSTR("Bank Connections 2"), packBuff[5] & 15);
 		}
 		AddUInt8(frame, 6, packBuff, carr, CSTR("Current Speed (ns)"));

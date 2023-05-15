@@ -201,6 +201,7 @@ SOXRFilter.o: ../../src/Media/SOXRFilter.cpp
 !-lsoxr
 ZXingWriter.o: ../../src/Media/ZXingWriter.cpp
 !-lZXing
+!-lZXingCore
 FFMPEGDecoder.o: ../../src/Media/Decoder/FFMPEGDecoder.cpp
 !-lavutil
 !-lavcodec
