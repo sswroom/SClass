@@ -807,7 +807,8 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookAdd(Net::WebServer
 		writer.WriteLineC(UTF8STRC("<input type=\"submit\"/></form>"));
 		if (errMsg.leng > 0)
 		{
-
+			writer.WriteLineC(errMsg.v, errMsg.leng);
+			writer.WriteLineC(UTF8STRC("<br/>"));
 		}
 		writer.WriteStrC(UTF8STRC("<a href=\"booklist.html?id="));
 		sptr = Text::StrInt32(sbuff, cate->cateId);
