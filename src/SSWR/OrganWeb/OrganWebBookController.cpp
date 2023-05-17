@@ -716,7 +716,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookAdd(Net::WebServer
 			{
 				errMsg = CSTR("Publish Date is not valid");
 			}
-			else if (url == 0 || (!url->StartsWith(UTF8STRC("http://")) && !url->StartsWith(UTF8STRC("https://"))))
+			else if (url == 0 || (url->leng > 0 && !url->StartsWith(UTF8STRC("http://")) && !url->StartsWith(UTF8STRC("https://"))))
 			{
 				errMsg = CSTR("URL is not valid");
 			}
