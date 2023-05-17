@@ -690,6 +690,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookAdd(Net::WebServer
 		Text::String *press = 0;
 		Text::String *pubDate = 0;
 		Text::String *url = 0;
+		Text::CString errMsg = CSTR_NULL;
 		if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_POST)
 		{
 			req->ParseHTTPForm();
@@ -699,9 +700,38 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookAdd(Net::WebServer
 			pubDate = req->GetHTTPFormStr(CSTR("pubDate"));
 			url = req->GetHTTPFormStr(CSTR("url"));
 			Data::Timestamp ts;
-			if (title && author && press && pubDate && url && title->leng > 0 && author->leng > 0 && press->leng > 0 && !(ts = Data::Timestamp(pubDate->ToCString(), Data::DateTimeUtil::GetLocalTzQhr())).IsNull())
+			if (title == 0 || title->leng == 0)
 			{
-
+				errMsg = CSTR("Book Name is empty");
+			}
+			else if (author == 0 || author->leng == 0)
+			{
+				errMsg = CSTR("Author is empty");
+			}
+			else if (press == 0 || press->leng == 0)
+			{
+				errMsg = CSTR("Press is empty");
+			}
+			else if (pubDate == 0 || (ts = Data::Timestamp(pubDate->ToCString(), Data::DateTimeUtil::GetLocalTzQhr())).IsNull())
+			{
+				errMsg = CSTR("Publish Date is not valid");
+			}
+			else if (url == 0 || (!url->StartsWith(UTF8STRC("http://")) && !url->StartsWith(UTF8STRC("https://"))))
+			{
+				errMsg = CSTR("URL is not valid");
+			}
+			else
+			{
+				if (me->env->BookAdd(&mutUsage, title, author, press, ts, url))
+				{
+					sptr = Text::StrConcatC(sbuff, UTF8STRC("booklist.html?id="));
+					sptr = Text::StrInt32(sptr, cate->cateId);
+					return resp->RedirectURL(req, CSTRP(sbuff, sptr), 0);
+				}
+				else
+				{
+					errMsg = CSTR("Error in adding book");
+				}
 			}
 		}
 		IO::MemoryStream mstm;
@@ -745,6 +775,13 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookAdd(Net::WebServer
 			writer.WriteStrC(s->v, s->leng);
 			s->Release();
 		}
+		else
+		{
+			sptr = Data::Timestamp::Now().ToString(sbuff, "yyyy-MM-dd");
+			writer.WriteStrC(UTF8STRC(" value=\""));
+			writer.WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
+			writer.WriteStrC(UTF8STRC("\""));
+		}
 		writer.WriteLineC(UTF8STRC(" /><br/>"));
 
 		writer.WriteStrC(UTF8STRC("<b>Press:</b> <input type=\"text\" name=\"press\""));
@@ -768,7 +805,10 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookAdd(Net::WebServer
 		writer.WriteLineC(UTF8STRC(" /><br/>"));
 
 		writer.WriteLineC(UTF8STRC("<input type=\"submit\"/></form>"));
+		if (errMsg.leng > 0)
+		{
 
+		}
 		writer.WriteStrC(UTF8STRC("<a href=\"booklist.html?id="));
 		sptr = Text::StrInt32(sbuff, cate->cateId);
 		writer.WriteStrC(sbuff, (UOSInt)(sptr - sbuff));

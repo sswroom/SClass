@@ -1228,6 +1228,53 @@ Bool SSWR::OrganWeb::OrganWebEnv::BookSetPhoto(Sync::RWMutexUsage *mutUsage, Int
 	}
 }
 
+SSWR::OrganWeb::BookInfo *SSWR::OrganWeb::OrganWebEnv::BookAdd(Sync::RWMutexUsage *mutUsage, Text::String *title, Text::String *author, Text::String *press, Data::Timestamp pubDate, Text::String *url)
+{
+	if (title == 0 || title->leng == 0 ||
+		author == 0 || author->leng == 0 ||
+		press == 0 || press->leng == 0 ||
+		pubDate.IsNull() ||
+		(url != 0 && !(url->leng == 0 || url->StartsWith(UTF8STRC("http://")) || url->StartsWith(UTF8STRC("https://")))))
+	{
+		return 0;
+	}
+	mutUsage->ReplaceMutex(&this->dataMut, true);
+
+	DB::SQLBuilder sql(this->db);
+	sql.AppendCmdC(CSTR("insert into book (title, dispAuthor, press, publishDate, groupId, url) values ("));
+	sql.AppendStr(title);
+	sql.AppendCmdC(CSTR(", "));
+	sql.AppendStr(author);
+	sql.AppendCmdC(CSTR(", "));
+	sql.AppendStr(press);
+	sql.AppendCmdC(CSTR(", "));
+	sql.AppendTS(pubDate);
+	sql.AppendCmdC(CSTR(", "));
+	sql.AppendInt32(0);
+	sql.AppendCmdC(CSTR(", "));
+	sql.AppendStr(url);
+	sql.AppendCmdC(CSTR(")"));
+	if (this->db->ExecuteNonQuery(sql.ToCString()) >= 0)
+	{
+		BookInfo *book;
+		NEW_CLASS(book, BookInfo());
+		book->id = this->db->GetLastIdentity32();
+		book->title = title->Clone();
+		book->author = author->Clone();
+		book->press = press->Clone();
+		book->publishDate = pubDate.ToTicks();
+		book->url = SCOPY_STRING(url);
+		book->userfileId = 0;
+
+		this->bookMap.Put(book->id, book);
+		return book;
+	}
+	else
+	{
+		return 0;
+	}
+}
+
 Bool SSWR::OrganWeb::OrganWebEnv::UserGPSGetPos(Sync::RWMutexUsage *mutUsage, Int32 userId, const Data::Timestamp &t, Double *lat, Double *lon)
 {
 	mutUsage->ReplaceMutex(&this->dataMut, false);

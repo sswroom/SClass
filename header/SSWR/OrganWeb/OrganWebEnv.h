@@ -106,6 +106,7 @@ namespace SSWR
 			void BookGetDateMap(Sync::RWMutexUsage *mutUsage, Data::FastMap<Int64, BookInfo*> *bookMap);
 			Bool BookFileExist(BookInfo *book);
 			Bool BookSetPhoto(Sync::RWMutexUsage *mutUsage, Int32 bookId, Int32 userfileId);
+			BookInfo *BookAdd(Sync::RWMutexUsage *mutUsage, Text::String *title, Text::String *author, Text::String *press, Data::Timestamp pubDate, Text::String *url);
 
 			Bool UserGPSGetPos(Sync::RWMutexUsage *mutUsage, Int32 userId, const Data::Timestamp &t, Double *lat, Double *lon);
 			WebUserInfo *UserGet(Sync::RWMutexUsage *mutUsage, Int32 id);
