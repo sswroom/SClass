@@ -27,6 +27,7 @@ void __stdcall SSWR::AVIRead::AVIRTCPSpdCliForm::OnConnClick(void *userObj)
 		mutUsage.EndUse();
 		me->txtHost->SetReadOnly(false);
 		me->txtPort->SetReadOnly(false);
+		me->btnConn->SetText(CSTR("Start"));
 		return;
 	}
 	me->txtHost->GetText(&sb);
@@ -67,6 +68,7 @@ void __stdcall SSWR::AVIRead::AVIRTCPSpdCliForm::OnConnClick(void *userObj)
 		me->lastTime = 0;
 		me->txtHost->SetReadOnly(true);
 		me->txtPort->SetReadOnly(true);
+		me->btnConn->SetText(CSTR("Stop"));
 		me->cli = cli;
 		me->procEvt.Set();
 		me->recvEvt.Set();
@@ -209,7 +211,7 @@ SSWR::AVIRead::AVIRTCPSpdCliForm::AVIRTCPSpdCliForm(UI::GUIClientControl *parent
 	this->lblPort->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtPort, UI::GUITextBox(ui, this, CSTR("1234")));
 	this->txtPort->SetRect(104, 28, 100, 23, false);
-	NEW_CLASS(this->btnConn, UI::GUIButton(ui, this, CSTR("Conn")));
+	NEW_CLASS(this->btnConn, UI::GUIButton(ui, this, CSTR("Start")));
 	this->btnConn->SetRect(104, 52, 75, 23, false);
 	this->btnConn->HandleButtonClick(OnConnClick, this);
 

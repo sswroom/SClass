@@ -685,19 +685,25 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookAdd(Net::WebServer
 			resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
 			return true;
 		}
-//		Text::StringBuilderUTF8 sb;
-/*		Int32 fileId;
-		if (req->GetQueryValueI32(CSTR("fileId"), &fileId))
+		Text::String *title = 0;
+		Text::String *author = 0;
+		Text::String *press = 0;
+		Text::String *pubDate = 0;
+		Text::String *url = 0;
+		if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_POST)
 		{
-			if (me->env->BookSetPhoto(&mutUsage, id, fileId))
+			req->ParseHTTPForm();
+			title = req->GetHTTPFormStr(CSTR("title"));
+			author = req->GetHTTPFormStr(CSTR("author"));
+			press = req->GetHTTPFormStr(CSTR("press"));
+			pubDate = req->GetHTTPFormStr(CSTR("pubDate"));
+			url = req->GetHTTPFormStr(CSTR("url"));
+			Data::Timestamp ts;
+			if (title && author && press && pubDate && url && title->leng > 0 && author->leng > 0 && press->leng > 0 && !(ts = Data::Timestamp(pubDate->ToCString(), Data::DateTimeUtil::GetLocalTzQhr())).IsNull())
 			{
-				sb.AppendC(UTF8STRC("book.html?id="));
-				sb.AppendI32(book->id);
-				sb.AppendC(UTF8STRC("&cateId="));
-				sb.AppendI32(cate->cateId);
-				resp->RedirectURL(req, sb.ToCString(), 0);
+
 			}
-		}*/
+		}
 		IO::MemoryStream mstm;
 		Text::UTF8Writer writer(&mstm);
 		Text::String *s;
@@ -711,17 +717,55 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookAdd(Net::WebServer
 		writer.WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
 		writer.WriteStrC(UTF8STRC("\">"));
 
-		writer.WriteStrC(UTF8STRC("<b>Book Name:</b> <input type=\"text\" name=\"title\" />"));
-		writer.WriteLineC(UTF8STRC("<br/>"));
+		writer.WriteStrC(UTF8STRC("<b>Book Name:</b> <input type=\"text\" name=\"title\""));
+		if (title)
+		{
+			s = Text::XML::ToNewAttrText(title->v);
+			writer.WriteStrC(UTF8STRC(" value="));
+			writer.WriteStrC(s->v, s->leng);
+			s->Release();
+		}
+		writer.WriteLineC(UTF8STRC(" /><br/>"));
 
-		writer.WriteStrC(UTF8STRC("<b>Author:</b> <input type=\"text\" name=\"author\" />"));
-		writer.WriteLineC(UTF8STRC("<br/>"));
+		writer.WriteStrC(UTF8STRC("<b>Author:</b> <input type=\"text\" name=\"author\""));
+		if (author)
+		{
+			s = Text::XML::ToNewAttrText(author->v);
+			writer.WriteStrC(UTF8STRC(" value="));
+			writer.WriteStrC(s->v, s->leng);
+			s->Release();
+		}
+		writer.WriteLineC(UTF8STRC(" /><br/>"));
 
-		writer.WriteStrC(UTF8STRC("<b>Press:</b> <input type=\"text\" name=\"press\" />"));
-		writer.WriteLineC(UTF8STRC("<br/>"));
+		writer.WriteStrC(UTF8STRC("<b>Publish Date:</b> <input type=\"text\" name=\"pubDate\""));
+		if (pubDate)
+		{
+			s = Text::XML::ToNewAttrText(pubDate->v);
+			writer.WriteStrC(UTF8STRC(" value="));
+			writer.WriteStrC(s->v, s->leng);
+			s->Release();
+		}
+		writer.WriteLineC(UTF8STRC(" /><br/>"));
 
-		writer.WriteStrC(UTF8STRC("<b>URL:</b> <input type=\"text\" name=\"url\" />"));
-		writer.WriteLineC(UTF8STRC("<br/>"));
+		writer.WriteStrC(UTF8STRC("<b>Press:</b> <input type=\"text\" name=\"press\""));
+		if (press)
+		{
+			s = Text::XML::ToNewAttrText(press->v);
+			writer.WriteStrC(UTF8STRC(" value="));
+			writer.WriteStrC(s->v, s->leng);
+			s->Release();
+		}
+		writer.WriteLineC(UTF8STRC(" /><br/>"));
+
+		writer.WriteStrC(UTF8STRC("<b>URL:</b> <input type=\"text\" name=\"url\""));
+		if (url)
+		{
+			s = Text::XML::ToNewAttrText(url->v);
+			writer.WriteStrC(UTF8STRC(" value="));
+			writer.WriteStrC(s->v, s->leng);
+			s->Release();
+		}
+		writer.WriteLineC(UTF8STRC(" /><br/>"));
 
 		writer.WriteLineC(UTF8STRC("<input type=\"submit\"/></form>"));
 
