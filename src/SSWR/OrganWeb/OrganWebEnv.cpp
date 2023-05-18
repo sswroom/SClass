@@ -285,6 +285,7 @@ void SSWR::OrganWeb::OrganWebEnv::LoadBooks()
 {
 	FreeBooks();
 
+	this->selectedBook = 0;
 	Text::StringBuilderUTF8 sb;
 	SpeciesInfo *sp;
 	BookInfo *book;
@@ -792,6 +793,7 @@ SSWR::OrganWeb::OrganWebEnv::OrganWebEnv(Net::SocketFactory *sockf, Net::SSLEngi
 	this->cacheDir = SCOPY_STRING(cacheDir);
 	this->reloadPwd = SCOPY_STRING(reloadPwd);
 	this->webHdlr = 0;
+	this->selectedBook = 0;
 
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -1157,8 +1159,19 @@ UTF8Char *SSWR::OrganWeb::OrganWebEnv::PasswordEnc(UTF8Char *buff, Text::CString
 
 SSWR::OrganWeb::BookInfo *SSWR::OrganWeb::OrganWebEnv::BookGet(Sync::RWMutexUsage *mutUsage, Int32 id)
 {
-	mutUsage->ReplaceMutex(&this->dataMut, true);
+	mutUsage->ReplaceMutex(&this->dataMut, false);
 	return this->bookMap.Get(id);
+}
+
+SSWR::OrganWeb::BookInfo *SSWR::OrganWeb::OrganWebEnv::BookGetSelected(Sync::RWMutexUsage *mutUsage)
+{
+	mutUsage->ReplaceMutex(&this->dataMut, false);
+	return this->selectedBook;
+}
+
+void SSWR::OrganWeb::OrganWebEnv::BookSelect(BookInfo *book)
+{
+	this->selectedBook = book;
 }
 
 UTF8Char *SSWR::OrganWeb::OrganWebEnv::BookGetPath(UTF8Char *sbuff, Int32 bookId)
@@ -1267,11 +1280,57 @@ SSWR::OrganWeb::BookInfo *SSWR::OrganWeb::OrganWebEnv::BookAdd(Sync::RWMutexUsag
 		book->userfileId = 0;
 
 		this->bookMap.Put(book->id, book);
+		this->selectedBook = book;
 		return book;
 	}
 	else
 	{
 		return 0;
+	}
+}
+
+Bool SSWR::OrganWeb::OrganWebEnv::BookAddSpecies(Sync::RWMutexUsage *mutUsage, Int32 speciesId, Text::String *bookspecies, Bool allowDuplicate)
+{
+	BookInfo *book = this->selectedBook;
+	if (book == 0)
+		return false;
+	BookSpInfo *bookSp;
+	SpeciesInfo *species = this->SpeciesGet(mutUsage, speciesId);
+	if (species == 0)
+		return false;
+	UOSInt i;
+	if (!allowDuplicate)
+	{
+		i = species->books.GetCount();
+		while (i-- > 0)
+		{
+			if (species->books.GetItem(i)->bookId == book->id)
+				return false;
+		}
+	}
+	mutUsage->ReplaceMutex(&this->dataMut, true);
+
+	DB::SQLBuilder sql(this->db);
+	sql.AppendCmdC(CSTR("insert into species_book (species_id, book_id, dispName) values ("));
+	sql.AppendInt32(species->speciesId);
+	sql.AppendCmdC(CSTR(", "));
+	sql.AppendInt32(book->id);
+	sql.AppendCmdC(CSTR(", "));
+	sql.AppendStr(bookspecies);
+	sql.AppendCmdC(CSTR(")"));
+	if (this->db->ExecuteNonQuery(sql.ToCString()) >= 0)
+	{
+		bookSp = MemAlloc(BookSpInfo, 1);
+		bookSp->speciesId = species->speciesId;
+		bookSp->bookId = book->id;
+		bookSp->dispName = bookspecies->Clone();
+		book->species.Add(bookSp);
+		species->books.Add(bookSp);
+		return true;
+	}
+	else
+	{
+		return false;
 	}
 }
 

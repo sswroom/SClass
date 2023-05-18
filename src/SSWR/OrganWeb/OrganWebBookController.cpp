@@ -11,6 +11,8 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookList(Net::WebServe
 	me->ParseRequestEnv(req, resp, &env, false);
 
 	Int32 id;
+	UInt32 unselect = 0;
+	req->GetQueryValueU32(CSTR("unselect"), &unselect);
 	if (req->GetQueryValueI32(CSTR("id"), &id))
 	{
 		Text::String *s;
@@ -31,6 +33,10 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookList(Net::WebServe
 			mutUsage.EndUse();
 			resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
 			return true;
+		}
+		if (unselect == 1 && env.user && env.user->userType == 0)
+		{
+			me->env->BookSelect(0);
 		}
 
 		IO::MemoryStream mstm;
@@ -123,6 +129,19 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookList(Net::WebServe
 			writer.WriteStrC(UTF8STRC(">"));
 			writer.WriteStr(LangGetValue(lang, UTF8STRC("New Book")));
 			writer.WriteStrC(UTF8STRC("</a><br/>"));
+			BookInfo *book = me->env->BookGetSelected(&mutUsage);
+			if (book)
+			{
+				writer.WriteStrC(UTF8STRC("Selected book: "));
+				s = Text::XML::ToNewHTMLBodyText(book->title->v);
+				writer.WriteStrC(s->v, s->leng);
+				s->Release();
+				writer.WriteStrC(UTF8STRC(" <a href=\"booklist.html?id="));
+				sptr = Text::StrInt32(sbuff, cate->cateId);
+				writer.WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
+				writer.WriteStrC(UTF8STRC("&unselect=1\">"));
+				writer.WriteStrC(UTF8STRC(" Unselect</a>"));
+			}
 		}
 		writer.WriteStrC(UTF8STRC("<a href="));
 		sb.ClearStr();
@@ -156,7 +175,9 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBook(Net::WebServer::I
 	Int32 id;
 	UInt32 pageNo = 0;
 	Int32 cateId;
+	UInt32 selectBook = 0;
 	req->GetQueryValueU32(CSTR("page"), &pageNo);
+	req->GetQueryValueU32(CSTR("select"), &selectBook);
 	if (req->GetQueryValueI32(CSTR("id"), &id) &&
 		req->GetQueryValueI32(CSTR("cateId"), &cateId))
 	{
@@ -189,6 +210,10 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBook(Net::WebServer::I
 			mutUsage.EndUse();
 			resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
 			return true;
+		}
+		if (selectBook != 0 && env.user && env.user->userType == 0)
+		{
+			me->env->BookSelect(book);
 		}
 
 		IO::MemoryStream mstm;
@@ -290,6 +315,18 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBook(Net::WebServer::I
 				sb.AppendC(UTF8STRC("\">Modify Book Photo</a><br/>"));
 				writer.WriteLineC(sb.ToString(), sb.GetLength());
 			}
+			sb.ClearStr();
+			sb.AppendC(UTF8STRC("<a href=\"book.html?id="));
+			sb.AppendI32(id);
+			sb.AppendC(UTF8STRC("&cateId="));
+			sb.AppendI32(cateId);
+			if (pageNo != 0)
+			{
+				sb.AppendC(UTF8STRC("&page="));
+				sb.AppendU32(pageNo);
+			}
+			sb.AppendC(UTF8STRC("&select=1\">Select</a><br/>"));
+			writer.WriteLineC(sb.ToString(), sb.GetLength());
 		}
 
 		i = 0;

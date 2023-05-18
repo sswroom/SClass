@@ -41,6 +41,7 @@ namespace SSWR
 			Net::WebServer::WebListener *sslListener;
 			Sync::Mutex parserMut;
 			Parser::FullParserList parsers;
+			BookInfo *selectedBook;
 
 			Media::ColorManager colorMgr;
 			Media::ColorManagerSess *colorSess;
@@ -102,11 +103,14 @@ namespace SSWR
 			UTF8Char *PasswordEnc(UTF8Char *buff, Text::CString pwd);
 
 			BookInfo *BookGet(Sync::RWMutexUsage *mutUsage, Int32 id);
+			BookInfo *BookGetSelected(Sync::RWMutexUsage *mutUsage);
+			void BookSelect(BookInfo *book);
 			UTF8Char *BookGetPath(UTF8Char *sbuff, Int32 bookId);
 			void BookGetDateMap(Sync::RWMutexUsage *mutUsage, Data::FastMap<Int64, BookInfo*> *bookMap);
 			Bool BookFileExist(BookInfo *book);
 			Bool BookSetPhoto(Sync::RWMutexUsage *mutUsage, Int32 bookId, Int32 userfileId);
 			BookInfo *BookAdd(Sync::RWMutexUsage *mutUsage, Text::String *title, Text::String *author, Text::String *press, Data::Timestamp pubDate, Text::String *url);
+			Bool BookAddSpecies(Sync::RWMutexUsage *mutUsage, Int32 speciesId, Text::String *bookspecies, Bool allowDuplicate);
 
 			Bool UserGPSGetPos(Sync::RWMutexUsage *mutUsage, Int32 userId, const Data::Timestamp &t, Double *lat, Double *lon);
 			WebUserInfo *UserGet(Sync::RWMutexUsage *mutUsage, Int32 id);

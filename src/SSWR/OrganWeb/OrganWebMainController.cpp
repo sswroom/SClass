@@ -1004,6 +1004,16 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(Net::WebServer
 			{
 				me->env->GroupSetPhotoSpecies(&mutUsage, species->groupId, species->speciesId);
 			}
+			else if (action && action->Equals(UTF8STRC("bookspecies")))
+			{
+				Text::String *bookspecies = req->GetQueryValue(CSTR("bookspecies"));
+				UInt32 bookAllowDup = 0;
+				req->GetQueryValueU32(CSTR("bookAllowDup"), &bookAllowDup);
+				if (bookspecies && bookspecies->leng > 0)
+				{
+					me->env->BookAddSpecies(&mutUsage, species->speciesId, bookspecies, bookAllowDup != 0);
+				}
+			}
 		}
 
 		IO::MemoryStream mstm;
@@ -1128,6 +1138,28 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(Net::WebServer
 			writer.WriteLineC(sb.ToString(), sb.GetLength());
 		}
 		writer.WriteLineC(UTF8STRC("<hr/>"));
+		if (env.user && env.user->userType == 0 && (book = me->env->BookGetSelected(&mutUsage)) != 0)
+		{
+			sb.ClearStr();
+			sb.AppendC(UTF8STRC("<form name=\"bookspecies\" action=\"species.html?id="));
+			sb.AppendI32(id);
+			sb.AppendC(UTF8STRC("&amp;cateId="));
+			sb.AppendI32(cateId);
+			sb.AppendC(UTF8STRC("\" method=\"POST\"/>"));
+			writer.WriteLineC(sb.ToString(), sb.GetLength());
+			writer.WriteLineC(UTF8STRC("<input type=\"hidden\" name=\"action\" value=\"bookspecies\"/>"));
+			writer.WriteStrC(UTF8STRC("Selected Book: "));
+			s = Text::XML::ToNewHTMLBodyText(book->title->v);
+			writer.WriteStrC(s->v, s->leng);
+			s->Release();
+			writer.WriteStrC(UTF8STRC("<br/><input type=\"text\" name=\"speciesname\" value="));
+			s = Text::XML::ToNewAttrText(species->sciName->v);
+			writer.WriteStrC(s->v, s->leng);
+			s->Release();
+			writer.WriteStrC(UTF8STRC(" /><input type=\"checkbox\" name=\"bookAllowDup\" id=\"bookAllowDup\" value=\"1\"/><label for=\"bookAllowDup\">Allow Duplicate</label>"));
+			writer.WriteStrC(UTF8STRC("<input type=\"submit\" /><br/>"));
+			writer.WriteLineC(UTF8STRC("</form><hr/>"));
+		}
 
 		Data::ArrayListICaseString fileNameList;
 		Data::ArrayListString refURLList;
