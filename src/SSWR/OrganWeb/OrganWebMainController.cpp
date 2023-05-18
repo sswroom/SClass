@@ -1006,9 +1006,9 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(Net::WebServer
 			}
 			else if (action && action->Equals(UTF8STRC("bookspecies")))
 			{
-				Text::String *dispName = req->GetQueryValue(CSTR("speciesname"));
+				Text::String *dispName = req->GetHTTPFormStr(CSTR("speciesname"));
 				UInt32 bookAllowDup = 0;
-				req->GetQueryValueU32(CSTR("bookAllowDup"), &bookAllowDup);
+				req->GetHTTPFormUInt32(CSTR("bookAllowDup"), &bookAllowDup);
 				if (dispName && dispName->leng > 0)
 				{
 					me->env->BookAddSpecies(&mutUsage, species->speciesId, dispName, bookAllowDup != 0);
