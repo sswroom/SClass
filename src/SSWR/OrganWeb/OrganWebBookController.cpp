@@ -140,7 +140,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookList(Net::WebServe
 				sptr = Text::StrInt32(sbuff, cate->cateId);
 				writer.WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
 				writer.WriteStrC(UTF8STRC("&unselect=1\">"));
-				writer.WriteStrC(UTF8STRC(" Unselect</a>"));
+				writer.WriteStrC(UTF8STRC(" Unselect</a><br/>"));
 			}
 		}
 		writer.WriteStrC(UTF8STRC("<a href="));
