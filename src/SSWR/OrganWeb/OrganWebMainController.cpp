@@ -1648,7 +1648,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpeciesMod(Net::WebSer
 			sname = req->GetHTTPFormStr(CSTR("sname"));
 			ename = req->GetHTTPFormStr(CSTR("ename"));
 			descr = req->GetHTTPFormStr(CSTR("descr"));
-			bookIgn = STR_PTR(req->GetHTTPFormStr(CSTR("bookIgn")));
+			bookIgn = STR_PTR(req->GetQueryValue(CSTR("bookIgn")));
 			if (task != 0 && cname != 0 && sname != 0 && ename != 0 && descr != 0 && cname->v[0] != 0 && sname->v[0] != 0)
 			{
 				if (task->Equals(UTF8STRC("new")))
