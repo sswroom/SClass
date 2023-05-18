@@ -236,7 +236,7 @@ void SSWR::OrganWeb::OrganWebController::WriteLocatorText(Sync::RWMutexUsage *mu
 	writer->WriteLineC(sb.ToString(), sb.GetLength());
 }
 
-void SSWR::OrganWeb::OrganWebController::WriteGroupTable(Sync::RWMutexUsage *mutUsage, IO::Writer *writer, const Data::ReadingList<GroupInfo *> *groupList, UInt32 scnWidth, Bool showSelect)
+void SSWR::OrganWeb::OrganWebController::WriteGroupTable(Sync::RWMutexUsage *mutUsage, IO::Writer *writer, const Data::ReadingList<GroupInfo *> *groupList, UInt32 scnWidth, Bool showSelect, Bool showAll)
 {
 	GroupInfo *group;
 	Text::String *s;
@@ -258,7 +258,7 @@ void SSWR::OrganWeb::OrganWebController::WriteGroupTable(Sync::RWMutexUsage *mut
 		{
 			group = groupList->GetItem(i);
 			this->env->CalcGroupCount(mutUsage, group);
-			if (group->totalCount != 0 || showSelect)
+			if (showAll || group->totalCount != 0 || showSelect)
 			{
 				if (currColumn == 0)
 				{
@@ -875,7 +875,7 @@ void SSWR::OrganWeb::OrganWebController::WritePickObjs(Sync::RWMutexUsage *mutUs
 			}
 			i++;
 		}
-		WriteGroupTable(mutUsage, writer, &groupList, scnSize, true);
+		WriteGroupTable(mutUsage, writer, &groupList, scnSize, true, true);
 		writer->WriteLineC(UTF8STRC("<input type=\"submit\" value=\"Place Selected\"/>"));
 		writer->WriteLineC(UTF8STRC("<input type=\"button\" value=\"Place All\" onclick=\"document.forms.pickfiles.action.value='placeall';document.forms.pickfiles.submit();\"/>"));
 		writer->WriteLineC(UTF8STRC("</form>"));

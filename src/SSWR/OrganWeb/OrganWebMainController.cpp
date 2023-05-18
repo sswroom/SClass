@@ -437,7 +437,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroup(Net::WebServer::
 			}
 			if (groups.GetCount() > 0)
 			{
-				me->WriteGroupTable(&mutUsage, &writer, groups.GetValues(), env.scnWidth, !notAdmin);
+				me->WriteGroupTable(&mutUsage, &writer, groups.GetValues(), env.scnWidth, !notAdmin, false);
 				writer.WriteLineC(UTF8STRC("<hr/>"));
 				found = true;
 			}
@@ -4193,7 +4193,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSearchInside(Net::WebS
 			{
 				groupList.Add(groupObjs.GetItem(i));
 			}
-			me->WriteGroupTable(&mutUsage, &writer, &groupList, env.scnWidth, false);
+			me->WriteGroupTable(&mutUsage, &writer, &groupList, env.scnWidth, false, env.user != 0 && env.user->userType == 0);
 			if (j > 0)
 			{
 				sptr = Text::TextBinEnc::URIEncoding::URIEncode(sbuff, searchStr->v);
@@ -4529,7 +4529,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSearchInsideMoreG(Net:
 			{
 				groupList.Add(groupObjs.GetItem(j));
 			}
-			me->WriteGroupTable(&mutUsage, &writer, &groupList, env.scnWidth, false);
+			me->WriteGroupTable(&mutUsage, &writer, &groupList, env.scnWidth, false, env.user && env.user->userType == 0);
 			if (pageNo > 0)
 			{
 				sptr = Text::TextBinEnc::URIEncoding::URIEncode(sbuff, STR_PTR(searchStr));
@@ -5021,7 +5021,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcCate(Net::WebServer::I
 		writer.WriteLineC(UTF8STRC("\">Book List</a>"));*/
 		me->WriteLocator(&mutUsage, &writer, 0, 0);
 		writer.WriteLineC(UTF8STRC("<hr/>"));
-		me->WriteGroupTable(&mutUsage, &writer, &groups, env.scnWidth, false);
+		me->WriteGroupTable(&mutUsage, &writer, &groups, env.scnWidth, false, env.user && env.user->userType == 0);
 		writer.WriteLineC(UTF8STRC("<hr/>"));
 		writer.WriteStrC(UTF8STRC("<a href=\"/\">"));
 		writer.WriteStr(LangGetValue(lang, UTF8STRC("Back")));
