@@ -1676,6 +1676,7 @@ IO/BufferedInputStream.h: ../../src/IO/BufferedInputStream.cpp
 IO/BufferedOutputStream.h: ../../src/IO/BufferedOutputStream.cpp
 @BufferedOutputStream.o
 IO/CameraControl.h:
+IO/CANHandler.h:
 IO/CDXAData.h: ../../src/IO/CDXAData.cpp
 @CDXAData.o
 IO/CDSectorData.h: ../../src/IO/CDSectorData.cpp
@@ -1887,10 +1888,14 @@ IO/Device/AM2315GPIO.h: ../../src/IO/Device/AM2315GPIO.cpp
 @AM2315GPIO.o
 IO/Device/AMGU4241.h: ../../src/IO/Device/AMGU4241.cpp
 @AMGU4241.o
-IO/Device/BME280.h: ../../src/IO/Device/BME280.cpp
-@BME280.o
+IO/Device/AXCAN.h: ../../src/IO/Device/AXCAN.cpp
+@AXCAN.o
 IO/Device/BivocomTD210.h: ../../src/IO/Device/BivocomTD210.cpp
 @BivocomTD210.o
+IO/Device/BME280.h: ../../src/IO/Device/BME280.cpp
+@BME280.o
+IO/Device/BYDC9RHandler.h: ../../src/IO/Device/BYDC9RHandler.cpp
+@BYDC9RHandler.o
 IO/Device/DensoWaveQB30.h: ../../src/IO/Device/DensoWaveQB30.cpp
 @DensoWaveQB30.o
 IO/Device/DensoWaveQK30U.h: ../../src/IO/Device/DensoWaveQK30U.cpp
@@ -4843,8 +4848,10 @@ ZIPMTBuilder.o: ../../src/IO/ZIPMTBuilder.cpp
 AM2315.o: ../../src/IO/Device/AM2315.cpp
 AM2315GPIO.o: ../../src/IO/Device/AM2315GPIO.cpp
 AMGU4241.o: ../../src/IO/Device/AMGU4241.cpp
-BME280.o: ../../src/IO/Device/BME280.cpp
+AXCAN.o: ../../src/IO/Device/AXCAN.cpp
 BivocomTD210.o: ../../src/IO/Device/BivocomTD210.cpp
+BME280.o: ../../src/IO/Device/BME280.cpp
+BYDC9RHandler.o: ../../src/IO/Device/BYDC9RHandler.cpp
 DensoWaveQB30.o: ../../src/IO/Device/DensoWaveQB30.cpp
 DensoWaveQK30U.o: ../../src/IO/Device/DensoWaveQK30U.cpp
 DHT22.o: ../../src/IO/Device/DHT22.cpp

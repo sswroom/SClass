@@ -4,9 +4,12 @@
 #include "IO/FileStream.h"
 #include "IO/FileUtil.h"
 #include "IO/Path.h"
+#include "IO/Device/AXCAN.h"
+#include "IO/Device/BYDC9RHandler.h"
 #include "IO/ProtoHdlr/ProtoJMVL01Handler.h"
 #include "Text/CPPText.h"
 #include "Text/StringTool.h"
+#include "Text/UTF8Reader.h"
 #include "Text/UTF8Writer.h"
 #include "Text/XMLReader.h"
 #include <stdio.h>
@@ -245,7 +248,84 @@ Int32 RenameFileTest()
 	return 0;
 }
 
+class TestCANHandler : public IO::Device::BYDC9RHandler
+{
+public:
+	TestCANHandler()
+	{
+	}
+	virtual ~TestCANHandler()
+	{
+	}
+
+/*	virtual void VehicleSpeed(Double speedkmHr)
+	{
+		printf("Vehicle Speed: %lf\r\n", speedkmHr);
+	}*/
+
+	virtual void VehicleDoor(DoorStatus door1, DoorStatus door2)
+	{
+//		printf("Vehicle Doors: door1 = %s, door2 = %s\r\n", DoorStatusGetName(door1).v, DoorStatusGetName(door2).v);
+	}
+
+	virtual void BatteryLevel(Double percent)
+	{
+//		printf("Battery Level: %lf\r\n", percent);
+	}
+
+	virtual void MotorRPM(Int32 rpm)
+	{
+//		printf("Motor RPM: %d\r\n", rpm);
+	}
+
+	virtual void BatteryChargedTime(UInt32 minutes)
+	{
+//		printf("Battery Charged time (minutes): %d\r\n", minutes);
+	}
+
+	virtual void LeftMotorMode(MotorMode mode)
+	{
+//		printf("Left Motor Mode: %s\r\n", MotorModeGetName(mode).v);
+	}
+
+	virtual void RightMotorMode(MotorMode mode)
+	{
+//		printf("RIght Motor Mode: %s\r\n", MotorModeGetName(mode).v);
+	}
+
+	virtual void CarbinDoor(Bool backOpened, Bool leftOpened, Bool rightOpened)
+	{
+//		printf("Carbin Door: Back = %d, Left = %d, Right = %d\r\n", backOpened?1:0, leftOpened?1:0, rightOpened?1:0);
+	}
+
+	virtual void PowerMode(PowerStatus status)
+	{
+		printf("Power Mode: %s\r\n", PowerStatusGetName(status).v);
+	}
+
+	virtual void BatteryCharging(ChargingStatus status)
+	{
+		printf("Battery Charging: %s\r\n", ChargingStatusGetName(status).v);
+	}
+
+	virtual void OKLED(Bool ledOn)
+	{
+//		printf("OK LED:  %d\r\n", ledOn?1:0);
+	}
+};
+
+Int32 AXCAN_BYDC9RTest()
+{
+	Text::CString filePath = CSTR("/home/sswroom/Progs/Temp/20230511 ITT CANBUS/Sampledata.txt");
+	IO::FileStream fs(filePath, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+	Text::UTF8Reader reader(&fs);
+	TestCANHandler hdlr;
+	IO::Device::AXCAN axcan(&hdlr);
+	axcan.ParseReader(&reader);
+	return 0;
+}
+
 Int32 MyMain(Core::IProgControl *progCtrl)
 {
-	return RenameFileTest();
+	return AXCAN_BYDC9RTest();
 }
