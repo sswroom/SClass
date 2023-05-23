@@ -3539,12 +3539,14 @@ SSWR/AVIRead/AVIRBluetoothLEForm.h: ../../src/SSWR/AVIRead/AVIRBluetoothLEForm.c
 @AVIRBluetoothLEForm.o
 SSWR/AVIRead/AVIRBluetoothLogForm.h: ../../src/SSWR/AVIRead/AVIRBluetoothLogForm.cpp
 @AVIRBluetoothLogForm.o
-SSWR/AVIRead/AVIRBruteForceForm.h: ../../src/SSWR/AVIRead/AVIRBruteForceForm.cpp
-@AVIRBruteForceForm.o
 SSWR/AVIRead/AVIRBTScanLogDevForm.h: ../../src/SSWR/AVIRead/AVIRBTScanLogDevForm.cpp
 @AVIRBTScanLogDevForm.o
 SSWR/AVIRead/AVIRBTScanLogForm.h: ../../src/SSWR/AVIRead/AVIRBTScanLogForm.cpp
 @AVIRBTScanLogForm.o
+SSWR/AVIRead/AVIRBruteForceForm.h: ../../src/SSWR/AVIRead/AVIRBruteForceForm.cpp
+@AVIRBruteForceForm.o
+SSWR/AVIRead/AVIRBYDC9RForm.h: ../../src/SSWR/AVIRead/AVIRBYDC9RForm.cpp
+@AVIRBYDC9RForm.o
 SSWR/AVIRead/AVIRCalculator1Form.h: ../../src/SSWR/AVIRead/AVIRCalculator1Form.cpp
 @AVIRCalculator1Form.o
 SSWR/AVIRead/AVIRCameraControlForm.h: ../../src/SSWR/AVIRead/AVIRCameraControlForm.cpp
@@ -5620,9 +5622,10 @@ AVIRBluetoothCtlForm.o: ../../src/SSWR/AVIRead/AVIRBluetoothCtlForm.cpp
 AVIRBluetoothForm.o: ../../src/SSWR/AVIRead/AVIRBluetoothForm.cpp
 AVIRBluetoothLEForm.o: ../../src/SSWR/AVIRead/AVIRBluetoothLEForm.cpp
 AVIRBluetoothLogForm.o: ../../src/SSWR/AVIRead/AVIRBluetoothLogForm.cpp
-AVIRBruteForceForm.o: ../../src/SSWR/AVIRead/AVIRBruteForceForm.cpp
 AVIRBTScanLogDevForm.o: ../../src/SSWR/AVIRead/AVIRBTScanLogDevForm.cpp
 AVIRBTScanLogForm.o: ../../src/SSWR/AVIRead/AVIRBTScanLogForm.cpp
+AVIRBruteForceForm.o: ../../src/SSWR/AVIRead/AVIRBruteForceForm.cpp
+AVIRBYDC9RForm.o: ../../src/SSWR/AVIRead/AVIRBYDC9RForm.cpp
 AVIRCalculator1Form.o: ../../src/SSWR/AVIRead/AVIRCalculator1Form.cpp
 AVIRCameraControlForm.o: ../../src/SSWR/AVIRead/AVIRCameraControlForm.cpp
 AVIRCaptureDevForm.o: ../../src/SSWR/AVIRead/AVIRCaptureDevForm.cpp

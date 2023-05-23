@@ -292,6 +292,10 @@ Bool Sync::Event::Wait(UOSInt timeout)
 				outtime.tv_sec++;
 			}
 			ret = pthread_cond_timedwait(&status->cond, &status->mutex, &outtime);
+			if (ret == ETIMEDOUT)
+			{
+				isTO = true;
+			}
 		}
 		pthread_mutex_unlock(&status->mutex);
 	}

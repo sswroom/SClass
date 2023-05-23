@@ -50,6 +50,7 @@
 #include "SSWR/AVIRead/AVIRBluetoothLEForm.h"
 #include "SSWR/AVIRead/AVIRBluetoothLogForm.h"
 #include "SSWR/AVIRead/AVIRBruteForceForm.h"
+#include "SSWR/AVIRead/AVIRBYDC9RForm.h"
 #include "SSWR/AVIRead/AVIRCalculator1Form.h"
 #include "SSWR/AVIRead/AVIRCameraControlForm.h"
 #include "SSWR/AVIRead/AVIRCaptureDevForm.h"
@@ -489,7 +490,8 @@ typedef enum
 	MNU_HKO_FORECAST,
 	MNU_HKO_LOCAL_FORECAST,
 	MNU_HKO_WARNING_SUMMARY,
-	MNU_RNCRYPTOR
+	MNU_RNCRYPTOR,
+	MNU_BYDC9R
 } MenuItems;
 
 void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(void *userObj, Text::String **files, UOSInt nFiles)
@@ -891,6 +893,7 @@ SSWR::AVIRead::AVIRBaseForm::AVIRBaseForm(UI::GUIClientControl *parent, UI::GUIC
 	mnu2->AddItem(CSTR("GoPro Camera"), MNU_GOPROCAMERA, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("EasyWay EW-DTU01"), MNU_EW_DTU01, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("Advantech ADAM"), MNU_ADAM, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu->AddItem(CSTR("BYD C9R"), MNU_BYDC9R, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 
 	mnu = this->mnuMain->AddSubMenu(CSTR("&Help"));
 	mnu->AddItem(CSTR("&About..."), MNU_ABOUT, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -2807,6 +2810,13 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		{
 			SSWR::AVIRead::AVIRRNCryptorForm *frm;
 			NEW_CLASS(frm, SSWR::AVIRead::AVIRRNCryptorForm(0, this->ui, this->core));
+			this->core->ShowForm(frm);
+		}
+		break;
+	case MNU_BYDC9R:
+		{
+			SSWR::AVIRead::AVIRBYDC9RForm *frm;
+			NEW_CLASS(frm, SSWR::AVIRead::AVIRBYDC9RForm(0, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
