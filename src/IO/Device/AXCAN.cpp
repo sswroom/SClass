@@ -112,6 +112,7 @@ UInt32 __stdcall IO::Device::AXCAN::SerialThread(void *userObj)
 		me->ParseReader(&reader);
 	}
 	me->threadRunning = false;
+	return 0;
 }
 
 IO::Device::AXCAN::AXCAN(CANHandler *hdlr) : cmdEvent(false)
@@ -178,6 +179,24 @@ void IO::Device::AXCAN::CloseSerialPort(Bool force)
 			Sync::Thread::Sleep(1);
 		}
 		this->stm = 0;
+	}
+}
+
+void IO::Device::AXCAN::CANStop()
+{
+	this->CloseSerialPort(false);
+}
+
+void IO::Device::AXCAN::ToString(Text::StringBuilderUTF8 *sb) const
+{
+	if (this->stm)
+	{
+		sb->AppendC(UTF8STRC("AXCAN - "));
+		sb->Append(this->stm->GetSourceNameObj());
+	}
+	else
+	{
+		sb->AppendC(UTF8STRC("AXCAN"));
 	}
 }
 

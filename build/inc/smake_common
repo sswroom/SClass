@@ -1677,6 +1677,7 @@ IO/BufferedOutputStream.h: ../../src/IO/BufferedOutputStream.cpp
 @BufferedOutputStream.o
 IO/CameraControl.h:
 IO/CANHandler.h:
+IO/CANListener.h:
 IO/CDXAData.h: ../../src/IO/CDXAData.cpp
 @CDXAData.o
 IO/CDSectorData.h: ../../src/IO/CDSectorData.cpp
@@ -1894,6 +1895,8 @@ IO/Device/BivocomTD210.h: ../../src/IO/Device/BivocomTD210.cpp
 @BivocomTD210.o
 IO/Device/BME280.h: ../../src/IO/Device/BME280.cpp
 @BME280.o
+IO/Device/BYDC9R.h: ../../src/IO/Device/BYDC9R.cpp
+@BYDC9R.o
 IO/Device/BYDC9RHandler.h: ../../src/IO/Device/BYDC9RHandler.cpp
 @BYDC9RHandler.o
 IO/Device/DensoWaveQB30.h: ../../src/IO/Device/DensoWaveQB30.cpp
@@ -3933,6 +3936,8 @@ SSWR/AVIRead/AVIRSDCardForm.h: ../../src/SSWR/AVIRead/AVIRSDCardForm.cpp
 @AVIRSDCardForm.o
 SSWR/AVIRead/AVIRSectorForm.h: ../../src/SSWR/AVIRead/AVIRSectorForm.cpp
 @AVIRSectorForm.o
+SSWR/AVIRead/AVIRSelCANForm.h: ../../src/SSWR/AVIRead/AVIRSelCANForm.cpp
+@AVIRSelCANForm.o
 SSWR/AVIRead/AVIRSelIOPinForm.h: ../../src/SSWR/AVIRead/AVIRSelIOPinForm.cpp
 @AVIRSelIOPinForm.o
 SSWR/AVIRead/AVIRSelPrinterForm.h: ../../src/SSWR/AVIRead/AVIRSelPrinterForm.cpp
@@ -4853,6 +4858,7 @@ AMGU4241.o: ../../src/IO/Device/AMGU4241.cpp
 AXCAN.o: ../../src/IO/Device/AXCAN.cpp
 BivocomTD210.o: ../../src/IO/Device/BivocomTD210.cpp
 BME280.o: ../../src/IO/Device/BME280.cpp
+BYDC9R.o: ../../src/IO/Device/BYDC9R.cpp
 BYDC9RHandler.o: ../../src/IO/Device/BYDC9RHandler.cpp
 DensoWaveQB30.o: ../../src/IO/Device/DensoWaveQB30.cpp
 DensoWaveQK30U.o: ../../src/IO/Device/DensoWaveQK30U.cpp
@@ -5819,6 +5825,7 @@ AVIRSAMLReqDecodeForm.o: ../../src/SSWR/AVIRead/AVIRSAMLReqDecodeForm.cpp
 AVIRSAMLTestForm.o: ../../src/SSWR/AVIRead/AVIRSAMLTestForm.cpp
 AVIRSDCardForm.o: ../../src/SSWR/AVIRead/AVIRSDCardForm.cpp
 AVIRSectorForm.o: ../../src/SSWR/AVIRead/AVIRSectorForm.cpp
+AVIRSelCANForm.o: ../../src/SSWR/AVIRead/AVIRSelCANForm.cpp
 AVIRSelIOPinForm.o: ../../src/SSWR/AVIRead/AVIRSelIOPinForm.cpp
 AVIRSelPrinterForm.o: ../../src/SSWR/AVIRead/AVIRSelPrinterForm.cpp
 AVIRSelStreamForm.o: ../../src/SSWR/AVIRead/AVIRSelStreamForm.cpp

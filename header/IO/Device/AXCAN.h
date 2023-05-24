@@ -1,6 +1,7 @@
 #ifndef _SM_IO_DEVICE_AXCAN
 #define _SM_IO_DEVICE_AXCAN
 #include "IO/CANHandler.h"
+#include "IO/CANListener.h"
 #include "IO/Reader.h"
 #include "IO/Stream.h"
 #include "Sync/Event.h"
@@ -10,7 +11,7 @@ namespace IO
 {
 	namespace Device
 	{
-		class AXCAN
+		class AXCAN : public IO::CANListener
 		{
 		public:
 			enum class CANBitRate
@@ -49,11 +50,14 @@ namespace IO
 			static UInt32 __stdcall SerialThread(void *userObj);
 		public:
 			AXCAN(CANHandler *hdlr);
-			~AXCAN();
+			virtual ~AXCAN();
 
 			Bool OpenSerialPort(UOSInt portNum, UInt32 serialBaudRate, CANBitRate bitRate);
 			Bool OpenStream(IO::Stream *stm, CANBitRate bitRate);
 			void CloseSerialPort(Bool force);
+
+			virtual void CANStop();
+			virtual void ToString(Text::StringBuilderUTF8 *sb) const;
 
 			void ParseReader(IO::Reader *reader);
 		};
