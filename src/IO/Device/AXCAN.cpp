@@ -6,7 +6,7 @@
 #include "Text/UTF8Reader.h"
 
 #define CMDTIMEOUT 1000
-#define VERBOSE
+//#define VERBOSE
 #if defined(VERBOSE)
 #include <stdio.h>
 #endif
