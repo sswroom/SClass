@@ -6,6 +6,10 @@
 #include "Text/UTF8Reader.h"
 
 #define CMDTIMEOUT 1000
+#define VERBOSE
+#if defined(VERBOSE)
+#include <stdio.h>
+#endif
 
 Bool IO::Device::AXCAN::SendSetCANBitRate(CANBitRate bitRate)
 {
@@ -90,6 +94,9 @@ Bool IO::Device::AXCAN::SendCommand(Text::CString cmd, UOSInt timeout)
 	if (cmd.leng > 63)
 		return false;
 	cmd.ConcatTo(buff);
+#if defined(VERBOSE)
+	printf("AXCAN Send: %s\r\n", buff);
+#endif
 	buff[cmd.leng] = 13;
 	if (this->stm == 0)
 		return false;
@@ -206,6 +213,9 @@ void IO::Device::AXCAN::ParseReader(IO::Reader *reader)
 	UInt8 buff[16];
 	while (reader->ReadLine(&sb, 1024))
 	{
+#if defined(VERBOSE)
+		printf("AXCAN Recv: %s\r\n", sb.ToString());
+#endif
 		if (sb.StartsWith('#'))
 		{
 			if (sb.Equals(UTF8STRC("#OK")))
