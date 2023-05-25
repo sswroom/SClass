@@ -1,4 +1,5 @@
 #include "Stdafx.h"
+#include "Data/Sort/ArtificialQuickSort.h"
 #include "SSWR/OrganWeb/OrganWebBookController.h"
 #include "SSWR/OrganWeb/OrganWebEnv.h"
 #include "Text/UTF8Writer.h"
@@ -16,7 +17,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookList(Net::WebServe
 	if (req->GetQueryValueI32(CSTR("id"), &id))
 	{
 		Text::String *s;
-		Data::FastMap<Int64, BookInfo*> sortBookMap;
+		Data::ArrayList<BookInfo*> sortBookList;
 		Data::DateTime dt;
 		UTF8Char sbuff[32];
 		UTF8Char *sptr;
@@ -62,13 +63,14 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookList(Net::WebServe
 		writer.WriteLineC(UTF8STRC("<td>Publish Date</td>"));
 		writer.WriteLineC(UTF8STRC("</tr>"));
 
-		me->env->BookGetDateMap(&mutUsage, &sortBookMap);
+		me->env->BookGetList(&mutUsage, &sortBookList);
+		Data::Sort::ArtificialQuickSort::Sort(&sortBookList, me);
 
 		i = 0;
-		j = sortBookMap.GetCount();
+		j = sortBookList.GetCount();
 		while (i < j)
 		{
-			book = sortBookMap.GetItem(i);
+			book = sortBookList.GetItem(i);
 
 			writer.WriteLineC(UTF8STRC("<tr>"));
 			writer.WriteStrC(UTF8STRC("<td>"));
@@ -882,4 +884,14 @@ SSWR::OrganWeb::OrganWebBookController::OrganWebBookController(Net::WebServer::M
 
 SSWR::OrganWeb::OrganWebBookController::~OrganWebBookController()
 {
+}
+
+OSInt SSWR::OrganWeb::OrganWebBookController::Compare(BookInfo *a, BookInfo *b) const
+{
+	if (a->publishDate > b->publishDate)
+		return 1;
+	else if (a->publishDate < b->publishDate)
+		return -1;
+	else
+		return a->title->CompareTo(b->title);
 }

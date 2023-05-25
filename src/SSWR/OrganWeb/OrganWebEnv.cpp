@@ -1188,17 +1188,10 @@ UTF8Char *SSWR::OrganWeb::OrganWebEnv::BookGetPath(UTF8Char *sbuff, Int32 bookId
 	return sbuff;
 }
 
-void SSWR::OrganWeb::OrganWebEnv::BookGetDateMap(Sync::RWMutexUsage *mutUsage, Data::FastMap<Int64, BookInfo*> *bookMap)
+void SSWR::OrganWeb::OrganWebEnv::BookGetList(Sync::RWMutexUsage *mutUsage, Data::ArrayList<BookInfo*> *bookList)
 {
 	mutUsage->ReplaceMutex(&this->dataMut, false);
-	UOSInt i = 0;
-	UOSInt j = this->bookMap.GetCount();
-	while (i < j)
-	{
-		BookInfo *book = this->bookMap.GetItem(i);
-		bookMap->Put(book->publishDate, book);
-		i++;
-	}
+	bookList->AddAll(&this->bookMap);
 }
 
 Bool SSWR::OrganWeb::OrganWebEnv::BookFileExist(BookInfo *book)
