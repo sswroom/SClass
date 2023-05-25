@@ -1153,7 +1153,24 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(Net::WebServer
 			writer.WriteStrC(s->v, s->leng);
 			s->Release();
 			writer.WriteStrC(UTF8STRC("<br/><input type=\"text\" name=\"speciesname\" value="));
-			s = Text::XML::ToNewAttrText(species->sciName->v);
+			if (species->sciName->EndsWith(UTF8STRC(" male")))
+			{
+				sb.ClearStr();
+				sb.Append(species->sciName);
+				sb.RemoveChars(5);
+				s = Text::XML::ToNewAttrText(sb.v);
+			}
+			else if (species->sciName->EndsWith(UTF8STRC(" female")))
+			{
+				sb.ClearStr();
+				sb.Append(species->sciName);
+				sb.RemoveChars(7);
+				s = Text::XML::ToNewAttrText(sb.v);
+			}
+			else
+			{
+				s = Text::XML::ToNewAttrText(species->sciName->v);
+			}
 			writer.WriteStrC(s->v, s->leng);
 			s->Release();
 			writer.WriteStrC(UTF8STRC(" /><input type=\"checkbox\" name=\"bookAllowDup\" id=\"bookAllowDup\" value=\"1\"/><label for=\"bookAllowDup\">Allow Duplicate</label>"));

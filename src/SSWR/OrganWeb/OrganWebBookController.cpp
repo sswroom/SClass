@@ -580,6 +580,11 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookPhoto(Net::WebServ
 		s->Release();
 		writer.WriteLineC(UTF8STRC("<br/>"));
 
+		writer.WriteStrC(UTF8STRC("<b>Publish Date:</b> "));
+		sptr = Data::Timestamp(book->publishDate, 0).ToString(sbuff, "yyyy-MM-dd");
+		writer.WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
+		writer.WriteLineC(UTF8STRC("<br/>"));
+
 		if (book->url)
 		{
 			writer.WriteStrC(UTF8STRC("<b>URL:</b> <a href="));
@@ -749,7 +754,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookAdd(Net::WebServer
 			{
 				errMsg = CSTR("Press is empty");
 			}
-			else if (pubDate == 0 || (ts = Data::Timestamp(pubDate->ToCString(), Data::DateTimeUtil::GetLocalTzQhr())).IsNull())
+			else if (pubDate == 0 || (ts = Data::Timestamp(pubDate->ToCString(), 0)).IsNull())
 			{
 				errMsg = CSTR("Publish Date is not valid");
 			}
