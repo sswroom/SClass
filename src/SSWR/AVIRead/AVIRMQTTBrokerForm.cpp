@@ -4,6 +4,7 @@
 #include "Net/SSLEngineFactory.h"
 #include "SSWR/AVIRead/AVIRMQTTBrokerForm.h"
 #include "SSWR/AVIRead/AVIRSSLCertKeyForm.h"
+#include "Sync/Interlocked.h"
 #include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
 #include "Text/StringBuilderUTF8.h"
@@ -16,6 +17,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnStartClicked(void *userObj)
 	{
 		me->ServerStop();
 		me->txtPort->SetReadOnly(false);
+		me->btnStart->SetText(CSTR("Start"));
 	}
 	else
 	{
@@ -60,10 +62,12 @@ void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnStartClicked(void *userObj)
 			}
 			else
 			{
+				me->totalCount = 0;
 				me->broker->HandleTopicUpdate(OnTopicUpdate, me);
 				if (me->broker->Start())
 				{
 					me->txtPort->SetReadOnly(true);
+					me->btnStart->SetText(CSTR("Stop"));
 				}
 				else
 				{
@@ -119,6 +123,27 @@ void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnTimerTick(void *userObj)
 	Data::DateTime dt;
 	UOSInt i;
 	UOSInt j;
+	UInt64 thisCount = me->totalCount;
+	Data::Timestamp ts = Data::Timestamp::UtcNow();
+	if (thisCount >= me->dispCount)
+	{
+		Double rate = (Double)(thisCount - me->dispCount) / ts.DiffSecDbl(me->dispTime);
+		sb.AppendDouble(rate);
+		me->txtDataRate->SetText(sb.ToCString());
+	}
+	else
+	{
+		me->txtDataRate->SetText(CSTR("0.0"));
+	}
+	if (thisCount != me->dispCount)
+	{
+		sb.ClearStr();
+		sb.AppendU64(thisCount);
+		me->txtTotalCount->SetText(sb.ToCString());
+	}
+	me->dispCount = thisCount;
+	me->dispTime = ts;
+	
 	Sync::MutexUsage mutUsage(&me->topicMut);
 	topicList = me->topicMap.GetValues();
 	i = 0;
@@ -163,7 +188,6 @@ void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnTimerTick(void *userObj)
 			i++;
 		}
 	}
-	mutUsage.EndUse();
 }
 
 void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnTopicUpdate(void *userObj, Text::CString topic, const UInt8 *message, UOSInt msgSize)
@@ -172,6 +196,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnTopicUpdate(void *userObj, T
 	SSWR::AVIRead::AVIRMQTTBrokerForm::TopicStatus *topicSt;
 	Data::DateTime dt;
 	dt.SetCurrTimeUTC();
+	Sync::Interlocked::Increment(&me->totalCount);
 	Sync::MutexUsage mutUsage(&me->topicMut);
 	topicSt = me->topicMap.Get(topic);
 	if (topicSt)
@@ -198,7 +223,6 @@ void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnTopicUpdate(void *userObj, T
 		me->topicMap.Put(topic, topicSt);
 		me->topicListUpdated = true;
 	}
-	mutUsage.EndUse();
 }
 
 void SSWR::AVIRead::AVIRMQTTBrokerForm::ServerStop()
@@ -221,6 +245,9 @@ SSWR::AVIRead::AVIRMQTTBrokerForm::AVIRMQTTBrokerForm(UI::GUIClientControl *pare
 	this->sslCert = 0;
 	this->sslKey = 0;
 	this->topicListUpdated = false;
+	this->totalCount = 0;
+	this->dispCount = 0;
+	this->dispTime = Data::Timestamp::UtcNow();
 
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
@@ -242,6 +269,16 @@ SSWR::AVIRead::AVIRMQTTBrokerForm::AVIRMQTTBrokerForm(UI::GUIClientControl *pare
 	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->tpStatus, CSTR("Start")));
 	this->btnStart->SetRect(204, 28, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
+	NEW_CLASS(this->lblTotalCount, UI::GUILabel(ui, this->tpStatus, CSTR("Total Count")));
+	this->lblTotalCount->SetRect(4, 52, 100, 23, false);
+	NEW_CLASS(this->txtTotalCount, UI::GUITextBox(ui, this->tpStatus, CSTR("0")));
+	this->txtTotalCount->SetReadOnly(true);
+	this->txtTotalCount->SetRect(104, 52, 200, 23, false);
+	NEW_CLASS(this->lblDataRate, UI::GUILabel(ui, this->tpStatus, CSTR("Data Rate")));
+	this->lblDataRate->SetRect(4, 76, 100, 23, false);
+	NEW_CLASS(this->txtDataRate, UI::GUITextBox(ui, this->tpStatus, CSTR("0.0")));
+	this->txtDataRate->SetReadOnly(true);
+	this->txtDataRate->SetRect(104, 76, 200, 23, false);
 
 	this->tpTopic = this->tcMain->AddTabPage(CSTR("Topic"));
 	NEW_CLASS(this->lvTopic, UI::GUIListView(ui, this->tpTopic, UI::GUIListView::LVSTYLE_TABLE, 3));

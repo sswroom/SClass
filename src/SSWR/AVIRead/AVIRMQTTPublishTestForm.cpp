@@ -16,6 +16,8 @@
 #include "UI/FileDialog.h"
 #include "UI/MessageDialog.h"
 
+#include <stdio.h>
+
 void __stdcall SSWR::AVIRead::AVIRMQTTPublishTestForm::OnStartClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRMQTTPublishTestForm *me = (SSWR::AVIRead::AVIRMQTTPublishTestForm*)userObj;
@@ -397,10 +399,10 @@ SSWR::AVIRead::AVIRMQTTPublishTestForm::AVIRMQTTPublishTestForm(UI::GUIClientCon
 	NEW_CLASS(this->lblRecvRate, UI::GUILabel(ui, this, CSTR("Recv Rate")));
 	this->lblRecvRate->SetRect(4, 148, 100, 23, false);
 	NEW_CLASS(this->txtRecvRate, UI::GUITextBox(ui, this, CSTR("0")));
-	this->txtRecvRate->SetRect(104, 172, 100, 23, false);
+	this->txtRecvRate->SetRect(104, 148, 100, 23, false);
 	this->txtRecvRate->SetReadOnly(true);
 	NEW_CLASS(this->lblStatus, UI::GUILabel(ui, this, CSTR("Not Connected")));
-	this->lblStatus->SetRect(4, 196, 150, 23, false);
+	this->lblStatus->SetRect(4, 172, 150, 23, false);
 
 	this->client = 0;
 

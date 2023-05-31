@@ -50,6 +50,7 @@ namespace Net
 		Data::ArrayList<PacketInfo *> packetList;
 		Sync::Mutex packetMut;
 		Sync::Event packetEvt;
+		Sync::Mutex cliMut;
 		UInt64 totalUpload;
 		UInt64 totalDownload;
 

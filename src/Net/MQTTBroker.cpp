@@ -13,7 +13,7 @@ typedef struct
 	void *cliData;
 	Text::String *cliId;
 	UOSInt buffSize;
-	UInt8 recvBuff[4096];
+	UInt8 recvBuff[20000];
 	UInt16 keepAlive;
 	Bool connected;
 } ClientData;

@@ -43,6 +43,9 @@ namespace SSWR
 			Data::StringMap<TopicStatus*> topicMap;
 			Sync::Mutex topicMut;
 			Bool topicListUpdated;
+			UInt64 totalCount;
+			UInt64 dispCount;
+			Data::Timestamp dispTime;
 
 			UI::GUITabControl *tcMain;
 
@@ -54,6 +57,10 @@ namespace SSWR
 			UI::GUILabel *lblPort;
 			UI::GUITextBox *txtPort;
 			UI::GUIButton *btnStart;
+			UI::GUILabel *lblTotalCount;
+			UI::GUITextBox *txtTotalCount;
+			UI::GUILabel *lblDataRate;
+			UI::GUITextBox *txtDataRate;
 
 			UI::GUITabPage *tpTopic;
 			UI::GUIListView *lvTopic;
