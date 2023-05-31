@@ -3,6 +3,8 @@
 #include "Sync/MutexUsage.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
+#include "UI/GUIListBox.h"
+#include "UI/GUITextBox.h"
 #include "UI/ListBoxLogger.h"
 
 void __stdcall UI::ListBoxLogger::TimerTick(void *userObj)
@@ -84,6 +86,20 @@ void __stdcall UI::ListBoxLogger::TimerTick(void *userObj)
 	}
 }
 
+void __stdcall UI::ListBoxLogger::OnListBoxSelChg(void *userObj)
+{
+	UI::ListBoxLogger *me = (UI::ListBoxLogger*)userObj;
+	if (me->txt)
+	{
+		Text::String *s = me->lb->GetSelectedItemTextNew();
+		if (s)
+		{
+			me->txt->SetText(s->ToCString());
+			s->Release();
+		}
+	}
+}
+
 UI::ListBoxLogger::ListBoxLogger(UI::GUIForm *frm, UI::GUIListBox *lb, UOSInt maxLog, Bool reverse)
 {
 	UOSInt i;
@@ -96,6 +112,7 @@ UI::ListBoxLogger::ListBoxLogger(UI::GUIForm *frm, UI::GUIListBox *lb, UOSInt ma
 	this->logIndex = 0;
 	this->logCnt = 0;
 	this->timeFormat = 0;
+	this->txt = 0;
 	i = this->maxLog;
 	while (i-- > 0)
 	{
@@ -162,4 +179,21 @@ void UI::ListBoxLogger::SetTimeFormat(const Char *timeFormat)
 	SDEL_TEXT(this->timeFormat);
 	this->timeFormat = Text::StrCopyNew(timeFormat);
 	mutUsage.EndUse();
+}
+
+UI::ListBoxLogger *UI::ListBoxLogger::CreateUI(UI::GUIForm *frm, UI::GUICore *ui, UI::GUIClientControl *ctrl, UOSInt maxLog, Bool reverse)
+{
+	UI::GUITextBox *txt;
+	UI::GUIListBox *lb;
+	UI::ListBoxLogger *logger;
+	NEW_CLASS(txt, UI::GUITextBox(ui, ctrl, CSTR("")));
+	txt->SetReadOnly(true);
+	txt->SetRect(0, 0, 100, 23, false);
+	txt->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	NEW_CLASS(lb, UI::GUIListBox(ui, ctrl, false));
+	lb->SetDockType(UI::GUIControl::DOCK_FILL);
+	NEW_CLASS(logger, UI::ListBoxLogger(frm, lb, maxLog, reverse));
+	logger->txt = txt;
+	lb->HandleSelectionChange(OnListBoxSelChg, logger);
+	return logger;
 }

@@ -3846,8 +3846,12 @@ SSWR/AVIRead/AVIRMQTTExplorerForm.h: ../../src/SSWR/AVIRead/AVIRMQTTExplorerForm
 @AVIRMQTTExplorerForm.o
 SSWR/AVIRead/AVIRMQTTPublishForm.h: ../../src/SSWR/AVIRead/AVIRMQTTPublishForm.cpp
 @AVIRMQTTPublishForm.o
+SSWR/AVIRead/AVIRMQTTPublishTestForm.h: ../../src/SSWR/AVIRead/AVIRMQTTPublishTestForm.cpp
+@AVIRMQTTPublishTestForm.o
 SSWR/AVIRead/AVIRMQTTSubscribeForm.h: ../../src/SSWR/AVIRead/AVIRMQTTSubscribeForm.cpp
 @AVIRMQTTSubscribeForm.o
+SSWR/AVIRead/AVIRMQTTSubscribeTestForm.h: ../../src/SSWR/AVIRead/AVIRMQTTSubscribeTestForm.cpp
+@AVIRMQTTSubscribeTestForm.o
 SSWR/AVIRead/AVIRMSSQLConnForm.h: ../../src/SSWR/AVIRead/AVIRMSSQLConnForm.cpp
 @AVIRMSSQLConnForm.o
 SSWR/AVIRead/AVIRMySQLClientForm.h: ../../src/SSWR/AVIRead/AVIRMySQLClientForm.cpp
@@ -5780,7 +5784,9 @@ AVIRMODBUSTCPSimForm.o: ../../src/SSWR/AVIRead/AVIRMODBUSTCPSimForm.cpp
 AVIRMQTTBrokerForm.o: ../../src/SSWR/AVIRead/AVIRMQTTBrokerForm.cpp
 AVIRMQTTExplorerForm.o: ../../src/SSWR/AVIRead/AVIRMQTTExplorerForm.cpp
 AVIRMQTTPublishForm.o: ../../src/SSWR/AVIRead/AVIRMQTTPublishForm.cpp
+AVIRMQTTPublishTestForm.o: ../../src/SSWR/AVIRead/AVIRMQTTPublishTestForm.cpp
 AVIRMQTTSubscribeForm.o: ../../src/SSWR/AVIRead/AVIRMQTTSubscribeForm.cpp
+AVIRMQTTSubscribeTestForm.o: ../../src/SSWR/AVIRead/AVIRMQTTSubscribeTestForm.cpp
 AVIRMSSQLConnForm.o: ../../src/SSWR/AVIRead/AVIRMSSQLConnForm.cpp
 AVIRMySQLClientForm.o: ../../src/SSWR/AVIRead/AVIRMySQLClientForm.cpp
 AVIRMySQLConnForm.o: ../../src/SSWR/AVIRead/AVIRMySQLConnForm.cpp

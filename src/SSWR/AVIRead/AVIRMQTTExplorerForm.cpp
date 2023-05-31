@@ -239,7 +239,11 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnPublishClicked(void *userO
 		UI::MessageDialog::ShowDialog(CSTR("Please enter content"), CSTR("MQTT Explorer"), me);
 		return;
 	}
-	me->client->SendPublish(sbTopic.ToCString(), sbContent.ToCString());
+	if (!me->client->SendPublish(sbTopic.ToCString(), sbContent.ToCString()))
+	{
+		UI::MessageDialog::ShowDialog(CSTR("Error in publishing topic"), CSTR("MQTT Explorer"), me);
+		return;
+	}
 }
 
 void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnTopicSelChg(void *userObj)
@@ -376,6 +380,11 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnPublishMessage(void *userO
 	topicSt = me->topicMap.Get(topic);
 	if (topicSt == 0)
 	{
+		sb.ClearStr();
+		sb.AppendC(UTF8STRC("New Topic: "));
+		sb.Append(topic);
+		me->log.LogMessage(sb.ToCString(), IO::ILogHandler::LogLevel::Command);
+
 		topicSt = MemAlloc(SSWR::AVIRead::AVIRMQTTExplorerForm::TopicStatus, 1);
 		topicSt->topic = Text::String::New(topic);
 		topicSt->currValue = MemAlloc(UTF8Char, msgSize + 1);
@@ -384,7 +393,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnPublishMessage(void *userO
 		topicSt->updated = true;
 		topicSt->recvCnt = 1;
 		topicSt->lastRecvTime = dt.ToTicks();
-		me->topicMap.Put(topic, topicSt);
+		me->topicMap.Put(topicSt->topic, topicSt);
 		me->topicListChanged = true;
 	}
 	else
@@ -416,7 +425,6 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnPublishMessage(void *userO
 		}
 		topicSt->valueList[(topicSt->recvCnt - 1) & 255] = dVal;
 	}
-	mutUsage.EndUse();
 }
 
 void SSWR::AVIRead::AVIRMQTTExplorerForm::UpdateTopicChart()
@@ -598,6 +606,10 @@ SSWR::AVIRead::AVIRMQTTExplorerForm::AVIRMQTTExplorerForm(UI::GUIClientControl *
 	NEW_CLASS(this->txtPubContent, UI::GUITextBox(ui, this->tpPublish, CSTR(""), true));
 	this->txtPubContent->SetDockType(UI::GUIControl::DOCK_FILL);
 
+	this->tpLog = this->tcDetail->AddTabPage(CSTR("Log"));
+	this->logger = UI::ListBoxLogger::CreateUI(this, this->ui, this->tpLog, 500, false);
+	this->log.AddLogHandler(this->logger, IO::ILogHandler::LogLevel::Raw);
+
 	this->client = 0;
 
 	this->AddTimer(30000, OnPingTimerTick, this);
@@ -607,10 +619,12 @@ SSWR::AVIRead::AVIRMQTTExplorerForm::AVIRMQTTExplorerForm(UI::GUIClientControl *
 
 SSWR::AVIRead::AVIRMQTTExplorerForm::~AVIRMQTTExplorerForm()
 {
+	this->log.RemoveLogHandler(this->logger);
 	this->ServerStop();
 	this->ClearTopics();
 	SDEL_CLASS(this->cliCert);
 	SDEL_CLASS(this->cliKey);
+	SDEL_CLASS(this->logger);
 	if (this->dispImg)
 	{
 		this->core->GetDrawEngine()->DeleteImage(this->dispImg);

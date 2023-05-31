@@ -8,6 +8,7 @@
 #include "UI/GUIForm.h"
 #include "UI/GUIHSplitter.h"
 #include "UI/GUILabel.h"
+#include "UI/GUIListBox.h"
 #include "UI/GUIListView.h"
 #include "UI/GUIPanel.h"
 #include "UI/GUIPictureBoxSimple.h"
@@ -15,6 +16,7 @@
 #include "UI/GUITabPage.h"
 #include "UI/GUITextBox.h"
 #include "UI/GUIVSplitter.h"
+#include "UI/ListBoxLogger.h"
 
 namespace SSWR
 {
@@ -40,6 +42,7 @@ namespace SSWR
 			Net::SSLEngine *ssl;
 			Net::MQTTConn *client;
 			IO::LogTool log;
+			UI::ListBoxLogger *logger;
 			Sync::Mutex topicMut;
 			Data::StringMap<TopicStatus*> topicMap;
 			Bool topicListChanged;
@@ -78,6 +81,8 @@ namespace SSWR
 			UI::GUIPanel *pnlPubCtrl;
 			UI::GUIButton *btnPublish;
 			UI::GUITextBox *txtPubContent;
+
+			UI::GUITabPage *tpLog;
 
 			static void __stdcall OnStartClicked(void *userObj);
 			static void __stdcall OnCliCertClicked(void *userObj);

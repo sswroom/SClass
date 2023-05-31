@@ -56,6 +56,9 @@ void Net::MQTTConn::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, Int
 		}
 		if (topic && i <= cmdSize)
 		{
+#if defined(DEBUG_PRINT)
+			printf("MQTT data: topic = %s, size = %d\r\n", topic, (UInt32)(cmdSize - i));
+#endif
 			this->OnPublishMessage({topic, topicLen}, &cmd[i], cmdSize - i);
 		}
 		if (qosLev == 1)
@@ -359,7 +362,7 @@ Bool Net::MQTTConn::SendSubscribe(UInt16 packetId, Text::CString topic)
 	packet1[i] = 0;
 	i++;
 #if defined(DEBUG_PRINT)
-	printf("Subscribing topic %s\r\n", topic);
+	printf("Subscribing topic %s\r\n", topic.v);
 #endif
 	j = this->protoHdlr.BuildPacket(packet2, 0x82, 0, packet1, i, this->cliData);
 	return this->SendPacket(packet2, j);

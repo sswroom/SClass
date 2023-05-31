@@ -59,6 +59,24 @@ Bool __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::OnMouseUp(void *userObj, 
 		ptList[4].x = me->sel1.x;
 		ptList[4].y = me->sel1.y;
 		me->navi->SetSelectedVector(pg);
+
+		UTF8Char sbuff[32];
+		UTF8Char *sptr;
+		Map::TileMap *tileMap = me->lyr->GetTileMap();
+		UOSInt lyrCnt = tileMap->GetLevelCount();
+		UOSInt currLyr = 0;
+		Data::ArrayList<Math::Coord2D<Int32>> imgIdList;
+		UOSInt cnt = 0;
+		while (currLyr < lyrCnt)
+		{
+			imgIdList.Clear();
+			tileMap->GetTileImageIDs(currLyr, Math::RectAreaDbl(me->sel1, me->sel2), &imgIdList);
+			cnt += imgIdList.GetCount();
+			currLyr++;
+		}
+		sptr = Text::StrUOSInt(sbuff, cnt);
+		me->txtTotalImages->SetText(CSTRP(sbuff, sptr));
+
 		return true;
 	}
 	return false;
@@ -143,102 +161,6 @@ void __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::OnStopClicked(void *userO
 	SSWR::AVIRead::AVIRGISTileDownloadForm *me = (SSWR::AVIRead::AVIRGISTileDownloadForm*)userObj;
 	me->stopDownload = true;
 }
-
-/*
-void SSWR::AVIRead::AVIRGISTileDownloadForm::SaveTiles(const WChar *folderName)
-{
-	Map::TileMap *tileMap = this->lyr->GetTileMap();
-	Text::StringBuilderW sb;
-	WChar wbuff[32];
-	OSInt currLyr;
-	OSInt lyrCnt = tileMap->GetLevelCount();
-	UInt8 *fileBuff = 0;
-	OSInt fileBuffSize = 0;
-	Data::ArrayList<Int64> imgIdList;
-	Map::TileMap::ImageType it;
-	Int32 blockX;
-	Int32 blockY;
-	IO::StreamData *fd;
-	Double bounds[4];
-	Int64 fileSize;
-	OSInt i;
-	OSInt j;
-	OSInt cnt;
-	OSInt err = 0;
-	this->txtError->SetText(L"0");
-	currLyr = 0;
-	while (currLyr < lyrCnt)
-	{
-		Text::StrOSInt(wbuff, currLyr);
-		this->txtLayer->SetText(wbuff);
-
-		imgIdList.Clear();
-		tileMap->GetImageIDs(currLyr, this->selX1, this->selY1, this->selX2, this->selY2, &imgIdList);
-		cnt = imgIdList.GetCount();
-		i = cnt;
-		while (i-- > 0)
-		{
-			Text::StrOSInt(Text::StrConcat(Text::StrOSInt(wbuff, cnt - i), L"/"), cnt);
-			this->txtImages->SetText(wbuff);
-			this->ui->ProcessMessages();
-
-			fd = 0;
-			j = 3;
-			while (fd == 0 && j-- > 0)
-			{
-				fd = tileMap->LoadTileImageData(currLyr, imgIdList.GetItem(i), bounds, false, &blockX, &blockY, &it);
-			}
-			if (fd)
-			{
-				fileSize = fd->GetDataSize();
-				if (fileSize > fileBuffSize)
-				{
-					fileBuffSize = (OSInt)fileSize;
-					if (fileBuff)
-					{
-						MemFree(fileBuff);
-					}
-					fileBuff = MemAlloc(UInt8, fileBuffSize);
-				}
-				if (fd->GetRealData(0, (OSInt)fileSize, fileBuff) == fileSize)
-				{
-					sb.ClearStr();
-					sb.Append(folderName);
-					sb.Append(IO::Path::PATH_SEPERATOR, 1);
-					sb.Append(currLyr);
-					sb.Append(IO::Path::PATH_SEPERATOR, 1);
-					sb.Append(blockX);
-					IO::Path::CreateDirectory(sb.ToString());
-					sb.Append(IO::Path::PATH_SEPERATOR, 1);
-					sb.Append(blockY);
-					if (it == Map::TileMap::IT_PNG)
-					{
-						sb.AppendC(UTF8STRC(".png"));
-					}
-					else
-					{
-						sb.AppendC(UTF8STRC(".jpg"));
-					}
-					IO::FileStream fs(sb.ToString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer);
-					fs.Write(fileBuff, (OSInt)fileSize);
-				}
-				DEL_CLASS(fd);
-			}
-			else
-			{
-				err++;
-				Text::StrOSInt(wbuff, err);
-				this->txtError->SetText(wbuff);
-			}
-		}
-		currLyr++;
-	}
-	if (fileBuff)
-	{
-		MemFree(fileBuff);
-		fileBuff = 0;
-	}
-}*/
 
 void SSWR::AVIRead::AVIRGISTileDownloadForm::SaveTilesDir(const UTF8Char *folderName)
 {
@@ -524,7 +446,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::ProcThread(void *userOb
 	return 0;
 }
 
-SSWR::AVIRead::AVIRGISTileDownloadForm::AVIRGISTileDownloadForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Map::TileMapLayer *lyr, IMapNavigator *navi) : UI::GUIForm(parent, 360, 144, ui)
+SSWR::AVIRead::AVIRGISTileDownloadForm::AVIRGISTileDownloadForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Map::TileMapLayer *lyr, IMapNavigator *navi) : UI::GUIForm(parent, 360, 168, ui)
 {
 	Text::StringBuilderUTF8 sb;
 	this->core = core;
@@ -553,21 +475,26 @@ SSWR::AVIRead::AVIRGISTileDownloadForm::AVIRGISTileDownloadForm(UI::GUIClientCon
 	this->btnStop->SetRect(224, 4, 100, 23, false);
 	this->btnStop->HandleButtonClick(OnStopClicked, this);
 
+	NEW_CLASS(this->lblTotalImages, UI::GUILabel(ui, this, CSTR("Total Images")));
+	this->lblTotalImages->SetRect(4, 36, 100, 23, false);
+	NEW_CLASS(this->txtTotalImages, UI::GUITextBox(ui, this, CSTR("")));
+	this->txtTotalImages->SetReadOnly(true);
+	this->txtTotalImages->SetRect(104, 36, 60, 23, false);
 	NEW_CLASS(this->lblLayer, UI::GUILabel(ui, this, CSTR("Curr Layer")));
-	this->lblLayer->SetRect(4, 36, 100, 23, false);
+	this->lblLayer->SetRect(4, 60, 100, 23, false);
 	NEW_CLASS(this->txtLayer, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtLayer->SetReadOnly(true);
-	this->txtLayer->SetRect(104, 36, 60, 23, false);
+	this->txtLayer->SetRect(104, 60, 60, 23, false);
 	NEW_CLASS(this->lblImages, UI::GUILabel(ui, this, CSTR("Images")));
-	this->lblImages->SetRect(4, 60, 100, 23, false);
+	this->lblImages->SetRect(4, 84, 100, 23, false);
 	NEW_CLASS(this->txtImages, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtImages->SetReadOnly(true);
-	this->txtImages->SetRect(104, 60, 100, 23, false);
+	this->txtImages->SetRect(104, 84, 100, 23, false);
 	NEW_CLASS(this->lblError, UI::GUILabel(ui, this, CSTR("Error")));
-	this->lblError->SetRect(4, 84, 100, 23, false);
+	this->lblError->SetRect(4, 108, 100, 23, false);
 	NEW_CLASS(this->txtError, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtError->SetReadOnly(true);
-	this->txtError->SetRect(104, 84, 100, 23, false);
+	this->txtError->SetRect(104, 108, 100, 23, false);
 
 	this->navi->HandleMapMouseDown(OnMouseDown, this);
 	this->navi->HandleMapMouseUp(OnMouseUp, this);

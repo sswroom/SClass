@@ -144,7 +144,9 @@
 #include "SSWR/AVIRead/AVIRMQTTBrokerForm.h"
 #include "SSWR/AVIRead/AVIRMQTTExplorerForm.h"
 #include "SSWR/AVIRead/AVIRMQTTPublishForm.h"
+#include "SSWR/AVIRead/AVIRMQTTPublishTestForm.h"
 #include "SSWR/AVIRead/AVIRMQTTSubscribeForm.h"
+#include "SSWR/AVIRead/AVIRMQTTSubscribeTestForm.h"
 #include "SSWR/AVIRead/AVIRMSSQLConnForm.h"
 #include "SSWR/AVIRead/AVIRMySQLConnForm.h"
 #include "SSWR/AVIRead/AVIRMySQLClientForm.h"
@@ -491,7 +493,9 @@ typedef enum
 	MNU_HKO_LOCAL_FORECAST,
 	MNU_HKO_WARNING_SUMMARY,
 	MNU_RNCRYPTOR,
-	MNU_BYDC9R
+	MNU_BYDC9R,
+	MNU_MQTT_SUBSCRIBE_TEST,
+	MNU_MQTT_PUBLISH_TEST
 } MenuItems;
 
 void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(void *userObj, Text::String **files, UOSInt nFiles)
@@ -785,6 +789,8 @@ SSWR::AVIRead::AVIRBaseForm::AVIRBaseForm(UI::GUIClientControl *parent, UI::GUIC
 	mnu2->AddItem(CSTR("TCP Speed Client"), MNU_TCPSPDCLI, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("HTTP Test"), MNU_HTTPTEST, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("UDP Test"), MNU_UDPTEST, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("MQTT Publish Test"), MNU_MQTT_PUBLISH_TEST, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("MQTT Subscribe Test"), MNU_MQTT_SUBSCRIBE_TEST, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2 = mnu->AddSubMenu(CSTR("ICMP Utils"));
 	mnu2->AddItem(CSTR("IP Scan"), MNU_IPSCAN, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("Trace Route"), MNU_TRACEROUTE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -2817,6 +2823,20 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		{
 			SSWR::AVIRead::AVIRBYDC9RForm *frm;
 			NEW_CLASS(frm, SSWR::AVIRead::AVIRBYDC9RForm(0, this->ui, this->core));
+			this->core->ShowForm(frm);
+		}
+		break;
+	case MNU_MQTT_SUBSCRIBE_TEST:
+		{
+			SSWR::AVIRead::AVIRMQTTSubscribeTestForm *frm;
+			NEW_CLASS(frm, SSWR::AVIRead::AVIRMQTTSubscribeTestForm(0, this->ui, this->core));
+			this->core->ShowForm(frm);
+		}
+		break;
+	case MNU_MQTT_PUBLISH_TEST:
+		{
+			SSWR::AVIRead::AVIRMQTTPublishTestForm *frm;
+			NEW_CLASS(frm, SSWR::AVIRead::AVIRMQTTPublishTestForm(0, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;

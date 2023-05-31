@@ -34,6 +34,8 @@ namespace SSWR
 			UI::GUIButton *btnSave;
 			UI::GUIButton *btnStop;
 
+			UI::GUILabel *lblTotalImages;
+			UI::GUITextBox *txtTotalImages;
 			UI::GUILabel *lblLayer;
 			UI::GUITextBox *txtLayer;
 			UI::GUILabel *lblImages;
