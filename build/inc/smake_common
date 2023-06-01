@@ -157,6 +157,7 @@ nodeps:
 @PingTest
 @POP3Test
 @SMTPTest
+@WebSocketTest
 @WiFiCapture
 @WiFiScan
 @ELFFuncTest
@@ -577,6 +578,9 @@ PushServer:
 @ConsoleStartup.o
 SMTPTest:
 @SMTPTest.o
+@ConsoleStartup.o
+WebSocketTest:
+@WebSocketTest.o
 @ConsoleStartup.o
 WiFiCapture:
 @WiFiCaptureMain.o
@@ -1063,6 +1067,7 @@ PingTest.o: ../../main/NetTest/PingTest.cpp
 POP3Test.o: ../../main/NetTest/POP3Test.cpp
 PushServerMain.o: ../../main/NetTest/PushServerMain.cpp
 SMTPTest.o: ../../main/NetTest/SMTPTest.cpp
+WebSocketTest.o: ../../main/NetTest/WebSocketTest.cpp
 WiFiCaptureMain.o: ../../main/NetTest/WiFiCaptureMain.cpp
 WiFiScanMain.o: ../../main/NetTest/WiFiScanMain.cpp
 OpenCVFaceDetectMain.o: ../../main/OpenCV/OpenCVFaceDetectMain.cpp
@@ -3135,6 +3140,8 @@ Net/UserAgentDB.h: ../../src/Net/UserAgentDB.cpp
 @UserAgentDB.o
 Net/WebBrowser.h: ../../src/Net/WebBrowser.cpp
 @WebBrowser.o
+Net/WebSocketClient.h: ../../src/Net/WebSocketClient.cpp
+@WebSocketClient.o
 Net/WebStatus.h: ../../src/Net/WebStatus.cpp
 @WebStatus.o
 Net/WebUtil.h: ../../src/Net/WebUtil.cpp
@@ -5433,6 +5440,7 @@ UDPServerStream.o: ../../src/Net/UDPServerStream.cpp
 URL.o: ../../src/Net/URL.cpp
 UserAgentDB.o: ../../src/Net/UserAgentDB.cpp
 WebBrowser.o: ../../src/Net/WebBrowser.cpp
+WebSocketClient.o: ../../src/Net/WebSocketClient.cpp
 WebStatus.o: ../../src/Net/WebStatus.cpp
 WebUtil.o: ../../src/Net/WebUtil.cpp
 WhoisClient.o: ../../src/Net/WhoisClient.cpp

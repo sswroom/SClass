@@ -165,6 +165,8 @@ Text::CString IO::StreamTypeGetName(StreamType st)
 		return CSTR("MemoryReading");
 	case StreamType::DataCapture:
 		return CSTR("DataCapture");
+	case StreamType::WebSocket:
+		return CSTR("WebSocket");
 	case StreamType::Unknown:
 	default:
 		return CSTR("Unknown");

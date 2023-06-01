@@ -309,6 +309,7 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(void *userObj)
 			}
 		}
 		break;
+	case IO::StreamType::WebSocket:
 	case IO::StreamType::Unknown:
 	case IO::StreamType::Memory:
 	case IO::StreamType::BufferedOutput:

@@ -7,6 +7,7 @@
 #include "Math/Math.h"
 #include "Media/ColorProfile.h"
 #include "Net/SSLEngineFactory.h"
+#include "Net/WebSocketClient.h"
 #include "SSWR/AVIRead/AVIRMQTTSubscribeTestForm.h"
 #include "Sync/Interlocked.h"
 #include "Sync/MutexUsage.h"
@@ -27,6 +28,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeTestForm::OnStartClicked(void *us
 		me->txtUsername->SetReadOnly(false);
 		me->txtPassword->SetReadOnly(false);
 		me->chkSSL->SetEnabled(true);
+		me->chkWebSocket->SetEnabled(true);
 		me->txtTopic->SetReadOnly(false);
 		me->lblStatus->SetText(CSTR("Disconnected"));
 		me->btnStart->SetText(CSTR("Start"));
@@ -34,17 +36,18 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeTestForm::OnStartClicked(void *us
 	else
 	{
 		Bool useSSL = me->chkSSL->IsChecked();
+		Bool useWS = me->chkWebSocket->IsChecked();
 		Text::StringBuilderUTF8 sb;
 		Text::StringBuilderUTF8 sbTopic;
 		Net::SocketUtil::AddressInfo addr;
-		Int32 port;
+		UInt16 port;
 		me->txtPort->GetText(&sb);
-		if (!sb.ToInt32(&port))
+		if (!sb.ToUInt16(&port))
 		{
 			UI::MessageDialog::ShowDialog(CSTR("Port is not valid"), CSTR("Error"), me);
 			return;
 		}
-		else if (port <= 0 || port >= 65536)
+		else if (port <= 0)
 		{
 			UI::MessageDialog::ShowDialog(CSTR("Port is out of range"), CSTR("Error"), me);
 			return;
@@ -70,7 +73,22 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeTestForm::OnStartClicked(void *us
 				ssl->ClientSetCertASN1(me->cliCert, me->cliKey);
 			}
 		}
-		NEW_CLASS(me->client, Net::MQTTConn(me->core->GetSocketFactory(), useSSL?ssl:0, sb.ToCString(), (UInt16)port, 0, 0));
+		if (useWS)
+		{
+			Net::WebSocketClient *ws;
+			NEW_CLASS(ws, Net::WebSocketClient(me->core->GetSocketFactory(), useSSL?ssl:0, sb.ToCString(), port, CSTR("/mqtt"), CSTR_NULL, Net::WebSocketClient::Protocol::MQTT));
+			if (ws->IsDown())
+			{
+				DEL_CLASS(ws);
+				UI::MessageDialog::ShowDialog(CSTR("Error in initializing websocket"), CSTR("Error"), me);
+				return;
+			}
+			NEW_CLASS(me->client, Net::MQTTConn(ws, 0, 0));
+		}
+		else
+		{
+			NEW_CLASS(me->client, Net::MQTTConn(me->core->GetSocketFactory(), useSSL?ssl:0, sb.ToCString(), port, 0, 0));
+		}
 		if (me->client->IsError())
 		{
 			UI::MessageDialog::ShowDialog(CSTR("Error in connecting to server"), CSTR("Error"), me);
@@ -129,6 +147,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeTestForm::OnStartClicked(void *us
 			me->txtUsername->SetReadOnly(true);
 			me->txtPassword->SetReadOnly(true);
 			me->chkSSL->SetEnabled(false);
+			me->chkWebSocket->SetEnabled(false);
 			me->txtTopic->SetReadOnly(true);
 			me->lblStatus->SetText(CSTR("Connected"));
 			me->btnStart->SetText(CSTR("Stop"));
@@ -225,6 +244,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeTestForm::OnPingTimerTick(void *u
 			me->txtUsername->SetReadOnly(false);
 			me->txtPassword->SetReadOnly(false);
 			me->chkSSL->SetEnabled(true);
+			me->chkWebSocket->SetEnabled(true);
 			me->txtTopic->SetReadOnly(false);
 			me->lblStatus->SetText(CSTR("Not Connected"));
 			me->btnStart->SetText(CSTR("Start"));
@@ -254,6 +274,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeTestForm::OnTimerTick(void *userO
 			me->txtUsername->SetReadOnly(false);
 			me->txtPassword->SetReadOnly(false);
 			me->chkSSL->SetEnabled(true);
+			me->chkWebSocket->SetEnabled(true);
 			me->txtTopic->SetReadOnly(false);
 			me->lblStatus->SetText(CSTR("Not Connected"));
 			me->btnStart->SetText(CSTR("Start"));
@@ -335,6 +356,8 @@ SSWR::AVIRead::AVIRMQTTSubscribeTestForm::AVIRMQTTSubscribeTestForm(UI::GUIClien
 	this->txtPassword->SetRect(354, 28, 100, 23, false);
 	NEW_CLASS(this->chkSSL, UI::GUICheckBox(ui, this, CSTR("Use SSL"), false));
 	this->chkSSL->SetRect(504, 4, 100, 23, false);
+	NEW_CLASS(this->chkWebSocket, UI::GUICheckBox(ui, this, CSTR("WebSocket"), false));
+	this->chkWebSocket->SetRect(504, 28, 100, 23, false);
 	NEW_CLASS(this->btnCliCert, UI::GUIButton(ui, this, CSTR("Client Cert")));
 	this->btnCliCert->SetRect(604, 4, 75, 23, false);
 	this->btnCliCert->HandleButtonClick(OnCliCertClicked, this);

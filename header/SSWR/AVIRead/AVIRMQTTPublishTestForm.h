@@ -39,6 +39,7 @@ namespace SSWR
 			UI::GUILabel *lblPassword;
 			UI::GUITextBox *txtPassword;
 			UI::GUICheckBox *chkSSL;
+			UI::GUICheckBox *chkWebSocket;
 			UI::GUIButton *btnCliCert;
 			UI::GUILabel *lblCliCert;
 			UI::GUIButton *btnCliKey;

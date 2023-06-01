@@ -34,10 +34,8 @@ namespace Net
 		typedef void (__stdcall *PublishMessageHdlr)(void *userObj, Text::CString topic, const UInt8 *buff, UOSInt buffSize);
 		typedef void (__stdcall *DisconnectHdlr)(void *userObj);
 	private:
-		Net::SocketFactory *sockf;
-		Net::SSLEngine *ssl;
 		IO::ProtoHdlr::ProtoMQTTHandler protoHdlr;
-		Net::TCPClient *cli;
+		IO::Stream *stm;
 		void *cliData;
 		Bool recvRunning;
 		Bool recvStarted;
@@ -61,8 +59,11 @@ namespace Net
 		void OnPublishMessage(Text::CString topic, const UInt8 *message, UOSInt msgSize);
 		PacketInfo *GetNextPacket(UInt8 packetType, UOSInt timeoutMS);
 		Bool SendPacket(const UInt8 *packet, UOSInt packetSize);
+
+		void InitStream(IO::Stream *stm);
 	public:
 		MQTTConn(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CString host, UInt16 port, DisconnectHdlr discHdlr, void *discHdlrObj);
+		MQTTConn(IO::Stream *stm, DisconnectHdlr discHdlr, void *discHdlrObj);
 		virtual ~MQTTConn();
 
 		void HandlePublishMessage(PublishMessageHdlr hdlr, void *userObj);

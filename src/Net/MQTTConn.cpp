@@ -107,12 +107,12 @@ UInt32 __stdcall Net::MQTTConn::RecvThread(void *userObj)
 	buff = MemAlloc(UInt8, maxBuffSize);
 	while (true)
 	{
-		readSize = me->cli->Read(&buff[buffSize], maxBuffSize - buffSize);
+		readSize = me->stm->Read(&buff[buffSize], maxBuffSize - buffSize);
 		if (readSize <= 0)
 			break;
 		me->totalDownload += readSize;
 		buffSize += readSize;
-		readSize = me->protoHdlr.ParseProtocol(me->cli, me, me->cliData, buff, buffSize);
+		readSize = me->protoHdlr.ParseProtocol(me->stm, me, me->cliData, buff, buffSize);
 		if (readSize == 0)
 		{
 			buffSize = 0;
@@ -169,79 +169,99 @@ Net::MQTTConn::PacketInfo *Net::MQTTConn::GetNextPacket(UInt8 packetType, UOSInt
 
 Bool Net::MQTTConn::SendPacket(const UInt8 *packet, UOSInt packetSize)
 {
-	if (this->cli == 0)
+	if (this->stm == 0)
 	{
 		return false;
 	}
 	Sync::MutexUsage mutUsage(&this->cliMut);
-	UOSInt sendSize = this->cli->Write(packet, packetSize);
+	UOSInt sendSize = this->stm->Write(packet, packetSize);
 	this->totalUpload += sendSize;
 	return sendSize == packetSize;
 }
 
+void Net::MQTTConn::InitStream(IO::Stream *stm)
+{
+	this->stm = stm;
+	this->cliData = this->protoHdlr.CreateStreamData(this->stm);
+	Sync::Thread::Create(RecvThread, this);
+	while (!this->recvStarted)
+	{
+		Sync::Thread::Sleep(1);
+	}
+}
+
 Net::MQTTConn::MQTTConn(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CString host, UInt16 port, DisconnectHdlr discHdlr, void *discHdlrObj) : protoHdlr(this)
 {
-	this->sockf = sockf;
-	this->ssl = ssl;
 	this->recvRunning = false;
 	this->recvStarted = false;
 	this->totalDownload = 0;
 	this->totalUpload = 0;
 	this->discHdlr = discHdlr;
 	this->discHdlrObj = discHdlrObj;
+	this->cliData = 0;
+	this->stm = 0;
 
-	if (this->ssl)
+	Net::TCPClient *cli;
+	if (ssl)
 	{
 		Net::SSLEngine::ErrorType err;
-		this->sockf->ReloadDNS();
-		this->cli = this->ssl->ClientConnect(host, port, &err);
+		sockf->ReloadDNS();
+		cli = ssl->ClientConnect(host, port, &err);
 #ifdef DEBUG_PRINT
 	printf("MQTTConn: Connect to MQTTS: err = %d\r\n", (UInt32)err);
 #endif
 	}
 	else
 	{
-		NEW_CLASS(this->cli, Net::TCPClient(sockf, host, port));
+		NEW_CLASS(cli, Net::TCPClient(sockf, host, port));
 	}
-	if (this->cli == 0)
+	if (cli == 0)
 	{
 
 	}
-	else if (this->cli->IsConnectError() != 0)
+	else if (cli->IsConnectError() != 0)
 	{
-		DEL_CLASS(this->cli);
-		this->cli = 0;
+		DEL_CLASS(cli);
+		cli = 0;
 #ifdef DEBUG_PRINT
 		printf("MQTTConn connect error, %d\r\n", 0);
 #endif
 	}
 	else
 	{
-		this->cli->SetNoDelay(true);
-		this->cliData = this->protoHdlr.CreateStreamData(this->cli);
-		Sync::Thread::Create(RecvThread, this);
-		while (!this->recvStarted)
-		{
-			Sync::Thread::Sleep(1);
-		}
+		cli->SetNoDelay(true);
+		this->InitStream(cli);
 	}
+}
+
+Net::MQTTConn::MQTTConn(IO::Stream *stm, DisconnectHdlr discHdlr, void *discHdlrObj) : protoHdlr(this)
+{
+	this->recvRunning = false;
+	this->recvStarted = false;
+	this->totalDownload = 0;
+	this->totalUpload = 0;
+	this->discHdlr = discHdlr;
+	this->discHdlrObj = discHdlrObj;
+	this->cliData = 0;
+	this->stm = 0;
+	this->InitStream(stm);
 }
 
 Net::MQTTConn::~MQTTConn()
 {
-	if (this->cli)
+	if (this->stm)
 	{
 		if (this->recvRunning)
 		{
-			this->cli->Close();
+			this->stm->Close();
 		}
 		while (this->recvRunning)
 		{
 			Sync::Thread::Sleep(1);
 		}
-		this->protoHdlr.DeleteStreamData(this->cli, this->cliData);
-		DEL_CLASS(this->cli);
-		this->cli = 0;
+		this->protoHdlr.DeleteStreamData(this->stm, this->cliData);
+		DEL_CLASS(this->stm);
+		this->stm = 0;
 	}
 	UOSInt i;
 	i = this->packetList.GetCount();
@@ -259,7 +279,7 @@ void Net::MQTTConn::HandlePublishMessage(PublishMessageHdlr hdlr, void *userObj)
 
 Bool Net::MQTTConn::IsError()
 {
-	return this->cli == 0 || !this->recvRunning;
+	return this->stm == 0 || !this->recvRunning;
 }
 
 Bool Net::MQTTConn::SendConnect(UInt8 protoVer, UInt16 keepAliveS, Text::CString clientId, Text::CString userName, Text::CString password)

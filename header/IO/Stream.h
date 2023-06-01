@@ -37,7 +37,8 @@ namespace IO
 		RS232GPIO,
 		WindowsCOM,
 		MemoryReading,
-		DataCapture
+		DataCapture,
+		WebSocket
 	};
 
 
