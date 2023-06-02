@@ -91,7 +91,7 @@ Bool Net::WebSocketClient::SendPacket(UInt8 opcode, const UInt8 *buff, UOSInt bu
 	{
 		UInt8 *packBuff = MemAlloc(UInt8, buffSize + 14);
 		packBuff[0] = (UInt8)(0x80 | (opcode));
-		packBuff[1] = 0xFE;
+		packBuff[1] = 0xFF;
 		WriteMUInt64(&packBuff[2], buffSize);
 		this->rand.NextBytes(&packBuff[10], 4);
 		mask = ReadNUInt32(&packBuff[10]);

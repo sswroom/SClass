@@ -369,7 +369,7 @@ void Net::TCPClientMgr::UseGetClient(Sync::MutexUsage *mutUsage)
 	mutUsage->ReplaceMutex(&this->cliMut);
 }
 
-UOSInt Net::TCPClientMgr::GetClientCount()
+UOSInt Net::TCPClientMgr::GetClientCount() const
 {
 	return this->cliArr.GetCount();
 }

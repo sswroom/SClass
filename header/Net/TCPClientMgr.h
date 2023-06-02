@@ -94,7 +94,7 @@ namespace Net
 		void CloseAll();
 
 		void UseGetClient(Sync::MutexUsage *mutUsage);
-		UOSInt GetClientCount();
+		UOSInt GetClientCount() const;
 		void ExtendTimeout(Net::TCPClient *cli);
 		Net::TCPClient *GetClient(UOSInt index, void **cliData);
 	};

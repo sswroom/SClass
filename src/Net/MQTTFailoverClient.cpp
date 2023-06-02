@@ -32,11 +32,11 @@ Net::MQTTFailoverClient::~MQTTFailoverClient()
 	LIST_FREE_FUNC(&this->cliList, this->FreeClient);
 }
 
-void Net::MQTTFailoverClient::AddClient(Text::CString host, UInt16 port, Text::CString username, Text::CString password)
+void Net::MQTTFailoverClient::AddClient(Text::CString host, UInt16 port, Text::CString username, Text::CString password, Bool webSocket)
 {
 	ClientInfo *cliInfo = MemAlloc(ClientInfo, 1);
 	cliInfo->me = this;
-	NEW_CLASS(cliInfo->client, Net::MQTTStaticClient(this->sockf, this->ssl, host, port, username, password, OnMessage, cliInfo, this->kaSeconds, 0));
+	NEW_CLASS(cliInfo->client, Net::MQTTStaticClient(this->sockf, this->ssl, host, port, username, password, webSocket, OnMessage, cliInfo, this->kaSeconds, 0));
 	this->cliList.Add(cliInfo);
 	this->foHdlr.AddChannel(cliInfo->client);
 }

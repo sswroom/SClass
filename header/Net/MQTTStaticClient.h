@@ -35,6 +35,7 @@ namespace Net
 		UInt16 port;
 		Text::String *username;
 		Text::String *password;
+		Bool webSocket;
 		Bool autoReconn;
 
 		static UInt32 __stdcall KAThread(void *userObj);
@@ -43,7 +44,7 @@ namespace Net
 		UInt16 GetNextPacketId();
 	public:
 		MQTTStaticClient(Net::MQTTConn::PublishMessageHdlr hdlr, void *hdlrObj, IO::Writer *errLog);
-		MQTTStaticClient(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CString host, UInt16 port, Text::CString username, Text::CString password, Net::MQTTConn::PublishMessageHdlr hdlr, void *userObj, UInt16 kaSeconds, IO::Writer *errLog);
+		MQTTStaticClient(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CString host, UInt16 port, Text::CString username, Text::CString password, Bool webSocket, Net::MQTTConn::PublishMessageHdlr hdlr, void *userObj, UInt16 kaSeconds, IO::Writer *errLog);
 		virtual ~MQTTStaticClient();
 
 		Bool IsStarted();

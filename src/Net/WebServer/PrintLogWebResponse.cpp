@@ -84,6 +84,11 @@ Bool Net::WebServer::PrintLogWebResponse::SSESend(const UTF8Char *eventName, con
 	return this->resp->SSESend(eventName, data);
 }
 
+Bool Net::WebServer::PrintLogWebResponse::SwitchProtocol(ProtocolHandler *protoHdlr)
+{
+	return this->resp->SwitchProtocol(protoHdlr);
+}
+
 Text::CString Net::WebServer::PrintLogWebResponse::GetRespHeaders()
 {
 	return this->resp->GetRespHeaders();

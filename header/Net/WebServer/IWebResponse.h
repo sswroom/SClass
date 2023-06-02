@@ -19,6 +19,13 @@ namespace Net
 			Strict
 		};
 
+		class ProtocolHandler
+		{
+		public:
+			virtual void ProtocolData(const UInt8 *data, UOSInt dataSize) = 0;
+			virtual void ConnectionClosed() = 0;
+		};
+
 		class IWebResponse : public IO::Stream
 		{
 		public:
@@ -37,6 +44,7 @@ namespace Net
 			virtual void ShutdownSend() = 0;
 			virtual Bool ResponseSSE(Int32 timeoutMS, SSEDisconnectHandler hdlr, void *userObj) = 0;
 			virtual Bool SSESend(const UTF8Char *eventName, const UTF8Char *data) = 0;
+			virtual Bool SwitchProtocol(ProtocolHandler *protoHdlr) = 0;
 			virtual Text::CString GetRespHeaders() = 0;
 
 			Bool ResponseError(Net::WebServer::IWebRequest *req, Net::WebStatus::StatusCode code);

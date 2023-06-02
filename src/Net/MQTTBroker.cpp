@@ -20,81 +20,28 @@ typedef struct
 
 void __stdcall Net::MQTTBroker::OnClientEvent(Net::TCPClient *cli, void *userObj, void *cliData, Net::TCPClientMgr::TCPEventType evtType)
 {
-	Net::MQTTBroker *me = (Net::MQTTBroker*)userObj;
+	Listener *listener = (Listener*)userObj;
 	ClientData *data = (ClientData*)cliData;
 	if (evtType == Net::TCPClientMgr::TCP_EVENT_DISCONNECT)
 	{
-		if (me->log)
+		if (listener->me->log)
 		{
 			UTF8Char sbuff[256];
 			UTF8Char *sptr;
 			sptr = Text::StrConcatC(sbuff, UTF8STRC("Client "));
 			sptr = cli->GetRemoteName(sptr);
 			sptr = Text::StrConcatC(sptr, UTF8STRC(" disconnect"));
-			me->log->LogMessage(CSTRP(sbuff, sptr), IO::ILogHandler::LogLevel::Action);
+			listener->me->log->LogMessage(CSTRP(sbuff, sptr), IO::ILogHandler::LogLevel::Action);
 		}
-		me->protoHdlr.DeleteStreamData(cli, data->cliData);
-		SDEL_STRING(data->cliId);
-		MemFree(data);
-
-		UOSInt i;
-		SubscribeInfo *subscribe;
-		Sync::MutexUsage mutUsage(&me->subscribeMut);
-		i = me->subscribeList.GetCount();
-		while (i-- > 0)
-		{
-			subscribe = me->subscribeList.GetItem(i);
-			if (subscribe->cli == cli)
-			{
-				me->subscribeList.RemoveAt(i);
-				subscribe->topic->Release();
-				MemFree(subscribe);
-			}
-		}
-		mutUsage.EndUse();
+		listener->me->StreamClosed(cli, data);
 		DEL_CLASS(cli);
 	}
 }
 
 void __stdcall Net::MQTTBroker::OnClientData(Net::TCPClient *cli, void *userObj, void *cliData, const UInt8 *buff, UOSInt size)
 {
-	Net::MQTTBroker *me = (Net::MQTTBroker*)userObj;
-	ClientData *data = (ClientData*)cliData;
-	Sync::Interlocked::Add(&me->infoTotalRecv, (OSInt)size);
-
-	if (me->log)
-	{
-		Text::StringBuilderUTF8 sb;
-		sb.AppendC(UTF8STRC("Received "));
-		sb.AppendUOSInt(size);
-		sb.AppendC(UTF8STRC(" bytes"));
-		me->log->LogMessage(sb.ToCString(), IO::ILogHandler::LogLevel::Action);
-	}
-	UOSInt i;
-	if (data->buffSize > 0)
-	{
-		MemCopyNO(&data->recvBuff[data->buffSize], buff, size);
-		data->buffSize += size;
-		i = me->protoHdlr.ParseProtocol(cli, data, data->cliData, data->recvBuff, data->buffSize);
-		if (i > 0)
-		{
-			MemCopyO(data->recvBuff, &data->recvBuff[data->buffSize - i], i);
-			data->buffSize = i;
-		}
-		else
-		{
-			data->buffSize = 0;
-		}
-	}
-	else
-	{
-		i = me->protoHdlr.ParseProtocol(cli, data, data->cliData, buff, size);
-		if (i > 0)
-		{
-			MemCopyNO(data->recvBuff, &buff[size - i], i);
-			data->buffSize = i;
-		}
-	}
+	Listener *listener = (Listener*)userObj;
+	listener->me->StreamData(cli, cliData, buff, size);
 }
 
 void __stdcall Net::MQTTBroker::OnClientTimeout(Net::TCPClient *cli, void *userObj, void *cliData)
@@ -103,34 +50,27 @@ void __stdcall Net::MQTTBroker::OnClientTimeout(Net::TCPClient *cli, void *userO
 
 void __stdcall Net::MQTTBroker::OnClientReady(Net::TCPClient *cli, void *userObj)
 {
-	Net::MQTTBroker *me = (Net::MQTTBroker*)userObj;
-	ClientData *data;
-	data = MemAlloc(ClientData, 1);
-	data->buffSize = 0;
-	data->cliData = me->protoHdlr.CreateStreamData(cli);
-	data->keepAlive = 0;
-	data->connected = false;
-	data->cliId = 0;
-	me->cliMgr->AddClient(cli, data);
-	UOSInt cnt = me->cliMgr->GetClientCount();
-	if (cnt > me->infoCliMax)
+	Listener *listener = (Listener*)userObj;
+	listener->cliMgr->AddClient(cli, listener->me->StreamCreated(cli));
+	UOSInt cnt = listener->cliMgr->GetClientCount();
+	if (cnt > listener->me->infoCliMax)
 	{
-		me->infoCliMax = cnt;
+		listener->me->infoCliMax = cnt;
 	}
 }
 
 void __stdcall Net::MQTTBroker::OnClientConn(Socket *s, void *userObj)
 {
-	Net::MQTTBroker *me = (Net::MQTTBroker*)userObj;
-	if (me->ssl)
+	Listener *listener = (Listener*)userObj;
+	if (listener->ssl)
 	{
-		me->ssl->ServerInit(s, OnClientReady, me);
+		listener->ssl->ServerInit(s, OnClientReady, listener);
 	}
 	else
 	{
 		Net::TCPClient *cli;
-		NEW_CLASS(cli, Net::TCPClient(me->sockf, s));
-		OnClientReady(cli, me);
+		NEW_CLASS(cli, Net::TCPClient(listener->me->sockf, s));
+		OnClientReady(cli, listener);
 	}
 }
 
@@ -140,6 +80,9 @@ UInt32 __stdcall Net::MQTTBroker::SysInfoThread(void *userObj)
 	Data::DateTime *dt;
 	UTF8Char sbuff[64];
 	UOSInt i;
+	UOSInt j;
+	UOSInt totalCnt;
+	Listener *listener;
 	NEW_CLASS(dt, Data::DateTime());
 
 	dt->SetCurrTimeUTC();
@@ -158,7 +101,21 @@ UInt32 __stdcall Net::MQTTBroker::SysInfoThread(void *userObj)
 		i = (UOSInt)(Text::StrUInt64(sbuff, me->infoTotalSent) - sbuff);
 		me->UpdateTopic(CSTR("$SYS/broker/load/bytes/sent"), sbuff, i, true);
 
-		i = (UOSInt)(Text::StrUOSInt(sbuff, me->cliMgr->GetClientCount()) - sbuff);
+		totalCnt = 0;
+		j = me->listeners.GetCount();
+		while (j-- > 0)
+		{
+			listener = me->listeners.GetItem(j);
+			if (listener->cliMgr)
+			{
+				totalCnt += listener->cliMgr->GetClientCount();
+			}
+			else if (listener->listener)
+			{
+				totalCnt += listener->listener->GetClientCount();
+			}
+		}
+		i = (UOSInt)(Text::StrUOSInt(sbuff, totalCnt) - sbuff);
 		me->UpdateTopic(CSTR("$SYS/broker/clients/connected"), sbuff, i, true);
 
 		i = (UOSInt)(Text::StrInt64(sbuff, me->infoCliDisconn) - sbuff);
@@ -699,7 +656,7 @@ void Net::MQTTBroker::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, I
 			{
 				SubscribeInfo *subscribe = MemAlloc(SubscribeInfo, 1);
 				subscribe->topic = Text::String::New(sbTopic.ToCString());
-				subscribe->cli = (Net::TCPClient*)stm;
+				subscribe->stm = stm;
 				subscribe->cliData = data;
 				Sync::MutexUsage subscribeMutUsage(&this->subscribeMut);
 				this->subscribeList.Add(subscribe);
@@ -875,7 +832,7 @@ void Net::MQTTBroker::UpdateTopic(Text::CString topic, const UInt8 *message, UOS
 		if (Net::MQTTUtil::TopicMatch(topic.v, topic.leng, subscribe->topic->v, subscribe->topic->leng))
 		{
 			topicMutUsage.BeginUse();
-			this->TopicSend(subscribe->cli, ((ClientData*)subscribe->cliData)->cliData, topicInfo);
+			this->TopicSend(subscribe->stm, ((ClientData*)subscribe->cliData)->cliData, topicInfo);
 			topicMutUsage.EndUse();
 		}
 	}
@@ -918,10 +875,84 @@ Bool Net::MQTTBroker::TopicSend(IO::Stream *stm, void *stmData, const TopicInfo 
 	}
 }
 
-Net::MQTTBroker::MQTTBroker(Net::SocketFactory *sockf, Net::SSLEngine *ssl, UInt16 port, IO::LogTool *log, Bool sysInfo, Bool autoStart) : protoHdlr(this)
+void *Net::MQTTBroker::StreamCreated(IO::Stream *stm)
+{
+	ClientData *data;
+	data = MemAlloc(ClientData, 1);
+	data->buffSize = 0;
+	data->cliData = this->protoHdlr.CreateStreamData(stm);
+	data->keepAlive = 0;
+	data->connected = false;
+	data->cliId = 0;
+	return data;
+}
+
+void Net::MQTTBroker::StreamData(IO::Stream *stm, void *stmData, const UInt8 *buff, UOSInt size)
+{
+	ClientData *data = (ClientData*)stmData;
+	Sync::Interlocked::Add(&this->infoTotalRecv, (OSInt)size);
+
+	if (this->log)
+	{
+		Text::StringBuilderUTF8 sb;
+		sb.AppendC(UTF8STRC("Received "));
+		sb.AppendUOSInt(size);
+		sb.AppendC(UTF8STRC(" bytes"));
+		this->log->LogMessage(sb.ToCString(), IO::ILogHandler::LogLevel::Action);
+	}
+	UOSInt i;
+	if (data->buffSize > 0)
+	{
+		MemCopyNO(&data->recvBuff[data->buffSize], buff, size);
+		data->buffSize += size;
+		i = this->protoHdlr.ParseProtocol(stm, data, data->cliData, data->recvBuff, data->buffSize);
+		if (i > 0)
+		{
+			MemCopyO(data->recvBuff, &data->recvBuff[data->buffSize - i], i);
+			data->buffSize = i;
+		}
+		else
+		{
+			data->buffSize = 0;
+		}
+	}
+	else
+	{
+		i = this->protoHdlr.ParseProtocol(stm, data, data->cliData, buff, size);
+		if (i > 0)
+		{
+			MemCopyNO(data->recvBuff, &buff[size - i], i);
+			data->buffSize = i;
+		}
+	}
+}
+
+void Net::MQTTBroker::StreamClosed(IO::Stream *stm, void *stmData)
+{
+	ClientData *data = (ClientData*)stmData;
+	this->protoHdlr.DeleteStreamData(stm, data->cliData);
+	SDEL_STRING(data->cliId);
+	MemFree(data);
+
+	UOSInt i;
+	SubscribeInfo *subscribe;
+	Sync::MutexUsage mutUsage(&this->subscribeMut);
+	i = this->subscribeList.GetCount();
+	while (i-- > 0)
+	{
+		subscribe = this->subscribeList.GetItem(i);
+		if (subscribe->stm == stm)
+		{
+			this->subscribeList.RemoveAt(i);
+			subscribe->topic->Release();
+			MemFree(subscribe);
+		}
+	}
+}
+
+Net::MQTTBroker::MQTTBroker(Net::SocketFactory *sockf, Net::SSLEngine *ssl, UInt16 port, IO::LogTool *log, Bool sysInfo, Bool autoStart) : protoHdlr(this), wsHdlr(this)
 {
 	this->sockf = sockf;
-	this->ssl = ssl;
 	this->log = log;
 	this->connHdlr = 0;
 	this->connObj = 0;
@@ -947,16 +978,7 @@ Net::MQTTBroker::MQTTBroker(Net::SocketFactory *sockf, Net::SSLEngine *ssl, UInt
 	dt.SetCurrTimeUTC();
 	this->infoStartTime = dt.ToTicks();
 
-	NEW_CLASS(this->cliMgr, Net::TCPClientMgr(240, OnClientEvent, OnClientData, this, Sync::Thread::GetThreadCnt(), OnClientTimeout));
-	NEW_CLASS(this->svr, Net::TCPServer(this->sockf, port, this->log, OnClientConn, this, CSTR("MQTT: "), autoStart));
-	if (this->svr->IsV4Error())
-	{
-		DEL_CLASS(this->svr);
-		this->svr = 0;
-		DEL_CLASS(this->cliMgr);
-		this->cliMgr = 0;
-	}
-	else if (sysInfo)
+	if (this->AddListener(ssl, port, autoStart) && sysInfo)
 	{
 		Sync::Thread::Create(SysInfoThread, this);
 		while (!this->sysInfoRunning)
@@ -977,15 +999,24 @@ Net::MQTTBroker::~MQTTBroker()
 			Sync::Thread::Sleep(1);
 		}
 	}
-	if (this->svr)
+	UOSInt i = this->listeners.GetCount();
+	Listener *listener;
+	while (i-- > 0)
 	{
-		DEL_CLASS(this->svr);
-		DEL_CLASS(this->cliMgr);
-		this->svr = 0;
-		this->cliMgr = 0;
+		listener = this->listeners.GetItem(i);
+		if (listener->svr)
+		{
+			DEL_CLASS(listener->svr);
+			DEL_CLASS(listener->cliMgr);
+		}
+		else if (listener->listener)
+		{
+			DEL_CLASS(listener->listener);
+		}
+		MemFree(listener);
 	}
 	TopicInfo *topic;
-	UOSInt i = this->topicMap.GetCount();
+	i = this->topicMap.GetCount();
 	while (i-- > 0)
 	{
 		topic = this->topicMap.GetItem(i);
@@ -1004,14 +1035,78 @@ Net::MQTTBroker::~MQTTBroker()
 	}
 }
 
+Bool Net::MQTTBroker::AddListener(Net::SSLEngine *ssl, UInt16 port, Bool autoStart)
+{
+	Listener *listener = MemAlloc(Listener, 1);
+	listener->me = this;
+	listener->ssl = ssl;
+	listener->listener = 0;
+	NEW_CLASS(listener->cliMgr, Net::TCPClientMgr(240, OnClientEvent, OnClientData, listener, Sync::Thread::GetThreadCnt(), OnClientTimeout));
+	NEW_CLASS(listener->svr, Net::TCPServer(this->sockf, port, this->log, OnClientConn, listener, CSTR("MQTT: "), autoStart));
+	if (listener->svr->IsV4Error())
+	{
+		DEL_CLASS(listener->svr);
+		listener->svr = 0;
+		DEL_CLASS(listener->cliMgr);
+		listener->cliMgr = 0;
+		MemFree(listener);
+		return false;
+	}
+	else
+	{
+		this->listeners.Add(listener);
+		return true;
+	}
+}
+
+Bool Net::MQTTBroker::AddWSListener(Net::SSLEngine *ssl, UInt16 port, Bool autoStart)
+{
+	Listener *listener = MemAlloc(Listener, 1);
+	listener->me = this;
+	listener->ssl = 0;
+	listener->cliMgr = 0;
+	listener->svr = 0;
+	NEW_CLASS(listener->listener, Net::WebServer::WebListener(this->sockf, ssl, &this->wsHdlr, port, 60, Sync::Thread::GetThreadCnt(), CSTR("SSWRMQTT/1.0"), false, Net::WebServer::KeepAlive::No, autoStart));
+	if (listener->listener->IsError())
+	{
+		DEL_CLASS(listener->listener);
+		MemFree(listener);
+		return false;
+	}
+	else
+	{
+		this->listeners.Add(listener);
+	}
+	return false;
+}
+
 Bool Net::MQTTBroker::Start()
 {
-	return this->svr != 0 && this->svr->Start();
+	Bool found = false;
+	Listener *listener;
+	UOSInt i = this->listeners.GetCount();
+	while (i-- > 0)
+	{
+		listener = this->listeners.GetItem(i);
+		if (listener->svr)
+		{
+			found = true;
+			if (!listener->svr->Start())
+				return false;
+		}
+		else if (listener->listener)
+		{
+			found = true;
+			if (!listener->listener->Start())
+				return false;
+		}
+	}
+	return found;
 }
 
 Bool Net::MQTTBroker::IsError()
 {
-	return this->svr == 0;
+	return this->listeners.GetCount() == 0;
 }
 
 void Net::MQTTBroker::HandleConnect(ConnectHandler connHdlr, void *userObj)

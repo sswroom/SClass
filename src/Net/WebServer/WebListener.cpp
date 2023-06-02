@@ -281,3 +281,8 @@ void Net::WebServer::WebListener::GetStatus(SERVER_STATUS *status)
 	MemCopyNO(status, &this->status, sizeof(SERVER_STATUS));
 	status->currConn = (UInt32)this->cliMgr.GetClientCount();
 }
+
+UOSInt Net::WebServer::WebListener::GetClientCount() const
+{
+	return this->cliMgr.GetClientCount();
+}

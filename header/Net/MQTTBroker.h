@@ -7,13 +7,23 @@
 #include "Net/SSLEngine.h"
 #include "Net/TCPClientMgr.h"
 #include "Net/TCPServer.h"
+#include "Net/WebServer/WebListener.h"
+#include "Net/WebServer/WebSocketHandler.h"
 #include "Text/String.h"
 
 namespace Net
 {
-	class MQTTBroker : public IO::IProtocolHandler::DataListener
+	class MQTTBroker : public IO::IProtocolHandler::DataListener, public IO::StreamHandler
 	{
 	public:
+		struct Listener
+		{
+			Net::SSLEngine *ssl;
+			Net::TCPServer *svr;
+			Net::TCPClientMgr *cliMgr;
+			Net::WebServer::WebListener *listener;
+			MQTTBroker *me;
+		};
 		typedef enum
 		{
 			CS_ACCEPTED = 0,
@@ -39,7 +49,7 @@ namespace Net
 		struct SubscribeInfo
 		{
 			Text::String *topic;
-			Net::TCPClient *cli;
+			IO::Stream *stm;
 			void *cliData;
 		};
 		
@@ -50,11 +60,10 @@ namespace Net
 		typedef void (__stdcall *TopicUpdateHandler)(void *userObj, Text::CString topic, const UInt8 *message, UOSInt msgSize);
 	private:
 		Net::SocketFactory *sockf;
-		Net::SSLEngine *ssl;
 		IO::LogTool *log;
-		Net::TCPServer *svr;
-		Net::TCPClientMgr *cliMgr;
+		Data::ArrayList<Listener*> listeners;
 		IO::ProtoHdlr::ProtoMQTTHandler protoHdlr;
+		Net::WebServer::WebSocketHandler wsHdlr;
 		Sync::Mutex topicMut;
 		Data::FastStringMap<TopicInfo*> topicMap;
 		Sync::Mutex subscribeMut;
@@ -94,9 +103,16 @@ namespace Net
 		virtual void DataSkipped(IO::Stream *stm, void *stmObj, const UInt8 *buff, UOSInt buffSize);
 		void UpdateTopic(Text::CString topic, const UInt8 *message, UOSInt msgSize, Bool suppressUnchg);
 		Bool TopicSend(IO::Stream *stm, void *stmData, const TopicInfo *topic);
+
+		virtual void *StreamCreated(IO::Stream *stm);
+		virtual void StreamData(IO::Stream *stm, void *stmData, const UInt8 *buff, UOSInt size);
+		virtual void StreamClosed(IO::Stream *stm, void *stmData);
 	public:
 		MQTTBroker(Net::SocketFactory *sockf, Net::SSLEngine *ssl, UInt16 port, IO::LogTool *log, Bool sysInfo, Bool autoStart);
 		virtual ~MQTTBroker();
+
+		Bool AddListener(Net::SSLEngine *ssl, UInt16 port, Bool autoStart);
+		Bool AddWSListener(Net::SSLEngine *ssl, UInt16 port, Bool autoStart);
 
 		Bool Start();
 		Bool IsError();

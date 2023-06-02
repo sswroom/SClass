@@ -1851,6 +1851,7 @@ IO/Stream.h: ../../src/IO/Stream.cpp
 IO/StreamData.h:
 IO/StreamDataStream.h: ../../src/IO/StreamDataStream.cpp
 @StreamDataStream.o
+IO/StreamHandler.h:
 IO/StreamLogger.h: ../../src/IO/StreamLogger.cpp
 @StreamLogger.o
 IO/StreamReader.h: ../../src/IO/StreamReader.cpp
@@ -3254,6 +3255,10 @@ Net/WebServer/WebServiceHandler.h: ../../src/Net/WebServer/WebServiceHandler.cpp
 @WebServiceHandler.o
 Net/WebServer/WebSessionUsage.h: ../../src/Net/WebServer/WebSessionUsage.cpp
 @WebSessionUsage.o
+Net/WebServer/WebSocketHandler.h: ../../src/Net/WebServer/WebSocketHandler.cpp
+@WebSocketHandler.o
+Net/WebServer/WebSocketServerStream.h: ../../src/Net/WebServer/WebSocketServerStream.cpp
+@WebSocketServerStream.o
 Net/WebServer/WebStandardHandler.h: ../../src/Net/WebServer/WebStandardHandler.cpp
 @WebStandardHandler.o
 Net/WebSite/WebSite7gogoControl.h: ../../src/Net/WebSite/WebSite7gogoControl.cpp
@@ -5495,6 +5500,8 @@ WebListener.o: ../../src/Net/WebServer/WebListener.cpp
 WebRequest.o: ../../src/Net/WebServer/WebRequest.cpp
 WebServiceHandler.o: ../../src/Net/WebServer/WebServiceHandler.cpp
 WebSessionUsage.o: ../../src/Net/WebServer/WebSessionUsage.cpp
+WebSocketHandler.o: ../../src/Net/WebServer/WebSocketHandler.cpp
+WebSocketServerStream.o: ../../src/Net/WebServer/WebSocketServerStream.cpp
 WebStandardHandler.o: ../../src/Net/WebServer/WebStandardHandler.cpp
 WebSite7gogoControl.o: ../../src/Net/WebSite/WebSite7gogoControl.cpp
 WebSite48IdolControl.o: ../../src/Net/WebSite/WebSite48IdolControl.cpp

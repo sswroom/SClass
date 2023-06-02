@@ -45,10 +45,16 @@ Net::WebServer::WebConnection::WebConnection(Net::SocketFactory *sockf, Net::SSL
 	this->loggerObj = 0;
 	this->sseHdlr = 0;
 	this->sseHdlrObj = 0;
+	this->protoHdlr = 0;
 }
 
 Net::WebServer::WebConnection::~WebConnection()
 {
+	if (this->protoHdlr)
+	{
+		this->protoHdlr->ConnectionClosed();
+		this->protoHdlr = 0;
+	}
 	if (this->sseHdlr)
 	{
 		this->sseHdlr(this, this->sseHdlrObj);
@@ -78,7 +84,12 @@ void Net::WebServer::WebConnection::ReceivedData(const UInt8 *buff, UOSInt size)
 	UOSInt j;
 	UOSInt lineStart;
 	UOSInt strIndex;
-	if (this->proxyMode)
+	if (this->protoHdlr)
+	{
+		this->protoHdlr->ProtocolData(buff, size);
+		return;
+	}
+	else if (this->proxyMode)
 	{
 		if (this->proxyCli->Write(buff, size) != size)
 		{
@@ -671,7 +682,10 @@ void Net::WebServer::WebConnection::ProcessResponse()
 		t = clk.GetTimeDiff();
 		this->svr->LogAccess(this->currReq, this, t);
 		SDEL_CLASS(this->cstm);
-		if (this->sseHdlr == 0)
+		if (this->protoHdlr)
+		{
+		}
+		else if (this->sseHdlr == 0)
 		{
 			if (this->keepAlive == KeepAlive::No)
 			{
@@ -833,6 +847,25 @@ Bool Net::WebServer::WebConnection::SSESend(const UTF8Char *eventName, const UTF
 	return this->cli->Write(sb.ToString(), sb.GetLength()) == sb.GetLength();
 }
 
+Bool Net::WebServer::WebConnection::SwitchProtocol(ProtocolHandler *protoHdlr)
+{
+	if (!this->respHeaderSent)
+	{
+		if (this->currReq)
+		{
+			SendHeaders(this->currReq->GetProtocol());
+		}
+		else
+		{
+			SendHeaders(Net::WebServer::IWebRequest::RequestProtocol::HTTP1_1);
+		}
+	}
+	if (this->respDataEnd)
+		return false;
+	this->protoHdlr = protoHdlr;
+	return true;
+}
+
 Text::CString Net::WebServer::WebConnection::GetRespHeaders()
 {
 	return this->respHeaders.ToCString();
@@ -850,6 +883,15 @@ UOSInt Net::WebServer::WebConnection::Read(UInt8 *buff, UOSInt size)
 
 UOSInt Net::WebServer::WebConnection::Write(const UInt8 *buff, UOSInt size)
 {
+	if (this->protoHdlr)
+	{
+		if (this->logger)
+		{
+			this->logger(this->loggerObj, size);
+		}
+		this->svr->ExtendTimeout(cli);
+		return this->cli->Write(buff, size);
+	}
 	if (!this->respHeaderSent)
 	{
 		if (this->currReq)

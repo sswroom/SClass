@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Net/MQTTStaticClient.h"
+#include "Net/WebSocketClient.h"
 #include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
 #include "Text/StringBuilderUTF8.h"
@@ -49,7 +50,22 @@ void __stdcall Net::MQTTStaticClient::OnDisconnect(void *userObj)
 void Net::MQTTStaticClient::Connect()
 {
 	Net::MQTTConn *conn;
-	NEW_CLASS(conn, Net::MQTTConn(this->sockf, this->ssl, this->host->ToCString(), this->port, OnDisconnect, this));
+	if (this->webSocket)
+	{
+		Net::WebSocketClient *ws;
+		NEW_CLASS(ws, Net::WebSocketClient(this->sockf, this->ssl, this->host->ToCString(), this->port, CSTR("/mqtt"), CSTR_NULL, Net::WebSocketClient::Protocol::MQTT));
+		if (ws->IsDown())
+		{
+			DEL_CLASS(ws);
+			if (errLog) errLog->WriteLineC(UTF8STRC("MQTT: Error in initializing websocket"));
+			return;
+		}
+		NEW_CLASS(conn, Net::MQTTConn(ws, 0, 0));
+	}
+	else
+	{
+		NEW_CLASS(conn, Net::MQTTConn(this->sockf, this->ssl, this->host->ToCString(), this->port, OnDisconnect, this));
+	}
 	if (conn->IsError())
 	{
 		if (errLog) errLog->WriteLineC(UTF8STRC("MQTT: Error in connecting to server"));
@@ -148,9 +164,10 @@ Net::MQTTStaticClient::MQTTStaticClient(Net::MQTTConn::PublishMessageHdlr hdlr, 
 	this->port = 0;
 	this->username = 0;
 	this->password = 0;
+	this->webSocket = false;
 }
 
-Net::MQTTStaticClient::MQTTStaticClient(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CString host, UInt16 port, Text::CString username, Text::CString password, Net::MQTTConn::PublishMessageHdlr hdlr, void *userObj, UInt16 kaSeconds, IO::Writer *errLog) : Net::MQTTStaticClient(hdlr, userObj, errLog)
+Net::MQTTStaticClient::MQTTStaticClient(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CString host, UInt16 port, Text::CString username, Text::CString password, Bool webSocket, Net::MQTTConn::PublishMessageHdlr hdlr, void *userObj, UInt16 kaSeconds, IO::Writer *errLog) : Net::MQTTStaticClient(hdlr, userObj, errLog)
 {
 	this->sockf = sockf;
 	this->ssl = ssl;
@@ -159,6 +176,7 @@ Net::MQTTStaticClient::MQTTStaticClient(Net::SocketFactory *sockf, Net::SSLEngin
 	this->username = Text::String::New(username);
 	this->password = Text::String::New(password);
 	this->kaSeconds = kaSeconds;
+	this->webSocket = webSocket;
 
 	this->Connect();
 

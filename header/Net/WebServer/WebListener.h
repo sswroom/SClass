@@ -79,6 +79,7 @@ namespace Net
 
 			void ExtendTimeout(Net::TCPClient *cli);
 			void GetStatus(SERVER_STATUS *status);
+			UOSInt GetClientCount() const;
 		};
 	}
 }
