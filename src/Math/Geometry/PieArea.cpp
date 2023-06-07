@@ -34,11 +34,10 @@ Math::Geometry::Vector2D *Math::Geometry::PieArea::Clone() const
 	return pie;
 }
 
-void Math::Geometry::PieArea::GetBounds(Math::RectAreaDbl* bounds) const
+Math::RectAreaDbl Math::Geometry::PieArea::GetBounds() const
 {
 	//////////////////////////////////////////////////////////
-	bounds->tl = this->center - this->r;
-	bounds->br = this->center + this->r;
+	return Math::RectAreaDbl(this->center - this->r, this->center + this->r);
 }
 
 Double Math::Geometry::PieArea::CalBoundarySqrDistance(Math::Coord2DDbl pt, Math::Coord2DDbl* nearPt) const
@@ -97,6 +96,12 @@ UOSInt Math::Geometry::PieArea::GetCoordinates(Data::ArrayListA<Math::Coord2DDbl
 void Math::Geometry::PieArea::SwapXY()
 {
 	this->center = this->center.SwapXY();
+}
+
+void Math::Geometry::PieArea::MultiplyCoordinatesXY(Double v)
+{
+	this->center = this->center * v;
+	this->r = this->r * v;
 }
 
 Double Math::Geometry::PieArea::GetCX() const
