@@ -44,7 +44,7 @@ namespace Net
 
 			Sync::Mutex accLogMut;
 			IO::LogTool *accLog;
-			IO::ILogHandler::LogLevel accLogLev;
+			IO::LogHandler::LogLevel accLogLev;
 			IReqLogger *reqLog;
 
 			TimeoutHandler timeoutHdlr;
@@ -70,7 +70,7 @@ namespace Net
 			Bool Start();
 			Bool IsError();
 			Text::String *GetServerName();
-			void SetAccessLog(IO::LogTool *accLog, IO::ILogHandler::LogLevel accLogLev);
+			void SetAccessLog(IO::LogTool *accLog, IO::LogHandler::LogLevel accLogLev);
 			void SetRequestLog(IReqLogger *reqLog);
 			void LogAccess(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Double time);
 			void LogMessageC(Net::WebServer::IWebRequest *req, const UTF8Char *msg, UOSInt msgLen);

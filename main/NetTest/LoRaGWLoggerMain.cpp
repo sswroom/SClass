@@ -13,7 +13,7 @@ void __stdcall OnMessage(void *userObj, Bool toServer, UInt8 ver, UInt16 token, 
 	IO::LogTool *log = (IO::LogTool*)userObj;
 	Text::StringBuilderUTF8 sb;
 	Net::LoRaGWUtil::ParseGWMPMessage(&sb, toServer, ver, token, msgType, msg, msgSize);
-	log->LogMessage(sb.ToCString(), IO::ILogHandler::LogLevel::Raw);
+	log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Raw);
 }
 
 Int32 MyMain(Core::IProgControl *progCtrl)
@@ -29,7 +29,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 		sptr = Text::StrConcatC(sptr, UTF8STRC("log"));
 
-		log.AddFileLog(CSTRP(sbuff, sptr), IO::ILogHandler::LogType::PerDay, IO::ILogHandler::LogGroup::PerMonth, IO::ILogHandler::LogLevel::Raw, "yyyy-MM-dd HH:mm:ss.fff", false);
+		log.AddFileLog(CSTRP(sbuff, sptr), IO::LogHandler::LogType::PerDay, IO::LogHandler::LogGroup::PerMonth, IO::LogHandler::LogLevel::Raw, "yyyy-MM-dd HH:mm:ss.fff", false);
 		Net::LoRaGWMonitor lora(&sockf, 1700, OnMessage, &log);
 		if (!lora.IsError())
 		{

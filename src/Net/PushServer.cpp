@@ -17,7 +17,7 @@ Net::PushServer::PushServer(Net::SocketFactory *sockf, Net::SSLEngine *ssl, UInt
 	else
 	{
 		if (log)
-			this->listener->SetAccessLog(log, IO::ILogHandler::LogLevel::Action);
+			this->listener->SetAccessLog(log, IO::LogHandler::LogLevel::Action);
 	}
 }
 

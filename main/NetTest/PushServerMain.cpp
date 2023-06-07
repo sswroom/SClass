@@ -48,7 +48,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("log"));
 	*sptr++ = IO::Path::PATH_SEPERATOR;
 	sptr = Text::StrConcatC(sptr, UTF8STRC("PushSvr"));
-	log.AddFileLog(CSTRP(sbuff, sptr), IO::ILogHandler::LogType::PerDay, IO::ILogHandler::LogGroup::PerMonth, IO::ILogHandler::LogLevel::Raw, "yyyy-MM-dd HH:mm:ss.fff", false);
+	log.AddFileLog(CSTRP(sbuff, sptr), IO::LogHandler::LogType::PerDay, IO::LogHandler::LogGroup::PerMonth, IO::LogHandler::LogLevel::Raw, "yyyy-MM-dd HH:mm:ss.fff", false);
 	{
 		Net::PushServer svr(&sockf, ssl, port, fcmKey->ToCString(), &log);
 		if (svr.IsError())

@@ -12,7 +12,7 @@
 
 namespace IO
 {
-	class MTFileLog : public ILogHandler
+	class MTFileLog : public LogHandler
 	{
 	private:
 		Sync::Mutex mut;
@@ -20,8 +20,8 @@ namespace IO
 		Data::ArrayListString msgList;
 		Sync::Event evt;
 
-		IO::ILogHandler::LogType logStyle;
-		IO::ILogHandler::LogGroup groupStyle;
+		IO::LogHandler::LogType logStyle;
+		IO::LogHandler::LogGroup groupStyle;
 		Int32 lastVal;
 		Text::UTF8Writer *log;
 		IO::BufferedOutputStream *cstm;

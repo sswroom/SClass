@@ -81,7 +81,7 @@ UInt32 __stdcall RecvThread(void *userObj)
 								sb.AppendP(sbuff, sptr);
 								sb.AppendC(UTF8STRC(", Size = "));
 								sb.AppendUOSInt(ipDataSize);
-								logTool->LogMessage(sb.ToCString(), IO::ILogHandler::LogLevel::Command);
+								logTool->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Command);
 	//							console->WriteLineC(sb->ToString(), sb->GetLength());
 							}
 							break;
@@ -139,7 +139,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("PingLog"));
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 		sptr = Text::StrConcatC(sptr, UTF8STRC("Log"));
-		logTool->AddFileLog(CSTRP(sbuff, sptr), IO::ILogHandler::LogType::PerDay, IO::ILogHandler::LogGroup::PerMonth, IO::ILogHandler::LogLevel::Raw, "yyyy-MM-dd HH:mm:ss.fff", false);
+		logTool->AddFileLog(CSTRP(sbuff, sptr), IO::LogHandler::LogType::PerDay, IO::LogHandler::LogGroup::PerMonth, IO::LogHandler::LogLevel::Raw, "yyyy-MM-dd HH:mm:ss.fff", false);
 		i = 3;
 		while (i-- > 0)
 		{

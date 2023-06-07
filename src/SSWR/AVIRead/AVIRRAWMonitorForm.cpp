@@ -62,7 +62,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnPingPacket(void *userData, U
 	sb.AppendUOSInt(packetSize);
 	sb.AppendC(UTF8STRC(", ttl = "));
 	sb.AppendU16(ttl);
-	me->log.LogMessage(sb.ToCString(), IO::ILogHandler::LogLevel::Command);
+	me->log.LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Command);
 }
 
 void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnRAWData(void *userData, const UInt8 *rawData, UOSInt packetSize)
@@ -1444,7 +1444,7 @@ SSWR::AVIRead::AVIRRAWMonitorForm::AVIRRAWMonitorForm(UI::GUIClientControl *pare
 	this->lbLog->HandleSelectionChange(OnLogSelChg, this);
 
 	NEW_CLASS(this->logger, UI::ListBoxLogger(this, this->lbLog, 500, true));
-	this->log.AddLogHandler(this->logger, IO::ILogHandler::LogLevel::Raw);
+	this->log.AddLogHandler(this->logger, IO::LogHandler::LogLevel::Raw);
 
 	Data::ArrayList<Net::ConnectionInfo*> connInfoList;
 	Net::ConnectionInfo *connInfo;

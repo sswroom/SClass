@@ -70,7 +70,7 @@ Bool Text::Cpp::CppEnv::InitVSEnv(Text::VSProject::VisualStudioVersion vsv)
 	 
 	if (cfg == 0)
 		return false;
-	Text::String *paths = cfg->GetValue(CSTR("VC\\VC_OBJECTS_PLATFORM_INFO\\Win32\\Directories"), CSTR("Include Dirs"));
+	Text::String *paths = cfg->GetCateValue(CSTR("VC\\VC_OBJECTS_PLATFORM_INFO\\Win32\\Directories"), CSTR("Include Dirs"));
 	if (paths)
 	{
 		csptr = paths->v;
@@ -355,7 +355,7 @@ Text::Cpp::CppEnv *Text::Cpp::CppEnv::LoadVSEnv(Text::VSProject::VisualStudioVer
 	if (cfg == 0)
 		return 0;
 	Text::Cpp::CppEnv *env = 0;
-	Text::String *paths = cfg->GetValue(CSTR("VC\\VC_OBJECTS_PLATFORM_INFO\\Win32\\Directories"), CSTR("Include Dirs"));
+	Text::String *paths = cfg->GetCateValue(CSTR("VC\\VC_OBJECTS_PLATFORM_INFO\\Win32\\Directories"), CSTR("Include Dirs"));
 	if (paths)
 	{
 		NEW_CLASS(env, Text::Cpp::CppEnv(vsv));

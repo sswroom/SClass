@@ -18,12 +18,12 @@ IO::StringLogFile::~StringLogFile()
 	}
 }
 
-UOSInt IO::StringLogFile::GetCount(IO::ILogHandler::LogLevel logLevel) const
+UOSInt IO::StringLogFile::GetCount(IO::LogHandler::LogLevel logLevel) const
 {
 	return this->items.GetCount();
 }
 
-Bool IO::StringLogFile::GetLogMessage(IO::ILogHandler::LogLevel logLevel, UOSInt index, Data::Timestamp *ts, Text::StringBuilderUTF8 *sb, Text::LineBreakType lineBreak) const
+Bool IO::StringLogFile::GetLogMessage(IO::LogHandler::LogLevel logLevel, UOSInt index, Data::Timestamp *ts, Text::StringBuilderUTF8 *sb, Text::LineBreakType lineBreak) const
 {
 	LogItem *item = this->items.GetItem(index);
 	if (item == 0)
@@ -38,7 +38,7 @@ Bool IO::StringLogFile::GetLogMessage(IO::ILogHandler::LogLevel logLevel, UOSInt
 	return true;
 }
 
-Bool IO::StringLogFile::GetLogDescription(IO::ILogHandler::LogLevel logLevel, UOSInt index, Text::StringBuilderUTF8 *sb) const
+Bool IO::StringLogFile::GetLogDescription(IO::LogHandler::LogLevel logLevel, UOSInt index, Text::StringBuilderUTF8 *sb) const
 {
 	LogItem *item = this->items.GetItem(index);
 	if (item == 0)

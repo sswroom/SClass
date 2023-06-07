@@ -8,7 +8,7 @@
 
 IO::ConsoleWriter *console;
 
-class MyLogHandler : public IO::ILogHandler
+class MyLogHandler : public IO::LogHandler
 {
 public:
 	MyLogHandler()
@@ -54,7 +54,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	NEW_CLASS(sockf, Net::OSSocketFactory(true));
 	NEW_CLASS(log, IO::LogTool());
 	NEW_CLASS(logHdlr, MyLogHandler());
-	log->AddLogHandler(logHdlr, IO::ILogHandler::LogLevel::Raw);
+	log->AddLogHandler(logHdlr, IO::LogHandler::LogLevel::Raw);
 	NEW_CLASS(svr, Net::LogServer(sockf, port, CSTR("logs"), log, true, true));
 	if (!svr->IsError())
 	{

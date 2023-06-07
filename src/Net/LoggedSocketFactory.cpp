@@ -33,7 +33,7 @@ Socket *Net::LoggedSocketFactory::CreateTCPSocketv4()
 	{
 		sb.AppendC(UTF8STRC("Failed"));
 	}
-	this->log->LogMessage(sb.ToCString(), IO::ILogHandler::LogLevel::Action);
+	this->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Action);
 	return ret;
 }
 
@@ -54,7 +54,7 @@ Socket *Net::LoggedSocketFactory::CreateTCPSocketv6()
 	{
 		sb.AppendC(UTF8STRC("Failed"));
 	}
-	this->log->LogMessage(sb.ToCString(), IO::ILogHandler::LogLevel::Action);
+	this->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Action);
 	return ret;
 }
 
@@ -75,7 +75,7 @@ Socket *Net::LoggedSocketFactory::CreateUDPSocketv4()
 	{
 		sb.AppendC(UTF8STRC("Failed"));
 	}
-	this->log->LogMessage(sb.ToCString(), IO::ILogHandler::LogLevel::Action);
+	this->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Action);
 	return ret;
 }
 
@@ -88,7 +88,7 @@ void Net::LoggedSocketFactory::DestroySocket(Socket *socket)
 		sb.Append(this->logPrefix);
 	}
 	sb.AppendC(UTF8STRC("Destroy Socket: "));
-	this->log->LogMessage(sb.ToCString(), IO::ILogHandler::LogLevel::Action);
+	this->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Action);
 }
 
 Bool Net::LoggedSocketFactory::SocketIsInvalid(Socket *socket)
@@ -118,7 +118,7 @@ Bool Net::LoggedSocketFactory::SocketBindv4(Socket *socket, UInt32 ip, UInt16 po
 	{
 		sb.AppendC(UTF8STRC("Failed"));
 	}
-	this->log->LogMessage(sb.ToCString(), IO::ILogHandler::LogLevel::Action);
+	this->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Action);
 	return ret;
 }
 
@@ -139,7 +139,7 @@ Bool Net::LoggedSocketFactory::SocketListen(Socket *socket)
 	{
 		sb.AppendC(UTF8STRC("Failed"));
 	}
-	this->log->LogMessage(sb.ToCString(), IO::ILogHandler::LogLevel::Action);
+	this->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Action);
 	return ret;
 }
 
@@ -153,7 +153,7 @@ Socket *Net::LoggedSocketFactory::SocketAccept(Socket *socket)
 		sb.Append(this->logPrefix);
 	}
 	sb.AppendC(UTF8STRC("Begin socket accept"));
-	this->log->LogMessage(sb.ToCString(), IO::ILogHandler::LogLevel::Action);
+	this->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Action);
 	Socket *ret = this->sockf->SocketAccept(socket);
 	sb.ClearStr();
 	if (this->logPrefix)
@@ -171,7 +171,7 @@ Socket *Net::LoggedSocketFactory::SocketAccept(Socket *socket)
 		sptr = this->sockf->GetRemoteName(sbuff, ret);
 		sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 	}
-	this->log->LogMessage(sb.ToCString(), IO::ILogHandler::LogLevel::Action);
+	this->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Action);
 	return ret;
 }
 
@@ -186,7 +186,7 @@ UOSInt Net::LoggedSocketFactory::SendData(Socket *socket, const UInt8 *buff, UOS
 	sb.AppendC(UTF8STRC("Sent "));
 	sb.AppendOSInt(ret);
 	sb.AppendC(UTF8STRC(" bytes"));
-	this->log->LogMessage(sb.ToCString(), IO::ILogHandler::LogLevel::Action);
+	this->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Action);
 	return ret;
 }
 
@@ -201,7 +201,7 @@ UOSInt Net::LoggedSocketFactory::ReceiveData(Socket *socket, UInt8 *buff, UOSInt
 	sb.AppendC(UTF8STRC("Received "));
 	sb.AppendOSInt(ret);
 	sb.AppendC(UTF8STRC(" bytes"));
-	this->log->LogMessage(sb.ToCString(), IO::ILogHandler::LogLevel::Action);
+	this->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Action);
 	return ret;
 }
 
@@ -223,7 +223,7 @@ UOSInt Net::LoggedSocketFactory::EndReceiveData(void *reqData, Bool toWait, Bool
 		sb.AppendC(UTF8STRC("End Received "));
 		sb.AppendOSInt(ret);
 		sb.AppendC(UTF8STRC(" bytes"));
-		this->log->LogMessage(sb.ToCString(), IO::ILogHandler::LogLevel::Action);
+		this->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Action);
 	}
 	return ret;
 }
@@ -260,7 +260,7 @@ UOSInt Net::LoggedSocketFactory::UDPReceive(Socket *socket, UInt8 *buff, UOSInt 
 		sptr = Net::SocketUtil::GetAddrName(sbuff, addr, *port);
 		sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 	}
-	this->log->LogMessage(sb.ToCString(), IO::ILogHandler::LogLevel::Action);
+	this->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Action);
 	return ret;
 }
 
@@ -287,7 +287,7 @@ UOSInt Net::LoggedSocketFactory::SendTo(Socket *socket, const UInt8 *buff, UOSIn
 		sb.AppendUOSInt(ret);
 		sb.AppendC(UTF8STRC(" bytes"));
 	}
-	this->log->LogMessage(sb.ToCString(), IO::ILogHandler::LogLevel::Action);
+	this->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Action);
 	return ret;
 }
 
@@ -323,5 +323,5 @@ void Net::LoggedSocketFactory::ShutdownSend(Socket *socket)
 		sb.Append(this->logPrefix);
 	}
 	sb.AppendC(UTF8STRC("Shutdown Send"));
-	this->log->LogMessage(sb.ToCString(), IO::ILogHandler::LogLevel::Action);
+	this->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Action);
 }

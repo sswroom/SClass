@@ -13,11 +13,11 @@ namespace IO
 		IO::LogTool *log;
 		Text::StringBuilderUTF8 sb;
 		Sync::Mutex mut;
-		IO::ILogHandler::LogLevel logLev;
+		IO::LogHandler::LogLevel logLev;
 
 		void CheckLines();
 	public:
-		LogWriter(IO::LogTool *log, IO::ILogHandler::LogLevel logLev);
+		LogWriter(IO::LogTool *log, IO::LogHandler::LogLevel logLev);
 		virtual ~LogWriter();
 
 		virtual Bool WriteStrC(const UTF8Char *str, UOSInt nChar);

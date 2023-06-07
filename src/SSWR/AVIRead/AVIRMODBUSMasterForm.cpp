@@ -30,7 +30,7 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnStreamClicked(void *userOb
 			me->recvUpdated = true;
 			me->sendBuff.Clear();
 			me->sendUpdated = true;
-			me->log.LogMessage(CSTR("Stream Started"), IO::ILogHandler::LogLevel::Action);
+			me->log.LogMessage(CSTR("Stream Started"), IO::LogHandler::LogLevel::Action);
 			NEW_CLASS(me->stm, IO::DataCaptureStream(me->devStm, OnDataRecv, OnDataSend, me));
 			if (me->radMODBUSTCP->IsSelected())
 			{
@@ -489,7 +489,7 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnDataRecv(void *userObj, co
 	sb.AppendC(UTF8STRC("Data Received: "));
 	sb.AppendUOSInt(dataSize);
 	sb.AppendC(UTF8STRC(" bytes"));
-	me->log.LogMessage(sb.ToCString(), IO::ILogHandler::LogLevel::Raw);
+	me->log.LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Raw);
 
 	Sync::MutexUsage mutUsage(&me->recvMut);
 	me->recvBuff.AppendBytes(data, dataSize);
@@ -503,7 +503,7 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnDataSend(void *userObj, co
 	sb.AppendC(UTF8STRC("Data Sent: "));
 	sb.AppendUOSInt(dataSize);
 	sb.AppendC(UTF8STRC(" bytes"));
-	me->log.LogMessage(sb.ToCString(), IO::ILogHandler::LogLevel::Raw);
+	me->log.LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Raw);
 
 	Sync::MutexUsage mutUsage(&me->sendMut);
 	me->sendBuff.AppendBytes(data, dataSize);
@@ -718,7 +718,7 @@ SSWR::AVIRead::AVIRMODBUSMasterForm::AVIRMODBUSMasterForm(UI::GUIClientControl *
 
 	NEW_CLASS(this->logger, UI::ListBoxLogger(this, this->lbLog, 500, false));
 	this->logger->SetTimeFormat("yyyy-MM-dd HH:mm:ss.fffffff");
-	this->log.AddLogHandler(this->logger, IO::ILogHandler::LogLevel::Raw);
+	this->log.AddLogHandler(this->logger, IO::LogHandler::LogLevel::Raw);
 
 	this->AddTimer(10000, OnTimerTick, this);
 }

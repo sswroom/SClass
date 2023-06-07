@@ -80,13 +80,13 @@ IO::UDPFileLog::~UDPFileLog()
 	DEL_CLASS(this->fd);
 }
 
-UOSInt IO::UDPFileLog::GetCount(IO::ILogHandler::LogLevel logLevel) const
+UOSInt IO::UDPFileLog::GetCount(IO::LogHandler::LogLevel logLevel) const
 {
-	if (logLevel == IO::ILogHandler::LogLevel::Raw)
+	if (logLevel == IO::LogHandler::LogLevel::Raw)
 	{
 		return this->logPos.GetCount() << 1;
 	}
-/*	if (logLevel == IO::ILogHandler::LogLevel::Raw)
+/*	if (logLevel == IO::LogHandler::LogLevel::Raw)
 	{
 		return this->logPos->GetCount();
 	}*/
@@ -96,9 +96,9 @@ UOSInt IO::UDPFileLog::GetCount(IO::ILogHandler::LogLevel logLevel) const
 	}
 }
 
-Bool IO::UDPFileLog::GetLogMessage(IO::ILogHandler::LogLevel logLevel, UOSInt index, Data::Timestamp *ts, Text::StringBuilderUTF8 *sb, Text::LineBreakType lineBreak) const
+Bool IO::UDPFileLog::GetLogMessage(IO::LogHandler::LogLevel logLevel, UOSInt index, Data::Timestamp *ts, Text::StringBuilderUTF8 *sb, Text::LineBreakType lineBreak) const
 {
-	if (logLevel == IO::ILogHandler::LogLevel::Raw)
+	if (logLevel == IO::LogHandler::LogLevel::Raw)
 	{
 		if (index >= (this->logPos.GetCount() << 1))
 			return false;
@@ -114,7 +114,7 @@ Bool IO::UDPFileLog::GetLogMessage(IO::ILogHandler::LogLevel logLevel, UOSInt in
 		}
 		index = index >> 1;
 	}
-/*	if (logLevel == IO::ILogHandler::LogLevel::Raw)
+/*	if (logLevel == IO::LogHandler::LogLevel::Raw)
 	{
 		if (index >= this->logPos->GetCount())
 			return false;
@@ -137,9 +137,9 @@ Bool IO::UDPFileLog::GetLogMessage(IO::ILogHandler::LogLevel logLevel, UOSInt in
 	return true;
 }
 
-Bool IO::UDPFileLog::GetLogDescription(IO::ILogHandler::LogLevel logLevel, UOSInt index, Text::StringBuilderUTF8 *sb) const
+Bool IO::UDPFileLog::GetLogDescription(IO::LogHandler::LogLevel logLevel, UOSInt index, Text::StringBuilderUTF8 *sb) const
 {
-	if (logLevel == IO::ILogHandler::LogLevel::Raw)
+	if (logLevel == IO::LogHandler::LogLevel::Raw)
 	{
 		index = index >> 1;
 	}

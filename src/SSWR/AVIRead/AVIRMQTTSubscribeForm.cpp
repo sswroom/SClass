@@ -259,7 +259,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnPublishMessage(void *user
 	sb.Append(topic);
 	sb.AppendC(UTF8STRC(", message = "));
 	sb.AppendC((const UTF8Char*)message, msgSize);
-	me->log.LogMessage(sb.ToCString(), IO::ILogHandler::LogLevel::Command);
+	me->log.LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Command);
 
 	Data::DateTime dt;
 	dt.SetCurrTimeUTC();
@@ -473,7 +473,7 @@ SSWR::AVIRead::AVIRMQTTSubscribeForm::AVIRMQTTSubscribeForm(UI::GUIClientControl
 
 	NEW_CLASS(this->logger, UI::ListBoxLogger(this, this->lbLog, 100, false));
 	this->logger->SetTimeFormat("yyyy-MM-dd HH:mm:ss.fff");
-	this->log.AddLogHandler(this->logger, IO::ILogHandler::LogLevel::Raw);
+	this->log.AddLogHandler(this->logger, IO::LogHandler::LogLevel::Raw);
 	this->client = 0;
 
 	this->AddTimer(30000, OnPingTimerTick, this);

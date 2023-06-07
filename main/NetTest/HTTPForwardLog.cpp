@@ -25,7 +25,7 @@ void __stdcall OnForwardRequest(void *userObj, Net::WebServer::IWebRequest *req,
 	sb.AppendC(reqMeth.v, reqMeth.leng);
 	sb.AppendUTF8Char(' ');
 	sb.Append(req->GetRequestURI());
-	logger->LogMessage(sb.ToCString(), IO::ILogHandler::LogLevel::Action);
+	logger->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Action);
 
 	Data::ArrayList<Text::String *> headerNames;
 	Text::String *headerName;
@@ -40,20 +40,20 @@ void __stdcall OnForwardRequest(void *userObj, Net::WebServer::IWebRequest *req,
 		sb.Append(headerName);
 		sb.AppendC(UTF8STRC(": "));
 		sb.Append(req->GetSHeader(headerName->ToCString()));
-		logger->LogMessage(sb.ToCString(), IO::ILogHandler::LogLevel::Raw);
+		logger->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Raw);
 		i++;
 	}
 	sb.ClearStr();
 	sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 	sb.AppendC(UTF8STRC(" Resp "));
 	sb.AppendI32(resp->GetStatusCode());
-	logger->LogMessage(sb.ToCString(), IO::ILogHandler::LogLevel::Action);
+	logger->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Action);
 	
 	sb.ClearStr();
 	sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 	sb.AppendC(UTF8STRC(" Resp "));
 	sb.Append(resp->GetRespHeaders());
-	logger->LogMessage(sb.ToCString(), IO::ILogHandler::LogLevel::Raw);
+	logger->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Raw);
 }
 
 Int32 MyMain(Core::IProgControl *progCtrl)
@@ -98,7 +98,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			sptr = IO::Path::GetProcessFileName(sbuff);
 			sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("FwdLog"));
 			sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("fwdLog"));
-			logger->AddFileLog(CSTRP(sbuff, sptr), IO::ILogHandler::LogType::PerDay, IO::ILogHandler::LogGroup::PerMonth, IO::ILogHandler::LogLevel::Raw, "yyyy-MM-dd HH:mm:ss.fff", false);
+			logger->AddFileLog(CSTRP(sbuff, sptr), IO::LogHandler::LogType::PerDay, IO::LogHandler::LogGroup::PerMonth, IO::LogHandler::LogLevel::Raw, "yyyy-MM-dd HH:mm:ss.fff", false);
 			hdlr->HandleForwardRequest(OnForwardRequest, 0);
 			NEW_CLASS(svr, Net::WebServer::WebListener(sockf, 0, hdlr, listenPort, 120, 4, CSTR("sswr/1.0"), false, Net::WebServer::KeepAlive::Default, true));
 			if (!svr->IsError())

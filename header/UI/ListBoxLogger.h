@@ -8,7 +8,7 @@
 
 namespace UI
 {
-	class ListBoxLogger : public IO::ILogHandler
+	class ListBoxLogger : public IO::LogHandler
 	{
 	private:
 		Sync::Mutex mut;
@@ -30,7 +30,7 @@ namespace UI
 		ListBoxLogger(UI::GUIForm *frm, UI::GUIListBox *lb, UOSInt maxLog, Bool reverse);
 		virtual ~ListBoxLogger();
 		virtual void LogClosed();
-		virtual void LogAdded(const Data::Timestamp &logTime, Text::CString logMsg, IO::ILogHandler::LogLevel logLev);
+		virtual void LogAdded(const Data::Timestamp &logTime, Text::CString logMsg, IO::LogHandler::LogLevel logLev);
 
 		void SetTimeFormat(const Char *timeFormat);
 

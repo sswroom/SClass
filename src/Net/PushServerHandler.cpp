@@ -79,7 +79,7 @@ Bool __stdcall Net::PushServerHandler::SubscribeHandler(Net::WebServer::IWebRequ
 				Text::StringBuilderUTF8 sb;
 				sb.AppendC(UTF8STRC("Unknown type: "));
 				sb.Append(sType);
-				me->mgr->LogMessage(sb.ToCString(), IO::ILogHandler::LogLevel::Error);
+				me->mgr->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Error);
 				succ = false;
 			}
 			if (succ)
@@ -89,21 +89,21 @@ Bool __stdcall Net::PushServerHandler::SubscribeHandler(Net::WebServer::IWebRequ
 		}
 		else if (sToken == 0)
 		{
-			me->mgr->LogMessage(CSTR("Token Missing"), IO::ILogHandler::LogLevel::Error);
+			me->mgr->LogMessage(CSTR("Token Missing"), IO::LogHandler::LogLevel::Error);
 		}
 		else if (sType == 0)
 		{
-			me->mgr->LogMessage(CSTR("Type Missing"), IO::ILogHandler::LogLevel::Error);
+			me->mgr->LogMessage(CSTR("Type Missing"), IO::LogHandler::LogLevel::Error);
 		}
 		else if (sUser == 0)
 		{
-			me->mgr->LogMessage(CSTR("User Missing"), IO::ILogHandler::LogLevel::Error);
+			me->mgr->LogMessage(CSTR("User Missing"), IO::LogHandler::LogLevel::Error);
 		}
 		json->EndUse();
 	}
 	else
 	{
-		me->mgr->LogMessage(CSTR("Not JSON"), IO::ILogHandler::LogLevel::Error);
+		me->mgr->LogMessage(CSTR("Not JSON"), IO::LogHandler::LogLevel::Error);
 	}
 	resp->AddDefHeaders(req);
 	resp->AddCacheControl(0);

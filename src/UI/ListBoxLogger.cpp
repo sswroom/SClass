@@ -143,7 +143,7 @@ void UI::ListBoxLogger::LogClosed()
 {
 }
 
-void UI::ListBoxLogger::LogAdded(const Data::Timestamp &logTime, Text::CString logMsg, IO::ILogHandler::LogLevel logLev)
+void UI::ListBoxLogger::LogAdded(const Data::Timestamp &logTime, Text::CString logMsg, IO::LogHandler::LogLevel logLev)
 {
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[64];

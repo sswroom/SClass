@@ -8,7 +8,7 @@
 
 Net::Spring::SpringBootApplication::SpringBootApplication(Text::CString appName) : consoleLog(&console)
 {
-	this->log.AddLogHandler(&this->consoleLog, IO::ILogHandler::LogLevel::Raw);
+	this->log.AddLogHandler(&this->consoleLog, IO::LogHandler::LogLevel::Raw);
 	this->cfg = IO::JavaProperties::ParseAppProp();
 	this->activeProfile = 0;
 	if (this->cfg)
@@ -70,12 +70,12 @@ Net::Spring::SpringBootApplication::SpringBootApplication(Text::CString appName)
 	sptr = IO::Path::GetCurrDirectory(sbuff);
 	sb.AppendP(sbuff, sptr);
 	sb.AppendUTF8Char(')');
-	this->log.LogMessage(sb.ToCString(), IO::ILogHandler::LogLevel::Action);
+	this->log.LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Action);
 
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("The following profiles are active: "));
 	sb.Append(this->activeProfile);
-	this->log.LogMessage(sb.ToCString(), IO::ILogHandler::LogLevel::Action);
+	this->log.LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Action);
 }
 
 Net::Spring::SpringBootApplication::~SpringBootApplication()

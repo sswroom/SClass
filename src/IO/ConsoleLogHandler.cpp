@@ -18,27 +18,27 @@ void IO::ConsoleLogHandler::LogAdded(const Data::Timestamp &logTime, Text::CStri
 	this->console->SetBGColor(Text::StandardColor::Black);
 	this->console->SetTextColor(Text::StandardColor::Gray);
 	this->console->WriteStr(CSTRP(sbuff, sptr));
-	if (logLev == IO::ILogHandler::LogLevel::Raw)
+	if (logLev == IO::LogHandler::LogLevel::Raw)
 	{
 		this->console->SetTextColor(Text::StandardColor::White);
 		this->console->WriteLineCStr(logMsg);
 	}
-	else if (logLev == IO::ILogHandler::LogLevel::Command)
+	else if (logLev == IO::LogHandler::LogLevel::Command)
 	{
 		this->console->SetTextColor(Text::StandardColor::Lime);
 		this->console->WriteLineCStr(logMsg);
 	}
-	else if (logLev == IO::ILogHandler::LogLevel::Action)
+	else if (logLev == IO::LogHandler::LogLevel::Action)
 	{
 		this->console->SetTextColor(Text::StandardColor::Yellow);
 		this->console->WriteLineCStr(logMsg);
 	}
-	else if (logLev == IO::ILogHandler::LogLevel::Error)
+	else if (logLev == IO::LogHandler::LogLevel::Error)
 	{
 		this->console->SetTextColor(Text::StandardColor::Red);
 		this->console->WriteLineCStr(logMsg);
 	}
-	else if (logLev == IO::ILogHandler::LogLevel::ErrorDetail)
+	else if (logLev == IO::LogHandler::LogLevel::ErrorDetail)
 	{
 		this->console->SetBGColor(Text::StandardColor::DarkRed);
 		this->console->SetTextColor(Text::StandardColor::Black);

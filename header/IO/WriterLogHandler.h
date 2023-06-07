@@ -7,7 +7,7 @@
 
 namespace IO
 {
-	class WriterLogHandler : public ILogHandler
+	class WriterLogHandler : public LogHandler
 	{
 	private:
 		IO::Writer *writer;

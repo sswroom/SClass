@@ -12,7 +12,7 @@
 
 namespace Net
 {
-	class LogClient : public IO::ILogHandler, public IO::IProtocolHandler::DataListener
+	class LogClient : public IO::LogHandler, public IO::IProtocolHandler::DataListener
 	{
 	private:
 		IO::ProtoHdlr::ProtoLogCliHandler protoHdlr;

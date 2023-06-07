@@ -8,11 +8,11 @@
 
 namespace IO
 {
-	class LoopFileLog : public ILogHandler
+	class LoopFileLog : public LogHandler
 	{
 	private:
 		Sync::Mutex mut;
-		IO::ILogHandler::LogType logStyle;
+		IO::LogHandler::LogType logStyle;
 		Int32 nFiles;
 		Int32 lastVal;
 		Text::UTF8Writer *log;

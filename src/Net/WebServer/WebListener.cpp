@@ -159,7 +159,7 @@ Text::String *Net::WebServer::WebListener::GetServerName()
 	return this->svrName;
 }
 
-void Net::WebServer::WebListener::SetAccessLog(IO::LogTool *accLog, IO::ILogHandler::LogLevel accLogLev)
+void Net::WebServer::WebListener::SetAccessLog(IO::LogTool *accLog, IO::LogHandler::LogLevel accLogLev)
 {
 	Sync::MutexUsage mutUsage(&this->accLogMut);
 	this->accLog = accLog;

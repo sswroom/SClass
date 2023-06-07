@@ -18,7 +18,7 @@ Bool __stdcall Net::WebServer::GCISNotifyHandler::NotifyFunc(Net::WebServer::IWe
 			resp->SetStatusCode(Net::WebStatus::SC_INTERNAL_SERVER_ERROR);
 			builder.ObjectAddStr(CSTR("description"), CSTR("Client Cert is missing"));
 			builder.ObjectAddStr(CSTR("code"), CSTR("9999"));
-			me->log->LogMessage(CSTR("Client Cert is missing"), IO::ILogHandler::LogLevel::Error);
+			me->log->LogMessage(CSTR("Client Cert is missing"), IO::LogHandler::LogLevel::Error);
 		}
 		else
 		{
@@ -33,14 +33,14 @@ Bool __stdcall Net::WebServer::GCISNotifyHandler::NotifyFunc(Net::WebServer::IWe
 				failed = true;
 				resultCd = CSTR("0021");
 				resultMsg = CSTR("Invalid content type");
-				me->log->LogMessage(CSTR("Cannot parse JSON"), IO::ILogHandler::LogLevel::Error);
+				me->log->LogMessage(CSTR("Cannot parse JSON"), IO::LogHandler::LogLevel::Error);
 			}
 			else if (json->GetType() != Text::JSONType::Object)
 			{
 				failed = true;
 				resultCd = CSTR("0021");
 				resultMsg = CSTR("Invalid content type");
-				me->log->LogMessage(CSTR("JSON is not object"), IO::ILogHandler::LogLevel::Error);
+				me->log->LogMessage(CSTR("JSON is not object"), IO::LogHandler::LogLevel::Error);
 			}
 			else
 			{
@@ -54,7 +54,7 @@ Bool __stdcall Net::WebServer::GCISNotifyHandler::NotifyFunc(Net::WebServer::IWe
 					failed = true;
 					resultCd = CSTR("0074");
 					resultMsg = CSTR("Invalid Channel Type.");
-					me->log->LogMessage(CSTR("Invalid Channel Type"), IO::ILogHandler::LogLevel::Error);
+					me->log->LogMessage(CSTR("Invalid Channel Type"), IO::LogHandler::LogLevel::Error);
 				}
 				if (!failed)
 				{
@@ -64,7 +64,7 @@ Bool __stdcall Net::WebServer::GCISNotifyHandler::NotifyFunc(Net::WebServer::IWe
 						failed = true;
 						resultCd = CSTR("0032");
 						resultMsg = CSTR("No recipient found.");
-						me->log->LogMessage(CSTR("No recipient found"), IO::ILogHandler::LogLevel::Error);
+						me->log->LogMessage(CSTR("No recipient found"), IO::LogHandler::LogLevel::Error);
 					}
 					else
 					{
@@ -79,7 +79,7 @@ Bool __stdcall Net::WebServer::GCISNotifyHandler::NotifyFunc(Net::WebServer::IWe
 								failed = true;
 								resultCd = CSTR("0032");
 								resultMsg = CSTR("No recipient found.");
-								me->log->LogMessage(CSTR("No recipient found"), IO::ILogHandler::LogLevel::Error);
+								me->log->LogMessage(CSTR("No recipient found"), IO::LogHandler::LogLevel::Error);
 								break;
 							}
 							else if ((s = recipient->GetObjectString(CSTR("ChanAddr"))) != 0)
@@ -99,7 +99,7 @@ Bool __stdcall Net::WebServer::GCISNotifyHandler::NotifyFunc(Net::WebServer::IWe
 								failed = true;
 								resultCd = CSTR("0032");
 								resultMsg = CSTR("No recipient found.");
-								me->log->LogMessage(CSTR("No recipient found"), IO::ILogHandler::LogLevel::Error);
+								me->log->LogMessage(CSTR("No recipient found"), IO::LogHandler::LogLevel::Error);
 								break;
 							}
 
@@ -116,7 +116,7 @@ Bool __stdcall Net::WebServer::GCISNotifyHandler::NotifyFunc(Net::WebServer::IWe
 						failed = true;
 						resultCd = CSTR("0024");
 						resultMsg = CSTR("Content field is empty.");
-						me->log->LogMessage(CSTR("Content field is empty"), IO::ILogHandler::LogLevel::Error);
+						me->log->LogMessage(CSTR("Content field is empty"), IO::LogHandler::LogLevel::Error);
 					}
 					else if ((s = contentDetail->GetObjectString(CSTR("ContentType"))) != 0)
 					{
@@ -126,7 +126,7 @@ Bool __stdcall Net::WebServer::GCISNotifyHandler::NotifyFunc(Net::WebServer::IWe
 							failed = true;
 							resultCd = CSTR("0024");
 							resultMsg = CSTR("Content field is empty.");
-							me->log->LogMessage(CSTR("Content field is empty"), IO::ILogHandler::LogLevel::Error);
+							me->log->LogMessage(CSTR("Content field is empty"), IO::LogHandler::LogLevel::Error);
 						}
 						else if (s->Equals(UTF8STRC("text/html")))
 						{
@@ -141,7 +141,7 @@ Bool __stdcall Net::WebServer::GCISNotifyHandler::NotifyFunc(Net::WebServer::IWe
 							failed = true;
 							resultCd = CSTR("0021");
 							resultMsg = CSTR("Invalid content type.");
-							me->log->LogMessage(CSTR("Invalid content type"), IO::ILogHandler::LogLevel::Error);
+							me->log->LogMessage(CSTR("Invalid content type"), IO::LogHandler::LogLevel::Error);
 						}
 					}
 					else
@@ -149,7 +149,7 @@ Bool __stdcall Net::WebServer::GCISNotifyHandler::NotifyFunc(Net::WebServer::IWe
 						failed = true;
 						resultCd = CSTR("0021");
 						resultMsg = CSTR("Invalid content type.");
-						me->log->LogMessage(CSTR("Invalid content type"), IO::ILogHandler::LogLevel::Error);
+						me->log->LogMessage(CSTR("Invalid content type"), IO::LogHandler::LogLevel::Error);
 					}
 					if (!failed)
 					{
@@ -162,7 +162,7 @@ Bool __stdcall Net::WebServer::GCISNotifyHandler::NotifyFunc(Net::WebServer::IWe
 							failed = true;
 							resultCd = CSTR("0021");
 							resultMsg = CSTR("Invalid content type.");
-							me->log->LogMessage(CSTR("Invalid content type"), IO::ILogHandler::LogLevel::Error);
+							me->log->LogMessage(CSTR("Invalid content type"), IO::LogHandler::LogLevel::Error);
 						}
 					}
 				}

@@ -128,7 +128,7 @@ Bool Crypto::Encrypt::JasyptEncryptor::Decrypt(IO::ConfigFile *cfg)
 		while (k < l)
 		{
 			key = keyList.GetItem(k);
-			val = cfg->GetValue(cate, key);
+			val = cfg->GetCateValue(cate, key);
 			if (val && val->StartsWith(UTF8STRC("ENC(")) && val->EndsWith(')'))
 			{
 				buffSize = this->DecryptB64(&val->v[4], val->leng - 5, buff);

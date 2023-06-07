@@ -276,7 +276,7 @@ Bool Net::PushManager::Send(Data::ArrayList<Text::String*> *userNames, Text::Str
 	if (tokenList.GetCount() == 0)
 	{
 		if (this->log)
-			this->log->LogMessage(CSTR("Send: Device not found"), IO::ILogHandler::LogLevel::Error);
+			this->log->LogMessage(CSTR("Send: Device not found"), IO::LogHandler::LogLevel::Error);
 		return false;
 	}
 	else
@@ -290,7 +290,7 @@ Bool Net::PushManager::Send(Data::ArrayList<Text::String*> *userNames, Text::Str
 			sbResult.AppendC(UTF8STRC("Send Message result: "));
 			ret |= Net::GoogleFCM::SendMessage(this->sockf, this->ssl, this->fcmKey->ToCString(), tokenList.GetItem(i)->ToCString(), message->ToCString(), &sbResult);
 			if (this->log)
-				this->log->LogMessage(sbResult.ToCString(), IO::ILogHandler::LogLevel::Action);
+				this->log->LogMessage(sbResult.ToCString(), IO::LogHandler::LogLevel::Action);
 			i++;
 		}
 		LIST_FREE_STRING(&tokenList);
@@ -324,7 +324,7 @@ const Data::ReadingList<Net::PushManager::DeviceInfo2*> *Net::PushManager::GetDe
 	return &this->devMap;
 }
 
-void Net::PushManager::LogMessage(Text::CString msg, IO::ILogHandler::LogLevel logLev)
+void Net::PushManager::LogMessage(Text::CString msg, IO::LogHandler::LogLevel logLev)
 {
 	this->log->LogMessage(msg, logLev);
 }

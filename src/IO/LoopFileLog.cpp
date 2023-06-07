@@ -47,19 +47,19 @@ IO::LoopFileLog::LoopFileLog(Text::CString fileName, Int32 nFiles, LogType style
 
 	Data::DateTime dt;
 	dt.SetCurrTime();
-	if (logStyle == ILogHandler::LogType::PerDay)
+	if (logStyle == LogHandler::LogType::PerDay)
 	{
 		lastVal = dt.GetDay();
 	}
-	else if (logStyle == ILogHandler::LogType::PerMonth)
+	else if (logStyle == LogHandler::LogType::PerMonth)
 	{
 		lastVal = dt.GetMonth();
 	}
-	else if (logStyle == ILogHandler::LogType::PerYear)
+	else if (logStyle == LogHandler::LogType::PerYear)
 	{
 		lastVal = dt.GetYear();
 	}
-	else if (logStyle == ILogHandler::LogType::PerHour)
+	else if (logStyle == LogHandler::LogType::PerHour)
 	{
 		lastVal = dt.GetDay() * 24 + dt.GetHour();
 	}
@@ -104,7 +104,7 @@ void IO::LoopFileLog::LogAdded(const Data::Timestamp &time, Text::CString logMsg
 	Data::DateTimeUtil::TimeValue tval;
 	time.ToTimeValue(&tval);
 
-	if (logStyle == ILogHandler::LogType::PerDay)
+	if (logStyle == LogHandler::LogType::PerDay)
 	{
 		if (tval.day != lastVal)
 		{
@@ -112,7 +112,7 @@ void IO::LoopFileLog::LogAdded(const Data::Timestamp &time, Text::CString logMsg
 			newFile = true;
 		}
 	}
-	else if (logStyle == ILogHandler::LogType::PerMonth)
+	else if (logStyle == LogHandler::LogType::PerMonth)
 	{
 		if (tval.month != lastVal)
 		{
@@ -120,7 +120,7 @@ void IO::LoopFileLog::LogAdded(const Data::Timestamp &time, Text::CString logMsg
 			newFile = true;
 		}
 	}
-	else if (logStyle == ILogHandler::LogType::PerYear)
+	else if (logStyle == LogHandler::LogType::PerYear)
 	{
 		if (tval.year != lastVal)
 		{
@@ -128,7 +128,7 @@ void IO::LoopFileLog::LogAdded(const Data::Timestamp &time, Text::CString logMsg
 			newFile = true;
 		}
 	}
-	else if (logStyle == ILogHandler::LogType::PerHour)
+	else if (logStyle == LogHandler::LogType::PerHour)
 	{
 		if (lastVal != (tval.day * 24 + tval.hour))
 		{

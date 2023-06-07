@@ -187,7 +187,7 @@ void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnLogFileClicked(void *userOb
 	{
 		IO::Path::AppendPath(&sb, UTF8STRC("log/SMTP"));
 	}
-	me->log.AddFileLog(sb.ToCString(), IO::ILogHandler::LogType::PerDay, IO::ILogHandler::LogGroup::PerMonth, IO::ILogHandler::LogLevel::Command, "yyyy-MM-dd HH:mm:ss.fff", false);
+	me->log.AddFileLog(sb.ToCString(), IO::LogHandler::LogType::PerDay, IO::LogHandler::LogGroup::PerMonth, IO::LogHandler::LogLevel::Command, "yyyy-MM-dd HH:mm:ss.fff", false);
 	me->btnLogFile->SetEnabled(false);
 }
 
@@ -233,7 +233,7 @@ UTF8Char *__stdcall SSWR::AVIRead::AVIREmailServerForm::OnMailReceived(UTF8Char 
 	Int64 id = me->store->NextEmailId();
 	sb.AppendC(UTF8STRC(", id = "));
 	sb.AppendI64(id);
-	me->log.LogMessage(sb.ToCString(), IO::ILogHandler::LogLevel::Command);
+	me->log.LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Command);
 
 	Net::SocketUtil::AddressInfo remoteAddr;
 	cli->GetRemoteAddr(&remoteAddr);
@@ -255,7 +255,7 @@ void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnGCISMailReceived(void *user
 	Int64 id = me->store->NextEmailId();
 	sb.AppendC(UTF8STRC(", id = "));
 	sb.AppendI64(id);
-	me->log.LogMessage(sb.ToCString(), IO::ILogHandler::LogLevel::Command);
+	me->log.LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Command);
 
 	Net::SocketUtil::AddressInfo remoteAddr;
 	cli->GetRemoteAddr(&remoteAddr);
@@ -276,7 +276,7 @@ Bool __stdcall SSWR::AVIRead::AVIREmailServerForm::OnMailLogin(void *userObj, Te
 	sb.Append(userName);
 	sb.AppendC(UTF8STRC(", Pwd: "));
 	sb.Append(pwd);
-	me->log.LogMessage(sb.ToCString(), IO::ILogHandler::LogLevel::Command);
+	me->log.LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Command);
 	return true;
 }
 
@@ -562,7 +562,7 @@ SSWR::AVIRead::AVIREmailServerForm::AVIREmailServerForm(UI::GUIClientControl *pa
 	this->lbLog->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	NEW_CLASS(this->logger, UI::ListBoxLogger(this, this->lbLog, 500, true));
-	this->log.AddLogHandler(this->logger, IO::ILogHandler::LogLevel::Command);
+	this->log.AddLogHandler(this->logger, IO::LogHandler::LogLevel::Command);
 
 	this->mailChanged = true;
 	this->AddTimer(1000, OnTimerTick, this);

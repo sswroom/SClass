@@ -116,7 +116,7 @@ Bool Net::SMSGatewayIntersoft::SendSMS(Text::CString userName, Text::CString pas
 			{
 				if (this->log)
 				{
-					this->log->LogMessage(CSTR("SMSGatewayIntersoft: Response error, Accept not found"), IO::ILogHandler::LogLevel::Error);
+					this->log->LogMessage(CSTR("SMSGatewayIntersoft: Response error, Accept not found"), IO::LogHandler::LogLevel::Error);
 				}
 			}
 			else
@@ -128,7 +128,7 @@ Bool Net::SMSGatewayIntersoft::SendSMS(Text::CString userName, Text::CString pas
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("SMSGatewayIntersoft: Response Accept = "));
 					sb.Append(&sbMsg);
-					this->log->LogMessage(sb.ToCString(), IO::ILogHandler::LogLevel::Action);
+					this->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Action);
 				}
 				if (sbMsg.Equals(UTF8STRC("true")))
 				{
@@ -142,14 +142,14 @@ Bool Net::SMSGatewayIntersoft::SendSMS(Text::CString userName, Text::CString pas
 						node = doc.SearchFirstNode(CSTR("/MessageResult/MessageID"));
 						if (node == 0)
 						{
-							this->log->LogMessage(CSTR("SMSGatewayIntersoft: Response MessageID = not found"), IO::ILogHandler::LogLevel::Error);
+							this->log->LogMessage(CSTR("SMSGatewayIntersoft: Response MessageID = not found"), IO::LogHandler::LogLevel::Error);
 						}
 						else
 						{
 							sbMsg.ClearStr();
 							sb.AppendC(UTF8STRC("SMSGatewayIntersoft: Response MessageID = "));
 							node->GetInnerText(&sbMsg);
-							this->log->LogMessage(sbMsg.ToCString(), IO::ILogHandler::LogLevel::Command);
+							this->log->LogMessage(sbMsg.ToCString(), IO::LogHandler::LogLevel::Command);
 						}
 					}
 					else
@@ -157,14 +157,14 @@ Bool Net::SMSGatewayIntersoft::SendSMS(Text::CString userName, Text::CString pas
 						node = doc.SearchFirstNode(CSTR("/MessageResult/FailReason"));
 						if (node == 0)
 						{
-							this->log->LogMessage(CSTR("SMSGatewayIntersoft: Response FailReason = not found"), IO::ILogHandler::LogLevel::Error);
+							this->log->LogMessage(CSTR("SMSGatewayIntersoft: Response FailReason = not found"), IO::LogHandler::LogLevel::Error);
 						}
 						else
 						{
 							sbMsg.ClearStr();
 							sb.AppendC(UTF8STRC("SMSGatewayIntersoft: Response FailReason = "));
 							node->GetInnerText(&sbMsg);
-							this->log->LogMessage(sbMsg.ToCString(), IO::ILogHandler::LogLevel::Error);
+							this->log->LogMessage(sbMsg.ToCString(), IO::LogHandler::LogLevel::Error);
 						}
 					}
 				}
@@ -174,7 +174,7 @@ Bool Net::SMSGatewayIntersoft::SendSMS(Text::CString userName, Text::CString pas
 		{
 			if (this->log)
 			{
-				this->log->LogMessage(CSTR("SMSGatewayIntersoft: Error in parsing response"), IO::ILogHandler::LogLevel::Error);
+				this->log->LogMessage(CSTR("SMSGatewayIntersoft: Error in parsing response"), IO::LogHandler::LogLevel::Error);
 			}
 		}
 		return ret;
@@ -186,7 +186,7 @@ Bool Net::SMSGatewayIntersoft::SendSMS(Text::CString userName, Text::CString pas
 			sbMsg.ClearStr();
 			sbMsg.AppendC(UTF8STRC("Error in connecting to URL: "));
 			sbMsg.AppendC(sb.ToString(), sb.GetLength());
-			this->log->LogMessage(sbMsg.ToCString(), IO::ILogHandler::LogLevel::Error);
+			this->log->LogMessage(sbMsg.ToCString(), IO::LogHandler::LogLevel::Error);
 			return false;
 		}
 	}

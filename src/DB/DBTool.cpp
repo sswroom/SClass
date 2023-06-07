@@ -36,7 +36,7 @@ OSInt DB::DBTool::ExecuteNonQuery(Text::CString sqlCmd)
 		Text::StringBuilderUTF8 logMsg;
 		logMsg.AppendC(UTF8STRC("ExecuteNonQuery: "));
 		logMsg.Append(sqlCmd);
-		AddLogMsgC(logMsg.ToString(), logMsg.GetLength(), IO::ILogHandler::LogLevel::Raw);
+		AddLogMsgC(logMsg.ToString(), logMsg.GetLength(), IO::LogHandler::LogLevel::Raw);
 	}
 	if (this->db == 0)
 	{
@@ -59,7 +59,7 @@ OSInt DB::DBTool::ExecuteNonQuery(Text::CString sqlCmd)
 			ptr = Text::StrInt32(ptr, (Int32)t2.DiffMS(&t1));
 			ptr = Text::StrConcatC(ptr, UTF8STRC(", t2 = "));
 			ptr = Text::StrInt32(ptr, (Int32)t3.DiffMS(&t2));
-			AddLogMsgC(buff, (UOSInt)(ptr - buff), IO::ILogHandler::LogLevel::Command);
+			AddLogMsgC(buff, (UOSInt)(ptr - buff), IO::LogHandler::LogLevel::Command);
 		}
 		nqFail = 0;
 		openFail = 0;
@@ -71,7 +71,7 @@ OSInt DB::DBTool::ExecuteNonQuery(Text::CString sqlCmd)
 			Text::StringBuilderUTF8 logMsg;
 			logMsg.AppendC(UTF8STRC("Cannot execute the sql command: "));
 			logMsg.Append(sqlCmd);
-			AddLogMsgC(logMsg.ToString(), logMsg.GetLength(), IO::ILogHandler::LogLevel::Error);
+			AddLogMsgC(logMsg.ToString(), logMsg.GetLength(), IO::LogHandler::LogLevel::Error);
 		}
 
 		{
@@ -80,7 +80,7 @@ OSInt DB::DBTool::ExecuteNonQuery(Text::CString sqlCmd)
 			this->lastErrMsg.ClearStr();
 			this->db->GetLastErrorMsg(&this->lastErrMsg);
 			logMsg.AppendSB(&this->lastErrMsg);
-			AddLogMsgC(logMsg.ToString(), logMsg.GetLength(), IO::ILogHandler::LogLevel::ErrorDetail);
+			AddLogMsgC(logMsg.ToString(), logMsg.GetLength(), IO::LogHandler::LogLevel::ErrorDetail);
 		}
 		Bool isData = this->db->IsLastDataError();
 		if (!isData)

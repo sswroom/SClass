@@ -5,7 +5,7 @@
 
 namespace IO
 {
-	class ConsoleLogHandler : public IO::ILogHandler
+	class ConsoleLogHandler : public IO::LogHandler
 	{
 	private:
 		IO::ConsoleWriter *console;

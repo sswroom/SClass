@@ -394,7 +394,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnPublishMessage(void *userO
 	sb.Append(topic);
 	sb.AppendC(UTF8STRC(", message = "));
 	sb.AppendC((const UTF8Char*)message, msgSize);
-	me->log.LogMessage(sb.ToCString(), IO::ILogHandler::LogLevel::Command);
+	me->log.LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Command);
 
 	Data::DateTime dt;
 	dt.SetCurrTimeUTC();
@@ -406,7 +406,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnPublishMessage(void *userO
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("New Topic: "));
 		sb.Append(topic);
-		me->log.LogMessage(sb.ToCString(), IO::ILogHandler::LogLevel::Command);
+		me->log.LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Command);
 
 		topicSt = MemAlloc(SSWR::AVIRead::AVIRMQTTExplorerForm::TopicStatus, 1);
 		topicSt->topic = Text::String::New(topic);
@@ -633,7 +633,7 @@ SSWR::AVIRead::AVIRMQTTExplorerForm::AVIRMQTTExplorerForm(UI::GUIClientControl *
 
 	this->tpLog = this->tcDetail->AddTabPage(CSTR("Log"));
 	this->logger = UI::ListBoxLogger::CreateUI(this, this->ui, this->tpLog, 500, false);
-	this->log.AddLogHandler(this->logger, IO::ILogHandler::LogLevel::Raw);
+	this->log.AddLogHandler(this->logger, IO::LogHandler::LogLevel::Raw);
 
 	this->client = 0;
 

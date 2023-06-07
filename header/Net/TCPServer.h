@@ -38,7 +38,7 @@ namespace Net
 		Sync::Event socsEvt;
 
 	private:
-		void AddLogMsgC(const UTF8Char *msg, UOSInt msgLen, IO::ILogHandler::LogLevel logLev);
+		void AddLogMsgC(const UTF8Char *msg, UOSInt msgLen, IO::LogHandler::LogLevel logLev);
 		static UInt32 __stdcall Svrv4Subthread(void *o);
 		static UInt32 __stdcall Svrv4Thread(void *o);
 		static UInt32 __stdcall Svrv6Subthread(void *o);

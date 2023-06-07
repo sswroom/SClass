@@ -12,7 +12,7 @@ namespace IO
 	{
 	private:
 		Sync::Mutex mut;
-		IO::ILogHandler::LogType logStyle;
+		IO::LogHandler::LogType logStyle;
 		UOSInt nFiles;
 		Int32 lastVal;
 		Text::UTF8Writer *log;

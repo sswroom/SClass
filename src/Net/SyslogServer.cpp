@@ -23,14 +23,14 @@ void __stdcall Net::SyslogServer::OnUDPPacket(const Net::SocketUtil::AddressInfo
 			sb.AppendP(sbuff, sptr);
 			sb.AppendC(UTF8STRC("> "));
 			sb.AppendC(buff, dataSize);
-			me->log->LogMessage(sb.ToCString(), IO::ILogHandler::LogLevel::Command);
+			me->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Command);
 		}
 
 		if (status)
 		{
 			sb.ClearStr();
 			sb.AppendC(buff, dataSize);
-			status->log->LogMessage(sb.ToCString(), IO::ILogHandler::LogLevel::Command);
+			status->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Command);
 
 			if (me->logHdlr)
 			{
@@ -66,7 +66,7 @@ Net::SyslogServer::IPStatus *Net::SyslogServer::GetIPStatus(const Net::SocketUti
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 		sptr = Text::StrConcatC(sptr, UTF8STRC("Log"));
 		NEW_CLASS(status->log, IO::LogTool());
-		status->log->AddFileLog(CSTRP(sbuff, sptr), IO::ILogHandler::LogType::PerDay, IO::ILogHandler::LogGroup::PerMonth, IO::ILogHandler::LogLevel::Raw, "yyyy-MM-dd HH:mm:ss.fff", false);
+		status->log->AddFileLog(CSTRP(sbuff, sptr), IO::LogHandler::LogType::PerDay, IO::LogHandler::LogGroup::PerMonth, IO::LogHandler::LogLevel::Raw, "yyyy-MM-dd HH:mm:ss.fff", false);
 		this->ipMap.Put(ip, status);
 		return status;
 	}

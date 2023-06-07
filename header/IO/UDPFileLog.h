@@ -19,9 +19,9 @@ namespace IO
 		UDPFileLog(IO::StreamData *fd);
 		virtual ~UDPFileLog();
 
-		virtual UOSInt GetCount(IO::ILogHandler::LogLevel logLevel) const;
-		virtual Bool GetLogMessage(IO::ILogHandler::LogLevel logLevel, UOSInt index, Data::Timestamp *ts, Text::StringBuilderUTF8 *sb, Text::LineBreakType lineBreak) const;
-		virtual Bool GetLogDescription(IO::ILogHandler::LogLevel logLevel, UOSInt index, Text::StringBuilderUTF8 *sb) const;
+		virtual UOSInt GetCount(IO::LogHandler::LogLevel logLevel) const;
+		virtual Bool GetLogMessage(IO::LogHandler::LogLevel logLevel, UOSInt index, Data::Timestamp *ts, Text::StringBuilderUTF8 *sb, Text::LineBreakType lineBreak) const;
+		virtual Bool GetLogDescription(IO::LogHandler::LogLevel logLevel, UOSInt index, Text::StringBuilderUTF8 *sb) const;
 	};
 }
 #endif

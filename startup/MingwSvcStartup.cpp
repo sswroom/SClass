@@ -201,6 +201,17 @@ int main(int argc, char *argv[])
 		Core::CoreEnd();
 		return 0;
 	}
+	else if (argc == 2 && Text::StrEquals(argv[1], "run"))
+	{
+		Core::CoreStart();
+		progCtrl = MemAlloc(Win32::ServiceControl, 1);
+		Win32::ServiceControl_Create(progCtrl);
+		Int32 ret = MyMain(progCtrl);
+		Win32::ServiceControl_Destroy(progCtrl);
+		MemFree(progCtrl);
+		Core::CoreEnd();
+		return ret;
+	}
 
 	SERVICE_TABLE_ENTRYW DispatchTable[] = 
 	{

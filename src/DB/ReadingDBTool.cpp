@@ -26,7 +26,7 @@
 
 #include <stdio.h>
 
-void DB::ReadingDBTool::AddLogMsgC(const UTF8Char *msg, UOSInt msgLen, IO::ILogHandler::LogLevel logLev)
+void DB::ReadingDBTool::AddLogMsgC(const UTF8Char *msg, UOSInt msgLen, IO::LogHandler::LogLevel logLev)
 {
 	if (log)
 	{
@@ -64,40 +64,40 @@ DB::ReadingDBTool::ReadingDBTool(DB::DBConn *db, Bool needRelease, IO::LogTool *
 	switch (this->sqlType)
 	{
 	case DB::SQLType::Access:
-		this->AddLogMsgC(UTF8STRC("Server type is Access"), IO::ILogHandler::LogLevel::Command);
+		this->AddLogMsgC(UTF8STRC("Server type is Access"), IO::LogHandler::LogLevel::Command);
 		break;
 	case DB::SQLType::MSSQL:
-		this->AddLogMsgC(UTF8STRC("Server type is MSSQL"), IO::ILogHandler::LogLevel::Command);
+		this->AddLogMsgC(UTF8STRC("Server type is MSSQL"), IO::LogHandler::LogLevel::Command);
 		break;
 	case DB::SQLType::MySQL:
-		this->AddLogMsgC(UTF8STRC("Server type is MySQL"), IO::ILogHandler::LogLevel::Command);
+		this->AddLogMsgC(UTF8STRC("Server type is MySQL"), IO::LogHandler::LogLevel::Command);
 		if (this->axisAware)
 		{
-			this->AddLogMsgC(UTF8STRC("DB is Axis-Aware"), IO::ILogHandler::LogLevel::Command);
+			this->AddLogMsgC(UTF8STRC("DB is Axis-Aware"), IO::LogHandler::LogLevel::Command);
 		}
 		else
 		{
-			this->AddLogMsgC(UTF8STRC("DB is not Axis-Aware"), IO::ILogHandler::LogLevel::Command);
+			this->AddLogMsgC(UTF8STRC("DB is not Axis-Aware"), IO::LogHandler::LogLevel::Command);
 		}
 		break;
 	case DB::SQLType::Oracle:
-		this->AddLogMsgC(UTF8STRC("Server type is Oracle"), IO::ILogHandler::LogLevel::Command);
+		this->AddLogMsgC(UTF8STRC("Server type is Oracle"), IO::LogHandler::LogLevel::Command);
 		break;
 	case DB::SQLType::SQLite:
-		this->AddLogMsgC(UTF8STRC("Server type is SQLite"), IO::ILogHandler::LogLevel::Command);
+		this->AddLogMsgC(UTF8STRC("Server type is SQLite"), IO::LogHandler::LogLevel::Command);
 		break;
 	case DB::SQLType::WBEM:
-		this->AddLogMsgC(UTF8STRC("Server type is WBEM"), IO::ILogHandler::LogLevel::Command);
+		this->AddLogMsgC(UTF8STRC("Server type is WBEM"), IO::LogHandler::LogLevel::Command);
 		break;
 	case DB::SQLType::MDBTools:
-		this->AddLogMsgC(UTF8STRC("Server type is MDBTools"), IO::ILogHandler::LogLevel::Command);
+		this->AddLogMsgC(UTF8STRC("Server type is MDBTools"), IO::LogHandler::LogLevel::Command);
 		break;
 	case DB::SQLType::PostgreSQL:
-		this->AddLogMsgC(UTF8STRC("Server type is PostgreSQL"), IO::ILogHandler::LogLevel::Command);
+		this->AddLogMsgC(UTF8STRC("Server type is PostgreSQL"), IO::LogHandler::LogLevel::Command);
 		break;
 	case DB::SQLType::Unknown:
 	default:
-		this->AddLogMsgC(UTF8STRC("Server type is Unknown"), IO::ILogHandler::LogLevel::Error);
+		this->AddLogMsgC(UTF8STRC("Server type is Unknown"), IO::LogHandler::LogLevel::Error);
 		break;
 	}
 }
@@ -369,7 +369,7 @@ DB::DBReader *DB::ReadingDBTool::ExecuteReader(Text::CString sqlCmd)
 		Text::StringBuilderUTF8 logMsg;
 		logMsg.AppendC(UTF8STRC("ExecuteReader: "));
 		logMsg.Append(sqlCmd);
-		AddLogMsgC(logMsg.ToString(), logMsg.GetLength(), IO::ILogHandler::LogLevel::Raw);
+		AddLogMsgC(logMsg.ToString(), logMsg.GetLength(), IO::LogHandler::LogLevel::Raw);
 	}
 	if (this->db == 0)
 	{
@@ -393,7 +393,7 @@ DB::DBReader *DB::ReadingDBTool::ExecuteReader(Text::CString sqlCmd)
 			ptr = Text::StrInt32(ptr, (Int32)t2.DiffMS(&t1));
 			ptr = Text::StrConcatC(ptr, UTF8STRC(", t2 = "));
 			ptr = Text::StrInt32(ptr, (Int32)t3.DiffMS(&t2));
-			AddLogMsgC(buff, (UOSInt)(ptr - buff), IO::ILogHandler::LogLevel::Command);
+			AddLogMsgC(buff, (UOSInt)(ptr - buff), IO::LogHandler::LogLevel::Command);
 		}
 		readerCnt += 1;
 		readerFail = 0;
@@ -408,14 +408,14 @@ DB::DBReader *DB::ReadingDBTool::ExecuteReader(Text::CString sqlCmd)
 			Text::StringBuilderUTF8 logMsg;
 			logMsg.AppendC(UTF8STRC("Cannot execute the sql command: "));
 			logMsg.Append(sqlCmd);
-			AddLogMsgC(logMsg.ToString(), logMsg.GetLength(), IO::ILogHandler::LogLevel::Error);
+			AddLogMsgC(logMsg.ToString(), logMsg.GetLength(), IO::LogHandler::LogLevel::Error);
 
 			logMsg.ClearStr();
 			logMsg.AppendC(UTF8STRC("Exception detail: "));
 			this->lastErrMsg.ClearStr();
 			this->db->GetLastErrorMsg(&this->lastErrMsg);
 			logMsg.AppendSB(&this->lastErrMsg);
-			AddLogMsgC(logMsg.ToString(), logMsg.GetLength(), IO::ILogHandler::LogLevel::ErrorDetail);
+			AddLogMsgC(logMsg.ToString(), logMsg.GetLength(), IO::LogHandler::LogLevel::ErrorDetail);
 		}
 
 		readerFail += 1;
@@ -423,7 +423,7 @@ DB::DBReader *DB::ReadingDBTool::ExecuteReader(Text::CString sqlCmd)
 		{
 			if (lastReader)
 			{
-				AddLogMsgC(UTF8STRC("Automatically closed last reader"), IO::ILogHandler::LogLevel::Action);
+				AddLogMsgC(UTF8STRC("Automatically closed last reader"), IO::LogHandler::LogLevel::Action);
 
 				this->CloseReader(lastReader);
 			}
@@ -580,7 +580,7 @@ DB::DBReader *DB::ReadingDBTool::QueryTableData(Text::CString schemaName, Text::
 			logMsg.AppendUTF8Char('.');
 		}
 		logMsg.Append(tableName);
-		AddLogMsgC(logMsg.ToString(), logMsg.GetLength(), IO::ILogHandler::LogLevel::Raw);
+		AddLogMsgC(logMsg.ToString(), logMsg.GetLength(), IO::LogHandler::LogLevel::Raw);
 	}
 	if (this->db == 0)
 	{
@@ -604,7 +604,7 @@ DB::DBReader *DB::ReadingDBTool::QueryTableData(Text::CString schemaName, Text::
 			ptr = Text::StrInt32(ptr, (Int32)t2.DiffMS(&t1));
 			ptr = Text::StrConcatC(ptr, UTF8STRC(", t2 = "));
 			ptr = Text::StrInt32(ptr, (Int32)t3.DiffMS(&t2));
-			AddLogMsgC(buff, (UOSInt)(ptr - buff), IO::ILogHandler::LogLevel::Command);
+			AddLogMsgC(buff, (UOSInt)(ptr - buff), IO::LogHandler::LogLevel::Command);
 		}
 		readerCnt += 1;
 		readerFail = 0;
@@ -618,7 +618,7 @@ DB::DBReader *DB::ReadingDBTool::QueryTableData(Text::CString schemaName, Text::
 			Text::StringBuilderUTF8 logMsg;
 			logMsg.AppendC(UTF8STRC("Cannot get table data: "));
 			logMsg.Append(tableName);
-			AddLogMsgC(logMsg.ToString(), logMsg.GetLength(), IO::ILogHandler::LogLevel::Error);
+			AddLogMsgC(logMsg.ToString(), logMsg.GetLength(), IO::LogHandler::LogLevel::Error);
 		}
 
 		{
@@ -627,7 +627,7 @@ DB::DBReader *DB::ReadingDBTool::QueryTableData(Text::CString schemaName, Text::
 			this->lastErrMsg.ClearStr();
 			this->db->GetLastErrorMsg(&this->lastErrMsg);
 			logMsg.AppendSB(&this->lastErrMsg);
-			AddLogMsgC(logMsg.ToString(), logMsg.GetLength(), IO::ILogHandler::LogLevel::ErrorDetail);
+			AddLogMsgC(logMsg.ToString(), logMsg.GetLength(), IO::LogHandler::LogLevel::ErrorDetail);
 		}
 
 		readerFail += 1;
@@ -635,7 +635,7 @@ DB::DBReader *DB::ReadingDBTool::QueryTableData(Text::CString schemaName, Text::
 		{
 			if (lastReader)
 			{
-				AddLogMsgC(UTF8STRC("Automatically closed last reader"), IO::ILogHandler::LogLevel::Action);
+				AddLogMsgC(UTF8STRC("Automatically closed last reader"), IO::LogHandler::LogLevel::Action);
 
 				this->CloseReader(lastReader);
 			}

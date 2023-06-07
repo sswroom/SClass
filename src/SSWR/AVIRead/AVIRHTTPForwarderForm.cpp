@@ -67,7 +67,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPForwarderForm::OnStartClick(void *userObj)
 					logPath = CSTR("log/fwd");
 				else
 					logPath = CSTR("log\\fwd");
-				me->fwdLog->AddFileLog(logPath, IO::ILogHandler::LogType::PerDay, IO::ILogHandler::LogGroup::PerMonth, IO::ILogHandler::LogLevel::Raw, 0, 0);
+				me->fwdLog->AddFileLog(logPath, IO::LogHandler::LogType::PerDay, IO::LogHandler::LogGroup::PerMonth, IO::LogHandler::LogLevel::Raw, 0, 0);
 				me->fwdHdlr->SetLog(me->fwdLog, me->chkLogContent->IsChecked());
 			}
 			if (!me->svr->Start())

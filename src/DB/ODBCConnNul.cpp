@@ -278,7 +278,7 @@ void DB::ODBCConn::ShowSQLError(const UTF16Char *state, const UTF16Char *errMsg)
 	s = Text::String::NewNotNull(errMsg);
 	sb.Append(s);
 	s->Release();
-	this->log->LogMessage(sb.ToCString(), IO::ILogHandler::LogLevel::ErrorDetail);
+	this->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::ErrorDetail);
 }
 
 void DB::ODBCConn::LogSQLError(void *hStmt)

@@ -155,7 +155,7 @@ Bool IO::IniFile::SaveConfig(IO::Writer *writer, IO::ConfigFile *cfg)
 			s = keyList.GetItem(k);
 			writer->WriteStrC(s->v, s->leng);
 			writer->WriteStrC(UTF8STRC("="));
-			s = cfg->GetValue(s2, s);
+			s = cfg->GetCateValue(s2, s);
 			writer->WriteLineC(s->v, s->leng);
 			k++;
 		}

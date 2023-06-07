@@ -25,7 +25,7 @@ void __stdcall Net::TCPBoardcastStream::ConnHandler(Socket *s, void *userObj)
 			sb.AppendP(sbuff, sptr);
 			sb.AppendC(UTF8STRC(" with "));
 			sb.AppendUOSInt(size);
-			me->log->LogMessage(sb.ToCString(), IO::ILogHandler::LogLevel::Raw);
+			me->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Raw);
 		}
 		cli->Write(me->writeBuff, size);
 	}
@@ -59,7 +59,7 @@ void __stdcall Net::TCPBoardcastStream::ClientData(Net::TCPClient *cli, void *us
 		sb.AppendP(sbuff, sptr);
 		sb.AppendC(UTF8STRC(" with "));
 		sb.AppendUOSInt(size);
-		me->log->LogMessage(sb.ToCString(), IO::ILogHandler::LogLevel::Raw);
+		me->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Raw);
 	}
 	Sync::MutexUsage mutUsage(&me->readMut);
 	UOSInt readBuffSize = me->readBuffPtr2 - me->readBuffPtr1;
@@ -96,7 +96,7 @@ void __stdcall Net::TCPBoardcastStream::ClientData(Net::TCPClient *cli, void *us
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("Recv readBuffPtr2 = "));
 		sb.AppendUOSInt(me->readBuffPtr2);
-		me->log->LogMessage(sb.ToCString(), IO::ILogHandler::LogLevel::Raw);
+		me->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Raw);
 	}
 }
 
@@ -111,7 +111,7 @@ void __stdcall Net::TCPBoardcastStream::ClientTimeout(Net::TCPClient *cli, void 
 		sb.AppendC(UTF8STRC("Timeout processing "));
 		sptr = cli->GetRemoteName(sbuff);
 		sb.AppendP(sbuff, sptr);
-		me->log->LogMessage(sb.ToCString(), IO::ILogHandler::LogLevel::Raw);
+		me->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Raw);
 	}
 }
 
@@ -208,7 +208,7 @@ UOSInt Net::TCPBoardcastStream::Read(UInt8 *buff, UOSInt size)
 		sb.AppendC(UTF8STRC("TBS "));
 		sb.AppendUOSInt(size);
 		sb.AppendC(UTF8STRC(" bytes returned"));
-		this->log->LogMessage(sb.ToCString(), IO::ILogHandler::LogLevel::Raw);
+		this->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Raw);
 	}
 	return size;
 }
@@ -239,7 +239,7 @@ UOSInt Net::TCPBoardcastStream::Write(const UInt8 *buff, UOSInt size)
 			sb.AppendP(sbuff, sptr);
 			sb.AppendC(UTF8STRC(" with "));
 			sb.AppendUOSInt(size);
-			this->log->LogMessage(sb.ToCString(), IO::ILogHandler::LogLevel::Raw);
+			this->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Raw);
 		}
 
 		cliFound = true;

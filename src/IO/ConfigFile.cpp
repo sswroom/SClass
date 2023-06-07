@@ -21,6 +21,7 @@ void IO::ConfigFile::MergeCate(Data::FastStringMap<Text::String *> *myCate, Data
 
 IO::ConfigFile::ConfigFile()
 {
+	this->defCate = Text::String::NewEmpty();
 }
 
 IO::ConfigFile::~ConfigFile()
@@ -41,19 +42,20 @@ IO::ConfigFile::~ConfigFile()
 		}
 		DEL_CLASS(cate);
 	}
+	this->defCate->Release();
 }
 
 Text::String *IO::ConfigFile::GetValue(Text::String *name)
 {
-	return GetValue(Text::String::NewEmpty(), name);
+	return GetCateValue(this->defCate, name);
 }
 
 Text::String *IO::ConfigFile::GetValue(Text::CString name)
 {
-	return GetValue(CSTR(""), name);
+	return GetCateValue(this->defCate->ToCString(), name);
 }
 
-Text::String *IO::ConfigFile::GetValue(Text::String *category, Text::String *name)
+Text::String *IO::ConfigFile::GetCateValue(Text::String *category, Text::String *name)
 {
 	Data::FastStringMap<Text::String *> *cate = this->cfgVals.Get(Text::String::OrEmpty(category));
 	if (cate == 0)
@@ -63,7 +65,7 @@ Text::String *IO::ConfigFile::GetValue(Text::String *category, Text::String *nam
 	return cate->Get(name);
 }
 
-Text::String *IO::ConfigFile::GetValue(Text::CString category, Text::CString name)
+Text::String *IO::ConfigFile::GetCateValue(Text::CString category, Text::CString name)
 {
 	if (category.leng == 0)
 	{

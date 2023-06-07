@@ -9,7 +9,7 @@
 namespace IO
 {
 	class MTFileLog;
-	class ILogHandler
+	class LogHandler
 	{
 	public:
 		enum class LogLevel
@@ -37,7 +37,7 @@ namespace IO
 			PerMonth,
 			PerDay
 		};
-		virtual ~ILogHandler(){};
+		virtual ~LogHandler(){};
 
 		virtual void LogAdded(const Data::Timestamp &logTime, Text::CString logMsg, LogLevel logLev) = 0;
 		virtual void LogClosed() = 0;
@@ -47,15 +47,15 @@ namespace IO
 	{
 	public:
 		virtual ~ILogger() {};
-		virtual void LogMessage(Text::CString logMsg, ILogHandler::LogLevel level) = 0;
+		virtual void LogMessage(Text::CString logMsg, LogHandler::LogLevel level) = 0;
 	};
 
 	class LogTool : public ILogger
 	{
 	private:
-		Data::ArrayList<IO::ILogHandler*> fileLogArr;
-		Data::ArrayList<IO::ILogHandler*> hdlrArr;
-		Data::ArrayList<IO::ILogHandler::LogLevel> levArr;
+		Data::ArrayList<IO::LogHandler*> fileLogArr;
+		Data::ArrayList<IO::LogHandler*> hdlrArr;
+		Data::ArrayList<IO::LogHandler::LogLevel> levArr;
 		Sync::Mutex hdlrMut;
 		Bool closed;
 		
@@ -63,12 +63,12 @@ namespace IO
 		LogTool();
 		virtual ~LogTool();
 		void Close();
-		void AddFileLog(Text::String *fileName, ILogHandler::LogType style, ILogHandler::LogGroup groupStyle, ILogHandler::LogLevel logLev, const Char *dateFormat, Bool directWrite);
-		void AddFileLog(Text::CString fileName, ILogHandler::LogType style, ILogHandler::LogGroup groupStyle, ILogHandler::LogLevel logLev, const Char *dateFormat, Bool directWrite);
-		void AddLogHandler(ILogHandler *hdlr, ILogHandler::LogLevel logLev);
-		void RemoveLogHandler(ILogHandler *hdlr);
-		virtual void LogMessage(Text::CString logMsg, ILogHandler::LogLevel level);
-		ILogHandler *GetLastFileLog();
+		void AddFileLog(Text::String *fileName, LogHandler::LogType style, LogHandler::LogGroup groupStyle, LogHandler::LogLevel logLev, const Char *dateFormat, Bool directWrite);
+		void AddFileLog(Text::CString fileName, LogHandler::LogType style, LogHandler::LogGroup groupStyle, LogHandler::LogLevel logLev, const Char *dateFormat, Bool directWrite);
+		void AddLogHandler(LogHandler *hdlr, LogHandler::LogLevel logLev);
+		void RemoveLogHandler(LogHandler *hdlr);
+		virtual void LogMessage(Text::CString logMsg, LogHandler::LogLevel level);
+		LogHandler *GetLastFileLog();
 	};
 }
 #endif

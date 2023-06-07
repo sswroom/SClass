@@ -34,7 +34,7 @@ void __stdcall SSWR::AVIRead::AVIRStreamLatencyForm::OnStreamClicked(void *userO
 			{
 				Sync::Thread::Sleep(10);
 			}
-			me->log->LogMessage(CSTR("Stream Started"), IO::ILogHandler::LogLevel::Action);
+			me->log->LogMessage(CSTR("Stream Started"), IO::LogHandler::LogLevel::Action);
 		}
 	}
 }
@@ -126,7 +126,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRStreamLatencyForm::RecvThread(void *userObj)
 							sb.ClearStr();
 							sb.AppendC(UTF8STRC("Received packet: diff = "));
 							sb.AppendI64(currTime - ReadInt64(&buff[recvSize + 2]));
-							me->log->LogMessage(sb.ToCString(), IO::ILogHandler::LogLevel::Command);
+							me->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Command);
 							me->recvCnt++;
 							recvSize += 10;
 						}
@@ -165,7 +165,7 @@ void SSWR::AVIRead::AVIRStreamLatencyForm::StopStream()
 		this->txtStream->SetText(CSTR("-"));
 		this->btnStream->SetText(CSTR("&Open"));
 		this->remoteClosed = false;
-		this->log->LogMessage(CSTR("Stream Stopped"), IO::ILogHandler::LogLevel::Action);
+		this->log->LogMessage(CSTR("Stream Stopped"), IO::LogHandler::LogLevel::Action);
 	}
 }
 
@@ -247,7 +247,7 @@ SSWR::AVIRead::AVIRStreamLatencyForm::AVIRStreamLatencyForm(UI::GUIClientControl
 	this->txtRecvCnt->SetReadOnly(true);
 
 	NEW_CLASS(this->logger, UI::ListBoxLogger(this, this->lbLog, 256, false));
-	this->log->AddLogHandler(this->logger, IO::ILogHandler::LogLevel::Raw);
+	this->log->AddLogHandler(this->logger, IO::LogHandler::LogLevel::Raw);
 
 	this->AddTimer(1000, OnTimerTick, this);
 }

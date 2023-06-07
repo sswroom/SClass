@@ -664,7 +664,7 @@ SSWR::SDNSProxy::SDNSProxyWebHandler::SDNSProxyWebHandler(Net::DNSProxy *proxy, 
 	this->reqMap->PutC(CSTR("/client"), ClientReq);
 	this->reqMap->PutC(CSTR("/reqpm"), ReqPerMinReq);
 
-	this->log->AddLogHandler(this->logBuff, IO::ILogHandler::LogLevel::Raw);
+	this->log->AddLogHandler(this->logBuff, IO::LogHandler::LogLevel::Raw);
 }
 
 SSWR::SDNSProxy::SDNSProxyWebHandler::~SDNSProxyWebHandler()

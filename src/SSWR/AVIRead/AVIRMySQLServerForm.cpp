@@ -115,7 +115,7 @@ SSWR::AVIRead::AVIRMySQLServerForm::AVIRMySQLServerForm(UI::GUIClientControl *pa
 	NEW_CLASS(this->log, IO::LogTool());
 	NEW_CLASS(this->logger, UI::ListBoxLogger(this, this->lbLog, 300, true));
 	this->logger->SetTimeFormat("yyyy-MM-dd HH:mm:ss.fff");
-	this->log->AddLogHandler(this->logger, IO::ILogHandler::LogLevel::Command);
+	this->log->AddLogHandler(this->logger, IO::LogHandler::LogLevel::Command);
 }
 
 SSWR::AVIRead::AVIRMySQLServerForm::~AVIRMySQLServerForm()

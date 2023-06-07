@@ -337,7 +337,7 @@ Int32 IO::Registry::GetValueI32(const WChar *name)
 		return 0;
 	}
 	Text::String *s = Text::String::NewNotNull(name);
-	Text::String *csval = this->clsData->reg->cfg->GetValue(this->clsData->cate, s);
+	Text::String *csval = this->clsData->reg->cfg->GetCateValue(this->clsData->cate, s);
 	s->Release();
 	if (csval && csval->StartsWith(UTF8STRC("dword:")))
 	{
@@ -354,7 +354,7 @@ WChar *IO::Registry::GetValueStr(const WChar *name, WChar *buff)
 		return 0;
 	}
 	Text::String *s = Text::String::NewNotNull(name);
-	Text::String *csval = this->clsData->reg->cfg->GetValue(this->clsData->cate, s);
+	Text::String *csval = this->clsData->reg->cfg->GetCateValue(this->clsData->cate, s);
 	s->Release();
 	if (csval && csval->StartsWith(UTF8STRC("sz:")))
 	{
@@ -371,7 +371,7 @@ Bool IO::Registry::GetValueI32(const WChar *name, Int32 *value)
 		return false;
 	}
 	Text::String *s = Text::String::NewNotNull(name);
-	Text::String *csval = this->clsData->reg->cfg->GetValue(this->clsData->cate, s);
+	Text::String *csval = this->clsData->reg->cfg->GetCateValue(this->clsData->cate, s);
 	s->Release();
 	if (csval && csval->StartsWith(UTF8STRC("dword:")))
 	{

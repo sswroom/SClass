@@ -1251,6 +1251,8 @@ Crypto/Encrypt/BlockCipher.h: ../../src/Crypto/Encrypt/BlockCipher.cpp
 Crypto/Encrypt/Blowfish.h: ../../src/Crypto/Encrypt/Blowfish.cpp
 @Blowfish.o
 Crypto/Encrypt/ICrypto.h:
+Crypto/Encrypt/JasyptConfigFile.h: ../../src/Crypto/Encrypt/JasyptConfigFile.cpp
+@JasyptConfigFile.o
 Crypto/Encrypt/JasyptEncryptor.h: ../../src/Crypto/Encrypt/JasyptEncryptor.cpp
 @JasyptEncryptor.o
 Crypto/Encrypt/RC2Cipher.h: ../../src/Crypto/Encrypt/RC2Cipher.cpp
@@ -1513,6 +1515,8 @@ DB/DBCache.h: ../../src/DB/DBCache.cpp
 DB/DBClassBuilder.h: ../../src/DB/DBClassBuilder.cpp
 @DBClassBuilder.o
 DB/DBClassReader.h:
+DB/DBConfig.h: ../../src/DB/DBConfig.cpp
+@DBConfig.o
 DB/DBConn.h: ../../src/DB/DBConn.cpp
 @DBConn.o
 DB/DBDataFile.h:
@@ -4584,6 +4588,7 @@ AESBase.o: ../../src/Crypto/Encrypt/AESBase.cpp
 Base64.o: ../../src/Crypto/Encrypt/Base64.cpp
 BlockCipher.o: ../../src/Crypto/Encrypt/BlockCipher.cpp
 Blowfish.o: ../../src/Crypto/Encrypt/Blowfish.cpp
+JasyptConfigFile.o: ../../src/Crypto/Encrypt/JasyptConfigFile.cpp
 JasyptEncryptor.o: ../../src/Crypto/Encrypt/JasyptEncryptor.cpp
 RC2Cipher.o: ../../src/Crypto/Encrypt/RC2Cipher.cpp
 RC4Cipher.o: ../../src/Crypto/Encrypt/RC4Cipher.cpp
@@ -4695,6 +4700,7 @@ InsertionSort_CPP.o: ../../src/Data/Sort/InsertionSort_CPP.cpp
 ColDef.o: ../../src/DB/ColDef.cpp
 CSVFile.o: ../../src/DB/CSVFile.cpp
 DBCache.o: ../../src/DB/DBCache.cpp
+DBConfig.o: ../../src/DB/DBConfig.cpp
 DBConn.o: ../../src/DB/DBConn.cpp
 DBClassBuilder.o: ../../src/DB/DBClassBuilder.cpp
 DBFFile.o: ../../src/DB/DBFFile.cpp
@@ -6132,7 +6138,10 @@ TextViewerForm.o: ../../src/UtilUI/TextViewerForm.cpp
 miniz.o: ../../ThirdParty/miniz/miniz.c
 $-I ../../ThirdParty/miniz/_build
 miniz_tdef.o: ../../ThirdParty/miniz/miniz_tdef.c
+$-I ../../ThirdParty/miniz/_build
 miniz_tinfl.o: ../../ThirdParty/miniz/miniz_tinfl.c
+$-I ../../ThirdParty/miniz/_build
 miniz_zip.o: ../../ThirdParty/miniz/miniz_zip.c
+$-I ../../ThirdParty/miniz/_build
 
 include ../../../*/SMake.cfg

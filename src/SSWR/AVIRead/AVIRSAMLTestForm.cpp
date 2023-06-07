@@ -252,7 +252,7 @@ void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnStartClicked(void *userObj)
 		}
 		else
 		{
-			me->svr->SetAccessLog(&me->log, IO::ILogHandler::LogLevel::Raw);
+			me->svr->SetAccessLog(&me->log, IO::LogHandler::LogLevel::Raw);
 		}
 	}
 
@@ -468,7 +468,7 @@ SSWR::AVIRead::AVIRSAMLTestForm::AVIRSAMLTestForm(UI::GUIClientControl *parent, 
 	this->lbLog->HandleSelectionChange(OnLogSel, this);
 
 	NEW_CLASS(this->logger, UI::ListBoxLogger(this, this->lbLog, 500, true));
-	this->log.AddLogHandler(this->logger, IO::ILogHandler::LogLevel::Raw);
+	this->log.AddLogHandler(this->logger, IO::LogHandler::LogLevel::Raw);
 
 	this->HandleDropFiles(OnFormFiles, this);
 	this->AddTimer(1000, OnTimerTick, this);

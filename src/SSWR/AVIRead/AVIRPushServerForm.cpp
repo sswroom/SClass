@@ -39,7 +39,7 @@ void __stdcall SSWR::AVIRead::AVIRPushServerForm::OnStartClicked(void *userObj)
 	sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("log"));
 	*sptr++ = IO::Path::PATH_SEPERATOR;
 	sptr = Text::StrConcatC(sptr, UTF8STRC("PushSvr"));
-	me->log->AddFileLog(CSTRP(sbuff, sptr), IO::ILogHandler::LogType::PerDay, IO::ILogHandler::LogGroup::PerMonth, IO::ILogHandler::LogLevel::Raw, "yyyy-MM-dd HH:mm:ss.fff", false);
+	me->log->AddFileLog(CSTRP(sbuff, sptr), IO::LogHandler::LogType::PerDay, IO::LogHandler::LogGroup::PerMonth, IO::LogHandler::LogLevel::Raw, "yyyy-MM-dd HH:mm:ss.fff", false);
 	NEW_CLASS(me->svr, Net::PushServer(me->core->GetSocketFactory(), me->ssl, port, sbAPIKey.ToCString(), me->log));
 	if (me->svr->IsError())
 	{

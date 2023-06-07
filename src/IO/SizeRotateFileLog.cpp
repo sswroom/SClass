@@ -44,19 +44,19 @@ IO::SizeRotateFileLog::SizeRotateFileLog(Text::CString fileName, UOSInt nFiles, 
 
 	Data::DateTime dt;
 	dt.SetCurrTime();
-	if (logStyle == ILogHandler::LogType::PerDay)
+	if (logStyle == LogHandler::LogType::PerDay)
 	{
 		lastVal = dt.GetDay();
 	}
-	else if (logStyle == ILogHandler::LogType::PerMonth)
+	else if (logStyle == LogHandler::LogType::PerMonth)
 	{
 		lastVal = dt.GetMonth();
 	}
-	else if (logStyle == ILogHandler::LogType::PerYear)
+	else if (logStyle == LogHandler::LogType::PerYear)
 	{
 		lastVal = dt.GetYear();
 	}
-	else if (logStyle == ILogHandler::LogType::PerHour)
+	else if (logStyle == LogHandler::LogType::PerHour)
 	{
 		lastVal = dt.GetDay() * 24 + dt.GetHour();
 	}

@@ -18,7 +18,7 @@ void IO::LogWriter::CheckLines()
 	}
 }
 
-IO::LogWriter::LogWriter(IO::LogTool *log, IO::ILogHandler::LogLevel logLev)
+IO::LogWriter::LogWriter(IO::LogTool *log, IO::LogHandler::LogLevel logLev)
 {
 	this->log = log;
 	this->logLev = logLev;

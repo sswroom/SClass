@@ -48,11 +48,11 @@ void __stdcall SSWR::AVIRead::AVIRNetPingForm::OnPingClicked(void *userObj)
 				Text::SBAppendF64(&sb, t2 * 1000);
 				sb.AppendC(UTF8STRC("ms, ttl = "));
 				sb.AppendU32(ttl);
-				me->log->LogMessage(sb.ToCString(), IO::ILogHandler::LogLevel::Command);
+				me->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Command);
 			}
 			else
 			{
-				me->log->LogMessage(CSTR("Ping: no response from target"), IO::ILogHandler::LogLevel::Command);
+				me->log->LogMessage(CSTR("Ping: no response from target"), IO::LogHandler::LogLevel::Command);
 			}
 		}
 	}
@@ -81,14 +81,14 @@ void __stdcall SSWR::AVIRead::AVIRNetPingForm::OnTimerTick(void *userObj)
 			Text::SBAppendF64(&sb, t2 * 1000);
 			sb.AppendC(UTF8STRC("ms, ttl = "));
 			sb.AppendU32(ttl);
-			me->log->LogMessage(sb.ToCString(), IO::ILogHandler::LogLevel::Command);
+			me->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Command);
 			me->rlcPing->AddSample(t);
 		}
 		else
 		{
 			t[0] = 1000;
 			t[1] = 1000;
-			me->log->LogMessage(CSTR("Ping: no response from target"), IO::ILogHandler::LogLevel::Command);
+			me->log->LogMessage(CSTR("Ping: no response from target"), IO::LogHandler::LogLevel::Command);
 			me->rlcPing->AddSample(t);
 		}
 	}
@@ -129,7 +129,7 @@ SSWR::AVIRead::AVIRNetPingForm::AVIRNetPingForm(UI::GUIClientControl *parent, UI
 	this->lbLog->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	NEW_CLASS(this->logger, UI::ListBoxLogger(this, this->lbLog, 500, true));
-	this->log->AddLogHandler(this->logger, IO::ILogHandler::LogLevel::Raw);
+	this->log->AddLogHandler(this->logger, IO::LogHandler::LogLevel::Raw);
 	this->SetDefaultButton(this->btnPing);
 	this->AddTimer(1000, OnTimerTick, this);
 }

@@ -596,7 +596,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	IO::ConsoleWriter console;
 	IO::LogTool log;
 	IO::ConsoleLogHandler logHdlr(&console);
-	log.AddLogHandler(&logHdlr, IO::ILogHandler::LogLevel::Raw);
+	log.AddLogHandler(&logHdlr, IO::LogHandler::LogLevel::Raw);
 	DB::DBTool *db;
 	db = DB::MSSQLConn::CreateDBToolTCP(serverHost, 1433, database, uid, pwd, &log, CSTR("DB: "));
 	if (db)

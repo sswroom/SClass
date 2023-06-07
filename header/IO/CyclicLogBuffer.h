@@ -7,7 +7,7 @@
 
 namespace IO
 {
-	class CyclicLogBuffer : public IO::ILogHandler
+	class CyclicLogBuffer : public IO::LogHandler
 	{
 	private:
 		Sync::Mutex logMut;

@@ -52,7 +52,7 @@ Bool SearchProcId(ProgInfo *prog)
 					sb.Append(prog->progName);
 					sb.AppendC(UTF8STRC(": Updated procId as "));
 					sb.AppendUOSInt(prog->procId);
-					myLog->LogMessage(sb.ToCString(), IO::ILogHandler::LogLevel::Command);
+					myLog->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Command);
 					break;
 				}
 			}
@@ -142,7 +142,7 @@ void __stdcall OnTimerTick(void *userObj)
 					sb.AppendC(UTF8STRC("Prog "));
 					sb.Append(prog->progName);
 					sb.AppendC(UTF8STRC(" stopped"));
-					myLog->LogMessage(sb.ToCString(), IO::ILogHandler::LogLevel::Command);
+					myLog->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Command);
 				}
 			}
 			if (prog->procId == 0)
@@ -158,7 +158,7 @@ void __stdcall OnTimerTick(void *userObj)
 						sb.Append(prog->progName);
 						sb.AppendC(UTF8STRC(" restarted, procId = "));
 						sb.AppendUOSInt(prog->procId);
-						myLog->LogMessage(sb.ToCString(), IO::ILogHandler::LogLevel::Command);
+						myLog->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Command);
 					}
 				}
 			}
@@ -185,7 +185,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
 	sb.AppendC(UTF8STRC("ProgLog"));
 	NEW_CLASS(myLog, IO::LogTool());
-	myLog->AddFileLog(sb.ToCString(), IO::ILogHandler::LogType::PerDay, IO::ILogHandler::LogGroup::PerMonth, IO::ILogHandler::LogLevel::Raw, "yyyy-MM-dd HH:mm:ss.fff", false);
+	myLog->AddFileLog(sb.ToCString(), IO::LogHandler::LogType::PerDay, IO::LogHandler::LogGroup::PerMonth, IO::LogHandler::LogLevel::Raw, "yyyy-MM-dd HH:mm:ss.fff", false);
 	NEW_CLASS(progList, Data::ArrayList<ProgInfo*>());
 
 	LoadProgList();

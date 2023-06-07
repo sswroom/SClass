@@ -71,7 +71,7 @@ Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(Net::WebServer::IWebRequ
 		sbHeader.Append(sb.ToCString());
 		sbHeader.AppendUTF8Char(' ');
 		sbHeader.Append(req->GetReqMethodStr());
-		this->log->LogMessage(sbHeader.ToCString(), IO::ILogHandler::LogLevel::Action);
+		this->log->LogMessage(sbHeader.ToCString(), IO::LogHandler::LogLevel::Action);
 	}
 	Net::HTTPClient *cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, CSTR("sswr/1.0"), kaConn, sb.StartsWith(UTF8STRC("https://")));
 	if (cli == 0)
@@ -203,7 +203,7 @@ Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(Net::WebServer::IWebRequ
 			sbHeader.ClearStr();
 			sbHeader.AppendC(UTF8STRC("RequestContent = "));
 			Text::CPPText::ToCPPString(&sbHeader, reqData, i);
-			this->log->LogMessage(sbHeader.ToCString(), IO::ILogHandler::LogLevel::Raw);
+			this->log->LogMessage(sbHeader.ToCString(), IO::LogHandler::LogLevel::Raw);
 		}
 		cli->Write(reqData, i);
 	}
@@ -305,13 +305,13 @@ Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(Net::WebServer::IWebRequ
 		sb.AppendU32((UInt32)scode);
 		sb.AppendC(UTF8STRC(", size = "));
 		sb.AppendU64(totalSize);
-		this->log->LogMessage(sb.ToCString(), IO::ILogHandler::LogLevel::Action);
+		this->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Action);
 		if (this->logContent)
 		{
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("ResponseContent = "));
 			Text::CPPText::ToCPPString(&sb, sbHeader.v, sbHeader.leng);
-			this->log->LogMessage(sb.ToCString(), IO::ILogHandler::LogLevel::Raw);
+			this->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Raw);
 		}
 	}
 	DEL_CLASS(cli);

@@ -300,7 +300,7 @@ SSWR::AVIRead::AVIRMQTTBrokerForm::AVIRMQTTBrokerForm(UI::GUIClientControl *pare
 
 	NEW_CLASS(this->logger, UI::ListBoxLogger(this, this->lbLog, 100, false));
 	this->logger->SetTimeFormat("yyyy-MM-dd HH:mm:ss.fff");
-	this->log.AddLogHandler(this->logger, IO::ILogHandler::LogLevel::Raw);
+	this->log.AddLogHandler(this->logger, IO::LogHandler::LogLevel::Raw);
 	this->broker = 0;
 	this->AddTimer(1000, OnTimerTick, this);
 }

@@ -80,7 +80,7 @@ SSWR::AVIRead::AVIRProxyServerForm::AVIRProxyServerForm(UI::GUIClientControl *pa
 	this->SetDefaultButton(this->btnStart);
 	this->txtPort->Focus();
 	NEW_CLASS(this->logger, UI::ListBoxLogger(this, this->lbLog, 500, true));
-	this->log->AddLogHandler(this->logger, IO::ILogHandler::LogLevel::Raw);
+	this->log->AddLogHandler(this->logger, IO::LogHandler::LogLevel::Raw);
 }
 
 SSWR::AVIRead::AVIRProxyServerForm::~AVIRProxyServerForm()

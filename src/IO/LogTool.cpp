@@ -28,7 +28,7 @@ IO::LogTool::~LogTool()
 	UOSInt i = this->fileLogArr.GetCount();
 	while (i-- > 0)
 	{
-		IO::ILogHandler *logHdlr = this->fileLogArr.GetItem(i);
+		IO::LogHandler *logHdlr = this->fileLogArr.GetItem(i);
 		DEL_CLASS(logHdlr);
 	}
 }
@@ -43,12 +43,12 @@ void IO::LogTool::Close()
 	Data::Timestamp ts = Data::Timestamp::Now();
 	while (i-- > 0)
 	{
-		this->hdlrArr.GetItem(i)->LogAdded(ts, CSTR("End logging normally"),  (IO::ILogHandler::LogLevel)0);
+		this->hdlrArr.GetItem(i)->LogAdded(ts, CSTR("End logging normally"),  (IO::LogHandler::LogLevel)0);
 		this->hdlrArr.GetItem(i)->LogClosed();
 	}
 }
 
-void IO::LogTool::AddFileLog(Text::String *fileName, ILogHandler::LogType style, ILogHandler::LogGroup groupStyle, ILogHandler::LogLevel logLev, const Char *dateFormat, Bool directWrite)
+void IO::LogTool::AddFileLog(Text::String *fileName, LogHandler::LogType style, LogHandler::LogGroup groupStyle, LogHandler::LogLevel logLev, const Char *dateFormat, Bool directWrite)
 {
 	if (closed)
 		return;
@@ -68,7 +68,7 @@ void IO::LogTool::AddFileLog(Text::String *fileName, ILogHandler::LogType style,
 	}
 }
 
-void IO::LogTool::AddFileLog(Text::CString fileName, ILogHandler::LogType style, ILogHandler::LogGroup groupStyle, ILogHandler::LogLevel logLev, const Char *dateFormat, Bool directWrite)
+void IO::LogTool::AddFileLog(Text::CString fileName, LogHandler::LogType style, LogHandler::LogGroup groupStyle, LogHandler::LogLevel logLev, const Char *dateFormat, Bool directWrite)
 {
 	if (closed)
 		return;
@@ -88,7 +88,7 @@ void IO::LogTool::AddFileLog(Text::CString fileName, ILogHandler::LogType style,
 	}
 }
 
-void IO::LogTool::AddLogHandler(ILogHandler *hdlr, IO::ILogHandler::LogLevel logLev)
+void IO::LogTool::AddLogHandler(LogHandler *hdlr, IO::LogHandler::LogLevel logLev)
 {
 	if (closed)
 		return;
@@ -113,10 +113,10 @@ void IO::LogTool::AddLogHandler(ILogHandler *hdlr, IO::ILogHandler::LogLevel log
 	IO::BuildTime::GetBuildTime(&dt2);
 	sb.AppendC(UTF8STRC(", version: "));
 	sb.AppendDate(&dt2);
-	hdlr->LogAdded(ts, sb.ToCString(), (ILogHandler::LogLevel)0);
+	hdlr->LogAdded(ts, sb.ToCString(), (LogHandler::LogLevel)0);
 }
 
-void IO::LogTool::RemoveLogHandler(ILogHandler *hdlr)
+void IO::LogTool::RemoveLogHandler(LogHandler *hdlr)
 {
 	if (closed)
 		return;
@@ -133,7 +133,7 @@ void IO::LogTool::RemoveLogHandler(ILogHandler *hdlr)
 	}
 }
 
-void IO::LogTool::LogMessage(Text::CString logMsg, ILogHandler::LogLevel level)
+void IO::LogTool::LogMessage(Text::CString logMsg, LogHandler::LogLevel level)
 {
 	Data::Timestamp ts = Data::Timestamp::Now();
 	Sync::MutexUsage mutUsage(&this->hdlrMut);
@@ -145,7 +145,7 @@ void IO::LogTool::LogMessage(Text::CString logMsg, ILogHandler::LogLevel level)
 	}
 }
 
-IO::ILogHandler *IO::LogTool::GetLastFileLog()
+IO::LogHandler *IO::LogTool::GetLastFileLog()
 {
 	return this->fileLogArr.GetItem(this->fileLogArr.GetCount() - 1);
 }

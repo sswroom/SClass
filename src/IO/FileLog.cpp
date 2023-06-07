@@ -12,11 +12,11 @@ UTF8Char *IO::FileLog::GetNewName(UTF8Char *buff, Data::DateTimeUtil::TimeValue 
 {
 	UTF8Char *currName;
 
-	if (this->groupStyle == IO::ILogHandler::LogGroup::NoGroup)
+	if (this->groupStyle == IO::LogHandler::LogGroup::NoGroup)
 	{
 		currName = this->fileName->ConcatTo(buff);
 	}
-	else if (this->groupStyle == IO::ILogHandler::LogGroup::PerYear)
+	else if (this->groupStyle == IO::LogHandler::LogGroup::PerYear)
 	{
 		currName = Data::DateTimeUtil::ToString(this->fileName->ConcatTo(buff), time, 0, nanosec, (const UTF8Char*)"yyyy");
 		if (!IO::Path::IsDirectoryExist(CSTRP(buff, currName)))
@@ -26,7 +26,7 @@ UTF8Char *IO::FileLog::GetNewName(UTF8Char *buff, Data::DateTimeUtil::TimeValue 
 		*currName++ = IO::Path::PATH_SEPERATOR;
 		currName = Text::StrConcat(currName, this->extName);
 	}
-	else if (this->groupStyle == IO::ILogHandler::LogGroup::PerMonth)
+	else if (this->groupStyle == IO::LogHandler::LogGroup::PerMonth)
 	{
 		currName = Data::DateTimeUtil::ToString(this->fileName->ConcatTo(buff), time, 0, nanosec, (const UTF8Char*)"yyyyMM");
 		if (!IO::Path::IsDirectoryExist(CSTRP(buff, currName)))
@@ -36,7 +36,7 @@ UTF8Char *IO::FileLog::GetNewName(UTF8Char *buff, Data::DateTimeUtil::TimeValue 
 		*currName++ = IO::Path::PATH_SEPERATOR;
 		currName = Text::StrConcat(currName, this->extName);
 	}
-	else if (this->groupStyle == IO::ILogHandler::LogGroup::PerDay)
+	else if (this->groupStyle == IO::LogHandler::LogGroup::PerDay)
 	{
 		currName = Data::DateTimeUtil::ToString(this->fileName->ConcatTo(buff), time, 0, nanosec, (const UTF8Char*)"yyyyMMdd");
 		if (!IO::Path::IsDirectoryExist(CSTRP(buff, currName)))
@@ -51,25 +51,25 @@ UTF8Char *IO::FileLog::GetNewName(UTF8Char *buff, Data::DateTimeUtil::TimeValue 
 		currName = this->fileName->ConcatTo(buff);
 	}
 
-	if (this->logStyle == IO::ILogHandler::LogType::SingleFile)
+	if (this->logStyle == IO::LogHandler::LogType::SingleFile)
 	{
 	}
-	else if (this->logStyle == IO::ILogHandler::LogType::PerHour)
+	else if (this->logStyle == IO::LogHandler::LogType::PerHour)
 	{
 		lastVal = time->day * 24 + time->hour;
 		currName = Text::StrConcatC(Data::DateTimeUtil::ToString(currName, time, 0, nanosec, (const UTF8Char*)"yyyyMMddHH"), UTF8STRC(".log"));
 	}
-	else if (this->logStyle == IO::ILogHandler::LogType::PerDay)
+	else if (this->logStyle == IO::LogHandler::LogType::PerDay)
 	{
 		lastVal = time->day;
 		currName = Text::StrConcatC(Data::DateTimeUtil::ToString(currName, time, 0, nanosec, (const UTF8Char*)"yyyyMMdd"), UTF8STRC(".log"));
 	}
-	else if (this->logStyle == IO::ILogHandler::LogType::PerMonth)
+	else if (this->logStyle == IO::LogHandler::LogType::PerMonth)
 	{
 		lastVal = time->month;
 		currName = Text::StrConcatC(Data::DateTimeUtil::ToString(currName, time, 0, nanosec, (const UTF8Char*)"yyyyMM"), UTF8STRC(".log"));
 	}
-	else if (this->logStyle == IO::ILogHandler::LogType::PerYear)
+	else if (this->logStyle == IO::LogHandler::LogType::PerYear)
 	{
 		lastVal = time->year;
 		currName = Text::StrConcatC(Data::DateTimeUtil::ToString(currName, time, 0, nanosec, (const UTF8Char*)"yyyy"), UTF8STRC(".log"));
@@ -97,7 +97,7 @@ void IO::FileLog::Init(LogType style, LogGroup groupStyle, const Char *dateForma
 
 	UOSInt i;
 
-	if (this->groupStyle != IO::ILogHandler::LogGroup::NoGroup)
+	if (this->groupStyle != IO::LogHandler::LogGroup::NoGroup)
 	{
 		i = this->fileName->LastIndexOf(IO::Path::PATH_SEPERATOR);
 		this->extName = Text::StrCopyNew(&this->fileName->v[i + 1]);
@@ -176,7 +176,7 @@ void IO::FileLog::LogAdded(const Data::Timestamp &time, Text::CString logMsg, Lo
 	Data::DateTimeUtil::TimeValue tval;
 	Data::DateTimeUtil::Instant2TimeValue(time.inst.sec, time.inst.nanosec, &tval, time.tzQhr);
 
-	if (logStyle == ILogHandler::LogType::PerDay)
+	if (logStyle == LogHandler::LogType::PerDay)
 	{
 		if (tval.day != lastVal)
 		{
@@ -184,7 +184,7 @@ void IO::FileLog::LogAdded(const Data::Timestamp &time, Text::CString logMsg, Lo
 			sptr = GetNewName(buff, &tval, time.inst.nanosec);
 		}
 	}
-	else if (logStyle == ILogHandler::LogType::PerMonth)
+	else if (logStyle == LogHandler::LogType::PerMonth)
 	{
 		if (tval.month != lastVal)
 		{
@@ -192,7 +192,7 @@ void IO::FileLog::LogAdded(const Data::Timestamp &time, Text::CString logMsg, Lo
 			sptr = GetNewName(buff, &tval, time.inst.nanosec);
 		}
 	}
-	else if (logStyle == ILogHandler::LogType::PerYear)
+	else if (logStyle == LogHandler::LogType::PerYear)
 	{
 		if (tval.year != lastVal)
 		{
@@ -200,7 +200,7 @@ void IO::FileLog::LogAdded(const Data::Timestamp &time, Text::CString logMsg, Lo
 			sptr = GetNewName(buff, &tval, time.inst.nanosec);
 		}
 	}
-	else if (logStyle == ILogHandler::LogType::PerHour)
+	else if (logStyle == LogHandler::LogType::PerHour)
 	{
 		if (lastVal != (tval.day * 24 + tval.hour))
 		{

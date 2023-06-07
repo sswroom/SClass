@@ -1384,7 +1384,7 @@ SSWR::AVIRead::AVIRGSMModemForm::AVIRGSMModemForm(UI::GUIClientControl *parent, 
 	this->toStop = false;
 	this->running = false;
 	NEW_CLASS(this->logger, UI::ListBoxLogger(this, this->lbLog, 200, false));
-	this->log.AddLogHandler(this->logger, IO::ILogHandler::LogLevel::Raw);
+	this->log.AddLogHandler(this->logger, IO::LogHandler::LogLevel::Raw);
 
 	this->AddTimer(1000, OnTimerTick, this);
 

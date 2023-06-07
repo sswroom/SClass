@@ -17,7 +17,7 @@ namespace SSWR
 
 			SSWR::AVIRead::AVIRCore *core;
 			IO::LogFile *logFile;
-			IO::ILogHandler::LogLevel logLevel;
+			IO::LogHandler::LogLevel logLevel;
 
 			void UpdateLogMessages();
 			static void __stdcall OnLogsDblClk(void *userObj, UOSInt itemIndex);
