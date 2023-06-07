@@ -7,7 +7,9 @@ You need to generate ThirdParty files after getting file from git:
 cd SClass
 git submodule update --init
 cd ThirdParty/miniz
-cmake .
+mkdir _build
+cd _build
+cmake ..
 
 For Windows version, please download [ffmpeg-master-latest-win64-gpl-shared.zip](https://github.com/BtbN/FFmpeg-Builds/releases/tag/latest) and extract to same directory as SClass.
 

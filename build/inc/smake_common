@@ -1,6 +1,7 @@
 INCLUDEPATH:=../../header
 CFLAGS += -I ../../header
 INCLUDEPATH+=:../../ThirdParty/miniz
+INCLUDEPATH+=:../../ThirdParty/miniz/_build
 INCLUDEPATH+=:../../ThirdParty/sqlite3
 INCLUDEPATH+=:../../ThirdParty/adl
 
@@ -4673,11 +4674,11 @@ VariItem.o: ../../src/Data/VariItem.cpp
 VariObject.o: ../../src/Data/VariObject.cpp
 Decompressor.o: ../../src/Data/Compress/Decompressor.cpp
 DeflateStream.o: ../../src/Data/Compress/DeflateStream.cpp
-$-I ../../ThirdParty/miniz
+$-I ../../ThirdParty/miniz -I ../../ThirdParty/miniz/_build
 Inflate.o: ../../src/Data/Compress/Inflate.cpp
-$-I ../../ThirdParty/miniz
+$-I ../../ThirdParty/miniz -I ../../ThirdParty/miniz/_build
 InflateStream.o: ../../src/Data/Compress/InflateStream.cpp
-$-I ../../ThirdParty/miniz
+$-I ../../ThirdParty/miniz -I ../../ThirdParty/miniz/_build
 LZODecompressor.o: ../../src/Data/Compress/LZODecompressor.cpp
 LZWDecompressor.o: ../../src/Data/Compress/LZWDecompressor.cpp
 LZWDecStream.o: ../../src/Data/Compress/LZWDecStream.cpp
@@ -4820,7 +4821,7 @@ MemFileBuffer.o: ../../src/IO/MemFileBuffer.cpp
 MemoryReadingStream.o: ../../src/IO/MemoryReadingStream.cpp
 MemoryStream.o: ../../src/IO/MemoryStream.cpp
 MinizZIP.o: ../../src/IO/MinizZIP.cpp
-$-I ../../ThirdParty/miniz
+$-I ../../ThirdParty/miniz -I ../../ThirdParty/miniz/_build
 MODBUSController.o: ../../src/IO/MODBUSController.cpp
 MODBUSDevice.o: ../../src/IO/MODBUSDevice.cpp
 MODBUSRTUMaster.o: ../../src/IO/MODBUSRTUMaster.cpp
@@ -5480,7 +5481,6 @@ GCISNotifyHandler.o: ../../src/Net/WebServer/GCISNotifyHandler.cpp
 HTTPDirectoryHandler.o: ../../src/Net/WebServer/HTTPDirectoryHandler.cpp
 HTTPForwardHandler.o: ../../src/Net/WebServer/HTTPForwardHandler.cpp
 HTTPServerUtil.o: ../../src/Net/WebServer/HTTPServerUtil.cpp
-$-I ../../ThirdParty/miniz
 IWebRequest.o: ../../src/Net/WebServer/IWebRequest.cpp
 IWebResponse.o: ../../src/Net/WebServer/IWebResponse.cpp
 IWebSessionManager.o: ../../src/Net/WebServer/IWebSessionManager.cpp
@@ -6130,6 +6130,7 @@ TextInputDialog.o: ../../src/UtilUI/TextInputDialog.cpp
 TextSearchForm.o: ../../src/UtilUI/TextSearchForm.cpp
 TextViewerForm.o: ../../src/UtilUI/TextViewerForm.cpp
 miniz.o: ../../ThirdParty/miniz/miniz.c
+$-I ../../ThirdParty/miniz/_build
 miniz_tdef.o: ../../ThirdParty/miniz/miniz_tdef.c
 miniz_tinfl.o: ../../ThirdParty/miniz/miniz_tinfl.c
 miniz_zip.o: ../../ThirdParty/miniz/miniz_zip.c

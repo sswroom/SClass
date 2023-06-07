@@ -54,7 +54,7 @@ SSWR::AVIRead::AVIRWOLForm::AVIRWOLForm(UI::GUIClientControl *parent, UI::GUICor
 	this->lblAdapter->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->cboAdapter, UI::GUIComboBox(ui, this, false));
 	this->cboAdapter->SetRect(104, 4, 300, 23, false);
-	NEW_CLASS(this->lblDeviceMac, UI::GUILabel(ui, this, CSTR("Server Time")));
+	NEW_CLASS(this->lblDeviceMac, UI::GUILabel(ui, this, CSTR("MAC Address")));
 	this->lblDeviceMac->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtDeviceMac, UI::GUITextBox(ui, this, CSTR(""), false));
 	this->txtDeviceMac->SetRect(104, 28, 200, 23, false);

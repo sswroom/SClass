@@ -1022,6 +1022,11 @@ Bool IO::SMake::CompileProgInternal(IO::SMake::ProgramItem *prog, Bool asmListin
 					sb.Append(cflagsCfg->value);
 					sb.AppendUTF8Char(' ');
 				}
+				if (subProg->compileCfg)
+				{
+					this->AppendCfg(&sb, subProg->compileCfg->ToCString());
+					sb.AppendUTF8Char(' ');
+				}
 				if (asmListing)
 				{
 					sb.AppendC(UTF8STRC("-Wa,-adhln="));
