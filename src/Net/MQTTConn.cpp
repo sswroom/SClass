@@ -325,23 +325,44 @@ Bool Net::MQTTConn::SendConnect(UInt8 protoVer, UInt16 keepAliveS, Text::CString
 
 Bool Net::MQTTConn::SendPublish(Text::CString topic, Text::CString message)
 {
-	UInt8 packet1[512];
-	UInt8 packet2[512];
-
 	UOSInt i;
 	UOSInt j;
 	i = 0;
 
-	j = topic.leng;
-	WriteMInt16(&packet1[i], j);
-	MemCopyNO(&packet1[i + 2], topic.v, j);
-	i += j + 2;
-	j = message.leng;
-	MemCopyNO(&packet1[i], message.v, j);
-	i += j;
+	if (topic.leng + message.leng > 507)
+	{
+		UInt8 *pack1 = MemAlloc(UInt8, topic.leng + message.leng + 2);
+		UInt8 *pack2 = MemAlloc(UInt8, topic.leng + message.leng + 7);
+		j = topic.leng;
+		WriteMInt16(&pack1[i], j);
+		MemCopyNO(&pack1[i + 2], topic.v, j);
+		i += j + 2;
+		j = message.leng;
+		MemCopyNO(&pack1[i], message.v, j);
+		i += j;
 
-	j = this->protoHdlr.BuildPacket(packet2, 0x30, 0, packet1, i, this->cliData);
-	return this->SendPacket(packet2, j);
+		j = this->protoHdlr.BuildPacket(pack2, 0x30, 0, pack1, i, this->cliData);
+		i = this->SendPacket(pack2, j);
+		MemFree(pack1);
+		MemFree(pack2);
+		return i;
+	}
+	else
+	{
+		UInt8 packet1[512];
+		UInt8 packet2[512];
+
+		j = topic.leng;
+		WriteMInt16(&packet1[i], j);
+		MemCopyNO(&packet1[i + 2], topic.v, j);
+		i += j + 2;
+		j = message.leng;
+		MemCopyNO(&packet1[i], message.v, j);
+		i += j;
+
+		j = this->protoHdlr.BuildPacket(packet2, 0x30, 0, packet1, i, this->cliData);
+		return this->SendPacket(packet2, j);
+	}
 }
 
 Bool Net::MQTTConn::SendPubAck(UInt16 packetId)
@@ -368,25 +389,49 @@ Bool Net::MQTTConn::SendPubRec(UInt16 packetId)
 
 Bool Net::MQTTConn::SendSubscribe(UInt16 packetId, Text::CString topic)
 {
-	UInt8 packet1[512];
-	UInt8 packet2[512];
 
 	UOSInt i;
 	UOSInt j;
 
-	WriteMInt16(&packet1[0], packetId);
-	i = 2;
-	j = topic.leng;
-	WriteMInt16(&packet1[i], j);
-	MemCopyNO(&packet1[i + 2], topic.v, j);
-	i += j + 2;
-	packet1[i] = 0;
-	i++;
+	if (topic.leng > 504)
+	{
+		UInt8 *packet1 = MemAlloc(UInt8, topic.leng + 5);
+		UInt8 *packet2 = MemAlloc(UInt8, topic.leng + 10);
+		WriteMInt16(&packet1[0], packetId);
+		i = 2;
+		j = topic.leng;
+		WriteMInt16(&packet1[i], j);
+		MemCopyNO(&packet1[i + 2], topic.v, j);
+		i += j + 2;
+		packet1[i] = 0;
+		i++;
 #if defined(DEBUG_PRINT)
-	printf("Subscribing topic %s\r\n", topic.v);
+		printf("Subscribing topic %s\r\n", topic.v);
 #endif
-	j = this->protoHdlr.BuildPacket(packet2, 0x82, 0, packet1, i, this->cliData);
-	return this->SendPacket(packet2, j);
+		j = this->protoHdlr.BuildPacket(packet2, 0x82, 0, packet1, i, this->cliData);
+		i = this->SendPacket(packet2, j);
+		MemFree(packet1);
+		MemFree(packet2);
+		return i;
+	}
+	else
+	{
+		UInt8 packet1[512];
+		UInt8 packet2[512];
+		WriteMInt16(&packet1[0], packetId);
+		i = 2;
+		j = topic.leng;
+		WriteMInt16(&packet1[i], j);
+		MemCopyNO(&packet1[i + 2], topic.v, j);
+		i += j + 2;
+		packet1[i] = 0;
+		i++;
+#if defined(DEBUG_PRINT)
+		printf("Subscribing topic %s\r\n", topic.v);
+#endif
+		j = this->protoHdlr.BuildPacket(packet2, 0x82, 0, packet1, i, this->cliData);
+		return this->SendPacket(packet2, j);
+	}
 }
 
 Bool Net::MQTTConn::SendPing()
