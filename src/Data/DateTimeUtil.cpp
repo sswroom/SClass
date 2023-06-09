@@ -1694,6 +1694,38 @@ Bool Data::DateTimeUtil::String2TimeValue(Text::CString dateStr, TimeValue *tval
 	return succ;
 }
 
+Bool Data::DateTimeUtil::TimeValueFromYMDHMS(Int64 ymdhms, TimeValue *tval)
+{
+	if (ymdhms < 0)
+		return false;
+	tval->second = (UInt8)(ymdhms % 100);
+	ymdhms = ymdhms / 100;
+	if (tval->second >= 60)
+		return false;
+	tval->minute = (UInt8)(ymdhms % 100);
+	ymdhms = ymdhms / 100;
+	if (tval->minute >= 60)
+		return false;
+	tval->hour = (UInt8)(ymdhms % 100);
+	ymdhms = ymdhms / 100;
+	if (tval->hour >= 24)
+		return false;
+	tval->day = (UInt8)(ymdhms % 100);
+	ymdhms = ymdhms / 100;
+	if (tval->day == 0 || tval->day > 31)
+		return false;
+	tval->month = (UInt8)(ymdhms % 100);
+	ymdhms = ymdhms / 100;
+	if (tval->month == 0 || tval->month > 12)
+		return false;
+	if (ymdhms <= 0 || ymdhms > 65535)
+		return false;
+	tval->year = (UInt16)ymdhms;
+	if (tval->day > Data::DateTimeUtil::DayInMonth(tval->year, tval->month))
+		return false;
+	return true;
+}
+
 Bool Data::DateTimeUtil::IsYearLeap(UInt16 year)
 {
 	return ((year & 3) == 0) && ((year % 100) != 0 || (year % 400) == 0);

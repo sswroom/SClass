@@ -160,7 +160,6 @@ UInt32 __stdcall IO::MTFileLog::FileThread(void *userObj)
 	UOSInt arrCnt;
 	Text::String **msgArr = 0;
 	Data::Timestamp *dateArr = 0;
-	me->running = true;
 	while (!me->closed)
 	{
 		Sync::MutexUsage mutUsage(&me->mut);
@@ -254,6 +253,7 @@ void IO::MTFileLog::Init(LogType style, LogGroup groupStyle, const Char *dateFor
 		this->hasNewFile = true;
 	}
 	log->WriteSignature();
+	this->running = true;
 	Sync::Thread::Create(FileThread, this, 0x20000);
 }
 

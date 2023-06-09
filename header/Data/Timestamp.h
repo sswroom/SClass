@@ -492,6 +492,19 @@ namespace Data
 			return Data::Timestamp(Data::TimeInstant(secs, nanosec), tzQhr);
 		}
 
+		static Timestamp FromYMDHMS(Int64 ymdhms, Int8 tzQhr)
+		{
+			Data::DateTimeUtil::TimeValue tval;
+			if (Data::DateTimeUtil::TimeValueFromYMDHMS(ymdhms, &tval))
+			{
+				return Timestamp(Data::TimeInstant(Data::DateTimeUtil::TimeValue2Secs(&tval, tzQhr), 0), tzQhr);
+			}
+			else
+			{
+				return Null();
+			}
+		}
+
 		static Timestamp Null()
 		{
 			return Data::Timestamp(0);

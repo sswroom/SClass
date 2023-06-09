@@ -57,6 +57,7 @@ namespace Data
 		static Weekday Instant2Weekday(Data::TimeInstant inst, Int8 tzQhr);
 		static UTF8Char *ToString(UTF8Char *sbuff, const TimeValue *tval, Int8 tzQhr, UInt32 nanosec, const UTF8Char *pattern);
 		static Bool String2TimeValue(Text::CString dateStr, TimeValue *tval, Int8 *tzQhr, UInt32 *nanosec);
+		static Bool TimeValueFromYMDHMS(Int64 ymdhms, TimeValue *tval);
 
 		static Bool IsYearLeap(UInt16 year);
 		static UInt8 ParseMonthStr(const UTF8Char *month, UOSInt monthLen);
