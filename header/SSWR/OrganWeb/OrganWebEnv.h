@@ -129,7 +129,7 @@ namespace SSWR
 			UserFileInfo *UserfileGetCheck(Sync::RWMutexUsage *mutUsage, Int32 userfileId, Int32 speciesId, Int32 cateId, WebUserInfo *currUser, UTF8Char **filePathOut);
 			UserFileInfo *UserfileGet(Sync::RWMutexUsage *mutUsage, Int32 id);
 			UTF8Char *UserfileGetPath(UTF8Char *sbuff, const UserFileInfo *userfile);
-			Int32 UserfileAdd(Sync::RWMutexUsage *mutUsage, Int32 userId, Int32 spId, Text::CString fileName, const UInt8 *fileCont, UOSInt fileSize, Bool mustHaveCamera);
+			Int32 UserfileAdd(Sync::RWMutexUsage *mutUsage, Int32 userId, Int32 spId, Text::CString fileName, const UInt8 *fileCont, UOSInt fileSize, Bool mustHaveCamera, Text::String *location);
 			Bool UserfileMove(Sync::RWMutexUsage *mutUsage, Int32 userfileId, Int32 speciesId, Int32 cateId);
 			Bool UserfileUpdateDesc(Sync::RWMutexUsage *mutUsage, Int32 userfileId, Text::CString descr);
 			Bool UserfileUpdateRotType(Sync::RWMutexUsage *mutUsage, Int32 userfileId, Int32 rotType);

@@ -1930,7 +1930,7 @@ UTF8Char *SSWR::OrganWeb::OrganWebEnv::UserfileGetPath(UTF8Char *sbuff, const Us
 	return sbuff;
 }
 
-Int32 SSWR::OrganWeb::OrganWebEnv::UserfileAdd(Sync::RWMutexUsage *mutUsage, Int32 userId, Int32 spId, Text::CString fileName, const UInt8 *fileCont, UOSInt fileSize, Bool mustHaveCamera)
+Int32 SSWR::OrganWeb::OrganWebEnv::UserfileAdd(Sync::RWMutexUsage *mutUsage, Int32 userId, Int32 spId, Text::CString fileName, const UInt8 *fileCont, UOSInt fileSize, Bool mustHaveCamera, Text::String *location)
 {
 	mutUsage->ReplaceMutex(&this->dataMut, true);
 	UOSInt j;
@@ -2140,7 +2140,7 @@ Int32 SSWR::OrganWeb::OrganWebEnv::UserfileAdd(Sync::RWMutexUsage *mutUsage, Int
 				if (succ)
 				{
 					DB::SQLBuilder sql(this->db);
-					sql.AppendCmdC(CSTR("insert into userfile (fileType, oriFileName, fileTime, lat, lon, webuser_id, species_id, captureTime, dataFileName, crcVal, rotType, camera, cropLeft, cropTop, cropRight, cropBottom) values ("));
+					sql.AppendCmdC(CSTR("insert into userfile (fileType, oriFileName, fileTime, lat, lon, webuser_id, species_id, captureTime, dataFileName, crcVal, rotType, camera, cropLeft, cropTop, cropRight, cropBottom, location) values ("));
 					sql.AppendInt32(fileType);
 					sql.AppendCmdC(CSTR(", "));
 					sql.AppendStrC(fileName);
@@ -2172,6 +2172,15 @@ Int32 SSWR::OrganWeb::OrganWebEnv::UserfileAdd(Sync::RWMutexUsage *mutUsage, Int
 					sql.AppendDbl(0);
 					sql.AppendCmdC(CSTR(", "));
 					sql.AppendDbl(0);
+					sql.AppendCmdC(CSTR(", "));
+					if (location && location->leng > 0)
+					{
+						sql.AppendStr(location);
+					}
+					else
+					{
+						sql.AppendStr(0);
+					}
 					sql.AppendCmdC(CSTR(")"));
 					if (this->db->ExecuteNonQuery(sql.ToCString()) > 0)
 					{
@@ -2195,7 +2204,10 @@ Int32 SSWR::OrganWeb::OrganWebEnv::UserfileAdd(Sync::RWMutexUsage *mutUsage, Int
 						userFile->cropRight = 0;
 						userFile->cropBottom = 0;
 						userFile->descript = 0;
-						userFile->location = 0;
+						if (location && location->leng > 0)
+							userFile->location = location->Clone();
+						else
+							userFile->location = 0;
 						this->userFileMap.Put(userFile->id, userFile);
 
 						SpeciesInfo *species = this->spMap.Get(userFile->speciesId);
@@ -2345,7 +2357,7 @@ Int32 SSWR::OrganWeb::OrganWebEnv::UserfileAdd(Sync::RWMutexUsage *mutUsage, Int
 				if (succ)
 				{
 					DB::SQLBuilder sql(this->db);
-					sql.AppendCmdC(CSTR("insert into userfile (fileType, oriFileName, fileTime, lat, lon, webuser_id, species_id, captureTime, dataFileName, crcVal, camera) values ("));
+					sql.AppendCmdC(CSTR("insert into userfile (fileType, oriFileName, fileTime, lat, lon, webuser_id, species_id, captureTime, dataFileName, crcVal, camera, location) values ("));
 					sql.AppendInt32(fileType);
 					sql.AppendCmdC(CSTR(", "));
 					sql.AppendStrC(fileName);
@@ -2367,6 +2379,14 @@ Int32 SSWR::OrganWeb::OrganWebEnv::UserfileAdd(Sync::RWMutexUsage *mutUsage, Int
 					sql.AppendInt32((Int32)crcVal);
 					sql.AppendCmdC(CSTR(", "));
 					sql.AppendStrUTF8(0);
+					if (location && location->leng > 0)
+					{
+						sql.AppendStr(location);
+					}
+					else
+					{
+						sql.AppendStr(0);
+					}
 					sql.AppendCmdC(CSTR(")"));
 					if (this->db->ExecuteNonQuery(sql.ToCString()) > 0)
 					{
@@ -2389,6 +2409,10 @@ Int32 SSWR::OrganWeb::OrganWebEnv::UserfileAdd(Sync::RWMutexUsage *mutUsage, Int
 						userFile->cropTop = 0;
 						userFile->cropRight = 0;
 						userFile->cropBottom = 0;
+						if (location && location->leng > 0)
+							userFile->location = location->Clone();
+						else
+							userFile->location = 0;
 						this->userFileMap.Put(userFile->id, userFile);
 
 						SpeciesInfo *species = this->spMap.Get(userFile->speciesId);

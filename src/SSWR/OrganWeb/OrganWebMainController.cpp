@@ -703,10 +703,24 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroupMod(Net::WebServe
 		Text::UTF8Writer writer(&mstm);
 
 		sb.ClearStr();
-		sb.AppendC(UTF8STRC("New group in "));
+		if (modGroup)
+		{
+			sb.AppendC(UTF8STRC("Modify group in "));
+		}
+		else
+		{
+			sb.AppendC(UTF8STRC("New group in "));
+		}
 		sb.Append(group->chiName);
 		sb.AppendC(UTF8STRC(" "));
 		sb.Append(group->engName);
+		if (modGroup)
+		{
+			sb.AppendC(UTF8STRC(" of "));
+			sb.Append(modGroup->chiName);
+			sb.AppendC(UTF8STRC(" "));
+			sb.Append(modGroup->engName);
+		}
 		me->WriteHeader(&writer, sb.ToString(), env.user, env.isMobile);
 		writer.WriteStrC(UTF8STRC("<center><h1>"));
 		s = Text::XML::ToNewHTMLBodyText(sb.ToString());
@@ -1773,10 +1787,29 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpeciesMod(Net::WebSer
 		Text::UTF8Writer writer(&mstm);
 
 		sb.ClearStr();
-		sb.AppendC(UTF8STRC("New Species in "));
+		if (species)
+		{
+			sb.AppendC(UTF8STRC("Modify Species in "));
+		}
+		else
+		{
+			sb.AppendC(UTF8STRC("New Species in "));
+		}
 		sb.Append(group->chiName);
 		sb.AppendC(UTF8STRC(" "));
 		sb.Append(group->engName);
+		if (species)
+		{
+			sb.AppendC(UTF8STRC(" of "));
+			sb.Append(species->chiName);
+			sb.AppendC(UTF8STRC(" "));
+			sb.Append(species->sciName);
+			if (species->engName && species->engName->leng > 0)
+			{
+				sb.AppendC(UTF8STRC(" "));
+				sb.Append(species->engName);
+			}
+		}
 		me->WriteHeader(&writer, sb.ToString(), env.user, env.isMobile);
 		writer.WriteStrC(UTF8STRC("<center><h1>"));
 		s = Text::XML::ToNewHTMLBodyText(sb.ToString());
@@ -3894,6 +3927,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoUpload(Net::WebSe
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 	const UInt8 *fileCont;
+	Text::String *location;
 	Text::String *s;
 	req->ParseHTTPForm();
 
@@ -3911,6 +3945,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoUpload(Net::WebSe
 		{
 			break;
 		}
+		location = req->GetHTTPFormStr(CSTR("location"));
 		writer.WriteStrC(UTF8STRC("<tr><td>"));
 		s = Text::XML::ToNewHTMLBodyText(fileName);
 		writer.WriteStrC(s->v, s->leng);
@@ -3919,7 +3954,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoUpload(Net::WebSe
 		sptr = Text::StrUOSInt(sbuff, fileSize);
 		writer.WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
 		writer.WriteStrC(UTF8STRC("</td><td>"));
-		Int32 ret = me->env->UserfileAdd(&mutUsage, env.user->id, env.user->unorganSpId, CSTRP(fileName, fileNameEnd), fileCont, fileSize, true);
+		Int32 ret = me->env->UserfileAdd(&mutUsage, env.user->id, env.user->unorganSpId, CSTRP(fileName, fileNameEnd), fileCont, fileSize, true, location);
 		if (ret == 0)
 		{
 			writer.WriteStrC(UTF8STRC("Failed"));
@@ -3983,6 +4018,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoUpload2(Net::WebS
 	UTF8Char fileName[512];
 	UTF8Char *fileNameEnd;
 	const UInt8 *fileCont;
+	Text::String *location;
 	Bool succ = true;
 	req->ParseHTTPForm();
 
@@ -3993,7 +4029,8 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoUpload2(Net::WebS
 		{
 			break;
 		}
-		if (!me->env->UserfileAdd(&mutUsage, env.user->id, env.user->unorganSpId, CSTRP(fileName, fileNameEnd), fileCont, fileSize, true))
+		location = req->GetHTTPFormStr(CSTR("location"));
+		if (!me->env->UserfileAdd(&mutUsage, env.user->id, env.user->unorganSpId, CSTRP(fileName, fileNameEnd), fileCont, fileSize, true, location))
 			succ = false;
 
 		i++;
@@ -4031,6 +4068,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoUploadD(Net::WebS
 		resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
 		return true;
 	}
+	Text::String *location = req->GetSHeader(CSTR("X-Location"));
 
 	UOSInt dataSize;
 	const UInt8 *imgData = req->GetReqData(&dataSize);
@@ -4041,7 +4079,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoUploadD(Net::WebS
 	}
 
 	Sync::RWMutexUsage mutUsage;
-	Int32 ret = me->env->UserfileAdd(&mutUsage, env.user->id, env.user->unorganSpId, sb.ToCString(), imgData, dataSize, true);
+	Int32 ret = me->env->UserfileAdd(&mutUsage, env.user->id, env.user->unorganSpId, sb.ToCString(), imgData, dataSize, true, location);
 	mutUsage.EndUse();
 
 	if (ret == 0)
@@ -4834,6 +4872,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcIndex(Net::WebServer::
 								"\tdocument.getElementById(\"uploadStatus\").disabled = true;\r\n"
 								"\tvar url = \"photoupload2.html\";\r\n"
 								"\tvar fileupload = document.getElementById(\"file\");\r\n"
+								"\tvar fileLocation = document.getElementById(\"location\").value;\r\n"
 								"\tvar uploadStatus = document.getElementById(\"uploadStatus\");\r\n"
 								"\tvar failList = new Array();\r\n"
 								"\tvar statusText;\r\n"
@@ -4845,6 +4884,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcIndex(Net::WebServer::
 								"\t\tuploadStatus.innerHTML = statusText;\r\n"
 								"\t\tvar formData = new FormData();\r\n"
 								"\t\tformData.append(\"file\", fileupload.files[i]);\r\n"
+								"\t\tformData.append(\"location\", fileLocation);\r\n"
 								"\t\tconst resp = await fetch(url, {\r\n"
 								"\t\t\tmethod: \"POST\", \r\n"
 								"\t\t\tbody: formData\r\n"
@@ -4943,7 +4983,8 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcIndex(Net::WebServer::
 		}
 		writer.WriteLineC(UTF8STRC("<hr/>"));
 		writer.WriteLineC(UTF8STRC("<h3>Photo Upload</h3>"));
-		writer.WriteLineC(UTF8STRC("<form name=\"upload\" method=\"POST\" action=\"photoupload.html\" enctype=\"multipart/form-data\">Files:<input type=\"file\" id=\"file\" name=\"file\" multiple/>"));
+		writer.WriteLineC(UTF8STRC("<form name=\"upload\" method=\"POST\" action=\"photoupload.html\" enctype=\"multipart/form-data\">Files:<input type=\"file\" id=\"file\" name=\"file\" multiple/><br/>"));
+		writer.WriteLineC(UTF8STRC("Location:<input type=\"text\" id=\"location\" name=\"file\" /><br/>"));
 		writer.WriteLineC(UTF8STRC("<input type=\"button\" id=\"uploadButton\" value=\"Upload\" onclick=\"submitFile()\"/></form>"));
 		writer.WriteLineC(UTF8STRC("<div id=\"uploadStatus\"></div>"));
 	}
