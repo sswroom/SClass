@@ -12,13 +12,7 @@
 void __stdcall UtilUI::TextViewerForm::OnFileDrop(void *userObj, Text::String **files, UOSInt nFiles)
 {
 	UtilUI::TextViewerForm *me = (UtilUI::TextViewerForm*)userObj;
-	UTF8Char sbuff[530];
-	UTF8Char *sptr;
-	if (me->txtView->LoadFile(files[0]))
-	{
-		sptr = files[0]->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("Text Viewer - ")));
-		me->SetText(CSTRP(sbuff, sptr));
-	}
+	me->LoadFile(files[0]);
 }
 
 void __stdcall UtilUI::TextViewerForm::OnTextPosUpd(void *userObj, UInt32 textPosX, UOSInt textPosY)
@@ -115,16 +109,7 @@ void UtilUI::TextViewerForm::EventMenuClicked(UInt16 cmdId)
 		}
 		break;
 	case MNU_EDIT_SEARCH:
-		if (this->srchFrm)
-		{
-			this->srchFrm->Focus();
-		}
-		else
-		{
-			NEW_CLASS(this->srchFrm, UtilUI::TextSearchForm(0, this->ui, this->monMgr, this));
-			this->srchFrm->HandleFormClosed(OnSearchClosed, this);
-			this->srchFrm->Show();
-		}
+		this->OpenSearch(CSTR_NULL);
 		break;
 	}
 }
@@ -137,5 +122,37 @@ void UtilUI::TextViewerForm::OnMonitorChanged()
 Bool UtilUI::TextViewerForm::SearchText(Text::CString txt)
 {
 	this->txtView->SearchText(txt);
+	return true;
+}
+
+Bool UtilUI::TextViewerForm::LoadFile(Text::String *filePath)
+{
+	UTF8Char sbuff[530];
+	UTF8Char *sptr;
+	if (this->txtView->LoadFile(filePath))
+	{
+		sptr = filePath->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("Text Viewer - ")));
+		this->SetText(CSTRP(sbuff, sptr));
+		return true;
+	}
+	return false;
+}
+
+Bool UtilUI::TextViewerForm::OpenSearch(Text::CString txt)
+{
+	if (this->srchFrm)
+	{
+		this->srchFrm->Focus();
+		if (txt.leng > 0)
+			((UtilUI::TextSearchForm*)this->srchFrm)->SetSearchText(txt);
+	}
+	else
+	{
+		NEW_CLASS(this->srchFrm, UtilUI::TextSearchForm(0, this->ui, this->monMgr, this));
+		this->srchFrm->HandleFormClosed(OnSearchClosed, this);
+		if (txt.leng > 0)
+			((UtilUI::TextSearchForm*)this->srchFrm)->SetSearchText(txt);
+		this->srchFrm->Show();
+	}
 	return true;
 }

@@ -27,6 +27,8 @@ namespace UtilUI
 
 		virtual void OnShow();
 		virtual void OnMonitorChanged();
+
+		void SetSearchText(Text::CString txt);
 	};
-};
+}
 #endif

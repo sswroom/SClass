@@ -78,10 +78,10 @@ void __stdcall SSWR::AVIRead::AVIRFileSizePackForm::OnMoveClicked(void *userObj)
 			}
 
 			sptr2 = Text::StrConcat(sbuff2, me->filePath);
-			i = me->packList->GetCount();
+			i = me->packList.GetCount();
 			while (i-- > 0)
 			{
-				file = me->packList->GetItem(i);
+				file = me->packList.GetItem(i);
 				sptrEnd = file->GetName()->ConcatTo(sptr);
 				sptr2End = file->GetName()->ConcatTo(sptr2);
 				IO::FileUtil::MoveFile(CSTRP(sbuff2, sptr2End), CSTRP(sbuff, sptrEnd), IO::FileUtil::FileExistAction::Fail, 0, 0);
@@ -109,14 +109,14 @@ void SSWR::AVIRead::AVIRFileSizePackForm::ReleaseObjects()
 {
 	SSWR::AVIRead::AVIRFileSizePackForm::MyFile *file;
 	UOSInt i;
-	i = this->fileList->GetCount();
+	i = this->fileList.GetCount();
 	while (i-- > 0)
 	{
-		file = this->fileList->GetItem(i);
+		file = this->fileList.GetItem(i);
 		DEL_CLASS(file);
 	}
-	this->fileList->Clear();
-	this->packList->Clear();
+	this->fileList.Clear();
+	this->packList.Clear();
 }
 
 void SSWR::AVIRead::AVIRFileSizePackForm::GenList()
@@ -179,19 +179,19 @@ void SSWR::AVIRead::AVIRFileSizePackForm::GenList()
 			if (pt == IO::Path::PathType::File)
 			{
 				NEW_CLASS(file, MyFile(CSTRP(sptr, sptr2), fileSize));
-				this->fileList->Add(file);
+				this->fileList.Add(file);
 				totalFileSize += fileSize;
 			}
 		}
 		IO::Path::FindFileClose(sess);
 
 		UOSInt arrSize;
-		Data::IComparable **arr = (Data::IComparable**)this->fileList->GetArray(&arrSize);
+		Data::IComparable **arr = (Data::IComparable**)this->fileList.GetArray(&arrSize);
 		ArtificialQuickSort_SortCmpO(arr, 0, (OSInt)arrSize - 1);
 		i = 0;
 		while (i < arrSize)
 		{
-			file = this->fileList->GetItem(i);
+			file = this->fileList.GetItem(i);
 			sb.ClearStr();
 			file->ToString(&sb);
 			this->lbFileDir->AddItem(sb.ToCString(), file);
@@ -206,12 +206,12 @@ void SSWR::AVIRead::AVIRFileSizePackForm::GenList()
 	if (totalFileSize <= maxSize)
 	{
 		this->lbFilePack->ClearItems();
-		this->packList->AddAll(this->fileList);
+		this->packList.AddAll(&this->fileList);
 		i = 0;
-		j = this->fileList->GetCount();
+		j = this->fileList.GetCount();
 		while (i < j)
 		{
-			file = this->fileList->GetItem(i);
+			file = this->fileList.GetItem(i);
 			sb.ClearStr();
 			file->ToString(&sb);
 			this->lbFilePack->AddItem(sb.ToCString(), file);
@@ -224,17 +224,17 @@ void SSWR::AVIRead::AVIRFileSizePackForm::GenList()
 	}
 
 	UInt64 dirSize;
-	this->packList->Clear();
-	dirSize = NewCalc(this->fileList, this->packList, maxSize, minSize);
+	this->packList.Clear();
+	dirSize = NewCalc(&this->fileList, &this->packList, maxSize, minSize);
 
-	if (this->packList->GetCount() > 0)
+	if (this->packList.GetCount() > 0)
 	{
 		this->lbFilePack->ClearItems();
 		i = 0;
-		j = this->packList->GetCount();
+		j = this->packList.GetCount();
 		while (i < j)
 		{
-			file = this->packList->GetItem(i);
+			file = this->packList.GetItem(i);
 			sb.ClearStr();
 			file->ToString(&sb);
 			this->lbFilePack->AddItem(sb.ToCString(), file);
@@ -349,8 +349,6 @@ SSWR::AVIRead::AVIRFileSizePackForm::AVIRFileSizePackForm(UI::GUIClientControl *
 
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
-	NEW_CLASS(this->fileList, Data::ArrayList<MyFile*>());
-	NEW_CLASS(this->packList, Data::ArrayList<MyFile*>());
 	this->filePath = 0;
 
 	NEW_CLASS(this->pnlFile, UI::GUIPanel(ui, this));
@@ -394,8 +392,6 @@ SSWR::AVIRead::AVIRFileSizePackForm::AVIRFileSizePackForm(UI::GUIClientControl *
 SSWR::AVIRead::AVIRFileSizePackForm::~AVIRFileSizePackForm()
 {
 	this->ReleaseObjects();
-	DEL_CLASS(this->fileList);
-	DEL_CLASS(this->packList);
 	SDEL_TEXT(this->filePath);
 }
 

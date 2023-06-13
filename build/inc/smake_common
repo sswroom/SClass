@@ -3671,6 +3671,8 @@ SSWR/AVIRead/AVIRFileHashForm.h: ../../src/SSWR/AVIRead/AVIRFileHashForm.cpp
 @AVIRFileHashForm.o
 SSWR/AVIRead/AVIRFileRenameForm.h: ../../src/SSWR/AVIRead/AVIRFileRenameForm.cpp
 @AVIRFileRenameForm.o
+SSWR/AVIRead/AVIRFileSearchForm.h: ../../src/SSWR/AVIRead/AVIRFileSearchForm.cpp
+@AVIRFileSearchForm.o
 SSWR/AVIRead/AVIRFileSizePackForm.h: ../../src/SSWR/AVIRead/AVIRFileSizePackForm.cpp
 @AVIRFileSizePackForm.o
 SSWR/AVIRead/AVIRFileTextEncryptForm.h: ../../src/SSWR/AVIRead/AVIRFileTextEncryptForm.cpp
@@ -5709,6 +5711,7 @@ AVIRFileChkForm.o: ../../src/SSWR/AVIRead/AVIRFileChkForm.cpp
 AVIRFileExForm.o: ../../src/SSWR/AVIRead/AVIRFileExForm.cpp
 AVIRFileHashForm.o: ../../src/SSWR/AVIRead/AVIRFileHashForm.cpp
 AVIRFileRenameForm.o: ../../src/SSWR/AVIRead/AVIRFileRenameForm.cpp
+AVIRFileSearchForm.o: ../../src/SSWR/AVIRead/AVIRFileSearchForm.cpp
 AVIRFileSizePackForm.o: ../../src/SSWR/AVIRead/AVIRFileSizePackForm.cpp
 AVIRFileTextEncryptForm.o: ../../src/SSWR/AVIRead/AVIRFileTextEncryptForm.cpp
 AVIRFontRendererForm.o: ../../src/SSWR/AVIRead/AVIRFontRendererForm.cpp

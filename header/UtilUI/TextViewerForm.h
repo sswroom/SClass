@@ -32,6 +32,8 @@ namespace UtilUI
 		virtual void OnMonitorChanged();
 
 		Bool SearchText(Text::CString txt);
+		Bool LoadFile(Text::String *filePath);
+		Bool OpenSearch(Text::CString txt);
 	};
 }
 #endif

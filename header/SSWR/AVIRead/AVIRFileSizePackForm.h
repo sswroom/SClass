@@ -33,8 +33,8 @@ namespace SSWR
 			};
 
 		private:
-			Data::ArrayList<MyFile *> *fileList;
-			Data::ArrayList<MyFile *> *packList;
+			Data::ArrayList<MyFile *> fileList;
+			Data::ArrayList<MyFile *> packList;
 			const UTF8Char *filePath;
 			SSWR::AVIRead::AVIRCore *core;
 

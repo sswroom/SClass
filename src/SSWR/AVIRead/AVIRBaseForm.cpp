@@ -90,6 +90,7 @@
 #include "SSWR/AVIRead/AVIRFileAnalyseForm.h"
 #include "SSWR/AVIRead/AVIRFileExForm.h"
 #include "SSWR/AVIRead/AVIRFileHashForm.h"
+#include "SSWR/AVIRead/AVIRFileSearchForm.h"
 #include "SSWR/AVIRead/AVIRFileSizePackForm.h"
 #include "SSWR/AVIRead/AVIRFileTextEncryptForm.h"
 #include "SSWR/AVIRead/AVIRGenImageForm.h"
@@ -495,7 +496,8 @@ typedef enum
 	MNU_RNCRYPTOR,
 	MNU_BYDC9R,
 	MNU_MQTT_SUBSCRIBE_TEST,
-	MNU_MQTT_PUBLISH_TEST
+	MNU_MQTT_PUBLISH_TEST,
+	MNU_FILE_SEARCH
 } MenuItems;
 
 void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(void *userObj, Text::String **files, UOSInt nFiles)
@@ -679,6 +681,7 @@ SSWR::AVIRead::AVIRBaseForm::AVIRBaseForm(UI::GUIClientControl *parent, UI::GUIC
 	mnu->AddItem(CSTR("File Size Pack"), MNU_FILE_SIZE_PACK, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("File Analyse"), MNU_FILE_ANALYSE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("Line Counter"), MNU_LINECOUNTER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu->AddItem(CSTR("File Search"), MNU_FILE_SEARCH, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("XML Walk"), MNU_XMLWALK, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("Well Format"), MNU_WELLFORMAT, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("Batch Rename"), MNU_BATCH_RENAME, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -2837,6 +2840,13 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		{
 			SSWR::AVIRead::AVIRMQTTPublishTestForm *frm;
 			NEW_CLASS(frm, SSWR::AVIRead::AVIRMQTTPublishTestForm(0, this->ui, this->core));
+			this->core->ShowForm(frm);
+		}
+		break;
+	case MNU_FILE_SEARCH:
+		{
+			SSWR::AVIRead::AVIRFileSearchForm *frm;
+			NEW_CLASS(frm, SSWR::AVIRead::AVIRFileSearchForm(0, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
