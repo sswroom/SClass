@@ -187,6 +187,27 @@ namespace Data
 			}
 		}
 
+		TimeInstant operator+(Duration dur) const
+		{
+			Int64 sec = this->sec + dur.GetSeconds();
+			UInt32 ns = this->nanosec + dur.GetNS();
+			if (ns >= 1000000000)
+				return TimeInstant(sec + 1, ns - 1000000000);
+			else
+				return TimeInstant(sec, ns);
+		}
+
+		TimeInstant operator-(Duration dur) const
+		{
+			Int64 sec = this->sec - dur.GetSeconds();
+			UInt32 ns1 = this->nanosec;
+			UInt32 ns2 = dur.GetNS();
+			if (ns1 >= ns2)
+				return TimeInstant(sec, ns1 - ns2);
+			else
+				return TimeInstant(sec - 1, 1000000000 + ns1 - ns2);
+		}
+
 		Bool operator==(TimeInstant dt) const
 		{
 			return this->sec == dt.sec && this->nanosec == dt.nanosec;

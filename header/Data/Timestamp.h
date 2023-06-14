@@ -332,6 +332,21 @@ namespace Data
 			return this->inst < dt.inst;
 		}
 
+		Duration operator-(Timestamp ts) const
+		{
+			return this->inst.Diff(ts.inst);
+		}
+
+		Timestamp operator-(Duration dur) const
+		{
+			return Timestamp(this->inst - dur, this->tzQhr);
+		}
+
+		Timestamp operator+(Duration dur) const
+		{
+			return Timestamp(this->inst + dur, this->tzQhr);
+		}
+
 		OSInt CompareTo(const Timestamp& ts) const
 		{
 			return this->inst.CompareTo(ts.inst);

@@ -158,6 +158,7 @@ nodeps:
 @PingTest
 @POP3Test
 @SMTPTest
+@TCPClientTest
 @WebSocketTest
 @WiFiCapture
 @WiFiScan
@@ -579,6 +580,9 @@ PushServer:
 @ConsoleStartup.o
 SMTPTest:
 @SMTPTest.o
+@ConsoleStartup.o
+TCPClientTest:
+@TCPClientTest.o
 @ConsoleStartup.o
 WebSocketTest:
 @WebSocketTest.o
@@ -1068,6 +1072,7 @@ PingTest.o: ../../main/NetTest/PingTest.cpp
 POP3Test.o: ../../main/NetTest/POP3Test.cpp
 PushServerMain.o: ../../main/NetTest/PushServerMain.cpp
 SMTPTest.o: ../../main/NetTest/SMTPTest.cpp
+TCPClientTest.o: ../../main/NetTest/TCPClientTest.cpp
 WebSocketTest.o: ../../main/NetTest/WebSocketTest.cpp
 WiFiCaptureMain.o: ../../main/NetTest/WiFiCaptureMain.cpp
 WiFiScanMain.o: ../../main/NetTest/WiFiScanMain.cpp

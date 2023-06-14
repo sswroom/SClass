@@ -1327,8 +1327,10 @@ public:
 		case 1:
 #if defined(FF_API_OLD_CHANNEL_LAYOUT) && FF_API_OLD_CHANNEL_LAYOUT
 			////////////////////////////////
-			this->ctx->request_channel_layout = AV_CH_LAYOUT_MONO;
-			this->ctx->channel_layout = AV_CH_LAYOUT_MONO;
+//			this->ctx->request_channel_layout = AV_CH_LAYOUT_MONO;
+//			this->ctx->channel_layout = AV_CH_LAYOUT_MONO;
+			this->ctx->ch_layout.order = AV_CHANNEL_ORDER_UNSPEC;
+			this->ctx->ch_layout.nb_channels = 1;
 #else
 			this->ctx->request_channel_layout = AV_CH_LAYOUT_MONO;
 			this->ctx->channel_layout = AV_CH_LAYOUT_MONO;
@@ -1337,8 +1339,10 @@ public:
 		case 2:
 #if defined(FF_API_OLD_CHANNEL_LAYOUT) && FF_API_OLD_CHANNEL_LAYOUT
 			////////////////////////////////
-			this->ctx->request_channel_layout = AV_CH_LAYOUT_STEREO;
-			this->ctx->channel_layout = AV_CH_LAYOUT_STEREO;
+//			this->ctx->request_channel_layout = AV_CH_LAYOUT_STEREO;
+//			this->ctx->channel_layout = AV_CH_LAYOUT_STEREO;
+			this->ctx->ch_layout.order = AV_CHANNEL_ORDER_UNSPEC;
+			this->ctx->ch_layout.nb_channels = 2;
 #else
 			this->ctx->request_channel_layout = AV_CH_LAYOUT_STEREO;
 			this->ctx->channel_layout = AV_CH_LAYOUT_STEREO;
