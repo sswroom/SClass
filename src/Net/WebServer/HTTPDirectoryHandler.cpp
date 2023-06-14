@@ -13,7 +13,7 @@
 #include "Sync/Interlocked.h"
 #include "Sync/MutexUsage.h"
 #include "Sync/RWMutexUsage.h"
-#include "Sync/Thread.h"
+#include "Sync/SimpleThread.h"
 #include "Text/JSText.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
@@ -1583,7 +1583,7 @@ void Net::WebServer::HTTPDirectoryHandler::ClearFileCache()
 	Sync::MutexUsage mutUsage(&this->fileCacheMut);
 	while (this->fileCacheUsing > 0)
 	{
-		Sync::Thread::Sleep(1);
+		Sync::SimpleThread::Sleep(1);
 	}
 	CacheInfo **cacheList = this->fileCache.ToArray(&cacheCnt);
 	while (cacheCnt-- > 0)

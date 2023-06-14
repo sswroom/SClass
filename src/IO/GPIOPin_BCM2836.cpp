@@ -389,7 +389,7 @@ Bool IO::GPIOPin::SetPullType(PullType pt)
 	{
 		return false;
 	}
-	Sync::Thread::Sleepus(1);
+	Sync::SimpleThread::Sleepus(1);
 	if (this->pinNum < 32)
 	{
 		((ClassData*)this->clsData)->memPtr[38] = (1 << this->pinNum);
@@ -398,7 +398,7 @@ Bool IO::GPIOPin::SetPullType(PullType pt)
 	{
 		((ClassData*)this->clsData)->memPtr[39] = (1 << (this->pinNum - 32));
 	}
-	Sync::Thread::Sleepus(1);
+	Sync::SimpleThread::Sleepus(1);
 	if (this->pinNum < 32)
 	{
 		((ClassData*)this->clsData)->memPtr[38] = 0;

@@ -2,6 +2,7 @@
 #include "Data/ByteTool.h"
 #include "IO/FileAnalyse/EXEFileAnalyse.h"
 #include "Sync/MutexUsage.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 #include "Text/StringBuilderUTF8.h"
 
@@ -279,7 +280,7 @@ IO::FileAnalyse::EXEFileAnalyse::EXEFileAnalyse(IO::StreamData *fd)
 	Sync::Thread::Create(ParseThread, this);
 	while (!this->threadStarted)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 }
 
@@ -290,7 +291,7 @@ IO::FileAnalyse::EXEFileAnalyse::~EXEFileAnalyse()
 		this->threadToStop = true;
 		while (this->threadRunning)
 		{
-			Sync::Thread::Sleep(10);
+			Sync::SimpleThread::Sleep(10);
 		}
 	}
 	SDEL_CLASS(this->fd);

@@ -5,6 +5,7 @@
 #include "Data/ByteTool.h"
 #include "Sync/Interlocked.h"
 #include "Sync/MutexUsage.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 #include "Text/MyString.h"
 
@@ -168,7 +169,7 @@ Crypto::Hash::BruteForceAttack::~BruteForceAttack()
 	this->threadToStop = true;
 	while (this->threadCnt > 0)
 	{
-		Sync::Thread::Sleep(1);
+		Sync::SimpleThread::Sleep(1);
 	}
 	DEL_CLASS(this->validator);
 }

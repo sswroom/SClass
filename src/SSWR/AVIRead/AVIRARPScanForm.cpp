@@ -6,7 +6,7 @@
 #include "Net/MACInfo.h"
 #include "SSWR/AVIRead/AVIRARPScanForm.h"
 #include "Sync/MutexUsage.h"
-#include "Sync/Thread.h"
+#include "Sync/SimpleThread.h"
 #include "UI/MessageDialog.h"
 
 //#include <stdio.h>
@@ -86,7 +86,7 @@ void __stdcall SSWR::AVIRead::AVIRARPScanForm::OnScanClicked(void *userObj)
 				buff[3]++;
 			}
 			mutUsage.EndUse();
-			Sync::Thread::Sleep(3000);
+			Sync::SimpleThread::Sleep(3000);
 		}
 		DEL_CLASS(arp);
 	}

@@ -385,11 +385,22 @@ void Net::OSSocketFactory::SetNoDelay(Socket *socket, Bool val)
 	setsockopt(this->SocketGetFD(socket), IPPROTO_TCP, TCP_NODELAY, (char*)&v, sizeof(v));
 }
 
-void Net::OSSocketFactory::SetRecvTimeout(Socket *socket, Int32 ms)
+void Net::OSSocketFactory::SetSendTimeout(Socket *socket, Data::Duration timeout)
 {
 	struct timeval tv;
-	tv.tv_sec = ms / 1000;
-	tv.tv_usec = (ms % 1000) * 1000;
+	tv.tv_sec = (__time_t)timeout.GetSeconds();
+	tv.tv_usec = (__suseconds_t)timeout.GetNS() / 1000;
+	if (setsockopt(this->SocketGetFD(socket), SOL_SOCKET, SO_SNDTIMEO, (char*)&tv, sizeof(tv)))
+	{
+		printf("Error in set SO_SNDTIMEO\r\n");
+	}
+}
+
+void Net::OSSocketFactory::SetRecvTimeout(Socket *socket, Data::Duration timeout)
+{
+	struct timeval tv;
+	tv.tv_sec = (__time_t)timeout.GetSeconds();
+	tv.tv_usec = (__suseconds_t)timeout.GetNS() / 1000;
 	if (setsockopt(this->SocketGetFD(socket), SOL_SOCKET, SO_RCVTIMEO, (char*)&tv, sizeof(tv)))
 	{
 		printf("Error in set SO_RCVTIMEO\r\n");
@@ -811,7 +822,7 @@ Bool Net::OSSocketFactory::IcmpSendEcho2(const Net::SocketUtil::AddressInfo *add
 	return false;
 }
 
-Bool Net::OSSocketFactory::Connect(Socket *socket, UInt32 ip, UInt16 port)
+Bool Net::OSSocketFactory::Connect(Socket *socket, UInt32 ip, UInt16 port, Data::Duration timeout)
 {
 	sockaddr_in addr;
 	addr.sin_family = AF_INET;
@@ -848,10 +859,12 @@ Bool Net::OSSocketFactory::Connect(Socket *socket, UInt32 ip, UInt16 port)
     fcntl(this->SocketGetFD(socket), F_SETFL, arg);
 
 	return succ;*/
+	if (timeout.NotZero())
+		this->SetSendTimeout(socket, timeout);
     return connect(this->SocketGetFD(socket), (struct sockaddr *)&addr, sizeof(addr)) == 0;
 }
 
-Bool Net::OSSocketFactory::Connect(Socket *socket, const Net::SocketUtil::AddressInfo *addr, UInt16 port)
+Bool Net::OSSocketFactory::Connect(Socket *socket, const Net::SocketUtil::AddressInfo *addr, UInt16 port, Data::Duration timeout)
 {
 	UInt8 addrBuff[28];
 	socklen_t socklen;
@@ -874,6 +887,8 @@ Bool Net::OSSocketFactory::Connect(Socket *socket, const Net::SocketUtil::Addres
 	{
 		return false;
 	}
+	if (timeout.NotZero())
+		this->SetSendTimeout(socket, timeout);
 	return connect(this->SocketGetFD(socket), (const sockaddr*)addrBuff, socklen) == 0;
 }
 

@@ -42,6 +42,7 @@ namespace Manage
 		Bool requesting;
 		Data::DateTime lastReqTime;
 		Data::DateTime lastKATime;
+		Data::Duration timeout;
 		void *userObj;
 		IO::Writer *msgWriter;
 
@@ -49,7 +50,7 @@ namespace Manage
 		static UInt32 __stdcall ConnRThread(void *conn);
 		void AddCommand(UInt8 *data, UOSInt dataSize, UInt16 cmdType);
 	public:
-		MonConn(EventHandler hdlr, void *userObj, Net::SocketFactory *sockf, IO::Writer *msgWriter);
+		MonConn(EventHandler hdlr, void *userObj, Net::SocketFactory *sockf, IO::Writer *msgWriter, Data::Duration timeout);
 		~MonConn();
 
 		Bool IsError();

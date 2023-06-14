@@ -6,6 +6,7 @@
 #include "Media/MPGFile.h"
 #include "Media/VOBAC3StreamSource.h"
 #include "Media/VOBLPCMStreamSource.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 #define BUFFSIZE 1048576
 
@@ -409,7 +410,7 @@ Bool Media::MPGFile::StopPlay()
 	this->playToStop = true;
 	while (this->playing != 0)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 	this->readOfst = 0;
 	this->startTime = 0;

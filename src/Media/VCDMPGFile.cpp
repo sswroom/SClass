@@ -5,6 +5,7 @@
 #include "Media/MPAStreamSource.h"
 #include "Media/MPEGVideoParser.h"
 #include "Media/VCDMPGFile.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 #define BUFFSIZE 1048576
 
@@ -223,7 +224,7 @@ Bool Media::VCDMPGFile::StopPlay()
 	this->playToStop = true;
 	while (this->playing != 0)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 	this->readOfst = 0;
 	this->startTime = 0;

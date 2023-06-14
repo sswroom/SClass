@@ -498,7 +498,7 @@ void Media::AAudioRenderer::Start()
 	Sync::Thread::Create(PlayThread, this);
 	while (!threadInit)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 }
 
@@ -514,7 +514,7 @@ void Media::AAudioRenderer::Stop()
 	}
 	while (playing)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 }
 

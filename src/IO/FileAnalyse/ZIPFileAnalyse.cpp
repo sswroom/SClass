@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "Data/ByteTool.h"
 #include "IO/FileAnalyse/ZIPFileAnalyse.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 #include "Text/Encoding.h"
 #include "Text/StringBuilderUTF8.h"
@@ -488,7 +489,7 @@ IO::FileAnalyse::ZIPFileAnalyse::ZIPFileAnalyse(IO::StreamData *fd)
 	Sync::Thread::Create(ParseThread, this);
 	while (!this->threadStarted)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 }
 
@@ -499,7 +500,7 @@ IO::FileAnalyse::ZIPFileAnalyse::~ZIPFileAnalyse()
 		this->threadToStop = true;
 		while (this->threadRunning)
 		{
-			Sync::Thread::Sleep(10);
+			Sync::SimpleThread::Sleep(10);
 		}
 	}
 

@@ -2,8 +2,8 @@
 #define _SM_NET_TCPCLIENTMGR
 #include "Data/ArrayList.h"
 #include "Data/ArrayListUInt64.h"
-#include "Data/DateTime.h"
 #include "Data/SyncCircularBuff.h"
+#include "Data/Timestamp.h"
 #include "Net/TCPClient.h"
 #include "Sync/Mutex.h"
 #include "Sync/MutexUsage.h"
@@ -30,12 +30,12 @@ namespace Net
 			UTF8Char debug[6];
 			TCPClient *cli;
 			void *cliData;
-			Int64 lastDataTimeTicks;
+			Data::Timestamp lastDataTime;
 			Sync::Mutex readMut;
 			Bool reading;
 			Bool processing;
 			Bool timeAlerted;
-			Int64 timeStart;
+			Data::Timestamp timeStart;
 			Bool recvDataExist;
 			UInt8 buff[TCP_BUFF_SIZE];
 			UOSInt buffSize;
@@ -67,7 +67,7 @@ namespace Net
 		TCPClientData dataHdlr;
 		TCPClientTimeout toHdlr;
 		void *userObj;
-		Int32 timeOutSeconds;
+		Data::Duration timeout;
 
 		ClassData *clsData;
 		Bool toStop;

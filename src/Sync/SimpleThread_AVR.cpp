@@ -2,12 +2,12 @@
 #include "MyMemory.h"
 #include "IO/FileStream.h"
 #include "IO/StreamReader.h"
-#include "Sync/Thread.h"
+#include "Sync/SimpleThread.h"
 #include "Text/MyString.h"
 #include <avr/interrupt.h>
 #define clockCyclesPerMicrosecond() ( F_CPU / 1000000L )
 
-void Sync::Thread::Sleep(UOSInt ms)
+void Sync::SimpleThread::Sleep(UOSInt ms)
 {
 	while (ms-- > 0)
 	{
@@ -15,7 +15,7 @@ void Sync::Thread::Sleep(UOSInt ms)
 	}
 }
 
-void Sync::Thread::Sleepus(UOSInt us)
+void Sync::SimpleThread::Sleepus(UOSInt us)
 {
 #if F_CPU >= 24000000L
 	if (!us) return; //  = 3 cycles, (4 when true)
@@ -56,7 +56,7 @@ void Sync::Thread::Sleepus(UOSInt us)
 	);
 }
 
-UInt32 Sync::Thread::GetThreadId()
+/*UInt32 Sync::Thread::GetThreadId()
 {
 	return 0;
 }
@@ -69,3 +69,4 @@ Int32 Sync::Thread::GetThreadCnt()
 void Sync::Thread::SetPriority(ThreadPriority priority)
 {
 }
+*/

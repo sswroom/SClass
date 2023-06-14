@@ -214,7 +214,7 @@ Net::SNMPUtil::ErrorStatus Net::SNMPClient::V1Walk(const Net::SocketUtil::Addres
 	return Net::SNMPUtil::ES_NOERROR;
 }
 
-UOSInt Net::SNMPClient::V1ScanGetRequest(const Net::SocketUtil::AddressInfo *broadcastAddr, Text::String *community, const UTF8Char *oidText, UOSInt oidTextLen, Data::ArrayList<Net::SocketUtil::AddressInfo *> *addrList, UOSInt timeoutMS, Bool scanIP)
+UOSInt Net::SNMPClient::V1ScanGetRequest(const Net::SocketUtil::AddressInfo *broadcastAddr, Text::String *community, const UTF8Char *oidText, UOSInt oidTextLen, Data::ArrayList<Net::SocketUtil::AddressInfo *> *addrList, Data::Duration timeout, Bool scanIP)
 {
 	UInt8 pduBuff[64];
 	UOSInt oidLen;
@@ -256,7 +256,7 @@ UOSInt Net::SNMPClient::V1ScanGetRequest(const Net::SocketUtil::AddressInfo *bro
 		this->svr->SetBroadcast(true);
 		this->svr->SendTo(broadcastAddr, 161, buff, buffSize);
 	}
-	Sync::Thread::Sleep(timeoutMS);
+	Sync::Thread::SleepDur(timeout);
 	scanMutUsage.BeginUse();
 	this->scanList = 0;
 	scanMutUsage.EndUse();

@@ -163,7 +163,7 @@ void Net::RTPAudioSession::StopSend()
 		this->outToStop = true;
 		while (this->outRunning)
 		{
-			Sync::Thread::Sleep(10);
+			Sync::SimpleThread::Sleep(10);
 		}
 	}
 }

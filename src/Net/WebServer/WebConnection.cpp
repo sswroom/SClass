@@ -6,7 +6,7 @@
 #include "Net/WebStatus.h"
 #include "Net/WebServer/HTTPServerUtil.h"
 #include "Net/WebServer/WebConnection.h"
-#include "Sync/Thread.h"
+#include "Sync/SimpleThread.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 
@@ -65,7 +65,7 @@ Net::WebServer::WebConnection::~WebConnection()
 		this->proxyCli->Close();
 		while (this->proxyMode)
 		{
-			Sync::Thread::Sleep(10);
+			Sync::SimpleThread::Sleep(10);
 		}
 	}
 	SDEL_CLASS(this->cstm);
@@ -460,7 +460,7 @@ void Net::WebServer::WebConnection::ProcessResponse()
 		}
 	
 		sbuff[i] = 0;
-		NEW_CLASS(proxyCli, Net::TCPClient(this->sockf, {sbuff, i}, (UInt16)Text::StrToInt32(&sbuff[i + 1])));
+		NEW_CLASS(proxyCli, Net::TCPClient(this->sockf, {sbuff, i}, (UInt16)Text::StrToInt32(&sbuff[i + 1]), 30000));
 		if (proxyCli->IsConnectError())
 		{
 			DEL_CLASS(proxyCli);
@@ -807,13 +807,13 @@ void Net::WebServer::WebConnection::ShutdownSend()
 	this->cli->ShutdownSend();
 }
 
-Bool Net::WebServer::WebConnection::ResponseSSE(Int32 timeoutMS, SSEDisconnectHandler hdlr, void *userObj)
+Bool Net::WebServer::WebConnection::ResponseSSE(Data::Duration timeout, SSEDisconnectHandler hdlr, void *userObj)
 {
 	if (this->sseHdlr)
 	{
 		return false;
 	}
-	this->cli->SetTimeout(timeoutMS);
+	this->cli->SetTimeout(timeout);
 	this->sseHdlrObj = userObj;
 	this->sseHdlr = hdlr;
 	this->AddContentType(CSTR("text/event-stream"));

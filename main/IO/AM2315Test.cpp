@@ -4,6 +4,7 @@
 #include "IO/ConsoleWriter.h"
 #include "IO/GPIOPin.h"
 #include "IO/Device/AM2315GPIO.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
@@ -71,7 +72,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			{
 				console.WriteLineC(UTF8STRC("Error in reading from AM2315"));
 			}
-			Sync::Thread::Sleep(2000);
+			Sync::SimpleThread::Sleep(2000);
 		}
 	}
 	DEL_CLASS(am2315);

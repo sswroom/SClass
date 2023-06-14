@@ -4,6 +4,7 @@
 #include "IO/MODBUSTCPMaster.h"
 #include "Math/Math.h"
 #include "Sync/MutexUsage.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 #include "Text/StringBuilderUTF8.h"
 //#include <stdio.h>
@@ -111,7 +112,7 @@ UInt32 __stdcall IO::MODBUSTCPMaster::ThreadProc(void *userObj)
 			}
 			else
 			{
-				Sync::Thread::Sleep(100);
+				Sync::SimpleThread::Sleep(100);
 			}
 			
 		}
@@ -131,7 +132,7 @@ IO::MODBUSTCPMaster::MODBUSTCPMaster(IO::Stream *stm)
 		Sync::Thread::Create(ThreadProc, this);
 		while (!this->threadRunning)
 		{
-			Sync::Thread::Sleep(10);
+			Sync::SimpleThread::Sleep(10);
 		}
 	}
 }
@@ -145,7 +146,7 @@ IO::MODBUSTCPMaster::~MODBUSTCPMaster()
 		this->stm->Close();
 		while (this->threadRunning)
 		{
-			Sync::Thread::Sleep(10);
+			Sync::SimpleThread::Sleep(10);
 		}
 	}
 	AddrResultCb *cb;
@@ -176,7 +177,7 @@ Bool IO::MODBUSTCPMaster::ReadCoils(UInt8 devAddr, UInt16 coilAddr, UInt16 coilC
 		Double t = this->clk.GetTimeDiff();
 		if (t < CMDDELAY * 0.001)
 		{
-			Sync::Thread::Sleep((UOSInt)(CMDDELAY - Double2Int32(t * 1000)));
+			Sync::SimpleThread::Sleep((UOSInt)(CMDDELAY - Double2Int32(t * 1000)));
 		}
 		this->stm->Write(buff, 12);
 		this->clk.Start();
@@ -204,7 +205,7 @@ Bool IO::MODBUSTCPMaster::ReadInputs(UInt8 devAddr, UInt16 inputAddr, UInt16 inp
 		Double t = this->clk.GetTimeDiff();
 		if (t < CMDDELAY * 0.001)
 		{
-			Sync::Thread::Sleep((UOSInt)(CMDDELAY - Double2Int32(t * 1000)));
+			Sync::SimpleThread::Sleep((UOSInt)(CMDDELAY - Double2Int32(t * 1000)));
 		}
 		this->stm->Write(buff, 12);
 		this->clk.Start();
@@ -232,7 +233,7 @@ Bool IO::MODBUSTCPMaster::ReadHoldingRegisters(UInt8 devAddr, UInt16 regAddr, UI
 		Double t = this->clk.GetTimeDiff();
 		if (t < CMDDELAY * 0.001)
 		{
-			Sync::Thread::Sleep((UOSInt)(CMDDELAY - Double2Int32(t * 1000)));
+			Sync::SimpleThread::Sleep((UOSInt)(CMDDELAY - Double2Int32(t * 1000)));
 		}
 		this->stm->Write(buff, 12);
 		this->clk.Start();
@@ -260,7 +261,7 @@ Bool IO::MODBUSTCPMaster::ReadInputRegisters(UInt8 devAddr, UInt16 regAddr, UInt
 		Double t = this->clk.GetTimeDiff();
 		if (t < CMDDELAY * 0.001)
 		{
-			Sync::Thread::Sleep((UOSInt)(CMDDELAY - Double2Int32(t * 1000)));
+			Sync::SimpleThread::Sleep((UOSInt)(CMDDELAY - Double2Int32(t * 1000)));
 		}
 		this->stm->Write(buff, 12);
 		this->clk.Start();
@@ -295,7 +296,7 @@ Bool IO::MODBUSTCPMaster::WriteCoil(UInt8 devAddr, UInt16 coilAddr, Bool isHigh)
 		Double t = this->clk.GetTimeDiff();
 		if (t < CMDDELAY * 0.001)
 		{
-			Sync::Thread::Sleep((UOSInt)(CMDDELAY - Double2Int32(t * 1000)));
+			Sync::SimpleThread::Sleep((UOSInt)(CMDDELAY - Double2Int32(t * 1000)));
 		}
 		this->stm->Write(buff, 12);
 		this->clk.Start();
@@ -323,7 +324,7 @@ Bool IO::MODBUSTCPMaster::WriteHoldingRegister(UInt8 devAddr, UInt16 regAddr, UI
 		Double t = this->clk.GetTimeDiff();
 		if (t < CMDDELAY * 0.001)
 		{
-			Sync::Thread::Sleep((UOSInt)(CMDDELAY - Double2Int32(t * 1000)));
+			Sync::SimpleThread::Sleep((UOSInt)(CMDDELAY - Double2Int32(t * 1000)));
 		}
 		this->stm->Write(buff, 12);
 		this->clk.Start();
@@ -354,7 +355,7 @@ Bool IO::MODBUSTCPMaster::WriteHoldingRegisters(UInt8 devAddr, UInt16 regAddr, U
 		Double t = this->clk.GetTimeDiff();
 		if (t < CMDDELAY * 0.001)
 		{
-			Sync::Thread::Sleep((UOSInt)(CMDDELAY - Double2Int32(t * 1000)));
+			Sync::SimpleThread::Sleep((UOSInt)(CMDDELAY - Double2Int32(t * 1000)));
 		}
 		this->stm->Write(buff, (UOSInt)cnt * 2 + 13);
 		this->clk.Start();

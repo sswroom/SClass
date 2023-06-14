@@ -12,6 +12,7 @@
 #include "Sync/Event.h"
 #include "Sync/Mutex.h"
 #include "Sync/MutexUsage.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
@@ -93,7 +94,7 @@ public:
 		Sync::Thread::Create(CheckThread, this);
 		while (!this->threadRunning)
 		{
-			Sync::Thread::Sleep(1);
+			Sync::SimpleThread::Sleep(1);
 		}
 	}
 
@@ -103,7 +104,7 @@ public:
 		this->evt->Set();
 		while (this->threadRunning)
 		{
-			Sync::Thread::Sleep(1);
+			Sync::SimpleThread::Sleep(1);
 		}
 		DEL_CLASS(this->evt);
 		SDEL_STRING(this->name);

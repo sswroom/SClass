@@ -54,7 +54,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		if (ctrl->LEScanBegin())
 		{
 			console->WriteLineC(UTF8STRC("Started scanning");
-			Sync::Thread::Sleep(10000);
+			Sync::SimpleThread::Sleep(10000);
 			ctrl->LEScanEnd();
 		}
 		DEL_CLASS(ctrl);

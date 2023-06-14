@@ -3,7 +3,7 @@
 #include "Manage/HiResClock.h"
 #include "Net/MACInfo.h"
 #include "SSWR/AVIRead/AVIRWifiScanForm.h"
-#include "Sync/Thread.h"
+#include "Sync/SimpleThread.h"
 #include "Text/MyStringFloat.h"
 #include "UI/MessageDialog.h"
 
@@ -65,7 +65,7 @@ void SSWR::AVIRead::AVIRWifiScanForm::WifiScan()
 		UOSInt j;
 		this->wlanInterf->Scan();
 		t1 = clk.GetTimeDiff();
-		Sync::Thread::Sleep(5000);
+		Sync::SimpleThread::Sleep(5000);
 
 		clk.Start();
 		this->wlanInterf->GetBSSList(&bssList);

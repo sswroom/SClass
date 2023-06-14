@@ -2,7 +2,7 @@
 #include "Net/TCPBoardcastStream.h"
 #include "Sync/Interlocked.h"
 #include "Sync/MutexUsage.h"
-#include "Sync/Thread.h"
+#include "Sync/SimpleThread.h"
 #include "Text/StringBuilderUTF8.h"
 
 void __stdcall Net::TCPBoardcastStream::ConnHandler(Socket *s, void *userObj)
@@ -140,7 +140,7 @@ Net::TCPBoardcastStream::~TCPBoardcastStream()
 	DEL_CLASS(this->cliMgr);
 	while (this->readCnt > 0)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 	MemFree(this->readBuff);
 	MemFree(this->writeBuff);
@@ -174,7 +174,7 @@ UOSInt Net::TCPBoardcastStream::Read(UInt8 *buff, UOSInt size)
 		}
 		if ((OSInt)readBuffSize > 0)
 			break;
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 	Sync::Interlocked::Decrement(&this->readCnt);
 	Sync::MutexUsage mutUsage(&this->readMut);

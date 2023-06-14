@@ -641,7 +641,7 @@ OSInt IO::RS232GPIO::Read(UInt8 *buff, OSInt size)
 	OSInt retSize = 0;
 	while (!RS232GPIO_Serial->available())
 	{
-		Sync::Thread::Sleep(1);
+		Sync::SimpleThread::Sleep(1);
 	}
 	while (retSize < size && RS232GPIO_Serial->available())
 	{

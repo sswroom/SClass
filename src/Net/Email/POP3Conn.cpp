@@ -2,6 +2,7 @@
 #include "MyMemory.h"
 #include "Manage/HiResClock.h"
 #include "Net/Email/POP3Conn.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
@@ -130,7 +131,7 @@ Net::Email::POP3Conn::ResultStatus Net::Email::POP3Conn::WaitForResult(UTF8Char 
 		return ResultStatus::TimedOut;
 }
 
-Net::Email::POP3Conn::POP3Conn(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CString host, UInt16 port, ConnType connType, IO::Writer *logWriter)
+Net::Email::POP3Conn::POP3Conn(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CString host, UInt16 port, ConnType connType, IO::Writer *logWriter, Data::Duration timeout)
 {
 	this->threadStarted = false;
 	this->threadRunning = false;
@@ -148,14 +149,14 @@ Net::Email::POP3Conn::POP3Conn(Net::SocketFactory *sockf, Net::SSLEngine *ssl, T
 	if (connType == CT_SSL)
 	{
 		Net::SSLEngine::ErrorType err;
-		this->cli = ssl->ClientConnect(host, port, &err);
+		this->cli = ssl->ClientConnect(host, port, &err, timeout);
 	}
 	else if (connType == CT_STARTTLS)
 	{
 		UInt8 buff[1024];
 		UOSInt buffSize;
-		NEW_CLASS(this->cli, Net::TCPClient(sockf, &addr, port));
-		this->cli->SetTimeout(2000);
+		NEW_CLASS(this->cli, Net::TCPClient(sockf, &addr, port, timeout));
+		this->cli->SetTimeout(timeout);
 		buffSize = this->cli->Read(buff, 1024);
 		if (this->logWriter)
 		{
@@ -211,7 +212,7 @@ Net::Email::POP3Conn::POP3Conn(Net::SocketFactory *sockf, Net::SSLEngine *ssl, T
 	}
 	else
 	{
-		NEW_CLASS(this->cli, Net::TCPClient(sockf, &addr, port));
+		NEW_CLASS(this->cli, Net::TCPClient(sockf, &addr, port, timeout));
 	}
 	this->cli->SetNoDelay(false);
 	NEW_CLASS(this->writer, Text::UTF8Writer(this->cli));
@@ -232,7 +233,7 @@ Net::Email::POP3Conn::POP3Conn(Net::SocketFactory *sockf, Net::SSLEngine *ssl, T
 	Sync::Thread::Create(RecvThread, this);
 	while (!this->threadStarted)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 	if (connType == CT_STARTTLS)
 	{
@@ -255,7 +256,7 @@ Net::Email::POP3Conn::~POP3Conn()
 	this->cli->Close();
 	while (this->threadRunning)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 	DEL_CLASS(this->writer);
 	DEL_CLASS(this->cli);

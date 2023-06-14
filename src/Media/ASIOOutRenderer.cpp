@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Media/ASIOOutRenderer.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 #include "Text/Encoding.h"
 #include "Text/MyString.h"
@@ -916,7 +917,7 @@ void Media::ASIOOutRenderer::Start()
 	Sync::Thread::Create(PlayThread, this);
 	while (!threadInit)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 }
 
@@ -930,7 +931,7 @@ void Media::ASIOOutRenderer::Stop()
 	this->bufferEvt->Set();
 	while (this->playing)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 }
 

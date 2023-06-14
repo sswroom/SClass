@@ -4,6 +4,7 @@
 #include "IO/ATCommandChannel.h"
 #include "IO/FileStream.h"
 #include "Sync/MutexUsage.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 #include "Text/MyString.h"
 
@@ -29,7 +30,7 @@ UInt32 __stdcall IO::ATCommandChannel::CmdThread(void *userObj)
 		readSize = me->stm->Read(&readBuff[buffSize], 2048 - buffSize);
 		if (readSize == 0)
 		{
-			Sync::Thread::Sleep(100);
+			Sync::SimpleThread::Sleep(100);
 		}
 		else
 		{
@@ -154,7 +155,7 @@ IO::Stream *IO::ATCommandChannel::GetStream()
 	return this->stm;
 }
 
-UOSInt IO::ATCommandChannel::SendATCommand(Data::ArrayList<Text::String *> *retArr, const UTF8Char *atCmd, UOSInt atCmdLen, Int32 timeoutMS)
+UOSInt IO::ATCommandChannel::SendATCommand(Data::ArrayList<Text::String *> *retArr, const UTF8Char *atCmd, UOSInt atCmdLen, Data::Duration timeout)
 {
 	Data::DateTime dt;
 	Data::DateTime dt2;
@@ -195,14 +196,14 @@ UOSInt IO::ATCommandChannel::SendATCommand(Data::ArrayList<Text::String *> *retA
 		if (cmdEnd || !this->threadRunning)
 			break;
 		dt2.SetCurrTimeUTC();
-		if (dt2.DiffMS(&dt) >= timeoutMS)
+		if (dt2.Diff(&dt) >= timeout)
 			break;
 	}
 
 	return retSize;
 }
 
-UOSInt IO::ATCommandChannel::SendATCommands(Data::ArrayList<Text::String *> *retArr, const UTF8Char *atCmd, UOSInt atCmdLen, const UTF8Char *atCmdSub, Int32 timeoutMS)
+UOSInt IO::ATCommandChannel::SendATCommands(Data::ArrayList<Text::String *> *retArr, const UTF8Char *atCmd, UOSInt atCmdLen, const UTF8Char *atCmdSub, Data::Duration timeout)
 {
 	Data::DateTime dt;
 	Data::DateTime dt2;
@@ -215,7 +216,7 @@ UOSInt IO::ATCommandChannel::SendATCommands(Data::ArrayList<Text::String *> *ret
 		return 0;
 	this->CmdSend((UInt8*)atCmd, atCmdLen);
 	this->CmdSend((UInt8*)"\r", 1);
-	Sync::Thread::Sleep(1000);
+	Sync::SimpleThread::Sleep(1000);
 	this->CmdSend((UInt8*)atCmdSub, Text::StrCharCnt(atCmdSub));
 	this->CmdSend((UInt8*)"\x1a", 1);
 	
@@ -246,13 +247,13 @@ UOSInt IO::ATCommandChannel::SendATCommands(Data::ArrayList<Text::String *> *ret
 		if (cmdEnd || !this->threadRunning)
 			break;
 		dt2.SetCurrTimeUTC();
-		if (dt2.DiffMS(&dt) >= timeoutMS)
+		if (dt2.Diff(&dt) >= timeout)
 			break;
 	}
 	return retSize;
 }
 
-UOSInt IO::ATCommandChannel::SendDialCommand(Data::ArrayList<Text::String *> *retArr, const UTF8Char *atCmd, UOSInt atCmdLen, Int32 timeoutMS)
+UOSInt IO::ATCommandChannel::SendDialCommand(Data::ArrayList<Text::String *> *retArr, const UTF8Char *atCmd, UOSInt atCmdLen, Data::Duration timeout)
 {
 	Data::DateTime dt;
 	Data::DateTime dt2;
@@ -313,7 +314,7 @@ UOSInt IO::ATCommandChannel::SendDialCommand(Data::ArrayList<Text::String *> *re
 		if (cmdEnd || !this->threadRunning)
 			break;
 		dt2.SetCurrTimeUTC();
-		if (dt2.DiffMS(&dt) >= timeoutMS)
+		if (dt2.Diff(&dt) >= timeout)
 			break;
 	}
 	return retSize;
@@ -333,7 +334,7 @@ UOSInt IO::ATCommandChannel::CmdSend(const UInt8 *data, UOSInt dataSize)
 	return this->stm->Write(data, dataSize);
 }
 
-Text::String *IO::ATCommandChannel::CmdGetNextResult(UOSInt timeoutMS)
+Text::String *IO::ATCommandChannel::CmdGetNextResult(Data::Duration timeout)
 {
 	Text::String *cmdRes = 0;
 	this->cmdEvt.Clear();
@@ -344,7 +345,7 @@ Text::String *IO::ATCommandChannel::CmdGetNextResult(UOSInt timeoutMS)
 		mutUsage.EndUse();
 		return cmdRes;
 	}
-	this->cmdEvt.Wait(timeoutMS);
+	this->cmdEvt.Wait(timeout);
 	if (this->cmdResults.GetCount() > 0)
 	{
 		Sync::MutexUsage mutUsage(&this->cmdResultMut);
@@ -363,7 +364,7 @@ void IO::ATCommandChannel::Close()
 		this->stm->Close();
 		while (this->threadRunning)
 		{
-			Sync::Thread::Sleep(10);
+			Sync::SimpleThread::Sleep(10);
 		}
 	}
 }

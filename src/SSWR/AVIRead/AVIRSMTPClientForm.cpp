@@ -29,7 +29,7 @@ void __stdcall SSWR::AVIRead::AVIRSMTPClientForm::OnSendClicked(void *userObj)
 	Net::Email::SMTPClient *cli;
 	Text::StringBuilderUTF8 sbLog;
 	Text::StringBuilderWriter writer(&sbLog);
-	NEW_CLASS(cli, Net::Email::SMTPClient(me->core->GetSocketFactory(), me->ssl, sb1.ToCString(), port, (Net::Email::SMTPConn::ConnType)(OSInt)me->cboSSLType->GetSelectedItem(), &writer));
+	NEW_CLASS(cli, Net::Email::SMTPClient(me->core->GetSocketFactory(), me->ssl, sb1.ToCString(), port, (Net::Email::SMTPConn::ConnType)(OSInt)me->cboSSLType->GetSelectedItem(), &writer, 60000));
 	sb1.ClearStr();
 	sb2.ClearStr();
 	me->txtUsername->GetText(&sb1);

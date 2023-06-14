@@ -171,7 +171,7 @@ OSInt Media::DDrawRendererLR::GetNextSurface(Int32 frameTime)
 		return -1;
 	while ((this->surfaceBuffEnd + 1) % FRAMEBUFFSIZE == this->surfaceBuffStart)
 	{
-		Sync::Thread::Sleep(1);
+		Sync::SimpleThread::Sleep(1);
 	}
 	this->surfaceBuff[this->surfaceBuffEnd].frameTime = frameTime;
 	return this->surfaceBuffEnd;
@@ -508,11 +508,11 @@ Media::DDrawRendererLR::~DDrawRendererLR()
 	this->frameProcEvent->Set();
 	while (this->scnUpdRunning)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 	while (this->frameProcRunning)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 	this->ReleaseSurface();
 	this->ReleaseSubSurface();
@@ -605,7 +605,7 @@ void Media::DDrawRendererLR::AddFrame(const UInt8 *frameData, Int32 frameTime, M
 {
 	while (((this->frameProcEnd + 1) % FRAMESRCSIZE) == this->frameProcStart)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 		if (this->rendering == false)
 			return;
 	}

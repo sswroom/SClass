@@ -35,7 +35,7 @@ namespace Net
 		UInt8 *dataBuff;
 		UOSInt buffSize;
 		UOSInt buffOfst;
-		Int32 timeOutMS;
+		Data::Duration timeout;
 
 	public:
 		HTTPMyClient(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CString userAgent, Bool kaConn);
@@ -54,7 +54,7 @@ namespace Net
 		virtual Bool Connect(Text::CString url, Net::WebUtil::RequestMethod method, Double *timeDNS, Double *timeConn, Bool defHeaders);
 		virtual void AddHeaderC(Text::CString name, Text::CString value);
 		virtual void EndRequest(Double *timeReq, Double *timeResp);
-		virtual void SetTimeout(Int32 ms);
+		virtual void SetTimeout(Data::Duration timeout);
 
 		virtual Bool IsSecureConn();
 		virtual Bool SetClientCert(Crypto::Cert::X509Cert *cert, Crypto::Cert::X509File *key);

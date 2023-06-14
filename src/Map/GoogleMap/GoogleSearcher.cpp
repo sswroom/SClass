@@ -12,7 +12,7 @@
 #include "Sync/Event.h"
 #include "Sync/Mutex.h"
 #include "Sync/MutexUsage.h"
-#include "Sync/Thread.h"
+#include "Sync/SimpleThread.h"
 #include "Text/Encoding.h"
 #include "Text/Locale.h"
 #include "Text/MyString.h"
@@ -99,7 +99,7 @@ UTF8Char *Map::GoogleMap::GoogleSearcher::SearchName(UTF8Char *buff, UOSInt buff
 	{
 		if (si >= 0)
 		{
-			Sync::Thread::Sleep((UOSInt)(200 - si));
+			Sync::SimpleThread::Sleep((UOSInt)(200 - si));
 		}
 	}
 

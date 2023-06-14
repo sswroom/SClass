@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Core/Core.h"
 #include "Net/OSSocketFactory.h"
-#include "Sync/Thread.h"
+#include "Sync/SimpleThread.h"
 #include <stdio.h>
 
 Int32 MyMain(Core::IProgControl *progCtrl)
@@ -23,7 +23,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		{
 //			printf("Error in receiving reply\r\n");
 		}
-		Sync::Thread::Sleep(60000);
+		Sync::SimpleThread::Sleep(60000);
 	}
 	DEL_CLASS(sockf);
 	return 0;

@@ -3,6 +3,7 @@
 #include "IO/ConsoleWriter.h"
 #include "Manage/HiResClock.h"
 #include "Sync/Event.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
@@ -21,11 +22,11 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	NEW_CLASS(clk, Manage::HiResClock());
 	NEW_CLASS(evt, Sync::Event(false));
 	Sync::Thread::Create(TestThread, 0);
-	Sync::Thread::Sleep(10);
+	Sync::SimpleThread::Sleep(10);
 	clk->Start();
 	evt->Set();
 	t2 = clk->GetTimeDiff();
-	Sync::Thread::Sleep(10);
+	Sync::SimpleThread::Sleep(10);
 
 	DEL_CLASS(evt);
 	DEL_CLASS(clk);

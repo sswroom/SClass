@@ -3,6 +3,7 @@
 #include "SSWR/AVIRead/AVIRThreadSpeedForm.h"
 #include "Sync/Interlocked.h"
 #include "Sync/MutexUsage.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 #include "Text/MyStringFloat.h"
 
@@ -13,7 +14,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRThreadSpeedForm::TestThread(void *userObj)
 	me->clk.Start();
 	me->mainEvt.Set();
 	Sync::MutexUsage mutUsage(&me->mut);
-	Sync::Thread::Sleep(500);
+	Sync::SimpleThread::Sleep(500);
 	me->clk.Start();
 	return 0;
 }
@@ -96,7 +97,7 @@ void __stdcall SSWR::AVIRead::AVIRThreadSpeedForm::OnTestClicked(void *userObj)
 	sptr = Text::StrDouble(sbuff, t);
 	me->lvResult->SetSubItem(i, 1, CSTRP(sbuff, sptr));
 
-	Sync::Thread::Sleep(100);
+	Sync::SimpleThread::Sleep(100);
 	{
 		Sync::MutexUsage mutUsage(&me->mut);
 		t = me->clk.GetTimeDiff();

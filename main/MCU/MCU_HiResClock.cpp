@@ -9,13 +9,13 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 {
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
-	Sync::Thread::Sleep(10000);
+	Sync::SimpleThread::Sleep(10000);
 	IO::ConsoleWriter console;
 	Manage::HiResClock clk;
 	while (true)
 	{
 		clk.Start();
-		Sync::Thread::Sleep(1000);
+		Sync::SimpleThread::Sleep(1000);
 		sptr = Text::StrInt64(sbuff, clk.GetTimeDiffus());
 		console.WriteStrC(UTF8STRC("Time used(us): "));
 		console.WriteLineC(sbuff, (UOSInt)(sptr - sbuff));

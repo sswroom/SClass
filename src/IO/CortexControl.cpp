@@ -5,6 +5,7 @@
 #include "Manage/HiResClock.h"
 #include "Math/Math.h"
 #include "Sync/MutexUsage.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 #include "Text/StringBuilderUTF8.h"
 
@@ -26,7 +27,7 @@ UInt32 __stdcall IO::CortexControl::RecvThread(void *userObj)
 			if (me->recvToStop)
 				break;
 			else
-				Sync::Thread::Sleep(10);
+				Sync::SimpleThread::Sleep(10);
 		}
 		else
 		{
@@ -84,7 +85,7 @@ IO::CortexControl::~CortexControl()
 	}
 	while (this->recvRunning)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 	SDEL_CLASS(this->stm);
 }

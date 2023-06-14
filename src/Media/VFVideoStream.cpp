@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "Media/VFVideoStream.h"
 #include "Sync/MutexUsage.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 #include "Text/MyString.h"
 #include "Text/MyStringW.h"
@@ -115,7 +116,7 @@ Media::VFVideoStream::VFVideoStream(Media::VFMediaFile *mfile)
 	Sync::Thread::Create(PlayThread, this);
 	while (!this->threadRunning)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 }
 
@@ -126,7 +127,7 @@ Media::VFVideoStream::~VFVideoStream()
 	this->threadEvt.Set();
 	while (this->threadRunning)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 
 	{

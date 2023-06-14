@@ -3,6 +3,7 @@
 #include "Net/MQTTStaticClient.h"
 #include "Net/WebSocketClient.h"
 #include "Sync/MutexUsage.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 #include "Text/StringBuilderUTF8.h"
 
@@ -53,7 +54,7 @@ void Net::MQTTStaticClient::Connect()
 	if (this->webSocket)
 	{
 		Net::WebSocketClient *ws;
-		NEW_CLASS(ws, Net::WebSocketClient(this->sockf, this->ssl, this->host->ToCString(), this->port, CSTR("/mqtt"), CSTR_NULL, Net::WebSocketClient::Protocol::MQTT));
+		NEW_CLASS(ws, Net::WebSocketClient(this->sockf, this->ssl, this->host->ToCString(), this->port, CSTR("/mqtt"), CSTR_NULL, Net::WebSocketClient::Protocol::MQTT, this->connTimeout));
 		if (ws->IsDown())
 		{
 			DEL_CLASS(ws);
@@ -64,7 +65,7 @@ void Net::MQTTStaticClient::Connect()
 	}
 	else
 	{
-		NEW_CLASS(conn, Net::MQTTConn(this->sockf, this->ssl, this->host->ToCString(), this->port, OnDisconnect, this));
+		NEW_CLASS(conn, Net::MQTTConn(this->sockf, this->ssl, this->host->ToCString(), this->port, OnDisconnect, this, this->connTimeout));
 	}
 	if (conn->IsError())
 	{
@@ -147,6 +148,7 @@ Net::MQTTStaticClient::MQTTStaticClient(Net::MQTTConn::PublishMessageHdlr hdlr, 
 	this->kaSeconds = 30;
 	this->conn = 0;
 	this->errLog = errLog;
+	this->connTimeout = 30000;
 
 	Data::DateTime dt;
 	dt.SetCurrTimeUTC();
@@ -183,7 +185,7 @@ Net::MQTTStaticClient::MQTTStaticClient(Net::SocketFactory *sockf, Net::SSLEngin
 	Sync::Thread::Create(KAThread, this);
 	while (!this->kaRunning)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 }
 
@@ -195,7 +197,7 @@ Net::MQTTStaticClient::~MQTTStaticClient()
 		this->kaEvt.Set();
 		while (this->kaRunning)
 		{
-			Sync::Thread::Sleep(10);
+			Sync::SimpleThread::Sleep(10);
 		}
 	}
 	Sync::MutexUsage mutUsage(&this->connMut);

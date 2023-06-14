@@ -9,6 +9,7 @@
 #include "Math/Geometry/VectorImage.h"
 #include "Media/ImageList.h"
 #include "Sync/MutexUsage.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 #include "Text/MyString.h"
 
@@ -193,7 +194,7 @@ Map::TileMapLayer::TileMapLayer(Map::TileMap *tileMap, Parser::ParserList *parse
 		}
 		if (!running)
 		{
-			Sync::Thread::Sleep(1);
+			Sync::SimpleThread::Sleep(1);
 		}
 	}
 }
@@ -229,7 +230,7 @@ Map::TileMapLayer::~TileMapLayer()
 		}
 		if (!running)
 			break;
-		Sync::Thread::Sleep(1);
+		Sync::SimpleThread::Sleep(1);
 	}
 	MemFree(this->threads);
 
@@ -657,7 +658,7 @@ void Map::TileMapLayer::WaitCache()
 		}
 		if (!found)
 			break;
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 }
 

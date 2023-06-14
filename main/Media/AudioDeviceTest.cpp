@@ -4,7 +4,7 @@
 #include "Media/AudioDevice.h"
 #include "Media/SilentSource.h"
 #include "Media/AudioFilter/AudioSweepFilter.h"
-#include "Sync/Thread.h"
+#include "Sync/SimpleThread.h"
 
 Int32 MyMain(Core::IProgControl *progCtrl)
 {
@@ -36,7 +36,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				{
 					break;
 				}
-				Sync::Thread::Sleep(10000 - (UOSInt)t);
+				Sync::SimpleThread::Sleep(10000 - (UOSInt)t);
 			}
 			console.WriteLineC(UTF8STRC("End Playing"));
 			renderer->Stop();

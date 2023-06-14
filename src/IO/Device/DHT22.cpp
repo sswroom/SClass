@@ -2,7 +2,7 @@
 #include "Data/ByteTool.h"
 #include "IO/Device/DHT22.h"
 #include "Manage/HiResClock.h"
-#include "Sync/Thread.h"
+#include "Sync/SimpleThread.h"
 //#include <wchar.h>
 //#include <stdio.h>
 
@@ -34,9 +34,9 @@ Bool IO::Device::DHT22::ReadData(Double *temp, Double *rh)
 
 	this->pin->SetPinOutput(true);
 	this->pin->SetPinState(false);
-	Sync::Thread::Sleep(18);
+	Sync::SimpleThread::Sleep(18);
 	this->pin->SetPinState(true);
-	Sync::Thread::Sleepus(40);
+	Sync::SimpleThread::Sleepus(40);
 	this->pin->SetPinOutput(false);
 	clk.Start();
 
@@ -55,7 +55,7 @@ Bool IO::Device::DHT22::ReadData(Double *temp, Double *rh)
 				break;
 			}
 			counter++;
-			Sync::Thread::Sleepus( 1 );
+			Sync::SimpleThread::Sleepus( 1 );
 			if ( counter == 255 )
 			{
 				break;

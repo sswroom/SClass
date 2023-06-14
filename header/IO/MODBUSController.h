@@ -22,7 +22,7 @@ namespace IO
 		} DataType;
 	private:
 		IO::MODBUSMaster *modbus;
-		UOSInt timeout;
+		Data::Duration timeout;
 		Sync::Event cbEvt;
 		Sync::Mutex reqMut;
 		UInt8 *reqResult;
@@ -43,7 +43,7 @@ namespace IO
 		MODBUSController(IO::MODBUSMaster *modbus);
 		~MODBUSController();
 
-		void SetTimeout(UOSInt timeout);
+		void SetTimeout(Data::Duration timeout);
 		Bool ReadRegisterI32(UInt8 devAddr, UInt32 regAddr, Int32 *outVal);
 		Bool ReadRegisterII32(UInt8 devAddr, UInt32 regAddr, Int32 *outVal); //Intel byte order
 		Bool ReadRegisterF32(UInt8 devAddr, UInt32 regAddr, Single *outVal);

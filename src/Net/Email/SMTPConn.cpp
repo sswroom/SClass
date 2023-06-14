@@ -2,6 +2,7 @@
 #include "MyMemory.h"
 #include "Manage/HiResClock.h"
 #include "Net/Email/SMTPConn.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
@@ -112,7 +113,7 @@ UInt32 Net::Email::SMTPConn::WaitForResult(UTF8Char **msgRetEnd)
 		return 0;
 }
 
-Net::Email::SMTPConn::SMTPConn(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CString host, UInt16 port, ConnType connType, IO::Writer *logWriter)
+Net::Email::SMTPConn::SMTPConn(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CString host, UInt16 port, ConnType connType, IO::Writer *logWriter, Data::Duration timeout)
 {
 	this->threadStarted = false;
 	this->threadRunning = false;
@@ -129,13 +130,13 @@ Net::Email::SMTPConn::SMTPConn(Net::SocketFactory *sockf, Net::SSLEngine *ssl, T
 	if (connType == ConnType::SSL)
 	{
 		Net::SSLEngine::ErrorType err;
-		this->cli = ssl->ClientConnect(host, port, &err);
+		this->cli = ssl->ClientConnect(host, port, &err, timeout);
 	}
 	else if (connType == ConnType::STARTTLS)
 	{
 		UInt8 buff[1024];
 		UOSInt buffSize;
-		NEW_CLASS(this->cli, Net::TCPClient(sockf, &addr, port));
+		NEW_CLASS(this->cli, Net::TCPClient(sockf, &addr, port, timeout));
 		this->cli->SetTimeout(2000);
 		buffSize = this->cli->Read(buff, 1024);
 		if (this->logWriter)
@@ -192,9 +193,10 @@ Net::Email::SMTPConn::SMTPConn(Net::SocketFactory *sockf, Net::SSLEngine *ssl, T
 	}
 	else
 	{
-		NEW_CLASS(this->cli, Net::TCPClient(sockf, &addr, port));
+		NEW_CLASS(this->cli, Net::TCPClient(sockf, &addr, port, timeout));
 	}
 	this->cli->SetNoDelay(false);
+	this->cli->SetTimeout(timeout);
 	NEW_CLASS(this->writer, Text::UTF8Writer(this->cli));
 	if (this->logWriter)
 	{
@@ -213,7 +215,7 @@ Net::Email::SMTPConn::SMTPConn(Net::SocketFactory *sockf, Net::SSLEngine *ssl, T
 	Sync::Thread::Create(SMTPThread, this);
 	while (!this->threadStarted)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 	if (connType == ConnType::STARTTLS)
 	{
@@ -236,7 +238,7 @@ Net::Email::SMTPConn::~SMTPConn()
 	this->cli->Close();
 	while (this->threadRunning)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 	DEL_CLASS(this->writer);
 	DEL_CLASS(this->cli);

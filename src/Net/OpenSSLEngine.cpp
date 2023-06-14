@@ -478,7 +478,7 @@ void Net::OpenSSLEngine::ClientSetSkipCertCheck(Bool skipCertCheck)
 }
 
 
-Net::SSLClient *Net::OpenSSLEngine::ClientConnect(Text::CString hostName, UInt16 port, ErrorType *err)
+Net::SSLClient *Net::OpenSSLEngine::ClientConnect(Text::CString hostName, UInt16 port, ErrorType *err, Data::Duration timeout)
 {
 	Net::SocketUtil::AddressInfo addr[1];
 	UOSInt addrCnt = this->sockf->DNSResolveIPs(hostName, addr, 1);
@@ -517,7 +517,7 @@ Net::SSLClient *Net::OpenSSLEngine::ClientConnect(Text::CString hostName, UInt16
 					*err = ErrorType::OutOfMemory;
 				return 0;
 			}
-			if (this->sockf->Connect(s, &addr[addrInd], port))
+			if (this->sockf->Connect(s, &addr[addrInd], port, timeout))
 			{
 				return CreateClientConn(ssl, s, hostName, err);
 			}
@@ -533,7 +533,7 @@ Net::SSLClient *Net::OpenSSLEngine::ClientConnect(Text::CString hostName, UInt16
 					*err = ErrorType::OutOfMemory;
 				return 0;
 			}
-			if (this->sockf->Connect(s, &addr[addrInd], port))
+			if (this->sockf->Connect(s, &addr[addrInd], port, timeout))
 			{
 				return CreateClientConn(ssl, s, hostName, err);
 			}

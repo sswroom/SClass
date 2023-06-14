@@ -3,7 +3,7 @@
 #include "Data/ByteTool.h"
 #include "IO/I2CChannelOS.h"
 #include "IO/Device/BME280.h"
-#include "Sync/Thread.h"
+#include "Sync/SimpleThread.h"
 
 Double IO::Device::BME280::CalcTempRAW(Int32 tRAW)
 {
@@ -100,7 +100,7 @@ Bool IO::Device::BME280::Reset()
 	{
 		return false;
 	}
-	Sync::Thread::Sleep(300);
+	Sync::SimpleThread::Sleep(300);
 	if (!this->i2c->ReadBuff(0x88, 0xa2 - 0x88, buff))
 	{
 		return false;

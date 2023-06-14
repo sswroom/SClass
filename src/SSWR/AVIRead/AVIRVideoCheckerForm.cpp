@@ -8,6 +8,7 @@
 #include "Media/Decoder/VideoDecoderFinder.h"
 #include "SSWR/AVIRead/AVIRVideoCheckerForm.h"
 #include "Sync/MutexUsage.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
@@ -195,7 +196,7 @@ SSWR::AVIRead::AVIRVideoCheckerForm::~AVIRVideoCheckerForm()
 	this->CancelQueues();
 	while (this->threadRunning)
 	{
-		Sync::Thread::Sleep(1);
+		Sync::SimpleThread::Sleep(1);
 	}
 	UOSInt i = this->updateList.GetCount();
 	UpdateQueue *update;

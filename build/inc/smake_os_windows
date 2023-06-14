@@ -160,9 +160,11 @@ Parser/FileParser/JP2Parser.h: ../../src/Parser/FileParser/JP2Parser_Null.cpp
 Parser/FileParser/WebPParser.h: ../../src/Parser/FileParser/WebPParser_Null.cpp
 @WebPParser.o
 
+Sync/SimpleThread.h: ../../src/Sync/ThreadW.cpp
+@SimpleThread.o
+@SimpleThread_CPP.o
 Sync/Thread.h: ../../src/Sync/ThreadW.cpp
 @Thread.o
-@Thread_CPP.o
 
 Win32/ServiceControl.h: ../../src/Win32/ServiceControl.cpp
 @ServiceControl.o
@@ -261,6 +263,7 @@ WLANWindowsInterface.o: ../../src/Net/WLANWindowsInterface.cpp
 HEIFParser.o: ../../src/Parser/FileParser/HEIFParser_Null.cpp
 JP2Parser.o: ../../src/Parser/FileParser/JP2Parser_Null.cpp
 WebPParser.o: ../../src/Parser/FileParser/WebPParser_Null.cpp
+SimpleThread.o: ../../src/Sync/SimpleThreadW.cpp
 Thread.o: ../../src/Sync/ThreadW.cpp
 ServiceControl.o: ../../src/Win32/ServiceControl.cpp
 WindowsBTScanner.o: ../../src/Win32/WindowsBTScanner.cpp

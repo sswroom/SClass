@@ -2,6 +2,7 @@
 #include "Net/TCPPortScanner.h"
 #include "Sync/Interlocked.h"
 #include "Sync/MutexUsage.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 
 UInt32 __stdcall Net::TCPPortScanner::ScanThread(void *userObj)
@@ -36,7 +37,7 @@ UInt32 __stdcall Net::TCPPortScanner::ScanThread(void *userObj)
 					}
 					if (s)
 					{
-						Bool succ = me->sockf->Connect(s, &addr, (UInt16)i);
+						Bool succ = me->sockf->Connect(s, &addr, (UInt16)i, 10000);
 						me->sockf->DestroySocket(s);
 
 						mutUsage.BeginUse();
@@ -99,7 +100,7 @@ Net::TCPPortScanner::~TCPPortScanner()
 	this->threadEvt.Set();
 	while (this->threadCnt > 0)
 	{
-		Sync::Thread::Sleep(1);
+		Sync::SimpleThread::Sleep(1);
 	}
 	MemFree(this->portList);
 }

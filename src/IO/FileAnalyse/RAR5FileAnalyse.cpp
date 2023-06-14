@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "Data/ByteTool.h"
 #include "IO/FileAnalyse/RAR5FileAnalyse.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 #include "Text/StringBuilderUTF8.h"
 
@@ -122,7 +123,7 @@ IO::FileAnalyse::RAR5FileAnalyse::RAR5FileAnalyse(IO::StreamData *fd)
 	Sync::Thread::Create(ParseThread, this);
 	while (!this->threadStarted)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 }
 
@@ -133,7 +134,7 @@ IO::FileAnalyse::RAR5FileAnalyse::~RAR5FileAnalyse()
 		this->threadToStop = true;
 		while (this->threadRunning)
 		{
-			Sync::Thread::Sleep(10);
+			Sync::SimpleThread::Sleep(10);
 		}
 	}
 	SDEL_CLASS(this->fd);

@@ -8,6 +8,7 @@
 #include "Math/Math.h"
 #include "Media/AudioFilter/DTMFDecoder.h"
 #include "Sync/MutexUsage.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
@@ -472,7 +473,7 @@ Media::AudioFilter::DTMFDecoder::~DTMFDecoder()
 	this->threadEvt.Set();
 	while (this->threadRunning)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 	MemFree(this->sampleBuff);
 	MemFree(this->calcBuff);

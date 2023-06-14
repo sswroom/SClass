@@ -88,6 +88,8 @@ Parser/FileParser/JP2Parser.h: ../../src/Parser/FileParser/JP2Parser.cpp
 Parser/FileParser/WebPParser.h: ../../src/Parser/FileParser/WebPParser.cpp
 @WebPParser.o
 
+Sync/SimpleThread.h: ../../src/Sync/SimpleThreadU.cpp
+@SimpleThread.o
 Sync/Thread.h: ../../src/Sync/ThreadU.cpp
 @Thread.o
 
@@ -173,5 +175,6 @@ JP2Parser.o: ../../src/Parser/FileParser/JP2Parser.cpp
 WebPParser.o: ../../src/Parser/FileParser/WebPParser.cpp
 !-lwebp
 !-lwebpdemux
+SimpleThread.o: ../../src/Sync/SimpleThreadU.cpp
 Thread.o: ../../src/Sync/ThreadU.cpp
 !-lpthread

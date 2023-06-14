@@ -15,6 +15,7 @@
 #include "Sync/Interlocked.h"
 #include "Sync/Mutex.h"
 #include "Sync/MutexUsage.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 #include "Text/Encoding.h"
 
@@ -133,7 +134,7 @@ UInt32 __stdcall Manage::MonConn::ConnRThread(void *conn)
 		if (me->cli == 0)
 		{
 			me->cliErr = true;
-			NEW_CLASS(me->cli, Net::TCPClient(me->sockf, CSTR("127.0.0.1"), me->port));
+			NEW_CLASS(me->cli, Net::TCPClient(me->sockf, CSTR("127.0.0.1"), me->port, me->timeout));
 			me->cliErr = me->cli->IsConnectError();
 			if (!me->cliErr)
 				me->svrMonConn++;
@@ -285,13 +286,14 @@ void Manage::MonConn::AddCommand(UInt8 *data, UOSInt dataSize, UInt16 cmdType)
 	connTEvt->Set();
 }
 
-Manage::MonConn::MonConn(EventHandler hdlr, void *userObj, Net::SocketFactory *sockf, IO::Writer *msgWriter)
+Manage::MonConn::MonConn(EventHandler hdlr, void *userObj, Net::SocketFactory *sockf, IO::Writer *msgWriter, Data::Duration timeout)
 {
 	UTF8Char buff[256];
 	UTF8Char *sptr;
 	this->lastKATime.SetCurrTimeUTC();
 	this->msgWriter = msgWriter;
 	this->userObj = userObj;
+	this->timeout = timeout;
 	this->hdlr = hdlr;
 	this->sockf = sockf;
 	this->ConnTRunning = false;
@@ -322,13 +324,13 @@ Manage::MonConn::MonConn(EventHandler hdlr, void *userObj, Net::SocketFactory *s
 		Sync::Thread::Create(ConnRThread, this);
 		Sync::Thread::Create(ConnTThread, this);
 		while (!this->ConnTRunning || !this->ConnRRunning)
-			Sync::Thread::Sleep(10);
+			Sync::SimpleThread::Sleep(10);
 		UInt32 i = 30;
 		while (i-- > 0)
 		{
 			if (this->svrMonConn)
 				break;
-			Sync::Thread::Sleep(100);
+			Sync::SimpleThread::Sleep(100);
 		}
 	}
 }
@@ -341,11 +343,11 @@ Manage::MonConn::~MonConn()
 
 	while (this->ConnRRunning)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 	while (this->ConnTRunning)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 	if (this->connREvt)
 	{

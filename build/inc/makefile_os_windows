@@ -9,7 +9,7 @@ LIBS_KSSample: audfilter.o audpin.o enum.o filter.o irptgt.o node.o pin.o util.o
 LIBS_EnvironmentVar:
 	$(eval CLASS_OBJS += $^ )
 	
-LIBS_Thread: Thread_CPP.o
+LIBS_Thread: SimpleThread_CPP.o
 	$(eval CLASS_OBJS += $^ )
 
 LIBS_comctl32:

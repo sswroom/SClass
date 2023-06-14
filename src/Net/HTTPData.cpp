@@ -3,6 +3,7 @@
 #include "IO/Path.h"
 #include "Net/HTTPData.h"
 #include "Sync/MutexUsage.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
@@ -285,7 +286,7 @@ UOSInt Net::HTTPData::GetRealData(UInt64 offset, UOSInt length, UInt8* buffer)
 	while (fdh->isLoading && (dataOffset + offset + length > fdh->loadSize))
 	{
 		mutUsage.EndUse();
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 		mutUsage.BeginUse();
 	}
 	if (fdh->currentOffset != dataOffset + offset)
@@ -323,7 +324,7 @@ UInt64 Net::HTTPData::GetDataSize()
 				dataLength = fdh->fileLength;
 				break;
 			}
-			Sync::Thread::Sleep(10);
+			Sync::SimpleThread::Sleep(10);
 		}
 	}
 	return dataLength;
@@ -407,7 +408,7 @@ void Net::HTTPData::Close()
 			mutUsage.EndUse();
 			while (fdh->isLoading)
 			{
-				Sync::Thread::Sleep(10);
+				Sync::SimpleThread::Sleep(10);
 			}
 			DEL_CLASS(fdh->file);
 			fdh->url->Release();

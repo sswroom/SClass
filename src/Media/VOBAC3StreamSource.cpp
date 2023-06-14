@@ -4,7 +4,7 @@
 #include "Media/VOBAC3StreamSource.h"
 #include "Media/BlockParser/AC3BlockParser.h"
 #include "Sync/MutexUsage.h"
-#include "Sync/Thread.h"
+#include "Sync/SimpleThread.h"
 
 Media::VOBAC3StreamSource::VOBAC3StreamSource(Media::IStreamControl *pbc)
 {
@@ -128,7 +128,7 @@ UOSInt Media::VOBAC3StreamSource::ReadBlock(UInt8 *buff, UOSInt blkSize)
 				break;
 			if (!this->pbc->IsRunning())
 				break;
-			Sync::Thread::Sleep(10);
+			Sync::SimpleThread::Sleep(10);
 			if (clk.GetTimeDiff() >= 5)
 				break;
 		}
@@ -318,7 +318,7 @@ void Media::VOBAC3StreamSource::WriteFrameStream(UInt8 *buff, UOSInt buffSize)
 				else
 				{
 					mutUsage.EndUse();
-					Sync::Thread::Sleep(10);
+					Sync::SimpleThread::Sleep(10);
 				}
 			}
 		}

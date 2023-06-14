@@ -4,6 +4,7 @@
 #include "Net/MQTTUtil.h"
 #include "Sync/Interlocked.h"
 #include "Sync/MutexUsage.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
@@ -983,7 +984,7 @@ Net::MQTTBroker::MQTTBroker(Net::SocketFactory *sockf, Net::SSLEngine *ssl, UInt
 		Sync::Thread::Create(SysInfoThread, this);
 		while (!this->sysInfoRunning)
 		{
-			Sync::Thread::Sleep(1);
+			Sync::SimpleThread::Sleep(1);
 		}
 	}
 }
@@ -996,7 +997,7 @@ Net::MQTTBroker::~MQTTBroker()
 		this->sysInfoEvt.Set();
 		while (this->sysInfoRunning)
 		{
-			Sync::Thread::Sleep(1);
+			Sync::SimpleThread::Sleep(1);
 		}
 	}
 	UOSInt i = this->listeners.GetCount();

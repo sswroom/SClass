@@ -2,6 +2,7 @@
 #include "Data/ByteTool.h"
 #include "IO/FileAnalyse/EBMLFileAnalyse.h"
 #include "Sync/MutexUsage.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
@@ -360,7 +361,7 @@ void IO::FileAnalyse::EBMLFileAnalyse::ParseRange(UOSInt lev, UInt64 ofst, UInt6
 	{
 		if (this->pauseParsing)
 		{
-			Sync::Thread::Sleep(100);
+			Sync::SimpleThread::Sleep(100);
 		}
 		else
 		{
@@ -451,7 +452,7 @@ IO::FileAnalyse::EBMLFileAnalyse::EBMLFileAnalyse(IO::StreamData *fd)
 	Sync::Thread::Create(ParseThread, this);
 	while (!this->threadStarted)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 }
 
@@ -462,7 +463,7 @@ IO::FileAnalyse::EBMLFileAnalyse::~EBMLFileAnalyse()
 		this->threadToStop = true;
 		while (this->threadRunning)
 		{
-			Sync::Thread::Sleep(10);
+			Sync::SimpleThread::Sleep(10);
 		}
 	}
 	SDEL_CLASS(this->fd);

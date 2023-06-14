@@ -4,6 +4,7 @@
 #include "IO/FileAnalyse/PCapngFileAnalyse.h"
 #include "Net/PacketAnalyzer.h"
 #include "Net/SocketUtil.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 #include "Text/StringBuilderUTF8.h"
 
@@ -170,7 +171,7 @@ IO::FileAnalyse::PCapngFileAnalyse::PCapngFileAnalyse(IO::StreamData *fd)
 	Sync::Thread::Create(ParseThread, this);
 	while (!this->threadStarted)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 }
 
@@ -181,7 +182,7 @@ IO::FileAnalyse::PCapngFileAnalyse::~PCapngFileAnalyse()
 		this->threadToStop = true;
 		while (this->threadRunning)
 		{
-			Sync::Thread::Sleep(10);
+			Sync::SimpleThread::Sleep(10);
 		}
 	}
 

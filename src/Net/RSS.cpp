@@ -238,7 +238,7 @@ Text::String *Net::RSSItem::GetId()
 	}
 }
 
-Net::RSS::RSS(Text::CString url, Text::String *userAgent, Net::SocketFactory *sockf, Net::SSLEngine *ssl)
+Net::RSS::RSS(Text::CString url, Text::String *userAgent, Net::SocketFactory *sockf, Net::SSLEngine *ssl, Data::Duration timeout)
 {
 	this->isError = true;
 	this->title = 0;
@@ -256,7 +256,7 @@ Net::RSS::RSS(Text::CString url, Text::String *userAgent, Net::SocketFactory *so
 
 	IO::ParsedObject *pobj;
 	IO::Stream *stm;
-	pobj = Net::URL::OpenObject(url, STR_CSTR(userAgent), sockf, ssl);
+	pobj = Net::URL::OpenObject(url, STR_CSTR(userAgent), sockf, ssl, timeout);
 	if (pobj == 0)
 	{
 		return;

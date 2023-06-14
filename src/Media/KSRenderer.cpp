@@ -2,6 +2,7 @@
 #include "MyMemory.h"
 #include "Text/MyString.h"
 #include "Media/KSRenderer.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 #include "kssample.h"
 
@@ -381,7 +382,7 @@ void Media::KSRenderer::Start()
 	Sync::Thread::Create(PlayThread, this);
 	while (!this->threadInit)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 }
 
@@ -397,7 +398,7 @@ void Media::KSRenderer::Stop()
 	}
 	while (playing)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 }
 

@@ -16,15 +16,15 @@ namespace Net
 		UInt64 currCnt;
 		UInt64 cliId;
 		Int32 flags; //1 = shutdown send, 2 = shutdown recv, 4 = closed, 8 = connect error
-		Int32 timeoutMS;
+		Data::Duration timeout;
 
 		Sync::Event *readEvent;
 		Sync::Event *writeEvent;
 
 	public:
-		TCPClient(Net::SocketFactory *sockf, Text::CString name, UInt16 port);
-		TCPClient(Net::SocketFactory *sockf, UInt32 ip, UInt16 port);
-		TCPClient(Net::SocketFactory *sockf, const Net::SocketUtil::AddressInfo *addr, UInt16 port);
+		TCPClient(Net::SocketFactory *sockf, Text::CString name, UInt16 port, Data::Duration timeout);
+		TCPClient(Net::SocketFactory *sockf, UInt32 ip, UInt16 port, Data::Duration timeout);
+		TCPClient(Net::SocketFactory *sockf, const Net::SocketUtil::AddressInfo *addr, UInt16 port, Data::Duration timeout);
 		TCPClient(Net::SocketFactory *sockf, Socket *s);
 		virtual ~TCPClient();
 
@@ -60,8 +60,8 @@ namespace Net
 
 		void SetNoDelay(Bool val);
 		virtual void ShutdownSend();
-		void SetTimeout(Int32 ms);
-		Int32 GetTimeoutMS();
+		void SetTimeout(Data::Duration timeout);
+		Data::Duration GetTimeout();
 
 		Socket *GetSocket();
 		Socket *RemoveSocket();

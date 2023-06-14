@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "Net/HTTPQueue.h"
 #include "Sync/MutexUsage.h"
-#include "Sync/Thread.h"
+#include "Sync/SimpleThread.h"
 #include "Text/URLString.h"
 
 Net::HTTPQueue::HTTPQueue(Net::SocketFactory *sockf, Net::SSLEngine *ssl)
@@ -117,6 +117,6 @@ void Net::HTTPQueue::Clear()
 	mutUsage.EndUse();
 	while (this->statusMap.GetCount() > 0)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 }

@@ -10,7 +10,7 @@ namespace Net
 	class URL
 	{
 	public:
-		static IO::ParsedObject *OpenObject(Text::CString url, Text::CString userAgent, Net::SocketFactory *sockf, Net::SSLEngine *ssl);
+		static IO::ParsedObject *OpenObject(Text::CString url, Text::CString userAgent, Net::SocketFactory *sockf, Net::SSLEngine *ssl, Data::Duration timeout);
 	};
 }
 #endif

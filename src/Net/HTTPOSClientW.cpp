@@ -637,10 +637,13 @@ void Net::HTTPOSClient::EndRequest(Double *timeReq, Double *timeResp)
 	}
 }
 
-void Net::HTTPOSClient::SetTimeout(Int32 ms)
+void Net::HTTPOSClient::SetTimeout(Data::Duration timeout)
 {
-//	if (this->cli)
-//		this->cli->SetTimeout(this->timeOutMS = ms);
+	if (this->clsData->hRequest)
+	{
+		DWORD to = (DWORD)timeout.GetTotalMS();
+		WinHttpSetOption(this->clsData->hRequest, WINHTTP_OPTION_CONNECT_TIMEOUT, &to, sizeof(to));
+	}
 }
 
 Bool Net::HTTPOSClient::IsSecureConn()

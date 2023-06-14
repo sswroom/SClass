@@ -2,6 +2,7 @@
 #include "IO/BTCapturer.h"
 #include "IO/BTDevLog.h"
 #include "IO/Path.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 
 //#include <stdio.h>
@@ -85,7 +86,7 @@ void IO::BTCapturer::Stop()
 		this->threadEvt.Set();
 		while (this->threadRunning)
 		{
-			Sync::Thread::Sleep(10);
+			Sync::SimpleThread::Sleep(10);
 		}
 		//printf("BTCapturer: Stopping 2\r\n");
 		this->bt->ScanOff();

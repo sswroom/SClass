@@ -5,6 +5,7 @@
 #include "Net/HTTPOSClient.h"
 #include "Net/SSLEngineFactory.h"
 #include "SSWR/AVIRead/AVIRHTTPDownloaderForm.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
@@ -46,7 +47,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPDownloaderForm::OnRequestClicked(void *use
 	me->threadEvt.Set();
 	while (me->threadRunning && me->reqURL)
 	{
-		Sync::Thread::Sleep(1);
+		Sync::SimpleThread::Sleep(1);
 	}
 }
 
@@ -383,7 +384,7 @@ SSWR::AVIRead::AVIRHTTPDownloaderForm::~AVIRHTTPDownloaderForm()
 	this->threadEvt.Set();
 	while (this->threadRunning)
 	{
-		Sync::Thread::Sleep(1);
+		Sync::SimpleThread::Sleep(1);
 	}
 	this->ClearHeaders();
 	SDEL_STRING(this->downPath);

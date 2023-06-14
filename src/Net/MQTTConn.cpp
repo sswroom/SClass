@@ -4,6 +4,7 @@
 #include "Manage/HiResClock.h"
 #include "Net/MQTTConn.h"
 #include "Sync/MutexUsage.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 
 //#define DEBUG_PRINT
@@ -142,11 +143,11 @@ void Net::MQTTConn::OnPublishMessage(Text::CString topic, const UInt8 *message, 
 	}
 }
 
-Net::MQTTConn::PacketInfo *Net::MQTTConn::GetNextPacket(UInt8 packetType, UOSInt timeoutMS)
+Net::MQTTConn::PacketInfo *Net::MQTTConn::GetNextPacket(UInt8 packetType, Data::Duration timeout)
 {
 	Manage::HiResClock clk;
 	PacketInfo *packet;
-	Int64 t;
+	Data::Duration t;
 	while (true)
 	{
 		while (this->packetList.GetCount() > 0)
@@ -160,10 +161,10 @@ Net::MQTTConn::PacketInfo *Net::MQTTConn::GetNextPacket(UInt8 packetType, UOSInt
 			}
 			MemFree(packet);
 		}
-		t = clk.GetTimeDiffus() / 1000;
-		if (!this->recvRunning || t >= (OSInt)timeoutMS)
+		t = Data::Duration::FromUs(clk.GetTimeDiffus());
+		if (!this->recvRunning || t >= timeout)
 			return 0;
-		this->packetEvt.Wait(timeoutMS - (UOSInt)t);
+		this->packetEvt.Wait(timeout - t);
 	}
 }
 
@@ -186,11 +187,11 @@ void Net::MQTTConn::InitStream(IO::Stream *stm)
 	Sync::Thread::Create(RecvThread, this);
 	while (!this->recvStarted)
 	{
-		Sync::Thread::Sleep(1);
+		Sync::SimpleThread::Sleep(1);
 	}
 }
 
-Net::MQTTConn::MQTTConn(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CString host, UInt16 port, DisconnectHdlr discHdlr, void *discHdlrObj) : protoHdlr(this)
+Net::MQTTConn::MQTTConn(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CString host, UInt16 port, DisconnectHdlr discHdlr, void *discHdlrObj, Data::Duration timeout) : protoHdlr(this)
 {
 	this->recvRunning = false;
 	this->recvStarted = false;
@@ -206,14 +207,14 @@ Net::MQTTConn::MQTTConn(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CS
 	{
 		Net::SSLEngine::ErrorType err;
 		sockf->ReloadDNS();
-		cli = ssl->ClientConnect(host, port, &err);
+		cli = ssl->ClientConnect(host, port, &err, timeout);
 #ifdef DEBUG_PRINT
 	printf("MQTTConn: Connect to MQTTS: err = %d\r\n", (UInt32)err);
 #endif
 	}
 	else
 	{
-		NEW_CLASS(cli, Net::TCPClient(sockf, host, port));
+		NEW_CLASS(cli, Net::TCPClient(sockf, host, port, timeout));
 	}
 	if (cli == 0)
 	{
@@ -257,7 +258,7 @@ Net::MQTTConn::~MQTTConn()
 		}
 		while (this->recvRunning)
 		{
-			Sync::Thread::Sleep(1);
+			Sync::SimpleThread::Sleep(1);
 		}
 		this->protoHdlr.DeleteStreamData(this->stm, this->cliData);
 		DEL_CLASS(this->stm);
@@ -450,9 +451,9 @@ Bool Net::MQTTConn::SendDisconnect()
 	return this->SendPacket(packet2, j);
 }
 
-Net::MQTTConn::ConnectStatus Net::MQTTConn::WaitConnAck(UOSInt timeoutMS)
+Net::MQTTConn::ConnectStatus Net::MQTTConn::WaitConnAck(Data::Duration timeout)
 {
-	PacketInfo *packet = this->GetNextPacket(0x20, timeoutMS);
+	PacketInfo *packet = this->GetNextPacket(0x20, timeout);
 	if (packet == 0)
 		return Net::MQTTConn::CS_TIMEDOUT;
 
@@ -461,9 +462,9 @@ Net::MQTTConn::ConnectStatus Net::MQTTConn::WaitConnAck(UOSInt timeoutMS)
 	return ret;
 }
 
-UInt8 Net::MQTTConn::WaitSubAck(UInt16 packetId, UOSInt timeoutMS)
+UInt8 Net::MQTTConn::WaitSubAck(UInt16 packetId, Data::Duration timeout)
 {
-	PacketInfo *packet = this->GetNextPacket(0x90, timeoutMS);
+	PacketInfo *packet = this->GetNextPacket(0x90, timeout);
 	if (packet == 0)
 		return 0x80;
 
@@ -497,12 +498,12 @@ UInt64 Net::MQTTConn::GetTotalDownload()
 	return this->totalDownload;
 }
 
-Bool Net::MQTTConn::PublishMessage(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CString host, UInt16 port, Text::CString username, Text::CString password, Text::CString topic, Text::CString message)
+Bool Net::MQTTConn::PublishMessage(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CString host, UInt16 port, Text::CString username, Text::CString password, Text::CString topic, Text::CString message, Data::Duration timeout)
 {
 	Net::MQTTConn *cli;
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
-	NEW_CLASS(cli, Net::MQTTConn(sockf, ssl, host, port, 0, 0));
+	NEW_CLASS(cli, Net::MQTTConn(sockf, ssl, host, port, 0, 0, timeout));
 	if (cli->IsError())
 	{
 		DEL_CLASS(cli);
@@ -515,7 +516,7 @@ Bool Net::MQTTConn::PublishMessage(Net::SocketFactory *sockf, Net::SSLEngine *ss
 	sptr = Text::StrInt64(Text::StrConcatC(sbuff, UTF8STRC("sswrMQTT/")), dt.ToTicks());
 	if (cli->SendConnect(4, 30, CSTRP(sbuff, sptr), username, password))
 	{
-		succ = (cli->WaitConnAck(30000) == Net::MQTTConn::CS_ACCEPTED);
+		succ = (cli->WaitConnAck(timeout) == Net::MQTTConn::CS_ACCEPTED);
 	}
 	if (succ)
 	{

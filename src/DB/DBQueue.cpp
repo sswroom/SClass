@@ -3,6 +3,7 @@
 #include "DB/DBQueue.h"
 #include "IO/FileStream.h"
 #include "Sync/MutexUsage.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 #include "Text/Encoding.h"
 #include "Text/MyString.h"
@@ -316,7 +317,7 @@ void DB::DBQueue::AddSQL(const UTF8Char *sql, UOSInt sqlLen, Priority priority, 
 			{
 				if (sqlList2[ipriority]->GetCount() > this->dbSize)
 				{
-					Sync::Thread::Sleep(200);
+					Sync::SimpleThread::Sleep(200);
 				}
 				else
 				{
@@ -545,7 +546,7 @@ DB::DBHandler::~DBHandler()
 {
 	while (this->running)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 	DEL_CLASS(this->db);
 }

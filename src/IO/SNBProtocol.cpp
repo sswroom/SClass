@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "IO/SNBProtocol.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 
 UInt32 __stdcall IO::SNBProtocol::RecvThread(void *userObj)
@@ -20,7 +21,7 @@ UInt32 __stdcall IO::SNBProtocol::RecvThread(void *userObj)
 		recvSize = me->stm->Read(&recvBuff[buffSize], 4096 - buffSize);
 		if (recvSize <= 0)
 		{
-			Sync::Thread::Sleep(100);
+			Sync::SimpleThread::Sleep(100);
 		}
 		else
 		{
@@ -74,7 +75,7 @@ IO::SNBProtocol::SNBProtocol(IO::Stream *stm, ProtocolHandler protoHdlr, void *u
 	Sync::Thread::Create(RecvThread, this);
 	while (!this->running)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 }
 
@@ -84,7 +85,7 @@ IO::SNBProtocol::~SNBProtocol()
 	this->stm->Close();
 	while (this->running)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 	DEL_CLASS(this->stm);
 }

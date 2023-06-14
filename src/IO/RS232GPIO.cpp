@@ -2,6 +2,7 @@
 #include "MyMemory.h"
 #include "IO/RS232GPIO.h"
 #include "Manage/HiResClock.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 
 UInt32 __stdcall IO::RS232GPIO::ReadThread(void *userObj)
@@ -25,7 +26,7 @@ UInt32 __stdcall IO::RS232GPIO::ReadThread(void *userObj)
 	{
 		if (!started)
 		{
-			Sync::Thread::Sleepus(halfClk);
+			Sync::SimpleThread::Sleepus(halfClk);
 			if (!me->gpio->IsPinHigh(me->rxdPin))
 			{
 				nextTime = clk->GetTimeDiffus() + fullClk;
@@ -43,7 +44,7 @@ UInt32 __stdcall IO::RS232GPIO::ReadThread(void *userObj)
 			t = (Int32)(nextTime - clk->GetTimeDiffus());
 			if (t > 0)
 			{
-				Sync::Thread::Sleepus((UInt32)t);
+				Sync::SimpleThread::Sleepus((UInt32)t);
 			}
 			nextTime += fullClk;
 
@@ -116,7 +117,7 @@ IO::RS232GPIO::RS232GPIO(IO::GPIOControl *gpio, UOSInt rxdPin, UOSInt txdPin, UI
 	Sync::Thread::Create(ReadThread, this);
 	while (!this->running)
 	{
-		Sync::Thread::Sleep(1);
+		Sync::SimpleThread::Sleep(1);
 	}
 	this->gpio->SetPinOutput(txdPin, true);
 	this->gpio->SetPinState(txdPin, true);
@@ -153,7 +154,7 @@ UOSInt IO::RS232GPIO::Read(UInt8 *buff, UOSInt size)
 		{
 			break;
 		}
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 	if (this->readBuffStart == this->readBuffEnd)
 	{
@@ -196,32 +197,32 @@ UOSInt IO::RS232GPIO::Write(const UInt8 *buff, UOSInt size)
 	{
 		v = *buff++;
 		this->gpio->SetPinState(txdPin, false);
-		Sync::Thread::Sleepus(fullClk);
+		Sync::SimpleThread::Sleepus(fullClk);
 		this->gpio->SetPinState(txdPin, v & 1);
 		v = (UInt8)(v >> 1);
-		Sync::Thread::Sleepus(fullClk);
+		Sync::SimpleThread::Sleepus(fullClk);
 		this->gpio->SetPinState(txdPin, v & 1);
 		v = (UInt8)(v >> 1);
-		Sync::Thread::Sleepus(fullClk);
+		Sync::SimpleThread::Sleepus(fullClk);
 		this->gpio->SetPinState(txdPin, v & 1);
 		v = (UInt8)(v >> 1);
-		Sync::Thread::Sleepus(fullClk);
+		Sync::SimpleThread::Sleepus(fullClk);
 		this->gpio->SetPinState(txdPin, v & 1);
 		v = (UInt8)(v >> 1);
-		Sync::Thread::Sleepus(fullClk);
+		Sync::SimpleThread::Sleepus(fullClk);
 		this->gpio->SetPinState(txdPin, v & 1);
 		v = (UInt8)(v >> 1);
-		Sync::Thread::Sleepus(fullClk);
+		Sync::SimpleThread::Sleepus(fullClk);
 		this->gpio->SetPinState(txdPin, v & 1);
 		v = (UInt8)(v >> 1);
-		Sync::Thread::Sleepus(fullClk);
+		Sync::SimpleThread::Sleepus(fullClk);
 		this->gpio->SetPinState(txdPin, v & 1);
 		v = (UInt8)(v >> 1);
-		Sync::Thread::Sleepus(fullClk);
+		Sync::SimpleThread::Sleepus(fullClk);
 		this->gpio->SetPinState(txdPin, v & 1);
-		Sync::Thread::Sleepus(fullClk);
+		Sync::SimpleThread::Sleepus(fullClk);
 		this->gpio->SetPinState(txdPin, true);
-		Sync::Thread::Sleepus(fullClk);
+		Sync::SimpleThread::Sleepus(fullClk);
 	}
 	return ret;
 }
@@ -285,7 +286,7 @@ void IO::RS232GPIO::Close()
 		this->toStop = true;
 		while (this->running)
 		{
-			Sync::Thread::Sleep(1);
+			Sync::SimpleThread::Sleep(1);
 		}
 	}
 }

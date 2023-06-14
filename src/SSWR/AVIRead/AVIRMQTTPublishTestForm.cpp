@@ -11,6 +11,7 @@
 #include "SSWR/AVIRead/AVIRMQTTPublishTestForm.h"
 #include "Sync/Interlocked.h"
 #include "Sync/MutexUsage.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
@@ -86,7 +87,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTPublishTestForm::OnStartClicked(void *user
 		if (useWS)
 		{
 			Net::WebSocketClient *ws;
-			NEW_CLASS(ws, Net::WebSocketClient(me->core->GetSocketFactory(), useSSL?ssl:0, sb.ToCString(), port, CSTR("/mqtt"), CSTR_NULL, Net::WebSocketClient::Protocol::MQTT));
+			NEW_CLASS(ws, Net::WebSocketClient(me->core->GetSocketFactory(), useSSL?ssl:0, sb.ToCString(), port, CSTR("/mqtt"), CSTR_NULL, Net::WebSocketClient::Protocol::MQTT, 10000));
 			if (ws->IsDown())
 			{
 				DEL_CLASS(ws);
@@ -97,7 +98,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTPublishTestForm::OnStartClicked(void *user
 		}
 		else
 		{
-			NEW_CLASS(me->client, Net::MQTTConn(me->core->GetSocketFactory(), useSSL?ssl:0, sb.ToCString(), port, 0, 0));
+			NEW_CLASS(me->client, Net::MQTTConn(me->core->GetSocketFactory(), useSSL?ssl:0, sb.ToCString(), port, 0, 0, 10000));
 		}
 		if (me->client->IsError())
 		{
@@ -156,7 +157,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTPublishTestForm::OnStartClicked(void *user
 			Sync::Thread::Create(SendThread, me);
 			while (!me->threadRunning)
 			{
-				Sync::Thread::Sleep(1);
+				Sync::SimpleThread::Sleep(1);
 			}
 		}
 		else
@@ -344,7 +345,7 @@ void SSWR::AVIRead::AVIRMQTTPublishTestForm::ServerStop()
 		this->threadToStop = true;
 		while (this->threadRunning)
 		{
-			Sync::Thread::Sleep(1);
+			Sync::SimpleThread::Sleep(1);
 		}
 		this->threadToStop = false;
 		DEL_CLASS(this->client);

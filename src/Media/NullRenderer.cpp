@@ -1,12 +1,13 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Sync/Event.h"
-#include "Sync/Thread.h"
-#include "Text/MyString.h"
 #include "Media/IMediaSource.h"
 #include "Media/IAudioSource.h"
 #include "Media/NullRenderer.h"
 #include "Media/RefClock.h"
+#include "Sync/Event.h"
+#include "Sync/SimpleThread.h"
+#include "Sync/Thread.h"
+#include "Text/MyString.h"
 
 UInt32 __stdcall Media::NullRenderer::PlayThread(void *obj)
 {
@@ -139,7 +140,7 @@ void Media::NullRenderer::Start()
 	Sync::Thread::Create(PlayThread, this);
 	while (!threadInit)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 }
 
@@ -155,7 +156,7 @@ void Media::NullRenderer::Stop()
 	}
 	while (playing)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 }
 

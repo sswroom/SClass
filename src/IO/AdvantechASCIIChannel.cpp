@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "IO/AdvantechASCIIChannel.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 
 #define CMDTIMEOUT 100
@@ -19,7 +20,7 @@ UInt32 __stdcall IO::AdvantechASCIIChannel::CmdThread(void *userObj)
 		readSize = me->stm->Read(&readBuff[buffSize], 64 - buffSize);
 		if (readSize == 0)
 		{
-			Sync::Thread::Sleep(100);
+			Sync::SimpleThread::Sleep(100);
 		}
 		else
 		{
@@ -120,7 +121,7 @@ void IO::AdvantechASCIIChannel::Close()
 		this->stm->Close();
 		while (this->threadRunning)
 		{
-			Sync::Thread::Sleep(10);
+			Sync::SimpleThread::Sleep(10);
 		}
 	}
 }

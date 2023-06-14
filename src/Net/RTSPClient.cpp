@@ -6,6 +6,7 @@
 #include "Net/RTSPClient.h"
 #include "Net/URL.h"
 #include "Sync/MutexUsage.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 #include "Text/MyString.h"
 #include "Text/URLString.h"
@@ -36,7 +37,7 @@ UInt32 __stdcall Net::RTSPClient::ControlThread(void *userObj)
 			if (cliData->cli == 0)
 			{
 				Sync::MutexUsage mutUsage(&cliData->cliMut);
-				NEW_CLASS(cliData->cli, Net::TCPClient(cliData->sockf, cliData->host->ToCString(), cliData->port));
+				NEW_CLASS(cliData->cli, Net::TCPClient(cliData->sockf, cliData->host->ToCString(), cliData->port, cliData->timeout));
 			}
 			if (content)
 			{
@@ -236,10 +237,11 @@ Net::RTSPClient::RTSPClient(const Net::RTSPClient *cli)
 	this->cliData->useCnt++;
 }
 
-Net::RTSPClient::RTSPClient(Net::SocketFactory *sockf, Text::CString host, UInt16 port)
+Net::RTSPClient::RTSPClient(Net::SocketFactory *sockf, Text::CString host, UInt16 port, Data::Duration timeout)
 {
 	NEW_CLASS(this->cliData, ClientData());
 	this->cliData->useCnt = 1;
+	this->cliData->timeout = timeout;
 	this->cliData->sockf = sockf;
 	this->cliData->nextSeq = 1;
 	this->cliData->threadRunning = false;
@@ -254,7 +256,7 @@ Net::RTSPClient::RTSPClient(Net::SocketFactory *sockf, Text::CString host, UInt1
 	Sync::Thread::Create(ControlThread, this->cliData);
 	while (!this->cliData->threadRunning)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 }
 
@@ -271,7 +273,7 @@ Net::RTSPClient::~RTSPClient()
 		mutUsage.EndUse();
 		while (this->cliData->threadRunning)
 		{
-			Sync::Thread::Sleep(10);
+			Sync::SimpleThread::Sleep(10);
 		}
 		this->NextRequest();
 		this->cliData->host->Release();
@@ -408,7 +410,7 @@ UTF8Char *Net::RTSPClient::SetupRTP(UTF8Char *sessIdOut, Text::CString url, Net:
 	return ret;
 }
 
-IO::ParsedObject *Net::RTSPClient::ParseURL(Net::SocketFactory *sockf, Text::CString url)
+IO::ParsedObject *Net::RTSPClient::ParseURL(Net::SocketFactory *sockf, Text::CString url, Data::Duration timeout)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -424,7 +426,7 @@ IO::ParsedObject *Net::RTSPClient::ParseURL(Net::SocketFactory *sockf, Text::CSt
 		port = 554;
 	}
 
-	NEW_CLASS(cli, Net::RTSPClient(sockf, CSTRP(sbuff, sptr), port));
+	NEW_CLASS(cli, Net::RTSPClient(sockf, CSTRP(sbuff, sptr), port, timeout));
 
 	Net::SDPFile *sdp = cli->GetMediaInfo(url);
 	if (sdp)

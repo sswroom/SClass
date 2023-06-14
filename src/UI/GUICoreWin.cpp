@@ -74,7 +74,7 @@ void UI::GUICoreWin::WaitForMessages()
     MSG msg;
 	while (PeekMessage(&msg, 0, 0, 0, PM_NOREMOVE) == 0)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 #endif
 }

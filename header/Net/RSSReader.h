@@ -31,6 +31,7 @@ namespace Net
 		Data::DateTime *nextDT;
 		Net::RSS *lastRSS;
 		UInt32 refreshSecond;
+		Data::Duration timeout;
 
 		Sync::Event *threadEvt;
 		Bool threadRunning;
@@ -38,7 +39,7 @@ namespace Net
 
 		static UInt32 __stdcall RSSThread(void *userObj);
 	public:
-		RSSReader(Text::CString url, Net::SocketFactory *sockf, Net::SSLEngine *ssl, UInt32 refreshSecond, RSSHandler *hdlr);
+		RSSReader(Text::CString url, Net::SocketFactory *sockf, Net::SSLEngine *ssl, UInt32 refreshSecond, RSSHandler *hdlr, Data::Duration timeout);
 		~RSSReader();
 
 		Bool IsError();

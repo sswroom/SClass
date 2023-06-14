@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "IO/OneWireGPIO.h"
-#include "Sync/Thread.h"
+#include "Sync/SimpleThread.h"
 
 IO::OneWireGPIO::OneWireGPIO(IO::IOPin *pin)
 {
@@ -18,19 +18,19 @@ Bool IO::OneWireGPIO::Init()
 {
 	this->pin->SetPinOutput(true);
 	this->pin->SetPinState(false);
-	Sync::Thread::Sleepus(480);
+	Sync::SimpleThread::Sleepus(480);
 	this->pin->SetPinOutput(false);
-	Sync::Thread::Sleepus(1);
+	Sync::SimpleThread::Sleepus(1);
 	if (!this->pin->IsPinHigh())
 	{
 		return false;
 	}
-	Sync::Thread::Sleepus(60);
+	Sync::SimpleThread::Sleepus(60);
 	if (this->pin->IsPinHigh())
 	{
 		return false;
 	}
-	Sync::Thread::Sleepus(420);
+	Sync::SimpleThread::Sleepus(420);
 	if (!this->pin->IsPinHigh())
 	{
 		return false;
@@ -47,27 +47,27 @@ void IO::OneWireGPIO::SendBits(const UInt8 *buff, OSInt nBits)
 		{
 			this->pin->SetPinOutput(true);
 			this->pin->SetPinState(false);
-			Sync::Thread::Sleepus(6);
+			Sync::SimpleThread::Sleepus(6);
 			this->pin->SetPinOutput(false);
 			this->clk->Start();
 			while (this->clk->GetTimeDiff() < 0.000064)
 			{
 				this->pin->IsPinHigh();
 			}
-//			Sync::Thread::Sleepus(64);
+//			Sync::SimpleThread::Sleepus(64);
 		}
 		else
 		{
 			this->pin->SetPinOutput(true);
 			this->pin->SetPinState(false);
-			Sync::Thread::Sleepus(60);
+			Sync::SimpleThread::Sleepus(60);
 			this->pin->SetPinOutput(false);
 			this->clk->Start();
 			while (this->clk->GetTimeDiff() < 0.000010)
 			{
 				this->pin->IsPinHigh();
 			}
-//			Sync::Thread::Sleepus(10);
+//			Sync::SimpleThread::Sleepus(10);
 		}
 		mask = (UInt8)(mask << 1);
 		if (mask == 0)
@@ -87,14 +87,14 @@ OSInt IO::OneWireGPIO::ReadBits(UInt8 *buff, OSInt nBits)
 	{
 		this->pin->SetPinOutput(true);
 		this->pin->SetPinState(false);
-		Sync::Thread::Sleepus(6);
+		Sync::SimpleThread::Sleepus(6);
 		this->pin->SetPinOutput(false);
 		this->clk->Start();
 		while (this->clk->GetTimeDiff() < 0.000004)
 		{
 			this->pin->IsPinHigh();
 		}
-//		Sync::Thread::Sleepus(4);
+//		Sync::SimpleThread::Sleepus(4);
 		if (this->pin->IsPinHigh())
 		{
 			v |= mask;
@@ -104,7 +104,7 @@ OSInt IO::OneWireGPIO::ReadBits(UInt8 *buff, OSInt nBits)
 		{
 			this->pin->IsPinHigh();
 		}
-//		Sync::Thread::Sleepus(55);
+//		Sync::SimpleThread::Sleepus(55);
 		if (mask == 0)
 		{
 			*buff++ = v;

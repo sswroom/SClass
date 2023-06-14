@@ -2,6 +2,7 @@
 #include "Data/ByteTool.h"
 #include "Data/ArrayListInt32.h"
 #include "IO/FileAnalyse/QTFileAnalyse.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
@@ -24,7 +25,7 @@ void IO::FileAnalyse::QTFileAnalyse::ParseRange(UOSInt lev, UInt64 ofst, UInt64 
 	{
 		if (this->pauseParsing)
 		{
-			Sync::Thread::Sleep(100);
+			Sync::SimpleThread::Sleep(100);
 		}
 		else
 		{
@@ -122,7 +123,7 @@ IO::FileAnalyse::QTFileAnalyse::QTFileAnalyse(IO::StreamData *fd)
 	Sync::Thread::Create(ParseThread, this);
 	while (!this->threadStarted)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 }
 
@@ -133,7 +134,7 @@ IO::FileAnalyse::QTFileAnalyse::~QTFileAnalyse()
 		this->threadToStop = true;
 		while (this->threadRunning)
 		{
-			Sync::Thread::Sleep(10);
+			Sync::SimpleThread::Sleep(10);
 		}
 	}
 	SDEL_CLASS(this->fd);

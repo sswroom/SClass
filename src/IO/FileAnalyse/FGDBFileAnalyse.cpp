@@ -4,6 +4,7 @@
 #include "IO/FileAnalyse/FGDBFileAnalyse.h"
 #include "Math/CoordinateSystemManager.h"
 #include "Math/Math.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 #include "Text/MyStringW.h"
 #include "Text/StringBuilderUTF8.h"
@@ -92,7 +93,7 @@ IO::FileAnalyse::FGDBFileAnalyse::FGDBFileAnalyse(IO::StreamData *fd)
 	Sync::Thread::Create(ParseThread, this);
 	while (!this->threadStarted)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 }
 
@@ -103,7 +104,7 @@ IO::FileAnalyse::FGDBFileAnalyse::~FGDBFileAnalyse()
 		this->threadToStop = true;
 		while (this->threadRunning)
 		{
-			Sync::Thread::Sleep(10);
+			Sync::SimpleThread::Sleep(10);
 		}
 	}
 	if (this->tableInfo)

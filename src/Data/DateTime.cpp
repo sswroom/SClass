@@ -779,6 +779,21 @@ Int64 Data::DateTime::DiffMS(DateTime *dt)
 	return this->ToTicks() - dt->ToTicks();
 }
 
+Data::Duration Data::DateTime::Diff(DateTime *dt)
+{
+	Int64 secs = this->ToUnixTimestamp() - dt->ToUnixTimestamp();
+	UInt32 ns1 = this->ns;
+	UInt32 ns2 = dt->ns;
+	if (ns1 >= ns2)
+	{
+		return Data::Duration(secs, ns1 - ns2);
+	}
+	else
+	{
+		return Data::Duration(secs - 1, 1000000000 + ns1 - ns2);
+	}
+}
+
 Bool Data::DateTime::IsYearLeap()
 {
 	Data::DateTimeUtil::TimeValue *tval = this->GetTimeValue();

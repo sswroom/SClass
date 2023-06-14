@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Data/ByteTool.h"
 #include "IO/I2C.h"
-#include "Sync/Thread.h"
+#include "Sync/SimpleThread.h"
 #include "Text/MyString.h"
 #include <stdio.h>
 
@@ -20,7 +20,7 @@ void IO::I2C::Wait()
 {
 	if (this->delayMS > 0)
 	{
-		Sync::Thread::Sleep(this->delayMS);
+		Sync::SimpleThread::Sleep(this->delayMS);
 	}
 }
 

@@ -10,7 +10,7 @@ Net::WhoisGlobalClient::~WhoisGlobalClient()
 {
 }
 
-Net::WhoisRecord *Net::WhoisGlobalClient::RequestIP(UInt32 ip)
+Net::WhoisRecord *Net::WhoisGlobalClient::RequestIP(UInt32 ip, Data::Duration timeout)
 {
 	UInt32 ipCmp = Net::SocketUtil::IPv4ToSortable(ip);
 	Text::CString whoisHost;
@@ -371,5 +371,5 @@ Net::WhoisRecord *Net::WhoisGlobalClient::RequestIP(UInt32 ip)
 		break;
 	}
 
-	return Net::WhoisClient::RequestIP(ip, this->sockf->DNSResolveIPv4(whoisHost), prefix);
+	return Net::WhoisClient::RequestIP(ip, this->sockf->DNSResolveIPv4(whoisHost), prefix, timeout);
 }

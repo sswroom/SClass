@@ -4,6 +4,7 @@
 #include "IO/ConsoleWriter.h"
 #include "IO/Watchdog.h"
 #include "Sync/Event.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
@@ -90,7 +91,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			Sync::Thread::Create(WatchdogThread, 0);
 			while (!running)
 			{
-				Sync::Thread::Sleep(10);
+				Sync::SimpleThread::Sleep(10);
 			}
 			console.WriteLineC(UTF8STRC("Running"));
 			progCtrl->WaitForExit(progCtrl);
@@ -99,7 +100,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			evt->Set();
 			while (running)
 			{
-				Sync::Thread::Sleep(10);
+				Sync::SimpleThread::Sleep(10);
 			}
 		}
 		else

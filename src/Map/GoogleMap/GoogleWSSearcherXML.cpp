@@ -36,7 +36,7 @@ UTF8Char *Map::GoogleMap::GoogleWSSearcherXML::SearchName(UTF8Char *buff, UOSInt
 	this->lastIsError = false;
 	if ((i = (Int32)currDt.DiffMS(&this->lastSrchDate)) < 200)
 	{
-		Sync::Thread::Sleep(200 - i);
+		Sync::SimpleThread::Sleep(200 - i);
 	}
 
 	Net::HTTPClient *cli;

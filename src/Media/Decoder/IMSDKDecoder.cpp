@@ -122,7 +122,7 @@ private:
 			{
 				break;
 			}
-			Sync::Thread::Sleep(1);
+			Sync::SimpleThread::Sleep(1);
 		}
 		return currSurface;
 	}
@@ -515,7 +515,7 @@ public:
 		this->sourceVideo->Stop();
 		while (this->endProcessing)
 		{
-			Sync::Thread::Sleep(10);
+			Sync::SimpleThread::Sleep(10);
 		}
 		this->frameCb = 0;
 		this->frameCbData = 0;

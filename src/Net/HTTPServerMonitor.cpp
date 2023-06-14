@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "Net/HTTPClient.h"
 #include "Net/HTTPServerMonitor.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 
 UInt32 __stdcall Net::HTTPServerMonitor::ThreadProc(void *userObj)
@@ -36,7 +37,7 @@ Net::HTTPServerMonitor::HTTPServerMonitor(Net::SocketFactory *sockf, Net::SSLEng
 	Sync::Thread::Create(ThreadProc, this);
 	while (!this->threadRunning)
 	{
-		Sync::Thread::Sleep(1);
+		Sync::SimpleThread::Sleep(1);
 	}
 }
 
@@ -52,7 +53,7 @@ Net::HTTPServerMonitor::HTTPServerMonitor(Net::SocketFactory *sockf, Net::SSLEng
 	Sync::Thread::Create(ThreadProc, this);
 	while (!this->threadRunning)
 	{
-		Sync::Thread::Sleep(1);
+		Sync::SimpleThread::Sleep(1);
 	}
 }
 
@@ -62,7 +63,7 @@ Net::HTTPServerMonitor::~HTTPServerMonitor()
 	this->threadEvt.Set();
 	while (this->threadRunning)
 	{
-		Sync::Thread::Sleep(1);
+		Sync::SimpleThread::Sleep(1);
 	}
 	this->url->Release();
 }

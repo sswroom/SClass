@@ -12,6 +12,7 @@
 #include "Parser/FullParserList.h"
 #include "SSWR/DownloadMonitor/DownMonCore.h"
 #include "Sync/MutexUsage.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 #include "Text/StringBuilderUTF8.h"
 #include "UI/Clipboard.h"
@@ -38,7 +39,7 @@ Bool SSWR::DownloadMonitor::DownMonCore::FFMPEGMux(const UTF8Char *videoFile, co
 	Manage::Process proc(sb.ToString());
 	while (proc.IsRunning())
 	{
-		Sync::Thread::Sleep(100);
+		Sync::SimpleThread::Sleep(100);
 	}
 	fileSize2 = IO::Path::GetFileSize(outFile);
 	if ((Double)fileSize1 > (Double)fileSize2 * 0.9 && (Double)fileSize1 < (Double)fileSize2 * 1.1)
@@ -73,7 +74,7 @@ Bool SSWR::DownloadMonitor::DownMonCore::FFMPEGMuxAAC(const UTF8Char *videoFile,
 	Manage::Process proc(sb.ToString());
 	while (proc.IsRunning())
 	{
-		Sync::Thread::Sleep(100);
+		Sync::SimpleThread::Sleep(100);
 	}
 	fileSize2 = IO::Path::GetFileSize(outFile);
 	if ((Double)fileSize1 > (Double)fileSize2 * 0.9 && (Double)fileSize1 < (Double)fileSize2 * 1.1)
@@ -522,7 +523,7 @@ SSWR::DownloadMonitor::DownMonCore::DownMonCore() : checker(false)
 	Sync::Thread::Create(CheckThread, this);
 	while (!this->chkRunning)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 }
 
@@ -532,7 +533,7 @@ SSWR::DownloadMonitor::DownMonCore::~DownMonCore()
 	this->chkEvt.Set();
 	while (this->chkRunning)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 	DEL_CLASS(this->parsers);
 

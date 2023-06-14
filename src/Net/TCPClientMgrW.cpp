@@ -11,6 +11,7 @@
 #include "Sync/Event.h"
 #include "Sync/Mutex.h"
 #include "Sync/MutexUsage.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 
 #define PROCESS_TIMEOUT_DURATION 30000
@@ -20,8 +21,8 @@ UInt32 __stdcall Net::TCPClientMgr::ClientThread(void *o)
 	Net::TCPClientMgr *me = (Net::TCPClientMgr*)o;
 	Double t;
 	UInt32 waitPeriod = 1;
-	Int64 intT;
-	Int64 currTime;
+	Data::Timestamp intT;
+	Data::Timestamp currTime;
 	UOSInt i;
 	UOSInt readSize;
 	Bool found;
@@ -35,7 +36,7 @@ UInt32 __stdcall Net::TCPClientMgr::ClientThread(void *o)
 			found = false;
 			((Sync::Event*)me->clsData)->Clear();
 			clk.Start();
-			currTime = Data::DateTimeUtil::GetCurrTimeMillis();
+			currTime = Data::Timestamp::UtcNow();
 			intT = currTime;
 			i = me->cliArr.GetCount();
 			while (i-- > 0)
@@ -63,19 +64,19 @@ UInt32 __stdcall Net::TCPClientMgr::ClientThread(void *o)
 						{
 							if (cliStat->cli->IsClosed())
 							{
-								Sync::Thread::Sleep(1);
+								Sync::SimpleThread::Sleep(1);
 							}
 							readSize = cliStat->cli->EndRead(cliStat->readReq, false, &incomplete);
 						}
 						mutUsage.EndUse();
 						if (incomplete)
 						{
-							currTime = Data::DateTimeUtil::GetCurrTimeMillis();
-							if ((currTime - cliStat->lastDataTimeTicks) > cliStat->cli->GetTimeoutMS())
+							currTime = Data::Timestamp::UtcNow();
+							if (currTime.Diff(cliStat->lastDataTime) > cliStat->cli->GetTimeout())
 							{
 								cliStat->cli->ShutdownSend();
 								cliStat->cli->Close();
-								Sync::Thread::Sleep(1);
+								Sync::SimpleThread::Sleep(1);
 								cliStat->cli->EndRead(cliStat->readReq, true, &incomplete);
 								me->cliArr.RemoveAt(i);
 								me->cliIdArr.RemoveAt(i);
@@ -93,7 +94,7 @@ UInt32 __stdcall Net::TCPClientMgr::ClientThread(void *o)
 						{
 							cliStat->reading = false;
 							cliMutUsage.EndUse();
-							cliStat->lastDataTimeTicks = Data::DateTimeUtil::GetCurrTimeMillis();
+							cliStat->lastDataTime = Data::Timestamp::UtcNow();
 							me->evtHdlr(cliStat->cli, me->userObj, cliStat->cliData, Net::TCPClientMgr::TCP_EVENT_HASDATA);
 							cliStat->buffSize = readSize;
 							me->ProcessClient(cliStat);
@@ -111,7 +112,7 @@ UInt32 __stdcall Net::TCPClientMgr::ClientThread(void *o)
 					}
 					else
 					{
-						if (cliStat->processing && !cliStat->timeAlerted && (intT - cliStat->timeStart) >= PROCESS_TIMEOUT_DURATION)
+						if (cliStat->processing && !cliStat->timeAlerted && intT.Diff(cliStat->timeStart).GetTotalMS() >= PROCESS_TIMEOUT_DURATION)
 						{
 							cliStat->timeAlerted = true;
 							if (me->toHdlr)
@@ -169,7 +170,7 @@ UInt32 __stdcall Net::TCPClientMgr::WorkerThread(void *o)
 		while ((cliStat = me->workerTasks.Get()) != 0)
 		{
 			stat->state = WorkerState::Processing;
-			cliStat->timeStart = Data::DateTimeUtil::GetCurrTimeMillis();
+			cliStat->timeStart = Data::Timestamp::UtcNow();
 			cliStat->timeAlerted = false;
 			cliStat->processing = true;
 			me->dataHdlr(cliStat->cli, me->userObj, cliStat->cliData, cliStat->buff, cliStat->buffSize);
@@ -212,7 +213,7 @@ void Net::TCPClientMgr::ProcessClient(Net::TCPClientMgr::TCPClientStatus *cliSta
 
 Net::TCPClientMgr::TCPClientMgr(Int32 timeOutSeconds, TCPClientEvent evtHdlr, TCPClientData dataHdlr, void *userObj, UOSInt workerCnt, TCPClientTimeout toHdlr)
 {
-	this->timeOutSeconds = timeOutSeconds;
+	this->timeout = Data::Duration(timeOutSeconds, 0);
 	this->evtHdlr = evtHdlr;
 	this->dataHdlr = dataHdlr;
 	this->toHdlr = toHdlr;
@@ -258,13 +259,13 @@ Net::TCPClientMgr::~TCPClientMgr()
 	}
 	while (this->cliArr.GetCount() > 0)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 	this->toStop = true;
 	((Sync::Event*)this->clsData)->Set();
 	while (clientThreadRunning)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 	i = this->workerCnt;
 	while (i-- > 0)
@@ -287,7 +288,7 @@ Net::TCPClientMgr::~TCPClientMgr()
 		}
 		if (!exist)
 			break;
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 	i = this->workerCnt;
 	while (i-- > 0)
@@ -303,13 +304,13 @@ Net::TCPClientMgr::~TCPClientMgr()
 void Net::TCPClientMgr::AddClient(TCPClient *cli, void *cliData)
 {
 	cli->SetNoDelay(true);
-	cli->SetTimeout(this->timeOutSeconds * 1000);
+	cli->SetTimeout(this->timeout);
 	Sync::MutexUsage mutUsage(&this->cliMut);
 	Net::TCPClientMgr::TCPClientStatus *cliStat;
 	NEW_CLASS(cliStat, Net::TCPClientMgr::TCPClientStatus());
 	cliStat->cli = cli;
 	cliStat->cliData = cliData;
-	cliStat->lastDataTimeTicks = Data::DateTimeUtil::GetCurrTimeMillis();
+	cliStat->lastDataTime = Data::Timestamp::UtcNow();
 	cliStat->reading = false;
 	cliStat->processing = false;
 	cliStat->timeAlerted = false;
@@ -319,7 +320,6 @@ void Net::TCPClientMgr::AddClient(TCPClient *cli, void *cliData)
 	this->cliArr.Insert(this->cliIdArr.SortedInsert(cli->GetCliId()), cliStat);
 	cliStat->readReq = cliStat->cli->BeginRead(cliStat->buff, TCP_BUFF_SIZE, ((Sync::Event*)this->clsData));
 	readMutUsage.EndUse();
-	mutUsage.EndUse();
 }
 
 Bool Net::TCPClientMgr::SendClientData(UInt64 cliId, const UInt8 *buff, UOSInt buffSize)
@@ -381,7 +381,7 @@ void Net::TCPClientMgr::ExtendTimeout(Net::TCPClient *cli)
 	if (i >= 0)
 	{
 		Net::TCPClientMgr::TCPClientStatus *cliStat = this->cliArr.GetItem((UOSInt)i);
-		cliStat->lastDataTimeTicks = Data::DateTimeUtil::GetCurrTimeMillis();
+		cliStat->lastDataTime = Data::Timestamp::UtcNow();
 	}
 }
 

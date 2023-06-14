@@ -3,7 +3,7 @@
 #include "Core/Core.h"
 #include "IO/ConsoleWriter.h"
 #include "Manage/HiResClock.h"
-#include "Sync/Thread.h"
+#include "Sync/SimpleThread.h"
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
 
@@ -23,7 +23,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		clk->Start();
 		while (j-- > 0)
 		{
-			Sync::Thread::Sleepus(i);
+			Sync::SimpleThread::Sleepus(i);
 		}
 		t = clk->GetTimeDiff();
 		sb.ClearStr();

@@ -12,7 +12,7 @@ IO::Device::HCSR04::HCSR04(IO::GPIOControl *gpio, OSInt trigPin, OSInt echoPin)
 	this->gpio->SetPinOutput(this->trigPin, true);
 	this->gpio->SetPinOutput(this->echoPin, false);
 	this->gpio->SetPinState(this->trigPin, false);
-	Sync::Thread::Sleepus(2);
+	Sync::SimpleThread::Sleepus(2);
 }
 
 IO::Device::HCSR04::~HCSR04()
@@ -30,7 +30,7 @@ Bool IO::Device::HCSR04::ReadTime(Int32 *t)
 	t0 = clk.GetTimeDiffus();
 	clk.Start();
 	this->gpio->SetPinState(this->trigPin, true);
-	Sync::Thread::Sleepus(10);
+	Sync::SimpleThread::Sleepus(10);
 	this->gpio->SetPinState(this->trigPin, false);
 
 	t1 = 0;

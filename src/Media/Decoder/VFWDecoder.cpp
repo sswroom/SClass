@@ -3,7 +3,7 @@
 #include "Media/MPEG4V.h"
 #include "Media/StaticImage.h"
 #include "Media/Decoder/VFWDecoder.h"
-#include "Sync/Thread.h"
+#include "Sync/SimpleThread.h"
 #include "Text/MyString.h"
 #include <windows.h>
 #include <vfw.h>
@@ -474,7 +474,7 @@ void Media::Decoder::VFWDecoder::Stop()
 	this->sourceVideo->Stop();
 	while (this->endProcessing)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 	this->frameCb = 0;
 	this->frameCbData = 0;

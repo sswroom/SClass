@@ -4,6 +4,7 @@
 #include "IO/FileAnalyse/PCapFileAnalyse.h"
 #include "Net/PacketAnalyzer.h"
 #include "Sync/MutexUsage.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 #include "Text/StringBuilderUTF8.h"
 
@@ -79,7 +80,7 @@ IO::FileAnalyse::PCapFileAnalyse::PCapFileAnalyse(IO::StreamData *fd)
 	Sync::Thread::Create(ParseThread, this);
 	while (!this->threadStarted)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 }
 
@@ -90,7 +91,7 @@ IO::FileAnalyse::PCapFileAnalyse::~PCapFileAnalyse()
 		this->threadToStop = true;
 		while (this->threadRunning)
 		{
-			Sync::Thread::Sleep(10);
+			Sync::SimpleThread::Sleep(10);
 		}
 	}
 

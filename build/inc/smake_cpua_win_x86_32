@@ -94,5 +94,5 @@ LanczosResizerLR_C16_CPP.o: ../../src/Media/Resizer/LanczosResizerLR_C16_CPP.cpp
 LanczosResizerLR_C32_CPU_CPP.o: ../../src/Media/Resizer/LanczosResizerLR_C32_CPU_CPP.cpp
 AutoCropFilter_CPP.o: ../../src/Media/VideoFilter/AutoCropFilter_CPP.cpp
 IVTCFilter_CPP.o: ../../src/Media/VideoFilter/IVTCFilter_CPP.cpp
-Thread_CPP.o: ../../src/Sync/Thread_32.asm
+SimpleThread_CPP.o: ../../src/Sync/SimpleThread_32.asm
 MyString_CPP.o: ../../src/Text/MyString_32.asm

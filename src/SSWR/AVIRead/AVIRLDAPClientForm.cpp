@@ -36,7 +36,7 @@ void __stdcall SSWR::AVIRead::AVIRLDAPClientForm::OnConnectClicked(void *userObj
 		UI::MessageDialog::ShowDialog(CSTR("Please enter valid Port number"), CSTR("LDAP Client"), me);
 		return;
 	}
-	NEW_CLASS(me->cli, Net::LDAPClient(sockf, &addr, port));
+	NEW_CLASS(me->cli, Net::LDAPClient(sockf, &addr, port, 15000));
 	if (me->cli->IsError())
 	{
 		DEL_CLASS(me->cli);

@@ -13,7 +13,7 @@ namespace IO
 		typedef void (__stdcall *MODBUSDataEntry)(void *userObj, Text::CString name, UInt8 devAddr, UInt32 regAddr, IO::MODBUSController::DataType dt, Math::Unit::UnitBase::ValueType vt, Int32 unit, Int32 denorm);
 	private:
 		IO::MODBUSMaster *modbus;
-		UOSInt timeout;
+		Data::Duration timeout;
 		UInt8 addr;
 		Sync::Event cbEvt;
 		Sync::Mutex reqMut;
@@ -27,7 +27,7 @@ namespace IO
 		static void __stdcall SetResult(void *userObj, UInt8 funcCode, UInt16 startAddr, UInt16 cnt);
 
 	protected:
-		void SetTimeout(UOSInt timeout);
+		void SetTimeout(Data::Duration timeout);
 
 		Bool ReadInputI16(UInt16 addr, Int32 *outVal);
 		Bool ReadInputFloat(UInt16 addr, Double *outVal);

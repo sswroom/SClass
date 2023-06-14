@@ -3,6 +3,7 @@
 #include "Data/ByteTool.h"
 #include "IO/FileStream.h"
 #include "IO/FileAnalyse/MDBFileAnalyse.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 #include "Text/MyStringFloat.h"
 #include "Text/MyStringW.h"
@@ -23,7 +24,7 @@ UInt32 __stdcall IO::FileAnalyse::MDBFileAnalyse::ParseThread(void *userObj)
 	{
 		if (me->pauseParsing)
 		{
-			Sync::Thread::Sleep(100);
+			Sync::SimpleThread::Sleep(100);
 		}
 		else
 		{
@@ -74,7 +75,7 @@ IO::FileAnalyse::MDBFileAnalyse::MDBFileAnalyse(IO::StreamData *fd)
 	Sync::Thread::Create(ParseThread, this);
 	while (!this->threadStarted)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 }
 
@@ -85,7 +86,7 @@ IO::FileAnalyse::MDBFileAnalyse::~MDBFileAnalyse()
 		this->threadToStop = true;
 		while (this->threadRunning)
 		{
-			Sync::Thread::Sleep(10);
+			Sync::SimpleThread::Sleep(10);
 		}
 	}
 	SDEL_CLASS(this->fd);

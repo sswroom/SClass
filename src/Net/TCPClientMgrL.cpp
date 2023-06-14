@@ -11,6 +11,7 @@
 #include "Sync/Event.h"
 #include "Sync/Mutex.h"
 #include "Sync/MutexUsage.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 #include <poll.h>
 #include <unistd.h>
@@ -65,7 +66,7 @@ UInt32 __stdcall Net::TCPClientMgr::ClientThread(void *o)
 {
 	Net::TCPClientMgr *me = (Net::TCPClientMgr*)o;
 	ClassData *clsData = me->clsData;
-	Int64 currTime;
+	Data::Timestamp currTime;
 	OSInt pollRet;
 	UOSInt i;
 	UOSInt readSize;
@@ -173,7 +174,7 @@ UInt32 __stdcall Net::TCPClientMgr::ClientThread(void *o)
 						Sync::MutexUsage readMutUsage(&cliStat->readMut);
 						if (cliStat->cli->IsClosed())
 						{
-							Sync::Thread::Sleep(1);
+							Sync::SimpleThread::Sleep(1);
 							closed = true;
 						}
 						readSize = cliStat->cli->GetRecvBuffSize();
@@ -197,13 +198,13 @@ UInt32 __stdcall Net::TCPClientMgr::ClientThread(void *o)
 						if (readSize == (UOSInt)-1)
 						{
 //							printf("Cli readSize = -1\r\n");
-							currTime = Data::DateTimeUtil::GetCurrTimeMillis();
-							if ((currTime - cliStat->lastDataTimeTicks) > me->timeOutSeconds * 1000)
+							currTime = Data::Timestamp::UtcNow();
+							if (currTime.Diff(cliStat->lastDataTime) > me->timeout)
 							{
 //								printf("Cli disconnect\r\n");
 								cliStat->cli->ShutdownSend();
 								cliStat->cli->Close();
-								Sync::Thread::Sleep(1);
+								Sync::SimpleThread::Sleep(1);
 								TCPClientMgr_RemoveCliStat(&me->cliArr, &me->cliIdArr, cliStat);
 								mutUsage.EndUse();
 
@@ -219,7 +220,7 @@ UInt32 __stdcall Net::TCPClientMgr::ClientThread(void *o)
 						{
 //							printf("Cli read data\r\n");
 							cliStat->reading = false;
-							cliStat->lastDataTimeTicks = Data::DateTimeUtil::GetCurrTimeMillis();
+							cliStat->lastDataTime = Data::Timestamp::UtcNow();
 							mutUsage.EndUse();
 							me->evtHdlr(cliStat->cli, me->userObj, cliStat->cliData, Net::TCPClientMgr::TCP_EVENT_HASDATA);
 							cliStat->buffSize = readSize;
@@ -254,9 +255,9 @@ UInt32 __stdcall Net::TCPClientMgr::WorkerThread(void *o)
 	Net::TCPClientMgr::WorkerStatus *stat = (Net::TCPClientMgr::WorkerStatus*)o;
 	Net::TCPClientMgr *me = stat->me;
 	ClassData *clsData = me->clsData;
-	Int64 currTime;
+	Data::Timestamp currTime;
 	Net::TCPClientMgr::TCPClientStatus *cliStat;
-	Int64 lastCheckTime = 0;
+	Data::Timestamp lastCheckTime = 0;
 	UOSInt i;
 	{
 		Sync::Event evt;
@@ -267,7 +268,7 @@ UInt32 __stdcall Net::TCPClientMgr::WorkerThread(void *o)
 			while ((cliStat = me->workerTasks.Get()) != 0)
 			{
 				stat->state = WorkerState::Processing;
-				currTime = Data::DateTimeUtil::GetCurrTimeMillis();
+				currTime = Data::Timestamp::UtcNow();
 				cliStat->timeStart = currTime;
 				cliStat->timeAlerted = false;
 				cliStat->processing = true;
@@ -286,8 +287,8 @@ UInt32 __stdcall Net::TCPClientMgr::WorkerThread(void *o)
 			stat->state = WorkerState::Idle;
 			if (stat->isPrimary)
 			{
-				currTime = Data::DateTimeUtil::GetCurrTimeMillis();
-				if ((currTime - lastCheckTime) >= 10000)
+				currTime = Data::Timestamp::UtcNow();
+				if (currTime.DiffMS(lastCheckTime) >= 10000)
 				{
 					lastCheckTime = currTime;
 					Sync::MutexUsage mutUsage(&me->cliMut);
@@ -295,7 +296,7 @@ UInt32 __stdcall Net::TCPClientMgr::WorkerThread(void *o)
 					while (i-- > 0)
 					{
 						cliStat = me->cliArr.GetItem(i);
-						if ((currTime - cliStat->lastDataTimeTicks) > cliStat->cli->GetTimeoutMS())
+						if (currTime.Diff(cliStat->lastDataTime) > cliStat->cli->GetTimeout())
 						{
 			//				printf("Client data timeout\r\n");
 							cliStat->cli->Close();
@@ -331,7 +332,7 @@ void Net::TCPClientMgr::ProcessClient(Net::TCPClientMgr::TCPClientStatus *cliSta
 
 Net::TCPClientMgr::TCPClientMgr(Int32 timeOutSeconds, TCPClientEvent evtHdlr, TCPClientData dataHdlr, void *userObj, UOSInt workerCnt, TCPClientTimeout toHdlr)
 {
-	this->timeOutSeconds = timeOutSeconds;
+	this->timeout = Data::Duration(timeOutSeconds, 0);
 	this->evtHdlr = evtHdlr;
 	this->dataHdlr = dataHdlr;
 	this->toHdlr = toHdlr;
@@ -396,7 +397,7 @@ Net::TCPClientMgr::~TCPClientMgr()
 	}
 	while (this->cliArr.GetCount() > 0)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 	this->toStop = true;
 	if (clsData)
@@ -406,7 +407,7 @@ Net::TCPClientMgr::~TCPClientMgr()
 	}
 	while (clientThreadRunning)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 	if (this->workers)
 	{
@@ -434,7 +435,7 @@ Net::TCPClientMgr::~TCPClientMgr()
 			}
 			if (!exist)
 				break;
-			Sync::Thread::Sleep(10);
+			Sync::SimpleThread::Sleep(10);
 		}
 		MemFree(this->workers);
 	}
@@ -451,7 +452,7 @@ void Net::TCPClientMgr::AddClient(TCPClient *cli, void *cliData)
 {
 //	printf("Client added and set timeout to %d\r\n", this->timeOutSeconds);
 	cli->SetNoDelay(true);
-	cli->SetTimeout(this->timeOutSeconds * 1000);
+	cli->SetTimeout(this->timeout);
 	UInt64 cliId = cli->GetCliId();
 	if (cliId == 0)
 	{
@@ -465,7 +466,7 @@ void Net::TCPClientMgr::AddClient(TCPClient *cli, void *cliData)
 	Text::StrConcatC(cliStat->debug, UTF8STRC("debug"));
 	cliStat->cli = cli;
 	cliStat->cliData = cliData;
-	cliStat->lastDataTimeTicks = Data::DateTimeUtil::GetCurrTimeMillis();
+	cliStat->lastDataTime = Data::Timestamp::UtcNow();
 	cliStat->reading = false;
 	cliStat->processing = false;
 	cliStat->timeAlerted = false;
@@ -550,7 +551,7 @@ void Net::TCPClientMgr::ExtendTimeout(Net::TCPClient *cli)
 	if (i >= 0)
 	{
 		Net::TCPClientMgr::TCPClientStatus *cliStat = this->cliArr.GetItem((UOSInt)i);
-		cliStat->lastDataTimeTicks = Data::DateTimeUtil::GetCurrTimeMillis();
+		cliStat->lastDataTime = Data::Timestamp::UtcNow();
 	}
 }
 

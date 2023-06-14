@@ -3,6 +3,7 @@
 #include "Core/Core.h"
 #include "Data/ByteTool.h"
 #include "IO/SerialPort.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 #include <stdio.h>
 
@@ -69,7 +70,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		port->Close();
 		while (threadRunning)
 		{
-			Sync::Thread::Sleep(10);
+			Sync::SimpleThread::Sleep(10);
 		}
 	}
 	DEL_CLASS(port);

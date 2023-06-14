@@ -99,7 +99,7 @@ OSInt Media::RealtimeVideoSource::ReadNextFrame(UInt8 *frameBuff, Int32 *frameTi
 		return 0;
 	while (this->frameTime == this->lastFrameTime && started)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 	if (!started)
 	{

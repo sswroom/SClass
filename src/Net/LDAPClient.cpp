@@ -6,6 +6,7 @@
 #include "Net/ASN1Util.h"
 #include "Net/LDAPClient.h"
 #include "Sync/MutexUsage.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 #include "Text/CharUtil.h"
 
@@ -548,19 +549,19 @@ const UTF8Char *Net::LDAPClient::ParseFilter(Net::ASN1PDUBuilder *pdu, const UTF
 	}
 }
 
-Net::LDAPClient::LDAPClient(Net::SocketFactory *sockf, const Net::SocketUtil::AddressInfo *addr, UInt16 port)
+Net::LDAPClient::LDAPClient(Net::SocketFactory *sockf, const Net::SocketUtil::AddressInfo *addr, UInt16 port, Data::Duration timeout)
 {
 	this->sockf = sockf;
 	this->recvRunning = false;
 	this->recvToStop = false;
 	this->lastMsgId = 0;
-	NEW_CLASS(this->cli, Net::TCPClient(sockf, addr, port));
+	NEW_CLASS(this->cli, Net::TCPClient(sockf, addr, port, timeout));
 	if (!this->cli->IsConnectError() && !this->cli->IsClosed())
 	{
 		Sync::Thread::Create(RecvThread, this);
 		while (!this->recvRunning)
 		{
-			Sync::Thread::Sleep(1);
+			Sync::SimpleThread::Sleep(1);
 		}
 	}
 }
@@ -573,7 +574,7 @@ Net::LDAPClient::~LDAPClient()
 		this->cli->Close();
 		while (this->recvRunning)
 		{
-			Sync::Thread::Sleep(1);
+			Sync::SimpleThread::Sleep(1);
 		}
 	}
 	DEL_CLASS(this->cli);

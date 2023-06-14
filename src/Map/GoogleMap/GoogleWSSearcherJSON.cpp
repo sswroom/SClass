@@ -7,7 +7,7 @@
 #include "Map/GoogleMap/GoogleWSSearcherJSON.h"
 #include "Net/HTTPClient.h"
 #include "Sync/MutexUsage.h"
-#include "Sync/Thread.h"
+#include "Sync/SimpleThread.h"
 #include "Text/JSON.h"
 #include "Text/MyStringFloat.h"
 #include "Text/Locale.h"
@@ -105,7 +105,7 @@ UTF8Char *Map::GoogleMap::GoogleWSSearcherJSON::SearchName(UTF8Char *buff, UOSIn
 	{
 		if (i >= 0)
 		{
-			Sync::Thread::Sleep((UOSInt)(200 - i));
+			Sync::SimpleThread::Sleep((UOSInt)(200 - i));
 		}
 	}
 

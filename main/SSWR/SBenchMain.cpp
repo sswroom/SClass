@@ -45,6 +45,7 @@
 #include "Sync/Interlocked.h"
 #include "Sync/Mutex.h"
 #include "Sync/MutexUsage.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
@@ -75,7 +76,7 @@ UInt32 __stdcall TestThread(void *userObj)
 	clk->Start();
 	mainEvt->Set();
 	Sync::MutexUsage mutUsage(mut);
-	Sync::Thread::Sleep(500);
+	Sync::SimpleThread::Sleep(500);
 	clk->Start();
 	mutUsage.EndUse();
 	return 0;
@@ -535,7 +536,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	console->WriteLineC(sb.ToString(), sb.GetLength());
 	writer->WriteLineC(sb.ToString(), sb.GetLength());
 
-	Sync::Thread::Sleep(100);
+	Sync::SimpleThread::Sleep(100);
 	Sync::MutexUsage mutUsage(mut);
 	t = clk->GetTimeDiff();
 	mutUsage.EndUse();

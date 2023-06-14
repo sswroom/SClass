@@ -64,7 +64,7 @@ UInt32 __stdcall Map::ReverseGeocoderClient::ClientThread(void *userObj)
 		}
 		else if (!me->cliToStop)
 		{
-			Sync::Thread::Sleep(100);
+			Sync::SimpleThread::Sleep(100);
 		}
 	}
 	{
@@ -144,11 +144,11 @@ Map::ReverseGeocoderClient::~ReverseGeocoderClient()
 
 	while (this->cliRunning)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 	while (this->monRunning)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 	this->host->Release();
 }

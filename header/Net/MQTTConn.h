@@ -57,12 +57,12 @@ namespace Net
 		static UInt32 __stdcall RecvThread(void *userObj);
 
 		void OnPublishMessage(Text::CString topic, const UInt8 *message, UOSInt msgSize);
-		PacketInfo *GetNextPacket(UInt8 packetType, UOSInt timeoutMS);
+		PacketInfo *GetNextPacket(UInt8 packetType, Data::Duration timeout);
 		Bool SendPacket(const UInt8 *packet, UOSInt packetSize);
 
 		void InitStream(IO::Stream *stm);
 	public:
-		MQTTConn(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CString host, UInt16 port, DisconnectHdlr discHdlr, void *discHdlrObj);
+		MQTTConn(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CString host, UInt16 port, DisconnectHdlr discHdlr, void *discHdlrObj, Data::Duration timeout);
 		MQTTConn(IO::Stream *stm, DisconnectHdlr discHdlr, void *discHdlrObj);
 		virtual ~MQTTConn();
 
@@ -77,14 +77,14 @@ namespace Net
 		Bool SendPing();
 		Bool SendDisconnect();
 
-		ConnectStatus WaitConnAck(UOSInt timeoutMS);
-		UInt8 WaitSubAck(UInt16 packetId, UOSInt timeoutMS); //0x80 = failure
+		ConnectStatus WaitConnAck(Data::Duration timeout);
+		UInt8 WaitSubAck(UInt16 packetId, Data::Duration timeout); //0x80 = failure
 		void ClearPackets();
 
 		UInt64 GetTotalUpload();
 		UInt64 GetTotalDownload();
 
-		static Bool PublishMessage(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CString host, UInt16 port, Text::CString username, Text::CString password, Text::CString topic, Text::CString message);
+		static Bool PublishMessage(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CString host, UInt16 port, Text::CString username, Text::CString password, Text::CString topic, Text::CString message, Data::Duration timeout);
 	};
 }
 #endif

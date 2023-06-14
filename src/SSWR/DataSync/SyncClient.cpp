@@ -3,6 +3,7 @@
 #include "Net/TCPClient.h"
 #include "SSWR/DataSync/SyncClient.h"
 #include "Sync/MutexUsage.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
@@ -49,7 +50,7 @@ UInt32 __stdcall SSWR::DataSync::SyncClient::RecvThread(void *userObj)
 		{
 
 			Net::TCPClient *cli;
-			NEW_CLASS(cli, Net::TCPClient(me->sockf, me->cliHost->ToCString(), me->cliPort));
+			NEW_CLASS(cli, Net::TCPClient(me->sockf, me->cliHost->ToCString(), me->cliPort, me->timeout));
 			if (cli->IsClosed())
 			{
 				DEL_CLASS(cli);
@@ -200,7 +201,7 @@ Bool SSWR::DataSync::SyncClient::SendUserData(const UInt8 *data, UOSInt dataSize
 	return succ;
 }
 
-SSWR::DataSync::SyncClient::SyncClient(Net::SocketFactory *sockf, Int32 serverId, Text::CString serverName, Text::CString clientHost, UInt16 cliPort) : protoHdlr(this)
+SSWR::DataSync::SyncClient::SyncClient(Net::SocketFactory *sockf, Int32 serverId, Text::CString serverName, Text::CString clientHost, UInt16 cliPort, Data::Duration timeout) : protoHdlr(this)
 {
 	this->sockf = sockf;
 	this->serverId = serverId;
@@ -208,6 +209,7 @@ SSWR::DataSync::SyncClient::SyncClient(Net::SocketFactory *sockf, Int32 serverId
 	this->cli = 0;
 	this->cliHost = Text::String::New(clientHost);
 	this->cliPort = cliPort;
+	this->timeout = timeout;
 
 	this->recvRunning = false;
 	this->kaRunning = false;
@@ -217,7 +219,7 @@ SSWR::DataSync::SyncClient::SyncClient(Net::SocketFactory *sockf, Int32 serverId
 	Sync::Thread::Create(KAThread, this);
 	while (!this->recvRunning || !this->kaRunning)
 	{
-		Sync::Thread::Sleep(1);
+		Sync::SimpleThread::Sleep(1);
 	}
 }
 
@@ -234,7 +236,7 @@ SSWR::DataSync::SyncClient::~SyncClient()
 	mutUsage.EndUse();
 	while (this->recvRunning || this->kaRunning)
 	{
-		Sync::Thread::Sleep(1);
+		Sync::SimpleThread::Sleep(1);
 	}
 	this->cliHost->Release();
 	this->serverName->Release();

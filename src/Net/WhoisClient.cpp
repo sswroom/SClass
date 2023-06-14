@@ -24,12 +24,12 @@ Net::WhoisClient::~WhoisClient()
 	SDEL_STRING(this->prefix);
 }
 
-Net::WhoisRecord *Net::WhoisClient::RequestIP(UInt32 ip)
+Net::WhoisRecord *Net::WhoisClient::RequestIP(UInt32 ip, Data::Duration timeout)
 {
-	return RequestIP(ip, this->whoisIP, STR_CSTR(this->prefix));
+	return RequestIP(ip, this->whoisIP, STR_CSTR(this->prefix), timeout);
 }
 
-Net::WhoisRecord *Net::WhoisClient::RequestIP(UInt32 ip, UInt32 whoisIP, Text::CString prefix)
+Net::WhoisRecord *Net::WhoisClient::RequestIP(UInt32 ip, UInt32 whoisIP, Text::CString prefix, Data::Duration timeout)
 {
 	Net::TCPClient *cli;
 	Text::UTF8Reader *reader;
@@ -53,7 +53,7 @@ Net::WhoisRecord *Net::WhoisClient::RequestIP(UInt32 ip, UInt32 whoisIP, Text::C
 	sptr = Text::StrConcatC(Text::StrUInt32(sptr, ipAddr[3]), UTF8STRC("\r\n"));
 
 	NEW_CLASS(rec, Net::WhoisRecord(ip));
-	NEW_CLASS(cli, Net::TCPClient(sockf, whoisIP, 43));
+	NEW_CLASS(cli, Net::TCPClient(sockf, whoisIP, 43, timeout));
 	cli->Write((UInt8*)sbuff, (UOSInt)(sptr - sbuff));
 	NEW_CLASS(reader, Text::UTF8Reader(cli));
 	while ((sptr = reader->ReadLine(sbuff, 511)) != 0)

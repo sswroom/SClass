@@ -5,6 +5,7 @@
 #include "IO/GPIOPin.h"
 #include "IO/IniFile.h"
 #include "Sync/Event.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 
 IO::GPIOPin *pin;
@@ -66,7 +67,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 					evt->Set();
 					while (threadRunning)
 					{
-						Sync::Thread::Sleep(1);
+						Sync::SimpleThread::Sleep(1);
 					}
 					pin->SetPinOutput(false);
 					DEL_CLASS(evt);

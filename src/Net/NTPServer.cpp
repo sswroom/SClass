@@ -4,6 +4,7 @@
 #include "Data/DateTime.h"
 #include "Net/NTPClient.h"
 #include "Net/NTPServer.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
@@ -149,7 +150,7 @@ Net::NTPServer::NTPServer(Net::SocketFactory *sockf, UInt16 port, IO::LogTool *l
 		Sync::Thread::Create(CheckThread, this);
 		while (!this->threadRunning)
 		{
-			Sync::Thread::Sleep(1);
+			Sync::SimpleThread::Sleep(1);
 		}
 	}
 }
@@ -163,7 +164,7 @@ Net::NTPServer::~NTPServer()
 		this->evt->Set();
 		while (this->threadRunning)
 		{
-			Sync::Thread::Sleep(1);
+			Sync::SimpleThread::Sleep(1);
 		}
 	}
 	DEL_CLASS(this->evt);

@@ -8,7 +8,7 @@
 #include "Media/Batch/BatchSavePNG.h"
 #include "Media/Batch/BatchSaveTIFF.h"
 #include "Media/Batch/BatchSaveWebP.h"
-#include "Sync/Thread.h"
+#include "Sync/SimpleThread.h"
 #include "Text/StringBuilderUTF8.h"
 #include "Text/UTF8Writer.h"
 
@@ -39,7 +39,7 @@ Media::ProfiledResizer::~ProfiledResizer()
 	UOSInt i;
 	while (loader->IsProcessing())
 	{
-		Sync::Thread::Sleep(100);
+		Sync::SimpleThread::Sleep(100);
 	}
 
 	i = this->profiles.GetCount();
@@ -80,7 +80,7 @@ void Media::ProfiledResizer::SetCurrentProfile(UOSInt index)
 
 	while (loader->IsProcessing())
 	{
-		Sync::Thread::Sleep(100);
+		Sync::SimpleThread::Sleep(100);
 	}
 	this->currProfile = index;
 	const ResizeProfile *profile = this->profiles.GetItem(index);
@@ -186,7 +186,7 @@ Bool Media::ProfiledResizer::RemoveProfile(UOSInt index)
 	{
 		while (loader->IsProcessing())
 		{
-			Sync::Thread::Sleep(100);
+			Sync::SimpleThread::Sleep(100);
 		}
 	}
 	ReleaseProfile(this->profiles.RemoveAt(index));
@@ -305,7 +305,7 @@ Bool Media::ProfiledResizer::LoadProfile(Text::CString fileName)
 		UOSInt i;
 		while (loader->IsProcessing())
 		{
-			Sync::Thread::Sleep(100);
+			Sync::SimpleThread::Sleep(100);
 		}
 
 		this->currProfile = (UOSInt)-1;

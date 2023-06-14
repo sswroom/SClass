@@ -3,6 +3,7 @@
 #include "IO/GPSNMEA.h"
 #include "Math/Math.h"
 #include "Sync/RWMutexUsage.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
@@ -303,7 +304,7 @@ UInt32 __stdcall IO::GPSNMEA::NMEAThread(void *userObj)
 			}
 			else
 			{
-				Sync::Thread::Sleep(10);
+				Sync::SimpleThread::Sleep(10);
 			}
 		}
 	}
@@ -323,7 +324,7 @@ IO::GPSNMEA::GPSNMEA(IO::Stream *stm, Bool relStm)
 	Sync::Thread::Create(NMEAThread, this);
 	while (!this->threadRunning)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 }
 
@@ -333,7 +334,7 @@ IO::GPSNMEA::~GPSNMEA()
 	this->stm->Close();
 	while (this->threadRunning)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 	if (this->relStm)
 	{

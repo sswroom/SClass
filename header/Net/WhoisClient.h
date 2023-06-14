@@ -17,10 +17,10 @@ namespace Net
 		WhoisClient(Net::SocketFactory *sockf, UInt32 whoisIP, Text::CString prefix);
 		virtual ~WhoisClient();
 
-		virtual WhoisRecord *RequestIP(UInt32 ip);
+		virtual WhoisRecord *RequestIP(UInt32 ip, Data::Duration timeout);
 
 	protected:
-		WhoisRecord *RequestIP(UInt32 ip, UInt32 whoisIP, Text::CString prefix);
+		WhoisRecord *RequestIP(UInt32 ip, UInt32 whoisIP, Text::CString prefix, Data::Duration timeout);
 	};
 };
 #endif

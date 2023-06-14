@@ -3,6 +3,7 @@
 #include "Media/AVIUtl/AUIVideo.h"
 #include "Sync/Interlocked.h"
 #include "Sync/MutexUsage.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 #include <windows.h>
 
@@ -80,7 +81,7 @@ Media::AVIUtl::AUIVideo::AUIVideo(Media::AVIUtl::AUIPlugin *plugin, Media::AVIUt
 	Sync::Thread::Create(PlayThread, this);
 	while (!this->threadRunning)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 }
 
@@ -91,7 +92,7 @@ Media::AVIUtl::AUIVideo::~AUIVideo()
 	this->threadEvt.Set();
 	while (this->threadRunning)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 
 	if (Sync::Interlocked::Decrement(&this->input->useCnt) == 0)

@@ -2,6 +2,7 @@
 #include "MyMemory.h"
 #include "IO/TVCtrl/MDT701STVControl.h"
 #include "Sync/MutexUsage.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 
 UInt32 __stdcall IO::TVCtrl::MDT701STVControl::RecvThread(void *userObj)
@@ -15,7 +16,7 @@ UInt32 __stdcall IO::TVCtrl::MDT701STVControl::RecvThread(void *userObj)
 		recvSize = me->stm->Read(buff, 256);
 		if (recvSize <= 0)
 		{
-			Sync::Thread::Sleep(10);
+			Sync::SimpleThread::Sleep(10);
 		}
 		else
 		{
@@ -49,7 +50,7 @@ Bool IO::TVCtrl::MDT701STVControl::SendBasicCommand(const Char *buff, UOSInt buf
 	if (dt.CompareTo(&this->nextTime) < 0)
 	{
 		Int64 timeDiff = this->nextTime.DiffMS(&dt);
-		Sync::Thread::Sleep((UInt32)timeDiff);
+		Sync::SimpleThread::Sleep((UInt32)timeDiff);
 	}
 	
 	Sync::MutexUsage mutUsage(&this->mut);
@@ -105,7 +106,7 @@ IO::TVCtrl::MDT701STVControl::~MDT701STVControl()
 	this->recvToStop = true;
 	while (this->recvRunning)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 }
 

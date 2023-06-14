@@ -15,7 +15,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	sptr = Text::StrUInt16(sptr, tmpVal);
 	*sptr++ = 13;
 	*sptr++ = 10;
-	Sync::Thread::Sleep(10000);
+	Sync::SimpleThread::Sleep(10000);
 	serial.Write(buff, sptr - buff);
 
 	while (true)

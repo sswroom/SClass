@@ -5,7 +5,7 @@
 #include "Sync/Event.h"
 #include "Sync/Mutex.h"
 #include "Sync/MutexUsage.h"
-#include "Sync/Thread.h"
+#include "Sync/SimpleThread.h"
 #include "Text/MyString.h"
 #if defined(_WIN32)
 #include <windows.h>
@@ -46,7 +46,7 @@ IO::SiLabSerialPort::~SiLabSerialPort()
 	this->rdEvt.Set();
 	while (this->reading)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 }
 

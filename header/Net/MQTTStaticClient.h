@@ -31,6 +31,7 @@ namespace Net
 
 		Net::SocketFactory *sockf;
 		Net::SSLEngine *ssl;
+		Data::Duration connTimeout;
 		Text::String *host;
 		UInt16 port;
 		Text::String *username;

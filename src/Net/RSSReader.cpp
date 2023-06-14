@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "Net/RSSReader.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 
 UInt32 __stdcall Net::RSSReader::RSSThread(void *userObj)
@@ -19,7 +20,7 @@ UInt32 __stdcall Net::RSSReader::RSSThread(void *userObj)
 		dt->SetCurrTimeUTC();
 		if (dt->CompareTo(me->nextDT) > 0)
 		{
-			NEW_CLASS(rss, Net::RSS(me->url->ToCString(), 0, me->sockf, me->ssl));
+			NEW_CLASS(rss, Net::RSS(me->url->ToCString(), 0, me->sockf, me->ssl, me->timeout));
 			if (rss->IsError())
 			{
 				DEL_CLASS(rss);
@@ -87,9 +88,10 @@ UInt32 __stdcall Net::RSSReader::RSSThread(void *userObj)
 	return false;
 }
 
-Net::RSSReader::RSSReader(Text::CString url, Net::SocketFactory *sockf, Net::SSLEngine *ssl, UInt32 refreshSecond, Net::RSSHandler *hdlr)
+Net::RSSReader::RSSReader(Text::CString url, Net::SocketFactory *sockf, Net::SSLEngine *ssl, UInt32 refreshSecond, Net::RSSHandler *hdlr, Data::Duration timeout)
 {
 	this->url = Text::String::New(url);
+	this->timeout = timeout;
 	this->sockf = sockf;
 	this->ssl = ssl;
 	this->refreshSecond = refreshSecond;
@@ -104,7 +106,7 @@ Net::RSSReader::RSSReader(Text::CString url, Net::SocketFactory *sockf, Net::SSL
 	Sync::Thread::Create(RSSThread, this);
 	while (!this->threadRunning)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 }
 
@@ -114,7 +116,7 @@ Net::RSSReader::~RSSReader()
 	this->threadEvt->Set();
 	while (this->threadRunning)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 	if (this->lastRSS)
 	{

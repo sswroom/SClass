@@ -5,6 +5,7 @@
 #include "Net/ConnectionInfo.h"
 #include "Net/ICMPScanner.h"
 #include "Sync/MutexUsage.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 
 #define THREADLEV 5
@@ -260,12 +261,12 @@ Bool Net::ICMPScanner::Scan(UInt32 ip)
 			buff[3]++;
 		}
 
-		Sync::Thread::Sleep(3000);
+		Sync::SimpleThread::Sleep(3000);
 		this->threadToStop = true;
 		this->sockf->DestroySocket(s);
 		while (this->threadRunning)
 		{
-			Sync::Thread::Sleep(1);
+			Sync::SimpleThread::Sleep(1);
 		}
 		this->soc = 0;
 		DEL_CLASS(this->clk);

@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 #include <pthread.h>
 #include <signal.h>
@@ -15,36 +16,19 @@
 #define gettid() syscall(SYS_gettid)
 #endif
 
-void Sync::Thread::Sleep(UOSInt ms)
-{
-	UOSInt s = ms / 1000;
-	ms = ms % 1000;
-	if (s)
-		if (!sleep((UInt32)s))
-			return;
-	if (ms)
-		if (!usleep((useconds_t)(ms * 1000)))
-			return;
-}
-
-void Sync::Thread::Sleepus(UOSInt us)
+void Sync::Thread::SleepDur(Data::Duration dur)
 {
 	struct timeval tNow, tLong, tEnd;
 	gettimeofday (&tNow, 0) ;
-	tLong.tv_sec  = (time_t)(us / 1000000);
-	tLong.tv_usec = (suseconds_t)(us % 1000000);
+	tLong.tv_sec  = (time_t)dur.GetSeconds();
+	tLong.tv_usec = (suseconds_t)(dur.GetNS() / 1000);
 	timeradd (&tNow, &tLong, &tEnd) ;
 
-	if (us >= 60)
-	{
-		struct timespec sleeper ;
-		us = us - 59;
-		sleeper.tv_sec  = (time_t)(us / 1000000);
-		sleeper.tv_nsec = (Int32)((us % 1000000) * 1000L) ;
-		nanosleep (&sleeper, NULL) ;
-
-		gettimeofday (&tNow, 0) ;
-	}
+	struct timespec sleeper ;
+	sleeper.tv_sec  = (time_t)dur.GetSeconds();
+	sleeper.tv_nsec = (Int32)dur.GetNS();
+	nanosleep (&sleeper, NULL) ;
+	gettimeofday (&tNow, 0) ;
 	while (timercmp (&tNow, &tEnd, <))
 		gettimeofday (&tNow, 0) ;
 }
@@ -64,7 +48,7 @@ UInt32 Sync::Thread::Create(Sync::ThreadProc tProc, void *userObj)
 		}
 		else if (ret == 11)
 		{
-			Sync::Thread::Sleep(100);
+			Sync::SimpleThread::Sleep(100);
 		}
 		else
 		{
@@ -98,7 +82,7 @@ UInt32 Sync::Thread::Create(Sync::ThreadProc tProc, void *userObj, UInt32 thread
 		}
 		else if (ret == 11)
 		{
-			Sync::Thread::Sleep(100);
+			Sync::SimpleThread::Sleep(100);
 		}
 		else if (ret == 22)
 		{

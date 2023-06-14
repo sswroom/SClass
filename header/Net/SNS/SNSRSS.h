@@ -25,6 +25,7 @@ namespace Net
 			Data::FastStringMap<SNSItem *> itemMap;
 			Sync::Mutex crcMut;
 			Crypto::Hash::CRC32R crc;
+			Data::Duration timeout;
 
 			void CalcCRC(const UInt8 *buff, UOSInt size, UInt8 *hashVal);
 		public:

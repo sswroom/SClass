@@ -9,7 +9,7 @@
 #include "IO/WindowsError.h"
 #include "Manage/Process.h"
 #include "Sync/Interlocked.h"
-#include "Sync/Thread.h"
+#include "Sync/SimpleThread.h"
 #include "Text/MyString.h"
 #include "Text/MyStringW.h"
 #include <windows.h>
@@ -1525,7 +1525,7 @@ Int32 Manage::Process::ExecuteProcessW(const WChar *cmd, Text::StringBuilderUTF8
 					break;
 				}
 				DEL_CLASS(fs);
-				Sync::Thread::Sleep(100);
+				Sync::SimpleThread::Sleep(100);
 			}
 			{
 				IO::StreamReader reader(fs);

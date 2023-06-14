@@ -9,6 +9,7 @@
 #include "Net/RTPAACHandler.h"
 #include "Net/RTPVSource.h"
 #include "Sync/MutexUsage.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 #include "Text/Encoding.h"
 #include "Text/MyString.h"
@@ -492,7 +493,7 @@ Bool Net::RTPCliChannel::StartPlay()
 	Sync::Thread::Create(PlayThread, this);
 	while (!this->chData->playing)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 	return true;
 }
@@ -505,7 +506,7 @@ Bool Net::RTPCliChannel::StopPlay()
 		this->chData->playEvt.Set();
 		while (this->chData->playing)
 		{
-			Sync::Thread::Sleep(10);
+			Sync::SimpleThread::Sleep(10);
 		}
 	}
 	return true;

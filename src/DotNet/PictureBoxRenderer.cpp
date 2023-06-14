@@ -152,7 +152,7 @@ void DotNet::PictureBoxRenderer::Stop()
 	this->renderer->StopRender();
 	while (playing)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 		stopPlay = true;
 	}
 }

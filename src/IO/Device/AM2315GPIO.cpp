@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Data/ByteTool.h"
 #include "IO/Device/AM2315GPIO.h"
-#include "Sync/Thread.h"
+#include "Sync/SimpleThread.h"
 #include "Text/StringBuilderUTF8.h"
 #include <stdio.h>
 
@@ -31,21 +31,21 @@ Bool IO::Device::AM2315GPIO::I2CWriteByte(UInt8 b)
 	j = 8;
 	while (j-- > 0)
 	{
-		Sync::Thread::Sleepus(4); //4.0
+		Sync::SimpleThread::Sleepus(4); //4.0
 		this->sdaPin->SetPinState(b & v);
 		this->sclPin->SetPinState(true);
-		Sync::Thread::Sleepus(5); //4.7
+		Sync::SimpleThread::Sleepus(5); //4.7
 		this->sclPin->SetPinState(false);
 		v = (UInt8)(v >> 1);
 	}
 	this->sdaPin->SetPinOutput(false);
-	Sync::Thread::Sleepus(4); //4.0
+	Sync::SimpleThread::Sleepus(4); //4.0
 	this->sclPin->SetPinState(true);
 	if (this->sdaPin->IsPinHigh()) //NACK
 	{
 		ret = true;
 	}
-	Sync::Thread::Sleepus(5); //4.7
+	Sync::SimpleThread::Sleepus(5); //4.7
 	this->sclPin->SetPinState(false);
 	this->sdaPin->SetPinOutput(true);
 	this->sdaPin->SetPinState(false);
@@ -63,13 +63,13 @@ Bool IO::Device::AM2315GPIO::I2CReadByte(UInt8 *b, Bool isLast)
 	j = 8;
 	while (j-- > 0)
 	{
-		Sync::Thread::Sleepus(4); //4.0
+		Sync::SimpleThread::Sleepus(4); //4.0
 		this->sclPin->SetPinState(true);
 		if (this->sdaPin->IsPinHigh())
 		{
 			by = by | v;
 		}
-		Sync::Thread::Sleepus(5); //4.7
+		Sync::SimpleThread::Sleepus(5); //4.7
 		this->sclPin->SetPinState(false);
 		v = (UInt8)(v >> 1);
 	}
@@ -84,9 +84,9 @@ Bool IO::Device::AM2315GPIO::I2CReadByte(UInt8 *b, Bool isLast)
 	{
 		this->sdaPin->SetPinState(false);
 	}
-	Sync::Thread::Sleepus(4); //4.0
+	Sync::SimpleThread::Sleepus(4); //4.0
 	this->sclPin->SetPinState(true);
-	Sync::Thread::Sleepus(5); //4.7
+	Sync::SimpleThread::Sleepus(5); //4.7
 	this->sclPin->SetPinState(false);
 	return true;
 }
@@ -94,7 +94,7 @@ Bool IO::Device::AM2315GPIO::I2CReadByte(UInt8 *b, Bool isLast)
 Bool IO::Device::AM2315GPIO::I2CEnd()
 {
 	printf("I2CEnd\r\n");
-	Sync::Thread::Sleepus(4); //4.0
+	Sync::SimpleThread::Sleepus(4); //4.0
 	this->sclPin->SetPinOutput(false);
 	this->sdaPin->SetPinOutput(false);
 	return true;
@@ -153,7 +153,7 @@ OSInt IO::Device::AM2315GPIO::DirectWrite(const UInt8 *buff, OSInt writeSize)
 
 void IO::Device::AM2315GPIO::Wait()
 {
-	Sync::Thread::Sleep(1);
+	Sync::SimpleThread::Sleep(1);
 }
 
 Bool IO::Device::AM2315GPIO::ReadWord(UInt8 regAddr, UInt8 *data)
@@ -244,7 +244,7 @@ void IO::Device::AM2315GPIO::Wakeup()
 	if (!this->I2CStart())
 		return;
 	this->I2CWriteByte(0xB8);
-	Sync::Thread::Sleepus(800);
+	Sync::SimpleThread::Sleepus(800);
 	this->I2CEnd();
 }
 

@@ -93,7 +93,7 @@ void Net::OSMGPXDownloader::ItemAdded(Net::RSSItem *item)
 			if (totalSize > 1)
 				break;
 			IO::Path::DeleteFile(sbuff);
-			Sync::Thread::Sleep(10000);
+			Sync::SimpleThread::Sleep(10000);
 		}
 	}
 }

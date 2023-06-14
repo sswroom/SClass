@@ -5,6 +5,7 @@
 #include "SSWR/AVIRead/AVIRHTTPTestForm.h"
 #include "Sync/Interlocked.h"
 #include "Sync/MutexUsage.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
@@ -272,7 +273,7 @@ void SSWR::AVIRead::AVIRHTTPTestForm::StopThreads()
 		}
 		while (this->threadCurrCnt > 0)
 		{
-			Sync::Thread::Sleep(10);
+			Sync::SimpleThread::Sleep(10);
 		}
 	}
 	if (this->threadStatus)

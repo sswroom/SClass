@@ -7,6 +7,7 @@
 #include "IO/Path.h"
 #include "SSWR/AVIRead/AVIRFileHashForm.h"
 #include "Sync/MutexUsage.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 
 void __stdcall SSWR::AVIRead::AVIRFileHashForm::OnFileDrop(void *userObj, Text::String **files, UOSInt nFiles)
@@ -363,7 +364,7 @@ SSWR::AVIRead::AVIRFileHashForm::~AVIRFileHashForm()
 	this->fileEvt.Set();
 	while (this->threadStatus != 2)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 
 	i = this->fileList.GetCount();

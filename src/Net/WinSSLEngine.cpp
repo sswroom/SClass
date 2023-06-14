@@ -1424,7 +1424,7 @@ Bool Net::WinSSLEngine::ClientSetCertASN1(Crypto::Cert::X509Cert *certASN1, Cryp
 	return true;
 }
 
-Net::SSLClient *Net::WinSSLEngine::ClientConnect(Text::CString hostName, UInt16 port, ErrorType *err)
+Net::SSLClient *Net::WinSSLEngine::ClientConnect(Text::CString hostName, UInt16 port, ErrorType *err, Data::Duration timeout)
 {
 	if (!this->clsData->cliInit)
 	{
@@ -1461,7 +1461,7 @@ Net::SSLClient *Net::WinSSLEngine::ClientConnect(Text::CString hostName, UInt16 
 					*err = ErrorType::OutOfMemory;
 				return 0;
 			}
-			if (this->sockf->Connect(s, &addr[addrInd], port))
+			if (this->sockf->Connect(s, &addr[addrInd], port, timeout))
 			{
 				return CreateClientConn(0, s, hostName, err);
 			}
@@ -1476,7 +1476,7 @@ Net::SSLClient *Net::WinSSLEngine::ClientConnect(Text::CString hostName, UInt16 
 					*err = ErrorType::OutOfMemory;
 				return 0;
 			}
-			if (this->sockf->Connect(s, &addr[addrInd], port))
+			if (this->sockf->Connect(s, &addr[addrInd], port, timeout))
 			{
 				return CreateClientConn(0, s, hostName, err);
 			}

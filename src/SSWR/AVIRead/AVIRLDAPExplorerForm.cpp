@@ -40,7 +40,7 @@ void __stdcall SSWR::AVIRead::AVIRLDAPExplorerForm::OnConnectClicked(void *userO
 		UI::MessageDialog::ShowDialog(CSTR("Please enter valid Port number"), CSTR("LDAP Explorer"), me);
 		return;
 	}
-	NEW_CLASS(me->cli, Net::LDAPClient(sockf, &addr, port));
+	NEW_CLASS(me->cli, Net::LDAPClient(sockf, &addr, port, 30000));
 	if (me->cli->IsError())
 	{
 		DEL_CLASS(me->cli);

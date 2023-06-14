@@ -6,6 +6,7 @@
 #include "IO/FileAnalyse/NFDumpFileAnalyse.h"
 #include "Manage/Process.h"
 #include "Net/SocketFactory.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 
 #define LZOPROGRAM L"LZOBlockDecomp.exe"
@@ -38,7 +39,7 @@ UInt32 __stdcall IO::FileAnalyse::NFDumpFileAnalyse::ParseThread(void *userObj)
 	{
 		if (me->pauseParsing)
 		{
-			Sync::Thread::Sleep(100);
+			Sync::SimpleThread::Sleep(100);
 		}
 		else
 		{
@@ -101,7 +102,7 @@ IO::FileAnalyse::NFDumpFileAnalyse::NFDumpFileAnalyse(IO::StreamData *fd)
 	Sync::Thread::Create(ParseThread, this);
 	while (!this->threadStarted)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 }
 
@@ -112,7 +113,7 @@ IO::FileAnalyse::NFDumpFileAnalyse::~NFDumpFileAnalyse()
 		this->threadToStop = true;
 		while (this->threadRunning)
 		{
-			Sync::Thread::Sleep(10);
+			Sync::SimpleThread::Sleep(10);
 		}
 	}
 	SDEL_CLASS(this->fd);

@@ -2,6 +2,7 @@
 #include "Manage/HiResClock.h"
 #include "Net/HTTPProxyClient.h"
 #include "SSWR/AVIRead/AVIRHTTPProxyClientForm.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
@@ -45,7 +46,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPProxyClientForm::OnRequestClicked(void *us
 	me->threadEvt->Set();
 	while (me->threadRunning && me->reqURL)
 	{
-		Sync::Thread::Sleep(1);
+		Sync::SimpleThread::Sleep(1);
 	}
 }
 
@@ -266,7 +267,7 @@ SSWR::AVIRead::AVIRHTTPProxyClientForm::~AVIRHTTPProxyClientForm()
 	this->threadEvt->Set();
 	while (this->threadRunning)
 	{
-		Sync::Thread::Sleep(1);
+		Sync::SimpleThread::Sleep(1);
 	}
 	DEL_CLASS(this->threadEvt);
 	this->ClearHeaders();

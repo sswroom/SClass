@@ -27,6 +27,7 @@ namespace Net
 		Int64 lastSendTime;
 		Sync::Mutex cliMut;
 		Net::TCPClient *cli;
+		Data::Duration timeout;
 
 		Bool sendRunning;
 		Bool sendToStop;
@@ -38,7 +39,7 @@ namespace Net
 		static UInt32 __stdcall RecvThread(void *userObj);
 		static UInt32 __stdcall SendThread(void *userObj);
 	public:
-		LogClient(Net::SocketFactory *sockf, const Net::SocketUtil::AddressInfo *addr, UInt16 port);
+		LogClient(Net::SocketFactory *sockf, const Net::SocketUtil::AddressInfo *addr, UInt16 port, Data::Duration timeout);
 		virtual ~LogClient();
 		virtual void LogClosed();
 		virtual void LogAdded(const Data::Timestamp &logTime, Text::CString logMsg, LogLevel logLev);

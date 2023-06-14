@@ -1,6 +1,7 @@
 #ifndef _SM_IO_ATCOMMANDCHANNEL
 #define _SM_IO_ATCOMMANDCHANNEL
 #include "Data/ArrayList.h"
+#include "Data/Duration.h"
 #include "IO/LogTool.h"
 #include "IO/Stream.h"
 #include "Sync/Event.h"
@@ -40,13 +41,13 @@ namespace IO
 
 		IO::Stream *GetStream();
 
-		UOSInt SendATCommand(Data::ArrayList<Text::String *> *retArr, const UTF8Char *atCmd, UOSInt atCmdLen, Int32 timeoutMS);
-		UOSInt SendATCommands(Data::ArrayList<Text::String *> *retArr, const UTF8Char *atCmd, UOSInt atCmdLen, const UTF8Char *atCmdSub, Int32 timeoutMS);
-		UOSInt SendDialCommand(Data::ArrayList<Text::String *> *retArr, const UTF8Char *atCmd, UOSInt atCmdLen, Int32 timeoutMS);
+		UOSInt SendATCommand(Data::ArrayList<Text::String *> *retArr, const UTF8Char *atCmd, UOSInt atCmdLen, Data::Duration timeout);
+		UOSInt SendATCommands(Data::ArrayList<Text::String *> *retArr, const UTF8Char *atCmd, UOSInt atCmdLen, const UTF8Char *atCmdSub, Data::Duration timeout);
+		UOSInt SendDialCommand(Data::ArrayList<Text::String *> *retArr, const UTF8Char *atCmd, UOSInt atCmdLen, Data::Duration timeout);
 
 		Bool UseCmd(Sync::MutexUsage *mutUsage);
 		UOSInt CmdSend(const UInt8 *data, UOSInt dataSize);
-		Text::String *CmdGetNextResult(UOSInt timeoutMS);
+		Text::String *CmdGetNextResult(Data::Duration timeout);
 
 		void Close();
 

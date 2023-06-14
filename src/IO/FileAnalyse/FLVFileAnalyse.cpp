@@ -2,6 +2,7 @@
 #include "Data/ByteTool.h"
 #include "IO/FileAnalyse/FLVFileAnalyse.h"
 #include "IO/FileAnalyse/SBFrameDetail.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
@@ -174,7 +175,7 @@ IO::FileAnalyse::FLVFileAnalyse::FLVFileAnalyse(IO::StreamData *fd)
 	Sync::Thread::Create(ParseThread, this);
 	while (!this->threadStarted)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 }
 
@@ -185,7 +186,7 @@ IO::FileAnalyse::FLVFileAnalyse::~FLVFileAnalyse()
 		this->threadToStop = true;
 		while (this->threadRunning)
 		{
-			Sync::Thread::Sleep(10);
+			Sync::SimpleThread::Sleep(10);
 		}
 	}
 

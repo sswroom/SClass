@@ -5,6 +5,7 @@
 #include "IO/GPIOPin.h"
 #include "IO/OneWireGPIO.h"
 #include "IO/Device/DS18B20.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
@@ -69,7 +70,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				Text::SBAppendF64(&sb, temp);
 				console.WriteLineC(sb.ToString(), sb.GetLength());
 			}
-			Sync::Thread::Sleep(3000);
+			Sync::SimpleThread::Sleep(3000);
 		}
 	}
 

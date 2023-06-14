@@ -9,6 +9,7 @@
 #include "Net/MySQLUtil.h"
 #include "Net/SocketUtil.h"
 #include "Sync/MutexUsage.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
@@ -2060,7 +2061,7 @@ Net::MySQLTCPClient::~MySQLTCPClient()
 		}
 		while (this->recvRunning)
 		{
-			Sync::Thread::Sleep(1);
+			Sync::SimpleThread::Sleep(1);
 		}
 		DEL_CLASS(this->cli);
 		this->cli = 0;
@@ -2168,7 +2169,7 @@ DB::DBReader *Net::MySQLTCPClient::ExecuteReaderText(Text::CString sql)
 		{
 			return 0;
 		}
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 	MySQLTCPReader *reader;
 	NEW_CLASS(reader, MySQLTCPReader(&this->cmdMut));
@@ -2222,7 +2223,7 @@ DB::DBReader *Net::MySQLTCPClient::ExecuteReaderBinary(Text::CString sql)
 		{
 			return 0;
 		}
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 	MySQLTCPBinaryReader *reader;
 	NEW_CLASS(reader, MySQLTCPBinaryReader(&this->cmdMut));
@@ -2317,7 +2318,7 @@ void Net::MySQLTCPClient::Reconnect()
 	this->mode = ClientMode::Handshake;
 	SDEL_STRING(this->svrVer);
 	this->axisAware = false;
-	NEW_CLASS(this->cli, Net::TCPClient(this->sockf, &this->addr, this->port));
+	NEW_CLASS(this->cli, Net::TCPClient(this->sockf, &this->addr, this->port, 15000));
 	if (this->cli->IsConnectError())
 	{
 		DEL_CLASS(this->cli);
@@ -2330,7 +2331,7 @@ void Net::MySQLTCPClient::Reconnect()
 		Sync::Thread::Create(RecvThread, this);
 		while (!this->recvStarted)
 		{
-			Sync::Thread::Sleep(1);
+			Sync::SimpleThread::Sleep(1);
 		}
 	}
 }

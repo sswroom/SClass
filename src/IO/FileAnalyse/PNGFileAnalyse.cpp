@@ -4,6 +4,7 @@
 #include "IO/MemoryStream.h"
 #include "IO/FileAnalyse/PNGFileAnalyse.h"
 #include "Media/ICCProfile.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
@@ -70,7 +71,7 @@ IO::FileAnalyse::PNGFileAnalyse::PNGFileAnalyse(IO::StreamData *fd)
 	Sync::Thread::Create(ParseThread, this);
 	while (!this->threadStarted)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 }
 
@@ -81,7 +82,7 @@ IO::FileAnalyse::PNGFileAnalyse::~PNGFileAnalyse()
 		this->threadToStop = true;
 		while (this->threadRunning)
 		{
-			Sync::Thread::Sleep(10);
+			Sync::SimpleThread::Sleep(10);
 		}
 	}
 

@@ -42,7 +42,7 @@ namespace Net
 			virtual Bool AddDefHeaders(Net::WebServer::IWebRequest *req) = 0;
 			virtual UInt64 GetRespLength() = 0;
 			virtual void ShutdownSend() = 0;
-			virtual Bool ResponseSSE(Int32 timeoutMS, SSEDisconnectHandler hdlr, void *userObj) = 0;
+			virtual Bool ResponseSSE(Data::Duration timeout, SSEDisconnectHandler hdlr, void *userObj) = 0;
 			virtual Bool SSESend(const UTF8Char *eventName, const UTF8Char *data) = 0;
 			virtual Bool SwitchProtocol(ProtocolHandler *protoHdlr) = 0;
 			virtual Text::CString GetRespHeaders() = 0;

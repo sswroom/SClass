@@ -3,7 +3,7 @@
 #include "Core/Core.h"
 #include "IO/ConsoleWriter.h"
 #include "IO/Device/BME280.h"
-#include "Sync/Thread.h"
+#include "Sync/SimpleThread.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
@@ -26,7 +26,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		}
 		else
 		{
-			Sync::Thread::Sleep(1000);
+			Sync::SimpleThread::Sleep(1000);
 			OSInt i = 10;
 			while (i-- > 0)
 			{
@@ -48,7 +48,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 					Text::SBAppendF64(&sb, pressure);
 					console.WriteLineC(sb.ToString(), sb.GetLength());
 				}
-				Sync::Thread::Sleep(2000);
+				Sync::SimpleThread::Sleep(2000);
 			}
 		}
 		DEL_CLASS(bme280);

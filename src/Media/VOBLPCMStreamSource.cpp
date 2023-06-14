@@ -3,7 +3,7 @@
 #include "Manage/HiResClock.h"
 #include "Media/VOBLPCMStreamSource.h"
 #include "Sync/MutexUsage.h"
-#include "Sync/Thread.h"
+#include "Sync/SimpleThread.h"
 
 Media::VOBLPCMStreamSource::VOBLPCMStreamSource(Media::IStreamControl *pbc, Media::AudioFormat *fmt)
 {
@@ -94,7 +94,7 @@ UOSInt Media::VOBLPCMStreamSource::ReadBlock(UInt8 *buff, UOSInt blkSize)
 		Manage::HiResClock clk;
 		while (this->buffStart == this->buffEnd && this->pbc->IsRunning())
 		{
-			Sync::Thread::Sleep(10);
+			Sync::SimpleThread::Sleep(10);
 			if (clk.GetTimeDiff() >= 5)
 				break;
 		}
@@ -276,7 +276,7 @@ void Media::VOBLPCMStreamSource::WriteFrameStream(UInt8 *buff, UOSInt buffSize)
 				else
 				{
 					mutUsage.EndUse();
-					Sync::Thread::Sleep(10);
+					Sync::SimpleThread::Sleep(10);
 				}
 			}
 		}

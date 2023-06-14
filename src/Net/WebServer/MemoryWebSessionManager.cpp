@@ -3,6 +3,7 @@
 #include "Crypto/Hash/CRC32R.h"
 #include "Net/WebServer/MemoryWebSessionManager.h"
 #include "Sync/MutexUsage.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
@@ -110,7 +111,7 @@ Net::WebServer::MemoryWebSessionManager::MemoryWebSessionManager(Text::CString p
 	Sync::Thread::Create(CheckThread, this);
 	while (!this->chkRunning)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 }
 
@@ -122,7 +123,7 @@ Net::WebServer::MemoryWebSessionManager::~MemoryWebSessionManager()
 	this->chkEvt.Set();
 	while (this->chkRunning)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 
 	UOSInt i = this->sesses.GetCount();

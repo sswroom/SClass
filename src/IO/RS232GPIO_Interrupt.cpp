@@ -151,7 +151,7 @@ UOSInt IO::RS232GPIO::Read(UInt8 *buff, UOSInt size)
 		{
 			break;
 		}
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 	if (this->readBuffStart == this->readBuffEnd)
 	{
@@ -194,32 +194,32 @@ UOSInt IO::RS232GPIO::Write(const UInt8 *buff, UOSInt size)
 	{
 		v = *buff++;
 		this->gpio->SetPinState(txdPin, false);
-		Sync::Thread::Sleepus(t);
+		Sync::SimpleThread::Sleepus(t);
 		this->gpio->SetPinState(txdPin, v & 1);
 		v >>= 1;
-		Sync::Thread::Sleepus(t);
+		Sync::SimpleThread::Sleepus(t);
 		this->gpio->SetPinState(txdPin, v & 1);
 		v >>= 1;
-		Sync::Thread::Sleepus(t);
+		Sync::SimpleThread::Sleepus(t);
 		this->gpio->SetPinState(txdPin, v & 1);
 		v >>= 1;
-		Sync::Thread::Sleepus(t);
+		Sync::SimpleThread::Sleepus(t);
 		this->gpio->SetPinState(txdPin, v & 1);
 		v >>= 1;
-		Sync::Thread::Sleepus(t);
+		Sync::SimpleThread::Sleepus(t);
 		this->gpio->SetPinState(txdPin, v & 1);
 		v >>= 1;
-		Sync::Thread::Sleepus(t);
+		Sync::SimpleThread::Sleepus(t);
 		this->gpio->SetPinState(txdPin, v & 1);
 		v >>= 1;
-		Sync::Thread::Sleepus(t);
+		Sync::SimpleThread::Sleepus(t);
 		this->gpio->SetPinState(txdPin, v & 1);
 		v >>= 1;
-		Sync::Thread::Sleepus(t);
+		Sync::SimpleThread::Sleepus(t);
 		this->gpio->SetPinState(txdPin, v & 1);
-		Sync::Thread::Sleepus(t);
+		Sync::SimpleThread::Sleepus(t);
 		this->gpio->SetPinState(txdPin, true);
-		Sync::Thread::Sleepus(t);
+		Sync::SimpleThread::Sleepus(t);
 	}
 	return ret;
 }

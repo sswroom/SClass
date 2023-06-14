@@ -1,6 +1,7 @@
 #ifndef _SM_DATA_DATETIME
 #define _SM_DATA_DATETIME
 #include "Data/DateTimeUtil.h"
+#include "Data/Duration.h"
 #include "Data/IComparable.h"
 #include "Text/PString.h"
 
@@ -87,6 +88,7 @@ namespace Data
 		Int64 GetMSPassedDate();
 
 		Int64 DiffMS(DateTime *dt);
+		Data::Duration Diff(DateTime *dt);
 
 		Bool IsYearLeap();
 		Int64 ToTicks();

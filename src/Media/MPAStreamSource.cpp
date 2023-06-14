@@ -4,7 +4,7 @@
 #include "Media/MPAStreamSource.h"
 #include "Media/BlockParser/AC3BlockParser.h"
 #include "Sync/MutexUsage.h"
-#include "Sync/Thread.h"
+#include "Sync/SimpleThread.h"
 
 Media::MPAStreamSource::MPAStreamSource(Media::IStreamControl *pbc)
 {
@@ -215,7 +215,7 @@ UOSInt Media::MPAStreamSource::ReadBlock(UInt8 *buff, UOSInt blkSize)
 				break;
 			if (!this->pbc->IsRunning() && !this->streamStarted)
 				break;
-			Sync::Thread::Sleep(10);
+			Sync::SimpleThread::Sleep(10);
 			if (clk.GetTimeDiff() >= 5)
 				break;
 		}
@@ -445,7 +445,7 @@ void Media::MPAStreamSource::WriteFrameStream(UInt8 *buff, UOSInt buffSize)
 			else
 			{
 				mutUsage.EndUse();
-				Sync::Thread::Sleep(10);
+				Sync::SimpleThread::Sleep(10);
 			}
 		}
 	}

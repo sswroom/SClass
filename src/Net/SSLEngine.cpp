@@ -5,6 +5,7 @@
 #include "Parser/FileParser/X509Parser.h"
 #include "Sync/Interlocked.h"
 #include "Sync/MutexUsage.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 #include "Text/MyString.h"
 
@@ -83,7 +84,7 @@ Net::SSLEngine::~SSLEngine()
 		}
 		if (running)
 		{
-			Sync::Thread::Sleep(1);
+			Sync::SimpleThread::Sleep(1);
 		}
 		else
 		{
@@ -191,7 +192,7 @@ void Net::SSLEngine::ServerInit(Socket *s, ClientReadyHandler readyHdlr, void *u
 		else
 		{
 			mutUsage.EndUse();
-			Sync::Thread::Sleep(10);
+			Sync::SimpleThread::Sleep(10);
 			mutUsage.BeginUse();
 		}
 	}

@@ -5,6 +5,7 @@
 #include "IO/SerialPort.h"
 #include "IO/StreamWriter.h"
 #include "SSWR/AVIRead/AVIRGSMModemForm.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 #include "Text/MyStringW.h"
 #include "Text/UTF8Writer.h"
@@ -953,7 +954,7 @@ void SSWR::AVIRead::AVIRGSMModemForm::InitStream(IO::Stream *stm, Bool updateSer
 		Sync::Thread::Create(ModemThread, this);
 		while (!this->running)
 		{
-			Sync::Thread::Sleep(10);
+			Sync::SimpleThread::Sleep(10);
 		}
 	}
 }
@@ -968,7 +969,7 @@ void SSWR::AVIRead::AVIRGSMModemForm::CloseStream(Bool updateUI)
 		this->channel->Close();
 		while (this->running)
 		{
-			Sync::Thread::Sleep(10);
+			Sync::SimpleThread::Sleep(10);
 		}
 
 		this->modem->SMSFreeMessages(&this->msgList);

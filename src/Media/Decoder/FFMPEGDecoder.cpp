@@ -13,6 +13,7 @@
 #include "Media/Decoder/VDecoderBase.h"
 #include "Media/Decoder/VDecoderChain.h"
 #include "Media/Decoder/VP09Decoder.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 #include "Text/MyString.h"
 
@@ -1105,7 +1106,7 @@ void Media::Decoder::FFMPEGDecoder::Stop()
 	this->sourceVideo->Stop();
 	while (this->endProcessing)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 	this->frameCb = 0;
 	this->frameCbData = 0;

@@ -2,6 +2,7 @@
 #include "IO/SerialPort.h"
 #include "SSWR/AVIRead/AVIRStreamConvForm.h"
 #include "Sync/MutexUsage.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 #include "UI/FileDialog.h"
 #include "UI/MessageDialog.h"
@@ -33,7 +34,7 @@ void __stdcall SSWR::AVIRead::AVIRStreamConvForm::OnStream1Clicked(void *userObj
 			Sync::Thread::Create(Stream1Thread, me);
 			while (!me->thread1Running && !me->remoteClosed1)
 			{
-				Sync::Thread::Sleep(10);
+				Sync::SimpleThread::Sleep(10);
 			}
 		}
 	}
@@ -66,7 +67,7 @@ void __stdcall SSWR::AVIRead::AVIRStreamConvForm::OnStream2Clicked(void *userObj
 			Sync::Thread::Create(Stream2Thread, me);
 			while (!me->thread2Running && !me->remoteClosed2)
 			{
-				Sync::Thread::Sleep(10);
+				Sync::SimpleThread::Sleep(10);
 			}
 		}
 	}
@@ -168,7 +169,7 @@ void SSWR::AVIRead::AVIRStreamConvForm::StopStream1()
 		this->stm1->Close();
 		while (this->thread1Running)
 		{
-			Sync::Thread::Sleep(10);
+			Sync::SimpleThread::Sleep(10);
 		}
 		this->thread1ToStop = false;
 		DEL_CLASS(this->stm1);
@@ -190,7 +191,7 @@ void SSWR::AVIRead::AVIRStreamConvForm::StopStream2()
 		this->stm2->Close();
 		while (this->thread2Running)
 		{
-			Sync::Thread::Sleep(10);
+			Sync::SimpleThread::Sleep(10);
 		}
 		this->thread2ToStop = false;
 		DEL_CLASS(this->stm2);

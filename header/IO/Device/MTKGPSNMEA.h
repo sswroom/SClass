@@ -83,7 +83,7 @@ namespace IO
 			UInt32 GetLogSpeed();
 			LogMode GetLogMode();
 			UOSInt GetLogSize(); //Bytes
-			Text::String *SendMTKCommand(const UInt8 *cmdBuff, UOSInt cmdSize, const UTF8Char *resultStart, UOSInt resultStartLen, Int32 timeoutMS);
+			Text::String *SendMTKCommand(const UInt8 *cmdBuff, UOSInt cmdSize, const UTF8Char *resultStart, UOSInt resultStartLen, Data::Duration timeout);
 
 			Text::String *GetFirmwareRel();
 			Text::String *GetFirmwareBuild();

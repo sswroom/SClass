@@ -540,10 +540,12 @@ void Net::HTTPOSClient::EndRequest(Double *timeReq, Double *timeResp)
 	}
 }
 
-void Net::HTTPOSClient::SetTimeout(Int32 ms)
+void Net::HTTPOSClient::SetTimeout(Data::Duration timeout)
 {
-//	if (this->cli)
-//		this->cli->SetTimeout(this->timeOutMS = ms);
+	if (this->clsData->curl)
+	{
+		curl_easy_setopt(this->clsData->curl, CURLOPT_TIMEOUT_MS, (long)timeout.GetTotalMS());
+	}
 }
 
 Bool Net::HTTPOSClient::IsSecureConn()

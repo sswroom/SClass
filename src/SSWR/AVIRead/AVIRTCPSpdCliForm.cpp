@@ -49,7 +49,7 @@ void __stdcall SSWR::AVIRead::AVIRTCPSpdCliForm::OnConnClick(void *userObj)
 		return;
 	}
 	Net::TCPClient *cli;
-	NEW_CLASS(cli, Net::TCPClient(me->core->GetSocketFactory(), &addr, port));
+	NEW_CLASS(cli, Net::TCPClient(me->core->GetSocketFactory(), &addr, port, 10000));
 	if (cli->IsConnectError())
 	{
 		DEL_CLASS(cli);

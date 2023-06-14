@@ -86,7 +86,7 @@ Bool Net::HTTPProxyClient::Connect(Text::CString url, Net::WebUtil::RequestMetho
 		this->svrAddr.addrType = Net::AddrType::IPv4;
 		WriteNUInt32(this->svrAddr.addr, this->proxyIP);
 
-		NEW_CLASS(cli, Net::TCPClient(sockf, this->proxyIP, this->proxyPort));
+		NEW_CLASS(cli, Net::TCPClient(sockf, this->proxyIP, this->proxyPort, 30000));
 		t1 = this->clk.GetTimeDiff();
 		if (timeConn)
 		{

@@ -2,7 +2,7 @@
 #include "Stdafx.h"
 #include "Net/MODBUSTCPListener.h"
 #include "Sync/MutexUsage.h"
-#include "Sync/Thread.h"
+#include "Sync/SimpleThread.h"
 #include "Text/StringBuilderUTF8.h"
 #include <stdio.h>
 
@@ -89,7 +89,7 @@ void __stdcall Net::MODBUSTCPListener::OnClientData(Net::TCPClient *cli, void *u
 						{
 							if (me->delay)
 							{
-								Sync::Thread::Sleep(me->delay);
+								Sync::SimpleThread::Sleep(me->delay);
 							}
 							cli->Write(retBuff, (UOSInt)byteSize + 9);
 						}
@@ -138,7 +138,7 @@ void __stdcall Net::MODBUSTCPListener::OnClientData(Net::TCPClient *cli, void *u
 						{
 							if (me->delay)
 							{
-								Sync::Thread::Sleep(me->delay);
+								Sync::SimpleThread::Sleep(me->delay);
 							}
 							cli->Write(retBuff, (UOSInt)byteSize + 9);
 						}
@@ -175,7 +175,7 @@ void __stdcall Net::MODBUSTCPListener::OnClientData(Net::TCPClient *cli, void *u
 						{
 							if (me->delay)
 							{
-								Sync::Thread::Sleep(me->delay);
+								Sync::SimpleThread::Sleep(me->delay);
 							}
 							cli->Write(retBuff, (UOSInt)byteSize + 9);
 						}
@@ -212,7 +212,7 @@ void __stdcall Net::MODBUSTCPListener::OnClientData(Net::TCPClient *cli, void *u
 						{
 							if (me->delay)
 							{
-								Sync::Thread::Sleep(me->delay);
+								Sync::SimpleThread::Sleep(me->delay);
 							}
 							cli->Write(retBuff, (UOSInt)byteSize + 9);
 						}
@@ -237,7 +237,7 @@ void __stdcall Net::MODBUSTCPListener::OnClientData(Net::TCPClient *cli, void *u
 							WriteMUInt16(&retBuff[10], val);
 							if (me->delay)
 							{
-								Sync::Thread::Sleep(me->delay);
+								Sync::SimpleThread::Sleep(me->delay);
 							}
 							cli->Write(retBuff, 12);
 						}
@@ -260,7 +260,7 @@ void __stdcall Net::MODBUSTCPListener::OnClientData(Net::TCPClient *cli, void *u
 						WriteMUInt16(&retBuff[10], val);
 						if (me->delay)
 						{
-							Sync::Thread::Sleep(me->delay);
+							Sync::SimpleThread::Sleep(me->delay);
 						}
 						cli->Write(retBuff, 12);
 					}

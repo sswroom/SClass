@@ -1,5 +1,6 @@
 #ifndef _SM_SYNC_THREAD
 #define _SM_SYNC_THREAD
+#include "Data/Duration.h"
 namespace Sync
 {
 	typedef UInt32 (__stdcall *ThreadProc)(void *userObj);
@@ -19,8 +20,7 @@ namespace Sync
 			TP_REALTIME
 		} ThreadPriority;
 	public:
-		static void Sleep(UOSInt ms);
-		static void Sleepus(UOSInt us);
+		static void SleepDur(Data::Duration dur);
 		static UInt32 Create(ThreadProc tProc, void *userObj);
 		static UInt32 Create(ThreadProc tProc, void *userObj, UInt32 threadSize);
 		static UInt32 GetThreadId();

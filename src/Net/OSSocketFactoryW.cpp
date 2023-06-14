@@ -35,6 +35,41 @@ struct Net::OSSocketFactory::ClassData
 	Data::FastMap<Int32, UInt8> *acceptedSoc;
 };
 
+Bool Net::OSSocketFactory::MyConnect(Socket *socket, const UInt8 *addrBuff, UOSInt addrLen, Data::Duration timeout)
+{
+	int error = -1;
+	int len = sizeof(int);
+	timeval tm;
+	fd_set set;
+	u_long ul = 1;
+	ioctlsocket((SOCKET)socket, FIONBIO, &ul);
+	Bool ret = false;
+	if (connect((SOCKET)socket, (struct sockaddr *)addrBuff, (int)addrLen) == -1)
+	{
+		tm.tv_sec = (long)timeout.GetSeconds();	// set the timeout. 10s
+		tm.tv_usec = (long)timeout.GetNS() / 1000;
+		FD_ZERO(&set);
+		FD_SET((int)(OSInt)socket, &set);
+
+		if (select((int)(OSInt)socket + 1, NULL, &set, NULL, &tm) > 0)
+		{
+			getsockopt((SOCKET)socket, SOL_SOCKET, SO_ERROR, (char *)&error, /*(socklen_t *)*/&len);
+			if (error == 0)
+				ret = true;
+			else
+				ret = false;
+		}
+		else
+			ret = false;
+	}
+	else
+		ret = true;
+	
+	ul = 0;
+	ioctlsocket((SOCKET)socket, FIONBIO, &ul); //set as blocking
+	return ret;
+}
+
 Net::OSSocketFactory::OSSocketFactory(Bool noV6DNS) : Net::SocketFactory(noV6DNS)
 {
 	WSADATA data;
@@ -383,8 +418,15 @@ void Net::OSSocketFactory::SetNoDelay(Socket *socket, Bool val)
 	setsockopt((SOCKET)socket, IPPROTO_TCP, TCP_NODELAY, (char*)&v, sizeof(v));
 }
 
-void Net::OSSocketFactory::SetRecvTimeout(Socket *socket, Int32 ms)
+void Net::OSSocketFactory::SetSendTimeout(Socket *socket, Data::Duration timeout)
 {
+	DWORD ms = (DWORD)timeout.GetTotalMS(); 
+	setsockopt((SOCKET)socket, SOL_SOCKET, SO_SNDTIMEO, (Char*)&ms, sizeof(ms));
+}
+
+void Net::OSSocketFactory::SetRecvTimeout(Socket *socket, Data::Duration timeout)
+{
+	DWORD ms = (DWORD)timeout.GetTotalMS(); 
 	setsockopt((SOCKET)socket, SOL_SOCKET, SO_RCVTIMEO, (Char*)&ms, sizeof(ms));
 }
 
@@ -638,16 +680,16 @@ Bool Net::OSSocketFactory::IcmpSendEcho2(const Net::SocketUtil::AddressInfo *add
     }
 }
 
-Bool Net::OSSocketFactory::Connect(Socket *socket, UInt32 ip, UInt16 port)
+Bool Net::OSSocketFactory::Connect(Socket *socket, UInt32 ip, UInt16 port, Data::Duration timeout)
 {
 	sockaddr_in addr;
 	addr.sin_family = AF_INET;
 	addr.sin_addr.s_addr = ip;
 	addr.sin_port = htons(port);
-	return connect((SOCKET)socket, (const sockaddr*)&addr, sizeof(addr)) == 0;
+	return MyConnect(socket, (const UInt8*)&addr, sizeof(addr), timeout);
 }
 
-Bool Net::OSSocketFactory::Connect(Socket *socket, const Net::SocketUtil::AddressInfo *addr, UInt16 port)
+Bool Net::OSSocketFactory::Connect(Socket *socket, const Net::SocketUtil::AddressInfo *addr, UInt16 port, Data::Duration timeout)
 {
 	UInt8 addrBuff[28];
 	if (addr->addrType == Net::AddrType::IPv4)
@@ -655,7 +697,7 @@ Bool Net::OSSocketFactory::Connect(Socket *socket, const Net::SocketUtil::Addres
 		*(Int16*)&addrBuff[0] = AF_INET;
 		WriteMInt16(&addrBuff[2], port);
 		*(Int32*)&addrBuff[4] = *(Int32*)addr->addr;
-		return connect((SOCKET)socket, (const sockaddr*)addrBuff, sizeof(sockaddr_in)) == 0;
+		return MyConnect(socket, addrBuff, sizeof(sockaddr_in), timeout);
 	}
 	else if (addr->addrType == Net::AddrType::IPv6)
 	{
@@ -663,7 +705,7 @@ Bool Net::OSSocketFactory::Connect(Socket *socket, const Net::SocketUtil::Addres
 		WriteMInt16(&addrBuff[2], port);
 		WriteMInt32(&addrBuff[4], 0);
 		MemCopyNO(&addrBuff[8], addr->addr, 20);
-		return connect((SOCKET)socket, (const sockaddr*)addrBuff, 28) == 0;
+		return MyConnect(socket, addrBuff, 28, timeout);
 	}
 	else
 	{

@@ -4,6 +4,7 @@
 #include "Data/Sort/ArtificialQuickSort.h"
 #include "IO/FileAnalyse/DWGFileAnalyse.h"
 #include "Sync/MutexUsage.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 #include "Text/StringBuilderUTF8.h"
 
@@ -145,7 +146,7 @@ IO::FileAnalyse::DWGFileAnalyse::DWGFileAnalyse(IO::StreamData *fd)
 	Sync::Thread::Create(ParseThread, this);
 	while (!this->threadStarted)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 }
 
@@ -156,7 +157,7 @@ IO::FileAnalyse::DWGFileAnalyse::~DWGFileAnalyse()
 		this->threadToStop = true;
 		while (this->threadRunning)
 		{
-			Sync::Thread::Sleep(10);
+			Sync::SimpleThread::Sleep(10);
 		}
 	}
 	SDEL_CLASS(this->fd);

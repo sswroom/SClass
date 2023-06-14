@@ -5,6 +5,7 @@
 #include "IO/Path.h"
 #include "Net/LogClient.h"
 #include "Sync/MutexUsage.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
@@ -83,7 +84,7 @@ UInt32 __stdcall Net::LogClient::SendThread(void *userObj)
 	{
 		if (me->cli == 0)
 		{
-			NEW_CLASS(cli, Net::TCPClient(me->sockf, &me->addr, me->port));
+			NEW_CLASS(cli, Net::TCPClient(me->sockf, &me->addr, me->port, me->timeout));
 			if (cli->IsConnectError())
 			{
 				DEL_CLASS(cli);
@@ -140,12 +141,13 @@ UInt32 __stdcall Net::LogClient::SendThread(void *userObj)
 	return 0;
 }
 
-Net::LogClient::LogClient(Net::SocketFactory *sockf, const Net::SocketUtil::AddressInfo *addr, UInt16 port) : protoHdlr(this)
+Net::LogClient::LogClient(Net::SocketFactory *sockf, const Net::SocketUtil::AddressInfo *addr, UInt16 port, Data::Duration timeout) : protoHdlr(this)
 {
 	this->sockf = sockf;
 	this->addr = *addr;
 	this->port = port;
 	this->cli = 0;
+	this->timeout = timeout;
 
 	this->lastSendTime = 0;
 	this->sendRunning = false;
@@ -156,7 +158,7 @@ Net::LogClient::LogClient(Net::SocketFactory *sockf, const Net::SocketUtil::Addr
 	Sync::Thread::Create(RecvThread, this);
 	while (!this->sendRunning || !this->recvRunning)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 }
 
@@ -174,7 +176,7 @@ Net::LogClient::~LogClient()
 	mutUsage.EndUse();
 	while (this->sendRunning || this->recvRunning)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 	LIST_FREE_STRING(&this->msgList);
 }

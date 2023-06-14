@@ -472,7 +472,7 @@ Bool Manage::ExceptionLogger::LogToFile(Text::String *fileName, UInt32 exCode, T
 
 /*		if (exAction == EA_RESTART)
 		{
-			Sync::Thread::Sleep(2000);
+			Sync::SimpleThread::Sleep(2000);
 			Manage::Process proc(GetCommandLineW());
 			exAction = EA_CLOSE;
 		}*/

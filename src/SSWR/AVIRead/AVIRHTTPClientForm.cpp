@@ -12,6 +12,7 @@
 #include "SSWR/AVIRead/AVIRSSLCertKeyForm.h"
 #include "SSWR/AVIRead/AVIRUserAgentSelForm.h"
 #include "Sync/MutexUsage.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 #include "Text/IMIMEObj.h"
 #include "Text/JSONBuilder.h"
@@ -286,7 +287,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnRequestClicked(void *userObj
 	if (sbuffPtr) MemFree(sbuffPtr);
 	while (me->threadRunning && me->reqURL && !me->respChanged)
 	{
-		Sync::Thread::Sleep(1);
+		Sync::SimpleThread::Sleep(1);
 	}
 }
 
@@ -1429,7 +1430,7 @@ SSWR::AVIRead::AVIRHTTPClientForm::~AVIRHTTPClientForm()
 	this->threadEvt.Set();
 	while (this->threadRunning)
 	{
-		Sync::Thread::Sleep(1);
+		Sync::SimpleThread::Sleep(1);
 	}
 	this->ClearHeaders();
 	this->ClearParams();

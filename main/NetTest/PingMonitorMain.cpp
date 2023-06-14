@@ -13,6 +13,7 @@
 #include "Net/OSSocketFactory.h"
 #include "Net/SocketUtil.h"
 #include "Sync/Interlocked.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 #include "Text/UTF8Writer.h"
 #include "Text/XML.h"
@@ -151,7 +152,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		sockf->DestroySocket(rawSock);
 		while (threadCnt > 0)
 		{
-			Sync::Thread::Sleep(1);
+			Sync::SimpleThread::Sleep(1);
 		}
 		DEL_CLASS(logTool);
 	}

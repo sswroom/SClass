@@ -8,6 +8,8 @@
 #include "UI/FileDialog.h"
 #include "UI/MessageDialog.h"
 
+#define NETTIMEOUT 30000
+
 void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(void *userObj)
 {
 	SSWR::AVIRead::AVIRSelStreamForm *me = (SSWR::AVIRead::AVIRSelStreamForm*)userObj;
@@ -143,7 +145,7 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(void *userObj)
 				return;
 			}
 			Net::TCPClient *cli;
-			NEW_CLASS(cli, Net::TCPClient(me->core->GetSocketFactory(), &addr, port));
+			NEW_CLASS(cli, Net::TCPClient(me->core->GetSocketFactory(), &addr, port, NETTIMEOUT));
 			if (cli->IsConnectError())
 			{
 				DEL_CLASS(cli);
@@ -183,7 +185,7 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(void *userObj)
 			}
 			Net::SSLEngine::ErrorType err;
 			Net::SSLClient *cli;
-			cli = me->ssl->ClientConnect(sb.ToCString(), port, &err);
+			cli = me->ssl->ClientConnect(sb.ToCString(), port, &err, NETTIMEOUT);
 			if (cli == 0)
 			{
 				sb.ClearStr();

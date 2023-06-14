@@ -2,6 +2,7 @@
 #include "IO/Path.h"
 #include "SSWR/AVIRead/AVIRPackageForm.h"
 #include "Sync/MutexUsage.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
@@ -614,7 +615,7 @@ SSWR::AVIRead::AVIRPackageForm::~AVIRPackageForm()
 	this->threadEvt.Set();
 	while (this->threadRunning)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 	DEL_CLASS(this->packFile);
 	LIST_FREE_STRING(&this->fileNames);

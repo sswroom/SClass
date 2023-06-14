@@ -3,9 +3,10 @@
 #include "Net/WhoisHandler.h"
 #include "Sync/MutexUsage.h"
 
-Net::WhoisHandler::WhoisHandler(Net::SocketFactory *sockf) : client(sockf)
+Net::WhoisHandler::WhoisHandler(Net::SocketFactory *sockf, Data::Duration timeout) : client(sockf)
 {
 	WhoisRecord *rec;
+	this->timeout = timeout;
 
 	NEW_CLASS(rec, WhoisRecord(Net::SocketUtil::GetIPAddr(CSTR("10.0.0.1"))));
 	rec->AddItem(UTF8STRC("inetnum: 10.0.0.0 - 10.255.255.225"));
@@ -84,7 +85,7 @@ Net::WhoisRecord *Net::WhoisHandler::RequestIP(UInt32 ip)
 			i = k + 1;
 		}
 	}
-	rec = this->client.RequestIP(ip);
+	rec = this->client.RequestIP(ip, this->timeout);
 	this->recordList.Insert((UOSInt)i, rec);
 	return rec;
 }

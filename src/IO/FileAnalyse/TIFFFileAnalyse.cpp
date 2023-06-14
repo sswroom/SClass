@@ -8,6 +8,7 @@
 #include "Manage/Process.h"
 #include "Media/EXIFData.h"
 #include "Net/SocketFactory.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 
 UInt32 __stdcall IO::FileAnalyse::TIFFFileAnalyse::ParseThread(void *userObj)
@@ -122,7 +123,7 @@ IO::FileAnalyse::TIFFFileAnalyse::TIFFFileAnalyse(IO::StreamData *fd)
 	Sync::Thread::Create(ParseThread, this);
 	while (!this->threadStarted)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 }
 
@@ -133,7 +134,7 @@ IO::FileAnalyse::TIFFFileAnalyse::~TIFFFileAnalyse()
 		this->threadToStop = true;
 		while (this->threadRunning)
 		{
-			Sync::Thread::Sleep(10);
+			Sync::SimpleThread::Sleep(10);
 		}
 	}
 	SDEL_CLASS(this->fd);

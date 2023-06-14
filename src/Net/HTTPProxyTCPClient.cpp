@@ -39,7 +39,7 @@ Net::HTTPProxyTCPClient::HTTPProxyTCPClient(Net::SocketFactory *sockf, Text::CSt
 		this->flags |= 12;
 		return;
 	}
-	if (!sockf->Connect(s, &addr, proxyPort))
+	if (!sockf->Connect(s, &addr, proxyPort, 15000))
 	{
 		sockf->DestroySocket(s);
 		this->s = 0;

@@ -11,9 +11,10 @@ namespace Net
 		Data::ArrayList<WhoisRecord*> recordList;
 		Sync::Mutex recordMut;
 		Net::WhoisGlobalClient client;
+		Data::Duration timeout;
 
 	public:
-		WhoisHandler(Net::SocketFactory *sockf);
+		WhoisHandler(Net::SocketFactory *sockf, Data::Duration timeout);
 		~WhoisHandler();
 
 		WhoisRecord *RequestIP(UInt32 ip);

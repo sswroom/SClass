@@ -1,6 +1,7 @@
 #ifndef _SM_DATA_TIMEINSTANT
 #define _SM_DATA_TIMEINSTANT
 #include "Data/DateTimeUtil.h"
+#include "Data/Duration.h"
 
 namespace Data
 {
@@ -105,6 +106,17 @@ namespace Data
 		Double DiffSecDbl(const TimeInstant &ts) const
 		{
 			return (Double)(this->sec - ts.sec) + (Int32)(this->nanosec - ts.nanosec) / 1000000000.0;
+		}
+
+		Data::Duration Diff(const TimeInstant &ts) const
+		{
+			Int64 secs = this->sec - ts.sec;
+			UInt32 ns1 = this->nanosec;
+			UInt32 ns2 = ts.nanosec;
+			if (ns1 >= ns2)
+				return Data::Duration(secs, ns1 - ns2);
+			else
+				return Data::Duration(secs - 1, 1000000000 + ns1 - ns2);
 		}
 
 		Int64 ToTicks() const

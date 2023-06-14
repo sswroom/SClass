@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "IO/Device/SIM7000.h"
 #include "Sync/MutexUsage.h"
-#include "Sync/Thread.h"
+#include "Sync/SimpleThread.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 
@@ -317,7 +317,7 @@ Bool IO::Device::SIM7000::NetIPSend(UOSInt index, const UInt8 *buff, UOSInt buff
 	sb.AppendUOSInt(buffSize);
 	sb.AppendUTF8Char('\r');
 	this->channel->CmdSend(sb.ToString(), sb.GetCharCnt());
-	Sync::Thread::Sleep(1000);
+	Sync::SimpleThread::Sleep(1000);
 	sb.ClearStr();
 	sb.AppendHexBuff(buff, buffSize, 0, Text::LineBreakType::None);
 	sb.AppendUTF8Char('\r');
@@ -424,7 +424,7 @@ Bool IO::Device::SIM7000::NetDNSResolveIP(Text::CString domain, Net::SocketUtil:
 	while (this->dnsReq.v)
 	{
 		mutUsage.EndUse();
-		Sync::Thread::Sleep(100);
+		Sync::SimpleThread::Sleep(100);
 		mutUsage.BeginUse();
 	}
 	this->dnsResult = false;

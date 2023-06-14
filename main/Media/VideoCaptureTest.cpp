@@ -9,7 +9,7 @@
 #include "Media/StaticImage.h"
 #include "Media/VideoCaptureMgr.h"
 #include "Media/CS/CSConverter.h"
-#include "Sync/Thread.h"
+#include "Sync/SimpleThread.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
@@ -320,7 +320,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				{
 					while (frameCnt > 0 && (isRunning = capture->IsRunning()))
 					{
-						Sync::Thread::Sleep(100);
+						Sync::SimpleThread::Sleep(100);
 					}
 					if (frameCnt > 0)
 					{

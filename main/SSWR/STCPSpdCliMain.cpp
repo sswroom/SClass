@@ -203,7 +203,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 
 		if (valid)
 		{
-			NEW_CLASS(c, Net::TCPClient(sockf, &addr, port));
+			NEW_CLASS(c, Net::TCPClient(sockf, &addr, port, 10000));
 			if (c->IsConnectError())
 			{
 				DEL_CLASS(c);

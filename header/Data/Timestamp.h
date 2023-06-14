@@ -176,6 +176,11 @@ namespace Data
 			return this->inst.DiffSecDbl(ts.inst);
 		}
 
+		Data::Duration Diff(const Timestamp &ts) const
+		{
+			return this->inst.Diff(ts.inst);
+		}
+
 		Int64 ToTicks() const
 		{
 			return this->inst.ToTicks();

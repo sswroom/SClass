@@ -179,7 +179,7 @@ void Media::Decoder::M2VDecoder::EnumFrameInfos(FrameInfoCallback cb, void *user
 		this->sourceVideo->Start();
 		while (this->sourceVideo->IsRunning())
 		{
-			Sync::Thread::Sleep(10);
+			Sync::SimpleThread::Sleep(10);
 		}
 		this->finfoMode = false;
 	}*/

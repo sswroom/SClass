@@ -3,6 +3,7 @@
 #include "Net/TCPClient.h"
 #include "SSWR/AVIRead/AVIRGPSDevForm.h"
 #include "Sync/MutexUsage.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 #include "Text/MyStringW.h"
 #include "Text/MyStringFloat.h"
@@ -81,7 +82,7 @@ void __stdcall SSWR::AVIRead::AVIRGPSDevForm::OnConnClicked(void *userObj)
 		else
 		{
 			Net::TCPClient *cli;
-			NEW_CLASS(cli, Net::TCPClient(me->core->GetSocketFactory(), &addr, port));
+			NEW_CLASS(cli, Net::TCPClient(me->core->GetSocketFactory(), &addr, port, 30000));
 			if (cli->IsClosed())
 			{
 				DEL_CLASS(cli);
@@ -329,7 +330,7 @@ void SSWR::AVIRead::AVIRGPSDevForm::ToStop()
 		mutUsage.EndUse();
 		while (this->cli)
 		{
-			Sync::Thread::Sleep(10);
+			Sync::SimpleThread::Sleep(10);
 		}
 	}
 	else
@@ -603,7 +604,7 @@ SSWR::AVIRead::AVIRGPSDevForm::AVIRGPSDevForm(UI::GUIClientControl *parent, UI::
 	Sync::Thread::Create(ClientThread, this);
 	while (!this->threadRunning)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 	this->AddTimer(500, OnTimerTick, this);
 }
@@ -615,7 +616,7 @@ SSWR::AVIRead::AVIRGPSDevForm::~AVIRGPSDevForm()
 	this->threadEvt->Set();
 	while (this->threadRunning)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 	DEL_CLASS(this->threadEvt);
 

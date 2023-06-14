@@ -4,6 +4,7 @@
 #include "IO/Path.h"
 #include "IO/MTFileLog.h"
 #include "Sync/MutexUsage.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
@@ -279,7 +280,7 @@ IO::MTFileLog::~MTFileLog()
 
 	while (running)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 	Sync::MutexUsage mutUsage(&this->mut);
 	log->Close();

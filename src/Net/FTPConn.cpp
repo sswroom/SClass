@@ -3,6 +3,7 @@
 #include "Text/MyString.h"
 #include "IO/StreamReader.h"
 #include "Manage/HiResClock.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 #include "Net/FTPConn.h"
 
@@ -85,7 +86,7 @@ Int32 Net::FTPConn::WaitForResult()
 		return 0;
 }
 
-Net::FTPConn::FTPConn(Text::CString host, UInt16 port, Net::SocketFactory *sockf, UInt32 codePage)
+Net::FTPConn::FTPConn(Text::CString host, UInt16 port, Net::SocketFactory *sockf, UInt32 codePage, Data::Duration timeout)
 {
 	this->codePage = codePage;
 	this->threadRunning = false;
@@ -94,7 +95,7 @@ Net::FTPConn::FTPConn(Text::CString host, UInt16 port, Net::SocketFactory *sockf
 	this->msgRet = 0;
 	this->statusChg = false;
 	NEW_CLASS(this->evt, Sync::Event(true));
-	NEW_CLASS(this->cli, Net::TCPClient(sockf, host, port));
+	NEW_CLASS(this->cli, Net::TCPClient(sockf, host, port, timeout));
 	NEW_CLASS(this->writer, IO::StreamWriter(this->cli, codePage));
 	Sync::Thread::Create(FTPThread, this);
 	WaitForResult();
@@ -106,7 +107,7 @@ Net::FTPConn::~FTPConn()
 	this->cli->Close();
 	while (this->threadRunning)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 	DEL_CLASS(this->writer);
 	DEL_CLASS(this->cli);

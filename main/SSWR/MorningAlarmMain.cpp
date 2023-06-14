@@ -31,6 +31,7 @@
 
 #include "Sync/Mutex.h"
 #include "Sync/Event.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 
 #include "Text/MyString.h"
@@ -174,7 +175,7 @@ UInt32 __stdcall PlayThread(void *obj)
 		}
 		else
 		{
-			Sync::Thread::Sleep(1000);
+			Sync::SimpleThread::Sleep(1000);
 		}
 	}
 	if (!ToStop)
@@ -213,7 +214,7 @@ UInt32 __stdcall PlayThread(void *obj)
 				{
 					break;
 				}
-				Sync::Thread::Sleep(10);
+				Sync::SimpleThread::Sleep(10);
 			}
 		}
 		if (!ToStop)
@@ -230,7 +231,7 @@ UInt32 __stdcall PlayThread(void *obj)
 					{
 						break;
 					}
-					Sync::Thread::Sleep(10);
+					Sync::SimpleThread::Sleep(10);
 				}
 			}
 			DEL_CLASS(astm);
@@ -334,7 +335,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 					ToStop = true;
 					while (threadRunning)
 					{
-						Sync::Thread::Sleep(10);
+						Sync::SimpleThread::Sleep(10);
 					}
 				}
 				DEL_CLASS(startDt);

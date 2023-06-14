@@ -4,6 +4,7 @@
 #include "Data/ByteTool.h"
 #include "IO/ConsoleWriter.h"
 #include "IO/SerialPort.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 #include "Text/StringBuilderUTF8.h"
 
@@ -91,7 +92,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				port->Close();
 				while (running)
 				{
-					Sync::Thread::Sleep(1);
+					Sync::SimpleThread::Sleep(1);
 				}
 			}
 			DEL_CLASS(port);

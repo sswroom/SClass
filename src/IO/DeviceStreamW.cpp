@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "IO/DeviceStream.h"
-#include "Sync/Thread.h"
+#include "Sync/SimpleThread.h"
 #include "Text/MyString.h"
 #include "Text/MyStringW.h"
 
@@ -35,7 +35,7 @@ UOSInt IO::DeviceStream::Read(UInt8 *buff, UOSInt size)
 	{
 		while (this->hand)
 		{
-			Sync::Thread::Sleep(100);
+			Sync::SimpleThread::Sleep(100);
 		}
 		return 0;
 /*		UInt32 readSize;

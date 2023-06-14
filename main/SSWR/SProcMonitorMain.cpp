@@ -7,6 +7,7 @@
 #include "IO/Path.h"
 #include "Manage/ExceptionRecorder.h"
 #include "Manage/Process.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 #include "Text/UTF8Reader.h"
 
@@ -203,7 +204,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		threadEvt->Set();
 		while (threadRunning)
 		{
-			Sync::Thread::Sleep(1);
+			Sync::SimpleThread::Sleep(1);
 		}
 		DEL_CLASS(threadEvt);
 	}

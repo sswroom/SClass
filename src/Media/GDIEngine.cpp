@@ -17,7 +17,7 @@
 #include "Media/ABlend/AlphaBlend8_C8.h"
 #include "Sync/Event.h"
 #include "Sync/MutexUsage.h"
-#include "Sync/Thread.h"
+#include "Sync/SimpleThread.h"
 #include "Text/Encoding.h"
 #include "Text/MyString.h"
 #include "Text/MyStringW.h"
@@ -136,7 +136,7 @@ Media::DrawImage *Media::GDIEngine::CreateImage32(UOSInt width, UOSInt height, M
 			if (i-- <= 0)
 				break;
 			mutUsage.EndUse();
-			Sync::Thread::Sleep(10);
+			Sync::SimpleThread::Sleep(10);
 			mutUsage.BeginUse();
 		}
 		mutUsage.EndUse();
@@ -179,7 +179,7 @@ Media::GDIImage *Media::GDIEngine::CreateImage24(UOSInt width, UOSInt height)
 		{
 			if (i-- <= 0)
 				break;
-			Sync::Thread::Sleep(10);
+			Sync::SimpleThread::Sleep(10);
 		}
 		if (hdcBmp)
 		{
@@ -1190,7 +1190,7 @@ Bool Media::GDIImage::DrawRect(Double x, Double y, Double w, Double h, DrawPen *
 				}
 				else
 				{
-					Sync::Thread::Sleep(10);
+					Sync::SimpleThread::Sleep(10);
 				}
 			}
 		}
@@ -2399,7 +2399,7 @@ Math::Size2D<Double> Media::GDIImage::GetTextSize(DrawFont *fnt, const WChar *tx
 			{
 				GDIFont *f = (GDIFont*)(this->currFont = fnt);
 				SelectObject((HDC)this->hdcBmp, (HFONT)f->hfont);
-				Sync::Thread::Sleep(10);
+				Sync::SimpleThread::Sleep(10);
 			}
 		}
 		return Math::Size2D<Double>(size.cx, size.cy);

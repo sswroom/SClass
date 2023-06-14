@@ -26,7 +26,7 @@ void __stdcall SSWR::AVIRead::AVIRWHOISClientForm::OnRequestClicked(void *userOb
 	Net::WhoisGlobalClient cli(me->sockf);
 	Manage::HiResClock clk;
 	Double t;
-	rec = cli.RequestIP(ip);
+	rec = cli.RequestIP(ip, 15000);
 	t = clk.GetTimeDiff();
 	sptr = Text::StrDoubleFmt(sbuff, t, "0.0000000000");
 	me->txtRespTime->SetText(CSTRP(sbuff, sptr));

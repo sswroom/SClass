@@ -4,6 +4,7 @@
 #include "Math/Math.h"
 #include "Net/WiFiCapturer.h"
 #include "Sync/Interlocked.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 
 UInt32 __stdcall Net::WiFiCapturer::ScanThread(void *userObj)
@@ -34,7 +35,7 @@ UInt32 __stdcall Net::WiFiCapturer::ScanThread(void *userObj)
 		{
 			if (interf->Scan())
 			{
-				Sync::Thread::Sleep(10000);
+				Sync::SimpleThread::Sleep(10000);
 				interf->GetBSSList(&bssList);
 				currTime = Data::Timestamp::Now();
 				me->lastScanTime = currTime;
@@ -140,7 +141,7 @@ UInt32 __stdcall Net::WiFiCapturer::ScanThread(void *userObj)
 			}
 			else
 			{
-				Sync::Thread::Sleep(5000);
+				Sync::SimpleThread::Sleep(5000);
 			}
 			currTime = Data::Timestamp::Now();
 			if (currTime.DiffMS(lastStoreTime) >= 600000)
@@ -238,7 +239,7 @@ void Net::WiFiCapturer::Stop()
 		threadToStop = true;
 		while (this->threadRunning)
 		{
-			Sync::Thread::Sleep(10);
+			Sync::SimpleThread::Sleep(10);
 		}
 		SDEL_CLASS(this->interf);
 	}

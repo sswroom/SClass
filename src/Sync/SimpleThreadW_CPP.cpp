@@ -4,7 +4,7 @@
 #include <intrin.h>
 
 #if defined(CPU_X86_32) || defined(CPU_X86_64)
-extern "C" void Thread_NanoSleep(Int64 clk)
+extern "C" void SimpleThread_NanoSleep(Int64 clk)
 {
 	UInt64 endTime = __rdtsc() + clk;
 	while (true)
@@ -18,7 +18,7 @@ extern "C" void Thread_NanoSleep(Int64 clk)
 	}
 }
 #else
-extern "C" void Thread_NanoSleep(Int64 clk)
+extern "C" void SimpleThread_NanoSleep(Int64 clk)
 {
 	UInt64 endTime;
 	LARGE_INTEGER liCurr;

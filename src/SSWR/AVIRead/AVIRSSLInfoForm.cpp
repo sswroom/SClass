@@ -46,7 +46,7 @@ void __stdcall SSWR::AVIRead::AVIRSSLInfoForm::OnCheckClicked(void *userObj)
 		me->txtStatus->SetText(CSTR("Error in creating socket"));
 		return;
 	}
-	if (!me->sockf->Connect(s, &addr, port))
+	if (!me->sockf->Connect(s, &addr, port, 30000))
 	{
 		me->sockf->DestroySocket(s);
 		me->txtStatus->SetText(CSTR("Error in connecting to remote host"));

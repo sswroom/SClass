@@ -5,6 +5,7 @@
 #include "Net/OSSocketFactory.h"
 #include "Net/SSLEngineFactory.h"
 #include "Sync/Interlocked.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 #include <stdio.h>
 
@@ -279,7 +280,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	}
 	while (threadCurrCnt > 0 || connLeft > 0)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 	UInt64 connCnt = 0;
 	UInt64 failCnt = 0;

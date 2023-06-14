@@ -5,6 +5,7 @@
 #include "IO/Path.h"
 #include "Net/TFTPServer.h"
 #include "Sync/MutexUsage.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 #include "Text/StringBuilderUTF8.h"
 
@@ -396,7 +397,7 @@ Net::TFTPServer::~TFTPServer()
 		this->chkEvt.Set();
 		while (this->threadRunning)
 		{
-			Sync::Thread::Sleep(1);
+			Sync::SimpleThread::Sleep(1);
 		}
 	}
 	UOSInt i;

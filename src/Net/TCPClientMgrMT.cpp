@@ -112,13 +112,13 @@ Net::TCPClientMgr::~TCPClientMgr()
 	this->CloseAll();
 	while (this->cliArr.GetCount() > 0)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 	this->toStop = true;
 	cliEvt->Set();
 	while (this->clientThreadRunning)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 	DEL_CLASS(cliEvt);
 }

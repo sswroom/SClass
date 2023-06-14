@@ -329,7 +329,7 @@ UI::DDrawWindow::~DDrawWindow()
 	this->presentEvt->Set();
 	while (presentRunning)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 	DEL_CLASS(presentEvt);
 	DEL_CLASS(resizer);

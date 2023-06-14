@@ -489,7 +489,7 @@ void Media::OpenSLESRenderer::Start()
 	Sync::Thread::Create(PlayThread, this);
 	while (!threadInit)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 }
 
@@ -505,7 +505,7 @@ void Media::OpenSLESRenderer::Stop()
 	}
 	while (playing)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 }
 

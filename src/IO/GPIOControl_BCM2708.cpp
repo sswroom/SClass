@@ -316,7 +316,7 @@ Bool IO::GPIOControl::SetPullType(UOSInt pinNum, IO::IOPin::PullType pt)
 	{
 		return false;
 	}
-	Sync::Thread::Sleepus(1);
+	Sync::SimpleThread::Sleepus(1);
 	if (pinNum < 32)
 	{
 		this->clsData->memPtr[38] = (1 << pinNum);
@@ -325,7 +325,7 @@ Bool IO::GPIOControl::SetPullType(UOSInt pinNum, IO::IOPin::PullType pt)
 	{
 		this->clsData->memPtr[39] = (1 << (pinNum - 32));
 	}
-	Sync::Thread::Sleepus(1);
+	Sync::SimpleThread::Sleepus(1);
 	if (pinNum < 32)
 	{
 		this->clsData->memPtr[38] = 0;

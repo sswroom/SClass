@@ -5,7 +5,7 @@
 #include "Media/H265Parser.h"
 #include "Media/Decoder/RHVCDecoder.h"
 #include "Sync/MutexUsage.h"
-#include "Sync/Thread.h"
+#include "Sync/SimpleThread.h"
 
 UOSInt Media::Decoder::RHVCDecoder::CalcNALSize(const UInt8 *buff, UOSInt buffSize)
 {
@@ -313,7 +313,7 @@ void Media::Decoder::RHVCDecoder::EnumFrameInfos(FrameInfoCallback cb, void *use
 		this->sourceVideo->Start();
 		while (this->sourceVideo->IsRunning())
 		{
-			Sync::Thread::Sleep(10);
+			Sync::SimpleThread::Sleep(10);
 		}
 		this->finfoMode = false;
 	}

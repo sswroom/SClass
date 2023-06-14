@@ -19,6 +19,7 @@
 #include "SSWR/SMonitor/SMonitorWebHandler.h"
 #include "SSWR/VAMS/VAMSBTWebHandler.h"
 #include "Sync/RWMutexUsage.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 #include "Text/StringBuilderUTF8.h"
 #include "Text/UTF8Reader.h"
@@ -1313,7 +1314,7 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(IO::Writer *writer, Media::Draw
 			Sync::Thread::Create(CheckThread, this);
 			while (!this->checkRunning)
 			{
-				Sync::Thread::Sleep(10);
+				Sync::SimpleThread::Sleep(10);
 			}
 		}
 	}
@@ -1336,7 +1337,7 @@ SSWR::SMonitor::SMonitorSvrCore::~SMonitorSvrCore()
 	this->checkEvt.Set();
 	while (this->checkRunning)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 	this->SaveDatas();
 

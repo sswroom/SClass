@@ -2,6 +2,7 @@
 #include "Math/Math.h"
 #include "Math/Geometry/LineString.h"
 #include "SSWR/AVIRead/AVIRGISReplayForm.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
@@ -464,6 +465,6 @@ void SSWR::AVIRead::AVIRGISReplayForm::StopThread()
 	this->threadToStop = true;
 	if (this->threadRunning)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 }

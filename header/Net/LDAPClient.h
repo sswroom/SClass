@@ -67,7 +67,7 @@ namespace Net
 		void ParseLDAPMessage(const UInt8 *msgBuff, UOSInt msgLen);
 		const UTF8Char *ParseFilter(Net::ASN1PDUBuilder *pdu, const UTF8Char *filter, Bool complex);
 	public:
-		LDAPClient(Net::SocketFactory *sockf, const Net::SocketUtil::AddressInfo *addr, UInt16 port);
+		LDAPClient(Net::SocketFactory *sockf, const Net::SocketUtil::AddressInfo *addr, UInt16 port, Data::Duration timeout);
 		~LDAPClient();
 
 		Bool IsError();

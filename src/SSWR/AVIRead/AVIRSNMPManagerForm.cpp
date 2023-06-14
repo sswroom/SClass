@@ -6,7 +6,7 @@
 #include "Net/MACInfo.h"
 #include "SSWR/AVIRead/AVIRSNMPManagerForm.h"
 #include "SSWR/AVIRead/AVIRSNMPWalkForm.h"
-#include "Sync/Thread.h"
+#include "Sync/SimpleThread.h"
 #include "Text/MyStringFloat.h"
 #include "UI/MessageDialog.h"
 
@@ -53,7 +53,7 @@ void __stdcall SSWR::AVIRead::AVIRSNMPManagerForm::OnAgentAddClicked(void *userO
 			Data::FastMap<UInt32, UInt16> readingMap;
 			UInt16 currId;
 			me->SendAgentValues(&agentList);
-			Sync::Thread::Sleep(100);
+			Sync::SimpleThread::Sleep(100);
 			i = 0;
 			while (i < j)
 			{

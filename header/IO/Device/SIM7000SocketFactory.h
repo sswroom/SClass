@@ -85,7 +85,7 @@ namespace IO
 			virtual void SetLinger(Socket *socket, UInt32 ms); ////////////////////////
 			virtual void SetRecvBuffSize(Socket *socket, Int32 buffSize); ////////////////////////
 			virtual void SetNoDelay(Socket *socket, Bool val);
-			virtual void SetRecvTimeout(Socket *socket, Int32 ms); ////////////////////////
+			virtual void SetRecvTimeout(Socket *socket, Data::Duration timeout); ////////////////////////
 			virtual void SetReuseAddr(Socket *socket, Bool val); ////////////////////////
 			virtual void SetIPv4TTL(Socket *socket, Int32 ttl);
 			virtual void SetBroadcast(Socket *socket, Bool val);
@@ -103,8 +103,8 @@ namespace IO
 
 			virtual Bool IcmpSendEcho2(const Net::SocketUtil::AddressInfo *addr, UInt32 *respTime_us, UInt32 *ttl);
 
-			virtual Bool Connect(Socket *socket, UInt32 ip, UInt16 port); ////////////////////////
-			virtual Bool Connect(Socket *socket, const Net::SocketUtil::AddressInfo *addr, UInt16 port); ////////////////////////
+			virtual Bool Connect(Socket *socket, UInt32 ip, UInt16 port, Data::Duration timeout); ////////////////////////
+			virtual Bool Connect(Socket *socket, const Net::SocketUtil::AddressInfo *addr, UInt16 port, Data::Duration timeout); ////////////////////////
 			virtual void ShutdownSend(Socket *socket); ////////////////////////
 
 			virtual Bool SocketGetReadBuff(Socket *socket, UInt32 *size); ////////////////////////

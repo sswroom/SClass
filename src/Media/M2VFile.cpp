@@ -2,6 +2,7 @@
 #include "Media/M2VFile.h"
 #include "Media/M2VStreamSource.h"
 #include "Media/MPEGVideoParser.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 #define BUFFSIZE 1048576
 
@@ -113,7 +114,7 @@ Bool Media::M2VFile::StopVideo()
 	this->playToStop = true;
 	while (this->playing)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 	this->readOfst = 0;
 	this->startTime = 0;

@@ -9,6 +9,7 @@
 #include "Media/StaticImage.h"
 #include "Sync/MutexUsage.h"
 #include "Sync/RWMutexUsage.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 #include "Text/MyString.h"
 
@@ -257,7 +258,7 @@ Map::WebImageLayer::~WebImageLayer()
 	this->loadEvt.Set();
 	while (this->threadRunning)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 
 	i = this->pendingList.GetCount();

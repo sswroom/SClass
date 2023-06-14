@@ -519,7 +519,7 @@ UOSInt IO::Device::MTKGPSNMEA::GetLogSize()
 	return i;
 }
 
-Text::String *IO::Device::MTKGPSNMEA::SendMTKCommand(const UInt8 *cmdBuff, UOSInt cmdSize, const UTF8Char *resultStart, UOSInt resultStartLen, Int32 timeoutMS)
+Text::String *IO::Device::MTKGPSNMEA::SendMTKCommand(const UInt8 *cmdBuff, UOSInt cmdSize, const UTF8Char *resultStart, UOSInt resultStartLen, Data::Duration timeout)
 {
 	Data::DateTime dt;
 	Data::DateTime dt2;
@@ -550,7 +550,7 @@ Text::String *IO::Device::MTKGPSNMEA::SendMTKCommand(const UInt8 *cmdBuff, UOSIn
 		if (resultStr)
 			break;
 		dt2.SetCurrTimeUTC();
-		if (dt2.DiffMS(&dt) >= timeoutMS)
+		if (dt2.Diff(&dt) >= timeout)
 			break;
 	}
 	mutUsage.EndUse();

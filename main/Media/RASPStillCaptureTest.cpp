@@ -13,7 +13,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	if (capture.DeviceBegin())
 	{
 		Media::IPhotoCapture::PhotoFormat pf;
-		Sync::Thread::Sleep(5000);
+		Sync::SimpleThread::Sleep(5000);
 		{
 			IO::FileStream fs(CSTR("Capture.jpg"), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 			if (!capture.CapturePhoto(&pf, &fs))
@@ -26,7 +26,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			}
 		}
 
-		Sync::Thread::Sleep(5000);
+		Sync::SimpleThread::Sleep(5000);
 		{
 			IO::FileStream fs(CSTR("Capture2.jpg"), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 			if (!capture.CapturePhoto(&pf, &fs))

@@ -6,6 +6,7 @@
 #include "Media/GTKDrawEngine.h"
 #include "Media/PaperSize.h"
 #include "Media/Printer.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
@@ -197,7 +198,7 @@ void Media::CUPSPrintDocument::WaitForEnd()
 {
 	while (this->running)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 }
 

@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "Data/ByteTool.h"
 #include "IO/ProgCtrl/BluetoothCtlProgCtrl.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 #include "Text/StringBuilderC.h"
 #include "Text/StringBuilderUTF8.h"
@@ -458,13 +459,13 @@ void IO::ProgCtrl::BluetoothCtlProgCtrl::Close()
 			{
 				break;
 			}
-			Sync::Thread::Sleep(1);
+			Sync::SimpleThread::Sleep(1);
 		}
 		this->prog->Close();
 	}
 	while (this->threadRunning)
 	{
-		Sync::Thread::Sleep(1);
+		Sync::SimpleThread::Sleep(1);
 	}
 }
 
@@ -488,7 +489,7 @@ Bool IO::ProgCtrl::BluetoothCtlProgCtrl::WaitForCmdReady()
 			{
 				break;
 			}
-			Sync::Thread::Sleep(1);
+			Sync::SimpleThread::Sleep(1);
 		}
 	}
 	return this->cmdReady;

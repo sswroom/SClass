@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Sync/Event.h"
 #include "Sync/Interlocked.h"
-#include "Sync/Thread.h"
+#include "Sync/SimpleThread.h"
 
 #if defined(_MSC_VER) || defined(__MINGW32__)
 #include <windows.h>
@@ -35,9 +35,9 @@ void Sync::Event::Wait()
 	}
 }
 
-Bool Sync::Event::Wait(UOSInt timeout)
+Bool Sync::Event::Wait(Data::Duration timeout)
 {
-	return WaitForSingleObject(this->hand, (DWORD)timeout) == WAIT_TIMEOUT;
+	return WaitForSingleObject(this->hand, (DWORD)timeout.GetTotalMS()) == WAIT_TIMEOUT;
 }
 
 void Sync::Event::Set()
@@ -99,7 +99,7 @@ void Sync::Event::Wait()
 	}
 }
 
-Bool Sync::Event::Wait(UOSInt timeout)
+Bool Sync::Event::Wait(Data::Duration timeout)
 {
 	Bool isTO = false;
 	if (this->isAuto)
@@ -195,7 +195,7 @@ Sync::Event::~Event()
 	EventStatus *status = (EventStatus*)this->hand;
 	while (status->useCnt != 0)
 	{
-		Sync::Thread::Sleep(1);
+		Sync::SimpleThread::Sleep(1);
 	}
 	pthread_mutex_lock(&status->mutex);
 	pthread_cond_destroy(&status->cond);
@@ -235,7 +235,7 @@ void Sync::Event::Wait()
 	}
 }
 
-Bool Sync::Event::Wait(UOSInt timeout)
+Bool Sync::Event::Wait(Data::Duration timeout)
 {
 	EventStatus *status = (EventStatus*)this->hand;
 	Bool isTO = false;
@@ -253,8 +253,8 @@ Bool Sync::Event::Wait(UOSInt timeout)
 		else
 		{
 			clock_gettime(CLOCK_REALTIME, &outtime);
-			outtime.tv_sec += (time_t)(timeout / 1000);
-			outtime.tv_nsec += (long)((timeout % 1000) * 1000000);
+			outtime.tv_sec += (time_t)timeout.GetSeconds();
+			outtime.tv_nsec += (long)timeout.GetNS();
 			if (outtime.tv_nsec >= 1000000000)
 			{
 				outtime.tv_nsec -= 1000000000;
@@ -284,8 +284,8 @@ Bool Sync::Event::Wait(UOSInt timeout)
 		else
 		{
 			clock_gettime(CLOCK_REALTIME, &outtime);
-			outtime.tv_sec += (time_t)(timeout / 1000);
-			outtime.tv_nsec += (long)((timeout % 1000) * 1000000);
+			outtime.tv_sec += (time_t)timeout.GetSeconds();
+			outtime.tv_nsec += (long)timeout.GetNS();
 			if (outtime.tv_nsec >= 1000000000)
 			{
 				outtime.tv_nsec -= 1000000000;

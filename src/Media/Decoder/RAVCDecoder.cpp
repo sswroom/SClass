@@ -5,7 +5,7 @@
 #include "Media/H264Parser.h"
 #include "Media/Decoder/RAVCDecoder.h"
 #include "Sync/MutexUsage.h"
-#include "Sync/Thread.h"
+#include "Sync/SimpleThread.h"
 
 #define ALLONE 1
 
@@ -476,7 +476,7 @@ void Media::Decoder::RAVCDecoder::EnumFrameInfos(FrameInfoCallback cb, void *use
 		this->sourceVideo->Start();
 		while (this->sourceVideo->IsRunning())
 		{
-			Sync::Thread::Sleep(10);
+			Sync::SimpleThread::Sleep(10);
 		}
 		this->finfoMode = false;
 	}

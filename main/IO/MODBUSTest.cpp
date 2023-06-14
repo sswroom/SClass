@@ -4,7 +4,7 @@
 #include "Data/ByteTool.h"
 #include "IO/MODBUSRTUMaster.h"
 #include "IO/SerialPort.h"
-#include "Sync/Thread.h"
+#include "Sync/SimpleThread.h"
 #include <stdio.h>
 
 void __stdcall ReadResult(void *userObj, UInt8 funcCode, const UInt8 *result, UOSInt resultSize)
@@ -42,10 +42,10 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 
 		printf("Reading 0 register\r\n");
 		modbus->ReadInputRegisters(1, 0, 2);
-		Sync::Thread::Sleep(1000);
+		Sync::SimpleThread::Sleep(1000);
 		printf("Reading 6 register\r\n");
 		modbus->ReadInputRegisters(1, 6, 2);
-		Sync::Thread::Sleep(1000);
+		Sync::SimpleThread::Sleep(1000);
 
 		DEL_CLASS(modbus);
 	}

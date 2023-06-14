@@ -3,6 +3,7 @@
 #include "Data/ByteTool.h"
 #include "Media/AudioFilter/AudioCaptureFilter.h"
 #include "Sync/MutexUsage.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 #define BUFFSIZE 1048576
 
@@ -60,7 +61,7 @@ Media::AudioFilter::AudioCaptureFilter::~AudioCaptureFilter()
 	this->evt.Set();
 	while (this->running)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 	MemFree(this->readBuff);
 	MemFree(this->writeBuff);

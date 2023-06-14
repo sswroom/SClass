@@ -3,6 +3,7 @@
 #include "Data/ByteTool.h"
 #include "IO/BTController.h"
 #include "IO/BTUtil.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 #include "Text/MyString.h"
 #include <errno.h>
@@ -387,7 +388,7 @@ Bool IO::BTController::LEScanBegin()
 	Sync::Thread::Create(LEScanThread, this);
 	while (!this->leScanning && !this->leScanToStop)
 	{
-		Sync::Thread::Sleep(1);
+		Sync::SimpleThread::Sleep(1);
 	}
 	return true;
 }
@@ -399,7 +400,7 @@ Bool IO::BTController::LEScanEnd()
 		this->leScanToStop = true;
 		while (this->leScanning)
 		{
-			Sync::Thread::Sleep(10);
+			Sync::SimpleThread::Sleep(10);
 		}
 	}
 	return true;

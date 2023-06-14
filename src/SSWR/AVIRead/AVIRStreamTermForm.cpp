@@ -2,6 +2,7 @@
 #include "IO/SerialPort.h"
 #include "SSWR/AVIRead/AVIRStreamTermForm.h"
 #include "Sync/MutexUsage.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 #include "Text/Encoding.h"
 
@@ -32,7 +33,7 @@ void __stdcall SSWR::AVIRead::AVIRStreamTermForm::OnStreamClicked(void *userObj)
 			Sync::Thread::Create(RecvThread, me);
 			while (!me->threadRunning && !me->remoteClosed)
 			{
-				Sync::Thread::Sleep(10);
+				Sync::SimpleThread::Sleep(10);
 			}
 		}
 	}
@@ -159,7 +160,7 @@ void SSWR::AVIRead::AVIRStreamTermForm::StopStream(Bool clearUI)
 		this->threadToStop = true;
 		while (this->threadRunning)
 		{
-			Sync::Thread::Sleep(10);
+			Sync::SimpleThread::Sleep(10);
 		}
 		this->threadToStop = false;
 		DEL_CLASS(this->stm);

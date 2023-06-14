@@ -21,16 +21,16 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	Int32 t2;
 	Int32 tv1;
 	Int32 tv2;
-	Sync::Thread::Sleep(10000);
+	Sync::SimpleThread::Sleep(10000);
 	while (true)
 	{
 		t0 = 0;
 		t1 = 0;
 		t2 = 0;
 		distSensor.ReadTime(&t0);
-		Sync::Thread::Sleep(100);
+		Sync::SimpleThread::Sleep(100);
 		distSensor.ReadTime(&t1);
-		Sync::Thread::Sleep(100);
+		Sync::SimpleThread::Sleep(100);
 		distSensor.ReadTime(&t2);
 
 		if (t0 != 0 && t1 != 0 && t2 != 0)
@@ -45,7 +45,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				console.WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
 			}
 		}
-		Sync::Thread::Sleep(1000);
+		Sync::SimpleThread::Sleep(1000);
 	}
 	return 0;
 }

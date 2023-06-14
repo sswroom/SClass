@@ -4,6 +4,7 @@
 #include "Manage/HiResClock.h"
 #include "Math/Math.h"
 #include "Media/V4LVideoCapture.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 #include "Text/MyString.h"
 #include <errno.h>
@@ -256,7 +257,7 @@ Bool Media::V4LVideoCapture::Start()
 		Sync::Thread::Create(PlayThread, this);
 		while (!this->threadStarted)
 		{
-			Sync::Thread::Sleep(10);
+			Sync::SimpleThread::Sleep(10);
 		}
 		return true;
 	}
@@ -274,7 +275,7 @@ void Media::V4LVideoCapture::Stop()
 		this->threadToStop = true;
 		while (this->threadRunning)
 		{
-			Sync::Thread::Sleep(10);
+			Sync::SimpleThread::Sleep(10);
 		}
 	}
 }

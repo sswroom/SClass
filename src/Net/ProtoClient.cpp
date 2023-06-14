@@ -102,7 +102,7 @@ Net::ProtoClient::ProtoClient(Net::SocketFactory *sockf, Text::CString cliAddr, 
 	Sync::Thread::Create(ProtoThread, this);
 	while (!this->threadRunning)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 }
 
@@ -119,7 +119,7 @@ Net::ProtoClient::~ProtoClient()
 	this->threadEvt.Set();
 	while (this->threadRunning)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 }
 

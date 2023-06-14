@@ -1,9 +1,9 @@
 #include "Stdafx.h"
 #include "IO/MemoryStream.h"
 #include "Net/Email/SMTPClient.h"
-#include "Sync/Thread.h"
+#include "Sync/SimpleThread.h"
 
-Net::Email::SMTPClient::SMTPClient(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CString host, UInt16 port, Net::Email::SMTPConn::ConnType connType, IO::Writer *logWriter)
+Net::Email::SMTPClient::SMTPClient(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CString host, UInt16 port, Net::Email::SMTPConn::ConnType connType, IO::Writer *logWriter, Data::Duration timeout)
 {
 	this->sockf = sockf;
 	this->ssl = ssl;
@@ -13,6 +13,7 @@ Net::Email::SMTPClient::SMTPClient(Net::SocketFactory *sockf, Net::SSLEngine *ss
 	this->logWriter = logWriter;
 	this->authUser = 0;
 	this->authPassword = 0;
+	this->timeout = timeout;
 }
 
 Net::Email::SMTPClient::~SMTPClient()
@@ -41,7 +42,7 @@ Bool Net::Email::SMTPClient::Send(Net::Email::EmailMessage *message)
 	{
 		return false;
 	}
-	Net::Email::SMTPConn conn(this->sockf, this->ssl, this->host->ToCString(), this->port, this->connType, this->logWriter);
+	Net::Email::SMTPConn conn(this->sockf, this->ssl, this->host->ToCString(), this->port, this->connType, this->logWriter, this->timeout);
 	if (conn.IsError())
 	{
 		return false;
@@ -53,7 +54,7 @@ Bool Net::Email::SMTPClient::Send(Net::Email::EmailMessage *message)
 			return false;
 		}
 	}
-	Sync::Thread::Sleep(10);
+	Sync::SimpleThread::Sleep(10);
 	if (this->authUser && this->authPassword)
 	{
 		if (!conn.SendAuth(this->authUser->ToCString(), this->authPassword->ToCString()))

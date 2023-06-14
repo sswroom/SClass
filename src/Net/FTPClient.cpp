@@ -4,7 +4,7 @@
 #include "Sync/Thread.h"
 #include "Net/FTPClient.h"
 
-Net::FTPClient::FTPClient(Text::CString url, Net::SocketFactory *sockf, Bool passiveMode, UInt32 codePage) : IO::Stream(url)
+Net::FTPClient::FTPClient(Text::CString url, Net::SocketFactory *sockf, Bool passiveMode, UInt32 codePage, Data::Duration timeout) : IO::Stream(url)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -57,7 +57,7 @@ Net::FTPClient::FTPClient(Text::CString url, Net::SocketFactory *sockf, Bool pas
 			{
 				this->port = 21;
 			}
-			NEW_CLASS(this->conn, Net::FTPConn(this->host->ToCString(), this->port, sockf, this->codePage));
+			NEW_CLASS(this->conn, Net::FTPConn(this->host->ToCString(), this->port, sockf, this->codePage, timeout));
 			this->conn->SendUser(this->userName);
 			if (this->password)
 			{
@@ -91,7 +91,7 @@ Net::FTPClient::FTPClient(Text::CString url, Net::SocketFactory *sockf, Bool pas
 					this->conn->ToBinaryType();
 					if (this->conn->ChangePassiveMode(&ip, &port))
 					{
-						NEW_CLASS(this->cli2, Net::TCPClient(sockf, ip, port));
+						NEW_CLASS(this->cli2, Net::TCPClient(sockf, ip, port, timeout));
 						this->conn->GetFile(&sbuff[i + 1]);
 					}
 				}

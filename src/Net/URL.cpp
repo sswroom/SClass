@@ -7,7 +7,7 @@
 #include "Text/MyString.h"
 #include "Text/URLString.h"
 
-IO::ParsedObject *Net::URL::OpenObject(Text::CString url, Text::CString userAgent, Net::SocketFactory *sockf, Net::SSLEngine *ssl)
+IO::ParsedObject *Net::URL::OpenObject(Text::CString url, Text::CString userAgent, Net::SocketFactory *sockf, Net::SSLEngine *ssl, Data::Duration timeout)
 {
 	IO::ParsedObject *pobj;
 	UTF8Char sbuff[512];
@@ -15,13 +15,14 @@ IO::ParsedObject *Net::URL::OpenObject(Text::CString url, Text::CString userAgen
 	if (url.StartsWithICase(UTF8STRC("http://")))
 	{
 		Net::HTTPClient *cli = Net::HTTPClient::CreateClient(sockf, ssl, userAgent, true, false);
+		cli->SetTimeout(timeout);
 		cli->Connect(url, Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, true);
 		if (cli->GetRespStatus() == Net::WebStatus::SC_MOVED_TEMPORARILY || cli->GetRespStatus() == Net::WebStatus::SC_MOVED_PERMANENTLY)
 		{
 			Text::CString newUrl = cli->GetRespHeader(CSTR("Location"));
 			if (newUrl.leng > 0 && !newUrl.Equals(url.v, url.leng) && (newUrl.StartsWith(UTF8STRC("http://")) || newUrl.StartsWith(UTF8STRC("https://"))))
 			{
-				pobj = OpenObject(newUrl, userAgent, sockf, ssl);
+				pobj = OpenObject(newUrl, userAgent, sockf, ssl, timeout);
 				DEL_CLASS(cli);
 				return pobj;
 			}
@@ -31,13 +32,14 @@ IO::ParsedObject *Net::URL::OpenObject(Text::CString url, Text::CString userAgen
 	else if (url.StartsWithICase(UTF8STRC("https://")))
 	{
 		Net::HTTPClient *cli = Net::HTTPClient::CreateClient(sockf, ssl, userAgent, true, true);
+		cli->SetTimeout(timeout);
 		cli->Connect(url, Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, true);
 		if (cli->GetRespStatus() == Net::WebStatus::SC_MOVED_TEMPORARILY || cli->GetRespStatus() == Net::WebStatus::SC_MOVED_PERMANENTLY)
 		{
 			Text::CString newUrl = cli->GetRespHeader(CSTR("Location"));
 			if (newUrl.leng > 0 && !newUrl.Equals(url.v, url.leng) && (newUrl.StartsWith(UTF8STRC("http://")) || newUrl.StartsWith(UTF8STRC("https://"))))
 			{
-				pobj = OpenObject(newUrl, userAgent, sockf, ssl);
+				pobj = OpenObject(newUrl, userAgent, sockf, ssl, timeout);
 				DEL_CLASS(cli);
 				return pobj;
 			}
@@ -52,12 +54,12 @@ IO::ParsedObject *Net::URL::OpenObject(Text::CString url, Text::CString userAgen
 	}
 	else if (url.StartsWithICase(UTF8STRC("ftp://")))
 	{
-		NEW_CLASS(pobj, Net::FTPClient(url, sockf, true, 0));
+		NEW_CLASS(pobj, Net::FTPClient(url, sockf, true, 0, timeout));
 		return pobj;
 	}
 	else if (url.StartsWithICase(UTF8STRC("rtsp://")))
 	{
-		pobj = Net::RTSPClient::ParseURL(sockf, url);
+		pobj = Net::RTSPClient::ParseURL(sockf, url, timeout);
 		return pobj;
 	}
 	return 0;

@@ -4,6 +4,7 @@
 #include "IO/TVCtrl/NECTVControl.h"
 #include "Net/SocketFactory.h"
 #include "Sync/MutexUsage.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
@@ -19,7 +20,7 @@ UInt32 __stdcall IO::TVCtrl::NECTVControl::RecvThread(void *userObj)
 		recvSize = me->stm->Read(buff, 256);
 		if (recvSize <= 0)
 		{
-			Sync::Thread::Sleep(10);
+			Sync::SimpleThread::Sleep(10);
 		}
 		else
 		{
@@ -57,7 +58,7 @@ Bool IO::TVCtrl::NECTVControl::SendCommand(Text::CString cmd, UTF8Char *cmdReply
 	if (dt.CompareTo(&this->nextTime) < 0)
 	{
 		Int64 timeDiff = this->nextTime.DiffMS(&dt);
-		Sync::Thread::Sleep((UInt32)timeDiff);
+		Sync::SimpleThread::Sleep((UInt32)timeDiff);
 	}
 	
 	cmdLen = cmd.leng;
@@ -150,7 +151,7 @@ Bool IO::TVCtrl::NECTVControl::GetParameter(UInt8 opCodePage, UInt8 opCode, UInt
 	if (dt.CompareTo(&this->nextTime) < 0)
 	{
 		Int64 timeDiff = this->nextTime.DiffMS(&dt);
-		Sync::Thread::Sleep((UInt32)timeDiff);
+		Sync::SimpleThread::Sleep((UInt32)timeDiff);
 	}
 	
 	buff[0] = 1; //SOH
@@ -245,7 +246,7 @@ Bool IO::TVCtrl::NECTVControl::SetParameter(UInt8 opCodePage, UInt8 opCode, UInt
 	if (dt.CompareTo(&this->nextTime) < 0)
 	{
 		Int64 timeDiff = this->nextTime.DiffMS(&dt);
-		Sync::Thread::Sleep((UInt32)timeDiff);
+		Sync::SimpleThread::Sleep((UInt32)timeDiff);
 	}
 	
 	buff[0] = 1; //SOH
@@ -343,7 +344,7 @@ IO::TVCtrl::NECTVControl::~NECTVControl()
 	this->recvToStop = true;
 	while (this->recvRunning)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 }
 

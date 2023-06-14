@@ -279,7 +279,7 @@ const UInt8 *Net::WebSocketClient::NextPacket(Sync::MutexUsage *mutUsage, UOSInt
 	}
 }
 
-Net::WebSocketClient::WebSocketClient(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CString host, UInt16 port, Text::CString path, Text::CString origin, Protocol protocol) : Stream(CSTR("WebSocket"))
+Net::WebSocketClient::WebSocketClient(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CString host, UInt16 port, Text::CString path, Text::CString origin, Protocol protocol, Data::Duration timeout) : Stream(CSTR("WebSocket"))
 {
 	this->recvCapacity = 4096;
 	this->recvBuff = MemAlloc(UInt8, this->recvCapacity);
@@ -293,11 +293,11 @@ Net::WebSocketClient::WebSocketClient(Net::SocketFactory *sockf, Net::SSLEngine 
 	if (ssl)
 	{
 		Net::SSLEngine::ErrorType err;
-		this->cli = ssl->ClientConnect(host, port, &err);
+		this->cli = ssl->ClientConnect(host, port, &err, timeout);
 	}
 	else
 	{
-		NEW_CLASS(this->cli, Net::TCPClient(sockf, host, port));
+		NEW_CLASS(this->cli, Net::TCPClient(sockf, host, port, timeout));
 	}
 	if (this->cli == 0)
 	{

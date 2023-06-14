@@ -4,6 +4,7 @@
 #include "Data/DateTime.h"
 #include "IO/Device/DensoWaveQK30U.h"
 #include "Sync/MutexUsage.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 #include "Text/Encoding.h"
 #include "Text/MyString.h"
@@ -24,7 +25,7 @@ UInt32 __stdcall IO::Device::DensoWaveQK30U::RecvThread(void *userObj)
 		recvSize = me->stm->Read(buff, 256);
 		if (recvSize <= 0)
 		{
-			Sync::Thread::Sleep(10);
+			Sync::SimpleThread::Sleep(10);
 		}
 		else
 		{
@@ -60,7 +61,7 @@ UInt32 __stdcall IO::Device::DensoWaveQK30U::RecvThread(void *userObj)
 								me->scanHdlr(me->scanHdlrObj, {sbuff, i});
 							}
 //							me->stm->Write((UInt8*)"READOFF\r", 8);
-//							Sync::Thread::Sleep(me->scanDelay);
+//							Sync::SimpleThread::Sleep(me->scanDelay);
 //							me->stm->Write((UInt8*)"READON\r", 7);
 
 							found = true;
@@ -267,7 +268,7 @@ IO::Device::DensoWaveQK30U::~DensoWaveQK30U()
 	this->stm->Close();
 	while (this->recvRunning)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 //	DEL_CLASS(this->nextTime);
 	MemFree(this->recvBuff);

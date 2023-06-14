@@ -179,7 +179,7 @@ LanczosResizerH8_8_CPP.o: $(CLASSDIR)src/Media/Resizer/LanczosResizerH8_8_CPP.cp
 LanczosResizerLR_C32_CPU_CPP.o: $(CLASSDIR)src/Media/Resizer/LanczosResizerLR_C32_CPU_CPP.cpp
 	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
 
-Thread_CPP.o: $(CLASSDIR)src/Sync/Thread_32.asm
+SimpleThread_CPP.o: $(CLASSDIR)src/Sync/SimpleThread_32.asm
 	$(ASM) $(ASMFLAGS) $(LDFLAGS) -f elf32 -o $@ $< $(ASMSUFFIX)
 
 MyString_CPP.o: $(CLASSDIR)src/Text/MyString_32.asm

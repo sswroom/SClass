@@ -16,10 +16,10 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	{
 		gpio.SetPinState(PIN1, true);
 		gpio.SetPinState(PIN2, false);
-		Sync::Thread::Sleep(1000);
+		Sync::SimpleThread::Sleep(1000);
 		gpio.SetPinState(PIN1, false);
 		gpio.SetPinState(PIN2, true);
-		Sync::Thread::Sleep(1000);
+		Sync::SimpleThread::Sleep(1000);
 	}
 	return 0;
 }

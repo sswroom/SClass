@@ -149,7 +149,7 @@ void __stdcall IO::MODBUSDevice::SetResult(void *userObj, UInt8 funcCode, UInt16
 	}
 }
 
-void IO::MODBUSDevice::SetTimeout(UOSInt timeout)
+void IO::MODBUSDevice::SetTimeout(Data::Duration timeout)
 {
 	this->timeout = timeout;
 }

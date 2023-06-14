@@ -36,7 +36,7 @@ Media::StaticImage *Media::ScreenCapturer::CaptureScreen(MonitorHandle *hMon)
 	while (i-- > 0)
 	{
 		ImageUtil_ColorFill32(dataPtr, surface->info->storeWidth * surface->info->storeHeight, 0xff800000);
-		Sync::Thread::Sleep(1000);
+		Sync::SimpleThread::Sleep(1000);
 	}
 	DEL_CLASS(surface);
 	return retImg;

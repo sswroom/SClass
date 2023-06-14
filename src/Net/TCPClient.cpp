@@ -15,7 +15,7 @@
 #include "Text/StringBuilderUTF8.h"
 #endif
 
-Net::TCPClient::TCPClient(Net::SocketFactory *sockf, Text::CString name, UInt16 port) : IO::Stream(name)
+Net::TCPClient::TCPClient(Net::SocketFactory *sockf, Text::CString name, UInt16 port, Data::Duration timeout) : IO::Stream(name)
 {
 	this->currCnt = 0;
 	this->flags = 0;
@@ -23,7 +23,7 @@ Net::TCPClient::TCPClient(Net::SocketFactory *sockf, Text::CString name, UInt16 
 	this->sockf = sockf;
 	this->readEvent = 0;
 	this->writeEvent = 0;
-	this->timeoutMS = 0;
+	this->timeout = 0;
 
 	Net::SocketUtil::AddressInfo addr;
 	if (!sockf->DNSResolveIP(name, &addr))
@@ -54,7 +54,7 @@ Net::TCPClient::TCPClient(Net::SocketFactory *sockf, Text::CString name, UInt16 
 		this->flags = 12;
 		return;
 	}
-	if (!sockf->Connect(s, &addr, port))
+	if (!sockf->Connect(s, &addr, port, timeout))
 	{
 		sockf->DestroySocket(s);
 		s = 0;
@@ -64,7 +64,7 @@ Net::TCPClient::TCPClient(Net::SocketFactory *sockf, Text::CString name, UInt16 
 	this->cliId = sockf->GenSocketId(s);
 }
 
-Net::TCPClient::TCPClient(Net::SocketFactory *sockf, UInt32 ip, UInt16 port) : IO::Stream(CSTR(""))
+Net::TCPClient::TCPClient(Net::SocketFactory *sockf, UInt32 ip, UInt16 port, Data::Duration timeout) : IO::Stream(CSTR(""))
 {
 	this->currCnt = 0;
 	this->s = 0;
@@ -72,7 +72,7 @@ Net::TCPClient::TCPClient(Net::SocketFactory *sockf, UInt32 ip, UInt16 port) : I
 	this->sockf = sockf;
 	this->readEvent = 0;
 	this->writeEvent = 0;
-	this->timeoutMS = 0;
+	this->timeout = 0;
 
 /*	UTF8Char sbuff[32];
 	UTF8Char *sptr;
@@ -88,7 +88,7 @@ Net::TCPClient::TCPClient(Net::SocketFactory *sockf, UInt32 ip, UInt16 port) : I
 		return;
 	}
 	sockf->SetReuseAddr(s, true);
-	if (!sockf->Connect(s, ip, port))
+	if (!sockf->Connect(s, ip, port, timeout))
 	{
 		printf("Error in connecting\r\n");
 		sockf->DestroySocket(s);
@@ -99,7 +99,7 @@ Net::TCPClient::TCPClient(Net::SocketFactory *sockf, UInt32 ip, UInt16 port) : I
 	this->cliId = sockf->GenSocketId(s);
 }
 
-Net::TCPClient::TCPClient(Net::SocketFactory *sockf, const Net::SocketUtil::AddressInfo *addr, UInt16 port) : IO::Stream(CSTR(""))
+Net::TCPClient::TCPClient(Net::SocketFactory *sockf, const Net::SocketUtil::AddressInfo *addr, UInt16 port, Data::Duration timeout) : IO::Stream(CSTR(""))
 {
 	this->currCnt = 0;
 	this->s = 0;
@@ -107,7 +107,7 @@ Net::TCPClient::TCPClient(Net::SocketFactory *sockf, const Net::SocketUtil::Addr
 	this->sockf = sockf;
 	this->readEvent = 0;
 	this->writeEvent = 0;
-	this->timeoutMS = 0;
+	this->timeout = 0;
 
 	if (addr->addrType == Net::AddrType::IPv4)
 	{
@@ -141,7 +141,7 @@ Net::TCPClient::TCPClient(Net::SocketFactory *sockf, const Net::SocketUtil::Addr
 		this->flags = 12;
 		return;
 	}
-	if (!sockf->Connect(s, addr, port))
+	if (!sockf->Connect(s, addr, port, timeout))
 	{
 #ifdef PRINTDEBUG
 		IO::Console::PrintStrO((const UTF8Char*)"Cannot connect to destination\r\n");
@@ -169,7 +169,7 @@ Net::TCPClient::TCPClient(Net::SocketFactory *sockf, Socket *s) : IO::Stream(CST
 	this->currCnt = 0;
 	this->readEvent = 0;
 	this->writeEvent = 0;
-	this->timeoutMS = 0;
+	this->timeout = 0;
 	if (s)
 	{
 		this->cliId = sockf->GenSocketId(s);
@@ -468,15 +468,15 @@ void Net::TCPClient::ShutdownSend()
 	this->sockf->ShutdownSend(this->s);
 }
 
-void Net::TCPClient::SetTimeout(Int32 ms)
+void Net::TCPClient::SetTimeout(Data::Duration timeout)
 {
-	this->sockf->SetRecvTimeout(this->s, ms);
-	this->timeoutMS = ms;
+	this->sockf->SetRecvTimeout(this->s, timeout);
+	this->timeout = timeout;
 }
 
-Int32 Net::TCPClient::GetTimeoutMS()
+Data::Duration Net::TCPClient::GetTimeout()
 {
-	return this->timeoutMS;
+	return this->timeout;
 }
 
 Socket *Net::TCPClient::GetSocket()

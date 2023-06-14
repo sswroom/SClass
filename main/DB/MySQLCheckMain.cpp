@@ -156,7 +156,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			Net::Email::EmailMessage *msg;
 			Data::DateTime currTime;
 			currTime.SetCurrTime();
-			NEW_CLASS(smtp, Net::Email::SMTPClient(sockf, ssl, smtpHost->ToCString(), smtpIPort, connType, writer));
+			NEW_CLASS(smtp, Net::Email::SMTPClient(sockf, ssl, smtpHost->ToCString(), smtpIPort, connType, writer, 30000));
 			if (smtpUser->v[0] && smtpPassword->v[0])
 			{
 				smtp->SetPlainAuth(smtpUser->ToCString(), smtpPassword->ToCString());

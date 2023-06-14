@@ -3,6 +3,7 @@
 #include "Math/Math.h"
 #include "Sync/Interlocked.h"
 #include "Sync/MutexUsage.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 #include "Text/Encoding.h"
 #include "Text/MyString.h"
@@ -893,7 +894,7 @@ UI::GUITextFileView::~GUITextFileView()
 	this->evtThread.Set();
 	while (this->threadRunning)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 	MemFree(this->readBuff);
 	if (this->fs)
@@ -1513,7 +1514,7 @@ Bool UI::GUITextFileView::LoadFile(Text::String *fileName)
 {
 	while (this->isSearching)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 
 	Sync::MutexUsage mutUsage(&this->mut);

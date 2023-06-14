@@ -356,7 +356,7 @@ void IO::Device::SIM7000SocketFactory::SetNoDelay(Socket *socket, Bool val)
 	this->modem->NetSetDisableNagle(val);
 }
 
-void IO::Device::SIM7000SocketFactory::SetRecvTimeout(Socket *socket, Int32 ms)
+void IO::Device::SIM7000SocketFactory::SetRecvTimeout(Socket *socket, Data::Duration timeout)
 {
 
 }
@@ -516,12 +516,12 @@ Bool IO::Device::SIM7000SocketFactory::IcmpSendEcho2(const Net::SocketUtil::Addr
 	return succ;
 }
 
-Bool IO::Device::SIM7000SocketFactory::Connect(Socket *socket, UInt32 ip, UInt16 port)
+Bool IO::Device::SIM7000SocketFactory::Connect(Socket *socket, UInt32 ip, UInt16 port, Data::Duration timeout)
 {
 	return false;
 }
 
-Bool IO::Device::SIM7000SocketFactory::Connect(Socket *socket, const Net::SocketUtil::AddressInfo *addr, UInt16 port)
+Bool IO::Device::SIM7000SocketFactory::Connect(Socket *socket, const Net::SocketUtil::AddressInfo *addr, UInt16 port, Data::Duration timeout)
 {
 	return false;
 }

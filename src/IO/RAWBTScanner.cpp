@@ -3,6 +3,7 @@
 #include "IO/RAWBTMonitor.h"
 #include "IO/RAWBTScanner.h"
 #include "IO/ProgCtrl/BluetoothCtlProgCtrl.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 
 //#include <stdio.h>
@@ -113,7 +114,7 @@ void IO::RAWBTScanner::ScanOn()
 		this->clsData->btCtrl->ScanOn();
 	while (!this->clsData->threadRunning)
 	{
-		Sync::Thread::Sleep(1);
+		Sync::SimpleThread::Sleep(1);
 	}
 }
 
@@ -130,7 +131,7 @@ void IO::RAWBTScanner::ScanOff()
 		//printf("RAWBT ctrl off\r\n");
 		while (this->clsData->threadRunning)
 		{
-			Sync::Thread::Sleep(1);
+			Sync::SimpleThread::Sleep(1);
 		}
 		//printf("RAWBT thread stopped\r\n");
 		DEL_CLASS(this->clsData->btMon);

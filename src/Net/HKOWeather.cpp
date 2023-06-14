@@ -124,7 +124,7 @@ Bool Net::HKOWeather::GetCurrentTempRH(Net::SocketFactory *sockf, Net::SSLEngine
 	Net::RSS *rss;
 	Text::CString userAgent = Net::UserAgentDB::FindUserAgent(Manage::OSInfo::OT_WINDOWS_NT64, Net::BrowserInfo::BT_FIREFOX);
 	Text::String *ua = Text::String::New(userAgent);
-	NEW_CLASS(rss, Net::RSS(CSTR("https://rss.weather.gov.hk/rss/CurrentWeather.xml"), ua, sockf, ssl));
+	NEW_CLASS(rss, Net::RSS(CSTR("https://rss.weather.gov.hk/rss/CurrentWeather.xml"), ua, sockf, ssl, 30000));
 	ua->Release();
 	if (!rss->IsError())
 	{
@@ -380,7 +380,7 @@ Net::HKOWeather::HKOWeather(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text
 	this->ssl = ssl;
 	this->encFact = encFact;
 	this->hdlr = hdlr;
-	NEW_CLASS(this->rss, Net::RSSReader(CSTR("http://rss.weather.gov.hk/rss/WeatherWarningSummary.xml"), this->sockf, this->ssl, 10, this));
+	NEW_CLASS(this->rss, Net::RSSReader(CSTR("http://rss.weather.gov.hk/rss/WeatherWarningSummary.xml"), this->sockf, this->ssl, 10, this, 30000));
 }
 
 Net::HKOWeather::~HKOWeather()

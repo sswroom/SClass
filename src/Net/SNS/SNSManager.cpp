@@ -10,6 +10,7 @@
 #include "Net/SNS/SNSRSS.h"
 #include "Net/SNS/SNSTwitter.h"
 #include "Sync/MutexUsage.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 #include "Text/UTF8Reader.h"
 #include "Text/UTF8Writer.h"
@@ -488,7 +489,7 @@ Net::SNS::SNSManager::SNSManager(Net::SocketFactory *sockf, Net::SSLEngine *ssl,
 	Sync::Thread::Create(ThreadProc, this);
 	while (!this->threadRunning)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 }
 
@@ -501,7 +502,7 @@ Net::SNS::SNSManager::~SNSManager()
 	this->threadEvt.Set();
 	while (this->threadRunning)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 
 	SDEL_STRING(this->userAgent);

@@ -4,7 +4,7 @@
 #include "IO/Path.h"
 #include "Net/ACMEClient.h"
 #include "Net/OSSocketFactory.h"
-#include "Sync/Thread.h"
+#include "Sync/SimpleThread.h"
 
 Int32 MyMain(Core::IProgControl *progCtrl)
 {
@@ -38,7 +38,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 					while (challStatus && (challStatus->status == Net::ACMEConn::ACMEStatus::Pending || challStatus->status == Net::ACMEConn::ACMEStatus::Processing))
 					{
 						conn->ChallengeFree(challStatus);
-						Sync::Thread::Sleep(5000);
+						Sync::SimpleThread::Sleep(5000);
 
 						challStatus = conn->ChallengeGetStatus(chall->url);
 					}

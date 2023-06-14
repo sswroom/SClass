@@ -2,6 +2,7 @@
 #include "IO/SerialPort.h"
 #include "Math/Math.h"
 #include "SSWR/AVIRead/AVIRElectronicScaleForm.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 #include "Text/Encoding.h"
 #include "Text/MyStringFloat.h"
@@ -28,7 +29,7 @@ void __stdcall SSWR::AVIRead::AVIRElectronicScaleForm::OnStreamClicked(void *use
 			Sync::Thread::Create(RecvThread, me);
 			while (!me->threadRunning && !me->remoteClosed)
 			{
-				Sync::Thread::Sleep(10);
+				Sync::SimpleThread::Sleep(10);
 			}
 		}
 	}
@@ -190,7 +191,7 @@ void SSWR::AVIRead::AVIRElectronicScaleForm::StopStream()
 		this->threadToStop = true;
 		while (this->threadRunning)
 		{
-			Sync::Thread::Sleep(10);
+			Sync::SimpleThread::Sleep(10);
 		}
 		this->threadToStop = false;
 		DEL_CLASS(this->stm);

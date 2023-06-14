@@ -59,7 +59,7 @@ Net::HTTPMyClient::HTTPMyClient(Net::SocketFactory *sockf, Net::SSLEngine *ssl, 
 	this->buffSize = 0;
 	this->buffOfst = 0;
 	this->contEnc = 0;
-	this->timeOutMS = 120000;
+	this->timeout = 120000;
 	this->userAgent = Text::String::New(userAgent.v, userAgent.leng);
 	this->dataBuff = MemAlloc(UInt8, BUFFSIZE);
 }
@@ -704,7 +704,7 @@ Bool Net::HTTPMyClient::Connect(Text::CString url, Net::WebUtil::RequestMethod m
 			if (secure)
 			{
 				Net::SSLEngine::ErrorType err;
-				this->cli = this->ssl->ClientConnect(this->cliHost->ToCString(), port, &err);
+				this->cli = this->ssl->ClientConnect(this->cliHost->ToCString(), port, &err, this->timeout);
 #if defined(SHOWDEBUG)
 				if (this->cli == 0)
 				{
@@ -714,7 +714,7 @@ Bool Net::HTTPMyClient::Connect(Text::CString url, Net::WebUtil::RequestMethod m
 			}
 			else
 			{
-				NEW_CLASS(this->cli, Net::TCPClient(sockf, &this->svrAddr, port));
+				NEW_CLASS(this->cli, Net::TCPClient(sockf, &this->svrAddr, port, this->timeout));
 			}
 		}
 		else
@@ -1006,7 +1006,7 @@ void Net::HTTPMyClient::EndRequest(Double *timeReq, Double *timeResp)
 		this->sockf->SetLinger(cli->GetSocket(), 0);
 		if (!this->kaConn && !this->cli->IsSSL())
 			this->cli->ShutdownSend();
-		this->cli->SetTimeout(this->timeOutMS);
+		this->cli->SetTimeout(this->timeout);
 		t1 = this->clk.GetTimeDiff();
 		if (timeReq)
 		{
@@ -1199,11 +1199,11 @@ void Net::HTTPMyClient::EndRequest(Double *timeReq, Double *timeResp)
 	}
 }
 
-void Net::HTTPMyClient::SetTimeout(Int32 ms)
+void Net::HTTPMyClient::SetTimeout(Data::Duration timeout)
 {
-	this->timeOutMS = ms;
+	this->timeout = timeout;
 	if (this->cli)
-		this->cli->SetTimeout(ms);
+		this->cli->SetTimeout(timeout);
 }
 
 Bool Net::HTTPMyClient::IsSecureConn()

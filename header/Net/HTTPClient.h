@@ -47,7 +47,7 @@ namespace Net
 		virtual Bool Connect(Text::CString url, Net::WebUtil::RequestMethod method, Double *timeDNS, Double *timeConn, Bool defHeaders) = 0;
 		virtual void AddHeaderC(Text::CString name, Text::CString value) = 0;
 		virtual void EndRequest(Double *timeReq, Double *timeResp) = 0;
-		virtual void SetTimeout(Int32 ms) = 0;
+		virtual void SetTimeout(Data::Duration timeout) = 0;
 		virtual IO::StreamType GetStreamType() const;
 
 		virtual Bool IsSecureConn() = 0;

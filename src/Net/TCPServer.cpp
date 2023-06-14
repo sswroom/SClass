@@ -11,6 +11,7 @@
 #include "Net/TCPServer.h"
 #include "Sync/Mutex.h"
 #include "Sync/Event.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 #include "Text/Encoding.h"
 #include "Text/MyString.h"
@@ -285,7 +286,7 @@ void Net::TCPServer::AcceptSocket(Socket *svrSoc)
 		this->AddLogMsgC(sbuff, (UOSInt)(sptr - sbuff), IO::LogHandler::LogLevel::ErrorDetail);
 		if (errCode == 24) // too many opened files
 		{
-			Sync::Thread::Sleep(2000);
+			Sync::SimpleThread::Sleep(2000);
 		}
 	}
 	else
@@ -374,7 +375,7 @@ Net::TCPServer::~TCPServer()
 	this->Close();
 	while (threadRunning)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 	SDEL_STRING(this->logPrefix);
 }
@@ -390,7 +391,7 @@ Bool Net::TCPServer::Start()
 	{
 		if (threadRunning & 1 || errorv4)
 			break;
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 	if (!this->errorv6)
 	{
@@ -403,7 +404,7 @@ Bool Net::TCPServer::Start()
 			if (threadRunning & 2)
 				if (threadRunning & 4 || errorv6)
 					break;
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 	return threadRunning & 1;
 }

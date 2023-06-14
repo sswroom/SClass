@@ -2,6 +2,7 @@
 #include "Data/ByteTool.h"
 #include "Data/UUID.h"
 #include "IO/FileAnalyse/LNKFileAnalyse.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 #include "Text/MyStringW.h"
 #include "Text/StringBuilderUTF8.h"
@@ -143,7 +144,7 @@ IO::FileAnalyse::LNKFileAnalyse::LNKFileAnalyse(IO::StreamData* fd)
 	Sync::Thread::Create(ParseThread, this);
 	while (!this->threadStarted)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 }
 
@@ -154,7 +155,7 @@ IO::FileAnalyse::LNKFileAnalyse::~LNKFileAnalyse()
 		this->threadToStop = true;
 		while (this->threadRunning)
 		{
-			Sync::Thread::Sleep(10);
+			Sync::SimpleThread::Sleep(10);
 		}
 	}
 	SDEL_CLASS(this->fd);

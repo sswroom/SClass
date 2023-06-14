@@ -23,11 +23,12 @@ Net::SNS::SNSRSS::SNSRSS(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::E
 	this->channelId = Text::String::New(channelId);
 	this->chName = 0;
 	this->chDesc = 0;
+	this->timeout = 30000;
 
 	Net::RSS *rss;
 	SNSItem *snsItem;
 	Net::RSSItem *item;
-	NEW_CLASS(rss, Net::RSS(this->channelId->ToCString(), this->userAgent, this->sockf, this->ssl));
+	NEW_CLASS(rss, Net::RSS(this->channelId->ToCString(), this->userAgent, this->sockf, this->ssl, this->timeout));
 	if (rss->GetTitle())
 	{
 		this->chName = rss->GetTitle()->Clone();
@@ -165,7 +166,7 @@ Bool Net::SNS::SNSRSS::Reload()
 	}
 
 	Net::RSS *rss;
-	NEW_CLASS(rss, Net::RSS(this->channelId->ToCString(), this->userAgent, this->sockf, this->ssl));
+	NEW_CLASS(rss, Net::RSS(this->channelId->ToCString(), this->userAgent, this->sockf, this->ssl, this->timeout));
 	i = rss->GetCount();
 	Text::StringBuilderUTF8 sb;
 	Text::StringBuilderUTF8 sb2;

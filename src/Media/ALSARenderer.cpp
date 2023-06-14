@@ -8,6 +8,7 @@
 #include "Media/RefClock.h"
 #include "Media/SOXRFilter.h"
 #include "Sync/Event.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 #include "Text/MyString.h"
 #include <alsa/asoundlib.h>
@@ -813,7 +814,7 @@ void Media::ALSARenderer::Start()
 	Sync::Thread::Create(PlayThread, this);
 	while (!threadInit)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 }
 
@@ -829,7 +830,7 @@ void Media::ALSARenderer::Stop()
 	}
 	while (playing)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 }
 

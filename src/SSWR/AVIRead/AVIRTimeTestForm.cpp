@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "Manage/HiResClock.h"
 #include "SSWR/AVIRead/AVIRTimeTestForm.h"
-#include "Sync/Thread.h"
+#include "Sync/SimpleThread.h"
 #include "Text/MyStringFloat.h"
 
 void __stdcall SSWR::AVIRead::AVIRTimeTestForm::OnSleepMSClicked(void *userObj)
@@ -15,7 +15,7 @@ void __stdcall SSWR::AVIRead::AVIRTimeTestForm::OnSleepMSClicked(void *userObj)
 	if (sb.ToUInt32(&t))
 	{
 		clk.Start();
-		Sync::Thread::Sleep(t);
+		Sync::SimpleThread::Sleep(t);
 		tDiff = clk.GetTimeDiff();
 		sb.ClearStr();
 		Text::SBAppendF64(&sb, tDiff);
@@ -38,7 +38,7 @@ void __stdcall SSWR::AVIRead::AVIRTimeTestForm::OnSleepUSClicked(void *userObj)
 	if (sb.ToUInt32(&t))
 	{
 		clk.Start();
-		Sync::Thread::Sleepus(t);
+		Sync::SimpleThread::Sleepus(t);
 		tDiff = clk.GetTimeDiff();
 		sb.ClearStr();
 		Text::SBAppendF64(&sb, tDiff);

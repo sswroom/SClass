@@ -4,7 +4,7 @@
 #include "IO/ConsoleWriter.h"
 #include "Net/MACInfo.h"
 #include "Net/WirelessLAN.h"
-#include "Sync/Thread.h"
+#include "Sync/SimpleThread.h"
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
 
@@ -52,7 +52,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			if (interface->Scan())
 			{
 				console.WriteLineC(UTF8STRC("Scan requested, waiting for 5 seconds"));
-				Sync::Thread::Sleep(5000);
+				Sync::SimpleThread::Sleep(5000);
 				interface->GetBSSList(&bssList);
 				console.WriteLineC(UTF8STRC("Scan result"));
 				maxSSIDLen = 0;

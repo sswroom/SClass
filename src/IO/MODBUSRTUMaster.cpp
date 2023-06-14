@@ -4,6 +4,7 @@
 #include "IO/MODBUSRTUMaster.h"
 #include "Math/Math.h"
 #include "Sync/MutexUsage.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 #include "Text/StringBuilderUTF8.h"
 #include <stdio.h>
@@ -118,7 +119,7 @@ UInt32 __stdcall IO::MODBUSRTUMaster::ThreadProc(void *userObj)
 			}
 			else
 			{
-				Sync::Thread::Sleep(100);
+				Sync::SimpleThread::Sleep(100);
 			}
 			
 		}
@@ -162,7 +163,7 @@ IO::MODBUSRTUMaster::MODBUSRTUMaster(IO::Stream *stm)
 		Sync::Thread::Create(ThreadProc, this);
 		while (!this->threadRunning)
 		{
-			Sync::Thread::Sleep(10);
+			Sync::SimpleThread::Sleep(10);
 		}
 	}
 }
@@ -176,7 +177,7 @@ IO::MODBUSRTUMaster::~MODBUSRTUMaster()
 		this->stm->Close();
 		while (this->threadRunning)
 		{
-			Sync::Thread::Sleep(10);
+			Sync::SimpleThread::Sleep(10);
 		}
 	}
 	AddrResultCb *cb;
@@ -203,7 +204,7 @@ Bool IO::MODBUSRTUMaster::ReadCoils(UInt8 devAddr, UInt16 coilAddr, UInt16 coilC
 		Double t = this->clk.GetTimeDiff();
 		if (t < CMDDELAY * 0.001)
 		{
-			Sync::Thread::Sleep((UOSInt)(CMDDELAY - Double2Int32(t * 1000)));
+			Sync::SimpleThread::Sleep((UOSInt)(CMDDELAY - Double2Int32(t * 1000)));
 		}
 		this->stm->Write(buff, 8);
 		this->clk.Start();
@@ -232,7 +233,7 @@ Bool IO::MODBUSRTUMaster::ReadInputs(UInt8 devAddr, UInt16 inputAddr, UInt16 inp
 		Double t = this->clk.GetTimeDiff();
 		if (t < CMDDELAY * 0.001)
 		{
-			Sync::Thread::Sleep((UOSInt)(CMDDELAY - Double2Int32(t * 1000)));
+			Sync::SimpleThread::Sleep((UOSInt)(CMDDELAY - Double2Int32(t * 1000)));
 		}
 		this->stm->Write(buff, 8);
 		this->clk.Start();
@@ -261,7 +262,7 @@ Bool IO::MODBUSRTUMaster::ReadHoldingRegisters(UInt8 devAddr, UInt16 regAddr, UI
 		Double t = this->clk.GetTimeDiff();
 		if (t < CMDDELAY * 0.001)
 		{
-			Sync::Thread::Sleep((UOSInt)(CMDDELAY - Double2Int32(t * 1000)));
+			Sync::SimpleThread::Sleep((UOSInt)(CMDDELAY - Double2Int32(t * 1000)));
 		}
 		this->stm->Write(buff, 8);
 		this->clk.Start();
@@ -290,7 +291,7 @@ Bool IO::MODBUSRTUMaster::ReadInputRegisters(UInt8 devAddr, UInt16 regAddr, UInt
 		Double t = this->clk.GetTimeDiff();
 		if (t < CMDDELAY * 0.001)
 		{
-			Sync::Thread::Sleep((UOSInt)(CMDDELAY - Double2Int32(t * 1000)));
+			Sync::SimpleThread::Sleep((UOSInt)(CMDDELAY - Double2Int32(t * 1000)));
 		}
 		this->stm->Write(buff, 8);
 		this->clk.Start();
@@ -326,7 +327,7 @@ Bool IO::MODBUSRTUMaster::WriteCoil(UInt8 devAddr, UInt16 coilAddr, Bool isHigh)
 		Double t = this->clk.GetTimeDiff();
 		if (t < CMDDELAY * 0.001)
 		{
-			Sync::Thread::Sleep((UOSInt)(CMDDELAY - Double2Int32(t * 1000)));
+			Sync::SimpleThread::Sleep((UOSInt)(CMDDELAY - Double2Int32(t * 1000)));
 		}
 		this->stm->Write(buff, 8);
 		this->clk.Start();
@@ -355,7 +356,7 @@ Bool IO::MODBUSRTUMaster::WriteHoldingRegister(UInt8 devAddr, UInt16 regAddr, UI
 		Double t = this->clk.GetTimeDiff();
 		if (t < CMDDELAY * 0.001)
 		{
-			Sync::Thread::Sleep((UOSInt)(CMDDELAY - Double2Int32(t * 1000)));
+			Sync::SimpleThread::Sleep((UOSInt)(CMDDELAY - Double2Int32(t * 1000)));
 		}
 //		Text::StringBuilderUTF8 sb;
 //		sb.AppendHexBuff(buff, 8, ' ', Text::LineBreakType::None);
@@ -390,7 +391,7 @@ Bool IO::MODBUSRTUMaster::WriteHoldingRegisters(UInt8 devAddr, UInt16 regAddr, U
 		Double t = this->clk.GetTimeDiff();
 		if (t < CMDDELAY * 0.001)
 		{
-			Sync::Thread::Sleep((UOSInt)(CMDDELAY - Double2Int32(t * 1000)));
+			Sync::SimpleThread::Sleep((UOSInt)(CMDDELAY - Double2Int32(t * 1000)));
 		}
 //		Text::StringBuilderUTF8 sb;
 //		sb.AppendHexBuff(buff, cnt * 2 + 9, ' ', Text::LineBreakType::None);

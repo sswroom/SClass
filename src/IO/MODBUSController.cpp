@@ -229,7 +229,7 @@ IO::MODBUSController::~MODBUSController()
 	}
 }
 
-void IO::MODBUSController::SetTimeout(UOSInt timeout)
+void IO::MODBUSController::SetTimeout(Data::Duration timeout)
 {
 	this->timeout = timeout;
 }

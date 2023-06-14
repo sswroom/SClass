@@ -2,6 +2,7 @@
 #include "IO/SerialPort.h"
 #include "IO/Device/AXCAN.h"
 #include "Sync/MutexUsage.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 #include "Text/UTF8Reader.h"
 
@@ -107,7 +108,7 @@ Bool IO::Device::AXCAN::SendCommand(Text::CString cmd, UOSInt timeout)
 	this->cmdResultCode = INVALID_INDEX;
 	if (this->stm->Write(buff, cmd.leng + 1) != cmd.leng + 1)
 		return false;
-	this->cmdEvent.Wait(timeout);
+	this->cmdEvent.Wait((Int64)timeout);
 	return this->cmdResultCode == 0;
 }
 
@@ -183,7 +184,7 @@ void IO::Device::AXCAN::CloseSerialPort(Bool force)
 		DEL_CLASS(this->stm);
 		while (this->threadRunning)
 		{
-			Sync::Thread::Sleep(1);
+			Sync::SimpleThread::Sleep(1);
 		}
 		this->stm = 0;
 	}

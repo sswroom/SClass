@@ -2,6 +2,7 @@
 #include "Data/ByteTool.h"
 #include "IO/FileStream.h"
 #include "IO/FileAnalyse/MPEGFileAnalyse.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 
 UInt32 __stdcall IO::FileAnalyse::MPEGFileAnalyse::ParseThread(void *userObj)
@@ -25,7 +26,7 @@ UInt32 __stdcall IO::FileAnalyse::MPEGFileAnalyse::ParseThread(void *userObj)
 	{
 		if (me->pauseParsing)
 		{
-			Sync::Thread::Sleep(100);
+			Sync::SimpleThread::Sleep(100);
 		}
 		else
 		{
@@ -140,7 +141,7 @@ IO::FileAnalyse::MPEGFileAnalyse::MPEGFileAnalyse(IO::StreamData *fd)
 	Sync::Thread::Create(ParseThread, this);
 	while (!this->threadStarted)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 }
 
@@ -151,7 +152,7 @@ IO::FileAnalyse::MPEGFileAnalyse::~MPEGFileAnalyse()
 		this->threadToStop = true;
 		while (this->threadRunning)
 		{
-			Sync::Thread::Sleep(10);
+			Sync::SimpleThread::Sleep(10);
 		}
 	}
 	SDEL_CLASS(this->fd);

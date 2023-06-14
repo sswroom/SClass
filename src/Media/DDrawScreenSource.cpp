@@ -238,7 +238,7 @@ Bool Media::DDrawScreenSource::Start(FrameCallback cb, void *userData)
 	Sync::Thread::Create(CaptureThread, this);
 	while (!this->captureRunning)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 	return true;
 }
@@ -251,7 +251,7 @@ void Media::DDrawScreenSource::Stop()
 		this->captureEvt->Set();
 		while (this->captureRunning)
 		{
-			Sync::Thread::Sleep(10);
+			Sync::SimpleThread::Sleep(10);
 		}
 		this->captureToStop = true;
 	}

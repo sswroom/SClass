@@ -5,6 +5,7 @@
 #include "Media/M2VStreamSource.h"
 #include "Media/MPEGVideoParser.h"
 #include "Sync/MutexUsage.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 #include "Text/StringBuilderUTF8.h"
 #include "Text/UTF8Writer.h"
@@ -173,7 +174,7 @@ void Media::M2VStreamSource::SubmitFrame(UOSInt frameSize, UOSInt frameStart, UO
 #endif
 					break;
 				}
-				Sync::Thread::Sleep(10);
+				Sync::SimpleThread::Sleep(10);
 			}
 			else
 			{
@@ -513,7 +514,7 @@ Bool Media::M2VStreamSource::Start()
 	mutUsage.EndUse();
 	while (!this->playInit)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 	return started;
 }
@@ -526,7 +527,7 @@ void Media::M2VStreamSource::Stop()
 		this->playEvt.Set();
 		while (this->playing)
 		{
-			Sync::Thread::Sleep(10);
+			Sync::SimpleThread::Sleep(10);
 		}
 	}
 	Sync::MutexUsage mutUsage(&this->pbcMut);
@@ -601,7 +602,7 @@ void Media::M2VStreamSource::EnumFrameInfos(FrameInfoCallback cb, void *userData
 	this->pbc->StartVideo();
 	while (this->pbc->IsRunning())
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 	this->finfoMode = false;
 }
@@ -685,7 +686,7 @@ void Media::M2VStreamSource::WriteFrameStream(UInt8 *buff, UOSInt buffSize)
 	}
 	while (this->frameBuffSize + buffSize > this->maxFrameSize)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 		if (!this->pbc->IsRunning())
 		{
 			return;
@@ -780,7 +781,7 @@ void Media::M2VStreamSource::EndFrameStream()
 	this->playEOF = true;
 	while (this->playBuffStart != this->playBuffEnd && this->pbc->IsRunning())
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 }
 

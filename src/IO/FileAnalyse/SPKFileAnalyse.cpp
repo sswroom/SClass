@@ -5,6 +5,7 @@
 #include "IO/FileAnalyse/SPKFileAnalyse.h"
 #include "Manage/Process.h"
 #include "Net/SocketFactory.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 
 void IO::FileAnalyse::SPKFileAnalyse::ParseV1Directory(UInt64 dirOfst, UInt64 dirSize)
@@ -44,7 +45,7 @@ void IO::FileAnalyse::SPKFileAnalyse::ParseV2Directory(UInt64 dirOfst, UInt64 di
 	}
 	while (this->pauseParsing && !this->threadToStop)
 	{
-		Sync::Thread::Sleep(100);
+		Sync::SimpleThread::Sleep(100);
 	}
 	if (this->threadToStop)
 	{
@@ -145,7 +146,7 @@ IO::FileAnalyse::SPKFileAnalyse::SPKFileAnalyse(IO::StreamData *fd)
 	Sync::Thread::Create(ParseThread, this);
 	while (!this->threadStarted)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 }
 
@@ -156,7 +157,7 @@ IO::FileAnalyse::SPKFileAnalyse::~SPKFileAnalyse()
 		this->threadToStop = true;
 		while (this->threadRunning)
 		{
-			Sync::Thread::Sleep(10);
+			Sync::SimpleThread::Sleep(10);
 		}
 	}
 	SDEL_CLASS(this->fd);

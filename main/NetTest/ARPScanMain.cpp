@@ -7,6 +7,7 @@
 #include "Net/ConnectionInfo.h"
 #include "Net/MACInfo.h"
 #include "Net/OSSocketFactory.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
@@ -146,7 +147,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 								}
 								buff[3]++;
 							}
-							Sync::Thread::Sleep(3000);
+							Sync::SimpleThread::Sleep(3000);
 							
 						}
 						DEL_CLASS(arpHdlr);

@@ -1,10 +1,10 @@
 section .text
 
-global Thread_NanoSleep
+global SimpleThread_NanoSleep
 
-;void Thread_NanoSleep(Int64 clk)
+;void SimpleThread_NanoSleep(Int64 clk)
 	align 16
-Thread_NanoSleep:
+SimpleThread_NanoSleep:
 	rdtsc
 	shl rdx,32
 	or rax,rdx

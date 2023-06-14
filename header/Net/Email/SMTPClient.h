@@ -18,12 +18,13 @@ namespace Net
 			Net::Email::SMTPConn::ConnType connType;
 			Text::String *host;
 			UInt16 port;
+			Data::Duration timeout;
 			IO::Writer *logWriter;
 			Text::String *authUser;
 			Text::String *authPassword;
 
 		public:
-			SMTPClient(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CString host, UInt16 port, Net::Email::SMTPConn::ConnType connType, IO::Writer *logWriter);
+			SMTPClient(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CString host, UInt16 port, Net::Email::SMTPConn::ConnType connType, IO::Writer *logWriter, Data::Duration timeout);
 			~SMTPClient();
 
 			void SetPlainAuth(Text::CString userName, Text::CString password);

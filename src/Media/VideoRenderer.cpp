@@ -15,6 +15,7 @@
 #include "Media/Resizer/LanczosResizerLR_C32.h"
 #include "Sync/Interlocked.h"
 #include "Sync/MutexUsage.h"
+#include "Sync/SimpleThread.h"
 
 #define PREPROCTIME 0
 #define PROCDELAYBUFF 32
@@ -1583,11 +1584,11 @@ void Media::VideoRenderer::StopThreads()
 		{
 			break;
 		}
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 	while (this->dispRunning)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 }
 
@@ -1596,7 +1597,7 @@ void Media::VideoRenderer::VideoBeginLoad()
 	this->videoPause = true;
 	while (this->videoProcCnt > 0)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 }
 
@@ -1609,7 +1610,7 @@ void Media::VideoRenderer::VideoBeginProc()
 {
 	while (this->videoPause)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 	Sync::Interlocked::Increment(&this->videoProcCnt);
 }
@@ -1851,7 +1852,7 @@ Media::VideoRenderer::VideoRenderer(Media::ColorManagerSess *colorSess, Media::M
 	Sync::Thread::Create(DisplayThread, this);
 	while (!this->dispRunning)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 
 	Bool found = false;
@@ -1871,7 +1872,7 @@ Media::VideoRenderer::VideoRenderer(Media::ColorManagerSess *colorSess, Media::M
 		{
 			break;
 		}
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 }
 

@@ -2,53 +2,19 @@
 #include "MyMemory.h"
 #include "IO/FileStream.h"
 #include "IO/StreamReader.h"
-#if defined(_WIN32_WCE)
-#include "Manage/HiResClock.h"
-#endif
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 #include "Text/MyString.h"
 #include <windows.h>
 
-void Sync::Thread::Sleep(UOSInt ms)
+void Sync::Thread::SleepDur(Data::Duration dur)
 {
-	::Sleep((UInt32)ms);
-}
-
-extern "C"
-{
-	void Thread_NanoSleep(Int64 clk);
-};
-static UInt64 Thread_Freq = 0;
-
-void Sync::Thread::Sleepus(UOSInt us)
-{
-#if defined(_WIN32_WCE)
-	Manage::HiResClock clk;
-	while (clk.GetTimeDiffus() < us)
-	{
-	}
-#else
-	if (Thread_Freq == 0)
-	{
-		LARGE_INTEGER liFreq;
-		QueryPerformanceFrequency(&liFreq);
-		Thread_Freq = (UInt64)liFreq.QuadPart;
-	}
-	Int64 clkCount = (Int64)(Thread_Freq * ((us << 1) + 1) / 2000LL);
-	if (us >= 1000)
-	{
-		LARGE_INTEGER liStart;
-		LARGE_INTEGER liEnd;
-		QueryPerformanceCounter(&liStart);
-		::Sleep((UInt32)(us / 1000));
-		QueryPerformanceCounter(&liEnd);
-		clkCount -= (liEnd.QuadPart - liStart.QuadPart) * 1000;
-	}
-	if (clkCount > 0)
-	{
-		Thread_NanoSleep(clkCount);
-	}
-#endif
+	Int64 ms = dur.GetTotalMS();
+	UInt32 us = (dur.GetNS() % 1000000) / 1000;
+	if (ms > 0)
+		Sync::SimpleThread::Sleep((UOSInt)ms);
+	if (us > 0)
+		Sync::SimpleThread::Sleepus(us);
 }
 
 UInt32 Sync::Thread::Create(Sync::ThreadProc tProc, void *userObj)

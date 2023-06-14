@@ -74,9 +74,9 @@ void Net::WebServer::PrintLogWebResponse::ShutdownSend()
 	this->resp->ShutdownSend();
 }
 
-Bool Net::WebServer::PrintLogWebResponse::ResponseSSE(Int32 timeoutMS, SSEDisconnectHandler hdlr, void *userObj)
+Bool Net::WebServer::PrintLogWebResponse::ResponseSSE(Data::Duration timeout, SSEDisconnectHandler hdlr, void *userObj)
 {
-	return this->resp->ResponseSSE(timeoutMS, hdlr, userObj);
+	return this->resp->ResponseSSE(timeout, hdlr, userObj);
 }
 
 Bool Net::WebServer::PrintLogWebResponse::SSESend(const UTF8Char *eventName, const UTF8Char *data)

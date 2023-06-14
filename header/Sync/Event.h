@@ -1,5 +1,6 @@
 #ifndef _SM_SYNC_EVENT
 #define _SM_SYNC_EVENT
+#include "Data/Duration.h"
 
 namespace Sync
 {
@@ -15,7 +16,7 @@ namespace Sync
 		Event(Bool isAuto);
 		~Event();
 		void Wait();
-		Bool Wait(UOSInt timeout); //true if timed out
+		Bool Wait(Data::Duration timeout); //true if timed out
 		void Set();
 		void Clear();
 		Bool IsSet();

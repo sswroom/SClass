@@ -1,6 +1,7 @@
 #ifndef _SM_NET_SOCKETFACTORY
 #define _SM_NET_SOCKETFACTORY
 #include "Data/ArrayList.h"
+#include "Data/Duration.h"
 #include "Net/SocketUtil.h"
 #include "Sync/Event.h"
 #include "Sync/Mutex.h"
@@ -175,7 +176,7 @@ namespace Net
 		virtual void SetLinger(Socket *socket, UInt32 ms) = 0;
 		virtual void SetRecvBuffSize(Socket *socket, Int32 buffSize) = 0;
 		virtual void SetNoDelay(Socket *socket, Bool val) = 0;
-		virtual void SetRecvTimeout(Socket *socket, Int32 ms) = 0;
+		virtual void SetRecvTimeout(Socket *socket, Data::Duration timeout) = 0;
 		virtual void SetReuseAddr(Socket *socket, Bool val) = 0;
 		virtual void SetIPv4TTL(Socket *socket, Int32 ttl) = 0;
 		virtual void SetBroadcast(Socket *socket, Bool val) = 0;
@@ -193,8 +194,8 @@ namespace Net
 
 		virtual Bool IcmpSendEcho2(const Net::SocketUtil::AddressInfo *addr, UInt32 *respTime_us, UInt32 *ttl) = 0;
 
-		virtual Bool Connect(Socket *socket, UInt32 ip, UInt16 port) = 0;
-		virtual Bool Connect(Socket *socket, const Net::SocketUtil::AddressInfo *addr, UInt16 port) = 0;
+		virtual Bool Connect(Socket *socket, UInt32 ip, UInt16 port, Data::Duration timeout) = 0;
+		virtual Bool Connect(Socket *socket, const Net::SocketUtil::AddressInfo *addr, UInt16 port, Data::Duration timeout) = 0;
 		virtual void ShutdownSend(Socket *socket) = 0;
 
 		virtual Bool SocketGetReadBuff(Socket *socket, UInt32 *size) = 0;

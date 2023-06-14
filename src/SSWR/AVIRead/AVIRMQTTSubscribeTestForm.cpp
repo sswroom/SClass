@@ -76,7 +76,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeTestForm::OnStartClicked(void *us
 		if (useWS)
 		{
 			Net::WebSocketClient *ws;
-			NEW_CLASS(ws, Net::WebSocketClient(me->core->GetSocketFactory(), useSSL?ssl:0, sb.ToCString(), port, CSTR("/mqtt"), CSTR_NULL, Net::WebSocketClient::Protocol::MQTT));
+			NEW_CLASS(ws, Net::WebSocketClient(me->core->GetSocketFactory(), useSSL?ssl:0, sb.ToCString(), port, CSTR("/mqtt"), CSTR_NULL, Net::WebSocketClient::Protocol::MQTT, 10000));
 			if (ws->IsDown())
 			{
 				DEL_CLASS(ws);
@@ -87,7 +87,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeTestForm::OnStartClicked(void *us
 		}
 		else
 		{
-			NEW_CLASS(me->client, Net::MQTTConn(me->core->GetSocketFactory(), useSSL?ssl:0, sb.ToCString(), port, 0, 0));
+			NEW_CLASS(me->client, Net::MQTTConn(me->core->GetSocketFactory(), useSSL?ssl:0, sb.ToCString(), port, 0, 0, 30000));
 		}
 		if (me->client->IsError())
 		{

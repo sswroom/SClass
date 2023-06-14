@@ -3,6 +3,7 @@
 #include "Math/Math.h"
 #include "Media/GDIEngine.h"
 #include "Media/Printer.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 #include "Text/MyString.h"
 #include "Text/MyStringW.h"
@@ -198,7 +199,7 @@ void Media::GDIPrintDocument::WaitForEnd()
 		return;
 	while (this->running)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 }
 

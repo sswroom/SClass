@@ -3,6 +3,7 @@
 #include "Map/NetworkLinkLayer.h"
 #include "Sync/MutexUsage.h"
 #include "Sync/RWMutexUsage.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 #include "Text/StringBuilderUTF8.h"
 #include "Text/URLString.h"
@@ -129,7 +130,7 @@ void Map::NetworkLinkLayer::LoadLink(LinkInfo *link)
 	{
 		while (data->IsLoading())
 		{
-			Sync::Thread::Sleep(10);
+			Sync::SimpleThread::Sleep(10);
 		}
 #if defined(VERBOSE)
 		printf("NetworkLnkLayer: Data size: %lld\r\n", data->GetDataSize());
@@ -199,7 +200,7 @@ Map::NetworkLinkLayer::NetworkLinkLayer(Text::CString fileName, Parser::ParserLi
 	Sync::Thread::Create(ControlThread, this);
 	while (!this->ctrlRunning)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 }
 
@@ -209,7 +210,7 @@ Map::NetworkLinkLayer::~NetworkLinkLayer()
 	this->ctrlEvt.Set();
 	while (this->ctrlRunning)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 	UOSInt i;
 	LinkInfo *link;

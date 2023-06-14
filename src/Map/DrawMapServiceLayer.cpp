@@ -6,6 +6,7 @@
 #include "Math/CoordinateSystemManager.h"
 #include "Math/Geometry/VectorImage.h"
 #include "Sync/MutexUsage.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 #include "Text/MyString.h"
 
@@ -113,7 +114,7 @@ Map::DrawMapServiceLayer::DrawMapServiceLayer(Map::DrawMapService *mapService) :
 	Sync::Thread::Create(TaskThread, this);
 	while (!this->threadRunning)
 	{
-		Sync::Thread::Sleep(1);
+		Sync::SimpleThread::Sleep(1);
 	}
 }
 
@@ -128,7 +129,7 @@ Map::DrawMapServiceLayer::~DrawMapServiceLayer()
 	this->threadEvt->Set();
 	while (this->threadRunning)
 	{
-		Sync::Thread::Sleep(1);
+		Sync::SimpleThread::Sleep(1);
 	}
 	this->ClearDisp();
 	SDEL_CLASS(this->lastImage);

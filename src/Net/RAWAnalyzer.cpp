@@ -3,6 +3,7 @@
 #include "Net/EthernetWebHandler.h"
 #include "Net/RAWAnalyzer.h"
 #include "Sync/Interlocked.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 
 UInt32 __stdcall Net::RAWAnalyzer::RecvThread(void *userObj)
@@ -66,7 +67,7 @@ Net::RAWAnalyzer::~RAWAnalyzer()
 		this->sockf->DestroySocket(this->rawSock);
 		while (this->threadCnt > 0)
 		{
-			Sync::Thread::Sleep(1);
+			Sync::SimpleThread::Sleep(1);
 		}
 		this->rawSock = 0;
 	}

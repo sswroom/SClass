@@ -288,7 +288,7 @@ UI::GUIForm::DialogResult UI::GUIForm::ShowDialog(UI::GUIForm *owner)
 	this->Show();
 	while (this->isDialog)
 	{
-		Sync::Thread::Sleep(100);
+		Sync::SimpleThread::Sleep(100);
 		//gtk_main_iteration();
 	}
 	if (owner)

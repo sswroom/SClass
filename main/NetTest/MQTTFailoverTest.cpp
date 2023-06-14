@@ -2,7 +2,7 @@
 #include "Core/Core.h"
 #include "Net/MQTTFailoverClient.h"
 #include "Net/OSSocketFactory.h"
-#include "Sync/Thread.h"
+#include "Sync/SimpleThread.h"
 #include "Text/MyString.h"
 
 Int32 MyMain(Core::IProgControl *progCtrl)
@@ -22,7 +22,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		dt.SetCurrTimeUTC();
 		sptr = Text::StrInt64(sbuff, dt.ToTicks());
 		cli->Publish(CSTR("test"), CSTRP(sbuff, sptr));
-		Sync::Thread::Sleep(1000);
+		Sync::SimpleThread::Sleep(1000);
 	}
 	DEL_CLASS(cli);
 	DEL_CLASS(sockf);

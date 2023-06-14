@@ -3,6 +3,7 @@
 #include "Data/ByteTool.h"
 #include "Data/DateTime.h"
 #include "IO/Device/QQZMSerialCamera.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
 #include "Text/MyString.h"
 
@@ -27,7 +28,7 @@ UInt32 __stdcall IO::Device::QQZMSerialCamera::RecvThread(void *userObj)
 		{
 			if (!me->threadToStop)
 			{
-				Sync::Thread::Sleep(10);
+				Sync::SimpleThread::Sleep(10);
 			}
 		}
 		else
@@ -185,7 +186,7 @@ IO::Device::QQZMSerialCamera::QQZMSerialCamera(IO::Stream *stm, UInt8 cameraId, 
 	Sync::Thread::Create(RecvThread, this);
 	while (!this->threadRunning)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 }
 
@@ -195,7 +196,7 @@ IO::Device::QQZMSerialCamera::~QQZMSerialCamera()
 	this->stm->Close();
 	while (this->threadRunning)
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 	if (this->imgBuff)
 	{
@@ -233,7 +234,7 @@ Bool IO::Device::QQZMSerialCamera::CapturePhoto(IO::Stream *outStm)
 		{
 			break;
 		}
-		Sync::Thread::Sleep(100);
+		Sync::SimpleThread::Sleep(100);
 	}
 	if (this->imgEnd && this->imgBuff)
 	{

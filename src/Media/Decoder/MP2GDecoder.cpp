@@ -4,7 +4,7 @@
 #include "Data/ByteTool.h"
 #include "Media/MPEGVideoParser.h"
 #include "Media/Decoder/MP2GDecoder.h"
-#include "Sync/Thread.h"
+#include "Sync/SimpleThread.h"
 
 void Media::Decoder::MP2GDecoder::ProcVideoFrame(UInt32 frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
 {
@@ -381,7 +381,7 @@ void Media::Decoder::MP2GDecoder::EnumFrameInfos(FrameInfoCallback cb, void *use
 	this->Start();
 	while (this->sourceVideo->IsRunning())
 	{
-		Sync::Thread::Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 	this->Stop();
 	this->finfoMode = false;

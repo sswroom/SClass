@@ -7,7 +7,7 @@
 #include "IO/Device/SIM7000.h"
 #include "IO/Device/SIM7000SocketFactory.h"
 #include "Net/UDPServer.h"
-#include "Sync/Thread.h"
+#include "Sync/SimpleThread.h"
 #include "Test/TestModem.h"
 #include "Test/TestSIM7000.h"
 #include "Text/MyStringFloat.h"
@@ -81,7 +81,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		plmn = modem->GSMGetSIMPLMN();
 		while (plmn == 0 && i-- > 0)
 		{
-			Sync::Thread::Sleep(1000);
+			Sync::SimpleThread::Sleep(1000);
 			plmn = modem->GSMGetSIMPLMN();
 		}
 		console->WriteLineC(UTF8STRC("PLMN Get"));
@@ -195,12 +195,12 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 							sb.AppendC(UTF8STRC("s, TTL = "));
 							sb.AppendU32(ttl);
 							console->WriteLineC(sb.ToString(), sb.GetLength());
-							Sync::Thread::Sleep(1000);
+							Sync::SimpleThread::Sleep(1000);
 						}
 						else
 						{
 							console->WriteLineC(UTF8STRC("Cannot ping"));
-							Sync::Thread::Sleep(1000);
+							Sync::SimpleThread::Sleep(1000);
 						}					
 					}
 				}
@@ -243,7 +243,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 							console->WriteLineC(UTF8STRC("Error in getting value"));
 						}
 						udp->SendTo(&addr, 10107, (const UInt8*)"Testing", 7);
-						Sync::Thread::Sleep(3000);
+						Sync::SimpleThread::Sleep(3000);
 					}				
 					DEL_CLASS(udp);
 				}
