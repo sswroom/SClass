@@ -16,6 +16,9 @@ SerialPort.o: $(CLASSDIR)src/IO/SerialPort_ATmega328.cpp LIB_SerialPortBase
 HiResClock.o: $(CLASSDIR)src/Manage/HiResClock_ATmega328.cpp
 	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
 
+SimpleThread.o: $(CLASSDIR)src/Sync/SimpleThread_AVR.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
 Thread.o: $(CLASSDIR)src/Sync/Thread_AVR.cpp
 	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
 

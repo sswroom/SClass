@@ -213,6 +213,9 @@ EventPool.o: $(CLASSDIR)src/Sync/EventPoolW.cpp
 RWMutex.o: $(CLASSDIR)src/Sync/RWMutexW.cpp
 	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
 
+SimpleThread.o: $(CLASSDIR)src/Sync/SimpleThreadW.cpp LIBS_Thread
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
 Thread.o: $(CLASSDIR)src/Sync/ThreadW.cpp LIBS_Thread
 	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
 
