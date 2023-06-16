@@ -6,7 +6,7 @@
 #include "Net/TFTPServer.h"
 #include "Sync/MutexUsage.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/StringBuilderUTF8.h"
 
 void __stdcall Net::TFTPServer::OnCommandPacket(const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData)
@@ -383,7 +383,7 @@ Net::TFTPServer::TFTPServer(Net::SocketFactory *sockf, UInt16 port, IO::LogTool 
 	}
 	if (this->dataSvr && this->svr)
 	{
-		Sync::Thread::Create(CheckThread, this);
+		Sync::ThreadUtil::Create(CheckThread, this);
 	}
 }
 

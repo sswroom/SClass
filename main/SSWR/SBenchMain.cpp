@@ -46,7 +46,7 @@
 #include "Sync/Mutex.h"
 #include "Sync/MutexUsage.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 #include "Text/MyStringW.h"
@@ -146,7 +146,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	UOSInt i;
 	UOSInt j;
 	Double t;
-	UOSInt threadCnt = Sync::Thread::GetThreadCnt();
+	UOSInt threadCnt = Sync::ThreadUtil::GetThreadCnt();
 
 	MemSetLogFile(UTF8STRC("Memory.log"));
 	NEW_CLASS(exHdlr, Manage::ExceptionRecorder(CSTR("SBench.log"), Manage::ExceptionRecorder::EA_CLOSE));
@@ -458,7 +458,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	i = 1000;
 	while (i-- > 0)
 	{
-		Sync::Thread::GetThreadId();
+		Sync::ThreadUtil::GetThreadId();
 	}
 	t = clk->GetTimeDiff();
 	sb.ClearStr();
@@ -521,7 +521,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 #if defined(TEST_THREAD)
 	threadT = 0;
 	clk->Start();
-	Sync::Thread::Create(TestThread, 0);
+	Sync::ThreadUtil::Create(TestThread, 0);
 	mainEvt->Wait(1000);
 	t = clk->GetTimeDiff();
 	sb.ClearStr();
@@ -929,7 +929,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			t = clk->GetTimeDiff();
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("AQuickSort "));
-			sb.AppendUOSInt(Sync::Thread::GetThreadCnt());
+			sb.AppendUOSInt(Sync::ThreadUtil::GetThreadCnt());
 			sb.AppendC(UTF8STRC(" Thread N = "));
 			sb.AppendUOSInt(noOfRec);
 			sb.AppendC(UTF8STRC(", Sort time = "));
@@ -1107,7 +1107,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			t = clk->GetTimeDiff();
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("BitonicSort ");
-			sb.AppendOSInt(Sync::Thread::GetThreadCnt());
+			sb.AppendOSInt(Sync::ThreadUtil::GetThreadCnt());
 			sb.AppendC(UTF8STRC(" Thread N = ");
 			sb.AppendOSInt(noOfRec);
 			sb.AppendC(UTF8STRC(", Sort time = ");

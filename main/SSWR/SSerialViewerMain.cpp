@@ -5,7 +5,7 @@
 #include "IO/ConsoleWriter.h"
 #include "IO/SerialPort.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/StringBuilderUTF8.h"
 
 IO::ConsoleWriter *console;
@@ -86,7 +86,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			else
 			{
 				console->WriteLineC(UTF8STRC("Running"));
-				Sync::Thread::Create(SerialViewer, 0);
+				Sync::ThreadUtil::Create(SerialViewer, 0);
 				progCtrl->WaitForExit(progCtrl);
 				console->WriteLineC(UTF8STRC("Exiting"));
 				port->Close();

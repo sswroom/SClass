@@ -2,7 +2,7 @@
 #include "IO/Path.h"
 #include "SSWR/AVIRead/AVIReGaugeSvrForm.h"
 #include "Sync/MutexUsage.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 
@@ -33,7 +33,7 @@ void __stdcall SSWR::AVIRead::AVIReGaugeSvrForm::OnStartClick(void *userObj)
 		{
 			NEW_CLASS(me->dirHdlr, Net::WebServer::EGaugeHandler());
 			me->dirHdlr->HandleEGaugeData(OnEGaugeData, me);
-			NEW_CLASS(me->svr, Net::WebServer::WebListener(me->core->GetSocketFactory(), 0, me->dirHdlr, port, 120, Sync::Thread::GetThreadCnt(), CSTR("eGauge/1.0"), false, Net::WebServer::KeepAlive::Default, false));
+			NEW_CLASS(me->svr, Net::WebServer::WebListener(me->core->GetSocketFactory(), 0, me->dirHdlr, port, 120, Sync::ThreadUtil::GetThreadCnt(), CSTR("eGauge/1.0"), false, Net::WebServer::KeepAlive::Default, false));
 			if (me->svr->IsError())
 			{
 				valid = false;

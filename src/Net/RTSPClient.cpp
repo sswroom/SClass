@@ -7,7 +7,7 @@
 #include "Net/URL.h"
 #include "Sync/MutexUsage.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 #include "Text/URLString.h"
 #include "Text/UTF8Reader.h"
@@ -253,7 +253,7 @@ Net::RTSPClient::RTSPClient(Net::SocketFactory *sockf, Text::CString host, UInt1
 	this->cliData->host = Text::String::New(host);
 	this->cliData->port = port;
 
-	Sync::Thread::Create(ControlThread, this->cliData);
+	Sync::ThreadUtil::Create(ControlThread, this->cliData);
 	while (!this->cliData->threadRunning)
 	{
 		Sync::SimpleThread::Sleep(10);

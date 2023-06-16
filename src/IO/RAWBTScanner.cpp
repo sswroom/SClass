@@ -4,7 +4,7 @@
 #include "IO/RAWBTScanner.h"
 #include "IO/ProgCtrl/BluetoothCtlProgCtrl.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 
 //#include <stdio.h>
 
@@ -109,7 +109,7 @@ void IO::RAWBTScanner::ScanOn()
 		this->clsData->btMon = 0;
 		return;
 	}
-	Sync::Thread::Create(RecvThread, this);
+	Sync::ThreadUtil::Create(RecvThread, this);
 	if (this->clsData->btCtrl)
 		this->clsData->btCtrl->ScanOn();
 	while (!this->clsData->threadRunning)

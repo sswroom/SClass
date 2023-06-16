@@ -5,7 +5,7 @@
 #include "Net/MACInfo.h"
 #include "SSWR/AVIRead/AVIRIPScanForm.h"
 #include "Sync/MutexUsage.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
 #include "UI/MessageDialog.h"

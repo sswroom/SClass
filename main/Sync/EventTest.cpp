@@ -4,7 +4,7 @@
 #include "Manage/HiResClock.h"
 #include "Sync/Event.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
 
@@ -21,7 +21,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 {
 	NEW_CLASS(clk, Manage::HiResClock());
 	NEW_CLASS(evt, Sync::Event(false));
-	Sync::Thread::Create(TestThread, 0);
+	Sync::ThreadUtil::Create(TestThread, 0);
 	Sync::SimpleThread::Sleep(10);
 	clk->Start();
 	evt->Set();

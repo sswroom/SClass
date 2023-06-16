@@ -9,7 +9,7 @@
 #include "SSWR/AVIRead/AVIRVideoCheckerForm.h"
 #include "Sync/MutexUsage.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 
@@ -185,7 +185,7 @@ SSWR::AVIRead::AVIRVideoCheckerForm::AVIRVideoCheckerForm(UI::GUIClientControl *
 	this->threadRunning = false;
 	this->threadToStop = false;
 
-	Sync::Thread::Create(ProcessThread, this);
+	Sync::ThreadUtil::Create(ProcessThread, this);
 	this->AddTimer(1000, OnTimerTick, this);
 }
 

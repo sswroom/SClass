@@ -4,7 +4,7 @@
 #include "IO/Path.h"
 #include "Manage/CPUDB.h"
 #include "Manage/CPUInfoDetail.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
@@ -63,7 +63,7 @@ Manage::CPUInfoDetail::CPUInfoDetail()
 			}
 			else if (IO::Path::GetPathType(CSTR("/sys/bus/platform/drivers/rtk129x-cpufreq")) == IO::Path::PathType::Directory)
 			{
-				UOSInt threadCnt = Sync::Thread::GetThreadCnt();
+				UOSInt threadCnt = Sync::ThreadUtil::GetThreadCnt();
 				if (threadCnt == 2)
 				{
 					this->cpuModel = CSTR("RTD1293");
@@ -154,7 +154,7 @@ Manage::CPUInfoDetail::CPUInfoDetail()
 			}
 			else if (this->brand == Manage::CPUVendor::CB_AMLOGIC)
 			{
-				UOSInt threadCnt = Sync::Thread::GetThreadCnt();
+				UOSInt threadCnt = Sync::ThreadUtil::GetThreadCnt();
 				if (threadCnt == 8)
 				{
 					this->cpuModel = CSTR("Amlogic S912");

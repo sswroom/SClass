@@ -4,7 +4,7 @@
 #include "IO/FileStream.h"
 #include "Sync/MutexUsage.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/Encoding.h"
 #include "Text/MyString.h"
 #include "Text/UTF8Writer.h"
@@ -539,7 +539,7 @@ DB::DBHandler::DBHandler(DB::DBQueue *dbQ, DB::DBTool *db)
 	this->dbQ = dbQ;
 	this->db = db;
 	this->running = false;
-	Sync::Thread::Create(ProcessSQL, this);
+	Sync::ThreadUtil::Create(ProcessSQL, this);
 }
 
 DB::DBHandler::~DBHandler()

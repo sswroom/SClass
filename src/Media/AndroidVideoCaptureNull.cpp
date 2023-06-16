@@ -4,7 +4,7 @@
 #include "Manage/HiResClock.h"
 #include "Math/Math.h"
 #include "Media/AndroidVideoCapture.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 
 #include <stdio.h>

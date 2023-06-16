@@ -3,7 +3,7 @@
 #include "IO/FileAnalyse/FLVFileAnalyse.h"
 #include "IO/FileAnalyse/SBFrameDetail.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
 
@@ -172,7 +172,7 @@ IO::FileAnalyse::FLVFileAnalyse::FLVFileAnalyse(IO::StreamData *fd)
 	}
 	this->fd = fd->GetPartialData(0, fd->GetDataSize());
 
-	Sync::Thread::Create(ParseThread, this);
+	Sync::ThreadUtil::Create(ParseThread, this);
 	while (!this->threadStarted)
 	{
 		Sync::SimpleThread::Sleep(10);

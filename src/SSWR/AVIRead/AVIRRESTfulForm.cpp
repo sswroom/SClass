@@ -4,7 +4,7 @@
 #include "SSWR/AVIRead/AVIRMySQLConnForm.h"
 #include "SSWR/AVIRead/AVIRODBCDSNForm.h"
 #include "SSWR/AVIRead/AVIRRESTfulForm.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 #include "UI/MessageDialog.h"
@@ -58,7 +58,7 @@ void __stdcall SSWR::AVIRead::AVIRRESTfulForm::OnStartClick(void *userObj)
 	if (sb.ToUInt16(&port) && port > 0 && port <= 65535)
 	{
 		NEW_CLASS(me->restHdlr, Net::WebServer::RESTfulHandler(me->dbCache));
-		NEW_CLASS(me->svr, Net::WebServer::WebListener(me->core->GetSocketFactory(), 0, me->restHdlr, port, 120, Sync::Thread::GetThreadCnt(), CSTR("sswr"), me->chkAllowProxy->IsChecked(), me->chkAllowKA->IsChecked()?Net::WebServer::KeepAlive::Always:Net::WebServer::KeepAlive::Default, false));
+		NEW_CLASS(me->svr, Net::WebServer::WebListener(me->core->GetSocketFactory(), 0, me->restHdlr, port, 120, Sync::ThreadUtil::GetThreadCnt(), CSTR("sswr"), me->chkAllowProxy->IsChecked(), me->chkAllowKA->IsChecked()?Net::WebServer::KeepAlive::Always:Net::WebServer::KeepAlive::Default, false));
 		if (me->svr->IsError())
 		{
 			valid = false;

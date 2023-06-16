@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Data/ByteTool.h"
 #include "Net/TraceRoute.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 
 UInt32 __stdcall Net::TraceRoute::RecvThread(void *userObj)
 {
@@ -93,7 +93,7 @@ Net::TraceRoute::TraceRoute(Net::SocketFactory *sockf, UInt32 ip)
 	NEW_CLASS(this->resEvt, Sync::Event(true));
 	if (this->socV4)
 	{
-		Sync::Thread::Create(RecvThread, this);
+		Sync::ThreadUtil::Create(RecvThread, this);
 		while (!this->threadRunning)
 		{
 			this->resEvt->Wait(100);

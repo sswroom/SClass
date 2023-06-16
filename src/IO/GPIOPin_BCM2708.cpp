@@ -3,7 +3,7 @@
 #include "IO/GPIOPin.h"
 #include "IO/PhysicalMem.h"
 #include "Sync/Interlocked.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 
 // BCM2708 (BCM2835)

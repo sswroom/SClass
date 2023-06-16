@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "Data/ByteTool.h"
 #include "SSWR/AVIRead/AVIRMQTTPublishForm.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/StringBuilderUTF8.h"
 #include "UI/MessageDialog.h"
 

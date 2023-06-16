@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Media/RealtimeVideoSource.h"
 #include "Sync/MutexUsage.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 
 void __stdcall Media::RealtimeVideoSource::FrameCB(UInt32 frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, FrameStruct frameStruct, void *userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
 {

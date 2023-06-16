@@ -4,7 +4,7 @@
 #include "Net/WebServer/MemoryWebSessionManager.h"
 #include "Sync/MutexUsage.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 
@@ -108,7 +108,7 @@ Net::WebServer::MemoryWebSessionManager::MemoryWebSessionManager(Text::CString p
 	this->chkHdlrObj = chkHdlrObj;
 	this->chkToStop = false;
 	this->chkRunning = false;
-	Sync::Thread::Create(CheckThread, this);
+	Sync::ThreadUtil::Create(CheckThread, this);
 	while (!this->chkRunning)
 	{
 		Sync::SimpleThread::Sleep(10);

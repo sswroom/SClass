@@ -7,7 +7,7 @@
 #include "Media/VOBAC3StreamSource.h"
 #include "Media/VOBLPCMStreamSource.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #define BUFFSIZE 1048576
 
 UInt32 __stdcall Media::MPGFile::PlayThread(void *userData)
@@ -401,7 +401,7 @@ Bool Media::MPGFile::StartPlay()
 	this->playing = 1;
 	this->playStarted = false;
 	this->playToStop = false;
-	Sync::Thread::Create(PlayThread, this);
+	Sync::ThreadUtil::Create(PlayThread, this);
 	return true;
 }
 

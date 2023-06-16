@@ -56,17 +56,17 @@ void Sync::SimpleThread::Sleepus(UOSInt us)
 	);
 }
 
-/*UInt32 Sync::Thread::GetThreadId()
+/*UInt32 Sync::ThreadUtil::GetThreadId()
 {
 	return 0;
 }
 
-Int32 Sync::Thread::GetThreadCnt()
+Int32 Sync::ThreadUtil::GetThreadCnt()
 {
 	return 1;
 }
 
-void Sync::Thread::SetPriority(ThreadPriority priority)
+void Sync::ThreadUtil::SetPriority(ThreadPriority priority)
 {
 }
 */

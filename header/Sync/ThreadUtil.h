@@ -1,10 +1,10 @@
-#ifndef _SM_SYNC_THREAD
-#define _SM_SYNC_THREAD
+#ifndef _SM_SYNC_THREADUTIL
+#define _SM_SYNC_THREADUTIL
 #include "Data/Duration.h"
 namespace Sync
 {
 	typedef UInt32 (__stdcall *ThreadProc)(void *userObj);
-	class Thread
+	class ThreadUtil
 	{
 	private:
 		static UInt32 usScale;

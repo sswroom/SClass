@@ -19,6 +19,6 @@ HiResClock.o: $(CLASSDIR)src/Manage/HiResClock_ATmega328.cpp
 SimpleThread.o: $(CLASSDIR)src/Sync/SimpleThread_AVR.cpp
 	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
 
-Thread.o: $(CLASSDIR)src/Sync/Thread_AVR.cpp
+ThreadUtil.o: $(CLASSDIR)src/Sync/Thread_AVR.cpp
 	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
 

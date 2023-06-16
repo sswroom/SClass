@@ -10,7 +10,7 @@
 #include "Net/SocketUtil.h"
 #include "Sync/MutexUsage.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 #include "Text/MyStringW.h"
@@ -2328,7 +2328,7 @@ void Net::MySQLTCPClient::Reconnect()
 	else
 	{
 		this->cli->SetNoDelay(true);
-		Sync::Thread::Create(RecvThread, this);
+		Sync::ThreadUtil::Create(RecvThread, this);
 		while (!this->recvStarted)
 		{
 			Sync::SimpleThread::Sleep(1);

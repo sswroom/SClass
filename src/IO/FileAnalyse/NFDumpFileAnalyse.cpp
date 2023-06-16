@@ -7,7 +7,7 @@
 #include "Manage/Process.h"
 #include "Net/SocketFactory.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 
 #define LZOPROGRAM L"LZOBlockDecomp.exe"
 
@@ -99,7 +99,7 @@ IO::FileAnalyse::NFDumpFileAnalyse::NFDumpFileAnalyse(IO::StreamData *fd)
 		return;
 	}
 	this->fd = fd->GetPartialData(0, fd->GetDataSize());
-	Sync::Thread::Create(ParseThread, this);
+	Sync::ThreadUtil::Create(ParseThread, this);
 	while (!this->threadStarted)
 	{
 		Sync::SimpleThread::Sleep(10);

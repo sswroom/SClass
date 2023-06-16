@@ -10,7 +10,7 @@
 #include "Media/ImageList.h"
 #include "Sync/MutexUsage.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 
 UInt32 __stdcall Map::TileMapLayer::TaskThread(void *userObj)
@@ -177,7 +177,7 @@ Map::TileMapLayer::TileMapLayer(Map::TileMap *tileMap, Parser::ParserList *parse
 		this->threads[i].toStop = false;
 		this->threads[i].me = this;
 		this->threads[i].isIdle = false;
-		Sync::Thread::Create(TaskThread, &this->threads[i]);
+		Sync::ThreadUtil::Create(TaskThread, &this->threads[i]);
 	}
 	Bool running = false;
 	while (!running)

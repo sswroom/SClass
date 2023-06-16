@@ -5,7 +5,7 @@
 #include "Math/CoordinateSystemManager.h"
 #include "Math/Math.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyStringW.h"
 #include "Text/StringBuilderUTF8.h"
 #include "Text/XLSUtil.h"
@@ -90,7 +90,7 @@ IO::FileAnalyse::FGDBFileAnalyse::FGDBFileAnalyse(IO::StreamData *fd)
 	}
 	this->fd = fd->GetPartialData(0, fd->GetDataSize());
 
-	Sync::Thread::Create(ParseThread, this);
+	Sync::ThreadUtil::Create(ParseThread, this);
 	while (!this->threadStarted)
 	{
 		Sync::SimpleThread::Sleep(10);

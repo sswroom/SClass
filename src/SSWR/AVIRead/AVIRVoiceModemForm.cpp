@@ -6,7 +6,7 @@
 #include "Media/WaveInSource.h"
 #include "SSWR/AVIRead/AVIRVoiceModemForm.h"
 #include "Sync/MutexUsage.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "UI/FileDialog.h"
 #include "UI/GUITabPage.h"
 #include "UI/MessageDialog.h"

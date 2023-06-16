@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Data/ByteTool.h"
 #include "Net/ARPHandler.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 
 UInt32 __stdcall Net::ARPHandler::DataThread(void *obj)
@@ -68,7 +68,7 @@ Net::ARPHandler::ARPHandler(Net::SocketFactory *sockf, const UTF8Char *ifName, c
 			this->threadStats[i].threadRunning = false;
 			NEW_CLASS(this->threadStats[i].evt, Sync::Event(true));
 			this->threadStats[i].me = this;
-			Sync::Thread::Create(DataThread, &this->threadStats[i]);
+			Sync::ThreadUtil::Create(DataThread, &this->threadStats[i]);
 		}
 		Bool running;
 		while (true)

@@ -6,7 +6,7 @@
 #include "IO/IniFile.h"
 #include "Sync/Event.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 
 IO::GPIOPin *pin;
 Sync::Event *evt;
@@ -59,7 +59,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 					threadRunning = false;
 					threadToStop = false;
 					pin->SetPinOutput(true);
-					Sync::Thread::Create(ThreadFunc, 0);
+					Sync::ThreadUtil::Create(ThreadFunc, 0);
 					console.WriteLineC(UTF8STRC("GPIO Sig Gen Running"));
 					progCtrl->WaitForExit(progCtrl);
 					console.WriteLineC(UTF8STRC("Exiting"));

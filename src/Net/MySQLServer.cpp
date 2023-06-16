@@ -6,7 +6,7 @@
 #include "Net/MySQLUtil.h"
 #include "Sync/Interlocked.h"
 #include "Sync/MutexUsage.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 
@@ -831,7 +831,7 @@ Net::MySQLServer::MySQLServer(Net::SocketFactory *sockf, UInt16 port, DB::DBMS *
 	this->log = dbms->GetLogTool();
 	this->connId = 0;
 
-	NEW_CLASS(this->cliMgr, Net::TCPClientMgr(240, OnClientEvent, OnClientData, this, Sync::Thread::GetThreadCnt(), OnClientTimeout));
+	NEW_CLASS(this->cliMgr, Net::TCPClientMgr(240, OnClientEvent, OnClientData, this, Sync::ThreadUtil::GetThreadCnt(), OnClientTimeout));
 	NEW_CLASS(this->svr, Net::TCPServer(this->sockf, port, this->log, OnClientConn, this, CSTR("MySQL: "), autoStart));
 	if (this->svr->IsV4Error())
 	{

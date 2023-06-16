@@ -5,7 +5,7 @@
 #include "Math/Geometry/LineString.h"
 #include "Math/Geometry/MultiPolygon.h"
 #include "Sync/MutexUsage.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 
 #include <stdio.h>
 
@@ -291,7 +291,7 @@ Map::MapScheduler::MapScheduler()
 	this->threadRunning = false;
 	this->taskFinish = true;
 	this->isLayerEmpty = 0;
-	Sync::Thread::Create(MapThread, this);
+	Sync::ThreadUtil::Create(MapThread, this);
 }
 
 Map::MapScheduler::~MapScheduler()

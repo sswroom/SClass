@@ -6,7 +6,7 @@
 #include "Net/SSLEngineFactory.h"
 #include "SSWR/AVIRead/AVIRHTTPDownloaderForm.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 #include "Text/PString.h"
@@ -374,7 +374,7 @@ SSWR::AVIRead::AVIRHTTPDownloaderForm::AVIRHTTPDownloaderForm(UI::GUIClientContr
 
 	this->SetDefaultButton(this->btnRequest);
 	this->txtURL->Focus();
-	Sync::Thread::Create(ProcessThread, this, 0);
+	Sync::ThreadUtil::Create(ProcessThread, this, 0);
 	this->AddTimer(100, OnTimerTick, this);
 }
 

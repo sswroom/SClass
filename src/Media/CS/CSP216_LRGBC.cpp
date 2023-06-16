@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Media/CS/CSP216_LRGBC.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 
 extern "C"
 {
@@ -38,7 +38,7 @@ UInt32 Media::CS::CSP216_LRGBC::WorkerThread(void *obj)
 Media::CS::CSP216_LRGBC::CSP216_LRGBC(const Media::ColorProfile *srcProfile, const Media::ColorProfile *destProfile, Media::ColorProfile::YUVType yuvType, Media::ColorManagerSess *colorSess) : Media::CS::CSYUV16_LRGBC(srcProfile, destProfile, yuvType, colorSess)
 {
 	UOSInt i;
-	this->nThread = Sync::Thread::GetThreadCnt();
+	this->nThread = Sync::ThreadUtil::GetThreadCnt();
 
 	NEW_CLASS(evtMain, Sync::Event());
 	stats = MemAlloc(THREADSTAT, nThread);
@@ -49,7 +49,7 @@ Media::CS::CSP216_LRGBC::CSP216_LRGBC(const Media::ColorProfile *srcProfile, con
 		stats[i].status = 0;
 
 		currId = i;
-		Sync::Thread::Create(WorkerThread, this);
+		Sync::ThreadUtil::Create(WorkerThread, this);
 		while (stats[i].status == 0)
 		{
 			evtMain->Wait();

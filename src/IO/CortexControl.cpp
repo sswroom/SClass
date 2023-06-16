@@ -6,7 +6,7 @@
 #include "Math/Math.h"
 #include "Sync/MutexUsage.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/StringBuilderUTF8.h"
 
 UInt32 __stdcall IO::CortexControl::RecvThread(void *userObj)
@@ -73,7 +73,7 @@ IO::CortexControl::CortexControl(UOSInt portNum, IO::Writer *errWriter) : protoH
 		this->stm = 0;
 		return;
 	}
-	Sync::Thread::Create(RecvThread, this);
+	Sync::ThreadUtil::Create(RecvThread, this);
 }
 
 IO::CortexControl::~CortexControl()

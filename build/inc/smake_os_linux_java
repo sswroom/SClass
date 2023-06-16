@@ -104,8 +104,8 @@ Parser/FileParser/WebPParser.h: ../../src/Parser/FileParser/WebPParser.cpp
 
 Sync/SimpleThread.h: ../../src/Sync/SimpleThreadU.cpp
 @SimpleThread.o
-Sync/Thread.h: ../../src/Sync/ThreadU.cpp
-@Thread.o
+Sync/ThreadUtil.h: ../../src/Sync/ThreadUtilU.cpp
+@ThreadUtil.o
 
 
 ConsoleStartup.o: ../../startup/JavaStartup.cpp
@@ -201,5 +201,5 @@ WebPParser.o: ../../src/Parser/FileParser/WebPParser.cpp
 !-lwebp
 !-lwebpdemux
 SimpleThread.o: ../../src/Sync/SimpleThreadU.cpp
-Thread.o: ../../src/Sync/ThreadU.cpp
+ThreadUtil.o: ../../src/Sync/ThreadUtilU.cpp
 !-lpthread

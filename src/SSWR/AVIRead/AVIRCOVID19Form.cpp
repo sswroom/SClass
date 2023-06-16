@@ -8,7 +8,7 @@
 #include "Net/HTTPClient.h"
 #include "Net/SSLEngineFactory.h"
 #include "SSWR/AVIRead/AVIRCOVID19Form.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
 #include "UI/FileDialog.h"

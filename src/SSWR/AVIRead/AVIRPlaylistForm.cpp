@@ -3,7 +3,7 @@
 #include "Math/Math.h"
 #include "Media/IMediaPlayer.h"
 #include "SSWR/AVIRead/AVIRPlaylistForm.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 #include "UI/FileDialog.h"
@@ -130,7 +130,7 @@ SSWR::AVIRead::AVIRPlaylistForm::AVIRPlaylistForm(UI::GUIClientControl *parent, 
 	NEW_CLASS(this->btnFS, UI::GUIButton(ui, this->pnlCtrl, CSTR("&Full Screen")));
 	this->btnFS->SetRect(176, 16, 75, 23, false);
 	this->btnFS->HandleButtonClick(OnFSClicked, this);
-	NEW_CLASS(this->vbdMain, UI::GUIVideoBoxDD(ui, this, this->colorSess, 5, Sync::Thread::GetThreadCnt()));
+	NEW_CLASS(this->vbdMain, UI::GUIVideoBoxDD(ui, this, this->colorSess, 5, Sync::ThreadUtil::GetThreadCnt()));
 	this->vbdMain->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->vbdMain->SetUserFSMode(UI::GUIDDrawControl::SM_VFS);
 

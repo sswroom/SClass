@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Math/Math.h"
 #include "Media/CS/CSP016_LRGBC.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include <float.h>
 
 #define LANCZOS_NTAP 4
@@ -207,7 +207,7 @@ void Media::CS::CSP016_LRGBC::WaitForWorker(Int32 jobStatus)
 Media::CS::CSP016_LRGBC::CSP016_LRGBC(const Media::ColorProfile *srcProfile, const Media::ColorProfile *destProfile, Media::ColorProfile::YUVType yuvType, Media::ColorManagerSess *colorSess) : Media::CS::CSYUV16_LRGBC(srcProfile, destProfile, yuvType, colorSess)
 {
 	UOSInt i;
-	this->nThread = Sync::Thread::GetThreadCnt();
+	this->nThread = Sync::ThreadUtil::GetThreadCnt();
 	if (this->nThread > 4)
 	{
 		this->nThread = this->nThread >> 1;
@@ -234,7 +234,7 @@ Media::CS::CSP016_LRGBC::CSP016_LRGBC(const Media::ColorProfile *srcProfile, con
 		stats[i].csLineBuff2 = 0;
 
 		currId = i;
-		Sync::Thread::Create(WorkerThread, this, 65536);
+		Sync::ThreadUtil::Create(WorkerThread, this, 65536);
 		while (stats[i].status == 0)
 		{
 			evtMain->Wait();

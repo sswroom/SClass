@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "IO/Device/HCSR04.h"
 #include "Manage/HiResClock.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 
 IO::Device::HCSR04::HCSR04(IO::GPIOControl *gpio, OSInt trigPin, OSInt echoPin)
 {

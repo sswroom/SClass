@@ -2,7 +2,7 @@
 #include "Net/HTTPClient.h"
 #include "Net/HTTPServerMonitor.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 
 UInt32 __stdcall Net::HTTPServerMonitor::ThreadProc(void *userObj)
 {
@@ -34,7 +34,7 @@ Net::HTTPServerMonitor::HTTPServerMonitor(Net::SocketFactory *sockf, Net::SSLEng
 	this->threadRunning = false;
 	this->threadToStop = false;
 
-	Sync::Thread::Create(ThreadProc, this);
+	Sync::ThreadUtil::Create(ThreadProc, this);
 	while (!this->threadRunning)
 	{
 		Sync::SimpleThread::Sleep(1);
@@ -50,7 +50,7 @@ Net::HTTPServerMonitor::HTTPServerMonitor(Net::SocketFactory *sockf, Net::SSLEng
 	this->threadRunning = false;
 	this->threadToStop = false;
 
-	Sync::Thread::Create(ThreadProc, this);
+	Sync::ThreadUtil::Create(ThreadProc, this);
 	while (!this->threadRunning)
 	{
 		Sync::SimpleThread::Sleep(1);

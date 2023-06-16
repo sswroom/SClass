@@ -4,7 +4,7 @@
 #include "Math/Math.h"
 #include "Media/IMediaPlayer.h"
 #include "SSWR/AVIRead/AVIRHQMPPlaylistForm.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 #include "UI/FileDialog.h"

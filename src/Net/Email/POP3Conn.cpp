@@ -3,7 +3,7 @@
 #include "Manage/HiResClock.h"
 #include "Net/Email/POP3Conn.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 #include "Text/UTF8Reader.h"
@@ -230,7 +230,7 @@ Net::Email::POP3Conn::POP3Conn(Net::SocketFactory *sockf, Net::SSLEngine *ssl, T
 		sb.AppendU16(port);
 		this->logWriter->WriteLineC(sb.ToString(), sb.GetLength());
 	}
-	Sync::Thread::Create(RecvThread, this);
+	Sync::ThreadUtil::Create(RecvThread, this);
 	while (!this->threadStarted)
 	{
 		Sync::SimpleThread::Sleep(10);

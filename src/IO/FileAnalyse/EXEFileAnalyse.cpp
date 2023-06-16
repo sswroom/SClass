@@ -3,7 +3,7 @@
 #include "IO/FileAnalyse/EXEFileAnalyse.h"
 #include "Sync/MutexUsage.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/StringBuilderUTF8.h"
 
 UInt32 __stdcall IO::FileAnalyse::EXEFileAnalyse::ParseThread(void *userObj)
@@ -277,7 +277,7 @@ IO::FileAnalyse::EXEFileAnalyse::EXEFileAnalyse(IO::StreamData *fd)
 		return;
 	}
 	this->fd = fd->GetPartialData(0, fd->GetDataSize());
-	Sync::Thread::Create(ParseThread, this);
+	Sync::ThreadUtil::Create(ParseThread, this);
 	while (!this->threadStarted)
 	{
 		Sync::SimpleThread::Sleep(10);

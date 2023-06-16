@@ -5,7 +5,7 @@
 #include "Data/Sort/BubbleSort.h"
 #include "Data/Sort/InsertionSort.h"
 #include "Sync/MutexUsage.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 
 /*
@@ -463,7 +463,7 @@ UInt32 __stdcall Data::Sort::ArtificialQuickSort::ProcessThread(void *userObj)
 
 Data::Sort::ArtificialQuickSort::ArtificialQuickSort()
 {
-	this->threadCnt = Sync::Thread::GetThreadCnt();
+	this->threadCnt = Sync::ThreadUtil::GetThreadCnt();
 	this->arr = 0;
 	this->tasks = MemAlloc(OSInt, 65536);
 	this->taskCnt = 0;
@@ -477,7 +477,7 @@ Data::Sort::ArtificialQuickSort::ArtificialQuickSort()
 		this->threads[i].toStop = false;
 		this->threads[i].threadId = i;
 
-		Sync::Thread::Create(ProcessThread, &this->threads[i]);
+		Sync::ThreadUtil::Create(ProcessThread, &this->threads[i]);
 	}
 
 	while (true)

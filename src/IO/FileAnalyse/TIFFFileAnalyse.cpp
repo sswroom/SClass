@@ -9,7 +9,7 @@
 #include "Media/EXIFData.h"
 #include "Net/SocketFactory.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 
 UInt32 __stdcall IO::FileAnalyse::TIFFFileAnalyse::ParseThread(void *userObj)
 {
@@ -120,7 +120,7 @@ IO::FileAnalyse::TIFFFileAnalyse::TIFFFileAnalyse(IO::StreamData *fd)
 		return;
 	}
 	this->fd = fd->GetPartialData(0, fd->GetDataSize());
-	Sync::Thread::Create(ParseThread, this);
+	Sync::ThreadUtil::Create(ParseThread, this);
 	while (!this->threadStarted)
 	{
 		Sync::SimpleThread::Sleep(10);

@@ -2,7 +2,7 @@
 #include "Manage/HiResClock.h"
 #include "Net/WhoisGlobalClient.h"
 #include "SSWR/AVIRead/AVIRWHOISClientForm.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 #include "UI/MessageDialog.h"

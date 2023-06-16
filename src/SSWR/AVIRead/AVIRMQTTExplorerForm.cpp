@@ -10,7 +10,7 @@
 #include "Net/WebSocketClient.h"
 #include "SSWR/AVIRead/AVIRMQTTExplorerForm.h"
 #include "Sync/MutexUsage.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
 #include "UI/FileDialog.h"

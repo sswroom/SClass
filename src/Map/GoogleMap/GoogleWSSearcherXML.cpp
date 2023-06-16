@@ -4,7 +4,7 @@
 #include "Map/GoogleMap/GoogleWSSearcherXML.h"
 #include "Net/HTTPClient.h"
 #include "Sync/MutexUsage.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/Locale.h"
 #include "Text/MyStringFloat.h"
 #include "Text/XMLDOM.h"

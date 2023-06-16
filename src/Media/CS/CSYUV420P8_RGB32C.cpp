@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Math/Math.h"
 #include "Media/CS/CSYUV420P8_RGB32C.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 
 #include <stdio.h>
 

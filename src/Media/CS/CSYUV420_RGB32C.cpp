@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Math/Math.h"
 #include "Media/CS/CSYUV420_RGB32C.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include <float.h>
 
 #define LANCZOS_NTAP 4
@@ -206,7 +206,7 @@ void Media::CS::CSYUV420_RGB32C::WaitForWorker(Int32 jobStatus)
 Media::CS::CSYUV420_RGB32C::CSYUV420_RGB32C(const Media::ColorProfile *srcProfile, const Media::ColorProfile *destProfile, Media::ColorProfile::YUVType yuvType, Media::ColorManagerSess *colorSess, Media::PixelFormat destPF) : Media::CS::CSYUV_RGB32C(srcProfile, destProfile, yuvType, colorSess, destPF)
 {
 	UOSInt i;
-	this->nThread = Sync::Thread::GetThreadCnt();
+	this->nThread = Sync::ThreadUtil::GetThreadCnt();
 	if (this->nThread > 4)
 	{
 		this->nThread = this->nThread >> 1;
@@ -233,7 +233,7 @@ Media::CS::CSYUV420_RGB32C::CSYUV420_RGB32C(const Media::ColorProfile *srcProfil
 		stats[i].csLineBuff2 = 0;
 
 		currId = i;
-		Sync::Thread::Create(WorkerThread, this, 65536);
+		Sync::ThreadUtil::Create(WorkerThread, this, 65536);
 		while (stats[i].status == 0)
 		{
 			evtMain->Wait();

@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "IO/AdvantechASCIIChannel.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 
 #define CMDTIMEOUT 100
 
@@ -73,7 +73,7 @@ IO::AdvantechASCIIChannel::AdvantechASCIIChannel(IO::Stream *stm, Bool needRelea
 	this->stmRelease = needRelease;
 	this->threadRunning = false;
 	this->threadToStop = false;
-	Sync::Thread::Create(CmdThread, this);
+	Sync::ThreadUtil::Create(CmdThread, this);
 	while (!this->threadRunning)
 	{
 		this->cmdEvt.Wait(100);

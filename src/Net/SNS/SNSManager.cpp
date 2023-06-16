@@ -11,7 +11,7 @@
 #include "Net/SNS/SNSTwitter.h"
 #include "Sync/MutexUsage.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/UTF8Reader.h"
 #include "Text/UTF8Writer.h"
 #include <stdio.h>
@@ -486,7 +486,7 @@ Net::SNS::SNSManager::SNSManager(Net::SocketFactory *sockf, Net::SSLEngine *ssl,
 		IO::Path::FindFileClose(sess);
 	}
 
-	Sync::Thread::Create(ThreadProc, this);
+	Sync::ThreadUtil::Create(ThreadProc, this);
 	while (!this->threadRunning)
 	{
 		Sync::SimpleThread::Sleep(10);

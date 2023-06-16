@@ -8,7 +8,7 @@
 #include "Math/Math.h"
 #include "Media/Resizer/LanczosResizerH8_8.h"
 #include "Sync/MutexUsage.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 #include "Text/UTF8Reader.h"
 #include "Text/UTF8Writer.h"

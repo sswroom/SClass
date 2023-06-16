@@ -11,7 +11,7 @@
 #include "SSWR/AVIRead/AVIRImageControl.h"
 #include "Sync/Interlocked.h"
 #include "Sync/MutexUsage.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
@@ -521,7 +521,7 @@ SSWR::AVIRead::AVIRImageControl::AVIRImageControl(UI::GUICore *ui, UI::GUIClient
 
 	this->threadState = 0;
 	this->threadCtrlCode = 0;
-	Sync::Thread::Create(FolderThread, this);
+	Sync::ThreadUtil::Create(FolderThread, this);
 	while (this->threadState == 0)
 		this->folderCtrlEvt.Wait();
 	

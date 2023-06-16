@@ -3,7 +3,7 @@
 #include "SSWR/AVIRead/AVIRStreamConvForm.h"
 #include "Sync/MutexUsage.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "UI/FileDialog.h"
 #include "UI/MessageDialog.h"
 
@@ -31,7 +31,7 @@ void __stdcall SSWR::AVIRead::AVIRStreamConvForm::OnStream1Clicked(void *userObj
 			me->thread1Running = false;
 			me->thread1ToStop = false;
 
-			Sync::Thread::Create(Stream1Thread, me);
+			Sync::ThreadUtil::Create(Stream1Thread, me);
 			while (!me->thread1Running && !me->remoteClosed1)
 			{
 				Sync::SimpleThread::Sleep(10);
@@ -64,7 +64,7 @@ void __stdcall SSWR::AVIRead::AVIRStreamConvForm::OnStream2Clicked(void *userObj
 			me->thread2Running = false;
 			me->thread2ToStop = false;
 
-			Sync::Thread::Create(Stream2Thread, me);
+			Sync::ThreadUtil::Create(Stream2Thread, me);
 			while (!me->thread2Running && !me->remoteClosed2)
 			{
 				Sync::SimpleThread::Sleep(10);

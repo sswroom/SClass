@@ -7,7 +7,7 @@
 #include "Media/Resizer/LanczosResizerLR_C32.h"
 #include "Sync/Event.h"
 #include "Sync/MutexUsage.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 
 #include <windows.h>
@@ -481,8 +481,8 @@ Media::DDrawRendererLR::DDrawRendererLR(void *hwnd, Media::ColorManager *colorMg
 		this->clipper = pcClipper;
 
 		CreateSurface();
-		Sync::Thread::Create(ScnUpdater, this);
-		Sync::Thread::Create(FrameProcesser, this);
+		Sync::ThreadUtil::Create(ScnUpdater, this);
+		Sync::ThreadUtil::Create(FrameProcesser, this);
 	}
 }
 

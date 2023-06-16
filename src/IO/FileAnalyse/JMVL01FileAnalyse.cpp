@@ -2,7 +2,7 @@
 #include "Data/ByteTool.h"
 #include "IO/FileAnalyse/JMVL01FileAnalyse.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/Encoding.h"
 #include "Text/StringBuilderUTF8.h"
 
@@ -90,7 +90,7 @@ IO::FileAnalyse::JMVL01FileAnalyse::JMVL01FileAnalyse(IO::StreamData *fd)
 	}
 	this->fd = fd->GetPartialData(0, fd->GetDataSize());
 
-	Sync::Thread::Create(ParseThread, this);
+	Sync::ThreadUtil::Create(ParseThread, this);
 	while (!this->threadStarted)
 	{
 		Sync::SimpleThread::Sleep(10);

@@ -2,7 +2,7 @@
 #include "Data/ByteTool.h"
 #include "Math/Math.h"
 #include "Media/CS/TransferFunc.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 #include "UI/FileDialog.h"
@@ -1543,7 +1543,7 @@ UtilUI::ColorDialog::ColorDialog(UI::GUIClientControl *parent, UI::GUICore *ui, 
 	this->lblAlpha = 0;
 	this->txtAlpha = 0;
 
-	this->genThreadCnt = Sync::Thread::GetThreadCnt();
+	this->genThreadCnt = Sync::ThreadUtil::GetThreadCnt();
 	NEW_CLASS(this->genEvt, Sync::Event(true));
 	UOSInt i;
 	this->genStats = MemAlloc(ThreadStat, this->genThreadCnt);
@@ -1554,7 +1554,7 @@ UtilUI::ColorDialog::ColorDialog(UI::GUIClientControl *parent, UI::GUICore *ui, 
 		NEW_CLASS(this->genStats[i].evt, Sync::Event(true));
 		this->genStats[i].me = this;
 		this->genStats[i].status = 0;
-		Sync::Thread::Create(GenThread, &this->genStats[i], 65536);
+		Sync::ThreadUtil::Create(GenThread, &this->genStats[i], 65536);
 	}
 
 	while (true)

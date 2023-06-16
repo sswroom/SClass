@@ -3,7 +3,7 @@
 #include "Manage/HiResClock.h"
 #include "Net/ConnectionInfo.h"
 #include "SSWR/AVIRead/AVIRARPPingForm.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
 #include "UI/MessageDialog.h"

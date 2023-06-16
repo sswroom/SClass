@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Net/ProtoClient.h"
 #include "Sync/MutexUsage.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 
 UInt32 __stdcall Net::ProtoClient::ProtoThread(void *userObj)
@@ -99,7 +99,7 @@ Net::ProtoClient::ProtoClient(Net::SocketFactory *sockf, Text::CString cliAddr, 
 	this->connected = false;
 	this->threadRunning = false;
 	this->threadToStop = false;
-	Sync::Thread::Create(ProtoThread, this);
+	Sync::ThreadUtil::Create(ProtoThread, this);
 	while (!this->threadRunning)
 	{
 		Sync::SimpleThread::Sleep(10);

@@ -3,7 +3,7 @@
 #include "Sync/Interlocked.h"
 #include "Sync/MutexUsage.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 
 UInt32 __stdcall Net::TCPPortScanner::ScanThread(void *userObj)
 {
@@ -86,11 +86,11 @@ Net::TCPPortScanner::TCPPortScanner(Net::SocketFactory *sockf, UOSInt threadCnt,
 	UOSInt i = threadCnt;
 	if (threadCnt <= 0)
 	{
-		i = Sync::Thread::GetThreadCnt();
+		i = Sync::ThreadUtil::GetThreadCnt();
 	}
 	while (i-- > 0)
 	{
-		Sync::Thread::Create(ScanThread, this);
+		Sync::ThreadUtil::Create(ScanThread, this);
 	}
 }
 

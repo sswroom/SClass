@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Text/MyString.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Net/FTPClient.h"
 
 Net::FTPClient::FTPClient(Text::CString url, Net::SocketFactory *sockf, Bool passiveMode, UInt32 codePage, Data::Duration timeout) : IO::Stream(url)

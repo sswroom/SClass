@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "SSWR/AVIRead/AVIRProxyServerForm.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 #include "UI/MessageDialog.h"
 

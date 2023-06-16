@@ -5,7 +5,7 @@
 #include "IO/Watchdog.h"
 #include "Sync/Event.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
@@ -88,7 +88,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		if (wd->Enable())
 		{
 			console.WriteLineC(UTF8STRC("Watchdog enabled"));
-			Sync::Thread::Create(WatchdogThread, 0);
+			Sync::ThreadUtil::Create(WatchdogThread, 0);
 			while (!running)
 			{
 				Sync::SimpleThread::Sleep(10);

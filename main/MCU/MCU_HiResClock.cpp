@@ -2,7 +2,7 @@
 #include "Core/Core.h"
 #include "IO/ConsoleWriter.h"
 #include "Manage/HiResClock.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 
 Int32 MyMain(Core::IProgControl *progCtrl)

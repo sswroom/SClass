@@ -3,7 +3,7 @@
 #include "Core/ConsoleControl.h"
 #include "Core/Core.h"
 #include "Media/GDIEngineC.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyStringW.h"
 #include <windows.h>
 

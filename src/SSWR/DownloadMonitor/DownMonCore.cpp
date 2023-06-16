@@ -13,7 +13,7 @@
 #include "SSWR/DownloadMonitor/DownMonCore.h"
 #include "Sync/MutexUsage.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/StringBuilderUTF8.h"
 #include "UI/Clipboard.h"
 
@@ -520,7 +520,7 @@ SSWR::DownloadMonitor::DownMonCore::DownMonCore() : checker(false)
 	if (this->firefoxPath == 0) this->firefoxPath = Text::String::New(UTF8STRC("C:\\Program Files\\Firefox Developer Edition\\firefox.exe"));
 	if (this->listFile == 0) this->listFile = Text::String::New(UTF8STRC("I:\\PROGS\\DownList2.txt"));
 
-	Sync::Thread::Create(CheckThread, this);
+	Sync::ThreadUtil::Create(CheckThread, this);
 	while (!this->chkRunning)
 	{
 		Sync::SimpleThread::Sleep(10);

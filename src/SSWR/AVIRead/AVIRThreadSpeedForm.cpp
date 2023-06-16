@@ -4,7 +4,7 @@
 #include "Sync/Interlocked.h"
 #include "Sync/MutexUsage.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyStringFloat.h"
 
 UInt32 __stdcall SSWR::AVIRead::AVIRThreadSpeedForm::TestThread(void *userObj)
@@ -31,7 +31,7 @@ void __stdcall SSWR::AVIRead::AVIRThreadSpeedForm::OnTestClicked(void *userObj)
 	me->t = 0;
 
 	i = me->lvResult->AddItem(CSTR("Thread Count"), 0);
-	sptr = Text::StrUOSInt(sbuff, Sync::Thread::GetThreadCnt());
+	sptr = Text::StrUOSInt(sbuff, Sync::ThreadUtil::GetThreadCnt());
 	me->lvResult->SetSubItem(i, 1, CSTRP(sbuff, sptr));
 
 	me->clk.Start();
@@ -44,7 +44,7 @@ void __stdcall SSWR::AVIRead::AVIRThreadSpeedForm::OnTestClicked(void *userObj)
 	i = 1000;
 	while (i-- > 0)
 	{
-		Sync::Thread::GetThreadId();
+		Sync::ThreadUtil::GetThreadId();
 	}
 	t = me->clk.GetTimeDiff();
 	i = me->lvResult->AddItem(CSTR("GetThreadId"), 0);
@@ -87,7 +87,7 @@ void __stdcall SSWR::AVIRead::AVIRThreadSpeedForm::OnTestClicked(void *userObj)
 	me->mainEvt.Clear();
 	me->t = 0;
 	me->clk.Start();
-	Sync::Thread::Create(TestThread, me);
+	Sync::ThreadUtil::Create(TestThread, me);
 	me->mainEvt.Wait(1000);
 	t = me->clk.GetTimeDiff();
 	i = me->lvResult->AddItem(CSTR("Thread Create"), 0);

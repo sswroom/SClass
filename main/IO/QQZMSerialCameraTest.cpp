@@ -5,7 +5,7 @@
 #include "IO/MemoryStream.h"
 #include "IO/SerialPort.h"
 #include "IO/Device/QQZMSerialCamera.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/StringBuilderUTF8.h"
 
 Int32 MyMain(Core::IProgControl *progCtrl)

@@ -5,7 +5,7 @@
 #include "IO/MODBUSRTUMaster.h"
 #include "IO/SerialPort.h"
 #include "IO/Device/SDM120M.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include <stdio.h>
 
 Int32 MyMain(Core::IProgControl *progCtrl)

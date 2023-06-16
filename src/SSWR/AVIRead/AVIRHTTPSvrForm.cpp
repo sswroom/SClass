@@ -6,7 +6,7 @@
 #include "SSWR/AVIRead/AVIRHTTPSvrForm.h"
 #include "SSWR/AVIRead/AVIRSSLCertKeyForm.h"
 #include "Sync/MutexUsage.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 #include "UI/MessageDialog.h"
@@ -186,7 +186,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnStartClick(void *userObj)
 		dt.ToUTCTime();
 		sptr = dt.ToString(Text::StrConcatC(sbuff, UTF8STRC("AVIRead/")), "yyyyMMddHHmmss");
 		NEW_CLASS(me->dirHdlr, Net::WebServer::HTTPDirectoryHandler(sb.ToCString(), me->chkAllowBrowse->IsChecked(), cacheSize, true));
-		NEW_CLASS(me->svr, Net::WebServer::WebListener(me->core->GetSocketFactory(), ssl, me->dirHdlr, port, 120, Sync::Thread::GetThreadCnt(), CSTRP(sbuff, sptr), me->chkAllowProxy->IsChecked(), (Net::WebServer::KeepAlive)(OSInt)me->cboKeepAlive->GetSelectedItem(), false));
+		NEW_CLASS(me->svr, Net::WebServer::WebListener(me->core->GetSocketFactory(), ssl, me->dirHdlr, port, 120, Sync::ThreadUtil::GetThreadCnt(), CSTRP(sbuff, sptr), me->chkAllowProxy->IsChecked(), (Net::WebServer::KeepAlive)(OSInt)me->cboKeepAlive->GetSelectedItem(), false));
 		if (me->svr->IsError())
 		{
 			valid = false;

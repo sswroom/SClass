@@ -6,7 +6,7 @@
 #include "Sync/Interlocked.h"
 #include "Sync/MutexUsage.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 
 const UInt8 BruteForceAttack_LimitASCII[] = {
@@ -258,10 +258,10 @@ Bool Crypto::Hash::BruteForceAttack::Start(const UTF8Char *hashStr, UOSInt hashL
 	this->keyBuff[minLeng] = 0;
 	this->resultBuff[0] = 0;
 	this->testCnt = 0;
-	i = Sync::Thread::GetThreadCnt();
+	i = Sync::ThreadUtil::GetThreadCnt();
 	while (i-- > 0)
 	{
-		Sync::Thread::Create(ProcessThread, this);
+		Sync::ThreadUtil::Create(ProcessThread, this);
 	}
 	return true;
 }

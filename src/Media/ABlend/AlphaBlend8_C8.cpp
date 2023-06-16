@@ -4,7 +4,7 @@
 #include "Media/ABlend/AlphaBlend8_C8.h"
 #include "Media/CS/TransferFunc.h"
 #include "Sync/MutexUsage.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 
 extern "C"
 {
@@ -182,7 +182,7 @@ Media::ABlend::AlphaBlend8_C8::AlphaBlend8_C8(Media::ColorSess *colorSess, Bool 
 		this->lutList = 0;
 		this->rgbTable = MemAlloc(UInt8, 262144 + 8192 + 8192);
 	}
-	this->threadCnt = Sync::Thread::GetThreadCnt();
+	this->threadCnt = Sync::ThreadUtil::GetThreadCnt();
 	if (this->threadCnt > 4)
 	{
 		this->threadCnt = 4;
@@ -194,7 +194,7 @@ Media::ABlend::AlphaBlend8_C8::AlphaBlend8_C8(Media::ColorSess *colorSess, Bool 
 	{
 		this->stats[i].me = this;
 		this->stats[i].status = 0;
-		Sync::Thread::Create(ProcessThread, &this->stats[i], 65536);
+		Sync::ThreadUtil::Create(ProcessThread, &this->stats[i], 65536);
 	}
 	Bool found;
 	while (true)

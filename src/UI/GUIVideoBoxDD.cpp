@@ -15,7 +15,7 @@
 #include "Media/Resizer/LanczosResizerLR_C32.h"
 #include "Sync/Interlocked.h"
 #include "Sync/MutexUsage.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "UI/GUIClientControl.h"
 #include "UI/GUIVideoBoxDD.h"
 #include "UI/MessageDialog.h"

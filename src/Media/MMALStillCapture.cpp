@@ -6,7 +6,7 @@
 #include "Media/MMALStillCapture.h"
 #include "Sync/Event.h"
 #include "Sync/Mutex.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/Encoding.h"
 #include "Text/MyString.h"
 

@@ -2,7 +2,7 @@
 #include "Manage/HiResClock.h"
 #include "Math/Math.h"
 #include "Media/DDrawScreenSource.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include <windows.h>
 #include <ddraw.h>
 
@@ -235,7 +235,7 @@ Bool Media::DDrawScreenSource::Start(FrameCallback cb, void *userData)
 	this->captureCb = cb;
 	this->captureCbData = userData;
 	this->captureToStop = false;
-	Sync::Thread::Create(CaptureThread, this);
+	Sync::ThreadUtil::Create(CaptureThread, this);
 	while (!this->captureRunning)
 	{
 		Sync::SimpleThread::Sleep(10);

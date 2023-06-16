@@ -5,7 +5,7 @@
 #include "Manage/ExceptionLogger.h"
 #include "Manage/StackTracer.h"
 #include "Manage/SymbolResolver.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 #include "Text/UTF8Writer.h"

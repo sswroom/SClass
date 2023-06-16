@@ -5,7 +5,7 @@
 #include "Net/SNMPClient.h"
 #include "Net/SNMPInfo.h"
 #include "Sync/MutexUsage.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/StringBuilderUTF8.h"
 
 void __stdcall Net::SNMPClient::OnSNMPPacket(const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData)
@@ -256,7 +256,7 @@ UOSInt Net::SNMPClient::V1ScanGetRequest(const Net::SocketUtil::AddressInfo *bro
 		this->svr->SetBroadcast(true);
 		this->svr->SendTo(broadcastAddr, 161, buff, buffSize);
 	}
-	Sync::Thread::SleepDur(timeout);
+	Sync::ThreadUtil::SleepDur(timeout);
 	scanMutUsage.BeginUse();
 	this->scanList = 0;
 	scanMutUsage.EndUse();

@@ -7,7 +7,7 @@
 #include "Sync/MutexUsage.h"
 #include "Text/Encoding.h"
 #include "Text/MyString.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 
 UInt32 __stdcall Map::ReverseGeocoderClient::ClientThread(void *userObj)
 {
@@ -128,8 +128,8 @@ Map::ReverseGeocoderClient::ReverseGeocoderClient(Net::SocketFactory *sockf, Tex
 	this->errWriter = errWriter;
 	this->lastKASent.SetCurrTimeUTC();
 	this->lastKARecv.SetCurrTimeUTC();
-	Sync::Thread::Create(ClientThread, this);
-	Sync::Thread::Create(MonThread, this);
+	Sync::ThreadUtil::Create(ClientThread, this);
+	Sync::ThreadUtil::Create(MonThread, this);
 }
 
 Map::ReverseGeocoderClient::~ReverseGeocoderClient()

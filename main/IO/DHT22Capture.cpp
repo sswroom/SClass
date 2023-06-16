@@ -7,7 +7,7 @@
 #include "IO/IOPinCapture.h"
 #include "IO/StreamWriter.h"
 #include "IO/Device/DHT22.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
@@ -26,7 +26,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	{
 		Text::StrToUInt16(argv[1], &pinNum);
 	}
-	Sync::Thread::SetPriority(Sync::Thread::TP_REALTIME);
+	Sync::ThreadUtil::SetPriority(Sync::ThreadUtil::TP_REALTIME);
 	sb.AppendC(UTF8STRC("Run using GPIO pin "));
 	sb.AppendI32(pinNum);
 	console.WriteLineC(sb.ToString(), sb.GetLength());

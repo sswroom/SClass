@@ -15,7 +15,7 @@
 #include "IO/MemoryStream.h"
 #include "IO/Path.h"
 #include "Manage/HiResClock.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
 
@@ -147,7 +147,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		t1 = clk->GetTimeDiff();
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("AQuickSort "));
-		sb.AppendUOSInt(Sync::Thread::GetThreadCnt());
+		sb.AppendUOSInt(Sync::ThreadUtil::GetThreadCnt());
 		sb.AppendC(UTF8STRC(" Thread N = "));
 		sb.AppendUOSInt(NumberOfRec);
 		sb.AppendC(UTF8STRC(", Sort time = "));
@@ -309,7 +309,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		t1 = clk->GetTimeDiff();
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("BitonicSort "));
-		sb.AppendUOSInt(Sync::Thread::GetThreadCnt());
+		sb.AppendUOSInt(Sync::ThreadUtil::GetThreadCnt());
 		sb.AppendC(UTF8STRC(" Thread N = "));
 		sb.AppendUOSInt(NumberOfRec);
 		sb.AppendC(UTF8STRC(", Sort time = "));

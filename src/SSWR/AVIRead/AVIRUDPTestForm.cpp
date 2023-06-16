@@ -4,7 +4,7 @@
 #include "SSWR/AVIRead/AVIRUDPTestForm.h"
 #include "Sync/Interlocked.h"
 #include "Sync/MutexUsage.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
@@ -298,7 +298,7 @@ SSWR::AVIRead::AVIRUDPTestForm::AVIRUDPTestForm(UI::GUIClientControl *parent, UI
 	this->AddTimer(100, OnTimerTick, this);
 
 	UOSInt i;
-	this->threadCnt = Sync::Thread::GetThreadCnt();
+	this->threadCnt = Sync::ThreadUtil::GetThreadCnt();
 	this->threads = MemAlloc(ThreadStatus, this->threadCnt);
 	i = this->threadCnt;
 	while (i-- > 0)
@@ -312,7 +312,7 @@ SSWR::AVIRead::AVIRUDPTestForm::AVIRUDPTestForm(UI::GUIClientControl *parent, UI
 		this->threads[i].taskType = 0;
 		this->threads[i].sentSuccCnt = 0;
 		this->threads[i].sentFailCnt = 0;
-		Sync::Thread::Create(ProcThread, &this->threads[i]);
+		Sync::ThreadUtil::Create(ProcThread, &this->threads[i]);
 	}
 	Bool found = true;
 	while (found)

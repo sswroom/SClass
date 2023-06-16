@@ -3,7 +3,7 @@
 #include "Data/UUID.h"
 #include "IO/FileAnalyse/LNKFileAnalyse.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyStringW.h"
 #include "Text/StringBuilderUTF8.h"
 
@@ -141,7 +141,7 @@ IO::FileAnalyse::LNKFileAnalyse::LNKFileAnalyse(IO::StreamData* fd)
 	}
 	this->fd = fd->GetPartialData(0, fd->GetDataSize());
 
-	Sync::Thread::Create(ParseThread, this);
+	Sync::ThreadUtil::Create(ParseThread, this);
 	while (!this->threadStarted)
 	{
 		Sync::SimpleThread::Sleep(10);

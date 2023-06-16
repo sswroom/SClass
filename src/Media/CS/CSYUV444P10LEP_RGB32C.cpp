@@ -3,7 +3,7 @@
 #include "Math/Math.h"
 #include "Media/RGBLUTGen.h"
 #include "Media/CS/CSYUV444P10LEP_RGB32C.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 
 extern "C"
 {
@@ -360,7 +360,7 @@ Media::CS::CSYUV444P10LEP_RGB32C::CSYUV444P10LEP_RGB32C(const Media::ColorProfil
 	MemCopyNO(&this->yuvParam, colorSess->GetYUVParam(), sizeof(YUVPARAM));
 	this->rgbParam.Set(colorSess->GetRGBParam());
 
-	this->nThread = Sync::Thread::GetThreadCnt();
+	this->nThread = Sync::ThreadUtil::GetThreadCnt();
 	if (this->nThread > 2)
 	{
 		this->nThread = 2;
@@ -372,7 +372,7 @@ Media::CS::CSYUV444P10LEP_RGB32C::CSYUV444P10LEP_RGB32C(const Media::ColorProfil
 		stats[i].status = 0;
 
 		currId = i;
-		Sync::Thread::Create(WorkerThread, this, 65536);
+		Sync::ThreadUtil::Create(WorkerThread, this, 65536);
 		while (stats[i].status == 0)
 		{
 			this->evtMain.Wait();

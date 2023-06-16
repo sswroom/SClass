@@ -5,7 +5,7 @@
 #include "Net/OSSocketFactory.h"
 #include "Net/WebServer/WebListener.h"
 #include "Net/WebServer/WebStandardHandler.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 
 #define PORT 6080
 
@@ -130,7 +130,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	NEW_CLASS(sockf, Net::OSSocketFactory(false));
 	NEW_CLASS(gpio, IO::GPIOControl());
 	NEW_CLASS(webHdlr, GPIOWebHandler(gpio));
-	NEW_CLASS(listener, Net::WebServer::WebListener(sockf, 0, webHdlr, PORT, 120, Sync::Thread::GetThreadCnt(), CSTR("GPIO/1.0"), false, Net::WebServer::KeepAlive::Default, true));
+	NEW_CLASS(listener, Net::WebServer::WebListener(sockf, 0, webHdlr, PORT, 120, Sync::ThreadUtil::GetThreadCnt(), CSTR("GPIO/1.0"), false, Net::WebServer::KeepAlive::Default, true));
 	progCtrl->WaitForExit(progCtrl);
 	DEL_CLASS(listener);
 	webHdlr->Release();

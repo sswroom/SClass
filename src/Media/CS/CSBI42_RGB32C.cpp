@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Math/Math.h"
 #include "Media/CS/CSBI42_RGB32C.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 
 #define YVADJ 0.25
 

@@ -6,7 +6,7 @@
 #include "Media/ColorProfile.h"
 #include "SSWR/AVIRead/AVIRMQTTSubscribeForm.h"
 #include "Sync/MutexUsage.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
 #include "UI/MessageDialog.h"

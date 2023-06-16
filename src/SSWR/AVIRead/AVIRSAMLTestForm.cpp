@@ -7,7 +7,7 @@
 #include "Net/SSLEngineFactory.h"
 #include "SSWR/AVIRead/AVIRSAMLTestForm.h"
 #include "SSWR/AVIRead/AVIRSSLCertKeyForm.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 #include "Text/XML.h"
@@ -237,7 +237,7 @@ void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnStartClicked(void *userObj)
 		}
 		me->samlHdlr->HandleRAWSAMLResponse(OnSAMLResponse, me);
 		me->samlHdlr->HandleLoginRequest(OnLoginRequest, me);
-		NEW_CLASS(me->svr, Net::WebServer::WebListener(me->core->GetSocketFactory(), ssl, me->samlHdlr, port, 120, Sync::Thread::GetThreadCnt(), CSTR("SAMLTest/1.0"), false, Net::WebServer::KeepAlive::Default, false));
+		NEW_CLASS(me->svr, Net::WebServer::WebListener(me->core->GetSocketFactory(), ssl, me->samlHdlr, port, 120, Sync::ThreadUtil::GetThreadCnt(), CSTR("SAMLTest/1.0"), false, Net::WebServer::KeepAlive::Default, false));
 		if (me->svr->IsError())
 		{
 			SDEL_CLASS(me->svr);

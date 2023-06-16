@@ -99,8 +99,8 @@ Parser/FileParser/WebPParser.h: ../../src/Parser/FileParser/WebPParser_Null.cpp
 
 Sync/SimpleThread.h: ../../src/Sync/SimpleThreadU.cpp
 @SimpleThread.o
-Sync/Thread.h: ../../src/Sync/ThreadU.cpp
-@Thread.o
+Sync/ThreadUtil.h: ../../src/Sync/ThreadUtilU.cpp
+@ThreadUtil.o
 
 
 ConsoleStartup.o: ../../startup/LinuxConStartup.cpp
@@ -151,5 +151,5 @@ HEIFParser.o: ../../src/Parser/FileParser/HEIFParser_Null.cpp
 JP2Parser.o: ../../src/Parser/FileParser/JP2Parser_Null.cpp
 WebPParser.o: ../../src/Parser/FileParser/WebPParser_Null.cpp
 SimpleThread.o: ../../src/Sync/SimpleThreadU.cpp
-Thread.o: ../../src/Sync/ThreadU.cpp
+ThreadUtil.o: ../../src/Sync/ThreadUtilU.cpp
 !-lpthread

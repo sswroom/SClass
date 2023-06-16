@@ -4,7 +4,7 @@
 #include "Sync/Interlocked.h"
 #include "Sync/MutexUsage.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include <windows.h>
 
 UInt32 __stdcall Media::AVIUtl::AUIVideo::PlayThread(void *userObj)
@@ -78,7 +78,7 @@ Media::AVIUtl::AUIVideo::AUIVideo(Media::AVIUtl::AUIPlugin *plugin, Media::AVIUt
 	this->playCb = 0;
 	this->playCbData = 0;
 
-	Sync::Thread::Create(PlayThread, this);
+	Sync::ThreadUtil::Create(PlayThread, this);
 	while (!this->threadRunning)
 	{
 		Sync::SimpleThread::Sleep(10);

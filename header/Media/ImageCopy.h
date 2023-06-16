@@ -2,7 +2,7 @@
 #define _SM_MEDIA_IMAGECOPY
 #include "Sync/Event.h"
 #include "Sync/Mutex.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 
 namespace Media
 {
@@ -35,7 +35,7 @@ namespace Media
 
 		void Copy32(UInt8 *src, OSInt sbpl, UInt8 *dest, OSInt dbpl, UOSInt dwidth, UOSInt dheight);
 		void Copy16(UInt8 *src, OSInt sbpl, UInt8 *dest, OSInt dbpl, UOSInt dwidth, UOSInt dheight);
-		void SetThreadPriority(Sync::Thread::ThreadPriority tp);
+		void SetThreadPriority(Sync::ThreadUtil::ThreadPriority tp);
 	};
 }
 

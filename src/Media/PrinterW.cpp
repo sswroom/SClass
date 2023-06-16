@@ -4,7 +4,7 @@
 #include "Media/GDIEngine.h"
 #include "Media/Printer.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 #include "Text/MyStringW.h"
 #include <windows.h>
@@ -178,7 +178,7 @@ void Media::GDIPrintDocument::Start()
 		{
 			this->started = true;
 			this->running = true;
-			Sync::Thread::Create(PrintThread, this);
+			Sync::ThreadUtil::Create(PrintThread, this);
 		}
 		else
 		{

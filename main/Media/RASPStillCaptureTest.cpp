@@ -4,7 +4,7 @@
 #include "IO/ConsoleWriter.h"
 #include "IO/FileStream.h"
 #include "Media/MMALStillCapture.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 
 Int32 MyMain(Core::IProgControl *progCtrl)
 {

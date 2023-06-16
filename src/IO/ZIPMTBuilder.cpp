@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "IO/ZIPMTBuilder.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 
 UInt32 __stdcall IO::ZIPMTBuilder::ThreadProc(void *userObj)
 {
@@ -68,7 +68,7 @@ void IO::ZIPMTBuilder::AddTask(FileTask *task)
 IO::ZIPMTBuilder::ZIPMTBuilder(IO::SeekableStream *stm) : zip(stm)
 {
 	this->toStop = false;
-	this->threadCnt = Sync::Thread::GetThreadCnt();
+	this->threadCnt = Sync::ThreadUtil::GetThreadCnt();
 	this->threads = MemAlloc(ThreadStat, this->threadCnt);
 	UOSInt i = this->threadCnt;
 	while (i-- > 0)
@@ -76,7 +76,7 @@ IO::ZIPMTBuilder::ZIPMTBuilder(IO::SeekableStream *stm) : zip(stm)
 		this->threads[i].me = this;
 		this->threads[i].evt = 0;
 		this->threads[i].status = ThreadState::NotRunning;
-		Sync::Thread::Create(ThreadProc, &this->threads[i]);
+		Sync::ThreadUtil::Create(ThreadProc, &this->threads[i]);
 	}
 }
 

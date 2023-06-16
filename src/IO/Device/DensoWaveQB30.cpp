@@ -5,7 +5,7 @@
 #include "IO/Device/DensoWaveQB30.h"
 #include "Sync/MutexUsage.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/Encoding.h"
 #include "Text/MyString.h"
 #define RECVBUFFSIZE 256
@@ -265,7 +265,7 @@ IO::Device::DensoWaveQB30::DensoWaveQB30(IO::Stream *stm) : IO::CodeScanner(CSTR
 	this->scanHdlr = 0;
 	this->scanHdlrObj = 0;
 
-	Sync::Thread::Create(RecvThread, this);
+	Sync::ThreadUtil::Create(RecvThread, this);
 }
 
 IO::Device::DensoWaveQB30::~DensoWaveQB30()

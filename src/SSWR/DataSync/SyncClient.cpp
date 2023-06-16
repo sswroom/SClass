@@ -4,7 +4,7 @@
 #include "SSWR/DataSync/SyncClient.h"
 #include "Sync/MutexUsage.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 
@@ -215,8 +215,8 @@ SSWR::DataSync::SyncClient::SyncClient(Net::SocketFactory *sockf, Int32 serverId
 	this->kaRunning = false;
 	this->toStop = false;
 
-	Sync::Thread::Create(RecvThread, this);
-	Sync::Thread::Create(KAThread, this);
+	Sync::ThreadUtil::Create(RecvThread, this);
+	Sync::ThreadUtil::Create(KAThread, this);
 	while (!this->recvRunning || !this->kaRunning)
 	{
 		Sync::SimpleThread::Sleep(1);

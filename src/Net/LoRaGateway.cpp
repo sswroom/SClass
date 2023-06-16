@@ -3,7 +3,7 @@
 #include "Net/LoRaGateway.h"
 #include "Net/LoRaGWUtil.h"
 #include "Sync/MutexUsage.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/StringBuilderUTF8.h"
 
 #include <stdio.h>
@@ -87,7 +87,7 @@ Net::LoRaGateway::LoRaGateway(Net::SocketFactory *sockf, const Net::SocketUtil::
 	this->lat = 0;
 	this->lon = 0;
 	this->altitude = 0;
-	Sync::Thread::Create(PullThread, this);
+	Sync::ThreadUtil::Create(PullThread, this);
 	while (!this->threadRunning)
 	{
 		this->mainEvt.Wait(1000);

@@ -12,7 +12,7 @@
 #include "Sync/Mutex.h"
 #include "Sync/MutexUsage.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include <poll.h>
 #include <unistd.h>
 #include <stdio.h>
@@ -80,7 +80,7 @@ UInt32 __stdcall Net::TCPClientMgr::ClientThread(void *o)
 	Bool pollPreData = false;
 
 	me->clientThreadRunning = true;
-	Sync::Thread::SetPriority(Sync::Thread::TP_REALTIME);
+	Sync::ThreadUtil::SetPriority(Sync::ThreadUtil::TP_REALTIME);
 	while (!me->toStop)
 	{
 		pollPreData = false;
@@ -358,7 +358,7 @@ Net::TCPClientMgr::TCPClientMgr(Int32 timeOutSeconds, TCPClientEvent evtHdlr, TC
 	}
 	else
 	{
-		Sync::Thread::Create(ClientThread, this);
+		Sync::ThreadUtil::Create(ClientThread, this);
 		this->workers = MemAlloc(WorkerStatus, workerCnt);
 		while (workerCnt-- > 0)
 		{
@@ -367,7 +367,7 @@ Net::TCPClientMgr::TCPClientMgr(Int32 timeOutSeconds, TCPClientEvent evtHdlr, TC
 			this->workers[workerCnt].isPrimary = (workerCnt == 0);
 			this->workers[workerCnt].me = this;
 
-			Sync::Thread::Create(WorkerThread, &this->workers[workerCnt]);
+			Sync::ThreadUtil::Create(WorkerThread, &this->workers[workerCnt]);
 		}
 	}
 }

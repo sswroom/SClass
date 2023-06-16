@@ -3,7 +3,7 @@
 #include "IO/Device/AXCAN.h"
 #include "Sync/MutexUsage.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/UTF8Reader.h"
 
 #define CMDTIMEOUT 1000
@@ -153,7 +153,7 @@ Bool IO::Device::AXCAN::OpenStream(IO::Stream *stm, CANBitRate bitRate)
 {
 	this->stm = stm;
 	this->threadRunning = true;
-	if (Sync::Thread::Create(SerialThread, this) == 0)
+	if (Sync::ThreadUtil::Create(SerialThread, this) == 0)
 	{
 		this->threadRunning = false;
 		DEL_CLASS(this->stm);

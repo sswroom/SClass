@@ -5,7 +5,7 @@
 #include "IO/SerialPort.h"
 #include "IO/Device/MTKGPSNMEA.h"
 #include "Sync/MutexUsage.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/CString.h"
 
 #include <stdio.h>

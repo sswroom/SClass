@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "IO/Path.h"
 #include "SSWR/AVIRead/AVIRTFTPServerForm.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 

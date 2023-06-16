@@ -9,7 +9,7 @@
 #include "Media/AudioFilter/DTMFDecoder.h"
 #include "Sync/MutexUsage.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 #include "Text/UTF8Writer.h"
@@ -463,7 +463,7 @@ Media::AudioFilter::DTMFDecoder::DTMFDecoder(Media::IAudioSource *audSrc, UOSInt
 	this->toneChgObj = 0;
 	this->threadToStop = false;
 	this->threadRunning = false;
-	Sync::Thread::Create(CalcThread, this);
+	Sync::ThreadUtil::Create(CalcThread, this);
 	this->ResetStatus();
 }
 

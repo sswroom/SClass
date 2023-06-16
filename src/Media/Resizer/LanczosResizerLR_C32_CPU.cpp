@@ -4,7 +4,7 @@
 #include "Math/Math.h"
 #include "Media/Resizer/LanczosResizerLR_C32_CPU.h"
 #include "Sync/Event.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 
 extern "C"
 {
@@ -225,7 +225,7 @@ void Media::Resizer::LanczosResizerLR_C32_CPU::DoTask(void *obj)
 Media::Resizer::LanczosResizerLR_C32_CPU::LanczosResizerLR_C32_CPU()
 {
 	UOSInt i;
-	this->nThread = Sync::Thread::GetThreadCnt();
+	this->nThread = Sync::ThreadUtil::GetThreadCnt();
 	if (this->nThread > 4)
 	{
 		this->nThread = 4;

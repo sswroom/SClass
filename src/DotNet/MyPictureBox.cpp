@@ -3,7 +3,7 @@
 #include "Math/Math.h"
 #include "Media/Resizer/LanczosResizerH8_8.h"
 #include "Media/Resizer/LanczosResizer8_C8.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "DotNet/MyPictureBox.h"
 
 #include <windows.h>

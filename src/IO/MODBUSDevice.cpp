@@ -3,7 +3,7 @@
 #include "IO/MODBUSDevice.h"
 #include "Math/Math.h"
 #include "Sync/MutexUsage.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 
 void __stdcall IO::MODBUSDevice::ReadResult(void *userObj, UInt8 funcCode, const UInt8 *result, UOSInt resultSize)
 {

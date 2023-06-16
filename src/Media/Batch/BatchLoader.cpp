@@ -4,7 +4,7 @@
 #include "Media/Batch/BatchLoader.h"
 #include "Sync/Event.h"
 #include "Sync/MutexUsage.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 
 UInt32 __stdcall Media::Batch::BatchLoader::ThreadProc(void *userObj)
 {
@@ -136,7 +136,7 @@ Media::Batch::BatchLoader::BatchLoader(Parser::ParserList *parsers, Media::Batch
 	this->hdlr = hdlr;
 
 	this->nextThread = 0;
-	i = this->threadCnt = Sync::Thread::GetThreadCnt();
+	i = this->threadCnt = Sync::ThreadUtil::GetThreadCnt();
 	this->threadStates = MemAlloc(ThreadState, i);
 	while (i-- > 0)
 	{
@@ -145,7 +145,7 @@ Media::Batch::BatchLoader::BatchLoader(Parser::ParserList *parsers, Media::Batch
 		this->threadStates[i].processing = false;
 		this->threadStates[i].me = this;
 		NEW_CLASS(this->threadStates[i].evt, Sync::Event(true));
-		Sync::Thread::Create(ThreadProc, &this->threadStates[i]);
+		Sync::ThreadUtil::Create(ThreadProc, &this->threadStates[i]);
 	}
 
 	while (true)

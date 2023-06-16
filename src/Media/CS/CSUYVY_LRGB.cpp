@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Media/CS/CSUYVY_LRGB.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 
 extern "C"
 {
@@ -200,7 +200,7 @@ UInt32 Media::CS::CSUYVY_LRGB::WorkerThread(void *obj)
 Media::CS::CSUYVY_LRGB::CSUYVY_LRGB(Media::ColorProfile *srcColor, Media::ColorProfile::YUVType yuvType, Media::ColorManagerSess *colorSess) : Media::CS::CSYUV_LRGB(srcColor, yuvType, colorSess)
 {
 	UOSInt i;
-	this->nThread = Sync::Thread::GetThreadCnt();
+	this->nThread = Sync::ThreadUtil::GetThreadCnt();
 
 	NEW_CLASS(evtMain, Sync::Event());
 	stats = MemAlloc(THREADSTAT, nThread);
@@ -211,7 +211,7 @@ Media::CS::CSUYVY_LRGB::CSUYVY_LRGB(Media::ColorProfile *srcColor, Media::ColorP
 		stats[i].status = 0;
 
 		currId = i;
-		Sync::Thread::Create(WorkerThread, this);
+		Sync::ThreadUtil::Create(WorkerThread, this);
 		while (stats[i].status == 0)
 		{
 			evtMain->Wait();

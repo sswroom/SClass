@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "Core/Core.h"
 #include "IO/GPIOControl.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 
 #define PIN1 5
 #define PIN2 8

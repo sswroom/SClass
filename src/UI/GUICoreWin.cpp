@@ -5,7 +5,7 @@
 #include "Media/GDIEngineC.h"
 #include "UI/GUICoreWin.h"
 #ifdef _WIN32_WCE
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #endif
 #include <windows.h>
 

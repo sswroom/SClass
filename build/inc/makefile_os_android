@@ -218,7 +218,7 @@ RWMutex.o: $(CLASSDIR)src/Sync/RWMutexL.cpp
 SimpleThread.o: $(CLASSDIR)src/Sync/SimpleThreadU.cpp LIBS_pthread
 	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
 
-Thread.o: $(CLASSDIR)src/Sync/ThreadU.cpp LIBS_pthread
+ThreadUtil.o: $(CLASSDIR)src/Sync/ThreadUtilU.cpp LIBS_pthread
 	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
 
 sqlite3.o: $(CLASSDIR)src/ThirdParty/sqlite3.c

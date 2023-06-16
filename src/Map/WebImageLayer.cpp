@@ -10,7 +10,7 @@
 #include "Sync/MutexUsage.h"
 #include "Sync/RWMutexUsage.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 
 //#define VERBOSE
@@ -242,7 +242,7 @@ Map::WebImageLayer::WebImageLayer(Net::WebBrowser *browser, Parser::ParserList *
 	this->currTime = 0;
 	this->threadRunning = false;
 	this->threadToStop = false;
-	Sync::Thread::Create(LoadThread, this);
+	Sync::ThreadUtil::Create(LoadThread, this);
 }
 
 Map::WebImageLayer::~WebImageLayer()

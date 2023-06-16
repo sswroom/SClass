@@ -3,7 +3,7 @@
 #include "Math/Math.h"
 #include "Media/Deinterlace8.h"
 #include "Sync/Event.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include <float.h>
 #include <math.h>
 
@@ -659,7 +659,7 @@ Media::Deinterlace8::Deinterlace8(UOSInt fieldCnt, UOSInt fieldSep)
 	this->fieldSep = 0;
 	Reinit(fieldCnt, fieldSep);
 
-	nCore = Sync::Thread::GetThreadCnt();
+	nCore = Sync::ThreadUtil::GetThreadCnt();
 	if (nCore > 4)
 	{
 		nCore = 4;
@@ -679,7 +679,7 @@ Media::Deinterlace8::Deinterlace8(UOSInt fieldCnt, UOSInt fieldSep)
 	i = nCore;
 	while (i-- > 0)
 	{
-		Sync::Thread::Create(ProcThread, &stats[i]);
+		Sync::ThreadUtil::Create(ProcThread, &stats[i]);
 	}
 
 }

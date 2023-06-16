@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Math/Math.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "DotNet/PictureBoxRenderer.h"
 
 void DotNet::PictureBoxRenderer::SizeChg(System::Object *sender, System::EventArgs *e)

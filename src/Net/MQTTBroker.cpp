@@ -5,7 +5,7 @@
 #include "Sync/Interlocked.h"
 #include "Sync/MutexUsage.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 
@@ -981,7 +981,7 @@ Net::MQTTBroker::MQTTBroker(Net::SocketFactory *sockf, Net::SSLEngine *ssl, UInt
 
 	if (this->AddListener(ssl, port, autoStart) && sysInfo)
 	{
-		Sync::Thread::Create(SysInfoThread, this);
+		Sync::ThreadUtil::Create(SysInfoThread, this);
 		while (!this->sysInfoRunning)
 		{
 			Sync::SimpleThread::Sleep(1);
@@ -1042,7 +1042,7 @@ Bool Net::MQTTBroker::AddListener(Net::SSLEngine *ssl, UInt16 port, Bool autoSta
 	listener->me = this;
 	listener->ssl = ssl;
 	listener->listener = 0;
-	NEW_CLASS(listener->cliMgr, Net::TCPClientMgr(240, OnClientEvent, OnClientData, listener, Sync::Thread::GetThreadCnt(), OnClientTimeout));
+	NEW_CLASS(listener->cliMgr, Net::TCPClientMgr(240, OnClientEvent, OnClientData, listener, Sync::ThreadUtil::GetThreadCnt(), OnClientTimeout));
 	NEW_CLASS(listener->svr, Net::TCPServer(this->sockf, port, this->log, OnClientConn, listener, CSTR("MQTT: "), autoStart));
 	if (listener->svr->IsV4Error())
 	{
@@ -1067,7 +1067,7 @@ Bool Net::MQTTBroker::AddWSListener(Net::SSLEngine *ssl, UInt16 port, Bool autoS
 	listener->ssl = 0;
 	listener->cliMgr = 0;
 	listener->svr = 0;
-	NEW_CLASS(listener->listener, Net::WebServer::WebListener(this->sockf, ssl, &this->wsHdlr, port, 60, Sync::Thread::GetThreadCnt(), CSTR("SSWRMQTT/1.0"), false, Net::WebServer::KeepAlive::No, autoStart));
+	NEW_CLASS(listener->listener, Net::WebServer::WebListener(this->sockf, ssl, &this->wsHdlr, port, 60, Sync::ThreadUtil::GetThreadCnt(), CSTR("SSWRMQTT/1.0"), false, Net::WebServer::KeepAlive::No, autoStart));
 	if (listener->listener->IsError())
 	{
 		DEL_CLASS(listener->listener);

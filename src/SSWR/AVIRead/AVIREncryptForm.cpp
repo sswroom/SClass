@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "IO/FileStream.h"
 #include "SSWR/AVIRead/AVIREncryptForm.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 #include "UI/FileDialog.h"
 #include "UI/MessageDialog.h"

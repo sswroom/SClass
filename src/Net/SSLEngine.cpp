@@ -6,7 +6,7 @@
 #include "Sync/Interlocked.h"
 #include "Sync/MutexUsage.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 
 Crypto::Cert::CertStore *Net::SSLEngine::trustStore = 0;
@@ -186,7 +186,7 @@ void Net::SSLEngine::ServerInit(Socket *s, ClientReadyHandler readyHdlr, void *u
 			this->threadSt[i].s = s;
 			this->threadSt[i].status = ThreadStatus::Starting;
 			this->threadSt[i].me = this;
-			Sync::Thread::Create(ServerThread, &this->threadSt[i]);
+			Sync::ThreadUtil::Create(ServerThread, &this->threadSt[i]);
 			break;
 		}
 		else

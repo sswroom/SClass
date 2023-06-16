@@ -5,7 +5,7 @@
 #include "Media/IAudioSource.h"
 #include "Media/RefClock.h"
 #include "Sync/Event.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 #include <aaudio/AAudio.h>
 #include <stdio.h>
@@ -495,7 +495,7 @@ void Media::AAudioRenderer::Start()
 		return;
 	threadInit = false;
 	stopPlay = false;
-	Sync::Thread::Create(PlayThread, this);
+	Sync::ThreadUtil::Create(PlayThread, this);
 	while (!threadInit)
 	{
 		Sync::SimpleThread::Sleep(10);

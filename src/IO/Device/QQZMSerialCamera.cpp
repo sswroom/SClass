@@ -4,7 +4,7 @@
 #include "Data/DateTime.h"
 #include "IO/Device/QQZMSerialCamera.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 
 #define PACKETSIZE 512
@@ -183,7 +183,7 @@ IO::Device::QQZMSerialCamera::QQZMSerialCamera(IO::Stream *stm, UInt8 cameraId, 
 
 	this->threadToStop = false;
 	this->threadRunning = false;
-	Sync::Thread::Create(RecvThread, this);
+	Sync::ThreadUtil::Create(RecvThread, this);
 	while (!this->threadRunning)
 	{
 		Sync::SimpleThread::Sleep(10);

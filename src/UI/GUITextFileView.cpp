@@ -4,7 +4,7 @@
 #include "Sync/Interlocked.h"
 #include "Sync/MutexUsage.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/Encoding.h"
 #include "Text/MyString.h"
 #include "Text/MyStringW.h"
@@ -885,7 +885,7 @@ UI::GUITextFileView::GUITextFileView(UI::GUICore *ui, UI::GUIClientControl *pare
 	this->srchText = 0;
 	this->fileSize = 0;
 
-	Sync::Thread::Create(ProcThread, this);
+	Sync::ThreadUtil::Create(ProcThread, this);
 }
 
 UI::GUITextFileView::~GUITextFileView()

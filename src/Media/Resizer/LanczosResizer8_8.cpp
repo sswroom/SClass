@@ -5,7 +5,7 @@
 #include "Media/IImgResizer.h"
 #include "Media/Resizer/LanczosResizer8_8.h"
 #include "Sync/Event.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #ifndef HAS_ASM32
 #include <mmintrin.h>
 #endif
@@ -1258,7 +1258,7 @@ Media::Resizer::LanczosResizer8_8::LanczosResizer8_8(Int32 nTap) : Media::IImgRe
 //	SYSTEM_INFO sysInfo;
 	Int32 i;
 
-	nThread = Sync::Thread::GetThreadCnt();
+	nThread = Sync::ThreadUtil::GetThreadCnt();
 	if (nThread <= 0)
 		nThread = 1;
 
@@ -1270,7 +1270,7 @@ Media::Resizer::LanczosResizer8_8::LanczosResizer8_8(Int32 nTap) : Media::IImgRe
 		NEW_CLASS(stats[i].evt, Sync::Event());
 		stats[i].status = 0;
 		currId = i;
-		Sync::Thread::Create(WorkerThread, this);
+		Sync::ThreadUtil::Create(WorkerThread, this);
 		while (stats[i].status == 0)
 		{
 			this->evtMain.Wait();

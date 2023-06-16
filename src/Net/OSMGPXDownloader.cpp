@@ -3,7 +3,7 @@
 #include "IO/FileStream.h"
 #include "Net/HTTPClient.h"
 #include "Net/OSMGPXDownloader.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 
 Net::OSMGPXDownloader::OSMGPXDownloader(Net::SocketFactory *sockf, Text::CString storeDir, IO::Writer *writer)
 {

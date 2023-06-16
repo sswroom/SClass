@@ -6,7 +6,7 @@
 #include "Sync/Event.h"
 #include "Sync/Mutex.h"
 #include "Sync/MutexUsage.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 
 #define PI 3.141592653589793
 

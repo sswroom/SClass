@@ -10,7 +10,7 @@
 #include "Net/HTTPClient.h"
 #include "Net/OSSocketFactory.h"
 #include "Net/SSLEngineFactory.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/JSON.h"
 #include "Text/String.h"
 
@@ -241,7 +241,7 @@ public:
 			this->stats[i].succCnt = 0;
 			this->stats[i].currURL = 0;
 			this->stats[i].state = ThreadState::NotRunning;
-			Sync::Thread::Create(ProcThread, &this->stats[i]);
+			Sync::ThreadUtil::Create(ProcThread, &this->stats[i]);
 		}
 		Bool found = true;
 		while (true)

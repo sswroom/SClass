@@ -2,7 +2,7 @@
 #include "Data/ByteTool.h"
 #include "IO/FileStream.h"
 #include "IO/FileAnalyse/TSFileAnalyse.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 
 IO::FileAnalyse::TSFileAnalyse::TSFileAnalyse(IO::StreamData *fd)
 {

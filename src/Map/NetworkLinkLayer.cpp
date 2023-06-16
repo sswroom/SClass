@@ -4,7 +4,7 @@
 #include "Sync/MutexUsage.h"
 #include "Sync/RWMutexUsage.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/StringBuilderUTF8.h"
 #include "Text/URLString.h"
 
@@ -197,7 +197,7 @@ Map::NetworkLinkLayer::NetworkLinkLayer(Text::CString fileName, Parser::ParserLi
 
 	this->ctrlRunning = false;
 	this->ctrlToStop = false;
-	Sync::Thread::Create(ControlThread, this);
+	Sync::ThreadUtil::Create(ControlThread, this);
 	while (!this->ctrlRunning)
 	{
 		Sync::SimpleThread::Sleep(10);

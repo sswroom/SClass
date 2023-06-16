@@ -4,7 +4,7 @@
 #include "IO/SerialPort.h"
 #include "SSWR/AVIRead/AVIRStreamLatencyForm.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/Encoding.h"
 
 void __stdcall SSWR::AVIRead::AVIRStreamLatencyForm::OnStreamClicked(void *userObj)
@@ -30,7 +30,7 @@ void __stdcall SSWR::AVIRead::AVIRStreamLatencyForm::OnStreamClicked(void *userO
 			me->threadRunning = false;
 			me->threadToStop = false;
 
-			Sync::Thread::Create(RecvThread, me);
+			Sync::ThreadUtil::Create(RecvThread, me);
 			while (!me->threadRunning && !me->remoteClosed)
 			{
 				Sync::SimpleThread::Sleep(10);

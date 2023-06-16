@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "Data/ByteTool.h"
 #include "IO/Device/DS18B20.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 
 UInt8 IO::Device::DS18B20::CalcCRC(const UInt8 *buff, OSInt size)
 {

@@ -3,7 +3,7 @@
 #include "Math/Math.h"
 #include "SSWR/AVIRead/AVIRProcInfoForm.h"
 #include "SSWR/AVIRead/AVIRThreadInfoForm.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 
 void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnSumDblClicked(void *userObj, UOSInt index)
 {
@@ -537,7 +537,7 @@ SSWR::AVIRead::AVIRProcInfoForm::AVIRProcInfoForm(UI::GUIClientControl *parent, 
 	this->currProc = 0;
 	this->currProcObj = 0;
 	this->currProcRes = 0;
-	this->threadCnt = Sync::Thread::GetThreadCnt();
+	this->threadCnt = Sync::ThreadUtil::GetThreadCnt();
 
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);

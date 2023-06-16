@@ -5,7 +5,7 @@
 #include "Media/ImageList.h"
 #include "Parser/FileParser/FNTParser.h"
 #include "SSWR/AVIRead/AVIRExeForm.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 #include "UI/Clipboard.h"

@@ -3,7 +3,7 @@
 #include "Manage/HiResClock.h"
 #include "Net/Email/SMTPConn.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 #include "Text/UTF8Reader.h"
@@ -212,7 +212,7 @@ Net::Email::SMTPConn::SMTPConn(Net::SocketFactory *sockf, Net::SSLEngine *ssl, T
 		sb.AppendU16(port);
 		this->logWriter->WriteLineC(sb.ToString(), sb.GetLength());
 	}
-	Sync::Thread::Create(SMTPThread, this);
+	Sync::ThreadUtil::Create(SMTPThread, this);
 	while (!this->threadStarted)
 	{
 		Sync::SimpleThread::Sleep(10);

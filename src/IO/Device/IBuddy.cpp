@@ -3,7 +3,7 @@
 #include "IO/HIDInfo.h"
 #include "IO/Path.h"
 #include "IO/Device/IBuddy.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 
 UOSInt IO::Device::IBuddy::GetNumDevice()

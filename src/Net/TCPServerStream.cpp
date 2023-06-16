@@ -2,7 +2,7 @@
 #include "Net/TCPServerStream.h"
 #include "Sync/Interlocked.h"
 #include "Sync/MutexUsage.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/StringBuilder.h"
 
 void __stdcall Net::TCPServerStream::ConnHandler(Socket *s, void *userObj)

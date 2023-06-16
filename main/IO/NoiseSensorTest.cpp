@@ -4,7 +4,7 @@
 #include "Data/ByteTool.h"
 #include "IO/SerialPort.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include <stdio.h>
 
 IO::SerialPort *port;
@@ -64,7 +64,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	{
 		threadToStop = false;
 		threadRunning = false;
-		Sync::Thread::Create(ReadThread, 0);
+		Sync::ThreadUtil::Create(ReadThread, 0);
 		progCtrl->WaitForExit(progCtrl);
 		threadToStop = true;
 		port->Close();

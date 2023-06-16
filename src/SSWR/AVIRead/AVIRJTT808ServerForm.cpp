@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "Data/ByteTool.h"
 #include "SSWR/AVIRead/AVIRJTT808ServerForm.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyStringFloat.h"
 #include "UI/MessageDialog.h"
 
@@ -36,7 +36,7 @@ void __stdcall SSWR::AVIRead::AVIRJTT808ServerForm::OnStartClicked(void *userObj
 		}
 		else
 		{
-			NEW_CLASS(me->cliMgr, Net::TCPClientMgr(240, OnClientEvent, OnClientData, me, Sync::Thread::GetThreadCnt(), OnClientTimeout));
+			NEW_CLASS(me->cliMgr, Net::TCPClientMgr(240, OnClientEvent, OnClientData, me, Sync::ThreadUtil::GetThreadCnt(), OnClientTimeout));
 			NEW_CLASS(me->svr, Net::TCPServer(me->core->GetSocketFactory(), port, me->log, OnClientConn, me, CSTR("TCP: "), true));
 			if (me->svr->IsV4Error())
 			{

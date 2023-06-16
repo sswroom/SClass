@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "Core/Core.h"
 #include "IO/ConsoleWriter.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 
 Int32 MyMain(Core::IProgControl *progCtrl)
 {

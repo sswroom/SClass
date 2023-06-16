@@ -6,7 +6,7 @@
 #include "Media/FrequencyGraph.h"
 #include "SSWR/AVIRead/AVIRAudioViewerForm.h"
 #include "SSWR/AVIRead/AVIRMediaForm.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 #include "Text/UTF8Writer.h"
@@ -335,7 +335,7 @@ SSWR::AVIRead::AVIRMediaForm::AVIRMediaForm(UI::GUIClientControl *parent, UI::GU
 	NEW_CLASS(this->pnlCtrl, UI::GUIPanel(ui, this));
 	this->pnlCtrl->SetRect(0, 0, 100, 56, false);
 	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASS(this->vbdMain, UI::GUIVideoBoxDD(ui, this, this->colorSess, 5, Sync::Thread::GetThreadCnt()));
+	NEW_CLASS(this->vbdMain, UI::GUIVideoBoxDD(ui, this, this->colorSess, 5, Sync::ThreadUtil::GetThreadCnt()));
 	this->vbdMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	UI::GUIMenu *mnu;

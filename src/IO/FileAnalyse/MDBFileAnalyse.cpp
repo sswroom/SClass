@@ -4,7 +4,7 @@
 #include "IO/FileStream.h"
 #include "IO/FileAnalyse/MDBFileAnalyse.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyStringFloat.h"
 #include "Text/MyStringW.h"
 #include "Text/XLSUtil.h"
@@ -72,7 +72,7 @@ IO::FileAnalyse::MDBFileAnalyse::MDBFileAnalyse(IO::StreamData *fd)
 	}
 	this->fileVer = ReadUInt32(&buff[20]);
 	this->fd = fd->GetPartialData(0, fd->GetDataSize());
-	Sync::Thread::Create(ParseThread, this);
+	Sync::ThreadUtil::Create(ParseThread, this);
 	while (!this->threadStarted)
 	{
 		Sync::SimpleThread::Sleep(10);

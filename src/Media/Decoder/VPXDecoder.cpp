@@ -3,7 +3,7 @@
 #include "Core/Core.h"
 #include "Media/StaticImage.h"
 #include "Media/Decoder/VPXDecoder.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 #include "vpx/vp8dx.h"
 #include "vpx/vpx_decoder.h"

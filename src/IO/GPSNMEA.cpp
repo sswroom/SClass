@@ -4,7 +4,7 @@
 #include "Math/Math.h"
 #include "Sync/RWMutexUsage.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
@@ -321,7 +321,7 @@ IO::GPSNMEA::GPSNMEA(IO::Stream *stm, Bool relStm)
 	this->threadRunning = false;
 	this->threadToStop = false;
 
-	Sync::Thread::Create(NMEAThread, this);
+	Sync::ThreadUtil::Create(NMEAThread, this);
 	while (!this->threadRunning)
 	{
 		Sync::SimpleThread::Sleep(10);

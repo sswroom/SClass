@@ -6,7 +6,7 @@
 #include "Net/LogClient.h"
 #include "Sync/MutexUsage.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 
@@ -154,8 +154,8 @@ Net::LogClient::LogClient(Net::SocketFactory *sockf, const Net::SocketUtil::Addr
 	this->sendToStop = false;
 	this->recvRunning = false;
 	this->recvToStop = false;
-	Sync::Thread::Create(SendThread, this);
-	Sync::Thread::Create(RecvThread, this);
+	Sync::ThreadUtil::Create(SendThread, this);
+	Sync::ThreadUtil::Create(RecvThread, this);
 	while (!this->sendRunning || !this->recvRunning)
 	{
 		Sync::SimpleThread::Sleep(10);

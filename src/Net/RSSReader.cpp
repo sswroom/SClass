@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "Net/RSSReader.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 
 UInt32 __stdcall Net::RSSReader::RSSThread(void *userObj)
 {
@@ -103,7 +103,7 @@ Net::RSSReader::RSSReader(Text::CString url, Net::SocketFactory *sockf, Net::SSL
 	NEW_CLASS(this->nextDT, Data::DateTime());
 	NEW_CLASS(this->threadEvt, Sync::Event(true));
 	this->nextDT->SetCurrTimeUTC();
-	Sync::Thread::Create(RSSThread, this);
+	Sync::ThreadUtil::Create(RSSThread, this);
 	while (!this->threadRunning)
 	{
 		Sync::SimpleThread::Sleep(10);

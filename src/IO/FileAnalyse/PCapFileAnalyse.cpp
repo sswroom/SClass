@@ -5,7 +5,7 @@
 #include "Net/PacketAnalyzer.h"
 #include "Sync/MutexUsage.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/StringBuilderUTF8.h"
 
 UInt32 __stdcall IO::FileAnalyse::PCapFileAnalyse::ParseThread(void *userObj)
@@ -77,7 +77,7 @@ IO::FileAnalyse::PCapFileAnalyse::PCapFileAnalyse(IO::StreamData *fd)
 		return;
 	}
 	
-	Sync::Thread::Create(ParseThread, this);
+	Sync::ThreadUtil::Create(ParseThread, this);
 	while (!this->threadStarted)
 	{
 		Sync::SimpleThread::Sleep(10);

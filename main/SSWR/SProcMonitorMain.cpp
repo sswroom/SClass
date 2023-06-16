@@ -8,7 +8,7 @@
 #include "Manage/ExceptionRecorder.h"
 #include "Manage/Process.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/UTF8Reader.h"
 
 typedef struct
@@ -196,7 +196,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		NEW_CLASS(threadEvt, Sync::Event(true));
 		threadRunning = false;
 		threadToStop = false;
-		Sync::Thread::Create(CheckThread, 0);
+		Sync::ThreadUtil::Create(CheckThread, 0);
 
 		progCtrl->WaitForExit(progCtrl);
 

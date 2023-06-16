@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Sync/Mutex.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 
 //#define MUTEX_DEBUG
 #if defined(_MSC_VER) || defined(__MINGW32__)
@@ -31,7 +31,7 @@ void Sync::Mutex_Lock(Sync::MutexData *data)
 	if (data->debName)
 		printf("Mutex %s Locking...", data->debName);
 	if (data->locked)
-		if (data->lockId == Sync::Thread::GetThreadId())
+		if (data->lockId == Sync::ThreadUtil::GetThreadId())
 		{
 			printf("Mutex: Lock again\r\n");
 			//Unlock();
@@ -42,7 +42,7 @@ void Sync::Mutex_Lock(Sync::MutexData *data)
 	EnterCriticalSection((LPCRITICAL_SECTION)data->hand);
 #ifdef MUTEX_DEBUG
 	data->locked = 1;
-	data->lockId = Sync::Thread::GetThreadId();
+	data->lockId = Sync::ThreadUtil::GetThreadId();
 	if (data->debName)
 		printf("Locked\r\n");
 #endif
@@ -81,7 +81,7 @@ Bool Sync::Mutex_TryLock(Sync::MutexData *data)
 	if (data->debName)
 		printf("Mutex %s Locking...", data->debName);
 	if (data->locked)
-		if (data->lockId == Sync::Thread::GetThreadId())
+		if (data->lockId == Sync::ThreadUtil::GetThreadId())
 		{
 			printf("Mutex: Lock Again\r\n");
 			//Unlock();
@@ -93,7 +93,7 @@ Bool Sync::Mutex_TryLock(Sync::MutexData *data)
 		return false;
 #ifdef MUTEX_DEBUG
 	data->locked = 1;
-	data->lockId = Sync::Thread::GetThreadId();
+	data->lockId = Sync::ThreadUtil::GetThreadId();
 	if (data->debName)
 		printf("Locked\r\n");
 #endif

@@ -3,7 +3,7 @@
 #include "Media/ImageCopy.h"
 #include "Media/ImageCopyC.h"
 #include "Sync/MutexUsage.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 
 #if defined(CPU_X86_64)
 extern "C" Int32 UseAVX;
@@ -71,7 +71,7 @@ UInt32 Media::ImageCopy::WorkerThread(void *obj)
 			}
 			else if (stat->status == 4)
 			{
-				Sync::Thread::SetPriority((Sync::Thread::ThreadPriority)stat->copySize);
+				Sync::ThreadUtil::SetPriority((Sync::ThreadUtil::ThreadPriority)stat->copySize);
 				stat->status = 1;
 				stat->evtMain->Set();
 			}
@@ -88,7 +88,7 @@ Media::ImageCopy::ImageCopy()
 #if defined(CPU_X86_64)
 	if (CPUBrand == 2)
 	{
-		nThread = Sync::Thread::GetThreadCnt();
+		nThread = Sync::ThreadUtil::GetThreadCnt();
 		if (nThread > 2)
 		{
 			nThread = 2;
@@ -107,7 +107,7 @@ Media::ImageCopy::ImageCopy()
 	{
 		stats[i].status = 0;
 		stats[i].evtMain = &this->evtMain;
-		Sync::Thread::Create(WorkerThread, &stats[i]);
+		Sync::ThreadUtil::Create(WorkerThread, &stats[i]);
 	}
 	while (true)
 	{
@@ -185,7 +185,7 @@ void Media::ImageCopy::Copy16(UInt8 *src, OSInt sbpl, UInt8 *dest, OSInt dbpl, U
 	}
 }
 
-void Media::ImageCopy::SetThreadPriority(Sync::Thread::ThreadPriority tp)
+void Media::ImageCopy::SetThreadPriority(Sync::ThreadUtil::ThreadPriority tp)
 {
 	Bool fin;
 	UOSInt i = this->nThread;

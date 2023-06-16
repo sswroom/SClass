@@ -6,7 +6,7 @@
 #include "Media/MPEGVideoParser.h"
 #include "Media/VCDMPGFile.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #define BUFFSIZE 1048576
 
 UInt32 __stdcall Media::VCDMPGFile::PlayThread(void *userData)
@@ -215,7 +215,7 @@ Bool Media::VCDMPGFile::StartPlay()
 	this->playing = 1;
 	this->playStarted = false;
 	this->playToStop = false;
-	Sync::Thread::Create(PlayThread, this);
+	Sync::ThreadUtil::Create(PlayThread, this);
 	return true;
 }
 

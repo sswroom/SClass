@@ -3,7 +3,7 @@
 #include "SSWR/AVIRead/AVIRStreamTermForm.h"
 #include "Sync/MutexUsage.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/Encoding.h"
 
 void __stdcall SSWR::AVIRead::AVIRStreamTermForm::OnStreamClicked(void *userObj)
@@ -30,7 +30,7 @@ void __stdcall SSWR::AVIRead::AVIRStreamTermForm::OnStreamClicked(void *userObj)
 			me->UpdateSendDisp();
 			me->UpdateRecvDisp();
 
-			Sync::Thread::Create(RecvThread, me);
+			Sync::ThreadUtil::Create(RecvThread, me);
 			while (!me->threadRunning && !me->remoteClosed)
 			{
 				Sync::SimpleThread::Sleep(10);

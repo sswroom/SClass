@@ -4,7 +4,7 @@
 #include "SSWR/AVIRead/AVIRGPSDevForm.h"
 #include "Sync/MutexUsage.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyStringW.h"
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
@@ -601,7 +601,7 @@ SSWR::AVIRead::AVIRGPSDevForm::AVIRGPSDevForm(UI::GUIClientControl *parent, UI::
 	this->threadRunning = false;
 	this->threadToStop = false;
 	NEW_CLASS(this->threadEvt, Sync::Event(true));
-	Sync::Thread::Create(ClientThread, this);
+	Sync::ThreadUtil::Create(ClientThread, this);
 	while (!this->threadRunning)
 	{
 		Sync::SimpleThread::Sleep(10);

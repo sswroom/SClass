@@ -6,7 +6,7 @@
 #include "Media/MPEGVideoParser.h"
 #include "Sync/MutexUsage.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/StringBuilderUTF8.h"
 #include "Text/UTF8Writer.h"
 
@@ -510,7 +510,7 @@ Bool Media::M2VStreamSource::Start()
 	this->playInit = false;
 	this->playEOF = false;
 	Bool started = this->pbc->StartVideo();
-	Sync::Thread::Create(PlayThread, this);
+	Sync::ThreadUtil::Create(PlayThread, this);
 	mutUsage.EndUse();
 	while (!this->playInit)
 	{

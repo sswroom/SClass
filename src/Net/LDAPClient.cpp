@@ -7,7 +7,7 @@
 #include "Net/LDAPClient.h"
 #include "Sync/MutexUsage.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/CharUtil.h"
 
 #define RECVBUFFSIZE 65536
@@ -558,7 +558,7 @@ Net::LDAPClient::LDAPClient(Net::SocketFactory *sockf, const Net::SocketUtil::Ad
 	NEW_CLASS(this->cli, Net::TCPClient(sockf, addr, port, timeout));
 	if (!this->cli->IsConnectError() && !this->cli->IsClosed())
 	{
-		Sync::Thread::Create(RecvThread, this);
+		Sync::ThreadUtil::Create(RecvThread, this);
 		while (!this->recvRunning)
 		{
 			Sync::SimpleThread::Sleep(1);

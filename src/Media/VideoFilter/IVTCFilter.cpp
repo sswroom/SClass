@@ -3,7 +3,7 @@
 #include "Math/Math.h"
 #include "Media/VideoFilter/IVTCFilter.h"
 #include "Sync/MutexUsage.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/UTF8Writer.h"
 
 #define IVTCINTERVAL 10
@@ -1246,7 +1246,7 @@ void Media::VideoFilter::IVTCFilter::StartIVTC(UInt32 frameTime, UInt32 frameNum
 UInt32 __stdcall Media::VideoFilter::IVTCFilter::IVTCThread(void *userObj)
 {
 	Media::VideoFilter::IVTCFilter *me = (Media::VideoFilter::IVTCFilter *)userObj;
-	Sync::Thread::SetPriority(Sync::Thread::TP_HIGHEST);
+	Sync::ThreadUtil::SetPriority(Sync::ThreadUtil::TP_HIGHEST);
 	me->ivtcTStatus = 1;
 	me->mainEvt.Set();
 	while (!me->ivtcTToStop)
@@ -1279,7 +1279,7 @@ UInt32 __stdcall Media::VideoFilter::IVTCFilter::IVTCThread(void *userObj)
 UInt32 __stdcall Media::VideoFilter::IVTCFilter::CalcThread(void *userObj)
 {
 	ThreadStat *tStat = (ThreadStat*)userObj;
-	Sync::Thread::SetPriority(Sync::Thread::TP_HIGHEST);
+	Sync::ThreadUtil::SetPriority(Sync::ThreadUtil::TP_HIGHEST);
 	tStat->threadStat = 1;
 	{
 		Sync::Event evt;
@@ -1959,7 +1959,7 @@ Media::VideoFilter::IVTCFilter::IVTCFilter(Media::IVideoSource *srcVideo) : Medi
 	NEW_CLASS(this->debugFS, IO::FileStream(CSTR("IVTC.log"), IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	NEW_CLASS(this->debugLog, Text::UTF8Writer(this->debugFS));
 #endif
-	this->threadCnt = Sync::Thread::GetThreadCnt();
+	this->threadCnt = Sync::ThreadUtil::GetThreadCnt();
 	if (this->threadCnt > 8)
 	{
 		this->threadCnt = 8;
@@ -1975,7 +1975,7 @@ Media::VideoFilter::IVTCFilter::IVTCFilter(Media::IVideoSource *srcVideo) : Medi
 		this->threadStats[i].threadStat = 0;
 		this->threadStats[i].me = this;
 		this->threadStats[i].currCmd = 0;
-		Sync::Thread::Create(CalcThread, &this->threadStats[i]);
+		Sync::ThreadUtil::Create(CalcThread, &this->threadStats[i]);
 	}
 
 	while (true)
@@ -1994,7 +1994,7 @@ Media::VideoFilter::IVTCFilter::IVTCFilter(Media::IVideoSource *srcVideo) : Medi
 	this->ivtcTToStop = false;
 	this->ivtcTStatus = 0;
 	this->ivtcTRequest = false;
-	Sync::Thread::Create(IVTCThread, this);
+	Sync::ThreadUtil::Create(IVTCThread, this);
 	while (this->ivtcTStatus == 0)
 	{
 		this->mainEvt.Wait(100);

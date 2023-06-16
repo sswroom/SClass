@@ -2,7 +2,7 @@
 #include "Data/ByteTool.h"
 #include "IO/ProgCtrl/BluetoothCtlProgCtrl.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/StringBuilderC.h"
 #include "Text/StringBuilderUTF8.h"
 
@@ -402,7 +402,7 @@ IO::ProgCtrl::BluetoothCtlProgCtrl::BluetoothCtlProgCtrl()
 	NEW_CLASS(this->prog, Manage::ProcessExecution(CSTR("bluetoothctl")));
 	if (this->prog->IsRunning())
 	{
-		Sync::Thread::Create(ReadThread, this);
+		Sync::ThreadUtil::Create(ReadThread, this);
 	}
 	else
 	{

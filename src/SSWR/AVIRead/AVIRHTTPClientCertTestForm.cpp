@@ -6,7 +6,7 @@
 #include "SSWR/AVIRead/AVIRHTTPClientCertTestForm.h"
 #include "SSWR/AVIRead/AVIRSSLCertKeyForm.h"
 #include "Sync/MutexUsage.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 #include "UI/MessageDialog.h"
@@ -93,7 +93,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientCertTestForm::OnStartClick(void *use
 		IO::BuildTime::GetBuildTime(&dt);
 		dt.ToUTCTime();
 		sptr = dt.ToString(Text::StrConcatC(sbuff, UTF8STRC("AVIRead/")), "yyyyMMddHHmmss");
-		NEW_CLASS(me->svr, Net::WebServer::WebListener(me->core->GetSocketFactory(), ssl, me, port, 120, Sync::Thread::GetThreadCnt(), CSTRP(sbuff, sptr), false, Net::WebServer::KeepAlive::Default, false));
+		NEW_CLASS(me->svr, Net::WebServer::WebListener(me->core->GetSocketFactory(), ssl, me, port, 120, Sync::ThreadUtil::GetThreadCnt(), CSTRP(sbuff, sptr), false, Net::WebServer::KeepAlive::Default, false));
 		if (me->svr->IsError())
 		{
 			valid = false;

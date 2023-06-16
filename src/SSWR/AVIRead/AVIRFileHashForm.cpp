@@ -8,7 +8,7 @@
 #include "SSWR/AVIRead/AVIRFileHashForm.h"
 #include "Sync/MutexUsage.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 
 void __stdcall SSWR::AVIRead::AVIRFileHashForm::OnFileDrop(void *userObj, Text::String **files, UOSInt nFiles)
 {
@@ -353,7 +353,7 @@ SSWR::AVIRead::AVIRFileHashForm::AVIRFileHashForm(UI::GUIClientControl *parent, 
 
 	this->HandleDropFiles(OnFileDrop, this);
 	this->AddTimer(500, OnTimerTick, this);
-	Sync::Thread::Create(HashThread, this);
+	Sync::ThreadUtil::Create(HashThread, this);
 }
 
 SSWR::AVIRead::AVIRFileHashForm::~AVIRFileHashForm()

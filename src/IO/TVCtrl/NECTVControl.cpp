@@ -5,7 +5,7 @@
 #include "Net/SocketFactory.h"
 #include "Sync/MutexUsage.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 
@@ -336,7 +336,7 @@ IO::TVCtrl::NECTVControl::NECTVControl(IO::Stream *stm, Int32 monId)
 	this->recvRunning = false;
 	this->recvToStop = false;
 
-	Sync::Thread::Create(RecvThread, this);
+	Sync::ThreadUtil::Create(RecvThread, this);
 }
 
 IO::TVCtrl::NECTVControl::~NECTVControl()

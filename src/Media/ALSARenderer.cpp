@@ -9,7 +9,7 @@
 #include "Media/SOXRFilter.h"
 #include "Sync/Event.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 #include <alsa/asoundlib.h>
 #include <stdio.h>
@@ -811,7 +811,7 @@ void Media::ALSARenderer::Start()
 		return;
 	threadInit = false;
 	stopPlay = false;
-	Sync::Thread::Create(PlayThread, this);
+	Sync::ThreadUtil::Create(PlayThread, this);
 	while (!threadInit)
 	{
 		Sync::SimpleThread::Sleep(10);

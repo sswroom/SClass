@@ -719,7 +719,7 @@ void UI::GUIDDrawControl::SwitchFullScreen(Bool fullScn, Bool vfs)
 		if (this->imgCopy == 0)
 		{
 			NEW_CLASS(this->imgCopy, Media::ImageCopy());
-			this->imgCopy->SetThreadPriority(Sync::Thread::TP_HIGHEST);
+			this->imgCopy->SetThreadPriority(Sync::ThreadUtil::TP_HIGHEST);
 		}
 		this->surfaceMgr->SetFSMode(this->GetHMonitor(), this->rootForm->GetHandle(), false);
 		if (this->debugWriter)

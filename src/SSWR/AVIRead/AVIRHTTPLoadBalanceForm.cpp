@@ -6,7 +6,7 @@
 #include "SSWR/AVIRead/AVIRHTTPLoadBalanceForm.h"
 #include "SSWR/AVIRead/AVIRSSLCertKeyForm.h"
 #include "Sync/MutexUsage.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 #include "UI/MessageDialog.h"
@@ -47,7 +47,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnStartClick(void *userOb
 	if (port > 0 && port < 65535)
 	{
 		NEW_CLASS(me->fwdHdlr, Net::WebServer::HTTPForwardHandler(me->core->GetSocketFactory(), me->ssl, sb.ToCString(), (Net::WebServer::HTTPForwardHandler::ForwardType)(OSInt)me->cboFwdType->GetSelectedItem()));
-		NEW_CLASS(me->svr, Net::WebServer::WebListener(me->core->GetSocketFactory(), ssl, me->fwdHdlr, port, 120, Sync::Thread::GetThreadCnt(), CSTR("sswr"), me->chkAllowProxy->IsChecked(), me->chkAllowKA->IsChecked()?Net::WebServer::KeepAlive::Always:Net::WebServer::KeepAlive::Default, false));
+		NEW_CLASS(me->svr, Net::WebServer::WebListener(me->core->GetSocketFactory(), ssl, me->fwdHdlr, port, 120, Sync::ThreadUtil::GetThreadCnt(), CSTR("sswr"), me->chkAllowProxy->IsChecked(), me->chkAllowKA->IsChecked()?Net::WebServer::KeepAlive::Always:Net::WebServer::KeepAlive::Default, false));
 		if (me->svr->IsError())
 		{
 			valid = false;

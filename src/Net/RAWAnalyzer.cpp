@@ -4,7 +4,7 @@
 #include "Net/RAWAnalyzer.h"
 #include "Sync/Interlocked.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 
 UInt32 __stdcall Net::RAWAnalyzer::RecvThread(void *userObj)
 {
@@ -53,7 +53,7 @@ Net::RAWAnalyzer::RAWAnalyzer(Net::SocketFactory *sockf, UInt16 infoPort, IO::Wr
 			OSInt i = 3;
 			while (i-- > 0)
 			{
-				Sync::Thread::Create(RecvThread, this);
+				Sync::ThreadUtil::Create(RecvThread, this);
 			}
 		}
 	}

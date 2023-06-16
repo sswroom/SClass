@@ -4,7 +4,7 @@
 #include "Manage/HiResClock.h"
 #include "Math/Math.h"
 #include "Media/MMALVideoCapture.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/Encoding.h"
 #include "Text/MyString.h"
 

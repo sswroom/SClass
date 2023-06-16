@@ -6,7 +6,7 @@
 #include "Net/ConnectionInfo.h"
 #include "Net/MACInfo.h"
 #include "Net/OSSocketFactory.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
 

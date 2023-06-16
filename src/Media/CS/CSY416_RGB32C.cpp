@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Math/Math.h"
 #include "Media/CS/CSY416_RGB32C.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 
 extern "C"
 {
@@ -62,7 +62,7 @@ void Media::CS::CSY416_RGB32C::WaitForWorker(Int32 jobStatus)
 Media::CS::CSY416_RGB32C::CSY416_RGB32C(const Media::ColorProfile *srcProfile, const Media::ColorProfile *destProfile, Media::ColorProfile::YUVType yuvType, Media::ColorManagerSess *colorSess, Media::PixelFormat destPF) : Media::CS::CSYUV16_RGB32C(srcProfile, destProfile, yuvType, colorSess, destPF)
 {
 	UOSInt i;
-	this->nThread = Sync::Thread::GetThreadCnt();
+	this->nThread = Sync::ThreadUtil::GetThreadCnt();
 	if (this->nThread > 2)
 	{
 		this->nThread = 2;
@@ -76,7 +76,7 @@ Media::CS::CSY416_RGB32C::CSY416_RGB32C(const Media::ColorProfile *srcProfile, c
 		stats[i].status = 0;
 
 		currId = i;
-		Sync::Thread::Create(WorkerThread, this, 65536);
+		Sync::ThreadUtil::Create(WorkerThread, this, 65536);
 		while (stats[i].status == 0)
 		{
 			evtMain->Wait();

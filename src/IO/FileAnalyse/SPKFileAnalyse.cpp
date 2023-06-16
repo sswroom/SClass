@@ -6,7 +6,7 @@
 #include "Manage/Process.h"
 #include "Net/SocketFactory.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 
 void IO::FileAnalyse::SPKFileAnalyse::ParseV1Directory(UInt64 dirOfst, UInt64 dirSize)
 {
@@ -143,7 +143,7 @@ IO::FileAnalyse::SPKFileAnalyse::SPKFileAnalyse(IO::StreamData *fd)
 		return;
 	}
 	this->fd = fd->GetPartialData(0, fd->GetDataSize());
-	Sync::Thread::Create(ParseThread, this);
+	Sync::ThreadUtil::Create(ParseThread, this);
 	while (!this->threadStarted)
 	{
 		Sync::SimpleThread::Sleep(10);

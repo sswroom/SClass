@@ -5,7 +5,7 @@
 #include "Net/MQTTConn.h"
 #include "Sync/MutexUsage.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 
 //#define DEBUG_PRINT
 #if defined(DEBUG_PRINT)
@@ -184,7 +184,7 @@ void Net::MQTTConn::InitStream(IO::Stream *stm)
 {
 	this->stm = stm;
 	this->cliData = this->protoHdlr.CreateStreamData(this->stm);
-	Sync::Thread::Create(RecvThread, this);
+	Sync::ThreadUtil::Create(RecvThread, this);
 	while (!this->recvStarted)
 	{
 		Sync::SimpleThread::Sleep(1);

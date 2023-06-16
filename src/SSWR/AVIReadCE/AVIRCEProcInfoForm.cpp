@@ -2,7 +2,7 @@
 #include "Manage/Process.h"
 #include "SSWR/AVIReadCE/AVIRCEProcInfoForm.h"
 #include "SSWR/AVIReadCE/AVIRCEThreadInfoForm.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 
 void __stdcall SSWR::AVIReadCE::AVIRCEProcInfoForm::OnSumDblClicked(void *userObj, UOSInt index)
 {
@@ -426,7 +426,7 @@ SSWR::AVIReadCE::AVIRCEProcInfoForm::AVIRCEProcInfoForm(UI::GUIClientControl *pa
 	this->currProc = 0;
 	this->currProcObj = 0;
 	this->currProcRes = 0;
-	this->threadCnt = Sync::Thread::GetThreadCnt();
+	this->threadCnt = Sync::ThreadUtil::GetThreadCnt();
 
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);

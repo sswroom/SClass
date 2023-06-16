@@ -9,7 +9,7 @@
 #include "IO/Device/ED588.h"
 #include "IO/Device/SDM120M.h"
 #include "SSWR/AVIRead/AVIRMODBUSMasterForm.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyStringFloat.h"
 #include "UI/MessageDialog.h"
 

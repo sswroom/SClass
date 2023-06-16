@@ -3,7 +3,7 @@
 #include "IO/GPIOControl.h"
 #include "IO/PhysicalMem.h"
 #include "Sync/Interlocked.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 
 // BCM2709 (BCM2836 BCM2837)

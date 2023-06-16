@@ -16,7 +16,7 @@
 #include "Sync/Mutex.h"
 #include "Sync/MutexUsage.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/Encoding.h"
 
 
@@ -321,8 +321,8 @@ Manage::MonConn::MonConn(EventHandler hdlr, void *userObj, Net::SocketFactory *s
 	{
 		NEW_CLASS(this->connREvt, Sync::Event());
 		NEW_CLASS(this->connTEvt, Sync::Event());
-		Sync::Thread::Create(ConnRThread, this);
-		Sync::Thread::Create(ConnTThread, this);
+		Sync::ThreadUtil::Create(ConnRThread, this);
+		Sync::ThreadUtil::Create(ConnTThread, this);
 		while (!this->ConnTRunning || !this->ConnRRunning)
 			Sync::SimpleThread::Sleep(10);
 		UInt32 i = 30;

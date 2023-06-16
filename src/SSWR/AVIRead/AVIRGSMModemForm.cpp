@@ -6,7 +6,7 @@
 #include "IO/StreamWriter.h"
 #include "SSWR/AVIRead/AVIRGSMModemForm.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyStringW.h"
 #include "Text/UTF8Writer.h"
 #include "UI/FileDialog.h"
@@ -951,7 +951,7 @@ void SSWR::AVIRead::AVIRGSMModemForm::InitStream(IO::Stream *stm, Bool updateSer
 		this->simChanged = true;
 		this->toStop = false;
 		this->running = false;
-		Sync::Thread::Create(ModemThread, this);
+		Sync::ThreadUtil::Create(ModemThread, this);
 		while (!this->running)
 		{
 			Sync::SimpleThread::Sleep(10);

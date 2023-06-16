@@ -4,7 +4,7 @@
 #include "Net/UDPServer.h"
 #include "Sync/Interlocked.h"
 #include "Sync/MutexUsage.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 
 UInt32 __stdcall Net::UDPServer::DataV4Thread(void *obj)
@@ -271,14 +271,14 @@ Net::UDPServer::UDPServer(Net::SocketFactory *sockf, Net::SocketUtil::AddressInf
 			this->v4threadStats[i].toStop = false;
 			this->v4threadStats[i].threadRunning = false;
 			this->v4threadStats[i].me = this;
-			Sync::Thread::Create(DataV4Thread, &this->v4threadStats[i]);
+			Sync::ThreadUtil::Create(DataV4Thread, &this->v4threadStats[i]);
 
 			if (this->socV6)
 			{
 				this->v6threadStats[i].toStop = false;
 				this->v6threadStats[i].threadRunning = false;
 				this->v6threadStats[i].me = this;
-				Sync::Thread::Create(DataV6Thread, &this->v6threadStats[i]);
+				Sync::ThreadUtil::Create(DataV6Thread, &this->v6threadStats[i]);
 			}
 		}
 		Bool running;

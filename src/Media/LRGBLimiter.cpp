@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Media/LRGBLimiter.h"
 #include "Media/LRGBLimiterC.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 
 void Media::LRGBLimiter::TaskFunc(void *userObj)
 {
@@ -10,7 +10,7 @@ void Media::LRGBLimiter::TaskFunc(void *userObj)
 	LRGBLimiter_LimitImageLRGB(status->imgPtr, status->w, status->h);
 }
 
-Media::LRGBLimiter::LRGBLimiter() : ptask((Sync::Thread::GetThreadCnt() >= 4)?4:Sync::Thread::GetThreadCnt(), false)
+Media::LRGBLimiter::LRGBLimiter() : ptask((Sync::ThreadUtil::GetThreadCnt() >= 4)?4:Sync::ThreadUtil::GetThreadCnt(), false)
 {
 }
 

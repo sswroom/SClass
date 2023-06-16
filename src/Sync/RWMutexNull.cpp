@@ -3,7 +3,7 @@
 #include "Sync/Event.h"
 #include "Sync/Interlocked.h"
 #include "Sync/RWMutex.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 
 Sync::RWMutex::RWMutex()
 {

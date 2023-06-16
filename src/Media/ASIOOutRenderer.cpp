@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Media/ASIOOutRenderer.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/Encoding.h"
 #include "Text/MyString.h"
 #include "Text/MyStringW.h"
@@ -384,7 +384,7 @@ UInt32 __stdcall Media::ASIOOutRenderer::PlayThread(void *obj)
 	UInt32 j;
 	UInt32 k;
 
-	Sync::Thread::SetPriority(Sync::Thread::TP_REALTIME);
+	Sync::ThreadUtil::SetPriority(Sync::ThreadUtil::TP_REALTIME);
 	ASIOBufferInfo *buffInfos = (ASIOBufferInfo *)me->bufferInfos;
 	me->threadInit = true;
 	me->audSrc->GetFormat(&fmt);
@@ -914,7 +914,7 @@ void Media::ASIOOutRenderer::Start()
 	toStop = false;
 	playing = true;
 	debug = 0;
-	Sync::Thread::Create(PlayThread, this);
+	Sync::ThreadUtil::Create(PlayThread, this);
 	while (!threadInit)
 	{
 		Sync::SimpleThread::Sleep(10);

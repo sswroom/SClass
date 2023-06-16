@@ -12,7 +12,7 @@
 #include "Sync/Interlocked.h"
 #include "Sync/MutexUsage.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
 #include "UI/FileDialog.h"
@@ -154,7 +154,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTPublishTestForm::OnStartClicked(void *user
 			me->txtContent->SetReadOnly(true);
 			me->lblStatus->SetText(CSTR("Connected"));
 			me->btnStart->SetText(CSTR("Stop"));
-			Sync::Thread::Create(SendThread, me);
+			Sync::ThreadUtil::Create(SendThread, me);
 			while (!me->threadRunning)
 			{
 				Sync::SimpleThread::Sleep(1);

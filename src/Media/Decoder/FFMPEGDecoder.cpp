@@ -14,7 +14,7 @@
 #include "Media/Decoder/VDecoderChain.h"
 #include "Media/Decoder/VP09Decoder.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 
 #include "Text/StringBuilderUTF8.h"
@@ -599,7 +599,7 @@ Media::Decoder::FFMPEGDecoder::FFMPEGDecoder(IVideoSource *sourceVideo) : Media:
 	data->ctx->codec_tag = data->srcFCC;
 	data->ctx->width = (int)frameInfo.dispWidth;
 	data->ctx->height = (int)frameInfo.dispHeight;
-	data->ctx->thread_count = (int)Sync::Thread::GetThreadCnt();
+	data->ctx->thread_count = (int)Sync::ThreadUtil::GetThreadCnt();
 	if (codecId == AV_CODEC_ID_H264)
 	{
 		UInt32 sz;

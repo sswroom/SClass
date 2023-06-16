@@ -14,7 +14,7 @@
 #include "Net/SocketUtil.h"
 #include "Sync/Interlocked.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/UTF8Writer.h"
 #include "Text/XML.h"
 
@@ -144,7 +144,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		i = 3;
 		while (i-- > 0)
 		{
-			Sync::Thread::Create(RecvThread, 0);
+			Sync::ThreadUtil::Create(RecvThread, 0);
 		}
 		progCtrl->WaitForExit(progCtrl);
 

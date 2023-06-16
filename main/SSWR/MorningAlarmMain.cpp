@@ -32,7 +32,7 @@
 #include "Sync/Mutex.h"
 #include "Sync/Event.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 
 #include "Text/MyString.h"
 
@@ -328,7 +328,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 					console->WriteLineC(UTF8STRC("Press Ctrl+C to exit"));
 					console->SetBGColor(Text::StandardColor::Black);
 					console->SetTextColor(Text::StandardColor::Gray);
-					Sync::Thread::Create(PlayThread, 0);
+					Sync::ThreadUtil::Create(PlayThread, 0);
 
 					progCtrl->WaitForExit(progCtrl);
 

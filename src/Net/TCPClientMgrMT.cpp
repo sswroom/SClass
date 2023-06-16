@@ -11,7 +11,7 @@
 #include "Sync/Event.h"
 #include "Sync/Mutex.h"
 #include "Sync/MutexUsage.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/StringBuilderW.h"
 
 #define TCP_BUFF_SIZE 2048
@@ -103,7 +103,7 @@ Net::TCPClientMgr::TCPClientMgr(Int32 timeOutSeconds, TCPClientEvent evtHdlr, TC
 	Sync::Event *cliEvt;
 	NEW_CLASS(cliEvt, Sync::Event(true));
 	this->clsData = (ClassData*)cliEvt;
-	Sync::Thread::Create(ClientThread, this);
+	Sync::ThreadUtil::Create(ClientThread, this);
 }
 
 Net::TCPClientMgr::~TCPClientMgr()
@@ -141,7 +141,7 @@ void Net::TCPClientMgr::AddClient(TCPClient *cli, void *cliData)
 	ThreadData *tdata = MemAlloc(ThreadData, 1);
 	tdata->me = this;
 	tdata->cliStat = cliStat;
-	Sync::Thread::Create(WorkerThread, tdata, 65536);
+	Sync::ThreadUtil::Create(WorkerThread, tdata, 65536);
 }
 
 Bool Net::TCPClientMgr::SendClientData(UInt64 cliId, const UInt8 *buff, UOSInt buffSize)

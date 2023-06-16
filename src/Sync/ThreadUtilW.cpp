@@ -3,11 +3,11 @@
 #include "IO/FileStream.h"
 #include "IO/StreamReader.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 #include <windows.h>
 
-void Sync::Thread::SleepDur(Data::Duration dur)
+void Sync::ThreadUtil::SleepDur(Data::Duration dur)
 {
 	Int64 ms = dur.GetTotalMS();
 	UInt32 us = (dur.GetNS() % 1000000) / 1000;
@@ -17,26 +17,26 @@ void Sync::Thread::SleepDur(Data::Duration dur)
 		Sync::SimpleThread::Sleepus(us);
 }
 
-UInt32 Sync::Thread::Create(Sync::ThreadProc tProc, void *userObj)
+UInt32 Sync::ThreadUtil::Create(Sync::ThreadProc tProc, void *userObj)
 {
 	DWORD threadId = 0;
 	CloseHandle(CreateThread(0, 0, (LPTHREAD_START_ROUTINE)tProc, userObj, 0, &threadId));
 	return threadId;
 }
 
-UInt32 Sync::Thread::Create(Sync::ThreadProc tProc, void *userObj, UInt32 threadSize)
+UInt32 Sync::ThreadUtil::Create(Sync::ThreadProc tProc, void *userObj, UInt32 threadSize)
 {
 	DWORD threadId = 0;
 	CloseHandle(CreateThread(0, threadSize, (LPTHREAD_START_ROUTINE)tProc, userObj, STACK_SIZE_PARAM_IS_A_RESERVATION, &threadId));
 	return threadId;
 }
 
-UInt32 Sync::Thread::GetThreadId()
+UInt32 Sync::ThreadUtil::GetThreadId()
 {
 	return GetCurrentThreadId();
 }
 
-UOSInt Sync::Thread::GetThreadCnt()
+UOSInt Sync::ThreadUtil::GetThreadCnt()
 {
 	SYSTEM_INFO sysInfo;
 
@@ -47,17 +47,17 @@ UOSInt Sync::Thread::GetThreadCnt()
 		return sysInfo.dwNumberOfProcessors;
 }
 
-Bool Sync::Thread::EnableInterrupt()
+Bool Sync::ThreadUtil::EnableInterrupt()
 {
 	return false;
 }
 
-Bool Sync::Thread::Interrupt(UInt32 threadId)
+Bool Sync::ThreadUtil::Interrupt(UInt32 threadId)
 {
 	return false;
 }
 
-void Sync::Thread::SetPriority(ThreadPriority priority)
+void Sync::ThreadUtil::SetPriority(ThreadPriority priority)
 {
 	Int32 threadPriority;
 	switch (priority)

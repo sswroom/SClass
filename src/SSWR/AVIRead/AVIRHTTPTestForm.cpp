@@ -6,7 +6,7 @@
 #include "Sync/Interlocked.h"
 #include "Sync/MutexUsage.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 #include "UI/MessageDialog.h"
@@ -77,7 +77,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPTestForm::OnStartClicked(void *userObj)
 		me->threadStatus[i].threadRunning = false;
 		me->threadStatus[i].threadToStop = false;
 		NEW_CLASS(me->threadStatus[i].evt, Sync::Event(true));
-		Sync::Thread::Create(ProcessThread, &me->threadStatus[i]);
+		Sync::ThreadUtil::Create(ProcessThread, &me->threadStatus[i]);
 	}
 }
 

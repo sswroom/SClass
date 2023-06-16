@@ -4,7 +4,7 @@
 #include "Map/ReverseGeocoderServer.h"
 #include "Math/Math.h"
 #include "Sync/MutexUsage.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/Encoding.h"
 #include "Text/MyString.h"
 

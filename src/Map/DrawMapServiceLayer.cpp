@@ -7,7 +7,7 @@
 #include "Math/Geometry/VectorImage.h"
 #include "Sync/MutexUsage.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 
 UInt32 __stdcall Map::DrawMapServiceLayer::TaskThread(void *userObj)
@@ -111,7 +111,7 @@ Map::DrawMapServiceLayer::DrawMapServiceLayer(Map::DrawMapService *mapService) :
 
 	this->threadRunning = false;
 	this->threadToStop = false;
-	Sync::Thread::Create(TaskThread, this);
+	Sync::ThreadUtil::Create(TaskThread, this);
 	while (!this->threadRunning)
 	{
 		Sync::SimpleThread::Sleep(1);

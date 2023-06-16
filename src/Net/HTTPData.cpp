@@ -4,7 +4,7 @@
 #include "Net/HTTPData.h"
 #include "Sync/MutexUsage.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 
@@ -264,7 +264,7 @@ Net::HTTPData::HTTPData(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Net::HTT
 		}
 		fdh->cli = 0;
 		NEW_CLASS(fdh->evtTmp, Sync::Event(false));
-		Sync::Thread::Create(LoadThread, fdh);
+		Sync::ThreadUtil::Create(LoadThread, fdh);
 		while (fdh->cli == 0 && fdh->isLoading)
 		{
 			fdh->evtTmp->Wait(10);

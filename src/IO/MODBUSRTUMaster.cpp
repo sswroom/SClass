@@ -5,7 +5,7 @@
 #include "Math/Math.h"
 #include "Sync/MutexUsage.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/StringBuilderUTF8.h"
 #include <stdio.h>
 #define CMDDELAY 200
@@ -160,7 +160,7 @@ IO::MODBUSRTUMaster::MODBUSRTUMaster(IO::Stream *stm)
 	NEW_CLASS(this->crc, Crypto::Hash::CRC16R(Crypto::Hash::CRC16::GetPolynomialANSI()));
 	if (this->stm)
 	{
-		Sync::Thread::Create(ThreadProc, this);
+		Sync::ThreadUtil::Create(ThreadProc, this);
 		while (!this->threadRunning)
 		{
 			Sync::SimpleThread::Sleep(10);

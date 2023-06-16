@@ -6,7 +6,7 @@
 #include "Media/WaveOutRenderer.h"
 #include "Sync/Event.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 #include "Text/MyStringW.h"
 
@@ -114,7 +114,7 @@ UInt32 __stdcall Media::WaveOutRenderer::PlayThread(void *obj)
 	Int32 stmEnd;
 	Bool needNotify = false;
 
-	Sync::Thread::SetPriority(Sync::Thread::TP_REALTIME);
+	Sync::ThreadUtil::SetPriority(Sync::ThreadUtil::TP_REALTIME);
 	NEW_CLASS(evt, Sync::Event());
 
 	me->playing = true;
@@ -439,7 +439,7 @@ void Media::WaveOutRenderer::Start()
 		return;
 	threadInit = false;
 	stopPlay = false;
-	Sync::Thread::Create(PlayThread, this);
+	Sync::ThreadUtil::Create(PlayThread, this);
 	while (!threadInit)
 	{
 		Sync::SimpleThread::Sleep(10);

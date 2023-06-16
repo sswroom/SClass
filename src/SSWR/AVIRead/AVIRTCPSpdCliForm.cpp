@@ -2,7 +2,7 @@
 #include "SSWR/AVIRead/AVIRTCPSpdCliForm.h"
 #include "Sync/Interlocked.h"
 #include "Sync/MutexUsage.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
 #include "UI/MessageDialog.h"
@@ -227,8 +227,8 @@ SSWR::AVIRead::AVIRTCPSpdCliForm::AVIRTCPSpdCliForm(UI::GUIClientControl *parent
 	this->txtRecvSpeed->SetReadOnly(true);
 
 	this->AddTimer(1000, OnTimerTick, this);
-	Sync::Thread::Create(ProcThread, this);
-	Sync::Thread::Create(RecvThread, this);
+	Sync::ThreadUtil::Create(ProcThread, this);
+	Sync::ThreadUtil::Create(RecvThread, this);
 	while (!this->recvRunning || !this->procRunning)
 	{
 		this->mainEvt.Wait(100);

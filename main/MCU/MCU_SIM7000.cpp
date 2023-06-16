@@ -4,7 +4,7 @@
 #include "IO/RS232GPIO.h"
 #include "IO/SerialPort.h"
 #include "Manage/HiResClock.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 
 Int32 MyMain(Core::IProgControl *progCtrl)
 {

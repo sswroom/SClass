@@ -6,7 +6,7 @@
 #include "Net/SSLEngineFactory.h"
 #include "Sync/Interlocked.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include <stdio.h>
 
 #define URL "http://127.0.0.1:8080"
@@ -276,7 +276,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		threadStatus[i].maxRespTime = 0;
 		threadStatus[i].recvSize = 0;
 		threadStatus[i].hdrSize = 0;
-		Sync::Thread::Create(ProcessThread, &threadStatus[i]);
+		Sync::ThreadUtil::Create(ProcessThread, &threadStatus[i]);
 	}
 	while (threadCurrCnt > 0 || connLeft > 0)
 	{

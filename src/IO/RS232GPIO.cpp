@@ -3,7 +3,7 @@
 #include "IO/RS232GPIO.h"
 #include "Manage/HiResClock.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 
 UInt32 __stdcall IO::RS232GPIO::ReadThread(void *userObj)
 {
@@ -19,7 +19,7 @@ UInt32 __stdcall IO::RS232GPIO::ReadThread(void *userObj)
 	Int32 t;
 	started  = false;
 
-	Sync::Thread::SetPriority(Sync::Thread::TP_REALTIME);
+	Sync::ThreadUtil::SetPriority(Sync::ThreadUtil::TP_REALTIME);
 	NEW_CLASS(clk, Manage::HiResClock());
 	me->running = true;
 	while (!me->toStop)
@@ -114,7 +114,7 @@ IO::RS232GPIO::RS232GPIO(IO::GPIOControl *gpio, UOSInt rxdPin, UOSInt txdPin, UI
 	this->readBuffEnd = 0;
 	this->baudRate = baudRate;
 
-	Sync::Thread::Create(ReadThread, this);
+	Sync::ThreadUtil::Create(ReadThread, this);
 	while (!this->running)
 	{
 		Sync::SimpleThread::Sleep(1);

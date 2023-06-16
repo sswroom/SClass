@@ -5,7 +5,7 @@
 #include "Manage/CPUInfo.h"
 #include "Manage/HiResClock.h"
 #include "SSWR/AVIRead/AVIRBenchmarkForm.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
 #include "Text/UTF8Writer.h"

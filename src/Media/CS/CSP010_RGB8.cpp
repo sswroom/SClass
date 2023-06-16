@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Media/CS/CSP010_RGB8.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 
 extern "C"
 {
@@ -46,7 +46,7 @@ UInt32 Media::CS::CSP010_RGB8::WorkerThread(void *obj)
 Media::CS::CSP010_RGB8::CSP010_RGB8(const Media::ColorProfile *srcColor, const Media::ColorProfile *destColor, Media::ColorProfile::YUVType yuvType, Media::ColorManagerSess *colorSess) : Media::CS::CSYUV10_RGB8(srcColor, destColor, yuvType, colorSess)
 {
 	UOSInt i;
-	this->nThread = Sync::Thread::GetThreadCnt();
+	this->nThread = Sync::ThreadUtil::GetThreadCnt();
 
 	NEW_CLASS(evtMain, Sync::Event());
 	stats = MemAlloc(THREADSTAT, nThread);
@@ -62,7 +62,7 @@ Media::CS::CSP010_RGB8::CSP010_RGB8(const Media::ColorProfile *srcColor, const M
 		stats[i].csNALineBuff2 = 0;
 
 		currId = i;
-		Sync::Thread::Create(WorkerThread, this, 65536);
+		Sync::ThreadUtil::Create(WorkerThread, this, 65536);
 		while (stats[i].status == 0)
 		{
 			evtMain->Wait();

@@ -9,7 +9,7 @@
 #include "Media/Decoder/RHVCDecoder.h"
 #include "Media/Decoder/VDecoderBase.h"
 #include "Media/Decoder/VDecoderChain.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "mfxvideo.h"
 #define FOURCC(c1, c2, c3, c4) (((UInt32)c1) | (((UInt32)c2) << 8) | (((UInt32)c3) << 16) | (((UInt32)c4) << 24))
 
@@ -397,7 +397,7 @@ public:
 			}
 
 			this->par.IOPattern = MFX_IOPATTERN_OUT_SYSTEM_MEMORY;
-			this->par.mfx.NumThread = Sync::Thread::GetThreadCnt();
+			this->par.mfx.NumThread = Sync::ThreadUtil::GetThreadCnt();
 
 			status = MFXVideoDECODE_DecodeHeader(this->session, &bs, &this->par);
 			if (status >= 0)

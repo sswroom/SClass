@@ -4,7 +4,7 @@
 #include "IO/StreamReader.h"
 #include "Manage/HiResClock.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Net/FTPConn.h"
 
 UInt32 __stdcall Net::FTPConn::FTPThread(void *userObj)
@@ -97,7 +97,7 @@ Net::FTPConn::FTPConn(Text::CString host, UInt16 port, Net::SocketFactory *sockf
 	NEW_CLASS(this->evt, Sync::Event(true));
 	NEW_CLASS(this->cli, Net::TCPClient(sockf, host, port, timeout));
 	NEW_CLASS(this->writer, IO::StreamWriter(this->cli, codePage));
-	Sync::Thread::Create(FTPThread, this);
+	Sync::ThreadUtil::Create(FTPThread, this);
 	WaitForResult();
 }
 

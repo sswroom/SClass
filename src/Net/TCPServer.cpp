@@ -12,7 +12,7 @@
 #include "Sync/Mutex.h"
 #include "Sync/Event.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/Encoding.h"
 #include "Text/MyString.h"
 #include "Text/UTF8Writer.h"
@@ -60,7 +60,7 @@ UInt32 __stdcall Net::TCPServer::Svrv4Thread(void *o)
 	SubthreadStatus *sthreads = 0;
 	Sync::Event *threadEvt = 0;
 
-	Sync::Thread::SetPriority(Sync::Thread::TP_HIGHEST);
+	Sync::ThreadUtil::SetPriority(Sync::ThreadUtil::TP_HIGHEST);
 
 	svr->threadRunning |= 1;
 	str = Text::StrConcatC(buff, UTF8STRC("Start listening to v4 port "));
@@ -78,7 +78,7 @@ UInt32 __stdcall Net::TCPServer::Svrv4Thread(void *o)
 			sthreads[i].threadRunning = false;
 			sthreads[i].toStop = false;
 			sthreads[i].threadEvt = threadEvt;
-			Sync::Thread::Create(Svrv4Subthread, &sthreads[i]);
+			Sync::ThreadUtil::Create(Svrv4Subthread, &sthreads[i]);
 		}
 		found = true;
 		while (found)
@@ -167,7 +167,7 @@ UInt32 __stdcall Net::TCPServer::Svrv6Thread(void *o)
 	SubthreadStatus *sthreads = 0;
 	Sync::Event *threadEvt = 0;
 
-	Sync::Thread::SetPriority(Sync::Thread::TP_HIGHEST);
+	Sync::ThreadUtil::SetPriority(Sync::ThreadUtil::TP_HIGHEST);
 	svr->threadRunning |= 4;
 	str = Text::StrConcatC(buff, UTF8STRC("Start listening to v6 port "));
 	str = Text::StrInt32(str, svr->port);
@@ -184,7 +184,7 @@ UInt32 __stdcall Net::TCPServer::Svrv6Thread(void *o)
 			sthreads[i].threadRunning = false;
 			sthreads[i].toStop = false;
 			sthreads[i].threadEvt = threadEvt;
-			Sync::Thread::Create(Svrv6Subthread, &sthreads[i]);
+			Sync::ThreadUtil::Create(Svrv6Subthread, &sthreads[i]);
 		}
 		found = true;
 		while (found)
@@ -386,7 +386,7 @@ Bool Net::TCPServer::Start()
 		return false;
 	if (this->threadRunning & 1)
 		return true;
-	Sync::Thread::Create(Svrv4Thread, this);
+	Sync::ThreadUtil::Create(Svrv4Thread, this);
 	while (true)
 	{
 		if (threadRunning & 1 || errorv4)
@@ -395,9 +395,9 @@ Bool Net::TCPServer::Start()
 	}
 	if (!this->errorv6)
 	{
-		Sync::Thread::Create(Svrv6Thread, this);
+		Sync::ThreadUtil::Create(Svrv6Thread, this);
 	}
-	Sync::Thread::Create(SvrThread2, this);
+	Sync::ThreadUtil::Create(SvrThread2, this);
 	while (true)
 	{
 		if (threadRunning & 1 || errorv4)

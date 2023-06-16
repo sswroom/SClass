@@ -7,7 +7,7 @@
 #include "Media/PaperSize.h"
 #include "Media/Printer.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 #include <cairo/cairo.h>
@@ -190,7 +190,7 @@ void Media::CUPSPrintDocument::Start()
 		
 		this->started = true;
 		this->running = true;
-		Sync::Thread::Create(PrintThread, this);
+		Sync::ThreadUtil::Create(PrintThread, this);
 	}
 }
 

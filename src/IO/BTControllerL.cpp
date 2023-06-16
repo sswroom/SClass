@@ -4,7 +4,7 @@
 #include "IO/BTController.h"
 #include "IO/BTUtil.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 #include <errno.h>
 #include <unistd.h>
@@ -385,7 +385,7 @@ Bool IO::BTController::LEScanBegin()
 		printf("Error in enabling scanning\r\n");
 		return false;
 	}
-	Sync::Thread::Create(LEScanThread, this);
+	Sync::ThreadUtil::Create(LEScanThread, this);
 	while (!this->leScanning && !this->leScanToStop)
 	{
 		Sync::SimpleThread::Sleep(1);

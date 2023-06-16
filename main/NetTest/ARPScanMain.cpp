@@ -8,7 +8,7 @@
 #include "Net/MACInfo.h"
 #include "Net/OSSocketFactory.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 

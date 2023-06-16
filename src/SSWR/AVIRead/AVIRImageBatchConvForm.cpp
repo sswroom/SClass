@@ -7,7 +7,7 @@
 #include "Media/ImageList.h"
 #include "Media/StaticImage.h"
 #include "SSWR/AVIRead/AVIRImageBatchConvForm.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 #include "UI/FolderDialog.h"
@@ -156,7 +156,7 @@ void SSWR::AVIRead::AVIRImageBatchConvForm::StartThreads()
 		return;
 	}
 	this->threadToStop = false;
-	this->nThreads = Sync::Thread::GetThreadCnt();
+	this->nThreads = Sync::ThreadUtil::GetThreadCnt();
 	this->threadStates = MemAlloc(ThreadState, this->nThreads);
 	UOSInt i = this->nThreads;
 	while (i-- > 0)
@@ -164,7 +164,7 @@ void SSWR::AVIRead::AVIRImageBatchConvForm::StartThreads()
 		this->threadStates[i].status = ThreadStatus::NotStarted;
 		this->threadStates[i].hasData = false;
 		this->threadStates[i].me = this;
-		Sync::Thread::Create(ThreadFunc, &this->threadStates[i]);
+		Sync::ThreadUtil::Create(ThreadFunc, &this->threadStates[i]);
 	}
 }
 

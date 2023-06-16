@@ -3,7 +3,7 @@
 #include "Math/Math.h"
 #include "Media/CS/CSAYUV444_10_LRGBC.h"
 #include "Media/CS/TransferFunc.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 
 extern "C"
 {
@@ -324,7 +324,7 @@ Media::CS::CSAYUV444_10_LRGBC::CSAYUV444_10_LRGBC(const Media::ColorProfile *src
 	MemCopyNO(&this->yuvParam, colorSess->GetYUVParam(), sizeof(YUVPARAM));
 	this->rgbParam.Set(colorSess->GetRGBParam());
 
-	this->nThread = Sync::Thread::GetThreadCnt();
+	this->nThread = Sync::ThreadUtil::GetThreadCnt();
 	if (this->nThread > 2)
 	{
 		this->nThread = 2;
@@ -336,7 +336,7 @@ Media::CS::CSAYUV444_10_LRGBC::CSAYUV444_10_LRGBC(const Media::ColorProfile *src
 		stats[i].status = 0;
 
 		currId = i;
-		Sync::Thread::Create(WorkerThread, this, 65536);
+		Sync::ThreadUtil::Create(WorkerThread, this, 65536);
 		while (stats[i].status == 0)
 		{
 			this->evtMain.Wait();

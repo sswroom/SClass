@@ -13,7 +13,7 @@
 #include "Sync/Event.h"
 #include "Sync/Mutex.h"
 #include "Sync/MutexUsage.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 
 void Media::Resizer::LanczosResizerLR_C32::setup_interpolation_parameter(UOSInt nTap, Double source_length, UOSInt source_max_pos, UOSInt result_length, LRHPARAMETER *out, OSInt indexSep, Double offsetCorr)
 {

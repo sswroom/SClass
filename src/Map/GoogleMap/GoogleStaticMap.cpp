@@ -11,7 +11,7 @@
 #include "Net/HTTPClient.h"
 #include "Sync/Event.h"
 #include "Sync/Mutex.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/Encoding.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"

@@ -3,7 +3,7 @@
 #include "IO/Device/SIM7000SocketFactory.h"
 #include "Net/ConnectionInfo.h"
 #include "Sync/MutexUsage.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 #include <stdio.h>
 

@@ -4,7 +4,7 @@
 #include "Net/WebSocketClient.h"
 #include "Sync/MutexUsage.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/StringBuilderUTF8.h"
 
 UInt32 __stdcall Net::MQTTStaticClient::KAThread(void *userObj)
@@ -182,7 +182,7 @@ Net::MQTTStaticClient::MQTTStaticClient(Net::SocketFactory *sockf, Net::SSLEngin
 
 	this->Connect();
 
-	Sync::Thread::Create(KAThread, this);
+	Sync::ThreadUtil::Create(KAThread, this);
 	while (!this->kaRunning)
 	{
 		Sync::SimpleThread::Sleep(10);

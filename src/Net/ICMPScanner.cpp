@@ -6,7 +6,7 @@
 #include "Net/ICMPScanner.h"
 #include "Sync/MutexUsage.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 
 #define THREADLEV 5
 
@@ -241,7 +241,7 @@ Bool Net::ICMPScanner::Scan(UInt32 ip)
 		this->threadToStop = false;
 		this->soc = s;
 		NEW_CLASS(this->clk, Manage::HiResClock());
-		Sync::Thread::Create(Ping2Thread, this);
+		Sync::ThreadUtil::Create(Ping2Thread, this);
 
 		Net::SocketUtil::AddressInfo addr;
 		packetBuff[0] = 8; //type = Echo request
@@ -288,7 +288,7 @@ Bool Net::ICMPScanner::Scan(UInt32 ip)
 			status[i].ipStart = ReadNUInt32(buff);
 			buff[3] = (UInt8)(buff[3] + (1 << (8 - THREADLEV)) - 1);
 			status[i].ipEnd = ReadNUInt32(buff);
-			Sync::Thread::Create(Ping1Thread, &status[i]);
+			Sync::ThreadUtil::Create(Ping1Thread, &status[i]);
 			i++;
 		}
 

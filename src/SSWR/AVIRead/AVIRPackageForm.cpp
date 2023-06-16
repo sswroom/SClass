@@ -3,7 +3,7 @@
 #include "SSWR/AVIRead/AVIRPackageForm.h"
 #include "Sync/MutexUsage.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 #include "Text/URLString.h"
@@ -595,7 +595,7 @@ SSWR::AVIRead::AVIRPackageForm::AVIRPackageForm(UI::GUIClientControl *parent, UI
 		this->lvStatus->HandleDblClk(OnStatusDblClick, this);
 
 		this->AddTimer(500, OnTimerTick, this);
-		Sync::Thread::Create(ProcessThread, this);
+		Sync::ThreadUtil::Create(ProcessThread, this);
 	}
 
 	this->tpInfo = this->tcMain->AddTabPage(CSTR("Info"));

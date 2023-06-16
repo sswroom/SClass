@@ -5,7 +5,7 @@
 #include "Net/WiFiCapturer.h"
 #include "Sync/Interlocked.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 
 UInt32 __stdcall Net::WiFiCapturer::ScanThread(void *userObj)
 {
@@ -214,7 +214,7 @@ Bool Net::WiFiCapturer::Start()
 		else
 		{
 			this->interf = ifObj;
-			Sync::Thread::Create(ScanThread, this);
+			Sync::ThreadUtil::Create(ScanThread, this);
 			found = true;
 			break;
 		}

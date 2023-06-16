@@ -4,7 +4,7 @@
 #include "Manage/Benchmark.h"
 #include "Manage/HiResClock.h"
 #include "SSWR/AVIRead/AVIRPerformanceLogForm.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
 #include "Text/UTF8Writer.h"

@@ -3,7 +3,7 @@
 #include "Math/Geometry/LineString.h"
 #include "SSWR/AVIRead/AVIRGISReplayForm.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 #include "Text/StringUtil.h"
@@ -450,7 +450,7 @@ void SSWR::AVIRead::AVIRGISReplayForm::UpdateRecList()
 				}
 				this->threadToStop = false;
 				this->threadRunning = false;
-				Sync::Thread::Create(AddressThread, this);
+				Sync::ThreadUtil::Create(AddressThread, this);
 			}
 		}
 	}

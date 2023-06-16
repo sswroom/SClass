@@ -9,7 +9,7 @@
 #include "Sync/Event.h"
 #include "Sync/Mutex.h"
 #include "Sync/MutexUsage.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 
 #define PI 3.141592653589793
 
@@ -451,7 +451,7 @@ void Media::Resizer::LanczosResizer16_C8::DestoryVert()
 
 Media::Resizer::LanczosResizer16_C8::LanczosResizer16_C8(UOSInt hnTap, UOSInt vnTap, const Media::ColorProfile *srcProfile, const Media::ColorProfile *destProfile, Media::ColorManagerSess *colorSess, Media::AlphaType srcAlphaType) : Media::IImgResizer(srcAlphaType), srcProfile(srcProfile), destProfile(destProfile)
 {
-	this->nThread = Sync::Thread::GetThreadCnt();
+	this->nThread = Sync::ThreadUtil::GetThreadCnt();
 	if (this->nThread > 6)
 	{
 		this->nThread = 6;

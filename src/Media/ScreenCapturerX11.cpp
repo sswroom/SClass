@@ -11,7 +11,7 @@
 #include <stdio.h>
 
 #undef None
-/*#include "Sync/Thread.h"
+/*#include "Sync/ThreadUtil.h"
 
 Media::ScreenCapturer::ScreenCapturer(Media::MonitorMgr *monMgr, Media::ColorManager *colorMgr)
 {

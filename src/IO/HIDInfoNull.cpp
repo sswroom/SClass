@@ -2,7 +2,7 @@
 #include "IO/FileStream.h"
 #include "IO/HIDInfo.h"
 #include "IO/Path.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 
 struct IO::HIDInfo::ClassData

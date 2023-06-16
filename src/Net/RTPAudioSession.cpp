@@ -3,7 +3,7 @@
 #include "Data/RandomOS.h"
 #include "Net/RTPAudioSession.h"
 #include "Sync/MutexUsage.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 
 void __stdcall Net::RTPAudioSession::UDPData(const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData)
@@ -92,7 +92,7 @@ Net::RTPAudioSession::RTPAudioSession(Net::SocketFactory *sockf, const Char *ip,
 	this->lastSSRC = 0;
 	this->readBuff = 0;
 	this->outRunning = false;
-	NEW_CLASS(this->svr, Net::UDPServer(sockf, 0, port, 0, UDPData, this, log, 0, Sync::Thread::GetThreadCnt(), false));
+	NEW_CLASS(this->svr, Net::UDPServer(sockf, 0, port, 0, UDPData, this, log, 0, Sync::ThreadUtil::GetThreadCnt(), false));
 	if (this->svr->IsError())
 	{
 		DEL_CLASS(this->svr);
@@ -152,7 +152,7 @@ Bool Net::RTPAudioSession::StartSend(Media::IAudioSource *audSrc, UInt32 destIP,
 	Net::SocketUtil::SetAddrInfoV4(&this->outAddr, destIP);
 	this->outPort = destPort;
 	this->outSSRC = outSSRC;
-	Sync::Thread::Create(SendThread, this);
+	Sync::ThreadUtil::Create(SendThread, this);
 	return true;
 }
 

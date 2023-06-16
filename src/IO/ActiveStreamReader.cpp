@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "IO/ActiveStreamReader.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 
 UInt32 __stdcall IO::ActiveStreamReader::ReadThread(void *obj)
 {
@@ -47,7 +47,7 @@ IO::ActiveStreamReader::ActiveStreamReader(DataHdlr hdlr, void *userData, IO::St
 		buffs[i].buff = MemAllocA(UInt8, buffSize);
 		buffs[i].buffSize = 0;
 	}
-	Sync::Thread::Create(ReadThread, this);
+	Sync::ThreadUtil::Create(ReadThread, this);
 }
 
 IO::ActiveStreamReader::~ActiveStreamReader()

@@ -3,7 +3,7 @@
 #include "Sync/Event.h"
 #include "Sync/Interlocked.h"
 #include "Sync/RWMutex.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 
 #include <pthread.h>
 #include <stdlib.h>
@@ -98,7 +98,7 @@ void Sync::RWMutex::LockWrite()
 		pthread_mutex_lock(&this->clsData->evtMutex);
 		if (this->writeTId == 0)
 		{
-			this->writeTId = Sync::Thread::GetThreadId();
+			this->writeTId = Sync::ThreadUtil::GetThreadId();
 			locked = true;
 		}
 		pthread_mutex_unlock(&this->clsData->evtMutex);

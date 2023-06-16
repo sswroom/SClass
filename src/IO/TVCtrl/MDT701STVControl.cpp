@@ -3,7 +3,7 @@
 #include "IO/TVCtrl/MDT701STVControl.h"
 #include "Sync/MutexUsage.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 
 UInt32 __stdcall IO::TVCtrl::MDT701STVControl::RecvThread(void *userObj)
 {
@@ -98,7 +98,7 @@ IO::TVCtrl::MDT701STVControl::MDT701STVControl(IO::Stream *stm, Int32 monId)
 	this->recvRunning = false;
 	this->recvToStop = false;
 
-	Sync::Thread::Create(RecvThread, this);
+	Sync::ThreadUtil::Create(RecvThread, this);
 }
 
 IO::TVCtrl::MDT701STVControl::~MDT701STVControl()

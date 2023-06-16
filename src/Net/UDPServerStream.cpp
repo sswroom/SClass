@@ -2,7 +2,7 @@
 #include "Net/UDPServerStream.h"
 #include "Sync/Interlocked.h"
 #include "Sync/MutexUsage.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/StringBuilder.h"
 
 #define BUFFSIZE 2048

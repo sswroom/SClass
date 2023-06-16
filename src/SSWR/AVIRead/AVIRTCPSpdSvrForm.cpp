@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "SSWR/AVIRead/AVIRTCPSpdSvrForm.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "UI/MessageDialog.h"
 
 struct ClientStatus
@@ -69,7 +69,7 @@ void __stdcall SSWR::AVIRead::AVIRTCPSpdSvrForm::OnClientConn(Socket *s, void *u
 		ClientStatus *cliStatus = MemAlloc(ClientStatus, 1);
 		cliStatus->echo = me->echo;
 		cliStatus->cli = cli;
-		Sync::Thread::Create(RecvThread, cliStatus);
+		Sync::ThreadUtil::Create(RecvThread, cliStatus);
 	}
 }
 

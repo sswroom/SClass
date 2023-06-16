@@ -4,7 +4,7 @@
 #include "Data/DateTime.h"
 #include "Net/IPScanDetector.h"
 #include "Sync/MutexUsage.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 
 #define TIMEDETECTRANGE 3000
@@ -157,7 +157,7 @@ Net::IPScanDetector::IPScanDetector(Net::SocketFactory *sockf, IPScanHandler hdl
 			this->threadStats[i].threadRunning = false;
 			NEW_CLASS(this->threadStats[i].evt, Sync::Event(true));
 			this->threadStats[i].me = this;
-			Sync::Thread::Create(DataThread, &this->threadStats[i]);
+			Sync::ThreadUtil::Create(DataThread, &this->threadStats[i]);
 		}
 		Bool running;
 		while (true)

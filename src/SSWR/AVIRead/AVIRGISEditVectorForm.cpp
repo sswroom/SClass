@@ -1,25 +1,25 @@
 #include "Stdafx.h"
 #include "Math/Math.h"
 #include "SSWR/AVIRead/AVIRGISEditVectorForm.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 
 Bool __stdcall SSWR::AVIRead::AVIRGISEditVectorForm::OnMouseDown(void *userObj, Math::Coord2D<OSInt> scnPos)
 {
-	SSWR::AVIRead::AVIRGISEditVectorForm *me = (SSWR::AVIRead::AVIRGISEditVectorForm*)userObj;
+//	SSWR::AVIRead::AVIRGISEditVectorForm *me = (SSWR::AVIRead::AVIRGISEditVectorForm*)userObj;
 	return false;
 }
 
 Bool __stdcall SSWR::AVIRead::AVIRGISEditVectorForm::OnMouseUp(void *userObj, Math::Coord2D<OSInt> scnPos)
 {
-	SSWR::AVIRead::AVIRGISEditVectorForm *me = (SSWR::AVIRead::AVIRGISEditVectorForm*)userObj;
+//	SSWR::AVIRead::AVIRGISEditVectorForm *me = (SSWR::AVIRead::AVIRGISEditVectorForm*)userObj;
 	return false;
 }
 
 Bool __stdcall SSWR::AVIRead::AVIRGISEditVectorForm::OnMouseMove(void *userObj, Math::Coord2D<OSInt> scnPos)
 {
-	SSWR::AVIRead::AVIRGISEditVectorForm *me = (SSWR::AVIRead::AVIRGISEditVectorForm*)userObj;
+//	SSWR::AVIRead::AVIRGISEditVectorForm *me = (SSWR::AVIRead::AVIRGISEditVectorForm*)userObj;
 	return false;
 }
 

@@ -5,7 +5,7 @@
 #include "Math/Math.h"
 #include "Media/Resizer/LanczosResizer8_C8.h"
 #include "Sync/MutexUsage.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 
 UInt32 __stdcall Map::ResizableTileMapRenderer::TaskThread(void *userObj)
 {
@@ -217,7 +217,7 @@ Map::ResizableTileMapRenderer::ResizableTileMapRenderer(Media::DrawEngine *eng, 
 		this->threads[i].toStop = false;
 		this->threads[i].me = this;
 		NEW_CLASS(this->threads[i].evt, Sync::Event(true));
-		Sync::Thread::Create(TaskThread, &this->threads[i]);
+		Sync::ThreadUtil::Create(TaskThread, &this->threads[i]);
 	}
 }
 

@@ -20,7 +20,7 @@
 #include "SSWR/VAMS/VAMSBTWebHandler.h"
 #include "Sync/RWMutexUsage.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/StringBuilderUTF8.h"
 #include "Text/UTF8Reader.h"
 #include "Text/UTF8Writer.h"
@@ -1311,7 +1311,7 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(IO::Writer *writer, Media::Draw
 
 		if (!this->IsError() && this->cliSvr->Start() && this->listener->Start())
 		{
-			Sync::Thread::Create(CheckThread, this);
+			Sync::ThreadUtil::Create(CheckThread, this);
 			while (!this->checkRunning)
 			{
 				Sync::SimpleThread::Sleep(10);

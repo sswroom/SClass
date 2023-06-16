@@ -5,7 +5,7 @@
 #include "IO/GPIOPin.h"
 #include "IO/Device/AM2315GPIO.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
@@ -29,7 +29,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		Text::StrToUInt16(argv[1], &pinNum1);
 		Text::StrToUInt16(argv[1], &pinNum2);
 	}
-	Sync::Thread::SetPriority(Sync::Thread::TP_REALTIME);
+	Sync::ThreadUtil::SetPriority(Sync::ThreadUtil::TP_REALTIME);
 	sb.AppendC(UTF8STRC("Run using GPIO pin "));
 	sb.AppendI32(pinNum1);
 	sb.AppendC(UTF8STRC(" (SDA) and "));

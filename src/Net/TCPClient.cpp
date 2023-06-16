@@ -5,7 +5,7 @@
 #include "Net/SocketFactory.h"
 #include "Net/TCPClient.h"
 #include "Sync/Event.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 
 #include <stdio.h>

@@ -10,7 +10,7 @@
 #include "Sync/Event.h"
 #include "Sync/Interlocked.h"
 #include "Sync/MutexUsage.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
 
@@ -165,16 +165,16 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		NEW_CLASS(procEvt, Sync::Event(true));
 		NEW_CLASS(dispEvt, Sync::Event(true));
 
-		UOSInt threadCnt = Sync::Thread::GetThreadCnt();
+		UOSInt threadCnt = Sync::ThreadUtil::GetThreadCnt();
 		UOSInt i;
-		Sync::Thread::Create(DispThread, 0);
+		Sync::ThreadUtil::Create(DispThread, 0);
 		i = 0;
 		while (i < threadCnt)
 		{
-			Sync::Thread::Create(ProcThread, 0);
+			Sync::ThreadUtil::Create(ProcThread, 0);
 			i++;
 		}
-		Sync::Thread::Create(RecvThread, 0);
+		Sync::ThreadUtil::Create(RecvThread, 0);
 		while (!recvRunning || procRunning != threadCnt || !dispRunning)
 		{
 			mainEvt->Wait(100);

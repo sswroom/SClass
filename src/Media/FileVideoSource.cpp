@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "Media/FileVideoSource.h"
 #include "Sync/MutexUsage.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 
 #define BUFFCNT 16
@@ -21,7 +21,7 @@ UInt32 __stdcall Media::FileVideoSource::PlayThread(void *userObj)
 
 	me->playing = true;
 	me->mainEvt.Set();
-	Sync::Thread::SetPriority(Sync::Thread::TP_HIGHEST);
+	Sync::ThreadUtil::SetPriority(Sync::ThreadUtil::TP_HIGHEST);
 	frameBuff = MemAllocA(UInt8, me->maxFrameSize);
 	nextIndex = BUFFCNT;
 	while (nextIndex-- > 0)
@@ -167,7 +167,7 @@ UInt32 __stdcall Media::FileVideoSource::OutputThread(void *userObj)
 	OSInt nextIndex;
 	me->outputRunning = true;
 	me->mainEvt.Set();
-	Sync::Thread::SetPriority(Sync::Thread::TP_HIGHEST);
+	Sync::ThreadUtil::SetPriority(Sync::ThreadUtil::TP_HIGHEST);
 	while (!me->outputToStop)
 	{
 		if (me->outputCount > 0)
@@ -308,12 +308,12 @@ Bool Media::FileVideoSource::Start()
 	this->outputToStop = false;
 	this->outputStart = 0;
 	this->outputCount = 0;
-	Sync::Thread::Create(OutputThread, this);
+	Sync::ThreadUtil::Create(OutputThread, this);
 	while (!this->outputRunning)
 	{
 		this->mainEvt.Wait(100);
 	}
-	Sync::Thread::Create(PlayThread, this);
+	Sync::ThreadUtil::Create(PlayThread, this);
 	while (!this->playing && !this->playEnd)
 	{
 		this->mainEvt.Wait(100);

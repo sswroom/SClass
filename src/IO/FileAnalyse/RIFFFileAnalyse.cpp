@@ -4,7 +4,7 @@
 #include "Media/EXIFData.h"
 #include "Media/ICCProfile.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 
 void IO::FileAnalyse::RIFFFileAnalyse::ParseRange(UOSInt lev, UInt64 ofst, UInt64 size)
 {
@@ -119,7 +119,7 @@ IO::FileAnalyse::RIFFFileAnalyse::RIFFFileAnalyse(IO::StreamData *fd)
 		return;
 	}
 	this->fd = fd->GetPartialData(0, fd->GetDataSize());
-	Sync::Thread::Create(ParseThread, this);
+	Sync::ThreadUtil::Create(ParseThread, this);
 	while (!this->threadStarted)
 	{
 		Sync::SimpleThread::Sleep(10);

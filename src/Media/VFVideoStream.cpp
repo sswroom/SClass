@@ -2,7 +2,7 @@
 #include "Media/VFVideoStream.h"
 #include "Sync/MutexUsage.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 #include "Text/MyStringW.h"
 #include <windows.h>
@@ -113,7 +113,7 @@ Media::VFVideoStream::VFVideoStream(Media::VFMediaFile *mfile)
 	this->playing = false;
 	this->threadRunning = false;
 	this->threadToStop = false;
-	Sync::Thread::Create(PlayThread, this);
+	Sync::ThreadUtil::Create(PlayThread, this);
 	while (!this->threadRunning)
 	{
 		Sync::SimpleThread::Sleep(10);

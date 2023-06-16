@@ -5,7 +5,7 @@
 #include "IO/FileStream.h"
 #include "Sync/MutexUsage.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 
 //#define DEBUG
@@ -128,7 +128,7 @@ IO::ATCommandChannel::ATCommandChannel(IO::Stream *stm, Bool needRelease)
 
 	this->threadRunning = false;
 	this->threadToStop = false;
-	Sync::Thread::Create(CmdThread, this);
+	Sync::ThreadUtil::Create(CmdThread, this);
 	while (!this->threadRunning)
 	{
 		this->cmdEvt.Wait(100);

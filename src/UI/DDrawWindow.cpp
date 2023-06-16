@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "UI/DDrawUI.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 //#include "Manage/HiResClock.h"
 //#include "Text/MyString.h"
 #include <windows.h>
@@ -320,7 +320,7 @@ UI::DDrawWindow::DDrawWindow(void *hWnd, UI::DDrawUI *ui, UI::DDrawWindow::UIMod
 	this->targetH = rc.bottom - rc.top;
 	SwitchFullscreen(false);
 	CreateSecondarySurface();
-	Sync::Thread::Create(PresentThread, this);
+	Sync::ThreadUtil::Create(PresentThread, this);
 }
 
 UI::DDrawWindow::~DDrawWindow()

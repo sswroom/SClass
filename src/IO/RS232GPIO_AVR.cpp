@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "IO/RS232GPIO.h"
 #include "Manage/HiResClock.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 
 /*
 SoftwareSerial.h (formerly NewSoftSerial.h) - 

@@ -4,7 +4,7 @@
 #include "IO/FileStream.h"
 #include "IO/Path.h"
 #include "IO/WindowZIP.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Manage/Process.h"
 #include "Manage/ThreadInfo.h"
 #include <windows.h>

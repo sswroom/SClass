@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Sync/ParallelTask.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 
 UInt32 __stdcall Sync::ParallelTask::WorkerThread(void *userObj)
 {
@@ -32,7 +32,7 @@ Sync::ParallelTask::ParallelTask(UOSInt threadCnt, Bool taskQueue)
 {
 	if (threadCnt == 0)
 	{
-		this->threadCnt = Sync::Thread::GetThreadCnt();
+		this->threadCnt = Sync::ThreadUtil::GetThreadCnt();
 	}
 	else
 	{
@@ -49,7 +49,7 @@ Sync::ParallelTask::ParallelTask(UOSInt threadCnt, Bool taskQueue)
 			this->stats[i].toStop = false;
 			this->stats[i].currTaskFunc = 0;
 			this->stats[i].currTaskObj = 0;
-			Sync::Thread::Create(WorkerThread, &this->stats[i]);
+			Sync::ThreadUtil::Create(WorkerThread, &this->stats[i]);
 		}
 
 		Bool inited = false;

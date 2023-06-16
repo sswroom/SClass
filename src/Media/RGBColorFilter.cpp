@@ -4,7 +4,7 @@
 #include "Math/Math.h"
 #include "Media/RGBColorFilter.h"
 #include "Media/CS/TransferFunc.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 
 extern "C"
 {
@@ -72,7 +72,7 @@ Media::RGBColorFilter::RGBColorFilter(Media::ColorManager *colorMgr)
 {
 	this->colorMgr = colorMgr;
 	this->lut = 0;
-	this->nThread = Sync::Thread::GetThreadCnt();
+	this->nThread = Sync::ThreadUtil::GetThreadCnt();
 	this->threadStats = MemAlloc(ThreadStat, this->nThread);
 	this->hdrLev = 0;
 	this->gammaParam = 0;
@@ -88,7 +88,7 @@ Media::RGBColorFilter::RGBColorFilter(Media::ColorManager *colorMgr)
 	{
 		this->threadStats[i].threadStat = 0;
 		this->threadStats[i].me = this;
-		Sync::Thread::Create(ProcessThread, &this->threadStats[i]);
+		Sync::ThreadUtil::Create(ProcessThread, &this->threadStats[i]);
 	}
 	WaitForThread(0);
 }

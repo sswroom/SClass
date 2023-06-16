@@ -8,7 +8,7 @@
 #include "Sync/Event.h"
 #include "Sync/Mutex.h"
 #include "Sync/MutexUsage.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 
 //#define VERBOSE
 #if defined(VERBOSE)
@@ -818,7 +818,7 @@ void Media::Resizer::LanczosResizer8_C8::DestoryVert()
 Media::Resizer::LanczosResizer8_C8::LanczosResizer8_C8(UOSInt hnTap, UOSInt vnTap, const Media::ColorProfile *srcProfile, const Media::ColorProfile *destProfile, Media::ColorManagerSess *colorSess, Media::AlphaType srcAlphaType) : Media::IImgResizer(srcAlphaType), srcProfile(srcProfile), destProfile(destProfile)
 {
 	UOSInt i;
-	this->nThread = Sync::Thread::GetThreadCnt();
+	this->nThread = Sync::ThreadUtil::GetThreadCnt();
 	if (this->nThread > 6)
 	{
 		this->nThread = 6;

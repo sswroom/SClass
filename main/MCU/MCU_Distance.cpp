@@ -3,7 +3,7 @@
 #include "IO/ConsoleWriter.h"
 #include "IO/GPIOControl.h"
 #include "IO/Device/HCSR04.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 
 #define TRIGPIN 1

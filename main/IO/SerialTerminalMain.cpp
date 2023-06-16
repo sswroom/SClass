@@ -5,7 +5,7 @@
 #include "IO/ConsoleWriter.h"
 #include "IO/SerialPort.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 
 IO::ConsoleWriter *console;
@@ -68,7 +68,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			{
 				threadToStop = false;
 				threadRunning = false;
-				Sync::Thread::Create(RecvThread, 0);
+				Sync::ThreadUtil::Create(RecvThread, 0);
 
 				while ((sptr = IO::Console::GetLine(sbuff)) != 0)
 				{

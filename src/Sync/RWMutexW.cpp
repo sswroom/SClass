@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Sync/Interlocked.h"
 #include "Sync/RWMutex.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 
 #include <windows.h>
 #include <stdlib.h>
@@ -64,7 +64,7 @@ void Sync::RWMutex::LockWrite()
 		EnterCriticalSection(&this->clsData->mutHand);
 		if (this->writeTId == 0)
 		{
-			this->writeTId = Sync::Thread::GetThreadId();
+			this->writeTId = Sync::ThreadUtil::GetThreadId();
 			locked = true;
 		}
 		LeaveCriticalSection(&this->clsData->mutHand);

@@ -6,7 +6,7 @@
 #include "IO/BTUtil.h"
 #include "IO/ConsoleWriter.h"
 #include "Net/MACInfo.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/StringBuilderUTF8.h"
 
 IO::ConsoleWriter *console;

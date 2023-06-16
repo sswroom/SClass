@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "SIMD.h"
 #include "Media/ABlend/AlphaBlend8_8.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 
 
 extern "C" void AlphaBlend8_8_DoBlend(UInt8 *dest, OSInt dbpl, const UInt8 *src, OSInt sbpl, OSInt width, OSInt height)

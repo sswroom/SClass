@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include <pthread.h>
 #include <signal.h>
 #include <unistd.h>
@@ -16,7 +16,7 @@
 #define gettid() syscall(SYS_gettid)
 #endif
 
-void Sync::Thread::SleepDur(Data::Duration dur)
+void Sync::ThreadUtil::SleepDur(Data::Duration dur)
 {
 	struct timeval tNow, tLong, tEnd;
 	gettimeofday (&tNow, 0) ;
@@ -33,7 +33,7 @@ void Sync::Thread::SleepDur(Data::Duration dur)
 		gettimeofday (&tNow, 0) ;
 }
 
-UInt32 Sync::Thread::Create(Sync::ThreadProc tProc, void *userObj)
+UInt32 Sync::ThreadUtil::Create(Sync::ThreadProc tProc, void *userObj)
 {
 	pthread_t tid;
 	pthread_attr_t attr;
@@ -65,7 +65,7 @@ UInt32 Sync::Thread::Create(Sync::ThreadProc tProc, void *userObj)
 #endif
 }
 
-UInt32 Sync::Thread::Create(Sync::ThreadProc tProc, void *userObj, UInt32 threadSize)
+UInt32 Sync::ThreadUtil::Create(Sync::ThreadProc tProc, void *userObj, UInt32 threadSize)
 {
 	pthread_t tid;
 	pthread_attr_t attr;
@@ -109,7 +109,7 @@ UInt32 Sync::Thread::Create(Sync::ThreadProc tProc, void *userObj, UInt32 thread
 #endif
 }
 
-UInt32 Sync::Thread::GetThreadId()
+UInt32 Sync::ThreadUtil::GetThreadId()
 {
 #if defined(__linux__)
 	return (UInt32)gettid();
@@ -118,7 +118,7 @@ UInt32 Sync::Thread::GetThreadId()
 #endif
 }
 
-UOSInt Sync::Thread::GetThreadCnt()
+UOSInt Sync::ThreadUtil::GetThreadCnt()
 {
 #if defined(__FreeBSD__)
 	int mib[2];
@@ -166,7 +166,7 @@ UOSInt Sync::Thread::GetThreadCnt()
 #endif
 }
 
-Bool Sync::Thread::EnableInterrupt()
+Bool Sync::ThreadUtil::EnableInterrupt()
 {
 /*	struct sigaction act;
 	MemClear(&act, sizeof(act));
@@ -177,13 +177,13 @@ Bool Sync::Thread::EnableInterrupt()
 	return false;
 }
 
-Bool Sync::Thread::Interrupt(UInt32 threadId)
+Bool Sync::ThreadUtil::Interrupt(UInt32 threadId)
 {
 //	return pthread_kill((pthread_t)threadId, SIGINT) == 0;
 	return false;
 }
 
-void Sync::Thread::SetPriority(ThreadPriority priority)
+void Sync::ThreadUtil::SetPriority(ThreadPriority priority)
 {
 /*	Int32 threadPriority;
 	switch (priority)

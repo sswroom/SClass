@@ -6,7 +6,7 @@
 #include "Media/RefClock.h"
 #include "Sync/Event.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 
 UInt32 __stdcall Media::NullRenderer::PlayThread(void *obj)
@@ -137,7 +137,7 @@ void Media::NullRenderer::Start()
 		return;
 	threadInit = false;
 	stopPlay = false;
-	Sync::Thread::Create(PlayThread, this);
+	Sync::ThreadUtil::Create(PlayThread, this);
 	while (!threadInit)
 	{
 		Sync::SimpleThread::Sleep(10);

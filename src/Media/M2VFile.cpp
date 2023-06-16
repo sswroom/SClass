@@ -3,7 +3,7 @@
 #include "Media/M2VStreamSource.h"
 #include "Media/MPEGVideoParser.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #define BUFFSIZE 1048576
 
 UInt32 __stdcall Media::M2VFile::PlayThread(void *userData)
@@ -105,7 +105,7 @@ Bool Media::M2VFile::StartVideo()
 		return false;
 	this->playStarted = false;
 	this->playToStop = false;
-	Sync::Thread::Create(PlayThread, this);
+	Sync::ThreadUtil::Create(PlayThread, this);
 	return true;
 }
 

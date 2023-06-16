@@ -4,7 +4,7 @@
 #include "Media/AudioFilter/AudioCaptureFilter.h"
 #include "Sync/MutexUsage.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #define BUFFSIZE 1048576
 
 UInt32 __stdcall Media::AudioFilter::AudioCaptureFilter::CaptureThread(void *userObj)
@@ -51,7 +51,7 @@ Media::AudioFilter::AudioCaptureFilter::AudioCaptureFilter(Media::IAudioSource *
 	this->writing = false;
 	this->running = false;
 	this->toStop = false;
-	Sync::Thread::Create(CaptureThread, this);
+	Sync::ThreadUtil::Create(CaptureThread, this);
 }
 
 Media::AudioFilter::AudioCaptureFilter::~AudioCaptureFilter()

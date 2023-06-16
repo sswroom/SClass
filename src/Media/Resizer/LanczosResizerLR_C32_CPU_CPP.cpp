@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "SIMD.h"
 #include "Data/ByteTool.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 
 //#include "Text/MyString.h"
 //#include <stdio.h>

@@ -29,7 +29,7 @@
 #include "Media/VideoCaptureMgr.h"
 #include "Net/ConnectionInfo.h"
 #include "Net/OSSocketFactory.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
 #include "Text/UTF8Writer.h"
@@ -128,7 +128,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	UOSInt j;
 	UOSInt k;
 	UOSInt l;
-	UOSInt threadCnt = Sync::Thread::GetThreadCnt();
+	UOSInt threadCnt = Sync::ThreadUtil::GetThreadCnt();
 
 	MemSetLogFile(UTF8STRC("Memory.log"));
 	NEW_CLASS(exHdlr, Manage::ExceptionRecorder(CSTR("SHWInfo.log"), Manage::ExceptionRecorder::EA_CLOSE));

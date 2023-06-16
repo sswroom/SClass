@@ -12,7 +12,7 @@
 #include "Sync/Mutex.h"
 #include "Sync/MutexUsage.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 
 #define PROCESS_TIMEOUT_DURATION 30000
 
@@ -30,7 +30,7 @@ UInt32 __stdcall Net::TCPClientMgr::ClientThread(void *o)
 	me->clientThreadRunning = true;
 	{
 		Manage::HiResClock clk;
-		Sync::Thread::SetPriority(Sync::Thread::TP_REALTIME);
+		Sync::ThreadUtil::SetPriority(Sync::ThreadUtil::TP_REALTIME);
 		while (!me->toStop)
 		{
 			found = false;
@@ -226,7 +226,7 @@ Net::TCPClientMgr::TCPClientMgr(Int32 timeOutSeconds, TCPClientEvent evtHdlr, TC
 	Sync::Event *recvEvt;
 	NEW_CLASS(recvEvt, Sync::Event(false));
 	this->clsData = (ClassData*)recvEvt;
-	Sync::Thread::Create(ClientThread, this);
+	Sync::ThreadUtil::Create(ClientThread, this);
 	this->workers = MemAlloc(WorkerStatus, workerCnt);
 	while (workerCnt-- > 0)
 	{
@@ -236,7 +236,7 @@ Net::TCPClientMgr::TCPClientMgr(Int32 timeOutSeconds, TCPClientEvent evtHdlr, TC
 		this->workers[workerCnt].me = this;
 		NEW_CLASS(this->workers[workerCnt].evt, Sync::Event(true));
 		
-		Sync::Thread::Create(WorkerThread, &this->workers[workerCnt]);
+		Sync::ThreadUtil::Create(WorkerThread, &this->workers[workerCnt]);
 	}
 }
 

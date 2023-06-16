@@ -5,7 +5,7 @@
 #include "IO/MTFileLog.h"
 #include "Sync/MutexUsage.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 
@@ -255,7 +255,7 @@ void IO::MTFileLog::Init(LogType style, LogGroup groupStyle, const Char *dateFor
 	}
 	log->WriteSignature();
 	this->running = true;
-	Sync::Thread::Create(FileThread, this, 0x20000);
+	Sync::ThreadUtil::Create(FileThread, this, 0x20000);
 }
 
 IO::MTFileLog::MTFileLog(Text::String *fileName, LogType style, LogGroup groupStyle, const Char *dateFormat)

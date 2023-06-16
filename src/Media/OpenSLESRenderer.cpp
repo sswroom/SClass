@@ -5,7 +5,7 @@
 #include "Media/OpenSLESRenderer.h"
 #include "Media/RefClock.h"
 #include "Sync/Event.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 #include <SLES/OpenSLES.h>
 #include <stdio.h>
@@ -486,7 +486,7 @@ void Media::OpenSLESRenderer::Start()
 		return;
 	threadInit = false;
 	stopPlay = false;
-	Sync::Thread::Create(PlayThread, this);
+	Sync::ThreadUtil::Create(PlayThread, this);
 	while (!threadInit)
 	{
 		Sync::SimpleThread::Sleep(10);

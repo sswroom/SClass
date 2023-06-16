@@ -4,7 +4,7 @@
 #include "Net/SSLEngineFactory.h"
 #include "SSWR/AVIRead/AVIRHTTPForwarderForm.h"
 #include "SSWR/AVIRead/AVIRSSLCertKeyForm.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 #include "UI/MessageDialog.h"
@@ -50,7 +50,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPForwarderForm::OnStartClick(void *userObj)
 	if (port > 0 && port < 65535)
 	{
 		NEW_CLASS(me->fwdHdlr, Net::WebServer::HTTPForwardHandler(me->core->GetSocketFactory(), me->ssl, sb.ToCString(), Net::WebServer::HTTPForwardHandler::ForwardType::Transparent));
-		NEW_CLASS(me->svr, Net::WebServer::WebListener(me->core->GetSocketFactory(), ssl, me->fwdHdlr, port, 120, Sync::Thread::GetThreadCnt(), CSTR("sswr"), false, me->chkAllowKA->IsChecked()?Net::WebServer::KeepAlive::Always:Net::WebServer::KeepAlive::Default, false));
+		NEW_CLASS(me->svr, Net::WebServer::WebListener(me->core->GetSocketFactory(), ssl, me->fwdHdlr, port, 120, Sync::ThreadUtil::GetThreadCnt(), CSTR("sswr"), false, me->chkAllowKA->IsChecked()?Net::WebServer::KeepAlive::Always:Net::WebServer::KeepAlive::Default, false));
 		if (me->svr->IsError())
 		{
 			valid = false;

@@ -5,7 +5,7 @@
 #include "Math/Math.h"
 #include "Sync/MutexUsage.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/StringBuilderUTF8.h"
 //#include <stdio.h>
 #define CMDDELAY 0
@@ -129,7 +129,7 @@ IO::MODBUSTCPMaster::MODBUSTCPMaster(IO::Stream *stm)
 	this->tranId = 0;
 	if (this->stm)
 	{
-		Sync::Thread::Create(ThreadProc, this);
+		Sync::ThreadUtil::Create(ThreadProc, this);
 		while (!this->threadRunning)
 		{
 			Sync::SimpleThread::Sleep(10);

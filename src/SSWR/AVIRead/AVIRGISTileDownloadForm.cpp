@@ -4,7 +4,7 @@
 #include "Math/Geometry/Polygon.h"
 #include "SSWR/AVIRead/AVIRGISTileDownloadForm.h"
 #include "Sync/Interlocked.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/StringBuilderUTF8.h"
 #include "UI/FileDialog.h"
 #include "UI/FolderDialog.h"
@@ -519,7 +519,7 @@ SSWR::AVIRead::AVIRGISTileDownloadForm::AVIRGISTileDownloadForm(UI::GUIClientCon
 		this->threadStat[i].pkgMut = 0;
 		this->threadStat[i].folderName = 0;
 		this->threadStat[i].tileMap = this->lyr->GetTileMap();
-		Sync::Thread::Create(ProcThread, &this->threadStat[i]);
+		Sync::ThreadUtil::Create(ProcThread, &this->threadStat[i]);
 		i++;
 	}
 	Bool running;

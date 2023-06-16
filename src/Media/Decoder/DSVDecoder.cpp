@@ -4,7 +4,7 @@
 #include "Media/StaticImage.h"
 #include "Media/Decoder/DSVDecoder.h"
 #include "Media/DShow/DShowVideoFilter.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 #include <windows.h>
 

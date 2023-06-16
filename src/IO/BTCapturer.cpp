@@ -3,7 +3,7 @@
 #include "IO/BTDevLog.h"
 #include "IO/Path.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 
 //#include <stdio.h>
 
@@ -72,7 +72,7 @@ Bool IO::BTCapturer::Start()
 		return false;
 	}
 	this->threadToStop = false;
-	Sync::Thread::Create(CheckThread, this);
+	Sync::ThreadUtil::Create(CheckThread, this);
 	this->bt->ScanOn();
 	return true;
 }

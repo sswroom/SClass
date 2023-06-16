@@ -21,7 +21,7 @@
 #include "Manage/DasmARM.h"
 #include "Manage/ThreadContextARM.h"
 #endif
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilder.h"
 #include <windows.h>

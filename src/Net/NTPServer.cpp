@@ -5,7 +5,7 @@
 #include "Net/NTPClient.h"
 #include "Net/NTPServer.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 
@@ -147,7 +147,7 @@ Net::NTPServer::NTPServer(Net::SocketFactory *sockf, UInt16 port, IO::LogTool *l
 	if (this->svr)
 	{
 		NEW_CLASS(this->cli, Net::NTPClient(this->sockf, 0));
-		Sync::Thread::Create(CheckThread, this);
+		Sync::ThreadUtil::Create(CheckThread, this);
 		while (!this->threadRunning)
 		{
 			Sync::SimpleThread::Sleep(1);

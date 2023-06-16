@@ -13,7 +13,7 @@
 #include "SSWR/AVIRead/AVIRUserAgentSelForm.h"
 #include "Sync/MutexUsage.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/IMIMEObj.h"
 #include "Text/JSONBuilder.h"
 #include "Text/MyString.h"
@@ -1420,7 +1420,7 @@ SSWR::AVIRead::AVIRHTTPClientForm::AVIRHTTPClientForm(UI::GUIClientControl *pare
 
 	this->SetDefaultButton(this->btnRequest);
 	this->txtURL->Focus();
-	Sync::Thread::Create(ProcessThread, this, 0);
+	Sync::ThreadUtil::Create(ProcessThread, this, 0);
 	this->AddTimer(100, OnTimerTick, this);
 }
 

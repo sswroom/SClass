@@ -6,7 +6,7 @@
 #include "SSWR/AVIRead/AVIRSSLCertKeyForm.h"
 #include "Sync/Interlocked.h"
 #include "Sync/MutexUsage.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/StringBuilderUTF8.h"
 #include "UI/MessageDialog.h"
 

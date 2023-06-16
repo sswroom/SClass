@@ -1362,7 +1362,7 @@ UInt32 __stdcall Media::VideoRenderer::DisplayThread(void *userObj)
 	Bool toClear;
 	UOSInt minIndex = 0;
 	me->dispRunning = true;
-	Sync::Thread::SetPriority(Sync::Thread::TP_HIGHEST);
+	Sync::ThreadUtil::SetPriority(Sync::ThreadUtil::TP_HIGHEST);
 	while (!me->dispToStop)
 	{
 		if (me->playing)
@@ -1843,13 +1843,13 @@ Media::VideoRenderer::VideoRenderer(Media::ColorManagerSess *colorSess, Media::M
 		this->tstats[i].resizer10Bit = false;
 		this->tstats[i].me = this;
 		NEW_CLASS(this->tstats[i].evt, Sync::Event(true));
-		Sync::Thread::Create(ProcessThread, &this->tstats[i]);
+		Sync::ThreadUtil::Create(ProcessThread, &this->tstats[i]);
 	}
 
 	this->dispToStop = false;
 	this->dispRunning = false;
 	this->dispForceUpdate = true;
-	Sync::Thread::Create(DisplayThread, this);
+	Sync::ThreadUtil::Create(DisplayThread, this);
 	while (!this->dispRunning)
 	{
 		Sync::SimpleThread::Sleep(10);

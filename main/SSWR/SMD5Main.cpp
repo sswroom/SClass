@@ -13,7 +13,7 @@
 #include "Sync/Mutex.h"
 #include "Sync/MutexUsage.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
@@ -92,7 +92,7 @@ public:
 		this->threadRunning = false;
 		this->threadToStop = false;
 		NEW_CLASS(this->evt, Sync::Event(true));
-		Sync::Thread::Create(CheckThread, this);
+		Sync::ThreadUtil::Create(CheckThread, this);
 		while (!this->threadRunning)
 		{
 			Sync::SimpleThread::Sleep(1);

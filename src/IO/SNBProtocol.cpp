@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "IO/SNBProtocol.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 
 UInt32 __stdcall IO::SNBProtocol::RecvThread(void *userObj)
 {
@@ -72,7 +72,7 @@ IO::SNBProtocol::SNBProtocol(IO::Stream *stm, ProtocolHandler protoHdlr, void *u
 	this->running = false;
 	this->toStop = false;
 
-	Sync::Thread::Create(RecvThread, this);
+	Sync::ThreadUtil::Create(RecvThread, this);
 	while (!this->running)
 	{
 		Sync::SimpleThread::Sleep(10);

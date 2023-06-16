@@ -193,8 +193,8 @@ UI::GUIDObjArea::GUIDObjArea(GUICore *ui, UI::GUIClientControl *parent, Media::D
 	this->processRunning = false;
 	this->currDrawImg = 0;
 	this->HandleSizeChanged(OnUpdateSize, this);
-	Sync::Thread::Create(DisplayThread, this);
-	Sync::Thread::Create(ProcessThread, this);
+	Sync::ThreadUtil::Create(DisplayThread, this);
+	Sync::ThreadUtil::Create(ProcessThread, this);
 	while (!this->displayRunning)
 	{
 		this->displayRunning = true;

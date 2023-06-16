@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Media/CS/CSI420_LRGB.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 
 extern "C"
 {
@@ -752,7 +752,7 @@ UInt32 Media::CS::CSI420_LRGB::WorkerThread(void *obj)
 Media::CS::CSI420_LRGB::CSI420_LRGB(const Media::ColorProfile *srcColor, Media::ColorProfile::YUVType yuvType, Media::ColorManagerSess *colorSess) : Media::CS::CSYUV_LRGB(srcColor, yuvType, colorSess)
 {
 	UOSInt i;
-	this->nThread = Sync::Thread::GetThreadCnt();
+	this->nThread = Sync::ThreadUtil::GetThreadCnt();
 
 	NEW_CLASS(evtMain, Sync::Event());
 	stats = MemAlloc(THREADSTAT, nThread);
@@ -766,7 +766,7 @@ Media::CS::CSI420_LRGB::CSI420_LRGB(const Media::ColorProfile *srcColor, Media::
 		stats[i].csLineBuff2 = 0;
 
 		currId = i;
-		Sync::Thread::Create(WorkerThread, this);
+		Sync::ThreadUtil::Create(WorkerThread, this);
 		while (stats[i].status == 0)
 		{
 			evtMain->Wait();

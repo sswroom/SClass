@@ -2,7 +2,7 @@
 #include "Math/Math.h"
 #include "Math/Geometry/VectorImage.h"
 #include "SSWR/AVIRead/AVIRGISEditImageForm.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 

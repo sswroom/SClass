@@ -3,7 +3,7 @@
 #include "Data/ByteTool.h"
 #include "Net/IRTPPLHandler.h"
 #include "Net/RTPSvrChannel.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 #include "Text/URLString.h"
 

@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "Math/Math.h"
 #include "Media/DrawEngine.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "UI/DObj/ButtonDObj.h"
 
 UInt32 __stdcall UI::DObj::ButtonDObj::ClickThread(void *userObj)
@@ -98,7 +98,7 @@ Bool UI::DObj::ButtonDObj::DoEvents()
 			if (this->isMouseClick)
 			{
 				this->isMouseClick = false;
-				Sync::Thread::Create(ClickThread, this);
+				Sync::ThreadUtil::Create(ClickThread, this);
 				return true;
 			}
 		}

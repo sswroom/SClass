@@ -9,7 +9,7 @@
 
 #include "IO/DebugWriter.h"
 #include "IO/OS.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/StringBuilderUTF8.h"
 #include "Win32/WindowsBTScanner.h"
 #include "Win32/WinRTCore.h"
@@ -284,7 +284,7 @@ void Win32::WindowsBTScanner::ScanOn()
 //	this->BeginScan();
 	if (!this->threadRunning)
 	{
-		Sync::Thread::Create(ScanThread, this);
+		Sync::ThreadUtil::Create(ScanThread, this);
 	}
 }
 

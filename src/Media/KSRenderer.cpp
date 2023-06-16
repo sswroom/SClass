@@ -3,7 +3,7 @@
 #include "Text/MyString.h"
 #include "Media/KSRenderer.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "kssample.h"
 
 typedef struct
@@ -379,7 +379,7 @@ void Media::KSRenderer::Start()
 		return;
 	this->threadInit = false;
 	this->stopPlay = false;
-	Sync::Thread::Create(PlayThread, this);
+	Sync::ThreadUtil::Create(PlayThread, this);
 	while (!this->threadInit)
 	{
 		Sync::SimpleThread::Sleep(10);

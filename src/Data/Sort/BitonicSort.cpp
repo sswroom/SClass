@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Data/Sort/BitonicSort.h"
 #include "Sync/MutexUsage.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 
 void Data::Sort::BitonicSort::DoMergeInt32(ThreadStat *stat, Int32 *arr, OSInt n, Bool dir, OSInt m)
@@ -310,7 +310,7 @@ UInt32 __stdcall Data::Sort::BitonicSort::ProcessThread(void *userObj)
 
 Data::Sort::BitonicSort::BitonicSort()
 {
-	this->threadCnt = Sync::Thread::GetThreadCnt();
+	this->threadCnt = Sync::ThreadUtil::GetThreadCnt();
 	this->threads = MemAlloc(ThreadStat, this->threadCnt);
 	mainThread.me = this;
 	mainThread.toStop = false;
@@ -326,7 +326,7 @@ Data::Sort::BitonicSort::BitonicSort()
 		NEW_CLASS(this->threads[i].evt, Sync::Event(true));
 		this->threads[i].nextThread = lastThread;
 		lastThread = &this->threads[i];
-		Sync::Thread::Create(ProcessThread, &this->threads[i]);
+		Sync::ThreadUtil::Create(ProcessThread, &this->threads[i]);
 	}
 	mainThread.nextThread = lastThread;
 	while (true)

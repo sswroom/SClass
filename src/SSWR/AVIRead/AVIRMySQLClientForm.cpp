@@ -3,7 +3,7 @@
 #include "IO/Path.h"
 #include "Math/Math.h"
 #include "SSWR/AVIRead/AVIRMySQLClientForm.h"
-#include "Sync/Thread.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 #include "UI/MessageDialog.h"
