@@ -43,7 +43,7 @@ namespace Net
 		static UInt32 __stdcall Svrv4Thread(void *o);
 		static UInt32 __stdcall Svrv6Subthread(void *o);
 		static UInt32 __stdcall Svrv6Thread(void *o);
-		static UInt32 __stdcall SvrThread2(void *o);
+		static UInt32 __stdcall WorkerThread(void *o);
 		void AcceptSocket(Socket *svrSoc);
 	public:
 		TCPServer(SocketFactory *socf, UInt16 port, IO::LogTool *log, TCPServerConn hdlr, void *userObj, Text::CString logPrefix, Bool autoStart);

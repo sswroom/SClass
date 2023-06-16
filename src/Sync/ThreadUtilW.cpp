@@ -1,10 +1,12 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "IO/FileStream.h"
+#include "IO/Library.h"
 #include "IO/StreamReader.h"
 #include "Sync/SimpleThread.h"
 #include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
+#include "Text/MyStringW.h"
 #include <windows.h>
 
 void Sync::ThreadUtil::SleepDur(Data::Duration dur)
@@ -87,4 +89,18 @@ void Sync::ThreadUtil::SetPriority(ThreadPriority priority)
 		return;
 	}
 	SetThreadPriority(GetCurrentThread(), threadPriority);
+}
+
+typedef HRESULT (WINAPI *SetThreadDescriptionFunc)(HANDLE hThread, PCWSTR lpThreadDescription);
+
+Bool Sync::ThreadUtil::SetName(const UTF8Char *name)
+{
+	IO::Library lib((const UTF8Char*)"Kernel32.dll");
+	SetThreadDescriptionFunc SetThreadDescription = (SetThreadDescriptionFunc)lib.GetFunc("SetThreadDescription");
+	if (SetThreadDescription == 0)
+		return false;
+	const WChar *wName = Text::StrToWCharNew(name);
+	HRESULT hr = SetThreadDescription(GetCurrentThread(), wName);
+	Text::StrDelNew(wName);
+	return hr == 0;
 }

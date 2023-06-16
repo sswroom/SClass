@@ -4278,6 +4278,8 @@ Sync/ParallelTask.h: ../../src/Sync/ParallelTask.cpp
 @ParallelTask.o
 Sync/RWMutexUsage.h: ../../src/Sync/RWMutexUsage.cpp
 @RWMutexUsage.o
+Sync/Thread.h: ../../src/Sync/Thread.cpp
+@Thread.o
 
 Test/TestModem.h: ../../src/Test/TestModem.cpp
 @TestModem.o
@@ -6014,6 +6016,7 @@ Mutex.o: ../../src/Sync/Mutex.cpp
 MutexUsage.o: ../../src/Sync/MutexUsage.cpp
 ParallelTask.o: ../../src/Sync/ParallelTask.cpp
 RWMutexUsage.o: ../../src/Sync/RWMutexUsage.cpp
+Thread.o: ../../src/Sync/Thread.cpp
 TestModem.o: ../../src/Test/TestModem.cpp
 TestSIM7000.o: ../../src/Test/TestSIM7000.cpp
 CPPText.o: ../../src/Text/CPPText.cpp

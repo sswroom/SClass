@@ -28,6 +28,7 @@ namespace Sync
 		static Bool EnableInterrupt();
 		static Bool Interrupt(UInt32 threadId);
 		static void SetPriority(ThreadPriority priority);
+		static Bool SetName(const UTF8Char *name);
 	};
 }
 #endif

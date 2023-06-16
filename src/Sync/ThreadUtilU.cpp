@@ -67,7 +67,7 @@ UInt32 Sync::ThreadUtil::Create(Sync::ThreadProc tProc, void *userObj)
 
 UInt32 Sync::ThreadUtil::Create(Sync::ThreadProc tProc, void *userObj, UInt32 threadSize)
 {
-	pthread_t tid;
+	pthread_t pthread;
 	pthread_attr_t attr;
 	UInt32 thisThreadSize = threadSize;
 	pthread_attr_init(&attr);
@@ -75,7 +75,7 @@ UInt32 Sync::ThreadUtil::Create(Sync::ThreadProc tProc, void *userObj, UInt32 th
 	pthread_attr_setstacksize(&attr, threadSize);
 	while (true)
 	{
-		int ret = pthread_create(&tid, &attr, (void*(*)(void*))tProc, userObj);
+		int ret = pthread_create(&pthread, &attr, (void*(*)(void*))tProc, userObj);
 		if (ret == 0)
 		{
 			break;
@@ -102,10 +102,10 @@ UInt32 Sync::ThreadUtil::Create(Sync::ThreadProc tProc, void *userObj, UInt32 th
 	}
 #if defined(__APPLE_)
 	int id;
-	pthread_getunique_np(&tid, &id);
+	pthread_getunique_np(&pthread, &id);
 	return id;
 #else
-	return (UInt32)(UOSInt)tid;
+	return (UInt32)(UOSInt)pthread;
 #endif
 }
 
@@ -213,4 +213,9 @@ void Sync::ThreadUtil::SetPriority(ThreadPriority priority)
 		return;
 	}
 	SetThreadPriority(GetCurrentThread(), threadPriority);*/
+}
+
+Bool Sync::ThreadUtil::SetName(const UTF8Char *name)
+{
+	return pthread_setname_np(pthread_self(), (const char*)name) == 0;
 }

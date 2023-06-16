@@ -51,6 +51,7 @@ namespace Net
 		};
 		typedef struct
 		{
+			UOSInt index;
 			WorkerState state;
 			Bool toStop;
 			Bool isPrimary;

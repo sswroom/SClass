@@ -17,6 +17,7 @@ namespace Text
 		UTF8Char *ConcatWith(UTF8Char *sbuff, const UTF8Char *s1, UOSInt len1) const;
 		UTF8Char *ConcatToS(UTF8Char *sbuff, UOSInt buffSize) const;
 		Bool Equals(StringBase<UTF8Char> *s) const;
+		Bool Equals(StringBase<const UTF8Char> s) const;
 		Bool Equals(const UTF8Char *s, UOSInt len) const;
 		Bool EqualsICase(StringBase<UTF8Char> *s) const;
 		Bool EqualsICase(const UTF8Char *s, UOSInt len) const;
@@ -127,6 +128,11 @@ template <typename T> UTF8Char *Text::StringBase<T>::ConcatToS(UTF8Char *sbuff, 
 template <typename T> Bool Text::StringBase<T>::Equals(StringBase<UTF8Char> *s) const
 {
 	return Equals(s->v, s->leng);
+}
+
+template <typename T> Bool Text::StringBase<T>::Equals(StringBase<const UTF8Char> s) const
+{
+	return Equals(s.v, s.leng);
 }
 
 template <typename T> Bool Text::StringBase<T>::Equals(const UTF8Char *s, UOSInt len) const

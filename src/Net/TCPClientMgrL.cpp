@@ -79,6 +79,7 @@ UInt32 __stdcall Net::TCPClientMgr::ClientThread(void *o)
 	UOSInt pollReqCnt;
 	Bool pollPreData = false;
 
+	Sync::ThreadUtil::SetName((const UTF8Char*)"TCPCliMgr");
 	me->clientThreadRunning = true;
 	Sync::ThreadUtil::SetPriority(Sync::ThreadUtil::TP_REALTIME);
 	while (!me->toStop)
@@ -259,6 +260,9 @@ UInt32 __stdcall Net::TCPClientMgr::WorkerThread(void *o)
 	Net::TCPClientMgr::TCPClientStatus *cliStat;
 	Data::Timestamp lastCheckTime = 0;
 	UOSInt i;
+	UTF8Char sbuff[16];
+	Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("TCPCliMgr")), stat->index);
+	Sync::ThreadUtil::SetName(sbuff);
 	{
 		Sync::Event evt;
 		stat->evt = &evt;
@@ -362,6 +366,7 @@ Net::TCPClientMgr::TCPClientMgr(Int32 timeOutSeconds, TCPClientEvent evtHdlr, TC
 		this->workers = MemAlloc(WorkerStatus, workerCnt);
 		while (workerCnt-- > 0)
 		{
+			this->workers[workerCnt].index = workerCnt;
 			this->workers[workerCnt].state = WorkerState::NotStarted;
 			this->workers[workerCnt].toStop = false;
 			this->workers[workerCnt].isPrimary = (workerCnt == 0);

@@ -134,6 +134,9 @@ void Media::ABlend::AlphaBlend8_C8::UpdateLUT()
 UInt32 __stdcall Media::ABlend::AlphaBlend8_C8::ProcessThread(void *userObj)
 {
 	ThreadStat *stat = (ThreadStat *)userObj;
+	UTF8Char sbuff[16];
+	Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("ABlend8_C8_")), stat->index);
+	Sync::ThreadUtil::SetName(sbuff);
 	{
 		Sync::Event evt;
 		stat->status = 1;
@@ -193,6 +196,7 @@ Media::ABlend::AlphaBlend8_C8::AlphaBlend8_C8(Media::ColorSess *colorSess, Bool 
 	while (i-- > 0)
 	{
 		this->stats[i].me = this;
+		this->stats[i].index = i;
 		this->stats[i].status = 0;
 		Sync::ThreadUtil::Create(ProcessThread, &this->stats[i], 65536);
 	}

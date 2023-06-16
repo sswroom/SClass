@@ -17,6 +17,7 @@ namespace Media
 			typedef struct
 			{
 				AlphaBlend8_C8 *me;
+				UOSInt index;
 				Sync::Event *evt;
 				Int32 status; //0 = not running, 1 = running/idle, 2 = toStop, 3 = stopped, 4 = Blend, 5 = BlendPA
 
