@@ -50,6 +50,7 @@ namespace IO
 		Bool ReadRegisterU16(UInt8 devAddr, UInt32 regAddr, UInt16 *outVal);
 		Bool ReadRegisterIU16(UInt8 devAddr, UInt32 regAddr, UInt16 *outVal); //Intel byte order
 		Bool ReadRegisterU8(UInt8 devAddr, UInt32 regAddr, UInt8 *outVal);
+		Bool ReadRegisterU8Arr(UInt8 devAddr, UInt32 regAddr, UInt8 *outVal, UInt16 valCnt);
 		Bool WriteRegisterBool(UInt8 devAddr, UInt32 regAddr, Bool val);
 	};
 }

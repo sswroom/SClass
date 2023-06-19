@@ -4075,6 +4075,8 @@ SSWR/AVIRead/AVIRUserAgentParseForm.h: ../../src/SSWR/AVIRead/AVIRUserAgentParse
 @AVIRUserAgentParseForm.o
 SSWR/AVIRead/AVIRUserAgentSelForm.h: ../../src/SSWR/AVIRead/AVIRUserAgentSelForm.cpp
 @AVIRUserAgentSelForm.o
+SSWR/AVIRead/AVIRVBoxManagerForm.h: ../../src/SSWR/AVIRead/AVIRVBoxManagerForm.cpp
+@AVIRVBoxManagerForm.o
 SSWR/AVIRead/AVIRVideoCheckerForm.h: ../../src/SSWR/AVIRead/AVIRVideoCheckerForm.cpp
 @AVIRVideoCheckerForm.o
 SSWR/AVIRead/AVIRVideoInfoForm.h: ../../src/SSWR/AVIRead/AVIRVideoInfoForm.cpp
@@ -5918,6 +5920,7 @@ AVIRUSBDeviceForm.o: ../../src/SSWR/AVIRead/AVIRUSBDeviceForm.cpp
 AVIRUserAgentBatchForm.o: ../../src/SSWR/AVIRead/AVIRUserAgentBatchForm.cpp
 AVIRUserAgentParseForm.o: ../../src/SSWR/AVIRead/AVIRUserAgentParseForm.cpp
 AVIRUserAgentSelForm.o: ../../src/SSWR/AVIRead/AVIRUserAgentSelForm.cpp
+AVIRVBoxManagerForm.o: ../../src/SSWR/AVIRead/AVIRVBoxManagerForm.cpp
 AVIRVideoCheckerForm.o: ../../src/SSWR/AVIRead/AVIRVideoCheckerForm.cpp
 AVIRVideoInfoForm.o: ../../src/SSWR/AVIRead/AVIRVideoInfoForm.cpp
 AVIRVoiceModemForm.o: ../../src/SSWR/AVIRead/AVIRVoiceModemForm.cpp

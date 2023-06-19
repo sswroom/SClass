@@ -229,6 +229,7 @@
 #include "SSWR/AVIRead/AVIRUSBDeviceForm.h"
 #include "SSWR/AVIRead/AVIRUserAgentBatchForm.h"
 #include "SSWR/AVIRead/AVIRUserAgentParseForm.h"
+#include "SSWR/AVIRead/AVIRVBoxManagerForm.h"
 #include "SSWR/AVIRead/AVIRVideoCheckerForm.h"
 #include "SSWR/AVIRead/AVIRVideoInfoForm.h"
 #include "SSWR/AVIRead/AVIRVoiceModemForm.h"
@@ -497,7 +498,8 @@ typedef enum
 	MNU_BYDC9R,
 	MNU_MQTT_SUBSCRIBE_TEST,
 	MNU_MQTT_PUBLISH_TEST,
-	MNU_FILE_SEARCH
+	MNU_FILE_SEARCH,
+	MNU_VBOX_MANAGER
 } MenuItems;
 
 void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(void *userObj, Text::String **files, UOSInt nFiles)
@@ -653,6 +655,7 @@ SSWR::AVIRead::AVIRBaseForm::AVIRBaseForm(UI::GUIClientControl *parent, UI::GUIC
 	mnu2->AddItem(CSTR("ASN.1 Parse"), MNU_ASN1_PARSE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("Windows Error"), MNU_WINDOWS_ERROR, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("Timestamp"), MNU_TIMESTAMP, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu->AddItem(CSTR("VirtualBox Manager"), MNU_VBOX_MANAGER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddSeperator();
 	mnu->AddItem(CSTR("RAM Speed"), MNU_BENCHMARK, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("Thread Speed"), MNU_THREADSPEED, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -2847,6 +2850,13 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		{
 			SSWR::AVIRead::AVIRFileSearchForm *frm;
 			NEW_CLASS(frm, SSWR::AVIRead::AVIRFileSearchForm(0, this->ui, this->core));
+			this->core->ShowForm(frm);
+		}
+		break;
+	case MNU_VBOX_MANAGER:
+		{
+			SSWR::AVIRead::AVIRVBoxManagerForm *frm;
+			NEW_CLASS(frm, SSWR::AVIRead::AVIRVBoxManagerForm(0, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;

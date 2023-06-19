@@ -294,6 +294,11 @@ Bool IO::MODBUSController::ReadRegisterU8(UInt8 devAddr, UInt32 regAddr, UInt8 *
 	return this->ReadRegister(devAddr, regAddr, outVal, 1);
 }
 
+Bool IO::MODBUSController::ReadRegisterU8Arr(UInt8 devAddr, UInt32 regAddr, UInt8 *outVal, UInt16 valCnt)
+{
+	return this->ReadRegister(devAddr, regAddr, outVal, valCnt);
+}
+
 Bool IO::MODBUSController::WriteRegisterBool(UInt8 devAddr, UInt32 regAddr, Bool val)
 {
 	UInt8 reg = val?1:0;
