@@ -85,6 +85,37 @@ void SSWR::AVIRead::AVIRCppEnumForm::ConvEnum()
 				i++;
 			}
 		}
+		else if (type == 3)
+		{
+			if (sbPrefix.EndsWith(UTF8STRC("::")))
+			{
+				destSb.AppendC(UTF8STRC("Text::CString "));
+				destSb.Append(sbPrefix);
+				destSb.RemoveChars(2);
+				destSb.AppendC(UTF8STRC("GetName("));
+				destSb.Append(sbPrefix);
+				destSb.RemoveChars(2);
+				destSb.AppendC(UTF8STRC(" val)\r\n"));
+				destSb.AppendC(UTF8STRC("{\r\n"));
+				destSb.AppendC(UTF8STRC("\tswitch (val)\r\n"));
+				destSb.AppendC(UTF8STRC("\t{\r\n"));
+				while (i < j)
+				{
+					destSb.AppendC(UTF8STRC("\tcase "));
+					destSb.AppendC(sbPrefix.ToString(), sbPrefix.GetLength());
+					destSb.Append(enumList.GetItem(i));
+					destSb.AppendC(UTF8STRC(":\r\n"));
+					destSb.AppendC(UTF8STRC("\t\treturn CSTR(\""));
+					destSb.Append(enumList.GetItem(i));
+					destSb.AppendC(UTF8STRC("\");\r\n"));
+					i++;
+				}
+				destSb.AppendC(UTF8STRC("\tdefault:\r\n"));
+				destSb.AppendC(UTF8STRC("\t\treturn CSTR_NULL;\r\n"));
+				destSb.AppendC(UTF8STRC("\t}\r\n"));
+				destSb.AppendC(UTF8STRC("}\r\n"));
+			}
+		}
 		this->txtDest->SetText(destSb.ToCString());
 	}
 	else
@@ -112,6 +143,7 @@ SSWR::AVIRead::AVIRCppEnumForm::AVIRCppEnumForm(UI::GUIClientControl *parent, UI
 	this->cboType->AddItem(CSTR("Switch Cases"), 0);
 	this->cboType->AddItem(CSTR("Switch Cases with return"), 0);
 	this->cboType->AddItem(CSTR("ComboBox Add Enum"), 0);
+	this->cboType->AddItem(CSTR("GetName Function"), 0);
 	this->cboType->SetSelectedIndex(0);
 	NEW_CLASS(this->btnConv, UI::GUIButton(ui, this->pnlCtrl, CSTR("Convert")));
 	this->btnConv->SetRect(4, 28, 75, 23, false);
