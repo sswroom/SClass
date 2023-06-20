@@ -51,7 +51,7 @@ void Data::UUID::SetValue(Text::CString str)
 	WriteUInt32(&this->data[0], Text::StrHex2UInt32C(&str.v[0]));
 	WriteUInt16(&this->data[4], Text::StrHex2UInt16C(&str.v[9]));
 	WriteUInt16(&this->data[6], Text::StrHex2UInt16C(&str.v[14]));
-	WriteUInt16(&this->data[8], Text::StrHex2UInt16C(&str.v[19]));
+	WriteMUInt16(&this->data[8], Text::StrHex2UInt16C(&str.v[19]));
 	Text::StrHex2Bytes(&str.v[24], &this->data[10]);
 }
 
@@ -93,8 +93,8 @@ OSInt Data::UUID::CompareTo(UUID *uuid) const
 	{
 		return -1;
 	}
-	v1 = ReadUInt16(&this->data[8]);
-	v2 = ReadUInt16(&uuid->data[8]);
+	v1 = ReadMUInt16(&this->data[8]);
+	v2 = ReadMUInt16(&uuid->data[8]);
 	if (v1 > v2)
 	{
 		return 1;
@@ -116,6 +116,36 @@ OSInt Data::UUID::CompareTo(UUID *uuid) const
 		}
 	}
 	return 0;
+}
+
+UInt32 Data::UUID::GetTimeLow() const
+{
+	return ReadUInt32(&this->data[0]);
+}
+
+UInt16 Data::UUID::GetTimeMid() const
+{
+	return ReadUInt16(&this->data[4]);
+}
+
+UInt16 Data::UUID::GetTimeHiAndVersion() const
+{
+	return ReadUInt16(&this->data[6]);
+}
+
+UInt8 Data::UUID::GetClkSeqHiRes() const
+{
+	return this->data[8];
+}
+
+UInt8 Data::UUID::GetClkSeqLow() const
+{
+	return this->data[9];
+}
+
+UInt64 Data::UUID::GetNode() const
+{
+	return ReadMUInt64(&this->data[8]) & 0xffffffffffffLL;
 }
 
 void Data::UUID::ToString(Text::StringBuilderUTF8 *sb) const

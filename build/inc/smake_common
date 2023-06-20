@@ -1885,6 +1885,10 @@ IO/UDPLog.h: ../../src/IO/UDPLog.cpp
 @UDPLog.o
 IO/UnixConfigFile.h: ../../src/IO/UnixConfigFile.cpp
 @UnixConfigFile.o
+IO/VBoxManager.h: ../../src/IO/VBoxManager.cpp
+@VBoxManager.o
+IO/VBoxVMInfo.h: ../../src/IO/VBoxVMInfo.cpp
+@VBoxVMInfo.o
 IO/VirtualIOPinMgr.h: ../../src/IO/VirtualIOPinMgr.cpp
 @VirtualIOPinMgr.o
 IO/WindowsError.h: ../../src/IO/WindowsError.cpp
@@ -4880,6 +4884,8 @@ TVControl.o: ../../src/IO/TVControl.cpp
 UDPFileLog.o: ../../src/IO/UDPFileLog.cpp
 UDPLog.o: ../../src/IO/UDPLog.cpp
 UnixConfigFile.o: ../../src/IO/UnixConfigFile.cpp
+VBoxManager.o: ../../src/IO/VBoxManager.cpp
+VBoxVMInfo.o: ../../src/IO/VBoxVMInfo.cpp
 VirtualIOPinMgr.o: ../../src/IO/VirtualIOPinMgr.cpp
 WindowsError.o: ../../src/IO/WindowsError.cpp
 WriteCacheStream.o: ../../src/IO/WriteCacheStream.cpp

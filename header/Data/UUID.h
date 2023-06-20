@@ -20,7 +20,14 @@ namespace Data
 		void SetValue(Text::CString str);
 		UOSInt GetValue(UInt8 *buff) const;
 		OSInt CompareTo(UUID *uuid) const;
-		
+
+		UInt32 GetTimeLow() const;
+		UInt16 GetTimeMid() const;
+		UInt16 GetTimeHiAndVersion() const;
+		UInt8 GetClkSeqHiRes() const;
+		UInt8 GetClkSeqLow() const;
+		UInt64 GetNode() const;
+
 		void ToString(Text::StringBuilderUTF8 *sb) const;
 		UTF8Char *ToString(UTF8Char *sbuff) const;
 		UUID *Clone() const;
