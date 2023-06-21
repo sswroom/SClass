@@ -3,7 +3,7 @@
 #include "DB/ODBCConn.h"
 #include "Text/MyString.h"
 
-DB::DBConn *DB::MSSQLConn::OpenConnTCP(Text::CString serverHost, UInt16 port, Text::CString database, Text::CString userName, Text::CString password, IO::LogTool *log, Text::StringBuilderUTF8 *errMsg)
+DB::DBConn *DB::MSSQLConn::OpenConnTCP(Text::CString serverHost, UInt16 port, Bool encrypt, Text::CString database, Text::CString userName, Text::CString password, IO::LogTool *log, Text::StringBuilderUTF8 *errMsg)
 {
 	DB::ODBCConn *conn;
 	Text::String *driverName = GetDriverNameNew();
@@ -21,7 +21,7 @@ DB::DBConn *DB::MSSQLConn::OpenConnTCP(Text::CString serverHost, UInt16 port, Te
 	connStr.AppendC(UTF8STRC("}"));
 	if (driverName->StartsWith(UTF8STRC("ODBC Driver ")) && driverName->EndsWith(UTF8STRC(" for SQL Server")))
 	{
-		connStr.AppendC(UTF8STRC(";server=tcp:"));
+		connStr.AppendC(UTF8STRC(";server="));
 		connStr.Append(serverHost);
 		connStr.AppendC(UTF8STRC(","));
 		connStr.AppendU16(port);
@@ -32,6 +32,10 @@ DB::DBConn *DB::MSSQLConn::OpenConnTCP(Text::CString serverHost, UInt16 port, Te
 		connStr.Append(serverHost);
 		connStr.AppendC(UTF8STRC(";port="));
 		connStr.AppendU16(port);
+	}
+	if (encrypt)
+	{
+		connStr.AppendC(UTF8STRC(";Encrypt=yes"));
 	}
 	connStr.AppendC(UTF8STRC(";database="));
 	connStr.Append(database);
@@ -78,9 +82,12 @@ DB::DBConn *DB::MSSQLConn::OpenConnTCP(Text::CString serverHost, UInt16 port, Te
 	}
 }
 
-DB::DBTool *DB::MSSQLConn::CreateDBToolTCP(Text::CString serverHost, UInt16 port, Text::CString database, Text::CString userName, Text::CString password, IO::LogTool *log, Text::CString logPrefix)
+DB::DBTool *DB::MSSQLConn::CreateDBToolTCP(Text::CString serverHost, UInt16 port, Bool encrypt, Text::CString database, Text::CString userName, Text::CString password, IO::LogTool *log, Text::CString logPrefix)
 {
-	DB::DBConn *conn = OpenConnTCP(serverHost, port, database, userName, password, log, 0);
+	Text::StringBuilderUTF8 sb;
+	sb.Append(logPrefix);
+	sb.AppendC(UTF8STRC("Error in connecting to database: "));
+	DB::DBConn *conn = OpenConnTCP(serverHost, port, encrypt, database, userName, password, log, &sb);
 	DB::DBTool *db;
 	if (conn)
 	{
@@ -89,7 +96,10 @@ DB::DBTool *DB::MSSQLConn::CreateDBToolTCP(Text::CString serverHost, UInt16 port
 	}
 	else
 	{
-		DEL_CLASS(conn);
+		if (log)
+		{
+			log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Error);
+		}
 		return 0;
 	}
 }

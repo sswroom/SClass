@@ -3,6 +3,7 @@
 #include "DB/DBConn.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "UI/GUIButton.h"
+#include "UI/GUICheckBox.h"
 #include "UI/GUIComboBox.h"
 #include "UI/GUIForm.h"
 #include "UI/GUILabel.h"
@@ -22,6 +23,7 @@ namespace SSWR
 			UI::GUIButton *btnPasteJDBC;
 			UI::GUILabel *lblPort;
 			UI::GUITextBox *txtPort;
+			UI::GUICheckBox *chkEncrypt;
 			UI::GUILabel *lblDatabase;
 			UI::GUITextBox *txtDatabase;
 			UI::GUILabel *lblUser;

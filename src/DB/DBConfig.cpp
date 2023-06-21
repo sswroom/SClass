@@ -17,6 +17,7 @@ DB::DBTool *DB::DBConfig::LoadFromConfig(Net::SocketFactory *sockf, IO::ConfigFi
 		UInt16 port;
 		Text::String *serverHost = cfg->GetValue(CSTR("MSSQLHost"));
 		Text::String *sPort = cfg->GetValue(CSTR("MSSQLPort"));
+		Text::String *sSSL = cfg->GetValue(CSTR("MSSQLEncrypt"));
 		Text::String *database = cfg->GetValue(CSTR("MSSQLDatabase"));
 		Text::String *userName = cfg->GetValue(CSTR("MSSQLUser"));
 		Text::String *password = cfg->GetValue(CSTR("MSSQLPwd"));
@@ -56,7 +57,7 @@ DB::DBTool *DB::DBConfig::LoadFromConfig(Net::SocketFactory *sockf, IO::ConfigFi
 			log->LogMessage(CSTR("MSSQLPwd is missing"), IO::LogHandler::LogLevel::Error);
 			return 0;
 		}
-		db = DB::MSSQLConn::CreateDBToolTCP(serverHost->ToCString(), port, database->ToCString(), userName->ToCString(), password->ToCString(), log, logPrefix);
+		db = DB::MSSQLConn::CreateDBToolTCP(serverHost->ToCString(), port, sSSL && sSSL->Equals(UTF8STRC("1")), database->ToCString(), userName->ToCString(), password->ToCString(), log, logPrefix);
 		if (db == 0)
 			log->LogMessage(CSTR("Error in connecting to MSSQL database"), IO::LogHandler::LogLevel::Error);
 		return db;

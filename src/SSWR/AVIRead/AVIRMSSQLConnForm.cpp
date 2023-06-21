@@ -80,7 +80,7 @@ void __stdcall SSWR::AVIRead::AVIRMSSQLConnForm::OnOKClicked(void *userObj)
 		return;
 	}
 	sbPort.ClearStr();
-	me->conn = DB::MSSQLConn::OpenConnTCP(sbServer.ToCString(), port, sbDatabase.ToCString(), sbUser.ToCString(), sbPassword.ToCString(), me->core->GetLog(), &sbPort);
+	me->conn = DB::MSSQLConn::OpenConnTCP(sbServer.ToCString(), port, me->chkEncrypt->IsChecked(), sbDatabase.ToCString(), sbUser.ToCString(), sbPassword.ToCString(), me->core->GetLog(), &sbPort);
 	if (me->conn)
 	{
 		me->SetDialogResult(UI::GUIForm::DR_OK);
@@ -127,6 +127,8 @@ SSWR::AVIRead::AVIRMSSQLConnForm::AVIRMSSQLConnForm(UI::GUIClientControl *parent
 	this->lblPort->SetRect(4, 52, 100, 23, false);
 	NEW_CLASS(this->txtPort, UI::GUITextBox(ui, this, CSTR("1433")));
 	this->txtPort->SetRect(104, 52, 100, 23, false);
+	NEW_CLASS(this->chkEncrypt, UI::GUICheckBox(ui, this, CSTR("Encrypt"), false));
+	this->chkEncrypt->SetRect(204, 52, 100, 23, false);
 	NEW_CLASS(this->lblDatabase, UI::GUILabel(ui, this, CSTR("Database")));
 	this->lblDatabase->SetRect(4, 76, 100, 23, false);
 	NEW_CLASS(this->txtDatabase, UI::GUITextBox(ui, this, CSTR("")));

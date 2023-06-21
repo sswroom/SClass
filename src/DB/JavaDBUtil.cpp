@@ -210,6 +210,7 @@ DB::DBTool *DB::JavaDBUtil::OpenJDBC(Text::String *url, Text::String *username, 
 		Text::PString sarr2[2];
 		UOSInt scnt;
 		UOSInt scnt2;
+		Bool encrypt = false;
 		UInt16 port = 1433;
 		Text::CString dbName = CSTR_NULL;
 		sb.AppendC(&url->v[17], url->leng - 17);
@@ -230,8 +231,12 @@ DB::DBTool *DB::JavaDBUtil::OpenJDBC(Text::String *url, Text::String *username, 
 			{
 				dbName = sarr[0].ToCString().Substring(13);
 			}
+			else if (Text::StrStartsWithICaseC(sarr[0].v, sarr[0].leng, UTF8STRC("encrypt=true")))
+			{
+				encrypt = true;
+			}
 		}
-		return MSSQLConn::CreateDBToolTCP(sarr2[0].ToCString(), port, dbName, STR_CSTR(username), STR_CSTR(password), log, LOGPREFIX);
+		return MSSQLConn::CreateDBToolTCP(sarr2[0].ToCString(), port, encrypt, dbName, STR_CSTR(username), STR_CSTR(password), log, LOGPREFIX);
 	}
 	return 0;
 }

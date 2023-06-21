@@ -291,7 +291,7 @@ Bool DB::ODBCConn::Connect(Text::String *connStr)
 	outSize = 0;
 	ret = SQLDriverConnectW(hConn, 0, connBuff, (SQLSMALLINT)(connEnd - connBuff), NULL, 0, &outSize, 0);
 	MemFree(connBuff);
-\
+
 	if (ret != SQL_SUCCESS && ret != SQL_SUCCESS_WITH_INFO)
 	{
 		Text::StringBuilderUTF8 sb;
