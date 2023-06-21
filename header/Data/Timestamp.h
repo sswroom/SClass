@@ -263,6 +263,31 @@ namespace Data
 			}
 		}
 
+		UTF8Char *ToStringISO8601(UTF8Char *buff) const
+		{
+			if (this->IsNull())
+			{
+				*buff = 0;
+				return buff;
+			}
+			else if (this->inst.nanosec == 0)
+			{
+				return ToString(buff, "yyyy-MM-ddTHH:mm:sszzzz");
+			}
+			else if (this->inst.nanosec % 1000000 == 0)
+			{
+				return ToString(buff, "yyyy-MM-ddTHH:mm:ss.fffzzzz");
+			}
+			else if (this->inst.nanosec % 1000 == 0)
+			{
+				return ToString(buff, "yyyy-MM-ddTHH:mm:ss.ffffffzzzz");
+			}
+			else
+			{
+				return ToString(buff, "yyyy-MM-ddTHH:mm:ss.fffffffffzzzz");
+			}
+		}
+
 		UTF8Char *ToStringNoZone(UTF8Char *buff) const
 		{
 			if (this->IsNull())
