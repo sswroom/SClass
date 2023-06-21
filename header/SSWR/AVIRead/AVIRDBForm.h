@@ -2,6 +2,8 @@
 #define _SM_SSWR_AVIREAD_AVIRDBFORM
 #include "DB/ReadingDB.h"
 #include "DB/ReadingDBTool.h"
+#include "IO/Writer.h"
+#include "IO/LogTool.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "UI/GUIForm.h"
 #include "UI/GUIHSplitter.h"
@@ -45,6 +47,9 @@ namespace SSWR
 			Bool needRelease;
 			DB::ReadingDBTool *dbt;
 			IO::LogTool log;
+
+			IO::Writer *debugWriter;
+			IO::LogHandler *logHdlr;
 
 			static void __stdcall OnSchemaSelChg(void *userObj);
 			static void __stdcall OnTableSelChg(void *userObj);

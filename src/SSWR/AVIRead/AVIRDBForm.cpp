@@ -14,6 +14,10 @@
 #include "UI/FileDialog.h"
 #include "UI/MessageDialog.h"
 
+//#define VERBOSE
+#if defined(VERBOSE)
+#include "IO/ConsoleLogHandler.h"
+#endif
 #define MAX_ROW_CNT 1000
 
 typedef enum
@@ -427,8 +431,19 @@ SSWR::AVIRead::AVIRDBForm::AVIRDBForm(UI::GUIClientControl *parent, UI::GUICore 
 	this->db = db;
 	this->needRelease = needRelease;
 	this->dbt = 0;
+	this->debugWriter = 0;
+	this->logHdlr = 0;
 	if (db->IsFullConn())
 	{
+#if defined(VERBOSE)
+		IO::ConsoleWriter *console;
+		IO::ConsoleLogHandler *logHdlr;
+		NEW_CLASS(console, IO::ConsoleWriter());
+		NEW_CLASS(logHdlr, IO::ConsoleLogHandler(console));
+		this->log.AddLogHandler(logHdlr, IO::LogHandler::LogLevel::Raw);
+		this->logHdlr = logHdlr;
+		this->debugWriter = console;
+#endif
 		NEW_CLASS(this->dbt, DB::ReadingDBTool((DB::DBConn*)this->db, needRelease, &this->log, CSTR("DB: ")));
 	}
 
@@ -528,6 +543,9 @@ SSWR::AVIRead::AVIRDBForm::~AVIRDBForm()
 	{
 		DEL_CLASS(this->db);
 	}
+	this->log.RemoveLogHandler(this->logHdlr);	
+	SDEL_CLASS(this->logHdlr);
+	SDEL_CLASS(this->debugWriter);
 }
 
 void SSWR::AVIRead::AVIRDBForm::UpdateSchemas()

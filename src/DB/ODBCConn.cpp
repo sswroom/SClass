@@ -94,6 +94,10 @@ void DB::ODBCConn::UpdateConnInfo()
 		{
 			this->sqlType = DB::SQLType::MSSQL;
 		}
+		else if (Text::StrIndexOfC(buff, (UOSInt)buffSize, UTF8STRC("libtdsodbc")) != INVALID_INDEX)
+		{
+			this->sqlType = DB::SQLType::MSSQL;
+		}
 		else
 		{
 		}

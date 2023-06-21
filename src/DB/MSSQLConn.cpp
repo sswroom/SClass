@@ -25,17 +25,21 @@ DB::DBConn *DB::MSSQLConn::OpenConnTCP(Text::CString serverHost, UInt16 port, Bo
 		connStr.Append(serverHost);
 		connStr.AppendC(UTF8STRC(","));
 		connStr.AppendU16(port);
+		if (encrypt)
+		{
+			connStr.AppendC(UTF8STRC(";Encrypt=yes"));
+		}
 	}
 	else
 	{
-		connStr.AppendC(UTF8STRC(";server="));
+		connStr.AppendC(UTF8STRC(";Server="));
 		connStr.Append(serverHost);
-		connStr.AppendC(UTF8STRC(";port="));
+		connStr.AppendC(UTF8STRC(";Port="));
 		connStr.AppendU16(port);
-	}
-	if (encrypt)
-	{
-		connStr.AppendC(UTF8STRC(";Encrypt=yes"));
+		if (encrypt)
+		{
+			connStr.AppendC(UTF8STRC(";Encryption=require"));
+		}
 	}
 	connStr.AppendC(UTF8STRC(";database="));
 	connStr.Append(database);
@@ -56,14 +60,16 @@ DB::DBConn *DB::MSSQLConn::OpenConnTCP(Text::CString serverHost, UInt16 port, Bo
 	{
 		if (userName.v)
 		{
-			connStr.AppendC(UTF8STRC(";user="));
+			connStr.AppendC(UTF8STRC(";UID="));
 			connStr.Append(userName);
 		}
 		if (password.v)
 		{
-			connStr.AppendC(UTF8STRC(";password="));
+			connStr.AppendC(UTF8STRC(";PWD="));
 			connStr.Append(password);
 		}
+//		connStr.AppendC(UTF8STRC(";Timeout=60"));
+//		connStr.AppendC(UTF8STRC(";connect timeout=30"));
 	}
 	driverName->Release();
 	NEW_CLASS(conn, DB::ODBCConn(connStr.ToCString(), CSTR("MSSQLConn"), log));
