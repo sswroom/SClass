@@ -18,3 +18,4 @@ libtesseract-dev
 libwebp-dev
 libheif-dev
 libzxing-dev
+freetds-dev

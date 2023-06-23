@@ -55,7 +55,7 @@ namespace DB
 			Data::Timestamp ts = GetTimestamp(colIndex);
 			if (ts.inst.sec == 0)
 				return DateErrType::Error;
-			outVal->SetValue(ts.ToTicks(), ts.tzQhr);
+			outVal->SetValue(ts.inst, ts.tzQhr);
 			return DateErrType::Ok;
 		}
 

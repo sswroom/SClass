@@ -7,6 +7,7 @@
 #include "DB/OLEDBConn.h"
 #include "DB/PostgreSQLConn.h"
 #include "DB/SQLiteFile.h"
+#include "DB/TDSConn.h"
 #include "IO/FileStream.h"
 #include "IO/MemoryStream.h"
 #include "IO/Path.h"
@@ -163,6 +164,32 @@ Bool DB::DBManager::GetConnStr(DB::DBTool *db, Text::StringBuilderUTF8 *connStr)
 				connStr->Append(s);
 			}
 			if ((s = psql->GetConnPWD()) != 0)
+			{
+				connStr->AppendC(UTF8STRC(";PWD="));
+				connStr->Append(s);
+			}
+			return true;
+		}
+		break;
+	case DB::DBConn::CT_TDSCONN:
+		{
+			UTF8Char sbuff[128];
+			UTF8Char *sptr;
+			DB::TDSConn *tds = (DB::TDSConn*)conn;
+			connStr->AppendC(UTF8STRC("tds:Host="));
+			sptr = tds->GetConnHost()->ConcatTo(sbuff);
+			connStr->AppendP(sbuff, sptr);
+			if ((s = tds->GetConnDB()) != 0)
+			{
+				connStr->AppendC(UTF8STRC(";Database="));
+				connStr->Append(s);
+			}
+			if ((s = tds->GetConnUID()) != 0)
+			{
+				connStr->AppendC(UTF8STRC(";UID="));
+				connStr->Append(s);
+			}
+			if ((s = tds->GetConnPWD()) != 0)
 			{
 				connStr->AppendC(UTF8STRC(";PWD="));
 				connStr->Append(s);
@@ -468,6 +495,71 @@ DB::ReadingDB *DB::DBManager::OpenConn(Text::CString connStr, IO::LogTool *log, 
 			return rdb;
 		}
 	}
+	else if (connStr.StartsWith(UTF8STRC("tds:")))
+	{
+		Text::StringBuilderUTF8 sb;
+		Text::String *server = 0;
+		Text::String *uid = 0;
+		Text::String *pwd = 0;
+		Text::String *schema = 0;
+		UOSInt cnt;
+		sb.Append(connStr.Substring(4));
+		Text::PString sarr[2];
+		sarr[1] = sb;
+		while (true)
+		{
+			cnt = Text::StrSplitP(sarr, 2, sarr[1], ';');
+			if (sarr[0].StartsWithICase(UTF8STRC("HOST=")))
+			{
+				SDEL_STRING(server);
+				server = Text::String::New(sarr[0].v + 5, sarr[0].leng - 5);
+			}
+			else if (sarr[0].StartsWithICase(UTF8STRC("UID=")))
+			{
+				SDEL_STRING(uid);
+				uid = Text::String::New(sarr[0].v + 4, sarr[0].leng - 4);
+			}
+			else if (sarr[0].StartsWithICase(UTF8STRC("PWD=")))
+			{
+				SDEL_STRING(pwd);
+				pwd = Text::String::New(sarr[0].v + 4, sarr[0].leng - 4);
+			}
+			else if (sarr[0].StartsWithICase(UTF8STRC("DATABASE=")))
+			{
+				SDEL_STRING(schema);
+				schema = Text::String::New(sarr[0].v + 9, sarr[0].leng - 9);
+			}
+			if (cnt != 2)
+			{
+				break;
+			}
+		}
+		DB::TDSConn *cli;
+		UInt16 port = 1433;
+		if (server)
+		{
+			UOSInt i = server->IndexOf(':');
+			if (i >= 0)
+			{
+				Text::StrToUInt16(&server->v[i + 1], &port);
+				server->TrimToLength(i);
+			}
+		}
+		NEW_CLASS(cli, DB::TDSConn(STR_CSTR(server), port, false, STR_CSTR(schema), STR_CSTR(uid), STR_CSTR(pwd), log, 0));
+		SDEL_STRING(server);
+		SDEL_STRING(uid);
+		SDEL_STRING(pwd);
+		SDEL_STRING(schema);
+		if (!cli->IsConnected())
+		{
+			DEL_CLASS(cli);
+		}
+		else
+		{
+			NEW_CLASS(db, DB::DBTool(cli, true, log, DBPREFIX));
+			return db;
+		}
+	}
 	return 0;
 }
 
@@ -601,6 +693,32 @@ void DB::DBManager::GetConnName(Text::CString connStr, Text::StringBuilderUTF8 *
 			else if (sarr[0].StartsWithICase(UTF8STRC("PORT=")))
 			{
 				sbOut->AppendUTF8Char(':');
+				sbOut->Append(sarr[0].ToCString().Substring(5));
+			}
+			else if (sarr[0].StartsWithICase(UTF8STRC("DATABASE=")))
+			{
+				sbOut->AppendUTF8Char(',');
+				sbOut->Append(sarr[0].ToCString().Substring(9));
+			}
+			if (cnt != 2)
+			{
+				break;
+			}
+		}
+	}
+	else if (connStr.StartsWith(UTF8STRC("tds:")))
+	{
+		sbOut->AppendC(UTF8STRC("tds:"));
+		Text::StringBuilderUTF8 sb;
+		UOSInt cnt;
+		sb.Append(connStr.Substring(4));
+		Text::PString sarr[2];
+		sarr[1] = sb;
+		while (true)
+		{
+			cnt = Text::StrSplitP(sarr, 2, sarr[1], ';');
+			if (sarr[0].StartsWithICase(UTF8STRC("HOST=")))
+			{
 				sbOut->Append(sarr[0].ToCString().Substring(5));
 			}
 			else if (sarr[0].StartsWithICase(UTF8STRC("DATABASE=")))

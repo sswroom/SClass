@@ -18,7 +18,8 @@ namespace DB
 			CT_WMIQUERY,
 			CT_OLEDB,
 			CT_MYSQLTCP,
-			CT_POSTGRESQL
+			CT_POSTGRESQL,
+			CT_TDSCONN
 		} ConnType;
 
 		typedef enum

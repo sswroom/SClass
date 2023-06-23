@@ -45,7 +45,7 @@
                 "${workspaceFolder}/../SClass/ThirdParty/sqlite3",
                 "${workspaceFolder}/../SClass/ThirdParty/KSSample",
                 "${workspaceFolder}/../SClass/ThirdParty/adl",
-				"/opt/local/include"
+                "/opt/local/include"
             ],
             "defines": [
                 "__APPLE__"
@@ -63,7 +63,7 @@
                 "${workspaceFolder}/../SClass/ThirdParty/sqlite3",
                 "${workspaceFolder}/../SClass/ThirdParty/KSSample",
                 "${workspaceFolder}/../SClass/ThirdParty/adl",
-				"~/android-ndk-r19c/sysroot/usr/include"
+                "~/android-ndk-r19c/sysroot/usr/include"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/gcc",
@@ -79,7 +79,7 @@
                 "${workspaceFolder}/../SClass/ThirdParty/sqlite3",
                 "${workspaceFolder}/../SClass/ThirdParty/KSSample",
                 "${workspaceFolder}/../SClass/ThirdParty/adl",
-				"~/arduino-1.8.8/hardware/tools/avr/avr/include"
+                "~/arduino-1.8.8/hardware/tools/avr/avr/include"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/gcc",
@@ -144,7 +144,7 @@
             "includePath": [
                 "${workspaceFolder}/../SClass/header",
                 "C:/msys64/usr/include",
-				"C:/msys64/mingw64/x86_64-w64-mingw32/include",
+                "C:/msys64/mingw64/x86_64-w64-mingw32/include",
                 "${workspaceFolder}/../SClass/ThirdParty/baseclasses",
                 "${workspaceFolder}/../SClass/ThirdParty/miniz",
                 "${workspaceFolder}/../SClass/ThirdParty/sqlite3",
@@ -154,7 +154,7 @@
             "defines": [
                 "UNICODE",
                 "_UNICODE",
-				"__CYGWIN__"
+                "__CYGWIN__"
             ],
             "compilerPath": "\"C:/msys64/usr/bin/g++.exe\"",
             "cStandard": "c11",
@@ -171,7 +171,8 @@
                 "${workspaceFolder}/../SClass/ThirdParty/miniz",
                 "${workspaceFolder}/../SClass/ThirdParty/sqlite3",
                 "${workspaceFolder}/../SClass/ThirdParty/KSSample",
-                "${workspaceFolder}/../SClass/ThirdParty/adl"
+                "${workspaceFolder}/../SClass/ThirdParty/adl",
+                "/usr/include"
             ],
             "defines": [
                 "UNICODE",
