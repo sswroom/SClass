@@ -119,7 +119,7 @@ void DB::ODBCConn::UpdateConnInfo()
 			Data::Timestamp ts1 = r->GetTimestamp(0);
 			Data::Timestamp ts2 = r->GetTimestamp(1);
 			this->CloseReader(r);
-			this->tzQhr = (Int8)((ts1.inst.sec - ts2.inst.sec) / 900);
+			this->tzQhr = (Int8)((ts1.inst.sec + 1 - ts2.inst.sec) / 900);
 		}
 	}
 	else if (this->sqlType == DB::SQLType::MySQL)

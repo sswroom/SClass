@@ -3,10 +3,17 @@
 #include "DB/DBReader.h"
 #include "DB/SQLBuilder.h"
 #include "DB/TDSConn.h"
+#include "Math/MSGeography.h"
+#include "Math/WKTWriter.h"
+#include "Math/Geometry/Vector2D.h"
 #include <sybfront.h>
 #include <sybdb.h>
 
 #include <stdio.h>
+//#define VERBOSE
+
+#define SYBGEOMETRY 240
+#define SYBUUID 36
 
 Bool DB::TDSConn::inited = false;
 
@@ -57,7 +64,8 @@ public:
 			i = this->nCols;
 			while (i-- > 0)
 			{
-				MemFree(this->cols[i].buff);
+				if (this->cols[i].buff)
+					MemFree(this->cols[i].buff);
 			}
 			MemFree(this->cols);
 		}
@@ -84,11 +92,11 @@ public:
 				case SYBCHAR:
 				case SYBTEXT:
 					this->cols[i].buffSize = (UInt32)this->cols[i].size;
-					this->cols[i].buff = MemAlloc(UInt8, this->cols[i].buffSize + 1);
-					if (dbbind(this->dbproc, c, NTBSTRINGBIND, (Int32)this->cols[i].buffSize + 1, this->cols[i].buff) == FAIL)
-					{
-						printf("TDS: Error in binding char of column %d\r\n", (UInt32)i);
-					}
+					this->cols[i].buff = 0;
+//					if (dbbind(this->dbproc, c, NTBSTRINGBIND, (Int32)this->cols[i].buffSize + 1, this->cols[i].buff) == FAIL)
+//					{
+//						printf("TDS: Error in binding char of column %d\r\n", (UInt32)i);
+//					}
 					break;
 				case SYBBIT:
 					this->cols[i].buffSize = 1;
@@ -130,6 +138,31 @@ public:
 						printf("TDS: Error in binding int8 of column %d\r\n", (UInt32)i);
 					}
 					break;
+				case SYBREAL:
+					this->cols[i].buffSize = 4;
+					this->cols[i].buff = MemAlloc(UInt8, this->cols[i].buffSize);
+					if (dbbind(this->dbproc, c, REALBIND, (Int32)this->cols[i].buffSize, this->cols[i].buff) == FAIL)
+					{
+						printf("TDS: Error in binding real of column %d\r\n", (UInt32)i);
+					}
+					break;
+				case SYBFLT8:
+					this->cols[i].buffSize = 8;
+					this->cols[i].buff = MemAlloc(UInt8, this->cols[i].buffSize);
+					if (dbbind(this->dbproc, c, FLT8BIND, (Int32)this->cols[i].buffSize, this->cols[i].buff) == FAIL)
+					{
+						printf("TDS: Error in binding float8 of column %d\r\n", (UInt32)i);
+					}
+					break;
+				case SYBDECIMAL:
+				case SYBNUMERIC:
+					this->cols[i].buffSize = 8;
+					this->cols[i].buff = MemAlloc(UInt8, this->cols[i].buffSize);
+					if (dbbind(this->dbproc, c, FLT8BIND, (Int32)this->cols[i].buffSize, this->cols[i].buff) == FAIL)
+					{
+						printf("TDS: Error in binding numeric of column %d\r\n", (UInt32)i);
+					}
+					break;
 				case SYBDATETIME:
 					this->cols[i].buffSize = 8;
 					this->cols[i].buff = MemAlloc(UInt8, this->cols[i].buffSize);
@@ -138,6 +171,8 @@ public:
 						printf("TDS: Error in binding datetime of column %d\r\n", (UInt32)i);
 					}
 					break;
+				case SYBMSDATE:
+				case SYBMSTIME:
 				case SYBMSDATETIME2:
 					this->cols[i].buffSize = 16;
 					this->cols[i].buff = MemAlloc(UInt8, this->cols[i].buffSize);
@@ -145,6 +180,18 @@ public:
 					{
 						printf("TDS: Error in binding msdatetime2 of column %d\r\n", (UInt32)i);
 					}
+					break;
+				case SYBUUID:
+					this->cols[i].buffSize = 0;
+					this->cols[i].buff = 0;
+					break;
+				case SYBGEOMETRY:
+					this->cols[i].buffSize = 0;
+					this->cols[i].buff = 0;
+					break;
+				case SYBBINARY:
+					this->cols[i].buffSize = 0;
+					this->cols[i].buff = 0;
 					break;
 				default:
 					this->cols[i].buffSize = (UInt32)dbprcollen(this->dbproc, c);;
@@ -236,8 +283,12 @@ public:
 		{
 		case SYBTEXT:
 		case SYBCHAR:
-			sb->AppendSlow(this->cols[colIndex].buff);
+		{
+			UOSInt len = (UInt32)dbdatlen(this->dbproc, (int)colIndex + 1);
+			UInt8 *data = dbdata(this->dbproc, (int)colIndex + 1);
+			sb->AppendC(data, len);
 			return true;
+		}
 		case SYBBIT:
 			sb->AppendU16((this->cols[colIndex].buff[0] != 0)?1:0);
 			return true;
@@ -253,6 +304,40 @@ public:
 		case SYBINT8:
 			sb->AppendI64(ReadNInt64(&this->cols[colIndex].buff[0]));
 			return true;
+		case SYBREAL:
+			sb->AppendDouble(ReadFloat(&this->cols[colIndex].buff[0]));
+			return true;
+		case SYBDECIMAL:
+		case SYBNUMERIC:
+		case SYBFLT8:
+			sb->AppendDouble(ReadDouble(&this->cols[colIndex].buff[0]));
+			return true;
+		case SYBDATETIME:
+		case SYBMSDATE:
+		case SYBMSTIME:
+		case SYBMSDATETIME2:
+			sb->AppendTS(this->GetTimestamp(colIndex));
+			return true;
+		case SYBGEOMETRY:
+			{
+				Math::Geometry::Vector2D *vec = this->GetVector(colIndex);
+				if (vec)
+				{
+					Math::WKTWriter wkt;
+					wkt.ToText(sb, vec);
+					DEL_CLASS(vec);
+				}
+			}
+			return true;
+		case SYBUUID:
+		{
+			Data::UUID uuid;
+			this->GetUUID(colIndex, &uuid);
+			uuid.ToString(sb);
+			return true;
+		}
+		case SYBBINARY:
+			return false;
 		default:
 			printf("TDS: Unsupported type %d to str(sb)\r\n", this->cols[colIndex].type);
 			return false;
@@ -261,7 +346,7 @@ public:
 
 	virtual Text::String *GetNewStr(UOSInt colIndex)
 	{
-		UTF8Char sbuff[32];
+		UTF8Char sbuff[64];
 		UTF8Char *sptr;
 		if (colIndex > this->nCols)
 			return 0;
@@ -271,7 +356,11 @@ public:
 		{
 		case SYBTEXT:
 		case SYBCHAR:
-			return Text::String::NewNotNullSlow(this->cols[colIndex].buff);
+		{
+			UOSInt len = (UInt32)dbdatlen(this->dbproc, (int)colIndex + 1);
+			UInt8 *data = dbdata(this->dbproc, (int)colIndex + 1);
+			return Text::String::New(data, len);
+		}
 		case SYBBIT:
 			return Text::String::New((this->cols[colIndex].buff[0] != 0)?CSTR("1"):CSTR("0"));
 		case SYBINT1:
@@ -286,6 +375,42 @@ public:
 		case SYBINT8:
 			sptr = Text::StrInt64(sbuff, ReadNInt64(&this->cols[colIndex].buff[0]));
 			return Text::String::NewP(sbuff, sptr);
+		case SYBREAL:
+			sptr = Text::StrDouble(sbuff, ReadFloat(&this->cols[colIndex].buff[0]));
+			return Text::String::NewP(sbuff, sptr);
+		case SYBDECIMAL:
+		case SYBNUMERIC:
+		case SYBFLT8:
+			sptr = Text::StrDouble(sbuff, ReadDouble(&this->cols[colIndex].buff[0]));
+			return Text::String::NewP(sbuff, sptr);
+		case SYBDATETIME:
+		case SYBMSDATE:
+		case SYBMSTIME:
+		case SYBMSDATETIME2:
+			sptr = this->GetTimestamp(colIndex).ToString(sbuff);
+			return Text::String::NewP(sbuff, sptr);
+		case SYBGEOMETRY:
+			{
+				Math::Geometry::Vector2D *vec = this->GetVector(colIndex);
+				if (vec)
+				{
+					Text::StringBuilderUTF8 sb;
+					Math::WKTWriter wkt;
+					wkt.ToText(&sb, vec);
+					DEL_CLASS(vec);
+					return Text::String::New(sb.ToString(), sb.GetLength());
+				}
+			}
+			return 0;
+		case SYBUUID:
+		{
+			Data::UUID uuid;
+			this->GetUUID(colIndex, &uuid);
+			sptr = uuid.ToString(sbuff);
+			return Text::String::NewP(sbuff, sptr);
+		}
+		case SYBBINARY:
+			return 0;
 		default:
 			printf("TDS: Unsupported type %d to new str\r\n", this->cols[colIndex].type);
 			return 0;
@@ -302,7 +427,11 @@ public:
 		{
 		case SYBTEXT:
 		case SYBCHAR:
-			return Text::StrConcatS(buff, this->cols[colIndex].buff, buffSize);
+		{
+			UOSInt len = (UInt32)dbdatlen(this->dbproc, (int)colIndex + 1);
+			UInt8 *data = dbdata(this->dbproc, (int)colIndex + 1);
+			return Text::StrConcatCS(buff, data, len, buffSize);
+		}
 		case SYBBIT:
 			buff[0] = (this->cols[colIndex].buff[0] != 0)?'1':'0';
 			buff[1] = 0;
@@ -315,6 +444,28 @@ public:
 			return Text::StrInt32(buff, ReadNInt32(&this->cols[colIndex].buff[0]));
 		case SYBINT8:
 			return Text::StrInt64(buff, ReadNInt64(&this->cols[colIndex].buff[0]));
+		case SYBREAL:
+			return Text::StrDouble(buff, ReadFloat(&this->cols[colIndex].buff[0]));
+		case SYBDECIMAL:
+		case SYBNUMERIC:
+		case SYBFLT8:
+			return Text::StrDouble(buff, ReadDouble(&this->cols[colIndex].buff[0]));
+		case SYBDATETIME:
+		case SYBMSDATE:
+		case SYBMSTIME:
+		case SYBMSDATETIME2:
+			return this->GetTimestamp(colIndex).ToString(buff);
+		case SYBUUID:
+		{
+			Data::UUID uuid;
+			this->GetUUID(colIndex, &uuid);
+			return uuid.ToString(buff);
+		}
+		case SYBGEOMETRY:
+			printf("TDS: Geometry to string not supported\r\n");
+			return 0;
+		case SYBBINARY:
+			return 0;
 		default:
 			printf("TDS: Unsupported type %d to str(s)\r\n", this->cols[colIndex].type);
 			return 0;
@@ -323,10 +474,36 @@ public:
 
 	virtual Data::Timestamp GetTimestamp(UOSInt colIndex)
 	{
-		Data::VariItem item;
-		if (this->GetVariItem(colIndex, &item))
-			return item.GetAsTimestamp();
-		return 0;
+		if (colIndex >= this->nCols)
+			return 0;
+		if (this->cols[colIndex].status == -1)
+			return 0;
+		if (this->cols[colIndex].type == SYBDATETIME)
+		{
+			Int64 secs = (-25567 + ReadInt32(this->cols[colIndex].buff)) * 86400;
+			UInt32 t = ReadUInt32(&this->cols[colIndex].buff[4]);
+			secs += t / 300;
+			t = (t % 300) * 10000000 / 3;
+			return Data::Timestamp(Data::TimeInstant(secs - this->tzQhr * 900, t), this->tzQhr);
+		}
+		else if (this->cols[colIndex].type == SYBMSDATETIME2 || this->cols[colIndex].type == SYBMSDATE || this->cols[colIndex].type == SYBMSTIME || this->cols[colIndex].type == SYBMSDATETIMEOFFSET)
+		{
+			DBDATETIMEALL *t = (DBDATETIMEALL *)this->cols[colIndex].buff;
+			Int64 secs = (-25567 + t->date) * 86400;
+			UInt32 ns = (UInt32)(t->time % 10000000) * 100;
+			secs += (Int64)(t->time / 10000000);
+			Int8 tzQhr;
+			if (t->has_offset)
+				tzQhr = (Int8)(t->offset / 15);
+			else
+				tzQhr = this->tzQhr;
+			return Data::Timestamp(Data::TimeInstant(secs - tzQhr * 900, ns), tzQhr);
+		}
+		else
+		{
+
+			return 0;
+		}
 	}
 
 	virtual Double GetDbl(UOSInt colIndex)
@@ -347,22 +524,61 @@ public:
 
 	virtual UOSInt GetBinarySize(UOSInt colIndex)
 	{
-		return 0;
+		if (colIndex >= this->nCols)
+			return 0;
+		if (this->cols[colIndex].status == -1)
+		{
+			return 0;
+		}
+		if (this->cols[colIndex].type != SYBBINARY)
+			return 0;
+		return (UInt32)dbdatlen(this->dbproc, (int)colIndex + 1);
 	}
 
 	virtual UOSInt GetBinary(UOSInt colIndex, UInt8 *buff)
 	{
-		return 0;
+		if (colIndex >= this->nCols)
+			return 0;
+		if (this->cols[colIndex].status == -1)
+		{
+			return 0;
+		}
+		if (this->cols[colIndex].type != SYBBINARY)
+			return 0;
+		UOSInt dataSize = (UInt32)dbdatlen(this->dbproc, (int)colIndex + 1);
+		UInt8 *buffPtr = dbdata(this->dbproc, (int)colIndex + 1);
+		MemCopyNO(buff, buffPtr, dataSize);
+		return dataSize;
 	}
 
 	virtual Math::Geometry::Vector2D *GetVector(UOSInt colIndex)
 	{
-		return 0;
+		if (colIndex >= this->nCols)
+			return 0;
+		if (this->cols[colIndex].status == -1)
+		{
+			return 0;
+		}
+		if (this->cols[colIndex].type != SYBGEOMETRY)
+			return 0;
+		UOSInt dataSize = (UInt32)dbdatlen(this->dbproc, (int)colIndex + 1);
+		UInt8 *buffPtr = dbdata(this->dbproc, (int)colIndex + 1);
+		UInt32 srId;
+		return Math::MSGeography::ParseBinary(buffPtr, dataSize, &srId);
 	}
 
 	virtual Bool GetUUID(UOSInt colIndex, Data::UUID *uuid)
 	{
-		return false;
+		if (colIndex >= this->nCols)
+			return false;
+		if (this->cols[colIndex].status == -1)
+		{
+			return false;
+		}
+		if (this->cols[colIndex].type != SYBUUID)
+			return false;
+		uuid->SetValue(dbdata(this->dbproc, (int)colIndex + 1));
+		return true;
 	}
 
 	virtual Bool GetVariItem(UOSInt colIndex, Data::VariItem *item)
@@ -391,6 +607,14 @@ public:
 		case SYBINT8:
 			item->SetI64(ReadNInt64(&this->cols[colIndex].buff[0]));
 			return true;
+		case SYBREAL:
+			item->SetF32(ReadFloat(&this->cols[colIndex].buff[0]));
+			return true;
+		case SYBDECIMAL:
+		case SYBNUMERIC:
+		case SYBFLT8:
+			item->SetF64(ReadDouble(&this->cols[colIndex].buff[0]));
+			return true;
 		case SYBDATETIME:
 		{
 			Int64 secs = (-25567 + ReadInt32(this->cols[colIndex].buff)) * 86400;
@@ -400,6 +624,8 @@ public:
 			item->SetDate(Data::Timestamp(Data::TimeInstant(secs - this->tzQhr * 900, t), this->tzQhr));
 			return true;
 		}
+		case SYBMSDATE:
+		case SYBMSTIME:
 		case SYBMSDATETIME2:
 		{
 			DBDATETIMEALL *t = (DBDATETIMEALL *)this->cols[colIndex].buff;
@@ -416,8 +642,33 @@ public:
 		}
 		case SYBTEXT:
 		case SYBCHAR:
-			item->SetStrSlow(this->cols[colIndex].buff);
+		{
+			UOSInt dataSize = (UInt32)dbdatlen(this->dbproc, (int)colIndex + 1);
+			UInt8 *buffPtr = dbdata(this->dbproc, (int)colIndex + 1);
+			item->SetStr(buffPtr, dataSize);
 			return true;
+		}
+		case SYBGEOMETRY:
+		{
+			UOSInt dataSize = (UInt32)dbdatlen(this->dbproc, (int)colIndex + 1);
+			UInt8 *buffPtr = dbdata(this->dbproc, (int)colIndex + 1);
+			UInt32 srId;
+			return Math::MSGeography::ParseBinary(buffPtr, dataSize, &srId);
+		}
+		case SYBBINARY:
+		{
+			UOSInt dataSize = (UInt32)dbdatlen(this->dbproc, (int)colIndex + 1);
+			UInt8 *buffPtr = dbdata(this->dbproc, (int)colIndex + 1);
+			item->SetByteArr(buffPtr, dataSize);
+			return true;
+		}
+		case SYBUUID:
+		{
+			Data::UUID *uuid;
+			NEW_CLASS(uuid, Data::UUID(dbdata(this->dbproc, (int)colIndex + 1)));
+			item->SetUUIDDirect(uuid);
+			return true;
+		}
 		default:
 			item->SetNull();
 			return true;
@@ -458,11 +709,27 @@ public:
 			return DB::DBUtil::ColType::CT_Int64;
 		case SYBDATETIME:
 			return DB::DBUtil::ColType::CT_DateTime;
+		case SYBMSDATE:
+			return DB::DBUtil::ColType::CT_Date;
+		case SYBMSTIME:
 		case SYBMSDATETIME2:
 			return DB::DBUtil::ColType::CT_DateTimeTZ;
+		case SYBREAL:
+			return DB::DBUtil::ColType::CT_Float;
+		case SYBFLT8:
+			return DB::DBUtil::ColType::CT_Double;
+		case SYBDECIMAL:
+		case SYBNUMERIC:
+			return DB::DBUtil::ColType::CT_Decimal;
 		case SYBTEXT:
 		case SYBCHAR:
 			return DB::DBUtil::ColType::CT_VarUTF8Char;
+		case SYBGEOMETRY:
+			return DB::DBUtil::ColType::CT_Vector;
+		case SYBBINARY:
+			return DB::DBUtil::ColType::CT_Binary;
+		case SYBUUID:
+			return DB::DBUtil::ColType::CT_UUID;
 		default:
 			return DB::DBUtil::ColType::CT_Unknown;
 		}
@@ -500,7 +767,9 @@ int TDSConnErrHdlr(DBPROCESS * dbproc, int severity, int dberr, int oserr, char 
 
 int TDSConnMsgHdlr(DBPROCESS * dbproc, DBINT msgno, int msgstate, int severity, char *msgtext, char *srvname, char *proc, int line)
 {
+#if defined(VERBOSE)
 	printf("TDS: Messages, msgno = %d, msgstate = %d, severity = %d, server = %s, msg: %s\r\n", msgno, msgstate, severity, srvname, msgtext);
+#endif
 	return 0;
 }
 
@@ -529,6 +798,20 @@ DB::TDSConn::TDSConn(Text::CString serverHost, UInt16 port, Bool encrypt, Text::
 	this->clsData->log = log;
 	this->Reconnect();
 	this->clsData->errMsg = 0;
+	if (this->clsData->dbproc != 0)
+	{
+		DB::DBReader *r = this->ExecuteReader(CSTR("select SYSDATETIME(), GETUTCDATE()"));
+		if (r)
+		{
+			if (r->ReadNext())
+			{
+				Data::Timestamp ts1 = r->GetTimestamp(0);
+				Data::Timestamp ts2 = r->GetTimestamp(1);
+				this->clsData->tzQhr = (Int8)((ts1.inst.sec + 1 - ts2.inst.sec) / 900);
+			}
+			this->CloseReader(r);
+		}
+	}
 }
 
 DB::TDSConn::~TDSConn()
@@ -623,7 +906,9 @@ DB::DBReader *DB::TDSConn::ExecuteReader(Text::CString sql)
 	if (this->clsData->dbproc == 0)
 		return 0;
 	this->cmdMut.Lock();
+#if defined(VERBOSE)
 	printf("TDS: Execute SQL: %s\r\n", sql.v);
+#endif
 	dbcmd(this->clsData->dbproc, (const Char*)sql.v);
 	RETCODE ret = dbsqlexec(this->clsData->dbproc);
 	if (ret == FAIL)

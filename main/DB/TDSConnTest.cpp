@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "Core/Core.h"
 #include "DB/DBReader.h"
-#include "DB/TDSConn.h"
+#include "DB/MSSQLConn.h"
 #include "IO/ConsoleLogHandler.h"
 
 #define DBHOST CSTR("127.0.0.1")
@@ -17,8 +17,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	IO::LogTool log;
 	log.AddLogHandler(&logHdlr, IO::LogHandler::LogLevel::Raw);
 	Text::StringBuilderUTF8 errMsg;
-	DB::TDSConn *conn;
-	NEW_CLASS(conn, DB::TDSConn(
+	DB::DBConn *conn;
+	conn = DB::MSSQLConn::OpenConnTCP(
 		DBHOST,
 		DBPORT,
 		true,
@@ -27,25 +27,47 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		DBPASSWORD,
 		&log,
 		&errMsg
-	));
-	if (conn->IsConnected())
+	);
+	if (conn)
 	{
-		DB::DBReader *r = conn->ExecuteReader(CSTR("select SYSDATETIME(), GETUTCDATE()"));
+		DB::DBReader *r = conn->ExecuteReader(CSTR("select * from table"));
 		if (r)
 		{
-			if (r->ReadNext())
+			while (r->ReadNext())
 			{
-				Text::StringBuilderUTF8 sb;
-				Data::Timestamp ts1 = r->GetTimestamp(0);
-				Data::Timestamp ts2 = r->GetTimestamp(1);
-				sb.AppendTS(ts1);
-				sb.AppendC(UTF8STRC(" - "));
-				sb.AppendTS(ts2);
-				console.WriteLineCStr(sb.ToCString());
+				Text::String *s;
+				r->GetInt32(0);
+				s = r->GetNewStr(1);
+				SDEL_STRING(s);
+				s = r->GetNewStr(2);
+				SDEL_STRING(s);
+				s = r->GetNewStr(3);
+				SDEL_STRING(s);
+				s = r->GetNewStr(4);
+				SDEL_STRING(s);
+				s = r->GetNewStr(5);
+				SDEL_STRING(s);
+				s = r->GetNewStr(6);
+				SDEL_STRING(s);
+				s = r->GetNewStr(7);
+				SDEL_STRING(s);
+				r->GetInt32(8);
+				s = r->GetNewStr(9);
+				SDEL_STRING(s);
+				r->GetTimestamp(10);
+				r->GetTimestamp(11);
+				r->GetInt32(12);
+				r->GetInt32(13);
+				r->GetInt32(14);
 			}
 			conn->CloseReader(r);
 		}
+		DEL_CLASS(conn);
 	}
-	DEL_CLASS(conn);
+	else
+	{
+		console.WriteLineCStr(CSTR("Error in connecting to database"));
+		console.WriteLineCStr(errMsg.ToCString());
+	}
 	return 0;
 }

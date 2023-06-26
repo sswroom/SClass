@@ -67,6 +67,7 @@ DB::DBConn *DB::MSSQLConn::OpenConnTCP(Text::CString serverHost, UInt16 port, Bo
 				connStr.AppendC(UTF8STRC(";PWD="));
 				connStr.Append(password);
 			}
+			connStr.AppendC(UTF8STRC(";TrustServerCertificate=YES"));	
 		}
 		else
 		{
