@@ -202,6 +202,16 @@ Double Text::JSONBase::GetValueAsDouble(Text::CString path)
 	return 0;
 }
 
+Bool Text::JSONBase::GetValueAsDouble(Text::CString path, Double *val)
+{
+	Text::JSONBase *json = this->GetValue(path);
+	if (json)
+	{
+		return json->GetAsDouble(val);
+	}
+	return false;
+}
+
 Bool Text::JSONBase::GetValueAsBool(Text::CString path)
 {
 	Text::JSONBase *json = this->GetValue(path);
@@ -297,6 +307,33 @@ Double Text::JSONBase::GetAsDouble()
 	case Text::JSONType::Object:
 	case Text::JSONType::Null:
 		return 0;
+	}
+	return 0;
+}
+
+Bool Text::JSONBase::GetAsDouble(Double *val)
+{
+	switch (this->GetType())
+	{
+	case Text::JSONType::BOOL:
+		*val = ((Text::JSONBool*)this)->GetValue()?1:0;
+		return true;
+	case Text::JSONType::INT32:
+		*val = ((Text::JSONInt32*)this)->GetValue();
+		return true;
+	case Text::JSONType::INT64:
+		*val = (Double)(((Text::JSONInt64*)this)->GetValue());
+		return true;
+	case Text::JSONType::Number:
+		*val = ((Text::JSONNumber*)this)->GetValue();
+		return true;
+	case Text::JSONType::String:
+		return ((Text::JSONString*)this)->GetValue()->ToDouble(val);
+	case Text::JSONType::StringWO:
+	case Text::JSONType::Array:
+	case Text::JSONType::Object:
+	case Text::JSONType::Null:
+		return false;
 	}
 	return 0;
 }
