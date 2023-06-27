@@ -193,7 +193,7 @@ ubgilop2b:
 	}
 }
 
-UI::DObj::RollingTextDObj::RollingTextDObj(Media::DrawEngine *deng, Text::CString txt, Text::CString fontName, Double fontSize, UInt32 fontColor, OSInt left, OSInt top, UOSInt width, UOSInt height, UInt32 codePage, Double rollSpeed) : DirectObject(left, top)
+UI::DObj::RollingTextDObj::RollingTextDObj(Media::DrawEngine *deng, Text::CString txt, Text::CString fontName, Double fontSize, UInt32 fontColor, Math::Coord2D<OSInt> tl, UOSInt width, UOSInt height, UInt32 codePage, Double rollSpeed) : DirectObject(tl)
 {
 	this->deng = deng;
 	if (txt.leng > 0)
@@ -270,9 +270,7 @@ Bool UI::DObj::RollingTextDObj::DoEvents()
 
 void UI::DObj::RollingTextDObj::DrawObject(Media::DrawImage *dimg)
 {
-	OSInt left;
-	OSInt top;
-	this->GetCurrPos(&left, &top);
+	Math::Coord2D<OSInt> tl = this->GetCurrPos();
 	if (this->dimg == 0)
 	{
 		return;
@@ -280,7 +278,7 @@ void UI::DObj::RollingTextDObj::DrawObject(Media::DrawImage *dimg)
 	UOSInt h = this->dimg->GetHeight();
 	if (h <= this->height)
 	{
-		dimg->DrawImagePt(this->dimg, OSInt2Double(left), OSInt2Double(top));
+		dimg->DrawImagePt(this->dimg, OSInt2Double(tl.x), OSInt2Double(tl.y));
 	}
 	else
 	{
@@ -297,12 +295,12 @@ void UI::DObj::RollingTextDObj::DrawObject(Media::DrawImage *dimg)
 
 		if ((h - (UOSInt)currPos) >= this->height)
 		{
-			dimg->DrawImagePt3(this->dimg, OSInt2Double(left), OSInt2Double(top), 0, OSInt2Double(currPos), OSInt2Double(this->width), OSInt2Double(this->height));
+			dimg->DrawImagePt3(this->dimg, OSInt2Double(tl.x), OSInt2Double(tl.y), 0, OSInt2Double(currPos), OSInt2Double(this->width), OSInt2Double(this->height));
 		}
 		else
 		{
-			dimg->DrawImagePt3(this->dimg, OSInt2Double(left), OSInt2Double(top), 0, OSInt2Double(currPos), OSInt2Double(this->width), OSInt2Double((OSInt)h - currPos));
-			dimg->DrawImagePt3(this->dimg, OSInt2Double(left), OSInt2Double(top + (OSInt)h - currPos), 0, 0, UOSInt2Double(this->width), OSInt2Double(this->height - h + (UOSInt)currPos));
+			dimg->DrawImagePt3(this->dimg, OSInt2Double(tl.x), OSInt2Double(tl.y), 0, OSInt2Double(currPos), OSInt2Double(this->width), OSInt2Double((OSInt)h - currPos));
+			dimg->DrawImagePt3(this->dimg, OSInt2Double(tl.x), OSInt2Double(tl.y + (OSInt)h - currPos), 0, 0, UOSInt2Double(this->width), OSInt2Double(this->height - h + (UOSInt)currPos));
 		}
 	}
 }

@@ -11,7 +11,7 @@ UInt32 __stdcall UI::DObj::ButtonDObj::ClickThread(void *userObj)
 	return 0;
 }
 
-UI::DObj::ButtonDObj::ButtonDObj(Media::DrawEngine *deng, Text::CString fileNameUnclick, Text::CString fileNameClicked, Int32 left, Int32 top, Bool rectMode, UI::UIEvent clkHdlr, void *clkUserObj) : DirectObject(left, top)
+UI::DObj::ButtonDObj::ButtonDObj(Media::DrawEngine *deng, Text::CString fileNameUnclick, Text::CString fileNameClicked, Math::Coord2D<OSInt> tl, Bool rectMode, UI::UIEvent clkHdlr, void *clkUserObj) : DirectObject(tl)
 {
 	this->deng = deng;
 	if (fileNameUnclick.leng == 0)
@@ -108,14 +108,11 @@ Bool UI::DObj::ButtonDObj::DoEvents()
 
 void UI::DObj::ButtonDObj::DrawObject(Media::DrawImage *dimg)
 {
-	OSInt left;
-	OSInt top;
 	if (!this->isVisible)
 		return;
 
-	this->GetCurrPos(&left, &top);
-	this->dispLeft = left;
-	this->dispTop = top;
+	Math::Coord2D<OSInt> tl = this->GetCurrPos();
+	this->dispTL = tl;
 	if (this->bmpUnclick && this->bmpClicked)
 	{
 		if (this->bmpUnclick->GetWidth() == this->bmpClicked->GetWidth() && this->bmpUnclick->GetHeight() == this->bmpClicked->GetHeight())
@@ -265,27 +262,27 @@ bdolop2:
 				}
 			}
 #endif
-			dimg->DrawImagePt(bmpTmp, OSInt2Double(left), OSInt2Double(top));
+			dimg->DrawImagePt(bmpTmp, OSInt2Double(tl.x), OSInt2Double(tl.y));
 			this->deng->DeleteImage(bmpTmp);
 		}
 		else
 		{
-			dimg->DrawImagePt(this->bmpUnclick, OSInt2Double(left), OSInt2Double(top));
+			dimg->DrawImagePt(this->bmpUnclick, OSInt2Double(tl.x), OSInt2Double(tl.y));
 		}
 	}
 	else if (this->bmpUnclick)
 	{
-		dimg->DrawImagePt(this->bmpUnclick, OSInt2Double(left), OSInt2Double(top));
+		dimg->DrawImagePt(this->bmpUnclick, OSInt2Double(tl.x), OSInt2Double(tl.y));
 	}
 	else if (this->bmpClicked)
 	{
-		dimg->DrawImagePt(this->bmpClicked, OSInt2Double(left), OSInt2Double(top));
+		dimg->DrawImagePt(this->bmpClicked, OSInt2Double(tl.x), OSInt2Double(tl.y));
 	}
 }
 
 Bool UI::DObj::ButtonDObj::IsObject(OSInt x, OSInt y)
 {
-	if (x < this->dispLeft || y < this->dispTop || !this->isVisible)
+	if (x < this->dispTL.x || y < this->dispTL.y || !this->isVisible)
 		return false;
 	Media::DrawImage *bmpChk = this->bmpUnclick;
 	if (bmpChk == 0)
@@ -294,11 +291,11 @@ Bool UI::DObj::ButtonDObj::IsObject(OSInt x, OSInt y)
 		if (bmpChk == 0)
 			return false;
 	}
-	if (this->dispLeft + (OSInt)bmpChk->GetWidth() <= x || this->dispTop + (OSInt)bmpChk->GetHeight() <= y)
+	if (this->dispTL.x + (OSInt)bmpChk->GetWidth() <= x || this->dispTL.y + (OSInt)bmpChk->GetHeight() <= y)
 		return false;
 	if (this->rectMode)
 		return true;
-	return (bmpChk->GetPixel32(x - this->dispLeft, y - this->dispTop) & 0xff000000) != 0;
+	return (bmpChk->GetPixel32(x - this->dispTL.x, y - this->dispTL.y) & 0xff000000) != 0;
 }
 
 /*System::Windows::Forms::Cursor ^UI::DObj::ButtonDObj::GetCursor()

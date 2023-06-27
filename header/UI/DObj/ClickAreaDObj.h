@@ -18,7 +18,7 @@ namespace UI
 			OSInt height;
 
 		public:
-			ClickAreaDObj(Media::DrawEngine *deng, OSInt left, OSInt top, OSInt width, OSInt height, UI::UIEvent clkHdlr, void *clkUserObj);
+			ClickAreaDObj(Media::DrawEngine *deng, Math::Coord2D<OSInt> tl, OSInt width, OSInt height, UI::UIEvent clkHdlr, void *clkUserObj);
 			virtual ~ClickAreaDObj();
 
 			virtual Bool IsChanged();

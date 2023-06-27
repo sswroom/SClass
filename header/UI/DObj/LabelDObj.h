@@ -15,13 +15,13 @@ namespace UI
 			Sync::Mutex txtMut;
 			Bool txtChg;
 			Text::String *fontName;
-			Double fontSize;
+			Double fontSizePx;
 			Media::DrawEngine::DrawFontStyle fontStyle;
 			UInt32 fontColor;
 			UInt32 codePage;
 
 		public:
-			LabelDObj(Media::DrawEngine *deng, Text::CString txt, Text::CString fontName, Double fontSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 fontColor, OSInt left, OSInt top, UInt32 codePage);
+			LabelDObj(Media::DrawEngine *deng, Text::CString txt, Text::CString fontName, Double fontSizePx, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 fontColor, Math::Coord2D<OSInt> tl, UInt32 codePage);
 			virtual ~LabelDObj();
 
 			virtual Bool IsChanged();
@@ -33,7 +33,7 @@ namespace UI
 			virtual void OnMouseUp();
 			virtual void OnMouseClick();
 
-			void SetFont(Text::CString fontName, Double fontSize);
+			void SetFont(Text::CString fontName, Double fontSizePx);
 			void SetText(Text::CString txt);
 		};
 	}

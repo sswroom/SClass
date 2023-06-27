@@ -4,7 +4,7 @@
 #include "Media/DrawEngine.h"
 #include "UI/DObj/DynamicOverlayDObj.h"
 
-UI::DObj::DynamicOverlayDObj::DynamicOverlayDObj(Media::DrawEngine *deng, Text::CString fileName1, Text::CString fileName2, Int32 left, Int32 top) : DirectObject(left, top)
+UI::DObj::DynamicOverlayDObj::DynamicOverlayDObj(Media::DrawEngine *deng, Text::CString fileName1, Text::CString fileName2, Math::Coord2D<OSInt> tl) : DirectObject(tl)
 {
 	this->deng = deng;
 	if (fileName1.leng == 0)
@@ -62,9 +62,7 @@ Bool UI::DObj::DynamicOverlayDObj::DoEvents()
 
 void UI::DObj::DynamicOverlayDObj::DrawObject(Media::DrawImage *dimg)
 {
-	OSInt left;
-	OSInt top;
-	this->GetCurrPos(&left, &top);
+	Math::Coord2DDbl tl = this->GetCurrPos().ToDouble();
 	if (this->bmp1 && this->bmp2)
 	{
 		if (this->bmp1->GetWidth() == this->bmp2->GetWidth() && this->bmp1->GetHeight() == this->bmp2->GetHeight())
@@ -103,21 +101,21 @@ void UI::DObj::DynamicOverlayDObj::DrawObject(Media::DrawImage *dimg)
 				}
 			}
 
-			dimg->DrawImagePt(bmpTmp, OSInt2Double(left), OSInt2Double(top));
+			dimg->DrawImagePt(bmpTmp, tl.x, tl.y);
 			this->deng->DeleteImage(bmpTmp);
 		}
 		else
 		{
-			dimg->DrawImagePt(this->bmp1, OSInt2Double(left), OSInt2Double(top));
+			dimg->DrawImagePt(this->bmp1, tl.x, tl.y);
 		}
 	}
 	else if (this->bmp1)
 	{
-		dimg->DrawImagePt(this->bmp1, OSInt2Double(left), OSInt2Double(top));
+		dimg->DrawImagePt(this->bmp1, tl.x, tl.y);
 	}
 	else if (this->bmp2)
 	{
-		dimg->DrawImagePt(this->bmp2, OSInt2Double(left), OSInt2Double(top));
+		dimg->DrawImagePt(this->bmp2, tl.x, tl.y);
 	}
 }
 

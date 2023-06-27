@@ -4,7 +4,7 @@
 #include "Text/StringBuilder.h"
 #include "UI/DObj/TextDObj.h"
 
-UI::DObj::TextDObj::TextDObj(Media::DrawEngine *deng, Text::CString txt, Text::CString fontName, Double fontSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 fontColor, OSInt left, OSInt top, UOSInt width, UOSInt height, UInt32 codePage) : DirectObject(left, top)
+UI::DObj::TextDObj::TextDObj(Media::DrawEngine *deng, Text::CString txt, Text::CString fontName, Double fontSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 fontColor, Math::Coord2D<OSInt> tl, UOSInt width, UOSInt height, UInt32 codePage) : DirectObject(tl)
 {
 	this->deng = deng;
 	if (txt.leng > 0)
@@ -69,34 +69,32 @@ Bool UI::DObj::TextDObj::DoEvents()
 void UI::DObj::TextDObj::DrawObject(Media::DrawImage *dimg)
 {
 	this->pageChg = false;
-	OSInt left;
-	OSInt top;
 	Math::Size2D<Double> sz;
 	Media::DrawFont *f;
 	Media::DrawBrush *b;
 	f = dimg->NewFontPx(this->fontName->ToCString(), this->fontSize, (Media::DrawEngine::DrawFontStyle)(this->fontStyle | Media::DrawEngine::DFS_ANTIALIAS), this->codePage);
 	b = dimg->NewBrushARGB(this->fontColor);
-	this->GetCurrPos(&left, &top);
+	Math::Coord2D<OSInt> tl = this->GetCurrPos();
 	UInt32 linePerPage = (UInt32)Double2Int32(UOSInt2Double(this->height) / this->lineHeight);
 	UInt32 currLine = this->currPage * linePerPage;
 	UOSInt j = this->lines.GetCount();
-	Double currPos = OSInt2Double(top);
-	Double endPos = OSInt2Double(top + (OSInt)this->height) - this->lineHeight;
+	Double currPos = OSInt2Double(tl.y);
+	Double endPos = OSInt2Double(tl.y + (OSInt)this->height) - this->lineHeight;
 	while (currPos <= endPos && currLine < j)
 	{
 		if (this->talign == TA_LEFT)
 		{
-			dimg->DrawString(OSInt2Double(left), currPos, this->lines.GetItem(currLine), f, b);
+			dimg->DrawString(OSInt2Double(tl.x), currPos, this->lines.GetItem(currLine), f, b);
 		}
 		else if (this->talign == TA_CENTER)
 		{
 			sz = dimg->GetTextSize(f, this->lines.GetItem(currLine)->ToCString());
-			dimg->DrawString(OSInt2Double(left) + (UOSInt2Double(this->width) - sz.width) * 0.5, currPos, this->lines.GetItem(currLine)->ToCString(), f, b);
+			dimg->DrawString(OSInt2Double(tl.x) + (UOSInt2Double(this->width) - sz.width) * 0.5, currPos, this->lines.GetItem(currLine)->ToCString(), f, b);
 		}
 		else if (this->talign == TA_RIGHT)
 		{
 			sz = dimg->GetTextSize(f, this->lines.GetItem(currLine)->ToCString());
-			dimg->DrawString(OSInt2Double(left + (OSInt)width) - sz.width, currPos, this->lines.GetItem(currLine), f, b);
+			dimg->DrawString(OSInt2Double(tl.x + (OSInt)width) - sz.width, currPos, this->lines.GetItem(currLine), f, b);
 		}
 		currLine++;
 		currPos += this->lineHeight;

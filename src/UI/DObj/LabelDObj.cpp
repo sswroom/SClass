@@ -2,7 +2,7 @@
 #include "Sync/MutexUsage.h"
 #include "UI/DObj/LabelDObj.h"
 
-UI::DObj::LabelDObj::LabelDObj(Media::DrawEngine *deng, Text::CString txt, Text::CString fontName, Double fontSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 fontColor, OSInt left, OSInt top, UInt32 codePage) : DirectObject(left, top)
+UI::DObj::LabelDObj::LabelDObj(Media::DrawEngine *deng, Text::CString txt, Text::CString fontName, Double fontSizePx, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 fontColor, Math::Coord2D<OSInt> tl, UInt32 codePage) : DirectObject(tl)
 {
 	this->deng = deng;
 	this->txtChg = true;
@@ -22,7 +22,7 @@ UI::DObj::LabelDObj::LabelDObj(Media::DrawEngine *deng, Text::CString txt, Text:
 	{
 		this->fontName = Text::String::New(UTF8STRC("Arial"));
 	}
-	this->fontSize = fontSize;
+	this->fontSizePx = fontSizePx;
 	this->fontStyle = fontStyle;
 	this->fontColor = fontColor;
 	this->codePage = codePage;
@@ -50,14 +50,12 @@ void UI::DObj::LabelDObj::DrawObject(Media::DrawImage *dimg)
 	Sync::MutexUsage mutUsage(&this->txtMut);
 	if (this->txt)
 	{
-		OSInt left;
-		OSInt top;
 		Media::DrawFont *f;
 		Media::DrawBrush *b;
-		f = dimg->NewFontPx(this->fontName->ToCString(), this->fontSize, (Media::DrawEngine::DrawFontStyle)(this->fontStyle | Media::DrawEngine::DFS_ANTIALIAS), this->codePage);
+		f = dimg->NewFontPx(this->fontName->ToCString(), this->fontSizePx, (Media::DrawEngine::DrawFontStyle)(this->fontStyle | Media::DrawEngine::DFS_ANTIALIAS), this->codePage);
 		b = dimg->NewBrushARGB(this->fontColor);
-		this->GetCurrPos(&left, &top);
-		dimg->DrawString(OSInt2Double(left), OSInt2Double(top), this->txt, f, b);
+		Math::Coord2DDbl tl = this->GetCurrPos().ToDouble();
+		dimg->DrawString(tl.x, tl.y, this->txt, f, b);
 		dimg->DelFont(f);
 		dimg->DelBrush(b);
 	}
@@ -80,7 +78,7 @@ void UI::DObj::LabelDObj::OnMouseClick()
 {
 }
 
-void UI::DObj::LabelDObj::SetFont(Text::CString fontName, Double fontSize)
+void UI::DObj::LabelDObj::SetFont(Text::CString fontName, Double fontSizePx)
 {
 	Sync::MutexUsage mutUsage(&this->txtMut);
 	if (fontName.leng == 0)
@@ -93,9 +91,9 @@ void UI::DObj::LabelDObj::SetFont(Text::CString fontName, Double fontSize)
 		this->fontName = Text::String::New(fontName);
 		this->txtChg = true;
 	}
-	if (this->fontSize != fontSize)
+	if (this->fontSizePx != fontSizePx)
 	{
-		this->fontSize = fontSize;
+		this->fontSizePx = fontSizePx;
 		this->txtChg = true;
 	}
 }

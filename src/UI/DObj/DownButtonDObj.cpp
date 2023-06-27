@@ -3,7 +3,7 @@
 #include "Media/DrawEngine.h"
 #include "UI/DObj/DownButtonDObj.h"
 
-UI::DObj::DownButtonDObj::DownButtonDObj(Media::DrawEngine *deng, Text::CString fileNameUnclick, Text::CString fileNameClicked, OSInt left, OSInt top, UI::UIEvent clkHdlr, void *clkUserObj) : DirectObject(left, top)
+UI::DObj::DownButtonDObj::DownButtonDObj(Media::DrawEngine *deng, Text::CString fileNameUnclick, Text::CString fileNameClicked, Math::Coord2D<OSInt> tl, UI::UIEvent clkHdlr, void *clkUserObj) : DirectObject(tl)
 {
 	this->deng = deng;
 	if (fileNameUnclick.leng == 0)
@@ -62,36 +62,33 @@ Bool UI::DObj::DownButtonDObj::DoEvents()
 
 void UI::DObj::DownButtonDObj::DrawObject(Media::DrawImage *dimg)
 {
-	OSInt left;
-	OSInt top;
-	this->GetCurrPos(&left, &top);
-	this->dispLeft = left;
-	this->dispTop = top;
+	Math::Coord2D<OSInt> tl = this->GetCurrPos();
+	this->dispTL = tl;
 	if (this->bmpUnclick && this->bmpClicked)
 	{
 		if (this->isMouseDown)
 		{
-			dimg->DrawImagePt(this->bmpClicked, OSInt2Double(left), OSInt2Double(top));
+			dimg->DrawImagePt(this->bmpClicked, OSInt2Double(tl.x), OSInt2Double(tl.y));
 		}
 		else
 		{
-			dimg->DrawImagePt(this->bmpUnclick, OSInt2Double(left), OSInt2Double(top));
+			dimg->DrawImagePt(this->bmpUnclick, OSInt2Double(tl.x), OSInt2Double(tl.y));
 		}
 	}
 	else if (this->bmpUnclick)
 	{
-		dimg->DrawImagePt(this->bmpUnclick, OSInt2Double(left), OSInt2Double(top));
+		dimg->DrawImagePt(this->bmpUnclick, OSInt2Double(tl.x), OSInt2Double(tl.y));
 	}
 	else if (this->bmpClicked)
 	{
-		dimg->DrawImagePt(this->bmpClicked, OSInt2Double(left), OSInt2Double(top));
+		dimg->DrawImagePt(this->bmpClicked, OSInt2Double(tl.x), OSInt2Double(tl.y));
 	}
 	this->updated = false;
 }
 
 Bool UI::DObj::DownButtonDObj::IsObject(OSInt x, OSInt y)
 {
-	if (x < this->dispLeft || y < this->dispTop)
+	if (x < this->dispTL.x || y < this->dispTL.y)
 		return false;
 	Media::DrawImage *bmpChk = this->bmpUnclick;
 	if (bmpChk == 0)
@@ -100,9 +97,9 @@ Bool UI::DObj::DownButtonDObj::IsObject(OSInt x, OSInt y)
 		if (bmpChk == 0)
 			return false;
 	}
-	if (this->dispLeft + (OSInt)bmpChk->GetWidth() <= x || this->dispTop + (OSInt)bmpChk->GetHeight() <= y)
+	if (this->dispTL.x + (OSInt)bmpChk->GetWidth() <= x || this->dispTL.y + (OSInt)bmpChk->GetHeight() <= y)
 		return false;
-	return (bmpChk->GetPixel32(x - this->dispLeft, y - this->dispTop) & 0xff000000) != 0;
+	return (bmpChk->GetPixel32(x - this->dispTL.x, y - this->dispTL.y) & 0xff000000) != 0;
 }
 
 /*System::Windows::Forms::Cursor ^UI::DObj::DownButtonDObj::GetCursor()

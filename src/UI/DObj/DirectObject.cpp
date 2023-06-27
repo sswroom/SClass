@@ -2,10 +2,9 @@
 #include "Math/Math.h"
 #include "UI/DObj/DirectObject.h"
 
-UI::DObj::DirectObject::DirectObject(OSInt left, OSInt top)
+UI::DObj::DirectObject::DirectObject(Math::Coord2D<OSInt> tl)
 {
-	this->left = left;
-	this->top = top;
+	this->tl = tl;
 	this->currMoveType = MT_NONE;
 }
 
@@ -14,12 +13,11 @@ UI::DObj::DirectObject::~DirectObject()
 }
 
 
-void UI::DObj::DirectObject::GetCurrPos(OSInt *left, OSInt *top)
+Math::Coord2D<OSInt> UI::DObj::DirectObject::GetCurrPos()
 {
 	if (this->currMoveType == MT_NONE)
 	{
-		*left = this->left;
-		*top = this->top;
+		return this->tl;
 	}
 	else
 	{
@@ -29,47 +27,41 @@ void UI::DObj::DirectObject::GetCurrPos(OSInt *left, OSInt *top)
 		if (dur >= this->moveDur)
 		{
 			this->currMoveType = MT_NONE;
-			this->left = this->destX;
-			this->top = this->destY;
-			*left = this->left;
-			*top = this->top;
+			this->tl = this->destTL;
+			return this->tl;
 		}
 		else if (dur < 0)
 		{
 			this->moveTime.SetCurrTimeUTC();
-			*left = this->left;
-			*top = this->top;
+			return this->tl;
 		}
 		else
 		{
 			if (this->currMoveType == MT_CONSTANT)
 			{
-				*left = this->left + Double2Int32(OSInt2Double(this->destX - this->left) * dur / this->moveDur);
-				*top = this->top + Double2Int32(OSInt2Double(this->destY - this->top) * dur / this->moveDur);
+				Math::Coord2DDbl diff = (this->destTL - this->tl).ToDouble() * dur / this->moveDur;
+				return this->tl + Math::Coord2D<OSInt>(Double2OSInt(diff.x), Double2OSInt(diff.y));
 			}
 			else if (this->currMoveType == MT_ACC)
 			{
-				Double aX = OSInt2Double(this->destX - this->left) / this->moveDur / this->moveDur;
-				Double aY = OSInt2Double(this->destY - this->top) / this->moveDur / this->moveDur;
 				Double currDur = dur;
-				*left = this->left + Double2Int32(aX * currDur * currDur);
-				*top = this->top + Double2Int32(aY * currDur * currDur);
+				Math::Coord2DDbl diff = (this->destTL - this->tl).ToDouble() / this->moveDur / this->moveDur * currDur * currDur;
+				return this->tl + Math::Coord2D<OSInt>(Double2OSInt(diff.x), Double2OSInt(diff.y));
 			}
 			else if (this->currMoveType == MT_ACCDEACC)
 			{
-				Double aX = OSInt2Double(this->destX - this->left) / this->moveDur / this->moveDur * 2;
-				Double aY = OSInt2Double(this->destY - this->top) / this->moveDur / this->moveDur * 2;
 				Double currDur = dur;
+				Math::Coord2DDbl diff = (this->destTL - this->tl).ToDouble() / this->moveDur / this->moveDur * 2;
 				if (currDur > this->moveDur * 0.5)
 				{
 					currDur = this->moveDur - currDur;
-					*left = this->destX - Double2Int32(aX * currDur * currDur);
-					*top = this->destY - Double2Int32(aY * currDur * currDur);
+					diff = diff * currDur * currDur;
+					return this->destTL - Math::Coord2D<OSInt>(Double2OSInt(diff.x), Double2OSInt(diff.y));
 				}
 				else
 				{
-					*left = this->left + Double2Int32(aX * currDur * currDur);
-					*top = this->top + Double2Int32(aY * currDur * currDur);
+					diff = diff * currDur * currDur;
+					return this->tl + Math::Coord2D<OSInt>(Double2OSInt(diff.x), Double2OSInt(diff.y));
 				}
 			}
 		}
@@ -81,15 +73,11 @@ Bool UI::DObj::DirectObject::IsMoving()
 	return this->currMoveType != MT_NONE;
 }
 
-void UI::DObj::DirectObject::MoveToPos(OSInt destX, OSInt destY, Double dur, MoveType mType)
+void UI::DObj::DirectObject::MoveToPos(Math::Coord2D<OSInt> destTL, Double dur, MoveType mType)
 {
-	OSInt left;
-	OSInt top;
-	this->GetCurrPos(&left, &top);
-	this->left = left;
-	this->top = top;
-	this->destX = destX;
-	this->destY = destY;
+	Math::Coord2D<OSInt> tl = this->GetCurrPos();
+	this->tl = tl;
+	this->destTL = destTL;
 	this->moveDur = dur;
 	this->moveTime.SetCurrTimeUTC();
 	this->currMoveType = mType;

@@ -31,16 +31,7 @@ void __stdcall UI::DObj::VideoDObjHandler::OnPBEnd(void *userObj)
 
 void UI::DObj::VideoDObjHandler::DrawBkg(Media::DrawImage *dimg)
 {
-	if (this->bmpBkg)
-	{
-		dimg->DrawImagePt(this->bmpBkg, 0, 0);
-	}
-	else
-	{
-		Media::DrawBrush *b = dimg->NewBrushARGB(this->bgColor);
-		dimg->DrawRect(0, 0, UOSInt2Double(dimg->GetWidth()), UOSInt2Double(dimg->GetHeight()), 0, b);
-		dimg->DelBrush(b);
-	}
+	ImageDObjHandler::DrawBkg(dimg);
 	this->DrawVideo(dimg);
 }
 

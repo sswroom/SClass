@@ -10,6 +10,7 @@ namespace UI
 		{
 		protected:
 			Media::DrawImage *bmpBkg;
+			Media::DrawImage *bmpBuff;
 			UInt32 bgColor;
 
 		protected:

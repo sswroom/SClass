@@ -1,6 +1,7 @@
 #ifndef _SM_UI_DOBJ_DIRECTOBJECT
 #define _SM_UI_DOBJ_DIRECTOBJECT
 #include "Data/DateTime.h"
+#include "Math/Coord2D.h"
 #include "Media/DrawEngine.h"
 
 namespace UI
@@ -18,20 +19,18 @@ namespace UI
 				MT_ACCDEACC
 			} MoveType;
 		private:
-			OSInt left;
-			OSInt top;
+			Math::Coord2D<OSInt> tl;
 			MoveType currMoveType;
-			OSInt destX;
-			OSInt destY;
+			Math::Coord2D<OSInt> destTL;
 			Data::DateTime moveTime;
 			Double moveDur;
 		public:
-			DirectObject(OSInt left, OSInt top);
+			DirectObject(Math::Coord2D<OSInt> tl);
 			virtual ~DirectObject();
 
-			void GetCurrPos(OSInt *left, OSInt *top);
+			Math::Coord2D<OSInt> GetCurrPos();
 			Bool IsMoving();
-			void MoveToPos(OSInt destX, OSInt destY, Double dur, MoveType mType);
+			void MoveToPos(Math::Coord2D<OSInt> destTL, Double dur, MoveType mType);
 			virtual Bool IsChanged() = 0;
 			virtual Bool DoEvents() = 0;
 			virtual void DrawObject(Media::DrawImage *dimg) = 0;

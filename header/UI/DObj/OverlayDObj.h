@@ -22,8 +22,8 @@ namespace UI
 			OSInt lastFrameNum;
 
 		public:
-			OverlayDObj(Media::DrawEngine *deng, Media::DrawImage *bmp, OSInt left, OSInt top);
-			OverlayDObj(Media::DrawEngine *deng, Text::CString fileName, OSInt left, OSInt top, Parser::ParserList *parsers);
+			OverlayDObj(Media::DrawEngine *deng, Media::DrawImage *bmp, Math::Coord2D<OSInt> tl);
+			OverlayDObj(Media::DrawEngine *deng, Text::CString fileName, Math::Coord2D<OSInt> tl, Parser::ParserList *parsers);
 			virtual ~OverlayDObj();
 
 			virtual Bool IsChanged();

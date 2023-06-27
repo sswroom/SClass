@@ -20,8 +20,7 @@ namespace UI
 			Bool isMouseDown;
 			Bool isMouseUp;
 			Bool isMouseClick;
-			OSInt dispLeft;
-			OSInt dispTop;
+			Math::Coord2D<OSInt> dispTL;
 			Double downAlpha;
 			Data::DateTime *downTime;
 			UI::UIEvent clkHdlr;
@@ -31,7 +30,7 @@ namespace UI
 
 			static UInt32 __stdcall ClickThread(void *userObj);
 		public:
-			ButtonDObj(Media::DrawEngine *deng, Text::CString fileNameUnclick, Text::CString fileNameClicked, Int32 left, Int32 top, Bool rectMode, UI::UIEvent clkHdlr, void *clkUserObj);
+			ButtonDObj(Media::DrawEngine *deng, Text::CString fileNameUnclick, Text::CString fileNameClicked, Math::Coord2D<OSInt> tl, Bool rectMode, UI::UIEvent clkHdlr, void *clkUserObj);
 			virtual ~ButtonDObj();
 
 			void SetRectMode(Bool rectMode);

@@ -26,7 +26,7 @@ namespace UI
 
 			void UpdateBGImg();
 		public:
-			RollingTextDObj(Media::DrawEngine *deng, Text::CString txt, Text::CString fontName, Double fontSize, UInt32 fontColor, OSInt left, OSInt top, UOSInt width, UOSInt height, UInt32 codePage, Double rollSpeed);
+			RollingTextDObj(Media::DrawEngine *deng, Text::CString txt, Text::CString fontName, Double fontSize, UInt32 fontColor, Math::Coord2D<OSInt> tl, UOSInt width, UOSInt height, UInt32 codePage, Double rollSpeed);
 			virtual ~RollingTextDObj();
 
 			virtual Bool IsChanged();
