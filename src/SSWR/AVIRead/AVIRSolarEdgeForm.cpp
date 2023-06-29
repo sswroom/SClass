@@ -318,9 +318,9 @@ void SSWR::AVIRead::AVIRSolarEdgeForm::UpdateSiteEnergyGraph()
 {
 	Media::DrawEngine *deng = this->core->GetDrawEngine();
 	Math::Size2D<UOSInt> size = this->pbSiteEnergy->GetSizeP();
-	if (this->siteEnergyList.GetCount() > 0 && size.width > 0 && size.height > 0)
+	if (this->siteEnergyList.GetCount() > 0 && size.x > 0 && size.y > 0)
 	{
-		Media::DrawImage *dimg = deng->CreateImage32(size.width, size.height, Media::AlphaType::AT_NO_ALPHA);
+		Media::DrawImage *dimg = deng->CreateImage32(size, Media::AlphaType::AT_NO_ALPHA);
 		dimg->SetHDPI(this->GetHDPI() * 96.0 / this->GetDDPI());
 		dimg->SetVDPI(this->GetHDPI() * 96.0 / this->GetDDPI());
 		Data::LineChart chart(CSTR("Site Energy"));
@@ -337,7 +337,7 @@ void SSWR::AVIRead::AVIRSolarEdgeForm::UpdateSiteEnergyGraph()
 		}
 		chart.AddXData(tsList, j);
 		chart.AddYData(CSTR("Wh"), valList, j, 0xffff0000, Data::LineChart::LS_LINE);
-		chart.Plot(dimg, 0, 0, UOSInt2Double(size.width), UOSInt2Double(size.height));
+		chart.Plot(dimg, 0, 0, UOSInt2Double(size.x), UOSInt2Double(size.y));
 		MemFree(tsList);
 		MemFree(valList);
 		Media::StaticImage *simg = dimg->ToStaticImage();
@@ -352,9 +352,9 @@ void SSWR::AVIRead::AVIRSolarEdgeForm::UpdateSitePowerGraph()
 {
 	Media::DrawEngine *deng = this->core->GetDrawEngine();
 	Math::Size2D<UOSInt> size = this->pbSitePower->GetSizeP();
-	if (this->sitePowerList.GetCount() > 0 && size.width > 0 && size.height > 0)
+	if (this->sitePowerList.GetCount() > 0 && size.x > 0 && size.y > 0)
 	{
-		Media::DrawImage *dimg = deng->CreateImage32(size.width, size.height, Media::AlphaType::AT_NO_ALPHA);
+		Media::DrawImage *dimg = deng->CreateImage32(size, Media::AlphaType::AT_NO_ALPHA);
 		dimg->SetHDPI(this->GetHDPI() * 96.0 / this->GetDDPI());
 		dimg->SetVDPI(this->GetHDPI() * 96.0 / this->GetDDPI());
 		Data::LineChart chart(CSTR("Site Power"));
@@ -371,7 +371,7 @@ void SSWR::AVIRead::AVIRSolarEdgeForm::UpdateSitePowerGraph()
 		}
 		chart.AddXData(tsList, j);
 		chart.AddYData(CSTR("W"), valList, j, 0xffff0000, Data::LineChart::LS_LINE);
-		chart.Plot(dimg, 0, 0, UOSInt2Double(size.width), UOSInt2Double(size.height));
+		chart.Plot(dimg, 0, 0, UOSInt2Double(size.x), UOSInt2Double(size.y));
 		MemFree(tsList);
 		MemFree(valList);
 		Media::StaticImage *simg = dimg->ToStaticImage();

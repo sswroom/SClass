@@ -81,7 +81,7 @@ void UI::DObj::DynamicOverlayDObj::DrawObject(Media::DrawImage *dimg)
 			}
 			Media::DrawImage *bmpS1 = this->bmp1;
 			Media::DrawImage *bmpS2 = this->bmp2;
-			Media::DrawImage *bmpTmp = this->deng->CreateImage32(bmpS1->GetWidth(), bmpS1->GetHeight(), Media::AT_NO_ALPHA);
+			Media::DrawImage *bmpTmp = this->deng->CreateImage32(bmpS1->GetSize(), Media::AT_NO_ALPHA);
 			bmpTmp->SetAlphaType(bmpS1->GetAlphaType());
 			Bool revOrder;
 			UInt8 *ptrS1 = bmpS1->GetImgBits(&revOrder);
@@ -101,21 +101,21 @@ void UI::DObj::DynamicOverlayDObj::DrawObject(Media::DrawImage *dimg)
 				}
 			}
 
-			dimg->DrawImagePt(bmpTmp, tl.x, tl.y);
+			dimg->DrawImagePt(bmpTmp, tl);
 			this->deng->DeleteImage(bmpTmp);
 		}
 		else
 		{
-			dimg->DrawImagePt(this->bmp1, tl.x, tl.y);
+			dimg->DrawImagePt(this->bmp1, tl);
 		}
 	}
 	else if (this->bmp1)
 	{
-		dimg->DrawImagePt(this->bmp1, tl.x, tl.y);
+		dimg->DrawImagePt(this->bmp1, tl);
 	}
 	else if (this->bmp2)
 	{
-		dimg->DrawImagePt(this->bmp2, tl.x, tl.y);
+		dimg->DrawImagePt(this->bmp2, tl);
 	}
 }
 

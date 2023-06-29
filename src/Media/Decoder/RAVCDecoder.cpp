@@ -393,19 +393,19 @@ Media::Decoder::RAVCDecoder::RAVCDecoder(IVideoSource *sourceVideo, Bool toRelea
 	this->frameBuff = MemAllocA(UInt8, this->maxFrameSize);
 //	OSInt oriW;
 //	OSInt oriH;
-//	oriW = info.dispWidth;
-//	oriH = info.dispHeight;
+//	oriW = info.dispSize.x;
+//	oriH = info.dispSize.y;
 	size = this->BuildIFrameHeader(this->frameBuff, true);
 	Media::H264Parser::GetFrameInfo(this->frameBuff, size, &info, &this->h264Flags);
 /*	OSInt cropRight = 0;
 	OSInt cropBottom = 0;
-	if (info.dispWidth < oriW)
+	if (info.dispSize.x < oriW)
 	{
-		cropRight = oriW - info.dispWidth;
+		cropRight = oriW - info.dispSize.x;
 	}
-	if (info.dispHeight < oriH)
+	if (info.dispSize.y < oriH)
 	{
-		cropBottom = oriH - info.dispHeight;
+		cropBottom = oriH - info.dispSize.y;
 	}
 	if (cropRight > 0 || cropBottom > 0)
 	{
@@ -584,11 +584,9 @@ Bool Media::Decoder::RAVCDecoder::GetVideoInfo(Media::FrameInfo *info, UInt32 *f
 
 	UOSInt size = this->BuildIFrameHeader(this->frameBuff, true);
 	this->sourceVideo->GetVideoInfo(info, frameRateNorm, frameRateDenorm, maxFrameSize);
-	UOSInt oriW = info->dispWidth;
-	UOSInt oriH = info->dispHeight;
+	Math::Size2D<UOSInt> oriSize = info->dispSize;
 	Media::H264Parser::GetFrameInfo(this->frameBuff, size, info, 0);
-	info->dispWidth = oriW;
-	info->dispHeight = oriH;
+	info->dispSize = oriSize;
 	*maxFrameSize = this->maxFrameSize;
 	info->fourcc = ReadNUInt32((const UInt8*)"h264");
 

@@ -84,10 +84,8 @@ Bool Media::AndroidVideoCapture::GetVideoInfo(Media::FrameInfo *info, UInt32 *fr
 	if (this->camWidth == 0 || this->camHeight == 0)
 		return false;
 
-	info->dispWidth = this->camWidth;;
-	info->dispHeight = this->camHeight;
-	info->storeWidth = info->dispWidth;
-	info->storeHeight = info->dispHeight;
+	info->dispSize = Math::Size2D<UOSInt>(this->camWidth, this->camHeight);
+	info->storeSize = info->dispSize;
 	info->fourcc = this->camFourcc;
 	info->storeBPP = 12;
 	info->pf = Media::PF_UNKNOWN;
@@ -273,10 +271,9 @@ UOSInt Media::AndroidVideoCapture::GetSupportedFormats(VideoFormat *fmtArr, UOSI
 				}
 				if (valid)
 				{
-					fmtArr[ret].info.dispWidth = entry.data.i32[i + 1];
-					fmtArr[ret].info.dispHeight = entry.data.i32[i + 2];
-					fmtArr[ret].info.storeWidth = fmtArr[ret].info.dispWidth;
-					fmtArr[ret].info.storeHeight = fmtArr[ret].info.dispHeight;
+					fmtArr[ret].info.dispSize.x = entry.data.i32[i + 1];
+					fmtArr[ret].info.dispSize.y = entry.data.i32[i + 2];
+					fmtArr[ret].info.storeSize = fmtArr[ret].info.dispSize;
 					fmtArr[ret].info.byteSize = 0;
 					fmtArr[ret].info.par2 = 1;
 					fmtArr[ret].info.hdpi = 72;

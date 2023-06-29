@@ -114,8 +114,8 @@ Bool Exporter::GIFExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 		buff[3] = '8';
 		buff[4] = '9';
 		buff[5] = 'a';
-		WriteInt16(&buff[6], (Int16)img->info.dispWidth);
-		WriteInt16(&buff[8], (Int16)img->info.dispHeight);
+		WriteInt16(&buff[6], (Int16)img->info.dispSize.x);
+		WriteInt16(&buff[8], (Int16)img->info.dispSize.y);
 		buff[10] = 0xf7;
 		buff[11] = 0;
 		buff[12] = (UInt8)(Double2Int32(img->info.par2 * 64.0) - 15);
@@ -151,22 +151,22 @@ Bool Exporter::GIFExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 		buff[0] = 0x2c;
 		WriteInt16(&buff[1], 0);
 		WriteInt16(&buff[3], 0);
-		WriteInt16(&buff[5], (Int16)img->info.dispWidth);
-		WriteInt16(&buff[7], (Int16)img->info.dispHeight);
+		WriteInt16(&buff[5], (Int16)img->info.dispSize.x);
+		WriteInt16(&buff[7], (Int16)img->info.dispSize.y);
 		buff[9] = 0;
 		buff[10] = 8;
 		stm->Write(buff, 11);
 
-		UInt8 *imgData = MemAlloc(UInt8, img->info.dispHeight * img->info.dispWidth);
+		UInt8 *imgData = MemAlloc(UInt8, img->info.dispSize.CalcArea());
 		UOSInt imgSize;
 		Data::Compress::LZWEncStream2 *lzw;
-		imgSize = img->info.dispHeight * img->info.dispWidth >> 1;
+		imgSize = img->info.dispSize.CalcArea() >> 1;
 		if (imgSize < 4096)
 			imgSize = 4096;
 		IO::MemoryStream mstm(imgSize);
 		NEW_CLASS(lzw, Data::Compress::LZWEncStream2(&mstm, true, 8, 12, 0));
-		img->GetImageData(imgData, 0, 0, img->info.dispWidth, img->info.dispHeight, img->info.dispWidth, false, Media::RotateType::None);
-		lzw->Write(imgData, img->info.dispHeight * img->info.dispWidth);
+		img->GetImageData(imgData, 0, 0, img->info.dispSize.x, img->info.dispSize.y, img->info.dispSize.x, false, Media::RotateType::None);
+		lzw->Write(imgData, img->info.dispSize.CalcArea());
 		MemFree(imgData);
 		DEL_CLASS(lzw);
 		imgData = mstm.GetBuff(&imgSize);

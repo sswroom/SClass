@@ -409,12 +409,12 @@ Media::DrawImage *Media::CodeImageGen::EAN13CodeImageGen::GenCode(Text::CString 
 	Double y2;
 	Double fh = 12.0 * UOSInt2Double(codeWidth);
 
-	Media::DrawImage *dimg = eng->CreateImage32((9 + 11 + 95) * codeWidth, h, Media::AT_NO_ALPHA);
+	Media::DrawImage *dimg = eng->CreateImage32(Math::Size2D<UOSInt>((9 + 11 + 95) * codeWidth, h), Media::AT_NO_ALPHA);
 	Media::DrawBrush *b;
 	Media::DrawPen *p;
 	Media::DrawFont *f;
 	b = dimg->NewBrushARGB(0xffffffff);
-	dimg->DrawRect(0, 0, (Double)dimg->GetWidth(), (Double)dimg->GetHeight(), 0, b);
+	dimg->DrawRect(Math::Coord2DDbl(0, 0), dimg->GetSize().ToDouble(), 0, b);
 	dimg->DelBrush(b);
 
 	p = dimg->NewPenARGB(0xff000000, 1, 0, 0);
@@ -458,13 +458,13 @@ Media::DrawImage *Media::CodeImageGen::EAN13CodeImageGen::GenCode(Text::CString 
 	b = dimg->NewBrushARGB(0xff000000);
 	sbuff[0] = *codePtr++;
 	sbuff[1] = 0;
-	dimg->DrawString((Double)codeWidth, UOSInt2Double(y) - fh, {sbuff, 1}, f, b);
+	dimg->DrawString(Math::Coord2DDbl((Double)codeWidth, UOSInt2Double(y) - fh), {sbuff, 1}, f, b);
 	i = codeWidth * (5 + 9);
 	j = 6;
 	while (j-- > 0)
 	{
 		sbuff[0] = *codePtr++;
-		dimg->DrawString((Double)i, UOSInt2Double(y) - fh, {sbuff, 1}, f, b);
+		dimg->DrawString(Math::Coord2DDbl((Double)i, UOSInt2Double(y) - fh), {sbuff, 1}, f, b);
 		i += 7 * codeWidth;
 	}
 	i += 5 * codeWidth;
@@ -472,7 +472,7 @@ Media::DrawImage *Media::CodeImageGen::EAN13CodeImageGen::GenCode(Text::CString 
 	while (j-- > 0)
 	{
 		sbuff[0] = *codePtr++;
-		dimg->DrawString((Double)i, UOSInt2Double(y) - fh, {sbuff, 1}, f, b);
+		dimg->DrawString(Math::Coord2DDbl((Double)i, UOSInt2Double(y) - fh), {sbuff, 1}, f, b);
 		i += 7 * codeWidth;
 	}
 	dimg->DelBrush(b);

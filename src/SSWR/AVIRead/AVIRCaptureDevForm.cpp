@@ -19,7 +19,7 @@ void __stdcall SSWR::AVIRead::AVIRCaptureDevForm::OnOKClick(void *userObj)
 		return;
 	}
 
-	me->currCapture->SetPreferSize(fmt->width, fmt->height, fmt->fourcc, fmt->bpp, fmt->frameRateNumer, fmt->frameRateDenom);
+	me->currCapture->SetPreferSize(fmt->size, fmt->fourcc, fmt->bpp, fmt->frameRateNumer, fmt->frameRateDenom);
 	me->capture = me->currCapture;
 	me->currCapture = 0;
 
@@ -80,14 +80,13 @@ void __stdcall SSWR::AVIRead::AVIRCaptureDevForm::OnDevChg(void *userObj)
 		while (i < fmtCnt)
 		{
 			cfmt = MemAlloc(SSWR::AVIRead::AVIRCaptureDevForm::CaptureFormat, 1);
-			cfmt->width = fmts[i].info.dispWidth;
-			cfmt->height = fmts[i].info.dispHeight;
+			cfmt->size = fmts[i].info.dispSize;
 			cfmt->fourcc = fmts[i].info.fourcc;
 			cfmt->bpp = fmts[i].info.storeBPP;
 			cfmt->pf = fmts[i].info.pf;
 			cfmt->frameRateNumer = fmts[i].frameRateNorm;
 			cfmt->frameRateDenom = fmts[i].frameRateDenorm;
-			currSize = cfmt->width * cfmt->height;
+			currSize = cfmt->size.CalcArea();
 			if (currSize > bestSize)
 			{
 				bestSize = currSize;
@@ -110,9 +109,9 @@ void __stdcall SSWR::AVIRead::AVIRCaptureDevForm::OnDevChg(void *userObj)
 			}
 			
 			sb.ClearStr();
-			sb.AppendUOSInt(cfmt->width);
+			sb.AppendUOSInt(cfmt->size.x);
 			sb.AppendC(UTF8STRC(" x "));
-			sb.AppendUOSInt(cfmt->height);
+			sb.AppendUOSInt(cfmt->size.y);
 			sb.AppendC(UTF8STRC(" ("));
 			if (cfmt->fourcc)
 			{
@@ -133,9 +132,9 @@ void __stdcall SSWR::AVIRead::AVIRCaptureDevForm::OnDevChg(void *userObj)
 			me->cboFormat->AddItem(sb.ToCString(), cfmt);
 			me->currFormats.Add(cfmt);
 
-			devInfo.AppendUOSInt(cfmt->width);
+			devInfo.AppendUOSInt(cfmt->size.x);
 			devInfo.AppendC(UTF8STRC(" x "));
-			devInfo.AppendUOSInt(cfmt->height);
+			devInfo.AppendUOSInt(cfmt->size.y);
 			devInfo.AppendC(UTF8STRC(" ("));
 			if (cfmt->fourcc)
 			{

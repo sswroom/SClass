@@ -100,7 +100,7 @@ void Map::OruxDBLayer::SetCurrScale(Double scale)
 	this->currLayer = (UInt32)level;
 }
 
-Map::MapView *Map::OruxDBLayer::CreateMapView(Math::Size2D<Double> scnSize)
+Map::MapView *Map::OruxDBLayer::CreateMapView(Math::Size2DDbl scnSize)
 {
 	Map::MapView *view;
 	Map::OruxDBLayer::LayerInfo *lyr = this->layerMap.Get(this->currLayer);

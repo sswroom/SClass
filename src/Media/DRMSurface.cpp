@@ -64,10 +64,9 @@ Media::DRMSurface::DRMSurface(Int32 fd, MonitorHandle *hMon, Media::ColorProfile
 					this->info->yuvType = Media::ColorProfile::YUVT_UNKNOWN;
 					this->info->storeBPP = 32;
 					this->info->pf = Media::PixelFormatGetDef(0, this->info->storeBPP);
-					this->info->dispWidth = connector->modes[0].hdisplay;
+					this->info->dispSize.x = connector->modes[0].hdisplay;
 					this->info->dispHeight = connector->modes[0].vdisplay;
-					this->info->storeWidth = this->info->dispWidth; //(UOSInt)this->clsData->dataBpl / (this->info->storeBPP >> 3);
-					this->info->storeHeight = this->info->dispHeight;
+					this->info->storeSize = this->info->dispSize; //(UOSInt)this->clsData->dataBpl / (this->info->storeBPP >> 3);
 					this->info->byteSize = this->info->storeWidth * this->info->storeHeight * (this->info->storeBPP >> 3);
 					this->info->par2 = 1.0;
 					this->info->hdpi = dpi;
@@ -88,7 +87,7 @@ Media::DRMSurface::DRMSurface(Int32 fd, MonitorHandle *hMon, Media::ColorProfile
 		i++;
 	}
 	drmModeFreeResources(resources);
-	if (this->info->dispWidth == 0 || this->clsData->crtcId == 0)
+	if (this->info->dispSize.x == 0 || this->clsData->crtcId == 0)
 	{
 		return;
 	}
@@ -98,7 +97,7 @@ Media::DRMSurface::DRMSurface(Int32 fd, MonitorHandle *hMon, Media::ColorProfile
 	drm_mode_destroy_dumb dreq;
 
 	MemClear(&creq, sizeof(drm_mode_create_dumb));
-	creq.width = (UInt32)this->info->dispWidth;
+	creq.width = (UInt32)this->info->dispSize.x;
 	creq.height = (UInt32)this->info->dispHeight;
 	creq.bpp = 32; // hard coding
 
@@ -192,7 +191,7 @@ void Media::DRMSurface::GetImageData(UInt8 *destBuff, OSInt left, OSInt top, UOS
 	if (this->clsData->dataPtr)
 	{
 		UOSInt buffBpl = this->info->storeWidth * (this->info->storeBPP >> 3);
-		if (left == 0 && top == 0 && width == this->info->dispWidth && height == this->info->dispHeight && buffBpl == destBpl && !upsideDown)
+		if (left == 0 && top == 0 && width == this->info->dispSize.x && height == this->info->dispHeight && buffBpl == destBpl && !upsideDown)
 		{
 			MemCopyANC(destBuff, this->clsData->dataPtr, destBpl * height);
 		}
@@ -217,7 +216,7 @@ Bool Media::DRMSurface::DrawFromBuff()
 {
 	if (this->clsData->buffSurface)
 	{
-		this->clsData->buffSurface->GetImageData(this->clsData->dataPtr, 0, 0, this->info->dispWidth, this->info->dispHeight, this->clsData->dataBpl, false);
+		this->clsData->buffSurface->GetImageData(this->clsData->dataPtr, 0, 0, this->info->dispSize.x, this->info->dispHeight, this->clsData->dataBpl, false);
 		return true;
 	}
 	return false;
@@ -227,7 +226,7 @@ Bool Media::DRMSurface::DrawFromSurface(Media::MonitorSurface *surface, OSInt de
 {
 	if (surface && surface->info->storeBPP == this->info->storeBPP)
 	{
-		OSInt destWidth = (OSInt)this->info->dispWidth;
+		OSInt destWidth = (OSInt)this->info->dispSize.x;
 		OSInt destHeight = (OSInt)this->info->dispHeight;
 		if (waitForVBlank) this->WaitForVBlank();
 		OSInt drawX = 0;

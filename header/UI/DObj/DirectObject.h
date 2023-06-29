@@ -35,7 +35,7 @@ namespace UI
 			virtual Bool DoEvents() = 0;
 			virtual void DrawObject(Media::DrawImage *dimg) = 0;
 
-			virtual Bool IsObject(OSInt x, OSInt y) = 0;
+			virtual Bool IsObject(Math::Coord2D<OSInt> scnPos) = 0;
 //			virtual System::Windows::Forms::Cursor ^GetCursor() = 0;
 			virtual void OnMouseDown() = 0;
 			virtual void OnMouseUp() = 0;

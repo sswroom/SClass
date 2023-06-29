@@ -18,7 +18,7 @@ Text::CString Media::ImageGen::LinesImageGen::GetName()
 	return CSTR("Lines Image");
 }
 
-Media::Image *Media::ImageGen::LinesImageGen::GenerateImage(Media::ColorProfile *colorProfile, UOSInt width, UOSInt height)
+Media::Image *Media::ImageGen::LinesImageGen::GenerateImage(Media::ColorProfile *colorProfile, Math::Size2D<UOSInt> size)
 {
 	Media::StaticImage *outImage;
 	Int64 *imgPtr;
@@ -27,21 +27,21 @@ Media::Image *Media::ImageGen::LinesImageGen::GenerateImage(Media::ColorProfile 
 	UOSInt i;
 	UOSInt j;
 	Double v;
-	if (width < 8 || height < 4)
+	if (size.x < 8 || size.y < 4)
 		return 0;
 	Media::CS::TransferFunc *rfunc = Media::CS::TransferFunc::CreateFunc(colorProfile->GetRTranParam());
 	Media::CS::TransferFunc *gfunc = Media::CS::TransferFunc::CreateFunc(colorProfile->GetGTranParam());
 	Media::CS::TransferFunc *bfunc = Media::CS::TransferFunc::CreateFunc(colorProfile->GetBTranParam());
-	NEW_CLASS(outImage, Media::StaticImage(width, height, 0, 64, Media::PF_LE_B16G16R16A16, 0, colorProfile, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+	NEW_CLASS(outImage, Media::StaticImage(size, 0, 64, Media::PF_LE_B16G16R16A16, 0, colorProfile, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 
 	imgPtr2 = outImage->data;
 	
 	j = 0;
-	while (j < height)
+	while (j < size.y)
 	{
 		imgPtr = (Int64*)imgPtr2;
 		i = 0;
-		while (i < width)
+		while (i < size.x)
 		{
 			v = 0.5 + Math_Sin(UOSInt2Double(i)) * 0.25 + Math_Sin(UOSInt2Double(j)) * 0.25;
 			c[0] = (UInt16)Double2Int32(bfunc->ForwardTransfer(v) * 65535.0);

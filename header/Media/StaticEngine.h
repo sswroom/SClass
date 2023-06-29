@@ -55,7 +55,7 @@ namespace Media
 	private:
 		Media::StaticEngine *eng;
 	public:
-		StaticDrawImage(StaticEngine *eng, OSInt dispWidth, OSInt dispHeight, Int32 fourcc, Int32 bpp, Media::PixelFormat pf, OSInt maxSize, const Media::ColorProfile *color, Media::ColorProfile::YUVType yuvType, Media::AlphaType atype, Media::YCOffset ycOfst);
+		StaticDrawImage(StaticEngine *eng, Math::Size2D<UOSInt> dispSize, Int32 fourcc, Int32 bpp, Media::PixelFormat pf, OSInt maxSize, const Media::ColorProfile *color, Media::ColorProfile::YUVType yuvType, Media::AlphaType atype, Media::YCOffset ycOfst);
 		virtual ~StaticDrawImage();
 
 		virtual UOSInt GetWidth();

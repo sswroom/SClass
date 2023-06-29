@@ -43,7 +43,7 @@ void Media::Batch::BatchWatermarker::ImageOutput(Media::ImageList *imgList, cons
 	UOSInt i;
 	UOSInt j;
 	Media::StaticImage *simg;
-	Media::DrawImage *tmpImg = this->deng->CreateImage32(16, 16, Media::AT_NO_ALPHA);
+	Media::DrawImage *tmpImg = this->deng->CreateImage32(Math::Size2D<UOSInt>(16, 16), Media::AT_NO_ALPHA);
 	i = 0;
 	j = imgList->GetCount();
 	while (i < j)
@@ -51,7 +51,7 @@ void Media::Batch::BatchWatermarker::ImageOutput(Media::ImageList *imgList, cons
 		Int32 xRand;
 		Int32 yRand;
 		Double fontSizePx;
-		Math::Size2D<Double> sz;
+		Math::Size2DDbl sz;
 		UInt32 iWidth;
 		UInt32 iHeight;
 		Media::DrawImage *gimg2;
@@ -59,36 +59,36 @@ void Media::Batch::BatchWatermarker::ImageOutput(Media::ImageList *imgList, cons
 		Media::DrawFont *f;
 
 		simg = (Media::StaticImage*)imgList->GetImage(i, 0);
-		fontSizePx = UOSInt2Double(simg->info.dispWidth) / 12.0;
+		fontSizePx = UOSInt2Double(simg->info.dispSize.x) / 12.0;
 
 		while (true)
 		{
 			f = tmpImg->NewFontPx(CSTR("Arial"), fontSizePx, Media::DrawEngine::DFS_NORMAL, 0);
 			sz = tmpImg->GetTextSize(f, this->watermark->ToCString());
-			if (sz.width == 0 || sz.height == 0)
+			if (sz.x == 0 || sz.y == 0)
 			{
 				tmpImg->DelFont(f);
 				break;
 			}
-			if (sz.width <= UOSInt2Double(simg->info.dispWidth) && sz.height <= UOSInt2Double(simg->info.dispHeight))
+			if (sz.x <= UOSInt2Double(simg->info.dispSize.x) && sz.y <= UOSInt2Double(simg->info.dispSize.y))
 			{
-				xRand = Double2Int32(UOSInt2Double(simg->info.dispWidth) - sz.width);
-				yRand = Double2Int32(UOSInt2Double(simg->info.dispHeight) - sz.height);
-				iWidth = (UInt32)Double2Int32(sz.width);
-				iHeight = (UInt32)Double2Int32(sz.height);
-				gimg2 = this->deng->CreateImage32(iWidth, iHeight, Media::AT_NO_ALPHA);
-				gimg2->DrawString(0, 0, this->watermark, f, b);
+				xRand = Double2Int32(UOSInt2Double(simg->info.dispSize.x) - sz.x);
+				yRand = Double2Int32(UOSInt2Double(simg->info.dispSize.y) - sz.y);
+				iWidth = (UInt32)Double2Int32(sz.x);
+				iHeight = (UInt32)Double2Int32(sz.y);
+				gimg2 = this->deng->CreateImage32(Math::Size2D<UOSInt>(iWidth, iHeight), Media::AT_NO_ALPHA);
+				gimg2->DrawString(Math::Coord2DDbl(0, 0), this->watermark, f, b);
 				gimg2->SetAlphaType(Media::AT_ALPHA);
 				Bool revOrder;
 				UInt8 *bmpBits = gimg2->GetImgBits(&revOrder);
 				ImageUtil_ColorReplace32A(bmpBits, iWidth, iHeight, (this->rnd.NextInt30() & 0xffffff) | 0x5f808080);
 				if (revOrder)
 				{
-					this->ablend.Blend(simg->data + (UInt32)Double2Int32(this->rnd.NextDouble() * yRand) * simg->info.storeWidth * 4 + Double2Int32(this->rnd.NextDouble() * xRand) * 4, (OSInt)simg->info.storeWidth << 2, bmpBits + iWidth * 4 * (iHeight - 1), -(Int32)iWidth * 4, iWidth, iHeight, Media::AT_ALPHA);
+					this->ablend.Blend(simg->data + (UInt32)Double2Int32(this->rnd.NextDouble() * yRand) * simg->info.storeSize.x * 4 + Double2Int32(this->rnd.NextDouble() * xRand) * 4, (OSInt)simg->info.storeSize.x << 2, bmpBits + iWidth * 4 * (iHeight - 1), -(Int32)iWidth * 4, iWidth, iHeight, Media::AT_ALPHA);
 				}
 				else
 				{
-					this->ablend.Blend(simg->data + (UInt32)Double2Int32(this->rnd.NextDouble() * yRand) * simg->info.storeWidth * 4 + Double2Int32(this->rnd.NextDouble() * xRand) * 4, (OSInt)simg->info.storeWidth << 2, bmpBits, (Int32)iWidth * 4, iWidth, iHeight, Media::AT_ALPHA);
+					this->ablend.Blend(simg->data + (UInt32)Double2Int32(this->rnd.NextDouble() * yRand) * simg->info.storeSize.x * 4 + Double2Int32(this->rnd.NextDouble() * xRand) * 4, (OSInt)simg->info.storeSize.x << 2, bmpBits, (Int32)iWidth * 4, iWidth, iHeight, Media::AT_ALPHA);
 				}
 				this->deng->DeleteImage(gimg2);
 				tmpImg->DelFont(f);

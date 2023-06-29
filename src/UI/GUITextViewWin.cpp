@@ -343,7 +343,7 @@ OSInt __stdcall UI::GUITextView::TFVWndProc(void *hWnd, UInt32 msg, UInt32 wPara
 			{
 				me->deng->DeleteImage(me->drawBuff);
 			}
-			me->drawBuff = me->deng->CreateImage32(scnW, scnH, Media::AT_NO_ALPHA);
+			me->drawBuff = me->deng->CreateImage32(Math::Size2D<UOSInt>(scnW, scnH), Media::AT_NO_ALPHA);
 			me->drawBuff->SetHDPI(me->GetHDPI());
 			me->drawBuff->SetVDPI(me->GetHDPI());
 			me->UpdateScrollBar();
@@ -406,18 +406,18 @@ void UI::GUITextView::UpdateScrollBar()
 		return;
 	}
 
-	Math::Size2D<Double> sz;
+	Math::Size2DDbl sz;
 	RECT rc;
 	if (this->drawBuff == 0)
 	{
-		sz.height = 12;
+		sz.y = 12;
 	}
 	else
 	{
 		Media::DrawFont *fnt = this->CreateDrawFont(this->drawBuff);
 		if (fnt == 0)
 		{
-			sz.height = 12;
+			sz.y = 12;
 		}
 		else
 		{
@@ -429,9 +429,9 @@ void UI::GUITextView::UpdateScrollBar()
 	SCROLLINFO si;
 	si.cbSize = sizeof(si);
 	si.fMask = SIF_PAGE;
-	si.nPage = (UINT)Double2Int32((rc.bottom - rc.top) / sz.height);
+	si.nPage = (UINT)Double2Int32((rc.bottom - rc.top) / sz.y);
 	this->pageLineCnt = si.nPage;
-	this->pageLineHeight = Double2Int32(sz.height);
+	this->pageLineHeight = Double2Int32(sz.y);
 	SetScrollInfo((HWND)this->hwnd, SB_VERT, &si, TRUE);
 
 	si.nPage = (UINT)(rc.right - rc.left);
@@ -498,11 +498,11 @@ void UI::GUITextView::GetDrawSize(WChar *str, UOSInt strLen, UOSInt *width, UOSI
 {
 	if (this->drawBuff)
 	{
-		Math::Size2D<Double> sz;
+		Math::Size2DDbl sz;
 		Media::DrawFont *fnt = this->CreateDrawFont(this->drawBuff);
 		sz = ((Media::GDIImage*)this->drawBuff)->GetTextSize(fnt, str, (OSInt)strLen);
-		*width = (UOSInt)Double2OSInt(sz.width);
-		*height = (UOSInt)Double2OSInt(sz.height);
+		*width = (UOSInt)Double2OSInt(sz.x);
+		*height = (UOSInt)Double2OSInt(sz.y);
 		this->drawBuff->DelFont(fnt);
 	}
 	else

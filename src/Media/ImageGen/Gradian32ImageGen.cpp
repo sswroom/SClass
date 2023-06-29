@@ -17,7 +17,7 @@ Text::CString Media::ImageGen::Gradian32ImageGen::GetName()
 	return CSTR("Gradian Test 32-bit");
 }
 
-Media::Image *Media::ImageGen::Gradian32ImageGen::GenerateImage(Media::ColorProfile *colorProfile, UOSInt width, UOSInt height)
+Media::Image *Media::ImageGen::Gradian32ImageGen::GenerateImage(Media::ColorProfile *colorProfile, Math::Size2D<UOSInt> size)
 {
 	Media::StaticImage *outImage;
 	UInt8 *imgPtr;
@@ -26,22 +26,22 @@ Media::Image *Media::ImageGen::Gradian32ImageGen::GenerateImage(Media::ColorProf
 	UInt8 hv;
 	UInt8 vv;
 	UOSInt bpl;
-	if (width < 16 || height < 16)
+	if (size.x < 16 || size.y < 16)
 		return 0;
 //	Media::CS::TransferFunc *rfunc = Media::CS::TransferFunc::CreateFunc(colorProfile->GetRTranParam());
 //	Media::CS::TransferFunc *gfunc = Media::CS::TransferFunc::CreateFunc(colorProfile->GetGTranParam());
 //	Media::CS::TransferFunc *bfunc = Media::CS::TransferFunc::CreateFunc(colorProfile->GetBTranParam());
-	NEW_CLASS(outImage, Media::StaticImage(width, height, 0, 32, Media::PF_B8G8R8A8, 0, colorProfile, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+	NEW_CLASS(outImage, Media::StaticImage(size, 0, 32, Media::PF_B8G8R8A8, 0, colorProfile, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 	bpl = outImage->GetDataBpl();
 	imgPtr = outImage->data;
-	i = height;
+	i = size.y;
 	while (i-- > 0)
 	{
-		vv = (UInt8)((i << 4) / height);
+		vv = (UInt8)((i << 4) / size.y);
 		j = 0;
-		while (j < width)
+		while (j < size.x)
 		{
-			hv = (UInt8)((j << 4) / width);
+			hv = (UInt8)((j << 4) / size.x);
 			imgPtr[(j << 2)] = (UInt8)(hv + (vv << 4));
 			imgPtr[(j << 2) + 1] = (UInt8)(hv + (vv << 4));
 			imgPtr[(j << 2) + 2] = (UInt8)(hv + (vv << 4));

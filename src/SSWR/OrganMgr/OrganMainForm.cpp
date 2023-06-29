@@ -505,11 +505,11 @@ Bool __stdcall SSWR::OrganMgr::OrganMainForm::OnImgMouseUp(void *userObj, Math::
 			Media::Image *img = me->dispImage->GetImage(0, 0);
 			if (me->dispImageUF)
 			{
-				me->env->UpdateUserFileCrop(me->dispImageUF, pt1.x, pt1.y, UOSInt2Double(img->info.dispWidth) - pt2.x, UOSInt2Double(img->info.dispHeight) - pt2.y);
+				me->env->UpdateUserFileCrop(me->dispImageUF, pt1.x, pt1.y, UOSInt2Double(img->info.dispSize.x) - pt2.x, UOSInt2Double(img->info.dispSize.y) - pt2.y);
 			}
 			else if (me->dispImageWF)
 			{
-				me->env->UpdateWebFileCrop(me->dispImageWF, pt1.x, pt1.y, UOSInt2Double(img->info.dispWidth) - pt2.x, UOSInt2Double(img->info.dispHeight) - pt2.y);
+				me->env->UpdateWebFileCrop(me->dispImageWF, pt1.x, pt1.y, UOSInt2Double(img->info.dispSize.x) - pt2.x, UOSInt2Double(img->info.dispSize.y) - pt2.y);
 			}
 		}
 
@@ -535,10 +535,8 @@ Bool __stdcall SSWR::OrganMgr::OrganMainForm::OnImgMouseMove(void *userObj, Math
 void __stdcall SSWR::OrganMgr::OrganMainForm::OnImgDraw(void *userObj, UInt8 *imgPtr, UOSInt w, UOSInt h, UOSInt bpl)
 {
 	OrganMainForm *me = (OrganMainForm*)userObj;
-	Double x1;
-	Double y1;
-	Double x2;
-	Double y2;
+	Math::Coord2DDbl pos1;
+	Math::Coord2DDbl pos2;
 	if (me->dispImage)
 	{
 		if (me->dispImageUF)
@@ -546,22 +544,22 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImgDraw(void *userObj, UInt8 *im
 			if (me->dispImageUF->cropLeft != 0 || me->dispImageUF->cropTop != 0 || me->dispImageUF->cropRight != 0 || me->dispImageUF->cropBottom)
 			{
 				Media::Image *img = me->dispImage->GetImage(0, 0);
-				me->pbImg->Image2ScnPos(me->dispImageUF->cropLeft, me->dispImageUF->cropTop, &x1, &y1);
-				me->pbImg->Image2ScnPos(UOSInt2Double(img->info.dispWidth) - me->dispImageUF->cropRight, UOSInt2Double(img->info.dispHeight) - me->dispImageUF->cropBottom, &x2, &y2);
-				if (x2 < 0 || x1 >= UOSInt2Double(w) || y2 < 0 || y1 >= UOSInt2Double(h))
+				pos1 = me->pbImg->Image2ScnPos(Math::Coord2DDbl(me->dispImageUF->cropLeft, me->dispImageUF->cropTop));
+				pos2 = me->pbImg->Image2ScnPos(Math::Coord2DDbl(UOSInt2Double(img->info.dispSize.x) - me->dispImageUF->cropRight, UOSInt2Double(img->info.dispSize.y) - me->dispImageUF->cropBottom));
+				if (pos2.x < 0 || pos1.x >= UOSInt2Double(w) || pos2.y < 0 || pos1.y >= UOSInt2Double(h))
 				{
 
 				}
-				else if (x1 < 0 || x2 >= UOSInt2Double(w) || y1 < 0 || y2 >= UOSInt2Double(h))
+				else if (pos1.x < 0 || pos2.x >= UOSInt2Double(w) || pos1.y < 0 || pos2.y >= UOSInt2Double(h))
 				{
-					Media::ImageUtil::DrawHLineNA32(imgPtr, w, h, bpl, Double2OSInt(y1), Double2OSInt(x1), Double2OSInt(x2), 0xff4040ff);
-					Media::ImageUtil::DrawHLineNA32(imgPtr, w, h, bpl, Double2OSInt(y2), Double2OSInt(x1), Double2OSInt(x2), 0xff4040ff);
-					Media::ImageUtil::DrawVLineNA32(imgPtr, w, h, bpl, Double2OSInt(x1), Double2OSInt(y1), Double2OSInt(y2), 0xff4040ff);
-					Media::ImageUtil::DrawVLineNA32(imgPtr, w, h, bpl, Double2OSInt(x2), Double2OSInt(y1), Double2OSInt(y2), 0xff4040ff);
+					Media::ImageUtil::DrawHLineNA32(imgPtr, w, h, bpl, Double2OSInt(pos1.y), Double2OSInt(pos1.x), Double2OSInt(pos2.x), 0xff4040ff);
+					Media::ImageUtil::DrawHLineNA32(imgPtr, w, h, bpl, Double2OSInt(pos2.y), Double2OSInt(pos1.x), Double2OSInt(pos2.x), 0xff4040ff);
+					Media::ImageUtil::DrawVLineNA32(imgPtr, w, h, bpl, Double2OSInt(pos1.x), Double2OSInt(pos1.y), Double2OSInt(pos2.y), 0xff4040ff);
+					Media::ImageUtil::DrawVLineNA32(imgPtr, w, h, bpl, Double2OSInt(pos2.x), Double2OSInt(pos1.y), Double2OSInt(pos2.y), 0xff4040ff);
 				}
 				else
 				{
-					ImageUtil_DrawRectNA32(imgPtr + bpl * (UInt32)Double2Int32(y1) + (UInt32)Double2Int32(x1) * 4, (UInt32)Double2Int32(x2 - x1), (UInt32)Double2Int32(y2 - y1), bpl, 0xff4040ff);
+					ImageUtil_DrawRectNA32(imgPtr + bpl * (UInt32)Double2Int32(pos1.y) + (UInt32)Double2Int32(pos1.x) * 4, (UInt32)Double2Int32(pos2.x - pos1.x), (UInt32)Double2Int32(pos2.y - pos1.y), bpl, 0xff4040ff);
 				}
 			}
 		}
@@ -570,22 +568,22 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImgDraw(void *userObj, UInt8 *im
 			if (me->dispImageWF->cropLeft != 0 || me->dispImageWF->cropTop != 0 || me->dispImageWF->cropRight != 0 || me->dispImageWF->cropBottom)
 			{
 				Media::Image *img = me->dispImage->GetImage(0, 0);
-				me->pbImg->Image2ScnPos(me->dispImageWF->cropLeft, me->dispImageWF->cropTop, &x1, &y1);
-				me->pbImg->Image2ScnPos(UOSInt2Double(img->info.dispWidth) - me->dispImageWF->cropRight, UOSInt2Double(img->info.dispHeight) - me->dispImageWF->cropBottom, &x2, &y2);
-				if (x2 < 0 || x1 >= UOSInt2Double(w) || y2 < 0 || y1 >= UOSInt2Double(h))
+				pos1 = me->pbImg->Image2ScnPos(Math::Coord2DDbl(me->dispImageWF->cropLeft, me->dispImageWF->cropTop));
+				pos2 = me->pbImg->Image2ScnPos(Math::Coord2DDbl(UOSInt2Double(img->info.dispSize.x) - me->dispImageWF->cropRight, UOSInt2Double(img->info.dispSize.y) - me->dispImageWF->cropBottom));
+				if (pos2.x < 0 || pos1.x >= UOSInt2Double(w) || pos2.y < 0 || pos1.y >= UOSInt2Double(h))
 				{
 
 				}
-				else if (x1 < 0 || x2 >= UOSInt2Double(w) || y1 < 0 || y2 >= UOSInt2Double(h))
+				else if (pos1.x < 0 || pos2.x >= UOSInt2Double(w) || pos1.y < 0 || pos2.y >= UOSInt2Double(h))
 				{
-					Media::ImageUtil::DrawHLineNA32(imgPtr, w, h, bpl, Double2OSInt(y1), Double2OSInt(x1), Double2OSInt(x2), 0xff4040ff);
-					Media::ImageUtil::DrawHLineNA32(imgPtr, w, h, bpl, Double2OSInt(y2), Double2OSInt(x1), Double2OSInt(x2), 0xff4040ff);
-					Media::ImageUtil::DrawVLineNA32(imgPtr, w, h, bpl, Double2OSInt(x1), Double2OSInt(y1), Double2OSInt(y2), 0xff4040ff);
-					Media::ImageUtil::DrawVLineNA32(imgPtr, w, h, bpl, Double2OSInt(x2), Double2OSInt(y1), Double2OSInt(y2), 0xff4040ff);
+					Media::ImageUtil::DrawHLineNA32(imgPtr, w, h, bpl, Double2OSInt(pos1.y), Double2OSInt(pos1.x), Double2OSInt(pos2.x), 0xff4040ff);
+					Media::ImageUtil::DrawHLineNA32(imgPtr, w, h, bpl, Double2OSInt(pos2.y), Double2OSInt(pos1.x), Double2OSInt(pos2.x), 0xff4040ff);
+					Media::ImageUtil::DrawVLineNA32(imgPtr, w, h, bpl, Double2OSInt(pos1.x), Double2OSInt(pos1.y), Double2OSInt(pos2.y), 0xff4040ff);
+					Media::ImageUtil::DrawVLineNA32(imgPtr, w, h, bpl, Double2OSInt(pos2.x), Double2OSInt(pos1.y), Double2OSInt(pos2.y), 0xff4040ff);
 				}
 				else
 				{
-					ImageUtil_DrawRectNA32(imgPtr + bpl * (UInt32)Double2Int32(y1) + (UInt32)Double2Int32(x1) * 4, (UInt32)Double2Int32(x2 - x1), (UInt32)Double2Int32(y2 - y1), bpl, 0xff4040ff);
+					ImageUtil_DrawRectNA32(imgPtr + bpl * (UInt32)Double2Int32(pos1.y) + (UInt32)Double2Int32(pos1.x) * 4, (UInt32)Double2Int32(pos2.x - pos1.x), (UInt32)Double2Int32(pos2.y - pos1.y), bpl, 0xff4040ff);
 				}
 			}
 		}
@@ -1626,8 +1624,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnMapMouseMove(void *userObj, Math
 						Media::StaticImage *img = (Media::StaticImage*)imgList->GetImage(0, 0);
 						Media::StaticImage *nimg;
 						img->To32bpp();
-						me->mapResizer->SetTargetWidth(320);
-						me->mapResizer->SetTargetHeight(320);
+						me->mapResizer->SetTargetSize(Math::Size2D<UOSInt>(320, 320));
 						me->mapResizer->SetResizeAspectRatio(Media::IImgResizer::RAR_SQUAREPIXEL);
 						nimg = me->mapResizer->ProcessToNew(img);
 						DEL_CLASS(imgList);
@@ -1658,8 +1655,8 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnMapDraw(void *userObj, Media::Dr
 	if (me->mapCurrImage)
 	{
 		Math::Size2D<UOSInt> scnSize = me->mcMap->GetSizeP();
-		dimg->DrawImagePt(me->mapCurrImage, OSInt2Double(xOfst), OSInt2Double(yOfst + (OSInt)(scnSize.height - me->mapCurrImage->GetHeight())));
-		//BitBlt((HDC)hdc, 0, scnH - me->mapCurrImage->info.dispHeight, me->mapCurrImage->info.dispWidth, me->mapCurrImage->info.dispHeight, (HDC)me->mapCurrImage->GetHDC(), 0, 0, SRCCOPY);
+		dimg->DrawImagePt(me->mapCurrImage, Math::Coord2DDbl(OSInt2Double(xOfst), OSInt2Double(yOfst + (OSInt)(scnSize.y - me->mapCurrImage->GetHeight()))));
+		//BitBlt((HDC)hdc, 0, scnH - me->mapCurrImage->info.dispSize.y, me->mapCurrImage->info.dispSize.x, me->mapCurrImage->info.dispSize.y, (HDC)me->mapCurrImage->GetHDC(), 0, 0, SRCCOPY);
 	}
 }
 
@@ -1715,13 +1712,13 @@ Bool SSWR::OrganMgr::OrganMainForm::CalcCropRect(Math::Coord2D<OSInt> *rect)
 	}
 
 	Media::Image *img = this->dispImage->GetImage(0, 0);
-	if ((OSInt)img->info.dispWidth * drawHeight > (OSInt)img->info.dispHeight * drawWidth)
+	if ((OSInt)img->info.dispSize.x * drawHeight > (OSInt)img->info.dispSize.y * drawWidth)
 	{
-		drawHeight = MulDivOS(drawWidth, (OSInt)img->info.dispHeight, (OSInt)img->info.dispWidth);
+		drawHeight = MulDivOS(drawWidth, (OSInt)img->info.dispSize.y, (OSInt)img->info.dispSize.x);
 	}
 	else
 	{
-		drawWidth = MulDivOS(drawHeight, (OSInt)img->info.dispWidth, (OSInt)img->info.dispHeight);
+		drawWidth = MulDivOS(drawHeight, (OSInt)img->info.dispSize.x, (OSInt)img->info.dispSize.y);
 	}
 
 	if (this->dispImageDownPos.x < this->dispImageCurrPos.x)
@@ -2476,7 +2473,7 @@ SSWR::OrganMgr::OrganSpImgLayer *SSWR::OrganMgr::OrganMainForm::GetImgLayer(UInt
 	UOSInt lyrInd;
 	Media::ColorProfile srcColor(Media::ColorProfile::CPT_SRGB);
 	NEW_CLASS(lyr, OrganSpImgLayer());
-	NEW_CLASS(stimg, Media::StaticImage(7, 7, 0, 32, Media::PF_B8G8R8A8, 0, &srcColor, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+	NEW_CLASS(stimg, Media::StaticImage(Math::Size2D<UOSInt>(7, 7), 0, 32, Media::PF_B8G8R8A8, 0, &srcColor, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 	lyr->SetCoordinateSystem(this->mapEnv->GetCoordinateSystem()->Clone());
 	stimg->FillColor(mapColor);
 	NEW_CLASS(imgList, Media::ImageList(CSTR("PointImage")));
@@ -2773,7 +2770,7 @@ SSWR::OrganMgr::OrganMainForm::OrganMainForm(UI::GUICore *ui, UI::GUIClientContr
 
 	Media::ColorProfile dispColor(Media::ColorProfile::CPT_PDISPLAY);
 	NEW_CLASS(this->mapRenderer, Map::DrawMapRenderer(this->env->GetDrawEngine(), this->mapEnv, &dispColor, this->colorSess, Map::DrawMapRenderer::DT_PIXELDRAW));
-	this->mapView = this->mapEnv->CreateMapView(Math::Size2D<Double>(1024, 768));
+	this->mapView = this->mapEnv->CreateMapView(Math::Size2DDbl(1024, 768));
 	NEW_CLASS(this->mcMap, UI::GUIMapControl(ui, this->tpMap, this->env->GetDrawEngine(), 0xff000000, this->mapRenderer, this->mapView, this->colorSess));
 	this->mcMap->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->mcMap->HandleMouseMove(OnMapMouseMove, this);

@@ -55,16 +55,22 @@ void Media::OpenCV::OCVFrame::ClearOutsidePolygon(Math::Coord2D<UOSInt> *poly, U
 	MemFree(points);
 }
 
-UOSInt Media::OpenCV::OCVFrame::GetWidth()
+UOSInt Media::OpenCV::OCVFrame::GetWidth() const
 {
 	cv::Mat *fr = (cv::Mat *)this->frame;
 	return (UOSInt)fr->cols;
 }
 
-UOSInt Media::OpenCV::OCVFrame::GetHeight()
+UOSInt Media::OpenCV::OCVFrame::GetHeight() const
 {
 	cv::Mat *fr = (cv::Mat *)this->frame;
 	return (UOSInt)fr->rows;
+}
+
+Math::Size2D<UOSInt> Media::OpenCV::OCVFrame::GetSize() const
+{
+	cv::Mat *fr = (cv::Mat *)this->frame;
+	return Math::Size2D<UOSInt>((UOSInt)fr->cols, (UOSInt)fr->rows);
 }
 
 OSInt Media::OpenCV::OCVFrame::GetBpl()
@@ -90,11 +96,10 @@ Media::StaticImage *Media::OpenCV::OCVFrame::CreateStaticImage()
 {
 	Media::ColorProfile sRGB(Media::ColorProfile::CPT_SRGB);
 	Media::StaticImage *simg;
-	UOSInt w = this->GetWidth();
-	UOSInt h = this->GetHeight();
-	NEW_CLASS(simg, Media::StaticImage(w, h, 0, 8, Media::PF_PAL_W8, w * h, &sRGB, Media::ColorProfile::YUVT_BT601, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+	Math::Size2D<UOSInt> size = this->GetSize();
+	NEW_CLASS(simg, Media::StaticImage(size, 0, 8, Media::PF_PAL_W8, size.CalcArea(), &sRGB, Media::ColorProfile::YUVT_BT601, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 	simg->InitGrayPal();
-	this->GetImageData(simg->data, 0, 0, w, h, simg->GetDataBpl(), false, Media::RotateType::None);
+	this->GetImageData(simg->data, 0, 0, size.x, size.y, simg->GetDataBpl(), false, Media::RotateType::None);
 	cv::imshow("Clear", *(cv::Mat *)this->frame);
 	return simg;
 }
@@ -141,14 +146,14 @@ Media::OpenCV::OCVFrame *Media::OpenCV::OCVFrame::BilateralFilter(Int32 d, Doubl
 	return NEW_CLASS_D(Media::OpenCV::OCVFrame(newFr));
 }
 
-Media::OpenCV::OCVFrame *Media::OpenCV::OCVFrame::CreateYFrame(UInt8 **imgData, UOSInt dataSize, UInt32 fourcc, UOSInt dispWidth, UOSInt dispHeight, UOSInt storeWidth, UOSInt storeBPP, Media::PixelFormat pf)
+Media::OpenCV::OCVFrame *Media::OpenCV::OCVFrame::CreateYFrame(UInt8 **imgData, UOSInt dataSize, UInt32 fourcc, Math::Size2D<UOSInt> dispSize, UOSInt storeWidth, UOSInt storeBPP, Media::PixelFormat pf)
 {
 	Media::CS::CSConverter *converter = Media::CS::CSConverter::NewConverter(fourcc, storeBPP, pf, 0, *(UInt32*)"Y800", 8, Media::PF_UNKNOWN, 0, Media::ColorProfile::YUVT_UNKNOWN, 0);
 	if (converter)
 	{
 		cv::Mat *fr;
-		fr = new cv::Mat((int)dispHeight, (int)dispWidth, CV_8UC1);
-		converter->ConvertV2(imgData, fr->ptr(0), dispWidth, dispHeight, storeWidth, dispHeight, (OSInt)dispWidth, Media::FT_NON_INTERLACE, Media::YCOFST_C_CENTER_LEFT);
+		fr = new cv::Mat((int)dispSize.y, (int)dispSize.x, CV_8UC1);
+		converter->ConvertV2(imgData, fr->ptr(0), dispSize.x, dispSize.y, storeWidth, dispSize.y, (OSInt)dispSize.x, Media::FT_NON_INTERLACE, Media::YCOFST_C_CENTER_LEFT);
 
 		DEL_CLASS(converter);
 		Media::OpenCV::OCVFrame *frame;
@@ -180,8 +185,8 @@ Media::OpenCV::OCVFrame *Media::OpenCV::OCVFrame::CreateYFrame(Media::StaticImag
 	{
 		return 0;
 	}
-	fr = new cv::Mat((int)simg->info.dispHeight, (int)simg->info.dispWidth, CV_8UC1);
-	simg->GetImageData(fr->ptr(0), 0, 0, simg->info.dispWidth, simg->info.dispHeight, simg->info.dispWidth, false, Media::RotateType::None);
+	fr = new cv::Mat((int)simg->info.dispSize.y, (int)simg->info.dispSize.x, CV_8UC1);
+	simg->GetImageData(fr->ptr(0), 0, 0, simg->info.dispSize.x, simg->info.dispSize.y, simg->info.dispSize.x, false, Media::RotateType::None);
 
 	Media::OpenCV::OCVFrame *frame;
 	NEW_CLASS(frame, Media::OpenCV::OCVFrame(fr));

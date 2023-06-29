@@ -29,15 +29,15 @@ void SSWR::AVIRead::AVIRLineSelector::OnDraw(Media::DrawImage *img)
 	Media::DrawImage *tmpBmp;
 	if (w >= itemW)
 	{
-		tmpBmp = deng->CreateImage32((UInt32)Double2Int32(110 * hdpi / ddpi), itemH, Media::AT_NO_ALPHA);
+		tmpBmp = deng->CreateImage32(Math::Size2D<UOSInt>((UInt32)Double2Int32(110 * hdpi / ddpi), itemH), Media::AT_NO_ALPHA);
 	}
 	else if (w >= 10)
 	{
-		tmpBmp = deng->CreateImage32(w - 10, itemH, Media::AT_NO_ALPHA);
+		tmpBmp = deng->CreateImage32(Math::Size2D<UOSInt>(w - 10, itemH), Media::AT_NO_ALPHA);
 	}
 	else
 	{
-		tmpBmp = deng->CreateImage32(w, itemH, Media::AT_NO_ALPHA);
+		tmpBmp = deng->CreateImage32(Math::Size2D<UOSInt>(w, itemH), Media::AT_NO_ALPHA);
 	}
 	tmpBmp->SetHDPI(hdpi / ddpi * 96.0);
 	tmpBmp->SetVDPI(hdpi / ddpi * 96.0);
@@ -49,38 +49,38 @@ void SSWR::AVIRead::AVIRLineSelector::OnDraw(Media::DrawImage *img)
 		if (currPos == defVal)
 		{
 			Media::DrawBrush *bDef = img->NewBrushARGB(this->colorConv->ConvRGB8(0xffffffc0));
-			img->DrawRect(0, UOSInt2Double(i), UOSInt2Double(w), UOSInt2Double(itemTH), 0, bDef);
+			img->DrawRect(Math::Coord2DDbl(0, UOSInt2Double(i)), Math::Size2DDbl(UOSInt2Double(w), UOSInt2Double(itemTH)), 0, bDef);
 			img->DelBrush(bDef);
 		}
 		else
 		{
-			img->DrawRect(0, UOSInt2Double(i), UOSInt2Double(w), itemTH, 0, bWhite);
+			img->DrawRect(Math::Coord2DDbl(0, UOSInt2Double(i)), Math::Size2DDbl(UOSInt2Double(w), itemTH), 0, bWhite);
 		}
 		this->core->GenLineStylePreview(tmpBmp, deng, this->env, currPos, this->colorConv);
 		if (currPos == this->currLineStyle)
 		{
 			Media::DrawBrush *bRed = img->NewBrushARGB(this->colorConv->ConvRGB8(0xffff0000));
-			img->DrawRect(0, UOSInt2Double(i), itemW, itemTH, 0, bRed);
+			img->DrawRect(Math::Coord2DDbl(0, UOSInt2Double(i)), Math::Size2DDbl(itemW, itemTH), 0, bRed);
 			img->DelBrush(bRed);
 		}
 		if (w >= itemW)
 		{
-			img->DrawImagePt(tmpBmp, itemL, UOSInt2Double(i + 1));
+			img->DrawImagePt(tmpBmp, Math::Coord2DDbl(itemL, UOSInt2Double(i + 1)));
 		}
 		else if (w >= 10)
 		{
-			img->DrawImagePt(tmpBmp, 5, UOSInt2Double(i + 1));
+			img->DrawImagePt(tmpBmp, Math::Coord2DDbl(5, UOSInt2Double(i + 1)));
 		}
 		else
 		{
-			img->DrawImagePt(tmpBmp, 0, UOSInt2Double(i + 1));
+			img->DrawImagePt(tmpBmp, Math::Coord2DDbl(0, UOSInt2Double(i + 1)));
 		}
 		sbuff[0] = 0;
 		sptr = this->env->GetLineStyleName(currPos, sbuff);
 		if (sbuff[0])
 		{
 			Media::DrawFont *fnt = this->CreateDrawFont(img);
-			img->DrawString(itemW, UOSInt2Double(i + 1), CSTRP(sbuff, sptr), fnt, bBlack);
+			img->DrawString(Math::Coord2DDbl(itemW, UOSInt2Double(i + 1)), CSTRP(sbuff, sptr), fnt, bBlack);
 			img->DelFont(fnt);
 		}
 
@@ -89,7 +89,7 @@ void SSWR::AVIRead::AVIRLineSelector::OnDraw(Media::DrawImage *img)
 	}
 	if (i < h)
 	{
-		img->DrawRect(0, UOSInt2Double(i), UOSInt2Double(w), UOSInt2Double(h - i), 0, bWhite);
+		img->DrawRect(Math::Coord2DDbl(0, UOSInt2Double(i)), Math::Size2DDbl(UOSInt2Double(w), UOSInt2Double(h - i)), 0, bWhite);
 	}
 	img->DelBrush(bWhite);
 	img->DelBrush(bBlack);

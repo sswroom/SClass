@@ -138,10 +138,9 @@ Bool Media::DShow::DShowVideoCapture::GetVideoInfo(Media::FrameInfo *info, UInt3
 				info->pf = Media::PixelFormatGetDef(format->bmiHeader.biCompression, format->bmiHeader.biBitCount);
 				info->byteSize = format->bmiHeader.biSizeImage;
 				info->ftype = Media::FT_NON_INTERLACE;
-				info->dispWidth = (ULONG)format->bmiHeader.biWidth;
-				info->dispHeight = (ULONG)format->bmiHeader.biHeight;
-				info->storeWidth = info->dispWidth;
-				info->storeHeight = info->dispHeight;
+				info->dispSize.x = (ULONG)format->bmiHeader.biWidth;
+				info->dispSize.y = (ULONG)format->bmiHeader.biHeight;
+				info->storeSize = info->dispSize;
 				info->par2 = 1;
 				info->hdpi = Math::Unit::Distance::Convert(Math::Unit::Distance::DU_INCH, Math::Unit::Distance::DU_METER, format->bmiHeader.biXPelsPerMeter);
 				info->color->SetCommonProfile(Media::ColorProfile::CPT_VUNKNOWN);
@@ -165,7 +164,7 @@ Bool Media::DShow::DShowVideoCapture::GetVideoInfo(Media::FrameInfo *info, UInt3
 				}
 				if (info->byteSize == 0)
 				{
-					*maxFrameSize = MulDivUOS(info->dispWidth * info->dispHeight, filter->GetFrameMul(), 8);
+					*maxFrameSize = MulDivUOS(info->dispSize.CalcArea(), filter->GetFrameMul(), 8);
 				}
 				else
 				{
@@ -186,14 +185,14 @@ Bool Media::DShow::DShowVideoCapture::GetVideoInfo(Media::FrameInfo *info, UInt3
 	return succ;
 }
 
-void Media::DShow::DShowVideoCapture::SetPreferSize(UOSInt width, UOSInt height, UInt32 fourcc, UInt32 bpp, UInt32 frameRateNumer, UInt32 fraemRateDenom)
+void Media::DShow::DShowVideoCapture::SetPreferSize(Math::Size2D<UOSInt> size, UInt32 fourcc, UInt32 bpp, UInt32 frameRateNumer, UInt32 fraemRateDenom)
 {
 	Bool found = false;
 	UInt32 minRate = 0;
 	IEnumMediaTypes *mediaTypes;
 	UInt32 fcc = 0;
 
-	UOSInt nearDiff = (width + 1) * (height + 1);
+	UOSInt nearDiff = (size.x + 1) * (size.y + 1);
 	UOSInt nearWidth = 0;
 	UOSInt nearHeight = 0;
 	UInt32 nearRate = 0;
@@ -213,7 +212,7 @@ void Media::DShow::DShowVideoCapture::SetPreferSize(UOSInt width, UOSInt height,
 				VIDEOINFOHEADER *format = (VIDEOINFOHEADER *)mediaType->pbFormat;
 				if (format->bmiHeader.biCompression == fourcc && format->bmiHeader.biBitCount == bpp)
 				{
-					if (format->bmiHeader.biWidth == (LONG)width && format->bmiHeader.biHeight == (LONG)height)
+					if (format->bmiHeader.biWidth == (LONG)size.x && format->bmiHeader.biHeight == (LONG)size.y)
 					{
 						if (found)
 						{
@@ -242,21 +241,21 @@ void Media::DShow::DShowVideoCapture::SetPreferSize(UOSInt width, UOSInt height,
 					}
 					else if (!found)
 					{
-						if (format->bmiHeader.biWidth > (LONG)width)
+						if (format->bmiHeader.biWidth > (LONG)size.x)
 						{
-							absWidth = (ULONG)format->bmiHeader.biWidth - width + 1;
+							absWidth = (ULONG)format->bmiHeader.biWidth - size.x + 1;
 						}
 						else
 						{
-							absWidth = width - (ULONG)format->bmiHeader.biWidth + 1;
+							absWidth = size.x - (ULONG)format->bmiHeader.biWidth + 1;
 						}
-						if (format->bmiHeader.biHeight > (LONG)height)
+						if (format->bmiHeader.biHeight > (LONG)size.y)
 						{
-							absHeight = (ULONG)format->bmiHeader.biHeight - height + 1;
+							absHeight = (ULONG)format->bmiHeader.biHeight - size.y + 1;
 						}
 						else
 						{
-							absHeight = height - (ULONG)format->bmiHeader.biHeight + 1;
+							absHeight = size.y - (ULONG)format->bmiHeader.biHeight + 1;
 						}
 						thisDiff = absWidth * absHeight;
 						if (nearDiff > thisDiff)
@@ -300,7 +299,7 @@ void Media::DShow::DShowVideoCapture::SetPreferSize(UOSInt width, UOSInt height,
 
 	if (found)
 	{
-		((Media::DShow::DShowVideoFilter*)captureFilter)->SetPreferSize(width, height, minRate, fcc, bpp);
+		((Media::DShow::DShowVideoFilter*)captureFilter)->SetPreferSize(size, minRate, fcc, bpp);
 		if (foundMediaType)
 		{
 			AM_MEDIA_TYPE connMT;
@@ -322,7 +321,7 @@ void Media::DShow::DShowVideoCapture::SetPreferSize(UOSInt width, UOSInt height,
 	}
 	else if (nearWidth != 0 && nearHeight != 0)
 	{
-		((Media::DShow::DShowVideoFilter*)captureFilter)->SetPreferSize(nearWidth, nearHeight, nearRate, fcc, bpp);
+		((Media::DShow::DShowVideoFilter*)captureFilter)->SetPreferSize(Math::Size2D<UOSInt>(nearWidth, nearHeight), nearRate, fcc, bpp);
 		if (foundMediaType)
 		{
 			AM_MEDIA_TYPE connMT;
@@ -456,10 +455,9 @@ UOSInt Media::DShow::DShowVideoCapture::GetSupportedFormats(VideoFormat *fmtArr,
 					fmtArr[outCnt].frameRateNorm = 10000000;
 					fmtArr[outCnt].frameRateDenorm = (UInt32)format->AvgTimePerFrame;
 				}
-				fmtArr[outCnt].info.dispWidth = (ULONG)format->bmiHeader.biWidth;
-				fmtArr[outCnt].info.dispHeight = (ULONG)format->bmiHeader.biHeight;
-				fmtArr[outCnt].info.storeWidth = fmtArr[outCnt].info.dispWidth;
-				fmtArr[outCnt].info.storeHeight = fmtArr[outCnt].info.dispWidth;
+				fmtArr[outCnt].info.dispSize.x = (ULONG)format->bmiHeader.biWidth;
+				fmtArr[outCnt].info.dispSize.y = (ULONG)format->bmiHeader.biHeight;
+				fmtArr[outCnt].info.storeSize = fmtArr[outCnt].info.dispSize;
 				fmtArr[outCnt].info.fourcc = format->bmiHeader.biCompression;
 				fmtArr[outCnt].info.storeBPP = format->bmiHeader.biBitCount;
 				fmtArr[outCnt].info.pf = Media::PixelFormatGetDef(format->bmiHeader.biCompression, format->bmiHeader.biBitCount);

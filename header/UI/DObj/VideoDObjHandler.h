@@ -14,10 +14,8 @@ namespace UI
 		class VideoDObjHandler : public ImageDObjHandler, public Media::VideoRenderer
 		{
 		protected:
-			Int32 videoX;
-			Int32 videoY;
-			UInt32 videoW;
-			UInt32 videoH;
+			Math::Coord2D<OSInt> videoTL;
+			Math::Size2D<UOSInt> videoSize;
 
 			UI::GUIForm *ownerFrm;
 			UI::GUITimer *tmr;
@@ -35,12 +33,12 @@ namespace UI
 			void DrawVideo(Media::DrawImage *dimg);
 
 			virtual void LockUpdateSize(Sync::MutexUsage *mutUsage);
-			virtual void DrawFromSurface(Media::MonitorSurface *surface, OSInt destX, OSInt destY, UOSInt buffWidth, UOSInt buffHeight, Bool clearScn);
+			virtual void DrawFromSurface(Media::MonitorSurface *surface, Math::Coord2D<OSInt> destTL, Math::Size2D<UOSInt> buffSize, Bool clearScn);
 		public:
-			VideoDObjHandler(UI::GUIForm *ownerFrm, Media::DrawEngine *deng, Media::ColorManagerSess *colorSess, Media::MonitorSurfaceMgr *surfaceMgr, Parser::ParserList *parsers, Text::CString imageFileName, Int32 videoX, Int32 videoY, UInt32 videoW, UInt32 videoH, Text::CString videoFileName);
+			VideoDObjHandler(UI::GUIForm *ownerFrm, Media::DrawEngine *deng, Media::ColorManagerSess *colorSess, Media::MonitorSurfaceMgr *surfaceMgr, Parser::ParserList *parsers, Text::CString imageFileName, Math::Coord2D<OSInt> videoTL, Math::Size2D<UOSInt> videoSize, Text::CString videoFileName);
 			virtual ~VideoDObjHandler();
 
-			void UpdateVideoArea(Int32 videoX, Int32 videoY, UInt32 videoW, UInt32 videoH);
+			void UpdateVideoArea(Math::Coord2D<OSInt> videoTL, Math::Size2D<UOSInt> videoSize);
 		};
 	}
 }

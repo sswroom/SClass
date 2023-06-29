@@ -138,7 +138,7 @@ Double Media::StaticPen::GetThick()
 	return this->thick;
 }
 
-Media::StaticDrawImage::StaticDrawImage(StaticEngine *eng, OSInt dispWidth, OSInt dispHeight, Int32 fourcc, Int32 bpp, Media::PixelFormat pf, OSInt maxSize, const Media::ColorProfile *color, Media::ColorProfile::YUVType yuvType, Media::AlphaType atype, Media::YCOffset ycOfst) : Media::StaticImage(dispWidth, dispHeight, fourcc, bpp, pf, maxSize, color, yuvType, atype, ycOfst)
+Media::StaticDrawImage::StaticDrawImage(StaticEngine *eng, Math::Size2D<UOSInt> dispSize, Int32 fourcc, Int32 bpp, Media::PixelFormat pf, OSInt maxSize, const Media::ColorProfile *color, Media::ColorProfile::YUVType yuvType, Media::AlphaType atype, Media::YCOffset ycOfst) : Media::StaticImage(dispSize, fourcc, bpp, pf, maxSize, color, yuvType, atype, ycOfst)
 {
 	this->eng = eng;
 }
@@ -150,12 +150,12 @@ Media::StaticDrawImage::~StaticDrawImage()
 
 UOSInt Media::StaticDrawImage::GetWidth()
 {
-	return this->info.dispWidth;
+	return this->info.dispSize.x;
 }
 
 UOSInt Media::StaticDrawImage::GetHeight()
 {
-	return this->info.dispHeight;
+	return this->info.dispSize.y;
 }
 
 UInt32 Media::StaticDrawImage::GetBitCount()
@@ -228,9 +228,9 @@ Bool Media::StaticDrawImage::DrawImagePt2(Media::StaticImage *img, Double tlx, D
 			Int32 y = Double2Int32(tly);
 			Int32 sx = 0;
 			Int32 sy = 0;
-			OSInt w = img->info.dispWidth;
-			OSInt h = img->info.dispHeight;
-			OSInt bpl = this->info.storeWidth << 2;
+			OSInt w = img->info.dispSize.x;
+			OSInt h = img->info.dispSize.y;
+			OSInt bpl = this->info.storeSize.x << 2;
 			if (x < 0)
 			{
 				w += x;
@@ -243,27 +243,27 @@ Bool Media::StaticDrawImage::DrawImagePt2(Media::StaticImage *img, Double tlx, D
 				sy = -y;
 				y = 0;
 			}
-			if (x + w > (OSInt)this->info.dispWidth)
+			if (x + w > (OSInt)this->info.dispSize.x)
 			{
-				w = this->info.dispWidth - x;
+				w = this->info.dispSize.x - x;
 			}
-			if (y + h > (OSInt)this->info.dispHeight)
+			if (y + h > (OSInt)this->info.dispSize.y)
 			{
-				h = this->info.dispHeight - y;
+				h = this->info.dispSize.y - y;
 			}
 			if (w > 0 && h > 0)
 			{
-				ImageCopy_ImgCopy(img->data + (sy * img->info.storeWidth << 2) + (sx << 2), this->data + y * bpl + (x << 2), w << 2, h, img->info.storeWidth << 2, this->info.storeWidth << 2);
+				ImageCopy_ImgCopy(img->data + (sy * img->info.storeSize.x << 2) + (sx << 2), this->data + y * bpl + (x << 2), w << 2, h, img->info.storeSize.x << 2, this->info.storeSize.x << 2);
 			}
 		}
 		else
 		{
-			OSInt w = img->info.dispWidth;
-			OSInt h = img->info.dispHeight;
+			OSInt w = img->info.dispSize.x;
+			OSInt h = img->info.dispSize.y;
 			UInt8 *dbits = this->data;
 			UInt8 *sbits = img->data;
-			OSInt dbpl = this->info.storeWidth << 2;
-			OSInt sbpl = img->info.storeWidth << 2;
+			OSInt dbpl = this->info.storeSize.x << 2;
+			OSInt sbpl = img->info.storeSize.x << 2;
 
 			if (tlx < 0)
 			{
@@ -278,13 +278,13 @@ Bool Media::StaticDrawImage::DrawImagePt2(Media::StaticImage *img, Double tlx, D
 				tly = 0;
 			}
 
-			if (tlx + w > this->info.dispWidth)
+			if (tlx + w > this->info.dispSize.x)
 			{
-				w = this->info.dispWidth - Double2Int32(tlx);
+				w = this->info.dispSize.x - Double2Int32(tlx);
 			}
-			if (tly + h > this->info.dispHeight)
+			if (tly + h > this->info.dispSize.y)
 			{
-				h = this->info.dispHeight - Double2Int32(tly);
+				h = this->info.dispSize.y - Double2Int32(tly);
 			}
 			if (w > 0 && h > 0)
 			{
@@ -317,7 +317,7 @@ Bool Media::StaticDrawImage::DrawImagePt3(DrawImage *img, Double destX, Double d
 			Int32 sy = Double2Int32(srcY);
 			OSInt w = Double2Int32(srcW);
 			OSInt h = Double2Int32(srcH);
-			OSInt bpl = this->info.storeWidth << 2;
+			OSInt bpl = this->info.storeSize.x << 2;
 			if (x < 0)
 			{
 				w += x;
@@ -330,17 +330,17 @@ Bool Media::StaticDrawImage::DrawImagePt3(DrawImage *img, Double destX, Double d
 				sy -= y;
 				y = 0;
 			}
-			if (x + w > (OSInt)this->info.dispWidth)
+			if (x + w > (OSInt)this->info.dispSize.x)
 			{
-				w = this->info.dispWidth - x;
+				w = this->info.dispSize.x - x;
 			}
-			if (y + h > (OSInt)this->info.dispHeight)
+			if (y + h > (OSInt)this->info.dispSize.y)
 			{
-				h = this->info.dispHeight - y;
+				h = this->info.dispSize.y - y;
 			}
 			if (w > 0 && h > 0)
 			{
-				ImageCopy_ImgCopy(simg->data + (sy * simg->info.storeWidth << 2) + (sx << 2), this->data + y * bpl + (x << 2), w << 2, h, simg->info.storeWidth << 2, bpl);
+				ImageCopy_ImgCopy(simg->data + (sy * simg->info.storeSize.x << 2) + (sx << 2), this->data + y * bpl + (x << 2), w << 2, h, simg->info.storeSize.x << 2, bpl);
 			}
 		}
 		else
@@ -353,8 +353,8 @@ Bool Media::StaticDrawImage::DrawImagePt3(DrawImage *img, Double destX, Double d
 			OSInt h = Double2Int32(srcH);
 			UInt8 *dbits = (UInt8*)this->data;
 			UInt8 *sbits = (UInt8*)simg->data;
-			OSInt dbpl = this->info.storeWidth << 2;
-			OSInt sbpl = simg->info.storeWidth << 2;
+			OSInt dbpl = this->info.storeSize.x << 2;
+			OSInt sbpl = simg->info.storeSize.x << 2;
 
 			if (x < 0)
 			{
@@ -368,13 +368,13 @@ Bool Media::StaticDrawImage::DrawImagePt3(DrawImage *img, Double destX, Double d
 				sy -= y;
 				y = 0;
 			}
-			if (x + w > (OSInt)this->info.dispWidth)
+			if (x + w > (OSInt)this->info.dispSize.x)
 			{
-				w = this->info.dispWidth - x;
+				w = this->info.dispSize.x - x;
 			}
-			if (y + h > (OSInt)this->info.dispHeight)
+			if (y + h > (OSInt)this->info.dispSize.y)
 			{
-				h = this->info.dispHeight - y;
+				h = this->info.dispSize.y - y;
 			}
 			if (w > 0 && h > 0)
 			{

@@ -415,10 +415,8 @@ Media::M2VStreamSource::M2VStreamSource(Media::IStreamControl *pbc)
 	this->bitRate = 1000;
 	this->finfoMode = false;
 	this->info->fourcc = (UInt32)-1;
-	this->info->dispWidth = 0;
-	this->info->dispHeight = 0;
-	this->info->storeWidth = 0;
-	this->info->storeHeight = 0;
+	this->info->dispSize = Math::Size2D<UOSInt>(0, 0);
+	this->info->storeSize = Math::Size2D<UOSInt>(0, 0);
 	this->frameRateNorm = 0;
 	this->frameRateDenorm = 0;
 	this->maxFrameSize = 10485760;

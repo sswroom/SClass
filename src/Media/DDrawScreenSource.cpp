@@ -208,10 +208,9 @@ Bool Media::DDrawScreenSource::GetVideoInfo(Media::FrameInfo *info, Int32 *frame
 		return false;
 	}
 
-	info->storeWidth = ddsd.dwWidth;
-	info->storeHeight = ddsd.dwHeight;
-	info->dispWidth = info->storeWidth;
-	info->dispHeight = info->storeHeight;
+	info->storeSize.x = ddsd.dwWidth;
+	info->storeSize.y = ddsd.dwHeight;
+	info->dispSize = info->storeSize;
 	info->fourcc = 0;
 	info->storeBPP = ddsd.ddpfPixelFormat.dwRGBBitCount;
 	info->byteSize = 0;

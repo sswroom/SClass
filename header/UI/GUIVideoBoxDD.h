@@ -17,7 +17,7 @@ namespace UI
 			MA_START,
 			MA_PAUSE
 		} MouseAction;
-		typedef void (__stdcall *MouseActionHandler)(void *userObj, MouseAction ma, OSInt x, OSInt y);
+		typedef void (__stdcall *MouseActionHandler)(void *userObj, MouseAction ma, Math::Coord2D<OSInt> pos);
 	protected:
 		IO::Writer *debugLog;
 		IO::Stream *debugFS;
@@ -27,14 +27,13 @@ namespace UI
 		MouseActionHandler maHdlr;
 		void *maHdlrObj;
 		Bool maDown;
-		OSInt maDownX;
-		OSInt maDownY;
+		Math::Coord2D<OSInt> maDownPos;
 		Int64 maDownTime;
 
 	protected:
 		//void UpdateFromBuff(VideoBuff *vbuff);
 		virtual void LockUpdateSize(Sync::MutexUsage *mutUsage);
-		virtual void DrawFromSurface(Media::MonitorSurface *surface, OSInt destX, OSInt destY, UOSInt buffWidth, UOSInt buffHeight, Bool clearScn);
+		virtual void DrawFromSurface(Media::MonitorSurface *surface, Math::Coord2D<OSInt> destTL, Math::Size2D<UOSInt> buffSize, Bool clearScn);
 
 		virtual void BeginUpdateSize();
 		virtual void EndUpdateSize();
@@ -52,10 +51,10 @@ namespace UI
 		virtual void OnMonitorChanged();
 
 		virtual void OnSurfaceCreated();
-		virtual void OnMouseWheel(OSInt x, OSInt y, Int32 amount);
-		virtual void OnMouseMove(OSInt x, OSInt y);
-		virtual void OnMouseDown(OSInt x, OSInt y, MouseButton button);
-		virtual void OnMouseUp(OSInt x, OSInt y, MouseButton button);
+		virtual void OnMouseWheel(Math::Coord2D<OSInt> pos, Int32 amount);
+		virtual void OnMouseMove(Math::Coord2D<OSInt> pos);
+		virtual void OnMouseDown(Math::Coord2D<OSInt> pos, MouseButton button);
+		virtual void OnMouseUp(Math::Coord2D<OSInt> pos, MouseButton button);
 
 		void HandleMouseActon(MouseActionHandler hdlr, void *userObj);
 

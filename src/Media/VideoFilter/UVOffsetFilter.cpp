@@ -8,8 +8,8 @@ void Media::VideoFilter::UVOffsetFilter::ProcessVideoFrame(UInt32 frameTime, UIn
 	{
 		Int32 uOfst = this->uOfst;
 		Int32 vOfst = this->vOfst;
-		UOSInt w = this->videoInfo.storeWidth;
-		UOSInt h = this->videoInfo.storeHeight;
+		UOSInt w = this->videoInfo.storeSize.x;
+		UOSInt h = this->videoInfo.storeSize.y;
 		UOSInt hh = h >> 1;
 		UOSInt wh = w >> 1;
 		UInt8 *imgPtr = imgData[0] + w * h;

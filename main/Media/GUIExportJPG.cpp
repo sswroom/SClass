@@ -14,7 +14,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	Media::StaticImage *simg;
 
 	Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
-	NEW_CLASS(simg, Media::StaticImage(320, 240, 0, 32, Media::PF_B8G8R8A8, 320 * 240 * 4, &color, Media::ColorProfile::YUVT_BT601, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+	NEW_CLASS(simg, Media::StaticImage(Math::Size2D<UOSInt>(320, 240), 0, 32, Media::PF_B8G8R8A8, 320 * 240 * 4, &color, Media::ColorProfile::YUVT_BT601, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 	Media::ImageList imgList(CSTR("Temp"));
 	imgList.AddImage(simg, 0);
 	{

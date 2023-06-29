@@ -9,13 +9,11 @@ namespace Math
 		class Ellipse : public Vector2D
 		{
 		private:
-			Double tlx;
-			Double tly;
-			Double w;
-			Double h;
+			Math::Coord2DDbl tl;
+			Math::Size2DDbl size;
 			
 		public:
-			Ellipse(UInt32 srid, Double tlx, Double tly, Double w, Double h);
+			Ellipse(UInt32 srid, Math::Coord2DDbl tl, Math::Size2DDbl size);
 			virtual ~Ellipse();
 
 			virtual VectorType GetVectorType() const;

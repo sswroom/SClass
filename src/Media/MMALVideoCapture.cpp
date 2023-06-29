@@ -188,7 +188,7 @@ Text::CString Media::MMALVideoCapture::GetFilterName()
 Bool Media::MMALVideoCapture::GetVideoInfo(Media::FrameInfo *finfo, UInt32 *frameRateNorm, UInt32 *frameRateDenorm, UOSInt *maxFrameSize)
 {
 	MMALInfo *info = (MMALInfo*)this->classData;
-	finfo->dispWidth = info->currWidth;
+	finfo->dispSize.x = info->currWidth;
 	finfo->dispHeight = info->currHeight;
 	if (info->currWidth & 31)
 	{
@@ -335,10 +335,10 @@ UOSInt Media::MMALVideoCapture::GetSupportedFormats(VideoFormat *fmtArr, UOSInt 
 	{
 		if (maxCnt > 0)
 		{
-			fmtArr[0].info.dispWidth = 2592;
-			fmtArr[0].info.dispHeight = 1944;
-			fmtArr[0].info.storeWidth = 2592;
-			fmtArr[0].info.storeHeight = 1952;
+			fmtArr[0].info.dispSize.x = 2592;
+			fmtArr[0].info.dispSize.y = 1944;
+			fmtArr[0].info.storeSize.x = 2592;
+			fmtArr[0].info.storeSize.y = 1952;
 			fmtArr[0].frameRateNorm = 15;
 			fmtArr[0].frameRateDenorm = 1;
 			ret = 1;
@@ -348,60 +348,60 @@ UOSInt Media::MMALVideoCapture::GetSupportedFormats(VideoFormat *fmtArr, UOSInt 
 	{
 		if (maxCnt > 0)
 		{
-			fmtArr[0].info.dispWidth = 1920;
-			fmtArr[0].info.dispHeight = 1080;
-			fmtArr[0].info.storeWidth = 1920;
-			fmtArr[0].info.storeHeight = 1088;
+			fmtArr[0].info.dispSize.x = 1920;
+			fmtArr[0].info.dispSize.y = 1080;
+			fmtArr[0].info.storeSize.x = 1920;
+			fmtArr[0].info.storeSize.y = 1088;
 			fmtArr[0].frameRateNorm = 30;
 			fmtArr[0].frameRateDenorm = 1;
 			ret++;
 		}
 		if (maxCnt > 1)
 		{
-			fmtArr[1].info.dispWidth = 1296;
-			fmtArr[1].info.dispHeight = 972;
-			fmtArr[1].info.storeWidth = 1312;
-			fmtArr[1].info.storeHeight = 976;
+			fmtArr[1].info.dispSize.x = 1296;
+			fmtArr[1].info.dispSize.y = 972;
+			fmtArr[1].info.storeSize.x = 1312;
+			fmtArr[1].info.storeSize.y = 976;
 			fmtArr[1].frameRateNorm = 42;
 			fmtArr[1].frameRateDenorm = 1;
 			ret++;
 		}
 		if (maxCnt > 2)
 		{
-			fmtArr[2].info.dispWidth = 1296;
-			fmtArr[2].info.dispHeight = 730;
-			fmtArr[2].info.storeWidth = 1312;
-			fmtArr[2].info.storeHeight = 736;
+			fmtArr[2].info.dispSize.x = 1296;
+			fmtArr[2].info.dispSize.y = 730;
+			fmtArr[2].info.storeSize.x = 1312;
+			fmtArr[2].info.storeSize.y = 736;
 			fmtArr[2].frameRateNorm = 49;
 			fmtArr[2].frameRateDenorm = 1;
 			ret++;
 		}
 		if (maxCnt > 3)
 		{
-			fmtArr[3].info.dispWidth = 1296;
-			fmtArr[3].info.dispHeight = 730;
-			fmtArr[3].info.storeWidth = 1312;
-			fmtArr[3].info.storeHeight = 736;
+			fmtArr[3].info.dispSize.x = 1296;
+			fmtArr[3].info.dispSize.y = 730;
+			fmtArr[3].info.storeSize.x = 1312;
+			fmtArr[3].info.storeSize.y = 736;
 			fmtArr[3].frameRateNorm = 30;
 			fmtArr[3].frameRateDenorm = 1;
 			ret++;
 		}
 		if (maxCnt > 4)
 		{
-			fmtArr[4].info.dispWidth = 640;
-			fmtArr[4].info.dispHeight = 480;
-			fmtArr[4].info.storeWidth = 640;
-			fmtArr[4].info.storeHeight = 480;
+			fmtArr[4].info.dispSize.x = 640;
+			fmtArr[4].info.dispSize.y = 480;
+			fmtArr[4].info.storeSize.x = 640;
+			fmtArr[4].info.storeSize.y = 480;
 			fmtArr[4].frameRateNorm = 90;
 			fmtArr[4].frameRateDenorm = 1;
 			ret++;
 		}
 		if (maxCnt > 5)
 		{
-			fmtArr[5].info.dispWidth = 640;
-			fmtArr[5].info.dispHeight = 480;
-			fmtArr[5].info.dispWidth = 640;
-			fmtArr[5].info.dispHeight = 480;
+			fmtArr[5].info.dispSize.x = 640;
+			fmtArr[5].info.dispSize.y = 480;
+			fmtArr[5].info.dispSize.x = 640;
+			fmtArr[5].info.dispSize.y = 480;
 			fmtArr[5].frameRateNorm = 60;
 			fmtArr[5].frameRateDenorm = 1;
 			ret++;

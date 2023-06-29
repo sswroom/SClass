@@ -18,22 +18,22 @@ Text::CString Media::ImageGen::GammaImageGen::GetName()
 	return CSTR("Gamma Test");
 }
 
-Media::Image *Media::ImageGen::GammaImageGen::GenerateImage(Media::ColorProfile *colorProfile, UOSInt width, UOSInt height)
+Media::Image *Media::ImageGen::GammaImageGen::GenerateImage(Media::ColorProfile *colorProfile, Math::Size2D<UOSInt> size)
 {
 	Media::StaticImage *outImage;
 	UInt8 *imgPtr;
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
-	UOSInt bpl = width << 3;
-	if (width < 2 || height < 2)
+	UOSInt bpl = size.x << 3;
+	if (size.x < 2 || size.y < 2)
 		return 0;
 	Media::CS::TransferFunc *rfunc = Media::CS::TransferFunc::CreateFunc(colorProfile->GetRTranParam());
 	Media::CS::TransferFunc *gfunc = Media::CS::TransferFunc::CreateFunc(colorProfile->GetGTranParam());
 	Media::CS::TransferFunc *bfunc = Media::CS::TransferFunc::CreateFunc(colorProfile->GetBTranParam());
-	NEW_CLASS(outImage, Media::StaticImage(width, height, 0, 32, Media::PF_B8G8R8A8, 0, colorProfile, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+	NEW_CLASS(outImage, Media::StaticImage(size, 0, 32, Media::PF_B8G8R8A8, 0, colorProfile, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 	imgPtr = (UInt8*)outImage->data;
-	i = width >> 1;
+	i = size.x >> 1;
 	j = 0;
 	while (j < i)
 	{
@@ -45,8 +45,8 @@ Media::Image *Media::ImageGen::GammaImageGen::GenerateImage(Media::ColorProfile 
 
 		j++;
 	}
-	i = width - j;
-	k = width - j - 1;
+	i = size.x - j;
+	k = size.x - j - 1;
 	j = 0;
 	while (j < i)
 	{
@@ -59,7 +59,7 @@ Media::Image *Media::ImageGen::GammaImageGen::GenerateImage(Media::ColorProfile 
 		j++;
 	}
 
-	i = width >> 1;
+	i = size.x >> 1;
 	j = 0;
 	while (j < i)
 	{
@@ -71,8 +71,8 @@ Media::Image *Media::ImageGen::GammaImageGen::GenerateImage(Media::ColorProfile 
 
 		j++;
 	}
-	i = width - j;
-	k = width - j - 1;
+	i = size.x - j;
+	k = size.x - j - 1;
 	j = 0;
 	while (j < i)
 	{
@@ -85,14 +85,14 @@ Media::Image *Media::ImageGen::GammaImageGen::GenerateImage(Media::ColorProfile 
 		j++;
 	}
 	i = 1;
-	j = height >> 1;
+	j = size.y >> 1;
 	while (i < j)
 	{
 		MemCopyNO(imgPtr, outImage->data, bpl);
 		imgPtr += bpl;
 		i++;
 	}
-	if (height & 1)
+	if (size.y & 1)
 	{
 		MemCopyNO(imgPtr, outImage->data, bpl >> 1);
 	}

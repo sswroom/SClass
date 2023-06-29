@@ -5,20 +5,18 @@
 #include "Media/Image.h"
 #include "Media/StaticImage.h"
 
-Media::Image::Image(UOSInt dispWidth, UOSInt dispHeight)
+Media::Image::Image(Math::Size2D<UOSInt> dispSize)
 {
 	this->exif = 0;
 	this->hasHotSpot = false;
 	this->hotSpotX = 0;
 	this->hotSpotY = 0;
-	this->info.dispWidth = dispWidth;
-	this->info.dispHeight = dispHeight;
-	this->info.storeWidth = dispWidth;
-	this->info.storeHeight = dispHeight;
+	this->info.dispSize = dispSize;
+	this->info.storeSize = dispSize;
 	this->info.fourcc = 0;
 	this->info.storeBPP = 32;
 	this->info.pf = Media::PF_B8G8R8A8;
-	this->info.byteSize = dispWidth * dispHeight * 4;
+	this->info.byteSize = dispSize.CalcArea() * 4;
 	this->info.par2 = 1;
 	this->info.hdpi = 96;
 	this->info.vdpi = 96;
@@ -31,16 +29,14 @@ Media::Image::Image(UOSInt dispWidth, UOSInt dispHeight)
 	this->pal = 0;
 }
 
-Media::Image::Image(UOSInt dispWidth, UOSInt dispHeight, UOSInt storeWidth, UOSInt storeHeight, UInt32 fourcc, UInt32 bpp, Media::PixelFormat pf, UOSInt maxSize, const Media::ColorProfile *color, Media::ColorProfile::YUVType yuvType, Media::AlphaType atype, Media::YCOffset ycOfst)
+Media::Image::Image(Math::Size2D<UOSInt> dispSize, Math::Size2D<UOSInt> storeSize, UInt32 fourcc, UInt32 bpp, Media::PixelFormat pf, UOSInt maxSize, const Media::ColorProfile *color, Media::ColorProfile::YUVType yuvType, Media::AlphaType atype, Media::YCOffset ycOfst)
 {
 	this->exif = 0;
 	this->hasHotSpot = false;
 	this->hotSpotX = 0;
 	this->hotSpotY = 0;
-	this->info.dispWidth = dispWidth;
-	this->info.dispHeight = dispHeight;
-	this->info.storeWidth = storeWidth;
-	this->info.storeHeight = storeHeight;
+	this->info.dispSize = dispSize;
+	this->info.storeSize = storeSize;
 	this->info.fourcc = fourcc;
 	this->info.storeBPP = bpp;
 	this->info.pf = pf;
@@ -64,67 +60,61 @@ Media::Image::Image(UOSInt dispWidth, UOSInt dispHeight, UOSInt storeWidth, UOSI
 
 	if (pf == Media::PF_PAL_1_A1)
 	{
-		this->info.storeWidth = dispHeight;
-		this->info.storeHeight = dispWidth;
-		this->info.byteSize = ((dispWidth + 7) >> 3) * dispHeight * 2;
+		this->info.storeSize = dispSize;
+		this->info.byteSize = ((dispSize.x + 7) >> 3) * dispSize.y * 2;
 	}
 	else if (pf == Media::PF_PAL_2_A1)
 	{
-		this->info.storeWidth = dispHeight;
-		this->info.storeHeight = dispWidth;
-		this->info.byteSize = (((dispWidth + 7) >> 3) + ((dispWidth + 3) >> 2)) * dispHeight;
+		this->info.storeSize = dispSize;
+		this->info.byteSize = (((dispSize.x + 7) >> 3) + ((dispSize.x + 3) >> 2)) * dispSize.y;
 	}
 	else if (pf == Media::PF_PAL_4_A1)
 	{
-		this->info.storeWidth = dispHeight;
-		this->info.storeHeight = dispWidth;
-		this->info.byteSize = (((dispWidth + 7) >> 3) + ((dispWidth + 1) >> 1)) * dispHeight;
+		this->info.storeSize = dispSize;
+		this->info.byteSize = (((dispSize.x + 7) >> 3) + ((dispSize.x + 1) >> 1)) * dispSize.y;
 	}
 	else if (pf == Media::PF_PAL_8_A1)
 	{
-		this->info.storeWidth = dispHeight;
-		this->info.storeHeight = dispWidth;
-		this->info.byteSize = (((dispWidth + 7) >> 3) + dispWidth) * dispHeight;
+		this->info.storeSize = dispSize;
+		this->info.byteSize = (((dispSize.x + 7) >> 3) + dispSize.x) * dispSize.y;
 	}
 	else
 	{
-		if (storeWidth == 0)
+		if (storeSize.x == 0)
 		{
-			storeWidth = dispWidth;
-			storeHeight = dispHeight;
-			this->info.storeHeight = storeHeight;
-			this->info.storeWidth = storeWidth;
+			storeSize = dispSize;
+			this->info.storeSize = storeSize;
 			if (pf == Media::PF_PAL_1 || pf == Media::PF_PAL_W1)
 			{
-				if (dispWidth & 7)
+				if (dispSize.x & 7)
 				{
-					storeWidth = dispWidth + 8 - (dispWidth & 7);
-					this->info.storeWidth = storeWidth;
+					storeSize.x = dispSize.x + 8 - (dispSize.x & 7);
+					this->info.storeSize.x = storeSize.x;
 				}
 			}
 			else if (pf == Media::PF_PAL_2 || pf == Media::PF_PAL_W2 || pf == Media::PF_PAL_2_A1)
 			{
-				if (dispWidth & 3)
+				if (dispSize.x & 3)
 				{
-					storeWidth = dispWidth + 4 - (dispWidth & 3);
-					this->info.storeWidth = storeWidth;
+					storeSize.x = dispSize.x + 4 - (dispSize.x & 3);
+					this->info.storeSize.x = storeSize.x;
 				}
 			}
 			else if (pf == Media::PF_PAL_4 || pf == Media::PF_PAL_W4 || pf == Media::PF_PAL_4_A1)
 			{
-				if (dispWidth & 1)
+				if (dispSize.x & 1)
 				{
-					storeWidth = dispWidth + 2 - (dispWidth & 1);
-					this->info.storeWidth = storeWidth;
+					storeSize.x = dispSize.x + 2 - (dispSize.x & 1);
+					this->info.storeSize.x = storeSize.x;
 				}
 			}
 		}
 		if (bpp)
 		{
-			this->info.byteSize = storeWidth * bpp;
+			this->info.byteSize = storeSize.x * bpp;
 			if (this->info.byteSize & 7)
 				this->info.byteSize += 8 - (this->info.byteSize & 7);
-			this->info.byteSize = storeHeight * (this->info.byteSize >> 3);
+			this->info.byteSize = storeSize.y * (this->info.byteSize >> 3);
 		}
 	}
 	this->pal = 0;
@@ -221,32 +211,32 @@ UOSInt Media::Image::GetDataBpl() const
 {
 	if (this->info.fourcc == *(UInt32*)"LRGB")
 	{
-		return (this->info.storeWidth << 3);
+		return (this->info.storeSize.x << 3);
 	}
 	if (this->info.fourcc != 0 && this->info.fourcc != *(UInt32*)"DIBS")
 		return 0;
 	if (this->info.pf == Media::PF_PAL_1_A1)
 	{
-		return ((this->info.dispWidth + 7) >> 3) * 2;
+		return ((this->info.dispSize.x + 7) >> 3) * 2;
 	}
 	else if (this->info.pf == Media::PF_PAL_2_A1)
 	{
-		return (((this->info.dispWidth + 7) >> 3) + ((this->info.dispWidth + 3) >> 2));
+		return (((this->info.dispSize.x + 7) >> 3) + ((this->info.dispSize.x + 3) >> 2));
 	}
 	else if (this->info.pf == Media::PF_PAL_4_A1)
 	{
-		return (((this->info.dispWidth + 7) >> 3) + ((this->info.dispWidth + 1) >> 1));
+		return (((this->info.dispSize.x + 7) >> 3) + ((this->info.dispSize.x + 1) >> 1));
 	}
 	else if (this->info.pf == Media::PF_PAL_8_A1)
 	{
-		return (((this->info.dispWidth + 7) >> 3) + this->info.dispWidth);
+		return (((this->info.dispSize.x + 7) >> 3) + this->info.dispSize.x);
 	}
 	else if (this->info.storeBPP <= 0)
-		return (this->info.storeWidth * (this->info.storeBPP >> 3));
+		return (this->info.storeSize.x * (this->info.storeBPP >> 3));
 	else if (this->info.storeBPP == 4)
-		return ((this->info.storeWidth >> 1) + (this->info.storeWidth & 1));
+		return ((this->info.storeSize.x >> 1) + (this->info.storeSize.x & 1));
 	else
-		return ((this->info.storeWidth * this->info.storeBPP) >> 3);
+		return ((this->info.storeSize.x * this->info.storeBPP) >> 3);
 }
 
 Bool Media::Image::IsUpsideDown() const
@@ -284,7 +274,7 @@ Media::StaticImage *Media::Image::CreateStaticImage() const
 	{
 		outImg->exif = this->exif->Clone();
 	}
-	this->GetImageData(outImg->data, 0, 0, this->info.dispWidth, this->info.dispHeight, this->GetDataBpl(), false, outImg->info.rotateType);
+	this->GetImageData(outImg->data, 0, 0, this->info.dispSize.x, this->info.dispSize.y, this->GetDataBpl(), false, outImg->info.rotateType);
 	if (this->pal)
 	{
 		UOSInt size;
@@ -305,18 +295,16 @@ Media::StaticImage *Media::Image::CreateSubImage(Math::RectArea<OSInt> area) con
 {
 	Media::FrameInfo frameInfo;
 	frameInfo.Set(&this->info);
-	frameInfo.dispWidth = (UOSInt)area.GetWidth();
-	frameInfo.dispHeight = (UOSInt)area.GetHeight();
-	frameInfo.storeWidth = frameInfo.dispWidth;
-	frameInfo.storeHeight = frameInfo.dispHeight;
-	frameInfo.byteSize = frameInfo.storeWidth * frameInfo.storeHeight * (frameInfo.storeBPP >> 3);
+	frameInfo.dispSize = Math::Size2D<UOSInt>((UOSInt)area.GetWidth(), (UOSInt)area.GetHeight());
+	frameInfo.storeSize = frameInfo.dispSize;
+	frameInfo.byteSize = frameInfo.storeSize.CalcArea() * (frameInfo.storeBPP >> 3);
 	Media::StaticImage *outImg;
 	NEW_CLASS(outImg, Media::StaticImage(&frameInfo));
 	if (this->exif)
 	{
 		outImg->exif = this->exif->Clone();
 	}
-	this->GetImageData(outImg->data, area.tl.x, area.tl.y, frameInfo.dispWidth, frameInfo.dispHeight, outImg->GetDataBpl(), false, outImg->info.rotateType);
+	this->GetImageData(outImg->data, area.tl.x, area.tl.y, frameInfo.dispSize.x, frameInfo.dispSize.y, outImg->GetDataBpl(), false, outImg->info.rotateType);
 	if (this->pal)
 	{
 		UOSInt size;
@@ -359,9 +347,9 @@ void Media::Image::ToString(Text::StringBuilderUTF8 *sb) const
 	}
 }
 
-Bool Media::Image::IsDispSize(UOSInt dispWidth, UOSInt dispHeight)
+Bool Media::Image::IsDispSize(Math::Size2D<UOSInt> dispSize)
 {
-	return this->info.dispWidth == dispWidth && this->info.dispHeight == dispHeight;
+	return this->info.dispSize == dispSize;
 }
 
 Text::CString Media::Image::AlphaTypeGetName(AlphaType atype)

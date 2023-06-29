@@ -1,6 +1,7 @@
 #ifndef _SM_MEDIA_FRAMEINFO
 #define _SM_MEDIA_FRAMEINFO
 #include "MyMemory.h"
+#include "Math/Size2D.h"
 #include "Media/ColorProfile.h"
 #include "Text/CString.h"
 #include "Text/StringBuilderUTF8.h"
@@ -95,10 +96,8 @@ namespace Media
 	class FrameInfo
 	{
 	public:
-		UOSInt storeWidth;
-		UOSInt storeHeight;
-		UOSInt dispWidth;
-		UOSInt dispHeight;
+		Math::Size2D<UOSInt> storeSize;
+		Math::Size2D<UOSInt> dispSize;
 		UInt32 fourcc; // see FFMT_xxxx
 		UInt32 storeBPP;
 		PixelFormat pf;

@@ -31,13 +31,13 @@ void Media::ANPR::NumPlateArea(void *userObj, Media::OpenCV::OCVFrame *filteredF
 			return;
 		}
 	}
-	Media::StaticImage *plainImg = CreatePlainImage(filteredFrame->GetDataPtr(), filteredFrame->GetWidth(), filteredFrame->GetHeight(), (UOSInt)filteredFrame->GetBpl(), rect, psize);
+	Media::StaticImage *plainImg = CreatePlainImage(filteredFrame->GetDataPtr(), filteredFrame->GetSize(), (UOSInt)filteredFrame->GetBpl(), rect, psize);
 	Media::OpenCV::OCVFrame *croppedFrame = Media::OpenCV::OCVFrame::CreateYFrame(plainImg);
 	if (croppedFrame)
 	{
 		croppedFrame->Normalize();
 		status->me->ocr.SetOCVFrame(croppedFrame);
-		Text::String *s = status->me->ocr.ParseInsideImage(Math::RectArea<UOSInt>(0, 0, plainImg->info.dispWidth, plainImg->info.dispHeight), &confidence);
+		Text::String *s = status->me->ocr.ParseInsideImage(Math::RectArea<UOSInt>(0, 0, plainImg->info.dispSize.x, plainImg->info.dispSize.y), &confidence);
 		if (s)
 		{
 			s->RemoveWS();
@@ -78,28 +78,27 @@ void Media::ANPR::NumPlateArea(void *userObj, Media::OpenCV::OCVFrame *filteredF
 	DEL_CLASS(plainImg);
 }
 
-Media::StaticImage *Media::ANPR::CreatePlainImage(UInt8 *sptr, UOSInt swidth, UOSInt sheight, UOSInt sbpl, Math::Coord2D<UOSInt> *rect, Media::OpenCV::OCVNumPlateFinder::PlateSize psize)
+Media::StaticImage *Media::ANPR::CreatePlainImage(UInt8 *sptr, Math::Size2D<UOSInt> sSize, UOSInt sbpl, Math::Coord2D<UOSInt> *rect, Media::OpenCV::OCVNumPlateFinder::PlateSize psize)
 {
-	return CreatePlainImage(sptr, swidth, sheight, sbpl, Math::Quadrilateral::FromPolygon(rect), psize);
+	return CreatePlainImage(sptr, sSize, sbpl, Math::Quadrilateral::FromPolygon(rect), psize);
 }
 
-Media::StaticImage *Media::ANPR::CreatePlainImage(UInt8 *sptr, UOSInt swidth, UOSInt sheight, UOSInt sbpl, Math::Quadrilateral quad, Media::OpenCV::OCVNumPlateFinder::PlateSize psize)
+Media::StaticImage *Media::ANPR::CreatePlainImage(UInt8 *sptr, Math::Size2D<UOSInt> sSize, UOSInt sbpl, Math::Quadrilateral quad, Media::OpenCV::OCVNumPlateFinder::PlateSize psize)
 {
-	UOSInt imgW;
-	UOSInt imgH;
+	Math::Size2D<UOSInt> imgSize;
 
 	if (psize == Media::OpenCV::OCVNumPlateFinder::PlateSize::SingleRow) //520 x 110 or 520 x 120
 	{
-		imgW = 195;
-		imgH = 45;
+		imgSize.x = 195;
+		imgSize.y = 45;
 	}
 	else // 331 x 170 or 331 x 180
 	{
-		imgW = 165;
-		imgH = 90;
+		imgSize.x = 165;
+		imgSize.y = 90;
 	}
 	Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
-	return Media::LinearRectRemapper::RemapW8(sptr, swidth, sheight, (OSInt)sbpl, imgW, imgH, quad, &color, Media::ColorProfile::YUVT_SMPTE170M, Media::YCOFST_C_CENTER_LEFT);
+	return Media::LinearRectRemapper::RemapW8(sptr, sSize, (OSInt)sbpl, imgSize, quad, &color, Media::ColorProfile::YUVT_SMPTE170M, Media::YCOFST_C_CENTER_LEFT);
 }
 
 Media::ANPR::ANPR() : ocr(Media::OCREngine::Language::English)
@@ -160,7 +159,7 @@ Bool Media::ANPR::ParseImageQuad(Media::StaticImage *simg, Math::Quadrilateral q
 		psize = Media::OpenCV::OCVNumPlateFinder::PlateSize::SingleRow;
 	}
 
-	Media::StaticImage *plainImg = CreatePlainImage(bwImg->data, bwImg->info.dispWidth, bwImg->info.dispHeight, bwImg->GetDataBpl(), quad, psize);
+	Media::StaticImage *plainImg = CreatePlainImage(bwImg->data, bwImg->info.dispSize, bwImg->GetDataBpl(), quad, psize);
 	Media::OpenCV::OCVFrame *croppedFrame = Media::OpenCV::OCVFrame::CreateYFrame(plainImg);
 	if (croppedFrame)
 	{
@@ -169,8 +168,8 @@ Bool Media::ANPR::ParseImageQuad(Media::StaticImage *simg, Math::Quadrilateral q
 		this->ocr.SetOCVFrame(filteredFrame);
 		if (false)//psize == Media::OpenCV::OCVNumPlateFinder::PlateSize::DoubleRow)
 		{
-			Text::String *s1 = this->ocr.ParseInsideImage(Math::RectArea<UOSInt>(0, 0, plainImg->info.dispWidth, plainImg->info.dispHeight >> 1), &confidence);
-			Text::String *s2 = this->ocr.ParseInsideImage(Math::RectArea<UOSInt>(0, plainImg->info.dispHeight >> 1, plainImg->info.dispWidth, (plainImg->info.dispHeight >> 1) + (plainImg->info.dispHeight & 1)), &confidence);
+			Text::String *s1 = this->ocr.ParseInsideImage(Math::RectArea<UOSInt>(0, 0, plainImg->info.dispSize.x, plainImg->info.dispSize.y >> 1), &confidence);
+			Text::String *s2 = this->ocr.ParseInsideImage(Math::RectArea<UOSInt>(0, plainImg->info.dispSize.y >> 1, plainImg->info.dispSize.x, (plainImg->info.dispSize.y >> 1) + (plainImg->info.dispSize.y & 1)), &confidence);
 			s1 = Text::String::OrEmpty(s1);
 			s2 = Text::String::OrEmpty(s2);
 			s1->RemoveWS();
@@ -203,7 +202,7 @@ Bool Media::ANPR::ParseImageQuad(Media::StaticImage *simg, Math::Quadrilateral q
 		}
 		else
 		{
-			Text::String *s = this->ocr.ParseInsideImage(Math::RectArea<UOSInt>(0, 0, plainImg->info.dispWidth, plainImg->info.dispHeight), &confidence);
+			Text::String *s = this->ocr.ParseInsideImage(Math::RectArea<UOSInt>(0, 0, plainImg->info.dispSize.x, plainImg->info.dispSize.y), &confidence);
 			if (s)
 			{
 				s->RemoveWS();

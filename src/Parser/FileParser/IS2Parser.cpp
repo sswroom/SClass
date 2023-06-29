@@ -139,7 +139,7 @@ IO::ParsedObject *Parser::FileParser::IS2Parser::ParseFileHdr(IO::StreamData *fd
 						UInt32 imageWidth = ReadUInt32(&currBuff[12]);
 						UInt32 imageHeight = ReadUInt32(&currBuff[16]);
 						Media::StaticImage *img;
-						NEW_CLASS(img, Media::StaticImage(imageWidth, imageHeight, 0, 32, Media::PF_B8G8R8A8, imageWidth * imageHeight * 4, 0, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_TOP_CENTER));
+						NEW_CLASS(img, Media::StaticImage(Math::Size2D<UOSInt>(imageWidth, imageHeight), 0, 32, Media::PF_B8G8R8A8, imageWidth * imageHeight * 4, 0, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_TOP_CENTER));
 						UInt8 *dataPtr = img->data;
 						UInt8 *currBuffPtr = currBuff + 60;
 						UInt32 cnt = imageWidth * imageHeight;
@@ -194,7 +194,7 @@ IO::ParsedObject *Parser::FileParser::IS2Parser::ParseFileHdr(IO::StreamData *fd
 						Int32 maxVal = ReadInt16(&currBuff[62]); //?
 						Int32 valDiff = maxVal - minVal;
 						Media::StaticImage *img;
-						NEW_CLASS(img, Media::StaticImage(imageWidth, imageHeight, 0, 16, Media::PF_LE_W16, imageWidth * imageHeight * 2, 0, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_TOP_CENTER));
+						NEW_CLASS(img, Media::StaticImage(Math::Size2D<UOSInt>(imageWidth, imageHeight), 0, 16, Media::PF_LE_W16, imageWidth * imageHeight * 2, 0, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_TOP_CENTER));
 						UInt8 *dataPtr = img->data;
 						UInt8 *currBuffPtr = currBuff + 64;
 						UInt32 cnt = imageWidth * imageHeight;
@@ -212,7 +212,7 @@ IO::ParsedObject *Parser::FileParser::IS2Parser::ParseFileHdr(IO::StreamData *fd
 						}
 						j = imgList->AddImage(img, 0);
 						imgList->SetImageType(j, Media::ImageList::IT_IRIMAGE);
-						imgList->SetThermoImage(imageWidth, imageHeight, 16, currBuff + 64, emissivity, transmission, bkgTemp, Media::ImageList::TT_UNKNOWN);
+						imgList->SetThermoImage(Math::Size2D<UOSInt>(imageWidth, imageHeight), 16, currBuff + 64, emissivity, transmission, bkgTemp, Media::ImageList::TT_UNKNOWN);
 					}
 					break;
 				case 0x22: //Output Image
@@ -220,7 +220,7 @@ IO::ParsedObject *Parser::FileParser::IS2Parser::ParseFileHdr(IO::StreamData *fd
 						UInt32 imageWidth = ReadUInt32(&currBuff[20]);
 						UInt32 imageHeight = ReadUInt32(&currBuff[24]);
 						Media::StaticImage *img;
-						NEW_CLASS(img, Media::StaticImage(imageWidth, imageHeight, 0, 32, Media::PF_B8G8R8A8, imageWidth * imageHeight * 4, 0, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_TOP_CENTER));
+						NEW_CLASS(img, Media::StaticImage(Math::Size2D<UOSInt>(imageWidth, imageHeight), 0, 32, Media::PF_B8G8R8A8, imageWidth * imageHeight * 4, 0, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_TOP_CENTER));
 						UInt8 *dataPtr = img->data;
 						UInt8 *currBuffPtr = currBuff + 56;
 						UInt32 cnt = imageWidth * imageHeight;

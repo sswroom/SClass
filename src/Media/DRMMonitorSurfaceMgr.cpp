@@ -191,10 +191,10 @@ UOSInt Media::DRMMonitorSurfaceMgr::GetMonitorCount()
 	return cnt;
 }
 
-Media::MonitorSurface *Media::DRMMonitorSurfaceMgr::CreateSurface(UOSInt width, UOSInt height, UOSInt bitDepth)
+Media::MonitorSurface *Media::DRMMonitorSurfaceMgr::CreateSurface(Math::Size2D<UOSInt> size, UOSInt bitDepth)
 {
 	Media::MemorySurface *surface;
-	NEW_CLASS(surface, Media::MemorySurface(width, height, bitDepth, this->GetMonitorColor(0), this->GetMonitorDPI(0)));
+	NEW_CLASS(surface, Media::MemorySurface(size, bitDepth, this->GetMonitorColor(0), this->GetMonitorDPI(0)));
 	return surface;
 }
 
@@ -219,7 +219,7 @@ Bool Media::DRMMonitorSurfaceMgr::CreatePrimarySurfaceWithBuffer(MonitorHandle *
 	Media::MonitorSurface *pSurface = this->CreatePrimarySurface(hMon, 0);
 	if (pSurface)
 	{
-		Media::MonitorSurface *bSurface = this->CreateSurface(pSurface->info->dispWidth, pSurface->info->dispHeight, pSurface->info->storeBPP);
+		Media::MonitorSurface *bSurface = this->CreateSurface(pSurface->info->dispSize, pSurface->info->storeBPP);
 		if (bSurface)
 		{
 			((Media::DRMSurface*)pSurface)->SetBuffSurface(bSurface);

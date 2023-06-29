@@ -133,9 +133,9 @@ void UI::GUIControl::SetSize(Double width, Double height)
 	this->SetArea(this->lxPos, this->lyPos, this->lxPos + width, this->lyPos + height, true);
 }
 
-void UI::GUIControl::SetSizeP(UOSInt width, UOSInt height)
+void UI::GUIControl::SetSizeP(Math::Size2D<UOSInt> size)
 {
-	this->SetArea(this->lxPos, this->lyPos, this->lxPos + UOSInt2Double(width) * this->ddpi / this->hdpi, this->lyPos + UOSInt2Double(height) * this->ddpi / this->hdpi, true);
+	this->SetArea(this->lxPos, this->lyPos, this->lxPos + UOSInt2Double(size.x) * this->ddpi / this->hdpi, this->lyPos + UOSInt2Double(size.y) * this->ddpi / this->hdpi, true);
 }
 
 void UI::GUIControl::GetSize(Double *width, Double *height)
@@ -547,8 +547,8 @@ void UI::GUIControl::UpdatePos(Bool redraw)
 				newW = maxW;
 			if (newH > maxH)
 				newH = maxH;
-			newX = (OSInt2Double(winX + winX + (OSInt)winSize.width) - newW) * 0.5;
-			newY = (OSInt2Double(winY + winY + (OSInt)winSize.height) - newH) * 0.5;
+			newX = (OSInt2Double(winX + winX + (OSInt)winSize.GetWidth()) - newW) * 0.5;
+			newY = (OSInt2Double(winY + winY + (OSInt)winSize.GetHeight()) - newH) * 0.5;
 			if (newY < monInfo->GetTop())
 			{
 				newY = monInfo->GetTop();
@@ -563,8 +563,8 @@ void UI::GUIControl::UpdatePos(Bool redraw)
 				newW = maxX;
 			if (newH > maxY)
 				newH = maxY;
-			newX = (OSInt2Double(winX + winX + (OSInt)winSize.width) - newW) * 0.5;
-			newY = (OSInt2Double(winY + winY + (OSInt)winSize.height) - newH) * 0.5;
+			newX = (OSInt2Double(winX + winX + (OSInt)winSize.GetWidth()) - newW) * 0.5;
+			newY = (OSInt2Double(winY + winY + (OSInt)winSize.GetHeight()) - newH) * 0.5;
 			if (newY < 0)
 			{
 				newY = 0;

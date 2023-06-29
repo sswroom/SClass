@@ -155,7 +155,7 @@ Media::DrawBrush *Media::VectorGraph::VectorBrushStyle::CreateDrawBrush(Double o
 
 Media::VectorGraph::VectorGraph(UInt32 srid, Double width, Double height, Math::Unit::Distance::DistanceUnit unit, Media::DrawEngine *refEng, Media::ColorProfile *colorProfile)
 {
-	this->size = Math::Size2D<Double>(width, height);
+	this->size = Math::Size2DDbl(width, height);
 	this->unit = unit;
 	this->align = Media::DrawEngine::DRAW_POS_TOPLEFT;
 	this->refEng = refEng;
@@ -218,19 +218,24 @@ Media::VectorGraph::~VectorGraph()
 	DEL_CLASS(this->colorProfile);
 }
 
-Math::Size2D<Double> Media::VectorGraph::GetSize() const
+Math::Size2DDbl Media::VectorGraph::GetSizeDbl() const
 {
 	return this->size;
 }
 
 UOSInt Media::VectorGraph::GetWidth() const
 {
-	return (UOSInt)Double2Int32(this->size.width);
+	return (UOSInt)Double2OSInt(this->size.x);
 }
 
 UOSInt Media::VectorGraph::GetHeight() const
 {
-	return (UOSInt)Double2Int32(this->size.height);
+	return (UOSInt)Double2OSInt(this->size.y);
+}
+
+Math::Size2D<UOSInt> Media::VectorGraph::GetSize() const
+{
+	return Math::Size2D<UOSInt>::FromDouble(this->size);
 }
 
 UInt32 Media::VectorGraph::GetBitCount() const
@@ -371,17 +376,17 @@ Bool Media::VectorGraph::DrawPolyPolygon(const Math::Coord2DDbl *points, const U
 	return false;
 }
 
-Bool Media::VectorGraph::DrawRect(Double x, Double y, Double w, Double h, DrawPen *p, DrawBrush *b)
+Bool Media::VectorGraph::DrawRect(Math::Coord2DDbl tl, Math::Size2DDbl size, DrawPen *p, DrawBrush *b)
 {
 	/////////////////////////////////
 	return false;
 }
 
-Bool Media::VectorGraph::DrawEllipse(Double tlx, Double tly, Double w, Double h, DrawPen *p, DrawBrush *b)
+Bool Media::VectorGraph::DrawEllipse(Math::Coord2DDbl tl, Math::Size2DDbl size, DrawPen *p, DrawBrush *b)
 {
 	VectorStyles *style;
 	Math::Geometry::Ellipse *vstr;
-	NEW_CLASS(vstr, Math::Geometry::Ellipse(this->srid, tlx, tly, w, h));
+	NEW_CLASS(vstr, Math::Geometry::Ellipse(this->srid, tl, size));
 	style = MemAlloc(VectorStyles, 1);
 	style->pen = (Media::VectorGraph::VectorPenStyle*)p;
 	style->brush = (VectorBrushStyle*)b;
@@ -391,11 +396,11 @@ Bool Media::VectorGraph::DrawEllipse(Double tlx, Double tly, Double w, Double h,
 	return true;
 }
 
-Bool Media::VectorGraph::DrawString(Double tlx, Double tly, Text::String *str, DrawFont *f, DrawBrush *b)
+Bool Media::VectorGraph::DrawString(Math::Coord2DDbl tl, Text::String *str, DrawFont *f, DrawBrush *b)
 {
 	VectorStyles *style;
 	Math::Geometry::VectorString *vstr;
-	NEW_CLASS(vstr, Math::Geometry::VectorString(this->srid, str, Math::Coord2DDbl(tlx, tly), 0, 0, this->align));
+	NEW_CLASS(vstr, Math::Geometry::VectorString(this->srid, str, tl, 0, 0, this->align));
 	style = MemAlloc(VectorStyles, 1);
 	style->pen = 0;
 	style->brush = (VectorBrushStyle*)b;
@@ -405,11 +410,11 @@ Bool Media::VectorGraph::DrawString(Double tlx, Double tly, Text::String *str, D
 	return true;
 }
 
-Bool Media::VectorGraph::DrawString(Double tlx, Double tly, Text::CString str, DrawFont *f, DrawBrush *b)
+Bool Media::VectorGraph::DrawString(Math::Coord2DDbl tl, Text::CString str, DrawFont *f, DrawBrush *b)
 {
 	VectorStyles *style;
 	Math::Geometry::VectorString *vstr;
-	NEW_CLASS(vstr, Math::Geometry::VectorString(this->srid, str, Math::Coord2DDbl(tlx, tly), 0, 0, this->align));
+	NEW_CLASS(vstr, Math::Geometry::VectorString(this->srid, str, tl, 0, 0, this->align));
 	style = MemAlloc(VectorStyles, 1);
 	style->pen = 0;
 	style->brush = (VectorBrushStyle*)b;
@@ -419,11 +424,11 @@ Bool Media::VectorGraph::DrawString(Double tlx, Double tly, Text::CString str, D
 	return true;
 }
 
-Bool Media::VectorGraph::DrawStringRot(Double centX, Double centY, Text::String *str, DrawFont *f, DrawBrush *b, Double angleDegree)
+Bool Media::VectorGraph::DrawStringRot(Math::Coord2DDbl center, Text::String *str, DrawFont *f, DrawBrush *b, Double angleDegree)
 {
 	VectorStyles *style;
 	Math::Geometry::VectorString *vstr;
-	NEW_CLASS(vstr, Math::Geometry::VectorString(this->srid, str, Math::Coord2DDbl(centX, centY), angleDegree, 0, this->align));
+	NEW_CLASS(vstr, Math::Geometry::VectorString(this->srid, str, center, angleDegree, 0, this->align));
 	style = MemAlloc(VectorStyles, 1);
 	style->pen = 0;
 	style->brush = (VectorBrushStyle*)b;
@@ -433,11 +438,11 @@ Bool Media::VectorGraph::DrawStringRot(Double centX, Double centY, Text::String 
 	return true;
 }
 
-Bool Media::VectorGraph::DrawStringRot(Double centX, Double centY, Text::CString str, DrawFont *f, DrawBrush *b, Double angleDegree)
+Bool Media::VectorGraph::DrawStringRot(Math::Coord2DDbl center, Text::CString str, DrawFont *f, DrawBrush *b, Double angleDegree)
 {
 	VectorStyles *style;
 	Math::Geometry::VectorString *vstr;
-	NEW_CLASS(vstr, Math::Geometry::VectorString(this->srid, str, Math::Coord2DDbl(centX, centY), angleDegree, 0, this->align));
+	NEW_CLASS(vstr, Math::Geometry::VectorString(this->srid, str, center, angleDegree, 0, this->align));
 	style = MemAlloc(VectorStyles, 1);
 	style->pen = 0;
 	style->brush = (VectorBrushStyle*)b;
@@ -447,11 +452,11 @@ Bool Media::VectorGraph::DrawStringRot(Double centX, Double centY, Text::CString
 	return true;
 }
 
-Bool Media::VectorGraph::DrawStringB(Double tlx, Double tly, Text::String *str, DrawFont *f, DrawBrush *b, UOSInt buffSize)
+Bool Media::VectorGraph::DrawStringB(Math::Coord2DDbl tl, Text::String *str, DrawFont *f, DrawBrush *b, UOSInt buffSize)
 {
 	VectorStyles *style;
 	Math::Geometry::VectorString *vstr;
-	NEW_CLASS(vstr, Math::Geometry::VectorString(this->srid, str, Math::Coord2DDbl(tlx, tly), 0, UOSInt2Double(buffSize), this->align));
+	NEW_CLASS(vstr, Math::Geometry::VectorString(this->srid, str, tl, 0, UOSInt2Double(buffSize), this->align));
 	style = MemAlloc(VectorStyles, 1);
 	style->pen = 0;
 	style->brush = (VectorBrushStyle*)b;
@@ -461,11 +466,11 @@ Bool Media::VectorGraph::DrawStringB(Double tlx, Double tly, Text::String *str, 
 	return true;
 }
 
-Bool Media::VectorGraph::DrawStringB(Double tlx, Double tly, Text::CString str, DrawFont *f, DrawBrush *b, UOSInt buffSize)
+Bool Media::VectorGraph::DrawStringB(Math::Coord2DDbl tl, Text::CString str, DrawFont *f, DrawBrush *b, UOSInt buffSize)
 {
 	VectorStyles *style;
 	Math::Geometry::VectorString *vstr;
-	NEW_CLASS(vstr, Math::Geometry::VectorString(this->srid, str, Math::Coord2DDbl(tlx, tly), 0, UOSInt2Double(buffSize), this->align));
+	NEW_CLASS(vstr, Math::Geometry::VectorString(this->srid, str, tl, 0, UOSInt2Double(buffSize), this->align));
 	style = MemAlloc(VectorStyles, 1);
 	style->pen = 0;
 	style->brush = (VectorBrushStyle*)b;
@@ -475,11 +480,11 @@ Bool Media::VectorGraph::DrawStringB(Double tlx, Double tly, Text::CString str, 
 	return true;
 }
 
-Bool Media::VectorGraph::DrawStringRotB(Double centX, Double centY, Text::String *str, DrawFont *f, DrawBrush *b, Double angleDegree, UOSInt buffSize)
+Bool Media::VectorGraph::DrawStringRotB(Math::Coord2DDbl center, Text::String *str, DrawFont *f, DrawBrush *b, Double angleDegree, UOSInt buffSize)
 {
 	VectorStyles *style;
 	Math::Geometry::VectorString *vstr;
-	NEW_CLASS(vstr, Math::Geometry::VectorString(this->srid, str, Math::Coord2DDbl(centX, centY), angleDegree, UOSInt2Double(buffSize), this->align));
+	NEW_CLASS(vstr, Math::Geometry::VectorString(this->srid, str, center, angleDegree, UOSInt2Double(buffSize), this->align));
 	style = MemAlloc(VectorStyles, 1);
 	style->pen = 0;
 	style->brush = (VectorBrushStyle*)b;
@@ -489,11 +494,11 @@ Bool Media::VectorGraph::DrawStringRotB(Double centX, Double centY, Text::String
 	return true;
 }
 
-Bool Media::VectorGraph::DrawStringRotB(Double centX, Double centY, Text::CString str, DrawFont *f, DrawBrush *b, Double angleDegree, UOSInt buffSize)
+Bool Media::VectorGraph::DrawStringRotB(Math::Coord2DDbl center, Text::CString str, DrawFont *f, DrawBrush *b, Double angleDegree, UOSInt buffSize)
 {
 	VectorStyles *style;
 	Math::Geometry::VectorString *vstr;
-	NEW_CLASS(vstr, Math::Geometry::VectorString(this->srid, str, Math::Coord2DDbl(centX, centY), angleDegree, UOSInt2Double(buffSize), this->align));
+	NEW_CLASS(vstr, Math::Geometry::VectorString(this->srid, str, center, angleDegree, UOSInt2Double(buffSize), this->align));
 	style = MemAlloc(VectorStyles, 1);
 	style->pen = 0;
 	style->brush = (VectorBrushStyle*)b;
@@ -503,7 +508,7 @@ Bool Media::VectorGraph::DrawStringRotB(Double centX, Double centY, Text::CStrin
 	return true;
 }
 
-Bool Media::VectorGraph::DrawImagePt(DrawImage *img, Double tlx, Double tly)
+Bool Media::VectorGraph::DrawImagePt(DrawImage *img, Math::Coord2DDbl tl)
 {
 	VectorStyles *style;
 	Media::SharedImage *simg;
@@ -513,7 +518,7 @@ Bool Media::VectorGraph::DrawImagePt(DrawImage *img, Double tlx, Double tly)
 	NEW_CLASS(imgList, Media::ImageList(CSTR("VectorGraphImage")));
 	imgList->AddImage(stImg = img->ToStaticImage(), 0);
 	NEW_CLASS(simg, Media::SharedImage(imgList, false));
-	NEW_CLASS(vimg, Math::Geometry::VectorImage(this->srid, simg, Math::Coord2DDbl(tlx, tly), Math::Coord2DDbl(tlx + UOSInt2Double(stImg->info.dispWidth) * this->GetHDPI() / stImg->info.hdpi, tly + UOSInt2Double(stImg->info.dispHeight) * stImg->info.par2 * this->GetVDPI() / stImg->info.vdpi), true, CSTR_NULL, 0, 0));
+	NEW_CLASS(vimg, Math::Geometry::VectorImage(this->srid, simg, tl, Math::Coord2DDbl(tl.x + UOSInt2Double(stImg->info.dispSize.x) * this->GetHDPI() / stImg->info.hdpi, tl.y + UOSInt2Double(stImg->info.dispSize.y) * stImg->info.par2 * this->GetVDPI() / stImg->info.vdpi), true, CSTR_NULL, 0, 0));
 	style = MemAlloc(VectorStyles, 1);
 	style->pen = 0;
 	style->brush = 0;
@@ -524,7 +529,7 @@ Bool Media::VectorGraph::DrawImagePt(DrawImage *img, Double tlx, Double tly)
 	return true;
 }
 
-Bool Media::VectorGraph::DrawImagePt2(Media::StaticImage *img, Double tlx, Double tly)
+Bool Media::VectorGraph::DrawImagePt2(Media::StaticImage *img, Math::Coord2DDbl tl)
 {
 	VectorStyles *style;
 	Media::SharedImage *simg;
@@ -533,7 +538,7 @@ Bool Media::VectorGraph::DrawImagePt2(Media::StaticImage *img, Double tlx, Doubl
 	NEW_CLASS(imgList, Media::ImageList(CSTR("VectorGraphImage")));
 	imgList->AddImage(img->CreateStaticImage(), 0);
 	NEW_CLASS(simg, Media::SharedImage(imgList, false));
-	NEW_CLASS(vimg, Math::Geometry::VectorImage(this->srid, simg, Math::Coord2DDbl(tlx, tly), Math::Coord2DDbl(tlx + UOSInt2Double(img->info.dispWidth) * this->GetHDPI() / img->info.hdpi, tly + UOSInt2Double(img->info.dispHeight) * img->info.par2 * this->GetVDPI() / img->info.vdpi), true, CSTR_NULL, 0, 0));
+	NEW_CLASS(vimg, Math::Geometry::VectorImage(this->srid, simg, tl, Math::Coord2DDbl(tl.x + UOSInt2Double(img->info.dispSize.x) * this->GetHDPI() / img->info.hdpi, tl.y + UOSInt2Double(img->info.dispSize.y) * img->info.par2 * this->GetVDPI() / img->info.vdpi), true, CSTR_NULL, 0, 0));
 	style = MemAlloc(VectorStyles, 1);
 	style->pen = 0;
 	style->brush = 0;
@@ -544,7 +549,7 @@ Bool Media::VectorGraph::DrawImagePt2(Media::StaticImage *img, Double tlx, Doubl
 	return true;
 }
 
-Bool Media::VectorGraph::DrawImagePt3(DrawImage *img, Double destX, Double destY, Double srcX, Double srcY, Double srcW, Double srcH)
+Bool Media::VectorGraph::DrawImagePt3(DrawImage *img, Math::Coord2DDbl destTL, Math::Coord2DDbl srcTL, Math::Size2DDbl srcSize)
 {
 	VectorStyles *style;
 	Media::StaticImage *stImg;
@@ -554,7 +559,7 @@ Bool Media::VectorGraph::DrawImagePt3(DrawImage *img, Double destX, Double destY
 	NEW_CLASS(imgList, Media::ImageList(CSTR("VectorGraphImage")));
 	imgList->AddImage(stImg = img->ToStaticImage(), 0);
 	NEW_CLASS(simg, Media::SharedImage(imgList, false));
-	NEW_CLASS(vimg, Math::Geometry::VectorImage(this->srid, simg, Math::Coord2DDbl(destX, destY), Math::Coord2DDbl(destX + UOSInt2Double(stImg->info.dispWidth) * this->GetHDPI() / stImg->info.hdpi, destY + UOSInt2Double(stImg->info.dispHeight) * stImg->info.par2 * this->GetVDPI() / stImg->info.vdpi), true, CSTR_NULL, 0, 0));
+	NEW_CLASS(vimg, Math::Geometry::VectorImage(this->srid, simg, destTL, Math::Coord2DDbl(destTL.x + UOSInt2Double(stImg->info.dispSize.x) * this->GetHDPI() / stImg->info.hdpi, destTL.y + UOSInt2Double(stImg->info.dispSize.y) * stImg->info.par2 * this->GetVDPI() / stImg->info.vdpi), true, CSTR_NULL, 0, 0));
 	style = MemAlloc(VectorStyles, 1);
 	style->pen = 0;
 	style->brush = 0;
@@ -663,12 +668,12 @@ void Media::VectorGraph::DelFont(DrawFont *f)
 {
 }
 
-Math::Size2D<Double> Media::VectorGraph::GetTextSize(DrawFont *fnt, Text::CString txt)
+Math::Size2DDbl Media::VectorGraph::GetTextSize(DrawFont *fnt, Text::CString txt)
 {
-	Media::DrawImage *tmpImg = this->refEng->CreateImage32(16, 16, Media::AT_NO_ALPHA);
+	Media::DrawImage *tmpImg = this->refEng->CreateImage32(Math::Size2D<UOSInt>(16, 16), Media::AT_NO_ALPHA);
 	tmpImg->SetHDPI(this->GetHDPI());
 	tmpImg->SetVDPI(this->GetVDPI());
-	Math::Size2D<Double> sz;
+	Math::Size2DDbl sz;
 	Media::DrawFont *f;
 	Media::VectorGraph::VectorFontStyle *fntStyle = (Media::VectorGraph::VectorFontStyle*)fnt;
 	Double fntSizePt = fntStyle->GetHeightPt();
@@ -678,8 +683,8 @@ Math::Size2D<Double> Media::VectorGraph::GetTextSize(DrawFont *fnt, Text::CStrin
 		f = tmpImg->NewFontPt(fontName->ToCString(), 100, fntStyle->GetStyle(), fntStyle->GetCodePage());
 		sz = tmpImg->GetTextSize(f, txt);
 		tmpImg->DelFont(f);
-		sz.width *= fntSizePt / 100.0;
-		sz.height *= fntSizePt / 100.0;
+		sz.x *= fntSizePt / 100.0;
+		sz.y *= fntSizePt / 100.0;
 	}
 	else
 	{
@@ -733,18 +738,18 @@ UOSInt Media::VectorGraph::SaveJPG(IO::SeekableStream *stm)
 
 Double Media::VectorGraph::GetVisibleWidthMM() const
 {
-	return Math::Unit::Distance::Convert(this->unit, Math::Unit::Distance::DU_MILLIMETER, this->size.width);
+	return Math::Unit::Distance::Convert(this->unit, Math::Unit::Distance::DU_MILLIMETER, this->size.x);
 }
 
 Double Media::VectorGraph::GetVisibleHeightMM() const
 {
-	return Math::Unit::Distance::Convert(this->unit, Math::Unit::Distance::DU_MILLIMETER, this->size.height);
+	return Math::Unit::Distance::Convert(this->unit, Math::Unit::Distance::DU_MILLIMETER, this->size.y);
 }
 
 void Media::VectorGraph::DrawTo(Media::DrawImage *dimg, UInt32 *imgDurMS)
 {
 	UInt32 imgTimeMS = 0;
-	Double scale = (UOSInt2Double(dimg->GetWidth()) / this->size.width + UOSInt2Double(dimg->GetHeight()) / this->size.height) * 0.5;
+	Double scale = (UOSInt2Double(dimg->GetWidth()) / this->size.x + UOSInt2Double(dimg->GetHeight()) / this->size.y) * 0.5;
 	Double dpi = this->GetHDPI();
 	Media::DrawEngine::DrawPos currAlign = Media::DrawEngine::DRAW_POS_TOPLEFT;
 	Media::DrawEngine::DrawPos align;
@@ -860,22 +865,22 @@ void Media::VectorGraph::DrawTo(Media::DrawImage *dimg, UInt32 *imgDurMS)
 			{
 				if (vstr->GetBuffSize() == 0)
 				{
-					dimg->DrawString(coord.x * scale, coord.y * scale, vstr->GetString(), f, b);
+					dimg->DrawString(coord * scale, vstr->GetString(), f, b);
 				}
 				else
 				{
-					dimg->DrawStringB(coord.x * scale, coord.y * scale, vstr->GetString(), f, b, (UOSInt)Double2Int32(vstr->GetBuffSize() * scale));
+					dimg->DrawStringB(coord * scale, vstr->GetString(), f, b, (UOSInt)Double2Int32(vstr->GetBuffSize() * scale));
 				}
 			}
 			else
 			{
 				if (vstr->GetBuffSize() == 0)
 				{
-					dimg->DrawStringRot(coord.x * scale, coord.y * scale, vstr->GetString(), f, b, Double2Int32(vstr->GetAngleDegree()));
+					dimg->DrawStringRot(coord * scale, vstr->GetString(), f, b, Double2Int32(vstr->GetAngleDegree()));
 				}
 				else
 				{
-					dimg->DrawStringRotB(coord.x * scale, coord.y * scale, vstr->GetString(), f, b, Double2Int32(vstr->GetAngleDegree()), (UOSInt)Double2Int32(vstr->GetBuffSize() * scale));
+					dimg->DrawStringRotB(coord * scale, vstr->GetString(), f, b, Double2Int32(vstr->GetAngleDegree()), (UOSInt)Double2Int32(vstr->GetBuffSize() * scale));
 				}
 			}
 		}
@@ -886,7 +891,7 @@ void Media::VectorGraph::DrawTo(Media::DrawImage *dimg, UInt32 *imgDurMS)
 			UInt32 thisTimeMS;
 			bounds = vimg->GetBounds();
 			Media::StaticImage *simg = vimg->GetImage(&thisTimeMS);
-			dimg->DrawImagePt2(simg, bounds.tl.x * scale, bounds.tl.y * scale);
+			dimg->DrawImagePt2(simg, bounds.tl * scale);
 			if (imgTimeMS == 0)
 			{
 				imgTimeMS = thisTimeMS;
@@ -904,7 +909,7 @@ void Media::VectorGraph::DrawTo(Media::DrawImage *dimg, UInt32 *imgDurMS)
 			Math::Geometry::Ellipse *ellipse = (Math::Geometry::Ellipse*)vec;
 			Math::RectAreaDbl bounds = ellipse->GetBounds();
 			bounds = bounds * scale;
-			dimg->DrawEllipse(bounds.tl.x, bounds.tl.y, bounds.GetWidth(), bounds.GetHeight(), p, b);
+			dimg->DrawEllipse(bounds.tl, bounds.GetSize(), p, b);
 		}
 		else
 		{

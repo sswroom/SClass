@@ -51,7 +51,7 @@ OSInt __stdcall UI::GUITabControl::TCWndProc(void *hWnd, UInt32 msg, UOSInt wPar
 			sz = me->GetSizeP();
 			rc.left = 0;
 			rc.top = 0;
-			rc.right = (LONG)sz.width;
+			rc.right = (LONG)sz.x;
 			rc.bottom = (LONG)tcTop;
 			FillRect((HDC)wParam, &rc, (HBRUSH)me->hbrBackground);
 			rc.left = 0;
@@ -61,13 +61,13 @@ OSInt __stdcall UI::GUITabControl::TCWndProc(void *hWnd, UInt32 msg, UOSInt wPar
 			FillRect((HDC)wParam, &rc, (HBRUSH)me->hbrBackground);
 			rc.left = (LONG)(tcLeft + (OSInt)tcWidth);
 			rc.top = (LONG)tcTop;
-			rc.right = (LONG)sz.width;
+			rc.right = (LONG)sz.x;
 			rc.bottom = (LONG)(tcTop + (OSInt)tcHeight);
 			FillRect((HDC)wParam, &rc, (HBRUSH)me->hbrBackground);
 			rc.left = 0;
 			rc.top = (LONG)(tcTop + (OSInt)tcHeight);
-			rc.right = (LONG)sz.width;
-			rc.bottom = (LONG)sz.height;
+			rc.right = (LONG)sz.x;
+			rc.bottom = (LONG)sz.y;
 			FillRect((HDC)wParam, &rc, (HBRUSH)me->hbrBackground);
 		}
 		return 0;

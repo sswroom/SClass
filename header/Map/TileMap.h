@@ -47,7 +47,7 @@ namespace Map
 		virtual UOSInt GetTileSize() = 0;
 		virtual Bool CanQuery() const { return false; };
 		virtual Bool QueryInfos(Math::Coord2DDbl coord, UOSInt level, Data::ArrayList<Math::Geometry::Vector2D*> *vecList, Data::ArrayList<UOSInt> *valueOfstList, Data::ArrayList<Text::String*> *nameList, Data::ArrayList<Text::String*> *valueList) const { return false; };
-		virtual void SetDispSize(Math::Size2D<Double> size, Double dpi) {};
+		virtual void SetDispSize(Math::Size2DDbl size, Double dpi) {};
 
 		virtual UOSInt GetTileImageIDs(UOSInt level, Math::RectAreaDbl rect, Data::ArrayList<Math::Coord2D<Int32>> *ids) = 0;
 		virtual Media::ImageList *LoadTileImage(UOSInt level, Math::Coord2D<Int32> tileId, Parser::ParserList *parsers, Math::RectAreaDbl *bounds, Bool localOnly) = 0;

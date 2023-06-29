@@ -77,11 +77,9 @@ Media::StaticImage *Media::ScreenCapturer::CaptureScreen(MonitorHandle *hMon)
 		{
 			info.pf = Media::PF_LE_A2B10G10R10;
 		}
-		info.dispWidth = (UInt32)image->width;
-		info.dispHeight = (UInt32)image->height;
-		info.storeWidth = (UInt32)image->bytes_per_line / (info.storeBPP >> 3);
-		info.storeHeight = (UInt32)image->height;
-		info.byteSize = info.storeWidth * info.storeHeight * (info.storeBPP >> 3);
+		info.dispSize = Math::Size2D<UOSInt>((UInt32)image->width, (UInt32)image->height);
+		info.storeSize = Math::Size2D<UOSInt>((UInt32)image->bytes_per_line / (info.storeBPP >> 3), (UInt32)image->height);
+		info.byteSize = info.storeSize.CalcArea() * (info.storeBPP >> 3);
 		info.par2 = 1.0;
 		info.hdpi = this->monMgr->GetMonitorHDPI(hMon);;
 		info.vdpi = info.hdpi;

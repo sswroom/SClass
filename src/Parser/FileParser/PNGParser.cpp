@@ -1882,8 +1882,8 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 	case 0: //Grayscale
 		if (bitDepth < 8)
 		{
-			UOSInt storeWidth = ((info->dispWidth + 15) >> 4) << 4;
-			UInt8 *tmpData = MemAllocA(UInt8, storeWidth * info->dispHeight);
+			UOSInt storeWidth = ((info->dispSize.x + 15) >> 4) << 4;
+			UInt8 *tmpData = MemAllocA(UInt8, storeWidth * info->dispSize.y);
 			UInt8 *lineStart;
 			OSInt pxMask;
 			OSInt pxAMask;
@@ -1913,7 +1913,7 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 				pxShift = 4;
 			}
 
-			MemClearAC(tmpData, storeWidth * info->dispHeight);
+			MemClearAC(tmpData, storeWidth * info->dispSize.y);
 				
 			if (interlaceMeth == 1)
 			{
@@ -1938,13 +1938,13 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 			}
 
 			info->atype = Media::AT_NO_ALPHA;
-			info->storeWidth = storeWidth;
+			info->storeSize.x = storeWidth;
 			UOSInt byteCnt;
 			if (bitDepth == 1)
 			{
 				info->storeBPP = 1;
 				info->pf = Media::PF_PAL_W1;
-				info->byteSize = storeWidth * info->storeHeight >> 3;
+				info->byteSize = storeWidth * info->storeSize.y >> 3;
 				NEW_CLASS(simg, Media::StaticImage(info));
 				WriteUInt32(&simg->pal[0], 0xff000000);
 				WriteUInt32(&simg->pal[4], 0xffffffff);
@@ -1964,7 +1964,7 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 			{
 				info->storeBPP = 2;
 				info->pf = Media::PF_PAL_W2;
-				info->byteSize = storeWidth * info->storeHeight >> 2;
+				info->byteSize = storeWidth * info->storeSize.y >> 2;
 				NEW_CLASS(simg, Media::StaticImage(info));
 				WriteUInt32(&simg->pal[0], 0xff000000);
 				WriteUInt32(&simg->pal[4], 0xff555555);
@@ -1986,7 +1986,7 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 			{
 				info->storeBPP = 4;
 				info->pf = Media::PF_PAL_W4;
-				info->byteSize = storeWidth * info->storeHeight >> 1;
+				info->byteSize = storeWidth * info->storeSize.y >> 1;
 				NEW_CLASS(simg, Media::StaticImage(info));
 				WriteUInt32(&simg->pal[0], 0xff000000);
 				WriteUInt32(&simg->pal[4], 0xff111111);
@@ -2024,10 +2024,10 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 			UInt32 pxId;
 
 			info->atype = Media::AT_NO_ALPHA;
-			info->storeWidth = info->dispWidth;
+			info->storeSize.x = info->dispSize.x;
 			info->storeBPP = 8;
 			info->pf = Media::PF_PAL_W8;
-			info->byteSize = info->storeWidth * info->storeHeight;
+			info->byteSize = info->storeSize.CalcArea();
 			NEW_CLASS(simg, Media::StaticImage(info));
 			pxId = 0;
 			while (pxId < 256)
@@ -2035,7 +2035,7 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 				WriteUInt32(&simg->pal[pxId << 2], (0xff000000 | (pxId << 16) | (pxId << 8) | pxId));
 				pxId++;
 			}
-			if (info->dispWidth != imgW || info->dispHeight != imgH)
+			if (info->dispSize.x != imgW || info->dispSize.y != imgH)
 			{
 				MemClearAC(simg->data, info->byteSize);
 			}
@@ -2043,23 +2043,23 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 			if (interlaceMeth == 1)
 			{
 				//Pass1
-				dataBuff = PNGParser_ParsePixelsByte(dataBuff, simg->data + imgY * info->storeWidth + imgX, info->storeWidth, 0, 0, imgW, imgH, 8, 8);
+				dataBuff = PNGParser_ParsePixelsByte(dataBuff, simg->data + imgY * info->storeSize.x + imgX, info->storeSize.x, 0, 0, imgW, imgH, 8, 8);
 				//Pass2
-				dataBuff = PNGParser_ParsePixelsByte(dataBuff, simg->data + imgY * info->storeWidth + imgX, info->storeWidth, 4, 0, imgW, imgH, 8, 8);
+				dataBuff = PNGParser_ParsePixelsByte(dataBuff, simg->data + imgY * info->storeSize.x + imgX, info->storeSize.x, 4, 0, imgW, imgH, 8, 8);
 				//Pass3
-				dataBuff = PNGParser_ParsePixelsByte(dataBuff, simg->data + imgY * info->storeWidth + imgX, info->storeWidth, 0, 4, imgW, imgH, 4, 8);
+				dataBuff = PNGParser_ParsePixelsByte(dataBuff, simg->data + imgY * info->storeSize.x + imgX, info->storeSize.x, 0, 4, imgW, imgH, 4, 8);
 				//Pass4
-				dataBuff = PNGParser_ParsePixelsByte(dataBuff, simg->data + imgY * info->storeWidth + imgX, info->storeWidth, 2, 0, imgW, imgH, 4, 4);
+				dataBuff = PNGParser_ParsePixelsByte(dataBuff, simg->data + imgY * info->storeSize.x + imgX, info->storeSize.x, 2, 0, imgW, imgH, 4, 4);
 				//Pass5
-				dataBuff = PNGParser_ParsePixelsByte(dataBuff, simg->data + imgY * info->storeWidth + imgX, info->storeWidth, 0, 2, imgW, imgH, 2, 4);
+				dataBuff = PNGParser_ParsePixelsByte(dataBuff, simg->data + imgY * info->storeSize.x + imgX, info->storeSize.x, 0, 2, imgW, imgH, 2, 4);
 				//Pass6
-				dataBuff = PNGParser_ParsePixelsByte(dataBuff, simg->data + imgY * info->storeWidth + imgX, info->storeWidth, 1, 0, imgW, imgH, 2, 2);
+				dataBuff = PNGParser_ParsePixelsByte(dataBuff, simg->data + imgY * info->storeSize.x + imgX, info->storeSize.x, 1, 0, imgW, imgH, 2, 2);
 				//Pass7
-				dataBuff = PNGParser_ParsePixelsByte(dataBuff, simg->data + imgY * info->storeWidth + imgX, info->storeWidth, 0, 1, imgW, imgH, 1, 2);
+				dataBuff = PNGParser_ParsePixelsByte(dataBuff, simg->data + imgY * info->storeSize.x + imgX, info->storeSize.x, 0, 1, imgW, imgH, 1, 2);
 			}
 			else
 			{
-				dataBuff = PNGParser_ParsePixelsByte(dataBuff, simg->data + imgY * info->storeWidth + imgX, info->storeWidth, 0, 0, imgW, imgH, 1, 1);
+				dataBuff = PNGParser_ParsePixelsByte(dataBuff, simg->data + imgY * info->storeSize.x + imgX, info->storeSize.x, 0, 0, imgW, imgH, 1, 1);
 			}
 
 			imgList->AddImage(simg, imgDelay);
@@ -2071,7 +2071,7 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 			info->atype = Media::AT_NO_ALPHA;
 			info->storeBPP = 16;
 			info->pf = Media::PF_LE_W16;
-			info->byteSize = info->storeWidth * info->storeHeight * 2;
+			info->byteSize = info->storeSize.CalcArea() * 2;
 			lineAdd = imgList->GetCount();
 			if (lineAdd > 0)
 			{
@@ -2116,7 +2116,7 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 			info->atype = Media::AT_NO_ALPHA;
 			info->storeBPP = 24;
 			info->pf = Media::PF_B8G8R8;
-			info->byteSize = info->storeWidth * info->storeHeight * 3;
+			info->byteSize = info->storeSize.CalcArea() * 3;
 			lineAdd = imgList->GetCount();
 			if (lineAdd > 0)
 			{
@@ -2158,7 +2158,7 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 			info->atype = Media::AT_NO_ALPHA;
 			info->storeBPP = 48;
 			info->pf = Media::PF_LE_B16G16R16;
-			info->byteSize = info->storeWidth * info->storeHeight * 3;
+			info->byteSize = info->storeSize.CalcArea() * 3;
 			lineAdd = imgList->GetCount();
 			if (lineAdd > 0)
 			{
@@ -2199,16 +2199,16 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 		{
 			if (bitDepth < 8)
 			{
-				UOSInt storeWidth = ((info->dispWidth + 15) >> 4) << 4;
+				UOSInt storeWidth = ((info->dispSize.x + 15) >> 4) << 4;
 				UInt8 *lineStart;
 
 				info->atype = Media::AT_ALPHA;
-				info->storeWidth = storeWidth;
+				info->storeSize.x = storeWidth;
 				if (bitDepth == 1)
 				{
 					info->storeBPP = 1;
 					info->pf = Media::PF_PAL_1;
-					info->byteSize = storeWidth * info->storeHeight >> 3;
+					info->byteSize = storeWidth * info->storeSize.y >> 3;
 					NEW_CLASS(simg, Media::StaticImage(info));
 					MemCopyNO(simg->pal, palette, 8);
 
@@ -2243,7 +2243,7 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 				{
 					info->storeBPP = 2;
 					info->pf = Media::PF_PAL_2;
-					info->byteSize = storeWidth * info->storeHeight >> 2;
+					info->byteSize = storeWidth * info->storeSize.y >> 2;
 					NEW_CLASS(simg, Media::StaticImage(info));
 					MemCopyNO(simg->pal, palette, 16);
 
@@ -2277,7 +2277,7 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 				{
 					info->storeBPP = 4;
 					info->pf = Media::PF_PAL_4;
-					info->byteSize = storeWidth * info->storeHeight >> 1;
+					info->byteSize = storeWidth * info->storeSize.y >> 1;
 					NEW_CLASS(simg, Media::StaticImage(info));
 					MemCopyNO(simg->pal, palette, 64);
 
@@ -2311,33 +2311,33 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 			else if (bitDepth == 8)
 			{
 				info->atype = Media::AT_ALPHA;
-				info->storeWidth = info->dispWidth;
+				info->storeSize.x = info->dispSize.x;
 				info->storeBPP = 8;
 				info->pf = Media::PF_PAL_8;
-				info->byteSize = info->storeWidth * info->storeHeight;
+				info->byteSize = info->storeSize.CalcArea();
 				NEW_CLASS(simg, Media::StaticImage(info));
 				MemCopyNO(simg->pal, palette, 1024);
 
 				if (interlaceMeth == 1)
 				{
 					//Pass1
-					dataBuff = PNGParser_ParsePixelsByte(dataBuff, simg->data + imgY * info->storeWidth + imgX, info->storeWidth, 0, 0, imgW, imgH, 8, 8);
+					dataBuff = PNGParser_ParsePixelsByte(dataBuff, simg->data + imgY * info->storeSize.x + imgX, info->storeSize.x, 0, 0, imgW, imgH, 8, 8);
 					//Pass2
-					dataBuff = PNGParser_ParsePixelsByte(dataBuff, simg->data + imgY * info->storeWidth + imgX, info->storeWidth, 4, 0, imgW, imgH, 8, 8);
+					dataBuff = PNGParser_ParsePixelsByte(dataBuff, simg->data + imgY * info->storeSize.x + imgX, info->storeSize.x, 4, 0, imgW, imgH, 8, 8);
 					//Pass3
-					dataBuff = PNGParser_ParsePixelsByte(dataBuff, simg->data + imgY * info->storeWidth + imgX, info->storeWidth, 0, 4, imgW, imgH, 4, 8);
+					dataBuff = PNGParser_ParsePixelsByte(dataBuff, simg->data + imgY * info->storeSize.x + imgX, info->storeSize.x, 0, 4, imgW, imgH, 4, 8);
 					//Pass4
-					dataBuff = PNGParser_ParsePixelsByte(dataBuff, simg->data + imgY * info->storeWidth + imgX, info->storeWidth, 2, 0, imgW, imgH, 4, 4);
+					dataBuff = PNGParser_ParsePixelsByte(dataBuff, simg->data + imgY * info->storeSize.x + imgX, info->storeSize.x, 2, 0, imgW, imgH, 4, 4);
 					//Pass5
-					dataBuff = PNGParser_ParsePixelsByte(dataBuff, simg->data + imgY * info->storeWidth + imgX, info->storeWidth, 0, 2, imgW, imgH, 2, 4);
+					dataBuff = PNGParser_ParsePixelsByte(dataBuff, simg->data + imgY * info->storeSize.x + imgX, info->storeSize.x, 0, 2, imgW, imgH, 2, 4);
 					//Pass6
-					dataBuff = PNGParser_ParsePixelsByte(dataBuff, simg->data + imgY * info->storeWidth + imgX, info->storeWidth, 1, 0, imgW, imgH, 2, 2);
+					dataBuff = PNGParser_ParsePixelsByte(dataBuff, simg->data + imgY * info->storeSize.x + imgX, info->storeSize.x, 1, 0, imgW, imgH, 2, 2);
 					//Pass7
-					dataBuff = PNGParser_ParsePixelsByte(dataBuff, simg->data + imgY * info->storeWidth + imgX, info->storeWidth, 0, 1, imgW, imgH, 1, 2);
+					dataBuff = PNGParser_ParsePixelsByte(dataBuff, simg->data + imgY * info->storeSize.x + imgX, info->storeSize.x, 0, 1, imgW, imgH, 1, 2);
 				}
 				else
 				{
-					dataBuff = PNGParser_ParsePixelsByte(dataBuff, simg->data + imgY * info->storeWidth + imgX, info->storeWidth, 0, 0, imgW, imgH, 1, 1);
+					dataBuff = PNGParser_ParsePixelsByte(dataBuff, simg->data + imgY * info->storeSize.x + imgX, info->storeSize.x, 0, 0, imgW, imgH, 1, 1);
 				}
 
 				imgList->AddImage(simg, imgDelay);
@@ -2354,7 +2354,7 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 				info->atype = Media::AT_ALPHA;
 				info->storeBPP = 16;
 				info->pf = Media::PF_W8A8;
-				info->byteSize = info->storeWidth * info->storeHeight * 2;
+				info->byteSize = info->storeSize.CalcArea() * 2;
 				lineAdd = imgList->GetCount();
 				if (lineAdd > 0)
 				{
@@ -2401,7 +2401,7 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 				info->atype = Media::AT_ALPHA;
 				info->storeBPP = 32;
 				info->pf = Media::PF_LE_W16A16;
-				info->byteSize = info->storeWidth * info->storeHeight * 4;
+				info->byteSize = info->storeSize.CalcArea() * 4;
 				lineAdd = imgList->GetCount();
 				if (lineAdd > 0)
 				{
@@ -2453,7 +2453,7 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 				info->atype = Media::AT_ALPHA;
 				info->storeBPP = 32;
 				info->pf = Media::PF_B8G8R8A8;
-				info->byteSize = info->storeWidth * info->storeHeight * 4;
+				info->byteSize = info->storeSize.CalcArea() * 4;
 				lineAdd = imgList->GetCount();
 				if (lineAdd > 0)
 				{
@@ -2500,7 +2500,7 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 				info->atype = Media::AT_ALPHA;
 				info->storeBPP = 64;
 				info->pf = Media::PF_LE_B16G16R16A16;
-				info->byteSize = info->storeWidth * info->storeHeight * 8;
+				info->byteSize = info->storeSize.CalcArea() * 8;
 				lineAdd = imgList->GetCount();
 				if (lineAdd > 0)
 				{
@@ -2619,12 +2619,11 @@ IO::ParsedObject *Parser::FileParser::PNGParser::ParseFileHdr(IO::StreamData *fd
 				chunkData = MemAlloc(UInt8, size);
 				if (fd->GetRealData(ofst + 8, size, chunkData) == size)
 				{
-					info.dispWidth = ReadMUInt32(&chunkData[0]);
-					info.dispHeight = ReadMUInt32(&chunkData[4]);
-					info.storeWidth = info.dispWidth;
-					info.storeHeight = info.dispHeight;
-					imgW = (UInt32)info.dispWidth;
-					imgH = (UInt32)info.dispHeight;
+					info.dispSize.x = ReadMUInt32(&chunkData[0]);
+					info.dispSize.y = ReadMUInt32(&chunkData[4]);
+					info.storeSize = info.dispSize;
+					imgW = (UInt32)info.dispSize.x;
+					imgH = (UInt32)info.dispSize.y;
 					bitDepth = chunkData[8];
 					colorType = chunkData[9];
 //					compMeth = chunkData[10];

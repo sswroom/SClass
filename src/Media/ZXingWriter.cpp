@@ -6,7 +6,7 @@
 #include <ZXing/MultiFormatWriter.h>
 #include <ZXing/ZXVersion.h>
 
-Media::StaticImage *Media::ZXingWriter::GenQRCode(Text::CString content, UOSInt width, UOSInt height)
+Media::StaticImage *Media::ZXingWriter::GenQRCode(Text::CString content, Math::Size2D<UOSInt> outputSize)
 {
 #if (ZXING_VERSION_MAJOR * 10000 + ZXING_VERSION_MINOR * 100 + ZXING_VERSION_PATCH) >= 10200
 	ZXing::MultiFormatWriter writer(ZXing::BarcodeFormat::QRCode);
@@ -20,9 +20,9 @@ Media::StaticImage *Media::ZXingWriter::GenQRCode(Text::CString content, UOSInt 
 	std::wstring s(wptr);
 	Text::StrDelNew(wptr);
 #endif
-	ZXing::BitMatrix bitMatrix = writer.encode(s, (int)width, (int) height);
+	ZXing::BitMatrix bitMatrix = writer.encode(s, (int)outputSize.x, (int) outputSize.y);
 	Media::StaticImage *simg;
-	NEW_CLASS(simg, Media::StaticImage(width, height, 0, 1, Media::PixelFormat::PF_PAL_W1, 0, 0, Media::ColorProfile::YUVT_BT601, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+	NEW_CLASS(simg, Media::StaticImage(outputSize, 0, 1, Media::PixelFormat::PF_PAL_W1, 0, 0, Media::ColorProfile::YUVT_BT601, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 	WriteUInt32(&simg->pal[0], 0xFF000000);
 	WriteUInt32(&simg->pal[4], 0xFFFFFFFF);
 	UInt8 *imgPtr = simg->data;

@@ -133,7 +133,7 @@ void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnLineModifyClicked(void *userObj
 			DEL_CLASS(me->imgLine);
 		}
 		sz = me->pbLineStyle->GetSizeP();
-		Media::DrawImage *dimg = me->eng->CreateImage32(sz.width, sz.height, Media::AT_NO_ALPHA);
+		Media::DrawImage *dimg = me->eng->CreateImage32(sz, Media::AT_NO_ALPHA);
 		dimg->SetHDPI(me->GetHDPI() / me->GetDDPI() * 96.0);
 		dimg->SetVDPI(me->GetHDPI() / me->GetDDPI() * 96.0);
 		me->core->GenLinePreview(dimg, me->eng, me->lineThick, me->lineColor, me->colorConv);
@@ -158,7 +158,7 @@ void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnLineStyleClicked(void *userObj)
 			DEL_CLASS(me->imgLine);
 		}
 		sz = me->pbLineStyle->GetSizeP();
-		Media::DrawImage *dimg = me->eng->CreateImage32(sz.width, sz.height, Media::AT_NO_ALPHA);
+		Media::DrawImage *dimg = me->eng->CreateImage32(sz, Media::AT_NO_ALPHA);
 		dimg->SetHDPI(me->GetHDPI() / me->GetDDPI() * 96.0);
 		dimg->SetVDPI(me->GetHDPI() / me->GetDDPI() * 96.0);
 		me->core->GenLineStylePreview(dimg, me->eng, me->env, me->lineStyle, me->colorConv);
@@ -212,7 +212,7 @@ void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnFontModifyClicked(void *userObj
 			DEL_CLASS(me->imgFont);
 		}
 		sz = me->pbFontStyle->GetSizeP();
-		Media::DrawImage *dimg = me->eng->CreateImage32(sz.width, sz.height, Media::AT_NO_ALPHA);
+		Media::DrawImage *dimg = me->eng->CreateImage32(sz, Media::AT_NO_ALPHA);
 		dimg->SetHDPI(me->GetHDPI() / me->GetDDPI() * 96.0);
 		dimg->SetVDPI(me->GetHDPI() / me->GetDDPI() * 96.0);
 		me->core->GenFontPreview(dimg, me->eng, me->fontName->ToCString(), me->fontSizePt, me->fontColor, me->colorConv);
@@ -237,7 +237,7 @@ void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnFontStyleClicked(void *userObj)
 			DEL_CLASS(me->imgFont);
 		}
 		sz = me->pbFontStyle->GetSizeP();
-		Media::DrawImage *dimg = me->eng->CreateImage32(sz.width, sz.height, Media::AT_NO_ALPHA);
+		Media::DrawImage *dimg = me->eng->CreateImage32(sz, Media::AT_NO_ALPHA);
 		dimg->SetHDPI(me->GetHDPI() / me->GetDDPI() * 96.0);
 		dimg->SetVDPI(me->GetHDPI() / me->GetDDPI() * 96.0);
 		me->core->GenFontStylePreview(dimg, me->eng, me->env, me->fontStyle, me->colorConv);
@@ -381,7 +381,7 @@ SSWR::AVIRead::AVIRGISPropForm::AVIRGISPropForm(UI::GUIClientControl *parent, UI
 		this->lineStyle = setting.lineStyle;
 		this->lineThick = setting.lineThick;
 		this->lineColor = setting.lineColor;
-		dimg = this->eng->CreateImage32(sz.width, sz.height, Media::AT_NO_ALPHA);
+		dimg = this->eng->CreateImage32(sz, Media::AT_NO_ALPHA);
 		dimg->SetHDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
 		dimg->SetVDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
 		if (this->lineType == 0)
@@ -397,7 +397,7 @@ SSWR::AVIRead::AVIRGISPropForm::AVIRGISPropForm(UI::GUIClientControl *parent, UI
 		this->eng->DeleteImage(dimg);
 
 		sz = this->pbFontStyle->GetSizeP();
-		dimg = this->eng->CreateImage32(sz.width, sz.height, Media::AT_NO_ALPHA);
+		dimg = this->eng->CreateImage32(sz, Media::AT_NO_ALPHA);
 		dimg->SetHDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
 		dimg->SetVDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
 		if (setting.fontType == Map::MapEnv::FontType::GlobalStyle)
@@ -543,7 +543,7 @@ void SSWR::AVIRead::AVIRGISPropForm::RGBParamChanged(const Media::IColorHandler:
 		DEL_CLASS(this->imgLine);
 	}
 	sz = this->pbLineStyle->GetSizeP();
-	Media::DrawImage *dimg = this->eng->CreateImage32(sz.width, sz.height, Media::AT_NO_ALPHA);
+	Media::DrawImage *dimg = this->eng->CreateImage32(sz, Media::AT_NO_ALPHA);
 	dimg->SetHDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
 	dimg->SetVDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
 	if (this->lineType == 0)
@@ -563,7 +563,7 @@ void SSWR::AVIRead::AVIRGISPropForm::RGBParamChanged(const Media::IColorHandler:
 		DEL_CLASS(this->imgFont);
 	}
 	sz = this->pbFontStyle->GetSizeP();
-	dimg = this->eng->CreateImage32(sz.width, sz.height, Media::AT_NO_ALPHA);
+	dimg = this->eng->CreateImage32(sz, Media::AT_NO_ALPHA);
 	dimg->SetHDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
 	dimg->SetVDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
 	if (this->fontType == Map::MapEnv::FontType::GlobalStyle)

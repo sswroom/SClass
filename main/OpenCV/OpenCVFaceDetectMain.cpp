@@ -67,12 +67,12 @@ void __stdcall OnDetectResult(void *userObj, UOSInt objCnt, const Media::OpenCV:
 			Data::DateTime dt;
 			UTF8Char sbuff[512];
 			UTF8Char *sptr;
-			NEW_CLASS(simg, Media::StaticImage(frInfo->dispWidth, frInfo->dispHeight, 0, 32, Media::PF_B8G8R8A8, 0, &srgb, frInfo->yuvType, Media::AT_NO_ALPHA, frInfo->ycOfst));
-			csConv->ConvertV2(imgData, simg->data, frInfo->dispWidth, frInfo->dispHeight, frInfo->storeWidth, frInfo->storeHeight, (OSInt)frInfo->dispWidth * 4, Media::FT_NON_INTERLACE, frInfo->ycOfst);
+			NEW_CLASS(simg, Media::StaticImage(frInfo->dispSize, 0, 32, Media::PF_B8G8R8A8, 0, &srgb, frInfo->yuvType, Media::AT_NO_ALPHA, frInfo->ycOfst));
+			csConv->ConvertV2(imgData, simg->data, frInfo->dispSize.x, frInfo->dispSize.y, frInfo->storeSize.x, frInfo->storeSize.y, (OSInt)frInfo->dispSize.x * 4, Media::FT_NON_INTERLACE, frInfo->ycOfst);
 			UOSInt i = 0;
 			while (i < objCnt)
 			{
-				ImageUtil_DrawRectNA32(simg->data + (OSInt)frInfo->dispWidth * 4 * objRects[i].top + objRects[i].left * 4, (UOSInt)(objRects[i].right - objRects[i].left), (UOSInt)(objRects[i].bottom - objRects[i].top), frInfo->dispWidth * 4, 0xffff0000);
+				ImageUtil_DrawRectNA32(simg->data + (OSInt)frInfo->dispSize.x * 4 * objRects[i].top + objRects[i].left * 4, (UOSInt)(objRects[i].right - objRects[i].left), (UOSInt)(objRects[i].bottom - objRects[i].top), frInfo->dispSize.x * 4, 0xffff0000);
 				i++;
 			}
 			Media::ImageList imgList(CSTR("ImageCapture"));

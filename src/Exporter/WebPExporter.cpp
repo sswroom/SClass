@@ -63,49 +63,49 @@ Bool Exporter::WebPExporter::ExportFile(IO::SeekableStream *stm, Text::CString f
 	if (img->info.pf == Media::PF_B8G8R8)
 	{
 		UOSInt bpl = img->GetDataBpl();
-		UInt8 *buff = MemAlloc(UInt8, bpl * img->info.dispHeight);
-		img->GetImageData(buff, 0, 0, img->info.dispWidth, img->info.dispHeight, bpl, false, img->info.rotateType);
+		UInt8 *buff = MemAlloc(UInt8, bpl * img->info.dispSize.y);
+		img->GetImageData(buff, 0, 0, img->info.dispSize.x, img->info.dispSize.y, bpl, false, img->info.rotateType);
 		if (quality < 0)
 		{
-			vp8len = WebPEncodeLosslessBGR(buff, (int)img->info.dispWidth, (int)img->info.dispHeight, (int)bpl, &vp8);
+			vp8len = WebPEncodeLosslessBGR(buff, (int)img->info.dispSize.x, (int)img->info.dispSize.y, (int)bpl, &vp8);
 		}
 		else
 		{
-			vp8len = WebPEncodeBGR(buff, (int)img->info.dispWidth, (int)img->info.dispHeight, (int)bpl, (float)quality, &vp8);
+			vp8len = WebPEncodeBGR(buff, (int)img->info.dispSize.x, (int)img->info.dispSize.y, (int)bpl, (float)quality, &vp8);
 		}
 		MemFree(buff);
 	}
 	else if (img->info.pf == Media::PF_R8G8B8)
 	{
 		UOSInt bpl = img->GetDataBpl();
-		UInt8 *buff = MemAlloc(UInt8, bpl * img->info.dispHeight);
-		img->GetImageData(buff, 0, 0, img->info.dispWidth, img->info.dispHeight, bpl, false, img->info.rotateType);
+		UInt8 *buff = MemAlloc(UInt8, bpl * img->info.dispSize.y);
+		img->GetImageData(buff, 0, 0, img->info.dispSize.x, img->info.dispSize.y, bpl, false, img->info.rotateType);
 		if (quality < 0)
 		{
-			vp8len = WebPEncodeLosslessRGB(buff, (int)img->info.dispWidth, (int)img->info.dispHeight, (int)bpl, &vp8);
+			vp8len = WebPEncodeLosslessRGB(buff, (int)img->info.dispSize.x, (int)img->info.dispSize.y, (int)bpl, &vp8);
 		}
 		else
 		{
-			vp8len = WebPEncodeRGB(buff, (int)img->info.dispWidth, (int)img->info.dispHeight, (int)bpl, (float)quality, &vp8);
+			vp8len = WebPEncodeRGB(buff, (int)img->info.dispSize.x, (int)img->info.dispSize.y, (int)bpl, (float)quality, &vp8);
 		}
 		MemFree(buff);
 	}
 	else if (img->info.pf == Media::PF_B8G8R8A8)
 	{
 		UOSInt bpl = img->GetDataBpl();
-		UInt8 *buff = MemAlloc(UInt8, bpl * img->info.dispHeight);
-		img->GetImageData(buff, 0, 0, img->info.dispWidth, img->info.dispHeight, bpl, false, img->info.rotateType);
+		UInt8 *buff = MemAlloc(UInt8, bpl * img->info.dispSize.y);
+		img->GetImageData(buff, 0, 0, img->info.dispSize.x, img->info.dispSize.y, bpl, false, img->info.rotateType);
 		if (img->info.atype == Media::AT_NO_ALPHA)
 		{
-			UInt8 *imgBuff = MemAlloc(UInt8, img->info.dispWidth * img->info.dispHeight * 3);
-			ImageUtil_ConvARGB32_B8G8R8(buff, imgBuff, img->info.dispWidth, img->info.dispHeight, (OSInt)bpl, (OSInt)img->info.dispWidth * 3);
+			UInt8 *imgBuff = MemAlloc(UInt8, img->info.dispSize.CalcArea() * 3);
+			ImageUtil_ConvARGB32_B8G8R8(buff, imgBuff, img->info.dispSize.x, img->info.dispSize.y, (OSInt)bpl, (OSInt)img->info.dispSize.x * 3);
 			if (quality < 0)
 			{
-				vp8len = WebPEncodeLosslessBGR(imgBuff, (int)img->info.dispWidth, (int)img->info.dispHeight, (int)img->info.dispWidth * 3, &vp8);
+				vp8len = WebPEncodeLosslessBGR(imgBuff, (int)img->info.dispSize.x, (int)img->info.dispSize.y, (int)img->info.dispSize.x * 3, &vp8);
 			}
 			else
 			{
-				vp8len = WebPEncodeBGR(imgBuff, (int)img->info.dispWidth, (int)img->info.dispHeight, (int)img->info.dispWidth * 3, (float)quality, &vp8);
+				vp8len = WebPEncodeBGR(imgBuff, (int)img->info.dispSize.x, (int)img->info.dispSize.y, (int)img->info.dispSize.x * 3, (float)quality, &vp8);
 			}
 			MemFree(imgBuff);
 		}
@@ -113,11 +113,11 @@ Bool Exporter::WebPExporter::ExportFile(IO::SeekableStream *stm, Text::CString f
 		{
 			if (quality < 0)
 			{
-				vp8len = WebPEncodeLosslessBGRA(buff, (int)img->info.dispWidth, (int)img->info.dispHeight, (int)bpl, &vp8);
+				vp8len = WebPEncodeLosslessBGRA(buff, (int)img->info.dispSize.x, (int)img->info.dispSize.y, (int)bpl, &vp8);
 			}
 			else
 			{
-				vp8len = WebPEncodeBGRA(buff, (int)img->info.dispWidth, (int)img->info.dispHeight, (int)bpl, (float)quality, &vp8);
+				vp8len = WebPEncodeBGRA(buff, (int)img->info.dispSize.x, (int)img->info.dispSize.y, (int)bpl, (float)quality, &vp8);
 			}
 		}
 		MemFree(buff);
@@ -129,11 +129,11 @@ Bool Exporter::WebPExporter::ExportFile(IO::SeekableStream *stm, Text::CString f
 		UOSInt bpl = simg->GetDataBpl();
 		if (quality < 0)
 		{
-			vp8len = WebPEncodeLosslessBGRA(simg->data, (int)simg->info.dispWidth, (int)simg->info.dispHeight, (int)bpl, &vp8);
+			vp8len = WebPEncodeLosslessBGRA(simg->data, (int)simg->info.dispSize.x, (int)simg->info.dispSize.y, (int)bpl, &vp8);
 		}
 		else
 		{
-			vp8len = WebPEncodeBGRA(simg->data, (int)simg->info.dispWidth, (int)simg->info.dispHeight, (int)bpl, (float)quality, &vp8);
+			vp8len = WebPEncodeBGRA(simg->data, (int)simg->info.dispSize.x, (int)simg->info.dispSize.y, (int)bpl, (float)quality, &vp8);
 		}
 		DEL_CLASS(simg);
 	}

@@ -18,8 +18,7 @@ namespace SSWR
 		private:
 			typedef struct
 			{
-				UOSInt width;
-				UOSInt height;
+				Math::Size2D<UOSInt> size;
 				UInt32 fourcc;
 				UInt32 bpp;
 				Media::PixelFormat pf;

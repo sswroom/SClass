@@ -19,8 +19,9 @@ namespace Media
 			void *GetFrame();
 			OCVFrame *CropToNew(Math::RectArea<UOSInt> *area);
 			void ClearOutsidePolygon(Math::Coord2D<UOSInt> *poly, UOSInt nPoints, UInt8 color);
-			UOSInt GetWidth();
-			UOSInt GetHeight();
+			UOSInt GetWidth() const;
+			UOSInt GetHeight() const;
+			Math::Size2D<UOSInt> GetSize() const;
 			OSInt GetBpl();
 			UInt8 *GetDataPtr();
 			void GetImageData(UInt8 *destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown, Media::RotateType destRotate);
@@ -29,7 +30,7 @@ namespace Media
 			void Normalize();
 			Media::OpenCV::OCVFrame *BilateralFilter(Int32 d, Double sigmaColor, Double sigmaSpace);
 
-			static OCVFrame *CreateYFrame(UInt8 **imgData, UOSInt dataSize, UInt32 fourcc, UOSInt dispWidth, UOSInt dispHeight, UOSInt storeWidth, UOSInt storeBPP, Media::PixelFormat pf);
+			static OCVFrame *CreateYFrame(UInt8 **imgData, UOSInt dataSize, UInt32 fourcc, Math::Size2D<UOSInt> dispSize, UOSInt storeWidth, UOSInt storeBPP, Media::PixelFormat pf);
 			static OCVFrame *CreateYFrame(Media::StaticImage *simg);
 		};
 	}

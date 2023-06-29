@@ -100,7 +100,7 @@ Int64 Map::MapDrawLayer::GetTimeEndTS()
 	return 0;
 }
 
-Map::MapView *Map::MapDrawLayer::CreateMapView(Math::Size2D<Double> scnSize)
+Map::MapView *Map::MapDrawLayer::CreateMapView(Math::Size2DDbl scnSize)
 {
 	Map::MapView *view;
 	Math::RectAreaDbl minMax;
@@ -120,7 +120,7 @@ void Map::MapDrawLayer::SetMixedData(MixedData mixedData)
 {
 }
 
-void Map::MapDrawLayer::SetDispSize(Math::Size2D<Double> size, Double dpi)
+void Map::MapDrawLayer::SetDispSize(Math::Size2DDbl size, Double dpi)
 {
 
 }

@@ -234,7 +234,7 @@ UOSInt Media::DDrawManager::GetMonitorCount()
 
 }
 
-Media::MonitorSurface *Media::DDrawManager::CreateSurface(UOSInt width, UOSInt height, UOSInt bitDepth)
+Media::MonitorSurface *Media::DDrawManager::CreateSurface(Math::Size2D<UOSInt> size, UOSInt bitDepth)
 {
 	if (this->IsError())
 	{
@@ -252,8 +252,8 @@ Media::MonitorSurface *Media::DDrawManager::CreateSurface(UOSInt width, UOSInt h
 	ddsd.dwSize = sizeof(ddsd);
 	ddsd.dwFlags = DDSD_CAPS | DDSD_HEIGHT | DDSD_WIDTH | DDSD_DEPTH;
 	ddsd.ddsCaps.dwCaps = DDSCAPS_OFFSCREENPLAIN | DDSCAPS_SYSTEMMEMORY;
-	ddsd.dwWidth = (UInt32)width;
-	ddsd.dwHeight = (UInt32)height;
+	ddsd.dwWidth = (UInt32)size.x;
+	ddsd.dwHeight = (UInt32)size.y;
 	ddsd.dwDepth = (UInt32)bitDepth;
 	surface = 0;
 	HRESULT res = lpDD->CreateSurface(&ddsd, &surface, NULL);

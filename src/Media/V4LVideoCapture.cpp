@@ -155,10 +155,9 @@ Bool Media::V4LVideoCapture::GetVideoInfo(Media::FrameInfo *info, UInt32 *frameR
 		return false;
 	if (fmt.type != V4L2_BUF_TYPE_VIDEO_CAPTURE)
 		return false;
-	info->dispWidth = fmt.fmt.pix.width;
-	info->dispHeight = fmt.fmt.pix.height;
-	info->storeWidth = info->dispWidth;
-	info->storeHeight = info->dispHeight;
+	info->dispSize.x = fmt.fmt.pix.width;
+	info->dispSize.y = fmt.fmt.pix.height;
+	info->storeSize = info->dispSize;
 	info->fourcc = fmt.fmt.pix.pixelformat;
 	info->storeBPP = 16;
 	info->pf = Media::PF_UNKNOWN;
@@ -285,13 +284,13 @@ Bool Media::V4LVideoCapture::IsRunning()
 	return this->threadRunning;
 }
 
-void Media::V4LVideoCapture::SetPreferSize(UOSInt width, UOSInt height, UInt32 fourcc, UInt32 bpp, UInt32 frameRateNumer, UInt32 frameRateDenom)
+void Media::V4LVideoCapture::SetPreferSize(Math::Size2D<UOSInt> size, UInt32 fourcc, UInt32 bpp, UInt32 frameRateNumer, UInt32 frameRateDenom)
 {
 	struct v4l2_format fmt;
 	struct v4l2_streamparm parm;
 	fmt.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
-	fmt.fmt.pix.width = (UInt32)width;
-	fmt.fmt.pix.height = (UInt32)height;
+	fmt.fmt.pix.width = (UInt32)size.x;
+	fmt.fmt.pix.height = (UInt32)size.y;
 	fmt.fmt.pix.pixelformat = fourcc;
 	fmt.fmt.pix.field = V4L2_FIELD_NONE;
 	fmt.fmt.pix.bytesperline = 0;
@@ -339,10 +338,9 @@ UOSInt Media::V4LVideoCapture::GetSupportedFormats(VideoFormat *fmtArr, UOSInt m
 			frmival.height = fsize.discrete.height;
 			while (ret < maxCnt && ioctl(this->fd, VIDIOC_ENUM_FRAMEINTERVALS, &frmival) == 0)
 			{
-				fmtArr[ret].info.dispWidth = fsize.discrete.width;
-				fmtArr[ret].info.dispHeight = fsize.discrete.height;
-				fmtArr[ret].info.storeWidth = fmtArr[ret].info.dispWidth;
-				fmtArr[ret].info.storeHeight = fmtArr[ret].info.dispHeight;
+				fmtArr[ret].info.dispSize.x = fsize.discrete.width;
+				fmtArr[ret].info.dispSize.y = fsize.discrete.height;
+				fmtArr[ret].info.storeSize = fmtArr[ret].info.dispSize;
 				fmtArr[ret].info.fourcc = fmt.pixelformat;
 				fmtArr[ret].info.storeBPP = 16;
 				fmtArr[ret].info.pf = Media::PF_UNKNOWN;

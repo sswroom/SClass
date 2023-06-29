@@ -75,7 +75,7 @@ void __stdcall SSWR::AVIRead::AVIRImageControl::OnTimerTick(void *userObj)
 		totalHeight = imgCnt * (20 + 12 + 12 + me->previewSize);
 
 		Math::Size2D<UOSInt> scnSize = me->GetSizeP();
-		me->SetVScrollBar(0, totalHeight, (UOSInt)Double2OSInt(UOSInt2Double(scnSize.height) / me->GetHDPI() * me->GetDDPI()));
+		me->SetVScrollBar(0, totalHeight, (UOSInt)Double2OSInt(UOSInt2Double(scnSize.y) / me->GetHDPI() * me->GetDDPI()));
 		me->imgUpdated = true;
 	}
 
@@ -172,8 +172,7 @@ void SSWR::AVIRead::AVIRImageControl::InitDir()
 		
 		Media::Resizer::LanczosResizer8_C8 resizer(4, 3, &srcProfile, &destProfile, this->colorSess, Media::AT_NO_ALPHA);
 		Exporter::GUIPNGExporter exporter;
-		resizer.SetTargetWidth(this->previewSize);
-		resizer.SetTargetHeight(this->previewSize);
+		resizer.SetTargetSize(Math::Size2D<UOSInt>(this->previewSize, this->previewSize));
 		parsers = this->core->GetParserList();
 		UOSInt currCnt = 0;
 		while (this->threadCtrlCode != 2 && this->threadCtrlCode != 3 && (sptr3 = IO::Path::FindNextFile(sptr, sess, 0, &pt, 0)) != 0)
@@ -668,7 +667,7 @@ void SSWR::AVIRead::AVIRImageControl::OnDraw(Media::DrawImage *dimg)
 		}
 		f = dimg->NewFontPt(CSTR("Arial"), 9, Media::DrawEngine::DFS_ANTIALIAS, 0);
 		b = dimg->NewBrushARGB(0xff000000);
-		Math::Size2D<Double> strSz;
+		Math::Size2DDbl strSz;
 		while (i <= j)
 		{
 			status = imgList->GetItem(i);
@@ -678,22 +677,22 @@ void SSWR::AVIRead::AVIRImageControl::OnDraw(Media::DrawImage *dimg)
 				status->previewImg = this->deng->LoadImage(status->cacheFile->ToCString());
 				if (status->previewImg)
 				{
-					status->previewImg2 = this->deng->CreateImage32((UInt32)Double2Int32(UOSInt2Double(status->previewImg->GetWidth()) * hdpi / ddpi), (UInt32)Double2Int32(UOSInt2Double(status->previewImg->GetHeight()) * hdpi / ddpi), Media::AT_NO_ALPHA);
+					status->previewImg2 = this->deng->CreateImage32(Math::Size2D<UOSInt>((UInt32)Double2Int32(UOSInt2Double(status->previewImg->GetWidth()) * hdpi / ddpi), (UInt32)Double2Int32(UOSInt2Double(status->previewImg->GetHeight()) * hdpi / ddpi)), Media::AT_NO_ALPHA);
 					this->UpdateImgPreview(status);
 				}
 			}
 			else if (status->previewImg2 == 0)
 			{
-				status->previewImg2 = this->deng->CreateImage32((UInt32)Double2Int32(UOSInt2Double(status->previewImg->GetWidth()) * hdpi / ddpi), (UInt32)Double2Int32(UOSInt2Double(status->previewImg->GetHeight()) * hdpi / ddpi), Media::AT_NO_ALPHA);
+				status->previewImg2 = this->deng->CreateImage32(Math::Size2D<UOSInt>((UInt32)Double2Int32(UOSInt2Double(status->previewImg->GetWidth()) * hdpi / ddpi), (UInt32)Double2Int32(UOSInt2Double(status->previewImg->GetHeight()) * hdpi / ddpi)), Media::AT_NO_ALPHA);
 				this->UpdateImgPreview(status);
 			}
-			dimg->DrawRect(0, OSInt2Double((OSInt)(i * itemTH - scrPos)), UOSInt2Double(scnW), itemBH, 0, barr[status->setting.flags & 3]);
-			dimg->DrawRect(0, OSInt2Double((OSInt)(i * itemTH - scrPos + itemBH)), UOSInt2Double(scnW), itemTH - itemBH, 0, barr[4]);
+			dimg->DrawRect(Math::Coord2DDbl(0, OSInt2Double((OSInt)(i * itemTH - scrPos))), Math::Size2DDbl(UOSInt2Double(scnW), itemBH), 0, barr[status->setting.flags & 3]);
+			dimg->DrawRect(Math::Coord2DDbl(0, OSInt2Double((OSInt)(i * itemTH - scrPos + itemBH))), Math::Size2DDbl(UOSInt2Double(scnW), itemTH - itemBH), 0, barr[4]);
 			if (status->previewImg2)
 			{
 				status->previewImg2->SetHDPI(dimg->GetHDPI());
 				status->previewImg2->SetVDPI(dimg->GetVDPI());
-				dimg->DrawImagePt(status->previewImg2, UOSInt2Double((scnW - status->previewImg2->GetWidth()) >> 1), OSInt2Double((OSInt)(i * itemTH - scrPos + ((itemH - status->previewImg2->GetHeight()) >> 1))));
+				dimg->DrawImagePt(status->previewImg2, Math::Coord2DDbl(UOSInt2Double((scnW - status->previewImg2->GetWidth()) >> 1), OSInt2Double((OSInt)(i * itemTH - scrPos + ((itemH - status->previewImg2->GetHeight()) >> 1)))));
 			}
 			if (status->fileName.leng > 0)
 			{
@@ -701,14 +700,14 @@ void SSWR::AVIRead::AVIRImageControl::OnDraw(Media::DrawImage *dimg)
 				sb.Append(status->fileName);
 				if (f && (strSz = dimg->GetTextSize(f, sb.ToCString())).HasArea())
 				{
-					dimg->DrawString((UOSInt2Double(scnW) - strSz.width) * 0.5, UOSInt2Double(i * itemTH - scrPos + itemH), sb.ToCString(), f, b);
+					dimg->DrawString(Math::Coord2DDbl((UOSInt2Double(scnW) - strSz.x) * 0.5, UOSInt2Double(i * itemTH - scrPos + itemH)), sb.ToCString(), f, b);
 				}
 			}
 			i++;
 		}
 		if ((j + 1) * itemTH - scrPos < scnH)
 		{
-			dimg->DrawRect(0, UOSInt2Double((j + 1) * itemTH - scrPos), UOSInt2Double(scnW), UOSInt2Double(scnH) - UOSInt2Double((j + 1) * itemTH - scrPos), 0, barr[4]);
+			dimg->DrawRect(Math::Coord2DDbl(0, UOSInt2Double((j + 1) * itemTH - scrPos)), Math::Size2DDbl(UOSInt2Double(scnW), UOSInt2Double(scnH) - UOSInt2Double((j + 1) * itemTH - scrPos)), 0, barr[4]);
 		}
 		dimg->DelBrush(b);
 		dimg->DelFont(f);
@@ -1025,7 +1024,7 @@ void SSWR::AVIRead::AVIRImageControl::ApplySetting(Media::StaticImage *srcImg, M
 	Sync::MutexUsage mutUsage(&this->filterMut);
 	this->filter.SetParameter((setting->brightness - 1.0) * setting->contrast, setting->contrast, setting->gamma, srcImg->info.color, srcImg->info.storeBPP, srcImg->info.pf, (setting->flags & 240) >> 4);
 	this->filter.SetGammaCorr(gammaParam, gammaCnt);
-	this->filter.ProcessImage(srcImg->data, destImg->data, srcImg->info.dispWidth, srcImg->info.dispHeight, (srcImg->info.storeWidth * (srcImg->info.storeBPP >> 3)), (destImg->info.storeWidth * (srcImg->info.storeBPP >> 3)), false);
+	this->filter.ProcessImage(srcImg->data, destImg->data, srcImg->info.dispSize.x, srcImg->info.dispSize.y, (srcImg->info.storeSize.x * (srcImg->info.storeBPP >> 3)), (destImg->info.storeSize.x * (srcImg->info.storeBPP >> 3)), false);
 	mutUsage.EndUse();
 }
 

@@ -30,7 +30,7 @@ UTF8Char *Media::ZXingReader::ReadImg(UTF8Char *buff, const Media::Image *simg)
 	tmpImg->To32bpp();
 	ZXing::Result result;
 	{
-		ZXing::ImageView imgView(tmpImg->data, (int)tmpImg->info.dispWidth, (int)tmpImg->info.dispHeight, ZXing::ImageFormat::BGRX, (int)tmpImg->GetDataBpl(), 4);
+		ZXing::ImageView imgView(tmpImg->data, (int)tmpImg->info.dispSize.x, (int)tmpImg->info.dispSize.y, ZXing::ImageFormat::BGRX, (int)tmpImg->GetDataBpl(), 4);
 		result = ZXing::ReadBarcode(imgView);
 	}
 	DEL_CLASS(tmpImg;)

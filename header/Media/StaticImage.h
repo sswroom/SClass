@@ -24,7 +24,7 @@ namespace Media
 	public:
 		UInt8 *data;
 	
-		StaticImage(UOSInt dispWidth, UOSInt dispHeight, UInt32 fourcc, UInt32 bpp, Media::PixelFormat pf, UOSInt maxSize, const Media::ColorProfile *color, Media::ColorProfile::YUVType yuvType, Media::AlphaType atype, Media::YCOffset ycOfst);
+		StaticImage(Math::Size2D<UOSInt> dispSize, UInt32 fourcc, UInt32 bpp, Media::PixelFormat pf, UOSInt maxSize, const Media::ColorProfile *color, Media::ColorProfile::YUVType yuvType, Media::AlphaType atype, Media::YCOffset ycOfst);
 		StaticImage(const Media::FrameInfo *imgInfo);
 		virtual ~StaticImage();
 
@@ -39,7 +39,7 @@ namespace Media
 		Bool FillColor(UInt32 color);
 		Bool MultiplyAlpha(Double alpha);
 		Bool MultiplyColor(UInt32 color);
-		Bool Resize(Media::IImgResizer *resizer, UOSInt newWidth, UOSInt newHeight);
+		Bool Resize(Media::IImgResizer *resizer, Math::Size2D<UOSInt> newSize);
 		Bool RotateImage(RotateType rtype);
 		Double CalcPSNR(Media::StaticImage *simg) const;
 		Double CalcAvgContrast(UOSInt *bgPxCnt) const;

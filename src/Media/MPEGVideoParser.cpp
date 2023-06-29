@@ -84,10 +84,8 @@ Bool Media::MPEGVideoParser::GetFrameInfo(UInt8 *frame, UOSInt frameSize, Media:
 		break;
 	}
 	//MPEG-1: Color = BT601
-	frameInfo->storeWidth = horizontal_size;
-	frameInfo->storeHeight = vertical_size;
-	frameInfo->dispWidth = frameInfo->storeWidth;
-	frameInfo->dispHeight = frameInfo->storeHeight;
+	frameInfo->storeSize = Math::Size2D<UOSInt>(horizontal_size, vertical_size);
+	frameInfo->dispSize = frameInfo->storeSize;
 	frameInfo->fourcc = *(UInt32*)"MPG2"; // 0 = bmp
 	frameInfo->storeBPP = 0;
 	frameInfo->pf = Media::PF_UNKNOWN;
@@ -136,10 +134,8 @@ Bool Media::MPEGVideoParser::GetFrameInfo(UInt8 *frame, UOSInt frameSize, Media:
 			frameRateNorm *= (frame_rate_extension_n + 1);
 			frameRateDenorm *= (frame_rate_extension_d + 1);
 
-			frameInfo->storeWidth = horizontal_size;
-			frameInfo->storeHeight = vertical_size;
-			frameInfo->dispWidth = frameInfo->storeWidth;
-			frameInfo->dispHeight = frameInfo->storeHeight;
+			frameInfo->storeSize = Math::Size2D<UOSInt>(horizontal_size, vertical_size);
+			frameInfo->dispSize = frameInfo->storeSize;
 
 			ofst += 10;
 		}
@@ -222,9 +218,9 @@ Bool Media::MPEGVideoParser::GetFrameInfo(UInt8 *frame, UOSInt frameSize, Media:
 				frameInfo->color->GetGTranParam()->Set(tranType, tranGamma);
 				frameInfo->color->GetBTranParam()->Set(tranType, tranGamma);
 
-				frameInfo->dispWidth = (UInt32)((frame[ofst + 8] << 6) | (frame[ofst + 9] >> 2));
-				frameInfo->dispHeight = (UInt32)(((frame[ofst + 9] & 1) << 13) | (frame[ofst + 10] << 5) | (frame[ofst + 11] >> 3));
-				if (decoderFix && (frameInfo->dispWidth != horizontal_size || frameInfo->dispHeight != vertical_size))
+				frameInfo->dispSize.x = (UInt32)((frame[ofst + 8] << 6) | (frame[ofst + 9] >> 2));
+				frameInfo->dispSize.y = (UInt32)(((frame[ofst + 9] & 1) << 13) | (frame[ofst + 10] << 5) | (frame[ofst + 11] >> 3));
+				if (decoderFix && (frameInfo->dispSize.x != horizontal_size || frameInfo->dispSize.y != vertical_size))
 				{
 					frame[ofst + 8] = (UInt8)(horizontal_size >> 6);
 					frame[ofst + 9] = (UInt8)(((horizontal_size << 2) | 2 | (vertical_size >> 13)) & 0xff);
@@ -235,9 +231,9 @@ Bool Media::MPEGVideoParser::GetFrameInfo(UInt8 *frame, UOSInt frameSize, Media:
 			}
 			else
 			{
-				frameInfo->dispWidth = (UInt32)((frame[ofst + 5] << 6) | (frame[ofst + 6] >> 2));
-				frameInfo->dispHeight = (UInt32)(((frame[ofst + 6] & 1) << 13) | (frame[ofst + 7] << 5) | (frame[ofst + 8] >> 3));
-				if (decoderFix && (frameInfo->dispWidth != horizontal_size || frameInfo->dispHeight != vertical_size))
+				frameInfo->dispSize.x = (UInt32)((frame[ofst + 5] << 6) | (frame[ofst + 6] >> 2));
+				frameInfo->dispSize.y = (UInt32)(((frame[ofst + 6] & 1) << 13) | (frame[ofst + 7] << 5) | (frame[ofst + 8] >> 3));
+				if (decoderFix && (frameInfo->dispSize.x != horizontal_size || frameInfo->dispSize.y != vertical_size))
 				{
 					frame[ofst + 5] = (UInt8)(horizontal_size >> 6);
 					frame[ofst + 6] = (UInt8)(((horizontal_size << 2) | 2 | (vertical_size >> 13)) & 0xff);

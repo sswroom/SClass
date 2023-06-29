@@ -54,14 +54,13 @@ void __stdcall SSWR::AVIRead::AVIRTimedCaptureForm::OnDevChg(void *userObj)
 		while (i < fmtCnt)
 		{
 			cfmt = MemAlloc(CaptureFormat, 1);
-			cfmt->width = fmts[i].info.dispWidth;
-			cfmt->height = fmts[i].info.dispHeight;
+			cfmt->size = fmts[i].info.dispSize;
 			cfmt->fourcc = fmts[i].info.fourcc;
 			cfmt->bpp = fmts[i].info.storeBPP;
 			cfmt->pf = fmts[i].info.pf;
 			cfmt->frameRateNumer = fmts[i].frameRateNorm;
 			cfmt->frameRateDenom = fmts[i].frameRateDenorm;
-			currSize = cfmt->width * cfmt->height;
+			currSize = cfmt->size.CalcArea();
 			if (currSize > bestSize)
 			{
 				bestSize = currSize;
@@ -84,9 +83,9 @@ void __stdcall SSWR::AVIRead::AVIRTimedCaptureForm::OnDevChg(void *userObj)
 			}
 			
 			sb.ClearStr();
-			sb.AppendUOSInt(cfmt->width);
+			sb.AppendUOSInt(cfmt->size.x);
 			sb.AppendC(UTF8STRC(" x "));
-			sb.AppendUOSInt(cfmt->height);
+			sb.AppendUOSInt(cfmt->size.y);
 			sb.AppendC(UTF8STRC(" ("));
 			if (cfmt->fourcc)
 			{
@@ -104,9 +103,9 @@ void __stdcall SSWR::AVIRead::AVIRTimedCaptureForm::OnDevChg(void *userObj)
 			me->cboFormat->AddItem(sb.ToCString(), cfmt);
 			me->currFormats->Add(cfmt);
 
-			devInfo.AppendUOSInt(cfmt->width);
+			devInfo.AppendUOSInt(cfmt->size.x);
 			devInfo.AppendC(UTF8STRC(" x "));
-			devInfo.AppendUOSInt(cfmt->height);
+			devInfo.AppendUOSInt(cfmt->size.y);
 			devInfo.AppendC(UTF8STRC(" ("));
 			if (cfmt->fourcc)
 			{
@@ -169,7 +168,7 @@ void __stdcall SSWR::AVIRead::AVIRTimedCaptureForm::OnStartClicked(void *userObj
 			}
 			me->currCapture->Init(OnVideoFrame, OnVideoChange, me);
 			me->currCapture->SetPreferFrameType(Media::FT_NON_INTERLACE);
-			me->currCapture->SetPreferSize(cfmt->width, cfmt->height, cfmt->fourcc, cfmt->bpp, cfmt->frameRateNumer, cfmt->frameRateDenom);
+			me->currCapture->SetPreferSize(cfmt->size, cfmt->fourcc, cfmt->bpp, cfmt->frameRateNumer, cfmt->frameRateDenom);
 
 			sb.ClearStr();
 			me->txtFileName->GetText(&sb);
@@ -243,8 +242,8 @@ void __stdcall SSWR::AVIRead::AVIRTimedCaptureForm::OnVideoFrame(UInt32 frameTim
 		Media::ColorProfile sRGB(Media::ColorProfile::CPT_SRGB);
 		dt.SetCurrTimeUTC();
 
-		NEW_CLASS(simg, Media::StaticImage(me->videoInfo.dispWidth, me->videoInfo.dispHeight, 0, 32, Media::PF_B8G8R8A8, me->videoInfo.dispWidth * me->videoInfo.dispHeight << 2, &sRGB, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
-		me->csConv->ConvertV2(imgData, simg->data, me->videoInfo.dispWidth, me->videoInfo.dispHeight, me->videoInfo.storeWidth, me->videoInfo.storeHeight, (OSInt)simg->GetDataBpl(), frameType, ycOfst);
+		NEW_CLASS(simg, Media::StaticImage(me->videoInfo.dispSize, 0, 32, Media::PF_B8G8R8A8, me->videoInfo.dispSize.x * me->videoInfo.dispSize.y << 2, &sRGB, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+		me->csConv->ConvertV2(imgData, simg->data, me->videoInfo.dispSize.x, me->videoInfo.dispSize.y, me->videoInfo.storeSize.x, me->videoInfo.storeSize.y, (OSInt)simg->GetDataBpl(), frameType, ycOfst);
 		NEW_CLASS(imgList, Media::ImageList(CSTR("Temp")));
 		imgList->AddImage(simg, 0);
 		param = me->exporter->CreateParam(imgList);

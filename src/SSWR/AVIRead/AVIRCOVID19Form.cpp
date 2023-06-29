@@ -62,7 +62,7 @@ void __stdcall SSWR::AVIRead::AVIRCOVID19Form::OnNewCasesSizeChanged(void *userO
 		return;
 	Media::DrawEngine *deng = me->core->GetDrawEngine();
 	Math::Size2D<UOSInt> sz = me->pbNewCases->GetSizeP();
-	Media::DrawImage *dimg = deng->CreateImage32(sz.width, sz.height, Media::AT_NO_ALPHA);
+	Media::DrawImage *dimg = deng->CreateImage32(sz, Media::AT_NO_ALPHA);
 	SSWR::AVIRead::AVIRCOVID19Form::DailyRecord *record;
 	UOSInt i;
 	UOSInt j;
@@ -90,7 +90,7 @@ void __stdcall SSWR::AVIRead::AVIRCOVID19Form::OnNewCasesSizeChanged(void *userO
 		}
 		chart.AddXDataDate(dates, j);
 		chart.AddYData(CSTR("New Cases"), counts, j, 0xffff0000, Data::LineChart::LS_LINE);
-		chart.Plot(dimg, 0, 0, UOSInt2Double(sz.width), UOSInt2Double(sz.height));
+		chart.Plot(dimg, 0, 0, UOSInt2Double(sz.x), UOSInt2Double(sz.y));
 		MemFree(counts);
 		MemFree(dates);
 	}

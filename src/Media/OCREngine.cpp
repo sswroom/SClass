@@ -47,12 +47,12 @@ Bool Media::OCREngine::SetParsingImage(Media::StaticImage *img)
 	PIX *pix;
 	if (img->info.pf == Media::PF_PAL_W8)
 	{
-		pix = pixCreateNoInit((l_int32)img->info.dispWidth, (l_int32)img->info.dispHeight, (l_int32)img->info.storeBPP);
+		pix = pixCreateNoInit((l_int32)img->info.dispSize.x, (l_int32)img->info.dispSize.y, (l_int32)img->info.storeBPP);
 	}
 	else
 	{
 		img->To32bpp();
-		pix = pixCreateNoInit((l_int32)img->info.dispWidth, (l_int32)img->info.dispHeight, (l_int32)img->info.storeBPP);
+		pix = pixCreateNoInit((l_int32)img->info.dispSize.x, (l_int32)img->info.dispSize.y, (l_int32)img->info.storeBPP);
 	}
 	if (pix == 0)
 	{
@@ -61,10 +61,10 @@ Bool Media::OCREngine::SetParsingImage(Media::StaticImage *img)
 	pixSetResolution(pix, Double2Int32(img->info.hdpi), Double2Int32(img->info.hdpi * img->info.par2));
 	UOSInt wpl = (UOSInt)pixGetWpl(pix);
 	UInt8 *data = (UInt8*)pixGetData(pix);
-	img->GetImageData(data, 0, 0, img->info.dispWidth, img->info.dispHeight, wpl * 4, false, Media::RotateType::None);
+	img->GetImageData(data, 0, 0, img->info.dispSize.x, img->info.dispSize.y, wpl * 4, false, Media::RotateType::None);
 	if (img->info.pf == Media::PF_PAL_W8)
 	{
-		UOSInt wordCnt = wpl * img->info.dispHeight;
+		UOSInt wordCnt = wpl * img->info.dispSize.y;
 		while (wordCnt-- > 0)
 		{
 			WriteMUInt32(data, ReadUInt32(data));

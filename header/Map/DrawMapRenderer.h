@@ -61,7 +61,7 @@ namespace Map
 			UOSInt fontStyleCnt;
 			DrawFontStyle *fontStyles;
 			UInt32 imgDurMS;
-			Math::Size2D<Double> dispSize;
+			Math::Size2DDbl dispSize;
 
 			Data::ArrayListInt64 idArr;
 			Data::ArrayList<Media::DrawFont*> layerFont;
@@ -92,10 +92,10 @@ namespace Map
 		void DrawShapesPoint(DrawEnv *denv, Map::MapDrawLayer *layer, UOSInt imgIndex);
 		void DrawLabel(DrawEnv *denv, Map::MapDrawLayer *layer, UOSInt fontSytle, UOSInt labelCol, Int32 priority, Int32 flags, UOSInt imgWidth, UOSInt imgHeight, Map::MapEnv::FontType fontType);
 		void DrawImageLayer(DrawEnv *denv, Map::MapDrawLayer *layer);
-		void DrawImageObject(DrawEnv *denv, Media::StaticImage *img, Double scnX1, Double scnY1, Double scnX2, Double scnY2, Double srcAlpha);
+		void DrawImageObject(DrawEnv *denv, Media::StaticImage *img, Math::Coord2DDbl scnTL, Math::Coord2DDbl scnBR, Double srcAlpha);
 
 		static void GetCharsSize(DrawEnv *denv, Math::Coord2DDbl *size, Text::CString label, Map::MapEnv::FontType fontType, UOSInt fontStyle, Double scaleW, Double scaleH);
-		static void DrawChars(DrawEnv *denv, Text::CString str1, Double xPos, Double yPos, Double scaleW, Double scaleH, Map::MapEnv::FontType fontType, UOSInt fontStyle, Bool isAlign);
+		static void DrawChars(DrawEnv *denv, Text::CString str1, Math::Coord2DDbl scnPos, Double scaleW, Double scaleH, Map::MapEnv::FontType fontType, UOSInt fontStyle, Bool isAlign);
 		static void DrawCharsL(DrawEnv *denv, Text::CString str1, Math::Coord2DDbl *mapPts, Math::Coord2D<Int32> *scnPts, UOSInt nPoints, UOSInt thisPt, Double scaleN, Double scaleD, Map::MapEnv::FontType fontType, UOSInt fontStyle, Math::RectAreaDbl *realBounds);
 		static void DrawCharsLA(DrawEnv *denv, Text::CString str1, Math::Coord2DDbl *mapPts, Math::Coord2D<Int32> *scnPts, UOSInt nPoints, UOSInt thisPt, Double scaleN, Double scaleD, Map::MapEnv::FontType fontType, UOSInt fontStyle, Math::RectAreaDbl *realBounds);
 	public:

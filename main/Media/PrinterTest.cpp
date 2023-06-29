@@ -27,7 +27,7 @@ public:
 	{
 		Media::DrawFont *font = printPage->NewFontPt(CSTR("Arial"), 12, Media::DrawEngine::DFS_NORMAL, 0);
 		Media::DrawBrush *brush = printPage->NewBrushARGB(0xff000000);
-		printPage->DrawString(100, 100, CSTR("Testing"), font, brush);
+		printPage->DrawString(Math::Coord2DDbl(100, 100), CSTR("Testing"), font, brush);
 		printPage->DelBrush(brush);
 		printPage->DelFont(font);
 		return false;

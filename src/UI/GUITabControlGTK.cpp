@@ -180,9 +180,9 @@ void UI::GUITabControl::GetTabPageRect(OSInt *x, OSInt *y, UOSInt *w, UOSInt *h)
 	if (y)
 		*y = btnH;
 	if (w)
-		*w = sz.width - 2;
+		*w = sz.x - 2;
 	if (h)
-		*h = sz.height - (UOSInt)btnH - 2;
+		*h = sz.y - (UOSInt)btnH - 2;
 //	printf("TabPage Rect: %d, %d, %d, %d\r\n", 0, (Int32)btnH, (Int32)width - 2, (Int32)(height - (UOSInt)btnH - 2));
 }
 
@@ -212,11 +212,11 @@ void UI::GUITabControl::OnSizeChanged(Bool updateScn)
 	Math::Size2D<UOSInt> sz1;
 	Math::Size2D<UOSInt> sz2;
 	sz1 = GetSizeP();
-	GetTabPageRect(0, 0, &sz2.width, &sz2.height);
+	GetTabPageRect(0, 0, &sz2.x, &sz2.y);
 	i = this->tabPages.GetCount();
 	while (i-- > 0)
 	{
-		this->tabPages.GetItem(i)->SetSizeP(sz2.width, sz2.height);
+		this->tabPages.GetItem(i)->SetSizeP(sz2);
 		this->tabPages.GetItem(i)->UpdateChildrenSize(false);
 	}
 }

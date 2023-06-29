@@ -44,10 +44,10 @@ void Media::VideoFilter::IVTCFilter::ProcessVideoFrame(UInt32 frameTime, UInt32 
 				{
 					if (frameType == Media::FT_MERGED_BF)
 					{
-//						UOSInt dw = this->videoInfo.dispWidth;
-						UOSInt dh = this->videoInfo.dispHeight >> 1;
-						UOSInt sw = this->videoInfo.storeWidth;
-//						UOSInt sh = this->videoInfo.storeHeight >> 1;
+//						UOSInt dw = this->videoInfo.dispSize.x;
+						UOSInt dh = this->videoInfo.dispSize.y >> 1;
+						UOSInt sw = this->videoInfo.storeSize.x;
+//						UOSInt sh = this->videoInfo.storeSize.y >> 1;
 						UOSInt sw2 = sw << 1;
 						UOSInt swh = sw >> 1;
 //						UOSInt dwh = dw >> 1;
@@ -171,10 +171,10 @@ void Media::VideoFilter::IVTCFilter::ProcessVideoFrame(UInt32 frameTime, UInt32 
 				{
 					if (frameType == Media::FT_MERGED_TF)
 					{
-//						UOSInt dw = this->videoInfo.dispWidth;
-						UOSInt dh = this->videoInfo.dispHeight >> 1;
-						UOSInt sw = this->videoInfo.storeWidth;
-//						UOSInt sh = this->videoInfo.storeHeight >> 1;
+//						UOSInt dw = this->videoInfo.dispSize.x;
+						UOSInt dh = this->videoInfo.dispSize.y >> 1;
+						UOSInt sw = this->videoInfo.storeSize.x;
+//						UOSInt sh = this->videoInfo.storeSize.y >> 1;
 						UOSInt sw2 = sw << 1;
 						UOSInt swh = sw >> 1;
 //						UOSInt dwh = dw >> 1;
@@ -284,10 +284,10 @@ void Media::VideoFilter::IVTCFilter::ProcessVideoFrame(UInt32 frameTime, UInt32 
 						this->fieldBuffSize = dataSize * 2;
 						this->fieldBuff = MemAllocA64(UInt8, this->fieldBuffSize);
 					}
-					UOSInt sw = this->videoInfo.storeWidth;
+					UOSInt sw = this->videoInfo.storeSize.x;
 //					UOSInt sh = this->videoInfo->storeHeight;
 //					UOSInt dw = this->videoInfo->dispWidth;
-					UOSInt dh = this->videoInfo.dispHeight;
+					UOSInt dh = this->videoInfo.dispSize.y;
 					UOSInt sw2 = sw << 1;
 //					UOSInt dw2 = dw << 1;
 					UOSInt swh = sw >> 1;
@@ -444,11 +444,11 @@ void Media::VideoFilter::IVTCFilter::do_IVTC(UInt32 frameTime, UInt32 frameNum, 
 					UInt8 *ivtcPtr = imgData[0];
 					UInt8 *ivtcLPtr = this->ivtcLastFrame;
 					UOSInt ivtcW;
-					UOSInt ivtcH = this->videoInfo.dispHeight;
+					UOSInt ivtcH = this->videoInfo.dispSize.y;
 
 					while (ivtcH > 1)
 					{
-						ivtcW = this->videoInfo.dispWidth;
+						ivtcW = this->videoInfo.dispSize.x;
 						while (ivtcW-- > 0)
 						{
 							diff = *ivtcPtr - *ivtcLPtr;
@@ -460,7 +460,7 @@ void Media::VideoFilter::IVTCFilter::do_IVTC(UInt32 frameTime, UInt32 frameNum, 
 							ivtcPtr++;
 							ivtcLPtr++;
 						}
-						ivtcW = this->videoInfo.dispWidth;
+						ivtcW = this->videoInfo.dispSize.x;
 						while (ivtcW-- > 0)
 						{
 							diff = *ivtcPtr - *ivtcLPtr;
@@ -477,7 +477,7 @@ void Media::VideoFilter::IVTCFilter::do_IVTC(UInt32 frameTime, UInt32 frameNum, 
 					}
 				}
 
-				Double pixelCnt = UOSInt2Double(this->videoInfo.dispWidth * this->videoInfo.dispHeight);
+				Double pixelCnt = UOSInt2Double(this->videoInfo.dispSize.x * this->videoInfo.dispSize.y);
 				Double oddDDiff = oddDiff / pixelCnt;
 				Double evenDDiff = evenDiff / pixelCnt;
 				
@@ -500,10 +500,10 @@ void Media::VideoFilter::IVTCFilter::do_IVTC(UInt32 frameTime, UInt32 frameNum, 
 							UInt8 *evenPtr;
 							FieldStat iFieldStat;
 							FieldStat pFieldStat;
-							UOSInt sw = this->videoInfo.storeWidth;
+							UOSInt sw = this->videoInfo.storeSize.x;
 //							OSInt sh = this->videoInfo->storeHeight;
 //							OSInt dw = this->videoInfo->dispWidth;
-							UOSInt dh = this->videoInfo.dispHeight;
+							UOSInt dh = this->videoInfo.dispSize.y;
 //							OSInt sw2 = sw << 1;
 //							OSInt sw4 = sw << 2;
 //							OSInt dw2 = dw << 1;
@@ -783,8 +783,8 @@ void Media::VideoFilter::IVTCFilter::do_IVTC(UInt32 frameTime, UInt32 frameNum, 
 								oddBuff = this->ivtcLastFrame;
 								evenBuff = imgData[0];
 							}
-							UOSInt ivtcW = this->videoInfo.dispWidth;
-							UOSInt ivtcH = this->videoInfo.dispHeight;
+							UOSInt ivtcW = this->videoInfo.dispSize.x;
+							UOSInt ivtcH = this->videoInfo.dispSize.y;
 							UOSInt ivtcW2 = ivtcW << 1;
 							UOSInt ivtcWH = ivtcW >> 1;
 							UOSInt ivtcCnt = ivtcH;
@@ -1024,12 +1024,12 @@ void Media::VideoFilter::IVTCFilter::do_IVTC(UInt32 frameTime, UInt32 frameNum, 
 					{
 						ivtcPtr = imgData[0];
 					}
-					this->CalcFieldStatP(&fieldStat, ivtcPtr, this->videoInfo.storeWidth, this->videoInfo.storeHeight);
+					this->CalcFieldStatP(&fieldStat, ivtcPtr, this->videoInfo.storeSize.x, this->videoInfo.storeSize.y);
 				}
 				UOSInt fieldRate;
 				if (this->ivtcLastSC)
 				{
-					fieldRate = this->videoInfo.storeWidth * this->videoInfo.dispHeight * 2;
+					fieldRate = this->videoInfo.storeSize.x * this->videoInfo.dispSize.y * 2;
 					if (frameType == Media::FT_DISCARD)
 					{
 						this->ivtcLastField = 0;
@@ -1043,11 +1043,11 @@ void Media::VideoFilter::IVTCFilter::do_IVTC(UInt32 frameTime, UInt32 frameNum, 
 				{
 					if (this->ivtcLastField == 0)
 					{
-						fieldRate = this->videoInfo.storeWidth * this->videoInfo.dispHeight * 2;
+						fieldRate = this->videoInfo.storeSize.x * this->videoInfo.dispSize.y * 2;
 					}
 					else
 					{
-						fieldRate = this->videoInfo.storeWidth * this->videoInfo.dispHeight * 2;//me->ivtcLastField * 2;
+						fieldRate = this->videoInfo.storeSize.x * this->videoInfo.dispSize.y * 2;//me->ivtcLastField * 2;
 					}
 				}
 				Bool needDI = false;

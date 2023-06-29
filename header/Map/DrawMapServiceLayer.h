@@ -19,13 +19,13 @@ namespace Map
 
 		Sync::Mutex dispMut;
 		Math::RectAreaDbl dispBounds;
-		Math::Size2D<Double> dispSize;
+		Math::Size2DDbl dispSize;
 		Double dispDPI;
 		Int64 dispId;
 		Media::SharedImage *dispImage;
 		Text::String *dispImageURL;
 		Math::RectAreaDbl lastBounds;
-		Math::Size2D<Double> lastSize;
+		Math::Size2DDbl lastSize;
 		Double lastDPI;
 		Int64 lastId;
 		Media::SharedImage *lastImage;
@@ -42,7 +42,7 @@ namespace Map
 		virtual ~DrawMapServiceLayer();
 
 		virtual void SetCurrScale(Double scale);
-		virtual Map::MapView *CreateMapView(Math::Size2D<Double> scnSize);
+		virtual Map::MapView *CreateMapView(Math::Size2DDbl scnSize);
 
 		virtual DrawLayerType GetLayerType();
 		virtual UOSInt GetAllObjectIds(Data::ArrayListInt64 *outArr, NameArray **nameArr);
@@ -57,7 +57,7 @@ namespace Map
 		virtual Bool GetColumnDef(UOSInt colIndex, DB::ColDef *colDef);
 		virtual UInt32 GetCodePage();
 		virtual Bool GetBounds(Math::RectAreaDbl *bounds);
-		virtual void SetDispSize(Math::Size2D<Double> size, Double dpi);
+		virtual void SetDispSize(Math::Size2DDbl size, Double dpi);
 
 		virtual GetObjectSess *BeginGetObject();
 		virtual void EndGetObject(GetObjectSess *session);

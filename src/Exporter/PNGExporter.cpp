@@ -1454,8 +1454,8 @@ Bool Exporter::PNGExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 	hdr[7] = 0x0A;
 	WriteMInt32(&hdr[8], 13);
 	*(Int32*)&hdr[12] = *(Int32*)"IHDR";
-	WriteMInt32(&hdr[16], (Int32)img->info.dispWidth);
-	WriteMInt32(&hdr[20], (Int32)img->info.dispHeight);
+	WriteMInt32(&hdr[16], (Int32)img->info.dispSize.x);
+	WriteMInt32(&hdr[20], (Int32)img->info.dispSize.y);
 	switch (img->info.pf)
 	{
 	case Media::PF_B8G8R8:
@@ -1629,22 +1629,22 @@ Bool Exporter::PNGExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 	case Media::PF_PAL_1:
 		PNGExporter_WritePal(stm, img, &crc);
 	case Media::PF_PAL_W1:
-		k = ((img->info.dispWidth + 7) >> 3);
-		tmpBuff = MemAlloc(UInt8, (k + 1) * img->info.dispHeight);
+		k = ((img->info.dispSize.x + 7) >> 3);
+		tmpBuff = MemAlloc(UInt8, (k + 1) * img->info.dispSize.y);
 		imgPtr1 = img->data;
 		imgPtr2 = tmpBuff;
-		i = img->info.dispHeight;
+		i = img->info.dispSize.y;
 		while (i-- > 0)
 		{
-			j = img->info.dispWidth;
+			j = img->info.dispSize.x;
 			*imgPtr2++ = 0;
 			MemCopyNO(imgPtr2, imgPtr1, k);
 			imgPtr2 += k;
-			imgPtr1 += img->info.storeWidth >> 3;
+			imgPtr1 += img->info.storeSize.x >> 3;
 		}
-		tmpBuff2 = MemAlloc(UInt8, 12 + (k + 1) * img->info.dispHeight + 11);
+		tmpBuff2 = MemAlloc(UInt8, 12 + (k + 1) * img->info.dispSize.y + 11);
 		*(Int32*)&tmpBuff2[4] = *(Int32*)"IDAT";
-		i = Data::Compress::Inflate::Compress(tmpBuff, (k + 1) * img->info.dispHeight, &tmpBuff2[8], true, Data::Compress::Inflate::CompressionLevel::BestCompression);
+		i = Data::Compress::Inflate::Compress(tmpBuff, (k + 1) * img->info.dispSize.y, &tmpBuff2[8], true, Data::Compress::Inflate::CompressionLevel::BestCompression);
 		if (i < 0)
 		{
 			i = 0;
@@ -1660,22 +1660,22 @@ Bool Exporter::PNGExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 	case Media::PF_PAL_2:
 		PNGExporter_WritePal(stm, img, &crc);
 	case Media::PF_PAL_W2:
-		k = ((img->info.dispWidth + 3) >> 2);
-		tmpBuff = MemAlloc(UInt8, (k + 1) * img->info.dispHeight);
+		k = ((img->info.dispSize.x + 3) >> 2);
+		tmpBuff = MemAlloc(UInt8, (k + 1) * img->info.dispSize.y);
 		imgPtr1 = img->data;
 		imgPtr2 = tmpBuff;
-		i = img->info.dispHeight;
+		i = img->info.dispSize.y;
 		while (i-- > 0)
 		{
-			j = img->info.dispWidth;
+			j = img->info.dispSize.x;
 			*imgPtr2++ = 0;
 			MemCopyNO(imgPtr2, imgPtr1, k);
 			imgPtr2 += k;
-			imgPtr1 += img->info.storeWidth >> 2;
+			imgPtr1 += img->info.storeSize.x >> 2;
 		}
-		tmpBuff2 = MemAlloc(UInt8, 12 + (k + 1) * img->info.dispHeight + 11);
+		tmpBuff2 = MemAlloc(UInt8, 12 + (k + 1) * img->info.dispSize.y + 11);
 		*(Int32*)&tmpBuff2[4] = *(Int32*)"IDAT";
-		i = Data::Compress::Inflate::Compress(tmpBuff, (k + 1) * img->info.dispHeight, &tmpBuff2[8], true, Data::Compress::Inflate::CompressionLevel::BestCompression);
+		i = Data::Compress::Inflate::Compress(tmpBuff, (k + 1) * img->info.dispSize.y, &tmpBuff2[8], true, Data::Compress::Inflate::CompressionLevel::BestCompression);
 		if (i < 0)
 		{
 			i = 0;
@@ -1691,22 +1691,22 @@ Bool Exporter::PNGExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 	case Media::PF_PAL_4:
 		PNGExporter_WritePal(stm, img, &crc);
 	case Media::PF_PAL_W4:
-		k = ((img->info.dispWidth + 1) >> 1);
-		tmpBuff = MemAlloc(UInt8, (k + 1) * img->info.dispHeight);
+		k = ((img->info.dispSize.x + 1) >> 1);
+		tmpBuff = MemAlloc(UInt8, (k + 1) * img->info.dispSize.y);
 		imgPtr1 = img->data;
 		imgPtr2 = tmpBuff;
-		i = img->info.dispHeight;
+		i = img->info.dispSize.y;
 		while (i-- > 0)
 		{
-			j = img->info.dispWidth;
+			j = img->info.dispSize.x;
 			*imgPtr2++ = 0;
 			MemCopyNO(imgPtr2, imgPtr1, k);
 			imgPtr2 += k;
-			imgPtr1 += img->info.storeWidth >> 1;
+			imgPtr1 += img->info.storeSize.x >> 1;
 		}
-		tmpBuff2 = MemAlloc(UInt8, 12 + (k + 1) * img->info.dispHeight + 11);
+		tmpBuff2 = MemAlloc(UInt8, 12 + (k + 1) * img->info.dispSize.y + 11);
 		*(Int32*)&tmpBuff2[4] = *(Int32*)"IDAT";
-		i = Data::Compress::Inflate::Compress(tmpBuff, (k + 1) * img->info.dispHeight, &tmpBuff2[8], true, Data::Compress::Inflate::CompressionLevel::BestCompression);
+		i = Data::Compress::Inflate::Compress(tmpBuff, (k + 1) * img->info.dispSize.y, &tmpBuff2[8], true, Data::Compress::Inflate::CompressionLevel::BestCompression);
 		if (i < 0)
 		{
 			i = 0;
@@ -1722,23 +1722,23 @@ Bool Exporter::PNGExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 	case Media::PF_PAL_8:
 		PNGExporter_WritePal(stm, img, &crc);
 	case Media::PF_PAL_W8:
-		k = img->info.dispWidth;
-		tmpBuff = MemAlloc(UInt8, (k + 1) * img->info.dispHeight);
+		k = img->info.dispSize.x;
+		tmpBuff = MemAlloc(UInt8, (k + 1) * img->info.dispSize.y);
 		imgPtr1 = img->data;
 		imgPtr2 = tmpBuff;
-		i = img->info.dispHeight;
+		i = img->info.dispSize.y;
 		while (i-- > 0)
 		{
-			j = img->info.dispWidth;
+			j = img->info.dispSize.x;
 			*imgPtr2++ = 0;
 			MemCopyNO(imgPtr2, imgPtr1, k);
 			imgPtr2 += k;
-			imgPtr1 += img->info.storeWidth;
+			imgPtr1 += img->info.storeSize.x;
 		}
-		PNGExporter_FilterByte(tmpBuff, k, img->info.dispHeight);
-		tmpBuff2 = MemAlloc(UInt8, 12 + (k + 1) * img->info.dispHeight + 11);
+		PNGExporter_FilterByte(tmpBuff, k, img->info.dispSize.y);
+		tmpBuff2 = MemAlloc(UInt8, 12 + (k + 1) * img->info.dispSize.y + 11);
 		*(Int32*)&tmpBuff2[4] = *(Int32*)"IDAT";
-		i = Data::Compress::Inflate::Compress(tmpBuff, (k + 1) * img->info.dispHeight, &tmpBuff2[8], true, Data::Compress::Inflate::CompressionLevel::BestCompression);
+		i = Data::Compress::Inflate::Compress(tmpBuff, (k + 1) * img->info.dispSize.y, &tmpBuff2[8], true, Data::Compress::Inflate::CompressionLevel::BestCompression);
 		if (i < 0)
 		{
 			i = 0;
@@ -1752,14 +1752,14 @@ Bool Exporter::PNGExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 		MemFree(tmpBuff);
 		break;
 	case Media::PF_LE_W16:
-		k = img->info.dispWidth << 1;
-		tmpBuff = MemAlloc(UInt8, (k + 1) * img->info.dispHeight);
+		k = img->info.dispSize.x << 1;
+		tmpBuff = MemAlloc(UInt8, (k + 1) * img->info.dispSize.y);
 		imgPtr1 = img->data;
 		imgPtr2 = tmpBuff;
-		i = img->info.dispHeight;
+		i = img->info.dispSize.y;
 		while (i-- > 0)
 		{
-			j = img->info.dispWidth;
+			j = img->info.dispSize.x;
 			*imgPtr2++ = 0;
 			while (j-- > 0)
 			{
@@ -1768,12 +1768,12 @@ Bool Exporter::PNGExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 				imgPtr2 += 2;
 				imgPtr1 += 2;
 			}
-			imgPtr1 += (img->info.storeWidth - img->info.dispWidth) << 1;
+			imgPtr1 += (img->info.storeSize.x - img->info.dispSize.x) << 1;
 		}
-		PNGExporter_FilterByte2(tmpBuff, k, img->info.dispHeight);
-		tmpBuff2 = MemAlloc(UInt8, 12 + (k + 1) * img->info.dispHeight + 11);
+		PNGExporter_FilterByte2(tmpBuff, k, img->info.dispSize.y);
+		tmpBuff2 = MemAlloc(UInt8, 12 + (k + 1) * img->info.dispSize.y + 11);
 		*(Int32*)&tmpBuff2[4] = *(Int32*)"IDAT";
-		i = Data::Compress::Inflate::Compress(tmpBuff, (k + 1) * img->info.dispHeight, &tmpBuff2[8], true, Data::Compress::Inflate::CompressionLevel::BestCompression);
+		i = Data::Compress::Inflate::Compress(tmpBuff, (k + 1) * img->info.dispSize.y, &tmpBuff2[8], true, Data::Compress::Inflate::CompressionLevel::BestCompression);
 		if (i < 0)
 		{
 			i = 0;
@@ -1787,23 +1787,23 @@ Bool Exporter::PNGExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 		MemFree(tmpBuff);
 		break;
 	case Media::PF_W8A8:
-		k = img->info.dispWidth << 1;
-		tmpBuff = MemAlloc(UInt8, (k + 1) * img->info.dispHeight);
+		k = img->info.dispSize.x << 1;
+		tmpBuff = MemAlloc(UInt8, (k + 1) * img->info.dispSize.y);
 		imgPtr1 = img->data;
 		imgPtr2 = tmpBuff;
-		i = img->info.dispHeight;
+		i = img->info.dispSize.y;
 		while (i-- > 0)
 		{
-			j = img->info.dispWidth;
+			j = img->info.dispSize.x;
 			*imgPtr2++ = 0;
 			MemCopyNO(imgPtr2, imgPtr1, j << 1);
-			imgPtr1 += img->info.storeWidth << 1;
-			imgPtr2 += img->info.dispWidth << 1;
+			imgPtr1 += img->info.storeSize.x << 1;
+			imgPtr2 += img->info.dispSize.x << 1;
 		}
-		PNGExporter_FilterByte2(tmpBuff, k, img->info.dispHeight);
-		tmpBuff2 = MemAlloc(UInt8, 12 + (k + 1) * img->info.dispHeight + 11);
+		PNGExporter_FilterByte2(tmpBuff, k, img->info.dispSize.y);
+		tmpBuff2 = MemAlloc(UInt8, 12 + (k + 1) * img->info.dispSize.y + 11);
 		*(Int32*)&tmpBuff2[4] = *(Int32*)"IDAT";
-		i = Data::Compress::Inflate::Compress(tmpBuff, (k + 1) * img->info.dispHeight, &tmpBuff2[8], true, Data::Compress::Inflate::CompressionLevel::BestCompression);
+		i = Data::Compress::Inflate::Compress(tmpBuff, (k + 1) * img->info.dispSize.y, &tmpBuff2[8], true, Data::Compress::Inflate::CompressionLevel::BestCompression);
 		if (i < 0)
 		{
 			i = 0;
@@ -1817,14 +1817,14 @@ Bool Exporter::PNGExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 		MemFree(tmpBuff);
 		break;
 	case Media::PF_LE_W16A16:
-		k = img->info.dispWidth << 2;
-		tmpBuff = MemAlloc(UInt8, (k + 1) * img->info.dispHeight);
+		k = img->info.dispSize.x << 2;
+		tmpBuff = MemAlloc(UInt8, (k + 1) * img->info.dispSize.y);
 		imgPtr1 = img->data;
 		imgPtr2 = tmpBuff;
-		i = img->info.dispHeight;
+		i = img->info.dispSize.y;
 		while (i-- > 0)
 		{
-			j = img->info.dispWidth;
+			j = img->info.dispSize.x;
 			*imgPtr2++ = 0;
 			while (j-- > 0)
 			{
@@ -1835,12 +1835,12 @@ Bool Exporter::PNGExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 				imgPtr2 += 4;
 				imgPtr1 += 4;
 			}
-			imgPtr1 += (img->info.storeWidth - img->info.dispWidth) << 2;
+			imgPtr1 += (img->info.storeSize.x - img->info.dispSize.x) << 2;
 		}
-		PNGExporter_FilterByte4(tmpBuff, k, img->info.dispHeight);
-		tmpBuff2 = MemAlloc(UInt8, 12 + (k + 1) * img->info.dispHeight + 11);
+		PNGExporter_FilterByte4(tmpBuff, k, img->info.dispSize.y);
+		tmpBuff2 = MemAlloc(UInt8, 12 + (k + 1) * img->info.dispSize.y + 11);
 		*(Int32*)&tmpBuff2[4] = *(Int32*)"IDAT";
-		i = Data::Compress::Inflate::Compress(tmpBuff, (k + 1) * img->info.dispHeight, &tmpBuff2[8], true, Data::Compress::Inflate::CompressionLevel::BestCompression);
+		i = Data::Compress::Inflate::Compress(tmpBuff, (k + 1) * img->info.dispSize.y, &tmpBuff2[8], true, Data::Compress::Inflate::CompressionLevel::BestCompression);
 		if (i < 0)
 		{
 			i = 0;
@@ -1854,14 +1854,14 @@ Bool Exporter::PNGExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 		MemFree(tmpBuff);
 		break;
 	case Media::PF_B8G8R8:
-		k = img->info.dispWidth * 3;
-		tmpBuff = MemAlloc(UInt8, (k + 1) * img->info.dispHeight);
+		k = img->info.dispSize.x * 3;
+		tmpBuff = MemAlloc(UInt8, (k + 1) * img->info.dispSize.y);
 		imgPtr1 = img->data;
 		imgPtr2 = tmpBuff;
-		i = img->info.dispHeight;
+		i = img->info.dispSize.y;
 		while (i-- > 0)
 		{
-			j = img->info.dispWidth;
+			j = img->info.dispSize.x;
 			*imgPtr2++ = 0;
 			while (j-- > 0)
 			{
@@ -1871,12 +1871,12 @@ Bool Exporter::PNGExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 				imgPtr2 += 3;
 				imgPtr1 += 3;
 			}
-			imgPtr1 += (img->info.storeWidth - img->info.dispWidth) * 3;
+			imgPtr1 += (img->info.storeSize.x - img->info.dispSize.x) * 3;
 		}
-		PNGExporter_FilterByte3(tmpBuff, k, img->info.dispHeight);
-		tmpBuff2 = MemAlloc(UInt8, 12 + (k + 1) * img->info.dispHeight + 11);
+		PNGExporter_FilterByte3(tmpBuff, k, img->info.dispSize.y);
+		tmpBuff2 = MemAlloc(UInt8, 12 + (k + 1) * img->info.dispSize.y + 11);
 		*(Int32*)&tmpBuff2[4] = *(Int32*)"IDAT";
-		i = Data::Compress::Inflate::Compress(tmpBuff, (k + 1) * img->info.dispHeight, &tmpBuff2[8], true, Data::Compress::Inflate::CompressionLevel::BestCompression);
+		i = Data::Compress::Inflate::Compress(tmpBuff, (k + 1) * img->info.dispSize.y, &tmpBuff2[8], true, Data::Compress::Inflate::CompressionLevel::BestCompression);
 		if (i < 0)
 		{
 			i = 0;
@@ -1890,14 +1890,14 @@ Bool Exporter::PNGExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 		MemFree(tmpBuff);
 		break;
 	case Media::PF_B8G8R8A8:
-		k = img->info.dispWidth << 2;
-		tmpBuff = MemAlloc(UInt8, (k + 1) * img->info.dispHeight);
+		k = img->info.dispSize.x << 2;
+		tmpBuff = MemAlloc(UInt8, (k + 1) * img->info.dispSize.y);
 		imgPtr1 = img->data;
 		imgPtr2 = tmpBuff;
-		i = img->info.dispHeight;
+		i = img->info.dispSize.y;
 		while (i-- > 0)
 		{
-			j = img->info.dispWidth;
+			j = img->info.dispSize.x;
 			*imgPtr2++ = 0;
 			while (j-- > 0)
 			{
@@ -1908,12 +1908,12 @@ Bool Exporter::PNGExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 				imgPtr2 += 4;
 				imgPtr1 += 4;
 			}
-			imgPtr1 += (img->info.storeWidth - img->info.dispWidth) << 2;
+			imgPtr1 += (img->info.storeSize.x - img->info.dispSize.x) << 2;
 		}
-		PNGExporter_FilterByte4(tmpBuff, k, img->info.dispHeight);
-		tmpBuff2 = MemAlloc(UInt8, 12 + (k + 1) * img->info.dispHeight + 11);
+		PNGExporter_FilterByte4(tmpBuff, k, img->info.dispSize.y);
+		tmpBuff2 = MemAlloc(UInt8, 12 + (k + 1) * img->info.dispSize.y + 11);
 		*(Int32*)&tmpBuff2[4] = *(Int32*)"IDAT";
-		i = Data::Compress::Inflate::Compress(tmpBuff, (k + 1) * img->info.dispHeight, &tmpBuff2[8], true, Data::Compress::Inflate::CompressionLevel::BestCompression);
+		i = Data::Compress::Inflate::Compress(tmpBuff, (k + 1) * img->info.dispSize.y, &tmpBuff2[8], true, Data::Compress::Inflate::CompressionLevel::BestCompression);
 		if (i < 0)
 		{
 			i = 0;
@@ -1927,14 +1927,14 @@ Bool Exporter::PNGExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 		MemFree(tmpBuff);
 		break;
 	case Media::PF_LE_B16G16R16:
-		k = img->info.dispWidth * 6;
-		tmpBuff = MemAlloc(UInt8, (k + 1) * img->info.dispHeight);
+		k = img->info.dispSize.x * 6;
+		tmpBuff = MemAlloc(UInt8, (k + 1) * img->info.dispSize.y);
 		imgPtr1 = img->data;
 		imgPtr2 = tmpBuff;
-		i = img->info.dispHeight;
+		i = img->info.dispSize.y;
 		while (i-- > 0)
 		{
-			j = img->info.dispWidth;
+			j = img->info.dispSize.x;
 			*imgPtr2++ = 0;
 			while (j-- > 0)
 			{
@@ -1947,12 +1947,12 @@ Bool Exporter::PNGExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 				imgPtr2 += 6;
 				imgPtr1 += 6;
 			}
-			imgPtr1 += (img->info.storeWidth - img->info.dispWidth) * 6;
+			imgPtr1 += (img->info.storeSize.x - img->info.dispSize.x) * 6;
 		}
-		PNGExporter_FilterByte6(tmpBuff, k, img->info.dispHeight);
-		tmpBuff2 = MemAlloc(UInt8, 12 + (k + 1) * img->info.dispHeight + 11);
+		PNGExporter_FilterByte6(tmpBuff, k, img->info.dispSize.y);
+		tmpBuff2 = MemAlloc(UInt8, 12 + (k + 1) * img->info.dispSize.y + 11);
 		*(Int32*)&tmpBuff2[4] = *(Int32*)"IDAT";
-		i = Data::Compress::Inflate::Compress(tmpBuff, (k + 1) * img->info.dispHeight, &tmpBuff2[8], true, Data::Compress::Inflate::CompressionLevel::BestCompression);
+		i = Data::Compress::Inflate::Compress(tmpBuff, (k + 1) * img->info.dispSize.y, &tmpBuff2[8], true, Data::Compress::Inflate::CompressionLevel::BestCompression);
 		if (i < 0)
 		{
 			i = 0;
@@ -1966,14 +1966,14 @@ Bool Exporter::PNGExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 		MemFree(tmpBuff);
 		break;
 	case Media::PF_LE_B16G16R16A16:
-		k = img->info.dispWidth << 3;
-		tmpBuff = MemAlloc(UInt8, (k + 1) * img->info.dispHeight);
+		k = img->info.dispSize.x << 3;
+		tmpBuff = MemAlloc(UInt8, (k + 1) * img->info.dispSize.y);
 		imgPtr1 = img->data;
 		imgPtr2 = tmpBuff;
-		i = img->info.dispHeight;
+		i = img->info.dispSize.y;
 		while (i-- > 0)
 		{
-			j = img->info.dispWidth;
+			j = img->info.dispSize.x;
 			*imgPtr2++ = 0;
 			while (j-- > 0)
 			{
@@ -1988,12 +1988,12 @@ Bool Exporter::PNGExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 				imgPtr2 += 8;
 				imgPtr1 += 8;
 			}
-			imgPtr1 += (img->info.storeWidth - img->info.dispWidth) << 3;
+			imgPtr1 += (img->info.storeSize.x - img->info.dispSize.x) << 3;
 		}
-		PNGExporter_FilterByte8(tmpBuff, k, img->info.dispHeight);
-		tmpBuff2 = MemAlloc(UInt8, 12 + (k + 1) * img->info.dispHeight + 11);
+		PNGExporter_FilterByte8(tmpBuff, k, img->info.dispSize.y);
+		tmpBuff2 = MemAlloc(UInt8, 12 + (k + 1) * img->info.dispSize.y + 11);
 		*(Int32*)&tmpBuff2[4] = *(Int32*)"IDAT";
-		i = Data::Compress::Inflate::Compress(tmpBuff, (k + 1) * img->info.dispHeight, &tmpBuff2[8], true, Data::Compress::Inflate::CompressionLevel::BestCompression);
+		i = Data::Compress::Inflate::Compress(tmpBuff, (k + 1) * img->info.dispSize.y, &tmpBuff2[8], true, Data::Compress::Inflate::CompressionLevel::BestCompression);
 		if (i < 0)
 		{
 			i = 0;

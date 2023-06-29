@@ -125,7 +125,7 @@ namespace Media
 		UInt32 GetPhotoISO() const;
 		Double GetPhotoFocalLength() const;
 		Bool GetPhotoLocation(Double *lat, Double *lon, Double *altitude, Int64 *gpsTimeTick) const;
-		Bool GetGeoBounds(UOSInt imgW, UOSInt imgH, UInt32 *srid, Double *minX, Double *minY, Double *maxX, Double *maxY) const;
+		Bool GetGeoBounds(Math::Size2D<UOSInt> imgSize, UInt32 *srid, Double *minX, Double *minY, Double *maxX, Double *maxY) const;
 		RotateType GetRotateType() const;
 		void SetRotateType(RotateType rotateType);
 		Double GetHDPI() const;

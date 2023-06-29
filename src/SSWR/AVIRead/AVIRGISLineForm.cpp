@@ -54,7 +54,7 @@ void SSWR::AVIRead::AVIRGISLineForm::UpdatePreview()
 	Math::Size2D<UOSInt> sz;
 	Media::DrawImage *dimg;
 	sz = this->pbPreview->GetSizeP();
-	dimg = this->eng->CreateImage32(sz.width, sz.height, Media::AT_NO_ALPHA);
+	dimg = this->eng->CreateImage32(sz, Media::AT_NO_ALPHA);
 	dimg->SetHDPI(this->GetHDPI());
 	dimg->SetVDPI(this->GetHDPI());
 	this->core->GenLinePreview(dimg, this->eng, this->lineThick, this->lineColor, this->colorConv);

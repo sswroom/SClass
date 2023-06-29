@@ -26,7 +26,7 @@ namespace Media
 
 		virtual Bool IsUpdatingSize();
 		virtual void LockUpdateSize(Sync::MutexUsage *mutUsage);
-		virtual void DrawFromSurface(Media::MonitorSurface *surface, OSInt destX, OSInt destY, UOSInt buffWidth, UOSInt buffHeight, Bool clearScn);
+		virtual void DrawFromSurface(Media::MonitorSurface *surface, Math::Coord2D<OSInt> destTL, Math::Size2D<UOSInt> buffSize, Bool clearScn);
 
 	};
 }

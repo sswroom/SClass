@@ -199,9 +199,9 @@ void __stdcall SSWR::AVIRead::AVIRHQMPDSForm::OnTimerTick(void *userObj)
 		sb.AppendI32(dbg.buffReady);
 		sb.AppendC(UTF8STRC("\r\n"));
 		sb.AppendC(UTF8STRC("Src Size: "));
-		sb.AppendOSInt(dbg.srcWidth);
+		sb.AppendOSInt(dbg.srcSize.x);
 		sb.AppendC(UTF8STRC(" x "));
-		sb.AppendOSInt(dbg.srcHeight);
+		sb.AppendOSInt(dbg.srcSize.y);
 		sb.AppendC(UTF8STRC("\r\n"));
 		sb.AppendC(UTF8STRC("PAR: "));
 		Text::SBAppendF64(&sb, dbg.par);
@@ -730,9 +730,8 @@ void SSWR::AVIRead::AVIRHQMPDSForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_VIDEO_ORISIZE:
 		{
-			UOSInt vw;
-			UOSInt vh;
-			if (this->player->GetVideoSize(&vw, &vh))
+			Math::Size2D<UOSInt> vSize;
+			if (this->player->GetVideoSize(&vSize.x, &vSize.y))
 			{
 				Math::Size2D<UOSInt> size1;
 				Math::Size2D<UOSInt> size2;
@@ -745,13 +744,13 @@ void SSWR::AVIRead::AVIRHQMPDSForm::EventMenuClicked(UInt16 cmdId)
 				size2 = this->GetSizeP();
 
 				this->SetFormState(UI::GUIForm::FS_NORMAL);
-				if (size1.width == vw && size1.height == vh)
+				if (size1 == vSize)
 				{
 					this->vbox->OnSizeChanged(false);
 				}
 				else
 				{
-					this->SetSizeP(size2.width - size1.width + vw, size2.height - size1.height + vh);
+					this->SetSizeP(size2 - size1 + vSize);
 				}
 			}
 		}

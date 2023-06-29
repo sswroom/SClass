@@ -106,10 +106,9 @@ Bool Media::H265Parser::GetFrameInfoSPS(const UInt8 *sps, UOSInt spsSize, Media:
 	Media::H264Parser::ParseVari(reader, &pic_height_in_luma_samples); //pic_height_in_luma_samples
 	if (pic_width_in_luma_samples != 0 && pic_height_in_luma_samples != 0)
 	{
-		frameInfo->storeWidth = pic_width_in_luma_samples;
-		frameInfo->storeHeight = pic_height_in_luma_samples;
-		frameInfo->dispWidth = frameInfo->storeWidth;
-		frameInfo->dispHeight = frameInfo->storeHeight;
+		frameInfo->storeSize.x = pic_width_in_luma_samples;
+		frameInfo->storeSize.y = pic_height_in_luma_samples;
+		frameInfo->dispSize = frameInfo->storeSize;
 	}
 	reader->ReadBits(&tmp, 1); //conformance_window_flag
 	if (tmp)

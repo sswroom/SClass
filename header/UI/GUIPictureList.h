@@ -18,13 +18,12 @@ namespace UI
 		Data::ArrayList<Media::DrawImage *> imgList;
 		UOSInt selectedIndex;
 		Media::IImgResizer *resizer;
-		UOSInt iconWidth;
-		UOSInt iconHeight;
+		Math::Size2D<UOSInt> iconSize;
 		Bool hasBorder;
 		Bool allowResize;
 
 	public:
-		GUIPictureList(GUICore *ui, UI::GUIClientControl *parent, Media::DrawEngine *eng, Bool hasBorder, UOSInt iconWidth, UOSInt iconHeight);
+		GUIPictureList(GUICore *ui, UI::GUIClientControl *parent, Media::DrawEngine *eng, Bool hasBorder, Math::Size2D<UOSInt> iconSize);
 		virtual ~GUIPictureList();
 
 		virtual void OnDraw(Media::DrawImage *img);

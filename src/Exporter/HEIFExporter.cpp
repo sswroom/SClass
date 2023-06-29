@@ -116,7 +116,7 @@ heif_image *HEIFExporter_CreateImage(Media::Image *img)
 		return 0;
 	}
 	heif_image *image = 0;
-	heif_image_create((int)img->info.dispWidth, (int)img->info.dispHeight, heif_colorspace_RGB, chroma, &image);
+	heif_image_create((int)img->info.dispSize.x, (int)img->info.dispSize.y, heif_colorspace_RGB, chroma, &image);
 	if (image == 0)
 		return 0;
 	int stride;
@@ -140,49 +140,49 @@ heif_image *HEIFExporter_CreateImage(Media::Image *img)
 	case Media::PF_B8G8R8A1:
 	case Media::PF_LE_R5G5B5:
 	case Media::PF_LE_R5G6B5:
-		heif_image_add_plane(image, heif_channel_interleaved, (int)img->info.dispWidth, (int)img->info.dispHeight, 8);
+		heif_image_add_plane(image, heif_channel_interleaved, (int)img->info.dispSize.x, (int)img->info.dispSize.y, 8);
 		data = heif_image_get_plane(image, heif_channel_interleaved, &stride);
 
 		simg = img->CreateStaticImage();
 		simg->To32bpp();
-		simg->GetImageData(data, 0, 0, simg->info.dispWidth, simg->info.dispHeight, (UOSInt)stride, false, img->info.rotateType);
-		ImageUtil_SwapRGB(data, img->info.dispWidth * img->info.dispHeight, 32);
+		simg->GetImageData(data, 0, 0, simg->info.dispSize.x, simg->info.dispSize.y, (UOSInt)stride, false, img->info.rotateType);
+		ImageUtil_SwapRGB(data, img->info.dispSize.x * img->info.dispSize.y, 32);
 		DEL_CLASS(simg);
 		break;
 	case Media::PF_B8G8R8A8:
-		heif_image_add_plane(image, heif_channel_interleaved, (int)img->info.dispWidth, (int)img->info.dispHeight, 8);
+		heif_image_add_plane(image, heif_channel_interleaved, (int)img->info.dispSize.x, (int)img->info.dispSize.y, 8);
 		data = heif_image_get_plane(image, heif_channel_interleaved, &stride);
 
-		img->GetImageData(data, 0, 0, img->info.dispWidth, img->info.dispHeight, (UOSInt)stride, false, img->info.rotateType);
-		ImageUtil_SwapRGB(data, img->info.dispWidth * img->info.dispHeight, 32);
+		img->GetImageData(data, 0, 0, img->info.dispSize.x, img->info.dispSize.y, (UOSInt)stride, false, img->info.rotateType);
+		ImageUtil_SwapRGB(data, img->info.dispSize.x * img->info.dispSize.y, 32);
 		break;
 	case Media::PF_R8G8B8A8:
-		heif_image_add_plane(image, heif_channel_interleaved, (int)img->info.dispWidth, (int)img->info.dispHeight, 8);
+		heif_image_add_plane(image, heif_channel_interleaved, (int)img->info.dispSize.x, (int)img->info.dispSize.y, 8);
 		data = heif_image_get_plane(image, heif_channel_interleaved, &stride);
 
-		img->GetImageData(data, 0, 0, img->info.dispWidth, img->info.dispHeight, (UOSInt)stride, false, img->info.rotateType);
+		img->GetImageData(data, 0, 0, img->info.dispSize.x, img->info.dispSize.y, (UOSInt)stride, false, img->info.rotateType);
 		break;
 
 	case Media::PF_B8G8R8:
-		heif_image_add_plane(image, heif_channel_interleaved, (int)img->info.dispWidth, (int)img->info.dispHeight, 8);
+		heif_image_add_plane(image, heif_channel_interleaved, (int)img->info.dispSize.x, (int)img->info.dispSize.y, 8);
 		data = heif_image_get_plane(image, heif_channel_interleaved, &stride);
 
-		img->GetImageData(data, 0, 0, img->info.dispWidth, img->info.dispHeight, (UOSInt)stride, false, img->info.rotateType);
-		ImageUtil_SwapRGB(data, img->info.dispWidth * img->info.dispHeight, 24);
+		img->GetImageData(data, 0, 0, img->info.dispSize.x, img->info.dispSize.y, (UOSInt)stride, false, img->info.rotateType);
+		ImageUtil_SwapRGB(data, img->info.dispSize.x * img->info.dispSize.y, 24);
 		break;
 	case Media::PF_R8G8B8:
-		heif_image_add_plane(image, heif_channel_interleaved, (int)img->info.dispWidth, (int)img->info.dispHeight, 8);
+		heif_image_add_plane(image, heif_channel_interleaved, (int)img->info.dispSize.x, (int)img->info.dispSize.y, 8);
 		data = heif_image_get_plane(image, heif_channel_interleaved, &stride);
 
-		img->GetImageData(data, 0, 0, img->info.dispWidth, img->info.dispHeight, (UOSInt)stride, false, img->info.rotateType);
+		img->GetImageData(data, 0, 0, img->info.dispSize.x, img->info.dispSize.y, (UOSInt)stride, false, img->info.rotateType);
 		break;
 
 	case Media::PF_LE_B16G16R16:
-		heif_image_add_plane(image, heif_channel_interleaved, (int)img->info.dispWidth, (int)img->info.dispHeight, 16);
+		heif_image_add_plane(image, heif_channel_interleaved, (int)img->info.dispSize.x, (int)img->info.dispSize.y, 16);
 		data = heif_image_get_plane(image, heif_channel_interleaved, &stride);
 
-		img->GetImageData(data, 0, 0, img->info.dispWidth, img->info.dispHeight, (UOSInt)stride, false, img->info.rotateType);
-		ImageUtil_SwapRGB(data, img->info.dispWidth * img->info.dispHeight, 48);
+		img->GetImageData(data, 0, 0, img->info.dispSize.x, img->info.dispSize.y, (UOSInt)stride, false, img->info.rotateType);
+		ImageUtil_SwapRGB(data, img->info.dispSize.x * img->info.dispSize.y, 48);
 		break;
 
 	case Media::PF_LE_W16:
@@ -192,21 +192,21 @@ heif_image *HEIFExporter_CreateImage(Media::Image *img)
 	case Media::PF_LE_W16A16:
 	case Media::PF_LE_FB32G32R32A32:
 	case Media::PF_LE_FW32A32:
-		heif_image_add_plane(image, heif_channel_interleaved, (int)img->info.dispWidth, (int)img->info.dispHeight, 16);
+		heif_image_add_plane(image, heif_channel_interleaved, (int)img->info.dispSize.x, (int)img->info.dispSize.y, 16);
 		data = heif_image_get_plane(image, heif_channel_interleaved, &stride);
 
 		simg = img->CreateStaticImage();
 		simg->To64bpp();
-		simg->GetImageData(data, 0, 0, simg->info.dispWidth, simg->info.dispHeight, (UOSInt)stride, false, simg->info.rotateType);
-		ImageUtil_SwapRGB(data, img->info.dispWidth * img->info.dispHeight, 64);
+		simg->GetImageData(data, 0, 0, simg->info.dispSize.x, simg->info.dispSize.y, (UOSInt)stride, false, simg->info.rotateType);
+		ImageUtil_SwapRGB(data, img->info.dispSize.x * img->info.dispSize.y, 64);
 		DEL_CLASS(simg);
 		break;
 	case Media::PF_LE_B16G16R16A16:
-		heif_image_add_plane(image, heif_channel_interleaved, (int)img->info.dispWidth, (int)img->info.dispHeight, 16);
+		heif_image_add_plane(image, heif_channel_interleaved, (int)img->info.dispSize.x, (int)img->info.dispSize.y, 16);
 		data = heif_image_get_plane(image, heif_channel_interleaved, &stride);
 
-		img->GetImageData(data, 0, 0, img->info.dispWidth, img->info.dispHeight, (UOSInt)stride, false, img->info.rotateType);
-		ImageUtil_SwapRGB(data, img->info.dispWidth * img->info.dispHeight, 64);
+		img->GetImageData(data, 0, 0, img->info.dispSize.x, img->info.dispSize.y, (UOSInt)stride, false, img->info.rotateType);
+		ImageUtil_SwapRGB(data, img->info.dispSize.x * img->info.dispSize.y, 64);
 		break;
 	default:
 	case Media::PF_UNKNOWN:

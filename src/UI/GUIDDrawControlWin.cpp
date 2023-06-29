@@ -61,44 +61,44 @@ OSInt __stdcall UI::GUIDDrawControl::FormWndProc(void *hWnd, UInt32 msg, UOSInt 
 	case WM_ERASEBKGND:
 		return 1;
 	case WM_LBUTTONDOWN:
-		me->OnMouseDown((Int16)LOWORD(lParam), (Int16)HIWORD(lParam), MBTN_LEFT);
+		me->OnMouseDown(Math::Coord2D<OSInt>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), MBTN_LEFT);
 		return 0;
 	case WM_LBUTTONUP:
-		me->OnMouseUp((Int16)LOWORD(lParam), (Int16)HIWORD(lParam), MBTN_LEFT);
+		me->OnMouseUp(Math::Coord2D<OSInt>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), MBTN_LEFT);
 		return 0;
 	case WM_LBUTTONDBLCLK:
-		me->OnMouseDblClick((Int16)LOWORD(lParam), (Int16)HIWORD(lParam), MBTN_LEFT);
+		me->OnMouseDblClick(Math::Coord2D<OSInt>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), MBTN_LEFT);
 		return 0;
 	case WM_RBUTTONDOWN:
-		me->OnMouseDown((Int16)LOWORD(lParam), (Int16)HIWORD(lParam), MBTN_RIGHT);
+		me->OnMouseDown(Math::Coord2D<OSInt>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), MBTN_RIGHT);
 		return 0;
 	case WM_RBUTTONUP:
-		me->OnMouseUp((Int16)LOWORD(lParam), (Int16)HIWORD(lParam), MBTN_RIGHT);
+		me->OnMouseUp(Math::Coord2D<OSInt>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), MBTN_RIGHT);
 		return 0;
 	case WM_RBUTTONDBLCLK:
-		me->OnMouseDblClick((Int16)LOWORD(lParam), (Int16)HIWORD(lParam), MBTN_RIGHT);
+		me->OnMouseDblClick(Math::Coord2D<OSInt>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), MBTN_RIGHT);
 		return 0;
 	case WM_MBUTTONDOWN:
-		me->OnMouseDown((Int16)LOWORD(lParam), (Int16)HIWORD(lParam), MBTN_MIDDLE);
+		me->OnMouseDown(Math::Coord2D<OSInt>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), MBTN_MIDDLE);
 		return 0;
 	case WM_MBUTTONUP:
-		me->OnMouseUp((Int16)LOWORD(lParam), (Int16)HIWORD(lParam), MBTN_MIDDLE);
+		me->OnMouseUp(Math::Coord2D<OSInt>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), MBTN_MIDDLE);
 		return 0;
 	case WM_XBUTTONDOWN:
-		me->OnMouseDown((Int16)LOWORD(lParam), (Int16)HIWORD(lParam), MBTN_X1);
+		me->OnMouseDown(Math::Coord2D<OSInt>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), MBTN_X1);
 		return 0;
 	case WM_XBUTTONUP:
-		me->OnMouseUp((Int16)LOWORD(lParam), (Int16)HIWORD(lParam), MBTN_X1);
+		me->OnMouseUp(Math::Coord2D<OSInt>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), MBTN_X1);
 		return 0;
 	case WM_MOUSEMOVE:
-		me->OnMouseMove((Int16)LOWORD(lParam), (Int16)HIWORD(lParam));
+		me->OnMouseMove(Math::Coord2D<OSInt>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)));
 		return 0;
 	case WM_MOUSEWHEEL:
 		{
 			OSInt scnX;
 			OSInt scnY;
 			me->GetScreenPosP(&scnX, &scnY);
-			me->OnMouseWheel(-scnX + (Int16)LOWORD(lParam), -scnY + (Int16)HIWORD(lParam), (Int16)HIWORD(wParam));
+			me->OnMouseWheel(Math::Coord2D<OSInt>(-scnX + (Int16)LOWORD(lParam), -scnY + (Int16)HIWORD(lParam)), (Int16)HIWORD(wParam));
 		}
 		return 0;
 	case WM_SIZE:
@@ -123,19 +123,19 @@ OSInt __stdcall UI::GUIDDrawControl::FormWndProc(void *hWnd, UInt32 msg, UOSInt 
 						{
 							RECT rcWnd;
 							GetWindowRect((HWND)hWnd, &rcWnd);
-							me->OnGZoomBegin(gi.ptsLocation.x - rcWnd.left, gi.ptsLocation.y - rcWnd.top, gi.ullArguments);
+							me->OnGZoomBegin(Math::Coord2D<OSInt>(gi.ptsLocation.x - rcWnd.left, gi.ptsLocation.y - rcWnd.top), gi.ullArguments);
 						}
 						else if (gi.dwFlags & GF_END)
 						{
 							RECT rcWnd;
 							GetWindowRect((HWND)hWnd, &rcWnd);
-							me->OnGZoomEnd(gi.ptsLocation.x - rcWnd.left, gi.ptsLocation.y - rcWnd.top, gi.ullArguments);
+							me->OnGZoomEnd(Math::Coord2D<OSInt>(gi.ptsLocation.x - rcWnd.left, gi.ptsLocation.y - rcWnd.top), gi.ullArguments);
 						}
 						else
 						{
 							RECT rcWnd;
 							GetWindowRect((HWND)hWnd, &rcWnd);
-							me->OnGZoomStep(gi.ptsLocation.x - rcWnd.left, gi.ptsLocation.y - rcWnd.top, gi.ullArguments);
+							me->OnGZoomStep(Math::Coord2D<OSInt>(gi.ptsLocation.x - rcWnd.left, gi.ptsLocation.y - rcWnd.top), gi.ullArguments);
 						}
 					}
 				}
@@ -230,8 +230,7 @@ void __stdcall UI::GUIDDrawControl::OnResized(void *userObj)
 	{
 		Sync::MutexUsage mutUsage(&me->surfaceMut);
 		Math::Size2D<UOSInt> sz = me->GetSizeP();
-		me->surfaceW = sz.width;
-		me->surfaceH = sz.height;
+		me->surfaceSize = sz;
 		me->ReleaseSubSurface();
 		me->CreateSubSurface();
 		mutUsage.EndUse();
@@ -240,9 +239,9 @@ void __stdcall UI::GUIDDrawControl::OnResized(void *userObj)
 		{
 			Text::StringBuilderUTF8 sb;
 			sb.AppendC(UTF8STRC("Surface size changed to "));
-			sb.AppendUOSInt(me->surfaceW);
+			sb.AppendUOSInt(me->surfaceSize.x);
 			sb.AppendC(UTF8STRC(" x "));
-			sb.AppendUOSInt(me->surfaceH);
+			sb.AppendUOSInt(me->surfaceSize.y);
 			sb.AppendC(UTF8STRC(", hMon="));
 			sb.AppendOSInt((OSInt)me->GetHMonitor());
 			me->debugWriter->WriteLineC(sb.ToString(), sb.GetLength());
@@ -307,8 +306,8 @@ Bool UI::GUIDDrawControl::CreateSurface()
 		if (succ)
 		{
 			this->bitDepth = this->primarySurface->info.storeBPP;
-			this->scnW = this->primarySurface->info.dispWidth;
-			this->scnH = this->primarySurface->info.dispHeight;
+			this->scnW = this->primarySurface->info.dispSize.x;
+			this->scnH = this->primarySurface->info.dispSize.y;
 		}
 		return succ;
 	}
@@ -337,9 +336,9 @@ Bool UI::GUIDDrawControl::CreateSurface()
 			{
 				Text::StringBuilderUTF8 sb;
 				sb.AppendC(UTF8STRC("Primary surface desc: Size = "));
-				sb.AppendUOSInt(this->primarySurface->info.dispWidth);
+				sb.AppendUOSInt(this->primarySurface->info.dispSize.x);
 				sb.AppendC(UTF8STRC(" x "));
-				sb.AppendUOSInt(this->primarySurface->info.dispHeight);
+				sb.AppendUOSInt(this->primarySurface->info.dispSize.y);
 				sb.AppendC(UTF8STRC(", bpl = "));
 				sb.AppendUOSInt(this->primarySurface->GetDataBpl());
 				sb.AppendC(UTF8STRC(", hMon = "));
@@ -349,8 +348,8 @@ Bool UI::GUIDDrawControl::CreateSurface()
 				this->debugWriter->WriteLineC(sb.ToString(), sb.GetLength());
 			}
 			this->bitDepth = this->primarySurface->info.storeBPP;
-			this->scnW = this->primarySurface->info.dispWidth;
-			this->scnH = this->primarySurface->info.dispHeight;
+			this->scnW = this->primarySurface->info.dispSize.x;
+			this->scnH = this->primarySurface->info.dispSize.y;
 
 			CreateSubSurface();
 			return true;
@@ -383,7 +382,7 @@ void UI::GUIDDrawControl::CreateSubSurface()
 	{
 		UInt32 w = (UInt32)(rc.right - rc.left);
 		UInt32 h = (UInt32)(rc.bottom - rc.top);
-		if (this->surfaceW != w || this->surfaceH != h)
+		if (this->surfaceSize.x != w || this->surfaceSize.y != h)
 		{
 			if (this->debugWriter)
 			{
@@ -394,10 +393,9 @@ void UI::GUIDDrawControl::CreateSubSurface()
 				sb.AppendU32(h);
 				this->debugWriter->WriteLineC(sb.ToString(), sb.GetLength());
 			}
-			this->surfaceW = w;
-			this->surfaceH = h;
+			this->surfaceSize = Math::Size2D<UOSInt>(w, h);
 		}
-		this->buffSurface = this->surfaceMgr->CreateSurface(w, h, this->primarySurface->info.storeBPP);
+		this->buffSurface = this->surfaceMgr->CreateSurface(Math::Size2D<UOSInt>(w, h), this->primarySurface->info.storeBPP);
 	}
 }
 
@@ -414,7 +412,7 @@ UInt8 *UI::GUIDDrawControl::LockSurfaceBegin(UOSInt targetWidth, UOSInt targetHe
 		this->surfaceMut.Unlock();
 		return 0;
 	}
-	if (targetWidth == this->surfaceW && targetHeight == this->surfaceH)
+	if (targetWidth == this->surfaceSize.x && targetHeight == this->surfaceSize.y)
 	{
 		UInt8 *dptr = this->buffSurface->LockSurface((OSInt*)bpl);
 		if (dptr)
@@ -637,11 +635,11 @@ void UI::GUIDDrawControl::DrawToScreen()
 	}
 }
 
-void UI::GUIDDrawControl::DisplayFromSurface(Media::MonitorSurface *surface, OSInt tlx, OSInt tly, UOSInt drawW, UOSInt drawH, Bool clearScn)
+void UI::GUIDDrawControl::DisplayFromSurface(Media::MonitorSurface *surface, Math::Coord2D<OSInt> tl, Math::Size2D<UOSInt> drawSize, Bool clearScn)
 {
 	if (primarySurface)
 	{
-		this->primarySurface->DrawFromSurface(surface, tlx, tly, drawW, drawH, clearScn, true);
+		this->primarySurface->DrawFromSurface(surface, tl, drawSize, clearScn, true);
 	}
 }
 
@@ -695,8 +693,8 @@ void UI::GUIDDrawControl::SwitchFullScreen(Bool fullScn, Bool vfs)
 			SwitchFullScreen(false);
 			return;
 		}*/
-		this->surfaceW = ddsd.dwWidth;
-		this->surfaceH = ddsd.dwHeight;
+		this->surfaceSize.x = ddsd.dwWidth;
+		this->surfaceSize.y = ddsd.dwHeight;
 
 		CreateSurface();
 		if (this->primarySurface == 0)
@@ -833,23 +831,23 @@ Bool UI::GUIDDrawControl::IsSurfaceReady()
 	return this->buffSurface != 0;
 }
 
-void UI::GUIDDrawControl::OnMouseWheel(OSInt x, OSInt y, Int32 amount)
+void UI::GUIDDrawControl::OnMouseWheel(Math::Coord2D<OSInt> scnPos, Int32 amount)
 {
 }
 
-void UI::GUIDDrawControl::OnMouseMove(OSInt x, OSInt y)
+void UI::GUIDDrawControl::OnMouseMove(Math::Coord2D<OSInt> scnPos)
 {
 }
 
-void UI::GUIDDrawControl::OnMouseDown(OSInt x, OSInt y, MouseButton button)
+void UI::GUIDDrawControl::OnMouseDown(Math::Coord2D<OSInt> scnPos, MouseButton button)
 {
 }
 
-void UI::GUIDDrawControl::OnMouseUp(OSInt x, OSInt y, MouseButton button)
+void UI::GUIDDrawControl::OnMouseUp(Math::Coord2D<OSInt> scnPos, MouseButton button)
 {
 }
 
-void UI::GUIDDrawControl::OnMouseDblClick(OSInt x, OSInt y, MouseButton button)
+void UI::GUIDDrawControl::OnMouseDblClick(Math::Coord2D<OSInt> scnPos, MouseButton button)
 {
 	if (button == MBTN_LEFT)
 	{
@@ -872,15 +870,15 @@ void UI::GUIDDrawControl::OnMouseDblClick(OSInt x, OSInt y, MouseButton button)
 	}
 }
 
-void UI::GUIDDrawControl::OnGZoomBegin(OSInt x, OSInt y, UInt64 dist)
+void UI::GUIDDrawControl::OnGZoomBegin(Math::Coord2D<OSInt> scnPos, UInt64 dist)
 {
 }
 
-void UI::GUIDDrawControl::OnGZoomStep(OSInt x, OSInt y, UInt64 dist)
+void UI::GUIDDrawControl::OnGZoomStep(Math::Coord2D<OSInt> scnPos, UInt64 dist)
 {
 }
 
-void UI::GUIDDrawControl::OnGZoomEnd(OSInt x, OSInt y, UInt64 dist)
+void UI::GUIDDrawControl::OnGZoomEnd(Math::Coord2D<OSInt> scnPos, UInt64 dist)
 {
 }
 

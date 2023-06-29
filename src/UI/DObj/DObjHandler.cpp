@@ -124,7 +124,7 @@ void UI::DObj::DObjHandler::EndUpdate()
 	this->updMut.Unlock();
 }
 
-void UI::DObj::DObjHandler::OnMouseDown(OSInt x, OSInt y, UI::GUIControl::MouseButton button)
+void UI::DObj::DObjHandler::OnMouseDown(Math::Coord2D<OSInt> scnPos, UI::GUIControl::MouseButton button)
 {
 	if (button == UI::GUIControl::MBTN_LEFT)
 	{
@@ -135,7 +135,7 @@ void UI::DObj::DObjHandler::OnMouseDown(OSInt x, OSInt y, UI::GUIControl::MouseB
 		while (i-- > 0)
 		{
 			obj = this->objList.GetItem(i);
-			if (obj->IsObject(x, y))
+			if (obj->IsObject(scnPos))
 			{
 				this->downObj = obj;
 				this->downObj->OnMouseDown();
@@ -145,7 +145,7 @@ void UI::DObj::DObjHandler::OnMouseDown(OSInt x, OSInt y, UI::GUIControl::MouseB
 	}
 }
 
-void UI::DObj::DObjHandler::OnMouseUp(OSInt x, OSInt y, UI::GUIControl::MouseButton button)
+void UI::DObj::DObjHandler::OnMouseUp(Math::Coord2D<OSInt> scnPos, UI::GUIControl::MouseButton button)
 {
 	if (button == UI::GUIControl::MBTN_LEFT)
 	{
@@ -153,7 +153,7 @@ void UI::DObj::DObjHandler::OnMouseUp(OSInt x, OSInt y, UI::GUIControl::MouseBut
 		if (this->downObj != 0)
 		{
 			this->downObj->OnMouseUp();
-			if (this->downObj->IsObject(x, y))
+			if (this->downObj->IsObject(scnPos))
 			{
 				this->downObj->OnMouseClick();
 			}
@@ -162,7 +162,7 @@ void UI::DObj::DObjHandler::OnMouseUp(OSInt x, OSInt y, UI::GUIControl::MouseBut
 	}
 }
 
-void UI::DObj::DObjHandler::OnMouseMove(OSInt x, OSInt y)
+void UI::DObj::DObjHandler::OnMouseMove(Math::Coord2D<OSInt> scnPos)
 {
 	DirectObject *mouseObj = 0;
 	
@@ -173,7 +173,7 @@ void UI::DObj::DObjHandler::OnMouseMove(OSInt x, OSInt y)
 	while (i-- > 0)
 	{
 		obj = this->objList.GetItem(i);
-		if (obj->IsObject(x, y))
+		if (obj->IsObject(scnPos))
 		{
 			mouseObj = obj;
 			break;

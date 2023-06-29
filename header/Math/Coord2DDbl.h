@@ -46,6 +46,11 @@ namespace Math
 			return Coord2DDbl(lon, lat);
 		}
 
+		Coord2DDbl XchgXY() const
+		{
+			return Coord2DDbl(this->y, this->x);
+		}
+
 		Double CalcLengTo(Coord2DDbl coord) const
 		{
 			Math::Coord2DDbl diff = *this - coord;
@@ -136,6 +141,12 @@ namespace Math
 		Coord2DDbl& operator+=(Coord2DDbl v)
 		{
 			this->vals = PADDPD(this->vals, v.vals);
+			return *this;
+		}
+
+		Coord2DDbl& operator-=(Coord2DDbl v)
+		{
+			this->vals = PSUBPD(this->vals, v.vals);
 			return *this;
 		}
 

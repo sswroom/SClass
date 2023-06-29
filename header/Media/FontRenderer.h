@@ -1,5 +1,6 @@
 #ifndef _SM_MEDIA_FONTRENDERER
 #define _SM_MEDIA_FONTRENDERER
+#include "Math/Size2D.h"
 #include "IO/ParsedObject.h"
 
 namespace Media
@@ -15,7 +16,7 @@ namespace Media
 		virtual IO::ParserType GetParserType() const;
 		virtual UTF32Char GetMinChar() const = 0;
 		virtual UTF32Char GetMaxChar() const = 0;
-		virtual Media::StaticImage *CreateImage(UTF32Char charCode, UOSInt targetWidth, UOSInt targetHeight) const = 0;
+		virtual Media::StaticImage *CreateImage(UTF32Char charCode, Math::Size2D<UOSInt> targetSize) const = 0;
 	};
 }
 #endif

@@ -87,7 +87,7 @@ void SSWR::AVIRead::AVIRSetDPIForm::UpdatePreview()
 	Double lastX;
 	UTF8Char sbuff[10];
 	UTF8Char *sptr;
-	Math::Size2D<Double> sz;
+	Math::Size2DDbl sz;
 	Media::DrawEngine *eng;
 	Media::DrawImage *gimg;
 	Media::DrawBrush *b;
@@ -97,13 +97,13 @@ void SSWR::AVIRead::AVIRSetDPIForm::UpdatePreview()
 	SDEL_CLASS(this->pimg);
 	usz = this->pbPreview->GetSizeP();
 	eng = this->core->GetDrawEngine();
-	if (usz.width > 0 && usz.height > 0)
+	if (usz.x > 0 && usz.y > 0)
 	{
 		Double ddpi = this->core->GetMonitorDDPI(this->GetHMonitor());
 		v = this->hsbDPI->GetPos();
-		gimg = eng->CreateImage32(usz.width, usz.height, Media::AT_NO_ALPHA);
+		gimg = eng->CreateImage32(usz, Media::AT_NO_ALPHA);
 		b = gimg->NewBrushARGB(0xffffffff);
-		gimg->DrawRect(0, 0, UOSInt2Double(usz.width), UOSInt2Double(usz.height), 0, b);
+		gimg->DrawRect(Math::Coord2DDbl(0, 0), usz.ToDouble(), 0, b);
 		gimg->DelBrush(b);
 
 		f = gimg->NewFontPx(CSTR("Arial"), 12 * UOSInt2Double(v) * 0.1 / ddpi, Media::DrawEngine::DFS_ANTIALIAS, 0);
@@ -111,20 +111,20 @@ void SSWR::AVIRead::AVIRSetDPIForm::UpdatePreview()
 		b = gimg->NewBrushARGB(0xff000000);
 		currV = 0;
 		sz = gimg->GetTextSize(f, CSTR("0"));
-		initX = sz.width * 0.5;
+		initX = sz.x * 0.5;
 		lastX = initX - 20.0;
 		while (true)
 		{
 			currX = Math::Unit::Distance::Convert(Math::Unit::Distance::DU_CENTIMETER, Math::Unit::Distance::DU_INCH, currV) * UOSInt2Double(v) * 0.1 + initX;
-			if (currX > UOSInt2Double(usz.width))
+			if (currX > UOSInt2Double(usz.x))
 				break;
 
 			if (currX >= lastX + 20)
 			{
 				sptr = Text::StrInt32(sbuff, currV);
 				sz = gimg->GetTextSize(f, CSTRP(sbuff, sptr));
-				gimg->DrawLine(currX, 0, currX, UOSInt2Double(usz.height) - sz.height, p);
-				gimg->DrawString(currX - sz.width * 0.5, UOSInt2Double(usz.height) - sz.height, CSTRP(sbuff, sptr), f, b);
+				gimg->DrawLine(currX, 0, currX, UOSInt2Double(usz.y) - sz.y, p);
+				gimg->DrawString(Math::Coord2DDbl(currX - sz.x * 0.5, UOSInt2Double(usz.y) - sz.y), CSTRP(sbuff, sptr), f, b);
 				lastX = currX;
 			}
 			currV++;

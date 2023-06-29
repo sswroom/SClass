@@ -26,7 +26,7 @@ void __stdcall SSWR::AVIRead::AVIRGenImageForm::GenerateClicked(void *userObj)
 		Media::ImageGenerator *imgGen = (Media::ImageGenerator*)me->cboGenerator->GetItem(i);
 		Media::ColorProfile colorProfile((Media::ColorProfile::CommonProfileType)(OSInt)me->cboColorProfile->GetSelectedItem());
 
-		Media::Image *img = imgGen->GenerateImage(&colorProfile, width, height);
+		Media::Image *img = imgGen->GenerateImage(&colorProfile, Math::Size2D<UOSInt>(width, height));
 		if (img)
 		{
 			Media::ImageList *imgList;

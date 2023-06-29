@@ -1562,7 +1562,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		NEW_CLASS(imgGen, Media::ImageGen::RingsImageGen());
 
 		clk->Start();
-		srcImg = (Media::StaticImage*)imgGen->GenerateImage(&color, imgWidth, imgHeight);
+		srcImg = (Media::StaticImage*)imgGen->GenerateImage(&color, Math::Size2D<UOSInt>(imgWidth, imgHeight));
 		t = clk->GetTimeDiff();
 		DEL_CLASS(imgGen);
 		if (srcImg == 0)
@@ -1608,7 +1608,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			tmpBuff = MemAllocA(UInt8, imgWidth * imgHeight * 8);
 
 			clk->Start();
-			NEW_CLASS(newImg, Media::StaticImage(imgWidth >> 1, imgHeight >> 1, 0, 64, Media::PF_LE_B16G16R16A16, 0, &color, Media::ColorProfile::YUVT_BT709, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+			NEW_CLASS(newImg, Media::StaticImage(Math::Size2D<UOSInt>(imgWidth >> 1, imgHeight >> 1), 0, 64, Media::PF_LE_B16G16R16A16, 0, &color, Media::ColorProfile::YUVT_BT709, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 			t = clk->GetTimeDiff();
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Create Image: t = "));
@@ -1686,7 +1686,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 			clk->Start();
-			NEW_CLASS(newImg, Media::StaticImage(imgWidth >> 1, imgHeight >> 1, 0, 32, Media::PF_B8G8R8A8, 0, &color, Media::ColorProfile::YUVT_BT709, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+			NEW_CLASS(newImg, Media::StaticImage(Math::Size2D<UOSInt>(imgWidth >> 1, imgHeight >> 1), 0, 32, Media::PF_B8G8R8A8, 0, &color, Media::ColorProfile::YUVT_BT709, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 			t = clk->GetTimeDiff();
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Create Image: t = "));
@@ -1825,7 +1825,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			console->WriteLineC(UTF8STRC("Initialized"));
 
 			clk->Start();
-			csconv->ConvertV2(&srcImg->data, tmpBuff, srcImg->info.dispWidth, srcImg->info.dispHeight, srcImg->info.storeWidth, srcImg->info.storeHeight, (OSInt)srcImg->info.dispWidth << 3, Media::FT_NON_INTERLACE, Media::YCOFST_C_CENTER_LEFT);
+			csconv->ConvertV2(&srcImg->data, tmpBuff, srcImg->info.dispSize.x, srcImg->info.dispSize.y, srcImg->info.storeSize.x, srcImg->info.storeSize.y, (OSInt)srcImg->info.dispSize.x << 3, Media::FT_NON_INTERLACE, Media::YCOFST_C_CENTER_LEFT);
 			t = clk->GetTimeDiff();
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("CSConv (1st): t = "));
@@ -1841,7 +1841,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			i = cnt;
 			while (i-- > 0)
 			{
-				csconv->ConvertV2(&srcImg->data, tmpBuff, srcImg->info.dispWidth, srcImg->info.dispHeight, srcImg->info.storeWidth, srcImg->info.storeHeight, (OSInt)srcImg->info.dispWidth << 3, Media::FT_NON_INTERLACE, Media::YCOFST_C_CENTER_LEFT);
+				csconv->ConvertV2(&srcImg->data, tmpBuff, srcImg->info.dispSize.x, srcImg->info.dispSize.y, srcImg->info.storeSize.x, srcImg->info.storeSize.y, (OSInt)srcImg->info.dispSize.x << 3, Media::FT_NON_INTERLACE, Media::YCOFST_C_CENTER_LEFT);
 			}
 			t = clk->GetTimeDiff() / UOSInt2Double(cnt);
 			sb.ClearStr();

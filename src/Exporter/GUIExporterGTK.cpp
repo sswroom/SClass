@@ -106,39 +106,39 @@ void *Exporter::GUIExporter::ToImage(IO::ParsedObject *pobj, UInt8 **relBuff)
 	switch (img->info.pf)
 	{
 	case Media::PF_B8G8R8A8:
-		tmpBuff = MemAllocA(UInt8, img->info.dispHeight * img->info.storeWidth * 4);
-		MemCopyANC(tmpBuff, img->data, img->info.dispHeight * img->info.storeWidth * 4);
+		tmpBuff = MemAllocA(UInt8, img->info.dispSize.y * img->info.storeSize.x * 4);
+		MemCopyANC(tmpBuff, img->data, img->info.dispSize.y * img->info.storeSize.x * 4);
 		if (img->info.atype == Media::AT_NO_ALPHA)
 		{
-			ImageUtil_ConvR8G8B8N8_ARGB32(tmpBuff, tmpBuff, img->info.dispWidth, img->info.dispHeight, (OSInt)img->info.storeWidth * 4, (OSInt)img->info.storeWidth * 4);
+			ImageUtil_ConvR8G8B8N8_ARGB32(tmpBuff, tmpBuff, img->info.dispSize.x, img->info.dispSize.y, (OSInt)img->info.storeSize.x * 4, (OSInt)img->info.storeSize.x * 4);
 		}
 		else
 		{
-			ImageUtil_SwapRGB(tmpBuff, img->info.dispHeight * img->info.storeWidth, 32);
+			ImageUtil_SwapRGB(tmpBuff, img->info.dispSize.y * img->info.storeSize.x, 32);
 		}
-		pixBuf = gdk_pixbuf_new_from_data(tmpBuff, GDK_COLORSPACE_RGB, true, 8, (int)img->info.dispWidth, (int)img->info.dispHeight, (int)img->info.storeWidth << 2, 0, 0);
+		pixBuf = gdk_pixbuf_new_from_data(tmpBuff, GDK_COLORSPACE_RGB, true, 8, (int)img->info.dispSize.x, (int)img->info.dispSize.y, (int)img->info.storeSize.x << 2, 0, 0);
 		GUIExporter_SetDPI(pixBuf, img->info.hdpi, img->info.vdpi);
 		*relBuff = tmpBuff;
 		return pixBuf;
 	case Media::PF_B8G8R8:
-		tmpBuff = MemAllocA(UInt8, img->info.dispHeight * img->info.storeWidth * 3);
-		MemCopyANC(tmpBuff, img->data, img->info.dispHeight * img->info.storeWidth * 3);
-		ImageUtil_SwapRGB(tmpBuff, img->info.dispHeight * img->info.storeWidth, 24);
-		pixBuf = gdk_pixbuf_new_from_data(tmpBuff, GDK_COLORSPACE_RGB, false, 8, (int)img->info.dispWidth, (int)img->info.dispHeight, (int)img->info.storeWidth * 3, 0, 0);
+		tmpBuff = MemAllocA(UInt8, img->info.dispSize.y * img->info.storeSize.x * 3);
+		MemCopyANC(tmpBuff, img->data, img->info.dispSize.y * img->info.storeSize.x * 3);
+		ImageUtil_SwapRGB(tmpBuff, img->info.dispSize.y * img->info.storeSize.x, 24);
+		pixBuf = gdk_pixbuf_new_from_data(tmpBuff, GDK_COLORSPACE_RGB, false, 8, (int)img->info.dispSize.x, (int)img->info.dispSize.y, (int)img->info.storeSize.x * 3, 0, 0);
 		GUIExporter_SetDPI(pixBuf, img->info.hdpi, img->info.vdpi);
 		*relBuff = tmpBuff;
 		return pixBuf;
 	case Media::PF_R8G8B8:
-		tmpBuff = MemAllocA(UInt8, img->info.dispHeight * img->info.storeWidth * 3);
-		MemCopyANC(tmpBuff, img->data, img->info.dispHeight * img->info.storeWidth * 3);
-		pixBuf = gdk_pixbuf_new_from_data(tmpBuff, GDK_COLORSPACE_RGB, false, 8, (int)img->info.dispWidth, (int)img->info.dispHeight, (int)img->info.storeWidth * 3, 0, 0);
+		tmpBuff = MemAllocA(UInt8, img->info.dispSize.y * img->info.storeSize.x * 3);
+		MemCopyANC(tmpBuff, img->data, img->info.dispSize.y * img->info.storeSize.x * 3);
+		pixBuf = gdk_pixbuf_new_from_data(tmpBuff, GDK_COLORSPACE_RGB, false, 8, (int)img->info.dispSize.x, (int)img->info.dispSize.y, (int)img->info.storeSize.x * 3, 0, 0);
 		GUIExporter_SetDPI(pixBuf, img->info.hdpi, img->info.vdpi);
 		*relBuff = tmpBuff;
 		return pixBuf;
 	case Media::PF_R8G8B8A8:
-		tmpBuff = MemAllocA(UInt8, img->info.dispHeight * img->info.storeWidth * 4);
-		MemCopyANC(tmpBuff, img->data, img->info.dispHeight * img->info.storeWidth * 4);
-		pixBuf = gdk_pixbuf_new_from_data(tmpBuff, GDK_COLORSPACE_RGB, true, 8, (int)img->info.dispWidth, (int)img->info.dispHeight, (int)img->info.storeWidth << 2, 0, 0);
+		tmpBuff = MemAllocA(UInt8, img->info.dispSize.y * img->info.storeSize.x * 4);
+		MemCopyANC(tmpBuff, img->data, img->info.dispSize.y * img->info.storeSize.x * 4);
+		pixBuf = gdk_pixbuf_new_from_data(tmpBuff, GDK_COLORSPACE_RGB, true, 8, (int)img->info.dispSize.x, (int)img->info.dispSize.y, (int)img->info.storeSize.x << 2, 0, 0);
 		GUIExporter_SetDPI(pixBuf, img->info.hdpi, img->info.vdpi);
 		*relBuff = tmpBuff;
 		return pixBuf;

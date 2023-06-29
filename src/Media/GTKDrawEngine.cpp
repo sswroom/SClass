@@ -26,25 +26,25 @@ Media::GTKDrawEngine::~GTKDrawEngine()
 {
 }
 
-Media::DrawImage *Media::GTKDrawEngine::CreateImage32(UOSInt width, UOSInt height, Media::AlphaType atype)
+Media::DrawImage *Media::GTKDrawEngine::CreateImage32(Math::Size2D<UOSInt> size, Media::AlphaType atype)
 {
 	Media::GTKDrawImage *dimg;
 	cairo_surface_t *surface;
 	cairo_t *cr;
-	surface = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, (int)width, (int)height);
+	surface = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, (int)size.x, (int)size.y);
 	cr = cairo_create(surface);
 	if (atype == Media::AT_ALPHA)
 	{
 		atype = Media::AT_PREMUL_ALPHA;
 	}
-	NEW_CLASS(dimg, Media::GTKDrawImage(this, surface, cr, 0, 0, width, height, 32, atype));
+	NEW_CLASS(dimg, Media::GTKDrawImage(this, surface, cr, Math::Coord2D<OSInt>(0, 0), size, 32, atype));
 	return dimg;
 }
 
-Media::DrawImage *Media::GTKDrawEngine::CreateImageScn(void *cr, OSInt left, OSInt top, OSInt right, OSInt bottom)
+Media::DrawImage *Media::GTKDrawEngine::CreateImageScn(void *cr, Math::Coord2D<OSInt> tl, Math::Coord2D<OSInt> br)
 {
 	Media::GTKDrawImage *dimg;
-	NEW_CLASS(dimg, Media::GTKDrawImage(this, 0, cr, left, top, (UOSInt)(right - left), (UOSInt)(bottom - top), 32, Media::AT_NO_ALPHA));
+	NEW_CLASS(dimg, Media::GTKDrawImage(this, 0, cr, tl, Math::Size2D<UOSInt>((UOSInt)(br.x - tl.x), (UOSInt)(br.y - tl.y)), 32, Media::AT_NO_ALPHA));
 	return dimg;
 }
 
@@ -95,7 +95,7 @@ Media::DrawImage *Media::GTKDrawEngine::ConvImage(Media::Image *img)
 	{
 		return 0; 
 	}
-	Media::GTKDrawImage *gimg = (Media::GTKDrawImage*)this->CreateImage32(img->info.dispWidth, img->info.dispHeight, img->info.atype);
+	Media::GTKDrawImage *gimg = (Media::GTKDrawImage*)this->CreateImage32(img->info.dispSize, img->info.atype);
 	if (gimg == 0)
 		return 0;
 	gimg->SetHDPI(img->info.hdpi);
@@ -109,15 +109,15 @@ Media::DrawImage *Media::GTKDrawEngine::ConvImage(Media::Image *img)
 			cairo_surface_flush((cairo_surface_t*)gimg->GetSurface());
 			UInt8 *sptr = (UInt8*)simg->data;
 			UInt8 *dptr = cairo_image_surface_get_data((cairo_surface_t*)gimg->GetSurface());
-			OSInt sbpl = (OSInt)simg->info.storeWidth << 2;
+			OSInt sbpl = (OSInt)simg->info.storeSize.x << 2;
 			OSInt dbpl = cairo_image_surface_get_stride((cairo_surface_t*)gimg->GetSurface());
 			if (simg->info.atype == Media::AT_ALPHA)
 			{
-				this->iab.PremulAlpha(dptr, dbpl, sptr, sbpl, simg->info.dispWidth, simg->info.dispHeight);
+				this->iab.PremulAlpha(dptr, dbpl, sptr, sbpl, simg->info.dispSize.x, simg->info.dispSize.y);
 			}
 			else
 			{
-				ImageCopy_ImgCopy(sptr, dptr, simg->info.dispWidth << 2, simg->info.dispHeight, sbpl, dbpl);
+				ImageCopy_ImgCopy(sptr, dptr, simg->info.dispSize.x << 2, simg->info.dispSize.y, sbpl, dbpl);
 			}
 			cairo_surface_mark_dirty((cairo_surface_t*)gimg->GetSurface());
 		}
@@ -130,15 +130,15 @@ Media::DrawImage *Media::GTKDrawEngine::ConvImage(Media::Image *img)
 			cairo_surface_flush((cairo_surface_t*)gimg->GetSurface());
 			UInt8 *sptr = (UInt8*)simg->data;
 			UInt8 *dptr = cairo_image_surface_get_data((cairo_surface_t*)gimg->GetSurface());
-			OSInt sbpl = (OSInt)simg->info.storeWidth << 2;
+			OSInt sbpl = (OSInt)simg->info.storeSize.x << 2;
 			OSInt dbpl = cairo_image_surface_get_stride((cairo_surface_t*)gimg->GetSurface());
 			if (simg->info.atype == Media::AT_ALPHA)
 			{
-				this->iab.PremulAlpha(dptr, dbpl, sptr, sbpl, simg->info.dispWidth, simg->info.dispHeight);
+				this->iab.PremulAlpha(dptr, dbpl, sptr, sbpl, simg->info.dispSize.x, simg->info.dispSize.y);
 			}
 			else
 			{
-				ImageCopy_ImgCopy(sptr, dptr, simg->info.dispWidth << 2, simg->info.dispHeight, sbpl, dbpl);
+				ImageCopy_ImgCopy(sptr, dptr, simg->info.dispSize.x << 2, simg->info.dispSize.y, sbpl, dbpl);
 			}
 			cairo_surface_mark_dirty((cairo_surface_t*)gimg->GetSurface());
 		}
@@ -150,17 +150,16 @@ Media::DrawImage *Media::GTKDrawEngine::ConvImage(Media::Image *img)
 Media::DrawImage *Media::GTKDrawEngine::CloneImage(DrawImage *img)
 {
 	Media::GTKDrawImage *dimg = (Media::GTKDrawImage*)img;
-	UOSInt width = dimg->GetWidth();
-	UOSInt height = dimg->GetHeight();
+	Math::Size2D<UOSInt> size = dimg->GetSize();
 	Media::AlphaType atype = dimg->GetAlphaType();
 	Media::GTKDrawImage *newImg = 0;
 	if (dimg->GetSurface())
 	{
 		Bool upsideDown;
 		UInt8 *dptr;
-		newImg = (GTKDrawImage*)this->CreateImage32(width, height, atype);
+		newImg = (GTKDrawImage*)this->CreateImage32(size, atype);
 		dptr = newImg->GetImgBits(&upsideDown);
-		((Media::GTKDrawImage*)img)->CopyBits(0, 0, dptr, newImg->GetDataBpl(), width, height, upsideDown);
+		((Media::GTKDrawImage*)img)->CopyBits(0, 0, dptr, newImg->GetDataBpl(), size.x, size.y, upsideDown);
 		newImg->SetHDPI(img->GetHDPI());
 		newImg->SetVDPI(img->GetVDPI());
 	}
@@ -297,13 +296,12 @@ UInt32 Media::GTKDrawBrush::GetOriColor()
 	return this->oriColor;
 }
 
-Media::GTKDrawImage::GTKDrawImage(GTKDrawEngine *eng, void *surface, void *cr, OSInt left, OSInt top, UOSInt width, UOSInt height, UInt32 bitCount, Media::AlphaType atype) : Media::Image(width, height, 0, 0, 0, bitCount, Media::PixelFormatGetDef(0, bitCount), 0, 0, Media::ColorProfile::YUVT_BT601, atype, Media::YCOFST_C_CENTER_LEFT)
+Media::GTKDrawImage::GTKDrawImage(GTKDrawEngine *eng, void *surface, void *cr, Math::Coord2D<OSInt> tl, Math::Size2D<UOSInt> size, UInt32 bitCount, Media::AlphaType atype) : Media::Image(size, Math::Size2D<UOSInt>(0, 0), 0, bitCount, Media::PixelFormatGetDef(0, bitCount), 0, 0, Media::ColorProfile::YUVT_BT601, atype, Media::YCOFST_C_CENTER_LEFT)
 {
 	this->eng = eng;
 	this->surface = surface;
 	this->cr = cr;
-	this->left = left;
-	this->top = top;
+	this->tl = tl;
 	this->info.hdpi = 96.0;
 	this->info.vdpi = 96.0;
 }
@@ -319,12 +317,17 @@ Media::GTKDrawImage::~GTKDrawImage()
 
 UOSInt Media::GTKDrawImage::GetWidth() const
 {
-	return this->info.dispWidth;
+	return this->info.dispSize.x;
 }
 
 UOSInt Media::GTKDrawImage::GetHeight() const
 {
-	return this->info.dispHeight;
+	return this->info.dispSize.y;
+}
+
+Math::Size2D<UOSInt> Media::GTKDrawImage::GetSize() const
+{
+	return this->info.dispSize;
 }
 
 UInt32 Media::GTKDrawImage::GetBitCount() const
@@ -389,7 +392,7 @@ void Media::GTKDrawImage::GetImgBitsEnd(Bool modified)
 
 UOSInt Media::GTKDrawImage::GetImgBpl() const
 {
-	return (this->info.storeWidth * this->info.storeBPP) >> 3;
+	return (this->info.storeSize.x * this->info.storeBPP) >> 3;
 }
 
 Media::EXIFData *Media::GTKDrawImage::GetEXIF() const
@@ -406,8 +409,8 @@ Bool Media::GTKDrawImage::DrawLine(Double x1, Double y1, Double x2, Double y2, D
 {
 	GTKDrawPen *pen = (GTKDrawPen*)p;
 	pen->Init(this->cr);
-	cairo_move_to((cairo_t*)this->cr, x1 + OSInt2Double(this->left), y1 + OSInt2Double(this->top));
-	cairo_line_to((cairo_t*)this->cr, x2 + OSInt2Double(this->left), y2 + OSInt2Double(this->top));
+	cairo_move_to((cairo_t*)this->cr, x1 + OSInt2Double(this->tl.x), y1 + OSInt2Double(this->tl.y));
+	cairo_line_to((cairo_t*)this->cr, x2 + OSInt2Double(this->tl.x), y2 + OSInt2Double(this->tl.y));
 	cairo_stroke((cairo_t*)this->cr);
 	return true;
 }
@@ -436,11 +439,11 @@ Bool Media::GTKDrawImage::DrawPolyline(const Math::Coord2DDbl *points, UOSInt nP
 	if (nPoints >= 2)
 	{
 		pen->Init(this->cr);
-		cairo_move_to((cairo_t*)this->cr, points->x + OSInt2Double(this->left), points->y + OSInt2Double(this->top));
+		cairo_move_to((cairo_t*)this->cr, points->x + OSInt2Double(this->tl.x), points->y + OSInt2Double(this->tl.y));
 		points++;
 		while (nPoints-- > 1)
 		{
-			cairo_line_to((cairo_t*)this->cr, points->x + OSInt2Double(this->left), points->y + OSInt2Double(this->top));
+			cairo_line_to((cairo_t*)this->cr, points->x + OSInt2Double(this->tl.x), points->y + OSInt2Double(this->tl.y));
 			points++;
 		}
 		cairo_stroke((cairo_t*)this->cr);
@@ -458,11 +461,11 @@ Bool Media::GTKDrawImage::DrawPolygon(const Math::Coord2DDbl *points, UOSInt nPo
 	GTKDrawBrush *brush = (GTKDrawBrush*)b;
 	if (nPoints >= 2)
 	{
-		cairo_move_to((cairo_t*)this->cr, points->x + OSInt2Double(this->left), points->y + OSInt2Double(this->top));
+		cairo_move_to((cairo_t*)this->cr, points->x + OSInt2Double(this->tl.x), points->y + OSInt2Double(this->tl.y));
 		points++;
 		while (nPoints-- > 1)
 		{
-			cairo_line_to((cairo_t*)this->cr, points->x + OSInt2Double(this->left), points->y + OSInt2Double(this->top));
+			cairo_line_to((cairo_t*)this->cr, points->x + OSInt2Double(this->tl.x), points->y + OSInt2Double(this->tl.y));
 			points++;
 		}
 		cairo_close_path((cairo_t*)this->cr);
@@ -507,11 +510,11 @@ Bool Media::GTKDrawImage::DrawPolyPolygon(const Math::Coord2DDbl *points, const 
 			i = *pointCnt++;
 			if (i > 0)
 			{
-				cairo_move_to((cairo_t*)this->cr, points->x + OSInt2Double(this->left), points->y + OSInt2Double(this->top));
+				cairo_move_to((cairo_t*)this->cr, points->x + OSInt2Double(this->tl.x), points->y + OSInt2Double(this->tl.y));
 				points++;
 				while (i-- > 1)
 				{
-					cairo_line_to((cairo_t*)this->cr, points->x + OSInt2Double(this->left), points->y + OSInt2Double(this->top));
+					cairo_line_to((cairo_t*)this->cr, points->x + OSInt2Double(this->tl.x), points->y + OSInt2Double(this->tl.y));
 					points++;
 				}
 				cairo_close_path((cairo_t*)this->cr);
@@ -547,35 +550,35 @@ Bool Media::GTKDrawImage::DrawPolyPolygon(const Math::Coord2DDbl *points, const 
 	}
 }
 
-Bool Media::GTKDrawImage::DrawRect(Double x, Double y, Double w, Double h, DrawPen *p, DrawBrush *b)
+Bool Media::GTKDrawImage::DrawRect(Math::Coord2DDbl tl, Math::Size2DDbl size, DrawPen *p, DrawBrush *b)
 {
 	if (b)
 	{
 		GTKDrawBrush *brush = (GTKDrawBrush*)b;
 		brush->Init(this->cr);
-		cairo_rectangle((cairo_t*)this->cr, x + OSInt2Double(this->left), y + OSInt2Double(this->top), w, h);
+		cairo_rectangle((cairo_t*)this->cr, tl.x + OSInt2Double(this->tl.x), tl.y + OSInt2Double(this->tl.y), size.x, size.y);
 		cairo_fill((cairo_t*)this->cr);
 	}
 	if (p)
 	{
 		GTKDrawPen *pen = (GTKDrawPen*)p;
 		pen->Init(this->cr);
-		cairo_rectangle((cairo_t*)this->cr, x + OSInt2Double(this->left), y + OSInt2Double(this->top), w, h);
+		cairo_rectangle((cairo_t*)this->cr, tl.x + OSInt2Double(this->tl.x), tl.y + OSInt2Double(this->tl.y), size.x, size.y);
 		cairo_stroke((cairo_t*)this->cr);
 	}
 	return true;
 }
 
-Bool Media::GTKDrawImage::DrawEllipse(Double tlx, Double tly, Double w, Double h, DrawPen *p, DrawBrush *b)
+Bool Media::GTKDrawImage::DrawEllipse(Math::Coord2DDbl tl, Math::Size2DDbl size, DrawPen *p, DrawBrush *b)
 {
 	GTKDrawPen *pen = (GTKDrawPen*)p;
 	GTKDrawBrush *brush = (GTKDrawBrush*)b;
 	cairo_t *cr = (cairo_t *)this->cr;
 	cairo_save(cr);
-	cairo_translate(cr, tlx + w * 0.5, tly + h * 0.5);
-	cairo_scale(cr, 1, h / w);
-	cairo_translate(cr, -tlx - w * 0.5, -tly - h * 0.5);
-	cairo_arc(cr, tlx + w * 0.5, tly + h * 0.5, w * 0.5, 0, 2 * Math::PI);
+	cairo_translate(cr, tl.x + size.x * 0.5, tl.y + size.y * 0.5);
+	cairo_scale(cr, 1, size.y / size.x);
+	cairo_translate(cr, -tl.x - size.x * 0.5, -tl.y - size.y * 0.5);
+	cairo_arc(cr, tl.x + size.x * 0.5, tl.y + size.y * 0.5, size.x * 0.5, 0, 2 * Math::PI);
 	cairo_close_path(cr);
 	if (pen && brush)
 	{
@@ -602,28 +605,28 @@ Bool Media::GTKDrawImage::DrawEllipse(Double tlx, Double tly, Double w, Double h
 	return true;
 }
 
-Bool Media::GTKDrawImage::DrawString(Double tlx, Double tly, Text::String *str, DrawFont *f, DrawBrush *b)
+Bool Media::GTKDrawImage::DrawString(Math::Coord2DDbl tl, Text::String *str, DrawFont *f, DrawBrush *b)
 {
-	return DrawString(tlx, tly, str->ToCString(), f, b);
+	return DrawString(tl, str->ToCString(), f, b);
 }
 
-Bool Media::GTKDrawImage::DrawString(Double tlx, Double tly, Text::CString str, DrawFont *f, DrawBrush *b)
+Bool Media::GTKDrawImage::DrawString(Math::Coord2DDbl tl, Text::CString str, DrawFont *f, DrawBrush *b)
 {
 	GTKDrawFont *font = (GTKDrawFont*)f;
 	GTKDrawBrush *brush = (GTKDrawBrush*)b;
 	font->Init(this->cr);
 	brush->Init(this->cr);
-	cairo_move_to((cairo_t *)this->cr, tlx + OSInt2Double(this->left), tly + font->GetHeight() * 0.8 + 1 + OSInt2Double(this->top));
+	cairo_move_to((cairo_t *)this->cr, tl.x + OSInt2Double(this->tl.x), tl.y + font->GetHeight() * 0.8 + 1 + OSInt2Double(this->tl.y));
 	cairo_show_text((cairo_t *)this->cr, (const Char*)str.v);
 	return true;
 }
 
-Bool Media::GTKDrawImage::DrawStringRot(Double centX, Double centY, Text::String *str, DrawFont *f, DrawBrush *b, Double angleDegree)
+Bool Media::GTKDrawImage::DrawStringRot(Math::Coord2DDbl center, Text::String *str, DrawFont *f, DrawBrush *b, Double angleDegree)
 {
-	return DrawStringRot(centX, centY, str->ToCString(), f, b, angleDegree);
+	return DrawStringRot(center, str->ToCString(), f, b, angleDegree);
 }
 
-Bool Media::GTKDrawImage::DrawStringRot(Double centX, Double centY, Text::CString str, DrawFont *f, DrawBrush *b, Double angleDegree)
+Bool Media::GTKDrawImage::DrawStringRot(Math::Coord2DDbl center, Text::CString str, DrawFont *f, DrawBrush *b, Double angleDegree)
 {
 	GTKDrawFont *font = (GTKDrawFont*)f;
 	GTKDrawBrush *brush = (GTKDrawBrush*)b;
@@ -635,22 +638,22 @@ Bool Media::GTKDrawImage::DrawStringRot(Double centX, Double centY, Text::CStrin
 	Double sVal = Math_Sin(angleR);
 	Double dist = font->GetHeight() * 0.8 + 1;
 	cairo_text_extents((cairo_t *)this->cr, (const Char*)str.v, &extents);
-	cairo_move_to((cairo_t *)this->cr, centX - dist * sVal + OSInt2Double(this->left), centY + dist * cVal + OSInt2Double(this->top));
+	cairo_move_to((cairo_t *)this->cr, center.x - dist * sVal + OSInt2Double(this->tl.x), center.y + dist * cVal + OSInt2Double(this->tl.y));
 	cairo_rotate((cairo_t *)this->cr, angleR);
 	cairo_show_text((cairo_t *)this->cr, (const Char*)str.v);
 	cairo_rotate((cairo_t *)this->cr, -angleR);
 	return true;
 }
 
-Bool Media::GTKDrawImage::DrawStringB(Double tlx, Double tly, Text::String *str, DrawFont *f, DrawBrush *b, UOSInt buffSize)
+Bool Media::GTKDrawImage::DrawStringB(Math::Coord2DDbl tl, Text::String *str, DrawFont *f, DrawBrush *b, UOSInt buffSize)
 {
-	return DrawStringB(tlx, tly, str->ToCString(), f, b, buffSize);
+	return DrawStringB(tl, str->ToCString(), f, b, buffSize);
 }
 
-Bool Media::GTKDrawImage::DrawStringB(Double tlx, Double tly, Text::CString str, DrawFont *f, DrawBrush *b, UOSInt buffSize)
+Bool Media::GTKDrawImage::DrawStringB(Math::Coord2DDbl tl, Text::CString str, DrawFont *f, DrawBrush *b, UOSInt buffSize)
 {
-	OSInt px = Double2Int32(tlx);
-	OSInt py = Double2Int32(tly);
+	OSInt px = Double2OSInt(tl.x);
+	OSInt py = Double2OSInt(tl.y);
 	GTKDrawFont *font = (GTKDrawFont*)f;
 	GTKDrawBrush *brush = (GTKDrawBrush*)b;
 
@@ -668,8 +671,8 @@ Bool Media::GTKDrawImage::DrawStringB(Double tlx, Double tly, Text::CString str,
 	cairo_text_extents((cairo_t *)this->cr, (const Char*)str.v, &extents);
 	sz[0] = (UInt32)Double2Int32(extents.width + 2);
 	sz[1] = (UInt32)Double2Int32(extents.height + 2);
-	dwidth = (OSInt)this->info.dispWidth - px;
-	dheight = (OSInt)this->info.dispHeight - py;
+	dwidth = (OSInt)this->info.dispSize.x - px;
+	dheight = (OSInt)this->info.dispSize.y - py;
 
 	if (dwidth < 0)
 	{
@@ -681,7 +684,7 @@ Bool Media::GTKDrawImage::DrawStringB(Double tlx, Double tly, Text::CString str,
 	{
 		swidth = (OSInt)(sz[0] + (buffSize << 1));
 		sheight = (OSInt)(sz[1] + (buffSize << 1));
-		gimg = (Media::GTKDrawImage*)eng->CreateImage32((UOSInt)swidth, (UOSInt)sheight, Media::AT_ALPHA);
+		gimg = (Media::GTKDrawImage*)eng->CreateImage32(Math::Size2D<UOSInt>((UOSInt)swidth, (UOSInt)sheight), Media::AT_ALPHA);
 		if (gimg == 0)
 		{
 			return false;
@@ -732,24 +735,24 @@ Bool Media::GTKDrawImage::DrawStringB(Double tlx, Double tly, Text::CString str,
 		else
 		{
 			Media::DrawBrush *whiteB = gimg->NewBrushARGB(0xffffffff);
-			gimg->DrawString(OSInt2Double(sx) + tlx - OSInt2Double(px),
-				OSInt2Double(sy) + tly - OSInt2Double(py), str, f, whiteB);
+			gimg->DrawString(Math::Coord2DDbl(OSInt2Double(sx) + tl.x - OSInt2Double(px),
+				OSInt2Double(sy) + tl.y - OSInt2Double(py)), str, f, whiteB);
 			gimg->DelBrush(whiteB);
 
 			UOSInt bpl = (sz[0] + (buffSize << 1)) << 2;
-			UOSInt dbpl = this->info.dispWidth << 2;
+			UOSInt dbpl = this->info.dispSize.x << 2;
 			UInt32 color = brush->GetOriColor();
 			cairo_surface_flush((cairo_surface_t*)gimg->surface);
 			UInt8 *pbits = cairo_image_surface_get_data((cairo_surface_t*)gimg->surface);
 			UInt8 *dbits = cairo_image_surface_get_data((cairo_surface_t*)this->surface);
 			ImageUtil_ImageColorBuffer32(pbits + bpl * buffSize + buffSize * 4, sz[0], sz[1], bpl, buffSize);
-			if (py + sheight > (OSInt)this->info.dispHeight)
+			if (py + sheight > (OSInt)this->info.dispSize.y)
 			{
-				sheight = (OSInt)this->info.dispHeight - py;
+				sheight = (OSInt)this->info.dispSize.y - py;
 			}
-			if (px + swidth > (OSInt)this->info.dispWidth)
+			if (px + swidth > (OSInt)this->info.dispSize.x)
 			{
-				swidth = (OSInt)this->info.dispWidth - px;
+				swidth = (OSInt)this->info.dispSize.x - px;
 			}
 			if (swidth > 0 && sheight > 0)
 			{
@@ -775,7 +778,7 @@ Bool Media::GTKDrawImage::DrawStringB(Double tlx, Double tly, Text::CString str,
 					ImageUtil_ImageColorReplace32((UInt8*)pbits, (UInt8*)pbits, (UOSInt)swidth, (UOSInt)sheight, (OSInt)bpl, (OSInt)bpl, color);
 					gimg->SetHDPI(this->GetHDPI());
 					gimg->SetVDPI(this->GetVDPI());
-					this->DrawImagePt(gimg, OSInt2Double(px - sx), OSInt2Double(py - sy));
+					this->DrawImagePt(gimg, Math::Coord2DDbl(OSInt2Double(px - sx), OSInt2Double(py - sy)));
 				}
 			}
 		}
@@ -785,18 +788,18 @@ Bool Media::GTKDrawImage::DrawStringB(Double tlx, Double tly, Text::CString str,
 	return true;
 }
 
-Bool Media::GTKDrawImage::DrawStringRotB(Double centX, Double centY, Text::String *str, DrawFont *f, DrawBrush *b, Double angleDegree, UOSInt buffSize)
+Bool Media::GTKDrawImage::DrawStringRotB(Math::Coord2DDbl center, Text::String *str, DrawFont *f, DrawBrush *b, Double angleDegree, UOSInt buffSize)
 {
-	return DrawStringRotB(centX, centY, str->ToCString(), f, b, angleDegree, buffSize);
+	return DrawStringRotB(center, str->ToCString(), f, b, angleDegree, buffSize);
 }
 
-Bool Media::GTKDrawImage::DrawStringRotB(Double centX, Double centY, Text::CString str, DrawFont *f, DrawBrush *b, Double angleDegree, UOSInt buffSize)
+Bool Media::GTKDrawImage::DrawStringRotB(Math::Coord2DDbl center, Text::CString str, DrawFont *f, DrawBrush *b, Double angleDegree, UOSInt buffSize)
 {
 	printf("GTK: Draw StringRotBUTF8 (Not support)\r\n");
 	return false;
 }
 
-Bool Media::GTKDrawImage::DrawImagePt(DrawImage *img, Double tlx, Double tly)
+Bool Media::GTKDrawImage::DrawImagePt(DrawImage *img, Math::Coord2DDbl tl)
 {
 	Media::GTKDrawImage *gimg = (GTKDrawImage*)img;
 	if (gimg->surface == 0)
@@ -813,7 +816,7 @@ Bool Media::GTKDrawImage::DrawImagePt(DrawImage *img, Double tlx, Double tly)
 			gimg->GetImgBitsEnd(true);
 		}
 		cairo_save((cairo_t*)this->cr);
-		cairo_translate((cairo_t*)this->cr, tlx + OSInt2Double(this->left), tly + OSInt2Double(this->top));
+		cairo_translate((cairo_t*)this->cr, tl.x + OSInt2Double(this->tl.x), tl.y + OSInt2Double(this->tl.y));
 		cairo_scale((cairo_t*)this->cr, this->info.hdpi / img->GetHDPI(), this->info.vdpi / img->GetVDPI());
 		cairo_set_source_surface((cairo_t*)this->cr, (cairo_surface_t*)gimg->surface, 0, 0);
 		cairo_paint((cairo_t*)this->cr);
@@ -826,7 +829,7 @@ Bool Media::GTKDrawImage::DrawImagePt(DrawImage *img, Double tlx, Double tly)
 		{
 			cairo_save((cairo_t*)this->cr);
 			cairo_set_source_surface((cairo_t*)this->cr, (cairo_surface_t*)gimg->surface, 0, 0);
-			cairo_translate((cairo_t*)this->cr, tlx + OSInt2Double(this->left), tly + OSInt2Double(this->top));
+			cairo_translate((cairo_t*)this->cr, tl.x + OSInt2Double(this->tl.x), tl.y + OSInt2Double(this->tl.y));
 			cairo_scale((cairo_t*)this->cr, 1, 1);
 			cairo_paint((cairo_t*)this->cr);
 			cairo_restore((cairo_t*)this->cr);
@@ -839,13 +842,13 @@ Bool Media::GTKDrawImage::DrawImagePt(DrawImage *img, Double tlx, Double tly)
 		UInt8 *simgPtr = cairo_image_surface_get_data((cairo_surface_t*)gimg->surface);
 		OSInt sbpl = cairo_image_surface_get_stride((cairo_surface_t*)gimg->surface);
 
-		OSInt ixPos = Double2Int32(tlx);
-		OSInt iyPos = Double2Int32(tly);
-		OSInt ixPos2 = ixPos + (OSInt)gimg->info.dispWidth;
-		OSInt iyPos2 = iyPos + (OSInt)gimg->info.dispHeight;
-		if ((OSInt)this->info.dispWidth < ixPos2)
+		OSInt ixPos = Double2Int32(tl.x);
+		OSInt iyPos = Double2Int32(tl.y);
+		OSInt ixPos2 = ixPos + (OSInt)gimg->info.dispSize.x;
+		OSInt iyPos2 = iyPos + (OSInt)gimg->info.dispSize.y;
+		if ((OSInt)this->info.dispSize.x < ixPos2)
 		{
-			ixPos2 = (OSInt)this->info.dispWidth;
+			ixPos2 = (OSInt)this->info.dispSize.x;
 		}
 		if (ixPos < 0)
 		{
@@ -853,9 +856,9 @@ Bool Media::GTKDrawImage::DrawImagePt(DrawImage *img, Double tlx, Double tly)
 			ixPos = 0;
 		}
 
-		if ((OSInt)this->info.dispHeight < iyPos2)
+		if ((OSInt)this->info.dispSize.y < iyPos2)
 		{
-			iyPos2 = (OSInt)this->info.dispHeight;
+			iyPos2 = (OSInt)this->info.dispSize.y;
 		}
 		if (iyPos < 0)
 		{
@@ -886,7 +889,7 @@ Bool Media::GTKDrawImage::DrawImagePt(DrawImage *img, Double tlx, Double tly)
 	}
 }
 
-Bool Media::GTKDrawImage::DrawImagePt2(Media::StaticImage *img, Double tlx, Double tly)
+Bool Media::GTKDrawImage::DrawImagePt2(Media::StaticImage *img, Math::Coord2DDbl tl)
 {
 	if (this->surface == 0)
 	{
@@ -895,7 +898,7 @@ Bool Media::GTKDrawImage::DrawImagePt2(Media::StaticImage *img, Double tlx, Doub
 		{
 			return false;
 		}
-		this->DrawImagePt(dimg, tlx, tly);
+		this->DrawImagePt(dimg, tl);
 		this->eng->DeleteImage(dimg);
 		return true;
 	}
@@ -908,15 +911,15 @@ Bool Media::GTKDrawImage::DrawImagePt2(Media::StaticImage *img, Double tlx, Doub
 	UInt8 *dimgPtr = cairo_image_surface_get_data((cairo_surface_t*)this->surface);
 	OSInt dbpl = cairo_image_surface_get_stride((cairo_surface_t*)this->surface);
 	UInt8 *simgPtr = img->data;
-	OSInt sbpl = (OSInt)img->info.storeWidth * 4;
+	OSInt sbpl = (OSInt)img->info.storeSize.x * 4;
 
-	Int32 ixPos = Double2Int32(tlx);
-	Int32 iyPos = Double2Int32(tly);
-	Int32 ixPos2 = ixPos + (Int32)img->info.dispWidth;
-	Int32 iyPos2 = iyPos + (Int32)img->info.dispHeight;
-	if ((OSInt)this->info.dispWidth < ixPos2)
+	Int32 ixPos = Double2Int32(tl.x);
+	Int32 iyPos = Double2Int32(tl.y);
+	Int32 ixPos2 = ixPos + (Int32)img->info.dispSize.x;
+	Int32 iyPos2 = iyPos + (Int32)img->info.dispSize.y;
+	if ((OSInt)this->info.dispSize.x < ixPos2)
 	{
-		ixPos2 = (Int32)this->info.dispWidth;
+		ixPos2 = (Int32)this->info.dispSize.x;
 	}
 	if (ixPos < 0)
 	{
@@ -924,9 +927,9 @@ Bool Media::GTKDrawImage::DrawImagePt2(Media::StaticImage *img, Double tlx, Doub
 		ixPos = 0;
 	}
 
-	if ((OSInt)this->info.dispHeight < iyPos2)
+	if ((OSInt)this->info.dispSize.y < iyPos2)
 	{
-		iyPos2 = (Int32)this->info.dispHeight;
+		iyPos2 = (Int32)this->info.dispSize.y;
 	}
 	if (iyPos < 0)
 	{
@@ -956,8 +959,9 @@ Bool Media::GTKDrawImage::DrawImagePt2(Media::StaticImage *img, Double tlx, Doub
 	return false;
 }
 
-Bool Media::GTKDrawImage::DrawImagePt3(DrawImage *img, Double destX, Double destY, Double srcX, Double srcY, Double srcW, Double srcH)
+Bool Media::GTKDrawImage::DrawImagePt3(DrawImage *img, Math::Coord2DDbl destTL, Math::Coord2DDbl srcTL, Math::Size2DDbl srcSize)
 {
+	printf("GTK: Draw ImagePt3 (Not support)\r\n");
 	return false;
 }
 
@@ -1018,13 +1022,13 @@ void Media::GTKDrawImage::DelFont(DrawFont *f)
 	DEL_CLASS(font);
 }
 
-Math::Size2D<Double> Media::GTKDrawImage::GetTextSize(DrawFont *fnt, Text::CString txt)
+Math::Size2DDbl Media::GTKDrawImage::GetTextSize(DrawFont *fnt, Text::CString txt)
 {
 	GTKDrawFont *font = (GTKDrawFont*)fnt;
 	cairo_text_extents_t extents;
 	font->Init(this->cr);
 	cairo_text_extents((cairo_t *)this->cr, (const Char*)txt.v, &extents);
-	return Math::Size2D<Double>(extents.width + 2, font->GetHeight() + 2);
+	return Math::Size2DDbl(extents.width + 2, font->GetHeight() + 2);
 }
 
 void Media::GTKDrawImage::SetTextAlign(DrawEngine::DrawPos pos)
@@ -1057,7 +1061,7 @@ void Media::GTKDrawImage::CopyBits(OSInt x, OSInt y, void *imgPtr, UOSInt bpl, U
 		UInt8 *srcData = cairo_image_surface_get_data((cairo_surface_t*)this->surface);
 		if (srcData)
 		{
-			ImageCopy_ImgCopyR(srcData + x * 4 + y * (OSInt)this->info.storeWidth * 4, (UInt8*)imgPtr, width * 4, height, this->info.storeWidth * 4, bpl, upsideDown);
+			ImageCopy_ImgCopyR(srcData + x * 4 + y * (OSInt)this->info.storeSize.x * 4, (UInt8*)imgPtr, width * 4, height, this->info.storeSize.x * 4, bpl, upsideDown);
 		}
 	}
 }
@@ -1073,7 +1077,7 @@ Media::StaticImage *Media::GTKDrawImage::ToStaticImage() const
 		if (srcData == 0)
 			return 0;
 		NEW_CLASS(simg, Media::StaticImage(&this->info));
-		MemCopyNO(simg->data, srcData, this->info.storeWidth * this->info.storeHeight * 4);
+		MemCopyNO(simg->data, srcData, this->info.storeSize.CalcArea() * 4);
 		return simg;
 	}
 	return 0;
@@ -1091,7 +1095,7 @@ UOSInt Media::GTKDrawImage::SavePng(IO::SeekableStream *stm)
 		cairo_surface_flush((cairo_surface_t*)this->surface);
 	}
 	GdkPixbuf *pixbuf;
-	pixbuf = gdk_pixbuf_get_from_surface((cairo_surface_t*)this->surface, 0, 0, (gint)this->info.dispWidth, (gint)this->info.dispHeight);
+	pixbuf = gdk_pixbuf_get_from_surface((cairo_surface_t*)this->surface, 0, 0, (gint)this->info.dispSize.x, (gint)this->info.dispSize.y);
 	if (pixbuf == 0)
 	{
 		return 0;
@@ -1136,7 +1140,7 @@ UOSInt Media::GTKDrawImage::SaveJPG(IO::SeekableStream *stm)
 		this->GetImgBitsEnd(true);
 	}
 	GdkPixbuf *pixbuf;
-	pixbuf = gdk_pixbuf_get_from_surface((cairo_surface_t*)this->surface, 0, 0, (gint)this->info.dispWidth, (gint)this->info.dispHeight);
+	pixbuf = gdk_pixbuf_get_from_surface((cairo_surface_t*)this->surface, 0, 0, (gint)this->info.dispSize.x, (gint)this->info.dispSize.y);
 	if (pixbuf == 0)
 	{
 		return 0;

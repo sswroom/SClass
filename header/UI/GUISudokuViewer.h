@@ -21,7 +21,7 @@ namespace UI
 		GUISudokuViewer(GUICore *ui, UI::GUIClientControl *parent, Media::DrawEngine *eng, Game::Sudoku::SudokuBoard *board);
 		virtual ~GUISudokuViewer();
 
-		virtual Bool OnMouseDown(OSInt scnX, OSInt scnY, MouseButton btn);
+		virtual Bool OnMouseDown(Math::Coord2D<OSInt> scnPos, MouseButton btn);
 		virtual Bool OnKeyDown(UI::GUIControl::GUIKey key);
 		virtual void OnDraw(Media::DrawImage *img);
 

@@ -220,8 +220,8 @@ void __stdcall SSWR::AVIRead::AVIRMediaForm::OnFileDblClicked(void *userObj)
 void __stdcall SSWR::AVIRead::AVIRMediaForm::VideoCropImage(void *userObj, UInt32 frameTime, UInt32 frameNum, Media::StaticImage *img)
 {
 	SSWR::AVIRead::AVIRMediaForm *me = (SSWR::AVIRead::AVIRMediaForm*)userObj;
-	UOSInt w = img->info.dispWidth;
-	UOSInt h = img->info.dispHeight;
+	UOSInt w = img->info.dispSize.x;
+	UOSInt h = img->info.dispSize.y;
 	UInt8 *yptr = img->data;
 	UOSInt ySplit;
 	UOSInt crops[4];
@@ -512,17 +512,16 @@ void SSWR::AVIRead::AVIRMediaForm::EventMenuClicked(UInt16 cmdId)
 			UOSInt cropTop;
 			UOSInt cropRight;
 			UOSInt cropBottom;
-			UOSInt vw;
-			UOSInt vh;
+			Math::Size2D<UOSInt> vSize;
 			UInt32 tmpV;
 
 			if (this->currDecoder)
 			{
-				this->currDecoder->GetVideoInfo(&info, &tmpV, &tmpV, &sz1.width);
+				this->currDecoder->GetVideoInfo(&info, &tmpV, &tmpV, &sz1.x);
 			}
 			else
 			{
-				this->activeVideo->GetVideoInfo(&info, &tmpV, &tmpV, &sz1.width);
+				this->activeVideo->GetVideoInfo(&info, &tmpV, &tmpV, &sz1.x);
 			}
 			this->activeVideo->GetBorderCrop(&cropLeft, &cropTop, &cropRight, &cropBottom);
 			if (this->vbdMain->IsFullScreen())
@@ -532,23 +531,23 @@ void SSWR::AVIRead::AVIRMediaForm::EventMenuClicked(UInt16 cmdId)
 			sz1 = this->vbdMain->GetSizeP();
 			sz2 = this->GetSizeP();
 
-			vw = info.dispWidth - cropLeft - cropRight;
-			vh = info.dispHeight - cropTop - cropBottom;
+			vSize.x = info.dispSize.x - cropLeft - cropRight;
+			vSize.y = info.dispSize.y - cropTop - cropBottom;
 			if (info.ftype == Media::FT_FIELD_BF || info.ftype == Media::FT_FIELD_TF)
 			{
-				vh = vh << 1;
+				vSize.y = vSize.y << 1;
 			}
 			if (info.par2 > 1)
 			{
-				vh = (UOSInt)Double2Int32(UOSInt2Double(vh) * info.par2);
+				vSize.y = (UOSInt)Double2Int32(UOSInt2Double(vSize.y) * info.par2);
 			}
 			else
 			{
-				vw = (UOSInt)Double2Int32(UOSInt2Double(vw) / info.par2);
+				vSize.x = (UOSInt)Double2Int32(UOSInt2Double(vSize.x) / info.par2);
 			}
 
 			this->SetFormState(UI::GUIForm::FS_NORMAL);
-			this->SetSizeP(sz2.width - sz1.width + vw, sz2.height - sz1.height + vh);
+			this->SetSizeP(sz2 - sz1 + vSize);
 		}
 		break;
 	case MNU_VIDEO_FULLSCN:

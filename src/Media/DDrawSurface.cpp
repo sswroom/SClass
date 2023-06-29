@@ -44,11 +44,11 @@ Media::DDrawSurface::DDrawSurface(DDrawManager *mgr, void *lpDD, void *surface, 
 	{
 		this->info.pf = Media::PF_LE_A2B10G10R10;
 	}
-	this->info.dispWidth = ddsd.dwWidth;
-	this->info.dispHeight = ddsd.dwHeight;
-	this->info.storeWidth = (UOSInt)ddsd.lPitch / (this->info.storeBPP >> 3);
-	this->info.storeHeight = ddsd.dwHeight;
-	this->info.byteSize = this->info.storeWidth * this->info.storeHeight * (this->info.storeBPP >> 3);
+	this->info.dispSize.x = ddsd.dwWidth;
+	this->info.dispSize.y = ddsd.dwHeight;
+	this->info.storeSize.x = (UOSInt)ddsd.lPitch / (this->info.storeBPP >> 3);
+	this->info.storeSize.y = ddsd.dwHeight;
+	this->info.byteSize = this->info.storeSize.x * this->info.storeSize.y * (this->info.storeBPP >> 3);
 	this->info.par2 = 1.0;
 	this->info.hdpi = mgr->GetMonitorDPI(hMon);;
 	this->info.vdpi = this->info.hdpi;
@@ -134,10 +134,10 @@ Bool Media::DDrawSurface::DrawFromBuff()
 	return hRes == DD_OK;
 }
 
-Bool Media::DDrawSurface::DrawFromSurface(Media::MonitorSurface *surface, OSInt destX, OSInt destY, UOSInt buffW, UOSInt buffH, Bool clearScn, Bool waitForVBlank)
+Bool Media::DDrawSurface::DrawFromSurface(Media::MonitorSurface *surface, Math::Coord2D<OSInt> destTL, Math::Size2D<UOSInt> buffSize, Bool clearScn, Bool waitForVBlank)
 {
-	OSInt drawWidth = (OSInt)this->info.dispWidth;
-	OSInt drawHeight = (OSInt)this->info.dispHeight;
+	OSInt drawWidth = (OSInt)this->info.dispSize.x;
+	OSInt drawHeight = (OSInt)this->info.dispSize.y;
 	RECT rc;
 	HWND hWnd;
 	if (this->clsData->clipper)
@@ -173,8 +173,8 @@ Bool Media::DDrawSurface::DrawFromSurface(Media::MonitorSurface *surface, OSInt 
 		DDSURFACEDESC2 ddsd;
 		rcSrc.left = 0;
 		rcSrc.top = 0;
-		rcSrc.right = (LONG)this->info.dispWidth;
-		rcSrc.bottom = (LONG)this->info.dispHeight;
+		rcSrc.right = (LONG)this->info.dispSize.x;
+		rcSrc.bottom = (LONG)this->info.dispSize.y;
 		MemClear(&ddsd, sizeof(ddsd));
 		ddsd.dwSize = sizeof(ddsd);
 
@@ -189,25 +189,25 @@ Bool Media::DDrawSurface::DrawFromSurface(Media::MonitorSurface *surface, OSInt 
 			if (waitForVBlank) this->WaitForVBlank();
 			OSInt drawX = 0;
 			OSInt drawY = 0;
-			if (destX < 0)
+			if (destTL.x < 0)
 			{
-				drawX = -destX;
-				buffW += (UOSInt)destX;
-				destX = 0;
+				drawX = -destTL.x;
+				buffSize.x += (UOSInt)destTL.x;
+				destTL.x = 0;
 			}
-			if (destY < 0)
+			if (destTL.y < 0)
 			{
-				drawY = -destY;
-				buffH += (UOSInt)destY;
-				destY = 0;
+				drawY = -destTL.y;
+				buffSize.y += (UOSInt)destTL.y;
+				destTL.y = 0;
 			}
-			if (rc.right > (OSInt)this->info.dispWidth)
+			if (rc.right > (OSInt)this->info.dispSize.x)
 			{
-				rc.right = (LONG)(OSInt)this->info.dispWidth;
+				rc.right = (LONG)(OSInt)this->info.dispSize.x;
 			}
-			if (rc.bottom > (OSInt)this->info.dispHeight)
+			if (rc.bottom > (OSInt)this->info.dispSize.y)
 			{
-				rc.bottom = (LONG)(OSInt)this->info.dispHeight;
+				rc.bottom = (LONG)(OSInt)this->info.dispSize.y;
 			}
 			if (rc.left < 0)
 			{
@@ -221,34 +221,34 @@ Bool Media::DDrawSurface::DrawFromSurface(Media::MonitorSurface *surface, OSInt 
 			}
 			drawWidth = (OSInt)rc.right - rc.left;
 			drawHeight = (OSInt)rc.bottom - rc.top;
-			if (destX + (OSInt)buffW > (OSInt)drawWidth)
+			if (destTL.x + (OSInt)buffSize.x > (OSInt)drawWidth)
 			{
-				buffW = (UOSInt)(drawWidth - destX);
+				buffSize.x = (UOSInt)(drawWidth - destTL.x);
 			}
-			if (destY + (OSInt)buffH > (OSInt)drawHeight)
+			if (destTL.y + (OSInt)buffSize.y > (OSInt)drawHeight)
 			{
-				buffH = (UOSInt)(drawHeight - destY);
+				buffSize.y = (UOSInt)(drawHeight - destTL.y);
 			}
-			if ((OSInt)buffW > 0 && (OSInt)buffH > 0)
+			if ((OSInt)buffSize.x > 0 && (OSInt)buffSize.y > 0)
 			{
-				surface->GetImageData((UInt8*)ddsd.lpSurface + (rc.top + destY) * ddsd.lPitch + (rc.left + destX) * ((OSInt)this->info.storeBPP >> 3), drawX, drawY, buffW, buffH, (UInt32)ddsd.lPitch, false, this->info.rotateType);
+				surface->GetImageData((UInt8*)ddsd.lpSurface + (rc.top + destTL.y) * ddsd.lPitch + (rc.left + destTL.x) * ((OSInt)this->info.storeBPP >> 3), drawX, drawY, buffSize.x, buffSize.y, (UInt32)ddsd.lPitch, false, this->info.rotateType);
 				if (clearScn)
 				{
-					if (destY > 0)
+					if (destTL.y > 0)
 					{
-						ImageUtil_ImageColorFill32((UInt8*)ddsd.lpSurface + (OSInt)rc.top * ddsd.lPitch + rc.left * ((OSInt)this->info.storeBPP >> 3), (UOSInt)drawWidth, (UOSInt)destY, (UInt32)ddsd.lPitch, 0);
+						ImageUtil_ImageColorFill32((UInt8*)ddsd.lpSurface + (OSInt)rc.top * ddsd.lPitch + rc.left * ((OSInt)this->info.storeBPP >> 3), (UOSInt)drawWidth, (UOSInt)destTL.y, (UInt32)ddsd.lPitch, 0);
 					}
-					if (destY + (OSInt)buffH < (OSInt)drawHeight)
+					if (destTL.y + (OSInt)buffSize.y < (OSInt)drawHeight)
 					{
-						ImageUtil_ImageColorFill32((UInt8*)ddsd.lpSurface + (rc.top + destY + (OSInt)buffH) * ddsd.lPitch + rc.left * ((OSInt)this->info.storeBPP >> 3), (UOSInt)drawWidth, (UOSInt)(drawHeight - (OSInt)buffH - destY), (UInt32)ddsd.lPitch, 0);
+						ImageUtil_ImageColorFill32((UInt8*)ddsd.lpSurface + (rc.top + destTL.y + (OSInt)buffSize.y) * ddsd.lPitch + rc.left * ((OSInt)this->info.storeBPP >> 3), (UOSInt)drawWidth, (UOSInt)(drawHeight - (OSInt)buffSize.y - destTL.y), (UInt32)ddsd.lPitch, 0);
 					}
-					if (destX > 0)
+					if (destTL.x > 0)
 					{
-						ImageUtil_ImageColorFill32((UInt8*)ddsd.lpSurface + (rc.top + destY) * ddsd.lPitch, (UOSInt)destX, buffH, (UInt32)ddsd.lPitch, 0);
+						ImageUtil_ImageColorFill32((UInt8*)ddsd.lpSurface + (rc.top + destTL.y) * ddsd.lPitch, (UOSInt)destTL.x, buffSize.y, (UInt32)ddsd.lPitch, 0);
 					}
-					if (destX + (OSInt)buffW < (OSInt)drawWidth)
+					if (destTL.x + (OSInt)buffSize.x < (OSInt)drawWidth)
 					{
-						ImageUtil_ImageColorFill32((UInt8*)ddsd.lpSurface + (rc.top + destY) * ddsd.lPitch + (destX + (OSInt)buffW) * (OSInt)(this->info.storeBPP >> 3), (UOSInt)drawWidth - (UOSInt)destX - buffW, buffH, (UInt32)ddsd.lPitch, 0);
+						ImageUtil_ImageColorFill32((UInt8*)ddsd.lpSurface + (rc.top + destTL.y) * ddsd.lPitch + (destTL.x + (OSInt)buffSize.x) * (OSInt)(this->info.storeBPP >> 3), (UOSInt)drawWidth - (UOSInt)destTL.x - buffSize.x, buffSize.y, (UInt32)ddsd.lPitch, 0);
 					}
 				}
 			}
@@ -263,25 +263,25 @@ Bool Media::DDrawSurface::DrawFromSurface(Media::MonitorSurface *surface, OSInt 
 		{
 			OSInt drawX = 0;
 			OSInt drawY = 0;
-			if (destX < 0)
+			if (destTL.x < 0)
 			{
-				drawX = -destX;
-				buffW += (UOSInt)destX;
-				destX = 0;
+				drawX = -destTL.x;
+				buffSize.x += (UOSInt)destTL.x;
+				destTL.x = 0;
 			}
-			if (destY < 0)
+			if (destTL.y < 0)
 			{
-				drawY = -destY;
-				buffH += (UOSInt)destY;
-				destY = 0;
+				drawY = -destTL.y;
+				buffSize.y += (UOSInt)destTL.y;
+				destTL.y = 0;
 			}
-			if (rc.right > (OSInt)this->info.dispWidth)
+			if (rc.right > (OSInt)this->info.dispSize.x)
 			{
-				rc.right = (LONG)(OSInt)this->info.dispWidth;
+				rc.right = (LONG)(OSInt)this->info.dispSize.x;
 			}
-			if (rc.bottom > (OSInt)this->info.dispHeight)
+			if (rc.bottom > (OSInt)this->info.dispSize.y)
 			{
-				rc.bottom = (LONG)(OSInt)this->info.dispHeight;
+				rc.bottom = (LONG)(OSInt)this->info.dispSize.y;
 			}
 			if (rc.left < 0)
 			{
@@ -295,61 +295,61 @@ Bool Media::DDrawSurface::DrawFromSurface(Media::MonitorSurface *surface, OSInt 
 			}
 			drawWidth = (OSInt)rc.right - rc.left;
 			drawHeight = (OSInt)rc.bottom - rc.top;
-			if (destX + (OSInt)buffW > (OSInt)drawWidth)
+			if (destTL.x + (OSInt)buffSize.x > (OSInt)drawWidth)
 			{
-				buffW = (UOSInt)(drawWidth - destX);
+				buffSize.x = (UOSInt)(drawWidth - destTL.x);
 			}
-			if (destY + (OSInt)buffH > (OSInt)drawHeight)
+			if (destTL.y + (OSInt)buffSize.y > (OSInt)drawHeight)
 			{
-				buffH = (UOSInt)(drawHeight - destY);
+				buffSize.y = (UOSInt)(drawHeight - destTL.y);
 			}
-			if ((OSInt)buffW > 0 && (OSInt)buffH > 0)
+			if ((OSInt)buffSize.x > 0 && (OSInt)buffSize.y > 0)
 			{
 				RECT rcSrc;
 				rcSrc.left = (LONG)drawX;
 				rcSrc.top = (LONG)drawY;
-				rcSrc.right = rcSrc.left + (LONG)buffW;
-				rcSrc.bottom = rcSrc.top + (LONG)buffH;
+				rcSrc.right = rcSrc.left + (LONG)buffSize.x;
+				rcSrc.bottom = rcSrc.top + (LONG)buffSize.y;
 				RECT rcDest;
-				rcDest.left = rc.left + (LONG)destX;
-				rcDest.top = rc.top + (LONG)destY;
-				rcDest.right = rcDest.left + (LONG)buffW;
-				rcDest.bottom = rcDest.top + (LONG)buffH;
+				rcDest.left = rc.left + (LONG)destTL.x;
+				rcDest.top = rc.top + (LONG)destTL.y;
+				rcDest.right = rcDest.left + (LONG)buffSize.x;
+				rcDest.bottom = rcDest.top + (LONG)buffSize.y;
 				this->clsData->surface->Blt(&rcDest, (LPDIRECTDRAWSURFACE7)surface->GetHandle(), &rcSrc, DDBLT_WAIT, 0);
 				if (clearScn)
 				{
 					DDBLTFX bltfx;
 					bltfx.dwFillColor = 0x00000000;
-					if (destY > 0)
+					if (destTL.y > 0)
 					{
 						rcSrc.left = rc.left;
 						rcSrc.top = rc.top;
 						rcSrc.right = rcSrc.left + (LONG)drawWidth;
-						rcSrc.bottom = rcSrc.top + (LONG)destY;
+						rcSrc.bottom = rcSrc.top + (LONG)destTL.y;
 						this->clsData->surface->Blt(&rcSrc, 0, 0, DDBLT_WAIT | DDBLT_COLORFILL, &bltfx);
 					}
-					if (destY + (OSInt)buffH < (OSInt)drawHeight)
+					if (destTL.y + (OSInt)buffSize.y < (OSInt)drawHeight)
 					{
 						rcSrc.left = rc.left;
-						rcSrc.top = rc.top + (LONG)destY + (LONG)buffH;
+						rcSrc.top = rc.top + (LONG)destTL.y + (LONG)buffSize.y;
 						rcSrc.right = rcSrc.left + (LONG)drawWidth;
-						rcSrc.bottom = rcSrc.top + (LONG)drawHeight - (LONG)destY - (LONG)buffH;
+						rcSrc.bottom = rcSrc.top + (LONG)drawHeight - (LONG)destTL.y - (LONG)buffSize.y;
 						this->clsData->surface->Blt(&rcSrc, 0, 0, DDBLT_WAIT | DDBLT_COLORFILL, &bltfx);
 					}
-					if (destX > 0)
+					if (destTL.x > 0)
 					{
 						rcSrc.left = rc.left;
-						rcSrc.top = rc.top + (LONG)destY;
-						rcSrc.right = rcSrc.left + (LONG)destX;
-						rcSrc.bottom = rcSrc.top + (LONG)buffH;
+						rcSrc.top = rc.top + (LONG)destTL.y;
+						rcSrc.right = rcSrc.left + (LONG)destTL.x;
+						rcSrc.bottom = rcSrc.top + (LONG)buffSize.y;
 						this->clsData->surface->Blt(&rcSrc, 0, 0, DDBLT_WAIT | DDBLT_COLORFILL, &bltfx);
 					}
-					if (destX + (OSInt)buffW < (OSInt)drawWidth)
+					if (destTL.x + (OSInt)buffSize.x < (OSInt)drawWidth)
 					{
-						rcSrc.left = rc.left + (LONG)destX + (LONG)buffW;
-						rcSrc.top = rc.top + (LONG)destY;
-						rcSrc.right = rcSrc.left + (LONG)drawWidth - (LONG)destX - (LONG)buffW;
-						rcSrc.bottom = rcSrc.top + (LONG)buffH;
+						rcSrc.left = rc.left + (LONG)destTL.x + (LONG)buffSize.x;
+						rcSrc.top = rc.top + (LONG)destTL.y;
+						rcSrc.right = rcSrc.left + (LONG)drawWidth - (LONG)destTL.x - (LONG)buffSize.x;
+						rcSrc.bottom = rcSrc.top + (LONG)buffSize.y;
 						this->clsData->surface->Blt(&rcSrc, 0, 0, DDBLT_WAIT | DDBLT_COLORFILL, &bltfx);
 					}
 				}
@@ -375,8 +375,8 @@ UInt8 *Media::DDrawSurface::LockSurface(OSInt *lineAdd)
 	ddsd.dwSize = sizeof(ddsd);
 	rcSrc.left = 0;
 	rcSrc.top = 0;
-	rcSrc.right = (LONG)this->info.dispWidth;
-	rcSrc.bottom = (LONG)this->info.dispHeight;
+	rcSrc.right = (LONG)this->info.dispSize.x;
+	rcSrc.bottom = (LONG)this->info.dispSize.y;
 
 	hRes = this->clsData->surface->Lock(&rcSrc, &ddsd, DDLOCK_WAIT, 0);
 	if (hRes == DDERR_SURFACELOST)

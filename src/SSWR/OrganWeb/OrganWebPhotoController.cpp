@@ -187,7 +187,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhoto(Net::WebServer::IWeb
 				simg = imgList->GetImage(0, 0)->CreateStaticImage();
 				DEL_CLASS(imgList);
 				Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
-				NEW_CLASS(lrimg, Media::StaticImage(simg->info.dispWidth, simg->info.dispHeight, *(UInt32*)"LRGB", 64, Media::PF_UNKNOWN, 0, &color, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+				NEW_CLASS(lrimg, Media::StaticImage(simg->info.dispSize, *(UInt32*)"LRGB", 64, Media::PF_UNKNOWN, 0, &color, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 				Sync::MutexUsage mutUsage(&this->csconvMut);
 				if (this->csconv == 0 || this->csconvFCC != simg->info.fourcc || this->csconvBpp != simg->info.storeBPP || this->csconvPF != simg->info.pf || !simg->info.color->Equals(&this->csconvColor))
 				{
@@ -200,7 +200,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhoto(Net::WebServer::IWeb
 				}
 				if (this->csconv)
 				{
-					this->csconv->ConvertV2(&simg->data, lrimg->data, simg->info.dispWidth, simg->info.dispHeight, simg->info.storeWidth, simg->info.storeHeight, (OSInt)lrimg->GetDataBpl(), Media::FT_NON_INTERLACE, Media::YCOFST_C_CENTER_LEFT);
+					this->csconv->ConvertV2(&simg->data, lrimg->data, simg->info.dispSize.x, simg->info.dispSize.y, simg->info.storeSize.x, simg->info.storeSize.y, (OSInt)lrimg->GetDataBpl(), Media::FT_NON_INTERLACE, Media::YCOFST_C_CENTER_LEFT);
 				}
 				else
 				{
@@ -211,11 +211,10 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhoto(Net::WebServer::IWeb
 
 				if (lrimg)
 				{
-					this->lrgbLimiter.LimitImageLRGB(lrimg->data, lrimg->info.dispWidth, lrimg->info.dispHeight);
+					this->lrgbLimiter.LimitImageLRGB(lrimg->data, lrimg->info.dispSize.x, lrimg->info.dispSize.y);
 					Sync::MutexUsage mutUsage(&this->resizerMut);
 					resizerLR->SetResizeAspectRatio(Media::IImgResizer::RAR_SQUAREPIXEL);
-					resizerLR->SetTargetWidth(imgWidth);
-					resizerLR->SetTargetHeight(imgHeight);
+					resizerLR->SetTargetSize(Math::Size2D<UOSInt>(imgWidth, imgHeight));
 					dimg = resizerLR->ProcessToNew(lrimg);
 					mutUsage.EndUse();
 					DEL_CLASS(lrimg)
@@ -263,10 +262,10 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhoto(Net::WebServer::IWeb
 								gimg->DelFont(f);
 								break;
 							}
-							if (sz[0] <= dimg->info.dispWidth && sz[1] <= dimg->info.dispHeight)
+							if (sz[0] <= dimg->info.dispSize.x && sz[1] <= dimg->info.dispSize.y)
 							{
-								xRand = Double2Int32(dimg->info.dispWidth - sz[0]);
-								yRand = Double2Int32(dimg->info.dispHeight - sz[1]);
+								xRand = Double2Int32(dimg->info.dispSize.x - sz[0]);
+								yRand = Double2Int32(dimg->info.dispSize.y - sz[1]);
 								iWidth = Double2Int32(sz[0]);
 								iHeight = Double2Int32(sz[1]);
 								gimg2 = this->eng->CreateImage32(iWidth, iHeight, Media::AT_NO_ALPHA);
@@ -446,7 +445,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoId(Net::WebServer::IW
 			simg = imgList->GetImage(0, 0)->CreateStaticImage();
 			DEL_CLASS(imgList);
 			Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
-			NEW_CLASS(lrimg, Media::StaticImage(simg->info.dispWidth, simg->info.dispHeight, *(UInt32*)"LRGB", 64, Media::PF_UNKNOWN, 0, &color, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+			NEW_CLASS(lrimg, Media::StaticImage(simg->info.dispSize, *(UInt32*)"LRGB", 64, Media::PF_UNKNOWN, 0, &color, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 			{
 				Sync::MutexUsage mutUsage(&this->csconvMut);
 				if (this->csconv == 0 || this->csconvFCC != simg->info.fourcc || this->csconvBpp != simg->info.storeBPP || this->csconvPF != simg->info.pf || !simg->info.color->Equals(&this->csconvColor))
@@ -460,7 +459,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoId(Net::WebServer::IW
 				}
 				if (this->csconv)
 				{
-					this->csconv->ConvertV2(&simg->data, lrimg->data, simg->info.dispWidth, simg->info.dispHeight, simg->info.storeWidth, simg->info.storeHeight, (OSInt)lrimg->GetDataBpl(), Media::FT_NON_INTERLACE, Media::YCOFST_C_CENTER_LEFT);
+					this->csconv->ConvertV2(&simg->data, lrimg->data, simg->info.dispSize.x, simg->info.dispSize.y, simg->info.storeSize.x, simg->info.storeSize.y, (OSInt)lrimg->GetDataBpl(), Media::FT_NON_INTERLACE, Media::YCOFST_C_CENTER_LEFT);
 				}
 				else
 				{
@@ -471,46 +470,44 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoId(Net::WebServer::IW
 
 			if (lrimg)
 			{
-				this->lrgbLimiter.LimitImageLRGB(lrimg->data, lrimg->info.dispWidth, lrimg->info.dispHeight);
+				this->lrgbLimiter.LimitImageLRGB(lrimg->data, lrimg->info.dispSize.x, lrimg->info.dispSize.y);
 				if (imgWidth == GetPreviewSize() && imgHeight == GetPreviewSize())
 				{
 					Sync::MutexUsage mutUsage(&this->resizerMut);
 					resizerLR->SetResizeAspectRatio(Media::IImgResizer::RAR_SQUAREPIXEL);
-					resizerLR->SetTargetWidth(imgWidth);
-					resizerLR->SetTargetHeight(imgHeight);
+					resizerLR->SetTargetSize(Math::Size2D<UOSInt>(imgWidth, imgHeight));
 					Double x1 = userFile->cropLeft;
 					Double y1 = userFile->cropTop;
-					Double x2 = UOSInt2Double(lrimg->info.dispWidth) - userFile->cropRight;
-					Double y2 = UOSInt2Double(lrimg->info.dispHeight) - userFile->cropBottom;
+					Double x2 = UOSInt2Double(lrimg->info.dispSize.x) - userFile->cropRight;
+					Double y2 = UOSInt2Double(lrimg->info.dispSize.y) - userFile->cropBottom;
 					if (userFile->cropLeft < 0)
 					{
 						x1 = 0;
-						x2 = UOSInt2Double(lrimg->info.dispWidth) - userFile->cropRight - userFile->cropLeft;
+						x2 = UOSInt2Double(lrimg->info.dispSize.x) - userFile->cropRight - userFile->cropLeft;
 					}
 					else if (userFile->cropRight < 0)
 					{
 						x1 = userFile->cropLeft + userFile->cropRight;
-						x2 = UOSInt2Double(lrimg->info.dispWidth);
+						x2 = UOSInt2Double(lrimg->info.dispSize.x);
 					}
 					if (userFile->cropTop < 0)
 					{
 						y1 = 0;
-						y2 = UOSInt2Double(lrimg->info.dispHeight) - userFile->cropBottom - userFile->cropTop;
+						y2 = UOSInt2Double(lrimg->info.dispSize.y) - userFile->cropBottom - userFile->cropTop;
 					}
 					else if (userFile->cropBottom < 0)
 					{
 						y1 = userFile->cropBottom + userFile->cropTop;
-						y2 = UOSInt2Double(lrimg->info.dispHeight);
+						y2 = UOSInt2Double(lrimg->info.dispSize.y);
 					}
-					dimg = resizerLR->ProcessToNewPartial(lrimg, x1, y1, x2, y2);
+					dimg = resizerLR->ProcessToNewPartial(lrimg, Math::Coord2DDbl(x1, y1), Math::Coord2DDbl(x2, y2));
 					mutUsage.EndUse();
 				}
 				else
 				{
 					Sync::MutexUsage mutUsage(&this->resizerMut);
 					resizerLR->SetResizeAspectRatio(Media::IImgResizer::RAR_SQUAREPIXEL);
-					resizerLR->SetTargetWidth(imgWidth);
-					resizerLR->SetTargetHeight(imgHeight);
+					resizerLR->SetTargetSize(Math::Size2D<UOSInt>(imgWidth, imgHeight));
 					dimg = resizerLR->ProcessToNew(lrimg);
 					mutUsage.EndUse();
 				}
@@ -547,7 +544,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoId(Net::WebServer::IW
 						Int32 xRand;
 						Int32 yRand;
 						UInt32 fontSizePx = imgWidth / 12;
-						Math::Size2D<Double> sz;
+						Math::Size2DDbl sz;
 						UInt32 iWidth;
 						UInt32 iHeight;
 						Media::DrawImage *gimg2;
@@ -562,14 +559,14 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoId(Net::WebServer::IW
 								gimg->DelFont(f);
 								break;
 							}
-							if (sz.width <= UOSInt2Double(dimg->info.dispWidth) && sz.height <= UOSInt2Double(dimg->info.dispHeight))
+							if (sz.x <= UOSInt2Double(dimg->info.dispSize.x) && sz.y <= UOSInt2Double(dimg->info.dispSize.y))
 							{
-								xRand = Double2Int32(UOSInt2Double(dimg->info.dispWidth) - sz.width);
-								yRand = Double2Int32(UOSInt2Double(dimg->info.dispHeight) - sz.height);
-								iWidth = (UInt32)Double2Int32(sz.width);
-								iHeight = (UInt32)Double2Int32(sz.height);
-								gimg2 = this->env->GetDrawEngine()->CreateImage32(iWidth, iHeight, Media::AT_NO_ALPHA);
-								gimg2->DrawString(0, 0, user->watermark->ToCString(), f, b);
+								xRand = Double2Int32(UOSInt2Double(dimg->info.dispSize.x) - sz.x);
+								yRand = Double2Int32(UOSInt2Double(dimg->info.dispSize.y) - sz.y);
+								iWidth = (UInt32)Double2Int32(sz.x);
+								iHeight = (UInt32)Double2Int32(sz.y);
+								gimg2 = this->env->GetDrawEngine()->CreateImage32(Math::Size2D<UOSInt>(iWidth, iHeight), Media::AT_NO_ALPHA);
+								gimg2->DrawString(Math::Coord2DDbl(0, 0), user->watermark->ToCString(), f, b);
 								gimg2->SetAlphaType(Media::AT_ALPHA);
 								{
 									Bool revOrder;
@@ -580,7 +577,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoId(Net::WebServer::IW
 										ImageUtil_ColorReplace32(bits, iWidth, iHeight, col);
 									}
 								}
-								gimg->DrawImagePt(gimg2, Double2Int32(this->random.NextDouble() * xRand), Double2Int32(this->random.NextDouble() * yRand));
+								gimg->DrawImagePt(gimg2, Math::Coord2DDbl(this->random.NextDouble() * xRand, this->random.NextDouble() * yRand));
 								this->env->GetDrawEngine()->DeleteImage(gimg2);
 								gimg->DelFont(f);
 								break;
@@ -733,7 +730,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoWId(Net::WebServer::I
 				simg = imgList->GetImage(0, 0)->CreateStaticImage();
 				DEL_CLASS(imgList);
 				Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
-				NEW_CLASS(lrimg, Media::StaticImage(simg->info.dispWidth, simg->info.dispHeight, *(UInt32*)"LRGB", 64, Media::PF_UNKNOWN, 0, &color, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+				NEW_CLASS(lrimg, Media::StaticImage(simg->info.dispSize, *(UInt32*)"LRGB", 64, Media::PF_UNKNOWN, 0, &color, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 				{
 					Sync::MutexUsage mutUsage(&this->csconvMut);
 					if (this->csconv == 0 || this->csconvFCC != simg->info.fourcc || this->csconvBpp != simg->info.storeBPP || this->csconvPF != simg->info.pf || !simg->info.color->Equals(&this->csconvColor))
@@ -747,7 +744,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoWId(Net::WebServer::I
 					}
 					if (this->csconv)
 					{
-						this->csconv->ConvertV2(&simg->data, lrimg->data, simg->info.dispWidth, simg->info.dispHeight, simg->info.storeWidth, simg->info.storeHeight, (OSInt)lrimg->GetDataBpl(), Media::FT_NON_INTERLACE, Media::YCOFST_C_CENTER_LEFT);
+						this->csconv->ConvertV2(&simg->data, lrimg->data, simg->info.dispSize.x, simg->info.dispSize.y, simg->info.storeSize.x, simg->info.storeSize.y, (OSInt)lrimg->GetDataBpl(), Media::FT_NON_INTERLACE, Media::YCOFST_C_CENTER_LEFT);
 					}
 					else
 					{
@@ -758,46 +755,44 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoWId(Net::WebServer::I
 
 				if (lrimg)
 				{
-					this->lrgbLimiter.LimitImageLRGB(lrimg->data, lrimg->info.dispWidth, lrimg->info.dispHeight);
+					this->lrgbLimiter.LimitImageLRGB(lrimg->data, lrimg->info.dispSize.x, lrimg->info.dispSize.y);
 					if (imgWidth == GetPreviewSize() && imgHeight == GetPreviewSize())
 					{
 						Sync::MutexUsage mutUsage(&this->resizerMut);
 						resizerLR->SetResizeAspectRatio(Media::IImgResizer::RAR_SQUAREPIXEL);
-						resizerLR->SetTargetWidth(imgWidth);
-						resizerLR->SetTargetHeight(imgHeight);
+						resizerLR->SetTargetSize(Math::Size2D<UOSInt>(imgWidth, imgHeight));
 						Double x1 = wfile->cropLeft;
 						Double y1 = wfile->cropTop;
-						Double x2 = UOSInt2Double(lrimg->info.dispWidth) - wfile->cropRight;
-						Double y2 = UOSInt2Double(lrimg->info.dispHeight) - wfile->cropBottom;
+						Double x2 = UOSInt2Double(lrimg->info.dispSize.x) - wfile->cropRight;
+						Double y2 = UOSInt2Double(lrimg->info.dispSize.y) - wfile->cropBottom;
 						if (wfile->cropLeft < 0)
 						{
 							x1 = 0;
-							x2 = UOSInt2Double(lrimg->info.dispWidth) - wfile->cropRight - wfile->cropLeft;
+							x2 = UOSInt2Double(lrimg->info.dispSize.x) - wfile->cropRight - wfile->cropLeft;
 						}
 						else if (wfile->cropRight < 0)
 						{
 							x1 = wfile->cropLeft + wfile->cropRight;
-							x2 = UOSInt2Double(lrimg->info.dispWidth);
+							x2 = UOSInt2Double(lrimg->info.dispSize.x);
 						}
 						if (wfile->cropTop < 0)
 						{
 							y1 = 0;
-							y2 = UOSInt2Double(lrimg->info.dispHeight) - wfile->cropBottom - wfile->cropTop;
+							y2 = UOSInt2Double(lrimg->info.dispSize.y) - wfile->cropBottom - wfile->cropTop;
 						}
 						else if (wfile->cropBottom < 0)
 						{
 							y1 = wfile->cropBottom + wfile->cropTop;
-							y2 = UOSInt2Double(lrimg->info.dispHeight);
+							y2 = UOSInt2Double(lrimg->info.dispSize.y);
 						}
-						dimg = resizerLR->ProcessToNewPartial(lrimg, x1, y1, x2, y2);
+						dimg = resizerLR->ProcessToNewPartial(lrimg, Math::Coord2DDbl(x1, y1), Math::Coord2DDbl(x2, y2));
 						mutUsage.EndUse();
 					}
 					else
 					{
 						Sync::MutexUsage mutUsage(&this->resizerMut);
 						resizerLR->SetResizeAspectRatio(Media::IImgResizer::RAR_SQUAREPIXEL);
-						resizerLR->SetTargetWidth(imgWidth);
-						resizerLR->SetTargetHeight(imgHeight);
+						resizerLR->SetTargetSize(Math::Size2D<UOSInt>(imgWidth, imgHeight));
 						dimg = resizerLR->ProcessToNew(lrimg);
 						mutUsage.EndUse();
 					}

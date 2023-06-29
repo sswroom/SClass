@@ -13,7 +13,7 @@ Map::ESRI::ESRITileMap::ESRITileMap(Map::ESRI::ESRIMapServer *esriMap, Bool toRe
 	this->toRelease = toRelease;
 	this->cacheDir = Text::String::New(cacheDir);
 	this->dispBounds = this->esriMap->GetInitBounds();
-	this->dispSize = Math::Size2D<Double>(640, 480);
+	this->dispSize = Math::Size2DDbl(640, 480);
 	this->dispDPI = 96.0;
 }
 
@@ -117,10 +117,10 @@ Bool Map::ESRI::ESRITileMap::CanQuery() const
 
 Bool Map::ESRI::ESRITileMap::QueryInfos(Math::Coord2DDbl coord, UOSInt level, Data::ArrayList<Math::Geometry::Vector2D*> *vecList, Data::ArrayList<UOSInt> *valueOfstList, Data::ArrayList<Text::String*> *nameList, Data::ArrayList<Text::String*> *valueList) const
 {
-	return this->esriMap->QueryInfos(coord, this->dispBounds, (UInt32)Double2Int32(this->dispSize.width), (UInt32)Double2Int32(this->dispSize.height), this->dispDPI, vecList, valueOfstList, nameList, valueList);
+	return this->esriMap->QueryInfos(coord, this->dispBounds, (UInt32)Double2Int32(this->dispSize.x), (UInt32)Double2Int32(this->dispSize.y), this->dispDPI, vecList, valueOfstList, nameList, valueList);
 }
 
-void Map::ESRI::ESRITileMap::SetDispSize(Math::Size2D<Double> size, Double dpi)
+void Map::ESRI::ESRITileMap::SetDispSize(Math::Size2DDbl size, Double dpi)
 {
 	this->dispSize = size;
 	this->dispDPI = dpi;

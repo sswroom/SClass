@@ -29,7 +29,7 @@ Map::BingMapsTile::BingMapsTile(ImagerySet is, Text::CString key, Text::CString 
 	this->brandLogoImg = 0;
 	this->hideLogo = false;
 	this->dispDPI = 96;
-	this->dispSize = Math::Size2D<Double>(640, 480);
+	this->dispSize = Math::Size2DDbl(640, 480);
 
 	Text::StringBuilderUTF8 sb;
 	Text::StringBuilderUTF8 sb2;
@@ -116,7 +116,7 @@ UOSInt Map::BingMapsTile::GetConcurrentCount()
 	return 2 * this->subdomains.GetCount();
 }
 
-void Map::BingMapsTile::SetDispSize(Math::Size2D<Double> size, Double dpi)
+void Map::BingMapsTile::SetDispSize(Math::Size2DDbl size, Double dpi)
 {
 	this->dispSize = size;
 	this->dispDPI = dpi;
@@ -145,9 +145,9 @@ Math::Geometry::Vector2D *Map::BingMapsTile::CreateScreenObjVector(UOSInt index)
 {
 	if (index == 0 && this->brandLogoImg && !this->hideLogo)
 	{
-		Math::Coord2DDbl size96 = this->dispSize.ToCoord() * (96.0 / this->dispDPI);
+		Math::Coord2DDbl size96 = this->dispSize * (96.0 / this->dispDPI);
 		Media::StaticImage *img = this->brandLogoImg->GetImage(0);
-		Math::Coord2DDbl imgSize = Math::Coord2DDbl(UOSInt2Double(img->info.dispWidth), UOSInt2Double(img->info.dispHeight));
+		Math::Coord2DDbl imgSize = img->info.dispSize.ToDouble();
 		Math::Coord2DDbl pos = size96 - 16 - imgSize;
 		return Math::Geometry::VectorImage::CreateScreenImage(0, this->brandLogoImg, pos / size96, imgSize / size96, this->brandLogoUri->ToCString());
 	}

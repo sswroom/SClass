@@ -413,18 +413,18 @@ void Math::Geometry::VectorImage::GetScreenBounds(UOSInt scnWidth, UOSInt scnHei
 
 	if (this->size.x == 0 && this->size.y == 0)
 	{
-		sizeX = UOSInt2Double(simg->info.dispWidth) * hdpi / simg->info.hdpi;
-		sizeY = UOSInt2Double(simg->info.dispHeight) * vdpi / simg->info.vdpi;
+		sizeX = UOSInt2Double(simg->info.dispSize.x) * hdpi / simg->info.hdpi;
+		sizeY = UOSInt2Double(simg->info.dispSize.y) * vdpi / simg->info.vdpi;
 	}
 	else if (this->size.x == 0)
 	{
 		sizeY = UOSInt2Double(scnHeight) * this->size.y;
-		sizeX = UOSInt2Double(scnHeight) * this->size.y * UOSInt2Double(simg->info.dispWidth) / UOSInt2Double(simg->info.dispHeight);
+		sizeX = UOSInt2Double(scnHeight) * this->size.y * UOSInt2Double(simg->info.dispSize.x) / UOSInt2Double(simg->info.dispSize.y);
 	}
 	else if (this->size.y == 0)
 	{
 		sizeX = UOSInt2Double(scnWidth) * this->size.x;
-		sizeY = UOSInt2Double(scnWidth) * this->size.x * UOSInt2Double(simg->info.dispHeight) / UOSInt2Double(simg->info.dispWidth);
+		sizeY = UOSInt2Double(scnWidth) * this->size.x * UOSInt2Double(simg->info.dispSize.x) / UOSInt2Double(simg->info.dispSize.y);
 	}
 	else
 	{

@@ -71,13 +71,13 @@ IO::ParsedObject *Parser::FileParser::WebPParser::ParseFileHdr(IO::StreamData *f
 
 	Media::StaticImage *simg;
 	Media::ColorProfile color(Media::ColorProfile::CPT_PUNKNOWN);
-	NEW_CLASS(simg, Media::StaticImage(width, height, 0, 32, Media::PF_B8G8R8A8, width * height * 4, &color, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_ALPHA, Media::YCOFST_C_CENTER_LEFT))
+	NEW_CLASS(simg, Media::StaticImage(Math::Size2D<UOSInt>(width, height), 0, 32, Media::PF_B8G8R8A8, width * height * 4, &color, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_ALPHA, Media::YCOFST_C_CENTER_LEFT))
 	WebPIterator iter;
 	if (WebPDemuxGetFrame(demux, 1, &iter))
 	{
 		do
 		{
-			WebPDecodeBGRAInto(iter.fragment.bytes, iter.fragment.size, simg->data, simg->GetDataBpl() * simg->info.dispHeight, (int)simg->GetDataBpl());
+			WebPDecodeBGRAInto(iter.fragment.bytes, iter.fragment.size, simg->data, simg->GetDataBpl() * simg->info.dispSize.y, (int)simg->GetDataBpl());
 		} while (WebPDemuxNextFrame(&iter));
 		WebPDemuxReleaseIterator(&iter);
 	}

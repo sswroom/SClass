@@ -18,7 +18,7 @@ Text::CString Media::ImageGen::ColorImageGen::GetName()
 	return CSTR("Color Test");
 }
 
-Media::Image *Media::ImageGen::ColorImageGen::GenerateImage(Media::ColorProfile *colorProfile, UOSInt width, UOSInt height)
+Media::Image *Media::ImageGen::ColorImageGen::GenerateImage(Media::ColorProfile *colorProfile, Math::Size2D<UOSInt> size)
 {
 	Media::StaticImage *outImage;
 	Int64 *imgPtr;
@@ -28,13 +28,13 @@ Media::Image *Media::ImageGen::ColorImageGen::GenerateImage(Media::ColorProfile 
 	UOSInt k;
 	UOSInt l;
 	UInt16 c[4];
-	UOSInt bpl = width << 3;
-	if (width < 8 || height < 4)
+	UOSInt bpl = size.x << 3;
+	if (size.x < 8 || size.y < 4)
 		return 0;
 	Media::CS::TransferFunc *rfunc = Media::CS::TransferFunc::CreateFunc(colorProfile->GetRTranParam());
 	Media::CS::TransferFunc *gfunc = Media::CS::TransferFunc::CreateFunc(colorProfile->GetRTranParam());
 	Media::CS::TransferFunc *bfunc = Media::CS::TransferFunc::CreateFunc(colorProfile->GetRTranParam());
-	NEW_CLASS(outImage, Media::StaticImage(width, height, 0, 64, Media::PF_LE_B16G16R16A16, 0, colorProfile, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+	NEW_CLASS(outImage, Media::StaticImage(size, 0, 64, Media::PF_LE_B16G16R16A16, 0, colorProfile, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 
 	imgPtr2 = outImage->data;
 	k = 0;
@@ -45,7 +45,7 @@ Media::Image *Media::ImageGen::ColorImageGen::GenerateImage(Media::ColorProfile 
 	c[2] = (UInt16)Double2Int32(rfunc->ForwardTransfer(1) * 65535.0);
 	c[3] = 65535;
 	i = 0;
-	j = (width * 1) >> 3;
+	j = (size.x * 1) >> 3;
 	while (i < j)
 	{
 		imgPtr[i] = *(Int64*)c;
@@ -56,7 +56,7 @@ Media::Image *Media::ImageGen::ColorImageGen::GenerateImage(Media::ColorProfile 
 	c[1] = (UInt16)Double2Int32(gfunc->ForwardTransfer(0.125) * 65535.0);
 	c[2] = (UInt16)Double2Int32(rfunc->ForwardTransfer(0.875) * 65535.0);
 	c[3] = 65535;
-	j = (width * 2) >> 3;
+	j = (size.x * 2) >> 3;
 	while (i < j)
 	{
 		imgPtr[i] = *(Int64*)c;
@@ -67,7 +67,7 @@ Media::Image *Media::ImageGen::ColorImageGen::GenerateImage(Media::ColorProfile 
 	c[1] = (UInt16)Double2Int32(gfunc->ForwardTransfer(0.25) * 65535.0);
 	c[2] = (UInt16)Double2Int32(rfunc->ForwardTransfer(0.75) * 65535.0);
 	c[3] = 65535;
-	j = (width * 3) >> 3;
+	j = (size.x * 3) >> 3;
 	while (i < j)
 	{
 		imgPtr[i] = *(Int64*)c;
@@ -78,7 +78,7 @@ Media::Image *Media::ImageGen::ColorImageGen::GenerateImage(Media::ColorProfile 
 	c[1] = (UInt16)Double2Int32(gfunc->ForwardTransfer(0.375) * 65535.0);
 	c[2] = (UInt16)Double2Int32(rfunc->ForwardTransfer(0.625) * 65535.0);
 	c[3] = 65535;
-	j = (width * 4) >> 3;
+	j = (size.x * 4) >> 3;
 	while (i < j)
 	{
 		imgPtr[i] = *(Int64*)c;
@@ -89,7 +89,7 @@ Media::Image *Media::ImageGen::ColorImageGen::GenerateImage(Media::ColorProfile 
 	c[1] = (UInt16)Double2Int32(gfunc->ForwardTransfer(0.5) * 65535.0);
 	c[2] = (UInt16)Double2Int32(rfunc->ForwardTransfer(0.5) * 65535.0);
 	c[3] = 65535;
-	j = (width * 5) >> 3;
+	j = (size.x * 5) >> 3;
 	while (i < j)
 	{
 		imgPtr[i] = *(Int64*)c;
@@ -100,7 +100,7 @@ Media::Image *Media::ImageGen::ColorImageGen::GenerateImage(Media::ColorProfile 
 	c[1] = (UInt16)Double2Int32(gfunc->ForwardTransfer(0.625) * 65535.0);
 	c[2] = (UInt16)Double2Int32(rfunc->ForwardTransfer(0.375) * 65535.0);
 	c[3] = 65535;
-	j = (width * 6) >> 3;
+	j = (size.x * 6) >> 3;
 	while (i < j)
 	{
 		imgPtr[i] = *(Int64*)c;
@@ -111,7 +111,7 @@ Media::Image *Media::ImageGen::ColorImageGen::GenerateImage(Media::ColorProfile 
 	c[1] = (UInt16)Double2Int32(gfunc->ForwardTransfer(0.75) * 65535.0);
 	c[2] = (UInt16)Double2Int32(rfunc->ForwardTransfer(0.25) * 65535.0);
 	c[3] = 65535;
-	j = (width * 7) >> 3;
+	j = (size.x * 7) >> 3;
 	while (i < j)
 	{
 		imgPtr[i] = *(Int64*)c;
@@ -122,14 +122,14 @@ Media::Image *Media::ImageGen::ColorImageGen::GenerateImage(Media::ColorProfile 
 	c[1] = (UInt16)Double2Int32(gfunc->ForwardTransfer(0.875) * 65535.0);
 	c[2] = (UInt16)Double2Int32(rfunc->ForwardTransfer(0.125) * 65535.0);
 	c[3] = 65535;
-	j = width;
+	j = size.x;
 	while (i < j)
 	{
 		imgPtr[i] = *(Int64*)c;
 		i++;
 	}
 
-	l = (height * 1) >> 2;
+	l = (size.y * 1) >> 2;
 	k++;
 	imgPtr2 += bpl;
 	while (k < l)
@@ -145,7 +145,7 @@ Media::Image *Media::ImageGen::ColorImageGen::GenerateImage(Media::ColorProfile 
 	c[2] = (UInt16)Double2Int32(rfunc->ForwardTransfer(0) * 65535.0);
 	c[3] = 65535;
 	i = 0;
-	j = (width * 1) >> 3;
+	j = (size.x * 1) >> 3;
 	while (i < j)
 	{
 		imgPtr[i] = *(Int64*)c;
@@ -156,7 +156,7 @@ Media::Image *Media::ImageGen::ColorImageGen::GenerateImage(Media::ColorProfile 
 	c[1] = (UInt16)Double2Int32(gfunc->ForwardTransfer(0.875) * 65535.0);
 	c[2] = (UInt16)Double2Int32(rfunc->ForwardTransfer(0) * 65535.0);
 	c[3] = 65535;
-	j = (width * 2) >> 3;
+	j = (size.x * 2) >> 3;
 	while (i < j)
 	{
 		imgPtr[i] = *(Int64*)c;
@@ -167,7 +167,7 @@ Media::Image *Media::ImageGen::ColorImageGen::GenerateImage(Media::ColorProfile 
 	c[1] = (UInt16)Double2Int32(gfunc->ForwardTransfer(0.75) * 65535.0);
 	c[2] = (UInt16)Double2Int32(rfunc->ForwardTransfer(0) * 65535.0);
 	c[3] = 65535;
-	j = (width * 3) >> 3;
+	j = (size.x * 3) >> 3;
 	while (i < j)
 	{
 		imgPtr[i] = *(Int64*)c;
@@ -178,7 +178,7 @@ Media::Image *Media::ImageGen::ColorImageGen::GenerateImage(Media::ColorProfile 
 	c[1] = (UInt16)Double2Int32(gfunc->ForwardTransfer(0.625) * 65535.0);
 	c[2] = (UInt16)Double2Int32(rfunc->ForwardTransfer(0) * 65535.0);
 	c[3] = 65535;
-	j = (width * 4) >> 3;
+	j = (size.x * 4) >> 3;
 	while (i < j)
 	{
 		imgPtr[i] = *(Int64*)c;
@@ -189,7 +189,7 @@ Media::Image *Media::ImageGen::ColorImageGen::GenerateImage(Media::ColorProfile 
 	c[1] = (UInt16)Double2Int32(gfunc->ForwardTransfer(0.5) * 65535.0);
 	c[2] = (UInt16)Double2Int32(rfunc->ForwardTransfer(0) * 65535.0);
 	c[3] = 65535;
-	j = (width * 5) >> 3;
+	j = (size.x * 5) >> 3;
 	while (i < j)
 	{
 		imgPtr[i] = *(Int64*)c;
@@ -200,7 +200,7 @@ Media::Image *Media::ImageGen::ColorImageGen::GenerateImage(Media::ColorProfile 
 	c[1] = (UInt16)Double2Int32(gfunc->ForwardTransfer(0.375) * 65535.0);
 	c[2] = (UInt16)Double2Int32(rfunc->ForwardTransfer(0) * 65535.0);
 	c[3] = 65535;
-	j = (width * 6) >> 3;
+	j = (size.x * 6) >> 3;
 	while (i < j)
 	{
 		imgPtr[i] = *(Int64*)c;
@@ -211,7 +211,7 @@ Media::Image *Media::ImageGen::ColorImageGen::GenerateImage(Media::ColorProfile 
 	c[1] = (UInt16)Double2Int32(gfunc->ForwardTransfer(0.25) * 65535.0);
 	c[2] = (UInt16)Double2Int32(rfunc->ForwardTransfer(0) * 65535.0);
 	c[3] = 65535;
-	j = (width * 7) >> 3;
+	j = (size.x * 7) >> 3;
 	while (i < j)
 	{
 		imgPtr[i] = *(Int64*)c;
@@ -222,14 +222,14 @@ Media::Image *Media::ImageGen::ColorImageGen::GenerateImage(Media::ColorProfile 
 	c[1] = (UInt16)Double2Int32(gfunc->ForwardTransfer(0.125) * 65535.0);
 	c[2] = (UInt16)Double2Int32(rfunc->ForwardTransfer(0) * 65535.0);
 	c[3] = 65535;
-	j = width;
+	j = size.x;
 	while (i < j)
 	{
 		imgPtr[i] = *(Int64*)c;
 		i++;
 	}
 
-	l = (height * 2) >> 2;
+	l = (size.y * 2) >> 2;
 	k++;
 	imgPtr2 += bpl;
 	while (k < l)
@@ -245,7 +245,7 @@ Media::Image *Media::ImageGen::ColorImageGen::GenerateImage(Media::ColorProfile 
 	c[2] = (UInt16)Double2Int32(rfunc->ForwardTransfer(0) * 65535.0);
 	c[3] = 65535;
 	i = 0;
-	j = (width * 1) >> 3;
+	j = (size.x * 1) >> 3;
 	while (i < j)
 	{
 		imgPtr[i] = *(Int64*)c;
@@ -256,7 +256,7 @@ Media::Image *Media::ImageGen::ColorImageGen::GenerateImage(Media::ColorProfile 
 	c[1] = (UInt16)Double2Int32(gfunc->ForwardTransfer(0) * 65535.0);
 	c[2] = (UInt16)Double2Int32(rfunc->ForwardTransfer(0.125) * 65535.0);
 	c[3] = 65535;
-	j = (width * 2) >> 3;
+	j = (size.x * 2) >> 3;
 	while (i < j)
 	{
 		imgPtr[i] = *(Int64*)c;
@@ -267,7 +267,7 @@ Media::Image *Media::ImageGen::ColorImageGen::GenerateImage(Media::ColorProfile 
 	c[1] = (UInt16)Double2Int32(gfunc->ForwardTransfer(0) * 65535.0);
 	c[2] = (UInt16)Double2Int32(rfunc->ForwardTransfer(0.25) * 65535.0);
 	c[3] = 65535;
-	j = (width * 3) >> 3;
+	j = (size.x * 3) >> 3;
 	while (i < j)
 	{
 		imgPtr[i] = *(Int64*)c;
@@ -278,7 +278,7 @@ Media::Image *Media::ImageGen::ColorImageGen::GenerateImage(Media::ColorProfile 
 	c[1] = (UInt16)Double2Int32(gfunc->ForwardTransfer(0) * 65535.0);
 	c[2] = (UInt16)Double2Int32(rfunc->ForwardTransfer(0.375) * 65535.0);
 	c[3] = 65535;
-	j = (width * 4) >> 3;
+	j = (size.x * 4) >> 3;
 	while (i < j)
 	{
 		imgPtr[i] = *(Int64*)c;
@@ -289,7 +289,7 @@ Media::Image *Media::ImageGen::ColorImageGen::GenerateImage(Media::ColorProfile 
 	c[1] = (UInt16)Double2Int32(gfunc->ForwardTransfer(0) * 65535.0);
 	c[2] = (UInt16)Double2Int32(rfunc->ForwardTransfer(0.5) * 65535.0);
 	c[3] = 65535;
-	j = (width * 5) >> 3;
+	j = (size.x * 5) >> 3;
 	while (i < j)
 	{
 		imgPtr[i] = *(Int64*)c;
@@ -300,7 +300,7 @@ Media::Image *Media::ImageGen::ColorImageGen::GenerateImage(Media::ColorProfile 
 	c[1] = (UInt16)Double2Int32(gfunc->ForwardTransfer(0) * 65535.0);
 	c[2] = (UInt16)Double2Int32(rfunc->ForwardTransfer(0.625) * 65535.0);
 	c[3] = 65535;
-	j = (width * 6) >> 3;
+	j = (size.x * 6) >> 3;
 	while (i < j)
 	{
 		imgPtr[i] = *(Int64*)c;
@@ -311,7 +311,7 @@ Media::Image *Media::ImageGen::ColorImageGen::GenerateImage(Media::ColorProfile 
 	c[1] = (UInt16)Double2Int32(gfunc->ForwardTransfer(0) * 65535.0);
 	c[2] = (UInt16)Double2Int32(rfunc->ForwardTransfer(0.75) * 65535.0);
 	c[3] = 65535;
-	j = (width * 7) >> 3;
+	j = (size.x * 7) >> 3;
 	while (i < j)
 	{
 		imgPtr[i] = *(Int64*)c;
@@ -322,14 +322,14 @@ Media::Image *Media::ImageGen::ColorImageGen::GenerateImage(Media::ColorProfile 
 	c[1] = (UInt16)Double2Int32(gfunc->ForwardTransfer(0) * 65535.0);
 	c[2] = (UInt16)Double2Int32(rfunc->ForwardTransfer(0.875) * 65535.0);
 	c[3] = 65535;
-	j = width;
+	j = size.x;
 	while (i < j)
 	{
 		imgPtr[i] = *(Int64*)c;
 		i++;
 	}
 
-	l = (height * 3) >> 2;
+	l = (size.y * 3) >> 2;
 	k++;
 	imgPtr2 += bpl;
 	while (k < l)
@@ -345,7 +345,7 @@ Media::Image *Media::ImageGen::ColorImageGen::GenerateImage(Media::ColorProfile 
 	c[2] = (UInt16)Double2Int32(rfunc->ForwardTransfer(0) * 65535.0);
 	c[3] = 65535;
 	i = 0;
-	j = (width * 1) >> 3;
+	j = (size.x * 1) >> 3;
 	while (i < j)
 	{
 		imgPtr[i] = *(Int64*)c;
@@ -356,7 +356,7 @@ Media::Image *Media::ImageGen::ColorImageGen::GenerateImage(Media::ColorProfile 
 	c[1] = (UInt16)Double2Int32(gfunc->ForwardTransfer(0.125) * 65535.0);
 	c[2] = (UInt16)Double2Int32(rfunc->ForwardTransfer(0.125) * 65535.0);
 	c[3] = 65535;
-	j = (width * 2) >> 3;
+	j = (size.x * 2) >> 3;
 	while (i < j)
 	{
 		imgPtr[i] = *(Int64*)c;
@@ -367,7 +367,7 @@ Media::Image *Media::ImageGen::ColorImageGen::GenerateImage(Media::ColorProfile 
 	c[1] = (UInt16)Double2Int32(gfunc->ForwardTransfer(0.25) * 65535.0);
 	c[2] = (UInt16)Double2Int32(rfunc->ForwardTransfer(0.25) * 65535.0);
 	c[3] = 65535;
-	j = (width * 3) >> 3;
+	j = (size.x * 3) >> 3;
 	while (i < j)
 	{
 		imgPtr[i] = *(Int64*)c;
@@ -378,7 +378,7 @@ Media::Image *Media::ImageGen::ColorImageGen::GenerateImage(Media::ColorProfile 
 	c[1] = (UInt16)Double2Int32(gfunc->ForwardTransfer(0.375) * 65535.0);
 	c[2] = (UInt16)Double2Int32(rfunc->ForwardTransfer(0.375) * 65535.0);
 	c[3] = 65535;
-	j = (width * 4) >> 3;
+	j = (size.x * 4) >> 3;
 	while (i < j)
 	{
 		imgPtr[i] = *(Int64*)c;
@@ -389,7 +389,7 @@ Media::Image *Media::ImageGen::ColorImageGen::GenerateImage(Media::ColorProfile 
 	c[1] = (UInt16)Double2Int32(gfunc->ForwardTransfer(0.5) * 65535.0);
 	c[2] = (UInt16)Double2Int32(rfunc->ForwardTransfer(0.5) * 65535.0);
 	c[3] = 65535;
-	j = (width * 5) >> 3;
+	j = (size.x * 5) >> 3;
 	while (i < j)
 	{
 		imgPtr[i] = *(Int64*)c;
@@ -400,7 +400,7 @@ Media::Image *Media::ImageGen::ColorImageGen::GenerateImage(Media::ColorProfile 
 	c[1] = (UInt16)Double2Int32(gfunc->ForwardTransfer(0.625) * 65535.0);
 	c[2] = (UInt16)Double2Int32(rfunc->ForwardTransfer(0.625) * 65535.0);
 	c[3] = 65535;
-	j = (width * 6) >> 3;
+	j = (size.x * 6) >> 3;
 	while (i < j)
 	{
 		imgPtr[i] = *(Int64*)c;
@@ -411,7 +411,7 @@ Media::Image *Media::ImageGen::ColorImageGen::GenerateImage(Media::ColorProfile 
 	c[1] = (UInt16)Double2Int32(gfunc->ForwardTransfer(0.75) * 65535.0);
 	c[2] = (UInt16)Double2Int32(rfunc->ForwardTransfer(0.75) * 65535.0);
 	c[3] = 65535;
-	j = (width * 7) >> 3;
+	j = (size.x * 7) >> 3;
 	while (i < j)
 	{
 		imgPtr[i] = *(Int64*)c;
@@ -422,14 +422,14 @@ Media::Image *Media::ImageGen::ColorImageGen::GenerateImage(Media::ColorProfile 
 	c[1] = (UInt16)Double2Int32(gfunc->ForwardTransfer(0.875) * 65535.0);
 	c[2] = (UInt16)Double2Int32(rfunc->ForwardTransfer(0.875) * 65535.0);
 	c[3] = 65535;
-	j = width;
+	j = size.x;
 	while (i < j)
 	{
 		imgPtr[i] = *(Int64*)c;
 		i++;
 	}
 
-	l = height;
+	l = size.y;
 	k++;
 	imgPtr2 += bpl;
 	while (k < l)

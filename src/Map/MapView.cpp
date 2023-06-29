@@ -3,7 +3,7 @@
 #include "Map/MapView.h"
 #include "Math/Math.h"
 
-Map::MapView::MapView(Math::Size2D<Double> scnSize)
+Map::MapView::MapView(Math::Size2DDbl scnSize)
 {
 	this->scnSize = scnSize;
 }
@@ -14,15 +14,15 @@ Map::MapView::~MapView()
 
 Double Map::MapView::GetScnWidth() const
 {
-	return this->scnSize.width;
+	return this->scnSize.GetWidth();
 }
 
 Double Map::MapView::GetScnHeight() const
 {
-	return this->scnSize.height;
+	return this->scnSize.GetHeight();
 }
 
-Math::Size2D<Double> Map::MapView::GetScnSize() const
+Math::Size2DDbl Map::MapView::GetScnSize() const
 {
 	return this->scnSize;
 }
@@ -33,10 +33,10 @@ void Map::MapView::SetVAngle(Double angleRad)
 
 void Map::MapView::SetDestImage(Media::DrawImage *img)
 {
-	if (this->scnSize.width != UOSInt2Double(img->GetWidth()) || this->scnSize.height != UOSInt2Double(img->GetHeight()) || this->GetDDPI() != img->GetHDPI())
+	if (this->scnSize.GetWidth() != UOSInt2Double(img->GetWidth()) || this->scnSize.GetHeight() != UOSInt2Double(img->GetHeight()) || this->GetDDPI() != img->GetHDPI())
 	{
 		this->SetDPI(this->GetHDPI(), img->GetHDPI());
-		ChangeViewXY(Math::Size2D<Double>(UOSInt2Double(img->GetWidth()), UOSInt2Double(img->GetHeight())), this->GetCenter(), this->GetMapScale());
+		ChangeViewXY(img->GetSize().ToDouble(), this->GetCenter(), this->GetMapScale());
 	}
 }
 

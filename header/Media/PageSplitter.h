@@ -10,13 +10,13 @@ namespace Media
 	class PageSplitter
 	{
 	public:
-		Math::Size2D<Double> drawSize;
+		Math::Size2DDbl drawSize;
 
 	public:
 		PageSplitter();
 		~PageSplitter();
 
-		void SetDrawSize(Math::Size2D<Double> size, Math::Unit::Distance::DistanceUnit unit);
+		void SetDrawSize(Math::Size2DDbl size, Math::Unit::Distance::DistanceUnit unit);
 		UOSInt SplitDrawings(Data::ArrayListA<Math::RectAreaDbl> *pages, Math::RectAreaDbl objectArea, Double objectBuffer, Double pageOverlapBuffer, Double scale);
 	};
 }

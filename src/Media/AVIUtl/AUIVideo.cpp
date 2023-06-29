@@ -54,11 +54,11 @@ UOSInt Media::AVIUtl::AUIVideo::GetMaxFrameSize()
 	}
 	else if (this->frameInfo->storeBPP != 0)
 	{
-		return this->frameInfo->storeBPP * this->frameInfo->storeWidth * this->frameInfo->storeHeight;
+		return this->frameInfo->storeBPP * this->frameInfo->storeSize.CalcArea();
 	}
 	else
 	{
-		return this->frameInfo->storeWidth * this->frameInfo->storeHeight * 4;
+		return this->frameInfo->storeSize.CalcArea() * 4;
 	}
 }
 

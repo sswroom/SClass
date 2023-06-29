@@ -11,7 +11,7 @@ Math::Quadrilateral::Quadrilateral(Coord2DDbl tl, Coord2DDbl tr, Coord2DDbl br, 
 	this->bl = bl;
 }
 
-Double Math::Quadrilateral::CalcMaxTiltAngle()
+Double Math::Quadrilateral::CalcMaxTiltAngle() const
 {
 	Double deg360 = Math::PI * 2;
 	Double deg90 = Math::PI * 0.5;
@@ -49,27 +49,27 @@ Double Math::Quadrilateral::CalcMaxTiltAngle()
 	return maxTiltAngle;
 }
 
-Double Math::Quadrilateral::CalcArea()
+Double Math::Quadrilateral::CalcArea() const
 {
 	return Math::Triangle(tl, tr, bl).CalcArea() + Math::Triangle(tr, bl, br).CalcArea();
 }
 
-Double Math::Quadrilateral::CalcLenLeft()
+Double Math::Quadrilateral::CalcLenLeft() const
 {
 	return tl.CalcLengTo(bl);
 }
 
-Double Math::Quadrilateral::CalcLenTop()
+Double Math::Quadrilateral::CalcLenTop() const
 {
 	return tl.CalcLengTo(tr);
 }
 
-Double Math::Quadrilateral::CalcLenRight()
+Double Math::Quadrilateral::CalcLenRight() const
 {
 	return tr.CalcLengTo(br);
 }
 
-Double Math::Quadrilateral::CalcLenBottom()
+Double Math::Quadrilateral::CalcLenBottom() const
 {
 	return br.CalcLengTo(bl);
 }

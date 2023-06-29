@@ -17,13 +17,13 @@ namespace Map
 		Double dtileSize;
 
 	public:
-		MercatorMapView(Math::Size2D<Double> scnSize, Math::Coord2DDbl center, UOSInt maxLevel, UOSInt tileSize);
+		MercatorMapView(Math::Size2DDbl scnSize, Math::Coord2DDbl center, UOSInt maxLevel, UOSInt tileSize);
 		virtual ~MercatorMapView();
 
-		virtual void ChangeViewXY(Math::Size2D<Double> scnSize, Math::Coord2DDbl centMap, Double scale);
+		virtual void ChangeViewXY(Math::Size2DDbl scnSize, Math::Coord2DDbl centMap, Double scale);
 		virtual void SetCenterXY(Math::Coord2DDbl mapPos);
 		virtual void SetMapScale(Double scale);
-		virtual void UpdateSize(Math::Size2D<Double> scnSize);
+		virtual void UpdateSize(Math::Size2DDbl scnSize);
 		virtual void SetDPI(Double hdpi, Double ddpi);
 		void UpdateXY();
 

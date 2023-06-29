@@ -68,8 +68,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		imgList->ToStaticImage(0);
 		Media::Image *img = imgList->GetImage(0, &delay);
 		Media::Resizer::LanczosResizer8_C8 resizer(4, 4, img->info.color, img->info.color, 0, img->info.atype);
-		resizer.SetTargetWidth(pxSize);
-		resizer.SetTargetHeight(pxSize);
+		resizer.SetTargetSize(Math::Size2D<UOSInt>(pxSize, pxSize));
 		Media::StaticImage *simg = (Media::StaticImage*)img;
 		simg->To32bpp();
 		Media::StaticImage *newImg = resizer.ProcessToNew(simg);

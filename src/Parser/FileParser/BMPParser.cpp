@@ -389,7 +389,7 @@ IO::ParsedObject *Parser::FileParser::BMPParser::ParseFileHdr(IO::StreamData *fd
 	}
 	if (imgWidth > 0 && imgHeight > 0 && bpp != 0 && imgWidth <= 32768 && imgHeight <= 32768 && headerValid)
 	{
-		NEW_CLASS(outImg, Media::StaticImage(imgWidth, uimgHeight, 0, bpp, pf, 0, 0, Media::ColorProfile::YUVT_UNKNOWN, atype, Media::YCOFST_C_CENTER_LEFT));
+		NEW_CLASS(outImg, Media::StaticImage(Math::Size2D<UOSInt>(imgWidth, uimgHeight), 0, bpp, pf, 0, 0, Media::ColorProfile::YUVT_UNKNOWN, atype, Media::YCOFST_C_CENTER_LEFT));
 		outImg->info.hdpi = hdpi;
 		outImg->info.vdpi = vdpi;
 		outImg->info.par2 = hdpi / vdpi;

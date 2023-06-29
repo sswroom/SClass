@@ -12,19 +12,18 @@ void __stdcall SSWR::AVIRead::AVIRImageResizeForm::OnOKClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRImageResizeForm *me = (SSWR::AVIRead::AVIRImageResizeForm*)userObj;
 	Text::StringBuilderUTF8 sb;
-	UOSInt outW = 0;
-	UOSInt outH = 0;
+	Math::Size2D<UOSInt> outSize = Math::Size2D<UOSInt>(0, 0);
 	UOSInt nTap = 0;
 	sb.ClearStr();
 	me->txtOutW->GetText(&sb);
-	sb.ToUOSInt(&outW);
+	sb.ToUOSInt(&outSize.x);
 	sb.ClearStr();
 	me->txtOutH->GetText(&sb);
-	sb.ToUOSInt(&outH);
+	sb.ToUOSInt(&outSize.y);
 	sb.ClearStr();
 	me->txtNTap->GetText(&sb);
 	sb.ToUOSInt(&nTap);
-	if (outW == 0 || outH == 0 || nTap < 3 || nTap > 32)
+	if (outSize.x == 0 || outSize.y == 0 || nTap < 3 || nTap > 32)
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Invalid input"), CSTR("Error"), me);
 		return;
@@ -33,16 +32,14 @@ void __stdcall SSWR::AVIRead::AVIRImageResizeForm::OnOKClicked(void *userObj)
 	{
 		Media::Resizer::LanczosResizer8_C8 resizer(nTap, nTap, me->srcImg->info.color, me->srcImg->info.color, 0, Media::AT_NO_ALPHA);
 		resizer.SetResizeAspectRatio(Media::IImgResizer::RAR_IGNOREAR);
-		resizer.SetTargetWidth(outW);
-		resizer.SetTargetHeight(outH);
+		resizer.SetTargetSize(outSize);
 		me->outImg = resizer.ProcessToNew(me->srcImg);
 	}
 	else if (me->srcImg->info.pf == Media::PF_LE_B16G16R16A16)
 	{
 		Media::Resizer::LanczosResizer16_C8 resizer(nTap, nTap, me->srcImg->info.color, me->srcImg->info.color, 0, Media::AT_NO_ALPHA);
 		resizer.SetResizeAspectRatio(Media::IImgResizer::RAR_IGNOREAR);
-		resizer.SetTargetWidth(outW);
-		resizer.SetTargetHeight(outH);
+		resizer.SetTargetSize(outSize);
 		me->outImg = resizer.ProcessToNew(me->srcImg);
 	}
 	else
@@ -107,10 +104,10 @@ SSWR::AVIRead::AVIRImageResizeForm::AVIRImageResizeForm(UI::GUIClientControl *pa
 	this->txtOutW->Focus();
 	if (this->srcImg)
 	{
-		sptr = Text::StrUOSInt(sbuff, this->srcImg->info.dispWidth);
+		sptr = Text::StrUOSInt(sbuff, this->srcImg->info.dispSize.x);
 		this->txtOriW->SetText(CSTRP(sbuff, sptr));
 		this->txtOutW->SetText(CSTRP(sbuff, sptr));
-		sptr = Text::StrUOSInt(sbuff, this->srcImg->info.dispHeight);
+		sptr = Text::StrUOSInt(sbuff, this->srcImg->info.dispSize.y);
 		this->txtOriH->SetText(CSTRP(sbuff, sptr));
 		this->txtOutH->SetText(CSTRP(sbuff, sptr));
 	}

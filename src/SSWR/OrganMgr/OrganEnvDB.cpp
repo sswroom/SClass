@@ -5101,10 +5101,9 @@ void SSWR::OrganMgr::OrganEnvDB::ExportLite(const UTF8Char *folder)
 						Media::StaticImage *newImg;
 						if (simg)
 						{
-							if (simg->info.dispWidth > 1920 || simg->info.dispHeight > 1920)
+							if (simg->info.dispSize.x > 1920 || simg->info.dispSize.y > 1920)
 							{
-								resizer.SetTargetWidth(1920);
-								resizer.SetTargetHeight(1920);
+								resizer.SetTargetSize(Math::Size2D<UOSInt>(1920, 1920));
 								resizer.SetResizeAspectRatio(Media::IImgResizer::RAR_KEEPAR);
 								newImg = resizer.ProcessToNew(simg);
 								if (newImg)

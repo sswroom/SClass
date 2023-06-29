@@ -135,12 +135,11 @@ void Media::ImageList::SetImageName(const UTF8Char *imgName)
 	}
 }
 
-void Media::ImageList::SetThermoImage(UOSInt thermoWidth, UOSInt thermoHeight, UOSInt thermoBPP, UInt8 *thermoPtr, Double thermoEmissivity, Double thermoTransmission, Double thermoBKGTemp, ThermoType thermoType)
+void Media::ImageList::SetThermoImage(Math::Size2D<UOSInt> thermoSize, UOSInt thermoBPP, UInt8 *thermoPtr, Double thermoEmissivity, Double thermoTransmission, Double thermoBKGTemp, ThermoType thermoType)
 {
-	this->thermoWidth = thermoWidth;
-	this->thermoHeight = thermoHeight;
+	this->thermoSize = thermoSize;
 	this->thermoBPP = thermoBPP;
-	UOSInt dataSize = thermoWidth * thermoHeight * thermoBPP >> 3;
+	UOSInt dataSize = thermoSize.CalcArea() * thermoBPP >> 3;
 	if (this->thermoPtr)
 	{
 		MemFree(this->thermoPtr);
@@ -164,28 +163,28 @@ Double Media::ImageList::GetThermoValue(Double x, Double y) const
 	{
 		return 0;
 	}
-	OSInt xOfst = Double2Int32(x * UOSInt2Double(this->thermoWidth));
-	OSInt yOfst = Double2Int32(y * UOSInt2Double(this->thermoHeight));
+	OSInt xOfst = Double2Int32(x * UOSInt2Double(this->thermoSize.x));
+	OSInt yOfst = Double2Int32(y * UOSInt2Double(this->thermoSize.y));
 	if (xOfst < 0)
 		xOfst = 0;
-	else if (xOfst >= (OSInt)this->thermoWidth)
-		xOfst = (OSInt)this->thermoWidth - 1;
+	else if (xOfst >= (OSInt)this->thermoSize.x)
+		xOfst = (OSInt)this->thermoSize.x - 1;
 	if (yOfst < 0)
 		yOfst = 0;
-	else if (yOfst >= (OSInt)this->thermoHeight)
-		yOfst = (OSInt)this->thermoHeight - 1;
+	else if (yOfst >= (OSInt)this->thermoSize.y)
+		yOfst = (OSInt)this->thermoSize.y - 1;
 	Double v;
 	if (this->thermoBPP == 16)
 	{
-		v = ReadInt16(&this->thermoPtr[(yOfst * (OSInt)this->thermoWidth + xOfst) << 1]);
+		v = ReadInt16(&this->thermoPtr[(yOfst * (OSInt)this->thermoSize.x + xOfst) << 1]);
 	}
 	else if (this->thermoBPP == 8)
 	{
-		v = this->thermoPtr[yOfst * (OSInt)this->thermoWidth + xOfst];
+		v = this->thermoPtr[yOfst * (OSInt)this->thermoSize.x + xOfst];
 	}
 	else if (this->thermoBPP == 32)
 	{
-		v = ReadInt32(&this->thermoPtr[(yOfst * (OSInt)this->thermoWidth + xOfst) << 2]);
+		v = ReadInt32(&this->thermoPtr[(yOfst * (OSInt)this->thermoSize.x + xOfst) << 2]);
 	}
 	else
 	{

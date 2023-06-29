@@ -24,14 +24,14 @@ void Media::VideoFilter::AutoCropFilter::ProcessVideoFrame(UInt32 frameTime, UIn
 			}
 			if (!this->hasCrop)
 			{
-				oriCropLeft = this->videoInfo.dispWidth >> 1;
-				oriCropRight = this->videoInfo.dispWidth >> 1;
-				oriCropTop = this->videoInfo.dispHeight >> 1;
-				oriCropBottom = this->videoInfo.dispHeight >> 1;
+				oriCropLeft = this->videoInfo.dispSize.x >> 1;
+				oriCropRight = this->videoInfo.dispSize.x >> 1;
+				oriCropTop = this->videoInfo.dispSize.y >> 1;
+				oriCropBottom = this->videoInfo.dispSize.y >> 1;
 			}
 
-			UOSInt w = this->videoInfo.dispWidth;
-			UOSInt h = this->videoInfo.dispHeight;
+			UOSInt w = this->videoInfo.dispSize.x;
+			UOSInt h = this->videoInfo.dispSize.y;
 			UInt8 *yptr = imgData[0];
 			UOSInt ySplit;
 			UOSInt crops[4];
@@ -130,7 +130,7 @@ void Media::VideoFilter::AutoCropFilter::GetBorderCrop(UOSInt *cropLeft, UOSInt 
 	}
 	else
 	{
-		UOSInt w = this->videoInfo.dispWidth;
+		UOSInt w = this->videoInfo.dispSize.x;
 		if ((oriCropLeft + oriCropRight + oriCropTop + oriCropBottom) > (w >> 1))
 		{
 			cropValid = false;

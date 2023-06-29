@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "Media/LinearRectRemapper.h"
 
-Media::StaticImage *Media::LinearRectRemapper::RemapW8(const UInt8 *imgPtr, UOSInt imgW, UOSInt imgH, OSInt imgBpl, UOSInt outputW, UOSInt outputH, Math::Quadrilateral quad, Media::ColorProfile *color, Media::ColorProfile::YUVType yuvType, Media::YCOffset ycOfst)
+Media::StaticImage *Media::LinearRectRemapper::RemapW8(const UInt8 *imgPtr, Math::Size2D<UOSInt> imgSize, OSInt imgBpl, Math::Size2D<UOSInt> outputSize, Math::Quadrilateral quad, Media::ColorProfile *color, Media::ColorProfile::YUVType yuvType, Media::YCOffset ycOfst)
 {
 	Math::Coord2DDbl pt;
 	Double xPos;
@@ -16,24 +16,24 @@ Media::StaticImage *Media::LinearRectRemapper::RemapW8(const UInt8 *imgPtr, UOSI
 	OSInt ix;
 	OSInt iy;
 	OSInt ofst;
-	OSInt imgXEnd = (OSInt)imgW - 1;
-	OSInt imgYEnd = (OSInt)imgH - 1;
+	OSInt imgXEnd = (OSInt)imgSize.x - 1;
+	OSInt imgYEnd = (OSInt)imgSize.y - 1;
 	UOSInt i;
 	UOSInt j;
 
 	Media::StaticImage *ret;
-	NEW_CLASS(ret, Media::StaticImage(outputW, outputH, 0, 8, Media::PF_PAL_W8, outputW * outputH, color, yuvType, Media::AT_NO_ALPHA, ycOfst));
+	NEW_CLASS(ret, Media::StaticImage(outputSize, 0, 8, Media::PF_PAL_W8, outputSize.CalcArea(), color, yuvType, Media::AT_NO_ALPHA, ycOfst));
 	ret->InitGrayPal();
-	xPos = UOSInt2Double(outputW - 1);
-	yPos = UOSInt2Double(outputH - 1);
+	xPos = UOSInt2Double(outputSize.x - 1);
+	yPos = UOSInt2Double(outputSize.y - 1);
 	UInt8 *dptr = ret->data;
 	i = 0;
-	while (i < outputH)
+	while (i < outputSize.y)
 	{
 		yRate = UOSInt2Double(i) / yPos;
 
 		j = 0;
-		while (j < outputW)
+		while (j < outputSize.x)
 		{
 			xRate = UOSInt2Double(j) / xPos;
 			if (xRate + yRate <= 1)

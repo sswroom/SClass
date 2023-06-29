@@ -147,13 +147,13 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::FileHandler(void *userObj, Text::Stri
 	mousePos.x = mousePos.x - scnX;
 	mousePos.y = mousePos.y - scnY;
 	sz = me->mapCtrl->GetSizeP();
-	if (mousePos.x >= 0 && mousePos.y >= 0 && mousePos.x < (OSInt)sz.width && mousePos.y < (OSInt)sz.height)
+	if (mousePos.x >= 0 && mousePos.y >= 0 && mousePos.x < (OSInt)sz.x && mousePos.y < (OSInt)sz.y)
 	{
 	}
 	else
 	{
-		mousePos.x = (OSInt)(sz.width >> 1);
-		mousePos.y = (OSInt)(sz.height >> 1);
+		mousePos.x = (OSInt)(sz.x >> 1);
+		mousePos.y = (OSInt)(sz.y >> 1);
 	}
 
 	NEW_CLASS(layers, Data::ArrayList<Map::MapDrawLayer*>());
@@ -206,15 +206,15 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::FileHandler(void *userObj, Text::Stri
 					{
 						hsX = OSInt2Double(stimg->GetHotSpotX());
 						hsY = OSInt2Double(stimg->GetHotSpotY()) * stimg->info.par2;
-						calcImgW = UOSInt2Double(stimg->info.dispWidth);
-						calcImgH = UOSInt2Double(stimg->info.dispHeight) * stimg->info.par2;
+						calcImgW = UOSInt2Double(stimg->info.dispSize.x);
+						calcImgH = UOSInt2Double(stimg->info.dispSize.y) * stimg->info.par2;
 					}
 					else
 					{
 						hsX = OSInt2Double(stimg->GetHotSpotX()) / stimg->info.par2;
 						hsY = OSInt2Double(stimg->GetHotSpotY());
-						calcImgW = UOSInt2Double(stimg->info.dispWidth) / stimg->info.par2;
-						calcImgH = UOSInt2Double(stimg->info.dispHeight);
+						calcImgW = UOSInt2Double(stimg->info.dispSize.x) / stimg->info.par2;
+						calcImgH = UOSInt2Double(stimg->info.dispSize.y);
 					}
 					pt1 = me->mapCtrl->ScnXYD2MapXY(Math::Coord2DDbl(OSInt2Double(mousePos.x) - hsX, OSInt2Double(mousePos.y) - hsY));
 					pt2 = me->mapCtrl->ScnXYD2MapXY(Math::Coord2DDbl(OSInt2Double(mousePos.x) + calcImgW - hsX, OSInt2Double(mousePos.y) + calcImgH - hsY));
@@ -223,13 +223,13 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::FileHandler(void *userObj, Text::Stri
 				{
 					if (stimg->info.par2 > 1)
 					{
-						calcImgW = UOSInt2Double(stimg->info.dispWidth);
-						calcImgH = UOSInt2Double(stimg->info.dispHeight) * stimg->info.par2;
+						calcImgW = UOSInt2Double(stimg->info.dispSize.x);
+						calcImgH = UOSInt2Double(stimg->info.dispSize.y) * stimg->info.par2;
 					}
 					else
 					{
-						calcImgW = UOSInt2Double(stimg->info.dispWidth) / stimg->info.par2;
-						calcImgH = UOSInt2Double(stimg->info.dispHeight);
+						calcImgW = UOSInt2Double(stimg->info.dispSize.x) / stimg->info.par2;
+						calcImgH = UOSInt2Double(stimg->info.dispSize.y);
 					}
 					pt1 = me->mapCtrl->ScnXYD2MapXY(Math::Coord2DDbl(OSInt2Double(mousePos.x) - calcImgW * 0.5, OSInt2Double(mousePos.y) - calcImgH * 0.5));
 					pt2 = me->mapCtrl->ScnXYD2MapXY(Math::Coord2DDbl(OSInt2Double(mousePos.x) + calcImgW * 0.5, OSInt2Double(mousePos.y) + calcImgH * 0.5));

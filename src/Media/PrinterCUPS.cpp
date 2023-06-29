@@ -30,7 +30,7 @@ namespace Media
 		Bool started;
 		Bool running;
 		PageOrientation po;
-		Math::Size2D<Double> paperSizeMM;
+		Math::Size2DDbl paperSizeMM;
 		Text::String *printerName;
 
 		static UInt32 __stdcall PrintThread(void *userObj);
@@ -71,13 +71,13 @@ UInt32 __stdcall Media::CUPSPrintDocument::PrintThread(void *userObj)
 
 	if (me->po == PageOrientation::Landscape)
 	{
-		paperWidth = Math::Unit::Distance::Convert(Math::Unit::Distance::DU_MILLIMETER, Math::Unit::Distance::DU_INCH, me->paperSizeMM.height);
-		paperHeight = Math::Unit::Distance::Convert(Math::Unit::Distance::DU_MILLIMETER, Math::Unit::Distance::DU_INCH, me->paperSizeMM.width);
+		paperWidth = Math::Unit::Distance::Convert(Math::Unit::Distance::DU_MILLIMETER, Math::Unit::Distance::DU_INCH, me->paperSizeMM.y);
+		paperHeight = Math::Unit::Distance::Convert(Math::Unit::Distance::DU_MILLIMETER, Math::Unit::Distance::DU_INCH, me->paperSizeMM.x);
 	}
 	else
 	{
-		paperWidth = Math::Unit::Distance::Convert(Math::Unit::Distance::DU_MILLIMETER, Math::Unit::Distance::DU_INCH, me->paperSizeMM.width);
-		paperHeight = Math::Unit::Distance::Convert(Math::Unit::Distance::DU_MILLIMETER, Math::Unit::Distance::DU_INCH, me->paperSizeMM.height);
+		paperWidth = Math::Unit::Distance::Convert(Math::Unit::Distance::DU_MILLIMETER, Math::Unit::Distance::DU_INCH, me->paperSizeMM.x);
+		paperHeight = Math::Unit::Distance::Convert(Math::Unit::Distance::DU_MILLIMETER, Math::Unit::Distance::DU_INCH, me->paperSizeMM.y);
 	}
 
 	cairo_surface_t *surface = cairo_ps_surface_create((const Char*)fileName, Double2Int32(paperWidth * 72.0), Double2Int32(paperHeight * 72.0));
@@ -88,18 +88,18 @@ UInt32 __stdcall Media::CUPSPrintDocument::PrintThread(void *userObj)
 	{
 		if (me->po == PageOrientation::Landscape)
 		{
-			paperWidth = Math::Unit::Distance::Convert(Math::Unit::Distance::DU_MILLIMETER, Math::Unit::Distance::DU_INCH, me->paperSizeMM.height);
-			paperHeight = Math::Unit::Distance::Convert(Math::Unit::Distance::DU_MILLIMETER, Math::Unit::Distance::DU_INCH, me->paperSizeMM.width);
+			paperWidth = Math::Unit::Distance::Convert(Math::Unit::Distance::DU_MILLIMETER, Math::Unit::Distance::DU_INCH, me->paperSizeMM.y);
+			paperHeight = Math::Unit::Distance::Convert(Math::Unit::Distance::DU_MILLIMETER, Math::Unit::Distance::DU_INCH, me->paperSizeMM.x);
 		}
 		else
 		{
-			paperWidth = Math::Unit::Distance::Convert(Math::Unit::Distance::DU_MILLIMETER, Math::Unit::Distance::DU_INCH, me->paperSizeMM.width);
-			paperHeight = Math::Unit::Distance::Convert(Math::Unit::Distance::DU_MILLIMETER, Math::Unit::Distance::DU_INCH, me->paperSizeMM.height);
+			paperWidth = Math::Unit::Distance::Convert(Math::Unit::Distance::DU_MILLIMETER, Math::Unit::Distance::DU_INCH, me->paperSizeMM.x);
+			paperHeight = Math::Unit::Distance::Convert(Math::Unit::Distance::DU_MILLIMETER, Math::Unit::Distance::DU_INCH, me->paperSizeMM.y);
 		}
 		cairo_ps_surface_set_size(surface, Double2Int32(paperWidth * 72.0), Double2Int32(paperHeight * 72.0));
 
 //		wprintf(L"Printing page size: %lf, %lf\r\n", paperWidth, paperHeight);
-		img = me->eng->CreateImageScn(cr, 0, 0, Double2Int32(paperWidth * 72.0), Double2Int32(paperHeight * 72.0));
+		img = me->eng->CreateImageScn(cr, Math::Coord2D<OSInt>(0, 0), Math::Coord2D<OSInt>(Double2OSInt(paperWidth * 72.0), Double2OSInt(paperHeight * 72.0)));
 		img->SetHDPI(72.0);
 		img->SetVDPI(72.0);
 		hasMorePage = me->hdlr->PrintPage(img);
@@ -172,7 +172,7 @@ void Media::CUPSPrintDocument::SetDocName(Text::CString docName)
 
 void Media::CUPSPrintDocument::SetNextPagePaperSizeMM(Double width, Double height)
 {
-	this->paperSizeMM = Math::Size2D<Double>(width, height);
+	this->paperSizeMM = Math::Size2DDbl(width, height);
 }
 
 void Media::CUPSPrintDocument::SetNextPageOrientation(PageOrientation po)

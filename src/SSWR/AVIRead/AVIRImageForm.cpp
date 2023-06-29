@@ -50,12 +50,12 @@ Bool __stdcall SSWR::AVIRead::AVIRImageForm::OnImageMouseMove(void *userObj, Mat
 		OSInt yPos = Double2Int32(imgPos.y);
 		if (xPos < 0)
 			xPos = 0;
-		else if ((UOSInt)xPos >= me->currImg->info.dispWidth)
-			xPos = (OSInt)me->currImg->info.dispWidth - 1;
+		else if ((UOSInt)xPos >= me->currImg->info.dispSize.x)
+			xPos = (OSInt)me->currImg->info.dispSize.x - 1;
 		if (yPos < 0)
 			yPos = 0;
-		else if ((UOSInt)yPos >= me->currImg->info.dispHeight)
-			yPos = (OSInt)me->currImg->info.dispHeight - 1;
+		else if ((UOSInt)yPos >= me->currImg->info.dispSize.y)
+			yPos = (OSInt)me->currImg->info.dispSize.y - 1;
 		me->currImg->GetImageData(pixel, xPos, yPos, 1, 1, 16, false, Media::RotateType::None);
 		sb.AppendC(UTF8STRC("(x, y) = ("));
 		sb.AppendOSInt(xPos);
@@ -526,7 +526,7 @@ Bool __stdcall SSWR::AVIRead::AVIRImageForm::OnImageMouseMove(void *userObj, Mat
 		if (me->imgList && me->imgList->HasThermoImage())
 		{
 			sb.AppendC(UTF8STRC(", T = "));
-			Text::SBAppendF64(&sb, me->imgList->GetThermoValue(imgPos.x / UOSInt2Double(me->currImg->info.dispWidth), imgPos.y / UOSInt2Double(me->currImg->info.dispHeight)));
+			Text::SBAppendF64(&sb, me->imgList->GetThermoValue(imgPos.x / UOSInt2Double(me->currImg->info.dispSize.x), imgPos.y / UOSInt2Double(me->currImg->info.dispSize.y)));
 		}
 		sb.AppendC(UTF8STRC(", RGB("));
 		Text::SBAppendF64(&sb, dR);

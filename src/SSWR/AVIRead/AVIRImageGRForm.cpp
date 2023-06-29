@@ -153,12 +153,12 @@ void __stdcall SSWR::AVIRead::AVIRImageGRForm::OnOKClicked(void *userObj)
 	}
 	if (me->srcImg->info.pf == Media::PF_B8G8R8A8)
 	{
-		me->grFilter->ProcessImage32(me->srcImg->data, me->destImg->data, me->srcImg->info.dispWidth, me->srcImg->info.dispHeight, (OSInt)(me->srcImg->info.storeWidth * (me->srcImg->info.storeBPP >> 3)), (OSInt)(me->destImg->info.storeWidth * (me->srcImg->info.storeBPP >> 3)));
+		me->grFilter->ProcessImage32(me->srcImg->data, me->destImg->data, me->srcImg->info.dispSize.x, me->srcImg->info.dispSize.y, (OSInt)(me->srcImg->info.storeSize.x * (me->srcImg->info.storeBPP >> 3)), (OSInt)(me->destImg->info.storeSize.x * (me->srcImg->info.storeBPP >> 3)));
 		me->previewCtrl->SetImage(me->destImg, true);
 	}
 	else if (me->srcImg->info.pf == Media::PF_LE_B16G16R16A16)
 	{
-		me->grFilter->ProcessImage64(me->srcImg->data, me->destImg->data, me->srcImg->info.dispWidth, me->srcImg->info.dispHeight, (OSInt)(me->srcImg->info.storeWidth * (me->srcImg->info.storeBPP >> 3)), (OSInt)(me->destImg->info.storeWidth * (me->srcImg->info.storeBPP >> 3)));
+		me->grFilter->ProcessImage64(me->srcImg->data, me->destImg->data, me->srcImg->info.dispSize.x, me->srcImg->info.dispSize.y, (OSInt)(me->srcImg->info.storeSize.x * (me->srcImg->info.storeBPP >> 3)), (OSInt)(me->destImg->info.storeSize.x * (me->srcImg->info.storeBPP >> 3)));
 		me->previewCtrl->SetImage(me->destImg, true);
 	}
 	me->SetDialogResult(UI::GUIForm::DR_OK);
@@ -174,11 +174,11 @@ void SSWR::AVIRead::AVIRImageGRForm::UpdatePreview()
 {
 	if (this->srcPrevImg->info.pf == Media::PF_B8G8R8A8)
 	{
-		this->grFilter->ProcessImage32(this->srcPrevImg->data, this->destPrevImg->data, this->srcPrevImg->info.dispWidth, this->srcPrevImg->info.dispHeight, (OSInt)(this->srcPrevImg->info.storeWidth * (this->srcPrevImg->info.storeBPP >> 3)), (OSInt)(this->destPrevImg->info.storeWidth * (this->srcPrevImg->info.storeBPP >> 3)));
+		this->grFilter->ProcessImage32(this->srcPrevImg->data, this->destPrevImg->data, this->srcPrevImg->info.dispSize.x, this->srcPrevImg->info.dispSize.y, (OSInt)(this->srcPrevImg->info.storeSize.x * (this->srcPrevImg->info.storeBPP >> 3)), (OSInt)(this->destPrevImg->info.storeSize.x * (this->srcPrevImg->info.storeBPP >> 3)));
 	}
 	else if (this->srcPrevImg->info.pf == Media::PF_LE_B16G16R16A16)
 	{
-		this->grFilter->ProcessImage64(this->srcPrevImg->data, this->destPrevImg->data, this->srcPrevImg->info.dispWidth, this->srcPrevImg->info.dispHeight, (OSInt)(this->srcPrevImg->info.storeWidth * (this->srcPrevImg->info.storeBPP >> 3)), (OSInt)(this->destPrevImg->info.storeWidth * (this->srcPrevImg->info.storeBPP >> 3)));
+		this->grFilter->ProcessImage64(this->srcPrevImg->data, this->destPrevImg->data, this->srcPrevImg->info.dispSize.x, this->srcPrevImg->info.dispSize.y, (OSInt)(this->srcPrevImg->info.storeSize.x * (this->srcPrevImg->info.storeBPP >> 3)), (OSInt)(this->destPrevImg->info.storeSize.x * (this->srcPrevImg->info.storeBPP >> 3)));
 	}
 	this->previewCtrl->SetImage(this->destPrevImg, true);
 }

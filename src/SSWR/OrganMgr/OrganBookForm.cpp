@@ -68,7 +68,7 @@ void __stdcall SSWR::OrganMgr::OrganBookForm::OnBookPublishChg(void *userObj, Da
 	else
 	{
 		Math::Size2D<UOSInt> sz = me->lvBook->GetSizeP();
-		j = (OSInt)sz.height >> 1;
+		j = (OSInt)sz.y >> 1;
 		Int32 rect[4];
 		me->lvBook->GetItemRectP((UOSInt)i, rect);
 		if (rect[1] > j)

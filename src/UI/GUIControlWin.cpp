@@ -212,9 +212,9 @@ void UI::GUIControl::SetSize(Double width, Double height)
 	this->SetArea(this->lxPos, this->lyPos, this->lxPos + width, this->lyPos + height, true);
 }
 
-void UI::GUIControl::SetSizeP(UOSInt width, UOSInt height)
+void UI::GUIControl::SetSizeP(Math::Size2D<UOSInt> size)
 {
-	this->SetArea(this->lxPos, this->lyPos, this->lxPos + UOSInt2Double(width) * this->ddpi / this->hdpi, this->lyPos + UOSInt2Double(height) * this->ddpi / this->hdpi, true);
+	this->SetArea(this->lxPos, this->lyPos, this->lxPos + UOSInt2Double(size.x) * this->ddpi / this->hdpi, this->lyPos + UOSInt2Double(size.y) * this->ddpi / this->hdpi, true);
 }
 
 void UI::GUIControl::GetSize(Double *width, Double *height)

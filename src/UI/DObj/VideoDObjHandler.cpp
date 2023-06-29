@@ -40,7 +40,7 @@ void UI::DObj::VideoDObjHandler::DrawVideo(Media::DrawImage *dimg)
 	if (this->frameImg)
 	{
 		Sync::MutexUsage mutUsage(&this->frameMut);
-		dimg->DrawImagePt(this->frameImg, this->videoX, this->videoY);
+		dimg->DrawImagePt(this->frameImg, this->videoTL.ToDouble());
 	}
 }
 
@@ -49,7 +49,7 @@ void UI::DObj::VideoDObjHandler::LockUpdateSize(Sync::MutexUsage *mutUsage)
 	mutUsage->ReplaceMutex(&this->frameMut);
 }
 
-void UI::DObj::VideoDObjHandler::DrawFromSurface(Media::MonitorSurface *surface, OSInt destX, OSInt destY, UOSInt buffWidth, UOSInt buffHeight, Bool clearScn)
+void UI::DObj::VideoDObjHandler::DrawFromSurface(Media::MonitorSurface *surface, Math::Coord2D<OSInt> destTL, Math::Size2D<UOSInt> buffSize, Bool clearScn)
 {
 #if defined(VERBOSE)
 	printf("VideoDObjHandler DrawFromSurface\r\n");
@@ -61,29 +61,27 @@ void UI::DObj::VideoDObjHandler::DrawFromSurface(Media::MonitorSurface *surface,
 		UInt8 *bits = this->frameImg->GetImgBits(&revOrder);
 		if (bits)
 		{
-			surface->GetImageData(bits, 0, 0, buffWidth, buffHeight, this->frameImg->GetImgBpl(), revOrder, Media::RotateType::None);
+			surface->GetImageData(bits, 0, 0, buffSize.x, buffSize.y, this->frameImg->GetImgBpl(), revOrder, Media::RotateType::None);
 			this->frameImg->GetImgBitsEnd(true);
 			this->shown = false;
 		}
 	}
 }
 
-UI::DObj::VideoDObjHandler::VideoDObjHandler(UI::GUIForm *ownerFrm, Media::DrawEngine *deng, Media::ColorManagerSess *colorSess, Media::MonitorSurfaceMgr *surfaceMgr, Parser::ParserList *parsers, Text::CString imageFileName, Int32 videoX, Int32 videoY, UInt32 videoW, UInt32 videoH, Text::CString videoFileName) : UI::DObj::ImageDObjHandler(deng, imageFileName), Media::VideoRenderer(colorSess, surfaceMgr, 4, 4)
+UI::DObj::VideoDObjHandler::VideoDObjHandler(UI::GUIForm *ownerFrm, Media::DrawEngine *deng, Media::ColorManagerSess *colorSess, Media::MonitorSurfaceMgr *surfaceMgr, Parser::ParserList *parsers, Text::CString imageFileName, Math::Coord2D<OSInt> videoTL, Math::Size2D<UOSInt> videoSize, Text::CString videoFileName) : UI::DObj::ImageDObjHandler(deng, imageFileName), Media::VideoRenderer(colorSess, surfaceMgr, 4, 4)
 {
 #if defined(VERBOSE)
-	printf("VideoDObjHandler init: w = %d, h = %d\r\n", videoW, videoH);
+	printf("VideoDObjHandler init: w = %d, h = %d\r\n", (UInt32)videoSize.x, (UInt32)videoSize.y);
 #endif
 	this->parsers = this->parsers;
-	this->videoX = videoX;
-	this->videoY = videoY;
-	this->videoW = videoW;
-	this->videoH = videoH;
+	this->videoTL = videoTL;
+	this->videoSize = videoSize;
 	this->ownerFrm = ownerFrm;
 	this->mf = 0;
 	this->player = 0;
-	this->UpdateDispInfo(videoW, videoH, 32, Media::PF_B8G8R8A8);
+	this->UpdateDispInfo(videoSize, 32, Media::PF_B8G8R8A8);
 	this->videoFileName = Text::String::New(videoFileName);
-	this->frameImg = this->deng->CreateImage32(videoW, videoH, Media::AT_NO_ALPHA);
+	this->frameImg = this->deng->CreateImage32(videoSize, Media::AT_NO_ALPHA);
 	{
 		IO::StmData::FileData fd(videoFileName, false);
 		this->mf = (Media::MediaFile*)parsers->ParseFileType(&fd, IO::ParserType::MediaFile);
@@ -114,14 +112,12 @@ UI::DObj::VideoDObjHandler::~VideoDObjHandler()
 	SDEL_CLASS(this->mf);
 }
 
-void UI::DObj::VideoDObjHandler::UpdateVideoArea(Int32 videoX, Int32 videoY, UInt32 videoW, UInt32 videoH)
+void UI::DObj::VideoDObjHandler::UpdateVideoArea(Math::Coord2D<OSInt> videoTL, Math::Size2D<UOSInt> videoSize)
 {
 	Sync::MutexUsage mutUsage(&this->frameMut);
 	this->deng->DeleteImage(this->frameImg);
-	this->videoX = videoX;
-	this->videoY = videoY;
-	this->videoW = videoW;
-	this->videoH = videoH;
-	this->frameImg = this->deng->CreateImage32(videoW, videoH, Media::AT_NO_ALPHA);
-	this->UpdateDispInfo(videoW, videoH, 32, Media::PF_B8G8R8A8);
+	this->videoTL = videoTL;
+	this->videoSize = videoSize;
+	this->frameImg = this->deng->CreateImage32(videoSize, Media::AT_NO_ALPHA);
+	this->UpdateDispInfo(videoSize, 32, Media::PF_B8G8R8A8);
 }

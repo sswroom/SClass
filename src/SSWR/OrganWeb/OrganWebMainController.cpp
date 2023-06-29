@@ -3977,7 +3977,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoUpload(Net::WebSe
 			Media::Image *img = imgList->GetImage(0, &imgDelay);
 			if (img)
 			{
-				Text::StrUOSInt(Text::StrConcatC(Text::StrUOSInt(sbuff, img->info.dispWidth), UTF8STRC(" x ")), img->info.dispHeight);
+				Text::StrUOSInt(Text::StrConcatC(Text::StrUOSInt(sbuff, img->info.dispSize.x), UTF8STRC(" x ")), img->info.dispSize.y);
 				writer.Write(sbuff);
 			}
 			else

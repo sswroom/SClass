@@ -37,27 +37,27 @@ gboolean GUICustomDrawVScroll_OnDraw(GtkWidget *widget, cairo_t *cr, gpointer da
 	OSInt height = gtk_widget_get_allocated_height(widget);
 	if ((clsData->max - clsData->min) > clsData->pageSize)
 	{
-		Media::DrawImage *dimg = ((Media::GTKDrawEngine*)me->deng)->CreateImageScn(cr, 0, 0, width - clsData->scrollSize, height);
+		Media::DrawImage *dimg = ((Media::GTKDrawEngine*)me->deng)->CreateImageScn(cr, Math::Coord2D<OSInt>(0, 0), Math::Coord2D<OSInt>(width - clsData->scrollSize, height));
 		dimg->SetHDPI(me->GetHDPI() / me->GetDDPI() * 96.0);
 		dimg->SetVDPI(me->GetHDPI() / me->GetDDPI() * 96.0);
 		me->OnDraw(dimg);
 		me->deng->DeleteImage(dimg);
 		
-		dimg = ((Media::GTKDrawEngine*)me->deng)->CreateImageScn(cr, width - clsData->scrollSize, 0, clsData->scrollSize, height);
+		dimg = ((Media::GTKDrawEngine*)me->deng)->CreateImageScn(cr, Math::Coord2D<OSInt>(width - clsData->scrollSize, 0), Math::Coord2D<OSInt>(clsData->scrollSize, height));
 		dimg->SetHDPI(me->GetHDPI() / me->GetDDPI() * 96.0);
 		dimg->SetVDPI(me->GetHDPI() / me->GetDDPI() * 96.0);
 		Media::DrawBrush *b = dimg->NewBrushARGB(0xff000000);
-		dimg->DrawRect(0, 0, OSInt2Double(clsData->scrollSize), OSInt2Double(height), 0, b);
+		dimg->DrawRect(Math::Coord2DDbl(0, 0), Math::Size2DDbl(OSInt2Double(clsData->scrollSize), OSInt2Double(height)), 0, b);
 		dimg->DelBrush(b);
 		b = dimg->NewBrushARGB(0xffcccccc);
 		UOSInt range = clsData->max - clsData->min;
-		dimg->DrawRect(0, UOSInt2Double((UOSInt)height * (clsData->currPos - clsData->min) / range), OSInt2Double(clsData->scrollSize), UOSInt2Double((UOSInt)height * clsData->pageSize / range), 0, b);
+		dimg->DrawRect(Math::Coord2DDbl(0, UOSInt2Double((UOSInt)height * (clsData->currPos - clsData->min) / range)), Math::Size2DDbl(OSInt2Double(clsData->scrollSize), UOSInt2Double((UOSInt)height * clsData->pageSize / range)), 0, b);
 		dimg->DelBrush(b);
 		me->deng->DeleteImage(dimg);
 	}
 	else
 	{
-		Media::DrawImage *dimg = ((Media::GTKDrawEngine*)me->deng)->CreateImageScn(cr, 0, 0, width, height);
+		Media::DrawImage *dimg = ((Media::GTKDrawEngine*)me->deng)->CreateImageScn(cr, Math::Coord2D<OSInt>(0, 0), Math::Coord2D<OSInt>(width, height));
 		dimg->SetHDPI(me->GetHDPI() / me->GetDDPI() * 96.0);
 		dimg->SetVDPI(me->GetHDPI() / me->GetDDPI() * 96.0);
 		me->OnDraw(dimg);

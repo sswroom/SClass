@@ -83,9 +83,9 @@ void UI::GUIControl::SetSize(Double width, Double height)
 	this->SetArea(this->lxPos, this->lyPos, this->lxPos + width, this->lyPos + height, true);
 }
 
-void UI::GUIControl::SetSizeP(UOSInt width, UOSInt height)
+void UI::GUIControl::SetSizeP(Math::Size2D<UOSInt> size)
 {
-	this->SetArea(this->lxPos, this->lyPos, this->lxPos + width * this->ddpi / this->hdpi, this->lyPos + height * this->ddpi / this->hdpi, true);
+	this->SetArea(this->lxPos, this->lyPos, this->lxPos + size.x * this->ddpi / this->hdpi, this->lyPos + size.y * this->ddpi / this->hdpi, true);
 }
 
 void UI::GUIControl::GetSize(Double *width, Double *height)
@@ -97,12 +97,10 @@ void UI::GUIControl::GetSize(Double *width, Double *height)
 //	printf("Control.GetSize %lf, %lf\r\n", *width, *height);
 }
 
-void UI::GUIControl::GetSizeP(UOSInt *width, UOSInt *height)
+Math::Size2D<UOSInt> UI::GUIControl::GetSizeP()
 {
-	if (width)
-		*width = Double2Int32((this->lxPos2 - this->lxPos) * this->hdpi / this->ddpi);
-	if (height)
-		*height = Double2Int32((this->lyPos2 - this->lyPos) * this->hdpi / this->ddpi);
+	return Math::Size2D<UOSInt>(Double2Int32((this->lxPos2 - this->lxPos) * this->hdpi / this->ddpi),
+		Double2Int32((this->lyPos2 - this->lyPos) * this->hdpi / this->ddpi));
 //	printf("Control.GetSizeP %ld, %ld\r\n", (Int32)*width, (Int32)*height);
 }
 

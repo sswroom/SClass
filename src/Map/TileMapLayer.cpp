@@ -294,7 +294,7 @@ void Map::TileMapLayer::SetCurrScale(Double scale)
 	}
 }
 
-Map::MapView *Map::TileMapLayer::CreateMapView(Math::Size2D<Double> scnSize)
+Map::MapView *Map::TileMapLayer::CreateMapView(Math::Size2DDbl scnSize)
 {
 	Map::MapView *view;
 	if (this->tileMap->IsMercatorProj())

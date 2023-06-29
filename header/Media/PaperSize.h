@@ -71,7 +71,7 @@ namespace Media
 		} PaperType;
 	private:
 		PaperType pType;
-		Math::Size2D<Double> sizeMM;
+		Math::Size2DDbl sizeMM;
 
 	public:
 		PaperSize(PaperType pType);
@@ -80,7 +80,7 @@ namespace Media
 		Double GetWidthMM();
 		Double GetHeightMM();
 
-		static Math::Size2D<Double> PaperTypeGetSizeMM(PaperType paperType);
+		static Math::Size2DDbl PaperTypeGetSizeMM(PaperType paperType);
 	};
 }
 #endif

@@ -28,14 +28,19 @@ void Media::OpenCV::OCVFrame::ClearOutsidePolygon(Math::Coord2D<UOSInt> *poly, U
 
 }
 
-UOSInt Media::OpenCV::OCVFrame::GetWidth()
+UOSInt Media::OpenCV::OCVFrame::GetWidth() const
 {
 	return 0;
 }
 
-UOSInt Media::OpenCV::OCVFrame::GetHeight()
+UOSInt Media::OpenCV::OCVFrame::GetHeight() const
 {
 	return 0;
+}
+
+Math::Size2D<UOSInt> Media::OpenCV::OCVFrame::GetSize() const
+{
+	return Math::Size2D<UOSInt>(0, 0);
 }
 
 OSInt Media::OpenCV::OCVFrame::GetBpl()
@@ -73,7 +78,7 @@ Media::OpenCV::OCVFrame *Media::OpenCV::OCVFrame::BilateralFilter(Int32 d, Doubl
 	return 0;
 }
 
-Media::OpenCV::OCVFrame *Media::OpenCV::OCVFrame::CreateYFrame(UInt8 **imgData, UOSInt dataSize, UInt32 fourcc, UOSInt dispWidth, UOSInt dispHeight, UOSInt storeWidth, UOSInt storeBPP, Media::PixelFormat pf)
+Media::OpenCV::OCVFrame *Media::OpenCV::OCVFrame::CreateYFrame(UInt8 **imgData, UOSInt dataSize, UInt32 fourcc, Math::Size2D<UOSInt> dispSize, UOSInt storeWidth, UOSInt storeBPP, Media::PixelFormat pf)
 {
 	return 0;		
 }

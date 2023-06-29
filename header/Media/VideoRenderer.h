@@ -32,10 +32,8 @@ namespace Media
 
 		struct DrawRect
 		{
-			OSInt left;
-			OSInt top;
-			UOSInt width;
-			UOSInt height;
+			Math::Coord2D<OSInt> tl;
+			Math::Size2D<UOSInt> size;
 		};
 
 		class RendererStatus
@@ -54,10 +52,8 @@ namespace Media
 			Int32 srcDelay;
 			Int32 avOfst;
 			UInt32 format;
-			UOSInt srcWidth;
-			UOSInt srcHeight;
-			UOSInt dispWidth;
-			UOSInt dispHeight;
+			Math::Size2D<UOSInt> srcSize;
+			Math::Size2D<UOSInt> dispSize;
 			UOSInt seekCnt;
 			Double par;
 			UInt32 dispBitDepth;
@@ -85,8 +81,7 @@ namespace Media
 			UInt32 frameNum;
 			Bool discontTime;
 			Media::MonitorSurface *destSurface;
-			UOSInt destW;
-			UOSInt destH;
+			Math::Size2D<UOSInt> destSize;
 			UInt32 destBitDepth;
 			Media::FrameType frameType;
 			Media::YCOffset ycOfst;
@@ -187,8 +182,7 @@ namespace Media
 		Bool curr10Bit;
 		Double currSrcRefLuminance;
 
-		UOSInt outputWidth;
-		UOSInt outputHeight;
+		Math::Size2D<UOSInt> outputSize;
 		UInt32 outputBpp;
 		Media::PixelFormat outputPf;
 
@@ -225,11 +219,11 @@ namespace Media
 		Int32 CalDispJitter();
 
 		void UpdateRefreshRate(UInt32 refRate);
-		void UpdateOutputSize(UOSInt width, UOSInt height);
-		void UpdateDispInfo(UOSInt width, UOSInt height, UInt32 bpp, Media::PixelFormat pf);
+		void UpdateOutputSize(Math::Size2D<UOSInt> outputSize);
+		void UpdateDispInfo(Math::Size2D<UOSInt> outputSize, UInt32 bpp, Media::PixelFormat pf);
 
 		virtual void LockUpdateSize(Sync::MutexUsage *mutUsage) = 0;
-		virtual void DrawFromSurface(Media::MonitorSurface *surface, OSInt destX, OSInt destY, UOSInt buffWidth, UOSInt buffHeight, Bool clearScn) = 0;
+		virtual void DrawFromSurface(Media::MonitorSurface *surface, Math::Coord2D<OSInt> destTL, Math::Size2D<UOSInt> buffSize, Bool clearScn) = 0;
 	public:
 		VideoRenderer(Media::ColorManagerSess *colorSess, Media::MonitorSurfaceMgr *surfaceMgr, UOSInt buffCnt, UOSInt threadCnt);
 		virtual ~VideoRenderer();

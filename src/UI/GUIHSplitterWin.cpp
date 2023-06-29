@@ -97,7 +97,7 @@ OSInt __stdcall UI::GUIHSplitter::FormWndProc(void *hWnd, UInt32 msg, UOSInt wPa
 					{
 						ctrl->GetPositionP(&x, &y);
 						sz = ctrl->GetSizeP();
-						ctrl->SetAreaP(drawX, y, x + (OSInt)sz.width, y + (OSInt)sz.height, false);
+						ctrl->SetAreaP(drawX, y, x + (OSInt)sz.x, y + (OSInt)sz.y, false);
 						me->parent->UpdateChildrenSize(true);
 						break;
 					}
@@ -105,7 +105,7 @@ OSInt __stdcall UI::GUIHSplitter::FormWndProc(void *hWnd, UInt32 msg, UOSInt wPa
 					{
 						ctrl->GetPositionP(&x, &y);
 						sz = ctrl->GetSizeP();
-						ctrl->SetAreaP(x, y, drawX, y + (OSInt)sz.height, false);
+						ctrl->SetAreaP(x, y, drawX, y + (OSInt)sz.y, false);
 						me->parent->UpdateChildrenSize(true);
 						break;
 					}
@@ -192,7 +192,7 @@ void UI::GUIHSplitter::DrawXorBar(void *hdc, Int32 x, Int32 y)
 	SetBrushOrgEx((HDC)hdc, (int)drawX, (int)posY, 0);
 	hbrushOld = (HBRUSH)SelectObject((HDC)hdc, hbr);
 
-	PatBlt((HDC)hdc, (int)drawX, (int)posY, (int)sz.width, (int)sz.height, PATINVERT);
+	PatBlt((HDC)hdc, (int)drawX, (int)posY, (int)sz.x, (int)sz.y, PATINVERT);
 	
 	SelectObject((HDC)hdc, hbrushOld);
 	DeleteObject(hbr);
@@ -233,7 +233,7 @@ void UI::GUIHSplitter::CalDragRange()
 					{
 						foundRight = true;
 						ctrl->GetPositionP(&max, 0);
-						max += (OSInt)ctrl->GetSizeP().width;
+						max += (OSInt)ctrl->GetSizeP().x;
 					}
 				}
 				else if (dockType == UI::GUIControl::DOCK_LEFT)
@@ -242,7 +242,7 @@ void UI::GUIHSplitter::CalDragRange()
 					{
 						foundLeft = true;
 						ctrl->GetPositionP(&min, 0);
-						min += (OSInt)ctrl->GetSizeP().width;
+						min += (OSInt)ctrl->GetSizeP().x;
 					}
 				}
 			}

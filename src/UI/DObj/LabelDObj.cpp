@@ -55,13 +55,13 @@ void UI::DObj::LabelDObj::DrawObject(Media::DrawImage *dimg)
 		f = dimg->NewFontPx(this->fontName->ToCString(), this->fontSizePx, (Media::DrawEngine::DrawFontStyle)(this->fontStyle | Media::DrawEngine::DFS_ANTIALIAS), this->codePage);
 		b = dimg->NewBrushARGB(this->fontColor);
 		Math::Coord2DDbl tl = this->GetCurrPos().ToDouble();
-		dimg->DrawString(tl.x, tl.y, this->txt, f, b);
+		dimg->DrawString(tl, this->txt, f, b);
 		dimg->DelFont(f);
 		dimg->DelBrush(b);
 	}
 }
 
-Bool UI::DObj::LabelDObj::IsObject(OSInt x, OSInt y)
+Bool UI::DObj::LabelDObj::IsObject(Math::Coord2D<OSInt> scnPos)
 {
 	return false;
 }

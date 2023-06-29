@@ -648,9 +648,9 @@ Bool Exporter::TIFFExporter::ExportFile(IO::SeekableStream *stm, Text::CString f
 			DEL_CLASS(newExif);
 			continue;
 		}
-		ibuff[0] = (UInt32)img->info.dispWidth;
+		ibuff[0] = (UInt32)img->info.dispSize.x;
 		newExif->AddUInt32(256, 1, ibuff); //Width
-		ibuff[0] = (UInt32)img->info.dispHeight;
+		ibuff[0] = (UInt32)img->info.dispSize.y;
 		newExif->AddUInt32(257, 1, ibuff); //Height
 		sibuff[0] = 1;
 		newExif->AddUInt16(259, 1, sibuff); //Compression
@@ -659,15 +659,15 @@ Bool Exporter::TIFFExporter::ExportFile(IO::SeekableStream *stm, Text::CString f
 		newExif->AddUInt32(273, 1, ibuff); //StripOffsets
 		if (img->info.storeBPP < 8)
 		{
-			UOSInt lineSize = (img->info.dispWidth * img->info.storeBPP + 7) >> 3;
-			ibuff[0] = (UInt32)(lineSize * img->info.dispHeight);
+			UOSInt lineSize = (img->info.dispSize.x * img->info.storeBPP + 7) >> 3;
+			ibuff[0] = (UInt32)(lineSize * img->info.dispSize.y);
 		}
 		else
 		{
-			ibuff[0] = (UInt32)(img->info.dispWidth * img->info.dispHeight * img->info.storeBPP >> 3);
+			ibuff[0] = (UInt32)(img->info.dispSize.x * img->info.dispSize.y * img->info.storeBPP >> 3);
 		}
 		newExif->AddUInt32(279, 1, ibuff); //StripByteCounts
-		ibuff[0] = (UInt32)img->info.dispHeight;
+		ibuff[0] = (UInt32)img->info.dispSize.y;
 		newExif->AddUInt32(278, 1, ibuff); //RowsPerStrip
 		stripCnt = 1;
 
@@ -889,10 +889,10 @@ Bool Exporter::TIFFExporter::ExportFile(IO::SeekableStream *stm, Text::CString f
 			else
 			{
 				UInt32 currSOfst = (UInt32)currOfst;
-				UInt32 sofstStep = (UInt32)(img->info.dispWidth * (img->info.storeBPP >> 3) * 10);
+				UInt32 sofstStep = (UInt32)(img->info.dispSize.x * (img->info.storeBPP >> 3) * 10);
 				UInt32 *stripBuff;
 				UInt32 *stripCntBuff;
-				UOSInt sizeLeft = img->info.dispWidth * img->info.dispHeight * (img->info.storeBPP >> 3);
+				UOSInt sizeLeft = img->info.dispSize.x * img->info.dispSize.y * (img->info.storeBPP >> 3);
 				stripBuff = MemAlloc(UInt32, stripCnt);
 				stripCntBuff = MemAlloc(UInt32, stripCnt);
 				k = 0;
@@ -921,10 +921,10 @@ Bool Exporter::TIFFExporter::ExportFile(IO::SeekableStream *stm, Text::CString f
 			}
 		}
 		stm->SeekFromBeginning(currOfst);
-		UOSInt imgSize = img->info.dispHeight * ((img->info.dispWidth * img->info.storeBPP + 7) >> 3);
+		UOSInt imgSize = img->info.dispSize.y * ((img->info.dispSize.x * img->info.storeBPP + 7) >> 3);
 		UInt8 *imgData;
 		imgData = MemAlloc(UInt8, imgSize);
-		img->GetImageData(imgData, 0, 0, img->info.dispWidth, img->info.dispHeight, (img->info.dispWidth * img->info.storeBPP + 7) >> 3, false, Media::RotateType::None);
+		img->GetImageData(imgData, 0, 0, img->info.dispSize.x, img->info.dispSize.y, (img->info.dispSize.x * img->info.storeBPP + 7) >> 3, false, Media::RotateType::None);
 		switch (img->info.pf)
 		{
 		case Media::PF_B8G8R8A8:
@@ -933,11 +933,11 @@ Bool Exporter::TIFFExporter::ExportFile(IO::SeekableStream *stm, Text::CString f
 		case Media::PF_B8G8R8:
 		case Media::PF_LE_B16G16R16:
 		case Media::PF_LE_FB32G32R32:
-			ImageUtil_SwapRGB(imgData, img->info.dispWidth * img->info.dispHeight, img->info.storeBPP);
+			ImageUtil_SwapRGB(imgData, img->info.dispSize.x * img->info.dispSize.y, img->info.storeBPP);
 			if (img->info.atype == Media::AT_NO_ALPHA)
 			{
 				UInt8 *tmpPtr = imgData;
-				UOSInt cnt = img->info.dispWidth * img->info.dispHeight;
+				UOSInt cnt = img->info.dispSize.x * img->info.dispSize.y;
 				if (img->info.pf == Media::PF_B8G8R8A8)
 				{
 					while (cnt-- > 0)

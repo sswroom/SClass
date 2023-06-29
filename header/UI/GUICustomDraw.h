@@ -38,13 +38,13 @@ namespace UI
 		virtual Text::CString GetObjectClass();
 		virtual OSInt OnNotify(UInt32 code, void *lParam);
 
-		virtual Bool OnMouseDown(OSInt scnX, OSInt scnY, MouseButton btn);
-		virtual Bool OnMouseUp(OSInt scnX, OSInt scnY, MouseButton btn);
-		virtual void OnMouseMove(OSInt scnX, OSInt scnY);
-		virtual Bool OnMouseWheel(OSInt scnX, OSInt scnY, Int32 delta);
-		virtual void OnGestureBegin(OSInt scnX, OSInt scnY, UInt64 dist);
-		virtual void OnGestureStep(OSInt scnX, OSInt scnY, UInt64 dist);
-		virtual void OnGestureEnd(OSInt scnX, OSInt scnY, UInt64 dist);
+		virtual Bool OnMouseDown(Math::Coord2D<OSInt> scnPos, MouseButton btn);
+		virtual Bool OnMouseUp(Math::Coord2D<OSInt> scnPos, MouseButton btn);
+		virtual void OnMouseMove(Math::Coord2D<OSInt> scnPos);
+		virtual Bool OnMouseWheel(Math::Coord2D<OSInt> scnPos, Int32 delta);
+		virtual void OnGestureBegin(Math::Coord2D<OSInt> scnPos, UInt64 dist);
+		virtual void OnGestureStep(Math::Coord2D<OSInt> scnPos, UInt64 dist);
+		virtual void OnGestureEnd(Math::Coord2D<OSInt> scnPos, UInt64 dist);
 		virtual void OnJSButtonDown(OSInt buttonId);
 		virtual void OnJSButtonUp(OSInt buttonId);
 		virtual void OnJSAxis(OSInt axis1, OSInt axis2, OSInt axis3, OSInt axis4);
@@ -53,5 +53,5 @@ namespace UI
 		virtual void OnTimerTick();
 		virtual void OnDraw(Media::DrawImage *img);
 	};
-};
+}
 #endif

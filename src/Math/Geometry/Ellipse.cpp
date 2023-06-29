@@ -4,12 +4,10 @@
 #include "Math/Math.h"
 #include "Math/Geometry/Ellipse.h"
 
-Math::Geometry::Ellipse::Ellipse(UInt32 srid, Double tlx, Double tly, Double w, Double h) : Math::Geometry::Vector2D(srid)
+Math::Geometry::Ellipse::Ellipse(UInt32 srid, Math::Coord2DDbl tl, Math::Size2DDbl size) : Math::Geometry::Vector2D(srid)
 {
-	this->tlx = tlx;
-	this->tly = tly;
-	this->w = w;
-	this->h = h;
+	this->tl = tl;
+	this->size = size;
 }
 
 Math::Geometry::Ellipse::~Ellipse()
@@ -23,28 +21,28 @@ Math::Geometry::Vector2D::VectorType Math::Geometry::Ellipse::GetVectorType() co
 
 Math::Coord2DDbl Math::Geometry::Ellipse::GetCenter() const
 {
-	return Math::Coord2DDbl(this->tlx + (this->w * 0.5), this->tly + (this->h * 0.5));
+	return this->tl + (this->size * 0.5);
 }
 
 Math::Geometry::Vector2D *Math::Geometry::Ellipse::Clone() const
 {
 	Math::Geometry::Ellipse *ellipse;
-	NEW_CLASS(ellipse, Math::Geometry::Ellipse(this->srid, this->tlx, this->tly, this->w, this->h));
+	NEW_CLASS(ellipse, Math::Geometry::Ellipse(this->srid, this->tl, this->size));
 	return ellipse;
 }
 
 Math::RectAreaDbl Math::Geometry::Ellipse::GetBounds() const
 {
-	return Math::RectAreaDbl(this->tlx, this->tly, this->w, this->h);
+	return Math::RectAreaDbl(this->tl, this->tl + this->size);
 }
 
 Double Math::Geometry::Ellipse::CalBoundarySqrDistance(Math::Coord2DDbl pt, Math::Coord2DDbl *nearPt) const
 {
-	Math::Coord2DDbl cent = Math::Coord2DDbl(this->tlx + this->w * 0.5, this->tly + this->h * 0.5);
-	Double ang = Math_ArcTan2((pt.y - cent.y) * this->w / this->h, pt.x - cent.x);
+	Math::Coord2DDbl cent = this->tl + (this->size * 0.5);
+	Double ang = Math_ArcTan2((pt.y - cent.y) * this->size.x / this->size.y, pt.x - cent.x);
 	Double sVal = Math_Sin(ang);
 	Double cVal = Math_Cos(ang);
-	*nearPt = Math::Coord2DDbl(cent.x + cVal * this->w * 0.5, cent.y + sVal * this->h * 0.5);
+	*nearPt = Math::Coord2DDbl(cent.x + cVal * this->size.x * 0.5, cent.y + sVal * this->size.y * 0.5);
 	return ang * 180 / Math::PI;
 }
 
@@ -60,12 +58,10 @@ Bool Math::Geometry::Ellipse::HasZ() const
 
 void Math::Geometry::Ellipse::ConvCSys(Math::CoordinateSystem *srcCSys, Math::CoordinateSystem *destCSys)
 {
-	Double x2 = this->tlx + this->w;
-	Double y2 = this->tly + this->h;
-	Math::CoordinateSystem::ConvertXYZ(srcCSys, destCSys, this->tlx, this->tly, 0, &this->tlx, &this->tly, 0);
-	Math::CoordinateSystem::ConvertXYZ(srcCSys, destCSys, x2, y2, 0, &x2, &y2, 0);
-	this->w = x2 - this->tlx;
-	this->h = y2 - this->tly;
+	Math::Coord2DDbl br = this->tl + this->size;
+	Math::CoordinateSystem::ConvertXYZ(srcCSys, destCSys, this->tl.x, this->tl.y, 0, &this->tl.x, &this->tl.y, 0);
+	Math::CoordinateSystem::ConvertXYZ(srcCSys, destCSys, br.x, br.y, 0, &br.x, &br.y, 0);
+	this->size = br - this->tl;
 	this->srid = destCSys->GetSRID();
 }
 
@@ -77,10 +73,8 @@ Bool Math::Geometry::Ellipse::Equals(Math::Geometry::Vector2D *vec) const
 	}
 	Math::Geometry::Ellipse *ellipse = (Math::Geometry::Ellipse*)vec;
 	return this->srid == ellipse->srid &&
-		this->w == ellipse->w &&
-		this->h == ellipse->h &&
-		this->tlx == ellipse->tlx &&
-		this->tly == ellipse->tly;
+		this->size == ellipse->size &&
+		this->tl == ellipse->tl;
 }
 
 Bool Math::Geometry::Ellipse::EqualsNearly(Math::Geometry::Vector2D *vec) const
@@ -91,73 +85,67 @@ Bool Math::Geometry::Ellipse::EqualsNearly(Math::Geometry::Vector2D *vec) const
 	}
 	Math::Geometry::Ellipse *ellipse = (Math::Geometry::Ellipse*)vec;
 	return this->srid == ellipse->srid &&
-		Math::NearlyEqualsDbl(this->w, ellipse->w) &&
-		Math::NearlyEqualsDbl(this->h, ellipse->h) &&
-		Math::NearlyEqualsDbl(this->tlx, ellipse->tlx) &&
-		Math::NearlyEqualsDbl(this->tly, ellipse->tly);
+		Math::NearlyEqualsDbl(this->size.x, ellipse->size.x) &&
+		Math::NearlyEqualsDbl(this->size.y, ellipse->size.y) &&
+		Math::NearlyEqualsDbl(this->tl.x, ellipse->tl.x) &&
+		Math::NearlyEqualsDbl(this->tl.y, ellipse->tl.y);
 }
 
 UOSInt Math::Geometry::Ellipse::GetCoordinates(Data::ArrayListA<Math::Coord2DDbl> *coordList) const
 {
-	coordList->Add(Math::Coord2DDbl(this->tlx + this->w * 0.5, this->tly));
-	coordList->Add(Math::Coord2DDbl(this->tlx + this->w, this->tly + this->h * 0.5));
-	coordList->Add(Math::Coord2DDbl(this->tlx + this->w * 0.5, this->tly + this->h));
-	coordList->Add(Math::Coord2DDbl(this->tlx, this->tly + this->h * 0.5));
+	coordList->Add(Math::Coord2DDbl(this->tl.x + this->size.x * 0.5, this->tl.y));
+	coordList->Add(Math::Coord2DDbl(this->tl.x + this->size.x, this->tl.y + this->size.y * 0.5));
+	coordList->Add(Math::Coord2DDbl(this->tl.x + this->size.x * 0.5, this->tl.y + this->size.y));
+	coordList->Add(Math::Coord2DDbl(this->tl.x, this->tl.y + this->size.y * 0.5));
 	return 4;
 }
 
 Bool Math::Geometry::Ellipse::InsideVector(Math::Coord2DDbl coord) const
 {
-	Math::Coord2DDbl cent = Math::Coord2DDbl(this->tlx + this->w * 0.5, this->tly + this->h * 0.5);
-	Double yDiff = (coord.y - cent.y) * this->w / this->h;
+	Math::Coord2DDbl cent = this->tl + (this->size * 0.5);
+	Double yDiff = (coord.y - cent.y) * this->size.x / this->size.y;
 	Double xDiff = (coord.x - cent.x);
-	return Math_Sqrt(xDiff * xDiff + yDiff * yDiff) <= this->w * 0.5;
+	return Math_Sqrt(xDiff * xDiff + yDiff * yDiff) <= this->size.x * 0.5;
 }
 
 void Math::Geometry::Ellipse::SwapXY()
 {
-	Double tmp = this->tlx;
-	this->tlx = this->tly;
-	this->tly = tmp;
-	tmp = this->w;
-	this->w = this->h;
-	this->h = tmp;
+	this->tl = this->tl.SwapXY();
+	this->size = this->size.XchgXY();
 }
 
 void Math::Geometry::Ellipse::MultiplyCoordinatesXY(Double v)
 {
-	this->tlx = this->tlx * v;
-	this->tly = this->tly * v;
-	this->w = this->w * v;
-	this->h = this->h * v;
+	this->tl = this->tl * v;
+	this->size = this->size * v;
 }
 
 Math::Coord2DDbl Math::Geometry::Ellipse::GetTL()
 {
-	return Math::Coord2DDbl(this->tlx, this->tly);
+	return this->tl;
 }
 
 Math::Coord2DDbl Math::Geometry::Ellipse::GetBR()
 {
-	return Math::Coord2DDbl(this->tlx + this->w, this->tly + this->h);
+	return this->tl + this->size;
 }
 
 Double Math::Geometry::Ellipse::GetLeft()
 {
-	return this->tlx;
+	return this->tl.x;
 }
 
 Double Math::Geometry::Ellipse::GetTop()
 {
-	return this->tly;
+	return this->tl.y;
 }
 
 Double Math::Geometry::Ellipse::GetWidth()
 {
-	return this->w;
+	return this->size.x;
 }
 
 Double Math::Geometry::Ellipse::GetHeight()
 {
-	return this->h;
+	return this->size.y;
 }

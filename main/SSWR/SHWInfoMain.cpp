@@ -71,7 +71,7 @@ public:
 		Double hdpi = printPage->GetHDPI();
 		Double vdpi = printPage->GetVDPI();
 		Media::DrawPen *p = printPage->NewPenARGB(0xff000000, 1, 0, 0);
-		printPage->DrawRect(hdpi * 0.5, vdpi * 0.5, UOSInt2Double(w) - hdpi, UOSInt2Double(h) - vdpi, p, 0);
+		printPage->DrawRect(Math::Coord2DDbl(hdpi * 0.5, vdpi * 0.5), Math::Size2DDbl(UOSInt2Double(w) - hdpi, UOSInt2Double(h) - vdpi), p, 0);
 		printPage->DelPen(p);
 
 		if (this->pageId == 0)
@@ -681,9 +681,9 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 						sb.AppendC(UTF8STRC(", bpp = "));
 						sb.AppendU32(fmts[k].info.storeBPP);
 						sb.AppendC(UTF8STRC(", size = "));
-						sb.AppendUOSInt(fmts[k].info.dispWidth);
+						sb.AppendUOSInt(fmts[k].info.dispSize.x);
 						sb.AppendC(UTF8STRC(" x "));
-						sb.AppendUOSInt(fmts[k].info.dispHeight);
+						sb.AppendUOSInt(fmts[k].info.dispSize.y);
 						sb.AppendC(UTF8STRC(", rate = "));
 						Text::SBAppendF64(&sb, fmts[k].frameRateNorm / (Double)fmts[k].frameRateDenorm);
 						console->WriteLineC(sb.ToString(), sb.GetLength());

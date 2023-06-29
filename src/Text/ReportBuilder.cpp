@@ -990,7 +990,7 @@ Media::VectorDocument *Text::ReportBuilder::CreateVDoc(Int32 id, Media::DrawEngi
 	Double headerW2;
 	Double headerW3;
 	Double headerW4;
-	Math::Size2D<Double> sz;
+	Math::Size2DDbl sz;
 	Double currY;
 	Double nextY;
 	TableCell *cols;
@@ -1045,20 +1045,20 @@ Media::VectorDocument *Text::ReportBuilder::CreateVDoc(Int32 id, Media::DrawEngi
 		if (header->isRight)
 		{
 			sz = g->GetTextSize(f, header->name->ToCString());
-			if (sz.width > headerW3)
-				headerW3 = sz.width;
+			if (sz.x > headerW3)
+				headerW3 = sz.x;
 			sz = g->GetTextSize(f, header->value->ToCString());
-			if (sz.width > headerW4)
-				headerW4 = sz.width;
+			if (sz.x > headerW4)
+				headerW4 = sz.x;
 		}
 		else
 		{
 			sz = g->GetTextSize(f, header->name->ToCString());
-			if (sz.width > headerW1)
-				headerW1 = sz.width;
+			if (sz.x > headerW1)
+				headerW1 = sz.x;
 			sz = g->GetTextSize(f, header->value->ToCString());
-			if (sz.width > headerW2)
-				headerW2 = sz.width;
+			if (sz.x > headerW2)
+				headerW2 = sz.x;
 		}
 	}
 	i = this->preheaders.GetCount();
@@ -1068,20 +1068,20 @@ Media::VectorDocument *Text::ReportBuilder::CreateVDoc(Int32 id, Media::DrawEngi
 		if (header->isRight)
 		{
 			sz = g->GetTextSize(f, header->name->ToCString());
-			if (sz.width > headerW3)
-				headerW3 = sz.width;
+			if (sz.x > headerW3)
+				headerW3 = sz.x;
 			sz = g->GetTextSize(f, header->value->ToCString());
-			if (sz.width > headerW4)
-				headerW4 = sz.width;
+			if (sz.x > headerW4)
+				headerW4 = sz.x;
 		}
 		else
 		{
 			sz = g->GetTextSize(f, header->name->ToCString());
-			if (sz.width > headerW1)
-				headerW1 = sz.width;
+			if (sz.x > headerW1)
+				headerW1 = sz.x;
 			sz = g->GetTextSize(f, header->value->ToCString());
-			if (sz.width > headerW2)
-				headerW2 = sz.width;
+			if (sz.x > headerW2)
+				headerW2 = sz.x;
 		}
 	}
 
@@ -1106,7 +1106,7 @@ Media::VectorDocument *Text::ReportBuilder::CreateVDoc(Int32 id, Media::DrawEngi
 			if (cols[j].val)
 			{
 				sz = g->GetTextSize(f, cols[j].val->ToCString());
-				colCurrX[j] = sz.width;
+				colCurrX[j] = sz.x;
 			}
 		}
 
@@ -1204,8 +1204,8 @@ Media::VectorDocument *Text::ReportBuilder::CreateVDoc(Int32 id, Media::DrawEngi
 			{
 				if (!lastRight && i > 0)
 					currY -= fontHeightMM * 1.5;
-				g->DrawString(border + drawWidth - headerW4 - headerW3 - 0.5, currY, header->name, f, b);
-				g->DrawString(border + drawWidth - headerW4, currY, header->value, f, b);
+				g->DrawString(Math::Coord2DDbl(border + drawWidth - headerW4 - headerW3 - 0.5, currY), header->name, f, b);
+				g->DrawString(Math::Coord2DDbl(border + drawWidth - headerW4, currY), header->value, f, b);
 				if (header->valueUnderline)
 				{
 					g->DrawLine(border + drawWidth - headerW4, currY + fontHeightMM, border + drawWidth, currY + fontHeightMM, p);
@@ -1213,8 +1213,8 @@ Media::VectorDocument *Text::ReportBuilder::CreateVDoc(Int32 id, Media::DrawEngi
 			}
 			else
 			{
-				g->DrawString(border, currY, header->name, f, b);
-				g->DrawString(border + headerW1 + 0.5, currY, header->value, f, b);
+				g->DrawString(Math::Coord2DDbl(border, currY), header->name, f, b);
+				g->DrawString(Math::Coord2DDbl(border + headerW1 + 0.5, currY), header->value, f, b);
 				if (header->valueUnderline)
 				{
 					g->DrawLine(border + headerW1 + 0.5, currY + fontHeightMM, border + headerW1 + 0.5 + headerW2, currY + fontHeightMM, p);
@@ -1226,7 +1226,7 @@ Media::VectorDocument *Text::ReportBuilder::CreateVDoc(Int32 id, Media::DrawEngi
 			i++;
 		}
 
-		g->DrawStringHAlign(border, currY, border + drawWidth, this->name->ToCString(), f, b, this->nameHAlign);
+		g->DrawStringHAlign(Math::Coord2DDbl(border, currY), border + drawWidth, this->name->ToCString(), f, b, this->nameHAlign);
 		currY += fontHeightMM * 2;
 		lastRight = false;
 		i = 0;
@@ -1238,8 +1238,8 @@ Media::VectorDocument *Text::ReportBuilder::CreateVDoc(Int32 id, Media::DrawEngi
 			{
 				if (!lastRight && i > 0)
 					currY -= fontHeightMM * 1.5;
-				g->DrawString(border + drawWidth - headerW4 - headerW3 - 0.5, currY, header->name, f, b);
-				g->DrawString(border + drawWidth - headerW4, currY, header->value, f, b);
+				g->DrawString(Math::Coord2DDbl(border + drawWidth - headerW4 - headerW3 - 0.5, currY), header->name, f, b);
+				g->DrawString(Math::Coord2DDbl(border + drawWidth - headerW4, currY), header->value, f, b);
 				if (header->valueUnderline)
 				{
 					g->DrawLine(border + drawWidth - headerW4, currY + fontHeightMM, border + drawWidth, currY + fontHeightMM, p);
@@ -1247,8 +1247,8 @@ Media::VectorDocument *Text::ReportBuilder::CreateVDoc(Int32 id, Media::DrawEngi
 			}
 			else
 			{
-				g->DrawString(border, currY, header->name, f, b);
-				g->DrawString(border + headerW1 + 0.5, currY, header->value, f, b);
+				g->DrawString(Math::Coord2DDbl(border, currY), header->name, f, b);
+				g->DrawString(Math::Coord2DDbl(border + headerW1 + 0.5, currY), header->value, f, b);
 				if (header->valueUnderline)
 				{
 					g->DrawLine(border + headerW1 + 0.5, currY + fontHeightMM, border + headerW1 + 0.5 + headerW2, currY + fontHeightMM, p);
@@ -1328,7 +1328,7 @@ Media::VectorDocument *Text::ReportBuilder::CreateVDoc(Int32 id, Media::DrawEngi
 							g->DrawLine(colPos[i], currY, nextX, currY, p);
 							g->DrawLine(colPos[i], currY, colPos[i], nextY, p);
 						}
-						g->DrawStringHAlign(colPos[i], currY, nextX, cols[i].val->ToCString(), f, b, cols[i].hAlign);
+						g->DrawStringHAlign(Math::Coord2DDbl(colPos[i], currY), nextX, cols[i].val->ToCString(), f, b, cols[i].hAlign);
 					}
 				}
 				m++;
@@ -1408,7 +1408,7 @@ Media::VectorDocument *Text::ReportBuilder::CreateVDoc(Int32 id, Media::DrawEngi
 								g->DrawLine(colPos[i], currY, nextX, currY, p);
 								g->DrawLine(colPos[i], currY, colPos[i], nextY, p);
 							}
-							g->DrawStringHAlign(colPos[i], currY, nextX, cols[i].val->ToCString(), f, b, cols[i].hAlign);
+							g->DrawStringHAlign(Math::Coord2DDbl(colPos[i], currY), nextX, cols[i].val->ToCString(), f, b, cols[i].hAlign);
 						}
 					}
 				}
@@ -1423,7 +1423,7 @@ Media::VectorDocument *Text::ReportBuilder::CreateVDoc(Int32 id, Media::DrawEngi
 						if (cols[i].val)
 						{
 							sz = g->GetTextSize(f, cols[i].val->ToCString());
-							colCurrX[i] = colPos[i] + sz.width;
+							colCurrX[i] = colPos[i] + sz.x;
 						}
 						else
 						{
@@ -1446,7 +1446,7 @@ Media::VectorDocument *Text::ReportBuilder::CreateVDoc(Int32 id, Media::DrawEngi
 								Double dpi = UOSInt2Double(iconSt->dimg->GetHeight()) / Math::Unit::Distance::Convert(Math::Unit::Distance::DU_MILLIMETER, Math::Unit::Distance::DU_INCH, fontHeightMM);
 								iconSt->dimg->SetHDPI(dpi);
 								iconSt->dimg->SetVDPI(dpi);
-								g->DrawImagePt(iconSt->dimg, colCurrX[icon->col], currY);
+								g->DrawImagePt(iconSt->dimg, Math::Coord2DDbl(colCurrX[icon->col], currY));
 								colCurrX[icon->col] += w;
 							}
 						}
@@ -1470,7 +1470,7 @@ Media::VectorDocument *Text::ReportBuilder::CreateVDoc(Int32 id, Media::DrawEngi
 			pageId++;
 			sptr = Text::StrInt32(sbuff, pageId);
 			sz = g->GetTextSize(f, CSTRP(sbuff, sptr));
-			g->DrawString(border + (drawWidth - sz.width) * 0.5, paperSize.GetHeightMM() - border, CSTRP(sbuff, sptr), f, b);
+			g->DrawString(Math::Coord2DDbl(border + (drawWidth - sz.x) * 0.5, paperSize.GetHeightMM() - border), CSTRP(sbuff, sptr), f, b);
 		}
 
 		g->DelFont(f);

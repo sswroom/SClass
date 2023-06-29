@@ -86,7 +86,7 @@ void UI::DObj::OverlayDObj::DrawObject(Media::DrawImage *dimg)
 	if (this->bmp)
 	{
 		Math::Coord2DDbl tl = GetCurrPos().ToDouble();
-		dimg->DrawImagePt(this->bmp, tl.x, tl.y);
+		dimg->DrawImagePt(this->bmp, tl);
 	}
 	else if (this->imgList)
 	{
@@ -110,7 +110,7 @@ void UI::DObj::OverlayDObj::DrawObject(Media::DrawImage *dimg)
 		if (img)
 		{
 			Math::Coord2DDbl tl = GetCurrPos().ToDouble();
-			dimg->DrawImagePt2(img, tl.x, tl.y);
+			dimg->DrawImagePt2(img, tl);
 		}
 		else
 		{
@@ -119,7 +119,7 @@ void UI::DObj::OverlayDObj::DrawObject(Media::DrawImage *dimg)
 	}
 }
 
-Bool UI::DObj::OverlayDObj::IsObject(OSInt x, OSInt y)
+Bool UI::DObj::OverlayDObj::IsObject(Math::Coord2D<OSInt> scnPos)
 {
 	return false;
 }

@@ -98,8 +98,8 @@ void Map::NetworkLinkLayer::LoadLink(LinkInfo *link)
 		UTF8Char sbuff[256];
 		UTF8Char *sptr;
 		Text::StringBuilderUTF8 sb;
-		Double width = this->dispSize.width;
-		Double height = this->dispSize.height;
+		Double width = this->dispSize.GetWidth();
+		Double height = this->dispSize.GetHeight();
 		if (this->dispDPI > 96.0)
 		{
 			width = width * 96.0 / this->dispDPI;
@@ -189,7 +189,7 @@ Map::NetworkLinkLayer::NetworkLinkLayer(Text::CString fileName, Parser::ParserLi
 	this->innerLayerType = Map::DRAW_LAYER_UNKNOWN;
 	this->currScale = 10000;
 	this->currTime = 0;
-	this->dispSize = Math::Size2D<Double>(640, 480);
+	this->dispSize = Math::Size2DDbl(640, 480);
 	this->dispDPI = 96.0;
 	this->dispRect = Math::RectAreaDbl(0, 0, 0, 0);
 	this->dispTime = Data::DateTimeUtil::GetCurrTimeMillis();
@@ -577,7 +577,7 @@ Bool Map::NetworkLinkLayer::GetBounds(Math::RectAreaDbl *bounds)
 	}
 }
 
-void Map::NetworkLinkLayer::SetDispSize(Math::Size2D<Double> size, Double dpi)
+void Map::NetworkLinkLayer::SetDispSize(Math::Size2DDbl size, Double dpi)
 {
 	Sync::MutexUsage mutUsage(&this->dispMut);
 	this->dispSize = size;

@@ -305,8 +305,7 @@ public:
 		this->started = false;
 		this->frameCb = 0;
 		this->frameCbData = 0;
-		this->streamInfo.dispWidth = 0;
-		this->streamInfo.dispHeight = 0;
+		this->streamInfo.dispSize = Math::Size2D<UOSInt>(0, 0);
 		this->decFCC = 0;
 		this->decBPP = 0;
 		this->frameBuff = 0;
@@ -485,7 +484,7 @@ public:
 	{
 		if (this->sourceVideo == 0)
 			return false;
-		if (this->streamInfo.dispWidth != 0 && this->streamInfo.dispHeight != 0)
+		if (this->streamInfo.dispSize.x != 0 && this->streamInfo.dispSize.y != 0)
 		{
 			info->Set(&this->streamInfo);
 		}

@@ -32,13 +32,13 @@ void __stdcall CaptureTest(UInt32 frameTime, UInt32 frameNum, UInt8 **imgData, U
 		Media::StaticImage *simg;
 		Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
 		Text::CString fileName = CSTR("Capture.tif");
-		NEW_CLASS(simg, Media::StaticImage(info.dispWidth, info.dispHeight, 0, 32, Media::PF_B8G8R8A8, 0, &color, Media::ColorProfile::YUVT_BT601, info.atype, info.ycOfst));
+		NEW_CLASS(simg, Media::StaticImage(info.dispSize, 0, 32, Media::PF_B8G8R8A8, 0, &color, Media::ColorProfile::YUVT_BT601, info.atype, info.ycOfst));
 		Media::ImageList imgList(fileName);
 		imgList.AddImage(simg, 0);
 
 		if (converter)
 		{
-			converter->ConvertV2(imgData, simg->data, info.dispWidth, info.dispHeight, info.storeWidth, info.storeHeight, (OSInt)info.storeWidth * 4, frameType, info.ycOfst);
+			converter->ConvertV2(imgData, simg->data, info.dispSize.x, info.dispSize.y, info.storeSize.x, info.storeSize.y, (OSInt)info.storeSize.x * 4, frameType, info.ycOfst);
 		}
 		{
 			IO::FileStream fs(fileName, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
@@ -179,9 +179,9 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 						sb.AppendC((const UTF8Char*)&formats[i].info.fourcc, 4);
 					}
 					sb.AppendC(UTF8STRC(", Size = "));
-					sb.AppendUOSInt(formats[i].info.dispWidth);
+					sb.AppendUOSInt(formats[i].info.dispSize.x);
 					sb.AppendC(UTF8STRC(" x "));
-					sb.AppendUOSInt(formats[i].info.dispHeight);
+					sb.AppendUOSInt(formats[i].info.dispSize.y);
 					sb.AppendC(UTF8STRC(", bpp = "));
 					sb.AppendU32(formats[i].info.storeBPP);
 					sb.AppendC(UTF8STRC(", rate = "));
@@ -192,7 +192,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 					Text::SBAppendF64(&sb, formats[i].frameRateNorm / (Double)formats[i].frameRateDenorm);
 					sb.AppendC(UTF8STRC(")"));
 					console->WriteLineC(sb.ToString(), sb.GetLength());
-					thisSize = formats[i].info.dispWidth * formats[i].info.dispHeight;
+					thisSize = formats[i].info.dispSize.CalcArea();
 					if (formats[i].info.fourcc == *(UInt32*)"MJPG")
 					{
 
@@ -201,11 +201,11 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 					{
 
 					}*/
-					else if (thisSize > maxSize && formats[i].info.dispWidth <= widthLimit)
+					else if (thisSize > maxSize && formats[i].info.dispSize.x <= widthLimit)
 					{
 						maxSize = thisSize;
-						maxWidth = formats[i].info.dispWidth;
-						maxHeight = formats[i].info.dispHeight;
+						maxWidth = formats[i].info.dispSize.x;
+						maxHeight = formats[i].info.dispSize.y;
 						maxFmt = formats[i].info.fourcc;
 						maxBpp = formats[i].info.storeBPP;
 						maxRateNumer = formats[i].frameRateNorm;
@@ -214,8 +214,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 					else if (thisSize == maxSize && formats[i].info.fourcc == prefFmt)
 					{
 						maxSize = thisSize;
-						maxWidth = formats[i].info.dispWidth;
-						maxHeight = formats[i].info.dispHeight;
+						maxWidth = formats[i].info.dispSize.x;
+						maxHeight = formats[i].info.dispSize.y;
 						maxFmt = formats[i].info.fourcc;
 						maxBpp = formats[i].info.storeBPP;
 						maxRateNumer = formats[i].frameRateNorm;
@@ -243,7 +243,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 					sb.AppendC(UTF8STRC(", bpp = "));
 					sb.AppendU32(maxBpp);
 					console->WriteLineC(sb.ToString(), sb.GetLength());
-					capture->SetPreferSize(maxWidth, maxHeight, maxFmt, maxBpp, maxRateNumer, maxRateDenom);
+					capture->SetPreferSize(Math::Size2D<UOSInt>(maxWidth, maxHeight), maxFmt, maxBpp, maxRateNumer, maxRateDenom);
 				}
 
 				i = 0;
@@ -271,9 +271,9 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 						sb.AppendC((const UTF8Char*)&info.fourcc, 4);
 					}
 					sb.AppendC(UTF8STRC(", Size = "));
-					sb.AppendUOSInt(info.dispWidth);
+					sb.AppendUOSInt(info.dispSize.x);
 					sb.AppendC(UTF8STRC(" x "));
-					sb.AppendUOSInt(info.dispHeight);
+					sb.AppendUOSInt(info.dispSize.y);
 					sb.AppendC(UTF8STRC(", bpp = "));
 					sb.AppendU32(info.storeBPP);
 					sb.AppendC(UTF8STRC(", rate = "));

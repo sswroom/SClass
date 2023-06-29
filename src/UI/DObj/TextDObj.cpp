@@ -36,7 +36,7 @@ UI::DObj::TextDObj::TextDObj(Media::DrawEngine *deng, Text::CString txt, Text::C
 
 	if (this->txt)
 	{
-		Media::DrawImage *dimg = this->deng->CreateImage32(width, height, Media::AT_NO_ALPHA);
+		Media::DrawImage *dimg = this->deng->CreateImage32(Math::Size2D<UOSInt>(width, height), Media::AT_NO_ALPHA);
 		Media::DrawFont *f = dimg->NewFontPx(this->fontName->ToCString(), this->fontSize, (Media::DrawEngine::DrawFontStyle)(fontStyle | Media::DrawEngine::DFS_ANTIALIAS), codePage);
 		Media::DrawImageTool::SplitString(dimg, this->txt->ToCString(), &this->lines, f, OSInt2Double(width));
 		dimg->DelFont(f);
@@ -69,7 +69,7 @@ Bool UI::DObj::TextDObj::DoEvents()
 void UI::DObj::TextDObj::DrawObject(Media::DrawImage *dimg)
 {
 	this->pageChg = false;
-	Math::Size2D<Double> sz;
+	Math::Size2DDbl sz;
 	Media::DrawFont *f;
 	Media::DrawBrush *b;
 	f = dimg->NewFontPx(this->fontName->ToCString(), this->fontSize, (Media::DrawEngine::DrawFontStyle)(this->fontStyle | Media::DrawEngine::DFS_ANTIALIAS), this->codePage);
@@ -84,17 +84,17 @@ void UI::DObj::TextDObj::DrawObject(Media::DrawImage *dimg)
 	{
 		if (this->talign == TA_LEFT)
 		{
-			dimg->DrawString(OSInt2Double(tl.x), currPos, this->lines.GetItem(currLine), f, b);
+			dimg->DrawString(Math::Coord2DDbl(OSInt2Double(tl.x), currPos), this->lines.GetItem(currLine), f, b);
 		}
 		else if (this->talign == TA_CENTER)
 		{
 			sz = dimg->GetTextSize(f, this->lines.GetItem(currLine)->ToCString());
-			dimg->DrawString(OSInt2Double(tl.x) + (UOSInt2Double(this->width) - sz.width) * 0.5, currPos, this->lines.GetItem(currLine)->ToCString(), f, b);
+			dimg->DrawString(Math::Coord2DDbl(OSInt2Double(tl.x) + (UOSInt2Double(this->width) - sz.x) * 0.5, currPos), this->lines.GetItem(currLine)->ToCString(), f, b);
 		}
 		else if (this->talign == TA_RIGHT)
 		{
 			sz = dimg->GetTextSize(f, this->lines.GetItem(currLine)->ToCString());
-			dimg->DrawString(OSInt2Double(tl.x + (OSInt)width) - sz.width, currPos, this->lines.GetItem(currLine), f, b);
+			dimg->DrawString(Math::Coord2DDbl(OSInt2Double(tl.x + (OSInt)width) - sz.x, currPos), this->lines.GetItem(currLine), f, b);
 		}
 		currLine++;
 		currPos += this->lineHeight;
@@ -103,7 +103,7 @@ void UI::DObj::TextDObj::DrawObject(Media::DrawImage *dimg)
 	dimg->DelBrush(b);
 }
 
-Bool UI::DObj::TextDObj::IsObject(OSInt x, OSInt y)
+Bool UI::DObj::TextDObj::IsObject(Math::Coord2D<OSInt> scnPos)
 {
 	return false;
 }

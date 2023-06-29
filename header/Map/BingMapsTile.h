@@ -34,7 +34,7 @@ namespace Map
 		Sync::Mutex urlMut;
 		Text::String *brandLogoUri;
 		Media::SharedImage *brandLogoImg;
-		Math::Size2D<Double> dispSize;
+		Math::Size2DDbl dispSize;
 		Double dispDPI;
 		Bool hideLogo;
 
@@ -47,7 +47,7 @@ namespace Map
 		virtual Text::CString GetName();
 		virtual TileType GetTileType();
 		virtual UOSInt GetConcurrentCount();
-		virtual void SetDispSize(Math::Size2D<Double> size, Double dpi);
+		virtual void SetDispSize(Math::Size2DDbl size, Double dpi);
 		virtual UTF8Char *GetTileImageURL(UTF8Char *sbuff, UOSInt level, Math::Coord2D<Int32> imgId);
 
 		virtual UOSInt GetScreenObjCnt();

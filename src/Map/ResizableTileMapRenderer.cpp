@@ -108,8 +108,8 @@ void Map::ResizableTileMapRenderer::DrawImage(Map::MapView *view, Media::DrawIma
 			}
 			else
 			{
-				cimgX2 = cimg->img->info.dispWidth;
-				cimgY2 = cimg->img->info.dispHeight;
+				cimgX2 = cimg->img->info.dispSize.x;
+				cimgY2 = cimg->img->info.dispSize.y;
 				cimgX = 0;
 				cimgY = 0;
 				if (iScnX < 0)
@@ -134,7 +134,7 @@ void Map::ResizableTileMapRenderer::DrawImage(Map::MapView *view, Media::DrawIma
 				}
 				if (cimgX == cimgX2)
 				{
-					if (cimgX2 >= cimg->img->info.dispWidth)
+					if (cimgX2 >= cimg->img->info.dispSize.x)
 					{
 						cimgX = cimgX2 - 1;
 					}
@@ -145,7 +145,7 @@ void Map::ResizableTileMapRenderer::DrawImage(Map::MapView *view, Media::DrawIma
 				}
 				if (cimgY == cimgY2)
 				{
-					if (cimgY2 >= cimg->img->info.dispHeight)
+					if (cimgY2 >= cimg->img->info.dispSize.y)
 					{
 						cimgY = cimgY2 - 1;
 					}

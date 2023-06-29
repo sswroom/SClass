@@ -54,8 +54,7 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnImageChanged(void *userObj, 
 		{
 			img->To32bpp();
 			Math::Size2D<UOSInt> sz = me->pbMain->GetSizeP();
-			me->resizer->SetTargetWidth(sz.width);
-			me->resizer->SetTargetHeight(sz.height);
+			me->resizer->SetTargetSize(sz);
 			me->resizer->SetDestProfile(img->info.color);
 			me->previewImage = me->resizer->ProcessToNew(img);
 			me->filteredImage = me->previewImage->CreateStaticImage();

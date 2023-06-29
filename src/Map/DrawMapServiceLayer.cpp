@@ -14,7 +14,7 @@ UInt32 __stdcall Map::DrawMapServiceLayer::TaskThread(void *userObj)
 {
 	Math::RectAreaDbl bounds;
 	Media::ImageList *imgList;
-	Math::Size2D<Double> size;
+	Math::Size2DDbl size;
 	Double dpi;
 	Map::DrawMapServiceLayer *me = (Map::DrawMapServiceLayer*)userObj;
 	Int64 thisId = 0;
@@ -34,7 +34,7 @@ UInt32 __stdcall Map::DrawMapServiceLayer::TaskThread(void *userObj)
 				dpi = me->dispDPI;
 				mutUsage.EndUse();
 				sb.ClearStr();
-				imgList = me->mapService->DrawMap(bounds, (UInt32)Double2Int32(size.width), (UInt32)Double2Int32(size.height), dpi, &sb);
+				imgList = me->mapService->DrawMap(bounds, (UInt32)Double2Int32(size.x), (UInt32)Double2Int32(size.y), dpi, &sb);
 				if (imgList)
 				{
 					mutUsage.BeginUse();
@@ -97,7 +97,7 @@ Map::DrawMapServiceLayer::DrawMapServiceLayer(Map::DrawMapService *mapService) :
 	this->mapService = mapService;
 	this->csys = mapService->GetCoordinateSystem()->Clone();
 	this->dispBounds = mapService->GetInitBounds();
-	this->dispSize = Math::Size2D<Double>(640, 480);
+	this->dispSize = Math::Size2DDbl(640, 480);
 	this->dispDPI = 96.0;
 	this->dispId = 0;
 	this->dispImage = 0;
@@ -141,7 +141,7 @@ void Map::DrawMapServiceLayer::SetCurrScale(Double scale)
 {
 }
 
-Map::MapView *Map::DrawMapServiceLayer::CreateMapView(Math::Size2D<Double> scnSize)
+Map::MapView *Map::DrawMapServiceLayer::CreateMapView(Math::Size2DDbl scnSize)
 {
 	Map::MapView *view;
 	NEW_CLASS(view, Map::ScaledMapView(this->dispSize, this->dispBounds.GetCenter(), Map::ScaledMapView::CalcScale(this->dispBounds, this->dispSize, this->dispDPI, this->csys->IsProjected()), this->csys->IsProjected()));
@@ -273,7 +273,7 @@ Bool Map::DrawMapServiceLayer::GetBounds(Math::RectAreaDbl *bounds)
 	return this->mapService->GetBounds(bounds);
 }
 
-void Map::DrawMapServiceLayer::SetDispSize(Math::Size2D<Double> size, Double dpi)
+void Map::DrawMapServiceLayer::SetDispSize(Math::Size2DDbl size, Double dpi)
 {
 	Sync::MutexUsage mutUsage(&this->dispMut);
 	if (this->dispSize != size || this->dispDPI != dpi)
@@ -324,7 +324,7 @@ Bool Map::DrawMapServiceLayer::CanQuery()
 
 Bool Map::DrawMapServiceLayer::QueryInfos(Math::Coord2DDbl coord, Data::ArrayList<Math::Geometry::Vector2D*> *vecList, Data::ArrayList<UOSInt> *valueOfstList, Data::ArrayList<Text::String*> *nameList, Data::ArrayList<Text::String*> *valueList)
 {
-	return this->mapService->QueryInfos(coord, this->dispBounds, (UInt32)Double2Int32(this->dispSize.width), (UInt32)Double2Int32(this->dispSize.height), this->dispDPI, vecList, valueOfstList, nameList, valueList);
+	return this->mapService->QueryInfos(coord, this->dispBounds, (UInt32)Double2Int32(this->dispSize.x), (UInt32)Double2Int32(this->dispSize.y), this->dispDPI, vecList, valueOfstList, nameList, valueList);
 }
 
 void Map::DrawMapServiceLayer::AddUpdatedHandler(Map::MapRenderer::UpdatedHandler hdlr, void *obj)

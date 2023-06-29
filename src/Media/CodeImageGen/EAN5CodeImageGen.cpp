@@ -305,12 +305,12 @@ Media::DrawImage *Media::CodeImageGen::EAN5CodeImageGen::GenCode(Text::CString c
 	UOSInt y = h - codeWidth;
 	Double fh = 12.0 * UOSInt2Double(codeWidth);
 
-	Media::DrawImage *dimg = eng->CreateImage32((4 + 48) * codeWidth, h, Media::AT_NO_ALPHA);
+	Media::DrawImage *dimg = eng->CreateImage32(Math::Size2D<UOSInt>((4 + 48) * codeWidth, h), Media::AT_NO_ALPHA);
 	Media::DrawBrush *b;
 	Media::DrawPen *p;
 	Media::DrawFont *f;
 	b = dimg->NewBrushARGB(0xffffffff);
-	dimg->DrawRect(0, 0, (Double)dimg->GetWidth(), (Double)dimg->GetHeight(), 0, b);
+	dimg->DrawRect(Math::Coord2DDbl(0, 0), dimg->GetSize().ToDouble(), 0, b);
 	dimg->DelBrush(b);
 
 	p = dimg->NewPenARGB(0xff000000, 1, 0, 0);
@@ -343,7 +343,7 @@ Media::DrawImage *Media::CodeImageGen::EAN5CodeImageGen::GenCode(Text::CString c
 	while (j-- > 0)
 	{
 		sbuff[0] = *codePtr++;
-		dimg->DrawString((Double)i, (Double)codeWidth, {sbuff, 1}, f, b);
+		dimg->DrawString(Math::Coord2DDbl((Double)i, (Double)codeWidth), {sbuff, 1}, f, b);
 		i += 9 * codeWidth;
 	}
 	dimg->DelBrush(b);

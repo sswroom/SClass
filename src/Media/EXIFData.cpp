@@ -2396,7 +2396,7 @@ Bool Media::EXIFData::GetPhotoLocation(Double *lat, Double *lon, Double *altitud
 	return false;
 }
 
-Bool Media::EXIFData::GetGeoBounds(UOSInt imgW, UOSInt imgH, UInt32 *srid, Double *minX, Double *minY, Double *maxX, Double *maxY) const
+Bool Media::EXIFData::GetGeoBounds(Math::Size2D<UOSInt> imgSize, UInt32 *srid, Double *minX, Double *minY, Double *maxX, Double *maxY) const
 {
 	Media::EXIFData::EXIFItem *item;
 	Media::EXIFData::EXIFItem *item2;
@@ -2427,8 +2427,8 @@ Bool Media::EXIFData::GetGeoBounds(UOSInt imgW, UOSInt imgH, UInt32 *srid, Doubl
 		*minY = coord->CalLatByDist(mapY, (imgH - imgY) * mppY);*/
 		*minX = mapX - imgX * mppX;
 		*maxY = mapY + imgY * mppY;
-		*maxX = mapX + (UOSInt2Double(imgW) - imgX) * mppX;
-		*minY = mapY - (UOSInt2Double(imgH) - imgY) * mppY;
+		*maxX = mapX + (UOSInt2Double(imgSize.x) - imgX) * mppX;
+		*minY = mapY - (UOSInt2Double(imgSize.y) - imgY) * mppY;
 
 	//	DEL_CLASS(coord);
 		return true;
@@ -2453,13 +2453,12 @@ Bool Media::EXIFData::GetGeoBounds(UOSInt imgW, UOSInt imgH, UInt32 *srid, Doubl
 
 		if (item->cnt == 16)
 		{
-			Double dimgW = UOSInt2Double(imgW);
-			Double dimgH = UOSInt2Double(imgH);
+			Math::Size2DDbl dimgSize = imgSize.ToDouble();
 			Double *transfMatrix = (Double*)item->dataBuff;
 			*minX = transfMatrix[3];
 			*maxY = transfMatrix[7];
-			*maxX = transfMatrix[3] + transfMatrix[0] * dimgW + transfMatrix[1] * dimgH;
-			*minY = transfMatrix[7] + transfMatrix[4] * dimgW + transfMatrix[5] * dimgH;
+			*maxX = transfMatrix[3] + transfMatrix[0] * dimgSize.x + transfMatrix[1] * dimgSize.y;
+			*minY = transfMatrix[7] + transfMatrix[4] * dimgSize.x + transfMatrix[5] * dimgSize.y;
 			if (srid) *srid = fileSRID;
 			return true;
 		}

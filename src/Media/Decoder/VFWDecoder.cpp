@@ -239,8 +239,8 @@ Media::Decoder::VFWDecoder::VFWDecoder(Media::IVideoSource *sourceVideo) : Media
 	BITMAPINFOHEADER bmihOut;
 	BITMAPINFOHEADER bmih;
 	bmih.biSize = sizeof(BITMAPINFOHEADER);
-	bmih.biWidth = (LONG)frameInfo.storeWidth;
-	bmih.biHeight = (LONG)frameInfo.storeHeight;
+	bmih.biWidth = (LONG)frameInfo.storeSize.x;
+	bmih.biHeight = (LONG)frameInfo.storeSize.y;
 	bmih.biPlanes = 1;
 	bmih.biBitCount = (WORD)frameInfo.storeBPP;
 	bmih.biCompression = frameInfo.fourcc;
@@ -454,10 +454,9 @@ Bool Media::Decoder::VFWDecoder::GetVideoInfo(Media::FrameInfo *info, UInt32 *fr
 	*frameRateNorm = this->frameRateNorm;
 	*frameRateDenorm = this->frameRateDenorm;
 	*maxFrameSize = this->maxFrameSize;
-	info->storeWidth = (UOSInt)bmih->biWidth;
-	info->storeHeight = (UOSInt)bmih->biHeight;
-	info->dispWidth = info->storeWidth;
-	info->dispHeight = info->storeHeight;
+	info->storeSize.x = (UOSInt)bmih->biWidth;
+	info->storeSize.y = (UOSInt)bmih->biHeight;
+	info->dispSize = info->storeSize;
 	info->storeBPP = bmih->biBitCount;
 	info->fourcc = bmih->biCompression;
 	info->pf = Media::PixelFormatGetDef(bmih->biCompression, bmih->biBitCount);

@@ -147,7 +147,7 @@ UInt32 Map::GoogleMap::GoogleStaticMap::Scale2Level(UInt32 scale)
 	}
 }
 
-UOSInt Map::GoogleMap::GoogleStaticMap::GetMap(UInt8 *buff, Double lat, Double lon, UInt32 scale, UInt32 width, UInt32 height, Text::CString lang, Int32 format, Double marker_lat, Double marker_lon)
+UOSInt Map::GoogleMap::GoogleStaticMap::GetMap(UInt8 *buff, Double lat, Double lon, UInt32 scale, Math::Size2D<UOSInt> imgSize, Text::CString lang, Int32 format, Double marker_lat, Double marker_lon)
 {
 	Net::HTTPClient *cli;
 	UTF8Char url[512];
@@ -176,9 +176,9 @@ UOSInt Map::GoogleMap::GoogleStaticMap::GetMap(UInt8 *buff, Double lat, Double l
 	sptr = Text::StrConcatC(sptr, UTF8STRC("&zoom="));
 	sptr = Text::StrUInt32(sptr, Map::GoogleMap::GoogleStaticMap::Scale2Level(scale));
 	sptr = Text::StrConcatC(sptr, UTF8STRC("&size="));
-	sptr = Text::StrUInt32(sptr, width);
+	sptr = Text::StrUOSInt(sptr, imgSize.x);
 	sptr = Text::StrConcatC(sptr, UTF8STRC("x"));
-	sptr = Text::StrUInt32(sptr, height);
+	sptr = Text::StrUOSInt(sptr, imgSize.y);
 	if (marker_lat != 0 || marker_lon != 0)
 	{
 		sptr = Text::StrConcatC(sptr, UTF8STRC("&markers="));

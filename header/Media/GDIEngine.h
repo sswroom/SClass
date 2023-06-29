@@ -27,8 +27,8 @@ namespace Media
 		GDIEngine();
 		virtual ~GDIEngine();
 
-		virtual DrawImage *CreateImage32(UOSInt width, UOSInt height, Media::AlphaType atype);
-		GDIImage *CreateImage24(UOSInt width, UOSInt height);
+		virtual DrawImage *CreateImage32(Math::Size2D<UOSInt> size, Media::AlphaType atype);
+		GDIImage *CreateImage24(Math::Size2D<UOSInt> size);
 		DrawImage *CreateImageScn(void *hdc, OSInt left, OSInt top, OSInt right, OSInt bottom);
 		virtual DrawImage *LoadImage(Text::CString fileName);
 		virtual DrawImage *LoadImageStream(IO::SeekableStream *stm);
@@ -96,8 +96,7 @@ namespace Media
 	{
 	private:
 		GDIEngine *eng;
-		UOSInt width;
-		UOSInt height;
+		Math::Size2D<UOSInt> size;
 		UInt32 bitCount;
 		Media::DrawEngine::DrawPos strAlign;
 
@@ -105,18 +104,18 @@ namespace Media
 		DrawFont *currFont;
 		DrawPen *currPen;
 
-		OSInt left;
-		OSInt top;
+		Math::Coord2D<OSInt> tl;
 	public:
 		void *hBmp;
 		void *bmpBits;
 		void *hdcBmp;
 
-		GDIImage(GDIEngine *eng, OSInt left, OSInt top, UOSInt width, UOSInt height, UInt32 bitCount, void *hBmp, void *bmpBits, void *hdcBmp, Media::AlphaType atype);
+		GDIImage(GDIEngine *eng, Math::Coord2D<OSInt> tl, Math::Size2D<UOSInt> size, UInt32 bitCount, void *hBmp, void *bmpBits, void *hdcBmp, Media::AlphaType atype);
 		virtual ~GDIImage();
 
 		virtual UOSInt GetWidth() const;
 		virtual UOSInt GetHeight() const;
+		virtual Math::Size2D<UOSInt> GetSize() const;
 		virtual UInt32 GetBitCount() const;
 		virtual ColorProfile *GetColorProfile() const;
 		virtual void SetColorProfile(const ColorProfile *color);
@@ -139,23 +138,23 @@ namespace Media
 		virtual Bool DrawPolyline(const Math::Coord2DDbl *points, UOSInt nPoints, DrawPen *p);
 		virtual Bool DrawPolygon(const Math::Coord2DDbl *points, UOSInt nPoints, DrawPen *p, DrawBrush *b);
 		virtual Bool DrawPolyPolygon(const Math::Coord2DDbl *points, const UInt32 *pointCnt, UOSInt nPointCnt, DrawPen *p, DrawBrush *b);
-		virtual Bool DrawRect(Double x, Double y, Double w, Double h, DrawPen *p, DrawBrush *b);
-		virtual Bool DrawEllipse(Double tlx, Double tly, Double w, Double h, DrawPen *p, DrawBrush *b);
-		virtual Bool DrawString(Double tlx, Double tly, Text::String *str, DrawFont *f, DrawBrush *b);
-		virtual Bool DrawString(Double tlx, Double tly, Text::CString str, DrawFont *f, DrawBrush *b);
-		Bool DrawStringW(Double tlx, Double tly, const WChar *str, DrawFont *f, DrawBrush *p);
-		virtual Bool DrawStringRot(Double centX, Double centY, Text::String *str, DrawFont *f, DrawBrush *p, Double angleDegree);
-		virtual Bool DrawStringRot(Double centX, Double centY, Text::CString str, DrawFont *f, DrawBrush *p, Double angleDegree);
-		Bool DrawStringRotW(Double centX, Double centY, const WChar *str, DrawFont *f, DrawBrush *p, Double angleDegree);
-		virtual Bool DrawStringB(Double tlx, Double tly, Text::String *str, DrawFont *f, DrawBrush *p, UOSInt buffSize);
-		virtual Bool DrawStringB(Double tlx, Double tly, Text::CString str, DrawFont *f, DrawBrush *p, UOSInt buffSize);
-		Bool DrawStringBW(Double tlx, Double tly, const WChar *str, DrawFont *f, DrawBrush *p, UOSInt buffSize);
-		virtual Bool DrawStringRotB(Double centX, Double centY, Text::String *str, DrawFont *f, DrawBrush *p, Double angleDegree, UOSInt buffSize);
-		virtual Bool DrawStringRotB(Double centX, Double centY, Text::CString str, DrawFont *f, DrawBrush *p, Double angleDegree, UOSInt buffSize);
-		Bool DrawStringRotBW(Double centX, Double centY, const WChar *str, DrawFont *f, DrawBrush *p, Double angleDegree, UOSInt buffSize);
-		virtual Bool DrawImagePt(DrawImage *img, Double tlx, Double tly);
-		virtual Bool DrawImagePt2(Media::StaticImage *img, Double tlx, Double tly);
-		virtual Bool DrawImagePt3(DrawImage *img, Double destX, Double destY, Double srcX, Double srcY, Double srcW, Double srcH);
+		virtual Bool DrawRect(Math::Coord2DDbl tl, Math::Size2DDbl size, DrawPen *p, DrawBrush *b);
+		virtual Bool DrawEllipse(Math::Coord2DDbl tl, Math::Size2DDbl size, DrawPen *p, DrawBrush *b);
+		virtual Bool DrawString(Math::Coord2DDbl tl, Text::String *str, DrawFont *f, DrawBrush *b);
+		virtual Bool DrawString(Math::Coord2DDbl tl, Text::CString str, DrawFont *f, DrawBrush *b);
+		Bool DrawStringW(Math::Coord2DDbl tl, const WChar *str, DrawFont *f, DrawBrush *p);
+		virtual Bool DrawStringRot(Math::Coord2DDbl center, Text::String *str, DrawFont *f, DrawBrush *p, Double angleDegree);
+		virtual Bool DrawStringRot(Math::Coord2DDbl center, Text::CString str, DrawFont *f, DrawBrush *p, Double angleDegree);
+		Bool DrawStringRotW(Math::Coord2DDbl center, const WChar *str, DrawFont *f, DrawBrush *p, Double angleDegree);
+		virtual Bool DrawStringB(Math::Coord2DDbl tl, Text::String *str, DrawFont *f, DrawBrush *p, UOSInt buffSize);
+		virtual Bool DrawStringB(Math::Coord2DDbl tl, Text::CString str, DrawFont *f, DrawBrush *p, UOSInt buffSize);
+		Bool DrawStringBW(Math::Coord2DDbl tl, const WChar *str, DrawFont *f, DrawBrush *p, UOSInt buffSize);
+		virtual Bool DrawStringRotB(Math::Coord2DDbl center, Text::String *str, DrawFont *f, DrawBrush *p, Double angleDegree, UOSInt buffSize);
+		virtual Bool DrawStringRotB(Math::Coord2DDbl center, Text::CString str, DrawFont *f, DrawBrush *p, Double angleDegree, UOSInt buffSize);
+		Bool DrawStringRotBW(Math::Coord2DDbl center, const WChar *str, DrawFont *f, DrawBrush *p, Double angleDegree, UOSInt buffSize);
+		virtual Bool DrawImagePt(DrawImage *img, Math::Coord2DDbl tl);
+		virtual Bool DrawImagePt2(Media::StaticImage *img, Math::Coord2DDbl tl);
+		virtual Bool DrawImagePt3(DrawImage *img, Math::Coord2DDbl destTL, Math::Coord2DDbl srcTL, Math::Size2DDbl srcSize);
 		Bool DrawImageRect(DrawImage *img, OSInt tlx, OSInt tly, OSInt brx, OSInt bry);
 
 		virtual DrawPen *NewPenARGB(UInt32 color, Double thick, UInt8 *pattern, UOSInt nPattern);
@@ -169,8 +168,8 @@ namespace Media
 		virtual void DelBrush(DrawBrush *b);
 		virtual void DelFont(DrawFont *f);
 
-		virtual Math::Size2D<Double> GetTextSize(DrawFont *fnt, Text::CString txt);
-		Math::Size2D<Double> GetTextSize(DrawFont *fnt, const WChar *txt, OSInt txtLen);
+		virtual Math::Size2DDbl GetTextSize(DrawFont *fnt, Text::CString txt);
+		Math::Size2DDbl GetTextSize(DrawFont *fnt, const WChar *txt, OSInt txtLen);
 		virtual void SetTextAlign(DrawEngine::DrawPos pos);
 		virtual void GetStringBound(Int32 *pos, OSInt centX, OSInt centY, const UTF8Char *str, DrawFont *f, OSInt *drawX, OSInt *drawY);
 		void GetStringBoundW(Int32 *pos, OSInt centX, OSInt centY, const WChar *str, DrawFont *f, OSInt *drawX, OSInt *drawY);

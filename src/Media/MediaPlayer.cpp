@@ -103,8 +103,8 @@ void __stdcall Media::MediaPlayer::OnAudioEnd(void *userObj)
 void __stdcall Media::MediaPlayer::VideoCropImage(void *userObj, UInt32 frameTime, UInt32 frameNum, Media::StaticImage *img)
 {
 	Media::MediaPlayer *me = (Media::MediaPlayer*)userObj;
-	UOSInt w = img->info.dispWidth;
-	UOSInt h = img->info.dispHeight;
+	UOSInt w = img->info.dispSize.x;
+	UOSInt h = img->info.dispSize.y;
 	UInt8 *yptr = img->data;
 	UOSInt ySplit;
 	UOSInt crops[4];
@@ -436,8 +436,8 @@ Bool Media::MediaPlayer::GetVideoSize(UOSInt *w, UOSInt *h)
 			this->currVStm->GetVideoInfo(&info, &tmpV, &tmpV, &vw);
 		}
 		this->currVStm->GetBorderCrop(&cropLeft, &cropTop, &cropRight, &cropBottom);
-		vw = info.dispWidth - cropLeft - cropRight;
-		vh = info.dispHeight - cropTop - cropBottom;
+		vw = info.dispSize.x - cropLeft - cropRight;
+		vh = info.dispSize.y - cropTop - cropBottom;
 		if (info.ftype == Media::FT_FIELD_BF || info.ftype == Media::FT_FIELD_TF)
 		{
 			vh = vh << 1;

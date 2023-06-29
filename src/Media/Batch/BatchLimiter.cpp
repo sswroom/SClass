@@ -31,7 +31,7 @@ void Media::Batch::BatchLimiter::ImageOutput(Media::ImageList *imgList, const UT
 		newImg = (Media::StaticImage*)imgList->GetImage(j, 0);
 		if (newImg->info.fourcc == *(UInt32*)"LRGB")
 		{
-			LRGBLimiter_LimitImageLRGB(newImg->data, newImg->info.storeWidth, newImg->info.storeHeight);
+			LRGBLimiter_LimitImageLRGB(newImg->data, newImg->info.storeSize.x, newImg->info.storeSize.y);
 		}
 		j++;
 	}

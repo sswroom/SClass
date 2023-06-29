@@ -247,7 +247,7 @@ UInt32 __stdcall Media::DDrawRendererLR::FrameProcesser(void *obj)
 			while (me->frameProcStart != me->frameProcEnd)
 			{
 				me->frameProcMut->Lock();
-				me->csconv->ConvertV2(&me->frameSources[me->frameProcStart].frameData, me->frameRGBBuff, me->info.dispWidth, me->info.dispHeight, me->info.storeWidth * (me->info.storeBPP >> 3), me->info.storeWidth << 3);
+				me->csconv->ConvertV2(&me->frameSources[me->frameProcStart].frameData, me->frameRGBBuff, me->info.dispSize.x, me->info.dispSize.y, me->info.storeSize.x * (me->info.storeBPP >> 3), me->info.storeSize.x << 3);
 
 				if (!me->firstFrame)
 				{
@@ -286,42 +286,42 @@ UInt32 __stdcall Media::DDrawRendererLR::FrameProcesser(void *obj)
 							destPtr = (UInt8*)ddsd.lpSurface;
 							if (me->frameSources[me->frameProcStart].ftype == Media::FT_NON_INTERLACE)
 							{
-								srcW = me->info.dispWidth;
-								srcH = me->info.dispHeight;
+								srcW = me->info.dispSize.x;
+								srcH = me->info.dispSize.y;
 								srcPtr = me->frameRGBBuff;
 							}
 							else if (me->frameSources[me->frameProcStart].ftype == Media::FT_FIELD_TF)
 							{
-								srcW = me->info.dispWidth;
-								srcH = me->info.dispHeight << 1;
+								srcW = me->info.dispSize.x;
+								srcH = me->info.dispSize.y << 1;
 								srcPtr = me->frameDIBuff;
-								me->deinterlace->Deinterlace(me->frameRGBBuff, me->frameDIBuff, 0, me->info.dispWidth, me->info.storeWidth << 3);
+								me->deinterlace->Deinterlace(me->frameRGBBuff, me->frameDIBuff, 0, me->info.dispSize.x, me->info.storeSize.x << 3);
 							}
 							else if (me->frameSources[me->frameProcStart].ftype == Media::FT_FIELD_BF)
 							{
-								srcW = me->info.dispWidth;
-								srcH = me->info.dispHeight << 1;
+								srcW = me->info.dispSize.x;
+								srcH = me->info.dispSize.y << 1;
 								srcPtr = me->frameDIBuff;
-								me->deinterlace->Deinterlace(me->frameRGBBuff, me->frameDIBuff, 1, me->info.dispWidth, me->info.storeWidth << 3);
+								me->deinterlace->Deinterlace(me->frameRGBBuff, me->frameDIBuff, 1, me->info.dispSize.x, me->info.storeSize.x << 3);
 							}
 							else if (me->frameSources[me->frameProcStart].ftype == Media::FT_INTERLACED_TFF)
 							{
-								srcW = me->info.dispWidth;
-								srcH = me->info.dispHeight;
+								srcW = me->info.dispSize.x;
+								srcH = me->info.dispSize.y;
 								srcPtr = me->frameDIBuff;
-								me->deinterlace->Deinterlace(me->frameRGBBuff, me->frameDIBuff, 0, me->info.dispWidth, me->info.storeWidth << 3);
+								me->deinterlace->Deinterlace(me->frameRGBBuff, me->frameDIBuff, 0, me->info.dispSize.x, me->info.storeSize.x << 3);
 							}
 							else if (me->frameSources[me->frameProcStart].ftype == Media::FT_INTERLACED_BFF)
 							{
-								srcW = me->info.dispWidth;
-								srcH = me->info.dispHeight;
+								srcW = me->info.dispSize.x;
+								srcH = me->info.dispSize.y;
 								srcPtr = me->frameDIBuff;
-								me->deinterlace->Deinterlace(me->frameRGBBuff + (me->info.storeWidth << 3), me->frameDIBuff, 1, me->info.dispWidth, me->info.storeWidth << 3);
+								me->deinterlace->Deinterlace(me->frameRGBBuff + (me->info.storeSize.x << 3), me->frameDIBuff, 1, me->info.dispSize.x, me->info.storeSize.x << 3);
 							}
 							else
 							{
-								srcW = me->info.dispWidth;
-								srcH = me->info.dispHeight;
+								srcW = me->info.dispSize.x;
+								srcH = me->info.dispSize.y;
 								srcPtr = me->frameRGBBuff;
 							}
 
@@ -338,7 +338,7 @@ UInt32 __stdcall Media::DDrawRendererLR::FrameProcesser(void *obj)
 								destPtr = destPtr + ((outW - destW) >> 1) * 4;
 							}
 
-							me->resizer->Resize(srcPtr, me->info.storeWidth << 3, me->info.dispWidth, me->info.dispHeight, 0, 0, destPtr, ddsd.lPitch, destW, destH);
+							me->resizer->Resize(srcPtr, me->info.storeSize.x << 3, me->info.dispSize.x, me->info.dispSize.y, 0, 0, destPtr, ddsd.lPitch, destW, destH);
 							surface->Unlock(0);
 
 							me->PutNextSurface(i);
@@ -352,17 +352,17 @@ UInt32 __stdcall Media::DDrawRendererLR::FrameProcesser(void *obj)
 								{
 									if (me->frameSources[me->frameProcStart].ftype == Media::FT_INTERLACED_TFF)
 									{
-										srcW = me->info.dispWidth;
-										srcH = me->info.dispHeight;
+										srcW = me->info.dispSize.x;
+										srcH = me->info.dispSize.y;
 										srcPtr = me->frameDIBuff;
-										me->deinterlace->Deinterlace(me->frameRGBBuff + (me->info.storeWidth << 3), me->frameDIBuff, 1, me->info.dispWidth, me->info.storeWidth << 3);
+										me->deinterlace->Deinterlace(me->frameRGBBuff + (me->info.storeSize.x << 3), me->frameDIBuff, 1, me->info.dispSize.x, me->info.storeSize.x << 3);
 									}
 									else if (me->frameSources[me->frameProcStart].ftype == Media::FT_INTERLACED_BFF)
 									{
-										srcW = me->info.dispWidth;
-										srcH = me->info.dispHeight;
+										srcW = me->info.dispSize.x;
+										srcH = me->info.dispSize.y;
 										srcPtr = me->frameDIBuff;
-										me->deinterlace->Deinterlace(me->frameRGBBuff, me->frameDIBuff, 0, me->info.dispWidth, me->info.storeWidth << 3);
+										me->deinterlace->Deinterlace(me->frameRGBBuff, me->frameDIBuff, 0, me->info.dispSize.x, me->info.storeSize.x << 3);
 									}
 
 									me->surfaceBuffMut->Lock();
@@ -386,7 +386,7 @@ UInt32 __stdcall Media::DDrawRendererLR::FrameProcesser(void *obj)
 												destPtr = destPtr + ((outW - destW) >> 1) * 4;
 											}
 
-											me->resizer->Resize(srcPtr, me->info.storeWidth << 3, me->info.dispWidth, me->info.dispHeight, 0, 0, destPtr, ddsd.lPitch, destW, destH);
+											me->resizer->Resize(srcPtr, me->info.storeSize.x << 3, me->info.dispSize.x, me->info.dispSize.y, 0, 0, destPtr, ddsd.lPitch, destW, destH);
 											surface->Unlock(0);
 
 											me->PutNextSurface(i);
@@ -584,20 +584,20 @@ void Media::DDrawRendererLR::ChangeFrameFormat(Media::FrameInfo *info)
 	}
 	else
 	{
-		this->frameSrcSize = this->csconv->GetSrcFrameSize(info->dispWidth, info->dispHeight);
+		this->frameSrcSize = this->csconv->GetSrcFrameSize(info->dispSize.x, info->dispHeight);
 		this->CreateFrameSrcBuff();
-		this->frameRGBSize = this->csconv->GetDestFrameSize(info->dispWidth, info->dispHeight);
+		this->frameRGBSize = this->csconv->GetDestFrameSize(info->dispSize.x, info->dispHeight);
 		this->frameRGBBuff = MemAlloc(UInt8, frameRGBSize);
 	}
 	if (info->ftype == Media::FT_FIELD_TF || info->ftype == Media::FT_FIELD_BF)
 	{
 		this->frameDIBuff = MemAlloc(UInt8, frameRGBSize << 1);
-		this->deinterlace->Reinit(this->info.dispHeight, this->info.storeWidth << 3);
+		this->deinterlace->Reinit(this->info.dispSize.y, this->info.storeSize.x << 3);
 	}
 	else
 	{
 		this->frameDIBuff = MemAlloc(UInt8, frameRGBSize);
-		this->deinterlace->Reinit(this->info.dispHeight >> 1, this->info.storeWidth << 4);
+		this->deinterlace->Reinit(this->info.dispSize.y >> 1, this->info.storeSize.x << 4);
 	}
 }
 

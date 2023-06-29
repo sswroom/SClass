@@ -22,13 +22,13 @@ namespace Map
 		void UpdateVals();
 
 	public:
-		LeveledMapView(Bool projected, Math::Size2D<Double> scnSize, Math::Coord2DDbl center, Data::ArrayListDbl *scales);
+		LeveledMapView(Bool projected, Math::Size2DDbl scnSize, Math::Coord2DDbl center, Data::ArrayListDbl *scales);
 		virtual ~LeveledMapView();
 
-		virtual void ChangeViewXY(Math::Size2D<Double> scnSize, Math::Coord2DDbl centMap, Double scale);
+		virtual void ChangeViewXY(Math::Size2DDbl scnSize, Math::Coord2DDbl centMap, Double scale);
 		virtual void SetCenterXY(Math::Coord2DDbl mapPos);
 		virtual void SetMapScale(Double scale);
-		virtual void UpdateSize(Math::Size2D<Double> scnSize);
+		virtual void UpdateSize(Math::Size2DDbl scnSize);
 		virtual void SetDPI(Double hdpi, Double ddpi);
 
 		virtual Math::Quadrilateral GetBounds() const;

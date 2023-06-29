@@ -18,7 +18,7 @@ Text::CString Media::ImageGen::RingsImageGen::GetName()
 	return CSTR("Rings Image");
 }
 
-Media::Image *Media::ImageGen::RingsImageGen::GenerateImage(Media::ColorProfile *colorProfile, UOSInt width, UOSInt height)
+Media::Image *Media::ImageGen::RingsImageGen::GenerateImage(Media::ColorProfile *colorProfile, Math::Size2D<UOSInt> size)
 {
 	Media::StaticImage *outImage;
 	Int64 *imgPtr;
@@ -29,27 +29,27 @@ Media::Image *Media::ImageGen::RingsImageGen::GenerateImage(Media::ColorProfile 
 	Double v;
 	Double dx;
 	Double dy;
-	Double dwidth = UOSInt2Double(width);
-	Double dheight = UOSInt2Double(height);
+	Double dwidth = UOSInt2Double(size.x);
+	Double dheight = UOSInt2Double(size.y);
 	Double d = dwidth;
 	if (dheight > d)
 	{
 		d = dheight;
 	}
-	if (width < 8 || height < 4)
+	if (size.x < 8 || size.x < 4)
 		return 0;
 	Media::CS::TransferFunc *rfunc = Media::CS::TransferFunc::CreateFunc(colorProfile->GetRTranParam());
 	Media::CS::TransferFunc *gfunc = Media::CS::TransferFunc::CreateFunc(colorProfile->GetGTranParam());
 	Media::CS::TransferFunc *bfunc = Media::CS::TransferFunc::CreateFunc(colorProfile->GetBTranParam());
-	NEW_CLASS(outImage, Media::StaticImage(width, height, 0, 64, Media::PF_LE_B16G16R16A16, 0, colorProfile, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+	NEW_CLASS(outImage, Media::StaticImage(size, 0, 64, Media::PF_LE_B16G16R16A16, 0, colorProfile, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 
 	imgPtr2 = outImage->data;
 	j = 0;
-	while (j < height)
+	while (j < size.y)
 	{
 		imgPtr = (Int64*)imgPtr2;
 		i = 0;
-		while (i < width)
+		while (i < size.x)
 		{
 			dx = (dwidth * 0.5) - UOSInt2Double(i) - 0.5;
 			dy = (dheight * 0.5) - UOSInt2Double(j) - 0.5;

@@ -36,7 +36,7 @@ namespace Media
 		virtual MonitorHandle *GetMonitorHandle(UOSInt monIndex);
 		virtual UOSInt GetMonitorCount();
 
-		virtual MonitorSurface *CreateSurface(UOSInt width, UOSInt height, UOSInt bitDepth);
+		virtual MonitorSurface *CreateSurface(Math::Size2D<UOSInt> size, UOSInt bitDepth);
 		virtual MonitorSurface *CreatePrimarySurface(MonitorHandle *hMon, ControlHandle *clipWindow, Media::RotateType rotateType);
 		virtual Bool CreatePrimarySurfaceWithBuffer(MonitorHandle *hMon, MonitorSurface **primarySurface, MonitorSurface **bufferSurface, Media::RotateType rotateType);
 	};

@@ -28,8 +28,8 @@ namespace Media
 		UInt8 *pal;
 		
 	public:
-		Image(UOSInt dispWidth, UOSInt dispHeight);
-		Image(UOSInt dispWidth, UOSInt dispHeight, UOSInt storeWidth, UOSInt storeHeight, UInt32 fourcc, UInt32 bpp, Media::PixelFormat pf, UOSInt maxSize, const Media::ColorProfile *color, Media::ColorProfile::YUVType yuvType, Media::AlphaType atype, Media::YCOffset ycOfst);
+		Image(Math::Size2D<UOSInt> dispSize);
+		Image(Math::Size2D<UOSInt> dispSize, Math::Size2D<UOSInt> storeSize, UInt32 fourcc, UInt32 bpp, Media::PixelFormat pf, UOSInt maxSize, const Media::ColorProfile *color, Media::ColorProfile::YUVType yuvType, Media::AlphaType atype, Media::YCOffset ycOfst);
 		virtual ~Image();
 
 		virtual Media::Image *Clone() const = 0;
@@ -48,7 +48,7 @@ namespace Media
 		Media::EXIFData *SetEXIFData(Media::EXIFData *exif);
 		void ToString(Text::StringBuilderUTF8 *sb) const;
 
-		Bool IsDispSize(UOSInt dispWidth, UOSInt dispHeight);
+		Bool IsDispSize(Math::Size2D<UOSInt> dispSize);
 		static Text::CString AlphaTypeGetName(AlphaType atype);
 	};
 }

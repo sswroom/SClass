@@ -71,7 +71,7 @@ Media::StaticImage *Map::MapPOI::CreateParkingPOI()
 {
 	Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
 	Media::StaticImage *retImg;
-	NEW_CLASS(retImg, Media::StaticImage(16, 16, 0, 32, Media::PF_R8G8B8A8, 1024, &color, Media::ColorProfile::YUVT_BT601, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+	NEW_CLASS(retImg, Media::StaticImage(Math::Size2D<UOSInt>(16, 16), 0, 32, Media::PF_R8G8B8A8, 1024, &color, Media::ColorProfile::YUVT_BT601, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 	MemCopyNO(retImg->data, MapPOI_Parking, 1024);
 	return retImg;
 }

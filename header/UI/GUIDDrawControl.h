@@ -43,8 +43,7 @@ namespace UI
 	protected:
 		Media::MonitorSurfaceMgr* surfaceMgr;
 		Sync::Mutex surfaceMut;
-		UOSInt surfaceW;
-		UOSInt surfaceH;
+		Math::Size2D<UOSInt> surfaceSize;
 		UInt32 bitDepth;
 		OSInt scnX;
 		OSInt scnY;
@@ -86,7 +85,7 @@ namespace UI
 
 		void SetUserFSMode(ScreenMode fullScnMode);
 		void DrawToScreen();
-		void DisplayFromSurface(Media::MonitorSurface *surface, OSInt tlx, OSInt tly, UOSInt drawW, UOSInt drawH, Bool clearScn);
+		void DisplayFromSurface(Media::MonitorSurface *surface, Math::Coord2D<OSInt> tl, Math::Size2D<UOSInt> drawSize, Bool clearScn);
 		void SwitchFullScreen(Bool fullScn, Bool vfs);
 		Bool IsFullScreen();
 		virtual void ChangeMonitor(MonitorHandle *hMon);
@@ -94,14 +93,14 @@ namespace UI
 		Bool IsSurfaceReady();
 	public:
 		virtual void OnSurfaceCreated() = 0;
-		virtual void OnMouseWheel(OSInt x, OSInt y, Int32 amount);
-		virtual void OnMouseMove(OSInt x, OSInt y);
-		virtual void OnMouseDown(OSInt x, OSInt y, MouseButton button);
-		virtual void OnMouseUp(OSInt x, OSInt y, MouseButton button);
-		virtual void OnMouseDblClick(OSInt x, OSInt y, MouseButton button);
-		virtual void OnGZoomBegin(OSInt x, OSInt y, UInt64 dist);
-		virtual void OnGZoomStep(OSInt x, OSInt y, UInt64 dist);
-		virtual void OnGZoomEnd(OSInt x, OSInt y, UInt64 dist);
+		virtual void OnMouseWheel(Math::Coord2D<OSInt> pos, Int32 amount);
+		virtual void OnMouseMove(Math::Coord2D<OSInt> pos);
+		virtual void OnMouseDown(Math::Coord2D<OSInt> pos, MouseButton button);
+		virtual void OnMouseUp(Math::Coord2D<OSInt> pos, MouseButton button);
+		virtual void OnMouseDblClick(Math::Coord2D<OSInt> pos, MouseButton button);
+		virtual void OnGZoomBegin(Math::Coord2D<OSInt> pos, UInt64 dist);
+		virtual void OnGZoomStep(Math::Coord2D<OSInt> pos, UInt64 dist);
+		virtual void OnGZoomEnd(Math::Coord2D<OSInt> pos, UInt64 dist);
 		virtual void OnJSButtonDown(OSInt buttonId);
 		virtual void OnJSButtonUp(OSInt buttonId);
 		virtual void OnJSAxis(OSInt axis1, OSInt axis2, OSInt axis3, OSInt axis4);

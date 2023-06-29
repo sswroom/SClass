@@ -95,7 +95,7 @@ namespace Map
 		virtual void SetCurrTimeTS(Int64 timeStamp);
 		virtual Int64 GetTimeStartTS();
 		virtual Int64 GetTimeEndTS();
-		virtual Map::MapView *CreateMapView(Math::Size2D<Double> scnSize);
+		virtual Map::MapView *CreateMapView(Math::Size2DDbl scnSize);
 
 		virtual DrawLayerType GetLayerType() = 0;
 		virtual void SetMixedData(MixedData MixedData);
@@ -111,7 +111,7 @@ namespace Map
 		virtual Bool GetColumnDef(UOSInt colIndex, DB::ColDef *colDef) = 0;
 		virtual UInt32 GetCodePage() = 0;
 		virtual Bool GetBounds(Math::RectAreaDbl *rect) = 0;
-		virtual void SetDispSize(Math::Size2D<Double> size, Double dpi);
+		virtual void SetDispSize(Math::Size2DDbl size, Double dpi);
 
 		virtual GetObjectSess *BeginGetObject() = 0;
 		virtual void EndGetObject(GetObjectSess *session) = 0;

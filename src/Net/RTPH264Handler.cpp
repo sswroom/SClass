@@ -23,10 +23,8 @@ Net::RTPH264Handler::RTPH264Handler(Int32 payloadType)
 	this->firstFrame = false;
 
 	this->frameInfo.fourcc = *(UInt32*)"H264";
-	this->frameInfo.dispWidth = 0;
-	this->frameInfo.dispHeight = 0;
-	this->frameInfo.storeWidth = 0;
-	this->frameInfo.storeHeight = 0;
+	this->frameInfo.dispSize = Math::Size2D<UOSInt>(0, 0);
+	this->frameInfo.storeSize = Math::Size2D<UOSInt>(0, 0);
 	this->frameInfo.storeBPP = 0;
 	this->frameInfo.pf = Media::PF_UNKNOWN;
 	this->frameInfo.byteSize = 0;
@@ -330,7 +328,7 @@ Text::CString Net::RTPH264Handler::GetFilterName()
 
 Bool Net::RTPH264Handler::GetVideoInfo(Media::FrameInfo *info, UInt32 *frameRateNorm, UInt32 *frameRateDenorm, UOSInt *maxFrameSize)
 {
-	if (this->frameInfo.dispWidth == 0 || this->frameInfo.dispHeight == 0)
+	if (this->frameInfo.dispSize.x == 0 || this->frameInfo.dispSize.y == 0)
 		return false;
 	info->Set(&this->frameInfo);
 	*frameRateNorm = 30;

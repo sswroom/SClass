@@ -27,8 +27,7 @@ namespace Media
 		{
 		private:
 			Int32 initRes;
-			UOSInt preferWidth;
-			UOSInt preferHeight;
+			Math::Size2D<UOSInt> preferSize;
 			UInt32 preferRate;
 			UInt32 preferFCC;
 			UInt32 preferBPP;
@@ -50,8 +49,7 @@ namespace Media
 				this->cb = 0;
 				this->fcCb = 0;
 				this->ud = 0;
-				this->preferWidth = 0;
-				this->preferHeight = 0;
+				this->preferSize = Math::Size2D<UOSInt>(0, 0);
 				this->preferRate = 0;
 				this->preferFCC = (UInt32)-1;
 				this->preferBPP = 0;
@@ -85,15 +83,15 @@ namespace Media
 				}
 				VIDEOINFOHEADER *format = (VIDEOINFOHEADER *)pmt->Format();
 
-				if (this->preferWidth)
+				if (this->preferSize.x)
 				{
-					if ((ULONG)format->bmiHeader.biWidth != this->preferWidth)
+					if ((ULONG)format->bmiHeader.biWidth != this->preferSize.x)
 						return S_FALSE;
 				}
 				this->frameWidth = (ULONG)format->bmiHeader.biWidth;
-				if (this->preferHeight)
+				if (this->preferSize.y)
 				{
-					if ((ULONG)format->bmiHeader.biHeight != this->preferHeight)
+					if ((ULONG)format->bmiHeader.biHeight != this->preferSize.y)
 						return S_FALSE;
 				}
 				this->frameHeight = (ULONG)format->bmiHeader.biHeight;
@@ -268,10 +266,9 @@ namespace Media
 				}
 			}
 
-			void SetPreferSize(UOSInt width, UOSInt height, UInt32 rate, UInt32 fcc, UInt32 bpp)
+			void SetPreferSize(Math::Size2D<UOSInt> size, UInt32 rate, UInt32 fcc, UInt32 bpp)
 			{
-				this->preferWidth = width;
-				this->preferHeight = height;
+				this->preferSize = size;
 				this->preferRate = rate;
 				this->preferFCC = fcc;
 				this->preferBPP = bpp;

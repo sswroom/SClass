@@ -75,8 +75,7 @@ void Media::Batch::BatchResizer::ImageOutput(Media::ImageList *imgList, const UT
 		Sync::MutexUsage mutUsage(&this->resizeMut);
 		if (param->sizeType == 0)
 		{
-			resizer->SetTargetWidth(param->width);
-			resizer->SetTargetHeight(param->height);
+			resizer->SetTargetSize(Math::Size2D<UOSInt>(param->width, param->height));
 		}
 
 		succ = true;
@@ -89,8 +88,8 @@ void Media::Batch::BatchResizer::ImageOutput(Media::ImageList *imgList, const UT
 			newImg = (Media::StaticImage*)imgList->GetImage(j, 0);
 			if (param->sizeType == 1)
 			{
-				resizer->SetTargetWidth((UInt32)Double2Int32(UOSInt2Double(newImg->info.dispWidth * param->width) / newImg->info.hdpi));
-				resizer->SetTargetHeight((UInt32)Double2Int32(UOSInt2Double(newImg->info.dispHeight * param->height) / newImg->info.vdpi));
+				resizer->SetTargetSize(Math::Size2D<UOSInt>((UInt32)Double2Int32(UOSInt2Double(newImg->info.dispSize.x * param->width) / newImg->info.hdpi),
+					(UInt32)Double2Int32(UOSInt2Double(newImg->info.dispSize.y * param->height) / newImg->info.vdpi)));
 				newImg = resizer->ProcessToNew(newImg);
 			}
 			else

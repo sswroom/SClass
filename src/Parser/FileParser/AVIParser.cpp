@@ -411,10 +411,8 @@ IO::ParsedObject *Parser::FileParser::AVIParser::ParseFileHdr(IO::StreamData *fd
 			{
 				BITMAPINFOHEADER *bmih = (BITMAPINFOHEADER*)strl[i].strf;
 				Media::FrameInfo info;
-				info.dispWidth = (UInt32)bmih->biWidth;
-				info.dispHeight = (UInt32)bmih->biHeight;
-				info.storeWidth = info.dispWidth;
-				info.storeHeight = info.dispHeight;
+				info.dispSize = Math::Size2D<UOSInt>((UInt32)bmih->biWidth, (UInt32)bmih->biHeight);
+				info.storeSize = info.dispSize;
 				info.fourcc = bmih->biCompression;
 				info.storeBPP = bmih->biBitCount;
 				info.pf = Media::PixelFormatGetDef(bmih->biCompression, bmih->biBitCount);

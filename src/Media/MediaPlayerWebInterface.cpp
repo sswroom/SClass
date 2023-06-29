@@ -340,14 +340,14 @@ void Media::MediaPlayerWebInterface::WebRequest(Net::WebServer::IWebRequest *req
 		sb.AppendI32(status.buffReady);
 		sb.AppendC(UTF8STRC("<br/>\r\n"));
 		sb.AppendC(UTF8STRC("Src Size: "));
-		sb.AppendUOSInt(status.srcWidth);
+		sb.AppendUOSInt(status.srcSize.x);
 		sb.AppendC(UTF8STRC(" x "));
-		sb.AppendUOSInt(status.srcHeight);
+		sb.AppendUOSInt(status.srcSize.y);
 		sb.AppendC(UTF8STRC("<br/>\r\n"));
 		sb.AppendC(UTF8STRC("Disp Size: "));
-		sb.AppendUOSInt(status.dispWidth);
+		sb.AppendUOSInt(status.dispSize.x);
 		sb.AppendC(UTF8STRC(" x "));
-		sb.AppendUOSInt(status.dispHeight);
+		sb.AppendUOSInt(status.dispSize.y);
 		sb.AppendC(UTF8STRC("<br/>\r\n"));
 		sb.AppendC(UTF8STRC("PAR: "));
 		Text::SBAppendF64(&sb, status.par);

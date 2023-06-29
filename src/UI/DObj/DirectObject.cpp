@@ -64,6 +64,10 @@ Math::Coord2D<OSInt> UI::DObj::DirectObject::GetCurrPos()
 					return this->tl + Math::Coord2D<OSInt>(Double2OSInt(diff.x), Double2OSInt(diff.y));
 				}
 			}
+			else
+			{
+				return Math::Coord2D<OSInt>(0, 0);
+			}
 		}
 	}
 }

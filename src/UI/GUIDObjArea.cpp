@@ -18,8 +18,8 @@ UInt32 __stdcall UI::GUIDObjArea::DisplayThread(void *userObj)
 				UInt8 *destBuff = me->LockSurfaceBegin(me->currDrawImg->GetWidth(), me->currDrawImg->GetHeight(), &dbpl);
 				if (destBuff)
 				{
-					UInt8 *tmpBuff = MemAlloc(UInt8, me->surfaceW * me->surfaceH << 2);
-					me->currDrawImg->CopyBits(0, 0, tmpBuff, me->surfaceW << 2, me->surfaceW, me->surfaceH, false);
+					UInt8 *tmpBuff = MemAlloc(UInt8, me->surfaceSize.CalcArea() << 2);
+					me->currDrawImg->CopyBits(0, 0, tmpBuff, me->surfaceSize.x << 2, me->surfaceSize.x, me->surfaceSize.y, false);
 //					UOSInt w = me->surfaceW;
 //					UOSInt h = me->surfaceH;
 /*#if defined(HAS_ASM32)
@@ -119,7 +119,7 @@ dtlop2:
 				UInt8 *destBuff = me->LockSurfaceBegin(me->currDrawImg->GetWidth(), me->currDrawImg->GetHeight(), &dbpl);
 				if (destBuff)
 				{
-					me->currDrawImg->CopyBits(0, 0, destBuff, dbpl, me->surfaceW, me->surfaceH, false);
+					me->currDrawImg->CopyBits(0, 0, destBuff, dbpl, me->surfaceSize.x, me->surfaceSize.y, false);
 					me->LockSurfaceEnd();
 				}
 			}
@@ -259,41 +259,41 @@ void UI::GUIDObjArea::OnSurfaceCreated()
 		this->deng->DeleteImage(this->currDrawImg);
 		this->currDrawImg = 0;
 	}
-	this->currDrawImg = this->deng->CreateImage32(this->surfaceW, this->surfaceH, Media::AT_NO_ALPHA);
+	this->currDrawImg = this->deng->CreateImage32(this->surfaceSize, Media::AT_NO_ALPHA);
 	this->drawUpdated = false;
 }
 
-void UI::GUIDObjArea::OnMouseWheel(OSInt x, OSInt y, Int32 amount)
+void UI::GUIDObjArea::OnMouseWheel(Math::Coord2D<OSInt> scnPos, Int32 amount)
 {
 }
 
-void UI::GUIDObjArea::OnMouseMove(OSInt x, OSInt y)
-{
-	Sync::MutexUsage mutUsage(&this->dobjMut);
-	if (this->dobjHdlr)
-	{
-		this->dobjHdlr->OnMouseMove(x, y);
-	}
-}
-
-void UI::GUIDObjArea::OnMouseDown(OSInt x, OSInt y, MouseButton button)
+void UI::GUIDObjArea::OnMouseMove(Math::Coord2D<OSInt> scnPos)
 {
 	Sync::MutexUsage mutUsage(&this->dobjMut);
 	if (this->dobjHdlr)
 	{
-		this->dobjHdlr->OnMouseDown(x, y, button);
+		this->dobjHdlr->OnMouseMove(scnPos);
 	}
 }
 
-void UI::GUIDObjArea::OnMouseUp(OSInt x, OSInt y, MouseButton button)
+void UI::GUIDObjArea::OnMouseDown(Math::Coord2D<OSInt> scnPos, MouseButton button)
 {
 	Sync::MutexUsage mutUsage(&this->dobjMut);
 	if (this->dobjHdlr)
 	{
-		this->dobjHdlr->OnMouseUp(x, y, button);
+		this->dobjHdlr->OnMouseDown(scnPos, button);
 	}
 }
 
-void UI::GUIDObjArea::OnMouseDblClick(OSInt x, OSInt y, MouseButton button)
+void UI::GUIDObjArea::OnMouseUp(Math::Coord2D<OSInt> scnPos, MouseButton button)
+{
+	Sync::MutexUsage mutUsage(&this->dobjMut);
+	if (this->dobjHdlr)
+	{
+		this->dobjHdlr->OnMouseUp(scnPos, button);
+	}
+}
+
+void UI::GUIDObjArea::OnMouseDblClick(Math::Coord2D<OSInt> scnPos, MouseButton button)
 {
 }

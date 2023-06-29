@@ -92,7 +92,7 @@ namespace Media
 			virtual void SetSrcRefLuminance(Double srcRefLuminance);
 
 			virtual Bool IsSupported(const Media::FrameInfo *srcInfo);
-			virtual Media::StaticImage *ProcessToNewPartial(const Media::Image *srcImage, Double srcX1, Double srcY1, Double srcX2, Double srcY2);
+			virtual Media::StaticImage *ProcessToNewPartial(const Media::Image *srcImage, Math::Coord2DDbl srcTL, Math::Coord2DDbl srcBR);
 		};
 	}
 }

@@ -13,7 +13,7 @@
 void __stdcall Media::OpenCV::OCVFrameFeeder::OnFrame(UInt32 frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, void *userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
 {
 	Media::OpenCV::OCVFrameFeeder *me = (Media::OpenCV::OCVFrameFeeder*)userData;
-	Media::OpenCV::OCVFrame *frame = Media::OpenCV::OCVFrame::CreateYFrame(imgData, dataSize, me->info.fourcc, me->info.dispWidth, me->info.dispHeight, me->info.storeWidth, me->info.storeBPP, me->info.pf);
+	Media::OpenCV::OCVFrame *frame = Media::OpenCV::OCVFrame::CreateYFrame(imgData, dataSize, me->info.fourcc, me->info.dispSize, me->info.storeSize.x, me->info.storeBPP, me->info.pf);
 	if (frame)
 	{
 		if (me->thisSkip > 0)
@@ -103,14 +103,14 @@ Bool Media::OpenCV::OCVFrameFeeder::Start()
 			j = capture->GetSupportedFormats(formats, 512);
 			while (i < j)
 			{
-				thisSize = formats[i].info.dispWidth * formats[i].info.dispHeight;
-				if (formats[i].info.fourcc == this->preferedFormat && formats[i].info.dispWidth == this->preferedWidth && formats[i].info.dispHeight == this->preferedHeight)
+				thisSize = formats[i].info.dispSize.CalcArea();
+				if (formats[i].info.fourcc == this->preferedFormat && formats[i].info.dispSize.x == this->preferedWidth && formats[i].info.dispSize.y == this->preferedHeight)
 				{
 					if (maxFmt != this->preferedFormat || maxWidth != this->preferedWidth || maxHeight != this->preferedHeight)
 					{
 						maxSize = thisSize;
-						maxWidth = formats[i].info.dispWidth;
-						maxHeight = formats[i].info.dispHeight;
+						maxWidth = formats[i].info.dispSize.x;
+						maxHeight = formats[i].info.dispSize.y;
 						maxFmt = formats[i].info.fourcc;
 						maxBpp = formats[i].info.storeBPP;
 						maxRateNumer = formats[i].frameRateNorm;
@@ -119,8 +119,8 @@ Bool Media::OpenCV::OCVFrameFeeder::Start()
 					else if (formats[i].frameRateNorm / formats[i].frameRateDenorm > maxRateNumer / maxRateDenom)
 					{
 						maxSize = thisSize;
-						maxWidth = formats[i].info.dispWidth;
-						maxHeight = formats[i].info.dispHeight;
+						maxWidth = formats[i].info.dispSize.x;
+						maxHeight = formats[i].info.dispSize.y;
 						maxFmt = formats[i].info.fourcc;
 						maxBpp = formats[i].info.storeBPP;
 						maxRateNumer = formats[i].frameRateNorm;
@@ -132,8 +132,8 @@ Bool Media::OpenCV::OCVFrameFeeder::Start()
 					if (formats[i].info.fourcc == this->preferedFormat && thisSize > maxSize)
 					{
 						maxSize = thisSize;
-						maxWidth = formats[i].info.dispWidth;
-						maxHeight = formats[i].info.dispHeight;
+						maxWidth = formats[i].info.dispSize.x;
+						maxHeight = formats[i].info.dispSize.y;
 						maxFmt = formats[i].info.fourcc;
 						maxBpp = formats[i].info.storeBPP;
 						maxRateNumer = formats[i].frameRateNorm;
@@ -142,22 +142,22 @@ Bool Media::OpenCV::OCVFrameFeeder::Start()
 				}
 				else if (maxWidth == this->preferedWidth && maxHeight == this->preferedWidth)
 				{
-					if (formats[i].info.dispWidth == this->preferedWidth && formats[i].info.dispHeight == this->preferedHeight && (formats[i].frameRateNorm / formats[i].frameRateDenorm > maxRateNumer / maxRateDenom))
+					if (formats[i].info.dispSize.x == this->preferedWidth && formats[i].info.dispSize.y == this->preferedHeight && (formats[i].frameRateNorm / formats[i].frameRateDenorm > maxRateNumer / maxRateDenom))
 					{
 						maxSize = thisSize;
-						maxWidth = formats[i].info.dispWidth;
-						maxHeight = formats[i].info.dispHeight;
+						maxWidth = formats[i].info.dispSize.x;
+						maxHeight = formats[i].info.dispSize.y;
 						maxFmt = formats[i].info.fourcc;
 						maxBpp = formats[i].info.storeBPP;
 						maxRateNumer = formats[i].frameRateNorm;
 						maxRateDenom = formats[i].frameRateDenorm;
 					}
 				}
-				else if (formats[i].info.dispWidth == this->preferedWidth && formats[i].info.dispHeight == this->preferedHeight)
+				else if (formats[i].info.dispSize.x == this->preferedWidth && formats[i].info.dispSize.y == this->preferedHeight)
 				{
 					maxSize = thisSize;
-					maxWidth = formats[i].info.dispWidth;
-					maxHeight = formats[i].info.dispHeight;
+					maxWidth = formats[i].info.dispSize.x;
+					maxHeight = formats[i].info.dispSize.y;
 					maxFmt = formats[i].info.fourcc;
 					maxBpp = formats[i].info.storeBPP;
 					maxRateNumer = formats[i].frameRateNorm;
@@ -166,8 +166,8 @@ Bool Media::OpenCV::OCVFrameFeeder::Start()
 				else if (thisSize > maxSize)
 				{
 					maxSize = thisSize;
-					maxWidth = formats[i].info.dispWidth;
-					maxHeight = formats[i].info.dispHeight;
+					maxWidth = formats[i].info.dispSize.x;
+					maxHeight = formats[i].info.dispSize.y;
 					maxFmt = formats[i].info.fourcc;
 					maxBpp = formats[i].info.storeBPP;
 					maxRateNumer = formats[i].frameRateNorm;
@@ -176,8 +176,8 @@ Bool Media::OpenCV::OCVFrameFeeder::Start()
 				else if (thisSize == maxSize && (formats[i].frameRateNorm / formats[i].frameRateDenorm > maxRateNumer / maxRateDenom))
 				{
 					maxSize = thisSize;
-					maxWidth = formats[i].info.dispWidth;
-					maxHeight = formats[i].info.dispHeight;
+					maxWidth = formats[i].info.dispSize.x;
+					maxHeight = formats[i].info.dispSize.y;
 					maxFmt = formats[i].info.fourcc;
 					maxBpp = formats[i].info.storeBPP;
 					maxRateNumer = formats[i].frameRateNorm;
@@ -192,7 +192,7 @@ Bool Media::OpenCV::OCVFrameFeeder::Start()
 				tmp[0] = maxFmt;
 				tmp[1] = 0;
 				printf("OCVFrameFeeder: %s %d %d\r\n", (Char*)tmp, (Int32)maxWidth, (Int32)maxHeight);
-				capture->SetPreferSize(maxWidth, maxHeight, maxFmt, maxBpp, maxRateNumer, maxRateDenom);
+				capture->SetPreferSize(Math::Size2D<UOSInt>(maxWidth, maxHeight), maxFmt, maxBpp, maxRateNumer, maxRateDenom);
 			}
 
 			i = 0;

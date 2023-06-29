@@ -158,18 +158,18 @@ void UI::GUIPictureBoxSimple::UpdatePreview()
 		GdkPixbuf *buf;
 		this->clsData->tmpImage = (Media::StaticImage*)this->currImage->Clone();
 		this->clsData->tmpImage->To32bpp();
-		ImageUtil_SwapRGB(this->clsData->tmpImage->data, this->clsData->tmpImage->info.storeWidth * this->clsData->tmpImage->info.storeHeight, this->clsData->tmpImage->info.storeBPP);
+		ImageUtil_SwapRGB(this->clsData->tmpImage->data, this->clsData->tmpImage->info.storeSize.x * this->clsData->tmpImage->info.storeSize.y, this->clsData->tmpImage->info.storeBPP);
 		if (this->clsData->tmpImage->info.atype == Media::AT_ALPHA)
 		{
-			buf = gdk_pixbuf_new_from_data(this->clsData->tmpImage->data, GDK_COLORSPACE_RGB, true, 8, (int)(UInt32)this->clsData->tmpImage->info.dispWidth, (int)(UInt32)this->clsData->tmpImage->info.dispHeight, (int)(UInt32)(this->clsData->tmpImage->info.storeWidth << 2), 0, 0);
+			buf = gdk_pixbuf_new_from_data(this->clsData->tmpImage->data, GDK_COLORSPACE_RGB, true, 8, (int)(UInt32)this->clsData->tmpImage->info.dispSize.x, (int)(UInt32)this->clsData->tmpImage->info.dispSize.y, (int)(UInt32)(this->clsData->tmpImage->info.storeSize.x << 2), 0, 0);
 		}
 		else if (this->currImage->info.atype == Media::AT_PREMUL_ALPHA)
 		{
-			buf = gdk_pixbuf_new_from_data(this->clsData->tmpImage->data, GDK_COLORSPACE_RGB, true, 8, (int)(UInt32)this->clsData->tmpImage->info.dispWidth, (int)(UInt32)this->clsData->tmpImage->info.dispHeight, (int)(UInt32)(this->clsData->tmpImage->info.storeWidth << 2), 0, 0);
+			buf = gdk_pixbuf_new_from_data(this->clsData->tmpImage->data, GDK_COLORSPACE_RGB, true, 8, (int)(UInt32)this->clsData->tmpImage->info.dispSize.x, (int)(UInt32)this->clsData->tmpImage->info.dispSize.y, (int)(UInt32)(this->clsData->tmpImage->info.storeSize.x << 2), 0, 0);
 		}
 		else
 		{
-			buf = gdk_pixbuf_new_from_data(this->clsData->tmpImage->data, GDK_COLORSPACE_RGB, true, 8, (int)(UInt32)this->clsData->tmpImage->info.dispWidth, (int)(UInt32)this->clsData->tmpImage->info.dispHeight, (int)(UInt32)(this->clsData->tmpImage->info.storeWidth << 2), 0, 0);
+			buf = gdk_pixbuf_new_from_data(this->clsData->tmpImage->data, GDK_COLORSPACE_RGB, true, 8, (int)(UInt32)this->clsData->tmpImage->info.dispSize.x, (int)(UInt32)this->clsData->tmpImage->info.dispSize.y, (int)(UInt32)(this->clsData->tmpImage->info.storeSize.x << 2), 0, 0);
 		}
 		this->clsData->pixbuf = buf;
 		gtk_image_set_from_pixbuf((GtkImage*)this->hwnd, buf);

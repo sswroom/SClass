@@ -320,31 +320,31 @@ void SSWR::AVIRead::AVIRChineseForm::UpdateImg()
 
 	if (this->charImg == 0)
 	{
-		this->charImg = this->deng->CreateImage32(newSize.width, newSize.height, Media::AT_NO_ALPHA);
+		this->charImg = this->deng->CreateImage32(newSize, Media::AT_NO_ALPHA);
 	}
-	else if (this->charImg->GetWidth() != newSize.width || this->charImg->GetHeight() != newSize.height)
+	else if (this->charImg->GetWidth() != newSize.x || this->charImg->GetHeight() != newSize.y)
 	{
 		this->pbChar->SetImageDImg(0);
 		this->deng->DeleteImage(this->charImg);
-		this->charImg = this->deng->CreateImage32(newSize.width, newSize.height, Media::AT_NO_ALPHA);
+		this->charImg = this->deng->CreateImage32(newSize, Media::AT_NO_ALPHA);
 	}
 	UTF8Char sbuff[7];
 	Media::DrawBrush *b;
 	Media::DrawFont *f;
 	b = this->charImg->NewBrushARGB(0xffffffff);
-	this->charImg->DrawRect(0, 0, UOSInt2Double(newSize.width), UOSInt2Double(newSize.height), 0, b);
+	this->charImg->DrawRect(Math::Coord2DDbl(0, 0), newSize.ToDouble(), 0, b);
 	this->charImg->DelBrush(b);
 	if (this->currChar != 0)
 	{
 		UOSInt len;
-		Math::Size2D<Double> sz;
+		Math::Size2DDbl sz;
 		b = this->charImg->NewBrushARGB(0xff000000);
-		f = this->charImg->NewFontPx(this->currFont->ToCString(), UOSInt2Double(newSize.height), Media::DrawEngine::DFS_NORMAL, 950);
+		f = this->charImg->NewFontPx(this->currFont->ToCString(), UOSInt2Double(newSize.y), Media::DrawEngine::DFS_NORMAL, 950);
 		len = (UOSInt)(Text::StrWriteChar(sbuff, (UTF32Char)this->currChar) - sbuff);
 		sbuff[len] = 0;
 		
 		sz = this->charImg->GetTextSize(f, {sbuff, len});
-		this->charImg->DrawString((UOSInt2Double(newSize.width) - sz.width) * 0.5, (UOSInt2Double(newSize.height) - sz.height) * 0.5, {sbuff, len}, f, b);
+		this->charImg->DrawString((newSize.ToDouble() - sz) * 0.5, {sbuff, len}, f, b);
 		this->charImg->DelFont(f);
 		this->charImg->DelBrush(b);
 	}

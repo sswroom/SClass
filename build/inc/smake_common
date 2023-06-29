@@ -2314,6 +2314,7 @@ Math/Quadrilateral.h: ../../src/Math/Quadrilateral.cpp
 Math/RectArea.h:
 Math/RectAreaDbl.h:
 Math/Size2D.h:
+Math/Size2DDbl.h:
 Math/SRESRIWKTWriter.h: ../../src/Math/SRESRIWKTWriter.cpp
 @SRESRIWKTWriter.o
 Math/SROGCWKTWriter.h: ../../src/Math/SROGCWKTWriter.cpp

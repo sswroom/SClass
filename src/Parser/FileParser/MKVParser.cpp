@@ -632,8 +632,8 @@ Bool Parser::FileParser::MKVParser::ReadVideo(MKVStatus *status, UInt64 dataSize
 				valid = false;
 			if (elementSize == 2)
 			{
-				frameInfo->storeWidth = ReadMUInt16(buff);
-				frameInfo->dispWidth = frameInfo->storeWidth;
+				frameInfo->storeSize.x = ReadMUInt16(buff);
+				frameInfo->dispSize.x = frameInfo->storeSize.x;
 			}
 			else
 			{
@@ -645,8 +645,8 @@ Bool Parser::FileParser::MKVParser::ReadVideo(MKVStatus *status, UInt64 dataSize
 				valid = false;
 			if (elementSize == 2)
 			{
-				frameInfo->storeHeight = ReadMUInt16(buff);
-				frameInfo->dispHeight = frameInfo->storeHeight;
+				frameInfo->storeSize.y = ReadMUInt16(buff);
+				frameInfo->dispSize.y = frameInfo->storeSize.y;
 			}
 			else
 			{
@@ -658,7 +658,7 @@ Bool Parser::FileParser::MKVParser::ReadVideo(MKVStatus *status, UInt64 dataSize
 				valid = false;
 			if (elementSize == 2)
 			{
-				frameInfo->dispWidth = ReadMUInt16(buff);
+				frameInfo->dispSize.x = ReadMUInt16(buff);
 			}
 			else
 			{
@@ -670,7 +670,7 @@ Bool Parser::FileParser::MKVParser::ReadVideo(MKVStatus *status, UInt64 dataSize
 				valid = false;
 			if (elementSize == 2)
 			{
-				frameInfo->dispHeight = ReadMUInt16(buff);
+				frameInfo->dispSize.y = ReadMUInt16(buff);
 			}
 			else
 			{

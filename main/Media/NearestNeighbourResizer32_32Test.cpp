@@ -39,11 +39,10 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 //	NEW_CLASS(resizer, Media::Resizer::LanczosResizerH8_8(4, 3, Media::AT_NO_ALPHA));
 
 	Manage::HiResClock clk;
-	resizer->SetTargetWidth(dWidth);
-	resizer->SetTargetHeight(dHeight);
+	resizer->SetTargetSize(Math::Size2D<UOSInt>(dWidth, dHeight));
 	resizer->SetResizeAspectRatio(Media::IImgResizer::RAR_IGNOREAR);
 
-	simg = (Media::StaticImage*)imgGen.GenerateImage(&srgb, sWidth, sHeight);
+	simg = (Media::StaticImage*)imgGen.GenerateImage(&srgb, Math::Size2D<UOSInt>(sWidth, sHeight));
 	t0 = clk.GetTimeDiff();
 	clk.Start();
 	simg->To32bpp();

@@ -398,7 +398,7 @@ Bool Media::Decoder::MP2GDecoder::GetVideoInfo(Media::FrameInfo *info, UInt32 *f
 		if (info->color->GetRTranParam()->GetTranType() == Media::CS::TRANT_VUNKNOWN)
 		{
 			Media::CS::TransferType ttype;
-			if (info->dispHeight > 576)
+			if (info->dispSize.y > 576)
 			{
 				ttype = Media::CS::TRANT_BT709;
 			}

@@ -25,10 +25,8 @@ void Media::FrameInfo::DeinitFrameInfo()
 
 void Media::FrameInfo::Clear()
 {
-	this->storeWidth = 0;
-	this->storeHeight = 0;
-	this->dispWidth = 0;
-	this->dispHeight = 0;
+	this->storeSize = Math::Size2D<UOSInt>(0, 0);
+	this->dispSize = Math::Size2D<UOSInt>(0, 0);
 	this->fourcc = 0;
 	this->storeBPP = 0;
 	this->pf  = Media::PF_UNKNOWN;
@@ -45,10 +43,8 @@ void Media::FrameInfo::Clear()
 
 void Media::FrameInfo::Set(const FrameInfo *info)
 {
-	this->storeWidth = info->storeWidth;
-	this->storeHeight = info->storeHeight;
-	this->dispWidth = info->dispWidth;
-	this->dispHeight = info->dispHeight;
+	this->storeSize = info->storeSize;
+	this->dispSize = info->dispSize;
 	this->fourcc = info->fourcc;
 	this->storeBPP = info->storeBPP;
 	this->pf  = info->pf;
@@ -77,14 +73,14 @@ void Media::FrameInfo::ToString(Text::StringBuilderUTF8 *sb) const
 	}
 	sb->AppendC(UTF8STRC("\r\n"));
 	sb->AppendC(UTF8STRC("Display Size = "));
-	sb->AppendUOSInt(this->dispWidth);
+	sb->AppendUOSInt(this->dispSize.GetWidth());
 	sb->AppendC(UTF8STRC(" x "));
-	sb->AppendUOSInt(this->dispHeight);
+	sb->AppendUOSInt(this->dispSize.GetHeight());
 	sb->AppendC(UTF8STRC("\r\n"));
 	sb->AppendC(UTF8STRC("Store Size = "));
-	sb->AppendUOSInt(this->storeWidth);
+	sb->AppendUOSInt(this->storeSize.GetWidth());
 	sb->AppendC(UTF8STRC(" x "));
-	sb->AppendUOSInt(this->storeHeight);
+	sb->AppendUOSInt(this->storeSize.GetHeight());
 	sb->AppendC(UTF8STRC("\r\n"));
 	sb->AppendC(UTF8STRC("Store BPP = "));
 	sb->AppendU32(this->storeBPP);

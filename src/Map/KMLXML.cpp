@@ -1480,11 +1480,11 @@ Map::MapDrawLayer *Map::KMLXML::ParseKMLPlacemarkLyr(Text::XMLReader *reader, Da
 					Media::Image *img = style->img->GetImage(0);
 					if (style->iconSpotX == -1 || style->iconSpotY == -1)
 					{
-						lyr->SetIconStyle(style->img, (OSInt)(img->info.dispWidth >> 1), (OSInt)(img->info.dispHeight >> 1));
+						lyr->SetIconStyle(style->img, (OSInt)(img->info.dispSize.x >> 1), (OSInt)(img->info.dispSize.y >> 1));
 					}
 					else
 					{
-						lyr->SetIconStyle(style->img, style->iconSpotX, (OSInt)img->info.dispHeight - style->iconSpotY);
+						lyr->SetIconStyle(style->img, style->iconSpotX, (OSInt)img->info.dispSize.y - style->iconSpotY);
 					}
 				}
 			}

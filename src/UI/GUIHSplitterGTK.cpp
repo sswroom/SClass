@@ -141,7 +141,7 @@ void UI::GUIHSplitter::EventMouseUp(UI::GUIControl::MouseButton btn, OSInt x, OS
 					{
 						ctrl->GetPositionP(&x, &y);
 						sz = ctrl->GetSizeP();
-						ctrl->SetAreaP(drawX, y, x + (OSInt)sz.width, y + (OSInt)sz.height, false);
+						ctrl->SetAreaP(drawX, y, x + (OSInt)sz.x, y + (OSInt)sz.y, false);
 						this->parent->UpdateChildrenSize(true);
 						break;
 					}
@@ -149,7 +149,7 @@ void UI::GUIHSplitter::EventMouseUp(UI::GUIControl::MouseButton btn, OSInt x, OS
 					{
 						ctrl->GetPositionP(&x, &y);
 						sz = ctrl->GetSizeP();
-						ctrl->SetAreaP(x, y, drawX, y + (OSInt)sz.height, false);
+						ctrl->SetAreaP(x, y, drawX, y + (OSInt)sz.y, false);
 						this->parent->UpdateChildrenSize(true);
 						break;
 					}

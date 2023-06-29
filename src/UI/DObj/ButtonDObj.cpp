@@ -148,7 +148,7 @@ void UI::DObj::ButtonDObj::DrawObject(Media::DrawImage *dimg)
 			}
 			Media::DrawImage *bmpS1 = this->bmpUnclick;
 			Media::DrawImage *bmpS2 = this->bmpClicked;
-			Media::DrawImage *bmpTmp = this->deng->CreateImage32(bmpS1->GetWidth(), bmpS1->GetHeight(), Media::AT_NO_ALPHA);
+			Media::DrawImage *bmpTmp = this->deng->CreateImage32(bmpS1->GetSize(), Media::AT_NO_ALPHA);
 			bmpTmp->SetAlphaType(bmpS1->GetAlphaType());
 #if defined(HAS_ASM32)
 			UInt8 *ptrS1 = (UInt8*)bmpS1->bmpBits;
@@ -262,27 +262,27 @@ bdolop2:
 				}
 			}
 #endif
-			dimg->DrawImagePt(bmpTmp, OSInt2Double(tl.x), OSInt2Double(tl.y));
+			dimg->DrawImagePt(bmpTmp, tl.ToDouble());
 			this->deng->DeleteImage(bmpTmp);
 		}
 		else
 		{
-			dimg->DrawImagePt(this->bmpUnclick, OSInt2Double(tl.x), OSInt2Double(tl.y));
+			dimg->DrawImagePt(this->bmpUnclick, tl.ToDouble());
 		}
 	}
 	else if (this->bmpUnclick)
 	{
-		dimg->DrawImagePt(this->bmpUnclick, OSInt2Double(tl.x), OSInt2Double(tl.y));
+		dimg->DrawImagePt(this->bmpUnclick, tl.ToDouble());
 	}
 	else if (this->bmpClicked)
 	{
-		dimg->DrawImagePt(this->bmpClicked, OSInt2Double(tl.x), OSInt2Double(tl.y));
+		dimg->DrawImagePt(this->bmpClicked, tl.ToDouble());
 	}
 }
 
-Bool UI::DObj::ButtonDObj::IsObject(OSInt x, OSInt y)
+Bool UI::DObj::ButtonDObj::IsObject(Math::Coord2D<OSInt> scnPos)
 {
-	if (x < this->dispTL.x || y < this->dispTL.y || !this->isVisible)
+	if (scnPos.x < this->dispTL.x || scnPos.y < this->dispTL.y || !this->isVisible)
 		return false;
 	Media::DrawImage *bmpChk = this->bmpUnclick;
 	if (bmpChk == 0)
@@ -291,11 +291,11 @@ Bool UI::DObj::ButtonDObj::IsObject(OSInt x, OSInt y)
 		if (bmpChk == 0)
 			return false;
 	}
-	if (this->dispTL.x + (OSInt)bmpChk->GetWidth() <= x || this->dispTL.y + (OSInt)bmpChk->GetHeight() <= y)
+	if (this->dispTL.x + (OSInt)bmpChk->GetWidth() <= scnPos.x || this->dispTL.y + (OSInt)bmpChk->GetHeight() <= scnPos.y)
 		return false;
 	if (this->rectMode)
 		return true;
-	return (bmpChk->GetPixel32(x - this->dispTL.x, y - this->dispTL.y) & 0xff000000) != 0;
+	return (bmpChk->GetPixel32(scnPos.x - this->dispTL.x, scnPos.y - this->dispTL.y) & 0xff000000) != 0;
 }
 
 /*System::Windows::Forms::Cursor ^UI::DObj::ButtonDObj::GetCursor()

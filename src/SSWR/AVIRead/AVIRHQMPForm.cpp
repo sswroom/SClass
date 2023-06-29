@@ -280,14 +280,14 @@ void __stdcall SSWR::AVIRead::AVIRHQMPForm::OnTimerTick(void *userObj)
 		sb.AppendI32(dbg.buffReady);
 		sb.AppendC(UTF8STRC("\r\n"));
 		sb.AppendC(UTF8STRC("Src Size: "));
-		sb.AppendUOSInt(dbg.srcWidth);
+		sb.AppendUOSInt(dbg.srcSize.x);
 		sb.AppendC(UTF8STRC(" x "));
-		sb.AppendUOSInt(dbg.srcHeight);
+		sb.AppendUOSInt(dbg.srcSize.y);
 		sb.AppendC(UTF8STRC("\r\n"));
 		sb.AppendC(UTF8STRC("Disp Size: "));
-		sb.AppendUOSInt(dbg.dispWidth);
+		sb.AppendUOSInt(dbg.dispSize.x);
 		sb.AppendC(UTF8STRC(" x "));
-		sb.AppendUOSInt(dbg.dispHeight);
+		sb.AppendUOSInt(dbg.dispSize.y);
 		sb.AppendC(UTF8STRC("\r\n"));
 		sb.AppendC(UTF8STRC("PAR: "));
 		Text::SBAppendF64(&sb, dbg.par);
@@ -408,7 +408,7 @@ void __stdcall SSWR::AVIRead::AVIRHQMPForm::OnVideoEnd(void *userObj)
 	me->pbEnd = true;
 }
 
-void __stdcall SSWR::AVIRead::AVIRHQMPForm::OnMouseAction(void *userObj, UI::GUIVideoBoxDD::MouseAction ma, OSInt x, OSInt y)
+void __stdcall SSWR::AVIRead::AVIRHQMPForm::OnMouseAction(void *userObj, UI::GUIVideoBoxDD::MouseAction ma, Math::Coord2D<OSInt> scnPos)
 {
 	SSWR::AVIRead::AVIRHQMPForm *me = (SSWR::AVIRead::AVIRHQMPForm*)userObj;
 	if (ma == UI::GUIVideoBoxDD::MA_START)
@@ -958,8 +958,7 @@ void SSWR::AVIRead::AVIRHQMPForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_VIDEO_ORISIZE:
 		{
-			UOSInt vw;
-			UOSInt vh;
+			Math::Size2D<UOSInt> vSize;
 			IO::DebugWriter debug;
 			Text::StringBuilderUTF8 sb;
 			Data::DateTime dt;
@@ -976,7 +975,7 @@ void SSWR::AVIRead::AVIRHQMPForm::EventMenuClicked(UInt16 cmdId)
 			sb.AppendDate(&dt);
 			sb.AppendC(UTF8STRC(" b"));
 			debug.WriteLineC(sb.ToString(), sb.GetLength());
-			if (this->player->GetVideoSize(&vw, &vh))
+			if (this->player->GetVideoSize(&vSize.x, &vSize.y))
 			{
 				Math::Size2D<UOSInt> sz1;
 				Math::Size2D<UOSInt> sz2;
@@ -1000,7 +999,7 @@ void SSWR::AVIRead::AVIRHQMPForm::EventMenuClicked(UInt16 cmdId)
 				sb.AppendC(UTF8STRC(" e"));
 				debug.WriteLineC(sb.ToString(), sb.GetLength());
 				this->SetFormState(UI::GUIForm::FS_NORMAL);
-				if (sz1.width == vw && sz1.height == vh)
+				if (sz1 == vSize)
 				{
 					dt.SetCurrTimeUTC();
 					sb.ClearStr();
@@ -1016,7 +1015,7 @@ void SSWR::AVIRead::AVIRHQMPForm::EventMenuClicked(UInt16 cmdId)
 					sb.AppendDate(&dt);
 					sb.AppendC(UTF8STRC(" g"));
 					debug.WriteLineC(sb.ToString(), sb.GetLength());
-					this->SetSizeP(sz2.width - sz1.width + vw, sz2.height - sz1.height + vh);
+					this->SetSizeP(sz2 - sz1 + vSize);
 				}
 				dt.SetCurrTimeUTC();
 				sb.ClearStr();

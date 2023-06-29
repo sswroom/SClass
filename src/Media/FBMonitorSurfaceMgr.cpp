@@ -87,10 +87,10 @@ UOSInt Media::FBMonitorSurfaceMgr::GetMonitorCount()
 	return 1;
 }
 
-Media::MonitorSurface *Media::FBMonitorSurfaceMgr::CreateSurface(UOSInt width, UOSInt height, UOSInt bitDepth)
+Media::MonitorSurface *Media::FBMonitorSurfaceMgr::CreateSurface(Math::Size2D<UOSInt> size, UOSInt bitDepth)
 {
 	Media::MemorySurface *surface;
-	NEW_CLASS(surface, Media::MemorySurface(width, height, bitDepth, this->GetMonitorColor(0), this->GetMonitorDPI(0)));
+	NEW_CLASS(surface, Media::MemorySurface(size, bitDepth, this->GetMonitorColor(0), this->GetMonitorDPI(0)));
 	return surface;
 }
 
@@ -115,7 +115,7 @@ Bool Media::FBMonitorSurfaceMgr::CreatePrimarySurfaceWithBuffer(MonitorHandle *h
 	Media::MonitorSurface *pSurface = this->CreatePrimarySurface(hMon, 0, rotateType);
 	if (pSurface)
 	{
-		Media::MonitorSurface *bSurface = this->CreateSurface(pSurface->info.dispWidth, pSurface->info.dispHeight, pSurface->info.storeBPP);
+		Media::MonitorSurface *bSurface = this->CreateSurface(pSurface->info.dispSize, pSurface->info.storeBPP);
 		if (bSurface)
 		{
 			((Media::FBSurface*)pSurface)->SetBuffSurface(bSurface);

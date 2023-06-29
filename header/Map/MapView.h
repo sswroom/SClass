@@ -1,7 +1,7 @@
 #ifndef _SM_MAP_MAPVIEW
 #define _SM_MAP_MAPVIEW
 #include "Math/Coord2D.h"
-#include "Math/Size2D.h"
+#include "Math/Size2DDbl.h"
 #include "Media/DrawEngine.h"
 
 namespace Map
@@ -9,16 +9,16 @@ namespace Map
 	class MapView
 	{
 	protected:
-		Math::Size2D<Double> scnSize;
+		Math::Size2DDbl scnSize;
 		
 	public:
-		MapView(Math::Size2D<Double> scnSize);
+		MapView(Math::Size2DDbl scnSize);
 		virtual ~MapView();
 
-		virtual void ChangeViewXY(Math::Size2D<Double> scnSize, Math::Coord2DDbl centMap, Double scale) = 0;
+		virtual void ChangeViewXY(Math::Size2DDbl scnSize, Math::Coord2DDbl centMap, Double scale) = 0;
 		virtual void SetCenterXY(Math::Coord2DDbl mapPos) = 0;
 		virtual void SetMapScale(Double scale) = 0;
-		virtual void UpdateSize(Math::Size2D<Double> scnSize) = 0;
+		virtual void UpdateSize(Math::Size2DDbl scnSize) = 0;
 		virtual void SetDPI(Double hdpi, Double ddpi) = 0;
 
 		virtual Math::Quadrilateral GetBounds() const = 0;
@@ -39,7 +39,7 @@ namespace Map
 
 		Double GetScnWidth() const;
 		Double GetScnHeight() const;
-		Math::Size2D<Double> GetScnSize() const;
+		Math::Size2DDbl GetScnSize() const;
 		void SetVAngle(Double angleRad);
 
 		void SetDestImage(Media::DrawImage *img);

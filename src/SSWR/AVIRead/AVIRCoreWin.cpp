@@ -46,7 +46,7 @@ void SSWR::AVIRead::AVIRCoreWin::OpenObject(IO::ParsedObject *pobj)
 	switch (pt)
 	{
 	case IO::ParserType::MapEnv:
-		NEW_CLASS(frm, AVIRead::AVIRGISForm(0, this->ui, this, (Map::MapEnv*)pobj, ((Map::MapEnv*)pobj)->CreateMapView(Math::Size2D<Double>(320, 240))));
+		NEW_CLASS(frm, AVIRead::AVIRGISForm(0, this->ui, this, (Map::MapEnv*)pobj, ((Map::MapEnv*)pobj)->CreateMapView(Math::Size2DDbl(320, 240))));
 		InitForm(frm);
 		break;
 	case IO::ParserType::MapLayer:
@@ -63,7 +63,7 @@ void SSWR::AVIRead::AVIRCoreWin::OpenObject(IO::ParsedObject *pobj)
 			Map::MapDrawLayer *lyr = (Map::MapDrawLayer*)pobj;
 			Map::MapEnv *env;
 			NEW_CLASS(env, Map::MapEnv(CSTR("Untitled"), 0xffc0c0ff, lyr->GetCoordinateSystem()->Clone()));
-			NEW_CLASS(frm, AVIRead::AVIRGISForm(0, this->ui, this, env, lyr->CreateMapView(Math::Size2D<Double>(320, 240))));
+			NEW_CLASS(frm, AVIRead::AVIRGISForm(0, this->ui, this, env, lyr->CreateMapView(Math::Size2DDbl(320, 240))));
 			((AVIRead::AVIRGISForm*)frm)->AddLayer(lyr);
 			InitForm(frm);
 			frm->Show();

@@ -10,7 +10,7 @@ namespace Media
 		UInt8 *buffPtr;
 
 	public:
-		MemorySurface(UOSInt width, UOSInt height, UOSInt bitPerPixel, const Media::ColorProfile *color, Double dpi);
+		MemorySurface(Math::Size2D<UOSInt> size, UOSInt bitPerPixel, const Media::ColorProfile *color, Double dpi);
 		virtual ~MemorySurface();
 
 		Bool IsError() const;
@@ -23,7 +23,7 @@ namespace Media
 		virtual void *GetHandle();
 
 		virtual Bool DrawFromBuff();
-		virtual Bool DrawFromSurface(Media::MonitorSurface *surface, OSInt destX, OSInt destY, UOSInt buffW, UOSInt buffH, Bool clearScn, Bool waitForVBlank);
+		virtual Bool DrawFromSurface(Media::MonitorSurface *surface, Math::Coord2D<OSInt> destTL, Math::Size2D<UOSInt> buffSize, Bool clearScn, Bool waitForVBlank);
 		virtual UInt8 *LockSurface(OSInt *lineAdd);
 		virtual void UnlockSurface();
 		virtual void SetSurfaceBugMode(Bool surfaceBugMode);

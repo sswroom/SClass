@@ -1505,20 +1505,19 @@ Media::StaticImage *Media::Resizer::LanczosResizer8_8::ProcessToNewPartial(Media
 	Media::StaticImage *img;
 	if (!IsSupported(&srcImage->info))
 		return 0;
-	Int32 targetWidth = this->targetWidth;
-	Int32 targetHeight = this->targetHeight;
-	if (targetWidth == 0)
+	Math::Size2D<UOSInt> targetSize = this->targetSize;
+	if (targetSize.x == 0)
 	{
-		targetWidth = srcImage->info.dispWidth;
+		targetSize.x = srcImage->info.dispSize.x;
 	}
-	if (targetHeight == 0)
+	if (targetSize.y == 0)
 	{
-		targetHeight = srcImage->info.dispHeight;
+		targetSize.y = srcImage->info.dispSize.y;
 	}
-	CalOutputSize(&srcImage->info, targetWidth, targetHeight, &destInfo, rar);
+	CalOutputSize(&srcImage->info, targetSize, &destInfo, rar);
 	NEW_CLASS(img, Media::StaticImage(&destInfo));
 	Int32 tlx = (Int32)srcX1;
 	Int32 tly = (Int32)srcY1;
-	Resize(srcImage->data + tlx * 4 + tly * srcImage->GetDataBpl(), srcImage->GetDataBpl(), srcX2 - srcX1, srcY2 - srcY1, srcX1 - tlx, srcY1 - tly, img->data, img->GetDataBpl(), destInfo.dispWidth, destInfo.dispHeight);
+	Resize(srcImage->data + tlx * 4 + tly * srcImage->GetDataBpl(), srcImage->GetDataBpl(), srcX2 - srcX1, srcY2 - srcY1, srcX1 - tlx, srcY1 - tly, img->data, img->GetDataBpl(), destInfo.dispSize.x, destInfo.dispSize.y);
 	return img;
 }

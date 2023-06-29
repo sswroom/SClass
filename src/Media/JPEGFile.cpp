@@ -189,7 +189,7 @@ Bool Media::JPEGFile::ParseJPEGHeader(IO::StreamData *fd, Media::Image *img, Med
 						UInt32 innerH = ReadUInt16(&tagBuff[blkOfst + 4]);
 						if (blkSize == innerW * innerH * 2 + 32)
 						{
-							imgList->SetThermoImage(innerW, innerH, 16, &tagBuff[blkOfst + 32], 0.95, 0, 0, Media::ImageList::TT_FLIR);
+							imgList->SetThermoImage(Math::Size2D<UOSInt>(innerW, innerH), 16, &tagBuff[blkOfst + 32], 0.95, 0, 0, Media::ImageList::TT_FLIR);
 						}
 						else if (tagBuff[blkOfst + 32] == 0x89 && tagBuff[blkOfst + 33] == 0x50 && tagBuff[blkOfst + 34] == 0x4e && tagBuff[blkOfst + 35] == 0x47)
 						{
@@ -211,13 +211,13 @@ Bool Media::JPEGFile::ParseJPEGHeader(IO::StreamData *fd, Media::Image *img, Med
 									if (stImg->info.pf == Media::PF_LE_W16)
 									{
 										UInt8 *imgPtr = stImg->data;
-										UOSInt pixelCnt = stImg->info.dispWidth * stImg->info.dispHeight;
+										UOSInt pixelCnt = stImg->info.dispSize.CalcArea();
 										while (pixelCnt-- > 0)
 										{
 											WriteInt16(imgPtr, ReadMInt16(imgPtr));
 											imgPtr += 2;
 										}
-										imgList->SetThermoImage(stImg->info.dispWidth, stImg->info.dispHeight, 16, stImg->data, 0.95, 0, 0, Media::ImageList::TT_FLIR);
+										imgList->SetThermoImage(stImg->info.dispSize, 16, stImg->data, 0.95, 0, 0, Media::ImageList::TT_FLIR);
 									}
 									imgList->AddImage(stImg, delay);
 									i++;

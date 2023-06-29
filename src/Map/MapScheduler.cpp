@@ -145,7 +145,7 @@ void Map::MapScheduler::DrawPoint(Math::Geometry::Point *pt)
 		objPtr->br.y = objPtr->tl.y + imgH;
 		if (objPtr->tl.x < scnW && objPtr->tl.y < scnH && objPtr->br.x >= 0 && objPtr->br.y >= 0)
 		{
-			this->img->DrawImagePt(this->ico, objPtr->tl.x, objPtr->tl.y);
+			this->img->DrawImagePt(this->ico, objPtr->tl);
 			objPtr += 1;
 			++*(this->objCnt);
 		}
@@ -155,7 +155,7 @@ void Map::MapScheduler::DrawPoint(Math::Geometry::Point *pt)
 		Math::Coord2DDbl pts;
 		pts = this->map->MapXYToScnXY(pt->GetCenter());
 		Double scale = this->img->GetHDPI() / 72;
-		this->img->DrawRect(pts.x - 6 * scale, pts.y - 6 * scale, 13 * scale, 13 * scale, 0, this->b);
+		this->img->DrawRect(pts - 6 * scale, Math::Size2DDbl(13 * scale, 13 * scale), 0, this->b);
 	}
 }
 

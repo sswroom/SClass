@@ -39,11 +39,11 @@ namespace UI
 
 	protected:
 		virtual void OnSurfaceCreated();
-		virtual void OnMouseWheel(OSInt x, OSInt y, Int32 amount);
-		virtual void OnMouseMove(OSInt x, OSInt y);
-		virtual void OnMouseDown(OSInt x, OSInt y, MouseButton button);
-		virtual void OnMouseUp(OSInt x, OSInt y, MouseButton button);
-		virtual void OnMouseDblClick(OSInt x, OSInt y, MouseButton button);
+		virtual void OnMouseWheel(Math::Coord2D<OSInt> pos, Int32 amount);
+		virtual void OnMouseMove(Math::Coord2D<OSInt> pos);
+		virtual void OnMouseDown(Math::Coord2D<OSInt> pos, MouseButton button);
+		virtual void OnMouseUp(Math::Coord2D<OSInt> pos, MouseButton button);
+		virtual void OnMouseDblClick(Math::Coord2D<OSInt> pos, MouseButton button);
 	};
 };
 #endif

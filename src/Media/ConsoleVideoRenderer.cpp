@@ -9,7 +9,7 @@ Media::ConsoleVideoRenderer::ConsoleVideoRenderer(Media::MonitorSurfaceMgr *surf
 		this->primarySurface = this->surfaceMgr->CreatePrimarySurface(this->surfaceMgr->GetMonitorHandle(0), 0, Media::RotateType::None);
 		if (this->primarySurface)
 		{
-			this->UpdateDispInfo(this->primarySurface->info.dispWidth, this->primarySurface->info.dispHeight, this->primarySurface->info.storeBPP, this->primarySurface->info.pf);
+			this->UpdateDispInfo(this->primarySurface->info.dispSize, this->primarySurface->info.storeBPP, this->primarySurface->info.pf);
 		}
 	}
 	else
@@ -34,14 +34,11 @@ void Media::ConsoleVideoRenderer::SetRotateType(Media::RotateType rotateType)
 	if (this->primarySurface)
 	{
 		Media::RotateType rtChange = Media::RotateTypeCalc(this->primarySurface->info.rotateType, rotateType);
-		UOSInt tmpV;
 		this->primarySurface->info.rotateType = rotateType;
 		if (rtChange == Media::RotateType::CW_90 || rtChange == Media::RotateType::CW_270)
 		{
-			tmpV = this->primarySurface->info.dispWidth;
-			this->primarySurface->info.dispWidth = this->primarySurface->info.dispHeight;
-			this->primarySurface->info.dispHeight = tmpV;
-			this->UpdateDispInfo(this->primarySurface->info.dispWidth, this->primarySurface->info.dispHeight, this->primarySurface->info.storeBPP, this->primarySurface->info.pf);
+			this->primarySurface->info.dispSize = this->primarySurface->info.dispSize.XchgXY();
+			this->UpdateDispInfo(this->primarySurface->info.dispSize, this->primarySurface->info.storeBPP, this->primarySurface->info.pf);
 			mutUsage.EndUse();
 		}
 	}	
@@ -66,11 +63,11 @@ void Media::ConsoleVideoRenderer::LockUpdateSize(Sync::MutexUsage *mutUsage)
 	mutUsage->ReplaceMutex(&this->mut);
 }
 
-void Media::ConsoleVideoRenderer::DrawFromSurface(Media::MonitorSurface *surface, OSInt destX, OSInt destY, UOSInt buffWidth, UOSInt buffHeight, Bool clearScn)
+void Media::ConsoleVideoRenderer::DrawFromSurface(Media::MonitorSurface *surface, Math::Coord2D<OSInt> destTL, Math::Size2D<UOSInt> buffSize, Bool clearScn)
 {
 	Sync::MutexUsage mutUsage(&this->mut);
 	if (this->primarySurface)
 	{
-		this->primarySurface->DrawFromSurface(surface, destX, destY, buffWidth, buffHeight, clearScn, true);
+		this->primarySurface->DrawFromSurface(surface, destTL, buffSize, clearScn, true);
 	}
 }

@@ -1,6 +1,7 @@
 #ifndef _SM_UI_GUIPICTUREBOXDD
 #define _SM_UI_GUIPICTUREBOXDD
 #include "Math/Coord2D.h"
+#include "Math/RectArea.h"
 #include "Media/ColorManager.h"
 #include "Media/IImgResizer.h"
 #include "Media/StaticImage.h"
@@ -29,43 +30,36 @@ namespace UI
 		Data::ArrayList<void *> moveToPrevObjs;
 
 		UInt8 *bgBuff;
-		UOSInt bgBuffW;
-		UOSInt bgBuffH;
+		Math::Size2D<UOSInt> bgBuffSize;
 
 		Media::CS::CSConverter *csconv;
 		Media::ColorManagerSess *colorSess;
 		Media::Image *currImage;
-		UOSInt currImageW;
-		UOSInt currImageH;
+		Math::Size2D<UOSInt> currImageSize;
 		Media::IImgResizer *resizer;
 		UInt8 *imgBuff;
 		Bool allowEnlarge;
 		Double zoomScale;
-		Double zoomCenterX;
-		Double zoomCenterY;
+		Math::Coord2DDbl zoomCenter;
 		Bool mouseDowned;
-		OSInt mouseCurrX;
-		OSInt mouseCurrY;
-		OSInt mouseDownX;
-		OSInt mouseDownY;
+		Math::Coord2D<OSInt> mouseCurrPos;
+		Math::Coord2D<OSInt> mouseDownPos;
 		Double zoomMinX;
 		Double zoomMinY;
 		Double zoomMaxX;
 		Double zoomMaxY;
 		Double zoomMinScale;
 		Bool gzoomDown;
-		OSInt gzoomDownX;
-		OSInt gzoomDownY;
+		Math::Coord2D<OSInt> gzoomDownPos;
 		UInt64 gzoomDownDist;
-		OSInt gzoomCurrX;
-		OSInt gzoomCurrY;
+		Math::Coord2D<OSInt> gzoomCurrPos;
 		UInt64 gzoomCurrDist;
 		Bool curr10Bit;
 		Bool enableLRGBLimit;
 
 	private:
 		void UpdateSubSurface();
-		void CalDispRect(Double *srcRect, OSInt *destRect);
+		void CalDispRect(Math::RectAreaDbl *srcRect, Math::RectArea<OSInt> *destRect);
 		void UpdateZoomRange();
 		void UpdateMinScale();
 		void CreateResizer();
@@ -89,20 +83,20 @@ namespace UI
 		void SetAllowEnlarge(Bool allowEnlarge);
 
 		virtual void OnSurfaceCreated();
-		virtual void OnMouseWheel(OSInt x, OSInt y, Int32 amount);
-		virtual void OnMouseMove(OSInt x, OSInt y);
-		virtual void OnMouseDown(OSInt x, OSInt y, MouseButton button);
-		virtual void OnMouseUp(OSInt x, OSInt y, MouseButton button);
-		virtual void OnGZoomBegin(OSInt x, OSInt y, UInt64 dist);
-		virtual void OnGZoomStep(OSInt x, OSInt y, UInt64 dist);
-		virtual void OnGZoomEnd(OSInt x, OSInt y, UInt64 dist);
+		virtual void OnMouseWheel(Math::Coord2D<OSInt> pos, Int32 amount);
+		virtual void OnMouseMove(Math::Coord2D<OSInt> pos);
+		virtual void OnMouseDown(Math::Coord2D<OSInt> pos, MouseButton button);
+		virtual void OnMouseUp(Math::Coord2D<OSInt> pos, MouseButton button);
+		virtual void OnGZoomBegin(Math::Coord2D<OSInt> pos, UInt64 dist);
+		virtual void OnGZoomStep(Math::Coord2D<OSInt> pos, UInt64 dist);
+		virtual void OnGZoomEnd(Math::Coord2D<OSInt> pos, UInt64 dist);
 		virtual void OnJSButtonDown(OSInt buttonId);
 		virtual void OnJSButtonUp(OSInt buttonId);
 		virtual void OnJSAxis(OSInt axis1, OSInt axis2, OSInt axis3, OSInt axis4);
 		void EventMoveToNext();
 		void EventMoveToPrev();
 
-		Bool GetImageViewSize(UOSInt *viewSize, UOSInt imageWidth, UOSInt imageHeight);
+		Bool GetImageViewSize(Math::Size2D<UOSInt> *viewSize, Math::Size2D<UOSInt> imageSize);
 		Media::StaticImage *CreatePreviewImage(Media::StaticImage *image);
 
 		void HandleMouseDown(MouseEventHandler hdlr, void *userObj);
@@ -112,7 +106,7 @@ namespace UI
 		void HandleMoveToNext(UI::UIEvent hdlr, void *userObj);
 		void HandleMoveToPrev(UI::UIEvent hdlr, void *userObj);
 		Math::Coord2DDbl Scn2ImagePos(Math::Coord2D<OSInt> scnPos);
-		void Image2ScnPos(Double x, Double y, Double *scnX, Double *scnY);
+		Math::Coord2DDbl Image2ScnPos(Math::Coord2DDbl imgPos);
 		void ZoomToFit();
 		void UpdateBufferImage();
 	};

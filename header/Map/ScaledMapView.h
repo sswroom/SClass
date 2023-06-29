@@ -16,13 +16,13 @@ namespace Map
 		Math::Coord2DDbl br;
 
 	public:
-		ScaledMapView(Math::Size2D<Double> scnSize, Math::Coord2DDbl centMap, Double scale, Bool projected);
+		ScaledMapView(Math::Size2DDbl scnSize, Math::Coord2DDbl centMap, Double scale, Bool projected);
 		virtual ~ScaledMapView();
 
-		virtual void ChangeViewXY(Math::Size2D<Double> scnSize, Math::Coord2DDbl centMap, Double scale);
+		virtual void ChangeViewXY(Math::Size2DDbl scnSize, Math::Coord2DDbl centMap, Double scale);
 		virtual void SetCenterXY(Math::Coord2DDbl mapPos);
 		virtual void SetMapScale(Double scale);
-		virtual void UpdateSize(Math::Size2D<Double> scnSize);
+		virtual void UpdateSize(Math::Size2DDbl scnSize);
 		virtual void SetDPI(Double hdpi, Double ddpi);
 
 		virtual Math::Quadrilateral GetBounds() const;
@@ -41,7 +41,7 @@ namespace Map
 		virtual Math::Coord2DDbl ScnXYToMapXY(Math::Coord2DDbl scnPos) const;
 		virtual Map::MapView *Clone() const;
 
-		static Double CalcScale(Math::RectAreaDbl bounds, Math::Size2D<Double> scnSize, Double dpi, Bool projected);
+		static Double CalcScale(Math::RectAreaDbl bounds, Math::Size2DDbl scnSize, Double dpi, Bool projected);
 	};
 }
 #endif

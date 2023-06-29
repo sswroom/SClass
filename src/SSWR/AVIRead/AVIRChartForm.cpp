@@ -11,13 +11,13 @@ void __stdcall SSWR::AVIRead::AVIRChartForm::OnSizeChanged(void *userObj)
 {
 	SSWR::AVIRead::AVIRChartForm *me = (SSWR::AVIRead::AVIRChartForm*)userObj;
 	Math::Size2D<UOSInt> sz = me->pbMain->GetSizeP();
-	if (sz.width == 0 || sz.height == 0)
+	if (sz.x == 0 || sz.y == 0)
 		return;
-	Media::DrawImage *gimg = me->core->GetDrawEngine()->CreateImage32(sz.width, sz.height, Media::AT_NO_ALPHA);
+	Media::DrawImage *gimg = me->core->GetDrawEngine()->CreateImage32(sz, Media::AT_NO_ALPHA);
 	Double dpi = me->core->GetMonitorHDPI(me->GetHMonitor());
 	gimg->SetHDPI(dpi);
 	gimg->SetVDPI(dpi);
-	me->chart->Plot(gimg, 0, 0, UOSInt2Double(sz.width), UOSInt2Double(sz.height));
+	me->chart->Plot(gimg, 0, 0, UOSInt2Double(sz.x), UOSInt2Double(sz.y));
 	me->pbMain->SetImageDImg(gimg);
 	me->core->GetDrawEngine()->DeleteImage(gimg);
 }

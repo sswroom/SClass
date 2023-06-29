@@ -34,7 +34,7 @@ void SSWR::AVIRead::AVIRGISLineEditForm::UpdatePreview()
 	Media::DrawPen *p;
 	Media::DrawBrush *b;
 	b = this->prevImage->NewBrushARGB(Media::ColorConv::ConvARGB(&srcProfile, &destProfile, this->colorSess, 0xffc0c0c0));
-	this->prevImage->DrawRect(0, 0, UOSInt2Double(w), UOSInt2Double(h), 0, b);
+	this->prevImage->DrawRect(Math::Coord2DDbl(0, 0), Math::Size2DDbl(UOSInt2Double(w), UOSInt2Double(h)), 0, b);
 	this->prevImage->DelBrush(b);
 
 	UOSInt i;
@@ -310,7 +310,7 @@ SSWR::AVIRead::AVIRGISLineEditForm::AVIRGISLineEditForm(UI::GUIClientControl *pa
 	this->pbPreview->SetRect(0, 0, 100, 24, false);
 	this->pbPreview->SetDockType(UI::GUIControl::DOCK_TOP);
 	sz = this->pbPreview->GetSizeP();
-	this->prevImage = this->eng->CreateImage32(sz.width, sz.height, Media::AT_NO_ALPHA);
+	this->prevImage = this->eng->CreateImage32(sz, Media::AT_NO_ALPHA);
 	this->prevImage->SetHDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
 	NEW_CLASS(this->lblName, UI::GUILabel(ui, this->pnlStyle, CSTR("Name:")));
 	this->lblName->SetRect(0, 32, 100, 23, false);
@@ -435,7 +435,7 @@ void SSWR::AVIRead::AVIRGISLineEditForm::OnMonitorChanged()
 
 	Math::Size2D<UOSInt> sz = this->pbPreview->GetSizeP();
 	this->eng->DeleteImage(this->prevImage);
-	this->prevImage = this->eng->CreateImage32(sz.width, sz.height, Media::AT_NO_ALPHA);
+	this->prevImage = this->eng->CreateImage32(sz, Media::AT_NO_ALPHA);
 	this->prevImage->SetHDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
 	if (this->currLayer)
 	{

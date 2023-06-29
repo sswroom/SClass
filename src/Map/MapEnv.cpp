@@ -1200,7 +1200,7 @@ UOSInt Map::MapEnv::AddImageSquare(UInt32 color, UOSInt size)
 	else
 		atype = Media::AlphaType::AT_ALPHA;
 	Media::ColorProfile colorProfile(Media::ColorProfile::CPT_SRGB);
-	NEW_CLASS(simg, Media::StaticImage(size, size, 0, 32, Media::PixelFormat::PF_B8G8R8A8, size * size * 4, &colorProfile, Media::ColorProfile::YUVT_BT601, atype, Media::YCOFST_C_CENTER_LEFT));
+	NEW_CLASS(simg, Media::StaticImage(Math::Size2D<UOSInt>(size, size), 0, 32, Media::PixelFormat::PF_B8G8R8A8, size * size * 4, &colorProfile, Media::ColorProfile::YUVT_BT601, atype, Media::YCOFST_C_CENTER_LEFT));
 	ImageUtil_ColorFill32(simg->data, size * size, color);
 	imgInfo->imgs->AddImage(simg, 0);
 	this->images.Put(imgInfo->fileName, imgInfo);
@@ -1491,7 +1491,7 @@ Bool Map::MapEnv::GetBounds(Map::MapEnv::GroupItem *group, Math::RectAreaDbl *bo
 	return !isFirst;
 }
 
-Map::MapView *Map::MapEnv::CreateMapView(Math::Size2D<Double> scnSize) const
+Map::MapView *Map::MapEnv::CreateMapView(Math::Size2DDbl scnSize) const
 {
 	Map::MapDrawLayer *baseLayer = GetFirstLayer(0);
 	if (baseLayer)

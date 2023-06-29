@@ -192,10 +192,9 @@ Bool Media::AVIUtl::AUIPlugin::GetInputVideoInfo(void *hand, Media::FrameInfo *f
 	if ((info.flag & INPUT_INFO_FLAG_VIDEO) == 0)
 		return false;
 	
-	frameInfo->storeWidth = (ULONG)info.format->biWidth;
-	frameInfo->storeHeight = (ULONG)info.format->biHeight;
-	frameInfo->dispWidth = frameInfo->storeWidth;
-	frameInfo->dispHeight = frameInfo->storeHeight;
+	frameInfo->storeSize.x = (ULONG)info.format->biWidth;
+	frameInfo->storeSize.y = (ULONG)info.format->biHeight;
+	frameInfo->dispSize = frameInfo->storeSize;
 	frameInfo->fourcc = info.format->biCompression;
 	frameInfo->storeBPP = info.format->biBitCount;
 	frameInfo->pf = Media::PixelFormatGetDef(info.format->biCompression, info.format->biBitCount);
@@ -208,21 +207,21 @@ Bool Media::AVIUtl::AUIPlugin::GetInputVideoInfo(void *hand, Media::FrameInfo *f
 	frameInfo->yuvType = Media::ColorProfile::YUVT_BT601;
 	frameInfo->ycOfst = Media::YCOFST_C_CENTER_LEFT;
 
-	if (frameInfo->dispWidth == 352 && frameInfo->dispHeight == 240)
+	if (frameInfo->dispSize.x == 352 && frameInfo->dispSize.y == 240)
 	{
 		frameInfo->par2 = 1.1;
 		frameInfo->color->GetRTranParam()->Set(Media::CS::TRANT_GAMMA, 2.2);
 		frameInfo->color->GetGTranParam()->Set(Media::CS::TRANT_GAMMA, 2.2);
 		frameInfo->color->GetRTranParam()->Set(Media::CS::TRANT_GAMMA, 2.2);
 	}
-	else if (frameInfo->dispWidth == 352 && frameInfo->dispHeight == 288)
+	else if (frameInfo->dispSize.x == 352 && frameInfo->dispSize.y == 288)
 	{
 		frameInfo->par2 = 0.91666666666666666666666666666667;
 		frameInfo->color->GetRTranParam()->Set(Media::CS::TRANT_GAMMA, 2.2);
 		frameInfo->color->GetGTranParam()->Set(Media::CS::TRANT_GAMMA, 2.2);
 		frameInfo->color->GetRTranParam()->Set(Media::CS::TRANT_GAMMA, 2.2);
 	}
-	else if (frameInfo->dispWidth == 720 && frameInfo->dispHeight == 480)
+	else if (frameInfo->dispSize.x == 720 && frameInfo->dispSize.y == 480)
 	{
 		frameInfo->par2 = 1.1;
 		frameInfo->color->GetRTranParam()->Set(Media::CS::TRANT_GAMMA, 2.2);
@@ -230,7 +229,7 @@ Bool Media::AVIUtl::AUIPlugin::GetInputVideoInfo(void *hand, Media::FrameInfo *f
 		frameInfo->color->GetRTranParam()->Set(Media::CS::TRANT_GAMMA, 2.2);
 		frameInfo->yuvType = Media::ColorProfile::YUVT_BT601;
 	}
-	else if (frameInfo->dispWidth == 720 && frameInfo->dispHeight == 576)
+	else if (frameInfo->dispSize.x == 720 && frameInfo->dispSize.y == 576)
 	{
 		frameInfo->par2 = 0.91666666666666666666666666666667;
 		frameInfo->color->GetRTranParam()->Set(Media::CS::TRANT_GAMMA, 2.2);

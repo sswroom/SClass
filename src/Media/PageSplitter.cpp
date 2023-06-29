@@ -7,14 +7,14 @@ Media::PageSplitter::PageSplitter()
 	this->drawSize = Media::PaperSize::PaperTypeGetSizeMM(Media::PaperSize::PT_A4) * Math::Unit::Distance::GetConvertRatio(Math::Unit::Distance::DU_MILLIMETER, Math::Unit::Distance::DU_METER);
 }
 
-void Media::PageSplitter::SetDrawSize(Math::Size2D<Double> size, Math::Unit::Distance::DistanceUnit unit)
+void Media::PageSplitter::SetDrawSize(Math::Size2DDbl size, Math::Unit::Distance::DistanceUnit unit)
 {
 	this->drawSize = size * Math::Unit::Distance::GetConvertRatio(unit, Math::Unit::Distance::DU_METER);
 }
 
 UOSInt Media::PageSplitter::SplitDrawings(Data::ArrayListA<Math::RectAreaDbl> *pages, Math::RectAreaDbl objectArea, Double objectBuffer, Double pageOverlapBuffer, Double scale)
 {
-	Math::Size2D<Double> drawMapSize =  this->drawSize * scale;
+	Math::Size2DDbl drawMapSize =  this->drawSize * scale;
 	if (pageOverlapBuffer >= drawMapSize.width || pageOverlapBuffer >= drawMapSize.height)
 	{
 		return 0;

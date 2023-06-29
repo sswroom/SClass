@@ -30,15 +30,15 @@ void SSWR::AVIRead::AVIRFontSelector::OnDraw(Media::DrawImage *img)
 	Media::DrawImage *tmpBmp;
 	if (UOSInt2Double(w) >= (138 * hdpi / ddpi))
 	{
-		tmpBmp = deng->CreateImage32((UInt32)Double2Int32(128 * hdpi / ddpi), itemH, Media::AT_NO_ALPHA);
+		tmpBmp = deng->CreateImage32(Math::Size2D<UOSInt>((UInt32)Double2Int32(128 * hdpi / ddpi), itemH), Media::AT_NO_ALPHA);
 	}
 	else if (w >= 10)
 	{
-		tmpBmp = deng->CreateImage32(w - 10, itemH, Media::AT_NO_ALPHA);
+		tmpBmp = deng->CreateImage32(Math::Size2D<UOSInt>(w - 10, itemH), Media::AT_NO_ALPHA);
 	}
 	else
 	{
-		tmpBmp = deng->CreateImage32(w, itemH, Media::AT_NO_ALPHA);
+		tmpBmp = deng->CreateImage32(Math::Size2D<UOSInt>(w, itemH), Media::AT_NO_ALPHA);
 	}
 	tmpBmp->SetHDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
 	tmpBmp->SetVDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
@@ -50,21 +50,21 @@ void SSWR::AVIRead::AVIRFontSelector::OnDraw(Media::DrawImage *img)
 		if (currPos == defVal)
 		{
 			Media::DrawBrush *bDef = img->NewBrushARGB(this->colorConv->ConvRGB8(0xffffffc0));
-			img->DrawRect(0, UOSInt2Double(i), UOSInt2Double(w), itemTH, 0, bDef);
+			img->DrawRect(Math::Coord2DDbl(0, UOSInt2Double(i)), Math::Size2DDbl(UOSInt2Double(w), itemTH), 0, bDef);
 			img->DelBrush(bDef);
 		}
 		else
 		{
-			img->DrawRect(0, UOSInt2Double(i), UOSInt2Double(w), itemTH, 0, bWhite);
+			img->DrawRect(Math::Coord2DDbl(0, UOSInt2Double(i)), Math::Size2DDbl(UOSInt2Double(w), itemTH), 0, bWhite);
 		}
 		this->core->GenFontStylePreview(tmpBmp, deng, this->env, currPos, this->colorConv);
 		if (currPos == this->currFontStyle)
 		{
 			Media::DrawBrush *bRed = img->NewBrushARGB(this->colorConv->ConvRGB8(0xffff0000));
-			img->DrawRect(0, UOSInt2Double(i), UOSInt2Double(w), itemTH, 0, bRed);
+			img->DrawRect(Math::Coord2DDbl(0, UOSInt2Double(i)), Math::Size2DDbl(UOSInt2Double(w), itemTH), 0, bRed);
 			img->DelBrush(bRed);
 		}
-		img->DrawImagePt(tmpBmp, UOSInt2Double((w - tmpBmp->GetWidth()) >> 1), UOSInt2Double(i + 1));
+		img->DrawImagePt(tmpBmp, Math::Coord2DDbl(UOSInt2Double((w - tmpBmp->GetWidth()) >> 1), UOSInt2Double(i + 1)));
 		sbuff[0] = 0;
 		UTF8Char *sptr = this->env->GetFontStyleName(currPos, sbuff);
 		if (sbuff[0] == 0)
@@ -73,10 +73,10 @@ void SSWR::AVIRead::AVIRFontSelector::OnDraw(Media::DrawImage *img)
 		}
 		if (sbuff[0])
 		{
-			Math::Size2D<Double> sz;
+			Math::Size2DDbl sz;
 			Media::DrawFont *fnt = this->CreateDrawFont(img);
 			sz = img->GetTextSize(fnt, CSTRP(sbuff, sptr));
-			img->DrawString((UOSInt2Double(w) - sz.width) * 0.5, UOSInt2Double(i + itemH + 2), CSTRP(sbuff, sptr), fnt, bBlack);
+			img->DrawString(Math::Coord2DDbl((UOSInt2Double(w) - sz.x) * 0.5, UOSInt2Double(i + itemH + 2)), CSTRP(sbuff, sptr), fnt, bBlack);
 			img->DelFont(fnt);
 		}
 
@@ -85,7 +85,7 @@ void SSWR::AVIRead::AVIRFontSelector::OnDraw(Media::DrawImage *img)
 	}
 	if (i < h)
 	{
-		img->DrawRect(0, UOSInt2Double(i), UOSInt2Double(w), UOSInt2Double(h - i), 0, bWhite);
+		img->DrawRect(Math::Coord2DDbl(0, UOSInt2Double(i)), Math::Size2DDbl(UOSInt2Double(w), UOSInt2Double(h - i)), 0, bWhite);
 	}
 	img->DelBrush(bWhite);
 	img->DelBrush(bBlack);

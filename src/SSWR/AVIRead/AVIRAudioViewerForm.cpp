@@ -27,19 +27,19 @@ void SSWR::AVIRead::AVIRAudioViewerForm::UpdateImages()
 {
 	Media::DrawImage *gimg;
 	Math::Size2D<UOSInt> sz = this->pbsSample->GetSizeP();
-	if (sz.width <= 0 || sz.height <= 0)
+	if (sz.x <= 0 || sz.y <= 0)
 		return;
 	if (this->totalSample == 0 || this->totalSample == (UOSInt)-1)
 	{
 		Media::DrawBrush *b;
 		Media::DrawFont *f;
-		gimg = this->eng->CreateImage32(sz.width, sz.height, Media::AT_NO_ALPHA);
+		gimg = this->eng->CreateImage32(sz, Media::AT_NO_ALPHA);
 		b = gimg->NewBrushARGB(0xff000000);
-		gimg->DrawRect(0, 0, UOSInt2Double(sz.width), UOSInt2Double(sz.height), 0, b);
+		gimg->DrawRect(Math::Coord2DDbl(0, 0), sz.ToDouble(), 0, b);
 		gimg->DelBrush(b);
 		b = gimg->NewBrushARGB(0xffffffff);
 		f = gimg->NewFontPt(CSTR("Arial"), 10, Media::DrawEngine::DFS_ANTIALIAS, 0);
-		gimg->DrawString(0, 0, CSTR("Format not supported"), f, b);
+		gimg->DrawString(Math::Coord2DDbl(0, 0), CSTR("Format not supported"), f, b);
 		gimg->DelFont(f);
 		gimg->DelBrush(b);
 		this->pbsSample->SetImageDImg(gimg);
@@ -61,25 +61,25 @@ void SSWR::AVIRead::AVIRAudioViewerForm::UpdateImages()
 		UOSInt lastY;
 		UOSInt thisY;
 		UOSInt align = this->format->align;
-		gimg = this->eng->CreateImage32(sz.width, sz.height, Media::AT_NO_ALPHA);
+		gimg = this->eng->CreateImage32(sz, Media::AT_NO_ALPHA);
 
-		UInt8 *buff = MemAlloc(UInt8, this->format->align * sz.width);
-		i = this->audSrc->ReadSample(currSample, sz.width, buff);
+		UInt8 *buff = MemAlloc(UInt8, this->format->align * sz.x);
+		i = this->audSrc->ReadSample(currSample, sz.x, buff);
 		
 		b = gimg->NewBrushARGB(0xff000000);
-		gimg->DrawRect(0, 0, UOSInt2Double(sz.width), UOSInt2Double(sz.height), 0, b);
+		gimg->DrawRect(Math::Coord2DDbl(0, 0), sz.ToDouble(), 0, b);
 		gimg->DelBrush(b);
 
-		channelH = sz.height / this->format->nChannels / 2;
+		channelH = sz.y / this->format->nChannels / 2;
 		if (channelH > 0)
 		{
 			p = gimg->NewPenARGB(0xffffffff, 1, 0, 0);
 			if (this->format->bitpersample == 16)
 			{
-				if (i != sz.width)
+				if (i != sz.x)
 				{
 					i = i * align;
-					j = sz.width * align;
+					j = sz.x * align;
 					while (i < j)
 					{
 						*(Int16*)&buff[i] = 0;
@@ -89,11 +89,11 @@ void SSWR::AVIRead::AVIRAudioViewerForm::UpdateImages()
 				currCh = this->format->nChannels;
 				while (currCh-- > 0)
 				{
-					currY = sz.height * currCh / this->format->nChannels;
+					currY = sz.y * currCh / this->format->nChannels;
 					lastY = currY + channelH;
 					i = 0;
 					j = 2 * currCh;
-					while (i < sz.width)
+					while (i < sz.x)
 					{
 						thisY = currY + channelH + ((ReadUInt16(&buff[j]) * channelH) >> 15);
 						gimg->DrawLine(UOSInt2Double(i - 1), UOSInt2Double(lastY), UOSInt2Double(i), UOSInt2Double(thisY), p);
@@ -125,19 +125,19 @@ void SSWR::AVIRead::AVIRAudioViewerForm::UpdateFreqImage()
 {
 	Media::DrawImage *gimg;
 	Math::Size2D<UOSInt> sz = this->pbsFreq->GetSizeP();
-	if (sz.width <= 0 || sz.height <= 0)
+	if (sz.x <= 0 || sz.y <= 0)
 		return;
 	if (this->totalSample == 0 || this->totalSample == (UOSInt)-1)
 	{
 		Media::DrawBrush *b;
 		Media::DrawFont *f;
-		gimg = this->eng->CreateImage32(sz.width, sz.height, Media::AT_NO_ALPHA);
+		gimg = this->eng->CreateImage32(sz, Media::AT_NO_ALPHA);
 		b = gimg->NewBrushARGB(0xff000000);
-		gimg->DrawRect(0, 0, UOSInt2Double(sz.width), UOSInt2Double(sz.height), 0, b);
+		gimg->DrawRect(Math::Coord2DDbl(0, 0), sz.ToDouble(), 0, b);
 		gimg->DelBrush(b);
 		b = gimg->NewBrushARGB(0xffffffff);
 		f = gimg->NewFontPt(CSTR("Arial"), 10, Media::DrawEngine::DFS_ANTIALIAS, 0);
-		gimg->DrawString(0, 0, CSTR("Format not supported"), f, b);
+		gimg->DrawString(Math::Coord2DDbl(0, 0), CSTR("Format not supported"), f, b);
 		gimg->DelFont(f);
 		gimg->DelBrush(b);
 		this->pbsSample->SetImageDImg(gimg);
@@ -158,13 +158,13 @@ void SSWR::AVIRead::AVIRAudioViewerForm::UpdateFreqImage()
 		Double thisX;
 		Double thisY;
 //		OSInt align = this->format->align;
-		gimg = this->eng->CreateImage32(sz.width, sz.height, Media::AT_NO_ALPHA);
+		gimg = this->eng->CreateImage32(sz, Media::AT_NO_ALPHA);
 
 		UInt8 *buff = MemAlloc(UInt8, this->format->align * (FFTSAMPLE + FFTAVG - 1));
 		i = this->audSrc->ReadSample(currSample - FFTSAMPLE + 1, FFTSAMPLE + FFTAVG - 1, buff);
 		
 		b = gimg->NewBrushARGB(0xff000000);
-		gimg->DrawRect(0, 0, UOSInt2Double(sz.width), UOSInt2Double(sz.height), 0, b);
+		gimg->DrawRect(Math::Coord2DDbl(0, 0), sz.ToDouble(), 0, b);
 		gimg->DelBrush(b);
 
 		Double *freqData;
@@ -200,8 +200,8 @@ void SSWR::AVIRead::AVIRAudioViewerForm::UpdateFreqImage()
 			{
 				rVal = freqData[j];
 
-				thisX = UOSInt2Double(j * sz.width) / (Double)(FFTSAMPLE / 2 - 1);
-				thisY = -Math_Log10(rVal / (FFTSAMPLE * 0.5)) * UOSInt2Double(sz.height) / 7.0;
+				thisX = UOSInt2Double(j * sz.x) / (Double)(FFTSAMPLE / 2 - 1);
+				thisY = -Math_Log10(rVal / (FFTSAMPLE * 0.5)) * UOSInt2Double(sz.y) / 7.0;
 				if (lastX >= 0)
 				{
 					gimg->DrawLine(lastX, lastY, thisX, thisY, p);
@@ -313,7 +313,7 @@ void SSWR::AVIRead::AVIRAudioViewerForm::EventMenuClicked(UInt16 cmdId)
 			if (this->currSample + 1 < this->totalSample)
 			{
 				sz = this->pbsSample->GetSizeP();
-				this->currSample += sz.width;
+				this->currSample += sz.x;
 				if (this->currSample >= this->totalSample)
 					this->currSample = this->totalSample - 1;
 				this->UpdateImages();
@@ -324,7 +324,7 @@ void SSWR::AVIRead::AVIRAudioViewerForm::EventMenuClicked(UInt16 cmdId)
 		if (this->currSample > 0)
 		{
 			sz = this->pbsSample->GetSizeP();
-			this->currSample -= sz.width;
+			this->currSample -= sz.x;
 			if (this->currSample < 0)
 				this->currSample = 0;
 			this->UpdateImages();

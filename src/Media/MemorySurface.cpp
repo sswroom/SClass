@@ -3,9 +3,9 @@
 #include "Media/ImageUtil.h"
 #include "Media/MemorySurface.h"
 
-Media::MemorySurface::MemorySurface(UOSInt width, UOSInt height, UOSInt bitPerPixel, const Media::ColorProfile *color, Double dpi)
+Media::MemorySurface::MemorySurface(Math::Size2D<UOSInt> size, UOSInt bitPerPixel, const Media::ColorProfile *color, Double dpi)
 {
-	this->buffPtr = MemAllocA(UInt8, width * height * (bitPerPixel >> 3));
+	this->buffPtr = MemAllocA(UInt8, size.CalcArea() * (bitPerPixel >> 3));
 	this->info.fourcc = 0;
 	this->info.ftype = Media::FT_NON_INTERLACE;
 	this->info.atype = Media::AT_NO_ALPHA;
@@ -13,11 +13,9 @@ Media::MemorySurface::MemorySurface(UOSInt width, UOSInt height, UOSInt bitPerPi
 	this->info.yuvType = Media::ColorProfile::YUVT_UNKNOWN;
 	this->info.storeBPP = (UInt32)bitPerPixel;
 	this->info.pf = Media::PixelFormatGetDef(0, this->info.storeBPP);
-	this->info.dispWidth = width;
-	this->info.dispHeight = height;
-	this->info.storeWidth = width;
-	this->info.storeHeight = height;
-	this->info.byteSize = this->info.storeWidth * this->info.storeHeight * (this->info.storeBPP >> 3);
+	this->info.dispSize = size;
+	this->info.storeSize = size;
+	this->info.byteSize = this->info.storeSize.CalcArea() * (this->info.storeBPP >> 3);
 	this->info.par2 = 1.0;
 	this->info.hdpi = dpi;
 	this->info.vdpi = dpi;
@@ -38,7 +36,7 @@ Bool Media::MemorySurface::IsError() const
 Media::Image *Media::MemorySurface::Clone() const
 {
 	Media::MemorySurface *surface;
-	NEW_CLASS(surface, Media::MemorySurface(this->info.dispWidth, this->info.dispHeight, this->info.storeBPP, this->info.color, this->info.hdpi));
+	NEW_CLASS(surface, Media::MemorySurface(this->info.dispSize, this->info.storeBPP, this->info.color, this->info.hdpi));
 	return surface;
 }
 
@@ -51,17 +49,17 @@ void Media::MemorySurface::GetImageData(UInt8 *destBuff, OSInt left, OSInt top, 
 {
 	OSInt right = left + (OSInt)width;
 	OSInt bottom = top + (OSInt)height;
-	if (left >= (OSInt)this->info.dispWidth || top >= (OSInt)this->info.dispHeight || right <= 0 || bottom <= 0)
+	if (left >= (OSInt)this->info.dispSize.x || top >= (OSInt)this->info.dispSize.y || right <= 0 || bottom <= 0)
 	{
 		return;
 	}
-	if ((UOSInt)right > this->info.dispWidth)
+	if ((UOSInt)right > this->info.dispSize.x)
 	{
-		right = (OSInt)this->info.dispWidth;
+		right = (OSInt)this->info.dispSize.x;
 	}
-	if ((UOSInt)bottom > this->info.dispHeight)
+	if ((UOSInt)bottom > this->info.dispSize.y)
 	{
-		bottom = (OSInt)this->info.dispHeight;
+		bottom = (OSInt)this->info.dispSize.y;
 	}
 	if (upsideDown)
 	{
@@ -100,36 +98,36 @@ Bool Media::MemorySurface::DrawFromBuff()
 	return false;
 }
 
-Bool Media::MemorySurface::DrawFromSurface(Media::MonitorSurface *surface, OSInt destX, OSInt destY, UOSInt buffW, UOSInt buffH, Bool clearScn, Bool waitForVBlank)
+Bool Media::MemorySurface::DrawFromSurface(Media::MonitorSurface *surface, Math::Coord2D<OSInt> destTL, Math::Size2D<UOSInt> buffSize, Bool clearScn, Bool waitForVBlank)
 {
 	if (surface && surface->info.storeBPP == this->info.storeBPP)
 	{
-		OSInt destWidth = (OSInt)this->info.dispWidth;
-		OSInt destHeight = (OSInt)this->info.dispHeight;
+		OSInt destWidth = (OSInt)this->info.dispSize.x;
+		OSInt destHeight = (OSInt)this->info.dispSize.y;
 		if (waitForVBlank) this->WaitForVBlank();
 		OSInt drawX = 0;
 		OSInt drawY = 0;
-		if (destX < 0)
+		if (destTL.x < 0)
 		{
-			drawX = -destX;
-			buffW += (UOSInt)destX;
-			destX = 0;
+			drawX = -destTL.x;
+			buffSize.x += (UOSInt)destTL.x;
+			destTL.x = 0;
 		}
-		if (destY < 0)
+		if (destTL.y < 0)
 		{
-			drawY = -destY;
-			buffH += (UOSInt)destY;
-			destY = 0;
+			drawY = -destTL.y;
+			buffSize.y += (UOSInt)destTL.y;
+			destTL.y = 0;
 		}
-		if (destX + (OSInt)buffW > (OSInt)destWidth)
+		if (destTL.x + (OSInt)buffSize.x > (OSInt)destWidth)
 		{
-			buffW = (UOSInt)(destWidth - destX);
+			buffSize.x = (UOSInt)(destWidth - destTL.x);
 		}
-		if (destY + (OSInt)buffH > (OSInt)destHeight)
+		if (destTL.y + (OSInt)buffSize.y > (OSInt)destHeight)
 		{
-			buffH = (UOSInt)(destHeight - destY);
+			buffSize.y = (UOSInt)(destHeight - destTL.y);
 		}
-		if ((OSInt)buffW > 0 && (OSInt)buffH > 0)
+		if ((OSInt)buffSize.x > 0 && (OSInt)buffSize.y > 0)
 		{
 			if (this->info.atype == Media::AT_ALPHA && this->info.storeBPP == 32)
 			{
@@ -138,35 +136,35 @@ Bool Media::MemorySurface::DrawFromSurface(Media::MonitorSurface *surface, OSInt
 				if (srcPtr)
 				{
 					ImageUtil_ConvR8G8B8N8_ARGB32(srcPtr + drawY * lineAdd + drawX * (OSInt)(this->info.storeBPP >> 3),
-						(UInt8*)this->buffPtr + destY * (OSInt)this->GetDataBpl() + destX * ((OSInt)this->info.storeBPP >> 3),
-						buffW, buffH, lineAdd, (OSInt)this->GetDataBpl());
+						(UInt8*)this->buffPtr + destTL.y * (OSInt)this->GetDataBpl() + destTL.x * ((OSInt)this->info.storeBPP >> 3),
+						buffSize.x, buffSize.y, lineAdd, (OSInt)this->GetDataBpl());
 					surface->UnlockSurface();
 				}
 			}
 			else
 			{
-				surface->GetImageData((UInt8*)this->buffPtr + destY * (OSInt)this->GetDataBpl() + destX * ((OSInt)this->info.storeBPP >> 3),
-					drawX, drawY, buffW, buffH, this->GetDataBpl(), false, this->info.rotateType);
+				surface->GetImageData((UInt8*)this->buffPtr + destTL.y * (OSInt)this->GetDataBpl() + destTL.x * ((OSInt)this->info.storeBPP >> 3),
+					drawX, drawY, buffSize.x, buffSize.y, this->GetDataBpl(), false, this->info.rotateType);
 			}
 
 			if (clearScn)
 			{
 				UInt32 c = 0xFF000000;
-				if (destY > 0)
+				if (destTL.y > 0)
 				{
-					ImageUtil_ImageColorFill32((UInt8*)this->buffPtr, (UOSInt)destWidth, (UOSInt)destY, this->GetDataBpl(), c);
+					ImageUtil_ImageColorFill32((UInt8*)this->buffPtr, (UOSInt)destWidth, (UOSInt)destTL.y, this->GetDataBpl(), c);
 				}
-				if (destY + (OSInt)buffH < (OSInt)destHeight)
+				if (destTL.y + (OSInt)buffSize.y < (OSInt)destHeight)
 				{
-					ImageUtil_ImageColorFill32((UInt8*)this->buffPtr + ((UOSInt)destY + buffH) * this->GetDataBpl(), (UOSInt)destWidth, (UOSInt)(destHeight - (OSInt)buffH - destY), this->GetDataBpl(), c);
+					ImageUtil_ImageColorFill32((UInt8*)this->buffPtr + ((UOSInt)destTL.y + buffSize.y) * this->GetDataBpl(), (UOSInt)destWidth, (UOSInt)(destHeight - (OSInt)buffSize.y - destTL.y), this->GetDataBpl(), c);
 				}
-				if (destX > 0)
+				if (destTL.x > 0)
 				{
-					ImageUtil_ImageColorFill32((UInt8*)this->buffPtr + (UOSInt)destY * this->GetDataBpl(), (UOSInt)destX, buffH, GetDataBpl(), c);
+					ImageUtil_ImageColorFill32((UInt8*)this->buffPtr + (UOSInt)destTL.y * this->GetDataBpl(), (UOSInt)destTL.x, buffSize.y, GetDataBpl(), c);
 				}
-				if (destX + (OSInt)buffW < (OSInt)destWidth)
+				if (destTL.x + (OSInt)buffSize.x < (OSInt)destWidth)
 				{
-					ImageUtil_ImageColorFill32((UInt8*)this->buffPtr + (UOSInt)destY * this->GetDataBpl() + ((UOSInt)destX + buffW) * (this->info.storeBPP >> 3), (UOSInt)destWidth - (UOSInt)destX - buffW, buffH, this->GetDataBpl(), c);
+					ImageUtil_ImageColorFill32((UInt8*)this->buffPtr + (UOSInt)destTL.y * this->GetDataBpl() + ((UOSInt)destTL.x + buffSize.x) * (this->info.storeBPP >> 3), (UOSInt)destWidth - (UOSInt)destTL.x - buffSize.x, buffSize.y, this->GetDataBpl(), c);
 				}
 			}
 		}

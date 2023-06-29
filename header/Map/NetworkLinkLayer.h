@@ -43,7 +43,7 @@ namespace Map
 		Data::ArrayList<void *> updObjs;
 
 		Sync::Mutex dispMut;
-		Math::Size2D<Double> dispSize;
+		Math::Size2DDbl dispSize;
 		Double dispDPI;
 		Math::RectAreaDbl dispRect;
 		Int64 dispTime;
@@ -81,7 +81,7 @@ namespace Map
 		virtual Bool GetColumnDef(UOSInt colIndex, DB::ColDef *colDef);
 		virtual UInt32 GetCodePage();
 		virtual Bool GetBounds(Math::RectAreaDbl *bounds);
-		virtual void SetDispSize(Math::Size2D<Double> size, Double dpi);
+		virtual void SetDispSize(Math::Size2DDbl size, Double dpi);
 
 		virtual GetObjectSess *BeginGetObject();
 		virtual void EndGetObject(GetObjectSess *session);

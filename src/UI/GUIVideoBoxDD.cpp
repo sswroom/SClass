@@ -66,9 +66,9 @@ void UI::GUIVideoBoxDD::LockUpdateSize(Sync::MutexUsage *mutUsage)
 	mutUsage->ReplaceMutex(&this->surfaceMut);
 }
 
-void UI::GUIVideoBoxDD::DrawFromSurface(Media::MonitorSurface *surface, OSInt destX, OSInt destY, UOSInt buffWidth, UOSInt buffHeight, Bool clearScn)
+void UI::GUIVideoBoxDD::DrawFromSurface(Media::MonitorSurface *surface, Math::Coord2D<OSInt> destTL, Math::Size2D<UOSInt> buffSize, Bool clearScn)
 {
-	this->DisplayFromSurface(surface, destX, destY, buffWidth, buffHeight, clearScn);
+	this->DisplayFromSurface(surface, destTL, buffSize, clearScn);
 }
 
 void UI::GUIVideoBoxDD::BeginUpdateSize()
@@ -98,8 +98,7 @@ UI::GUIVideoBoxDD::GUIVideoBoxDD(UI::GUICore *ui, UI::GUIClientControl *parent, 
 	this->maHdlr = 0;
 	this->maHdlrObj = 0;
 	this->maDown = 0;
-	this->maDownX = 0;
-	this->maDownY = 0;
+	this->maDownPos = Math::Coord2D<OSInt>(0, 0);
 	this->maDownTime = 0;
 
 #ifdef _DEBUG
@@ -183,12 +182,12 @@ void UI::GUIVideoBoxDD::OnMonitorChanged()
 {
 	this->UpdateRefreshRate(this->GetRefreshRate());
 	this->manualDeint = false;
-	this->UpdateDispInfo(this->surfaceW, this->surfaceH, this->bitDepth, this->GetPixelFormat());
+	this->UpdateDispInfo(this->surfaceSize, this->bitDepth, this->GetPixelFormat());
 }
 
 void UI::GUIVideoBoxDD::OnSurfaceCreated()
 {
-	this->UpdateOutputSize(this->surfaceW, this->surfaceH);
+	this->UpdateOutputSize(this->surfaceSize);
 	if (!playing)
 	{
 		this->dispForceUpdate = true;
@@ -196,15 +195,15 @@ void UI::GUIVideoBoxDD::OnSurfaceCreated()
 	}
 }
 
-void UI::GUIVideoBoxDD::OnMouseWheel(OSInt x, OSInt y, Int32 amount)
+void UI::GUIVideoBoxDD::OnMouseWheel(Math::Coord2D<OSInt> pos, Int32 amount)
 {
 }
 
-void UI::GUIVideoBoxDD::OnMouseMove(OSInt x, OSInt y)
+void UI::GUIVideoBoxDD::OnMouseMove(Math::Coord2D<OSInt> pos)
 {
 }
 
-void UI::GUIVideoBoxDD::OnMouseDown(OSInt x, OSInt y, MouseButton button)
+void UI::GUIVideoBoxDD::OnMouseDown(Math::Coord2D<OSInt> pos, MouseButton button)
 {
 	if (button == UI::GUIControl::MBTN_LEFT && !this->maDown)
 	{
@@ -212,12 +211,11 @@ void UI::GUIVideoBoxDD::OnMouseDown(OSInt x, OSInt y, MouseButton button)
 		dt.SetCurrTimeUTC();
 		this->maDownTime = dt.ToTicks();
 		this->maDown = true;
-		this->maDownX = x;
-		this->maDownY = y;
+		this->maDownPos = pos;
 	}
 }
 
-void UI::GUIVideoBoxDD::OnMouseUp(OSInt x, OSInt y, MouseButton button)
+void UI::GUIVideoBoxDD::OnMouseUp(Math::Coord2D<OSInt> pos, MouseButton button)
 {
 	if (this->maDown && button == UI::GUIControl::MBTN_LEFT)
 	{
@@ -226,16 +224,15 @@ void UI::GUIVideoBoxDD::OnMouseUp(OSInt x, OSInt y, MouseButton button)
 		dt.SetCurrTimeUTC();
 		if (dt.ToTicks() - this->maDownTime < 1000 && this->maHdlr != 0)
 		{
-			OSInt xDiff = x - this->maDownX;
-			OSInt yDiff = y - this->maDownY;
+			Math::Coord2D<OSInt> diff = pos - this->maDownPos;
 			OSInt xType;
 			OSInt yType;
 			Double dpi = this->GetHDPI();
-			if (OSInt2Double(xDiff) >= dpi)
+			if (OSInt2Double(diff.x) >= dpi)
 			{
 				xType = 1;
 			}
-			else if (OSInt2Double(xDiff) <= -dpi)
+			else if (OSInt2Double(diff.x) <= -dpi)
 			{
 				xType = -1;
 			}
@@ -243,11 +240,11 @@ void UI::GUIVideoBoxDD::OnMouseUp(OSInt x, OSInt y, MouseButton button)
 			{
 				xType = 0;
 			}
-			if (OSInt2Double(yDiff) >= dpi)
+			if (OSInt2Double(diff.y) >= dpi)
 			{
 				yType = 1;
 			}
-			else if (OSInt2Double(yDiff) <= -dpi)
+			else if (OSInt2Double(diff.y) <= -dpi)
 			{
 				yType = -1;
 			}
@@ -257,15 +254,15 @@ void UI::GUIVideoBoxDD::OnMouseUp(OSInt x, OSInt y, MouseButton button)
 			}
 			if (xType == 1 && yType == 0)
 			{
-				this->maHdlr(this->maHdlrObj, UI::GUIVideoBoxDD::MA_START, x, y);
+				this->maHdlr(this->maHdlrObj, UI::GUIVideoBoxDD::MA_START, pos);
 			}
 			else if (xType == -1 && yType == 0)
 			{
-				this->maHdlr(this->maHdlrObj, UI::GUIVideoBoxDD::MA_STOP, x, y);
+				this->maHdlr(this->maHdlrObj, UI::GUIVideoBoxDD::MA_STOP, pos);
 			}
 			else if (xType == 0 && yType == 1)
 			{
-				this->maHdlr(this->maHdlrObj, UI::GUIVideoBoxDD::MA_PAUSE, x, y);
+				this->maHdlr(this->maHdlrObj, UI::GUIVideoBoxDD::MA_PAUSE, pos);
 			}
 		}
 	}

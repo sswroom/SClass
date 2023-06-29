@@ -78,7 +78,7 @@ SSWR::AVIRead::AVIRGISImageForm::AVIRGISImageForm(UI::GUIClientControl *parent, 
 	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this->pnlButtons, CSTR("&Cancel")));
 	this->btnCancel->SetRect(264, 8, 100, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClick, this);
-	NEW_CLASS(this->plIcons, UI::GUIPictureList(ui, this, core->GetDrawEngine(), true, 48, 48));
+	NEW_CLASS(this->plIcons, UI::GUIPictureList(ui, this, core->GetDrawEngine(), true, Math::Size2D<UOSInt>(48, 48)));
 	this->plIcons->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->plIcons->HandleDblClk(OnOKClick, this);
 

@@ -554,7 +554,7 @@ void UI::GUIListView::GetItemRectP(UOSInt index, Int32 *rect)
 	gtk_tree_view_get_cell_area((GtkTreeView*)data->treeView, path, 0, &rc);
 	rect[0] = 0;
 	rect[1] = rc.y;
-	rect[2] = (Int32)sz.width;
+	rect[2] = (Int32)sz.x;
 	rect[3] = rc.height;
 }
 

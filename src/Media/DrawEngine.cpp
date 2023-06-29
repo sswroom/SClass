@@ -2,19 +2,19 @@
 #include "Media/DrawEngine.h"
 #include "Media/ImageUtil.h"
 
-Bool Media::DrawImage::DrawStringHAlign(Double tlx, Double tly, Double brx, Text::CString str, DrawFont *f, DrawBrush *b, Text::HAlignment hAlign)
+Bool Media::DrawImage::DrawStringHAlign(Math::Coord2DDbl tl, Double brx, Text::CString str, DrawFont *f, DrawBrush *b, Text::HAlignment hAlign)
 {
-	Math::Size2D<Double> sz;
+	Math::Size2DDbl sz;
 	if (hAlign == Text::HAlignment::Right)
 	{
 		sz = this->GetTextSize(f, str);
 		if (!sz.HasArea())
 		{
-			return this->DrawString(tlx, tly, str, f, b);
+			return this->DrawString(tl, str, f, b);
 		}
 		else
 		{
-			return this->DrawString(brx - sz.width, tly, str, f, b);
+			return this->DrawString(Math::Coord2DDbl(brx - sz.GetWidth(), tl.y), str, f, b);
 		}
 	}
 	else if (hAlign == Text::HAlignment::Center)
@@ -22,16 +22,16 @@ Bool Media::DrawImage::DrawStringHAlign(Double tlx, Double tly, Double brx, Text
 		sz = this->GetTextSize(f, str);
 		if (!sz.HasArea())
 		{
-			return this->DrawString(tlx, tly, str, f, b);
+			return this->DrawString(tl, str, f, b);
 		}
 		else
 		{
-			return this->DrawString(tlx + (brx - tlx - sz.width) * 0.5, tly, str, f, b);
+			return this->DrawString(Math::Coord2DDbl(tl.x + (brx - tl.x - sz.GetWidth()) * 0.5, tl.y), str, f, b);
 		}
 	}
 	else
 	{
-		return this->DrawString(tlx, tly, str, f, b);
+		return this->DrawString(tl, str, f, b);
 	}
 }
 

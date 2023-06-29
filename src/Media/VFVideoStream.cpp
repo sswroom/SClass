@@ -18,7 +18,7 @@ UInt32 __stdcall Media::VFVideoStream::PlayThread(void *userObj)
 	UInt32 frameNum;
 	me->threadRunning = true;
 	frameNum = 0;
-	frameSize = me->info.storeWidth * me->info.storeHeight * (me->info.storeBPP >> 3);
+	frameSize = me->info.storeSize.x * me->info.storeSize.y * (me->info.storeBPP >> 3);
 	frameBuff = MemAlloc(UInt8, frameSize);
 	while (!me->threadToStop)
 	{
@@ -61,10 +61,9 @@ Media::VFVideoStream::VFVideoStream(Media::VFMediaFile *mfile)
 	this->frameCnt = vinfo.dwLengthL;
 	this->frameRate = vinfo.dwRate;
 	this->frameRateScale = vinfo.dwScale;
-	this->info.storeWidth = vinfo.dwWidth;
-	this->info.storeHeight = vinfo.dwHeight;
-	this->info.dispWidth = this->info.storeWidth;
-	this->info.dispHeight = this->info.storeHeight;
+	this->info.storeSize.x = vinfo.dwWidth;
+	this->info.storeSize.y = vinfo.dwHeight;
+	this->info.dispSize = this->info.storeSize;
 	this->info.fourcc = 0;
 	this->info.storeBPP = vinfo.dwBitCount;
 	this->info.pf = Media::PixelFormatGetDef(0, vinfo.dwBitCount);
@@ -94,7 +93,7 @@ Media::VFVideoStream::VFVideoStream(Media::VFMediaFile *mfile)
 	}
 	if (isNTSC)
 	{
-		if ((this->info.dispWidth == 720 && this->info.dispHeight == 480) || (this->info.dispWidth == 704 && this->info.dispHeight == 480))
+		if ((this->info.dispSize.x == 720 && this->info.dispSize.y == 480) || (this->info.dispSize.x == 704 && this->info.dispSize.y == 480))
 		{
 			this->info.par2 = 1/1.097222222222222222222;
 		}
@@ -157,7 +156,7 @@ Text::CString Media::VFVideoStream::GetFilterName()
 Bool Media::VFVideoStream::GetVideoInfo(Media::FrameInfo *info, UInt32 *frameRateNorm, UInt32 *frameRateDenorm, UOSInt *maxFrameSize)
 {
 	info->Set(&this->info);
-	*maxFrameSize = this->info.storeWidth * this->info.storeHeight * (this->info.storeBPP >> 3);
+	*maxFrameSize = this->info.storeSize.x * this->info.storeSize.y * (this->info.storeBPP >> 3);
 	*frameRateNorm = this->frameRate;
 	*frameRateDenorm = this->frameRateScale;
 	return true;
@@ -257,7 +256,7 @@ UInt32 Media::VFVideoStream::GetFrameTime(UOSInt frameIndex)
 void Media::VFVideoStream::EnumFrameInfos(FrameInfoCallback cb, void *userData)
 {
 	UInt32 i;
-	UOSInt dataSize = this->info.storeWidth * this->info.storeHeight * (this->info.storeBPP >> 3);
+	UOSInt dataSize = this->info.storeSize.x * this->info.storeSize.y * (this->info.storeBPP >> 3);
 	i = 0;
 	while (i < this->frameCnt)
 	{
@@ -280,10 +279,10 @@ UOSInt Media::VFVideoStream::ReadNextFrame(UInt8 *frameBuff, UInt32 *frameTime, 
 	rd.dwFrameNumberH = 0;
 	rd.dwFrameNumberL = this->currFrameNum;
 	rd.lpData = frameBuff;
-	rd.lPitch = (int)(this->info.storeWidth * (this->info.storeBPP >> 3));
+	rd.lPitch = (int)(this->info.storeSize.x * (this->info.storeBPP >> 3));
 	funcs->ReadData(mfile->file, VF_STREAM_VIDEO, &rd);
 	*frameTime = MulDivU32(this->currFrameNum, this->frameRateScale * 1000, this->frameRate);
 	*ftype = this->info.ftype;
 	this->currFrameNum++;
-	return (UInt32)rd.lPitch * this->info.storeHeight;
+	return (UInt32)rd.lPitch * this->info.storeSize.y;
 }

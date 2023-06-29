@@ -15,7 +15,7 @@
 
 void Map::TileMapGenerator::InitMapView(Map::MapView *view, Int32 x, Int32 y, UInt32 scale)
 {
-	view->UpdateSize(Math::Size2D<Double>(UOSInt2Double(this->imgSize * this->osSize), UOSInt2Double(this->imgSize * this->osSize)));
+	view->UpdateSize(Math::Size2DDbl(UOSInt2Double(this->imgSize * this->osSize), UOSInt2Double(this->imgSize * this->osSize)));
 	view->SetDPI((UOSInt2Double(this->osSize) * 96.0), 96.0);
 	view->SetCenterXY(Math::Coord2DDbl((x + 0.5) * this->imgSize * scale / 2000 / 283464, (y + 0.5) * this->imgSize * scale / 2000 / 283464));
 }
@@ -102,7 +102,7 @@ Bool Map::TileMapGenerator::GenerateDBFile(Int32 x, Int32 y, UInt32 scale, Map::
 	this->dbGenList.SortedInsert(id);
 	mutUsage.EndUse();
 
-	Map::ScaledMapView view(Math::Size2D<Double>(this->imgSize, this->imgSize), Math::Coord2DDbl(0, 0), scale, false);
+	Map::ScaledMapView view(Math::Size2DDbl(this->imgSize, this->imgSize), Math::Coord2DDbl(0, 0), scale, false);
 	InitMapView(&view, x, y, scale);
 
 	params.tileX = x;
@@ -110,7 +110,7 @@ Bool Map::TileMapGenerator::GenerateDBFile(Int32 x, Int32 y, UInt32 scale, Map::
 	params.labelType = 0;
 	params.dbStream = 0;
 
-	dimg2 = geng->CreateImage32(16, 16, Media::AT_NO_ALPHA);
+	dimg2 = geng->CreateImage32(Math::Size2D<UOSInt>(16, 16), Media::AT_NO_ALPHA);
 	dimg2->SetHDPI(96.0 * UOSInt2Double(this->osSize));
 	dimg2->SetVDPI(96.0 * UOSInt2Double(this->osSize));
 	mcfg->DrawMap(dimg2, &view, &isLayerEmpty, mapSch, resizer, CSTRP(sbuff, sptr), &params);
@@ -187,10 +187,10 @@ Bool Map::TileMapGenerator::GenerateTile(Int64 tileId, UInt32 scale, Map::MapSch
 	params.labelType = 2;
 	params.dbStream = &mstm;
 
-	Map::ScaledMapView view(Math::Size2D<Double>(this->imgSize, this->imgSize), Math::Coord2DDbl(0, 0), scale, false);
+	Map::ScaledMapView view(Math::Size2DDbl(this->imgSize, this->imgSize), Math::Coord2DDbl(0, 0), scale, false);
 	InitMapView(&view, x, y, scale);
 
-	dimg = this->geng->CreateImage32(this->imgSize, this->imgSize, Media::AT_NO_ALPHA);
+	dimg = this->geng->CreateImage32(Math::Size2D<UOSInt>(this->imgSize, this->imgSize), Media::AT_NO_ALPHA);
 	if (this->osSize == 1)
 	{
 		dimg->SetHDPI(96);
@@ -199,7 +199,7 @@ Bool Map::TileMapGenerator::GenerateTile(Int64 tileId, UInt32 scale, Map::MapSch
 	}
 	else
 	{
-		dimg2 = this->geng->CreateImage32((this->imgSize * this->osSize), (this->imgSize * this->osSize), Media::AT_NO_ALPHA);
+		dimg2 = this->geng->CreateImage32(Math::Size2D<UOSInt>((this->imgSize * this->osSize), (this->imgSize * this->osSize)), Media::AT_NO_ALPHA);
 		dimg2->SetHDPI(96.0 * UOSInt2Double(this->osSize));
 		dimg2->SetVDPI(96.0 * UOSInt2Double(this->osSize));
 		mcfg->DrawMap(dimg2, &view, &isLayerEmpty, mapSch, resizer, CSTR_NULL, &params);

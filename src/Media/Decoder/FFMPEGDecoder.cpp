@@ -597,8 +597,8 @@ Media::Decoder::FFMPEGDecoder::FFMPEGDecoder(IVideoSource *sourceVideo) : Media:
 #endif
 
 	data->ctx->codec_tag = data->srcFCC;
-	data->ctx->width = (int)frameInfo.dispWidth;
-	data->ctx->height = (int)frameInfo.dispHeight;
+	data->ctx->width = (int)frameInfo.dispSize.x;
+	data->ctx->height = (int)frameInfo.dispSize.y;
 	data->ctx->thread_count = (int)Sync::ThreadUtil::GetThreadCnt();
 	if (codecId == AV_CODEC_ID_H264)
 	{
@@ -632,7 +632,7 @@ Media::Decoder::FFMPEGDecoder::FFMPEGDecoder(IVideoSource *sourceVideo) : Media:
 	UOSInt frameSize;
 	if (sourceVideo->IsRealTimeSrc())
 	{
-		frameSize = frameInfo.dispWidth * frameInfo.dispHeight * 4;
+		frameSize = frameInfo.dispSize.CalcArea() * 4;
 	}
 	else
 	{
@@ -688,7 +688,7 @@ Media::Decoder::FFMPEGDecoder::FFMPEGDecoder(IVideoSource *sourceVideo) : Media:
 				frameNum++;
 				if (sourceVideo->IsRealTimeSrc())
 				{
-					frameSize = frameInfo.dispWidth * frameInfo.dispHeight * 4;
+					frameSize = frameInfo.dispSize.CalcArea() * 4;
 				}
 				else
 				{			
@@ -857,10 +857,8 @@ Bool Media::Decoder::FFMPEGDecoder::GetVideoInfo(Media::FrameInfo *info, UInt32 
 	if (!this->sourceVideo->GetVideoInfo(info, frameRateNorm, frameRateDenorm, maxFrameSize))
 		return false;
 	Bool fullRange = false;
-	info->dispWidth = data->dispWidth;
-	info->dispHeight = data->dispHeight;
-	info->storeWidth = data->storeWidth;
-	info->storeHeight = data->storeHeight;
+	info->dispSize = Math::Size2D<UOSInt>(data->dispWidth, data->dispHeight);
+	info->storeSize = Math::Size2D<UOSInt>(data->storeWidth, data->storeHeight);
 	info->par2 = data->par;
 	info->byteSize = 0;
 	switch (data->currFmt)
@@ -872,7 +870,7 @@ Bool Media::Decoder::FFMPEGDecoder::GetVideoInfo(Media::FrameInfo *info, UInt32 
 		info->fourcc = FFMT_YUV420P8;
 		info->storeBPP = 12;
 		info->pf = Media::PixelFormatGetDef(info->fourcc, info->storeBPP);
-		info->byteSize = (info->storeWidth * info->storeHeight * 3) >> 1;
+		info->byteSize = (info->storeSize.CalcArea() * 3) >> 1;
 		break;
 	case AV_PIX_FMT_YUVJ422P:
 		fullRange = true;
@@ -880,7 +878,7 @@ Bool Media::Decoder::FFMPEGDecoder::GetVideoInfo(Media::FrameInfo *info, UInt32 
 		info->fourcc = *(UInt32*)"YUY2";
 		info->storeBPP = 16;
 		info->pf = Media::PixelFormatGetDef(info->fourcc, info->storeBPP);
-		info->byteSize = info->storeWidth * info->storeHeight * 2;
+		info->byteSize = info->storeSize.CalcArea() * 2;
 		break;
 	case AV_PIX_FMT_YUV420P10LE:
 	case AV_PIX_FMT_YUV420P12LE:
@@ -894,13 +892,13 @@ Bool Media::Decoder::FFMPEGDecoder::GetVideoInfo(Media::FrameInfo *info, UInt32 
 		}
 		info->storeBPP = 24;
 		info->pf = Media::PixelFormatGetDef(info->fourcc, info->storeBPP);
-		info->byteSize = (info->storeWidth * info->storeHeight * 6) >> 1;
+		info->byteSize = (info->storeSize.CalcArea() * 6) >> 1;
 		break;
 	case AV_PIX_FMT_YUV444P10LE:
 		info->fourcc = FFMT_YUV444P10LE;
 		info->storeBPP = 48;
 		info->pf = Media::PixelFormatGetDef(info->fourcc, info->storeBPP);
-		info->byteSize = info->storeWidth * info->storeHeight * 6;
+		info->byteSize = info->storeSize.CalcArea() * 6;
 		break;
 	default:
 		printf("Unsupported decoded format: %d\r\n", data->currFmt);

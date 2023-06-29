@@ -32,17 +32,13 @@ namespace UI
 		Int64 mouseLDownTime;
 		Int64 mouseRDownTime;
 		Bool mouseDown;
-		OSInt mouseDownX;
-		OSInt mouseDownY;
-		OSInt mouseCurrX;
-		OSInt mouseCurrY;
+		Math::Coord2D<OSInt> mouseDownPos;
+		Math::Coord2D<OSInt> mouseCurrPos;
 		Bool gZoom;
-		OSInt gZoomX;
-		OSInt gZoomY;
+		Math::Coord2D<OSInt> gZoomPos;
 		UInt64 gZoomDist;
 		UInt64 gZoomCurrDist;
-		OSInt gZoomCurrX;
-		OSInt gZoomCurrY;
+		Math::Coord2D<OSInt> gZoomCurrPos;
 		Bool pauseUpdate;
 
 		Math::Coord2DDbl markerPos;
@@ -69,13 +65,13 @@ namespace UI
 	private:
 		static void __stdcall ImageUpdated(void *userObj);
 
-		virtual Bool OnMouseDown(OSInt scnX, OSInt scnY, MouseButton btn);
-		virtual Bool OnMouseUp(OSInt scnX, OSInt scnY, MouseButton btn);
-		virtual void OnMouseMove(OSInt scnX, OSInt scnY) ;
-		virtual Bool OnMouseWheel(OSInt scnX, OSInt scnY, Int32 delta);
-		virtual void OnGestureBegin(OSInt scnX, OSInt scnY, UInt64 dist);
-		virtual void OnGestureStep(OSInt scnX, OSInt scnY, UInt64 dist);
-		virtual void OnGestureEnd(OSInt scnX, OSInt scnY, UInt64 dist);
+		virtual Bool OnMouseDown(Math::Coord2D<OSInt> scnPos, MouseButton btn);
+		virtual Bool OnMouseUp(Math::Coord2D<OSInt> scnPos, MouseButton btn);
+		virtual void OnMouseMove(Math::Coord2D<OSInt> scnPos) ;
+		virtual Bool OnMouseWheel(Math::Coord2D<OSInt> scnPos, Int32 delta);
+		virtual void OnGestureBegin(Math::Coord2D<OSInt> scnPos, UInt64 dist);
+		virtual void OnGestureStep(Math::Coord2D<OSInt> scnPos, UInt64 dist);
+		virtual void OnGestureEnd(Math::Coord2D<OSInt> scnPos, UInt64 dist);
 		virtual void OnJSButtonDown(OSInt buttonId);
 		virtual void OnJSButtonUp(OSInt buttonId);
 		virtual void OnJSAxis(OSInt axis1, OSInt axis2, OSInt axis3, OSInt axis4);

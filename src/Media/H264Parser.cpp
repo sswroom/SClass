@@ -456,12 +456,12 @@ Bool Media::H264Parser::GetFrameInfo(const UInt8 *frame, UOSInt frameSize, Media
 	reader->ReadBits(&temp, 1); //gaps_in_frame_num_value_allowed_flag
 	if (ParseVari(reader, &pic_width_in_mbs_minus1))
 	{
-		frameInfo->storeWidth = ((UOSInt)pic_width_in_mbs_minus1 + 1) << 4;
+		frameInfo->storeSize.x = ((UOSInt)pic_width_in_mbs_minus1 + 1) << 4;
 	}
 	ParseVari(reader, &pic_height_in_map_units_minus1);
 	if (reader->ReadBits(&frame_mbs_only_flag, 1))
 	{
-		frameInfo->storeHeight = (2 - frame_mbs_only_flag) * ((UOSInt)pic_height_in_map_units_minus1 + 1) << 4;
+		frameInfo->storeSize.y = (2 - frame_mbs_only_flag) * ((UOSInt)pic_height_in_map_units_minus1 + 1) << 4;
 	}
 	mb_adaptive_frame_field_flag = 0;
 	if (frame_mbs_only_flag == 0)
@@ -470,18 +470,17 @@ Bool Media::H264Parser::GetFrameInfo(const UInt8 *frame, UOSInt frameSize, Media
 	}
 	reader->ReadBits(&temp, 1); //direct_8x8_inference_flag
 	reader->ReadBits(&temp, 1); //frame_cropping_flag
-	frameInfo->dispWidth = frameInfo->storeWidth;
-	frameInfo->dispHeight = frameInfo->storeHeight;
+	frameInfo->dispSize = frameInfo->storeSize;
 	if (temp)
 	{
 		if (ParseVari(reader, &temp))
-			frameInfo->dispWidth -= temp;
+			frameInfo->dispSize.x -= temp;
 		if (ParseVari(reader, &temp))
-			frameInfo->dispWidth -= temp;
+			frameInfo->dispSize.x -= temp;
 		if (ParseVari(reader, &temp))
-			frameInfo->dispHeight -= temp;
+			frameInfo->dispSize.y -= temp;
 		if (ParseVari(reader, &temp))
-			frameInfo->dispHeight -= temp;
+			frameInfo->dispSize.y -= temp;
 	}
 
 	if (flags)

@@ -4,6 +4,7 @@
 #include "Math/Math.h"
 #include "Math/Quadrilateral.h"
 #include "Math/RectAreaDbl.h"
+#include "Math/Size2D.h"
 
 namespace Math
 {
@@ -33,52 +34,57 @@ namespace Math
 			this->br = br;
 		}
 
-		Bool ContainPt(T x, T y)
+		Bool ContainPt(T x, T y) const
 		{
 			return (x >= tl.x && x < br.x && y >= tl.y && y < br.y);
 		}
 
-		Math::Coord2D<T> GetTL()
+		Math::Coord2D<T> GetTL() const
 		{
 			return this->tl;
 		}
 
-		Math::Coord2D<T> GetTR()
+		Math::Coord2D<T> GetTR() const
 		{
 			return Math::Coord2D<T>(this->br.x, this->tl.y);
 		}
 
-		Math::Coord2D<T> GetBR()
+		Math::Coord2D<T> GetBR() const
 		{
 			return this->br;
 		}
 
-		Math::Coord2D<T> GetBL()
+		Math::Coord2D<T> GetBL() const
 		{
 			return Math::Coord2D<T>(this->tl.x, this->br.y);
 		}
 
-		T GetWidth()
+		T GetWidth() const
 		{
 			return this->br.x - this->tl.x;
 		}
 
-		T GetHeight()
+		T GetHeight() const
 		{
 			return this->br.y - this->tl.y;
 		}
 
-		T GetArea()
+		T GetArea() const
 		{
 			return this->GetWidth() * this->GetHeight();
 		}
 
-		Math::Quadrilateral ToQuadrilateral()
+		Math::Size2D<T> GetSize() const
+		{
+			return this->br - this->tl;
+		}
+
+		Math::Quadrilateral ToQuadrilateral() const
 		{
 			return Math::Quadrilateral(GetTL().ToDouble(), GetTR().ToDouble(), GetBR().ToDouble(), GetBL().ToDouble());
 		}
 
-		Math::RectAreaDbl ToDouble()
+		Math::RectAreaDbl ToDouble() const
 		{
 			Math::RectAreaDbl rect;
 			rect.tl = Math::Coord2DDbl((Double)tl.x, (Double)tl.y);
@@ -86,7 +92,7 @@ namespace Math
 			return rect;
 		}
 
-		Math::RectArea<T> Reorder()
+		Math::RectArea<T> Reorder() const
 		{
 			Math::RectArea<T> ret = *this;
 			T tmp;
@@ -105,22 +111,22 @@ namespace Math
 			return ret;
 		}
 
-		Bool operator==(Math::RectArea<T> &rect)
+		Bool operator==(Math::RectArea<T> &rect) const
 		{
 			return this->tl == rect.tl && this->br == rect.br;
 		}
 
-		Math::RectArea<T> operator*(T v)
+		Math::RectArea<T> operator*(T v) const
 		{
 			return Math::RectArea<T>(this->tl * v, this->br * v);
 		}
 
-		Math::RectArea<T> operator/(T v)
+		Math::RectArea<T> operator/(T v) const
 		{
 			return Math::RectArea<T>(this->tl / v, this->br / v);
 		}
 
-		Bool OverlapOrTouch(RectArea<T> rect)
+		Bool OverlapOrTouch(RectArea<T> rect) const
 		{
 			return rect.tl.x <= this->br.x && rect.br.x >= this->tl.x && rect.tl.y <= this->br.y && rect.br.y >= this->tl.y;	
 		}

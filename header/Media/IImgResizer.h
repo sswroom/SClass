@@ -15,8 +15,7 @@ namespace Media
 		} ResizeAspectRatio;
 
 	protected:
-		UOSInt targetWidth;
-		UOSInt targetHeight;
+		Math::Size2D<UOSInt> targetSize;
 		ResizeAspectRatio rar;
 		Media::AlphaType srcAlphaType;
 	public:
@@ -28,14 +27,13 @@ namespace Media
 
 		virtual Bool IsSupported(const Media::FrameInfo *srcInfo) = 0;
 		virtual Media::StaticImage *ProcessToNew(const Media::Image *srcImage);
-		virtual Media::StaticImage *ProcessToNewPartial(const Media::Image *srcImage, Double srcX1, Double srcY1, Double srcX2, Double srcY2) = 0;
-		void SetTargetWidth(UOSInt targetWidth);
-		void SetTargetHeight(UOSInt targetHeight);
+		virtual Media::StaticImage *ProcessToNewPartial(const Media::Image *srcImage, Math::Coord2DDbl srcTL, Math::Coord2DDbl srcBR) = 0;
+		void SetTargetSize(Math::Size2D<UOSInt> targetSize);
 		void SetResizeAspectRatio(ResizeAspectRatio rar);
 		void SetSrcAlphaType(Media::AlphaType alphaType);
 		virtual void SetSrcRefLuminance(Double srcRefLuminance);
 
-		static void CalOutputSize(const Media::FrameInfo *srcInfo, UOSInt targetWidth, UOSInt targetHeight, Media::FrameInfo *destInfo, ResizeAspectRatio rar);
+		static void CalOutputSize(const Media::FrameInfo *srcInfo, Math::Size2D<UOSInt> targetSize, Media::FrameInfo *destInfo, ResizeAspectRatio rar);
 	};
 }
 #endif

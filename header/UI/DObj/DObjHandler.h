@@ -37,9 +37,9 @@ namespace UI
 			void BeginUpdate();
 			void EndUpdate();
 
-			void OnMouseDown(OSInt x, OSInt y, UI::GUIControl::MouseButton button);
-			void OnMouseUp(OSInt x, OSInt y, UI::GUIControl::MouseButton button);
-			void OnMouseMove(OSInt x, OSInt y);
+			void OnMouseDown(Math::Coord2D<OSInt> scnPos, UI::GUIControl::MouseButton button);
+			void OnMouseUp(Math::Coord2D<OSInt> scnPos, UI::GUIControl::MouseButton button);
+			void OnMouseMove(Math::Coord2D<OSInt> scnPos);
 			virtual void SizeChanged(Math::Size2D<UOSInt> size);
 		};
 	}

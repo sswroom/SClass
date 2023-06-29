@@ -430,10 +430,8 @@ Media::IMediaSource *Parser::FileParser::QTParser::ParseStblAtom(IO::StreamData 
 	if (mtyp == Media::MEDIA_TYPE_VIDEO)
 	{
 		frInfo.fourcc = (UInt32)-1;
-		frInfo.storeWidth = 0;
-		frInfo.storeHeight = 0;
-		frInfo.dispWidth = 0;
-		frInfo.dispHeight = 0;
+		frInfo.storeSize = Math::Size2D<UOSInt>(0, 0);
+		frInfo.dispSize = Math::Size2D<UOSInt>(0, 0);
 		frInfo.storeBPP = 0;
 		frInfo.pf = Media::PF_UNKNOWN;
 		frInfo.byteSize = 0;
@@ -476,10 +474,9 @@ Media::IMediaSource *Parser::FileParser::QTParser::ParseStblAtom(IO::StreamData 
 //			descSize = ReadMInt32(&buff[8]);
 			if (mtyp == Media::MEDIA_TYPE_VIDEO)
 			{
-				frInfo.dispWidth = ReadMUInt16(&buff[40]);
-				frInfo.dispHeight = ReadMUInt16(&buff[42]);
-				frInfo.storeWidth = frInfo.dispWidth;
-				frInfo.storeHeight = frInfo.dispHeight;
+				frInfo.dispSize.x = ReadMUInt16(&buff[40]);
+				frInfo.dispSize.y = ReadMUInt16(&buff[42]);
+				frInfo.storeSize = frInfo.dispSize;
 				frInfo.storeBPP = ReadMUInt16(&buff[90]);
 				frInfo.pf = Media::PF_UNKNOWN;
 //				frameCnt = ReadMUInt16(&buff[56]);

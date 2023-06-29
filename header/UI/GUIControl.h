@@ -255,7 +255,7 @@ namespace UI
 		virtual UTF8Char *GetText(UTF8Char *buff);
 		virtual Bool GetText(Text::StringBuilderUTF8 *sb);
 		virtual void SetSize(Double width, Double height);
-		virtual void SetSizeP(UOSInt width, UOSInt height);
+		virtual void SetSizeP(Math::Size2D<UOSInt> size);
 		virtual void GetSize(Double *width, Double *height);
 		virtual Math::Size2D<UOSInt> GetSizeP();
 		virtual void SetPosition(Double x, Double y);

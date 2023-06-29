@@ -56,7 +56,7 @@ namespace SSWR
 			static void __stdcall OnTimerTick(void *userObj);
 			static void __stdcall OnDebugClosed(void *userObj, UI::GUIForm *frm);
 			static void __stdcall OnVideoEnd(void *userObj);
-			static void __stdcall OnMouseAction(void *userObj, UI::GUIVideoBoxDD::MouseAction ma, OSInt x, OSInt y);
+			static void __stdcall OnMouseAction(void *userObj, UI::GUIVideoBoxDD::MouseAction ma, Math::Coord2D<OSInt> scnPos);
 
 			virtual void OnMediaOpened();
 			virtual void OnMediaClosed();

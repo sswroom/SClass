@@ -1,59 +1,44 @@
 #ifndef _SM_MATH_SIZE2D
 #define _SM_MATH_SIZE2D
 #include "Math/Coord2D.h"
+#include "Math/Size2DDbl.h"
 
 namespace Math
 {
-	template <typename T> struct Size2D
+	template <typename T> struct Size2D : public Coord2D<T>
 	{
-		T width;
-		T height;
-
 		Size2D() = default;
-		Size2D(void *)
+		Size2D(Coord2D<T> v) : Coord2D<T>(v)
 		{
-			this->width = 0;
-			this->height = 0;
-		}
-		Size2D(T w, T h)
-		{
-			this->width = w;
-			this->height = h;
 		}
 
-		T CalcArea()
+		Size2D(T w, T h) : Coord2D<T>(w, h)
 		{
-			return this->width * this->height;
 		}
 
-		Bool operator==(Size2D<T> size) const
+		T GetWidth() const
 		{
-			return this->width == size.width && this->height == size.height;
+			return this->x;
 		}
 
-		Bool operator!=(Size2D<T> size) const
+		T GetHeight() const
 		{
-			return this->width != size.width || this->height != size.height;
-		}
-		
-		Size2D<T> operator*(T val) const
-		{
-			return Size2D<T>(this->width * val, this->height * val);
+			return this->y;
 		}
 
-		Size2D<Double> ToDouble() const
+		T CalcArea() const
 		{
-			return Size2D<Double>((Double)this->width, (Double)this->height);
+			return this->x * this->y;
 		}
 
-		Math::Coord2DDbl ToCoord() const
+		Size2DDbl ToDouble() const
 		{
-			return Math::Coord2DDbl((Double)this->width, (Double)this->height);
+			return this->Coord2D<T>::ToDouble();
 		}
 
 		Bool HasArea() const
 		{
-			return this->width > 0 && this->height > 0;
+			return this->x > 0 && this->y > 0;
 		}
 	};
 }

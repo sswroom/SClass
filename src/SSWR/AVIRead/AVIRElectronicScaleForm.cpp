@@ -55,16 +55,16 @@ void __stdcall SSWR::AVIRead::AVIRElectronicScaleForm::OnTimerTick(void *userObj
 		strSize = (UOSInt)(sptr - sbuff);
 
 		Math::Size2D<UOSInt> usz = me->pbsDisplay->GetSizeP();
-		if (usz.width > 0 && usz.height > 0)
+		if (usz.x > 0 && usz.y > 0)
 		{
 			if (me->dimg == 0)
 			{
-				me->dimg = me->eng->CreateImage32(usz.width, usz.height, Media::AT_NO_ALPHA);
+				me->dimg = me->eng->CreateImage32(usz, Media::AT_NO_ALPHA);
 			}
-			else if (me->dimg->GetWidth() != usz.width || me->dimg->GetHeight() != usz.height)
+			else if (me->dimg->GetWidth() != usz.x || me->dimg->GetHeight() != usz.y)
 			{
 				me->eng->DeleteImage(me->dimg);
-				me->dimg = me->eng->CreateImage32(usz.width, usz.height, Media::AT_NO_ALPHA);
+				me->dimg = me->eng->CreateImage32(usz, Media::AT_NO_ALPHA);
 			}
 
 			if (me->dimg)
@@ -72,27 +72,27 @@ void __stdcall SSWR::AVIRead::AVIRElectronicScaleForm::OnTimerTick(void *userObj
 				Media::DrawBrush *b;
 				Media::DrawFont *f;
 				b = me->dimg->NewBrushARGB(0xffffffff);
-				me->dimg->DrawRect(0, 0, UOSInt2Double(usz.width), UOSInt2Double(usz.height), 0, b);
+				me->dimg->DrawRect(Math::Coord2DDbl(0, 0), usz.ToDouble(), 0, b);
 				me->dimg->DelBrush(b);
 
 				Double fontHeight;
-				Math::Size2D<Double> sz;
-				fontHeight = UOSInt2Double(usz.width) / UOSInt2Double(strSize);
+				Math::Size2DDbl sz;
+				fontHeight = UOSInt2Double(usz.x) / UOSInt2Double(strSize);
 				f = me->dimg->NewFontPx(CSTR("Arial"), fontHeight, Media::DrawEngine::DFS_NORMAL, 0);
 				sz = me->dimg->GetTextSize(f, {sbuff, strSize});
 				me->dimg->DelFont(f);
-				if (UOSInt2Double(usz.width) * sz.height > UOSInt2Double(usz.height) * sz.width) //w / sz[0] > h / sz[1]
+				if (UOSInt2Double(usz.x) * sz.y > UOSInt2Double(usz.y) * sz.x) //w / sz[0] > h / sz[1]
 				{
-					fontHeight = fontHeight * UOSInt2Double(usz.height) / sz.height;
+					fontHeight = fontHeight * UOSInt2Double(usz.y) / sz.y;
 				}
 				else
 				{
-					fontHeight = fontHeight * UOSInt2Double(usz.width) / sz.width;
+					fontHeight = fontHeight * UOSInt2Double(usz.x) / sz.x;
 				}
 				f = me->dimg->NewFontPx(CSTR("Arial"), fontHeight, Media::DrawEngine::DFS_NORMAL, 0);
 				b = me->dimg->NewBrushARGB(0xff000000);
 				sz = me->dimg->GetTextSize(f, {sbuff, strSize});
-				me->dimg->DrawString((UOSInt2Double(usz.width) - sz.width) * 0.5, (UOSInt2Double(usz.height) - sz.height) * 0.5, {sbuff, strSize}, f, b);
+				me->dimg->DrawString((usz.ToDouble() - sz) * 0.5, {sbuff, strSize}, f, b);
 				me->dimg->DelFont(f);
 				me->dimg->DelBrush(b);
 

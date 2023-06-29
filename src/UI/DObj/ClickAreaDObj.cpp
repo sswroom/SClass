@@ -28,10 +28,10 @@ void UI::DObj::ClickAreaDObj::DrawObject(Media::DrawImage *dimg)
 {
 }
 
-Bool UI::DObj::ClickAreaDObj::IsObject(OSInt x, OSInt y)
+Bool UI::DObj::ClickAreaDObj::IsObject(Math::Coord2D<OSInt> scnPos)
 {
 	Math::Coord2D<OSInt> tl = this->GetCurrPos();
-	if (x >= tl.x && x < tl.x + this->width && y >= tl.y && y < tl.y + this->height)
+	if (scnPos.x >= tl.x && scnPos.x < tl.x + this->width && scnPos.y >= tl.y && scnPos.y < tl.y + this->height)
 		return true;
 	return false;
 }
