@@ -96,10 +96,10 @@ Bool Exporter::GPXExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 		while (k < l)
 		{
 			writer->WriteStrC(UTF8STRC("<trkpt lat=\""));
-			sptr = Text::StrDouble(sbuff, recs[k].pos.lat);
+			sptr = Text::StrDouble(sbuff, recs[k].pos.GetLat());
 			writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
 			writer->WriteStrC(UTF8STRC("\" lon=\""));
-			sptr = Text::StrDouble(sbuff, recs[k].pos.lon);
+			sptr = Text::StrDouble(sbuff, recs[k].pos.GetLon());
 			writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
 			writer->WriteLineC(UTF8STRC("\">"));
 			
@@ -115,10 +115,10 @@ Bool Exporter::GPXExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 			writer->WriteLineC(UTF8STRC("</time>"));
 
 			writer->WriteStrC(UTF8STRC("<desc>lat.="));
-			sptr = Text::StrDoubleFmt(sbuff, recs[k].pos.lat, "0.000000");
+			sptr = Text::StrDoubleFmt(sbuff, recs[k].pos.GetLat(), "0.000000");
 			writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
 			writer->WriteStrC(UTF8STRC(", lon.="));
-			sptr = Text::StrDoubleFmt(sbuff, recs[k].pos.lon, "0.000000");
+			sptr = Text::StrDoubleFmt(sbuff, recs[k].pos.GetLon(), "0.000000");
 			writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
 			writer->WriteStrC(UTF8STRC(", Alt.="));
 			sptr = Text::StrDoubleFmt(sbuff, recs[k].altitude, "0.000000");

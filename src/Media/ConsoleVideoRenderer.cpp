@@ -37,7 +37,7 @@ void Media::ConsoleVideoRenderer::SetRotateType(Media::RotateType rotateType)
 		this->primarySurface->info.rotateType = rotateType;
 		if (rtChange == Media::RotateType::CW_90 || rtChange == Media::RotateType::CW_270)
 		{
-			this->primarySurface->info.dispSize = this->primarySurface->info.dispSize.XchgXY();
+			this->primarySurface->info.dispSize = this->primarySurface->info.dispSize.SwapXY();
 			this->UpdateDispInfo(this->primarySurface->info.dispSize, this->primarySurface->info.storeBPP, this->primarySurface->info.pf);
 			mutUsage.EndUse();
 		}

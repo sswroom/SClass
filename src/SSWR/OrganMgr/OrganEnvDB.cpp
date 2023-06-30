@@ -1661,9 +1661,9 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 					sql.AppendCmdC(CSTR(", "));
 					sql.AppendTS(fileTime);
 					sql.AppendCmdC(CSTR(", "));
-					sql.AppendDbl(pos.lat);
+					sql.AppendDbl(pos.GetLat());
 					sql.AppendCmdC(CSTR(", "));
-					sql.AppendDbl(pos.lon);
+					sql.AppendDbl(pos.GetLon());
 					sql.AppendCmdC(CSTR(", "));
 					sql.AppendInt32(this->userId);
 					sql.AppendCmdC(CSTR(", "));
@@ -1692,8 +1692,8 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 						userFile->fileType = fileType;
 						userFile->oriFileName = Text::String::New(fileName.Substring(i + 1));
 						userFile->fileTime = fileTime;
-						userFile->lat = pos.lat;
-						userFile->lon = pos.lon;
+						userFile->lat = pos.GetLat();
+						userFile->lon = pos.GetLon();
 						userFile->webuserId = this->userId;
 						userFile->speciesId = sp->GetSpeciesId();
 						userFile->captureTime = userFile->fileTime;
@@ -3277,7 +3277,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::AddDataFile(Text::CString fileName)
 							{
 								Math::Coord2DDbl pos = Math::Coord2DDbl(0, 0);
 								gpsTrk->GetPosByTime(userFile->captureTime, &pos);
-								this->UpdateUserFilePos(userFile, userFile->captureTime, pos.lat, pos.lon);
+								this->UpdateUserFilePos(userFile, userFile->captureTime, pos.GetLat(), pos.GetLon());
 							}
 							startIndex++;
 						}

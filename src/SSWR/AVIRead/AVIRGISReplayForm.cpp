@@ -71,9 +71,9 @@ void __stdcall SSWR::AVIRead::AVIRGISReplayForm::OnLbRecordChg(void *userObj)
 		dt.SetInstant(recs[i].recTime);
 		sptr = dt.ToStringNoZone(sbuff);
 		me->txtGPSTime->SetText(CSTRP(sbuff, sptr));
-		sptr = Text::StrDouble(sbuff, recs[i].pos.lat);
+		sptr = Text::StrDouble(sbuff, recs[i].pos.GetLat());
 		me->txtLatitude->SetText(CSTRP(sbuff, sptr));
-		sptr = Text::StrDouble(sbuff, recs[i].pos.lon);
+		sptr = Text::StrDouble(sbuff, recs[i].pos.GetLon());
 		me->txtLongitude->SetText(CSTRP(sbuff, sptr));
 		sptr = Text::StrDoubleFmt(sbuff, recs[i].altitude, "0.##########");
 		me->txtAltitude->SetText(CSTRP(sbuff, sptr));
@@ -125,7 +125,7 @@ void __stdcall SSWR::AVIRead::AVIRGISReplayForm::OnLbRecordChg(void *userObj)
 			}
 			else
 			{
-				me->navi->ShowMarkerDir(recs[i].pos, Math_ArcTan2(recs[i - 1].pos.lat - recs[i].pos.lat, recs[i].pos.lon - recs[i - 1].pos.lon) + Math::PI * 0.5, Math::Unit::Angle::AU_RADIAN);
+				me->navi->ShowMarkerDir(recs[i].pos, Math_ArcTan2(recs[i - 1].pos.GetLat() - recs[i].pos.GetLat(), recs[i].pos.GetLon() - recs[i - 1].pos.GetLon()) + Math::PI * 0.5, Math::Unit::Angle::AU_RADIAN);
 			}
 		}
 		else

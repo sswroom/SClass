@@ -235,7 +235,7 @@ UOSInt Media::VectorGraph::GetHeight() const
 
 Math::Size2D<UOSInt> Media::VectorGraph::GetSize() const
 {
-	return Math::Size2D<UOSInt>::FromDouble(this->size);
+	return Math::Size2D<UOSInt>::UOSIntFromDouble(this->size);
 }
 
 UInt32 Media::VectorGraph::GetBitCount() const

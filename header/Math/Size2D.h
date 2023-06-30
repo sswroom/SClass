@@ -1,18 +1,17 @@
 #ifndef _SM_MATH_SIZE2D
 #define _SM_MATH_SIZE2D
-#include "Math/Coord2D.h"
-#include "Math/Size2DDbl.h"
+#include "Math/Value2D.h"
 
 namespace Math
 {
-	template <typename T> struct Size2D : public Coord2D<T>
+	template <typename T> struct Size2D : public Value2D<T>
 	{
 		Size2D() = default;
-		Size2D(Coord2D<T> v) : Coord2D<T>(v)
+		Size2D(Value2D<T> v) : Value2D<T>(v)
 		{
 		}
 
-		Size2D(T w, T h) : Coord2D<T>(w, h)
+		Size2D(T w, T h) : Value2D<T>(w, h)
 		{
 		}
 
@@ -29,11 +28,6 @@ namespace Math
 		T CalcArea() const
 		{
 			return this->x * this->y;
-		}
-
-		Size2DDbl ToDouble() const
-		{
-			return this->Coord2D<T>::ToDouble();
 		}
 
 		Bool HasArea() const

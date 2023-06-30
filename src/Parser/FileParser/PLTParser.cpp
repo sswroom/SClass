@@ -91,8 +91,8 @@ IO::ParsedObject *Parser::FileParser::PLTParser::ParseFileHdr(IO::StreamData *fd
 				Double tval;
 				Data::DateTime dt(1899, 12, 30, 0, 0, 0, 0);
 				Map::GPSTrack::GPSRecord3 rec;
-				rec.pos.lat = Text::StrToDouble(tmpArr[0]);
-				rec.pos.lon = Text::StrToDouble(tmpArr[1]);
+				rec.pos.SetLat(Text::StrToDouble(tmpArr[0]));
+				rec.pos.SetLon(Text::StrToDouble(tmpArr[1]));
 				rec.heading = 0;
 				rec.nSateUsed = 0;
 				rec.nSateUsedGLO = 0;

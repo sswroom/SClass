@@ -623,49 +623,49 @@ UOSInt Map::GPSTrack::AddRecord(Map::GPSTrack::GPSRecord3 *rec)
 	Sync::MutexUsage mutUsage(&this->recMut);
 	if (this->currTimes.GetCount() == 0)
 	{
-		this->currMaxLat = this->currMinLat = rec->pos.lat;
-		this->currMaxLon = this->currMinLon = rec->pos.lon;
+		this->currMaxLat = this->currMinLat = rec->pos.GetLat();
+		this->currMaxLon = this->currMinLon = rec->pos.GetLon();
 		if (this->currTracks.GetCount() == 0)
 		{
-			this->maxLat = this->minLat = rec->pos.lat;
-			this->maxLon = this->minLon = rec->pos.lon;
+			this->maxLat = this->minLat = rec->pos.GetLat();
+			this->maxLon = this->minLon = rec->pos.GetLon();
 		}
 	}
 	else
 	{
-		if (this->currMaxLat < rec->pos.lat)
+		if (this->currMaxLat < rec->pos.GetLat())
 		{
-			this->currMaxLat = rec->pos.lat;
+			this->currMaxLat = rec->pos.GetLat();
 		}
-		if (this->currMinLat > rec->pos.lat)
+		if (this->currMinLat > rec->pos.GetLat())
 		{
-			this->currMinLat = rec->pos.lat;
+			this->currMinLat = rec->pos.GetLat();
 		}
-		if (this->currMaxLon < rec->pos.lon)
+		if (this->currMaxLon < rec->pos.GetLon())
 		{
-			this->currMaxLon = rec->pos.lon;
+			this->currMaxLon = rec->pos.GetLon();
 		}
-		if (this->currMinLon > rec->pos.lon)
+		if (this->currMinLon > rec->pos.GetLon())
 		{
-			this->currMinLon = rec->pos.lon;
+			this->currMinLon = rec->pos.GetLon();
 		}
 	}
 
-	if (this->maxLat < rec->pos.lat)
+	if (this->maxLat < rec->pos.GetLat())
 	{
-		this->maxLat = rec->pos.lat;
+		this->maxLat = rec->pos.GetLat();
 	}
-	if (this->minLat > rec->pos.lat)
+	if (this->minLat > rec->pos.GetLat())
 	{
-		this->minLat = rec->pos.lat;
+		this->minLat = rec->pos.GetLat();
 	}
-	if (this->maxLon < rec->pos.lon)
+	if (this->maxLon < rec->pos.GetLon())
 	{
-		this->maxLon = rec->pos.lon;
+		this->maxLon = rec->pos.GetLon();
 	}
-	if (this->minLon > rec->pos.lon)
+	if (this->minLon > rec->pos.GetLon())
 	{
-		this->minLon = rec->pos.lon;
+		this->minLon = rec->pos.GetLon();
 	}
 
 	Map::GPSTrack::GPSRecord3 *newRec;
@@ -1121,11 +1121,11 @@ Int32 Map::GPSDataReader::GetInt32(UOSInt colIndex)
 		return 0;
 	if (colIndex == 2)
 	{
-		return Double2Int32(this->currRec->pos.lat);
+		return Double2Int32(this->currRec->pos.GetLat());
 	}
 	else if (colIndex == 3)
 	{
-		return Double2Int32(this->currRec->pos.lon);
+		return Double2Int32(this->currRec->pos.GetLon());
 	}
 	else if (colIndex == 4)
 	{
@@ -1267,11 +1267,11 @@ Double Map::GPSDataReader::GetDbl(UOSInt colIndex)
 		return 0;
 	if (colIndex == 2)
 	{
-		return this->currRec->pos.lat;
+		return this->currRec->pos.GetLat();
 	}
 	else if (colIndex == 3)
 	{
-		return this->currRec->pos.lon;
+		return this->currRec->pos.GetLon();
 	}
 	else if (colIndex == 4)
 	{

@@ -30,15 +30,15 @@ Bool __stdcall SSWR::AVIRead::AVIRGPSSimulatorForm::OnMouseDown(void *userObj, M
 	if (me->currPos.IsZero())
 	{
 		me->currPos = pos;
-		sptr = Text::StrDouble(sbuff, pos.lat);
+		sptr = Text::StrDouble(sbuff, pos.GetLat());
 		me->txtCurrLat->SetText(CSTRP(sbuff, sptr));
-		sptr = Text::StrDouble(sbuff, pos.lon);
+		sptr = Text::StrDouble(sbuff, pos.GetLon());
 		me->txtCurrLon->SetText(CSTRP(sbuff, sptr));
 		me->navi->ShowMarker(pos);
 	}
 	else
 	{
-		sptr = Text::StrDouble(Text::StrConcatC(Text::StrDouble(sbuff, pos.lat), UTF8STRC(", ")), pos.lon);
+		sptr = Text::StrDouble(Text::StrConcatC(Text::StrDouble(sbuff, pos.GetLat()), UTF8STRC(", ")), pos.GetLon());
 		me->lbPoints->AddItem(CSTRP(sbuff, sptr), 0);
 		me->points.Add(pos);
 	}
@@ -95,33 +95,33 @@ void __stdcall SSWR::AVIRead::AVIRGPSSimulatorForm::OnTimerTick(void *userObj)
 			if (dist < maxDist)
 			{
 				me->currPos = destPos;
-				me->GenRecord(me->currPos.lat, me->currPos.lon, dir * 180 / Math::PI, dist * 3.6 / 1.852, true);
+				me->GenRecord(me->currPos, dir * 180 / Math::PI, dist * 3.6 / 1.852, true);
 				me->lbPoints->RemoveItem(0);
 				me->points.RemoveAt(0);
 			}
 			else
 			{
 				me->currPos = me->currPos + (destPos - me->currPos) * maxDist / dist;
-				me->GenRecord(me->currPos.lat, me->currPos.lon, dir * 180 / Math::PI, maxDist * 3.6 / 1.852, true);
+				me->GenRecord(me->currPos, dir * 180 / Math::PI, maxDist * 3.6 / 1.852, true);
 			}
 			me->navi->ShowMarker(me->currPos);
-			sptr = Text::StrDouble(sbuff, me->currPos.lon);
+			sptr = Text::StrDouble(sbuff, me->currPos.GetLon());
 			me->txtCurrLon->SetText(CSTRP(sbuff, sptr));
-			sptr = Text::StrDouble(sbuff, me->currPos.lat);
+			sptr = Text::StrDouble(sbuff, me->currPos.GetLat());
 			me->txtCurrLat->SetText(CSTRP(sbuff, sptr));
 		}
 		else if (me->currPos.IsZero())
 		{
-			me->GenRecord(me->currPos.lat, me->currPos.lon, 0, 0, false);
+			me->GenRecord(me->currPos, 0, 0, false);
 		}
 		else
 		{
-			me->GenRecord(me->currPos.lat, me->currPos.lon, 0, 0, true);
+			me->GenRecord(me->currPos, 0, 0, true);
 		}
 	}
 }
 
-void SSWR::AVIRead::AVIRGPSSimulatorForm::GenRecord(Double lat, Double lon, Double dir, Double speed, Bool isValid)
+void SSWR::AVIRead::AVIRGPSSimulatorForm::GenRecord(Math::Coord2DDbl pt, Double dir, Double speed, Bool isValid)
 {
 	Char buff[256];
 	Char *cptr;
@@ -137,9 +137,9 @@ void SSWR::AVIRead::AVIRGPSSimulatorForm::GenRecord(Double lat, Double lon, Doub
 	if (isValid)
 	{
 		cptr = Text::StrConcat(cptr, ",");
-		cptr = GenLat(cptr, lat);
+		cptr = GenLat(cptr, pt.GetLat());
 		cptr = Text::StrConcat(cptr, ",");
-		cptr = GenLon(cptr, lon);
+		cptr = GenLon(cptr, pt.GetLon());
 		cptr = Text::StrConcat(cptr, ",1"); //GPS fix
 		cptr = Text::StrConcat(cptr, ",9"); //nSate View
 		cptr = Text::StrConcat(cptr, ",1.5"); //HDOP
@@ -175,9 +175,9 @@ void SSWR::AVIRead::AVIRGPSSimulatorForm::GenRecord(Double lat, Double lon, Doub
 	if (isValid)
 	{
 		cptr = Text::StrConcat(cptr, ",A,");
-		cptr = GenLat(cptr, lat);
+		cptr = GenLat(cptr, pt.GetLat());
 		cptr = Text::StrConcat(cptr, ",");
-		cptr = GenLon(cptr, lon);
+		cptr = GenLon(cptr, pt.GetLon());
 		cptr = Text::StrConcat(cptr, ",");
 		cptr = Text::StrDoubleFmt(cptr, speed, "0.00");
 		cptr = Text::StrConcat(cptr, ",");

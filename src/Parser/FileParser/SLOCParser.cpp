@@ -262,8 +262,8 @@ IO::ParsedObject *Parser::FileParser::SLOCParser::ParseFileHdr(IO::StreamData *f
 		ExtraInfo extInfo;
 		fd->GetRealData(currPos, 84, buff);
 		extInfo.termId = ReadInt64(&buff[0]);
-		rec.pos.lat = ReadInt32(&buff[8]) / 200000.0;
-		rec.pos.lon = ReadInt32(&buff[12]) / 200000.0;
+		rec.pos.SetLat(ReadInt32(&buff[8]) / 200000.0);
+		rec.pos.SetLon(ReadInt32(&buff[12]) / 200000.0);
 		rec.speed = ReadUInt16(&buff[16]) * 0.01;
 		rec.heading = ReadUInt16(&buff[18]) * 0.01;
 		rec.recTime = Data::TimeInstant(ReadUInt32(&buff[20]), 0);

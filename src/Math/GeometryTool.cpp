@@ -986,16 +986,16 @@ Double Math::GeometryTool::CalcMaxDistanceFromPoint(Math::Coord2DDbl pt, Math::G
 	}
 }
 
-Math::Coord2DDbl Math::GeometryTool::MercatorToProject(Double lat, Double lon)
+Math::Coord2DDbl Math::GeometryTool::MercatorToProject(Math::Coord2DDbl pt)
 {
 	Double a = 6378137.0;
-	return Math::Coord2DDbl(lon * a, a * Math_Ln(Math_Tan(Math::PI * 0.25 + lat * 0.5)));
+	return Math::Coord2DDbl(pt.GetLon() * a, a * Math_Ln(Math_Tan(Math::PI * 0.25 + pt.GetLat() * 0.5)));
 }
 
 void Math::GeometryTool::CalcHVAngleRad(Math::Coord2DDbl ptCurr, Math::Coord2DDbl ptNext, Double heightCurr, Double heightNext, Double *hAngle, Double *vAngle)
 {
-	Math::Coord2DDbl projCurr = MercatorToProject(ptCurr.lat, ptCurr.lon);
-	Math::Coord2DDbl projDiff = MercatorToProject(ptNext.lat, ptNext.lon) - projCurr;
+	Math::Coord2DDbl projCurr = MercatorToProject(ptCurr);
+	Math::Coord2DDbl projDiff = MercatorToProject(ptNext) - projCurr;
 	Double len = Math_Sqrt(projDiff.x * projDiff.x + projDiff.y * projDiff.y);
 	if (len == 0)
 	{

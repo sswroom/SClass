@@ -325,14 +325,14 @@ void Text::ReportBuilder::SetColumnType(UOSInt index, ColType colType)
 	this->colTypes[index] = colType;
 }
 
-void Text::ReportBuilder::SetColURLLatLon(UOSInt index, Double lat, Double lon)
+void Text::ReportBuilder::SetColURLLatLon(UOSInt index, Math::Coord2DDbl pos)
 {
 	ColURLLatLon *url;
 	url = MemAlloc(ColURLLatLon, 1);
 	url->col = index;
 	url->row = this->tableContent.GetCount();
-	url->lat = lat;
-	url->lon = lon;
+	url->lat = pos.GetLat();
+	url->lon = pos.GetLon();
 	this->urlList.Add(url);
 }
 

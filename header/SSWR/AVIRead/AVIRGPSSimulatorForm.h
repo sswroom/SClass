@@ -47,7 +47,7 @@ namespace SSWR
 			static void __stdcall OnStreamClicked(void *userObj);
 			static void __stdcall OnSpeedClicked(void *userObj);
 			static void __stdcall OnTimerTick(void *userObj);
-			void GenRecord(Double lat, Double lon, Double dir, Double speed, Bool isValid);
+			void GenRecord(Math::Coord2DDbl pt, Double dir, Double speed, Bool isValid);
 			Char *GenLat(Char *ptr, Double lat);
 			Char *GenLon(Char *ptr, Double lon);
 			Char *GenCheck(Char *ptr, Char *start);

@@ -2278,6 +2278,7 @@ Math/CoordinateSystem.h: ../../src/Math/CoordinateSystem.cpp
 @CoordinateSystem.o
 Math/CoordinateSystemManager.h: ../../src/Math/CoordinateSystemManager.cpp
 @CoordinateSystemManager.o
+Math/Double2D.h:
 Math/EarthEllipsoid.h: ../../src/Math/EarthEllipsoid.cpp
 @EarthEllipsoid.o
 Math/FFT.h: ../../src/Math/FFT.cpp
@@ -2326,6 +2327,7 @@ Math/TSPFile.h: ../../src/Math/TSPFile.cpp
 @TSPFile.o
 Math/UTMGridConvertDbl.h: ../../src/Math/UTMGridConvertDbl.cpp
 @UTMGridConvertDbl.o
+Math/Value2D.h:
 Math/VectorTextWriter.h:
 Math/VectorTextWriterList.h: ../../src/Math/VectorTextWriterList.cpp
 @VectorTextWriterList.o

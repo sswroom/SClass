@@ -86,9 +86,9 @@ Bool Exporter::PLTExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 		recs = track->GetTrack(i, &l);
 		while (k < l)
 		{
-			sptr = FixDouble(sbuff, recs[k].pos.lat, "0.000000", 11);
+			sptr = FixDouble(sbuff, recs[k].pos.GetLat(), "0.000000", 11);
 			sptr = Text::StrConcatC(sptr, UTF8STRC(","));
-			sptr = FixDouble(sptr, recs[k].pos.lon, "0.000000", 11);
+			sptr = FixDouble(sptr, recs[k].pos.GetLon(), "0.000000", 11);
 			sptr = Text::StrConcatC(sptr, UTF8STRC(","));
 			if (k == 0)
 			{

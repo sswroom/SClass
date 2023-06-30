@@ -145,8 +145,8 @@ IO::ParsedObject *Parser::FileParser::SPREDParser::ParseFileHdr(IO::StreamData *
 					currDevId = devId;
 				}
 				rec = MemAllocA(Map::GPSTrack::GPSRecord3, 1);
-				rec->pos.lat = (*(Int32*)&buff[i + 8]) / 200000.0;
-				rec->pos.lon = (*(Int32*)&buff[i + 12]) / 200000.0;
+				rec->pos.SetLat((*(Int32*)&buff[i + 8]) / 200000.0);
+				rec->pos.SetLon((*(Int32*)&buff[i + 12]) / 200000.0);
 				rec->speed = *(Int32*)&buff[i + 16] * 0.0001;
 				rec->heading = *(UInt16*)&buff[i + 20] * 0.01;
 				rec->recTime = Data::TimeInstant(ReadUInt32(&buff[i + 22]), 0);

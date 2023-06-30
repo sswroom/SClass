@@ -226,7 +226,7 @@ Int32 Map::MapSearch::SearchNames(UTF8Char *buff, Text::PString *outArrs, Math::
 					thisDist = tmp.x + tmp.y;
 					if (lyr->searchDist)
 					{
-						Double meterDist = Math::GeometryTool::SphereDistDeg(pos.lat, pos.lon, posout.lat, posout.lon, 6378137.0);
+						Double meterDist = Math::GeometryTool::SphereDistDeg(pos.GetLat(), pos.GetLon(), posout.GetLat(), posout.GetLon(), 6378137.0);
 						if (meterDist < lyr->searchDist)
 						{
 							minDist = thisDist;

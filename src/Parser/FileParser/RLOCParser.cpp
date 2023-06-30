@@ -260,8 +260,8 @@ IO::ParsedObject *Parser::FileParser::RLOCParser::ParseFileHdr(IO::StreamData *f
 		rec.recTime = Data::TimeInstant(ReadInt32(&buff[12]), 0);
 		extInfo.funcs = ReadInt24(&buff[16]);
 		rec.nSateUsedGPS = buff[19];
-		rec.pos.lat = ReadInt32(&buff[20]) / 200000.0;
-		rec.pos.lon = ReadInt32(&buff[24]) / 200000.0;
+		rec.pos.SetLat(ReadInt32(&buff[20]) / 200000.0);
+		rec.pos.SetLon(ReadInt32(&buff[24]) / 200000.0);
 		extInfo.status = ReadUInt32(&buff[28]);
 		extInfo.status2 = ReadUInt32(&buff[32]);
 		rec.nSateViewGPS = buff[36];

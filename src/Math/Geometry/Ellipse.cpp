@@ -111,7 +111,7 @@ Bool Math::Geometry::Ellipse::InsideVector(Math::Coord2DDbl coord) const
 void Math::Geometry::Ellipse::SwapXY()
 {
 	this->tl = this->tl.SwapXY();
-	this->size = this->size.XchgXY();
+	this->size = this->size.SwapXY();
 }
 
 void Math::Geometry::Ellipse::MultiplyCoordinatesXY(Double v)

@@ -270,12 +270,12 @@ IO::ParsedObject *Parser::FileParser::CSVParser::ParseFileHdr(IO::StreamData *fd
 				if (latDirCol != INVALID_INDEX)
 				{
 					if (tmpArr2[latDirCol].v[0] == 'S')
-						rec.pos.lat = -rec.pos.lat;
+						rec.pos.SetLat(-rec.pos.GetLat());
 				}
 				if (lonDirCol != INVALID_INDEX)
 				{
 					if (tmpArr2[lonDirCol].v[0] == 'W')
-						rec.pos.lon = -rec.pos.lon;
+						rec.pos.SetLon(-rec.pos.GetLon());
 				}
 				if (validCol != INVALID_INDEX)
 				{

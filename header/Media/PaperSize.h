@@ -1,6 +1,6 @@
 #ifndef _SM_MEDIA_PAPERSIZE
 #define _SM_MEDIA_PAPERSIZE
-#include "Math/Size2D.h"
+#include "Math/Size2DDbl.h"
 
 namespace Media
 {

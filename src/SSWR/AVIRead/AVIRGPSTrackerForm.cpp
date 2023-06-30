@@ -74,9 +74,9 @@ void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnTimerTick(void *userObj)
 		dt.SetInstant(me->recCurr.recTime);
 		sptr = dt.ToStringNoZone(sbuff);
 		me->txtGPSTime->SetText(CSTRP(sbuff, sptr));
-		sptr = Text::StrDouble(sbuff, me->recCurr.pos.lat);
+		sptr = Text::StrDouble(sbuff, me->recCurr.pos.GetLat());
 		me->txtLatitude->SetText(CSTRP(sbuff, sptr));
-		sptr = Text::StrDouble(sbuff, me->recCurr.pos.lon);
+		sptr = Text::StrDouble(sbuff, me->recCurr.pos.GetLon());
 		me->txtLongitude->SetText(CSTRP(sbuff, sptr));
 		sptr = Text::StrDouble(sbuff, me->recCurr.altitude);
 		me->txtAltitude->SetText(CSTRP(sbuff, sptr));

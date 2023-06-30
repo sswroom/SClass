@@ -1,6 +1,7 @@
 #ifndef _SM_MATH_QUADRILATERAL
 #define _SM_MATH_QUADRILATERAL
 #include "Math/Coord2D.h"
+#include "Math/Coord2DDbl.h"
 
 namespace Math
 {

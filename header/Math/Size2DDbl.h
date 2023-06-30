@@ -1,17 +1,17 @@
 #ifndef _SM_MATH_SIZE2DDBL
 #define _SM_MATH_SIZE2DDBL
-#include "Math/Coord2DDbl.h"
+#include "Math/Double2D.h"
 
 namespace Math
 {
-	struct Size2DDbl : public Coord2DDbl
+	struct Size2DDbl : public Double2D
 	{
 		Size2DDbl() = default;
-		Size2DDbl(Coord2DDbl v) : Coord2DDbl(v)
+		Size2DDbl(Double2D v) : Double2D(v)
 		{
 		}
 
-		Size2DDbl(Double w, Double h) : Coord2DDbl(w, h)
+		Size2DDbl(Double w, Double h) : Double2D(w, h)
 		{
 		}
 

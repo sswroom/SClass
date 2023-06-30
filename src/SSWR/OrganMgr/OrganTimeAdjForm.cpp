@@ -192,7 +192,7 @@ void __stdcall SSWR::OrganMgr::OrganTimeAdjForm::OnTimeApplyClicked(void *userOb
 		{
 			ts = userFile->fileTime.AddSecond(timeAdj);
 			me->gpsTrk->GetPosByTime(ts, &pos);
-			if (me->env->UpdateUserFilePos(userFile, ts, pos.lat, pos.lon))
+			if (me->env->UpdateUserFilePos(userFile, ts, pos.GetLat(), pos.GetLon()))
 			{
 				succCnt++;
 			}

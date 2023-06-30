@@ -646,12 +646,12 @@ Bool IO::Device::MTKGPSNMEA::ParseBlock(UInt8 *block, Map::GPSTrack *gps)
 //			}
 //			if (bitmask & 4) // LATITUDE
 //			{
-				rec.pos.lat = *(Double*)&block[currOfst];
+				rec.pos.SetLat(*(Double*)&block[currOfst]);
 				currOfst += 8;
 //			}
 //			if (bitmask & 8) // LONGITUDE
 //			{
-				rec.pos.lon = *(Double*)&block[currOfst];
+				rec.pos.SetLon(*(Double*)&block[currOfst]);
 				currOfst += 8;
 //			}
 			if (bitmask & 0x10) // HEIGHT

@@ -229,7 +229,7 @@ IO::GPSNMEA::ParseStatus IO::GPSNMEA::ParseNMEALine(UTF8Char *line, UOSInt lineL
 				{
 					ddeg = -ddeg;
 				}
-				record->pos.lat = ddeg;
+				record->pos.SetLat(ddeg);
 
 				ddeg = Text::StrToDouble(sarr[5]);
 				deg = (Int32)(ddeg / 100);
@@ -238,7 +238,7 @@ IO::GPSNMEA::ParseStatus IO::GPSNMEA::ParseNMEALine(UTF8Char *line, UOSInt lineL
 				{
 					ddeg = -ddeg;
 				}
-				record->pos.lon = ddeg;
+				record->pos.SetLon(ddeg);
 			}
 			return ParseStatus::NewRecord;
 		}

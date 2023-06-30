@@ -112,9 +112,9 @@ UTF8Char *Map::GoogleMap::GoogleWSSearcherJSON::SearchName(UTF8Char *buff, UOSIn
 	Net::HTTPClient *cli;
 	urlStart = sptr = Text::StrConcatC(url, UTF8STRC("https://maps.googleapis.com"));
 	sptr = Text::StrConcatC(sptr, UTF8STRC("/maps/api/geocode/json?latlng="));
-	sptr = Text::StrDouble(sptr, pos.lat);
+	sptr = Text::StrDouble(sptr, pos.GetLat());
 	sptr = Text::StrConcatC(sptr, UTF8STRC(","));
-	sptr = Text::StrDouble(sptr, pos.lon);
+	sptr = Text::StrDouble(sptr, pos.GetLon());
 //	sptr = Text::StrConcatC(sptr, UTF8STRC("&sensor=false"));
 	if (lang)
 	{

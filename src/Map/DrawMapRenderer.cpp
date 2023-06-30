@@ -2156,7 +2156,7 @@ void Map::DrawMapRenderer::DrawImageObject(DrawEnv *denv, Media::StaticImage *im
 			if (dimgW > drawSize.x || dimgH > drawSize.y)
 			{
 				img->To32bpp();
-				this->resizer->SetTargetSize(Math::Coord2D<UOSInt>::FromDouble(scnBR - scnTL));
+				this->resizer->SetTargetSize(Math::Coord2D<UOSInt>::UOSIntFromDouble(scnBR - scnTL));
 				this->resizer->SetResizeAspectRatio(Media::IImgResizer::RAR_IGNOREAR);
 				Media::StaticImage *newImg = this->resizer->ProcessToNew(img);
 				if (newImg)
@@ -2218,7 +2218,7 @@ void Map::DrawMapRenderer::DrawImageObject(DrawEnv *denv, Media::StaticImage *im
 					}
 				}
 
-				this->resizer->SetTargetSize(Math::Coord2D<UOSInt>::FromDouble(scnBR - scnTL));
+				this->resizer->SetTargetSize(Math::Coord2D<UOSInt>::UOSIntFromDouble(scnBR - scnTL));
 				this->resizer->SetResizeAspectRatio(Media::IImgResizer::RAR_IGNOREAR);
 				img->To32bpp();
 				Media::StaticImage *newImg = 0;
@@ -3554,7 +3554,7 @@ void Map::DrawMapRenderer::DrawCharsLA(DrawEnv *denv, Text::CString str1, Math::
 			}
 			Math::Coord2DDbl scnPt1 = scnPts[lastAInd].ToDouble();
 			Math::Coord2DDbl scnPt2 = scnPts[lastAInd + 1].ToDouble();
-			Math::Coord2DDbl tempPt = scnPt1 + (scnPt2 - scnPt1) * ((nextPt - scnPt1) / (scnPt2 - scnPt1)).XchgXY();
+			Math::Coord2DDbl tempPt = scnPt1 + (scnPt2 - scnPt1) * ((nextPt - scnPt1) / (scnPt2 - scnPt1)).SwapXY();
 			tempPt -= lastPt;
 			if (tempPt.y < 0)
 				tempPt.y = -tempPt.y;

@@ -93,9 +93,9 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(void *userObj)
 	{
 		Data::DateTime dt;
 		me->gpsChg = false;
-		sptr = Text::StrDouble(sbuff, me->currPos.lat);
+		sptr = Text::StrDouble(sbuff, me->currPos.GetLat());
 		me->txtGPSLat->SetText(CSTRP(sbuff, sptr));
-		sptr = Text::StrDouble(sbuff, me->currPos.lon);
+		sptr = Text::StrDouble(sbuff, me->currPos.GetLon());
 		me->txtGPSLon->SetText(CSTRP(sbuff, sptr));
 		sptr = Text::StrDouble(sbuff, me->currAlt);
 		me->txtGPSAlt->SetText(CSTRP(sbuff, sptr));
@@ -774,9 +774,9 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnGPSData(void *userObj, Map:
 			else
 			{
 				sb.AppendC(UTF8STRC("Active,"));
-				Text::SBAppendF64(&sb, record->pos.lat);
+				Text::SBAppendF64(&sb, record->pos.GetLat());
 				sb.AppendC(UTF8STRC(","));
-				Text::SBAppendF64(&sb, record->pos.lon);
+				Text::SBAppendF64(&sb, record->pos.GetLon());
 				sb.AppendC(UTF8STRC(","));
 				Text::SBAppendF64(&sb, record->altitude);
 			}

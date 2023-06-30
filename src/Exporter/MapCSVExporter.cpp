@@ -109,7 +109,7 @@ Bool Exporter::MapCSVExporter::ExportFile(IO::SeekableStream *stm, Text::CString
 				{
 					sptr = Text::StrConcatC(sptr, UTF8STRC(", Estimated (dead reckoning), "));
 				}
-				v = rec[k].pos.lat;
+				v = rec[k].pos.GetLat();
 				if (v < 0)
 				{
 					sptr = Text::StrDouble(sptr, -v);
@@ -120,7 +120,7 @@ Bool Exporter::MapCSVExporter::ExportFile(IO::SeekableStream *stm, Text::CString
 					sptr = Text::StrDouble(sptr, v);
 					sptr = Text::StrConcatC(sptr, UTF8STRC(", N, "));
 				}
-				v = rec[k].pos.lon;
+				v = rec[k].pos.GetLon();
 				if (v < 0)
 				{
 					sptr = Text::StrDouble(sptr, -v);

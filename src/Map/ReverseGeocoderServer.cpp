@@ -73,8 +73,8 @@ UTF8Char *Map::ReverseGeocoderServer::SearchName(UTF8Char *buff, UOSInt buffSize
 	Sync::MutexUsage mutUsage(&this->reqMut);
 	this->reqBuff = buff;
 	this->reqBuffSize = buffSize;
-	this->reqLat = Double2Int32(pos.lat * 200000.0);
-	this->reqLon = Double2Int32(pos.lon * 200000.0);
+	this->reqLat = Double2Int32(pos.GetLat() * 200000.0);
+	this->reqLon = Double2Int32(pos.GetLon() * 200000.0);
 	this->reqLCID = lcid;
 	this->reqResult = false;
 	buff[0] = 0;
@@ -126,8 +126,8 @@ UTF8Char *Map::ReverseGeocoderServer::CacheName(UTF8Char *buff, UOSInt buffSize,
 	Sync::MutexUsage mutUsage(&this->reqMut);
 	this->reqBuff = buff;
 	this->reqBuffSize = buffSize;
-	this->reqLat = Double2Int32(pos.lat * 200000.0);
-	this->reqLon = Double2Int32(pos.lon * 200000.0);
+	this->reqLat = Double2Int32(pos.GetLat() * 200000.0);
+	this->reqLon = Double2Int32(pos.GetLon() * 200000.0);
 	this->reqLCID = lcid;
 	this->reqResult = false;
 	buff[0] = 0;

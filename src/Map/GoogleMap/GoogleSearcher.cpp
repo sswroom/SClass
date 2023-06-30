@@ -106,9 +106,9 @@ UTF8Char *Map::GoogleMap::GoogleSearcher::SearchName(UTF8Char *buff, UOSInt buff
 	Net::HTTPClient *cli;
 	urlStart = sptr = Text::StrConcatC(url, UTF8STRC("http://maps.google.com"));
 	sptr = Text::StrConcatC(sptr, UTF8STRC("/maps/geo?q="));
-	sptr = Text::StrDouble(sptr, pos.lat);
+	sptr = Text::StrDouble(sptr, pos.GetLat());
 	sptr = Text::StrConcatC(sptr, UTF8STRC(","));
-	sptr = Text::StrDouble(sptr, pos.lon);
+	sptr = Text::StrDouble(sptr, pos.GetLon());
 	sptr = Text::StrConcatC(sptr, UTF8STRC("&output=csv&oe=utf8&sensor=false"));
 	if (this->gooCliId)
 	{

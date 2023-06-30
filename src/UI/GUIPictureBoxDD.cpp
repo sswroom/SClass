@@ -486,14 +486,14 @@ void UI::GUIPictureBoxDD::SetImage(Media::Image *currImage, Bool sameImg)
 			rotType = this->currImage->exif->GetRotateType();
 			if (rotType == Media::RotateType::CW_90)
 			{
-				this->currImageSize = this->currImage->info.dispSize.XchgXY();
+				this->currImageSize = this->currImage->info.dispSize.SwapXY();
 			}
 			else if (rotType == Media::RotateType::CW_180)
 			{
 			}
 			else if (rotType == Media::RotateType::CW_270)
 			{
-				this->currImageSize = this->currImage->info.dispSize.XchgXY();
+				this->currImageSize = this->currImage->info.dispSize.SwapXY();
 			}
 		}
 		if (!sameImg || oriSize != this->currImageSize)

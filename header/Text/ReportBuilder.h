@@ -102,7 +102,7 @@ namespace Text
 		void AddIcon(UOSInt index, Text::CString fileName, Text::CString name);
 		void SetColumnWidthPts(UOSInt index, Double width);
 		void SetColumnType(UOSInt index, ColType colType);
-		void SetColURLLatLon(UOSInt index, Double lat, Double lon);
+		void SetColURLLatLon(UOSInt index, Math::Coord2DDbl pos);
 		void SetColHAlign(UOSInt index, HAlignment hAlign);
 		Bool HasChart();
 		Text::SpreadSheet::Workbook *CreateWorkbook();

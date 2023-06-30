@@ -1076,11 +1076,11 @@ Bool Parser::FileParser::XMLParser::ParseGPXPoint(Text::XMLReader *reader, Map::
 		attr = reader->GetAttrib(i);
 		if (attr->name->EqualsICase(UTF8STRC("LAT")))
 		{
-			rec->pos.lat = attr->value->ToDouble();
+			rec->pos.SetLat(attr->value->ToDouble());
 		}
 		else if (attr->name->EqualsICase(UTF8STRC("LON")))
 		{
-			rec->pos.lon = attr->value->ToDouble();
+			rec->pos.SetLon(attr->value->ToDouble());
 		}
 		i++;
 	}

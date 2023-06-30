@@ -119,8 +119,7 @@ void Math::CoordinateSystem::ConvertXYArray(Math::CoordinateSystem *srcCoord, Ma
 			i = nPoints;
 			while (i-- > 0)
 			{
-				destArr[i].lat = srcArr[i].lat * 180.0 / Math::PI;
-				destArr[i].lon = srcArr[i].lon * 180.0 / Math::PI;
+				destArr[i] = srcArr[i] * 180.0 / Math::PI;
 			}
 		}
 		else if (srcArr != destArr)
@@ -139,8 +138,8 @@ void Math::CoordinateSystem::ConvertXYArray(Math::CoordinateSystem *srcCoord, Ma
 			i = nPoints;
 			while (i-- > 0)
 			{
-				((Math::GeographicCoordinateSystem*)srcCoord)->ToCartesianCoordRad(srcArr[i].lat, srcArr[i].lon, 0, &destArr[i].x, &destArr[i].y, &tmpZ);
-				gcs->FromCartesianCoordRad(destArr[i].x, destArr[i].y, tmpZ, &destArr[i].lat, &destArr[i].lon, &tmpZ);
+				((Math::GeographicCoordinateSystem*)srcCoord)->ToCartesianCoordRad(srcArr[i].GetLat(), srcArr[i].GetLon(), 0, &destArr[i].x, &destArr[i].y, &tmpZ);
+				gcs->FromCartesianCoordRad(destArr[i].x, destArr[i].y, tmpZ, &destArr[i].GetLatRef(), &destArr[i].GetLonRef(), &tmpZ);
 				pcs->FromGeographicCoordinateRad(destArr[i].x, destArr[i].y, &destArr[i].x, &destArr[i].y);
 			}
 		}
@@ -149,8 +148,8 @@ void Math::CoordinateSystem::ConvertXYArray(Math::CoordinateSystem *srcCoord, Ma
 			i = nPoints;
 			while (i-- > 0)
 			{
-				((Math::GeographicCoordinateSystem*)srcCoord)->ToCartesianCoordDeg(srcArr[i].lat, srcArr[i].lon, 0, &destArr[i].x, &destArr[i].y, &tmpZ);
-				gcs->FromCartesianCoordRad(destArr[i].x, destArr[i].y, tmpZ, &destArr[i].lat, &destArr[i].lon, &tmpZ);
+				((Math::GeographicCoordinateSystem*)srcCoord)->ToCartesianCoordDeg(srcArr[i].GetLat(), srcArr[i].GetLon(), 0, &destArr[i].x, &destArr[i].y, &tmpZ);
+				gcs->FromCartesianCoordRad(destArr[i].x, destArr[i].y, tmpZ, &destArr[i].GetLatRef(), &destArr[i].GetLonRef(), &tmpZ);
 				pcs->FromGeographicCoordinateRad(destArr[i].x, destArr[i].y, &destArr[i].x, &destArr[i].y);
 			}
 		}
@@ -163,8 +162,8 @@ void Math::CoordinateSystem::ConvertXYArray(Math::CoordinateSystem *srcCoord, Ma
 			i = nPoints;
 			while (i-- > 0)
 			{
-				((Math::GeographicCoordinateSystem*)srcCoord)->ToCartesianCoordRad(srcArr[i].lat, srcArr[i].lon, 0, &destArr[i].x, &destArr[i].y, &tmpZ);
-				gcs->FromCartesianCoordDeg(destArr[i].x, destArr[i].y, tmpZ, &destArr[i].lat, &destArr[i].lon, &tmpZ);
+				((Math::GeographicCoordinateSystem*)srcCoord)->ToCartesianCoordRad(srcArr[i].GetLat(), srcArr[i].GetLon(), 0, &destArr[i].x, &destArr[i].y, &tmpZ);
+				gcs->FromCartesianCoordDeg(destArr[i].x, destArr[i].y, tmpZ, &destArr[i].GetLatRef(), &destArr[i].GetLonRef(), &tmpZ);
 			}
 		}
 		else
@@ -172,8 +171,8 @@ void Math::CoordinateSystem::ConvertXYArray(Math::CoordinateSystem *srcCoord, Ma
 			i = nPoints;
 			while (i-- > 0)
 			{
-				((Math::GeographicCoordinateSystem*)srcCoord)->ToCartesianCoordDeg(srcArr[i].lat, srcArr[i].lon, 0, &destArr[i].x, &destArr[i].y, &tmpZ);
-				gcs->FromCartesianCoordDeg(destArr[i].x, destArr[i].y, tmpZ, &destArr[i].lat, &destArr[i].lon, &tmpZ);
+				((Math::GeographicCoordinateSystem*)srcCoord)->ToCartesianCoordDeg(srcArr[i].GetLat(), srcArr[i].GetLon(), 0, &destArr[i].x, &destArr[i].y, &tmpZ);
+				gcs->FromCartesianCoordDeg(destArr[i].x, destArr[i].y, tmpZ, &destArr[i].GetLatRef(), &destArr[i].GetLonRef(), &tmpZ);
 			}
 		}
 	}

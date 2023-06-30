@@ -74,7 +74,7 @@ Math::GeographicCoordinateSystem::~GeographicCoordinateSystem()
 
 Double Math::GeographicCoordinateSystem::CalSurfaceDistanceXY(Math::Coord2DDbl pos1, Math::Coord2DDbl pos2, Math::Unit::Distance::DistanceUnit unit) const
 {
-	return this->datum.spheroid.ellipsoid->CalSurfaceDistance(pos1.lat, pos1.lon, pos2.lat, pos2.lon, unit);
+	return this->datum.spheroid.ellipsoid->CalSurfaceDistance(pos1.GetLat(), pos1.GetLon(), pos2.GetLat(), pos2.GetLon(), unit);
 }
 
 Double Math::GeographicCoordinateSystem::CalPLDistance(Math::Geometry::Polyline *pl, Math::Unit::Distance::DistanceUnit unit) const

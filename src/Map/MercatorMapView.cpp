@@ -131,8 +131,8 @@ Bool Map::MercatorMapView::MapXYToScnXY(const Math::Coord2DDbl *srcArr, Math::Co
 	rate = this->hdpi / this->ddpi;
 	while (nPoints-- > 0)
 	{
-		thisX = Double2Int32((Lon2PixelX(srcArr->lon) - this->centPixel.x) * rate + this->scnSize.x * 0.5);
-		thisY = Double2Int32((Lat2PixelY(srcArr->lat) - this->centPixel.y) * rate + this->scnSize.y * 0.5);
+		thisX = Double2Int32((Lon2PixelX(srcArr->GetLon()) - this->centPixel.x) * rate + this->scnSize.x * 0.5);
+		thisY = Double2Int32((Lat2PixelY(srcArr->GetLat()) - this->centPixel.y) * rate + this->scnSize.y * 0.5);
 		destArr->x = thisX + ofst.x;
 		destArr->y = thisY + ofst.y;
 		srcArr++;
