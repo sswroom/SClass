@@ -86,6 +86,11 @@ Media::Image *Media::ImageList::GetImage(UOSInt index, UInt32 *imageDelay) const
 	return this->imgList.GetItem(index);
 }
 
+UInt32 Media::ImageList::GetImageDelay(UOSInt index) const
+{
+	return this->imgTimes.GetItem(index);
+}
+
 Media::ImageList::ImageType Media::ImageList::GetImageType(UOSInt index) const
 {
 	return this->imgTypeList.GetItem(index);

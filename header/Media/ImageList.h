@@ -73,6 +73,7 @@ namespace Media
 		Bool RemoveImage(UOSInt index, Bool toRelease);
 		UOSInt GetCount() const;
 		Media::Image *GetImage(UOSInt index, UInt32 *imageDelay) const;
+		UInt32 GetImageDelay(UOSInt index) const;
 		ImageType GetImageType(UOSInt index) const;
 		void SetImageType(UOSInt index, ImageType imgType);
 		void ToStaticImage(UOSInt index);

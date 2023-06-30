@@ -18,6 +18,7 @@ namespace Data
 	public:
 		ArrayList();
 		ArrayList(UOSInt capacity);
+		ArrayList(const ArrayList<T> &list);
 		virtual ~ArrayList();
 
 		virtual UOSInt Add(T val);
@@ -41,14 +42,15 @@ namespace Data
 		UOSInt RemoveRange(UOSInt index, UOSInt cnt);
 		virtual T *GetArray(UOSInt *arraySize);
 		T Pop();
+		ArrayList<T> &operator =(const ArrayList<T> &v);
 	};
 
 
-	template <class T> void ArrayList<T>::Init(UOSInt Capacity)
+	template <class T> void ArrayList<T>::Init(UOSInt capacity)
 	{
 		objCnt = 0;
-		this->capacity = Capacity;
-		arr = MemAlloc(T, Capacity);
+		this->capacity = capacity;
+		arr = MemAlloc(T, capacity);
 	}
 
 	template <class T> ArrayList<T>::ArrayList()
@@ -56,9 +58,15 @@ namespace Data
 		Init(40);
 	}
 
-	template <class T> ArrayList<T>::ArrayList(UOSInt Capacity)
+	template <class T> ArrayList<T>::ArrayList(UOSInt capacity)
 	{
-		Init(Capacity);
+		Init(capacity);
+	}
+
+	template <class T> ArrayList<T>::ArrayList(const ArrayList<T> &list)
+	{
+		Init(list.capacity);
+		this->AddAll(&list);
 	}
 
 	template <class T> ArrayList<T>::~ArrayList()
@@ -241,11 +249,11 @@ namespace Data
 		return this->capacity;
 	}
 
-	template <class T> void ArrayList<T>::EnsureCapacity(UOSInt Capacity)
+	template <class T> void ArrayList<T>::EnsureCapacity(UOSInt capacity)
 	{
-		if (Capacity > this->capacity)
+		if (capacity > this->capacity)
 		{
-			while (Capacity > this->capacity)
+			while (capacity > this->capacity)
 			{
 				this->capacity = this->capacity << 1;
 			}
@@ -343,6 +351,14 @@ namespace Data
 		T o = arr[this->objCnt - 1];
 		this->objCnt--;
 		return o;
+	}
+
+	template <class T> ArrayList<T> &ArrayList<T>::operator =(const ArrayList<T> &v)
+	{
+		this->Clear();
+		this->EnsureCapacity(v.capacity);
+		this->AddAll(&v);
+		return *this;
 	}
 }
 

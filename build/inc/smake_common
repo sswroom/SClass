@@ -4572,6 +4572,8 @@ UI/DObj/OverlayDObj.h: ../../src/UI/DObj/OverlayDObj.cpp
 @OverlayDObj.o
 UI/DObj/RollingTextDObj.h: ../../src/UI/DObj/RollingTextDObj.cpp
 @RollingTextDObj.o
+UI/DObj/SizedOverlayDObj.h: ../../src/UI/DObj/SizedOverlayDObj.cpp
+@SizedOverlayDObj.o
 UI/DObj/TextDObj.h: ../../src/UI/DObj/TextDObj.cpp
 @TextDObj.o
 UI/DObj/VideoDObjHandler.h: ../../src/UI/DObj/VideoDObjHandler.cpp
@@ -6157,6 +6159,7 @@ ImageDObjHandler.o: ../../src/UI/DObj/ImageDObjHandler.cpp
 LabelDObj.o: ../../src/UI/DObj/LabelDObj.cpp
 OverlayDObj.o: ../../src/UI/DObj/OverlayDObj.cpp
 RollingTextDObj.o: ../../src/UI/DObj/RollingTextDObj.cpp
+SizedOverlayDObj.o: ../../src/UI/DObj/SizedOverlayDObj.cpp
 TextDObj.o: ../../src/UI/DObj/TextDObj.cpp
 VideoDObjHandler.o: ../../src/UI/DObj/VideoDObjHandler.cpp
 ColorDialog.o: ../../src/UtilUI/ColorDialog.cpp

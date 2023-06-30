@@ -16,8 +16,6 @@ Data::VariItem *DB::SortableDBReader::GetItem(UOSInt colIndex)
 DB::SortableDBReader::SortableDBReader(DB::ReadingDB *db, Text::CString schemaName, Text::CString tableName, Data::ArrayList<Text::String*> *colNames, UOSInt dataOfst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	this->currIndex = INVALID_INDEX;
-	this->objList = 0;
-	this->cols = 0;
 	UOSInt i;
 	UOSInt j;
 	DB::ColDef colDef(CSTR_NULL);

@@ -11,6 +11,11 @@
 #include "Text/UTF8Reader.h"
 #include "Text/XMLDOM.h"
 
+//#define VERBOSE
+#if defined(VERBOSE)
+#include <stdio.h>
+#endif
+
 Net::HKOWeather::WeatherSignal Net::HKOWeather::String2Signal(Text::String *textMessage)
 {
 	WeatherSignal signal;
@@ -183,6 +188,9 @@ Bool Net::HKOWeather::GetWeatherForecast(Net::SocketFactory *sockf, Net::SSLEngi
 		url = CSTR("https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=fnd&lang=en");
 		break;
 	}
+#if defined(VERBOSE)
+	printf("Getting Weather forecast from: %s\r\n", url.v);
+#endif
 	Text::JSONBase *json = Net::HTTPJSONReader::Read(sockf, ssl, url);
 	if (json)
 	{
@@ -197,6 +205,9 @@ Bool Net::HKOWeather::GetWeatherForecast(Net::SocketFactory *sockf, Net::SSLEngi
 			SDEL_STRING(weatherForecast->generalSituation);
 			SDEL_STRING(weatherForecast->seaTempPlace);
 			json->EndUse();
+#if defined(VERBOSE)
+			printf("Missing data from JSON\r\n");
+#endif
 			return false;
 		}
 		weatherForecast->updateTime = Data::Timestamp::FromStr(sUpdateTime->ToCString(), Data::DateTimeUtil::GetLocalTzQhr());
@@ -234,6 +245,12 @@ Bool Net::HKOWeather::GetWeatherForecast(Net::SocketFactory *sockf, Net::SSLEngi
 		}
 		json->EndUse();
 		return true;
+	}
+	else
+	{
+#if defined(VERBOSE)
+		printf("Error in getting json data\r\n");
+#endif		
 	}
 	return false;
 }
