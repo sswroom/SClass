@@ -600,6 +600,10 @@ Media::Decoder::FFMPEGDecoder::FFMPEGDecoder(IVideoSource *sourceVideo) : Media:
 	data->ctx->width = (int)frameInfo.dispSize.x;
 	data->ctx->height = (int)frameInfo.dispSize.y;
 	data->ctx->thread_count = (int)Sync::ThreadUtil::GetThreadCnt();
+	if (data->ctx->thread_count > 16)
+	{
+		data->ctx->thread_count = 16;
+	}
 	if (codecId == AV_CODEC_ID_H264)
 	{
 		UInt32 sz;
