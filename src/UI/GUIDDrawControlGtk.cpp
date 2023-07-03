@@ -449,7 +449,6 @@ UI::GUIDDrawControl::GUIDDrawControl(GUICore *ui, UI::GUIClientControl *parent, 
 	this->debugFS = 0;
 	this->debugWriter = 0;
 	this->bitDepth = 32;
-	this->HandleSizeChanged(OnResized, this);
 	this->currScnMode = SM_WINDOWED;
 	this->clsData->imgCtrl = gtk_image_new();
 	this->hwnd = (ControlHandle*)gtk_event_box_new();
@@ -460,6 +459,7 @@ UI::GUIDDrawControl::GUIDDrawControl(GUICore *ui, UI::GUIClientControl *parent, 
 	g_signal_connect(G_OBJECT(this->hwnd), "scroll-event", G_CALLBACK(GUIDDrawControl_OnMouseWheel), this);
 //	g_signal_connect(G_OBJECT(this->hwnd), "key-press-event", G_CALLBACK(GUIDDrawControl_OnKeyDown), this);
 	g_signal_connect(G_OBJECT(this->hwnd), "size-allocate", G_CALLBACK(GUIDDrawControl_OnResize), this);
+//	this->HandleSizeChanged(OnResized, this);
 	gtk_widget_set_events((GtkWidget*)this->hwnd, GDK_ALL_EVENTS_MASK);
 	gtk_widget_set_can_focus((GtkWidget*)this->hwnd, true);
 	parent->AddChild(this);

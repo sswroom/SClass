@@ -4570,6 +4570,8 @@ UI/DObj/LabelDObj.h: ../../src/UI/DObj/LabelDObj.cpp
 @LabelDObj.o
 UI/DObj/OverlayDObj.h: ../../src/UI/DObj/OverlayDObj.cpp
 @OverlayDObj.o
+UI/DObj/RollingMessageDObj.h: ../../src/UI/DObj/RollingMessageDObj.cpp
+@RollingMessageDObj.o
 UI/DObj/RollingTextDObj.h: ../../src/UI/DObj/RollingTextDObj.cpp
 @RollingTextDObj.o
 UI/DObj/SizedOverlayDObj.h: ../../src/UI/DObj/SizedOverlayDObj.cpp
@@ -6158,6 +6160,7 @@ DynamicOverlayDObj.o: ../../src/UI/DObj/DynamicOverlayDObj.cpp
 ImageDObjHandler.o: ../../src/UI/DObj/ImageDObjHandler.cpp
 LabelDObj.o: ../../src/UI/DObj/LabelDObj.cpp
 OverlayDObj.o: ../../src/UI/DObj/OverlayDObj.cpp
+RollingMessageDObj.o: ../../src/UI/DObj/RollingMessageDObj.cpp
 RollingTextDObj.o: ../../src/UI/DObj/RollingTextDObj.cpp
 SizedOverlayDObj.o: ../../src/UI/DObj/SizedOverlayDObj.cpp
 TextDObj.o: ../../src/UI/DObj/TextDObj.cpp

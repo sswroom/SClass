@@ -828,9 +828,9 @@ Bool Media::GTKDrawImage::DrawImagePt(DrawImage *img, Math::Coord2DDbl tl)
 		if (gimg->info.storeBPP != 32 || this->info.storeBPP != 32)
 		{
 			cairo_save((cairo_t*)this->cr);
-			cairo_set_source_surface((cairo_t*)this->cr, (cairo_surface_t*)gimg->surface, 0, 0);
 			cairo_translate((cairo_t*)this->cr, tl.x + OSInt2Double(this->tl.x), tl.y + OSInt2Double(this->tl.y));
 			cairo_scale((cairo_t*)this->cr, 1, 1);
+			cairo_set_source_surface((cairo_t*)this->cr, (cairo_surface_t*)gimg->surface, 0, 0);
 			cairo_paint((cairo_t*)this->cr);
 			cairo_restore((cairo_t*)this->cr);
 			return true;
@@ -961,8 +961,96 @@ Bool Media::GTKDrawImage::DrawImagePt2(Media::StaticImage *img, Math::Coord2DDbl
 
 Bool Media::GTKDrawImage::DrawImagePt3(DrawImage *img, Math::Coord2DDbl destTL, Math::Coord2DDbl srcTL, Math::Size2DDbl srcSize)
 {
-	printf("GTK: Draw ImagePt3 (Not support)\r\n");
-	return false;
+	Media::GTKDrawImage *gimg = (GTKDrawImage*)img;
+	if (gimg->surface == 0)
+	{
+		return false;
+	}
+	if (this->surface == 0)
+	{
+		cairo_surface_flush((cairo_surface_t*)gimg->surface);
+		if (gimg->info.atype == Media::AT_NO_ALPHA)
+		{
+			Bool revOrder;
+			ImageUtil_ImageFillAlpha32(gimg->GetImgBits(&revOrder), gimg->GetWidth(), gimg->GetHeight(), gimg->GetImgBpl(), 0xFF);
+			gimg->GetImgBitsEnd(true);
+		}
+		cairo_save((cairo_t*)this->cr);
+		cairo_rectangle((cairo_t*)this->cr, destTL.x + OSInt2Double(this->tl.x), destTL.y + OSInt2Double(this->tl.y), srcSize.x, srcSize.y);
+		cairo_clip((cairo_t*)this->cr);
+		cairo_translate((cairo_t*)this->cr, destTL.x + OSInt2Double(this->tl.x), destTL.y + OSInt2Double(this->tl.y));
+		cairo_scale((cairo_t*)this->cr, this->info.hdpi / img->GetHDPI(), this->info.vdpi / img->GetVDPI());
+		cairo_set_source_surface((cairo_t*)this->cr, (cairo_surface_t*)gimg->surface, Double2Int32(srcTL.x), Double2Int32(srcTL.y));
+		cairo_paint((cairo_t*)this->cr);
+		cairo_restore((cairo_t*)this->cr);
+		return true;
+	}
+	else
+	{
+		if (gimg->info.storeBPP != 32 || this->info.storeBPP != 32)
+		{
+			cairo_save((cairo_t*)this->cr);
+			cairo_rectangle((cairo_t*)this->cr, destTL.x + OSInt2Double(this->tl.x), destTL.y + OSInt2Double(this->tl.y), srcSize.x, srcSize.y);
+			cairo_clip((cairo_t*)this->cr);
+			cairo_translate((cairo_t*)this->cr, destTL.x + OSInt2Double(this->tl.x), destTL.y + OSInt2Double(this->tl.y));
+			cairo_scale((cairo_t*)this->cr, 1, 1);
+			cairo_set_source_surface((cairo_t*)this->cr, (cairo_surface_t*)gimg->surface, Double2Int32(-srcTL.x), Double2Int32(-srcTL.y));
+			cairo_paint((cairo_t*)this->cr);
+			cairo_restore((cairo_t*)this->cr);
+			return true;
+		}
+		cairo_surface_flush((cairo_surface_t*)this->surface);
+		cairo_surface_flush((cairo_surface_t*)gimg->surface);
+		UInt8 *dimgPtr = cairo_image_surface_get_data((cairo_surface_t*)this->surface);
+		OSInt dbpl = cairo_image_surface_get_stride((cairo_surface_t*)this->surface);
+		UInt8 *simgPtr = cairo_image_surface_get_data((cairo_surface_t*)gimg->surface);
+		OSInt sbpl = cairo_image_surface_get_stride((cairo_surface_t*)gimg->surface);
+
+		OSInt ixPos = Double2Int32(destTL.x);
+		OSInt iyPos = Double2Int32(destTL.y);
+		OSInt ixPos2 = ixPos + (OSInt)srcSize.x;
+		OSInt iyPos2 = iyPos + (OSInt)srcSize.y;
+		if ((OSInt)this->info.dispSize.x < ixPos2)
+		{
+			ixPos2 = (OSInt)this->info.dispSize.x;
+		}
+		if (ixPos < 0)
+		{
+			simgPtr += -ixPos * 4;
+			ixPos = 0;
+		}
+
+		if ((OSInt)this->info.dispSize.y < iyPos2)
+		{
+			iyPos2 = (OSInt)this->info.dispSize.y;
+		}
+		if (iyPos < 0)
+		{
+			simgPtr += -iyPos * sbpl;
+			iyPos = 0;
+		}
+		if (ixPos >= ixPos2 || iyPos >= iyPos2)
+		{
+			return true;
+		}
+
+		if (gimg->info.atype == Media::AT_NO_ALPHA)
+		{
+			ImageCopy_ImgCopy(simgPtr + Double2OSInt(srcTL.y) * sbpl + Double2OSInt(srcTL.x) * 4, dimgPtr + ixPos * 4 + iyPos * dbpl, (UOSInt)(ixPos2 - ixPos) * 4, (UOSInt)(iyPos2 - iyPos), sbpl, dbpl);
+			cairo_surface_mark_dirty((cairo_surface_t*)this->surface);
+			return true;
+		}
+		else
+		{
+			this->eng->iab.SetSourceProfile(gimg->info.color);
+			this->eng->iab.SetDestProfile(this->info.color);
+			this->eng->iab.SetOutputProfile(this->info.color);
+			this->eng->iab.Blend(dimgPtr + ixPos * 4 + iyPos * dbpl, dbpl, simgPtr + Double2OSInt(srcTL.y) * sbpl + Double2OSInt(srcTL.x) * 4, sbpl, (UOSInt)(ixPos2 - ixPos), (UOSInt)(iyPos2 - iyPos), gimg->info.atype);
+			cairo_surface_mark_dirty((cairo_surface_t*)this->surface);
+			return true;
+		}
+		return false;
+	}
 }
 
 Media::DrawPen *Media::GTKDrawImage::NewPenARGB(UInt32 color, Double thick, UInt8 *pattern, UOSInt nPattern)

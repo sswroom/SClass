@@ -16,17 +16,16 @@ namespace UI
 			Double fontSize;
 			UInt32 fontColor;
 			UInt32 codePage;
-			UOSInt width;
-			UOSInt height;
+			Math::Size2D<UOSInt> size;
 			Double lineHeight;
 			Media::DrawImage *dimg;
 			Double rollSpeed;
 			OSInt lastRollPos;
-			Data::DateTime *startTime;
+			Data::DateTime startTime;
 
 			void UpdateBGImg();
 		public:
-			RollingTextDObj(Media::DrawEngine *deng, Text::CString txt, Text::CString fontName, Double fontSize, UInt32 fontColor, Math::Coord2D<OSInt> tl, UOSInt width, UOSInt height, UInt32 codePage, Double rollSpeed);
+			RollingTextDObj(Media::DrawEngine *deng, Text::CString txt, Text::CString fontName, Double fontSize, UInt32 fontColor, UInt32 codePage, Math::Coord2D<OSInt> tl, Math::Size2D<UOSInt> size, Double rollSpeed);
 			virtual ~RollingTextDObj();
 
 			virtual Bool IsChanged();

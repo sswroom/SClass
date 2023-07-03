@@ -57,6 +57,11 @@ namespace Data
 			return this->seconds * 1000 + this->ns / 1000000;
 		}
 
+		Double GetTotalSec() const
+		{
+			return Int64_Double(this->seconds) + (this->ns * 0.000000001);
+		}
+
 		Bool NotZero() const
 		{
 			return this->seconds != 0 || this->ns != 0;

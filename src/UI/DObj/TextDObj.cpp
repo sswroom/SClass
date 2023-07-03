@@ -4,7 +4,7 @@
 #include "Text/StringBuilder.h"
 #include "UI/DObj/TextDObj.h"
 
-UI::DObj::TextDObj::TextDObj(Media::DrawEngine *deng, Text::CString txt, Text::CString fontName, Double fontSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 fontColor, Math::Coord2D<OSInt> tl, UOSInt width, UOSInt height, UInt32 codePage) : DirectObject(tl)
+UI::DObj::TextDObj::TextDObj(Media::DrawEngine *deng, Text::CString txt, Text::CString fontName, Double fontSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 fontColor, UInt32 codePage, Math::Coord2D<OSInt> tl, Math::Size2D<UOSInt> size) : DirectObject(tl)
 {
 	this->deng = deng;
 	if (txt.leng > 0)
@@ -26,8 +26,7 @@ UI::DObj::TextDObj::TextDObj(Media::DrawEngine *deng, Text::CString txt, Text::C
 	this->fontSize = fontSize;
 	this->fontStyle = fontStyle;
 	this->fontColor = fontColor;
-	this->width = width;
-	this->height = height;
+	this->size = size;
 	this->currPage = 0;
 	this->pageChg = false;
 	this->codePage = codePage;
@@ -36,9 +35,9 @@ UI::DObj::TextDObj::TextDObj(Media::DrawEngine *deng, Text::CString txt, Text::C
 
 	if (this->txt)
 	{
-		Media::DrawImage *dimg = this->deng->CreateImage32(Math::Size2D<UOSInt>(width, height), Media::AT_NO_ALPHA);
+		Media::DrawImage *dimg = this->deng->CreateImage32(this->size, Media::AT_NO_ALPHA);
 		Media::DrawFont *f = dimg->NewFontPx(this->fontName->ToCString(), this->fontSize, (Media::DrawEngine::DrawFontStyle)(fontStyle | Media::DrawEngine::DFS_ANTIALIAS), codePage);
-		Media::DrawImageTool::SplitString(dimg, this->txt->ToCString(), &this->lines, f, OSInt2Double(width));
+		Media::DrawImageTool::SplitString(dimg, this->txt->ToCString(), &this->lines, f, OSInt2Double(this->size.x));
 		dimg->DelFont(f);
 		this->deng->DeleteImage(dimg);
 	}
@@ -75,11 +74,11 @@ void UI::DObj::TextDObj::DrawObject(Media::DrawImage *dimg)
 	f = dimg->NewFontPx(this->fontName->ToCString(), this->fontSize, (Media::DrawEngine::DrawFontStyle)(this->fontStyle | Media::DrawEngine::DFS_ANTIALIAS), this->codePage);
 	b = dimg->NewBrushARGB(this->fontColor);
 	Math::Coord2D<OSInt> tl = this->GetCurrPos();
-	UInt32 linePerPage = (UInt32)Double2Int32(UOSInt2Double(this->height) / this->lineHeight);
+	UInt32 linePerPage = (UInt32)Double2Int32(UOSInt2Double(this->size.y) / this->lineHeight);
 	UInt32 currLine = this->currPage * linePerPage;
 	UOSInt j = this->lines.GetCount();
 	Double currPos = OSInt2Double(tl.y);
-	Double endPos = OSInt2Double(tl.y + (OSInt)this->height) - this->lineHeight;
+	Double endPos = OSInt2Double(tl.y + (OSInt)this->size.y) - this->lineHeight;
 	while (currPos <= endPos && currLine < j)
 	{
 		if (this->talign == TA_LEFT)
@@ -89,12 +88,12 @@ void UI::DObj::TextDObj::DrawObject(Media::DrawImage *dimg)
 		else if (this->talign == TA_CENTER)
 		{
 			sz = dimg->GetTextSize(f, this->lines.GetItem(currLine)->ToCString());
-			dimg->DrawString(Math::Coord2DDbl(OSInt2Double(tl.x) + (UOSInt2Double(this->width) - sz.x) * 0.5, currPos), this->lines.GetItem(currLine)->ToCString(), f, b);
+			dimg->DrawString(Math::Coord2DDbl(OSInt2Double(tl.x) + (UOSInt2Double(this->size.x) - sz.x) * 0.5, currPos), this->lines.GetItem(currLine)->ToCString(), f, b);
 		}
 		else if (this->talign == TA_RIGHT)
 		{
 			sz = dimg->GetTextSize(f, this->lines.GetItem(currLine)->ToCString());
-			dimg->DrawString(Math::Coord2DDbl(OSInt2Double(tl.x + (OSInt)width) - sz.x, currPos), this->lines.GetItem(currLine), f, b);
+			dimg->DrawString(Math::Coord2DDbl(OSInt2Double(tl.x + (OSInt)this->size.x) - sz.x, currPos), this->lines.GetItem(currLine), f, b);
 		}
 		currLine++;
 		currPos += this->lineHeight;
@@ -132,7 +131,7 @@ void UI::DObj::TextDObj::SetTextAlign(TextAlign talign)
 
 UOSInt UI::DObj::TextDObj::GetPageCount()
 {
-	UOSInt linePerPage = (UOSInt)Double2OSInt(UOSInt2Double(this->height) / this->lineHeight);
+	UOSInt linePerPage = (UOSInt)Double2OSInt(UOSInt2Double(this->size.y) / this->lineHeight);
 	return (this->lines.GetCount() - 1 + linePerPage) / linePerPage;
 }
 
