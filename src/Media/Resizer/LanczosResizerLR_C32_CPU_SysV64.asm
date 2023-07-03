@@ -1035,6 +1035,7 @@ vf6start:							; else if (tap == 6)
 	shr rdx,1 ;width
 	mov rbp,qword [rsp+64] ;rgbTable
 	mov rbx,qword [rsp+40] ;weight
+	mov qword [rsp+48],rdi ;inPt
 	mov r10,rdx ;width
 	xor rax,rax
 	ALIGN 16
@@ -1043,6 +1044,7 @@ vf6lop4:
 	movdqa xmm5,[rbx+32]
 	movdqa xmm6,[rbx+48]
 	movdqa xmm7,[rbx+64]
+	mov rdi,qword [rsp+48]
 	mov r11,r10 ;width
 	ALIGN 16
 vf6lop5:
@@ -1121,6 +1123,7 @@ vf8start:							;else if (tap == 8)
 	shr rdx,1 ;width
 	mov rbx,r9 ;index
 	mov r10,rdx ;width
+	mov qword [rsp+48],rdi ;inPt
 	mov r8,qword [rsp+40] ;weight
 	mov rbp,qword [rsp+64] ;rgbTable
 	ALIGN 16
@@ -1130,6 +1133,7 @@ vf8lop4:
 	movdqa xmm6,[r8+32]
 	movdqa xmm7,[r8+48]
 
+	mov rdi,qword [rsp+48]
 	mov r11,r10 ;width
 	ALIGN 16
 vf8lop5:
@@ -1224,6 +1228,7 @@ vf12start:							; else if (tap == 12)
 	shr rdx,1 ;width
 	mov rbx,r9 ;index
 	mov r10,rdx ;width
+	mov qword [rsp+48],rdi ;inPt
 	mov r8,qword [rsp+40] ;weight
 	mov rbp,qword [rsp+64] ;rgbTable
 	ALIGN 16
@@ -1235,6 +1240,7 @@ vf12lop4:
 	movq xmm7,[r8+64]
 	movhps xmm7,[r8+80]
 
+	mov rdi,qword [rsp+48]
 	mov r11,r10 ;width
 	ALIGN 16
 vf12lop5:

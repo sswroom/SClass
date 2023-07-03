@@ -2076,10 +2076,13 @@ IO::DeviceDB::PCIDeviceInfo IO::DeviceDB::pciList[] = {
 	{0x8086, 0x4E24,  "PCI Device",                                                                               "Intel Host Bridge"},
 	{0x8086, 0x4E61,  "PCI Device",                                                                               "Intel JasperLake [UHD Graphics]"},
 	{0x8086, 0x5182,  "PCI Device",                                                                               "Intel Alder Lake PCH eSPI Controller"},
+	{0x8086, 0x519D,  "PCI Device",                                                                               "Intel Alder Lake LPC Controller"},
 	{0x8086, 0x51A3,  "PCI Device",                                                                               "Intel Alder Lake PCH-P SMBus Host Controller"},
 	{0x8086, 0x51A4,  "PCI Device",                                                                               "Intel Alder Lake-P PCH SPI Controller"},
 	{0x8086, 0x51B0,  "PCI Device",                                                                               "Intel Alder Lake PCI Bridge"},
+	{0x8086, 0x51B1,  "PCI Device",                                                                               "Intel Alder Lake PCI Express x1 Root Port #10"},
 	{0x8086, 0x51C8,  "PCI Device",                                                                               "Intel Alder Lake PCH Serial IO I2C Controller #0"},
+	{0x8086, 0x51CA,  "PCI Device",                                                                               "Intel Alder Lake HD Audio"},
 	{0x8086, 0x51D3,  "PCI Device",                                                                               "Intel Alder Lake-P SATA AHCI Controller"},
 	{0x8086, 0x51E0,  "PCI Device",                                                                               "Intel Alder Lake PCH HECI Controller"},
 	{0x8086, 0x51E8,  "PCI Device",                                                                               "Intel Alder Lake PCH Serial IO I2C Controller #0"},
@@ -2183,6 +2186,8 @@ IO::DeviceDB::PCIDeviceInfo IO::DeviceDB::pciList[] = {
 	{0x8086, 0xA2BA,  "Intel(R) Management Engine Interface",                                                     "Intel 200 Series Chipset Family ME Interface"},
 	{0x8086, 0xA2C8,  "PCI Standard ISA Bridge Adapter",                                                          "Intel 200 Series Chipset Family PCI ISA Bridge"},
 	{0x8086, 0xA2F0,  "High Definition Audio Controller",                                                         "Intel 200 Series Chipset Family HD Audio"},
+	{0x8086, 0xA74F,  "PCI Device",                                                                               "Intel GNA Scoring Accelerator module"},
+	{0x8086, 0xA77F,  "PCI Device",                                                                               "Intel Volume Management Device NVMe RAID Controller"},
 	{0x80EE, 0xBEEF,  "VirtualBox Graphics Adapter",                                                              "VirtualBox Graphics Adapter"},
 	{0x80EE, 0xCAFE,  "VirtualBox Guest Service",                                                                 "VirtualBox Guest Service"}
 };
