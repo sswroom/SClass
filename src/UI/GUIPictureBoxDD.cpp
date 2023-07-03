@@ -211,7 +211,7 @@ void UI::GUIPictureBoxDD::CalDispRect(Math::RectAreaDbl *srcRect, Math::RectArea
 	if (srcRect->br.x > UOSInt2Double(this->currImageSize.x))
 	{
 		srcRect->br.x = UOSInt2Double(this->currImageSize.x);
-		destRect->br.x = Double2OSInt(srcRect->GetWidth() * this->zoomScale);
+		destRect->br.x = Double2OSInt(srcRect->GetWidth() * this->zoomScale) + destRect->tl.x;
 	}
 	if (srcRect->tl.y < 0)
 	{
@@ -221,7 +221,7 @@ void UI::GUIPictureBoxDD::CalDispRect(Math::RectAreaDbl *srcRect, Math::RectArea
 	if (srcRect->br.y > UOSInt2Double(this->currImageSize.y))
 	{
 		srcRect->br.y = UOSInt2Double(this->currImageSize.y);
-		destRect->br.y = Double2OSInt(srcRect->GetHeight() * this->zoomScale);
+		destRect->br.y = Double2OSInt(srcRect->GetHeight() * this->zoomScale) + destRect->tl.y;
 	}
 }
 
