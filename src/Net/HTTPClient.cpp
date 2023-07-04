@@ -218,6 +218,11 @@ Text::CString Net::HTTPClient::GetTransferEncoding()
 	return this->GetRespHeader(CSTR("Transfer-Encoding"));
 }
 
+Text::CString Net::HTTPClient::GetContentType()
+{
+	return this->GetRespHeader(CSTR("Content-Type"));
+}
+
 Text::String *Net::HTTPClient::GetURL()
 {
 	return this->url;

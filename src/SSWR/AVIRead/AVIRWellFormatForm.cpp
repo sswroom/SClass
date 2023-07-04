@@ -1,5 +1,7 @@
 #include "Stdafx.h"
 #include "IO/FileStream.h"
+#include "Net/HTTPClient.h"
+#include "Net/SSLEngineFactory.h"
 #include "SSWR/AVIRead/AVIRWellFormatForm.h"
 #include "Text/HTMLUtil.h"
 #include "Text/JSText.h"
@@ -7,6 +9,10 @@
 #include "Text/XMLReader.h"
 #include "UI/FileDialog.h"
 
+#define VERBOSE
+#if defined(VERBOSE)
+#include <stdio.h>
+#endif
 void SSWR::AVIRead::AVIRWellFormatForm::AddFilters(IO::FileSelector *selector)
 {
 	selector->AddFilter(CSTR("*.json"), CSTR("JSON File"));
@@ -17,15 +23,46 @@ void SSWR::AVIRead::AVIRWellFormatForm::AddFilters(IO::FileSelector *selector)
 	selector->AddFilter(CSTR("*.kml"), CSTR("KML File"));
 }
 
-Bool SSWR::AVIRead::AVIRWellFormatForm::ParseFile(const UTF8Char *fileName, UOSInt fileNameLen, Text::StringBuilderUTF8 *output)
+Bool SSWR::AVIRead::AVIRWellFormatForm::ParseFile(Text::CString fileName, Text::StringBuilderUTF8 *output)
 {
 	Bool succ = false;
 	UInt64 fileLen;
 	UInt8 *buff;
-
-	if (Text::StrEndsWithICaseC(fileName, fileNameLen, UTF8STRC(".json")))
+	Bool reqSSL = false;
+	if (fileName.StartsWith(UTF8STRC("http://")) || (reqSSL = fileName.StartsWith(UTF8STRC("https://"))))
 	{
-		IO::FileStream fs({fileName, fileNameLen}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+		Net::SSLEngine *ssl = 0;
+		if (reqSSL)
+		{
+			ssl = Net::SSLEngineFactory::Create(this->core->GetSocketFactory(), false);
+		}
+		Net::HTTPClient *cli = Net::HTTPClient::CreateConnect(this->core->GetSocketFactory(), ssl, fileName, Net::WebUtil::RequestMethod::HTTP_GET, true);
+		if (cli)
+		{
+			if (!cli->IsError() && cli->GetRespStatus() == Net::WebStatus::SC_OK)
+			{
+				Text::CString contType = cli->GetContentType();
+				if (contType.leng == 0)
+				{
+
+				}
+				else if (contType.Equals(UTF8STRC("application/xml")))
+				{
+					succ = Text::XMLReader::XMLWellFormat(this->core->GetEncFactory(), cli, 0, output);
+				}
+//				else if (contType.Equals(UTF8STRC("text/")))
+				else
+				{
+					printf("AVIRWellFormat: Unknown content-type: %s\r\n", contType.v);
+				}
+			}
+			DEL_CLASS(cli);
+		}
+		SDEL_CLASS(ssl);
+	}
+	else if (fileName.EndsWithICase(UTF8STRC(".json")))
+	{
+		IO::FileStream fs(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 		fileLen = fs.GetLength();
 		if (fileLen > 0 && fileLen < 1048576)
 		{
@@ -37,25 +74,25 @@ Bool SSWR::AVIRead::AVIRWellFormatForm::ParseFile(const UTF8Char *fileName, UOSI
 			MemFree(buff);
 		}
 	}
-	else if (Text::StrEndsWithICaseC(fileName, fileNameLen, UTF8STRC(".html")) || Text::StrEndsWithICaseC(fileName, fileNameLen, UTF8STRC(".htm")))
+	else if (fileName.EndsWithICase(UTF8STRC(".html")) || fileName.EndsWith(UTF8STRC(".htm")))
 	{
-		IO::FileStream fs({fileName, fileNameLen}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+		IO::FileStream fs(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 		fileLen = fs.GetLength();
 		if (fileLen > 0 && fileLen < 1048576)
 		{
 			succ = Text::HTMLUtil::HTMLWellFormat(this->core->GetEncFactory(), &fs, 0, output);
 		}
 	}
-	else if (Text::StrEndsWithICaseC(fileName, fileNameLen, UTF8STRC(".xml")) || Text::StrEndsWithICaseC(fileName, fileNameLen, UTF8STRC(".gml")) || Text::StrEndsWithICaseC(fileName, fileNameLen, UTF8STRC(".kml")))
+	else if (fileName.EndsWithICase(UTF8STRC(".xml")) || fileName.EndsWithICase(UTF8STRC(".gml")) || fileName.EndsWithICase(UTF8STRC(".kml")))
 	{
-		IO::FileStream fs({fileName, fileNameLen}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+		IO::FileStream fs(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 		fileLen = fs.GetLength();
 		if (fileLen > 0 && fileLen < 10485760)
 		{
 			succ = Text::XMLReader::XMLWellFormat(this->core->GetEncFactory(), &fs, 0, output);
 		}
 	}
-	else if (Text::StrEndsWithICaseC(fileName, fileNameLen, UTF8STRC(".js")))
+	else if (fileName.EndsWithICase(UTF8STRC(".js")))
 	{
 
 	}
@@ -90,7 +127,7 @@ void __stdcall SSWR::AVIRead::AVIRWellFormatForm::OnParseToTextClicked(void *use
 	{
 		return;
 	}
-	if (me->ParseFile(sbFile.ToString(), sbFile.GetLength(), &sbOutput))
+	if (me->ParseFile(sbFile.ToCString(), &sbOutput))
 	{
 		me->txtOutput->SetText(sbOutput.ToCString());
 	}
@@ -106,7 +143,7 @@ void __stdcall SSWR::AVIRead::AVIRWellFormatForm::OnParseToFileClicked(void *use
 	{
 		return;
 	}
-	if (me->ParseFile(sbFile.ToString(), sbFile.GetLength(), &sbOutput))
+	if (me->ParseFile(sbFile.ToCString(), &sbOutput))
 	{
 		UI::FileDialog dlg(L"SSWR", L"AVIRead", L"WellFormatParse", true);
 		AddFilters(&dlg);

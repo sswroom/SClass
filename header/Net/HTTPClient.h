@@ -71,6 +71,7 @@ namespace Net
 		Bool GetLastModified(Data::DateTime *dt);
 		Bool GetServerDate(Data::DateTime *dt);
 		Text::CString GetTransferEncoding();
+		Text::CString GetContentType();
 
 		Text::String *GetURL();
 		Net::WebStatus::StatusCode GetRespStatus();

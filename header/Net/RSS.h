@@ -3,6 +3,7 @@
 #include "Net/SocketFactory.h"
 #include "Net/SSLEngine.h"
 #include "Text/XMLDOM.h"
+#include "Text/XMLReader.h"
 
 namespace Net
 {
@@ -18,7 +19,7 @@ namespace Net
 		Text::String *category;
 		Text::String *comments;
 		Text::String *enclosure;
-		Data::DateTime *pubDate;
+		Data::Timestamp pubDate;
 		Text::String *source;
 		Text::String *guid;
 		Text::String *imgURL;
@@ -27,6 +28,7 @@ namespace Net
 
 	public:
 		RSSItem(Text::XMLNode *itemNode);
+		RSSItem(Text::XMLReader *itemNode);
 		~RSSItem();
 
 		Bool IsError();
@@ -44,8 +46,8 @@ namespace Net
 		Text::String *copyright;
 		Text::String *managingEditor;
 		Text::String *webMaster;
-		Data::DateTime *pubDate;
-		Data::DateTime *lastBuildDate;
+		Data::Timestamp pubDate;
+		Data::Timestamp lastBuildDate;
 //		Text::String *category;
 		Text::String *generator;
 		Text::String *docs;
@@ -63,17 +65,18 @@ namespace Net
 		virtual UOSInt GetCount() const;
 		virtual RSSItem *GetItem(UOSInt Index) const;
 
-		Text::String *GetTitle();
-		Text::String *GetLink();
-		Text::String *GetDescription();
-		Text::String *GetLanguage();
-		Text::String *GetCopyright();
-		Text::String *GetManagingEditor();
-		Text::String *GetWebMaster();
-		Data::DateTime *GetPubDate();
-		Data::DateTime *GetLastBuildDate();
-		Text::String *GetGenerator();
-		Text::String *GetDocs();
+		Text::String *GetTitle() const;
+		Text::String *GetLink() const;
+		Text::String *GetDescription() const;
+		Text::String *GetLanguage() const;
+		Text::String *GetCopyright() const;
+		Text::String *GetManagingEditor() const;
+		Text::String *GetWebMaster() const;
+		Data::Timestamp GetPubDate() const;
+		Data::Timestamp GetLastBuildDate() const;
+		Text::String *GetGenerator() const;
+		Text::String *GetDocs() const;
+		Int32 GetTTL() const;
 
 		static void GetYoutubeURL(Text::CString channelId, Text::StringBuilderUTF8 *outURL);
 	};

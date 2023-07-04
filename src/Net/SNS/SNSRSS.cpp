@@ -74,13 +74,13 @@ Net::SNS::SNSRSS::SNSRSS(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::E
 			Text::String *s2;
 			s = Text::String::New(sb.ToString(), sb.GetLength());
 			s2 = Text::String::New(sb2.ToString(), sb2.GetLength());
-			snsItem = CreateItem(item->guid, item->pubDate->ToTicks(), item->title, s, item->link, s2, 0);
+			snsItem = CreateItem(item->guid, item->pubDate.ToTicks(), item->title, s, item->link, s2, 0);
 			s->Release();
 			s2->Release();
 		}
 		else
 		{
-			snsItem = CreateItem(item->guid, item->pubDate->ToTicks(), item->title, item->description, item->link, item->imgURL, 0);
+			snsItem = CreateItem(item->guid, item->pubDate.ToTicks(), item->title, item->description, item->link, item->imgURL, 0);
 		}
 		this->itemMap.Put(item->guid, snsItem);
 	}
@@ -209,13 +209,13 @@ Bool Net::SNS::SNSRSS::Reload()
 					Text::String *s2;
 					s = Text::String::New(sb.ToString(), sb.GetLength());
 					s2 = Text::String::New(sb2.ToString(), sb2.GetLength());
-					snsItem = CreateItem(item->guid, item->pubDate->ToTicks(), item->title, s, item->link, s2, 0);
+					snsItem = CreateItem(item->guid, item->pubDate.ToTicks(), item->title, s, item->link, s2, 0);
 					s->Release();
 					s2->Release();
 				}
 				else
 				{
-					snsItem = CreateItem(item->guid, item->pubDate->ToTicks(), item->title, item->description, item->link, item->imgURL, 0);
+					snsItem = CreateItem(item->guid, item->pubDate.ToTicks(), item->title, item->description, item->link, item->imgURL, 0);
 				}
 				this->itemMap.Put(item->guid, snsItem);
 				changed = true;

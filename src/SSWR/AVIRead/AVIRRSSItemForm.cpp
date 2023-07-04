@@ -103,9 +103,9 @@ SSWR::AVIRead::AVIRRSSItemForm::AVIRRSSItemForm(UI::GUIClientControl *parent, UI
 		this->lvInfo->SetSubItem(i, 1, rssItem->enclosure);
 	}
 	i = this->lvInfo->AddItem(CSTR("PubDate"), 0);
-	if (rssItem->pubDate)
+	if (!rssItem->pubDate.IsNull())
 	{
-		sptr = rssItem->pubDate->ToString(sbuff, "yyyy-MM-dd HH:mm:ss zzzz");
+		sptr = rssItem->pubDate.ToString(sbuff, "yyyy-MM-dd HH:mm:ss zzzz");
 		this->lvInfo->SetSubItem(i, 1, CSTRP(sbuff, sptr));
 	}
 	i = this->lvInfo->AddItem(CSTR("Source"), 0);

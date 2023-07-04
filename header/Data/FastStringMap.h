@@ -43,6 +43,7 @@ namespace Data
 		T GetC(Text::CString key) const;
 		virtual T Remove(Text::String *key);
 		T RemoveC(Text::CString key);
+		T RemoveAt(UOSInt index);
 		virtual Bool IsEmpty() const;
 		virtual void Clear();
 		
@@ -309,6 +310,22 @@ namespace Data
 		UInt32 hash = this->crc.CalcDirect(key.v, key.leng);
 		OSInt index = this->IndexOf(hash, key.v, key.leng);
 		if (index >= 0)
+		{
+			T oldVal = this->items[index].val;
+			this->items[index].s->Release();
+			this->cnt--;
+			if ((UOSInt)index < this->cnt)
+			{
+				MemCopyO(&this->items[index], &this->items[index + 1], sizeof(StringItem) * (this->cnt - (UOSInt)index));
+			}
+			return oldVal;
+		}
+		return 0;
+	}
+
+	template <class T> T FastStringMap<T>::RemoveAt(UOSInt index)
+	{
+		if (index < this->cnt)
 		{
 			T oldVal = this->items[index].val;
 			this->items[index].s->Release();

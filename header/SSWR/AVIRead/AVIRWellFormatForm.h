@@ -25,7 +25,7 @@ namespace SSWR
 			SSWR::AVIRead::AVIRCore *core;
 
 			static void AddFilters(IO::FileSelector *selector);
-			Bool ParseFile(const UTF8Char *fileName, UOSInt fileNameLen, Text::StringBuilderUTF8 *output);
+			Bool ParseFile(Text::CString fileName, Text::StringBuilderUTF8 *output);
 
 			static void __stdcall OnBrowseClicked(void *userObj);
 			static void __stdcall OnFileDrop(void *userObj, Text::String **files, UOSInt nFile);

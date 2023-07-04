@@ -33,7 +33,7 @@ void __stdcall SSWR::AVIRead::AVIRRSSReaderForm::OnRequestClicked(void *userObj)
 		if (!rss->IsError())
 		{
 			Text::String *s;
-			Data::DateTime *dt;
+			Data::Timestamp dt;
 			i = me->lvInfo->AddItem(CSTR("Title"), 0);
 			if ((s = rss->GetTitle()) != 0)
 			{
@@ -70,15 +70,15 @@ void __stdcall SSWR::AVIRead::AVIRRSSReaderForm::OnRequestClicked(void *userObj)
 				me->lvInfo->SetSubItem(i, 1, s);
 			}
 			i = me->lvInfo->AddItem(CSTR("PubDate"), 0);
-			if ((dt = rss->GetPubDate()) != 0)
+			if (!(dt = rss->GetPubDate()).IsNull())
 			{
-				sptr = dt->ToString(sbuff, "yyyy-MM-dd HH:mm:ss zzzz");
+				sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss zzzz");
 				me->lvInfo->SetSubItem(i, 1, CSTRP(sbuff, sptr));
 			}
 			i = me->lvInfo->AddItem(CSTR("LastBuildDate"), 0);
-			if ((dt = rss->GetLastBuildDate()) != 0)
+			if (!(dt = rss->GetLastBuildDate()).IsNull())
 			{
-				sptr = dt->ToString(sbuff, "yyyy-MM-dd HH:mm:ss zzzz");
+				sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss zzzz");
 				me->lvInfo->SetSubItem(i, 1, CSTRP(sbuff, sptr));
 			}
 			i = me->lvInfo->AddItem(CSTR("Generator"), 0);
@@ -108,9 +108,9 @@ void __stdcall SSWR::AVIRead::AVIRRSSReaderForm::OnRequestClicked(void *userObj)
 			{
 				item = rss->GetItem(i);
 				me->lvItems->AddItem(item->title, item);
-				if (item->pubDate)
+				if (!item->pubDate.IsNull())
 				{
-					sptr = item->pubDate->ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
+					sptr = item->pubDate.ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
 					me->lvItems->SetSubItem(i, 1, CSTRP(sbuff, sptr));
 				}
 				if (item->description)
