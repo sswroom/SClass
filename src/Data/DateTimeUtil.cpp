@@ -1051,6 +1051,10 @@ UTF8Char *Data::DateTimeUtil::ToString(UTF8Char *sbuff, const TimeValue *tval, I
 		case 'h':
 		{
 			UInt8 thisH = tval->hour % 12;
+			if (thisH == 0)
+			{
+				thisH = 12;
+			}
 			pattern++;
 			if (*pattern != 'h')
 			{
