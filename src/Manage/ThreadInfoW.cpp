@@ -100,7 +100,7 @@ Manage::ThreadContext *Manage::ThreadInfo::GetThreadContextHand(UOSInt threadId,
 	context.ContextFlags = (CONTEXT_ALL);
 	if (::GetThreadContext((HANDLE)hand, &context))
 	{
-		NEW_CLASS(outContext, Manage::ThreadContextARM64EC(procId, threadId, &context));
+		NEW_CLASS(outContext, Manage::ThreadContextX86_64(procId, threadId, &context));
 		return outContext;
 	}
 	else

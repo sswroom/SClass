@@ -315,7 +315,18 @@ Bool Media::DDrawSurface::DrawFromSurface(Media::MonitorSurface *surface, Math::
 				rcDest.top = rc.top + (LONG)destTL.y;
 				rcDest.right = rcDest.left + (LONG)buffSize.x;
 				rcDest.bottom = rcDest.top + (LONG)buffSize.y;
-				this->clsData->surface->Blt(&rcDest, (LPDIRECTDRAWSURFACE7)surface->GetHandle(), &rcSrc, DDBLT_WAIT, 0);
+				hRes = this->clsData->surface->Blt(&rcDest, (LPDIRECTDRAWSURFACE7)surface->GetHandle(), &rcSrc, DDBLT_WAIT, 0);
+				if (hRes == DD_OK)
+				{
+					succ = true;
+				}
+				else
+				{
+					DDBLTFX bltfx;
+					bltfx.dwFillColor = 0x00000000;
+					this->clsData->surface->Blt(&rc, 0, 0, DDBLT_WAIT | DDBLT_COLORFILL, &bltfx);
+					clearScn = false;
+				}
 				if (clearScn)
 				{
 					DDBLTFX bltfx;
@@ -359,6 +370,7 @@ Bool Media::DDrawSurface::DrawFromSurface(Media::MonitorSurface *surface, Math::
 				DDBLTFX bltfx;
 				bltfx.dwFillColor = 0x00000000;
 				this->clsData->surface->Blt(&rc, 0, 0, DDBLT_WAIT | DDBLT_COLORFILL, &bltfx);
+				succ = true;
 			}
 		}
 		return succ;

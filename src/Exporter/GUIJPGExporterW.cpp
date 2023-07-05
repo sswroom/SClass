@@ -173,7 +173,7 @@ Bool Exporter::GUIJPGExporter::ExportFile(IO::SeekableStream *stm, Text::CString
 				WriteInt16(&exifBuff[12], 42);
 				WriteInt32(&exifBuff[14], 8);
 				k = 8;
-				l = endOfst + 8;
+				l = (UInt32)(endOfst + 8);
 				exif->ToExifBuff(&exifBuff[10], &k, &l);
 				stm->Write(exifBuff, exifSize + 18);
 				MemFree(exifBuff);

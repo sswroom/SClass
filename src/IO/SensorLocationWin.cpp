@@ -28,7 +28,7 @@ Bool IO::SensorLocationWin::ReadLocation(Map::GPSTrack::GPSRecord3 *loc)
 		loc->recTime = Data::TimeInstant::Now();
 		if (SUCCEEDED(pReport->GetSensorValue(SENSOR_DATA_TYPE_LATITUDE_DEGREES, &var)) && var.vt == VT_R8)
 		{
-			loc->pos.lat = var.dblVal;
+			loc->pos.SetLat(var.dblVal);
 		}
 		else
 		{
@@ -48,7 +48,7 @@ Bool IO::SensorLocationWin::ReadLocation(Map::GPSTrack::GPSRecord3 *loc)
 
 		if (SUCCEEDED(pReport->GetSensorValue(SENSOR_DATA_TYPE_ALTITUDE_SEALEVEL_METERS, &var)) && var.vt == VT_R8)
 		{
-			loc->pos.lon = var.dblVal;
+			loc->pos.SetLon(var.dblVal);
 		}
 		else
 		{
