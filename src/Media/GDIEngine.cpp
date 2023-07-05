@@ -635,8 +635,6 @@ Media::GDIFont::GDIFont(void *hdc, const Char *fontName, Double ptSize, Media::D
 
 Media::GDIFont::GDIFont(void *hdc, const WChar *fontName, Double ptSize, Media::DrawEngine::DrawFontStyle style, DrawImage *img, Int32 codePage)
 {
-	const WChar *src;
-	WChar *dest;
 	this->hdc = hdc;
 	this->ptSize = ptSize;
 	this->style = style;
@@ -681,9 +679,7 @@ Media::GDIFont::GDIFont(void *hdc, const WChar *fontName, Double ptSize, Media::
 		break;
 	}
 
-	dest = lf.lfFaceName;
-	src = fontName;
-	while ((*dest++ = *src++) != 0);
+	Text::StrConcat(lf.lfFaceName, fontName);
 	this->hfont = CreateFontIndirectW(&lf);
 }
 

@@ -17,6 +17,10 @@
 #include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 
+#include <stdio.h>
+//#include "WinDebug.h"
+//#undef GetProp
+
 #include "Text/StringBuilderUTF8.h"
 #ifdef _DEBUG
 #include "IO/FileStream.h"
@@ -30,7 +34,9 @@
 #endif
 
 #define VERSION_FROM(major, minor, micro) ((LIBAVCODEC_VERSION_MAJOR > major) || ((LIBAVCODEC_VERSION_MAJOR == major) && (LIBAVCODEC_VERSION_MINOR > minor)) || ((LIBAVCODEC_VERSION_MAJOR == major) && (LIBAVCODEC_VERSION_MINOR == minor) && (LIBAVCODEC_VERSION_MICRO == micro)))
-#define UTIL_VERSION_FROM(major, minor, micro) ((LIBAVUTIL_VERSION_MAJOR > major) || ((LIBAVUTIL_VERSION_MAJOR == major) && (LIBAVUTIL_VERSION_MINOR > minor)) || ((LIBAVUTIL_VERSION_MAJOR == major) && (LIBAVUTIL_VERSION_MINOR == minor) && (LIBAVUTIL_VERSION_MICRO == micro)))
+#define UTIL_VERSION_FROM(major, minor, micro) ( AV_VERSION_INT(major, minor, micro) <= (LIBAVUTIL_VERSION_INT))
+#define STRINGIFY(x) #x
+#define DEFINE_TOSTRING(v) STRINGIFY(v)
 
 #if !defined(_MSC_VER) || _MSC_VER >= 1400
 extern "C" 
@@ -38,6 +44,16 @@ extern "C"
 #include <libavcodec/avcodec.h>
 #include <libavutil/channel_layout.h>
 }
+
+#if UTIL_VERSION_FROM(58, 0, 0)
+#define AVFRAME_IS_INTERLACE(frame) (frame->flags & AV_FRAME_FLAG_INTERLACED)
+#define AVFRAME_IS_TFF(frame) (frame->flags & AV_FRAME_FLAG_TOP_FIELD_FIRST)
+#define AVFRAME_IS_KEY_FRAME(frame) (frame->flags & AV_FRAME_FLAG_KEY)
+#else
+#define AVFRAME_IS_INTERLACE(frame) frame->interlaced_frame
+#define AVFRAME_IS_TFF(frame) frame->top_field_first
+#define AVFRAME_IS_KEY_FRAME(frame) frame->key_frame
+#endif
 
 #if !defined(__MINGW32__) && defined(__GNUC__)
 #if VERSION_FROM(55, 0, 0) //not sure
@@ -120,7 +136,30 @@ void (__stdcall *FFMPEGDecoder_avcodec_free_context)(AVCodecContext **avctx) = 0
 int (__stdcall *FFMPEGDecoder_avcodec_open2)(AVCodecContext *avctx, const AVCodec *codec, AVDictionary **options) = 0;
 int (__stdcall *FFMPEGDecoder_avcodec_close)(AVCodecContext *avctx) = 0;
 void (__stdcall *FFMPEGDecoder_av_packet_unref)(AVPacket *pkt) = 0;
+#if VERSION_FROM(55, 0, 0) // not sure
+static int FFMPEGDecoder_avcodec_decode_audio4(AVCodecContext* avctx, AVFrame* frame, int* got_frame_ptr, const AVPacket* avpkt)
+{
+	int ret = FFMPEGDecoder_avcodec_receive_frame(avctx, frame);
+	if (ret == 0)
+		*got_frame_ptr = true;
+	if (ret == AVERROR(EAGAIN))
+		ret = 0;
+	if (ret == 0)
+		ret = FFMPEGDecoder_avcodec_send_packet(avctx, avpkt);
+	if (ret == AVERROR(EAGAIN))
+		ret = 0;
+	else if (ret < 0)
+	{
+		ret = 0;
+		//        Debug(3, "codec/audio: audio decode error: %1 (%2)\n",av_make_error_string(error, sizeof(error), ret),got_frame);
+	}
+	else
+		ret = avpkt->size;
+	return ret;
+}
+#else
 int (__stdcall *FFMPEGDecoder_avcodec_decode_audio4)(AVCodecContext *avctx, AVFrame *frame, int *got_frame_ptr, const AVPacket *avpkt) = 0;
+#endif
 #endif
 
 typedef struct
@@ -267,9 +306,9 @@ void Media::Decoder::FFMPEGDecoder::ProcVideoFrame(UInt32 frameTime, UInt32 fram
 			outFrameStruct = Media::IVideoSource::FS_B;
 			break;
 		}
-		if (data->frame->interlaced_frame)
+		if (AVFRAME_IS_INTERLACE(data->frame))
 		{
-			if (data->frame->top_field_first)
+			if (AVFRAME_IS_TFF(data->frame))
 			{
 				outFrameType = Media::FT_INTERLACED_TFF;
 			}
@@ -343,7 +382,7 @@ void Media::Decoder::FFMPEGDecoder::ProcVideoFrame(UInt32 frameTime, UInt32 fram
 		Bool skip = false;
 		if (data->seeked)
 		{
-			if (data->frame->key_frame && data->seekTime <= outFrameTime && (data->seekTime + 50) >= outFrameTime)
+			if (AVFRAME_IS_KEY_FRAME(data->frame) && data->seekTime <= outFrameTime && (data->seekTime + 50) >= outFrameTime)
 			{
 				outFlags = (Media::IVideoSource::FrameFlag)(outFlags | Media::IVideoSource::FF_DISCONTTIME);
 				data->seeked = false;
@@ -359,7 +398,7 @@ void Media::Decoder::FFMPEGDecoder::ProcVideoFrame(UInt32 frameTime, UInt32 fram
 		}
 		if (!skip)
 		{
-			if (data->frame->key_frame || outFrameStruct == Media::IVideoSource::FS_I)
+			if (AVFRAME_IS_KEY_FRAME(data->frame) || outFrameStruct == Media::IVideoSource::FS_I)
 			{
 				while (data->frameIndexS != data->frameIndexE)
 				{
@@ -384,7 +423,7 @@ void Media::Decoder::FFMPEGDecoder::ProcVideoFrame(UInt32 frameTime, UInt32 fram
 							data->frameIndexS = 0;
 						}
 
-						if (data->frameIndexS != data->frameIndexE && srcFrameType == Media::FT_MERGED_TF && data->frames[data->frameIndexS].frameType == Media::FT_MERGED_BF && data->frame->interlaced_frame)
+						if (data->frameIndexS != data->frameIndexE && srcFrameType == Media::FT_MERGED_TF && data->frames[data->frameIndexS].frameType == Media::FT_MERGED_BF && AVFRAME_IS_INTERLACE(data->frame))
 						{
 							data->frameIndexS++;
 							if (data->frameIndexS == FRAMEBUFFSIZE)
@@ -392,7 +431,7 @@ void Media::Decoder::FFMPEGDecoder::ProcVideoFrame(UInt32 frameTime, UInt32 fram
 								data->frameIndexS = 0;
 							}
 						}
-						else if (data->frameIndexS != data->frameIndexE && srcFrameType == Media::FT_MERGED_BF && data->frames[data->frameIndexS].frameType == Media::FT_MERGED_TF && data->frame->interlaced_frame)
+						else if (data->frameIndexS != data->frameIndexE && srcFrameType == Media::FT_MERGED_BF && data->frames[data->frameIndexS].frameType == Media::FT_MERGED_TF && AVFRAME_IS_INTERLACE(data->frame))
 						{
 							data->frameIndexS++;
 							if (data->frameIndexS == FRAMEBUFFSIZE)
@@ -451,7 +490,7 @@ void Media::Decoder::FFMPEGDecoder::ProcVideoFrame(UInt32 frameTime, UInt32 fram
 							data->frameIndexS = 0;
 						}
 
-						if (data->frameIndexS != data->frameIndexE && srcFrameType == Media::FT_MERGED_TF && data->frames[data->frameIndexS].frameType == Media::FT_MERGED_BF && data->frame->interlaced_frame)
+						if (data->frameIndexS != data->frameIndexE && srcFrameType == Media::FT_MERGED_TF && data->frames[data->frameIndexS].frameType == Media::FT_MERGED_BF && AVFRAME_IS_INTERLACE(data->frame))
 						{
 							data->frameIndexS++;
 							if (data->frameIndexS == FRAMEBUFFSIZE)
@@ -459,7 +498,7 @@ void Media::Decoder::FFMPEGDecoder::ProcVideoFrame(UInt32 frameTime, UInt32 fram
 								data->frameIndexS = 0;
 							}
 						}
-						else if (data->frameIndexS != data->frameIndexE && srcFrameType == Media::FT_MERGED_BF && data->frames[data->frameIndexS].frameType == Media::FT_MERGED_TF && data->frame->interlaced_frame)
+						else if (data->frameIndexS != data->frameIndexE && srcFrameType == Media::FT_MERGED_BF && data->frames[data->frameIndexS].frameType == Media::FT_MERGED_TF && AVFRAME_IS_INTERLACE(data->frame))
 						{
 							data->frameIndexS++;
 							if (data->frameIndexS == FRAMEBUFFSIZE)
@@ -1889,8 +1928,8 @@ void __stdcall FFMPEGDecoder_OnExit()
 void Media::Decoder::FFMPEGDecoder::Enable()
 {
 #if !defined(__GNUC__) || defined(__MINGW32__)
-	NEW_CLASS(FFMPEGDecoder_lib1, IO::Library((const UTF8Char*)"avcodec-57.dll"));
-	NEW_CLASS(FFMPEGDecoder_lib2, IO::Library((const UTF8Char*)"avutil-55.dll"));
+	NEW_CLASS(FFMPEGDecoder_lib1, IO::Library((const UTF8Char*)"avcodec-" DEFINE_TOSTRING(LIBAVCODEC_VERSION_MAJOR) ".dll"));
+	NEW_CLASS(FFMPEGDecoder_lib2, IO::Library((const UTF8Char*)"avutil-" DEFINE_TOSTRING(LIBAVUTIL_VERSION_MAJOR) ".dll"));
 	Core::CoreAddOnExitFunc(FFMPEGDecoder_OnExit);
 
 	FFMPEGDecoder_av_frame_alloc = (AVFrame *(__stdcall *)())FFMPEGDecoder_lib2->GetFunc("av_frame_alloc");
@@ -1898,7 +1937,11 @@ void Media::Decoder::FFMPEGDecoder::Enable()
 
 	FFMPEGDecoder_av_init_packet = (void (__stdcall *)(AVPacket *pkt))FFMPEGDecoder_lib1->GetFunc("av_init_packet");
 	FFMPEGDecoder_av_packet_unref = (void (__stdcall *)(AVPacket *))FFMPEGDecoder_lib1->GetFunc("av_packet_unref");
+#if VERSION_FROM(58, 10, 100)
+	FFMPEGDecoder_avcodec_register_all = 0;
+#else
 	FFMPEGDecoder_avcodec_register_all = (void (__stdcall*)())FFMPEGDecoder_lib1->GetFunc("avcodec_register_all");
+#endif
 	FFMPEGDecoder_avcodec_send_packet = (int (__stdcall *)(AVCodecContext *, const AVPacket *))FFMPEGDecoder_lib1->GetFunc("avcodec_send_packet");
 	FFMPEGDecoder_avcodec_receive_frame = (int (__stdcall *)(AVCodecContext *, AVFrame *))FFMPEGDecoder_lib1->GetFunc("avcodec_receive_frame");
 	FFMPEGDecoder_avcodec_find_decoder = (AVCodec *(__stdcall *)(enum AVCodecID id))FFMPEGDecoder_lib1->GetFunc("avcodec_find_decoder");
@@ -1906,7 +1949,9 @@ void Media::Decoder::FFMPEGDecoder::Enable()
 	FFMPEGDecoder_avcodec_free_context = (void (__stdcall *)(AVCodecContext **))FFMPEGDecoder_lib1->GetFunc("avcodec_free_context");
 	FFMPEGDecoder_avcodec_open2 = (int (__stdcall *)(AVCodecContext *, const AVCodec *, AVDictionary **))FFMPEGDecoder_lib1->GetFunc("avcodec_open2");
 	FFMPEGDecoder_avcodec_close = (int (__stdcall *)(AVCodecContext *))FFMPEGDecoder_lib1->GetFunc("avcodec_close");
+#if !VERSION_FROM(55, 0, 0) // not sure
 	FFMPEGDecoder_avcodec_decode_audio4 = (int (__stdcall *)(AVCodecContext *, AVFrame *, int *, const AVPacket *))FFMPEGDecoder_lib1->GetFunc("avcodec_decode_audio4");
+#endif
 
 	if (FFMPEGDecoder_av_frame_alloc == 0)
 		return;
@@ -1916,8 +1961,10 @@ void Media::Decoder::FFMPEGDecoder::Enable()
 		return;
 	if (FFMPEGDecoder_av_packet_unref == 0)
 		return;
+#if !VERSION_FROM(58, 10, 100)
 	if (FFMPEGDecoder_avcodec_register_all == 0)
 		return;
+#endif
 	if (FFMPEGDecoder_avcodec_send_packet == 0)
 		return;
 	if (FFMPEGDecoder_avcodec_receive_frame == 0)
@@ -1932,10 +1979,14 @@ void Media::Decoder::FFMPEGDecoder::Enable()
 		return;
 	if (FFMPEGDecoder_avcodec_close == 0)
 		return;
+#if !VERSION_FROM(55, 0, 0) // not sure
 	if (FFMPEGDecoder_avcodec_decode_audio4 == 0)
 		return;
 #endif
+#endif
+#if !VERSION_FROM(58, 10, 100)
 	FFMPEGDecoder_avcodec_register_all();
+#endif
 	Core::CoreAddVideoDecFunc(FFMPEGDecoder_DecodeVideo);
 	Core::CoreAddAudioDecFunc(FFMPEGDecoder_DecodeAudio);
 }
