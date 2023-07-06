@@ -158,7 +158,7 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnTimerTick(void *userObj)
 	if (me->simInfoUpdated)
 	{
 		me->simInfoUpdated = false;
-		me->txtIMSI->SetText(me->simIMSI->ToCString());
+		me->txtIMSI->SetText(Text::String::OrEmpty(me->simIMSI)->ToCString());
 	}
 	if (me->cfgTECharsetUpd)
 	{
@@ -1066,7 +1066,7 @@ SSWR::AVIRead::AVIRGSMModemForm::AVIRGSMModemForm(UI::GUIClientControl *parent, 
 	NEW_CLASS(this->lblModemManu, UI::GUILabel(ui, this->pnlInfo, CSTR("Manufacture")));
 	this->lblModemManu->SetRect(8, 8, 100, 23, false);
 	NEW_CLASS(this->txtModemManu, UI::GUITextBox(ui, this->pnlInfo, CSTR("")));
-	this->txtModemManu->SetRect(108, 8, 100, 23, false);
+	this->txtModemManu->SetRect(108, 8, 200, 23, false);
 	this->txtModemManu->SetReadOnly(true);
 	NEW_CLASS(this->lblModemModel, UI::GUILabel(ui, this->pnlInfo, CSTR("Model")));
 	this->lblModemModel->SetRect(8, 32, 100, 23, false);
@@ -1076,17 +1076,17 @@ SSWR::AVIRead::AVIRGSMModemForm::AVIRGSMModemForm(UI::GUIClientControl *parent, 
 	NEW_CLASS(this->lblModemVer, UI::GUILabel(ui, this->pnlInfo, CSTR("Modem Ver")));
 	this->lblModemVer->SetRect(8, 56, 100, 23, false);
 	NEW_CLASS(this->txtModemVer, UI::GUITextBox(ui, this->pnlInfo, CSTR("")));
-	this->txtModemVer->SetRect(108, 56, 100, 23, false);
+	this->txtModemVer->SetRect(108, 56, 200, 23, false);
 	this->txtModemVer->SetReadOnly(true);
 	NEW_CLASS(this->lblModemIMEI, UI::GUILabel(ui, this->pnlInfo, CSTR("IMEI")));
 	this->lblModemIMEI->SetRect(8, 80, 100, 23, false);
 	NEW_CLASS(this->txtModemIMEI, UI::GUITextBox(ui, this->pnlInfo, CSTR("")));
-	this->txtModemIMEI->SetRect(108, 80, 100, 23, false);
+	this->txtModemIMEI->SetRect(108, 80, 150, 23, false);
 	this->txtModemIMEI->SetReadOnly(true);
 	NEW_CLASS(this->lblIMSI, UI::GUILabel(ui, this->pnlInfo, CSTR("IMSI")));
 	this->lblIMSI->SetRect(8, 104, 100, 23, false);
 	NEW_CLASS(this->txtIMSI, UI::GUITextBox(ui, this->pnlInfo, CSTR("")));
-	this->txtIMSI->SetRect(108, 104, 100, 23, false);
+	this->txtIMSI->SetRect(108, 104, 150, 23, false);
 	this->txtIMSI->SetReadOnly(true);
 	NEW_CLASS(this->lblTECharset, UI::GUILabel(ui, this->pnlInfo, CSTR("TE Charset")));
 	this->lblTECharset->SetRect(8, 128, 100, 23, false);
@@ -1101,7 +1101,7 @@ SSWR::AVIRead::AVIRGSMModemForm::AVIRGSMModemForm(UI::GUIClientControl *parent, 
 	NEW_CLASS(this->lblRegStatus, UI::GUILabel(ui, this->pnlInfo, CSTR("Register Status")));
 	this->lblRegStatus->SetRect(8, 176, 100, 23, false);
 	NEW_CLASS(this->txtRegStatus, UI::GUITextBox(ui, this->pnlInfo, CSTR("")));
-	this->txtRegStatus->SetRect(108, 176, 100, 23, false);
+	this->txtRegStatus->SetRect(108, 176, 200, 23, false);
 	this->txtRegStatus->SetReadOnly(true);
 	NEW_CLASS(this->lblLAC, UI::GUILabel(ui, this->pnlInfo, CSTR("LAC")));
 	this->lblLAC->SetRect(8, 200, 100, 23, false);
