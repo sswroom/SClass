@@ -4,6 +4,8 @@
 #include "IO/Stream.h"
 #include "Text/StringBuilderUTF8.h"
 
+#define UTF8READER_BUFFSIZE 16384
+
 namespace Text
 {
 	class UTF8Reader : public IO::Reader
@@ -11,7 +13,7 @@ namespace Text
 	private:
 		IO::Stream *stm;
 
-		UInt8 *buff;
+		UInt8 buff[UTF8READER_BUFFSIZE];
 		UOSInt buffSize;
 		UOSInt currOfst;
 		Text::LineBreakType lineBreak;

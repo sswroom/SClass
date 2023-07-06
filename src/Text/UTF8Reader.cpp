@@ -9,7 +9,6 @@
 #ifdef VERBOSE
 #include <stdio.h>
 #endif
-#define BUFFSIZE 16384
 
 void Text::UTF8Reader::FillBuffer()
 {
@@ -39,7 +38,7 @@ void Text::UTF8Reader::FillBuffer()
 		this->buffSize -= this->currOfst;
 		this->currOfst = 0;
 	}
-	readSize = this->stm->Read(&this->buff[this->buffSize], BUFFSIZE - this->buffSize);;
+	readSize = this->stm->Read(&this->buff[this->buffSize], UTF8READER_BUFFSIZE - this->buffSize);;
 #ifdef VERBOSE
 	printf("UTF8Reader.FB read %d bytes, ofst = %d, size = %d\r\n", (UInt32)readSize, (UInt32)this->currOfst, (UInt32)this->buffSize);
 #endif
@@ -77,7 +76,6 @@ void Text::UTF8Reader::CheckHeader()
 Text::UTF8Reader::UTF8Reader(IO::Stream *stm)
 {
 	this->stm = stm;
-	this->buff = MemAlloc(UInt8, BUFFSIZE);
 	this->buffSize = 0;
 	this->currOfst = 0;
 	if (stm->CanSeek())
@@ -95,7 +93,6 @@ Text::UTF8Reader::UTF8Reader(IO::Stream *stm)
 
 Text::UTF8Reader::~UTF8Reader()
 {
-	MemFree(this->buff);
 }
 
 void Text::UTF8Reader::Close()
@@ -655,7 +652,7 @@ Bool Text::UTF8Reader::IsLineBreak()
 Bool Text::UTF8Reader::ReadToEnd(Text::StringBuilderUTF8 *sb)
 {
 	Bool succ = false;
-	while (this->ReadLine(sb, BUFFSIZE))
+	while (this->ReadLine(sb, UTF8READER_BUFFSIZE))
 	{
 		succ = this->GetLastLineBreak(sb);
 	}
