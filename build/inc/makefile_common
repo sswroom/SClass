@@ -589,6 +589,9 @@ UnixConfigFile.o: $(CLASSDIR)src/IO/UnixConfigFile.cpp
 VirtualIOPinMgr.o: $(CLASSDIR)src/IO/VirtualIOPinMgr.cpp
 	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
 
+WindowsError.o: $(CLASSDIR)src/IO/WindowsError.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
 WriterLogHandler.o: $(CLASSDIR)src/IO/WriterLogHandler.cpp
 	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
 
