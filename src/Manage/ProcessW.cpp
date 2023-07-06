@@ -49,16 +49,15 @@ typedef struct _SYSTEM_HANDLE_INFORMATION
 
 #define SystemHandleInformation (SYSTEM_INFORMATION_CLASS)16
 #define ObjectNameInformation (OBJECT_INFORMATION_CLASS)1
-#else
+#endif
 
-typedef struct __PUBLIC_OBJECT_TYPE_INFORMATION {
+typedef struct __MyPUBLIC_OBJECT_TYPE_INFORMATION {
 
     UNICODE_STRING TypeName;
 
     ULONG Reserved [22];    // reserved for internal use
 
-} PUBLIC_OBJECT_TYPE_INFORMATION, *PPUBLIC_OBJECT_TYPE_INFORMATION;
-#endif
+} MyPUBLIC_OBJECT_TYPE_INFORMATION, *PMyPUBLIC_OBJECT_TYPE_INFORMATION;
 
 #define STATUS_INFO_LENGTH_MISMATCH (NTSTATUS)0xc0000004
 
@@ -743,7 +742,7 @@ Bool Manage::Process::GetHandleDetail(Int32 id, HandleType* handleType, Text::St
 	UInt8 buff[4096];
 	UTF8Char sbuff[512];
 	UTF8Char* sptr;
-	PPUBLIC_OBJECT_TYPE_INFORMATION objectTypeInfo = (PPUBLIC_OBJECT_TYPE_INFORMATION)buff;
+	PMyPUBLIC_OBJECT_TYPE_INFORMATION objectTypeInfo = (PMyPUBLIC_OBJECT_TYPE_INFORMATION)buff;
 	if ((status = qryObj(dupHandle, ObjectTypeInformation, objectTypeInfo, sizeof(buff), 0)) < 0)
 	{
 		if (needClose) CloseHandle(dupHandle);

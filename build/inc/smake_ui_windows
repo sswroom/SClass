@@ -14,12 +14,8 @@ Media/DDrawManager.h: ../../src/Media/DDrawManager.cpp
 @DDrawManager.o
 Media/DrawEngineFactory.h: ../../src/Media/DrawEngineFactoryWin.cpp
 @DrawEngineFactory.o
-Media/DrawEngineGUI.h: ../../src/Media/GDIEngineC.cpp
-@DrawEngineGUI.o
 Media/GDIEngine.h: ../../src/Media/GDIEngine.cpp
 @GDIEngine.o
-Media/GDIEngineC.h: ../../src/Media/GDIEngineC.cpp
-@DrawEngineGUI.o
 Media/MonitorInfo.h: ../../src/Media/MonitorInfoW.cpp
 @MonitorInfo.o
 Media/ScreenCapturer.h: ../../src/Media/ScreenCapturerW.cpp
@@ -130,7 +126,6 @@ DDrawManager.o: ../../src/Media/DDrawManager.cpp
 !-lddraw
 !-ldxguid
 DrawEngineFactory.o: ../../src/Media/DrawEngineFactoryWin.cpp
-DrawEngineGUI.o: ../../src/Media/GDIEngineC.cpp
 GDIEngine.o: ../../src/Media/GDIEngine.cpp
 !-lgdi32
 !-lgdiplus

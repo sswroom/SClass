@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Data/ArrayList.h"
 #include "IO/Library.h"
-#include "Media/GDIEngineC.h"
+#include "Media/GDIEngine.h"
 #include "UI/GUICoreWin.h"
 #ifdef _WIN32_WCE
 #include "Sync/ThreadUtil.h"
@@ -87,7 +87,7 @@ void UI::GUICoreWin::Exit()
 Media::DrawEngine *UI::GUICoreWin::CreateDrawEngine()
 {
 	Media::DrawEngine *deng;
-	NEW_CLASS(deng, Media::GDIEngineC());
+	NEW_CLASS(deng, Media::GDIEngine());
 	return deng;
 }
 

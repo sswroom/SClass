@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Core/Core.h"
 #include "IO/Library.h"
-#include "Media/GDIEngineC.h"
+#include "Text/MyString.h"
 #include "Text/MyStringW.h"
 #include "UI/GUICoreWin.h"
 #include <windows.h>

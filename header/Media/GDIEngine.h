@@ -1,7 +1,7 @@
 #ifndef _SM_MEDIA_GDIENGINE
 #define _SM_MEDIA_GDIENGINE
 #include "Media/DrawEngine.h"
-#include "Media/ImageAlphaBlend.h"
+#include "Media/ABlend/AlphaBlend8_C8.h"
 #include "Sync/Mutex.h"
 
 namespace Media
@@ -11,7 +11,7 @@ namespace Media
 	class GDIEngine : public Media::DrawEngine
 	{
 	public:
-		Media::ImageAlphaBlend *iab;
+		Media::ABlend::AlphaBlend8_C8 iab;
 	private:
 		void *hdc;
 		void *hdcScreen;

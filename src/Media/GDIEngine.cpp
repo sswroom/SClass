@@ -13,8 +13,6 @@
 #include "Media/ImageUtil.h"
 #include "Media/StaticImage.h"
 #include "Media/ImageTo8Bit.h"
-#include "Media/ABlend/AlphaBlend8_8.h"
-#include "Media/ABlend/AlphaBlend8_C8.h"
 #include "Sync/Event.h"
 #include "Sync/MutexUsage.h"
 #include "Sync/SimpleThread.h"
@@ -83,7 +81,7 @@ COLORREF GDIEGetCol(UInt32 col)
 	return ((col & 0xff) << 16) | (col & 0xff00) | ((col >> 16) & 0xff);
 }
 
-Media::GDIEngine::GDIEngine()
+Media::GDIEngine::GDIEngine() : iab(0, true)
 {
 #ifdef HAS_GDIPLUS
 	NEW_CLASS(gdiplusStartupInput, Gdiplus::GdiplusStartupInput());
@@ -93,7 +91,6 @@ Media::GDIEngine::GDIEngine()
 	this->hdcScreen = CreateDC(TEXT("DISPLAY"), NULL, NULL, NULL); 
 	this->hpenBlack = CreatePen(PS_SOLID, 1, 0);
 	this->hbrushWhite = CreateSolidBrush(0xffffff);
-	NEW_CLASS(this->iab, Media::ABlend::AlphaBlend8_8());
 }
 
 Media::GDIEngine::~GDIEngine()
@@ -102,7 +99,6 @@ Media::GDIEngine::~GDIEngine()
 	ReleaseDC(0, (HDC)this->hdc);
 	DeleteObject(this->hpenBlack);
 	DeleteObject(this->hbrushWhite);
-	DEL_CLASS(this->iab);
 
 #ifdef HAS_GDIPLUS
 	Gdiplus::GdiplusShutdown(gdiplusToken);
@@ -1937,10 +1933,10 @@ Bool Media::GDIImage::DrawImagePt(DrawImage *img, Math::Coord2DDbl tl)
 			}
 			if (w > 0 && h > 0)
 			{
-				this->eng->iab->SetSourceProfile(image->info.color);
-				this->eng->iab->SetDestProfile(this->info.color);
-				this->eng->iab->SetOutputProfile(this->info.color);
-				this->eng->iab->Blend(dbits + (this->size.y - (Int32)tl.y - h) * dbpl + (((Int32)tl.x) * 4), dbpl, sbits, sbpl, w, h, image->info.atype);
+				this->eng->iab.SetSourceProfile(image->info.color);
+				this->eng->iab.SetDestProfile(this->info.color);
+				this->eng->iab.SetOutputProfile(this->info.color);
+				this->eng->iab.Blend(dbits + (this->size.y - (Int32)tl.y - h) * dbpl + (((Int32)tl.x) * 4), dbpl, sbits, sbpl, w, h, image->info.atype);
 			}
 		}
 		else
@@ -2062,10 +2058,10 @@ Bool Media::GDIImage::DrawImagePt2(Media::StaticImage *img, Math::Coord2DDbl tl)
 			}
 			if (w > 0 && h > 0)
 			{
-				this->eng->iab->SetSourceProfile(simg->info.color);
-				this->eng->iab->SetDestProfile(this->info.color);
-				this->eng->iab->SetOutputProfile(this->info.color);
-				this->eng->iab->Blend(dbits + (this->size.y - Double2Int32(tl.y) - 1) * dbpl + (Double2Int32(tl.x) * 4), -(OSInt)dbpl, sbits, sbpl, w, h, simg->info.atype);
+				this->eng->iab.SetSourceProfile(simg->info.color);
+				this->eng->iab.SetDestProfile(this->info.color);
+				this->eng->iab.SetOutputProfile(this->info.color);
+				this->eng->iab.Blend(dbits + (this->size.y - Double2Int32(tl.y) - 1) * dbpl + (Double2Int32(tl.x) * 4), -(OSInt)dbpl, sbits, sbpl, w, h, simg->info.atype);
 			}
 		}
 		return true;
@@ -2170,10 +2166,10 @@ Bool Media::GDIImage::DrawImagePt3(DrawImage *img, Math::Coord2DDbl destTL, Math
 			}
 			if (w > 0 && h > 0)
 			{
-				this->eng->iab->SetSourceProfile(image->info.color);
-				this->eng->iab->SetDestProfile(this->info.color);
-				this->eng->iab->SetOutputProfile(this->info.color);
-				this->eng->iab->Blend(dbits + (this->size.y - y - h) * dbpl + (x * 4), dbpl, sbits + (sh - sy - h) * sbpl + (sx << 2), sbpl, w, h, image->info.atype);
+				this->eng->iab.SetSourceProfile(image->info.color);
+				this->eng->iab.SetDestProfile(this->info.color);
+				this->eng->iab.SetOutputProfile(this->info.color);
+				this->eng->iab.Blend(dbits + (this->size.y - y - h) * dbpl + (x * 4), dbpl, sbits + (sh - sy - h) * sbpl + (sx << 2), sbpl, w, h, image->info.atype);
 			}
 		}
 		else
