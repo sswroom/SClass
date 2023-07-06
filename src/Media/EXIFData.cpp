@@ -14,6 +14,7 @@
 // http://hul.harvard.edu/jhove/tiff-tags.html
 
 Media::EXIFData::EXIFInfo Media::EXIFData::defInfos[] = {
+	{11, CSTR("ProcessingSoftware")},
 	{254, CSTR("NewSubfileType")},
 	{255, CSTR("SubfileType")},
 	{256, CSTR("Width")},
@@ -216,7 +217,8 @@ Media::EXIFData::EXIFInfo Media::EXIFData::defInfos[] = {
 	{50741, CSTR("MakerNoteSafety")},
 	{50778, CSTR("CalibrationIlluminant1")},
 	{50779, CSTR("CalibrationIlluminant2")},
-	{50780, CSTR("BestQualityScale")}
+	{50780, CSTR("BestQualityScale")},
+	{59932, CSTR("Padding")}
 };
 
 Media::EXIFData::EXIFInfo Media::EXIFData::exifInfos[] = {
@@ -292,7 +294,9 @@ Media::EXIFData::EXIFInfo Media::EXIFData::exifInfos[] = {
 	{42037, CSTR("LensSerialNumber")},
 	{42080, CSTR("CompositeImage")},
 	{42081, CSTR("SourceImageNumberOfCompositeImage")},
-	{42082, CSTR("SourceExposureTimesOfCompositeImage")}
+	{42082, CSTR("SourceExposureTimesOfCompositeImage")},
+	{59932, CSTR("Padding")},
+	{59933, CSTR("OffsetSchema")}
 };
 
 Media::EXIFData::EXIFInfo Media::EXIFData::gpsInfos[] = {
@@ -5358,6 +5362,29 @@ Media::EXIFData *Media::EXIFData::ParseIFD(IO::StreamData *fd, UInt64 ofst, Data
 					*(Int16*)&tmpBuff[j] = bo->GetInt16(&tmpBuff[j]);
 				}
 				exif->AddInt16(tag, fcnt, (Int16*)tmpBuff);
+				MemFree(tmpBuff);
+			}
+			break;
+		}
+		case 9:
+		{
+			Int32 tmp;
+			if (fcnt == 1)
+			{
+				tmp = bo->GetInt32(&ifdEntries[ifdOfst + 8]);
+				exif->AddInt32(tag, fcnt, &tmp);
+			}
+			else
+			{
+				tmpBuff = MemAlloc(UInt8, fcnt << 2);
+				fd->GetRealData(bo->GetUInt32(&ifdEntries[ifdOfst + 8]) + readBase, fcnt << 2, tmpBuff);
+				j = fcnt << 2;
+				while (j > 0)
+				{
+					j -= 4;
+					*(Int32*)&tmpBuff[j] = bo->GetInt32(&tmpBuff[j]);
+				}
+				exif->AddInt32(tag, fcnt, (Int32*)tmpBuff);
 				MemFree(tmpBuff);
 			}
 			break;
