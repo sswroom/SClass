@@ -2772,6 +2772,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(Net::WebSe
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("<a href="));
 				sb.Append(s);
+				sb.AppendUTF8Char('>');
 				s->Release();
 				sb.Append(LangGetValue(lang, UTF8STRC("Back")));
 				sb.AppendC(UTF8STRC("</a>"));
