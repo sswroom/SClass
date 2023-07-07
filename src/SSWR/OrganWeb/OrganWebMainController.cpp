@@ -2513,7 +2513,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(Net::WebSe
 					sb.AppendI32(cateId);
 					sb.AppendC(UTF8STRC("&amp;fileId="));
 					sb.AppendI32(fileId);
-					sb.AppendC(UTF8STRC("\"><input type=\"hidden\" name=\"action\"/>"));
+					sb.AppendC(UTF8STRC("\"><input type=\"hidden\" name=\"action\" value=\"setname\"/>"));
 					if (env.user->userType == 0)
 					{
 						sb.AppendC(UTF8STRC("<input type=\"button\" value=\"Set As Species Photo\" onclick=\"document.forms.photo.action.value='setdefault';document.forms.photo.submit();\"/>"));
@@ -2574,6 +2574,15 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(Net::WebSe
 			wfile = species->wfiles.Get(fileId);
 			if (wfile)
 			{
+				if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_POST && env.user && env.user->userType == 0)
+				{
+					req->ParseHTTPForm();
+					Text::String *action = req->GetHTTPFormStr(CSTR("action"));
+					if (action && action->Equals(UTF8STRC("setdefault")))
+					{
+						me->env->SpeciesSetPhotoWId(&mutUsage, id, fileId, true);
+					}
+				}
 				IO::MemoryStream mstm;
 				Text::UTF8Writer writer(&mstm);
 
@@ -2738,6 +2747,21 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(Net::WebSe
 				writer.WriteStrC(UTF8STRC(">"));
 				writer.WriteStrC(wfile->srcUrl->v, wfile->srcUrl->leng);
 				writer.WriteStrC(UTF8STRC("</a><br/>"));
+
+				if (env.user->userType == 0)
+				{
+					sb.ClearStr();
+					sb.AppendC(UTF8STRC("<form name=\"photo\" method=\"POST\" action=\"photodetail.html?id="));
+					sb.AppendI32(id);
+					sb.AppendC(UTF8STRC("&amp;cateId="));
+					sb.AppendI32(cateId);
+					sb.AppendC(UTF8STRC("&amp;fileWId="));
+					sb.AppendI32(fileId);
+					sb.AppendC(UTF8STRC("\"><input type=\"hidden\" name=\"action\" value=\"setname\"/>"));
+					sb.AppendC(UTF8STRC("<input type=\"button\" value=\"Set As Species Photo\" onclick=\"document.forms.photo.action.value='setdefault';document.forms.photo.submit();\"/>"));
+					sb.AppendC(UTF8STRC("</form>"));
+					writer.WriteLineC(sb.ToString(), sb.GetLength());
+				}
 
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("species.html?id="));

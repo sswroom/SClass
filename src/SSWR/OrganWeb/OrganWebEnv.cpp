@@ -1590,7 +1590,7 @@ Bool SSWR::OrganWeb::OrganWebEnv::SpeciesSetPhotoId(Sync::RWMutexUsage *mutUsage
 	}
 }
 
-Bool SSWR::OrganWeb::OrganWebEnv::SpeciesSetPhotoWId(Sync::RWMutexUsage *mutUsage, Int32 speciesId, Int32 photoWId)
+Bool SSWR::OrganWeb::OrganWebEnv::SpeciesSetPhotoWId(Sync::RWMutexUsage *mutUsage, Int32 speciesId, Int32 photoWId, Bool removePhotoId)
 {
 	mutUsage->ReplaceMutex(&this->dataMut, true);
 	SpeciesInfo *species = this->spMap.Get(speciesId);
@@ -1603,11 +1603,19 @@ Bool SSWR::OrganWeb::OrganWebEnv::SpeciesSetPhotoWId(Sync::RWMutexUsage *mutUsag
 	DB::SQLBuilder sql(this->db);
 	sql.AppendCmdC(CSTR("update species set photoWId = "));
 	sql.AppendInt32(photoWId);
+	if (removePhotoId && species->photoId != 0)
+	{
+		sql.AppendCmdC(CSTR(", photoId = 0"));
+	}
 	sql.AppendCmdC(CSTR(" where id = "));
 	sql.AppendInt32(speciesId);
 	if (this->db->ExecuteNonQuery(sql.ToCString()) == 1)
 	{
 		species->photoWId = photoWId;
+		if (removePhotoId && species->photoId != 0)
+		{
+			species->photoId = 0;
+		}
 		return true;
 	}
 	else
@@ -1993,10 +2001,14 @@ Bool SSWR::OrganWeb::OrganWebEnv::SpeciesAddWebfile(Sync::RWMutexUsage *mutUsage
 		if ((species->flags & SpeciesFlags::SF_HAS_WEBPHOTO) == 0)
 		{
 			this->SpeciesSetFlags(mutUsage, speciesId, (SpeciesFlags)(species->flags | SpeciesFlags::SF_HAS_WEBPHOTO));
+			if ((species->flags & SpeciesFlags::SF_HAS_MYPHOTO) == 0)
+			{
+				this->GroupAddCounts(mutUsage, species->groupId, 0, 1, 0);
+			}
 		}
-		if (species->photo == 0 && species->photoId == 0 && species->photoWId == 0)
+		if (species->photoWId == 0)
 		{
-			this->SpeciesSetPhotoWId(mutUsage, speciesId, wfile->id);
+			this->SpeciesSetPhotoWId(mutUsage, speciesId, wfile->id, false);
 		}
 		return true;
 	}

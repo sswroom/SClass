@@ -121,7 +121,7 @@ namespace SSWR
 			Int32 SpeciesAdd(Sync::RWMutexUsage *mutUsage, Text::CString engName, Text::CString chiName, Text::CString sciName, Int32 groupId, Text::CString description, Text::CString dirName, Text::CString idKey, Int32 cateId);
 			Bool SpeciesUpdateDefPhoto(Sync::RWMutexUsage *mutUsage, Int32 speciesId);
 			Bool SpeciesSetPhotoId(Sync::RWMutexUsage *mutUsage, Int32 speciesId, Int32 photoId);
-			Bool SpeciesSetPhotoWId(Sync::RWMutexUsage *mutUsage, Int32 speciesId, Int32 photoWId);
+			Bool SpeciesSetPhotoWId(Sync::RWMutexUsage *mutUsage, Int32 speciesId, Int32 photoWId, Bool removePhotoId);
 			Bool SpeciesSetFlags(Sync::RWMutexUsage *mutUsage, Int32 speciesId, SpeciesFlags flags);
 			Bool SpeciesMove(Sync::RWMutexUsage *mutUsage, Int32 speciesId, Int32 groupId, Int32 cateId);
 			Bool SpeciesModify(Sync::RWMutexUsage *mutUsage, Int32 speciesId, Text::CString engName, Text::CString chiName, Text::CString sciName, Text::CString description, Text::CString dirName);
