@@ -121,9 +121,9 @@ namespace Map
 
 		UOSInt GetTrackCnt();
 		GPSRecord3 *GetTrack(UOSInt index, UOSInt *recordCnt);
-		void GetPosByTime(const Data::Timestamp &ts, Math::Coord2DDbl *pos);
-		void GetPosByTime(Data::DateTime *dt, Math::Coord2DDbl *pos);
-		void GetPosByTicks(Int64 tiemTicks, Math::Coord2DDbl *pos);
+		Math::Coord2DDbl GetPosByTime(const Data::Timestamp &ts);
+		Math::Coord2DDbl GetPosByTime(Data::DateTime *dt);
+		Math::Coord2DDbl GetPosByTicks(Int64 tiemTicks);
 
 		void SetExtraParser(GPSExtraParser *parser);
 		void SetExtraDataIndex(UOSInt recIndex, const UInt8 *data, UOSInt dataSize);

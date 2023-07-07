@@ -3276,7 +3276,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::AddDataFile(Text::CString fileName)
 							if (userFile->lat == 0 && userFile->lon == 0)
 							{
 								Math::Coord2DDbl pos = Math::Coord2DDbl(0, 0);
-								gpsTrk->GetPosByTime(userFile->captureTime, &pos);
+								pos = gpsTrk->GetPosByTime(userFile->captureTime);
 								this->UpdateUserFilePos(userFile, userFile->captureTime, pos.GetLat(), pos.GetLon());
 							}
 							startIndex++;
@@ -3388,7 +3388,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::GetGPSPos(Int32 userId, const Data::Timestamp &
 
 	if (this->gpsTrk)
 	{
-		this->gpsTrk->GetPosByTime(ts, pos);
+		*pos = this->gpsTrk->GetPosByTime(ts);
 		return true;
 	}
 	else

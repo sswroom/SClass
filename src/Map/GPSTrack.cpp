@@ -879,17 +879,17 @@ Map::GPSTrack::GPSRecord3 *Map::GPSTrack::GetTrack(UOSInt index, UOSInt *recordC
 	}
 }
 
-void Map::GPSTrack::GetPosByTime(const Data::Timestamp &ts, Math::Coord2DDbl *pos)
+Math::Coord2DDbl Map::GPSTrack::GetPosByTime(const Data::Timestamp &ts)
 {
-	GetPosByTicks(ts.ToTicks(), pos);
+	return GetPosByTicks(ts.ToTicks());
 }
 
-void Map::GPSTrack::GetPosByTime(Data::DateTime *dt, Math::Coord2DDbl *pos)
+Math::Coord2DDbl Map::GPSTrack::GetPosByTime(Data::DateTime *dt)
 {
-	GetPosByTicks(dt->ToTicks(), pos);
+	return GetPosByTicks(dt->ToTicks());
 }
 
-void Map::GPSTrack::GetPosByTicks(Int64 ticks, Math::Coord2DDbl *pos)
+Math::Coord2DDbl Map::GPSTrack::GetPosByTicks(Int64 ticks)
 {
 	OSInt si;
 	if (this->currTimes.GetCount() > 0)
@@ -900,8 +900,7 @@ void Map::GPSTrack::GetPosByTicks(Int64 ticks, Math::Coord2DDbl *pos)
 			if (si >= 0)
 			{
 				Map::GPSTrack::GPSRecord3 *rec = this->currRecs.GetItem((UOSInt)si);
-				*pos = rec->pos;
-				return;
+				return rec->pos;
 			}
 			else
 			{
@@ -909,8 +908,7 @@ void Map::GPSTrack::GetPosByTicks(Int64 ticks, Math::Coord2DDbl *pos)
 				Map::GPSTrack::GPSRecord3 *rec1 = this->currRecs.GetItem((UOSInt)~si - 1);
 				Map::GPSTrack::GPSRecord3 *rec2 = this->currRecs.GetItem((UOSInt)~si);
 				tDiff = rec2->recTime.DiffMS(rec1->recTime);
-				*pos = (rec1->pos * (Double)(rec2->recTime.ToTicks() - ticks) + rec2->pos * (Double)(ticks - rec1->recTime.ToTicks())) / (Double)tDiff;
-				return;
+				return (rec1->pos * (Double)(rec2->recTime.ToTicks() - ticks) + rec2->pos * (Double)(ticks - rec1->recTime.ToTicks())) / (Double)tDiff;
 			}
 		}
 	}
@@ -934,20 +932,18 @@ void Map::GPSTrack::GetPosByTicks(Int64 ticks, Math::Coord2DDbl *pos)
 				}
 				if (ticks == rec->records[j].recTime.ToTicks())
 				{
-					*pos = rec->records[j].pos;
-					return;
+					return rec->records[j].pos;
 				}
 				else
 				{
 					Int64 tDiff;
 					tDiff = rec->records[j].recTime.DiffMS(rec->records[j - 1].recTime);
-					*pos = (rec->records[j - 1].pos * (Double)(rec->records[j].recTime.ToTicks() - ticks) + rec->records[j].pos * (Double)(ticks - rec->records[j - 1].recTime.ToTicks())) / (Double)tDiff;
-					return;
+					return (rec->records[j - 1].pos * (Double)(rec->records[j].recTime.ToTicks() - ticks) + rec->records[j].pos * (Double)(ticks - rec->records[j - 1].recTime.ToTicks())) / (Double)tDiff;
 				}
 			}
 		}
 	}
-	*pos = Math::Coord2DDbl(0, 0);
+	return Math::Coord2DDbl(0, 0);
 }
 
 void Map::GPSTrack::SetExtraParser(GPSExtraParser *parser)

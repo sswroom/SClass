@@ -191,7 +191,7 @@ void __stdcall SSWR::OrganMgr::OrganTimeAdjForm::OnTimeApplyClicked(void *userOb
 		if (userFile->camera && userFile->camera->Equals(sb.ToString(), sb.GetLength()))
 		{
 			ts = userFile->fileTime.AddSecond(timeAdj);
-			me->gpsTrk->GetPosByTime(ts, &pos);
+			pos = me->gpsTrk->GetPosByTime(ts);
 			if (me->env->UpdateUserFilePos(userFile, ts, pos.GetLat(), pos.GetLon()))
 			{
 				succCnt++;
@@ -215,8 +215,7 @@ void SSWR::OrganMgr::OrganTimeAdjForm::UpdateSelTime(const UTF8Char *camera, UOS
 {
 	if (this->selImgCamera && this->selImgCamera->Equals(camera, cameraLen))
 	{
-		Math::Coord2DDbl pos;
-		this->gpsTrk->GetPosByTime(this->selImgTime.AddSecond(timeAdj), &pos);
+		Math::Coord2DDbl pos = this->gpsTrk->GetPosByTime(this->selImgTime.AddSecond(timeAdj));
 		this->mapMain->ShowMarkerMapXY(pos);
 
 		if (!this->mapView->InViewXY(pos))
