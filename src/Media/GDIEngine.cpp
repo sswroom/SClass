@@ -24,7 +24,9 @@
 #undef WIN32_LEAN_AND_MEAN
 #endif
 
-//#include <stdio.h>
+#include <stdio.h>
+#include "WinDebug.h"
+
 #include <windows.h>
 
 #if (defined(_MSC_VER) || defined(__CYGWIN__) || defined(__MINGW32__)) && !defined(_WIN32_WCE)
@@ -1369,7 +1371,7 @@ Bool Media::GDIImage::DrawStringW(Math::Coord2DDbl tl, const WChar *str, DrawFon
 		Media::DrawBrush *b2 = tmpImg->NewBrushARGB(0xffffffff);
 		tmpImg->DrawStringW(Math::Coord2DDbl(0, 0), str, f, b2);
 		tmpImg->DelBrush(b2);
-		ImageUtil_ColorReplace32((UInt8*)tmpImg->bmpBits, tmpImg->info.storeSize.x, tmpImg->info.storeSize.y, ((GDIBrush*)b)->oriColor);
+		Media::ImageUtil::ColorReplaceAlpha32((UInt8*)tmpImg->bmpBits, tmpImg->info.storeSize.x, tmpImg->info.storeSize.y, ((GDIBrush*)b)->oriColor);
 		tmpImg->info.atype = Media::AT_ALPHA;
 		Double x;
 		Double y;

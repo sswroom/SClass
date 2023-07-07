@@ -3,6 +3,31 @@
 #include "Media/ImageCopyC.h"
 #include "Media/ImageUtil.h"
 
+void Media::ImageUtil::ColorReplaceAlpha32(UInt8 *pixelPtr, UOSInt w, UOSInt h, UInt32 col)
+{
+	UInt8 lut[256];
+	UInt8 b;
+	UOSInt i;
+	i = 256;
+	b = (UInt8)(col >> 24);
+	while (i-- > 0)
+	{
+		lut[i] = (UInt8)(((i << 1) + 1) * b / 510);
+	}
+
+	i = w * h;
+	while (i-- > 0)
+	{
+		b = pixelPtr[0];
+		if (b)
+		{
+			WriteInt32(pixelPtr, col);
+			pixelPtr[3] = lut[b];
+		}
+		pixelPtr += 4;
+	}
+}
+
 void Media::ImageUtil::DrawHLineNA32(UInt8 *pixelPtr, UOSInt w, UOSInt h, UOSInt bpl, OSInt y, OSInt x1, OSInt x2, UInt32 col)
 {
 	if (y < 0 || (UOSInt)y >= h || x1 >= (OSInt)w || x2 < 0)
