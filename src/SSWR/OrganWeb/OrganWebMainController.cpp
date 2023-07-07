@@ -1028,6 +1028,16 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(Net::WebServer
 					me->env->BookAddSpecies(&mutUsage, species->speciesId, dispName, bookAllowDup != 0);
 				}
 			}
+			else if (action && action->Equals(UTF8STRC("webfile")))
+			{
+				Text::String *srcURL = req->GetHTTPFormStr(CSTR("srcURL"));
+				Text::String *imgURL = req->GetHTTPFormStr(CSTR("imgURL"));
+				Text::String *location = req->GetHTTPFormStr(CSTR("location"));
+				if (srcURL && imgURL && srcURL->leng > 0 && imgURL->leng > 0)
+				{
+					me->env->SpeciesAddWebfile(&mutUsage, species->speciesId, imgURL->ToCString(), srcURL->ToCString(), STR_CSTR(location));
+				}
+			}
 		}
 
 		IO::MemoryStream mstm;
@@ -1603,7 +1613,21 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(Net::WebServer
 		if (env.user != 0 && env.user->userType == 0)
 		{
 			writer.WriteLineC(UTF8STRC("<br/>"));
-
+			writer.WriteLineC(UTF8STRC("<hr/>"));
+			sb.ClearStr();
+			sb.AppendC(UTF8STRC("<form name=\"webfile\" action=\"species.html?id="));
+			sb.AppendI32(id);
+			sb.AppendC(UTF8STRC("&amp;cateId="));
+			sb.AppendI32(cateId);
+			sb.AppendC(UTF8STRC("\" method=\"POST\"/>"));
+			writer.WriteLineC(sb.ToString(), sb.GetLength());
+			writer.WriteLineC(UTF8STRC("<input type=\"hidden\" name=\"action\" value=\"webfile\"/>"));
+			writer.WriteLineC(UTF8STRC("Image URL: <input type=\"text\" name=\"imgURL\" value=\"\"/><br/>"));
+			writer.WriteLineC(UTF8STRC("Source URL: <input type=\"text\" name=\"srcURL\" value=\"\"/><br/>"));
+			writer.WriteLineC(UTF8STRC("Location: <input type=\"text\" name=\"location\" value=\"\"/><br/>"));
+			writer.WriteLineC(UTF8STRC("<input type=\"submit\"/><br/>"));
+			writer.WriteLineC(UTF8STRC("</form>"));
+			writer.WriteLineC(UTF8STRC("<hr/>"));
 			writer.WriteLineC(UTF8STRC("<input type=\"button\" value=\"Set Group Photo\" onclick=\"document.forms.userfiles.action.value='setphoto';document.forms.userfiles.submit();\"/>"));
 		}
 

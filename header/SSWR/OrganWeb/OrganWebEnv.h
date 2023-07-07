@@ -121,11 +121,13 @@ namespace SSWR
 			Int32 SpeciesAdd(Sync::RWMutexUsage *mutUsage, Text::CString engName, Text::CString chiName, Text::CString sciName, Int32 groupId, Text::CString description, Text::CString dirName, Text::CString idKey, Int32 cateId);
 			Bool SpeciesUpdateDefPhoto(Sync::RWMutexUsage *mutUsage, Int32 speciesId);
 			Bool SpeciesSetPhotoId(Sync::RWMutexUsage *mutUsage, Int32 speciesId, Int32 photoId);
+			Bool SpeciesSetPhotoWId(Sync::RWMutexUsage *mutUsage, Int32 speciesId, Int32 photoWId);
 			Bool SpeciesSetFlags(Sync::RWMutexUsage *mutUsage, Int32 speciesId, SpeciesFlags flags);
 			Bool SpeciesMove(Sync::RWMutexUsage *mutUsage, Int32 speciesId, Int32 groupId, Int32 cateId);
 			Bool SpeciesModify(Sync::RWMutexUsage *mutUsage, Int32 speciesId, Text::CString engName, Text::CString chiName, Text::CString sciName, Text::CString description, Text::CString dirName);
 			Bool SpeciesDelete(Sync::RWMutexUsage *mutUsage, Int32 speciesId);
 			Bool SpeciesMerge(Sync::RWMutexUsage *mutUsage, Int32 srcSpeciesId, Int32 destSpeciesId, Int32 cateId);
+			Bool SpeciesAddWebfile(Sync::RWMutexUsage *mutUsage, Int32 speciesId, Text::CString imgURL, Text::CString sourceURL, Text::CString location);
 			UserFileInfo *UserfileGetCheck(Sync::RWMutexUsage *mutUsage, Int32 userfileId, Int32 speciesId, Int32 cateId, WebUserInfo *currUser, UTF8Char **filePathOut);
 			UserFileInfo *UserfileGet(Sync::RWMutexUsage *mutUsage, Int32 id);
 			UTF8Char *UserfileGetPath(UTF8Char *sbuff, const UserFileInfo *userfile);

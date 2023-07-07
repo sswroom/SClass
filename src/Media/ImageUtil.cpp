@@ -21,7 +21,7 @@ void Media::ImageUtil::ColorReplaceAlpha32(UInt8 *pixelPtr, UOSInt w, UOSInt h, 
 		b = pixelPtr[0];
 		if (b)
 		{
-			WriteInt32(pixelPtr, col);
+			WriteUInt32(pixelPtr, col);
 			pixelPtr[3] = lut[b];
 		}
 		pixelPtr += 4;

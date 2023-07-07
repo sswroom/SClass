@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "Crypto/Hash/CRC32R.h"
+#include "Crypto/Hash/CRC32RIEEE.h"
 #include "Crypto/Hash/MD5.h"
 #include "Data/Sort/ArtificialQuickSort.h"
 #include "DB/DBReader.h"
@@ -10,6 +11,7 @@
 #include "Media/FrequencyGraph.h"
 #include "Media/ImageList.h"
 #include "Media/MediaFile.h"
+#include "Net/HTTPClient.h"
 #include "SSWR/OrganWeb/OrganWebEnv.h"
 
 void SSWR::OrganWeb::OrganWebEnv::LoadLangs()
@@ -1588,6 +1590,32 @@ Bool SSWR::OrganWeb::OrganWebEnv::SpeciesSetPhotoId(Sync::RWMutexUsage *mutUsage
 	}
 }
 
+Bool SSWR::OrganWeb::OrganWebEnv::SpeciesSetPhotoWId(Sync::RWMutexUsage *mutUsage, Int32 speciesId, Int32 photoWId)
+{
+	mutUsage->ReplaceMutex(&this->dataMut, true);
+	SpeciesInfo *species = this->spMap.Get(speciesId);
+	if (species == 0)
+		return false;
+	if (species->photoWId == photoWId)
+	{
+		return true;
+	}
+	DB::SQLBuilder sql(this->db);
+	sql.AppendCmdC(CSTR("update species set photoWId = "));
+	sql.AppendInt32(photoWId);
+	sql.AppendCmdC(CSTR(" where id = "));
+	sql.AppendInt32(speciesId);
+	if (this->db->ExecuteNonQuery(sql.ToCString()) == 1)
+	{
+		species->photoWId = photoWId;
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
 Bool SSWR::OrganWeb::OrganWebEnv::SpeciesSetFlags(Sync::RWMutexUsage *mutUsage, Int32 speciesId, SpeciesFlags flags)
 {
 	mutUsage->ReplaceMutex(&this->dataMut, true);
@@ -1860,6 +1888,122 @@ Bool SSWR::OrganWeb::OrganWebEnv::SpeciesMerge(Sync::RWMutexUsage *mutUsage, Int
 		this->GroupAddCounts(mutUsage, srcSpecies->groupId, 0, (UOSInt)-1, hasFiles?(UOSInt)-1:0);
 	}
 	return this->SpeciesDelete(mutUsage, srcSpeciesId);
+}
+
+Bool SSWR::OrganWeb::OrganWebEnv::SpeciesAddWebfile(Sync::RWMutexUsage *mutUsage, Int32 speciesId, Text::CString imgURL, Text::CString sourceURL, Text::CString location)
+{
+	if (!imgURL.StartsWith(UTF8STRC("http://")) && !imgURL.StartsWith(UTF8STRC("https://")))
+		return false;
+	if (!sourceURL.StartsWith(UTF8STRC("http://")) && !sourceURL.StartsWith(UTF8STRC("https://")))
+		return false;
+	mutUsage->ReplaceMutex(&this->dataMut, true);
+	SpeciesInfo *species = this->spMap.Get(speciesId);
+	if (species == 0)
+	{
+		return false;
+	}
+	UOSInt i = species->wfiles.GetCount();
+	while (i-- > 0)
+	{
+		if (species->wfiles.GetItem(i)->imgUrl->Equals(imgURL))
+			return false;
+	}
+	Net::HTTPClient *cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, imgURL, Net::WebUtil::RequestMethod::HTTP_GET, true);
+	if (cli->IsError() || cli->GetRespStatus() != Net::WebStatus::SC_OK)
+	{
+		DEL_CLASS(cli);
+		return false;
+	}
+	IO::MemoryStream mstm;
+	if (!cli->ReadAllContent(&mstm, 65536, 10485760))
+	{
+		DEL_CLASS(cli);
+		return false;
+	}
+	DEL_CLASS(cli);
+	Crypto::Hash::CRC32RIEEE crc;
+	UInt32 crcVal = crc.CalcDirect(imgURL.v, imgURL.leng);
+	
+	IO::StmData::MemoryDataRef fd(mstm.GetBuff(), mstm.GetLength());
+	Media::ImageList *imgList = (Media::ImageList*)this->parsers.ParseFileType(&fd, IO::ParserType::ImageList);
+	if (imgList == 0)
+		return false;
+	DEL_CLASS(imgList);
+
+	DB::SQLBuilder sql(this->db);
+	sql.AppendCmdC(CSTR("insert into webfile (species_id, crcVal, imgUrl, srcUrl, prevUpdated, cropLeft, cropTop, cropRight, cropBottom, location) values ("));
+	sql.AppendInt32(speciesId);
+	sql.AppendCmdC(CSTR(", "));
+	sql.AppendInt32((Int32)crcVal);
+	sql.AppendCmdC(CSTR(", "));
+	sql.AppendStrC(imgURL);
+	sql.AppendCmdC(CSTR(", "));
+	sql.AppendStrC(sourceURL);
+	sql.AppendCmdC(CSTR(", "));
+	sql.AppendInt32(0);
+	sql.AppendCmdC(CSTR(", "));
+	sql.AppendDbl(0);
+	sql.AppendCmdC(CSTR(", "));
+	sql.AppendDbl(0);
+	sql.AppendCmdC(CSTR(", "));
+	sql.AppendDbl(0);
+	sql.AppendCmdC(CSTR(", "));
+	sql.AppendDbl(0);
+	sql.AppendCmdC(CSTR(", "));
+	sql.AppendStrC(location);
+	sql.AppendCmdC(CSTR(")"));
+	if (this->db->ExecuteNonQuery(sql.ToCString()) > 0)
+	{
+		Int32 id = this->db->GetLastIdentity32();
+		
+		WebFileInfo *wfile = MemAlloc(WebFileInfo, 1);
+		wfile->id = id;
+		wfile->imgUrl = Text::String::New(imgURL);
+		wfile->srcUrl = Text::String::New(sourceURL);
+		wfile->location = Text::String::New(location);
+		wfile->crcVal = (Int32)crcVal;
+		wfile->cropLeft = 0;
+		wfile->cropTop = 0;
+		wfile->cropRight = 0;
+		wfile->cropBottom = 0;
+
+		UTF8Char sbuff2[512];
+		UTF8Char *sptr2;
+		sptr2 = this->dataDir->ConcatTo(sbuff2);
+		if (sptr2[-1] != IO::Path::PATH_SEPERATOR)
+		{
+			*sptr2++ = IO::Path::PATH_SEPERATOR;
+		}
+		sptr2 = Text::StrConcatC(sptr2, UTF8STRC("WebFile"));
+		*sptr2++ = IO::Path::PATH_SEPERATOR;
+		sptr2 = Text::StrInt32(sptr2, id >> 10);
+		IO::Path::CreateDirectory(CSTRP(sbuff2, sptr2));
+
+		*sptr2++ = IO::Path::PATH_SEPERATOR;
+		sptr2 = Text::StrInt32(sptr2, id);
+		sptr2 = Text::StrConcatC(sptr2, UTF8STRC(".jpg"));
+
+		UInt8 *buff = mstm.GetBuff(&i);
+		{
+			IO::FileStream fs(CSTRP(sbuff2, sptr2), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+			fs.Write(buff, i);
+		}
+
+		species->wfiles.Put(wfile->id, wfile);
+		if ((species->flags & SpeciesFlags::SF_HAS_WEBPHOTO) == 0)
+		{
+			this->SpeciesSetFlags(mutUsage, speciesId, (SpeciesFlags)(species->flags | SpeciesFlags::SF_HAS_WEBPHOTO));
+		}
+		if (species->photo == 0 && species->photoId == 0 && species->photoWId == 0)
+		{
+			this->SpeciesSetPhotoWId(mutUsage, speciesId, wfile->id);
+		}
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }
 
 SSWR::OrganWeb::UserFileInfo *SSWR::OrganWeb::OrganWebEnv::UserfileGetCheck(Sync::RWMutexUsage *mutUsage, Int32 userfileId, Int32 speciesId, Int32 cateId, WebUserInfo *currUser, UTF8Char **filePathOut)
