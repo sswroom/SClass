@@ -1204,6 +1204,7 @@ GUITest8.o: ../../main/UI/GUITest8.cpp
 GUITest9.o: ../../main/UI/GUITest9.cpp
 
 Handles.h:
+NotNullPtr.h:
 sdefs.h:
 Stdafx.h:
 SIMD.h:

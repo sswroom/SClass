@@ -14,7 +14,7 @@ void __stdcall OnTVDblClick(void *userObj)
 	UI::MessageDialog::ShowDialog(CSTR("Test"), CSTR("GUI Test 6 TV DblClick"), me);
 }
 
-Int32 MyMain(Core::IProgControl *progCtrl)
+Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	UI::GUICore *core = progCtrl->CreateGUICore(progCtrl);
 	if (core)

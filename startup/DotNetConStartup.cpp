@@ -7,7 +7,7 @@
 #include "Text/MyStringW.h"
 #include <windows.h>
 
-Int32 MyMain(Core::IProgControl *progCtrl);
+Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl);
 
 Core::ConsoleControl *ConsoleControl_self;
 
@@ -43,7 +43,7 @@ Int32 __stdcall ConsoleControl_ExitHdlr(UInt32 evtType)
 	return TRUE;
 }
 
-void __stdcall ConsoleControl_WaitForExit(Core::IProgControl *progCtrl)
+void __stdcall ConsoleControl_WaitForExit(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	Core::ConsoleControl *ctrl = (Core::ConsoleControl *)progCtrl;
 	while (!ctrl->exited)
@@ -52,14 +52,14 @@ void __stdcall ConsoleControl_WaitForExit(Core::IProgControl *progCtrl)
 	}
 }
 
-void __stdcall ConsoleControl_SignalExit(Core::IProgControl *progCtrl)
+void __stdcall ConsoleControl_SignalExit(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	Core::ConsoleControl *ctrl = (Core::ConsoleControl *)progCtrl;
 	ctrl->exited = true;
 	ctrl->evt->Set();
 }
 
-UTF8Char **__stdcall ConsoleControl_GetCommandLines(Core::IProgControl *progCtrl, UOSInt *cmdCnt)
+UTF8Char **__stdcall ConsoleControl_GetCommandLines(NotNullPtr<Core::IProgControl> progCtrl, UOSInt *cmdCnt)
 {
 	Core::ConsoleControl *ctrl = (Core::ConsoleControl *)progCtrl;
 	if (ctrl->argv == 0)
@@ -119,7 +119,7 @@ void ConsoleControl_Destroy(Core::ConsoleControl *ctrl)
 	}
 }
 
-UI::GUICore *Core::IProgControl::CreateGUICore(Core::IProgControl *progCtrl)
+UI::GUICore *Core::IProgControl::CreateGUICore(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	return 0;
 }

@@ -9,7 +9,7 @@
 
 #include <stdio.h>
 
-Int32 MyMain(Core::IProgControl *progCtrl)
+Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	Text::StringBuilderUTF8 sb;
 	IO::FileStream fs(CSTR("/mnt/raid2_3/Progs/DownList2.txt"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);

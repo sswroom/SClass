@@ -7,7 +7,7 @@
 #include "Media/DrawEngineFactory.h"
 #include "SSWR/SMonitor/SMonitorSvrCore.h"
 
-Int32 MyMain(Core::IProgControl *progCtrl)
+Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	SSWR::SMonitor::SMonitorSvrCore *core;
 	Manage::ExceptionRecorder *exHdlr;

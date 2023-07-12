@@ -752,7 +752,7 @@ Data::NamedClass<LamppostData> *LamppostData::CreateClass()
 	return cls;
 }
 
-Int32 MyMain(Core::IProgControl *progCtrl)
+Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	Text::CString key = CSTR("WEBnAPI");
 	UTF8Char sbuff[512];

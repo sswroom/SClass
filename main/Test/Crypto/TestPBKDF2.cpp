@@ -18,7 +18,7 @@ UTF8Char *Test(UTF8Char *sbuff, const UTF8Char *pwd, UOSInt pwdLen, const UTF8Ch
 	return sbuff;
 }
 
-Int32 MyMain(Core::IProgControl *progCtrl)
+Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;

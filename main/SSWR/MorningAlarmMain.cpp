@@ -257,7 +257,7 @@ UInt32 __stdcall PlayThread(void *obj)
 	return 0;
 }
 
-Int32 MyMain(Core::IProgControl *progCtrl)
+Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	UTF8Char buff[256];
 	UTF8Char *sptr;

@@ -10,7 +10,7 @@
 #include "Parser/FileParser/X509Parser.h"
 #include "Text/StringBuilderUTF8.h"
 
-Int32 MyMain(Core::IProgControl *progCtrl)
+Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;

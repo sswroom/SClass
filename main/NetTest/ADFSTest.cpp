@@ -33,7 +33,7 @@ public:
 	}
 };
 
-Int32 MyMain(Core::IProgControl *progCtrl)
+Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	UTF8Char sbuff1[512];
 	UTF8Char sbuff2[512];

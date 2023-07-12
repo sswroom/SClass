@@ -25,7 +25,7 @@ UTF8Char *Func3(UTF8Char *sbuff);
 UTF8Char *Func4(UTF8Char *sbuff);
 UTF8Char *Func4b(UTF8Char *sbuff);
 
-Int32 MyMain(Core::IProgControl *progCtrl)
+Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	UTF8Char sbuff[128];
 	Func3(sbuff);

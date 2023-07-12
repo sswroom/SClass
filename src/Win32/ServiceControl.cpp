@@ -3,7 +3,7 @@
 #include "Text/MyString.h"
 #include "Win32/ServiceControl.h"
 
-void __stdcall ServiceControl_WaitForExit(Core::IProgControl *progCtrl)
+void __stdcall ServiceControl_WaitForExit(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	Win32::ServiceControl *me = (Win32::ServiceControl*)progCtrl;
 	while (!me->exited)
@@ -12,14 +12,14 @@ void __stdcall ServiceControl_WaitForExit(Core::IProgControl *progCtrl)
 	}
 }
 
-UTF8Char **__stdcall ServiceControl_GetCommandLines(Core::IProgControl *progCtrl, UOSInt *cmdCnt)
+UTF8Char **__stdcall ServiceControl_GetCommandLines(NotNullPtr<Core::IProgControl> progCtrl, UOSInt *cmdCnt)
 {
 	Win32::ServiceControl *me = (Win32::ServiceControl*)progCtrl;
 	*cmdCnt = 1;
 	return &me->argv;
 }
 
-void Win32::ServiceControl_Create(Core::IProgControl *progCtrl)
+void Win32::ServiceControl_Create(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	Win32::ServiceControl *me = (Win32::ServiceControl*)progCtrl;
 	NEW_CLASS(me->evt, Sync::Event(true));
@@ -33,7 +33,7 @@ void Win32::ServiceControl_Create(Core::IProgControl *progCtrl)
 	me->SignalRestart = ServiceControl_SignalRestart;
 }
 
-void Win32::ServiceControl_Destroy(Core::IProgControl *progCtrl)
+void Win32::ServiceControl_Destroy(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	Win32::ServiceControl *me = (Win32::ServiceControl*)progCtrl;
 	Text::StrDelNew(me->argv);
@@ -41,7 +41,7 @@ void Win32::ServiceControl_Destroy(Core::IProgControl *progCtrl)
 }
 
 
-void Win32::ServiceControl_SignalExit(Core::IProgControl *progCtrl)
+void Win32::ServiceControl_SignalExit(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	Win32::ServiceControl *me = (Win32::ServiceControl*)progCtrl;
 	me->exited = true;

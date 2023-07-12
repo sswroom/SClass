@@ -9,7 +9,7 @@
 #include "Net/OSSocketFactory.h"
 #include "Net/RAWAnalyzer.h"
 
-Int32 MyMain(Core::IProgControl *progCtrl)
+Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	Net::RAWAnalyzer *analyzer;
 	Net::SocketFactory *sockf;

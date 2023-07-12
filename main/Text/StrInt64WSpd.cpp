@@ -9,7 +9,7 @@
 #include "Text/StringBuilderUTF8.h"
 #include <wchar.h>
 
-Int32 MyMain(Core::IProgControl *progCtrl)
+Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	WChar wbuff[256];
 	Manage::HiResClock *clk;

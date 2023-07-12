@@ -481,7 +481,7 @@ void TempTest(Net::SocketFactory *sockf, IO::Writer *console)
 	}
 }
 
-Int32 MyMain(Core::IProgControl *progCtrl)
+Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	Text::CString mysqlServer;
 	Text::CString mysqlDB;

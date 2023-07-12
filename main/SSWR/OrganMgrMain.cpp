@@ -9,7 +9,7 @@
 #include "UI/GUICore.h"
 #include "UI/MessageDialog.h"
 
-Int32 MyMain(Core::IProgControl *progCtrl)
+Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	MemSetLogFile(UTF8STRC("Memory.log"));
 

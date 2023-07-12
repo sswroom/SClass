@@ -582,7 +582,7 @@ Data::NamedClass<FlightHoldingsPeriod> *FlightHoldingsPeriod::CreateClass() cons
 	return cls;
 }
 
-Int32 MyMain(Core::IProgControl *progCtrl)
+Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	Text::CString serverHost;
 	Text::CString database;

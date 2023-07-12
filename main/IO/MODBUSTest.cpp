@@ -19,7 +19,7 @@ void __stdcall SetResult(void *userObj, UInt8 funcCode, UInt16 startAddr, UInt16
 {
 }
 
-Int32 MyMain(Core::IProgControl *progCtrl)
+Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	IO::MODBUSMaster *modbus;
 /*	NEW_CLASS(modbus, IO::MODBUSMaster(0));

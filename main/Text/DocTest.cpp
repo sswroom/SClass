@@ -10,7 +10,7 @@
 #include "Text/Doc/DocValidator.h"
 #include "Text/Doc/TextDocument.h"
 
-Int32 MyMain(Core::IProgControl *progCtrl)
+Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	Text::Doc::DocValidator *validator;
 	Text::CString fileName;

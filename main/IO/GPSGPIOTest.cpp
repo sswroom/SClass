@@ -34,7 +34,7 @@ void __stdcall OnGPSPos(void *userObj, Map::GPSTrack::GPSRecord3 *record, UOSInt
 	console->WriteLineC(sb.ToString(), sb.GetLength());
 }
 
-Int32 MyMain(Core::IProgControl *progCtrl)
+Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	IO::GPIOControl *gpio;
 	IO::RS232GPIO *port;

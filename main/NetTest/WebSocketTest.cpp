@@ -19,7 +19,7 @@ void __stdcall OnMessage(void *userObj, Text::CString topic, const UInt8 *buff, 
 	printf("Data from topic: %s\r\n", topic.v);
 }
 
-Int32 MyMain(Core::IProgControl *progCtrl)
+Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	Net::OSSocketFactory sockf(true);
 	Net::WebSocketClient *cli;

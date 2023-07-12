@@ -5,7 +5,7 @@
 #include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 
-Int32 MyMain(Core::IProgControl *progCtrl)
+Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;

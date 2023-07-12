@@ -5,7 +5,7 @@
 #include "Sync/SimpleThread.h"
 #include <stdio.h>
 
-Int32 MyMain(Core::IProgControl *progCtrl)
+Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	Net::SocketFactory *sockf;
 	NEW_CLASS(sockf, Net::OSSocketFactory(true));

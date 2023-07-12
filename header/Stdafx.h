@@ -14,6 +14,6 @@
 //#define USE_OPENCL
 
 #include "sdefs.h"
-
+#include "NotNullPtr.h"
 
 // TODO: reference additional headers your program requires here

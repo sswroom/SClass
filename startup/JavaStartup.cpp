@@ -6,7 +6,7 @@
 #include <jni.h>
 #include <stdio.h>
 
-Int32 MyMain(Core::IProgControl *progCtrl);
+Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl);
 
 extern "C"
 {
@@ -23,7 +23,7 @@ void LinuxProgControl_OnSignal(Int32 sigNum)
 {
 }
 
-void __stdcall LinuxProgControl_WaitForExit(Core::IProgControl *progCtrl)
+void __stdcall LinuxProgControl_WaitForExit(NotNullPtr<Core::IProgControl> progCtrl)
 {
 /*	signal(SIGINT, LinuxProgControl_OnSignal);
 	signal(SIGPIPE, LinuxProgControl_OnSignal);
@@ -32,14 +32,14 @@ void __stdcall LinuxProgControl_WaitForExit(Core::IProgControl *progCtrl)
 //	getchar();
 }
 
-UI::GUICore *__stdcall Core::IProgControl::CreateGUICore(Core::IProgControl *progCtrl)
+UI::GUICore *__stdcall Core::IProgControl::CreateGUICore(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	UI::GUICore *ui;
 	NEW_CLASS(ui, UI::GUICoreJava());
 	return ui;
 }
 
-UTF8Char **__stdcall LinuxProgControl_GetCommandLines(Core::IProgControl *progCtrl, UOSInt *cmdCnt)
+UTF8Char **__stdcall LinuxProgControl_GetCommandLines(NotNullPtr<Core::IProgControl> progCtrl, UOSInt *cmdCnt)
 {
 	LinuxProgControl *ctrl = (LinuxProgControl*)progCtrl;
 	*cmdCnt = ctrl->argc;

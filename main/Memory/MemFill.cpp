@@ -8,7 +8,7 @@
 
 #define BUFFSIZE 104857600
 
-Int32 MyMain(Core::IProgControl *progCtrl)
+Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	UInt8 buff[1021];
 	UInt8 *buff2;

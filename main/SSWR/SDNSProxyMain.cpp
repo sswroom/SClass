@@ -8,7 +8,7 @@
 #include "Manage/ExceptionRecorder.h"
 #include "SSWR/SDNSProxy/SDNSProxyCore.h"
 
-Int32 MyMain(Core::IProgControl *progCtrl)
+Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	Manage::ExceptionRecorder *exHdlr;
 	IO::ConfigFile *cfg;

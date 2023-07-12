@@ -2,7 +2,7 @@
 #include "Core/Core.h"
 #include "Text/MyString.h"
 
-Int32 MyMain(Core::IProgControl *progCtrl)
+Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	Char sbuff[32];
 	Char sbuff2[32];

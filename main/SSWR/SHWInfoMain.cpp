@@ -112,7 +112,7 @@ UTF8Char *ByteDisp(UTF8Char *sbuff, UInt64 byteSize)
 	}
 }
 
-Int32 MyMain(Core::IProgControl *progCtrl)
+Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	Manage::ExceptionRecorder *exHdlr;
 	IO::ConsoleWriter *console;

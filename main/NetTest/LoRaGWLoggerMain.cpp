@@ -16,7 +16,7 @@ void __stdcall OnMessage(void *userObj, Bool toServer, UInt8 ver, UInt16 token, 
 	log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Raw);
 }
 
-Int32 MyMain(Core::IProgControl *progCtrl)
+Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	Net::OSSocketFactory sockf(true);
 	IO::ConsoleWriter console;

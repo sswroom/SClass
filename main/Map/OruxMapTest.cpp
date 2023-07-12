@@ -7,7 +7,7 @@
 #include "Map/OSM/OSMLocalTileMap.h"
 #include "Parser/FullParserList.h"
 
-Int32 MyMain(Core::IProgControl *progCtrl)
+Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	Text::CString fileName = CSTR("/media/sswroom/Extreme SSD/Map/HKTIle.spk");
 	Text::CString destFile = CSTR("/media/sswroom/Extreme SSD/Map/Temp/Temp.otrk2.xml");

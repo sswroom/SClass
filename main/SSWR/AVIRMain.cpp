@@ -31,7 +31,7 @@ Int32 MyAdd(Int32 a, Int32 b)
 	return a;
 }
 
-Int32 MyMain(Core::IProgControl *progCtrl)
+Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	UI::GUICore *ui;
 	SSWR::AVIRead::AVIRBaseForm *frm;

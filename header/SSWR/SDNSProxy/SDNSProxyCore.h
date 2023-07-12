@@ -58,7 +58,7 @@ namespace SSWR
 			~SDNSProxyCore();
 
 			Bool IsError();
-			void Run(Core::IProgControl *progCtrl);
+			void Run(NotNullPtr<Core::IProgControl> progCtrl);
 
 			UOSInt GetClientList(Data::ArrayList<SSWR::SDNSProxy::SDNSProxyCore::ClientInfo *> *cliList);
 			UOSInt GetRequestPerMin();

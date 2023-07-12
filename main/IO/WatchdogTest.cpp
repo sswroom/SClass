@@ -27,7 +27,7 @@ UInt32 __stdcall WatchdogThread(void *userObj)
 	return 0;
 }
 
-Int32 MyMain(Core::IProgControl *progCtrl)
+Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	IO::ConsoleWriter console;
 	Int32 wdId;

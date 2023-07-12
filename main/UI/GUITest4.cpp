@@ -51,7 +51,7 @@ void __stdcall OnFileDrop(void *userObj, Text::String **files, UOSInt nFiles)
 	UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("Drop Files"), me);
 }
 
-Int32 MyMain(Core::IProgControl *progCtrl)
+Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	UI::GUICore *core = progCtrl->CreateGUICore(progCtrl);
 	if (core)

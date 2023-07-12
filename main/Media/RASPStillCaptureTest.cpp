@@ -6,7 +6,7 @@
 #include "Media/MMALStillCapture.h"
 #include "Sync/ThreadUtil.h"
 
-Int32 MyMain(Core::IProgControl *progCtrl)
+Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	IO::ConsoleWriter console;
 	Media::MMALStillCapture capture;

@@ -3,7 +3,7 @@
 #include "Core/Core.h"
 #include "Crypto/Encrypt/RSAEnc.h"
 
-Int32 MyMain(Core::IProgControl *progCtrl)
+Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	Text::CString keyFile = CSTR("/home/sswroom/Progs/Temp/saml_token.key");
 	Crypto::Encrypt::RSAEnc rsa;

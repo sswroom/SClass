@@ -53,7 +53,7 @@ UInt32 __stdcall ReadThread(void *userObj)
 	return 0;
 }
 
-Int32 MyMain(Core::IProgControl *progCtrl)
+Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	NEW_CLASS(port, IO::SerialPort(33, 115200, IO::SerialPort::PARITY_NONE, false));
 	if (port->IsError())

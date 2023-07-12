@@ -6,7 +6,7 @@
 #include "SSWR/AVIRead/AVIRBenchmarkForm.h"
 #include "UI/GUICore.h"
 
-Int32 MyMain(Core::IProgControl *progCtrl)
+Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	UI::GUICore *ui;
 	SSWR::AVIRead::AVIRBenchmarkForm *frm;

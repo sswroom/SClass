@@ -479,7 +479,7 @@ void TestURL(IO::Writer *console, CesiumDownloader *downloader, Text::CString ur
 	downloader->ClearFiles();
 }
 
-Int32 MyMain(Core::IProgControl *progCtrl)
+Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	Net::OSSocketFactory sockf(true);
 	IO::ConsoleWriter console;

@@ -186,7 +186,7 @@ void TestBorder()
 	DEL_CLASS(wb);
 }
 
-Int32 MyMain(Core::IProgControl *progCtrl)
+Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	TestEmpty();
 	TestChart();

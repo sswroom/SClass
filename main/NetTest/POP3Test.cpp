@@ -5,7 +5,7 @@
 #include "Net/SSLEngineFactory.h"
 #include "Net/Email/POP3Client.h"
 
-Int32 MyMain(Core::IProgControl *progCtrl)
+Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	IO::ConsoleWriter writer;
 

@@ -6,7 +6,7 @@
 #include "UI/GUIForm.h"
 #include "UI/GUILabel.h"
 
-Int32 MyMain(Core::IProgControl *progCtrl)
+Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	UI::GUICore *core = progCtrl->CreateGUICore(progCtrl);
 	if (core)

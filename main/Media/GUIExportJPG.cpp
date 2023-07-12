@@ -7,7 +7,7 @@
 #include "Media/ImageList.h"
 #include "Media/StaticImage.h"
 
-Int32 MyMain(Core::IProgControl *progCtrl)
+Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	Text::CString fileName = CSTR("export.jpg");
 	Exporter::GUIJPGExporter exporter;

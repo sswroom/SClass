@@ -3,7 +3,7 @@
 #include "Exporter/WebPExporter.h"
 #include "Parser/FileParser/WebPParser.h"
 
-Int32 MyMain(Core::IProgControl *progCtrl)
+Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	Text::CString fileName = CSTR("/home/sswroom/Progs/Temp/FileTest/1.webp");
 	Text::CString outName = CSTR("/home/sswroom/Progs/Temp/FileTest/1.enc.webp");

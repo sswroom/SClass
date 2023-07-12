@@ -28,7 +28,7 @@ void main2()
 	main3();
 }
 
-Int32 MyMain(Core::IProgControl *progCtrl)
+Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	Manage::ExceptionRecorder *recorder;
 	NEW_CLASS(recorder, Manage::ExceptionRecorder(CSTR("except.txt"), Manage::ExceptionRecorder::EA_CLOSE));

@@ -4,7 +4,7 @@
 #include "SSWR/DownloadMonitor/DownMonMainForm.h"
 #include "UI/MessageDialog.h"
 
-Int32 MyMain(Core::IProgControl *progCtrl)
+Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
 #if 1
 	Media::Decoder::FFMPEGDecoder::Enable();

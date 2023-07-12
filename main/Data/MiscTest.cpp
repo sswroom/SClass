@@ -325,7 +325,7 @@ Int32 AXCAN_BYDC9RTest()
 	return 0;
 }
 
-Int32 MyMain(Core::IProgControl *progCtrl)
+Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	return AXCAN_BYDC9RTest();
 }

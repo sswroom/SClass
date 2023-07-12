@@ -6,7 +6,7 @@
 #include "Text/JSON.h"
 #include "Text/StringBuilderUTF8.h"
 
-Int32 MyMain(Core::IProgControl *progCtrl)
+Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	UInt8 *buff;
 	UInt64 flen;

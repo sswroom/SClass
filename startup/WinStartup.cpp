@@ -21,7 +21,7 @@ struct WinProgControl : public Core::IProgControl
 	UTF8Char **argv;
 };
 
-void __stdcall WinProgControl_WaitForExit(Core::IProgControl *progCtrl)
+void __stdcall WinProgControl_WaitForExit(NotNullPtr<Core::IProgControl> progCtrl)
 {
 }
 
@@ -106,7 +106,7 @@ WChar **CommandLineToArgvW(const WChar *cmdLine, Int32 *argc)
 }
 #endif
 
-UTF8Char **__stdcall WinProgControl_GetCommandLines(Core::IProgControl *progCtrl, UOSInt *cmdCnt)
+UTF8Char **__stdcall WinProgControl_GetCommandLines(NotNullPtr<Core::IProgControl> progCtrl, UOSInt *cmdCnt)
 {
 	WinProgControl *ctrl = (WinProgControl*)progCtrl;
 	if (ctrl->argv == 0)
@@ -163,7 +163,7 @@ void WinProgControl_Destroy(WinProgControl *ctrl)
 	}
 }
 
-UI::GUICore *Core::IProgControl::CreateGUICore(Core::IProgControl *progCtrl)
+UI::GUICore *Core::IProgControl::CreateGUICore(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	WinProgControl *ctrl = (WinProgControl*)progCtrl;
 	UI::GUICoreWin *ui;

@@ -121,7 +121,7 @@ public:
 	}
 };
 
-Int32 MyMain(Core::IProgControl *progCtrl)
+Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	Net::SocketFactory *sockf;
 	Net::WebServer::WebListener *listener;

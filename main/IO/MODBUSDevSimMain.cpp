@@ -11,7 +11,7 @@
 #include "Net/WebServer/MODBUSDevSimHandler.h"
 #include "Net/WebServer/WebListener.h"
 
-Int32 MyMain(Core::IProgControl *progCtrl)
+Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	IO::ConsoleWriter console;
 	IO::ConfigFile *cfg = IO::IniFile::ParseProgConfig(0);

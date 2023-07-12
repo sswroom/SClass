@@ -205,7 +205,7 @@ Bool ParseFile(const UTF8Char *fileName, UOSInt fileNameLen)
 	}
 }
 
-Int32 MyMain(Core::IProgControl *progCtrl)
+Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	UOSInt cmdCnt;
 	UTF8Char sbuff[512];

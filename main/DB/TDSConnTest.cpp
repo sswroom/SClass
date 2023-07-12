@@ -10,7 +10,7 @@
 #define DBUSER CSTR("user")
 #define DBPASSWORD CSTR("password")
 
-Int32 MyMain(Core::IProgControl *progCtrl)
+Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	IO::ConsoleWriter console;
 	IO::ConsoleLogHandler logHdlr(&console);

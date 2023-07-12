@@ -13,10 +13,10 @@ namespace Win32
 		UTF8Char *argv;
 	};
 
-	void ServiceControl_Create(Core::IProgControl *progCtrl);
-	void ServiceControl_Destroy(Core::IProgControl *progCtrl);
+	void ServiceControl_Create(NotNullPtr<Core::IProgControl> progCtrl);
+	void ServiceControl_Destroy(NotNullPtr<Core::IProgControl> progCtrl);
 		
-	void ServiceControl_SignalExit(Core::IProgControl *progCtrl);
+	void ServiceControl_SignalExit(NotNullPtr<Core::IProgControl> progCtrl);
 	void ServiceControl_SignalRestart(Core::IProgControl* progCtrl);
 };
 #endif

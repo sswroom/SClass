@@ -6,7 +6,7 @@
 #include "UI/GUICoreGTK.h"
 #include <gtk/gtk.h>
 
-Int32 MyMain(Core::IProgControl *ctrl);
+Int32 MyMain(NotNullPtr<Core::IProgControl> ctrl);
 
 struct GtkProgControl : public Core::IProgControl
 {
@@ -14,18 +14,18 @@ struct GtkProgControl : public Core::IProgControl
 	UOSInt argc;
 };
 
-void __stdcall GtkProgControl_WaitForExit(Core::IProgControl *progCtrl)
+void __stdcall GtkProgControl_WaitForExit(NotNullPtr<Core::IProgControl> progCtrl)
 {
 }
 
-UTF8Char ** __stdcall GtkProgControl_GetCommandLines(Core::IProgControl *progCtrl, UOSInt *cmdCnt)
+UTF8Char ** __stdcall GtkProgControl_GetCommandLines(NotNullPtr<Core::IProgControl> progCtrl, UOSInt *cmdCnt)
 {
-	GtkProgControl *ctrl = (GtkProgControl*)progCtrl;
+	GtkProgControl *ctrl = (GtkProgControl*)progCtrl.Ptr();
 	*cmdCnt = ctrl->argc;
 	return ctrl->argv;
 }
 
-void GtkProgControl_Create(GtkProgControl *ctrl, UOSInt argc, Char **argv)
+void GtkProgControl_Create(NotNullPtr<GtkProgControl> ctrl, UOSInt argc, Char **argv)
 {
 	ctrl->argv = (UTF8Char**)argv;
 	ctrl->argc = argc;
@@ -35,11 +35,11 @@ void GtkProgControl_Create(GtkProgControl *ctrl, UOSInt argc, Char **argv)
 	ctrl->SignalRestart = GtkProgControl_WaitForExit;
 }
 
-void GtkProgControl_Destroy(GtkProgControl *ctrl)
+void GtkProgControl_Destroy(NotNullPtr<GtkProgControl> ctrl)
 {
 }
 
-UI::GUICore *Core::IProgControl::CreateGUICore(Core::IProgControl *progCtrl)
+UI::GUICore *Core::IProgControl::CreateGUICore(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	UI::GUICoreGTK *ui;
 	NEW_CLASS(ui, UI::GUICoreGTK());
@@ -54,9 +54,9 @@ int main(int argc, char *argv[])
 
 	gtk_init(&argc, &argv);
 	Core::CoreStart();
-	GtkProgControl_Create(&ctrl, (UOSInt)argc, argv);
-	ret = MyMain(&ctrl);
-	GtkProgControl_Destroy(&ctrl);
+	GtkProgControl_Create(ctrl, (UOSInt)argc, argv);
+	ret = MyMain(ctrl);
+	GtkProgControl_Destroy(ctrl);
 	Core::CoreEnd();
 	return ret;
 }

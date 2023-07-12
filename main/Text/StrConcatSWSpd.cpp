@@ -8,7 +8,7 @@
 #include "Text/MyStringW.h"
 #include "Text/StringBuilderUTF8.h"
 
-Int32 MyMain(Core::IProgControl *progCtrl)
+Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	WChar wbuff[32];
 	OSInt i = 10000000;

@@ -3,7 +3,7 @@
 #include "IO/SerialPort.h"
 #include "Sync/ThreadUtil.h"
 
-Int32 MyMain(Core::IProgControl *progCtrl)
+Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	IO::SerialPort serial(1, 9600, IO::SerialPort::PARITY_NONE, false);	
 	UInt8 v = '0';

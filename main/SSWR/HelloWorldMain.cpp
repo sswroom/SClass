@@ -8,7 +8,7 @@
 #include "IO/Path.h"
 #include "Text/MyString.h"
 
-Int32 MyMain(Core::IProgControl *progCtrl)
+Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
 #ifdef DEBUGCON
 	IO::DebugWriter console;

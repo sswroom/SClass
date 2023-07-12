@@ -48,7 +48,7 @@ void __stdcall CaptureTest(UInt32 frameTime, UInt32 frameNum, UInt8 **imgData, U
 	frameCnt--;
 }
 
-Int32 MyMain(Core::IProgControl *progCtrl)
+Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	Media::VideoCaptureMgr *mgr;
 	Media::ColorManager *colorMgr;

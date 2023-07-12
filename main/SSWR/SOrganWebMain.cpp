@@ -14,7 +14,7 @@
 #include "Net/SSLEngineFactory.h"
 #include "SSWR/OrganWeb/OrganWebEnv.h"
 
-Int32 MyMain(Core::IProgControl *progCtrl)
+Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	Manage::ExceptionRecorder exHdlr(CSTR("Error.txt"), Manage::ExceptionRecorder::EA_RESTART);
 	{

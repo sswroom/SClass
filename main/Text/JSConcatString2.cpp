@@ -8,7 +8,7 @@
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 
-Int32 MyMain(Core::IProgControl *progCtrl)
+Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;

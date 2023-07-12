@@ -22,7 +22,7 @@ void GenerateAngle(Media::DrawEngine *deng, UOSInt angleDegree)
 	deng->DeleteImage(dimg);
 }
 
-Int32 MyMain(Core::IProgControl *progCtrl)
+Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	Media::DrawEngine *deng = Media::DrawEngineFactory::CreateDrawEngine();
 	GenerateAngle(deng, 0);

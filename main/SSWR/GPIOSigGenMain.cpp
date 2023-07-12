@@ -31,7 +31,7 @@ UInt32 __stdcall ThreadFunc(void *userObj)
 	return 0;
 }
 
-Int32 MyMain(Core::IProgControl *progCtrl)
+Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	IO::GPIOControl *gpioCtrl;
 	IO::ConsoleWriter console;

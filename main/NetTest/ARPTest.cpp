@@ -24,7 +24,7 @@ void __stdcall ARPHandler(const UInt8 *hwAddr, UInt32 ipv4, void *userData)
 	console->WriteLineC(sb.ToString(), sb.GetLength());
 }
 
-Int32 MyMain(Core::IProgControl *progCtrl)
+Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	Net::ARPHandler *arp = 0;
 	NEW_CLASS(console, IO::ConsoleWriter());

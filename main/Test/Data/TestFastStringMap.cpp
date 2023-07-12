@@ -9,7 +9,7 @@
 #include <stdio.h>
 
 #define DATACNT 10000
-Int32 MyMain(Core::IProgControl *progCtrl)
+Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
 //	Data::StringMap<UInt32> map;
 	Data::FastStringMap<UInt32> map;

@@ -112,7 +112,7 @@ void TestFile2(Text::CString imgPath, Parser::ParserList *parsers, Media::ANPR *
 	}
 }
 
-Int32 MyMain(Core::IProgControl *progCtrl)
+Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	Parser::FullParserList parsers;
 /*	Media::OCREngine ocr(Media::OCREngine::Language::English);

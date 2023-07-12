@@ -219,7 +219,7 @@ Bool SSWR::SDNSProxy::SDNSProxyCore::IsError()
 	return this->listener == 0 || this->proxy == 0 || this->proxy->IsError();
 }
 
-void SSWR::SDNSProxy::SDNSProxyCore::Run(Core::IProgControl *progCtrl)
+void SSWR::SDNSProxy::SDNSProxyCore::Run(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	this->console->WriteLineC(UTF8STRC("SDNSProxy running"));
 	progCtrl->WaitForExit(progCtrl);

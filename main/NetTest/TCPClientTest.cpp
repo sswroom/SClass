@@ -6,7 +6,7 @@
 #include "Net/TCPClient.h"
 #include "Text/StringBuilderUTF8.h"
 
-Int32 MyMain(Core::IProgControl *progCtrl)
+Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	Net::OSSocketFactory sockf(true);
 	Data::Timestamp ts = Data::Timestamp::UtcNow();

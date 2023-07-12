@@ -2,7 +2,7 @@
 #include "Core/Core.h"
 #include "Text/MyString.h"
 
-Int32 MyMain(Core::IProgControl *progCtrl)
+Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	UTF8Char sbuff[32];
 	UInt32 i = 100000;

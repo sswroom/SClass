@@ -936,7 +936,7 @@ Data::NamedClass<Lamppost> *Lamppost::CreateClass()
 	return cls;
 }
 
-Int32 MyMain(Core::IProgControl *progCtrl)
+Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;

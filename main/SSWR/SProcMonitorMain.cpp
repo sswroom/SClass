@@ -179,7 +179,7 @@ static UInt32 __stdcall CheckThread(void *userObj)
 	return 0;
 }
 
-Int32 MyMain(Core::IProgControl *progCtrl)
+Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("Log"));

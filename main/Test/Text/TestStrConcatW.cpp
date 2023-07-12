@@ -3,7 +3,7 @@
 #include "Text/MyString.h"
 #include "Text/MyStringW.h"
 
-Int32 MyMain(Core::IProgControl *progCtrl)
+Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	WChar wbuff[32];
 	const WChar *srcStr = L"ABCDEFGHIJKLMNOPQRSTUVWXYZ";

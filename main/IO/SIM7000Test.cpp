@@ -26,7 +26,7 @@ void __stdcall OnUDPData(const Net::SocketUtil::AddressInfo *addr, UInt16 port, 
 	console->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
 }
 
-Int32 MyMain(Core::IProgControl *progCtrl)
+Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
