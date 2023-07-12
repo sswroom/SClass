@@ -57,7 +57,7 @@ void Map::TileMapServiceSource::LoadXML()
 						if (reader.ReadNodeText(&sb))
 						{
 							SDEL_STRING(this->title);
-							this->title = Text::String::New(sb.ToCString());
+							this->title = Text::String::New(sb.ToCString()).Ptr();
 #if defined(VERBOSE)
 							printf("Title = %s\r\n", this->title->v);
 #endif
@@ -200,13 +200,13 @@ void Map::TileMapServiceSource::LoadXML()
 								if (attr->value->Equals(UTF8STRC("jpg")))
 								{
 									SDEL_STRING(this->tileExt);
-									this->tileExt = attr->value->Clone();
+									this->tileExt = attr->value->Clone().Ptr();
 									this->imgType = IT_JPG;
 								}
 								else if (attr->value->Equals(UTF8STRC("png")))
 								{
 									SDEL_STRING(this->tileExt);
-									this->tileExt = attr->value->Clone();
+									this->tileExt = attr->value->Clone().Ptr();
 									this->imgType = IT_PNG;
 								}
 #if defined(VERBOSE)
@@ -237,7 +237,7 @@ void Map::TileMapServiceSource::LoadXML()
 										if (attr->name->Equals(UTF8STRC("href")))
 										{
 											SDEL_STRING(href);
-											href = attr->value->Clone();
+											href = attr->value->Clone().Ptr();
 #if defined(VERBOSE)
 											printf("tileHref = %s\r\n", href->v);
 #endif
@@ -245,7 +245,7 @@ void Map::TileMapServiceSource::LoadXML()
 										else if (attr->name->Equals(UTF8STRC("profile")))
 										{
 											SDEL_STRING(href);
-											href = attr->value->Clone();
+											href = attr->value->Clone().Ptr();
 #if defined(VERBOSE)
 											printf("tileProfile = %s\r\n", href->v);
 #endif
@@ -299,7 +299,6 @@ void Map::TileMapServiceSource::LoadXML()
 
 Map::TileMapServiceSource::TileMapServiceSource(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, Text::CString tmsURL)
 {
-	this->cacheDir = 0;
 	this->sockf = sockf;
 	this->ssl = ssl;
 	this->encFact = encFact;
@@ -329,7 +328,7 @@ Map::TileMapServiceSource::~TileMapServiceSource()
 	this->tmsURL->Release();
 	SDEL_STRING(this->title);
 	SDEL_STRING(this->tileExt);
-	SDEL_STRING(this->cacheDir);
+	this->cacheDir->Release();
 	SDEL_CLASS(this->csys);
 	TileLayer *layer;
 	UOSInt i = this->layers.GetCount();
@@ -524,38 +523,35 @@ IO::StreamData *Map::TileMapServiceSource::LoadTileImageData(UOSInt level, Math:
 //	printf("Loading Tile %d %d %d\r\n", (UInt32)level, imgX, imgY);
 #endif
 
-	if (this->cacheDir)
+	sptru = this->cacheDir->ConcatTo(filePathU);
+	if (sptru[-1] != IO::Path::PATH_SEPERATOR)
+		*sptru++ = IO::Path::PATH_SEPERATOR;
+	sptru = Text::StrUOSInt(sptru, level);
+	*sptru++ = IO::Path::PATH_SEPERATOR;
+	sptru = Text::StrInt32(sptru, tileId.x);
+	IO::Path::CreateDirectory(CSTRP(filePathU, sptru));
+	*sptru++ = IO::Path::PATH_SEPERATOR;
+	sptru = Text::StrInt32(sptru, tileId.y);
+	*sptru++ = '.';
+	sptru = this->tileExt->ConcatTo(sptru);
+	NEW_CLASS(fd, IO::StmData::FileData({filePathU, (UOSInt)(sptru - filePathU)}, false));
+	if (fd->GetDataSize() > 0)
 	{
-		sptru = this->cacheDir->ConcatTo(filePathU);
-		if (sptru[-1] != IO::Path::PATH_SEPERATOR)
-			*sptru++ = IO::Path::PATH_SEPERATOR;
-		sptru = Text::StrUOSInt(sptru, level);
-		*sptru++ = IO::Path::PATH_SEPERATOR;
-		sptru = Text::StrInt32(sptru, tileId.x);
-		IO::Path::CreateDirectory(CSTRP(filePathU, sptru));
-		*sptru++ = IO::Path::PATH_SEPERATOR;
-		sptru = Text::StrInt32(sptru, tileId.y);
-		*sptru++ = '.';
-		sptru = this->tileExt->ConcatTo(sptru);
-		NEW_CLASS(fd, IO::StmData::FileData({filePathU, (UOSInt)(sptru - filePathU)}, false));
-		if (fd->GetDataSize() > 0)
+		currTime.SetCurrTimeUTC();
+		currTime.AddDay(-7);
+		((IO::StmData::FileData*)fd)->GetFileStream()->GetFileTimes(&dt, 0, 0);
+		if (dt.CompareTo(&currTime) > 0)
 		{
-			currTime.SetCurrTimeUTC();
-			currTime.AddDay(-7);
-			((IO::StmData::FileData*)fd)->GetFileStream()->GetFileTimes(&dt, 0, 0);
-			if (dt.CompareTo(&currTime) > 0)
-			{
-				if (it)
-					*it = this->imgType;
-				return fd;
-			}
-			else
-			{
-				hasTime = true;
-			}
+			if (it)
+				*it = this->imgType;
+			return fd;
 		}
-		DEL_CLASS(fd);
+		else
+		{
+			hasTime = true;
+		}
 	}
+	DEL_CLASS(fd);
 
 	if (localOnly)
 		return 0;
@@ -592,20 +588,17 @@ IO::StreamData *Map::TileMapServiceSource::LoadTileImageData(UOSInt level, Math:
 		IO::MemoryStream mstm;
 		if (cli->ReadAllContent(&mstm, 16384, 10485760))
 		{
-			if (this->cacheDir)
+			IO::FileStream fs({filePathU, (UOSInt)(sptru - filePathU)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer);
+			fs.Write(mstm.GetBuff(), (UOSInt)mstm.GetLength());
+			if (cli->GetLastModified(&dt))
 			{
-				IO::FileStream fs({filePathU, (UOSInt)(sptru - filePathU)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer);
-				fs.Write(mstm.GetBuff(), (UOSInt)mstm.GetLength());
-				if (cli->GetLastModified(&dt))
-				{
-					currTime.SetCurrTimeUTC();
-					fs.SetFileTimes(&currTime, 0, &dt);
-				}
-				else
-				{
-					currTime.SetCurrTimeUTC();
-					fs.SetFileTimes(&currTime, 0, 0);
-				}
+				currTime.SetCurrTimeUTC();
+				fs.SetFileTimes(&currTime, 0, &dt);
+			}
+			else
+			{
+				currTime.SetCurrTimeUTC();
+				fs.SetFileTimes(&currTime, 0, 0);
 			}
 		}
 	}
@@ -617,11 +610,7 @@ IO::StreamData *Map::TileMapServiceSource::LoadTileImageData(UOSInt level, Math:
 	}
 	DEL_CLASS(cli);
 
-	fd = 0;
-	if (this->cacheDir)
-	{
-		NEW_CLASS(fd, IO::StmData::FileData({filePathU, (UOSInt)(sptru - filePathU)}, false));
-	}
+	NEW_CLASS(fd, IO::StmData::FileData({filePathU, (UOSInt)(sptru - filePathU)}, false));
 	if (fd)
 	{
 		if (fd->GetDataSize() > 0)

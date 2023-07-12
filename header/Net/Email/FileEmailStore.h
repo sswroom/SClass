@@ -13,8 +13,8 @@ namespace Net
 			struct FileInfo
 			{
 				Int64 id;
-				Data::ArrayList<Text::String *> rcptList;
-				Text::String *fileName;
+				Data::ArrayListNN<Text::String> rcptList;
+				NotNullPtr<Text::String> fileName;
 				const UTF8Char *uid;
 			};
 		private:

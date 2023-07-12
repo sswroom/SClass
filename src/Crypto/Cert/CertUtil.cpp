@@ -555,7 +555,7 @@ Crypto::Cert::X509Cert *Crypto::Cert::CertUtil::FindIssuer(Crypto::Cert::X509Cer
 			{
 				if (IO::FileStream::LoadFile(CSTRP(sbuff, sptr2), dataBuff, sizeof(dataBuff)) == fileSize)
 				{
-					Text::String *s = Text::String::New(sbuff, (UOSInt)(sptr2 - sbuff));
+					NotNullPtr<Text::String> s = Text::String::New(sbuff, (UOSInt)(sptr2 - sbuff));
 					x509 = Parser::FileParser::X509Parser::ParseBuff(dataBuff, (UOSInt)fileSize, s);
 					s->Release();
 					if (x509)

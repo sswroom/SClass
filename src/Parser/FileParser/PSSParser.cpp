@@ -107,7 +107,7 @@ IO::ParsedObject *Parser::FileParser::PSSParser::ParseFileHdr(IO::StreamData *fd
 			NEW_CLASS(data, IO::StmData::ConcatStreamData(fd->GetFullName()));
 			data->AddData(fd->GetPartialData(0, fd->GetDataSize()));
 			
-			Text::String *s = fd->GetFullFileName();
+			NotNullPtr<Text::String> s = fd->GetFullFileName();
 			sptr = Text::StrConcatC(sbuff, s->v, s->leng - 5);
 			while (true)
 			{

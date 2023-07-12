@@ -25,7 +25,7 @@ namespace Map
 	private:
 		Math::RectAreaDbl bounds;
 
-		Text::String *url;
+		NotNullPtr<Text::String> url;
 		Net::SocketFactory *sockf;
 		Net::SSLEngine *ssl;
 		Text::EncodingFactory *encFact;

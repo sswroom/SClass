@@ -56,10 +56,17 @@ void DB::SQLBuilder::AppendUInt64(UInt64 val)
 	this->sb.AllocLeng(DB::DBUtil::SDBUInt64Leng(val, this->sqlType));
 	this->sb.SetEndPtr(DB::DBUtil::SDBUInt64(this->sb.GetEndPtr(), val, this->sqlType));
 }
+
 void DB::SQLBuilder::AppendStr(Text::String *val)
 {
 	this->sb.AllocLeng(DB::DBUtil::SDBStrUTF8Leng(STR_PTR(val), this->sqlType));
 	this->sb.SetEndPtr(DB::DBUtil::SDBStrUTF8(this->sb.GetEndPtr(), STR_PTR(val), this->sqlType));
+}
+
+void DB::SQLBuilder::AppendStr(NotNullPtr<Text::String> val)
+{
+	this->sb.AllocLeng(DB::DBUtil::SDBStrUTF8Leng(val->v, this->sqlType));
+	this->sb.SetEndPtr(DB::DBUtil::SDBStrUTF8(this->sb.GetEndPtr(), val->v, this->sqlType));
 }
 
 void DB::SQLBuilder::AppendStrC(Text::CString val)
@@ -130,7 +137,7 @@ void DB::SQLBuilder::AppendTableName(DB::TableDef *table)
 	UOSInt i = name->IndexOf('.');
 	if (i != INVALID_INDEX)
 	{
-		const UTF8Char *catalog = Text::StrCopyNewC(name->v, i);
+		const UTF8Char *catalog = Text::StrCopyNewC(name->v, i).Ptr();
 		this->AppendCol(catalog);
 		this->sb.AppendUTF8Char('.');
 		Text::StrDelNew(catalog);
@@ -182,9 +189,9 @@ Text::CString DB::SQLBuilder::ToCString() const
 	return this->sb.ToCString();
 }
 
-Text::String *DB::SQLBuilder::ToNewString() const
+NotNullPtr<Text::String> DB::SQLBuilder::ToNewString() const
 {
-	return Text::String::New(this->sb.ToString(), this->sb.GetLength());
+	return Text::String::New(this->sb.ToCString());
 }
 
 DB::SQLType DB::SQLBuilder::GetSQLType() const

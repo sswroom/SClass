@@ -1,5 +1,6 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRSYSLOGSERVERFORM
 #define _SM_SSWR_AVIREAD_AVIRSYSLOGSERVERFORM
+#include "Data/ArrayListNN.h"
 #include "Data/FastMap.h"
 #include "Net/SyslogServer.h"
 #include "SSWR/AVIRead/AVIRCore.h"
@@ -22,7 +23,7 @@ namespace SSWR
 			typedef struct
 			{
 				UInt32 ip;
-				Data::ArrayList<Text::String*> *logMessage;
+				Data::ArrayListNN<Text::String> *logMessage;
 			} IPLog;
 		private:
 			SSWR::AVIRead::AVIRCore *core;

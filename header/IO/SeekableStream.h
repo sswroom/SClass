@@ -7,7 +7,7 @@ namespace IO
 	class SeekableStream : public Stream
 	{
 	public:
-		SeekableStream(Text::String *sourceName) : IO::Stream(sourceName)
+		SeekableStream(NotNullPtr<Text::String> sourceName) : IO::Stream(sourceName)
 		{};
 
 		SeekableStream(Text::CString sourceName) : IO::Stream(sourceName)

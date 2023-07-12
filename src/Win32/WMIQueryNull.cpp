@@ -105,7 +105,7 @@ void Win32::WMIQuery::Rollback(void *tran)
 }
 
 
-UOSInt Win32::WMIQuery::QueryTableNames(Text::CString schemaName, Data::ArrayList<Text::String*> *names)
+UOSInt Win32::WMIQuery::QueryTableNames(Text::CString schemaName, Data::ArrayListNN<Text::String> *names)
 {
 	if (this->pService == 0)
 	{
@@ -114,7 +114,7 @@ UOSInt Win32::WMIQuery::QueryTableNames(Text::CString schemaName, Data::ArrayLis
 	return 0;
 }
 
-DB::DBReader *Win32::WMIQuery::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+DB::DBReader *Win32::WMIQuery::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListNN<Text::String> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	WChar wbuff[256];
 	Text::StrUTF8_WChar(Text::StrConcat(wbuff, L"SELECT * FROM "), tableName.v, 0);

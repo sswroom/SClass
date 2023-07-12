@@ -224,7 +224,7 @@ IO::ParsedObject *Parser::FileParser::SLOCParser::ParseFileHdr(IO::StreamData *f
 	UOSInt currPos;
 	UInt64 fileSize;
 	Int64 devId;
-	Text::String *s = fd->GetFullName();
+	NotNullPtr<Text::String> s = fd->GetFullName();
 	i = Text::StrLastIndexOfCharC(s->v, s->leng, IO::Path::PATH_SEPERATOR);
 	sptr = Text::StrConcatC(sbuff, &s->v[i + 1], s->leng - i - 1);
 	if (!Text::StrStartsWithICaseC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("LOC")))
@@ -250,7 +250,7 @@ IO::ParsedObject *Parser::FileParser::SLOCParser::ParseFileHdr(IO::StreamData *f
 	Map::GPSTrack *track;
 	sptr = Text::StrInt64(sbuff, devId);
 	s = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
-	NEW_CLASS(track, Map::GPSTrack(fd->GetFullName(), true, 0, s));
+	NEW_CLASS(track, Map::GPSTrack(fd->GetFullName(), true, 0, s.Ptr()));
 	track->SetTrackName(s->ToCString());
 	s->Release();
 	SLOCExtraParser *parser;

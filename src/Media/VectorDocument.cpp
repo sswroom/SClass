@@ -25,7 +25,7 @@ Media::VectorDocument::VectorDocument(UInt32 srid, Text::CString name, Media::Dr
 	this->currDoc = 0;
 	this->srid = srid;
 	this->refEng = refEng;
-	this->docName = Text::String::New(name);
+	this->docName = Text::String::New(name).Ptr();
 	this->author = 0;
 	this->subject = 0;
 	this->keywords = 0;
@@ -68,7 +68,7 @@ void Media::VectorDocument::SetDocName(Text::CString docName)
 	if (docName.v)
 	{
 		SDEL_STRING(this->docName);
-		this->docName = Text::String::New(docName);
+		this->docName = Text::String::New(docName).Ptr();
 	}
 }
 
@@ -102,7 +102,7 @@ void Media::VectorDocument::SetAuthor(const UTF8Char *author)
 	SDEL_TEXT(this->author);
 	if (author)
 	{
-		this->author = Text::StrCopyNew(author);
+		this->author = Text::StrCopyNew(author).Ptr();
 	}
 }
 
@@ -116,7 +116,7 @@ void Media::VectorDocument::SetSubject(const UTF8Char *subject)
 	SDEL_TEXT(this->subject);
 	if (subject)
 	{
-		this->subject = Text::StrCopyNew(subject);
+		this->subject = Text::StrCopyNew(subject).Ptr();
 	}
 }
 
@@ -130,7 +130,7 @@ void Media::VectorDocument::SetKeywords(const UTF8Char *keywords)
 	SDEL_TEXT(this->keywords);
 	if (keywords)
 	{
-		this->keywords = Text::StrCopyNew(keywords);
+		this->keywords = Text::StrCopyNew(keywords).Ptr();
 	}
 }
 
@@ -144,7 +144,7 @@ void Media::VectorDocument::SetCreator(const UTF8Char *creator)
 	SDEL_TEXT(this->creator);
 	if (creator)
 	{
-		this->creator = Text::StrCopyNew(creator);
+		this->creator = Text::StrCopyNew(creator).Ptr();
 	}
 }
 
@@ -158,7 +158,7 @@ void Media::VectorDocument::SetProducer(const UTF8Char *producer)
 	SDEL_TEXT(this->producer);
 	if (producer)
 	{
-		this->producer = Text::StrCopyNew(producer);
+		this->producer = Text::StrCopyNew(producer).Ptr();
 	}
 }
 

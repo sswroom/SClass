@@ -48,8 +48,8 @@ Bool __stdcall Net::WebServer::GCISNotifyHandler::NotifyFunc(Net::WebServer::IWe
 				cert->GetSubjectCN(&sb2);
 				mail.SetFrom(0, sb2.ToCString());
 				Text::JSONObject *msgObj = (Text::JSONObject*)json;
-				Text::String *s;
-				if ((s = msgObj->GetObjectString(CSTR("ChanType"))) != 0 && !s->Equals(UTF8STRC("EM")) && !s->Equals(UTF8STRC("BD")))
+				NotNullPtr<Text::String> s;
+				if (s.Set(msgObj->GetObjectString(CSTR("ChanType"))) && !s->Equals(UTF8STRC("EM")) && !s->Equals(UTF8STRC("BD")))
 				{
 					failed = true;
 					resultCd = CSTR("0074");
@@ -82,15 +82,15 @@ Bool __stdcall Net::WebServer::GCISNotifyHandler::NotifyFunc(Net::WebServer::IWe
 								me->log->LogMessage(CSTR("No recipient found"), IO::LogHandler::LogLevel::Error);
 								break;
 							}
-							else if ((s = recipient->GetObjectString(CSTR("ChanAddr"))) != 0)
+							else if (s.Set(recipient->GetObjectString(CSTR("ChanAddr"))))
 							{
 								mail.ToAdd(0, s);
 							}
-							else if ((s = recipient->GetObjectString(CSTR("CcAddr"))) != 0)
+							else if (s.Set(recipient->GetObjectString(CSTR("CcAddr"))))
 							{
 								mail.CCAdd(0, s);
 							}
-							else if ((s = recipient->GetObjectString(CSTR("BccAddr"))) != 0)
+							else if (s.Set(recipient->GetObjectString(CSTR("BccAddr"))))
 							{
 //								mail.BccAdd(0, s);
 							}
@@ -118,7 +118,7 @@ Bool __stdcall Net::WebServer::GCISNotifyHandler::NotifyFunc(Net::WebServer::IWe
 						resultMsg = CSTR("Content field is empty.");
 						me->log->LogMessage(CSTR("Content field is empty"), IO::LogHandler::LogLevel::Error);
 					}
-					else if ((s = contentDetail->GetObjectString(CSTR("ContentType"))) != 0)
+					else if (s.Set(contentDetail->GetObjectString(CSTR("ContentType"))))
 					{
 						content = contentDetail->GetObjectString(CSTR("Content"));
 						if (content == 0)
@@ -153,7 +153,7 @@ Bool __stdcall Net::WebServer::GCISNotifyHandler::NotifyFunc(Net::WebServer::IWe
 					}
 					if (!failed)
 					{
-						if ((s = contentDetail->GetObjectString(CSTR("Subject"))) != 0)
+						if (s.Set(contentDetail->GetObjectString(CSTR("Subject"))))
 						{
 							mail.SetSubject(s);
 						}

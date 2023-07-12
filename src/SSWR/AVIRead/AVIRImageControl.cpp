@@ -869,7 +869,7 @@ void SSWR::AVIRead::AVIRImageControl::SetFolder(Text::CString folderPath)
 	if (folderPath.leng > 0)
 	{
 		Sync::MutexUsage mutUsage(&this->folderMut);
-		this->folderPath = Text::String::New(folderPath);
+		this->folderPath = Text::String::New(folderPath).Ptr();
 		this->folderChanged = true;
 		mutUsage.EndUse();
 

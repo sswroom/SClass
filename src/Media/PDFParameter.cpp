@@ -39,7 +39,7 @@ Text::String *Media::PDFParameter::GetEntryType(UOSInt index) const
 {
 	ParamEntry *entry = this->GetItem(index);
 	if (entry)
-		return entry->type;
+		return entry->type.Ptr();
 	return 0;
 }
 

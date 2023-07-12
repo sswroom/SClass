@@ -357,7 +357,7 @@ Bool Media::AudioFilter::DTMFGenerator::GenTones(UInt32 signalTime, UInt32 break
 
 	Sync::MutexUsage mutUsage(&this->tonesMut);
 	SDEL_STRING(this->tonesVals);
-	this->tonesVals = Text::String::New(tones, (UOSInt)(sptr - tones));
+	this->tonesVals = Text::String::New(tones, (UOSInt)(sptr - tones)).Ptr();
 	this->tonesSignalSamples = this->format.frequency * signalTime / 1000;
 	this->tonesBreakSamples = this->format.frequency * breakTime / 1000;
 	this->tonesVol = vol;

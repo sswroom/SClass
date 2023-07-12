@@ -17,7 +17,7 @@ namespace SSWR
 			Net::SSLEngine *ssl;
 
 		private:
-			static void __stdcall FileHandler(void *userObj, Text::String **files, UOSInt nFiles);
+			static void __stdcall FileHandler(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles);
 		public:
 			AVIRBaseForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRBaseForm();

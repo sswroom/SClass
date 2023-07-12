@@ -17,10 +17,10 @@ namespace SSWR
 			Net::SocketFactory *sockf;
 			IO::ProtoHdlr::ProtoSyncHandler protoHdlr;
 			Int32 serverId;
-			Text::String *serverName;
+			NotNullPtr<Text::String> serverName;
 			Sync::Mutex cliMut;
 			Net::TCPClient *cli;
-			Text::String *cliHost;
+			NotNullPtr<Text::String> cliHost;
 			UInt16 cliPort;
 			Data::DateTime cliKATime;
 			Data::Duration timeout;

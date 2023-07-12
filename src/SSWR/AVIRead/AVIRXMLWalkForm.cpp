@@ -18,7 +18,7 @@ void __stdcall SSWR::AVIRead::AVIRXMLWalkForm::OnBrowseClick(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRXMLWalkForm::OnFileDrop(void *userObj, Text::String **fileNames, UOSInt nFiles)
+void __stdcall SSWR::AVIRead::AVIRXMLWalkForm::OnFileDrop(void *userObj, NotNullPtr<Text::String> *fileNames, UOSInt nFiles)
 {
 	SSWR::AVIRead::AVIRXMLWalkForm *me = (SSWR::AVIRead::AVIRXMLWalkForm*)userObj;
 	if (nFiles > 0)
@@ -55,7 +55,7 @@ void SSWR::AVIRead::AVIRXMLWalkForm::LoadFile(Text::CString fileName)
 		reader.GetCurrPath(&sb);
 		i = this->lvXML->AddItem(sb.ToCString(), 0);
 		this->lvXML->SetSubItem(i, 1, Text::XMLNode::NodeTypeGetName(reader.GetNodeType()));
-		this->lvXML->SetSubItem(i, 2, reader.GetNodeText());
+		this->lvXML->SetSubItem(i, 2, Text::String::OrEmpty(reader.GetNodeText()));
 	}
 	if (!reader.IsComplete())
 	{

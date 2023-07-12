@@ -5,6 +5,7 @@
 #include "Data/Timestamp.h"
 #include "Text/LineBreakType.h"
 #include "Text/PString.h"
+#include "Text/String.h"
 
 namespace Text
 {
@@ -43,6 +44,7 @@ namespace Text
 		}
 
 		StringBuilderUTF8 *Append(Text::StringBase<UTF8Char> *s);
+		StringBuilderUTF8 *Append(NotNullPtr<Text::String> s);
 		StringBuilderUTF8 *Append(Text::StringBase<const UTF8Char> *s);
 		StringBuilderUTF8 *Append(const Text::StringBase<UTF8Char> &s);
 		StringBuilderUTF8 *Append(const Text::StringBase<const UTF8Char> &s);

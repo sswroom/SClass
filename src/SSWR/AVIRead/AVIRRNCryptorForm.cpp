@@ -54,7 +54,7 @@ void __stdcall SSWR::AVIRead::AVIRRNCryptorForm::OnProcessClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRRNCryptorForm::OnFiles(void *userObj, Text::String **files, UOSInt nFiles)
+void __stdcall SSWR::AVIRead::AVIRRNCryptorForm::OnFiles(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles)
 {
 	SSWR::AVIRead::AVIRRNCryptorForm *me = (SSWR::AVIRead::AVIRRNCryptorForm*)userObj;
 	if (nFiles > 0)

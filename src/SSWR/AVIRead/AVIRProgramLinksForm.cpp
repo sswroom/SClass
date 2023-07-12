@@ -2,7 +2,7 @@
 #include "Data/Sort/ArtificialQuickSort.h"
 #include "SSWR/AVIRead/AVIRProgramLinksCreateForm.h"
 #include "SSWR/AVIRead/AVIRProgramLinksForm.h"
-#include "Text/StringComparatorFast.h"
+#include "Text/StringComparatorFastNN.h"
 #include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRProgramLinksForm::OnItemsSelChg(void *userObj)
@@ -108,16 +108,16 @@ void __stdcall SSWR::AVIRead::AVIRProgramLinksForm::OnCreateClicked(void *userOb
 void SSWR::AVIRead::AVIRProgramLinksForm::UpdateLinkList()
 {
 	this->lbItems->ClearItems();
-	Data::ArrayList<Text::String*> nameList;
-	Text::StringComparatorFast comparator;
+	Data::ArrayListNN<Text::String> nameList;
+	Text::StringComparatorFastNN comparator;
 	this->progMgr.GetLinkNames(&nameList, true, true);
 	Data::Sort::ArtificialQuickSort::Sort(&nameList, &comparator);
-	Text::String *s;
+	NotNullPtr<Text::String> s;
 	UOSInt i = 0;
 	UOSInt j = nameList.GetCount();
 	while (i < j)
 	{
-		s = nameList.GetItem(i);
+		s = Text::String::OrEmpty(nameList.GetItem(i));
 		this->lbItems->AddItem(s, 0);
 		s->Release();
 		i++;

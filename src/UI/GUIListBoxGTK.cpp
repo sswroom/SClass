@@ -17,7 +17,7 @@ struct UI::GUIListBox::ItemData
 {
 	GtkListBoxRow *row;
 	GtkWidget *lbl;
-	Text::String *txt;
+	NotNullPtr<Text::String> txt;
 	void *userData;
 };
 
@@ -139,7 +139,7 @@ void UI::GUIListBox::EventRightClick(OSInt x, OSInt y)
 	}
 }
 
-UOSInt UI::GUIListBox::AddItem(Text::String *itemText, void *itemObj)
+UOSInt UI::GUIListBox::AddItem(NotNullPtr<Text::String> itemText, void *itemObj)
 {
 	ClassData *data = this->clsData;
 	ItemData *item = MemAlloc(ItemData, 1);
@@ -486,7 +486,7 @@ Text::String *UI::GUIListBox::GetItemTextNew(UOSInt index)
 	ItemData *item = this->items.GetItem(index);
 	if (item == 0)
 		return 0;
-	return item->txt->Clone();
+	return item->txt->Clone().Ptr();
 }
 
 OSInt UI::GUIListBox::GetItemHeight()

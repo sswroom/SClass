@@ -78,7 +78,7 @@ IO::ParsedObject *Parser::FileParser::MDBParser::ParseFileHdr(IO::StreamData *fd
 		return 0;
 	}
 
-	Data::ArrayList<Text::String*> tableNames;
+	Data::ArrayListNN<Text::String> tableNames;
 	Data::ArrayList<Text::String*> shpTables;
 	DB::ColDef colDef(CSTR(""));
 	UTF8Char sbuff[128];

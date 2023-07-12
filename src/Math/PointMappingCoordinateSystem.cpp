@@ -5,7 +5,7 @@
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 
-Math::PointMappingCoordinateSystem::PointMappingCoordinateSystem(Text::String *sourceName, UInt32 srid, Text::CString csysName, Math::CoordinateSystem *baseCSys) : Math::CoordinateSystem(sourceName, srid, csysName)
+Math::PointMappingCoordinateSystem::PointMappingCoordinateSystem(NotNullPtr<Text::String> sourceName, UInt32 srid, Text::CString csysName, Math::CoordinateSystem *baseCSys) : Math::CoordinateSystem(sourceName, srid, csysName)
 {
 	this->baseCSys = baseCSys;
 	NEW_CLASS(this->mappingList, Data::ArrayList<Double*>());

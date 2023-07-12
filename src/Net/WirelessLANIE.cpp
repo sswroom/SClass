@@ -1179,7 +1179,7 @@ void Net::WirelessLANIE::GetWPSInfo(const UInt8 *iebuff, UOSInt ieLen, Text::Str
 						if (*model != 0 && (*model)->Equals(UTF8STRC("WAP")))
 						{
 							SDEL_STRING(*model);
-							*model = Text::String::New(sb.ToString(), sb.GetLength());
+							*model = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 						}
 						break;
 					case 0x1021: //Manufacture
@@ -1188,24 +1188,24 @@ void Net::WirelessLANIE::GetWPSInfo(const UInt8 *iebuff, UOSInt ieLen, Text::Str
 						SDEL_STRING(*manuf);
 						if (sb.Equals(UTF8STRC("NETGEAR, Inc.")))
 						{
-							*manuf = Text::String::New(UTF8STRC("Netgear"));
+							*manuf = Text::String::New(UTF8STRC("Netgear")).Ptr();
 						}
 						else if (sb.Equals(UTF8STRC("NTGR")))
 						{
-							*manuf = Text::String::New(UTF8STRC("Netgear"));
+							*manuf = Text::String::New(UTF8STRC("Netgear")).Ptr();
 						}
 						else if (sb.Equals(UTF8STRC("ASUSTeK Computer Inc.")))
 						{
-							*manuf = Text::String::New(UTF8STRC("ASUS"));
+							*manuf = Text::String::New(UTF8STRC("ASUS")).Ptr();
 						}
 						else if (sb.Equals(UTF8STRC("ASUSTek Computer Inc.")))
 						{
-							*manuf = Text::String::New(UTF8STRC("ASUS"));
+							*manuf = Text::String::New(UTF8STRC("ASUS")).Ptr();
 						}
 						else
 						{
 							sb.Equals(UTF8STRC("ASUSTeK Computer Inc."));
-							*manuf = Text::String::New(sb.ToString(), sb.GetLength());
+							*manuf = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 						}
 						break;
 					case 0x1023: //Model
@@ -1217,7 +1217,7 @@ void Net::WirelessLANIE::GetWPSInfo(const UInt8 *iebuff, UOSInt ieLen, Text::Str
 						else
 						{
 							SDEL_STRING(*model);
-							*model = Text::String::New(sb.ToString(), sb.GetLength());
+							*model = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 						}
 						break;
 					case 0x1024: //Model Number
@@ -1226,19 +1226,19 @@ void Net::WirelessLANIE::GetWPSInfo(const UInt8 *iebuff, UOSInt ieLen, Text::Str
 						if (*manuf != 0 && (*manuf)->Equals(UTF8STRC("ASUS")))
 						{
 							SDEL_STRING(*model);
-							*model = Text::String::New(sb.ToString(), sb.GetLength());
+							*model = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 						}
 						else if (*model != 0 && (*model)->Equals(UTF8STRC("NETGEAR Wireless Access Point")))
 						{
 							SDEL_STRING(*model);
-							*model = Text::String::New(sb.ToString(), sb.GetLength());
+							*model = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 						}
 						break;
 					case 0x1042: //Serial
 						sb.ClearStr();
 						sb.AppendC(&iebuff[i + 6], itemSize);
 						SDEL_STRING(*serialNum);
-						*serialNum = Text::String::New(sb.ToString(), sb.GetLength());
+						*serialNum = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 						break;
 					}
 					i += 4 + itemSize; 

@@ -143,7 +143,7 @@ Bool __stdcall Net::PushServerHandler::UsersHandler(Net::WebServer::IWebRequest 
 		Text::JSONBuilder json(&sb, Text::JSONBuilder::OT_OBJECT);
 		json.ObjectBeginArray(CSTR("users"));
 		Sync::MutexUsage mutUsage;
-		Data::ArrayList<Text::String*> userList;
+		Data::ArrayListNN<Text::String> userList;
 		UOSInt i = 0;
 		UOSInt j = me->mgr->GetUsers(&userList, &mutUsage);
 		while (i < j)

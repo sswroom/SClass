@@ -97,7 +97,7 @@ public:
 		{
 			return 0;
 		}
-		return cell->cellValue->Clone();
+		return cell->cellValue->Clone().Ptr();
 	}
 
 	virtual UTF8Char *GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSize)
@@ -232,7 +232,7 @@ DB::WorkbookDB::~WorkbookDB()
 	DEL_CLASS(this->wb);
 }
 
-UOSInt DB::WorkbookDB::QueryTableNames(Text::CString schemaName, Data::ArrayList<Text::String*> *names)
+UOSInt DB::WorkbookDB::QueryTableNames(Text::CString schemaName, Data::ArrayListNN<Text::String> *names)
 {
 	if (schemaName.leng != 0)
 	{
@@ -248,7 +248,7 @@ UOSInt DB::WorkbookDB::QueryTableNames(Text::CString schemaName, Data::ArrayList
 	return j;
 }
 
-DB::DBReader *DB::WorkbookDB::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayList<Text::String*> *colNames, UOSInt dataOfst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+DB::DBReader *DB::WorkbookDB::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListNN<Text::String> *colNames, UOSInt dataOfst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	Text::SpreadSheet::Worksheet *sheet = this->wb->GetWorksheetByName(tableName);
 	if (sheet == 0)
@@ -290,7 +290,7 @@ DB::TableDef *DB::WorkbookDB::GetTableDef(Text::CString schemaName, Text::CStrin
 	while (i < j)
 	{
 		cell = row->cells->GetItem(i);
-		NEW_CLASS(col, DB::ColDef(cell->cellValue));
+		NEW_CLASS(col, DB::ColDef(Text::String::OrEmpty(cell->cellValue)));
 		col->SetColType(DB::DBUtil::ColType::CT_VarUTF8Char);
 		col->SetColSize(256);
 		tabDef->AddCol(col);

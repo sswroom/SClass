@@ -21,7 +21,7 @@ Manage::ModuleInfo::ModuleInfo(void *hProc, void *hMod)
 	info = MemAlloc(ModuleInfoData, 1);
 	this->hMod = info;
 	info->addr = input->addr;
-	info->fileName = Text::StrCopyNew(input->fileName);
+	info->fileName = Text::StrCopyNew(input->fileName).Ptr();
 	info->size = input->size;
 }
 

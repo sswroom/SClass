@@ -2,6 +2,7 @@
 #define _SM_DATA_SORT_ARTIFICIALQUICKSORT
 #include "MyMemory.h"
 #include "Data/ArrayList.h"
+#include "Data/ArrayListNN.h"
 #include "Data/Comparator.h"
 #include "Data/Sort/ArtificialQuickSortC.h"
 #include "Data/Sort/InsertionSort.h"
@@ -57,14 +58,14 @@ namespace Data
 
 			template <class T> static void PreSort(T *arr, Data::Comparator<T> *comparator, OSInt firstIndex, OSInt lastIndex);
 			template <class T> static void Sort(T *arr, Data::Comparator<T> *comparator, OSInt firstIndex, OSInt lastIndex);
-			template <class T> static void Sort(Data::ArrayList<T> *list, Data::Comparator<T> *comparator);
+			template <class T> static void Sort(Data::ArrayCollection<T> *list, Data::Comparator<T> *comparator);
 		};
 	}
 }
 
 template <class T> void Data::Sort::ArtificialQuickSort::PreSort(T *arr, Data::Comparator<T> *comparator, OSInt left, OSInt right)
 {
-	T temp = 0;
+	T temp = arr[left];
 	T temp2;
 	while (left < right)
 	{
@@ -164,7 +165,7 @@ template <class T> void Data::Sort::ArtificialQuickSort::Sort(T *arr, Data::Comp
 #endif
 }
 
-template <class T> void Data::Sort::ArtificialQuickSort::Sort(Data::ArrayList<T> *list, Data::Comparator<T> *comparator)
+template <class T> void Data::Sort::ArtificialQuickSort::Sort(Data::ArrayCollection<T> *list, Data::Comparator<T> *comparator)
 {
 	UOSInt len;
 	T *arr = list->GetArray(&len);

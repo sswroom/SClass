@@ -15,14 +15,14 @@ Text::XMLAttrib::XMLAttrib(const UTF8Char *name, UOSInt nameLen, const UTF8Char 
 	this->valueOri = 0;
 	if (nameLen > 0)
 	{
-		this->name = Text::String::New(nameLen);
+		this->name = Text::String::New(nameLen).Ptr();
 		Text::XML::ParseStr(this->name, name, name + nameLen);
 	}
 	if (valueLen > 0)
 	{
-		this->value = Text::String::New(valueLen);
+		this->value = Text::String::New(valueLen).Ptr();
 		Text::XML::ParseStr(this->value, value, value + valueLen);
-		this->valueOri = Text::String::New(value, valueLen);
+		this->valueOri = Text::String::New(value, valueLen).Ptr();
 	}
 }
 
@@ -45,7 +45,7 @@ Bool Text::XMLAttrib::ToString(Text::StringBuilderUTF8 *sb) const
 		}
 		else
 		{
-			Text::String *s = Text::XML::ToNewAttrText(this->value->v);
+			NotNullPtr<Text::String> s = Text::XML::ToNewAttrText(this->value->v);
 			sb->Append(s);
 			s->Release();
 		}
@@ -737,13 +737,13 @@ UTF8Char *Text::XMLDocument::ParseNode(XMLNode *parentNode, UTF8Char *xmlStart, 
 						if (Text::StrEqualsICaseC(UTF8STRC("ENCODING"), xmlNameSt, (UOSInt)(xmlNameEn - xmlNameSt)))
 						{
 							SDEL_STRING(this->encoding);
-							this->encoding = Text::String::New((UOSInt)(xmlValEn - xmlValSt));
+							this->encoding = Text::String::New((UOSInt)(xmlValEn - xmlValSt)).Ptr();
 							Text::XML::ParseStr(this->encoding, xmlValSt, xmlValEn);
 						}
 						else if (Text::StrEqualsICaseC(UTF8STRC("VERSION"), xmlNameSt, (UOSInt)(xmlNameEn - xmlNameSt)))
 						{
 							SDEL_STRING(this->version);
-							this->version = Text::String::New((UOSInt)(xmlValEn - xmlValSt));
+							this->version = Text::String::New((UOSInt)(xmlValEn - xmlValSt)).Ptr();
 							Text::XML::ParseStr(this->version, xmlValSt, xmlValEn);
 						}
 
@@ -797,13 +797,13 @@ UTF8Char *Text::XMLDocument::ParseNode(XMLNode *parentNode, UTF8Char *xmlStart, 
 						if (Text::StrEqualsICaseC(UTF8STRC("ENCODING"), xmlNameSt, (UOSInt)(xmlNameEn - xmlNameSt)))
 						{
 							SDEL_STRING(this->encoding);
-							this->encoding = Text::String::New((UOSInt)(xmlValEn - xmlValSt));
+							this->encoding = Text::String::New((UOSInt)(xmlValEn - xmlValSt)).Ptr();
 							Text::XML::ParseStr(this->encoding, xmlValSt, xmlValEn);
 						}
 						else if (Text::StrEqualsICaseC(UTF8STRC("VERSION"), xmlNameSt, (UOSInt)(xmlNameEn - xmlNameSt)))
 						{
 							SDEL_STRING(this->version);
-							this->version = Text::String::New((UOSInt)(xmlValEn - xmlValSt));
+							this->version = Text::String::New((UOSInt)(xmlValEn - xmlValSt)).Ptr();
 							Text::XML::ParseStr(this->version, xmlValSt, xmlValEn);
 						}
 
@@ -863,7 +863,7 @@ UTF8Char *Text::XMLDocument::ParseNode(XMLNode *parentNode, UTF8Char *xmlStart, 
 					if (currPtr[1] == '-' && currPtr[2] == '>')
 					{
 						NEW_CLASS(node, XMLNode(XMLNode::NodeType::Comment));
-						node->value = Text::String::New(xmlStart + 4, (UOSInt)(currPtr - xmlStart - 4));
+						node->value = Text::String::New(xmlStart + 4, (UOSInt)(currPtr - xmlStart - 4)).Ptr();
 						parentNode->AddChild(node);
 						
 						return xmlEnd + 3;
@@ -874,7 +874,7 @@ UTF8Char *Text::XMLDocument::ParseNode(XMLNode *parentNode, UTF8Char *xmlStart, 
 
 			//////////////////////////////// File Error /////////////////////////////////////////////////
 			NEW_CLASS(node, XMLNode(XMLNode::NodeType::Text));
-			node->name = Text::String::New((UOSInt)(currPtr - xmlStart));
+			node->name = Text::String::New((UOSInt)(currPtr - xmlStart)).Ptr();
 			Text::XML::ParseStr(node->name, xmlStart, currPtr);
 			this->AddChild(node);
 			
@@ -891,7 +891,7 @@ UTF8Char *Text::XMLDocument::ParseNode(XMLNode *parentNode, UTF8Char *xmlStart, 
 					if (currPtr[1] == ']' && currPtr[2] == '>')
 					{
 						NEW_CLASS(node, XMLNode(XMLNode::NodeType::CData));
-						node->value = Text::String::New(xmlStart + 9, (UOSInt)(currPtr - xmlStart - 9));
+						node->value = Text::String::New(xmlStart + 9, (UOSInt)(currPtr - xmlStart - 9)).Ptr();
 						parentNode->AddChild(node);
 						return xmlEnd + 3;
 					}
@@ -901,7 +901,7 @@ UTF8Char *Text::XMLDocument::ParseNode(XMLNode *parentNode, UTF8Char *xmlStart, 
 
 			//////////////////////////////// File Error /////////////////////////////////////////////////
 			NEW_CLASS(node, XMLNode(XMLNode::NodeType::Text));
-			node->name = Text::String::New((UOSInt)(currPtr - xmlStart));
+			node->name = Text::String::New((UOSInt)(currPtr - xmlStart)).Ptr();
 			Text::XML::ParseStr(node->name, xmlStart, currPtr);
 			this->AddChild(node);
 			
@@ -930,7 +930,7 @@ UTF8Char *Text::XMLDocument::ParseNode(XMLNode *parentNode, UTF8Char *xmlStart, 
 					if (node == 0)
 					{
 						NEW_CLASS(node, XMLNode(XMLNode::NodeType::Element));
-						node->name = Text::String::New((UOSInt)(currPtr - xmlNameSt));
+						node->name = Text::String::New((UOSInt)(currPtr - xmlNameSt)).Ptr();
 						Text::XML::ParseStr(node->name, xmlNameSt, currPtr);
 					}
 					else if (xmlNameSt != 0)
@@ -1024,7 +1024,7 @@ UTF8Char *Text::XMLDocument::ParseNode(XMLNode *parentNode, UTF8Char *xmlStart, 
 						if (node == 0)
 						{
 							NEW_CLASS(node, XMLNode(XMLNode::NodeType::Element));
-							node->name = Text::String::New((UOSInt)(xmlNameEn - xmlNameSt));
+							node->name = Text::String::New((UOSInt)(xmlNameEn - xmlNameSt)).Ptr();
 							Text::XML::ParseStr(node->name, xmlNameSt, xmlNameEn);
 							xmlNameSt = 0;
 							xmlValSt = 0;
@@ -1147,7 +1147,7 @@ UTF8Char *Text::XMLDocument::ParseNode(XMLNode *parentNode, UTF8Char *xmlStart, 
 			currPtr++;
 		}
 		NEW_CLASS(node, XMLNode(XMLNode::NodeType::Text));
-		node->value = Text::String::New((UOSInt)(currPtr - xmlStart));
+		node->value = Text::String::New((UOSInt)(currPtr - xmlStart)).Ptr();
 		Text::XML::ParseStr(node->value, xmlStart, currPtr);
 		parentNode->AddChild(node);
 		return currPtr;

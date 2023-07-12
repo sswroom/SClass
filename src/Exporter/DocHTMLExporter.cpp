@@ -154,7 +154,7 @@ void Exporter::DocHTMLExporter::WriteItems(IO::Writer *writer, Data::ReadingList
 	Text::Doc::DocItem *item;
 	UOSInt i = 0;
 	UOSInt j = items->GetCount();
-	Text::String *s;
+	NotNullPtr<Text::String> s;
 	Text::Doc::DocItem::HorizontalAlign halign;
 	Text::Doc::DocHeading *heading;
 	while (i < j)

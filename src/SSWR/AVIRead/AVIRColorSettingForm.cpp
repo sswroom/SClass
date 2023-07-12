@@ -54,11 +54,11 @@ void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnMonProfileClicked(void *us
 		dlg.SetFileName(CSTRP(sbuff, sptr));
 		if (dlg.ShowDialog(me->GetHandle()))
 		{
-			Text::String *s = dlg.GetFileName();
+			NotNullPtr<Text::String> s = dlg.GetFileName();
 			if (me->monColor->SetMonProfileFile(s))
 			{
 				SDEL_STRING(me->monFileName);
-				me->monFileName = s->Clone();
+				me->monFileName = s->Clone().Ptr();
 
 				const Media::IColorHandler::RGBPARAM2 *rgbParam = me->monColor->GetRGBParam();
 				me->txtMonTran->SetText(Media::CS::TransferTypeGetName(rgbParam->monProfile.GetRTranParamRead()->GetTranType()));
@@ -479,7 +479,7 @@ SSWR::AVIRead::AVIRColorSettingForm::AVIRColorSettingForm(UI::GUIClientControl *
 	Text::String *s = this->monColor->GetMonProfileFile();
 	if (s)
 	{
-		this->monFileName = s->Clone();
+		this->monFileName = s->Clone().Ptr();
 	}
 
 	UOSInt i;

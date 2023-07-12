@@ -20,7 +20,7 @@ namespace IO
 			virtual ~BufferedStreamData();
 
 			virtual UOSInt GetRealData(UInt64 offset, UOSInt length, UInt8 *buffer);
-			virtual Text::String *GetFullName();
+			virtual NotNullPtr<Text::String> GetFullName();
 			virtual Text::CString GetShortName();
 			virtual void SetFullName(Text::CString fullName);
 			virtual UInt64 GetDataSize();
@@ -28,7 +28,7 @@ namespace IO
 
 			virtual IO::StreamData *GetPartialData(UInt64 offset, UInt64 length);
 			virtual Bool IsFullFile();
-			virtual Text::String *GetFullFileName();
+			virtual NotNullPtr<Text::String> GetFullFileName();
 			virtual Bool IsLoading();
 			virtual UOSInt GetSeekCount();
 		};

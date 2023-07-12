@@ -40,7 +40,7 @@ IO::ParserType Text::Doc::TextDocument::GetParserType() const
 void Text::Doc::TextDocument::SetDocumentName(Text::CString docName)
 {
 	SDEL_STRING(this->docName);
-	this->docName = Text::String::New(docName);
+	this->docName = Text::String::New(docName).Ptr();
 }
 
 UTF8Char *Text::Doc::TextDocument::GetDocumentName(UTF8Char *docName) const

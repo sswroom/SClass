@@ -30,7 +30,7 @@ namespace SSWR
 
 			static void __stdcall OnOKClick(void *userObj);
 			static void __stdcall OnCancelClick(void *userObj);
-			static void __stdcall OnFileDrop(void *userObj, Text::String **fileNames, UOSInt fileCnt);
+			static void __stdcall OnFileDrop(void *userObj, NotNullPtr<Text::String> *fileNames, UOSInt fileCnt);
 			void UpdateImages();
 		public:
 			AVIRGISImageForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Map::MapEnv *env, UOSInt imgIndex);

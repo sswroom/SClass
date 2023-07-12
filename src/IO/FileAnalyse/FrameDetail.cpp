@@ -4,7 +4,7 @@
 void IO::FileAnalyse::FrameDetail::FreeFieldInfo(FieldInfo *field)
 {
 	field->name->Release();
-	SDEL_STRING(field->value);
+	field->value->Release();
 	MemFree(field);
 }
 
@@ -13,8 +13,8 @@ void IO::FileAnalyse::FrameDetail::AddFieldInfo(UOSInt ofst, UOSInt size, Text::
 	FieldInfo *field = MemAlloc(FieldInfo, 1);
 	field->ofst = (UInt32)ofst;
 	field->size = (UInt32)size;
-	field->name = Text::String::New(name.v, name.leng);
-	field->value = Text::String::New(value.v, value.leng);
+	field->name = Text::String::New(name);
+	field->value = Text::String::New(value);
 	field->fieldType = fieldType;
 	this->fields.Add(field);
 }
@@ -67,7 +67,7 @@ UOSInt IO::FileAnalyse::FrameDetail::GetFieldInfos(UInt64 ofst, Data::ArrayList<
 
 void IO::FileAnalyse::FrameDetail::AddHeader(Text::CString header)
 {
-	this->headers.Add(Text::String::New(header.v, header.leng));
+	this->headers.Add(Text::String::New(header));
 }
 
 void IO::FileAnalyse::FrameDetail::AddField(UOSInt ofst, UOSInt size, Text::CString name, Text::CString value)
@@ -133,11 +133,8 @@ void IO::FileAnalyse::FrameDetail::ToString(Text::StringBuilderUTF8 *sb) const
 				sb->AppendC(UTF8STRC("\r\n"));
 			}
 			sb->Append(field->name);
-			if (field->value)
-			{
-				sb->AppendUTF8Char('=');
-				sb->Append(field->value);
-			}
+			sb->AppendUTF8Char('=');
+			sb->Append(field->value);
 			i++;
 		}
 	}

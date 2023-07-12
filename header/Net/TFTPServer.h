@@ -20,14 +20,14 @@ namespace Net
 			Bool isWrite;
 			Bool isLast;
 			UInt16 currBlock;
-			Text::String *fileName;
+			NotNullPtr<Text::String> fileName;
 		} SessionInfo;
 		
 	private:
 		IO::LogTool *log;
 		Net::UDPServer *svr;
 		Net::UDPServer *dataSvr;
-		Text::String *path;
+		NotNullPtr<Text::String> path;
 		Sync::Mutex mut;
 		Data::FastMap<UInt64, SessionInfo*> sessMap;
 		Bool threadToStop;

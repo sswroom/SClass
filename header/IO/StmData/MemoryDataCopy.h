@@ -26,7 +26,7 @@ namespace IO
 			virtual ~MemoryDataCopy();
 
 			virtual UOSInt GetRealData(UInt64 offset, UOSInt length, UInt8 *buffer);
-			virtual Text::String *GetFullName();
+			virtual NotNullPtr<Text::String> GetFullName();
 			virtual Text::CString GetShortName();
 			virtual void SetFullName(Text::CString fullName);
 			virtual UInt64 GetDataSize();

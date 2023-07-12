@@ -90,11 +90,11 @@ void __stdcall Net::DHCPServer::PacketHdlr(const Net::SocketUtil::AddressInfo *a
 				dev->updated = true;
 				if (sbHostName.GetLength() > 0)
 				{
-					dev->hostName = Text::String::New(sbHostName.ToCString());
+					dev->hostName = Text::String::New(sbHostName.ToCString()).Ptr();
 				}
 				if (sbVendorClass.GetLength() > 0)
 				{
-					dev->vendorClass = Text::String::New(sbVendorClass.ToCString());
+					dev->vendorClass = Text::String::New(sbVendorClass.ToCString()).Ptr();
 				}
 				if (reqIP == 0 || (reqIP & me->subnet) != (me->infIP & me->subnet))
 				{

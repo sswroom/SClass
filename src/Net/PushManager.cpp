@@ -15,7 +15,7 @@ Net::PushManager::UserInfo *Net::PushManager::GetUser(Text::CString userName)
 	{
 		NEW_CLASS(user, UserInfo());
 		user->userName = Text::String::New(userName);
-		this->userMap.Put(user->userName, user);
+		this->userMap.PutNN(user->userName, user);
 	}
 	return user;
 }
@@ -178,12 +178,12 @@ Bool Net::PushManager::Subscribe(Text::CString token, Text::CString userName, De
 			{
 				if (dev->devModel == 0)
 				{
-					dev->devModel = Text::String::New(devModel);
+					dev->devModel = Text::String::New(devModel).Ptr();
 				}
 				else if (!dev->devModel->Equals(devModel.v, devModel.leng))
 				{
 					SDEL_STRING(dev->devModel);
-					dev->devModel = Text::String::New(devModel);
+					dev->devModel = Text::String::New(devModel).Ptr();
 				}
 			}
 			return true;
@@ -204,25 +204,25 @@ Bool Net::PushManager::Subscribe(Text::CString token, Text::CString userName, De
 		dev->subscribeAddr.addrType = Net::AddrType::Unknown;
 		dev->devModel = 0;
 		dev->lastSubscribeTime = 0;
-		this->devMap.Put(dev->token, dev);
+		this->devMap.PutNN(dev->token, dev);
 	}
 	user = this->GetUser(userName);
-	dev->userName = user->userName->Clone();
+	dev->userName = user->userName->Clone().Ptr();
 	dev->lastSubscribeTime = Data::Timestamp::Now();
 	dev->subscribeAddr = *remoteAddr;
 	if (devModel.leng > 0)
 	{
 		if (dev->devModel == 0)
 		{
-			dev->devModel = Text::String::New(devModel);
+			dev->devModel = Text::String::New(devModel).Ptr();
 		}
 		else if (!dev->devModel->Equals(devModel.v, devModel.leng))
 		{
 			SDEL_STRING(dev->devModel);
-			dev->devModel = Text::String::New(devModel);
+			dev->devModel = Text::String::New(devModel).Ptr();
 		}
 	}
-	user->devMap.Put(dev->token, dev);
+	user->devMap.PutNN(dev->token, dev);
 	if (!this->loading)
 		this->SaveData();
 	return true;
@@ -257,7 +257,7 @@ Bool Net::PushManager::Send(Data::ArrayList<Text::String*> *userNames, Text::Str
 {
 	Sync::MutexUsage mutUsage(&this->dataMut);
 	UserInfo *user;
-	Data::ArrayList<Text::String*> tokenList;
+	Data::ArrayListNN<Text::String> tokenList;
 	UOSInt i = 0;
 	UOSInt j = userNames->GetCount();
 	while (i < j)
@@ -298,7 +298,7 @@ Bool Net::PushManager::Send(Data::ArrayList<Text::String*> *userNames, Text::Str
 	}
 }
 
-UOSInt Net::PushManager::GetUsers(Data::ArrayList<Text::String*> *users, Sync::MutexUsage *mutUsage)
+UOSInt Net::PushManager::GetUsers(Data::ArrayListNN<Text::String> *users, Sync::MutexUsage *mutUsage)
 {
 	mutUsage->ReplaceMutex(&this->dataMut);
 	UOSInt i = 0;

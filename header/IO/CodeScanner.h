@@ -158,13 +158,13 @@ namespace IO
 		typedef void (__stdcall *ScanHandler)(void *userObj, Text::CString code);
 
 	private:
-		Text::String *devName;
+		NotNullPtr<Text::String> devName;
 
 	public:
 		CodeScanner(Text::CString devName);
 		virtual ~CodeScanner();
 
-		Text::String *GetDevName();
+		NotNullPtr<Text::String> GetDevName() const;
 
 		virtual void SetCurrMode(ModeType currMode) = 0;
 		virtual Bool SoftReset() = 0;

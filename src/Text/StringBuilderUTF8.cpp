@@ -22,6 +22,17 @@ Text::StringBuilderUTF8 *Text::StringBuilderUTF8::Append(Text::StringBase<UTF8Ch
 	return this;
 }
 
+Text::StringBuilderUTF8 *Text::StringBuilderUTF8::Append(NotNullPtr<Text::String> s)
+{
+	if (s->leng > 0)
+	{
+		STRINGBUILDER_ALLOCLENG(s->leng);
+		MemCopyNO(&this->v[this->leng], s->v, s->leng + 1);
+		this->leng += s->leng;
+	}
+	return this;
+}
+
 Text::StringBuilderUTF8 *Text::StringBuilderUTF8::Append(Text::StringBase<const UTF8Char> *s)
 {
 	if (s == 0)
@@ -252,7 +263,7 @@ Text::StringBuilderUTF8 *Text::StringBuilderUTF8::AppendChar(UTF32Char c, UOSInt
 
 Text::StringBuilderUTF8 *Text::StringBuilderUTF8::AppendCSV(const UTF8Char **sarr, UOSInt nStr)
 {
-	Text::String *s;
+	NotNullPtr<Text::String> s;
 	UOSInt i;
 	i = 0;
 	while (i < nStr)

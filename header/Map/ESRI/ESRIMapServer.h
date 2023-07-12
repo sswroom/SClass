@@ -16,8 +16,8 @@ namespace Map
 		class ESRIMapServer : public Map::DrawMapService
 		{
 		private:
-			Text::String *url;
-			Text::String *name;
+			NotNullPtr<Text::String> url;
+			NotNullPtr<Text::String> name;
 			Net::SocketFactory *sockf;
 			Net::SSLEngine *ssl;
 			Math::RectAreaDbl bounds;
@@ -43,7 +43,7 @@ namespace Map
 			Bool HasTile() const;
 			void SetSRID(UInt32 srid);
 
-			Text::String *GetURL() const;
+			NotNullPtr<Text::String> GetURL() const;
 			Math::RectAreaDbl GetBounds() const;
 
 			UOSInt TileGetLevelCount() const;
@@ -55,12 +55,12 @@ namespace Map
 			Bool TileLoadToStream(IO::Stream *stm, UOSInt level, Int32 tileX, Int32 tileY) const;
 			Bool TileLoadToFile(Text::CString fileName, UOSInt level, Int32 tileX, Int32 tileY) const;
 
-			virtual Text::String *GetName() const;
+			virtual NotNullPtr<Text::String> GetName() const;
 			virtual Math::CoordinateSystem *GetCoordinateSystem() const;
 			virtual Math::RectAreaDbl GetInitBounds() const;
 			virtual Bool GetBounds(Math::RectAreaDbl *bounds) const;
 			virtual Bool CanQuery() const;
-			virtual Bool QueryInfos(Math::Coord2DDbl coord, Math::RectAreaDbl bounds, UInt32 width, UInt32 height, Double dpi, Data::ArrayList<Math::Geometry::Vector2D*> *vecList, Data::ArrayList<UOSInt> *valueOfstList, Data::ArrayList<Text::String*> *nameList, Data::ArrayList<Text::String*> *valueList);
+			virtual Bool QueryInfos(Math::Coord2DDbl coord, Math::RectAreaDbl bounds, UInt32 width, UInt32 height, Double dpi, Data::ArrayList<Math::Geometry::Vector2D*> *vecList, Data::ArrayList<UOSInt> *valueOfstList, Data::ArrayListNN<Text::String> *nameList, Data::ArrayList<Text::String*> *valueList);
 			virtual Media::ImageList *DrawMap(Math::RectAreaDbl bounds, UInt32 width, UInt32 height, Double dpi, Text::StringBuilderUTF8 *sbUrl);
 
 			static Math::Geometry::Vector2D *ParseGeometry(UInt32 srid, Text::String *geometryType, Text::JSONBase *geometry);

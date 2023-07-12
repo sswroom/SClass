@@ -19,7 +19,7 @@ namespace Net
 			Net::SocketFactory *sockf;
 			Net::TCPClient *cli;
 			Sync::Mutex cliMut;
-			Text::String *host;
+			NotNullPtr<Text::String> host;
 			UInt16 port;
 			Int32 nextSeq;
 			Data::Duration timeout;

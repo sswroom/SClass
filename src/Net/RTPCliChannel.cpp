@@ -309,7 +309,7 @@ UInt32 __stdcall Net::RTPCliChannel::PlayThread(void *userObj)
 void Net::RTPCliChannel::SetControlURL(Text::CString url)
 {
 	SDEL_STRING(this->chData->controlURL);
-	this->chData->controlURL = Text::String::New(url);
+	this->chData->controlURL = Text::String::New(url).Ptr();
 }
 
 void Net::RTPCliChannel::SetPlayControl(Net::IRTPController *playCtrl)

@@ -10,7 +10,7 @@ namespace SSWR
 		{
 		private:
 			UOSInt colIndex;
-			Text::String *value;
+			NotNullPtr<Text::String> value;
 			Int32 compareType;
 
 		public:

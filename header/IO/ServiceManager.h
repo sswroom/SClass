@@ -13,7 +13,7 @@ namespace IO
 	public:
 		struct ServiceItem
 		{
-			Text::String *name;
+			NotNullPtr<Text::String> name;
 			IO::ServiceInfo::ServiceState state;
 			IO::ServiceInfo::RunStatus runStatus;
 		};

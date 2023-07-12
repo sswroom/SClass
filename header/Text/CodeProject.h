@@ -25,7 +25,7 @@ namespace Text
 		virtual ~CodeFile();
 		virtual ObjectType GetObjectType() const;
 
-		virtual Text::String *GetFileName() const = 0;
+		virtual NotNullPtr<Text::String> GetFileName() const = 0;
 	};
 
 	class CodeContainer : public CodeObject
@@ -35,7 +35,7 @@ namespace Text
 
 		virtual ObjectType GetObjectType() const;
 
-		virtual Text::String *GetContainerName() const = 0;
+		virtual NotNullPtr<Text::String> GetContainerName() const = 0;
 		virtual UOSInt GetChildCount() const = 0;
 		virtual CodeObject *GetChildObj(UOSInt index) const = 0;
 	};
@@ -43,12 +43,12 @@ namespace Text
 	class CodeProjectCfg : public IO::ConfigFile
 	{
 	private:
-		Text::String *cfgName;
+		NotNullPtr<Text::String> cfgName;
 	public:
-		CodeProjectCfg(Text::String *name);
+		CodeProjectCfg(NotNullPtr<Text::String> name);
 		virtual ~CodeProjectCfg();
 
-		Text::String *GetCfgName() const;
+		NotNullPtr<Text::String> GetCfgName() const;
 	};
 
 	class CodeProject : public IO::ParsedObject, public CodeContainer

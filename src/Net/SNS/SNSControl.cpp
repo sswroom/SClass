@@ -41,7 +41,7 @@ Net::SNS::SNSControl::SNSType Net::SNS::SNSControl::SNSTypeFromName(Text::CStrin
 	return Net::SNS::SNSControl::ST_UNKNOWN;
 }
 
-Net::SNS::SNSControl::SNSItem *Net::SNS::SNSControl::CreateItem(Text::String *id, Int64 msgTime, Text::String *title, Text::String *message, Text::String *msgLink, Text::String *imgURL, Text::String *videoURL)
+Net::SNS::SNSControl::SNSItem *Net::SNS::SNSControl::CreateItem(NotNullPtr<Text::String> id, Int64 msgTime, Text::String *title, NotNullPtr<Text::String> message, Text::String *msgLink, Text::String *imgURL, Text::String *videoURL)
 {
 	Net::SNS::SNSControl::SNSItem *item = MemAlloc(Net::SNS::SNSControl::SNSItem, 1);
 	item->id = id->Clone();

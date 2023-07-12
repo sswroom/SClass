@@ -22,7 +22,7 @@ namespace Net
 		Sync::Mutex packetIdMut;
 		IO::Writer *errLog;
 
-		Text::String *clientId;
+		NotNullPtr<Text::String> clientId;
 		Sync::Mutex hdlrMut;
 		Data::ArrayList<Net::MQTTConn::PublishMessageHdlr> hdlrList;
 		Data::ArrayList<void *> hdlrObjList;

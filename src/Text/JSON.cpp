@@ -167,7 +167,7 @@ Text::String *Text::JSONBase::GetValueNewString(Text::CString path)
 	Text::JSONBase *json = this->GetValue(path);
 	if (json && json->IsString())
 	{
-		return ((Text::JSONString*)json)->GetValue()->Clone();
+		return ((Text::JSONString*)json)->GetValue()->Clone().Ptr();
 	}
 	return 0;
 }
@@ -1038,6 +1038,11 @@ Text::JSONString::JSONString(Text::String *val)
 	this->val = SCOPY_STRING(val);
 }
 
+Text::JSONString::JSONString(NotNullPtr<Text::String> val)
+{
+	this->val = val->Clone().Ptr();
+}
+
 Text::JSONString::JSONString(Text::CString val)
 {
 	this->val = Text::String::NewOrNull(val);
@@ -1342,6 +1347,18 @@ void Text::JSONObject::SetObjectString(Text::CString name, Text::String *val)
 	this->objVals.PutC(name, ival);
 }
 
+void Text::JSONObject::SetObjectString(Text::CString name, NotNullPtr<Text::String> val)
+{
+	Text::JSONBase *obj = this->objVals.GetC(name);
+	if (obj)
+	{
+		obj->EndUse();
+	}
+	Text::JSONString *ival;
+	NEW_CLASS(ival, Text::JSONString(val));
+	this->objVals.PutC(name, ival);
+}
+
 void Text::JSONObject::SetObjectBool(Text::CString name, Bool val)
 {
 	Text::JSONBase *obj = this->objVals.GetC(name);
@@ -1403,7 +1420,7 @@ Text::String *Text::JSONObject::GetObjectNewString(Text::CString name)
 	{
 		return 0;
 	}
-	return ((Text::JSONString*)baseObj)->GetValue()->Clone();
+	return ((Text::JSONString*)baseObj)->GetValue()->Clone().Ptr();
 }
 
 Double Text::JSONObject::GetObjectDouble(Text::CString name)

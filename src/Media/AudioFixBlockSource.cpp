@@ -3,11 +3,11 @@
 #include "Text/MyString.h"
 #include "Media/AudioFixBlockSource.h"
 
-Media::AudioFixBlockSource::AudioFixBlockSource(IO::StreamData *fd, UInt64 ofst, UInt64 length, Media::AudioFormat *format, Text::String *name)
+Media::AudioFixBlockSource::AudioFixBlockSource(IO::StreamData *fd, UInt64 ofst, UInt64 length, Media::AudioFormat *format, NotNullPtr<Text::String> name)
 {
 	this->format.FromAudioFormat(format);
 	this->data = fd->GetPartialData(ofst, length);
-	this->name = SCOPY_STRING(name);
+	this->name = name->Clone();
 	this->readEvt = 0;
 	this->readOfst = 0;
 }
@@ -15,13 +15,11 @@ Media::AudioFixBlockSource::AudioFixBlockSource(IO::StreamData *fd, UInt64 ofst,
 Media::AudioFixBlockSource::~AudioFixBlockSource()
 {
 	DEL_CLASS(this->data);
-	SDEL_STRING(this->name);
+	this->name->Release();
 }
 
 UTF8Char *Media::AudioFixBlockSource::GetSourceName(UTF8Char *buff)
 {
-	if (this->name == 0)
-		return 0;
 	return this->name->ConcatTo(buff);
 }
 

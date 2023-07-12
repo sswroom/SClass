@@ -204,7 +204,7 @@ IO::ParsedObject *Parser::FileParser::CSVParser::ParseFileHdr(IO::StreamData *fd
 				if (lastTime == 0 || !lastTime->Equals(&sarr[1]))
 				{
 					SDEL_STRING(lastTime);
-					lastTime = Text::String::New(sarr[1].ToCString());
+					lastTime = Text::String::New(sarr[1].ToCString()).Ptr();
 					rec.recTime = Data::Timestamp::FromStr(lastTime->ToCString(), Data::DateTimeUtil::GetLocalTzQhr()).inst;
 				}
 				else

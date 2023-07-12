@@ -82,7 +82,7 @@ IO::ParsedObject *Parser::FileParser::SakuotoArcParser::ParseFileHdr(IO::StreamD
 		}
 		fileName = (UTF16Char*)&recBuff[i + 8];
 		while (*fileName++);
-		Text::String *s = Text::String::NewNotNull((UTF16Char*)&recBuff[i + 8]);
+		NotNullPtr<Text::String> s = Text::String::NewNotNull((UTF16Char*)&recBuff[i + 8]);
 		pf->AddData(fd, dataOfst + fileOfst, fileSize, s->ToCString(), Data::Timestamp(0));
 		s->Release();
 

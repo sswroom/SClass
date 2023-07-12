@@ -33,7 +33,7 @@ namespace DB
 
 	protected:
 		DataError lastDataError;
-		DBConn(Text::String *sourceName);
+		DBConn(NotNullPtr<Text::String> sourceName);
 		DBConn(Text::CString sourceName);
 	public:
 		virtual ~DBConn();

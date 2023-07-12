@@ -134,7 +134,7 @@ Bool Crypto::Encrypt::JasyptEncryptor::Decrypt(IO::ConfigFile *cfg)
 				buffSize = this->DecryptB64(&val->v[4], val->leng - 5, buff);
 				if (buffSize > 0)
 				{
-					val = Text::String::New(buff, buffSize);
+					val = Text::String::New(buff, buffSize).Ptr();
 					cfg->SetValue(cate, key, val);
 					val->Release();
 				}

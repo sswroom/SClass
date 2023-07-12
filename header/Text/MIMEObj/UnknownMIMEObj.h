@@ -11,7 +11,7 @@ namespace Text
 		private:
 			UInt8 *dataBuff;
 			UOSInt buffSize;
-			Text::String *contType;
+			NotNullPtr<Text::String> contType;
 
 		public:
 			UnknownMIMEObj(UInt8 *dataBuff, UOSInt buffSize, Text::CString contentType);

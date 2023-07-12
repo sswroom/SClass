@@ -71,7 +71,7 @@ namespace SSWR
 			Text::CString table;
 
 			static void __stdcall OnBrowseClk(void *userObj);
-			static void __stdcall OnFiles(void *userObj, Text::String **files, UOSInt nFiles);
+			static void __stdcall OnFiles(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles);
 			static void __stdcall OnSQLClicked(void *userObj);
 			static void __stdcall OnExecuteClicked(void *userObj);
 			Bool LoadCSV(Text::CString fileName);

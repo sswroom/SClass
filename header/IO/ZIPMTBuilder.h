@@ -27,7 +27,7 @@ namespace IO
 
 		struct FileTask
 		{
-			Text::String *fileName;
+			NotNullPtr<Text::String> fileName;
 			UInt8 *fileBuff;
 			UOSInt fileSize;
 			Int64 fileTimeTicks;

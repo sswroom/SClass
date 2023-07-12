@@ -140,7 +140,7 @@ Text::SpreadSheet::Worksheet::CellData *Text::SpreadSheet::Worksheet::CloneCell(
 	newCell->cdt = cell->cdt;
 	if (cell->cellValue)
 	{
-		newCell->cellValue = cell->cellValue->Clone();
+		newCell->cellValue = cell->cellValue->Clone().Ptr();
 	}
 	else
 	{
@@ -152,7 +152,7 @@ Text::SpreadSheet::Worksheet::CellData *Text::SpreadSheet::Worksheet::CloneCell(
 	newCell->hidden = cell->hidden;
 	if (cell->cellURL)
 	{
-		newCell->cellURL = cell->cellURL->Clone();
+		newCell->cellURL = cell->cellURL->Clone().Ptr();
 	}
 	else
 	{
@@ -167,7 +167,7 @@ void Text::SpreadSheet::Worksheet::FreeDrawing(WorksheetDrawing *drawing)
 	MemFree(drawing);
 }
 
-Text::SpreadSheet::Worksheet::Worksheet(Text::String *name)
+Text::SpreadSheet::Worksheet::Worksheet(NotNullPtr<Text::String> name)
 {
 	this->name = name->Clone();
 	this->freezeHori = 0;
@@ -400,12 +400,12 @@ Double Text::SpreadSheet::Worksheet::GetDefRowHeightPt()
 	return this->defRowHeightPt;
 }
 
-Text::String *Text::SpreadSheet::Worksheet::GetName()
+NotNullPtr<Text::String> Text::SpreadSheet::Worksheet::GetName() const
 {
 	return this->name;
 }
 
-Bool Text::SpreadSheet::Worksheet::SetCellString(UOSInt row, UOSInt col, Text::String *val)
+Bool Text::SpreadSheet::Worksheet::SetCellString(UOSInt row, UOSInt col, NotNullPtr<Text::String> val)
 {
 	return this->SetCellString(row, col, 0, val);
 }
@@ -506,7 +506,7 @@ Bool Text::SpreadSheet::Worksheet::SetCellURL(UOSInt row, UOSInt col, Text::Stri
 	SDEL_STRING(cell->cellURL);
 	if (url)
 	{
-		cell->cellURL = url->Clone();
+		cell->cellURL = url->Clone().Ptr();
 	}
 	return true;
 }
@@ -520,12 +520,12 @@ Bool Text::SpreadSheet::Worksheet::SetCellURL(UOSInt row, UOSInt col, Text::CStr
 	SDEL_STRING(cell->cellURL);
 	if (url.leng > 0)
 	{
-		cell->cellURL = Text::String::New(url);
+		cell->cellURL = Text::String::New(url).Ptr();
 	}
 	return true;
 }
 
-Bool Text::SpreadSheet::Worksheet::SetCellString(UOSInt row, UOSInt col, CellStyle *style, Text::String *val)
+Bool Text::SpreadSheet::Worksheet::SetCellString(UOSInt row, UOSInt col, CellStyle *style, NotNullPtr<Text::String> val)
 {
 	CellData *cell;
 	cell = GetCellData(row, col, false);
@@ -533,10 +533,7 @@ Bool Text::SpreadSheet::Worksheet::SetCellString(UOSInt row, UOSInt col, CellSty
 		return false;
 	cell->cdt = CellDataType::String;
 	SDEL_STRING(cell->cellValue);
-	if (val)
-	{
-		cell->cellValue = val->Clone();
-	}
+	cell->cellValue = val->Clone().Ptr();
 	if (style) cell->style = style;
 	return true;
 }
@@ -551,7 +548,7 @@ Bool Text::SpreadSheet::Worksheet::SetCellString(UOSInt row, UOSInt col, CellSty
 	SDEL_STRING(cell->cellValue);
 	if (val.leng > 0)
 	{
-		cell->cellValue = Text::String::New(val);
+		cell->cellValue = Text::String::New(val).Ptr();
 	}
 	if (style) cell->style = style;
 	return true;
@@ -568,7 +565,7 @@ Bool Text::SpreadSheet::Worksheet::SetCellDate(UOSInt row, UOSInt col, CellStyle
 	cell->cdt = CellDataType::DateTime;
 	SDEL_STRING(cell->cellValue);
 	sptr = val->ToString(sbuff, "yyyy-MM-ddTHH:mm:ss.fff");
-	cell->cellValue = Text::String::NewP(sbuff, sptr);
+	cell->cellValue = Text::String::NewP(sbuff, sptr).Ptr();
 	if (style) cell->style = style;
 	return true;
 }
@@ -584,7 +581,7 @@ Bool Text::SpreadSheet::Worksheet::SetCellDouble(UOSInt row, UOSInt col, CellSty
 	cell->cdt = CellDataType::Number;
 	SDEL_STRING(cell->cellValue);
 	sptr = Text::StrDouble(sbuff, val);
-	cell->cellValue = Text::String::NewP(sbuff, sptr);
+	cell->cellValue = Text::String::NewP(sbuff, sptr).Ptr();
 	if (style) cell->style = style;
 	return true;
 }
@@ -600,7 +597,7 @@ Bool Text::SpreadSheet::Worksheet::SetCellInt32(UOSInt row, UOSInt col, CellStyl
 	cell->cdt = CellDataType::Number;
 	SDEL_STRING(cell->cellValue);
 	sptr = Text::StrInt32(sbuff, val);
-	cell->cellValue = Text::String::NewP(sbuff, sptr);
+	cell->cellValue = Text::String::NewP(sbuff, sptr).Ptr();
 	if (style) cell->style = style;
 	return true;
 }

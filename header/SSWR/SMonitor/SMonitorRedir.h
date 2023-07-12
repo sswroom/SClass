@@ -16,7 +16,7 @@ namespace SSWR
 		private:
 			Net::SocketFactory *sockf;
 			Net::UDPServer *svr;
-			Text::String *hostName;
+			NotNullPtr<Text::String> hostName;
 			UInt16 port;
 			Crypto::Hash::CRC16 dataCRC;
 			Sync::Mutex dataCRCMut;
@@ -27,7 +27,7 @@ namespace SSWR
 			void CalcCRC(const UInt8 *buff, UOSInt size, UInt8 *crcVal);
 		public:
 			SMonitorRedir(Net::SocketFactory *sockf);
-			SMonitorRedir(Net::SocketFactory *sockf, Text::String *hostName, UInt16 port);
+			SMonitorRedir(Net::SocketFactory *sockf, NotNullPtr<Text::String> hostName, UInt16 port);
 			~SMonitorRedir();
 
 			Bool IsError();

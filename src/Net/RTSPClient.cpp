@@ -128,12 +128,12 @@ UInt32 __stdcall Net::RTSPClient::ControlThread(void *userObj)
 										sbuff[9 + k] = 0;
 										sptr = &sbuff[9 + k];
 									}
-									cliData->reqStrs = Text::String::New(&sbuff[9], (UOSInt)(sptr - &sbuff[9]));
+									cliData->reqStrs = Text::String::New(&sbuff[9], (UOSInt)(sptr - &sbuff[9])).Ptr();
 								}
 								else if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Public: ")))
 								{
 									SDEL_STRING(cliData->reqStrs);
-									cliData->reqStrs = Text::String::New(&sbuff[8], (UOSInt)(sptr - &sbuff[8]));
+									cliData->reqStrs = Text::String::New(&sbuff[8], (UOSInt)(sptr - &sbuff[8])).Ptr();
 								}
 							}
 							if (cliData->reqReplySize == 0)
@@ -322,7 +322,7 @@ Bool Net::RTSPClient::GetOptions(Text::CString url, Data::ArrayList<const UTF8Ch
 			i = 0;
 			while (i < buffSize)
 			{
-				options->Add(Text::StrCopyNewC(sarr[i].v, sarr[i].leng));
+				options->Add(Text::StrCopyNewC(sarr[i].v, sarr[i].leng).Ptr());
 				i++;
 			}
 			ret = true;
@@ -579,7 +579,7 @@ Bool Net::RTSPClient::Init(Net::RTPCliChannel *rtpChannel)
 	UTF8Char *sptr;
 	if ((sptr = this->SetupRTP(sbuff, rtpChannel->GetControlURL()->ToCString(), rtpChannel)) != 0)
 	{
-		rtpChannel->SetUserData((void*)Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+		rtpChannel->SetUserData((void*)Text::String::New(sbuff, (UOSInt)(sptr - sbuff)).Ptr());
 		return true;
 	}
 	return false;

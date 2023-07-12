@@ -38,7 +38,7 @@ void DB::PageRequest::Sort(const UTF8Char *colName, Bool descending)
 		NEW_CLASS(this->sortList, Data::ArrayList<const UTF8Char*>());
 		NEW_CLASS(this->sortDescList, Data::ArrayList<Bool>());
 	}
-	this->sortList->Add(Text::StrCopyNew(colName));
+	this->sortList->Add(Text::StrCopyNew(colName).Ptr());
 	this->sortDescList->Add(descending);
 }
 

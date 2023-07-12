@@ -512,13 +512,13 @@ SSWR::DownloadMonitor::DownMonCore::DownMonCore() : checker(false)
 		s = cfg->GetValue(CSTR("ListFile"));
 		this->listFile = SCOPY_STRING(s);
 	}
-	if (this->downPath == 0) this->downPath = Text::String::New(UTF8STRC("D:\\DownTemp"));
-	if (this->succPath == 0) this->succPath = Text::String::New(UTF8STRC("\\\\192.168.0.21\\disk4\\DownVideo\\ToCheck"));
-	if (this->errPath == 0) this->errPath = Text::String::New(UTF8STRC("D:\\DownTemp\\Err"));
-	if (this->ytPath == 0) this->ytPath = Text::String::New(UTF8STRC("D:\\DownTemp\\Youtube"));
-	if (this->ffmpegPath == 0) this->ffmpegPath = Text::String::New(UTF8STRC("C:\\BDTools\\ffmpeg.exe"));
-	if (this->firefoxPath == 0) this->firefoxPath = Text::String::New(UTF8STRC("C:\\Program Files\\Firefox Developer Edition\\firefox.exe"));
-	if (this->listFile == 0) this->listFile = Text::String::New(UTF8STRC("I:\\PROGS\\DownList2.txt"));
+	if (this->downPath == 0) this->downPath = Text::String::New(UTF8STRC("D:\\DownTemp")).Ptr();
+	if (this->succPath == 0) this->succPath = Text::String::New(UTF8STRC("\\\\192.168.0.21\\disk4\\DownVideo\\ToCheck")).Ptr();
+	if (this->errPath == 0) this->errPath = Text::String::New(UTF8STRC("D:\\DownTemp\\Err")).Ptr();
+	if (this->ytPath == 0) this->ytPath = Text::String::New(UTF8STRC("D:\\DownTemp\\Youtube")).Ptr();
+	if (this->ffmpegPath == 0) this->ffmpegPath = Text::String::New(UTF8STRC("C:\\BDTools\\ffmpeg.exe")).Ptr();
+	if (this->firefoxPath == 0) this->firefoxPath = Text::String::New(UTF8STRC("C:\\Program Files\\Firefox Developer Edition\\firefox.exe")).Ptr();
+	if (this->listFile == 0) this->listFile = Text::String::New(UTF8STRC("I:\\PROGS\\DownList2.txt")).Ptr();
 
 	Sync::ThreadUtil::Create(CheckThread, this);
 	while (!this->chkRunning)
@@ -586,7 +586,7 @@ void SSWR::DownloadMonitor::DownMonCore::FileFree(SSWR::DownloadMonitor::DownMon
 	DEL_CLASS(file);
 }
 
-Bool SSWR::DownloadMonitor::DownMonCore::FileAdd(Int32 id, Int32 webType, Text::String *dbName)
+Bool SSWR::DownloadMonitor::DownMonCore::FileAdd(Int32 id, Int32 webType, NotNullPtr<Text::String> dbName)
 {
 	SSWR::DownloadMonitor::DownMonCore::FileInfo *file;
 	Text::StringBuilderUTF8 sb;
@@ -607,7 +607,7 @@ Bool SSWR::DownloadMonitor::DownMonCore::FileAdd(Int32 id, Int32 webType, Text::
 	file->status = FS_NORMAL;
 
 	this->fileTypeMap.Put((file->webType << 24) | file->id, file);
-	this->fileNameMap.Put(file->fileName, file);
+	this->fileNameMap.PutNN(file->fileName, file);
 	return true;
 }
 
@@ -645,9 +645,9 @@ Bool SSWR::DownloadMonitor::DownMonCore::FileEnd(Int32 id, Int32 webType)
 	file = this->fileTypeMap.Remove((webType << 24) | id);
 	if (file)
 	{
-		if (this->fileNameMap.Get(file->fileName) == file)
+		if (this->fileNameMap.GetNN(file->fileName) == file)
 		{
-			this->fileNameMap.Remove(file->fileName);
+			this->fileNameMap.RemoveNN(file->fileName);
 		}
 		this->FileFree(file);
 		ret = true;

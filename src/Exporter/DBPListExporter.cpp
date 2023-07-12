@@ -181,7 +181,7 @@ void *Exporter::DBPListExporter::CreateParam(IO::ParsedObject *pobj)
 {
 	DBParam *param = MemAlloc(DBParam, 1);
 	param->db = (DB::ReadingDB *)pobj;
-	NEW_CLASS(param->names, Data::ArrayList<Text::String*>());
+	NEW_CLASS(param->names, Data::ArrayListNN<Text::String>());
 	param->db->QueryTableNames(CSTR_NULL, param->names);
 	param->tableIndex = 0;
 	return param;

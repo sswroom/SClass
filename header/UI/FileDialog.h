@@ -1,7 +1,7 @@
 #ifndef _SM_UI_FILEDIALOG
 #define _SM_UI_FILEDIALOG
 #include "Handles.h"
-#include "Data/ArrayListString.h"
+#include "Data/ArrayListStringNN.h"
 #include "Data/ArrayListStrUTF8.h"
 #include "IO/FileSelector.h"
 #include "IO/Registry.h"
@@ -17,9 +17,9 @@ namespace UI
 		Text::String *fileName;
 		Bool isSave;
 		Bool allowMulti;
-		Data::ArrayListString *patterns;
-		Data::ArrayListString *names;
-		Data::ArrayListStrUTF8 *fileNames;
+		Data::ArrayListStringNN patterns;
+		Data::ArrayListStringNN names;
+		Data::ArrayListStrUTF8 fileNames;
 		UOSInt filterIndex;
 
 		void ClearFileNames();
@@ -31,7 +31,7 @@ namespace UI
 		UOSInt GetFilterIndex();
 
 		void SetFileName(Text::CString fileName);
-		Text::String *GetFileName();
+		NotNullPtr<Text::String> GetFileName() const;
 
 		UOSInt GetFileNameCount();
 		const UTF8Char *GetFileNames(UOSInt index);

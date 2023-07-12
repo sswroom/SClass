@@ -37,7 +37,7 @@ class MySQLTCPReader : public DB::DBReader
 private:
 	typedef struct
 	{
-		Text::String *name;
+		NotNullPtr<Text::String> name;
 		Text::String *defValues;
 		UInt32 colLen;
 		UInt16 charSet;
@@ -207,7 +207,7 @@ public:
 		{
 			return 0;
 		}
-		return this->currRow[colIndex]->Clone();
+		return this->currRow[colIndex]->Clone().Ptr();
 	}
 
 	virtual UTF8Char *GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSize)
@@ -394,7 +394,7 @@ public:
 			colDef = Net::MySQLUtil::ReadLenencInt(colDef, &v); //catalog
 			if ((colDef + v) <= colEnd)
 			{
-				col->defValues = Text::String::New(colDef, (UOSInt)v);
+				col->defValues = Text::String::New(colDef, (UOSInt)v).Ptr();
 			}
 		}
 		this->cols.Add(col);
@@ -417,7 +417,7 @@ public:
 			else
 			{
 				rowData = Net::MySQLUtil::ReadLenencInt(rowData, &v);
-				row[i] = Text::String::New(rowData, (UOSInt)v);
+				row[i] = Text::String::New(rowData, (UOSInt)v).Ptr();
 				rowData += v;
 			}
 			i++;
@@ -453,7 +453,7 @@ class MySQLTCPBinaryReader : public DB::DBReader
 private:
 	typedef struct
 	{
-		Text::String *name;
+		NotNullPtr<Text::String> name;
 		Text::String *defValues;
 		UInt32 colLen;
 		UInt16 charSet;
@@ -675,7 +675,7 @@ public:
 		Data::VariItem::ItemType itemType = item.GetItemType();
 		if (itemType == Data::VariItem::ItemType::Str)
 		{
-			return item.GetItemValue().str->Clone();
+			return item.GetItemValue().str->Clone().Ptr();
 		}
 		else if (itemType == Data::VariItem::ItemType::Null)
 		{
@@ -685,7 +685,7 @@ public:
 		{
 			Text::StringBuilderUTF8 sb;
 			item.GetAsString(&sb);
-			return Text::String::New(sb.ToString(), sb.GetLength());
+			return Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 		}
 	}
 
@@ -1130,7 +1130,7 @@ public:
 			colDef = Net::MySQLUtil::ReadLenencInt(colDef, &v); //catalog
 			if ((colDef + v) <= colEnd)
 			{
-				col->defValues = Text::String::New(colDef, (UOSInt)v);
+				col->defValues = Text::String::New(colDef, (UOSInt)v).Ptr();
 			}
 		}
 		this->cols.Add(col);
@@ -1428,7 +1428,7 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(void *userObj)
 								}
 								else
 								{
-									me->svrVer = Text::String::NewNotNullSlow(&buff[5]);
+									me->svrVer = Text::String::NewNotNullSlow(&buff[5]).Ptr();
 									me->connId = ReadUInt32(&buff[packetSize - 9]);
 									MemCopyNO(me->authPluginData, &buff[packetSize - 5], 8);
 									me->authPluginDataSize = 8;
@@ -1452,7 +1452,7 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(void *userObj)
 								ptrEnd = &buff[packetSize + 4];
 								sptr = Text::StrConcatS(sbuff, &buff[5], packetSize - 1);
 								ptrCurr = &buff[6] + (sptr - sbuff);
-								me->svrVer = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
+								me->svrVer = Text::String::New(sbuff, (UOSInt)(sptr - sbuff)).Ptr();
 								me->axisAware = Net::MySQLUtil::IsAxisAware(me->svrVer->ToCString());
 	#if defined(VERBOSE)
 								printf("MySQLTCP %d Server ver = %s\r\n", me->cli->GetLocalPort(), me->svrVer->v);
@@ -1963,7 +1963,7 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(void *userObj)
 void Net::MySQLTCPClient::SetLastError(Text::CString errMsg)
 {
 	SDEL_STRING(this->lastError);
-	this->lastError = Text::String::New(errMsg);
+	this->lastError = Text::String::New(errMsg).Ptr();
 #if defined(VERBOSE)
 	Text::StringBuilderUTF8 sb;
 	this->GetLastErrorMsg(&sb);
@@ -2003,7 +2003,7 @@ void Net::MySQLTCPClient::SendStmtClose(UInt32 stmtId)
 	this->cli->Write(sbuff, 9);
 }
 
-Net::MySQLTCPClient::MySQLTCPClient(Net::SocketFactory *sockf, const Net::SocketUtil::AddressInfo *addr, UInt16 port, Text::String *userName, Text::String *password, Text::String *database) : DB::DBConn(CSTR("MySQLTCPClient"))
+Net::MySQLTCPClient::MySQLTCPClient(Net::SocketFactory *sockf, const Net::SocketUtil::AddressInfo *addr, UInt16 port, NotNullPtr<Text::String> userName, NotNullPtr<Text::String> password, Text::String *database) : DB::DBConn(CSTR("MySQLTCPClient"))
 {
 	this->sockf = sockf;
 	this->recvRunning = false;
@@ -2354,7 +2354,7 @@ void Net::MySQLTCPClient::Rollback(void *tran)
 	this->ExecuteNonQuery(CSTR("ROLLBACK"));
 }
 
-UOSInt Net::MySQLTCPClient::QueryTableNames(Text::CString schemaName, Data::ArrayList<Text::String*> *names)
+UOSInt Net::MySQLTCPClient::QueryTableNames(Text::CString schemaName, Data::ArrayListNN<Text::String> *names)
 {
 	if (schemaName.leng != 0)
 		return 0;
@@ -2376,7 +2376,7 @@ UOSInt Net::MySQLTCPClient::QueryTableNames(Text::CString schemaName, Data::Arra
 	return names->GetCount() - initCnt;
 }
 
-DB::DBReader *Net::MySQLTCPClient::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+DB::DBReader *Net::MySQLTCPClient::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListNN<Text::String> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -2485,37 +2485,37 @@ UOSInt Net::MySQLTCPClient::GetAuthPluginData(UInt8 *buff)
 	return this->authPluginDataSize;
 }
 
-UInt32 Net::MySQLTCPClient::GetServerCap()
+UInt32 Net::MySQLTCPClient::GetServerCap() const
 {
 	return this->svrCap;
 }
 
-UInt16 Net::MySQLTCPClient::GetServerCS()
+UInt16 Net::MySQLTCPClient::GetServerCS() const
 {
 	return this->svrCS;
 }
 
-const Net::SocketUtil::AddressInfo *Net::MySQLTCPClient::GetConnAddr()
+const Net::SocketUtil::AddressInfo *Net::MySQLTCPClient::GetConnAddr() const
 {
 	return &this->addr;
 }
 
-UInt16 Net::MySQLTCPClient::GetConnPort()
+UInt16 Net::MySQLTCPClient::GetConnPort() const
 {
 	return this->port;
 }
 
-Text::String *Net::MySQLTCPClient::GetConnDB()
+Text::String *Net::MySQLTCPClient::GetConnDB() const
 {
 	return this->database;
 }
 
-Text::String *Net::MySQLTCPClient::GetConnUID()
+NotNullPtr<Text::String> Net::MySQLTCPClient::GetConnUID() const
 {
 	return this->userName;
 }
 
-Text::String *Net::MySQLTCPClient::GetConnPWD()
+NotNullPtr<Text::String> Net::MySQLTCPClient::GetConnPWD() const
 {
 	return this->password;
 }
@@ -2525,7 +2525,7 @@ UInt16 Net::MySQLTCPClient::GetDefaultPort()
 	return 3306;
 }
 
-DB::DBTool *Net::MySQLTCPClient::CreateDBTool(Net::SocketFactory *sockf, Text::String *serverName, Text::String *dbName, Text::String *uid, Text::String *pwd, IO::LogTool *log, Text::CString logPrefix)
+DB::DBTool *Net::MySQLTCPClient::CreateDBTool(Net::SocketFactory *sockf, Text::String *serverName, Text::String *dbName, NotNullPtr<Text::String> uid, NotNullPtr<Text::String> pwd, IO::LogTool *log, Text::CString logPrefix)
 {
 	Net::MySQLTCPClient *conn;
 	DB::DBTool *db;

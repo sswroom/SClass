@@ -18,14 +18,14 @@ IO::ParsedObject *Media::PDFDocument::SetPObjName(IO::ParsedObject *pobj, UInt32
 	return pobj;
 }
 
-Media::PDFDocument::PDFDocument(Text::String *sourceName, Text::CString version) : IO::ParsedObject(sourceName)
+Media::PDFDocument::PDFDocument(NotNullPtr<Text::String> sourceName, Text::CString version) : IO::ParsedObject(sourceName)
 {
 	this->version = Text::String::New(version);
 }
 
 Media::PDFDocument::~PDFDocument()
 {
-	SDEL_STRING(this->version);
+	this->version->Release();
 	UOSInt i = this->objMap.GetCount();
 	Media::PDFObject *obj;
 	while (i-- > 0)

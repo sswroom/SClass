@@ -14,7 +14,7 @@ void __stdcall Map::MapLayerCollection::InnerUpdated(void *userObj)
 	}
 }
 
-Map::MapLayerCollection::MapLayerCollection(Text::String *sourceName, Text::String *layerName) : Map::MapDrawLayer(sourceName, 0, layerName)
+Map::MapLayerCollection::MapLayerCollection(NotNullPtr<Text::String> sourceName, Text::String *layerName) : Map::MapDrawLayer(sourceName, 0, layerName)
 {
 }
 

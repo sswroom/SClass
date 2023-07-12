@@ -8,7 +8,7 @@ void __stdcall UtilUI::TextInputDialog::OnOKClicked(void *userObj)
 	Text::StringBuilderUTF8 sb;
 	if (me->txtInput->GetText(&sb) && sb.GetLength() > 0)
 	{
-		me->retInput = Text::String::New(sb.ToCString());
+		me->retInput = Text::String::New(sb.ToCString()).Ptr();
 		me->SetDialogResult(UI::GUIForm::DR_OK);
 	}
 }

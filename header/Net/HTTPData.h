@@ -17,9 +17,9 @@ namespace Net
 			IO::FileStream *file;
 			UInt64 fileLength;
 			UInt64 currentOffset;
-			Text::String *url;
+			NotNullPtr<Text::String> url;
 			Text::CString fileName;
-			Text::String *localFile;
+			NotNullPtr<Text::String> localFile;
 			UOSInt seekCnt;
 
 			Net::HTTPClient *cli;
@@ -46,7 +46,7 @@ namespace Net
 		virtual ~HTTPData();
 
 		virtual UOSInt GetRealData(UInt64 offset, UOSInt length, UInt8 *buffer);
-		virtual Text::String *GetFullName();
+		virtual NotNullPtr<Text::String> GetFullName();
 		virtual Text::CString GetShortName();
 		virtual void SetFullName(Text::CString fullName);
 		virtual UInt64 GetDataSize();

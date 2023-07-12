@@ -15,7 +15,7 @@ namespace Net
 	private:
 		Net::SocketFactory *sockf;
 		Net::SSLEngine *ssl;
-		Text::String *cacheDir;
+		NotNullPtr<Text::String> cacheDir;
 		Crypto::Hash::CRC32RIEEE hash;
 		Net::HTTPQueue queue;
 

@@ -147,7 +147,7 @@ OSInt Net::WebSite::WebSite48IdolControl::GetArcPageItems(OSInt pageNo, Data::Ar
 								sb.ClearStr();
 								reader->ReadNodeText(&sb);
 								SDEL_STRING(title);
-								title = Text::String::New(sb.ToString(), sb.GetLength());
+								title = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 							}
 						}
 						else
@@ -180,12 +180,13 @@ OSInt Net::WebSite::WebSite48IdolControl::GetArcPageItems(OSInt pageNo, Data::Ar
 						}
 					}
 				}
-				if (id != 0 && time != 0 && title != 0)
+				NotNullPtr<Text::String> titleStr;
+				if (id != 0 && time != 0 && titleStr.Set(title))
 				{
 					item = MemAlloc(ItemData, 1);
 					item->id = id;
 					item->recTime = time;
-					item->title = title;
+					item->title = titleStr;
 					title = 0;
 					itemList->Add(item);
 					retCnt++;
@@ -290,7 +291,7 @@ Bool Net::WebSite::WebSite48IdolControl::GetVideoName(Int32 videoId, Text::Strin
 	return found;
 }
 
-void Net::WebSite::WebSite48IdolControl::Title2DisplayName(Text::String *title, Text::StringBuilderUTF8 *dispName)
+void Net::WebSite::WebSite48IdolControl::Title2DisplayName(NotNullPtr<Text::String> title, Text::StringBuilderUTF8 *dispName)
 {
 	UOSInt i;
 	Text::StringBuilderUTF8 sb;

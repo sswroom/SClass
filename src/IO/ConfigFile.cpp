@@ -10,7 +10,7 @@ void IO::ConfigFile::MergeCate(Data::FastStringMap<Text::String *> *myCate, Data
 	while (i < j)
 	{
 		name = cateToMerge->GetKey(i);
-		value = myCate->Put(name, cateToMerge->GetItem(i)->Clone());
+		value = myCate->Put(name, cateToMerge->GetItem(i)->Clone().Ptr());
 		if (value)
 		{
 			value->Release();
@@ -57,7 +57,17 @@ Text::String *IO::ConfigFile::GetValue(Text::CString name)
 
 Text::String *IO::ConfigFile::GetCateValue(Text::String *category, Text::String *name)
 {
-	Data::FastStringMap<Text::String *> *cate = this->cfgVals.Get(Text::String::OrEmpty(category));
+	Data::FastStringMap<Text::String *> *cate = this->cfgVals.GetNN(Text::String::OrEmpty(category));
+	if (cate == 0)
+	{
+		return 0;
+	}
+	return cate->Get(name);
+}
+
+Text::String *IO::ConfigFile::GetCateValue(NotNullPtr<Text::String> category, Text::String *name)
+{
+	Data::FastStringMap<Text::String *> *cate = this->cfgVals.GetNN(category);
 	if (cate == 0)
 	{
 		return 0;
@@ -86,15 +96,16 @@ Bool IO::ConfigFile::SetValue(Text::String *category, Text::String *name, Text::
 
 	if (name == 0)
 		return false;
-	if (category == 0)
+	NotNullPtr<Text::String> cateNN;
+	if (!cateNN.Set(category))
 	{
-		category = Text::String::NewEmpty();
+		cateNN = Text::String::NewEmpty();
 	}
-	cate = this->cfgVals.Get(category);
+	cate = this->cfgVals.GetNN(cateNN);
 	if (cate == 0)
 	{
 		NEW_CLASS(cate, Data::FastStringMap<Text::String *>());
-		this->cfgVals.Put(category, cate);
+		this->cfgVals.PutNN(cateNN, cate);
 	}
 	s = cate->Get(name);
 	SDEL_STRING(s);
@@ -121,7 +132,7 @@ Bool IO::ConfigFile::SetValue(Text::CString category, Text::CString name, Text::
 	}
 	s = cate->GetC(name);
 	SDEL_STRING(s);
-	cate->PutC(name, Text::String::New(value));
+	cate->PutC(name, Text::String::New(value).Ptr());
 	return true;
 }
 
@@ -175,7 +186,7 @@ UOSInt IO::ConfigFile::GetCateList(Data::ArrayList<Text::String *> *cateList, Bo
 UOSInt IO::ConfigFile::GetKeys(Text::String *category, Data::ArrayList<Text::String *> *keyList)
 {
 	Data::FastStringMap<Text::String *> *cate;
-	cate = this->cfgVals.Get(Text::String::OrEmpty(category));
+	cate = this->cfgVals.GetNN(Text::String::OrEmpty(category));
 	if (cate == 0)
 		return 0;
 	UOSInt i = 0;

@@ -42,7 +42,7 @@ typedef struct
 
 IO::ParsedObject *Parser::FileParser::PFS2Parser::ParseFileHdr(IO::StreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
-	Text::String *fileName = fd->GetFullName();
+	NotNullPtr<Text::String> fileName = fd->GetFullName();
 	if (!fileName->EndsWithICase(UTF8STRC(".pfs")))
 		return 0;
 

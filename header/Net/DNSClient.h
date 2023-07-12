@@ -12,7 +12,7 @@ namespace Net
 	public:
 		typedef struct
 		{
-			Text::String *name;
+			NotNullPtr<Text::String> name;
 			UInt16 recType;
 			UInt16 recClass;
 			UInt32 ttl;

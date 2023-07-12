@@ -1,6 +1,6 @@
 #ifndef _SM_TEXT_MIMEOBJ_MIMEMESSAGE
 #define _SM_TEXT_MIMEOBJ_MIMEMESSAGE
-#include "Data/ArrayList.h"
+#include "Data/ArrayListNN.h"
 #include "IO/StreamData.h"
 #include "Text/IMIMEObj.h"
 #include "Text/String.h"
@@ -12,8 +12,8 @@ namespace Text
 		class MIMEMessage : public Text::IMIMEObj
 		{
 		protected:
-			Data::ArrayList<Text::String *> headerName;
-			Data::ArrayList<Text::String *> headerValue;
+			Data::ArrayListNN<Text::String> headerName;
+			Data::ArrayListNN<Text::String> headerValue;
 			Text::IMIMEObj *content;
 			UInt8 *transferData;
 			UOSInt transferSize;

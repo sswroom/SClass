@@ -20,7 +20,7 @@ void Media::Jasper::JasperReport::InitValues()
 	this->marginBottom = 0;
 }
 
-Media::Jasper::JasperReport::JasperReport(Text::String *sourceName) : IO::ParsedObject(sourceName)
+Media::Jasper::JasperReport::JasperReport(NotNullPtr<Text::String> sourceName) : IO::ParsedObject(sourceName)
 {
 	this->InitValues();
 }
@@ -160,7 +160,7 @@ void Media::Jasper::JasperReport::SetQueryString(Text::String *str)
 	this->queryString = SCOPY_STRING(str);
 }
 
-void Media::Jasper::JasperReport::SetProperty(Text::String *name, Text::String *value)
+void Media::Jasper::JasperReport::SetProperty(NotNullPtr<Text::String> name, NotNullPtr<Text::String> value)
 {
 	JasperProperty *property = MemAlloc(JasperProperty, 1);
 	property->name = name->Clone();
@@ -168,7 +168,7 @@ void Media::Jasper::JasperReport::SetProperty(Text::String *name, Text::String *
 	this->properties.Add(property);
 }
 
-void Media::Jasper::JasperReport::AddImport(Text::String *value)
+void Media::Jasper::JasperReport::AddImport(NotNullPtr<Text::String> value)
 {
 	this->importList.Add(value->Clone());
 }
@@ -184,7 +184,7 @@ void Media::Jasper::JasperReport::AddParameter(Text::String *name, Text::String 
 	}
 	else
 	{
-		param->defValueExp = Text::String::New(defValueExp);
+		param->defValueExp = Text::String::New(defValueExp).Ptr();
 	}
 	this->params.Add(param);
 }

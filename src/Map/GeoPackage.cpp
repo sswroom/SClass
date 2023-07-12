@@ -24,7 +24,7 @@ Map::GeoPackage::GeoPackage(DB::DBConn *conn)
 	this->conn = conn;
 	this->useCnt = 1;
 	Text::String *tableName;
-	Data::ArrayList<Text::String*> colList;
+	Data::ArrayListNN<Text::String> colList;
 	DB::DBReader *r;
 	Text::StringTool::SplitAsNewString(CSTR("table_name,data_type,min_x,min_y,max_x,max_y,srs_id"), ',', &colList);
 	r = this->conn->QueryTableData(CSTR_NULL, CSTR("gpkg_contents"), &colList, 0, 0, CSTR_NULL, 0);
@@ -52,7 +52,7 @@ Map::GeoPackage::GeoPackage(DB::DBConn *conn)
 			cont->srsId = r->GetInt32(6);
 			cont->hasZ = false;
 			cont->hasM = false;
-			cont = this->tableList.Put(cont->tableName, cont);
+			cont = this->tableList.PutNN(cont->tableName, cont);
 			if (cont) FreeContent(cont);
 		}
 	}
@@ -86,12 +86,12 @@ void Map::GeoPackage::Release()
 	}
 }
 
-Text::String *Map::GeoPackage::GetSourceNameObj()
+NotNullPtr<Text::String> Map::GeoPackage::GetSourceNameObj()
 {
 	return this->conn->GetSourceNameObj();
 }
 
-UOSInt Map::GeoPackage::QueryTableNames(Text::CString schemaName, Data::ArrayList<Text::String*> *names)
+UOSInt Map::GeoPackage::QueryTableNames(Text::CString schemaName, Data::ArrayListNN<Text::String> *names)
 {
 	UOSInt i = 0;
 	UOSInt j = this->allTables.GetCount();
@@ -103,7 +103,7 @@ UOSInt Map::GeoPackage::QueryTableNames(Text::CString schemaName, Data::ArrayLis
 	return j;
 }
 
-DB::DBReader *Map::GeoPackage::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+DB::DBReader *Map::GeoPackage::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListNN<Text::String> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	return this->conn->QueryTableData(schemaName, tableName, columnNames, ofst, maxCnt, ordering, condition);
 }
@@ -149,7 +149,7 @@ void Map::GeoPackage::Reconnect()
 Map::MapLayerCollection *Map::GeoPackage::CreateLayerCollection()
 {
 	Map::MapLayerCollection *layerColl;
-	Text::String *sourceName = this->conn->GetSourceNameObj();
+	NotNullPtr<Text::String> sourceName = this->conn->GetSourceNameObj();
 	UOSInt i = sourceName->LastIndexOf(IO::Path::PATH_SEPERATOR);
 	UOSInt j;
 	Map::GeoPackageLayer *layer;

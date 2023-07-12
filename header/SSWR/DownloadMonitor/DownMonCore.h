@@ -38,8 +38,8 @@ namespace SSWR
 			{
 				Int32 id;
 				Int32 webType;
-				Text::String *dbName;
-				Text::String *fileName;
+				NotNullPtr<Text::String> dbName;
+				NotNullPtr<Text::String> fileName;
 				FileStatus status;
 				Sync::Mutex mut;
 			};
@@ -88,7 +88,7 @@ namespace SSWR
 			Text::String *GetListFile();
 
 			void FileFree(FileInfo *file);
-			Bool FileAdd(Int32 id, Int32 webType, Text::String *dbName);
+			Bool FileAdd(Int32 id, Int32 webType, NotNullPtr<Text::String> dbName);
 			FileInfo *FileGet(Int32 id, Int32 webType, Sync::MutexUsage *mutUsage);
 			Int32 FileGetByName(Text::CString fileName, Int32 *webType);
 			Bool FileEnd(Int32 id, Int32 webType);

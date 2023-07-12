@@ -81,7 +81,7 @@ IO::ParsedObject *Parser::FileParser::CUEParser::ParseFileHdr(IO::StreamData *fd
 				errorFound = true;
 				break;
 			}
-			artists[currTrack] = Text::String::NewP(sbuff2, sptr2);
+			artists[currTrack] = Text::String::NewP(sbuff2, sptr2).Ptr();
 		}
 		else if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("TITLE ")))
 		{
@@ -91,7 +91,7 @@ IO::ParsedObject *Parser::FileParser::CUEParser::ParseFileHdr(IO::StreamData *fd
 				errorFound = true;
 				break;
 			}
-			titles[currTrack] = Text::String::NewP(sbuff2, sptr2);
+			titles[currTrack] = Text::String::NewP(sbuff2, sptr2).Ptr();
 		}
 		else if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("FILE ")))
 		{
@@ -101,7 +101,7 @@ IO::ParsedObject *Parser::FileParser::CUEParser::ParseFileHdr(IO::StreamData *fd
 				errorFound = true;
 				break;
 			}
-			fileName = Text::String::New(sbuff2, (UOSInt)(sptr - sbuff2));
+			fileName = Text::String::New(sbuff2, (UOSInt)(sptr - sbuff2)).Ptr();
 		}
 		else if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("TRACK ")))
 		{

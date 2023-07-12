@@ -14,7 +14,7 @@
 #include "Text/MyStringW.h"
 #include "Text/UTF8Reader.h"
 
-DB::CSVFile::CSVFile(Text::String *fileName, UInt32 codePage) : DB::ReadingDB(fileName)
+DB::CSVFile::CSVFile(NotNullPtr<Text::String> fileName, UInt32 codePage) : DB::ReadingDB(fileName)
 {
 	this->fileName = fileName->Clone();
 	this->stm = 0;
@@ -63,7 +63,7 @@ DB::CSVFile::~CSVFile()
 	}
 }
 
-UOSInt DB::CSVFile::QueryTableNames(Text::CString schemaName, Data::ArrayList<Text::String*> *names)
+UOSInt DB::CSVFile::QueryTableNames(Text::CString schemaName, Data::ArrayListNN<Text::String> *names)
 {
 	if (schemaName.leng != 0)
 		return 0;
@@ -71,7 +71,7 @@ UOSInt DB::CSVFile::QueryTableNames(Text::CString schemaName, Data::ArrayList<Te
 	return 1;
 }
 
-DB::DBReader *DB::CSVFile::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayList<Text::String*> *columnName, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+DB::DBReader *DB::CSVFile::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListNN<Text::String> *columnName, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	if (this->stm)
 	{
@@ -89,33 +89,26 @@ DB::DBReader *DB::CSVFile::QueryTableData(Text::CString schemaName, Text::CStrin
 		NEW_CLASS(r, DB::CSVReader(0, rdr, this->noHeader, this->nullIfEmpty));
 		return r;
 	}
-	else if (this->fileName)
+	IO::Reader *rdr;
+	DB::CSVReader *r;
+	IO::FileStream *fs;
+	NEW_CLASS(fs, IO::FileStream(this->fileName->ToCString(), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
+	if (!fs->IsError())
 	{
-		IO::Reader *rdr;
-		DB::CSVReader *r;
-		IO::FileStream *fs;
-		NEW_CLASS(fs, IO::FileStream(this->fileName->ToCString(), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
-		if (!fs->IsError())
+		if (codePage == 65001)
 		{
-			if (codePage == 65001)
-			{
-				NEW_CLASS(rdr, Text::UTF8Reader(fs));
-			}
-			else
-			{
-				NEW_CLASS(rdr, IO::StreamReader(fs, codePage));
-			}
-			NEW_CLASS(r, DB::CSVReader(fs, rdr, this->noHeader, this->nullIfEmpty));
-			return r;
+			NEW_CLASS(rdr, Text::UTF8Reader(fs));
 		}
 		else
 		{
-			DEL_CLASS(fs);
-			return 0;
+			NEW_CLASS(rdr, IO::StreamReader(fs, codePage));
 		}
+		NEW_CLASS(r, DB::CSVReader(fs, rdr, this->noHeader, this->nullIfEmpty));
+		return r;
 	}
 	else
 	{
+		DEL_CLASS(fs);
 		return 0;
 	}
 }
@@ -132,7 +125,7 @@ DB::TableDef *DB::CSVFile::GetTableDef(Text::CString schemaName, Text::CString t
 		UOSInt j = r->ColCount();
 		while (i < j)
 		{
-			NEW_CLASS(col, DB::ColDef(0));
+			NEW_CLASS(col, DB::ColDef(Text::String::NewEmpty()));
 			r->GetColDef(i, col);
 			tab->AddCol(col);
 			i++;
@@ -567,7 +560,7 @@ Text::String *DB::CSVReader::GetNewStr(UOSInt colIndex)
 			return 0;
 		}
 	}
-	Text::String *s;
+	NotNullPtr<Text::String> s;
 	UOSInt len = 0;
 	const UTF8Char *csptr = cols[colIndex];
 	const UTF8Char *ptr = csptr;
@@ -648,7 +641,7 @@ Text::String *DB::CSVReader::GetNewStr(UOSInt colIndex)
 		}
 
 		*buff = 0;
-		return s;
+		return s.Ptr();
 	}
 	else
 	{
@@ -671,7 +664,7 @@ Text::String *DB::CSVReader::GetNewStr(UOSInt colIndex)
 		}
 
 		*buff = 0;
-		return s;
+		return s.Ptr();
 	}
 }
 
@@ -877,7 +870,7 @@ Bool DB::CSVReader::GetVariItem(UOSInt colIndex, Data::VariItem *item)
 	c = *ptr;
 	if (c == '"')
 	{
-		Text::String *s = Text::String::New(this->colSize[colIndex]);
+		NotNullPtr<Text::String> s = Text::String::New(this->colSize[colIndex]);
 		UTF8Char *buff = s->v;
 		Int32 quote = 0;
 		while (true)

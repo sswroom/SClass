@@ -100,7 +100,7 @@ void IO::FileLog::Init(LogType style, LogGroup groupStyle, const Char *dateForma
 	if (this->groupStyle != IO::LogHandler::LogGroup::NoGroup)
 	{
 		i = this->fileName->LastIndexOf(IO::Path::PATH_SEPERATOR);
-		this->extName = Text::StrCopyNew(&this->fileName->v[i + 1]);
+		this->extName = Text::StrCopyNew(&this->fileName->v[i + 1]).Ptr();
 	}
 	else
 	{
@@ -127,7 +127,7 @@ void IO::FileLog::Init(LogType style, LogGroup groupStyle, const Char *dateForma
 	log->WriteSignature();
 }
 
-IO::FileLog::FileLog(Text::String *fileName, LogType style, LogGroup groupStyle, const Char *dateFormat)
+IO::FileLog::FileLog(NotNullPtr<Text::String> fileName, LogType style, LogGroup groupStyle, const Char *dateFormat)
 {
 	this->fileName = fileName->Clone();
 	this->Init(style, groupStyle, dateFormat);
@@ -142,8 +142,7 @@ IO::FileLog::FileLog(Text::CString fileName, LogType style, LogGroup groupStyle,
 IO::FileLog::~FileLog()
 {
 	SDEL_TEXT(this->dateFormat);
-	fileName->Release();
-	fileName = 0;
+	this->fileName->Release();
 	if (this->extName)
 	{
 		Text::StrDelNew(this->extName);

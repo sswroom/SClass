@@ -58,7 +58,7 @@ Bool Exporter::SQLiteExporter::ExportFile(IO::SeekableStream *stm, Text::CString
 	DB::ReadingDBTool *srcDB;
 	DB::DBReader *r;
 	DB::TableDef *tabDef;
-	Data::ArrayList<Text::String*> tables;
+	Data::ArrayListNN<Text::String> tables;
 	UOSInt i;
 	UOSInt j;
 	OSInt k;

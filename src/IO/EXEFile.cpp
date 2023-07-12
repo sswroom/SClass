@@ -9,7 +9,7 @@
 #include "Text/Locale.h"
 #include "Text/MyString.h"
 
-IO::EXEFile::EXEFile(Text::String *fileName) : IO::ParsedObject(fileName)
+IO::EXEFile::EXEFile(NotNullPtr<Text::String> fileName) : IO::ParsedObject(fileName)
 {
 	this->envDOS = 0;
 }
@@ -105,8 +105,8 @@ UOSInt IO::EXEFile::AddImportModule(Text::CString moduleName)
 {
 	ImportInfo *imp;
 	imp = MemAlloc(ImportInfo, 1);
-	NEW_CLASS(imp->funcs, Data::ArrayList<Text::String*>());
-	imp->moduleName = Text::String::New(moduleName.v, moduleName.leng);
+	NEW_CLASS(imp->funcs, Data::ArrayListNN<Text::String>());
+	imp->moduleName = Text::String::New(moduleName);
 	return this->importList.Add(imp);
 }
 
@@ -130,7 +130,7 @@ Text::String *IO::EXEFile::GetImportName(UOSInt modIndex) const
 	ImportInfo *imp = this->importList.GetItem(modIndex);
 	if (imp)
 	{
-		return imp->moduleName;
+		return imp->moduleName.Ptr();
 	}
 	return 0;
 }
@@ -172,7 +172,7 @@ Text::String *IO::EXEFile::GetExportName(UOSInt index) const
 	ExportInfo *exp = this->exportList.GetItem(index);
 	if (exp)
 	{
-		return exp->funcName;
+		return exp->funcName.Ptr();
 	}
 	return 0;
 }

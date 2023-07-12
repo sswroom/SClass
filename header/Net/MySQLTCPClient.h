@@ -39,8 +39,8 @@ namespace Net
 		Sync::Mutex cliMut;
 		Bool recvRunning;
 		Bool recvStarted;
-		Text::String *userName;
-		Text::String *password;
+		NotNullPtr<Text::String> userName;
+		NotNullPtr<Text::String> password;
 		Text::String *database;
 		ClientMode mode;
 		Text::String *svrVer;
@@ -66,7 +66,7 @@ namespace Net
 		void SendExecuteStmt(UInt32 stmtId);
 		void SendStmtClose(UInt32 stmtId);
 	public:
-		MySQLTCPClient(Net::SocketFactory *sockf, const Net::SocketUtil::AddressInfo *addr, UInt16 port, Text::String *userName, Text::String *password, Text::String *database);
+		MySQLTCPClient(Net::SocketFactory *sockf, const Net::SocketUtil::AddressInfo *addr, UInt16 port, NotNullPtr<Text::String> userName, NotNullPtr<Text::String> password, Text::String *database);
 		MySQLTCPClient(Net::SocketFactory *sockf, const Net::SocketUtil::AddressInfo *addr, UInt16 port, Text::CString userName, Text::CString password, Text::CString database);
 		virtual ~MySQLTCPClient();
 
@@ -91,8 +91,8 @@ namespace Net
 		virtual void Commit(void *tran);
 		virtual void Rollback(void *tran);
 
-		virtual UOSInt QueryTableNames(Text::CString schemaName, Data::ArrayList<Text::String*> *names);
-		virtual DB::DBReader *QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
+		virtual UOSInt QueryTableNames(Text::CString schemaName, Data::ArrayListNN<Text::String> *names);
+		virtual DB::DBReader *QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListNN<Text::String> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
 		Bool ChangeSchema(const UTF8Char *schemaName);
 
 		Bool IsError();
@@ -101,17 +101,17 @@ namespace Net
 		Text::String *GetServerVer();
 		UInt32 GetConnId();
 		UOSInt GetAuthPluginData(UInt8 *buff);
-		UInt32 GetServerCap();
-		UInt16 GetServerCS();
+		UInt32 GetServerCap() const;
+		UInt16 GetServerCS() const;
 
-		const Net::SocketUtil::AddressInfo *GetConnAddr();
-		UInt16 GetConnPort();
-		Text::String *GetConnDB();
-		Text::String *GetConnUID();
-		Text::String *GetConnPWD();
+		const Net::SocketUtil::AddressInfo *GetConnAddr() const;
+		UInt16 GetConnPort() const;
+		Text::String *GetConnDB() const;
+		NotNullPtr<Text::String> GetConnUID() const;
+		NotNullPtr<Text::String> GetConnPWD() const;
 
 		static UInt16 GetDefaultPort();
-		static DB::DBTool *CreateDBTool(Net::SocketFactory *sockf, Text::String *serverName, Text::String *dbName, Text::String *uid, Text::String *pwd, IO::LogTool *log, Text::CString logPrefix);
+		static DB::DBTool *CreateDBTool(Net::SocketFactory *sockf, Text::String *serverName, Text::String *dbName, NotNullPtr<Text::String> uid, NotNullPtr<Text::String> pwd, IO::LogTool *log, Text::CString logPrefix);
 		static DB::DBTool *CreateDBTool(Net::SocketFactory *sockf, Text::CString serverName, Text::CString dbName, Text::CString uid, Text::CString pwd, IO::LogTool *log, Text::CString logPrefix);
 	};
 }

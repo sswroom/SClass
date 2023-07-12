@@ -2954,13 +2954,13 @@ Bool Media::EXIFData::ToString(Text::StringBuilderUTF8 *sb, Text::CString linePr
 			{
 				if (valBuff[exItem->cnt - 2] == 0)
 				{
-					Text::String *s = Text::String::NewNotNull((const UTF16Char*)valBuff);
+					NotNullPtr<Text::String> s = Text::String::NewNotNull((const UTF16Char*)valBuff);
 					sb->Append(s);
 					s->Release();
 				}
 				else
 				{
-					Text::String *s = Text::String::New((const UTF16Char*)valBuff, exItem->cnt >> 1);
+					NotNullPtr<Text::String> s = Text::String::New((const UTF16Char*)valBuff, exItem->cnt >> 1);
 					sb->Append(s);
 					s->Release();
 				}

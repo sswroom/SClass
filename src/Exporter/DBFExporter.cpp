@@ -29,7 +29,7 @@ IO::FileExporter::SupportType Exporter::DBFExporter::IsObjectSupported(IO::Parse
 	}
 	DB::ReadingDB *conn = (DB::ReadingDB *)pobj;
 	UOSInt tableCnt;
-	Data::ArrayList<Text::String*> tableNames;
+	Data::ArrayListNN<Text::String> tableNames;
 	conn->QueryTableNames(CSTR_NULL, &tableNames);
 	tableCnt = tableNames.GetCount();
 	LIST_FREE_STRING(&tableNames);
@@ -63,7 +63,7 @@ Bool Exporter::DBFExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 	UTF8Char sbuff[1024];
 	DB::ReadingDB *conn = (DB::ReadingDB *)pobj;
 	UOSInt tableCnt;
-	Data::ArrayList<Text::String*> tableNames;
+	Data::ArrayListNN<Text::String> tableNames;
 	conn->QueryTableNames(CSTR_NULL, &tableNames);
 	tableCnt = tableNames.GetCount();
 	if (tableCnt != 1)
@@ -101,7 +101,7 @@ Bool Exporter::DBFExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 	while (i-- > 0)
 	{
 		r->GetColDef(i, colDef);
-		colNames[i] = colDef->GetColName()->Clone();
+		colNames[i] = colDef->GetColName()->Clone().Ptr();
 		if (colDef->GetColType() == DB::DBUtil::CT_DateTime)
 		{
 			colSize[i] = 8;

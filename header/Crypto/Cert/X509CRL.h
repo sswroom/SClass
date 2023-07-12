@@ -9,7 +9,7 @@ namespace Crypto
 		class X509CRL : public Crypto::Cert::X509File
 		{
 		public:
-			X509CRL(Text::String *sourceName, const UInt8 *buff, UOSInt buffSize);
+			X509CRL(NotNullPtr<Text::String> sourceName, const UInt8 *buff, UOSInt buffSize);
 			X509CRL(Text::CString sourceName, const UInt8 *buff, UOSInt buffSize);
 			virtual ~X509CRL();
 

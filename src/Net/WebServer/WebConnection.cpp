@@ -362,12 +362,9 @@ void Net::WebServer::WebConnection::ProcessTimeout()
 	sb.AppendC(UTF8STRC(" "));
 	if (this->currReq)
 	{
-		Text::String *uri = this->currReq->GetRequestURI();
-		if (uri)
-		{
-			sb.Append(uri);
-			sb.AppendUTF8Char(' ');
-		}
+		NotNullPtr<Text::String> uri = this->currReq->GetRequestURI();
+		sb.Append(uri);
+		sb.AppendUTF8Char(' ');
 	}
 	sb.AppendC(UTF8STRC("Process Timeout"));
 	this->svr->LogMessageC(0, sb.ToString(), sb.GetLength());
@@ -377,7 +374,7 @@ Text::String *Net::WebServer::WebConnection::GetRequestURL()
 {
 	if (this->currReq)
 	{
-		return this->currReq->GetRequestURI();
+		return this->currReq->GetRequestURI().Ptr();
 	}
 	return 0;
 }
@@ -437,7 +434,7 @@ void Net::WebServer::WebConnection::ProcessResponse()
 	this->respDataEnd = false;
 	this->respHeaders.ClearStr();
 
-	Text::String *reqURI = this->currReq->GetRequestURI();
+	NotNullPtr<Text::String> reqURI = this->currReq->GetRequestURI();
 	Net::WebUtil::RequestMethod reqMeth = this->currReq->GetReqMethod();
 	if (reqMeth == Net::WebUtil::RequestMethod::HTTP_CONNECT && this->allowProxy)
 	{

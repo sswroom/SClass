@@ -23,7 +23,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	DB::MongoDB::BuildURL(&sb, username, password, serverhost, serverport);
 	NEW_CLASS(mongoDB, DB::MongoDB(sb.ToCString(), database, log));
 	
-	Data::ArrayList<Text::String*> tableList;
+	Data::ArrayListNN<Text::String> tableList;
 	Data::ArrayList<Text::String*> dbList;
 	UOSInt i;
 	UOSInt j;

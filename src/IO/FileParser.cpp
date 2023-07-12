@@ -20,7 +20,7 @@ IO::ParsedObject *IO::FileParser::ParseFilePath(Text::CString filePath)
 	UOSInt i = filePath.LastIndexOf(IO::Path::PATH_SEPERATOR);
 	if (i != INVALID_INDEX)
 	{
-		Text::String *dir = Text::String::New(filePath.v, i);
+		NotNullPtr<Text::String> dir = Text::String::New(filePath.v, i);
 		NEW_CLASS(pkg, IO::DirectoryPackage(dir));
 		dir->Release();
 	}

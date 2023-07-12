@@ -7,7 +7,7 @@
 #include "Parser/FileParser/XMLParser.h"
 #include "Text/JSON.h"
 
-Bool Map::OWSFeatureParser::ParseText(Text::PString txt, UInt32 srid, Math::Coord2DDbl coord, Data::ArrayList<Math::Geometry::Vector2D*> *vecList, Data::ArrayList<UOSInt> *valueOfstList, Data::ArrayList<Text::String*> *nameList, Data::ArrayList<Text::String*> *valueList)
+Bool Map::OWSFeatureParser::ParseText(Text::PString txt, UInt32 srid, Math::Coord2DDbl coord, Data::ArrayList<Math::Geometry::Vector2D*> *vecList, Data::ArrayList<UOSInt> *valueOfstList, Data::ArrayListNN<Text::String> *nameList, Data::ArrayList<Text::String*> *valueList)
 {
 	Text::PString lineArr[2];
 	Text::PString sarr[2];
@@ -32,7 +32,7 @@ Bool Map::OWSFeatureParser::ParseText(Text::PString txt, UInt32 srid, Math::Coor
 				newVec = false;
 			}
 			nameList->Add(Text::String::New(sarr[0].ToCString()));
-			valueList->Add(Text::String::New(sarr[1].ToCString()));
+			valueList->Add(Text::String::New(sarr[1].ToCString()).Ptr());
 		}
 
 		if (lineCnt != 2)
@@ -41,7 +41,7 @@ Bool Map::OWSFeatureParser::ParseText(Text::PString txt, UInt32 srid, Math::Coor
 	return nameList->GetCount() > 0;
 }
 
-Bool Map::OWSFeatureParser::ParseJSON(Text::CString txt, UInt32 srid, Data::ArrayList<Math::Geometry::Vector2D*> *vecList, Data::ArrayList<UOSInt> *valueOfstList, Data::ArrayList<Text::String*> *nameList, Data::ArrayList<Text::String*> *valueList)
+Bool Map::OWSFeatureParser::ParseJSON(Text::CString txt, UInt32 srid, Data::ArrayList<Math::Geometry::Vector2D*> *vecList, Data::ArrayList<UOSInt> *valueOfstList, Data::ArrayListNN<Text::String> *nameList, Data::ArrayList<Text::String*> *valueList)
 {
 	Text::JSONBase *json = Text::JSONBase::ParseJSONStr(txt);
 	if (json)
@@ -91,7 +91,7 @@ Bool Map::OWSFeatureParser::ParseJSON(Text::CString txt, UInt32 srid, Data::Arra
 								nameList->Add(name->Clone());
 								sb.ClearStr();
 								obj->GetValue(name->ToCString())->ToString(&sb);
-								valueList->Add(Text::String::New(sb.ToCString()));
+								valueList->Add(Text::String::New(sb.ToCString()).Ptr());
 								k++;
 							}
 						}
@@ -108,7 +108,7 @@ Bool Map::OWSFeatureParser::ParseJSON(Text::CString txt, UInt32 srid, Data::Arra
 	return false;
 }
 
-Bool Map::OWSFeatureParser::ParseGML(Text::CString txt, UInt32 srid, Bool swapXY, Text::EncodingFactory *encFact, Data::ArrayList<Math::Geometry::Vector2D*> *vecList, Data::ArrayList<UOSInt> *valueOfstList, Data::ArrayList<Text::String*> *nameList, Data::ArrayList<Text::String*> *valueList)
+Bool Map::OWSFeatureParser::ParseGML(Text::CString txt, UInt32 srid, Bool swapXY, Text::EncodingFactory *encFact, Data::ArrayList<Math::Geometry::Vector2D*> *vecList, Data::ArrayList<UOSInt> *valueOfstList, Data::ArrayListNN<Text::String> *nameList, Data::ArrayList<Text::String*> *valueList)
 {
 	UTF8Char tmpBuff[1024];
 	UTF8Char *tmpPtr;
@@ -145,7 +145,7 @@ Bool Map::OWSFeatureParser::ParseGML(Text::CString txt, UInt32 srid, Bool swapXY
 							tmpPtr = layer->GetColumnName(tmpBuff, k);
 							nameList->Add(Text::String::NewP(tmpBuff, tmpPtr));
 							tmpPtr = layer->GetString(tmpBuff, sizeof(tmpBuff), nameArr, idArr.GetItem(i), k);
-							valueList->Add(Text::String::NewP(tmpBuff, tmpPtr));
+							valueList->Add(Text::String::NewP(tmpBuff, tmpPtr).Ptr());
 							k++;
 						}
 						vecList->Add(vec);

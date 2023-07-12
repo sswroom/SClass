@@ -93,7 +93,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPTestForm::OnURLAddClicked(void *userObj)
 	me->txtURL->GetText(&sb);
 	if (sb.StartsWith(UTF8STRC("http://")) || sb.StartsWith(UTF8STRC("https://")))
 	{
-		me->connURLs.Add(Text::String::New(sb.ToString(), sb.GetLength()));
+		me->connURLs.Add(Text::String::New(sb.ToCString()));
 		me->lbURL->AddItem(sb.ToCString(), 0);
 		me->txtURL->SetText(CSTR(""));
 	}

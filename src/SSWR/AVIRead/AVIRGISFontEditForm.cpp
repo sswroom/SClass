@@ -19,7 +19,7 @@ void __stdcall SSWR::AVIRead::AVIRGISFontEditForm::FontNameClicked(void *userObj
 	if (dlg->ShowDialog(me->hwnd))
 	{
 		SDEL_STRING(me->currFontName);
-		me->currFontName = dlg->GetFontName()->Clone();
+		me->currFontName = dlg->GetFontName()->Clone().Ptr();
 		me->currFontSizePt = dlg->GetFontSizePt();
 		me->isBold = dlg->IsBold();
 		me->txtFontName->SetText(me->currFontName->ToCString());
@@ -169,7 +169,7 @@ void SSWR::AVIRead::AVIRGISFontEditForm::UpdateDisplay()
 	SDEL_STRING(this->currFontName);
 	if (fontName)
 	{
-		this->currFontName = fontName->Clone();
+		this->currFontName = fontName->Clone().Ptr();
 		this->txtFontName->SetText(this->currFontName->ToCString());
 	}
 	else

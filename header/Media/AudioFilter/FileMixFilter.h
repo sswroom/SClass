@@ -25,7 +25,7 @@ namespace Media
 			virtual void GetFormat(AudioFormat *format);
 			virtual UOSInt ReadBlock(UInt8 *buff, UOSInt blkSize); //ret actual block size
 
-			Bool LoadFile(Text::String *fileName);
+			Bool LoadFile(NotNullPtr<Text::String> fileName);
 			Bool StartMix();
 			Bool StopMix();
 		};

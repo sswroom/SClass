@@ -276,7 +276,7 @@ Bool Text::StringTool::SplitAsDouble(Text::CString str, UTF8Char splitChar, Data
 	}
 }
 
-UOSInt Text::StringTool::SplitAsNewString(Text::CString str, UTF8Char splitChar, Data::ArrayList<Text::String*> *outArr)
+UOSInt Text::StringTool::SplitAsNewString(Text::CString str, UTF8Char splitChar, Data::ArrayListNN<Text::String> *outArr)
 {
 	UOSInt initCnt = outArr->GetCount();
 	UOSInt i = 0;

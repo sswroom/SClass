@@ -165,14 +165,13 @@
             "name": "Windows_cc_x64",
             "includePath": [
                 "${workspaceFolder}/../SClass/header",
-                "/usr/x86_64-w64-mingw32/include",
+                "/usr/x86_64-w64-mingw32/include/**",
                 "${workspaceFolder}/../ffmpeg-master-latest-win64-gpl-shared/include",
                 "${workspaceFolder}/../SClass/ThirdParty/baseclasses",
                 "${workspaceFolder}/../SClass/ThirdParty/miniz",
                 "${workspaceFolder}/../SClass/ThirdParty/sqlite3",
                 "${workspaceFolder}/../SClass/ThirdParty/KSSample",
-                "${workspaceFolder}/../SClass/ThirdParty/adl",
-                "/usr/include"
+                "${workspaceFolder}/../SClass/ThirdParty/adl"
             ],
             "defines": [
                 "UNICODE",

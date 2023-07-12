@@ -46,17 +46,17 @@ namespace IO
 	class ParsedObject
 	{
 	protected:
-		Text::String *sourceName;
+		NotNullPtr<Text::String> sourceName;
 
-		ParsedObject(Text::String *sourceName);
+		ParsedObject(NotNullPtr<Text::String> sourceName);
 		ParsedObject(Text::CString sourceName);
 	public:
 		virtual ~ParsedObject();
 
 		virtual IO::ParserType GetParserType() const = 0;
 		UTF8Char *GetSourceName(UTF8Char *oriStr) const;
-		Text::String *GetSourceNameObj() const { return this->sourceName; }
-		void SetSourceName(Text::String *sourceName);
+		NotNullPtr<Text::String> GetSourceNameObj() const { return this->sourceName; }
+		void SetSourceName(NotNullPtr<Text::String> sourceName);
 		void SetSourceName(Text::CString sourceName);
 	};
 }

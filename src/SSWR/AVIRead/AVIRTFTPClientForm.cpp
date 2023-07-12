@@ -114,7 +114,7 @@ void __stdcall SSWR::AVIRead::AVIRTFTPClientForm::OnSendClick(void *userObj)
 	dlg.SetAllowMultiSel(false);
 	if (dlg.ShowDialog(me->GetHandle()))
 	{
-		Text::String *fileName = dlg.GetFileName();
+		NotNullPtr<Text::String> fileName = dlg.GetFileName();
 		UOSInt i = fileName->LastIndexOf(IO::Path::PATH_SEPERATOR);
 		Net::TFTPClient cli(me->core->GetSocketFactory(), &addr, port);
 		if (cli.IsError())

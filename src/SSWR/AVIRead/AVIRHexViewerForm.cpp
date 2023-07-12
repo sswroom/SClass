@@ -15,7 +15,7 @@ typedef enum
 	MNU_GOTO = 101,
 } MenuItems;
 
-void __stdcall SSWR::AVIRead::AVIRHexViewerForm::OnFilesDrop(void *userObj, Text::String **files, UOSInt nFiles)
+void __stdcall SSWR::AVIRead::AVIRHexViewerForm::OnFilesDrop(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles)
 {
 	SSWR::AVIRead::AVIRHexViewerForm *me = (SSWR::AVIRead::AVIRHexViewerForm*)userObj;
 	Bool dynamicSize = me->chkDynamicSize->IsChecked();
@@ -168,11 +168,8 @@ void __stdcall SSWR::AVIRead::AVIRHexViewerForm::OnOffsetChg(void *userObj, UInt
 				}
 				field = fieldList.GetItem(i);
 				sb.Append(field->name);
-				if (field->value)
-				{
-					sb.AppendUTF8Char('=');
-					sb.Append(field->value);
-				}
+				sb.AppendUTF8Char('=');
+				sb.Append(field->value);
 				i++;
 			}
 			me->txtFieldDetail->SetText(sb.ToCString());

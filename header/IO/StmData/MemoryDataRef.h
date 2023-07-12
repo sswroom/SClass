@@ -17,7 +17,7 @@ namespace IO
 			virtual ~MemoryDataRef();
 
 			virtual UOSInt GetRealData(UInt64 offset, UOSInt length, UInt8 *buffer);
-			virtual Text::String *GetFullName();
+			virtual NotNullPtr<Text::String> GetFullName();
 			virtual Text::CString GetShortName();
 			virtual UInt64 GetDataSize();
 			virtual const UInt8 *GetPointer();

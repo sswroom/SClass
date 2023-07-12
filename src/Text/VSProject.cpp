@@ -3,7 +3,7 @@
 #include "Text/MyString.h"
 #include "Text/VSProject.h"
 
-Text::VSFile::VSFile(Text::String *fileName)
+Text::VSFile::VSFile(NotNullPtr<Text::String> fileName)
 {
 	this->fileName = fileName->Clone();
 }
@@ -18,12 +18,12 @@ Text::VSFile::~VSFile()
 	this->fileName->Release();
 }
 
-Text::String *Text::VSFile::GetFileName() const
+NotNullPtr<Text::String> Text::VSFile::GetFileName() const
 {
 	return this->fileName;
 }
 
-Text::VSContainer::VSContainer(Text::String *contName)
+Text::VSContainer::VSContainer(NotNullPtr<Text::String> contName)
 {
 	this->contName = contName->Clone();
 }
@@ -55,7 +55,7 @@ void Text::VSContainer::SetContainerName(Text::CString contName)
 	}
 }
 
-Text::String *Text::VSContainer::GetContainerName() const
+NotNullPtr<Text::String> Text::VSContainer::GetContainerName() const
 {
 	return this->contName;
 }
@@ -96,7 +96,7 @@ Text::VSProject::~VSProject()
 {
 	UOSInt i;
 	Text::CodeObject *child;
-	SDEL_STRING(this->projName);
+	this->projName->Release();
 	i = this->childList.GetCount();
 	while (i-- > 0)
 	{
@@ -114,7 +114,7 @@ void Text::VSProject::SetProjectName(Text::String *projName)
 {
 	if (projName)
 	{
-		SDEL_STRING(this->projName);
+		this->projName->Release();
 		this->projName = projName->Clone();
 	}
 }
@@ -123,12 +123,12 @@ void Text::VSProject::SetProjectName(Text::CString projName)
 {
 	if (projName.leng > 0)
 	{
-		SDEL_STRING(this->projName);
+		this->projName->Release();
 		this->projName = Text::String::New(projName);
 	}
 }
 
-Text::String *Text::VSProject::GetContainerName() const
+NotNullPtr<Text::String> Text::VSProject::GetContainerName() const
 {
 	return this->projName;
 }

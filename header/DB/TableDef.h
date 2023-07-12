@@ -14,7 +14,7 @@ namespace DB
 	private:
 		Text::String *databaseName;
 		Text::String *schemaName;
-		Text::String *tableName;
+		NotNullPtr<Text::String> tableName;
 		Text::String *engine;
 		Text::String *charset;
 		const UTF8Char *attr;

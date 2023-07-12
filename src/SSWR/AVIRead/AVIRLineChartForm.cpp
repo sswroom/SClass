@@ -169,28 +169,28 @@ void __stdcall SSWR::AVIRead::AVIRLineChartForm::OnPlotClicked(void *userObj)
 				Double *dblData;
 				Data::ArrayList<Double> *dblVals = (Data::ArrayList<Double>*)colInfos[i].datas;
 				dblData = dblVals->GetArray(&j);
-				chart->AddYData(colInfos[i].colDef->GetColName(), dblData, j, chart->GetRndColor(), Data::LineChart::LS_LINE);
+				chart->AddYData(colInfos[i].colDef->GetColName().Ptr(), dblData, j, chart->GetRndColor(), Data::LineChart::LS_LINE);
 			}
 			else if (colInfos[i].colDef->GetColType() == DB::DBUtil::CT_Int32)
 			{
 				Int32 *i32Data;
 				Data::ArrayList<Int32> *i32Vals = (Data::ArrayList<Int32>*)colInfos[i].datas;
 				i32Data = i32Vals->GetArray(&j);
-				chart->AddYData(colInfos[i].colDef->GetColName(), i32Data, j, chart->GetRndColor(), Data::LineChart::LS_LINE);
+				chart->AddYData(colInfos[i].colDef->GetColName().Ptr(), i32Data, j, chart->GetRndColor(), Data::LineChart::LS_LINE);
 			}
 			else if (colInfos[i].colDef->GetColType() == DB::DBUtil::CT_Int64)
 			{
 				Int64 *i64Data;
 				Data::ArrayList<Int64> *i64Vals = (Data::ArrayList<Int64>*)colInfos[i].datas;
 				i64Data = i64Vals->GetArray(&j);
-				chart->AddYDataDate(colInfos[i].colDef->GetColName(), i64Data, j, chart->GetRndColor(), Data::LineChart::LS_LINE);
+				chart->AddYDataDate(colInfos[i].colDef->GetColName().Ptr(), i64Data, j, chart->GetRndColor(), Data::LineChart::LS_LINE);
 			}
 			else if (colInfos[i].colDef->GetColType() == DB::DBUtil::CT_DateTime)
 			{
 				Int64 *i64Data;
 				Data::ArrayList<Int64> *i64Vals = (Data::ArrayList<Int64>*)colInfos[i].datas;
 				i64Data = i64Vals->GetArray(&j);
-				chart->AddYDataDate(colInfos[i].colDef->GetColName(), i64Data, j, chart->GetRndColor(), Data::LineChart::LS_LINE);
+				chart->AddYDataDate(colInfos[i].colDef->GetColName().Ptr(), i64Data, j, chart->GetRndColor(), Data::LineChart::LS_LINE);
 			}
 			i++;
 		}
@@ -262,7 +262,7 @@ void __stdcall SSWR::AVIRead::AVIRLineChartForm::OnStrColsDblClicked(void *userO
 	{
 		UOSInt colInd = (UOSInt)me->lbStrCols->GetItem(selInd);
 		me->strTypes[colInd] = DB::DBUtil::CT_Double;
-		Text::String *s = me->lbStrCols->GetItemTextNew(selInd);
+		NotNullPtr<Text::String> s = Text::String::OrEmpty(me->lbStrCols->GetItemTextNew(selInd));
 		me->cboXAxis->AddItem(s, (void*)colInd);
 		me->cboYAxis->AddItem(s, (void*)colInd);
 		s->Release();
@@ -278,7 +278,7 @@ void __stdcall SSWR::AVIRead::AVIRLineChartForm::OnStrColsInt32Clicked(void *use
 	{
 		UOSInt colInd = (UOSInt)me->lbStrCols->GetItem(selInd);
 		me->strTypes[colInd] = DB::DBUtil::CT_Int32;
-		Text::String *s = me->lbStrCols->GetItemTextNew(selInd);
+		NotNullPtr<Text::String> s = Text::String::OrEmpty(me->lbStrCols->GetItemTextNew(selInd));
 		me->cboXAxis->AddItem(s, (void*)colInd);
 		me->cboYAxis->AddItem(s, (void*)colInd);
 		s->Release();

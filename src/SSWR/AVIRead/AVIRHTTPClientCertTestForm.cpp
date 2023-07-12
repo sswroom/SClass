@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "Crypto/Cert/CertUtil.h"
+#include "Data/ArrayListNN.h"
 #include "IO/BuildTime.h"
 #include "IO/Path.h"
 #include "Net/SSLEngineFactory.h"
@@ -40,16 +41,16 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientCertTestForm::OnStartClick(void *use
 		me->sslKey = key;
 		Crypto::Cert::CertNames names;
 		Crypto::Cert::CertExtensions ext;
-		Data::ArrayList<Text::String*> sanList;
+		Data::ArrayListNN<Text::String> sanList;
 		MemClear(&names, sizeof(names));
 		MemClear(&ext, sizeof(ext));
-		names.countryName = Text::String::New(UTF8STRC("HK"));
-		names.stateOrProvinceName = Text::String::New(UTF8STRC("Hong Kong"));
-		names.localityName = Text::String::New(UTF8STRC("Hong Kong"));
-		names.organizationName = Text::String::New(UTF8STRC("Simon Software Working Room"));
-		names.organizationUnitName = Text::String::New(UTF8STRC("SSWR"));
-		names.commonName = Text::String::New(UTF8STRC("localhost"));
-		names.emailAddress = Text::String::New(UTF8STRC("sswroom@yahoo.com"));
+		names.countryName = Text::String::New(UTF8STRC("HK")).Ptr();
+		names.stateOrProvinceName = Text::String::New(UTF8STRC("Hong Kong")).Ptr();
+		names.localityName = Text::String::New(UTF8STRC("Hong Kong")).Ptr();
+		names.organizationName = Text::String::New(UTF8STRC("Simon Software Working Room")).Ptr();
+		names.organizationUnitName = Text::String::New(UTF8STRC("SSWR")).Ptr();
+		names.commonName = Text::String::New(UTF8STRC("localhost")).Ptr();
+		names.emailAddress = Text::String::New(UTF8STRC("sswroom@yahoo.com")).Ptr();
 
 		sanList.Add(Text::String::New(CSTR("localhost")));
 		sanList.Add(Text::String::New(CSTR("127.0.0.1")));

@@ -11,7 +11,7 @@ namespace Media
 	private:
 		struct VideoFileInfo
 		{
-			Text::String *fileName;
+			NotNullPtr<Text::String> fileName;
 			UInt64 fileSize;
 		};
 

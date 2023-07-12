@@ -600,7 +600,7 @@ UTF8Char *Data::VariItem::GetAsStringS(UTF8Char *sbuff, UOSInt buffSize) const
 
 Text::String *Data::VariItem::GetAsNewString() const
 {
-	Text::String *s;
+	NotNullPtr<Text::String> s;
 	switch (this->itemType)
 	{
 	case ItemType::Unknown:
@@ -609,76 +609,76 @@ Text::String *Data::VariItem::GetAsNewString() const
 	case ItemType::F32:
 		s = Text::String::New(32);
 		s->leng = (UOSInt)(Text::StrDouble(s->v, this->val.f32) - s->v);
-		return s;
+		return s.Ptr();
 	case ItemType::F64:
 		s = Text::String::New(32);
 		s->leng = (UOSInt)(Text::StrDouble(s->v, this->val.f64) - s->v);
-		return s;
+		return s.Ptr();
 	case ItemType::I8:
 		s = Text::String::New(4);
 		s->leng = (UOSInt)(Text::StrInt16(s->v, this->val.i8) - s->v);
-		return s;
+		return s.Ptr();
 	case ItemType::U8:
 		s = Text::String::New(3);
 		s->leng = (UOSInt)(Text::StrUInt16(s->v, this->val.u8) - s->v);
-		return s;
+		return s.Ptr();
 	case ItemType::I16:
 		s = Text::String::New(6);
 		s->leng = (UOSInt)(Text::StrInt16(s->v, this->val.i16) - s->v);
-		return s;
+		return s.Ptr();
 	case ItemType::U16:
 		s = Text::String::New(5);
 		s->leng = (UOSInt)(Text::StrUInt16(s->v, this->val.u16) - s->v);
-		return s;
+		return s.Ptr();
 	case ItemType::I32:
 		s = Text::String::New(11);
 		s->leng = (UOSInt)(Text::StrInt32(s->v, this->val.i32) - s->v);
-		return s;
+		return s.Ptr();
 	case ItemType::U32:
 		s = Text::String::New(10);
 		s->leng = (UOSInt)(Text::StrUInt32(s->v, this->val.u32) - s->v);
-		return s;
+		return s.Ptr();
 	case ItemType::I64:
 		s = Text::String::New(21);
 		s->leng = (UOSInt)(Text::StrInt64(s->v, this->val.i64) - s->v);
-		return s;
+		return s.Ptr();
 	case ItemType::U64:
 		s = Text::String::New(20);
 		s->leng = (UOSInt)(Text::StrUInt64(s->v, this->val.u64) - s->v);
-		return s;
+		return s.Ptr();
 	case ItemType::BOOL:
 		if (this->val.boolean)
 		{
-			return Text::String::New(UTF8STRC("true"));
+			return Text::String::New(UTF8STRC("true")).Ptr();
 		}
 		else
 		{
-			return Text::String::New(UTF8STRC("false"));
+			return Text::String::New(UTF8STRC("false")).Ptr();
 		}
 		break;
 	case ItemType::Str:
-		return this->val.str->Clone();
+		return this->val.str->Clone().Ptr();
 	case ItemType::CStr:
-		return Text::String::New(this->val.cstr.v, this->val.cstr.leng);
+		return Text::String::New(this->val.cstr.v, this->val.cstr.leng).Ptr();
 	case ItemType::Timestamp:
 		s = Text::String::New(30);
 		s->leng = (UOSInt)(this->val.ts.ToStringNoZone(s->v) - s->v);
-		return s;
+		return s.Ptr();
 	case ItemType::ByteArr:
 		s = Text::String::New(this->val.byteArr->GetCount() * 2);
 		s->leng = (UOSInt)(Text::StrHexBytes(s->v, this->val.byteArr->GetArray(), this->val.byteArr->GetCount(), 0) - s->v);
-		return s;
+		return s.Ptr();
 	case ItemType::Vector:
 		{
 			Text::StringBuilderUTF8 sb;
 			Math::WKTWriter writer;
 			writer.ToText(&sb, this->val.vector);
-			return Text::String::New(sb.ToCString());
+			return Text::String::New(sb.ToCString()).Ptr();
 		}
 	case ItemType::UUID:
 		s = Text::String::New(48);
 		s->leng = (UOSInt)(Text::StrConcatC(this->val.uuid->ToString(Text::StrConcatC(s->v, UTF8STRC("{"))), UTF8STRC("}")) - s->v);
-		return s;
+		return s.Ptr();
 	default:
 		return 0;
 	}
@@ -858,7 +858,7 @@ void Data::VariItem::SetStrCopy(const UTF8Char *str, UOSInt strLen)
 	this->FreeItem();
 	if (str)
 	{
-		this->val.str = Text::String::New(str, strLen);
+		this->val.str = Text::String::New(str, strLen).Ptr();
 		this->itemType = ItemType::Str;
 	}
 	else
@@ -873,13 +873,20 @@ void Data::VariItem::SetStr(Text::String *str)
 	this->FreeItem();
 	if (str)
 	{
-		this->val.str = str->Clone();
+		this->val.str = str->Clone().Ptr();
 		this->itemType = ItemType::Str;
 	}
 	else
 	{
 		this->itemType = ItemType::Null;
 	}
+}
+
+void Data::VariItem::SetStr(NotNullPtr<Text::String> str)
+{
+	this->FreeItem();
+	this->val.str = str->Clone().Ptr();
+	this->itemType = ItemType::Str;
 }
 
 void Data::VariItem::SetDate(Data::DateTime *dt)
@@ -1085,7 +1092,7 @@ void Data::VariItem::Set(VariItem *item)
 		this->val.cstr.leng = item->val.cstr.leng;
 		break;
 	case ItemType::Str:
-		this->val.str = item->val.str->Clone();
+		this->val.str = item->val.str->Clone().Ptr();
 		break;
 	case ItemType::Timestamp:
 		this->val.ts = item->val.ts;
@@ -1148,7 +1155,7 @@ Data::VariItem *Data::VariItem::Clone() const
 		ival.boolean = this->val.boolean;
 		break;
 	case ItemType::Str:
-		ival.str = this->val.str->Clone();
+		ival.str = this->val.str->Clone().Ptr();
 		break;
 	case ItemType::CStr:
 		ival.cstr.v = this->val.cstr.v;
@@ -1172,7 +1179,7 @@ Data::VariItem *Data::VariItem::Clone() const
 
 void Data::VariItem::ToString(Text::StringBuilderUTF8 *sb) const
 {
-	Text::String *s;
+	NotNullPtr<Text::String> s;
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
 	switch (this->itemType)
@@ -1289,7 +1296,7 @@ Data::VariItem *Data::VariItem::NewStr(Text::String *str)
 {
 	if (str == 0) return NewNull();
 	ItemValue ival;
-	ival.str = str->Clone();
+	ival.str = str->Clone().Ptr();
 	Data::VariItem *item;
 	NEW_CLASS(item, Data::VariItem(ItemType::Str, ival));
 	return item;
@@ -1634,18 +1641,18 @@ void Data::VariItem::SetPtr(void *ptr, ItemType itemType, VariItem *item)
 			}
 			else if (itemType == ItemType::Str)
 			{
-				*(Text::String**)ptr = item->GetItemValue().str->Clone();
+				*(Text::String**)ptr = item->GetItemValue().str->Clone().Ptr();
 			}
 			else if (itemType == ItemType::CStr)
 			{
 				const ItemValue ival = item->GetItemValue();
-				*(Text::String**)ptr = Text::String::New(ival.cstr.v, ival.cstr.leng);
+				*(Text::String**)ptr = Text::String::New(ival.cstr.v, ival.cstr.leng).Ptr();
 			}
 			else
 			{
 				Text::StringBuilderUTF8 sb;
 				item->GetAsString(&sb);
-				*(Text::String**)ptr = Text::String::New(sb.ToCString());
+				*(Text::String**)ptr = Text::String::New(sb.ToCString()).Ptr();
 			}
 		}
 		break;
@@ -1741,18 +1748,18 @@ void Data::VariItem::SetPtrAndNotKeep(void *ptr, ItemType itemType, VariItem *it
 			}
 			else if (itemType == ItemType::Str)
 			{
-				*(Text::String**)ptr = item->GetItemValue().str->Clone();
+				*(Text::String**)ptr = item->GetItemValue().str->Clone().Ptr();
 			}
 			else if (itemType == ItemType::CStr)
 			{
 				const ItemValue ival = item->GetItemValue();
-				*(Text::String**)ptr = Text::String::New(ival.cstr.v, ival.cstr.leng);
+				*(Text::String**)ptr = Text::String::New(ival.cstr.v, ival.cstr.leng).Ptr();
 			}
 			else
 			{
 				Text::StringBuilderUTF8 sb;
 				item->GetAsString(&sb);
-				*(Text::String**)ptr = Text::String::New(sb.ToCString());
+				*(Text::String**)ptr = Text::String::New(sb.ToCString()).Ptr();
 			}
 		}
 		break;

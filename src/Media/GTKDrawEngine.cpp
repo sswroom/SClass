@@ -217,6 +217,14 @@ Media::GTKDrawFont::GTKDrawFont(Text::String *fontName, Double fontHeight, OSInt
 	this->fontSlant = fontSlant;
 }
 
+Media::GTKDrawFont::GTKDrawFont(NotNullPtr<Text::String> fontName, Double fontHeight, OSInt fontSlant, OSInt fontWeight)
+{
+	this->fontName = fontName->Clone();
+	this->fontHeight = fontHeight;
+	this->fontWeight = fontWeight;
+	this->fontSlant = fontSlant;
+}
+
 Media::GTKDrawFont::~GTKDrawFont()
 {
 	this->fontName->Release();
@@ -228,7 +236,7 @@ void Media::GTKDrawFont::Init(void *cr)
 	cairo_set_font_size((cairo_t*)cr, this->fontHeight);
 }
 
-Text::String *Media::GTKDrawFont::GetFontName()
+NotNullPtr<Text::String> Media::GTKDrawFont::GetFontName()
 {
 	return this->fontName;
 }
@@ -605,7 +613,7 @@ Bool Media::GTKDrawImage::DrawEllipse(Math::Coord2DDbl tl, Math::Size2DDbl size,
 	return true;
 }
 
-Bool Media::GTKDrawImage::DrawString(Math::Coord2DDbl tl, Text::String *str, DrawFont *f, DrawBrush *b)
+Bool Media::GTKDrawImage::DrawString(Math::Coord2DDbl tl, NotNullPtr<Text::String> str, DrawFont *f, DrawBrush *b)
 {
 	return DrawString(tl, str->ToCString(), f, b);
 }
@@ -621,7 +629,7 @@ Bool Media::GTKDrawImage::DrawString(Math::Coord2DDbl tl, Text::CString str, Dra
 	return true;
 }
 
-Bool Media::GTKDrawImage::DrawStringRot(Math::Coord2DDbl center, Text::String *str, DrawFont *f, DrawBrush *b, Double angleDegree)
+Bool Media::GTKDrawImage::DrawStringRot(Math::Coord2DDbl center, NotNullPtr<Text::String> str, DrawFont *f, DrawBrush *b, Double angleDegree)
 {
 	return DrawStringRot(center, str->ToCString(), f, b, angleDegree);
 }
@@ -645,7 +653,7 @@ Bool Media::GTKDrawImage::DrawStringRot(Math::Coord2DDbl center, Text::CString s
 	return true;
 }
 
-Bool Media::GTKDrawImage::DrawStringB(Math::Coord2DDbl tl, Text::String *str, DrawFont *f, DrawBrush *b, UOSInt buffSize)
+Bool Media::GTKDrawImage::DrawStringB(Math::Coord2DDbl tl, NotNullPtr<Text::String> str, DrawFont *f, DrawBrush *b, UOSInt buffSize)
 {
 	return DrawStringB(tl, str->ToCString(), f, b, buffSize);
 }
@@ -788,7 +796,7 @@ Bool Media::GTKDrawImage::DrawStringB(Math::Coord2DDbl tl, Text::CString str, Dr
 	return true;
 }
 
-Bool Media::GTKDrawImage::DrawStringRotB(Math::Coord2DDbl center, Text::String *str, DrawFont *f, DrawBrush *b, Double angleDegree, UOSInt buffSize)
+Bool Media::GTKDrawImage::DrawStringRotB(Math::Coord2DDbl center, NotNullPtr<Text::String> str, DrawFont *f, DrawBrush *b, Double angleDegree, UOSInt buffSize)
 {
 	return DrawStringRotB(center, str->ToCString(), f, b, angleDegree, buffSize);
 }
@@ -1084,7 +1092,7 @@ Media::DrawFont *Media::GTKDrawImage::NewFontPx(Text::CString name, Double pxSiz
 Media::DrawFont *Media::GTKDrawImage::CloneFont(DrawFont *f)
 {
 	Media::GTKDrawFont *fnt = (Media::GTKDrawFont*)f;
-	Text::String *fname = fnt->GetFontName();
+	NotNullPtr<Text::String> fname = fnt->GetFontName();
 	Double height = fnt->GetHeight();
 	OSInt fontWeight = fnt->GetFontWeight();
 	OSInt fontSlant = fnt->GetFontSlant();

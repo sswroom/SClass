@@ -12,7 +12,7 @@ namespace Net
 		{
 			UInt8 mac[6];
 			UInt64 macInt;
-			Text::String *ssid;
+			NotNullPtr<Text::String> ssid;
 			Int32 phyType;
 			Double freq;
 			Text::String *manuf;

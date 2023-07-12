@@ -42,7 +42,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPProxyClientForm::OnRequestClicked(void *us
 
 	me->proxyIP = ip;
 	me->proxyPort = port;
-	me->reqURL = Text::String::New(sb.ToString(), sb.GetLength());
+	me->reqURL = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 	me->threadEvt->Set();
 	while (me->threadRunning && me->reqURL)
 	{
@@ -83,7 +83,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPProxyClientForm::ProcessThread(void *use
 			while (i < j)
 			{
 				sptr = cli->GetRespHeader(i, sbuff);
-				me->respHeaders->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+				me->respHeaders.Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
 				i++;
 			}
 			me->respSvrAddr = *cli->GetSvrAddr();
@@ -161,10 +161,10 @@ void __stdcall SSWR::AVIRead::AVIRHTTPProxyClientForm::OnTimerTick(void *userObj
 
 		me->lvHeaders->ClearItems();
 		i = 0;
-		j = me->respHeaders->GetCount();
+		j = me->respHeaders.GetCount();
 		while (i < j)
 		{
-			me->lvHeaders->AddItem(me->respHeaders->GetItem(i), 0);
+			me->lvHeaders->AddItem(Text::String::OrEmpty(me->respHeaders.GetItem(i)), 0);
 			i++;
 		}
 		me->respChanged = false;
@@ -174,10 +174,10 @@ void __stdcall SSWR::AVIRead::AVIRHTTPProxyClientForm::OnTimerTick(void *userObj
 void SSWR::AVIRead::AVIRHTTPProxyClientForm::ClearHeaders()
 {
 	UOSInt i;
-	i = this->respHeaders->GetCount();
+	i = this->respHeaders.GetCount();
 	while (i-- > 0)
 	{
-		this->respHeaders->RemoveAt(i)->Release();
+		this->respHeaders.RemoveAt(i)->Release();
 	}
 }
 
@@ -194,7 +194,6 @@ SSWR::AVIRead::AVIRHTTPProxyClientForm::AVIRHTTPProxyClientForm(UI::GUIClientCon
 	this->threadToStop = false;
 	this->reqURL = 0;
 	NEW_CLASS(this->threadEvt, Sync::Event(true));
-	NEW_CLASS(this->respHeaders, Data::ArrayList<Text::String *>());
 
 	NEW_CLASS(this->pnlRequest, UI::GUIPanel(ui, this));
 	this->pnlRequest->SetRect(0, 0, 100, 79, false);
@@ -271,7 +270,6 @@ SSWR::AVIRead::AVIRHTTPProxyClientForm::~AVIRHTTPProxyClientForm()
 	}
 	DEL_CLASS(this->threadEvt);
 	this->ClearHeaders();
-	DEL_CLASS(this->respHeaders);
 }
 
 void SSWR::AVIRead::AVIRHTTPProxyClientForm::OnMonitorChanged()

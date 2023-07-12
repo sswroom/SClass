@@ -9,7 +9,7 @@
 #define MNU_EDIT_GOTO 102
 #define MNU_EDIT_SEARCH 103
 
-void __stdcall UtilUI::TextViewerForm::OnFileDrop(void *userObj, Text::String **files, UOSInt nFiles)
+void __stdcall UtilUI::TextViewerForm::OnFileDrop(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles)
 {
 	UtilUI::TextViewerForm *me = (UtilUI::TextViewerForm*)userObj;
 	me->LoadFile(files[0]);
@@ -72,7 +72,7 @@ void UtilUI::TextViewerForm::EventMenuClicked(UInt16 cmdId)
 {
 	UTF8Char sbuff[530];
 	UTF8Char *sptr;
-	Text::String *fileName;
+	NotNullPtr<Text::String> fileName;
 	switch (cmdId)
 	{
 	case MNU_FILE_OPEN:
@@ -83,7 +83,7 @@ void UtilUI::TextViewerForm::EventMenuClicked(UInt16 cmdId)
 			dlg.AddFilter(CSTR("*.cfg"), CSTR("Config File"));
 			dlg.AddFilter(CSTR("*.ini"), CSTR("Ini File"));
 			fileName = this->txtView->GetFileName();
-			if (fileName)
+			if (fileName->leng > 0)
 			{
 				dlg.SetFileName(fileName->ToCString());
 			}
@@ -125,7 +125,7 @@ Bool UtilUI::TextViewerForm::SearchText(Text::CString txt)
 	return true;
 }
 
-Bool UtilUI::TextViewerForm::LoadFile(Text::String *filePath)
+Bool UtilUI::TextViewerForm::LoadFile(NotNullPtr<Text::String> filePath)
 {
 	UTF8Char sbuff[530];
 	UTF8Char *sptr;

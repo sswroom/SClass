@@ -1,6 +1,6 @@
 #ifndef _SM_MAP_ESRI_ESRIMDBLAYER
 #define _SM_MAP_ESRI_ESRIMDBLAYER
-#include "Data/ArrayListStrUTF8.h"
+#include "Data/ArrayListStringNN.h"
 #include "Data/FastMap.h"
 #include "DB/DBReader.h"
 #include "DB/SharedDBConn.h"
@@ -18,19 +18,19 @@ namespace Map
 			DB::DBConn *currDB;
 			DB::DBConn *lastDB;
 			Map::DrawLayerType layerType;
-			Data::ArrayListString colNames;
+			Data::ArrayListStringNN colNames;
 			Math::Coord2DDbl min;
 			Math::Coord2DDbl max;
 			UOSInt objIdCol;
 			UOSInt shapeCol;
-			Text::String *tableName;
+			NotNullPtr<Text::String> tableName;
 
 		private:
 			Data::FastMap<Int32, const UTF8Char **> *ReadNameArr();
 
 			void Init(DB::SharedDBConn *conn, UInt32 srid, Text::CString tableName);
 		public:
-			ESRIMDBLayer(DB::SharedDBConn *conn, UInt32 srid, Text::String *sourceName, Text::CString tableName);
+			ESRIMDBLayer(DB::SharedDBConn *conn, UInt32 srid, NotNullPtr<Text::String> sourceName, Text::CString tableName);
 			ESRIMDBLayer(DB::SharedDBConn *conn, UInt32 srid, Text::CString sourceName, Text::CString tableName);
 			virtual ~ESRIMDBLayer();
 
@@ -54,8 +54,8 @@ namespace Map
 			virtual void AddUpdatedHandler(UpdatedHandler hdlr, void *obj);
 			virtual void RemoveUpdatedHandler(UpdatedHandler hdlr, void *obj);
 
-			virtual UOSInt QueryTableNames(Text::CString schemaName, Data::ArrayList<Text::String*> *names);
-			virtual DB::DBReader *QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
+			virtual UOSInt QueryTableNames(Text::CString schemaName, Data::ArrayListNN<Text::String> *names);
+			virtual DB::DBReader *QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListNN<Text::String> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
 			virtual DB::TableDef *GetTableDef(Text::CString schemaName, Text::CString tableName);
 			virtual void CloseReader(DB::DBReader *r);
 			virtual void GetLastErrorMsg(Text::StringBuilderUTF8 *str);

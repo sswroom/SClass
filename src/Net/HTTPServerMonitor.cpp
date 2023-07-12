@@ -25,7 +25,7 @@ Bool Net::HTTPServerMonitor::CheckOnline()
 	return status == Net::WebStatus::SC_OK;
 }
 
-Net::HTTPServerMonitor::HTTPServerMonitor(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::String *url)
+Net::HTTPServerMonitor::HTTPServerMonitor(Net::SocketFactory *sockf, Net::SSLEngine *ssl, NotNullPtr<Text::String> url)
 {
 	this->sockf = sockf;
 	this->ssl = ssl;

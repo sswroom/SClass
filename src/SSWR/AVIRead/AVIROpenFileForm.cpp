@@ -26,7 +26,7 @@ void __stdcall SSWR::AVIRead::AVIROpenFileForm::OnOKClicked(void *userObj)
 	SSWR::AVIRead::AVIROpenFileForm *me = (SSWR::AVIRead::AVIROpenFileForm*)userObj;
 	Text::StringBuilderUTF8 sb;
 	me->txtName->GetText(&sb);
-	me->fileName = Text::String::New(sb.ToString(), sb.GetLength());
+	me->fileName = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 	me->parserType = (IO::ParserType)(UOSInt)me->cboType->GetSelectedItem();
 	me->SetDialogResult(UI::GUIForm::DR_OK);
 }
@@ -89,9 +89,9 @@ void SSWR::AVIRead::AVIROpenFileForm::OnMonitorChanged()
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 }
 
-Text::String *SSWR::AVIRead::AVIROpenFileForm::GetFileName()
+NotNullPtr<Text::String> SSWR::AVIRead::AVIROpenFileForm::GetFileName() const
 {
-	return this->fileName;
+	return Text::String::OrEmpty(this->fileName);
 }
 
 IO::ParserType SSWR::AVIRead::AVIROpenFileForm::GetParserType()

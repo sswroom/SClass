@@ -165,7 +165,7 @@ Text::String *Media::HTRecFile::HTRecReader::GetNewStr(UOSInt colIndex)
 	UTF8Char *sptr;
 	if ((sptr = GetStr(colIndex, sbuff, sizeof(sbuff))) == 0)
 		return 0;
-	return Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
+	return Text::String::New(sbuff, (UOSInt)(sptr - sbuff)).Ptr();
 }
 
 UTF8Char *Media::HTRecFile::HTRecReader::GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSize)
@@ -599,7 +599,7 @@ Media::HTRecFile::HTRecFile(IO::StreamData *stmData) : DB::ReadingDB(stmData->Ge
 	this->time1TS = ReadUInt32(&buff[0x04]); //Server Recv Time
 	this->address = buff[8];
 	Text::StrConcatC(sbuff, &buff[9], 10);
-	this->serialNo = Text::StrCopyNew(sbuff);
+	this->serialNo = Text::StrCopyNew(sbuff).Ptr();
 	wptr = (const WChar*)&buff[19];
 	dptr = sbuff;
 	OSInt charLeft = 36;
@@ -618,7 +618,7 @@ Media::HTRecFile::HTRecFile(IO::StreamData *stmData) : DB::ReadingDB(stmData->Ge
 			break;
 		}
 	}
-	this->testName = Text::StrCopyNew(sbuff);
+	this->testName = Text::StrCopyNew(sbuff).Ptr();
 	this->totalRecords = ReadUInt16(&buff[0x3b]);
 	this->recInterval = ReadUInt16(&buff[0x3d]);
 	this->tempAlarmL = ReadUInt16(&buff[0x41]) - 400;
@@ -657,7 +657,7 @@ Media::HTRecFile::~HTRecFile()
 	SDEL_TEXT(this->testName);
 }
 
-UOSInt Media::HTRecFile::QueryTableNames(Text::CString schemaName, Data::ArrayList<Text::String*> *names)
+UOSInt Media::HTRecFile::QueryTableNames(Text::CString schemaName, Data::ArrayListNN<Text::String> *names)
 {
 	if (this->recBuff == 0 || schemaName.leng != 0)
 	{
@@ -671,7 +671,7 @@ UOSInt Media::HTRecFile::QueryTableNames(Text::CString schemaName, Data::ArrayLi
 	}
 }
 
-DB::DBReader *Media::HTRecFile::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+DB::DBReader *Media::HTRecFile::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListNN<Text::String> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	if (tableName.Equals(UTF8STRC("Setting")))
 	{
@@ -700,7 +700,7 @@ DB::TableDef *Media::HTRecFile::GetTableDef(Text::CString schemaName, Text::CStr
 		j = 2;
 		while (i < j)
 		{
-			NEW_CLASS(col, DB::ColDef(0));
+			NEW_CLASS(col, DB::ColDef(Text::String::NewEmpty()));
 			Media::HTRecFile::HTRecReader::GetColDefV(i, col, true);
 			tab->AddCol(col);
 			i++;
@@ -712,7 +712,7 @@ DB::TableDef *Media::HTRecFile::GetTableDef(Text::CString schemaName, Text::CStr
 		j = 4;
 		while (i < j)
 		{
-			NEW_CLASS(col, DB::ColDef(0));
+			NEW_CLASS(col, DB::ColDef(Text::String::NewEmpty()));
 			Media::HTRecFile::HTRecReader::GetColDefV(i, col, false);
 			tab->AddCol(col);
 			i++;

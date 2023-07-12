@@ -93,7 +93,7 @@ void Net::HKTrafficImage::Init(Text::EncodingFactory *encFact, const UInt8 *buff
 								grp = MemAlloc(GroupInfo, 1);
 								grp->groupName = Text::String::New(sbRegion.ToString(), sbRegion.GetLength());
 								NEW_CLASS(grp->imageList, Data::ArrayList<ImageInfo*>());
-								this->groupMap.Put(grp->groupName, grp);
+								this->groupMap.PutNN(grp->groupName, grp);
 							}
 
 							img = MemAlloc(ImageInfo, 1);

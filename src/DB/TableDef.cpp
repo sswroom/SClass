@@ -22,7 +22,7 @@ DB::TableDef::~TableDef()
 	UOSInt i;
 	SDEL_STRING(this->databaseName);
 	SDEL_STRING(this->schemaName);
-	SDEL_STRING(this->tableName);
+	this->tableName->Release();
 	SDEL_STRING(this->engine);
 	SDEL_STRING(this->charset);
 	SDEL_TEXT(this->attr);
@@ -46,7 +46,7 @@ Text::String *DB::TableDef::GetSchemaName() const
 
 Text::String *DB::TableDef::GetTableName() const
 {
-	return this->tableName;
+	return this->tableName.Ptr();
 }
 
 Text::String *DB::TableDef::GetEngine() const
@@ -128,8 +128,8 @@ DB::TableDef *DB::TableDef::SetSchemaName(Text::CString schemaName)
 
 DB::TableDef *DB::TableDef::SetTableName(Text::CString tableName)
 {
-	SDEL_STRING(this->tableName);
-	this->tableName = Text::String::NewOrNull(tableName);
+	this->tableName->Release();
+	this->tableName = Text::String::New(tableName);
 	return this;
 }
 
@@ -174,7 +174,7 @@ void DB::TableDef::ColFromReader(DB::DBReader *r)
 	DB::ColDef *col;
 	while (i < j)
 	{
-		NEW_CLASS(col, DB::ColDef(0));
+		NEW_CLASS(col, DB::ColDef(Text::String::NewEmpty()));
 		r->GetColDef(i, col);
 		this->AddCol(col);
 		i++;

@@ -19,7 +19,7 @@ Bool DB::DBModel::LoadDatabase(DB::DBTool *db, Text::CString dbName, Text::CStri
 		return false;
 	}
 	Text::StringBuilderUTF8 sb;
-	Data::ArrayList<Text::String*> tableNames;
+	Data::ArrayListNN<Text::String> tableNames;
 	DB::TableDef *table;
 	Text::String *tableName;
 	UOSInt i;

@@ -92,6 +92,7 @@ SSWR::AVIRead::AVIRSystemInfoLogForm::AVIRSystemInfoLogForm(UI::GUIClientControl
 
 	const Data::ArrayList<IO::SystemInfoLog::DeviceInfo*> *devList = this->sysInfo->GetDeviceInfos();
 	IO::SystemInfoLog::DeviceInfo *dev;
+	NotNullPtr<Text::String> s;
 	UOSInt i = 0;
 	UOSInt j = devList->GetCount();
 	while (i < j)
@@ -99,13 +100,13 @@ SSWR::AVIRead::AVIRSystemInfoLogForm::AVIRSystemInfoLogForm(UI::GUIClientControl
 		dev = devList->GetItem(i);
 		this->lvDevices->AddItem(dev->desc, dev);
 		this->lvDevices->SetSubItem(i, 1, dev->hwId);
-		if (dev->service)
+		if (s.Set(dev->service))
 		{
-			this->lvDevices->SetSubItem(i, 2, dev->service);
+			this->lvDevices->SetSubItem(i, 2, s);
 		}
-		if (dev->driver)
+		if (s.Set(dev->driver))
 		{
-			this->lvDevices->SetSubItem(i, 3, dev->driver);
+			this->lvDevices->SetSubItem(i, 3, s);
 		}
 		i++;
 	}
@@ -120,25 +121,26 @@ SSWR::AVIRead::AVIRSystemInfoLogForm::AVIRSystemInfoLogForm(UI::GUIClientControl
 		this->lvDrivers->AddItem(driver->fileName, driver);
 		sptr = Text::StrUInt64(sbuff, driver->fileSize);
 		this->lvDrivers->SetSubItem(i, 1, CSTRP(sbuff, sptr));
-		if (driver->creationDate)
+
+		if (s.Set(driver->creationDate))
 		{
-			this->lvDrivers->SetSubItem(i, 2, driver->creationDate);
+			this->lvDrivers->SetSubItem(i, 2, s);
 		}
-		if (driver->version)
+		if (s.Set(driver->version))
 		{
-			this->lvDrivers->SetSubItem(i, 3, driver->version);
+			this->lvDrivers->SetSubItem(i, 3, s);
 		}
-		if (driver->manufacturer)
+		if (s.Set(driver->manufacturer))
 		{
-			this->lvDrivers->SetSubItem(i, 4, driver->manufacturer);
+			this->lvDrivers->SetSubItem(i, 4, s);
 		}
-		if (driver->productName)
+		if (s.Set(driver->productName))
 		{
-			this->lvDrivers->SetSubItem(i, 5, driver->productName);
+			this->lvDrivers->SetSubItem(i, 5, s);
 		}
-		if (driver->group)
+		if (s.Set(driver->group))
 		{
-			this->lvDrivers->SetSubItem(i, 6, driver->group);
+			this->lvDrivers->SetSubItem(i, 6, s);
 		}
 		if (driver->altitude)
 		{

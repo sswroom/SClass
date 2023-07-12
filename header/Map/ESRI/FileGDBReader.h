@@ -31,7 +31,7 @@ namespace Map
 			
 			UOSInt GetFieldIndex(UOSInt colIndex);
 		public:
-			FileGDBReader(IO::StreamData *fd, UInt64 ofst, FileGDBTableInfo *tableInfo, Data::ArrayList<Text::String*> *columnNames, UOSInt dataOfst, UOSInt maxCnt, Data::QueryConditions *conditions);
+			FileGDBReader(IO::StreamData *fd, UInt64 ofst, FileGDBTableInfo *tableInfo, Data::ArrayListNN<Text::String> *columnNames, UOSInt dataOfst, UOSInt maxCnt, Data::QueryConditions *conditions);
 			virtual ~FileGDBReader();
 
 			virtual Bool ReadNext();

@@ -50,7 +50,7 @@ Net::WebSite::WebSiteInstagramControl::~WebSiteInstagramControl()
 	SDEL_STRING(this->userAgent);
 }
 
-OSInt Net::WebSite::WebSiteInstagramControl::GetChannelItems(Text::String *channelId, OSInt pageNo, Data::ArrayList<Net::WebSite::WebSiteInstagramControl::ItemData*> *itemList, Net::WebSite::WebSiteInstagramControl::ChannelInfo *chInfo)
+OSInt Net::WebSite::WebSiteInstagramControl::GetChannelItems(NotNullPtr<Text::String> channelId, OSInt pageNo, Data::ArrayList<Net::WebSite::WebSiteInstagramControl::ItemData*> *itemList, Net::WebSite::WebSiteInstagramControl::ChannelInfo *chInfo)
 {
 	Text::StringBuilderUTF8 sb;
 	OSInt retCnt = 0;
@@ -92,25 +92,25 @@ OSInt Net::WebSite::WebSiteInstagramControl::GetChannelItems(Text::String *chann
 									{
 										str1 = (Text::JSONString*)jsBase;
 										SDEL_STRING(chInfo->full_name);
-										chInfo->full_name = str1->GetValue()->Clone();
+										chInfo->full_name = str1->GetValue()->Clone().Ptr();
 									}
 									if ((jsBase = obj1->GetObjectValue(CSTR("biography"))) != 0 && jsBase->GetType() == Text::JSONType::String)
 									{
 										str1 = (Text::JSONString*)jsBase;
 										SDEL_STRING(chInfo->biography);
-										chInfo->biography = str1->GetValue()->Clone();
+										chInfo->biography = str1->GetValue()->Clone().Ptr();
 									}
 									if ((jsBase = obj1->GetObjectValue(CSTR("profile_pic_url_hd"))) != 0 && jsBase->GetType() == Text::JSONType::String)
 									{
 										str1 = (Text::JSONString*)jsBase;
 										SDEL_STRING(chInfo->profile_pic_url_hd);
-										chInfo->profile_pic_url_hd = str1->GetValue()->Clone();
+										chInfo->profile_pic_url_hd = str1->GetValue()->Clone().Ptr();
 									}
 									if ((jsBase = obj1->GetObjectValue(CSTR("username"))) != 0 && jsBase->GetType() == Text::JSONType::String)
 									{
 										str1 = (Text::JSONString*)jsBase;
 										SDEL_STRING(chInfo->username);
-										chInfo->username = str1->GetValue()->Clone();
+										chInfo->username = str1->GetValue()->Clone().Ptr();
 									}
 								}
 								if ((jsBase = obj1->GetObjectValue(CSTR("edge_owner_to_timeline_media"))) != 0 && jsBase->GetType() == Text::JSONType::Object)
@@ -140,14 +140,19 @@ OSInt Net::WebSite::WebSiteInstagramControl::GetChannelItems(Text::String *chann
 													{
 														item->shortCode = ((Text::JSONString*)jsBase)->GetValue()->Clone();
 													}
+													else
+													{
+														item->shortCode = Text::String::NewEmpty();
+													}
+													item->message = Text::String::NewEmpty();
 													item->recTime = obj1->GetObjectInt64(CSTR("taken_at_timestamp")) * 1000;
 													if ((jsBase = obj1->GetObjectValue(CSTR("display_url"))) != 0 && jsBase->GetType() == Text::JSONType::String)
 													{
-														item->imgURL = ((Text::JSONString*)jsBase)->GetValue()->Clone();
+														item->imgURL = ((Text::JSONString*)jsBase)->GetValue()->Clone().Ptr();
 													}
 													if ((jsBase = obj1->GetObjectValue(CSTR("video_url"))) != 0 && jsBase->GetType() == Text::JSONType::String)
 													{
-														item->videoURL = ((Text::JSONString*)jsBase)->GetValue()->Clone();
+														item->videoURL = ((Text::JSONString*)jsBase)->GetValue()->Clone().Ptr();
 													}
 													if ((jsBase = obj1->GetObjectValue(CSTR("__typename"))) != 0 && jsBase->GetType() == Text::JSONType::String)
 													{
@@ -168,23 +173,24 @@ OSInt Net::WebSite::WebSiteInstagramControl::GetChannelItems(Text::String *chann
 																	obj1 = (Text::JSONObject*)jsBase;
 																	if ((jsBase = obj1->GetObjectValue(CSTR("text"))) != 0 && jsBase->GetType() == Text::JSONType::String)
 																	{
+																		item->message->Release();
 																		item->message = ((Text::JSONString*)jsBase)->GetValue()->Clone();
 																	}
 																}
 															}
 														}
 													}
-													if (item->id != 0 && item->shortCode != 0 && item->recTime != 0 && item->message != 0)
+													if (item->id != 0 && item->recTime != 0)
 													{
 														itemList->Add(item);
 														retCnt++;
 													}
 													else
 													{
-														SDEL_STRING(item->shortCode);
+														item->shortCode->Release();
 														SDEL_STRING(item->imgURL);
 														SDEL_STRING(item->videoURL);
-														SDEL_STRING(item->message);
+														item->message->Release();
 														MemFree(item);
 													}
 												}												
@@ -232,7 +238,7 @@ void Net::WebSite::WebSiteInstagramControl::FreeChannelInfo(Net::WebSite::WebSit
 	SDEL_STRING(chInfo->username);
 }
 
-OSInt Net::WebSite::WebSiteInstagramControl::GetPageImages(Text::String *shortCode, Data::ArrayList<Text::String*> *imageList, Data::ArrayList<Text::String*> *videoList)
+OSInt Net::WebSite::WebSiteInstagramControl::GetPageImages(NotNullPtr<Text::String> shortCode, Data::ArrayListNN<Text::String> *imageList, Data::ArrayListNN<Text::String> *videoList)
 {
 	Text::StringBuilderUTF8 sb;
 	OSInt retCnt = 0;

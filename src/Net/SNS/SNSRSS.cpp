@@ -21,7 +21,6 @@ Net::SNS::SNSRSS::SNSRSS(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::E
 	this->encFact = encFact;
 	this->userAgent = SCOPY_STRING(userAgent);
 	this->channelId = Text::String::New(channelId);
-	this->chName = 0;
 	this->chDesc = 0;
 	this->timeout = 30000;
 
@@ -39,7 +38,7 @@ Net::SNS::SNSRSS::SNSRSS(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::E
 	}
 	if (rss->GetDescription())
 	{
-		this->chDesc = rss->GetDescription()->Clone();
+		this->chDesc = rss->GetDescription()->Clone().Ptr();
 	}
 	UOSInt i = rss->GetCount();
 	Text::StringBuilderUTF8 sb;
@@ -49,7 +48,7 @@ Net::SNS::SNSRSS::SNSRSS(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::E
 		item = rss->GetItem(i);
 		if (item->descHTML)
 		{
-			Data::ArrayList<Text::String *> imgList;
+			Data::ArrayListNN<Text::String> imgList;
 			sb.ClearStr();
 			Text::HTMLUtil::HTMLGetText(this->encFact, item->description->v, item->description->leng, false, &sb, &imgList);
 			sb2.ClearStr();
@@ -71,16 +70,17 @@ Net::SNS::SNSRSS::SNSRSS(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::E
 				s->Release();
 				j++;
 			}
-			Text::String *s2;
-			s = Text::String::New(sb.ToString(), sb.GetLength());
+			NotNullPtr<Text::String> nns;
+			NotNullPtr<Text::String> s2;
+			nns = Text::String::New(sb.ToString(), sb.GetLength());
 			s2 = Text::String::New(sb2.ToString(), sb2.GetLength());
-			snsItem = CreateItem(item->guid, item->pubDate.ToTicks(), item->title, s, item->link, s2, 0);
-			s->Release();
+			snsItem = CreateItem(Text::String::OrEmpty(item->guid), item->pubDate.ToTicks(), item->title, nns, item->link, s2.Ptr(), 0);
+			nns->Release();
 			s2->Release();
 		}
 		else
 		{
-			snsItem = CreateItem(item->guid, item->pubDate.ToTicks(), item->title, item->description, item->link, item->imgURL, 0);
+			snsItem = CreateItem(Text::String::OrEmpty(item->guid), item->pubDate.ToTicks(), item->title, Text::String::OrEmpty(item->description), item->link, item->imgURL, 0);
 		}
 		this->itemMap.Put(item->guid, snsItem);
 	}
@@ -91,7 +91,7 @@ Net::SNS::SNSRSS::~SNSRSS()
 {
 	UOSInt i;
 	SDEL_STRING(this->userAgent);
-	SDEL_STRING(this->chName);
+	this->chName->Release();
 	SDEL_STRING(this->chDesc);
 	i = this->itemMap.GetCount();
 	while (i-- > 0)
@@ -110,12 +110,12 @@ Net::SNS::SNSControl::SNSType Net::SNS::SNSRSS::GetSNSType()
 	return Net::SNS::SNSControl::ST_RSS;
 }
 
-Text::String *Net::SNS::SNSRSS::GetChannelId()
+NotNullPtr<Text::String> Net::SNS::SNSRSS::GetChannelId() const
 {
 	return this->channelId;
 }
 
-Text::String *Net::SNS::SNSRSS::GetName()
+NotNullPtr<Text::String> Net::SNS::SNSRSS::GetName() const
 {
 	return this->chName;
 }
@@ -184,7 +184,7 @@ Bool Net::SNS::SNSRSS::Reload()
 			{
 				if (item->descHTML)
 				{
-					Data::ArrayList<Text::String *> imgList;
+					Data::ArrayListNN<Text::String> imgList;
 					sb.ClearStr();
 					Text::HTMLUtil::HTMLGetText(this->encFact, item->description->v, item->description->leng, false, &sb, &imgList);
 					sb2.ClearStr();
@@ -206,16 +206,17 @@ Bool Net::SNS::SNSRSS::Reload()
 						s->Release();
 						j++;
 					}
-					Text::String *s2;
-					s = Text::String::New(sb.ToString(), sb.GetLength());
+					NotNullPtr<Text::String> nns;
+					NotNullPtr<Text::String> s2;
+					nns = Text::String::New(sb.ToString(), sb.GetLength());
 					s2 = Text::String::New(sb2.ToString(), sb2.GetLength());
-					snsItem = CreateItem(item->guid, item->pubDate.ToTicks(), item->title, s, item->link, s2, 0);
-					s->Release();
+					snsItem = CreateItem(Text::String::OrEmpty(item->guid), item->pubDate.ToTicks(), item->title, nns, item->link, s2.Ptr(), 0);
+					nns->Release();
 					s2->Release();
 				}
 				else
 				{
-					snsItem = CreateItem(item->guid, item->pubDate.ToTicks(), item->title, item->description, item->link, item->imgURL, 0);
+					snsItem = CreateItem(Text::String::OrEmpty(item->guid), item->pubDate.ToTicks(), item->title, Text::String::OrEmpty(item->description), item->link, item->imgURL, 0);
 				}
 				this->itemMap.Put(item->guid, snsItem);
 				changed = true;

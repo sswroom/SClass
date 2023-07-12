@@ -25,7 +25,7 @@ namespace SSWR
 			Bool changed;
 			Media::DrawEngine *eng;
 
-			Text::String *fontName;
+			NotNullPtr<Text::String> fontName;
 			Double fontSizePt;
 			UInt32 fontColor;
 			Media::StaticImage *previewImage;
@@ -56,7 +56,7 @@ namespace SSWR
 			virtual void YUVParamChanged(const Media::IColorHandler::YUVPARAM *yuvParam);
 			virtual void RGBParamChanged(const Media::IColorHandler::RGBPARAM2 *rgbParam);
 
-			Text::String *GetFontName();
+			NotNullPtr<Text::String> GetFontName() const;
 			Double GetFontSizePt();
 			UInt32 GetFontColor();
 

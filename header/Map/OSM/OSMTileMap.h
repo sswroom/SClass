@@ -1,6 +1,6 @@
 #ifndef _SM_MAP_OSM_OSMTILEMAP
 #define _SM_MAP_OSM_OSMTILEMAP
-#include "Data/ArrayListString.h"
+#include "Data/ArrayListNN.h"
 #include "Map/MercatorTileMap.h"
 #include "Sync/Mutex.h"
 
@@ -11,7 +11,7 @@ namespace Map
 		class OSMTileMap : public Map::MercatorTileMap
 		{
 		private:
-			Data::ArrayListString urls;
+			Data::ArrayListNN<Text::String> urls;
 			UOSInt urlNext;
 			Sync::Mutex urlMut;
 

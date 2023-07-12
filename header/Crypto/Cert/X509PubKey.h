@@ -10,7 +10,7 @@ namespace Crypto
 		class X509PubKey : public Crypto::Cert::X509File
 		{
 		public:
-			X509PubKey(Text::String *sourceName, const UInt8 *buff, UOSInt buffSize);
+			X509PubKey(NotNullPtr<Text::String> sourceName, const UInt8 *buff, UOSInt buffSize);
 			X509PubKey(Text::CString sourceName, const UInt8 *buff, UOSInt buffSize);
 			virtual ~X509PubKey();
 
@@ -23,7 +23,7 @@ namespace Crypto
 			
 			Crypto::Cert::X509Key *CreateKey() const;
 
-			static X509PubKey *CreateFromKeyBuff(KeyType keyType, const UInt8 *buff, UOSInt buffSize, Text::String *sourceName);
+			static X509PubKey *CreateFromKeyBuff(KeyType keyType, const UInt8 *buff, UOSInt buffSize, NotNullPtr<Text::String> sourceName);
 			static X509PubKey *CreateFromKey(Crypto::Cert::X509Key *key);
 		};
 	}

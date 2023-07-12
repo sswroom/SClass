@@ -114,7 +114,7 @@ UInt32 __stdcall IO::ProgCtrl::BluetoothCtlProgCtrl::ReadThread(void *obj)
 						if (dev)
 						{
 							SDEL_STRING(dev->name);
-							dev->name = Text::String::New(&sarr[0].v[31], sarr[0].leng - 31);
+							dev->name = Text::String::New(&sarr[0].v[31], sarr[0].leng - 31).Ptr();
 							dev->inRange = true;
 							dev->lastSeenTime = Data::DateTimeUtil::GetCurrTimeMillis();
 							if (me->recHdlr) me->recHdlr(dev, UT_NEW_DEVICE, me->recHdlrObj);
@@ -156,14 +156,14 @@ UInt32 __stdcall IO::ProgCtrl::BluetoothCtlProgCtrl::ReadThread(void *obj)
 							else if (Text::StrStartsWithC(&sarr[0].v[31], sarr[0].leng - 31, UTF8STRC("Name: ")))
 							{
 								SDEL_STRING(dev->name);
-								dev->name = Text::String::New(&sarr[0].v[37], sarr[0].leng - 37);
+								dev->name = Text::String::New(&sarr[0].v[37], sarr[0].leng - 37).Ptr();
 								if (me->recHdlr) me->recHdlr(dev, UT_NAME, me->recHdlrObj);
 							}
 							//[CHG] Device 19:08:19:32:09:3A Alias: Ble T70939
 							else if (Text::StrStartsWithC(&sarr[0].v[31], sarr[0].leng - 31, UTF8STRC("Alias: ")))
 							{
 								SDEL_STRING(dev->name);
-								dev->name = Text::String::New(&sarr[0].v[38], sarr[0].leng - 38);
+								dev->name = Text::String::New(&sarr[0].v[38], sarr[0].leng - 38).Ptr();
 								if (me->recHdlr) me->recHdlr(dev, UT_NAME, me->recHdlrObj);
 							}
 							//[CHG] Device ED:8E:0E:77:6E:15 RSSI: -64
@@ -318,7 +318,7 @@ void IO::ProgCtrl::BluetoothCtlProgCtrl::SendCmd(const UTF8Char *cmd, UOSInt cmd
 	{
 		Sync::MutexUsage mutUsage(&this->lastCmdMut);
 		SDEL_STRING(this->lastCmd);
-		this->lastCmd = Text::String::New(cmd, cmdLen);
+		this->lastCmd = Text::String::New(cmd, cmdLen).Ptr();
 	}
 	if (cmdLen < 255)
 	{

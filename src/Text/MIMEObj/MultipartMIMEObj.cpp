@@ -17,13 +17,13 @@ void Text::MIMEObj::MultipartMIMEObj::ParsePart(UInt8 *buff, UOSInt buffSize)
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
-	Data::ArrayList<Text::String*> hdrNames;
-	Data::ArrayList<Text::String*> hdrValues;
+	Data::ArrayListNN<Text::String> hdrNames;
+	Data::ArrayListNN<Text::String> hdrValues;
 	Data::FastStringMap<Text::String*> hdrMap;
 	Text::StringBuilderUTF8 sb;
 	Text::PString sarr[2];
-	Text::String *hdrName;
-	Text::String *hdrValue;
+	NotNullPtr<Text::String> hdrName;
+	NotNullPtr<Text::String> hdrValue;
 	Bool found = false;
 	lineStart = 0;
 	i = 0;
@@ -63,7 +63,7 @@ void Text::MIMEObj::MultipartMIMEObj::ParsePart(UInt8 *buff, UOSInt buffSize)
 					hdrValue = Text::String::New(sarr[1].v, sarr[1].leng);
 					hdrNames.Add(hdrName);
 					hdrValues.Add(hdrValue);
-					hdrMap.Put(hdrName, hdrValue);
+					hdrMap.PutNN(hdrName, hdrValue.Ptr());
 					sb.ClearStr();
 				}
 			}
@@ -154,12 +154,12 @@ void Text::MIMEObj::MultipartMIMEObj::ParsePart(UInt8 *buff, UOSInt buffSize)
 	}
 }
 
-Text::MIMEObj::MultipartMIMEObj::MultipartMIMEObj(Text::String *contentType, Text::String *defMsg, Text::String *boundary) : Text::IMIMEObj(CSTR("multipart/mixed"))
+Text::MIMEObj::MultipartMIMEObj::MultipartMIMEObj(NotNullPtr<Text::String> contentType, Text::String *defMsg, NotNullPtr<Text::String> boundary) : Text::IMIMEObj(CSTR("multipart/mixed"))
 {
 	this->contentType = contentType->Clone();
 	if (defMsg)
 	{
-		this->defMsg = defMsg->Clone();
+		this->defMsg = defMsg->Clone().Ptr();
 	}
 	else
 	{
@@ -173,7 +173,7 @@ Text::MIMEObj::MultipartMIMEObj::MultipartMIMEObj(Text::CString contentType, Tex
 	this->contentType = Text::String::New(contentType);
 	if (defMsg.leng > 0)
 	{
-		this->defMsg = Text::String::New(defMsg);
+		this->defMsg = Text::String::New(defMsg).Ptr();
 	}
 	else
 	{
@@ -190,16 +190,16 @@ Text::MIMEObj::MultipartMIMEObj::MultipartMIMEObj(Text::CString contentType, Tex
 	sbc.AppendC(UTF8STRC("----------"));
 	sbc.AppendI64(dt.ToTicks());
 	sbc.AppendOSInt((0x7fffffff & (OSInt)this));
-	this->boundary = Text::String::New(sbc.ToString(), sbc.GetLength());
+	this->boundary = Text::String::New(sbc.ToCString());
 	sbc.ClearStr();
 	sbc.Append(contentType);
 	sbc.AppendC(UTF8STRC(";\r\n\tboundary=\""));
 	sbc.Append(this->boundary);
 	sbc.AppendC(UTF8STRC("\""));
-	this->contentType = Text::String::New(sbc.ToString(), sbc.GetLength());
+	this->contentType = Text::String::New(sbc.ToCString());
 	if (defMsg.leng > 0)
 	{
-		this->defMsg = Text::String::New(defMsg);
+		this->defMsg = Text::String::New(defMsg).Ptr();
 	}
 	else
 	{

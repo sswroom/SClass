@@ -19,7 +19,7 @@ namespace SSWR
 		private:
 			typedef struct
 			{
-				Text::String *fileName;
+				NotNullPtr<Text::String> fileName;
 				UOSInt index;
 			} FileQueue;
 
@@ -45,7 +45,7 @@ namespace SSWR
 			Bool threadToStop;
 			Sync::Event threadEvt;
 
-			static void __stdcall OnFileHandler(void *userObj, Text::String **files, UOSInt nFilesj);
+			static void __stdcall OnFileHandler(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFilesj);
 			static void __stdcall OnCancelClicked(void *userObj);
 			static void __stdcall OnAllowTimeSkipChange(void *userObj, Bool newVal);
 			static void __stdcall OnTimerTick(void *userObj);

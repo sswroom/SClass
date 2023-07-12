@@ -32,7 +32,7 @@ namespace UI
 		void EventDoubleClick();
 		void EventRightClick(OSInt x, OSInt y);
 
-		UOSInt AddItem(Text::String *itemText, void *itemObj);
+		UOSInt AddItem(NotNullPtr<Text::String> itemText, void *itemObj);
 		UOSInt AddItem(Text::CString itemText, void *itemObj);
 		UOSInt AddItem(const WChar *itemText, void *itemObj);
 		UOSInt InsertItem(UOSInt index, Text::String *itemText, void *itemObj);

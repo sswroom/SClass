@@ -9,7 +9,7 @@ Crypto::Cert::CertStore::CertStore(Text::CString name)
 	this->storeName = Text::String::New(name);
 }
 
-Crypto::Cert::CertStore::CertStore(Text::String *name)
+Crypto::Cert::CertStore::CertStore(NotNullPtr<Text::String> name)
 {
 	this->storeName = name->Clone();
 }
@@ -160,7 +160,7 @@ void Crypto::Cert::CertStore::FromPackageFile(IO::PackageFile *pkg)
 	}
 }
 
-Text::String *Crypto::Cert::CertStore::GetStoreName()
+NotNullPtr<Text::String> Crypto::Cert::CertStore::GetStoreName() const
 {
 	return this->storeName;
 }

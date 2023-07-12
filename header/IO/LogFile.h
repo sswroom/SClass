@@ -10,7 +10,7 @@ namespace IO
 	class LogFile : public IO::ParsedObject
 	{
 	public:
-		LogFile(Text::String *sourceName);
+		LogFile(NotNullPtr<Text::String> sourceName);
 		virtual ~LogFile();
 
 		virtual UOSInt GetCount(IO::LogHandler::LogLevel logLevel) const = 0;

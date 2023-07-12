@@ -55,8 +55,8 @@ namespace Map
 		virtual void EndGetObject(GetObjectSess *session);
 		virtual Math::Geometry::Vector2D *GetNewVectorById(GetObjectSess *session, Int64 id);
 
-		virtual UOSInt QueryTableNames(Text::CString schemaName, Data::ArrayList<Text::String*> *names);
-		virtual DB::DBReader *QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
+		virtual UOSInt QueryTableNames(Text::CString schemaName, Data::ArrayListNN<Text::String> *names);
+		virtual DB::DBReader *QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListNN<Text::String> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
 		virtual DB::TableDef *GetTableDef(Text::CString schemaName, Text::CString tableName);
 		virtual void CloseReader(DB::DBReader *r);
 		virtual void GetLastErrorMsg(Text::StringBuilderUTF8 *str);

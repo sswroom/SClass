@@ -48,7 +48,7 @@ namespace Data
 		}
 		else
 		{
-			this->keys->Insert((UOSInt)~i, Text::StrCopyNew(key));
+			this->keys->Insert((UOSInt)~i, Text::StrCopyNew(key).Ptr());
 			this->vals.Insert((UOSInt)~i, val);
 			return 0;
 		}

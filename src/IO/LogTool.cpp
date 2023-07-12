@@ -48,7 +48,7 @@ void IO::LogTool::Close()
 	}
 }
 
-void IO::LogTool::AddFileLog(Text::String *fileName, LogHandler::LogType style, LogHandler::LogGroup groupStyle, LogHandler::LogLevel logLev, const Char *dateFormat, Bool directWrite)
+void IO::LogTool::AddFileLog(NotNullPtr<Text::String> fileName, LogHandler::LogType style, LogHandler::LogGroup groupStyle, LogHandler::LogLevel logLev, const Char *dateFormat, Bool directWrite)
 {
 	if (closed)
 		return;

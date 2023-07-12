@@ -8,7 +8,7 @@ namespace IO
 	class ConfigFile
 	{
 	protected:
-		Text::String *defCate;
+		NotNullPtr<Text::String> defCate;
 	private:
 		Data::FastStringMap<Data::FastStringMap<Text::String *>*> cfgVals;
 
@@ -20,6 +20,7 @@ namespace IO
 		Text::String *GetValue(Text::String *name);
 		Text::String *GetValue(Text::CString name);
 		virtual Text::String *GetCateValue(Text::String *category, Text::String *name);
+		virtual Text::String *GetCateValue(NotNullPtr<Text::String> category, Text::String *name);
 		virtual Text::String *GetCateValue(Text::CString category, Text::CString name);
 		Bool SetValue(Text::String *category, Text::String *name, Text::String *value);
 		Bool SetValue(Text::CString category, Text::CString name, Text::CString value);

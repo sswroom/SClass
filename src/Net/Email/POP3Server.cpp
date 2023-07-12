@@ -431,7 +431,7 @@ void Net::Email::POP3Server::ParseCmd(Net::TCPClient *cli, MailStatus *cliStatus
 	else if (Text::StrStartsWithC(cmd, cmdLen, UTF8STRC("USER ")))
 	{
 		SDEL_STRING(cliStatus->userName);
-		cliStatus->userName = Text::String::New(&cmd[5], cmdLen - 5);
+		cliStatus->userName = Text::String::New(&cmd[5], cmdLen - 5).Ptr();
 		WriteMessage(cli, true, 0, 0);
 	}
 	else if (Text::StrStartsWithC(cmd, cmdLen, UTF8STRC("PASS ")))

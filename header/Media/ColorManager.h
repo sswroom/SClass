@@ -60,7 +60,7 @@ namespace Media
 		void SetYGamma(Double newVal);
 		void SetCGamma(Double newVal);
 		void SetMonProfileType(Media::ColorProfile::CommonProfileType newVal);
-		Bool SetMonProfileFile(Text::String *fileName);
+		Bool SetMonProfileFile(NotNullPtr<Text::String> fileName);
 		void SetMonProfile(Media::ColorProfile *color);
 		Text::String *GetMonProfileFile();
 		void SetMonLuminance(Double newVal);
@@ -71,7 +71,7 @@ namespace Media
 		void AddSess(Media::ColorManagerSess *colorSess);
 		void RemoveSess(Media::ColorManagerSess *colorSess);
 	private:
-		Bool SetFromProfileFile(Text::String *fileName);
+		Bool SetFromProfileFile(NotNullPtr<Text::String> fileName);
 		void SetOSProfile();
 		void SetEDIDProfile();
 

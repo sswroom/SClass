@@ -6,7 +6,7 @@
 #include "Media/StaticImage.h"
 #include "Text/MyString.h"
 
-Media::ImageList::ImageList(Text::String *name) : IO::ParsedObject(name)
+Media::ImageList::ImageList(NotNullPtr<Text::String> name) : IO::ParsedObject(name)
 {
 	this->author = 0;
 	this->imgName = 0;
@@ -121,7 +121,7 @@ void Media::ImageList::SetAuthor(const UTF8Char *name)
 	{
 		Text::StrDelNew(this->author);
 	}
-	this->author = Text::StrCopyNew(name);
+	this->author = Text::StrCopyNew(name).Ptr();
 }
 
 void Media::ImageList::SetImageName(const UTF8Char *imgName)
@@ -132,7 +132,7 @@ void Media::ImageList::SetImageName(const UTF8Char *imgName)
 	}
 	if (imgName)
 	{
-		this->imgName = Text::StrCopyNew(imgName);
+		this->imgName = Text::StrCopyNew(imgName).Ptr();
 	}
 	else
 	{

@@ -31,7 +31,7 @@ namespace Net
 		public:
 			typedef void (__stdcall *SSEDisconnectHandler)(Net::WebServer::IWebResponse *resp, void *userObj);
 		public:
-			IWebResponse(Text::String *sourceName);
+			IWebResponse(NotNullPtr<Text::String> sourceName);
 			IWebResponse(Text::CString sourceName);
 			virtual ~IWebResponse();
 
@@ -55,7 +55,7 @@ namespace Net
 			Bool ResponseText(Text::CString txt, Text::CString contentType);
 			Bool ResponseJSONStr(Net::WebServer::IWebRequest *req, OSInt cacheAge, Text::CString json);
 
-			Bool AddHeaderS(Text::CString name, Text::String *value)
+			Bool AddHeaderS(Text::CString name, NotNullPtr<Text::String> value)
 			{
 				return AddHeader(name, value->ToCString());
 			}

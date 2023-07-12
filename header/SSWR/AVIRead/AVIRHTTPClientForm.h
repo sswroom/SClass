@@ -25,15 +25,15 @@ namespace SSWR
 		private:
 			typedef struct
 			{
-				Text::String *name;
-				Text::String *value;
+				NotNullPtr<Text::String> name;
+				NotNullPtr<Text::String> value;
 			} ParamValue;
 
 			typedef struct
 			{
-				Text::String *name;
-				Text::String *value;
-				Text::String *domain;
+				NotNullPtr<Text::String> name;
+				NotNullPtr<Text::String> value;
+				NotNullPtr<Text::String> domain;
 				Text::String *path;
 				Int64 expireTime;
 				Bool secure;
@@ -132,7 +132,7 @@ namespace SSWR
 			Bool reqOSClient;
 			Bool reqAllowComp;
 			Bool noShutdown;
-			Text::String *userAgent;
+			NotNullPtr<Text::String> userAgent;
 			Crypto::Cert::X509Cert *cliCert;
 			Crypto::Cert::X509File *cliKey;
 
@@ -148,7 +148,7 @@ namespace SSWR
 			UInt64 respULSize;
 			Int32 respStatus;
 			Text::String *respReqURL;
-			Data::ArrayList<Text::String*> respHeaders;
+			Data::ArrayListNN<Text::String> respHeaders;
 			Sync::Mutex respMut;
 			Text::String *respContType;
 			IO::MemoryStream *respData;
@@ -157,7 +157,7 @@ namespace SSWR
 			Data::ArrayList<ParamValue*> params;
 			Data::ArrayList<HTTPCookie *> cookieList;
 			Sync::Mutex cookieMut;
-			Data::ArrayList<Text::String*> fileList;
+			Data::ArrayListNN<Text::String> fileList;
 
 			static void __stdcall OnUserAgentClicked(void *userObj);
 			static void __stdcall OnRequestClicked(void *userObj);

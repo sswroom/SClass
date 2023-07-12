@@ -502,7 +502,7 @@ typedef enum
 	MNU_VBOX_MANAGER
 } MenuItems;
 
-void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(void *userObj, Text::String **files, UOSInt nFiles)
+void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles)
 {
 	SSWR::AVIRead::AVIRBaseForm *me = (AVIRead::AVIRBaseForm*)userObj;
 	IO::Path::PathType pt;
@@ -1083,7 +1083,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 				if (esriMap->HasTile())
 				{
 					Map::ESRI::ESRITileMap *map;
-					Text::String *url = esriMap->GetURL();
+					NotNullPtr<Text::String> url = esriMap->GetURL();
 					crc.Calc((UInt8*)url->v, url->leng);
 					crc.GetValue(crcVal);
 					sptr = IO::Path::GetProcessFileName(sbuff);
@@ -1127,7 +1127,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 			SSWR::AVIRead::AVIROpenFileForm dlg(0, this->ui, this->core, IO::ParserType::Unknown);
 			if (dlg.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
-				Text::String *fname = dlg.GetFileName();
+				NotNullPtr<Text::String> fname = dlg.GetFileName();
 				UOSInt i = fname->IndexOf(':');
 				if (i == INVALID_INDEX || i == 1)
 				{

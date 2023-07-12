@@ -62,7 +62,7 @@ void Text::MailCreator::AppendStr(Text::StringBuilderUTF8 *sbc, const WChar *s)
 	}
 	if (found)
 	{
-		Text::String *str = Text::String::NewNotNull(s);
+		NotNullPtr<Text::String> str = Text::String::NewNotNull(s);
 		UOSInt buffSize;
 		UInt8 *b64Buff;
 		UOSInt b64Size;
@@ -78,7 +78,7 @@ void Text::MailCreator::AppendStr(Text::StringBuilderUTF8 *sbc, const WChar *s)
 	}
 	else
 	{
-		Text::String *str = Text::String::NewNotNull(s);
+		NotNullPtr<Text::String> str = Text::String::NewNotNull(s);
 		sbc->Append(str);
 		str->Release();
 	}
@@ -218,8 +218,6 @@ Text::MailCreator::MailCreator()
 	this->content = 0;
 	NEW_CLASS(this->toVals, Text::StringBuilderUTF8());
 	NEW_CLASS(this->ccVals, Text::StringBuilderUTF8());
-	NEW_CLASS(this->attachName, Data::ArrayList<Text::String*>());
-	NEW_CLASS(this->attachObj, Data::ArrayList<Text::IMIMEObj*>());
 }
 
 Text::MailCreator::~MailCreator()
@@ -233,15 +231,13 @@ Text::MailCreator::~MailCreator()
 	SDEL_CLASS(this->content);
 	DEL_CLASS(this->toVals);
 	DEL_CLASS(this->ccVals);
-	i = this->attachName->GetCount();
+	i = this->attachName.GetCount();
 	while (i-- > 0)
 	{
-		this->attachName->GetItem(i)->Release();
-		obj = this->attachObj->GetItem(i);
+		this->attachName.GetItem(i)->Release();
+		obj = this->attachObj.GetItem(i);
 		DEL_CLASS(obj);
 	}
-	DEL_CLASS(this->attachName);
-	DEL_CLASS(this->attachObj);
 }
 
 void Text::MailCreator::SetFrom(const WChar *name, const WChar *address)
@@ -265,7 +261,7 @@ void Text::MailCreator::SetFrom(const WChar *name, const WChar *address)
 			this->AppendStr(&sb, address);
 		}
 		SDEL_STRING(this->from);
-		this->from = Text::String::New(sb.ToString(), sb.GetLength());
+		this->from = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 	}
 }
 
@@ -290,7 +286,7 @@ void Text::MailCreator::SetFrom(Text::CString name, Text::CString address)
 			this->AppendStr(&sb, address);
 		}
 		SDEL_STRING(this->from);
-		this->from = Text::String::New(sb.ToString(), sb.GetLength());
+		this->from = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 	}
 }
 
@@ -315,7 +311,7 @@ void Text::MailCreator::SetReplyTo(const WChar *name, const WChar *address)
 			this->AppendStr(&sb, address);
 		}
 		SDEL_STRING(this->replyTo);
-		this->replyTo = Text::String::New(sb.ToString(), sb.GetLength());
+		this->replyTo = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 	}
 }
 
@@ -338,7 +334,7 @@ void Text::MailCreator::ToAdd(const WChar *name, const WChar *address)
 	}
 }
 
-void Text::MailCreator::ToAdd(Text::String *name, Text::String *address)
+void Text::MailCreator::ToAdd(Text::String *name, NotNullPtr<Text::String> address)
 {
 	if (this->toVals->GetLength() > 0)
 	{
@@ -381,7 +377,7 @@ void Text::MailCreator::CCAdd(const WChar *name, const WChar *address)
 	}
 }
 
-void Text::MailCreator::CCAdd(Text::String *name, Text::String *address)
+void Text::MailCreator::CCAdd(Text::String *name, NotNullPtr<Text::String> address)
 {
 	if (this->ccVals->GetLength() > 0)
 	{
@@ -410,15 +406,15 @@ void Text::MailCreator::SetSubject(const WChar *subj)
 	Text::StringBuilderUTF8 sb;
 	this->AppendStr(&sb, subj);
 	SDEL_STRING(this->subject);
-	this->subject = Text::String::New(sb.ToString(), sb.GetLength());
+	this->subject = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 }
 
-void Text::MailCreator::SetSubject(Text::String *subj)
+void Text::MailCreator::SetSubject(NotNullPtr<Text::String> subj)
 {
 	Text::StringBuilderUTF8 sb;
 	this->AppendStr(&sb, subj->ToCString());
 	SDEL_STRING(this->subject);
-	this->subject = Text::String::New(sb.ToString(), sb.GetLength());
+	this->subject = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 }
 
 void Text::MailCreator::SetContentHTML(const WChar *content, Text::CString htmlPath)
@@ -494,8 +490,8 @@ void Text::MailCreator::AddAttachment(Text::CString fileName)
 {
 	Text::IMIMEObj *obj = Text::IMIMEObj::ParseFromFile(fileName);
 
-	this->attachObj->Add(obj);
-	this->attachName->Add(Text::String::New(fileName.v, fileName.leng));
+	this->attachObj.Add(obj);
+	this->attachName.Add(Text::String::New(fileName.v, fileName.leng));
 }
 
 Text::MIMEObj::MailMessage *Text::MailCreator::CreateMail()
@@ -522,7 +518,7 @@ Text::MIMEObj::MailMessage *Text::MailCreator::CreateMail()
 	{
 		msg->AddHeader(UTF8STRC("Subject"), this->subject->v, this->subject->leng);
 	}
-	if (this->attachName->GetCount() > 0)
+	if (this->attachName.GetCount() > 0)
 	{
 		Text::MIMEObj::MultipartMIMEObj *mpart;
 		Text::IMIMEObj *obj;
@@ -542,11 +538,11 @@ Text::MIMEObj::MailMessage *Text::MailCreator::CreateMail()
 		}
 
 		i = 0;
-		j = this->attachName->GetCount();
+		j = this->attachName.GetCount();
 		while (i < j)
 		{
-			obj = this->attachObj->GetItem(i);
-			fname = this->attachName->GetItem(i);
+			obj = this->attachObj.GetItem(i);
+			fname = this->attachName.GetItem(i);
 			k = mpart->AddPart(obj->Clone());
 			l = fname->LastIndexOf(IO::Path::PATH_SEPERATOR);
 			sbc.ClearStr();

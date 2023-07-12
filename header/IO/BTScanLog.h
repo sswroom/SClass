@@ -88,7 +88,7 @@ namespace IO
 
 		void FreeDev(DevEntry* dev);
 	public:
-		BTScanLog(Text::String *sourceName);
+		BTScanLog(NotNullPtr<Text::String> sourceName);
 		virtual ~BTScanLog();
 
 		virtual IO::ParserType GetParserType() const;

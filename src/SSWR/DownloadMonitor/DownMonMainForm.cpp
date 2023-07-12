@@ -122,7 +122,7 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnPasteTableClicked(void 
 
 			if (id != 0)
 			{
-				Text::String *s = Text::String::New(sarr2[1].v, sarr2[1].leng);
+				NotNullPtr<Text::String> s = Text::String::New(sarr2[1].v, sarr2[1].leng);
 				if (me->core->FileAdd(id, webType, s))
 				{
 					Sync::MutexUsage mutUsage;
@@ -248,7 +248,7 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnPasteHTMLClicked(void *
 
 					if (id != 0)
 					{
-						Text::String *s = Text::String::NewNotNullSlow(desc);
+						NotNullPtr<Text::String> s = Text::String::NewNotNullSlow(desc);
 						if (me->core->FileAdd(id, webType, s))
 						{
 							Sync::MutexUsage mutUsage;
@@ -357,9 +357,9 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnWebUpdateClicked(void *
 	Net::WebSite::WebSite48IdolControl *ctrl;
 	Text::EncodingFactory *encFact;
 	Text::CString userAgent = Net::UserAgentDB::FindUserAgent(Manage::OSInfo::OT_WINDOWS_NT64, Net::BrowserInfo::BT_FIREFOX);
-	Text::String *ua = Text::String::New(userAgent);
+	NotNullPtr<Text::String> ua = Text::String::New(userAgent);
 	NEW_CLASS(encFact, Text::EncodingFactory());
-	NEW_CLASS(ctrl, Net::WebSite::WebSite48IdolControl(me->core->GetSocketFactory(), me->core->GetSSLEngine(), encFact, ua));
+	NEW_CLASS(ctrl, Net::WebSite::WebSite48IdolControl(me->core->GetSocketFactory(), me->core->GetSSLEngine(), encFact, ua.Ptr()));
 	ua->Release();
 	while (true)
 	{
@@ -478,7 +478,7 @@ void SSWR::DownloadMonitor::DownMonMainForm::LoadList()
 	Net::WebSite::WebSite48IdolControl *ctrl = 0;
 	Text::EncodingFactory *encFact = 0;
 	Text::CString userAgent = Net::UserAgentDB::FindUserAgent(Manage::OSInfo::OT_WINDOWS_NT64, Net::BrowserInfo::BT_FIREFOX);
-	Text::String *ua = Text::String::New(userAgent);
+	NotNullPtr<Text::String> ua = Text::String::New(userAgent);
 	Text::StringBuilderUTF8 sb2;
 	Bool updated = false;
 
@@ -486,8 +486,10 @@ void SSWR::DownloadMonitor::DownMonMainForm::LoadList()
 	UTF8Char *sptr;
 	Text::PString sarr[2];
 	UOSInt i;
+	NotNullPtr<Text::String> listFile;
+	if (listFile.Set(this->core->GetListFile()))
 	{
-		IO::FileStream fs(this->core->GetListFile(), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+		IO::FileStream fs(listFile, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 		Text::UTF8Reader reader(&fs);
 		while (reader.ReadLine(&sb, 4096))
 		{
@@ -505,7 +507,7 @@ void SSWR::DownloadMonitor::DownMonMainForm::LoadList()
 						if (ctrl == 0)
 						{
 							NEW_CLASS(encFact, Text::EncodingFactory());
-							NEW_CLASS(ctrl, Net::WebSite::WebSite48IdolControl(this->core->GetSocketFactory(), this->core->GetSSLEngine(), encFact, ua));
+							NEW_CLASS(ctrl, Net::WebSite::WebSite48IdolControl(this->core->GetSocketFactory(), this->core->GetSSLEngine(), encFact, ua.Ptr()));
 						}
 						sb2.ClearStr();
 						if (ctrl->GetVideoName(id, &sb2))
@@ -515,7 +517,7 @@ void SSWR::DownloadMonitor::DownMonMainForm::LoadList()
 							updated = true;
 						}
 					}
-					Text::String *s = Text::String::New(sarr[1].v, sarr[1].leng);
+					NotNullPtr<Text::String> s = Text::String::New(sarr[1].v, sarr[1].leng);
 					if (this->core->FileAdd(id, webType, s))
 					{
 						Sync::MutexUsage mutUsage;
@@ -550,7 +552,10 @@ void SSWR::DownloadMonitor::DownMonMainForm::SaveList()
 	UOSInt i;
 	UOSInt j;
 
-	IO::FileStream fs(this->core->GetListFile(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+	NotNullPtr<Text::String> listFile;
+	if (!listFile.Set(this->core->GetListFile()))
+		return;
+	IO::FileStream fs(listFile, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 	Text::UTF8Writer writer(&fs);
 	writer.WriteSignature();
 	i = 0;

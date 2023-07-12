@@ -325,9 +325,9 @@ void SSWR::AVIRead::AVIRMACManagerForm::LogFileLoad(Text::CString fileName)
 						log->freq = Text::StrToDouble(sarr[3].v);
 						if (i >= 7)
 						{
-							log->manuf = Text::String::New(sarr[4].v, sarr[4].leng);
-							log->model = Text::String::New(sarr[5].v, sarr[5].leng);
-							log->serialNum = Text::String::New(sarr[6].v, sarr[6].leng);
+							log->manuf = Text::String::New(sarr[4].v, sarr[4].leng).Ptr();
+							log->model = Text::String::New(sarr[5].v, sarr[5].leng).Ptr();
+							log->serialNum = Text::String::New(sarr[6].v, sarr[6].leng).Ptr();
 						}
 						else
 						{
@@ -344,7 +344,7 @@ void SSWR::AVIRead::AVIRMACManagerForm::LogFileLoad(Text::CString fileName)
 						}
 						if (i >= 9)
 						{
-							log->country = Text::String::New(sarr[8].v, sarr[8].leng);
+							log->country = Text::String::New(sarr[8].v, sarr[8].leng).Ptr();
 							j = Text::StrSplitP(sarr2, 3, sarr[7], ',');
 							while (j-- > 0)
 							{
@@ -402,6 +402,7 @@ void SSWR::AVIRead::AVIRMACManagerForm::LogFileLoad(Text::CString fileName)
 		}
 
 		const Net::MACInfo::MACEntry *entry;
+		NotNullPtr<Text::String> s;
 		this->lvContent->BeginUpdate();
 		this->lvContent->ClearItems();
 		i = 0;
@@ -425,12 +426,12 @@ void SSWR::AVIRead::AVIRMACManagerForm::LogFileLoad(Text::CString fileName)
 			this->lvContent->SetSubItem(i, 3, CSTRP(sbuff, sptr));
 			sptr = Text::StrDouble(sbuff, log->freq);
 			this->lvContent->SetSubItem(i, 4, CSTRP(sbuff, sptr));
-			if (log->manuf)
-				this->lvContent->SetSubItem(i, 5, log->manuf);
-			if (log->model)
-				this->lvContent->SetSubItem(i, 6, log->model);
-			if (log->serialNum)
-				this->lvContent->SetSubItem(i, 7, log->serialNum);
+			if (s.Set(log->manuf))
+				this->lvContent->SetSubItem(i, 5, s);
+			if (s.Set(log->model))
+				this->lvContent->SetSubItem(i, 6, s);
+			if (s.Set(log->serialNum))
+				this->lvContent->SetSubItem(i, 7, s);
 			if (log->ouis[0][0] != 0 || log->ouis[0][1] != 0 || log->ouis[0][2] != 0)
 			{
 				entry = Net::MACInfo::GetMACInfoOUI(log->ouis[0]);
@@ -446,8 +447,8 @@ void SSWR::AVIRead::AVIRMACManagerForm::LogFileLoad(Text::CString fileName)
 				entry = Net::MACInfo::GetMACInfoOUI(log->ouis[2]);
 				this->lvContent->SetSubItem(i, 10, {entry->name, entry->nameLen});
 			}
-			if (log->country)
-				this->lvContent->SetSubItem(i, 11, log->country);
+			if (s.Set(log->country))
+				this->lvContent->SetSubItem(i, 11, s);
 			i++;
 		}
 		this->lvContent->EndUpdate();
@@ -461,7 +462,7 @@ void SSWR::AVIRead::AVIRMACManagerForm::LogFileClear()
 	while (i-- > 0)
 	{
 		log = this->logList.GetItem(i);
-		SDEL_STRING(log->ssid);
+		log->ssid->Release();
 		SDEL_STRING(log->manuf);
 		SDEL_STRING(log->model);
 		SDEL_STRING(log->serialNum);

@@ -50,10 +50,11 @@ UOSInt IO::StmData::MemoryDataCopy::GetRealData(UInt64 offset, UOSInt length, UI
 	return length;
 }
 
-Text::String *IO::StmData::MemoryDataCopy::GetFullName()
+NotNullPtr<Text::String> IO::StmData::MemoryDataCopy::GetFullName()
 {
-	if (this->stat->fullName)
-		return this->stat->fullName;
+	NotNullPtr<Text::String> retStr;
+	if (retStr.Set(this->stat->fullName))
+		return retStr;
 	return Text::String::NewEmpty();
 }
 
@@ -74,7 +75,7 @@ Text::CString IO::StmData::MemoryDataCopy::GetShortName()
 void IO::StmData::MemoryDataCopy::SetFullName(Text::CString fullName)
 {
 	SDEL_STRING(this->stat->fullName);
-	this->stat->fullName = Text::String::New(fullName);
+	this->stat->fullName = Text::String::New(fullName).Ptr();
 }
 
 UInt64 IO::StmData::MemoryDataCopy::GetDataSize()

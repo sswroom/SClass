@@ -66,7 +66,7 @@ UOSInt IO::StmData::BufferedStreamData::GetRealData(UInt64 offset, UOSInt length
 	return length + ret;
 }
 
-Text::String *IO::StmData::BufferedStreamData::GetFullName()
+NotNullPtr<Text::String> IO::StmData::BufferedStreamData::GetFullName()
 {
 	return this->stmData->GetFullName();
 }
@@ -101,7 +101,7 @@ Bool IO::StmData::BufferedStreamData::IsFullFile()
 	return this->stmData->IsFullFile();
 }
 
-Text::String *IO::StmData::BufferedStreamData::GetFullFileName()
+NotNullPtr<Text::String> IO::StmData::BufferedStreamData::GetFullFileName()
 {
 	return this->stmData->GetFullFileName();
 }

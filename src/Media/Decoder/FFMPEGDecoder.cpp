@@ -45,7 +45,7 @@ extern "C"
 #include <libavutil/channel_layout.h>
 }
 
-#if UTIL_VERSION_FROM(58, 0, 0)
+#if UTIL_VERSION_FROM(58, 6, 0)
 #define AVFRAME_IS_INTERLACE(frame) (frame->flags & AV_FRAME_FLAG_INTERLACED)
 #define AVFRAME_IS_TFF(frame) (frame->flags & AV_FRAME_FLAG_TOP_FIELD_FIRST)
 #define AVFRAME_IS_KEY_FRAME(frame) (frame->flags & AV_FRAME_FLAG_KEY)

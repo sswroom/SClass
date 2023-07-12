@@ -72,13 +72,13 @@ namespace Map
 		struct GroupItem : public MapItem
 		{
 			Data::ArrayList<MapItem*> *subitems;
-			Text::String *groupName;
+			NotNullPtr<Text::String> groupName;
 			Bool groupHide;
 		};
 
 		typedef struct
 		{
-			Text::String *fileName;
+			NotNullPtr<Text::String> fileName;
 			UOSInt index;
 			UOSInt cnt;
 			Bool isAni;
@@ -108,7 +108,7 @@ namespace Map
 		typedef struct
 		{
 			Text::String *styleName;
-			Text::String *fontName;
+			NotNullPtr<Text::String> fontName;
 			Double fontSizePt;
 			Bool bold;
 			UInt32 fontColor;
@@ -169,14 +169,14 @@ namespace Map
 
 		UOSInt AddLayer(GroupItem *group, Map::MapDrawLayer *layer, Bool needRelease);
 		Bool ReplaceLayer(GroupItem *group, UOSInt index, Map::MapDrawLayer *layer, Bool needRelease);
-		GroupItem *AddGroup(GroupItem *group, Text::String *subgroupName);
+		GroupItem *AddGroup(GroupItem *group, NotNullPtr<Text::String> subgroupName);
 		GroupItem *AddGroup(GroupItem *group, Text::CString subgroupName);
 		void RemoveItem(GroupItem *group, UOSInt index);
 		void MoveItem(GroupItem *group, UOSInt fromIndex, UOSInt toIndex);
 		void MoveItem(GroupItem *fromGroup, UOSInt fromIndex, GroupItem *toGroup, UOSInt toIndex);
 		UOSInt GetItemCount(GroupItem *group) const;
 		MapItem *GetItem(GroupItem *group, UOSInt index) const;
-		Text::String *GetGroupName(GroupItem *group) const;
+		NotNullPtr<Text::String> GetGroupName(GroupItem *group) const;
 		void SetGroupName(GroupItem *group, Text::CString name);
 		void SetGroupHide(GroupItem *group, Bool isHide);
 		Bool GetGroupHide(GroupItem *group) const;

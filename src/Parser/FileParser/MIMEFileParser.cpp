@@ -34,7 +34,7 @@ IO::ParserType Parser::FileParser::MIMEFileParser::GetParserType()
 
 IO::ParsedObject *Parser::FileParser::MIMEFileParser::ParseFileHdr(IO::StreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
-	Text::String *name = fd->GetFullName();
+	NotNullPtr<Text::String> name = fd->GetFullName();
 	Text::IMIMEObj *obj;
 	if (name->EndsWithICase(UTF8STRC(".eml")))
 	{

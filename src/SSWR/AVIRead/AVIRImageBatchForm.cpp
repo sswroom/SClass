@@ -175,7 +175,7 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnGammaResetClicked(void *user
 	me->hsbGamma->SetPos(100);
 }
 
-void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnFilesDrop(void *userObj, Text::String **files, UOSInt nFiles)
+void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnFilesDrop(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles)
 {
 	SSWR::AVIRead::AVIRImageBatchForm *me = (SSWR::AVIRead::AVIRImageBatchForm*)userObj;
 	if (nFiles == 1 && IO::Path::GetPathType(files[0]->ToCString()) == IO::Path::PathType::Directory)
@@ -184,7 +184,7 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnFilesDrop(void *userObj, Tex
 	}
 }
 
-void SSWR::AVIRead::AVIRImageBatchForm::OpenFolder(Text::String *folder)
+void SSWR::AVIRead::AVIRImageBatchForm::OpenFolder(NotNullPtr<Text::String> folder)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;

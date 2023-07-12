@@ -1,6 +1,7 @@
 #ifndef _SM_MEDIA_JASPER_JASPERREPORT
 #define _SM_MEDIA_JASPER_JASPERREPORT
 #include "Data/ArrayList.h"
+#include "Data/ArrayListNN.h"
 #include "IO/ParsedObject.h"
 #include "Media/Jasper/JasperBand.h"
 
@@ -13,14 +14,14 @@ namespace Media
 		public:
 			struct JasperProperty
 			{
-				Text::String *name;
-				Text::String *value;
+				NotNullPtr<Text::String> name;
+				NotNullPtr<Text::String> value;
 			};
 
 			struct JasperParameter
 			{
-				Text::String *name;
-				Text::String *className;
+				NotNullPtr<Text::String> name;
+				NotNullPtr<Text::String> className;
 				Text::String *defValueExp;
 			};
 
@@ -30,7 +31,7 @@ namespace Media
 			};
 		private:
 			Data::ArrayList<JasperProperty*> properties;
-			Data::ArrayList<Text::String*> importList;
+			Data::ArrayListNN<Text::String> importList;
 			Data::ArrayList<JasperParameter*> params;
 			Text::String *queryString;
 			JasperBand *title;
@@ -46,7 +47,7 @@ namespace Media
 
 			void InitValues();
 		public:
-			JasperReport(Text::String *sourceName);
+			JasperReport(NotNullPtr<Text::String> sourceName);
 			JasperReport(Text::CString sourceName);
 			virtual ~JasperReport();
 
@@ -71,8 +72,8 @@ namespace Media
 			Text::String *GetUUID() const;
 
 			void SetQueryString(Text::String *str);
-			void SetProperty(Text::String *name, Text::String *value);
-			void AddImport(Text::String *value);
+			void SetProperty(NotNullPtr<Text::String> name, NotNullPtr<Text::String> value);
+			void AddImport(NotNullPtr<Text::String> value);
 			void AddParameter(Text::String *name, Text::String *className, Text::CString defValueExp);
 			void SetTitle(Media::Jasper::JasperBand *band);
 			void AddDetail(Media::Jasper::JasperBand *band);

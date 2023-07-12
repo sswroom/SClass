@@ -9,7 +9,7 @@
 typedef struct
 {
 	GtkWidget *lbl;
-	Text::String *txt;
+	NotNullPtr<Text::String> txt;
 } PageInfo;
 
 void GUITabControl_SelChange(GtkNotebook *notebook, GtkWidget *page, guint page_num, gpointer user_data)

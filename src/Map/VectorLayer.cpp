@@ -171,7 +171,7 @@ void Map::VectorLayer::UpdateMapRate()
 	}
 }
 
-Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, Text::String *sourceName, UOSInt strCnt, const UTF8Char **colNames, Math::CoordinateSystem *csys, UOSInt nameCol, Text::String *layerName) : Map::MapDrawLayer(sourceName, nameCol, layerName)
+Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, NotNullPtr<Text::String> sourceName, UOSInt strCnt, const UTF8Char **colNames, Math::CoordinateSystem *csys, UOSInt nameCol, Text::String *layerName) : Map::MapDrawLayer(sourceName, nameCol, layerName)
 {
 	UOSInt i;
 	this->layerType = layerType;
@@ -192,7 +192,7 @@ Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, Text::String *source
 		maxStrLen[i] = 0;
 		if (colNames[i])
 		{
-			this->colNames[i] = Text::StrCopyNew(colNames[i]);
+			this->colNames[i] = Text::StrCopyNew(colNames[i]).Ptr();
 		}
 		else
 		{
@@ -222,7 +222,7 @@ Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, Text::CString source
 		maxStrLen[i] = 0;
 		if (colNames[i])
 		{
-			this->colNames[i] = Text::StrCopyNew(colNames[i]);
+			this->colNames[i] = Text::StrCopyNew(colNames[i]).Ptr();
 		}
 		else
 		{
@@ -231,7 +231,7 @@ Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, Text::CString source
 	}
 }
 
-Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, Text::String *sourceName, UOSInt strCnt, const UTF8Char **colNames, Math::CoordinateSystem *csys, DB::DBUtil::ColType *colTypes, UOSInt *colSize, UOSInt *colDP, UOSInt nameCol, Text::String *layerName) : Map::MapDrawLayer(sourceName, nameCol, layerName)
+Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, NotNullPtr<Text::String> sourceName, UOSInt strCnt, const UTF8Char **colNames, Math::CoordinateSystem *csys, DB::DBUtil::ColType *colTypes, UOSInt *colSize, UOSInt *colDP, UOSInt nameCol, Text::String *layerName) : Map::MapDrawLayer(sourceName, nameCol, layerName)
 {
 	UOSInt i;
 	this->layerType = layerType;
@@ -252,7 +252,7 @@ Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, Text::String *source
 		maxStrLen[i] = 0;
 		if (colNames[i])
 		{
-			this->colNames[i] = Text::StrCopyNew(colNames[i]);
+			this->colNames[i] = Text::StrCopyNew(colNames[i]).Ptr();
 		}
 		else
 		{
@@ -285,7 +285,7 @@ Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, Text::CString source
 		maxStrLen[i] = 0;
 		if (colNames[i])
 		{
-			this->colNames[i] = Text::StrCopyNew(colNames[i]);
+			this->colNames[i] = Text::StrCopyNew(colNames[i]).Ptr();
 		}
 		else
 		{
@@ -522,9 +522,11 @@ Bool Map::VectorLayer::GetColumnDef(UOSInt colIndex, DB::ColDef *colDef)
 {
 	if (colIndex >= this->strCnt)
 		return false;
+	NotNullPtr<const UTF8Char> colName;
+	if (!colName.Set(this->colNames[colIndex])) colName.Set((const UTF8Char*)"");
+	colDef->SetColName(colName);
 	if (this->cols)
 	{
-		colDef->SetColName(this->colNames[colIndex]);
 		colDef->SetColType(this->cols[colIndex].colType);
 		colDef->SetColSize(this->cols[colIndex].colSize);
 		colDef->SetColDP(this->cols[colIndex].colDP);
@@ -536,7 +538,6 @@ Bool Map::VectorLayer::GetColumnDef(UOSInt colIndex, DB::ColDef *colDef)
 	}
 	else
 	{
-		colDef->SetColName(this->colNames[colIndex]);
 		colDef->SetColType(DB::DBUtil::CT_VarUTF8Char);
 		colDef->SetColSize(this->maxStrLen[colIndex]);
 		colDef->SetColDP(0);
@@ -587,11 +588,11 @@ void Map::VectorLayer::SetTableName(Text::String *tableName)
 	SDEL_STRING(this->tableName);
 	if (tableName)
 	{
-		this->tableName = tableName->Clone();
+		this->tableName = tableName->Clone().Ptr();
 	}
 }
 
-UOSInt Map::VectorLayer::QueryTableNames(Text::CString schemaName, Data::ArrayList<Text::String*> *names)
+UOSInt Map::VectorLayer::QueryTableNames(Text::CString schemaName, Data::ArrayListNN<Text::String> *names)
 {
 	if (schemaName.leng != 0)
 		return 0;

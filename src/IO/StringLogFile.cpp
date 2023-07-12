@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "IO/StringLogFile.h"
 
-IO::StringLogFile::StringLogFile(Text::String *sourceName) : IO::LogFile(sourceName)
+IO::StringLogFile::StringLogFile(NotNullPtr<Text::String> sourceName) : IO::LogFile(sourceName)
 {
 }
 

@@ -48,7 +48,7 @@ Map::CIPLayer2::CIPLayer2(Text::CString layerName) : Map::MapDrawLayer(layerName
 	this->lastObjs = 0;
 	this->currObjs = 0;
 	this->lyrType = (Map::DrawLayerType)0;
-	this->layerName = Text::String::New(fname, (UOSInt)(sptr - fname));
+	this->layerName = Text::String::NewP(fname, sptr);
 
 	sptr2 = Text::StrConcatC(sptr, UTF8STRC(".blk"));
 	NEW_CLASS(file, IO::FileStream({fname, (UOSInt)(sptr2 - fname)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
@@ -180,11 +180,7 @@ Map::CIPLayer2::~CIPLayer2()
 		MemFree(blks);
 		blks = 0;
 	}
-	if (this->layerName)
-	{
-		this->layerName->Release();
-		this->layerName = 0;
-	}
+	this->layerName->Release();
 	if (this->lastObjs)
 	{
 		this->ReleaseFileObjs(this->lastObjs);

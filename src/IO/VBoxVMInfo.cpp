@@ -13,7 +13,7 @@ IO::VBoxVMInfo::~VBoxVMInfo()
 	this->name->Release();
 }
 
-Text::String *IO::VBoxVMInfo::GetName() const
+NotNullPtr<Text::String> IO::VBoxVMInfo::GetName() const
 {
 	return this->name;
 }

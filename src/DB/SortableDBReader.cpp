@@ -1,4 +1,5 @@
 #include "Stdafx.h"
+#include "Data/ArrayListStringNN.h"
 #include "Data/Sort/ArtificialQuickSort.h"
 #include "Data/FieldComparator.h"
 #include "DB/ColDef.h"
@@ -13,7 +14,7 @@ Data::VariItem *DB::SortableDBReader::GetItem(UOSInt colIndex)
 	return obj->GetItem(this->cols.GetItem(colIndex)->GetColName()->v);
 }
 
-DB::SortableDBReader::SortableDBReader(DB::ReadingDB *db, Text::CString schemaName, Text::CString tableName, Data::ArrayList<Text::String*> *colNames, UOSInt dataOfst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+DB::SortableDBReader::SortableDBReader(DB::ReadingDB *db, Text::CString schemaName, Text::CString tableName, Data::ArrayListNN<Text::String> *colNames, UOSInt dataOfst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	this->currIndex = INVALID_INDEX;
 	UOSInt i;
@@ -57,28 +58,30 @@ DB::SortableDBReader::SortableDBReader(DB::ReadingDB *db, Text::CString schemaNa
 	}
 	else
 	{
-		Data::ArrayListString dbColNames;
+		Data::ArrayListStringNN dbColNames;
 		i = 0;
 		j = colNames->GetCount();
 		while (i < j)
 		{
-			if (dbColNames.SortedIndexOf(colNames->GetItem(i)) < 0)
+			NotNullPtr<Text::String> colName;
+			if (colName.Set(colNames->GetItem(i)) && dbColNames.SortedIndexOf(colName) < 0)
 			{
-				dbColNames.SortedInsert(colNames->GetItem(i));
+				dbColNames.SortedInsert(colName);
 			}
 			i++;
 		}
 		if (condition)
 		{
-			Data::ArrayList<Text::String*> condColNames;
+			Data::ArrayListNN<Text::String> condColNames;
 			condition->GetFieldList(&condColNames);
 			i = 0;
 			j = condColNames.GetCount();
 			while (i < j)
 			{
-				if (dbColNames.SortedIndexOf(condColNames.GetItem(i)) < 0)
+				NotNullPtr<Text::String> colName;
+				if (colName.Set(condColNames.GetItem(i)) && dbColNames.SortedIndexOf(colName) < 0)
 				{
-					dbColNames.SortedInsert(condColNames.GetItem(i));
+					dbColNames.SortedInsert(colName);
 				}
 				i++;
 			}
@@ -96,7 +99,7 @@ DB::SortableDBReader::SortableDBReader(DB::ReadingDB *db, Text::CString schemaNa
 		{
 			if (r->GetColDef(i, &colDef))
 			{
-				tmpCols.Put(colDef.GetColName(), colDef.Clone());
+				tmpCols.PutNN(colDef.GetColName(), colDef.Clone());
 			}
 			i++;
 		}
@@ -336,7 +339,7 @@ Text::String *DB::SortableDBReader::GetNewStr(UOSInt colIndex)
 	Text::StringBuilderUTF8 sb;
 	if (this->GetStr(colIndex, &sb))
 	{
-		return Text::String::New(sb.ToCString());
+		return Text::String::New(sb.ToCString()).Ptr();
 	}
 	return 0;
 }
@@ -483,7 +486,7 @@ UTF8Char *DB::SortableDBReader::GetName(UOSInt colIndex, UTF8Char *buff)
 	DB::ColDef *col = this->cols.GetItem(colIndex);
 	if (col)
 	{
-		Text::String *colName = col->GetColName();
+		NotNullPtr<Text::String> colName = col->GetColName();
 		return Text::StrConcatC(buff, colName->v, colName->leng);
 	}
 	return 0;

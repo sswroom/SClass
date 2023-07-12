@@ -2,7 +2,7 @@
 #include "Crypto/Cert/X509PKCS12.h"
 #include "Net/ASN1Util.h"
 
-Crypto::Cert::X509PKCS12::X509PKCS12(Text::String *sourceName, const UInt8 *buff, UOSInt buffSize) : Crypto::Cert::X509File(sourceName, buff, buffSize)
+Crypto::Cert::X509PKCS12::X509PKCS12(NotNullPtr<Text::String> sourceName, const UInt8 *buff, UOSInt buffSize) : Crypto::Cert::X509File(sourceName, buff, buffSize)
 {
 
 }

@@ -199,7 +199,7 @@ Text::EncodingFactory::EncodingFactory()
 {
 	UOSInt i = (sizeof(encInfo) / sizeof(encInfo[0]));
 	UOSInt j;
-	Text::String *s;
+	NotNullPtr<Text::String> s;
 	UOSInt len;
 	while (i-- > 0)
 	{
@@ -211,7 +211,7 @@ Text::EncodingFactory::EncodingFactory()
 				len = Text::StrCharCnt(encInfo[i].internetNames[j]);
 				s = Text::String::New(len);
 				Text::StrToLowerC(s->v, (const UTF8Char*)encInfo[i].internetNames[j], len);
-				this->encMap.Put(s, &encInfo[i]);
+				this->encMap.PutNN(s, &encInfo[i]);
 				s->Release();
 			}
 			else

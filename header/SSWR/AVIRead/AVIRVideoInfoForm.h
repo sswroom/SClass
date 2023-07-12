@@ -46,7 +46,7 @@ namespace SSWR
 			static void __stdcall OnVideoFrame(UInt32 frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, void *userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst);
 			static void __stdcall OnVideoChange(Media::IVideoSource::FrameChange frChg, void *userData);
 			static void __stdcall OnAudioEnd(void *userData);
-			static void __stdcall OnFileHandler(void *userObj, Text::String **files, UOSInt nFiles);
+			static void __stdcall OnFileHandler(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles);
 			static void __stdcall OnStreamChg(void *userObj);
 			static void __stdcall OnDecodeClicked(void *userObj);
 			Bool OpenFile(Text::CString fileName);

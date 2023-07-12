@@ -42,7 +42,7 @@ void SSWR::AVIRead::AVIRASN1DataForm::AddHashTypes(UI::GUIComboBox *cbo, Crypto:
 	AddHash(cbo, Crypto::Hash::HashType::SHA512, hashType);
 }
 
-Bool SSWR::AVIRead::AVIRASN1DataForm::FileIsSign(Text::String *fileName)
+Bool SSWR::AVIRead::AVIRASN1DataForm::FileIsSign(NotNullPtr<Text::String> fileName)
 {
 	UInt8 fileCont[172];
 	UInt8 decCont[256];
@@ -320,7 +320,7 @@ void __stdcall SSWR::AVIRead::AVIRASN1DataForm::OnEncryptDecryptClicked(void *us
 	MemFree(outData);
 }
 
-void __stdcall SSWR::AVIRead::AVIRASN1DataForm::OnFileDrop(void *userObj, Text::String **files, UOSInt nFiles)
+void __stdcall SSWR::AVIRead::AVIRASN1DataForm::OnFileDrop(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles)
 {
 	SSWR::AVIRead::AVIRASN1DataForm *me = (SSWR::AVIRead::AVIRASN1DataForm*)userObj;
 	UI::GUITabPage *tp = me->tcMain->GetSelectedPage();

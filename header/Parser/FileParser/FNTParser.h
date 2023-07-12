@@ -19,7 +19,7 @@ namespace Parser
 			virtual IO::ParserType GetParserType();
 			virtual IO::ParsedObject *ParseFile(IO::StreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType);
 
-			static Media::FontRenderer *ParseFontBuff(Text::String *sourceName, const UInt8 *fontBuff, UOSInt buffSize);
+			static Media::FontRenderer *ParseFontBuff(NotNullPtr<Text::String> sourceName, const UInt8 *fontBuff, UOSInt buffSize);
 			static UOSInt GetFileDesc(const UInt8 *fileBuff, UOSInt fileSize, Text::StringBuilderUTF8 *sb); //return header size
 			static void GetFileDirDesc(const UInt8 *fileBuff, UOSInt fileSize, Text::StringBuilderUTF8 *sb);
 		};

@@ -8,7 +8,7 @@
 
 Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl);
 
-Core::ConsoleControl *ConsoleControl_self;
+NotNullPtr<Core::ConsoleControl> ConsoleControl_self;
 
 Int32 __stdcall ConsoleControl_ExitHdlr(UInt32 evtType)
 {
@@ -37,7 +37,7 @@ Int32 __stdcall ConsoleControl_ExitHdlr(UInt32 evtType)
 
 void __stdcall ConsoleControl_WaitForExit(NotNullPtr<Core::IProgControl> progCtrl)
 {
-	Core::ConsoleControl *ctrl = (Core::ConsoleControl *)progCtrl;
+	Core::ConsoleControl *ctrl = (Core::ConsoleControl *)progCtrl.Ptr();
 	while (!ctrl->exited)
 	{
 		ctrl->evt->Wait();
@@ -46,14 +46,14 @@ void __stdcall ConsoleControl_WaitForExit(NotNullPtr<Core::IProgControl> progCtr
 
 void __stdcall ConsoleControl_SignalExit(NotNullPtr<Core::IProgControl> progCtrl)
 {
-	Core::ConsoleControl *ctrl = (Core::ConsoleControl *)progCtrl;
+	Core::ConsoleControl *ctrl = (Core::ConsoleControl *)progCtrl.Ptr();
 	ctrl->exited = true;
 	ctrl->evt->Set();
 }
 
 UTF8Char **__stdcall ConsoleControl_GetCommandLines(NotNullPtr<Core::IProgControl> progCtrl, UOSInt *cmdCnt)
 {
-	Core::ConsoleControl *ctrl = (Core::ConsoleControl *)progCtrl;
+	Core::ConsoleControl *ctrl = (Core::ConsoleControl *)progCtrl.Ptr();
 	if (ctrl->argv == 0)
 	{
 		Int32 argc;
@@ -72,7 +72,7 @@ UTF8Char **__stdcall ConsoleControl_GetCommandLines(NotNullPtr<Core::IProgContro
 	return ctrl->argv;
 }
 
-void ConsoleControl_Create(Core::ConsoleControl *ctrl)
+void ConsoleControl_Create(NotNullPtr<Core::ConsoleControl> ctrl)
 {
 	ConsoleControl_self = ctrl;
 	ctrl->argc = 0;
@@ -89,7 +89,7 @@ void ConsoleControl_Create(Core::ConsoleControl *ctrl)
 	SetConsoleCtrlHandler((PHANDLER_ROUTINE)ConsoleControl_ExitHdlr, TRUE);
 }
 
-void ConsoleControl_Destroy(Core::ConsoleControl *ctrl)
+void ConsoleControl_Destroy(NotNullPtr<Core::ConsoleControl> ctrl)
 {
 	ctrl->ended = true;
 	ctrl->evt->Set();
@@ -121,9 +121,9 @@ Int32 main()
 	Int32 ret;
 	Core::ConsoleControl conCtrl;
 	Core::CoreStart();
-	ConsoleControl_Create(&conCtrl);
-	ret = MyMain(&conCtrl);
-	ConsoleControl_Destroy(&conCtrl);
+	ConsoleControl_Create(conCtrl);
+	ret = MyMain(conCtrl);
+	ConsoleControl_Destroy(conCtrl);
 	Core::CoreEnd();
 	return ret;
 }

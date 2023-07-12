@@ -12,13 +12,13 @@ namespace Text
 		class MultipartMIMEObj : public Text::IMIMEObj
 		{
 		private:
-			Text::String *contentType;
-			Text::String *boundary;
+			NotNullPtr<Text::String> contentType;
+			NotNullPtr<Text::String> boundary;
 			Text::String *defMsg;
 			Data::ArrayList<MIMEMessage*> parts;
 
 			void ParsePart(UInt8 *buff, UOSInt buffSize);
-			MultipartMIMEObj(Text::String *contentType, Text::String *defMsg, Text::String *boundary);
+			MultipartMIMEObj(NotNullPtr<Text::String> contentType, Text::String *defMsg, NotNullPtr<Text::String> boundary);
 			MultipartMIMEObj(Text::CString contentType, Text::CString defMsg, Text::CString boundary);
 		public:
 			MultipartMIMEObj(Text::CString contentType, Text::CString defMsg);

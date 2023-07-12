@@ -77,7 +77,7 @@ void __stdcall UI::ListBoxLogger::TimerTick(void *userObj)
 			i = 0;
 			while (i < cnt)
 			{
-				me->lb->AddItem(me->tmpLogArr[i], 0);
+				me->lb->AddItem(Text::String::OrEmpty(me->tmpLogArr[i]), 0);
 				me->tmpLogArr[i]->Release();
 				i++;
 			}
@@ -168,7 +168,7 @@ void UI::ListBoxLogger::LogAdded(const Data::Timestamp &logTime, Text::CString l
 	{
 		this->logArr[this->logIndex]->Release();
 	}
-	this->logArr[this->logIndex] = Text::String::New(sb.ToString(), sb.GetLength());
+	this->logArr[this->logIndex] = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 	this->logIndex = (this->logIndex + 1) % this->maxLog;
 	mutUsage.EndUse();
 }

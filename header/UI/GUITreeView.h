@@ -13,11 +13,11 @@ namespace UI
 			Data::ArrayList<TreeItem *> children;
 			void *hTreeItem;
 			void *itemObj;
-			Text::String *txt;
+			NotNullPtr<Text::String> txt;
 			TreeItem *parent;
 
 		public:
-			TreeItem(void *itemObj, Text::String *txt);
+			TreeItem(void *itemObj, NotNullPtr<Text::String> txt);
 			TreeItem(void *itemObj, Text::CString txt);
 			~TreeItem();
 
@@ -28,7 +28,7 @@ namespace UI
 			void SetHItem(void *hTreeItem);
 			void *GetHItem();
 			void SetText(Text::CString txt);
-			Text::String *GetText();
+			NotNullPtr<Text::String> GetText() const;
 			UOSInt GetChildCount();
 			TreeItem *GetChild(UOSInt index);
 		};
@@ -62,7 +62,7 @@ namespace UI
 		virtual OSInt EventEndLabelEdit(TreeItem *item, const UTF8Char *newLabel);
 		virtual void EventDragItem(TreeItem *dragItem, TreeItem *dropItem);
 
-		TreeItem *InsertItem(TreeItem *parent, TreeItem *insertAfter, Text::String *itemText, void *itemObj);
+		TreeItem *InsertItem(TreeItem *parent, TreeItem *insertAfter, NotNullPtr<Text::String> itemText, void *itemObj);
 		TreeItem *InsertItem(TreeItem *parent, TreeItem *insertAfter, Text::CString itemText, void *itemObj);
 		void *RemoveItem(TreeItem *item);
 		void ClearItems();

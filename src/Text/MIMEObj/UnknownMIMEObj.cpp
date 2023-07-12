@@ -10,7 +10,7 @@ Text::MIMEObj::UnknownMIMEObj::UnknownMIMEObj(UInt8 *dataBuff, UOSInt buffSize, 
 	this->dataBuff = MemAlloc(UInt8, buffSize);
 	this->contType = Text::String::New(contentType);
 	MemCopyNO(this->dataBuff, dataBuff, buffSize);
-	const UTF8Char *tmpPtr = Text::StrCopyNewC(contentType.v, this->contType->leng);
+	const UTF8Char *tmpPtr = Text::StrCopyNewC(contentType.v, this->contType->leng).Ptr();
 	UOSInt i;
 	UOSInt j;
 	Text::PString sarr[2];

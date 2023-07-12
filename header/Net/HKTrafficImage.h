@@ -10,16 +10,16 @@ namespace Net
 	public:
 		typedef struct
 		{
-			Text::String *key;
-			Text::String *addr;
+			NotNullPtr<Text::String> key;
+			NotNullPtr<Text::String> addr;
 			Double lat;
 			Double lon;
-			Text::String *url;
+			NotNullPtr<Text::String> url;
 		} ImageInfo;
 
 		typedef struct
 		{
-			Text::String *groupName;
+			NotNullPtr<Text::String> groupName;
 			Data::ArrayList<ImageInfo*> *imageList;
 		} GroupInfo;
 

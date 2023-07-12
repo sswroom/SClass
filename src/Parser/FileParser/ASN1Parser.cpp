@@ -38,7 +38,7 @@ IO::ParsedObject *Parser::FileParser::ASN1Parser::ParseFileHdr(IO::StreamData *f
 	Net::ASN1Data *asn1 = 0;
 //	UInt8 *buff;
 	UInt64 fsize = fd->GetDataSize();
-	Text::String *fname = fd->GetFullFileName();
+	NotNullPtr<Text::String> fname = fd->GetFullFileName();
 	if (fname->EndsWithICase(UTF8STRC(".JKS")) && fsize <= 65536)
 	{
 /*		buff = MemAlloc(UInt8, (UOSInt)fsize);

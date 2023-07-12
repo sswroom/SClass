@@ -47,11 +47,12 @@ UInt32 __stdcall Media::Batch::BatchLoader::ThreadProc(void *userObj)
 			if (!found)
 				break;
 
-			if (fileName)
+			NotNullPtr<Text::String> fileNameStr;
+			if (fileNameStr.Set(fileName))
 			{
 				Sync::MutexUsage mutUsage(&state->me->ioMut);
 				{
-					IO::StmData::FileData fd(fileName, false);
+					IO::StmData::FileData fd(fileNameStr, false);
 					pobj = state->me->parsers->ParseFile(&fd, &pt);
 				}
 				if (pobj)
@@ -224,7 +225,7 @@ Media::Batch::BatchLoader::~BatchLoader()
 void Media::Batch::BatchLoader::AddFileName(Text::CString fileName)
 {
 	Sync::MutexUsage mutUsage(&this->reqMut);
-	this->fileNames.Put(Text::String::New(fileName));
+	this->fileNames.Put(Text::String::New(fileName).Ptr());
 	this->threadStates[this->nextThread].evt->Set();
 	this->nextThread = (this->nextThread + 1) % this->threadCnt;
 	mutUsage.EndUse();
@@ -235,7 +236,7 @@ void Media::Batch::BatchLoader::AddImageData(IO::StreamData *data, const UTF8Cha
 	DataInfo *info;
 	info = MemAlloc(DataInfo, 1);
 	info->data = data->GetPartialData(0, data->GetDataSize());
-	info->fileId = Text::StrCopyNew(fileId);
+	info->fileId = Text::StrCopyNew(fileId).Ptr();
 	Sync::MutexUsage mutUsage(&this->reqMut);
 	this->datas.Put(info);
 	this->threadStates[this->nextThread].evt->Set();

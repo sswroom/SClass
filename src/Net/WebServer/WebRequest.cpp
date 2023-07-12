@@ -18,7 +18,7 @@ void Net::WebServer::WebRequest::ParseQuery()
 	UTF8Char *sbuff;
 	UTF8Char *sbuff2;
 	UTF8Char *sptr;
-	Text::String *url = this->GetRequestURI();
+	NotNullPtr<Text::String> url = this->GetRequestURI();
 	UOSInt urlLen = url->leng;
 	Text::PString strs1[2];
 	Text::PString strs2[2];
@@ -55,11 +55,11 @@ void Net::WebServer::WebRequest::ParseQuery()
 				sb.Append(s);
 				sb.AppendChar(PARAM_SEPERATOR, 1);
 				sb.AppendC(sbuff2, (UOSInt)(sptr - sbuff2));
-				s = this->queryMap->PutC(strs2[0].ToCString(), Text::String::New(sb.ToString(), sb.GetLength()));
+				s = this->queryMap->PutC(strs2[0].ToCString(), Text::String::New(sb.ToString(), sb.GetLength()).Ptr());
 			}
 			else
 			{
-				s = this->queryMap->PutC(strs2[0].ToCString(), Text::String::New(sbuff2, (UOSInt)(sptr - sbuff2)));
+				s = this->queryMap->PutC(strs2[0].ToCString(), Text::String::New(sbuff2, (UOSInt)(sptr - sbuff2)).Ptr());
 			}
 			if (s)
 			{
@@ -76,7 +76,7 @@ void Net::WebServer::WebRequest::ParseFormStr(Data::FastStringMap<Text::String *
 	UInt8 *tmpBuff;
 	UInt8 b;
 	UInt8 b2;
-	Text::String *tmpStr;
+	NotNullPtr<Text::String> tmpStr;
 	UTF8Char *tmpName;
 	UOSInt tmpNameLen;
 	UOSInt nameLen = 0;
@@ -106,12 +106,12 @@ void Net::WebServer::WebRequest::ParseFormStr(Data::FastStringMap<Text::String *
 					charCnt += tmpNameLen;
 					tmpStr = Text::String::New(charCnt);
 					Text::StrConcatC(Text::StrConcatC(s->ConcatTo(tmpStr->v), UTF8STRC(",")), tmpName, tmpNameLen);
-					formMap->PutC({tmpBuff, nameLen}, tmpStr);
+					formMap->PutC({tmpBuff, nameLen}, tmpStr.Ptr());
 					s->Release();
 				}
 				else
 				{
-					formMap->PutC({tmpBuff, nameLen}, Text::String::New(tmpName, (UOSInt)(&tmpBuff[buffPos] - tmpName)));
+					formMap->PutC({tmpBuff, nameLen}, Text::String::New(tmpName, (UOSInt)(&tmpBuff[buffPos] - tmpName)).Ptr());
 				}
 				tmpName = 0;
 				buffPos = 0;
@@ -174,12 +174,12 @@ void Net::WebServer::WebRequest::ParseFormStr(Data::FastStringMap<Text::String *
 			charCnt += tmpNameLen;
 			tmpStr = Text::String::New(charCnt);
 			Text::StrConcatC(Text::StrConcatC(s->ConcatTo(tmpStr->v), UTF8STRC(",")), tmpName, tmpNameLen);
-			formMap->PutC({tmpBuff, nameLen}, tmpStr);
+			formMap->PutC({tmpBuff, nameLen}, tmpStr.Ptr());
 			s->Release();
 		}
 		else
 		{
-			formMap->PutC({tmpBuff, nameLen}, Text::String::New(tmpName, (UOSInt)(&tmpBuff[buffPos] - tmpName)));
+			formMap->PutC({tmpBuff, nameLen}, Text::String::New(tmpName, (UOSInt)(&tmpBuff[buffPos] - tmpName)).Ptr());
 		}
 		tmpName = 0;
 		buffPos = 0;
@@ -264,11 +264,11 @@ void Net::WebServer::WebRequest::ParseFormPart(UInt8 *data, UOSInt dataSize, UOS
 			if (s)
 			{
 				s->Release();
-				formMap->PutC(formName, Text::String::New(&data[i], dataSize - i));
+				formMap->PutC(formName, Text::String::New(&data[i], dataSize - i).Ptr());
 			}
 			else
 			{
-				formMap->PutC(formName, Text::String::New(&data[i], dataSize - i));
+				formMap->PutC(formName, Text::String::New(&data[i], dataSize - i).Ptr());
 			}
 		}
 	}
@@ -348,7 +348,7 @@ Net::WebServer::WebRequest::~WebRequest()
 		{
 			fileInfo = this->formFileList->GetItem(i);
 			fileInfo->formName->Release();
-			SDEL_STRING(fileInfo->fileName);
+			fileInfo->fileName->Release();
 			MemFree(fileInfo);
 		}
 		DEL_CLASS(this->formFileList);
@@ -364,7 +364,7 @@ Net::WebServer::WebRequest::~WebRequest()
 
 void Net::WebServer::WebRequest::AddHeader(Text::CString name, Text::CString value)
 {
-	Text::String *s = this->headers.PutC(name, Text::String::New(value));
+	Text::String *s = this->headers.PutC(name, Text::String::New(value).Ptr());
 	SDEL_STRING(s);
 }
 
@@ -423,12 +423,12 @@ Text::String *Net::WebServer::WebRequest::GetHeaderValue(UOSInt index)
 	return this->headers.GetItem(index);
 }
 
-Text::String *Net::WebServer::WebRequest::GetRequestURI()
+NotNullPtr<Text::String> Net::WebServer::WebRequest::GetRequestURI() const
 {
 	return this->requestURI;
 }
 
-Net::WebServer::IWebRequest::RequestProtocol Net::WebServer::WebRequest::GetProtocol()
+Net::WebServer::IWebRequest::RequestProtocol Net::WebServer::WebRequest::GetProtocol() const
 {
 	return this->reqProto;
 }
@@ -555,7 +555,7 @@ const UInt8 *Net::WebServer::WebRequest::GetHTTPFormFile(Text::CString formName,
 				{
 					*fileSize = info->leng;
 				}
-				if (fileName && info->fileName)
+				if (fileName)
 				{
 					if (fileNameEnd)
 					{

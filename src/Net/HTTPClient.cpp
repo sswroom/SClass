@@ -21,7 +21,7 @@ Net::HTTPClient::HTTPClient(Net::SocketFactory *sockf, Bool kaConn) : IO::Stream
 	this->canWrite = false;
 	this->contLeng = 0;
 	this->respStatus = Net::WebStatus::SC_UNKNOWN;
-	this->url = 0;
+	this->url = Text::String::NewEmpty();
 	this->hasForm = false;
 	this->formSb = 0;
 	this->hdrLen = 0;
@@ -35,7 +35,7 @@ Net::HTTPClient::~HTTPClient()
 {
 	LIST_FREE_STRING(&this->headers);
 	SDEL_CLASS(this->formSb);
-	SDEL_STRING(this->url);
+	this->url->Release();
 }
 
 Bool Net::HTTPClient::IsDown() const
@@ -225,7 +225,7 @@ Text::CString Net::HTTPClient::GetContentType()
 
 Text::String *Net::HTTPClient::GetURL()
 {
-	return this->url;
+	return (this->url->leng > 0)?this->url.Ptr():0;
 }
 
 Net::WebStatus::StatusCode Net::HTTPClient::GetRespStatus()

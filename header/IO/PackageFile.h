@@ -36,7 +36,7 @@ namespace IO
 			UInt8 checkBytes[32];
 		};
 
-		Text::String *name;
+		NotNullPtr<Text::String> name;
 		IO::StreamData *fd;
 		IO::ParsedObject *pobj;
 		PackItemType itemType;
@@ -77,7 +77,7 @@ namespace IO
 
 		PackageFile(const PackageFile *pkg);
 	public:
-		PackageFile(Text::String *fileName);
+		PackageFile(NotNullPtr<Text::String> fileName);
 		PackageFile(Text::CString fileName);
 		virtual ~PackageFile();
 

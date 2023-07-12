@@ -24,7 +24,7 @@
 
 typedef struct
 {
-	Text::String *fileName;
+	NotNullPtr<Text::String> fileName;
 	UInt64 fileSize;
 	Data::Timestamp modTime;
 	IO::Path::PathType pt;
@@ -188,15 +188,15 @@ void Net::WebServer::HTTPDirectoryHandler::ResponsePackageFile(Net::WebServer::I
 	AddCacheHeader(resp);
 
 	UTF8Char sbuff[512];
-	Text::String *s;
+	NotNullPtr<Text::String> s;
 
 	sbOut.AppendNE(UTF8STRC("<html><head><title>Index of "));
 	Text::TextBinEnc::URIEncoding::URIDecode(sbuff, sptr);
 	s = Text::XML::ToNewHTMLElementText(sbuff);
-	sbOut.AppendNE(s);
+	sbOut.Append(s);
 	sbOut.AppendNE(UTF8STRC("</title></head>\r\n<body>\r\n"));
 	sbOut.AppendNE(UTF8STRC("<h2>Index Of "));
-	sbOut.AppendNE(s);
+	sbOut.Append(s);
 	s->Release();
 	sbOut.AppendNE(UTF8STRC("</h2>\r\n"));
 	sbOut.AppendNE(UTF8STRC("<a href=\"..\">Up one level</a><br/>\r\n"));
@@ -456,7 +456,7 @@ void Net::WebServer::HTTPDirectoryHandler::StatSave(Net::WebServer::HTTPDirector
 	}
 }
 
-Net::WebServer::HTTPDirectoryHandler::HTTPDirectoryHandler(Text::String *rootDir, Bool allowBrowsing, UInt64 fileCacheSize, Bool allowUpload)
+Net::WebServer::HTTPDirectoryHandler::HTTPDirectoryHandler(NotNullPtr<Text::String> rootDir, Bool allowBrowsing, UInt64 fileCacheSize, Bool allowUpload)
 {
 	this->rootDir = rootDir->Clone();
 	this->allowBrowsing = allowBrowsing;
@@ -927,17 +927,17 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(Net::WebServer::IWebReq
 				AddCacheHeader(resp);
 
 				Bool isRoot = false;
-				Text::String *s;
-				Text::String *s2;
+				NotNullPtr<Text::String> s;
+				NotNullPtr<Text::String> s2;
 				sbOut.AppendNE(UTF8STRC("<html><head><title>Index of "));
 				Text::TextBinEnc::URIEncoding::URIDecode(sbuff, sb2.ToString());
 				s = Text::XML::ToNewHTMLElementText(sbuff);
-				sbOut.AppendNE(s);
+				sbOut.Append(s);
 				sbOut.AppendNE(UTF8STRC("</title><script type=\"application/javascript\">\r\n"
 							    		"async function submitFile() {\r\n"
 										"\tvar url = "));
 				s2 = Text::JSText::ToNewJSTextDQuote(req->GetRequestURI()->v);
-				sbOut.AppendNE(s2);
+				sbOut.Append(s2);
 				s2->Release();
 				sbOut.AppendNE(UTF8STRC(";\r\n"
 							    		"\tif (url.indexOf(\"?\") >= 0)\r\n"
@@ -960,7 +960,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(Net::WebServer::IWebReq
 							    		"}\r\n"
 										"</script></head>\r\n<body>\r\n"
 							   			"<h2>Index Of "));
-				sbOut.AppendNE(s);
+				sbOut.Append(s);
 				s->Release();
 				sbOut.AppendNE(UTF8STRC("</h2>\r\n"));
 				if (!sb2.Equals(UTF8STRC("/")))
@@ -975,7 +975,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(Net::WebServer::IWebReq
 				{
 					s = Text::XML::ToNewAttrText(sb2.ToString());
 					sbOut.AppendNE(UTF8STRC("<form name=\"upload\" method=\"POST\" action="));
-					sbOut.AppendNE(s);
+					sbOut.Append(s);
 					sbOut.AppendNE(UTF8STRC(" enctype=\"multipart/form-data\">"));
 					s->Release();
 //					sbOut.AppendNE2(UTF8STRC("Upload: <input type=\"file\" id=\"uploadfile\" name=\"uploadfile\" multiple/><br/><input type=\"submit\"/>"),
@@ -984,24 +984,19 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(Net::WebServer::IWebReq
 								   UTF8STRC("</form>"));
 				}
 
-				s = req->GetQueryValue(CSTR("sort"));
-				if (s)
-				{
-					sort = s->ToInt32();
-				}
-
+				req->GetQueryValueI32(CSTR("sort"), &sort);
 				Text::StringBuilderUTF8 sb3;
 				sb3.AppendNE(sb2.ToString(), sb2.GetLength());
 				sb3.AppendC(UTF8STRC("?sort=1"));
 				s = Text::XML::ToNewAttrText(sb3.ToString());
 				sbOut.AppendNE(UTF8STRC("<table><tr><th><a href="));
-				sbOut.AppendNE(s);
+				sbOut.Append(s);
 				s->Release();
 				sbOut.AppendNE(UTF8STRC(">Name</a></th><th>MIME</th><th><a href="));
 				sb3.ClearStr();
 				sb3.AppendC2(sb2.ToString(), sb2.GetLength(), UTF8STRC("?sort=2"));
 				s = Text::XML::ToNewAttrText(sb3.ToString());
-				sbOut.AppendNE(s);
+				sbOut.Append(s);
 				s->Release();
 				sbOut.AppendNE(UTF8STRC(">File Size</a></th>"));
 				if (this->statMap)
@@ -1010,7 +1005,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(Net::WebServer::IWebReq
 					sb3.ClearStr();
 					sb3.AppendC2(sb2.ToString(), sb2.GetLength(), UTF8STRC("?sort=3"));
 					s = Text::XML::ToNewAttrText(sb3.ToString());
-					sbOut.AppendNE(s);
+					sbOut.Append(s);
 					s->Release();
 					sbOut.AppendNE(UTF8STRC(">Download Count</a></th>"));
 				}
@@ -1073,7 +1068,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(Net::WebServer::IWebReq
 							sb2.ClearStr();
 							sb2.AppendC2(sb.ToString(), sb.GetLength(), UTF8STRC(".counts"));
 							stat->statFileName = Text::String::New(sb2.ToString(), sb2.GetLength());
-							this->statMap->Put(stat->reqPath, stat);
+							this->statMap->PutNN(stat->reqPath, stat);
 							this->StatLoad(stat);
 						}
 					}
@@ -1324,7 +1319,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(Net::WebServer::IWebReq
 				i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr3 - sbuff), IO::Path::PATH_SEPERATOR);
 				sptr3 = Text::StrConcatC(&sbuff[i + 1], UTF8STRC(".counts"));
 				stat->statFileName = Text::String::New(sbuff, (UOSInt)(sptr3 - sbuff));
-				this->statMap->Put(stat->reqPath, stat);
+				this->statMap->PutNN(stat->reqPath, stat);
 				this->StatLoad(stat);
 			}
 			stat->cntMap->PutC({sptr2, sb2.GetLength() - i - 1}, stat->cntMap->GetC({sptr2, sb2.GetLength() - i - 1}) + 1);
@@ -1650,7 +1645,7 @@ void Net::WebServer::HTTPDirectoryHandler::ExpandPackageFiles(Parser::ParserList
 						sptr2 = &sptr[i];
 					}
 					package->fileName = Text::String::NewP(sptr, sptr2);
-					package = this->packageMap->Put(package->fileName, package);
+					package = this->packageMap->PutNN(package->fileName, package);
 					if (package)
 					{
 						package->fileName->Release();

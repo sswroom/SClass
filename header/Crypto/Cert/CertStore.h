@@ -13,10 +13,10 @@ namespace Crypto
 		{
 		private:
 			Data::FastStringMap<Crypto::Cert::X509Cert*> certMap;
-			Text::String *storeName;
+			NotNullPtr<Text::String> storeName;
 		public:
 			CertStore(Text::CString name);
-			CertStore(Text::String *name);
+			CertStore(NotNullPtr<Text::String> name);
 			virtual ~CertStore();
 
 			CertStore *Clone();
@@ -24,7 +24,7 @@ namespace Crypto
 			Bool LoadJavaCACerts(Text::CString jksPath);
 			void AddCert(Crypto::Cert::X509Cert *cert);
 			void FromPackageFile(IO::PackageFile *pkg);
-			Text::String *GetStoreName();
+			NotNullPtr<Text::String> GetStoreName() const;
 
 			Crypto::Cert::X509Cert *GetCertByCN(Text::CString commonName);
 			virtual UOSInt GetCount() const;

@@ -136,7 +136,7 @@ void __stdcall SSWR::AVIRead::AVIRMySQLClientForm::OnTimerTick(void *userObj)
 	UTF8Char *sptr;
 	UInt8 buff[48];
 	UOSInt i;
-	Text::String *s;
+	NotNullPtr<Text::String> s;
 	if (me->cli)
 	{
 		if (!me->cliConnected && me->cli->ServerInfoRecv())

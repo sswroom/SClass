@@ -67,7 +67,7 @@ void DB::ColDef::AppendDefVal(DB::SQLBuilder *sql, Text::CString defVal, UOSInt 
 
 DB::ColDef::ColDef(Text::CString colName)
 {
-	this->colName = Text::String::NewOrNull(colName);
+	this->colName = Text::String::New(colName);
 	this->colType = DB::DBUtil::CT_Unknown;
 	this->nativeType = 0;
 	this->colSize = 0;
@@ -80,9 +80,9 @@ DB::ColDef::ColDef(Text::CString colName)
 	this->attr = 0;
 }
 
-DB::ColDef::ColDef(Text::String *colName)
+DB::ColDef::ColDef(NotNullPtr<Text::String> colName)
 {
-	this->colName = SCOPY_STRING(colName);
+	this->colName = colName->Clone();
 	this->colType = DB::DBUtil::CT_Unknown;
 	this->nativeType = 0;
 	this->colSize = 0;
@@ -97,13 +97,13 @@ DB::ColDef::ColDef(Text::String *colName)
 
 DB::ColDef::~ColDef()
 {
-	SDEL_STRING(this->colName);
+	this->colName->Release();
 	SDEL_STRING(this->nativeType);
 	SDEL_STRING(this->defVal);
 	SDEL_STRING(this->attr);
 }
 
-Text::String *DB::ColDef::GetColName() const
+NotNullPtr<Text::String> DB::ColDef::GetColName() const
 {
 	return this->colName;
 }
@@ -191,24 +191,23 @@ Bool DB::ColDef::GetDefVal(DB::SQLBuilder *sql) const
 }
 
 
-void DB::ColDef::SetColName(const UTF8Char *colName)
+void DB::ColDef::SetColName(NotNullPtr<const UTF8Char> colName)
 {
-	SDEL_STRING(this->colName);
-	if (colName) this->colName = Text::String::NewOrNullSlow(colName);
+	this->colName->Release();
+	this->colName = Text::String::NewNotNullSlow(colName.Ptr());
 }
 
 void DB::ColDef::SetColName(Text::CString colName)
 {
-	SDEL_STRING(this->colName);
-	if (colName.v) this->colName = Text::String::New(colName.v, colName.leng);
+	this->colName->Release();
+	this->colName = Text::String::New(colName);
 }
 
-void DB::ColDef::SetColName(Text::String *colName)
+void DB::ColDef::SetColName(NotNullPtr<Text::String> colName)
 {
-	SDEL_STRING(this->colName);
-	if (colName) this->colName = colName->Clone();
+	this->colName->Release();
+	this->colName = colName->Clone();
 }
-
 void DB::ColDef::SetColType(DB::DBUtil::ColType colType)
 {
 	this->colType = colType;
@@ -269,7 +268,7 @@ void DB::ColDef::SetDefVal(Text::CString defVal)
 void DB::ColDef::SetDefVal(Text::String *defVal)
 {
 	SDEL_STRING(this->defVal);
-	if (defVal) this->defVal = defVal->Clone();
+	if (defVal) this->defVal = defVal->Clone().Ptr();
 }
 
 void DB::ColDef::SetAttr(Text::CString attr)
@@ -281,7 +280,7 @@ void DB::ColDef::SetAttr(Text::CString attr)
 void DB::ColDef::SetAttr(Text::String *attr)
 {
 	SDEL_STRING(this->attr);
-	if (attr) this->attr = attr->Clone();
+	if (attr) this->attr = attr->Clone().Ptr();
 }
 
 void DB::ColDef::Set(const ColDef *colDef)

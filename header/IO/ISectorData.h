@@ -8,7 +8,7 @@ namespace IO
 	class ISectorData : public IO::ParsedObject
 	{
 	public:
-		ISectorData(Text::String *name) : IO::ParsedObject(name){};
+		ISectorData(NotNullPtr<Text::String> name) : IO::ParsedObject(name){};
 		virtual ~ISectorData(){};
 
 		virtual UInt64 GetSectorCount() const = 0;

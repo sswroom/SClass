@@ -34,7 +34,7 @@ Data::FastMap<Int32, const UTF8Char **> *Map::ESRI::ESRIMDBLayer::ReadNameArr()
 				}
 				else if (r->GetStr(i, sbuff, sizeof(sbuff)))
 				{
-					names[i] = Text::StrCopyNew(sbuff);
+					names[i] = Text::StrCopyNew(sbuff).Ptr();
 				}
 				else
 				{
@@ -186,7 +186,7 @@ void Map::ESRI::ESRIMDBLayer::Init(DB::SharedDBConn *conn, UInt32 srid, Text::CS
 	this->csys = Math::CoordinateSystemManager::SRCreateCSys(srid);
 }
 
-Map::ESRI::ESRIMDBLayer::ESRIMDBLayer(DB::SharedDBConn *conn, UInt32 srid, Text::String *sourceName, Text::CString tableName) : Map::MapDrawLayer(sourceName->ToCString(), 0, tableName)
+Map::ESRI::ESRIMDBLayer::ESRIMDBLayer(DB::SharedDBConn *conn, UInt32 srid, NotNullPtr<Text::String> sourceName, Text::CString tableName) : Map::MapDrawLayer(sourceName->ToCString(), 0, tableName)
 {
 	SDEL_STRING(this->layerName);
 	this->Init(conn, srid, tableName);
@@ -366,7 +366,7 @@ void Map::ESRI::ESRIMDBLayer::RemoveUpdatedHandler(UpdatedHandler hdlr, void *ob
 {
 }
 
-UOSInt Map::ESRI::ESRIMDBLayer::QueryTableNames(Text::CString schemaName, Data::ArrayList<Text::String*> *names)
+UOSInt Map::ESRI::ESRIMDBLayer::QueryTableNames(Text::CString schemaName, Data::ArrayListNN<Text::String> *names)
 {
 	if (schemaName.leng != 0)
 		return 0;
@@ -374,7 +374,7 @@ UOSInt Map::ESRI::ESRIMDBLayer::QueryTableNames(Text::CString schemaName, Data::
 	return 1;
 }
 
-DB::DBReader *Map::ESRI::ESRIMDBLayer::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+DB::DBReader *Map::ESRI::ESRIMDBLayer::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListNN<Text::String> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	Sync::MutexUsage *mutUsage;
 	NEW_CLASS(mutUsage, Sync::MutexUsage());

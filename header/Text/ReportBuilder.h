@@ -51,9 +51,9 @@ namespace Text
 
 		struct HeaderInfo
 		{
-			Text::String *name;
+			NotNullPtr<Text::String> name;
 			UOSInt nameCellCnt;
-			Text::String *value;
+			NotNullPtr<Text::String> value;
 			UOSInt valueCellCnt;
 			Bool valueUnderline;
 			Bool isRight;
@@ -65,9 +65,9 @@ namespace Text
 			HAlignment hAlign;
 		};
 	private:
-		Text::String *name;
+		NotNullPtr<Text::String> name;
 		Text::HAlignment nameHAlign;
-		Text::String *fontName;
+		NotNullPtr<Text::String> fontName;
 		UOSInt colCount;
 		Data::ArrayList<HeaderInfo*> preheaders;
 		Data::ArrayList<HeaderInfo*> headers;

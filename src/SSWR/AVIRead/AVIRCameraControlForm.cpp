@@ -213,8 +213,8 @@ SSWR::AVIRead::AVIRCameraControlForm::AVIRCameraControlForm(UI::GUIClientControl
 	this->lvFiles->HandleDblClk(OnFilesDblClick, this);
 	this->lvFiles->HandleSelChg(OnFilesSelChg, this);
 
-	Data::ArrayList<Text::String *> nameList;
-	Data::ArrayList<Text::String *> valueList;
+	Data::ArrayListNN<Text::String> nameList;
+	Data::ArrayListNN<Text::String> valueList;
 	UOSInt i;
 	UOSInt j;
 	this->camera->GetInfoList(&nameList, &valueList);
@@ -222,8 +222,8 @@ SSWR::AVIRead::AVIRCameraControlForm::AVIRCameraControlForm(UI::GUIClientControl
 	j = nameList.GetCount();
 	while (i < j)
 	{
-		this->lvInfo->AddItem(nameList.GetItem(i), 0);
-		this->lvInfo->SetSubItem(i, 1, valueList.GetItem(i));
+		this->lvInfo->AddItem(Text::String::OrEmpty(nameList.GetItem(i)), 0);
+		this->lvInfo->SetSubItem(i, 1, Text::String::OrEmpty(valueList.GetItem(i)));
 		i++;
 	}
 	this->camera->FreeInfoList(&nameList, &valueList);

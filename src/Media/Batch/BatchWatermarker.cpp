@@ -22,7 +22,7 @@ void Media::Batch::BatchWatermarker::SetWatermark(Text::CString watermark)
 	SDEL_STRING(this->watermark);
 	if (watermark.leng > 0)
 	{
-		this->watermark = Text::String::New(watermark);
+		this->watermark = Text::String::New(watermark).Ptr();
 	}
 }
 
@@ -40,6 +40,9 @@ void Media::Batch::BatchWatermarker::ImageOutput(Media::ImageList *imgList, cons
 		this->hdlr->ImageOutput(imgList, fileId, subId);
 		return;
 	}
+	NotNullPtr<Text::String> watermark;
+	if (!watermark.Set(this->watermark))
+		return;
 	UOSInt i;
 	UOSInt j;
 	Media::StaticImage *simg;
@@ -77,7 +80,7 @@ void Media::Batch::BatchWatermarker::ImageOutput(Media::ImageList *imgList, cons
 				iWidth = (UInt32)Double2Int32(sz.x);
 				iHeight = (UInt32)Double2Int32(sz.y);
 				gimg2 = this->deng->CreateImage32(Math::Size2D<UOSInt>(iWidth, iHeight), Media::AT_NO_ALPHA);
-				gimg2->DrawString(Math::Coord2DDbl(0, 0), this->watermark, f, b);
+				gimg2->DrawString(Math::Coord2DDbl(0, 0), watermark, f, b);
 				gimg2->SetAlphaType(Media::AT_ALPHA);
 				Bool revOrder;
 				UInt8 *bmpBits = gimg2->GetImgBits(&revOrder);

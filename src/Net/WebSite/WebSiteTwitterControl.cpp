@@ -22,7 +22,7 @@ Net::WebSite::WebSiteTwitterControl::~WebSiteTwitterControl()
 	SDEL_STRING(this->userAgent);
 }
 
-UOSInt Net::WebSite::WebSiteTwitterControl::GetChannelItems(Text::String *channelId, UOSInt pageNo, Data::ArrayList<Net::WebSite::WebSiteTwitterControl::ItemData*> *itemList, Net::WebSite::WebSiteTwitterControl::ChannelInfo *chInfo)
+UOSInt Net::WebSite::WebSiteTwitterControl::GetChannelItems(NotNullPtr<Text::String> channelId, UOSInt pageNo, Data::ArrayList<Net::WebSite::WebSiteTwitterControl::ItemData*> *itemList, Net::WebSite::WebSiteTwitterControl::ChannelInfo *chInfo)
 {
 	Text::StringBuilderUTF8 sb;
 	UOSInt retCnt = 0;
@@ -172,7 +172,7 @@ UOSInt Net::WebSite::WebSiteTwitterControl::GetChannelItems(Text::String *channe
 							}
 						}
 						SDEL_STRING(message);
-						message = Text::String::New(sb.ToString(), sb.GetLength());
+						message = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 					}
 				}
 			}
@@ -195,7 +195,7 @@ UOSInt Net::WebSite::WebSiteTwitterControl::GetChannelItems(Text::String *channe
 							{
 								if (imgURL == 0)
 								{
-									imgURL = attr->value->Clone();
+									imgURL = attr->value->Clone().Ptr();
 								}
 								else
 								{
@@ -204,7 +204,7 @@ UOSInt Net::WebSite::WebSiteTwitterControl::GetChannelItems(Text::String *channe
 									sb.AppendUTF8Char(' ');
 									imgURL->Release();
 									sb.Append(attr->value);
-									imgURL = Text::String::New(sb.ToString(), sb.GetLength());
+									imgURL = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 								}
 							}
 							i++;
@@ -245,7 +245,7 @@ UOSInt Net::WebSite::WebSiteTwitterControl::GetChannelItems(Text::String *channe
 							if (chInfo)
 							{
 								SDEL_STRING(chInfo->name);
-								chInfo->name = Text::String::New(sb.ToString(), sb.GetLength());
+								chInfo->name = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 							}
 						}
 						else if (reader->GetNodeText()->Equals(UTF8STRC("p")))
@@ -263,7 +263,7 @@ UOSInt Net::WebSite::WebSiteTwitterControl::GetChannelItems(Text::String *channe
 									if (chInfo)
 									{
 										SDEL_STRING(chInfo->bio);
-										chInfo->bio = Text::String::New(sb.ToString(), sb.GetLength());
+										chInfo->bio = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 									}
 									break;
 								}

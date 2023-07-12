@@ -22,7 +22,7 @@ namespace IO
 			BTDevice(void *internalData, void *hRadio, void *devInfo);
 			~BTDevice();
 
-			Text::String *GetName();
+			NotNullPtr<Text::String> GetName() const;
 			UInt8 *GetAddress();
 			UInt32 GetDevClass();
 			Bool IsConnected();
@@ -42,7 +42,7 @@ namespace IO
 		void *internalData;
 		void *hand;
 		UInt8 addr[6];
-		Text::String *name;
+		NotNullPtr<Text::String> name;
 		UInt32 devClass;
 		UInt16 subversion;
 		UInt16 manufacturer;
@@ -60,7 +60,7 @@ namespace IO
 		OSInt CreateDevices(Data::ArrayList<BTDevice*> *devList, Bool toSearch);
 
 		UInt8 *GetAddress();
-		Text::String *GetName();
+		NotNullPtr<Text::String> GetName() const;
 		UInt32 GetDevClass();
 		UInt16 GetManufacturer();
 		UInt16 GetSubversion();

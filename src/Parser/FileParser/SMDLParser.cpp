@@ -228,7 +228,7 @@ IO::ParsedObject *Parser::FileParser::SMDLParser::ParseFileHdr(IO::StreamData *f
 	UInt8 buff[384];
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
-	Text::String *s;
+	NotNullPtr<Text::String> s;
 	UOSInt i;
 	UOSInt ui;
 	UOSInt currPos;
@@ -259,7 +259,7 @@ IO::ParsedObject *Parser::FileParser::SMDLParser::ParseFileHdr(IO::StreamData *f
 
 	Map::GPSTrack *track;
 	s = Text::String::NewP(sbuff, sptr);
-	NEW_CLASS(track, Map::GPSTrack(fd->GetFullName(), true, 0, s));
+	NEW_CLASS(track, Map::GPSTrack(fd->GetFullName(), true, 0, s.Ptr()));
 	track->SetTrackName(s->ToCString());
 	s->Release();
 	SMDLExtraParser *parser;

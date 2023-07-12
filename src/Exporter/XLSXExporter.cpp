@@ -65,8 +65,8 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, Text::CString f
 	Data::DateTime dt;
 	Data::DateTime dt2;
 	Data::DateTime *t;
-	Text::String *s;
-	Text::String *s2;
+	NotNullPtr<Text::String> s;
+	NotNullPtr<Text::String> s2;
 	const UTF8Char *csptr;
 	IO::ZIPBuilder *zip;
 	UOSInt i;
@@ -238,7 +238,7 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, Text::CString f
 							case Text::SpreadSheet::CellDataType::String:
 								{
 									UOSInt sIndex = stringMap.Get(cell->cellValue);
-									if (sIndex == 0 && stringMap.IndexOf(cell->cellValue) < 0)
+									if (sIndex == 0 && stringMap.IndexOf(Text::String::OrEmpty(cell->cellValue)) < 0)
 									{
 										sIndex = sharedStrings.Add(cell->cellValue);
 										stringMap.Put(cell->cellValue, sIndex);
@@ -749,14 +749,14 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, Text::CString f
 		while (i < j)
 		{
 			Text::SpreadSheet::CellStyle *style = workbook->GetStyle(i);
-			s = style->GetDataFormat();
-			if (s == 0)
+			Text::String *optS = style->GetDataFormat();
+			if (optS == 0)
 			{
 				csptr = (const UTF8Char*)"general";
 			}
 			else
 			{
-				csptr = s->v;
+				csptr = optS->v;
 			}
 			if (!numFmtMap.ContainsKey(csptr))
 			{
@@ -945,14 +945,14 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, Text::CString f
 			{
 				Text::SpreadSheet::CellStyle *style = workbook->GetStyle(i);
 				Text::SpreadSheet::WorkbookFont *font = style->GetFont();
-				s = style->GetDataFormat();
-				if (s == 0)
+				Text::String *optS = style->GetDataFormat();
+				if (optS == 0)
 				{
 					csptr = (const UTF8Char*)"general";
 				}
 				else
 				{
-					csptr = s->v;
+					csptr = optS->v;
 				}
 				sb.AppendC(UTF8STRC("<xf numFmtId=\""));
 				sb.AppendUOSInt(numFmtMap.Get(csptr) + 164);
@@ -1282,7 +1282,7 @@ void Exporter::XLSXExporter::AppendTitle(Text::StringBuilderUTF8 *sb, const UTF8
 	sb->AppendC(UTF8STRC("<a:r>"));
 	sb->AppendC(UTF8STRC("<a:rPr lang=\"en-HK\"/>"));
 	sb->AppendC(UTF8STRC("<a:t>"));
-	Text::String *s = Text::XML::ToNewXMLText(title);
+	NotNullPtr<Text::String> s = Text::XML::ToNewXMLText(title);
 	sb->Append(s);
 	s->Release();
 	sb->AppendC(UTF8STRC("</a:t>"));
@@ -1397,7 +1397,7 @@ void Exporter::XLSXExporter::AppendAxis(Text::StringBuilderUTF8 *sb, Text::Sprea
 
 void Exporter::XLSXExporter::AppendSeries(Text::StringBuilderUTF8 *sb, Text::SpreadSheet::OfficeChartSeries *series, UOSInt index)
 {
-	Text::String *s;
+	NotNullPtr<Text::String> s;
 	sb->AppendC(UTF8STRC("<c:ser>"));
 	sb->AppendC(UTF8STRC("<c:idx val=\""));
 	sb->AppendUOSInt(index);

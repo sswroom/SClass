@@ -81,7 +81,7 @@ void Net::EthernetAnalyzer::MDNSAdd(Net::DNSClient::RequestAnswer *ans)
 	this->mdnsList.Insert((UOSInt)i, ans);
 }
 
-Net::EthernetAnalyzer::EthernetAnalyzer(IO::Writer *errWriter, AnalyzeType aType, Text::String *name) : IO::ParsedObject(name), tcp4synList(128)
+Net::EthernetAnalyzer::EthernetAnalyzer(IO::Writer *errWriter, AnalyzeType aType, NotNullPtr<Text::String> name) : IO::ParsedObject(name), tcp4synList(128)
 {
 	this->atype = aType;
 	this->packetCnt = 0;
@@ -918,7 +918,7 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, UOSInt packetSize, U
 					{
 						ipLog->logList.RemoveAt(0)->Release();
 					}
-					ipLog->logList.Add(Text::String::New(sb.ToString(), sb.GetLength()));
+					ipLog->logList.Add(Text::String::New(sb.ToCString()));
 					mutUsage.EndUse();
 				}
 
@@ -1086,7 +1086,7 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, UOSInt packetSize, U
 							if (answers.GetCount() > 0)
 							{
 								DNSRequestResult *req;
-								Text::String *reqName;
+								NotNullPtr<Text::String> reqName;
 								Data::Timestamp currTime = Data::Timestamp::UtcNow();
 								reqName = answers.GetItem(0)->name;
 								answer = answers.GetItem(answers.GetCount() - 1);
@@ -1095,7 +1095,7 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, UOSInt packetSize, U
 									if (this->atype & AT_DNSREQ)
 									{
 										Sync::MutexUsage mutUsage(&this->dnsReqv4Mut);
-										req = this->dnsReqv4Map.Get(reqName);
+										req = this->dnsReqv4Map.GetNN(reqName);
 										if (req)
 										{
 											Sync::MutexUsage mutUsage(&req->mut);
@@ -1114,7 +1114,7 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, UOSInt packetSize, U
 											MemCopyNO(req->recBuff, &ipData[8], ipDataSize - 8);
 											req->reqTime = currTime;
 											req->ttl = Net::DNSClient::GetResponseTTL(req->recBuff, req->recSize);
-											this->dnsReqv4Map.Put(reqName, req);
+											this->dnsReqv4Map.PutNN(reqName, req);
 										}
 										mutUsage.EndUse();
 									}
@@ -1143,9 +1143,9 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, UOSInt packetSize, U
 												}
 												Sync::MutexUsage mutUsage(&dnsTarget->mut);
 												dnsTargetMutUsage.EndUse();
-												if (dnsTarget->addrList.SortedIndexOf(answer->name) < 0)
+												if (dnsTarget->addrList.SortedIndexOf(answer->name.Ptr()) < 0)
 												{
-													dnsTarget->addrList.SortedInsert(answer->name->Clone());
+													dnsTarget->addrList.SortedInsert(answer->name->Clone().Ptr());
 												}
 												j = i;
 												while (j-- > 0)
@@ -1153,9 +1153,9 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, UOSInt packetSize, U
 													answer = answers.GetItem(j);
 													if (answer->recType == 5)
 													{
-														if (dnsTarget->addrList.SortedIndexOf(answer->name) < 0)
+														if (dnsTarget->addrList.SortedIndexOf(answer->name.Ptr()) < 0)
 														{
-															dnsTarget->addrList.SortedInsert(answer->name->Clone());
+															dnsTarget->addrList.SortedInsert(answer->name->Clone().Ptr());
 														}
 													}
 												}
@@ -1169,7 +1169,7 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, UOSInt packetSize, U
 									if (this->atype & AT_DNSREQ)
 									{
 										Sync::MutexUsage mutUsage(&this->dnsReqv6Mut);
-										req = this->dnsReqv6Map.Get(reqName);
+										req = this->dnsReqv6Map.GetNN(reqName);
 										if (req)
 										{
 											Sync::MutexUsage mutUsage(&req->mut);
@@ -1188,7 +1188,7 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, UOSInt packetSize, U
 											MemCopyNO(req->recBuff, &ipData[8], ipDataSize - 8);
 											req->reqTime = currTime;
 											req->ttl = Net::DNSClient::GetResponseTTL(req->recBuff, req->recSize);
-											this->dnsReqv6Map.Put(reqName, req);
+											this->dnsReqv6Map.PutNN(reqName, req);
 										}
 										mutUsage.EndUse();
 									}
@@ -1198,7 +1198,7 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, UOSInt packetSize, U
 									if (this->atype & AT_DNSREQ)
 									{
 										Sync::MutexUsage mutUsage(&this->dnsReqOthMut);
-										req = this->dnsReqOthMap.Get(reqName);
+										req = this->dnsReqOthMap.GetNN(reqName);
 										if (req)
 										{
 											Sync::MutexUsage mutUsage(&req->mut);
@@ -1217,7 +1217,7 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, UOSInt packetSize, U
 											MemCopyNO(req->recBuff, &ipData[8], ipDataSize - 8);
 											req->reqTime = currTime;
 											req->ttl = Net::DNSClient::GetResponseTTL(req->recBuff, req->recSize);
-											this->dnsReqOthMap.Put(reqName, req);
+											this->dnsReqOthMap.PutNN(reqName, req);
 										}
 										mutUsage.EndUse();
 									}
@@ -1338,7 +1338,7 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, UOSInt packetSize, U
 								{
 									if (dhcp->hostName == 0)
 									{
-										dhcp->hostName = Text::String::New(len);
+										dhcp->hostName = Text::String::New(len).Ptr();
 										MemCopyNO(dhcp->hostName->v, currPtr, len);
 										dhcp->hostName->v[len] = 0;
 									}
@@ -1347,7 +1347,7 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, UOSInt packetSize, U
 								{
 									if (dhcp->vendorClass == 0)
 									{
-										dhcp->vendorClass = Text::String::New(len);;
+										dhcp->vendorClass = Text::String::New(len).Ptr();
 										MemCopyNO(dhcp->vendorClass->v, currPtr, len);
 										dhcp->vendorClass->v[len] = 0;
 									}
@@ -1512,7 +1512,7 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, UOSInt packetSize, U
 														MemCopyNO(sbuff, &ipData[65 + i * 18], 15);
 														sbuff[15] = 0;
 														sptr = Text::StrRTrim(sbuff);
-														mac->name = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
+														mac->name = Text::String::New(sbuff, (UOSInt)(sptr - sbuff)).Ptr();
 													}
 													mutUsage.EndUse();
 													break;
@@ -1587,7 +1587,7 @@ FF FF FF FF FF FF 00 11 32 0A AB 9C 08 00 45 00
 										MemCopyNO(sbuff, &ipData[23], 32);
 										NetBIOSDecName(sbuff, 32);
 										sptr = Text::StrRTrim(sbuff);
-										mac->name = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
+										mac->name = Text::String::New(sbuff, (UOSInt)(sptr - sbuff)).Ptr();
 /*										NetBIOSDecName(&ipData[57], 32);
 										console->Write(&ipData[23]);
 										console->WriteStrC(UTF8STRC(", ");
@@ -1718,7 +1718,7 @@ FF FF FF FF FF FF 00 11 32 0A AB 9C 08 00 45 00
 							if (mac->name == 0)
 							{
 								sptr = Text::StrConcatC(sbuff, &ipData[21], ipData[20]);
-								mac->name = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
+								mac->name = Text::String::New(sbuff, (UOSInt)(sptr - sbuff)).Ptr();
 							}
 							mutUsage.EndUse();
 						}

@@ -76,12 +76,12 @@ Bool Map::ESRI::FileGDBTable::IsError()
 	return this->tableInfo == 0;
 }
 
-Text::String *Map::ESRI::FileGDBTable::GetName()
+NotNullPtr<Text::String> Map::ESRI::FileGDBTable::GetName() const
 {
 	return this->tableName;
 }
 
-DB::DBReader *Map::ESRI::FileGDBTable::OpenReader(Data::ArrayList<Text::String*> *columnNames, UOSInt dataOfst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *conditions)
+DB::DBReader *Map::ESRI::FileGDBTable::OpenReader(Data::ArrayListNN<Text::String> *columnNames, UOSInt dataOfst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *conditions)
 {
 	if (this->tableInfo == 0)
 	{

@@ -8,13 +8,13 @@ namespace Text
 	class VSFile : public Text::CodeFile
 	{
 	private:
-		Text::String *fileName;
+		NotNullPtr<Text::String> fileName;
 	public:
-		VSFile(Text::String *fileName);
+		VSFile(NotNullPtr<Text::String> fileName);
 		VSFile(Text::CString fileName);
 		virtual ~VSFile();
 
-		virtual Text::String *GetFileName() const;
+		virtual NotNullPtr<Text::String> GetFileName() const;
 	};
 
 	class VSProjContainer
@@ -26,15 +26,15 @@ namespace Text
 	class VSContainer : public Text::CodeContainer, public VSProjContainer
 	{
 	private:
-		Text::String *contName;
+		NotNullPtr<Text::String> contName;
 		Data::ArrayList<CodeObject*> childList;
 	public:
-		VSContainer(Text::String *contName);
+		VSContainer(NotNullPtr<Text::String> contName);
 		VSContainer(Text::CString contName);
 		virtual ~VSContainer();
 
 		virtual void SetContainerName(Text::CString contName);
-		virtual Text::String *GetContainerName() const;
+		virtual NotNullPtr<Text::String> GetContainerName() const;
 
 		virtual UOSInt GetChildCount() const;
 		virtual CodeObject *GetChildObj(UOSInt index) const;
@@ -58,7 +58,7 @@ namespace Text
 		} VisualStudioVersion;
 	private:
 		VisualStudioVersion ver;
-		Text::String *projName;
+		NotNullPtr<Text::String> projName;
 		Data::ArrayList<CodeObject*> childList;
 	public:
 		VSProject(Text::CString name, VisualStudioVersion ver);
@@ -67,7 +67,7 @@ namespace Text
 		virtual ProjectType GetProjectType() const;
 		virtual void SetProjectName(Text::String *projName);
 		virtual void SetProjectName(Text::CString projName);
-		virtual Text::String *GetContainerName() const;
+		virtual NotNullPtr<Text::String> GetContainerName() const;
 
 		virtual UOSInt GetChildCount() const;
 		virtual CodeObject *GetChildObj(UOSInt index) const;

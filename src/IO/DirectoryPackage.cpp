@@ -19,7 +19,7 @@ void IO::DirectoryPackage::AddFile(Text::CString fileName)
 		IO::Path::PathType pt;
 		if (IO::Path::FindNextFile(sbuff, sess, &ts, &pt, &fileSize))
 		{
-			this->files.Add(Text::String::New(fileName.v, fileName.leng));
+			this->files.Add(Text::String::New(fileName));
 			this->fileSizes.Add(fileSize);
 			this->fileTimes.Add(ts);
 		}
@@ -67,7 +67,7 @@ void IO::DirectoryPackage::Init()
 	}
 }
 
-IO::DirectoryPackage::DirectoryPackage(Text::String *dirName) : IO::PackageFile(dirName)
+IO::DirectoryPackage::DirectoryPackage(NotNullPtr<Text::String> dirName) : IO::PackageFile(dirName)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -147,8 +147,8 @@ UTF8Char *IO::DirectoryPackage::GetItemName(UTF8Char *sbuff, UOSInt index) const
 
 IO::StreamData *IO::DirectoryPackage::GetItemStmDataNew(UOSInt index) const
 {
-	Text::String *fileName = this->files.GetItem(index);
-	if (fileName == 0)
+	NotNullPtr<Text::String> fileName;
+	if (!fileName.Set(this->files.GetItem(index)))
 		return 0;
 	IO::Path::PathType pt = IO::Path::GetPathType(fileName->ToCString());
 	if (pt == IO::Path::PathType::File)
@@ -165,8 +165,8 @@ IO::StreamData *IO::DirectoryPackage::GetItemStmDataNew(UOSInt index) const
 
 IO::PackageFile *IO::DirectoryPackage::GetItemPackNew(UOSInt index) const
 {
-	Text::String *fileName = this->files.GetItem(index);
-	if (fileName == 0)
+	NotNullPtr<Text::String> fileName;
+	if (!fileName.Set(this->files.GetItem(index)))
 		return 0;
 	IO::Path::PathType pt = IO::Path::GetPathType(fileName->ToCString());
 	if (pt == IO::Path::PathType::Directory)
@@ -421,7 +421,7 @@ Bool IO::DirectoryPackage::RetryMoveFrom(Text::CString fileName, IO::ProgressHan
 
 typedef struct
 {
-	Text::String *name;
+	NotNullPtr<Text::String> name;
 	UInt64 fileSize;
 	Data::Timestamp fileTime;
 } DirFile;
@@ -430,7 +430,7 @@ OSInt __stdcall DirectoryPackage_Compare(void *obj1, void *obj2)
 {
 	DirFile *df1 = (DirFile*)obj1;
 	DirFile *df2 = (DirFile*)obj2;
-	return df1->name->CompareTo(df2->name);
+	return df1->name->CompareTo(df2->name.Ptr());
 }
 
 Bool IO::DirectoryPackage::Sort()
@@ -447,7 +447,7 @@ Bool IO::DirectoryPackage::Sort()
 	while (i < j)
 	{
 		df = MemAlloc(DirFile, 1);
-		df->name = this->files.GetItem(i);
+		df->name = NotNullPtr<Text::String>::FromPtr(this->files.GetItem(i));
 		df->fileSize = this->fileSizes.GetItem(i);
 		df->fileTime = this->fileTimes.GetItem(i);
 		arr[i] = df;

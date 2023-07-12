@@ -302,7 +302,7 @@ UOSInt Text::MIMEObj::MailMessage::ParseAddrList(const UTF8Char *hdr, UOSInt hdr
 			{
 				*ptr2++ = 0;
 				ptr1End = Text::StrTrim(ptr1);
-				addr->name = Text::String::New(ptr1, (UOSInt)(ptr1End - ptr1));
+				addr->name = Text::String::New(ptr1, (UOSInt)(ptr1End - ptr1)).Ptr();
 				ptr1 = ptr2;
 				while (true)
 				{

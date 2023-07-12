@@ -1,5 +1,6 @@
 #ifndef _SM_IO_EXEFILE
 #define _SM_IO_EXEFILE
+#include "Data/ArrayListNN.h"
 #include "Data/DateTime.h"
 #include "IO/ParsedObject.h"
 #include "Manage/DasmBase.h"
@@ -93,26 +94,26 @@ namespace IO
 
 		typedef struct
 		{
-			Text::String *moduleName;
-			Data::ArrayList<Text::String *> *funcs;
+			NotNullPtr<Text::String> moduleName;
+			Data::ArrayListNN<Text::String> *funcs;
 		} ImportInfo;
 
 		typedef struct
 		{
-			Text::String *funcName;
+			NotNullPtr<Text::String> funcName;
 		} ExportInfo;
 
 		typedef struct
 		{
 			ResourceType rt;
-			Text::String *name;
+			NotNullPtr<Text::String> name;
 			UInt32 codePage;
 			const UInt8 *data;
 			UOSInt dataSize;
 		} ResourceInfo;
 	private:
-		Data::ArrayList<Text::String *> propNames;
-		Data::ArrayList<Text::String *> propValues;
+		Data::ArrayListNN<Text::String> propNames;
+		Data::ArrayListNN<Text::String> propValues;
 		Data::ArrayList<ImportInfo*> importList;
 		Data::ArrayList<ExportInfo*> exportList;
 		Data::ArrayList<ResourceInfo*> resList;
@@ -120,7 +121,7 @@ namespace IO
 		ProgramEnvDOS *envDOS;
 
 	public:
-		EXEFile(Text::String *fileName);
+		EXEFile(NotNullPtr<Text::String> fileName);
 		virtual ~EXEFile();
 
 		virtual IO::ParserType GetParserType() const;
@@ -129,6 +130,7 @@ namespace IO
 		UOSInt GetPropCount() const;
 		Text::String *GetPropName(UOSInt index) const;
 		Text::String *GetPropValue(UOSInt index) const;
+		
 
 		UOSInt AddImportModule(Text::CString moduleName);
 		void AddImportFunc(UOSInt modIndex, Text::CString funcName);

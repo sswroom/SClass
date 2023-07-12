@@ -12,7 +12,7 @@ typedef BOOL (WINAPI *BoolFunc)();
 typedef HRESULT (WINAPI *AwareFunc)(OSInt val);
 typedef BOOL (WINAPI *AwareFunc2)(OSInt val);
 
-Int32 MyMain(Core::IProgControl *ctrl);
+Int32 MyMain(NotNullPtr<Core::IProgControl> ctrl);
 
 struct WinProgControl : public Core::IProgControl
 {
@@ -108,7 +108,7 @@ WChar **CommandLineToArgvW(const WChar *cmdLine, Int32 *argc)
 
 UTF8Char **__stdcall WinProgControl_GetCommandLines(NotNullPtr<Core::IProgControl> progCtrl, UOSInt *cmdCnt)
 {
-	WinProgControl *ctrl = (WinProgControl*)progCtrl;
+	WinProgControl *ctrl = (WinProgControl*)progCtrl.Ptr();
 	if (ctrl->argv == 0)
 	{
 		Int32 argc;
@@ -127,18 +127,18 @@ UTF8Char **__stdcall WinProgControl_GetCommandLines(NotNullPtr<Core::IProgContro
 	return ctrl->argv;
 }
 
-void __stdcall WinProgControl_SignalExit(Core::IProgControl* progCtrl)
+void __stdcall WinProgControl_SignalExit(NotNullPtr<Core::IProgControl> progCtrl)
 {
 
 }
 
-void __stdcall WinProgControl_SignalRestart(Core::IProgControl* progCtrl)
+void __stdcall WinProgControl_SignalRestart(NotNullPtr<Core::IProgControl> progCtrl)
 {
 
 }
 
 
-void WinProgControl_Create(WinProgControl *ctrl, void *hInst)
+void WinProgControl_Create(NotNullPtr<WinProgControl> ctrl, void *hInst)
 {
 	ctrl->argc = 0;
 	ctrl->argv = 0;
@@ -149,7 +149,7 @@ void WinProgControl_Create(WinProgControl *ctrl, void *hInst)
 	ctrl->GetCommandLines = WinProgControl_GetCommandLines;
 }
 
-void WinProgControl_Destroy(WinProgControl *ctrl)
+void WinProgControl_Destroy(NotNullPtr<WinProgControl> ctrl)
 {
 	if (ctrl->argv)
 	{
@@ -165,7 +165,7 @@ void WinProgControl_Destroy(WinProgControl *ctrl)
 
 UI::GUICore *Core::IProgControl::CreateGUICore(NotNullPtr<Core::IProgControl> progCtrl)
 {
-	WinProgControl *ctrl = (WinProgControl*)progCtrl;
+	WinProgControl *ctrl = (WinProgControl*)progCtrl.Ptr();
 	UI::GUICoreWin *ui;
 	NEW_CLASS(ui, UI::GUICoreWin(ctrl->hInst));
 	return ui;
@@ -220,9 +220,9 @@ Int32 __stdcall WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmdLine, i
 		}
 	}
 
-	WinProgControl_Create(&ctrl, hInst);
-	ret = MyMain(&ctrl);
-	WinProgControl_Destroy(&ctrl);
+	WinProgControl_Create(ctrl, hInst);
+	ret = MyMain(ctrl);
+	WinProgControl_Destroy(ctrl);
 	Core::CoreEnd();
 	_CrtDumpMemoryLeaks();
 	return ret;

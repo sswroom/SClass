@@ -133,6 +133,7 @@ namespace Text
 
 	public:
 		JSONString(Text::String *val);
+		JSONString(NotNullPtr<Text::String> val);
 		JSONString(Text::CString val);
 	private:
 		virtual ~JSONString();
@@ -205,6 +206,7 @@ namespace Text
 		void SetObjectDouble(Text::CString name, Double val);
 		void SetObjectString(Text::CString name, Text::CString val);
 		void SetObjectString(Text::CString name, Text::String *val);
+		void SetObjectString(Text::CString name, NotNullPtr<Text::String> val);
 		void SetObjectBool(Text::CString name, Bool val);
 		JSONBase *GetObjectValue(Text::CString name);
 		JSONArray *GetObjectArray(Text::CString name);

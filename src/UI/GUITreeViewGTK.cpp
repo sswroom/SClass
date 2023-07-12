@@ -34,7 +34,7 @@ gboolean GUITreeView_ButtonClick(GtkWidget *widget, GdkEventButton *event, gpoin
 	return false;
 }
 
-UI::GUITreeView::TreeItem::TreeItem(void *itemObj, Text::String *txt)
+UI::GUITreeView::TreeItem::TreeItem(void *itemObj, NotNullPtr<Text::String> txt)
 {
 	this->hTreeItem = 0;
 	this->itemObj = itemObj;
@@ -60,7 +60,7 @@ UI::GUITreeView::TreeItem::~TreeItem()
 		item = this->children.GetItem(i);
 		DEL_CLASS(item);
 	}
-	SDEL_STRING(this->txt);
+	this->txt->Release();
 	if (this->hTreeItem)
 	{
 		MemFree(this->hTreeItem);
@@ -103,11 +103,11 @@ void UI::GUITreeView::TreeItem::SetText(Text::CString txt)
 	{
 		return;
 	}
-	SDEL_STRING(this->txt);
+	this->txt->Release();
 	this->txt = Text::String::New(txt);
 }
 
-Text::String *UI::GUITreeView::TreeItem::GetText()
+NotNullPtr<Text::String> UI::GUITreeView::TreeItem::GetText() const
 {
 	return this->txt;
 }
@@ -205,7 +205,7 @@ void UI::GUITreeView::EventDragItem(UI::GUITreeView::TreeItem *dragItem, TreeIte
 {
 }
 
-UI::GUITreeView::TreeItem *UI::GUITreeView::InsertItem(TreeItem *parent, TreeItem *insertAfter, Text::String *itemText, void *itemObj)
+UI::GUITreeView::TreeItem *UI::GUITreeView::InsertItem(TreeItem *parent, TreeItem *insertAfter, NotNullPtr<Text::String> itemText, void *itemObj)
 {
 	ClassData *data = this->clsData;
 	TreeItem *item;

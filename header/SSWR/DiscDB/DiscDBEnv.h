@@ -23,8 +23,8 @@ namespace SSWR
 
 			typedef struct
 			{
-				Text::String *discId;
-				Text::String *discTypeId;
+				NotNullPtr<Text::String> discId;
+				NotNullPtr<Text::String> discTypeId;
 				Data::Timestamp burntDate;
 				Int32 status;
 			} BurntDiscInfo;
@@ -32,7 +32,7 @@ namespace SSWR
 			typedef struct
 			{
 				UInt32 fileId;
-				Text::String *fileName;
+				NotNullPtr<Text::String> fileName;
 				UInt64 fileSize;
 				UTF8Char category[6];
 				Int32 videoId;
@@ -41,14 +41,14 @@ namespace SSWR
 			typedef struct
 			{
 				Text::String *id;
-				Text::String *name;
+				NotNullPtr<Text::String> name;
 			} CategoryInfo;
 
 			typedef struct
 			{
-				Text::String *discTypeID;
-				Text::String *name;
-				Text::String *description;
+				NotNullPtr<Text::String> discTypeID;
+				NotNullPtr<Text::String> name;
+				NotNullPtr<Text::String> description;
 			} DVDTypeInfo;
 
 			typedef struct
@@ -69,10 +69,10 @@ namespace SSWR
 			typedef struct
 			{
 				Int32 videoId;
-				Text::String *anime;
+				NotNullPtr<Text::String> anime;
 				Text::String *series;
 				Text::String *volume;
-				Text::String *dvdType;
+				NotNullPtr<Text::String> dvdType;
 			} DVDVideoInfo;
 		private:
 			ErrorType err;
@@ -115,7 +115,7 @@ namespace SSWR
 			Int32 NewDVDVideo(const UTF8Char *anime, const UTF8Char *series, const UTF8Char *volume, const UTF8Char *dvdType);
 			UOSInt GetDVDVideos(Data::ArrayList<DVDVideoInfo*> *dvdVideoList);
 			const DVDVideoInfo *GetDVDVideo(Int32 videoId);
-			Bool NewMovies(const UTF8Char *discId, UOSInt fileId, const UTF8Char *mainTitle, Text::String *type, const UTF8Char *chapter, const UTF8Char *chapterTitle, Text::CString videoFormat, Int32 width, Int32 height, Int32 fps, Int32 length, Text::CString audioFormat, Int32 samplingRate, Int32 bitRate, const UTF8Char *aspectRatio, const UTF8Char *remark);
+			Bool NewMovies(const UTF8Char *discId, UOSInt fileId, const UTF8Char *mainTitle, NotNullPtr<Text::String> type, const UTF8Char *chapter, const UTF8Char *chapterTitle, Text::CString videoFormat, Int32 width, Int32 height, Int32 fps, Int32 length, Text::CString audioFormat, Int32 samplingRate, Int32 bitRate, const UTF8Char *aspectRatio, const UTF8Char *remark);
 			Bool AddMD5(IO::StreamData *fd);
 		};
 	}

@@ -48,7 +48,7 @@ Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(Net::WebServer::IWebRequ
 		sb.RemoveChars(1);
 	}
 	sb.Append(subReq);
-	Text::String *uri = req->GetRequestURI();
+	NotNullPtr<Text::String> uri = req->GetRequestURI();
 	UOSInt i = uri->IndexOf('?');
 	UOSInt j;
 	if (i != INVALID_INDEX)
@@ -110,7 +110,7 @@ Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(Net::WebServer::IWebRequ
 			if (req->GetHeaderC(&sbHeader, hdr->ToCString()))
 			{
 				UOSInt k = sbHeader.IndexOf(':');
-				svrHost = Text::String::New(sbHeader.ToString(), sbHeader.GetLength());
+				svrHost = Text::String::New(sbHeader.ToString(), sbHeader.GetLength()).Ptr();
 				if (k >= 0)
 				{
 					Text::StrToUInt16(sbHeader.ToString() + k + 1, &svrPort);
@@ -122,7 +122,7 @@ Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(Net::WebServer::IWebRequ
 			sbHeader.ClearStr();
 			if (req->GetHeaderC(&sbHeader, hdr->ToCString()))
 			{
-				fwdFor = Text::String::New(sbHeader.ToString(), sbHeader.GetLength());
+				fwdFor = Text::String::New(sbHeader.ToString(), sbHeader.GetLength()).Ptr();
 			}
 		}
 		else

@@ -8,7 +8,7 @@ namespace Net
 	class GoogleQRCode
 	{
 	private:
-		Text::String *dataStr;
+		NotNullPtr<Text::String> dataStr;
 		UOSInt width;
 		UOSInt height;		
 	public:

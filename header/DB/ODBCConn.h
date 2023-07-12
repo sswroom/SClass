@@ -49,11 +49,11 @@ namespace DB
 		Bool Connect(Text::String *dsn, Text::String *uid, Text::String *pwd, Text::String *schema);
 
 	protected:		
-		Bool Connect(Text::String *connStr);
+		Bool Connect(NotNullPtr<Text::String> connStr);
 		Bool Connect(Text::CString connStr);
 		ODBCConn(Text::CString sourceName, IO::LogTool *log);
 	public:
-		ODBCConn(Text::String *dsn, Text::String *uid, Text::String *pwd, Text::String *schema, IO::LogTool *log);
+		ODBCConn(NotNullPtr<Text::String> dsn, Text::String *uid, Text::String *pwd, Text::String *schema, IO::LogTool *log);
 		ODBCConn(Text::CString dsn, Text::CString uid, Text::CString pwd, Text::CString schema, IO::LogTool *log);
 		ODBCConn(Text::CString connStr, Text::CString sourceName, IO::LogTool *log);
 		virtual ~ODBCConn();
@@ -83,8 +83,8 @@ namespace DB
 		UTF8Char *ShowTablesCmd(UTF8Char *sbuff);
 
 		DBReader *GetTablesInfo(Text::CString schemaName);
-		virtual UOSInt QueryTableNames(Text::CString schemaName, Data::ArrayList<Text::String*> *names);
-		virtual DBReader *QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
+		virtual UOSInt QueryTableNames(Text::CString schemaName, Data::ArrayListNN<Text::String> *names);
+		virtual DBReader *QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListNN<Text::String> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
 
 	public:
 		void ShowSQLError(const UTF16Char *state, const UTF16Char *errMsg);
@@ -96,9 +96,9 @@ namespace DB
 		Text::String *GetConnPWD();
 		Text::String *GetConnSchema();
 
-		static UOSInt GetDriverList(Data::ArrayList<Text::String*> *driverList);
+		static UOSInt GetDriverList(Data::ArrayListNN<Text::String> *driverList);
 		static IO::ConfigFile *GetDriverInfo(Text::CString driverName);
-		static DBTool *CreateDBTool(Text::String *dsn, Text::String *uid, Text::String *pwd, Text::String *schema, IO::LogTool *log, Text::CString logPrefix);
+		static DBTool *CreateDBTool(NotNullPtr<Text::String> dsn, Text::String *uid, Text::String *pwd, Text::String *schema, IO::LogTool *log, Text::CString logPrefix);
 		static DBTool *CreateDBTool(Text::CString dsn, Text::CString uid, Text::CString pwd, Text::CString schema, IO::LogTool *log, Text::CString logPrefix);
 	};
 

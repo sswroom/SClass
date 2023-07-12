@@ -42,7 +42,7 @@ SSWR::AVIRead::AVIRFileChkForm::AVIRFileChkForm(UI::GUIClientControl *parent, UI
 	j = this->fileChk->GetCount();
 	while (i < j)
 	{
-		this->lvFileChk->AddItem(this->fileChk->GetEntryName(i), 0);
+		this->lvFileChk->AddItem(Text::String::OrEmpty(this->fileChk->GetEntryName(i)), 0);
 		this->fileChk->GetEntryHash(i, hash);
 		sptr = Text::StrHexBytes(sbuff, hash, hashSize, 0);
 		this->lvFileChk->SetSubItem(i, 1, CSTRP(sbuff, sptr));

@@ -38,7 +38,7 @@ Map::MapDrawLayer *Map::GMLXML::ParseFeatureCollection(Text::XMLReader *reader, 
 				i = nodeText->IndexOf(':');
 				if (i != INVALID_INDEX)
 				{
-					tableName = Text::String::New(nodeText->ToCString().Substring(i + 1));
+					tableName = Text::String::New(nodeText->ToCString().Substring(i + 1)).Ptr();
 				}
 				Math::Geometry::Vector2D *vec = 0;
 				while (reader->NextElement())
@@ -117,12 +117,12 @@ Map::MapDrawLayer *Map::GMLXML::ParseFeatureCollection(Text::XMLReader *reader, 
 						UOSInt i = nodeText->IndexOf(':');
 						if (i != INVALID_INDEX)
 						{
-							nameList.Add(Text::StrCopyNew(reader->GetNodeText()->v + i + 1));
+							nameList.Add(Text::StrCopyNew(reader->GetNodeText()->v + i + 1).Ptr());
 							sb.ClearStr();
 							reader->ReadNodeText(&sb);
 							if (sb.GetLength() > 0)
 							{
-								valList.Add(Text::String::New(sb.ToString(), sb.GetLength()));
+								valList.Add(Text::String::New(sb.ToString(), sb.GetLength()).Ptr());
 							}
 							else
 							{

@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "Media/FontRenderer.h"
 
-Media::FontRenderer::FontRenderer(Text::String *sourceName) : IO::ParsedObject(sourceName)
+Media::FontRenderer::FontRenderer(NotNullPtr<Text::String> sourceName) : IO::ParsedObject(sourceName)
 {
 }
 

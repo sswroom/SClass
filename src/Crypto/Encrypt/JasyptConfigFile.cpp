@@ -49,7 +49,7 @@ Text::String *Crypto::Encrypt::JasyptConfigFile::GetCateValue(Text::String *cate
 				NEW_CLASS(cate, Data::FastStringMap<Text::String*>());
 				this->decVals.Put(category, cate);
 			}
-			s = Text::String::New(sbuff, leng);
+			s = Text::String::New(sbuff, leng).Ptr();
 			cate->Put(name, s);
 			return s;
 		}
@@ -87,7 +87,7 @@ Text::String *Crypto::Encrypt::JasyptConfigFile::GetCateValue(Text::CString cate
 				NEW_CLASS(cate, Data::FastStringMap<Text::String*>());
 				this->decVals.PutC(category, cate);
 			}
-			s = Text::String::New(sbuff, leng);
+			s = Text::String::New(sbuff, leng).Ptr();
 			cate->PutC(name, s);
 			return s;
 		}

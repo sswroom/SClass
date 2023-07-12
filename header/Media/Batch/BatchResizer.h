@@ -17,7 +17,7 @@ namespace Media
 				UInt32 width;
 				UInt32 height;
 				Int32 sizeType;
-				Text::String *targetId;
+				NotNullPtr<Text::String> targetId;
 			} TargetParam;
 		private:
 			Media::IImgResizer *resizer;

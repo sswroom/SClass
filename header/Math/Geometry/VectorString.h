@@ -10,14 +10,14 @@ namespace Math
 		class VectorString : public Vector2D
 		{
 		private:
-			Text::String *s;
+			NotNullPtr<Text::String> s;
 			Math::Coord2DDbl pos;
 			Double angleDegree;
 			Double buffSize;
 			Media::DrawEngine::DrawPos align;
 			
 		public:
-			VectorString(UInt32 srid, Text::String *s, Math::Coord2DDbl pos, Double angleDegree, Double buffSize, Media::DrawEngine::DrawPos align);
+			VectorString(UInt32 srid, NotNullPtr<Text::String> s, Math::Coord2DDbl pos, Double angleDegree, Double buffSize, Media::DrawEngine::DrawPos align);
 			VectorString(UInt32 srid, Text::CString s, Math::Coord2DDbl pos, Double angleDegree, Double buffSize, Media::DrawEngine::DrawPos align);
 			virtual ~VectorString();
 
@@ -35,7 +35,7 @@ namespace Math
 			virtual void SwapXY();
 			virtual void MultiplyCoordinatesXY(Double v);
 
-			Text::String *GetString() const;
+			NotNullPtr<Text::String> GetString() const;
 			Double GetAngleDegree() const;
 			Double GetBuffSize() const;
 			Media::DrawEngine::DrawPos GetTextAlign() const;

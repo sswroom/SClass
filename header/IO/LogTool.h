@@ -63,7 +63,7 @@ namespace IO
 		LogTool();
 		virtual ~LogTool();
 		void Close();
-		void AddFileLog(Text::String *fileName, LogHandler::LogType style, LogHandler::LogGroup groupStyle, LogHandler::LogLevel logLev, const Char *dateFormat, Bool directWrite);
+		void AddFileLog(NotNullPtr<Text::String> fileName, LogHandler::LogType style, LogHandler::LogGroup groupStyle, LogHandler::LogLevel logLev, const Char *dateFormat, Bool directWrite);
 		void AddFileLog(Text::CString fileName, LogHandler::LogType style, LogHandler::LogGroup groupStyle, LogHandler::LogLevel logLev, const Char *dateFormat, Bool directWrite);
 		void AddLogHandler(LogHandler *hdlr, LogHandler::LogLevel logLev);
 		void RemoveLogHandler(LogHandler *hdlr);

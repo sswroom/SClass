@@ -18,7 +18,7 @@ DB::MySQLMaintance::~MySQLMaintance()
 
 void DB::MySQLMaintance::RepairSchema(const UTF8Char *schema, Text::StringBuilderUTF8 *sb)
 {
-	Data::ArrayList<Text::String*> tableNames;
+	Data::ArrayListNN<Text::String> tableNames;
 	if (!this->cli->ChangeSchema(schema))
 	{
 		this->cli->GetLastErrorMsg(sb);
@@ -36,7 +36,7 @@ void DB::MySQLMaintance::RepairSchema(const UTF8Char *schema, Text::StringBuilde
 	}
 }
 
-void DB::MySQLMaintance::RepairTable(Text::String *tableName, Text::StringBuilderUTF8 *sb)
+void DB::MySQLMaintance::RepairTable(NotNullPtr<Text::String> tableName, Text::StringBuilderUTF8 *sb)
 {
 	DB::SQLBuilder sql(this->cli->GetSQLType(), this->cli->IsAxisAware(), this->cli->GetTzQhr());
 	sql.AppendCmdC(CSTR("check table "));

@@ -36,20 +36,20 @@ namespace Net
 		class Network
 		{
 		private:
-			Text::String *ssid;
+			NotNullPtr<Text::String> ssid;
 			Double rssi;
 		public:
-			Network(Text::String *ssid, Double rssi);
+			Network(NotNullPtr<Text::String> ssid, Double rssi);
 			Network(Text::CString ssid, Double rssi);
 			~Network();
-			Double GetRSSI();
-			Text::String *GetSSID();
+			Double GetRSSI() const;
+			NotNullPtr<Text::String> GetSSID() const;
 		};
 
 		class BSSInfo
 		{
 		private:
-			Text::String *ssid;
+			NotNullPtr<Text::String> ssid;
 			UInt32 phyId;
 			UInt8 mac[6];
 			BSSType bssType;
@@ -66,7 +66,7 @@ namespace Net
 		public:
 			BSSInfo(Text::CString ssid, const void *bssEntry);
 			~BSSInfo();
-			Text::String *GetSSID();
+			NotNullPtr<Text::String> GetSSID() const;
 			UInt32 GetPHYId();
 			const UInt8 *GetMAC();
 			BSSType GetBSSType();
@@ -86,13 +86,13 @@ namespace Net
 		class Interface
 		{
 		protected:
-			Text::String *name;
+			NotNullPtr<Text::String> name;
 
 		public:
 			Interface();
 			virtual ~Interface();
 
-			Text::String *GetName();
+			NotNullPtr<Text::String> GetName() const;
 			virtual Bool Scan() = 0;
 			virtual UOSInt GetNetworks(Data::ArrayList<Net::WirelessLAN::Network*> *networkList) = 0;
 			virtual UOSInt GetBSSList(Data::ArrayList<Net::WirelessLAN::BSSInfo*> *bssList) = 0;

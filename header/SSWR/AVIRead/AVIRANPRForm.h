@@ -29,7 +29,7 @@ namespace SSWR
 			typedef struct
 			{
 				Math::RectArea<UOSInt> area;
-				Text::String *result;
+				NotNullPtr<Text::String> result;
 				Double maxTileAngle;
 				Double pxArea;
 				UOSInt confidence;
@@ -55,7 +55,7 @@ namespace SSWR
 			UI::GUIHSplitter *hspPlate;
 			UI::GUIPictureBoxDD *pbImg;
 
-			static void __stdcall OnFileHandler(void *userObj, Text::String **files, UOSInt nFiles);
+			static void __stdcall OnFileHandler(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles);
 			static void __stdcall OnPlateSelChg(void *userObj);
 			static void __stdcall OnSelPlateClicked(void *userObj);
 			static void __stdcall OnSelCornersClicked(void *userObj);

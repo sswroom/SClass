@@ -224,11 +224,6 @@ namespace Data
 
 	template <class T> void ArrayList<T>::Clear()
 	{
-		UOSInt i = objCnt;
-		while (i-- > 0)
-		{
-			arr[i] = (T)0;
-		}
 		this->objCnt = 0;
 	}
 

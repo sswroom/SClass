@@ -16,7 +16,7 @@ namespace Net
 			Net::SocketFactory *sockf;
 			Net::SSLEngine *ssl;
 			Net::Email::SMTPConn::ConnType connType;
-			Text::String *host;
+			NotNullPtr<Text::String> host;
 			UInt16 port;
 			Data::Duration timeout;
 			IO::Writer *logWriter;

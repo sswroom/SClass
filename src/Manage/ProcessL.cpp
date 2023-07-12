@@ -571,7 +571,7 @@ UOSInt Manage::Process::GetModules(Data::ArrayList<Manage::ModuleInfo *> *modLis
 							else
 							{
 								data = MemAlloc(ModuleInfoData, 1);
-								data->fileName = Text::StrCopyNew(sarr[5]);
+								data->fileName = Text::StrCopyNew(sarr[5]).Ptr();
 								data->addr = startAddr;
 								data->size = (UOSInt)(endAddr - startAddr);
 								dataMap.Put(inode, data);
@@ -967,7 +967,7 @@ Manage::Process::FindProcSess *Manage::Process::FindProcess(Text::CString proces
 	sess->findFileSess = ffsess;
 	if (processName.v)
 	{
-		sess->procName = Text::String::New(processName);
+		sess->procName = Text::String::New(processName).Ptr();
 	}
 	else
 	{
@@ -988,7 +988,7 @@ Manage::Process::FindProcSess *Manage::Process::FindProcessW(const WChar *proces
 	sess->findFileSess = ffsess;
 	if (processName)
 	{
-		sess->procName = Text::String::NewNotNull(processName);
+		sess->procName = Text::String::NewNotNull(processName).Ptr();
 	}
 	else
 	{
@@ -1244,7 +1244,7 @@ Int32 Manage::Process::ExecuteProcess(Text::CString cmd, Text::StringBuilderUTF8
 
 Int32 Manage::Process::ExecuteProcessW(const WChar *cmd, Text::StringBuilderUTF8 *result)
 {
-	Text::String *s = Text::String::NewNotNull(cmd);
+	NotNullPtr<Text::String> s = Text::String::NewNotNull(cmd);
 	Int32 ret = ExecuteProcess(s->ToCString(), result);
 	s->Release();
 	return ret;

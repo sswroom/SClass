@@ -2604,37 +2604,37 @@ Bool Crypto::Cert::X509File::NamesGet(const UInt8 *pdu, const UInt8 *pduEnd, Cer
 						if (Net::ASN1Util::OIDEqualsText(oidPDU, oidLen, UTF8STRC("2.5.4.6")))
 						{
 							SDEL_STRING(names->countryName);
-							names->countryName = Text::String::New(strPDU, strLen);
+							names->countryName = Text::String::New(strPDU, strLen).Ptr();
 						}
 						else if (Net::ASN1Util::OIDEqualsText(oidPDU, oidLen, UTF8STRC("2.5.4.8")))
 						{
 							SDEL_STRING(names->stateOrProvinceName);
-							names->stateOrProvinceName = Text::String::New(strPDU, strLen);
+							names->stateOrProvinceName = Text::String::New(strPDU, strLen).Ptr();
 						}
 						else if (Net::ASN1Util::OIDEqualsText(oidPDU, oidLen, UTF8STRC("2.5.4.7")))
 						{
 							SDEL_STRING(names->localityName);
-							names->localityName = Text::String::New(strPDU, strLen);
+							names->localityName = Text::String::New(strPDU, strLen).Ptr();
 						}
 						else if (Net::ASN1Util::OIDEqualsText(oidPDU, oidLen, UTF8STRC("2.5.4.10")))
 						{
 							SDEL_STRING(names->organizationName);
-							names->organizationName = Text::String::New(strPDU, strLen);
+							names->organizationName = Text::String::New(strPDU, strLen).Ptr();
 						}
 						else if (Net::ASN1Util::OIDEqualsText(oidPDU, oidLen, UTF8STRC("2.5.4.11")))
 						{
 							SDEL_STRING(names->organizationUnitName);
-							names->organizationUnitName = Text::String::New(strPDU, strLen);
+							names->organizationUnitName = Text::String::New(strPDU, strLen).Ptr();
 						}
 						else if (Net::ASN1Util::OIDEqualsText(oidPDU, oidLen, UTF8STRC("2.5.4.3")))
 						{
 							SDEL_STRING(names->commonName);
-							names->commonName = Text::String::New(strPDU, strLen);
+							names->commonName = Text::String::New(strPDU, strLen).Ptr();
 						}
 						else if (Net::ASN1Util::OIDEqualsText(oidPDU, oidLen, UTF8STRC("1.2.840.113549.1.9.1")))
 						{
 							SDEL_STRING(names->emailAddress);
-							names->emailAddress = Text::String::New(strPDU, strLen);
+							names->emailAddress = Text::String::New(strPDU, strLen).Ptr();
 						}
 					}
 				}
@@ -2685,7 +2685,7 @@ Bool Crypto::Cert::X509File::ExtensionsGet(const UInt8 *pdu, const UInt8 *pduEnd
 								LIST_FREE_STRING(ext->subjectAltName);
 								SDEL_CLASS(ext->subjectAltName)
 							}
-							NEW_CLASS(ext->subjectAltName, Data::ArrayList<Text::String*>());
+							NEW_CLASS(ext->subjectAltName, Data::ArrayListNN<Text::String>());
 							UOSInt j = 0;
 							UOSInt k = Net::ASN1Util::PDUCountItem(strPDU, strPDU + strLen, "1");
 							while (j < k)
@@ -3006,7 +3006,7 @@ Bool Crypto::Cert::X509File::AlgorithmIdentifierGet(const UInt8 *pdu, const UInt
 	return true;
 }
 
-Crypto::Cert::X509File::X509File(Text::String *sourceName, const UInt8 *buff, UOSInt buffSize) : Net::ASN1Data(sourceName, buff, buffSize)
+Crypto::Cert::X509File::X509File(NotNullPtr<Text::String> sourceName, const UInt8 *buff, UOSInt buffSize) : Net::ASN1Data(sourceName, buff, buffSize)
 {
 }
 

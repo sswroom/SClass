@@ -79,7 +79,7 @@ namespace Text
 			void SetPalette(UInt32 *palette);
 
 			Worksheet *AddWorksheet();
-			Worksheet *AddWorksheet(Text::String *name);
+			Worksheet *AddWorksheet(NotNullPtr<Text::String> name);
 			Worksheet *AddWorksheet(Text::CString name);
 			Worksheet *InsertWorksheet(UOSInt index, Text::CString name);
 			UOSInt GetCount();

@@ -16,15 +16,15 @@ namespace IO
 
 		struct DeviceInfo
 		{
-			Text::String *desc;
-			Text::String *hwId;
+			NotNullPtr<Text::String> desc;
+			NotNullPtr<Text::String> hwId;
 			Text::String *service;
 			Text::String *driver;
 		};
 
 		struct DriverInfo
 		{
-			Text::String *fileName;
+			NotNullPtr<Text::String> fileName;
 			UInt64 fileSize;
 			Text::String *creationDate;
 			Text::String *version;

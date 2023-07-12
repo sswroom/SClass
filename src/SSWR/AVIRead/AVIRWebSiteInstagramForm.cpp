@@ -20,7 +20,7 @@ void __stdcall SSWR::AVIRead::AVIRWebSiteInstagramForm::OnRequestUserClicked(voi
 		MemClear(&chInfo, sizeof(chInfo));
 		Data::ArrayList<Net::WebSite::WebSiteInstagramControl::ItemData*> itemList;
 		Net::WebSite::WebSiteInstagramControl::ItemData *item;
-		Text::String *s = Text::String::New(sb.ToString(), sb.GetLength());
+		NotNullPtr<Text::String> s = Text::String::New(sb.ToString(), sb.GetLength());
 		me->ctrl->GetChannelItems(s, 0, &itemList, &chInfo);
 		s->Release();
 		i = 0;
@@ -62,31 +62,25 @@ void __stdcall SSWR::AVIRead::AVIRWebSiteInstagramForm::OnPageClicked(void *user
 	me->lbImageURL->ClearItems();
 	if (sb.GetLength() > 0)
 	{
-		Data::ArrayList<Text::String*> imageList;
-		Data::ArrayList<Text::String*> videoList;
-		UOSInt i;
-		UOSInt j;
-		Text::String *s = Text::String::New(sb.ToString(), sb.GetLength());
+		Data::ArrayListNN<Text::String> imageList;
+		Data::ArrayListNN<Text::String> videoList;
+		NotNullPtr<Text::String> s = Text::String::New(sb.ToString(), sb.GetLength());
 		me->ctrl->GetPageImages(s, &imageList, &videoList);
 		s->Release();
-		i = 0;
-		j = imageList.GetCount();
-		while (i < j)
+		Data::ArrayIterator<NotNullPtr<Text::String>> it = imageList.Iterator();
+		while (it.HasNext())
 		{
-			me->lbImageURL->AddItem(imageList.GetItem(i), 0);
-			imageList.GetItem(i)->Release();
-
-			i++;
+			NotNullPtr<Text::String> s = it.Next();
+			me->lbImageURL->AddItem(s, 0);
+			s->Release();
 		}
 
-		i = 0;
-		j = videoList.GetCount();
-		while (i < j)
+		it = videoList.Iterator();
+		while (it.HasNext())
 		{
-			me->lbImageURL->AddItem(videoList.GetItem(i), 0);
-			videoList.GetItem(i)->Release();
-
-			i++;
+			NotNullPtr<Text::String> s = it.Next();
+			me->lbImageURL->AddItem(s, 0);
+			s->Release();
 		}
 	}
 }
@@ -99,8 +93,8 @@ SSWR::AVIRead::AVIRWebSiteInstagramForm::AVIRWebSiteInstagramForm(UI::GUIClientC
 	this->core = core;
 	this->ssl = Net::SSLEngineFactory::Create(this->core->GetSocketFactory(), true);
 	Text::CString userAgent = Net::UserAgentDB::FindUserAgent(Manage::OSInfo::OT_WINDOWS_NT64, Net::BrowserInfo::BT_FIREFOX);
-	Text::String *ua = Text::String::New(userAgent);
-	NEW_CLASS(this->ctrl, Net::WebSite::WebSiteInstagramControl(core->GetSocketFactory(), this->ssl, core->GetEncFactory(), ua));
+	NotNullPtr<Text::String> ua = Text::String::New(userAgent);
+	NEW_CLASS(this->ctrl, Net::WebSite::WebSiteInstagramControl(core->GetSocketFactory(), this->ssl, core->GetEncFactory(), ua.Ptr()));
 	ua->Release();
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 

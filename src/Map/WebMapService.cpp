@@ -277,7 +277,7 @@ void Map::WebMapService::LoadXMLLayers(Text::XMLReader *reader)
 							if (reader->ReadNodeText(&sb))
 							{
 								SDEL_STRING(layerName);
-								layerName = Text::String::New(sb.ToCString());
+								layerName = Text::String::New(sb.ToCString()).Ptr();
 							}
 						}
 						else if (nodeName->Equals(UTF8STRC("Title")))
@@ -286,7 +286,7 @@ void Map::WebMapService::LoadXMLLayers(Text::XMLReader *reader)
 							if (reader->ReadNodeText(&sb))
 							{
 								SDEL_STRING(layerTitle);
-								layerTitle = Text::String::New(sb.ToCString());
+								layerTitle = Text::String::New(sb.ToCString()).Ptr();
 							}
 						}
 						else if (nodeName->Equals(UTF8STRC("BoundingBox")))
@@ -319,12 +319,12 @@ void Map::WebMapService::LoadXMLLayers(Text::XMLReader *reader)
 									else if (attr->name->Equals(UTF8STRC("CRS")))
 									{
 										SDEL_STRING(crs->name);
-										crs->name = attr->value->Clone();
+										crs->name = attr->value->Clone().Ptr();
 									}
 									else if (attr->name->Equals(UTF8STRC("SRS")))
 									{
 										SDEL_STRING(crs->name);
-										crs->name = attr->value->Clone();
+										crs->name = attr->value->Clone().Ptr();
 									}
 								}
 							}
@@ -350,11 +350,12 @@ void Map::WebMapService::LoadXMLLayers(Text::XMLReader *reader)
 						}
 					}
 				}
-				if (layerName && layerTitle && layerCRS.GetCount() > 0)
+				NotNullPtr<Text::String> s;
+				if (s.Set(layerName) && layerTitle && layerCRS.GetCount() > 0)
 				{
 					LayerInfo *layer;
 					NEW_CLASS(layer, LayerInfo());
-					layer->name = layerName;
+					layer->name = s;
 					layer->title = layerTitle;
 					layer->crsList.AddAll(&layerCRS);
 					layer->queryable = queryable;
@@ -416,7 +417,7 @@ Map::WebMapService::~WebMapService()
 	while (i-- > 0)
 	{
 		layer = this->layers.GetItem(i);
-		SDEL_STRING(layer->name);
+		layer->name->Release();
 		SDEL_STRING(layer->title);
 		j = layer->crsList.GetCount();
 		while (j-- > 0)
@@ -427,16 +428,16 @@ Map::WebMapService::~WebMapService()
 		}
 		DEL_CLASS(layer);
 	}
-	SDEL_STRING(this->wmsURL);
+	this->wmsURL->Release();
 	SDEL_STRING(this->version);
 	SDEL_CLASS(this->csys);
 }
 
-Text::String *Map::WebMapService::GetName() const
+NotNullPtr<Text::String> Map::WebMapService::GetName() const
 {
 	LayerInfo *layer = this->layers.GetItem(this->layer);
 	if (layer == 0)
-		return 0;
+		return Text::String::NewEmpty();
 	return layer->name;
 }
 
@@ -466,7 +467,7 @@ Bool Map::WebMapService::CanQuery() const
 	return layer && layer->queryable;
 }
 
-Bool Map::WebMapService::QueryInfos(Math::Coord2DDbl coord, Math::RectAreaDbl bounds, UInt32 width, UInt32 height, Double dpi, Data::ArrayList<Math::Geometry::Vector2D*> *vecList, Data::ArrayList<UOSInt> *valueOfstList, Data::ArrayList<Text::String*> *nameList, Data::ArrayList<Text::String*> *valueList)
+Bool Map::WebMapService::QueryInfos(Math::Coord2DDbl coord, Math::RectAreaDbl bounds, UInt32 width, UInt32 height, Double dpi, Data::ArrayList<Math::Geometry::Vector2D*> *vecList, Data::ArrayList<UOSInt> *valueOfstList, Data::ArrayListNN<Text::String> *nameList, Data::ArrayList<Text::String*> *valueList)
 {
 	LayerInfo *layer = this->layers.GetItem(this->layer);
 	Text::String *imgFormat = this->mapImageTypeNames.GetItem(this->mapImageType);
@@ -801,7 +802,7 @@ void Map::WebMapService::SetLayerCRS(UOSInt index)
 	}
 }
 
-UOSInt Map::WebMapService::GetLayerNames(Data::ArrayList<Text::String*> *nameList) const
+UOSInt Map::WebMapService::GetLayerNames(Data::ArrayListNN<Text::String> *nameList) const
 {
 	UOSInt i = 0;
 	UOSInt j = this->layers.GetCount();
@@ -813,12 +814,12 @@ UOSInt Map::WebMapService::GetLayerNames(Data::ArrayList<Text::String*> *nameLis
 	return j;
 }
 
-UOSInt Map::WebMapService::GetMapImageTypeNames(Data::ArrayList<Text::String*> *nameList) const
+UOSInt Map::WebMapService::GetMapImageTypeNames(Data::ArrayListNN<Text::String> *nameList) const
 {
 	return nameList->AddAll(&this->mapImageTypeNames);
 }
 
-UOSInt Map::WebMapService::GetInfoTypeNames(Data::ArrayList<Text::String*> *nameList) const
+UOSInt Map::WebMapService::GetInfoTypeNames(Data::ArrayListNN<Text::String> *nameList) const
 {
 	return nameList->AddAll(&this->infoTypeNames);
 }

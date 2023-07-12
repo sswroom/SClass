@@ -13,7 +13,7 @@ namespace Media
 		Int32 right;
 		Int32 bottom;
 		Bool isPrimary;
-		Text::String *name;
+		NotNullPtr<Text::String> name;
 		Text::String *desc;
 		Text::String *monId;
 
@@ -21,13 +21,13 @@ namespace Media
 		MonitorInfo(MonitorHandle *hMonitor);
 		~MonitorInfo();
 
-		Text::String *GetName();
-		Text::String *GetDesc();
-		Text::String *GetMonitorID();
-		Int32 GetLeft();
-		Int32 GetTop();
-		Int32 GetPixelWidth();
-		Int32 GetPixelHeight();
+		NotNullPtr<Text::String> GetName() const;
+		Text::String *GetDesc() const;
+		Text::String *GetMonitorID() const;
+		Int32 GetLeft() const;
+		Int32 GetTop() const;
+		Int32 GetPixelWidth() const;
+		Int32 GetPixelHeight() const;
 		Bool IsPrimary();
 	};
 }

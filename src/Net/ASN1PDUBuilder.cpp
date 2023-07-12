@@ -254,6 +254,11 @@ void Net::ASN1PDUBuilder::AppendOctetString(Text::String *s)
 	this->AppendOther(4, s->v, s->leng);
 }
 
+void Net::ASN1PDUBuilder::AppendOctetString(NotNullPtr<Text::String> s)
+{
+	this->AppendOther(4, s->v, s->leng);
+}
+
 void Net::ASN1PDUBuilder::AppendOctetStringC(const UTF8Char *s, UOSInt len)
 {
 	if (s == 0)

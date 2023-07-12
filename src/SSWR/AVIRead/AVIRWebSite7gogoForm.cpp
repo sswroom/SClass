@@ -20,7 +20,7 @@ void __stdcall SSWR::AVIRead::AVIRWebSite7gogoForm::OnRequestPageClicked(void *u
 		MemClear(&chInfo, sizeof(chInfo));
 		Data::ArrayList<Net::WebSite::WebSite7gogoControl::ItemData*> itemList;
 		Net::WebSite::WebSite7gogoControl::ItemData *item;
-		Text::String *s = Text::String::New(sb.ToString(), sb.GetLength());
+		NotNullPtr<Text::String> s = Text::String::New(sb.ToString(), sb.GetLength());
 		me->ctrl->GetChannelItems(s, 0, &itemList, &chInfo);
 		s->Release();
 		i = 0;

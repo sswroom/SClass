@@ -36,7 +36,7 @@ void __stdcall SSWR::AVIRead::AVIRSolarEdgeForm::OnAPIKeyClicked(void *userObj)
 			me->txtCurrVer->SetText(s->ToCString());
 			s->Release();
 
-			Data::ArrayList<Text::String *> vers;
+			Data::ArrayListNN<Text::String> vers;
 			if (me->seAPI->GetSupportedVersions(&vers))
 			{
 				sb.ClearStr();
@@ -59,6 +59,7 @@ void __stdcall SSWR::AVIRead::AVIRSolarEdgeForm::OnAPIKeyClicked(void *userObj)
 				me->txtSuppVer->SetText(CSTR(""));
 			}
 			UOSInt totalCount;
+			NotNullPtr<Text::String> s;
 			Net::SolarEdgeAPI::Site *site;
 			me->lvSiteList->ClearItems();
 			me->cboSiteEnergySite->ClearItems();
@@ -72,9 +73,9 @@ void __stdcall SSWR::AVIRead::AVIRSolarEdgeForm::OnAPIKeyClicked(void *userObj)
 					site = me->siteList.GetItem(i);
 					sptr = Text::StrInt32(sbuff, site->id);
 					me->lvSiteList->AddItem(CSTRP(sbuff, sptr), (void*)site);
-					if (site->name)
+					if (s.Set(site->name))
 					{
-						me->lvSiteList->SetSubItem(i, 1, site->name);
+						me->lvSiteList->SetSubItem(i, 1, s);
 						*sptr++ = ' ';
 						sptr = site->name->ConcatTo(sptr);
 						me->cboSiteEnergySite->AddItem(CSTRP(sbuff, sptr), (void*)site);
@@ -82,22 +83,22 @@ void __stdcall SSWR::AVIRead::AVIRSolarEdgeForm::OnAPIKeyClicked(void *userObj)
 					}
 					sptr = Text::StrInt32(sbuff, site->accountId);
 					me->lvSiteList->SetSubItem(i, 2, CSTRP(sbuff, sptr));
-					if (site->status)
-						me->lvSiteList->SetSubItem(i, 3, site->status);
+					if (s.Set(site->status))
+						me->lvSiteList->SetSubItem(i, 3, s);
 					sptr = Text::StrConcatC(Text::StrDouble(sbuff, site->peakPower_kWp), UTF8STRC(" kWp"));
 					me->lvSiteList->SetSubItem(i, 4, CSTRP(sbuff, sptr));
 					sptr = site->lastUpdateTime.ToStringNoZone(sbuff);
 					me->lvSiteList->SetSubItem(i, 5, CSTRP(sbuff, sptr));
-					if (site->currency)
-						me->lvSiteList->SetSubItem(i, 6, site->currency);
+					if (s.Set(site->currency))
+						me->lvSiteList->SetSubItem(i, 6, s);
 					sptr = site->installationDate.ToStringNoZone(sbuff);
 					me->lvSiteList->SetSubItem(i, 7, CSTRP(sbuff, sptr));
 					sptr = site->ptoDate.ToStringNoZone(sbuff);
 					me->lvSiteList->SetSubItem(i, 8, CSTRP(sbuff, sptr));
-					if (site->notes)
-						me->lvSiteList->SetSubItem(i, 9, site->notes);
-					if (site->type)
-						me->lvSiteList->SetSubItem(i, 10, site->type);
+					if (s.Set(site->notes))
+						me->lvSiteList->SetSubItem(i, 9, s);
+					if (s.Set(site->type))
+						me->lvSiteList->SetSubItem(i, 10, s);
 					i++;
 				}
 				if (j > 0)

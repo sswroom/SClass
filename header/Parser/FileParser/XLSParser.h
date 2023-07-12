@@ -29,12 +29,12 @@ namespace Parser
 				Int32 uls;
 				Int32 bFamily;
 				Int32 bCharSet;
-				Text::String *fontName;
+				NotNullPtr<Text::String> fontName;
 			} FontInfo;
 
 			struct WorkbookStatus
 			{
-				Data::ArrayList<Text::String *> sst;
+				Data::ArrayListNN<Text::String> sst;
 				Data::ArrayList<WorksheetStatus*> wsList;
 				Data::ArrayList<FontInfo *> fontList;
 				Data::FastMap<Int32, Text::String *> formatMap;

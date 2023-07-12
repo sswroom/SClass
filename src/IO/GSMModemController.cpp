@@ -108,7 +108,7 @@ Bool IO::GSMModemController::GSMSetTECharset(const UTF8Char *cs)
 	return this->SendBoolCommandC(sbuff, (UOSInt)(sptr - sbuff));
 }
 
-Bool IO::GSMModemController::GSMGetTECharsetsSupported(Data::ArrayList<Text::String*> *csList)
+Bool IO::GSMModemController::GSMGetTECharsetsSupported(Data::ArrayListNN<Text::String> *csList)
 {
 	UTF8Char sbuff[128];
 	UTF8Char *sptr2;
@@ -814,8 +814,8 @@ void IO::GSMModemController::GPRSFreePDPContext(Data::ArrayList<PDPContext*> *ct
 	while (i-- > 0)
 	{
 		ctx = ctxList->GetItem(i);
-		SDEL_STRING(ctx->type);
-		SDEL_STRING(ctx->apn);
+		ctx->type->Release();
+		ctx->apn->Release();
 		MemFree(ctx);
 	}
 	ctxList->Clear();
@@ -1412,8 +1412,8 @@ Bool IO::GSMModemController::PBReadAllEntries(Data::ArrayList<PBEntry*> *phoneLi
 
 void IO::GSMModemController::PBFreeEntry(PBEntry *entry)
 {
-	SDEL_STRING(entry->name);
-	SDEL_STRING(entry->number);
+	entry->name->Release();
+	entry->number->Release();
 	MemFree(entry);
 }
 

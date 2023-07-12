@@ -15,7 +15,7 @@ namespace Net
 			{
 				Int32 id;
 				Int64 recTime;
-				Text::String *title;
+				NotNullPtr<Text::String> title;
 			} ItemData;
 			
 		private:
@@ -35,7 +35,7 @@ namespace Net
 			Bool GetDownloadLink(Int32 videoId, Int32 linkId, Text::StringBuilderUTF8 *link);
 			Bool GetVideoName(Int32 videoId, Text::StringBuilderUTF8 *name);
 
-			static void Title2DisplayName(Text::String *title, Text::StringBuilderUTF8 *dispName);
+			static void Title2DisplayName(NotNullPtr<Text::String> title, Text::StringBuilderUTF8 *dispName);
 		};
 	}
 }

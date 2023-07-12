@@ -3,7 +3,7 @@
 #include "SSWR/AVIRead/AVIRFileTextEncryptForm.h"
 #include "UI/MessageDialog.h"
 
-void __stdcall SSWR::AVIRead::AVIRFileTextEncryptForm::OnFileDrop(void *userObj, Text::String **files, UOSInt nFiles)
+void __stdcall SSWR::AVIRead::AVIRFileTextEncryptForm::OnFileDrop(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles)
 {
 	SSWR::AVIRead::AVIRFileTextEncryptForm *me = (SSWR::AVIRead::AVIRFileTextEncryptForm *)userObj;
 	if (nFiles > 0)

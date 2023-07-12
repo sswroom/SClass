@@ -128,11 +128,11 @@ Text::String *DB::MSSQLConn::GetDriverNameNew()
 {
 	if (IsNative())
 	{
-		return Text::String::New(UTF8STRC("FreeTDS (Native)"));
+		return Text::String::New(UTF8STRC("FreeTDS (Native)")).Ptr();
 	}
 	Text::String *driverName = 0;
 	Text::String *driver;
-	Data::ArrayList<Text::String *> driverList;
+	Data::ArrayListNN<Text::String> driverList;
 	UOSInt i = 0;
 	UOSInt j = DB::ODBCConn::GetDriverList(&driverList);
 	while (i < j)

@@ -203,7 +203,7 @@ void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnFontModifyClicked(void *userObj
 		Math::Size2D<UOSInt> sz;
 		me->fontType = Map::MapEnv::FontType::LayerStyle;
 		SDEL_STRING(me->fontName);
-		me->fontName = frm.GetFontName()->Clone();
+		me->fontName = frm.GetFontName()->Clone().Ptr();
 		me->fontSizePt = frm.GetFontSizePt();
 		me->fontColor = frm.GetFontColor();
 
@@ -418,7 +418,7 @@ SSWR::AVIRead::AVIRGISPropForm::AVIRGISPropForm(UI::GUIClientControl *parent, UI
 		this->fontStyle = setting.fontStyle;
 		if (setting.fontName)
 		{
-			this->fontName = setting.fontName->Clone();
+			this->fontName = setting.fontName->Clone().Ptr();
 		}
 		else
 		{

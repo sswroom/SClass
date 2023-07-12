@@ -1,5 +1,6 @@
 #ifndef _SM_NET_ETHERNETANALYZER
 #define _SM_NET_ETHERNETANALYZER
+#include "Data/ArrayListNN.h"
 #include "Data/FastMap.h"
 #include "Data/FixedCircularBuff.h"
 #include "Data/ICaseStringMap.h"
@@ -101,7 +102,7 @@ namespace Net
 		{
 			UInt32 ip;
 			Sync::Mutex mut;
-			Data::ArrayList<Text::String*> logList;
+			Data::ArrayListNN<Text::String> logList;
 		};
 
 		struct DHCPInfo
@@ -189,7 +190,7 @@ namespace Net
 		MACStatus *MACGet(UInt64 macAddr);
 		void MDNSAdd(Net::DNSClient::RequestAnswer *ans);
 	public:
-		EthernetAnalyzer(IO::Writer *errWriter, AnalyzeType ctype, Text::String *name);
+		EthernetAnalyzer(IO::Writer *errWriter, AnalyzeType ctype, NotNullPtr<Text::String> name);
 		EthernetAnalyzer(IO::Writer *errWriter, AnalyzeType ctype, Text::CString name);
 		virtual ~EthernetAnalyzer();
 

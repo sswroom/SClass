@@ -12,7 +12,7 @@ DB::MongoDB::~MongoDB()
 {
 }
 
-UOSInt DB::MongoDB::QueryTableNames(Text::CString schemaName, Data::ArrayList<Text::String*> *names)
+UOSInt DB::MongoDB::QueryTableNames(Text::CString schemaName, Data::ArrayListNN<Text::String> *names)
 {
 	return 0;
 }
@@ -40,12 +40,12 @@ void DB::MongoDB::Reconnect()
 
 }
 
-UOSInt DB::MongoDB::GetDatabaseNames(Data::ArrayList<Text::String*> *names)
+UOSInt DB::MongoDB::GetDatabaseNames(Data::ArrayListNN<Text::String> *names)
 {
 	return 0;
 }
 
-void DB::MongoDB::FreeDatabaseNames(Data::ArrayList<Text::String*> *names)
+void DB::MongoDB::FreeDatabaseNames(Data::ArrayListNN<Text::String> *names)
 {
 }
 

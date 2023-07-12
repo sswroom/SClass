@@ -2261,14 +2261,14 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 	else if (destPort == 1900)
 	{
 		frame->AddText(frameOfst, CSTR("SSDP Request:"));
-		Text::String *s = Text::String::New(packet, packetSize);
+		NotNullPtr<Text::String> s = Text::String::New(packet, packetSize);
 		frame->AddField(frameOfst, (UInt32)packetSize, s->ToCString(), CSTR_NULL);
 		s->Release();
 	}
 	else if (srcPort == 1900)
 	{
 		frame->AddText(frameOfst, CSTR("SSDP Reply:"));
-		Text::String *s = Text::String::New(packet, packetSize);
+		NotNullPtr<Text::String> s = Text::String::New(packet, packetSize);
 		frame->AddField(frameOfst, (UInt32)packetSize, s->ToCString(), CSTR_NULL);
 		s->Release();
 	}

@@ -45,7 +45,7 @@ OSInt __stdcall Map::MapDrawLayer::ObjectCompare(void *obj1, void *obj2)
 	}
 }
 
-Map::MapDrawLayer::MapDrawLayer(Text::String *sourceName, UOSInt nameCol, Text::String *layerName) : DB::ReadingDB(sourceName)//IO::ParsedObject(sourceName)
+Map::MapDrawLayer::MapDrawLayer(NotNullPtr<Text::String> sourceName, UOSInt nameCol, Text::String *layerName) : DB::ReadingDB(sourceName)//IO::ParsedObject(sourceName)
 {
 	this->nameCol = nameCol;
 	this->layerName = SCOPY_STRING(layerName);
@@ -63,7 +63,7 @@ Map::MapDrawLayer::MapDrawLayer(Text::String *sourceName, UOSInt nameCol, Text::
 Map::MapDrawLayer::MapDrawLayer(Text::CString sourceName, UOSInt nameCol, Text::CString layerName) : DB::ReadingDB(sourceName)//IO::ParsedObject(sourceName)
 {
 	this->nameCol = nameCol;
-	this->layerName = Text::String::New(layerName.v, layerName.leng);
+	this->layerName = Text::String::New(layerName).Ptr();
 	this->csys = 0;
 
 	this->pgColor = 0;
@@ -133,7 +133,7 @@ void Map::MapDrawLayer::RemoveUpdatedHandler(UpdatedHandler hdlr, void *obj)
 {
 }
 
-UOSInt Map::MapDrawLayer::QueryTableNames(Text::CString schemaName, Data::ArrayList<Text::String*> *names)
+UOSInt Map::MapDrawLayer::QueryTableNames(Text::CString schemaName, Data::ArrayListNN<Text::String> *names)
 {
 	if (schemaName.leng != 0)
 		return 0;
@@ -141,7 +141,7 @@ UOSInt Map::MapDrawLayer::QueryTableNames(Text::CString schemaName, Data::ArrayL
 	return 1;
 }
 
-DB::DBReader *Map::MapDrawLayer::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+DB::DBReader *Map::MapDrawLayer::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListNN<Text::String> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	DB::DBReader *r;
 	NEW_CLASS(r, Map::MapLayerReader(this));
@@ -188,11 +188,12 @@ void Map::MapDrawLayer::SetNameCol(UOSInt nameCol)
 	this->nameCol = nameCol;
 }
 
-Text::String *Map::MapDrawLayer::GetName()
+NotNullPtr<Text::String> Map::MapDrawLayer::GetName()
 {
-	if (this->layerName && this->layerName->leng > 0)
+	NotNullPtr<Text::String> layerName;
+	if (layerName.Set(this->layerName) && this->layerName->leng > 0)
 	{
-		return this->layerName;
+		return layerName;
 	}
 	else
 	{
@@ -277,7 +278,7 @@ Int32 Map::MapDrawLayer::CalBlockSize()
 void Map::MapDrawLayer::SetLayerName(Text::CString name)
 {
 	SDEL_STRING(this->layerName);
-	this->layerName = Text::String::New(name);
+	this->layerName = Text::String::New(name).Ptr();
 }
 
 Bool Map::MapDrawLayer::IsError()
@@ -399,7 +400,7 @@ Bool Map::MapDrawLayer::CanQuery()
 	return false;
 }
 
-Bool Map::MapDrawLayer::QueryInfos(Math::Coord2DDbl coord, Data::ArrayList<Math::Geometry::Vector2D*> *vecList, Data::ArrayList<UOSInt> *valueOfstList, Data::ArrayList<Text::String*> *nameList, Data::ArrayList<Text::String*> *valueList)
+Bool Map::MapDrawLayer::QueryInfos(Math::Coord2DDbl coord, Data::ArrayList<Math::Geometry::Vector2D*> *vecList, Data::ArrayList<UOSInt> *valueOfstList, Data::ArrayListNN<Text::String> *nameList, Data::ArrayList<Text::String*> *valueList)
 {
 	return false;
 }
@@ -671,7 +672,7 @@ UOSInt Map::MapDrawLayer::SearchString(Data::ArrayListString *outArr, Text::Sear
 			k = strList->SortedIndexOfPtr(s.v, s.leng);
 			if (k < 0)
 			{
-				strList->Insert((UOSInt)~k, Text::String::New(s.v, s.leng));
+				strList->Insert((UOSInt)~k, Text::String::New(s.v, s.leng).Ptr());
 				if (++resCnt >= maxResult)
 					break;
 			}
@@ -967,10 +968,10 @@ Text::String *Map::MapLayerReader::GetNewStr(UOSInt colIndex)
 		{
 			return 0;
 		}
-		return Text::String::New(sb.ToCString());
+		return Text::String::New(sb.ToCString()).Ptr();
 	}
 	sptr = this->layer->GetString(sbuff, sizeof(sbuff), this->nameArr, this->GetCurrObjId(), colIndex - 1);
-	return Text::String::NewP(sbuff, sptr);
+	return Text::String::NewP(sbuff, sptr).Ptr();
 }
 
 UTF8Char *Map::MapLayerReader::GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSize)

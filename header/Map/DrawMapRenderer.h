@@ -22,7 +22,7 @@ namespace Map
 		ASTRUCT MapLabels
 		{
 			Math::Coord2DDbl pos;
-			Text::String *label;
+			Text::String* label;
 			Double scaleW;
 			Double scaleH;
 			Int32 priority;

@@ -45,7 +45,7 @@ Text::String *Net::ACMEConn::JWK(Crypto::Cert::X509Key *key, Crypto::Token::JWSi
 			b64.EncodeBin(&sb, m, mSize);
 			sb.AppendC(UTF8STRC("\"}"));
 			*alg = Crypto::Token::JWSignature::Algorithm::RS256;
-			return Text::String::New(sb.ToCString());
+			return Text::String::New(sb.ToCString()).Ptr();
 		}
 	case Crypto::Cert::X509Key::KeyType::ECDSA:
 	case Crypto::Cert::X509Key::KeyType::ECPublic:
@@ -85,10 +85,10 @@ Text::String *Net::ACMEConn::ProtectedJWK(Text::String *nonce, Text::String *url
 	}
 	jwk->Release();
 	sb.AppendC(UTF8STRC("}"));
-	return Text::String::New(sb.ToCString());
+	return Text::String::New(sb.ToCString()).Ptr();
 }
 
-Text::String *Net::ACMEConn::EncodeJWS(Net::SSLEngine *ssl, Text::CString protStr, Text::CString data, Crypto::Cert::X509Key *key, Crypto::Token::JWSignature::Algorithm alg)
+NotNullPtr<Text::String> Net::ACMEConn::EncodeJWS(Net::SSLEngine *ssl, Text::CString protStr, Text::CString data, Crypto::Cert::X509Key *key, Crypto::Token::JWSignature::Algorithm alg)
 {
 	Text::StringBuilderUTF8 sb;
 	Text::TextBinEnc::Base64Enc b64(Text::TextBinEnc::Base64Enc::Charset::URL, true);
@@ -145,13 +145,9 @@ Net::HTTPClient *Net::ACMEConn::ACMEPost(Text::String *url, Text::CString data)
 	{
 		return 0;
 	}
-	Text::String *jws;
+	NotNullPtr<Text::String> jws;
 	jws = EncodeJWS(ssl, protStr->ToCString(), data, this->key, alg);
 	protStr->Release();
-	if (jws == 0)
-	{
-		return 0;
-	}
 	UOSInt jwsLen = jws->leng;
 	Net::HTTPClient *cli = 0;
 	cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, url->ToCString(), Net::WebUtil::RequestMethod::HTTP_POST, true);
@@ -168,7 +164,7 @@ Net::HTTPClient *Net::ACMEConn::ACMEPost(Text::String *url, Text::CString data)
 	if (cli->GetRespHeader(CSTR("Replay-Nonce"), &sb))
 	{
 		SDEL_STRING(this->nonce);
-		this->nonce = Text::String::New(sb.ToString(), sb.GetLength());
+		this->nonce = Text::String::New(sb.ToCString()).Ptr();
 	}
 	return cli;
 }
@@ -198,7 +194,7 @@ Net::ACMEConn::Order *Net::ACMEConn::OrderParse(const UInt8 *buff, UOSInt buffSi
 			if (auth && auth->GetType() == Text::JSONType::Array)
 			{
 				Text::JSONArray *authArr = (Text::JSONArray*)auth;
-				NEW_CLASS(order->authURLs, Data::ArrayList<Text::String*>());
+				NEW_CLASS(order->authURLs, Data::ArrayListNN<Text::String>());
 				UOSInt i = 0;
 				UOSInt j = authArr->GetArrayLength();
 				while (i < j)
@@ -304,27 +300,27 @@ Net::ACMEConn::ACMEConn(Net::SocketFactory *sockf, Text::CString serverHost, UIn
 						Text::JSONObject *o = (Text::JSONObject*)json;
 						if ((s = o->GetObjectString(CSTR("newNonce"))) != 0)
 						{
-							this->urlNewNonce = s->Clone();
+							this->urlNewNonce = s->Clone().Ptr();
 						}
 						if ((s = o->GetObjectString(CSTR("newAccount"))) != 0)
 						{
-							this->urlNewAccount = s->Clone();
+							this->urlNewAccount = s->Clone().Ptr();
 						}
 						if ((s = o->GetObjectString(CSTR("newOrder"))) != 0)
 						{
-							this->urlNewOrder = s->Clone();
+							this->urlNewOrder = s->Clone().Ptr();
 						}
 						if ((s = o->GetObjectString(CSTR("newAuthz"))) != 0)
 						{
-							this->urlNewAuthz = s->Clone();
+							this->urlNewAuthz = s->Clone().Ptr();
 						}
 						if ((s = o->GetObjectString(CSTR("revokeCert"))) != 0)
 						{
-							this->urlRevokeCert = s->Clone();
+							this->urlRevokeCert = s->Clone().Ptr();
 						}
 						if ((s = o->GetObjectString(CSTR("keyChange"))) != 0)
 						{
-							this->urlKeyChange = s->Clone();
+							this->urlKeyChange = s->Clone().Ptr();
 						}
 						Text::JSONBase *metaBase = o->GetObjectValue(CSTR("meta"));
 						if (metaBase && metaBase->GetType() == Text::JSONType::Object)
@@ -332,11 +328,11 @@ Net::ACMEConn::ACMEConn(Net::SocketFactory *sockf, Text::CString serverHost, UIn
 							Text::JSONObject *metaObj = (Text::JSONObject*)metaBase;
 							if ((s = metaObj->GetObjectString(CSTR("termsOfService"))) != 0)
 							{
-								this->urlTermOfService = s->Clone();
+								this->urlTermOfService = s->Clone().Ptr();
 							}
 							if ((s = metaObj->GetObjectString(CSTR("website"))) != 0)
 							{
-								this->urlWebsite = s->Clone();
+								this->urlWebsite = s->Clone().Ptr();
 							}
 						}
 					}
@@ -411,7 +407,7 @@ Bool Net::ACMEConn::NewNonce()
 		if (cli->GetRespHeader(CSTR("Replay-Nonce"), &sb))
 		{
 			SDEL_STRING(this->nonce);
-			this->nonce = Text::String::New(sb.ToString(), sb.GetLength());
+			this->nonce = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 			succ = true;
 		}
 	}
@@ -459,7 +455,7 @@ Bool Net::ACMEConn::AccountNew()
 						if (cli->GetRespStatus() == Net::WebStatus::SC_CREATED && cli->GetRespHeader(CSTR("Location"), &sb))
 						{
 							SDEL_STRING(this->accountId);
-							this->accountId = Text::String::New(sb.ToString(), sb.GetLength());
+							this->accountId = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 							succ = true;
 						}
 						DEL_CLASS(cli);
@@ -496,7 +492,7 @@ Bool Net::ACMEConn::AccountRetr()
 		if (cli->GetRespHeader(CSTR("Location"), &sb))
 		{
 			SDEL_STRING(this->accountId);
-			this->accountId = Text::String::New(sb.ToString(), sb.GetLength());
+			this->accountId = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 			succ = true;
 		}
 		DEL_CLASS(cli);
@@ -554,7 +550,7 @@ Net::ACMEConn::Order *Net::ACMEConn::OrderNew(const UTF8Char *domainNames, UOSIn
 		Order *order = this->OrderParse(replyBuff, i);
 		if (order && sb.GetLength() > 0)
 		{
-			order->orderURL = Text::String::New(sb.ToString(), sb.GetLength());
+			order->orderURL = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 		}
 		return order;
 	}
@@ -694,8 +690,8 @@ Net::ACMEConn::Challenge *Net::ACMEConn::ChallengeGetStatus(Text::String *challU
 
 void Net::ACMEConn::ChallengeFree(Challenge *chall)
 {
-	SDEL_STRING(chall->token);
-	SDEL_STRING(chall->url);
+	chall->token->Release();
+	chall->url->Release();
 	MemFree(chall);
 }
 
@@ -730,7 +726,7 @@ Bool Net::ACMEConn::LoadKey(Text::CString fileName)
 	{
 		return false;
 	}
-	Text::String *s = Text::String::New(fileName.v, fileName.leng);
+	NotNullPtr<Text::String> s = Text::String::New(fileName.v, fileName.leng);
 	Crypto::Cert::X509File *x509 = Parser::FileParser::X509Parser::ParseBuff(keyPEM, keyPEMSize, s);
 	s->Release();
 	if (x509 == 0)

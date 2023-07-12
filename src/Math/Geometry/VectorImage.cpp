@@ -49,7 +49,7 @@ Math::Geometry::VectorImage::VectorImage(UInt32 srid, Media::SharedImage *img, M
 	this->scnCoord = scnCoord;
 	this->hasHeight = false;
 	this->height = 0;
-	this->srcAddr = Text::String::New(srcAddr.v, srcAddr.leng);
+	this->srcAddr = Text::String::New(srcAddr).Ptr();
 	this->timeStart = timeStart;
 	this->timeEnd = timeEnd;
 	this->srcAlpha = -1;
@@ -101,7 +101,7 @@ Math::Geometry::VectorImage::VectorImage(UInt32 srid, Media::SharedImage *img, M
 	this->scnCoord = scnCoord;
 	this->hasHeight = false;
 	this->height = 0;
-	this->srcAddr = Text::String::New(srcAddr.v, srcAddr.leng);
+	this->srcAddr = Text::String::New(srcAddr).Ptr();
 	this->timeStart = timeStart;
 	this->timeEnd = timeEnd;
 	this->srcAlpha = -1;

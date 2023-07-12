@@ -67,7 +67,7 @@ Bool Exporter::MDBExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 	DB::ReadingDB *srcDB;
 	DB::DBReader *r;
 	DB::ColDef *colDef;
-	Data::ArrayList<Text::String*> tables;
+	Data::ArrayListNN<Text::String> tables;
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;

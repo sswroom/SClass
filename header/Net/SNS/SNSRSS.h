@@ -19,8 +19,8 @@ namespace Net
 			Net::SSLEngine *ssl;
 			Text::EncodingFactory *encFact;
 			Text::String *userAgent;
-			Text::String *channelId;
-			Text::String *chName;
+			NotNullPtr<Text::String> channelId;
+			NotNullPtr<Text::String> chName;
 			Text::String *chDesc;
 			Data::FastStringMap<SNSItem *> itemMap;
 			Sync::Mutex crcMut;
@@ -34,8 +34,8 @@ namespace Net
 
 			virtual Bool IsError();
 			virtual SNSType GetSNSType();
-			virtual Text::String *GetChannelId();
-			virtual Text::String *GetName();
+			virtual NotNullPtr<Text::String> GetChannelId() const;
+			virtual NotNullPtr<Text::String> GetName() const;
 			virtual UTF8Char *GetDirName(UTF8Char *dirName);
 			virtual UOSInt GetCurrItems(Data::ArrayList<SNSItem*> *itemList);
 			virtual UTF8Char *GetItemShortId(UTF8Char *buff, SNSItem *item);

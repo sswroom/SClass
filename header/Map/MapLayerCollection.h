@@ -16,7 +16,7 @@ namespace Map
 
 		static void __stdcall InnerUpdated(void *userObj);
 	public:
-		MapLayerCollection(Text::String *sourceName, Text::String *layerName);
+		MapLayerCollection(NotNullPtr<Text::String> sourceName, Text::String *layerName);
 		MapLayerCollection(Text::CString sourceName, Text::CString layerName);
 		virtual ~MapLayerCollection();
 

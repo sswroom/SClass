@@ -30,7 +30,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnUserAgentClicked(void *userO
 	SSWR::AVIRead::AVIRUserAgentSelForm frm(0, me->ui, me->core, me->userAgent->ToCString());
 	if (frm.ShowDialog(me))
 	{
-		SDEL_STRING(me->userAgent);
+		me->userAgent->Release();
 		me->userAgent = Text::String::New(frm.GetUserAgent());
 		me->lblUserAgent->SetText(me->userAgent->ToCString());
 	}
@@ -57,17 +57,17 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnRequestClicked(void *userObj
 	sbTmp.ClearStr();
 	if (me->txtUserName->GetText(&sbTmp) && sbTmp.GetCharCnt() > 0)
 	{
-		me->reqUserName = Text::String::New(sbTmp.ToCString());
+		me->reqUserName = Text::String::New(sbTmp.ToCString()).Ptr();
 	}
 	sbTmp.ClearStr();
 	if (me->txtPassword->GetText(&sbTmp) && sbTmp.GetCharCnt() > 0)
 	{
-		me->reqPassword = Text::String::New(sbTmp.ToCString());
+		me->reqPassword = Text::String::New(sbTmp.ToCString()).Ptr();
 	}
 	sbTmp.ClearStr();
 	if (me->txtHeaders->GetText(&sbTmp) && sbTmp.GetCharCnt() > 0)
 	{
-		me->reqHeaders = Text::String::New(sbTmp.ToCString());
+		me->reqHeaders = Text::String::New(sbTmp.ToCString()).Ptr();
 	}
 
 
@@ -120,7 +120,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnRequestClicked(void *userObj
 	}
 	else if (me->fileList.GetCount() == 1 && me->cboPostFormat->GetSelectedIndex() == 2)
 	{
-		Text::String *fileName = me->fileList.GetItem(0);
+		NotNullPtr<Text::String> fileName = Text::String::OrEmpty(me->fileList.GetItem(0));
 		UTF8Char *sptr;
 		{
 			IO::FileStream fs(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
@@ -131,7 +131,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnRequestClicked(void *userObj
 		if ((sptr = IO::Path::GetFileExt(sbuff, fileName->v, fileName->leng)) != 0)
 		{
 			mime = Net::MIME::GetMIMEFromExt(CSTRP(sbuff, sptr));
-			me->reqBodyType = Text::String::New(mime.v, mime.leng);
+			me->reqBodyType = Text::String::New(mime.v, mime.leng).Ptr();
 		}
 		else
 		{
@@ -148,7 +148,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnRequestClicked(void *userObj
 		sbBoundary.AppendI64(dt.ToTicks());
 		sb2.AppendC(UTF8STRC("multipart/form-data; boundary="));
 		sb2.AppendC(sbBoundary.ToString(), sbBoundary.GetLength());
-		me->reqBodyType = Text::String::New(sb2.ToString(), sb2.GetLength());
+		me->reqBodyType = Text::String::New(sb2.ToString(), sb2.GetLength()).Ptr();
 		IO::MemoryStream mstm;
 		UOSInt i = 0;
 		UOSInt j = me->params.GetCount();
@@ -247,9 +247,9 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnRequestClicked(void *userObj
 				i++;
 			}
 		}
-		me->reqBody = Text::StrCopyNew(sb2.ToString());
+		me->reqBody = Text::StrCopyNew(sb2.ToString()).Ptr();
 		me->reqBodyLen = sb2.GetCharCnt();
-		me->reqBodyType = Text::String::New(UTF8STRC("application/json"));
+		me->reqBodyType = Text::String::New(UTF8STRC("application/json")).Ptr();
 	}
 	else
 	{
@@ -278,11 +278,11 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnRequestClicked(void *userObj
 			sb2.AppendP(sbuff, sptr);
 			i++;
 		}
-		me->reqBody = Text::StrCopyNew(sb2.ToString());
+		me->reqBody = Text::StrCopyNew(sb2.ToString()).Ptr();
 		me->reqBodyLen = sb2.GetCharCnt();
-		me->reqBodyType = Text::String::New(UTF8STRC("application/x-www-form-urlencoded"));
+		me->reqBodyType = Text::String::New(UTF8STRC("application/x-www-form-urlencoded")).Ptr();
 	}
-	me->reqURL = Text::String::New(sb.ToString(), sb.GetLength());
+	me->reqURL = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 	me->threadEvt.Set();
 	if (sbuffPtr) MemFree(sbuffPtr);
 	while (me->threadRunning && me->reqURL && !me->respChanged)
@@ -729,7 +729,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 				Text::StringBuilderUTF8 sb;
 				if (cli->GetRespHeader(CSTR("Content-Type"), &sb))
 				{
-					contType = Text::String::New(sb.ToString(), sb.GetLength());
+					contType = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 				}
 				sb.ClearStr();
 				if (cli->GetRespHeader(CSTR("Content-Encoding"), &sb))
@@ -762,7 +762,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 				SDEL_STRING(me->respReqURL)
 				SDEL_STRING(me->respContType);
 				SDEL_CLASS(me->respData);
-				me->respReqURL = currURL->Clone();
+				me->respReqURL = currURL->Clone().Ptr();
 				me->respContType = contType;
 				me->respData = mstm;
 				SDEL_STRING(me->respCertText);
@@ -787,7 +787,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 							i++;
 						}
 					}
-					me->respCertText = Text::String::New(sb.ToString(), sb.GetLength());
+					me->respCertText = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 				}
 				respMutUsage.EndUse();
 			}
@@ -806,7 +806,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 				SDEL_STRING(me->respReqURL)
 				SDEL_CLASS(me->respData);
 				SDEL_STRING(me->respContType);
-				me->respReqURL = currURL->Clone();
+				me->respReqURL = currURL->Clone().Ptr();
 				SDEL_STRING(me->respCertText);
 				SDEL_CLASS(me->respCert);
 			}
@@ -842,9 +842,10 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnTimerTick(void *userObj)
 {
 	SSWR::AVIRead::AVIRHTTPClientForm *me = (SSWR::AVIRead::AVIRHTTPClientForm*)userObj;
-	Text::String *hdr;
+	NotNullPtr<Text::String> hdr;
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
+	NotNullPtr<Text::String> s;
 	UOSInt i;
 	UOSInt j;
 	if (me->respChanged)
@@ -927,16 +928,16 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnTimerTick(void *userObj)
 		j = me->respHeaders.GetCount();
 		while (i < j)
 		{
-			hdr = me->respHeaders.GetItem(i);
+			hdr = Text::String::OrEmpty(me->respHeaders.GetItem(i));
 			if (hdr->StartsWithICase(UTF8STRC("Set-Cookie: ")))
 			{
 				SSWR::AVIRead::AVIRHTTPClientForm::HTTPCookie *cookie = me->SetCookie(hdr->ToCString().Substring(12), me->respReqURL->ToCString());
 				if (cookie)
 				{
 					UOSInt k = me->lvCookie->AddItem(cookie->domain, cookie);
-					if (cookie->path)
+					if (s.Set(cookie->path))
 					{
-						me->lvCookie->SetSubItem(k, 1, cookie->path);
+						me->lvCookie->SetSubItem(k, 1, s);
 					}
 					me->lvCookie->SetSubItem(k, 2, cookie->name);
 					me->lvCookie->SetSubItem(k, 3, cookie->value);
@@ -1092,14 +1093,14 @@ SSWR::AVIRead::AVIRHTTPClientForm::HTTPCookie *SSWR::AVIRead::AVIRHTTPClientForm
 	}
 	if (valid)
 	{
-		Text::String *cookieName = Text::String::New(cookieValue, (UOSInt)i);
+		NotNullPtr<Text::String> cookieName = Text::String::New(cookieValue, (UOSInt)i);
 		SSWR::AVIRead::AVIRHTTPClientForm::HTTPCookie *cookie;
 		Bool eq;
 		UOSInt j = this->cookieList.GetCount();
 		while (j-- > 0)
 		{
 			cookie = this->cookieList.GetItem(j);
-			eq = cookie->domain->Equals(domain, (UOSInt)(domainEnd - domain)) && cookie->secure == secure && cookie->name->Equals(cookieName);
+			eq = cookie->domain->Equals(domain, (UOSInt)(domainEnd - domain)) && cookie->secure == secure && cookie->name->Equals(cookieName.Ptr());
 			if (cookie->path == 0)
 			{
 				eq = eq && (path[0] == 0);
@@ -1111,7 +1112,7 @@ SSWR::AVIRead::AVIRHTTPClientForm::HTTPCookie *SSWR::AVIRead::AVIRHTTPClientForm
 			if (eq)
 			{
 				Sync::MutexUsage mutUsage(&this->cookieMut);
-				SDEL_STRING(cookie->value);
+				cookie->value->Release();
 				cookie->value  = Text::String::NewP(&cookieValue[i + 1], cookieValueEnd);
 				mutUsage.EndUse();
 				cookieName->Release();
@@ -1122,7 +1123,7 @@ SSWR::AVIRead::AVIRHTTPClientForm::HTTPCookie *SSWR::AVIRead::AVIRHTTPClientForm
 		cookie->domain = Text::String::NewP(domain, domainEnd);
 		if (path[0])
 		{
-			cookie->path = Text::String::New(path, (UOSInt)(pathEnd - path));
+			cookie->path = Text::String::New(path, (UOSInt)(pathEnd - path)).Ptr();
 		}
 		else
 		{

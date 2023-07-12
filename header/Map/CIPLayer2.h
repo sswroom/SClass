@@ -36,7 +36,7 @@ namespace Map
 		CIPBlock *blks;
 		UOSInt maxTextSize;
 		Map::DrawLayerType lyrType;
-		Text::String *layerName;
+		NotNullPtr<Text::String> layerName;
 		Int64 maxId;
 
 		Data::FastMap<Int32, CIPFileObject*> *lastObjs;

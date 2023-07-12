@@ -102,14 +102,14 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnStartClicked(void *userObj
 		me->txtUsername->GetText(&sb);
 		if (sb.GetLength() > 0)
 		{
-			username.v = Text::StrCopyNewC(sb.ToString(), sb.GetLength());
+			username.v = Text::StrCopyNewC(sb.ToString(), sb.GetLength()).Ptr();
 			username.leng = sb.GetLength();
 		}
 		sb.ClearStr();
 		me->txtPassword->GetText(&sb);
 		if (sb.GetLength() > 0)
 		{
-			password.v = Text::StrCopyNewC(sb.ToString(), sb.GetLength());
+			password.v = Text::StrCopyNewC(sb.ToString(), sb.GetLength()).Ptr();
 			password.leng = sb.GetLength();
 		}
 		sb.ClearStr();
@@ -199,7 +199,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnCliCertClicked(void *userO
 		}
 		SDEL_CLASS(me->cliCert);
 		me->cliCert = (Crypto::Cert::X509Cert*)x509;
-		Text::String *s = dlg.GetFileName();
+		NotNullPtr<Text::String> s = dlg.GetFileName();
 		UOSInt i = s->LastIndexOf(IO::Path::PATH_SEPERATOR);
 		me->lblCliCert->SetText(s->ToCString().Substring(i + 1));
 	}
@@ -230,7 +230,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnCliKeyClicked(void *userOb
 		}
 		SDEL_CLASS(me->cliKey);
 		me->cliKey = (Crypto::Cert::X509File*)asn1;
-		Text::String *s = dlg.GetFileName();
+		NotNullPtr<Text::String> s = dlg.GetFileName();
 		UOSInt i = s->LastIndexOf(IO::Path::PATH_SEPERATOR);
 		me->lblCliKey->SetText(s->ToCString().Substring(i + 1));
 	}
@@ -416,7 +416,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnPublishMessage(void *userO
 		topicSt->updated = true;
 		topicSt->recvCnt = 1;
 		topicSt->lastRecvTime = dt.ToTicks();
-		me->topicMap.Put(topicSt->topic, topicSt);
+		me->topicMap.PutNN(topicSt->topic, topicSt);
 		me->topicListChanged = true;
 	}
 	else
@@ -481,7 +481,7 @@ void SSWR::AVIRead::AVIRMQTTExplorerForm::UpdateTopicChart()
 				Data::LineChart *chart;
 				NEW_CLASS(chart, Data::LineChart(CSTR_NULL));
 				chart->AddXDataDate(this->currTopic->dateList, recvCnt);
-				chart->AddYData(this->currTopic->topic, this->currTopic->valueList, recvCnt, 0xFFFF0000, Data::LineChart::LS_LINE);
+				chart->AddYData(this->currTopic->topic.Ptr(), this->currTopic->valueList, recvCnt, 0xFFFF0000, Data::LineChart::LS_LINE);
 				chart->Plot(this->dispImg, 0, 0, UOSInt2Double(sz.x), UOSInt2Double(sz.y));
 				DEL_CLASS(chart);
 			}
@@ -506,7 +506,7 @@ void SSWR::AVIRead::AVIRMQTTExplorerForm::UpdateTopicChart()
 				Data::LineChart *chart;
 				NEW_CLASS(chart, Data::LineChart(CSTR_NULL));
 				chart->AddXDataDate(this->currTopic->dateList, 256);
-				chart->AddYData(this->currTopic->topic, this->currTopic->valueList, 256, 0xFFFF0000, Data::LineChart::LS_LINE);
+				chart->AddYData(this->currTopic->topic.Ptr(), this->currTopic->valueList, 256, 0xFFFF0000, Data::LineChart::LS_LINE);
 				chart->Plot(this->dispImg, 0, 0, UOSInt2Double(sz.x), UOSInt2Double(sz.y));
 				DEL_CLASS(chart);
 				MemFree(dateList);

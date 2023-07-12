@@ -20,14 +20,14 @@ namespace SSWR
 			class MyFile : public Data::IComparable
 			{
 			private:
-				Text::String *fileName;
+				NotNullPtr<Text::String> fileName;
 				UInt64 fileSize;
 			public:
 				MyFile(Text::CString fileName, UInt64 fileSize);
 				virtual ~MyFile();
 
 				Bool ToString(Text::StringBuilderUTF8 *sb) const;
-				Text::String *GetName() const;
+				NotNullPtr<Text::String> GetName() const;
 				UInt64 GetSize() const;
 				virtual OSInt CompareTo(Data::IComparable *obj) const;
 			};

@@ -11,7 +11,7 @@ UI::GUIDragDataGTK *GUIDragDataGTK_currData = 0;
 
 void GUIDragDataGTK_AppendWC(Text::StringBuilderUTF8 *sb, const UTF16Char *s, UOSInt slen)
 {
-	Text::String *str = Text::String::New(s, slen);
+	NotNullPtr<Text::String> str = Text::String::New(s, slen);
 	sb->Append(str);
 	str->Release();
 }
@@ -196,11 +196,11 @@ void UI::GUIDragDataGTK::OnDataReceived(void *selData)
 		{
 			sb.AppendC((const UTF8Char*)data, dataSize);
 		}
-		this->targetText->Put(itarget, Text::String::New(sb.ToString(), sb.GetLength()));
+		this->targetText->Put(itarget, Text::String::New(sb.ToString(), sb.GetLength()).Ptr());
 	}
 	else
 	{
-		this->targetText->Put(itarget, Text::String::NewEmpty());
+		this->targetText->Put(itarget, Text::String::NewEmpty().Ptr());
 	}
 	
 }

@@ -1,5 +1,6 @@
 #ifndef _SM_TEXT_STRINGTOOL
 #define _SM_TEXT_STRINGTOOL
+#include "Data/ArrayListNN.h"
 #include "Data/NamedClass.h"
 #include "Data/StringMap.h"
 #include "Data/StringUTF8Map.h"
@@ -27,7 +28,7 @@ namespace Text
 		static Bool IsEmailAddress(const UTF8Char *s);
 		static const UTF8Char *Null2Empty(const UTF8Char *s);
 		static Bool SplitAsDouble(Text::CString str, UTF8Char splitChar, Data::ArrayList<Double> *outArr);
-		static UOSInt SplitAsNewString(Text::CString str, UTF8Char splitChar, Data::ArrayList<Text::String*> *outArr);
+		static UOSInt SplitAsNewString(Text::CString str, UTF8Char splitChar, Data::ArrayListNN<Text::String> *outArr);
 	};
 }
 

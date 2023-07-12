@@ -154,7 +154,7 @@ Bool Net::WebServer::WebListener::IsError()
 	return this->svr->IsV4Error();
 }
 
-Text::String *Net::WebServer::WebListener::GetServerName()
+NotNullPtr<Text::String> Net::WebServer::WebListener::GetServerName() const
 {
 	return this->svrName;
 }

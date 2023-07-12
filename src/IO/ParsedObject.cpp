@@ -68,36 +68,34 @@ Text::CString IO::ParserTypeGetName(ParserType pt)
 	}
 }
 
-IO::ParsedObject::ParsedObject(Text::String *sourceName)
+IO::ParsedObject::ParsedObject(NotNullPtr<Text::String> sourceName)
 {
-	this->sourceName = SCOPY_STRING(sourceName);
+	this->sourceName = sourceName->Clone();
 }
 
 IO::ParsedObject::ParsedObject(Text::CString sourceName)
 {
-	this->sourceName = Text::String::NewOrNull(sourceName);
+	this->sourceName = Text::String::New(sourceName);
 }
 
 IO::ParsedObject::~ParsedObject()
 {
-	SDEL_STRING(this->sourceName);
+	this->sourceName->Release();
 }
 
 UTF8Char *IO::ParsedObject::GetSourceName(UTF8Char *oriStr) const
 {
-	if (this->sourceName)
-		return this->sourceName->ConcatTo(oriStr);
-	return 0;
+	return this->sourceName->ConcatTo(oriStr);
 }
 
-void IO::ParsedObject::SetSourceName(Text::String *sourceName)
+void IO::ParsedObject::SetSourceName(NotNullPtr<Text::String> sourceName)
 {
-	SDEL_STRING(this->sourceName);
-	this->sourceName = SCOPY_STRING(sourceName);
+	this->sourceName->Release();
+	this->sourceName = sourceName->Clone();
 }
 
 void IO::ParsedObject::SetSourceName(Text::CString sourceName)
 {
-	SDEL_STRING(this->sourceName);
-	this->sourceName = Text::String::NewOrNull(sourceName);
+	this->sourceName->Release();
+	this->sourceName = Text::String::New(sourceName);
 }

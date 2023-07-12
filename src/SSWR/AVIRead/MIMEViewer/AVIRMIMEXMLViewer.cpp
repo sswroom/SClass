@@ -21,7 +21,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMIMEXMLViewer::AVIRMIMEXMLViewer(SSWR::AVIRead::A
 	Text::StringBuilderUTF8 sbPath;
 	Text::StringBuilderUTF8 sbCont;
 	Text::XMLAttrib *attr;
-	Text::String *s;
+	NotNullPtr<Text::String> s;
 	UOSInt i;
 	UOSInt j;
 	IO::MemoryReadingStream mstm(buff, size);

@@ -13,9 +13,10 @@ namespace Text
 		static void ToJSTextDQuote(Text::StringBuilderUTF8 *sb, const UTF8Char *s);
 		static WChar *ToJSText(WChar *buff, const WChar *s);
 		static WChar *ToJSTextDQuote(WChar *buff, const WChar *s);
-		static Text::String *ToNewJSText(Text::String *s);
-		static Text::String *ToNewJSText(const UTF8Char *s);
-		static Text::String *ToNewJSTextDQuote(const UTF8Char *s);
+		static NotNullPtr<Text::String> ToNewJSText(Text::String *s);
+		static NotNullPtr<Text::String> ToNewJSText(NotNullPtr<Text::String> s);
+		static NotNullPtr<Text::String> ToNewJSText(const UTF8Char *s);
+		static NotNullPtr<Text::String> ToNewJSTextDQuote(const UTF8Char *s);
 		static const WChar *ToNewJSText(const WChar *s);
 		static const WChar *ToNewJSTextDQuote(const WChar *s);
 		static Text::String *FromNewJSText(const UTF8Char *s);

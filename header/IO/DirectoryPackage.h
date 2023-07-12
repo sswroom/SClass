@@ -1,6 +1,7 @@
 #ifndef _SM_IO_DIRECTORYPACKAGE
 #define _SM_IO_DIRECTORYPACKAGE
 #include "Data/ArrayListInt64.h"
+#include "Data/ArrayListNN.h"
 #include "Data/ArrayListUInt64.h"
 #include "IO/PackageFile.h"
 #include "Text/CString.h"
@@ -11,15 +12,15 @@ namespace IO
 	class DirectoryPackage : public IO::PackageFile
 	{
 	private:
-		Data::ArrayList<Text::String *> files;
+		Data::ArrayListNN<Text::String> files;
 		Data::ArrayListUInt64 fileSizes;
 		Data::ArrayList<Data::Timestamp> fileTimes;
-		Text::String *dirName;
+		NotNullPtr<Text::String> dirName;
 
 		void AddFile(Text::CString fileName);
 		void Init();
 	public:
-		DirectoryPackage(Text::String *dirName);
+		DirectoryPackage(NotNullPtr<Text::String> dirName);
 		DirectoryPackage(Text::CString dirName);
 		virtual ~DirectoryPackage();
 

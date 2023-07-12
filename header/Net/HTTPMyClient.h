@@ -23,7 +23,7 @@ namespace Net
 		Net::TCPClient *cli;
 		Text::String *cliHost;
 		IO::MemoryStream reqMstm;
-		Text::String *userAgent;
+		NotNullPtr<Text::String> userAgent;
 		Data::ArrayListString reqHeaders;
 
 		Bool writing;

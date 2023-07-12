@@ -74,7 +74,7 @@ namespace SSWR
 			UI::GUIButton *btnExtractEnd;
 			UI::GUIButton *btnExtract;
 
-			static void __stdcall OnFilesDrop(void *userObj, Text::String **files, UOSInt nFiles);
+			static void __stdcall OnFilesDrop(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles);
 			static void __stdcall OnEndianChg(void *userObj, Bool newState);
 			static void __stdcall OnOffsetChg(void *userObj, UInt64 ofst);
 			static void __stdcall OnFontClicked(void *userObj);

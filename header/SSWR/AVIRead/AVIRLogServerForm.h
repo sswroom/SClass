@@ -22,7 +22,7 @@ namespace SSWR
 			struct IPLog
 			{
 				UInt32 ip;
-				Data::ArrayList<Text::String*> logMessage;
+				Data::ArrayListNN<Text::String> logMessage;
 			};
 		private:
 			SSWR::AVIRead::AVIRCore *core;

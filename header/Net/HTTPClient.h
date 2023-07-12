@@ -2,6 +2,7 @@
 #define _SM_NET_HTTPCLIENT
 #include "Crypto/Cert/Certificate.h"
 #include "Data/ArrayList.h"
+#include "Data/ArrayListNN.h"
 #include "Data/DateTime.h"
 #include "IO/MemoryStream.h"
 #include "IO/Stream.h"
@@ -29,11 +30,11 @@ namespace Net
 
 		UInt64 contLeng;
 		Net::WebStatus::StatusCode respStatus;
-		Data::ArrayList<Text::String*> headers;
+		Data::ArrayListNN<Text::String> headers;
 		UOSInt hdrLen;
 
 		Bool kaConn;
-		Text::String *url;
+		NotNullPtr<Text::String> url;
 		UInt64 totalUpload;
 		UInt64 totalDownload;
 

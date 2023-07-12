@@ -35,15 +35,22 @@ namespace DB
 		virtual Bool GetStr(UOSInt colIndex, Text::StringBuilderUTF8 *sb) = 0;
 		Bool GetStrN(UOSInt colIndex, Text::StringBuilderUTF8 *sb) { sb->ClearStr(); return GetStr(colIndex, sb); }
 		virtual Text::String *GetNewStr(UOSInt colIndex) = 0;
-		Text::String *GetNewStrB(UOSInt colIndex, Text::StringBuilderUTF8 *tmpBuff, Bool emptyOnNull)
+		Text::String *GetNewStrB(UOSInt colIndex, Text::StringBuilderUTF8 *tmpBuff)
+		{
+			tmpBuff->ClearStr();
+			if (GetStr(colIndex, tmpBuff))
+				return Text::String::New(tmpBuff->ToCString()).Ptr();
+			else
+				return 0;
+		}
+
+		NotNullPtr<Text::String> GetNewStrBNN(UOSInt colIndex, Text::StringBuilderUTF8 *tmpBuff)
 		{
 			tmpBuff->ClearStr();
 			if (GetStr(colIndex, tmpBuff))
 				return Text::String::New(tmpBuff->ToCString());
-			else if (emptyOnNull)
-				return Text::String::NewEmpty();
 			else
-				return 0;
+				return Text::String::NewEmpty();
 		}
 		virtual UTF8Char *GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSize) = 0;
 		virtual Data::Timestamp GetTimestamp(UOSInt colIndex) = 0;

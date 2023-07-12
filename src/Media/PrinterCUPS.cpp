@@ -31,16 +31,16 @@ namespace Media
 		Bool running;
 		PageOrientation po;
 		Math::Size2DDbl paperSizeMM;
-		Text::String *printerName;
+		NotNullPtr<Text::String> printerName;
 
 		static UInt32 __stdcall PrintThread(void *userObj);
 	public:
-		CUPSPrintDocument(Text::String *printerName, Media::GTKDrawEngine *eng, IPrintHandler *hdlr);
+		CUPSPrintDocument(NotNullPtr<Text::String> printerName, Media::GTKDrawEngine *eng, IPrintHandler *hdlr);
 		virtual ~CUPSPrintDocument();
 
 		Bool IsError();
 
-		virtual void SetDocName(Text::String *docName);
+		virtual void SetDocName(Text::String* docName);
 		virtual void SetDocName(Text::CString docName);
 		virtual void SetNextPagePaperSizeMM(Double width, Double height);
 		virtual void SetNextPageOrientation(PageOrientation po);
@@ -135,7 +135,7 @@ UInt32 __stdcall Media::CUPSPrintDocument::PrintThread(void *userObj)
 	return 0;
 }
 
-Media::CUPSPrintDocument::CUPSPrintDocument(Text::String *printerName, Media::GTKDrawEngine *eng, IPrintHandler *hdlr)
+Media::CUPSPrintDocument::CUPSPrintDocument(NotNullPtr<Text::String> printerName, Media::GTKDrawEngine *eng, IPrintHandler *hdlr)
 {
 	this->eng = eng;
 	this->hdlr = hdlr;
@@ -230,7 +230,7 @@ Media::Printer *Media::Printer::SelectPrinter(void *hWnd)
 	return 0;
 }
 
-Media::Printer::Printer(Text::String *printerName)
+Media::Printer::Printer(NotNullPtr<Text::String> printerName)
 {
 	this->printerName = printerName->Clone();
 }
@@ -247,7 +247,7 @@ Media::Printer::~Printer()
 
 Bool Media::Printer::IsError()
 {
-	return this->printerName == 0;
+	return this->printerName->leng > 0;
 }
 
 Bool Media::Printer::ShowPrintSettings(void *hWnd)

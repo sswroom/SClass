@@ -66,7 +66,7 @@ Bool Net::Email::SMTPClient::Send(Net::Email::EmailMessage *message)
 	{
 		return false;
 	}
-	Data::ArrayList<Text::String *> *recpList = message->GetRecpList();
+	const Data::ArrayListNN<Text::String> *recpList = message->GetRecpList();
 	UOSInt i = 0;
 	UOSInt j = recpList->GetCount();
 	while (i < j)

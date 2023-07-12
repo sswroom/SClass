@@ -348,8 +348,8 @@ SSWR::AVIRead::AVIRPingMonitorForm::~AVIRPingMonitorForm()
 	while (i-- > 0)
 	{
 		ipInfo = this->ipMap.GetItem(i);
-		SDEL_STRING(ipInfo->name);
-		SDEL_STRING(ipInfo->country);
+		ipInfo->name->Release();
+		ipInfo->country->Release();
 		MemFree(ipInfo);
 	}
 }

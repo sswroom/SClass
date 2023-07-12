@@ -1,6 +1,6 @@
 #ifndef _SM_TEXT_CPP_CPPENV
 #define _SM_TEXT_CPP_CPPENV
-#include "Data/ArrayListString.h"
+#include "Data/ArrayListStringNN.h"
 #include "IO/ConfigFile.h"
 #include "Text/VSProject.h"
 #include "Text/Cpp/CppCodeParser.h"
@@ -12,7 +12,7 @@ namespace Text
 		class CppEnv
 		{
 		private:
-			Data::ArrayListString *includePaths;
+			Data::ArrayListStringNN includePaths;
 			Text::VSProject::VisualStudioVersion vsv;
 			Text::CodeProject::ProjectType pt;
 			Text::String *baseFile;

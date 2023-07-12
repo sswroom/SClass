@@ -543,7 +543,7 @@ void SSWR::AVIRead::AVIRNetInfoForm::UpdateWIFINetworks()
 		Data::ArrayList<Net::WirelessLAN::BSSInfo*> bssList;
 		Net::WirelessLAN::BSSInfo *bss;
 		interf->GetBSSList(&bssList);
-		Text::String *s;
+		NotNullPtr<Text::String> s;
 		this->lvWIFIBSS->ClearItems();
 		i = 0;
 		j = bssList.GetCount();
@@ -563,15 +563,15 @@ void SSWR::AVIRead::AVIRNetInfoForm::UpdateWIFINetworks()
 			this->lvWIFIBSS->SetSubItem(k, 5, CSTRP(sbuff, sptr));
 			sptr = Text::StrUInt32(sbuff, bss->GetLinkQuality());
 			this->lvWIFIBSS->SetSubItem(k, 6, CSTRP(sbuff, sptr));
-			if ((s = bss->GetManuf()) != 0)
+			if (s.Set(bss->GetManuf()))
 			{
 				this->lvWIFIBSS->SetSubItem(k, 7, s);
 			}
-			if ((s = bss->GetModel()) != 0)
+			if (s.Set(bss->GetModel()))
 			{
 				this->lvWIFIBSS->SetSubItem(k, 8, s);
 			}
-			if ((s = bss->GetSN()) != 0)
+			if (s.Set(bss->GetSN()))
 			{
 				this->lvWIFIBSS->SetSubItem(k, 9, s);
 			}

@@ -19,7 +19,7 @@ Map::ESRI::FileGDBTable *Map::ESRI::FileGDBDir::GetTable(Text::CString name)
 	return 0;
 }
 
-Map::ESRI::FileGDBDir::FileGDBDir(Text::String *sourceName) : DB::ReadingDB(sourceName)
+Map::ESRI::FileGDBDir::FileGDBDir(NotNullPtr<Text::String> sourceName) : DB::ReadingDB(sourceName)
 {
 }
 
@@ -28,7 +28,7 @@ Map::ESRI::FileGDBDir::~FileGDBDir()
 	LIST_FREE_FUNC(&this->tables, DEL_CLASS);
 }
 
-UOSInt Map::ESRI::FileGDBDir::QueryTableNames(Text::CString schemaName, Data::ArrayList<Text::String*> *names)
+UOSInt Map::ESRI::FileGDBDir::QueryTableNames(Text::CString schemaName, Data::ArrayListNN<Text::String> *names)
 {
 	UOSInt i = 0;
 	UOSInt j = this->tables.GetCount();
@@ -40,7 +40,7 @@ UOSInt Map::ESRI::FileGDBDir::QueryTableNames(Text::CString schemaName, Data::Ar
 	return j;
 }
 
-DB::DBReader *Map::ESRI::FileGDBDir::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+DB::DBReader *Map::ESRI::FileGDBDir::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListNN<Text::String> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	FileGDBTable *table = this->GetTable(tableName);
 	if (table == 0)

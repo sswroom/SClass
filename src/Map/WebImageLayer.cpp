@@ -101,7 +101,7 @@ void Map::WebImageLayer::LoadImage(Map::WebImageLayer::ImageStat *stat)
 		{
 			Text::StrDelNew(stat->name);
 		}
-		SDEL_STRING(stat->url);
+		stat->url->Release();
 		DEL_CLASS(stat);
 	}
 	else if (stat->data->IsLoading())
@@ -123,7 +123,7 @@ void Map::WebImageLayer::LoadImage(Map::WebImageLayer::ImageStat *stat)
 			{
 				Text::StrDelNew(stat->name);
 			}
-			SDEL_STRING(stat->url);
+			stat->url->Release();
 			DEL_CLASS(stat);
 			if (pobj)
 			{
@@ -182,7 +182,7 @@ UInt32 __stdcall Map::WebImageLayer::LoadThread(void *userObj)
 					{
 						Text::StrDelNew(stat->name);
 					}
-					SDEL_STRING(stat->url);
+					stat->url->Release();
 					DEL_CLASS(stat);
 					if (pobj)
 					{
@@ -269,7 +269,7 @@ Map::WebImageLayer::~WebImageLayer()
 		{
 			Text::StrDelNew(stat->name);
 		}
-		SDEL_STRING(stat->url);
+		stat->url->Release();
 		DEL_CLASS(stat);
 	}
 
@@ -281,7 +281,7 @@ Map::WebImageLayer::~WebImageLayer()
 		{
 			Text::StrDelNew(stat->name);
 		}
-		SDEL_STRING(stat->url);
+		stat->url->Release();
 		if (stat->data)
 		{
 			DEL_CLASS(stat->data);
@@ -297,7 +297,7 @@ Map::WebImageLayer::~WebImageLayer()
 		{
 			Text::StrDelNew(stat->name);
 		}
-		SDEL_STRING(stat->url);
+		stat->url->Release();
 		if (stat->simg)
 		{
 			DEL_CLASS(stat->simg);
@@ -575,7 +575,7 @@ Math::Geometry::Vector2D *Map::WebImageLayer::GetNewVectorById(GetObjectSess *se
 	if (stat)
 	{
 		Math::Geometry::VectorImage *img;
-		NEW_CLASS(img, Math::Geometry::VectorImage(this->csys->GetSRID(), stat->simg, Math::Coord2DDbl(stat->x1, stat->y1), Math::Coord2DDbl(stat->x2, stat->y2), Math::Coord2DDbl(stat->sizeX, stat->sizeY), stat->isScreen, stat->url, stat->timeStart, stat->timeEnd));
+		NEW_CLASS(img, Math::Geometry::VectorImage(this->csys->GetSRID(), stat->simg, Math::Coord2DDbl(stat->x1, stat->y1), Math::Coord2DDbl(stat->x2, stat->y2), Math::Coord2DDbl(stat->sizeX, stat->sizeY), stat->isScreen, stat->url.Ptr(), stat->timeStart, stat->timeEnd));
 		if (stat->hasAltitude)
 		{
 			img->SetHeight(stat->altitude);
@@ -631,7 +631,7 @@ void Map::WebImageLayer::AddImage(Text::CString name, Text::CString url, Int32 z
 	stat->data = 0;
 	if (name.leng > 0)
 	{
-		stat->name = Text::StrCopyNewC(name.v, name.leng);
+		stat->name = Text::StrCopyNewC(name.v, name.leng).Ptr();
 	}
 	else
 	{

@@ -6,7 +6,7 @@
 #include "UI/FileDialog.h"
 #include "UI/MessageDialog.h"
 
-void __stdcall SSWR::AVIRead::AVIRASN1MIBForm::OnFileDroped(void *userObj, Text::String **files, UOSInt nFiles)
+void __stdcall SSWR::AVIRead::AVIRASN1MIBForm::OnFileDroped(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles)
 {
 	SSWR::AVIRead::AVIRASN1MIBForm *me = (SSWR::AVIRead::AVIRASN1MIBForm*)userObj;
 	me->LoadFile(files[0]->ToCString());
@@ -37,8 +37,8 @@ void __stdcall SSWR::AVIRead::AVIRASN1MIBForm::OnObjectsSelChg(void *userObj)
 		UOSInt j = obj->valName.GetCount();
 		while (i < j)
 		{
-			me->lvObjectsVal->AddItem(obj->valName.GetItem(i), 0);
-			me->lvObjectsVal->SetSubItem(i, 1, obj->valCont.GetItem(i));
+			me->lvObjectsVal->AddItem(Text::String::OrEmpty(obj->valName.GetItem(i)), 0);
+			me->lvObjectsVal->SetSubItem(i, 1, Text::String::OrEmpty(obj->valCont.GetItem(i)));
 			i++;
 		}
 	}
@@ -70,25 +70,26 @@ void SSWR::AVIRead::AVIRASN1MIBForm::LoadFile(Text::CString fileName)
 		module = this->mib.GetGlobalModule();
 	}
 	Data::ArrayList<Net::ASN1MIB::ObjectInfo *> *objList = &module->objValues;
+	NotNullPtr<Text::String> s;
 	i = 0;
 	j = objList->GetCount();
 	while (i < j)
 	{
 		obj = objList->GetItem(i);
-		this->lvObjects->AddItem(obj->objectName, obj);
+		this->lvObjects->AddItem(Text::String::OrEmpty(obj->objectName), obj);
 		if (obj->oidLen > 0)
 		{
 			sb.ClearStr();
 			Net::ASN1Util::OIDToString(obj->oid, obj->oidLen, &sb);
 			this->lvObjects->SetSubItem(i, 1, sb.ToCString());
 		}
-		if (obj->typeName)
+		if (s.Set(obj->typeName))
 		{
-			this->lvObjects->SetSubItem(i, 2, obj->typeName);
+			this->lvObjects->SetSubItem(i, 2, s);
 		}
-		if (obj->typeVal)
+		if (s.Set(obj->typeVal))
 		{
-			this->lvObjects->SetSubItem(i, 3, obj->typeVal);
+			this->lvObjects->SetSubItem(i, 3, s);
 		}
 		i++;
 	}
@@ -106,7 +107,7 @@ void SSWR::AVIRead::AVIRASN1MIBForm::LoadFile(Text::CString fileName)
 		{
 			this->lvOID->SetSubItem(i, 1, Text::CString::FromPtr((const UTF8Char*)entry->name));
 		}
-		this->lvOID->SetSubItem(i, 2, obj->objectName);
+		this->lvOID->SetSubItem(i, 2, Text::String::OrEmpty(obj->objectName));
 
 		Net::ASN1Util::OIDToCPPCode(obj->oid, obj->oidLen, obj->objectName->v, obj->objectName->leng, &sbOIDText);
 		i++;

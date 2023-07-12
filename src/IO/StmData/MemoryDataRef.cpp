@@ -29,7 +29,7 @@ UOSInt IO::StmData::MemoryDataRef::GetRealData(UInt64 offset, UOSInt length, UIn
 	return length;
 }
 
-Text::String *IO::StmData::MemoryDataRef::GetFullName()
+NotNullPtr<Text::String> IO::StmData::MemoryDataRef::GetFullName()
 {
 	return Text::String::NewEmpty();
 }

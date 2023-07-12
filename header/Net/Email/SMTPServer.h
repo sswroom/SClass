@@ -41,8 +41,8 @@ namespace Net
 			Net::TCPServer *svr;
 			Net::TCPClientMgr cliMgr;
 			IO::LogTool *log;
-			Text::String *domain;
-			Text::String *serverName;
+			NotNullPtr<Text::String> domain;
+			NotNullPtr<Text::String> serverName;
 
 			MailHandler mailHdlr;
 			LoginHandler loginHdlr;

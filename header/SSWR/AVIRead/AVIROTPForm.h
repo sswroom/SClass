@@ -20,7 +20,7 @@ namespace SSWR
 		private:
 			typedef struct
 			{
-				Text::String *name;
+				NotNullPtr<Text::String> name;
 				Crypto::OTP *otp;
 				UInt64 lastCounter;
 			} EntryInfo;

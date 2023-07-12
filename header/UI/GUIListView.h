@@ -44,17 +44,17 @@ namespace UI
 
 		void ChangeColumnCnt(UOSInt newColCnt);
 		UOSInt GetColumnCnt();
-		Bool AddColumn(Text::String *columnName, Double colWidth);
+		Bool AddColumn(NotNullPtr<Text::String> columnName, Double colWidth);
 		Bool AddColumn(Text::CString columnName, Double colWidth);
 		Bool AddColumn(const WChar *columnName, Double colWidth);
 		Bool SetColumnWidth(UOSInt index, Double colWidth);
 		Bool ClearAll();
 
-		UOSInt AddItem(Text::String *itemText, void *itemObj);
+		UOSInt AddItem(NotNullPtr<Text::String> itemText, void *itemObj);
 		UOSInt AddItem(Text::CString itemText, void *itemObj);
 		UOSInt AddItem(const WChar *itemText, void *itemObj);
 		UOSInt AddItem(Text::CString itemText, void *itemObj, UOSInt imageIndex);
-		Bool SetSubItem(UOSInt index, UOSInt subIndex, Text::String *text);
+		Bool SetSubItem(UOSInt index, UOSInt subIndex, NotNullPtr<Text::String> text);
 		Bool SetSubItem(UOSInt index, UOSInt subIndex, Text::CString text);
 		Bool SetSubItem(UOSInt index, UOSInt subIndex, const WChar *text);
 		Bool GetSubItem(UOSInt index, UOSInt subIndex, Text::StringBuilderUTF8 *sb);

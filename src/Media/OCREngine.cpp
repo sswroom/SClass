@@ -122,7 +122,7 @@ Text::String *Media::OCREngine::ParseInsideImage(Math::RectArea<UOSInt> area, UO
 		{
 			*confidence = (UOSInt)this->clsData->api.MeanTextConf();
 		}
-		s = Text::String::NewNotNullSlow((const UTF8Char*)resultText);
+		s = Text::String::NewNotNullSlow((const UTF8Char*)resultText).Ptr();
 		delete [] resultText;
 	}
 	return s;
@@ -157,7 +157,7 @@ Bool Media::OCREngine::ParseAllInImage()
 				ri->BoundingBox(level, &left, &top, &right, &bottom);
 				if (this->hdlr)
 				{
-					Text::String *res = Text::String::NewNotNullSlow((const UTF8Char*)txt);
+					NotNullPtr<Text::String> res = Text::String::NewNotNullSlow((const UTF8Char*)txt);
 					this->hdlr(this->hdlrObj, res, confidence, Math::RectArea<OSInt>(left, top, right - left, bottom - top));
 					res->Release();
 				}

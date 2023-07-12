@@ -91,8 +91,7 @@ IO::ParsedObject *Parser::ObjParser::FileGDB2Parser::ParseObject(IO::ParsedObjec
 				UOSInt i;
 				UOSInt j;
 				NEW_CLASS(db, DB::SharedReadingDB(fgdb));
-				layerName = pobj->GetSourceNameObj();
-				sptr = layerName->ConcatTo(sbuff);
+				sptr = pobj->GetSourceNameObj()->ConcatTo(sbuff);
 				i = Text::StrLastIndexOfC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
 				NEW_CLASS(layerColl, Map::MapLayerCollection(CSTRP(sbuff, sptr), CSTRP(&sbuff[i + 1], sptr)));
 				i = 0;

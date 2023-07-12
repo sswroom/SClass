@@ -11,7 +11,7 @@ Net::WhoisClient::WhoisClient(Net::SocketFactory *sockf, UInt32 whoisIP, Text::C
 	this->whoisIP = whoisIP;
 	if (prefix.leng > 0)
 	{
-		this->prefix = Text::String::New(prefix);
+		this->prefix = Text::String::New(prefix).Ptr();
 	}
 	else
 	{

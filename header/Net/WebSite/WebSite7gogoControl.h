@@ -16,7 +16,7 @@ namespace Net
 			{
 				Int64 id;
 				Int64 recTime;
-				Text::String *message;
+				NotNullPtr<Text::String> message;
 				Text::String *imgURL;
 			} ItemData;
 
@@ -41,7 +41,7 @@ namespace Net
 			WebSite7gogoControl(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, Text::String *userAgent);
 			~WebSite7gogoControl();
 
-			OSInt GetChannelItems(Text::String *channelId, OSInt pageNo, Data::ArrayList<ItemData*> *itemList, ChannelInfo *chInfo);
+			OSInt GetChannelItems(NotNullPtr<Text::String> channelId, OSInt pageNo, Data::ArrayList<ItemData*> *itemList, ChannelInfo *chInfo);
 			void FreeItems(Data::ArrayList<ItemData*> *itemList);
 			void FreeChannelInfo(ChannelInfo *chInfo);
 			Text::String *GetUserAgent();

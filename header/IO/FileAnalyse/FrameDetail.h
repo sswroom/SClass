@@ -1,6 +1,7 @@
 #ifndef _SM_IO_FILEANALYSE_FRAMEDETAIL
 #define _SM_IO_FILEANALYSE_FRAMEDETAIL
 #include "Data/ArrayList.h"
+#include "Data/ArrayListNN.h"
 #include "IO/FileAnalyse/FrameDetailHandler.h"
 #include "Text/String.h"
 #include "Text/StringBuilderUTF8.h"
@@ -25,15 +26,15 @@ namespace IO
 			{
 				UInt32 ofst;
 				UInt32 size;
-				Text::String *name;
-				Text::String *value;
+				NotNullPtr<Text::String> name;
+				NotNullPtr<Text::String> value;
 				FieldType fieldType;
 			};
 		private:
 			UInt64 ofst;
 			UInt64 size;
 
-			Data::ArrayList<Text::String*> headers;
+			Data::ArrayListNN<Text::String> headers;
 			Data::ArrayList<FieldInfo*> fields;
 
 			void FreeFieldInfo(FieldInfo *field);

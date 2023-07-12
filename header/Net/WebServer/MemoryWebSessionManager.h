@@ -15,8 +15,8 @@ namespace Net
 			Data::ArrayListInt64 sessIds;
 			Data::ArrayList<Net::WebServer::MemoryWebSession*> sesses;
 			Sync::Mutex mut;
-			Text::String *path;
-			Text::String *cookieName;
+			NotNullPtr<Text::String> path;
+			NotNullPtr<Text::String> cookieName;
 
 			Int32 chkInterval;
 			SessionHandler chkHdlr;

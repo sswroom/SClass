@@ -22,7 +22,7 @@ Net::MACInfoList::MACInfoList()
 		entry = MemAlloc(Net::MACInfo::MACEntry, 1);
 		entry->rangeStart = ents[i].rangeStart;
 		entry->rangeEnd = ents[i].rangeEnd;
-		entry->name = Text::StrCopyNewC(ents[i].name, ents[i].nameLen);
+		entry->name = Text::StrCopyNewC(ents[i].name, ents[i].nameLen).Ptr();
 		entry->nameLen = ents[i].nameLen;
 		this->dataList.Add(entry);
 		i++;
@@ -130,7 +130,7 @@ UOSInt Net::MACInfoList::SetEntry(UInt64 rangeStart, UInt64 rangeEnd, Text::CStr
 	{
 		entry = this->dataList.GetItem((UOSInt)si);
 		SDEL_TEXT(entry->name);
-		entry->name = Text::StrCopyNewC(name.v, name.leng);
+		entry->name = Text::StrCopyNewC(name.v, name.leng).Ptr();
 		entry->nameLen = name.leng;
 		return (UOSInt)si;
 	}
@@ -139,7 +139,7 @@ UOSInt Net::MACInfoList::SetEntry(UInt64 rangeStart, UInt64 rangeEnd, Text::CStr
 		entry = MemAlloc(Net::MACInfo::MACEntry, 1);
 		entry->rangeStart = rangeStart;
 		entry->rangeEnd = rangeEnd;
-		entry->name = Text::StrCopyNewC(name.v, name.leng);
+		entry->name = Text::StrCopyNewC(name.v, name.leng).Ptr();
 		entry->nameLen = name.leng;
 		this->dataList.Insert((UOSInt)~si, entry);
 		return (UOSInt)~si;

@@ -15,13 +15,13 @@ void __stdcall SSWR::AVIRead::AVIRWFSForm::OnLoadClicked(void *userObj)
 	else
 	{
 		me->txtStatus->SetText(CSTR("Success"));
-		Data::ArrayList<Text::String*> nameList;
+		Data::ArrayListNN<Text::String> nameList;
 		UOSInt i = 0;
 		UOSInt j = me->wfs->GetFeatureNames(&nameList);
 		me->cboFeature->ClearItems();
 		while (i < j)
 		{
-			me->cboFeature->AddItem(nameList.GetItem(i), 0);
+			me->cboFeature->AddItem(Text::String::OrEmpty(nameList.GetItem(i)), 0);
 			i++;
 		}
 		if (j > 0)

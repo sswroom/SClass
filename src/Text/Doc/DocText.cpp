@@ -5,7 +5,7 @@
 
 Text::Doc::DocText::DocText(const UTF8Char *text)
 {
-	this->text = Text::StrCopyNew(text);
+	this->text = Text::StrCopyNew(text).Ptr();
 }
 
 Text::Doc::DocText::~DocText()

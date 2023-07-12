@@ -46,7 +46,7 @@ namespace SSWR
 			DB::ReadingDB *db;
 			Data::Chart *chart;
 			Data::ArrayList<UInt32> *yCols;
-			Text::String *tableName;
+			NotNullPtr<Text::String> tableName;
 			Text::String *schemaName;
 			DB::DBUtil::ColType *strTypes;
 

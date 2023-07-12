@@ -49,7 +49,7 @@ IO::SystemInfo::SystemInfo()
 		{
 			sb.RemoveChars(1);
 		}
-		info->platformName = Text::String::New(sb.ToString(), sb.GetLength());
+		info->platformName = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 	}
 	else if (SystemInfo_ReadFile(CSTR("/sys/class/dmi/id/sys_vendor"), &sb))
 	{
@@ -58,18 +58,18 @@ IO::SystemInfo::SystemInfo()
 		{
 			sb.RemoveChars(1);
 		}
-		info->platformName = Text::String::New(sb.ToString(), sb.GetLength());
+		info->platformName = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 	}
 
 
 	sb.ClearStr();
 	if (SystemInfo_ReadFile(CSTR("/sys/class/dmi/id/board_serial"), &sb))
 	{
-		info->platformSN = Text::String::New(sb.ToString(), sb.GetLength());
+		info->platformSN = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 	}
 	else if (SystemInfo_ReadFile(CSTR("/sys/class/dmi/id/product_serial"), &sb))
 	{
-		info->platformSN = Text::String::New(sb.ToString(), sb.GetLength());
+		info->platformSN = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 	}
 
 	this->clsData = info;
@@ -225,7 +225,7 @@ UOSInt IO::SystemInfo::GetRAMInfo(Data::ArrayList<RAMInfo*> *ramList)
 				{
 					sb.ClearStr();
 					sb.AppendSlow((const UTF8Char*)mem->deviceLocator);
-					ram->deviceLocator = Text::String::New(sb.ToCString());
+					ram->deviceLocator = Text::String::New(sb.ToCString()).Ptr();
 				}
 				else
 				{
@@ -235,7 +235,7 @@ UOSInt IO::SystemInfo::GetRAMInfo(Data::ArrayList<RAMInfo*> *ramList)
 				{
 					sb.ClearStr();
 					sb.AppendSlow((const UTF8Char*)mem->manufacturer);
-					ram->manufacturer = Text::String::New(sb.ToCString());
+					ram->manufacturer = Text::String::New(sb.ToCString()).Ptr();
 				}
 				else
 				{
@@ -245,7 +245,7 @@ UOSInt IO::SystemInfo::GetRAMInfo(Data::ArrayList<RAMInfo*> *ramList)
 				{
 					sb.ClearStr();
 					sb.AppendSlow((const UTF8Char*)mem->partNo);
-					ram->partNo = Text::String::New(sb.ToCString());
+					ram->partNo = Text::String::New(sb.ToCString()).Ptr();
 				}
 				else
 				{
@@ -255,7 +255,7 @@ UOSInt IO::SystemInfo::GetRAMInfo(Data::ArrayList<RAMInfo*> *ramList)
 				{
 					sb.ClearStr();
 					sb.AppendSlow((const UTF8Char*)mem->sn);
-					ram->sn = Text::String::New(sb.ToCString());
+					ram->sn = Text::String::New(sb.ToCString()).Ptr();
 				}
 				else
 				{

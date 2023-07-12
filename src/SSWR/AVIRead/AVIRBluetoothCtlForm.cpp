@@ -103,6 +103,7 @@ UOSInt SSWR::AVIRead::AVIRBluetoothCtlForm::UpdateList(Data::FastMap<UInt64, IO:
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 	Data::DateTime dt;
+	NotNullPtr<Text::String> s;
 	Sync::MutexUsage mutUsage;
 	IO::BTScanLog::ScanRecord3 *dev;
 
@@ -146,9 +147,9 @@ UOSInt SSWR::AVIRead::AVIRBluetoothCtlForm::UpdateList(Data::FastMap<UInt64, IO:
 		}
 		if (statusMap->Get(dev->macInt) != 0)
 		{
-			if (dev->name)
+			if (s.Set(dev->name))
 			{
-				this->lvDevices->SetSubItem(i, 3, dev->name);
+				this->lvDevices->SetSubItem(i, 3, s);
 			}
 			sptr = Text::StrInt32(sbuff, dev->rssi);
 			this->lvDevices->SetSubItem(i, 5, CSTRP(sbuff, sptr));

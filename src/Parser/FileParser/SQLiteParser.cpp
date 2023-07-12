@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/ArrayListStrFast.h"
+#include "Data/ArrayListStrFastNN.h"
 #include "Data/Sort/ArtificialQuickSort.h"
 #include "DB/SQLiteFile.h"
 #include "IO/FileStream.h"
@@ -8,7 +9,7 @@
 #include "Map/GeoPackage.h"
 #include "Parser/FileParser/SQLiteParser.h"
 #include "Text/MyString.h"
-#include "Text/StringComparatorFast.h"
+#include "Text/StringComparatorFastNN.h"
 
 #include <stdio.h>
 
@@ -109,9 +110,9 @@ IO::ParsedObject *Parser::FileParser::SQLiteParser::ParseFileHdr(IO::StreamData 
 
 IO::ParsedObject *Parser::FileParser::SQLiteParser::ParseAsMap(DB::DBConn *conn)
 {
-	Data::ArrayListStrFast tableNames;
+	Data::ArrayListStrFastNN tableNames;
 	conn->QueryTableNames(CSTR_NULL, &tableNames);
-	Text::StringComparatorFast comparator;
+	Text::StringComparatorFastNN comparator;
 	Data::Sort::ArtificialQuickSort::Sort(&tableNames, &comparator);
 	if (tableNames.SortedIndexOf(CSTR("gpkg_spatial_ref_sys")) < 0 ||
 		tableNames.SortedIndexOf(CSTR("gpkg_contents")) < 0 ||

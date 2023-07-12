@@ -165,7 +165,7 @@ typedef enum
 	MNU_PB_CHAPTERS = 1000
 } MenuItems;
 
-void __stdcall SSWR::AVIRead::AVIRHQMPForm::OnFileDrop(void *userObj, Text::String **files, UOSInt nFiles)
+void __stdcall SSWR::AVIRead::AVIRHQMPForm::OnFileDrop(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles)
 {
 	SSWR::AVIRead::AVIRHQMPForm *me = (SSWR::AVIRead::AVIRHQMPForm*)userObj;
 	UOSInt i;
@@ -821,7 +821,7 @@ void SSWR::AVIRead::AVIRHQMPForm::EventMenuClicked(UInt16 cmdId)
 			SSWR::AVIRead::AVIROpenFileForm dlg(0, this->ui, this->core, IO::ParserType::MediaFile);
 			if (dlg.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
-				Text::String *fname = dlg.GetFileName();
+				NotNullPtr<Text::String> fname = dlg.GetFileName();
 				UOSInt i = fname->IndexOf(':');
 				if (i == 1 || i == INVALID_INDEX)
 				{

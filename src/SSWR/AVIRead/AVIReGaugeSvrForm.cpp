@@ -97,7 +97,7 @@ void __stdcall SSWR::AVIRead::AVIReGaugeSvrForm::OnEGaugeData(void *userObj, con
 	{
 		me->reqLast->Release();
 	}
-	me->reqLast = Text::String::New(data, dataSize);
+	me->reqLast = Text::String::New(data, dataSize).Ptr();
 	me->reqUpdated = true;
 }
 
