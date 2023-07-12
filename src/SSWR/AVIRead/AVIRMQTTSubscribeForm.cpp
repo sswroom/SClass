@@ -65,14 +65,14 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnStartClicked(void *userOb
 		me->txtUsername->GetText(&sb);
 		if (sb.GetLength() > 0)
 		{
-			username.v = Text::StrCopyNewC(sb.ToString(), sb.GetLength()).Ptr();
+			username.v = Text::StrCopyNewC(sb.ToString(), sb.GetLength());
 			username.leng = sb.GetLength();
 		}
 		sb.ClearStr();
 		me->txtPassword->GetText(&sb);
 		if (sb.GetLength() > 0)
 		{
-			password.v = Text::StrCopyNewC(sb.ToString(), sb.GetLength()).Ptr();
+			password.v = Text::StrCopyNewC(sb.ToString(), sb.GetLength());
 			password.leng = sb.GetLength();
 		}
 		sb.ClearStr();
@@ -342,7 +342,7 @@ void SSWR::AVIRead::AVIRMQTTSubscribeForm::UpdateTopicChart()
 				Data::LineChart *chart;
 				NEW_CLASS(chart, Data::LineChart(CSTR_NULL));
 				chart->AddXDataDate(this->currTopic->dateList, recvCnt);
-				chart->AddYData(this->currTopic->topic.Ptr(), this->currTopic->valueList, recvCnt, 0xFFFF0000, Data::LineChart::LS_LINE);
+				chart->AddYData(this->currTopic->topic, this->currTopic->valueList, recvCnt, 0xFFFF0000, Data::LineChart::LS_LINE);
 				chart->Plot(this->dispImg, 0, 0, UOSInt2Double(sz.x), UOSInt2Double(sz.y));
 				DEL_CLASS(chart);
 			}
@@ -367,7 +367,7 @@ void SSWR::AVIRead::AVIRMQTTSubscribeForm::UpdateTopicChart()
 				Data::LineChart *chart;
 				NEW_CLASS(chart, Data::LineChart(CSTR_NULL));
 				chart->AddXDataDate(this->currTopic->dateList, 256);
-				chart->AddYData(this->currTopic->topic.Ptr(), this->currTopic->valueList, 256, 0xFFFF0000, Data::LineChart::LS_LINE);
+				chart->AddYData(this->currTopic->topic, this->currTopic->valueList, 256, 0xFFFF0000, Data::LineChart::LS_LINE);
 				chart->Plot(this->dispImg, 0, 0, UOSInt2Double(sz.x), UOSInt2Double(sz.y));
 				DEL_CLASS(chart);
 				MemFree(dateList);

@@ -30,22 +30,22 @@ Net::FTPClient::FTPClient(Text::CString url, Net::SocketFactory *sockf, Bool pas
 	{
 		if (c == '/')
 		{
-			this->path = Text::StrCopyNew(&sptr[-1]).Ptr();
+			this->path = Text::StrCopyNew(&sptr[-1]);
 			sptr[-1] = 0;
 			if (userName == 0)
 			{
-				this->userName = Text::StrCopyNewC(UTF8STRC("Annonymous")).Ptr();
+				this->userName = Text::StrCopyNewC(UTF8STRC("Annonymous"));
 				this->password = 0;
 			}
 			else
 			{
-				this->userName = Text::StrCopyNew(userName).Ptr();
+				this->userName = Text::StrCopyNew(userName);
 				if (password)
 				{
-					this->password = Text::StrCopyNew(password).Ptr();
+					this->password = Text::StrCopyNew(password);
 				}
 			}
-			this->host = Text::String::New(host, (UOSInt)(sptr - host - 1)).Ptr();
+			this->host = Text::String::New(host, (UOSInt)(sptr - host - 1));
 			if (port)
 			{
 				if (!Text::StrToUInt16(port, &this->port))

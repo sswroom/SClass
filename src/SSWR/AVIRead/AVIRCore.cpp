@@ -85,7 +85,7 @@ SSWR::AVIRead::AVIRCore::AVIRCore(UI::GUICore *ui) : vioPinMgr(4)
 			Text::StrOSInt(Text::StrConcatC(wbuff2, L"AudioDevice", 11), i);
 			if (reg->GetValueStr(wbuff2, wbuff) != 0)
 			{
-				NotNullPtr<Text::String> devName = Text::String::NewNotNull(wbuff);
+				Text::String *devName = Text::String::NewNotNull(wbuff);
 				this->audDevice.AddDevice(devName->ToCString());
 				this->audDevList.Add(devName);
 			}
@@ -386,7 +386,7 @@ void SSWR::AVIRead::AVIRCore::SetAudioDeviceList(Data::ArrayList<Text::String *>
 	}
 }
 
-Data::ArrayListNN<Text::String> *SSWR::AVIRead::AVIRCore::GetAudioDeviceList()
+Data::ArrayList<Text::String *> *SSWR::AVIRead::AVIRCore::GetAudioDeviceList()
 {
 	return &this->audDevList;
 }

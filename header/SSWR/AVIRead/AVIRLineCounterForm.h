@@ -18,7 +18,7 @@ namespace SSWR
 		private:
 			typedef struct
 			{
-				NotNullPtr<Text::String> fileName;
+				Text::String *fileName;
 				UOSInt lineCnt;
 			} FileInfo;
 		private:
@@ -40,7 +40,7 @@ namespace SSWR
 			UI::GUIListView *lvResult;
 
 			SSWR::AVIRead::AVIRCore *core;
-			Data::ArrayListNN<Text::String> extList;
+			Data::ArrayList<Text::String *> extList;
 			Data::ArrayList<FileInfo *> resList;
 
 			static void __stdcall OnExtensionsAddClicked(void *userObj);
@@ -58,6 +58,6 @@ namespace SSWR
 
 			virtual void OnMonitorChanged();
 		};
-	}
-}
+	};
+};
 #endif

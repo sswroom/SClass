@@ -3,7 +3,7 @@
 #include "DB/ReadingDB.h"
 #include "Text/MyString.h"
 
-DB::ReadingDB::ReadingDB(NotNullPtr<Text::String> sourceName) : IO::ParsedObject(sourceName)
+DB::ReadingDB::ReadingDB(Text::String *sourceName) : IO::ParsedObject(sourceName)
 {
 }
 

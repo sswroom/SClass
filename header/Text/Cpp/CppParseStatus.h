@@ -17,7 +17,7 @@ namespace Text
 //http://msdn.microsoft.com/en-us/library/b0084kay.aspx
 			typedef struct
 			{
-				NotNullPtr<Text::String> defineName;
+				Text::String *defineName;
 				Text::String *defineVal;
 				Text::String *defineParam;
 				Text::String *fileName;
@@ -48,7 +48,7 @@ namespace Text
 
 			typedef struct
 			{
-				NotNullPtr<Text::String> fileName;
+				Text::String *fileName;
 				Int32 lineNum;
 				Bool lineStart;
 				ParserMode currMode;
@@ -59,15 +59,15 @@ namespace Text
 				UTF8Char *lineBuffWS;
 			} FileParseStatus;
 		private:
-			NotNullPtr<Text::String> fileName;
-			Data::FastStringMap<DefineInfo*> defines;
-			Data::ArrayList<FileParseStatus*> statuses;
-			Data::ArrayListICaseString fileNames;
+			Text::String *fileName;
+			Data::FastStringMap<DefineInfo*> *defines;
+			Data::ArrayList<FileParseStatus*> *statuses;
+			Data::ArrayListICaseString *fileNames;
 
 			void FreeDefineInfo(DefineInfo *definfo);
 			void FreeFileStatus(FileParseStatus *fileStatus);
 		public:
-			CppParseStatus(NotNullPtr<Text::String> rootFile);
+			CppParseStatus(Text::String *rootFile);
 			CppParseStatus(Text::CString rootFile);
 			~CppParseStatus();
 
@@ -86,7 +86,7 @@ namespace Text
 
 			UOSInt GetFileCount();
 			Text::String *GetFileName(UOSInt index);
-			NotNullPtr<Text::String> GetCurrCodeFile() const;
+			Text::String *GetCurrCodeFile();
 		};
 	}
 }

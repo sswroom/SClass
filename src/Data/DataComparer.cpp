@@ -184,16 +184,5 @@ OSInt Data::DataComparer::Compare(Text::CString val1, Text::CString val2)
 
 OSInt Data::DataComparer::Compare(Text::String *val1, Text::String *val2)
 {
-	if (val1 == val2)
-		return 0;
-	else if (val1 == 0)
-		return -1;
-	else if (val2 == 0)
-		return 1;
-	return Text::StrCompare(val1->v, val2->v);
-}
-
-OSInt Data::DataComparer::Compare(NotNullPtr<Text::String> val1, NotNullPtr<Text::String> val2)
-{
 	return Text::StrCompare(val1->v, val2->v);
 }

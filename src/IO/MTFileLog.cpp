@@ -72,7 +72,7 @@ UTF8Char *IO::MTFileLog::GetNewName(UTF8Char *buff, Data::DateTimeUtil::TimeValu
 	return currName;
 }
 
-void IO::MTFileLog::WriteArr(NotNullPtr<Text::String> *msgArr, Data::Timestamp *dateArr, UOSInt arrCnt)
+void IO::MTFileLog::WriteArr(Text::String **msgArr, Data::Timestamp *dateArr, UOSInt arrCnt)
 {
 	Bool newFile = false;
 	UTF8Char buff[256];
@@ -159,14 +159,14 @@ UInt32 __stdcall IO::MTFileLog::FileThread(void *userObj)
 {
 	IO::MTFileLog *me = (IO::MTFileLog*)userObj;
 	UOSInt arrCnt;
-	NotNullPtr<Text::String> *msgArr = 0;
+	Text::String **msgArr = 0;
 	Data::Timestamp *dateArr = 0;
 	while (!me->closed)
 	{
 		Sync::MutexUsage mutUsage(&me->mut);
 		if ((arrCnt = me->msgList.GetCount()) > 0)
 		{
-			msgArr = MemAlloc(NotNullPtr<Text::String>, arrCnt);
+			msgArr = MemAlloc(Text::String *, arrCnt);
 			dateArr = MemAlloc(Data::Timestamp, arrCnt);
 			me->msgList.GetRange(msgArr, 0, arrCnt);
 			me->dateList.GetRange(dateArr, 0, arrCnt);
@@ -186,7 +186,7 @@ UInt32 __stdcall IO::MTFileLog::FileThread(void *userObj)
 
 	if ((arrCnt = me->msgList.GetCount()) > 0)
 	{
-		msgArr = MemAlloc(NotNullPtr<Text::String>, arrCnt);
+		msgArr = MemAlloc(Text::String *, arrCnt);
 		dateArr = MemAlloc(Data::Timestamp, arrCnt);
 		me->msgList.GetRange(msgArr, 0, arrCnt);
 		me->dateList.GetRange(dateArr, 0, arrCnt);
@@ -208,12 +208,12 @@ void IO::MTFileLog::Init(LogType style, LogGroup groupStyle, const Char *dateFor
 	UOSInt i;
 	if (dateFormat == 0)
 	{
-		this->dateFormat = Text::StrCopyNewC(UTF8STRC("yyyy-MM-dd HH:mm:ss\t")).Ptr();
+		this->dateFormat = Text::StrCopyNewC(UTF8STRC("yyyy-MM-dd HH:mm:ss\t"));
 	}
 	else
 	{
 		sptr = Text::StrConcatC(Text::StrConcat(buff, (const UTF8Char*)dateFormat), UTF8STRC("\t"));
-		this->dateFormat = Text::StrCopyNewC(buff, (UOSInt)(sptr - buff)).Ptr();
+		this->dateFormat = Text::StrCopyNewC(buff, (UOSInt)(sptr - buff));
 	}
 	this->logStyle = style;
 	this->groupStyle = groupStyle;
@@ -224,7 +224,7 @@ void IO::MTFileLog::Init(LogType style, LogGroup groupStyle, const Char *dateFor
 	if (this->groupStyle != IO::LogHandler::LogGroup::NoGroup)
 	{
 		i = this->fileName->LastIndexOf(IO::Path::PATH_SEPERATOR);
-		this->extName = Text::String::New(this->fileName->ToCString().Substring(i + 1)).Ptr();
+		this->extName = Text::String::New(this->fileName->ToCString().Substring(i + 1));
 	}
 	else
 	{
@@ -258,7 +258,7 @@ void IO::MTFileLog::Init(LogType style, LogGroup groupStyle, const Char *dateFor
 	Sync::ThreadUtil::Create(FileThread, this, 0x20000);
 }
 
-IO::MTFileLog::MTFileLog(NotNullPtr<Text::String> fileName, LogType style, LogGroup groupStyle, const Char *dateFormat)
+IO::MTFileLog::MTFileLog(Text::String *fileName, LogType style, LogGroup groupStyle, const Char *dateFormat)
 {
 	this->fileName = fileName->Clone();
 	this->Init(style, groupStyle, dateFormat);
@@ -286,7 +286,8 @@ IO::MTFileLog::~MTFileLog()
 	log->Close();
 	mutUsage.EndUse();
 
-	this->fileName->Release();
+	fileName->Release();
+	fileName = 0;
 	SDEL_STRING(this->extName);
 
 	SDEL_CLASS(log);

@@ -925,7 +925,7 @@ void Net::UserAgentDB::ParseUserAgent(Net::UserAgentDB::UAEntry *ent, Text::CStr
 	else if (userAgent.StartsWith(UTF8STRC("West Wind Internet Protocols ")))
 	{
 		ent->browser = Net::BrowserInfo::BT_WESTWIND;
-		ent->browserVer = Text::StrCopyNewC(&ent->userAgent[29], userAgent.leng - 29).Ptr();
+		ent->browserVer = Text::StrCopyNewC(&ent->userAgent[29], userAgent.leng - 29);
 		ent->browserVerLen = userAgent.leng - 29;
 		return;
 	}
@@ -935,12 +935,12 @@ void Net::UserAgentDB::ParseUserAgent(Net::UserAgentDB::UAEntry *ent, Text::CStr
 		i = userAgent.IndexOf('(');
 		if (i != INVALID_INDEX)
 		{
-			ent->browserVer = Text::StrCopyNewC(&ent->userAgent[17], i - 17).Ptr();
+			ent->browserVer = Text::StrCopyNewC(&ent->userAgent[17], i - 17);
 			ent->browserVerLen = i - 17;
 		}
 		else
 		{
-			ent->browserVer = Text::StrCopyNewC(&ent->userAgent[17], userAgent.leng - 17).Ptr();
+			ent->browserVer = Text::StrCopyNewC(&ent->userAgent[17], userAgent.leng - 17);
 			ent->browserVerLen = userAgent.leng - 17;
 		}
 		return;
@@ -951,12 +951,12 @@ void Net::UserAgentDB::ParseUserAgent(Net::UserAgentDB::UAEntry *ent, Text::CStr
 		i = userAgent.IndexOf('(');
 		if (i != INVALID_INDEX)
 		{
-			ent->browserVer = Text::StrCopyNewC(&ent->userAgent[17], i - 17).Ptr();
+			ent->browserVer = Text::StrCopyNewC(&ent->userAgent[17], i - 17);
 			ent->browserVerLen = i - 17;
 		}
 		else
 		{
-			ent->browserVer = Text::StrCopyNewC(&ent->userAgent[17], userAgent.leng - 17).Ptr();
+			ent->browserVer = Text::StrCopyNewC(&ent->userAgent[17], userAgent.leng - 17);
 			ent->browserVerLen = userAgent.leng - 17;
 		}
 		return;
@@ -964,7 +964,7 @@ void Net::UserAgentDB::ParseUserAgent(Net::UserAgentDB::UAEntry *ent, Text::CStr
 	else if (userAgent.Equals(UTF8STRC("Nutch Master Test/Dolphin-0.1-Beta")))
 	{
 		ent->browser = Net::BrowserInfo::BT_NUTCH;
-		ent->browserVer = Text::StrCopyNewC(UTF8STRC("0.1")).Ptr();
+		ent->browserVer = Text::StrCopyNewC(UTF8STRC("0.1"));
 		ent->browserVerLen = 3;
 		return;
 	}
@@ -1051,14 +1051,14 @@ void Net::UserAgentDB::ParseUserAgent(Net::UserAgentDB::UAEntry *ent, Text::CStr
 				{
 					ent->browser = Net::BrowserInfo::BT_IE;
 					SDEL_TEXT(ent->browserVer);
-					ent->browserVer = Text::StrCopyNewC(&strs2[j].v[5], strs2[j].leng - 5).Ptr();
+					ent->browserVer = Text::StrCopyNewC(&strs2[j].v[5], strs2[j].leng - 5);
 					ent->browserVerLen = strs2[j].leng - 5;
 				}
 				else if (Text::StrStartsWithC(strs2[j].v, strs2[j].leng, UTF8STRC("Windows NT ")))
 				{
 					ent->os = Manage::OSInfo::OT_WINDOWS_NT;
 					SDEL_TEXT(ent->osVer);
-					ent->osVer = Text::StrCopyNewC(&strs2[j].v[11], strs2[j].leng - 11).Ptr();
+					ent->osVer = Text::StrCopyNewC(&strs2[j].v[11], strs2[j].leng - 11);
 					ent->osVerLen = strs2[j].leng - 11;
 				}
 				else if (Text::StrEqualsC(strs2[j].v, strs2[j].leng, UTF8STRC("WOW64")))
@@ -1102,7 +1102,7 @@ void Net::UserAgentDB::ParseUserAgent(Net::UserAgentDB::UAEntry *ent, Text::CStr
 				{
 					ent->os = Manage::OSInfo::OT_ANDROID;
 					SDEL_TEXT(ent->osVer);
-					ent->osVer = Text::StrCopyNewC(&strs2[j].v[8], strs2[j].leng - 8).Ptr();
+					ent->osVer = Text::StrCopyNewC(&strs2[j].v[8], strs2[j].leng - 8);
 					ent->osVerLen = strs2[j].leng - 8;
 					lastIsAndroid = true;
 				}
@@ -1111,7 +1111,7 @@ void Net::UserAgentDB::ParseUserAgent(Net::UserAgentDB::UAEntry *ent, Text::CStr
 					ent->os = Manage::OSInfo::OT_CHROMEOS;
 					SDEL_TEXT(ent->osVer);
 					k = Text::StrIndexOfCharC(&strs2[j].v[5], strs2[j].leng - 5, ' ');
-					ent->osVer = Text::StrCopyNewC(&strs2[j].v[6 + k], strs2[j].leng - k - 6).Ptr();
+					ent->osVer = Text::StrCopyNewC(&strs2[j].v[6 + k], strs2[j].leng - k - 6);
 					ent->osVerLen = strs2[j].leng - k - 6;
 				}
 				else if (ent->os == Manage::OSInfo::OT_IPAD && Text::StrEqualsC(strs2[j].v, strs2[j].leng, UTF8STRC("U")))
@@ -1136,7 +1136,7 @@ void Net::UserAgentDB::ParseUserAgent(Net::UserAgentDB::UAEntry *ent, Text::CStr
 						strs2[j].leng = k + 7;
 					}
 					Text::StrReplace(&strs2[j].v[7], '_', '.');
-					ent->osVer = Text::StrCopyNewC(&strs2[j].v[7], strs2[j].leng - 7).Ptr();
+					ent->osVer = Text::StrCopyNewC(&strs2[j].v[7], strs2[j].leng - 7);
 					ent->osVerLen = strs2[j].leng - 7;
 				}
 				else if (ent->os == Manage::OSInfo::OT_IPHONE && Text::StrStartsWithC(strs2[j].v, strs2[j].leng, UTF8STRC("CPU iPhone OS ")))
@@ -1149,7 +1149,7 @@ void Net::UserAgentDB::ParseUserAgent(Net::UserAgentDB::UAEntry *ent, Text::CStr
 						strs2[j].leng = k + 14;
 					}
 					Text::StrReplace(&strs2[j].v[14], '_', '.');
-					ent->osVer = Text::StrCopyNewC(&strs2[j].v[14], strs2[j].leng - 14).Ptr();
+					ent->osVer = Text::StrCopyNewC(&strs2[j].v[14], strs2[j].leng - 14);
 					ent->osVerLen = strs2[j].leng - 14;
 				}
 				else if (ent->os == Manage::OSInfo::OT_MACOS && Text::StrStartsWithC(strs2[j].v, strs2[j].leng, UTF8STRC("Intel Mac OS X ")))
@@ -1162,14 +1162,14 @@ void Net::UserAgentDB::ParseUserAgent(Net::UserAgentDB::UAEntry *ent, Text::CStr
 						strs2[j].leng = k + 15;
 					}
 					Text::StrReplace(&strs2[j].v[15], '_', '.');
-					ent->osVer = Text::StrCopyNewC(&strs2[j].v[15], strs2[j].leng - 15).Ptr();
+					ent->osVer = Text::StrCopyNewC(&strs2[j].v[15], strs2[j].leng - 15);
 					ent->osVerLen = strs2[j].leng - 15;
 				}
 				else if (Text::StrEqualsC(strs2[j].v ,strs2[j].leng, UTF8STRC("Trident/7.0")))
 				{
 					ent->browser = Net::BrowserInfo::BT_IE;
 					SDEL_TEXT(ent->browserVer);
-					ent->browserVer = Text::StrCopyNewC(UTF8STRC("11.0")).Ptr();
+					ent->browserVer = Text::StrCopyNewC(UTF8STRC("11.0"));
 					ent->browserVerLen = 4;
 				}
 				else if (Text::StrEqualsC(strs2[j].v, strs2[j].leng, UTF8STRC("JuziBrowser"))) //JuziBrowser
@@ -1188,70 +1188,70 @@ void Net::UserAgentDB::ParseUserAgent(Net::UserAgentDB::UAEntry *ent, Text::CStr
 					{
 						ent->browser = Net::BrowserInfo::BT_GOOGLEBOTS;
 						SDEL_TEXT(ent->browserVer);
-						ent->browserVer = Text::StrCopyNewC(&strs2[j].v[10], strs2[j].leng - 10).Ptr();
+						ent->browserVer = Text::StrCopyNewC(&strs2[j].v[10], strs2[j].leng - 10);
 						ent->browserVerLen = strs2[j].leng - 10;
 					}
 					else if (ent->os == Manage::OSInfo::OT_UNKNOWN)
 					{
 						ent->browser = Net::BrowserInfo::BT_GOOGLEBOTD;
 						SDEL_TEXT(ent->browserVer);
-						ent->browserVer = Text::StrCopyNewC(&strs2[j].v[10], strs2[j].leng - 10).Ptr();
+						ent->browserVer = Text::StrCopyNewC(&strs2[j].v[10], strs2[j].leng - 10);
 						ent->browserVerLen = strs2[j].leng - 10;
 					}
 				}
 				else if (ent->browser == Net::BrowserInfo::BT_UNKNOWN && Text::StrStartsWithC(strs2[j].v, strs2[j].leng, UTF8STRC("Baiduspider-render/")))
 				{
 					ent->browser = Net::BrowserInfo::BT_BAIDU;
-					ent->browserVer = Text::StrCopyNewC(&strs2[j].v[19], strs2[j].leng - 19).Ptr();
+					ent->browserVer = Text::StrCopyNewC(&strs2[j].v[19], strs2[j].leng - 19);
 						ent->browserVerLen = strs2[j].leng - 19;
 				}
 				else if (ent->browser == Net::BrowserInfo::BT_UNKNOWN && Text::StrStartsWithC(strs2[j].v, strs2[j].leng, UTF8STRC("SemrushBot/")))
 				{
 					ent->browser = Net::BrowserInfo::BT_SEMRUSH;
-					ent->browserVer = Text::StrCopyNewC(&strs2[j].v[11], strs2[j].leng - 11).Ptr();
+					ent->browserVer = Text::StrCopyNewC(&strs2[j].v[11], strs2[j].leng - 11);
 					ent->browserVerLen = strs2[j].leng - 11;
 				}
 				else if (ent->browser == Net::BrowserInfo::BT_UNKNOWN && Text::StrStartsWithC(strs2[j].v, strs2[j].leng, UTF8STRC("YandexBot/")))
 				{
 					ent->browser = Net::BrowserInfo::BT_YANDEX;
-					ent->browserVer = Text::StrCopyNewC(&strs2[j].v[10], strs2[j].leng - 10).Ptr();
+					ent->browserVer = Text::StrCopyNewC(&strs2[j].v[10], strs2[j].leng - 10);
 					ent->browserVerLen = strs2[j].leng - 10;
 				}
 				else if (ent->browser == Net::BrowserInfo::BT_UNKNOWN && Text::StrStartsWithC(strs2[j].v, strs2[j].leng, UTF8STRC("BLEXBot/")))
 				{
 					ent->browser = Net::BrowserInfo::BT_BLEXBOT;
-					ent->browserVer = Text::StrCopyNewC(&strs2[j].v[10], strs2[j].leng - 10).Ptr();
+					ent->browserVer = Text::StrCopyNewC(&strs2[j].v[10], strs2[j].leng - 10);
 					ent->browserVerLen = strs2[j].leng - 10;
 				}
 				else if (ent->browser == Net::BrowserInfo::BT_UNKNOWN && Text::StrStartsWithC(strs2[j].v, strs2[j].leng, UTF8STRC("bingbot/")))
 				{
 					ent->browser = Net::BrowserInfo::BT_BING;
-					ent->browserVer = Text::StrCopyNewC(&strs2[j].v[8], strs2[j].leng - 8).Ptr();
+					ent->browserVer = Text::StrCopyNewC(&strs2[j].v[8], strs2[j].leng - 8);
 					ent->browserVerLen = strs2[j].leng - 8;
 				}
 				else if ((ent->browser == Net::BrowserInfo::BT_UNKNOWN || ent->browser == Net::BrowserInfo::BT_IE) && Text::StrStartsWithC(strs2[j].v, strs2[j].leng, UTF8STRC("MS Web Services Client Protocol ")))
 				{
 					ent->browser = Net::BrowserInfo::BT_DOTNET;
 					SDEL_TEXT(ent->browserVer);
-					ent->browserVer = Text::StrCopyNewC(&strs2[j].v[32], strs2[j].leng - 32).Ptr();
+					ent->browserVer = Text::StrCopyNewC(&strs2[j].v[32], strs2[j].leng - 32);
 					ent->browserVerLen = strs2[j].leng - 32;
 				}
 				else if (ent->browser == Net::BrowserInfo::BT_UNKNOWN && Text::StrStartsWithC(strs2[j].v, strs2[j].leng, UTF8STRC("WinHttp.WinHttpRequest.")))
 				{
 					ent->browser = Net::BrowserInfo::BT_WINHTTP;
-					ent->browserVer = Text::StrCopyNewC(&strs2[j].v[23], strs2[j].leng - 23).Ptr();
+					ent->browserVer = Text::StrCopyNewC(&strs2[j].v[23], strs2[j].leng - 23);
 					ent->browserVerLen = strs2[j].leng - 23;
 				}
 				else if (ent->browser == Net::BrowserInfo::BT_UNKNOWN && Text::StrStartsWithC(strs2[j].v, strs2[j].leng, UTF8STRC("NetcraftSurveyAgent/")))
 				{
 					ent->browser = Net::BrowserInfo::BT_NETCRAFTAG;
-					ent->browserVer = Text::StrCopyNewC(&strs2[j].v[20], strs2[j].leng - 20).Ptr();
+					ent->browserVer = Text::StrCopyNewC(&strs2[j].v[20], strs2[j].leng - 20);
 					ent->browserVerLen = strs2[j].leng - 20;
 				}
 				else if (ent->browser == Net::BrowserInfo::BT_UNKNOWN && Text::StrStartsWithC(strs2[j].v, strs2[j].leng, UTF8STRC("AhrefsBot/")))
 				{
 					ent->browser = Net::BrowserInfo::BT_AHREFSBOT;
-					ent->browserVer = Text::StrCopyNewC(&strs2[j].v[10], strs2[j].leng - 10).Ptr();
+					ent->browserVer = Text::StrCopyNewC(&strs2[j].v[10], strs2[j].leng - 10);
 					ent->browserVerLen = strs2[j].leng - 10;
 				}
 				else if (ent->browser == Net::BrowserInfo::BT_UNKNOWN && Text::StrStartsWithC(strs2[j].v, strs2[j].leng, UTF8STRC("MJ12bot/")))
@@ -1259,12 +1259,12 @@ void Net::UserAgentDB::ParseUserAgent(Net::UserAgentDB::UAEntry *ent, Text::CStr
 					ent->browser = Net::BrowserInfo::BT_MJ12BOT;
 					if (strs2[j].v[8] == 'v')
 					{
-						ent->browserVer = Text::StrCopyNewC(&strs2[j].v[9], strs2[j].leng - 9).Ptr();
+						ent->browserVer = Text::StrCopyNewC(&strs2[j].v[9], strs2[j].leng - 9);
 						ent->browserVerLen = strs2[j].leng - 9;
 					}
 					else
 					{
-						ent->browserVer = Text::StrCopyNewC(&strs2[j].v[8], strs2[j].leng - 8).Ptr();
+						ent->browserVer = Text::StrCopyNewC(&strs2[j].v[8], strs2[j].leng - 8);
 						ent->browserVerLen = strs2[j].leng - 8;
 					}
 				}
@@ -1298,17 +1298,17 @@ void Net::UserAgentDB::ParseUserAgent(Net::UserAgentDB::UAEntry *ent, Text::CStr
 					SDEL_TEXT(ent->devName);
 					if (Text::StrStartsWithC(strs2[j].v, strs2[j].leng, UTF8STRC("SAMSUNG SM-")))
 					{
-						ent->devName = Text::StrCopyNewC(&strs2[j].v[8], strs2[j].leng - 8).Ptr();
+						ent->devName = Text::StrCopyNewC(&strs2[j].v[8], strs2[j].leng - 8);
 						ent->devNameLen = strs2[j].leng - 8;
 					}
 					else if (Text::StrStartsWithC(strs2[j].v, strs2[j].leng, UTF8STRC("HUAWEI ")))
 					{
-						ent->devName = Text::StrCopyNewC(&strs2[j].v[7], strs2[j].leng - 7).Ptr();
+						ent->devName = Text::StrCopyNewC(&strs2[j].v[7], strs2[j].leng - 7);
 						ent->devNameLen = strs2[j].leng - 7;
 					}
 					else
 					{
-						ent->devName = Text::StrCopyNewC(strs2[j].v, strs2[j].leng).Ptr();
+						ent->devName = Text::StrCopyNewC(strs2[j].v, strs2[j].leng);
 						ent->devNameLen = strs2[j].leng;
 					}
 				}
@@ -1318,28 +1318,28 @@ void Net::UserAgentDB::ParseUserAgent(Net::UserAgentDB::UAEntry *ent, Text::CStr
 		else if (ent->browser == Net::BrowserInfo::BT_UNKNOWN && Text::StrStartsWithC(strs[i].v, strs[i].leng, UTF8STRC("Firefox/")))
 		{
 			ent->browser = Net::BrowserInfo::BT_FIREFOX;
-			ent->browserVer = Text::StrCopyNewC(&strs[i].v[8], strs[i].leng - 8).Ptr();
+			ent->browserVer = Text::StrCopyNewC(&strs[i].v[8], strs[i].leng - 8);
 			ent->browserVerLen = strs[i].leng - 8;
 		}
 		else if ((ent->browser == Net::BrowserInfo::BT_UNKNOWN || ent->browser == Net::BrowserInfo::BT_SAFARI) && Text::StrStartsWithC(strs[i].v, strs[i].leng, UTF8STRC("SamsungBrowser/")))
 		{
 			ent->browser = Net::BrowserInfo::BT_SAMSUNG;
 			SDEL_TEXT(ent->browserVer);
-			ent->browserVer = Text::StrCopyNewC(&strs[i].v[15], strs[i].leng - 15).Ptr();
+			ent->browserVer = Text::StrCopyNewC(&strs[i].v[15], strs[i].leng - 15);
 			ent->browserVerLen = strs[i].leng - 15;
 		}
 		else if ((ent->browser == Net::BrowserInfo::BT_UNKNOWN || ent->browser == Net::BrowserInfo::BT_SAFARI) && Text::StrStartsWithC(strs[i].v, strs[i].leng, UTF8STRC("GSA/")))
 		{
 			ent->browser = Net::BrowserInfo::BT_GSA;
 			SDEL_TEXT(ent->browserVer);
-			ent->browserVer = Text::StrCopyNewC(&strs[i].v[4], strs[i].leng - 4).Ptr();
+			ent->browserVer = Text::StrCopyNewC(&strs[i].v[4], strs[i].leng - 4);
 			ent->browserVerLen = strs[i].leng - 4;
 		}
 		else if ((ent->browser == Net::BrowserInfo::BT_UNKNOWN || ent->browser == Net::BrowserInfo::BT_SAFARI) && Text::StrStartsWithC(strs[i].v, strs[i].leng, UTF8STRC("CriOS/")))
 		{
 			ent->browser = Net::BrowserInfo::BT_CHROME;
 			SDEL_TEXT(ent->browserVer);
-			ent->browserVer = Text::StrCopyNewC(&strs[i].v[6], strs[i].leng - 6).Ptr();
+			ent->browserVer = Text::StrCopyNewC(&strs[i].v[6], strs[i].leng - 6);
 			ent->browserVerLen = strs[i].leng - 6;
 		}
 		else if (Text::StrStartsWithC(strs[i].v, strs[i].leng, UTF8STRC("Chrome/")))
@@ -1348,13 +1348,13 @@ void Net::UserAgentDB::ParseUserAgent(Net::UserAgentDB::UAEntry *ent, Text::CStr
 			{
 				ent->browser = Net::BrowserInfo::BT_CHROME;
 				SDEL_TEXT(ent->browserVer);
-				ent->browserVer = Text::StrCopyNewC(&strs[i].v[7], strs[i].leng - 7).Ptr();
+				ent->browserVer = Text::StrCopyNewC(&strs[i].v[7], strs[i].leng - 7);
 				ent->browserVerLen = strs[i].leng - 7;
 			}
 			else if (ent->browser == Net::BrowserInfo::BT_ANDROIDWV)
 			{
 				SDEL_TEXT(ent->browserVer);
-				ent->browserVer = Text::StrCopyNewC(&strs[i].v[7], strs[i].leng - 7).Ptr();
+				ent->browserVer = Text::StrCopyNewC(&strs[i].v[7], strs[i].leng - 7);
 				ent->browserVerLen = strs[i].leng - 7;
 			}
 		}
@@ -1362,26 +1362,26 @@ void Net::UserAgentDB::ParseUserAgent(Net::UserAgentDB::UAEntry *ent, Text::CStr
 		{
 			ent->browser = Net::BrowserInfo::BT_EDGE;
 			SDEL_TEXT(ent->browserVer);
-			ent->browserVer = Text::StrCopyNewC(&strs[i].v[5], strs[i].leng - 5).Ptr();
+			ent->browserVer = Text::StrCopyNewC(&strs[i].v[5], strs[i].leng - 5);
 			ent->browserVerLen = strs[i].leng - 5;
 		}
 		else if (ent->browser == Net::BrowserInfo::BT_UNKNOWN && Text::StrStartsWithC(strs[i].v, strs[i].leng, UTF8STRC("Safari/")))
 		{
 			ent->browser = Net::BrowserInfo::BT_SAFARI;
-			ent->browserVer = Text::StrCopyNewC(&strs[i].v[7], strs[i].leng - 7).Ptr();
+			ent->browserVer = Text::StrCopyNewC(&strs[i].v[7], strs[i].leng - 7);
 			ent->browserVerLen = strs[i].leng - 7;
 		}
 		else if (ent->browser == Net::BrowserInfo::BT_UNKNOWN && Text::StrStartsWithC(strs[i].v, strs[i].leng, UTF8STRC("UCBrowser/")))
 		{
 			ent->browser = Net::BrowserInfo::BT_UCBROWSER;
-			ent->browserVer = Text::StrCopyNewC(&strs[i].v[10], strs[i].leng - 10).Ptr();
+			ent->browserVer = Text::StrCopyNewC(&strs[i].v[10], strs[i].leng - 10);
 			ent->browserVerLen = strs[i].leng - 10;
 		}
 		else if ((ent->browser == Net::BrowserInfo::BT_UNKNOWN || ent->browser == Net::BrowserInfo::BT_CHROME) && Text::StrStartsWithC(strs[i].v, strs[i].leng, UTF8STRC("baidu.sogo.uc.UCBrowser/")))
 		{
 			ent->browser = Net::BrowserInfo::BT_UCBROWSER;
 			SDEL_TEXT(ent->browserVer);
-			ent->browserVer = Text::StrCopyNewC(&strs[i].v[24], strs[i].leng - 24).Ptr();
+			ent->browserVer = Text::StrCopyNewC(&strs[i].v[24], strs[i].leng - 24);
 			ent->browserVerLen = strs[i].leng - 24;
 		}
 		else if (Text::StrStartsWithC(strs[i].v, strs[i].leng, UTF8STRC("UBrowser/")))
@@ -1393,121 +1393,121 @@ void Net::UserAgentDB::ParseUserAgent(Net::UserAgentDB::UAEntry *ent, Text::CStr
 		else if (ent->browser == Net::BrowserInfo::BT_UNKNOWN && Text::StrStartsWithC(strs[i].v, strs[i].leng, UTF8STRC("Dalvik/")))
 		{
 			ent->browser = Net::BrowserInfo::BT_DALVIK;
-			ent->browserVer = Text::StrCopyNewC(&strs[i].v[7], strs[i].leng - 7).Ptr();
+			ent->browserVer = Text::StrCopyNewC(&strs[i].v[7], strs[i].leng - 7);
 			ent->browserVerLen = strs[i].leng - 7;
 		}
 		else if (ent->os == Manage::OSInfo::OT_UNKNOWN && Text::StrStartsWithC(strs[i].v, strs[i].leng, UTF8STRC("Darwin/")))
 		{
 			ent->os = Manage::OSInfo::OT_DARWIN;
-			ent->osVer = Text::StrCopyNewC(&strs[i].v[7], strs[i].leng - 7).Ptr();
+			ent->osVer = Text::StrCopyNewC(&strs[i].v[7], strs[i].leng - 7);
 			ent->osVerLen = strs[i].leng - 7;
 		}
 		else if (ent->os == Manage::OSInfo::OT_UNKNOWN && Text::StrStartsWithC(strs[i].v, strs[i].leng, UTF8STRC("SmartTV/")))
 		{
 			ent->os = Manage::OSInfo::OT_NETCAST;
-			ent->osVer = Text::StrCopyNewC(&strs[i].v[8], strs[i].leng - 8).Ptr();
+			ent->osVer = Text::StrCopyNewC(&strs[i].v[8], strs[i].leng - 8);
 			ent->osVerLen = strs[i].leng - 8;
 		}
 		else if (ent->browser == Net::BrowserInfo::BT_UNKNOWN && Text::StrStartsWithC(strs[i].v, strs[i].leng, UTF8STRC("CFNetwork/")))
 		{
 			ent->browser = Net::BrowserInfo::BT_CFNETWORK;
-			ent->browserVer = Text::StrCopyNewC(&strs[i].v[10], strs[i].leng - 10).Ptr();
+			ent->browserVer = Text::StrCopyNewC(&strs[i].v[10], strs[i].leng - 10);
 			ent->browserVerLen = strs[i].leng - 10;
 		}
 		else if (ent->browser == Net::BrowserInfo::BT_UNKNOWN && Text::StrStartsWithC(strs[i].v, strs[i].leng, UTF8STRC("Version/")))
 		{
 			ent->browser = Net::BrowserInfo::BT_SAFARI;
-			ent->browserVer = Text::StrCopyNewC(&strs[i].v[8], strs[i].leng - 8).Ptr();
+			ent->browserVer = Text::StrCopyNewC(&strs[i].v[8], strs[i].leng - 8);
 			ent->browserVerLen = strs[i].leng - 8;
 		}
 		else if (ent->browser == Net::BrowserInfo::BT_UNKNOWN && Text::StrStartsWithC(strs[i].v, strs[i].leng, UTF8STRC("masscan/")))
 		{
 			ent->browser = Net::BrowserInfo::BT_MASSCAN;
-			ent->browserVer = Text::StrCopyNewC(&strs[i].v[8], strs[i].leng - 8).Ptr();
+			ent->browserVer = Text::StrCopyNewC(&strs[i].v[8], strs[i].leng - 8);
 			ent->browserVerLen = strs[i].leng - 8;
 		}
 		else if (ent->browser == Net::BrowserInfo::BT_UNKNOWN && Text::StrStartsWithC(strs[i].v, strs[i].leng, UTF8STRC("zgrab/")))
 		{
 			ent->browser = Net::BrowserInfo::BT_ZGRAB;
-			ent->browserVer = Text::StrCopyNewC(&strs[i].v[6], strs[i].leng - 6).Ptr();
+			ent->browserVer = Text::StrCopyNewC(&strs[i].v[6], strs[i].leng - 6);
 			ent->browserVerLen = strs[i].leng - 6;
 		}
 		else if (ent->browser == Net::BrowserInfo::BT_UNKNOWN && Text::StrStartsWithC(strs[i].v, strs[i].leng, UTF8STRC("python-requests/")))
 		{
 			ent->browser = Net::BrowserInfo::BT_PYREQUESTS;
-			ent->browserVer = Text::StrCopyNewC(&strs[i].v[16], strs[i].leng - 16).Ptr();
+			ent->browserVer = Text::StrCopyNewC(&strs[i].v[16], strs[i].leng - 16);
 			ent->browserVerLen = strs[i].leng - 16;
 		}
 		else if (ent->browser == Net::BrowserInfo::BT_UNKNOWN && Text::StrStartsWithC(strs[i].v, strs[i].leng, UTF8STRC("Python-urllib/")))
 		{
 			ent->browser = Net::BrowserInfo::BT_PYURLLIB;
-			ent->browserVer = Text::StrCopyNewC(&strs[i].v[14], strs[i].leng - 14).Ptr();
+			ent->browserVer = Text::StrCopyNewC(&strs[i].v[14], strs[i].leng - 14);
 			ent->browserVerLen = strs[i].leng - 14;
 		}
 		else if (ent->browser == Net::BrowserInfo::BT_UNKNOWN && Text::StrStartsWithC(strs[i].v, strs[i].leng, UTF8STRC("Wget/")))
 		{
 			ent->browser = Net::BrowserInfo::BT_WGET;
-			ent->browserVer = Text::StrCopyNewC(&strs[i].v[5], strs[i].leng - 5).Ptr();
+			ent->browserVer = Text::StrCopyNewC(&strs[i].v[5], strs[i].leng - 5);
 			ent->browserVerLen = strs[i].leng - 5;
 		}
 		else if (ent->browser == Net::BrowserInfo::BT_UNKNOWN && Text::StrStartsWithC(strs[i].v, strs[i].leng, UTF8STRC("Scrapy/")))
 		{
 			ent->browser = Net::BrowserInfo::BT_SCRAPY;
-			ent->browserVer = Text::StrCopyNewC(&strs[i].v[7], strs[i].leng - 7).Ptr();
+			ent->browserVer = Text::StrCopyNewC(&strs[i].v[7], strs[i].leng - 7);
 			ent->browserVerLen = strs[i].leng - 7;
 		}
 		else if (ent->browser == Net::BrowserInfo::BT_UNKNOWN && Text::StrStartsWithC(strs[i].v, strs[i].leng, UTF8STRC("Go-http-client/")))
 		{
 			ent->browser = Net::BrowserInfo::BT_GOHTTP;
-			ent->browserVer = Text::StrCopyNewC(&strs[i].v[15], strs[i].leng - 15).Ptr();
+			ent->browserVer = Text::StrCopyNewC(&strs[i].v[15], strs[i].leng - 15);
 			ent->browserVerLen = strs[i].leng - 15;
 		}
 		else if (ent->browser == Net::BrowserInfo::BT_UNKNOWN && Text::StrStartsWithC(strs[i].v, strs[i].leng, UTF8STRC("Apache-HttpClient/")))
 		{
 			ent->browser = Net::BrowserInfo::BT_APACHEHTTP;
-			ent->browserVer = Text::StrCopyNewC(&strs[i].v[18], strs[i].leng - 18).Ptr();
+			ent->browserVer = Text::StrCopyNewC(&strs[i].v[18], strs[i].leng - 18);
 			ent->browserVerLen = strs[i].leng - 18;
 		}
 		else if (ent->browser == Net::BrowserInfo::BT_UNKNOWN && Text::StrStartsWithC(strs[i].v, strs[i].leng, UTF8STRC("WhatsApp/")))
 		{
 			ent->browser = Net::BrowserInfo::BT_WHATSAPP;
-			ent->browserVer = Text::StrCopyNewC(&strs[i].v[9], strs[i].leng - 9).Ptr();
+			ent->browserVer = Text::StrCopyNewC(&strs[i].v[9], strs[i].leng - 9);
 			ent->browserVerLen = strs[i].leng - 9;
 		}
 		else if (ent->browser == Net::BrowserInfo::BT_UNKNOWN && Text::StrStartsWithC(strs[i].v, strs[i].leng, UTF8STRC("curl/")))
 		{
 			ent->browser = Net::BrowserInfo::BT_CURL;
-			ent->browserVer = Text::StrCopyNewC(&strs[i].v[5], strs[i].leng - 5).Ptr();
+			ent->browserVer = Text::StrCopyNewC(&strs[i].v[5], strs[i].leng - 5);
 			ent->browserVerLen = strs[i].leng - 5;
 		}
 		else if (ent->browser == Net::BrowserInfo::BT_UNKNOWN && Text::StrStartsWithC(strs[i].v, strs[i].leng, UTF8STRC("sswr/")))
 		{
 			ent->browser = Net::BrowserInfo::BT_SSWR;
-			ent->browserVer = Text::StrCopyNewC(&strs[i].v[5], strs[i].leng - 5).Ptr();
+			ent->browserVer = Text::StrCopyNewC(&strs[i].v[5], strs[i].leng - 5);
 			ent->browserVerLen = strs[i].leng - 5;
 		}
 		else if (ent->browser == Net::BrowserInfo::BT_UNKNOWN && Text::StrStartsWithC(strs[i].v, strs[i].leng, UTF8STRC("facebookexternalhit/")))
 		{
 			ent->browser = Net::BrowserInfo::BT_FACEBOOK;
-			ent->browserVer = Text::StrCopyNewC(&strs[i].v[20], strs[i].leng - 20).Ptr();
+			ent->browserVer = Text::StrCopyNewC(&strs[i].v[20], strs[i].leng - 20);
 			ent->browserVerLen = strs[i].leng - 20;
 		}
 		else if (ent->browser == Net::BrowserInfo::BT_UNKNOWN && Text::StrStartsWithC(strs[i].v, strs[i].leng, UTF8STRC("NetSeen/")))
 		{
 			ent->browser = Net::BrowserInfo::BT_NETSEEN;
-			ent->browserVer = Text::StrCopyNewC(&strs[i].v[8], strs[i].leng - 8).Ptr();
+			ent->browserVer = Text::StrCopyNewC(&strs[i].v[8], strs[i].leng - 8);
 			ent->browserVerLen = strs[i].leng - 8;
 		}
 		else if (ent->browser == Net::BrowserInfo::BT_UNKNOWN && Text::StrStartsWithC(strs[i].v, strs[i].leng, UTF8STRC("msnbot/")))
 		{
 			ent->browser = Net::BrowserInfo::BT_MSNBOT;
-			ent->browserVer = Text::StrCopyNewC(&strs[i].v[7], strs[i].leng - 7).Ptr();
+			ent->browserVer = Text::StrCopyNewC(&strs[i].v[7], strs[i].leng - 7);
 			ent->browserVerLen = strs[i].leng - 7;
 		}
 		else if (ent->browser == Net::BrowserInfo::BT_UNKNOWN && Text::StrStartsWithC(strs[i].v, strs[i].leng, UTF8STRC("libwww-perl/")))
 		{
 			ent->browser = Net::BrowserInfo::BT_LIBWWW_PERL;
-			ent->browserVer = Text::StrCopyNewC(&strs[i].v[12], strs[i].leng - 12).Ptr();
+			ent->browserVer = Text::StrCopyNewC(&strs[i].v[12], strs[i].leng - 12);
 			ent->browserVerLen = strs[i].leng - 12;
 		}
 		else if (Text::StrEqualsC(strs[i].v, strs[i].leng, UTF8STRC("LBBROWSER")))

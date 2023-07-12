@@ -447,24 +447,8 @@ Bool Text::JSONBuilder::ObjectAddStr(Text::CString name, Text::PString *val)
 	}
 	else
 	{
-		this->AppendStr(val->ToCString());
+		this->AppendStrUTF8(val->v);
 	}
-	return true;
-}
-
-Bool Text::JSONBuilder::ObjectAddStr(Text::CString name, NotNullPtr<Text::String> val)
-{
-	if (this->currType != OT_OBJECT)
-		return false;
-	if (this->isFirst)
-		this->isFirst = false;
-	else
-	{
-		this->sb->AppendC(UTF8STRC(","));
-	}
-	this->AppendStr(name);
-	this->sb->AppendC(UTF8STRC(":"));
-	this->AppendStr(val->ToCString());
 	return true;
 }
 

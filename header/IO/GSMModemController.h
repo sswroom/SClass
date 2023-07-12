@@ -1,6 +1,5 @@
 #ifndef _SM_IO_GSMMODEMCONTROLLER
 #define _SM_IO_GSMMODEMCONTROLLER
-#include "Data/ArrayListNN.h"
 #include "Data/DateTime.h"
 #include "IO/ModemController.h"
 #include "Text/SMSMessage.h"
@@ -146,8 +145,8 @@ namespace IO
 
 		typedef struct
 		{
-			NotNullPtr<Text::String> longName;
-			NotNullPtr<Text::String> shortName;
+			Text::String *longName;
+			Text::String *shortName;
 			Int32 plmn;
 			OperStatus status;
 			Int32 netact;
@@ -171,15 +170,15 @@ namespace IO
 		typedef struct
 		{
 			Int32 index;
-			NotNullPtr<Text::String> name;
-			NotNullPtr<Text::String> number;
+			Text::String *name;
+			Text::String *number;
 		} PBEntry;
 
 		struct PDPContext
 		{
 			UInt32 cid;
-			NotNullPtr<Text::String> type;
-			NotNullPtr<Text::String> apn;
+			Text::String *type;
+			Text::String *apn;
 		};
 
 		struct ActiveState
@@ -220,7 +219,7 @@ namespace IO
 		UTF8Char *GSMGetIMEI(UTF8Char *imei); //AT+CGSN
 		UTF8Char *GSMGetTECharset(UTF8Char *cs); //AT+CSCS
 		Bool GSMSetTECharset(const UTF8Char *cs); //AT+CSCS
-		Bool GSMGetTECharsetsSupported(Data::ArrayListNN<Text::String> *csList); //AT+CSCS
+		Bool GSMGetTECharsetsSupported(Data::ArrayList<Text::String*> *csList); //AT+CSCS
 		UTF8Char *GSMGetIMSI(UTF8Char *imsi); //AT+CIMI
 		UTF8Char *GSMGetCurrOperator(UTF8Char *oper); //AT+COPS
 		UTF8Char *GSMGetCurrPLMN(UTF8Char *plmn); //AT+COPS

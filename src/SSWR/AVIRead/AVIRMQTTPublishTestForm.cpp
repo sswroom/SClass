@@ -117,14 +117,14 @@ void __stdcall SSWR::AVIRead::AVIRMQTTPublishTestForm::OnStartClicked(void *user
 		me->txtUsername->GetText(&sb);
 		if (sb.GetLength() > 0)
 		{
-			username.v = Text::StrCopyNewC(sb.ToString(), sb.GetLength()).Ptr();
+			username.v = Text::StrCopyNewC(sb.ToString(), sb.GetLength());
 			username.leng = sb.GetLength();
 		}
 		sb.ClearStr();
 		me->txtPassword->GetText(&sb);
 		if (sb.GetLength() > 0)
 		{
-			password.v = Text::StrCopyNewC(sb.ToString(), sb.GetLength()).Ptr();
+			password.v = Text::StrCopyNewC(sb.ToString(), sb.GetLength());
 			password.leng = sb.GetLength();
 		}
 		sb.ClearStr();
@@ -142,8 +142,8 @@ void __stdcall SSWR::AVIRead::AVIRMQTTPublishTestForm::OnStartClicked(void *user
 
 		if (succ)
 		{
-			me->connContent = Text::String::New(sbContent.ToCString()).Ptr();
-			me->connTopic = Text::String::New(sbTopic.ToCString()).Ptr();
+			me->connContent = Text::String::New(sbContent.ToCString());
+			me->connTopic = Text::String::New(sbTopic.ToCString());
 			me->txtHost->SetReadOnly(true);
 			me->txtPort->SetReadOnly(true);
 			me->txtUsername->SetReadOnly(true);
@@ -202,7 +202,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTPublishTestForm::OnCliCertClicked(void *us
 		}
 		SDEL_CLASS(me->cliCert);
 		me->cliCert = (Crypto::Cert::X509Cert*)x509;
-		NotNullPtr<Text::String> s = dlg.GetFileName();
+		Text::String *s = dlg.GetFileName();
 		UOSInt i = s->LastIndexOf(IO::Path::PATH_SEPERATOR);
 		me->lblCliCert->SetText(s->ToCString().Substring(i + 1));
 	}
@@ -233,7 +233,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTPublishTestForm::OnCliKeyClicked(void *use
 		}
 		SDEL_CLASS(me->cliKey);
 		me->cliKey = (Crypto::Cert::X509File*)asn1;
-		NotNullPtr<Text::String> s = dlg.GetFileName();
+		Text::String *s = dlg.GetFileName();
 		UOSInt i = s->LastIndexOf(IO::Path::PATH_SEPERATOR);
 		me->lblCliKey->SetText(s->ToCString().Substring(i + 1));
 	}

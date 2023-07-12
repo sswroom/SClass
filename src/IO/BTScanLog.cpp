@@ -9,7 +9,7 @@ void IO::BTScanLog::FreeDev(DevEntry* dev)
 	MemFree(dev);
 }
 
-IO::BTScanLog::BTScanLog(NotNullPtr<Text::String> sourceName) : IO::ParsedObject(sourceName)
+IO::BTScanLog::BTScanLog(Text::String *sourceName) : IO::ParsedObject(sourceName)
 {
 }
 
@@ -62,7 +62,7 @@ IO::BTScanLog::LogEntry *IO::BTScanLog::AddEntry(Int64 timeTicks, UInt64 macInt,
 	}
 	if (name && dev->name == 0)
 	{
-		dev->name = name->Clone().Ptr();
+		dev->name = name->Clone();
 	}
 	if (company && dev->company == 0)
 	{
@@ -439,7 +439,7 @@ void IO::BTScanLog::ParseAdvisement(ScanRecord3 *rec, const UInt8 *buff, UOSInt 
 	}
 	if (sbuff[0])
 	{
-		rec->name = Text::String::New(sbuff, (UOSInt)(sptr - sbuff)).Ptr();
+		rec->name = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 	}
 	else
 	{

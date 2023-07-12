@@ -10,17 +10,17 @@ namespace Media
 	protected:
 		AudioFormat format;
 		IO::StreamData *data;
-		NotNullPtr<Text::String> name;
+		Text::String *name;
 
 		UInt64 readOfst;
 		Sync::Event *readEvt;
 
 	protected:
-		LPCMSource(NotNullPtr<Text::String> name);
+		LPCMSource(Text::String *name);
 		LPCMSource(Text::CString name);
 		void SetData(IO::StreamData *fd, UInt64 ofst, UInt64 length, Media::AudioFormat *format);
 	public:
-		LPCMSource(IO::StreamData *fd, UInt64 ofst, UInt64 length, Media::AudioFormat *format, NotNullPtr<Text::String> name);
+		LPCMSource(IO::StreamData *fd, UInt64 ofst, UInt64 length, Media::AudioFormat *format, Text::String *name);
 		LPCMSource(IO::StreamData *fd, UInt64 ofst, UInt64 length, Media::AudioFormat *format, Text::CString name);
 		virtual ~LPCMSource();
 

@@ -3,7 +3,7 @@
 #include "Text/MyString.h"
 #include "Media/AACFrameSource.h"
 
-Media::AACFrameSource::AACFrameSource(IO::StreamData *fd, Media::AudioFormat *format, NotNullPtr<Text::String> name) : Media::AudioFrameSource(fd, format, name)
+Media::AACFrameSource::AACFrameSource(IO::StreamData *fd, Media::AudioFormat *format, Text::String *name) : Media::AudioFrameSource(fd, format, name)
 {
 }
 

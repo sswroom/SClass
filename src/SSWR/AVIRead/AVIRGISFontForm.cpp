@@ -7,10 +7,10 @@
 void __stdcall SSWR::AVIRead::AVIRGISFontForm::OnFontClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRGISFontForm *me = (SSWR::AVIRead::AVIRGISFontForm *)userObj;
-	UI::FontDialog dlg(me->fontName.Ptr(), me->fontSizePt, false, false);
+	UI::FontDialog dlg(me->fontName, me->fontSizePt, false, false);
 	if (dlg.ShowDialog(me->hwnd))
 	{
-		me->fontName->Release();
+		SDEL_STRING(me->fontName);
 		me->fontName = dlg.GetFontName()->Clone();
 		me->fontSizePt = dlg.GetFontSizePt();
 		me->UpdateFontText();
@@ -139,7 +139,7 @@ SSWR::AVIRead::AVIRGISFontForm::~AVIRGISFontForm()
 		DEL_CLASS(this->previewImage);
 		this->previewImage = 0;
 	}
-	this->fontName->Release();
+	SDEL_STRING(this->fontName);
 	DEL_CLASS(this->colorConv);
 	this->colorSess->RemoveHandler(this);
 	this->ClearChildren();
@@ -164,7 +164,7 @@ void SSWR::AVIRead::AVIRGISFontForm::RGBParamChanged(const Media::IColorHandler:
 	this->UpdateFontPreview();
 }
 
-NotNullPtr<Text::String> SSWR::AVIRead::AVIRGISFontForm::GetFontName() const
+Text::String *SSWR::AVIRead::AVIRGISFontForm::GetFontName()
 {
 	return this->fontName;
 }

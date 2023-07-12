@@ -173,10 +173,10 @@ Net::MQTTStaticClient::MQTTStaticClient(Net::SocketFactory *sockf, Net::SSLEngin
 {
 	this->sockf = sockf;
 	this->ssl = ssl;
-	this->host = Text::String::New(host).Ptr();
+	this->host = Text::String::New(host);
 	this->port = port;
-	this->username = Text::String::New(username).Ptr();
-	this->password = Text::String::New(password).Ptr();
+	this->username = Text::String::New(username);
+	this->password = Text::String::New(password);
 	this->kaSeconds = kaSeconds;
 	this->webSocket = webSocket;
 
@@ -230,7 +230,7 @@ void Net::MQTTStaticClient::HandlePublishMessage(Net::MQTTConn::PublishMessageHd
 Bool Net::MQTTStaticClient::Subscribe(Text::CString topic)
 {
 	Sync::MutexUsage mutUsage(&this->topicMut);
-	this->topicList.Add(Text::String::New(topic).Ptr());
+	this->topicList.Add(Text::String::New(topic));
 	mutUsage.ReplaceMutex(&this->connMut);
 	if (this->conn == 0) return false;
 	UInt16 packetId = GetNextPacketId();

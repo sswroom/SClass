@@ -5,38 +5,44 @@
 
 Media::ChapterInfo::ChapterInfo()
 {
+	NEW_CLASS(this->chapterNames, Data::ArrayList<Text::String *>());
+	NEW_CLASS(this->chapterArtists, Data::ArrayList<Text::String *>());
+	NEW_CLASS(this->chapterTimes, Data::ArrayListUInt32());
 }
 
 Media::ChapterInfo::~ChapterInfo()
 {
 	UOSInt i;
 	Text::String *s;
-	i = this->chapterNames.GetCount();
+	i = this->chapterNames->GetCount();
 	while (i-- > 0)
 	{
-		this->chapterNames.GetItem(i)->Release();
-		s = this->chapterArtists.GetItem(i);
+		this->chapterNames->GetItem(i)->Release();
+		s = this->chapterArtists->GetItem(i);
 		SDEL_STRING(s);
 	}
+	DEL_CLASS(this->chapterNames);
+	DEL_CLASS(this->chapterArtists);
+	DEL_CLASS(this->chapterTimes);
 }
 
 void Media::ChapterInfo::AddChapter(UInt32 chapterTime, Text::CString chapterName, Text::CString chapterArtist)
 {
-	UOSInt i = this->chapterTimes.SortedInsert(chapterTime);
-	this->chapterNames.Insert(i, Text::String::New(chapterName));
+	UOSInt i = this->chapterTimes->SortedInsert(chapterTime);
+	this->chapterNames->Insert(i, Text::String::New(chapterName));
 	if (chapterArtist.leng > 0)
 	{
-		this->chapterArtists.Insert(i, Text::String::New(chapterArtist).Ptr());
+		this->chapterArtists->Insert(i, Text::String::New(chapterArtist));
 	}
 	else
 	{
-		this->chapterArtists.Insert(i, 0);
+		this->chapterArtists->Insert(i, 0);
 	}
 }
 
 UOSInt Media::ChapterInfo::GetChapterIndex(UInt32 currTime)
 {
-	OSInt i = this->chapterTimes.SortedIndexOf(currTime);
+	OSInt i = this->chapterTimes->SortedIndexOf(currTime);
 	if (i >= 0)
 		return (UOSInt)i;
 	else
@@ -45,20 +51,20 @@ UOSInt Media::ChapterInfo::GetChapterIndex(UInt32 currTime)
 
 UInt32 Media::ChapterInfo::GetChapterTime(UOSInt index)
 {
-	return this->chapterTimes.GetItem(index);
+	return this->chapterTimes->GetItem(index);
 }
 
 UOSInt Media::ChapterInfo::GetChapterCnt()
 {
-	return this->chapterTimes.GetCount();
+	return this->chapterTimes->GetCount();
 }
 
 Text::String *Media::ChapterInfo::GetChapterName(UOSInt index)
 {
-	return this->chapterNames.GetItem(index);
+	return this->chapterNames->GetItem(index);
 }
 
 Text::String *Media::ChapterInfo::GetChapterArtist(UOSInt index)
 {
-	return this->chapterArtists.GetItem(index);
+	return this->chapterArtists->GetItem(index);
 }

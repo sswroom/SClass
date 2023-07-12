@@ -388,7 +388,7 @@ void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnSQLFileClicked(void *userObj)
 	if (me->currDB && me->currDB->IsDBTool())
 	{
 		DB::ReadingDBTool *db = (DB::ReadingDBTool*)me->currDB;
-		NotNullPtr<Text::String> fileName;
+		Text::String *fileName;
 		{
 			UI::FileDialog dlg(L"SSWR", L"AVIRead", L"DBManagerSQLFile", false);
 			dlg.SetAllowMultiSel(false);
@@ -493,7 +493,7 @@ void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnSvrConnKillClicked(void *user
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnFileHandler(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles)
+void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnFileHandler(void *userObj, Text::String **files, UOSInt nFiles)
 {
 	SSWR::AVIRead::AVIRDBManagerForm *me = (SSWR::AVIRead::AVIRDBManagerForm*)userObj;
 	UOSInt i = 0;
@@ -528,7 +528,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateDatabaseList()
 	while (i < j)
 	{
 		dbName = dbNames.GetItem(i);
-		this->lbDatabase->AddItem(Text::String::OrEmpty(dbName), 0);
+		this->lbDatabase->AddItem(dbName, 0);
 		i++;
 	}
 	this->currDB->ReleaseDatabaseNames(&dbNames);
@@ -556,7 +556,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateSchemaList()
 	j = schemaNames.GetCount();
 	while (i < j)
 	{
-		NotNullPtr<Text::String> schemaName = Text::String::OrEmpty(schemaNames.GetItem(i));
+		Text::String *schemaName = schemaNames.GetItem(i);
 		this->lbSchema->AddItem(schemaName, 0);
 		this->lbMapSchema->AddItem(schemaName, 0);
 		i++;
@@ -575,15 +575,15 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateTableList()
 		return;
 	}
 	Text::String *schemaName = this->lbSchema->GetSelectedItemTextNew();
-	NotNullPtr<Text::String> tableName;
-	Data::ArrayListNN<Text::String> tableNames;
+	Text::String *tableName;
+	Data::ArrayList<Text::String*> tableNames;
 	UOSInt i = 0;
 	UOSInt j = this->currDB->QueryTableNames(STR_CSTR(schemaName), &tableNames);
 	SDEL_STRING(schemaName);
 	ArtificialQuickSort_Sort(&tableNames, 0, (OSInt)j - 1);
 	while (i < j)
 	{
-		tableName = Text::String::OrEmpty(tableNames.GetItem(i));
+		tableName = tableNames.GetItem(i);
 		this->lbTable->AddItem(tableName, 0);
 		i++;
 	}
@@ -599,7 +599,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateMapTableList()
 	}
 	Text::String *schemaName = this->lbMapSchema->GetSelectedItemTextNew();
 	Text::String *tableName;
-	Data::ArrayListNN<Text::String> tableNames;
+	Data::ArrayList<Text::String*> tableNames;
 	UOSInt i = 0;
 	UOSInt j = this->currDB->QueryTableNames(STR_CSTR(schemaName), &tableNames);
 	SDEL_STRING(schemaName);
@@ -607,7 +607,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateMapTableList()
 	while (i < j)
 	{
 		tableName = tableNames.GetItem(i);
-		this->lbMapTable->AddItem(Text::String::OrEmpty(tableName), 0);
+		this->lbMapTable->AddItem(tableName, 0);
 		i++;
 	}
 	LIST_FREE_STRING(&tableNames);
@@ -624,7 +624,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateTableData(Text::CString schemaName,
 
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
-	NotNullPtr<Text::String> s;
+	Text::String *s;
 	DB::TableDef *tabDef = 0;
 	DB::DBReader *r;
 	tabDef = this->currDB->GetTableDef(schemaName, STR_CSTR(tableName));
@@ -648,15 +648,16 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateTableData(Text::CString schemaName,
 				k = this->lvTable->AddItem(col->GetColName(), 0);
 				sptr = col->ToColTypeStr(sbuff);
 				this->lvTable->SetSubItem(k, 1, CSTRP(sbuff, sptr));
-				if (s.Set(col->GetNativeType()))
+				s = col->GetNativeType();
+				if (s)
 					this->lvTable->SetSubItem(k, 2, s);
 				this->lvTable->SetSubItem(k, 3, col->IsNotNull()?CSTR("NOT NULL"):CSTR("NULL"));
 				this->lvTable->SetSubItem(k, 4, col->IsPK()?CSTR("PK"):CSTR(""));
 				this->lvTable->SetSubItem(k, 5, col->IsAutoInc()?CSTR("AUTO_INCREMENT"):CSTR(""));
-				if (s.Set(col->GetDefVal()))
-					this->lvTable->SetSubItem(k, 6, s);
-				if (s.Set(col->GetAttr()))
-					this->lvTable->SetSubItem(k, 7, s);
+				if (col->GetDefVal())
+					this->lvTable->SetSubItem(k, 6, col->GetDefVal());
+				if (col->GetAttr())
+					this->lvTable->SetSubItem(k, 7, col->GetAttr());
 
 				i++;
 			}
@@ -674,15 +675,16 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateTableData(Text::CString schemaName,
 				k = this->lvTable->AddItem(col->GetColName(), 0);
 				sptr = col->ToColTypeStr(sbuff);
 				this->lvTable->SetSubItem(k, 1, CSTRP(sbuff, sptr));
-				if (s.Set(col->GetNativeType()))
+				s = col->GetNativeType();
+				if (s)
 					this->lvTable->SetSubItem(k, 2, s);
 				this->lvTable->SetSubItem(k, 3, col->IsNotNull()?CSTR("NOT NULL"):CSTR("NULL"));
 				this->lvTable->SetSubItem(k, 4, col->IsPK()?CSTR("PK"):CSTR(""));
 				this->lvTable->SetSubItem(k, 5, col->IsAutoInc()?CSTR("AUTO_INCREMENT"):CSTR(""));
-				if (s.Set(col->GetDefVal()))
-					this->lvTable->SetSubItem(k, 6, s);
-				if (s.Set(col->GetAttr()))
-					this->lvTable->SetSubItem(k, 7, s);
+				if (col->GetDefVal())
+					this->lvTable->SetSubItem(k, 6, col->GetDefVal());
+				if (col->GetAttr())
+					this->lvTable->SetSubItem(k, 7, col->GetAttr());
 
 				i++;
 			}
@@ -786,14 +788,13 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateVariableList()
 	this->lvVariable->ClearItems();
 	if (this->currDB->IsDBTool())
 	{
-		NotNullPtr<Text::String> s;
 		UOSInt i = 0;
 		UOSInt j = ((DB::ReadingDBTool*)this->currDB)->GetVariables(&vars);
 		while (i < j)
 		{
 			item = vars.GetItem(i);
-			this->lvVariable->AddItem(Text::String::OrEmpty(item.key), 0);
-			if (s.Set(item.value)) this->lvVariable->SetSubItem(i, 1, s);
+			this->lvVariable->AddItem(item.key, 0);
+			if (item.value) this->lvVariable->SetSubItem(i, 1, item.value);
 			i++;
 		}
 		((DB::ReadingDBTool*)this->currDB)->FreeVariables(&vars);
@@ -809,7 +810,6 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateSvrConnList()
 	{
 		Data::ArrayList<DB::ReadingDBTool::ConnectionInfo*> conns;
 		DB::ReadingDBTool::ConnectionInfo *conn;
-		NotNullPtr<Text::String> s;
 		UOSInt i = 0;
 		UOSInt j = ((DB::ReadingDBTool*)this->currDB)->GetConnectionInfo(&conns);
 		while (i < j)
@@ -817,14 +817,14 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateSvrConnList()
 			conn = conns.GetItem(i);
 			sptr = Text::StrInt32(sbuff, conn->id);
 			this->lvSvrConn->AddItem(CSTRP(sbuff, sptr), (void*)(OSInt)conn->id);
-			if (s.Set(conn->status)) this->lvSvrConn->SetSubItem(i, 1, s);
-			if (s.Set(conn->user)) this->lvSvrConn->SetSubItem(i, 2, s);
-			if (s.Set(conn->clientHostName)) this->lvSvrConn->SetSubItem(i, 3, s);
-			if (s.Set(conn->dbName)) this->lvSvrConn->SetSubItem(i, 4, s);
-			if (s.Set(conn->cmd)) this->lvSvrConn->SetSubItem(i, 5, s);
+			if (conn->status) this->lvSvrConn->SetSubItem(i, 1, conn->status);
+			if (conn->user) this->lvSvrConn->SetSubItem(i, 2, conn->user);
+			if (conn->clientHostName) this->lvSvrConn->SetSubItem(i, 3, conn->clientHostName);
+			if (conn->dbName) this->lvSvrConn->SetSubItem(i, 4, conn->dbName);
+			if (conn->cmd) this->lvSvrConn->SetSubItem(i, 5, conn->cmd);
 			sptr = Text::StrInt32(sbuff, conn->timeUsed);
 			this->lvSvrConn->SetSubItem(i, 6, CSTRP(sbuff, sptr));
-			if (s.Set(conn->sql)) this->lvSvrConn->SetSubItem(i, 7, s);
+			if (conn->sql) this->lvSvrConn->SetSubItem(i, 7, conn->sql);
 			i++;
 		}
 		((DB::ReadingDBTool*)this->currDB)->FreeConnectionInfo(&conns);

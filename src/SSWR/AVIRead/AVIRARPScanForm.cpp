@@ -210,7 +210,7 @@ SSWR::AVIRead::AVIRARPScanForm::AVIRARPScanForm(UI::GUIClientControl *parent, UI
 					adapter = MemAlloc(SSWR::AVIRead::AVIRARPScanForm::AdapterInfo, 1);
 					sbuff[0] = 0;
 					connInfo->GetName(sbuff);
-					adapter->ifName = Text::StrCopyNew(sbuff).Ptr();
+					adapter->ifName = Text::StrCopyNew(sbuff);
 					adapter->ipAddr = ip;
 					MemCopyNO(adapter->hwAddr, hwAddr, 6);
 					this->adapters.Add(adapter);

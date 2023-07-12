@@ -14,7 +14,7 @@ namespace SSWR
 		{
 		private:
 			SSWR::AVIRead::AVIRCore *core;
-			NotNullPtr<Text::String> fileName;
+			Text::String *fileName;
 
 			UI::GUILabel *lblNewName;
 			UI::GUITextBox *txtNewName;
@@ -26,11 +26,11 @@ namespace SSWR
 			static void __stdcall OnCancelClicked(void *userObj);
 
 		public:
-			AVIRFileRenameForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, NotNullPtr<Text::String> fileName);
+			AVIRFileRenameForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Text::String *fileName);
 			virtual ~AVIRFileRenameForm();
 
 			virtual void OnMonitorChanged();
-			NotNullPtr<Text::String> GetFileName() const;
+			Text::String *GetFileName() const;
 		};
 	}
 }

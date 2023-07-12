@@ -32,7 +32,7 @@ Data::FastMap<Int32, const UTF8Char **> *Map::FileGDBLayer::ReadNameArr()
 				}
 				else if (r->GetStr(i, sbuff, sizeof(sbuff)))
 				{
-					names[i] = Text::StrCopyNew(sbuff).Ptr();
+					names[i] = Text::StrCopyNew(sbuff);
 				}
 				else
 				{
@@ -338,7 +338,7 @@ void Map::FileGDBLayer::RemoveUpdatedHandler(UpdatedHandler hdlr, void *obj)
 {
 }
 
-UOSInt Map::FileGDBLayer::QueryTableNames(Text::CString schemaName, Data::ArrayListNN<Text::String> *names)
+UOSInt Map::FileGDBLayer::QueryTableNames(Text::CString schemaName, Data::ArrayList<Text::String*> *names)
 {
 	if (schemaName.leng != 0)
 		return 0;
@@ -346,7 +346,7 @@ UOSInt Map::FileGDBLayer::QueryTableNames(Text::CString schemaName, Data::ArrayL
 	return 1;
 }
 
-DB::DBReader *Map::FileGDBLayer::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListNN<Text::String> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+DB::DBReader *Map::FileGDBLayer::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	Sync::MutexUsage *mutUsage;
 	NEW_CLASS(mutUsage, Sync::MutexUsage());

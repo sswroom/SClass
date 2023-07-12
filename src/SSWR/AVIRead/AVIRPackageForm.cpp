@@ -631,7 +631,7 @@ void SSWR::AVIRead::AVIRPackageForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_PASTE:
 		{
 			UI::Clipboard clipboard(this->hwnd);
-			Data::ArrayListNN<Text::String> fileNames;
+			Data::ArrayList<Text::String *> fileNames;
 			UI::Clipboard::FilePasteType fpt;
 			UOSInt i;
 			UOSInt j;
@@ -738,7 +738,7 @@ void SSWR::AVIRead::AVIRPackageForm::ProgressStart(Text::CString name, UInt64 co
 	{
 		Sync::MutexUsage mutUsage(&this->statusFileMut);
 		SDEL_STRING(this->statusFile);
-		this->statusFile = Text::String::New(name).Ptr();
+		this->statusFile = Text::String::New(name);
 		this->statusFileSize = count;
 		this->statusFileChg = true;
 	}
@@ -747,7 +747,7 @@ void SSWR::AVIRead::AVIRPackageForm::ProgressStart(Text::CString name, UInt64 co
 		Sync::MutexUsage mutUsage(&this->progMut);
 		this->progStarted = true;
 		SDEL_STRING(this->progName);
-		this->progName = Text::String::New(name).Ptr();
+		this->progName = Text::String::New(name);
 		this->progStartCnt = count;
 		this->progEnd = false;
 	}

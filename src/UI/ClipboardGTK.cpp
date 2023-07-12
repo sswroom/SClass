@@ -63,7 +63,7 @@ Bool UI::Clipboard::GetDataText(UInt32 fmtId, Text::StringBuilderUTF8 *sb)
 	return GetDataTextH(0, fmtId, sb, 0);
 }
 
-UI::Clipboard::FilePasteType UI::Clipboard::GetDataFiles(Data::ArrayListNN<Text::String> *fileNames)
+UI::Clipboard::FilePasteType UI::Clipboard::GetDataFiles(Data::ArrayList<Text::String *> *fileNames)
 {
 	if (!this->succ)
 		return UI::Clipboard::FPT_NONE;
@@ -153,7 +153,7 @@ UI::Clipboard::FilePasteType UI::Clipboard::GetDataFiles(Data::ArrayListNN<Text:
 	return ret;
 }
 
-void UI::Clipboard::FreeDataFiles(Data::ArrayListNN<Text::String> *fileNames)
+void UI::Clipboard::FreeDataFiles(Data::ArrayList<Text::String *> *fileNames)
 {
 	UOSInt i = fileNames->GetCount();;
 	while (i-- > 0)

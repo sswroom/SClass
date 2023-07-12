@@ -143,7 +143,7 @@ namespace DB
 			if (this->rows && colIndex < this->colCount)
 			{
 				SDEL_TEXT(this->colNames[colIndex]);
-				this->colNames[colIndex] = Text::StrCopyNewC(colName.v, colName.leng).Ptr();
+				this->colNames[colIndex] = Text::StrCopyNewC(colName.v, colName.leng);
 				this->colTypes[colIndex] = colType;
 			}
 		}
@@ -220,7 +220,7 @@ namespace DB
 			Text::String **row = this->rows->GetItem((UOSInt)this->rowIndex);
 			if (row == 0 || row[colIndex] == 0)
 				return 0;
-			return row[colIndex]->Clone().Ptr();
+			return row[colIndex]->Clone();
 		}
 
 		virtual UTF8Char *GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSize)
@@ -343,7 +343,7 @@ namespace DB
 				return false;
 			if (this->colNames[colIndex])
 			{
-				colDef->SetColName(NotNullPtr<const UTF8Char>::FromPtr(this->colNames[colIndex]));
+				colDef->SetColName(this->colNames[colIndex]);
 			}
 			else
 			{
@@ -1180,7 +1180,7 @@ Bool DB::DBMS::UserVarSet(DB::DBMS::SessionInfo *sess, const UTF8Char *varName, 
 	{
 		if (val)
 		{
-			sess->userVars->Put(varName, val->Clone().Ptr())->Release();
+			sess->userVars->Put(varName, val->Clone())->Release();
 		}
 		else
 		{
@@ -1189,7 +1189,7 @@ Bool DB::DBMS::UserVarSet(DB::DBMS::SessionInfo *sess, const UTF8Char *varName, 
 	}
 	else if (val)
 	{
-		sess->userVars->Put(varName, val->Clone().Ptr());
+		sess->userVars->Put(varName, val->Clone());
 	}
 	return true;
 }
@@ -1230,7 +1230,7 @@ Text::String *DB::DBMS::Evals(const UTF8Char **valPtr, DB::DBMS::SessionInfo *se
 				sb.AppendSlow(val);
 				sb.AppendC(UTF8STRC("'"));
 				SDEL_STRING(sess->lastError);
-				sess->lastError = Text::String::New(sb.ToCString()).Ptr();
+				sess->lastError = Text::String::New(sb.ToCString());
 				return 0;
 			}
 		}
@@ -1247,12 +1247,12 @@ Text::String *DB::DBMS::Evals(const UTF8Char **valPtr, DB::DBMS::SessionInfo *se
 			sb.AppendC(sb2.ToString(), sb2.GetLength());
 			sb.AppendC(UTF8STRC("'"));
 			SDEL_STRING(sess->lastError);
-			sess->lastError = Text::String::New(sb.ToCString()).Ptr();
+			sess->lastError = Text::String::New(sb.ToCString());
 			return 0;
 		}
 		else
 		{
-			return Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
+			return Text::String::New(sb.ToString(), sb.GetLength());
 		}
 	}
 	else if (val[0] == '@')
@@ -2949,7 +2949,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt 
 						sb.AppendSlow(sptr1);
 						sb.AppendC(UTF8STRC("' at line 1"));
 						SDEL_STRING(sess->lastError);
-						sess->lastError = Text::String::New(sb.ToCString()).Ptr();
+						sess->lastError = Text::String::New(sb.ToCString());
 						
 						return 0;
 					}
@@ -2961,7 +2961,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt 
 					sb.AppendSlow(sptr1);
 					sb.AppendC(UTF8STRC("' at line 1"));
 					SDEL_STRING(sess->lastError);
-					sess->lastError = Text::String::New(sb.ToCString()).Ptr();
+					sess->lastError = Text::String::New(sb.ToCString());
 				}
 			}
 			else
@@ -2971,7 +2971,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt 
 				sb.AppendSlow(sptr1);
 				sb.AppendC(UTF8STRC("' at line 1"));
 				SDEL_STRING(sess->lastError);
-				sess->lastError = Text::String::New(sb.ToCString()).Ptr();
+				sess->lastError = Text::String::New(sb.ToCString());
 			}
 		}
 		else

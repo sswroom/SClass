@@ -201,7 +201,7 @@ Bool DB::ODBCConn::Connect(Text::String *dsn, Text::String *uid, Text::String *p
 		{
 			sb.AppendC(UTF8STRC("["));
 			state[5] = 0;
-			NotNullPtr<Text::String> s = Text::String::NewNotNull((const UTF16Char*)state);
+			Text::String *s = Text::String::NewNotNull((const UTF16Char*)state);
 			sb.Append(s);
 			s->Release();
 			sb.AppendC(UTF8STRC("]"));
@@ -221,7 +221,7 @@ Bool DB::ODBCConn::Connect(Text::String *dsn, Text::String *uid, Text::String *p
 				s->Release();
 			}
 		}
-		this->lastErrorMsg = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
+		this->lastErrorMsg = Text::String::New(sb.ToString(), sb.GetLength());
 
 		SQLFreeHandle(SQL_HANDLE_DBC, hConn);
 		SQLFreeHandle(SQL_HANDLE_ENV, hand);
@@ -245,14 +245,14 @@ Bool DB::ODBCConn::Connect(Text::String *dsn, Text::String *uid, Text::String *p
 	return true;
 }
 
-Bool DB::ODBCConn::Connect(NotNullPtr<Text::String> connStr)
+Bool DB::ODBCConn::Connect(Text::String *connStr)
 {
 	SQLHANDLE hand;
 	SQLHANDLE hConn;
 	SQLRETURN ret;
 	int timeOut = 5;
 	SDEL_STRING(this->connStr);
-	this->connStr = connStr->Clone().Ptr();
+	this->connStr = connStr->Clone();
 	SDEL_STRING(this->lastErrorMsg);
 
 	this->connErr = CE_NONE;
@@ -308,7 +308,7 @@ Bool DB::ODBCConn::Connect(NotNullPtr<Text::String> connStr)
 		{
 			sb.AppendC(UTF8STRC("["));
 			state[5] = 0;
-			NotNullPtr<Text::String> s = Text::String::NewNotNull((const UTF16Char*)state);
+			Text::String *s = Text::String::NewNotNull((const UTF16Char*)state);
 			sb.Append(s);
 			s->Release();
 			sb.AppendC(UTF8STRC("]"));
@@ -328,7 +328,7 @@ Bool DB::ODBCConn::Connect(NotNullPtr<Text::String> connStr)
 				s->Release();
 			}
 		}
-		this->lastErrorMsg = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
+		this->lastErrorMsg = Text::String::New(sb.ToString(), sb.GetLength());
 //		printf("ODBC Connect error: %s\r\n", sb.ToString());
 
 		SQLFreeHandle(SQL_HANDLE_DBC, hConn);
@@ -347,7 +347,7 @@ Bool DB::ODBCConn::Connect(NotNullPtr<Text::String> connStr)
 
 Bool DB::ODBCConn::Connect(Text::CString connStr)
 {
-	NotNullPtr<Text::String> s = Text::String::New(connStr);
+	Text::String *s = Text::String::New(connStr);
 	Bool ret = this->Connect(s);
 	s->Release();
 	return ret;
@@ -393,12 +393,12 @@ DB::ODBCConn::ODBCConn(Text::CString connStr, Text::CString sourceName, IO::LogT
 	this->tzQhr = 0;
 	this->forceTz = false;
 	this->axisAware = false;
-	NotNullPtr<Text::String> s = Text::String::New(connStr);
+	Text::String *s = Text::String::New(connStr);
 	this->Connect(s);
 	s->Release();
 }
 
-DB::ODBCConn::ODBCConn(NotNullPtr<Text::String> dsn, Text::String *uid, Text::String *pwd, Text::String *schema, IO::LogTool *log) : DB::DBConn(dsn)
+DB::ODBCConn::ODBCConn(Text::String *dsn, Text::String *uid, Text::String *pwd, Text::String *schema, IO::LogTool *log) : DB::DBConn(dsn)
 {
 	this->log = log;
 	this->connStr = 0;
@@ -407,7 +407,7 @@ DB::ODBCConn::ODBCConn(NotNullPtr<Text::String> dsn, Text::String *uid, Text::St
 	this->lastErrorMsg = 0;
 	this->envHand = 0;
 	this->enableDebug = false;
-	this->dsn = dsn->Clone().Ptr();
+	this->dsn = SCOPY_STRING(dsn);
 	this->uid = SCOPY_STRING(uid);
 	this->pwd = SCOPY_STRING(pwd);
 	this->schema = SCOPY_STRING(schema);
@@ -759,7 +759,7 @@ void DB::ODBCConn::GetLastErrorMsg(Text::StringBuilderUTF8 *str)
 		{
 			str->AppendC(UTF8STRC("["));
 			state[5] = 0;
-			NotNullPtr<Text::String> s = Text::String::NewNotNull((const UTF16Char*)state);
+			Text::String *s = Text::String::NewNotNull((const UTF16Char*)state);
 			str->Append(s);
 			str->AppendC(UTF8STRC("]"));
 
@@ -815,7 +815,7 @@ Bool DB::ODBCConn::IsLastDataError()
 	if (ret == SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO)
 	{
 		state[5] = 0;
-		NotNullPtr<Text::String> s = Text::String::New((const UTF16Char*)state, 5);
+		Text::String *s = Text::String::New((const UTF16Char*)state, 5);
 		Bool ret = false;
 		if (s->Equals(UTF8STRC("23000")))
 			ret = true;
@@ -835,7 +835,7 @@ void DB::ODBCConn::Reconnect()
 	Int8 oldTzQhr = this->tzQhr;
 	if (this->connStr)
 	{
-		NotNullPtr<Text::String> connStr = this->connStr->Clone();
+		Text::String *connStr = this->connStr->Clone();
 		Connect(connStr);
 		connStr->Release();
 	}
@@ -977,7 +977,7 @@ DB::DBReader *DB::ODBCConn::GetTablesInfo(Text::CString schemaName)
 	return r;
 }
 
-UOSInt DB::ODBCConn::QueryTableNames(Text::CString schemaName, Data::ArrayListNN<Text::String> *names)
+UOSInt DB::ODBCConn::QueryTableNames(Text::CString schemaName, Data::ArrayList<Text::String*> *names)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
@@ -1009,7 +1009,7 @@ UOSInt DB::ODBCConn::QueryTableNames(Text::CString schemaName, Data::ArrayListNN
 	return names->GetCount() - initCnt;
 }
 
-DB::DBReader *DB::ODBCConn::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListNN<Text::String> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+DB::DBReader *DB::ODBCConn::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -1069,7 +1069,7 @@ void DB::ODBCConn::ShowSQLError(const UTF16Char *state, const UTF16Char *errMsg)
 {
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("ODBC Error: ["));
-	NotNullPtr<Text::String> s = Text::String::NewNotNull(state);
+	Text::String *s = Text::String::NewNotNull(state);
 	sb.Append(s);
 	s->Release();
 	sb.AppendC(UTF8STRC("] "));
@@ -1122,7 +1122,7 @@ void DB::ODBCConn::ForceTz(Int8 tzQhr)
 	this->tzQhr = tzQhr;
 }
 
-UOSInt DB::ODBCConn::GetDriverList(Data::ArrayListNN<Text::String> *driverList)
+UOSInt DB::ODBCConn::GetDriverList(Data::ArrayList<Text::String*> *driverList)
 {
 #if defined(WIN32) || defined(_WIN64) || defined(__CYGWIN__) || defined(__MINGW32__)
 	WChar wbuff[512];
@@ -1173,7 +1173,7 @@ IO::ConfigFile *DB::ODBCConn::GetDriverInfo(Text::CString driverName)
 #endif
 }
 
-DB::DBTool *DB::ODBCConn::CreateDBTool(NotNullPtr<Text::String> dsn, Text::String *uid, Text::String *pwd, Text::String *schema, IO::LogTool *log, Text::CString logPrefix)
+DB::DBTool *DB::ODBCConn::CreateDBTool(Text::String *dsn, Text::String *uid, Text::String *pwd, Text::String *schema, IO::LogTool *log, Text::CString logPrefix)
 {
 	DB::ODBCConn *conn;
 	DB::DBTool *db;
@@ -1959,34 +1959,34 @@ Text::String *DB::ODBCReader::GetNewStr(UOSInt colIndex)
 	case DB::DBUtil::CT_UUID:
 		{
 			Text::StringBuilderUTF8 *sb = (Text::StringBuilderUTF8*)this->colDatas[colIndex].colData;
-			return Text::String::New(sb->ToString(), sb->GetLength()).Ptr();
+			return Text::String::New(sb->ToString(), sb->GetLength());
 		}
 	case DB::DBUtil::CT_Double:
 	case DB::DBUtil::CT_Float:
 	case DB::DBUtil::CT_Decimal:
 		sptr = Text::StrDouble(sbuff, *(Double*)&this->colDatas[colIndex].dataVal);
-		return Text::String::New(sbuff, (UOSInt)(sptr - sbuff)).Ptr();
+		return Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 	case DB::DBUtil::CT_Int16:
 	case DB::DBUtil::CT_Int32:
 	case DB::DBUtil::CT_Byte:
 	case DB::DBUtil::CT_Int64:
 	case DB::DBUtil::CT_Bool:
 		sptr = Text::StrInt64(sbuff, this->colDatas[colIndex].dataVal);
-		return Text::String::New(sbuff, (UOSInt)(sptr - sbuff)).Ptr();
+		return Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 	case DB::DBUtil::CT_UInt64:
 		sptr = Text::StrUInt64(sbuff, (UInt64)this->colDatas[colIndex].dataVal);
-		return Text::String::New(sbuff, (UOSInt)(sptr - sbuff)).Ptr();
+		return Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 	case DB::DBUtil::CT_UInt32:
 		sptr = Text::StrUInt32(sbuff, (UInt32)this->colDatas[colIndex].dataVal);
-		return Text::String::New(sbuff, (UOSInt)(sptr - sbuff)).Ptr();
+		return Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 	case DB::DBUtil::CT_UInt16:
 		sptr = Text::StrUInt16(sbuff, (UInt16)this->colDatas[colIndex].dataVal);
-		return Text::String::New(sbuff, (UOSInt)(sptr - sbuff)).Ptr();
+		return Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 	case DB::DBUtil::CT_DateTimeTZ:
 	case DB::DBUtil::CT_DateTime:
 	case DB::DBUtil::CT_Date:
 		sptr = ((Data::Timestamp*)this->colDatas[colIndex].colData)->ToString(sbuff);
-		return Text::String::New(sbuff, (UOSInt)(sptr - sbuff)).Ptr();
+		return Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 	case DB::DBUtil::CT_Binary:
 		return 0;
 	case DB::DBUtil::CT_Vector:
@@ -1998,7 +1998,7 @@ Text::String *DB::ODBCReader::GetNewStr(UOSInt colIndex)
 				Math::WKTWriter wkt;
 				wkt.ToText(&sb, vec);
 				DEL_CLASS(vec);
-				return Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
+				return Text::String::New(sb.ToString(), sb.GetLength());
 			}
 		}
 		return 0;
@@ -2441,7 +2441,7 @@ Bool DB::ODBCReader::GetColDef(UOSInt colIndex, DB::ColDef *colDef)
 		return false;
 	}
 
-	NotNullPtr<Text::String> s = Text::String::NewNotNull((const UTF16Char*)sbuff);
+	Text::String *s = Text::String::NewNotNull((const UTF16Char*)sbuff);
 	colDef->SetColName(s);
 	s->Release();
 	colDef->SetColType(this->ODBCType2DBType(dataType, colSize));

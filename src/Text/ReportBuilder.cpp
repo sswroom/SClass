@@ -49,7 +49,7 @@ Text::ReportBuilder::ReportBuilder(Text::CString name, UOSInt colCount, const UT
 		colWidthPts[i] = 0;
 		if (columns[i])
 		{
-			cols[i].val = Text::String::NewNotNullSlow(columns[i]).Ptr();
+			cols[i].val = Text::String::NewNotNullSlow(columns[i]);
 		}
 		else
 		{
@@ -212,7 +212,7 @@ void Text::ReportBuilder::AddTableHeader(const UTF8Char **content)
 	{
 		if (content[i])
 		{
-			cols[i].val = Text::String::NewNotNullSlow(content[i]).Ptr();
+			cols[i].val = Text::String::NewNotNullSlow(content[i]);
 		}
 		else
 		{
@@ -235,7 +235,7 @@ void Text::ReportBuilder::AddTableContent(const UTF8Char **content)
 	{
 		if (content[i])
 		{
-			cols[i].val = Text::String::NewNotNullSlow(content[i]).Ptr();
+			cols[i].val = Text::String::NewNotNullSlow(content[i]);
 		}
 		else
 		{
@@ -258,7 +258,7 @@ void Text::ReportBuilder::AddTableSummary(const UTF8Char **content)
 	{
 		if (content[i])
 		{
-			cols[i].val = Text::String::NewNotNullSlow(content[i]).Ptr();
+			cols[i].val = Text::String::NewNotNullSlow(content[i]);
 		}
 		else
 		{
@@ -290,7 +290,7 @@ void Text::ReportBuilder::AddIcon(UOSInt index, Text::CString fileName, Text::CS
 	icon->col = index;
 	if (fileName.v)
 	{
-		icon->fileName = Text::String::New(fileName.v, fileName.leng).Ptr();
+		icon->fileName = Text::String::New(fileName.v, fileName.leng);
 		if (IO::Path::PATH_SEPERATOR != '/')
 		{
 			icon->fileName->Replace('/', IO::Path::PATH_SEPERATOR);
@@ -302,7 +302,7 @@ void Text::ReportBuilder::AddIcon(UOSInt index, Text::CString fileName, Text::CS
 	}
 	if (name.v)
 	{
-		icon->name = Text::String::New(name.v, name.leng).Ptr();
+		icon->name = Text::String::New(name.v, name.leng);
 	}
 	else
 	{
@@ -605,7 +605,7 @@ Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 						}
 						else
 						{
-							ws->SetCellString(k, l, Text::String::OrEmpty(cols[l].val));
+							ws->SetCellString(k, l, cols[l].val);
 						}
 						if (cols[l].hAlign != Text::HAlignment::Unknown)
 						{
@@ -632,7 +632,7 @@ Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 						}
 						else
 						{
-							ws->SetCellString(k, l, Text::String::OrEmpty(cols[l].val));
+							ws->SetCellString(k, l, cols[l].val);
 						}
 						if (cols[l].hAlign != Text::HAlignment::Unknown)
 						{
@@ -823,7 +823,14 @@ Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 			{
 				if (dateStyle == 0)
 				{
-					dateStyle = wb->NewCellStyle(font10, Text::HAlignment::Left, Text::VAlignment::Center, chart->GetTimeFormat()->ToCString());
+					if (chart->GetTimeFormat())
+					{
+						dateStyle = wb->NewCellStyle(font10, Text::HAlignment::Left, Text::VAlignment::Center, chart->GetTimeFormat()->ToCString());
+					}
+					else
+					{
+						dateStyle = wb->NewCellStyle(font10, Text::HAlignment::Left, Text::VAlignment::Center, CSTR("YYYY-MM-dd HH:mm"));
+					}
 				}
 				Data::DateTime dt;
 				dt.ToLocalTime();
@@ -841,7 +848,14 @@ Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 			{
 				if (dblStyle == 0)
 				{
-					dblStyle = wb->NewCellStyle(font10, Text::HAlignment::Left, Text::VAlignment::Center, chart->GetDblFormat()->ToCString());
+					if (chart->GetDblFormat())
+					{
+						dblStyle = wb->NewCellStyle(font10, Text::HAlignment::Left, Text::VAlignment::Center, chart->GetDblFormat()->ToCString());
+					}
+					else
+					{
+						dblStyle = wb->NewCellStyle(font10, Text::HAlignment::Left, Text::VAlignment::Center, CSTR("0.###"));
+					}
 				}
 				Double *dblValues = chart->GetXDouble(0, &colCount);
 				i = 0;
@@ -875,14 +889,21 @@ Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 			j = chart->GetYDataCount();
 			while (i < j)
 			{
-				dataSheet->SetCellString(1 + i, 0, strStyle, Text::String::OrEmpty(chart->GetYName(i)));
+				dataSheet->SetCellString(1 + i, 0, strStyle, chart->GetYName(i));
 				switch (chart->GetYType(i))
 				{
 				case Data::Chart::DataType::DateTicks:
 				{
 					if (dateStyle == 0)
 					{
-						dateStyle = wb->NewCellStyle(font10, Text::HAlignment::Left, Text::VAlignment::Center, chart->GetTimeFormat()->ToCString());
+						if (chart->GetTimeFormat())
+						{
+							dateStyle = wb->NewCellStyle(font10, Text::HAlignment::Left, Text::VAlignment::Center, chart->GetTimeFormat()->ToCString());
+						}
+						else
+						{
+							dateStyle = wb->NewCellStyle(font10, Text::HAlignment::Left, Text::VAlignment::Center, CSTR("YYYY-MM-dd HH:mm"));
+						}
 					}
 					Data::DateTime dt;
 					dt.ToLocalTime();
@@ -900,7 +921,14 @@ Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 				{
 					if (dblStyle == 0)
 					{
-						dblStyle = wb->NewCellStyle(font10, Text::HAlignment::Left, Text::VAlignment::Center, chart->GetDblFormat()->ToCString());
+						if (chart->GetDblFormat())
+						{
+							dblStyle = wb->NewCellStyle(font10, Text::HAlignment::Left, Text::VAlignment::Center, chart->GetDblFormat()->ToCString());
+						}
+						else
+						{
+							dblStyle = wb->NewCellStyle(font10, Text::HAlignment::Left, Text::VAlignment::Center, CSTR("0.###"));
+						}
 					}
 					Double *dblValues = chart->GetYDouble(i, &colCount);
 					k = 0;

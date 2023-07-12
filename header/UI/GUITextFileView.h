@@ -20,7 +20,7 @@ namespace UI
 //		void *drawFont;
 		UOSInt lastLineCnt;
 
-		NotNullPtr<Text::String> fileName;
+		Text::String *fileName;
 		UInt8 *readBuff;
 		UInt64 readBuffOfst;
 		UOSInt readBuffSize;
@@ -84,8 +84,8 @@ namespace UI
 		Bool IsLoading();
 		UOSInt GetLineCount();
 		void SetCodePage(UInt32 codePage);
-		Bool LoadFile(NotNullPtr<Text::String> fileName);
-		NotNullPtr<Text::String> GetFileName() const;
+		Bool LoadFile(Text::String *fileName);
+		Text::String *GetFileName();
 		void GetTextPos(OSInt scnPosX, OSInt scnPosY, UInt32 *textPosX, UOSInt *textPosY);
 		UOSInt GetTextPosY();
 		UInt32 GetTextPosX();

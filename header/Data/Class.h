@@ -11,7 +11,7 @@ namespace Data
 	public:
 		struct FieldInfo
 		{
-			NotNullPtr<Text::String> name;
+			Text::String *name;
 			OSInt ofst;
 			Data::VariItem::ItemType itemType;
 		};

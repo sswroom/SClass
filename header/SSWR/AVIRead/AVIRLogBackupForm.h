@@ -1,6 +1,5 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRLOGBACKUPFORM
 #define _SM_SSWR_AVIREAD_AVIRLOGBACKUPFORM
-#include "Data/ArrayListNN.h"
 #include "UI/GUIButton.h"
 #include "UI/GUIForm.h"
 #include "UI/GUILabel.h"
@@ -17,7 +16,7 @@ namespace SSWR
 			typedef struct
 			{
 				const UTF8Char *logName;
-				Data::ArrayListNN<Text::String> *fileNames;
+				Data::ArrayList<Text::String *> *fileNames;
 			} LogGroup;
 		private:
 			SSWR::AVIRead::AVIRCore *core;

@@ -27,7 +27,7 @@ namespace SSWR
 			UI::GUIButton *btnProcess;
 
 			static void __stdcall OnProcessClicked(void *userObj);
-			static void __stdcall OnFiles(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles);
+			static void __stdcall OnFiles(void *userObj, Text::String **files, UOSInt nFiles);
 		public:
 			AVIRRNCryptorForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRRNCryptorForm();

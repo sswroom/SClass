@@ -8,7 +8,7 @@
 #include "Text/StringBuilderUTF8.h"
 #include "Text/TextBinEnc/URIEncoding.h"
 
-Net::WebServer::IWebResponse::IWebResponse(NotNullPtr<Text::String> sourceName) : IO::Stream(sourceName)
+Net::WebServer::IWebResponse::IWebResponse(Text::String *sourceName) : IO::Stream(sourceName)
 {
 }
 
@@ -64,7 +64,7 @@ Bool Net::WebServer::IWebResponse::VirtualRedirectURL(Net::WebServer::IWebReques
 	"<script type=\"text/javascript\">\r\n"
 	"function afterLoad(){\r\n"
 	"	document.location.replace("));
-	NotNullPtr<Text::String> s = Text::JSText::ToNewJSText(url.v);
+	Text::String *s = Text::JSText::ToNewJSText(url.v);
 	sb.Append(s);
 	s->Release();
 	sb.AppendC(UTF8STRC(");\r\n"

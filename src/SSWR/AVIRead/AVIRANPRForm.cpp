@@ -4,7 +4,7 @@
 #include "Math/Quadrilateral.h"
 #include "SSWR/AVIRead/AVIRANPRForm.h"
 
-void __stdcall SSWR::AVIRead::AVIRANPRForm::OnFileHandler(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles)
+void __stdcall SSWR::AVIRead::AVIRANPRForm::OnFileHandler(void *userObj, Text::String **files, UOSInt nFiles)
 {
 	SSWR::AVIRead::AVIRANPRForm *me = (SSWR::AVIRead::AVIRANPRForm*)userObj;
 	Parser::ParserList *parsers = me->core->GetParserList();

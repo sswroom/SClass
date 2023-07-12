@@ -28,7 +28,6 @@ void __stdcall SSWR::AVIRead::AVIRSNSManagerForm::OnChannelsSelChg(void *userObj
 		UOSInt i;
 		UOSInt j;
 		Data::DateTime dt;
-		NotNullPtr<Text::String> s;
 		UTF8Char sbuff[32];
 		UTF8Char *sptr;
 		Sync::MutexUsage mutUsage;
@@ -43,9 +42,9 @@ void __stdcall SSWR::AVIRead::AVIRSNSManagerForm::OnChannelsSelChg(void *userObj
 			dt.ToLocalTime();
 			sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
 			me->lvCurrItems->SetSubItem(j, 1, CSTRP(sbuff, sptr));
-			if (s.Set(item->title))
+			if (item->title)
 			{
-				me->lvCurrItems->SetSubItem(j, 2, s);
+				me->lvCurrItems->SetSubItem(j, 2, item->title);
 			}
 			me->lvCurrItems->SetSubItem(j, 3, item->message);
 		}

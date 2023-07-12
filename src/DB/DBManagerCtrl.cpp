@@ -93,7 +93,7 @@ DB::DBManagerCtrl *DB::DBManagerCtrl::Create(Text::String *connStr, IO::LogTool 
 {
 	DB::DBManagerCtrl *ctrl;
 	NEW_CLASS(ctrl, DB::DBManagerCtrl(log, sockf, parsers));
-	ctrl->connStr = connStr->Clone().Ptr();
+	ctrl->connStr = connStr->Clone();
 	return ctrl;
 }
 
@@ -101,7 +101,7 @@ DB::DBManagerCtrl *DB::DBManagerCtrl::Create(Text::CString connStr, IO::LogTool 
 {
 	DB::DBManagerCtrl *ctrl;
 	NEW_CLASS(ctrl, DB::DBManagerCtrl(log, sockf, parsers));
-	ctrl->connStr = Text::String::New(connStr).Ptr();
+	ctrl->connStr = Text::String::New(connStr);
 	return ctrl;
 }
 
@@ -112,21 +112,21 @@ DB::DBManagerCtrl *DB::DBManagerCtrl::Create(DB::DBTool *db, IO::LogTool *log, N
 	NEW_CLASS(ctrl, DB::DBManagerCtrl(log, sockf, parsers));
 	if (DB::DBManager::GetConnStr(db, &sb))
 	{
-		ctrl->connStr = Text::String::New(sb.ToCString()).Ptr();
+		ctrl->connStr = Text::String::New(sb.ToCString());
 	}
 	ctrl->db = db;
 	ctrl->status = ConnStatus::Connected;
 	return ctrl;
 }
 
-DB::DBManagerCtrl *DB::DBManagerCtrl::CreateFromFile(DB::ReadingDB *db, NotNullPtr<Text::String> filePath, IO::LogTool *log, Net::SocketFactory *sockf, Parser::ParserList *parsers)
+DB::DBManagerCtrl *DB::DBManagerCtrl::CreateFromFile(DB::ReadingDB *db, Text::String *filePath, IO::LogTool *log, Net::SocketFactory *sockf, Parser::ParserList *parsers)
 {
 	Text::StringBuilderUTF8 sb;
 	DB::DBManagerCtrl *ctrl;
 	NEW_CLASS(ctrl, DB::DBManagerCtrl(log, sockf, parsers));
 	sb.AppendC(UTF8STRC("file:"));
 	sb.Append(filePath);
-	ctrl->connStr = Text::String::New(sb.ToCString()).Ptr();
+	ctrl->connStr = Text::String::New(sb.ToCString());
 	ctrl->db = db;
 	ctrl->status = ConnStatus::Connected;
 	return ctrl;

@@ -74,7 +74,7 @@ Bool Exporter::ExcelXMLExporter::ExportFile(IO::SeekableStream *stm, Text::CStri
 	UOSInt n;
 	UInt32 v;
 	const UTF8Char *text;
-	NotNullPtr<Text::String> s;
+	Text::String *s;
 	Data::DateTime *dt;
 	Double ver;
 	Text::StringBuilderUTF8 sb;
@@ -818,7 +818,7 @@ void Exporter::ExcelXMLExporter::WriteBorderStyle(IO::Writer *writer, const UTF8
 	UTF8Char sbuff[10];
 	UTF8Char *sptr;
 	Text::StringBuilderUTF8 sb;
-	NotNullPtr<Text::String> s;
+	Text::String *s;
 	sb.AppendC(UTF8STRC("    <Border ss:Position="));
 	s = Text::XML::ToNewAttrText(position);
 	sb.Append(s);

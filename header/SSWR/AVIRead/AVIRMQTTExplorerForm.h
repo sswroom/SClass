@@ -27,7 +27,7 @@ namespace SSWR
 		private:
 			typedef struct
 			{
-				NotNullPtr<Text::String> topic;
+				Text::String *topic;
 				UTF8Char *currValue;
 				UOSInt currValueLen;
 				Bool updated;

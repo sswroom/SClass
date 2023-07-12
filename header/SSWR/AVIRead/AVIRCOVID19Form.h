@@ -27,8 +27,8 @@ namespace SSWR
 
 			typedef struct
 			{
-				NotNullPtr<Text::String> isoCode;
-				NotNullPtr<Text::String> name;
+				Text::String *isoCode;
+				Text::String *name;
 				Double population;
 				Data::FastMap<Int64, DailyRecord*> *records;
 			} CountryInfo;

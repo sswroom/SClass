@@ -1,6 +1,6 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRHTTPPROXYCLIENTFORM
 #define _SM_SSWR_AVIREAD_AVIRHTTPPROXYCLIENTFORM
-#include "Data/ArrayListNN.h"
+
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "UI/GUIButton.h"
 #include "UI/GUIForm.h"
@@ -59,7 +59,7 @@ namespace SSWR
 			Double respTimeReq;
 			Double respTimeResp;
 			Double respTimeTotal;
-			Data::ArrayListNN<Text::String> respHeaders;
+			Data::ArrayList<Text::String*> *respHeaders;
 
 			static void __stdcall OnRequestClicked(void *userObj);
 			static UInt32 __stdcall ProcessThread(void *userObj);

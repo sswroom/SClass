@@ -24,7 +24,7 @@ Text::CodeObject::ObjectType Text::CodeFile::GetObjectType() const
 	return Text::CodeObject::OT_FILE;
 }
 
-Text::CodeProjectCfg::CodeProjectCfg(NotNullPtr<Text::String> name)
+Text::CodeProjectCfg::CodeProjectCfg(Text::String *name)
 {
 	this->cfgName = name->Clone();
 }
@@ -34,7 +34,7 @@ Text::CodeProjectCfg::~CodeProjectCfg()
 	this->cfgName->Release();
 }
 
-NotNullPtr<Text::String> Text::CodeProjectCfg::GetCfgName() const
+Text::String *Text::CodeProjectCfg::GetCfgName() const
 {
 	return this->cfgName;
 }

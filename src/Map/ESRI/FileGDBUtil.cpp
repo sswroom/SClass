@@ -50,7 +50,7 @@ Map::ESRI::FileGDBTableInfo *Map::ESRI::FileGDBUtil::ParseFieldDesc(const UInt8 
 		}
 		else
 		{
-			field->alias = Text::String::New((const UTF16Char*)&fieldDesc[ofst + 1], fieldDesc[ofst]).Ptr();
+			field->alias = Text::String::New((const UTF16Char*)&fieldDesc[ofst + 1], fieldDesc[ofst]);
 			ofst += 1 + (UOSInt)fieldDesc[ofst] * 2;
 		}
 		field->fieldType = fieldDesc[ofst];
@@ -190,7 +190,7 @@ Map::ESRI::FileGDBTableInfo *Map::ESRI::FileGDBUtil::ParseFieldDesc(const UInt8 
 
 void Map::ESRI::FileGDBUtil::FreeFieldInfo(FileGDBFieldInfo *fieldInfo)
 {
-	fieldInfo->name->Release();
+	SDEL_STRING(fieldInfo->name);
 	SDEL_STRING(fieldInfo->alias);
 	if (fieldInfo->defValue)
 	{
@@ -214,7 +214,7 @@ void Map::ESRI::FileGDBUtil::FreeTableInfo(FileGDBTableInfo *tableInfo)
 Map::ESRI::FileGDBFieldInfo *Map::ESRI::FileGDBUtil::FieldInfoClone(FileGDBFieldInfo *field)
 {
 	FileGDBFieldInfo *newField = MemAlloc(FileGDBFieldInfo, 1);
-	newField->name = field->name->Clone();
+	newField->name = SCOPY_STRING(field->name);
 	newField->alias = SCOPY_STRING(field->alias);
 	newField->fieldType = field->fieldType;
 	newField->fieldSize = field->fieldSize;

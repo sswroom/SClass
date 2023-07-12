@@ -3,7 +3,7 @@
 #include "Text/MyString.h"
 #include "Media/AudioFrameSource.h"
 
-Media::AudioFrameSource::AudioFrameSource(IO::StreamData *fd, Media::AudioFormat *format, NotNullPtr<Text::String> name)
+Media::AudioFrameSource::AudioFrameSource(IO::StreamData *fd, Media::AudioFormat *format, Text::String *name)
 {
 	this->format.FromAudioFormat(format);
 	if (this->format.frequency == 0)
@@ -13,7 +13,7 @@ Media::AudioFrameSource::AudioFrameSource(IO::StreamData *fd, Media::AudioFormat
 
 	this->data = fd->GetPartialData(0, fd->GetDataSize());
 	this->maxBlockSize = 0;
-	this->name = name->Clone();
+	this->name = SCOPY_STRING(name);
 	this->readEvt = 0;
 	this->readBlock = 0;
 	this->readBlockOfst = 0;
@@ -35,7 +35,7 @@ Media::AudioFrameSource::AudioFrameSource(IO::StreamData *fd, Media::AudioFormat
 
 	this->data = fd->GetPartialData(0, fd->GetDataSize());
 	this->maxBlockSize = 0;
-	this->name = Text::String::New(name);
+	this->name = Text::String::NewOrNull(name);
 	this->readEvt = 0;
 	this->readBlock = 0;
 	this->readBlockOfst = 0;
@@ -50,12 +50,14 @@ Media::AudioFrameSource::AudioFrameSource(IO::StreamData *fd, Media::AudioFormat
 Media::AudioFrameSource::~AudioFrameSource()
 {
 	DEL_CLASS(this->data);
-	this->name->Release();
+	SDEL_STRING(this->name);
 	MemFree(this->blocks);
 }
 
 UTF8Char *Media::AudioFrameSource::GetSourceName(UTF8Char *buff)
 {
+	if (this->name == 0)
+		return 0;
 	return this->name->ConcatTo(buff);
 }
 

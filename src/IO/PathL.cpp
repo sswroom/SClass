@@ -24,7 +24,7 @@
 
 struct IO::Path::FindFileSession
 {
-	NotNullPtr<Text::String> searchPattern;
+	Text::String *searchPattern;
 	DIR *dirObj;
 	UTF8Char pathBuff[512];
 	UTF8Char *pathEnd;
@@ -76,7 +76,7 @@ Bool IO::Path::CreateDirectoryW(const WChar *dirInput)
 	if (i != INVALID_INDEX && i > 0)
 	{
 		const WChar *wptr = Text::StrCopyNewC(dirInput, (UOSInt)i);
-		NotNullPtr<Text::String> s = Text::String::NewNotNull(wptr);
+		Text::String *s = Text::String::NewNotNull(wptr);
 		if (GetPathType(s->ToCString()) == PathType::Unknown)
 		{
 			CreateDirectory(s->ToCString());
@@ -423,7 +423,7 @@ IO::Path::FindFileSession *IO::Path::FindFile(Text::CString path)
 IO::Path::FindFileSession *IO::Path::FindFileW(const WChar *path)
 {
 	FindFileSession *sess = 0;
-	NotNullPtr<Text::String> utfPath = Text::String::NewNotNull(path);
+	Text::String *utfPath = Text::String::NewNotNull(path);
 	Text::CString searchPattern;
 	Text::CString searchDir;
 	UOSInt i = Text::StrLastIndexOfCharC(utfPath->v, utfPath->leng, '/');
@@ -601,7 +601,7 @@ IO::Path::PathType IO::Path::GetPathType(Text::CString path)
 
 IO::Path::PathType IO::Path::GetPathTypeW(const WChar *path)
 {
-	NotNullPtr<Text::String> utfPath = Text::String::NewNotNull(path);
+	Text::String *utfPath = Text::String::NewNotNull(path);
 	IO::Path::PathType pt = IO::Path::GetPathType(utfPath->ToCString());
 	utfPath->Release();
 	return pt;
@@ -621,7 +621,7 @@ Bool IO::Path::PathExists(const UTF8Char *path, UOSInt pathLen)
 
 Bool IO::Path::PathExistsW(const WChar *path)
 {
-	NotNullPtr<Text::String> utfPath = Text::String::NewNotNull(path);
+	Text::String *utfPath = Text::String::NewNotNull(path);
 	Bool ret = IO::Path::PathExists(utfPath->v, utfPath->leng);
 	utfPath->Release();
 	return ret;
@@ -630,7 +630,7 @@ Bool IO::Path::PathExistsW(const WChar *path)
 WChar *IO::Path::GetFullPathW(WChar *buff, const WChar *path)
 {
 	Text::StringBuilderUTF8 sb;
-	NotNullPtr<Text::String> str = Text::String::NewNotNull(path);
+	Text::String *str = Text::String::NewNotNull(path);
 	sb.Append(str);
 	str->Release();
 	sb.AllocLeng(512);

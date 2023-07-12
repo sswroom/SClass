@@ -219,7 +219,7 @@ Map::NetworkLinkLayer::~NetworkLinkLayer()
 	{
 		link = this->links.GetItem(i);
 		SDEL_CLASS(link->innerLayer);
-		link->url->Release();
+		SDEL_STRING(link->url);
 		SDEL_STRING(link->viewFormat);
 		SDEL_STRING(link->layerName);
 		DEL_CLASS(link);

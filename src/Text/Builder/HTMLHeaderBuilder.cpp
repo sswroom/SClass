@@ -8,7 +8,7 @@ Text::Builder::HTMLHeaderBuilder::HTMLHeaderBuilder(Text::StringBuilderUTF8 *sb,
 	if (title.leng > 0)
 	{
 		this->sb->AppendC(UTF8STRC("<title>"));
-		NotNullPtr<Text::String> s = Text::XML::ToNewHTMLElementText(title.v);
+		Text::String *s = Text::XML::ToNewHTMLElementText(title.v);
 		this->sb->Append(s);
 		s->Release();
 		this->sb->AppendC(UTF8STRC("</title>\r\n"));

@@ -7,6 +7,7 @@ Net::SNS::SNSInstagram::SNSInstagram(Net::SocketFactory *sockf, Net::SSLEngine *
 {
 	NEW_CLASS(this->ctrl, Net::WebSite::WebSiteInstagramControl(sockf, ssl, encFact, userAgent));
 	this->channelId = Text::String::New(channelId);
+	this->chName = 0;
 	this->chDesc = 0;
 	this->chError = false;
 	NEW_CLASS(this->itemMap, Data::FastStringMap<SNSItem*>());
@@ -28,7 +29,7 @@ Net::SNS::SNSInstagram::SNSInstagram(Net::SocketFactory *sockf, Net::SSLEngine *
 	}
 	if (chInfo.biography)
 	{
-		this->chDesc = chInfo.biography->Clone().Ptr();
+		this->chDesc = chInfo.biography->Clone();
 	}
 	this->ctrl->FreeChannelInfo(&chInfo);
 	UOSInt i = itemList.GetCount();
@@ -38,8 +39,8 @@ Net::SNS::SNSInstagram::SNSInstagram(Net::SocketFactory *sockf, Net::SSLEngine *
 		item = itemList.GetItem(i);
 		if (item->moreImages)
 		{
-			Data::ArrayListNN<Text::String> imgList;
-			Data::ArrayListNN<Text::String> videoList;
+			Data::ArrayList<Text::String *> imgList;
+			Data::ArrayList<Text::String *> videoList;
 			UOSInt j;
 			UOSInt k;
 			Text::String *s;
@@ -63,7 +64,7 @@ Net::SNS::SNSInstagram::SNSInstagram(Net::SocketFactory *sockf, Net::SSLEngine *
 						s->Release();
 						j++;
 					}
-					item->imgURL = Text::String::New(sb.ToCString()).Ptr();
+					item->imgURL = Text::String::New(sb.ToString(), sb.GetLength());
 				}
 
 				if (videoList.GetCount() > 0)
@@ -82,7 +83,7 @@ Net::SNS::SNSInstagram::SNSInstagram(Net::SocketFactory *sockf, Net::SSLEngine *
 						s->Release();
 						j++;
 					}
-					item->videoURL = Text::String::New(sb.ToCString()).Ptr();
+					item->videoURL = Text::String::New(sb.ToString(), sb.GetLength());
 				}
 			}
 		}
@@ -91,10 +92,10 @@ Net::SNS::SNSInstagram::SNSInstagram(Net::SocketFactory *sockf, Net::SSLEngine *
 		sb.AppendC(UTF8STRC("https://www.instagram.com/p/"));
 		sb.Append(item->shortCode);
 		sb.AppendC(UTF8STRC("/"));
-		NotNullPtr<Text::String> s = Text::String::New(sb.ToString(), sb.GetLength());
-		snsItem = CreateItem(item->shortCode, item->recTime, 0, item->message, s.Ptr(), item->imgURL, item->videoURL);
+		Text::String *s = Text::String::New(sb.ToString(), sb.GetLength());
+		snsItem = CreateItem(item->shortCode, item->recTime, 0, item->message, s, item->imgURL, item->videoURL);
 		s->Release();
-		this->itemMap->PutNN(item->shortCode, snsItem);
+		this->itemMap->Put(item->shortCode, snsItem);
 	}
 	this->ctrl->FreeItems(&itemList);
 }
@@ -103,7 +104,7 @@ Net::SNS::SNSInstagram::~SNSInstagram()
 {
 	UOSInt i;
 	DEL_CLASS(this->ctrl);
-	this->chName->Release();
+	SDEL_STRING(this->chName);
 	SDEL_STRING(this->chDesc);
 	i = this->itemMap->GetCount();
 	while (i-- > 0)
@@ -123,12 +124,12 @@ Net::SNS::SNSControl::SNSType Net::SNS::SNSInstagram::GetSNSType()
 	return Net::SNS::SNSControl::ST_INSTAGRAM;
 }
 
-NotNullPtr<Text::String> Net::SNS::SNSInstagram::GetChannelId() const
+Text::String *Net::SNS::SNSInstagram::GetChannelId()
 {
 	return this->channelId;
 }
 
-NotNullPtr<Text::String> Net::SNS::SNSInstagram::GetName() const
+Text::String *Net::SNS::SNSInstagram::GetName()
 {
 	return this->chName;
 }
@@ -182,7 +183,7 @@ Bool Net::SNS::SNSInstagram::Reload()
 		while (i-- > 0)
 		{
 			item = itemList.GetItem(i);
-			si = idList.SortedIndexOf(item->shortCode.Ptr());
+			si = idList.SortedIndexOf(item->shortCode);
 			if (si >= 0)
 			{
 				idList.RemoveAt((UOSInt)si);
@@ -191,8 +192,8 @@ Bool Net::SNS::SNSInstagram::Reload()
 			{
 				if (item->moreImages)
 				{
-					Data::ArrayListNN<Text::String> imgList;
-					Data::ArrayListNN<Text::String> videoList;
+					Data::ArrayList<Text::String *> imgList;
+					Data::ArrayList<Text::String *> videoList;
 					UOSInt j;
 					UOSInt k;
 					Text::String *s;
@@ -216,7 +217,7 @@ Bool Net::SNS::SNSInstagram::Reload()
 								s->Release();
 								j++;
 							}
-							item->imgURL = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
+							item->imgURL = Text::String::New(sb.ToString(), sb.GetLength());
 						}
 
 						if (videoList.GetCount() > 0)
@@ -235,7 +236,7 @@ Bool Net::SNS::SNSInstagram::Reload()
 								s->Release();
 								j++;
 							}
-							item->videoURL = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
+							item->videoURL = Text::String::New(sb.ToString(), sb.GetLength());
 						}
 					}
 				}
@@ -244,10 +245,10 @@ Bool Net::SNS::SNSInstagram::Reload()
 				sb.AppendC(UTF8STRC("https://www.instagram.com/p/"));
 				sb.Append(item->shortCode);
 				sb.AppendC(UTF8STRC("/"));
-				NotNullPtr<Text::String> s = Text::String::New(sb.ToString(), sb.GetLength());
-				snsItem = CreateItem(item->shortCode, item->recTime, 0, item->message, s.Ptr(), item->imgURL, item->videoURL);
+				Text::String *s = Text::String::New(sb.ToString(), sb.GetLength());
+				snsItem = CreateItem(item->shortCode, item->recTime, 0, item->message, s, item->imgURL, item->videoURL);
 				s->Release();
-				this->itemMap->PutNN(item->shortCode, snsItem);
+				this->itemMap->Put(item->shortCode, snsItem);
 				changed = true;
 			}
 		}

@@ -16,9 +16,9 @@ namespace DB
 		ClassData *clsData;
 
 		Bool isTran;
-		NotNullPtr<Text::String> server;
+		Text::String *server;
 		UInt16 port;
-		NotNullPtr<Text::String> database;
+		Text::String *database;
 		Text::String *uid;
 		Text::String *pwd;
 		IO::LogTool *log;
@@ -30,7 +30,7 @@ namespace DB
 		void InitConnection();
 
 	public:
-		PostgreSQLConn(NotNullPtr<Text::String> server, UInt16 port, Text::String *uid, Text::String *pwd, NotNullPtr<Text::String> database, IO::LogTool *log);
+		PostgreSQLConn(Text::String *server, UInt16 port, Text::String *uid, Text::String *pwd, Text::String *database, IO::LogTool *log);
 		PostgreSQLConn(Text::CString server, UInt16 port, Text::CString uid, Text::CString pwd, Text::CString database, IO::LogTool *log);
 		virtual ~PostgreSQLConn();
 		virtual DB::SQLType GetSQLType() const;
@@ -52,15 +52,15 @@ namespace DB
 		virtual void Rollback(void *tran);
 
 		virtual UOSInt QuerySchemaNames(Data::ArrayList<Text::String*> *names);
-		virtual UOSInt QueryTableNames(Text::CString schemaName, Data::ArrayListNN<Text::String> *names);
-		virtual DBReader *QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListNN<Text::String> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
+		virtual UOSInt QueryTableNames(Text::CString schemaName, Data::ArrayList<Text::String*> *names);
+		virtual DBReader *QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
 
 		Bool IsConnError();
-		NotNullPtr<Text::String> GetConnServer() const;
-		UInt16 GetConnPort() const;
-		NotNullPtr<Text::String> GetConnDB() const;
-		Text::String *GetConnUID() const;
-		Text::String *GetConnPWD() const;
+		Text::String *GetConnServer();
+		UInt16 GetConnPort();
+		Text::String *GetConnDB();
+		Text::String *GetConnUID();
+		Text::String *GetConnPWD();
 		Bool ChangeDatabase(Text::CString databaseName);
 
 		UInt32 GetGeometryOid();

@@ -1,6 +1,6 @@
 #ifndef _SM_MAP_OSM_OSMCACHEHANDLER
 #define _SM_MAP_OSM_OSMCACHEHANDLER
-#include "Data/ArrayListStringNN.h"
+#include "Data/ArrayListString.h"
 #include "Data/SyncLinkedList.h"
 #include "IO/FileStream.h"
 #include "Net/SocketFactory.h"
@@ -40,11 +40,11 @@ namespace Map
 			} ThreadStatus;
 
 		private:
-			Data::ArrayListStringNN urls;
+			Data::ArrayListString urls;
 			UOSInt urlNext;
 			Sync::Mutex urlMut;
 
-			NotNullPtr<Text::String> cacheDir;
+			Text::String *cacheDir;
 			Int32 maxLevel;
 			Net::SocketFactory *sockf;
 			Net::SSLEngine *ssl;

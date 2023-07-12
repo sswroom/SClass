@@ -15,15 +15,15 @@ Earth�fs gravitational constant: GM=3.986004418 * 10^14 m^3/s^2
 Angular velocity of the Earth: ��=7.292115 * 10^-5 rad/s
 */
 
-Math::GeographicCoordinateSystem::GeographicCoordinateSystem(NotNullPtr<Text::String> sourceName, UInt32 srid, Text::CString csysName, const DatumData1 *datum, PrimemType primem, UnitType unit) : Math::CoordinateSystem(sourceName, srid, csysName)
+Math::GeographicCoordinateSystem::GeographicCoordinateSystem(Text::String *sourceName, UInt32 srid, Text::CString csysName, const DatumData1 *datum, PrimemType primem, UnitType unit) : Math::CoordinateSystem(sourceName, srid, csysName)
 {
 	this->datum.spheroid.srid = datum->spheroid.srid;
 	this->datum.spheroid.ellipsoid = datum->spheroid.ellipsoid->Clone();
-	this->datum.spheroid.name = Text::StrCopyNewC(datum->spheroid.name, datum->spheroid.nameLen).Ptr();
+	this->datum.spheroid.name = Text::StrCopyNewC(datum->spheroid.name, datum->spheroid.nameLen);
 	this->datum.spheroid.nameLen = datum->spheroid.nameLen;
 	this->datum.srid = datum->srid;
 	Double aRatio = Math::Unit::Angle::GetUnitRatio(datum->aunit);
-	this->datum.name = Text::StrCopyNewC(datum->name, datum->nameLen).Ptr();
+	this->datum.name = Text::StrCopyNewC(datum->name, datum->nameLen);
 	this->datum.nameLen = datum->nameLen;
 	this->datum.x0 = datum->x0;
 	this->datum.y0 = datum->y0;
@@ -44,11 +44,11 @@ Math::GeographicCoordinateSystem::GeographicCoordinateSystem(Text::CString sourc
 {
 	this->datum.spheroid.srid = datum->spheroid.srid;
 	this->datum.spheroid.ellipsoid = datum->spheroid.ellipsoid->Clone();
-	this->datum.spheroid.name = Text::StrCopyNewC(datum->spheroid.name, datum->spheroid.nameLen).Ptr();
+	this->datum.spheroid.name = Text::StrCopyNewC(datum->spheroid.name, datum->spheroid.nameLen);
 	this->datum.spheroid.nameLen = datum->spheroid.nameLen;
 	this->datum.srid = datum->srid;
 	Double aRatio = Math::Unit::Angle::GetUnitRatio(datum->aunit);
-	this->datum.name = Text::StrCopyNewC(datum->name, datum->nameLen).Ptr();
+	this->datum.name = Text::StrCopyNewC(datum->name, datum->nameLen);
 	this->datum.nameLen = datum->nameLen;
 	this->datum.x0 = datum->x0;
 	this->datum.y0 = datum->y0;

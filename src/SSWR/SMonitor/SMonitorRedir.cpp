@@ -70,7 +70,7 @@ SSWR::SMonitor::SMonitorRedir::SMonitorRedir(Net::SocketFactory *sockf) : dataCR
 	NEW_CLASS(this->svr, Net::UDPServer(this->sockf, 0, 0, CSTR_NULL, OnDataUDPPacket, this, 0, CSTR_NULL, 2, false));
 }
 
-SSWR::SMonitor::SMonitorRedir::SMonitorRedir(Net::SocketFactory *sockf, NotNullPtr<Text::String> hostName, UInt16 port) : dataCRC(Crypto::Hash::CRC16::GetPolynomialCCITT())
+SSWR::SMonitor::SMonitorRedir::SMonitorRedir(Net::SocketFactory *sockf, Text::String *hostName, UInt16 port) : dataCRC(Crypto::Hash::CRC16::GetPolynomialCCITT())
 {
 	this->sockf = sockf;
 	this->hostName = hostName->Clone();

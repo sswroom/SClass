@@ -23,9 +23,9 @@ Data::Chart::~Chart()
 	SDEL_STRING(this->xAxisName);
 	SDEL_STRING(this->yAxisName);
 
-	this->dateFormat->Release();
-	this->timeFormat->Release();
-	this->dblFormat->Release();
+	SDEL_STRING(this->dateFormat);
+	SDEL_STRING(this->timeFormat);
+	SDEL_STRING(this->dblFormat);
 }
 
 void Data::Chart::SetTitle(Text::CString title)
@@ -41,29 +41,38 @@ Text::String *Data::Chart::GetTitle() const
 
 void Data::Chart::SetDateFormat(Text::CString format)
 {
-	this->dateFormat->Release();
+	if (this->dateFormat)
+	{
+		this->dateFormat->Release();
+	}
 	this->dateFormat = Text::String::New(format);
 }
 
-NotNullPtr<Text::String> Data::Chart::GetDateFormat() const
+Text::String *Data::Chart::GetDateFormat() const
 {
 	return this->dateFormat;
 }
 
 void Data::Chart::SetTimeFormat(Text::CString format)
 {
-	this->timeFormat->Release();
-	this->timeFormat = Text::String::New(format);
+	SDEL_STRING(this->timeFormat);
+	if (format.leng > 0)
+	{
+		this->timeFormat = Text::String::New(format);
+	}
 }
 
-NotNullPtr<Text::String> Data::Chart::GetTimeFormat() const
+Text::String *Data::Chart::GetTimeFormat() const
 {
 	return this->timeFormat;
 }
 
 void Data::Chart::SetDblFormat(Text::CString format)
 {
-	this->dblFormat->Release();
+	if (this->dblFormat)
+	{
+		this->dblFormat->Release();
+	}
 	this->dblFormat = Text::String::New(format);
 	UOSInt i = format.IndexOf('.');
 	if (i == INVALID_INDEX)
@@ -81,7 +90,7 @@ void Data::Chart::SetDblFormat(Text::CString format)
 	}
 }
 
-NotNullPtr<Text::String> Data::Chart::GetDblFormat() const
+Text::String *Data::Chart::GetDblFormat() const
 {
 	return this->dblFormat;
 }
@@ -108,7 +117,7 @@ Text::String *Data::Chart::GetYAxisName() const
 	return this->yAxisName;
 }
 
-UOSInt Data::Chart::CalScaleMarkDbl(Data::ArrayListDbl *locations, Data::ArrayListNN<Text::String> *labels, Double min, Double max, Double leng, Double minLeng, const Char *dblFormat, Double minDblVal, const UTF8Char *unit)
+UOSInt Data::Chart::CalScaleMarkDbl(Data::ArrayListDbl *locations, Data::ArrayList<Text::String*> *labels, Double min, Double max, Double leng, Double minLeng, const Char *dblFormat, Double minDblVal, const UTF8Char *unit)
 {
 	UOSInt retCnt = 2;
 	UTF8Char sbuff[128];
@@ -164,7 +173,7 @@ UOSInt Data::Chart::CalScaleMarkDbl(Data::ArrayListDbl *locations, Data::ArrayLi
 	return retCnt;
 }
 
-UOSInt Data::Chart::CalScaleMarkInt(Data::ArrayListDbl *locations, Data::ArrayListNN<Text::String> *labels, Int32 min, Int32 max, Double leng, Double minLeng, const UTF8Char *unit)
+UOSInt Data::Chart::CalScaleMarkInt(Data::ArrayListDbl *locations, Data::ArrayList<Text::String*> *labels, Int32 min, Int32 max, Double leng, Double minLeng, const UTF8Char *unit)
 {
 	UOSInt retCnt = 2;
 	UTF8Char sbuff[64];
@@ -219,7 +228,7 @@ UOSInt Data::Chart::CalScaleMarkInt(Data::ArrayListDbl *locations, Data::ArrayLi
 	return retCnt;
 }
 
-UOSInt Data::Chart::CalScaleMarkDate(Data::ArrayListDbl *locations, Data::ArrayListNN<Text::String> *labels, Data::DateTime *min, Data::DateTime *max, Double leng, Double minLeng, const Char *dateFormat, const Char *timeFormat)
+UOSInt Data::Chart::CalScaleMarkDate(Data::ArrayListDbl *locations, Data::ArrayList<Text::String*> *labels, Data::DateTime *min, Data::DateTime *max, Double leng, Double minLeng, const Char *dateFormat, const Char *timeFormat)
 {
 	UOSInt retCnt = 2;
 	UTF8Char sbuff[64];

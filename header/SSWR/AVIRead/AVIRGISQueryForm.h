@@ -1,6 +1,5 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRGISQUERYFORM
 #define _SM_SSWR_AVIREAD_AVIRGISQUERYFORM
-#include "Data/ArrayListNN.h"
 #include "Map/VectorLayer.h"
 #include "Math/VectorTextWriterList.h"
 #include "SSWR/AVIRead/AVIRCore.h"
@@ -60,7 +59,7 @@ namespace SSWR
 
 			Data::ArrayList<Math::Geometry::Vector2D*> queryVecList;
 			Data::ArrayList<UOSInt> queryValueOfstList;
-			Data::ArrayListNN<Text::String> queryNameList;
+			Data::ArrayList<Text::String*> queryNameList;
 			Data::ArrayList<Text::String*> queryValueList;
 
 			static Bool __stdcall OnMouseDown(void *userObj, Math::Coord2D<OSInt> scnPos);

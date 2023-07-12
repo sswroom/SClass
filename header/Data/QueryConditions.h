@@ -1,7 +1,6 @@
 #ifndef _SM_DATA_QUERYCONDITIONS
 #define _SM_DATA_QUERYCONDITIONS
 #include "Data/ArrayList.h"
-#include "Data/ArrayListNN.h"
 #include "Data/ObjectGetter.h"
 #include "Data/VariObject.h"
 #include "DB/DBUtil.h"
@@ -37,21 +36,21 @@ namespace Data
 			virtual Bool ToWhereClause(Text::StringBuilderUTF8 *sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem) = 0;
 			virtual Bool IsValid(Data::VariObject *obj) = 0;
 			virtual Bool IsValid(Data::ObjectGetter *getter) = 0;
-			virtual void GetFieldList(Data::ArrayListNN<Text::String> *fieldList) = 0;
+			virtual void GetFieldList(Data::ArrayList<Text::String*> *fieldList) = 0;
 		};
 
 		class FieldCondition : public Condition
 		{
 		protected:
-			NotNullPtr<Text::String> fieldName;
+			Text::String *fieldName;
 		public:
 			FieldCondition(Text::CString fieldName);
-			FieldCondition(NotNullPtr<Text::String> fieldName);
+			FieldCondition(Text::String *fieldName);
 			virtual ~FieldCondition();
 
 			virtual Bool IsValid(Data::VariObject *obj);
 			virtual Bool IsValid(Data::ObjectGetter *getter);
-			virtual void GetFieldList(Data::ArrayListNN<Text::String> *fieldList);
+			virtual void GetFieldList(Data::ArrayList<Text::String*> *fieldList);
 
 			virtual Bool TestValid(Data::VariItem *item) = 0;
 		};
@@ -165,7 +164,7 @@ namespace Data
 		class StringContainsCondition : public FieldCondition
 		{
 		private:
-			NotNullPtr<Text::String> val;
+			Text::String *val;
 
 		public:
 			StringContainsCondition(Text::CString fieldName, const UTF8Char *val);
@@ -179,7 +178,7 @@ namespace Data
 		class StringEqualsCondition : public FieldCondition
 		{
 		private:
-			NotNullPtr<Text::String> val;
+			Text::String *val;
 
 		public:
 			StringEqualsCondition(Text::CString fieldName, Text::CString val);
@@ -228,7 +227,7 @@ namespace Data
 			virtual Bool ToWhereClause(Text::StringBuilderUTF8 *sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem);
 			virtual Bool IsValid(Data::VariObject *obj);
 			virtual Bool IsValid(Data::ObjectGetter *getter);
-			virtual void GetFieldList(Data::ArrayListNN<Text::String> *fieldList);
+			virtual void GetFieldList(Data::ArrayList<Text::String*> *fieldList);
 
 			QueryConditions *GetConditions();
 		};
@@ -243,7 +242,7 @@ namespace Data
 			virtual Bool ToWhereClause(Text::StringBuilderUTF8 *sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem);
 			virtual Bool IsValid(Data::VariObject *obj);
 			virtual Bool IsValid(Data::ObjectGetter *getter);
-			virtual void GetFieldList(Data::ArrayListNN<Text::String> *fieldList);
+			virtual void GetFieldList(Data::ArrayList<Text::String*> *fieldList);
 		};
 
 	private:
@@ -258,7 +257,7 @@ namespace Data
 		UOSInt GetCount();
 		Condition *GetItem(UOSInt index);
 		Data::ArrayList<Condition*> *GetList();
-		void GetFieldList(Data::ArrayListNN<Text::String> *fieldList);
+		void GetFieldList(Data::ArrayList<Text::String*> *fieldList);
 
 		QueryConditions *TimeBetween(Text::CString fieldName, const Data::Timestamp &t1, const Data::Timestamp &t2);
 		QueryConditions *Or();

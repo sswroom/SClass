@@ -206,7 +206,7 @@ void IO::RAWBTScanner::OnPacket(Int64 timeTicks, const UInt8 *packet, UOSInt pac
 		}
 		if (dev->name == 0 && rec.name != 0)
 		{
-			dev->name = rec.name->Clone().Ptr();
+			dev->name = rec.name->Clone();
 		}
 		dev->inRange = rec.inRange;
 		dev->connected = rec.connected;

@@ -50,6 +50,7 @@ DB::DBFFile::DBFFile(IO::StreamData *stmData, UInt32 codePage) : DB::ReadingDB(s
 		i += 1;
 	}
 
+	this->name = 0;
 	sptr = this->stmData->GetShortName().ConcatTo(sbuff);
 	i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), '.');
 	if (i != INVALID_INDEX)
@@ -68,12 +69,12 @@ DB::DBFFile::~DBFFile()
 		UOSInt i = colCnt;
 		while (i-- > 0)
 		{
-			this->cols[i].name->Release();
+			MemFree(this->cols[i].name);
 		}
 		MemFree(cols);
 		this->cols = 0;
 	}
-	this->name->Release();
+	SDEL_STRING(this->name);
 	if (this->stmData)
 	{
 		DEL_CLASS(this->stmData);
@@ -81,15 +82,22 @@ DB::DBFFile::~DBFFile()
 	}
 }
 
-UOSInt DB::DBFFile::QueryTableNames(Text::CString schemaName, Data::ArrayListNN<Text::String> *names)
+UOSInt DB::DBFFile::QueryTableNames(Text::CString schemaName, Data::ArrayList<Text::String*> *names)
 {
 	if (schemaName.leng != 0)
 		return 0;
-	names->Add(this->name->Clone());
+	if (this->name)
+	{
+		names->Add(this->name->Clone());
+	}
+	else
+	{
+		names->Add(Text::String::New(UTF8STRC("DBF")));
+	}
 	return 1;
 }
 
-DB::DBReader *DB::DBFFile::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListNN<Text::String> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+DB::DBReader *DB::DBFFile::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	if (cols)
 	{
@@ -114,7 +122,7 @@ DB::TableDef *DB::DBFFile::GetTableDef(Text::CString schemaName, Text::CString t
 	j = this->GetColCount();
 	while (i < j)
 	{
-		NEW_CLASS(col, DB::ColDef(Text::String::NewEmpty()));
+		NEW_CLASS(col, DB::ColDef(0));
 		this->GetColumnDef(i, col);
 		tab->AddCol(col);
 		i++;
@@ -625,9 +633,9 @@ Text::String *DB::DBFReader::GetNewStr(UOSInt colIndex)
 	if (colIndex >= this->colCnt)
 		return 0;
 	UOSInt strLen = this->enc->CountUTF8Chars(&this->recordData[this->cols[colIndex].colOfst], this->cols[colIndex].colSize);
-	NotNullPtr<Text::String> s = Text::String::New(strLen);
+	Text::String *s = Text::String::New(strLen);
 	this->enc->UTF8FromBytes(s->v, &this->recordData[this->cols[colIndex].colOfst], this->cols[colIndex].colSize, 0);
-	return s.Ptr();
+	return s;
 }
 
 UTF8Char *DB::DBFReader::GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSize)

@@ -166,11 +166,9 @@ Media::Jasper::JasperReport *Media::Jasper::JasperXML::ParseJasperReport(Text::X
 				{
 					printf("JasperXML: property is not empty element (%s)\r\n", name?name->v:(const UTF8Char*)"");
 				}
-				NotNullPtr<Text::String> nameStr;
-				NotNullPtr<Text::String> valueStr;
-				if (nameStr.Set(name) && valueStr.Set(value))
+				if (name && value)
 				{
-					report->SetProperty(nameStr, valueStr);
+					report->SetProperty(name, value);
 				}
 			}
 			else if (nodeText->Equals(UTF8STRC("import")))
@@ -195,10 +193,9 @@ Media::Jasper::JasperReport *Media::Jasper::JasperXML::ParseJasperReport(Text::X
 				{
 					printf("JasperXML: import is not empty element (%s)\r\n", value?value->v:(const UTF8Char*)"");
 				}
-				NotNullPtr<Text::String> valueStr;
-				if (valueStr.Set(value))
+				if (value)
 				{
-					report->AddImport(valueStr);
+					report->AddImport(value);
 				}
 				else
 				{

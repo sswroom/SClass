@@ -1,6 +1,6 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRHTTPTESTFORM
 #define _SM_SSWR_AVIREAD_AVIRHTTPTESTFORM
-#include "Data/ArrayListNN.h"
+
 #include "Manage/HiResClock.h"
 #include "Net/HTTPClient.h"
 #include "SSWR/AVIRead/AVIRCore.h"
@@ -36,7 +36,7 @@ namespace SSWR
 			Net::SSLEngine *ssl;
 			ThreadStatus *threadStatus;
 			Sync::Mutex connMut;
-			Data::ArrayListNN<Text::String> connURLs;
+			Data::ArrayList<Text::String *> connURLs;
 			Net::WebUtil::RequestMethod method;
 			UInt32 postSize;
 			UOSInt connCurrIndex;

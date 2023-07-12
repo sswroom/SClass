@@ -13,7 +13,7 @@ namespace IO
 	private:
 		typedef struct
 		{
-			NotNullPtr<Text::String> fileName;
+			Text::String *fileName;
 			UInt64 fileOfst;
 			Int64 fileTimeTicks;
 			UInt32 crcVal;

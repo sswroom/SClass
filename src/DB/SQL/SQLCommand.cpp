@@ -144,7 +144,7 @@ DB::SQL::SQLCommand *DB::SQL::SQLCommand::Parse(const UTF8Char *sql, DB::SQLType
 								while (i-- > 0)
 								{
 									col = tab->GetCol(i);
-									if (sb.Equals(col->GetColName().Ptr()))
+									if (sb.Equals(col->GetColName()))
 									{
 										col->SetPK(true);
 										break;

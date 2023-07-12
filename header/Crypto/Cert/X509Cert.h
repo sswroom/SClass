@@ -10,7 +10,7 @@ namespace Crypto
 		class X509Cert : public Crypto::Cert::X509File, public Crypto::Cert::Certificate
 		{
 		public:
-			X509Cert(NotNullPtr<Text::String> sourceName, const UInt8 *buff, UOSInt buffSize);
+			X509Cert(Text::String *sourceName, const UInt8 *buff, UOSInt buffSize);
 			X509Cert(Text::CString sourceName, const UInt8 *buff, UOSInt buffSize);
 			virtual ~X509Cert();
 

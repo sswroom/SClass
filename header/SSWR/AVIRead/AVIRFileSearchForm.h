@@ -1,6 +1,5 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRFILESEARCHFORM
 #define _SM_SSWR_AVIREAD_AVIRFILESEARCHFORM
-#include "Data/ArrayListNN.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "Text/TextBinEnc/TextBinEncList.h"
 #include "UI/GUIButton.h"
@@ -20,7 +19,7 @@ namespace SSWR
 		private:
 			SSWR::AVIRead::AVIRCore *core;
 			Text::TextBinEnc::TextBinEncList encList;
-			Data::ArrayListNN<Text::String> fileList;
+			Data::ArrayList<Text::String*> fileList;
 
 			UI::GUIPanel *pnlControl;
 			UI::GUILabel *lblDir;
@@ -33,7 +32,7 @@ namespace SSWR
 			UI::GUIListView *lvFiles;
 
 			static void __stdcall OnSearchClicked(void *userObj);
-			static void __stdcall OnDirectoryDrop(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles);
+			static void __stdcall OnDirectoryDrop(void *userObj, Text::String **files, UOSInt nFiles);
 			static void __stdcall OnFilesDblClk(void *userObj, UOSInt itemIndex);
 
 			void ClearFiles();

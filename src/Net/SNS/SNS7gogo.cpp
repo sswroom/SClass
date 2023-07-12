@@ -7,6 +7,7 @@ Net::SNS::SNS7gogo::SNS7gogo(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Tex
 {
 	NEW_CLASS(this->ctrl, Net::WebSite::WebSite7gogoControl(sockf, ssl, encFact, userAgent));
 	this->channelId = Text::String::New(channelId);
+	this->chName = 0;
 	this->chDesc = 0;
 	this->chError = false;
 
@@ -29,7 +30,7 @@ Net::SNS::SNS7gogo::SNS7gogo(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Tex
 	}
 	if (chInfo.detail)
 	{
-		this->chDesc = chInfo.detail->Clone().Ptr();
+		this->chDesc = chInfo.detail->Clone();
 	}
 	this->ctrl->FreeChannelInfo(&chInfo);
 	UOSInt i = itemList.GetCount();
@@ -43,9 +44,9 @@ Net::SNS::SNS7gogo::SNS7gogo(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Tex
 		sb.Append(this->channelId);
 		sb.AppendC(UTF8STRC("/"));
 		sb.AppendI64(item->id);
-		NotNullPtr<Text::String> s = Text::String::NewP(sbuff, sptr);
-		NotNullPtr<Text::String> s2 = Text::String::New(sb.ToString(), sb.GetLength());
-		snsItem = CreateItem(s, item->recTime, 0, item->message, s2.Ptr(), item->imgURL, 0);
+		Text::String *s = Text::String::NewP(sbuff, sptr);
+		Text::String *s2 = Text::String::New(sb.ToString(), sb.GetLength());
+		snsItem = CreateItem(s, item->recTime, 0, item->message, s2, item->imgURL, 0);
 		s->Release();
 		s2->Release();
 		this->itemMap.Put(item->id, snsItem);
@@ -57,7 +58,7 @@ Net::SNS::SNS7gogo::~SNS7gogo()
 {
 	UOSInt i;
 	DEL_CLASS(this->ctrl);
-	this->chName->Release();
+	SDEL_STRING(this->chName);
 	SDEL_STRING(this->chDesc);
 	i = this->itemMap.GetCount();
 	while (i-- > 0)
@@ -76,12 +77,12 @@ Net::SNS::SNSControl::SNSType Net::SNS::SNS7gogo::GetSNSType()
 	return Net::SNS::SNSControl::ST_7GOGO;
 }
 
-NotNullPtr<Text::String> Net::SNS::SNS7gogo::GetChannelId()
+Text::String *Net::SNS::SNS7gogo::GetChannelId()
 {
 	return this->channelId;
 }
 
-NotNullPtr<Text::String> Net::SNS::SNS7gogo::GetName()
+Text::String *Net::SNS::SNS7gogo::GetName()
 {
 	return this->chName;
 }
@@ -143,9 +144,9 @@ Bool Net::SNS::SNS7gogo::Reload()
 				sb.Append(this->channelId);
 				sb.AppendC(UTF8STRC("/"));
 				sb.AppendI64(item->id);
-				NotNullPtr<Text::String> s = Text::String::NewP(sbuff, sptr);
-				NotNullPtr<Text::String> s2 = Text::String::New(sb.ToString(), sb.GetLength());
-				snsItem = CreateItem(s, item->recTime, 0, item->message, s2.Ptr(), item->imgURL, 0);
+				Text::String *s = Text::String::NewP(sbuff, sptr);
+				Text::String *s2 = Text::String::New(sb.ToString(), sb.GetLength());
+				snsItem = CreateItem(s, item->recTime, 0, item->message, s2, item->imgURL, 0);
 				s->Release();
 				s2->Release();
 				this->itemMap.Put(item->id, snsItem);

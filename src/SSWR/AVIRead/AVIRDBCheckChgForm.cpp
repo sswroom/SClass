@@ -33,7 +33,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::OnBrowseClk(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::OnFiles(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles)
+void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::OnFiles(void *userObj, Text::String **files, UOSInt nFiles)
 {
 	SSWR::AVIRead::AVIRDBCheckChgForm *me = (SSWR::AVIRead::AVIRDBCheckChgForm*)userObj;
 	UOSInt i = 0;

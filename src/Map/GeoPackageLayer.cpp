@@ -52,7 +52,7 @@ Bool Map::GeoPackageLayer::StringSessGoRow(StringSession *sess, UOSInt index)
 	}
 }
 
-Map::GeoPackageLayer::GeoPackageLayer(Map::GeoPackage *gpkg, Map::GeoPackage::ContentInfo *layerContent) : Map::MapDrawLayer(gpkg->GetSourceNameObj(), 0, layerContent->tableName.Ptr())
+Map::GeoPackageLayer::GeoPackageLayer(Map::GeoPackage *gpkg, Map::GeoPackage::ContentInfo *layerContent) : Map::MapDrawLayer(gpkg->GetSourceNameObj(), 0, layerContent->tableName)
 {
 	this->gpkg = gpkg;
 	this->layerContent = layerContent;
@@ -306,12 +306,12 @@ Math::Geometry::Vector2D *Map::GeoPackageLayer::GetNewVectorById(GetObjectSess *
 	return 0;
 }
 
-UOSInt Map::GeoPackageLayer::QueryTableNames(Text::CString schemaName, Data::ArrayListNN<Text::String> *names)
+UOSInt Map::GeoPackageLayer::QueryTableNames(Text::CString schemaName, Data::ArrayList<Text::String*> *names)
 {
 	return this->gpkg->QueryTableNames(schemaName, names);
 }
 
-DB::DBReader *Map::GeoPackageLayer::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListNN<Text::String> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+DB::DBReader *Map::GeoPackageLayer::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	return this->gpkg->QueryTableData(schemaName, tableName, columnNames, ofst, maxCnt, ordering, condition);
 }

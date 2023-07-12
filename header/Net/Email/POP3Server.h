@@ -34,7 +34,7 @@ namespace Net
 			Net::TCPServer *svr;
 			Net::TCPClientMgr cliMgr;
 			IO::LogTool *log;
-			NotNullPtr<Text::String> greeting;
+			Text::String *greeting;
 
 			Net::Email::MailController *mailCtrl;
 			IO::FileStream *rawLog;

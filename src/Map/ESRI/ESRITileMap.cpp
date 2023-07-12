@@ -19,7 +19,7 @@ Map::ESRI::ESRITileMap::ESRITileMap(Map::ESRI::ESRIMapServer *esriMap, Bool toRe
 
 Map::ESRI::ESRITileMap::~ESRITileMap()
 {
-	this->cacheDir->Release();
+	SDEL_STRING(this->cacheDir);
 	if (this->toRelease)
 	{
 		DEL_CLASS(this->esriMap);
@@ -115,7 +115,7 @@ Bool Map::ESRI::ESRITileMap::CanQuery() const
 	return true;
 }
 
-Bool Map::ESRI::ESRITileMap::QueryInfos(Math::Coord2DDbl coord, UOSInt level, Data::ArrayList<Math::Geometry::Vector2D*> *vecList, Data::ArrayList<UOSInt> *valueOfstList, Data::ArrayListNN<Text::String> *nameList, Data::ArrayList<Text::String*> *valueList) const
+Bool Map::ESRI::ESRITileMap::QueryInfos(Math::Coord2DDbl coord, UOSInt level, Data::ArrayList<Math::Geometry::Vector2D*> *vecList, Data::ArrayList<UOSInt> *valueOfstList, Data::ArrayList<Text::String*> *nameList, Data::ArrayList<Text::String*> *valueList) const
 {
 	return this->esriMap->QueryInfos(coord, this->dispBounds, (UInt32)Double2Int32(this->dispSize.x), (UInt32)Double2Int32(this->dispSize.y), this->dispDPI, vecList, valueOfstList, nameList, valueList);
 }

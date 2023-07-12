@@ -27,7 +27,7 @@ Bool DB::ODBCConn::Connect(Text::CString connStr)
 	{
 		this->connStr->Release();
 	}
-	this->connStr = Text::String::New(connStr).Ptr();
+	this->connStr = Text::String::New(connStr);
 	this->connErr = CE_NOT_CONNECT;
 	return false;
 }
@@ -87,10 +87,10 @@ DB::ODBCConn::ODBCConn(Text::String *dsn, Text::String *uid, Text::String *pwd, 
 	this->tzQhr = 0;
 	this->lastStmtHand = 0;
 	this->connErr = DB::ODBCConn::CE_NOT_CONNECT;
-	this->dsn = dsn->Clone().Ptr();
-	this->uid = uid->Clone().Ptr();
-	this->pwd = pwd->Clone().Ptr();
-	this->schema = schema->Clone().Ptr();
+	this->dsn = dsn->Clone();
+	this->uid = uid->Clone();
+	this->pwd = pwd->Clone();
+	this->schema = schema->Clone();
 	this->Connect(this->dsn, this->uid, this->pwd, this->schema);
 }
 
@@ -257,12 +257,12 @@ DB::DBReader *DB::ODBCConn::GetTablesInfo(Text::CString schemaName)
 	return 0;
 }
 
-UOSInt DB::ODBCConn::QueryTableNames(Text::CString schemaName, Data::ArrayListNN<Text::String> *names)
+UOSInt DB::ODBCConn::QueryTableNames(Text::CString schemaName, Data::ArrayList<Text::String*> *names)
 {
 	return 0;
 }
 
-DB::DBReader *DB::ODBCConn::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListNN<Text::String> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+DB::DBReader *DB::ODBCConn::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	return 0;
 }
@@ -271,7 +271,7 @@ void DB::ODBCConn::ShowSQLError(const UTF16Char *state, const UTF16Char *errMsg)
 {
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("ODBC Error: ["));
-	NotNullPtr<Text::String> s = Text::String::NewNotNull(state);
+	Text::String *s = Text::String::NewNotNull(state);
 	sb.Append(s);
 	s->Release();
 	sb.AppendC(UTF8STRC("] "));
@@ -310,7 +310,7 @@ Text::String *DB::ODBCConn::GetConnSchema()
 	return this->schema;
 }
 
-UOSInt DB::ODBCConn::GetDriverList(Data::ArrayListNN<Text::String> *driverList)
+UOSInt DB::ODBCConn::GetDriverList(Data::ArrayList<Text::String*> *driverList)
 {
 	return 0;
 }

@@ -15,7 +15,7 @@ namespace Net
 		private:
 			typedef struct
 			{
-				NotNullPtr<Text::String> svcPath;
+				Text::String *svcPath;
 				Data::FastMap<Int32, ServiceFunc> funcs;
 			} ServiceInfo;
 			

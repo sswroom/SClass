@@ -218,8 +218,8 @@ void SSWR::AVIRead::AVIRImageBatchConvForm::MTConvertFile(ConvertSess *sess, Tex
 			if (this->threadStates[i].status == ThreadStatus::Idle && !this->threadStates[i].hasData)
 			{
 				this->threadStates[i].sess = sess;
-				this->threadStates[i].srcFile = Text::String::New(srcFile).Ptr();
-				this->threadStates[i].destFile = Text::String::New(destFile).Ptr();
+				this->threadStates[i].srcFile = Text::String::New(srcFile);
+				this->threadStates[i].destFile = Text::String::New(destFile);
 				this->threadStates[i].hasData = true;
 				this->threadStates[i].evt->Set();
 				found = true;
@@ -259,7 +259,7 @@ void SSWR::AVIRead::AVIRImageBatchConvForm::ConvertFile(ConvertSess *sess, Text:
 				Sync::MutexUsage mutUsage(&sess->mut);
 				sess->succ = false;
 				SDEL_STRING(sess->errMsg);
-				sess->errMsg = Text::String::New(sb.ToCString()).Ptr();
+				sess->errMsg = Text::String::New(sb.ToCString());
 			}
 		}
 
@@ -277,7 +277,7 @@ void SSWR::AVIRead::AVIRImageBatchConvForm::ConvertFile(ConvertSess *sess, Text:
 		Sync::MutexUsage mutUsage(&sess->mut);
 		sess->succ = false;
 		SDEL_STRING(sess->errMsg);
-		sess->errMsg = Text::String::New(sb.ToCString()).Ptr();
+		sess->errMsg = Text::String::New(sb.ToCString());
 	}
 }
 

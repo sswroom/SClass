@@ -110,11 +110,11 @@ void SSWR::AVIRead::AVIRDragDropViewerForm::DropData(UI::GUIDropData *data, OSIn
 		sb.ClearStr();
 		if (data->GetDataText(csptr, &sb))
 		{
-			this->dropMap->Put(csptr, Text::StrCopyNewC(sb.ToString(), sb.GetLength()).Ptr());
+			this->dropMap->Put(csptr, Text::StrCopyNewC(sb.ToString(), sb.GetLength()));
 		}
 		else
 		{
-			this->dropMap->Put(csptr, Text::StrCopyNewC(UTF8STRC("Cannot get data")).Ptr());
+			this->dropMap->Put(csptr, Text::StrCopyNewC(UTF8STRC("Cannot get data")));
 		}
 		this->lbType->AddItem({csptr, Text::StrCharCnt(csptr)}, 0);
 		i++;

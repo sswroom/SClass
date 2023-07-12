@@ -480,7 +480,7 @@ Bool Map::MapEnv::GetFontStyle(UOSInt index, Text::String **fontName, Double *fo
 		*buffColor = 0xff000000;
 		return false;
 	}
-	*fontName = style->fontName.Ptr();
+	*fontName = style->fontName;
 	*fontSizePt = style->fontSizePt;
 	*bold = style->bold;
 	*fontColor = style->fontColor;
@@ -664,7 +664,7 @@ Bool Map::MapEnv::ReplaceLayer(Map::MapEnv::GroupItem *group, UOSInt index, Map:
 	}
 }
 
-Map::MapEnv::GroupItem *Map::MapEnv::AddGroup(Map::MapEnv::GroupItem *group, NotNullPtr<Text::String> subgroupName)
+Map::MapEnv::GroupItem *Map::MapEnv::AddGroup(Map::MapEnv::GroupItem *group, Text::String *subgroupName)
 {
 	Sync::MutexUsage mutUsage(&this->mut);
 	Map::MapEnv::GroupItem *newG;
@@ -838,7 +838,7 @@ Map::MapEnv::MapItem *Map::MapEnv::GetItem(Map::MapEnv::GroupItem *group, UOSInt
 	}
 }
 
-NotNullPtr<Text::String> Map::MapEnv::GetGroupName(Map::MapEnv::GroupItem *group) const
+Text::String *Map::MapEnv::GetGroupName(Map::MapEnv::GroupItem *group) const
 {
 	return group->groupName;
 }
@@ -924,7 +924,7 @@ Bool Map::MapEnv::SetLayerProp(Map::MapEnv::LayerItem *setting, Map::MapEnv::Gro
 				SDEL_STRING(lyr->fontName);
 				if (setting->fontName)
 				{
-					lyr->fontName = setting->fontName->Clone().Ptr();
+					lyr->fontName = setting->fontName->Clone();
 				}
 			}
 			lyr->fontSizePt = setting->fontSizePt;
@@ -1173,7 +1173,7 @@ UOSInt Map::MapEnv::AddImage(Text::CString fileName, Media::ImageList *imgList)
 			imgInfo->isAni = true;
 		}
 	}
-	this->images.PutNN(imgInfo->fileName, imgInfo);
+	this->images.Put(imgInfo->fileName, imgInfo);
 	this->imgList.Add(imgInfo);
 	return imgInfo->index;
 }
@@ -1203,7 +1203,7 @@ UOSInt Map::MapEnv::AddImageSquare(UInt32 color, UOSInt size)
 	NEW_CLASS(simg, Media::StaticImage(Math::Size2D<UOSInt>(size, size), 0, 32, Media::PixelFormat::PF_B8G8R8A8, size * size * 4, &colorProfile, Media::ColorProfile::YUVT_BT601, atype, Media::YCOFST_C_CENTER_LEFT));
 	ImageUtil_ColorFill32(simg->data, size * size, color);
 	imgInfo->imgs->AddImage(simg, 0);
-	this->images.PutNN(imgInfo->fileName, imgInfo);
+	this->images.Put(imgInfo->fileName, imgInfo);
 	this->imgList.Add(imgInfo);
 	return imgInfo->index;
 }

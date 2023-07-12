@@ -13,7 +13,7 @@ IO::StmData::ConcatStreamData::ConcatStreamData(IO::StmData::ConcatStreamData::C
 	this->cdb->objectCnt++;
 }
 
-IO::StmData::ConcatStreamData::ConcatStreamData(NotNullPtr<Text::String> fileName)
+IO::StmData::ConcatStreamData::ConcatStreamData(Text::String *fileName)
 {
 	NEW_CLASS(this->cdb, CONCATDATABASE());
 	this->cdb->fileName = fileName->Clone();
@@ -104,7 +104,7 @@ UOSInt IO::StmData::ConcatStreamData::GetRealData(UInt64 offset, UOSInt length, 
 	return readTotal;
 }
 
-NotNullPtr<Text::String> IO::StmData::ConcatStreamData::GetFullName()
+Text::String *IO::StmData::ConcatStreamData::GetFullName()
 {
 	return this->cdb->fileName;
 }

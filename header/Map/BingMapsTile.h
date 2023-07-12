@@ -1,6 +1,5 @@
 #ifndef _SM_MAP_BINGMAPSTILE
 #define _SM_MAP_BINGMAPSTILE
-#include "Data/ArrayListNN.h"
 #include "Map/MercatorTileMap.h"
 #include "Media/SharedImage.h"
 #include "Sync/Mutex.h"
@@ -30,7 +29,7 @@ namespace Map
 	private:
 		Text::String *url;
 		Text::String *key;
-		Data::ArrayListNN<Text::String> subdomains;
+		Data::ArrayList<Text::String*> subdomains;
 		UOSInt urlNext;
 		Sync::Mutex urlMut;
 		Text::String *brandLogoUri;

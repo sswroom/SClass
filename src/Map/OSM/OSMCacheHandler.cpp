@@ -151,7 +151,7 @@ Map::OSM::OSMCacheHandler::OSMCacheHandler(Text::CString url, Text::CString cach
 Map::OSM::OSMCacheHandler::~OSMCacheHandler()
 {
 	LIST_FREE_STRING(&this->urls);
-	this->cacheDir->Release();
+	SDEL_STRING(this->cacheDir);
 }
 
 void Map::OSM::OSMCacheHandler::AddAlternateURL(Text::CString url)

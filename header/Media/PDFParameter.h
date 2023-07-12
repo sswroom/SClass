@@ -10,7 +10,7 @@ namespace Media
 	public:
 		struct ParamEntry
 		{
-			NotNullPtr<Text::String> type;
+			Text::String *type;
 			Text::String *value;
 		};
 	private:

@@ -92,7 +92,7 @@ IO::ParsedObject *Parser::FileParser::JKSParser::ParseFileHdr(IO::StreamData *fd
 			}
 			cerBuff = MemAlloc(UInt8, cerBuffSize);
 		}
-		NotNullPtr<Text::String> s = Text::String::New(sb.ToCString());
+		Text::String *s = Text::String::New(sb.ToCString());
 		fd->GetRealData(ofst + 20 + aliasLen + certTypeLen, certLen, cerBuff);
 		Crypto::Cert::X509Cert *cert = (Crypto::Cert::X509Cert*)Parser::FileParser::X509Parser::ParseBuff(cerBuff, certLen, s);
 		s->Release();

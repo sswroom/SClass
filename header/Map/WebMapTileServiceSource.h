@@ -21,7 +21,7 @@ namespace Map
 
 		struct TileMatrix
 		{
-			NotNullPtr<Text::String> id;
+			Text::String *id;
 			Int32 minRow;
 			Int32 maxRow;
 			Int32 minCol;
@@ -30,9 +30,9 @@ namespace Map
 
 		struct ResourceURL
 		{
-			NotNullPtr<Text::String> templateURL;
+			Text::String *templateURL;
 			ResourceType resourceType;
-			NotNullPtr<Text::String> format;
+			Text::String *format;
 			Map::TileMap::ImageType imgType;
 		};
 
@@ -47,7 +47,7 @@ namespace Map
 		struct TileMatrixDef
 		{
 			Math::Coord2DDbl origin;
-			NotNullPtr<Text::String> id;
+			Text::String *id;
 			Double scaleDenom;
 			Double unitPerPixel;
 			UInt32 tileWidth;
@@ -68,15 +68,15 @@ namespace Map
 			Math::RectAreaDbl wgs84Bounds;
 			Text::String *title;
 			Text::String *id;
-			Data::ArrayListNN<Text::String> format;
-			Data::ArrayListNN<Text::String> infoFormat;
+			Data::ArrayList<Text::String*> format;
+			Data::ArrayList<Text::String*> infoFormat;
 			Data::ArrayList<TileMatrixSet*> tileMatrixes;
 			Data::ArrayList<ResourceURL*> resourceURLs;
 		};
 	private:
 		Text::EncodingFactory *encFact;
-		NotNullPtr<Text::String> wmtsURL;
-		NotNullPtr<Text::String> cacheDir;
+		Text::String *wmtsURL;
+		Text::String *cacheDir;
 		Net::SocketFactory *sockf;
 		Net::SSLEngine *ssl;
 		Data::FastStringMap<TileLayer*> layers;
@@ -115,7 +115,7 @@ namespace Map
 		virtual Bool IsMercatorProj();
 		virtual UOSInt GetTileSize();
 		virtual Bool CanQuery() const;
-		virtual Bool QueryInfos(Math::Coord2DDbl coord, UOSInt level, Data::ArrayList<Math::Geometry::Vector2D*> *vecList, Data::ArrayList<UOSInt> *valueOfstList, Data::ArrayListNN<Text::String> *nameList, Data::ArrayList<Text::String*> *valueList) const;
+		virtual Bool QueryInfos(Math::Coord2DDbl coord, UOSInt level, Data::ArrayList<Math::Geometry::Vector2D*> *vecList, Data::ArrayList<UOSInt> *valueOfstList, Data::ArrayList<Text::String*> *nameList, Data::ArrayList<Text::String*> *valueList) const;
 
 		virtual UOSInt GetTileImageIDs(UOSInt level, Math::RectAreaDbl rect, Data::ArrayList<Math::Coord2D<Int32>> *ids);
 		virtual Media::ImageList *LoadTileImage(UOSInt level, Math::Coord2D<Int32> tileId, Parser::ParserList *parsers, Math::RectAreaDbl *bounds, Bool localOnly);
@@ -130,8 +130,8 @@ namespace Map
 		UOSInt GetResourceInfoType();
 		UOSInt GetLayerNames(Data::ArrayList<Text::String*> *layerNames);
 		UOSInt GetMatrixSetNames(Data::ArrayList<Text::String*> *matrixSetNames);
-		UOSInt GetResourceTileTypeNames(Data::ArrayListNN<Text::String> *resourceTypeNames);
-		UOSInt GetResourceInfoTypeNames(Data::ArrayListNN<Text::String> *resourceTypeNames);
+		UOSInt GetResourceTileTypeNames(Data::ArrayList<Text::String*> *resourceTypeNames);
+		UOSInt GetResourceInfoTypeNames(Data::ArrayList<Text::String*> *resourceTypeNames);
 		static Text::CString GetExt(Map::TileMap::ImageType imgType);
 	};
 }

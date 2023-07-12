@@ -44,7 +44,7 @@ Net::Email::EmailValidator::Status Net::Email::EmailValidator::Validate(Text::CS
 		ans = ansList.GetItem(i);
 		if (ans->recType == 15)
 		{
-			emailSvr = ans->rd->Clone().Ptr();
+			emailSvr = ans->rd->Clone();
 			break;
 		}
 		j++;

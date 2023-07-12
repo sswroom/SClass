@@ -1,8 +1,6 @@
 #ifndef _SM_NET_ASN1MIB
 #define _SM_NET_ASN1MIB
-#include "Data/ArrayList.h"
-#include "Data/ArrayListNN.h"
-#include "Data/ArrayListStringNN.h"
+#include "Data/ArrayListString.h"
 #include "Data/FastStringMap.h"
 #include "Net/MIBReader.h"
 #include "Text/StringBuilderUTF8.h"
@@ -21,17 +19,17 @@ namespace Net
 			Text::String *typeVal;
 			UInt8 oid[32];
 			UOSInt oidLen;
-			Data::ArrayListNN<Text::String> valName;
-			Data::ArrayListNN<Text::String> valCont;
+			Data::ArrayList<Text::String *> valName;
+			Data::ArrayList<Text::String *> valCont;
 			ModuleInfo *impModule;
 			Bool parsed;
 		};
 
 		struct ModuleInfo
 		{
-			NotNullPtr<Text::String> moduleName;
-			NotNullPtr<Text::String> moduleFileName;
-			Data::ArrayListStringNN objKeys;
+			Text::String *moduleName;
+			Text::String *moduleFileName;
+			Data::ArrayListString objKeys;
 			Data::ArrayList<ObjectInfo*> objValues;
 			Data::ArrayList<ObjectInfo *> oidList;
 		};

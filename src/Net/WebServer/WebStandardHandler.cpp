@@ -80,7 +80,7 @@ Net::WebServer::WebStandardHandler::WebStandardHandler()
 
 void Net::WebServer::WebStandardHandler::WebRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp)
 {
-	NotNullPtr<Text::String> reqURL = req->GetRequestURI();
+	Text::String *reqURL = req->GetRequestURI();
 	Net::WebUtil::RequestMethod reqMeth = req->GetReqMethod();
 	if (reqMeth == Net::WebUtil::RequestMethod::RTSP_OPTIONS)
 	{

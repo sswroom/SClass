@@ -12,7 +12,7 @@ namespace Map
 	{
 		struct FileGDBFieldInfo
 		{
-			NotNullPtr<Text::String> name;
+			Text::String *name;
 			Text::String *alias;
 			UInt8 fieldType;
 			UInt32 fieldSize;

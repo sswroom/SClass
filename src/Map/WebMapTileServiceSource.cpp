@@ -124,7 +124,7 @@ void Map::WebMapTileServiceSource::ReadLayer(Text::XMLReader *reader)
 				if (sb.GetLength() > 0)
 				{
 					SDEL_STRING(layer->title);
-					layer->title = Text::String::New(sb.ToCString()).Ptr();
+					layer->title = Text::String::New(sb.ToCString());
 				}
 			}
 			else if (name->Equals(UTF8STRC("ows:WGS84BoundingBox")))
@@ -173,7 +173,7 @@ void Map::WebMapTileServiceSource::ReadLayer(Text::XMLReader *reader)
 				if (sb.GetLength() > 0)
 				{
 					SDEL_STRING(layer->id);
-					layer->id = Text::String::New(sb.ToCString()).Ptr();
+					layer->id = Text::String::New(sb.ToCString());
 				}
 			}
 			else if (name->Equals(UTF8STRC("Style")))
@@ -308,7 +308,7 @@ Map::WebMapTileServiceSource::TileMatrixSet *Map::WebMapTileServiceSource::ReadT
 				if (sb.GetLength() > 0)
 				{
 					SDEL_STRING(set->id);
-					set->id = Text::String::New(sb.ToCString()).Ptr();
+					set->id = Text::String::New(sb.ToCString());
 				}
 			}
 			else if (name->Equals(UTF8STRC("TileMatrixSetLimits")))
@@ -339,7 +339,7 @@ Map::WebMapTileServiceSource::TileMatrixSet *Map::WebMapTileServiceSource::ReadT
 										if (sb.GetLength() > 0)
 										{
 											SDEL_STRING(id);
-											id = Text::String::New(sb.ToCString()).Ptr();
+											id = Text::String::New(sb.ToCString());
 										}
 									}
 									else if (name->Equals(UTF8STRC("MinTileRow")))
@@ -455,7 +455,7 @@ Map::WebMapTileServiceSource::TileMatrixDefSet *Map::WebMapTileServiceSource::Re
 				if (sb.GetLength() > 0)
 				{
 					SDEL_STRING(set->id);
-					set->id = Text::String::New(sb.ToCString()).Ptr();
+					set->id = Text::String::New(sb.ToCString());
 				}
 			}
 			else if (name->Equals(UTF8STRC("ows:SupportedCRS")))
@@ -491,7 +491,7 @@ Map::WebMapTileServiceSource::TileMatrixDefSet *Map::WebMapTileServiceSource::Re
 							if (sb.GetLength() > 0)
 							{
 								SDEL_STRING(id);
-								id = Text::String::New(sb.ToCString()).Ptr();
+								id = Text::String::New(sb.ToCString());
 							}
 						}
 						else if (name->Equals(UTF8STRC("ScaleDenominator")))
@@ -711,6 +711,7 @@ void Map::WebMapTileServiceSource::ReleaseResourceURL(ResourceURL *resourceURL)
 
 Map::WebMapTileServiceSource::WebMapTileServiceSource(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, Text::CString wmtsURL)
 {
+	this->cacheDir = 0;
 	this->sockf = sockf;
 	this->ssl = ssl;
 	this->encFact = encFact;
@@ -735,7 +736,7 @@ Map::WebMapTileServiceSource::WebMapTileServiceSource(Net::SocketFactory *sockf,
 Map::WebMapTileServiceSource::~WebMapTileServiceSource()
 {
 	this->wmtsURL->Release();
-	this->cacheDir->Release();
+	SDEL_STRING(this->cacheDir);
 	UOSInt i = this->layers.GetCount();
 	while (i-- > 0)
 	{
@@ -862,7 +863,7 @@ Bool Map::WebMapTileServiceSource::CanQuery() const
 	return this->currResourceInfo != 0;
 }
 
-Bool Map::WebMapTileServiceSource::QueryInfos(Math::Coord2DDbl coord, UOSInt level, Data::ArrayList<Math::Geometry::Vector2D*> *vecList, Data::ArrayList<UOSInt> *valueOfstList, Data::ArrayListNN<Text::String> *nameList, Data::ArrayList<Text::String*> *valueList) const
+Bool Map::WebMapTileServiceSource::QueryInfos(Math::Coord2DDbl coord, UOSInt level, Data::ArrayList<Math::Geometry::Vector2D*> *vecList, Data::ArrayList<UOSInt> *valueOfstList, Data::ArrayList<Text::String*> *nameList, Data::ArrayList<Text::String*> *valueList) const
 {
 	if (this->currResourceInfo == 0)
 		return false;
@@ -1038,6 +1039,7 @@ IO::StreamData *Map::WebMapTileServiceSource::LoadTileImageData(UOSInt level, Ma
 	printf("Loading Tile %d %d %d\r\n", (UInt32)level, imgX, imgY);
 #endif
 
+	if (this->cacheDir)
 	{
 		sptru = this->cacheDir->ConcatTo(filePathU);
 		if (sptru[-1] != IO::Path::PATH_SEPERATOR)
@@ -1111,23 +1113,30 @@ IO::StreamData *Map::WebMapTileServiceSource::LoadTileImageData(UOSInt level, Ma
 		IO::MemoryStream mstm;
 		if (cli->ReadAllContent(&mstm, 16384, 10485760))
 		{
-			IO::FileStream fs({filePathU, (UOSInt)(sptru - filePathU)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer);
-			fs.Write(mstm.GetBuff(), (UOSInt)mstm.GetLength());
-			if (cli->GetLastModified(&dt))
+			if (this->cacheDir)
 			{
-				currTime.SetCurrTimeUTC();
-				fs.SetFileTimes(&currTime, 0, &dt);
-			}
-			else
-			{
-				currTime.SetCurrTimeUTC();
-				fs.SetFileTimes(&currTime, 0, 0);
+				IO::FileStream fs({filePathU, (UOSInt)(sptru - filePathU)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer);
+				fs.Write(mstm.GetBuff(), (UOSInt)mstm.GetLength());
+				if (cli->GetLastModified(&dt))
+				{
+					currTime.SetCurrTimeUTC();
+					fs.SetFileTimes(&currTime, 0, &dt);
+				}
+				else
+				{
+					currTime.SetCurrTimeUTC();
+					fs.SetFileTimes(&currTime, 0, 0);
+				}
 			}
 		}
 	}
 	DEL_CLASS(cli);
 
-	NEW_CLASS(fd, IO::StmData::FileData({filePathU, (UOSInt)(sptru - filePathU)}, false));
+	fd = 0;
+	if (this->cacheDir)
+	{
+		NEW_CLASS(fd, IO::StmData::FileData({filePathU, (UOSInt)(sptru - filePathU)}, false));
+	}
 	if (fd)
 	{
 		if (fd->GetDataSize() > 0)
@@ -1291,7 +1300,7 @@ UOSInt Map::WebMapTileServiceSource::GetMatrixSetNames(Data::ArrayList<Text::Str
 	return j;
 }
 
-UOSInt Map::WebMapTileServiceSource::GetResourceTileTypeNames(Data::ArrayListNN<Text::String> *resourceTypeNames)
+UOSInt Map::WebMapTileServiceSource::GetResourceTileTypeNames(Data::ArrayList<Text::String*> *resourceTypeNames)
 {
 	if (this->currLayer == 0)
 		return 0;
@@ -1311,7 +1320,7 @@ UOSInt Map::WebMapTileServiceSource::GetResourceTileTypeNames(Data::ArrayListNN<
 	return resourceTypeNames->GetCount() - initCnt;
 }
 
-UOSInt Map::WebMapTileServiceSource::GetResourceInfoTypeNames(Data::ArrayListNN<Text::String> *resourceTypeNames)
+UOSInt Map::WebMapTileServiceSource::GetResourceInfoTypeNames(Data::ArrayList<Text::String*> *resourceTypeNames)
 {
 	if (this->currLayer == 0)
 		return 0;

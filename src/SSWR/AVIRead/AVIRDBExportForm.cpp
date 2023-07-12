@@ -46,14 +46,14 @@ void __stdcall SSWR::AVIRead::AVIRDBExportForm::OnExportClicked(void *userObj)
 	if (dlg.ShowDialog(me->GetHandle()))
 	{
 		DB::SQLBuilder sql((DB::SQLType)(OSInt)me->cboDBType->GetSelectedItem(), me->chkAxisAware->IsChecked(), 0);
-		Data::ArrayListNN<Text::String> cols;
+		Data::ArrayList<Text::String*> cols;
 		UOSInt i = 0;
 		UOSInt j = me->lvTables->GetCount();
 		while (i < j)
 		{
 			if (me->lvTables->GetItem(i) != 0)
 			{
-				cols.Add(Text::String::OrEmpty(me->lvTables->GetItemTextNew(i)));
+				cols.Add(me->lvTables->GetItemTextNew(i));
 			}
 			i++;
 		}

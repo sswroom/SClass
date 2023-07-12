@@ -1,7 +1,6 @@
 #ifndef _SM_DATA_FIELDCOMPARATOR
 #define _SM_DATA_FIELDCOMPARATOR
 #include "Data/ArrayList.h"
-#include "Data/ArrayListNN.h"
 #include "Data/Comparator.h"
 #include "Data/VariObject.h"
 #include "DB/DBUtil.h"
@@ -12,7 +11,7 @@ namespace Data
 	class FieldComparator : public Comparator<Data::VariObject*>
 	{
 	private:
-		Data::ArrayListNN<Text::String> fieldNames;
+		Data::ArrayList<Text::String*> fieldNames;
 		Data::ArrayList<Int8> dirs;
 	public:
 		FieldComparator(Text::CString compareConds);

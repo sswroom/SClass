@@ -426,7 +426,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnTargetSelChg(void *userObj)
 		j = target->addrList.GetCount();
 		while (i < j)
 		{
-			me->lbTargetDomains->AddItem(Text::String::OrEmpty(target->addrList.GetItem(i)), 0);
+			me->lbTargetDomains->AddItem(target->addrList.GetItem(i), 0);
 			i++;
 		}
 		mutUsage.EndUse();

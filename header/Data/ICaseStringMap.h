@@ -30,7 +30,7 @@ namespace Data
 		UOSInt j = map->keys->GetCount();
 		while (i < j)
 		{
-			this->keys->Add(map->keys->GetItem(i)->Clone().Ptr());
+			this->keys->Add(map->keys->GetItem(i)->Clone());
 			this->vals.Add(map->vals.GetItem(i));
 			i++;
 		}

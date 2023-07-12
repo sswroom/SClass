@@ -11,7 +11,7 @@
 void Math::GeoJSONWriter::SetLastError(Text::CString lastError)
 {
 	SDEL_STRING(this->lastError);
-	this->lastError = Text::String::New(lastError).Ptr();
+	this->lastError = Text::String::New(lastError);
 }
 
 Math::GeoJSONWriter::GeoJSONWriter()

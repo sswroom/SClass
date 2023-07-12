@@ -68,7 +68,7 @@ void UI::GUIButton::SetText(Text::CString text)
 	UTF8Char *cptr;
 	UTF8Char c;
 	Bool hasUL = false;
-	const UTF8Char *lbl = Text::StrCopyNewC(text.v, text.leng).Ptr();
+	const UTF8Char *lbl = Text::StrCopyNewC(text.v, text.leng);
 	cptr = (UTF8Char*)lbl;
 	while ((c = *cptr++) != 0)
 	{

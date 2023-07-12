@@ -21,7 +21,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-NotNullPtr<Text::String> Manage::ExceptionRecorder::fileName;
+Text::String *Manage::ExceptionRecorder::fileName;
 Manage::ExceptionRecorder::ExceptionAction Manage::ExceptionRecorder::exAction;
 Int32 (__stdcall *ExceptionRecorder_Handler)(void *);
 
@@ -89,7 +89,10 @@ Int32 __stdcall Manage::ExceptionRecorder::ExceptionHandler(void *exInfo)
 #else
 #error Unsupported architecture.
 #endif
-	Manage::ExceptionLogger::LogToFile(fileName, (UInt32)einfo->signum, GetExceptionCodeName((UInt32)einfo->signum), (UOSInt)einfo->info->si_addr, context);
+	if (fileName)
+	{
+		Manage::ExceptionLogger::LogToFile(fileName, (UInt32)einfo->signum, GetExceptionCodeName((UInt32)einfo->signum), (UOSInt)einfo->info->si_addr, context);
+	}
 	DEL_CLASS(context);
 
 	if (exAction == Manage::ExceptionRecorder::EA_CONTINUE)
@@ -111,7 +114,7 @@ Int32 __stdcall Manage::ExceptionRecorder::ExceptionHandler(void *exInfo)
 
 Manage::ExceptionRecorder::ExceptionRecorder(Text::CString fileName, ExceptionAction exAction)
 {
-	Manage::ExceptionRecorder::fileName = Text::String::New(fileName);
+	Manage::ExceptionRecorder::fileName = Text::String::New(fileName.v, fileName.leng);
 	Manage::ExceptionRecorder::exAction = exAction;
 	ExceptionRecorder_Handler = ExceptionHandler;
 
@@ -128,6 +131,7 @@ Manage::ExceptionRecorder::ExceptionRecorder(Text::CString fileName, ExceptionAc
 Manage::ExceptionRecorder::~ExceptionRecorder()
 {
 	this->fileName->Release();
+	this->fileName = 0;
 
 	signal(SIGSEGV, SIG_DFL);
 	signal(SIGFPE, SIG_DFL);

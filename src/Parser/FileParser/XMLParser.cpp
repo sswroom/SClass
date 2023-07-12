@@ -622,7 +622,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 												j = nameList.GetCount();
 												while (i < j)
 												{
-													colList.Add(Text::StrCopyNew(nameList.GetItem(i)).Ptr());
+													colList.Add(Text::StrCopyNew(nameList.GetItem(i)));
 													i++;
 												}
 												NEW_CLASS(db, DB::TextDB(fileName));
@@ -670,10 +670,10 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 										if (reader.GetNodeText()->StartsWith(UTF8STRC("fme:")))
 										{
 											Text::String *txt = reader.GetNodeText();
-											nameList.Add(Text::StrCopyNewC(txt->v + 4, txt->leng - 4).Ptr());
+											nameList.Add(Text::StrCopyNewC(txt->v + 4, txt->leng - 4));
 											sb.ClearStr();
 											reader.ReadNodeText(&sb);
-											valList.Add(Text::StrCopyNewC(sb.ToString(), sb.GetLength()).Ptr());
+											valList.Add(Text::StrCopyNewC(sb.ToString(), sb.GetLength()));
 										}
 										else
 										{
@@ -810,7 +810,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 											sb.ClearStr();
 											if (reader.ReadNodeText(&sb))
 											{
-												roleName = Text::StrCopyNewC(sb.ToString(), sb.GetLength()).Ptr();
+												roleName = Text::StrCopyNewC(sb.ToString(), sb.GetLength());
 											}
 										}
 										else if (reader.GetNodeText()->Equals(UTF8STRC("DATA")))
@@ -819,7 +819,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 											sb.ClearStr();
 											if (reader.ReadNodeText(&sb))
 											{
-												roleData = Text::StrCopyNewC(sb.ToString(), sb.GetLength()).Ptr();
+												roleData = Text::StrCopyNewC(sb.ToString(), sb.GetLength());
 											}
 										}
 										else
@@ -872,7 +872,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 											sb.ClearStr();
 											if (reader.ReadNodeText(&sb))
 											{
-												desc = Text::StrCopyNewC(sb.ToString(), sb.GetLength()).Ptr();
+												desc = Text::StrCopyNewC(sb.ToString(), sb.GetLength());
 											}
 										}
 										else if (reader.GetNodeText()->Equals(UTF8STRC("HARDWAREID")))
@@ -881,7 +881,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 											sb.ClearStr();
 											if (reader.ReadNodeText(&sb))
 											{
-												hwId = Text::StrCopyNewC(sb.ToString(), sb.GetLength()).Ptr();
+												hwId = Text::StrCopyNewC(sb.ToString(), sb.GetLength());
 											}
 										}
 										else if (reader.GetNodeText()->Equals(UTF8STRC("SERVICE")))
@@ -890,7 +890,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 											sb.ClearStr();
 											if (reader.ReadNodeText(&sb))
 											{
-												service = Text::StrCopyNewC(sb.ToString(), sb.GetLength()).Ptr();
+												service = Text::StrCopyNewC(sb.ToString(), sb.GetLength());
 											}
 										}
 										else if (reader.GetNodeText()->Equals(UTF8STRC("DRIVER")))
@@ -899,7 +899,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 											sb.ClearStr();
 											if (reader.ReadNodeText(&sb))
 											{
-												driver = Text::StrCopyNewC(sb.ToString(), sb.GetLength()).Ptr();
+												driver = Text::StrCopyNewC(sb.ToString(), sb.GetLength());
 											}
 										}
 										else
@@ -958,7 +958,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 											sb.ClearStr();
 											if (reader.ReadNodeText(&sb))
 											{
-												fileName = Text::StrCopyNewC(sb.ToString(), sb.GetLength()).Ptr();
+												fileName = Text::StrCopyNewC(sb.ToString(), sb.GetLength());
 											}
 										}
 										else if (reader.GetNodeText()->Equals(UTF8STRC("FILESIZE")))
@@ -975,7 +975,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 											sb.ClearStr();
 											if (reader.ReadNodeText(&sb))
 											{
-												createDate = Text::StrCopyNewC(sb.ToString(), sb.GetLength()).Ptr();
+												createDate = Text::StrCopyNewC(sb.ToString(), sb.GetLength());
 											}
 										}
 										else if (reader.GetNodeText()->Equals(UTF8STRC("VERSION")))
@@ -984,7 +984,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 											sb.ClearStr();
 											if (reader.ReadNodeText(&sb))
 											{
-												version = Text::StrCopyNewC(sb.ToString(), sb.GetLength()).Ptr();
+												version = Text::StrCopyNewC(sb.ToString(), sb.GetLength());
 											}
 										}
 										else if (reader.GetNodeText()->Equals(UTF8STRC("MANUFACTURER")))
@@ -993,7 +993,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 											sb.ClearStr();
 											if (reader.ReadNodeText(&sb))
 											{
-												manufacturer = Text::StrCopyNewC(sb.ToString(), sb.GetLength()).Ptr();
+												manufacturer = Text::StrCopyNewC(sb.ToString(), sb.GetLength());
 											}
 										}
 										else if (reader.GetNodeText()->Equals(UTF8STRC("PRODUCTNAME")))
@@ -1002,7 +1002,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 											sb.ClearStr();
 											if (reader.ReadNodeText(&sb))
 											{
-												productName = Text::StrCopyNewC(sb.ToString(), sb.GetLength()).Ptr();
+												productName = Text::StrCopyNewC(sb.ToString(), sb.GetLength());
 											}
 										}
 										else if (reader.GetNodeText()->Equals(UTF8STRC("GROUP")))
@@ -1011,7 +1011,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 											sb.ClearStr();
 											if (reader.ReadNodeText(&sb))
 											{
-												group = Text::StrCopyNewC(sb.ToString(), sb.GetLength()).Ptr();
+												group = Text::StrCopyNewC(sb.ToString(), sb.GetLength());
 											}
 										}
 										else if (reader.GetNodeText()->Equals(UTF8STRC("ALTITUDE")))
@@ -1162,19 +1162,15 @@ Bool Parser::FileParser::XMLParser::ParseVSProjFile(Text::XMLReader *reader, Tex
 					attr = reader->GetAttrib(i);
 					if (attr->name->Equals(UTF8STRC("Name")))
 					{
-						NotNullPtr<Text::String> name;
-						if (name.Set(attr->value))
+						Text::VSContainer *childCont;
+						found = true;
+						NEW_CLASS(childCont, Text::VSContainer(attr->value));
+						container->AddChild(childCont);
+						if (!ParseVSProjFile(reader, childCont))
 						{
-							Text::VSContainer *childCont;
-							found = true;
-							NEW_CLASS(childCont, Text::VSContainer(name));
-							container->AddChild(childCont);
-							if (!ParseVSProjFile(reader, childCont))
-							{
-								return false;
-							}
-							break;
+							return false;
 						}
+						break;
 					}
 				}
 				if (!found)
@@ -1193,14 +1189,10 @@ Bool Parser::FileParser::XMLParser::ParseVSProjFile(Text::XMLReader *reader, Tex
 					attr = reader->GetAttrib(i);
 					if (attr->name->Equals(UTF8STRC("RelativePath")))
 					{
-						NotNullPtr<Text::String> path;
-						if (path.Set(attr->value))
-						{
-							Text::VSFile *childFile;
-							NEW_CLASS(childFile, Text::VSFile(path));
-							container->AddChild(childFile);
-							break;
-						}
+						Text::VSFile *childFile;
+						NEW_CLASS(childFile, Text::VSFile(attr->value));
+						container->AddChild(childFile);
+						break;
 					}
 				}
 				if (!reader->SkipElement())
@@ -1248,10 +1240,9 @@ Bool Parser::FileParser::XMLParser::ParseVSConfFile(Text::XMLReader *reader, Tex
 						break;
 					}
 				}
-				NotNullPtr<Text::String> cfgNameStr;
-				if (cfgNameStr.Set(cfgName))
+				if (cfgName)
 				{
-					NEW_CLASS(cfg, Text::CodeProjectCfg(cfgNameStr));
+					NEW_CLASS(cfg, Text::CodeProjectCfg(cfgName));
 					while (true)
 					{
 						if (!reader->ReadNext())

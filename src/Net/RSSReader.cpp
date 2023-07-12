@@ -18,19 +18,19 @@ UInt32 __stdcall Net::RSSReader::RSSThread(void *userObj)
 	while (!me->threadToStop)
 	{
 		dt->SetCurrTimeUTC();
-		if (dt->CompareTo(&me->nextDT) > 0)
+		if (dt->CompareTo(me->nextDT) > 0)
 		{
 			NEW_CLASS(rss, Net::RSS(me->url->ToCString(), 0, me->sockf, me->ssl, me->timeout));
 			if (rss->IsError())
 			{
 				DEL_CLASS(rss);
-				me->nextDT.SetCurrTimeUTC();
-				me->nextDT.AddSecond(300);
+				me->nextDT->SetCurrTimeUTC();
+				me->nextDT->AddSecond(300);
 			}
 			else
 			{
-				me->nextDT.SetCurrTimeUTC();
-				me->nextDT.AddSecond((OSInt)me->refreshSecond);
+				me->nextDT->SetCurrTimeUTC();
+				me->nextDT->AddSecond((OSInt)me->refreshSecond);
 
 				i = me->currRSSMaps->GetCount();
 				while (i-- > 0)
@@ -100,8 +100,9 @@ Net::RSSReader::RSSReader(Text::CString url, Net::SocketFactory *sockf, Net::SSL
 	this->threadRunning = false;
 	this->threadToStop = false;
 	NEW_CLASS(this->currRSSMaps, Data::FastStringMap<RSSStatus*>());
+	NEW_CLASS(this->nextDT, Data::DateTime());
 	NEW_CLASS(this->threadEvt, Sync::Event(true));
-	this->nextDT.SetCurrTimeUTC();
+	this->nextDT->SetCurrTimeUTC();
 	Sync::ThreadUtil::Create(RSSThread, this);
 	while (!this->threadRunning)
 	{
@@ -123,6 +124,7 @@ Net::RSSReader::~RSSReader()
 		this->lastRSS = 0;
 	}
 	DEL_CLASS(this->threadEvt);
+	DEL_CLASS(this->nextDT);
 	this->url->Release();
 
 	UOSInt i;

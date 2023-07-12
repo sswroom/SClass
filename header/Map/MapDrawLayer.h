@@ -2,7 +2,6 @@
 #define _SM_MAP_MAPDRAWLAYER
 #include "Data/ArrayList.h"
 #include "Data/ArrayListInt64.h"
-#include "Data/ArrayListNN.h"
 #include "Data/ArrayListString.h"
 #include "DB/DBReader.h"
 #include "DB/ReadingDB.h"
@@ -88,7 +87,7 @@ namespace Map
 
 		typedef void (__stdcall *UpdatedHandler)(void *userObj);
 
-		MapDrawLayer(NotNullPtr<Text::String> sourceName, UOSInt nameCol, Text::String *layerName);
+		MapDrawLayer(Text::String *sourceName, UOSInt nameCol, Text::String *layerName);
 		MapDrawLayer(Text::CString sourceName, UOSInt nameCol, Text::CString layerName);
 		virtual ~MapDrawLayer();
 
@@ -120,8 +119,8 @@ namespace Map
 		virtual void AddUpdatedHandler(UpdatedHandler hdlr, void *obj);
 		virtual void RemoveUpdatedHandler(UpdatedHandler hdlr, void *obj);
 
-		virtual UOSInt QueryTableNames(Text::CString schemaName, Data::ArrayListNN<Text::String> *names);
-		virtual DB::DBReader *QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListNN<Text::String> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
+		virtual UOSInt QueryTableNames(Text::CString schemaName, Data::ArrayList<Text::String*> *names);
+		virtual DB::DBReader *QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
 		virtual DB::TableDef *GetTableDef(Text::CString schemaName, Text::CString tableName);
 		virtual void CloseReader(DB::DBReader *r);
 		virtual void GetLastErrorMsg(Text::StringBuilderUTF8 *str);
@@ -131,7 +130,7 @@ namespace Map
 		virtual void SetNameCol(UOSInt nameCol);
 
 		virtual ObjectClass GetObjectClass() = 0;
-		NotNullPtr<Text::String> GetName();
+		Text::String *GetName();
 		virtual IO::ParserType GetParserType() const;
 		virtual Math::CoordinateSystem *GetCoordinateSystem();
 		virtual void SetCoordinateSystem(Math::CoordinateSystem *csys);
@@ -143,7 +142,7 @@ namespace Map
 		virtual UTF8Char *GetPGLabel(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl coord, Math::Coord2DDbl *outCoord, UOSInt strIndex);
 		virtual UTF8Char *GetPLLabel(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl coord, Math::Coord2DDbl *outCoord, UOSInt strIndex);
 		virtual Bool CanQuery();
-		virtual Bool QueryInfos(Math::Coord2DDbl coord, Data::ArrayList<Math::Geometry::Vector2D*> *vecList, Data::ArrayList<UOSInt> *valueOfstList, Data::ArrayListNN<Text::String> *nameList, Data::ArrayList<Text::String*> *valueList);
+		virtual Bool QueryInfos(Math::Coord2DDbl coord, Data::ArrayList<Math::Geometry::Vector2D*> *vecList, Data::ArrayList<UOSInt> *valueOfstList, Data::ArrayList<Text::String*> *nameList, Data::ArrayList<Text::String*> *valueList);
 
 		Int64 GetNearestObjectId(GetObjectSess *session, Math::Coord2DDbl pt, Math::Coord2DDbl *nearPt);
 		OSInt GetNearObjects(GetObjectSess *session, Data::ArrayList<ObjectInfo*> *objList, Math::Coord2DDbl pt, Double maxDist); //return nearest object if no object within distance

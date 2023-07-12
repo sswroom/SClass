@@ -12,7 +12,7 @@ namespace IO
 	public:
 		struct VMId
 		{
-			NotNullPtr<Text::String> name;
+			Text::String *name;
 			Data::UUID uuid;
 		};
 	private:

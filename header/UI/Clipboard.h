@@ -2,7 +2,6 @@
 #define _SM_UI_CLIPBOARD
 #include "Handles.h"
 #include "Data/ArrayList.h"
-#include "Data/ArrayListNN.h"
 #include "Text/String.h"
 #include "Text/StringBuilderUTF8.h"
 
@@ -28,8 +27,8 @@ namespace UI
 
 		UOSInt GetDataFormats(Data::ArrayList<UInt32> *dataTypes);
 		Bool GetDataText(UInt32 fmtId, Text::StringBuilderUTF8 *sb);
-		FilePasteType GetDataFiles(Data::ArrayListNN<Text::String> *fileNames);
-		void FreeDataFiles(Data::ArrayListNN<Text::String> *fileNames);
+		FilePasteType GetDataFiles(Data::ArrayList<Text::String *> *fileNames);
+		void FreeDataFiles(Data::ArrayList<Text::String *> *fileNames);
 
 	public:
 		static Bool GetDataTextH(void *hand, UInt32 fmtId, Text::StringBuilderUTF8 *sb, UInt32 tymed);

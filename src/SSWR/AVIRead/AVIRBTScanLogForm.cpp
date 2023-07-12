@@ -119,7 +119,6 @@ void SSWR::AVIRead::AVIRBTScanLogForm::LogUIUpdate()
 	UTF8Char *sptr;
 	Text::CString cstr;
 	UInt8 mac[8];
-	NotNullPtr<Text::String> s;
 	UOSInt i;
 	UOSInt j;
 	UOSInt l;
@@ -181,8 +180,8 @@ void SSWR::AVIRead::AVIRBTScanLogForm::LogUIUpdate()
 				this->lvContent->SetSubItem(l, 4, CSTR("?"));
 			}
 		}
-		if (s.Set(log->name))
-			this->lvContent->SetSubItem(l, 5, s);
+		if (log->name)
+			this->lvContent->SetSubItem(l, 5, log->name);
 		sptr = Text::StrUOSInt(sbuff, log->logs->GetCount());
 		this->lvContent->SetSubItem(l, 6, CSTRP(sbuff, sptr));
 		sptr = Text::StrInt16(sbuff, log->measurePower);

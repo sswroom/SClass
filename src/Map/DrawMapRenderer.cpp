@@ -159,7 +159,7 @@ Bool Map::DrawMapRenderer::AddLabel(MapLabels *labels, UOSInt maxLabel, UOSInt *
 						return false;
 					}
 
-					labels[i].label = Text::String::New(label).Ptr();
+					labels[i].label = Text::String::New(label);
 					labels[i].pos = ptPtr[0];
 					labels[i].fontStyle = fontStyle;
 					labels[i].fontType = fontType;
@@ -435,7 +435,7 @@ Bool Map::DrawMapRenderer::AddLabel(MapLabels *labels, UOSInt maxLabel, UOSInt *
 			labels[i].currSize = visibleSize;
 			labels[i].flags = flags;
 
-			labels[i].label = Text::String::New(label).Ptr();
+			labels[i].label = Text::String::New(label);
 			labels[i].points = 0;
 
 			toUpdate = 1;
@@ -597,7 +597,7 @@ Bool Map::DrawMapRenderer::AddLabel(MapLabels *labels, UOSInt maxLabel, UOSInt *
 					return false;
 				}
 
-				labels[i].label = Text::String::New(label).Ptr();
+				labels[i].label = Text::String::New(label);
 				labels[i].pos = thisPt;
 				labels[i].fontStyle = fontStyle;
 				labels[i].fontType = fontType;
@@ -762,7 +762,7 @@ void Map::DrawMapRenderer::DrawLabels(Map::DrawMapRenderer::DrawEnv *denv)
 				{
 					if (lastLbl)
 						lastLbl->Release();
-					lastLbl = denv->labels[i].label->Clone().Ptr();
+					lastLbl = denv->labels[i].label->Clone();
 				}
 				else
 				{

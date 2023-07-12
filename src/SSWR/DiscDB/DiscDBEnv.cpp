@@ -24,11 +24,11 @@ void SSWR::DiscDB::DiscDBEnv::LoadDB()
 		while (r->ReadNext())
 		{
 			disc = MemAlloc(BurntDiscInfo, 1);
-			disc->discId = Text::String::OrEmpty(r->GetNewStr(0));
-			disc->discTypeId = Text::String::OrEmpty(r->GetNewStr(1));
+			disc->discId = r->GetNewStr(0);
+			disc->discTypeId = r->GetNewStr(1);
 			disc->burntDate = r->GetTimestamp(2);
 			disc->status = r->GetInt32(3);
-			disc = this->discMap->PutNN(disc->discId, disc);
+			disc = this->discMap->Put(disc->discId, disc);
 			if (disc)
 			{
 				disc->discId->Release();
@@ -46,10 +46,10 @@ void SSWR::DiscDB::DiscDBEnv::LoadDB()
 		while (r->ReadNext())
 		{
 			dvdType = MemAlloc(DVDTypeInfo, 1);
-			dvdType->discTypeID = Text::String::OrEmpty(r->GetNewStr(0));
-			dvdType->name = Text::String::OrEmpty(r->GetNewStr(1));
-			dvdType->description = Text::String::OrEmpty(r->GetNewStr(2));
-			this->dvdTypeMap->PutNN(dvdType->discTypeID, dvdType);
+			dvdType->discTypeID = r->GetNewStr(0);
+			dvdType->name = r->GetNewStr(1);
+			dvdType->description = r->GetNewStr(2);
+			this->dvdTypeMap->Put(dvdType->discTypeID, dvdType);
 		}
 		this->db->CloseReader(r);
 	}
@@ -62,7 +62,7 @@ void SSWR::DiscDB::DiscDBEnv::LoadDB()
 		{
 			cate = MemAlloc(CategoryInfo, 1);
 			cate->id = r->GetNewStr(0);
-			cate->name = Text::String::OrEmpty(r->GetNewStr(1));
+			cate->name = r->GetNewStr(1);
 			this->cateMap->Put(cate->id, cate);
 		}
 		this->db->CloseReader(r);
@@ -79,27 +79,27 @@ void SSWR::DiscDB::DiscDBEnv::LoadDB()
 			discType->brand = r->GetNewStr(1);
 			sb.ClearStr();
 			r->GetStr(2, &sb);
-			discType->name = Text::StrCopyNew(sb.ToString()).Ptr();
+			discType->name = Text::StrCopyNew(sb.ToString());
 			discType->speed = r->GetDbl(3);
 			sb.ClearStr();
 			r->GetStr(4, &sb);
-			discType->dvdType = Text::StrCopyNew(sb.ToString()).Ptr();
+			discType->dvdType = Text::StrCopyNew(sb.ToString());
 			sb.ClearStr();
 			r->GetStr(5, &sb);
-			discType->madeIn = Text::StrCopyNew(sb.ToString()).Ptr();
+			discType->madeIn = Text::StrCopyNew(sb.ToString());
 			sb.ClearStr();
 			r->GetStr(6, &sb);
-			discType->mid = Text::StrCopyNew(sb.ToString()).Ptr();
+			discType->mid = Text::StrCopyNew(sb.ToString());
 			sb.ClearStr();
 			r->GetStr(7, &sb);
-			discType->tid = Text::StrCopyNew(sb.ToString()).Ptr();
+			discType->tid = Text::StrCopyNew(sb.ToString());
 			sb.ClearStr();
 			r->GetStr(8, &sb);
-			discType->revision = Text::StrCopyNew(sb.ToString()).Ptr();
+			discType->revision = Text::StrCopyNew(sb.ToString());
 			discType->qcTest = r->GetBool(9);
 			sb.ClearStr();
 			r->GetStr(10, &sb);
-			discType->remark = Text::StrCopyNew(sb.ToString()).Ptr();
+			discType->remark = Text::StrCopyNew(sb.ToString());
 			this->discTypeMap->Put(discType->discTypeId, discType);
 		}
 		this->db->CloseReader(r);
@@ -113,10 +113,10 @@ void SSWR::DiscDB::DiscDBEnv::LoadDB()
 		{
 			dvdVideo = MemAlloc(DVDVideoInfo, 1);
 			dvdVideo->videoId = r->GetInt32(0);
-			dvdVideo->anime = Text::String::OrEmpty(r->GetNewStr(1));
+			dvdVideo->anime = r->GetNewStr(1);
 			dvdVideo->series = r->GetNewStr(2);
 			dvdVideo->volume = r->GetNewStr(3);
-			dvdVideo->dvdType = Text::String::OrEmpty(r->GetNewStr(4));
+			dvdVideo->dvdType = r->GetNewStr(4);
 			this->dvdVideoMap->Put(dvdVideo->videoId, dvdVideo);
 		}
 		this->db->CloseReader(r);
@@ -140,20 +140,19 @@ SSWR::DiscDB::DiscDBEnv::DiscDBEnv()
 	if (cfg)
 	{
 		Text::String *s;
-		NotNullPtr<Text::String> str;
-		if (str.Set(cfg->GetValue(CSTR("DSN"))))
+		if ((s = cfg->GetValue(CSTR("DSN"))) != 0)
 		{
-			this->db = DB::ODBCConn::CreateDBTool(str,
+			this->db = DB::ODBCConn::CreateDBTool(s,
 				cfg->GetValue(CSTR("UID")),
 				cfg->GetValue(CSTR("PWD")),
 				cfg->GetValue(CSTR("Schema")),
 				this->log, CSTR("DB: "));
 		}
-		else if (str.Set(cfg->GetValue(CSTR("MySQLServer"))))
+		else if ((s = cfg->GetValue(CSTR("MySQLServer"))) != 0)
 		{
 			this->db = Net::MySQLTCPClient::CreateDBTool(this->sockf,
-				str.Ptr(),
-				Text::String::OrEmpty(cfg->GetValue(CSTR("MySQLDB"))).Ptr(),
+				s,
+				Text::String::OrEmpty(cfg->GetValue(CSTR("MySQLDB"))),
 				Text::String::OrEmpty(cfg->GetValue(CSTR("UID"))),
 				Text::String::OrEmpty(cfg->GetValue(CSTR("PWD"))),
 				this->log, CSTR("DB: "));
@@ -289,7 +288,7 @@ const SSWR::DiscDB::DiscDBEnv::BurntDiscInfo *SSWR::DiscDB::DiscDBEnv::NewBurntD
 		disc->discTypeId = Text::String::New(discTypeId);
 		disc->burntDate = ts;
 		disc->status = 0;
-		this->discMap->PutNN(disc->discId, disc);
+		this->discMap->Put(disc->discId, disc);
 		return disc;
 	}
 	else
@@ -350,7 +349,7 @@ UOSInt SSWR::DiscDB::DiscDBEnv::GetBurntFiles(Text::CString discId, Data::ArrayL
 		{
 			file = MemAlloc(DiscFileInfo, 1);
 			file->fileId = (UInt32)r->GetInt32(0);
-			file->fileName = Text::String::OrEmpty(r->GetNewStr(1));
+			file->fileName = r->GetNewStr(1);
 			file->fileSize = (UInt64)r->GetInt64(2);
 			sb.ClearStr();
 			r->GetStr(3, &sb);
@@ -398,7 +397,7 @@ Bool SSWR::DiscDB::DiscDBEnv::ModifyDVDType(Text::CString discTypeID, Text::CStr
 	DVDTypeInfo *dvdType = this->dvdTypeMap->GetC(discTypeID);
 	if (dvdType == 0)
 		return false;
-	if (name.Equals(dvdType->name.Ptr()) && desc.Equals(dvdType->description.Ptr()))
+	if (name.Equals(dvdType->name) && desc.Equals(dvdType->description))
 	{
 		return true;
 	}
@@ -439,7 +438,7 @@ const SSWR::DiscDB::DiscDBEnv::DVDTypeInfo *SSWR::DiscDB::DiscDBEnv::NewDVDType(
 		dvdType->discTypeID = Text::String::New(discTypeID.v, discTypeID.leng);
 		dvdType->name = Text::String::New(name);
 		dvdType->description = Text::String::New(desc);
-		this->dvdTypeMap->PutNN(dvdType->discTypeID, dvdType);
+		this->dvdTypeMap->Put(dvdType->discTypeID, dvdType);
 		return dvdType;
 	}
 	return 0;
@@ -501,8 +500,22 @@ Int32 SSWR::DiscDB::DiscDBEnv::NewDVDVideo(const UTF8Char *anime, const UTF8Char
 		DVDVideoInfo *dvdVideo = MemAlloc(DVDVideoInfo, 1);
 		dvdVideo->videoId = this->db->GetLastIdentity32();
 		dvdVideo->anime = Text::String::NewNotNullSlow(anime);
-		dvdVideo->series = Text::String::NewOrNullSlow(series);
-		dvdVideo->volume = Text::String::NewOrNullSlow(volume);
+		if (series)
+		{
+			dvdVideo->series = Text::String::NewNotNullSlow(series);
+		}
+		else
+		{
+			dvdVideo->series = 0;
+		}
+		if (volume)
+		{
+			dvdVideo->volume = Text::String::NewNotNullSlow(volume);
+		}
+		else
+		{
+			dvdVideo->volume = 0;
+		}
 		dvdVideo->dvdType = Text::String::NewNotNullSlow(dvdType);
 		this->dvdVideoMap->Put(dvdVideo->videoId, dvdVideo);
 		return dvdVideo->videoId;
@@ -524,7 +537,7 @@ const SSWR::DiscDB::DiscDBEnv::DVDVideoInfo *SSWR::DiscDB::DiscDBEnv::GetDVDVide
 	return this->dvdVideoMap->Get(videoId);
 }
 
-Bool SSWR::DiscDB::DiscDBEnv::NewMovies(const UTF8Char *discId, UOSInt fileId, const UTF8Char *mainTitle, NotNullPtr<Text::String> type, const UTF8Char *chapter, const UTF8Char *chapterTitle, Text::CString videoFormat, Int32 width, Int32 height, Int32 fps, Int32 length, Text::CString audioFormat, Int32 samplingRate, Int32 bitRate, const UTF8Char *aspectRatio, const UTF8Char *remark)
+Bool SSWR::DiscDB::DiscDBEnv::NewMovies(const UTF8Char *discId, UOSInt fileId, const UTF8Char *mainTitle, Text::String *type, const UTF8Char *chapter, const UTF8Char *chapterTitle, Text::CString videoFormat, Int32 width, Int32 height, Int32 fps, Int32 length, Text::CString audioFormat, Int32 samplingRate, Int32 bitRate, const UTF8Char *aspectRatio, const UTF8Char *remark)
 {
 	DB::SQLBuilder sql(this->db);
 	sql.AppendCmdC(CSTR("insert into Movies (DiscID, FileID, MainTitle, Type, Chapter, ChapterTitle, VideoFormat, Width, Height, fps, length, AudioFormat, SamplingRate, Bitrate, AspectRatio, Remarks) values ("));
@@ -578,7 +591,7 @@ Bool SSWR::DiscDB::DiscDBEnv::AddMD5(IO::StreamData *fd)
 		return false;
 	}
 	Text::StringBuilderUTF8 sbDiscId;
-	NotNullPtr<Text::String> s = fd->GetFullName();
+	Text::String *s = fd->GetFullName();
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;

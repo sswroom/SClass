@@ -21,15 +21,14 @@ void __stdcall SSWR::AVIRead::AVIRPDFObjectForm::OnObjectSelChg(void *userObj)
 		if (param)
 		{
 			Media::PDFParameter::ParamEntry *entry;
-			NotNullPtr<Text::String> s;
 			UOSInt i = 0;
 			UOSInt j = param->GetCount();
 			while (i < j)
 			{
 				entry = param->GetItem(i);
 				me->lvParameter->AddItem(entry->type, 0);
-				if (s.Set(entry->value))
-					me->lvParameter->SetSubItem(i, 1, s);
+				if (entry->value)
+					me->lvParameter->SetSubItem(i, 1, entry->value);
 				i++;
 			}
 		}
@@ -119,7 +118,7 @@ void SSWR::AVIRead::AVIRPDFObjectForm::EventMenuClicked(UInt16 cmdId)
 		UI::FolderDialog dlg(L"SSWR", L"AVIRead", L"PDFObjectAllImage");
 		if (dlg.ShowDialog(this->GetHandle()))
 		{
-			NotNullPtr<Text::String> folder = dlg.GetFolder();
+			Text::String *folder = dlg.GetFolder();
 			Text::CString fileName = this->doc->GetSourceNameObj()->ToCString();
 			UOSInt i = fileName.LastIndexOf(IO::Path::PATH_SEPERATOR);
 			if (i != INVALID_INDEX)

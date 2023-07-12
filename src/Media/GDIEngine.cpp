@@ -1320,7 +1320,7 @@ Bool Media::GDIImage::DrawEllipse(Math::Coord2DDbl tl, Math::Size2DDbl size, Dra
 	return true;
 }
 
-Bool Media::GDIImage::DrawString(Math::Coord2DDbl tl, NotNullPtr<Text::String> str, DrawFont *f, DrawBrush *b)
+Bool Media::GDIImage::DrawString(Math::Coord2DDbl tl, Text::String *str, DrawFont *f, DrawBrush *b)
 {
 	const WChar *wptr = Text::StrToWCharNew(str->v);
 	Bool ret = this->DrawStringW(tl, wptr, f, b);

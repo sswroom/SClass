@@ -179,7 +179,7 @@ Bool Net::WebServer::RESTfulHandler::ProcessRequest(Net::WebServer::IWebRequest 
 		if (i != INVALID_INDEX)
 		{
 			DB::DBRow *row;
-			NotNullPtr<Text::String> tableName;
+			Text::String *tableName;
 			Int64 ikey;
 			if (!Text::StrToInt64(&subReq.v[1 + i], &ikey))
 			{

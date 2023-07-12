@@ -16,7 +16,7 @@ Net::ConnectionInfo::ConnectionInfo(const Net::ConnectionInfo::ConnectionEntry *
 	}
 	if (ent->name)
 	{
-		this->ent.name = Text::StrCopyNew(ent->name).Ptr();
+		this->ent.name = Text::StrCopyNew(ent->name);
 	}
 	else
 	{
@@ -24,7 +24,7 @@ Net::ConnectionInfo::ConnectionInfo(const Net::ConnectionInfo::ConnectionEntry *
 	}
 	if (ent->description)
 	{
-		this->ent.description = Text::StrCopyNew(ent->description).Ptr();
+		this->ent.description = Text::StrCopyNew(ent->description);
 	}
 	else
 	{
@@ -32,7 +32,7 @@ Net::ConnectionInfo::ConnectionInfo(const Net::ConnectionInfo::ConnectionEntry *
 	}
 	if (ent->dnsSuffix)
 	{
-		this->ent.dnsSuffix = Text::StrCopyNew(ent->dnsSuffix).Ptr();
+		this->ent.dnsSuffix = Text::StrCopyNew(ent->dnsSuffix);
 	}
 	else
 	{

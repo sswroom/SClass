@@ -60,7 +60,7 @@ IO::ParsedObject *Parser::FileParser::X509Parser::ParseFileHdr(IO::StreamData *f
 	{
 		return 0;
 	}
-	NotNullPtr<Text::String> fileName = fd->GetFullFileName();
+	Text::String *fileName = fd->GetFullFileName();
 	if (len > sizeof(buff))
 	{
 		if (fileName->EndsWithICase(UTF8STRC(".CRL")) && len <= 10485760)
@@ -85,7 +85,7 @@ IO::ParsedObject *Parser::FileParser::X509Parser::ParseFileHdr(IO::StreamData *f
 	return ParseBuff(buff, (UOSInt)len, fd->GetFullFileName());
 }
 
-Crypto::Cert::X509File *Parser::FileParser::X509Parser::ParseBuff(const UInt8 *buff, UOSInt buffSize, NotNullPtr<Text::String> fileName)
+Crypto::Cert::X509File *Parser::FileParser::X509Parser::ParseBuff(const UInt8 *buff, UOSInt buffSize, Text::String *fileName)
 {
 	Crypto::Cert::X509File *ret = 0;
 	UInt8 dataBuff[10240];

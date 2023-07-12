@@ -1,6 +1,5 @@
 #ifndef _SM_EXPORTER_DBCSVEXPORTER
 #define _SM_EXPORTER_DBCSVEXPORTER
-#include "Data/ArrayListNN.h"
 #include "Data/ArrayListStrUTF8.h"
 #include "DB/ReadingDB.h"
 #include "IO/FileExporter.h"
@@ -15,7 +14,7 @@ namespace Exporter
 		{
 			DB::ReadingDB *db;
 			UOSInt tableIndex;
-			Data::ArrayListNN<Text::String> names;
+			Data::ArrayList<Text::String*> names;
 		};
 
 	private:

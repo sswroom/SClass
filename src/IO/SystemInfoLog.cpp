@@ -11,8 +11,8 @@ void IO::SystemInfoLog::FreeServerRole(ServerRole *serverRole)
 
 void IO::SystemInfoLog::FreeDeviceInfo(DeviceInfo *deviceInfo)
 {
-	deviceInfo->desc->Release();
-	deviceInfo->hwId->Release();
+	SDEL_STRING(deviceInfo->desc);
+	SDEL_STRING(deviceInfo->hwId);
 	SDEL_STRING(deviceInfo->service);
 	SDEL_STRING(deviceInfo->driver);
 	MemFree(deviceInfo);
@@ -20,7 +20,7 @@ void IO::SystemInfoLog::FreeDeviceInfo(DeviceInfo *deviceInfo)
 
 void IO::SystemInfoLog::FreeDriverInfo(DriverInfo *driverInfo)
 {
-	driverInfo->fileName->Release();
+	SDEL_STRING(driverInfo->fileName);
 	SDEL_STRING(driverInfo->creationDate);
 	SDEL_STRING(driverInfo->version);
 	SDEL_STRING(driverInfo->manufacturer);
@@ -126,8 +126,8 @@ const Data::ArrayList<IO::SystemInfoLog::ServerRole*> *IO::SystemInfoLog::GetSer
 void IO::SystemInfoLog::AddDeviceInfo(const UTF8Char *desc, const UTF8Char *hwId, const UTF8Char *service, const UTF8Char *driver)
 {
 	DeviceInfo *dev = MemAlloc(DeviceInfo, 1);
-	dev->desc = Text::String::NewNotNullSlow(desc);
-	dev->hwId = Text::String::NewNotNullSlow(hwId);
+	dev->desc = Text::String::NewOrNullSlow(desc);
+	dev->hwId = Text::String::NewOrNullSlow(hwId);
 	dev->service = Text::String::NewOrNullSlow(service);
 	dev->driver = Text::String::NewOrNullSlow(driver);
 	this->deviceInfos->Add(dev);
@@ -141,7 +141,7 @@ const Data::ArrayList<IO::SystemInfoLog::DeviceInfo*> *IO::SystemInfoLog::GetDev
 void IO::SystemInfoLog::AddDriverInfo(const UTF8Char *fileName, UInt64 fileSize, const UTF8Char *creationDate, const UTF8Char *version, const UTF8Char *manufacturer, const UTF8Char *productName, const UTF8Char *group, UInt32 altitude)
 {
 	DriverInfo *driver = MemAlloc(DriverInfo, 1);
-	driver->fileName = Text::String::NewNotNullSlow(fileName);
+	driver->fileName = Text::String::NewOrNullSlow(fileName);
 	driver->fileSize = fileSize;
 	driver->creationDate = Text::String::NewOrNullSlow(creationDate);
 	driver->version = Text::String::NewOrNullSlow(version);

@@ -359,36 +359,36 @@ public:
 		{
 			UOSInt len = (UInt32)dbdatlen(this->dbproc, (int)colIndex + 1);
 			UInt8 *data = dbdata(this->dbproc, (int)colIndex + 1);
-			return Text::String::New(data, len).Ptr();
+			return Text::String::New(data, len);
 		}
 		case SYBBIT:
-			return Text::String::New((this->cols[colIndex].buff[0] != 0)?CSTR("1"):CSTR("0")).Ptr();
+			return Text::String::New((this->cols[colIndex].buff[0] != 0)?CSTR("1"):CSTR("0"));
 		case SYBINT1:
 			sptr = Text::StrInt16(sbuff, (Int8)this->cols[colIndex].buff[0]);
-			return Text::String::NewP(sbuff, sptr).Ptr();
+			return Text::String::NewP(sbuff, sptr);
 		case SYBINT2:
 			sptr = Text::StrInt16(sbuff, ReadNInt16(&this->cols[colIndex].buff[0]));
-			return Text::String::NewP(sbuff, sptr).Ptr();
+			return Text::String::NewP(sbuff, sptr);
 		case SYBINT4:
 			sptr = Text::StrInt32(sbuff, ReadNInt32(&this->cols[colIndex].buff[0]));
-			return Text::String::NewP(sbuff, sptr).Ptr();
+			return Text::String::NewP(sbuff, sptr);
 		case SYBINT8:
 			sptr = Text::StrInt64(sbuff, ReadNInt64(&this->cols[colIndex].buff[0]));
-			return Text::String::NewP(sbuff, sptr).Ptr();
+			return Text::String::NewP(sbuff, sptr);
 		case SYBREAL:
 			sptr = Text::StrDouble(sbuff, ReadFloat(&this->cols[colIndex].buff[0]));
-			return Text::String::NewP(sbuff, sptr).Ptr();
+			return Text::String::NewP(sbuff, sptr);
 		case SYBDECIMAL:
 		case SYBNUMERIC:
 		case SYBFLT8:
 			sptr = Text::StrDouble(sbuff, ReadDouble(&this->cols[colIndex].buff[0]));
-			return Text::String::NewP(sbuff, sptr).Ptr();
+			return Text::String::NewP(sbuff, sptr);
 		case SYBDATETIME:
 		case SYBMSDATE:
 		case SYBMSTIME:
 		case SYBMSDATETIME2:
 			sptr = this->GetTimestamp(colIndex).ToString(sbuff);
-			return Text::String::NewP(sbuff, sptr).Ptr();
+			return Text::String::NewP(sbuff, sptr);
 		case SYBGEOMETRY:
 			{
 				Math::Geometry::Vector2D *vec = this->GetVector(colIndex);
@@ -398,7 +398,7 @@ public:
 					Math::WKTWriter wkt;
 					wkt.ToText(&sb, vec);
 					DEL_CLASS(vec);
-					return Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
+					return Text::String::New(sb.ToString(), sb.GetLength());
 				}
 			}
 			return 0;
@@ -407,7 +407,7 @@ public:
 			Data::UUID uuid;
 			this->GetUUID(colIndex, &uuid);
 			sptr = uuid.ToString(sbuff);
-			return Text::String::NewP(sbuff, sptr).Ptr();
+			return Text::String::NewP(sbuff, sptr);
 		}
 		case SYBBINARY:
 			return 0;
@@ -739,9 +739,7 @@ public:
 	{
 		if (colIndex >= this->nCols)
 			return DB::DBUtil::ColType::CT_Unknown;
-		NotNullPtr<const UTF8Char> colName;
-		if (!colName.Set((const UTF8Char*)this->cols[colIndex].name)) colName.Set((const UTF8Char*)"");
-		colDef->SetColName(colName);
+		colDef->SetColName((const UTF8Char*)this->cols[colIndex].name);
 		colDef->SetColType(this->GetColType(colIndex, 0));
 		colDef->SetColSize((UInt32)this->cols[colIndex].size);
 		return true;
@@ -755,9 +753,9 @@ struct DB::TDSConn::ClassData
 
 	Text::StringBuilderUTF8 *errMsg;
 	IO::LogTool *log;
-	NotNullPtr<Text::String> host;
-	NotNullPtr<Text::String> username;
-	NotNullPtr<Text::String> password;
+	Text::String *host;
+	Text::String *username;
+	Text::String *password;
 	Text::String *database;
 };
 
@@ -831,7 +829,7 @@ Bool DB::TDSConn::IsConnected() const
 	return this->clsData->dbproc != 0;
 }
 
-NotNullPtr<Text::String> DB::TDSConn::GetConnHost() const
+Text::String *DB::TDSConn::GetConnHost() const
 {
 	return this->clsData->host;
 }
@@ -841,12 +839,12 @@ Text::String *DB::TDSConn::GetConnDB() const
 	return this->clsData->database;
 }
 
-NotNullPtr<Text::String> DB::TDSConn::GetConnUID() const
+Text::String *DB::TDSConn::GetConnUID() const
 {
 	return this->clsData->username;
 }
 
-NotNullPtr<Text::String> DB::TDSConn::GetConnPWD() const
+Text::String *DB::TDSConn::GetConnPWD() const
 {
 	return this->clsData->password;
 }
@@ -998,7 +996,7 @@ void DB::TDSConn::Rollback(void *tran)
 	///////////////////////////////////////
 }
 
-UOSInt DB::TDSConn::QueryTableNames(Text::CString schemaName, Data::ArrayListNN<Text::String> *names)
+UOSInt DB::TDSConn::QueryTableNames(Text::CString schemaName, Data::ArrayList<Text::String*> *names)
 {
 	if (this->sqlType == DB::SQLType::MSSQL)
 	{
@@ -1033,7 +1031,7 @@ UOSInt DB::TDSConn::QueryTableNames(Text::CString schemaName, Data::ArrayListNN<
 	return 0;
 }
 
-DB::DBReader *DB::TDSConn::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListNN<Text::String> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+DB::DBReader *DB::TDSConn::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;

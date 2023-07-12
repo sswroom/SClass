@@ -12,7 +12,7 @@ namespace Map
 	public:
 		struct ContentInfo
 		{
-			NotNullPtr<Text::String> tableName;
+			Text::String *tableName;
 			Math::RectAreaDbl bounds;
 			Int32 srsId;
 			Bool hasZ;
@@ -30,10 +30,10 @@ namespace Map
 		GeoPackage(DB::DBConn *conn);
 		void Release();
 
-		NotNullPtr<Text::String> GetSourceNameObj();
+		Text::String *GetSourceNameObj();
 
-		UOSInt QueryTableNames(Text::CString schemaName, Data::ArrayListNN<Text::String> *names);
-		DB::DBReader *QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListNN<Text::String> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
+		UOSInt QueryTableNames(Text::CString schemaName, Data::ArrayList<Text::String*> *names);
+		DB::DBReader *QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
 		DB::TableDef *GetTableDef(Text::CString schemaName, Text::CString tableName);
 		void CloseReader(DB::DBReader *r);
 		void GetLastErrorMsg(Text::StringBuilderUTF8 *str);

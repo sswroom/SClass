@@ -153,7 +153,7 @@ IO::ParsedObject *Parser::FileParser::MEVParser::ParseFileHdr(IO::StreamData *fd
 		*wptr++ = IO::Path::PATH_SEPERATOR;
 		Text::StrUTF8_WCharC(wptr, &buff[16], ReadUInt32(&buff[4]), 0);
 
-		NotNullPtr<Text::String> s = Text::String::NewNotNull(wbuff);
+		Text::String *s = Text::String::NewNotNull(wbuff);
 		imgFileArr[i].envIndex = env->AddImage(s->ToCString(), this->parsers);
 		s->Release();
 		i++;
@@ -248,7 +248,7 @@ void Parser::FileParser::MEVParser::ReadItems(IO::StreamData *fd, Map::MapEnv *e
 			Text::StrUTF8_WCharC(wbuff, &buff[12], ReadUInt32(&buff[4]), 0);
 			*currPos = 12 + *currPos;
 			
-			NotNullPtr<Text::String> s = Text::String::NewNotNull(wbuff);
+			Text::String *s = Text::String::NewNotNull(wbuff);
 			Map::MapEnv::GroupItem *item = env->AddGroup(group, s->ToCString());
 			s->Release();
 			ReadItems(fd, env, ReadUInt32(&buff[8]), currPos, item, dirArr, imgInfos);
@@ -265,7 +265,7 @@ void Parser::FileParser::MEVParser::ReadItems(IO::StreamData *fd, Map::MapEnv *e
 			{
 				this->parsers->SetCodePage(ReadUInt32(&buff[12]));
 			}
-			NotNullPtr<Text::String> s = Text::String::NewNotNull(wbuff);
+			Text::String *s = Text::String::NewNotNull(wbuff);
 			Map::MapDrawLayer *layer = this->mapMgr->LoadLayer(s->ToCString(), this->parsers, env);
 			s->Release();
 			if (layer)

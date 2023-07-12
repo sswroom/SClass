@@ -14,7 +14,7 @@ namespace SSWR
 			struct CertEntry
 			{
 				Crypto::Cert::X509Cert *cert;
-				NotNullPtr<Text::String> subjectCN;
+				Text::String *subjectCN;
 			};
 		private:
 			SSWR::AVIRead::AVIRCore *core;

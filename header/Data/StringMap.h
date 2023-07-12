@@ -15,13 +15,10 @@ namespace Data
 		virtual ~StringMap();
 
 		virtual T Put(Text::String *key, T val);
-		T PutNN(NotNullPtr<Text::String> key, T val);
 		T Put(Text::CString key, T val);
 		virtual T Get(Text::String *key) const;
-		T GetNN(NotNullPtr<Text::String> key) const;
 		T Get(Text::CString key) const;
 		virtual T Remove(Text::String *key);
-		T RemoveNN(NotNullPtr<Text::String> key);
 		T Remove(Text::CString key);
 		virtual Text::String *GetKey(UOSInt index) const;
 		virtual void Clear();
@@ -41,7 +38,7 @@ namespace Data
 		UOSInt j = map->keys->GetCount();
 		while (i < j)
 		{
-			this->keys->Add(map->keys->GetItem(i)->Clone().Ptr());
+			this->keys->Add(map->keys->GetItem(i)->Clone());
 			this->vals.Add(map->vals.GetItem(i));
 			i++;
 		}
@@ -69,25 +66,7 @@ namespace Data
 		}
 		else
 		{
-			this->keys->Insert((UOSInt)~i, key->Clone().Ptr());
-			this->vals.Insert((UOSInt)~i, val);
-			return 0;
-		}
-	}
-
-	template <class T> T StringMap<T>::PutNN(NotNullPtr<Text::String> key, T val)
-	{
-		OSInt i;
-		i = this->keys->SortedIndexOf(key.Ptr());
-		if (i >= 0)
-		{
-			T oldVal = this->vals.GetItem((UOSInt)i);
-            this->vals.SetItem((UOSInt)i, val);
-			return oldVal;
-		}
-		else
-		{
-			this->keys->Insert((UOSInt)~i, key->Clone().Ptr());
+			this->keys->Insert((UOSInt)~i, key->Clone());
 			this->vals.Insert((UOSInt)~i, val);
 			return 0;
 		}
@@ -105,7 +84,7 @@ namespace Data
 		}
 		else
 		{
-			this->keys->Insert((UOSInt)~i, Text::String::New(key.v, key.leng).Ptr());
+			this->keys->Insert((UOSInt)~i, Text::String::New(key.v, key.leng));
 			this->vals.Insert((UOSInt)~i, val);
 			return 0;
 		}
@@ -115,20 +94,6 @@ namespace Data
 	{
 		OSInt i;
 		i = this->keys->SortedIndexOf(key);
-		if (i >= 0)
-		{
-			return this->vals.GetItem((UOSInt)i);
-		}
-		else
-		{
-			return 0;
-		}
-	}
-
-	template <class T> T StringMap<T>::GetNN(NotNullPtr<Text::String> key) const
-	{
-		OSInt i;
-		i = this->keys->SortedIndexOf(key.Ptr());
 		if (i >= 0)
 		{
 			return this->vals.GetItem((UOSInt)i);
@@ -157,21 +122,6 @@ namespace Data
 	{
 		OSInt i;
 		i = this->keys->SortedIndexOf(key);
-		if (i >= 0)
-		{
-			this->keys->RemoveAt((UOSInt)i)->Release();
-			return this->vals.RemoveAt((UOSInt)i);
-		}
-		else
-		{
-			return 0;
-		}
-	}
-
-	template <class T> T StringMap<T>::RemoveNN(NotNullPtr<Text::String> key)
-	{
-		OSInt i;
-		i = this->keys->SortedIndexOf(key.Ptr());
 		if (i >= 0)
 		{
 			this->keys->RemoveAt((UOSInt)i)->Release();

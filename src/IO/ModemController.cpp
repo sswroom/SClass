@@ -72,7 +72,7 @@ UTF8Char *IO::ModemController::SendStringCommand(UTF8Char *buff, const UTF8Char 
 	}
 }
 
-Bool IO::ModemController::SendStringCommand(Data::ArrayListNN<Text::String> *resList, const UTF8Char *cmd, UOSInt cmdLen, Data::Duration timeout)
+Bool IO::ModemController::SendStringCommand(Data::ArrayList<Text::String*> *resList, const UTF8Char *cmd, UOSInt cmdLen, Data::Duration timeout)
 {
 	Sync::MutexUsage mutUsage(&this->cmdMut);
 	this->channel->SendATCommand(&this->cmdResults, cmd, cmdLen, timeout);

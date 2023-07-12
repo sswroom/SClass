@@ -166,7 +166,7 @@ void Map::WebFeatureService::LoadXMLFeatureType(Text::XMLReader *reader)
 				if (reader->ReadNodeText(&sb))
 				{
 					SDEL_STRING(name);
-					name = Text::String::New(sb.ToCString()).Ptr();
+					name = Text::String::New(sb.ToCString());
 				}
 			}
 			else if (nodeName->Equals(UTF8STRC("Title")))
@@ -175,7 +175,7 @@ void Map::WebFeatureService::LoadXMLFeatureType(Text::XMLReader *reader)
 				if (reader->ReadNodeText(&sb))
 				{
 					SDEL_STRING(title);
-					title = Text::String::New(sb.ToCString()).Ptr();
+					title = Text::String::New(sb.ToCString());
 				}
 			}
 			else if (nodeName->Equals(UTF8STRC("DefaultCRS")))
@@ -184,7 +184,7 @@ void Map::WebFeatureService::LoadXMLFeatureType(Text::XMLReader *reader)
 				if (reader->ReadNodeText(&sb))
 				{
 					SDEL_STRING(crs);
-					crs = Text::String::New(sb.ToCString()).Ptr();
+					crs = Text::String::New(sb.ToCString());
 				}
 			}
 			else if (nodeName->Equals(UTF8STRC("DefaultSRS")))
@@ -193,7 +193,7 @@ void Map::WebFeatureService::LoadXMLFeatureType(Text::XMLReader *reader)
 				if (reader->ReadNodeText(&sb))
 				{
 					SDEL_STRING(crs);
-					crs = Text::String::New(sb.ToCString()).Ptr();
+					crs = Text::String::New(sb.ToCString());
 				}
 			}
 			else if (nodeName->Equals(UTF8STRC("SRS")))
@@ -202,7 +202,7 @@ void Map::WebFeatureService::LoadXMLFeatureType(Text::XMLReader *reader)
 				if (reader->ReadNodeText(&sb))
 				{
 					SDEL_STRING(crs);
-					crs = Text::String::New(sb.ToCString()).Ptr();
+					crs = Text::String::New(sb.ToCString());
 				}
 			}
 			else if (nodeName->EndsWith(UTF8STRC(":WGS84BoundingBox")))
@@ -282,9 +282,9 @@ void Map::WebFeatureService::LoadXMLFeatureType(Text::XMLReader *reader)
 	{
 		FeatureType *feature;
 		feature = MemAllocA(FeatureType, 1);
-		feature->name = Text::String::OrEmpty(name);
-		feature->title = Text::String::OrEmpty(title);
-		feature->crs = Text::String::OrEmpty(crs);
+		feature->name = name;
+		feature->title = title;
+		feature->crs = crs;
 		feature->wgs84Bounds = wgs84Bounds;
 		this->features.Add(feature);
 	}
@@ -308,7 +308,7 @@ Map::WebFeatureService::WebFeatureService(Net::SocketFactory *sockf, Net::SSLEng
 
 Map::WebFeatureService::~WebFeatureService()
 {
-	this->wfsURL->Release();
+	SDEL_STRING(this->wfsURL);
 	SDEL_STRING(this->version);
 	FeatureType *feature;
 	UOSInt i = this->features.GetCount();
@@ -332,7 +332,7 @@ void Map::WebFeatureService::SetFeature(UOSInt index)
 	this->currFeature = this->features.GetItem(index);
 }
 
-UOSInt Map::WebFeatureService::GetFeatureNames(Data::ArrayListNN<Text::String> *nameList) const
+UOSInt Map::WebFeatureService::GetFeatureNames(Data::ArrayList<Text::String*> *nameList) const
 {
 	UOSInt i = 0;
 	UOSInt j = this->features.GetCount();

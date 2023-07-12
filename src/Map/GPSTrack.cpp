@@ -13,7 +13,7 @@
 #include "Text/MyStringFloat.h"
 #include "Text/MyStringW.h"
 
-Map::GPSTrack::GPSTrack(NotNullPtr<Text::String> sourceName, Bool hasAltitude, UInt32 codePage, Text::String *layerName) : Map::MapDrawLayer(sourceName, 0, layerName)
+Map::GPSTrack::GPSTrack(Text::String *sourceName, Bool hasAltitude, UInt32 codePage, Text::String *layerName) : Map::MapDrawLayer(sourceName, 0, layerName)
 {
 	this->codePage = codePage;
 	this->currTrackName = 0;
@@ -505,7 +505,7 @@ void Map::GPSTrack::RemoveUpdatedHandler(UpdatedHandler hdlr, void *obj)
 	mutUsage.EndUse();
 }
 
-UOSInt Map::GPSTrack::QueryTableNames(Text::CString schemaName, Data::ArrayListNN<Text::String> *names)
+UOSInt Map::GPSTrack::QueryTableNames(Text::CString schemaName, Data::ArrayList<Text::String*> *names)
 {
 	if (schemaName.leng != 0)
 		return 0;
@@ -514,7 +514,7 @@ UOSInt Map::GPSTrack::QueryTableNames(Text::CString schemaName, Data::ArrayListN
 	return 2;
 }
 
-DB::DBReader *Map::GPSTrack::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListNN<Text::String> *columnName, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+DB::DBReader *Map::GPSTrack::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayList<Text::String *> *columnName, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	DB::DBReader *r;
 	if (tableName.v != 0 && tableName.Equals(UTF8STRC("GPSData")))
@@ -547,7 +547,7 @@ DB::TableDef *Map::GPSTrack::GetTableDef(Text::CString schemaName, Text::CString
 		NEW_CLASS(tab, DB::TableDef(schemaName, tableName));
 		while (i < j)
 		{
-			NEW_CLASS(col, DB::ColDef(Text::String::NewEmpty()));
+			NEW_CLASS(col, DB::ColDef(0));
 			GPSDataReader::GetColDefV(i, col, this->hasAltitude);
 			tab->AddCol(col);
 			i++;
@@ -559,7 +559,7 @@ DB::TableDef *Map::GPSTrack::GetTableDef(Text::CString schemaName, Text::CString
 		NEW_CLASS(tab, DB::TableDef(schemaName, tableName));
 		while (i < j)
 		{
-			NEW_CLASS(col, DB::ColDef(Text::String::NewEmpty()));
+			NEW_CLASS(col, DB::ColDef(0));
 			Map::MapLayerReader::GetColDefV(i, col, this);
 			tab->AddCol(col);
 			i++;
@@ -760,7 +760,14 @@ Bool Map::GPSTrack::GetHasAltitude()
 void Map::GPSTrack::SetTrackName(Text::CString name)
 {
 	SDEL_STRING(this->currTrackName);
-	this->currTrackName = Text::String::NewOrNull(name);
+	if (name.v)
+	{
+		this->currTrackName = Text::String::New(name.v, name.leng);
+	}
+	else
+	{
+		this->currTrackName = 0;
+	}
 }
 
 void Map::GPSTrack::GetTrackNames(Data::ArrayListString *nameArr)
@@ -1215,7 +1222,7 @@ Text::String *Map::GPSDataReader::GetNewStr(UOSInt colIndex)
 	UTF8Char *sptr;
 	if ((sptr = this->GetStr(colIndex, sbuff, sizeof(sbuff))) != 0)
 	{
-		return Text::String::New(sbuff, (UOSInt)(sptr - sbuff)).Ptr();
+		return Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 	}
 	return 0;
 }

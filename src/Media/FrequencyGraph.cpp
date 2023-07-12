@@ -21,7 +21,7 @@ Media::DrawImage *Media::FrequencyGraph::CreateGraph(Media::DrawEngine *eng, Med
 	Media::DrawBrush *b;
 	Media::DrawFont *f;
 	Data::ArrayListDbl chartPos;
-	Data::ArrayListNN<Text::String> chartLabels;
+	Data::ArrayList<Text::String *> chartLabels;
 	UInt32 ihFontSize = (UInt32)Double2Int32(fontSizePx * 0.5);
 	UInt32 yAxis;
 	UInt32 xAxis;

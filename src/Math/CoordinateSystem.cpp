@@ -5,15 +5,15 @@
 #include "Math/ProjectedCoordinateSystem.h"
 #include "Text/MyString.h"
 
-Math::CoordinateSystem::CoordinateSystem(NotNullPtr<Text::String> sourceName, UInt32 srid, Text::CString csysName) : IO::ParsedObject(sourceName)
+Math::CoordinateSystem::CoordinateSystem(Text::String *sourceName, UInt32 srid, Text::CString csysName) : IO::ParsedObject(sourceName)
 {
-	this->csysName = Text::String::New(csysName);
+	this->csysName = Text::String::New(csysName.v, csysName.leng);
 	this->srid = srid;
 }
 
 Math::CoordinateSystem::CoordinateSystem(Text::CString sourceName, UInt32 srid, Text::CString csysName) : IO::ParsedObject(sourceName)
 {
-	this->csysName = Text::String::New(csysName);
+	this->csysName = Text::String::New(csysName.v, csysName.leng);
 	this->srid = srid;
 }
 

@@ -12,7 +12,7 @@ namespace DB
 	class SQLiteFile : public DB::DBConn
 	{
 	private:
-		NotNullPtr<Text::String> fileName;
+		Text::String *fileName;
 		void *db;
 //		Data::ArrayList<Text::CString> tableNames;
 		Bool delOnClose;
@@ -20,7 +20,7 @@ namespace DB
 
 		void Init();
 	public:
-		SQLiteFile(NotNullPtr<Text::String> fileName);
+		SQLiteFile(Text::String *fileName);
 		SQLiteFile(Text::CString fileName);
 		virtual ~SQLiteFile();
 
@@ -41,16 +41,16 @@ namespace DB
 		virtual void Commit(void *tran);
 		virtual void Rollback(void *tran);
 
-		virtual UOSInt QueryTableNames(Text::CString schemaName, Data::ArrayListNN<Text::String> *names);
-		virtual DBReader *QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListNN<Text::String> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
+		virtual UOSInt QueryTableNames(Text::CString schemaName, Data::ArrayList<Text::String*> *names);
+		virtual DBReader *QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
 
 		void SetDeleteOnClose(Bool delOnClose);
 		Bool IsError();
-		NotNullPtr<Text::String> GetFileName();
+		Text::String *GetFileName();
 
 		static Math::Geometry::Vector2D *GPGeometryParse(const UInt8 *buff, UOSInt buffSize);
 		
-		static DBTool *CreateDBTool(NotNullPtr<Text::String> fileName, IO::LogTool *log, Text::CString logPrefix);
+		static DBTool *CreateDBTool(Text::String *fileName, IO::LogTool *log, Text::CString logPrefix);
 		static DBTool *CreateDBTool(Text::CString fileName, IO::LogTool *log, Text::CString logPrefix);
 	};
 

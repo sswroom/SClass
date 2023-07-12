@@ -21,7 +21,6 @@ Net::WebSite::WebSite7gogoControl::ItemData *Net::WebSite::WebSite7gogoControl::
 	MemClear(item, sizeof(Net::WebSite::WebSite7gogoControl::ItemData));
 	item->id = postObj->GetObjectInt64(CSTR("postId"));
 	item->recTime = postObj->GetObjectInt64(CSTR("time")) * 1000;
-	item->message = Text::String::NewEmpty();
 	if ((jsBase = postObj->GetObjectValue(CSTR("body"))) != 0 && jsBase->GetType() == Text::JSONType::Array)
 	{
 		arr1 = (Text::JSONArray*)jsBase;
@@ -39,7 +38,7 @@ Net::WebSite::WebSite7gogoControl::ItemData *Net::WebSite::WebSite7gogoControl::
 					if ((jsBase = obj1->GetObjectValue(CSTR("text"))) != 0 && jsBase->GetType() == Text::JSONType::String)
 					{
 						str1 = (Text::JSONString*)jsBase;
-						item->message->Release();
+						SDEL_STRING(item->message);
 						item->message = str1->GetValue()->Clone();
 					}
 				}
@@ -55,11 +54,11 @@ Net::WebSite::WebSite7gogoControl::ItemData *Net::WebSite::WebSite7gogoControl::
 							sb.AppendUTF8Char(' ');
 							sb.Append(str1->GetValue());
 							item->imgURL->Release();
-							item->imgURL = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
+							item->imgURL = Text::String::New(sb.ToString(), sb.GetLength());
 						}
 						else
 						{
-							item->imgURL = str1->GetValue()->Clone().Ptr();
+							item->imgURL = str1->GetValue()->Clone();
 						}
 					}
 				}
@@ -75,11 +74,11 @@ Net::WebSite::WebSite7gogoControl::ItemData *Net::WebSite::WebSite7gogoControl::
 							sb.AppendUTF8Char(' ');
 							sb.Append(str1->GetValue());
 							item->imgURL->Release();
-							item->imgURL = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
+							item->imgURL = Text::String::New(sb.ToString(), sb.GetLength());
 						}
 						else
 						{
-							item->imgURL = str1->GetValue()->Clone().Ptr();
+							item->imgURL = str1->GetValue()->Clone();
 						}
 					}
 				}
@@ -88,14 +87,14 @@ Net::WebSite::WebSite7gogoControl::ItemData *Net::WebSite::WebSite7gogoControl::
 		}
 	}
 
-	if (item->id != 0 && item->recTime != 0 && item->message->leng != 0)
+	if (item->id != 0 && item->recTime != 0 && item->message != 0)
 	{
 		return item;
 	}
 	else
 	{
 		SDEL_STRING(item->imgURL);
-		item->message->Release();
+		SDEL_STRING(item->message);
 		MemFree(item);
 		return 0;
 	}
@@ -113,7 +112,7 @@ Net::WebSite::WebSite7gogoControl::~WebSite7gogoControl()
 	SDEL_STRING(this->userAgent);
 }
 
-OSInt Net::WebSite::WebSite7gogoControl::GetChannelItems(NotNullPtr<Text::String> channelId, OSInt pageNo, Data::ArrayList<Net::WebSite::WebSite7gogoControl::ItemData*> *itemList, Net::WebSite::WebSite7gogoControl::ChannelInfo *chInfo)
+OSInt Net::WebSite::WebSite7gogoControl::GetChannelItems(Text::String *channelId, OSInt pageNo, Data::ArrayList<Net::WebSite::WebSite7gogoControl::ItemData*> *itemList, Net::WebSite::WebSite7gogoControl::ChannelInfo *chInfo)
 {
 	Text::StringBuilderUTF8 sb;
 	OSInt retCnt = 0;
@@ -158,32 +157,32 @@ OSInt Net::WebSite::WebSite7gogoControl::GetChannelItems(NotNullPtr<Text::String
 								{
 									str1 = (Text::JSONString*)jsBase;
 									SDEL_STRING(chInfo->talkCode);
-									chInfo->talkCode = str1->GetValue()->Clone().Ptr();
+									chInfo->talkCode = str1->GetValue()->Clone();
 								}
 								if ((jsBase = obj1->GetObjectValue(CSTR("name"))) != 0 && jsBase->GetType() == Text::JSONType::String)
 								{
 									str1 = (Text::JSONString*)jsBase;
 									SDEL_STRING(chInfo->name);
-									chInfo->name = str1->GetValue()->Clone().Ptr();
+									chInfo->name = str1->GetValue()->Clone();
 								}
 								if ((jsBase = obj1->GetObjectValue(CSTR("detail"))) != 0 && jsBase->GetType() == Text::JSONType::String)
 								{
 									str1 = (Text::JSONString*)jsBase;
 									SDEL_STRING(chInfo->detail);
-									chInfo->detail = str1->GetValue()->Clone().Ptr();
+									chInfo->detail = str1->GetValue()->Clone();
 								}
 								if ((jsBase = obj1->GetObjectValue(CSTR("imagePath"))) != 0 && jsBase->GetType() == Text::JSONType::String)
 								{
 									str1 = (Text::JSONString*)jsBase;
 									SDEL_STRING(chInfo->imagePath);
-									chInfo->imagePath = str1->GetValue()->Clone().Ptr();
+									chInfo->imagePath = str1->GetValue()->Clone();
 								}
 								chInfo->editDate = obj1->GetObjectInt64(CSTR("editDate")) * 1000;
 								if ((jsBase = obj1->GetObjectValue(CSTR("screenName"))) != 0 && jsBase->GetType() == Text::JSONType::String)
 								{
 									str1 = (Text::JSONString*)jsBase;
 									SDEL_STRING(chInfo->screenName);
-									chInfo->screenName = str1->GetValue()->Clone().Ptr();
+									chInfo->screenName = str1->GetValue()->Clone();
 								}
 							}
 						}

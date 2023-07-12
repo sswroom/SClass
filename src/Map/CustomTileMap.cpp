@@ -14,8 +14,8 @@ Map::CustomTileMap::CustomTileMap(Text::CString url, Text::CString cacheDir, UOS
 
 Map::CustomTileMap::~CustomTileMap()
 {
-	this->url->Release();
-	this->name->Release();
+	SDEL_STRING(this->url);
+	SDEL_STRING(this->name);
 }
 
 Text::CString Map::CustomTileMap::GetName()
@@ -63,7 +63,7 @@ void Map::CustomTileMap::SetName(Text::CString name)
 {
 	if (name.v)
 	{
-		this->name->Release();
+		SDEL_STRING(this->name);
 		this->name = Text::String::New(name);
 	}
 }

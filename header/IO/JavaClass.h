@@ -1,7 +1,6 @@
 #ifndef _SM_IO_JAVACLASS
 #define _SM_IO_JAVACLASS
 #include "Data/ArrayList.h"
-#include "Data/ArrayListNN.h"
 #include "Data/ArrayListString.h"
 #include "Data/ArrayListStrUTF8.h"
 #include "IO/ParsedObject.h"
@@ -83,8 +82,8 @@ namespace IO
 		
 		struct DecompileEnv
 		{
-			Data::ArrayListNN<Text::String> *stacks;
-			Data::ArrayListNN<Text::String> *stackTypes;
+			Data::ArrayList<Text::String*> *stacks;
+			Data::ArrayList<Text::String*> *stackTypes;
 			Text::String **localTypes;
 			const MethodInfo *method;
 			const UInt8 *codeStart;
@@ -154,7 +153,7 @@ namespace IO
 
 		void Init(const UInt8 *buff, UOSInt buffSize);
 	public:
-		JavaClass(NotNullPtr<Text::String> sourceName, const UInt8 *buff, UOSInt buffSize);
+		JavaClass(Text::String *sourceName, const UInt8 *buff, UOSInt buffSize);
 		JavaClass(Text::CString sourceName, const UInt8 *buff, UOSInt buffSize);
 		virtual ~JavaClass();
 
@@ -179,7 +178,7 @@ namespace IO
 		UTF8Char *DecompileMethod(UInt16 methodIndex, UTF8Char *nameBuff, UInt16 *classIndex, UTF8Char *retType, DecompileEnv *env, Text::StringBuilderUTF8 *sb) const;
 	public:
 		static JavaClass *ParseFile(Text::CString fileName);
-		static JavaClass *ParseBuff(NotNullPtr<Text::String> sourceName, const UInt8 *buff, UOSInt buffSize);
+		static JavaClass *ParseBuff(Text::String *sourceName, const UInt8 *buff, UOSInt buffSize);
 		static JavaClass *ParseBuff(Text::CString sourceName, const UInt8 *buff, UOSInt buffSize);
 		static Text::CString EndTypeGetName(EndType et);
 	};

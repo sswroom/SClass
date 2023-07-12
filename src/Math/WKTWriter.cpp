@@ -12,7 +12,7 @@
 void Math::WKTWriter::SetLastError(Text::CString lastError)
 {
 	SDEL_STRING(this->lastError);
-	this->lastError = Text::String::New(lastError).Ptr();
+	this->lastError = Text::String::New(lastError);
 }
 
 void Math::WKTWriter::AppendLineString(Text::StringBuilderUTF8 *sb, Math::Geometry::LineString *pl, Bool reverseAxis)

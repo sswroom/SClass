@@ -112,7 +112,7 @@ UOSInt IO::CDSectorStreamData::GetRealData(UInt64 offset, UOSInt length, UInt8 *
 	return retSize;
 }
 
-NotNullPtr<Text::String> IO::CDSectorStreamData::GetFullName()
+Text::String *IO::CDSectorStreamData::GetFullName()
 {
 	return this->data->GetSourceNameObj();
 }

@@ -1,5 +1,4 @@
 #include "Stdafx.h"
-#include "Data/ArrayListStringNN.h"
 #include "Net/UserAgentDB.h"
 #include "SSWR/AVIRead/AVIRUserAgentBatchForm.h"
 #include "Text/JSText.h"
@@ -67,7 +66,7 @@ void SSWR::AVIRead::AVIRUserAgentBatchForm::UserAgent2Output(Text::CString userA
 	sb.AppendUTF8Char(',');
 	j = sb.GetLength();
 	if (j < 140) sb.AppendChar(' ', 140 - j);
-	NotNullPtr<Text::String> s = Text::JSText::ToNewJSTextDQuote((const UTF8Char*)ent.userAgent);
+	Text::String *s = Text::JSText::ToNewJSTextDQuote((const UTF8Char*)ent.userAgent);
 	sb.AppendC(UTF8STRC("UTF8STRC("));
 	sb.Append(s);
 	s->Release();
@@ -136,7 +135,7 @@ void __stdcall SSWR::AVIRead::AVIRUserAgentBatchForm::OnUpdateCBClicked(void *us
 
 void SSWR::AVIRead::AVIRUserAgentBatchForm::UpdateByText(Text::PString txt)
 {
-	Data::ArrayListStringNN uaList;
+	Data::ArrayListString uaList;
 	UOSInt i;
 	UOSInt j;
 	OSInt k;
@@ -147,7 +146,7 @@ void SSWR::AVIRead::AVIRUserAgentBatchForm::UpdateByText(Text::PString txt)
 	while (i < j)
 	{
 		UOSInt uaLen = Text::StrCharCnt(entList[i].userAgent);
-		k = uaList.SortedIndexOfC(Text::CString((const UTF8Char*)entList[i].userAgent, uaLen));
+		k = uaList.SortedIndexOfPtr((const UTF8Char*)entList[i].userAgent, uaLen);
 		if (k < 0)
 		{
 			uaList.Insert((UOSInt)~k, Text::String::New((const UTF8Char*)entList[i].userAgent, uaLen));
@@ -160,7 +159,7 @@ void SSWR::AVIRead::AVIRUserAgentBatchForm::UpdateByText(Text::PString txt)
 		i = Text::StrSplitLineP(sarr, 2, sarr[1]);
 		if (sarr[0].v[0] != 0)
 		{
-			k = uaList.SortedIndexOfC(sarr[0].ToCString());
+			k = uaList.SortedIndexOfPtr(sarr[0].v, sarr[0].leng);
 			if (k < 0)
 			{
 				uaList.Insert((UOSInt)~k, Text::String::New(sarr[0].v, sarr[0].leng));

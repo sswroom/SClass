@@ -37,7 +37,7 @@ namespace Net
 			Net::SSLEngine *ssl;
 			Net::SocketFactory *sockf;
 			IO::LogTool log;
-			NotNullPtr<Text::String> svrName;
+			Text::String *svrName;
 			Bool allowProxy;
 			KeepAlive keepAlive;
 			SERVER_STATUS status;
@@ -69,7 +69,7 @@ namespace Net
 
 			Bool Start();
 			Bool IsError();
-			NotNullPtr<Text::String> GetServerName() const;
+			Text::String *GetServerName();
 			void SetAccessLog(IO::LogTool *accLog, IO::LogHandler::LogLevel accLogLev);
 			void SetRequestLog(IReqLogger *reqLog);
 			void LogAccess(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Double time);

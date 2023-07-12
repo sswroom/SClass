@@ -10,7 +10,7 @@
 #include "UI/FileDialog.h"
 #include "UI/FolderDialog.h"
 
-void __stdcall SSWR::AVIRead::AVIRHQMPPlaylistForm::OnFileDrop(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles)
+void __stdcall SSWR::AVIRead::AVIRHQMPPlaylistForm::OnFileDrop(void *userObj, Text::String **files, UOSInt nFiles)
 {
 	SSWR::AVIRead::AVIRHQMPPlaylistForm *me = (SSWR::AVIRead::AVIRHQMPPlaylistForm*)userObj;
 	Bool changed = false;
@@ -68,7 +68,7 @@ void __stdcall SSWR::AVIRead::AVIRHQMPPlaylistForm::OnAddDirClicked(void *userOb
 	UI::FolderDialog dlg(L"SSWR", L"AVIRead", L"HQMPPlaylistDir");
 	if (dlg.ShowDialog(me->GetHandle()) == UI::GUIForm::DR_OK)
 	{
-		NotNullPtr<Text::String> folder = dlg.GetFolder();
+		Text::String *folder = dlg.GetFolder();
 		if (me->AddFolder(sbuff, folder->ConcatTo(sbuff)))
 		{
 			me->UpdatePlaylist();
@@ -162,7 +162,7 @@ void SSWR::AVIRead::AVIRHQMPPlaylistForm::UpdatePlaylist()
 	while (i < j)
 	{
 		Text::String *title = this->playlist->GetTitle(i);
-		this->lbPlaylist->AddItem(Text::String::OrEmpty(title), (void*)i);
+		this->lbPlaylist->AddItem(title, (void*)i);
 		i++;
 	}
 }

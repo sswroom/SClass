@@ -69,7 +69,7 @@ Math::TSPFile::~TSPFile()
 	}
 }
 
-UOSInt Math::TSPFile::QueryTableNames(Text::CString schemaName, Data::ArrayListNN<Text::String> *names)
+UOSInt Math::TSPFile::QueryTableNames(Text::CString schemaName, Data::ArrayList<Text::String*> *names)
 {
 	if (schemaName.leng != 0)
 		return 0;
@@ -92,7 +92,7 @@ UOSInt Math::TSPFile::QueryTableNames(Text::CString schemaName, Data::ArrayListN
 	}
 }
 
-DB::DBReader *Math::TSPFile::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListNN<Text::String> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+DB::DBReader *Math::TSPFile::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	DB::DBReader *reader;
 	if (tableName.v != 0 && tableName.Equals(UTF8STRC("StationSetup")))
@@ -119,7 +119,7 @@ DB::TableDef *Math::TSPFile::GetTableDef(Text::CString schemaName, Text::CString
 		j = 8;
 		while (i < j)
 		{
-			NEW_CLASS(col, DB::ColDef(Text::String::NewEmpty()));
+			NEW_CLASS(col, DB::ColDef(0));
 			TSPHReader::GetColDefV(i, col);
 			tab->AddCol(col);
 			i++;
@@ -138,7 +138,7 @@ DB::TableDef *Math::TSPFile::GetTableDef(Text::CString schemaName, Text::CString
 		}
 		while (i < j)
 		{
-			NEW_CLASS(col, DB::ColDef(Text::String::NewEmpty()));
+			NEW_CLASS(col, DB::ColDef(0));
 			TSPReader::GetColDefV(i, col, this->rowSize);
 			tab->AddCol(col);
 			i++;
@@ -330,7 +330,7 @@ Text::String *Math::TSPReader::GetNewStr(UOSInt colIndex)
 	UTF8Char *sptr;
 	if ((sptr = GetStr(colIndex, sbuff, sizeof(sbuff))) != 0)
 	{
-		return Text::String::NewP(sbuff, sptr).Ptr();
+		return Text::String::NewP(sbuff, sptr);
 	}
 	return 0;
 }
@@ -694,7 +694,7 @@ Text::String *Math::TSPHReader::GetNewStr(UOSInt colIndex)
 	UTF8Char *sptr;
 	if ((sptr = GetStr(colIndex, sbuff, sizeof(sbuff))) != 0)
 	{
-		return Text::String::NewP(sbuff, sptr).Ptr();
+		return Text::String::NewP(sbuff, sptr);
 	}
 	return 0;
 }

@@ -20,7 +20,7 @@ Text::Builder::HTMLBodyBuilder::~HTMLBodyBuilder()
 void Text::Builder::HTMLBodyBuilder::BeginLink(Text::CString url)
 {
 	this->sb->AppendC(UTF8STRC("<a href="));
-	NotNullPtr<Text::String> s = Text::XML::ToNewAttrText(url.v);
+	Text::String *s = Text::XML::ToNewAttrText(url.v);
 	this->sb->Append(s);
 	s->Release();
 	sb->AppendUTF8Char('>');

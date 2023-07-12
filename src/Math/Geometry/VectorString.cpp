@@ -4,7 +4,7 @@
 #include "Math/Geometry/VectorString.h"
 #include "Text/MyString.h"
 
-Math::Geometry::VectorString::VectorString(UInt32 srid, NotNullPtr<Text::String> s, Math::Coord2DDbl pos, Double angleDegree, Double buffSize, Media::DrawEngine::DrawPos align) : Vector2D(srid)
+Math::Geometry::VectorString::VectorString(UInt32 srid, Text::String *s, Math::Coord2DDbl pos, Double angleDegree, Double buffSize, Media::DrawEngine::DrawPos align) : Vector2D(srid)
 {
 	this->s = s->Clone();
 	this->pos = pos;
@@ -85,7 +85,7 @@ Bool Math::Geometry::VectorString::Equals(Math::Geometry::Vector2D *vec) const
 		this->align == vstr->align &&
 		this->angleDegree == vstr->angleDegree &&
 		this->buffSize == vstr->buffSize &&
-		this->s->Equals(vstr->s.Ptr());
+		this->s->Equals(vstr->s);
 }
 
 Bool Math::Geometry::VectorString::EqualsNearly(Math::Geometry::Vector2D *vec) const
@@ -100,7 +100,7 @@ Bool Math::Geometry::VectorString::EqualsNearly(Math::Geometry::Vector2D *vec) c
 		this->align == vstr->align &&
 		Math::NearlyEqualsDbl(this->angleDegree, vstr->angleDegree) &&
 		this->buffSize == vstr->buffSize &&
-		this->s->Equals(vstr->s.Ptr());
+		this->s->Equals(vstr->s);
 }
 
 UOSInt Math::Geometry::VectorString::GetCoordinates(Data::ArrayListA<Math::Coord2DDbl> *coordList) const
@@ -119,7 +119,7 @@ void Math::Geometry::VectorString::MultiplyCoordinatesXY(Double v)
 	this->pos = this->pos * v;
 }
 
-NotNullPtr<Text::String> Math::Geometry::VectorString::GetString() const
+Text::String *Math::Geometry::VectorString::GetString() const
 {
 	return this->s;
 }

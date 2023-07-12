@@ -10,7 +10,7 @@
 #include "Text/StringBuilderUTF8.h"
 #include "UI/Clipboard.h"
 
-void SSWR::AVIRead::AVIRExeForm::ParseSess16(Manage::DasmX86_16::DasmX86_16_Sess *sess, Data::ArrayListStringNN *codes, Data::ArrayList<ExeB16Addr*> *parts, Data::ArrayListInt32 *partInd, ExeB16Addr *startAddr, Manage::DasmX86_16 *dasm, UOSInt codeSize)
+void SSWR::AVIRead::AVIRExeForm::ParseSess16(Manage::DasmX86_16::DasmX86_16_Sess *sess, Data::ArrayListString *codes, Data::ArrayList<ExeB16Addr*> *parts, Data::ArrayListInt32 *partInd, ExeB16Addr *startAddr, Manage::DasmX86_16 *dasm, UOSInt codeSize)
 {
 	UTF8Char buff[512];
 	UTF8Char *sptr;
@@ -83,7 +83,7 @@ void SSWR::AVIRead::AVIRExeForm::ParseSess16(Manage::DasmX86_16::DasmX86_16_Sess
 			}
 			if (found)
 				break;
-			NEW_CLASS(codes, Data::ArrayListStringNN());
+			NEW_CLASS(codes, Data::ArrayListString());
 			this->codesList->Add(codes);
 			startAddr = MemAlloc(ExeB16Addr, 1);
 			startAddr->segm = sess->regs.CS;
@@ -105,7 +105,7 @@ void SSWR::AVIRead::AVIRExeForm::InitSess16()
 	Manage::DasmX86_16::DasmX86_16_Regs regs;
 	Manage::DasmX86_16 *dasm;
 	Manage::DasmX86_16::DasmX86_16_Sess *sess;
-	Data::ArrayListStringNN *codes;
+	Data::ArrayListString *codes;
 	Data::ArrayList<ExeB16Addr*> *parts;
 	Data::ArrayListInt32 *partInd;
 	UTF8Char sbuff[32];
@@ -120,8 +120,8 @@ void SSWR::AVIRead::AVIRExeForm::InitSess16()
 	this->exeFile->GetDOSInitRegs(&regs);
 	NEW_CLASS(parts, Data::ArrayList<ExeB16Addr*>());
 	NEW_CLASS(partInd, Data::ArrayListInt32());
-	NEW_CLASS(this->codesList, Data::ArrayList<Data::ArrayListStringNN*>());
-	NEW_CLASS(codes, Data::ArrayListStringNN());
+	NEW_CLASS(this->codesList, Data::ArrayList<Data::ArrayListString*>());
+	NEW_CLASS(codes, Data::ArrayListString());
 	this->codesList->Add(codes);
 	eaddr = MemAlloc(ExeB16Addr, 1);
 	eaddr->segm = regs.CS;
@@ -155,7 +155,7 @@ void SSWR::AVIRead::AVIRExeForm::InitSess16()
 				funcCalls->Insert((UOSInt)-si - 1, faddr);
 				sess = dasm->CreateSess(&regs, this->exeFile->GetDOSCodePtr(&codeSize), this->exeFile->GetDOSCodeSegm());
 				sess->regs.IP = (::UInt16)faddr;
-				NEW_CLASS(codes, Data::ArrayListStringNN());
+				NEW_CLASS(codes, Data::ArrayListString());
 				this->codesList->Add(codes);
 				eaddr = MemAlloc(ExeB16Addr, 1);
 				eaddr->segm = sess->regs.CS;
@@ -211,7 +211,7 @@ void __stdcall SSWR::AVIRead::AVIRExeForm::On16BitFuncsChg(void *userObj)
 		j = addr->codeList->GetCount();
 		while (i < j)
 		{
-			me->lb16BitCont->AddItem(NotNullPtr<Text::String>::FromPtr(addr->codeList->GetItem(i)), 0);
+			me->lb16BitCont->AddItem(addr->codeList->GetItem(i), 0);
 			i++;
 		}
 	}
@@ -232,7 +232,7 @@ void __stdcall SSWR::AVIRead::AVIRExeForm::OnImportSelChg(void *userObj)
 	j = me->exeFile->GetImportFuncCount(modIndex);
 	while (i < j)
 	{
-		me->lvImport->AddItem(NotNullPtr<Text::String>::FromPtr(me->exeFile->GetImportFunc(modIndex, i)), 0);
+		me->lvImport->AddItem(me->exeFile->GetImportFunc(modIndex, i), 0);
 		i++;
 	}
 }
@@ -338,8 +338,8 @@ SSWR::AVIRead::AVIRExeForm::AVIRExeForm(UI::GUIClientControl *parent, UI::GUICor
 	while (i < j)
 	{
 		s = this->exeFile->GetPropName(i);
-		k = this->lvProp->AddItem(Text::String::OrEmpty(s), 0);
-		this->lvProp->SetSubItem(k, 1, Text::String::OrEmpty(this->exeFile->GetPropValue(i)));
+		k = this->lvProp->AddItem(s, 0);
+		this->lvProp->SetSubItem(k, 1, this->exeFile->GetPropValue(i));
 
 		i++;
 	}
@@ -359,7 +359,7 @@ SSWR::AVIRead::AVIRExeForm::AVIRExeForm(UI::GUIClientControl *parent, UI::GUICor
 	j = this->exeFile->GetImportCount();
 	while (i < j)
 	{
-		this->lbImport->AddItem(NotNullPtr<Text::String>::FromPtr(this->exeFile->GetImportName(i)), (void*)i);
+		this->lbImport->AddItem(this->exeFile->GetImportName(i), (void*)i);
 		i++;
 	}
 
@@ -371,7 +371,7 @@ SSWR::AVIRead::AVIRExeForm::AVIRExeForm(UI::GUIClientControl *parent, UI::GUICor
 	j = this->exeFile->GetExportCount();
 	while (i < j)
 	{
-		this->lbExport->AddItem(NotNullPtr<Text::String>::FromPtr(this->exeFile->GetExportName(i)), (void*)i);
+		this->lbExport->AddItem(this->exeFile->GetExportName(i), (void*)i);
 		i++;
 	}
 
@@ -431,7 +431,7 @@ SSWR::AVIRead::AVIRExeForm::~AVIRExeForm()
 	}
 	if (this->codesList)
 	{
-		Data::ArrayListStringNN *codes;
+		Data::ArrayListString *codes;
 		i = this->codesList->GetCount();
 		while (i-- > 0)
 		{

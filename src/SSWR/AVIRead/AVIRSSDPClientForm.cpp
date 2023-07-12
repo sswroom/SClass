@@ -45,7 +45,7 @@ void __stdcall SSWR::AVIRead::AVIRSSDPClientForm::OnDeviceSelChg(void *userObj)
 	while (i < j)
 	{
 		svc = dev->services.GetItem(i);
-		me->lbService->AddItem(Text::String::OrEmpty(svc->st), svc);
+		me->lbService->AddItem(svc->st, svc);
 		i++;
 	}
 }
@@ -74,7 +74,7 @@ void __stdcall SSWR::AVIRead::AVIRSSDPClientForm::OnServiceSelChg(void *userObj)
 			me->txtDate->SetText(CSTR("-"));
 		}
 		me->txtUSN->SetText(Text::String::OrEmpty(svc->usn)->ToCString());
-		me->txtST->SetText(svc->st->ToCString());
+		me->txtST->SetText(Text::String::OrEmpty(svc->st)->ToCString());
 		me->txtServer->SetText(Text::String::OrEmpty(svc->server)->ToCString());
 		me->txtOpt->SetText(Text::String::OrEmpty(svc->opt)->ToCString());
 		me->txtUserAgent->SetText(Text::String::OrEmpty(svc->userAgent)->ToCString());

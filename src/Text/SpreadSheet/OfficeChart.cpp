@@ -81,7 +81,7 @@ Double Text::SpreadSheet::OfficeChart::GetHInch()
 void Text::SpreadSheet::OfficeChart::SetTitleText(Text::CString titleText)
 {
 	SDEL_STRING(this->titleText);
-	this->titleText = Text::String::New(titleText).Ptr();
+	this->titleText = Text::String::New(titleText);
 }
 
 Text::String *Text::SpreadSheet::OfficeChart::GetTitleText()

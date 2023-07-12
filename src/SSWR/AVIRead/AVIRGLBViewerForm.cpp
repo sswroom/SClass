@@ -4,7 +4,7 @@
 #include "Text/JSText.h"
 #include "Text/StringBuilderUTF8.h"
 
-void __stdcall SSWR::AVIRead::AVIRGLBViewerForm::OnFileDrop(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles)
+void __stdcall SSWR::AVIRead::AVIRGLBViewerForm::OnFileDrop(void *userObj, Text::String **files, UOSInt nFiles)
 {
 	SSWR::AVIRead::AVIRGLBViewerForm *me = (SSWR::AVIRead::AVIRGLBViewerForm*)userObj;
 	UOSInt i = 0;
@@ -18,7 +18,7 @@ void __stdcall SSWR::AVIRead::AVIRGLBViewerForm::OnFileDrop(void *userObj, NotNu
 	}
 }
 
-Bool SSWR::AVIRead::AVIRGLBViewerForm::LoadFile(NotNullPtr<Text::String> fileName)
+Bool SSWR::AVIRead::AVIRGLBViewerForm::LoadFile(Text::String *fileName)
 {
 	UInt8 hdr[40];
 	IO::StmData::FileData fd(fileName, false);

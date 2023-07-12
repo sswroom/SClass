@@ -18,8 +18,8 @@ namespace IO
 				UInt64 fileLength;
 				UInt64 currentOffset;
 				Text::CString fileName;
-				NotNullPtr<Text::String> fullName;
-				NotNullPtr<Text::String> filePath;
+				Text::String *fullName;
+				Text::String *filePath;
 				Bool deleteOnClose;
 				UOSInt seekCnt;
 
@@ -30,7 +30,7 @@ namespace IO
 			typedef struct
 			{
 				Text::CString fileName;
-				NotNullPtr<Text::String> fullName;
+				Text::String *fullName;
 				UInt32 objectCnt;
 			} FILEDATANAME;
 
@@ -43,12 +43,12 @@ namespace IO
 			void ReopenFile();
 		public:
 			FileData(const FileData *fd, UInt64 offset, UInt64 length);
-			FileData(NotNullPtr<Text::String> fileName, Bool deleteOnClose);
+			FileData(Text::String *fileName, Bool deleteOnClose);
 			FileData(Text::CString fileName, Bool deleteOnClose);
 			virtual ~FileData();
 
 			virtual UOSInt GetRealData(UInt64 offset, UOSInt length, UInt8 *buffer);
-			virtual NotNullPtr<Text::String> GetFullName();
+			virtual Text::String *GetFullName();
 			virtual Text::CString GetShortName();
 			virtual void SetFullName(Text::CString fullName);
 			virtual UInt64 GetDataSize();
@@ -56,7 +56,7 @@ namespace IO
 
 			virtual IO::StreamData *GetPartialData(UInt64 offset, UInt64 length);
 			virtual Bool IsFullFile();
-			virtual NotNullPtr<Text::String> GetFullFileName();
+			virtual Text::String *GetFullFileName();
 			virtual Bool IsLoading();
 			virtual UOSInt GetSeekCount();
 

@@ -119,7 +119,7 @@ Text::String *Data::Class::GetFieldName(UOSInt index)
 	FieldInfo *field = this->fields.GetItem(index);
 	if (field)
 	{
-		return field->name.Ptr();
+		return field->name;
 	}
 	return 0;
 }
@@ -274,7 +274,7 @@ void Data::Class::ToCppClassSource(Text::StringBase<UTF8Char> *clsPrefix, Text::
 {
 	if (clsPrefix == 0)
 	{
-		clsPrefix = Text::String::NewEmpty().Ptr();
+		clsPrefix = Text::String::NewEmpty();
 	}
 	Data::ArrayList<FieldInfo *> *fieldList = &this->fields;
 	FieldInfo *field;

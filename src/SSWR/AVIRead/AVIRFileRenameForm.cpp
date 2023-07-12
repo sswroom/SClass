@@ -26,7 +26,7 @@ void __stdcall SSWR::AVIRead::AVIRFileRenameForm::OnRenameClicked(void *userObj)
 		sbPath.AppendUTF8Char('.');
 		sbPath.Append(sbExt);
 	}
-	if (sbPath.Equals(me->fileName.Ptr()))
+	if (sbPath.Equals(me->fileName))
 	{
 		UI::MessageDialog::ShowDialog(CSTR("File name not changed"), CSTR("File Rename"), me);
 		return;
@@ -49,7 +49,7 @@ void __stdcall SSWR::AVIRead::AVIRFileRenameForm::OnCancelClicked(void *userObj)
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 
-SSWR::AVIRead::AVIRFileRenameForm::AVIRFileRenameForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, NotNullPtr<Text::String> fileName) : UI::GUIForm(parent, 532, 120, ui)
+SSWR::AVIRead::AVIRFileRenameForm::AVIRFileRenameForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Text::String *fileName) : UI::GUIForm(parent, 532, 120, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->fileName = fileName->Clone();
@@ -94,7 +94,7 @@ SSWR::AVIRead::AVIRFileRenameForm::AVIRFileRenameForm(UI::GUIClientControl *pare
 
 SSWR::AVIRead::AVIRFileRenameForm::~AVIRFileRenameForm()
 {
-	this->fileName->Release();
+	SDEL_STRING(this->fileName);
 }
 
 void SSWR::AVIRead::AVIRFileRenameForm::OnMonitorChanged()
@@ -102,7 +102,7 @@ void SSWR::AVIRead::AVIRFileRenameForm::OnMonitorChanged()
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 }
 
-NotNullPtr<Text::String> SSWR::AVIRead::AVIRFileRenameForm::GetFileName() const
+Text::String *SSWR::AVIRead::AVIRFileRenameForm::GetFileName() const
 {
 	return this->fileName;
 }

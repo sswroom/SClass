@@ -82,9 +82,9 @@ void IO::FileStream::InitStream(const WChar *fileName, FileMode mode, FileShare 
 	}
 }
 
-IO::FileStream::FileStream(NotNullPtr<Text::String> fileName, FileMode mode, FileShare share, BufferType buffType) : IO::SeekableStream(fileName)
+IO::FileStream::FileStream(Text::String *fileName, FileMode mode, FileShare share, BufferType buffType) : IO::SeekableStream(fileName)
 {
-	if (fileName->v[0] == 0)
+	if (fileName == 0 || fileName->v[0] == 0)
 	{
 		this->currPos = 0;
 		this->handle = 0;
@@ -261,6 +261,8 @@ Int32 IO::FileStream::GetErrCode()
 
 void IO::FileStream::GetFileTimes(Data::DateTime *creationTime, Data::DateTime *lastAccessTime, Data::DateTime *lastWriteTime)
 {
+	if (this->sourceName == 0)
+		return;
 #if defined(__USE_LARGEFILE64)
 	struct stat64 s;
 	if (this->handle == 0)
@@ -317,6 +319,8 @@ void IO::FileStream::GetFileTimes(Data::DateTime *creationTime, Data::DateTime *
 
 void IO::FileStream::GetFileTimes(Data::Timestamp *creationTime, Data::Timestamp *lastAccessTime, Data::Timestamp *lastWriteTime)
 {
+	if (this->sourceName == 0)
+		return;
 #if defined(__USE_LARGEFILE64)
 	struct stat64 s;
 	if (this->handle == 0)
@@ -373,6 +377,8 @@ void IO::FileStream::GetFileTimes(Data::Timestamp *creationTime, Data::Timestamp
 
 Data::Timestamp IO::FileStream::GetCreateTime()
 {
+	if (this->sourceName == 0)
+		return Data::Timestamp(0);
 #if defined(__USE_LARGEFILE64)
 	struct stat64 s;
 	if (this->handle == 0)
@@ -408,6 +414,8 @@ Data::Timestamp IO::FileStream::GetCreateTime()
 
 Data::Timestamp IO::FileStream::GetModifyTime()
 {
+	if (this->sourceName == 0)
+		return Data::Timestamp(0);
 #if defined(__USE_LARGEFILE64)
 	struct stat64 s;
 	if (this->handle == 0)
@@ -442,6 +450,8 @@ Data::Timestamp IO::FileStream::GetModifyTime()
 
 void IO::FileStream::SetFileTimes(Data::DateTime *creationTime, Data::DateTime *lastAccessTime, Data::DateTime *lastWriteTime)
 {
+	if (this->sourceName == 0)
+		return;
 	struct utimbuf t;
 	if (lastAccessTime == 0 || lastWriteTime == 0)
 	{
@@ -475,6 +485,8 @@ void IO::FileStream::SetFileTimes(Data::DateTime *creationTime, Data::DateTime *
 
 void IO::FileStream::SetFileTimes(const Data::Timestamp &creationTime, const Data::Timestamp &lastAccessTime, const Data::Timestamp &lastWriteTime)
 {
+	if (this->sourceName == 0)
+		return;
 	struct utimbuf t;
 	if (lastAccessTime.IsNull() || lastWriteTime.IsNull())
 	{

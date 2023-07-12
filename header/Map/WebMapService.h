@@ -1,6 +1,5 @@
 #ifndef _SM_MAP_WEBMAPSERVICE
 #define _SM_MAP_WEBMAPSERVICE
-#include "Data/ArrayListNN.h"
 #include "Map/DrawMapService.h"
 #include "Net/SSLEngine.h"
 #include "Text/EncodingFactory.h"
@@ -22,7 +21,7 @@ namespace Map
 		struct LayerInfo
 		{
 			Data::ArrayList<LayerCRS*> crsList;
-			NotNullPtr<Text::String> name;
+			Text::String *name;
 			Text::String *title;
 			Bool queryable;
 		};
@@ -36,15 +35,15 @@ namespace Map
 		};
 	private:
 		Text::EncodingFactory *encFact;
-		NotNullPtr<Text::String> wmsURL;
+		Text::String *wmsURL;
 		Net::SocketFactory *sockf;
 		Net::SSLEngine *ssl;
 		Math::CoordinateSystem *envCsys;
 
 		Text::String *version;
 		Data::ArrayList<LayerInfo*> layers;
-		Data::ArrayListNN<Text::String> mapImageTypeNames;
-		Data::ArrayListNN<Text::String> infoTypeNames;
+		Data::ArrayList<Text::String*> mapImageTypeNames;
+		Data::ArrayList<Text::String*> infoTypeNames;
 		UOSInt layer;
 		UOSInt mapImageType;
 		UOSInt infoType;
@@ -60,12 +59,12 @@ namespace Map
 		WebMapService(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, Text::CString wmsURL, Version version, Math::CoordinateSystem *envCsys);
 		virtual ~WebMapService();
 
-		virtual NotNullPtr<Text::String> GetName() const;
+		virtual Text::String *GetName() const;
 		virtual Math::CoordinateSystem *GetCoordinateSystem() const;
 		virtual Math::RectAreaDbl GetInitBounds() const;
 		virtual Bool GetBounds(Math::RectAreaDbl *bounds) const;
 		virtual Bool CanQuery() const;
-		virtual Bool QueryInfos(Math::Coord2DDbl coord, Math::RectAreaDbl bounds, UInt32 width, UInt32 height, Double dpi, Data::ArrayList<Math::Geometry::Vector2D*> *vecList, Data::ArrayList<UOSInt> *valueOfstList, Data::ArrayListNN<Text::String> *nameList, Data::ArrayList<Text::String*> *valueList);
+		virtual Bool QueryInfos(Math::Coord2DDbl coord, Math::RectAreaDbl bounds, UInt32 width, UInt32 height, Double dpi, Data::ArrayList<Math::Geometry::Vector2D*> *vecList, Data::ArrayList<UOSInt> *valueOfstList, Data::ArrayList<Text::String*> *nameList, Data::ArrayList<Text::String*> *valueList);
 		virtual Media::ImageList *DrawMap(Math::RectAreaDbl bounds, UInt32 width, UInt32 height, Double dpi, Text::StringBuilderUTF8 *sbUrl);
 
 		Bool IsError() const;
@@ -75,9 +74,9 @@ namespace Map
 		void SetLayer(UOSInt index);
 		void SetMapImageType(UOSInt index);
 		void SetLayerCRS(UOSInt index);
-		UOSInt GetLayerNames(Data::ArrayListNN<Text::String> *nameList) const;
-		UOSInt GetMapImageTypeNames(Data::ArrayListNN<Text::String> *nameList) const;
-		UOSInt GetInfoTypeNames(Data::ArrayListNN<Text::String> *nameList) const;
+		UOSInt GetLayerNames(Data::ArrayList<Text::String*> *nameList) const;
+		UOSInt GetMapImageTypeNames(Data::ArrayList<Text::String*> *nameList) const;
+		UOSInt GetInfoTypeNames(Data::ArrayList<Text::String*> *nameList) const;
 		UOSInt GetLayerCRSNames(Data::ArrayList<Text::String*> *nameList) const;
 	};
 }

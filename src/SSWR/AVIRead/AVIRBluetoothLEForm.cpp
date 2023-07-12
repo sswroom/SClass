@@ -69,7 +69,6 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothLEForm::OnTimerTick(void *userObj)
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 	BTDevice *dev;
-	NotNullPtr<Text::String> s;
 
 	Sync::MutexUsage mutUsage(&me->devMut);
 	i = 0;
@@ -84,9 +83,9 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothLEForm::OnTimerTick(void *userObj)
 			WriteMUInt64(buff, dev->mac);
 			sptr = Text::StrHexBytes(sbuff, &buff[2], 6, ':');
 			me->lvDevices->InsertItem(i, CSTRP(sbuff, sptr), dev);
-			if (s.Set(dev->name))
+			if (dev->name)
 			{
-				me->lvDevices->SetSubItem(i, 1, s);
+				me->lvDevices->SetSubItem(i, 1, dev->name);
 			}
 			const Net::MACInfo::MACEntry *mac = Net::MACInfo::GetMACInfo(dev->mac);
 			me->lvDevices->SetSubItem(i, 2, {mac->name, mac->nameLen});
@@ -96,9 +95,9 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothLEForm::OnTimerTick(void *userObj)
 		else if (dev->updated)
 		{
 			dev->updated = false;
-			if (s.Set(dev->name))
+			if (dev->name)
 			{
-				me->lvDevices->SetSubItem(i, 1, s);
+				me->lvDevices->SetSubItem(i, 1, dev->name);
 			}
 			sptr = Text::StrInt32(sbuff, dev->rssi);
 			me->lvDevices->SetSubItem(i, 3, CSTRP(sbuff, sptr));
@@ -121,12 +120,12 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothLEForm::OnLEScanItem(void *userObj, U
 		{
 			if (dev->name == 0)
 			{
-				dev->name = Text::String::New(name).Ptr();
+				dev->name = Text::String::New(name);
 			}
 			else if (name.leng > dev->name->leng)
 			{
 				dev->name->Release();
-				dev->name = Text::String::New(name).Ptr();
+				dev->name = Text::String::New(name);
 			}
 		}
 		dev->updated = true;
@@ -138,7 +137,7 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothLEForm::OnLEScanItem(void *userObj, U
 		dev->rssi = rssi;
 		if (name.leng)
 		{
-			dev->name = Text::String::New(name).Ptr();
+			dev->name = Text::String::New(name);
 		}
 		else
 		{

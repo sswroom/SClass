@@ -19,8 +19,8 @@ struct Net::HTTPOSClient::ClassData
 {
 	CURL *curl;
 	struct curl_slist *headers;
-	Data::ArrayListNN<Text::String> *respHeaders;
-	NotNullPtr<Text::String> userAgent;
+	Data::ArrayList<Text::String*> *respHeaders;
+	Text::String *userAgent;
 	IO::MemoryStream *respData;
 	UInt64 contLen;
 	Data::ArrayList<Crypto::Cert::Certificate *> *certs;
@@ -34,7 +34,7 @@ size_t HTTPOSClient_HeaderFunc(char *buffer, size_t size, size_t nitems, void *u
 	{
 		return len;
 	}
-	NotNullPtr<Text::String> hdr = Text::String::New(len);
+	Text::String *hdr = Text::String::New(len);
 	MemCopyNO(hdr->v, buffer, len);
 	hdr->v[len] = 0;
 	UOSInt i = len;
@@ -86,7 +86,7 @@ Net::HTTPOSClient::HTTPOSClient(Net::SocketFactory *sockf, Text::CString userAge
 	{
 		userAgent = CSTR("sswr/1.0");
 	}
-	this->clsData->userAgent = Text::String::New(userAgent);
+	this->clsData->userAgent = Text::String::New(userAgent.v, userAgent.leng);
 }
 
 Net::HTTPOSClient::~HTTPOSClient()
@@ -226,8 +226,8 @@ Bool Net::HTTPOSClient::Connect(Text::CString url, Net::WebUtil::RequestMethod m
 		return false;
 	}
 
-	this->url->Release();
-	this->url = Text::String::New(url);
+	SDEL_STRING(this->url);
+	this->url = Text::String::New(url.v, url.leng);
 	this->SetSourceName(this->url);
 	if (url.StartsWith(UTF8STRC("http://")))
 	{
@@ -318,7 +318,7 @@ Bool Net::HTTPOSClient::Connect(Text::CString url, Net::WebUtil::RequestMethod m
 	this->clk.Start();
 	if (this->cliHost == 0)
 	{
-		this->cliHost = Text::StrCopyNew(urltmp).Ptr();
+		this->cliHost = Text::StrCopyNew(urltmp);
 		if (Text::StrEqualsICaseC(svrname, (UOSInt)(svrnameEnd- svrname), UTF8STRC("localhost")))
 		{
 			this->svrAddr.addrType = Net::AddrType::IPv4;
@@ -550,7 +550,7 @@ void Net::HTTPOSClient::SetTimeout(Data::Duration timeout)
 
 Bool Net::HTTPOSClient::IsSecureConn()
 {
-	if (this->url->StartsWith(UTF8STRC("https://")))
+	if (this->url && this->url->StartsWith(UTF8STRC("https://")))
 	{
 		return true;
 	}

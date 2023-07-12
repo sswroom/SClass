@@ -7,7 +7,7 @@ namespace Sync
 	class Thread
 	{
 	public:
-		typedef void (__stdcall *ThreadFunc)(NotNullPtr<Thread> thread);
+		typedef void (__stdcall *ThreadFunc)(Thread *thread);
 	private:
 		Bool running;
 		Bool stopping;

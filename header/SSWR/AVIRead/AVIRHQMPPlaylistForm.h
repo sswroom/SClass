@@ -25,7 +25,7 @@ namespace SSWR
 			SSWR::AVIRead::AVIRCore *core;
 			Media::Playlist *playlist;
 		private:
-			static void __stdcall OnFileDrop(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles);
+			static void __stdcall OnFileDrop(void *userObj, Text::String **files, UOSInt nFiles);
 			static void __stdcall OnAddClicked(void *userObj);
 			static void __stdcall OnAddDirClicked(void *userObj);
 			static void __stdcall OnClearClicked(void *userObj);

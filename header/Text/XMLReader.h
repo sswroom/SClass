@@ -1,7 +1,6 @@
 #ifndef _SM_TEXT_XMLREADER
 #define _SM_TEXT_XMLREADER
 #include "Data/ArrayList.h"
-#include "Data/ArrayListNN.h"
 #include "IO/Stream.h"
 #include "Text/Encoding.h"
 #include "Text/EncodingFactory.h"
@@ -33,7 +32,7 @@ namespace Text
 
 		Data::ArrayList<Text::XMLAttrib *> attrList;
 		Text::XMLNode::NodeType nt;
-		Data::ArrayListNN<Text::String> pathList;
+		Data::ArrayList<Text::String*> pathList;
 		Text::String *nodeText;
 		Text::String *nodeOriText;
 		Bool emptyNode;

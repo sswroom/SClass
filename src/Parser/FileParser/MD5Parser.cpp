@@ -47,8 +47,12 @@ IO::ParsedObject *Parser::FileParser::MD5Parser::ParseFileHdr(IO::StreamData *fd
 	UInt8 chk[20];
 	Crypto::Hash::HashType ctype;
 	UOSInt chkSize;
-	NotNullPtr<Text::String> fullName = fd->GetFullName();
+	Text::String *fullName = fd->GetFullName();
 
+	if (fullName == 0)
+	{
+		return 0;
+	}
 	if (fullName->EndsWithICase(UTF8STRC(".MD5")))
 	{
 		ctype = Crypto::Hash::HashType::MD5;

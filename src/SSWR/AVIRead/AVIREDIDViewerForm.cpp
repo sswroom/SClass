@@ -138,7 +138,7 @@ void __stdcall SSWR::AVIRead::AVIREDIDViewerForm::OnHexClicked(void *userObj)
 	me->core->OpenHex(&fd, 0);
 }
 
-void __stdcall SSWR::AVIRead::AVIREDIDViewerForm::OnFileDrop(void *userObj, NotNullPtr<Text::String> *fileNames, UOSInt fileCnt)
+void __stdcall SSWR::AVIRead::AVIREDIDViewerForm::OnFileDrop(void *userObj, Text::String **fileNames, UOSInt fileCnt)
 {
 	SSWR::AVIRead::AVIREDIDViewerForm *me = (SSWR::AVIRead::AVIREDIDViewerForm*)userObj;
 	UInt8 *fileCont;

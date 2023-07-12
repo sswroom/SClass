@@ -210,7 +210,7 @@ void Net::MQTTBroker::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, I
 					this->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Action);
 					break;
 				}
-				clientId = Text::String::New(sb.ToCString()).Ptr();
+				clientId = Text::String::New(sb.ToCString());
 				sb.AppendC(sb2.ToString(), sb2.GetLength());
 				if (connFlags & 4)
 				{
@@ -245,7 +245,7 @@ void Net::MQTTBroker::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, I
 						SDEL_STRING(clientId);
 						break;
 					}
-					userName = Text::String::New(sb2.ToCString()).Ptr();
+					userName = Text::String::New(sb2.ToCString());
 					sb.AppendC(sb2.ToString(), sb2.GetLength());
 				}
 				if (connFlags & 0x40)
@@ -272,7 +272,7 @@ void Net::MQTTBroker::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, I
 					}
 					sb2.ClearStr();
 					sb2.AppendC(&cmd[i + 2], pwdSize);
-					password = Text::String::New(sb2.ToCString()).Ptr();
+					password = Text::String::New(sb2.ToCString());
 
 					sb.AppendHexBuff(&cmd[i + 2], pwdSize, ' ', Text::LineBreakType::None);
 					i += pwdSize + 2;
@@ -300,7 +300,7 @@ void Net::MQTTBroker::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, I
 				{
 					break;
 				}
-				clientId = Text::String::New(sb.ToCString()).Ptr();
+				clientId = Text::String::New(sb.ToCString());
 				if (connFlags & 4)
 				{
 					sb.ClearStr();
@@ -324,7 +324,7 @@ void Net::MQTTBroker::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, I
 						SDEL_STRING(clientId);
 						break;
 					}
-					userName = Text::String::New(sb.ToCString()).Ptr();
+					userName = Text::String::New(sb.ToCString());
 				}
 				if (connFlags & 0x40)
 				{
@@ -343,7 +343,7 @@ void Net::MQTTBroker::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, I
 					}
 					sb.ClearStr();
 					sb.AppendC(&cmd[i], pwdSize);
-					password = Text::String::New(sb.ToCString()).Ptr();
+					password = Text::String::New(sb.ToCString());
 
 					i += pwdSize + 2;
 				}
@@ -394,7 +394,7 @@ void Net::MQTTBroker::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, I
 			{
 				data->connected = true;
 				SDEL_STRING(data->cliId);
-				data->cliId = clientId->Clone().Ptr();
+				data->cliId = clientId->Clone();
 			}
 
 			i = this->protoHdlr.BuildPacket(packet2, 0x20, 0, packet, 2, data->cliData);
@@ -779,7 +779,7 @@ void Net::MQTTBroker::UpdateTopic(Text::CString topic, const UInt8 *message, UOS
 		topicInfo->message = MemAlloc(UInt8, msgSize);
 		MemCopyNO(topicInfo->message, message, msgSize);
 		topicInfo->msgSize = msgSize;
-		this->topicMap.PutNN(topicInfo->topic, topicInfo);
+		this->topicMap.Put(topicInfo->topic, topicInfo);
 	}
 	else
 	{

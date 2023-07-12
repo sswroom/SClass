@@ -16,7 +16,7 @@ namespace IO
 
 		Data::ArrayList<LogItem*> items;
 	public:
-		StringLogFile(NotNullPtr<Text::String> sourceName);
+		StringLogFile(Text::String *sourceName);
 		virtual ~StringLogFile();
 
 		virtual UOSInt GetCount(IO::LogHandler::LogLevel logLevel) const;

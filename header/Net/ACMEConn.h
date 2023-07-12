@@ -3,7 +3,6 @@
 #include "Crypto/Cert/X509CertReq.h"
 #include "Crypto/Cert/X509Key.h"
 #include "Crypto/Token/JWSignature.h"
-#include "Data/ArrayListNN.h"
 #include "Net/HTTPClient.h"
 #include "Net/SocketFactory.h"
 #include "Net/SSLEngine.h"
@@ -39,7 +38,7 @@ namespace Net
 			ACMEStatus status;
 			Int64 expires;
 			Text::String *orderURL;
-			Data::ArrayListNN<Text::String> *authURLs;
+			Data::ArrayList<Text::String*> *authURLs;
 			Text::String *finalizeURL;
 			Text::String *certificateURL;
 		};
@@ -48,14 +47,14 @@ namespace Net
 		{
 			ACMEStatus status;
 			AuthorizeType type;
-			NotNullPtr<Text::String> url;
-			NotNullPtr<Text::String> token;
+			Text::String *url;
+			Text::String *token;
 		};
 	private:
 		Net::SocketFactory *sockf;
 		Net::SSLEngine *ssl;
 		Crypto::Cert::X509Key *key;
-		NotNullPtr<Text::String> serverHost;
+		Text::String *serverHost;
 		UInt16 port;
 		Text::String *urlNewNonce;
 		Text::String *urlNewAccount;
@@ -70,7 +69,7 @@ namespace Net
 
 		static Text::String *JWK(Crypto::Cert::X509Key *key, Crypto::Token::JWSignature::Algorithm *alg);
 		static Text::String *ProtectedJWK(Text::String *nonce, Text::String *url, Crypto::Cert::X509Key *key, Crypto::Token::JWSignature::Algorithm *alg, Text::String *accountId);
-		static NotNullPtr<Text::String> EncodeJWS(Net::SSLEngine *ssl, Text::CString protStr, Text::CString data, Crypto::Cert::X509Key *key, Crypto::Token::JWSignature::Algorithm alg);
+		static Text::String *EncodeJWS(Net::SSLEngine *ssl, Text::CString protStr, Text::CString data, Crypto::Cert::X509Key *key, Crypto::Token::JWSignature::Algorithm alg);
 		static Bool KeyHash(Crypto::Cert::X509Key *key, Text::StringBuilderUTF8 *sb);
 		Net::HTTPClient *ACMEPost(Text::String *url, Text::CString data);
 		Order *OrderParse(const UInt8 *buff, UOSInt buffSize);

@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "IO/LogFile.h"
 
-IO::LogFile::LogFile(NotNullPtr<Text::String> sourceName) : IO::ParsedObject(sourceName)
+IO::LogFile::LogFile(Text::String *sourceName) : IO::ParsedObject(sourceName)
 {
 }
 

@@ -101,9 +101,9 @@ void UI::FileDialog::SetFileName(Text::CString fileName)
 	this->fileName = Text::String::New(fileName);
 }
 
-Text::String *UI::FileDialog::GetFileName() const
+Text::String *UI::FileDialog::GetFileName()
 {
-	return Text::String::OrEmpty(this->fileName);
+	return this->fileName;
 }
 
 UOSInt UI::FileDialog::GetFileNameCount()

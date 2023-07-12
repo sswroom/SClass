@@ -3,7 +3,7 @@
 #include "MyMemory.h"
 #include "Data/ByteTool.h"
 
-#define SCOPY_TEXT(var) (((var) != 0)?Text::StrCopyNew(var).Ptr():0)
+#define SCOPY_TEXT(var) (((var) != 0)?Text::StrCopyNew(var):0)
 #define SDEL_TEXT(var) if (var != 0) { Text::StrDelNew(var); var = 0;}
 
 #if !defined(_WIN32) && !defined(__CYGWIN__) && !defined(__APPLE__)
@@ -243,8 +243,8 @@ namespace Text
 	UTF8Char *StrTrimWSCRLFC(UTF8Char* str1, UOSInt len);
 	UTF8Char *StrRemoveChar(UTF8Char *str1, UTF8Char c);
 
-	NotNullPtr<const UTF8Char> StrCopyNew(const UTF8Char *str1);
-	NotNullPtr<const UTF8Char> StrCopyNewC(const UTF8Char *str1, UOSInt strLen);
+	const UTF8Char *StrCopyNew(const UTF8Char *str1);
+	const UTF8Char *StrCopyNewC(const UTF8Char *str1, UOSInt strLen);
 	void StrDelNew(const UTF8Char *newStr);
 	Bool StrStartsWith(const UTF8Char *str1, const UTF8Char *str2);
 	FORCEINLINE Bool StrStartsWithC(const UTF8Char *str1, UOSInt len1, const UTF8Char *str2, UOSInt len2);

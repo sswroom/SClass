@@ -45,7 +45,7 @@ namespace IO
 	class Stream : public IO::ParsedObject
 	{
 	public:
-		Stream(NotNullPtr<Text::String> sourceName);
+		Stream(Text::String *sourceName);
 		Stream(Text::CString sourceName);
 		virtual ~Stream(){};
 		virtual Bool IsDown() const = 0;

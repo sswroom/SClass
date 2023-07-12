@@ -169,7 +169,7 @@ Net::NTPServer::~NTPServer()
 	}
 	DEL_CLASS(this->evt);
 	SDEL_CLASS(this->cli);
-	this->timeServer->Release();
+	SDEL_STRING(this->timeServer);
 }
 
 Bool Net::NTPServer::IsError()

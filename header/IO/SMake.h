@@ -1,7 +1,6 @@
 #ifndef _SM_IO_SMAKE
 #define _SM_IO_SMAKE
 #include "Data/ArrayList.h"
-#include "Data/ArrayListNN.h"
 #include "Data/ArrayListStrUTF8.h"
 #include "Data/FastStringMap.h"
 #include "Data/StringMap.h"
@@ -19,25 +18,25 @@ namespace IO
 	private:
 		typedef struct
 		{
-			NotNullPtr<Text::String> cmd;
+			Text::String *cmd;
 			Bool *errorState;
 			SMake *me;
 		} CompileReq;
 	public:
 		typedef struct
 		{
-			NotNullPtr<Text::String> name;
-			NotNullPtr<Text::String> value;
+			Text::String *name;
+			Text::String *value;
 		} ConfigItem;
 
 		class ProgramItem
 		{
 		public:
-			NotNullPtr<Text::String> name;
+			Text::String *name;
 			Text::String *srcFile;
 			Text::String *compileCfg;
-			Data::ArrayListNN<Text::String> subItems;
-			Data::ArrayListNN<Text::String> libs;
+			Data::ArrayList<Text::String *> subItems;
+			Data::ArrayList<Text::String *> libs;
 		};
 
 	private:
@@ -46,7 +45,7 @@ namespace IO
 		Data::FastStringMap<Int64> fileTimeMap;
 		Sync::Mutex errorMsgMut;
 		Text::String *errorMsg;
-		NotNullPtr<Text::String> basePath;
+		Text::String *basePath;
 		IO::Writer *messageWriter;
 		IO::Writer *cmdWriter;
 		Text::String *debugObj;
@@ -60,7 +59,7 @@ namespace IO
 		Bool LoadConfigFile(Text::CString cfgFile);
 
 		Bool ParseSource(Data::FastStringMap<Int32> *objList, Data::FastStringMap<Int32> *libList, Data::FastStringMap<Int32> *procList, Data::ArrayListString *headerList, Int64 *latestTime, Text::CString sourceFile, Text::StringBuilderUTF8 *tmpSb);
-		Bool ParseHeader(Data::FastStringMap<Int32> *objList, Data::FastStringMap<Int32> *libList, Data::FastStringMap<Int32> *procList, Data::ArrayListString *headerList, Int64 *latestTime, NotNullPtr<Text::String> headerFile, Text::CString sourceFile, Text::StringBuilderUTF8 *tmpSb);
+		Bool ParseHeader(Data::FastStringMap<Int32> *objList, Data::FastStringMap<Int32> *libList, Data::FastStringMap<Int32> *procList, Data::ArrayListString *headerList, Int64 *latestTime, Text::String *headerFile, Text::CString sourceFile, Text::StringBuilderUTF8 *tmpSb);
 		Bool ParseProgInternal(Data::FastStringMap<Int32> *objList, Data::FastStringMap<Int32> *libList, Data::FastStringMap<Int32> *procList, Data::ArrayListString *headerList, Int64 *latestTime, Bool *progGroup, const ProgramItem *prog, Text::StringBuilderUTF8 *tmpSb);
 
 		static void __stdcall CompileTask(void *userObj);

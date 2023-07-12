@@ -3443,21 +3443,19 @@ UTF8Char *Text::StrRemoveChar(UTF8Char *str1, UTF8Char c)
 	return sp;
 }
 
-NotNullPtr<const UTF8Char> Text::StrCopyNew(const UTF8Char *str1)
+const UTF8Char *Text::StrCopyNew(const UTF8Char *str1)
 {
 	UOSInt len = Text::StrCharCnt(str1);
 	UTF8Char *s = MemAlloc(UTF8Char, len + 1);
-	NotNullPtr<const UTF8Char> ret = NotNullPtr<const UTF8Char>::FromPtr(s);
 	Text::StrConcatC(s, str1, len);
-	return ret;
+	return s;
 }
 
-NotNullPtr<const UTF8Char> Text::StrCopyNewC(const UTF8Char *str1, UOSInt strLen)
+const UTF8Char *Text::StrCopyNewC(const UTF8Char *str1, UOSInt strLen)
 {
 	UTF8Char *s = MemAlloc(UTF8Char, strLen + 1);
-	NotNullPtr<const UTF8Char> ret = NotNullPtr<const UTF8Char>::FromPtr(s);
 	Text::StrConcatC(s, str1, strLen);
-	return ret;
+	return s;
 }
 
 void Text::StrDelNew(const UTF8Char *newStr)

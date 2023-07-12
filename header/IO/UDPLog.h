@@ -11,7 +11,7 @@ namespace IO
 	{
 	protected:
 		Bool ParseLog(UInt8 *dataBuff, UOSInt dataSize, Text::StringBuilderUTF8 *sb, Bool detail) const;
-		UDPLog(NotNullPtr<Text::String> sourceName);
+		UDPLog(Text::String *sourceName);
 	public:
 		virtual ~UDPLog();
 	};

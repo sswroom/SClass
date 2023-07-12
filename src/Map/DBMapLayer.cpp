@@ -57,7 +57,7 @@ void *Map::DBMapLayer::InitNameArr()
 	return 0;
 }
 
-Map::DBMapLayer::DBMapLayer(NotNullPtr<Text::String> layerName) : Map::MapDrawLayer(layerName, 0, layerName.Ptr())
+Map::DBMapLayer::DBMapLayer(Text::String *layerName) : Map::MapDrawLayer(layerName, 0, layerName)
 {
 	this->releaseDB = false;
 	this->db = 0;
@@ -347,7 +347,7 @@ Math::Geometry::Vector2D *Map::DBMapLayer::GetNewVectorById(GetObjectSess *sessi
 	return 0;
 }
 
-UOSInt Map::DBMapLayer::QueryTableNames(Text::CString schemaName, Data::ArrayListNN<Text::String> *names)
+UOSInt Map::DBMapLayer::QueryTableNames(Text::CString schemaName, Data::ArrayList<Text::String*> *names)
 {
 	if (this->db == 0)
 	{
@@ -356,7 +356,7 @@ UOSInt Map::DBMapLayer::QueryTableNames(Text::CString schemaName, Data::ArrayLis
 	return this->db->QueryTableNames(schemaName, names);
 }
 
-DB::DBReader *Map::DBMapLayer::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListNN<Text::String> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+DB::DBReader *Map::DBMapLayer::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	if (this->db)
 	{
@@ -406,7 +406,7 @@ Bool Map::DBMapLayer::SetDatabase(DB::ReadingDB *db, Text::CString schemaName, T
 	this->releaseDB = false;
 	this->db = db;
 	this->schema = Text::String::NewOrNull(schemaName);
-	this->table = Text::String::New(tableName).Ptr();
+	this->table = Text::String::New(tableName);
 
 	this->tabDef = this->db->GetTableDef(schemaName, tableName);
 	UOSInt xCol = INVALID_INDEX;
@@ -444,7 +444,7 @@ Bool Map::DBMapLayer::SetDatabase(DB::ReadingDB *db, Text::CString schemaName, T
 		}
 		else
 		{
-			NotNullPtr<Text::String> colName = col->GetColName();
+			Text::String *colName = col->GetColName();
 			if (colName->EqualsICase(UTF8STRC("LATITUDE")))
 			{
 				yCol = i;

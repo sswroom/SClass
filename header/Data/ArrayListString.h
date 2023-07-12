@@ -15,7 +15,7 @@ namespace Data
 		virtual OSInt Compare(Text::String* obj1, Text::String* obj2) const;
 		virtual OSInt SortedIndexOfPtr(const UTF8Char *val, UOSInt len) const;
 
-		NotNullPtr<Text::String> JoinString() const;
+		Text::String *JoinString() const;
 	};
 }
 #endif

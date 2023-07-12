@@ -106,7 +106,7 @@ Double Media::VectorGraph::VectorFontStyle::GetHeightPt()
 	return this->heightPt;
 }
 
-NotNullPtr<Text::String> Media::VectorGraph::VectorFontStyle::GetName() const
+Text::String *Media::VectorGraph::VectorFontStyle::GetName()
 {
 	return this->name;
 }
@@ -396,7 +396,7 @@ Bool Media::VectorGraph::DrawEllipse(Math::Coord2DDbl tl, Math::Size2DDbl size, 
 	return true;
 }
 
-Bool Media::VectorGraph::DrawString(Math::Coord2DDbl tl, NotNullPtr<Text::String> str, DrawFont *f, DrawBrush *b)
+Bool Media::VectorGraph::DrawString(Math::Coord2DDbl tl, Text::String *str, DrawFont *f, DrawBrush *b)
 {
 	VectorStyles *style;
 	Math::Geometry::VectorString *vstr;
@@ -424,7 +424,7 @@ Bool Media::VectorGraph::DrawString(Math::Coord2DDbl tl, Text::CString str, Draw
 	return true;
 }
 
-Bool Media::VectorGraph::DrawStringRot(Math::Coord2DDbl center, NotNullPtr<Text::String> str, DrawFont *f, DrawBrush *b, Double angleDegree)
+Bool Media::VectorGraph::DrawStringRot(Math::Coord2DDbl center, Text::String *str, DrawFont *f, DrawBrush *b, Double angleDegree)
 {
 	VectorStyles *style;
 	Math::Geometry::VectorString *vstr;
@@ -452,7 +452,7 @@ Bool Media::VectorGraph::DrawStringRot(Math::Coord2DDbl center, Text::CString st
 	return true;
 }
 
-Bool Media::VectorGraph::DrawStringB(Math::Coord2DDbl tl, NotNullPtr<Text::String> str, DrawFont *f, DrawBrush *b, UOSInt buffSize)
+Bool Media::VectorGraph::DrawStringB(Math::Coord2DDbl tl, Text::String *str, DrawFont *f, DrawBrush *b, UOSInt buffSize)
 {
 	VectorStyles *style;
 	Math::Geometry::VectorString *vstr;
@@ -480,7 +480,7 @@ Bool Media::VectorGraph::DrawStringB(Math::Coord2DDbl tl, Text::CString str, Dra
 	return true;
 }
 
-Bool Media::VectorGraph::DrawStringRotB(Math::Coord2DDbl center, NotNullPtr<Text::String> str, DrawFont *f, DrawBrush *b, Double angleDegree, UOSInt buffSize)
+Bool Media::VectorGraph::DrawStringRotB(Math::Coord2DDbl center, Text::String *str, DrawFont *f, DrawBrush *b, Double angleDegree, UOSInt buffSize)
 {
 	VectorStyles *style;
 	Math::Geometry::VectorString *vstr;
@@ -650,7 +650,7 @@ Media::DrawFont *Media::VectorGraph::NewFontPx(Text::CString name, Double pxSize
 Media::DrawFont *Media::VectorGraph::CloneFont(Media::DrawFont *f)
 {
 	Media::VectorGraph::VectorFontStyle *font = (Media::VectorGraph::VectorFontStyle*)f;
-	NotNullPtr<Text::String> fontName = font->GetName();
+	Text::String *fontName = font->GetName();
 	NEW_CLASS(font, Media::VectorGraph::VectorFontStyle(this->fontStyles->GetCount(), fontName->ToCString(), font->GetHeightPt(), font->GetStyle(), font->GetCodePage()));
 	this->fontStyles->Add(font);
 	return font;
@@ -679,7 +679,7 @@ Math::Size2DDbl Media::VectorGraph::GetTextSize(DrawFont *fnt, Text::CString txt
 	Double fntSizePt = fntStyle->GetHeightPt();
 	if (fntSizePt < 100)
 	{
-		NotNullPtr<Text::String> fontName = fntStyle->GetName();
+		Text::String *fontName = fntStyle->GetName();
 		f = tmpImg->NewFontPt(fontName->ToCString(), 100, fntStyle->GetStyle(), fntStyle->GetCodePage());
 		sz = tmpImg->GetTextSize(f, txt);
 		tmpImg->DelFont(f);
@@ -688,7 +688,7 @@ Math::Size2DDbl Media::VectorGraph::GetTextSize(DrawFont *fnt, Text::CString txt
 	}
 	else
 	{
-		NotNullPtr<Text::String> fontName = fntStyle->GetName();
+		Text::String *fontName = fntStyle->GetName();
 		f = tmpImg->NewFontPt(fontName->ToCString(), fntSizePt, fntStyle->GetStyle(), fntStyle->GetCodePage());
 		sz = tmpImg->GetTextSize(f, txt);
 		tmpImg->DelFont(f);

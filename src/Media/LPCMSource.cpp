@@ -7,11 +7,11 @@
 #include "Media/IAudioSource.h"
 #include "Media/LPCMSource.h"
 
-Media::LPCMSource::LPCMSource(NotNullPtr<Text::String> name)
+Media::LPCMSource::LPCMSource(Text::String *name)
 {
 	this->format.Clear();
 	this->data = 0;
-	this->name = name->Clone();
+	this->name = SCOPY_STRING(name);
 	this->readEvt = 0;
 	this->readOfst = 0;
 }
@@ -20,7 +20,7 @@ Media::LPCMSource::LPCMSource(Text::CString name)
 {
 	this->format.Clear();
 	this->data = 0;
-	this->name = Text::String::New(name);
+	this->name = Text::String::NewOrNull(name);
 	this->readEvt = 0;
 	this->readOfst = 0;
 }
@@ -36,11 +36,11 @@ void Media::LPCMSource::SetData(IO::StreamData *fd, UInt64 ofst, UInt64 length, 
 	this->data = fd->GetPartialData(ofst, length);
 }
 
-Media::LPCMSource::LPCMSource(IO::StreamData *fd, UInt64 ofst, UInt64 length, Media::AudioFormat *format, NotNullPtr<Text::String> name)
+Media::LPCMSource::LPCMSource(IO::StreamData *fd, UInt64 ofst, UInt64 length, Media::AudioFormat *format, Text::String *name)
 {
 	this->format.FromAudioFormat(format);
 	this->data = fd->GetPartialData(ofst, length);
-	this->name = name->Clone();
+	this->name = SCOPY_STRING(name);
 	this->readEvt = 0;
 	this->readOfst = 0;
 }
@@ -49,7 +49,7 @@ Media::LPCMSource::LPCMSource(IO::StreamData *fd, UInt64 ofst, UInt64 length, Me
 {
 	this->format.FromAudioFormat(format);
 	this->data = fd->GetPartialData(ofst, length);
-	this->name = Text::String::New(name);
+	this->name = Text::String::NewOrNull(name);
 	this->readEvt = 0;
 	this->readOfst = 0;
 }
@@ -57,11 +57,13 @@ Media::LPCMSource::LPCMSource(IO::StreamData *fd, UInt64 ofst, UInt64 length, Me
 Media::LPCMSource::~LPCMSource()
 {
 	DEL_CLASS(this->data);
-	this->name->Release();
+	SDEL_STRING(this->name);
 }
 
 UTF8Char *Media::LPCMSource::GetSourceName(UTF8Char *buff)
 {
+	if (this->name == 0)
+		return 0;
 	return this->name->ConcatTo(buff);
 }
 

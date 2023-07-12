@@ -83,7 +83,7 @@ IO::ParsedObject *Parser::FileParser::JSONParser::ParseFileHdr(IO::StreamData *f
 	return pobj;
 }
 
-IO::ParsedObject *Parser::FileParser::JSONParser::ParseJSON(Text::JSONBase *fileJSON, NotNullPtr<Text::String> sourceName, Text::CString layerName, IO::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::JSONParser::ParseJSON(Text::JSONBase *fileJSON, Text::String *sourceName, Text::CString layerName, IO::ParserType targetType)
 {
 	UInt32 srid = 0;
 	IO::ParsedObject *pobj = 0;
@@ -149,8 +149,8 @@ IO::ParsedObject *Parser::FileParser::JSONParser::ParseJSON(Text::JSONBase *file
 						vec = ParseGeomJSON((Text::JSONObject*)featGeom, srid);
 						if (vec)
 						{
-							NotNullPtr<Text::String> s = Text::String::New(layerName);
-							NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_MIXED, sourceName, colCnt, tabHdrs, csys, 0, s.Ptr()));
+							Text::String *s = Text::String::New(layerName);
+							NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_MIXED, sourceName, colCnt, tabHdrs, csys, 0, s));
 							s->Release();
 							DEL_CLASS(vec);
 						}

@@ -9,7 +9,7 @@
 #include "Text/MyString.h"
 #include <stdio.h>
 
-DB::DBConn::DBConn(NotNullPtr<Text::String> sourceName) : DB::ReadingDB(sourceName)
+DB::DBConn::DBConn(Text::String *sourceName) : DB::ReadingDB(sourceName)
 {
 	this->lastDataError = DE_NO_ERROR;
 }
@@ -316,7 +316,7 @@ DB::TableDef *DB::DBConn::GetTableDef(Text::CString schemaName, Text::CString ta
 		while (r->ReadNext())
 		{
 			s = r->GetNewStr(0);
-			NEW_CLASS(col, DB::ColDef(Text::String::OrEmpty(s)));
+			NEW_CLASS(col, DB::ColDef(s));
 			SDEL_STRING(s);
 			s = r->GetNewStr(1);
 			col->SetDefVal(s);
@@ -568,7 +568,7 @@ DB::TableDef *DB::DBConn::GetTableDef(Text::CString schemaName, Text::CString ta
 				col->SetColSize((UOSInt)r->GetInt32(sizeCol));
 			}
 			tab->AddCol(col);
-			colMap.PutNN(col->GetColName(), col);
+			colMap.Put(col->GetColName(), col);
 		}
 		this->CloseReader(r);
 

@@ -196,7 +196,7 @@ Bool SSWR::AVIRead::AVIRCOVID19Form::LoadCSV(IO::SeekableStream *stm)
 				r->GetStr(colPopulation, sbuff, sizeof(sbuff));
 				country->population = Text::StrToDouble(sbuff);
 				NEW_CLASS(country->records, Data::Int64FastMap<SSWR::AVIRead::AVIRCOVID19Form::DailyRecord *>());
-				this->countries.PutNN(country->isoCode, country);
+				this->countries.Put(country->isoCode, country);
 			}
 			t = r->GetTimestamp(colDate).ToTicks();
 			if (country->records->Get(t) == 0)

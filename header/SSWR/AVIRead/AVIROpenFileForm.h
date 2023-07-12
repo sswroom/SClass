@@ -36,7 +36,7 @@ namespace SSWR
 
 			virtual void OnMonitorChanged();
 
-			NotNullPtr<Text::String> GetFileName() const;
+			Text::String *GetFileName();
 			IO::ParserType GetParserType();
 		};
 	}

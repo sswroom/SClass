@@ -182,15 +182,14 @@ Bool Media::MonitorColorManager::Load()
 		if (reg->GetValueStr(L"MonProfileFile", wbuff))
 		{
 			SDEL_STRING(this->monProfileFile);
-			this->monProfileFile = Text::String::NewNotNull(wbuff).Ptr();
+			this->monProfileFile = Text::String::NewNotNull(wbuff);
 		}
 		if (reg->GetValueI32(L"MonProfileType", &tmpVal))
 		{
 			this->rgb.monProfileType = (Media::ColorProfile::CommonProfileType)tmpVal;
-			NotNullPtr<Text::String> fileName;
-			if (this->rgb.monProfileType == Media::ColorProfile::CPT_FILE && fileName.Set(this->monProfileFile))
+			if (this->rgb.monProfileType == Media::ColorProfile::CPT_FILE && this->monProfileFile != 0)
 			{
-				if (!SetFromProfileFile(fileName))
+				if (!SetFromProfileFile(this->monProfileFile))
 				{
 					this->rgb.monProfile.SetCommonProfile(this->rgb.monProfileType);
 				}
@@ -520,10 +519,9 @@ void Media::MonitorColorManager::SetMonProfileType(Media::ColorProfile::CommonPr
 	if (newVal != this->rgb.monProfileType)
 	{
 		this->rgb.monProfileType = newVal;
-		NotNullPtr<Text::String> fileName;
-		if (this->rgb.monProfileType == Media::ColorProfile::CPT_FILE && fileName.Set(this->monProfileFile))
+		if (this->rgb.monProfileType == Media::ColorProfile::CPT_FILE && this->monProfileFile)
 		{
-			if (SetFromProfileFile(fileName))
+			if (SetFromProfileFile(this->monProfileFile))
 			{
 				this->RGBUpdated();
 			}
@@ -546,12 +544,12 @@ void Media::MonitorColorManager::SetMonProfileType(Media::ColorProfile::CommonPr
 	}
 }
 
-Bool Media::MonitorColorManager::SetMonProfileFile(NotNullPtr<Text::String> fileName)
+Bool Media::MonitorColorManager::SetMonProfileFile(Text::String *fileName)
 {
 	if (SetFromProfileFile(fileName))
 	{
 		SDEL_STRING(this->monProfileFile);
-		this->monProfileFile = fileName->Clone().Ptr();
+		this->monProfileFile = fileName->Clone();
 		this->rgb.monProfileType = Media::ColorProfile::CPT_FILE;
 		this->RGBUpdated();
 		return true;
@@ -612,7 +610,7 @@ void Media::MonitorColorManager::RemoveSess(Media::ColorManagerSess *colorSess)
 	mutUsage.EndUse();
 }
 
-Bool Media::MonitorColorManager::SetFromProfileFile(NotNullPtr<Text::String> fileName)
+Bool Media::MonitorColorManager::SetFromProfileFile(Text::String *fileName)
 {
 	Bool succ = false;
 	UInt8 *fileBuff;
@@ -892,7 +890,7 @@ Media::MonitorColorManager *Media::ColorManager::GetMonColorManager(Text::String
 		NEW_CLASS(monColor, Media::MonitorColorManager(profileName));
 		if (profileName == 0)
 		{
-			this->monColor.PutNN(Text::String::NewEmpty(), monColor);
+			this->monColor.Put(Text::String::NewEmpty(), monColor);
 		}
 		else
 		{

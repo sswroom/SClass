@@ -24,7 +24,7 @@ void __stdcall SSWR::AVIRead::AVIRGISImageForm::OnCancelClick(void *userObj)
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 
-void __stdcall SSWR::AVIRead::AVIRGISImageForm::OnFileDrop(void *userObj, NotNullPtr<Text::String> *fileNames, UOSInt fileCnt)
+void __stdcall SSWR::AVIRead::AVIRGISImageForm::OnFileDrop(void *userObj, Text::String **fileNames, UOSInt fileCnt)
 {
 	SSWR::AVIRead::AVIRGISImageForm *me = (SSWR::AVIRead::AVIRGISImageForm *)userObj;
 	Bool loaded = false;

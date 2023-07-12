@@ -464,7 +464,7 @@ void DB::OLEDBConn::Reconnect()
 {
 }
 
-UOSInt DB::OLEDBConn::QueryTableNames(Text::CString schemaName, Data::ArrayListNN<Text::String> *names)
+UOSInt DB::OLEDBConn::QueryTableNames(Text::CString schemaName, Data::ArrayList<Text::String*> *names)
 {
 	if (schemaName.leng != 0)
 		return 0;
@@ -520,7 +520,7 @@ UOSInt DB::OLEDBConn::QueryTableNames(Text::CString schemaName, Data::ArrayListN
 	return names->GetCount() - initCnt;
 }
 
-DB::DBReader *DB::OLEDBConn::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListNN<Text::String> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+DB::DBReader *DB::OLEDBConn::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	UTF8Char tmpBuff[256];
 	UTF8Char *sptr = tableName.ConcatTo(Text::StrConcatC(tmpBuff, UTF8STRC("select * from ")));
@@ -1322,14 +1322,14 @@ Text::String *DB::OLEDBReader::GetNewStr(UOSInt colIndex)
 			WChar *tmpBuff = MemAlloc(WChar, (*valLen / sizeof(WChar*)) + 1);
 			MemCopyNO(tmpBuff, val, *valLen);
 			tmpBuff[*valLen / sizeof(WChar*)] = 0;
-			NotNullPtr<Text::String> ret = Text::String::New(tmpBuff, *valLen / sizeof(WChar*));
+			Text::String *ret = Text::String::New(tmpBuff, *valLen / sizeof(WChar*));
 			MemFree(tmpBuff);
-			return ret.Ptr();
+			return ret;
 		}
 	default:
 		if (GetStr(colIndex, wbuff))
 		{
-			return Text::String::NewNotNull(wbuff).Ptr();
+			return Text::String::NewNotNull(wbuff);
 		}
 		return 0;
 	}
@@ -1666,8 +1666,8 @@ Bool DB::OLEDBReader::GetColDef(UOSInt colIndex, DB::ColDef *colDef)
 	}
 	if (data->dbColInfo[colIndex].pwszName)
 	{
-		NotNullPtr<Text::String> s = Text::String::NewNotNull(data->dbColInfo[colIndex].pwszName);
-		colDef->SetColName(s.Ptr());
+		Text::String *s = Text::String::NewNotNull(data->dbColInfo[colIndex].pwszName);
+		colDef->SetColName(s);
 		s->Release();
 	}
 	else

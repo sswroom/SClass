@@ -14,7 +14,7 @@ namespace Net
 		Net::SocketFactory *sockf;
 		Net::UDPServer *svr;
 		IO::LogTool *log;
-		NotNullPtr<Text::String> timeServer;
+		Text::String *timeServer;
 		Int64 refTime;
 		Int64 timeDiff;
 		Bool threadRunning;

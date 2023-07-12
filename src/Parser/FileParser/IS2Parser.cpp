@@ -101,7 +101,7 @@ IO::ParsedObject *Parser::FileParser::IS2Parser::ParseFileHdr(IO::StreamData *fd
 						const UTF16Char *cameraBrand = (const UTF16Char *)&currBuff[72];
 						const UTF16Char *cameraModel = (const UTF16Char *)&currBuff[136];
 						const UTF16Char *cameraSN = (const UTF16Char *)&currBuff[200];
-						NotNullPtr<Text::String> s = Text::String::NewNotNull(cameraBrand);
+						Text::String *s = Text::String::NewNotNull(cameraBrand);
 						imgList->SetValueStr(Media::ImageList::VT_CAMERA_BRAND, s->ToCString());
 						s->Release();
 						s = Text::String::NewNotNull(cameraModel);

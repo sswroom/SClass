@@ -823,7 +823,7 @@ IO::Stream *Map::HKTrafficLayer::OpenURLStream()
 				DEL_CLASS(cli);
 				if (!this->url->Equals(sb.ToString(), sb.GetLength()))
 				{
-					this->url->Release();
+					SDEL_STRING(this->url);
 					this->url = Text::String::New(sb.ToString(), sb.GetLength());
 					return this->OpenURLStream();
 				}

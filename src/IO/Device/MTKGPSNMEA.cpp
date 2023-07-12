@@ -22,13 +22,13 @@ void IO::Device::MTKGPSNMEA::ParseUnknownCmd(const UTF8Char *cmd, UOSInt cmdLen)
 		}
 		else
 		{
-			this->cmdWResults.Add(Text::String::New(cmd, cmdLen).Ptr());
+			this->cmdWResults.Add(Text::String::New(cmd, cmdLen));
 			this->cmdEvt.Set();
 		}
 	}
 	else
 	{
-		this->cmdWResults.Add(Text::String::New(cmd, cmdLen).Ptr());
+		this->cmdWResults.Add(Text::String::New(cmd, cmdLen));
 		this->cmdEvt.Set();
 	}
 }
@@ -120,10 +120,10 @@ Bool IO::Device::MTKGPSNMEA::QueryFirmware()
 		SDEL_STRING(this->firmwareRel);
 		SDEL_STRING(this->productMode);
 		SDEL_STRING(this->sdkVer);
-		this->firmwareRel = Text::String::New(sarr[1].v, sarr[1].leng).Ptr();
-		this->firmwareBuild = Text::String::New(sarr[2].v, sarr[2].leng).Ptr();
-		this->productMode = Text::String::New(sarr[3].v, sarr[3].leng).Ptr();
-		this->sdkVer = Text::String::New(sarr[4].v, sarr[4].leng).Ptr();
+		this->firmwareRel = Text::String::New(sarr[1].v, sarr[1].leng);
+		this->firmwareBuild = Text::String::New(sarr[2].v, sarr[2].leng);
+		this->productMode = Text::String::New(sarr[3].v, sarr[3].leng);
+		this->sdkVer = Text::String::New(sarr[4].v, sarr[4].leng);
 		return true;
 	}
 	else

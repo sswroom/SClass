@@ -10,7 +10,7 @@ namespace Crypto
 		class X509PrivKey : public Crypto::Cert::X509File
 		{
 		public:
-			X509PrivKey(NotNullPtr<Text::String> sourceName, const UInt8 *buff, UOSInt buffSize);
+			X509PrivKey(Text::String *sourceName, const UInt8 *buff, UOSInt buffSize);
 			X509PrivKey(Text::CString sourceName, const UInt8 *buff, UOSInt buffSize);
 			virtual ~X509PrivKey();
 

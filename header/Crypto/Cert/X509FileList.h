@@ -14,7 +14,7 @@ namespace Crypto
 			Data::ArrayList<Crypto::Cert::X509File *> fileList;
 
 		public:
-			X509FileList(NotNullPtr<Text::String> sourceName, Crypto::Cert::X509Cert *cert);
+			X509FileList(Text::String *sourceName, Crypto::Cert::X509Cert *cert);
 			X509FileList(Text::CString sourceName, Crypto::Cert::X509Cert *cert);
 			virtual ~X509FileList();
 

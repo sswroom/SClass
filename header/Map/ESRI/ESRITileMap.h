@@ -14,7 +14,7 @@ namespace Map
 		class ESRITileMap : public Map::TileMap
 		{
 		private:
-			NotNullPtr<Text::String> cacheDir;
+			Text::String *cacheDir;
 			Map::ESRI::ESRIMapServer *esriMap;
 			Bool toRelease;
 			Math::RectAreaDbl dispBounds;
@@ -37,7 +37,7 @@ namespace Map
 			virtual Bool IsMercatorProj();
 			virtual UOSInt GetTileSize();
 			virtual Bool CanQuery() const;
-			virtual Bool QueryInfos(Math::Coord2DDbl coord, UOSInt level, Data::ArrayList<Math::Geometry::Vector2D*> *vecList, Data::ArrayList<UOSInt> *valueOfstList, Data::ArrayListNN<Text::String> *nameList, Data::ArrayList<Text::String*> *valueList) const;
+			virtual Bool QueryInfos(Math::Coord2DDbl coord, UOSInt level, Data::ArrayList<Math::Geometry::Vector2D*> *vecList, Data::ArrayList<UOSInt> *valueOfstList, Data::ArrayList<Text::String*> *nameList, Data::ArrayList<Text::String*> *valueList) const;
 			virtual void SetDispSize(Math::Size2DDbl size, Double dpi);
 
 			virtual UOSInt GetTileImageIDs(UOSInt level, Math::RectAreaDbl rect, Data::ArrayList<Math::Coord2D<Int32>> *ids);

@@ -2,7 +2,6 @@
 #define _SM_CRYPTO_CERT_X509FILE
 #include "Crypto/Hash/IHash.h"
 #include "Data/ArrayList.h"
-#include "Data/ArrayListNN.h"
 #include "Net/ASN1Data.h"
 #include "Text/CString.h"
 
@@ -37,7 +36,7 @@ namespace Crypto
 
 		struct CertExtensions
 		{
-			Data::ArrayListNN<Text::String> *subjectAltName;
+			Data::ArrayList<Text::String *> *subjectAltName;
 			Data::ArrayList<Text::String *> *issuerAltName;
 			Bool useSubjKeyId;
 			UInt8 subjKeyId[20];
@@ -201,7 +200,7 @@ namespace Crypto
 			static ECName ECNameFromOID(const UInt8 *oid, UOSInt oidLen);
 			static Bool AlgorithmIdentifierGet(const UInt8 *pdu, const UInt8 *pduEnd, AlgType *algType);
 
-			X509File(NotNullPtr<Text::String> sourceName, const UInt8 *buff, UOSInt buffSize);
+			X509File(Text::String *sourceName, const UInt8 *buff, UOSInt buffSize);
 			X509File(Text::CString sourceName, const UInt8 *buff, UOSInt buffSize);
 		public:
 			virtual ~X509File();

@@ -312,7 +312,7 @@ Bool Net::Email::EmailMessage::SetSubject(Text::CString subject)
 Bool Net::Email::EmailMessage::SetContent(Text::CString content, Text::CString contentType)
 {
 	SDEL_STRING(this->contentType);
-	this->contentType = Text::String::New(contentType).Ptr();
+	this->contentType = Text::String::New(contentType);
 	if (this->content)
 		MemFree(this->content);
 	this->content = MemAlloc(UInt8, content.leng);
@@ -360,7 +360,7 @@ Bool Net::Email::EmailMessage::SetFrom(Text::CString name, Text::CString addr)
 	sb.AppendUTF8Char('>');
 	this->SetHeader(UTF8STRC("From"), sb.ToString(), sb.GetLength());
 	SDEL_STRING(this->fromAddr);
-	this->fromAddr = Text::String::New(addr).Ptr();
+	this->fromAddr = Text::String::New(addr);
 	return true;
 }
 
@@ -535,7 +535,7 @@ Text::String *Net::Email::EmailMessage::GetFromAddr()
 	return this->fromAddr;
 }
 
-const Data::ArrayListNN<Text::String> *Net::Email::EmailMessage::GetRecpList()
+Data::ArrayList<Text::String*> *Net::Email::EmailMessage::GetRecpList()
 {
 	return &this->recpList;
 }

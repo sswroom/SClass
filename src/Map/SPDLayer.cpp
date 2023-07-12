@@ -42,7 +42,7 @@ Map::SPDLayer::SPDLayer(Text::CString layerName) : Map::MapDrawLayer(layerName, 
 	this->maxTextSize = 0;
 	this->csys = Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84);
 	this->lyrType = (Map::DrawLayerType)0;
-	this->layerName = Text::StrCopyNew(fname).Ptr();
+	this->layerName = Text::StrCopyNew(fname);
 
 	sptr2 = Text::StrConcatC(sptr, UTF8STRC(".spb"));
 	NEW_CLASS(file, IO::FileStream({fname, (UOSInt)(sptr2 - fname)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));

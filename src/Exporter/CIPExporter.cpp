@@ -247,7 +247,7 @@ Bool Exporter::CIPExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 							strRec->recId = (Int32)i;
 							if (layer->GetString(sbuff, sizeof(sbuff), nameArr, objIds->GetItem(i), p->dispCol))
 							{
-								strRec->str = Text::StrCopyNew(sbuff).Ptr();
+								strRec->str = Text::StrCopyNew(sbuff);
 							}
 							else
 							{
@@ -270,7 +270,7 @@ Bool Exporter::CIPExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 						strRec->recId = (Int32)i;
 						if (layer->GetString(sbuff, sizeof(sbuff), nameArr, objIds->GetItem(i), p->dispCol))
 						{
-							strRec->str = Text::StrCopyNew(sbuff).Ptr();
+							strRec->str = Text::StrCopyNew(sbuff);
 						}
 						else
 						{

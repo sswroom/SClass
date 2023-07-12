@@ -49,8 +49,8 @@ namespace SSWR
 
 			SSWR::AVIRead::AVIRCore *core;
 
-			Data::ArrayListNN<const UTF8Char> stacks;
-			Data::ArrayListNN<const UTF8Char> stacksMem;
+			Data::ArrayList<const UTF8Char *> stacks;
+			Data::ArrayList<const UTF8Char *> stacksMem;
 			Manage::Process *proc;
 			Manage::SymbolResolver *symbol;
 			Manage::ThreadContext::ContextType contextType;

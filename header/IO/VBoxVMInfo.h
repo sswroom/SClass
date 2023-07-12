@@ -14,7 +14,7 @@ namespace IO
 			PoweredOff
 		};
 	private:
-		NotNullPtr<Text::String> name;
+		Text::String *name;
 		State state;
 		Data::Timestamp stateSince;
 
@@ -22,7 +22,7 @@ namespace IO
 		VBoxVMInfo(Text::CString name);
 		~VBoxVMInfo();
 
-		NotNullPtr<Text::String> GetName() const;
+		Text::String *GetName() const;
 		State GetState() const;
 		Data::Timestamp GetStateSince() const;
 

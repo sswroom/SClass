@@ -19,7 +19,7 @@ namespace UI
 		~FolderDialog();
 
 		void SetFolder(Text::CString dirName);
-		NotNullPtr<Text::String> GetFolder() const;
+		Text::String *GetFolder();
 		void SetMessage(const UTF8Char *message);
 
 		Bool ShowDialog(ControlHandle *ownerHandle);

@@ -334,7 +334,7 @@ Bool Text::XMLReader::ReadNext()
 				if (Text::StrStartsWithC(&this->readBuff[parseOfst], this->buffSize - parseOfst, UTF8STRC("-->")))
 				{
 					this->parseOfst = parseOfst + 3;
-					this->nodeText = Text::String::New(sb->ToString(), sb->GetLength()).Ptr();
+					this->nodeText = Text::String::New(sb->ToString(), sb->GetLength());
 					return true;
 				}
 				sb->AppendUTF8Char(this->readBuff[parseOfst++]);
@@ -372,7 +372,7 @@ Bool Text::XMLReader::ReadNext()
 				if (Text::StrStartsWithC(&this->readBuff[parseOfst], this->buffSize - parseOfst, UTF8STRC("]]>")))
 				{
 					this->parseOfst = parseOfst + 3;
-					this->nodeText = Text::String::New(sb->ToCString()).Ptr();
+					this->nodeText = Text::String::New(sb->ToCString());
 					return true;
 				}
 				sb->AppendUTF8Char(this->readBuff[parseOfst++]);
@@ -484,13 +484,13 @@ Bool Text::XMLReader::ReadNext()
 						{
 							if (this->nodeText == 0)
 							{
-								this->nodeText = Text::String::New(sb->ToString(), sb->GetLength()).Ptr();
+								this->nodeText = Text::String::New(sb->ToString(), sb->GetLength());
 							}
 							else if (isEqual)
 							{
 								Text::XMLAttrib *attr = this->attrList.GetItem(this->attrList.GetCount() - 1);
 								SDEL_STRING(attr->value);
-								attr->value = Text::String::New(sb->ToCString()).Ptr();
+								attr->value = Text::String::New(sb->ToCString());
 								isEqual = false;
 							}
 							else
@@ -686,13 +686,13 @@ Bool Text::XMLReader::ReadNext()
 					{
 						if (this->nodeText == 0)
 						{
-							this->nodeText = Text::String::New(sb->ToCString()).Ptr();
+							this->nodeText = Text::String::New(sb->ToCString());
 						}
 						else if (isEqual)
 						{
 							Text::XMLAttrib *attr = this->attrList.GetItem(this->attrList.GetCount() - 1);
 							SDEL_STRING(attr->value);
-							attr->value = Text::String::New(sb->ToCString()).Ptr();
+							attr->value = Text::String::New(sb->ToCString());
 							isEqual = false;
 						}
 						else
@@ -710,13 +710,13 @@ Bool Text::XMLReader::ReadNext()
 					{
 						if (this->nodeText == 0)
 						{
-							this->nodeText = Text::String::New(sb->ToCString()).Ptr();
+							this->nodeText = Text::String::New(sb->ToCString());
 						}
 						else if (isEqual)
 						{
 							Text::XMLAttrib *attr = this->attrList.GetItem(this->attrList.GetCount() - 1);
 							SDEL_STRING(attr->value);
-							attr->value = Text::String::New(sb->ToCString()).Ptr();
+							attr->value = Text::String::New(sb->ToCString());
 							isEqual = false;
 						}
 						else
@@ -853,7 +853,7 @@ Bool Text::XMLReader::ReadNext()
 					{
 						if (this->nodeText == 0)
 						{
-							this->nodeText = Text::String::New(sb->ToCString()).Ptr();
+							this->nodeText = Text::String::New(sb->ToCString());
 						}
 						else
 						{
@@ -869,7 +869,7 @@ Bool Text::XMLReader::ReadNext()
 					{
 						if (this->nodeText == 0)
 						{
-							this->nodeText = Text::String::New(sb->ToString(), sb->GetLength()).Ptr();
+							this->nodeText = Text::String::New(sb->ToString(), sb->GetLength());
 						}
 						else
 						{
@@ -948,8 +948,8 @@ Bool Text::XMLReader::ReadNext()
 
 						if (this->nodeText == 0)
 						{
-							this->nodeText = Text::String::New(sbText->ToCString()).Ptr();
-							this->nodeOriText = Text::String::New(sbOri.ToCString()).Ptr();
+							this->nodeText = Text::String::New(sbText->ToCString());
+							this->nodeOriText = Text::String::New(sbOri.ToCString());
 						}
 						else if (isEqual)
 						{
@@ -958,19 +958,19 @@ Bool Text::XMLReader::ReadNext()
 							if (this->enc && !this->stmEnc)
 							{
 								UOSInt len = this->enc->CountUTF8Chars(sbText->ToString(), sbText->GetLength());
-								attr->value = Text::String::New(len).Ptr();
+								attr->value = Text::String::New(len);
 								this->enc->UTF8FromBytes(attr->value->v, sbText->ToString(), sbText->GetLength(), 0);
 								attr->value->v[len] = 0;
 
 								len = this->enc->CountUTF8Chars(sbOri.ToString(), sbOri.GetLength());
-								attr->valueOri = Text::String::New(len).Ptr();
+								attr->valueOri = Text::String::New(len);
 								this->enc->UTF8FromBytes(attr->valueOri->v, sbOri.ToString(), sbOri.GetLength(), 0);
 								attr->valueOri->v[len] = 0;
 							}
 							else
 							{
-								attr->value = Text::String::New(sbText->ToCString()).Ptr();
-								attr->valueOri = Text::String::New(sbOri.ToCString()).Ptr();
+								attr->value = Text::String::New(sbText->ToCString());
+								attr->valueOri = Text::String::New(sbOri.ToCString());
 							}
 							isEqual = false;
 						}
@@ -1124,8 +1124,8 @@ Bool Text::XMLReader::ReadNext()
 					{
 						if (this->nodeText == 0)
 						{
-							this->nodeText = Text::String::New(sbText->ToCString()).Ptr();
-							this->nodeOriText = Text::String::New(sbOri.ToCString()).Ptr();
+							this->nodeText = Text::String::New(sbText->ToCString());
+							this->nodeOriText = Text::String::New(sbOri.ToCString());
 						}
 						else if (isEqual)
 						{
@@ -1134,19 +1134,19 @@ Bool Text::XMLReader::ReadNext()
 							if (this->enc && !this->stmEnc)
 							{
 								UOSInt len = this->enc->CountUTF8Chars(sbText->ToString(), sbText->GetLength());
-								attr->value = Text::String::New(len).Ptr();
+								attr->value = Text::String::New(len);
 								this->enc->UTF8FromBytes(attr->value->v, sbText->ToString(), sbText->GetLength(), 0);
 								attr->value->v[len] = 0;
 
 								len = this->enc->CountUTF8Chars(sbOri.ToString(), sbOri.GetLength());
-								attr->valueOri = Text::String::New(len).Ptr();
+								attr->valueOri = Text::String::New(len);
 								this->enc->UTF8FromBytes(attr->valueOri->v, sbOri.ToString(), sbOri.GetLength(), 0);
 								attr->valueOri->v[len] = 0;
 							}
 							else
 							{
-								attr->value = Text::String::New(sbText->ToCString()).Ptr();
-								attr->valueOri = Text::String::New(sbOri.ToCString()).Ptr();
+								attr->value = Text::String::New(sbText->ToString(), sbText->GetLength());
+								attr->valueOri = Text::String::New(sbOri.ToString(), sbOri.GetLength());
 							}
 							isEqual = false;
 						}
@@ -1166,8 +1166,8 @@ Bool Text::XMLReader::ReadNext()
 					{
 						if (this->nodeText == 0)
 						{
-							this->nodeText = Text::String::New(sbText->ToCString()).Ptr();
-							this->nodeOriText = Text::String::New(sbOri.ToCString()).Ptr();
+							this->nodeText = Text::String::New(sbText->ToCString());
+							this->nodeOriText = Text::String::New(sbOri.ToCString());
 						}
 						else if (isEqual)
 						{
@@ -1176,19 +1176,19 @@ Bool Text::XMLReader::ReadNext()
 							if (this->enc && !this->stmEnc)
 							{
 								UOSInt len = this->enc->CountUTF8Chars(sbText->ToString(), sbText->GetLength());
-								attr->value = Text::String::New(len).Ptr();
+								attr->value = Text::String::New(len);
 								this->enc->UTF8FromBytes(attr->value->v, sbText->ToString(), sbText->GetLength(), 0);
 								attr->value->v[len] = 0;
 
 								len = this->enc->CountUTF8Chars(sbOri.ToString(), sbOri.GetLength());
-								attr->valueOri = Text::String::New(len).Ptr();
+								attr->valueOri = Text::String::New(len);
 								this->enc->UTF8FromBytes(attr->valueOri->v, sbOri.ToString(), sbOri.GetLength(), 0);
 								attr->valueOri->v[len] = 0;
 							}
 							else
 							{
-								attr->value = Text::String::New(sbText->ToCString()).Ptr();
-								attr->valueOri = Text::String::New(sbOri.ToCString()).Ptr();
+								attr->value = Text::String::New(sbText->ToCString());
+								attr->valueOri = Text::String::New(sbOri.ToCString());
 							}
 							isEqual = false;
 						}
@@ -1231,8 +1231,8 @@ Bool Text::XMLReader::ReadNext()
 					{
 						if (this->nodeText == 0)
 						{
-							this->nodeText = Text::String::New(sbText->ToCString()).Ptr();
-							this->nodeOriText = Text::String::New(sbOri.ToCString()).Ptr();
+							this->nodeText = Text::String::New(sbText->ToCString());
+							this->nodeOriText = Text::String::New(sbOri.ToCString());
 						}
 						else if (isEqual)
 						{
@@ -1241,19 +1241,19 @@ Bool Text::XMLReader::ReadNext()
 							if (this->enc && !this->stmEnc)
 							{
 								UOSInt len = this->enc->CountUTF8Chars(sbText->ToString(), sbText->GetLength());
-								attr->value = Text::String::New(len).Ptr();
+								attr->value = Text::String::New(len);
 								this->enc->UTF8FromBytes(attr->value->v, sbText->ToString(), sbText->GetLength(), 0);
 								attr->value->v[len] = 0;
 
 								len = this->enc->CountUTF8Chars(sbOri.ToString(), sbOri.GetLength());
-								attr->valueOri = Text::String::New(len).Ptr();
+								attr->valueOri = Text::String::New(len);
 								this->enc->UTF8FromBytes(attr->valueOri->v, sbOri.ToString(), sbOri.GetLength(), 0);
 								attr->valueOri->v[len] = 0;
 							}
 							else
 							{
-								attr->value = Text::String::New(sbText->ToCString()).Ptr();
-								attr->valueOri = Text::String::New(sbOri.ToCString()).Ptr();
+								attr->value = Text::String::New(sbText->ToCString());
+								attr->valueOri = Text::String::New(sbOri.ToCString());
 							}
 							isEqual = false;
 						}
@@ -1352,19 +1352,19 @@ Bool Text::XMLReader::ReadNext()
 					if (this->enc && !this->stmEnc)
 					{
 						UOSInt len = this->enc->CountUTF8Chars(sbText->ToString(), sbText->GetLength());
-						this->nodeText = Text::String::New(len).Ptr();
+						this->nodeText = Text::String::New(len);
 						this->enc->UTF8FromBytes(this->nodeText->v, sbText->ToString(), sbText->GetLength(), 0);
 						this->nodeText->v[len] = 0;
 
 						len = this->enc->CountUTF8Chars(sbOri.ToString(), sbOri.GetLength());
-						this->nodeOriText = Text::String::New(len).Ptr();
+						this->nodeOriText = Text::String::New(len);
 						this->enc->UTF8FromBytes(this->nodeOriText->v, sbOri.ToString(), sbOri.GetLength(), 0);
 						this->nodeOriText->v[len] = 0;
 					}
 					else
 					{
-						this->nodeText = Text::String::New(sbText->ToCString()).Ptr();
-						this->nodeOriText = Text::String::New(sbOri.ToCString()).Ptr();
+						this->nodeText = Text::String::New(sbText->ToCString());
+						this->nodeOriText = Text::String::New(sbOri.ToCString());
 					}
 					this->parseOfst = parseOfst;
 					return true;
@@ -1384,19 +1384,19 @@ Bool Text::XMLReader::ReadNext()
 					if (this->enc && !this->stmEnc)
 					{
 						UOSInt len = this->enc->CountUTF8Chars(sbText->ToString(), sbText->GetLength());
-						this->nodeText = Text::String::New(len).Ptr();
+						this->nodeText = Text::String::New(len);
 						this->enc->UTF8FromBytes(this->nodeText->v, sbText->ToString(), sbText->GetLength(), 0);
 						this->nodeText->v[len] = 0;
 
 						len = this->enc->CountUTF8Chars(sbOri.ToString(), sbOri.GetLength());
-						this->nodeOriText = Text::String::New(len).Ptr();
+						this->nodeOriText = Text::String::New(len);
 						this->enc->UTF8FromBytes(this->nodeOriText->v, sbOri.ToString(), sbOri.GetLength(), 0);
 						this->nodeOriText->v[len] = 0;
 					}
 					else
 					{
-						this->nodeText = Text::String::New(sbText->ToCString()).Ptr();
-						this->nodeOriText = Text::String::New(sbOri.ToCString()).Ptr();
+						this->nodeText = Text::String::New(sbText->ToCString());
+						this->nodeOriText = Text::String::New(sbOri.ToCString());
 					}
 					this->parseOfst = parseOfst;
 					return true;
@@ -1676,7 +1676,7 @@ Bool Text::XMLReader::ToString(Text::StringBuilderUTF8 *sb) const
 		}
 		else if (this->mode == Text::XMLReader::PM_XML)
 		{
-			NotNullPtr<Text::String> s = Text::XML::ToNewXMLText(this->nodeText->v);
+			Text::String *s = Text::XML::ToNewXMLText(this->nodeText->v);
 			sb->Append(s);
 			s->Release();
 		}

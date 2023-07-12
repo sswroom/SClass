@@ -240,7 +240,7 @@ public:
 	}
 };
 
-DB::JSONDB::JSONDB(NotNullPtr<Text::String> sourceName, Text::CString layerName, Text::JSONArray *data) : DB::ReadingDB(sourceName)
+DB::JSONDB::JSONDB(Text::String *sourceName, Text::CString layerName, Text::JSONArray *data) : DB::ReadingDB(sourceName)
 {
 	this->layerName = Text::String::New(layerName);
 	this->data = data;
@@ -249,19 +249,19 @@ DB::JSONDB::JSONDB(NotNullPtr<Text::String> sourceName, Text::CString layerName,
 
 DB::JSONDB::~JSONDB()
 {
-	this->layerName->Release();
+	SDEL_STRING(this->layerName);
 	this->data->EndUse();
 }
 
-UOSInt DB::JSONDB::QueryTableNames(Text::CString schemaName, Data::ArrayListNN<Text::String> *names)
+UOSInt DB::JSONDB::QueryTableNames(Text::CString schemaName, Data::ArrayList<Text::String*> *names)
 {
 	names->Add(this->layerName->Clone());
 	return 1;
 }
 
-DB::DBReader *DB::JSONDB::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListNN<Text::String> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+DB::DBReader *DB::JSONDB::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
-	if (tableName.Equals(this->layerName->ToCString()))
+	if (tableName.Equals(this->layerName))
 	{
 		JSONDBReader *r;
 		UOSInt endOfst;
@@ -278,7 +278,7 @@ DB::DBReader *DB::JSONDB::QueryTableData(Text::CString schemaName, Text::CString
 DB::TableDef *DB::JSONDB::GetTableDef(Text::CString schemaName, Text::CString tableName)
 {
 	DB::TableDef *tab;
-	if (!tableName.Equals(this->layerName->ToCString()))
+	if (!tableName.Equals(this->layerName))
 		return 0;
 	NEW_CLASS(tab, DB::TableDef(schemaName, this->layerName->ToCString()));
 	Text::JSONBase *json = this->data->GetArrayValue(0);
@@ -301,31 +301,31 @@ DB::TableDef *DB::JSONDB::GetTableDef(Text::CString schemaName, Text::CString ta
 			}
 			else if (type == Text::JSONType::BOOL)
 			{
-				NEW_CLASS(col, DB::ColDef(Text::String::OrEmpty(names.GetItem(i))));
+				NEW_CLASS(col, DB::ColDef(names.GetItem(i)));
 				col->SetColType(DB::DBUtil::ColType::CT_Bool);
 				tab->AddCol(col);
 			}
 			else if (type == Text::JSONType::INT32)
 			{
-				NEW_CLASS(col, DB::ColDef(Text::String::OrEmpty(names.GetItem(i))));
+				NEW_CLASS(col, DB::ColDef(names.GetItem(i)));
 				col->SetColType(DB::DBUtil::ColType::CT_Int32);
 				tab->AddCol(col);
 			}
 			else if (type == Text::JSONType::INT64)
 			{
-				NEW_CLASS(col, DB::ColDef(Text::String::OrEmpty(names.GetItem(i))));
+				NEW_CLASS(col, DB::ColDef(names.GetItem(i)));
 				col->SetColType(DB::DBUtil::ColType::CT_Int64);
 				tab->AddCol(col);
 			}
 			else if (type == Text::JSONType::Number)
 			{
-				NEW_CLASS(col, DB::ColDef(Text::String::OrEmpty(names.GetItem(i))));
+				NEW_CLASS(col, DB::ColDef(names.GetItem(i)));
 				col->SetColType(DB::DBUtil::ColType::CT_Double);
 				tab->AddCol(col);
 			}
 			else if (type == Text::JSONType::String)
 			{
-				NEW_CLASS(col, DB::ColDef(Text::String::OrEmpty(names.GetItem(i))));
+				NEW_CLASS(col, DB::ColDef(names.GetItem(i)));
 				col->SetColType(DB::DBUtil::ColType::CT_VarUTF8Char);
 				col->SetColSize((UOSInt)-1);
 				tab->AddCol(col);

@@ -31,7 +31,6 @@ namespace DB
 		void AppendUInt32(UInt32 val);
 		void AppendUInt64(UInt64 val);
 		void AppendStr(Text::String *val);
-		void AppendStr(NotNullPtr<Text::String> val);
 		void AppendStrC(Text::CString val);
 		void AppendStrUTF8(const UTF8Char *val);
 		void AppendStrW(const WChar *val);
@@ -51,7 +50,7 @@ namespace DB
 		const UTF8Char *ToString() const;
 		UOSInt GetLength() const;
 		Text::CString ToCString() const;
-		NotNullPtr<Text::String> ToNewString() const;
+		Text::String *ToNewString() const;
 		DB::SQLType GetSQLType() const;
 	};
 }

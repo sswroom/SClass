@@ -330,10 +330,10 @@ UInt64 Net::HTTPData::GetDataSize()
 	return dataLength;
 }
 
-NotNullPtr<Text::String> Net::HTTPData::GetFullName()
+Text::String *Net::HTTPData::GetFullName()
 {
 	if (fdh == 0)
-		return Text::String::NewEmpty();
+		return 0;
 	return fdh->url;
 }
 
@@ -350,7 +350,7 @@ void Net::HTTPData::SetFullName(Text::CString fullName)
 		return;
 	UOSInt i;
 	Sync::MutexUsage mutUsage(&fdh->mut);
-	fdh->url->Release();
+	SDEL_STRING(fdh->url);
 	fdh->url = Text::String::New(fullName);
 	i = fdh->url->LastIndexOf('/');
 	if (i != INVALID_INDEX)

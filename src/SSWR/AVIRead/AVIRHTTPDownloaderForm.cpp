@@ -24,14 +24,14 @@ void __stdcall SSWR::AVIRead::AVIRHTTPDownloaderForm::OnRequestClicked(void *use
 		return;
 	}
 	SDEL_STRING(me->downPath);
-	me->downPath = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
+	me->downPath = Text::String::New(sb.ToString(), sb.GetLength());
 
 	sb.ClearStr();
 	me->txtHeaders->GetText(&sb);
 	SDEL_STRING(me->reqHeader);
 	if (sb.GetLength() > 0)
 	{
-		me->reqHeader = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
+		me->reqHeader = Text::String::New(sb.ToString(), sb.GetLength());
 	}
 
 	sb.ClearStr();
@@ -43,7 +43,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPDownloaderForm::OnRequestClicked(void *use
 	}
 
 
-	me->reqURL = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
+	me->reqURL = Text::String::New(sb.ToString(), sb.GetLength());
 	me->threadEvt.Set();
 	while (me->threadRunning && me->reqURL)
 	{
@@ -74,13 +74,13 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPDownloaderForm::ProcessThread(void *user
 			currURL = me->reqURL;
 			if (me->reqHeader)
 			{
-				currHeader = me->reqHeader->Clone().Ptr();
+				currHeader = me->reqHeader->Clone();
 			}
 			else
 			{
 				currHeader = 0;
 			}
-			currPath = me->downPath->Clone().Ptr();
+			currPath = me->downPath->Clone();
 			me->reqURL = 0;
 
 			sptr = currPath->ConcatTo(sbuff);

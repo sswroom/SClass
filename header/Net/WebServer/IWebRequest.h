@@ -50,10 +50,10 @@ namespace Net
 			Bool GetCookie(Text::CString name, Text::StringBuilderUTF8 *sb);
 			Text::String *GetCookieAsNew(Text::CString name);
 
-			virtual NotNullPtr<Text::String> GetRequestURI() const = 0;
+			virtual Text::String *GetRequestURI() = 0;
 			UTF8Char *GetRequestPath(UTF8Char *sbuff, UOSInt maxLeng);
 			UTF8Char *GetQueryString(UTF8Char *sbuff, UOSInt maxLeng);
-			virtual RequestProtocol GetProtocol() const = 0;
+			virtual RequestProtocol GetProtocol() = 0;
 			virtual Text::String *GetQueryValue(Text::CString name) = 0;
 			UTF8Char *GetQueryValueStr(Text::CString name, UTF8Char *buff, UOSInt buffSize);
 			Bool GetQueryValueI16(Text::CString name, Int16 *val);

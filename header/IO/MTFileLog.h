@@ -1,7 +1,7 @@
 #ifndef _SM_IO_MTFILELOG
 #define _SM_IO_MTFILELOG
 #include "Data/ArrayListInt64.h"
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListString.h"
 #include "IO/BufferedOutputStream.h"
 #include "IO/FileStream.h"
 #include "IO/LogTool.h"
@@ -17,7 +17,7 @@ namespace IO
 	private:
 		Sync::Mutex mut;
 		Data::ArrayList<Data::Timestamp> dateList;
-		Data::ArrayListNN<Text::String> msgList;
+		Data::ArrayListString msgList;
 		Sync::Event evt;
 
 		IO::LogHandler::LogType logStyle;
@@ -27,18 +27,18 @@ namespace IO
 		IO::BufferedOutputStream *cstm;
 		IO::FileStream *fileStm;
 		const UTF8Char *dateFormat;
-		NotNullPtr<Text::String> fileName;
+		Text::String *fileName;
 		Text::String *extName;
 		Bool closed;
 		Bool running;
 		Bool hasNewFile;
 
 		UTF8Char *GetNewName(UTF8Char *buff, Data::DateTimeUtil::TimeValue *logTime, UInt32 nanosec, Int32 *lastVal);
-		void WriteArr(NotNullPtr<Text::String> *msgArr, Data::Timestamp *dateArr, UOSInt arrCnt);
+		void WriteArr(Text::String **msgArr, Data::Timestamp *dateArr, UOSInt arrCnt);
 		static UInt32 __stdcall FileThread(void *userObj);
 		void Init(LogType style, LogGroup groupStyle, const Char *dateFormat);
 	public:
-		MTFileLog(NotNullPtr<Text::String> fileName, LogType style, LogGroup groupStyle, const Char *dateFormat);
+		MTFileLog(Text::String *fileName, LogType style, LogGroup groupStyle, const Char *dateFormat);
 		MTFileLog(Text::CString fileName, LogType style, LogGroup groupStyle, const Char *dateFormat);
 		virtual ~MTFileLog();
 		virtual void LogClosed();

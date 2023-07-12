@@ -100,7 +100,7 @@ public:
 			return 0;
 		if (this->row[colIndex] == 0)
 			return 0;
-		return this->row[colIndex]->Clone().Ptr();
+		return this->row[colIndex]->Clone();
 	}
 
 	virtual UTF8Char *GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSize)
@@ -225,13 +225,7 @@ public:
 			colDef->SetColType(DB::DBUtil::CT_Unknown);
 			return false;
 		}
-		NotNullPtr<const UTF8Char> colName;
-		if (!colName.Set(this->data->colList.GetItem(colIndex)))
-		{
-			colDef->SetColType(DB::DBUtil::CT_Unknown);
-			return false;
-		}
-		colDef->SetColName(colName);
+		colDef->SetColName(this->data->colList.GetItem(colIndex));
 		colDef->SetColSize(256);
 		colDef->SetColType(DB::DBUtil::CT_VarUTF8Char);
 		colDef->SetAttr(CSTR_NULL);
@@ -282,7 +276,7 @@ DB::TextDB::~TextDB()
 	}
 }
 
-UOSInt DB::TextDB::QueryTableNames(Text::CString schemaName, Data::ArrayListNN<Text::String> *names)
+UOSInt DB::TextDB::QueryTableNames(Text::CString schemaName, Data::ArrayList<Text::String*> *names)
 {
 	Data::ArrayList<Text::String*> *keys = this->dbMap.GetKeys();
 	UOSInt i = 0;
@@ -295,7 +289,7 @@ UOSInt DB::TextDB::QueryTableNames(Text::CString schemaName, Data::ArrayListNN<T
 	return j;
 }
 
-DB::DBReader *DB::TextDB::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListNN<Text::String> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+DB::DBReader *DB::TextDB::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	DBData *data;
 	if (tableName.v == 0)
@@ -347,11 +341,12 @@ DB::TableDef *DB::TextDB::GetTableDef(Text::CString schemaName, Text::CString ta
 	DB::TableDef *tab;
 	DB::ColDef *colDef;
 	NEW_CLASS(tab, DB::TableDef(schemaName, data->name->ToCString()));
-	Data::ArrayIterator<NotNullPtr<const UTF8Char>> it = data->colList.Iterator();
-	while (it.HasNext())
+	UOSInt i = 0;
+	UOSInt j = data->colList.GetCount();
+	while (i < j)
 	{
-		NEW_CLASS(colDef, DB::ColDef(Text::String::NewEmpty()));
-		colDef->SetColName(it.Next());
+		NEW_CLASS(colDef, DB::ColDef(0));
+		colDef->SetColName(data->colList.GetItem(i));
 		colDef->SetColSize(256);
 		colDef->SetColType(DB::DBUtil::CT_VarUTF8Char);
 		colDef->SetAttr(CSTR_NULL);

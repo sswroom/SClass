@@ -27,7 +27,7 @@ namespace Text
 			{
 				AddressType type;
 				Text::String *name;
-				NotNullPtr<Text::String> address;
+				Text::String *address;
 			} MailAddress;
 
 		public:

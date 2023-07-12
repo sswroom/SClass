@@ -10,7 +10,7 @@ namespace Media
 	class FontRenderer : public IO::ParsedObject
 	{
 	public:
-		FontRenderer(NotNullPtr<Text::String> sourceName);
+		FontRenderer(Text::String *sourceName);
 		virtual ~FontRenderer();
 
 		virtual IO::ParserType GetParserType() const;

@@ -6,7 +6,7 @@
 #include "SSWR/AVIRead/AVIRSAMLDecryptForm.h"
 #include "UI/MessageDialog.h"
 
-void __stdcall SSWR::AVIRead::AVIRSAMLDecryptForm::OnFormFiles(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles)
+void __stdcall SSWR::AVIRead::AVIRSAMLDecryptForm::OnFormFiles(void *userObj, Text::String **files, UOSInt nFiles)
 {
 	SSWR::AVIRead::AVIRSAMLDecryptForm *me = (SSWR::AVIRead::AVIRSAMLDecryptForm*)userObj;
 	Parser::ParserList *parsers = me->core->GetParserList();

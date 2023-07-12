@@ -27,8 +27,8 @@ namespace SSWR
 			UI::GUILabel *lblBinBuff;
 			UI::GUIHexFileView *hfvBinBuff;
 
-			static void __stdcall OnFileDrop(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles);
-			Bool LoadFile(NotNullPtr<Text::String> fileName);
+			static void __stdcall OnFileDrop(void *userObj, Text::String **files, UOSInt nFiles);
+			Bool LoadFile(Text::String *fileName);
 			Bool LoadData(IO::StreamData *jsonFD, IO::StreamData *binBuffFD);
 		public:
 			AVIRGLBViewerForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);

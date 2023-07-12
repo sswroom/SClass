@@ -39,8 +39,8 @@ namespace SSWR
 			typedef struct
 			{
 				Text::CString fileName;
-				NotNullPtr<Text::String> filePath;
-				NotNullPtr<Text::String> cacheFile;
+				Text::String *filePath;
+				Text::String *cacheFile;
 				ImageSetting setting;
 				Media::DrawImage *previewImg;
 				Media::DrawImage *previewImg2;

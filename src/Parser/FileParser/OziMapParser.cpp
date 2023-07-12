@@ -75,7 +75,7 @@ IO::ParsedObject *Parser::FileParser::OziMapParser::ParseFileHdr(IO::StreamData 
 	sptr = reader.ReadLine(sbuff, 1024); //File Name
 	if (sptr)
 	{
-		fileName = Text::String::New(sbuff, (UOSInt)(sptr - sbuff)).Ptr();
+		fileName = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 	}
 	else
 	{
@@ -199,8 +199,8 @@ IO::ParsedObject *Parser::FileParser::OziMapParser::ParseFileHdr(IO::StreamData 
 				NEW_CLASS(shimg, Media::SharedImage(imgList, true));
 				NEW_CLASS(vimg, Math::Geometry::VectorImage(csys->GetSRID(), shimg, Math::Coord2DDbl(0, 0), Math::Coord2DDbl(imgW, imgH), false, CSTRP(sbuff, sptr), 0, 0));
 				UOSInt i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
-				NotNullPtr<Text::String> s = Text::String::New(&sbuff[i + 1], (UOSInt)(sptr - &sbuff[i + 1]));
-				NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, fd->GetFullName(), 0, (const UTF8Char**)0, csys, 0, s.Ptr()));
+				Text::String *s = Text::String::New(&sbuff[i + 1], (UOSInt)(sptr - &sbuff[i + 1]));
+				NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, fd->GetFullName(), 0, (const UTF8Char**)0, csys, 0, s));
 				s->Release();
 				lyr->AddVector(vimg, (const UTF8Char**)0);
 			}

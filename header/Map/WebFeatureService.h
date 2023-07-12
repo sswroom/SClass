@@ -1,6 +1,5 @@
 #ifndef _SM_MAP_WEBFEATURESERVICE
 #define _SM_MAP_WEBFEATURESERVICE
-#include "Data/ArrayListNN.h"
 #include "Map/MapDrawLayer.h"
 #include "Math/RectAreaDbl.h"
 #include "Net/SSLEngine.h"
@@ -16,9 +15,9 @@ namespace Map
 		struct FeatureType
 		{
 			Math::RectAreaDbl wgs84Bounds;
-			NotNullPtr<Text::String> name;
-			NotNullPtr<Text::String> title;
-			NotNullPtr<Text::String> crs;
+			Text::String *name;
+			Text::String *title;
+			Text::String *crs;
 		};
 	public:
 		enum class Version
@@ -30,7 +29,7 @@ namespace Map
 		};
 	private:
 		Text::EncodingFactory *encFact;
-		NotNullPtr<Text::String> wfsURL;
+		Text::String *wfsURL;
 		Net::SocketFactory *sockf;
 		Net::SSLEngine *ssl;
 
@@ -46,7 +45,7 @@ namespace Map
 
 		Bool IsError() const;
 		void SetFeature(UOSInt index);
-		UOSInt GetFeatureNames(Data::ArrayListNN<Text::String> *nameList) const;
+		UOSInt GetFeatureNames(Data::ArrayList<Text::String*> *nameList) const;
 
 		Map::MapDrawLayer *LoadAsLayer();
 	};

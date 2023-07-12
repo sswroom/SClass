@@ -10,7 +10,7 @@ namespace Media
 	private:
 		void *hPrinter;
 		UInt8 *devMode;
-		NotNullPtr<Text::String> printerName;
+		Text::String *printerName;
 		
 	public:
 		static UOSInt GetPrinterCount();
@@ -20,7 +20,7 @@ namespace Media
 	private:
 		Printer(const WChar *printerName, UInt8 *devMode, UOSInt devModeSize);
 	public:
-		Printer(NotNullPtr<Text::String> printerName);
+		Printer(Text::String *printerName);
 		Printer(Text::CString printerName);
 		~Printer();
 		

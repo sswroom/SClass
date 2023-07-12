@@ -41,14 +41,14 @@ namespace Net
 
 		struct TopicInfo
 		{
-			NotNullPtr<Text::String> topic;
+			Text::String *topic;
 			UInt8 *message;
 			UOSInt msgSize;
 		};
 		
 		struct SubscribeInfo
 		{
-			NotNullPtr<Text::String> topic;
+			Text::String *topic;
 			IO::Stream *stm;
 			void *cliData;
 		};

@@ -602,9 +602,9 @@ Bool SSWR::AVIRead::AVIREmailServerForm::Login(Text::CString user, Text::CString
 	UOSInt index = this->userMap.GetC(user);
 	if (index == 0)
 	{
-		NotNullPtr<Text::String> str = Text::String::New(user);
+		Text::String *str = Text::String::New(user);
 		index = this->userList.Add(str) + 1;
-		this->userMap.PutNN(str, index);
+		this->userMap.Put(str, index);
 	}
 	*userId = (Int32)index;
 	return true;

@@ -1,6 +1,5 @@
 #ifndef _SM_NET_PUSHMANAGER
 #define _SM_NET_PUSHMANAGER
-#include "Data/ArrayListNN.h"
 #include "Data/FastStringMap.h"
 #include "IO/LogFile.h"
 #include "Net/SocketFactory.h"
@@ -20,7 +19,7 @@ namespace Net
 
 		struct DeviceInfo2
 		{
-			NotNullPtr<Text::String> token;
+			Text::String *token;
 			Text::String *userName;
 			DeviceType devType;
 			Net::SocketUtil::AddressInfo subscribeAddr;
@@ -32,13 +31,13 @@ namespace Net
 
 		struct UserInfo
 		{
-			NotNullPtr<Text::String> userName;
+			Text::String *userName;
 			Data::FastStringMap<DeviceInfo2*> devMap;
 		};
 
 		Net::SocketFactory *sockf;
 		Net::SSLEngine *ssl;
-		NotNullPtr<Text::String> fcmKey;
+		Text::String *fcmKey;
 		IO::LogTool *log;
 
 		Sync::Mutex dataMut;
@@ -56,7 +55,7 @@ namespace Net
 		Bool Subscribe(Text::CString token, Text::CString userName, DeviceType devType, const Net::SocketUtil::AddressInfo *remoteAddr, Text::CString devModel);
 		Bool Unsubscribe(Text::CString token);
 		Bool Send(Data::ArrayList<Text::String*> *userNames, Text::String *message);
-		UOSInt GetUsers(Data::ArrayListNN<Text::String> *users, Sync::MutexUsage *mutUsage);
+		UOSInt GetUsers(Data::ArrayList<Text::String*> *users, Sync::MutexUsage *mutUsage);
 		const Data::ReadingList<DeviceInfo2*> *GetDevices(Sync::MutexUsage *mutUsage);
 		void LogMessage(Text::CString msg, IO::LogHandler::LogLevel logLev);
 

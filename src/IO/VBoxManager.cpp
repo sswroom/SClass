@@ -43,8 +43,8 @@ IO::VBoxManager::VBoxManager()
 	if (sb.leng > 0)
 	{
 		sb.TrimWSCRLF();
-		this->progPath = Text::String::New(UTF8STRC("vboxmanage")).Ptr();
-		this->version = Text::String::New(sb.ToCString()).Ptr();
+		this->progPath = Text::String::New(UTF8STRC("vboxmanage"));
+		this->version = Text::String::New(sb.ToCString());
 		this->GetVMList(&this->vms);
 	}
 }

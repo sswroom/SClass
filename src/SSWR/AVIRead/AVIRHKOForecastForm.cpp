@@ -52,8 +52,8 @@ void SSWR::AVIRead::AVIRHKOForecastForm::Reload(Net::HKOWeather::Language lang)
 			this->lvForecast->SetSubItem(i, 3, CSTRP(sbuff, sptr));
 			this->lvForecast->SetSubItem(i, 4, Net::HKOWeather::ForecastIconGetName(forecast->weatherIcon));
 			this->lvForecast->SetSubItem(i, 5, Net::HKOWeather::PSRGetName(forecast->psr));
-			this->lvForecast->SetSubItem(i, 6, Text::String::OrEmpty(forecast->wind));
-			this->lvForecast->SetSubItem(i, 7, Text::String::OrEmpty(forecast->weather));
+			this->lvForecast->SetSubItem(i, 6, forecast->wind);
+			this->lvForecast->SetSubItem(i, 7, forecast->weather);
 			
 			i++;
 		}

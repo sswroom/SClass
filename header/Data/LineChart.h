@@ -35,7 +35,7 @@ namespace Data
 		class ChartData
 		{
 		public:
-			NotNullPtr<Text::String> name;
+			Text::String *name;
 			void *data;
 			Data::Chart::DataType dataType;
 			UInt32 lineColor;
@@ -78,7 +78,7 @@ namespace Data
 		Double lineThick;
 		Double barLength;
 
-		NotNullPtr<Text::String> fntName;
+		Text::String *fntName;
 		Double fntSizePt;
 
 		Bool hasXRangeDate;

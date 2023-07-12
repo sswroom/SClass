@@ -8,7 +8,7 @@
 
 OSInt IO::ServiceManager::ServiceComparator::Compare(ServiceItem* a, ServiceItem* b) const
 {
-	return a->name->CompareTo(b->name.Ptr());
+	return a->name->CompareTo(b->name);
 }
 
 IO::ServiceManager::ServiceManager()

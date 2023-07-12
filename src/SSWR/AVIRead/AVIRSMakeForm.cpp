@@ -16,7 +16,7 @@ void __stdcall SSWR::AVIRead::AVIRSMakeForm::OnProgSelChg(void *userObj)
 		Data::ArrayListString headerList;
 		Int64 latestTime;
 		Bool progGroup;
-		NotNullPtr<Text::String> s;
+		Text::String *s;
 		UOSInt i;
 		UOSInt j;
 		const IO::SMake::ProgramItem *prog;
@@ -26,7 +26,7 @@ void __stdcall SSWR::AVIRead::AVIRSMakeForm::OnProgSelChg(void *userObj)
 		j = objList.GetCount();
 		while (i < j)
 		{
-			s = Text::String::OrEmpty(objList.GetKey(i));
+			s = objList.GetKey(i);
 			me->lbProgObject->AddItem(s, 0);
 			prog = me->smake->GetProgItem(s->ToCString());
 			if (prog && prog->srcFile)
@@ -40,7 +40,7 @@ void __stdcall SSWR::AVIRead::AVIRSMakeForm::OnProgSelChg(void *userObj)
 		j = procList.GetCount();
 		while (i < j)
 		{
-			s = Text::String::OrEmpty(procList.GetKey(i));
+			s = procList.GetKey(i);
 			if (s->v[0] == '@')
 			{
 				me->lbProgSource->AddItem({s->v + 1, s->leng - 1}, 0);
@@ -56,7 +56,7 @@ void __stdcall SSWR::AVIRead::AVIRSMakeForm::OnProgSelChg(void *userObj)
 		j = headerList.GetCount();
 		while (i < j)
 		{
-			s = Text::String::OrEmpty(headerList.GetItem(i));
+			s = headerList.GetItem(i);
 			me->lbProgHeader->AddItem(s, 0);
 			i++;
 		}
@@ -79,7 +79,7 @@ void __stdcall SSWR::AVIRead::AVIRSMakeForm::OnProgGroupSelChg(void *userObj)
 			UOSInt j = prog->subItems.GetCount();
 			while (i < j)
 			{
-				me->lbProgGroupItems->AddItem(Text::String::OrEmpty(prog->subItems.GetItem(i)), 0);
+				me->lbProgGroupItems->AddItem(prog->subItems.GetItem(i), 0);
 				i++;
 			}
 		}
@@ -151,19 +151,19 @@ SSWR::AVIRead::AVIRSMakeForm::AVIRSMakeForm(UI::GUIClientControl *parent, UI::GU
 	this->lvConfig->AddColumn(CSTR("Value"), 450);
 
 	Data::ArrayList<Text::String*> progList;
-	NotNullPtr<Text::String> progName;
+	Text::String *progName;
 	UOSInt i = 0;
 	UOSInt j = this->smake->GetProgList(&progList);
 	while (i < j)
 	{
-		progName = Text::String::OrEmpty(progList.GetItem(i));
+		progName = progList.GetItem(i);
 		if (this->smake->IsProgGroup(progName->ToCString()))
 		{
-			this->lbProgGroup->AddItem(progName, (void*)progName.Ptr());
+			this->lbProgGroup->AddItem(progName, (void*)progName);
 		}
 		else
 		{
-			this->lbProg->AddItem(progName, (void*)progName.Ptr());
+			this->lbProg->AddItem(progName, (void*)progName);
 		}
 		i++;
 	}

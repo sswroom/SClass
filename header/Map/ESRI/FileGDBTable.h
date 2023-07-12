@@ -11,7 +11,7 @@ namespace Map
 		class FileGDBTable
 		{
 		private:
-			NotNullPtr<Text::String> tableName;
+			Text::String *tableName;
 			IO::StreamData *gdbtableFD;
 			IO::StreamData *gdbtablxFD;
 			UOSInt indexCnt;
@@ -23,8 +23,8 @@ namespace Map
 			~FileGDBTable();
 
 			Bool IsError();
-			NotNullPtr<Text::String> GetName() const;
-			DB::DBReader *OpenReader(Data::ArrayListNN<Text::String> *columnNames, UOSInt dataOfst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *conditions);	
+			Text::String *GetName();
+			DB::DBReader *OpenReader(Data::ArrayList<Text::String*> *columnNames, UOSInt dataOfst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *conditions);	
 		};
 	}
 }

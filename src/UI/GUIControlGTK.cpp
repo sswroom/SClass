@@ -295,7 +295,7 @@ void UI::GUIControl::SetFont(const UTF8Char *name, UOSInt nameLen, Double ptSize
 	SDEL_STRING(this->fontName);
 	if (name)
 	{
-		this->fontName = Text::String::New(name, nameLen).Ptr();
+		this->fontName = Text::String::New(name, nameLen);
 	}
 	this->fontHeightPt = ptSize;
 	this->fontIsBold = isBold;
@@ -845,8 +845,8 @@ Media::DrawFont *UI::GUIControl::CreateDrawFont(Media::DrawImage *img)
 			family = "Arial";
 		}
 		Media::DrawFont *font;
-		NotNullPtr<Text::String> fntName = Text::String::NewNotNullSlow((const UTF8Char*)family);
-		NEW_CLASS(font, Media::GTKDrawFont(fntName.Ptr(), height, (OSInt)((style & PANGO_STYLE_ITALIC)?CAIRO_FONT_SLANT_ITALIC:CAIRO_FONT_SLANT_NORMAL), (weight < PANGO_WEIGHT_BOLD)?0:1));
+		Text::String *fntName = Text::String::NewNotNullSlow((const UTF8Char*)family);
+		NEW_CLASS(font, Media::GTKDrawFont(fntName, height, (OSInt)((style & PANGO_STYLE_ITALIC)?CAIRO_FONT_SLANT_ITALIC:CAIRO_FONT_SLANT_NORMAL), (weight < PANGO_WEIGHT_BOLD)?0:1));
 		fntName->Release();
 		pango_font_description_free(fnt);
 		return font;

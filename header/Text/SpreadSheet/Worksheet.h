@@ -65,7 +65,7 @@ namespace Text
 			} RowData;
 
 		private:
-			NotNullPtr<Text::String> name;
+			Text::String *name;
 			Data::ArrayList<RowData*> *rows;
 			Data::ArrayListDbl *colWidthsPt;
 			Data::ArrayList<WorksheetDrawing*> *drawings;
@@ -93,7 +93,7 @@ namespace Text
 			CellData *CloneCell(CellData *cell, const IStyleCtrl *srcCtrl, IStyleCtrl *newCtrl);
 			void FreeDrawing(WorksheetDrawing *drawing);
 		public:
-			Worksheet(NotNullPtr<Text::String> name);
+			Worksheet(Text::String *name);
 			Worksheet(Text::CString name);
 			~Worksheet();
 
@@ -125,8 +125,8 @@ namespace Text
 			void SetDefRowHeightPt(Double defRowHeightPt);
 			Double GetDefRowHeightPt();
 
-			NotNullPtr<Text::String> GetName() const;
-			Bool SetCellString(UOSInt row, UOSInt col, NotNullPtr<Text::String> val);
+			Text::String *GetName();
+			Bool SetCellString(UOSInt row, UOSInt col, Text::String *val);
 			Bool SetCellString(UOSInt row, UOSInt col, Text::CString val);
 			Bool SetCellDate(UOSInt row, UOSInt col, Data::DateTime *val);
 			Bool SetCellDouble(UOSInt row, UOSInt col, Double val);
@@ -136,7 +136,7 @@ namespace Text
 			Bool SetCellStyleBorderBottom(UOSInt row, UOSInt col, IStyleCtrl *wb, UInt32 color, BorderType borderType);
 			Bool SetCellURL(UOSInt row, UOSInt col, Text::String *url);
 			Bool SetCellURL(UOSInt row, UOSInt col, Text::CString url);
-			Bool SetCellString(UOSInt row, UOSInt col, CellStyle *style, NotNullPtr<Text::String> val);
+			Bool SetCellString(UOSInt row, UOSInt col, CellStyle *style, Text::String *val);
 			Bool SetCellString(UOSInt row, UOSInt col, CellStyle *style, Text::CString val);
 			Bool SetCellDate(UOSInt row, UOSInt col, CellStyle *style, Data::DateTime *val);
 			Bool SetCellDouble(UOSInt row, UOSInt col, CellStyle *style, Double val);

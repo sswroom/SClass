@@ -629,7 +629,7 @@ Bool Net::OpenSSLEngine::GenerateCert(Text::CString country, Text::CString compa
 		int readSize = BIO_read(bio2, buff, 4096);
 		if (readSize > 0)
 		{
-			NotNullPtr<Text::String> fileName = Text::String::New(UTF8STRC("Certificate.key"));
+			Text::String *fileName = Text::String::New(UTF8STRC("Certificate.key"));
 			pobjKey = Parser::FileParser::X509Parser::ParseBuff(buff, (UInt32)readSize, fileName);
 			fileName->Release();
 		}
@@ -637,7 +637,7 @@ Bool Net::OpenSSLEngine::GenerateCert(Text::CString country, Text::CString compa
 		readSize = BIO_read(bio2, buff, 4096);
 		if (readSize > 0)
 		{
-			NotNullPtr<Text::String> fileName = Text::String::New(UTF8STRC("Certificate.crt"));
+			Text::String *fileName = Text::String::New(UTF8STRC("Certificate.crt"));
 			pobjCert = (Crypto::Cert::X509Cert*)Parser::FileParser::X509Parser::ParseBuff(buff, (UInt32)readSize, fileName);
 			fileName->Release();
 		}
@@ -717,7 +717,7 @@ Crypto::Cert::X509Key *Net::OpenSSLEngine::GenerateRSAKey()
 		int readSize = BIO_read(bio2, buff, 4096);
 		if (readSize > 0)
 		{
-			NotNullPtr<Text::String> fileName = Text::String::New(UTF8STRC("Certificate.key"));
+			Text::String *fileName = Text::String::New(UTF8STRC("Certificate.key"));
 			pobjKey = Parser::FileParser::X509Parser::ParseBuff(buff, (UInt32)readSize, fileName);
 			if (pobjKey && pobjKey->GetFileType() == Crypto::Cert::X509File::FileType::PrivateKey)
 			{

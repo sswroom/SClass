@@ -19,7 +19,7 @@ namespace SSWR
 			typedef struct
 			{
 				const UTF8Char *mainTitle;
-				NotNullPtr<Text::String> type;
+				Text::String *type;
 				const UTF8Char *chapter;
 				const UTF8Char *chapterTitle;
 				Text::CString videoFormat;
@@ -36,7 +36,7 @@ namespace SSWR
 
 			typedef struct
 			{
-				NotNullPtr<Text::String> fname;
+				Text::String *fname;
 				UInt64 fSize;
 				Text::CString cate;
 				Int32 videoId;

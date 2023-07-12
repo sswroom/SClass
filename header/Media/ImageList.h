@@ -1,7 +1,6 @@
 #ifndef _SM_MEDIA_IMAGELIST
 #define _SM_MEDIA_IMAGELIST
 #include "Data/ArrayList.h"
-#include "Data/ArrayListNN.h"
 #include "Data/ArrayListUInt32.h"
 #include "IO/ParsedObject.h"
 #include "Media/Image.h"
@@ -53,7 +52,7 @@ namespace Media
 		Data::ArrayList<ValueType> valTypeI64;
 		Data::ArrayList<Int64> valI64;
 		Data::ArrayList<ValueType> valTypeStr;
-		Data::ArrayListNN<Text::String> valStr;
+		Data::ArrayList<Text::String *> valStr;
 
 		Math::Size2D<UOSInt> thermoSize;
 		UOSInt thermoBPP;
@@ -63,7 +62,7 @@ namespace Media
 		Double thermoBKGTemp;
 		ThermoType thermoType;
 
-		ImageList(NotNullPtr<Text::String> name);
+		ImageList(Text::String *name);
 		ImageList(Text::CString name);
 		virtual ~ImageList();
 

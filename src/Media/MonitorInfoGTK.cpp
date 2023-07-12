@@ -82,7 +82,7 @@ Media::MonitorInfo::MonitorInfo(MonitorHandle *hMonitor)
 		{
 			this->name = Text::String::NewNotNullSlow(info.monitorName);
 			sptr = Text::StrHexVal16(Text::StrConcat(sbuff, info.vendorName), info.productCode);
-			this->monId = Text::String::New(sbuff, (UOSInt)(sptr - sbuff)).Ptr();
+			this->monId = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 		}
 		else
 		{
@@ -101,42 +101,42 @@ Media::MonitorInfo::MonitorInfo(MonitorHandle *hMonitor)
 
 Media::MonitorInfo::~MonitorInfo()
 {
-	this->name->Release();
+	SDEL_STRING(this->name);
 	SDEL_STRING(this->desc);
 	SDEL_STRING(this->monId);
 }
 
-NotNullPtr<Text::String> Media::MonitorInfo::GetName() const
+Text::String *Media::MonitorInfo::GetName()
 {
 	return this->name;
 }
 
-Text::String *Media::MonitorInfo::GetDesc() const
+Text::String *Media::MonitorInfo::GetDesc()
 {
 	return this->desc;
 }
 
-Text::String *Media::MonitorInfo::GetMonitorID() const
+Text::String *Media::MonitorInfo::GetMonitorID()
 {
 	return this->monId;
 }
 
-Int32 Media::MonitorInfo::GetLeft() const
+Int32 Media::MonitorInfo::GetLeft()
 {
 	return this->left;
 }
 
-Int32 Media::MonitorInfo::GetTop() const
+Int32 Media::MonitorInfo::GetTop()
 {
 	return this->top;
 }
 
-Int32 Media::MonitorInfo::GetPixelWidth() const
+Int32 Media::MonitorInfo::GetPixelWidth()
 {
 	return this->right - this->left;
 }
 
-Int32 Media::MonitorInfo::GetPixelHeight() const
+Int32 Media::MonitorInfo::GetPixelHeight()
 {
 	return this->bottom - this->top;
 }

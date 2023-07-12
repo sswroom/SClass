@@ -60,7 +60,7 @@ Bool Net::WebServer::WebServiceHandler::ProcessRequest(Net::WebServer::IWebReque
 	{
 		return true;
 	}
-	if (this->rootDir->leng > 0)
+	if (this->rootDir && this->rootDir->leng > 0)
 	{
 		return this->DoFileRequest(req, resp, subReq);
 	}
@@ -85,7 +85,7 @@ void Net::WebServer::WebServiceHandler::AddService(Text::CString svcPath, Net::W
 	{
 		NEW_CLASS(service, Net::WebServer::WebServiceHandler::ServiceInfo());
 		service->svcPath = Text::String::New(svcPath);
-		this->services.PutNN(service->svcPath, service);
+		this->services.Put(service->svcPath, service);
 	}
 	service->funcs.Put((Int32)reqMeth, func);
 }

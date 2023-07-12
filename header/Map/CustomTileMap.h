@@ -7,8 +7,8 @@ namespace Map
 	class CustomTileMap : public Map::MercatorTileMap
 	{
 	private:
-		NotNullPtr<Text::String> url;
-		NotNullPtr<Text::String> name;
+		Text::String *url;
+		Text::String *name;
 		UOSInt concurrCnt;
 		Math::RectAreaDbl bounds;
 

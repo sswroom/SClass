@@ -147,7 +147,7 @@ Text::SpreadSheet::CellStyle *Text::SpreadSheet::CellStyle::SetID(const UTF8Char
 	if (id == 0)
 		return this;
 	SDEL_TEXT(this->id)
-	this->id = Text::StrCopyNew(id).Ptr();
+	this->id = Text::StrCopyNew(id);
 	return this;
 }
 

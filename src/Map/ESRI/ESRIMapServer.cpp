@@ -204,9 +204,9 @@ Map::ESRI::ESRIMapServer::ESRIMapServer(Text::CString url, Net::SocketFactory *s
 
 Map::ESRI::ESRIMapServer::~ESRIMapServer()
 {
-	this->url->Release();
+	SDEL_STRING(this->url);
 	SDEL_CLASS(this->csys);
-	this->name->Release();
+	SDEL_STRING(this->name);
 }
 
 Bool Map::ESRI::ESRIMapServer::IsError() const
@@ -248,7 +248,7 @@ void Map::ESRI::ESRIMapServer::SetSRID(UInt32 srid)
 	}
 }
 
-NotNullPtr<Text::String> Map::ESRI::ESRIMapServer::GetURL() const
+Text::String *Map::ESRI::ESRIMapServer::GetURL() const
 {
 	return this->url;
 }
@@ -341,7 +341,7 @@ Bool Map::ESRI::ESRIMapServer::TileLoadToFile(Text::CString fileName, UOSInt lev
 	return succ;
 }
 
-NotNullPtr<Text::String> Map::ESRI::ESRIMapServer::GetName() const
+Text::String *Map::ESRI::ESRIMapServer::GetName() const
 {
 	return this->name;
 }
@@ -367,7 +367,7 @@ Bool Map::ESRI::ESRIMapServer::CanQuery() const
 	return true;
 }
 
-Bool Map::ESRI::ESRIMapServer::QueryInfos(Math::Coord2DDbl coord, Math::RectAreaDbl bounds, UInt32 width, UInt32 height, Double dpi, Data::ArrayList<Math::Geometry::Vector2D*> *vecList, Data::ArrayList<UOSInt> *valueOfstList, Data::ArrayListNN<Text::String> *nameList, Data::ArrayList<Text::String*> *valueList)
+Bool Map::ESRI::ESRIMapServer::QueryInfos(Math::Coord2DDbl coord, Math::RectAreaDbl bounds, UInt32 width, UInt32 height, Double dpi, Data::ArrayList<Math::Geometry::Vector2D*> *vecList, Data::ArrayList<UOSInt> *valueOfstList, Data::ArrayList<Text::String*> *nameList, Data::ArrayList<Text::String*> *valueList)
 {
 	// https://services.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer/identify?geometryType=esriGeometryPoint&geometry=114.2,22.4&sr=4326&tolerance=0&mapExtent=113,22,115,23&imageDisplay=400,300,96&f=json
 	UTF8Char url[1024];
@@ -450,7 +450,7 @@ Bool Map::ESRI::ESRIMapServer::QueryInfos(Math::Coord2DDbl coord, Math::RectArea
 										sb.ClearStr();
 										attr->GetObjectValue(name->ToCString())->ToString(&sb);
 										nameList->Add(name->Clone());
-										valueList->Add(Text::String::New(sb.ToCString()).Ptr());
+										valueList->Add(Text::String::New(sb.ToCString()));
 										k++;
 									}
 								}

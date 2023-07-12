@@ -29,13 +29,13 @@ namespace Net
 
 		typedef struct
 		{
-			NotNullPtr<Text::String> type;
+			Text::String *type;
 			Text::String *value;
 		} SearchResItem;
 
 		typedef struct
 		{
-			NotNullPtr<Text::String> name;
+			Text::String *name;
 			Bool isRef;
 			Data::ArrayList<SearchResItem*> *items;
 		} SearchResObject;

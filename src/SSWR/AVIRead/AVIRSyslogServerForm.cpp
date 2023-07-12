@@ -57,7 +57,7 @@ void __stdcall SSWR::AVIRead::AVIRSyslogServerForm::OnClientSelChg(void *userObj
 void __stdcall SSWR::AVIRead::AVIRSyslogServerForm::OnLogSelChg(void *userObj)
 {
 	SSWR::AVIRead::AVIRSyslogServerForm *me = (SSWR::AVIRead::AVIRSyslogServerForm*)userObj;
-	NotNullPtr<Text::String> s = Text::String::OrEmpty(me->lbLog->GetSelectedItemTextNew());
+	Text::String *s = Text::String::OrEmpty(me->lbLog->GetSelectedItemTextNew());
 	me->txtLog->SetText(s->ToCString());
 	s->Release();
 }
@@ -72,7 +72,7 @@ void __stdcall SSWR::AVIRead::AVIRSyslogServerForm::OnClientLog(void *userObj, U
 	{
 		ipLog = MemAlloc(IPLog, 1);
 		ipLog->ip = ip;
-		NEW_CLASS(ipLog->logMessage, Data::ArrayListNN<Text::String>());
+		NEW_CLASS(ipLog->logMessage, Data::ArrayList<Text::String*>());
 		me->ipMap.Put(ip, ipLog);
 		me->ipListUpd = true;
 	}
@@ -121,7 +121,7 @@ void __stdcall SSWR::AVIRead::AVIRSyslogServerForm::OnTimerTick(void *userObj)
 			i = ipLog->logMessage->GetCount();
 			while (i-- > 0)
 			{
-				me->lbLog->AddItem(Text::String::OrEmpty(ipLog->logMessage->GetItem(i)), 0);
+				me->lbLog->AddItem(ipLog->logMessage->GetItem(i), 0);
 			}
 		}
 		mutUsage.EndUse();

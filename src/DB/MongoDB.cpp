@@ -34,7 +34,7 @@ DB::MongoDB::MongoDB(Text::CString url, Text::CString database, IO::LogTool *log
 	this->client = client;
 	if (database.v)
 	{
-		this->database = Text::String::New(database).Ptr();
+		this->database = Text::String::New(database);
 	}
 	else
 	{
@@ -55,7 +55,7 @@ DB::MongoDB::~MongoDB()
 	}
 }
 
-UOSInt DB::MongoDB::QueryTableNames(Text::CString schemaName, Data::ArrayListNN<Text::String> *names)
+UOSInt DB::MongoDB::QueryTableNames(Text::CString schemaName, Data::ArrayList<Text::String*> *names)
 {
 	if (this->database == 0 || this->client == 0 || schemaName.leng != 0)
 		return 0;
@@ -68,7 +68,7 @@ UOSInt DB::MongoDB::QueryTableNames(Text::CString schemaName, Data::ArrayListNN<
 	SDEL_STRING(this->errorMsg);
 	if (strv == 0)
 	{
-		this->errorMsg = Text::String::NewNotNullSlow((const UTF8Char*)error.message).Ptr();
+		this->errorMsg = Text::String::NewNotNullSlow((const UTF8Char*)error.message);
 	}
 	else
 	{
@@ -139,7 +139,7 @@ void DB::MongoDB::Reconnect()
 
 }
 
-UOSInt DB::MongoDB::GetDatabaseNames(Data::ArrayListNN<Text::String> *names)
+UOSInt DB::MongoDB::GetDatabaseNames(Data::ArrayList<Text::String*> *names)
 {
 	bson_error_t error;
 	SDEL_STRING(this->errorMsg);
@@ -148,7 +148,7 @@ UOSInt DB::MongoDB::GetDatabaseNames(Data::ArrayListNN<Text::String> *names)
 	char **strv = mongoc_client_get_database_names_with_opts((mongoc_client_t*)this->client, 0, &error);
 	if (strv == 0)
 	{
-		this->errorMsg = Text::String::NewNotNullSlow((const UTF8Char*)error.message).Ptr();
+		this->errorMsg = Text::String::NewNotNullSlow((const UTF8Char*)error.message);
 		return 0;
 	}
 	else
@@ -164,7 +164,7 @@ UOSInt DB::MongoDB::GetDatabaseNames(Data::ArrayListNN<Text::String> *names)
 	}
 }
 
-void DB::MongoDB::FreeDatabaseNames(Data::ArrayListNN<Text::String> *names)
+void DB::MongoDB::FreeDatabaseNames(Data::ArrayList<Text::String*> *names)
 {
 	UOSInt i = names->GetCount();
 	while (i-- > 0)
@@ -285,7 +285,7 @@ Text::String *DB::MongoDBReader::GetNewStr(UOSInt colIndex)
 	if (this->doc)
 	{
 		char *str = bson_as_canonical_extended_json((const bson_t*)this->doc, 0);
-		Text::String *ret = Text::String::NewNotNullSlow((const UTF8Char*)str).Ptr();
+		Text::String *ret = Text::String::NewNotNullSlow((const UTF8Char*)str);
 		bson_free(str);
 		return ret;
 	}

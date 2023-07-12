@@ -221,7 +221,7 @@ void SSWR::DataSync::SyncServer::DataParsed(IO::Stream *stm, void *stmObj, Int32
 					NEW_CLASS(svr, ServerInfo());
 					svr->serverId = serverId;
 					sb.AppendC((const UTF8Char*)&cmd[5], cmd[4]);
-					svr->serverName = Text::StrCopyNew(sb.ToString()).Ptr();
+					svr->serverName = Text::StrCopyNew(sb.ToString());
 					svr->isLocal = false;
 					svr->cli = (Net::TCPClient*)stm;
 					this->svrMut.LockWrite();

@@ -291,7 +291,7 @@ void DB::MySQLConn::Rollback(void *tran)
 {
 }
 
-UOSInt DB::MySQLConn::QueryTableNames(Text::CString schemaName, Data::ArrayListNN<Text::String> *names)
+UOSInt DB::MySQLConn::QueryTableNames(Text::CString schemaName, Data::ArrayList<Text::String*> *names)
 {
 	if (schemaName.leng != 0)
 		return 0;
@@ -313,7 +313,7 @@ UOSInt DB::MySQLConn::QueryTableNames(Text::CString schemaName, Data::ArrayListN
 	return names->GetCount() - initCnt;
 }
 
-DB::DBReader *DB::MySQLConn::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListNN<Text::String> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+DB::DBReader *DB::MySQLConn::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;

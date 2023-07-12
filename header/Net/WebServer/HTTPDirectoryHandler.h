@@ -33,21 +33,21 @@ namespace Net
 
 			typedef struct
 			{
-				NotNullPtr<Text::String> fileName;
+				Text::String *fileName;
 				Data::Timestamp modTime;
 				IO::PackageFile *packageFile;
 			} PackageInfo;
 
 			typedef struct
 			{
-				NotNullPtr<Text::String> reqPath;
-				NotNullPtr<Text::String> statFileName;
+				Text::String *reqPath;
+				Text::String *statFileName;
 				Data::FastStringMap<UInt32> *cntMap;
 				Bool updated;
 			} StatInfo;
 			
 		protected:
-			NotNullPtr<Text::String> rootDir;
+			Text::String *rootDir;
 		private:
 			Bool allowBrowsing;
 			Bool allowUpload;
@@ -70,7 +70,7 @@ namespace Net
 			void StatLoad(StatInfo *stat);
 			void StatSave(StatInfo *stat);
 		public:
-			HTTPDirectoryHandler(NotNullPtr<Text::String> rootDir, Bool allowBrowsing, UInt64 fileCacheSize, Bool allowUpload);
+			HTTPDirectoryHandler(Text::String *rootDir, Bool allowBrowsing, UInt64 fileCacheSize, Bool allowUpload);
 			HTTPDirectoryHandler(Text::CString rootDir, Bool allowBrowsing, UInt64 fileCacheSize, Bool allowUpload);
 
 		protected:

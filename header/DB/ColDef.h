@@ -50,7 +50,7 @@ namespace DB
 			PathM
 		};
 	private:
-		NotNullPtr<Text::String> colName;
+		Text::String *colName;
 		DB::DBUtil::ColType colType;
 		Text::String *nativeType;
 		UOSInt colSize;
@@ -66,10 +66,10 @@ namespace DB
 		static void AppendDefVal(DB::SQLBuilder *sql, Text::CString defVal, UOSInt colSize);
 	public:
 		ColDef(Text::CString colName);
-		ColDef(NotNullPtr<Text::String> colName);
+		ColDef(Text::String *colName);
 		~ColDef();
 
-		NotNullPtr<Text::String> GetColName() const;
+		Text::String *GetColName() const;
 		DB::DBUtil::ColType GetColType() const;
 		Text::String *GetNativeType() const;
 		UOSInt GetColSize() const;
@@ -84,9 +84,9 @@ namespace DB
 		Text::String *GetAttr() const;
 		Bool GetDefVal(DB::SQLBuilder *sql) const;
 
-		void SetColName(NotNullPtr<const UTF8Char> colName);
+		void SetColName(const UTF8Char *colName);
 		void SetColName(Text::CString colName);
-		void SetColName(NotNullPtr<Text::String> colName);
+		void SetColName(Text::String *colName);
 		void SetColType(DB::DBUtil::ColType colType);
 		void SetNativeType(Text::String *nativeType);
 		void SetNativeType(Text::CString nativeType);

@@ -11,7 +11,7 @@ namespace UI
 	class GUIButton;
 	class GUIIcon;
 
-	typedef void (__stdcall *FileEvent)(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles);
+	typedef void (__stdcall *FileEvent)(void *userObj, Text::String **files, UOSInt nFiles);
 	typedef void (__stdcall *MenuEvent)(void *userObj, UInt16 cmdId);
 
 	class GUIForm : public GUIClientControl
@@ -137,7 +137,7 @@ namespace UI
 		virtual void OnFocus();
 		virtual void OnFocusLost();
 		virtual void OnDisplaySizeChange(UOSInt dispWidth, UOSInt dispHeight);
-		void OnFileDrop(NotNullPtr<Text::String> *files, UOSInt nFiles);
+		void OnFileDrop(Text::String **files, UOSInt nFiles);
 
 		void ToFullScn();
 		void FromFullScn();

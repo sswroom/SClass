@@ -1,6 +1,5 @@
 #ifndef _SM_SSWR_AVIREAD_AVIREMAILSERVERFORM
 #define _SM_SSWR_AVIREAD_AVIREMAILSERVERFORM
-#include "Data/ArrayListNN.h"
 #include "Net/Email/EmailStore.h"
 #include "Net/Email/POP3Server.h"
 #include "Net/Email/SMTPServer.h"
@@ -89,7 +88,7 @@ namespace SSWR
 
 			Sync::Mutex userMut;
 			Data::FastStringMap<UOSInt> userMap;
-			Data::ArrayListNN<Text::String> userList;
+			Data::ArrayList<Text::String*> userList;
 
 			Net::Email::EmailStore *store;
 			UOSInt totalSize;

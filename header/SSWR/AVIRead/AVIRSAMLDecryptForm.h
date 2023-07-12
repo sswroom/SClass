@@ -29,7 +29,7 @@ namespace SSWR
 			UI::GUITextBox *txtResult;
 
 		private:
-			static void __stdcall OnFormFiles(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles);
+			static void __stdcall OnFormFiles(void *userObj, Text::String **files, UOSInt nFiles);
 			static void __stdcall OnDecryptClicked(void *userObj);
 		public:
 			AVIRSAMLDecryptForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);

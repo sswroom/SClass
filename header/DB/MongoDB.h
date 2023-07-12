@@ -22,15 +22,15 @@ namespace DB
 		MongoDB(Text::CString url, Text::CString database, IO::LogTool *log);
 		virtual ~MongoDB();
 		
-		virtual UOSInt QueryTableNames(Text::CString schemaName, Data::ArrayListNN<Text::String> *names);
+		virtual UOSInt QueryTableNames(Text::CString schemaName, Data::ArrayList<Text::String*> *names);
 		virtual DBReader *QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayList<Text::String*> *columNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
 		virtual TableDef *GetTableDef(Text::CString schemaName, Text::CString tableName);
 		virtual void CloseReader(DBReader *r);
 		virtual void GetLastErrorMsg(Text::StringBuilderUTF8 *str);
 		virtual void Reconnect();
 
-		UOSInt GetDatabaseNames(Data::ArrayListNN<Text::String> *names);
-		void FreeDatabaseNames(Data::ArrayListNN<Text::String> *names);
+		UOSInt GetDatabaseNames(Data::ArrayList<Text::String*> *names);
+		void FreeDatabaseNames(Data::ArrayList<Text::String*> *names);
 
 		static void BuildURL(Text::StringBuilderUTF8 *out, Text::CString userName, Text::CString password, Text::CString host, UInt16 port);
 	};

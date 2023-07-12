@@ -1,7 +1,6 @@
 #ifndef _SM_IO_FILECHECK
 #define _SM_IO_FILECHECK
-#include "Data/ArrayList.h"
-#include "Data/ArrayListStringNN.h"
+#include "Data/ArrayListString.h"
 #include "IO/ParsedObject.h"
 #include "IO/ProgressHandler.h"
 #include "Crypto/Hash/IHash.h"
@@ -11,7 +10,7 @@ namespace IO
 	class FileCheck : public IO::ParsedObject
 	{
 	private:
-		Data::ArrayListStringNN fileNames;
+		Data::ArrayListString fileNames;
 		UInt8 *chkValues;
 		UOSInt chkCapacity;
 		Crypto::Hash::HashType chkType;
@@ -24,7 +23,7 @@ namespace IO
 		static Bool CheckDir(UTF8Char *fullPath, UTF8Char *hashPath, Crypto::Hash::IHash *hash, IO::FileCheck *fchk, IO::ProgressHandler *progress, Bool skipError); //true = error
 
 	public:
-		FileCheck(NotNullPtr<Text::String> name, Crypto::Hash::HashType chkType);
+		FileCheck(Text::String *name, Crypto::Hash::HashType chkType);
 		FileCheck(Text::CString name, Crypto::Hash::HashType chkType);
 		virtual ~FileCheck();
 

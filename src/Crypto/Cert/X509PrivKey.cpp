@@ -3,7 +3,7 @@
 #include "Net/ASN1PDUBuilder.h"
 #include "Net/ASN1Util.h"
 
-Crypto::Cert::X509PrivKey::X509PrivKey(NotNullPtr<Text::String> sourceName, const UInt8 *buff, UOSInt buffSize) : Crypto::Cert::X509File(sourceName, buff, buffSize)
+Crypto::Cert::X509PrivKey::X509PrivKey(Text::String *sourceName, const UInt8 *buff, UOSInt buffSize) : Crypto::Cert::X509File(sourceName, buff, buffSize)
 {
 
 }
@@ -97,10 +97,9 @@ Crypto::Cert::X509Key *Crypto::Cert::X509PrivKey::CreateKey() const
 
 Crypto::Cert::X509PrivKey *Crypto::Cert::X509PrivKey::CreateFromKeyBuff(KeyType keyType, const UInt8 *buff, UOSInt buffSize, Text::String *sourceName)
 {
-	NotNullPtr<Text::String> mySourceName;
-	if (!mySourceName.Set(sourceName))
+	if (sourceName == 0)
 	{
-		mySourceName = Text::String::NewEmpty();
+		sourceName = Text::String::NewEmpty();
 	}
 	Net::ASN1PDUBuilder keyPDU;
 	keyPDU.BeginSequence();
@@ -113,7 +112,7 @@ Crypto::Cert::X509PrivKey *Crypto::Cert::X509PrivKey::CreateFromKeyBuff(KeyType 
 	keyPDU.AppendOctetString(buff, buffSize);
 	keyPDU.EndLevel();
 	Crypto::Cert::X509PrivKey *key;
-	NEW_CLASS(key, Crypto::Cert::X509PrivKey(mySourceName, keyPDU.GetBuff(0), keyPDU.GetBuffSize()));
+	NEW_CLASS(key, Crypto::Cert::X509PrivKey(sourceName, keyPDU.GetBuff(0), keyPDU.GetBuffSize()));
 	return key;
 }
 
@@ -155,7 +154,7 @@ Crypto::Cert::X509PrivKey *Crypto::Cert::X509PrivKey::CreateFromKey(Crypto::Cert
 	}
 	else if (keyType == KeyType::RSA)
 	{
-		return CreateFromKeyBuff(keyType, key->GetASN1Buff(), key->GetASN1BuffSize(), key->GetSourceNameObj().Ptr());
+		return CreateFromKeyBuff(keyType, key->GetASN1Buff(), key->GetASN1BuffSize(), key->GetSourceNameObj());
 	}
 	else
 	{

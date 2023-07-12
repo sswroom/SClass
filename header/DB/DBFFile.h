@@ -15,7 +15,7 @@ namespace DB
 	public:
 		typedef struct
 		{
-			NotNullPtr<Text::String> name;
+			Text::String *name;
 			Int32 type;
 			UOSInt colOfst;
 			UOSInt colSize;
@@ -32,14 +32,14 @@ namespace DB
 		UOSInt colCnt;
 		UOSInt rowCnt;
 		DBFCol *cols;
-		NotNullPtr<Text::String> name;
+		Text::String *name;
 
 	public:
 		DBFFile(IO::StreamData *stmData, UInt32 codePage);
 		virtual ~DBFFile();
 
-		virtual UOSInt QueryTableNames(Text::CString schemaName, Data::ArrayListNN<Text::String> *names);
-		virtual DB::DBReader *QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListNN<Text::String> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
+		virtual UOSInt QueryTableNames(Text::CString schemaName, Data::ArrayList<Text::String*> *names);
+		virtual DB::DBReader *QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
 		virtual TableDef *GetTableDef(Text::CString schemaName, Text::CString tableName);
 		virtual void CloseReader(DB::DBReader *r);
 		virtual void GetLastErrorMsg(Text::StringBuilderUTF8 *str);

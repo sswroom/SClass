@@ -862,7 +862,7 @@ void UI::GUITextFileView::EventTextPosUpdated()
 
 UI::GUITextFileView::GUITextFileView(UI::GUICore *ui, UI::GUIClientControl *parent, Media::DrawEngine *deng) : UI::GUITextView(ui, parent, deng)
 {
-	this->fileName = Text::String::NewEmpty();
+	this->fileName = 0;
 	this->threadToStop = false;
 	this->threadRunning = false;
 	this->loadNewFile = false;
@@ -901,7 +901,11 @@ UI::GUITextFileView::~GUITextFileView()
 	{
 		DEL_CLASS(this->fs);
 	}
-	this->fileName->Release();
+	if (this->fileName)
+	{
+		this->fileName->Release();
+		this->fileName = 0;
+	}
 	SDEL_STRING(this->srchText);
 }
 
@@ -1156,8 +1160,8 @@ void UI::GUITextFileView::DrawImage(Media::DrawImage *dimg)
 //	WChar wbuff[21];
 	UTF8Char sbuff[21];
 	UTF8Char *sbuffEnd;
-	NotNullPtr<Text::String> s;
-	NotNullPtr<Text::String> s2;
+	Text::String *s;
+	Text::String *s2;
 	UOSInt xPos;
 	UOSInt yPos;
 	UInt64 startOfst;
@@ -1506,7 +1510,7 @@ void UI::GUITextFileView::SetCodePage(UInt32 codePage)
 	this->codePage = codePage;
 }
 
-Bool UI::GUITextFileView::LoadFile(NotNullPtr<Text::String> fileName)
+Bool UI::GUITextFileView::LoadFile(Text::String *fileName)
 {
 	while (this->isSearching)
 	{
@@ -1514,7 +1518,10 @@ Bool UI::GUITextFileView::LoadFile(NotNullPtr<Text::String> fileName)
 	}
 
 	Sync::MutexUsage mutUsage(&this->mut);
-	this->fileName->Release();
+	if (this->fileName)
+	{
+		this->fileName->Release();
+	}
 	this->fileName = fileName->Clone();
 	this->loadNewFile = true;
 	this->fileSize = 0;
@@ -1536,7 +1543,7 @@ Bool UI::GUITextFileView::LoadFile(NotNullPtr<Text::String> fileName)
 	return true;
 }
 
-NotNullPtr<Text::String> UI::GUITextFileView::GetFileName() const
+Text::String *UI::GUITextFileView::GetFileName()
 {
 	return this->fileName;
 }
@@ -1641,7 +1648,7 @@ void UI::GUITextFileView::SearchText(Text::CString txt)
 	if (this->fs && !this->isSearching)
 	{
 		SDEL_STRING(this->srchText);
-		this->srchText = Text::String::New(txt).Ptr();
+		this->srchText = Text::String::New(txt);
 		this->isSearching = true;
 		this->evtThread.Set();
 	}

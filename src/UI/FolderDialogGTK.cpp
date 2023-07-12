@@ -27,18 +27,18 @@ UI::FolderDialog::~FolderDialog()
 void UI::FolderDialog::SetFolder(Text::CString dirName)
 {
 	SDEL_STRING(this->dirName);
-	this->dirName = Text::String::New(dirName).Ptr();
+	this->dirName = Text::String::New(dirName);
 }
 
-NotNullPtr<Text::String> UI::FolderDialog::GetFolder() const
+Text::String *UI::FolderDialog::GetFolder()
 {
-	return Text::String::OrEmpty(this->dirName);
+	return this->dirName;
 }
 
 void UI::FolderDialog::SetMessage(const UTF8Char *message)
 {
 	SDEL_TEXT(this->message);
-	this->message = Text::StrCopyNew(message).Ptr();
+	this->message = Text::StrCopyNew(message);
 }
 
 Bool UI::FolderDialog::ShowDialog(ControlHandle *ownerHandle)
@@ -57,7 +57,7 @@ Bool UI::FolderDialog::ShowDialog(ControlHandle *ownerHandle)
 		ret = true;
 		char *csptr = gtk_file_chooser_get_filename(chooser);
 		SDEL_STRING(this->dirName);
-		this->dirName = Text::String::NewNotNullSlow((const UTF8Char*)csptr).Ptr();
+		this->dirName = Text::String::NewNotNullSlow((const UTF8Char*)csptr);
 		g_free(csptr);
 	}
 	gtk_widget_destroy(dialog);

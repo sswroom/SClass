@@ -20,10 +20,10 @@ namespace DB
 		virtual ~TDSConn();
 
 		Bool IsConnected() const;
-		NotNullPtr<Text::String> GetConnHost() const;
+		Text::String *GetConnHost() const;
 		Text::String *GetConnDB() const;
-		NotNullPtr<Text::String> GetConnUID() const;
-		NotNullPtr<Text::String> GetConnPWD() const;
+		Text::String *GetConnUID() const;
+		Text::String *GetConnPWD() const;
 
 		virtual DB::SQLType GetSQLType() const;
 		virtual ConnType GetConnType() const;
@@ -42,8 +42,8 @@ namespace DB
 		virtual void Commit(void *tran);
 		virtual void Rollback(void *tran);
 
-		virtual UOSInt QueryTableNames(Text::CString schemaName, Data::ArrayListNN<Text::String> *names);
-		virtual DBReader *QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListNN<Text::String> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
+		virtual UOSInt QueryTableNames(Text::CString schemaName, Data::ArrayList<Text::String*> *names);
+		virtual DBReader *QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
 	};
 }
 #endif

@@ -11,7 +11,7 @@ namespace Crypto
 		private:
 			KeyType keyType;
 		public:
-			X509Key(NotNullPtr<Text::String> sourceName, const UInt8 *buff, UOSInt buffSize, KeyType keyType);
+			X509Key(Text::String *sourceName, const UInt8 *buff, UOSInt buffSize, KeyType keyType);
 			X509Key(Text::CString sourceName, const UInt8 *buff, UOSInt buffSize, KeyType keyType);
 			virtual ~X509Key();
 

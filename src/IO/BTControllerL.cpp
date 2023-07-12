@@ -25,7 +25,7 @@ typedef struct
 {
 	BTControllerInfo *ctrlInfo;
 	UInt8 addr[6];
-	NotNullPtr<Text::String> name;
+	Text::String *name;
 } BTDeviceInfo;
 
 IO::BTController::BTDevice::BTDevice(void *internalData, void *hRadio, void *devInfo)
@@ -33,6 +33,7 @@ IO::BTController::BTDevice::BTDevice(void *internalData, void *hRadio, void *dev
 	Char name[256];
 	BTDeviceInfo *dev = MemAlloc(BTDeviceInfo, 1);
 	MemCopyNO(dev, devInfo, sizeof(BTDeviceInfo));
+	dev->name = 0;
 	if (hci_read_remote_name(dev->ctrlInfo->dd, (bdaddr_t *)dev->addr, 256, name, 2000) >= 0)
 	{
 		dev->name = Text::String::NewNotNullSlow((const UTF8Char*)name);
@@ -47,11 +48,11 @@ IO::BTController::BTDevice::BTDevice(void *internalData, void *hRadio, void *dev
 IO::BTController::BTDevice::~BTDevice()
 {
 	BTDeviceInfo *dev = (BTDeviceInfo*)this->devInfo;
-	dev->name->Release();
+	SDEL_STRING(dev->name);
 	MemFree(this->devInfo);
 }
 
-NotNullPtr<Text::String> IO::BTController::BTDevice::GetName() const
+Text::String *IO::BTController::BTDevice::GetName()
 {
 	BTDeviceInfo *dev = (BTDeviceInfo*)this->devInfo;
 	return dev->name;
@@ -298,7 +299,7 @@ IO::BTController::~BTController()
 		hci_close_dev(info->dd);
 	}
 	MemFree(info);
-	this->name->Release();
+	SDEL_STRING(this->name);
 }
 
 OSInt IO::BTController::CreateDevices(Data::ArrayList<BTDevice*> *devList, Bool toSearch)
@@ -337,7 +338,7 @@ UInt8 *IO::BTController::GetAddress()
 	return this->addr;
 }
 
-NotNullPtr<Text::String> IO::BTController::GetName() const
+Text::String *IO::BTController::GetName()
 {
 	return this->name;
 }

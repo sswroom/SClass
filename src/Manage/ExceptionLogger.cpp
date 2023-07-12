@@ -353,12 +353,12 @@ void Manage::ExceptionLogger::WriteStackTrace(IO::Writer *writer, Manage::StackT
 #endif
 }
 
-Bool Manage::ExceptionLogger::LogToFile(NotNullPtr<Text::String> fileName, UInt32 exCode, Text::CString exName, UOSInt exAddr, Manage::ThreadContext *context)
+Bool Manage::ExceptionLogger::LogToFile(Text::String *fileName, UInt32 exCode, Text::CString exName, UOSInt exAddr, Manage::ThreadContext *context)
 {
 #ifndef _WIN32_WCE
 	Manage::SymbolResolver *symResol;
 	Manage::Process proc;
-	IO::FileStream fs(fileName, IO::FileMode::Append, IO::FileShare::DenyAll, IO::FileStream::BufferType::Normal);
+	IO::FileStream fs(fileName->ToCString(), IO::FileMode::Append, IO::FileShare::DenyAll, IO::FileStream::BufferType::Normal);
 	Text::UTF8Writer writer(&fs);
 	Text::StringBuilderUTF8 sb;
 	Data::DateTime d;

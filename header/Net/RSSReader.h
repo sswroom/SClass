@@ -23,12 +23,12 @@ namespace Net
 			Net::RSSItem *item;
 		} RSSStatus;
 	private:
-		NotNullPtr<Text::String> url;
+		Text::String *url;
 		Net::SocketFactory *sockf;
 		Net::SSLEngine *ssl;
 		RSSHandler *hdlr;
 		Data::FastStringMap<RSSStatus *> *currRSSMaps;
-		Data::DateTime nextDT;
+		Data::DateTime *nextDT;
 		Net::RSS *lastRSS;
 		UInt32 refreshSecond;
 		Data::Duration timeout;

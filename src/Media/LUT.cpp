@@ -39,7 +39,7 @@ void Media::LUT::Init(UOSInt inputCh, UOSInt inputLev, UOSInt outputCh, DataForm
 	this->luTable = MemAlloc(UInt8, tableSize);
 }
 
-Media::LUT::LUT(UOSInt inputCh, UOSInt inputLev, UOSInt outputCh, DataFormat fmt, NotNullPtr<Text::String> sourceName) : IO::ParsedObject(sourceName)
+Media::LUT::LUT(UOSInt inputCh, UOSInt inputLev, UOSInt outputCh, DataFormat fmt, Text::String *sourceName) : IO::ParsedObject(sourceName)
 {
 	this->Init(inputCh, inputLev, outputCh, fmt);
 }

@@ -24,7 +24,7 @@ Bool SSWR::AVIRead::AVIRFileSizePackForm::MyFile::ToString(Text::StringBuilderUT
 	return true;
 }
 
-NotNullPtr<Text::String> SSWR::AVIRead::AVIRFileSizePackForm::MyFile::GetName() const
+Text::String *SSWR::AVIRead::AVIRFileSizePackForm::MyFile::GetName() const
 {
 	return this->fileName;
 }
@@ -169,7 +169,7 @@ void SSWR::AVIRead::AVIRFileSizePackForm::GenList()
 	SDEL_TEXT(this->filePath);
 
 	UInt64 totalFileSize = 0;
-	this->filePath = Text::StrCopyNew(sbuff).Ptr();
+	this->filePath = Text::StrCopyNew(sbuff);
 	sptr2 = Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
 	sess = IO::Path::FindFile(CSTRP(sbuff, sptr2));
 	if (sess)

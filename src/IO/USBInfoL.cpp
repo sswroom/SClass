@@ -21,7 +21,7 @@ IO::USBInfo::USBInfo(ClassData *info)
 	clsData->idVendor = info->idVendor;
 	clsData->idProduct = info->idProduct;
 	clsData->bcdDevice = info->bcdDevice;
-	clsData->dispName.v = Text::StrCopyNewC(info->dispName.v, info->dispName.leng).Ptr();
+	clsData->dispName.v = Text::StrCopyNewC(info->dispName.v, info->dispName.leng);
 	clsData->dispName.leng = info->dispName.leng;
 	this->clsData = clsData;
 }

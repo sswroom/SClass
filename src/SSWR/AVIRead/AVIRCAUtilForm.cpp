@@ -11,7 +11,7 @@
 #include "Text/StringTool.h"
 #include "UI/MessageDialog.h"
 
-void __stdcall SSWR::AVIRead::AVIRCAUtilForm::OnFileDrop(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles)
+void __stdcall SSWR::AVIRead::AVIRCAUtilForm::OnFileDrop(void *userObj, Text::String **files, UOSInt nFiles)
 {
 	SSWR::AVIRead::AVIRCAUtilForm *me = (SSWR::AVIRead::AVIRCAUtilForm*)userObj;
 	Parser::ParserList *parsers = me->core->GetParserList();
@@ -86,7 +86,7 @@ void __stdcall SSWR::AVIRead::AVIRCAUtilForm::OnFileDrop(void *userObj, NotNullP
 									UOSInt k = exts.subjectAltName->GetCount();
 									while (j < k)
 									{
-										me->lbSAN->AddItem(Text::String::OrEmpty(exts.subjectAltName->GetItem(j)), 0);
+										me->lbSAN->AddItem(exts.subjectAltName->GetItem(j), 0);
 										j++;
 									}
 								}

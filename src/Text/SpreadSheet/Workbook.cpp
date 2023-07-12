@@ -138,7 +138,7 @@ void Text::SpreadSheet::Workbook::SetAuthor(const UTF8Char *author)
 	}
 	if (author)
 	{
-		this->author = Text::StrCopyNew(author).Ptr();
+		this->author = Text::StrCopyNew(author);
 	}
 	else
 	{
@@ -154,7 +154,7 @@ void Text::SpreadSheet::Workbook::SetLastAuthor(const UTF8Char *lastAuthor)
 	}
 	if (lastAuthor)
 	{
-		this->lastAuthor = Text::StrCopyNew(lastAuthor).Ptr();
+		this->lastAuthor = Text::StrCopyNew(lastAuthor);
 	}
 	else
 	{
@@ -170,7 +170,7 @@ void Text::SpreadSheet::Workbook::SetCompany(const UTF8Char *company)
 	}
 	if (company)
 	{
-		this->company = Text::StrCopyNew(company).Ptr();
+		this->company = Text::StrCopyNew(company);
 	}
 	else
 	{
@@ -398,7 +398,7 @@ Text::SpreadSheet::Worksheet *Text::SpreadSheet::Workbook::AddWorksheet()
 	return ws;
 }
 
-Text::SpreadSheet::Worksheet *Text::SpreadSheet::Workbook::AddWorksheet(NotNullPtr<Text::String> name)
+Text::SpreadSheet::Worksheet *Text::SpreadSheet::Workbook::AddWorksheet(Text::String *name)
 {
 	Text::SpreadSheet::Worksheet *ws;
 	NEW_CLASS(ws, Text::SpreadSheet::Worksheet(name));

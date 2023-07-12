@@ -15,7 +15,7 @@ void Text::MIMEObj::TextMIMEObj::BuildContentType()
 	sbc.AppendC(UTF8STRC("text/plain; charset="));
 	sptr = Text::EncodingFactory::GetInternetName(sbuff, this->codePage);
 	sbc.AppendP(sbuff, sptr);
-	this->contType = Text::String::New(sbc.ToString(), sbc.GetLength()).Ptr();
+	this->contType = Text::String::New(sbc.ToString(), sbc.GetLength());
 }
 
 Text::MIMEObj::TextMIMEObj::TextMIMEObj(const UInt8 *textBuff, UOSInt buffSize, UInt32 codePage) : Text::IMIMEObj(CSTR("text/plain"))

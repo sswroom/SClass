@@ -17,7 +17,7 @@ UI::FontDialog::FontDialog(const UTF8Char *fontName, UOSInt nameLen, Double font
 {
 	if (fontName)
 	{
-		this->fontName = Text::String::New(fontName, nameLen).Ptr();
+		this->fontName = Text::String::New(fontName, nameLen);
 	}
 	else
 	{
@@ -58,7 +58,7 @@ Bool UI::FontDialog::ShowDialog(ControlHandle *ownerHandle)
 		{
 			const char *family = pango_font_description_get_family(fontDesc);
 			SDEL_STRING(this->fontName);
-			this->fontName = Text::String::NewNotNullSlow((const UTF8Char*)family).Ptr();
+			this->fontName = Text::String::NewNotNullSlow((const UTF8Char*)family);
 			this->isBold = pango_font_description_get_weight(fontDesc) >= PANGO_WEIGHT_BOLD;
 			this->isItalic = pango_font_description_get_style(fontDesc) == PANGO_STYLE_ITALIC;
 			this->fontSizePt = pango_font_description_get_size(fontDesc) / (Double)PANGO_SCALE;

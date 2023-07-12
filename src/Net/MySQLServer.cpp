@@ -442,7 +442,7 @@ void __stdcall Net::MySQLServer::OnClientData(Net::TCPClient *cli, void *userObj
 							if (bptr + iVal > bptrEnd)
 								break;
 							sb.AppendC(bptr, (UOSInt)iVal);
-							data->attrMap->Put(sbuff, Text::StrCopyNewC(bptr, (UOSInt)iVal).Ptr());
+							data->attrMap->Put(sbuff, Text::StrCopyNewC(bptr, (UOSInt)iVal));
 							bptr += iVal;
 						}
 					}
@@ -550,7 +550,7 @@ void __stdcall Net::MySQLServer::OnClientData(Net::TCPClient *cli, void *userObj
 				{
 				case 3:
 					{
-						NotNullPtr<Text::String> sql = Text::String::New(&data->buff[i + 5], packetSize - 1);
+						Text::String *sql = Text::String::New(&data->buff[i + 5], packetSize - 1);
 					#if defined(VERBOSE)
 						printf("COM_QUERY: query_text = %s\r\n", sql->v);
 					#endif

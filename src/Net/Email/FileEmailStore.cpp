@@ -14,7 +14,7 @@ Net::Email::FileEmailStore::FileInfo *Net::Email::FileEmailStore::GetFileInfo(In
 
 void Net::Email::FileEmailStore::AddMail(const Text::MIMEObj::MailMessage *mail, UTF8Char *filePath, UTF8Char *fileNameStart, UTF8Char *filePathEnd, UInt64 fileSize)
 {
-	Data::ArrayListNN<Text::String> rcptList;
+	Data::ArrayList<Text::String*> rcptList;
 	Text::StringBuilderUTF8 sb;
 	Data::DateTime recvTime;
 	Text::String *remoteIP = 0;
@@ -44,7 +44,7 @@ void Net::Email::FileEmailStore::AddMail(const Text::MIMEObj::MailMessage *mail,
 				if (l != INVALID_INDEX)
 				{
 					SDEL_STRING(remoteIP);
-					remoteIP = Text::String::New(value->v + k + 1, l - k - 1).Ptr();
+					remoteIP = Text::String::New(value->v + k + 1, l - k - 1);
 				}
 			}
 		}
@@ -66,7 +66,7 @@ void Net::Email::FileEmailStore::AddMail(const Text::MIMEObj::MailMessage *mail,
 		}
 		else if (name->EqualsICase(UTF8STRC("From")))
 		{
-			fromAddr = value->Clone().Ptr();
+			fromAddr = value->Clone();
 		}
 		i++;
 	}
@@ -91,7 +91,7 @@ void Net::Email::FileEmailStore::AddMail(const Text::MIMEObj::MailMessage *mail,
 		NEW_CLASS(file, FileInfo());
 		file->id = id;
 		file->fileName = Text::String::NewP(filePath, filePathEnd);
-		file->uid = Text::StrCopyNewC(sb.ToString(), sb.GetLength()).Ptr();
+		file->uid = Text::StrCopyNewC(sb.ToString(), sb.GetLength());
 
 		k = 0;
 		l = rcptList.GetCount();
@@ -197,7 +197,7 @@ Bool Net::Email::FileEmailStore::NewEmail(Int64 id, const Net::SocketUtil::Addre
 	file->id = id;
 	file->fileName = Text::String::New(sb.ToCString());
 	sptr = Text::StrInt64(sbuff, id);
-	file->uid = Text::StrCopyNewC(sbuff, (UOSInt)(sptr - sbuff)).Ptr();
+	file->uid = Text::StrCopyNewC(sbuff, (UOSInt)(sptr - sbuff));
 
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("Received: from "));
@@ -275,7 +275,7 @@ Bool Net::Email::FileEmailStore::NewEmail(Int64 id, const Net::SocketUtil::Addre
 	file->id = id;
 	file->fileName = Text::String::New(sb.ToCString());
 	sptr = Text::StrInt64(sbuff, id);
-	file->uid = Text::StrCopyNewC(sbuff, (UOSInt)(sptr - sbuff)).Ptr();
+	file->uid = Text::StrCopyNewC(sbuff, (UOSInt)(sptr - sbuff));
 
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("Received: from "));

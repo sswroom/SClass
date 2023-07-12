@@ -24,7 +24,7 @@ void __stdcall SSWR::AVIRead::AVIRCodeProjectForm::OnItemSelected(void *userObj)
 			Text::CodeFile *file = (Text::CodeFile*)obj;
 			UTF8Char sbuff[512];
 			UTF8Char *sptr;
-			NotNullPtr<Text::String> s;
+			Text::String *s;
 			sptr = me->proj->GetSourceName(sbuff);
 			s = file->GetFileName();
 			sptr = IO::Path::AppendPath(sbuff, sptr, s->ToCString());
@@ -165,7 +165,7 @@ void SSWR::AVIRead::AVIRCodeProjectForm::AddTreeObj(UI::GUITreeView::TreeItem *p
 		if (obj->GetObjectType() == Text::CodeObject::OT_FILE)
 		{
 			Text::CodeFile *file = (Text::CodeFile*)obj;
-			NotNullPtr<Text::String> fileName = file->GetFileName();
+			Text::String *fileName = file->GetFileName();
 			k = fileName->LastIndexOf(IO::Path::PATH_SEPERATOR);
 			tviLast = this->tvMain->InsertItem(parent, tviLast, fileName->ToCString().Substring(k + 1), obj);
 		}

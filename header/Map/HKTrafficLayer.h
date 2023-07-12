@@ -53,7 +53,7 @@ namespace Map
 		Double maxX;
 		Double maxY;
 
-		NotNullPtr<Text::String> url;
+		Text::String *url;
 		Net::SocketFactory *sockf;
 		Net::SSLEngine *ssl;
 		Text::EncodingFactory *encFact;

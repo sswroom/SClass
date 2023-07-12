@@ -13,7 +13,7 @@ namespace Net
 		class DomainStatus
 		{
 		public:
-			NotNullPtr<Text::String> domain;
+			Text::String *domain;
 			Data::Timestamp timeout;
 			Data::ArrayList<Net::DNSClient::RequestAnswer*> answers;
 			Net::SocketUtil::AddressInfo addr;

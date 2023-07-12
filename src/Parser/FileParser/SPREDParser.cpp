@@ -79,7 +79,7 @@ IO::ParsedObject *Parser::FileParser::SPREDParser::ParseFileHdr(IO::StreamData *
 		return 0;
 	}
 
-	NotNullPtr<Text::String> s = fd->GetFullName();
+	Text::String *s = fd->GetFullName();
 	i = Text::StrLastIndexOfCharC(s->v, s->leng, IO::Path::PATH_SEPERATOR);
 	sptr = Text::StrConcatC(sbuff, &s->v[i + 1], s->leng - i - 1);
 	if (!Text::StrStartsWithICaseC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("RED")))

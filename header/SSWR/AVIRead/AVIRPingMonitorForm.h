@@ -31,8 +31,8 @@ namespace SSWR
 			{
 				UInt32 ip;
 				Int64 count;
-				NotNullPtr<Text::String> name;
-				NotNullPtr<Text::String> country;
+				Text::String *name;
+				Text::String *country;
 			} IPInfo;
 
 		private:

@@ -44,7 +44,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnSourceDBChg(void *userObj)
 			me->txtSourceCollation->SetText(CSTR(""));
 		}
 		Data::ArrayList<Text::String*> schemaNames;
-		NotNullPtr<Text::String> s;
+		Text::String *s;
 		db->QuerySchemaNames(&schemaNames);
 		UOSInt i = 0;
 		UOSInt j = schemaNames.GetCount();
@@ -52,7 +52,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnSourceDBChg(void *userObj)
 		{
 			while (i < j)
 			{
-				s = Text::String::OrEmpty(schemaNames.GetItem(i));
+				s = schemaNames.GetItem(i);
 				me->cboSourceSchema->AddItem(s, 0);
 				s->Release();
 				i++;
@@ -77,7 +77,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnSourceSelectClicked(void *
 	sptr = me->cboSourceSchema->GetSelectedItemText(sbuff);
 	if (sptr == 0)
 		return;
-	Data::ArrayListNN<Text::String> tableNames;
+	Data::ArrayList<Text::String*> tableNames;
 	db->GetDB()->QueryTableNames(CSTRP(sbuff, sptr), &tableNames);
 	if (tableNames.GetCount() == 0)
 	{
@@ -88,14 +88,14 @@ void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnSourceSelectClicked(void *
 		me->dataConn = db->GetDB();
 		SDEL_STRING(me->dataSchema);
 		LIST_FREE_STRING(&me->dataTables);
-		me->dataSchema = Text::String::NewP(sbuff, sptr).Ptr();
+		me->dataSchema = Text::String::NewP(sbuff, sptr);
 		me->dataTables.AddAll(&tableNames);
 		me->lvData->ClearItems();
 		UOSInt i = 0;
 		UOSInt j = tableNames.GetCount();
 		while (i < j)
 		{
-			me->lvData->AddItem(Text::String::OrEmpty(tableNames.GetItem(i)), 0);
+			me->lvData->AddItem(tableNames.GetItem(i), 0);
 			i++;
 		}
 		me->tcMain->SetSelectedIndex(1);
@@ -115,7 +115,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnDestDBChg(void *userObj)
 			return;
 		}
 		Data::ArrayList<Text::String*> schemaNames;
-		NotNullPtr<Text::String> s;
+		Text::String *s;
 		ctrl->GetDB()->QuerySchemaNames(&schemaNames);
 		UOSInt i = 0;
 		UOSInt j = schemaNames.GetCount();
@@ -123,7 +123,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnDestDBChg(void *userObj)
 		{
 			while (i < j)
 			{
-				s = Text::String::OrEmpty(schemaNames.GetItem(i));
+				s = schemaNames.GetItem(i);
 				me->cboDestSchema->AddItem(s, 0);
 				s->Release();
 				i++;

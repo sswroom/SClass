@@ -229,7 +229,7 @@ void IO::FileAnalyse::FrameDetailHandler::AddHex32Name(UOSInt frameOfst, Text::C
 
 void IO::FileAnalyse::FrameDetailHandler::AddStrC(UOSInt frameOfst, UOSInt size, Text::CString name, const UTF8Char *vBuff)
 {
-	NotNullPtr<Text::String> s = Text::String::New(vBuff, size);
+	Text::String *s = Text::String::New(vBuff, size);
 	this->AddField(frameOfst, size, name, s->ToCString());
 	s->Release();
 }

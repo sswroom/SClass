@@ -129,7 +129,7 @@ IO::ParsedObject *Parser::FileParser::AVIParser::ParseFileHdr(IO::StreamData *fd
 	UInt16 wLongsPerEntry;
 	Int32 cmpTmp;
 	Media::MediaFile *mf;
-	NotNullPtr<Text::String> audsName;
+	Text::String *audsName;
 
 	UInt32 rate = 30000;
 	UInt32 scale = 1001;
@@ -510,7 +510,7 @@ IO::ParsedObject *Parser::FileParser::AVIParser::ParseFileHdr(IO::StreamData *fd
 
 			fmt.FromWAVEFORMATEX(strl[i].strf);
 
-			audsName = Text::String::NewEmpty();
+			audsName = 0;
 			error = false;
 			j = 0;
 			while (j < strl[i].otherSize)
@@ -518,7 +518,6 @@ IO::ParsedObject *Parser::FileParser::AVIParser::ParseFileHdr(IO::StreamData *fd
 				if (*(Int32*)&strl[i].others[j] == *(Int32*)"strn")
 				{
 					sptr = enc.UTF8FromBytes(sbuff, &strl[i].others[j + 8], ReadUInt32(&strl[i].others[j + 4]), 0);
-					audsName->Release();
 					audsName = Text::String::NewP(sbuff, sptr);
 					j += *(UInt32*)&strl[i].others[j + 4] + 8;
 				}
@@ -674,7 +673,7 @@ IO::ParsedObject *Parser::FileParser::AVIParser::ParseFileHdr(IO::StreamData *fd
 			dsList->Add(audsData);
 			audioList->Add(new AudioStream((WAVEFORMATEX*)strl[i].strf, dsList, audsName, audDelay));*/
 			/////////////////////////////////
-			audsName->Release();
+			SDEL_STRING(audsName);
 			if (audsData)
 			{
 				mf->AddSource(audsData, audDelay);

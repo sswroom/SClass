@@ -15,13 +15,13 @@ void __stdcall SSWR::AVIRead::AVIRWMSForm::OnLoadClicked(void *userObj)
 	else
 	{
 		me->txtStatus->SetText(CSTR("Success"));
-		Data::ArrayListNN<Text::String> nameList;
+		Data::ArrayList<Text::String*> nameList;
 		UOSInt i = 0;
 		UOSInt j = me->wms->GetLayerNames(&nameList);
 		me->cboLayer->ClearItems();
 		while (i < j)
 		{
-			me->cboLayer->AddItem(Text::String::OrEmpty(nameList.GetItem(i)), 0);
+			me->cboLayer->AddItem(nameList.GetItem(i), 0);
 			i++;
 		}
 		if (j > 0)
@@ -35,7 +35,7 @@ void __stdcall SSWR::AVIRead::AVIRWMSForm::OnLoadClicked(void *userObj)
 		me->cboMapImageType->ClearItems();
 		while (i < j)
 		{
-			me->cboMapImageType->AddItem(Text::String::OrEmpty(nameList.GetItem(i)), 0);
+			me->cboMapImageType->AddItem(nameList.GetItem(i), 0);
 			i++;
 		}
 		if (j > 0)
@@ -49,7 +49,7 @@ void __stdcall SSWR::AVIRead::AVIRWMSForm::OnLoadClicked(void *userObj)
 		me->cboInfoType->ClearItems();
 		while (i < j)
 		{
-			me->cboInfoType->AddItem(Text::String::OrEmpty(nameList.GetItem(i)), 0);
+			me->cboInfoType->AddItem(nameList.GetItem(i), 0);
 			i++;
 		}
 		if (j > 0)
@@ -81,7 +81,7 @@ void __stdcall SSWR::AVIRead::AVIRWMSForm::OnLayerSelChg(void *userObj)
 		UOSInt j = me->wms->GetLayerCRSNames(&nameList);
 		while (i < j)
 		{
-			me->cboLayerCRS->AddItem(Text::String::OrEmpty(nameList.GetItem(i)), 0);
+			me->cboLayerCRS->AddItem(nameList.GetItem(i), 0);
 			i++;
 		}
 		if (j > 0)

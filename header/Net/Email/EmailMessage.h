@@ -2,7 +2,6 @@
 #define _SM_NET_EMAIL_EMAILMESSAGE
 #include "Crypto/Cert/X509Cert.h"
 #include "Data/ArrayList.h"
-#include "Data/ArrayListNN.h"
 #include "Data/DateTime.h"
 #include "Data/Timestamp.h"
 #include "IO/Stream.h"
@@ -21,8 +20,8 @@ namespace Net
 			{
 				UInt8 *content;
 				UOSInt contentLen;
-				NotNullPtr<Text::String> contentId;
-				NotNullPtr<Text::String> fileName;
+				Text::String *contentId;
+				Text::String *fileName;
 				Data::DateTime createTime;
 				Data::DateTime modifyTime;
 				Bool isInline;
@@ -30,8 +29,8 @@ namespace Net
 			
 		private:
 			Text::String *fromAddr;
-			Data::ArrayListNN<Text::String> recpList;
-			Data::ArrayListNN<Text::String> headerList;
+			Data::ArrayList<Text::String*> recpList;
+			Data::ArrayList<Text::String*> headerList;
 			Text::String *contentType;
 			UInt8 *content;
 			UOSInt contentLen;
@@ -70,7 +69,7 @@ namespace Net
 
 			Bool CompletedMessage();
 			Text::String *GetFromAddr();
-			const Data::ArrayListNN<Text::String> *GetRecpList();
+			Data::ArrayList<Text::String*> *GetRecpList();
 			Bool WriteToStream(IO::Stream *stm);
 
 			static Bool GenerateMessageID(Text::StringBuilderUTF8 *sb, Text::CString fromAddr);

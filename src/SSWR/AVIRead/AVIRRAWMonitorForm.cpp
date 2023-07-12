@@ -268,7 +268,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnDNSReqv4SelChg(void *userObj
 				me->lvDNSReqv4->SetSubItem(i, 2, CSTRP(sbuff, sptr));
 				sptr = Text::StrUInt32(sbuff, ans->ttl);
 				me->lvDNSReqv4->SetSubItem(i, 3, CSTRP(sbuff, sptr));
-				me->lvDNSReqv4->SetSubItem(i, 4, Text::String::OrEmpty(ans->rd));
+				me->lvDNSReqv4->SetSubItem(i, 4, ans->rd);
 				i++;
 			}
 		}
@@ -310,7 +310,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnDNSReqv6SelChg(void *userObj
 				me->lvDNSReqv6->SetSubItem(i, 2, CSTRP(sbuff, sptr));
 				sptr = Text::StrUInt32(sbuff, ans->ttl);
 				me->lvDNSReqv6->SetSubItem(i, 3, CSTRP(sbuff, sptr));
-				me->lvDNSReqv6->SetSubItem(i, 4, Text::String::OrEmpty(ans->rd));
+				me->lvDNSReqv6->SetSubItem(i, 4, ans->rd);
 				i++;
 			}
 		}
@@ -352,7 +352,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnDNSReqOthSelChg(void *userOb
 				me->lvDNSReqOth->SetSubItem(i, 2, CSTRP(sbuff, sptr));
 				sptr = Text::StrUInt32(sbuff, ans->ttl);
 				me->lvDNSReqOth->SetSubItem(i, 3, CSTRP(sbuff, sptr));
-				me->lvDNSReqOth->SetSubItem(i, 4, Text::String::OrEmpty(ans->rd));
+				me->lvDNSReqOth->SetSubItem(i, 4, ans->rd);
 				i++;
 			}
 		}
@@ -368,14 +368,12 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnDNSTargetSelChg(void *userOb
 	{
 		UOSInt i;
 		UOSInt j;
-		NotNullPtr<Text::String> s;
 		Sync::MutexUsage mutUsage(&target->mut);
 		i = 0;
 		j = target->addrList.GetCount();
 		while (i < j)
 		{
-			if (s.Set(target->addrList.GetItem(i)))
-				me->lbDNSTargetDomain->AddItem(s, 0);
+			me->lbDNSTargetDomain->AddItem(target->addrList.GetItem(i), 0);
 			i++;
 		}
 		mutUsage.EndUse();
@@ -498,7 +496,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnIPLogSelChg(void *userObj)
 		j = ipLog->logList.GetCount();
 		while (i < j)
 		{
-			me->lbIPLogVal->AddItem(Text::String::OrEmpty(ipLog->logList.GetItem(i)), 0);
+			me->lbIPLogVal->AddItem(ipLog->logList.GetItem(i), 0);
 			i++;
 		}
 		mutUsage.EndUse();
@@ -543,7 +541,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(void *userObj)
 	{
 		Data::ArrayList<Text::String *> nameList;
 		Text::String *selName = (Text::String*)me->lbDNSReqv4->GetSelectedItem();
-		NotNullPtr<Text::String> s;
+		Text::String *s;
 		UOSInt i;
 		UOSInt j;
 		me->lbDNSReqv4->ClearItems();
@@ -552,13 +550,11 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(void *userObj)
 		j = nameList.GetCount();
 		while (i < j)
 		{
-			if (s.Set(nameList.GetItem(i)))
+			s = nameList.GetItem(i);
+			me->lbDNSReqv4->AddItem(s, (void*)s);
+			if (s == selName)
 			{
-				me->lbDNSReqv4->AddItem(s, (void*)s.Ptr());
-				if (s.Ptr() == selName)
-				{
-					me->lbDNSReqv4->SetSelectedIndex(i);
-				}
+				me->lbDNSReqv4->SetSelectedIndex(i);
 			}
 			i++;
 		}
@@ -567,7 +563,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(void *userObj)
 	{
 		Data::ArrayList<Text::String *> nameList;
 		Text::String *selName = (Text::String*)me->lbDNSReqv6->GetSelectedItem();
-		NotNullPtr<Text::String> s;
+		Text::String *s;
 		UOSInt i;
 		UOSInt j;
 		me->lbDNSReqv6->ClearItems();
@@ -576,13 +572,11 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(void *userObj)
 		j = nameList.GetCount();
 		while (i < j)
 		{
-			if (s.Set(nameList.GetItem(i)))
+			s = nameList.GetItem(i);
+			me->lbDNSReqv6->AddItem(s, (void*)s);
+			if (s == selName)
 			{
-				me->lbDNSReqv6->AddItem(s, (void*)s.Ptr());
-				if (s.Ptr() == selName)
-				{
-					me->lbDNSReqv6->SetSelectedIndex(i);
-				}
+				me->lbDNSReqv6->SetSelectedIndex(i);
 			}
 			i++;
 		}
@@ -591,7 +585,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(void *userObj)
 	{
 		Data::ArrayList<Text::String *> nameList;
 		Text::String *selName = (Text::String*)me->lbDNSReqOth->GetSelectedItem();
-		NotNullPtr<Text::String> s;
+		Text::String *s;
 		UOSInt i;
 		UOSInt j;
 		me->lbDNSReqOth->ClearItems();
@@ -600,13 +594,11 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(void *userObj)
 		j = nameList.GetCount();
 		while (i < j)
 		{
-			if (s.Set(nameList.GetItem(i)))
+			s = nameList.GetItem(i);
+			me->lbDNSReqOth->AddItem(s, (void*)s);
+			if (s == selName)
 			{
-				me->lbDNSReqOth->AddItem(s, (void*)s.Ptr());
-				if (s.Ptr() == selName)
-				{
-					me->lbDNSReqOth->SetSelectedIndex(i);
-				}
+				me->lbDNSReqOth->SetSelectedIndex(i);
 			}
 			i++;
 		}
@@ -900,7 +892,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(void *userObj)
 				me->lvDevice->SetSubItem(i, 1, {entry->name, entry->nameLen});
 				if (mac->name)
 				{
-					me->lvDevice->SetSubItem(i, 8, mac->name->ToCString());
+					me->lvDevice->SetSubItem(i, 8, mac->name);
 				}
 				else
 				{
@@ -1034,9 +1026,9 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(void *userObj)
 				sptr = Text::StrUInt32(sbuff, dhcp->rebindTime);
 				me->lvDHCP->SetSubItem(i, 11, CSTRP(sbuff, sptr));
 				if (dhcp->hostName)
-					me->lvDHCP->SetSubItem(i, 12, Text::String::OrEmpty(dhcp->hostName));
+					me->lvDHCP->SetSubItem(i, 12, dhcp->hostName);
 				if (dhcp->vendorClass)
-					me->lvDHCP->SetSubItem(i, 13, Text::String::OrEmpty(dhcp->vendorClass));
+					me->lvDHCP->SetSubItem(i, 13, dhcp->vendorClass);
 				mutUsage.EndUse();
 			}
 			i++;
@@ -1510,8 +1502,8 @@ SSWR::AVIRead::AVIRRAWMonitorForm::~AVIRRAWMonitorForm()
 	while (i-- > 0)
 	{
 		pingIPInfo = this->pingIPMap.GetItem(i);
-		pingIPInfo->name->Release();
-		pingIPInfo->country->Release();
+		SDEL_STRING(pingIPInfo->name);
+		SDEL_STRING(pingIPInfo->country);
 		MemFree(pingIPInfo);
 	}
 

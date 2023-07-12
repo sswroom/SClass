@@ -42,7 +42,7 @@ void UI::GUIMapTreeView::AddTreeNode(UI::GUITreeView::TreeItem *treeItem, Map::M
 		if (item->itemType == Map::MapEnv::IT_LAYER)
 		{
 			Map::MapEnv::LayerItem *layer = (Map::MapEnv::LayerItem*)item;
-			NotNullPtr<Text::String> name = layer->layer->GetName();
+			Text::String *name = layer->layer->GetName();
 			UOSInt i = name->LastIndexOf(IO::Path::PATH_SEPERATOR);
 			ind = MemAlloc(ItemIndex, 1);
 			ind->group = group;

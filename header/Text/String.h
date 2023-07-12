@@ -14,12 +14,12 @@ namespace Text
 		UTF8Char vbuff[1];
 
 		static String *NewOrNullSlow(const UTF8Char *str);
-		static NotNullPtr<String> NewNotNullSlow(const UTF8Char *str);
+		static String *NewNotNullSlow(const UTF8Char *str);
 		static String *NewOrNull(Text::CString str);
-		static NotNullPtr<String> New(Text::CString str)
+		static String *New(Text::CString str)
 		{
 			if (str.leng == 0) return NewEmpty();
-			NotNullPtr<Text::String> s = NotNullPtr<Text::String>::FromPtr((Text::String*)MAlloc(str.leng + sizeof(String)));
+			Text::String *s = (Text::String*)MAlloc(str.leng + sizeof(String));
 			s->v = s->vbuff;
 			s->leng = str.leng;
 			s->useCnt = 1;
@@ -28,10 +28,10 @@ namespace Text
 			return s;
 		}
 
-		static NotNullPtr<String> New(const UTF8Char *str, UOSInt len)
+		static String *New(const UTF8Char *str, UOSInt len)
 		{
 			if (len == 0) return NewEmpty();
-			NotNullPtr<Text::String> s = NotNullPtr<Text::String>::FromPtr((Text::String*)MAlloc(len + sizeof(String)));
+			Text::String *s = (Text::String*)MAlloc(len + sizeof(String));
 			s->v = s->vbuff;
 			s->leng = len;
 			s->useCnt = 1;
@@ -40,11 +40,11 @@ namespace Text
 			return s;
 		}
 		
-		static NotNullPtr<String> NewP(const UTF8Char *str, const UTF8Char *strEnd);
+		static String *NewP(const UTF8Char *str, const UTF8Char *strEnd);
 
-		static NotNullPtr<String> New(UOSInt len)
+		static String *New(UOSInt len)
 		{
-			NotNullPtr<Text::String> s = NotNullPtr<Text::String>::FromPtr((Text::String*)MAlloc(len + sizeof(String)));
+			Text::String *s = (Text::String*)MAlloc(len + sizeof(String));
 			s->v = s->vbuff;
 			s->leng = len;
 			s->useCnt = 1;
@@ -53,18 +53,18 @@ namespace Text
 		}
 
 		static String *NewOrNull(const UTF16Char *str);
-		static NotNullPtr<String> NewNotNull(const UTF16Char *str);
-		static NotNullPtr<String> New(const UTF16Char *str, UOSInt len);
+		static String *NewNotNull(const UTF16Char *str);
+		static String *New(const UTF16Char *str, UOSInt len);
 		static String *NewOrNull(const UTF32Char *str);
-		static NotNullPtr<String> NewNotNull(const UTF32Char *str);
-		static NotNullPtr<String> New(const UTF32Char *str, UOSInt len);
-		static NotNullPtr<String> NewCSVRec(const UTF8Char *str);
-		static NotNullPtr<String> NewEmpty();
-		static NotNullPtr<String> OrEmpty(Text::String *s);
+		static String *NewNotNull(const UTF32Char *str);
+		static String *New(const UTF32Char *str, UOSInt len);
+		static String *NewCSVRec(const UTF8Char *str);
+		static String *NewEmpty();
+		static String *OrEmpty(Text::String *s);
 		void Release();
-		NotNullPtr<String> Clone() const;
+		String *Clone() const;
 
-		NotNullPtr<String> ToLower();
+		String *ToLower();
 	private:
 		String(UOSInt cnt);
 		~String();
@@ -75,6 +75,6 @@ namespace Text
 #define STR_PTRC(s) (s)?s->v:0, (s)?s->leng:0
 #define STR_CSTR(s) ((s)?(s)->ToCString():Text::CString(0, 0))
 #define STR_REL(s) (s->Release())
-#define SCOPY_STRING(s) ((s)?(s)->Clone().Ptr():0)
+#define SCOPY_STRING(s) ((s)?(s)->Clone():0)
 #define SDEL_STRING(s) if (s) { (s)->Release(); s = 0; }
 #endif

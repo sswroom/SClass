@@ -3,7 +3,7 @@
 #include "Media/MSFontRenderer.h"
 #include "Media/StaticImage.h"
 
-Media::MSFontRenderer::MSFontRenderer(NotNullPtr<Text::String> sourceName, const UInt8 *fontBuff, UOSInt buffSize) : Media::FontRenderer(sourceName)
+Media::MSFontRenderer::MSFontRenderer(Text::String *sourceName, const UInt8 *fontBuff, UOSInt buffSize) : Media::FontRenderer(sourceName)
 {
 	this->fontBuff = 0;
 	UOSInt ver = ReadUInt16(&fontBuff[0]);

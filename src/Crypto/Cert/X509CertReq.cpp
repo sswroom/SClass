@@ -4,7 +4,7 @@
 #include "Net/ASN1Util.h"
 #include "Net/SSLEngine.h"
 
-Crypto::Cert::X509CertReq::X509CertReq(NotNullPtr<Text::String> sourceName, const UInt8 *buff, UOSInt buffSize) : Crypto::Cert::X509File(sourceName, buff, buffSize)
+Crypto::Cert::X509CertReq::X509CertReq(Text::String *sourceName, const UInt8 *buff, UOSInt buffSize) : Crypto::Cert::X509File(sourceName, buff, buffSize)
 {
 
 }

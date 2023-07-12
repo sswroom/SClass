@@ -2,7 +2,7 @@
 #define _SM_NOTNULLPTR
 #include <stdio.h>
 
-template <typename T> struct NotNullPtr
+template <typename T> class NotNullPtr
 {
 private:
 	T* p;
@@ -31,10 +31,10 @@ public:
 		this->p = &p;
 	}
 
-/*	NotNullPtr(const NotNullPtr<T> &p)
+	NotNullPtr(const NotNullPtr<T> &p)
 	{
 		this->p = p.p;
-	}*/
+	}
 
 	T *Ptr() const
 	{
@@ -45,21 +45,6 @@ public:
 	{
         return this->p;
     }
-
-	Bool operator==(const NotNullPtr<T> &p)
-	{
-		return this->p == p.p;
-	}
-
-	Bool Set(T *p)
-	{
-		if (p)
-		{
-			this->p = p;
-			return true;
-		}
-		return false;
-	}
 
 	static NotNullPtr<T> FromPtr(T *p)
 	{

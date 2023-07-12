@@ -12,7 +12,7 @@ namespace Map
 	private:
 		struct TileLayer
 		{
-			NotNullPtr<Text::String> url;
+			Text::String *url;
 			Double unitPerPixel;
 			UOSInt order;
 		};
@@ -25,9 +25,9 @@ namespace Map
 		Text::EncodingFactory *encFact;
 		ImageType imgType;
 		Text::String *tileExt;
-		NotNullPtr<Text::String> tmsURL;
+		Text::String *tmsURL;
 		Text::String *title;
-		NotNullPtr<Text::String> cacheDir;
+		Text::String *cacheDir;
 		Net::SocketFactory *sockf;
 		Net::SSLEngine *ssl;
 		Data::ArrayList<TileLayer*> layers;

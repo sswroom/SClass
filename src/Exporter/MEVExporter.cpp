@@ -77,7 +77,7 @@ Bool Exporter::MEVExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 			si = dirArr.SortedIndexOfPtr(sbuff, j);
 			if (si < 0)
 			{
-				dirArr.Insert((UOSInt)~si, Text::String::New(sbuff, j).Ptr());
+				dirArr.Insert((UOSInt)~si, Text::String::New(sbuff, j));
 			}
 		}
 	}
@@ -287,7 +287,7 @@ void Exporter::MEVExporter::GetMapDirs(Map::MapEnv *env, Data::ArrayListString *
 					si = dirArr->SortedIndexOfPtr(sbuff, k);
 					if (si < 0)
 					{
-						dirArr->Insert((UOSInt)~si, Text::String::New(sbuff, k).Ptr());
+						dirArr->Insert((UOSInt)~si, Text::String::New(sbuff, k));
 					}
 				}
 			}
@@ -343,9 +343,16 @@ void Exporter::MEVExporter::WriteGroupItems(Map::MapEnv *env, Map::MapEnv::Group
 		{
 			*(Int32*)&buff[0] = item->itemType;
 
-			NotNullPtr<Text::String> groupName = env->GetGroupName((Map::MapEnv::GroupItem*)item);
+			Text::String *groupName = env->GetGroupName((Map::MapEnv::GroupItem*)item);
 			*(Int32*)&buff[4] = 0;
-			*(UInt32*)&buff[8] = AddString(strArr, groupName->v, groupName->leng, 4 + *stmPos);
+			if (groupName)
+			{
+				*(UInt32*)&buff[8] = AddString(strArr, groupName->v, groupName->leng, 4 + *stmPos);
+			}
+			else
+			{
+				*(UInt32*)&buff[8] = 0;
+			}
 			*(Int32*)&buff[12] = (Int32)env->GetItemCount((Map::MapEnv::GroupItem*)item);
 			stm->Write(buff, 16);
 			*stmPos = 16 + *stmPos;

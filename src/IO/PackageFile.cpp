@@ -32,7 +32,7 @@ IO::PackageFile::PackageFile(const PackageFile *pkg) : IO::ParsedObject(pkg->Get
 	}
 }
 
-IO::PackageFile::PackageFile(NotNullPtr<Text::String> fileName) : IO::ParsedObject(fileName)
+IO::PackageFile::PackageFile(Text::String *fileName) : IO::ParsedObject(fileName)
 {
 	NEW_CLASS(this->items, Data::ArrayList<PackFileItem*>());
 	if (IO::Path::PATH_SEPERATOR == '\\')
@@ -67,7 +67,7 @@ IO::PackageFile::~PackageFile()
 		item = this->items->GetItem(i);
 		if (Sync::Interlocked::Decrement(&item->useCnt) == 0)
 		{
-			item->name->Release();
+			SDEL_STRING(item->name);
 			SDEL_CLASS(item->fd);
 			SDEL_CLASS(item->pobj);
 			if (item->compInfo)
@@ -107,7 +107,7 @@ void IO::PackageFile::AddData(IO::StreamData *fd, UInt64 ofst, UInt64 length, Te
 	item->modTime = modTime;
 	item->useCnt = 1;
 	this->items->Add(item);
-	this->namedItems->PutNN(item->name, item);
+	this->namedItems->Put(item->name, item);
 }
 
 void IO::PackageFile::AddObject(IO::ParsedObject *pobj, Text::CString name, const Data::Timestamp &modTime)
@@ -129,7 +129,7 @@ void IO::PackageFile::AddObject(IO::ParsedObject *pobj, Text::CString name, cons
 	item->modTime = modTime;
 	item->useCnt = 1;
 	this->items->Add(item);
-	this->namedItems->PutNN(item->name, item);
+	this->namedItems->Put(item->name, item);
 }
 
 void IO::PackageFile::AddCompData(IO::StreamData *fd, UInt64 ofst, UInt64 length, IO::PackFileItem::CompressInfo *compInfo, Text::CString name, const Data::Timestamp &modTime)
@@ -150,7 +150,7 @@ void IO::PackageFile::AddCompData(IO::StreamData *fd, UInt64 ofst, UInt64 length
 	item->modTime = modTime;
 	item->useCnt = 1;
 	this->items->Add(item);
-	this->namedItems->PutNN(item->name, item);
+	this->namedItems->Put(item->name, item);
 }
 
 void IO::PackageFile::AddPack(IO::PackageFile *pkg, Text::CString name, const Data::Timestamp &modTime)
@@ -165,8 +165,8 @@ void IO::PackageFile::AddPack(IO::PackageFile *pkg, Text::CString name, const Da
 	item->modTime = modTime;
 	item->useCnt = 1;
 	this->items->Add(item);
-	this->pkgFiles.PutNN(item->name, item);
-	this->namedItems->PutNN(item->name, item);
+	this->pkgFiles.Put(item->name, item);
+	this->namedItems->Put(item->name, item);
 }
 
 IO::PackageFile *IO::PackageFile::GetPackFile(Text::CString name) const
@@ -311,7 +311,14 @@ IO::StreamData *IO::PackageFile::GetPItemStmDataNew(const PackFileItem *item) co
 			*sptr++ = IO::Path::PATH_SEPERATOR;
 			sptr = Text::StrHexVal64(sptr, (UInt64)Data::DateTimeUtil::GetCurrTimeMillis());
 			*sptr++ = '_';
-			sptr = item->name->ConcatTo(sptr);
+			if (item->name)
+			{
+				sptr = item->name->ConcatTo(sptr);
+			}
+			else
+			{
+				sptr = item->fd->GetShortName().ConcatTo(sptr);
+			}
 			{
 				IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 				Crypto::Hash::HashStream hashStm(&fs, hash);
@@ -347,7 +354,14 @@ IO::StreamData *IO::PackageFile::GetPItemStmDataNew(const PackFileItem *item) co
 				NEW_CLASS(fd, IO::StmData::FileData(CSTRP(sbuff, sptr), true));
 				sb.Append(this->sourceName);
 				sb.AppendC(UTF8STRC("\\"));
-				sb.Append(item->name);
+				if (item->name)
+				{
+					sb.Append(item->name);
+				}
+				else
+				{
+					sb.Append(item->fd->GetShortName());
+				}
 				fd->SetFullName(sb.ToCString());
 				return fd;
 			}
@@ -398,7 +412,23 @@ UTF8Char *IO::PackageFile::GetItemName(UTF8Char *sbuff, UOSInt index) const
 		*sbuff = 0;
 		return 0;
 	}
-	return item->name->ConcatTo(sbuff);
+	if (item->name)
+	{
+		return item->name->ConcatTo(sbuff);
+	}
+	if (item->itemType == IO::PackFileItem::PackItemType::Compressed || item->itemType == IO::PackFileItem::PackItemType::Uncompressed)
+	{
+		return item->fd->GetShortName().ConcatTo(sbuff);
+	}
+	else if (item->itemType == IO::PackFileItem::PackItemType::ParsedObject)
+	{
+		return item->pobj->GetSourceName(sbuff);
+	}
+	else
+	{
+		*sbuff = 0;
+		return 0;
+	}
 }
 
 IO::StreamData *IO::PackageFile::GetItemStmDataNew(UOSInt index) const
@@ -495,8 +525,11 @@ UOSInt IO::PackageFile::GetItemIndex(Text::CString name) const
 		item = this->items->GetItem(i);
 		if (item)
 		{
-			if (item->name->EqualsICase(name.v, name.leng))
-				return i;
+			if (item->name)
+			{
+				if (item->name->EqualsICase(name.v, name.leng))
+					return i;
+			}
 			if (item->itemType == IO::PackFileItem::PackItemType::Compressed || item->itemType == IO::PackFileItem::PackItemType::Uncompressed)
 			{
 				Text::CString shName = item->fd->GetShortName();
@@ -811,7 +844,7 @@ IO::StreamData *IO::PackageFile::OpenStreamData(Text::CString fileName) const
 
 void IO::PackageFile::SetInfo(InfoType infoType, const UTF8Char *val)
 {
-	const UTF8Char *csptr = this->infoMap.Put(infoType, Text::StrCopyNew(val).Ptr());
+	const UTF8Char *csptr = this->infoMap.Put(infoType, Text::StrCopyNew(val));
 	if (csptr)
 	{
 		Text::StrDelNew(csptr);

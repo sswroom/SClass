@@ -58,7 +58,7 @@ Net::WebBrowser::WebBrowser(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text
 {
 	this->sockf = sockf;
 	this->ssl = ssl;
-	this->cacheDir = Text::String::New(cacheDir);
+	this->cacheDir = Text::String::New(cacheDir.v, cacheDir.leng);
 }
 
 Net::WebBrowser::~WebBrowser()

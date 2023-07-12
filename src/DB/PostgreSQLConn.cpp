@@ -587,12 +587,11 @@ public:
 			return false;
 		}
 		char *name = PQfname(this->res, (int)colIndex);
-		NotNullPtr<const UTF8Char> colName;
-		if (!colName.Set((const UTF8Char*)name))
+		if (name == 0)
 		{
 			return false;
 		}
-		colDef->SetColName(colName);
+		colDef->SetColName((const UTF8Char*)name);
 		colDef->SetColType(this->conn->DBType2ColType(PQftype(this->res, (int)colIndex)));
 		int len = PQfsize(this->res, (int)colIndex);
 		if (len < 0)
@@ -681,7 +680,7 @@ void DB::PostgreSQLConn::InitConnection()
 	}
 }
 
-DB::PostgreSQLConn::PostgreSQLConn(NotNullPtr<Text::String> server, UInt16 port, Text::String *uid, Text::String *pwd, NotNullPtr<Text::String> database, IO::LogTool *log) : DBConn(server)
+DB::PostgreSQLConn::PostgreSQLConn(Text::String *server, UInt16 port, Text::String *uid, Text::String *pwd, Text::String *database, IO::LogTool *log) : DBConn(server)
 {
 	this->clsData = MemAlloc(ClassData, 1);
 	this->clsData->conn = 0;
@@ -746,8 +745,11 @@ void DB::PostgreSQLConn::ForceTz(Int8 tzQhr)
 void DB::PostgreSQLConn::GetConnName(Text::StringBuilderUTF8 *sb)
 {
 	sb->AppendC(UTF8STRC("PostgreSQL"));
-	sb->AppendC(UTF8STRC(" - "));
-	sb->Append(this->database);
+	if (this->database)
+	{
+		sb->AppendC(UTF8STRC(" - "));
+		sb->Append(this->database);
+	}
 }
 
 void DB::PostgreSQLConn::Close()
@@ -893,7 +895,7 @@ UOSInt DB::PostgreSQLConn::QuerySchemaNames(Data::ArrayList<Text::String*> *name
 	return names->GetCount() - initCnt;
 }
 		
-UOSInt DB::PostgreSQLConn::QueryTableNames(Text::CString schemaName, Data::ArrayListNN<Text::String> *names)
+UOSInt DB::PostgreSQLConn::QueryTableNames(Text::CString schemaName, Data::ArrayList<Text::String*> *names)
 {
 	if (schemaName.leng == 0)
 		schemaName = CSTR("public");
@@ -906,16 +908,14 @@ UOSInt DB::PostgreSQLConn::QueryTableNames(Text::CString schemaName, Data::Array
 	{
 		while (r->ReadNext())
 		{
-			NotNullPtr<Text::String> tabName;
-			if (tabName.Set(r->GetNewStr(0)))
-				names->Add(tabName);
+			names->Add(r->GetNewStr(0));
 		}
 		this->CloseReader(r);
 	}
 	return names->GetCount() - initCnt;
 }
 
-DB::DBReader *DB::PostgreSQLConn::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListNN<Text::String> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+DB::DBReader *DB::PostgreSQLConn::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -981,34 +981,34 @@ Bool DB::PostgreSQLConn::IsConnError()
 	return PQstatus(this->clsData->conn) != CONNECTION_OK;
 }
 
-NotNullPtr<Text::String> DB::PostgreSQLConn::GetConnServer() const
+Text::String *DB::PostgreSQLConn::GetConnServer()
 {
 	return this->server;
 }
 
-UInt16 DB::PostgreSQLConn::GetConnPort() const
+UInt16 DB::PostgreSQLConn::GetConnPort()
 {
 	return this->port;
 }
 
-NotNullPtr<Text::String> DB::PostgreSQLConn::GetConnDB() const
+Text::String *DB::PostgreSQLConn::GetConnDB()
 {
 	return this->database;
 }
 
-Text::String *DB::PostgreSQLConn::GetConnUID() const
+Text::String *DB::PostgreSQLConn::GetConnUID()
 {
 	return this->uid;
 }
 
-Text::String *DB::PostgreSQLConn::GetConnPWD() const
+Text::String *DB::PostgreSQLConn::GetConnPWD()
 {
 	return this->pwd;
 }
 
 Bool DB::PostgreSQLConn::ChangeDatabase(Text::CString databaseName)
 {
-	NotNullPtr<Text::String> oldDB = this->database;
+	Text::String *oldDB = this->database;
 	this->database = Text::String::New(databaseName);
 	this->Reconnect();
 	if (this->clsData->conn)

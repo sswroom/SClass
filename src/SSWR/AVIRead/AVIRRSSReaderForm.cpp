@@ -27,8 +27,8 @@ void __stdcall SSWR::AVIRead::AVIRRSSReaderForm::OnRequestClicked(void *userObj)
 		Net::RSS *rss;
 		Net::RSSItem *item;
 		Text::CString userAgent = Net::UserAgentDB::FindUserAgent(Manage::OSInfo::OT_WINDOWS_NT64, Net::BrowserInfo::BT_FIREFOX);
-		NotNullPtr<Text::String> ua = Text::String::New(userAgent);
-		NEW_CLASS(rss, Net::RSS(sb.ToCString(), ua.Ptr(), me->core->GetSocketFactory(), me->ssl, 30000));
+		Text::String *ua = Text::String::New(userAgent);
+		NEW_CLASS(rss, Net::RSS(sb.ToCString(), ua, me->core->GetSocketFactory(), me->ssl, 30000));
 		ua->Release();
 		if (!rss->IsError())
 		{
@@ -37,37 +37,37 @@ void __stdcall SSWR::AVIRead::AVIRRSSReaderForm::OnRequestClicked(void *userObj)
 			i = me->lvInfo->AddItem(CSTR("Title"), 0);
 			if ((s = rss->GetTitle()) != 0)
 			{
-				me->lvInfo->SetSubItem(i, 1, s->ToCString());
+				me->lvInfo->SetSubItem(i, 1, s);
 			}
 			i = me->lvInfo->AddItem(CSTR("Link"), 0);
 			if ((s = rss->GetLink()) != 0)
 			{
-				me->lvInfo->SetSubItem(i, 1, s->ToCString());
+				me->lvInfo->SetSubItem(i, 1, s);
 			}
 			i = me->lvInfo->AddItem(CSTR("Description"), 0);
 			if ((s = rss->GetDescription()) != 0)
 			{
-				me->lvInfo->SetSubItem(i, 1, s->ToCString());
+				me->lvInfo->SetSubItem(i, 1, s);
 			}
 			i = me->lvInfo->AddItem(CSTR("Language"), 0);
 			if ((s = rss->GetLanguage()) != 0)
 			{
-				me->lvInfo->SetSubItem(i, 1, s->ToCString());
+				me->lvInfo->SetSubItem(i, 1, s);
 			}
 			i = me->lvInfo->AddItem(CSTR("Copyright"), 0);
 			if ((s = rss->GetCopyright()) != 0)
 			{
-				me->lvInfo->SetSubItem(i, 1, s->ToCString());
+				me->lvInfo->SetSubItem(i, 1, s);
 			}
 			i = me->lvInfo->AddItem(CSTR("ManagingEditor"), 0);
 			if ((s = rss->GetManagingEditor()) != 0)
 			{
-				me->lvInfo->SetSubItem(i, 1, s->ToCString());
+				me->lvInfo->SetSubItem(i, 1, s);
 			}
 			i = me->lvInfo->AddItem(CSTR("WebMaster"), 0);
 			if ((s = rss->GetWebMaster()) != 0)
 			{
-				me->lvInfo->SetSubItem(i, 1, s->ToCString());
+				me->lvInfo->SetSubItem(i, 1, s);
 			}
 			i = me->lvInfo->AddItem(CSTR("PubDate"), 0);
 			if (!(dt = rss->GetPubDate()).IsNull())
@@ -84,17 +84,17 @@ void __stdcall SSWR::AVIRead::AVIRRSSReaderForm::OnRequestClicked(void *userObj)
 			i = me->lvInfo->AddItem(CSTR("Generator"), 0);
 			if ((s = rss->GetGenerator()) != 0)
 			{
-				me->lvInfo->SetSubItem(i, 1, s->ToCString());
+				me->lvInfo->SetSubItem(i, 1, s);
 			}
 			i = me->lvInfo->AddItem(CSTR("Docs"), 0);
 			if ((s = rss->GetDocs()) != 0)
 			{
-				me->lvInfo->SetSubItem(i, 1, s->ToCString());
+				me->lvInfo->SetSubItem(i, 1, s);
 			}
 		}
 		if (rss->GetCount() > 0)
 		{
-			si = me->rssList.SortedIndexOfC(sb.ToCString());
+			si = me->rssList.SortedIndexOfPtr(sb.ToString(), sb.GetLength());
 			if (si < 0)
 			{
 				j = me->rssList.SortedInsert(Text::String::New(sb.ToString(), sb.GetLength()));
@@ -107,7 +107,7 @@ void __stdcall SSWR::AVIRead::AVIRRSSReaderForm::OnRequestClicked(void *userObj)
 			while (i < j)
 			{
 				item = rss->GetItem(i);
-				me->lvItems->AddItem(Text::String::OrEmpty(item->title), item);
+				me->lvItems->AddItem(item->title, item);
 				if (!item->pubDate.IsNull())
 				{
 					sptr = item->pubDate.ToString(sbuff, "yyyy-MM-dd HH:mm:ss");

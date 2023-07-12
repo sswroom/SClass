@@ -1,6 +1,6 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRRSSREADERFORM
 #define _SM_SSWR_AVIREAD_AVIRRSSREADERFORM
-#include "Data/ArrayListStringNN.h"
+#include "Data/ArrayListStrUTF8.h"
 #include "Net/RSS.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "UI/GUIButton.h"
@@ -35,7 +35,7 @@ namespace SSWR
 			UI::GUIListView *lvItems;
 
 			Net::RSS *rss;
-			Data::ArrayListStringNN rssList;
+			Data::ArrayListString rssList;
 			SSWR::AVIRead::AVIRCore *core;
 			Net::SSLEngine *ssl;
 

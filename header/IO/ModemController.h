@@ -1,8 +1,7 @@
 #ifndef _SM_IO_MODEMCONTROLLER
 #define _SM_IO_MODEMCONTROLLER
-#include "Data/ArrayListNN.h"
-#include "Data/DateTime.h"
 #include "IO/ATCommandChannel.h"
+#include "Data/DateTime.h"
 #include "Text/SMSMessage.h"
 #include "Text/StringBuilderUTF8.h"
 
@@ -31,7 +30,7 @@ namespace IO
 		Bool IsCmdSucceed();
 
 		UTF8Char *SendStringCommand(UTF8Char *buff, const UTF8Char *cmd, UOSInt cmdLen, Data::Duration timeout);
-		Bool SendStringCommand(Data::ArrayListNN<Text::String> *resList, const UTF8Char *cmd, UOSInt cmdLen, Data::Duration timeout);
+		Bool SendStringCommand(Data::ArrayList<Text::String*> *resList, const UTF8Char *cmd, UOSInt cmdLen, Data::Duration timeout);
 		UTF8Char *SendStringCommandDirect(UTF8Char *buff, const UTF8Char *cmd, UOSInt cmdLen, Data::Duration timeout);
 		Bool SendStringListCommand(Text::StringBuilderUTF8 *sb, const UTF8Char *cmd, UOSInt cmdLen);
 		Bool SendBoolCommandC(const UTF8Char *cmd, UOSInt cmdLen);

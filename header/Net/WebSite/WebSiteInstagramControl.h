@@ -1,6 +1,5 @@
 #ifndef _SM_NET_WEBSITE_WEBSITEINSTAGRAMCONTROL
 #define _SM_NET_WEBSITE_WEBSITEINSTAGRAMCONTROL
-#include "Data/ArrayListNN.h"
 #include "Net/SocketFactory.h"
 #include "Net/SSLEngine.h"
 #include "Text/EncodingFactory.h"
@@ -16,9 +15,9 @@ namespace Net
 			typedef struct
 			{
 				Int64 id;
-				NotNullPtr<Text::String> shortCode;
+				Text::String *shortCode;
 				Int64 recTime;
-				NotNullPtr<Text::String> message;
+				Text::String *message;
 				Text::String *imgURL;
 				Text::String *videoURL;
 				Bool moreImages;
@@ -43,10 +42,10 @@ namespace Net
 			WebSiteInstagramControl(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, Text::String *userAgent);
 			~WebSiteInstagramControl();
 
-			OSInt GetChannelItems(NotNullPtr<Text::String> channelId, OSInt pageNo, Data::ArrayList<ItemData*> *itemList, ChannelInfo *chInfo);
+			OSInt GetChannelItems(Text::String *channelId, OSInt pageNo, Data::ArrayList<ItemData*> *itemList, ChannelInfo *chInfo);
 			void FreeItems(Data::ArrayList<ItemData*> *itemList);
 			void FreeChannelInfo(ChannelInfo *chInfo);
-			OSInt GetPageImages(NotNullPtr<Text::String> shortCode, Data::ArrayListNN<Text::String> *imageList, Data::ArrayListNN<Text::String> *videoList);
+			OSInt GetPageImages(Text::String *shortCode, Data::ArrayList<Text::String*> *imageList, Data::ArrayList<Text::String*> *videoList);
 			Text::String *GetUserAgent();
 		};
 	}

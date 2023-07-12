@@ -36,7 +36,7 @@ void IO::StringLogger::LogStr(const UTF8Char *s, UOSInt len)
 	OSInt i = this->strList.SortedIndexOfPtr(s, len);
 	if (i < 0)
 	{
-		this->strList.Insert((UOSInt)~i, Text::String::New(s, len).Ptr());
+		this->strList.Insert((UOSInt)~i, Text::String::New(s, len));
 		this->modified = true;
 	}
 }

@@ -16,9 +16,9 @@ void __stdcall Media::Playlist::OnPBEnd(void *userObj)
 
 void Media::Playlist::FreeEntry(PlaylistEntry* ent)
 {
-	ent->title->Release();
+	SDEL_STRING(ent->title);
 	SDEL_STRING(ent->artist);
-	ent->fileName->Release();
+	SDEL_STRING(ent->fileName);
 	MemFree(ent);
 }
 
@@ -92,7 +92,7 @@ Bool Media::Playlist::AddFile(Text::CString fileName)
 			artist = chap->GetChapterArtist(i);
 			if (artist)
 			{
-				ent->artist = artist->Clone().Ptr();
+				ent->artist = artist->Clone();
 			}
 			else
 			{
@@ -145,7 +145,7 @@ Bool Media::Playlist::AppendPlaylist(Media::Playlist *playlist)
 		ent->title = plent->title->Clone();
 		if (plent->artist)
 		{
-			ent->artist = plent->artist->Clone().Ptr();
+			ent->artist = plent->artist->Clone();
 		}
 		else
 		{
@@ -181,7 +181,7 @@ Text::String *Media::Playlist::GetTitle(UOSInt index) const
 	PlaylistEntry *ent = this->entries.GetItem(index);
 	if (ent == 0)
 		return 0;
-	return ent->title.Ptr();
+	return ent->title;
 }
 
 Text::String *Media::Playlist::GetArtist(UOSInt index) const
@@ -197,7 +197,7 @@ Text::String *Media::Playlist::GetFileName(UOSInt index) const
 	PlaylistEntry *ent = this->entries.GetItem(index);
 	if (ent == 0)
 		return 0;
-	return ent->fileName.Ptr();
+	return ent->fileName;
 }
 
 UInt32 Media::Playlist::GetTimeStart(UOSInt index) const

@@ -594,7 +594,6 @@ Media::ALSARenderer::ALSARenderer(const UTF8Char *devName)
 {
 	if (devName == 0)
 	{
-		Bool found = false;
 		this->devName = 0;
 		IO::ConfigFile *cfg = IO::WSConfigFile::Parse(CSTR("/etc/asound.conf"));
 		if (cfg)
@@ -605,18 +604,18 @@ Media::ALSARenderer::ALSARenderer(const UTF8Char *devName)
 				UTF8Char sbuff[32];
 				UTF8Char *sptr;
 				sptr = s->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("hw:")));
-				this->devName = Text::StrCopyNewC(sbuff, (UOSInt)(sptr - sbuff)).Ptr();
+				this->devName = Text::StrCopyNewC(sbuff, (UOSInt)(sptr - sbuff));
 			}
 			DEL_CLASS(cfg);
 		}
 		if (this->devName == 0)
 		{
-			this->devName = Text::StrCopyNewC(UTF8STRC("hw:0")).Ptr();
+			this->devName = Text::StrCopyNewC(UTF8STRC("hw:0"));
 		}
 	}
 	else
 	{
-		this->devName = Text::StrCopyNew(devName).Ptr();
+		this->devName = Text::StrCopyNew(devName);
 	}
 	this->audsrc = 0;
 	this->resampler = 0;

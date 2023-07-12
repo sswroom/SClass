@@ -5,7 +5,7 @@
 #include "SSWR/AVIRead/AVIRICCInfoForm.h"
 #include "Text/MyStringFloat.h"
 
-void __stdcall SSWR::AVIRead::AVIRICCInfoForm::OnFileDrop(void *userObj, NotNullPtr<Text::String> *files, UOSInt fileCnt)
+void __stdcall SSWR::AVIRead::AVIRICCInfoForm::OnFileDrop(void *userObj, Text::String **files, UOSInt fileCnt)
 {
 	SSWR::AVIRead::AVIRICCInfoForm *me = (SSWR::AVIRead::AVIRICCInfoForm*)userObj;
 	UOSInt i;

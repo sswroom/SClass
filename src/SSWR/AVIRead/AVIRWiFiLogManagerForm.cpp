@@ -127,7 +127,7 @@ void __stdcall SSWR::AVIRead::AVIRWiFiLogManagerForm::OnFilterClicked(void *user
 	SDEL_STRING(me->filterText);
 	if (sb.GetLength() > 0)
 	{
-		me->filterText = Text::String::New(sb.ToCString()).Ptr();
+		me->filterText = Text::String::New(sb.ToString(), sb.GetLength());
 	}
 	me->LogUIUpdate();
 }
@@ -172,7 +172,7 @@ void SSWR::AVIRead::AVIRWiFiLogManagerForm::LogUIUpdate()
 		else if (this->filterText)
 		{
 			valid = false;
-			if (log->ssid->IndexOfICase(this->filterText) != INVALID_INDEX)
+			if (log->ssid && log->ssid->IndexOfICase(this->filterText) != INVALID_INDEX)
 			{
 				valid = true;
 			}
@@ -235,17 +235,17 @@ void SSWR::AVIRead::AVIRWiFiLogManagerForm::LogUIUpdate()
 			Text::String *serialNum = 0;
 			Net::WirelessLANIE::GetWPSInfo(log->ieBuff, log->ieLen, &manuf, &model, &serialNum);
 			if (manuf)
-				this->lvContent->SetSubItem(l, 5, manuf->ToCString());
+				this->lvContent->SetSubItem(l, 5, manuf);
 			else if (log->manuf)
-				this->lvContent->SetSubItem(l, 5, log->manuf->ToCString());
+				this->lvContent->SetSubItem(l, 5, log->manuf);
 			if (model)
-				this->lvContent->SetSubItem(l, 6, model->ToCString());
+				this->lvContent->SetSubItem(l, 6, model);
 			else if (log->model)
-				this->lvContent->SetSubItem(l, 6, log->model->ToCString());
+				this->lvContent->SetSubItem(l, 6, log->model);
 			if (serialNum)
-				this->lvContent->SetSubItem(l, 7, serialNum->ToCString());
+				this->lvContent->SetSubItem(l, 7, serialNum);
 			else if (log->serialNum)
-				this->lvContent->SetSubItem(l, 7, log->serialNum->ToCString());
+				this->lvContent->SetSubItem(l, 7, log->serialNum);
 			SDEL_STRING(manuf);
 			SDEL_STRING(model);
 			SDEL_STRING(serialNum);
@@ -265,7 +265,7 @@ void SSWR::AVIRead::AVIRWiFiLogManagerForm::LogUIUpdate()
 				this->lvContent->SetSubItem(l, 10, {entry->name, entry->nameLen});
 			}
 			if (log->country)
-				this->lvContent->SetSubItem(l, 11, log->country->ToCString());
+				this->lvContent->SetSubItem(l, 11, log->country);
 			cnt = 0;
 			k = 0;
 			while (k < 20)

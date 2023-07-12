@@ -268,7 +268,7 @@ IO::ParsedObject *Parser::FileParser::GLOCParser::ParseFileHdr(IO::StreamData *f
 	UInt64 fileSize;
 	Int64 devId;
 	UInt32 idevId;
-	NotNullPtr<Text::String> name = fd->GetFullName();
+	Text::String *name = fd->GetFullName();
 	sptr = name->v;
 	i = Text::StrLastIndexOfCharC(sptr, name->leng, IO::Path::PATH_SEPERATOR);
 	sptr2 = Text::StrConcatC(sbuff, &sptr[i + 1], name->leng - i - 1);

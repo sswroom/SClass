@@ -5,7 +5,7 @@
 
 UInt32 __stdcall Sync::Thread::InnerThread(void *userObj)
 {
-	NotNullPtr<Thread> me = NotNullPtr<Thread>::FromPtr((Thread*)userObj);
+	Thread *me = (Thread*)userObj;
 	me->func(me);
 	me->running = false;
 	return 0;

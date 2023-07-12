@@ -20,7 +20,7 @@ namespace Net
 				Int64 id;
 				Net::SocketUtil::AddressInfo remoteAddr;
 				Int64 recvTime;
-				NotNullPtr<Text::String> fromAddr;
+				Text::String *fromAddr;
 				UOSInt fileSize;
 				Bool isDeleted;
 			};

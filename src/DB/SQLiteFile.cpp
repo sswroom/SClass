@@ -41,7 +41,7 @@ void DB::SQLiteFile::Init()
 	}
 }
 
-DB::SQLiteFile::SQLiteFile(NotNullPtr<Text::String> fileName) : DB::DBConn(fileName)
+DB::SQLiteFile::SQLiteFile(Text::String *fileName) : DB::DBConn(fileName)
 {
 	this->fileName = fileName->Clone();
 	this->Init();
@@ -122,7 +122,7 @@ OSInt DB::SQLiteFile::ExecuteNonQuery(Text::CString sql)
 			{
 				this->lastDataError = DE_EXEC_SQL_ERROR;
 				SDEL_STRING(this->lastErrMsg);
-				this->lastErrMsg = Text::String::NewNotNullSlow((const UTF8Char*)sqlite3_errmsg((sqlite3*)this->db)).Ptr();
+				this->lastErrMsg = Text::String::NewNotNullSlow((const UTF8Char*)sqlite3_errmsg((sqlite3*)this->db));
 				chg = 0;
 			}
 			sqlite3_finalize(stmt);
@@ -196,7 +196,7 @@ void DB::SQLiteFile::Reconnect()
 	}
 
 	Int32 ret;
-	ret = sqlite3_open((const Char*)this->fileName->v, &db);
+	ret = sqlite3_open((const Char*)this->fileName, &db);
 	if (SQLITE_OK == ret)
 	{
 		this->db = db;
@@ -219,7 +219,7 @@ void DB::SQLiteFile::Rollback(void *tran)
 	ExecuteNonQuery(CSTR("end"));
 }
 
-UOSInt DB::SQLiteFile::QueryTableNames(Text::CString schemaName, Data::ArrayListNN<Text::String> *names)
+UOSInt DB::SQLiteFile::QueryTableNames(Text::CString schemaName, Data::ArrayList<Text::String*> *names)
 {
 	if (schemaName.leng > 0)
 		return 0;
@@ -228,18 +228,16 @@ UOSInt DB::SQLiteFile::QueryTableNames(Text::CString schemaName, Data::ArrayList
 	if (r)
 	{
 		Text::StringBuilderUTF8 sb;
-		NotNullPtr<Text::String> name;
 		while (r->ReadNext())
 		{
-			name = r->GetNewStrBNN(0, &sb);
-			names->Add(name);
+			names->Add(r->GetNewStrB(0, &sb, true));
 		}
 		this->CloseReader(r);
 	}
 	return names->GetCount() - initCnt;
 }
 
-DB::DBReader *DB::SQLiteFile::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListNN<Text::String> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+DB::DBReader *DB::SQLiteFile::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[512];
@@ -282,7 +280,7 @@ Bool DB::SQLiteFile::IsError()
 	return this->db == 0;
 }
 
-NotNullPtr<Text::String> DB::SQLiteFile::GetFileName()
+Text::String *DB::SQLiteFile::GetFileName()
 {
 	return this->fileName;
 }
@@ -370,7 +368,7 @@ Math::Geometry::Vector2D *DB::SQLiteFile::GPGeometryParse(const UInt8 *buff, UOS
 	return reader.ParseWKB(buff + ofst, buffSize - ofst, 0);
 }
 
-DB::DBTool *DB::SQLiteFile::CreateDBTool(NotNullPtr<Text::String> fileName, IO::LogTool *log, Text::CString logPrefix)
+DB::DBTool *DB::SQLiteFile::CreateDBTool(Text::String *fileName, IO::LogTool *log, Text::CString logPrefix)
 {
 	DB::SQLiteFile *conn;
 	NEW_CLASS(conn, DB::SQLiteFile(fileName));
@@ -482,7 +480,7 @@ Text::String *DB::SQLiteReader::GetNewStr(UOSInt colIndex)
 	Text::StringBuilderUTF8 sb;
 	if (!this->GetStr(colIndex, &sb))
 		return 0;
-	return Text::String::New(sb.ToCString()).Ptr();
+	return Text::String::New(sb.ToCString());
 }
 
 Bool DB::SQLiteReader::GetStr(UOSInt colIndex, Text::StringBuilderUTF8 *sb)
@@ -528,7 +526,7 @@ Bool DB::SQLiteReader::GetStr(UOSInt colIndex, Text::StringBuilderUTF8 *sb)
 			return false;
 		else
 		{
-			NotNullPtr<Text::String> s = Text::String::NewNotNull((const UTF16Char*)outp);
+			Text::String *s = Text::String::NewNotNull((const UTF16Char*)outp);
 			sb->Append(s);
 			s->Release();
 			return true;
@@ -669,10 +667,9 @@ Bool DB::SQLiteReader::GetColDef(UOSInt colIndex, DB::ColDef *colDef)
 	const Char *name = sqlite3_column_name((sqlite3_stmt*)this->hStmt, (int)colIndex);
 	UOSInt colSize;
 	DB::DBUtil::ColType colType;
-	NotNullPtr<const UTF8Char> colName;
-	if (!colName.Set((const UTF8Char*)name))
+	if (name == 0)
 		return false;
-	colDef->SetColName(colName);
+	colDef->SetColName((const UTF8Char*)name);
 	colType = GetColType(colIndex, &colSize);
 	colDef->SetColType(colType);
 	colDef->SetColSize(colSize);

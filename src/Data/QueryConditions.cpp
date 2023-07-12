@@ -9,7 +9,7 @@ Data::QueryConditions::FieldCondition::FieldCondition(Text::CString fieldName)
 	this->fieldName = Text::String::New(fieldName);
 }
 
-Data::QueryConditions::FieldCondition::FieldCondition(NotNullPtr<Text::String> fieldName)
+Data::QueryConditions::FieldCondition::FieldCondition(Text::String *fieldName)
 {
 	this->fieldName = fieldName->Clone();
 }
@@ -32,7 +32,7 @@ Bool Data::QueryConditions::FieldCondition::IsValid(Data::ObjectGetter *getter)
 	return ret;
 }
 
-void Data::QueryConditions::FieldCondition::GetFieldList(Data::ArrayListNN<Text::String> *fieldList)
+void Data::QueryConditions::FieldCondition::GetFieldList(Data::ArrayList<Text::String*> *fieldList)
 {
 	fieldList->Add(this->fieldName);
 }
@@ -194,7 +194,7 @@ Bool Data::QueryConditions::Int32Condition::TestValid(Data::VariItem *item)
 
 Text::String *Data::QueryConditions::Int32Condition::GetFieldName()
 {
-	return this->fieldName.Ptr();
+	return this->fieldName;
 }
 
 Int32 Data::QueryConditions::Int32Condition::GetVal()
@@ -393,7 +393,7 @@ Bool Data::QueryConditions::Int64Condition::TestValid(Data::VariItem *item)
 
 Text::String *Data::QueryConditions::Int64Condition::GetFieldName()
 {
-	return this->fieldName.Ptr();
+	return this->fieldName;
 }
 
 Int64 Data::QueryConditions::Int64Condition::GetVal()
@@ -504,7 +504,7 @@ Data::QueryConditions::StringInCondition::StringInCondition(Text::CString fieldN
 	UOSInt j = val->GetCount();
 	while (i < j)
 	{
-		this->vals.Add(Text::StrCopyNew(val->GetItem(i)).Ptr());
+		this->vals.Add(Text::StrCopyNew(val->GetItem(i)));
 		i++;
 	}
 }
@@ -747,7 +747,7 @@ Bool Data::QueryConditions::StringEqualsCondition::TestValid(Data::VariItem *ite
 	switch (item->GetItemType())
 	{
 	case Data::VariItem::ItemType::Str:
-		return item->GetItemValue().str->Equals(this->val.Ptr());
+		return item->GetItemValue().str->Equals(this->val);
 	case Data::VariItem::ItemType::CStr:
 	{
 		Data::VariItem::ItemValue ival = item->GetItemValue();
@@ -951,7 +951,7 @@ Bool Data::QueryConditions::InnerCondition::IsValid(Data::ObjectGetter *getter)
 	return this->innerCond->IsValid(getter);
 }
 
-void Data::QueryConditions::InnerCondition::GetFieldList(Data::ArrayListNN<Text::String> *fieldList)
+void Data::QueryConditions::InnerCondition::GetFieldList(Data::ArrayList<Text::String*> *fieldList)
 {
 	this->innerCond->GetFieldList(fieldList);	
 }
@@ -990,7 +990,7 @@ Bool Data::QueryConditions::OrCondition::IsValid(Data::ObjectGetter *getter)
 	return true;
 }
 
-void Data::QueryConditions::OrCondition::GetFieldList(Data::ArrayListNN<Text::String> *fieldList)
+void Data::QueryConditions::OrCondition::GetFieldList(Data::ArrayList<Text::String*> *fieldList)
 {
 }
 
@@ -1126,7 +1126,7 @@ Data::ArrayList<Data::QueryConditions::Condition*> *Data::QueryConditions::GetLi
 	return &this->conditionList;
 }
 
-void Data::QueryConditions::GetFieldList(Data::ArrayListNN<Text::String> *fieldList)
+void Data::QueryConditions::GetFieldList(Data::ArrayList<Text::String*> *fieldList)
 {
 	UOSInt i = 0;
 	UOSInt j = this->conditionList.GetCount();

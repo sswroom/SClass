@@ -165,7 +165,7 @@ Text::String *Net::WebServer::IWebRequest::GetCookieAsNew(Text::CString name)
 		strCnt = Text::StrSplitTrimP(strs, 2, strs[1], ';');
 		if (strs[0].StartsWith(name.v, name.leng) && strs[0].v[name.leng] == '=')
 		{
-			ret = Text::String::New(&strs[0].v[name.leng + 1], strs[0].leng - name.leng - 1).Ptr();
+			ret = Text::String::New(&strs[0].v[name.leng + 1], strs[0].leng - name.leng - 1);
 			break;
 		}
 	}
@@ -193,7 +193,7 @@ UTF8Char *Net::WebServer::IWebRequest::GetRequestPath(UTF8Char *sbuff, UOSInt ma
 
 UTF8Char *Net::WebServer::IWebRequest::GetQueryString(UTF8Char *sbuff, UOSInt maxLeng)
 {
-	NotNullPtr<Text::String> s = this->GetRequestURI();
+	Text::String *s = this->GetRequestURI();
 	UOSInt i = s->IndexOf('?');
 	if (i == INVALID_INDEX)
 		return 0;

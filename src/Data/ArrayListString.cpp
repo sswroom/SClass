@@ -53,9 +53,9 @@ OSInt Data::ArrayListString::SortedIndexOfPtr(const UTF8Char *val, UOSInt len) c
 
 }
 
-NotNullPtr<Text::String> Data::ArrayListString::JoinString() const
+Text::String *Data::ArrayListString::JoinString() const
 {
-	NotNullPtr<Text::String> newStr;
+	Text::String *newStr;
 	UOSInt newStrLeng = 0;
 	UOSInt j;
 	UOSInt i;

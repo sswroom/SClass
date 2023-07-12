@@ -8,7 +8,7 @@ Bool DB::PostgreSQLConn::Connect()
 	return false;
 }
 
-DB::PostgreSQLConn::PostgreSQLConn(NotNullPtr<Text::String> server, UInt16 port, Text::String *uid, Text::String *pwd, NotNullPtr<Text::String> database, IO::LogTool *log) : DBConn(server)
+DB::PostgreSQLConn::PostgreSQLConn(Text::String *server, UInt16 port, Text::String *uid, Text::String *pwd, Text::String *database, IO::LogTool *log) : DBConn(server)
 {
 	this->clsData = 0;
 	this->tzQhr = 0;
@@ -155,7 +155,7 @@ UOSInt DB::PostgreSQLConn::QuerySchemaNames(Data::ArrayList<Text::String*> *name
 	return names->GetCount() - initCnt;
 }
 
-UOSInt DB::PostgreSQLConn::QueryTableNames(Text::CString schemaName, Data::ArrayListNN<Text::String> *names)
+UOSInt DB::PostgreSQLConn::QueryTableNames(Text::CString schemaName, Data::ArrayList<Text::String*> *names)
 {
 	if (schemaName.leng == 0)
 		schemaName = CSTR("public");
@@ -168,16 +168,14 @@ UOSInt DB::PostgreSQLConn::QueryTableNames(Text::CString schemaName, Data::Array
 	{
 		while (r->ReadNext())
 		{
-			NotNullPtr<Text::String> tabName;
-			if (tabName.Set(r->GetNewStr(0)))
-				names->Add(tabName);
+			names->Add(r->GetNewStr(0));
 		}
 		this->CloseReader(r);
 	}
 	return names->GetCount() - initCnt;
 }
 
-DB::DBReader *DB::PostgreSQLConn::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListNN<Text::String> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+DB::DBReader *DB::PostgreSQLConn::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -250,27 +248,27 @@ Bool DB::PostgreSQLConn::IsConnError()
 	return true;
 }
 
-NotNullPtr<Text::String> DB::PostgreSQLConn::GetConnServer() const
+Text::String *DB::PostgreSQLConn::GetConnServer()
 {
 	return this->server;
 }
 
-UInt16 DB::PostgreSQLConn::GetConnPort() const
+UInt16 DB::PostgreSQLConn::GetConnPort()
 {
 	return this->port;
 }
 
-NotNullPtr<Text::String> DB::PostgreSQLConn::GetConnDB() const
+Text::String *DB::PostgreSQLConn::GetConnDB()
 {
 	return this->database;
 }
 
-Text::String *DB::PostgreSQLConn::GetConnUID() const
+Text::String *DB::PostgreSQLConn::GetConnUID()
 {
 	return this->uid;
 }
 
-Text::String *DB::PostgreSQLConn::GetConnPWD() const
+Text::String *DB::PostgreSQLConn::GetConnPWD()
 {
 	return this->pwd;
 }

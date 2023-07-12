@@ -18,12 +18,12 @@ namespace Net
 			{
 				UOSInt ofst;
 				UOSInt leng;
-				NotNullPtr<Text::String> formName;
-				NotNullPtr<Text::String> fileName;
+				Text::String *formName;
+				Text::String *fileName;
 			} FormFileInfo;
 
 		private:
-			NotNullPtr<Text::String> requestURI;
+			Text::String *requestURI;
 			Net::WebUtil::RequestMethod reqMeth;
 			Data::FastStringMap<Text::String*> headers;
 			Data::FastStringMap<Text::String*> *queryMap;
@@ -59,8 +59,8 @@ namespace Net
 			Text::String *GetHeaderName(UOSInt index);
 			Text::String *GetHeaderValue(UOSInt index);
 
-			virtual NotNullPtr<Text::String> GetRequestURI() const;
-			virtual RequestProtocol GetProtocol() const;
+			virtual Text::String *GetRequestURI();
+			virtual RequestProtocol GetProtocol();
 			virtual Text::String *GetQueryValue(Text::CString name);
 			virtual Bool HasQuery(Text::CString name);
 			virtual Net::WebUtil::RequestMethod GetReqMethod() const;

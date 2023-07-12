@@ -34,7 +34,7 @@ void __stdcall SSWR::AVIRead::AVIRSNMPClientForm::OnRequestClicked(void *userObj
 	UOSInt i = me->cboCommandType->GetSelectedIndex();
 	Data::ArrayList<Net::SNMPUtil::BindingItem*> itemList;
 	Net::SNMPUtil::ErrorStatus err;
-	NotNullPtr<Text::String> community = Text::String::New(sbComm.ToString(), sbComm.GetLength());
+	Text::String *community = Text::String::New(sbComm.ToString(), sbComm.GetLength());
 	if (i == 0)
 	{
 		err = me->cli->V1GetRequest(&addr, community, sbOID.ToString(), sbOID.GetLength(), &itemList);

@@ -30,7 +30,7 @@ void IO::FileAnalyse::SPKFileAnalyse::ParseV1Directory(UInt64 dirOfst, UInt64 di
 		pack->fileOfst = fileOfst;
 		pack->packSize = (UOSInt)fileSize;
 		pack->packType = PT_FILE;
-		pack->fileName = Text::String::New(&buff[ofst + 26], fileNameSize).Ptr();
+		pack->fileName = Text::String::New(&buff[ofst + 26], fileNameSize);
 		this->packs.Add(pack);
 		ofst += 26 + (UOSInt)fileNameSize;
 	}

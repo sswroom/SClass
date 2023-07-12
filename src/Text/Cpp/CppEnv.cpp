@@ -116,7 +116,7 @@ Bool Text::Cpp::CppEnv::InitVSEnv(Text::VSProject::VisualStudioVersion vsv)
 				}
 				else
 				{
-					this->includePaths.Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+					this->includePaths->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
 				}
 				if (c == 0)
 					break;
@@ -140,6 +140,7 @@ Bool Text::Cpp::CppEnv::InitVSEnv(Text::VSProject::VisualStudioVersion vsv)
 Text::Cpp::CppEnv::CppEnv(Text::VSProject::VisualStudioVersion vsv)
 {
 	this->pt = Text::CodeProject::PROJT_VSPROJECT;
+	NEW_CLASS(this->includePaths, Data::ArrayListString());
 	this->vsv = vsv;
 	this->baseFile = 0;
 }
@@ -147,7 +148,8 @@ Text::Cpp::CppEnv::CppEnv(Text::VSProject::VisualStudioVersion vsv)
 Text::Cpp::CppEnv::CppEnv(Text::CodeProject *proj, IO::ConfigFile *cfg)
 {
 	this->pt = proj->GetProjectType();
-	this->baseFile = proj->GetSourceNameObj()->Clone().Ptr();
+	this->baseFile = proj->GetSourceNameObj()->Clone();
+	NEW_CLASS(this->includePaths, Data::ArrayListString());
 	if (this->pt == Text::CodeProject::PROJT_VSPROJECT)
 	{
 		this->vsv = ((Text::VSProject*)proj)->GetVSVersion();
@@ -176,17 +178,18 @@ Text::Cpp::CppEnv::CppEnv(Text::CodeProject *proj, IO::ConfigFile *cfg)
 
 Text::Cpp::CppEnv::~CppEnv()
 {
-	UOSInt i = this->includePaths.GetCount();
+	UOSInt i = this->includePaths->GetCount();
 	while (i-- > 0)
 	{
-		this->includePaths.GetItem(i)->Release();
+		this->includePaths->GetItem(i)->Release();
 	}
+	DEL_CLASS(this->includePaths);
 	SDEL_STRING(this->baseFile);
 }
 
 void Text::Cpp::CppEnv::AddIncludePath(Text::CString includePath)
 {
-	this->includePaths.Add(Text::String::New(includePath));
+	this->includePaths->Add(Text::String::New(includePath));
 }
 
 UTF8Char *Text::Cpp::CppEnv::GetIncludeFilePath(UTF8Char *buff, Text::CString includeFile, Text::String *sourceFile)
@@ -208,19 +211,19 @@ UTF8Char *Text::Cpp::CppEnv::GetIncludeFilePath(UTF8Char *buff, Text::CString in
 			return sptr2;
 	}
 	i = 0;
-	j = this->includePaths.GetCount();
+	j = this->includePaths->GetCount();
 	while (i < j)
 	{
 		if (this->baseFile)
 		{
 			sptr = this->baseFile->ConcatTo(buff);
-			Text::String *s = this->includePaths.GetItem(i);
+			Text::String *s = this->includePaths->GetItem(i);
 			sptr = IO::Path::AppendPath(buff, sptr, s->ToCString());
 			*sptr++ = IO::Path::PATH_SEPERATOR;
 		}
 		else
 		{
-			sptr = this->includePaths.GetItem(i)->ConcatTo(buff);
+			sptr = this->includePaths->GetItem(i)->ConcatTo(buff);
 			*sptr++ = IO::Path::PATH_SEPERATOR;
 		}
 		sptr2 = includeFile.ConcatTo(sptr);
@@ -400,7 +403,7 @@ Text::Cpp::CppEnv *Text::Cpp::CppEnv::LoadVSEnv(Text::VSProject::VisualStudioVer
 				}
 				else
 				{
-					env->includePaths.Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+					env->includePaths->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
 				}
 				if (c == 0)
 					break;

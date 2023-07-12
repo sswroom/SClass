@@ -28,18 +28,17 @@ namespace Media
 	class GTKDrawFont : public DrawFont
 	{
 	private:
-		NotNullPtr<Text::String> fontName;
+		Text::String *fontName;
 		Double fontHeight;
 		OSInt fontSlant;
 		OSInt fontWeight;
 	public:
 		GTKDrawFont(Text::CString fontName, Double pxHeight, Media::DrawEngine::DrawFontStyle drawFontStyle);
 		GTKDrawFont(Text::String *fontName, Double pxHeight, OSInt fontSlant, OSInt fontWeight);
-		GTKDrawFont(NotNullPtr<Text::String> fontName, Double pxHeight, OSInt fontSlant, OSInt fontWeight);
 		~GTKDrawFont();
 
 		void Init(void *cr);
-		NotNullPtr<Text::String> GetFontName();
+		Text::String *GetFontName();
 		Double GetHeight();
 		OSInt GetFontWeight();
 		OSInt GetFontSlant();
@@ -120,14 +119,14 @@ namespace Media
 		virtual Bool DrawPolyPolygon(const Math::Coord2DDbl *points, const UInt32 *pointCnt, UOSInt nPointCnt, DrawPen *p, DrawBrush *b); ////////////////////////////////////
 		virtual Bool DrawRect(Math::Coord2DDbl tl, Math::Size2DDbl size, DrawPen *p, DrawBrush *b);
 		virtual Bool DrawEllipse(Math::Coord2DDbl tl, Math::Size2DDbl size, DrawPen *p, DrawBrush *b); ////////////////////////////////////
-		virtual Bool DrawString(Math::Coord2DDbl tl, NotNullPtr<Text::String> str, DrawFont *f, DrawBrush *p);
+		virtual Bool DrawString(Math::Coord2DDbl tl, Text::String *str, DrawFont *f, DrawBrush *p);
 		virtual Bool DrawString(Math::Coord2DDbl tl, Text::CString str, DrawFont *f, DrawBrush *p);
-		virtual Bool DrawStringRot(Math::Coord2DDbl center, NotNullPtr<Text::String> str, DrawFont *f, DrawBrush *p, Double angleDegree);
+		virtual Bool DrawStringRot(Math::Coord2DDbl center, Text::String *str, DrawFont *f, DrawBrush *p, Double angleDegree);
 		virtual Bool DrawStringRot(Math::Coord2DDbl center, Text::CString str, DrawFont *f, DrawBrush *p, Double angleDegree);
-		virtual Bool DrawStringB(Math::Coord2DDbl tl, NotNullPtr<Text::String> str, DrawFont *f, DrawBrush *p, UOSInt buffSize);
+		virtual Bool DrawStringB(Math::Coord2DDbl tl, Text::String *str, DrawFont *f, DrawBrush *p, UOSInt buffSize);
 		virtual Bool DrawStringB(Math::Coord2DDbl tl, Text::CString str, DrawFont *f, DrawBrush *p, UOSInt buffSize);
-		virtual Bool DrawStringRotB(Math::Coord2DDbl center, NotNullPtr<Text::String> str, DrawFont *f, DrawBrush *p, Double angleDegree, UOSInt buffSize);
-		virtual Bool DrawStringRotB(Math::Coord2DDbl center, Text::CString str, DrawFont *f, DrawBrush *p, Double angleDegree, UOSInt buffSize);
+		virtual Bool DrawStringRotB(Math::Coord2DDbl center, Text::String *str, DrawFont *f, DrawBrush *p, Double angleDegree, UOSInt buffSize); ////////////////////////////////////
+		virtual Bool DrawStringRotB(Math::Coord2DDbl center, Text::CString str, DrawFont *f, DrawBrush *p, Double angleDegree, UOSInt buffSize); ////////////////////////////////////
 		virtual Bool DrawImagePt(DrawImage *img, Math::Coord2DDbl tl); ////////////////////////////////////
 		virtual Bool DrawImagePt2(Media::StaticImage *img, Math::Coord2DDbl tl); ////////////////////////////////////
 		virtual Bool DrawImagePt3(DrawImage *img, Math::Coord2DDbl destTL, Math::Coord2DDbl srcTL, Math::Size2DDbl srcSize); ////////////////////////////////////

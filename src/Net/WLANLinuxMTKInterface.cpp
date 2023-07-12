@@ -47,7 +47,6 @@ Net::WLANLinuxMTKInterface::WLANLinuxMTKInterface(Text::CString name, void *id, 
 Net::WLANLinuxMTKInterface::~WLANLinuxMTKInterface()
 {
 	close(-1 + (int)(OSInt)this->id);
-	this->name->Release();
 }
 
 Bool Net::WLANLinuxMTKInterface::Scan()

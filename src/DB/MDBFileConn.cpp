@@ -43,14 +43,14 @@ DB::MDBFileConn::MDBFileConn(Text::CString fileName, IO::LogTool *log, UInt32 co
 		sb.AppendC(UTF8STRC(";Uid="));
 		if (uid)
 		{
-			NotNullPtr<Text::String> s = Text::String::NewNotNull(uid);
+			Text::String *s = Text::String::NewNotNull(uid);
 			sb.Append(s);
 			s->Release();
 		}
 		sb.AppendC(UTF8STRC(";Pwd="));
 		if (pwd)
 		{
-			NotNullPtr<Text::String> s = Text::String::NewNotNull(pwd);
+			Text::String *s = Text::String::NewNotNull(pwd);
 			sb.Append(s);
 			s->Release();
 		}
@@ -82,14 +82,14 @@ DB::MDBFileConn::MDBFileConn(Text::CString fileName, IO::LogTool *log, UInt32 co
 			sb.AppendC(UTF8STRC(";Uid="));
 			if (uid)
 			{
-				NotNullPtr<Text::String> s = Text::String::NewNotNull(uid);
+				Text::String *s = Text::String::NewNotNull(uid);
 				sb.Append(s);
 				s->Release();
 			}
 			sb.AppendC(UTF8STRC(";Pwd="));
 			if (pwd)
 			{
-				NotNullPtr<Text::String> s = Text::String::NewNotNull(pwd);
+				Text::String *s = Text::String::NewNotNull(pwd);
 				sb.Append(s);
 				s->Release();
 			}
@@ -122,14 +122,14 @@ DB::MDBFileConn::MDBFileConn(Text::CString fileName, IO::LogTool *log, UInt32 co
 				sb.AppendC(UTF8STRC(";Uid="));
 				if (uid)
 				{
-					NotNullPtr<Text::String> s = Text::String::NewNotNull(uid);
+					Text::String *s = Text::String::NewNotNull(uid);
 					sb.Append(s);
 					s->Release();
 				}
 				sb.AppendC(UTF8STRC(";Pwd="));
 				if (pwd)
 				{
-					NotNullPtr<Text::String> s = Text::String::NewNotNull(pwd);
+					Text::String *s = Text::String::NewNotNull(pwd);
 					sb.Append(s);
 					s->Release();
 				}

@@ -13,9 +13,9 @@ namespace IO
 		{
 		private:
 			IO::StreamData *sd;
-			Data::ArrayListUInt64 dataOfstList;
-			Data::ArrayListUInt64 stmOfstList;
-			Data::ArrayListUInt32 lengthList;
+			Data::ArrayListUInt64 *dataOfstList;
+			Data::ArrayListUInt64 *stmOfstList;
+			Data::ArrayListUInt32 *lengthList;
 			UInt64 totalSize;
 
 		public:
@@ -23,7 +23,7 @@ namespace IO
 			virtual ~BlockStreamData();
 
 			virtual UOSInt GetRealData(UInt64 offset, UOSInt length, UInt8 *buffer);
-			virtual NotNullPtr<Text::String> GetFullName();
+			virtual Text::String *GetFullName();
 			virtual Text::CString GetShortName();
 			virtual UInt64 GetDataSize();
 			virtual const UInt8 *GetPointer();

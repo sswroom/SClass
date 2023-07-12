@@ -120,9 +120,9 @@ Map::MapDrawLayer *Map::KMLXML::ParseKMLContainer(Text::XMLReader *reader, Data:
 			if (parsers && browser)
 			{
 				Map::NetworkLinkLayer *lyr;
-				NotNullPtr<Text::String> layerName = Text::String::NewEmpty();
-				NotNullPtr<Text::String> url = Text::String::NewEmpty();
-				NotNullPtr<Text::String> viewFormat = Text::String::NewEmpty();
+				Text::String *layerName = 0;
+				Text::String *url = 0;
+				Text::String *viewFormat = 0;
 				Map::NetworkLinkLayer::RefreshMode mode = Map::NetworkLinkLayer::RefreshMode::OnInterval;
 				Int32 interval = 0;
 				NEW_CLASS(lyr, Map::NetworkLinkLayer(sourceName, parsers, browser, CSTR_NULL));
@@ -135,7 +135,7 @@ Map::MapDrawLayer *Map::KMLXML::ParseKMLContainer(Text::XMLReader *reader, Data:
 						sb.ClearStr();
 						reader->ReadNodeText(&sb);
 						lyr->SetLayerName(sb.ToCString());
-						layerName->Release();
+						SDEL_STRING(layerName);
 						layerName = Text::String::New(sb.ToCString());
 					}
 					else if (nodeName->Equals(UTF8STRC("Link")))
@@ -147,7 +147,7 @@ Map::MapDrawLayer *Map::KMLXML::ParseKMLContainer(Text::XMLReader *reader, Data:
 							{
 								sb.ClearStr();
 								reader->ReadNodeText(&sb);
-								url->Release();
+								SDEL_STRING(url);
 								url = Text::String::New(sb.ToCString());
 							}
 							else if (nodeName->Equals(UTF8STRC("refreshInterval")))
@@ -204,7 +204,7 @@ Map::MapDrawLayer *Map::KMLXML::ParseKMLContainer(Text::XMLReader *reader, Data:
 								sb.ClearStr();
 								reader->ReadNodeText(&sb);
 								sb.TrimWSCRLF();
-								viewFormat->Release();
+								SDEL_STRING(viewFormat);
 								viewFormat = Text::String::New(sb.ToCString());
 							}
 							else
@@ -270,14 +270,14 @@ Map::MapDrawLayer *Map::KMLXML::ParseKMLContainer(Text::XMLReader *reader, Data:
 					}
 				}
 
-				if (url->leng > 0)
+				if (url)
 				{
-					lyr->AddLink(layerName->ToCString(), url->ToCString(), viewFormat->ToCString(), mode, interval);
+					lyr->AddLink(STR_CSTR(layerName), STR_CSTR(url), STR_CSTR(viewFormat), mode, interval);
 				}
 
-				layerName->Release();
-				viewFormat->Release();
-				url->Release();
+				SDEL_STRING(layerName);
+				SDEL_STRING(viewFormat);
+				SDEL_STRING(url);
 				layers.Add(lyr);
 			}
 			else
@@ -304,7 +304,7 @@ Map::MapDrawLayer *Map::KMLXML::ParseKMLContainer(Text::XMLReader *reader, Data:
 				attr = reader->GetAttrib(i);
 				if (attr->name->EqualsICase(UTF8STRC("ID")))
 				{
-					styleId = attr->value->Clone().Ptr();
+					styleId = attr->value->Clone();
 					break;
 				}
 			}
@@ -358,7 +358,7 @@ Map::MapDrawLayer *Map::KMLXML::ParseKMLContainer(Text::XMLReader *reader, Data:
 									if (sb.GetLength() > 0)
 									{
 										SDEL_STRING(style->iconURL);
-										style->iconURL = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
+										style->iconURL = Text::String::New(sb.ToString(), sb.GetLength());
 									}
 								}
 								else
@@ -448,7 +448,7 @@ Map::MapDrawLayer *Map::KMLXML::ParseKMLContainer(Text::XMLReader *reader, Data:
 				attr = reader->GetAttrib(i);
 				if (attr->name->EqualsICase(UTF8STRC("ID")))
 				{
-					styleId = attr->value->Clone().Ptr();
+					styleId = attr->value->Clone();
 					break;
 				}
 			}
@@ -538,7 +538,7 @@ Map::MapDrawLayer *Map::KMLXML::ParseKMLContainer(Text::XMLReader *reader, Data:
 				NEW_CLASS(imgLyr, Map::WebImageLayer(browser, parsers, sourceName, Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84), containerNameSb.ToCString()));
 			}
 
-			NotNullPtr<Text::String> name = Text::String::NewEmpty();
+			Text::String *name = 0;
 			Int32 zIndex = 0;
 			Double minX = 0;
 			Double minY = 0;
@@ -560,7 +560,7 @@ Map::MapDrawLayer *Map::KMLXML::ParseKMLContainer(Text::XMLReader *reader, Data:
 				{
 					sb.ClearStr();
 					reader->ReadNodeText(&sb);
-					name->Release();
+					SDEL_STRING(name);
 					name = Text::String::New(sb.ToCString());
 				}
 				else if (reader->GetNodeText()->EqualsICase(UTF8STRC("COLOR")))
@@ -681,9 +681,9 @@ Map::MapDrawLayer *Map::KMLXML::ParseKMLContainer(Text::XMLReader *reader, Data:
 			}
 			if (sbuff[0] != 0)
 			{
-				imgLyr->AddImage(name->ToCString(), CSTRP(sbuff, sbuffEnd), zIndex, minX, minY, oX, oY, sizeX, sizeY, true, timeStart, timeEnd, ((color >> 24) & 0xff) / 255.0, hasAltitude, altitude);
+				imgLyr->AddImage(STR_CSTR(name), CSTRP(sbuff, sbuffEnd), zIndex, minX, minY, oX, oY, sizeX, sizeY, true, timeStart, timeEnd, ((color >> 24) & 0xff) / 255.0, hasAltitude, altitude);
 			}
-			name->Release();
+			SDEL_STRING(name);
 		}
 		else if (nodeName->EqualsICase(UTF8STRC("GROUNDOVERLAY")))
 		{
@@ -692,7 +692,7 @@ Map::MapDrawLayer *Map::KMLXML::ParseKMLContainer(Text::XMLReader *reader, Data:
 				NEW_CLASS(imgLyr, Map::WebImageLayer(browser, parsers, sourceName, Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84), containerNameSb.ToCString()));
 			}
 
-			NotNullPtr<Text::String> name = Text::String::NewEmpty();
+			Text::String *name = 0;
 			Int32 zIndex = 0;
 			Double minX = 0;
 			Double minY = 0;
@@ -711,7 +711,7 @@ Map::MapDrawLayer *Map::KMLXML::ParseKMLContainer(Text::XMLReader *reader, Data:
 				{
 					sb.ClearStr();
 					reader->ReadNodeText(&sb);
-					name->Release();
+					SDEL_STRING(name);
 					name = Text::String::New(sb.ToCString());
 				}
 				else if (reader->GetNodeText()->EqualsICase(UTF8STRC("COLOR")))
@@ -825,9 +825,9 @@ Map::MapDrawLayer *Map::KMLXML::ParseKMLContainer(Text::XMLReader *reader, Data:
 			}
 			if (sbuff[0] != 0)
 			{
-				imgLyr->AddImage(name->ToCString(), CSTRP(sbuff, sbuffEnd), zIndex, minX, minY, maxX, maxY, 0, 0, false, timeStart, timeEnd, alpha, hasAltitude, altitude);
+				imgLyr->AddImage(STR_CSTR(name), CSTRP(sbuff, sbuffEnd), zIndex, minX, minY, maxX, maxY, 0, 0, false, timeStart, timeEnd, alpha, hasAltitude, altitude);
 			}
-			name->Release();
+			SDEL_STRING(name);
 		}
 		else if (nodeName->EqualsICase(UTF8STRC("FOLDER")))
 		{
@@ -897,8 +897,8 @@ Map::MapDrawLayer *Map::KMLXML::ParseKMLContainer(Text::XMLReader *reader, Data:
 
 void Map::KMLXML::ParseKMLPlacemarkTrack(Text::XMLReader *reader, Map::GPSTrack *lyr, Data::StringMap<KMLStyle*> *styles)
 {
-	Data::ArrayListNN<Text::String> timeList;
-	Data::ArrayListNN<Text::String> coordList;
+	Data::ArrayList<Text::String*> timeList;
+	Data::ArrayList<Text::String*> coordList;
 	Bool lastTrack = false;
 	while (reader->NextElement())
 	{

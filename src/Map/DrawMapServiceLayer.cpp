@@ -41,7 +41,7 @@ UInt32 __stdcall Map::DrawMapServiceLayer::TaskThread(void *userObj)
 					if (me->dispId == thisId)
 					{
 						NEW_CLASS(me->dispImage, Media::SharedImage(imgList, false));
-						me->dispImageURL = Text::String::New(sb.ToCString()).Ptr();
+						me->dispImageURL = Text::String::New(sb.ToCString());
 						mutUsage.ReplaceMutex(&me->updMut);
 						UOSInt i = me->updHdlrs.GetCount();
 						while (i-- > 0)
@@ -58,7 +58,7 @@ UInt32 __stdcall Map::DrawMapServiceLayer::TaskThread(void *userObj)
 						me->lastSize = size;
 						me->lastDPI = dpi;
 						NEW_CLASS(me->lastImage, Media::SharedImage(imgList, false));
-						me->lastImageURL = Text::String::New(sb.ToCString()).Ptr();
+						me->lastImageURL = Text::String::New(sb.ToCString());
 						mutUsage.ReplaceMutex(&me->updMut);
 						UOSInt i = me->updHdlrs.GetCount();
 						while (i-- > 0)
@@ -322,7 +322,7 @@ Bool Map::DrawMapServiceLayer::CanQuery()
 	return this->mapService->CanQuery();
 }
 
-Bool Map::DrawMapServiceLayer::QueryInfos(Math::Coord2DDbl coord, Data::ArrayList<Math::Geometry::Vector2D*> *vecList, Data::ArrayList<UOSInt> *valueOfstList, Data::ArrayListNN<Text::String> *nameList, Data::ArrayList<Text::String*> *valueList)
+Bool Map::DrawMapServiceLayer::QueryInfos(Math::Coord2DDbl coord, Data::ArrayList<Math::Geometry::Vector2D*> *vecList, Data::ArrayList<UOSInt> *valueOfstList, Data::ArrayList<Text::String*> *nameList, Data::ArrayList<Text::String*> *valueList)
 {
 	return this->mapService->QueryInfos(coord, this->dispBounds, (UInt32)Double2Int32(this->dispSize.x), (UInt32)Double2Int32(this->dispSize.y), this->dispDPI, vecList, valueOfstList, nameList, valueList);
 }

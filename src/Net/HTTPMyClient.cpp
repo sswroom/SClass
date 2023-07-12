@@ -60,7 +60,7 @@ Net::HTTPMyClient::HTTPMyClient(Net::SocketFactory *sockf, Net::SSLEngine *ssl, 
 	this->buffOfst = 0;
 	this->contEnc = 0;
 	this->timeout = 120000;
-	this->userAgent = Text::String::New(userAgent);
+	this->userAgent = Text::String::New(userAgent.v, userAgent.leng);
 	this->dataBuff = MemAlloc(UInt8, BUFFSIZE);
 }
 
@@ -557,8 +557,8 @@ Bool Net::HTTPMyClient::Connect(Text::CString url, Net::WebUtil::RequestMethod m
 	Bool secure = false;
 	this->hdrLen = 0;
 
-	this->url->Release();
-	this->url = Text::String::New(url);
+	SDEL_STRING(this->url);
+	this->url = Text::String::New(url.v, url.leng);
 	if (url.StartsWith(UTF8STRC("http://")))
 	{
 		ptr1 = url.Substring(7);
@@ -673,7 +673,7 @@ Bool Net::HTTPMyClient::Connect(Text::CString url, Net::WebUtil::RequestMethod m
 	this->clk.Start();
 	if (this->cliHost == 0)
 	{
-		this->cliHost = Text::String::New(urltmp, urltmpLen).Ptr();
+		this->cliHost = Text::String::New(urltmp, urltmpLen);
 
 		Double t1;
 		Net::SocketUtil::AddressInfo addr;
@@ -949,7 +949,7 @@ void Net::HTTPMyClient::AddHeaderC(Text::CString name, Text::CString value)
 #endif
 			this->reqMstm.Write(buff, (UOSInt)(sptr - (UTF8Char*)buff));
 		}
-		this->reqHeaders.SortedInsert(Text::String::New(name).Ptr());
+		this->reqHeaders.SortedInsert(Text::String::New(name.v, name.leng));
 	}
 }
 
@@ -1052,7 +1052,7 @@ void Net::HTTPMyClient::EndRequest(Double *timeReq, Double *timeResp)
 			UTF8Char *ptrs[3];
 			UTF8Char *ptr;
 			UTF8Char *ptrEnd;
-			NotNullPtr<Text::String> s;
+			Text::String *s;
 			UOSInt i;
 			i = Text::StrIndexOfC(this->dataBuff, this->buffSize, UTF8STRC("\r\n"));
 			MemCopyNO(buff, this->dataBuff, i);
@@ -1127,8 +1127,8 @@ void Net::HTTPMyClient::EndRequest(Double *timeReq, Double *timeResp)
 									UOSInt j = s->IndexOf('"', i + 10);
 									if (j > 0)
 									{
-										NotNullPtr<Text::String> tmpS = Text::String::New(&s->v[i + 10], j - i - 10);
-										this->SetSourceName(tmpS);
+										Text::String *tmpS = Text::String::New(&s->v[i + 10], j - i - 10);
+										this->SetSourceName(tmpS->ToCString());
 										tmpS->Release();
 									}
 								}

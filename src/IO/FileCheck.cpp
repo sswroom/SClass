@@ -228,7 +228,7 @@ Bool IO::FileCheck::CheckDir(UTF8Char *fullPath, UTF8Char *hashPath, Crypto::Has
 	return false;
 }
 
-IO::FileCheck::FileCheck(NotNullPtr<Text::String> name, Crypto::Hash::HashType chkType) : IO::ParsedObject(name)
+IO::FileCheck::FileCheck(Text::String *name, Crypto::Hash::HashType chkType) : IO::ParsedObject(name)
 {
 	this->chkType = chkType;
 	Crypto::Hash::IHash *hash = Crypto::Hash::HashCreator::CreateHash(chkType);

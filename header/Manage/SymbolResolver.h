@@ -2,7 +2,7 @@
 #define _SM_MANAGE_SYMBOLRESOLVER
 #include "Manage/Process.h"
 #include "Manage/AddressResolver.h"
-#include "Data/ArrayListStringNN.h"
+#include "Data/ArrayListString.h"
 #include "Data/ArrayListUInt64.h"
 
 namespace Manage
@@ -10,7 +10,7 @@ namespace Manage
 	class SymbolResolver : public Manage::AddressResolver
 	{
 	private:
-		Data::ArrayListStringNN modNames;
+		Data::ArrayListString modNames;
 		Data::ArrayListUInt64 modBaseAddrs;
 		Data::ArrayListUInt64 modSizes;
 		Manage::Process *proc;

@@ -81,7 +81,7 @@ Bool Exporter::DBExcelXMLExporter::ExportFile(IO::SeekableStream *stm, Text::CSt
 	writer.WriteLineC(UTF8STRC(" xmlns:ss=\"urn:schemas-microsoft-com:office:spreadsheet\""));
 	writer.WriteLineC(UTF8STRC(" xmlns:html=\"http://www.w3.org/TR/REC-html40\">"));
 
-	Data::ArrayListNN<Text::String> names;
+	Data::ArrayList<Text::String*> names;
 	tableCnt = db->QueryTableNames(CSTR_NULL, &names);
 	j = 0;
 	while (j < tableCnt)

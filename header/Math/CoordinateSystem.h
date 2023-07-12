@@ -62,10 +62,10 @@ namespace Math
 		} DatumData1;
 		
 	protected:
-		NotNullPtr<Text::String> csysName;
+		Text::String *csysName;
 		UInt32 srid;
 
-		CoordinateSystem(NotNullPtr<Text::String> sourceName, UInt32 srid, Text::CString csysName);
+		CoordinateSystem(Text::String *sourceName, UInt32 srid, Text::CString csysName);
 		CoordinateSystem(Text::CString sourceName, UInt32 srid, Text::CString csysName);
 	public:
 		virtual ~CoordinateSystem();
@@ -81,7 +81,7 @@ namespace Math
 		virtual IO::ParserType GetParserType() const;
 
 		virtual Bool Equals(CoordinateSystem *csys) const;
-		NotNullPtr<Text::String> GetCSysName() const { return this->csysName; }
+		Text::String *GetCSysName() const { return this->csysName; }
 		UInt32 GetSRID() const { return this->srid; }
 
 		static Math::Coord2DDbl Convert(Math::CoordinateSystem *srcCoord, Math::CoordinateSystem *destCoord, Math::Coord2DDbl coord);

@@ -11,7 +11,7 @@ typedef struct
 {
 	GtkTreeIter iter;
 	void *data;
-	NotNullPtr<Text::String> txt;
+	Text::String *txt;
 } MyRow;
 
 typedef struct
@@ -156,7 +156,7 @@ UOSInt UI::GUIListView::GetColumnCnt()
 	return this->colCnt;
 }
 
-Bool UI::GUIListView::AddColumn(NotNullPtr<Text::String> columnName, Double colWidth)
+Bool UI::GUIListView::AddColumn(Text::String *columnName, Double colWidth)
 {
 	return this->AddColumn(columnName->ToCString(), colWidth);
 }
@@ -222,7 +222,7 @@ Bool UI::GUIListView::ClearAll()
 	return true;
 }
 
-UOSInt UI::GUIListView::AddItem(NotNullPtr<Text::String> text, void *itemObj)
+UOSInt UI::GUIListView::AddItem(Text::String *text, void *itemObj)
 {
 	GUIListViewData *data = (GUIListViewData*)this->clsData;
 	MyRow *row = MemAlloc(MyRow, 1);
@@ -270,7 +270,7 @@ UOSInt UI::GUIListView::AddItem(Text::CString text, void *itemObj, UOSInt imageI
 	return ret;
 }
 
-Bool UI::GUIListView::SetSubItem(UOSInt row, UOSInt col, NotNullPtr<Text::String> text)
+Bool UI::GUIListView::SetSubItem(UOSInt row, UOSInt col, Text::String *text)
 {
 	GUIListViewData *data = (GUIListViewData*)this->clsData;
 	MyRow *r = data->rows->GetItem(row);
@@ -354,7 +354,7 @@ UOSInt UI::GUIListView::InsertItem(UOSInt index, const WChar *itemText, void *it
 	row->txt = Text::String::NewNotNull(itemText);
 	gtk_list_store_insert(data->listStore, &row->iter, (gint)index);
 	data->rows->Insert(index, row);
-	gtk_list_store_set(data->listStore, &row->iter, 0, (const Char*)row->txt->v, -1);
+	gtk_list_store_set(data->listStore, &row->iter, 0, (const Char*)row->txt, -1);
 	return index;
 }
 
@@ -502,7 +502,7 @@ Text::String *UI::GUIListView::GetItemTextNew(UOSInt index)
 	MyRow *r = data->rows->GetItem(index);
 	if (r == 0)
 		return 0;
-	return r->txt->Clone().Ptr();
+	return r->txt->Clone();
 }
 
 void UI::GUIListView::SetFullRowSelect(Bool fullRowSelect)

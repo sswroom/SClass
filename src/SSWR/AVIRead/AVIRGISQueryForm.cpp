@@ -117,7 +117,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseUp(void *userObj, Math::C
 					{
 						sbuff[0] = 0;
 						sptr = me->lyr->GetString(sbuff, sizeof(sbuff), nameArr, obj->objId, i);
-						me->queryValueList.Add(Text::String::NewP(sbuff, sptr).Ptr());
+						me->queryValueList.Add(Text::String::NewP(sbuff, sptr));
 						i++;
 					}
 				}
@@ -242,7 +242,14 @@ void SSWR::AVIRead::AVIRGISQueryForm::SetQueryItem(UOSInt index)
 		while (i < j)
 		{
 			value = this->queryValueList.GetItem(i + k);
-			this->lvInfo->SetSubItem(i, 1, Text::String::OrEmpty(value));
+			if (value)
+			{
+				this->lvInfo->SetSubItem(i, 1, value);
+			}
+			else
+			{
+				this->lvInfo->SetSubItem(i, 1, CSTR(""));
+			}
 			i++;
 		}
 	}
@@ -253,15 +260,14 @@ void SSWR::AVIRead::AVIRGISQueryForm::SetQueryItem(UOSInt index)
 		j = this->queryValueOfstList.GetItem(index + 1);
 		if (j == 0)
 			j = this->queryNameList.GetCount();
-		NotNullPtr<Text::String> valueStr;
 		while (i < j)
 		{
 			name = this->queryNameList.GetItem(i);
 			value = this->queryValueList.GetItem(i);
-			k = this->lvInfo->AddItem(Text::String::OrEmpty(name), 0);
-			if (valueStr.Set(value))
+			k = this->lvInfo->AddItem(name, 0);
+			if (value)
 			{
-				this->lvInfo->SetSubItem(k, 1, valueStr);
+				this->lvInfo->SetSubItem(k, 1, value);
 			}
 			i++;
 		}

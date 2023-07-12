@@ -12,9 +12,9 @@ namespace Media
 	private:
 		typedef struct
 		{
-			NotNullPtr<Text::String> title;
+			Text::String *title;
 			Text::String *artist;
-			NotNullPtr<Text::String> fileName;
+			Text::String *fileName;
 			UInt32 timeStart;
 			Int32 timeEnd;
 		} PlaylistEntry;

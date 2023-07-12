@@ -205,44 +205,44 @@ Bool Parser::FileParser::XLSParser::ParseWorkbook(IO::StreamData *fd, UInt64 ofs
 	readBuffSize = 0;
 	Text::SpreadSheet::Workbook::GetDefPalette(status.palette);
 
-	status.formatMap.Put(0x1, Text::String::New(UTF8STRC("0")).Ptr());
-	status.formatMap.Put(0x2, Text::String::New(UTF8STRC("0.00")).Ptr());
-	status.formatMap.Put(0x3, Text::String::New(UTF8STRC("#,##0")).Ptr());
-	status.formatMap.Put(0x4, Text::String::New(UTF8STRC("#,##0.00")).Ptr());
-	status.formatMap.Put(0x5, Text::String::New(UTF8STRC("($#,##0_);($#,##0)")).Ptr());
-	status.formatMap.Put(0x6, Text::String::New(UTF8STRC("($#,##0_);[Red]($#,##0)")).Ptr());
-	status.formatMap.Put(0x7, Text::String::New(UTF8STRC("($#,##0.00_);($#,##0.00)")).Ptr());
-	status.formatMap.Put(0x8, Text::String::New(UTF8STRC("($#,##0.00_);[Red]($#,##0.00)")).Ptr());
-	status.formatMap.Put(0x9, Text::String::New(UTF8STRC("0%")).Ptr());
-	status.formatMap.Put(0xa, Text::String::New(UTF8STRC("0.00%")).Ptr());
-	status.formatMap.Put(0xb, Text::String::New(UTF8STRC("0.00E+00")).Ptr());
-	status.formatMap.Put(0xc, Text::String::New(UTF8STRC("# ?/?")).Ptr());
-	status.formatMap.Put(0xd, Text::String::New(UTF8STRC("# \?\?/\?\?")).Ptr());
-	status.formatMap.Put(0xe, Text::String::New(UTF8STRC("m/d/yy")).Ptr());
-	status.formatMap.Put(0xf, Text::String::New(UTF8STRC("d-mmm-yy")).Ptr());
+	status.formatMap.Put(0x1, Text::String::New(UTF8STRC("0")));
+	status.formatMap.Put(0x2, Text::String::New(UTF8STRC("0.00")));
+	status.formatMap.Put(0x3, Text::String::New(UTF8STRC("#,##0")));
+	status.formatMap.Put(0x4, Text::String::New(UTF8STRC("#,##0.00")));
+	status.formatMap.Put(0x5, Text::String::New(UTF8STRC("($#,##0_);($#,##0)")));
+	status.formatMap.Put(0x6, Text::String::New(UTF8STRC("($#,##0_);[Red]($#,##0)")));
+	status.formatMap.Put(0x7, Text::String::New(UTF8STRC("($#,##0.00_);($#,##0.00)")));
+	status.formatMap.Put(0x8, Text::String::New(UTF8STRC("($#,##0.00_);[Red]($#,##0.00)")));
+	status.formatMap.Put(0x9, Text::String::New(UTF8STRC("0%")));
+	status.formatMap.Put(0xa, Text::String::New(UTF8STRC("0.00%")));
+	status.formatMap.Put(0xb, Text::String::New(UTF8STRC("0.00E+00")));
+	status.formatMap.Put(0xc, Text::String::New(UTF8STRC("# ?/?")));
+	status.formatMap.Put(0xd, Text::String::New(UTF8STRC("# \?\?/\?\?")));
+	status.formatMap.Put(0xe, Text::String::New(UTF8STRC("m/d/yy")));
+	status.formatMap.Put(0xf, Text::String::New(UTF8STRC("d-mmm-yy")));
 
-	status.formatMap.Put(0x10, Text::String::New(UTF8STRC("d-mmm")).Ptr());
-	status.formatMap.Put(0x11, Text::String::New(UTF8STRC("mmm-yy")).Ptr());
-	status.formatMap.Put(0x12, Text::String::New(UTF8STRC("h:mm AM/PM")).Ptr());
-	status.formatMap.Put(0x13, Text::String::New(UTF8STRC("h:mm:ss AM/PM")).Ptr());
-	status.formatMap.Put(0x14, Text::String::New(UTF8STRC("h:mm")).Ptr());
-	status.formatMap.Put(0x15, Text::String::New(UTF8STRC("h:mm:ss")).Ptr());
-	status.formatMap.Put(0x16, Text::String::New(UTF8STRC("m/d/yy h:mm")).Ptr());
+	status.formatMap.Put(0x10, Text::String::New(UTF8STRC("d-mmm")));
+	status.formatMap.Put(0x11, Text::String::New(UTF8STRC("mmm-yy")));
+	status.formatMap.Put(0x12, Text::String::New(UTF8STRC("h:mm AM/PM")));
+	status.formatMap.Put(0x13, Text::String::New(UTF8STRC("h:mm:ss AM/PM")));
+	status.formatMap.Put(0x14, Text::String::New(UTF8STRC("h:mm")));
+	status.formatMap.Put(0x15, Text::String::New(UTF8STRC("h:mm:ss")));
+	status.formatMap.Put(0x16, Text::String::New(UTF8STRC("m/d/yy h:mm")));
 
-	status.formatMap.Put(0x25, Text::String::New(UTF8STRC("(#,##0_);(#,##0)")).Ptr());
-	status.formatMap.Put(0x26, Text::String::New(UTF8STRC("(#,##0_);[Red](#,##0)")).Ptr());
-	status.formatMap.Put(0x27, Text::String::New(UTF8STRC("(#,##0.00_);(#,##0.00)")).Ptr());
-	status.formatMap.Put(0x28, Text::String::New(UTF8STRC("(#,##0.00_);[Red](#,##0.00)")).Ptr());
-	status.formatMap.Put(0x29, Text::String::New(UTF8STRC("_(* #,##0_);_(* (#,##0);_(* \"-\"_);_(@_)")).Ptr());
-	status.formatMap.Put(0x2a, Text::String::New(UTF8STRC("_($* #,##0_);_($* (#,##0);_($* \"-\"_);_(@_)")).Ptr());
-	status.formatMap.Put(0x2b, Text::String::New(UTF8STRC("_(* #,##0.00_);_(* (#,##0.00);_(* \"-\"??_);_(@_)")).Ptr());
-	status.formatMap.Put(0x2c, Text::String::New(UTF8STRC("_($* #,##0.00_);_($* (#,##0.00);_($* \"-\"??_);_(@_)")).Ptr());
-	status.formatMap.Put(0x2d, Text::String::New(UTF8STRC("mm:ss")).Ptr());
-	status.formatMap.Put(0x2e, Text::String::New(UTF8STRC("[h]:mm:ss")).Ptr());
-	status.formatMap.Put(0x2f, Text::String::New(UTF8STRC("mm:ss.0")).Ptr());
+	status.formatMap.Put(0x25, Text::String::New(UTF8STRC("(#,##0_);(#,##0)")));
+	status.formatMap.Put(0x26, Text::String::New(UTF8STRC("(#,##0_);[Red](#,##0)")));
+	status.formatMap.Put(0x27, Text::String::New(UTF8STRC("(#,##0.00_);(#,##0.00)")));
+	status.formatMap.Put(0x28, Text::String::New(UTF8STRC("(#,##0.00_);[Red](#,##0.00)")));
+	status.formatMap.Put(0x29, Text::String::New(UTF8STRC("_(* #,##0_);_(* (#,##0);_(* \"-\"_);_(@_)")));
+	status.formatMap.Put(0x2a, Text::String::New(UTF8STRC("_($* #,##0_);_($* (#,##0);_($* \"-\"_);_(@_)")));
+	status.formatMap.Put(0x2b, Text::String::New(UTF8STRC("_(* #,##0.00_);_(* (#,##0.00);_(* \"-\"??_);_(@_)")));
+	status.formatMap.Put(0x2c, Text::String::New(UTF8STRC("_($* #,##0.00_);_($* (#,##0.00);_($* \"-\"??_);_(@_)")));
+	status.formatMap.Put(0x2d, Text::String::New(UTF8STRC("mm:ss")));
+	status.formatMap.Put(0x2e, Text::String::New(UTF8STRC("[h]:mm:ss")));
+	status.formatMap.Put(0x2f, Text::String::New(UTF8STRC("mm:ss.0")));
 
-	status.formatMap.Put(0x30, Text::String::New(UTF8STRC("##0.0E+0")).Ptr());
-	status.formatMap.Put(0x31, Text::String::New(UTF8STRC("@")).Ptr());
+	status.formatMap.Put(0x30, Text::String::New(UTF8STRC("##0.0E+0")));
+	status.formatMap.Put(0x31, Text::String::New(UTF8STRC("@")));
 
 	Text::StringBuilderUTF8 sb;
 	while (!eofFound)
@@ -339,7 +339,7 @@ Bool Parser::FileParser::XLSParser::ParseWorkbook(IO::StreamData *fd, UInt64 ofs
 					sb.ClearStr();
 					if (readBuff[i + 11] & 1)
 					{
-						NotNullPtr<Text::String> s = Text::String::New((UTF16Char*)&readBuff[i + 12], readBuff[i + 10]);
+						Text::String *s = Text::String::New((UTF16Char*)&readBuff[i + 12], readBuff[i + 10]);
 						sb.Append(s);
 						s->Release();
 					}
@@ -637,7 +637,7 @@ Bool Parser::FileParser::XLSParser::ParseWorkbook(IO::StreamData *fd, UInt64 ofs
 					UInt16 ifmt = ReadUInt16(&readBuff[i + 4]);
 					sb.ClearStr();
 					ReadUString(&readBuff[i + 6], &sb);
-					fmt = status.formatMap.Put(ifmt, Text::String::New(sb.ToCString()).Ptr());
+					fmt = status.formatMap.Put(ifmt, Text::String::New(sb.ToCString()));
 					if (fmt)
 					{
 						fmt->Release();
@@ -974,7 +974,7 @@ Bool Parser::FileParser::XLSParser::ParseWorksheet(IO::StreamData *fd, UInt64 of
 			case 0xef: ///////////////////////////////////
 				break;
 			case 0xfd: //LABELSST
-				ws->SetCellString(ReadUInt16(&readBuff[i + 4]), ReadUInt16(&readBuff[i + 6]), Text::String::OrEmpty(status->sst.GetItem(ReadUInt32(&readBuff[i + 10]))));
+				ws->SetCellString(ReadUInt16(&readBuff[i + 4]), ReadUInt16(&readBuff[i + 6]), status->sst.GetItem(ReadUInt32(&readBuff[i + 10])));
 				ws->SetCellStyle(ReadUInt16(&readBuff[i + 4]), ReadUInt16(&readBuff[i + 6]), wb->GetStyle(ReadUInt16(&readBuff[i + 8])));
 				break;
 			case 0x1b6: //TXO
@@ -1046,7 +1046,7 @@ UOSInt Parser::FileParser::XLSParser::ReadUString(UInt8 *buff, Text::StringBuild
 	{
 		if (flags & 1)
 		{
-			NotNullPtr<Text::String> s = Text::String::New((UTF16Char*)&buff[3], charCnt);
+			Text::String *s = Text::String::New((UTF16Char*)&buff[3], charCnt);
 			sb->Append(s);
 			s->Release();
 			currOfst += 3 + charCnt * 2;
@@ -1062,7 +1062,7 @@ UOSInt Parser::FileParser::XLSParser::ReadUString(UInt8 *buff, Text::StringBuild
 		cchExtRst = ReadUInt32(&buff[3]);
 		if (flags & 1)
 		{
-			NotNullPtr<Text::String> s = Text::String::New((UTF16Char*)&buff[7], charCnt);
+			Text::String *s = Text::String::New((UTF16Char*)&buff[7], charCnt);
 			sb->Append(s);
 			s->Release();
 			currOfst += 7 + charCnt * 2;
@@ -1080,7 +1080,7 @@ UOSInt Parser::FileParser::XLSParser::ReadUString(UInt8 *buff, Text::StringBuild
 		fmtCnt = ReadUInt16(&buff[3]);
 		if (flags & 1)
 		{
-			NotNullPtr<Text::String> s = Text::String::New((UTF16Char*)&buff[5], charCnt);
+			Text::String *s = Text::String::New((UTF16Char*)&buff[5], charCnt);
 			sb->Append(s);
 			s->Release();
 			currOfst += 5 + charCnt * 2;
@@ -1099,7 +1099,7 @@ UOSInt Parser::FileParser::XLSParser::ReadUString(UInt8 *buff, Text::StringBuild
 		cchExtRst = ReadUInt32(&buff[5]);
 		if (flags & 1)
 		{
-			NotNullPtr<Text::String> s = Text::String::New((UTF16Char*)&buff[9], charCnt);
+			Text::String *s = Text::String::New((UTF16Char*)&buff[9], charCnt);
 			sb->Append(s);
 			s->Release();
 			currOfst += 9 + charCnt * 2;
@@ -1128,7 +1128,7 @@ UOSInt Parser::FileParser::XLSParser::ReadUStringPartial(UInt8 *buff, UOSInt buf
 		{
 			if (thisCnt * 2 + 1 > buffSize)
 				thisCnt = (buffSize - 1) >> 1;
-			NotNullPtr<Text::String> s = Text::String::New((UTF16Char*)&buff[1], thisCnt);
+			Text::String *s = Text::String::New((UTF16Char*)&buff[1], thisCnt);
 			sb->Append(s);
 			s->Release();
 			currOfst += 1 + thisCnt * 2;
@@ -1148,7 +1148,7 @@ UOSInt Parser::FileParser::XLSParser::ReadUStringPartial(UInt8 *buff, UOSInt buf
 		{
 			if (thisCnt * 2 + 1 + cchExtRst > buffSize)
 				thisCnt = (buffSize - 1 - cchExtRst) >> 1;
-			NotNullPtr<Text::String> s = Text::String::New((UTF16Char*)&buff[5], thisCnt);
+			Text::String *s = Text::String::New((UTF16Char*)&buff[5], thisCnt);
 			sb->Append(s);
 			s->Release();
 			currOfst += 5 + thisCnt * 2;
@@ -1170,7 +1170,7 @@ UOSInt Parser::FileParser::XLSParser::ReadUStringPartial(UInt8 *buff, UOSInt buf
 		{
 			if (thisCnt * 2 + 3 + (fmtCnt << 2) > buffSize)
 				thisCnt = (buffSize - 3 - (fmtCnt << 2)) >> 1;
-			NotNullPtr<Text::String> s = Text::String::New((UTF16Char*)&buff[3], thisCnt);
+			Text::String *s = Text::String::New((UTF16Char*)&buff[3], thisCnt);
 			sb->Append(s);
 			s->Release();
 			currOfst += 3 + thisCnt * 2;
@@ -1193,7 +1193,7 @@ UOSInt Parser::FileParser::XLSParser::ReadUStringPartial(UInt8 *buff, UOSInt buf
 		{
 			if (thisCnt * 2 + 7 + (fmtCnt << 2) + cchExtRst > buffSize)
 				thisCnt = (buffSize - 7 - (fmtCnt << 2) - cchExtRst) >> 1;
-			NotNullPtr<Text::String> s = Text::String::New((UTF16Char*)&buff[7], thisCnt);
+			Text::String *s = Text::String::New((UTF16Char*)&buff[7], thisCnt);
 			sb->Append(s);
 			s->Release();
 			currOfst += 7 + thisCnt * 2;
@@ -1223,7 +1223,7 @@ UOSInt Parser::FileParser::XLSParser::ReadUStringB(UInt8 *buff, Text::StringBuil
 	{
 		if (flags & 1)
 		{
-			NotNullPtr<Text::String> s = Text::String::New((UTF16Char*)&buff[2], charCnt);
+			Text::String *s = Text::String::New((UTF16Char*)&buff[2], charCnt);
 			sb->Append(s);
 			s->Release();
 			currOfst += 3 + charCnt * 2;
@@ -1239,7 +1239,7 @@ UOSInt Parser::FileParser::XLSParser::ReadUStringB(UInt8 *buff, Text::StringBuil
 		cchExtRst = ReadUInt32(&buff[2]);
 		if (flags & 1)
 		{
-			NotNullPtr<Text::String> s = Text::String::New((UTF16Char*)&buff[6], charCnt);
+			Text::String *s = Text::String::New((UTF16Char*)&buff[6], charCnt);
 			sb->Append(s);
 			s->Release();
 			currOfst += 7 + charCnt * 2;
@@ -1257,7 +1257,7 @@ UOSInt Parser::FileParser::XLSParser::ReadUStringB(UInt8 *buff, Text::StringBuil
 		fmtCnt = ReadUInt16(&buff[2]);
 		if (flags & 1)
 		{
-			NotNullPtr<Text::String> s = Text::String::New((UTF16Char*)&buff[4], charCnt);
+			Text::String *s = Text::String::New((UTF16Char*)&buff[4], charCnt);
 			sb->Append(s);
 			s->Release();
 			currOfst += 5 + charCnt * 2;
@@ -1276,7 +1276,7 @@ UOSInt Parser::FileParser::XLSParser::ReadUStringB(UInt8 *buff, Text::StringBuil
 		cchExtRst = ReadUInt32(&buff[4]);
 		if (flags & 1)
 		{
-			NotNullPtr<Text::String> s = Text::String::New((UTF16Char*)&buff[8], charCnt);
+			Text::String *s = Text::String::New((UTF16Char*)&buff[8], charCnt);
 			sb->Append(s);
 			s->Release();
 			currOfst += 9 + charCnt * 2;

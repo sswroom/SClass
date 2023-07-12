@@ -60,7 +60,7 @@ void Media::MediaPlayerWebInterface::BrowseRequest(Net::WebServer::IWebRequest *
 	IO::Path::PathType pt;
 	IO::Path::FindFileSession *sess;
 	UInt8 *buff;
-	NotNullPtr<Text::String> s;
+	Text::String *s;
 	UOSInt size;
 	UInt64 fileSize;
 
@@ -151,7 +151,7 @@ void Media::MediaPlayerWebInterface::BrowseRequest(Net::WebServer::IWebRequest *
 
 void Media::MediaPlayerWebInterface::WebRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp)
 {
-	NotNullPtr<Text::String> reqURI = req->GetRequestURI();
+	Text::String *reqURI = req->GetRequestURI();
 	if (reqURI->Equals(UTF8STRC("/browse")) || reqURI->StartsWith(UTF8STRC("/browse?")))
 	{
 		this->BrowseRequest(req, resp);
@@ -203,7 +203,7 @@ void Media::MediaPlayerWebInterface::WebRequest(Net::WebServer::IWebRequest *req
 	}
 	IO::Writer *writer;
 	UInt8 *buff;
-	NotNullPtr<Text::String> s;
+	Text::String *s;
 	UOSInt size;
 
 	IO::MemoryStream mstm;

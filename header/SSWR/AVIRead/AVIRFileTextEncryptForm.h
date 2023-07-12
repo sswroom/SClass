@@ -25,7 +25,7 @@ namespace SSWR
 
 			SSWR::AVIRead::AVIRCore *core;
 			Text::TextBinEnc::TextBinEncList encList;
-			static void __stdcall OnFileDrop(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles);
+			static void __stdcall OnFileDrop(void *userObj, Text::String **files, UOSInt nFiles);
 			static void __stdcall OnConvertClicked(void *userObj);
 		public:
 			AVIRFileTextEncryptForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);

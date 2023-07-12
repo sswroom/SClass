@@ -1,6 +1,5 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRCORE
 #define _SM_SSWR_AVIREAD_AVIRCORE
-#include "Data/ArrayListNN.h"
 #include "Exporter/ExporterList.h"
 #include "IO/GPIOControl.h"
 #include "IO/LogTool.h"
@@ -51,7 +50,7 @@ namespace SSWR
 			Exporter::ExporterList exporters;
 			UInt32 currCodePage;
 			IO::LogTool log;
-			Data::ArrayListNN<Text::String> audDevList;
+			Data::ArrayList<Text::String *> audDevList;
 			Media::AudioDevice audDevice;
 			Int32 audAPIType;
 			Media::MonitorMgr monMgr;
@@ -108,7 +107,7 @@ namespace SSWR
 			Media::MonitorMgr *GetMonitorMgr();
 			
 			void SetAudioDeviceList(Data::ArrayList<Text::String *> *audDevList);
-			Data::ArrayListNN<Text::String> *GetAudioDeviceList();
+			Data::ArrayList<Text::String *> *GetAudioDeviceList();
 			Int32 GetAudioAPIType();
 			Media::IAudioRenderer *BindAudio(Media::IAudioSource *audSrc);
 

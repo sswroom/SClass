@@ -80,7 +80,7 @@ Crypto::Cert::X509Cert *Crypto::Cert::OpenSSLCert::CreateX509Cert() const
 	readSize = BIO_read(bio2, buff, 4096);
 	if (readSize > 0)
 	{
-		NotNullPtr<Text::String> fileName = Text::String::New(UTF8STRC("Certificate.crt"));
+		Text::String *fileName = Text::String::New(UTF8STRC("Certificate.crt"));
 		pobjCert = Parser::FileParser::X509Parser::ParseBuff(buff, (UOSInt)readSize, fileName);
 		fileName->Release();
 	}

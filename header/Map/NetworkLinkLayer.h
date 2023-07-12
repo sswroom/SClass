@@ -21,7 +21,7 @@ namespace Map
 		struct LinkInfo
 		{
 			Text::String *layerName;
-			NotNullPtr<Text::String> url;
+			Text::String *url;
 			Text::String *viewFormat;
 			RefreshMode mode;
 			Int32 reloadInterval;

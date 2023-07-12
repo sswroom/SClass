@@ -38,7 +38,7 @@ namespace DB
 		static DBManagerCtrl *Create(Text::String *connStr, IO::LogTool *log, Net::SocketFactory *sockf, Parser::ParserList *parsers);
 		static DBManagerCtrl *Create(Text::CString connStr, IO::LogTool *log, Net::SocketFactory *sockf, Parser::ParserList *parsers);
 		static DBManagerCtrl *Create(DB::DBTool *db, IO::LogTool *log, Net::SocketFactory *sockf, Parser::ParserList *parsers);
-		static DBManagerCtrl *CreateFromFile(DB::ReadingDB *db, NotNullPtr<Text::String> filePath, IO::LogTool *log, Net::SocketFactory *sockf, Parser::ParserList *parsers);
+		static DBManagerCtrl *CreateFromFile(DB::ReadingDB *db, Text::String *filePath, IO::LogTool *log, Net::SocketFactory *sockf, Parser::ParserList *parsers);
 	};
 }
 #endif
