@@ -483,19 +483,19 @@ C0 05 01 2A 00 C0 FF C3 04 02 12 12 12 DD 1E 00
 									sbTmp.ClearStr();
 									sbTmp.AppendC(&currItem[4], itemSize);
 									SDEL_STRING(bss.devManuf);
-									bss.devManuf = Text::String::New(sbTmp.ToString(), sbTmp.GetLength());
+									bss.devManuf = Text::String::New(sbTmp.ToString(), sbTmp.GetLength()).Ptr();
 									break;
 								case 0x1023: //Model
 									sbTmp.ClearStr();
 									sbTmp.AppendC(&currItem[4], itemSize);
 									SDEL_STRING(bss.devModel);
-									bss.devModel = Text::String::New(sbTmp.ToString(), sbTmp.GetLength());
+									bss.devModel = Text::String::New(sbTmp.ToString(), sbTmp.GetLength()).Ptr();
 									break;
 								case 0x1042: //Serial
 									sbTmp.ClearStr();
 									sbTmp.AppendC(&currItem[4], itemSize);
 									SDEL_STRING(bss.devSN);
-									bss.devSN = Text::String::New(sbTmp.ToString(), sbTmp.GetLength());
+									bss.devSN = Text::String::New(sbTmp.ToString(), sbTmp.GetLength()).Ptr();
 									break;
 								}
 								currItem += itemSize + 4; 

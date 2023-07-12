@@ -76,12 +76,12 @@ Net::SNS::SNSControl::SNSType Net::SNS::SNS7gogo::GetSNSType()
 	return Net::SNS::SNSControl::ST_7GOGO;
 }
 
-NotNullPtr<Text::String> Net::SNS::SNS7gogo::GetChannelId()
+NotNullPtr<Text::String> Net::SNS::SNS7gogo::GetChannelId() const
 {
 	return this->channelId;
 }
 
-NotNullPtr<Text::String> Net::SNS::SNS7gogo::GetName()
+NotNullPtr<Text::String> Net::SNS::SNS7gogo::GetName() const
 {
 	return this->chName;
 }

@@ -29,8 +29,8 @@ namespace Media
 			BatchResizer(Media::IImgResizer *resizer, Media::Batch::BatchHandler *hdlr);
 			virtual ~BatchResizer();
 			
-			void AddTargetSize(UInt32 targetWidth, UInt32 targetHeight, Text::String *targetId);
-			void AddTargetDPI(UInt32 targetHDPI, UInt32 targetVDPI, Text::String *targetId);
+			void AddTargetSize(UInt32 targetWidth, UInt32 targetHeight, NotNullPtr<Text::String> targetId);
+			void AddTargetDPI(UInt32 targetHDPI, UInt32 targetVDPI, NotNullPtr<Text::String> targetId);
 			void ClearTargetSizes();
 			void SetHandler(Media::Batch::BatchHandler *hdlr);
 		private:

@@ -20,8 +20,8 @@ SSWR::AVIRead::AVIRHTTPLog::AVIRHTTPLog(UOSInt logCnt)
 	while (i-- > 0)
 	{
 		this->entries[i].reqTime = 0;
-		NEW_CLASS(this->entries[i].headerName, Data::ArrayListString());
-		NEW_CLASS(this->entries[i].headerVal, Data::ArrayList<Text::String *>());
+		NEW_CLASS(this->entries[i].headerName, Data::ArrayListStringNN());
+		NEW_CLASS(this->entries[i].headerVal, Data::ArrayListNN<Text::String>());
 		this->entries[i].reqURI = 0;
 		this->entries[i].cliAddr.addrType = Net::AddrType::Unknown;
 		this->entries[i].cliPort = 0;
@@ -62,7 +62,7 @@ void SSWR::AVIRead::AVIRHTTPLog::LogRequest(Net::WebServer::IWebRequest *req)
 		this->currEnt = 0;
 	}
 	SDEL_STRING(this->entries[i].reqURI);
-	this->entries[i].reqURI = req->GetRequestURI()->Clone();
+	this->entries[i].reqURI = req->GetRequestURI()->Clone().Ptr();
 	this->entries[i].cliAddr = *req->GetClientAddr();
 	this->entries[i].cliPort = req->GetClientPort();
 	this->entries[i].reqTime = dt.ToTicks();

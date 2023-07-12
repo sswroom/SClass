@@ -28,7 +28,7 @@ namespace SSWR
 			Bool ParseFile(Text::CString fileName, Text::StringBuilderUTF8 *output);
 
 			static void __stdcall OnBrowseClicked(void *userObj);
-			static void __stdcall OnFileDrop(void *userObj, Text::String **files, UOSInt nFile);
+			static void __stdcall OnFileDrop(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFile);
 			static void __stdcall OnParseToTextClicked(void *userObj);
 			static void __stdcall OnParseToFileClicked(void *userObj);
 

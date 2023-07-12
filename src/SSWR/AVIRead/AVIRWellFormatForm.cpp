@@ -111,7 +111,7 @@ void __stdcall SSWR::AVIRead::AVIRWellFormatForm::OnBrowseClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRWellFormatForm::OnFileDrop(void *userObj, Text::String **files, UOSInt nFile)
+void __stdcall SSWR::AVIRead::AVIRWellFormatForm::OnFileDrop(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFile)
 {
 	SSWR::AVIRead::AVIRWellFormatForm *me = (SSWR::AVIRead::AVIRWellFormatForm*)userObj;
 	me->txtFile->SetText(files[0]->ToCString());

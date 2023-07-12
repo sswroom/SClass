@@ -131,6 +131,7 @@ void __stdcall SSWR::AVIRead::AVIREWDTU01Form::OnTimerTick(void *userObj)
 	{
 		DeviceEntry *entry;
 		const Net::MACInfo::MACEntry *macEntry;
+		NotNullPtr<Text::String> s;
 		Sync::MutexUsage mutUsage(&me->dataMut);
 		me->lvDevices->ClearItems();
 		UOSInt i = 0;
@@ -140,9 +141,9 @@ void __stdcall SSWR::AVIRead::AVIREWDTU01Form::OnTimerTick(void *userObj)
 			entry = me->dataMap.GetItem(i);
 			sptr = Text::StrHexBytes(sbuff, entry->mac, 6, ':');
 			me->lvDevices->AddItem(CSTRP(sbuff, sptr), entry);
-			if (entry->name)
+			if (s.Set(entry->name))
 			{
-				me->lvDevices->SetSubItem(i, 1, entry->name);
+				me->lvDevices->SetSubItem(i, 1, s);
 			}
 			macEntry = Net::MACInfo::GetMACInfo(entry->macInt);
 			if (macEntry)
@@ -155,9 +156,9 @@ void __stdcall SSWR::AVIRead::AVIREWDTU01Form::OnTimerTick(void *userObj)
 			}
 			sptr = Text::StrInt32(sbuff, entry->rssi);
 			me->lvDevices->SetSubItem(i, 3, CSTRP(sbuff, sptr));
-			if (entry->remark)
+			if (s.Set(entry->remark))
 			{
-				me->lvDevices->SetSubItem(i, 4, entry->remark);
+				me->lvDevices->SetSubItem(i, 4, s);
 			}
 			i++;
 		}

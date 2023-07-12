@@ -213,7 +213,7 @@ void __stdcall SSWR::SHPConv::SHPConvMainForm::OnConvertClicked(void *userObj)
 	me->ParseLabelStr(sb.ToCString(), &dbCols, &dbCols2);
 	sb.ClearStr();
 	me->txtSource->GetText(&sb);
-	Text::String *srcFile = Text::String::New(sb.ToString(), sb.GetLength());
+	NotNullPtr<Text::String> srcFile = Text::String::New(sb.ToString(), sb.GetLength());
 	sb.RemoveChars(4);
 	if (me->currGroup == (UOSInt)-1)
 	{
@@ -234,7 +234,7 @@ void __stdcall SSWR::SHPConv::SHPConvMainForm::OnConvertClicked(void *userObj)
 	me->btnSBrowse->SetEnabled(true);
 }
 
-void __stdcall SSWR::SHPConv::SHPConvMainForm::OnFile(void *userObj, Text::String **files, UOSInt nFiles)
+void __stdcall SSWR::SHPConv::SHPConvMainForm::OnFile(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles)
 {
 	SSWR::SHPConv::SHPConvMainForm *me = (SSWR::SHPConv::SHPConvMainForm*)userObj;
 	UTF8Char sbuff[16];
@@ -248,7 +248,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::GroupConvert(Text::CString sourceFile, Tex
 	UOSInt i;
 	OSInt si;
 	Text::StringBuilderUTF8 sb;
-	Data::ArrayListString names;
+	Data::ArrayListStringNN names;
 	Int32 shpType = 0;
 	DB::DBReader *r;
 	Text::String *s;
@@ -267,7 +267,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::GroupConvert(Text::CString sourceFile, Tex
 			{
 				sb.ClearStr();
 				r->GetStr(groupCol, &sb);
-				si = names.SortedIndexOfPtr(sb.ToString(), sb.GetLength());
+				si = names.SortedIndexOfC(sb.ToCString());
 				if (si < 0)
 				{
 					names.Insert((UOSInt)~si, Text::String::New(sb.ToCString()));
@@ -305,7 +305,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::GroupConvert(Text::CString sourceFile, Tex
 		}
 		if (outNames)
 		{
-			outNames->Add(Text::StrCopyNew(sb2.ToString()));
+			outNames->Add(Text::StrCopyNew(sb2.ToString()).Ptr());
 		}
 		s->Release();
 	}
@@ -635,7 +635,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CString sourceFile, Text:
 									strRec->recId = currRec;
 									if (dbfr)
 									{
-										strRec->str = this->GetNewDBFName(&dbf, dbCols, tRec, dbCols2);
+										strRec->str = this->GetNewDBFName(&dbf, dbCols, tRec, dbCols2).Ptr();
 									}
 									else
 									{
@@ -657,7 +657,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CString sourceFile, Text:
 								strRec->recId = currRec;
 								if (dbfr)
 								{
-									strRec->str = this->GetNewDBFName(&dbf, dbCols, tRec, dbCols2);
+									strRec->str = this->GetNewDBFName(&dbf, dbCols, tRec, dbCols2).Ptr();
 								}
 								else
 								{
@@ -956,7 +956,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CString sourceFile, Text:
 									strRec->recId = currRec;
 									if (dbfr)
 									{
-										strRec->str = GetNewDBFName(&dbf, dbCols, tRec, dbCols2);
+										strRec->str = GetNewDBFName(&dbf, dbCols, tRec, dbCols2).Ptr();
 									}
 									else
 									{
@@ -977,7 +977,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CString sourceFile, Text:
 								strRec->recId = currRec;
 								if (dbfr)
 								{
-									strRec->str = GetNewDBFName(&dbf, dbCols, tRec, dbCols2);
+									strRec->str = GetNewDBFName(&dbf, dbCols, tRec, dbCols2).Ptr();
 								}
 								else
 								{
@@ -1245,11 +1245,11 @@ void SSWR::SHPConv::SHPConvMainForm::ParseLabelStr(Text::CString labelStr, Data:
 		i = sb.IndexOf(UTF8STRC("<%="));
 		if (i == INVALID_INDEX)
 		{
-			dbCols->Add(Text::StrCopyNew(sb.ToString()));
+			dbCols->Add(Text::StrCopyNew(sb.ToString()).Ptr());
 			break;
 		}
 		sb.v[i] = 0;
-		dbCols->Add(Text::StrCopyNew(sb.ToString()));
+		dbCols->Add(Text::StrCopyNew(sb.ToString()).Ptr());
 		sb.SetSubstr((UOSInt)i + 3);
 		i = sb.IndexOf(UTF8STRC("%>"));
 		if (i != INVALID_INDEX)
@@ -1313,7 +1313,7 @@ void SSWR::SHPConv::SHPConvMainForm::FreeLabelStr(Data::ArrayList<const UTF8Char
 	dbCols2->Clear();
 }
 
-Text::String *SSWR::SHPConv::SHPConvMainForm::GetNewDBFName(DB::DBFFile *dbf, Data::ArrayList<const UTF8Char*> *dbCols, UOSInt currRec, Data::ArrayList<UInt32> *dbCols2)
+NotNullPtr<Text::String> SSWR::SHPConv::SHPConvMainForm::GetNewDBFName(DB::DBFFile *dbf, Data::ArrayList<const UTF8Char*> *dbCols, UOSInt currRec, Data::ArrayList<UInt32> *dbCols2)
 {
 	Text::StringBuilderUTF16 output;
 	UOSInt i;

@@ -85,7 +85,7 @@ void __stdcall SSWR::AVIRead::AVIRDBForm::OnTableSelChg(void *userObj)
 
 		me->lvTable->ClearItems();
 		DB::ColDef *col;
-		Text::String *s;
+		NotNullPtr<Text::String> s;
 		UOSInt i;
 		UOSInt j;
 		UOSInt k;
@@ -99,16 +99,15 @@ void __stdcall SSWR::AVIRead::AVIRDBForm::OnTableSelChg(void *userObj)
 				k = me->lvTable->AddItem(col->GetColName(), 0);
 				sptr = col->ToColTypeStr(sbuff);
 				me->lvTable->SetSubItem(k, 1, CSTRP(sbuff, sptr));
-				s = col->GetNativeType();
-				if (s)
-					me->lvTable->SetSubItem(k, 2, s->ToCString());
+				if (s.Set(col->GetNativeType()))
+					me->lvTable->SetSubItem(k, 2, s);
 				me->lvTable->SetSubItem(k, 3, col->IsNotNull()?CSTR("NOT NULL"):CSTR("NULL"));
 				me->lvTable->SetSubItem(k, 4, col->IsPK()?CSTR("PK"):CSTR(""));
 				me->lvTable->SetSubItem(k, 5, col->IsAutoInc()?CSTR("AUTO_INCREMENT"):CSTR(""));
-				if (col->GetDefVal())
-					me->lvTable->SetSubItem(k, 6, col->GetDefVal());
-				if (col->GetAttr())
-					me->lvTable->SetSubItem(k, 7, col->GetAttr());
+				if (s.Set(col->GetDefVal()))
+					me->lvTable->SetSubItem(k, 6, s);
+				if (s.Set(col->GetAttr()))
+					me->lvTable->SetSubItem(k, 7, s);
 
 				i++;
 			}
@@ -126,16 +125,15 @@ void __stdcall SSWR::AVIRead::AVIRDBForm::OnTableSelChg(void *userObj)
 				k = me->lvTable->AddItem(col->GetColName(), 0);
 				sptr = col->ToColTypeStr(sbuff);
 				me->lvTable->SetSubItem(k, 1, CSTRP(sbuff, sptr));
-				s = col->GetNativeType();
-				if (s)
-					me->lvTable->SetSubItem(k, 2, s->ToCString());
+				if (s.Set(col->GetNativeType()))
+					me->lvTable->SetSubItem(k, 2, s);
 				me->lvTable->SetSubItem(k, 3, col->IsNotNull()?CSTR("NOT NULL"):CSTR("NULL"));
 				me->lvTable->SetSubItem(k, 4, col->IsPK()?CSTR("PK"):CSTR(""));
 				me->lvTable->SetSubItem(k, 5, col->IsAutoInc()?CSTR("AUTO_INCREMENT"):CSTR(""));
-				if (col->GetDefVal())
-					me->lvTable->SetSubItem(k, 6, col->GetDefVal());
-				if (col->GetAttr())
-					me->lvTable->SetSubItem(k, 7, col->GetAttr());
+				if (s.Set(col->GetDefVal()))
+					me->lvTable->SetSubItem(k, 6, s);
+				if (s.Set(col->GetAttr()))
+					me->lvTable->SetSubItem(k, 7, s);
 
 				i++;
 			}
@@ -572,7 +570,7 @@ void SSWR::AVIRead::AVIRDBForm::UpdateSchemas()
 	while (i < j)
 	{
 		Text::String *schemaName = schemaNames.GetItem(i);
-		this->lbSchema->AddItem(schemaName, 0);
+		this->lbSchema->AddItem(Text::String::OrEmpty(schemaName), 0);
 		i++;
 	}
 
@@ -584,7 +582,7 @@ void SSWR::AVIRead::AVIRDBForm::UpdateTables()
 {
 	Text::StringBuilderUTF8 sb;
 	Text::String *schemaName = this->lbSchema->GetSelectedItemTextNew();
-	Data::ArrayList<Text::String*> tableNames;
+	Data::ArrayListNN<Text::String> tableNames;
 	UOSInt i;
 	UOSInt j;
 
@@ -603,7 +601,7 @@ void SSWR::AVIRead::AVIRDBForm::UpdateTables()
 	while (i < j)
 	{
 		Text::String *tableName = tableNames.GetItem(i);
-		this->lbTable->AddItem(tableName, 0);
+		this->lbTable->AddItem(Text::String::OrEmpty(tableName), 0);
 		i++;
 	}
 

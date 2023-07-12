@@ -158,9 +158,9 @@ void __stdcall Net::DNSProxy::OnDNSRequest(void *userObj, Text::CString reqName,
 						}
 						Sync::MutexUsage mutUsage(&target->mut);
 						targetMutUsage.EndUse();
-						if (target->addrList.SortedIndexOf(ans->name) < 0)
+						if (target->addrList.SortedIndexOf(ans->name.Ptr()) < 0)
 						{
-							target->addrList.SortedInsert(ans->name->Clone());
+							target->addrList.SortedInsert(ans->name->Clone().Ptr());
 						}
 						j = i;
 						while (j-- > 0)
@@ -168,9 +168,9 @@ void __stdcall Net::DNSProxy::OnDNSRequest(void *userObj, Text::CString reqName,
 							ans = ansList.GetItem(j);
 							if (ans->recType == 5)
 							{
-								if (target->addrList.SortedIndexOf(ans->name) < 0)
+								if (target->addrList.SortedIndexOf(ans->name.Ptr()) < 0)
 								{
-									target->addrList.SortedInsert(ans->name->Clone());
+									target->addrList.SortedInsert(ans->name->Clone().Ptr());
 								}
 							}
 						}

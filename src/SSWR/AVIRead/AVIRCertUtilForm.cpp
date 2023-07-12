@@ -9,7 +9,7 @@
 #include "Text/StringTool.h"
 #include "UI/MessageDialog.h"
 
-void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnFileDrop(void *userObj, Text::String **files, UOSInt nFiles)
+void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnFileDrop(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles)
 {
 	SSWR::AVIRead::AVIRCertUtilForm *me = (SSWR::AVIRead::AVIRCertUtilForm*)userObj;
 	Parser::ParserList *parsers = me->core->GetParserList();
@@ -291,35 +291,35 @@ Bool SSWR::AVIRead::AVIRCertUtilForm::GetNames(Crypto::Cert::CertNames *names)
 			return false;
 		}
 		SDEL_STRING(names->countryName);
-		names->countryName = Text::String::New(sb.ToString(), sb.GetLength());
+		names->countryName = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 	}
 	sb.ClearStr();
 	this->txtStateOrProvinceName->GetText(&sb);
 	if (sb.GetLength() != 0)
 	{
 		SDEL_STRING(names->stateOrProvinceName);
-		names->stateOrProvinceName = Text::String::New(sb.ToString(), sb.GetLength());
+		names->stateOrProvinceName = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 	}
 	sb.ClearStr();
 	this->txtLocalityName->GetText(&sb);
 	if (sb.GetLength() != 0)
 	{
 		SDEL_STRING(names->localityName);
-		names->localityName = Text::String::New(sb.ToString(), sb.GetLength());
+		names->localityName = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 	}
 	sb.ClearStr();
 	this->txtOrganizationName->GetText(&sb);
 	if (sb.GetLength() != 0)
 	{
 		SDEL_STRING(names->organizationName);
-		names->organizationName = Text::String::New(sb.ToString(), sb.GetLength());
+		names->organizationName = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 	}
 	sb.ClearStr();
 	this->txtOrganizationUnitName->GetText(&sb);
 	if (sb.GetLength() != 0)
 	{
 		SDEL_STRING(names->organizationUnitName);
-		names->organizationUnitName = Text::String::New(sb.ToString(), sb.GetLength());
+		names->organizationUnitName = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 	}
 	sb.ClearStr();
 	this->txtCommonName->GetText(&sb);
@@ -329,7 +329,7 @@ Bool SSWR::AVIRead::AVIRCertUtilForm::GetNames(Crypto::Cert::CertNames *names)
 		return false;
 	}
 	SDEL_STRING(names->commonName);
-	names->commonName = Text::String::New(sb.ToString(), sb.GetLength());
+	names->commonName = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 
 	sb.ClearStr();
 	this->txtEmailAddress->GetText(&sb);
@@ -341,7 +341,7 @@ Bool SSWR::AVIRead::AVIRCertUtilForm::GetNames(Crypto::Cert::CertNames *names)
 			return false;
 		}
 		SDEL_STRING(names->emailAddress);
-		names->emailAddress = Text::String::New(sb.ToString(), sb.GetLength());
+		names->emailAddress = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 	}
 	return true;
 }
@@ -381,11 +381,11 @@ void SSWR::AVIRead::AVIRCertUtilForm::UpdateExtensions(Crypto::Cert::CertExtensi
 	{
 		UOSInt i = 0;
 		UOSInt j = exts->subjectAltName->GetCount();
-		Text::String *s;
+		NotNullPtr<Text::String> s;
 		while (i < j)
 		{
-			s = exts->subjectAltName->GetItem(i);
-			this->sanList->Add(s->Clone());
+			s = exts->subjectAltName->GetItem(i)->Clone();
+			this->sanList->Add(s);
 			this->lbSAN->AddItem(s, 0);
 			i++;
 		}
@@ -406,7 +406,7 @@ SSWR::AVIRead::AVIRCertUtilForm::AVIRCertUtilForm(UI::GUIClientControl *parent, 
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->ssl = Net::SSLEngineFactory::Create(this->core->GetSocketFactory(), true);
-	NEW_CLASS(this->sanList, Data::ArrayList<Text::String*>());
+	NEW_CLASS(this->sanList, Data::ArrayListNN<Text::String>());
 	this->key = 0;
 
 	NEW_CLASS(this->lblKey, UI::GUILabel(ui, this, CSTR("Key")));

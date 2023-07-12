@@ -32,8 +32,8 @@ Net::SNMPManager::~SNMPManager()
 	while (i-- > 0)
 	{
 		agent = this->agentList.GetItem(i);
-		SDEL_STRING(agent->community);
-		SDEL_STRING(agent->descr);
+		agent->community->Release();
+		agent->descr->Release();
 		SDEL_STRING(agent->name);
 		SDEL_STRING(agent->contact);
 		SDEL_STRING(agent->location);
@@ -41,7 +41,7 @@ Net::SNMPManager::~SNMPManager()
 		while (j-- > 0)
 		{
 			reading = agent->readingList->GetItem(j);
-			SDEL_STRING(reading->name);
+			reading->name->Release();
 			MemFree(reading);
 		}
 		DEL_CLASS(agent->readingList);
@@ -103,7 +103,7 @@ UOSInt Net::SNMPManager::GetAgentList(Data::ArrayList<AgentInfo*> *agentList)
 	return ret;
 }
 
-Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(const Net::SocketUtil::AddressInfo *addr, Text::String *community)
+Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(const Net::SocketUtil::AddressInfo *addr, NotNullPtr<Text::String> community)
 {
 	Data::ArrayList<Net::SNMPUtil::BindingItem *> itemList;
 	Net::SNMPUtil::ErrorStatus err;
@@ -170,7 +170,7 @@ Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(const Net::SocketUtil::A
 			item = itemList.GetItem(0);
 			if (item->valType == 4 && item->valLen > 0)
 			{
-				agent->contact = Text::String::New(item->valBuff, item->valLen);
+				agent->contact = Text::String::New(item->valBuff, item->valLen).Ptr();
 			}
 		}
 		FreeAllItems(&itemList);
@@ -181,7 +181,7 @@ Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(const Net::SocketUtil::A
 			item = itemList.GetItem(0);
 			if (item->valType == 4 && item->valLen > 0)
 			{
-				agent->name = Text::String::New(item->valBuff, item->valLen);
+				agent->name = Text::String::New(item->valBuff, item->valLen).Ptr();
 			}
 		}
 		FreeAllItems(&itemList);
@@ -192,7 +192,7 @@ Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(const Net::SocketUtil::A
 			item = itemList.GetItem(0);
 			if (item->valType == 4 && item->valLen > 0)
 			{
-				agent->location = Text::String::New(item->valBuff, item->valLen);
+				agent->location = Text::String::New(item->valBuff, item->valLen).Ptr();
 			}
 		}
 		FreeAllItems(&itemList);
@@ -239,7 +239,7 @@ Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(const Net::SocketUtil::A
 					Int32 iVal;
 					Text::StringBuilderUTF8 sb;
 					found = true;
-					agent->vendor = Text::String::New(UTF8STRC("QNAP"));
+					agent->vendor = Text::String::New(UTF8STRC("QNAP")).Ptr();
 
 					err = this->cli->V1GetRequest(addr, community, UTF8STRC("1.3.6.1.4.1.24681.1.4.1.1.1.1.1.2.1.5.1"), &itemList); //enclosureSlot.1
 					if (err == Net::SNMPUtil::ES_NOERROR && itemList.GetCount() == 1)
@@ -255,7 +255,7 @@ Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(const Net::SocketUtil::A
 						item = itemList.GetItem(0);
 						if (item->valType == 4 && item->valLen > 0)
 						{
-							agent->model = Text::String::New(item->valBuff, item->valLen);
+							agent->model = Text::String::New(item->valBuff, item->valLen).Ptr();
 						}
 					}
 					FreeAllItems(&itemList);
@@ -355,7 +355,7 @@ Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(const Net::SocketUtil::A
 							if (Net::SNMPUtil::ValueToInt32(item->valType, item->valBuff, item->valLen, &iVal) && iVal > 0)
 							{
 								reading = MemAlloc(ReadingInfo, 1);
-								reading->name = 0;
+								reading->name = Text::String::NewEmpty();
 								reading->index = 4 + i;
 								reading->objIdLen = Net::ASN1Util::OIDText2PDU(sbuff, (UOSInt)(sptr - sbuff), reading->objId);
 								reading->mulVal = 1.0;
@@ -380,6 +380,7 @@ Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(const Net::SocketUtil::A
 										sb.AppendC(item->valBuff, item->valLen);
 									}
 								}
+								reading->name->Release();
 								reading->name = Text::String::New(sb.ToString(), sb.GetLength());
 
 								sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("1.3.6.1.4.1.24681.1.4.1.1.1.1.5.2.1.2.")), i);
@@ -411,7 +412,7 @@ Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(const Net::SocketUtil::A
 						Int32 iVal;
 						Text::StringBuilderUTF8 sb;
 						found = true;
-						agent->vendor = Text::String::New(UTF8STRC("Synology"));
+						agent->vendor = Text::String::New(UTF8STRC("Synology")).Ptr();
 
 						err = this->cli->V1GetRequest(addr, community, UTF8STRC("1.3.6.1.4.1.6574.1.5.1.0"), &itemList); //modelName.1
 						if (err == Net::SNMPUtil::ES_NOERROR && itemList.GetCount() == 1)
@@ -419,7 +420,7 @@ Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(const Net::SocketUtil::A
 							item = itemList.GetItem(0);
 							if (item->valType == 4 && item->valLen > 0)
 							{
-								agent->model = Text::String::New(item->valBuff, item->valLen);
+								agent->model = Text::String::New(item->valBuff, item->valLen).Ptr();
 							}
 						}
 						FreeAllItems(&itemList);
@@ -455,7 +456,7 @@ Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(const Net::SocketUtil::A
 								if (Net::SNMPUtil::ValueToInt32(item->valType, item->valBuff, item->valLen, &iVal))
 								{
 									reading = MemAlloc(ReadingInfo, 1);
-									reading->name = 0;
+									reading->name = Text::String::NewEmpty();
 									reading->index = 4 + i;
 									reading->objIdLen = Net::ASN1Util::OIDText2PDU(sbuff, (UOSInt)(sptr - sbuff), reading->objId);
 									reading->mulVal = 1.0;
@@ -503,6 +504,7 @@ Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(const Net::SocketUtil::A
 											sb.RTrim();
 										}
 									}
+									reading->name->Release();
 									reading->name = Text::String::New(sb.ToString(), sb.GetLength());
 								}
 							}
@@ -526,7 +528,7 @@ Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(const Net::SocketUtil::A
 					ReadingInfo *reading;
 
 					found = true;
-					agent->vendor = Text::String::New(UTF8STRC("Canon"));
+					agent->vendor = Text::String::New(UTF8STRC("Canon")).Ptr();
 
 					err = this->cli->V1GetRequest(addr, community, UTF8STRC("1.3.6.1.4.1.1602.1.1.1.2.0"), &itemList); //enclosureSlot.1
 					if (err == Net::SNMPUtil::ES_NOERROR && itemList.GetCount() == 1)
@@ -534,7 +536,7 @@ Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(const Net::SocketUtil::A
 						item = itemList.GetItem(0);
 						if (item->valType == 4 && item->valLen > 0)
 						{
-							agent->model = Text::String::New(item->valBuff, item->valLen);
+							agent->model = Text::String::New(item->valBuff, item->valLen).Ptr();
 						}
 					}
 					FreeAllItems(&itemList);
@@ -550,7 +552,7 @@ Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(const Net::SocketUtil::A
 							if (Net::SNMPUtil::ValueToInt32(item->valType, item->valBuff, item->valLen, &iVal))
 							{
 								reading = MemAlloc(ReadingInfo, 1);
-								reading->name = 0;
+								reading->name = Text::String::NewEmpty();
 								reading->index = i - 1;
 								reading->objIdLen = Net::ASN1Util::OIDText2PDU(sbuff, (UOSInt)(sptr - sbuff), reading->objId);
 								reading->mulVal = 1.0;
@@ -568,12 +570,14 @@ Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(const Net::SocketUtil::A
 									item = itemList.GetItem(0);
 									if (item->valType == 4 && item->valLen > 0)
 									{
+										reading->name->Release();
 										reading->name = Text::String::New(item->valBuff, item->valLen);
 									}
 								}
-								if (reading->name == 0)
+								if (reading->name->leng == 0)
 								{
 									sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Count ")), i);
+									reading->name->Release();
 									reading->name = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 								}
 							}
@@ -594,7 +598,7 @@ Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(const Net::SocketUtil::A
 				if (Net::ASN1Util::OIDStartsWith(agent->objId, agent->objIdLen, oidPDU, pduSize))
 				{
 					found = true;
-					agent->vendor = Text::String::New(UTF8STRC("HP"));
+					agent->vendor = Text::String::New(UTF8STRC("HP")).Ptr();
 
 					err = this->cli->V1GetRequest(addr, community, UTF8STRC("1.3.6.1.4.1.11.2.4.3.1.10.0"), &itemList); //npSysModelNumber.0
 					if (err == Net::SNMPUtil::ES_NOERROR && itemList.GetCount() == 1)
@@ -602,7 +606,7 @@ Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(const Net::SocketUtil::A
 						item = itemList.GetItem(0);
 						if (item->valType == 4 && item->valLen > 0)
 						{
-							agent->model = Text::String::New(item->valBuff, item->valLen);
+							agent->model = Text::String::New(item->valBuff, item->valLen).Ptr();
 						}
 					}
 					FreeAllItems(&itemList);
@@ -616,7 +620,7 @@ Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(const Net::SocketUtil::A
 					ReadingInfo *reading;
 					Int32 iVal;
 					found = true;
-					agent->vendor = Text::String::New(UTF8STRC("AKCP"));
+					agent->vendor = Text::String::New(UTF8STRC("AKCP")).Ptr();
 
 					err = this->cli->V1GetRequest(addr, community, UTF8STRC("1.3.6.1.4.1.3854.1.1.8.0"), &itemList); //npSysModelNumber.0
 					if (err == Net::SNMPUtil::ES_NOERROR && itemList.GetCount() == 1)
@@ -624,7 +628,7 @@ Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(const Net::SocketUtil::A
 						item = itemList.GetItem(0);
 						if (item->valType == 4 && item->valLen > 0)
 						{
-							agent->model = Text::String::New(item->valBuff, item->valLen);
+							agent->model = Text::String::New(item->valBuff, item->valLen).Ptr();
 						}
 					}
 					FreeAllItems(&itemList);
@@ -643,7 +647,7 @@ Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(const Net::SocketUtil::A
 								{
 									sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("1.3.6.1.4.1.3854.1.2.2.1.16.1.14.")), i);
 									reading = MemAlloc(ReadingInfo, 1);
-									reading->name = 0;
+									reading->name = Text::String::NewEmpty();
 									reading->index = i;
 									reading->objIdLen = Net::ASN1Util::OIDText2PDU(sbuff, (UOSInt)(sptr - sbuff), reading->objId);
 									reading->mulVal = 0.1;
@@ -673,12 +677,14 @@ Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(const Net::SocketUtil::A
 										item = itemList.GetItem(0);
 										if (item->valType == 4 && item->valLen > 0)
 										{
+											reading->name->Release();
 											reading->name = Text::String::New(item->valBuff, item->valLen);
 										}
 									}
-									if (reading->name == 0)
+									if (reading->name->leng == 0)
 									{
 										sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Temperature")), i + 1);
+										reading->name->Release();
 										reading->name = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 									}
 								}
@@ -707,7 +713,7 @@ Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(const Net::SocketUtil::A
 								{
 									sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("1.3.6.1.4.1.3854.1.2.2.1.17.1.3.")), i);
 									reading = MemAlloc(ReadingInfo, 1);
-									reading->name = 0;
+									reading->name = Text::String::NewEmpty();
 									reading->index = i;
 									reading->objIdLen = Net::ASN1Util::OIDText2PDU(sbuff, (UOSInt)(sptr - sbuff), reading->objId);
 									reading->mulVal = 1.0;
@@ -737,12 +743,14 @@ Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(const Net::SocketUtil::A
 										item = itemList.GetItem(0);
 										if (item->valType == 4 && item->valLen > 0)
 										{
+											reading->name->Release();
 											reading->name = Text::String::New(item->valBuff, item->valLen);
 										}
 									}
-									if (reading->name == 0)
+									if (reading->name->leng == 0)
 									{
 										sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Humidity")), i + 1);
+										reading->name->Release();
 										reading->name = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 									}
 								}
@@ -771,7 +779,7 @@ Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(const Net::SocketUtil::A
 								{
 									sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("1.3.6.1.4.1.3854.1.2.2.1.18.1.3.")), i);
 									reading = MemAlloc(ReadingInfo, 1);
-									reading->name = 0;
+									reading->name = Text::String::NewEmpty();
 									reading->index = i;
 									reading->objIdLen = Net::ASN1Util::OIDText2PDU(sbuff, (UOSInt)(sptr - sbuff), reading->objId);
 									reading->mulVal = 1.0;
@@ -801,12 +809,14 @@ Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(const Net::SocketUtil::A
 										item = itemList.GetItem(0);
 										if (item->valType == 4 && item->valLen > 0)
 										{
+											reading->name->Release();
 											reading->name = Text::String::New(item->valBuff, item->valLen);
 										}
 									}
-									if (reading->name == 0)
+									if (reading->name->leng == 0)
 									{
 										sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Dry Contact Switch")), i + 1);
+										reading->name->Release();
 										reading->name = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 									}
 								}
@@ -828,7 +838,7 @@ Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(const Net::SocketUtil::A
 				if (Net::ASN1Util::OIDStartsWith(agent->objId, agent->objIdLen, oidPDU, pduSize))
 				{
 					found = true;
-					agent->vendor = Text::String::New(UTF8STRC("Microsoft"));
+					agent->vendor = Text::String::New(UTF8STRC("Microsoft")).Ptr();
 
 					Text::StringBuilderUTF8 sb;
 					sb.AppendC(UTF8STRC("WindowsNT"));
@@ -856,7 +866,7 @@ Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(const Net::SocketUtil::A
 						}
 					}
 					FreeAllItems(&itemList);
-					agent->model = Text::String::New(sb.ToString(), sb.GetLength());
+					agent->model = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 				}
 			}
 		}
@@ -864,7 +874,7 @@ Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(const Net::SocketUtil::A
 	return agent;
 }
 
-UOSInt Net::SNMPManager::AddAgents(const Net::SocketUtil::AddressInfo *addr, Text::String *community, Data::ArrayList<AgentInfo*> *agentList, Bool scanIP)
+UOSInt Net::SNMPManager::AddAgents(const Net::SocketUtil::AddressInfo *addr, NotNullPtr<Text::String> community, Data::ArrayList<AgentInfo*> *agentList, Bool scanIP)
 {
 	AgentInfo *agent;
 	UOSInt ret = 0;

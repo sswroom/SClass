@@ -31,7 +31,7 @@ void __stdcall SSWR::AVIRead::AVIRCodeProjectForm::OnItemSelected(void *userObj)
 			if (Text::StrEndsWithICaseC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC(".CPP")))
 			{
 				Text::StringBuilderUTF8 sb;
-				Data::ArrayListString errMsgs;
+				Data::ArrayListStringNN errMsgs;
 				NEW_CLASS(env, Text::Cpp::CppEnv(me->proj, cfg));
 				NEW_CLASS(parser, Text::Cpp::CppCodeParser(env));
 				NEW_CLASS(status, Text::Cpp::CppParseStatus(me->proj->GetSourceNameObj()));
@@ -63,7 +63,7 @@ void __stdcall SSWR::AVIRead::AVIRCodeProjectForm::OnItemSelected(void *userObj)
 			else if (Text::StrEndsWithICaseC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC(".C")))
 			{
 				Text::StringBuilderUTF8 sb;
-				Data::ArrayListString errMsgs;
+				Data::ArrayListStringNN errMsgs;
 				NEW_CLASS(env, Text::Cpp::CppEnv(me->proj, cfg));
 				NEW_CLASS(parser, Text::Cpp::CppCodeParser(env));
 				NEW_CLASS(status, Text::Cpp::CppParseStatus(me->proj->GetSourceNameObj()));

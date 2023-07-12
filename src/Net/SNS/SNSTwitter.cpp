@@ -7,7 +7,6 @@ Net::SNS::SNSTwitter::SNSTwitter(Net::SocketFactory *sockf, Net::SSLEngine *ssl,
 {
 	NEW_CLASS(this->ctrl, Net::WebSite::WebSiteTwitterControl(sockf, ssl, encFact, userAgent));
 	this->channelId = Text::String::New(channelId);
-	this->chName = 0;
 	this->chDesc = 0;
 	this->chError = false;
 
@@ -19,11 +18,7 @@ Net::SNS::SNSTwitter::SNSTwitter(Net::SocketFactory *sockf, Net::SSLEngine *ssl,
 	Data::ArrayList<Net::WebSite::WebSiteTwitterControl::ItemData*> itemList;
 	MemClear(&chInfo, sizeof(chInfo));
 	this->ctrl->GetChannelItems(this->channelId, 0, &itemList, &chInfo);
-	if (chInfo.name)
-	{
-		this->chName = chInfo.name;
-	}
-	else
+	if (!this->chName.Set(chInfo.name))
 	{
 		this->chName = this->channelId->Clone();
 		this->chError = true;
@@ -43,9 +38,9 @@ Net::SNS::SNSTwitter::SNSTwitter(Net::SocketFactory *sockf, Net::SSLEngine *ssl,
 		sb.Append(this->channelId);
 		sb.AppendC(UTF8STRC("/status/"));
 		sb.AppendI64(item->id);
-		Text::String *s = Text::String::NewP(sbuff, sptr);
-		Text::String *s2 = Text::String::New(sb.ToString(), sb.GetLength());
-		snsItem = CreateItem(s, item->recTime, 0, item->message, s2, item->imgURL, 0);
+		NotNullPtr<Text::String> s = Text::String::NewP(sbuff, sptr);
+		NotNullPtr<Text::String> s2 = Text::String::New(sb.ToString(), sb.GetLength());
+		snsItem = CreateItem(s, item->recTime, 0, Text::String::OrEmpty(item->message), s2.Ptr(), item->imgURL, 0);
 		s->Release();
 		s2->Release();
 		this->itemMap.Put(item->id, snsItem);
@@ -57,7 +52,7 @@ Net::SNS::SNSTwitter::~SNSTwitter()
 {
 	UOSInt i;
 	DEL_CLASS(this->ctrl);
-	SDEL_STRING(this->chName);
+	this->chName->Release();
 	SDEL_STRING(this->chDesc);
 	i = this->itemMap.GetCount();
 	while (i-- > 0)
@@ -76,12 +71,12 @@ Net::SNS::SNSControl::SNSType Net::SNS::SNSTwitter::GetSNSType()
 	return Net::SNS::SNSControl::ST_TWITTER;
 }
 
-Text::String *Net::SNS::SNSTwitter::GetChannelId()
+NotNullPtr<Text::String> Net::SNS::SNSTwitter::GetChannelId() const
 {
 	return this->channelId;
 }
 
-Text::String *Net::SNS::SNSTwitter::GetName()
+NotNullPtr<Text::String> Net::SNS::SNSTwitter::GetName() const
 {
 	return this->chName;
 }
@@ -141,9 +136,9 @@ Bool Net::SNS::SNSTwitter::Reload()
 				sb.Append(this->channelId);
 				sb.AppendC(UTF8STRC("/status/"));
 				sb.AppendI64(item->id);
-				Text::String *s = Text::String::NewP(sbuff, sptr);
-				Text::String *s2 = Text::String::New(sb.ToString(), sb.GetLength());
-				snsItem = CreateItem(s, item->recTime, 0, item->message, s2, item->imgURL, 0);
+				NotNullPtr<Text::String> s = Text::String::NewP(sbuff, sptr);
+				NotNullPtr<Text::String> s2 = Text::String::New(sb.ToString(), sb.GetLength());
+				snsItem = CreateItem(s, item->recTime, 0, Text::String::OrEmpty(item->message), s2.Ptr(), item->imgURL, 0);
 				s->Release();
 				s2->Release();
 				this->itemMap.Put(item->id, snsItem);

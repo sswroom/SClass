@@ -1,6 +1,6 @@
 #ifndef _SM_NET_SNS_SNSMANAGER
 #define _SM_NET_SNS_SNSMANAGER
-#include "Data/ArrayListString.h"
+#include "Data/ArrayListStringNN.h"
 #include "Data/List.h"
 #include "Data/Usable.h"
 #include "Net/SocketFactory.h"
@@ -20,7 +20,7 @@ namespace Net
 			struct ChannelData
 			{
 				Net::SNS::SNSControl *ctrl;
-				Data::ArrayListString currItems;
+				Data::ArrayListStringNN currItems;
 				Int64 lastLoadTime;
 			};
 			
@@ -29,7 +29,7 @@ namespace Net
 			Net::SSLEngine *ssl;
 			Text::EncodingFactory *encFact;
 			Text::String *userAgent;
-			Text::String *dataPath;
+			NotNullPtr<Text::String> dataPath;
 			Sync::Mutex mut;
 			Data::ArrayList<ChannelData*> channelList;
 			Bool threadToStop;

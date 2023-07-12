@@ -1,6 +1,7 @@
 #ifndef _SM_NET_DNSPROXY
 #define _SM_NET_DNSPROXY
 #include "Data/ArrayListICaseString.h"
+#include "Data/ArrayListNN.h"
 #include "Data/ICaseStringMap.h"
 #include "Net/DNSClient.h"
 #include "Net/DNSServer.h"
@@ -83,7 +84,7 @@ namespace Net
 		Data::ArrayList<void *> hdlrObjs;
 
 		Sync::Mutex blackListMut;
-		Data::ArrayList<Text::String *> blackList;
+		Data::ArrayListNN<Text::String> blackList;
 
 //		Sync::Mutex *whiteListMut;
 //		Data::ArrayList<const UTF8Char *> *whiteList;

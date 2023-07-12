@@ -1,5 +1,6 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRHTTPSVRFORM
 #define _SM_SSWR_AVIREAD_AVIRHTTPSVRFORM
+#include "Data/ArrayListStringNN.h"
 #include "Data/ArrayListStrUTF8.h"
 #include "Net/WebServer/HTTPDirectoryHandler.h"
 #include "Net/WebServer/WebListener.h"
@@ -30,8 +31,8 @@ namespace SSWR
 				Net::SocketUtil::AddressInfo cliAddr;
 				UInt16 cliPort;
 				Text::String *reqURI;
-				Data::ArrayListString *headerName;
-				Data::ArrayList<Text::String *> *headerVal;
+				Data::ArrayListStringNN *headerName;
+				Data::ArrayListNN<Text::String> *headerVal;
 			} LogEntry;
 		private:
 			UOSInt logCnt;

@@ -12,7 +12,7 @@ namespace Net
 	public:
 		typedef struct
 		{
-			Text::String *name;
+			NotNullPtr<Text::String> name;
 			UOSInt index;
 			UInt8 objId[64];
 			UOSInt objIdLen;
@@ -26,10 +26,10 @@ namespace Net
 		typedef struct
 		{
 			Net::SocketUtil::AddressInfo addr;
-			Text::String *community;
+			NotNullPtr<Text::String> community;
 			UInt8 objId[64];
 			UOSInt objIdLen;
-			Text::String *descr;
+			NotNullPtr<Text::String> descr;
 			Text::String *contact;
 			Text::String *name;
 			Text::String *location;
@@ -55,8 +55,8 @@ namespace Net
 		void UpdateValues();
 		UOSInt GetAgentList(Data::ArrayList<AgentInfo*> *agentList);
 
-		AgentInfo *AddAgent(const Net::SocketUtil::AddressInfo *addr, Text::String *community);
-		UOSInt AddAgents(const Net::SocketUtil::AddressInfo *addr, Text::String *community, Data::ArrayList<AgentInfo*> *agentList, Bool scanIP);
+		AgentInfo *AddAgent(const Net::SocketUtil::AddressInfo *addr, NotNullPtr<Text::String> community);
+		UOSInt AddAgents(const Net::SocketUtil::AddressInfo *addr, NotNullPtr<Text::String> community, Data::ArrayList<AgentInfo*> *agentList, Bool scanIP);
 
 		static void Agent2Record(const AgentInfo *agent, SSWR::SMonitor::ISMonitorCore::DevRecord2 *rec, Int64 *cliId);
 		static Int64 Agent2CliId(const AgentInfo *agent);

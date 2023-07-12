@@ -34,10 +34,10 @@ void __stdcall SSWR::AVIRead::AVIRChineseForm::OnCharChg(void *userObj)
 Bool __stdcall SSWR::AVIRead::AVIRChineseForm::OnCharMouseDown(void *userObj, Math::Coord2D<OSInt> scnPos, UI::GUIControl::MouseButton btn)
 {
 	SSWR::AVIRead::AVIRChineseForm *me = (SSWR::AVIRead::AVIRChineseForm *)userObj;
-	UI::FontDialog dlg(me->currFont, 12, false, false);
+	UI::FontDialog dlg(me->currFont.Ptr(), 12, false, false);
 	if (dlg.ShowDialog(me->GetHandle()) == UI::GUIForm::DR_OK)
 	{
-		SDEL_STRING(me->currFont);
+		me->currFont->Release();
 		me->currFont = dlg.GetFontName()->Clone();
 		me->UpdateImg();
 	}
@@ -489,7 +489,7 @@ SSWR::AVIRead::AVIRChineseForm::~AVIRChineseForm()
 		this->deng->DeleteImage(this->charImg);
 		this->charImg = 0;
 	}
-	SDEL_STRING(this->currFont);
+	this->currFont->Release();
 	DEL_CLASS(this->chinese);
 }
 

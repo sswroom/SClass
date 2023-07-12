@@ -337,7 +337,7 @@ Media::MonitorMgr *SSWR::AVIRead::AVIRCore::GetMonitorMgr()
 	return &this->monMgr;
 }
 
-void SSWR::AVIRead::AVIRCore::SetAudioDeviceList(Data::ArrayList<Text::String *> *devList)
+void SSWR::AVIRead::AVIRCore::SetAudioDeviceList(Data::ArrayListNN<Text::String> *devList)
 {
 	IO::Registry *reg = IO::Registry::OpenSoftware(IO::Registry::REG_USER_THIS, L"SSWR", L"AVIRead");
 	WChar wbuff[32];

@@ -21,11 +21,11 @@ UTF8Char *Text::Cpp::CppCodeParser::RemoveSpace(UTF8Char *sptr)
 	return sptr - 1;
 }
 
-void Text::Cpp::CppCodeParser::LogError(Text::Cpp::CppParseStatus *status, const UTF8Char *errMsg, UOSInt msgLen, Data::ArrayListString *errMsgs)
+void Text::Cpp::CppCodeParser::LogError(Text::Cpp::CppParseStatus *status, const UTF8Char *errMsg, UOSInt msgLen, Data::ArrayListStringNN *errMsgs)
 {
 	Text::StringBuilderUTF8 sb;
 	Text::Cpp::CppParseStatus::FileParseStatus *fileStatus = status->GetFileStatus();
-	Text::String *fname = fileStatus->fileName;
+	NotNullPtr<Text::String> fname = fileStatus->fileName;
 	UOSInt i = fname->LastIndexOf('\\');
 	sb.AppendC(&fname->v[i + 1], fname->leng - i - 1);
 	sb.AppendC(UTF8STRC(" ("));
@@ -35,7 +35,7 @@ void Text::Cpp::CppCodeParser::LogError(Text::Cpp::CppParseStatus *status, const
 	errMsgs->Add(Text::String::New(sb.ToString(), sb.GetLength()));
 }
 
-Bool Text::Cpp::CppCodeParser::ParseSharpIfParam(Text::CString condStr, Text::Cpp::CppParseStatus *status, Data::ArrayListString *errMsgs, Data::ArrayList<Text::String *> *codePhases, UOSInt cpIndex)
+Bool Text::Cpp::CppCodeParser::ParseSharpIfParam(Text::CString condStr, Text::Cpp::CppParseStatus *status, Data::ArrayListStringNN *errMsgs, Data::ArrayListNN<Text::String> *codePhases, UOSInt cpIndex)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
@@ -197,7 +197,7 @@ Bool Text::Cpp::CppCodeParser::ParseSharpIfParam(Text::CString condStr, Text::Cp
 	return succ;
 }
 
-Bool Text::Cpp::CppCodeParser::EvalSharpIfVal(Data::ArrayList<Text::String *> *codePhases, Text::Cpp::CppParseStatus *status, Data::ArrayListString *errMsgs, UOSInt cpIndex, Int32 *outVal, OSInt priority)
+Bool Text::Cpp::CppCodeParser::EvalSharpIfVal(Data::ArrayListNN<Text::String> *codePhases, Text::Cpp::CppParseStatus *status, Data::ArrayListStringNN *errMsgs, UOSInt cpIndex, Int32 *outVal, OSInt priority)
 {
 /*
 	Priority:
@@ -753,13 +753,13 @@ Bool Text::Cpp::CppCodeParser::EvalSharpIfVal(Data::ArrayList<Text::String *> *c
 	return true;
 }
 
-Bool Text::Cpp::CppCodeParser::EvalSharpIf(Text::CString cond, Text::Cpp::CppParseStatus *status, Data::ArrayListString *errMsgs, Bool *result)
+Bool Text::Cpp::CppCodeParser::EvalSharpIf(Text::CString cond, Text::Cpp::CppParseStatus *status, Data::ArrayListStringNN *errMsgs, Bool *result)
 {
 	Bool succ = true;
 	UOSInt i;
 	UOSInt j;
 	Text::String *phase;
-	Data::ArrayList<Text::String *> codePhase;
+	Data::ArrayListNN<Text::String> codePhase;
 	if (!ParseSharpIfParam(cond, status, errMsgs, &codePhase, 0))
 	{
 		succ = false;
@@ -821,7 +821,7 @@ Bool Text::Cpp::CppCodeParser::EvalSharpIf(Text::CString cond, Text::Cpp::CppPar
 	return succ;
 }
 
-Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, UTF8Char *lineBuffEnd, Text::Cpp::CppParseStatus *status, Data::ArrayListString *errMsgs)
+Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, UTF8Char *lineBuffEnd, Text::Cpp::CppParseStatus *status, Data::ArrayListStringNN *errMsgs)
 {
 	Bool lineStart;
 	Bool nextLine = false;
@@ -1424,7 +1424,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, UTF8Char *lineBuffE
 				{
 					sptr[-1] = 0;
 					sbuff2[0] = 0;
-					sptr2 = this->env->GetIncludeFilePath(sbuff2, CSTRP(wordStart, sptr - 1), status->GetCurrCodeFile());
+					sptr2 = this->env->GetIncludeFilePath(sbuff2, CSTRP(wordStart, sptr - 1), status->GetCurrCodeFile().Ptr());
 					sptr[-1] = c;
 
 					if (sbuff2[0] == 0)
@@ -2315,7 +2315,7 @@ Text::Cpp::CppCodeParser::~CppCodeParser()
 {
 }
 
-Bool Text::Cpp::CppCodeParser::ParseFile(const UTF8Char *fileName, UOSInt fileNameLen, Data::ArrayListString *errMsgs, Text::Cpp::CppParseStatus *status)
+Bool Text::Cpp::CppCodeParser::ParseFile(const UTF8Char *fileName, UOSInt fileNameLen, Data::ArrayListStringNN *errMsgs, Text::Cpp::CppParseStatus *status)
 {
 	UTF8Char *lineBuff;
 	UTF8Char *sptr;
@@ -2372,7 +2372,7 @@ Bool Text::Cpp::CppCodeParser::ParseFile(const UTF8Char *fileName, UOSInt fileNa
 	return succ;
 }
 
-void Text::Cpp::CppCodeParser::FreeErrMsgs(Data::ArrayListString *errMsgs)
+void Text::Cpp::CppCodeParser::FreeErrMsgs(Data::ArrayListStringNN *errMsgs)
 {
 	UOSInt i = errMsgs->GetCount();
 	while (i-- > 0)

@@ -52,7 +52,7 @@ namespace SSWR
 			static void __stdcall OnFileKeyClicked(void *userObj);
 			static void __stdcall OnFileConfirmClicked(void *userObj);
 			static void __stdcall OnGenerateClicked(void *userObj);
-			static void __stdcall OnFileDrop(void *userObj, Text::String **files, UOSInt nFiles);
+			static void __stdcall OnFileDrop(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles);
 
 			void LoadFile(Text::CString fileName);
 

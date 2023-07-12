@@ -16,7 +16,7 @@ void __stdcall SSWR::AVIRead::AVIRSetAudioForm::OnOKClick(void *userObj)
 	}
 	else
 	{
-		Data::ArrayList<Text::String *> audDevList;
+		Data::ArrayListNN<Text::String> audDevList;
 		audDevList.Add(Text::String::NewP(sbuff, sptr));
 		me->core->SetAudioDeviceList(&audDevList);
 		audDevList.RemoveAt(0)->Release();
@@ -54,7 +54,7 @@ SSWR::AVIRead::AVIRSetAudioForm::AVIRSetAudioForm(UI::GUIClientControl *parent, 
 	this->SetDefaultButton(this->btnOK);
 	this->SetCancelButton(this->btnCancel);
 
-	Data::ArrayList<Text::String *> *audDevList = this->core->GetAudioDeviceList();
+	Data::ArrayListNN<Text::String> *audDevList = this->core->GetAudioDeviceList();
 	Text::String *devName = audDevList->GetItem(0);
 	Bool found = false;
 	UOSInt i;

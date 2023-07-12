@@ -17,7 +17,7 @@ namespace SSWR
 		private:
 			SSWR::AVIRead::AVIRCore *core;
 			Net::SSLEngine *ssl;
-			Data::ArrayList<Text::String*> *sanList;
+			Data::ArrayListNN<Text::String> *sanList;
 			Crypto::Cert::X509Key *key;
 
 			UI::GUILabel *lblKey;
@@ -57,7 +57,7 @@ namespace SSWR
 			UI::GUIButton *btnCSRGenerate;
 			UI::GUIButton *btnSelfSignedCert;
 
-			static void __stdcall OnFileDrop(void *userObj, Text::String **files, UOSInt nFiles);
+			static void __stdcall OnFileDrop(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles);
 			static void __stdcall OnKeyGenerateClicked(void *userObj);
 			static void __stdcall OnKeyViewClicked(void *userObj);
 			static void __stdcall OnKeySaveClicked(void *userObj);

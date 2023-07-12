@@ -90,7 +90,7 @@ Bool Exporter::OruxMapExporter::ExportFile(IO::SeekableStream *stm, Text::CStrin
 	UOSInt i;
 	UOSInt j;
 	UOSInt level;
-	Text::String *s;
+	NotNullPtr<Text::String> s;
 //	const UTF8Char *csptr;
 	Int32 minX;
 	Int32 minY;

@@ -40,7 +40,7 @@ namespace SSWR
 
 			static void __stdcall OnStopClicked(void *userObj);
 			static void __stdcall OnCaptureDevClicked(void *userObj);
-			static void __stdcall OnFileDrop(void *userObj, Text::String **files, UOSInt nFiles);
+			static void __stdcall OnFileDrop(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles);
 			static void __stdcall OnRotateChg(void *userObj);
 			static void __stdcall OnSurfaceBugChg(void *userObj, Bool newVal);
 			static void __stdcall OnYUVTypeChg(void *userObj);

@@ -30,8 +30,8 @@ namespace Media
 
 		typedef struct
 		{
-			Text::String *profileName;
-			Text::String *suffix;
+			NotNullPtr<Text::String> profileName;
+			NotNullPtr<Text::String> suffix;
 			UInt32 targetSizeX;
 			UInt32 targetSizeY;
 			SizeType sizeType;

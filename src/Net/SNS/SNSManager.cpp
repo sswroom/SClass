@@ -95,7 +95,7 @@ void Net::SNS::SNSManager::ChannelAddMessage(Net::SNS::SNSManager::ChannelData *
 
 	Text::StringBuilderUTF8 sb;
 	Text::StringBuilderUTF8 sb2;
-	Text::String *s;
+	NotNullPtr<Text::String> s;
 	{
 		IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 		Text::UTF8Writer writer(&fs);
@@ -332,7 +332,7 @@ void Net::SNS::SNSManager::ChannelUpdate(Net::SNS::SNSManager::ChannelData *chan
 	Net::SNS::SNSControl::SNSItem *item;
 	Bool updated = false;
 	channel->ctrl->GetCurrItems(&itemList);
-	Data::ArrayListString oldItems;
+	Data::ArrayListStringNN oldItems;
 	oldItems.AddAll(&channel->currItems);
 	UOSInt i;
 	UOSInt j;
@@ -359,7 +359,7 @@ void Net::SNS::SNSManager::ChannelUpdate(Net::SNS::SNSManager::ChannelData *chan
 	i = oldItems.GetCount();
 	while (i-- > 0)
 	{
-		si = channel->currItems.SortedIndexOf(oldItems.GetItem(i));
+		si = channel->currItems.SortedIndexOf(Text::String::OrEmpty(oldItems.GetItem(i)));
 		if (si >= 0)
 		{
 			channel->currItems.RemoveAt((UOSInt)si)->Release();
@@ -554,7 +554,7 @@ Net::SNS::SNSControl *Net::SNS::SNSManager::AddChannel(Net::SNS::SNSControl::SNS
 			IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 			Text::UTF8Writer writer(&fs);
 			writer.WriteLine(Net::SNS::SNSControl::SNSTypeGetName(ctrl->GetSNSType()));
-			Text::String *s = ctrl->GetChannelId();
+			NotNullPtr<Text::String> s = ctrl->GetChannelId();
 			writer.WriteLineC(s->v, s->leng);
 		}
 		Net::SNS::SNSManager::ChannelData *channel = this->ChannelInit(ctrl);

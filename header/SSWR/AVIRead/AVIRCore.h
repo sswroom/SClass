@@ -107,7 +107,7 @@ namespace SSWR
 			void SetMonitorDDPI(MonitorHandle *hMonitor, Double monitorDDPI);
 			Media::MonitorMgr *GetMonitorMgr();
 			
-			void SetAudioDeviceList(Data::ArrayList<Text::String *> *audDevList);
+			void SetAudioDeviceList(Data::ArrayListNN<Text::String> *audDevList);
 			Data::ArrayListNN<Text::String> *GetAudioDeviceList();
 			Int32 GetAudioAPIType();
 			Media::IAudioRenderer *BindAudio(Media::IAudioSource *audSrc);

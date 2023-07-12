@@ -16,7 +16,7 @@ Media::Batch::BatchResizer::~BatchResizer()
 	ClearTargetSizes();
 }
 
-void Media::Batch::BatchResizer::AddTargetSize(UInt32 targetWidth, UInt32 targetHeight, Text::String *targetId)
+void Media::Batch::BatchResizer::AddTargetSize(UInt32 targetWidth, UInt32 targetHeight, NotNullPtr<Text::String> targetId)
 {
 	TargetParam *param;
 	param = MemAlloc(TargetParam, 1);
@@ -27,7 +27,7 @@ void Media::Batch::BatchResizer::AddTargetSize(UInt32 targetWidth, UInt32 target
 	this->targetParam.Add(param);
 }
 
-void Media::Batch::BatchResizer::AddTargetDPI(UInt32 targetHDPI, UInt32 targetVDPI, Text::String *targetId)
+void Media::Batch::BatchResizer::AddTargetDPI(UInt32 targetHDPI, UInt32 targetVDPI, NotNullPtr<Text::String> targetId)
 {
 	TargetParam *param;
 	param = MemAlloc(TargetParam, 1);

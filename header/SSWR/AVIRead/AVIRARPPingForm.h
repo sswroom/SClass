@@ -27,7 +27,7 @@ namespace SSWR
 		private:
 			typedef struct
 			{
-				Text::String *ifName;
+				NotNullPtr<Text::String> ifName;
 				UInt32 ipAddr;
 				UInt8 hwAddr[6];
 			} AdapterInfo;

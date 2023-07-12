@@ -35,7 +35,7 @@ void __stdcall SSWR::AVIRead::AVIRSNMPManagerForm::OnAgentAddClicked(void *userO
 	UOSInt j;
 	UOSInt k;
 	Data::ArrayList<Net::SNMPManager::AgentInfo *> agentList;
-	Text::String *community = Text::String::New(sb.ToString(), sb.GetLength());
+	NotNullPtr<Text::String> community = Text::String::New(sb.ToString(), sb.GetLength());
 	j = me->mgr->AddAgents(&addr, community, &agentList, me->chkAgentScan->IsChecked());
 	community->Release();
 	if (j <= 0)
@@ -89,10 +89,7 @@ void __stdcall SSWR::AVIRead::AVIRSNMPManagerForm::OnAgentAddClicked(void *userO
 					reading = agent->readingList->GetItem(k);
 					currId = readingMap.Get((UInt32)reading->index);
 					readingMap.Put((UInt32)reading->index, (UInt16)(currId + 1));
-					if (reading->name)
-					{
-						me->redir->SendDevReadingName(cliId, k, (UInt16)reading->index, currId, reading->name->v, reading->name->leng);
-					}
+					me->redir->SendDevReadingName(cliId, k, (UInt16)reading->index, currId, reading->name->v, reading->name->leng);
 					k++;
 				}
 				i++;
@@ -123,14 +120,7 @@ void __stdcall SSWR::AVIRead::AVIRSNMPManagerForm::OnAgentSelChg(void *userObj)
 	{
 		sptr = Net::SocketUtil::GetAddrName(sbuff, &agent->addr);
 		me->txtAgentDAddr->SetText(CSTRP(sbuff, sptr));
-		if (agent->descr)
-		{
-			me->txtAgentDescr->SetText(agent->descr->ToCString());
-		}
-		else
-		{
-			me->txtAgentDescr->SetText(CSTR(""));
-		}
+		me->txtAgentDescr->SetText(agent->descr->ToCString());
 		if (agent->objIdLen > 0)
 		{
 			Text::StringBuilderUTF8 sb;

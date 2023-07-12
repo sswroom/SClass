@@ -25,7 +25,7 @@ void Net::WebServer::IWebRequest::ParseUserAgent()
 		this->reqBrowser = ent->browser;
 		if (ent->browserVer)
 		{
-			this->reqBrowserVer.v = Text::StrCopyNewC(ent->browserVer, ent->browserVerLen);
+			this->reqBrowserVer.v = Text::StrCopyNewC(ent->browserVer, ent->browserVerLen).Ptr();
 			this->reqBrowserVer.leng = ent->browserVerLen;
 		}
 		else
@@ -35,7 +35,7 @@ void Net::WebServer::IWebRequest::ParseUserAgent()
 		this->reqOS = ent->os;
 		if (ent->osVer)
 		{
-			this->reqOSVer.v = Text::StrCopyNewC(ent->osVer, ent->osVerLen);
+			this->reqOSVer.v = Text::StrCopyNewC(ent->osVer, ent->osVerLen).Ptr();
 			this->reqOSVer.leng = ent->osVerLen;
 		}
 		else
@@ -44,7 +44,7 @@ void Net::WebServer::IWebRequest::ParseUserAgent()
 		}
 		if (ent->devName)
 		{
-			this->reqDevModel.v = Text::StrCopyNewC(ent->devName, ent->devNameLen);
+			this->reqDevModel.v = Text::StrCopyNewC(ent->devName, ent->devNameLen).Ptr();
 			this->reqDevModel.leng = ent->devNameLen;
 		}
 		return;

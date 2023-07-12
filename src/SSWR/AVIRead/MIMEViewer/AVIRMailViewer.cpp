@@ -75,6 +75,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMailViewer::AVIRMailViewer(SSWR::AVIRead::AVIRCor
 	}
 	Data::ArrayList<Text::MIMEObj::MailMessage::MailAddress *> addrList;
 	Text::MIMEObj::MailMessage::MailAddress *addr;
+	NotNullPtr<Text::String> s;
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
@@ -96,9 +97,9 @@ SSWR::AVIRead::MIMEViewer::AVIRMailViewer::AVIRMailViewer(SSWR::AVIRead::AVIRCor
 		{
 			k = this->lvRecp->AddItem(CSTR("Unk"), 0);
 		}
-		if (addr->name)
+		if (s.Set(addr->name))
 		{
-			this->lvRecp->SetSubItem(k, 1, addr->name);
+			this->lvRecp->SetSubItem(k, 1, s);
 		}
 		this->lvRecp->SetSubItem(k, 2, addr->address);
 		i++;
@@ -108,8 +109,8 @@ SSWR::AVIRead::MIMEViewer::AVIRMailViewer::AVIRMailViewer(SSWR::AVIRead::AVIRCor
 	j = this->mail->GetHeaderCount();
 	while (i < j)
 	{
-		k = this->lvRAW->AddItem(this->mail->GetHeaderName(i), 0);
-		this->lvRAW->SetSubItem(k, 1, this->mail->GetHeaderValue(i));
+		k = this->lvRAW->AddItem(Text::String::OrEmpty(this->mail->GetHeaderName(i)), 0);
+		this->lvRAW->SetSubItem(k, 1, Text::String::OrEmpty(this->mail->GetHeaderValue(i)));
 		i++;
 	}
 }

@@ -27,8 +27,8 @@ namespace Net
 
 			virtual Bool IsError();
 			virtual SNSType GetSNSType();
-			virtual NotNullPtr<Text::String> GetChannelId();
-			virtual NotNullPtr<Text::String> GetName();
+			virtual NotNullPtr<Text::String> GetChannelId() const;
+			virtual NotNullPtr<Text::String> GetName() const;
 			virtual UTF8Char *GetDirName(UTF8Char *dirName);
 			virtual UOSInt GetCurrItems(Data::ArrayList<SNSItem*> *itemList);
 			virtual UTF8Char *GetItemShortId(UTF8Char *buff, SNSItem *item);

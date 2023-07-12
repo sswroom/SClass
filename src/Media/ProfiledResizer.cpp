@@ -168,7 +168,7 @@ Bool Media::ProfiledResizer::AddProfile(Text::CString profileName, Text::CString
 	profile->outParam = outParam;
 	if (watermark.leng > 0)
 	{
-		profile->watermark = Text::String::New(watermark);
+		profile->watermark = Text::String::New(watermark).Ptr();
 	}
 	else
 	{

@@ -68,7 +68,7 @@ namespace DB
 		
 		typedef struct
 		{
-			Text::String *login;
+			NotNullPtr<Text::String> login;
 			Data::ArrayList<UserInfo*> *userList;
 		} LoginInfo;
 		
@@ -103,7 +103,7 @@ namespace DB
 	private:
 		static const Char *sysVarList[];
 
-		Text::String *versionStr;
+		NotNullPtr<Text::String> versionStr;
 		IO::LogTool *log;
 		Sync::Mutex loginMut;
 		Crypto::Hash::SHA1 loginSHA1;
@@ -128,7 +128,7 @@ namespace DB
 		DBMS(Text::CString versionStr, IO::LogTool *log);
 		virtual ~DBMS();
 
-		Text::String *GetVersion();
+		NotNullPtr<Text::String> GetVersion() const;
 		IO::LogTool *GetLogTool();
 
 		Bool UserAdd(Int32 userId, Text::CString userName, Text::CString password, Text::CString host);

@@ -41,7 +41,7 @@ SSWR::SHPConv::SHPConvDBFViewForm::SHPConvDBFViewForm(UI::GUIClientControl *pare
 		j = 300;
 	}
 	Text::HKSCSFix hkscs;
-	Text::String *s;
+	NotNullPtr<Text::String> s;
 	while (i < j)
 	{
 		s = eng->GetNewDBFName(dbf, &dbCols, i, &dbCols2);

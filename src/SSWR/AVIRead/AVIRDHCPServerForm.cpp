@@ -148,6 +148,7 @@ void __stdcall SSWR::AVIRead::AVIRDHCPServerForm::OnTimerTick(void *userObj)
 		UOSInt j;
 		Net::DHCPServer::DeviceStatus *dhcp;
 		const Net::MACInfo::MACEntry *macInfo;
+		NotNullPtr<Text::String> s;
 		Sync::MutexUsage mutUsage;
 		me->svr->UseStatus(&mutUsage);
 		const Data::ReadingList<Net::DHCPServer::DeviceStatus*> *dhcpList = me->svr->StatusGetList();
@@ -192,10 +193,10 @@ void __stdcall SSWR::AVIRead::AVIRDHCPServerForm::OnTimerTick(void *userObj)
 				dt.AddSecond((OSInt)me->svr->GetIPLeaseTime());
 				sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
 				me->lvDevices->SetSubItem(i, 4, CSTRP(sbuff, sptr));
-				if (dhcp->hostName)
-					me->lvDevices->SetSubItem(i, 5, dhcp->hostName);
-				if (dhcp->vendorClass)
-					me->lvDevices->SetSubItem(i, 6, dhcp->vendorClass);
+				if (s.Set(dhcp->hostName))
+					me->lvDevices->SetSubItem(i, 5, s);
+				if (s.Set(dhcp->vendorClass))
+					me->lvDevices->SetSubItem(i, 6, s);
 			}
 			i++;
 		}

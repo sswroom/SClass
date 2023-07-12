@@ -15,8 +15,8 @@ namespace Net
 		{
 		private:
 			Net::WebSite::WebSiteTwitterControl *ctrl;
-			Text::String *channelId;
-			Text::String *chName;
+			NotNullPtr<Text::String> channelId;
+			NotNullPtr<Text::String> chName;
 			Text::String *chDesc;
 			Bool chError;
 			Data::FastMap<Int64, SNSItem *> itemMap;
@@ -27,8 +27,8 @@ namespace Net
 
 			virtual Bool IsError();
 			virtual SNSType GetSNSType();
-			virtual Text::String *GetChannelId();
-			virtual Text::String *GetName();
+			virtual NotNullPtr<Text::String> GetChannelId() const;
+			virtual NotNullPtr<Text::String> GetName() const;
 			virtual UTF8Char *GetDirName(UTF8Char *dirName);
 			virtual UOSInt GetCurrItems(Data::ArrayList<SNSItem*> *itemList);
 			virtual UTF8Char *GetItemShortId(UTF8Char *buff, SNSItem *item);

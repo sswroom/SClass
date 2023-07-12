@@ -1269,7 +1269,7 @@ Text::String *DB::DBMS::Evals(const UTF8Char **valPtr, DB::DBMS::SessionInfo *se
 		else
 		{
 			*valPtr = val;
-			return Text::String::New(sb.ToString(), sb.GetLength());
+			return Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 		}
 	}
 	else if (val[0] == '\'')
@@ -1292,7 +1292,7 @@ Text::String *DB::DBMS::Evals(const UTF8Char **valPtr, DB::DBMS::SessionInfo *se
 					*valPtr = val;
 					if (reader)
 						reader->SetColumn(colIndex, (colName.leng > 0)?colName:sb.ToCString(), DB::DBUtil::CT_VarUTF8Char);
-					return Text::String::New(sb.ToString(), sb.GetLength());
+					return Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 				}
 			}
 			else if (c == 0)
@@ -1363,7 +1363,7 @@ Text::String *DB::DBMS::Evals(const UTF8Char **valPtr, DB::DBMS::SessionInfo *se
 					*valPtr = val;
 					if (reader)
 						reader->SetColumn(colIndex, (colName.leng > 0)?colName:sb.ToCString(), DB::DBUtil::CT_VarUTF8Char);
-					return Text::String::New(sb.ToString(), sb.GetLength());
+					return Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 				}
 			}
 			else if (c == 0)
@@ -1446,7 +1446,7 @@ Text::String *DB::DBMS::Evals(const UTF8Char **valPtr, DB::DBMS::SessionInfo *se
 			if (reader)
 				reader->SetColumn(colIndex, (colName.leng > 0)?colName:Text::CString::FromPtr(val), isDbl?DB::DBUtil::CT_Double:DB::DBUtil::CT_Int32);
 			*valPtr = sptr;
-			return Text::String::New(sb.ToString(), sb.GetLength());
+			return Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 		}
 		if (*sptr == '+')
 		{
@@ -1470,7 +1470,7 @@ Text::String *DB::DBMS::Evals(const UTF8Char **valPtr, DB::DBMS::SessionInfo *se
 						reader->SetColumn(colIndex, (colName.leng > 0)?colName:Text::CString::FromPtr(val), DB::DBUtil::CT_Int32);
 					*valPtr = sptr;
 					val2->Release();
-					return Text::String::New(sb.ToString(), sb.GetLength());
+					return Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 				}
 			}
 			Double dVal;
@@ -1483,7 +1483,7 @@ Text::String *DB::DBMS::Evals(const UTF8Char **valPtr, DB::DBMS::SessionInfo *se
 					reader->SetColumn(colIndex, (colName.leng > 0)?colName:Text::CString::FromPtr(val), DB::DBUtil::CT_Double);
 				*valPtr = sptr;
 				val2->Release();
-				return Text::String::New(sb.ToString(), sb.GetLength());
+				return Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 			}
 			else
 			{
@@ -1515,7 +1515,7 @@ Text::String *DB::DBMS::Evals(const UTF8Char **valPtr, DB::DBMS::SessionInfo *se
 						reader->SetColumn(colIndex, (colName.leng > 0)?colName:Text::CString::FromPtr(val), DB::DBUtil::CT_Int32);
 					*valPtr = sptr;
 					val2->Release();
-					return Text::String::New(sb.ToString(), sb.GetLength());
+					return Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 				}
 			}
 			Double dVal;
@@ -1528,7 +1528,7 @@ Text::String *DB::DBMS::Evals(const UTF8Char **valPtr, DB::DBMS::SessionInfo *se
 					reader->SetColumn(colIndex, (colName.leng > 0)?colName:Text::CString::FromPtr(val), DB::DBUtil::CT_Double);
 				*valPtr = sptr;
 				val2->Release();
-				return Text::String::New(sb.ToString(), sb.GetLength());
+				return Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 			}
 			else
 			{
@@ -1560,7 +1560,7 @@ Text::String *DB::DBMS::Evals(const UTF8Char **valPtr, DB::DBMS::SessionInfo *se
 						reader->SetColumn(colIndex, (colName.leng > 0)?colName:Text::CString::FromPtr(val), DB::DBUtil::CT_Int32);
 					*valPtr = sptr;
 					val2->Release();
-					return Text::String::New(sb.ToString(), sb.GetLength());
+					return Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 				}
 			}
 			Double dVal;
@@ -1573,7 +1573,7 @@ Text::String *DB::DBMS::Evals(const UTF8Char **valPtr, DB::DBMS::SessionInfo *se
 					reader->SetColumn(colIndex, (colName.leng > 0)?colName:Text::CString::FromPtr(val), DB::DBUtil::CT_Double);
 				*valPtr = sptr;
 				val2->Release();
-				return Text::String::New(sb.ToString(), sb.GetLength());
+				return Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 			}
 			else
 			{
@@ -1605,7 +1605,7 @@ Text::String *DB::DBMS::Evals(const UTF8Char **valPtr, DB::DBMS::SessionInfo *se
 						reader->SetColumn(colIndex, (colName.leng > 0)?colName:Text::CString::FromPtr(val), DB::DBUtil::CT_Int32);
 					*valPtr = sptr;
 					val2->Release();
-					return Text::String::New(sb.ToString(), sb.GetLength());
+					return Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 				}
 			}
 			Double dVal;
@@ -1618,7 +1618,7 @@ Text::String *DB::DBMS::Evals(const UTF8Char **valPtr, DB::DBMS::SessionInfo *se
 					reader->SetColumn(colIndex, (colName.leng > 0)?colName:Text::CString::FromPtr(val), DB::DBUtil::CT_Double);
 				*valPtr = sptr;
 				val2->Release();
-				return Text::String::New(sb.ToString(), sb.GetLength());
+				return Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 			}
 			else
 			{
@@ -1687,7 +1687,7 @@ Text::String *DB::DBMS::Evals(const UTF8Char **valPtr, DB::DBMS::SessionInfo *se
 								if (reader)
 									reader->SetColumn(colIndex, (colName.leng > 0)?colName:Text::CString::FromPtr(val), DB::DBUtil::CT_Double);
 								*valPtr = sptr + 1;
-								return Text::String::New(sb.ToString(), sb.GetLength());
+								return Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 							}
 							else if (sptr[0] == ',')
 							{
@@ -1702,7 +1702,7 @@ Text::String *DB::DBMS::Evals(const UTF8Char **valPtr, DB::DBMS::SessionInfo *se
 								sb.AppendSlow(val);
 								sb.AppendC(UTF8STRC("' in field list"));
 								SDEL_STRING(sess->lastError);
-								sess->lastError = Text::String::New(sb.ToCString());
+								sess->lastError = Text::String::New(sb.ToCString()).Ptr();
 
 								return 0;
 							}
@@ -1721,7 +1721,7 @@ Text::String *DB::DBMS::Evals(const UTF8Char **valPtr, DB::DBMS::SessionInfo *se
 							sb.AppendSlow(sptr);
 							sb.AppendC(UTF8STRC("' in field list"));
 							SDEL_STRING(sess->lastError);
-							sess->lastError = Text::String::New(sb.ToCString());
+							sess->lastError = Text::String::New(sb.ToCString()).Ptr();
 
 							return 0;
 						}
@@ -1730,7 +1730,7 @@ Text::String *DB::DBMS::Evals(const UTF8Char **valPtr, DB::DBMS::SessionInfo *se
 							*valPtr = sptr + 1;
 							if (sess->database)
 							{
-								return sess->database->Clone();
+								return sess->database->Clone().Ptr();
 							}
 							else
 							{
@@ -1756,7 +1756,7 @@ Text::String *DB::DBMS::Evals(const UTF8Char **valPtr, DB::DBMS::SessionInfo *se
 		sb.AppendSlow(val);
 		sb.AppendC(UTF8STRC("' in field list"));
 		SDEL_STRING(sess->lastError);
-		sess->lastError = Text::String::New(sb.ToCString());
+		sess->lastError = Text::String::New(sb.ToCString()).Ptr();
 
 		return 0;
 	}
@@ -1796,7 +1796,7 @@ DB::DBMS::~DBMS()
 	}
 }
 
-Text::String *DB::DBMS::GetVersion()
+NotNullPtr<Text::String> DB::DBMS::GetVersion() const
 {
 	return this->versionStr;
 }
@@ -1927,7 +1927,7 @@ Int32 DB::DBMS::UserLoginMySQL(Int32 sessId, Text::CString userName, const UInt8
 					sess->database = 0;
 					if (database && database[0])
 					{
-						sess->database = Text::String::NewNotNullSlow(database);
+						sess->database = Text::String::NewNotNullSlow(database).Ptr();
 					}
 					MemCopyNO(&sess->params, param, sizeof(DB::DBMS::SessionParam));
 					NEW_CLASS(sess->userVars, Data::StringUTF8Map<Text::String*>());
@@ -1994,14 +1994,14 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt 
 				sb.AppendC(sptr2, (UOSInt)(sqlEnd - sptr2));
 				sb.AppendC(UTF8STRC("' at line 1"));
 				SDEL_STRING(sess->lastError);
-				sess->lastError = Text::String::New(sb.ToCString());
+				sess->lastError = Text::String::New(sb.ToCString()).Ptr();
 				return 0;
 			}
 			while (Text::CharUtil::PtrIsWS(&sptr1));
 			if (*sptr1 == ',' || *sptr1 == 0)
 			{
 				col = MemAlloc(DB::DBMS::SQLColumn, 1);
-				col->name = Text::StrCopyNew(nameBuff);
+				col->name = Text::StrCopyNew(nameBuff).Ptr();
 				col->asName = 0;
 				col->sqlPtr = sptr2;
 				cols.Add(col);
@@ -2035,15 +2035,15 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt 
 					sb.AppendC(sptr3, (UOSInt)(sqlEnd - sptr3));
 					sb.AppendC(UTF8STRC("' at line 1"));
 					SDEL_STRING(sess->lastError);
-					sess->lastError = Text::String::New(sb.ToCString());
+					sess->lastError = Text::String::New(sb.ToCString()).Ptr();
 					return 0;
 				}
 				while (Text::CharUtil::PtrIsWS(&sptr1));
 				if (*sptr1 == ',' || *sptr1 == 0)
 				{
 					col = MemAlloc(DB::DBMS::SQLColumn, 1);
-					col->name = Text::StrCopyNew(nameBuff);
-					col->asName = Text::String::NewNotNullSlow(nameBuff2);
+					col->name = Text::StrCopyNew(nameBuff).Ptr();
+					col->asName = Text::String::NewNotNullSlow(nameBuff2).Ptr();
 					col->sqlPtr = sptr2;
 					cols.Add(col);
 					if (*sptr1 == 0)
@@ -2077,7 +2077,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt 
 					sb.AppendC(sptr1, (UOSInt)(sqlEnd - sptr1));
 					sb.AppendC(UTF8STRC("' at line 1"));
 					SDEL_STRING(sess->lastError);
-					sess->lastError = Text::String::New(sb.ToCString());
+					sess->lastError = Text::String::New(sb.ToCString()).Ptr();
 					return 0;
 				}
 			}
@@ -2106,15 +2106,15 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt 
 					sb.AppendSlow(sptr3);
 					sb.AppendC(UTF8STRC("' at line 1"));
 					SDEL_STRING(sess->lastError);
-					sess->lastError = Text::String::New(sb.ToCString());
+					sess->lastError = Text::String::New(sb.ToCString()).Ptr();
 					return 0;
 				}
 				while (Text::CharUtil::PtrIsWS(&sptr1));
 				if (*sptr1 == ',' || *sptr1 == 0)
 				{
 					col = MemAlloc(DB::DBMS::SQLColumn, 1);
-					col->name = Text::StrCopyNew(nameBuff);
-					col->asName = Text::String::NewNotNullSlow(nameBuff2);
+					col->name = Text::StrCopyNew(nameBuff).Ptr();
+					col->asName = Text::String::NewNotNullSlow(nameBuff2).Ptr();
 					col->sqlPtr = sptr2;
 					cols.Add(col);
 					if (*sptr1 == 0)
@@ -2148,7 +2148,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt 
 					sb.AppendC(sptr1, (UOSInt)(sqlEnd - sptr1));
 					sb.AppendC(UTF8STRC("' at line 1"));
 					SDEL_STRING(sess->lastError);
-					sess->lastError = Text::String::New(sb.ToCString());
+					sess->lastError = Text::String::New(sb.ToCString()).Ptr();
 					return 0;
 				}
 			}
@@ -2170,7 +2170,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt 
 			Text::StringBuilderUTF8 sb;
 			sb.AppendC(UTF8STRC("#00000Unsupported syntax 'FROM'"));
 			SDEL_STRING(sess->lastError);
-			sess->lastError = Text::String::New(sb.ToCString());
+			sess->lastError = Text::String::New(sb.ToCString()).Ptr();
 
 			return 0;
 		}
@@ -2281,7 +2281,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt 
 							Text::StringBuilderUTF8 sb;
 							sb.AppendC(UTF8STRC("#00000Unsupported syntax 'FROM'"));
 							SDEL_STRING(sess->lastError);
-							sess->lastError = Text::String::New(sb.ToCString());
+							sess->lastError = Text::String::New(sb.ToCString()).Ptr();
 							return 0;
 						}
 					}
@@ -2319,7 +2319,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt 
 							Text::StringBuilderUTF8 sb;
 							sb.AppendC(UTF8STRC("#00000Unsupported syntax 'FROM'"));
 							SDEL_STRING(sess->lastError);
-							sess->lastError = Text::String::New(sb.ToCString());
+							sess->lastError = Text::String::New(sb.ToCString()).Ptr();
 							return 0;
 						}
 					}
@@ -2346,7 +2346,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt 
 					nameBuff2[0] = isGlobal?'!':'#';
 					Text::StrConcat(&nameBuff2[1], nameBuff);
 					col = MemAlloc(DB::DBMS::SQLColumn, 1);
-					col->name = Text::StrCopyNew(nameBuff2);
+					col->name = Text::StrCopyNew(nameBuff2).Ptr();
 					col->asName = val;
 					cols.Add(col);
 
@@ -2388,7 +2388,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt 
 					Text::StringBuilderUTF8 sb;
 					sb.AppendC(UTF8STRC("#00000Unsupported syntax 'FROM'"));
 					SDEL_STRING(sess->lastError);
-					sess->lastError = Text::String::New(sb.ToCString());
+					sess->lastError = Text::String::New(sb.ToCString()).Ptr();
 					return 0;
 				}
 			}
@@ -2427,7 +2427,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt 
 								sb.AppendSlow(sptr1);
 								sb.AppendUTF8Char('\'');
 								SDEL_STRING(sess->lastError);
-								sess->lastError = Text::String::New(sb.ToCString());
+								sess->lastError = Text::String::New(sb.ToCString()).Ptr();
 								break;
 							}
 						}
@@ -2443,7 +2443,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt 
 								sb.AppendSlow(sptr1);
 								sb.AppendUTF8Char('\'');
 								SDEL_STRING(sess->lastError);
-								sess->lastError = Text::String::New(sb.ToCString());
+								sess->lastError = Text::String::New(sb.ToCString()).Ptr();
 								break;
 							}
 							else if (c == 't')
@@ -2472,7 +2472,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt 
 							sb.AppendSlow(sptr1);
 							sb.AppendUTF8Char('\'');
 							SDEL_STRING(sess->lastError);
-							sess->lastError = Text::String::New(sb.ToCString());
+							sess->lastError = Text::String::New(sb.ToCString()).Ptr();
 							break;
 
 						}
@@ -2510,7 +2510,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt 
 								sb.AppendSlow(sptr1);
 								sb.AppendUTF8Char('\'');
 								SDEL_STRING(sess->lastError);
-								sess->lastError = Text::String::New(sb.ToCString());
+								sess->lastError = Text::String::New(sb.ToCString()).Ptr();
 								break;
 							}
 						}
@@ -2526,7 +2526,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt 
 								sb.AppendSlow(sptr1);
 								sb.AppendUTF8Char('\'');
 								SDEL_STRING(sess->lastError);
-								sess->lastError = Text::String::New(sb.ToCString());
+								sess->lastError = Text::String::New(sb.ToCString()).Ptr();
 								break;
 							}
 							else if (c == 't')
@@ -2555,7 +2555,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt 
 							sb.AppendSlow(sptr1);
 							sb.AppendUTF8Char('\'');
 							SDEL_STRING(sess->lastError);
-							sess->lastError = Text::String::New(sb.ToCString());
+							sess->lastError = Text::String::New(sb.ToCString()).Ptr();
 							break;
 
 						}
@@ -2598,7 +2598,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt 
 								sb.AppendSlow(sptr1);
 								sb.AppendUTF8Char('\'');
 								SDEL_STRING(sess->lastError);
-								sess->lastError = Text::String::New(sb.ToCString());
+								sess->lastError = Text::String::New(sb.ToCString()).Ptr();
 								break;
 							}
 						}
@@ -2613,7 +2613,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt 
 					sb.AppendSlow(sptr1);
 					sb.AppendUTF8Char('\'');
 					SDEL_STRING(sess->lastError);
-					sess->lastError = Text::String::New(sb.ToCString());
+					sess->lastError = Text::String::New(sb.ToCString()).Ptr();
 				}
 				if (valid)
 				{
@@ -2637,11 +2637,11 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt 
 						sb.AppendSlow(sptr1);
 						sb.AppendUTF8Char('\'');
 						SDEL_STRING(sess->lastError);
-						sess->lastError = Text::String::New(sb.ToCString());
+						sess->lastError = Text::String::New(sb.ToCString()).Ptr();
 						return 0;
 					}
 					col = MemAlloc(DB::DBMS::SQLColumn, 1);
-					col->name = Text::StrCopyNewC(sb.ToString(), sb.GetLength());
+					col->name = Text::StrCopyNewC(sb.ToString(), sb.GetLength()).Ptr();
 					col->asName = val;
 					cols.Add(col);
 
@@ -2734,7 +2734,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt 
 							Text::StringBuilderUTF8 sb;
 							sb.AppendC(UTF8STRC("#00000Unsupported syntax 'FROM'"));
 							SDEL_STRING(sess->lastError);
-							sess->lastError = Text::String::New(sb.ToCString());
+							sess->lastError = Text::String::New(sb.ToCString()).Ptr();
 							return 0;
 						}
 					}
@@ -2760,7 +2760,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt 
 						return 0;
 					}
 					col = MemAlloc(DB::DBMS::SQLColumn, 1);
-					col->name = Text::StrCopyNew(nameBuff);
+					col->name = Text::StrCopyNew(nameBuff).Ptr();
 					col->asName = val;
 					cols.Add(col);
 
@@ -2811,7 +2811,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt 
 					Text::StringBuilderUTF8 sb;
 					sb.AppendC(UTF8STRC("#00000Unsupported syntax 'FROM'"));
 					SDEL_STRING(sess->lastError);
-					sess->lastError = Text::String::New(sb.ToCString());
+					sess->lastError = Text::String::New(sb.ToCString()).Ptr();
 					return 0;
 				}
 			}
@@ -2829,7 +2829,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt 
 				Text::StringBuilderUTF8 sb;
 				sb.AppendC(UTF8STRC("#00000Unsupported syntax 'FROM'"));
 				SDEL_STRING(sess->lastError);
-				sess->lastError = Text::String::New(sb.ToCString());
+				sess->lastError = Text::String::New(sb.ToCString()).Ptr();
 				return 0;
 			}
 		}
@@ -2846,7 +2846,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt 
 			sb.AppendSlow(sptr1);
 			sb.AppendC(UTF8STRC("' at line 1"));
 			SDEL_STRING(sess->lastError);
-			sess->lastError = Text::String::New(sb.ToCString());
+			sess->lastError = Text::String::New(sb.ToCString()).Ptr();
 		}
 		else if (Text::StrStartsWithICaseC(sptr1, (UOSInt)(sqlEnd - sptr1), UTF8STRC("CHARSET")) && (Text::CharUtil::IsWS(sptr1 + 7) || sptr1[7] == 0))
 		{
@@ -2856,7 +2856,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt 
 			sb.AppendSlow(sptr1);
 			sb.AppendC(UTF8STRC("' at line 1"));
 			SDEL_STRING(sess->lastError);
-			sess->lastError = Text::String::New(sb.ToCString());
+			sess->lastError = Text::String::New(sb.ToCString()).Ptr();
 		}
 		else if (Text::StrStartsWithICaseC(sptr1, (UOSInt)(sqlEnd - sptr1), UTF8STRC("COLLATION")) && (Text::CharUtil::IsWS(sptr1 + 9) || sptr1[9] == 0))
 		{
@@ -2866,7 +2866,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt 
 			sb.AppendSlow(sptr1);
 			sb.AppendC(UTF8STRC("' at line 1"));
 			SDEL_STRING(sess->lastError);
-			sess->lastError = Text::String::New(sb.ToCString());
+			sess->lastError = Text::String::New(sb.ToCString()).Ptr();
 		}
 		else if (Text::StrStartsWithICaseC(sptr1, (UOSInt)(sqlEnd - sptr1), UTF8STRC("VARIABLES")) && (Text::CharUtil::IsWS(sptr1 + 9) || sptr1[9] == 0))
 		{
@@ -2887,10 +2887,10 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt 
 				j = sizeof(sysVarList) / sizeof(sysVarList[0]);
 				while (i < j)
 				{
-					row[0] = Text::String::NewNotNullSlow((const UTF8Char*)sysVarList[i]);
+					row[0] = Text::String::NewNotNullSlow((const UTF8Char*)sysVarList[i]).Ptr();
 					sb.ClearStr();
 					SysVarGet(&sb, sess, row[0]->v, row[0]->leng);
-					row[1] = Text::String::New(sb.ToString(), sb.GetLength());
+					row[1] = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 					reader->AddRow(row);
 					i++;
 				}
@@ -2929,9 +2929,9 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt 
 							if (StrLike((const UTF8Char*)sysVarList[i], val->v))
 							{
 								sb.ClearStr();
-								row[0] = Text::String::NewNotNullSlow((const UTF8Char*)sysVarList[i]);
+								row[0] = Text::String::NewNotNullSlow((const UTF8Char*)sysVarList[i]).Ptr();
 								SysVarGet(&sb, sess, row[0]->v, row[0]->leng);
-								row[1] = Text::String::New(sb.ToString(), sb.GetLength());
+								row[1] = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 								reader->AddRow(row);
 							}
 							i++;
@@ -2981,7 +2981,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt 
 			sb.AppendSlow(sptr1);
 			sb.AppendC(UTF8STRC("' at line 1"));
 			SDEL_STRING(sess->lastError);
-			sess->lastError = Text::String::New(sb.ToCString());
+			sess->lastError = Text::String::New(sb.ToCString()).Ptr();
 		}
 	}
 	else
@@ -2991,7 +2991,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt 
 		sb.AppendSlow(sptr1);
 		sb.AppendC(UTF8STRC("' at line 1"));
 		SDEL_STRING(sess->lastError);
-		sess->lastError = Text::String::New(sb.ToCString());
+		sess->lastError = Text::String::New(sb.ToCString()).Ptr();
 	}
 	return 0;
 }
