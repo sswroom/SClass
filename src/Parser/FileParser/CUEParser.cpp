@@ -69,7 +69,7 @@ IO::ParsedObject *Parser::FileParser::CUEParser::ParseFileHdr(IO::StreamData *fd
 	currTrack = 0;
 
 	IO::StreamDataStream stm(fd);
-	IO::StreamReader reader(&stm, 0);
+	IO::StreamReader reader(stm, 0);
 	while ((sptr = reader.ReadLine(sbuff, 511)) != 0)
 	{
 		sptr = Text::StrTrimC(sbuff, (UOSInt)(sptr - sbuff));

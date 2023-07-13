@@ -991,7 +991,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 			IO::SerialPort port(IO::Device::MTKGPSNMEA::GetMTKSerialPort(), 115200, IO::SerialPort::PARITY_NONE, true);
 			if (!port.IsError())
 			{
-				IO::Device::MTKGPSNMEA mtk(&port, false);
+				IO::Device::MTKGPSNMEA mtk(port, false);
 				if (mtk.IsMTKDevice())
 				{
 					NEW_CLASS(trk, Map::GPSTrack(CSTR("MTK_Tracker"), true, 0, CSTR_NULL));
@@ -1029,11 +1029,12 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		{
 			SSWR::AVIRead::AVIRSelStreamForm dlg(0, this->ui, this->core, true, this->ssl);
 			dlg.SetText(CSTR("Select GPS Tracker"));
-			if (dlg.ShowDialog(this) == UI::GUIForm::DR_OK)
+			NotNullPtr<IO::Stream> stm;
+			if (dlg.ShowDialog(this) == UI::GUIForm::DR_OK && stm.Set(dlg.stm))
 			{
 				SSWR::AVIRead::AVIRGPSTrackerForm *gpsFrm;
 				IO::GPSNMEA *gps;
-				NEW_CLASS(gps, IO::GPSNMEA(dlg.stm, true));
+				NEW_CLASS(gps, IO::GPSNMEA(stm, true));
 				NEW_CLASS(gpsFrm, SSWR::AVIRead::AVIRGPSTrackerForm(0, this->ui, this->core, gps, true));
 				this->core->ShowForm(gpsFrm);
 			}

@@ -15,7 +15,7 @@ void Text::UTF8Reader::FillBuffer()
 	UOSInt readSize;
 	if (this->stm->CanSeek())
 	{
-		UInt64 currPos = ((IO::SeekableStream*)this->stm)->GetPosition();
+		UInt64 currPos = ((IO::SeekableStream*)this->stm.Ptr())->GetPosition();
 		if (this->lastPos != currPos)
 		{
 			this->buffSize = 0;
@@ -65,7 +65,7 @@ void Text::UTF8Reader::CheckHeader()
 
 	if (stm->CanSeek())
 	{
-		this->lastPos = ((IO::SeekableStream*)stm)->GetPosition();
+		this->lastPos = ((IO::SeekableStream*)stm.Ptr())->GetPosition();
 	}
 	else
 	{
@@ -73,14 +73,14 @@ void Text::UTF8Reader::CheckHeader()
 	}
 }
 
-Text::UTF8Reader::UTF8Reader(IO::Stream *stm)
+Text::UTF8Reader::UTF8Reader(NotNullPtr<IO::Stream> stm)
 {
 	this->stm = stm;
 	this->buffSize = 0;
 	this->currOfst = 0;
 	if (stm->CanSeek())
 	{
-		this->lastPos = ((IO::SeekableStream*)stm)->GetPosition();
+		this->lastPos = ((IO::SeekableStream*)stm.Ptr())->GetPosition();
 	}
 	else
 	{

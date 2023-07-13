@@ -122,7 +122,7 @@ UOSInt Text::XMLReader::FillBuffer()
 	}
 }
 
-Text::XMLReader::XMLReader(Text::EncodingFactory *encFact, IO::Stream *stm, ParseMode mode)
+Text::XMLReader::XMLReader(Text::EncodingFactory *encFact, NotNullPtr<IO::Stream> stm, ParseMode mode)
 {
 	this->encFact = encFact;
 	this->enc = 0;
@@ -1725,7 +1725,7 @@ Bool Text::XMLReader::ToString(Text::StringBuilderUTF8 *sb) const
 	return false;
 }
 
-Bool Text::XMLReader::XMLWellFormat(Text::EncodingFactory *encFact, IO::Stream *stm, UOSInt lev, Text::StringBuilderUTF8 *sb)
+Bool Text::XMLReader::XMLWellFormat(Text::EncodingFactory *encFact, NotNullPtr<IO::Stream> stm, UOSInt lev, Text::StringBuilderUTF8 *sb)
 {
 	Bool toWrite;
 	Text::XMLNode::NodeType thisNT;

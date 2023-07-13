@@ -85,8 +85,8 @@ namespace Net
 		Bool ReadAllContent(Text::StringBuilderUTF8 *sb, UOSInt buffSize, UInt64 maxSize);
 
 		static void ParseDateStr(Data::DateTime *dt, Text::CString dateStr);
-		static Net::HTTPClient *CreateClient(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CString userAgent, Bool kaConn, Bool isSecure);
-		static Net::HTTPClient *CreateConnect(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CString url, Net::WebUtil::RequestMethod method, Bool kaConn);
+		static NotNullPtr<Net::HTTPClient> CreateClient(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CString userAgent, Bool kaConn, Bool isSecure);
+		static NotNullPtr<Net::HTTPClient> CreateConnect(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CString url, Net::WebUtil::RequestMethod method, Bool kaConn);
 		static Bool IsHTTPURL(Text::CString url);
 		static void PrepareSSL(Net::SSLEngine *ssl);
 		static Bool LoadContent(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CString url, IO::Stream *stm, UInt64 maxSize);

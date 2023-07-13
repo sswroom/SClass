@@ -52,7 +52,7 @@ IO::ParsedObject *Parser::FileParser::SFVParser::ParseFileHdr(IO::StreamData *fd
 		return 0;
 	}
 	IO::StreamDataStream stm(fd);
-	Text::UTF8Reader reader(&stm);
+	Text::UTF8Reader reader(stm);
 	NEW_CLASS(fchk, IO::FileCheck(fd->GetFullName(), ctype));
 	while ((sptr = reader.ReadLine(sbuff, 512)) != 0)
 	{

@@ -53,7 +53,7 @@ namespace IO
 		private:
 			virtual void ParseUnknownCmd(const UTF8Char *cmd, UOSInt cmdLen);
 		public:
-			MTKGPSNMEA(IO::Stream *stm, Bool relStm);
+			MTKGPSNMEA(NotNullPtr<IO::Stream> stm, Bool relStm);
 			virtual ~MTKGPSNMEA();
 
 			virtual ServiceType GetServiceType();

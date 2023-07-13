@@ -9,21 +9,7 @@ private:
 
 	NotNullPtr(T *p)
 	{
-		if (p == 0)
-		{
-#if defined(__PRETTY_FUNCTION__)
-			printf("Null found in not null variable: " __PRETTY_FUNCTION__ "\r\n");
-#elif defined(__FUNCSIG__)
-			printf("Null found in not null pointer: " __FUNCSIG__ "\r\n");
-#elif defined(__FUNCTION__)
-			printf("Null found in not null pointer: " __FUNCTION__ "\r\n");
-#elif defined(__func__)
-			printf("Null found in not null pointer: " __func__ "\r\n");
-#else
-			printf("Null found in not null pointer\r\n");
-#endif
-		}
-		this->p = p;
+		this->SetPtr(p);
 	}
 public:
 	NotNullPtr() = default;
@@ -32,6 +18,11 @@ public:
 	NotNullPtr(T &p)
 	{
 		this->p = &p;
+	}
+
+	template <typename V> NotNullPtr(NotNullPtr<V> p)
+	{
+		this->p = p.Ptr();
 	}
 
 /*	NotNullPtr(const NotNullPtr<T> &p)
@@ -62,6 +53,30 @@ public:
 			return true;
 		}
 		return false;
+	}
+
+	void SetPtr(T *p)
+	{
+		if (p == 0)
+		{
+#if defined(__PRETTY_FUNCTION__)
+			printf("Null found in not null variable: " __PRETTY_FUNCTION__ "\r\n");
+#elif defined(__FUNCSIG__)
+			printf("Null found in not null pointer: " __FUNCSIG__ "\r\n");
+#elif defined(__FUNCTION__)
+			printf("Null found in not null pointer: " __FUNCTION__ "\r\n");
+#elif defined(__func__)
+			printf("Null found in not null pointer: " __func__ "\r\n");
+#else
+			printf("Null found in not null pointer\r\n");
+#endif
+		}
+		this->p = p;
+	}
+
+	void Delete()
+	{
+		delete this->p;
 	}
 
 	static NotNullPtr<T> FromPtr(T *p)

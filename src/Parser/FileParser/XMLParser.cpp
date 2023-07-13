@@ -129,11 +129,11 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseFileHdr(IO::StreamData *fd
 
 	IO::ParsedObject *pobj;
 	IO::StreamDataStream stm(fd);
-	pobj = ParseStream(this->encFact, &stm, fd->GetFullName()->ToCString(), this->parsers, this->browser, pkgFile);
+	pobj = ParseStream(this->encFact, stm, fd->GetFullName()->ToCString(), this->parsers, this->browser, pkgFile);
 	return pobj;
 }
 
-IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFactory *encFact, IO::Stream *stm, Text::CString fileName, Parser::ParserList *parsers, Net::WebBrowser *browser, IO::PackageFile *pkgFile)
+IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFactory *encFact, NotNullPtr<IO::Stream> stm, Text::CString fileName, Parser::ParserList *parsers, Net::WebBrowser *browser, IO::PackageFile *pkgFile)
 {
 	Text::String *nodeText;
 	Text::XMLReader reader(encFact, stm, Text::XMLReader::PM_XML);

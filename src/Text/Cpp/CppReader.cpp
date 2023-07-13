@@ -5,7 +5,7 @@
 Bool Text::Cpp::CppReader::ReadLineInner(Text::StringBuilderUTF8 *sb)
 {
 	UOSInt initSize = sb->GetLength();
-	if (!this->reader->ReadLine(sb, 512))
+	if (!this->reader.ReadLine(sb, 512))
 	{
 		return false;
 	}
@@ -85,17 +85,17 @@ Bool Text::Cpp::CppReader::ReadLineInner(Text::StringBuilderUTF8 *sb)
 
 Bool Text::Cpp::CppReader::ReadWord(Text::StringBuilderUTF8 *sb, Bool move)
 {
-	while (this->currOfst >= this->sbLine->GetCharCnt())
+	while (this->currOfst >= this->sbLine.GetCharCnt())
 	{
-		this->sbLine->ClearStr();
-		if (!ReadLineInner(this->sbLine))
+		this->sbLine.ClearStr();
+		if (!ReadLineInner(&this->sbLine))
 		{
 			return false;
 		}
-		this->sbLine->Trim();
+		this->sbLine.Trim();
 		this->currOfst = 0;
 	}
-	UTF8Char *sptr = this->sbLine->v;
+	UTF8Char *sptr = this->sbLine.v;
 	while (Text::CharUtil::IsWS(&sptr[this->currOfst]))
 	{
 		this->currOfst++;
@@ -171,12 +171,12 @@ Bool Text::Cpp::CppReader::ReadWord(Text::StringBuilderUTF8 *sb, Bool move)
 		{
 			if (sptr[j] == 0 || (sptr[j] == '\\' && sptr[j + 1] == 0))
 			{
-				reader->GetLastLineBreak(this->sbLine);
-				if (!ReadLineInner(this->sbLine))
+				reader.GetLastLineBreak(&this->sbLine);
+				if (!ReadLineInner(&this->sbLine))
 				{
 					return false;
 				}
-				sptr = this->sbLine->v;
+				sptr = this->sbLine.v;
 			}
 			else if (sptr[j] == '\\')
 			{
@@ -202,18 +202,14 @@ Bool Text::Cpp::CppReader::ReadWord(Text::StringBuilderUTF8 *sb, Bool move)
 	}
 }
 
-Text::Cpp::CppReader::CppReader(IO::Stream *stm)
+Text::Cpp::CppReader::CppReader(NotNullPtr<IO::Stream> stm) : reader(stm)
 {
-	NEW_CLASS(this->reader, Text::UTF8Reader(stm));
-	NEW_CLASS(this->sbLine, Text::StringBuilderUTF8());
 	this->currOfst = 0;
 	this->escapeType = ET_NONE;
 }
 
 Text::Cpp::CppReader::~CppReader()
 {
-	DEL_CLASS(this->sbLine);
-	DEL_CLASS(this->reader);
 }
 
 Bool Text::Cpp::CppReader::PeekWord(Text::StringBuilderUTF8 *sb)
@@ -228,19 +224,19 @@ Bool Text::Cpp::CppReader::NextWord(Text::StringBuilderUTF8 *sb)
 
 Bool Text::Cpp::CppReader::ReadLine(Text::StringBuilderUTF8 *sb)
 {
-	if (this->currOfst >= this->sbLine->GetCharCnt())
+	if (this->currOfst >= this->sbLine.GetCharCnt())
 	{
 		return ReadLineInner(sb);
 	}
 	else
 	{
-		sb->AppendC(this->sbLine->ToString() + this->currOfst, this->sbLine->GetLength() - this->currOfst);
-		this->currOfst = this->sbLine->GetCharCnt();
+		sb->AppendC(this->sbLine.ToString() + this->currOfst, this->sbLine.GetLength() - this->currOfst);
+		this->currOfst = this->sbLine.GetCharCnt();
 		return true;
 	}
 }
 
 Bool Text::Cpp::CppReader::GetLastLineBreak(Text::StringBuilderUTF8 *sb)
 {
-	return this->reader->GetLastLineBreak(sb);
+	return this->reader.GetLastLineBreak(sb);
 }

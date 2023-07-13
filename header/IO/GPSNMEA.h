@@ -29,7 +29,7 @@ namespace IO
 			SateStatus sates[32];
 		};
 	protected:
-		IO::Stream *stm;
+		NotNullPtr<IO::Stream> stm;
 	private:
 		Bool relStm;
 		Data::ArrayList<LocationHandler> hdlrList;
@@ -45,7 +45,7 @@ namespace IO
 		static ParseStatus ParseNMEALine(UTF8Char *line, UOSInt lineLen, Map::GPSTrack::GPSRecord3 *record, SateRecord *sateRec);
 		static UInt32 __stdcall NMEAThread(void *userObj);
 	public:
-		GPSNMEA(IO::Stream *stm, Bool relStm);
+		GPSNMEA(NotNullPtr<IO::Stream> stm, Bool relStm);
 		virtual ~GPSNMEA();
 
 		virtual Bool IsDown();
@@ -57,7 +57,7 @@ namespace IO
 		void HandleCommand(CommandHandler cmdHdlr, void *userObj);
 
 		static UOSInt GenNMEACommand(const UTF8Char *cmd, UOSInt cmdLen, UInt8 *buff);
-		static Map::GPSTrack *NMEA2Track(IO::Stream *stm, Text::CString sourceName);
+		static Map::GPSTrack *NMEA2Track(NotNullPtr<IO::Stream> stm, Text::CString sourceName);
 	};
 }
 #endif

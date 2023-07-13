@@ -162,7 +162,7 @@ void SSWR::AVIRead::AVIRLineCounterForm::CalcDir(UTF8Char *pathBuff, UTF8Char *p
 					lineCnt = 0;
 					{
 						IO::FileStream fs({pathBuff, (UOSInt)(sptr - pathBuff)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-						Text::UTF8Reader reader(&fs);
+						Text::UTF8Reader reader(fs);
 						while (true)
 						{
 							sb.ClearStr();

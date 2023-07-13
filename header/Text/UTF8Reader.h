@@ -11,7 +11,7 @@ namespace Text
 	class UTF8Reader : public IO::Reader
 	{
 	private:
-		IO::Stream *stm;
+		NotNullPtr<IO::Stream> stm;
 
 		UInt8 buff[UTF8READER_BUFFSIZE];
 		UOSInt buffSize;
@@ -23,7 +23,7 @@ namespace Text
 		void FillBuffer();
 		void CheckHeader();
 	public:
-		UTF8Reader(IO::Stream *stm);
+		UTF8Reader(NotNullPtr<IO::Stream> stm);
 		virtual ~UTF8Reader();
 		virtual void Close();
 		UTF32Char Peek();

@@ -13,7 +13,7 @@ void __stdcall SSWR::AVIRead::AVIRSMakeForm::OnProgSelChg(void *userObj)
 		Data::FastStringMap<Int32> objList;
 		Data::FastStringMap<Int32> liblist;
 		Data::FastStringMap<Int32> procList;
-		Data::ArrayListString headerList;
+		Data::ArrayListStringNN headerList;
 		Int64 latestTime;
 		Bool progGroup;
 		NotNullPtr<Text::String> s;

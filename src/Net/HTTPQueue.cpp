@@ -15,13 +15,13 @@ Net::HTTPQueue::~HTTPQueue()
 	this->Clear();
 }
 
-Net::HTTPClient *Net::HTTPQueue::MakeRequest(Text::CString url, Net::WebUtil::RequestMethod method, Bool noShutdown)
+NotNullPtr<Net::HTTPClient> Net::HTTPQueue::MakeRequest(Text::CString url, Net::WebUtil::RequestMethod method, Bool noShutdown)
 {
 	UTF8Char sbuff[512];
 	Text::URLString::GetURLDomain(sbuff, url, 0);
 	Bool found = false;;
 	DomainStatus *status;
-	Net::HTTPClient *cli;
+	NotNullPtr<Net::HTTPClient> cli;
 	while (true)
 	{
 		Sync::MutexUsage mutUsage(&this->statusMut);
@@ -31,13 +31,13 @@ Net::HTTPClient *Net::HTTPQueue::MakeRequest(Text::CString url, Net::WebUtil::Re
 			if (status->req1 == 0)
 			{
 				cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, url, method, noShutdown);
-				status->req1 = cli;
+				status->req1 = cli.Ptr();
 				found = true;
 			}
 			else if (status->req2 == 0)
 			{
 				cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, url, method, noShutdown);
-				status->req2 = cli;
+				status->req2 = cli.Ptr();
 				found = true;
 			}
 		}
@@ -47,7 +47,7 @@ Net::HTTPClient *Net::HTTPQueue::MakeRequest(Text::CString url, Net::WebUtil::Re
 			status->req1 = 0;
 			status->req2 = 0;
 			cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, url, method, noShutdown);
-			status->req1 = cli;
+			status->req1 = cli.Ptr();
 			this->statusMap.Put(sbuff, status);
 			found = true;
 		}

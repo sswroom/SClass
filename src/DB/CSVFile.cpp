@@ -34,10 +34,10 @@ DB::CSVFile::CSVFile(Text::CString fileName, UInt32 codePage) : DB::ReadingDB(fi
 	this->nullIfEmpty = false;
 }
 
-DB::CSVFile::CSVFile(IO::SeekableStream *stm, UInt32 codePage) : DB::ReadingDB(stm->GetSourceNameObj())
+DB::CSVFile::CSVFile(NotNullPtr<IO::SeekableStream> stm, UInt32 codePage) : DB::ReadingDB(stm->GetSourceNameObj())
 {
 	this->fileName = stm->GetSourceNameObj()->Clone();
-	this->stm = stm;
+	this->stm = stm.Ptr();
 	this->releaseStm = false;
 	this->codePage = codePage;
 	this->noHeader = false;
@@ -73,26 +73,27 @@ UOSInt DB::CSVFile::QueryTableNames(Text::CString schemaName, Data::ArrayListNN<
 
 DB::DBReader *DB::CSVFile::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListNN<Text::String> *columnName, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
-	if (this->stm)
+	NotNullPtr<IO::Stream> stm;
+	if (stm.Set(this->stm))
 	{
 		IO::Reader *rdr;
 		DB::CSVReader *r;
 		this->stm->SeekFromBeginning(0);
 		if (codePage == 65001)
 		{
-			NEW_CLASS(rdr, Text::UTF8Reader(this->stm));
+			NEW_CLASS(rdr, Text::UTF8Reader(stm));
 		}
 		else
 		{
-			NEW_CLASS(rdr, IO::StreamReader(this->stm, codePage));
+			NEW_CLASS(rdr, IO::StreamReader(stm, codePage));
 		}
 		NEW_CLASS(r, DB::CSVReader(0, rdr, this->noHeader, this->nullIfEmpty));
 		return r;
 	}
 	IO::Reader *rdr;
 	DB::CSVReader *r;
-	IO::FileStream *fs;
-	NEW_CLASS(fs, IO::FileStream(this->fileName->ToCString(), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
+	NotNullPtr<IO::FileStream> fs;
+	NEW_CLASSNN(fs, IO::FileStream(this->fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
 	if (!fs->IsError())
 	{
 		if (codePage == 65001)
@@ -103,12 +104,12 @@ DB::DBReader *DB::CSVFile::QueryTableData(Text::CString schemaName, Text::CStrin
 		{
 			NEW_CLASS(rdr, IO::StreamReader(fs, codePage));
 		}
-		NEW_CLASS(r, DB::CSVReader(fs, rdr, this->noHeader, this->nullIfEmpty));
+		NEW_CLASS(r, DB::CSVReader(fs.Ptr(), rdr, this->noHeader, this->nullIfEmpty));
 		return r;
 	}
 	else
 	{
-		DEL_CLASS(fs);
+		fs.Delete();
 		return 0;
 	}
 }

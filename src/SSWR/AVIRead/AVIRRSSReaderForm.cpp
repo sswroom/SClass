@@ -161,7 +161,7 @@ void SSWR::AVIRead::AVIRRSSReaderForm::RSSListLoad()
 	if (!fs.IsError())
 	{
 		Text::StringBuilderUTF8 sb;
-		Text::UTF8Reader reader(&fs);
+		Text::UTF8Reader reader(fs);
 		while (reader.ReadLine(&sb, 4096))
 		{
 			i = this->rssList.SortedInsert(Text::String::New(sb.ToString(), sb.GetLength()));

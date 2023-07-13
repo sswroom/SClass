@@ -958,7 +958,7 @@ Bool Net::OSSocketFactory::GetDefDNS(Net::SocketUtil::AddressInfo *addr)
 	Bool ret = false;
 	Text::PString sarr[3];
 	Text::StringBuilderUTF8 sb;
-	Text::UTF8Reader reader(&fs);
+	Text::UTF8Reader reader(fs);
 	while (true)
 	{
 		sb.ClearStr();
@@ -990,23 +990,20 @@ Bool Net::OSSocketFactory::GetDefDNS(Net::SocketUtil::AddressInfo *addr)
 
 UOSInt Net::OSSocketFactory::GetDNSList(Data::ArrayList<UInt32> *dnsList)
 {
-	Text::UTF8Reader *reader;
-	IO::FileStream *fs;
-	NEW_CLASS(fs, IO::FileStream(CSTR("/etc/resolv.conf"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	if (fs->IsError())
+	IO::FileStream fs(CSTR("/etc/resolv.conf"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+	if (fs.IsError())
 	{
-		DEL_CLASS(fs);
 		return false;
 	}
 	UOSInt ret = 0;
 	Text::PString sarr[3];
 	Text::StringBuilderUTF8 sb;
 	Net::SocketUtil::AddressInfo addr;
-	NEW_CLASS(reader, Text::UTF8Reader(fs));
+	Text::UTF8Reader reader(fs);
 	while (true)
 	{
 		sb.ClearStr();
-		if (!reader->ReadLine(&sb, 1024))
+		if (!reader.ReadLine(&sb, 1024))
 		{
 			break;
 		}
@@ -1032,9 +1029,6 @@ UOSInt Net::OSSocketFactory::GetDNSList(Data::ArrayList<UInt32> *dnsList)
 			}
 		}
 	}
-
-	DEL_CLASS(reader);
-	DEL_CLASS(fs);
 	return ret;
 }
 
@@ -1048,7 +1042,7 @@ Bool Net::OSSocketFactory::LoadHosts(Net::DNSHandler *dnsHdlr)
 	{
 		return false;
 	}
-	Text::UTF8Reader reader(&fs);
+	Text::UTF8Reader reader(fs);
 	Text::StringBuilderUTF8 sb;
 	while (reader.ReadLine(&sb, 512))
 	{
@@ -1126,7 +1120,7 @@ UOSInt Net::OSSocketFactory::GetConnInfoList(Data::ArrayList<Net::ConnectionInfo
 	IO::FileStream fs(CSTR("/proc/net/route"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 	if (!fs.IsError())
 	{
-		Text::UTF8Reader reader(&fs);
+		Text::UTF8Reader reader(fs);
 		if (reader.ReadLine(&sb, 512))
 		{
 			sb.ClearStr();
@@ -1220,11 +1214,9 @@ Bool Net::OSSocketFactory::GetUDPInfo(UDPInfo *info)
 UOSInt OSSocketFactory_LoadPortInfo(Data::ArrayList<Net::SocketFactory::PortInfo*> *portInfoList, Text::CString path, Net::SocketFactory::ProtocolType protoType)
 {
 	UOSInt ret = 0;
-	IO::FileStream *fs;
-	Text::UTF8Reader *reader;
 	Net::SocketFactory::PortInfo *port;
-	NEW_CLASS(fs, IO::FileStream(path, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	if (fs->IsError())
+	IO::FileStream fs(path, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+	if (fs.IsError())
 	{
 		
 	}
@@ -1233,13 +1225,13 @@ UOSInt OSSocketFactory_LoadPortInfo(Data::ArrayList<Net::SocketFactory::PortInfo
 		UTF8Char *sarr[5];
 		UTF8Char *sarr2[3];
 		Text::StringBuilderUTF8 sb;
-		NEW_CLASS(reader, Text::UTF8Reader(fs));
-		if (reader->ReadLine(&sb, 1024))
+		Text::UTF8Reader reader(fs);
+		if (reader.ReadLine(&sb, 1024))
 		{
 			while (true)
 			{
 				sb.ClearStr();
-				if (!reader->ReadLine(&sb, 1024))
+				if (!reader.ReadLine(&sb, 1024))
 				{
 					break;
 				}
@@ -1313,9 +1305,7 @@ UOSInt OSSocketFactory_LoadPortInfo(Data::ArrayList<Net::SocketFactory::PortInfo
 				}
 			}
 		}
-		DEL_CLASS(reader);
 	}
-	DEL_CLASS(fs);
 	return ret;
 }
 
@@ -1333,7 +1323,7 @@ UOSInt OSSocketFactory_LoadPortInfov4(Data::ArrayList<Net::SocketFactory::PortIn
 		UTF8Char *sarr[11];
 		UTF8Char *sarr2[3];
 		Text::StringBuilderUTF8 sb;
-		Text::UTF8Reader reader(&fs);
+		Text::UTF8Reader reader(fs);
 		if (reader.ReadLine(&sb, 1024))
 		{
 			while (true)
@@ -1433,7 +1423,7 @@ UOSInt OSSocketFactory_LoadPortInfov6(Data::ArrayList<Net::SocketFactory::PortIn
 		UTF8Char *sarr[11];
 		UTF8Char *sarr2[3];
 		Text::StringBuilderUTF8 sb;
-		Text::UTF8Reader reader(&fs);
+		Text::UTF8Reader reader(fs);
 		if (reader.ReadLine(&sb, 1024))
 		{
 			while (true)

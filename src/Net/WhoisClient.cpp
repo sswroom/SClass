@@ -31,8 +31,6 @@ Net::WhoisRecord *Net::WhoisClient::RequestIP(UInt32 ip, Data::Duration timeout)
 
 Net::WhoisRecord *Net::WhoisClient::RequestIP(UInt32 ip, UInt32 whoisIP, Text::CString prefix, Data::Duration timeout)
 {
-	Net::TCPClient *cli;
-	Text::UTF8Reader *reader;
 	Net::WhoisRecord *rec;
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -53,10 +51,10 @@ Net::WhoisRecord *Net::WhoisClient::RequestIP(UInt32 ip, UInt32 whoisIP, Text::C
 	sptr = Text::StrConcatC(Text::StrUInt32(sptr, ipAddr[3]), UTF8STRC("\r\n"));
 
 	NEW_CLASS(rec, Net::WhoisRecord(ip));
-	NEW_CLASS(cli, Net::TCPClient(sockf, whoisIP, 43, timeout));
-	cli->Write((UInt8*)sbuff, (UOSInt)(sptr - sbuff));
-	NEW_CLASS(reader, Text::UTF8Reader(cli));
-	while ((sptr = reader->ReadLine(sbuff, 511)) != 0)
+	Net::TCPClient cli(sockf, whoisIP, 43, timeout);
+	cli.Write((UInt8*)sbuff, (UOSInt)(sptr - sbuff));
+	Text::UTF8Reader reader(cli);
+	while ((sptr = reader.ReadLine(sbuff, 511)) != 0)
 	{
 		if (sbuff[0] == '%')
 		{
@@ -73,7 +71,5 @@ Net::WhoisRecord *Net::WhoisClient::RequestIP(UInt32 ip, UInt32 whoisIP, Text::C
 			rec->AddItem(sbuff, (UOSInt)(sptr - sbuff));
 		}
 	}
-	DEL_CLASS(reader);
-	DEL_CLASS(cli);
 	return rec;
 }

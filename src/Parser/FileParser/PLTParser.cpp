@@ -52,7 +52,7 @@ IO::ParsedObject *Parser::FileParser::PLTParser::ParseFileHdr(IO::StreamData *fd
 		return 0;
 
 	IO::StreamDataStream stm(fd);
-	Text::UTF8Reader reader(&stm);
+	Text::UTF8Reader reader(stm);
 
 	valid = true;
 	sptr = reader.ReadLine(sbuff, 1024);

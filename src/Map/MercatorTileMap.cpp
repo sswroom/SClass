@@ -183,7 +183,7 @@ Media::ImageList *Map::MercatorTileMap::LoadTileImage(UOSInt level, Math::Coord2
 	Bool hasTime = false;
 	Data::Timestamp ts;
 	Data::Timestamp currTS;
-	Net::HTTPClient *cli;
+	NotNullPtr<Net::HTTPClient> cli;
 	IO::StreamData *fd;
 	IO::ParsedObject *pobj;
 	if (level < this->minLevel || level > this->maxLevel)
@@ -319,7 +319,7 @@ Media::ImageList *Map::MercatorTileMap::LoadTileImage(UOSInt level, Math::Coord2
 			}
 		}
 	}
-	DEL_CLASS(cli);
+	cli.Delete();
 
 	fd = 0;
 	if (this->cacheDir)
@@ -366,7 +366,7 @@ IO::StreamData *Map::MercatorTileMap::LoadTileImageData(UOSInt level, Math::Coor
 	Bool hasTime = false;
 	Data::DateTime dt;
 	Data::DateTime currTime;
-	Net::HTTPClient *cli;
+	NotNullPtr<Net::HTTPClient> cli;
 	IO::StreamData *fd;
 	if (level > this->maxLevel)
 		return 0;
@@ -490,7 +490,7 @@ IO::StreamData *Map::MercatorTileMap::LoadTileImageData(UOSInt level, Math::Coor
 		}
 
 	}
-	DEL_CLASS(cli);
+	cli.Delete();
 
 	fd = 0;
 	if (this->cacheDir)

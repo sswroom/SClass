@@ -63,7 +63,7 @@ UTF8Char *IO::OS::GetDistro(UTF8Char *sbuff)
 		UOSInt j;
 		{
 			IO::FileStream fs(CSTR("/etc/release"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-			Text::UTF8Reader reader(&fs);
+			Text::UTF8Reader reader(fs);
 			line[0] = 0;
 			reader.ReadLine(line, 512);
 		}
@@ -94,7 +94,7 @@ UTF8Char *IO::OS::GetDistro(UTF8Char *sbuff)
 		IO::FileStream fs(CSTR("/usr/sbin/ENG/stringlist_ENG.txt"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 		if (!fs.IsError())
 		{
-			Text::UTF8Reader reader(&fs);
+			Text::UTF8Reader reader(fs);
 			sb.ClearStr();
 			while (reader.ReadLine(&sb, 512))
 			{
@@ -151,7 +151,7 @@ UTF8Char *IO::OS::GetVersion(UTF8Char *sbuff)
 		IO::FileStream fs(CSTR("/etc/debian_version"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 		if (!fs.IsError())
 		{
-			Text::UTF8Reader reader(&fs);
+			Text::UTF8Reader reader(fs);
 			ret = reader.ReadLine(sbuff, 128);
 		}
 		return ret;
@@ -182,7 +182,7 @@ UTF8Char *IO::OS::GetVersion(UTF8Char *sbuff)
 		IO::FileStream fs(CSTR("/etc/openwrt_version"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 		if (!fs.IsError())
 		{
-			Text::UTF8Reader reader(&fs);
+			Text::UTF8Reader reader(fs);
 			ret = reader.ReadLine(sbuff, 128);
 		}
 		return ret;
@@ -226,7 +226,7 @@ UTF8Char *IO::OS::GetVersion(UTF8Char *sbuff)
 		UOSInt i;
 		UOSInt j;
 		IO::FileStream fs(CSTR("/etc/release"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-		Text::UTF8Reader reader(&fs);
+		Text::UTF8Reader reader(fs);
 		line[0] = 0;
 		reader.ReadLine(line, 512);
 		i = INVALID_INDEX;
@@ -256,7 +256,7 @@ UTF8Char *IO::OS::GetVersion(UTF8Char *sbuff)
 	{
 		UTF8Char *sptr;
 		IO::FileStream fs(CSTR("/etc/version.txt"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-		Text::UTF8Reader reader(&fs);
+		Text::UTF8Reader reader(fs);
 		sptr = reader.ReadLine(sbuff, 512);
 
 		if (sptr && sptr != sbuff)
@@ -268,7 +268,7 @@ UTF8Char *IO::OS::GetVersion(UTF8Char *sbuff)
 	{
 		UTF8Char *sptr;
 		IO::FileStream fs(CSTR("/etc/mlinux-version"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-		Text::UTF8Reader reader(&fs);
+		Text::UTF8Reader reader(fs);
 		sptr = reader.ReadLine(sbuff, 512);
 
 		if (sptr && Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("mLinux ")))

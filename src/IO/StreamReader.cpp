@@ -16,7 +16,7 @@ void IO::StreamReader::FillBuffer()
 
 	if (stm->CanSeek())
 	{
-		UInt64 currPos = ((IO::SeekableStream*)stm)->GetPosition();
+		UInt64 currPos = ((IO::SeekableStream*)stm.Ptr())->GetPosition();
 		if (this->lastPos != currPos)
 		{
 			buffSize = 0;
@@ -44,7 +44,7 @@ void IO::StreamReader::FillBuffer()
 	buffSize += stm->Read(&buff[buffSize], BUFFSIZE - buffSize);
 	if (stm->CanSeek())
 	{
-		lastPos = ((IO::SeekableStream*)stm)->GetPosition();
+		lastPos = ((IO::SeekableStream*)stm.Ptr())->GetPosition();
 	}
 	if (buffSize <= 0)
 	{
@@ -96,7 +96,7 @@ void IO::StreamReader::CheckHeader()
 	}
 	if (stm->CanSeek())
 	{
-		this->lastPos = ((IO::SeekableStream*)stm)->GetPosition();
+		this->lastPos = ((IO::SeekableStream*)stm.Ptr())->GetPosition();
 	}
 	else
 	{
@@ -104,7 +104,7 @@ void IO::StreamReader::CheckHeader()
 	}
 }
 
-IO::StreamReader::StreamReader(IO::Stream *stm)
+IO::StreamReader::StreamReader(NotNullPtr<IO::Stream> stm)
 {
 	this->stm = stm;
 	this->buff = MemAlloc(UInt8, BUFFSIZE);
@@ -114,7 +114,7 @@ IO::StreamReader::StreamReader(IO::Stream *stm)
 	this->cPos = 0;
 	if (stm->CanSeek())
 	{
-		this->lastPos = ((IO::SeekableStream*)stm)->GetPosition();
+		this->lastPos = ((IO::SeekableStream*)stm.Ptr())->GetPosition();
 	}
 	else
 	{
@@ -125,7 +125,7 @@ IO::StreamReader::StreamReader(IO::Stream *stm)
 	FillBuffer();
 }
 
-IO::StreamReader::StreamReader(IO::Stream *stm, UInt32 codePage) : enc(codePage)
+IO::StreamReader::StreamReader(NotNullPtr<IO::Stream> stm, UInt32 codePage) : enc(codePage)
 {
 	this->stm = stm;
 	this->buff = MemAlloc(UInt8, BUFFSIZE);
@@ -135,7 +135,7 @@ IO::StreamReader::StreamReader(IO::Stream *stm, UInt32 codePage) : enc(codePage)
 	this->cPos = 0;
 	if (stm->CanSeek())
 	{
-		this->lastPos = ((IO::SeekableStream*)stm)->GetPosition();
+		this->lastPos = ((IO::SeekableStream*)stm.Ptr())->GetPosition();
 	}
 	else
 	{
@@ -163,7 +163,7 @@ UTF8Char *IO::StreamReader::ReadLine(UTF8Char *buff, UOSInt maxCharCnt)
 	Bool tmp = false;
 	if (stm->CanSeek())
 	{
-		UInt64 currPos = ((IO::SeekableStream*)stm)->GetPosition();
+		UInt64 currPos = ((IO::SeekableStream*)stm.Ptr())->GetPosition();
 		if (this->lastPos != currPos)
 		{
 			this->FillBuffer();

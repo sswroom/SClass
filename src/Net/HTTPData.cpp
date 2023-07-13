@@ -17,12 +17,12 @@ UInt32 __stdcall Net::HTTPData::LoadThread(void *userObj)
 	if (fdh->queue)
 	{
 		Sync::MutexUsage mutUsage(&fdh->mut);
-		fdh->cli = fdh->queue->MakeRequest(fdh->url->ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, true);
+		fdh->cli = fdh->queue->MakeRequest(fdh->url->ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, true).Ptr();
 		mutUsage.EndUse();
 	}
 	else
 	{
-		fdh->cli = Net::HTTPClient::CreateConnect(fdh->sockf, fdh->ssl, fdh->url->ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, true);
+		fdh->cli = Net::HTTPClient::CreateConnect(fdh->sockf, fdh->ssl, fdh->url->ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, true).Ptr();
 	}
 	fdh->evtTmp->Set();
 	if (IO::Path::GetPathType(fdh->localFile->ToCString()) == IO::Path::PathType::File)
@@ -45,13 +45,13 @@ UInt32 __stdcall Net::HTTPData::LoadThread(void *userObj)
 			{
 				Sync::MutexUsage mutUsage(&fdh->mut);
 				fdh->queue->EndRequest(fdh->cli);
-				fdh->cli = fdh->queue->MakeRequest(sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, true);
+				fdh->cli = fdh->queue->MakeRequest(sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, true).Ptr();
 				mutUsage.EndUse();
 			}
 			else
 			{
 				DEL_CLASS(fdh->cli);
-				fdh->cli = Net::HTTPClient::CreateConnect(fdh->sockf, fdh->ssl, sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, true);
+				fdh->cli = Net::HTTPClient::CreateConnect(fdh->sockf, fdh->ssl, sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, true).Ptr();
 			}
 		}
 		else

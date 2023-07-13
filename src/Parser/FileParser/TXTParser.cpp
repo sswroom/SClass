@@ -82,7 +82,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFileHdr(IO::StreamData *fd
 		return 0;
 	}
 	IO::StreamDataStream stm(fd);
-	IO::StreamReader reader(&stm, this->codePage);
+	IO::StreamReader reader(stm, this->codePage);
 	if ((sptr = reader.ReadLine(sbuff, 255)) == 0)
 	{
 		return 0;
@@ -369,7 +369,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFileHdr(IO::StreamData *fd
 
 		{
 			IO::FileStream fs2({sbuff4, (UOSInt)(fileName - sbuff4)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-			IO::StreamReader reader2(&fs2, 0);
+			IO::StreamReader reader2(fs2, 0);
 			while ((sptr2 = reader2.ReadLine(sbuff2, 512)) != 0)
 			{
 				i = Text::StrSplitP(sarr, 4, {sbuff2, (UOSInt)(sptr2 - sbuff2)}, ',');

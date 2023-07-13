@@ -22,7 +22,7 @@ void __stdcall SSWR::AVIRead::AVIRCOVID19Form::OnFileClicked(void *userObj)
 	if (dlg.ShowDialog(me->GetHandle()))
 	{
 		IO::FileStream fs(dlg.GetFileName(), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-		me->LoadCSV(&fs);
+		me->LoadCSV(fs);
 	}
 }
 
@@ -45,7 +45,7 @@ void __stdcall SSWR::AVIRead::AVIRCOVID19Form::OnDownloadClicked(void *userObj)
 	DEL_CLASS(cli);
 	if (mstm.GetLength() > 100)
 	{
-		me->LoadCSV(&mstm);
+		me->LoadCSV(mstm);
 	}
 }
 
@@ -121,7 +121,7 @@ void SSWR::AVIRead::AVIRCOVID19Form::ClearRecords()
 	this->lvCountry->ClearItems();
 }
 
-Bool SSWR::AVIRead::AVIRCOVID19Form::LoadCSV(IO::SeekableStream *stm)
+Bool SSWR::AVIRead::AVIRCOVID19Form::LoadCSV(NotNullPtr<IO::SeekableStream> stm)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;

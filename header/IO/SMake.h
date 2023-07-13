@@ -2,6 +2,7 @@
 #define _SM_IO_SMAKE
 #include "Data/ArrayList.h"
 #include "Data/ArrayListNN.h"
+#include "Data/ArrayListStringNN.h"
 #include "Data/ArrayListStrUTF8.h"
 #include "Data/FastStringMap.h"
 #include "Data/StringMap.h"
@@ -59,13 +60,13 @@ namespace IO
 		Bool ExecuteCmd(Text::CString cmd);
 		Bool LoadConfigFile(Text::CString cfgFile);
 
-		Bool ParseSource(Data::FastStringMap<Int32> *objList, Data::FastStringMap<Int32> *libList, Data::FastStringMap<Int32> *procList, Data::ArrayListString *headerList, Int64 *latestTime, Text::CString sourceFile, Text::StringBuilderUTF8 *tmpSb);
-		Bool ParseHeader(Data::FastStringMap<Int32> *objList, Data::FastStringMap<Int32> *libList, Data::FastStringMap<Int32> *procList, Data::ArrayListString *headerList, Int64 *latestTime, NotNullPtr<Text::String> headerFile, Text::CString sourceFile, Text::StringBuilderUTF8 *tmpSb);
-		Bool ParseProgInternal(Data::FastStringMap<Int32> *objList, Data::FastStringMap<Int32> *libList, Data::FastStringMap<Int32> *procList, Data::ArrayListString *headerList, Int64 *latestTime, Bool *progGroup, const ProgramItem *prog, Text::StringBuilderUTF8 *tmpSb);
+		Bool ParseSource(Data::FastStringMap<Int32> *objList, Data::FastStringMap<Int32> *libList, Data::FastStringMap<Int32> *procList, Data::ArrayListStringNN *headerList, Int64 *latestTime, Text::CString sourceFile, Text::StringBuilderUTF8 *tmpSb);
+		Bool ParseHeader(Data::FastStringMap<Int32> *objList, Data::FastStringMap<Int32> *libList, Data::FastStringMap<Int32> *procList, Data::ArrayListStringNN *headerList, Int64 *latestTime, NotNullPtr<Text::String> headerFile, Text::CString sourceFile, Text::StringBuilderUTF8 *tmpSb);
+		Bool ParseProgInternal(Data::FastStringMap<Int32> *objList, Data::FastStringMap<Int32> *libList, Data::FastStringMap<Int32> *procList, Data::ArrayListStringNN *headerList, Int64 *latestTime, Bool *progGroup, NotNullPtr<const ProgramItem> prog, Text::StringBuilderUTF8 *tmpSb);
 
 		static void __stdcall CompileTask(void *userObj);
 		void CompileObject(Bool *errorState, Text::CString cmd);
-		Bool CompileProgInternal(ProgramItem *prog, Bool asmListing, Bool enableTest);
+		Bool CompileProgInternal(NotNullPtr<const ProgramItem> prog, Bool asmListing, Bool enableTest);
 
 		void SetErrorMsg(Text::CString msg);
 	public:
@@ -84,7 +85,7 @@ namespace IO
 		const Data::ArrayList<ConfigItem*> *GetConfigList() const;
 		Bool HasProg(Text::CString progName) const;
 		Bool CompileProg(Text::CString progName, Bool asmListing);
-		Bool ParseProg(Data::FastStringMap<Int32> *objList, Data::FastStringMap<Int32> *libList, Data::FastStringMap<Int32> *procList, Data::ArrayListString *headerList, Int64 *latestTime, Bool *progGroup, Text::String *progName);
+		Bool ParseProg(Data::FastStringMap<Int32> *objList, Data::FastStringMap<Int32> *libList, Data::FastStringMap<Int32> *procList, Data::ArrayListStringNN *headerList, Int64 *latestTime, Bool *progGroup, Text::String *progName);
 
 		void CleanFiles();
 

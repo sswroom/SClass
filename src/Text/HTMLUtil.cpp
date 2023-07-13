@@ -6,7 +6,7 @@
 #include "Text/JSText.h"
 #include "Text/XMLReader.h"
 
-Bool Text::HTMLUtil::HTMLWellFormat(Text::EncodingFactory *encFact, IO::Stream *stm, UOSInt lev, Text::StringBuilderUTF8 *sb)
+Bool Text::HTMLUtil::HTMLWellFormat(Text::EncodingFactory *encFact, NotNullPtr<IO::Stream> stm, UOSInt lev, Text::StringBuilderUTF8 *sb)
 {
 	Text::XMLReader *reader;
 	Text::XMLAttrib *attr;
@@ -242,7 +242,7 @@ Bool Text::HTMLUtil::HTMLGetText(Text::EncodingFactory *encFact, const UInt8 *bu
 	UTF8Char c;
 	IO::MemoryStream wmstm;
 	IO::MemoryReadingStream mstm(buff, buffSize);
-	NEW_CLASS(reader, Text::XMLReader(encFact, &mstm, Text::XMLReader::PM_HTML));
+	NEW_CLASS(reader, Text::XMLReader(encFact, mstm, Text::XMLReader::PM_HTML));
 	while (reader->ReadNext())
 	{
 		nt = reader->GetNodeType();

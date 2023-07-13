@@ -17,15 +17,15 @@ namespace Text
 				ET_STRING
 			} EscapeType;
 		private:
-			Text::UTF8Reader *reader;
-			Text::StringBuilderUTF8 *sbLine;
+			Text::UTF8Reader reader;
+			Text::StringBuilderUTF8 sbLine;
 			UOSInt currOfst;
 			EscapeType escapeType;
 
 			Bool ReadLineInner(Text::StringBuilderUTF8 *sb);
 			Bool ReadWord(Text::StringBuilderUTF8 *sb, Bool move);
 		public:
-			CppReader(IO::Stream *stm);
+			CppReader(NotNullPtr<IO::Stream> stm);
 			~CppReader();
 
 			Bool PeekWord(Text::StringBuilderUTF8 *sb);

@@ -60,7 +60,7 @@ IO::ParsedObject *Parser::FileParser::CSVParser::ParseFileHdr(IO::StreamData *fd
 
 	UOSInt i;
 	IO::StreamDataStream stm(fd);
-	IO::StreamReader reader(&stm, this->codePage);
+	IO::StreamReader reader(stm, this->codePage);
 
 	UOSInt dateCol = INVALID_INDEX;
 	UOSInt timeCol = INVALID_INDEX;

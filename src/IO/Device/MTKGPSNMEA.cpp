@@ -33,7 +33,7 @@ void IO::Device::MTKGPSNMEA::ParseUnknownCmd(const UTF8Char *cmd, UOSInt cmdLen)
 	}
 }
 
-IO::Device::MTKGPSNMEA::MTKGPSNMEA(IO::Stream *stm, Bool relStm) : IO::GPSNMEA(stm, relStm)
+IO::Device::MTKGPSNMEA::MTKGPSNMEA(NotNullPtr<IO::Stream> stm, Bool relStm) : IO::GPSNMEA(stm, relStm)
 {
 	this->firmwareBuild = 0;
 	this->firmwareRel = 0;

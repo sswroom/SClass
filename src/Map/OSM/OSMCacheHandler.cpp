@@ -70,7 +70,7 @@ IO::SeekableStream *Map::OSM::OSMCacheHandler::GetTileData(Int32 lev, Int32 xTil
 	urlSb.AppendI32(yTile);
 	urlSb.AppendC(UTF8STRC(".png"));
 
-	Net::HTTPClient *cli;
+	NotNullPtr<Net::HTTPClient> cli;
 	cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, CSTR("OSMTileMap/1.0 SSWR/1.0"), true, urlSb.StartsWith(UTF8STRC("https://")));
 	cli->Connect(urlSb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, true);
 
@@ -129,7 +129,7 @@ IO::SeekableStream *Map::OSM::OSMCacheHandler::GetTileData(Int32 lev, Int32 xTil
 			Sync::Interlocked::Increment(&this->status.remoteErrCnt);
 		}
 	}
-	DEL_CLASS(cli);
+	cli.Delete();
 	return fs;
 }
 

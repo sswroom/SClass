@@ -1571,7 +1571,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(IO::StreamData *f
 				Double yCoord;
 				{
 					IO::FileStream fs(CSTRP(fileNameBuff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential);
-					IO::StreamReader reader(&fs, 0);
+					IO::StreamReader reader(fs, 0);
 					sb.ClearStr();
 					if (!reader.ReadLine(&sb, 1024) || !Text::StrToDouble(sb.ToString(), &xPxSize))
 					{

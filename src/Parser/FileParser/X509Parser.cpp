@@ -99,7 +99,7 @@ Crypto::Cert::X509File *Parser::FileParser::X509Parser::ParseBuff(const UInt8 *b
 	if (Text::StrStartsWithC(buff, 5, UTF8STRC("-----")))
 	{
 		IO::MemoryReadingStream mstm(buff, buffSize);
-		Text::UTF8Reader reader(&mstm);
+		Text::UTF8Reader reader(mstm);
 		Text::StringBuilderUTF8 sb;
 		Text::TextBinEnc::Base64Enc b64;
 		Crypto::Cert::X509FileList *fileList = 0;

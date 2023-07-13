@@ -490,7 +490,7 @@ void SSWR::DownloadMonitor::DownMonMainForm::LoadList()
 	if (listFile.Set(this->core->GetListFile()))
 	{
 		IO::FileStream fs(listFile, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-		Text::UTF8Reader reader(&fs);
+		Text::UTF8Reader reader(fs);
 		while (reader.ReadLine(&sb, 4096))
 		{
 			if (sb.StartsWith(UTF8STRC("https://")) && Text::StrSplitP(sarr, 2, sb, '\t') == 2)

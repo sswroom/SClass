@@ -549,7 +549,7 @@ UOSInt Manage::Process::GetModules(Data::ArrayList<Manage::ModuleInfo *> *modLis
 		{
 			sptr = Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("/proc/")), this->procId), UTF8STRC("/maps"));
 			IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-			Text::UTF8Reader reader(&fs);
+			Text::UTF8Reader reader(fs);
 			sb.ClearStr();
 			while (reader.ReadLine(&sb, 512))
 			{
@@ -750,7 +750,7 @@ Bool Manage::Process::GetMemoryInfo(UOSInt *pageFault, UOSInt *workingSetSize, U
 	sptr = Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("/proc/")), this->procId), UTF8STRC("/statm"));
 	Text::StringBuilderUTF8 sb;
 	IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-	Text::UTF8Reader reader(&fs);
+	Text::UTF8Reader reader(fs);
 	sb.ClearStr();
 	if (reader.ReadLine(&sb, 512))
 	{
@@ -793,7 +793,7 @@ Bool Manage::Process::GetTimeInfo(Data::Timestamp *createTime, Data::Timestamp *
 	sptr = Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("/proc/")), this->procId), UTF8STRC("/stat"));
 	Text::StringBuilderUTF8 sb;
 	IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-	Text::UTF8Reader reader(&fs);
+	Text::UTF8Reader reader(fs);
 	sb.ClearStr();
 	if (reader.ReadLine(&sb, 512))
 	{
@@ -1021,7 +1021,7 @@ UTF8Char *Manage::Process::FindProcessNext(UTF8Char *processNameBuff, Manage::Pr
 				IO::FileStream fs(CSTRP(sbuff, sptr3), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 				if (!fs.IsError())
 				{
-					Text::UTF8Reader reader(&fs);
+					Text::UTF8Reader reader(fs);
 					sb.ClearStr();
 					while (reader.ReadLine(&sb, 512))
 					{
@@ -1043,7 +1043,7 @@ UTF8Char *Manage::Process::FindProcessNext(UTF8Char *processNameBuff, Manage::Pr
 				IO::FileStream fs(CSTRP(sbuff, sptr3), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 				if (!fs.IsError())
 				{
-					Text::UTF8Reader reader(&fs);
+					Text::UTF8Reader reader(fs);
 					sb.ClearStr();
 					while (reader.ReadLine(&sb, 512))
 					{
@@ -1088,7 +1088,7 @@ WChar *Manage::Process::FindProcessNextW(WChar *processNameBuff, Manage::Process
 				IO::FileStream fs(CSTRP(sbuff, sptr3), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 				if (!fs.IsError())
 				{
-					Text::UTF8Reader reader(&fs);
+					Text::UTF8Reader reader(fs);
 					sb.ClearStr();
 					while (reader.ReadLine(&sb, 512))
 					{
@@ -1110,7 +1110,7 @@ WChar *Manage::Process::FindProcessNextW(WChar *processNameBuff, Manage::Process
 				IO::FileStream fs(CSTRP(sbuff, sptr3), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 				if (!fs.IsError())
 				{
-					Text::UTF8Reader reader(&fs);
+					Text::UTF8Reader reader(fs);
 					sb.ClearStr();
 					while (reader.ReadLine(&sb, 512))
 					{

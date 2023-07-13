@@ -485,7 +485,7 @@ void Net::WebServer::WebConnection::ProcessResponse()
 	{
 		Manage::HiResClock clk;
 		Double t;
-		Net::HTTPClient *httpCli;
+		NotNullPtr<Net::HTTPClient> httpCli;
 		Text::StringBuilderUTF8 sb;
 
 		clk.Start();
@@ -633,7 +633,7 @@ void Net::WebServer::WebConnection::ProcessResponse()
 				}
 				MemFree(sbuffHdr);
 			}
-			DEL_CLASS(httpCli);
+			httpCli.Delete();
 			this->cli->ShutdownSend();
 		}
 		else

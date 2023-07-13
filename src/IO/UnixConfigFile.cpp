@@ -13,7 +13,7 @@ IO::ConfigFile *IO::UnixConfigFile::Parse(Text::CString fileName)
 	}
 	else
 	{
-		Text::UTF8Reader reader(&fstm);
+		Text::UTF8Reader reader(fstm);
 		cfg = ParseReader(&reader);
 	}
 	return cfg;

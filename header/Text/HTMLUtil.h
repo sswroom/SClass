@@ -10,7 +10,7 @@ namespace Text
 	class HTMLUtil
 	{
 	public:
-		static Bool HTMLWellFormat(Text::EncodingFactory *encFact, IO::Stream *stm, UOSInt lev, Text::StringBuilderUTF8 *sb);
+		static Bool HTMLWellFormat(Text::EncodingFactory *encFact, NotNullPtr<IO::Stream> stm, UOSInt lev, Text::StringBuilderUTF8 *sb);
 		static Bool CSSWellFormat(const UInt8 *buff, UOSInt buffSize, UOSInt lev, Text::StringBuilderUTF8 *sb);
 		static Bool HTMLGetText(Text::EncodingFactory *encFact, const UInt8 *buff, UOSInt buffSize, Bool singleLine, Text::StringBuilderUTF8 *sb, Data::ArrayListNN<Text::String> *imgList);
 		static Bool XMLWellFormat(const UInt8 *buff, UOSInt buffSize, UOSInt lev, Text::StringBuilderUTF8 *sb);

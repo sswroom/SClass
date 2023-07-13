@@ -34,8 +34,8 @@ Net::ConnectionInfo::ConnectionInfo(void *info)
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC((const UTF8Char*)data->name, nameLen);
 	this->ent.internalName = Text::StrCopyNewC(data->name, nameLen);
-	this->ent.name = Text::StrCopyNewC(sb.ToString(), sb.GetLength());
-	this->ent.description = Text::StrCopyNewC(sb.ToString(), sb.GetLength());
+	this->ent.name = Text::StrCopyNewC(sb.ToString(), sb.GetLength()).Ptr();
+	this->ent.description = Text::StrCopyNewC(sb.ToString(), sb.GetLength()).Ptr();
 
 	if (ioctl(data->sock, SIOCGIFFLAGS, &ifr) == 0)
 	{
@@ -192,7 +192,7 @@ Net::ConnectionInfo::ConnectionInfo(void *info)
 		if (!fs.IsError())
 		{
 			Text::PString sarr[3];
-			Text::UTF8Reader reader(&fs);
+			Text::UTF8Reader reader(fs);
 			sb.ClearStr();
 			while (reader.ReadLine(&sb, 512))
 			{

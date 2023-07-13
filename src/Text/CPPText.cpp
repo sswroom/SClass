@@ -298,7 +298,7 @@ void Text::CPPText::FromCPPString(Text::StringBuilderUTF8 *sb, const UTF8Char *s
 Bool Text::CPPText::ParseEnum(Data::ArrayListNN<Text::String> *enumEntries, Text::CString cppEnumStr, Text::StringBuilderUTF8 *sbPrefix)
 {
 	IO::MemoryReadingStream mstm(cppEnumStr.v, cppEnumStr.leng);
-	Text::Cpp::CppReader reader(&mstm);
+	Text::Cpp::CppReader reader(mstm);
 	Text::StringBuilderUTF8 sb;
 	if (!reader.NextWord(&sb))
 	{

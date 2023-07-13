@@ -24,12 +24,12 @@ Text::StringBuilderUTF8 *Text::StringBuilderUTF8::Append(Text::StringBase<UTF8Ch
 
 Text::StringBuilderUTF8 *Text::StringBuilderUTF8::Append(NotNullPtr<Text::String> s)
 {
-	if (s->leng > 0)
-	{
+//	if (s->leng > 0)
+//	{
 		STRINGBUILDER_ALLOCLENG(s->leng);
 		MemCopyNO(&this->v[this->leng], s->v, s->leng + 1);
 		this->leng += s->leng;
-	}
+//	}
 	return this;
 }
 

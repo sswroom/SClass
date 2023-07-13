@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "DB/SQLFileReader.h"
 
-DB::SQLFileReader::SQLFileReader(IO::Stream *stm, DB::SQLType sqlType, Bool mergeInsert) : reader(stm)
+DB::SQLFileReader::SQLFileReader(NotNullPtr<IO::Stream> stm, DB::SQLType sqlType, Bool mergeInsert) : reader(stm)
 {
 	this->sqlType = sqlType;
 	this->mergeInsert = mergeInsert;

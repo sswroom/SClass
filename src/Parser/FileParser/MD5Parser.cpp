@@ -74,7 +74,7 @@ IO::ParsedObject *Parser::FileParser::MD5Parser::ParseFileHdr(IO::StreamData *fd
 		return 0;
 	}
 	IO::StreamDataStream stm(fd);
-	IO::StreamReader reader(&stm, this->codePage);
+	IO::StreamReader reader(stm, this->codePage);
 	NEW_CLASS(fchk, IO::FileCheck(fullName, ctype));
 	while ((sptr = reader.ReadLine(sbuff, 512)) != 0)
 	{

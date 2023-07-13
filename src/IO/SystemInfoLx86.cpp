@@ -26,7 +26,7 @@ Bool SystemInfo_ReadFile(Text::CString fileName, Text::StringBuilderUTF8 *sb)
 	IO::FileStream fs(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 	if (!fs.IsError())
 	{
-		Text::UTF8Reader reader(&fs);
+		Text::UTF8Reader reader(fs);
 		while (reader.ReadLine(sb, 512))
 		{
 		}

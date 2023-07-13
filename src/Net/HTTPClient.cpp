@@ -399,23 +399,23 @@ void Net::HTTPClient::ParseDateStr(Data::DateTime *dt, Text::CString dateStr)
 	}
 }
 
-Net::HTTPClient *Net::HTTPClient::CreateClient(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CString userAgent, Bool kaConn, Bool isSecure)
+NotNullPtr<Net::HTTPClient> Net::HTTPClient::CreateClient(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CString userAgent, Bool kaConn, Bool isSecure)
 {
-	Net::HTTPClient *cli;
+	NotNullPtr<Net::HTTPClient> cli;
 	if (isSecure && ssl == 0)
 	{
-		NEW_CLASS(cli, Net::HTTPOSClient(sockf, userAgent, kaConn));
+		NEW_CLASSNN(cli, Net::HTTPOSClient(sockf, userAgent, kaConn));
 	}
 	else
 	{
-		NEW_CLASS(cli, Net::HTTPMyClient(sockf, ssl, userAgent, kaConn));
+		NEW_CLASSNN(cli, Net::HTTPMyClient(sockf, ssl, userAgent, kaConn));
 	}
 	return cli;
 }
 
-Net::HTTPClient *Net::HTTPClient::CreateConnect(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CString url, Net::WebUtil::RequestMethod method, Bool kaConn)
+NotNullPtr<Net::HTTPClient> Net::HTTPClient::CreateConnect(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CString url, Net::WebUtil::RequestMethod method, Bool kaConn)
 {
-	Net::HTTPClient *cli = Net::HTTPClient::CreateClient(sockf, ssl, CSTR_NULL, kaConn, url.StartsWithICase(UTF8STRC("HTTPS://")));
+	NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(sockf, ssl, CSTR_NULL, kaConn, url.StartsWithICase(UTF8STRC("HTTPS://")));
 	cli->Connect(url, method, 0, 0, true);
 	return cli;
 }
@@ -435,12 +435,10 @@ void Net::HTTPClient::PrepareSSL(Net::SSLEngine *ssl)
 
 Bool Net::HTTPClient::LoadContent(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CString url, IO::Stream *stm, UInt64 maxSize)
 {
-	Net::HTTPClient *cli = Net::HTTPClient::CreateConnect(sockf, ssl, url, Net::WebUtil::RequestMethod::HTTP_GET, true);
-	if (cli == 0)
-		return false;
+	NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(sockf, ssl, url, Net::WebUtil::RequestMethod::HTTP_GET, true);
 	if (cli->GetRespStatus() != Net::WebStatus::SC_OK)
 	{
-		DEL_CLASS(cli);
+		cli.Delete();
 		return false;
 	}
 	UInt8 buff[2048];
@@ -449,24 +447,22 @@ Bool Net::HTTPClient::LoadContent(Net::SocketFactory *sockf, Net::SSLEngine *ssl
 	{
 		if (readSize > maxSize)
 		{
-			DEL_CLASS(cli);
+			cli.Delete();
 			return false;
 		}
 		stm->Write(buff, readSize);
 		maxSize -= readSize;
 	}
-	DEL_CLASS(cli);
+	cli.Delete();
 	return true;
 }
 
 Bool Net::HTTPClient::LoadContent(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CString url, Text::StringBuilderUTF8 *sb, UInt64 maxSize)
 {
-	Net::HTTPClient *cli = Net::HTTPClient::CreateConnect(sockf, ssl, url, Net::WebUtil::RequestMethod::HTTP_GET, true);
-	if (cli == 0)
-		return false;
+	NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(sockf, ssl, url, Net::WebUtil::RequestMethod::HTTP_GET, true);
 	if (cli->GetRespStatus() != Net::WebStatus::SC_OK)
 	{
-		DEL_CLASS(cli);
+		cli.Delete();
 		return false;
 	}
 	UInt8 buff[2048];
@@ -475,12 +471,12 @@ Bool Net::HTTPClient::LoadContent(Net::SocketFactory *sockf, Net::SSLEngine *ssl
 	{
 		if (readSize > maxSize)
 		{
-			DEL_CLASS(cli);
+			cli.Delete();
 			return false;
 		}
 		sb->AppendC(buff, readSize);
 		maxSize -= readSize;
 	}
-	DEL_CLASS(cli);
+	cli.Delete();
 	return true;
 }

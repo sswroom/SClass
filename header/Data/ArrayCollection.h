@@ -6,9 +6,9 @@ namespace Data
 	template <class T> class ArrayCollection
 	{
 	public:
-		virtual T* GetArray(UOSInt *arraySize) = 0;
+		virtual T* GetArray(UOSInt *arraySize) const = 0;
 
-		ArrayIterator<T> Iterator()
+		ArrayIterator<T> Iterator() const
 		{
 			UOSInt cnt;
 			T *arr = this->GetArray(&cnt);

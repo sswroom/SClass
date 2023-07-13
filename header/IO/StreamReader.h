@@ -11,7 +11,7 @@ namespace IO
 	{
 	private:
 		Text::Encoding enc;
-		IO::Stream *stm;
+		NotNullPtr<IO::Stream> stm;
 
 		UTF8Char *cbuff;
 		UOSInt cSize;
@@ -25,8 +25,8 @@ namespace IO
 		void FillBuffer();
 		void CheckHeader();
 	public:
-		StreamReader(IO::Stream *stm);
-		StreamReader(IO::Stream *stm, UInt32 codePage);
+		StreamReader(NotNullPtr<IO::Stream> stm);
+		StreamReader(NotNullPtr<IO::Stream> stm, UInt32 codePage);
 		virtual ~StreamReader();
 		virtual void Close();
 		virtual UTF8Char *ReadLine(UTF8Char *buff, UOSInt maxCharCnt);

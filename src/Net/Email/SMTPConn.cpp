@@ -25,7 +25,7 @@ UInt32 __stdcall Net::Email::SMTPConn::SMTPThread(void *userObj)
 	me->threadStarted = true;
 	me->threadRunning = true;
 	{
-		Text::UTF8Reader reader(me->cli);
+		Text::UTF8Reader reader(NotNullPtr<IO::Stream>::FromPtr(me->cli));
 		while (!me->threadToStop)
 		{
 			sptr = reader.ReadLine(sbuff, 2048);
@@ -231,17 +231,16 @@ Net::Email::SMTPConn::SMTPConn(Net::SocketFactory *sockf, Net::SSLEngine *ssl, T
 Net::Email::SMTPConn::~SMTPConn()
 {
 	this->threadToStop = true;
-	if (cli)
+	if (this->cli)
 	{
-
+		this->cli->Close();
 	}
-	this->cli->Close();
 	while (this->threadRunning)
 	{
 		Sync::SimpleThread::Sleep(10);
 	}
 	DEL_CLASS(this->writer);
-	DEL_CLASS(this->cli);
+	SDEL_CLASS(this->cli);
 }
 
 Bool Net::Email::SMTPConn::IsError()

@@ -416,7 +416,7 @@ void Net::WebServer::HTTPDirectoryHandler::StatLoad(Net::WebServer::HTTPDirector
 	if (!fs.IsError())
 	{
 		Text::PString sarr[2];
-		Text::UTF8Reader reader(&fs);
+		Text::UTF8Reader reader(fs);
 		sb.ClearStr();
 		while (reader.ReadLine(&sb, 1024))
 		{

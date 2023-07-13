@@ -221,7 +221,7 @@ Bool Net::WebSite::WebSite48IdolControl::GetDownloadLink(Int32 videoId, Int32 li
 	Text::XMLReader *reader;
 	Text::XMLAttrib *attr;
 	Bool found = false;
-	Net::HTTPClient *cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, {STR_PTRC(this->userAgent)}, true, true);
+	NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, {STR_PTRC(this->userAgent)}, true, true);
 	cli->Connect(sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, true);
 	NEW_CLASS(reader, Text::XMLReader(this->encFact, cli, Text::XMLReader::PM_HTML));
 	while (!found && reader->ReadNext())
@@ -264,7 +264,7 @@ Bool Net::WebSite::WebSite48IdolControl::GetVideoName(Int32 videoId, Text::Strin
 	Text::XMLReader *reader;
 	Text::XMLAttrib *attr;
 	Bool found = false;
-	Net::HTTPClient *cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, {STR_PTRC(this->userAgent)}, true, true);
+	NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, {STR_PTRC(this->userAgent)}, true, true);
 	cli->Connect(sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, true);
 	NEW_CLASS(reader, Text::XMLReader(this->encFact, cli, Text::XMLReader::PM_HTML));
 	while (!found && reader->ReadNext())
@@ -287,7 +287,7 @@ Bool Net::WebSite::WebSite48IdolControl::GetVideoName(Int32 videoId, Text::Strin
 		}
 	}
 	DEL_CLASS(reader);
-	DEL_CLASS(cli);
+	cli.Delete();
 	return found;
 }
 

@@ -170,7 +170,7 @@ Bool IO::SMake::LoadConfigFile(Text::CString cfgFile)
 	UOSInt i;
 	IO::SMake::ConfigItem *cfg;
 	IO::SMake::ProgramItem *prog = 0;
-	Text::UTF8Reader reader(&fs);
+	Text::UTF8Reader reader(fs);
 	sb.ClearStr();
 	ret = true;
 	while (reader.ReadLine(&sb, 1024))
@@ -476,7 +476,7 @@ Bool IO::SMake::LoadConfigFile(Text::CString cfgFile)
 }
 
 
-Bool IO::SMake::ParseSource(Data::FastStringMap<Int32> *objList, Data::FastStringMap<Int32> *libList, Data::FastStringMap<Int32> *procList, Data::ArrayListString *headerList, Int64 *latestTime, Text::CString sourceFile, Text::StringBuilderUTF8 *tmpSb)
+Bool IO::SMake::ParseSource(Data::FastStringMap<Int32> *objList, Data::FastStringMap<Int32> *libList, Data::FastStringMap<Int32> *procList, Data::ArrayListStringNN *headerList, Int64 *latestTime, Text::CString sourceFile, Text::StringBuilderUTF8 *tmpSb)
 {
 	Text::CString fileName;
 	if (IO::Path::PATH_SEPERATOR == '\\')
@@ -508,7 +508,7 @@ Bool IO::SMake::ParseSource(Data::FastStringMap<Int32> *objList, Data::FastStrin
 	Text::PString str1;
 	UOSInt i;
 	IO::SMake::ProgramItem *prog;
-	Text::UTF8Reader reader(&fs);
+	Text::UTF8Reader reader(fs);
 	tmpSb->ClearStr();
 	while (reader.ReadLine(tmpSb, 1024))
 	{
@@ -551,10 +551,10 @@ Bool IO::SMake::ParseSource(Data::FastStringMap<Int32> *objList, Data::FastStrin
 						{
 							procList->PutNN(prog->name, 1);
 
-							UOSInt i = prog->subItems.GetCount();
-							while (i-- > 0)
+							Data::ArrayIterator<NotNullPtr<Text::String>> it = prog->subItems.Iterator();
+							while (it.HasNext())
 							{
-								Text::String *subItem = prog->subItems.GetItem(i);
+								NotNullPtr<Text::String> subItem = it.Next();
 								if (this->debugObj && this->messageWriter && subItem->Equals(this->debugObj))
 								{
 									Text::StringBuilderUTF8 sb2;
@@ -563,12 +563,12 @@ Bool IO::SMake::ParseSource(Data::FastStringMap<Int32> *objList, Data::FastStrin
 									sb2.Append(sourceFile);
 									this->messageWriter->WriteLineC(sb2.ToString(), sb2.GetLength());
 								}
-								objList->Put(subItem, 1);
+								objList->PutNN(subItem, 1);
 							}
-							i = prog->libs.GetCount();
-							while (i-- > 0)
+							it = prog->libs.Iterator();
+							while (it.HasNext())
 							{
-								libList->Put(prog->libs.GetItem(i), 1);
+								libList->PutNN(it.Next(), 1);
 							}
 							if (this->debugObj && this->messageWriter && prog->name->Equals(this->debugObj))
 							{
@@ -586,13 +586,14 @@ Bool IO::SMake::ParseSource(Data::FastStringMap<Int32> *objList, Data::FastStrin
 							{
 								lastTime = thisTime;
 							}
-							if (prog->srcFile)
+							NotNullPtr<Text::String> s;
+							if (s.Set(prog->srcFile))
 							{
 								if (!this->ParseSource(objList, libList, procList, headerList, &thisTime, prog->srcFile->ToCString(), tmpSb))
 								{
 									return false;
 								}
-								this->fileTimeMap.Put(prog->srcFile, thisTime);
+								this->fileTimeMap.PutNN(s, thisTime);
 							}
 						}
 					}
@@ -605,7 +606,7 @@ Bool IO::SMake::ParseSource(Data::FastStringMap<Int32> *objList, Data::FastStrin
 	return true;
 }
 
-Bool IO::SMake::ParseHeader(Data::FastStringMap<Int32> *objList, Data::FastStringMap<Int32> *libList, Data::FastStringMap<Int32> *procList, Data::ArrayListString *headerList, Int64 *latestTime, NotNullPtr<Text::String> headerFile, Text::CString sourceFile, Text::StringBuilderUTF8 *tmpSb)
+Bool IO::SMake::ParseHeader(Data::FastStringMap<Int32> *objList, Data::FastStringMap<Int32> *libList, Data::FastStringMap<Int32> *procList, Data::ArrayListStringNN *headerList, Int64 *latestTime, NotNullPtr<Text::String> headerFile, Text::CString sourceFile, Text::StringBuilderUTF8 *tmpSb)
 {
 	IO::SMake::ConfigItem *cfg = this->cfgMap.Get(CSTR("INCLUDEPATH"));
 	if (cfg == 0)
@@ -630,9 +631,9 @@ Bool IO::SMake::ParseHeader(Data::FastStringMap<Int32> *objList, Data::FastStrin
 
 		if (IO::Path::GetPathType(CSTRP(sbuff, sptr)) == IO::Path::PathType::File)
 		{
-			if (headerList && headerList->SortedIndexOf(headerFile.Ptr()) < 0)
+			if (headerList && headerList->SortedIndexOf(headerFile) < 0)
 			{
-				headerList->SortedInsert(headerFile.Ptr());
+				headerList->SortedInsert(headerFile);
 			}
 			if (this->ParseSource(objList, libList, procList, headerList, latestTime, CSTRP(sbuff, sptr), tmpSb))
 			{
@@ -663,9 +664,9 @@ Bool IO::SMake::ParseHeader(Data::FastStringMap<Int32> *objList, Data::FastStrin
 	sptr = IO::Path::GetRealPath(sbuff, tmpSb->ToString(), tmpSb->GetLength());
 	if (IO::Path::GetPathType(CSTRP(sbuff, sptr)) == IO::Path::PathType::File)
 	{
-		if (headerList && headerList->SortedIndexOf(headerFile.Ptr()) < 0)
+		if (headerList && headerList->SortedIndexOf(headerFile) < 0)
 		{
-			headerList->SortedInsert(headerFile.Ptr());
+			headerList->SortedInsert(headerFile);
 		}
 		if (this->ParseSource(objList, libList, procList, headerList, latestTime, CSTRP(sbuff, sptr), tmpSb))
 		{
@@ -688,18 +689,17 @@ Bool IO::SMake::ParseHeader(Data::FastStringMap<Int32> *objList, Data::FastStrin
 	return false;
 }
 
-Bool IO::SMake::ParseProgInternal(Data::FastStringMap<Int32> *objList, Data::FastStringMap<Int32> *libList, Data::FastStringMap<Int32> *procList, Data::ArrayListString *headerList, Int64 *latestTime, Bool *progGroup, const IO::SMake::ProgramItem *prog, Text::StringBuilderUTF8 *tmpSb)
+Bool IO::SMake::ParseProgInternal(Data::FastStringMap<Int32> *objList, Data::FastStringMap<Int32> *libList, Data::FastStringMap<Int32> *procList, Data::ArrayListStringNN *headerList, Int64 *latestTime, Bool *progGroup, NotNullPtr<const ProgramItem> prog, Text::StringBuilderUTF8 *tmpSb)
 {
-	UOSInt i;
-	Text::String *subItem;
+	NotNullPtr<Text::String> subItem;
 	IO::SMake::ProgramItem *subProg;
 	Int64 thisTime;
 	*latestTime = 0;
 	*progGroup = true;
-	i = prog->subItems.GetCount();
-	while (i-- > 0)
+	Data::ArrayIterator<NotNullPtr<Text::String>> it = prog->subItems.Iterator();
+	while (it.HasNext())
 	{
-		subItem = prog->subItems.GetItem(i);
+		subItem = it.Next();
 		if (subItem->EndsWith(UTF8STRC(".o")))
 		{
 			*progGroup = false;
@@ -712,7 +712,7 @@ Bool IO::SMake::ParseProgInternal(Data::FastStringMap<Int32> *objList, Data::Fas
 			tmpSb->Append(prog->name);
 			this->messageWriter->WriteLineC(tmpSb->ToString(), tmpSb->GetLength());
 		}
-		objList->Put(subItem, 1);
+		objList->PutNN(subItem, 1);
 	}
 
 	if (*progGroup)
@@ -741,11 +741,11 @@ Bool IO::SMake::ParseProgInternal(Data::FastStringMap<Int32> *objList, Data::Fas
 		*latestTime = thisTime;
 	}
 
-	i = prog->subItems.GetCount();
-	while (i-- > 0)
+	it = prog->subItems.Iterator();
+	while (it.HasNext())
 	{
-		subItem = prog->subItems.GetItem(i);
-		subProg = this->progMap.Get(subItem);
+		subItem = it.Next();
+		subProg = this->progMap.GetNN(subItem);
 		if (subProg == 0)
 		{
 			tmpSb->AppendC(UTF8STRC("Item "));
@@ -787,17 +787,16 @@ void IO::SMake::CompileObject(Bool *errorState, Text::CString cmd)
 	this->tasks->AddTask(CompileTask, req);
 }
 
-Bool IO::SMake::CompileProgInternal(IO::SMake::ProgramItem *prog, Bool asmListing, Bool enableTest)
+Bool IO::SMake::CompileProgInternal(NotNullPtr<const ProgramItem> prog, Bool asmListing, Bool enableTest)
 {
 	Data::FastStringMap<Int32> libList;
 	Data::FastStringMap<Int32> objList;
 	Data::FastStringMap<Int32> procList;
 	UOSInt i;
 	UOSInt j;
-	UOSInt k;
 	Int64 latestTime = 0;
 	Int64 thisTime;
-	IO::SMake::ProgramItem *subProg;
+	NotNullPtr<const IO::SMake::ProgramItem> subProg;
 	Bool progGroup;
 	if (this->messageWriter)
 	{
@@ -828,8 +827,7 @@ Bool IO::SMake::CompileProgInternal(IO::SMake::ProgramItem *prog, Bool asmListin
 		j = objList.GetCount();
 		while (i < j)
 		{
-			subProg = this->progMap.Get(objList.GetKey(i));
-			if (subProg == 0)
+			if (!subProg.Set(this->progMap.Get(objList.GetKey(i))))
 			{
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("Program "));
@@ -878,8 +876,7 @@ Bool IO::SMake::CompileProgInternal(IO::SMake::ProgramItem *prog, Bool asmListin
 	j = objList.GetCount();
 	while (i < j)
 	{
-		subProg = this->progMap.Get(objList.GetKey(i));
-		if (subProg == 0)
+		if (!subProg.Set(this->progMap.Get(objList.GetKey(i))))
 		{
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Object "));
@@ -898,10 +895,10 @@ Bool IO::SMake::CompileProgInternal(IO::SMake::ProgramItem *prog, Bool asmListin
 			return false;
 		}
 
-		k = subProg->libs.GetCount();
-		while (k-- > 0)
+		Data::ArrayIterator<NotNullPtr<Text::String>> itLibs = subProg->libs.Iterator();
+		while (itLibs.HasNext())
 		{
-			libList.Put(subProg->libs.GetItem(k), 1);
+			libList.PutNN(itLibs.Next(), 1);
 		}
 
 		Bool updateToDate = false;
@@ -1344,8 +1341,8 @@ Bool IO::SMake::HasProg(Text::CString progName) const
 
 Bool IO::SMake::CompileProg(Text::CString progName, Bool asmListing)
 {
-	IO::SMake::ProgramItem *prog = this->progMap.GetC(progName);
-	if (prog == 0)
+	NotNullPtr<const IO::SMake::ProgramItem> prog;
+	if (!prog.Set(this->progMap.GetC(progName)))
 	{
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("Program "));
@@ -1360,11 +1357,11 @@ Bool IO::SMake::CompileProg(Text::CString progName, Bool asmListing)
 	}
 }
 
-Bool IO::SMake::ParseProg(Data::FastStringMap<Int32> *objList, Data::FastStringMap<Int32> *libList, Data::FastStringMap<Int32> *procList, Data::ArrayListString *headerList, Int64 *latestTime, Bool *progGroup, Text::String *progName)
+Bool IO::SMake::ParseProg(Data::FastStringMap<Int32> *objList, Data::FastStringMap<Int32> *libList, Data::FastStringMap<Int32> *procList, Data::ArrayListStringNN *headerList, Int64 *latestTime, Bool *progGroup, Text::String *progName)
 {
-	IO::SMake::ProgramItem *prog = this->progMap.GetC(progName->ToCString());
+	NotNullPtr<const IO::SMake::ProgramItem> prog;
 	Text::StringBuilderUTF8 sb;
-	if (prog == 0)
+	if (!prog.Set(this->progMap.GetC(progName->ToCString())))
 	{
 		sb.AppendC(UTF8STRC("Program "));
 		sb.AppendC(progName->v, progName->leng);

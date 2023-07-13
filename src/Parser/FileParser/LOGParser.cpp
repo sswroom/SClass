@@ -59,7 +59,7 @@ IO::ParsedObject *Parser::FileParser::LOGParser::ParseFileHdr(IO::StreamData *fd
 		return 0;
 	}
 	IO::StreamDataStream stm(fd);
-	IO::StreamReader reader(&stm, this->codePage);
+	IO::StreamReader reader(stm, this->codePage);
 	if ((sptr = reader.ReadLine(sbuff, 255)) == 0)
 	{
 		return 0;

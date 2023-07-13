@@ -51,7 +51,7 @@ namespace SSWR
 			static void __stdcall OnNewCasesSizeChanged(void *userObj);
 
 			void ClearRecords();
-			Bool LoadCSV(IO::SeekableStream *stm);
+			Bool LoadCSV(NotNullPtr<IO::SeekableStream> stm);
 		public:
 			AVIRCOVID19Form(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRCOVID19Form();

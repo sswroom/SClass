@@ -312,7 +312,7 @@ UInt32 __stdcall IO::GPSNMEA::NMEAThread(void *userObj)
 	return 0;
 }
 
-IO::GPSNMEA::GPSNMEA(IO::Stream *stm, Bool relStm)
+IO::GPSNMEA::GPSNMEA(NotNullPtr<IO::Stream> stm, Bool relStm)
 {
 	this->stm = stm;
 	this->relStm = relStm;
@@ -338,8 +338,7 @@ IO::GPSNMEA::~GPSNMEA()
 	}
 	if (this->relStm)
 	{
-		DEL_CLASS(this->stm);
-		this->stm = 0;
+		this->stm.Delete();
 		this->relStm = false;
 	}
 }
@@ -408,7 +407,7 @@ UOSInt IO::GPSNMEA::GenNMEACommand(const UTF8Char *cmd, UOSInt cmdLen, UInt8 *bu
 	return size + 5;
 }
 
-Map::GPSTrack *IO::GPSNMEA::NMEA2Track(IO::Stream *stm, Text::CString sourceName)
+Map::GPSTrack *IO::GPSNMEA::NMEA2Track(NotNullPtr<IO::Stream> stm, Text::CString sourceName)
 {
 	Map::GPSTrack *trk;
 	Map::GPSTrack::GPSRecord3 record;
