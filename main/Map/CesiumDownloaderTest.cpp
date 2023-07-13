@@ -21,7 +21,7 @@ class CesiumDownloader
 public:
 	struct FileEntry
 	{
-		Text::String *url;
+		NotNullPtr<Text::String> url;
 		UInt64 downloadSize;
 		UInt64 contentSize;
 	};
@@ -306,12 +306,12 @@ public:
 		{
 			if (this->stats[i].currURL == 0)
 			{
-				this->stats[i].currURL = Text::String::New(url);
+				this->stats[i].currURL = Text::String::New(url).Ptr();
 				this->stats[i].evt->Set();
 				return;
 			}
 		}
-		this->urlList.Add(Text::String::New(url));
+		this->urlList.Add(Text::String::New(url).Ptr());
 	}
 
 	void WaitForIdle()

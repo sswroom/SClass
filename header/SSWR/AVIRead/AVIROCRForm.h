@@ -19,7 +19,7 @@ namespace SSWR
 			typedef struct
 			{
 				Math::RectArea<OSInt> area;
-				Text::String *result;
+				NotNullPtr<Text::String> result;
 				Double confidence;
 				Media::StaticImage *resImg;
 			} ResultInfo;
@@ -37,9 +37,9 @@ namespace SSWR
 			UI::GUIHSplitter *hspText;
 			UI::GUIPictureBoxDD *pbImg;
 
-			static void __stdcall OnFileHandler(void *userObj, Text::String **files, UOSInt nFiles);
+			static void __stdcall OnFileHandler(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles);
 			static void __stdcall OnTextSelChg(void *userObj);
-			static void __stdcall OnOCRResult(void *userObj, Text::String *txt, Double confidence, Math::RectArea<OSInt> boundary);
+			static void __stdcall OnOCRResult(void *userObj, NotNullPtr<Text::String> txt, Double confidence, Math::RectArea<OSInt> boundary);
 			void ClearResults();
 		public:
 			AVIROCRForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);

@@ -19,7 +19,7 @@ namespace UI
 
 			UI::GUIForm *ownerFrm;
 			UI::GUITimer *tmr;
-			Text::String *videoFileName;
+			NotNullPtr<Text::String> videoFileName;
 			Sync::Mutex frameMut;
 			Media::DrawImage *frameImg;
 			Parser::ParserList *parsers;

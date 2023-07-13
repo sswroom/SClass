@@ -25,7 +25,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		return 0;
 	}
 	Parser::FileParser::X509Parser parser;
-	Text::String *s = Text::String::NewP(sbuff, sptr);
+	NotNullPtr<Text::String> s = Text::String::NewP(sbuff, sptr);
 	Crypto::Cert::X509File *x509 = parser.ParseBuff(buff, buffSize, s);
 	s->Release();
 	if (x509 == 0)
@@ -48,15 +48,15 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	Crypto::Cert::CertExtensions ext;
 	MemClear(&names, sizeof(names));
 	MemClear(&ext, sizeof(ext));
-	names.countryName = Text::String::New(UTF8STRC("HK"));
-	names.stateOrProvinceName = Text::String::New(UTF8STRC("Hong Kong"));
-	names.localityName = Text::String::New(UTF8STRC("Hong Kong"));
-	names.organizationName = Text::String::New(UTF8STRC("Simon Software Working Room"));
-	names.organizationUnitName = Text::String::New(UTF8STRC("sswr"));
-	names.commonName = Text::String::New(UTF8STRC("sswroom.no-ip.org"));
-	names.emailAddress = Text::String::New(UTF8STRC("sswroom@yahoo.com"));
+	names.countryName = Text::String::New(UTF8STRC("HK")).Ptr();
+	names.stateOrProvinceName = Text::String::New(UTF8STRC("Hong Kong")).Ptr();
+	names.localityName = Text::String::New(UTF8STRC("Hong Kong")).Ptr();
+	names.organizationName = Text::String::New(UTF8STRC("Simon Software Working Room")).Ptr();
+	names.organizationUnitName = Text::String::New(UTF8STRC("sswr")).Ptr();
+	names.commonName = Text::String::New(UTF8STRC("sswroom.no-ip.org")).Ptr();
+	names.emailAddress = Text::String::New(UTF8STRC("sswroom@yahoo.com")).Ptr();
 
-	NEW_CLASS(ext.subjectAltName, Data::ArrayList<Text::String*>());
+	NEW_CLASS(ext.subjectAltName, Data::ArrayListNN<Text::String>());
 	ext.subjectAltName->Add(Text::String::New(UTF8STRC("sswroom.no-ip.org")));
 	Crypto::Cert::X509CertReq *csr = Crypto::Cert::CertUtil::CertReqCreate(ssl, &names, key, &ext);
 	if (csr)

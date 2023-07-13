@@ -2839,7 +2839,7 @@ Bool Map::MapConfig2TGen::AddLabel(MapLabels2 *labels, UOSInt maxLabel, UOSInt *
 			labels[i].totalSize = UOSInt2Double(nPoint);
 			labels[i].scaleW = (sumVal.x / UOSInt2Double(nPoint));
 			labels[i].scaleH = (sumVal.y / UOSInt2Double(nPoint));
-			labels[i].label = Text::String::New(labelt);
+			labels[i].label = Text::String::New(labelt).Ptr();
 			labels[i].pos = points[0];
 			labels[i].fontStyle = fontStyle;
 			labels[i].priority = priority;
@@ -3093,7 +3093,7 @@ Bool Map::MapConfig2TGen::AddLabel(MapLabels2 *labels, UOSInt maxLabel, UOSInt *
 			labels[i].currSize = size;//visibleSize;
 			labels[i].flags = flags;
 
-			labels[i].label = Text::String::New(labelt);
+			labels[i].label = Text::String::New(labelt).Ptr();
 			labels[i].points = 0;
 
 			toUpdate = 1;
@@ -3252,7 +3252,7 @@ Bool Map::MapConfig2TGen::AddLabel(MapLabels2 *labels, UOSInt maxLabel, UOSInt *
 					return false;
 				}
 
-				labels[i].label = Text::String::New(labelt);
+				labels[i].label = Text::String::New(labelt).Ptr();
 				labels[i].pos = thisPt;
 				labels[i].fontStyle = fontStyle;
 				labels[i].scaleW = (max.x + min.x) * 0.5; //& 1
@@ -3480,7 +3480,7 @@ void Map::MapConfig2TGen::DrawLabels(Media::DrawImage *img, MapLabels2 *labels, 
 				{
 					if (lastLbl)
 						lastLbl->Release();
-					lastLbl = labels[i].label->Clone();
+					lastLbl = labels[i].label->Clone().Ptr();
 				}
 				else
 				{
@@ -4107,7 +4107,7 @@ void Map::MapConfig2TGen::LoadLabels(Media::DrawImage *img, Map::MapConfig2TGen:
 		{
 			Bool eol;
 			Int32 lblType;
-			Text::String *label;
+			NotNullPtr<Text::String> label;
 //			Double scnX;
 //			Double scnY;
 			Double minX;
@@ -4653,10 +4653,7 @@ Map::MapConfig2TGen::~MapConfig2TGen()
 				while (j-- > 0)
 				{
 					currFont = (Map::MapFontStyle*)this->fonts[i]->GetItem(j);
-					if (currFont->fontName)
-					{
-						MemFree(currFont->fontName);
-					}
+					currFont->fontName->Release();
 					MemFree(currFont);
 				}
 				DEL_CLASS(this->fonts[i]);

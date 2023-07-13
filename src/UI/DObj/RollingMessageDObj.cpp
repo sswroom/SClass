@@ -247,7 +247,7 @@ UInt32 UI::DObj::RollingMessageDObj::AddMessage(Text::CString message)
 	return msg->id;
 }
 
-UInt32 UI::DObj::RollingMessageDObj::AddMessage(Text::String *message)
+UInt32 UI::DObj::RollingMessageDObj::AddMessage(NotNullPtr<Text::String> message)
 {
 	MessageInfo *msg;
 	msg = MemAlloc(MessageInfo, 1);

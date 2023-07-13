@@ -1,5 +1,6 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRCOORDCONVFORM
 #define _SM_SSWR_AVIREAD_AVIRCOORDCONVFORM
+#include "Data/ArrayListNN.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "Text/String.h"
 #include "UI/GUIButton.h"
@@ -45,7 +46,7 @@ namespace SSWR
 			UI::GUITextBox *txtStatus;
 
 			SSWR::AVIRead::AVIRCore *core;
-			Data::ArrayList<Text::String *> nameList;
+			Data::ArrayListNN<Text::String> nameList;
 			Data::ArrayList<Double> xList;
 			Data::ArrayList<Double> yList;
 			Data::ArrayList<Double> zList;
@@ -60,7 +61,7 @@ namespace SSWR
 			static void __stdcall OnCopyAllClicked(void *userObj);
 			static void __stdcall OnConvFileClicked(void *userObj);
 			static void __stdcall OnCoordDblClk(void *userObj, UOSInt itemIndex);
-			static void __stdcall OnFileDrop(void *userObj, Text::String **files, UOSInt nFiles);
+			static void __stdcall OnFileDrop(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles);
 
 			void ClearItems(Bool updateList);
 			void UpdateList();

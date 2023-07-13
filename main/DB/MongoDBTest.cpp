@@ -24,7 +24,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	NEW_CLASS(mongoDB, DB::MongoDB(sb.ToCString(), database, log));
 	
 	Data::ArrayListNN<Text::String> tableList;
-	Data::ArrayList<Text::String*> dbList;
+	Data::ArrayListNN<Text::String> dbList;
 	UOSInt i;
 	UOSInt j;
 	j = mongoDB->GetDatabaseNames(&dbList);

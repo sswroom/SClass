@@ -19,13 +19,13 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	UTF8Char *sptr;
 	UInt32 val;
 	UInt32 val2;
-	Text::String *s;
+	NotNullPtr<Text::String> s;
 	val = 0;
 	while (val < DATACNT)
 	{
 		sptr = Text::StrUInt32(Text::StrConcatC(sbuff, UTF8STRC("Text")), val);
 		s = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
-		map.Put(s, val);
+		map.PutNN(s, val);
 		s->Release();
 		val++;
 	}

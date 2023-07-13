@@ -280,10 +280,7 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::WiFiDownloadFunc(Net::WebServ
 		entry = entryList->GetItem(i);
 		sb.AppendHexBuff(entry->mac, 6, ':', Text::LineBreakType::None);
 		sb.AppendUTF8Char('\t');
-		if (entry->ssid)
-		{
-			sb.Append(entry->ssid);
-		}
+		sb.Append(entry->ssid);
 		sb.AppendUTF8Char('\t');
 		sb.AppendI32(entry->phyType);
 		sb.AppendUTF8Char('\t');
@@ -350,7 +347,7 @@ void Net::WebServer::CapturerWebHandler::AppendWiFiTable(Text::StringBuilderUTF8
 	UInt32 sort = 0;
 	UOSInt i;
 	UOSInt j;
-	Text::String *s;
+	NotNullPtr<Text::String> s;
 	Net::WiFiLogFile::LogFileEntry *entry;
 	sptr = req->GetRequestPath(sbuff, 512);
 	sb->AppendC(UTF8STRC("<table border=\"1\">\r\n"));
@@ -387,10 +384,7 @@ void Net::WebServer::CapturerWebHandler::AppendWiFiTable(Text::StringBuilderUTF8
 			const Net::MACInfo::MACEntry *macEntry = Net::MACInfo::GetMACInfo(entry->macInt);
 			sb->AppendC(macEntry->name, macEntry->nameLen);
 			sb->AppendC(UTF8STRC("</td><td>"));
-			if (entry->ssid)
-			{
-				sb->Append(entry->ssid);
-			}
+			sb->Append(entry->ssid);
 			sb->AppendC(UTF8STRC("</td><td>"));
 			Text::SBAppendF64(sb, entry->lastRSSI);
 			sb->AppendC(UTF8STRC("</td><td>"));
@@ -415,7 +409,7 @@ void Net::WebServer::CapturerWebHandler::AppendBTTable(Text::StringBuilderUTF8 *
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	UInt32 sort = 0;
-	Text::String *s;
+	NotNullPtr<Text::String> s;
 	Data::DateTime dt;
 	Int64 currTime;
 	dt.SetCurrTimeUTC();
@@ -538,17 +532,9 @@ OSInt __stdcall Net::WebServer::CapturerWebHandler::WiFiLogRSSICompare(void *obj
 		{
 			return 0;
 		}
-		else if (log1->ssid == 0)
-		{
-			return -1;
-		}
-		else if (log2->ssid == 0)
-		{
-			return 1;
-		}
 		else
 		{
-			return log1->ssid->CompareTo(log2->ssid);
+			return log1->ssid->CompareTo(log2->ssid.Ptr());
 		}
 	}
 	else if (log1->lastRSSI == 0)

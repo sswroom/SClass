@@ -74,7 +74,7 @@ Bool __stdcall Map::MapServerHandler::GetLayerDataFunc(Net::WebServer::IWebReque
 			UOSInt l;
 			Data::ArrayListInt64 objIds;
 			Int64 objId;
-			Text::String *s;
+			NotNullPtr<Text::String> s;
 			Map::NameArray *nameArr;
 			sb.AppendUTF8Char('[');
 			layer->GetAllObjectIds(&objIds, &nameArr);
@@ -550,7 +550,7 @@ void Map::MapServerHandler::AddLayer(Map::MapDrawLayer *layer)
 	}
 	else
 	{
-		this->layerMap.Put(layer->GetName(), layer);
+		this->layerMap.PutNN(layer->GetName(), layer);
 	}
 }
 
@@ -620,7 +620,7 @@ Bool Map::MapServerHandler::AddAsset(Text::CString filePath)
 void Map::MapServerHandler::SetCesiumScenePath(Text::CString cesiumScenePath)
 {
 	SDEL_STRING(this->cesiumScenePath);
-	this->cesiumScenePath = Text::String::New(cesiumScenePath);
+	this->cesiumScenePath = Text::String::New(cesiumScenePath).Ptr();
 }
 
 void Map::MapServerHandler::SetCesiumMinError(Double minError)

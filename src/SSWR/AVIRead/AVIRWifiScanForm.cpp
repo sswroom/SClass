@@ -54,9 +54,9 @@ void SSWR::AVIRead::AVIRWifiScanForm::WifiScan()
 		UInt8 id[8];
 		UInt64 imac;
 		Manage::HiResClock clk;
-		Text::String *s;
+		NotNullPtr<Text::String> s;
 		const UTF8Char *csptr;
-		Text::String *ssid;
+		NotNullPtr<Text::String> ssid;
 		Data::ArrayList<Net::WirelessLAN::BSSInfo*> bssList;
 		Net::WirelessLAN::BSSInfo *bss;
 		Double t1;
@@ -125,11 +125,11 @@ void SSWR::AVIRead::AVIRWifiScanForm::WifiScan()
 				entry = Net::MACInfo::GetMACInfoOUI(oui);
 				this->lvWifi->SetSubItem(i, 12, {entry->name, entry->nameLen});
 			}
-			if ((s = bss->GetManuf()) != 0)
+			if (s.Set(bss->GetManuf()))
 				this->lvWifi->SetSubItem(i, 13, s);
-			if ((s = bss->GetModel()) != 0)
+			if (s.Set(bss->GetModel()))
 				this->lvWifi->SetSubItem(i, 14, s);
-			if ((s = bss->GetSN()) != 0)
+			if (s.Set(bss->GetSN()))
 				this->lvWifi->SetSubItem(i, 15, s);
 
 			i++;

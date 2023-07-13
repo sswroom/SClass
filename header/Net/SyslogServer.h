@@ -23,7 +23,7 @@ namespace Net
 	private:
 		Net::SocketFactory *sockf;
 		Net::UDPServer *svr;
-		Text::String *logPath;
+		NotNullPtr<Text::String> logPath;
 		IO::LogTool *log;
 		Bool redirLog;
 		Sync::Mutex ipMut;

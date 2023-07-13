@@ -19,8 +19,11 @@ private:
 			printf("Null found in not null pointer: " __FUNCTION__ "\r\n");
 #elif defined(__func__)
 			printf("Null found in not null pointer: " __func__ "\r\n");
+#else
+			printf("Null found in not null pointer\r\n");
 #endif
 		}
+		this->p = p;
 	}
 public:
 	NotNullPtr() = default;

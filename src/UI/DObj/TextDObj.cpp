@@ -9,7 +9,7 @@ UI::DObj::TextDObj::TextDObj(Media::DrawEngine *deng, Text::CString txt, Text::C
 	this->deng = deng;
 	if (txt.leng > 0)
 	{
-		this->txt = Text::String::New(txt);
+		this->txt = Text::String::New(txt).Ptr();
 	}
 	else
 	{
@@ -83,7 +83,7 @@ void UI::DObj::TextDObj::DrawObject(Media::DrawImage *dimg)
 	{
 		if (this->talign == TA_LEFT)
 		{
-			dimg->DrawString(Math::Coord2DDbl(OSInt2Double(tl.x), currPos), this->lines.GetItem(currLine), f, b);
+			dimg->DrawString(Math::Coord2DDbl(OSInt2Double(tl.x), currPos), Text::String::OrEmpty(this->lines.GetItem(currLine)), f, b);
 		}
 		else if (this->talign == TA_CENTER)
 		{
@@ -93,7 +93,7 @@ void UI::DObj::TextDObj::DrawObject(Media::DrawImage *dimg)
 		else if (this->talign == TA_RIGHT)
 		{
 			sz = dimg->GetTextSize(f, this->lines.GetItem(currLine)->ToCString());
-			dimg->DrawString(Math::Coord2DDbl(OSInt2Double(tl.x + (OSInt)this->size.x) - sz.x, currPos), this->lines.GetItem(currLine), f, b);
+			dimg->DrawString(Math::Coord2DDbl(OSInt2Double(tl.x + (OSInt)this->size.x) - sz.x, currPos), Text::String::OrEmpty(this->lines.GetItem(currLine)), f, b);
 		}
 		currLine++;
 		currPos += this->lineHeight;

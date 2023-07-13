@@ -69,12 +69,12 @@ IO::BTDevLog::DevEntry *IO::BTDevLog::AddEntry(UInt64 macInt, Text::String *name
 		}
 		if (log->name == 0 && name != 0)
 		{
-			log->name = name->Clone();
+			log->name = name->Clone().Ptr();
 		}
 		else if (log->name != 0 && name != 0 && IsDefaultName(log->name) && !IsDefaultName(name))
 		{
 			log->name->Release();
-			log->name = name->Clone();
+			log->name = name->Clone().Ptr();
 		}
 		return log;
 	}

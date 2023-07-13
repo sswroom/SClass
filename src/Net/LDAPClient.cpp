@@ -268,7 +268,7 @@ void Net::LDAPClient::ParseLDAPMessage(const UInt8 *msgBuff, UOSInt msgLen)
 						Net::LDAPClient::SearchResItem *item;
 						item = MemAlloc(Net::LDAPClient::SearchResItem, 1);
 						item->type = Text::String::New(sb.ToCString());
-						item->value = Text::String::New(sb2.ToCString());
+						item->value = Text::String::New(sb2.ToCString()).Ptr();
 						obj->items->Add(item);
 					}
 				}

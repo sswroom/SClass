@@ -1,13 +1,13 @@
 #ifndef _SM_NET_WHOISRECORD
 #define _SM_NET_WHOISRECORD
-#include "Data/ArrayListString.h"
+#include "Data/ArrayListStringNN.h"
 namespace Net
 {
 	class WhoisRecord
 	{
 	private:
 		UInt32 recordIP;
-		Data::ArrayListString *items;
+		Data::ArrayListStringNN items;
 		UInt32 startIP;
 		UInt32 endIP;
 

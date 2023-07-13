@@ -197,7 +197,7 @@ Bool Net::WiFiCapturer::Start()
 	this->threadToStop = false;
 	SDEL_CLASS(this->interf);
 	UOSInt i;
-	Text::String *namePtr;
+	NotNullPtr<Text::String> namePtr;
 	Data::ArrayList<Net::WirelessLAN::Interface*> interfaces;
 	Net::WirelessLAN::Interface *ifObj;
 	this->wlan.GetInterfaces(&interfaces);
@@ -267,7 +267,7 @@ void Net::WiFiCapturer::StoreStatus()
 			IO::Path::DeleteFile(this->lastFileName);
 			Text::StrDelNew(this->lastFileName);
 		}
-		this->lastFileName = Text::StrCopyNewC(sbuff, (UOSInt)(sptr - sbuff));
+		this->lastFileName = Text::StrCopyNewC(sbuff, (UOSInt)(sptr - sbuff)).Ptr();
 	}
 }
 

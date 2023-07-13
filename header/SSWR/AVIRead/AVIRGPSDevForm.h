@@ -1,5 +1,6 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRGPSDEVFORM
 #define _SM_SSWR_AVIREAD_AVIRGPSDEVFORM
+#include "Data/ArrayListNN.h"
 #include "IO/ProtoHdlr/ProtoGPSDevInfoHandler.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "UI/GUIButton.h"
@@ -111,7 +112,7 @@ namespace SSWR
 
 			Bool devContUpd;
 			Sync::Mutex devContMut;
-			Data::ArrayList<Text::String*> devConts;
+			Data::ArrayListNN<Text::String> devConts;
 			UOSInt devContACnt;
 			DevAlert *devContAlerts;
 			UOSInt devContGCnt;
@@ -119,12 +120,12 @@ namespace SSWR
 
 			Bool alertContUpd;
 			Sync::Mutex alertContMut;
-			Data::ArrayList<Text::String*> alertConts;
+			Data::ArrayListNN<Text::String> alertConts;
 			Data::ArrayList<Int64> alertContDevs;
 
 			Bool userContUpd;
 			Sync::Mutex userContMut;
-			Data::ArrayList<Text::String*> userConts;
+			Data::ArrayListNN<Text::String> userConts;
 			Data::ArrayList<Int64> userContDevs;
 
 			static UInt32 __stdcall ClientThread(void *userObj);

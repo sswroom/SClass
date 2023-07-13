@@ -40,7 +40,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRGISReplayForm::AddressThread(void *userObj)
 	{
 		if ((sptr = me->navi->ResolveAddress(sbuff, latLon[i])) != 0)
 		{
-			me->names[i] = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
+			me->names[i] = Text::String::New(sbuff, (UOSInt)(sptr - sbuff)).Ptr();
 		}
 		i++;
 	}
@@ -295,18 +295,19 @@ SSWR::AVIRead::AVIRGISReplayForm::AVIRGISReplayForm(UI::GUIClientControl *parent
 	Data::ArrayListString *nameArr;
 	NEW_CLASS(nameArr, Data::ArrayListString());
 	this->track->GetTrackNames(nameArr);
+	NotNullPtr<Text::String> s;
 	UOSInt i = 0;
 	UOSInt j = nameArr->GetCount();
 	while (i < j)
 	{
-		if (nameArr->GetItem(i) == 0)
+		if (!s.Set(nameArr->GetItem(i)))
 		{
 			sptr = Text::StrInt32(Text::StrConcatC(sbuff, UTF8STRC("Track")), (Int32)i);
 			this->cboName->AddItem(CSTRP(sbuff, sptr), 0);
 		}
 		else
 		{
-			this->cboName->AddItem(nameArr->GetItem(i), 0);
+			this->cboName->AddItem(s, 0);
 		}
 		i++;
 	}
@@ -353,7 +354,7 @@ void SSWR::AVIRead::AVIRGISReplayForm::EventMenuClicked(UInt16 cmdId)
 			UOSInt recCnt;
 			UOSInt i;
 			Map::GPSTrack *newTrack;
-			NEW_CLASS(newTrack, Map::GPSTrack(this->track->GetSourceNameObj(), this->track->GetHasAltitude(), this->track->GetCodePage(), this->track->GetName()));
+			NEW_CLASS(newTrack, Map::GPSTrack(this->track->GetSourceNameObj(), this->track->GetHasAltitude(), this->track->GetCodePage(), this->track->GetName().Ptr()));
 			Text::String *trackName = track->GetTrackName(this->currTrackId);
 			if (trackName)
 				newTrack->SetTrackName(trackName->ToCString());

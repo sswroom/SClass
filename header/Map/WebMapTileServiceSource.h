@@ -1,6 +1,7 @@
 #ifndef _SM_MAP_WEBMAPTILESERVICESOURCE
 #define _SM_MAP_WEBMAPTILESERVICESOURCE
 #include "Data/ArrayList.h"
+#include "Data/ArrayListNN.h"
 #include "Data/FastStringMap.h"
 #include "Map/TileMap.h"
 #include "Net/SocketFactory.h"
@@ -39,7 +40,7 @@ namespace Map
 		struct TileMatrixSet
 		{
 			Math::RectAreaDbl bounds;
-			Text::String *id;
+			NotNullPtr<Text::String> id;
 			Math::CoordinateSystem *csys;
 			Data::ArrayList<TileMatrix*> tiles;
 		};
@@ -129,7 +130,7 @@ namespace Map
 		Bool SetResourceInfoType(Text::CString name);
 		UOSInt GetResourceInfoType();
 		UOSInt GetLayerNames(Data::ArrayList<Text::String*> *layerNames);
-		UOSInt GetMatrixSetNames(Data::ArrayList<Text::String*> *matrixSetNames);
+		UOSInt GetMatrixSetNames(Data::ArrayListNN<Text::String> *matrixSetNames);
 		UOSInt GetResourceTileTypeNames(Data::ArrayListNN<Text::String> *resourceTypeNames);
 		UOSInt GetResourceInfoTypeNames(Data::ArrayListNN<Text::String> *resourceTypeNames);
 		static Text::CString GetExt(Map::TileMap::ImageType imgType);

@@ -410,7 +410,7 @@ void UI::GUITextView::GetDrawSize(WChar *str, UOSInt strLen, UOSInt *width, UOSI
 		Media::DrawFont *fnt = this->CreateDrawFont(this->drawBuff);
 		c = str[strLen];
 		str[strLen] = 0;
-		Text::String *s = Text::String::NewNotNull(str);
+		NotNullPtr<Text::String> s = Text::String::NewNotNull(str);
 		str[strLen] = c;
 		sz = this->drawBuff->GetTextSize(fnt, s->ToCString());
 		s->Release();

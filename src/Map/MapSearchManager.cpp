@@ -27,7 +27,7 @@ Map::MapSearchLayer *Map::MapSearchManager::LoadLayer(Text::CString fileName)
 	{
 		return this->layerArr.GetItem((UOSInt)i);
 	}
-	i = (OSInt)this->nameArr.SortedInsert(Text::String::New(fileName));
+	i = (OSInt)this->nameArr.SortedInsert(Text::String::New(fileName).Ptr());
 	Map::MapLayerData *lyr;
 	NEW_CLASS(lyr, Map::MapLayerData(fileName));
 	this->layerArr.Insert((UOSInt)i, lyr);

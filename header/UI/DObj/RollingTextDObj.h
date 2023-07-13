@@ -12,7 +12,7 @@ namespace UI
 		private:
 			Media::DrawEngine *deng;
 			Text::String *txt;
-			Text::String *fontName;
+			NotNullPtr<Text::String> fontName;
 			Double fontSize;
 			UInt32 fontColor;
 			UInt32 codePage;

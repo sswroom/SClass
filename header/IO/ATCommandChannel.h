@@ -1,6 +1,6 @@
 #ifndef _SM_IO_ATCOMMANDCHANNEL
 #define _SM_IO_ATCOMMANDCHANNEL
-#include "Data/ArrayList.h"
+#include "Data/ArrayListNN.h"
 #include "Data/Duration.h"
 #include "IO/LogTool.h"
 #include "IO/Stream.h"
@@ -27,7 +27,7 @@ namespace IO
 		void *cmdHdlrObj;
 		IO::ILogger *log;
 
-		Data::ArrayList<Text::String *> cmdResults;
+		Data::ArrayListNN<Text::String> cmdResults;
 		Sync::Mutex cmdResultMut;
 
 		Bool threadRunning;

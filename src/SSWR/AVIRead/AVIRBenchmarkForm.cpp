@@ -459,10 +459,10 @@ SSWR::AVIRead::AVIRBenchmarkForm::AVIRBenchmarkForm(UI::GUIClientControl *parent
 	while (i < j)
 	{
 		ram = ramList.GetItem(i);
-		k = this->lvRAM->AddItem(ram->deviceLocator, 0);
-		this->lvRAM->SetSubItem(k, 1, ram->manufacturer);
-		this->lvRAM->SetSubItem(k, 2, ram->partNo);
-		this->lvRAM->SetSubItem(k, 3, ram->sn);
+		k = this->lvRAM->AddItem(Text::String::OrEmpty(ram->deviceLocator), 0);
+		this->lvRAM->SetSubItem(k, 1, Text::String::OrEmpty(ram->manufacturer));
+		this->lvRAM->SetSubItem(k, 2, Text::String::OrEmpty(ram->partNo));
+		this->lvRAM->SetSubItem(k, 3, Text::String::OrEmpty(ram->sn));
 		sptr = Text::StrUOSInt(sbuff, ram->defSpdMHz);
 		this->lvRAM->SetSubItem(k, 4, CSTRP(sbuff, sptr));
 		sptr = Text::StrUOSInt(sbuff, ram->confSpdMHz);

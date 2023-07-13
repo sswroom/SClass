@@ -9,7 +9,7 @@ void __stdcall SSWR::AVIRead::AVIRProfiledResizerForm::OnChgClicked(void *userOb
 	me->ChangeProfile();
 }
 
-void __stdcall SSWR::AVIRead::AVIRProfiledResizerForm::OnFileDrop(void *userObj, Text::String **files, UOSInt nFiles)
+void __stdcall SSWR::AVIRead::AVIRProfiledResizerForm::OnFileDrop(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles)
 {
 	SSWR::AVIRead::AVIRProfiledResizerForm *me = (SSWR::AVIRead::AVIRProfiledResizerForm*)userObj;
 	UOSInt i = 0;

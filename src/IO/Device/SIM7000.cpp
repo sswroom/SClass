@@ -390,7 +390,7 @@ UTF8Char *IO::Device::SIM7000::NetGetIFAddr(UTF8Char *addr)
 
 Bool IO::Device::SIM7000::NetGetDNSList(Data::ArrayList<UInt32> *dnsList)
 {
-	Data::ArrayList<Text::String*> resList;
+	Data::ArrayListNN<Text::String> resList;
 	if (this->SendStringCommand(&resList, UTF8STRC("AT+CDNSCFG?"), 3000))
 	{
 		UOSInt i = 0;

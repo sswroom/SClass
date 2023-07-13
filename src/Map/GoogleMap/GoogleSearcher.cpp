@@ -29,7 +29,7 @@ Map::GoogleMap::GoogleSearcher::GoogleSearcher(Net::SocketFactory *sockf, Net::S
 	if (gooCliId)
 	{
 		Text::TextBinEnc::Base64Enc b64(Text::TextBinEnc::Base64Enc::Charset::URL, true);
-		this->gooCliId = gooCliId->Clone();
+		this->gooCliId = gooCliId->Clone().Ptr();
 		this->gooPrivKey = MemAlloc(UInt8, gooPrivKey->leng + 1);
 		this->gooPrivKeyLeng = b64.DecodeBin(gooPrivKey->v, gooPrivKey->leng, this->gooPrivKey);
 		this->gooKey = 0;
@@ -54,7 +54,7 @@ Map::GoogleMap::GoogleSearcher::GoogleSearcher(Net::SocketFactory *sockf, Net::S
 	if (gooCliId.leng > 0)
 	{
 		Text::TextBinEnc::Base64Enc b64(Text::TextBinEnc::Base64Enc::Charset::URL, true);
-		this->gooCliId = Text::String::New(gooCliId);
+		this->gooCliId = Text::String::New(gooCliId).Ptr();
 		this->gooPrivKey = MemAlloc(UInt8, gooPrivKey.leng + 1);
 		this->gooPrivKeyLeng = b64.DecodeBin(gooPrivKey.v, gooPrivKey.leng, this->gooPrivKey);
 		this->gooKey = 0;

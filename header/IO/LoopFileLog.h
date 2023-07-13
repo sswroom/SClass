@@ -17,7 +17,7 @@ namespace IO
 		Int32 lastVal;
 		Text::UTF8Writer *log;
 		IO::FileStream *fileStm;
-		Text::String *fileName;
+		NotNullPtr<Text::String> fileName;
 		const UTF8Char *extName;
 		Bool closed;
 

@@ -60,7 +60,7 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothLogForm::OnContentDblClicked(void *us
 	SSWR::AVIRead::AVIRMACManagerEntryForm frm(0, me->ui, me->core, log->mac, name);
 	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 	{
-		Text::String *name = frm.GetNameNew();
+		NotNullPtr<Text::String> name = frm.GetNameNew();
 		UOSInt i = me->macList.SetEntry(log->macInt, name->ToCString());
 		name->Release();
 		entry = me->macList.GetItem(i);
@@ -110,6 +110,7 @@ void SSWR::AVIRead::AVIRBluetoothLogForm::LogUIUpdate()
 	Bool unkOnly = this->chkUnkOnly->IsChecked();
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
+	NotNullPtr<Text::String> s;
 	UOSInt i;
 	UOSInt j;
 	UOSInt l;
@@ -159,8 +160,8 @@ void SSWR::AVIRead::AVIRBluetoothLogForm::LogUIUpdate()
 					this->lvContent->SetSubItem(l, 3, CSTR("?"));
 				}
 			}
-			if (log->name)
-				this->lvContent->SetSubItem(l, 4, log->name);
+			if (s.Set(log->name))
+				this->lvContent->SetSubItem(l, 4, s);
 			sptr = Text::StrInt32(sbuff, log->txPower);
 			this->lvContent->SetSubItem(l, 5, CSTRP(sbuff, sptr));
 			if (log->company == 0)

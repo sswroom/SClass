@@ -297,7 +297,7 @@ Text::String* Lamppost::GetAccLocati()
 void Lamppost::SetAccLocati(Text::String* accLocati)
 {
 	SDEL_STRING(this->accLocati);
-	this->accLocati = accLocati?accLocati->Clone():0;
+	this->accLocati = accLocati?accLocati->Clone().Ptr():0;
 }
 
 Text::String* Lamppost::GetAntiBurgl()
@@ -308,7 +308,7 @@ Text::String* Lamppost::GetAntiBurgl()
 void Lamppost::SetAntiBurgl(Text::String* antiBurgl)
 {
 	SDEL_STRING(this->antiBurgl);
-	this->antiBurgl = antiBurgl?antiBurgl->Clone():0;
+	this->antiBurgl = antiBurgl?antiBurgl->Clone().Ptr():0;
 }
 
 Int16 Lamppost::GetBulbQty()
@@ -339,7 +339,7 @@ Text::String* Lamppost::GetCmsType()
 void Lamppost::SetCmsType(Text::String* cmsType)
 {
 	SDEL_STRING(this->cmsType);
-	this->cmsType = cmsType?cmsType->Clone():0;
+	this->cmsType = cmsType?cmsType->Clone().Ptr():0;
 }
 
 Int16 Lamppost::GetColClass()
@@ -400,7 +400,7 @@ Text::String* Lamppost::GetContrNo()
 void Lamppost::SetContrNo(Text::String* contrNo)
 {
 	SDEL_STRING(this->contrNo);
-	this->contrNo = contrNo?contrNo->Clone():0;
+	this->contrNo = contrNo?contrNo->Clone().Ptr():0;
 }
 
 Text::String* Lamppost::GetCzone()
@@ -411,7 +411,7 @@ Text::String* Lamppost::GetCzone()
 void Lamppost::SetCzone(Text::String* czone)
 {
 	SDEL_STRING(this->czone);
-	this->czone = czone?czone->Clone():0;
+	this->czone = czone?czone->Clone().Ptr():0;
 }
 
 Text::String* Lamppost::GetDeleted()
@@ -422,7 +422,7 @@ Text::String* Lamppost::GetDeleted()
 void Lamppost::SetDeleted(Text::String* deleted)
 {
 	SDEL_STRING(this->deleted);
-	this->deleted = deleted?deleted->Clone():0;
+	this->deleted = deleted?deleted->Clone().Ptr():0;
 }
 
 Data::Timestamp Lamppost::GetDisconDate()
@@ -443,7 +443,7 @@ Text::String* Lamppost::GetDistrict()
 void Lamppost::SetDistrict(Text::String* district)
 {
 	SDEL_STRING(this->district);
-	this->district = district?district->Clone():0;
+	this->district = district?district->Clone().Ptr():0;
 }
 
 Text::String* Lamppost::GetFixOPole()
@@ -454,7 +454,7 @@ Text::String* Lamppost::GetFixOPole()
 void Lamppost::SetFixOPole(Text::String* fixOPole)
 {
 	SDEL_STRING(this->fixOPole);
-	this->fixOPole = fixOPole?fixOPole->Clone():0;
+	this->fixOPole = fixOPole?fixOPole->Clone().Ptr():0;
 }
 
 Int16 Lamppost::GetIVersion()
@@ -495,7 +495,7 @@ Text::String* Lamppost::GetLampNo()
 void Lamppost::SetLampNo(Text::String* lampNo)
 {
 	SDEL_STRING(this->lampNo);
-	this->lampNo = lampNo?lampNo->Clone():0;
+	this->lampNo = lampNo?lampNo->Clone().Ptr():0;
 }
 
 Text::String* Lamppost::GetLampType()
@@ -506,7 +506,7 @@ Text::String* Lamppost::GetLampType()
 void Lamppost::SetLampType(Text::String* lampType)
 {
 	SDEL_STRING(this->lampType);
-	this->lampType = lampType?lampType->Clone():0;
+	this->lampType = lampType?lampType->Clone().Ptr():0;
 }
 
 Text::String* Lamppost::GetLandmark()
@@ -517,7 +517,7 @@ Text::String* Lamppost::GetLandmark()
 void Lamppost::SetLandmark(Text::String* landmark)
 {
 	SDEL_STRING(this->landmark);
-	this->landmark = landmark?landmark->Clone():0;
+	this->landmark = landmark?landmark->Clone().Ptr():0;
 }
 
 Text::String* Lamppost::GetLtgRegion()
@@ -528,7 +528,7 @@ Text::String* Lamppost::GetLtgRegion()
 void Lamppost::SetLtgRegion(Text::String* ltgRegion)
 {
 	SDEL_STRING(this->ltgRegion);
-	this->ltgRegion = ltgRegion?ltgRegion->Clone():0;
+	this->ltgRegion = ltgRegion?ltgRegion->Clone().Ptr():0;
 }
 
 Text::String* Lamppost::GetMounting()
@@ -539,7 +539,7 @@ Text::String* Lamppost::GetMounting()
 void Lamppost::SetMounting(Text::String* mounting)
 {
 	SDEL_STRING(this->mounting);
-	this->mounting = mounting?mounting->Clone():0;
+	this->mounting = mounting?mounting->Clone().Ptr():0;
 }
 
 Text::String* Lamppost::GetNOPoint()
@@ -550,7 +550,7 @@ Text::String* Lamppost::GetNOPoint()
 void Lamppost::SetNOPoint(Text::String* nOPoint)
 {
 	SDEL_STRING(this->nOPoint);
-	this->nOPoint = nOPoint?nOPoint->Clone():0;
+	this->nOPoint = nOPoint?nOPoint->Clone().Ptr():0;
 }
 
 Text::String* Lamppost::GetNemaSoc()
@@ -561,7 +561,7 @@ Text::String* Lamppost::GetNemaSoc()
 void Lamppost::SetNemaSoc(Text::String* nemaSoc)
 {
 	SDEL_STRING(this->nemaSoc);
-	this->nemaSoc = nemaSoc?nemaSoc->Clone():0;
+	this->nemaSoc = nemaSoc?nemaSoc->Clone().Ptr():0;
 }
 
 Int32 Lamppost::GetObjectid()
@@ -592,7 +592,7 @@ Text::String* Lamppost::GetPUserFid()
 void Lamppost::SetPUserFid(Text::String* pUserFid)
 {
 	SDEL_STRING(this->pUserFid);
-	this->pUserFid = pUserFid?pUserFid->Clone():0;
+	this->pUserFid = pUserFid?pUserFid->Clone().Ptr():0;
 }
 
 Text::String* Lamppost::GetPaintMate()
@@ -603,7 +603,7 @@ Text::String* Lamppost::GetPaintMate()
 void Lamppost::SetPaintMate(Text::String* paintMate)
 {
 	SDEL_STRING(this->paintMate);
-	this->paintMate = paintMate?paintMate->Clone():0;
+	this->paintMate = paintMate?paintMate->Clone().Ptr():0;
 }
 
 Single Lamppost::GetPlDepth()
@@ -624,7 +624,7 @@ Text::String* Lamppost::GetPoleManu()
 void Lamppost::SetPoleManu(Text::String* poleManu)
 {
 	SDEL_STRING(this->poleManu);
-	this->poleManu = poleManu?poleManu->Clone():0;
+	this->poleManu = poleManu?poleManu->Clone().Ptr():0;
 }
 
 Text::String* Lamppost::GetPoleType()
@@ -635,7 +635,7 @@ Text::String* Lamppost::GetPoleType()
 void Lamppost::SetPoleType(Text::String* poleType)
 {
 	SDEL_STRING(this->poleType);
-	this->poleType = poleType?poleType->Clone():0;
+	this->poleType = poleType?poleType->Clone().Ptr():0;
 }
 
 Text::String* Lamppost::GetPolecolor()
@@ -646,7 +646,7 @@ Text::String* Lamppost::GetPolecolor()
 void Lamppost::SetPolecolor(Text::String* polecolor)
 {
 	SDEL_STRING(this->polecolor);
-	this->polecolor = polecolor?polecolor->Clone():0;
+	this->polecolor = polecolor?polecolor->Clone().Ptr():0;
 }
 
 Text::String* Lamppost::GetPrimarySt()
@@ -657,7 +657,7 @@ Text::String* Lamppost::GetPrimarySt()
 void Lamppost::SetPrimarySt(Text::String* primarySt)
 {
 	SDEL_STRING(this->primarySt);
-	this->primarySt = primarySt?primarySt->Clone():0;
+	this->primarySt = primarySt?primarySt->Clone().Ptr():0;
 }
 
 Data::Timestamp Lamppost::GetRegDate()
@@ -678,7 +678,7 @@ Text::String* Lamppost::GetRemark1()
 void Lamppost::SetRemark1(Text::String* remark1)
 {
 	SDEL_STRING(this->remark1);
-	this->remark1 = remark1?remark1->Clone():0;
+	this->remark1 = remark1?remark1->Clone().Ptr():0;
 }
 
 Text::String* Lamppost::GetRemark2()
@@ -689,7 +689,7 @@ Text::String* Lamppost::GetRemark2()
 void Lamppost::SetRemark2(Text::String* remark2)
 {
 	SDEL_STRING(this->remark2);
-	this->remark2 = remark2?remark2->Clone():0;
+	this->remark2 = remark2?remark2->Clone().Ptr():0;
 }
 
 Text::String* Lamppost::GetRemark3()
@@ -700,7 +700,7 @@ Text::String* Lamppost::GetRemark3()
 void Lamppost::SetRemark3(Text::String* remark3)
 {
 	SDEL_STRING(this->remark3);
-	this->remark3 = remark3?remark3->Clone():0;
+	this->remark3 = remark3?remark3->Clone().Ptr():0;
 }
 
 Int16 Lamppost::GetRotation()
@@ -721,7 +721,7 @@ Text::String* Lamppost::GetRouteno()
 void Lamppost::SetRouteno(Text::String* routeno)
 {
 	SDEL_STRING(this->routeno);
-	this->routeno = routeno?routeno->Clone():0;
+	this->routeno = routeno?routeno->Clone().Ptr():0;
 }
 
 Text::String* Lamppost::GetSecondSt()
@@ -732,7 +732,7 @@ Text::String* Lamppost::GetSecondSt()
 void Lamppost::SetSecondSt(Text::String* secondSt)
 {
 	SDEL_STRING(this->secondSt);
-	this->secondSt = secondSt?secondSt->Clone():0;
+	this->secondSt = secondSt?secondSt->Clone().Ptr():0;
 }
 
 Math::Geometry::Vector2D* Lamppost::GetShape()
@@ -754,7 +754,7 @@ Text::String* Lamppost::GetShielded()
 void Lamppost::SetShielded(Text::String* shielded)
 {
 	SDEL_STRING(this->shielded);
-	this->shielded = shielded?shielded->Clone():0;
+	this->shielded = shielded?shielded->Clone().Ptr():0;
 }
 
 Text::String* Lamppost::GetSolarLtg()
@@ -765,7 +765,7 @@ Text::String* Lamppost::GetSolarLtg()
 void Lamppost::SetSolarLtg(Text::String* solarLtg)
 {
 	SDEL_STRING(this->solarLtg);
-	this->solarLtg = solarLtg?solarLtg->Clone():0;
+	this->solarLtg = solarLtg?solarLtg->Clone().Ptr():0;
 }
 
 Text::String* Lamppost::GetSpecMate()
@@ -776,7 +776,7 @@ Text::String* Lamppost::GetSpecMate()
 void Lamppost::SetSpecMate(Text::String* specMate)
 {
 	SDEL_STRING(this->specMate);
-	this->specMate = specMate?specMate->Clone():0;
+	this->specMate = specMate?specMate->Clone().Ptr():0;
 }
 
 Data::Timestamp Lamppost::GetSubDate()
@@ -797,7 +797,7 @@ Text::String* Lamppost::GetSubtype()
 void Lamppost::SetSubtype(Text::String* subtype)
 {
 	SDEL_STRING(this->subtype);
-	this->subtype = subtype?subtype->Clone():0;
+	this->subtype = subtype?subtype->Clone().Ptr():0;
 }
 
 Text::String* Lamppost::GetUpdbyhyd()
@@ -808,7 +808,7 @@ Text::String* Lamppost::GetUpdbyhyd()
 void Lamppost::SetUpdbyhyd(Text::String* updbyhyd)
 {
 	SDEL_STRING(this->updbyhyd);
-	this->updbyhyd = updbyhyd?updbyhyd->Clone():0;
+	this->updbyhyd = updbyhyd?updbyhyd->Clone().Ptr():0;
 }
 
 Text::String* Lamppost::GetUpdbymom()
@@ -819,7 +819,7 @@ Text::String* Lamppost::GetUpdbymom()
 void Lamppost::SetUpdbymom(Text::String* updbymom)
 {
 	SDEL_STRING(this->updbymom);
-	this->updbymom = updbymom?updbymom->Clone():0;
+	this->updbymom = updbymom?updbymom->Clone().Ptr():0;
 }
 
 Data::Timestamp Lamppost::GetUpddatehyd()
@@ -850,7 +850,7 @@ Text::String* Lamppost::GetUtilNo()
 void Lamppost::SetUtilNo(Text::String* utilNo)
 {
 	SDEL_STRING(this->utilNo);
-	this->utilNo = utilNo?utilNo->Clone():0;
+	this->utilNo = utilNo?utilNo->Clone().Ptr():0;
 }
 
 Text::String* Lamppost::GetVillage()
@@ -861,7 +861,7 @@ Text::String* Lamppost::GetVillage()
 void Lamppost::SetVillage(Text::String* village)
 {
 	SDEL_STRING(this->village);
-	this->village = village?village->Clone():0;
+	this->village = village?village->Clone().Ptr():0;
 }
 
 Single Lamppost::GetZCoor()

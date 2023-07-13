@@ -32,7 +32,7 @@ namespace Net
 		Net::SocketFactory *sockf;
 		Net::TCPServer *svr;
 		Net::TCPClientMgr *cliMgr;
-		Text::String *logPath;
+		NotNullPtr<Text::String> logPath;
 		IO::ProtoHdlr::ProtoLogCliHandler protoHdlr;
 		IO::LogTool *log;
 		Bool redirLog;

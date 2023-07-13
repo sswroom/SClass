@@ -22,7 +22,7 @@ namespace UI
 		GUITabControl(GUICore *ui, UI::GUIClientControl *parent);
 		virtual ~GUITabControl();
 
-		GUITabPage *AddTabPage(Text::String *itemText);
+		GUITabPage *AddTabPage(NotNullPtr<Text::String> itemText);
 		GUITabPage *AddTabPage(Text::CString itemText);
 		void SetSelectedIndex(UOSInt index);
 		void SetSelectedPage(GUITabPage *page);

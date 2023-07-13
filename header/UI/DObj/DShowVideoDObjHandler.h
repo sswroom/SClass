@@ -17,7 +17,7 @@ namespace UI
 
 			UI::GUIForm *ownerFrm;
 			UI::GUITimer *tmr;
-			Text::String *videoFileName;
+			NotNullPtr<Text::String> videoFileName;
 			Media::Decoder::VideoDecoderFinder vdecoders;
 			Media::IVideoSource *decoder;
 			Media::IImgResizer *resizer;

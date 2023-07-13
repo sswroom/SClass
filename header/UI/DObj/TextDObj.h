@@ -18,7 +18,7 @@ namespace UI
 		private:
 			Media::DrawEngine *deng;
 			Text::String *txt;
-			Text::String *fontName;
+			NotNullPtr<Text::String> fontName;
 			Double fontSize;
 			Media::DrawEngine::DrawFontStyle fontStyle;
 			TextAlign talign;
@@ -28,7 +28,7 @@ namespace UI
 			Double lineHeight;
 			UInt32 currPage;
 			Bool pageChg;
-			Data::ArrayList<Text::String *> lines;
+			Data::ArrayListNN<Text::String> lines;
 
 		public:
 			TextDObj(Media::DrawEngine *deng, Text::CString txt, Text::CString fontName, Double fontSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 fontColor, UInt32 codePage, Math::Coord2D<OSInt> tl, Math::Size2D<UOSInt> size);

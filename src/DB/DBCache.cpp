@@ -35,7 +35,7 @@ DB::DBCache::TableInfo *DB::DBCache::GetTableInfo(Text::CString tableName)
 		this->db->CloseReader(r);
 	}
 	mutUsage.BeginUse();
-	DB::DBCache::TableInfo *oldTable = this->tableMap.Put(table->tableName, table);
+	DB::DBCache::TableInfo *oldTable = this->tableMap.PutNN(table->tableName, table);
 	mutUsage.EndUse();
 	if (oldTable)
 	{

@@ -71,36 +71,37 @@ SSWR::AVIRead::AVIRRSSItemForm::AVIRRSSItemForm(UI::GUIClientControl *parent, UI
 	NEW_CLASS(this->txtText, UI::GUITextBox(ui, this->tpText, CSTR(""), true));
 	this->txtText->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->txtText->SetReadOnly(true);
+	NotNullPtr<Text::String> s;
 
 	i = this->lvInfo->AddItem(CSTR("Title"), 0);
-	if (rssItem->title)
+	if (s.Set(rssItem->title))
 	{
-		this->lvInfo->SetSubItem(i, 1, rssItem->title);
+		this->lvInfo->SetSubItem(i, 1, s);
 	}
 	i = this->lvInfo->AddItem(CSTR("Link"), 0);
-	if (rssItem->link)
+	if (s.Set(rssItem->link))
 	{
-		this->lvInfo->SetSubItem(i, 1, rssItem->link);
+		this->lvInfo->SetSubItem(i, 1, s);
 	}
 	i = this->lvInfo->AddItem(CSTR("Author"), 0);
-	if (rssItem->author)
+	if (s.Set(rssItem->author))
 	{
-		this->lvInfo->SetSubItem(i, 1, rssItem->author);
+		this->lvInfo->SetSubItem(i, 1, s);
 	}
 	i = this->lvInfo->AddItem(CSTR("Category"), 0);
-	if (rssItem->category)
+	if (s.Set(rssItem->category))
 	{
-		this->lvInfo->SetSubItem(i, 1, rssItem->category);
+		this->lvInfo->SetSubItem(i, 1, s);
 	}
 	i = this->lvInfo->AddItem(CSTR("Comments"), 0);
-	if (rssItem->comments)
+	if (s.Set(rssItem->comments))
 	{
-		this->lvInfo->SetSubItem(i, 1, rssItem->comments);
+		this->lvInfo->SetSubItem(i, 1, s);
 	}
 	i = this->lvInfo->AddItem(CSTR("Enclosure"), 0);
-	if (rssItem->enclosure)
+	if (s.Set(rssItem->enclosure))
 	{
-		this->lvInfo->SetSubItem(i, 1, rssItem->enclosure);
+		this->lvInfo->SetSubItem(i, 1, s);
 	}
 	i = this->lvInfo->AddItem(CSTR("PubDate"), 0);
 	if (!rssItem->pubDate.IsNull())
@@ -109,24 +110,24 @@ SSWR::AVIRead::AVIRRSSItemForm::AVIRRSSItemForm(UI::GUIClientControl *parent, UI
 		this->lvInfo->SetSubItem(i, 1, CSTRP(sbuff, sptr));
 	}
 	i = this->lvInfo->AddItem(CSTR("Source"), 0);
-	if (rssItem->source)
+	if (s.Set(rssItem->source))
 	{
-		this->lvInfo->SetSubItem(i, 1, rssItem->source);
+		this->lvInfo->SetSubItem(i, 1, s);
 	}
 	i = this->lvInfo->AddItem(CSTR("GUID"), 0);
-	if (rssItem->guid)
+	if (s.Set(rssItem->guid))
 	{
-		this->lvInfo->SetSubItem(i, 1, rssItem->guid);
+		this->lvInfo->SetSubItem(i, 1, s);
 	}
-	if (rssItem->objectId)
+	if (s.Set(rssItem->objectId))
 	{
 		i = this->lvInfo->AddItem(CSTR("ObjectId"), 0);
-		this->lvInfo->SetSubItem(i, 1, rssItem->objectId);
+		this->lvInfo->SetSubItem(i, 1, s);
 	}
 
 	if (rssItem->description)
 	{
-		Data::ArrayList<Text::String*> imgList;
+		Data::ArrayListNN<Text::String> imgList;
 		Text::String *url;
 		if (rssItem->descHTML)
 		{
@@ -150,7 +151,7 @@ SSWR::AVIRead::AVIRRSSItemForm::AVIRRSSItemForm(UI::GUIClientControl *parent, UI
 			url = imgList.GetItem(i);
 			if (this->cboImage)
 			{
-				this->cboImage->AddItem(url, 0);
+				this->cboImage->AddItem(Text::String::OrEmpty(url), 0);
 			}
 
 			url->Release();

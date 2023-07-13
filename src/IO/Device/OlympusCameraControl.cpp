@@ -41,7 +41,7 @@ void IO::Device::OlympusCameraControl::GetCommandList()
 							reader->ReadNodeText(&sb);
 							sb.TrimWSCRLF();
 							SDEL_STRING(this->oiVersion);
-							this->oiVersion = Text::String::New(sb.ToString(), sb.GetLength());
+							this->oiVersion = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 						}
 						else if (reader->GetNodeText()->Equals(UTF8STRC("oitrackversion")))
 						{
@@ -49,7 +49,7 @@ void IO::Device::OlympusCameraControl::GetCommandList()
 							reader->ReadNodeText(&sb);
 							sb.TrimWSCRLF();
 							SDEL_STRING(this->oiTrackVersion);
-							this->oiTrackVersion = Text::String::New(sb.ToString(), sb.GetLength());
+							this->oiTrackVersion = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 						}
 						else if (reader->GetNodeText()->Equals(UTF8STRC("support")))
 						{
@@ -63,10 +63,10 @@ void IO::Device::OlympusCameraControl::GetCommandList()
 								attr = reader->GetAttrib(i);
 								if (attr->value && attr->name->Equals(UTF8STRC("name")))
 								{
-									j = this->cmdList->SortedIndexOf(attr->value);
+									j = this->cmdList.SortedIndexOf(Text::String::OrEmpty(attr->value));
 									if (j < 0)
 									{
-										this->cmdList->SortedInsert(attr->value->Clone());
+										this->cmdList.SortedInsert(attr->value->Clone());
 									}
 								}
 							}
@@ -145,7 +145,7 @@ void IO::Device::OlympusCameraControl::GetImageList()
 
 void IO::Device::OlympusCameraControl::GetGPSLogList()
 {
-	if (this->cmdList->SortedIndexOfPtr(UTF8STRC("get_gpsloglist")) < 0)
+	if (this->cmdList.SortedIndexOfC(CSTR("get_gpsloglist")) < 0)
 	{
 		return;
 	}
@@ -194,7 +194,7 @@ void IO::Device::OlympusCameraControl::GetGPSLogList()
 
 void IO::Device::OlympusCameraControl::GetSNSLogList()
 {
-	if (this->cmdList->SortedIndexOfPtr(UTF8STRC("get_snsloglist")) < 0)
+	if (this->cmdList.SortedIndexOfC(CSTR("get_snsloglist")) < 0)
 	{
 		return;
 	}
@@ -248,18 +248,16 @@ IO::Device::OlympusCameraControl::OlympusCameraControl(Net::SocketFactory *sockf
 	this->oiVersion = 0;
 	this->oiTrackVersion = 0;
 	this->fileList = 0;
-	NEW_CLASS(this->cmdList, Data::ArrayListString());
 	this->GetCommandList();
 }
 
 IO::Device::OlympusCameraControl::~OlympusCameraControl()
 {
-	UOSInt i = this->cmdList->GetCount();
+	UOSInt i = this->cmdList.GetCount();
 	while (i-- > 0)
 	{
-		this->cmdList->GetItem(i)->Release();
+		this->cmdList.GetItem(i)->Release();
 	}
-	DEL_CLASS(this->cmdList);
 	if (this->fileList)
 	{
 		IO::CameraControl::FileInfo *file;
@@ -275,7 +273,7 @@ IO::Device::OlympusCameraControl::~OlympusCameraControl()
 	SDEL_STRING(this->oiTrackVersion);
 }
 
-UOSInt IO::Device::OlympusCameraControl::GetInfoList(Data::ArrayList<Text::String*> *nameList, Data::ArrayList<Text::String*> *valueList)
+UOSInt IO::Device::OlympusCameraControl::GetInfoList(Data::ArrayListNN<Text::String> *nameList, Data::ArrayListNN<Text::String> *valueList)
 {
 	Text::StringBuilderUTF8 sb;
 	UOSInt initCnt = nameList->GetCount();
@@ -297,7 +295,7 @@ UOSInt IO::Device::OlympusCameraControl::GetInfoList(Data::ArrayList<Text::Strin
 	return nameList->GetCount() - initCnt;
 }
 
-void IO::Device::OlympusCameraControl::FreeInfoList(Data::ArrayList<Text::String*> *nameList, Data::ArrayList<Text::String*> *valueList)
+void IO::Device::OlympusCameraControl::FreeInfoList(Data::ArrayListNN<Text::String> *nameList, Data::ArrayListNN<Text::String> *valueList)
 {
 	LIST_FREE_STRING(nameList);
 	LIST_FREE_STRING(valueList);

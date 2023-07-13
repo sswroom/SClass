@@ -13,7 +13,7 @@ namespace Map
 	public:
 		typedef struct
 		{
-			Text::String *layerName;
+			NotNullPtr<Text::String> layerName;
 			Int32 searchType;
 			Int32 usedCnt;
 			Map::MapSearchLayer *data;

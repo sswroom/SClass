@@ -37,7 +37,7 @@ void __stdcall SSWR::AVIRead::AVIRWHOISClientForm::OnRequestClicked(void *userOb
 		UOSInt j = rec->GetCount();
 		while (i < j)
 		{
-			me->lbResponse->AddItem(rec->GetItem(i), 0);
+			me->lbResponse->AddItem(Text::String::OrEmpty(rec->GetItem(i)), 0);
 			i++;
 		}
 		DEL_CLASS(rec);

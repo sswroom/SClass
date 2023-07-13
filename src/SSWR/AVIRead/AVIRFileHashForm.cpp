@@ -10,7 +10,7 @@
 #include "Sync/SimpleThread.h"
 #include "Sync/ThreadUtil.h"
 
-void __stdcall SSWR::AVIRead::AVIRFileHashForm::OnFileDrop(void *userObj, Text::String **files, UOSInt nFiles)
+void __stdcall SSWR::AVIRead::AVIRFileHashForm::OnFileDrop(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles)
 {
 	SSWR::AVIRead::AVIRFileHashForm *me = (SSWR::AVIRead::AVIRFileHashForm *)userObj;
 	UOSInt i;
@@ -239,7 +239,7 @@ void SSWR::AVIRead::AVIRFileHashForm::UpdateUI()
 					l = status->fchk->GetCount();
 					while (k < l)
 					{
-						m = this->lvFiles->AddItem(status->fchk->GetEntryName(k), 0);
+						m = this->lvFiles->AddItem(Text::String::OrEmpty(status->fchk->GetEntryName(k)), 0);
 						status->fchk->GetEntryHash(k, hashBuff);
 						sptr = Text::StrHexBytes(sbuff, hashBuff, status->fchk->GetHashSize(), 0);
 						this->lvFiles->SetSubItem(m, 1, CSTRP(sbuff, sptr));
@@ -390,7 +390,7 @@ void SSWR::AVIRead::AVIRFileHashForm::ProgressStart(Text::CString name, UInt64 c
 	{
 		this->progName->Release();
 	}
-	this->progName = Text::String::New(name);
+	this->progName = Text::String::New(name).Ptr();
 	this->progNameChg = true;
 	this->readSize += this->progCount - this->progCurr;
 	this->totalRead += this->progCount - this->progCurr;

@@ -1,7 +1,7 @@
 #ifndef _SM_NET_LOGCLIENT
 #define _SM_NET_LOGCLIENT
 #include "Data/ArrayListInt64.h"
-#include "Data/ArrayListString.h"
+#include "Data/ArrayListStringNN.h"
 #include "IO/LogTool.h"
 #include "IO/ProtoHdlr/ProtoLogCliHandler.h"
 #include "Net/SocketFactory.h"
@@ -22,7 +22,7 @@ namespace Net
 
 		Sync::Mutex mut;
 		Data::ArrayList<Data::Timestamp> dateList;
-		Data::ArrayListString msgList;
+		Data::ArrayListStringNN msgList;
 
 		Int64 lastSendTime;
 		Sync::Mutex cliMut;

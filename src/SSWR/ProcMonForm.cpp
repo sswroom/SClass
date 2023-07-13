@@ -17,7 +17,7 @@ void SSWR::ProcMonForm::AddProg(Text::CString progName, Text::CString progPath)
 	prog->procId = 0;
 	if (progPath.leng > 0)
 	{
-		prog->progPath = Text::String::New(progPath);
+		prog->progPath = Text::String::New(progPath).Ptr();
 	}
 	else
 	{
@@ -80,7 +80,7 @@ void SSWR::ProcMonForm::SetByProcId(ProgInfo *prog, UOSInt procId)
 		if (proc.GetFilename(&sb))
 		{
 			SDEL_STRING(prog->progPath);
-			prog->progPath = Text::String::New(sb.ToString(), sb.GetLength());
+			prog->progPath = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 			prog->procId = procId;
 			this->txtProgPath->SetText(sb.ToCString());
 			this->SaveProgList();
@@ -223,7 +223,7 @@ void __stdcall SSWR::ProcMonForm::OnProgAddClicked(void *userObj)
 void __stdcall SSWR::ProcMonForm::OnLogSelChg(void *userObj)
 {
 	SSWR::ProcMonForm *me = (SSWR::ProcMonForm *)userObj;
-	Text::String *s = Text::String::OrEmpty(me->lbLog->GetSelectedItemTextNew());
+	NotNullPtr<Text::String> s = Text::String::OrEmpty(me->lbLog->GetSelectedItemTextNew());
 	me->txtLog->SetText(s->ToCString());
 	s->Release();
 }
@@ -351,7 +351,7 @@ SSWR::ProcMonForm::ProcMonForm(UI::GUIClientControl *parent, UI::GUICore *ui) : 
 		Text::String *s = cfg->GetValue(CSTR("NotifyCmd"));
 		if (s)
 		{
-			this->notifyCmd = s->Clone();
+			this->notifyCmd = s->Clone().Ptr();
 		}
 		DEL_CLASS(cfg);
 	}
@@ -366,7 +366,7 @@ SSWR::ProcMonForm::~ProcMonForm()
 	{
 		prog = this->progList->GetItem(i);
 		SDEL_STRING(prog->progPath);
-		SDEL_STRING(prog->progName);
+		prog->progName->Release();
 		MemFree(prog);
 	}
 	DEL_CLASS(this->progList);

@@ -177,25 +177,25 @@ Net::WebServer::SAMLHandler::SAMLHandler(SAMLConfig *cfg, Net::SSLEngine *ssl, W
 		this->initErr = SAMLError::ServerHost;
 		return;
 	}
-	this->serverHost = Text::String::New(cfg->serverHost);
+	this->serverHost = Text::String::New(cfg->serverHost).Ptr();
 	if (cfg->metadataPath.leng == 0 || cfg->metadataPath.v[0] != '/')
 	{
 		this->initErr = SAMLError::MetadataPath;
 		return;
 	}
-	this->metadataPath = Text::String::New(cfg->metadataPath);
+	this->metadataPath = Text::String::New(cfg->metadataPath).Ptr();
 	if (cfg->logoutPath.leng == 0 || cfg->logoutPath.v[0] != '/')
 	{
 		this->initErr = SAMLError::LogoutPath;
 		return;
 	}
-	this->logoutPath = Text::String::New(cfg->logoutPath);
+	this->logoutPath = Text::String::New(cfg->logoutPath).Ptr();
 	if (cfg->ssoPath.leng == 0 || cfg->ssoPath.v[0] != '/')
 	{
 		this->initErr = SAMLError::SSOPath;
 		return;
 	}
-	this->ssoPath = Text::String::New(cfg->ssoPath);
+	this->ssoPath = Text::String::New(cfg->ssoPath).Ptr();
 	Parser::FileParser::X509Parser parser;
 	if (cfg->signCertPath.leng == 0)
 	{

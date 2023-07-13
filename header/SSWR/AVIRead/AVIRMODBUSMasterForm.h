@@ -45,7 +45,7 @@ namespace SSWR
 
 			typedef struct
 			{
-				Text::String *name;
+				NotNullPtr<Text::String> name;
 				UInt8 devAddr;
 				UInt32 regAddr;
 				IO::MODBUSController::DataType dt;

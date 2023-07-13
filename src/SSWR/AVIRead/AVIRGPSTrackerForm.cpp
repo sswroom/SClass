@@ -264,7 +264,7 @@ void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnNMEALine(void *userObj, cons
 	SSWR::AVIRead::AVIRGPSTrackerForm *me = (SSWR::AVIRead::AVIRGPSTrackerForm*)userObj;
 	Sync::MutexUsage mutUsage(&me->nmeaMut);
 	SDEL_STRING(me->nmeaBuff[me->nmeaIndex]);
-	me->nmeaBuff[me->nmeaIndex] = Text::String::New(line, lineLen);
+	me->nmeaBuff[me->nmeaIndex] = Text::String::New(line, lineLen).Ptr();
 	me->nmeaIndex = (me->nmeaIndex + 1) & (NMEAMAXSIZE - 1);
 	me->nmeaUpdated = true;
 }

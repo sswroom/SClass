@@ -10,18 +10,15 @@ Net::Spring::SpringBootApplication::SpringBootApplication(Text::CString appName)
 {
 	this->log.AddLogHandler(&this->consoleLog, IO::LogHandler::LogLevel::Raw);
 	this->cfg = IO::JavaProperties::ParseAppProp();
-	this->activeProfile = 0;
+	this->activeProfile = Text::String::New(UTF8STRC("default"));
 	if (this->cfg)
 	{
 		Text::String *s = this->cfg->GetValue(CSTR("spring.profiles.active"));
 		if (s)
 		{
+			this->activeProfile->Release();
 			this->activeProfile = s->Clone();
 		}
-	}
-	if (this->activeProfile == 0)
-	{
-		this->activeProfile = Text::String::New(UTF8STRC("default"));
 	}
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[512];
@@ -81,5 +78,5 @@ Net::Spring::SpringBootApplication::SpringBootApplication(Text::CString appName)
 Net::Spring::SpringBootApplication::~SpringBootApplication()
 {
 	SDEL_CLASS(this->cfg);
-	SDEL_STRING(this->activeProfile);
+	this->activeProfile->Release();
 }

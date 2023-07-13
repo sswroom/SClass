@@ -25,7 +25,7 @@ namespace SSWR
 		private:
 			typedef struct
 			{
-				Text::String *topic;
+				NotNullPtr<Text::String> topic;
 				UInt8 *message;
 				UOSInt msgSize;
 				Bool updated;

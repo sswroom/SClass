@@ -129,7 +129,7 @@ Map::TileMapGenerator::TileMapGenerator(Map::MapConfig2TGen *mcfg, Media::DrawEn
 	this->mcfg = mcfg;
 	this->osSize = osSize;
 
-	this->tileDir = Text::StrCopyNew(tileDir);
+	this->tileDir = Text::StrCopyNew(tileDir).Ptr();
 	NEW_CLASS(this->resizer, Media::Resizer::LanczosResizerH8_8(3, 3, Media::AT_NO_ALPHA));
 }
 

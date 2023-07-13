@@ -47,7 +47,7 @@ Net::ARPHandler::ARPHandler(Net::SocketFactory *sockf, const UTF8Char *ifName, c
 	this->threadCnt = threadCnt;
 	this->sockf = sockf;
 	this->hdlr = hdlr;
-	this->ifName = Text::StrCopyNew(ifName);
+	this->ifName = Text::StrCopyNew(ifName).Ptr();
 	MemCopyNO(this->hwAddr, hwAddr, 6);
 	this->ipAddr = adapterIP;
 	this->userData = userData;

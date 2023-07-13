@@ -89,7 +89,7 @@ void IO::Device::SIM7000SocketFactory::SetAPN(Text::CString apn)
 	SDEL_STRING(this->apn);
 	if (apn.v)
 	{
-		this->apn = Text::String::New(apn);
+		this->apn = Text::String::New(apn).Ptr();
 	}
 }
 

@@ -5,7 +5,7 @@
 
 Text::Doc::DocLink::DocLink(const UTF8Char *url)
 {
-	this->url = Text::StrCopyNew(url);
+	this->url = Text::StrCopyNew(url).Ptr();
 }
 
 Text::Doc::DocLink::~DocLink()

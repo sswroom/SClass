@@ -139,7 +139,7 @@ SSWR::SDNSProxy::SDNSProxyCore::SDNSProxyCore(IO::ConfigFile *cfg, IO::Writer *c
 		s = cfg->GetValue(CSTR("LogPath"));
 		if (s)
 		{
-			this->log.AddFileLog(s, IO::LogHandler::LogType::PerDay, IO::LogHandler::LogGroup::PerMonth, IO::LogHandler::LogLevel::Raw, "yyyy-MM-dd HH:mm:ss.fff", false);
+			this->log.AddFileLog(Text::String::OrEmpty(s), IO::LogHandler::LogType::PerDay, IO::LogHandler::LogGroup::PerMonth, IO::LogHandler::LogLevel::Raw, "yyyy-MM-dd HH:mm:ss.fff", false);
 		}
 
 		s = cfg->GetValue(CSTR("DisableV6"));

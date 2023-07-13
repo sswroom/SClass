@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "Core/Core.h"
-#include "Data/ArrayListString.h"
+#include "Data/ArrayListStringNN.h"
 #include "IO/Console.h"
 #include "IO/ConsoleWriter.h"
 #include "Manage/HiResClock.h"
@@ -15,22 +15,22 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	Manage::HiResClock *clk;
 	UOSInt i;
 	UOSInt j;
-	Data::ArrayListString *strs;
-	Text::String *s;
+	Data::ArrayListStringNN *strs;
+	NotNullPtr<Text::String> s;
 	
 	NEW_CLASS(clk, Manage::HiResClock());
 	clk->Start();
 	i = 1;
 	while (i-- > 0)
 	{
-		NEW_CLASS(strs, Data::ArrayListString());
+		NEW_CLASS(strs, Data::ArrayListStringNN());
 		j = 1000;
 		while (j-- > 0)
 		{
 			s = Text::String::New(sbuff, (UOSInt)(Text::StrInt32(sbuff, (Int32)j) - sbuff));
 			strs->Add(s);
 		}
-		Text::String *str = strs->JoinString();
+		NotNullPtr<Text::String> str = strs->JoinString();
 		str->Release();
 		j = strs->GetCount();
 		while (j-- > 0)

@@ -127,7 +127,7 @@ namespace DB
 template <class T> Bool DB::DBUtil::SaveCSV(IO::Stream *stm, Data::ArrayList<T*> *list, Data::Class *cls)
 {
 	UTF8Char sbuff[512];
-	Text::String *s;
+	NotNullPtr<Text::String> s;
 	Text::StringBuilderUTF8 sb;
 	Text::StringBuilderUTF8 sb2;
 	Bool succ = true;

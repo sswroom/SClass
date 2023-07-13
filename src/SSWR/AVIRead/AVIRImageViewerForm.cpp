@@ -21,7 +21,7 @@ typedef enum
 	MNU_IMAGE_INFO
 } MenuEvent;
 
-void __stdcall SSWR::AVIRead::AVIRImageViewerForm::OnFileDrop(void *userObj, Text::String **files, UOSInt fileCnt)
+void __stdcall SSWR::AVIRead::AVIRImageViewerForm::OnFileDrop(void *userObj, NotNullPtr<Text::String> *files, UOSInt fileCnt)
 {
 	SSWR::AVIRead::AVIRImageViewerForm *me = (SSWR::AVIRead::AVIRImageViewerForm *)userObj;
 	IO::StmData::FileData *fd;

@@ -8,7 +8,7 @@ UI::DObj::LabelDObj::LabelDObj(Media::DrawEngine *deng, Text::CString txt, Text:
 	this->txtChg = true;
 	if (txt.leng > 0)
 	{
-		this->txt = Text::String::New(txt);
+		this->txt = Text::String::New(txt).Ptr();
 	}
 	else
 	{
@@ -48,14 +48,15 @@ void UI::DObj::LabelDObj::DrawObject(Media::DrawImage *dimg)
 {
 	this->txtChg = false;
 	Sync::MutexUsage mutUsage(&this->txtMut);
-	if (this->txt)
+	NotNullPtr<Text::String> s;
+	if (s.Set(this->txt))
 	{
 		Media::DrawFont *f;
 		Media::DrawBrush *b;
 		f = dimg->NewFontPx(this->fontName->ToCString(), this->fontSizePx, (Media::DrawEngine::DrawFontStyle)(this->fontStyle | Media::DrawEngine::DFS_ANTIALIAS), this->codePage);
 		b = dimg->NewBrushARGB(this->fontColor);
 		Math::Coord2DDbl tl = this->GetCurrPos().ToDouble();
-		dimg->DrawString(tl, this->txt, f, b);
+		dimg->DrawString(tl, s, f, b);
 		dimg->DelFont(f);
 		dimg->DelBrush(b);
 	}
@@ -87,7 +88,7 @@ void UI::DObj::LabelDObj::SetFont(Text::CString fontName, Double fontSizePx)
 	}
 	if (!this->fontName->Equals(fontName.v, fontName.leng))
 	{
-		SDEL_STRING(this->fontName);
+		this->fontName->Release();
 		this->fontName = Text::String::New(fontName);
 		this->txtChg = true;
 	}
@@ -116,7 +117,7 @@ void UI::DObj::LabelDObj::SetText(Text::CString txt)
 	else
 	{
 		SDEL_STRING(this->txt);
-		this->txt = Text::String::New(txt);
+		this->txt = Text::String::New(txt).Ptr();
 		this->txtChg = true;
 	}
 }

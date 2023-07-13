@@ -71,7 +71,7 @@ IO::LoopFileLog::LoopFileLog(Text::CString fileName, Int32 nFiles, LogType style
 
 IO::LoopFileLog::~LoopFileLog()
 {
-	SDEL_STRING(this->fileName);
+	this->fileName->Release();
 	if (this->extName)
 	{
 		Text::StrDelNew(this->extName);

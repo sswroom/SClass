@@ -11,13 +11,10 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	IO::ConsoleWriter console;
 	Text::StringBuilderUTF8 sb;
 	NEW_CLASS(info, Media::MonitorInfo(0));
-	if (info->GetName())
-	{
-		sb.ClearStr();
-		sb.AppendC(UTF8STRC("Name = "));
-		sb.Append(info->GetName());
-		console.WriteLineC(sb.ToString(), sb.GetLength());
-	}
+	sb.ClearStr();
+	sb.AppendC(UTF8STRC("Name = "));
+	sb.Append(info->GetName());
+	console.WriteLineC(sb.ToString(), sb.GetLength());
 	if (info->GetDesc())
 	{
 		sb.ClearStr();

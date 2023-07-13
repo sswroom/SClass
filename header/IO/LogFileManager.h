@@ -10,7 +10,7 @@ namespace IO
 	class LogFileManager
 	{
 	private:
-		Text::String *logPath;
+		NotNullPtr<Text::String> logPath;
 	public:
 		LogFileManager(Text::String *logPath);
 		~LogFileManager();

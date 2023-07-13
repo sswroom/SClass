@@ -53,7 +53,7 @@ Map::MapSearch::MapSearch(Text::CString fileName, Map::MapSearchManager *manager
 			{
 				if (layerType == 0)
 				{
-					this->baseDir = Text::String::New(strs[1].v, strs[1].leng);
+					this->baseDir = Text::String::New(strs[1].v, strs[1].leng).Ptr();
 				}
 				else if (layerType == 3)
 				{
@@ -120,7 +120,7 @@ Map::MapSearch::MapSearch(Text::CString fileName, Map::MapSearchManager *manager
 				}
 				else
 				{
-					lyr->searchStr = Text::String::New(strs[4].v, strs[4].leng);
+					lyr->searchStr = Text::String::New(strs[4].v, strs[4].leng).Ptr();
 				}
 				lyr->strIndex = 0;
 				this->layersArr[layerId]->Add(lyr);

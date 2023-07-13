@@ -22,7 +22,7 @@ UInt32 __stdcall IO::ATCommandChannel::CmdThread(void *userObj)
 	UOSInt buffSize = 0;
 	UOSInt i;
 	UOSInt cmdStart;
-	Text::String *cmdResult;
+	NotNullPtr<Text::String> cmdResult;
 	me->threadRunning = true;
 	me->cmdEvt.Set();
 	while (!me->threadToStop)

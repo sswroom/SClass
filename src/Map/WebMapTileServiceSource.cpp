@@ -293,7 +293,7 @@ Map::WebMapTileServiceSource::TileMatrixSet *Map::WebMapTileServiceSource::ReadT
 	TileMatrixSet *set;
 	Text::StringBuilderUTF8 sb;
 	NEW_CLASS(set, TileMatrixSet());
-	set->id = 0;
+	set->id = Text::String::NewEmpty();
 	set->csys = 0;
 	while (reader->ReadNext())
 	{
@@ -307,8 +307,8 @@ Map::WebMapTileServiceSource::TileMatrixSet *Map::WebMapTileServiceSource::ReadT
 				reader->ReadNodeText(&sb);
 				if (sb.GetLength() > 0)
 				{
-					SDEL_STRING(set->id);
-					set->id = Text::String::New(sb.ToCString()).Ptr();
+					set->id->Release();
+					set->id = Text::String::New(sb.ToCString());
 				}
 			}
 			else if (name->Equals(UTF8STRC("TileMatrixSetLimits")))
@@ -421,7 +421,7 @@ Map::WebMapTileServiceSource::TileMatrixSet *Map::WebMapTileServiceSource::ReadT
 			break;
 		}
 	}
-	if (set->id && set->tiles.GetCount() > 0)
+	if (set->id->leng > 0 && set->tiles.GetCount() > 0)
 	{
 		set->csys = Math::CoordinateSystemManager::CreateFromName(set->id->ToCString());
 		return set;
@@ -1162,7 +1162,7 @@ Bool Map::WebMapTileServiceSource::SetMatrixSet(UOSInt index)
 	this->currSet = this->currLayer->tileMatrixes.GetItem(index);
 	if (this->currSet == 0)
 		return false;
-	this->currDef = this->matrixDef.Get(this->currSet->id);
+	this->currDef = this->matrixDef.GetNN(this->currSet->id);
 	return true;
 }
 
@@ -1275,7 +1275,7 @@ UOSInt Map::WebMapTileServiceSource::GetLayerNames(Data::ArrayList<Text::String*
 	return j;
 }
 
-UOSInt Map::WebMapTileServiceSource::GetMatrixSetNames(Data::ArrayList<Text::String*> *matrixSetNames)
+UOSInt Map::WebMapTileServiceSource::GetMatrixSetNames(Data::ArrayListNN<Text::String> *matrixSetNames)
 {
 	if (this->currLayer == 0)
 	{

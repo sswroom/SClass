@@ -10,13 +10,13 @@ Bool Net::WebServer::MODBUSDevSimHandler::ProcessRequest(Net::WebServer::IWebReq
 	{
 		if (this->dev)
 		{
-			Text::String *s;
+			NotNullPtr<Text::String> s;
 			if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_POST)
 			{
 				UInt32 delay;
 				UInt16 toggleIndex;
 				req->ParseHTTPForm();
-				if ((s = req->GetHTTPFormStr(CSTR("action"))) != 0)
+				if (s.Set(req->GetHTTPFormStr(CSTR("action"))))
 				{
 					if (s->Equals(UTF8STRC("toggle")) && req->GetHTTPFormUInt16(CSTR("index"), &toggleIndex))
 					{

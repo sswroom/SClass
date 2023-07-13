@@ -23,17 +23,17 @@ DB::DBQueue::SQLCmd::~SQLCmd()
 	this->str->Release();
 }
 
-DB::DBQueue::CmdType DB::DBQueue::SQLCmd::GetCmdType()
+DB::DBQueue::CmdType DB::DBQueue::SQLCmd::GetCmdType() const
 {
 	return CmdType::SQLCmd;
 }
 
-Int32 DB::DBQueue::SQLCmd::GetProgId()
+Int32 DB::DBQueue::SQLCmd::GetProgId() const
 {
 	return this->progId;
 }
 
-Text::String *DB::DBQueue::SQLCmd::GetSQL()
+NotNullPtr<Text::String> DB::DBQueue::SQLCmd::GetSQL() const
 {
 	return this->str;
 }
@@ -80,12 +80,12 @@ DB::DBQueue::SQLTrans::~SQLTrans()
 {
 }
 
-DB::DBQueue::CmdType DB::DBQueue::SQLTrans::GetCmdType()
+DB::DBQueue::CmdType DB::DBQueue::SQLTrans::GetCmdType() const
 {
 	return CmdType::SQLTrans;
 }
 
-Int32 DB::DBQueue::SQLTrans::GetProgId()
+Int32 DB::DBQueue::SQLTrans::GetProgId() const
 {
 	return this->progId;
 };
@@ -102,12 +102,12 @@ DB::DBQueue::SQLGetDB::~SQLGetDB()
 {
 }
 
-DB::DBQueue::CmdType DB::DBQueue::SQLGetDB::GetCmdType()
+DB::DBQueue::CmdType DB::DBQueue::SQLGetDB::GetCmdType() const
 {
 	return CmdType::SQLGetDB;
 }
 
-Int32 DB::DBQueue::SQLGetDB::GetProgId()
+Int32 DB::DBQueue::SQLGetDB::GetProgId() const
 {
 	return this->progId;
 };
@@ -135,7 +135,7 @@ DB::DBQueue::DBQueue(DBTool *db, IO::LogTool *log, Text::CString name, UOSInt db
 	this->dbList.Add(dbHdlr);
 }
 
-DB::DBQueue::DBQueue(Data::ArrayList<DBTool*> *dbs, IO::LogTool *log, Text::String *name, UOSInt dbSize)
+DB::DBQueue::DBQueue(Data::ArrayList<DBTool*> *dbs, IO::LogTool *log, NotNullPtr<Text::String> name, UOSInt dbSize)
 {
 	this->db1 = dbs->GetItem(0);
 	this->dbSize = dbSize / 200;
@@ -224,7 +224,7 @@ DB::DBQueue::~DBQueue()
 					NEW_CLASS(fs, IO::FileStream(CSTR("FailSQL.txt"), IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 					NEW_CLASS(writer, Text::UTF8Writer(fs));
 				}
-				Text::String *sql = ((DB::DBQueue::SQLCmd*)c)->GetSQL();
+				NotNullPtr<Text::String> sql = ((DB::DBQueue::SQLCmd*)c)->GetSQL();
 				writer->WriteStrC(sql->v, sql->leng);
 				writer->WriteLineC(UTF8STRC(";"));
 			}
@@ -246,7 +246,7 @@ DB::DBQueue::~DBQueue()
 						NEW_CLASS(fs, IO::FileStream(CSTR("FailSQL.txt"), IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 						NEW_CLASS(writer, Text::UTF8Writer(fs));
 					}
-					Text::String *sql = ((DB::DBQueue::SQLCmd*)c)->GetSQL();
+					NotNullPtr<Text::String> sql = ((DB::DBQueue::SQLCmd*)c)->GetSQL();
 					writer->WriteStrC(sql->v, sql->leng);
 					writer->WriteLineC(UTF8STRC(";"));
 				}
@@ -556,7 +556,7 @@ UInt32 DB::DBHandler::GetDataCnt()
 	return db->GetDataCnt();
 }
 
-void DB::DBHandler::WriteError(const UTF8Char *errMsg, Text::String *sqlCmd)
+void DB::DBHandler::WriteError(const UTF8Char *errMsg, NotNullPtr<Text::String> sqlCmd)
 {
 	this->dbQ->log->LogMessage(CSTR("SQL: Failed"), IO::LogHandler::LogLevel::Error);
 
@@ -575,7 +575,7 @@ UInt32 __stdcall DB::DBHandler::ProcessSQL(void *userObj)
 	DB::DBHandler *me = (DB::DBHandler*)userObj;
 	me->running = true;
 
-	Text::String *s;
+	NotNullPtr<Text::String> s;
 	UOSInt i = 0;
 	DB::DBQueue::SQLCmd *cmd;
 	DB::DBQueue::SQLGroup *grp;
@@ -694,7 +694,7 @@ UInt32 __stdcall DB::DBHandler::ProcessSQL(void *userObj)
 								i = 3;
 								while (k < grp->strs.GetCount())
 								{
-									s = grp->strs.GetItem(k);
+									s = Text::String::OrEmpty(grp->strs.GetItem(k));
 									if (me->db->ExecuteNonQuery(s->ToCString()) == -2)
 									{
 										i -= 1;
@@ -719,7 +719,7 @@ UInt32 __stdcall DB::DBHandler::ProcessSQL(void *userObj)
 								i = 3;
 								while (k < grp->strs.GetCount())
 								{
-									s = grp->strs.GetItem(k);
+									s = Text::String::OrEmpty(grp->strs.GetItem(k));
 									rdr = me->db->ExecuteReader(s->ToCString());
 									if (rdr == 0)
 									{

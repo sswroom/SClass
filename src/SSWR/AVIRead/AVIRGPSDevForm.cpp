@@ -219,8 +219,8 @@ void __stdcall SSWR::AVIRead::AVIRGPSDevForm::OnTimerTick(void *userObj)
 		j = me->devConts.GetCount();
 		while (i < j)
 		{
-			k = me->lvDevInfo->AddItem(me->devConts.GetItem(i), 0);
-			me->lvDevInfo->SetSubItem(k, 1, me->devConts.GetItem(i + 1));
+			k = me->lvDevInfo->AddItem(Text::String::OrEmpty(me->devConts.GetItem(i)), 0);
+			me->lvDevInfo->SetSubItem(k, 1, Text::String::OrEmpty(me->devConts.GetItem(i + 1)));
 			i += 2;
 		}
 		me->lvDevAlert->ClearItems();
@@ -282,8 +282,8 @@ void __stdcall SSWR::AVIRead::AVIRGPSDevForm::OnTimerTick(void *userObj)
 		j = me->alertConts.GetCount();
 		while (i < j)
 		{
-			k = me->lvAlert->AddItem(me->alertConts.GetItem(i), 0);
-			me->lvAlert->SetSubItem(k, 1, me->alertConts.GetItem(i + 1));
+			k = me->lvAlert->AddItem(Text::String::OrEmpty(me->alertConts.GetItem(i)), 0);
+			me->lvAlert->SetSubItem(k, 1, Text::String::OrEmpty(me->alertConts.GetItem(i + 1)));
 			i += 2;
 		}
 		me->lbAlertDev->ClearItems();
@@ -305,8 +305,8 @@ void __stdcall SSWR::AVIRead::AVIRGPSDevForm::OnTimerTick(void *userObj)
 		j = me->userConts.GetCount();
 		while (i < j)
 		{
-			k = me->lvUser->AddItem(me->userConts.GetItem(i), 0);
-			me->lvUser->SetSubItem(k, 1, me->userConts.GetItem(i + 1));
+			k = me->lvUser->AddItem(Text::String::OrEmpty(me->userConts.GetItem(i)), 0);
+			me->lvUser->SetSubItem(k, 1, Text::String::OrEmpty(me->userConts.GetItem(i + 1)));
 			i += 2;
 		}
 		me->lbUserDev->ClearItems();

@@ -14,7 +14,7 @@ namespace UI
 			struct MessageInfo
 			{
 				UInt32 id;
-				Text::String *message;
+				NotNullPtr<Text::String> message;
 				Media::DrawImage *img;
 				Bool deleted;
 			};
@@ -33,7 +33,7 @@ namespace UI
 			OSInt lastMsgOfst;
 
 		protected:
-			virtual Media::DrawImage *GenerateImage(Media::DrawEngine *deng, Text::String *message, Math::Size2D<UOSInt> drawSize, Media::DrawImage *scnImg) = 0;
+			virtual Media::DrawImage *GenerateImage(Media::DrawEngine *deng, NotNullPtr<Text::String> message, Math::Size2D<UOSInt> drawSize, Media::DrawImage *scnImg) = 0;
 		private:
 			void FreeMessage(MessageInfo *msg);
 		public:
@@ -50,7 +50,7 @@ namespace UI
 			virtual void OnMouseClick();
 
 			UInt32 AddMessage(Text::CString message);
-			UInt32 AddMessage(Text::String *message);
+			UInt32 AddMessage(NotNullPtr<Text::String> message);
 			void RemoveMessage(UInt32 msgId);
 
 			void SetSize(Math::Size2D<UOSInt> size);

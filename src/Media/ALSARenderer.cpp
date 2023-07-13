@@ -594,7 +594,6 @@ Media::ALSARenderer::ALSARenderer(const UTF8Char *devName)
 {
 	if (devName == 0)
 	{
-		Bool found = false;
 		this->devName = 0;
 		IO::ConfigFile *cfg = IO::WSConfigFile::Parse(CSTR("/etc/asound.conf"));
 		if (cfg)

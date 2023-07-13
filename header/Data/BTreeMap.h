@@ -16,11 +16,11 @@ namespace Data
 		BTreeNode<T> *leftNode;
 		BTreeNode<T> *rightNode;
 		T nodeVal;
-		Text::String *nodeStr;
+		NotNullPtr<Text::String> nodeStr;
 		UInt32 nodeHash;
 	};
 
-	template <class T> class BTreeMap : public DataMap<Text::String*, T>
+	template <class T> class BTreeMap : public DataMap<NotNullPtr<Text::String>, T>
 	{
 	protected:
 		Crypto::Hash::CRC32RC crc;
@@ -29,24 +29,24 @@ namespace Data
 	protected:
 		void OptimizeNode(BTreeNode<T> *node);
 		void ReleaseNodeTree(BTreeNode<T> *node);
-		BTreeNode<T> *NewNode(Text::String *key, UInt32 hash, T val);
-		virtual T PutNode(BTreeNode<T> *node, Text::String *key, UInt32 hash, T val);
+		BTreeNode<T> *NewNode(NotNullPtr<Text::String> key, UInt32 hash, T val);
+		virtual T PutNode(BTreeNode<T> *node, NotNullPtr<Text::String> key, UInt32 hash, T val);
 		BTreeNode<T> *RemoveNode(BTreeNode<T> *node);
 		void FillArr(T **arr, BTreeNode<T> *node);
-		void FillNameArr(Text::String ***arr, BTreeNode<T> *node);
-		virtual UInt32 CalHash(Text::String *key) const;
+		void FillNameArr(NotNullPtr<Text::String> **arr, BTreeNode<T> *node);
+		virtual UInt32 CalHash(NotNullPtr<Text::String> key) const;
 		UInt32 CalHash(Text::CString key) const;
 	public:
 		BTreeMap();
 		virtual ~BTreeMap();
 
-		virtual T Put(Text::String *key, T val);
-		virtual T Get(Text::String *key) const;
+		virtual T Put(NotNullPtr<Text::String> key, T val);
+		virtual T Get(NotNullPtr<Text::String> key) const;
 		T Get(Text::CString key) const;
-		virtual T Remove(Text::String *key);
+		virtual T Remove(NotNullPtr<Text::String> key);
 		virtual Bool IsEmpty() const;
 		virtual T *ToArray(UOSInt *objCnt);
-		virtual Text::String **ToNameArray(UOSInt *objCnt);
+		virtual NotNullPtr<Text::String> *ToNameArray(UOSInt *objCnt);
 		virtual void Clear();
 	};
 
@@ -94,7 +94,7 @@ namespace Data
 		MemFree(node);
 	}
 
-	template <class T> BTreeNode<T> *BTreeMap<T>::NewNode(Text::String *key, UInt32 hash, T val)
+	template <class T> BTreeNode<T> *BTreeMap<T>::NewNode(NotNullPtr<Text::String> key, UInt32 hash, T val)
 	{
 		BTreeNode<T> *node = MemAlloc(BTreeNode<T>, 1);
 		node->nodeCnt = 0;
@@ -108,7 +108,7 @@ namespace Data
 		return node;
 	}
 
-	template <class T> T BTreeMap<T>::PutNode(BTreeNode<T> *node, Text::String *key, UInt32 hash, T val)
+	template <class T> T BTreeMap<T>::PutNode(BTreeNode<T> *node, NotNullPtr<Text::String> key, UInt32 hash, T val)
 	{
 		BTreeNode<T> *tmpNode;
 		T retVal;
@@ -349,7 +349,7 @@ namespace Data
 		}
 	}
 
-	template <class T> UInt32 BTreeMap<T>::CalHash(Text::String *key) const
+	template <class T> UInt32 BTreeMap<T>::CalHash(NotNullPtr<Text::String> key) const
 	{
 		return this->crc.CalcDirect(key->v, key->leng);
 	}
@@ -369,7 +369,7 @@ namespace Data
 		FillArr(arr, node->rightNode);
 	}
 
-	template <class T> void BTreeMap<T>::FillNameArr(Text::String ***arr, BTreeNode<T> *node)
+	template <class T> void BTreeMap<T>::FillNameArr(NotNullPtr<Text::String> **arr, BTreeNode<T> *node)
 	{
 		if (node == 0)
 			return;
@@ -379,7 +379,7 @@ namespace Data
 		FillNameArr(arr, node->rightNode);
 	}
 
-	template <class T> BTreeMap<T>::BTreeMap() : DataMap<Text::String*, T>()
+	template <class T> BTreeMap<T>::BTreeMap() : DataMap<NotNullPtr<Text::String>, T>()
 	{
 		rootNode = 0;
 	}
@@ -393,7 +393,7 @@ namespace Data
 		}
 	}
 
-	template <class T> T BTreeMap<T>::Put(Text::String *key, T val)
+	template <class T> T BTreeMap<T>::Put(NotNullPtr<Text::String> key, T val)
 	{
 		UInt32 hash = CalHash(key);
 		if (this->rootNode == 0)
@@ -409,7 +409,7 @@ namespace Data
 		}
 	}
 
-	template <class T> T BTreeMap<T>::Get(Text::String *key) const
+	template <class T> T BTreeMap<T>::Get(NotNullPtr<Text::String> key) const
 	{
 		UInt32 hash = CalHash(key);
 		BTreeNode<T> *node = this->rootNode;
@@ -479,11 +479,11 @@ namespace Data
 		return 0;
 	}
 
-	template <class T> T BTreeMap<T>::Remove(Text::String *key)
+	template <class T> T BTreeMap<T>::Remove(NotNullPtr<Text::String> key)
 	{
 		if (this->rootNode == 0)
 			return 0;
-		if (this->rootNode->nodeStr->Equals(key))
+		if (this->rootNode->nodeStr->Equals(key.Ptr()))
 		{
 			T nodeVal = this->rootNode->nodeVal;
 			this->rootNode = RemoveNode(this->rootNode);
@@ -556,15 +556,15 @@ namespace Data
 		return outArr;
 	}
 
-	template <class T> Text::String **BTreeMap<T>::ToNameArray(UOSInt *objCnt)
+	template <class T> NotNullPtr<Text::String> *BTreeMap<T>::ToNameArray(UOSInt *objCnt)
 	{
 		UOSInt cnt = 0;
 		if (this->rootNode)
 		{
 			cnt = this->rootNode->nodeCnt + 1;
 		}
-		Text::String **outArr = MemAlloc(Text::String*, cnt);
-		Text::String **tmpArr = outArr;
+		NotNullPtr<Text::String> *outArr = MemAlloc(NotNullPtr<Text::String>, cnt);
+		NotNullPtr<Text::String> *tmpArr = outArr;
 		FillNameArr(&tmpArr, this->rootNode);
 		*objCnt = cnt;
 		return outArr;

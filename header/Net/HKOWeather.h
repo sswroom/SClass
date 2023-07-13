@@ -129,8 +129,8 @@ namespace Net
 		{
 			Data::DateTimeUtil::DateValue date;
 			Data::DateTimeUtil::Weekday weekday;
-			Text::String *wind;
-			Text::String *weather;
+			NotNullPtr<Text::String> wind;
+			NotNullPtr<Text::String> weather;
 			Int32 maxTemp;
 			Int32 minTemp;
 			Int32 maxRH;

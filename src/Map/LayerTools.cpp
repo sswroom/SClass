@@ -17,7 +17,7 @@ Map::VectorLayer *Map::LayerTools::CombineLayers(Data::ArrayList<Map::MapDrawLay
 	Map::MapDrawLayer *lyr;
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	Text::String *sourceName;
+	NotNullPtr<Text::String> sourceName;
 
 	if (layerCnt <= 0)
 		return 0;
@@ -64,7 +64,7 @@ Map::VectorLayer *Map::LayerTools::CombineLayers(Data::ArrayList<Map::MapDrawLay
 			}
 			else
 			{
-				const UTF8Char *name = Text::StrCopyNew(sbuff);
+				const UTF8Char *name = Text::StrCopyNew(sbuff).Ptr();
 				nameIndex.Insert((UOSInt)~si, name);
 				nameSizes.Insert((UOSInt)~si, colDef.GetColSize());
 				nameDPs.Insert((UOSInt)~si, colDef.GetColDP());

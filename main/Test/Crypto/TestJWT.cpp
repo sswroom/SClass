@@ -22,8 +22,8 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	NEW_CLASS(jwt, Crypto::Token::JWTHandler(ssl, Crypto::Token::JWSignature::Algorithm::HS256, UTF8STRC("your-256-bit-secret")));
 
 	Crypto::Token::JWTParam param;
-	Text::String *s = Text::String::New(UTF8STRC("1234567890"));
-	param.SetSubject(s);
+	NotNullPtr<Text::String> s = Text::String::New(UTF8STRC("1234567890"));
+	param.SetSubject(s.Ptr());
 	s->Release();
 	param.SetIssuedAt(1516239022);
 	Data::StringMap<const UTF8Char*> payload;
@@ -38,8 +38,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	}
 	
 	Data::StringMap<Text::String*> *result = jwt->Parse((const UTF8Char*)"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiSm9obiBEb2UiLCJzdWIiOiIxMjM0NTY3ODkwIiwiaWF0IjoxNTE2MjM5MDIyfQ.3uGPWYtY_HtIcBGz4eUmTtcjZ4HnJZK9Z2uhx0Ks4n8", &param);
-	s = result->Get(CSTR("name"));
-	if (s == 0 || !s->Equals(UTF8STRC("John Doe")))
+	if (!s.Set(result->Get(CSTR("name"))) || !s->Equals(UTF8STRC("John Doe")))
 	{
 		jwt->FreeResult(result);
 		DEL_CLASS(jwt);
@@ -47,8 +46,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		DEL_CLASS(sockf);
 		return 1;
 	}
-	s = param.GetSubject();
-	if (s == 0 || !s->Equals(UTF8STRC("1234567890")))
+	if (!s.Set(param.GetSubject()) || !s->Equals(UTF8STRC("1234567890")))
 	{
 		jwt->FreeResult(result);
 		DEL_CLASS(jwt);
@@ -83,7 +81,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		else
 		{
 			Crypto::Cert::X509Key *key = 0;
-			Text::String *s = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
+			NotNullPtr<Text::String> s = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 			Crypto::Cert::X509File *x509 = Parser::FileParser::X509Parser::ParseBuff(keyBuff, keySize, s);
 			s->Release();
 			if (x509 == 0)

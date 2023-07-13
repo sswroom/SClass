@@ -30,7 +30,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		UOSInt maxSNLen;
 		UInt8 buff[8];
 		const UInt8 *macPtr;
-		Text::String *s;
+		NotNullPtr<Text::String> s;
 		Data::ArrayList<Net::WirelessLAN::Interface*> interfaces;
 		Data::ArrayList<Net::WirelessLAN::BSSInfo *> bssList;
 		Net::WirelessLAN::BSSInfo *bss;
@@ -63,32 +63,29 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 				while (j-- > 0)
 				{
 					bss = bssList.GetItem(j);
-					if (bss->GetSSID())
+					thisLen = bss->GetSSID()->leng;
+					if (thisLen > maxSSIDLen)
+						maxSSIDLen = thisLen;
+
+					if (s.Set(bss->GetManuf()))
 					{
-						thisLen = bss->GetSSID()->leng;
-						if (thisLen > maxSSIDLen)
-							maxSSIDLen = thisLen;
+						thisLen = s->leng;
+						if (thisLen > maxManuLen)
+							maxManuLen = thisLen;
+					}
+						
+					if (s.Set(bss->GetModel()))
+					{
+						thisLen = s->leng;
+						if (thisLen > maxModelLen)
+							maxModelLen = thisLen;
+					}
 
-						if ((s = bss->GetManuf()) != 0)
-						{
-							thisLen = s->leng;
-							if (thisLen > maxManuLen)
-								maxManuLen = thisLen;
-						}
-						 
-						if ((s = bss->GetModel()) != 0)
-						{
-							thisLen = s->leng;
-							if (thisLen > maxModelLen)
-								maxModelLen = thisLen;
-						}
-
-						if ((s = bss->GetSN()) != 0)
-						{
-							thisLen = s->leng;
-							if (thisLen > maxSNLen)
-								maxSNLen = thisLen;
-						}
+					if (s.Set(bss->GetSN()))
+					{
+						thisLen = s->leng;
+						if (thisLen > maxSNLen)
+							maxSNLen = thisLen;
 					}
 				}
 				j = 0;
@@ -100,16 +97,9 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 					macPtr = bss->GetMAC();
 					sb.AppendHexBuff(macPtr, 6, ':', Text::LineBreakType::None);
 					sb.AppendUTF8Char('\t');
-					if (bss->GetSSID())
-					{
-						s = bss->GetSSID();
-						sb.Append(s);
-						thisLen = s->leng;
-					}
-					else
-					{
-						thisLen = 0;
-					}
+					s = bss->GetSSID();
+					sb.Append(s);
+					thisLen = s->leng;
 					if (maxSSIDLen > thisLen)
 					{
 						sb.AppendChar(' ', maxSSIDLen - thisLen);
@@ -119,7 +109,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 					sb.AppendUTF8Char('\t');
 					Text::SBAppendF64(&sb, bss->GetFreq());
 					sb.AppendUTF8Char('\t');
-					if ((s = bss->GetManuf()) != 0)
+					if (s.Set(bss->GetManuf()))
 					{
 						sb.Append(s);
 						thisLen = s->leng;
@@ -133,7 +123,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 						sb.AppendChar(' ', maxManuLen - thisLen);
 					}
 					sb.AppendUTF8Char('\t');
-					if ((s = bss->GetModel()) != 0)
+					if (s.Set(bss->GetModel()))
 					{
 						sb.Append(s);
 						thisLen = s->leng;
@@ -147,7 +137,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 						sb.AppendChar(' ', maxModelLen - thisLen);
 					}
 					sb.AppendUTF8Char('\t');
-					if ((s = bss->GetSN()) != 0)
+					if (s.Set(bss->GetSN()))
 					{
 						sb.Append(s);
 						thisLen = s->leng;

@@ -11,18 +11,16 @@ Net::WhoisRecord::WhoisRecord(UInt32 recordIP)
 	this->recordIP = recordIP;
 	this->startIP = 0;
 	this->endIP = 0;
-	NEW_CLASS(this->items, Data::ArrayListString());
 }
 
 Net::WhoisRecord::~WhoisRecord()
 {
-	LIST_FREE_STRING(this->items);
-	DEL_CLASS(this->items);
+	LIST_FREE_STRING(&this->items);
 }
 
 void Net::WhoisRecord::AddItem(const UTF8Char *item, UOSInt itemLen)
 {
-	if (item[0] == 0 && this->items->GetCount() == 0)
+	if (item[0] == 0 && this->items.GetCount() == 0)
 	{
 		return;
 	}
@@ -105,17 +103,17 @@ void Net::WhoisRecord::AddItem(const UTF8Char *item, UOSInt itemLen)
 			}
 		}
 	}
-	this->items->Add(Text::String::New(item, itemLen));
+	this->items.Add(Text::String::New(item, itemLen));
 }
 
 UOSInt Net::WhoisRecord::GetCount()
 {
-	return this->items->GetCount();
+	return this->items.GetCount();
 }
 
 Text::String *Net::WhoisRecord::GetItem(UOSInt index)
 {
-	return this->items->GetItem(index);
+	return this->items.GetItem(index);
 }
 
 
@@ -126,10 +124,10 @@ UTF8Char *Net::WhoisRecord::GetNetworkName(UTF8Char *buff)
 	Text::String *s;
 	UTF8Char *sptr;
 	i = 0;
-	j = this->items->GetCount();
+	j = this->items.GetCount();
 	while (i < j)
 	{
-		s = this->items->GetItem(i);
+		s = this->items.GetItem(i);
 		if (Text::StrStartsWithICaseC(s->v, s->leng, UTF8STRC("netname:")))
 		{
 			sptr = Text::StrConcatC(buff, &s->v[8], s->leng - 8);
@@ -147,10 +145,10 @@ UTF8Char *Net::WhoisRecord::GetCountryCode(UTF8Char *buff)
 	Text::String *s;
 	UTF8Char *sptr;
 	i = 0;
-	j = this->items->GetCount();
+	j = this->items.GetCount();
 	while (i < j)
 	{
-		s = this->items->GetItem(i);
+		s = this->items.GetItem(i);
 		if (Text::StrStartsWithICaseC(s->v, s->leng, UTF8STRC("country:")))
 		{
 			sptr = Text::StrConcatC(buff, &s->v[8], s->leng - 8);

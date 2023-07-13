@@ -66,8 +66,9 @@ Map::AssistedReverseGeocoderPL::AssistedReverseGeocoderPL(DB::DBTool *db, IO::Wr
 				addr = this->strMap.Get(sb.ToCString());
 				if (addr == 0)
 				{
-					addr = Text::String::New(sb.ToCString());
-					this->strMap.Put(addr, addr);
+					NotNullPtr<Text::String> s = Text::String::New(sb.ToCString());
+					addr = s.Ptr();
+					this->strMap.Put(s, addr);
 				}
 				entry->address = addr;
 				
@@ -197,8 +198,9 @@ UTF8Char *Map::AssistedReverseGeocoderPL::SearchName(UTF8Char *buff, UOSInt buff
 		addr = this->strMap.Get(CSTRP(buff, sptr));
 		if (addr == 0)
 		{
-			addr = Text::String::New(buff, (UOSInt)(sptr - buff));
-			this->strMap.Put(addr, addr);
+			NotNullPtr<Text::String> s = Text::String::New(buff, (UOSInt)(sptr - buff));
+			addr = s.Ptr();
+			this->strMap.Put(s, addr);
 		}
 		entry = MemAlloc(AddressEntry, 1);
 		entry->keyx = keyx;

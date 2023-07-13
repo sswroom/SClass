@@ -546,7 +546,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		writer->WriteLine();
 		console->WriteLineC(UTF8STRC("Printer Info:"));
 		writer->WriteLineC(UTF8STRC("Printer Info:"));
-		Data::ArrayList<Text::String *> printerList;
+		Data::ArrayListNN<Text::String> printerList;
 		i = 0;
 		j = Media::Printer::GetPrinterCount();
 		while (i < j)

@@ -128,8 +128,8 @@ Bool Net::HKOWeather::GetCurrentTempRH(Net::SocketFactory *sockf, Net::SSLEngine
 	Bool succ = false;
 	Net::RSS *rss;
 	Text::CString userAgent = Net::UserAgentDB::FindUserAgent(Manage::OSInfo::OT_WINDOWS_NT64, Net::BrowserInfo::BT_FIREFOX);
-	Text::String *ua = Text::String::New(userAgent);
-	NEW_CLASS(rss, Net::RSS(CSTR("https://rss.weather.gov.hk/rss/CurrentWeather.xml"), ua, sockf, ssl, 30000));
+	NotNullPtr<Text::String> ua = Text::String::New(userAgent);
+	NEW_CLASS(rss, Net::RSS(CSTR("https://rss.weather.gov.hk/rss/CurrentWeather.xml"), ua.Ptr(), sockf, ssl, 30000));
 	ua->Release();
 	if (!rss->IsError())
 	{
@@ -264,8 +264,8 @@ void Net::HKOWeather::FreeWeatherForecast(WeatherForecast *weatherForecast)
 	while (i-- > 0)
 	{
 		forecast = weatherForecast->forecast.GetItem(i);
-		SDEL_STRING(forecast->wind);
-		SDEL_STRING(forecast->weather);
+		forecast->wind->Release();
+		forecast->weather->Release();
 		MemFree(forecast);
 	}
 }
@@ -307,12 +307,12 @@ Bool Net::HKOWeather::GetLocalForecast(Net::SocketFactory *sockf, Net::SSLEngine
 			json->EndUse();
 			return false;
 		}
-		localForecast->generalSituation = localForecast->generalSituation->Clone();
-		localForecast->tcInfo = localForecast->tcInfo->Clone();
-		localForecast->fireDangerWarning = localForecast->fireDangerWarning->Clone();
-		localForecast->forecastPeriod = localForecast->forecastPeriod->Clone();
-		localForecast->forecastDesc = localForecast->forecastDesc->Clone();
-		localForecast->outlook = localForecast->outlook->Clone();
+		localForecast->generalSituation = localForecast->generalSituation->Clone().Ptr();
+		localForecast->tcInfo = localForecast->tcInfo->Clone().Ptr();
+		localForecast->fireDangerWarning = localForecast->fireDangerWarning->Clone().Ptr();
+		localForecast->forecastPeriod = localForecast->forecastPeriod->Clone().Ptr();
+		localForecast->forecastDesc = localForecast->forecastDesc->Clone().Ptr();
+		localForecast->outlook = localForecast->outlook->Clone().Ptr();
 		localForecast->updateTime = Data::Timestamp::FromStr(sUpdateTime->ToCString(), Data::DateTimeUtil::GetLocalTzQhr());
 		json->EndUse();
 		return true;

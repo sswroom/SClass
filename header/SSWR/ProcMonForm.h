@@ -21,7 +21,7 @@ namespace SSWR
 	private:
 		typedef struct
 		{
-			Text::String *progName;
+			NotNullPtr<Text::String> progName;
 			Text::String *progPath;
 			UOSInt procId;
 		} ProgInfo;

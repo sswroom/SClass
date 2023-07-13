@@ -35,6 +35,11 @@ namespace DB
 		virtual Bool GetStr(UOSInt colIndex, Text::StringBuilderUTF8 *sb) = 0;
 		Bool GetStrN(UOSInt colIndex, Text::StringBuilderUTF8 *sb) { sb->ClearStr(); return GetStr(colIndex, sb); }
 		virtual Text::String *GetNewStr(UOSInt colIndex) = 0;
+		NotNullPtr<Text::String> GetNewStrNN(UOSInt colIndex)
+		{
+			return Text::String::OrEmpty(GetNewStr(colIndex));
+		}
+		
 		Text::String *GetNewStrB(UOSInt colIndex, Text::StringBuilderUTF8 *tmpBuff)
 		{
 			tmpBuff->ClearStr();

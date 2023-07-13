@@ -83,7 +83,7 @@ void __stdcall SSWR::AVIRead::AVIRWiFiLogManagerForm::OnContentDblClicked(void *
 		SSWR::AVIRead::AVIRMACManagerEntryForm frm(0, me->ui, me->core, log->mac, name);
 		if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 		{
-			Text::String *name = frm.GetNameNew();
+			NotNullPtr<Text::String> name = frm.GetNameNew();
 			UOSInt i = me->macList->SetEntry(log->macInt, name->ToCString());
 			name->Release();
 			entry = me->macList->GetItem(i);

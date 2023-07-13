@@ -2664,7 +2664,7 @@ Bool Map::MapConfig2::AddLabel(MapLabels2 *labels, UInt32 maxLabel, UInt32 *labe
 						return false;
 					}
 
-					labels[i].label = Text::String::New(labelt);
+					labels[i].label = Text::String::New(labelt).Ptr();
 					labels[i].pos = ptPtr[0];
 					labels[i].fontStyle = fontStyle;
 					labels[i].scaleW = 0;
@@ -2929,7 +2929,7 @@ Bool Map::MapConfig2::AddLabel(MapLabels2 *labels, UInt32 maxLabel, UInt32 *labe
 			labels[i].currSize = visibleSize;
 			labels[i].flags = flags;
 
-			labels[i].label = Text::String::New(labelt);
+			labels[i].label = Text::String::New(labelt).Ptr();
 			labels[i].points = 0;
 
 			toUpdate = 1;
@@ -3086,7 +3086,7 @@ Bool Map::MapConfig2::AddLabel(MapLabels2 *labels, UInt32 maxLabel, UInt32 *labe
 					return false;
 				}
 
-				labels[i].label = Text::String::New(labelt);
+				labels[i].label = Text::String::New(labelt).Ptr();
 				labels[i].pos = thisPt;
 				labels[i].fontStyle = fontStyle;
 				labels[i].scaleW = 0;
@@ -3305,7 +3305,7 @@ void Map::MapConfig2::DrawLabels(Media::DrawImage *img, MapLabels2 *labels, UInt
 				{
 					if (lastLbl)
 						lastLbl->Release();
-					lastLbl = labels[i].label->Clone();
+					lastLbl = labels[i].label->Clone().Ptr();
 				}
 				else
 				{
@@ -4187,10 +4187,7 @@ Map::MapConfig2::~MapConfig2()
 				while (j-- > 0)
 				{
 					currFont = (Map::MapFontStyle*)this->fonts[i]->GetItem(j);
-					if (currFont->fontName)
-					{
-						MemFree(currFont->fontName);
-					}
+					currFont->fontName->Release();
 					MemFree(currFont);
 				}
 				DEL_CLASS(this->fonts[i]);

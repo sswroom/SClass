@@ -3,12 +3,12 @@
 
 Text::String *IO::RobustelInfo::GetIMEI()
 {
-	return Text::String::New(UTF8STRC("1234567890123456"));
+	return Text::String::New(UTF8STRC("1234567890123456")).Ptr();
 }
 
 Text::String *IO::RobustelInfo::GetCellID()
 {
-	return Text::String::NewEmpty();
+	return Text::String::NewEmpty().Ptr();
 }
 
 Bool IO::RobustelInfo::GetRSSI(Int8 *val)

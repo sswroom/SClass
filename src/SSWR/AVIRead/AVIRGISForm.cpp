@@ -131,7 +131,7 @@ typedef enum
 #define MAX_SCALE 200000000
 #define MIN_SCALE 400
 
-void __stdcall SSWR::AVIRead::AVIRGISForm::FileHandler(void *userObj, Text::String **files, UOSInt nFiles)
+void __stdcall SSWR::AVIRead::AVIRGISForm::FileHandler(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles)
 {
 	SSWR::AVIRead::AVIRGISForm *me = (SSWR::AVIRead::AVIRGISForm*)userObj;
 	Parser::ParserList *parsers = me->core->GetParserList();
@@ -235,7 +235,7 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::FileHandler(void *userObj, Text::Stri
 					pt2 = me->mapCtrl->ScnXYD2MapXY(Math::Coord2DDbl(OSInt2Double(mousePos.x) + calcImgW * 0.5, OSInt2Double(mousePos.y) + calcImgH * 0.5));
 				}
 				NEW_CLASS(simg, Media::SharedImage((Media::ImageList*)pobj, true));
-				NEW_CLASS(vimg, Math::Geometry::VectorImage(me->env->GetSRID(), simg, pt1, pt2, pt2 - pt1, false, files[i], 0, 0));
+				NEW_CLASS(vimg, Math::Geometry::VectorImage(me->env->GetSRID(), simg, pt1, pt2, pt2 - pt1, false, files[i].Ptr(), 0, 0));
 				DEL_CLASS(simg);
 				lyr->AddVector(vimg, (const UTF8Char**)0);
 				layers->Add(lyr);
@@ -1380,7 +1380,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 			SSWR::AVIRead::AVIROpenFileForm frm(0, this->ui, this->core, IO::ParserType::Unknown);
 			if (frm.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
-				Text::String *fname = frm.GetFileName();
+				NotNullPtr<Text::String> fname = frm.GetFileName();
 				UOSInt i = fname->IndexOf(':');
 				if (i == INVALID_INDEX || i == 1)
 				{
@@ -1590,7 +1590,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 				if (esriMap->HasTile())
 				{
 					Map::ESRI::ESRITileMap *map;
-					Text::String *url = esriMap->GetURL();
+					NotNullPtr<Text::String> url = esriMap->GetURL();
 					crc.Calc((UInt8*)url->v, url->leng);
 					crc.GetValue(crcVal);
 					sptr = IO::Path::GetProcessFileName(sbuff);
@@ -1982,7 +1982,7 @@ void SSWR::AVIRead::AVIRGISForm::UpdateTimeRange()
 
 Bool SSWR::AVIRead::AVIRGISForm::BeginPrint(Media::IPrintDocument *doc)
 {
-	doc->SetDocName(this->env->GetSourceNameObj());
+	doc->SetDocName(this->env->GetSourceNameObj().Ptr());
 	return true;
 }
 

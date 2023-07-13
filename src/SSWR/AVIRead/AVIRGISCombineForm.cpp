@@ -101,7 +101,7 @@ SSWR::AVIRead::AVIRGISCombineForm::AVIRGISCombineForm(UI::GUIClientControl *pare
 	UOSInt cnt = this->layers->GetCount();
 	UOSInt j;
 	Map::MapDrawLayer *lyr;
-	Text::String *name;
+	NotNullPtr<Text::String> name;
 	this->lbLayers->ClearItems();
 	while (i < cnt)
 	{
@@ -133,8 +133,8 @@ void SSWR::AVIRead::AVIRGISCombineForm::OnMonitorChanged()
 Map::MapDrawLayer *SSWR::AVIRead::AVIRGISCombineForm::GetCombinedLayer()
 {
 	Map::VectorLayer *layer = 0;
-	Text::String *s = Text::String::New(UTF8STRC("CombinedLayer"));
-	layer = Map::LayerTools::CombineLayers(this->selLayers, s);
+	NotNullPtr<Text::String> s = Text::String::New(UTF8STRC("CombinedLayer"));
+	layer = Map::LayerTools::CombineLayers(this->selLayers, s.Ptr());
 	s->Release();
 	return layer;
 }

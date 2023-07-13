@@ -21,6 +21,7 @@ void __stdcall SSWR::AVIRead::AVIRMACManagerEntryForm::OnOKClicked(void *userObj
 			return;
 		}
 	}
+	me->name->Release();
 	me->name = Text::String::New(sb.ToCString());
 	me->SetDialogResult(UI::GUIForm::DR_OK);
 }
@@ -45,7 +46,7 @@ SSWR::AVIRead::AVIRMACManagerEntryForm::AVIRMACManagerEntryForm(UI::GUIClientCon
 	this->SetNoResize(true);
 
 	this->core = core;
-	this->name = 0;
+	this->name = Text::String::NewEmpty();
 
 	NEW_CLASS(this->lblMAC, UI::GUILabel(ui, this, CSTR("MAC")));
 	this->lblMAC->SetRect(4, 4, 100, 23, false);
@@ -114,7 +115,7 @@ SSWR::AVIRead::AVIRMACManagerEntryForm::AVIRMACManagerEntryForm(UI::GUIClientCon
 
 SSWR::AVIRead::AVIRMACManagerEntryForm::~AVIRMACManagerEntryForm()
 {
-	SDEL_STRING(this->name);
+	this->name->Release();
 }
 
 void SSWR::AVIRead::AVIRMACManagerEntryForm::OnMonitorChanged()
@@ -122,7 +123,7 @@ void SSWR::AVIRead::AVIRMACManagerEntryForm::OnMonitorChanged()
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 }
 
-Text::String *SSWR::AVIRead::AVIRMACManagerEntryForm::GetNameNew()
+NotNullPtr<Text::String> SSWR::AVIRead::AVIRMACManagerEntryForm::GetNameNew() const
 {
 	return this->name->Clone();
 }

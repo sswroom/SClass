@@ -150,7 +150,7 @@ Text::String* Userfile::GetOrifilename()
 void Userfile::SetOrifilename(Text::String* orifilename)
 {
 	SDEL_STRING(this->orifilename);
-	this->orifilename = orifilename?orifilename->Clone():0;
+	this->orifilename = orifilename?orifilename->Clone().Ptr():0;
 }
 
 Data::Timestamp Userfile::GetFiletime()
@@ -221,7 +221,7 @@ Text::String* Userfile::GetDatafilename()
 void Userfile::SetDatafilename(Text::String* datafilename)
 {
 	SDEL_STRING(this->datafilename);
-	this->datafilename = datafilename?datafilename->Clone():0;
+	this->datafilename = datafilename?datafilename->Clone().Ptr():0;
 }
 
 Int32 Userfile::GetCrcval()
@@ -252,7 +252,7 @@ Text::String* Userfile::GetCamera()
 void Userfile::SetCamera(Text::String* camera)
 {
 	SDEL_STRING(this->camera);
-	this->camera = camera?camera->Clone():0;
+	this->camera = camera?camera->Clone().Ptr():0;
 }
 
 Text::String* Userfile::GetDescript()
@@ -263,7 +263,7 @@ Text::String* Userfile::GetDescript()
 void Userfile::SetDescript(Text::String* descript)
 {
 	SDEL_STRING(this->descript);
-	this->descript = descript?descript->Clone():0;
+	this->descript = descript?descript->Clone().Ptr():0;
 }
 
 Int32 Userfile::GetLoctype()
@@ -284,7 +284,7 @@ Text::String* Userfile::GetCamerasn()
 void Userfile::SetCamerasn(Text::String* camerasn)
 {
 	SDEL_STRING(this->camerasn);
-	this->camerasn = camerasn?camerasn->Clone():0;
+	this->camerasn = camerasn?camerasn->Clone().Ptr():0;
 }
 
 Int32 Userfile::GetPrevupdated()
@@ -345,7 +345,7 @@ Text::String* Userfile::GetLocation()
 void Userfile::SetLocation(Text::String* location)
 {
 	SDEL_STRING(this->location);
-	this->location = location?location->Clone():0;
+	this->location = location?location->Clone().Ptr():0;
 }
 
 Data::NamedClass<Userfile> *Userfile::CreateClass()

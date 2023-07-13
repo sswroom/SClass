@@ -14,7 +14,7 @@ namespace UI
 			Text::String *txt;
 			Sync::Mutex txtMut;
 			Bool txtChg;
-			Text::String *fontName;
+			NotNullPtr<Text::String> fontName;
 			Double fontSizePx;
 			Media::DrawEngine::DrawFontStyle fontStyle;
 			UInt32 fontColor;

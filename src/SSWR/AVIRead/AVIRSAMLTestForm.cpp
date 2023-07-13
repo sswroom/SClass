@@ -14,7 +14,7 @@
 #include "Text/XMLReader.h"
 #include "UI/MessageDialog.h"
 
-void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnFormFiles(void *userObj, Text::String **files, UOSInt nFiles)
+void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnFormFiles(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles)
 {
 	SSWR::AVIRead::AVIRSAMLTestForm *me = (SSWR::AVIRead::AVIRSAMLTestForm*)userObj;
 	Parser::ParserList *parsers = me->core->GetParserList();
@@ -328,7 +328,7 @@ void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnSAMLResponse(void *userObj, Te
 	SSWR::AVIRead::AVIRSAMLTestForm *me = (SSWR::AVIRead::AVIRSAMLTestForm*)userObj;
 	Sync::MutexUsage mutUsage(&me->respMut);
 	SDEL_STRING(me->respNew);
-	me->respNew = Text::String::New(msg);
+	me->respNew = Text::String::New(msg).Ptr();
 }
 
 Bool __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnLoginRequest(void *userObj, Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const Net::WebServer::SAMLMessage *msg)
@@ -342,7 +342,7 @@ Bool __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnLoginRequest(void *userObj, Ne
 		IO::MemoryReadingStream mstm(sb.v, sb.GetLength());
 		Text::StringBuilderUTF8 sb2;
 		Text::XMLReader::XMLWellFormat(me->core->GetEncFactory(), &mstm, 0, &sb2);
-		decMsg = Text::XML::ToNewHTMLTextXMLColor(sb2.ToString());
+		decMsg = Text::XML::ToNewHTMLTextXMLColor(sb2.ToString()).Ptr();
 	}
 	DEL_CLASS(key);
 	{
@@ -350,7 +350,7 @@ Bool __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnLoginRequest(void *userObj, Ne
 		sb.ClearStr();
 		Text::XMLReader::XMLWellFormat(me->core->GetEncFactory(), &mstm, 0, &sb);
 	}
-	Text::String *msgContent = Text::XML::ToNewHTMLTextXMLColor(sb.ToString());
+	NotNullPtr<Text::String> msgContent = Text::XML::ToNewHTMLTextXMLColor(sb.ToString());
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("<html><head><title>SAML Message</title></head><body>"));
 	if (decMsg)

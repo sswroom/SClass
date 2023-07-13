@@ -13,7 +13,7 @@
 
 typedef struct
 {
-	Text::String *progName;
+	NotNullPtr<Text::String> progName;
 	Text::String *progPath;
 	UOSInt procId;
 } ProgInfo;
@@ -71,7 +71,7 @@ void AddProg(const UTF8Char *progName, UOSInt progNameLen, const UTF8Char *progP
 	prog->procId = 0;
 	if (progPath)
 	{
-		prog->progPath = Text::String::New(progPath, progPathLen);
+		prog->progPath = Text::String::New(progPath, progPathLen).Ptr();
 	}
 	else
 	{
@@ -216,7 +216,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	{
 		prog = progList->GetItem(i);
 		SDEL_STRING(prog->progPath);
-		SDEL_STRING(prog->progName);
+		prog->progName->Release();
 		MemFree(prog);
 	}
 	DEL_CLASS(progList);

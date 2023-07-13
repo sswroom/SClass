@@ -38,7 +38,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRGSMModemForm::ModemThread(void *userObj)
 			SDEL_STRING(me->huaweiICCID);
 			if ((sptr = me->modem->GSMGetManufacturer(sbuff)) != 0)
 			{
-				me->initModemManu = Text::String::NewP(sbuff, sptr);
+				me->initModemManu = Text::String::NewP(sbuff, sptr).Ptr();
 				if (me->initModemManu->StartsWith(UTF8STRC("Huawei")))
 				{
 					IO::HuaweiGSMModemController *huawei;
@@ -52,19 +52,19 @@ UInt32 __stdcall SSWR::AVIRead::AVIRGSMModemForm::ModemThread(void *userObj)
 				}
 			}
 			if ((sptr = me->modem->GSMGetModelIdent(sbuff)) != 0)
-				me->initModemModel = Text::String::NewP(sbuff, sptr);
+				me->initModemModel = Text::String::NewP(sbuff, sptr).Ptr();
 			if ((sptr = me->modem->GSMGetModemVer(sbuff)) != 0)
-				me->initModemVer = Text::String::NewP(sbuff, sptr);
+				me->initModemVer = Text::String::NewP(sbuff, sptr).Ptr();
 			if ((sptr = me->modem->GSMGetIMEI(sbuff)) != 0)
-				me->initIMEI = Text::String::NewP(sbuff, sptr);
+				me->initIMEI = Text::String::NewP(sbuff, sptr).Ptr();
 			if (me->huawei && (sptr = me->huawei->HuaweiGetICCID(sbuff)) != 0)
-				me->huaweiICCID = Text::String::NewP(sbuff, sptr);
+				me->huaweiICCID = Text::String::NewP(sbuff, sptr).Ptr();
 			me->initStrs = true;
 
 			if ((sptr = me->modem->GSMGetTECharset(sbuff)) != 0)
 			{
 				SDEL_STRING(me->cfgTECharset);
-				me->cfgTECharset = Text::String::NewP(sbuff, sptr);
+				me->cfgTECharset = Text::String::NewP(sbuff, sptr).Ptr();
 				me->cfgTECharsetUpd = true;
 			}
 		}
@@ -74,7 +74,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRGSMModemForm::ModemThread(void *userObj)
 			if ((sptr = me->modem->GSMGetIMSI(sbuff)) != 0)
 			{
 				SDEL_STRING(me->simIMSI);
-				me->simIMSI = Text::String::NewP(sbuff, sptr);
+				me->simIMSI = Text::String::NewP(sbuff, sptr).Ptr();
 			}
 			me->simInfoUpdated = true;
 		}
@@ -86,7 +86,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRGSMModemForm::ModemThread(void *userObj)
 			if ((sptr = me->modem->GSMGetCurrPLMN(sbuff)) != 0)
 			{
 				SDEL_STRING(me->operName);
-				me->operName = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
+				me->operName = Text::String::New(sbuff, (UOSInt)(sptr - sbuff)).Ptr();
 				me->operUpdated = true;
 			}
 			if (me->modem->GSMGetRegisterNetwork(&me->regNetN, &me->regNetStat, &me->regNetLAC, &me->regNetCI, &me->regNetACT))
@@ -423,7 +423,7 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnSMSSaveAllClick(void *userObj)
 				sb.AppendC(UTF8STRC("_"));
 				sb.AppendI32(sms->index);
 				sb.AppendC(UTF8STRC("_"));
-				Text::String *s = Text::String::NewNotNull(smsMsg->GetAddress());
+				NotNullPtr<Text::String> s = Text::String::NewNotNull(smsMsg->GetAddress());
 				sb.Append(s);
 				s->Release();
 				sb.AppendC(UTF8STRC(".sms"));

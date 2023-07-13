@@ -173,15 +173,8 @@ SSWR::AVIRead::AVIRGISGroupQueryForm::AVIRGISGroupQueryForm(UI::GUIClientControl
 	}
 	else
 	{
-		Text::String *name = env->GetGroupName(group);
-		if (name)
-		{
-			sb.Append(name);
-		}
-		else
-		{
-			sb.AppendC(UTF8STRC("Unknown"));
-		}
+		NotNullPtr<Text::String> name = env->GetGroupName(group);
+		sb.Append(name);
 	}
 	this->SetText(sb.ToCString());
 	this->SetFont(0, 0, 8.25, false);

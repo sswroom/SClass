@@ -118,7 +118,7 @@ public:
 		UOSInt i;
 		Sync::MutexUsage mutUsage(this->mut);
 		SDEL_STRING(this->name);
-		this->name = Text::String::New(name);
+		this->name = Text::String::New(name).Ptr();
 		i = Text::StrLastIndexOfCharC(this->name->v, this->name->leng, IO::Path::PATH_SEPERATOR);
 		this->fileName = this->name->ToCString().Substring(i + 1);
 		this->lastCount = 0;

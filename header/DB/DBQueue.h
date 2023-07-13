@@ -1,6 +1,7 @@
 #ifndef _SM_DB_DBQUEUE
 #define _SM_DB_DBQUEUE
 #include "Data/ArrayList.h"
+#include "Data/ArrayListNN.h"
 #include "DB/DBTool.h"
 #include "Sync/Event.h"
 
@@ -43,14 +44,14 @@ namespace DB
 		{
 		public:
 			virtual ~IDBCmd(){};
-			virtual Int32 GetProgId() = 0;
-			virtual CmdType GetCmdType() = 0;
+			virtual Int32 GetProgId() const = 0;
+			virtual CmdType GetCmdType() const = 0;
 		};
 
 		class SQLCmd : public IDBCmd
 		{
 		public:
-			Text::String *str;
+			NotNullPtr<Text::String> str;
 			DBReadHdlr hdlr;
 
 			Int32 progId;
@@ -60,15 +61,15 @@ namespace DB
 
 			SQLCmd(const UTF8Char *sql, UOSInt sqlLen, Int32 progId, DBReadHdlr hdlr, void *userData, void *userData2);
 			virtual ~SQLCmd();			
-			virtual CmdType GetCmdType();
-			virtual Int32 GetProgId();
-			Text::String *GetSQL();
+			virtual CmdType GetCmdType() const;
+			virtual Int32 GetProgId() const;
+			NotNullPtr<Text::String> GetSQL() const;
 		};
 
 		class SQLGroup : public IDBCmd
 		{
 		public:
-			Data::ArrayList<Text::String*> strs;
+			Data::ArrayListNN<Text::String> strs;
 			DBReadHdlr hdlr;
 			Int32 progId;
 			void *userData;
@@ -90,8 +91,8 @@ namespace DB
 
 			SQLTrans(Int32 progId, DBToolHdlr hdlr, void *userData, void *userData2);
 			virtual ~SQLTrans();
-			virtual CmdType GetCmdType();
-			virtual Int32 GetProgId();
+			virtual CmdType GetCmdType() const;
+			virtual Int32 GetProgId() const;
 		};
 
 		class SQLGetDB : public IDBCmd
@@ -104,8 +105,8 @@ namespace DB
 
 			SQLGetDB(Int32 progId, DBToolHdlr hdlr, void *userData, void *userData2);
 			virtual ~SQLGetDB();
-			virtual CmdType GetCmdType();
-			virtual Int32 GetProgId();
+			virtual CmdType GetCmdType() const;
+			virtual Int32 GetProgId() const;
 		};
 
 	private:
@@ -119,7 +120,7 @@ namespace DB
 	public:
 		UInt64 sqlCnt;
 		UInt64 lostCnt;
-		Text::String *name;
+		NotNullPtr<Text::String> name;
 
 	public:
 		IO::LogTool *log;
@@ -132,7 +133,7 @@ namespace DB
 
 	public:
 		DBQueue(DBTool *db, IO::LogTool *log, Text::CString name, UOSInt dbSize);
-		DBQueue(Data::ArrayList<DBTool*> *dbs, IO::LogTool *log, Text::String *name, UOSInt dbSize);
+		DBQueue(Data::ArrayList<DBTool*> *dbs, IO::LogTool *log, NotNullPtr<Text::String> name, UOSInt dbSize);
 		DBQueue(Data::ArrayList<DBTool*> *dbs, IO::LogTool *log, Text::CString name, UOSInt dbSize);
 		~DBQueue();
 
@@ -180,7 +181,7 @@ namespace DB
 		UInt32 GetDataCnt();
 
 	private:
-		void WriteError(const UTF8Char *errMsg, Text::String *sqlCmd);
+		void WriteError(const UTF8Char *errMsg, NotNullPtr<Text::String> sqlCmd);
 		static UInt32 __stdcall ProcessSQL(void *userObj);
 
 	public:

@@ -83,7 +83,7 @@ OSInt __stdcall SSWR::AVIRead::AVIRSDCardForm::ItemCompare(void *item1, void *it
 {
 	IO::SDCardInfo *sdCard1 = (IO::SDCardInfo*)item1;
 	IO::SDCardInfo *sdCard2 = (IO::SDCardInfo*)item2;
-	return sdCard1->GetName()->CompareTo(sdCard2->GetName());
+	return sdCard1->GetName()->CompareTo(sdCard2->GetName().Ptr());
 }
 
 SSWR::AVIRead::AVIRSDCardForm::AVIRSDCardForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)

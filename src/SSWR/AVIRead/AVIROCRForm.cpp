@@ -2,7 +2,7 @@
 #include "IO/StmData/FileData.h"
 #include "SSWR/AVIRead/AVIROCRForm.h"
 
-void __stdcall SSWR::AVIRead::AVIROCRForm::OnFileHandler(void *userObj, Text::String **files, UOSInt nFiles)
+void __stdcall SSWR::AVIRead::AVIROCRForm::OnFileHandler(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles)
 {
 	SSWR::AVIRead::AVIROCRForm *me = (SSWR::AVIRead::AVIROCRForm*)userObj;
 	Parser::ParserList *parsers = me->core->GetParserList();
@@ -40,7 +40,7 @@ void __stdcall SSWR::AVIRead::AVIROCRForm::OnTextSelChg(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIROCRForm::OnOCRResult(void *userObj, Text::String *txt, Double confidence, Math::RectArea<OSInt> boundary)
+void __stdcall SSWR::AVIRead::AVIROCRForm::OnOCRResult(void *userObj, NotNullPtr<Text::String> txt, Double confidence, Math::RectArea<OSInt> boundary)
 {
 	SSWR::AVIRead::AVIROCRForm *me = (SSWR::AVIRead::AVIROCRForm*)userObj;
 	UTF8Char sbuff[64];

@@ -50,7 +50,7 @@ UI::GUITabControl::~GUITabControl()
 	}
 }
 
-UI::GUITabPage *UI::GUITabControl::AddTabPage(Text::String *tabName)
+UI::GUITabPage *UI::GUITabControl::AddTabPage(NotNullPtr<Text::String> tabName)
 {
 	UI::GUITabPage *tp;
 	PageInfo *page;

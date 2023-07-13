@@ -240,7 +240,7 @@ Data::StringMap<Text::String*> *Crypto::Token::JWTHandler::Parse(const UTF8Char 
 			{
 				sb.ClearStr();
 				json->ToJSONString(&sb);
-				retMap->Put(name, Text::String::New(sb.ToString(), sb.GetLength()));
+				retMap->Put(name, Text::String::New(sb.ToString(), sb.GetLength()).Ptr());
 			}
 		}
 		i++;

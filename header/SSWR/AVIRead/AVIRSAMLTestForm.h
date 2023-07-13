@@ -75,7 +75,7 @@ namespace SSWR
 			UI::GUITextBox *txtLog;
 
 		private:
-			static void __stdcall OnFormFiles(void *userObj, Text::String **files, UOSInt nFiles);
+			static void __stdcall OnFormFiles(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles);
 			static void __stdcall OnLogSel(void *userObj);
 			static void __stdcall OnSSLCertClicked(void *userObj);
 			static void __stdcall OnStartClicked(void *userObj);

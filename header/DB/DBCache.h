@@ -13,7 +13,7 @@ namespace DB
 	private:
 		typedef struct
 		{
-			Text::String *tableName;
+			NotNullPtr<Text::String> tableName;
 			TableDef *def;
 			UOSInt dataCnt;
 		} TableInfo;
