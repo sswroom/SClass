@@ -29,8 +29,8 @@ namespace SSWR
 		public:
 			Int32 id;
 			Int32 parId;
-			Text::String *ename;
-			Text::String *cname;
+			NotNullPtr<Text::String> ename;
+			NotNullPtr<Text::String> cname;
 			Double lat;
 			Double lon;
 			Int32 locType;
@@ -44,8 +44,8 @@ namespace SSWR
 		{
 		public:
 			Int32 id;
-			Text::String *engName;
-			Text::String *chiName;
+			NotNullPtr<Text::String> engName;
+			NotNullPtr<Text::String> chiName;
 
 			LocationType(Int32 id, Text::CString engName, Text::CString chiName);
 			~LocationType();

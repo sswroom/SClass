@@ -508,7 +508,7 @@ template <class T> Bool DB::DBDataFile<T>::LoadFile(Text::CString fileName, Data
 							else
 							{
 								m2 = ReadInt(buff, m2, &m3);
-								Text::String *s = Text::String::New(&buff[m2], m3);
+								NotNullPtr<Text::String> s = Text::String::New(&buff[m2], m3);
 								item.SetStr(s);
 								s->Release();
 								cls->SetField(obj, k, &item);

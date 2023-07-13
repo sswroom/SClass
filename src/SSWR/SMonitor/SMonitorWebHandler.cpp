@@ -141,7 +141,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::IndexReq(SSWR::SMonitor::SMon
 			writer->WriteStrC(UTF8STRC("<tr><td>"));
 			if (dev->devName)
 			{
-				WriteHTMLText(writer, dev->devName);
+				WriteHTMLText(writer, Text::String::OrEmpty(dev->devName));
 			}
 			else
 			{
@@ -415,7 +415,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReq(SSWR::SMonitor::SMo
 		Sync::RWMutexUsage mutUsage(&dev->mut, false);
 		if (dev->devName)
 		{
-			WriteHTMLText(writer, dev->devName);
+			WriteHTMLText(writer, Text::String::OrEmpty(dev->devName));
 		}
 		else
 		{
@@ -2120,7 +2120,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserAssignReq(SSWR::SMonitor:
 		writer->WriteStrC(UTF8STRC("\">"));
 		if (dev->devName)
 		{
-			WriteHTMLText(writer, dev->devName);
+			WriteHTMLText(writer, Text::String::OrEmpty(dev->devName));
 		}
 		else
 		{
@@ -2195,49 +2195,63 @@ void __stdcall SSWR::SMonitor::SMonitorWebHandler::WriteMenu(IO::Writer *writer,
 
 void __stdcall SSWR::SMonitor::SMonitorWebHandler::WriteHTMLText(IO::Writer *writer, const UTF8Char *txt)
 {
-	Text::String *xmlTxt = Text::XML::ToNewHTMLBodyText(txt);
+	NotNullPtr<Text::String> xmlTxt = Text::XML::ToNewHTMLBodyText(txt);
 	writer->WriteStrC(xmlTxt->v, xmlTxt->leng);
 	xmlTxt->Release();
 }
 
-void __stdcall SSWR::SMonitor::SMonitorWebHandler::WriteHTMLText(IO::Writer *writer, Text::String *txt)
+void __stdcall SSWR::SMonitor::SMonitorWebHandler::WriteHTMLText(IO::Writer *writer, NotNullPtr<Text::String> txt)
 {
-	Text::String *xmlTxt = Text::XML::ToNewHTMLBodyText(txt->v);
+	NotNullPtr<Text::String> xmlTxt = Text::XML::ToNewHTMLBodyText(txt->v);
 	writer->WriteStrC(xmlTxt->v, xmlTxt->leng);
 	xmlTxt->Release();
 }
 
 void __stdcall SSWR::SMonitor::SMonitorWebHandler::WriteHTMLText(IO::Writer *writer, Text::CString txt)
 {
-	Text::String *xmlTxt = Text::XML::ToNewHTMLBodyText(txt.v);
+	NotNullPtr<Text::String> xmlTxt = Text::XML::ToNewHTMLBodyText(txt.v);
 	writer->WriteStrC(xmlTxt->v, xmlTxt->leng);
 	xmlTxt->Release();
 }
 
 void __stdcall SSWR::SMonitor::SMonitorWebHandler::WriteAttrText(IO::Writer *writer, const UTF8Char *txt)
 {
-	Text::String *xmlTxt = Text::XML::ToNewAttrText(txt);
+	NotNullPtr<Text::String> xmlTxt = Text::XML::ToNewAttrText(txt);
 	writer->WriteStrC(xmlTxt->v, xmlTxt->leng);
 	xmlTxt->Release();
 }
 
 void __stdcall SSWR::SMonitor::SMonitorWebHandler::WriteAttrText(IO::Writer *writer, Text::String *txt)
 {
-	Text::String *xmlTxt = Text::XML::ToNewAttrText(txt->v);
+	NotNullPtr<Text::String> xmlTxt = Text::XML::ToNewAttrText(STR_PTR(txt));
+	writer->WriteStrC(xmlTxt->v, xmlTxt->leng);
+	xmlTxt->Release();
+}
+
+void __stdcall SSWR::SMonitor::SMonitorWebHandler::WriteAttrText(IO::Writer *writer, NotNullPtr<Text::String> txt)
+{
+	NotNullPtr<Text::String> xmlTxt = Text::XML::ToNewAttrText(txt->v);
 	writer->WriteStrC(xmlTxt->v, xmlTxt->leng);
 	xmlTxt->Release();
 }
 
 void __stdcall SSWR::SMonitor::SMonitorWebHandler::WriteJSText(IO::Writer *writer, const UTF8Char *txt)
 {
-	Text::String *jsTxt = Text::JSText::ToNewJSText(txt);
+	NotNullPtr<Text::String> jsTxt = Text::JSText::ToNewJSText(txt);
 	writer->WriteStrC(jsTxt->v, jsTxt->leng);
 	jsTxt->Release();
 }
 
 void __stdcall SSWR::SMonitor::SMonitorWebHandler::WriteJSText(IO::Writer *writer, Text::String *txt)
 {
-	Text::String *jsTxt = Text::JSText::ToNewJSText(txt);
+	NotNullPtr<Text::String> jsTxt = Text::JSText::ToNewJSText(txt);
+	writer->WriteStrC(jsTxt->v, jsTxt->leng);
+	jsTxt->Release();
+}
+
+void __stdcall SSWR::SMonitor::SMonitorWebHandler::WriteJSText(IO::Writer *writer, NotNullPtr<Text::String> txt)
+{
+	NotNullPtr<Text::String> jsTxt = Text::JSText::ToNewJSText(txt);
 	writer->WriteStrC(jsTxt->v, jsTxt->leng);
 	jsTxt->Release();
 }

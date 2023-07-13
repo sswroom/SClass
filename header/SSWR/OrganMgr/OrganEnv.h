@@ -53,8 +53,8 @@ namespace SSWR
 		typedef struct
 		{
 			Int32 id;
-			Text::String *userName;
-			Text::String *watermark;
+			NotNullPtr<Text::String> userName;
+			NotNullPtr<Text::String> watermark;
 			UserType userType;
 		} OrganWebUser;
 
@@ -64,8 +64,8 @@ namespace SSWR
 			Int32 fileType;
 			Data::Timestamp startTime;
 			Data::Timestamp endTime;
-			Text::String *oriFileName;
-			Text::String *fileName;
+			NotNullPtr<Text::String> oriFileName;
+			NotNullPtr<Text::String> fileName;
 			Int32 webUserId;
 		} DataFileInfo;
 
@@ -73,14 +73,14 @@ namespace SSWR
 		{
 			Int32 id;
 			Int32 fileType;
-			Text::String *oriFileName;
+			NotNullPtr<Text::String> oriFileName;
 			Data::Timestamp fileTime;
 			Double lat;
 			Double lon;
 			Int32 webuserId;
 			Int32 speciesId;
 			Data::Timestamp captureTime;
-			Text::String *dataFileName;
+			NotNullPtr<Text::String> dataFileName;
 			UInt32 crcVal;
 			Int32 rotType;
 			Text::String *camera;
@@ -97,9 +97,9 @@ namespace SSWR
 			Int32 id;
 			Int32 speciesId;
 			UInt32 crcVal;
-			Text::String *imgUrl;
-			Text::String *srcUrl;
-			Text::String *location;
+			NotNullPtr<Text::String> imgUrl;
+			NotNullPtr<Text::String> srcUrl;
+			NotNullPtr<Text::String> location;
 			Double cropLeft;
 			Double cropTop;
 			Double cropRight;

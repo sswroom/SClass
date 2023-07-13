@@ -4,7 +4,7 @@
 #include "UI/Clipboard.h"
 #include "UI/MessageDialog.h"
 
-void __stdcall SSWR::OrganMgr::OrganDataFileForm::OnFileDrop(void *userObj, Text::String **files, UOSInt nFiles)
+void __stdcall SSWR::OrganMgr::OrganDataFileForm::OnFileDrop(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles)
 {
 	OrganDataFileForm *me = (OrganDataFileForm*)userObj;
 	Bool chg = false;
@@ -84,7 +84,7 @@ void SSWR::OrganMgr::OrganDataFileForm::UpdateFileList()
 	while (i < j)
 	{
 		dataFile = dataFiles->GetItem(i);
-		k = this->lvFiles->AddItem(dataFile->oriFileName, dataFile);
+		k = this->lvFiles->AddItem(Text::String::OrEmpty(dataFile->oriFileName), dataFile);
 		sptr = dataFile->startTime.ToLocalTime().ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
 		this->lvFiles->SetSubItem(k, 1, CSTRP(sbuff, sptr));
 		sptr = dataFile->endTime.ToLocalTime().ToString(sbuff, "yyyy-MM-dd HH:mm:ss");

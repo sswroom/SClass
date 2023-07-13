@@ -11,7 +11,7 @@ namespace SSWR
 		class VAMSBTWebHandler : public Net::WebServer::WebServiceHandler
 		{
 		private:
-			Text::String *logPath;
+			NotNullPtr<Text::String> logPath;
 			VAMSBTList *btList;
 
 			static Bool __stdcall DevData(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq, WebServiceHandler *me);
@@ -21,7 +21,7 @@ namespace SSWR
 			static Bool __stdcall ListItem(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq, WebServiceHandler *me);
 
 		public:
-			VAMSBTWebHandler(Text::String *logPath, VAMSBTList *btList);
+			VAMSBTWebHandler(NotNullPtr<Text::String> logPath, VAMSBTList *btList);
 			virtual ~VAMSBTWebHandler();
 		};
 	}

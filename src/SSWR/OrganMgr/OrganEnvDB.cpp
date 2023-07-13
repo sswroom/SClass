@@ -90,7 +90,7 @@ SSWR::OrganMgr::OrganEnvDB::OrganEnvDB() : OrganEnv()
 	}
 	else if (cfgDSN)
 	{
-		this->db = DB::ODBCConn::CreateDBTool(cfgDSN, Text::String::OrEmpty(cfgUID), Text::String::OrEmpty(cfgPassword), 0, &this->log, CSTR_NULL);
+		this->db = DB::ODBCConn::CreateDBTool(Text::String::OrEmpty(cfgDSN), cfgUID, cfgPassword, 0, &this->log, CSTR_NULL);
 	}
 	if (db == 0)
 	{
@@ -148,8 +148,8 @@ SSWR::OrganMgr::OrganEnvDB::OrganEnvDB() : OrganEnv()
 			dataFile->fileType = r->GetInt32(1);
 			dataFile->startTime = r->GetTimestamp(2);
 			dataFile->endTime = r->GetTimestamp(3);
-			dataFile->oriFileName = r->GetNewStr(4);
-			dataFile->fileName = r->GetNewStr(5);
+			dataFile->oriFileName = r->GetNewStrNN(4);
+			dataFile->fileName = r->GetNewStrNN(5);
 			dataFile->webUserId = r->GetInt32(6);
 			this->dataFiles.Add(dataFile);
 
@@ -179,14 +179,14 @@ SSWR::OrganMgr::OrganEnvDB::OrganEnvDB() : OrganEnv()
 			userFile = MemAlloc(UserFileInfo, 1);
 			userFile->id = r->GetInt32(0);
 			userFile->fileType = r->GetInt32(1);
-			userFile->oriFileName = r->GetNewStr(2);
+			userFile->oriFileName = r->GetNewStrNN(2);
 			userFile->fileTime = r->GetTimestamp(3);
 			userFile->lat = r->GetDbl(4);
 			userFile->lon = r->GetDbl(5);
 			userFile->webuserId = r->GetInt32(6);
 			userFile->speciesId = r->GetInt32(7);
 			userFile->captureTime = r->GetTimestamp(8);
-			userFile->dataFileName = r->GetNewStr(9);
+			userFile->dataFileName = r->GetNewStrNN(9);
 			userFile->crcVal = (UInt32)r->GetInt32(10);
 			userFile->rotType = r->GetInt32(11);
 			userFile->camera = r->GetNewStr(12);
@@ -264,13 +264,13 @@ SSWR::OrganMgr::OrganEnvDB::OrganEnvDB() : OrganEnv()
 			wfile->id = r->GetInt32(0);
 			wfile->speciesId = r->GetInt32(1);
 			wfile->crcVal = (UInt32)r->GetInt32(2);
-			wfile->imgUrl = r->GetNewStr(3);
-			wfile->srcUrl = r->GetNewStr(4);
+			wfile->imgUrl = r->GetNewStrNN(3);
+			wfile->srcUrl = r->GetNewStrNN(4);
 			wfile->cropLeft = r->GetDbl(6);
 			wfile->cropTop = r->GetDbl(7);
 			wfile->cropRight = r->GetDbl(8);
 			wfile->cropBottom = r->GetDbl(9);
-			wfile->location = r->GetNewStr(10);
+			wfile->location = r->GetNewStrNN(10);
 			fileList.Add(wfile);
 		}
 		this->db->CloseReader(r);
@@ -506,7 +506,7 @@ UOSInt SSWR::OrganMgr::OrganEnvDB::GetGroupImages(Data::ArrayList<OrganImageItem
 				UserFileInfo *userFile = this->userFileMap.Get(photoId);
 				if (userFile != 0)
 				{
-					item->SetFullName(userFile->dataFileName);
+					item->SetFullName(userFile->dataFileName.Ptr());
 					item->SetFileType(OrganImageItem::FileType::UserFile);
 					item->SetUserFile(userFile);
 				}
@@ -519,7 +519,7 @@ UOSInt SSWR::OrganMgr::OrganEnvDB::GetGroupImages(Data::ArrayList<OrganImageItem
 					WebFileInfo *webFile = sp->wfileMap.Get(photoWId);
 					if (webFile != 0)
 					{
-						item->SetFullName(webFile->imgUrl);
+						item->SetFullName(webFile->imgUrl.Ptr());
 						item->SetFileType(OrganImageItem::FileType::WebFile);
 						item->SetWebFile(webFile);
 					}
@@ -663,9 +663,9 @@ UOSInt SSWR::OrganMgr::OrganEnvDB::GetSpeciesImages(Data::ArrayList<OrganImageIt
 			}
 
 			NEW_CLASS(imgItem, OrganImageItem(userFile->webuserId));
-			imgItem->SetDispName(userFile->oriFileName);
+			imgItem->SetDispName(userFile->oriFileName.Ptr());
 			imgItem->SetIsCoverPhoto(isCoverPhoto);
-			imgItem->SetFullName(userFile->dataFileName);
+			imgItem->SetFullName(userFile->dataFileName.Ptr());
 			imgItem->SetPhotoDate(userFile->captureTime);
 			imgItem->SetRotateType(OrganImageItem::RotateType::None);
 			imgItem->SetFileType(OrganImageItem::FileType::UserFile);
@@ -706,8 +706,8 @@ UOSInt SSWR::OrganMgr::OrganEnvDB::GetSpeciesImages(Data::ArrayList<OrganImageIt
 			imgItem->SetPhotoDate(0);
 			imgItem->SetRotateType(OrganImageItem::RotateType::None);
 			imgItem->SetFileType(OrganImageItem::FileType::WebFile);
-			imgItem->SetSrcURL(webFile->srcUrl);
-			imgItem->SetImgURL(webFile->imgUrl);
+			imgItem->SetSrcURL(webFile->srcUrl.Ptr());
+			imgItem->SetImgURL(webFile->imgUrl.Ptr());
 			imgItem->SetUserFile(0);
 			imgItem->SetWebFile(webFile);
 			items->Add(imgItem);
@@ -1551,7 +1551,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 						{
 							if (cstr2.StartsWithICase(cstr.v, cstr.leng))
 							{
-								camera = Text::String::New(cstr2);
+								camera = Text::String::New(cstr2).Ptr();
 							}
 							else
 							{
@@ -1559,16 +1559,16 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 								sb.Append(cstr);
 								sb.AppendC(UTF8STRC(" "));
 								sb.Append(cstr2);
-								camera = Text::String::New(sb.ToCString());
+								camera = Text::String::New(sb.ToCString()).Ptr();
 							}
 						}
 						else if (cstr.v)
 						{
-							camera = Text::String::New(cstr);
+							camera = Text::String::New(cstr).Ptr();
 						}
 						else if (cstr2.v)
 						{
-							camera = Text::String::New(cstr2);
+							camera = Text::String::New(cstr2).Ptr();
 						}
 					}
 				}
@@ -2280,8 +2280,8 @@ Bool SSWR::OrganMgr::OrganEnvDB::UpdateSpeciesWebFile(OrganSpecies *sp, WebFileI
 	sql.AppendInt32(wfile->id);
 	if (this->db->ExecuteNonQuery(sql.ToCString()) >= 0)
 	{
-		SDEL_STRING(wfile->srcUrl);
-		SDEL_STRING(wfile->location);
+		wfile->srcUrl->Release();
+		wfile->location->Release();
 		wfile->srcUrl = srcURL->Clone();
 		wfile->location = location->Clone();
 		return true;
@@ -2700,7 +2700,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::MoveImages(Data::ArrayList<OrganImages*> *imgLi
 			if (!IO::FileUtil::MoveFile(img->GetImgItem()->GetFullName()->ToCString(), CSTRP(sbuff, sptr2), IO::FileUtil::FileExistAction::Fail, 0, 0))
 			{
 				Text::StringBuilderUTF8 sb;
-				Text::String *s;
+				NotNullPtr<Text::String> s;
 				s = Text::String::NewNotNull(L"移動");
 				sb.Append(s);
 				s->Release();
@@ -2758,7 +2758,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::MoveImages(Data::ArrayList<OrganImages*> *imgLi
 			sptr = Text::StrConcat(sbuff, srcDir);
 			*sptr++ = IO::Path::PATH_SEPERATOR;
 			sptr = Text::StrConcatC(sptr, UTF8STRC("web.txt"));
-			Data::ArrayList<Text::String *> webLines;
+			Data::ArrayListNN<Text::String> webLines;
 			Text::PString sarr[4];
 			Bool found;
 			{
@@ -2867,8 +2867,8 @@ UOSInt SSWR::OrganMgr::OrganEnvDB::GetWebUsers(Data::ArrayList<OrganWebUser*> *u
 		{
 			user = MemAlloc(OrganWebUser, 1);
 			user->id = r->GetInt32(0);
-			user->userName = r->GetNewStr(1);
-			user->watermark = r->GetNewStr(2);
+			user->userName = r->GetNewStrNN(1);
+			user->watermark = r->GetNewStrNN(2);
 			user->userType = (UserType)r->GetInt32(3);
 			userList->Add(user);
 		}
@@ -3165,7 +3165,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::AddDataFile(Text::CString fileName)
 		else if (t == IO::ParserType::ReadingDB)
 		{
 			DB::ReadingDB *db = (DB::ReadingDB*)pobj;
-			Data::ArrayList<Text::String*> tables;
+			Data::ArrayListNN<Text::String> tables;
 			db->QueryTableNames(CSTR_NULL, &tables);
 			if (tables.GetCount() == 2)
 			{
@@ -3530,7 +3530,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::UpdateUserFileDesc(UserFileInfo *userFile, cons
 		SDEL_STRING(userFile->descript);
 		if (descript)
 		{
-			userFile->descript = Text::String::NewNotNullSlow(descript);
+			userFile->descript = Text::String::NewNotNullSlow(descript).Ptr();
 		}
 	}
 	return succ;
@@ -3550,7 +3550,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::UpdateUserFileLoc(UserFileInfo *userFile, const
 		SDEL_STRING(userFile->location);
 		if (location)
 		{
-			userFile->location = Text::String::NewNotNullSlow(location);
+			userFile->location = Text::String::NewNotNullSlow(location).Ptr();
 		}
 	}
 	return succ;
@@ -3702,8 +3702,8 @@ Bool SSWR::OrganMgr::OrganEnvDB::LocationUpdate(Int32 locId, Text::CString engNa
 		return false;
 	else
 	{
-		SDEL_STRING(loc->ename);
-		SDEL_STRING(loc->cname);
+		loc->ename->Release();
+		loc->cname->Release();
 		loc->ename = Text::String::New(engName);
 		loc->cname = Text::String::New(chiName);
 		return true;
@@ -3968,7 +3968,7 @@ Media::ImageList *SSWR::OrganMgr::OrganEnvDB::ParseImage(OrganImageItem *img, Us
 		{
 			*outWebFile = 0;
 		}
-		NEW_CLASS(fd, IO::StmData::FileData(img->GetFullName(), false));
+		NEW_CLASS(fd, IO::StmData::FileData(Text::String::OrEmpty(img->GetFullName()), false));
 		IO::ParsedObject *pobj = this->parsers.ParseFile(fd, &pt);
 		DEL_CLASS(fd);
 		if (pobj == 0)

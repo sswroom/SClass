@@ -266,7 +266,7 @@ Text::String* LamppostData::GetLampno()
 void LamppostData::SetLampno(Text::String* lampno)
 {
 	SDEL_STRING(this->lampno);
-	this->lampno = lampno?lampno->Clone():0;
+	this->lampno = lampno?lampno->Clone().Ptr():0;
 }
 
 Int32 LamppostData::GetLightStatus()
@@ -397,7 +397,7 @@ Text::String* LamppostData::GetFault1Descr()
 void LamppostData::SetFault1Descr(Text::String* fault1Descr)
 {
 	SDEL_STRING(this->fault1Descr);
-	this->fault1Descr = fault1Descr?fault1Descr->Clone():0;
+	this->fault1Descr = fault1Descr?fault1Descr->Clone().Ptr():0;
 }
 
 Text::String* LamppostData::GetFault2Descr()
@@ -408,7 +408,7 @@ Text::String* LamppostData::GetFault2Descr()
 void LamppostData::SetFault2Descr(Text::String* fault2Descr)
 {
 	SDEL_STRING(this->fault2Descr);
-	this->fault2Descr = fault2Descr?fault2Descr->Clone():0;
+	this->fault2Descr = fault2Descr?fault2Descr->Clone().Ptr():0;
 }
 
 Text::String* LamppostData::GetFault3Descr()
@@ -419,7 +419,7 @@ Text::String* LamppostData::GetFault3Descr()
 void LamppostData::SetFault3Descr(Text::String* fault3Descr)
 {
 	SDEL_STRING(this->fault3Descr);
-	this->fault3Descr = fault3Descr?fault3Descr->Clone():0;
+	this->fault3Descr = fault3Descr?fault3Descr->Clone().Ptr():0;
 }
 
 Text::String* LamppostData::GetFault4Descr()
@@ -430,7 +430,7 @@ Text::String* LamppostData::GetFault4Descr()
 void LamppostData::SetFault4Descr(Text::String* fault4Descr)
 {
 	SDEL_STRING(this->fault4Descr);
-	this->fault4Descr = fault4Descr?fault4Descr->Clone():0;
+	this->fault4Descr = fault4Descr?fault4Descr->Clone().Ptr():0;
 }
 
 Text::String* LamppostData::GetFault5Descr()
@@ -441,7 +441,7 @@ Text::String* LamppostData::GetFault5Descr()
 void LamppostData::SetFault5Descr(Text::String* fault5Descr)
 {
 	SDEL_STRING(this->fault5Descr);
-	this->fault5Descr = fault5Descr?fault5Descr->Clone():0;
+	this->fault5Descr = fault5Descr?fault5Descr->Clone().Ptr():0;
 }
 
 Text::String* LamppostData::GetFault6Descr()
@@ -452,7 +452,7 @@ Text::String* LamppostData::GetFault6Descr()
 void LamppostData::SetFault6Descr(Text::String* fault6Descr)
 {
 	SDEL_STRING(this->fault6Descr);
-	this->fault6Descr = fault6Descr?fault6Descr->Clone():0;
+	this->fault6Descr = fault6Descr?fault6Descr->Clone().Ptr():0;
 }
 
 Text::String* LamppostData::GetFault7Descr()
@@ -463,7 +463,7 @@ Text::String* LamppostData::GetFault7Descr()
 void LamppostData::SetFault7Descr(Text::String* fault7Descr)
 {
 	SDEL_STRING(this->fault7Descr);
-	this->fault7Descr = fault7Descr?fault7Descr->Clone():0;
+	this->fault7Descr = fault7Descr?fault7Descr->Clone().Ptr():0;
 }
 
 Text::String* LamppostData::GetFault8Descr()
@@ -474,7 +474,7 @@ Text::String* LamppostData::GetFault8Descr()
 void LamppostData::SetFault8Descr(Text::String* fault8Descr)
 {
 	SDEL_STRING(this->fault8Descr);
-	this->fault8Descr = fault8Descr?fault8Descr->Clone():0;
+	this->fault8Descr = fault8Descr?fault8Descr->Clone().Ptr():0;
 }
 
 Text::String* LamppostData::GetFault9Descr()
@@ -485,7 +485,7 @@ Text::String* LamppostData::GetFault9Descr()
 void LamppostData::SetFault9Descr(Text::String* fault9Descr)
 {
 	SDEL_STRING(this->fault9Descr);
-	this->fault9Descr = fault9Descr?fault9Descr->Clone():0;
+	this->fault9Descr = fault9Descr?fault9Descr->Clone().Ptr():0;
 }
 
 Text::String* LamppostData::GetFault10Descr()
@@ -496,7 +496,7 @@ Text::String* LamppostData::GetFault10Descr()
 void LamppostData::SetFault10Descr(Text::String* fault10Descr)
 {
 	SDEL_STRING(this->fault10Descr);
-	this->fault10Descr = fault10Descr?fault10Descr->Clone():0;
+	this->fault10Descr = fault10Descr?fault10Descr->Clone().Ptr():0;
 }
 
 Double LamppostData::GetVal1()
@@ -933,7 +933,7 @@ Text::String* CadRunway::GetCode() const
 void CadRunway::SetCode(Text::String* code)
 {
 	SDEL_STRING(this->code);
-	this->code = code?code->Clone():0;
+	this->code = code?code->Clone().Ptr():0;
 }
 
 Text::String* CadRunway::GetDisplayName() const
@@ -944,7 +944,7 @@ Text::String* CadRunway::GetDisplayName() const
 void CadRunway::SetDisplayName(Text::String* displayName)
 {
 	SDEL_STRING(this->displayName);
-	this->displayName = displayName?displayName->Clone():0;
+	this->displayName = displayName?displayName->Clone().Ptr():0;
 }
 
 Text::String* CadRunway::GetDescr() const
@@ -955,7 +955,7 @@ Text::String* CadRunway::GetDescr() const
 void CadRunway::SetDescr(Text::String* descr)
 {
 	SDEL_STRING(this->descr);
-	this->descr = descr?descr->Clone():0;
+	this->descr = descr?descr->Clone().Ptr():0;
 }
 
 Data::Timestamp CadRunway::GetDtCreate() const

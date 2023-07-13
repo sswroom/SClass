@@ -91,11 +91,11 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			}
 			else if (cfg->GetValue(CSTR("MySQLServer")))
 			{
-				db = Net::MySQLTCPClient::CreateDBTool(&sockf, cfg->GetValue(CSTR("MySQLServer")), cfg->GetValue(CSTR("MySQLDB")), cfg->GetValue(CSTR("MySQLUID")), cfg->GetValue(CSTR("MySQLPwd")), &log, CSTR("DB: "));
+				db = Net::MySQLTCPClient::CreateDBTool(&sockf, cfg->GetValue(CSTR("MySQLServer")), cfg->GetValue(CSTR("MySQLDB")), Text::String::OrEmpty(cfg->GetValue(CSTR("MySQLUID"))), Text::String::OrEmpty(cfg->GetValue(CSTR("MySQLPwd"))), &log, CSTR("DB: "));
 			}
 			else
 			{
-				db = DB::ODBCConn::CreateDBTool(cfg->GetValue(CSTR("DBDSN")), cfg->GetValue(CSTR("DBUID")), cfg->GetValue(CSTR("DBPwd")), cfg->GetValue(CSTR("DBSchema")), &log, CSTR("DB: "));
+				db = DB::ODBCConn::CreateDBTool(Text::String::OrEmpty(cfg->GetValue(CSTR("DBDSN"))), cfg->GetValue(CSTR("DBUID")), cfg->GetValue(CSTR("DBPwd")), cfg->GetValue(CSTR("DBSchema")), &log, CSTR("DB: "));
 			}
 			UInt16 port;
 			cfg->GetValue(CSTR("SvrPort"))->ToUInt16S(&port, 0);

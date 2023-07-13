@@ -9,12 +9,12 @@ void __stdcall SSWR::OrganMgr::OrganImageWebForm::OnOKClicked(void *userObj)
 	Text::StringBuilderUTF8 sb;
 	me->txtSourceURL->GetText(&sb);
 	SDEL_STRING(me->srcURL);
-	me->srcURL = Text::String::New(sb.ToString(), sb.GetLength());
+	me->srcURL = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 
 	sb.ClearStr();
 	me->txtLocation->GetText(&sb);
 	SDEL_STRING(me->location);
-	me->location = Text::String::New(sb.ToString(), sb.GetLength());
+	me->location = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 	me->SetDialogResult(UI::GUIForm::DR_OK);
 }
 

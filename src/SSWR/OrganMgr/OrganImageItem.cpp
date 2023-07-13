@@ -34,13 +34,13 @@ Int32 SSWR::OrganMgr::OrganImageItem::GetUserId() const
 void SSWR::OrganMgr::OrganImageItem::SetDispName(Text::String *dispName)
 {
 	SDEL_STRING(this->dispName);
-	if (dispName) this->dispName = dispName->Clone();
+	if (dispName) this->dispName = dispName->Clone().Ptr();
 }
 
 void SSWR::OrganMgr::OrganImageItem::SetDispName(Text::CString dispName)
 {
 	SDEL_STRING(this->dispName);
-	if (dispName.v) this->dispName = Text::String::New(dispName);
+	if (dispName.v) this->dispName = Text::String::New(dispName).Ptr();
 }
 
 Text::String *SSWR::OrganMgr::OrganImageItem::GetDispName() const
@@ -81,13 +81,13 @@ SSWR::OrganMgr::OrganImageItem::RotateType SSWR::OrganMgr::OrganImageItem::GetRo
 void SSWR::OrganMgr::OrganImageItem::SetFullName(Text::String *fullName)
 {
 	SDEL_STRING(this->fullName);
-	if (fullName) this->fullName = fullName->Clone();
+	if (fullName) this->fullName = fullName->Clone().Ptr();
 }
 
 void SSWR::OrganMgr::OrganImageItem::SetFullName(Text::CString fullName)
 {
 	SDEL_STRING(this->fullName);
-	if (fullName.v) this->fullName = Text::String::New(fullName);
+	if (fullName.v) this->fullName = Text::String::New(fullName).Ptr();
 }
 
 Text::String *SSWR::OrganMgr::OrganImageItem::GetFullName() const
@@ -108,13 +108,13 @@ SSWR::OrganMgr::OrganImageItem::FileType SSWR::OrganMgr::OrganImageItem::GetFile
 void SSWR::OrganMgr::OrganImageItem::SetSrcURL(Text::String *srcURL)
 {
 	SDEL_STRING(this->srcURL);
-	if (srcURL) this->srcURL = srcURL->Clone();
+	if (srcURL) this->srcURL = srcURL->Clone().Ptr();
 }
 
 void SSWR::OrganMgr::OrganImageItem::SetSrcURL(Text::CString srcURL)
 {
 	SDEL_STRING(this->srcURL);
-	if (srcURL.v) this->srcURL = Text::String::New(srcURL);
+	if (srcURL.v) this->srcURL = Text::String::New(srcURL).Ptr();
 }
 
 Text::String *SSWR::OrganMgr::OrganImageItem::GetSrcURL() const
@@ -125,13 +125,13 @@ Text::String *SSWR::OrganMgr::OrganImageItem::GetSrcURL() const
 void SSWR::OrganMgr::OrganImageItem::SetImgURL(Text::String *imgURL)
 {
 	SDEL_STRING(this->imgURL);
-	if (imgURL) this->imgURL = imgURL->Clone();
+	if (imgURL) this->imgURL = imgURL->Clone().Ptr();
 }
 
 void SSWR::OrganMgr::OrganImageItem::SetImgURL(Text::CString imgURL)
 {
 	SDEL_STRING(this->imgURL);
-	if (imgURL.v) this->imgURL = Text::String::New(imgURL);
+	if (imgURL.v) this->imgURL = Text::String::New(imgURL).Ptr();
 }
 
 void SSWR::OrganMgr::OrganImageItem::SetUserFile(UserFileInfo *userFile)

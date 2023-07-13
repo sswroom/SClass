@@ -185,7 +185,7 @@ Text::String* AdsbMovementstatistics::GetUploadId() const
 void AdsbMovementstatistics::SetUploadId(Text::String* uploadId)
 {
 	SDEL_STRING(this->uploadId);
-	this->uploadId = uploadId?uploadId->Clone():0;
+	this->uploadId = uploadId?uploadId->Clone().Ptr():0;
 }
 
 Text::String* AdsbMovementstatistics::GetFinalUploadId() const
@@ -196,7 +196,7 @@ Text::String* AdsbMovementstatistics::GetFinalUploadId() const
 void AdsbMovementstatistics::SetFinalUploadId(Text::String* finalUploadId)
 {
 	SDEL_STRING(this->finalUploadId);
-	this->finalUploadId = finalUploadId?finalUploadId->Clone():0;
+	this->finalUploadId = finalUploadId?finalUploadId->Clone().Ptr():0;
 }
 
 Data::Timestamp AdsbMovementstatistics::GetAdsbDatetime() const
@@ -217,7 +217,7 @@ Text::String* AdsbMovementstatistics::GetCallsign() const
 void AdsbMovementstatistics::SetCallsign(Text::String* callsign)
 {
 	SDEL_STRING(this->callsign);
-	this->callsign = callsign?callsign->Clone():0;
+	this->callsign = callsign?callsign->Clone().Ptr():0;
 }
 
 Double AdsbMovementstatistics::GetLatitude() const
@@ -389,7 +389,7 @@ Text::String* AdsbMovementstatistics::GetAircraftType() const
 void AdsbMovementstatistics::SetAircraftType(Text::String* aircraftType)
 {
 	SDEL_STRING(this->aircraftType);
-	this->aircraftType = aircraftType?aircraftType->Clone():0;
+	this->aircraftType = aircraftType?aircraftType->Clone().Ptr():0;
 }
 
 Data::Timestamp AdsbMovementstatistics::GetAtaAtd() const
@@ -410,7 +410,7 @@ Text::String* AdsbMovementstatistics::GetDeparture() const
 void AdsbMovementstatistics::SetDeparture(Text::String* departure)
 {
 	SDEL_STRING(this->departure);
-	this->departure = departure?departure->Clone():0;
+	this->departure = departure?departure->Clone().Ptr():0;
 }
 
 Text::String* AdsbMovementstatistics::GetDestination() const
@@ -421,7 +421,7 @@ Text::String* AdsbMovementstatistics::GetDestination() const
 void AdsbMovementstatistics::SetDestination(Text::String* destination)
 {
 	SDEL_STRING(this->destination);
-	this->destination = destination?destination->Clone():0;
+	this->destination = destination?destination->Clone().Ptr():0;
 }
 
 Text::String* AdsbMovementstatistics::GetInOutbound() const
@@ -432,7 +432,7 @@ Text::String* AdsbMovementstatistics::GetInOutbound() const
 void AdsbMovementstatistics::SetInOutbound(Text::String* inOutbound)
 {
 	SDEL_STRING(this->inOutbound);
-	this->inOutbound = inOutbound?inOutbound->Clone():0;
+	this->inOutbound = inOutbound?inOutbound->Clone().Ptr():0;
 }
 
 Text::String* AdsbMovementstatistics::GetRunway() const
@@ -443,7 +443,7 @@ Text::String* AdsbMovementstatistics::GetRunway() const
 void AdsbMovementstatistics::SetRunway(Text::String* runway)
 {
 	SDEL_STRING(this->runway);
-	this->runway = runway?runway->Clone():0;
+	this->runway = runway?runway->Clone().Ptr():0;
 }
 
 Text::String* AdsbMovementstatistics::GetServiceType() const
@@ -454,7 +454,7 @@ Text::String* AdsbMovementstatistics::GetServiceType() const
 void AdsbMovementstatistics::SetServiceType(Text::String* serviceType)
 {
 	SDEL_STRING(this->serviceType);
-	this->serviceType = serviceType?serviceType->Clone():0;
+	this->serviceType = serviceType?serviceType->Clone().Ptr():0;
 }
 
 Text::String* AdsbMovementstatistics::GetIoFlight() const
@@ -465,7 +465,7 @@ Text::String* AdsbMovementstatistics::GetIoFlight() const
 void AdsbMovementstatistics::SetIoFlight(Text::String* ioFlight)
 {
 	SDEL_STRING(this->ioFlight);
-	this->ioFlight = ioFlight?ioFlight->Clone():0;
+	this->ioFlight = ioFlight?ioFlight->Clone().Ptr():0;
 }
 
 Data::NamedClass<AdsbMovementstatistics> *AdsbMovementstatistics::CreateClass() const
@@ -526,7 +526,7 @@ Text::String* FlightHoldingsPeriod::GetFinalUploadId() const
 void FlightHoldingsPeriod::SetFinalUploadId(Text::String* finalUploadId)
 {
 	SDEL_STRING(this->finalUploadId);
-	this->finalUploadId = finalUploadId?finalUploadId->Clone():0;
+	this->finalUploadId = finalUploadId?finalUploadId->Clone().Ptr():0;
 }
 
 Data::Timestamp FlightHoldingsPeriod::GetBeginTime() const
@@ -557,7 +557,7 @@ Text::String* FlightHoldingsPeriod::GetVisitedwaypoints() const
 void FlightHoldingsPeriod::SetVisitedwaypoints(Text::String* visitedwaypoints)
 {
 	SDEL_STRING(this->visitedwaypoints);
-	this->visitedwaypoints = visitedwaypoints?visitedwaypoints->Clone():0;
+	this->visitedwaypoints = visitedwaypoints?visitedwaypoints->Clone().Ptr():0;
 }
 
 Int32 FlightHoldingsPeriod::GetSeqno() const

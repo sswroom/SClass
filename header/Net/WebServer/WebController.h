@@ -16,12 +16,12 @@ namespace Net
 		private:
 			typedef struct
 			{
-				Text::String *svcPath;
+				NotNullPtr<Text::String> svcPath;
 				Data::FastMap<Int32, ServiceFunc> funcs;
 			} ServiceInfo;
 			
 			Data::FastStringMap<ServiceInfo *> services;
-			Text::String *svcPath;
+			NotNullPtr<Text::String> svcPath;
 
 		public:
 			WebController(Text::CString svcPath);

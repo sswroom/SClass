@@ -31,7 +31,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			UOSInt j = order->authURLs->GetCount();
 			while (i < j)
 			{
-				Net::ACMEConn::Challenge *chall = conn->OrderAuthorize(order->authURLs->GetItem(i), Net::ACMEConn::AuthorizeType::TLS_ALPN_01);
+				Net::ACMEConn::Challenge *chall = conn->OrderAuthorize(Text::String::OrEmpty(order->authURLs->GetItem(i)), Net::ACMEConn::AuthorizeType::TLS_ALPN_01);
 				if (chall)
 				{
 					Net::ACMEConn::Challenge *challStatus = conn->ChallengeBegin(chall->url);

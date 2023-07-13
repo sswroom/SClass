@@ -104,7 +104,7 @@ SSWR::DataSync::SyncServer::SyncServer(Net::SocketFactory *sockf, IO::LogTool *l
 	ServerInfo *svrInfo;
 	NEW_CLASS(svrInfo, ServerInfo());
 	svrInfo->serverId = serverId;
-	svrInfo->serverName = Text::StrCopyNewC(serverName.v, serverName.leng);
+	svrInfo->serverName = Text::StrCopyNewC(serverName.v, serverName.leng).Ptr();
 	svrInfo->isLocal = true;
 	svrInfo->cli = 0;
 	this->svrMap.Put(svrInfo->serverId, svrInfo);

@@ -271,9 +271,9 @@ void SSWR::OrganMgr::OrganBookForm::UpdateBookList()
 		book = this->bookList.GetItem(i);;
 		sptr = book->GetPublishDate().ToString(sbuff, "yyyy-MM");
 		k = this->lvBook->AddItem(CSTRP(sbuff, sptr), book);
-		this->lvBook->SetSubItem(k, 1, book->GetDispAuthor());
-		this->lvBook->SetSubItem(k, 2, book->GetTitle());
-		this->lvBook->SetSubItem(k, 3, book->GetPress());
+		this->lvBook->SetSubItem(k, 1, Text::String::OrEmpty(book->GetDispAuthor()));
+		this->lvBook->SetSubItem(k, 2, Text::String::OrEmpty(book->GetTitle()));
+		this->lvBook->SetSubItem(k, 3, Text::String::OrEmpty(book->GetPress()));
 		i++;
 	}
 }

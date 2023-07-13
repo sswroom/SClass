@@ -337,7 +337,7 @@ void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnDataUDPPacket(const Net::Socke
 				if (dataSize > 14)
 				{
 					Int64 cliId = ReadInt64(&buff[4]);
-					Text::String *name = Text::String::New(&buff[12], dataSize - 14);
+					NotNullPtr<Text::String> name = Text::String::New(&buff[12], dataSize - 14);
 					me->DeviceSetName(cliId, name);
 					name->Release();
 				}
@@ -346,7 +346,7 @@ void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnDataUDPPacket(const Net::Socke
 				if (dataSize > 14)
 				{
 					Int64 cliId = ReadInt64(&buff[4]);
-					Text::String *name = Text::String::New(&buff[12], dataSize - 14);
+					NotNullPtr<Text::String> name = Text::String::New(&buff[12], dataSize - 14);
 					me->DeviceSetPlatform(cliId, name);
 					name->Release();
 				}
@@ -355,7 +355,7 @@ void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnDataUDPPacket(const Net::Socke
 				if (dataSize > 14)
 				{
 					Int64 cliId = ReadInt64(&buff[4]);
-					Text::String *name = Text::String::New(&buff[12], dataSize - 14);
+					NotNullPtr<Text::String> name = Text::String::New(&buff[12], dataSize - 14);
 					me->DeviceSetCPUName(cliId, name);
 					name->Release();
 				}
@@ -367,7 +367,7 @@ void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnDataUDPPacket(const Net::Socke
 					UInt32 index = ReadUInt32(&buff[12]);
 					UInt16 sensorId = ReadUInt16(&buff[16]);
 					UInt16 readingId = ReadUInt16(&buff[18]);
-					const UTF8Char *name = Text::StrCopyNewC(&buff[20], dataSize - 22);
+					const UTF8Char *name = Text::StrCopyNewC(&buff[20], dataSize - 22).Ptr();
 					me->DeviceSetReading(cliId, index, sensorId, readingId, name);
 					Text::StrDelNew(name);
 				}
@@ -833,7 +833,7 @@ void SSWR::SMonitor::SMonitorSvrCore::LoadData()
 			user->userId = r->GetInt32(0);
 			sb.ClearStr();
 			r->GetStr(1, &sb);
-			user->userName = Text::StrCopyNew(sb.ToString());
+			user->userName = Text::StrCopyNew(sb.ToString()).Ptr();
 			sb.ClearStr();
 			r->GetStr(2, &sb);
 			sb.Hex2Bytes(user->md5Pwd);
@@ -857,8 +857,8 @@ void SSWR::SMonitor::SMonitorSvrCore::LoadData()
 		{
 			NEW_CLASS(dev, DeviceInfo());
 			dev->cliId = r->GetInt64(0);
-			dev->cpuName = r->GetNewStr(1);
-			dev->platformName = r->GetNewStr(2);
+			dev->cpuName = r->GetNewStrNN(1);
+			dev->platformName = r->GetNewStrNN(2);
 			dev->lastKATime = r->GetTimestamp(3).ToTicks();
 			dev->flags = r->GetInt32(4);
 			dev->readingTime = r->GetTimestamp(5).ToTicks();
@@ -901,7 +901,7 @@ void SSWR::SMonitor::SMonitorSvrCore::LoadData()
 				while (true)
 				{
 					j = Text::StrSplit(sarr, 2, sarr[1], '|');
-					dev->readingNames[i] = Text::StrCopyNew(sarr[0]);
+					dev->readingNames[i] = Text::StrCopyNew(sarr[0]).Ptr();
 					i++;
 					if (j != 2)
 						break;
@@ -915,7 +915,7 @@ void SSWR::SMonitor::SMonitorSvrCore::LoadData()
 				while (true)
 				{
 					j = Text::StrSplit(sarr, 2, sarr[1], '|');
-					dev->digitalNames[i] = Text::StrCopyNew(sarr[0]);
+					dev->digitalNames[i] = Text::StrCopyNew(sarr[0]).Ptr();
 					i++;
 					if (j != 2)
 						break;
@@ -1146,11 +1146,11 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(IO::Writer *writer, Media::Draw
 				sb.ClearStr();
 				sb.Append(s);
 				sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
-				this->dataDir = Text::String::New(sb.ToString(), sb.GetLength());
+				this->dataDir = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 			}
 			else
 			{
-				this->dataDir = s->Clone();
+				this->dataDir = s->Clone().Ptr();
 			}
 		}
 
@@ -1158,7 +1158,7 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(IO::Writer *writer, Media::Draw
 		s2 = cfg->GetValue(CSTR("MySQLDB"));
 		if (s && s2)
 		{
-			this->db = Net::MySQLTCPClient::CreateDBTool(this->sockf, s, s2, cfg->GetValue(CSTR("UID")), cfg->GetValue(CSTR("PWD")), &this->log, CSTR("DB: "));
+			this->db = Net::MySQLTCPClient::CreateDBTool(this->sockf, s, s2, Text::String::OrEmpty(cfg->GetValue(CSTR("UID"))), Text::String::OrEmpty(cfg->GetValue(CSTR("PWD"))), &this->log, CSTR("DB: "));
 			NEW_CLASS(this->dbMut, Sync::Mutex());
 			if (this->db == 0)
 			{
@@ -1176,7 +1176,7 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(IO::Writer *writer, Media::Draw
 			s3 = cfg->GetValue(CSTR("PWD"));
 			if (s)
 			{
-				this->db = DB::ODBCConn::CreateDBTool(s, s2, s3, cfg->GetValue(CSTR("Schema")), &this->log, CSTR("DB: "));
+				this->db = DB::ODBCConn::CreateDBTool(Text::String::OrEmpty(s), s2, s3, cfg->GetValue(CSTR("Schema")), &this->log, CSTR("DB: "));
 				NEW_CLASS(this->dbMut, Sync::Mutex());
 				if (this->db == 0)
 				{
@@ -1207,7 +1207,7 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(IO::Writer *writer, Media::Draw
 					SSWR::Benchmark::BenchmarkWebHandler *benchhdlr;
 					SSWR::VAMS::VAMSBTWebHandler *vamsHdlr;
 					SSWR::VAMS::VAMSBTList *btList;
-					NEW_CLASS(hdlr, Net::WebServer::HTTPDirectoryHandler(s2, false, 0, false));
+					NEW_CLASS(hdlr, Net::WebServer::HTTPDirectoryHandler(Text::String::OrEmpty(s2), false, 0, false));
 					NEW_CLASS(shdlr, SSWR::SMonitor::SMonitorWebHandler(this));
 					NEW_CLASS(benchhdlr, SSWR::Benchmark::BenchmarkWebHandler());
 
@@ -1221,7 +1221,7 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(IO::Writer *writer, Media::Draw
 					if ((s = cfg->GetValue(CSTR("VAMSLogPath"))) != 0)
 					{
 						NEW_CLASS(btList, SSWR::VAMS::VAMSBTList());
-						NEW_CLASS(vamsHdlr, SSWR::VAMS::VAMSBTWebHandler(s, btList));
+						NEW_CLASS(vamsHdlr, SSWR::VAMS::VAMSBTWebHandler(Text::String::OrEmpty(s), btList));
 						hdlr->HandlePath(CSTR("/vams"), vamsHdlr, true);
 					}
 
@@ -1359,8 +1359,8 @@ SSWR::SMonitor::SMonitorSvrCore::~SMonitorSvrCore()
 	{
 		dev = this->devMap.GetItem(i);
 		SDEL_STRING(dev->devName);
-		SDEL_STRING(dev->cpuName);
-		SDEL_STRING(dev->platformName);
+		dev->cpuName->Release();
+		dev->platformName->Release();
 		j = SMONITORCORE_DEVREADINGCNT;
 		while (j-- > 0)
 		{
@@ -1641,16 +1641,16 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceKARecv(DeviceInfo *dev, Int64 kaTime
 	return succ;
 }
 
-Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetName(Int64 cliId, Text::String *devName)
+Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetName(Int64 cliId, NotNullPtr<Text::String> devName)
 {
 	SSWR::SMonitor::ISMonitorCore::DeviceInfo *dev;
 	dev = this->DeviceGet(cliId);
 	if (dev == 0)
 		return false;
-	if (devName == 0 || devName->leng == 0)
+	if (devName->leng == 0)
 		return false;
 	Sync::RWMutexUsage devMutUsage(&dev->mut, false);
-	if (dev->devName && dev->devName->Equals(devName))
+	if (dev->devName && dev->devName->Equals(devName.Ptr()))
 	{
 		return true;
 	}
@@ -1668,25 +1668,22 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetName(Int64 cliId, Text::String *d
 	{
 		Sync::RWMutexUsage mutUsage(&dev->mut, true);
 		SDEL_STRING(dev->devName);
-		if (devName)
-		{
-			dev->devName = devName->Clone();
-		}
+		dev->devName = devName->Clone().Ptr();
 		succ = true;
 	}
 	return succ;
 }
 
-Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetPlatform(Int64 cliId, Text::String *platformName)
+Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetPlatform(Int64 cliId, NotNullPtr<Text::String> platformName)
 {
 	SSWR::SMonitor::ISMonitorCore::DeviceInfo *dev;
 	dev = this->DeviceGet(cliId);
 	if (dev == 0)
 		return false;
-	if (platformName == 0 || platformName->leng == 0)
+	if (platformName->leng == 0)
 		return false;
 	Sync::RWMutexUsage devMutUsage(&dev->mut, false);
-	if (dev->platformName && dev->platformName->Equals(platformName))
+	if (dev->platformName->Equals(platformName.Ptr()))
 	{
 		return true;
 	}
@@ -1703,26 +1700,23 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetPlatform(Int64 cliId, Text::Strin
 	if (db->ExecuteNonQuery(sql.ToCString()) >= 0)
 	{
 		Sync::RWMutexUsage mutUsage(&dev->mut, true);
-		SDEL_STRING(dev->platformName);
-		if (platformName)
-		{
-			dev->platformName = platformName->Clone();
-		}
+		dev->platformName->Release();
+		dev->platformName = platformName->Clone();
 		succ = true;
 	}
 	return succ;
 }
 
-Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetCPUName(Int64 cliId, Text::String *cpuName)
+Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetCPUName(Int64 cliId, NotNullPtr<Text::String> cpuName)
 {
 	SSWR::SMonitor::ISMonitorCore::DeviceInfo *dev;
 	dev = this->DeviceGet(cliId);
 	if (dev == 0)
 		return false;
-	if (cpuName == 0 || cpuName->leng == 0)
+	if (cpuName->leng == 0)
 		return false;
 	Sync::RWMutexUsage devMutUsage(&dev->mut, false);
-	if (dev->cpuName && dev->cpuName->Equals(cpuName))
+	if (dev->cpuName->Equals(cpuName.Ptr()))
 	{
 		return true;
 	}
@@ -1739,11 +1733,8 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetCPUName(Int64 cliId, Text::String
 	if (db->ExecuteNonQuery(sql.ToCString()) >= 0)
 	{
 		Sync::RWMutexUsage mutUsage(&dev->mut, true);
-		SDEL_STRING(dev->cpuName);
-		if (cpuName)
-		{
-			dev->cpuName = cpuName->Clone();
-		}
+		dev->cpuName->Release();
+		dev->cpuName = cpuName->Clone();
 		succ = true;
 	}
 	return succ;
@@ -1803,7 +1794,7 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetReading(Int64 cliId, UInt32 index
 	{
 		Sync::RWMutexUsage mutUsage(&dev->mut, true);
 		SDEL_TEXT(dev->readingNames[index]);
-		dev->readingNames[index] = Text::StrCopyNew(readingName);
+		dev->readingNames[index] = Text::StrCopyNew(readingName).Ptr();
 		dev->valUpdated = true;
 		succ = true;
 	}
@@ -1870,7 +1861,7 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceModify(Int64 cliId, Text::CString de
 		SDEL_STRING(dev->devName);
 		if (devName.v)
 		{
-			dev->devName = Text::String::New(devName);
+			dev->devName = Text::String::New(devName).Ptr();
 		}
 		dev->flags = flags;
 		succ = true;
@@ -1917,7 +1908,7 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetReadings(DeviceInfo *dev, const U
 				j = Text::StrSplit(sarr, 2, sarr[1], '|');
 				if (sarr[0][0])
 				{
-					dev->readingNames[i] = Text::StrCopyNew(sarr[0]);
+					dev->readingNames[i] = Text::StrCopyNew(sarr[0]).Ptr();
 				}
 				if (j != 2)
 					break;
@@ -1969,7 +1960,7 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetDigitals(DeviceInfo *dev, const U
 				j = Text::StrSplit(sarr, 2, sarr[1], '|');
 				if (sarr[0][0])
 				{
-					dev->digitalNames[i] = Text::StrCopyNew(sarr[0]);
+					dev->digitalNames[i] = Text::StrCopyNew(sarr[0]).Ptr();
 				}
 				if (j != 2)
 					break;
@@ -2140,7 +2131,7 @@ Bool SSWR::SMonitor::SMonitorSvrCore::UserAdd(const UTF8Char *userName, const UT
 	{
 		NEW_CLASS(user, WebUser());
 		user->userId = db->GetLastIdentity32();
-		user->userName = Text::StrCopyNew(userName);
+		user->userName = Text::StrCopyNew(userName).Ptr();
 		MemCopyNO(user->md5Pwd, pwdBuff, 16);
 		user->userType = userType;
 

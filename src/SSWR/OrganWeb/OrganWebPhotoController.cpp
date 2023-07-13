@@ -536,7 +536,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoId(Net::WebServer::IW
 					dimg->RotateImage(Media::StaticImage::RotateType::CW270);
 				}
 
-				if (user && user->watermark)
+				if (user && user->watermark->leng > 0)
 				{
 					Media::DrawImage *gimg = this->env->GetDrawEngine()->ConvImage(dimg);
 					if ((cacheDir && imgWidth == GetPreviewSize() && imgHeight == GetPreviewSize()) || user != reqUser)

@@ -22,7 +22,7 @@ void Media::PhotoInfo::ParseXMF(Text::XMLDocument *xmf)
 	if ((node = xmf->SearchFirstNode(CSTR("//@aux:Lens"))) != 0)
 	{
 		SDEL_STRING(this->lens);
-		this->lens = node->value->Clone();
+		this->lens = node->value->Clone().Ptr();
 	}
 	if ((node = xmf->SearchFirstNode(CSTR("//@exif:FocalLength"))) != 0)
 	{
@@ -88,12 +88,12 @@ Media::PhotoInfo::PhotoInfo(IO::StreamData *fd)
 			ctxt = exif->GetPhotoMake();
 			if (ctxt.v)
 			{
-				this->make = Text::String::New(ctxt);
+				this->make = Text::String::New(ctxt).Ptr();
 			}
 			ctxt = exif->GetPhotoModel();
 			if (ctxt.v)
 			{
-				this->model = Text::String::New(ctxt);
+				this->model = Text::String::New(ctxt).Ptr();
 			}
 			this->fNumber = exif->GetPhotoFNumber();
 			this->expTime = exif->GetPhotoExpTime();
@@ -132,7 +132,7 @@ Media::PhotoInfo::PhotoInfo(IO::StreamData *fd)
 							ctxt = innerExif->GetPhotoLens();
 							if (ctxt.v)
 							{
-								this->lens = Text::String::New(ctxt);
+								this->lens = Text::String::New(ctxt).Ptr();
 							}
 							if (innerExif->GetPhotoFocalLength())
 								this->focalLength = innerExif->GetPhotoFocalLength();

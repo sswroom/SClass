@@ -279,7 +279,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	while (i-- > 0)
 	{
 		sptr = Media::AudioDevice::GetDeviceName(buff, i);
-		sel[i] = Text::String::New(buff, (UOSInt)(sptr - buff));
+		sel[i] = Text::String::New(buff, (UOSInt)(sptr - buff)).Ptr();
 	}
 	if (timeCli->GetServerTime(NTPHOST, 123, tmpDt))
 	{
@@ -289,7 +289,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	irt = IO::ConsoleInput::InputSelect(console, sel, devCnt, &i);
 	if (irt == IO::ConsoleInput::IRT_TAB || irt == IO::ConsoleInput::IRT_ENTER)
 	{
-		audioDevice = sel[i]->Clone();
+		audioDevice = sel[i]->Clone().Ptr();
 		i = devCnt;
 		while (i-- > 0)
 		{

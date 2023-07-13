@@ -16,7 +16,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookList(Net::WebServe
 	req->GetQueryValueU32(CSTR("unselect"), &unselect);
 	if (req->GetQueryValueI32(CSTR("id"), &id))
 	{
-		Text::String *s;
+		NotNullPtr<Text::String> s;
 		Data::ArrayList<BookInfo*> sortBookList;
 		Data::DateTime dt;
 		UTF8Char sbuff[32];
@@ -183,7 +183,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBook(Net::WebServer::I
 	if (req->GetQueryValueI32(CSTR("id"), &id) &&
 		req->GetQueryValueI32(CSTR("cateId"), &cateId))
 	{
-		Text::String *s;
+		NotNullPtr<Text::String> s;
 		Data::FastMap<Int64, BookInfo*> sortBookMap;
 		Data::DateTime dt;
 		UTF8Char sbuff[32];
@@ -339,7 +339,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBook(Net::WebServer::I
 			species = me->env->SpeciesGet(&mutUsage, bookSp->speciesId);
 			if (species)
 			{
-				speciesMap.Put(species->sciName, species);
+				speciesMap.PutNN(species->sciName, species);
 			}
 			i++;
 		}
@@ -519,7 +519,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookPhoto(Net::WebServ
 		}
 		IO::MemoryStream mstm;
 		Text::UTF8Writer writer(&mstm);
-		Text::String *s;
+		NotNullPtr<Text::String> s;
 
 		sb.ClearStr();
 		sb.Append(cate->chiName);
@@ -780,7 +780,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookAdd(Net::WebServer
 		}
 		IO::MemoryStream mstm;
 		Text::UTF8Writer writer(&mstm);
-		Text::String *s;
+		NotNullPtr<Text::String> s;
 
 		me->WriteHeader(&writer, cate->chiName->v, env.user, env.isMobile);
 		writer.WriteStrC(UTF8STRC("<center><h1>New Book"));
@@ -893,5 +893,5 @@ OSInt SSWR::OrganWeb::OrganWebBookController::Compare(BookInfo *a, BookInfo *b) 
 	else if (a->publishDate < b->publishDate)
 		return -1;
 	else
-		return a->title->CompareTo(b->title);
+		return a->title->CompareTo(b->title.Ptr());
 }

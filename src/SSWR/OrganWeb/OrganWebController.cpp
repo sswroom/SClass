@@ -65,7 +65,7 @@ void SSWR::OrganWeb::OrganWebController::ResponseMstm(Net::WebServer::IWebReques
 
 void SSWR::OrganWeb::OrganWebController::WriteHeaderPart1(IO::Writer *writer, const UTF8Char *title, Bool isMobile)
 {
-	Text::String *s;
+	NotNullPtr<Text::String> s;
 	writer->WriteLineC(UTF8STRC("<HTML>"));
 	writer->WriteLineC(UTF8STRC("<HEAD>"));
 	writer->WriteLineC(UTF8STRC("<META HTTP-EQUIV=\"Content-Type\" CONTENT=\"text/html; charset=utf8\">"));
@@ -82,7 +82,7 @@ void SSWR::OrganWeb::OrganWebController::WriteHeaderPart1(IO::Writer *writer, co
 
 void SSWR::OrganWeb::OrganWebController::WriteHeaderPart2(IO::Writer *writer, WebUserInfo *user, const UTF8Char *onLoadFunc)
 {
-	Text::String *s;
+	NotNullPtr<Text::String> s;
 	writer->WriteLineC(UTF8STRC("</HEAD>"));
 	writer->WriteLine();
 	writer->WriteStrC(UTF8STRC("<BODY TEXT=\"#c0e0ff\" LINK=\"#6080ff\" VLINK=\"#4060ff\" ALINK=\"#4040FF\" bgcolor=\"#000000\""));
@@ -119,7 +119,7 @@ void SSWR::OrganWeb::OrganWebController::WriteFooter(IO::Writer *writer)
 void SSWR::OrganWeb::OrganWebController::WriteLocator(Sync::RWMutexUsage *mutUsage, IO::Writer *writer, GroupInfo *group, CategoryInfo *cate)
 {
 	GroupTypeInfo *grpType;
-	Text::String *s;
+	NotNullPtr<Text::String> s;
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[12];
 	UTF8Char *sptr;
@@ -239,7 +239,7 @@ void SSWR::OrganWeb::OrganWebController::WriteLocatorText(Sync::RWMutexUsage *mu
 void SSWR::OrganWeb::OrganWebController::WriteGroupTable(Sync::RWMutexUsage *mutUsage, IO::Writer *writer, const Data::ReadingList<GroupInfo *> *groupList, UInt32 scnWidth, Bool showSelect, Bool showAll)
 {
 	GroupInfo *group;
-	Text::String *s;
+	NotNullPtr<Text::String> s;
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	Text::StringBuilderUTF8 sb;
@@ -433,7 +433,7 @@ void SSWR::OrganWeb::OrganWebController::WriteGroupTable(Sync::RWMutexUsage *mut
 void SSWR::OrganWeb::OrganWebController::WriteSpeciesTable(Sync::RWMutexUsage *mutUsage, IO::Writer *writer, const Data::ArrayList<SpeciesInfo *> *spList, UInt32 scnWidth, Int32 cateId, Bool showSelect, Bool showModify)
 {
 	SpeciesInfo *sp;
-	Text::String *s;
+	NotNullPtr<Text::String> s;
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	Text::StringBuilderUTF8 sb;
@@ -659,7 +659,7 @@ void SSWR::OrganWeb::OrganWebController::WritePickObjs(Sync::RWMutexUsage *mutUs
 	Text::StringBuilderUTF8 sb;
 	UOSInt i;
 	UOSInt j;
-	Text::String *s;
+	NotNullPtr<Text::String> s;
 	UInt32 colCount = env->scnWidth / PREVIEW_SIZE;
 	UInt32 colWidth = 100 / colCount;
 	UInt32 currColumn;

@@ -11,7 +11,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	OSInt i;
 	OSInt j;
 	Text::String *strArr[10000];
-	Text::String *str;
+	NotNullPtr<Text::String> str;
 	Data::ArrayListString *a;
 	Double t1;
 	Manage::HiResClock *clk;
@@ -22,7 +22,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	i = 10000;
 	while (i-- > 0)
 	{
-		strArr[i] = Text::String::New(UTF8STRC("1234567890"));
+		strArr[i] = Text::String::New(UTF8STRC("1234567890")).Ptr();
 	}
 
 	clk->Start();

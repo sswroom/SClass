@@ -369,7 +369,7 @@ SSWR::OrganMgr::OrganTimeAdjForm::OrganTimeAdjForm(UI::GUIClientControl *parent,
 	j = cameraList->GetCount();
 	while (i < j)
 	{
-		this->cboCamera->AddItem(cameraList->GetItem(i), 0);
+		this->cboCamera->AddItem(Text::String::OrEmpty(cameraList->GetItem(i)), 0);
 		this->adjLyr->SetTimeAdj(cameraList->GetItem(i), this->cameraMap->Get(cameraList->GetItem(i)));
 		i++;
 	}

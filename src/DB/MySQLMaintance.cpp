@@ -31,7 +31,7 @@ void DB::MySQLMaintance::RepairSchema(const UTF8Char *schema, Text::StringBuilde
 	UOSInt j = tableNames.GetCount();
 	while (i < j)
 	{
-		this->RepairTable(tableNames.GetItem(i), sb);
+		this->RepairTable(Text::String::OrEmpty(tableNames.GetItem(i)), sb);
 		i++;
 	}
 }

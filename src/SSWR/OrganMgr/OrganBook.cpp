@@ -39,13 +39,13 @@ Text::String *SSWR::OrganMgr::OrganBook::GetTitle()
 void SSWR::OrganMgr::OrganBook::SetTitle(Text::CString title)
 {
 	SDEL_STRING(this->title);
-	this->title = Text::String::New(title);
+	this->title = Text::String::New(title).Ptr();
 }
 
 void SSWR::OrganMgr::OrganBook::SetTitle(Text::StringBase<UTF8Char> *title)
 {
 	SDEL_STRING(this->title);
-	this->title = Text::String::New(title->v, title->leng);
+	this->title = Text::String::New(title->v, title->leng).Ptr();
 }
 
 Text::String *SSWR::OrganMgr::OrganBook::GetDispAuthor()
@@ -56,13 +56,13 @@ Text::String *SSWR::OrganMgr::OrganBook::GetDispAuthor()
 void SSWR::OrganMgr::OrganBook::SetDispAuthor(Text::CString dispAuthor)
 {
 	SDEL_STRING(this->dispAuthor);
-	this->dispAuthor = Text::String::New(dispAuthor);
+	this->dispAuthor = Text::String::New(dispAuthor).Ptr();
 }
 
 void SSWR::OrganMgr::OrganBook::SetDispAuthor(Text::StringBase<UTF8Char> *dispAuthor)
 {
 	SDEL_STRING(this->dispAuthor);
-	this->dispAuthor = Text::String::New(dispAuthor->v, dispAuthor->leng);
+	this->dispAuthor = Text::String::New(dispAuthor->v, dispAuthor->leng).Ptr();
 }
 
 Text::String *SSWR::OrganMgr::OrganBook::GetPress()
@@ -73,13 +73,13 @@ Text::String *SSWR::OrganMgr::OrganBook::GetPress()
 void SSWR::OrganMgr::OrganBook::SetPress(Text::CString press)
 {
 	SDEL_STRING(this->press);
-	this->press = Text::String::New(press);
+	this->press = Text::String::New(press).Ptr();
 }
 
 void SSWR::OrganMgr::OrganBook::SetPress(Text::StringBase<UTF8Char> *press)
 {
 	SDEL_STRING(this->press);
-	this->press = Text::String::New(press->v, press->leng);
+	this->press = Text::String::New(press->v, press->leng).Ptr();
 }
 
 Data::Timestamp SSWR::OrganMgr::OrganBook::GetPublishDate()
@@ -110,13 +110,13 @@ Text::String *SSWR::OrganMgr::OrganBook::GetURL()
 void SSWR::OrganMgr::OrganBook::SetURL(Text::CString url)
 {
 	SDEL_STRING(this->url);
-	this->url = Text::String::New(url);
+	this->url = Text::String::New(url).Ptr();
 }
 
 void SSWR::OrganMgr::OrganBook::SetURL(Text::StringBase<UTF8Char> *url)
 {
 	SDEL_STRING(this->url);
-	this->url = Text::String::New(url->v, url->leng);
+	this->url = Text::String::New(url->v, url->leng).Ptr();
 }
 
 void SSWR::OrganMgr::OrganBook::GetString(Text::StringBuilderUTF8 *sb)

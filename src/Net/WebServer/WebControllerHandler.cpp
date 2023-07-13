@@ -27,7 +27,7 @@ Bool Net::WebServer::WebControllerHandler::ProcessRequest(Net::WebServer::IWebRe
 	{
 		return true;
 	}
-	if (this->rootDir && this->rootDir->leng > 0)
+	if (this->rootDir->leng > 0)
 	{
 		return this->DoFileRequest(req, resp, subReq);
 	}

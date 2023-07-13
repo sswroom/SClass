@@ -183,7 +183,7 @@ Bool __stdcall SSWR::VAMS::VAMSBTWebHandler::ListItem(Net::WebServer::IWebReques
 	return true;
 }
 
-SSWR::VAMS::VAMSBTWebHandler::VAMSBTWebHandler(Text::String *logPath, VAMSBTList *btList)
+SSWR::VAMS::VAMSBTWebHandler::VAMSBTWebHandler(NotNullPtr<Text::String> logPath, VAMSBTList *btList)
 {
 	this->logPath = logPath->Clone();
 	this->btList = btList;

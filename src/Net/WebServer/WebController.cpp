@@ -78,7 +78,7 @@ void Net::WebServer::WebController::AddService(Text::CString svcPath, Net::WebUt
 	{
 		NEW_CLASS(service, ServiceInfo());
 		service->svcPath = Text::String::New(sb.ToCString());
-		this->services.Put(service->svcPath, service);
+		this->services.PutNN(service->svcPath, service);
 	}
 	service->funcs.Put((Int32)reqMeth, func);
 }

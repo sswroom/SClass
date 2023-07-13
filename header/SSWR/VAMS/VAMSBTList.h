@@ -13,7 +13,7 @@ namespace SSWR
 		public:
 			struct AvlBleItem
 			{
-    			Text::String *avlNo;
+    			NotNullPtr<Text::String> avlNo;
 				Int32 progId;
     			Int64 lastDevTS;
     			Int16 rssi;

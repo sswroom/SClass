@@ -51,8 +51,8 @@ namespace SSWR
 			struct DeviceInfo
 			{
 				Int64 cliId;
-				Text::String *platformName;
-				Text::String *cpuName;
+				NotNullPtr<Text::String> platformName;
+				NotNullPtr<Text::String> cpuName;
 				Int32 flags; //0: allow anonymous
 				Int64 lastKATime;
 				Sync::RWMutex mut;

@@ -94,7 +94,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::UploadReq(SSWR::Benchmark::
 				{
 					if (sb.StartsWith(UTF8STRC("Platform: ")))
 					{
-						platform = Text::StrCopyNew(sb.ToString() + 10);
+						platform = Text::StrCopyNew(sb.ToString() + 10).Ptr();
 					}
 					else
 					{
@@ -116,7 +116,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::UploadReq(SSWR::Benchmark::
 				{
 					if (sb.StartsWith(UTF8STRC("CPU: ")))
 					{
-						cpu = Text::StrCopyNew(sb.ToString() + 5);
+						cpu = Text::StrCopyNew(sb.ToString() + 5).Ptr();
 					}
 					else
 					{

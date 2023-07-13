@@ -116,7 +116,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 				}
 				else
 				{
-					Text::String *fileName = 0;
+					NotNullPtr<Text::String> fileName;
 					sb.ClearStr();
 					sb.AppendC(url, urlLen);
 					j = sb.IndexOf('?');

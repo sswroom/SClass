@@ -42,16 +42,16 @@ namespace SSWR
 		{
 			Int32 bookId;
 			Int32 speciesId;
-			Text::String *dispName;
+			NotNullPtr<Text::String> dispName;
 		} BookSpInfo;
 
 		class BookInfo
 		{
 		public:
 			Int32 id;
-			Text::String *title;
-			Text::String *author;
-			Text::String *press;
+			NotNullPtr<Text::String> title;
+			NotNullPtr<Text::String> author;
+			NotNullPtr<Text::String> press;
 			Int64 publishDate;
 			Text::String *url;
 			Int32 userfileId;
@@ -83,14 +83,14 @@ namespace SSWR
 		{
 			Int32 id;
 			Int32 fileType;
-			Text::String *oriFileName;
+			NotNullPtr<Text::String> oriFileName;
 			Int64 fileTimeTicks;
 			Double lat;
 			Double lon;
 			Int32 webuserId;
 			Int32 speciesId;
 			Int64 captureTimeTicks;
-			Text::String *dataFileName;
+			NotNullPtr<Text::String> dataFileName;
 			UInt32 crcVal;
 			Int32 rotType;
 			Int32 prevUpdated;
@@ -106,9 +106,9 @@ namespace SSWR
 		{
 			Int32 id;
 			Int32 crcVal;
-			Text::String *imgUrl;
-			Text::String *srcUrl;
-			Text::String *location;
+			NotNullPtr<Text::String> imgUrl;
+			NotNullPtr<Text::String> srcUrl;
+			NotNullPtr<Text::String> location;
 			Int32 prevUpdated;
 			Double cropLeft;
 			Double cropTop;
@@ -130,9 +130,9 @@ namespace SSWR
 		typedef struct
 		{
 			Int32 id;
-			Text::String *userName;
+			NotNullPtr<Text::String> userName;
 			Text::String *pwd;
-			Text::String *watermark;
+			NotNullPtr<Text::String> watermark;
 			Int32 userType;
 			Data::ArrayListInt64 userFileIndex;
 			Data::ArrayList<UserFileInfo*> userFileObj;
@@ -146,15 +146,15 @@ namespace SSWR
 		{
 		public:
 			Int32 speciesId;
-			Text::String *engName;
-			Text::String *chiName;
-			Text::String *sciName;
+			NotNullPtr<Text::String> engName;
+			NotNullPtr<Text::String> chiName;
+			NotNullPtr<Text::String> sciName;
 			UInt32 sciNameHash;
 			Int32 groupId;
-			Text::String *descript;
-			Text::String *dirName;
+			NotNullPtr<Text::String> descript;
+			NotNullPtr<Text::String> dirName;
 			Text::String *photo;
-			Text::String *idKey;
+			NotNullPtr<Text::String> idKey;
 			Int32 cateId;
 			SpeciesFlags flags;
 			Int32 photoId;
@@ -171,9 +171,9 @@ namespace SSWR
 		public:
 			Int32 id;
 			Int32 groupType;
-			Text::String *engName;
-			Text::String *chiName;
-			Text::String *descript;
+			NotNullPtr<Text::String> engName;
+			NotNullPtr<Text::String> chiName;
+			NotNullPtr<Text::String> descript;
 			Int32 parentId;
 			Int32 photoGroup;
 			Int32 photoSpecies;
@@ -201,7 +201,7 @@ namespace SSWR
 			Int32 cateId;
 			Text::String *chiName;
 			Text::String *dirName;
-			Text::String *srcDir;
+			NotNullPtr<Text::String> srcDir;
 			Int32 flags;
 			Data::FastMap<Int32, GroupTypeInfo *> groupTypes;
 			Data::ArrayList<GroupInfo*> groups;

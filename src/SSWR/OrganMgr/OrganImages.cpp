@@ -6,7 +6,7 @@
 SSWR::OrganMgr::OrganImages::OrganImages(OrganImageItem *imgItem, const UTF8Char *srcImgDir)
 {
 	this->imgItem = imgItem->Clone();
-	this->srcImgDir = Text::StrCopyNew(srcImgDir);
+	this->srcImgDir = Text::StrCopyNew(srcImgDir).Ptr();
 }
 
 SSWR::OrganMgr::OrganImages::~OrganImages()

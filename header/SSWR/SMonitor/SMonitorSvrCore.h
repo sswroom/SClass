@@ -105,9 +105,9 @@ namespace SSWR
 			DeviceInfo *DevAdd(Int64 cliId, Text::CString cpuName, Text::CString platformName);
 			Bool DeviceRecvReading(DeviceInfo *dev, Int64 cliTime, UOSInt nDigitals, UOSInt nReading, UOSInt nOutput, UInt32 digitalVals, ReadingInfo *readings, Int32 profileId, UInt32 cliIP, UInt16 port);
 			Bool DeviceKARecv(DeviceInfo *dev, Int64 kaTime);
-			Bool DeviceSetName(Int64 cliId, Text::String *devName);
-			Bool DeviceSetPlatform(Int64 cliId, Text::String *platformName);
-			Bool DeviceSetCPUName(Int64 cliId, Text::String *cpuName);
+			Bool DeviceSetName(Int64 cliId, NotNullPtr<Text::String> devName);
+			Bool DeviceSetPlatform(Int64 cliId, NotNullPtr<Text::String> platformName);
+			Bool DeviceSetCPUName(Int64 cliId, NotNullPtr<Text::String> cpuName);
 			Bool DeviceSetReading(Int64 cliId, UInt32 index, UInt16 sensorId, UInt16 readingId, const UTF8Char *readingName);
 			Bool DeviceSetVersion(Int64 cliId, Int64 version);
 			virtual DeviceInfo *DeviceGet(Int64 cliId);

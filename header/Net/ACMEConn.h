@@ -69,10 +69,10 @@ namespace Net
 		Text::String *accountId;
 
 		static Text::String *JWK(Crypto::Cert::X509Key *key, Crypto::Token::JWSignature::Algorithm *alg);
-		static Text::String *ProtectedJWK(Text::String *nonce, Text::String *url, Crypto::Cert::X509Key *key, Crypto::Token::JWSignature::Algorithm *alg, Text::String *accountId);
+		static Text::String *ProtectedJWK(Text::String *nonce, NotNullPtr<Text::String> url, Crypto::Cert::X509Key *key, Crypto::Token::JWSignature::Algorithm *alg, Text::String *accountId);
 		static NotNullPtr<Text::String> EncodeJWS(Net::SSLEngine *ssl, Text::CString protStr, Text::CString data, Crypto::Cert::X509Key *key, Crypto::Token::JWSignature::Algorithm alg);
 		static Bool KeyHash(Crypto::Cert::X509Key *key, Text::StringBuilderUTF8 *sb);
-		Net::HTTPClient *ACMEPost(Text::String *url, Text::CString data);
+		Net::HTTPClient *ACMEPost(NotNullPtr<Text::String> url, Text::CString data);
 		Order *OrderParse(const UInt8 *buff, UOSInt buffSize);
 		Challenge *ChallengeJSON(Text::JSONBase *json);
 		Challenge *ChallengeParse(const UInt8 *buff, UOSInt buffSize);
@@ -90,13 +90,13 @@ namespace Net
 		Bool AccountRetr();
 
 		Order *OrderNew(const UTF8Char *domainNames, UOSInt namesLen); //comma seperated
-		Challenge *OrderAuthorize(Text::String *authorizeURL, AuthorizeType authType);
+		Challenge *OrderAuthorize(NotNullPtr<Text::String> authorizeURL, AuthorizeType authType);
 		Order *OrderGetStatus(const UTF8Char *orderURL);
 		Order *OrderFinalize(const UTF8Char *finalizeURL, Crypto::Cert::X509CertReq *csr);
 		void OrderFree(Order *order);
 
-		Challenge *ChallengeBegin(Text::String *challURL);
-		Challenge *ChallengeGetStatus(Text::String *challURL);
+		Challenge *ChallengeBegin(NotNullPtr<Text::String> challURL);
+		Challenge *ChallengeGetStatus(NotNullPtr<Text::String> challURL);
 		void ChallengeFree(Challenge *chall);
 
 		Bool NewKey();
