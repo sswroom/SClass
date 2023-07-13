@@ -308,7 +308,7 @@ IO::ParsedObject *Parser::FileParser::GUIImgParser::ParseFileHdr(IO::StreamData 
 				Double yCoord;
 				{
 					IO::FileStream fs(sb.ToCString(), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential);
-					IO::StreamReader reader(&fs, 0);
+					IO::StreamReader reader(fs, 0);
 					sb.ClearStr();
 					if (!reader.ReadLine(&sb, 1024) || !Text::StrToDouble(sb.ToString(), &xPxSize))
 					{

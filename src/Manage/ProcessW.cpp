@@ -1521,18 +1521,18 @@ Int32 Manage::Process::ExecuteProcessW(const WChar *cmd, Text::StringBuilderUTF8
 
 		if (result)
 		{
-			IO::FileStream *fs;
+			NotNullPtr<IO::FileStream> fs;
 			UTF8Char lineBuff[128];
 			UTF8Char *linePtr;
 			UOSInt retryCnt = 20;
 			while (true)
 			{
-				NEW_CLASS(fs, IO::FileStream(CSTRP(tmpFile, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
+				NEW_CLASSNN(fs, IO::FileStream(CSTRP(tmpFile, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
 				if (!fs->IsError() || retryCnt-- <= 0)
 				{
 					break;
 				}
-				DEL_CLASS(fs);
+				fs.Delete();
 				Sync::SimpleThread::Sleep(100);
 			}
 			{
@@ -1543,7 +1543,7 @@ Int32 Manage::Process::ExecuteProcessW(const WChar *cmd, Text::StringBuilderUTF8
 					result->AppendP(lineBuff, linePtr);
 				}
 			}
-			DEL_CLASS(fs);
+			fs.Delete();
 		}
 		IO::FileUtil::DeleteFile(CSTRP(tmpFile, sptr), false);
 		MemFree(cmdLine);

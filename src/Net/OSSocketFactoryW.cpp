@@ -883,20 +883,17 @@ Bool Net::OSSocketFactory::LoadHosts(Net::DNSHandler *dnsHdlr)
 	UTF8Char sbuff[512];
 	UTF8Char *sptr = IO::Path::GetOSPath(sbuff);
 	sptr = Text::StrConcatC(sptr, UTF8STRC("\\System32\\drivers\\etc\\hosts"));
-	Text::UTF8Reader *reader;
-	IO::FileStream *fs;
 	Net::SocketUtil::AddressInfo addr;
 	UOSInt i;
 	Text::PString sarr[2];
-	NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	if (fs->IsError())
+	IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+	if (fs.IsError())
 	{
-		DEL_CLASS(fs);
 		return false;
 	}
-	NEW_CLASS(reader, Text::UTF8Reader(fs));
+	Text::UTF8Reader reader(fs);
 	Text::StringBuilderUTF8 sb;
-	while (reader->ReadLine(&sb, 512))
+	while (reader.ReadLine(&sb, 512))
 	{
 		sb.Trim();
 		if (sb.ToString()[0] == '#')
@@ -922,8 +919,6 @@ Bool Net::OSSocketFactory::LoadHosts(Net::DNSHandler *dnsHdlr)
 		
 		sb.ClearStr();
 	}
-	DEL_CLASS(reader);
-	DEL_CLASS(fs);
 	return true;
 }
 
