@@ -269,7 +269,7 @@ Bool Net::HTTPOSClient::Connect(Text::CString url, Net::WebUtil::RequestMethod m
 		return false;
 	}
 
-	SDEL_STRING(this->url);
+	this->url->Release();
 	this->url = Text::String::New(url.v, url.leng);
 	this->SetSourceName(this->url);
 	if (url.StartsWith(UTF8STRC("http://")))
@@ -366,7 +366,7 @@ Bool Net::HTTPOSClient::Connect(Text::CString url, Net::WebUtil::RequestMethod m
 	this->clk.Start();
 	if (this->cliHost == 0)
 	{
-		this->cliHost = Text::StrCopyNew(urltmp);
+		this->cliHost = Text::StrCopyNew(urltmp).Ptr();
 		if (Text::StrEqualsICaseC(svrname, (UOSInt)(svrnameEnd - svrname), UTF8STRC("localhost")))
 		{
 			this->svrAddr.addrType = Net::AddrType::IPv4;
@@ -603,7 +603,7 @@ void Net::HTTPOSClient::EndRequest(Double *timeReq, Double *timeResp)
 					if (succ)
 					{
 						WChar *wptr = buff;
-						Text::String *s;
+						NotNullPtr<Text::String> s;
 						UOSInt i;
 						while ((i = Text::StrIndexOf(wptr, L"\r\n")) != INVALID_INDEX && i > 0)
 						{

@@ -284,7 +284,7 @@ void UI::GUIRealtimeLineChart::SetUnit(Text::CString unit)
 {
 	SDEL_TEXT(this->unit);
 	if (unit.leng != 0)
-		this->unit = Text::StrCopyNewC(unit.v, unit.leng);
+		this->unit = Text::StrCopyNewC(unit.v, unit.leng).Ptr();
 	this->valueChanged = true;
 }
 

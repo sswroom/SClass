@@ -20,10 +20,10 @@
 void UI::FileDialog::ClearFileNames()
 {
 	UOSInt i;
-	i = this->fileNames->GetCount();
+	i = this->fileNames.GetCount();
 	while (i-- > 0)
 	{
-		Text::StrDelNew(this->fileNames->RemoveAt(i));
+		Text::StrDelNew(this->fileNames.RemoveAt(i));
 	}
 }
 
@@ -48,9 +48,6 @@ UI::FileDialog::FileDialog(const WChar *compName, const WChar *appName, const WC
 	{
 		this->lastName = Text::StrCopyNew(buff);
 	}
-	NEW_CLASS(this->fileNames, Data::ArrayListStrUTF8());
-	NEW_CLASS(this->names, Data::ArrayListString());
-	NEW_CLASS(this->patterns, Data::ArrayListString());
 }
 
 UI::FileDialog::~FileDialog()
@@ -68,22 +65,19 @@ UI::FileDialog::~FileDialog()
 		this->fileName->Release();
 		this->fileName = 0;
 	}
-	i = this->patterns->GetCount();
+	i = this->patterns.GetCount();
 	while (i-- > 0)
 	{
-		this->patterns->RemoveAt(i)->Release();
-		this->names->RemoveAt(i)->Release();
+		this->patterns.RemoveAt(i)->Release();
+		this->names.RemoveAt(i)->Release();
 	}
 	this->ClearFileNames();
-	DEL_CLASS(this->fileNames);
-	DEL_CLASS(this->patterns);
-	DEL_CLASS(this->names);
 }
 
 void UI::FileDialog::AddFilter(Text::CString pattern, Text::CString name)
 {
-	this->patterns->Add(Text::String::New(pattern));
-	this->names->Add(Text::String::New(name));
+	this->patterns.Add(Text::String::New(pattern));
+	this->names.Add(Text::String::New(name));
 }
 
 UOSInt UI::FileDialog::GetFilterIndex()
@@ -98,17 +92,17 @@ void UI::FileDialog::SetFileName(Text::CString fileName)
 		this->fileName->Release();
 		this->fileName = 0;
 	}
-	this->fileName = Text::String::New(fileName);
+	this->fileName = Text::String::New(fileName).Ptr();
 }
 
-Text::String *UI::FileDialog::GetFileName() const
+NotNullPtr<Text::String> UI::FileDialog::GetFileName() const
 {
 	return Text::String::OrEmpty(this->fileName);
 }
 
 UOSInt UI::FileDialog::GetFileNameCount()
 {
-	UOSInt cnt = this->fileNames->GetCount();
+	UOSInt cnt = this->fileNames.GetCount();
 	if (cnt)
 		return cnt;
 	if (this->fileName)
@@ -118,9 +112,9 @@ UOSInt UI::FileDialog::GetFileNameCount()
 
 const UTF8Char *UI::FileDialog::GetFileNames(UOSInt index)
 {
-	if (index == 0 && this->fileNames->GetCount() == 0)
+	if (index == 0 && this->fileNames.GetCount() == 0)
 		return STR_PTR(this->fileName);
-	return this->fileNames->GetItem(index);
+	return this->fileNames.GetItem(index);
 }
 
 void UI::FileDialog::SetAllowMultiSel(Bool allowMulti)
@@ -142,7 +136,7 @@ Bool UI::FileDialog::ShowDialog(ControlHandle *ownerHandle)
 	OSInt fnameBuffSize;
 	Text::StringBuilderUTF16 sb;
 	UOSInt i = 0;
-	UOSInt filterCnt = this->names->GetCount();
+	UOSInt filterCnt = this->names.GetCount();
 
 	OPENFILENAMEW ofn;
 	ZeroMemory(&ofn, sizeof(ofn));
@@ -160,7 +154,7 @@ Bool UI::FileDialog::ShowDialog(ControlHandle *ownerHandle)
 			{
 				sb.AppendC(UTF8STRC(";"));
 			}
-			sb.Append(this->patterns->GetItem(i++));
+			sb.Append(this->patterns.GetItem(i++));
 		}
 		sb.AppendChar('\0', 1);
 	}
@@ -168,11 +162,11 @@ Bool UI::FileDialog::ShowDialog(ControlHandle *ownerHandle)
 	i = 0;
 	while (i < filterCnt)
 	{
-		sb.Append(this->names->GetItem(i));
+		sb.Append(this->names.GetItem(i));
 		sb.AppendC(UTF8STRC(" ("));
-		sb.Append(this->patterns->GetItem(i));
+		sb.Append(this->patterns.GetItem(i));
 		sb.AppendChar('\0', 2);
-		sb.Append(this->patterns->GetItem(i++));
+		sb.Append(this->patterns.GetItem(i++));
 		sb.AppendChar('\0', 1);
 	}
 	if (!this->isSave)
@@ -278,11 +272,11 @@ Bool UI::FileDialog::ShowDialog(ControlHandle *ownerHandle)
 		{
 			Bool found = false;
 			UOSInt foundIndexLeng = 0;
-			Text::String *u8fname = Text::String::NewNotNull(fnameBuff);
+			NotNullPtr<Text::String> u8fname = Text::String::NewNotNull(fnameBuff);
 			i = 0;
 			while (i < filterCnt)
 			{
-				Text::String *pattern = this->patterns->GetItem(i);
+				Text::String *pattern = this->patterns.GetItem(i);
 				if (IO::Path::FilePathMatch(u8fname->v, u8fname->leng, pattern->v, pattern->leng))
 				{
 					if (!found)
@@ -350,16 +344,16 @@ Bool UI::FileDialog::ShowDialog(ControlHandle *ownerHandle)
 		this->filterIndex = ofn.nFilterIndex - 1;
 		if (isSave && ofn.nFileExtension == 0)
 		{
-			Text::String *pattern = this->patterns->GetItem(this->filterIndex);
+			Text::String *pattern = this->patterns.GetItem(this->filterIndex);
 			if (pattern && Text::StrStartsWithC(pattern->v, pattern->leng, UTF8STRC("*.")))
 			{
 				Text::StrUTF8_WChar(&fnameBuff[Text::StrCharCnt(fnameBuff)], &pattern->v[1], 0);
 			}
-			this->fileName = Text::String::NewNotNull(fnameBuff);
+			this->fileName = Text::String::NewNotNull(fnameBuff).Ptr();
 		}
 		else if (!isSave && this->allowMulti)
 		{
-			Text::String *s = Text::String::NewNotNull(fnameBuff);
+			NotNullPtr<Text::String> s = Text::String::NewNotNull(fnameBuff);
 			IO::Path::PathType pt = IO::Path::GetPathType(s->ToCString());
 			s->Release();
 			if (pt == IO::Path::PathType::Directory)
@@ -372,28 +366,28 @@ Bool UI::FileDialog::ShowDialog(ControlHandle *ownerHandle)
 				while (*wptr)
 				{
 					Text::StrConcat(dptr, wptr);
-					this->fileNames->Add(Text::StrToUTF8New(fname));
+					this->fileNames.Add(Text::StrToUTF8New(fname));
 					wptr = &wptr[Text::StrCharCnt(wptr) + 1];
 					i++;
 				}
 				if (i == 1)
 				{
-					this->fileName = Text::String::NewNotNullSlow(this->fileNames->GetItem(0));
+					this->fileName = Text::String::NewNotNullSlow(this->fileNames.GetItem(0)).Ptr();
 				}
 				else
 				{
-					this->fileName = Text::String::NewNotNull(fnameBuff);
+					this->fileName = Text::String::NewNotNull(fnameBuff).Ptr();
 					toSave = false;
 				}
 			}
 			else
 			{
-				this->fileName = Text::String::NewNotNull(fnameBuff);
+				this->fileName = Text::String::NewNotNull(fnameBuff).Ptr();
 			}
 		}
 		else
 		{
-			this->fileName = Text::String::NewNotNull(fnameBuff);
+			this->fileName = Text::String::NewNotNull(fnameBuff).Ptr();
 		}
 
 		if (toSave)

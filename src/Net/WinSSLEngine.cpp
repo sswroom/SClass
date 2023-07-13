@@ -1613,8 +1613,8 @@ Bool Net::WinSSLEngine::GenerateCert(Text::CString country, Text::CString compan
 	sb2.ClearStr();
 	sb2.Append(commonName);
 	sb2.AppendC(UTF8STRC(".key"));
-	Text::String *s = Text::String::New(sb2.ToString(), sb2.GetLength());
-	*keyASN1 = Crypto::Cert::X509PrivKey::CreateFromKeyBuff(Crypto::Cert::X509File::KeyType::RSA, certBuff, certBuffSize, s);
+	NotNullPtr<Text::String> s = Text::String::New(sb2.ToString(), sb2.GetLength());
+	*keyASN1 = Crypto::Cert::X509PrivKey::CreateFromKeyBuff(Crypto::Cert::X509File::KeyType::RSA, certBuff, certBuffSize, s.Ptr());
 	s->Release();
 	CertFreeCertificateContext(pCertContext);
 	//CryptReleaseContext(hCryptProvOrNCryptKey, 0);

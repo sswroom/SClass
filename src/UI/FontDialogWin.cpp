@@ -17,7 +17,7 @@ UI::FontDialog::FontDialog()
 
 UI::FontDialog::FontDialog(const UTF8Char *fontName, UOSInt nameLen, Double fontSizePt, Bool isBold, Bool isItalic)
 {
-	this->fontName = Text::String::New(fontName, nameLen);
+	this->fontName = Text::String::New(fontName, nameLen).Ptr();
 	this->fontSizePt = fontSizePt;
 	this->isBold = isBold;
 	this->isItalic = isItalic;
@@ -71,7 +71,7 @@ Bool UI::FontDialog::ShowDialog(ControlHandle *ownerHandle)
 	if (ChooseFontW(&cfont))
 	{
 		SDEL_STRING(this->fontName);;
-		this->fontName = Text::String::NewNotNull(lf.lfFaceName);
+		this->fontName = Text::String::NewNotNull(lf.lfFaceName).Ptr();
 		this->isBold = (lf.lfWeight == FW_BOLD);
 		this->isItalic = lf.lfItalic != FALSE;
 		if (lf.lfHeight < 0)

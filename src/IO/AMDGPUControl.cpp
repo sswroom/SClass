@@ -18,7 +18,7 @@ IO::AMDGPUControl::AMDGPUControl(IO::AMDGPUManager *gpuMgr, void *adapter)
 	this->odrivever = 0;
 	Text::StringBuilderUTF8 sb;
 	sb.AppendSlow((const UTF8Char*)adapt->strAdapterName);
-	this->name = Text::StrCopyNew(sb.ToString());
+	this->name = Text::StrCopyNew(sb.ToString()).Ptr();
 
 	int iOverdriveSupported;
 	int iOverdriveEnabled;

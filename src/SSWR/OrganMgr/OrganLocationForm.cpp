@@ -81,8 +81,8 @@ Bool SSWR::OrganMgr::OrganLocationForm::ToSave()
 
 	if (this->env->LocationUpdate(currLoc->id, CSTRP(sbuff, sbuffEnd), {sbuff2, (UOSInt)(sbuff2End - sbuff2)}))
 	{
-		SDEL_STRING(this->currLoc->ename);
-		SDEL_STRING(this->currLoc->cname);
+		this->currLoc->ename->Release();
+		this->currLoc->cname->Release();
 		this->currLoc->ename = Text::String::NewP(sbuff, sbuffEnd);
 		this->currLoc->cname = Text::String::NewP(sbuff2, sbuff2End);
 		return false;

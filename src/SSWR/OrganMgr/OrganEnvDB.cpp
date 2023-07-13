@@ -105,8 +105,8 @@ SSWR::OrganMgr::OrganEnvDB::OrganEnvDB() : OrganEnv()
 		{
 			cate = MemAlloc(Category, 1);
 			cate->cateId = r->GetInt32(0);
-			cate->chiName = r->GetNewStr(1);
-			cate->dirName = r->GetNewStr(2);
+			cate->chiName = r->GetNewStrNN(1);
+			cate->dirName = r->GetNewStrNN(2);
 			cate->srcDir = r->GetNewStr(3);
 			this->categories.Add(cate);
 		}
@@ -2022,7 +2022,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 	}
 }
 
-SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesWebFile(OrganSpecies *sp, Text::String *srcURL, Text::String *imgURL, IO::Stream *stm, UTF8Char *webFileName)
+SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesWebFile(OrganSpecies *sp, NotNullPtr<Text::String> srcURL, NotNullPtr<Text::String> imgURL, IO::Stream *stm, UTF8Char *webFileName)
 {
 	UTF8Char sbuff2[2048];
 	UTF8Char *sptr2;
@@ -2043,7 +2043,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesWeb
 		imgItem = imgItems->GetItem(i);
 		if (imgItem->GetFileType() == OrganImageItem::FileType::Webimage || imgItem->GetFileType() == OrganImageItem::FileType::WebFile)
 		{
-			if (imgItem->GetImgURL()->Equals(imgURL))
+			if (imgItem->GetImgURL()->Equals(imgURL.Ptr()))
 			{
 				found = true;
 			}
@@ -3032,7 +3032,7 @@ UOSInt SSWR::OrganMgr::OrganEnvDB::GetSpeciesBooks(Data::ArrayList<SpeciesBook*>
 			book = this->bookObjs->GetItem((UOSInt)i);
 			spBook = MemAlloc(SpeciesBook, 1);
 			spBook->book = book;
-			spBook->dispName = r->GetNewStr(1);
+			spBook->dispName = r->GetNewStrNN(1);
 			spBook->id = r->GetInt32(2);
 			items->Add(spBook);
 			j++;
@@ -3050,7 +3050,7 @@ void SSWR::OrganMgr::OrganEnvDB::ReleaseSpeciesBooks(Data::ArrayList<SpeciesBook
 	while (i-- > 0)
 	{
 		spBook = items->GetItem(i);
-		SDEL_STRING(spBook->dispName);
+		spBook->dispName->Release();
 		MemFree(spBook);
 	}
 }

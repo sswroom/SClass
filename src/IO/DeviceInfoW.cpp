@@ -17,11 +17,11 @@ IO::DeviceInfo::DeviceInfo(void *hDevInfo, void *interfData)
 	*(Int32*)data2 = sizeof(SP_DEVICE_INTERFACE_DETAIL_DATA_W);
 	if (SetupDiGetDeviceInterfaceDetailW(devInfo, data, (SP_DEVICE_INTERFACE_DETAIL_DATA_W*)&data2, 254, (DWORD*)&reqSize, 0))
 	{
-		this->name = Text::String::NewNotNull(&data2[2]);
+		this->name = Text::String::NewNotNull(&data2[2]).Ptr();
 	}
 	else
 	{
-		this->name = Text::String::New(UTF8STRC("Unknown"));
+		this->name = Text::String::New(UTF8STRC("Unknown")).Ptr();
 	}
 
 }

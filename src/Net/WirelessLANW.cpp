@@ -10,7 +10,7 @@
 #include <windows.h>
 #include <wlanapi.h>
 
-Net::WirelessLAN::Network::Network(Text::String *ssid, Double rssi)
+Net::WirelessLAN::Network::Network(NotNullPtr<Text::String> ssid, Double rssi)
 {
 	this->ssid = ssid->Clone();
 	this->rssi = rssi;
@@ -27,12 +27,12 @@ Net::WirelessLAN::Network::~Network()
 	this->ssid->Release();
 }
 
-Double Net::WirelessLAN::Network::GetRSSI()
+Double Net::WirelessLAN::Network::GetRSSI() const
 {
 	return this->rssi;
 }
 
-Text::String *Net::WirelessLAN::Network::GetSSID()
+NotNullPtr<Text::String> Net::WirelessLAN::Network::GetSSID() const
 {
 	return this->ssid;
 }
@@ -119,19 +119,19 @@ Net::WirelessLAN::BSSInfo::BSSInfo(Text::CString ssid, const void *bssEntry)
 							sbTmp.ClearStr();
 							sbTmp.AppendC(&currItem[4], itemSize);
 							SDEL_STRING(this->devManuf);
-							this->devManuf = Text::String::New(sbTmp.ToString(), sbTmp.GetLength());
+							this->devManuf = Text::String::New(sbTmp.ToString(), sbTmp.GetLength()).Ptr();
 							break;
 						case 0x1023: //Model
 							sbTmp.ClearStr();
 							sbTmp.AppendC(&currItem[4], itemSize);
 							SDEL_STRING(this->devModel);
-							this->devModel = Text::String::New(sbTmp.ToString(), sbTmp.GetLength());
+							this->devModel = Text::String::New(sbTmp.ToString(), sbTmp.GetLength()).Ptr();
 							break;
 						case 0x1042: //Serial
 							sbTmp.ClearStr();
 							sbTmp.AppendC(&currItem[4], itemSize);
 							SDEL_STRING(this->devSN);
-							this->devSN = Text::String::New(sbTmp.ToString(), sbTmp.GetLength());
+							this->devSN = Text::String::New(sbTmp.ToString(), sbTmp.GetLength()).Ptr();
 							break;
 						}
 						currItem += itemSize + 4; 
@@ -174,13 +174,13 @@ Net::WirelessLAN::BSSInfo::~BSSInfo()
 		ie = this->ieList.GetItem(i);
 		DEL_CLASS(ie);
 	}
-	SDEL_STRING(this->ssid);
+	this->ssid->Release();
 	SDEL_STRING(this->devManuf);
 	SDEL_STRING(this->devModel);
 	SDEL_STRING(this->devSN);
 }
 
-Text::String *Net::WirelessLAN::BSSInfo::GetSSID()
+NotNullPtr<Text::String> Net::WirelessLAN::BSSInfo::GetSSID() const
 {
 	return this->ssid;
 }
@@ -262,7 +262,7 @@ Net::WirelessLANIE *Net::WirelessLAN::BSSInfo::GetIE(UOSInt index)
 
 Net::WirelessLAN::Interface::Interface()
 {
-	this->name = 0;
+	this->name = Text::String::NewEmpty();
 }
 
 Net::WirelessLAN::Interface::~Interface()
@@ -270,7 +270,7 @@ Net::WirelessLAN::Interface::~Interface()
 	this->name->Release();
 }
 
-Text::String *Net::WirelessLAN::Interface::GetName()
+NotNullPtr<Text::String> Net::WirelessLAN::Interface::GetName() const
 {
 	return this->name;
 }
@@ -309,8 +309,8 @@ UOSInt Net::WirelessLAN::GetInterfaces(Data::ArrayList<Net::WirelessLAN::Interfa
 		while (i < j)
 		{
 			Net::WirelessLAN::Interface *interf;
-			Text::String *s = Text::String::NewNotNull(list->InterfaceInfo[i].strInterfaceDescription);
-			NEW_CLASS(interf, Net::WLANWindowsInterface(s, &list->InterfaceInfo[i].InterfaceGuid, (Net::WirelessLAN::INTERFACE_STATE)list->InterfaceInfo[i].isState, core));
+			NotNullPtr<Text::String> s = Text::String::NewNotNull(list->InterfaceInfo[i].strInterfaceDescription);
+			NEW_CLASS(interf, Net::WLANWindowsInterface(s.Ptr(), &list->InterfaceInfo[i].InterfaceGuid, (Net::WirelessLAN::INTERFACE_STATE)list->InterfaceInfo[i].isState, core));
 			s->Release();
 			outArr->Add(interf);
 			retVal++;

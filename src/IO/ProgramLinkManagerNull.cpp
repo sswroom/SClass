@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "IO/ProgramLinkManager.h"
 
-UOSInt IO::ProgramLinkManager::GetLinkNamesDir(Data::ArrayList<Text::String*> *nameList, UTF8Char *linkPath, UTF8Char *linkPathEnd, UTF8Char *filePath, UTF8Char *filePathEnd)
+UOSInt IO::ProgramLinkManager::GetLinkNamesDir(Data::ArrayListNN<Text::String> *nameList, UTF8Char *linkPath, UTF8Char *linkPathEnd, UTF8Char *filePath, UTF8Char *filePathEnd)
 {
 	return 0;
 }
@@ -14,7 +14,7 @@ IO::ProgramLinkManager::~ProgramLinkManager()
 {
 }
 
-UOSInt IO::ProgramLinkManager::GetLinkNames(Data::ArrayList<Text::String*> *nameList, Bool allUser, Bool thisUser)
+UOSInt IO::ProgramLinkManager::GetLinkNames(Data::ArrayListNN<Text::String> *nameList, Bool allUser, Bool thisUser)
 {
 	return 0;
 }

@@ -815,7 +815,7 @@ void UI::GUIForm::OnDropFiles(void *hDrop)
 	{
 		UInt32 i;
 		WChar wbuff[256];
-		Text::String **files = MemAlloc(Text::String *, fileCnt);
+		NotNullPtr<Text::String> *files = MemAlloc(NotNullPtr<Text::String>, fileCnt);
 		i = 0;
 		while (i < fileCnt)
 		{

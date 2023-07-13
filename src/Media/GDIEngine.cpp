@@ -1405,7 +1405,7 @@ Bool Media::GDIImage::DrawStringW(Math::Coord2DDbl tl, const WChar *str, DrawFon
 	return true;
 }
 
-Bool Media::GDIImage::DrawStringRot(Math::Coord2DDbl center, Text::String *str, DrawFont *f, DrawBrush *b, Double angleDegree)
+Bool Media::GDIImage::DrawStringRot(Math::Coord2DDbl center, NotNullPtr<Text::String> str, DrawFont *f, DrawBrush *b, Double angleDegree)
 {
 	const WChar *wptr = Text::StrToWCharNew(str->v);
 	Bool ret = this->DrawStringRotW(center, wptr, f, b, angleDegree);
@@ -1466,7 +1466,7 @@ Bool Media::GDIImage::DrawStringRotW(Math::Coord2DDbl center, const WChar *str, 
 	return true;
 }
 
-Bool Media::GDIImage::DrawStringB(Math::Coord2DDbl tl, Text::String *str1, DrawFont *f, DrawBrush *b, UOSInt buffSize)
+Bool Media::GDIImage::DrawStringB(Math::Coord2DDbl tl, NotNullPtr<Text::String> str1, DrawFont *f, DrawBrush *b, UOSInt buffSize)
 {
 	const WChar *wptr = Text::StrToWCharNew(str1->v);
 	Bool ret = DrawStringBW(tl, wptr, f, b, buffSize);
@@ -1659,7 +1659,7 @@ Bool Media::GDIImage::DrawStringBW(Math::Coord2DDbl tl, const WChar *str1, DrawF
 	return true;
 }
 
-Bool Media::GDIImage::DrawStringRotB(Math::Coord2DDbl center, Text::String *str1, DrawFont *f, DrawBrush *b, Double angleDegree, UOSInt buffSize)
+Bool Media::GDIImage::DrawStringRotB(Math::Coord2DDbl center, NotNullPtr<Text::String> str1, DrawFont *f, DrawBrush *b, Double angleDegree, UOSInt buffSize)
 {
 	const WChar *wptr = Text::StrToWCharNew(str1->v);
 	Bool ret = this->DrawStringRotBW(center, wptr, f, b, angleDegree, buffSize);

@@ -115,16 +115,10 @@ IO::FileStream::FileStream() : IO::SeekableStream(CSTR("FileStream"))
 	this->currPos = 0;
 }
 
-IO::FileStream::FileStream(Text::String *fileName, FileMode mode, FileShare share, BufferType buffType) : IO::SeekableStream(fileName)
+IO::FileStream::FileStream(NotNullPtr<Text::String> fileName, FileMode mode, FileShare share, BufferType buffType) : IO::SeekableStream(fileName)
 {
 	handle = (void*)-1;
-	if (fileName == 0)
-	{
-		this->currPos = 0;
-		handle = INVALID_HANDLE_VALUE;
-		return;
-	}
-	else if (fileName->leng == 0)
+	if (fileName->leng == 0)
 	{
 		this->currPos = 0;
 		handle = INVALID_HANDLE_VALUE;

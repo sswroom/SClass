@@ -91,7 +91,7 @@ void UI::GUIListBox::EventRightClick(OSInt x, OSInt y)
 	}
 }
 
-UOSInt UI::GUIListBox::AddItem(Text::String *itemText, void *itemObj)
+UOSInt UI::GUIListBox::AddItem(NotNullPtr<Text::String> itemText, void *itemObj)
 {
 	UOSInt i = Text::StrUTF8_WCharCntC(itemText->v, itemText->leng);
 	WChar *s = MemAlloc(WChar, i + 1);
@@ -313,9 +313,9 @@ Text::String *UI::GUIListBox::GetItemTextNew(UOSInt index)
 	}
 	else
 	{
-		Text::String *ret = Text::String::NewNotNull(sbuff);
+		NotNullPtr<Text::String> ret = Text::String::NewNotNull(sbuff);
 		MemFree(sbuff);
-		return ret;
+		return ret.Ptr();
 	}
 }
 

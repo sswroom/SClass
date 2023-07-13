@@ -93,7 +93,7 @@ void SSWR::OrganMgr::OrganSpecies::SetDesc(Text::CString desc)
 	}
 	if (desc.v)
 	{
-		this->desc = Text::String::New(desc);
+		this->desc = Text::String::New(desc).Ptr();
 	}
 	else
 	{
@@ -114,7 +114,7 @@ void SSWR::OrganMgr::OrganSpecies::SetDirName(Text::CString dirName)
 	}
 	if (dirName.v)
 	{
-		this->dirName = Text::String::New(dirName);
+		this->dirName = Text::String::New(dirName).Ptr();
 	}
 	else
 	{
@@ -135,7 +135,7 @@ void SSWR::OrganMgr::OrganSpecies::SetPhoto(Text::CString photo)
 	}
 	if (photo.v)
 	{
-		this->photo = Text::String::New(photo);
+		this->photo = Text::String::New(photo).Ptr();
 	}
 	else
 	{
@@ -156,7 +156,7 @@ void SSWR::OrganMgr::OrganSpecies::SetIDKey(Text::CString idKey)
 	}
 	if (idKey.v)
 	{
-		this->idKey = Text::String::New(idKey);
+		this->idKey = Text::String::New(idKey).Ptr();
 	}
 	else
 	{

@@ -115,7 +115,7 @@ UOSInt UI::GUIListView::GetColumnCnt()
 	return this->colCnt;
 }
 
-Bool UI::GUIListView::AddColumn(Text::String *columnName, Double colWidth)
+Bool UI::GUIListView::AddColumn(NotNullPtr<Text::String> columnName, Double colWidth)
 {
 	const WChar *wptr = Text::StrToWCharNew(columnName->v);
 	Bool ret = this->AddColumn(wptr, colWidth);
@@ -172,7 +172,7 @@ Bool UI::GUIListView::ClearAll()
 	return true;
 }
 
-UOSInt UI::GUIListView::AddItem(Text::String *itemText, void *itemObj)
+UOSInt UI::GUIListView::AddItem(NotNullPtr<Text::String> itemText, void *itemObj)
 {
 	UOSInt strLen = Text::StrUTF8_WCharCntC(itemText->v, itemText->leng);
 	WChar *ws = MemAlloc(WChar, strLen + 1);
@@ -233,24 +233,16 @@ UOSInt UI::GUIListView::AddItem(Text::CString itemText, void *itemObj, UOSInt im
 	return ret;
 }
 
-Bool UI::GUIListView::SetSubItem(UOSInt index, UOSInt subIndex, Text::String *text)
+Bool UI::GUIListView::SetSubItem(UOSInt index, UOSInt subIndex, NotNullPtr<Text::String> text)
 {
 	const WChar *ws = 0;
 	LVITEMW item;
 	item.iItem = (int)index;
 	item.iSubItem = (int)subIndex;
 	item.mask = LVIF_TEXT;
-	if (text != 0)
-	{
-		ws = Text::StrToWCharNew(text->v);
-		item.pszText = (LPWSTR)ws;
-		item.cchTextMax = (int)Text::StrCharCnt(ws);
-	}
-	else
-	{
-		item.pszText = 0;
-		item.cchTextMax = 0;
-	}
+	ws = Text::StrToWCharNew(text->v);
+	item.pszText = (LPWSTR)ws;
+	item.cchTextMax = (int)Text::StrCharCnt(ws);
 	Bool ret = (SendMessage((HWND)this->hwnd, LVM_SETITEMW, 0, (LPARAM)&item) == TRUE);
 	SDEL_TEXT(ws);
 	return ret;
@@ -435,13 +427,13 @@ UTF8Char *UI::GUIListView::GetItemText(UTF8Char *buff, UOSInt index)
 Text::String *UI::GUIListView::GetItemTextNew(UOSInt index)
 {
 	UTF8Char sbuff[768];
-	Text::String *sout;
+	NotNullPtr<Text::String> sout;
 	UTF8Char *sptr = GetItemText(sbuff, index);
 	if (sptr == 0)
 		return 0;
 	sout = Text::String::New((UOSInt)(sptr - sbuff));
 	MemCopyNO(sout->v, sbuff, sizeof(UTF8Char) * (UOSInt)(sptr - sbuff + 1));
-	return sout;
+	return sout.Ptr();
 }
 
 void UI::GUIListView::SetFullRowSelect(Bool fullRowSelect)

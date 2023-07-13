@@ -27,7 +27,7 @@ namespace Media
 
 		static UInt32 __stdcall PrintThread(void *userObj);
 	public:
-		GDIPrintDocument(Text::String *printerName, UInt8 *devMode, Media::GDIEngine *eng, IPrintHandler *hdlr);
+		GDIPrintDocument(NotNullPtr<Text::String> printerName, UInt8 *devMode, Media::GDIEngine *eng, IPrintHandler *hdlr);
 		virtual ~GDIPrintDocument();
 
 		Bool IsError();
@@ -86,7 +86,7 @@ UInt32 __stdcall Media::GDIPrintDocument::PrintThread(void *userObj)
 	return 0;
 }
 
-Media::GDIPrintDocument::GDIPrintDocument(Text::String *printerName, UInt8 *devMode, Media::GDIEngine *eng, IPrintHandler *hdlr)
+Media::GDIPrintDocument::GDIPrintDocument(NotNullPtr<Text::String> printerName, UInt8 *devMode, Media::GDIEngine *eng, IPrintHandler *hdlr)
 {
 	this->devMode = devMode;
 	this->eng = eng;
@@ -299,7 +299,7 @@ Media::Printer::Printer(const WChar *printerName, UInt8 *devMode, UOSInt devMode
 	MemCopyNO(this->devMode, devMode, devModeSize);
 }
 
-Media::Printer::Printer(Text::String *printerName)
+Media::Printer::Printer(NotNullPtr<Text::String> printerName)
 {
 	this->devMode = 0;
 	this->hPrinter = 0;
@@ -351,7 +351,7 @@ Media::Printer::Printer(Text::CString printerName)
 
 Media::Printer::~Printer()
 {
-	SDEL_STRING(this->printerName);
+	this->printerName->Release();
 	if (hPrinter)
 	{
 		ClosePrinter((HANDLE)hPrinter);

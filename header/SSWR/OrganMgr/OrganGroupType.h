@@ -11,16 +11,16 @@ namespace SSWR
 		{
 		private:
 			Int32 seq;
-			Text::String *cName;
-			Text::String *eName;
+			NotNullPtr<Text::String> cName;
+			NotNullPtr<Text::String> eName;
 
 		public:
 			OrganGroupType(Int32 seq, Text::CString cName, Text::CString eName);
 			~OrganGroupType();
 
 			Int32 GetSeq();
-			Text::String *GetCName();
-			Text::String *GetEName();
+			NotNullPtr<Text::String> GetCName() const;
+			NotNullPtr<Text::String> GetEName() const;
 			UTF8Char *ToString(UTF8Char *sbuff);
 		};
 	}

@@ -11,7 +11,7 @@
 #define GWL_USERDATA GWLP_USERDATA
 #endif
 
-UI::GUITreeView::TreeItem::TreeItem(void *itemObj, Text::String *txt)
+UI::GUITreeView::TreeItem::TreeItem(void *itemObj, NotNullPtr<Text::String> txt)
 {
 	this->hTreeItem = hTreeItem;
 	this->itemObj = itemObj;
@@ -37,7 +37,7 @@ UI::GUITreeView::TreeItem::~TreeItem()
 		item = this->children.GetItem(i);
 		DEL_CLASS(item);
 	}
-	SDEL_STRING(this->txt);
+	this->txt->Release();
 }
 
 void UI::GUITreeView::TreeItem::AddChild(UI::GUITreeView::TreeItem *child)
@@ -76,11 +76,11 @@ void UI::GUITreeView::TreeItem::SetText(Text::CString txt)
 	{
 		return;
 	}
-	SDEL_STRING(this->txt);
+	this->txt->Release();
 	this->txt = Text::String::New(txt);
 }
 
-Text::String *UI::GUITreeView::TreeItem::GetText()
+NotNullPtr<Text::String> UI::GUITreeView::TreeItem::GetText() const
 {
 	return this->txt;
 }
@@ -225,7 +225,7 @@ void UI::GUITreeView::EventDragItem(TreeItem *dragItem, TreeItem *dropItem)
 
 }
 
-UI::GUITreeView::TreeItem *UI::GUITreeView::InsertItem(UI::GUITreeView::TreeItem *parent, UI::GUITreeView::TreeItem *insertAfter, Text::String *itemText, void *itemObj)
+UI::GUITreeView::TreeItem *UI::GUITreeView::InsertItem(UI::GUITreeView::TreeItem *parent, UI::GUITreeView::TreeItem *insertAfter, NotNullPtr<Text::String> itemText, void *itemObj)
 {
 	TreeItem *item;
 	TVINSERTSTRUCTW is;
@@ -504,7 +504,7 @@ OSInt UI::GUITreeView::OnNotify(UInt32 code, void *lParam)
 		{
 			this->editing = false;
 			info = (NMTVDISPINFOW*)lParam;
-			Text::String *s = Text::String::NewNotNull(info->item.pszText);
+			NotNullPtr<Text::String> s = Text::String::NewNotNull(info->item.pszText);
 			retVal = EventEndLabelEdit((UI::GUITreeView::TreeItem*)info->item.lParam, s->v);
 			if (retVal != 0)
 			{

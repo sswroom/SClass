@@ -38,12 +38,12 @@ Media::MonitorInfo::MonitorInfo(MonitorHandle *hMonitor)
 		dev.cb = sizeof(dev);
 		if (EnumDisplayDevicesW(info.szDevice, 0, &dev, 0))
 		{
-			this->desc = Text::String::NewNotNull(dev.DeviceString);
+			this->desc = Text::String::NewNotNull(dev.DeviceString).Ptr();
 			Text::StrConcat(wbuff, dev.DeviceID);
 			i = Text::StrSplit(sarr, 3, wbuff, '\\');
 			if (i == 3)
 			{
-				this->monId = Text::String::NewNotNull(sarr[1]);
+				this->monId = Text::String::NewNotNull(sarr[1]).Ptr();
 			}
 			else
 			{
@@ -64,7 +64,7 @@ Media::MonitorInfo::MonitorInfo(MonitorHandle *hMonitor)
 		this->right = 0;
 		this->bottom = 0;
 		this->isPrimary = false;
-		this->name = 0;
+		this->name = Text::String::NewEmpty();
 		this->desc = 0;
 		this->monId = 0;
 	}
@@ -72,42 +72,42 @@ Media::MonitorInfo::MonitorInfo(MonitorHandle *hMonitor)
 
 Media::MonitorInfo::~MonitorInfo()
 {
-	SDEL_STRING(this->name);
+	this->name->Release();
 	SDEL_STRING(this->desc);
 	SDEL_STRING(this->monId);
 }
 
-Text::String *Media::MonitorInfo::GetName()
+NotNullPtr<Text::String> Media::MonitorInfo::GetName() const
 {
 	return this->name;
 }
 
-Text::String *Media::MonitorInfo::GetDesc()
+Text::String *Media::MonitorInfo::GetDesc() const
 {
 	return this->desc;
 }
 
-Text::String *Media::MonitorInfo::GetMonitorID()
+Text::String *Media::MonitorInfo::GetMonitorID() const
 {
 	return this->monId;
 }
 
-Int32 Media::MonitorInfo::GetLeft()
+Int32 Media::MonitorInfo::GetLeft() const
 {
 	return this->left;
 }
 
-Int32 Media::MonitorInfo::GetTop()
+Int32 Media::MonitorInfo::GetTop() const
 {
 	return this->top;
 }
 
-Int32 Media::MonitorInfo::GetPixelWidth()
+Int32 Media::MonitorInfo::GetPixelWidth() const
 {
 	return this->right - this->left;
 }
 
-Int32 Media::MonitorInfo::GetPixelHeight()
+Int32 Media::MonitorInfo::GetPixelHeight() const
 {
 	return this->bottom - this->top;
 }

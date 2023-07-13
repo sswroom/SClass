@@ -50,7 +50,7 @@ DB::DBTool *DB::MySQLConn::CreateDBTool(Net::SocketFactory *sockf, Text::String 
 		}
 		return 0;
 	}
-	NEW_CLASS(conn, Net::MySQLTCPClient(sockf, &addr, 3306, uid, pwd, dbName));
+	NEW_CLASS(conn, Net::MySQLTCPClient(sockf, &addr, 3306, Text::String::OrEmpty(uid), Text::String::OrEmpty(pwd), dbName));
 	if (!conn->IsError())
 	{
 		NEW_CLASS(db, DB::DBTool(conn, true, log, logPrefix));

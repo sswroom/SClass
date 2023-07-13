@@ -16,7 +16,7 @@ Manage::EnvironmentVar::EnvironmentVar()
 	this->envs = (void*)(envs = (const WChar *)GetEnvironmentStringsW());
 	if (envs)
 	{
-		Text::String *name;
+		NotNullPtr<Text::String> name;
 		const UTF8Char *val;
 
 		currPtr = envs;
@@ -30,7 +30,7 @@ Manage::EnvironmentVar::EnvironmentVar()
 					*dptr = 0;
 					name = Text::String::NewNotNull(wbuff);
 					val = Text::StrToUTF8New(currPtr);
-					this->names.Put(name, val);
+					this->names.PutNN(name, val);
 					name->Release();
 					while (*currPtr++);
 					break;

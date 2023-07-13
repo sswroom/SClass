@@ -38,15 +38,15 @@ namespace SSWR
 		typedef struct
 		{
 			Int32 cateId;
-			Text::String *chiName;
-			Text::String *dirName;
+			NotNullPtr<Text::String> chiName;
+			NotNullPtr<Text::String> dirName;
 			Text::String *srcDir;
 		} Category;
 
 		typedef struct
 		{
 			Int32 id;
-			Text::String *dispName;
+			NotNullPtr<Text::String> dispName;
 			OrganBook *book;
 		} SpeciesBook;
 
@@ -235,7 +235,7 @@ namespace SSWR
 			virtual Bool AddSpecies(OrganSpecies *sp) = 0;
 			virtual Bool DelSpecies(OrganSpecies *sp) = 0;
 			virtual FileStatus AddSpeciesFile(OrganSpecies *sp, Text::CString fileName, Bool firstPhoto, Bool moveFile, Int32 *fileId) = 0;
-			virtual FileStatus AddSpeciesWebFile(OrganSpecies *sp, Text::String *srcURL, Text::String *imgURL, IO::Stream *stm, UTF8Char *webFileName) = 0;
+			virtual FileStatus AddSpeciesWebFile(OrganSpecies *sp, NotNullPtr<Text::String> srcURL, NotNullPtr<Text::String> imgURL, IO::Stream *stm, UTF8Char *webFileName) = 0;
 			virtual Bool UpdateSpeciesWebFile(OrganSpecies *sp, WebFileInfo *wfile, Text::String *srcURL, Text::String *location) = 0;
 			Bool SetSpeciesImg(OrganSpecies *sp, OrganImageItem *img);
 			Bool SetSpeciesMapColor(OrganSpecies *sp, UInt32 mapColor);

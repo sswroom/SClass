@@ -212,7 +212,7 @@ UOSInt IO::SystemInfo::GetRAMInfo(Data::ArrayList<RAMInfo*> *ramList)
 				{
 					sb.ClearStr();
 					sb.AppendSlow((const UTF8Char*)mem->deviceLocator);
-					ram->deviceLocator = Text::String::New(sb.ToCString());
+					ram->deviceLocator = Text::String::New(sb.ToCString()).Ptr();
 				}
 				else
 				{
@@ -222,7 +222,7 @@ UOSInt IO::SystemInfo::GetRAMInfo(Data::ArrayList<RAMInfo*> *ramList)
 				{
 					sb.ClearStr();
 					sb.AppendSlow((const UTF8Char*)mem->manufacturer);
-					ram->manufacturer = Text::String::New(sb.ToCString());
+					ram->manufacturer = Text::String::New(sb.ToCString()).Ptr();
 				}
 				else
 				{
@@ -232,7 +232,7 @@ UOSInt IO::SystemInfo::GetRAMInfo(Data::ArrayList<RAMInfo*> *ramList)
 				{
 					sb.ClearStr();
 					sb.AppendSlow((const UTF8Char*)mem->partNo);
-					ram->partNo = Text::String::New(sb.ToCString());
+					ram->partNo = Text::String::New(sb.ToCString()).Ptr();
 				}
 				else
 				{
@@ -242,7 +242,7 @@ UOSInt IO::SystemInfo::GetRAMInfo(Data::ArrayList<RAMInfo*> *ramList)
 				{
 					sb.ClearStr();
 					sb.AppendSlow((const UTF8Char*)mem->sn);
-					ram->sn = Text::String::New(sb.ToCString());
+					ram->sn = Text::String::New(sb.ToCString()).Ptr();
 				}
 				else
 				{
@@ -322,10 +322,10 @@ UOSInt IO::SystemInfo::GetRAMInfo(Data::ArrayList<RAMInfo*> *ramList)
 			while (r->ReadNext())
 			{
 				ram = MemAlloc(RAMInfo, 1);
-				ram->deviceLocator = Text::String::OrEmpty(r->GetNewStr(devLocCol));
-				ram->manufacturer = Text::String::OrEmpty(r->GetNewStr(manuCol));
-				ram->partNo = Text::String::OrEmpty(r->GetNewStr(partNoCol));
-				ram->sn = Text::String::OrEmpty(r->GetNewStr(snCol));
+				ram->deviceLocator = r->GetNewStr(devLocCol);
+				ram->manufacturer = r->GetNewStr(manuCol);
+				ram->partNo = r->GetNewStr(partNoCol);
+				ram->sn = r->GetNewStr(snCol);
 				ram->defSpdMHz = (UInt32)r->GetInt32(spdCol);
 				ram->confSpdMHz = 0;
 				ram->dataWidth = (UInt32)r->GetInt32(dataWCol);

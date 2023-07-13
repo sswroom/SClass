@@ -588,7 +588,7 @@ Text::String *SSWR::OrganMgr::OrganEnv::GetLocName(Int32 userId, const Data::Tim
 	Trip *tr = this->TripGet(userId, ts);
 	if (tr)
 	{
-		return this->LocationGet(tr->locId)->cname;
+		return this->LocationGet(tr->locId)->cname.Ptr();
 	}
 	else if (userId == this->userId)
 	{
@@ -606,7 +606,7 @@ Text::String *SSWR::OrganMgr::OrganEnv::GetLocName(Int32 userId, const Data::Tim
 		tr = this->TripGet(userId, ts);
 		if (tr)
 		{
-			return this->LocationGet(tr->locId)->cname;
+			return this->LocationGet(tr->locId)->cname.Ptr();
 		}
 		else
 		{
@@ -633,8 +633,8 @@ void SSWR::OrganMgr::OrganEnv::SetCurrCategory(Category *currCate)
 
 void SSWR::OrganMgr::OrganEnv::FreeCategory(Category *cate)
 {
-	SDEL_STRING(cate->chiName);
-	SDEL_STRING(cate->dirName);
+	cate->chiName->Release();
+	cate->dirName->Release();
 	SDEL_STRING(cate->srcDir);
 	MemFree(cate);
 }
@@ -682,7 +682,7 @@ void SSWR::OrganMgr::OrganEnv::ExportWeb(const UTF8Char *exportDir, Bool include
 	OrganGroup *grp;
 	UOSInt i;
 	UOSInt j;
-	Text::String *s;
+	NotNullPtr<Text::String> s;
 	Data::FastMap<Int32, Data::ArrayList<OrganGroup*>*> *grpTree;
 	Data::FastMap<Int32, Data::ArrayList<OrganSpecies*>*> *spTree;
 	Data::ArrayList<OrganGroup*> *grps;
@@ -790,7 +790,7 @@ void SSWR::OrganMgr::OrganEnv::FreeSpeciesTree(Data::FastMap<Int32, Data::ArrayL
 
 void SSWR::OrganMgr::OrganEnv::ExportBeginPage(IO::Writer *writer, const UTF8Char *title)
 {
-	Text::String *s;
+	NotNullPtr<Text::String> s;
 	writer->WriteLineC(UTF8STRC("<HTML>"));
 	writer->WriteLineC(UTF8STRC("<HEAD>"));
 	writer->WriteLineC(UTF8STRC("<META HTTP-EQUIV=\"Content-Type\" CONTENT=\"text/html; charset=utf8\">"));
@@ -830,7 +830,7 @@ void SSWR::OrganMgr::OrganEnv::ExportGroup(OrganGroup *grp, Data::FastMap<Int32,
 	Text::UTF8Writer *writer = 0;
 	Text::StringBuilderUTF8 *sb;
 	UTF8Char *sptr;
-	Text::String *s;
+	NotNullPtr<Text::String> s;
 	UTF8Char backBuff[64];
 	Text::StrConcatC(Text::StrInt32(Text::StrConcatC(backBuff, UTF8STRC("../../indexhd/grp")), grp->GetGroupId()), UTF8STRC("/index.html"));
 
@@ -924,16 +924,16 @@ void SSWR::OrganMgr::OrganEnv::ExportGroup(OrganGroup *grp, Data::FastMap<Int32,
 					ExportBeginPage(writer, sb->ToString());
 				}
 				
-				s = sp->GetDirName();
+				Text::String *str = sp->GetDirName();
 				sptr = pathAppend;
-				*sptr++ = s->v[0];
-				*sptr++ = s->v[1];
+				*sptr++ = str->v[0];
+				*sptr++ = str->v[1];
 				*sptr = 0;
 				sb->ClearStr();
 				sb->AppendC(UTF8STRC("../../"));
 				sb->AppendC(pathAppend, 2);
 				sb->AppendC(UTF8STRC("/"));
-				sb->Append(s);
+				sb->Append(str);
 				sb->AppendC(UTF8STRC("/index.html"));
 				writer->WriteStrC(UTF8STRC("<a href="));
 				s = Text::XML::ToNewAttrText(sb->ToString());
@@ -993,7 +993,7 @@ Bool SSWR::OrganMgr::OrganEnv::ExportSpecies(OrganSpecies *sp, const UTF8Char *b
 	OrganImageItem::FileType ft;
 	Data::ArrayList<OrganImageItem*> items;
 	Bool myPhotoExist = false;
-	Text::String *s;
+	NotNullPtr<Text::String> s;
 	UTF8Char *sptr;
 	GetSpeciesImages(&items, sp);
 
@@ -1026,12 +1026,12 @@ Bool SSWR::OrganMgr::OrganEnv::ExportSpecies(OrganSpecies *sp, const UTF8Char *b
 		return false;
 	}
 
-	s = sp->GetDirName();
+	Text::String *str = sp->GetDirName();
 	sptr = pathAppend;
-	*sptr++ = s->v[0];
-	*sptr++ = s->v[1];
+	*sptr++ = str->v[0];
+	*sptr++ = str->v[1];
 	*sptr++ = IO::Path::PATH_SEPERATOR;
-	sptr = s->ConcatTo(sptr);
+	sptr = str->ConcatTo(sptr);
 	IO::Path::CreateDirectory(CSTRP(fullPath, sptr));
 
 	*sptr++ = IO::Path::PATH_SEPERATOR;

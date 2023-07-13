@@ -56,7 +56,7 @@ SSWR::OrganMgr::OrganImageWebForm::OrganImageWebForm(UI::GUIClientControl *paren
 	this->txtSourceURL->SetRect(100, 72, 680, 23, false);
 	NEW_CLASS(this->lblLocation, UI::GUILabel(ui, this, this->env->GetLang(UTF8STRC("ImageWebLocation"))));
 	this->lblLocation->SetRect(0, 96, 100, 23, false);
-	NEW_CLASS(this->txtLocation, UI::GUITextBox(ui, this, Text::String::OrEmpty(wfile->location)->ToCString()));
+	NEW_CLASS(this->txtLocation, UI::GUITextBox(ui, this, wfile->location->ToCString()));
 	this->txtLocation->SetRect(100, 96, 680, 23, false);
 	if (wfile == 0)
 	{
@@ -69,7 +69,7 @@ SSWR::OrganMgr::OrganImageWebForm::OrganImageWebForm(UI::GUIClientControl *paren
 	this->btnCancel->SetRect(200, 120, 75, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClicked, this);
 
-	if (wfile == 0 || wfile->srcUrl->Equals(wfile->imgUrl) || wfile->srcUrl->Equals(UTF8STRC("chrome://browser/content/browser.xhtml")))
+	if (wfile == 0 || wfile->srcUrl->Equals(wfile->imgUrl.Ptr()) || wfile->srcUrl->Equals(UTF8STRC("chrome://browser/content/browser.xhtml")))
 	{
 		this->txtSourceURL->Focus();
 		this->txtSourceURL->SelectAll();

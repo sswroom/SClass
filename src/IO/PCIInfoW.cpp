@@ -19,7 +19,7 @@ IO::PCIInfo::PCIInfo(ClassData *info)
 	ClassData *clsData = MemAlloc(ClassData, 1);
 	clsData->vendorId = srcData->vendorId;
 	clsData->productId = srcData->productId;
-	clsData->dispName.v = Text::StrCopyNewC(srcData->dispName.v, srcData->dispName.leng);
+	clsData->dispName.v = Text::StrCopyNewC(srcData->dispName.v, srcData->dispName.leng).Ptr();
 	clsData->dispName.leng = srcData->dispName.leng;
 	this->clsData = clsData;
 }

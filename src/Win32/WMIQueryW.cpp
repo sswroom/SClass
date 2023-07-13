@@ -170,7 +170,7 @@ void Win32::WMIQuery::Rollback(void *tran)
 {
 }
 
-UOSInt Win32::WMIQuery::QueryTableNames(Text::CString schemaName, Data::ArrayList<Text::String*> *names)
+UOSInt Win32::WMIQuery::QueryTableNames(Text::CString schemaName, Data::ArrayListNN<Text::String> *names)
 {
 	if (schemaName.leng != 0)
 		return 0;

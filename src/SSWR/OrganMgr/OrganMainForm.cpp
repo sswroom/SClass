@@ -227,7 +227,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnObjDblClicked(void *userObj)
 		{
 			OrganGroup *groupO = (OrganGroup*)me->lbDir->GetItem(me->lbDir->GetSelectedIndex());
 			SDEL_STRING(me->initSelObj);
-			me->initSelObj = groupO->GetEName()->Clone();
+			me->initSelObj = groupO->GetEName()->Clone().Ptr();
             me->lbDir->SetSelectedIndex(me->lbDir->GetSelectedIndex() - 1);
 		}
 	}
@@ -419,7 +419,7 @@ Bool __stdcall SSWR::OrganMgr::OrganMainForm::OnImgRClicked(void *userObj, Math:
 			OrganGroup *go = (OrganGroup*)me->lbDir->GetSelectedItem();
 			me->env->SetGroupDefSp(go, imgItem);
 			SDEL_STRING(me->initSelImg);
-			me->initSelImg = imgItem->GetDispName()->Clone();
+			me->initSelImg = imgItem->GetDispName()->Clone().Ptr();
 			me->UpdateImgDir();
 		}
 		else
@@ -429,7 +429,7 @@ Bool __stdcall SSWR::OrganMgr::OrganMainForm::OnImgRClicked(void *userObj, Math:
 				return false;
 			me->env->SetSpeciesImg(me->lastSpeciesObj, imgItem);
 			SDEL_STRING(me->initSelImg);
-			me->initSelImg = imgItem->GetDispName()->Clone();
+			me->initSelImg = imgItem->GetDispName()->Clone().Ptr();
 			me->UpdateImgDir();
 		}
 	}
@@ -645,7 +645,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImgDblClicked(void *userObj)
 							OrganGroupItem *item = ((OrganGroupItem*)me->lbObj->GetSelectedItem());
 							me->env->UpdateSpeciesWebFile((OrganSpecies*)item, wfile, sURL, location);
 							SDEL_STRING(me->initSelImg);
-							me->initSelImg = imgItem->GetDispName()->Clone();
+							me->initSelImg = imgItem->GetDispName()->Clone().Ptr();
 							me->UpdateImgDir();
 						}
 					}
@@ -847,7 +847,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImageClipboardClicked(void *user
 					{
 						{
 							IO::FileStream fs(fileNameSb.ToCString(), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-							Text::String *url = Text::String::New(urlSb.ToString(), urlSb.GetLength());
+							NotNullPtr<Text::String> url = Text::String::New(urlSb.ToString(), urlSb.GetLength());
 							succ = (me->env->AddSpeciesWebFile((OrganSpecies*)gi, url, url, &fs, sbuff) == OrganEnv::FS_SUCCESS);
 							url->Release();
 						}
@@ -855,7 +855,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImageClipboardClicked(void *user
 						if (succ)
 						{
 							SDEL_STRING(me->initSelImg);
-							me->initSelImg = Text::String::NewNotNullSlow(sbuff);
+							me->initSelImg = Text::String::NewNotNullSlow(sbuff).Ptr();
 							me->UpdateImgDir();
 						}
 					}
@@ -889,7 +889,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImageClipboardClicked(void *user
 								if (!chg)
 								{
 									UOSInt tmp = Text::StrLastIndexOfChar(sarr[0].v, IO::Path::PATH_SEPERATOR);
-									me->initSelImg = Text::String::New(&sarr[0].v[tmp + 1], sarr[0].leng - tmp - 1);
+									me->initSelImg = Text::String::New(&sarr[0].v[tmp + 1], sarr[0].leng - tmp - 1).Ptr();
 								}
 								chg = true;
 								firstPhoto = false;
@@ -900,7 +900,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImageClipboardClicked(void *user
 							else
 							{
 								UOSInt i;
-								Text::String *s;
+								NotNullPtr<Text::String> s;
 								Text::StringBuilderUTF8 sb;
 								i = Text::StrLastIndexOfChar(sarr[0].v, IO::Path::PATH_SEPERATOR);
 								s = Text::String::NewNotNull(L"不能複製檔案: ");
@@ -1436,7 +1436,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnObjPlaceClicked(void *userObj)
 			UTF8Char *sptr;
 			sbuff[0] = 0;
 			sptr = ((OrganImages*)me->pickObjs.GetItem(0))->GetItemName(sbuff);
-			me->initSelImg = Text::String::NewP(sbuff, sptr);
+			me->initSelImg = Text::String::NewP(sbuff, sptr).Ptr();
 		}
 		while (i < j)
 		{
@@ -1789,7 +1789,7 @@ void SSWR::OrganMgr::OrganMainForm::UpdateDir()
             this->lbDir->RemoveItem(j);
 			grp = this->groupList.RemoveAt(j);
 			SDEL_STRING(this->initSelObj);
-			this->initSelObj = grp->GetEName()->Clone();
+			this->initSelObj = grp->GetEName()->Clone().Ptr();
 			DEL_CLASS(grp);
 		}
         this->lastSpeciesObj = 0;
@@ -2055,11 +2055,8 @@ void SSWR::OrganMgr::OrganMainForm::UpdateImgDir()
 				WebFileInfo *wfile = imgItem->GetWebFile();
 				if (wfile)
 				{
-					if (wfile->location)
-					{
-						sptr = Text::StrConcatC(sptr, UTF8STRC(" "));
-						sptr = wfile->location->ConcatTo(sptr);
-					}
+					sptr = Text::StrConcatC(sptr, UTF8STRC(" "));
+					sptr = wfile->location->ConcatTo(sptr);
 				}
 
 				this->lbImage->AddItem(CSTRP(sbuff, sptr), imgItem);
@@ -2884,7 +2881,7 @@ void SSWR::OrganMgr::OrganMainForm::EventMenuClicked(UInt16 cmdId)
 			if (frm.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
 				SDEL_STRING(this->initSelObj);
-				this->initSelObj = frm.GetFoundStr()->Clone();
+				this->initSelObj = frm.GetFoundStr()->Clone().Ptr();
 				this->GoToDir(frm.GetFoundGroup(), frm.GetParentId());
 			}
 		}
@@ -3117,7 +3114,7 @@ void SSWR::OrganMgr::OrganMainForm::EventMenuClicked(UInt16 cmdId)
 			{
 				OrganGroup *groupO = (OrganGroup*)this->lbDir->GetItem(i);
 				SDEL_STRING(this->initSelObj);
-				this->initSelObj = groupO->GetEName()->Clone();
+				this->initSelObj = groupO->GetEName()->Clone().Ptr();
 				this->lbDir->SetSelectedIndex(i - 1);
 			}
 		}
@@ -3400,8 +3397,8 @@ void SSWR::OrganMgr::OrganMainForm::DropData(UI::GUIDropData *data, OSInt x, OSI
 						IO::Stream *stm = data->GetDataStream(fmtFile);
 						if (stm)
 						{
-							Text::String *ssurl = Text::String::New(sURL.ToString(), sURL.GetLength());
-							Text::String *siurl = Text::String::New(iURL.ToString(), iURL.GetLength());
+							NotNullPtr<Text::String> ssurl = Text::String::New(sURL.ToString(), sURL.GetLength());
+							NotNullPtr<Text::String> siurl = Text::String::New(iURL.ToString(), iURL.GetLength());
 							Bool succ = (this->env->AddSpeciesWebFile((OrganSpecies*)gi, ssurl, siurl, stm, sbuff) == OrganEnv::FS_SUCCESS);
 							ssurl->Release();
 							siurl->Release();
@@ -3410,7 +3407,7 @@ void SSWR::OrganMgr::OrganMainForm::DropData(UI::GUIDropData *data, OSInt x, OSI
 							if (succ)
 							{
 								SDEL_STRING(this->initSelImg);
-								this->initSelImg = Text::String::NewNotNullSlow(sbuff);
+								this->initSelImg = Text::String::NewNotNullSlow(sbuff).Ptr();
 								this->UpdateImgDir();
 							}
 						}
@@ -3450,7 +3447,7 @@ void SSWR::OrganMgr::OrganMainForm::DropData(UI::GUIDropData *data, OSInt x, OSI
 								if (!chg)
 								{
 									UOSInt tmp = Text::StrLastIndexOfChar(sarr[0].v, IO::Path::PATH_SEPERATOR);
-									this->initSelImg = Text::String::New(&sarr[0].v[tmp + 1], sarr[0].leng - tmp - 1);
+									this->initSelImg = Text::String::New(&sarr[0].v[tmp + 1], sarr[0].leng - tmp - 1).Ptr();
 								}
 								chg = true;
 								firstPhoto = false;
@@ -3461,7 +3458,7 @@ void SSWR::OrganMgr::OrganMainForm::DropData(UI::GUIDropData *data, OSInt x, OSI
 							else
 							{
 								UOSInt i;
-								Text::String *s;
+								NotNullPtr<Text::String> s;
 								Text::StringBuilderUTF8 sb;
 								i = Text::StrLastIndexOfChar(sarr[0].v, IO::Path::PATH_SEPERATOR);
 								s = Text::String::NewNotNull(L"不能複製檔案: ");

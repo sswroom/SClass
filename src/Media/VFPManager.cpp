@@ -195,8 +195,8 @@ void Media::VFPManager::PrepareSelector(IO::FileSelector *selector)
 				j = Text::StrSplit(sarr, 3, sarr[2], '|');
 				if (j == 1)
 					break;
-				Text::String *wptr1 = Text::String::NewNotNull(sarr[1]);
-				Text::String *wptr0 = Text::String::NewNotNull(sarr[0]);
+				NotNullPtr<Text::String> wptr1 = Text::String::NewNotNull(sarr[1]);
+				NotNullPtr<Text::String> wptr0 = Text::String::NewNotNull(sarr[0]);
 				selector->AddFilter(wptr1->ToCString(), wptr0->ToCString());
 				wptr1->Release();
 				wptr0->Release();

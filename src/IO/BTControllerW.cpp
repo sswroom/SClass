@@ -64,14 +64,14 @@ IO::BTController::BTDevice::~BTDevice()
 	}
 }
 
-Text::String *IO::BTController::BTDevice::GetName()
+NotNullPtr<Text::String> IO::BTController::BTDevice::GetName() const
 {
 	BLUETOOTH_DEVICE_INFO *dev = (BLUETOOTH_DEVICE_INFO*)this->devInfo;
 	if (this->clsData == 0)
 	{
-		this->clsData = (void*)Text::String::NewNotNull(dev->szName);
+		((IO::BTController::BTDevice*)this)->clsData = (void*)Text::String::NewNotNull(dev->szName).Ptr();
 	}
-	return (Text::String*)this->clsData;
+	return Text::String::OrEmpty((Text::String*)this->clsData);
 }
 
 UInt8 *IO::BTController::BTDevice::GetAddress()
@@ -221,7 +221,7 @@ IO::BTController::BTController(void *internalData, void *hand)
 	}
 	else
 	{
-		this->name = 0;
+		this->name = Text::String::NewEmpty();
 		this->addr[0] = 0;
 		this->addr[1] = 0;
 		this->addr[2] = 0;
@@ -238,7 +238,7 @@ IO::BTController::~BTController()
 {
 	InternalData *me = (InternalData*)this->internalData;
 	CloseHandle((HANDLE)this->hand);
-	SDEL_STRING(this->name);
+	this->name->Release();
 	if (Sync::Interlocked::Decrement(&me->useCnt) <= 0)
 	{
 		DEL_CLASS(me->lib);
@@ -294,7 +294,7 @@ UInt8 *IO::BTController::GetAddress()
 	return this->addr;
 }
 
-Text::String *IO::BTController::GetName()
+NotNullPtr<Text::String> IO::BTController::GetName() const
 {
 	return this->name;
 }

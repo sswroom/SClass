@@ -16,7 +16,7 @@ IO::SensorWin::SensorWin(void *sensor)
 	pSensor->SetEventSink(0);
 	if (SUCCEEDED(pSensor->GetFriendlyName(&sname)))
 	{
-		this->name = Text::String::NewNotNull(sname);
+		this->name = Text::String::NewNotNull(sname).Ptr();
 	}
 }
 

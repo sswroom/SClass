@@ -16,9 +16,9 @@ Bool DB::TDSConn::IsConnected() const
 	return false;
 }
 
-Text::String *DB::TDSConn::GetConnHost() const
+NotNullPtr<Text::String> DB::TDSConn::GetConnHost() const
 {
-	return 0;
+	return Text::String::NewEmpty();
 }
 
 Text::String *DB::TDSConn::GetConnDB() const
@@ -26,14 +26,14 @@ Text::String *DB::TDSConn::GetConnDB() const
 	return 0;
 }
 
-Text::String *DB::TDSConn::GetConnUID() const
+NotNullPtr<Text::String> DB::TDSConn::GetConnUID() const
 {
-	return 0;
+	return Text::String::NewEmpty();
 }
 
-Text::String *DB::TDSConn::GetConnPWD() const
+NotNullPtr<Text::String> DB::TDSConn::GetConnPWD() const
 {
-	return 0;
+	return Text::String::NewEmpty();
 }
 
 DB::SQLType DB::TDSConn::GetSQLType() const

@@ -33,7 +33,7 @@ UOSInt Media::VideoCaptureMgr::GetDeviceList(Data::ArrayList<DeviceInfo *> *devL
 		devInfo->devType = 0;
 		devInfo->devId = i;
 		this->clsData->dshowMgr->GetDeviceName(sbuff, i);
-		devInfo->devName = Text::StrCopyNew(sbuff);
+		devInfo->devName = Text::StrCopyNew(sbuff).Ptr();
 		devList->Add(devInfo);
 		ret++;
 		i++;

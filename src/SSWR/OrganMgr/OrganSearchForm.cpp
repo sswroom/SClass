@@ -16,7 +16,7 @@ void __stdcall SSWR::OrganMgr::OrganSearchForm::OnOKClicked(void *userObj)
 	me->foundGroup = me->env->SearchObject(sbuff, sbuff2, sizeof(sbuff2), &me->parentId);
 	if (me->foundGroup)
 	{
-		me->foundStr = Text::String::NewNotNullSlow(sbuff2);
+		me->foundStr = Text::String::NewNotNullSlow(sbuff2).Ptr();
 		me->SetDialogResult(DR_OK);
 	}
 	else

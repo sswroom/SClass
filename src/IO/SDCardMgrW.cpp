@@ -170,7 +170,7 @@ IO::SDCardInfo *SDCardMgr_ReadInfo(const WChar *path)
 	
 	if (valid)
 	{
-		Text::String *s = Text::String::NewNotNull(path);
+		NotNullPtr<Text::String> s = Text::String::NewNotNull(path);
 		NEW_CLASS(sdcard, IO::SDCardInfo(s->ToCString(), cid, csd));
 		s->Release();
 	}

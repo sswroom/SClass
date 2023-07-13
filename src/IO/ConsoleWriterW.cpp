@@ -376,7 +376,7 @@ void IO::ConsoleWriter::FixWrite(const WChar *str, UOSInt displayWidth)
 	UOSInt width = GetDisplayWidth(str);
 	if (width <= displayWidth)
 	{
-		Text::String *s = Text::String::NewNotNull(str);
+		NotNullPtr<Text::String> s = Text::String::NewNotNull(str);
 		this->WriteStr(s->ToCString());
 		s->Release();
 		while (width < displayWidth)
@@ -403,7 +403,7 @@ void IO::ConsoleWriter::FixWrite(const WChar *str, UOSInt displayWidth)
 			}
 			wbuff[0] = str[0];
 			wbuff[1] = 0;
-			Text::String *s = Text::String::NewNotNull(wbuff);
+			NotNullPtr<Text::String> s = Text::String::NewNotNull(wbuff);
 			this->WriteStr(s->ToCString());
 			s->Release();
 			str++;
@@ -418,7 +418,7 @@ void IO::ConsoleWriter::FixWrite(const WChar *str, UOSInt displayWidth)
 			width += GetDisplayCharWidth(*str);
 			wbuff[0] = str[0];
 			wbuff[1] = 0;
-			Text::String *s = Text::String::NewNotNull(wbuff);
+			NotNullPtr<Text::String> s = Text::String::NewNotNull(wbuff);
 			this->WriteStr(s->ToCString());
 			s->Release();
 			str++;

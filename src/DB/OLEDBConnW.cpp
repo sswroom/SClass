@@ -1667,7 +1667,7 @@ Bool DB::OLEDBReader::GetColDef(UOSInt colIndex, DB::ColDef *colDef)
 	if (data->dbColInfo[colIndex].pwszName)
 	{
 		NotNullPtr<Text::String> s = Text::String::NewNotNull(data->dbColInfo[colIndex].pwszName);
-		colDef->SetColName(s.Ptr());
+		colDef->SetColName(s);
 		s->Release();
 	}
 	else

@@ -34,7 +34,7 @@
 
 #define STACKDUMPSIZE 4096
 
-Text::String *Manage::ExceptionRecorder::fileName;
+NotNullPtr<Text::String> Manage::ExceptionRecorder::fileName;
 Manage::ExceptionRecorder::ExceptionAction Manage::ExceptionRecorder::exAction;
 
 #ifndef _WIN32_WCE
@@ -135,10 +135,7 @@ Int32 __stdcall Manage::ExceptionRecorder::ExceptionHandler(void *exInfo)
 #else
 #error "Unsupported CPU"
 #endif
-	if (fileName)
-	{
-		Manage::ExceptionLogger::LogToFile(fileName, info->ExceptionRecord->ExceptionCode, GetExceptionCodeName(info->ExceptionRecord->ExceptionCode), (UOSInt)info->ExceptionRecord->ExceptionAddress, tCont);
-	}
+	Manage::ExceptionLogger::LogToFile(fileName, info->ExceptionRecord->ExceptionCode, GetExceptionCodeName(info->ExceptionRecord->ExceptionCode), (UOSInt)info->ExceptionRecord->ExceptionAddress, tCont);
 	DEL_CLASS(tCont);
 
 	if (exAction == EA_CLOSE)
@@ -178,5 +175,4 @@ Manage::ExceptionRecorder::ExceptionRecorder(Text::CString fileName, ExceptionAc
 Manage::ExceptionRecorder::~ExceptionRecorder()
 {
 	this->fileName->Release();
-	this->fileName = 0;
 }

@@ -672,7 +672,7 @@ void Media::MonitorColorManager::SetOSProfile()
 						size = 512;
 						if (GetICMProfileW(hdc, &size, wbuff) != 0)
 						{
-							Text::String *s = Text::String::NewNotNull(wbuff);
+							NotNullPtr<Text::String> s = Text::String::NewNotNull(wbuff);
 							succ = SetFromProfileFile(s);
 							s->Release();
 						}

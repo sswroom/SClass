@@ -130,7 +130,7 @@ void UI::GUIComboBox::EndUpdate()
 	
 }
 
-UOSInt UI::GUIComboBox::AddItem(Text::String *itemText, void *itemObj)
+UOSInt UI::GUIComboBox::AddItem(NotNullPtr<Text::String> itemText, void *itemObj)
 {
 	const WChar *wptr = Text::StrToWCharNew(itemText->v);
 	OSInt i = SendMessage((HWND)hwnd, CB_ADDSTRING, 0, (LPARAM)wptr);

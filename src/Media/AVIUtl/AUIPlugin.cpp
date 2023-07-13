@@ -307,8 +307,8 @@ void Media::AVIUtl::AUIPlugin::PrepareSelector(IO::FileSelector *selector)
 		j = Text::StrSplit(sarr, 3, sarr[2], '|');
 		if (j == 1)
 			break;
-		Text::String *sptr1 = Text::String::NewNotNull(sarr[1]);
-		Text::String *sptr0 = Text::String::NewNotNull(sarr[0]);
+		NotNullPtr<Text::String> sptr1 = Text::String::NewNotNull(sarr[1]);
+		NotNullPtr<Text::String> sptr0 = Text::String::NewNotNull(sarr[0]);
 		selector->AddFilter(sptr1->ToCString(), sptr0->ToCString());
 		sptr1->Release();
 		sptr0->Release();

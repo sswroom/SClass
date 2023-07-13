@@ -79,7 +79,7 @@ void UI::GUIButton::SetFont(const UTF8Char *name, UOSInt nameLen, Double fontHei
 	SDEL_STRING(this->fontName);
 	if (name)
 	{
-		this->fontName = Text::String::New(name, nameLen);
+		this->fontName = Text::String::New(name, nameLen).Ptr();
 	}
 	this->fontHeightPt = fontHeightPt;
 	this->fontIsBold = isBold;

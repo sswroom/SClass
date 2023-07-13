@@ -71,18 +71,18 @@ UI::FolderDialog::~FolderDialog()
 void UI::FolderDialog::SetFolder(Text::CString dirName)
 {
 	SDEL_STRING(this->dirName);
-	this->dirName = Text::String::New(dirName);
+	this->dirName = Text::String::New(dirName).Ptr();
 }
 
-Text::String *UI::FolderDialog::GetFolder()
+NotNullPtr<Text::String> UI::FolderDialog::GetFolder() const
 {
-	return this->dirName;
+	return Text::String::OrEmpty(this->dirName);
 }
 
 void UI::FolderDialog::SetMessage(const UTF8Char *message)
 {
 	SDEL_TEXT(this->message);
-	this->message = Text::StrCopyNew(message);
+	this->message = Text::StrCopyNew(message).Ptr();
 }
 
 Bool UI::FolderDialog::ShowDialog(ControlHandle *ownerHandle)
@@ -135,7 +135,7 @@ Bool UI::FolderDialog::ShowDialog(ControlHandle *ownerHandle)
 			this->dirName->Release();
 			this->dirName = 0;
 		}
-		this->dirName = Text::String::NewNotNull(wbuff);
+		this->dirName = Text::String::NewNotNull(wbuff).Ptr();
 		return true;
 	}
 }

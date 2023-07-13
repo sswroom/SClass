@@ -17,7 +17,7 @@ struct IO::HIDInfo::ClassData
 IO::HIDInfo::BusType busType;
 UInt16 vendor;
 UInt16 product;
-Text::String *devPath;
+NotNullPtr<Text::String> devPath;
 };
 
 
@@ -49,7 +49,7 @@ UInt16 IO::HIDInfo::GetProductId()
 
 Text::String *IO::HIDInfo::GetDevPath()
 {
-	return this->clsData->devPath;
+	return this->clsData->devPath.Ptr();
 }
 
 IO::Stream *IO::HIDInfo::OpenHID()

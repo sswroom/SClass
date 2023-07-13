@@ -84,7 +84,7 @@ void SSWR::OrganMgr::OrganDataFileForm::UpdateFileList()
 	while (i < j)
 	{
 		dataFile = dataFiles->GetItem(i);
-		k = this->lvFiles->AddItem(Text::String::OrEmpty(dataFile->oriFileName), dataFile);
+		k = this->lvFiles->AddItem(dataFile->oriFileName, dataFile);
 		sptr = dataFile->startTime.ToLocalTime().ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
 		this->lvFiles->SetSubItem(k, 1, CSTRP(sbuff, sptr));
 		sptr = dataFile->endTime.ToLocalTime().ToString(sbuff, "yyyy-MM-dd HH:mm:ss");

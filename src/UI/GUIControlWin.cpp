@@ -306,7 +306,7 @@ void UI::GUIControl::SetFont(const UTF8Char *name, UOSInt nameLen, Double ptSize
 	SDEL_STRING(this->fontName);
 	if (name)
 	{
-		this->fontName = Text::String::New(name, nameLen);
+		this->fontName = Text::String::New(name, nameLen).Ptr();
 	}
 	this->fontHeightPt = ptSize;
 	this->fontIsBold = isBold;
