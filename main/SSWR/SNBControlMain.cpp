@@ -32,7 +32,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			frm.SetText(CSTR("Select SNB Dongle"));
 			if (frm.ShowDialog(0) == UI::GUIForm::DR_OK)
 			{
-				NEW_CLASS(snbFrm, SSWR::AVIRead::AVIRSNBDongleForm(0, ui, &core, frm.stm));
+				NEW_CLASS(snbFrm, SSWR::AVIRead::AVIRSNBDongleForm(0, ui, &core, frm.GetStream()));
 				snbFrm->SetExitOnClose(true);
 				snbFrm->Show();
 			}

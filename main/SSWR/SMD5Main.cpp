@@ -191,7 +191,7 @@ Bool ParseFile(const UTF8Char *fileName, UOSInt fileNameLen)
 			sb.AppendC(UTF8STRC(".md5"));
 			{
 				IO::FileStream fs(sb.ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-				exporter.ExportFile(&fs, sb.ToCString(), fileChk, 0);
+				exporter.ExportFile(fs, sb.ToCString(), fileChk, 0);
 			}
 			DEL_CLASS(fileChk);
 			showHelp = false;

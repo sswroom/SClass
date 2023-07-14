@@ -30,24 +30,17 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	sb.AppendUOSInt(portNum);
 	console.WriteLineC(sb.ToString(), sb.GetLength());
 
-	IO::SerialPort *port;
-	NEW_CLASS(port, IO::SerialPort(portNum, baudRate, IO::SerialPort::PARITY_NONE, true));
-	if (port->IsError())
+	IO::SerialPort port(portNum, baudRate, IO::SerialPort::PARITY_NONE, true);
+	if (port.IsError())
 	{
 		console.WriteLineC(UTF8STRC("Error in opening the port"));
 	}
 	else
 	{
-		IO::ATCommandChannel *channel;
-		IO::GSMModemController *modem;
-		NEW_CLASS(channel, IO::ATCommandChannel(port, false));
-		NEW_CLASS(modem, IO::GSMModemController(channel, false));
+		IO::ATCommandChannel channel(port, false);
+		IO::GSMModemController modem(&channel, false);
 
-		Test::TestModem::GSMModemTest(&console, modem, false);		
-
-		DEL_CLASS(modem);
-		DEL_CLASS(channel);
+		Test::TestModem::GSMModemTest(&console, &modem, false);		
 	}
-	DEL_CLASS(port);
 	return 0;
 }

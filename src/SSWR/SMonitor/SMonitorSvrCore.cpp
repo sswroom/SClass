@@ -44,7 +44,7 @@ void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnClientEvent(NotNullPtr<Net::TC
 			if (status->dev)
 			{
 				Sync::RWMutexUsage mutUsage(&status->dev->mut, true);
-				if (status->dev->stm == cli)
+				if (status->dev->stm == cli.Ptr())
 				{
 					status->dev->stm = 0;
 				}
@@ -52,7 +52,7 @@ void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnClientEvent(NotNullPtr<Net::TC
 			MemFree(status->dataBuff);
 			me->protoHdlr.DeleteStreamData(cli, status->stmData);
 			MemFree(status);
-			DEL_CLASS(cli);
+			cli.Delete();
 		}
 		break;
 	case Net::TCPClientMgr::TCP_EVENT_CONNECT:
@@ -100,9 +100,9 @@ void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnClientTimeout(NotNullPtr<Net::
 void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnServerConn(Socket *s, void *userObj)
 {
 	SSWR::SMonitor::SMonitorSvrCore *me = (SSWR::SMonitor::SMonitorSvrCore*)userObj;
-	Net::TCPClient *cli;
+	NotNullPtr<Net::TCPClient> cli;
 	ClientStatus *status;
-	NEW_CLASS(cli, Net::TCPClient(me->sockf, s));
+	NEW_CLASSNN(cli, Net::TCPClient(me->sockf, s));
 	status = MemAlloc(ClientStatus, 1);
 	status->cliId = 0;
 	status->dataBuff = MemAlloc(UInt8, TCP_BUFF_SIZE + 2048);
@@ -395,7 +395,7 @@ void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnDataUDPPacket(const Net::Socke
 	}
 }
 
-void SSWR::SMonitor::SMonitorSvrCore::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize)
+void SSWR::SMonitor::SMonitorSvrCore::DataParsed(NotNullPtr<IO::Stream> stm, void *stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize)
 {
 	DeviceInfo *dev;
 	ClientStatus *status = (ClientStatus*)stmObj;
@@ -418,7 +418,7 @@ void SSWR::SMonitor::SMonitorSvrCore::DataParsed(IO::Stream *stm, void *stmObj, 
 					if (status->dev)
 					{
 						Sync::RWMutexUsage mutUsage(&status->dev->mut, true);
-						if (status->dev->stm == stm)
+						if (status->dev->stm == stm.Ptr())
 						{
 							status->dev->stm = 0;
 						}
@@ -430,7 +430,7 @@ void SSWR::SMonitor::SMonitorSvrCore::DataParsed(IO::Stream *stm, void *stmObj, 
 					{
 						status->dev->stm->Close();
 					}
-					status->dev->stm = stm;
+					status->dev->stm = stm.Ptr();
 				}
 				status->cliId = cliId;
 				dev->lastKATime = dt.ToTicks();
@@ -459,7 +459,7 @@ void SSWR::SMonitor::SMonitorSvrCore::DataParsed(IO::Stream *stm, void *stmObj, 
 			if (dev == 0)
 			{
 				status->dev = this->DevAdd(cliId, CSTRP(sbuff, sbuffEnd), CSTRP(sbuff2, sbuff2End));
-				status->dev->stm = stm;
+				status->dev->stm = stm.Ptr();
 				status->cliId = cliId;
 			}
 		}
@@ -555,11 +555,11 @@ void SSWR::SMonitor::SMonitorSvrCore::DataParsed(IO::Stream *stm, void *stmObj, 
 	}
 }
 
-void SSWR::SMonitor::SMonitorSvrCore::DataSkipped(IO::Stream *stm, void *stmObj, const UInt8 *buff, UOSInt buffSize)
+void SSWR::SMonitor::SMonitorSvrCore::DataSkipped(NotNullPtr<IO::Stream> stm, void *stmObj, const UInt8 *buff, UOSInt buffSize)
 {
 }
 
-void SSWR::SMonitor::SMonitorSvrCore::TCPSendLoginReply(IO::Stream *stm, Int64 cliTime, Int64 svrTime, UInt8 status)
+void SSWR::SMonitor::SMonitorSvrCore::TCPSendLoginReply(NotNullPtr<IO::Stream> stm, Int64 cliTime, Int64 svrTime, UInt8 status)
 {
 	UInt8 cmdBuff[17];
 	UInt8 packetBuff[27];
@@ -571,7 +571,7 @@ void SSWR::SMonitor::SMonitorSvrCore::TCPSendLoginReply(IO::Stream *stm, Int64 c
 	stm->Write(packetBuff, packetSize);
 }
 
-void SSWR::SMonitor::SMonitorSvrCore::TCPSendKAReply(IO::Stream *stm, Int64 cliTime, Int64 svrTime)
+void SSWR::SMonitor::SMonitorSvrCore::TCPSendKAReply(NotNullPtr<IO::Stream> stm, Int64 cliTime, Int64 svrTime)
 {
 	UInt8 cmdBuff[16];
 	UInt8 packetBuff[26];
@@ -582,7 +582,7 @@ void SSWR::SMonitor::SMonitorSvrCore::TCPSendKAReply(IO::Stream *stm, Int64 cliT
 	stm->Write(packetBuff, packetSize);
 }
 
-void SSWR::SMonitor::SMonitorSvrCore::TCPSendCapturePhoto(IO::Stream *stm)
+void SSWR::SMonitor::SMonitorSvrCore::TCPSendCapturePhoto(NotNullPtr<IO::Stream> stm)
 {
 	UInt8 packetBuff[10];
 	UOSInt packetSize;
@@ -590,7 +590,7 @@ void SSWR::SMonitor::SMonitorSvrCore::TCPSendCapturePhoto(IO::Stream *stm)
 	stm->Write(packetBuff, packetSize);
 }
 
-void SSWR::SMonitor::SMonitorSvrCore::TCPSendPhotoEnd(IO::Stream *stm, Int64 photoTime)
+void SSWR::SMonitor::SMonitorSvrCore::TCPSendPhotoEnd(NotNullPtr<IO::Stream> stm, Int64 photoTime)
 {
 	UInt8 cmdBuff[8];
 	UInt8 packetBuff[18];
@@ -600,7 +600,7 @@ void SSWR::SMonitor::SMonitorSvrCore::TCPSendPhotoEnd(IO::Stream *stm, Int64 pho
 	stm->Write(packetBuff, packetSize);
 }
 
-void SSWR::SMonitor::SMonitorSvrCore::TCPSendSetOutput(IO::Stream *stm, UInt32 outputNum, Bool toHigh)
+void SSWR::SMonitor::SMonitorSvrCore::TCPSendSetOutput(NotNullPtr<IO::Stream> stm, UInt32 outputNum, Bool toHigh)
 {
 	UInt8 cmdBuff[2];
 	UInt8 packetBuff[12];
@@ -1104,7 +1104,7 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(IO::Writer *writer, Media::Draw
 		sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("UserAgent.txt"));
 		{
 			IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-			Text::UTF8Reader reader(&fs);
+			Text::UTF8Reader reader(fs);
 			this->uaLog.ReadLogs(&reader);
 		}
 
@@ -1112,7 +1112,7 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(IO::Writer *writer, Media::Draw
 		sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("Referer.txt"));
 		{
 			IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-			Text::UTF8Reader reader(&fs);
+			Text::UTF8Reader reader(fs);
 			this->refererLog.ReadLogs(&reader);
 		}
 	}
@@ -2089,9 +2089,10 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetOutput(Int64 cliId, UInt32 output
 	if (dev)
 	{
 		Sync::RWMutexUsage mutUsage(&dev->mut, false);
-		if (dev->stm)
+		NotNullPtr<IO::Stream> cli;
+		if (cli.Set(dev->stm))
 		{
-			this->TCPSendSetOutput(dev->stm, outputNum, toHigh);
+			this->TCPSendSetOutput(cli, outputNum, toHigh);
 			succ = true;
 		}
 	}
@@ -2422,9 +2423,10 @@ Bool SSWR::SMonitor::SMonitorSvrCore::SendCapturePhoto(Int64 cliId)
 	if (dev)
 	{
 		mutUsage.ReplaceMutex(&dev->mut, false);
-		if (dev->stm)
+		NotNullPtr<IO::Stream> cli;
+		if (cli.Set(dev->stm))
 		{
-			this->TCPSendCapturePhoto(dev->stm);
+			this->TCPSendCapturePhoto(cli);
 			succ = true;
 		}
 		mutUsage.EndUse();
@@ -2460,7 +2462,7 @@ void SSWR::SMonitor::SMonitorSvrCore::UserAgentStore()
 		sptr = IO::Path::GetProcessFileName(sbuff);
 		sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("UserAgent.txt"));
 		IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-		Text::UTF8Writer writer(&fs);
+		Text::UTF8Writer writer(fs);
 		this->uaLog.WriteLogs(&writer);
 	}
 }
@@ -2487,7 +2489,7 @@ void SSWR::SMonitor::SMonitorSvrCore::RefererStore()
 		sptr = IO::Path::GetProcessFileName(sbuff);
 		sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("Referer.txt"));
 		IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-		Text::UTF8Writer writer(&fs);
+		Text::UTF8Writer writer(fs);
 		this->refererLog.WriteLogs(&writer);
 	}
 }

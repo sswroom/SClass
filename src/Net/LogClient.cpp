@@ -20,13 +20,14 @@ UInt32 __stdcall Net::LogClient::RecvThread(void *userObj)
 	UInt8 *recvBuff;
 	UOSInt recvSize = 0;
 	UOSInt readSize;
+	NotNullPtr<Net::TCPClient> cli;
 	me->recvRunning = true;
 	recvBuff = MemAlloc(UInt8, BUFFSIZE);
 	while (!me->recvToStop)
 	{
-		if (me->cli)
+		if (cli.Set(me->cli))
 		{
-			readSize = me->cli->Read(recvBuff, BUFFSIZE - recvSize);
+			readSize = cli->Read(recvBuff, BUFFSIZE - recvSize);
 			if (readSize == 0)
 			{
 				recvSize = 0;
@@ -38,7 +39,7 @@ UInt32 __stdcall Net::LogClient::RecvThread(void *userObj)
 			else
 			{
 				recvSize += readSize;
-				readSize = me->protoHdlr.ParseProtocol(me->cli, me,0, recvBuff, recvSize);
+				readSize = me->protoHdlr.ParseProtocol(cli, me,0, recvBuff, recvSize);
 				if (readSize <= 0)
 				{
 					recvSize = 0;
@@ -195,7 +196,7 @@ void Net::LogClient::LogAdded(const Data::Timestamp &time, Text::CString logMsg,
 	this->sendEvt.Set();
 }
 
-void Net::LogClient::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize)
+void Net::LogClient::DataParsed(NotNullPtr<IO::Stream> stm, void *stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize)
 {
 	switch (cmdType)
 	{
@@ -218,6 +219,6 @@ void Net::LogClient::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, In
 	}
 }
 
-void Net::LogClient::DataSkipped(IO::Stream *stm, void *stmObj, const UInt8 *buff, UOSInt buffSize)
+void Net::LogClient::DataSkipped(NotNullPtr<IO::Stream> stm, void *stmObj, const UInt8 *buff, UOSInt buffSize)
 {
 }

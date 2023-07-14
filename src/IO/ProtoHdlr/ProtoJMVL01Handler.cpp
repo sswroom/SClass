@@ -14,16 +14,16 @@ IO::ProtoHdlr::ProtoJMVL01Handler::~ProtoJMVL01Handler()
 {
 }
 
-void *IO::ProtoHdlr::ProtoJMVL01Handler::CreateStreamData(IO::Stream *stm)
+void *IO::ProtoHdlr::ProtoJMVL01Handler::CreateStreamData(NotNullPtr<IO::Stream> stm)
 {
 	return (void*)-1;
 }
 
-void IO::ProtoHdlr::ProtoJMVL01Handler::DeleteStreamData(IO::Stream *stm, void *stmData)
+void IO::ProtoHdlr::ProtoJMVL01Handler::DeleteStreamData(NotNullPtr<IO::Stream> stm, void *stmData)
 {
 }
 
-UOSInt IO::ProtoHdlr::ProtoJMVL01Handler::ParseProtocol(IO::Stream *stm, void *stmObj, void *stmData, const UInt8 *buff, UOSInt buffSize)
+UOSInt IO::ProtoHdlr::ProtoJMVL01Handler::ParseProtocol(NotNullPtr<IO::Stream> stm, void *stmObj, void *stmData, const UInt8 *buff, UOSInt buffSize)
 {
 	UInt16 crcVal;
 	UInt16 len;

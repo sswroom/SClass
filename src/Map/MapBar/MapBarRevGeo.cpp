@@ -41,7 +41,7 @@ UTF8Char *Map::MapBar::MapBarRevGeo::CacheName(UTF8Char *buff, UOSInt buffSize, 
 UTF8Char *Map::MapBar::MapBarRevGeo::SearchNameAdjusted(UTF8Char *buff, UOSInt buffSize, Double adjLat, Double adjLon, Int32 lcid)
 {
 	Text::StringBuilderUTF8 sb;
-	Net::HTTPClient *cli;
+	NotNullPtr<Net::HTTPClient> cli;
 	IO::MemoryStream mstm(UTF8STRC("Map.MapBar.MapBarRevGeo"));
 	OSInt readSize;
 	UInt8 *dataBbuff;

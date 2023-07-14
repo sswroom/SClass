@@ -54,7 +54,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPProxyClientForm::ProcessThread(void *use
 {
 	SSWR::AVIRead::AVIRHTTPProxyClientForm *me = (SSWR::AVIRead::AVIRHTTPProxyClientForm*)userObj;
 	Text::String *currURL;
-	Net::HTTPClient *cli;
+	NotNullPtr<Net::HTTPClient> cli;
 	UInt8 buff[4096];
 	UTF8Char *sbuff;
 	UTF8Char *sptr;
@@ -69,7 +69,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPProxyClientForm::ProcessThread(void *use
 			currURL = me->reqURL;
 			me->reqURL = 0;
 
-			NEW_CLASS(cli, Net::HTTPProxyClient(me->core->GetSocketFactory(), false, me->proxyIP, me->proxyPort));
+			NEW_CLASSNN(cli, Net::HTTPProxyClient(me->core->GetSocketFactory(), false, me->proxyIP, me->proxyPort));
 			cli->Connect(currURL->ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, &me->respTimeDNS, &me->respTimeConn, false);
 			cli->AddHeaderC(CSTR("User-Agent"), CSTR("Test/1.0"));
 			cli->AddHeaderC(CSTR("Accept"), CSTR("*/*"));
@@ -88,7 +88,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPProxyClientForm::ProcessThread(void *use
 			}
 			me->respSvrAddr = *cli->GetSvrAddr();
 
-			DEL_CLASS(cli);
+			cli.Delete();
 			me->respChanged = true;
 
 			currURL->Release();

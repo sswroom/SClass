@@ -16,14 +16,15 @@ UInt32 __stdcall SSWR::DataSync::SyncClient::RecvThread(void *userObj)
 	UOSInt recvSize;
 	UInt8 *buff;
 	UOSInt buffSize;
+	NotNullPtr<Net::TCPClient> cli;
 	me->recvRunning = true;
 	buff = MemAlloc(UInt8, 8192);
 	buffSize = 0;
 	while (!me->toStop)
 	{
-		if (me->cli)
+		if (cli.Set(me->cli))
 		{
-			recvSize = me->cli->Read(&buff[buffSize], 8192 - buffSize);
+			recvSize = cli->Read(&buff[buffSize], 8192 - buffSize);
 			if (recvSize <= 0)
 			{
 				Sync::MutexUsage mutUsage(&me->cliMut);
@@ -34,7 +35,7 @@ UInt32 __stdcall SSWR::DataSync::SyncClient::RecvThread(void *userObj)
 			else
 			{
 				buffSize += recvSize;
-				recvSize = me->protoHdlr.ParseProtocol(me->cli, 0, 0, buff, buffSize);
+				recvSize = me->protoHdlr.ParseProtocol(cli, 0, 0, buff, buffSize);
 				if (recvSize <= 0)
 				{
 					buffSize = 0;
@@ -48,18 +49,16 @@ UInt32 __stdcall SSWR::DataSync::SyncClient::RecvThread(void *userObj)
 		}
 		else
 		{
-
-			Net::TCPClient *cli;
-			NEW_CLASS(cli, Net::TCPClient(me->sockf, me->cliHost->ToCString(), me->cliPort, me->timeout));
+			NEW_CLASSNN(cli, Net::TCPClient(me->sockf, me->cliHost->ToCString(), me->cliPort, me->timeout));
 			if (cli->IsClosed())
 			{
-				DEL_CLASS(cli);
+				cli.Delete();
 				me->recvEvt.Wait(1000);
 			}
 			else
 			{
 				Sync::MutexUsage mutUsage(&me->cliMut);
-				me->cli = cli;
+				me->cli = cli.Ptr();
 				me->cliKATime.SetCurrTimeUTC();
 				mutUsage.EndUse();
 				buffSize = 0;
@@ -242,11 +241,11 @@ SSWR::DataSync::SyncClient::~SyncClient()
 	this->serverName->Release();
 }
 
-void SSWR::DataSync::SyncClient::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize)
+void SSWR::DataSync::SyncClient::DataParsed(NotNullPtr<IO::Stream> stm, void *stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize)
 {
 }
 
-void SSWR::DataSync::SyncClient::DataSkipped(IO::Stream *stm, void *stmObj, const UInt8 *buff, UOSInt buffSize)
+void SSWR::DataSync::SyncClient::DataSkipped(NotNullPtr<IO::Stream> stm, void *stmObj, const UInt8 *buff, UOSInt buffSize)
 {
 }
 

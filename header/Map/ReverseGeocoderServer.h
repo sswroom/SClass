@@ -40,12 +40,12 @@ namespace Map
 		virtual UTF8Char *SearchName(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl pos, UInt32 lcid);
 		virtual UTF8Char *CacheName(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl pos, UInt32 lcid);
 
-		virtual void *NewConn(Net::TCPClient *cli);
-		virtual void EndConn(Net::TCPClient *cli, void *cliObj);
-		virtual UOSInt ReceivedData(Net::TCPClient *cli, void *cliObj, UInt8 *buff, UOSInt buffSize); //Return buff size unprocessed
+		virtual void *NewConn(NotNullPtr<Net::TCPClient> cli);
+		virtual void EndConn(NotNullPtr<Net::TCPClient> cli, void *cliObj);
+		virtual UOSInt ReceivedData(NotNullPtr<Net::TCPClient> cli, void *cliObj, UInt8 *buff, UOSInt buffSize); //Return buff size unprocessed
 
-		virtual void DataParsed(IO::Stream *stm, void *cliObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize);
-		virtual void DataSkipped(IO::Stream *stm, void *cliObj, const UInt8 *buff, UOSInt buffSize);
+		virtual void DataParsed(NotNullPtr<IO::Stream> stm, void *cliObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize);
+		virtual void DataSkipped(NotNullPtr<IO::Stream> stm, void *cliObj, const UInt8 *buff, UOSInt buffSize);
 		Bool IsError();
 	};
 }

@@ -23,7 +23,7 @@ Bool Map::MapBar::MapBarAdjuster::AdjustPoints(Double *srcLatLons, Double *destL
 {
 	UInt8 *buff;
 	UInt8 *xmlBuff;
-	Net::HTTPClient *cli;
+	NotNullPtr<Net::HTTPClient> cli;
 	IO::MemoryStream *mstm;
 	Text::XMLDocument *xmlDoc;
 	Text::EncodingFactory encFact;

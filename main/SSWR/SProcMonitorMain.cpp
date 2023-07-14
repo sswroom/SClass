@@ -90,13 +90,13 @@ void LoadProgList()
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	Text::PString sarr[2];
-	IO::FileStream *fs;
+	NotNullPtr<IO::FileStream> fs;
 	Text::UTF8Reader *reader;
 	Text::StringBuilderUTF8 sb;
 
 	IO::Path::GetProcessFileName(sbuff);
 	sptr = IO::Path::ReplaceExt(sbuff, UTF8STRC("prg"));
-	NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyAll, IO::FileStream::BufferType::Normal));
+	NEW_CLASSNN(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyAll, IO::FileStream::BufferType::Normal));
 	if (!fs->IsError())
 	{
 		NEW_CLASS(reader, Text::UTF8Reader(fs));
@@ -104,7 +104,7 @@ void LoadProgList()
 		while (true)
 		{
 			sb.ClearStr();
-			if (!reader->ReadLine(&sb, 4096))
+			if (!reader->ReadLine(sb, 4096))
 				break;
 			if (Text::StrSplitP(sarr, 2, sb, ',') == 2)
 			{
@@ -120,7 +120,7 @@ void LoadProgList()
 		}
 		DEL_CLASS(reader);
 	}
-	DEL_CLASS(fs);
+	fs.Delete();
 }
 
 void __stdcall OnTimerTick(void *userObj)

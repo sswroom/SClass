@@ -4,10 +4,10 @@
 
 void __stdcall Net::TCPServerController::ConnHdlr(Socket *s, void *userObj)
 {
-	Net::TCPClient *cli;
+	NotNullPtr<Net::TCPClient> cli;
 	Net::TCPServerController::ClientData *data;
 	Net::TCPServerController *me = (Net::TCPServerController *)userObj;
-	NEW_CLASS(cli, Net::TCPClient(me->sockf, s));
+	NEW_CLASSNN(cli, Net::TCPClient(me->sockf, s));
 	data = MemAlloc(Net::TCPServerController::ClientData, 1);
 	data->buffSize = 0;
 	data->buff = MemAlloc(UInt8, me->maxBuffSize);
@@ -28,7 +28,7 @@ void __stdcall Net::TCPServerController::EventHdlr(NotNullPtr<Net::TCPClient> cl
 		me->hdlr->EndConn(cli, data->cliObj);
 		MemFree(data->buff);
 		MemFree(data);
-		DEL_CLASS(cli);
+		cli.Delete();
 	}
 }
 

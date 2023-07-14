@@ -80,7 +80,7 @@ Media::DrawImage *Media::GTKDrawEngine::LoadImage(Text::CString fileName)
 	return dimg;
 }
 
-Media::DrawImage *Media::GTKDrawEngine::LoadImageStream(IO::SeekableStream *stm)
+Media::DrawImage *Media::GTKDrawEngine::LoadImageStream(NotNullPtr<IO::SeekableStream> stm)
 {
 	return 0;
 }

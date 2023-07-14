@@ -61,41 +61,33 @@ UInt32 __stdcall IO::CortexControl::RecvThread(void *userObj)
 
 IO::CortexControl::CortexControl(UOSInt portNum, IO::Writer *errWriter) : protoHdlr(this)
 {
-	this->stm = 0;
 	this->recvRunning = false;
 	this->recvToStop = false;
 	this->errWriter = errWriter;
-
-	NEW_CLASS(this->stm, IO::SerialPort(portNum, 115200, IO::SerialPort::PARITY_NONE, false));
-	if (((IO::SerialPort*)this->stm)->IsError())
+	NEW_CLASSNN(this->stm, IO::SerialPort(portNum, 115200, IO::SerialPort::PARITY_NONE, false));
+	if (!this->stm->IsError())
 	{
-		DEL_CLASS(this->stm);
-		this->stm = 0;
-		return;
+		Sync::ThreadUtil::Create(RecvThread, this);
 	}
-	Sync::ThreadUtil::Create(RecvThread, this);
 }
 
 IO::CortexControl::~CortexControl()
 {
 	this->recvToStop = true;
-	if (this->stm)
-	{
-		this->stm->Close();
-	}
+	this->stm->Close();
 	while (this->recvRunning)
 	{
 		Sync::SimpleThread::Sleep(10);
 	}
-	SDEL_CLASS(this->stm);
+	this->stm.Delete();
 }
 
 Bool IO::CortexControl::IsError()
 {
-	return stm == 0;
+	return this->stm->IsError();
 }
 
-void IO::CortexControl::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize)
+void IO::CortexControl::DataParsed(NotNullPtr<IO::Stream> stm, void *stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize)
 {
 	if (cmdType == (this->sendType | 0x80))
 	{
@@ -210,7 +202,7 @@ void IO::CortexControl::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType,
 	}
 }
 
-void IO::CortexControl::DataSkipped(IO::Stream *stm, void *stmObj, const UInt8 *buff, UOSInt buffSize)
+void IO::CortexControl::DataSkipped(NotNullPtr<IO::Stream> stm, void *stmObj, const UInt8 *buff, UOSInt buffSize)
 {
 }
 

@@ -219,10 +219,12 @@ DB::DBQueue::~DBQueue()
 			c = sqlList[i]->GetItem(j);
 			if (c->GetCmdType() == CmdType::SQLCmd)
 			{
+				NotNullPtr<IO::FileStream> nnfs;
 				if (fs == 0)
 				{
-					NEW_CLASS(fs, IO::FileStream(CSTR("FailSQL.txt"), IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-					NEW_CLASS(writer, Text::UTF8Writer(fs));
+					NEW_CLASSNN(nnfs, IO::FileStream(CSTR("FailSQL.txt"), IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+					fs = nnfs.Ptr();
+					NEW_CLASS(writer, Text::UTF8Writer(nnfs));
 				}
 				NotNullPtr<Text::String> sql = ((DB::DBQueue::SQLCmd*)c)->GetSQL();
 				writer->WriteStrC(sql->v, sql->leng);
@@ -241,10 +243,12 @@ DB::DBQueue::~DBQueue()
 				c = carr[k];
 				if (c->GetCmdType() == CmdType::SQLCmd)
 				{
+					NotNullPtr<IO::FileStream> nnfs;
 					if (fs == 0)
 					{
-						NEW_CLASS(fs, IO::FileStream(CSTR("FailSQL.txt"), IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-						NEW_CLASS(writer, Text::UTF8Writer(fs));
+						NEW_CLASSNN(nnfs, IO::FileStream(CSTR("FailSQL.txt"), IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+						fs = nnfs.Ptr();
+						NEW_CLASS(writer, Text::UTF8Writer(nnfs));
 					}
 					NotNullPtr<Text::String> sql = ((DB::DBQueue::SQLCmd*)c)->GetSQL();
 					writer->WriteStrC(sql->v, sql->leng);
@@ -563,7 +567,7 @@ void DB::DBHandler::WriteError(const UTF8Char *errMsg, NotNullPtr<Text::String> 
 	Sync::MutexUsage mutUsage(&this->mut);
 	{
 		IO::FileStream fs(CSTR("FailSQL.txt"), IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-		Text::UTF8Writer writer(&fs);
+		Text::UTF8Writer writer(fs);
 		writer.WriteStrC(sqlCmd->v, sqlCmd->leng);
 		writer.WriteLineC(UTF8STRC(";"));
 	}

@@ -25,7 +25,7 @@ IO::ConfigFile *IO::JavaProperties::Parse(Text::CString fileName)
 	}
 	else
 	{
-		Text::UTF8Reader reader(&fstm);
+		Text::UTF8Reader reader(fstm);
 		cfg = ParseReader(&reader);
 	}
 	return cfg;

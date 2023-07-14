@@ -63,7 +63,7 @@ void Map::TileMapGenerator::AppendDBFile(IO::Writer *writer, Int32 x, Int32 y, U
 	IO::FileStream sfs(CSTRP(sbuff2, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 	if (!sfs.IsError())
 	{
-		Text::UTF8Reader reader(&sfs);
+		Text::UTF8Reader reader(sfs);
 		sptr = Text::StrConcatC(sbuff2, UTF8STRC("3,"));
 		sptr = Text::StrInt32(sptr, xOfst);
 		sptr = Text::StrConcatC(sptr, UTF8STRC(","));
@@ -167,7 +167,7 @@ Bool Map::TileMapGenerator::GenerateTile(Int64 tileId, UInt32 scale, Map::MapSch
 
 	IO::MemoryStream mstm(1048576);
 	{
-		Text::UTF8Writer writer(&mstm);
+		Text::UTF8Writer writer(mstm);
 		writer.WriteSignature();
 
 		AppendDBFile(&writer, x, y, scale, 0, 0);
@@ -212,7 +212,7 @@ Bool Map::TileMapGenerator::GenerateTile(Int64 tileId, UInt32 scale, Map::MapSch
 
 	{
 		IO::FileStream dfs(CSTRP(sbuff2, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-		dimg->SavePng(&dfs);
+		dimg->SavePng(dfs);
 		geng->DeleteImage(dimg);
 	}
 	return true;

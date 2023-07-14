@@ -12,16 +12,16 @@ IO::ProtoHdlr::ProtoLBSGateHandler::~ProtoLBSGateHandler()
 {
 }
 
-void *IO::ProtoHdlr::ProtoLBSGateHandler::CreateStreamData(IO::Stream *stm)
+void *IO::ProtoHdlr::ProtoLBSGateHandler::CreateStreamData(NotNullPtr<IO::Stream> stm)
 {
 	return 0;
 }
 
-void IO::ProtoHdlr::ProtoLBSGateHandler::DeleteStreamData(IO::Stream *stm, void *stmData)
+void IO::ProtoHdlr::ProtoLBSGateHandler::DeleteStreamData(NotNullPtr<IO::Stream> stm, void *stmData)
 {
 }
 
-UOSInt IO::ProtoHdlr::ProtoLBSGateHandler::ParseProtocol(IO::Stream *stm, void *stmObj, void *stmData, const UInt8 *buff, UOSInt buffSize)
+UOSInt IO::ProtoHdlr::ProtoLBSGateHandler::ParseProtocol(NotNullPtr<IO::Stream> stm, void *stmObj, void *stmData, const UInt8 *buff, UOSInt buffSize)
 {
 	Bool found;
 	UInt32 crcVal;

@@ -111,7 +111,7 @@ private:
 	{
 		UInt8 buff[4096];
 		stat->reqCnt++;
-		Net::HTTPClient *cli = Net::HTTPClient::CreateClient(stat->me->sockf, stat->me->ssl, url->ToCString(), true, url->StartsWithICase(UTF8STRC("HTTPS://")));
+		NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(stat->me->sockf, stat->me->ssl, url->ToCString(), true, url->StartsWithICase(UTF8STRC("HTTPS://")));
 		if (cli->Connect(url->ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, false))
 		{
 			cli->AddHeaderC(CSTR("Accept"), CSTR("*/*"));
@@ -184,7 +184,7 @@ private:
 			}
 			DEL_CLASS(mstm);
 		}
-		DEL_CLASS(cli);
+		cli.Delete();
 	}
 
 	static UInt32 __stdcall ProcThread(void *userObj)

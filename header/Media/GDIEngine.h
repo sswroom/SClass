@@ -31,7 +31,7 @@ namespace Media
 		GDIImage *CreateImage24(Math::Size2D<UOSInt> size);
 		DrawImage *CreateImageScn(void *hdc, OSInt left, OSInt top, OSInt right, OSInt bottom);
 		virtual DrawImage *LoadImage(Text::CString fileName);
-		virtual DrawImage *LoadImageStream(IO::SeekableStream *stm);
+		virtual DrawImage *LoadImageStream(NotNullPtr<IO::SeekableStream> stm);
 		virtual DrawImage *ConvImage(Media::Image *img);
 		virtual DrawImage *CloneImage(DrawImage *img);
 		virtual Bool DeleteImage(DrawImage *img);

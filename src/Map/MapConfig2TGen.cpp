@@ -4305,7 +4305,7 @@ Map::MapConfig2TGen::MapConfig2TGen(Text::CString fileName, Media::DrawEngine *e
 	}
 	else
 	{
-		IO::StreamReader rdr(&fstm);
+		IO::StreamReader rdr(fstm);
 //		Media::Resizer::LanczosResizerH8_8 resizer(3, 3, Media::AT_NO_ALPHA);
 		if (forceBase)
 		{

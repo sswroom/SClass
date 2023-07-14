@@ -29,7 +29,7 @@ namespace Net
 				TimedOut
 			};
 		private:
-			Net::TCPClient *cli;
+			NotNullPtr<Net::TCPClient> cli;
 			Text::UTF8Writer *writer;
 			Bool threadToStop;
 			Bool threadRunning;

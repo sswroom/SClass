@@ -39,7 +39,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			Int32 httpStatus;
 			Net::SocketFactory *sockf;
 			Net::SSLEngine *ssl;
-			Net::HTTPClient *cli;
+			NotNullPtr<Net::HTTPClient> cli;
 			NEW_CLASS(sockf, Net::OSSocketFactory(true));
 			ssl = Net::SSLEngineFactory::Create(sockf, true);
 			cli = Net::HTTPClient::CreateClient(sockf, ssl, CSTR("Test/1.0"), false, url.StartsWith(UTF8STRC("https://")));
@@ -111,7 +111,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 					console->WriteLineC(sb.ToString(), sb.GetLength());
 				}
 			}
-			DEL_CLASS(cli);	
+			cli.Delete();
 			SDEL_CLASS(ssl);
 			DEL_CLASS(sockf);
 		}

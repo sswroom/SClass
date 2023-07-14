@@ -54,10 +54,11 @@ UInt32 __stdcall Net::Email::POP3Conn::RecvThread(void *userObj)
 					me->statusChg = true;
 					me->evt.Set();
 				}
-				if (me->msgData)
+				NotNullPtr<Text::StringBuilderUTF8> sb;
+				if (sb.Set(me->msgData))
 				{
 					me->msgData->AppendP(sbuff, sptr);
-					reader.GetLastLineBreak(me->msgData);					
+					reader.GetLastLineBreak(sb);					
 				}
 			}
 			else
@@ -149,13 +150,16 @@ Net::Email::POP3Conn::POP3Conn(Net::SocketFactory *sockf, Net::SSLEngine *ssl, T
 	if (connType == CT_SSL)
 	{
 		Net::SSLEngine::ErrorType err;
-		this->cli = ssl->ClientConnect(host, port, &err, timeout);
+		if (!this->cli.Set(ssl->ClientConnect(host, port, &err, timeout)))
+		{
+			NEW_CLASSNN(this->cli, Net::TCPClient(sockf, &addr, port, timeout));
+		}
 	}
 	else if (connType == CT_STARTTLS)
 	{
 		UInt8 buff[1024];
 		UOSInt buffSize;
-		NEW_CLASS(this->cli, Net::TCPClient(sockf, &addr, port, timeout));
+		NEW_CLASSNN(this->cli, Net::TCPClient(sockf, &addr, port, timeout));
 		this->cli->SetTimeout(timeout);
 		buffSize = this->cli->Read(buff, 1024);
 		if (this->logWriter)
@@ -182,14 +186,14 @@ Net::Email::POP3Conn::POP3Conn(Net::SocketFactory *sockf, Net::SSLEngine *ssl, T
 				}
 				Socket *s = this->cli->RemoveSocket();
 				Net::SSLEngine::ErrorType err;
-				Net::TCPClient *cli = ssl->ClientInit(s, host, &err);
-				if (cli)
+				NotNullPtr<Net::TCPClient> cli;
+				if (cli.Set(ssl->ClientInit(s, host, &err)))
 				{
 					if (this->logWriter)
 					{
 						this->logWriter->WriteLineC(UTF8STRC("SSL Handshake success"));
 					}
-					DEL_CLASS(this->cli);
+					this->cli.Delete();
 					this->cli = cli;
 				}
 				else
@@ -212,7 +216,7 @@ Net::Email::POP3Conn::POP3Conn(Net::SocketFactory *sockf, Net::SSLEngine *ssl, T
 	}
 	else
 	{
-		NEW_CLASS(this->cli, Net::TCPClient(sockf, &addr, port, timeout));
+		NEW_CLASSNN(this->cli, Net::TCPClient(sockf, &addr, port, timeout));
 	}
 	this->cli->SetNoDelay(false);
 	NEW_CLASS(this->writer, Text::UTF8Writer(this->cli));
@@ -249,17 +253,13 @@ Net::Email::POP3Conn::POP3Conn(Net::SocketFactory *sockf, Net::SSLEngine *ssl, T
 Net::Email::POP3Conn::~POP3Conn()
 {
 	this->threadToStop = true;
-	if (cli)
-	{
-
-	}
 	this->cli->Close();
 	while (this->threadRunning)
 	{
 		Sync::SimpleThread::Sleep(10);
 	}
 	DEL_CLASS(this->writer);
-	DEL_CLASS(this->cli);
+	this->cli.Delete();
 }
 
 Bool Net::Email::POP3Conn::IsError()

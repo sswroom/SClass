@@ -100,7 +100,7 @@ void SSWR::ProcMonForm::LoadProgList()
 	IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyAll, IO::FileStream::BufferType::Normal);
 	if (!fs.IsError())
 	{
-		Text::UTF8Reader reader(&fs);
+		Text::UTF8Reader reader(fs);
 		
 		while (true)
 		{
@@ -134,7 +134,7 @@ void SSWR::ProcMonForm::SaveProgList()
 	IO::Path::GetProcessFileName(sbuff);
 	sptr = IO::Path::ReplaceExt(sbuff, UTF8STRC("prg"));
 	IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyAll, IO::FileStream::BufferType::NoWriteBuffer);
-	Text::UTF8Writer writer(&fs);
+	Text::UTF8Writer writer(fs);
 	i = 0;
 	j = this->progList->GetCount();
 	while (i < j)

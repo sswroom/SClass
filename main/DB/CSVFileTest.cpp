@@ -13,7 +13,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	{
 		IO::FileStream stm(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 		{
-			DB::CSVFile csv(&stm, 65001);
+			DB::CSVFile csv(stm, 65001);
 
 			DB::DBReader *rdr = csv.QueryTableData(CSTR_NULL, CSTR_NULL, 0, 0, 0, CSTR_NULL, 0);
 			Int32 rowCnt = 0;

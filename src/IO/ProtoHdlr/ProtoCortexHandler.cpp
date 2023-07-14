@@ -11,16 +11,16 @@ IO::ProtoHdlr::ProtoCortexHandler::~ProtoCortexHandler()
 {
 }
 
-void *IO::ProtoHdlr::ProtoCortexHandler::CreateStreamData(IO::Stream *stm)
+void *IO::ProtoHdlr::ProtoCortexHandler::CreateStreamData(NotNullPtr<IO::Stream> stm)
 {
 	return 0;
 }
 
-void IO::ProtoHdlr::ProtoCortexHandler::DeleteStreamData(IO::Stream *stm, void *stmData)
+void IO::ProtoHdlr::ProtoCortexHandler::DeleteStreamData(NotNullPtr<IO::Stream> stm, void *stmData)
 {
 }
 
-UOSInt IO::ProtoHdlr::ProtoCortexHandler::ParseProtocol(IO::Stream *stm, void *stmObj, void *stmData, const UInt8 *buff, UOSInt buffSize)
+UOSInt IO::ProtoHdlr::ProtoCortexHandler::ParseProtocol(NotNullPtr<IO::Stream> stm, void *stmObj, void *stmData, const UInt8 *buff, UOSInt buffSize)
 {
 	UOSInt i;
 	UOSInt j;

@@ -103,7 +103,7 @@ UTF8Char *Map::GoogleMap::GoogleSearcher::SearchName(UTF8Char *buff, UOSInt buff
 		}
 	}
 
-	Net::HTTPClient *cli;
+	NotNullPtr<Net::HTTPClient> cli;
 	urlStart = sptr = Text::StrConcatC(url, UTF8STRC("http://maps.google.com"));
 	sptr = Text::StrConcatC(sptr, UTF8STRC("/maps/geo?q="));
 	sptr = Text::StrDouble(sptr, pos.GetLat());
@@ -207,7 +207,7 @@ UTF8Char *Map::GoogleMap::GoogleSearcher::SearchName(UTF8Char *buff, UOSInt buff
 		errWriter->WriteLineC(sb.ToString(), sb.GetLength());
 	}
 	this->lastSrchDate.SetCurrTimeUTC();
-	DEL_CLASS(cli);
+	cli.Delete();
 	mutUsage.EndUse();
 	return buff;
 }

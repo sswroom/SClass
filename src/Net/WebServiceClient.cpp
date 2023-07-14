@@ -75,7 +75,7 @@ Bool Net::WebServiceClient::Request(RequestType rt)
 	if (rt == RT_SOAP11)
 	{
 		Bool succ;
-		Net::HTTPClient *cli;
+		NotNullPtr<Net::HTTPClient> cli;
 		IO::MemoryStream *mstm;
 		Text::UTF8Writer *writer;
 		NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("Net.WebServiceClient.Request.S11")));
@@ -228,7 +228,7 @@ Bool Net::WebServiceClient::Request(RequestType rt)
 	else if (rt == RT_SOAP12)
 	{
 		Bool succ;
-		Net::HTTPClient *cli;
+		NotNullPtr<Net::HTTPClient> cli;
 		IO::MemoryStream *mstm;
 		Text::UTF8Writer *writer;
 		NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("Net.WebServiceClient.Request.S11")));

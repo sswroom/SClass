@@ -23,7 +23,7 @@ Map::RevGeoCfg::RevGeoCfg(Text::CString fileName, Map::MapSearchManager *mapSrch
 	IO::FileStream fs(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 	if (!fs.IsError())
 	{
-		IO::StreamReader reader(&fs);
+		IO::StreamReader reader(fs);
 		while ((sptr = reader.ReadLine(sbuff, 511)) != 0)
 		{
 			if (Text::StrSplitP(sptrs, 2, {sbuff, (UOSInt)(sptr - sbuff)}, ',') == 2)

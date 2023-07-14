@@ -149,7 +149,7 @@ UInt32 Map::GoogleMap::GoogleStaticMap::Scale2Level(UInt32 scale)
 
 UOSInt Map::GoogleMap::GoogleStaticMap::GetMap(UInt8 *buff, Double lat, Double lon, UInt32 scale, Math::Size2D<UOSInt> imgSize, Text::CString lang, Int32 format, Double marker_lat, Double marker_lon)
 {
-	Net::HTTPClient *cli;
+	NotNullPtr<Net::HTTPClient> cli;
 	UTF8Char url[512];
 	UTF8Char *sptr;
 	UTF8Char *urlStart;
@@ -223,7 +223,7 @@ UOSInt Map::GoogleMap::GoogleStaticMap::GetMap(UInt8 *buff, Double lat, Double l
 			buff = &buff[thisSize];
 		}
 	}
-	DEL_CLASS(cli);
+	cli.Delete();
 	
 	return retSize;
 } //lang = en-us, zh-cn, zh-tw, format = 0:png, 1:gif, 2:jpg

@@ -13,16 +13,16 @@ IO::ProtoHdlr::ProtoSyncHandler::~ProtoSyncHandler()
 {
 }
 
-void *IO::ProtoHdlr::ProtoSyncHandler::CreateStreamData(IO::Stream *stm)
+void *IO::ProtoHdlr::ProtoSyncHandler::CreateStreamData(NotNullPtr<IO::Stream> stm)
 {
 	return 0;
 }
 
-void IO::ProtoHdlr::ProtoSyncHandler::DeleteStreamData(IO::Stream *stm, void *stmData)
+void IO::ProtoHdlr::ProtoSyncHandler::DeleteStreamData(NotNullPtr<IO::Stream> stm, void *stmData)
 {
 }
 
-UOSInt IO::ProtoHdlr::ProtoSyncHandler::ParseProtocol(IO::Stream *stm, void *stmObj, void *stmData, const UInt8 *buff, UOSInt buffSize)
+UOSInt IO::ProtoHdlr::ProtoSyncHandler::ParseProtocol(NotNullPtr<IO::Stream> stm, void *stmObj, void *stmData, const UInt8 *buff, UOSInt buffSize)
 {
 	Bool found;
 	UInt32 crcVal;

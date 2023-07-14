@@ -49,16 +49,16 @@ IO::ProtoHdlr::ProtoMapSvrHandler::~ProtoMapSvrHandler()
 {
 }
 
-void *IO::ProtoHdlr::ProtoMapSvrHandler::CreateStreamData(IO::Stream *stm)
+void *IO::ProtoHdlr::ProtoMapSvrHandler::CreateStreamData(NotNullPtr<IO::Stream> stm)
 {
 	return 0;
 }
 
-void IO::ProtoHdlr::ProtoMapSvrHandler::DeleteStreamData(IO::Stream *stm, void *stmData)
+void IO::ProtoHdlr::ProtoMapSvrHandler::DeleteStreamData(NotNullPtr<IO::Stream> stm, void *stmData)
 {
 }
 
-UOSInt IO::ProtoHdlr::ProtoMapSvrHandler::ParseProtocol(IO::Stream *stm, void *stmObj, void *stmData, const UInt8 *buff, UOSInt buffSize)
+UOSInt IO::ProtoHdlr::ProtoMapSvrHandler::ParseProtocol(NotNullPtr<IO::Stream> stm, void *stmObj, void *stmData, const UInt8 *buff, UOSInt buffSize)
 {
 	Bool found;
 	UInt32 crcVal;

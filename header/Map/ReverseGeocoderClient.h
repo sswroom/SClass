@@ -19,7 +19,7 @@ namespace Map
 		IO::ProtoHdlr::ProtoRevGeoHandler protocol;
 		Net::SocketFactory *sockf;
 		IO::Writer *errWriter;
-		Text::String *host;
+		NotNullPtr<Text::String> host;
 		UInt16 port;
 		Sync::Mutex cliMut;
 		Net::TCPClient *cli;
@@ -38,8 +38,8 @@ namespace Map
 		ReverseGeocoderClient(Net::SocketFactory *sockf, Text::CString host, UInt16 port, Map::IReverseGeocoder *revGeo, IO::Writer *errWriter);
 		virtual ~ReverseGeocoderClient();
 
-		virtual void DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize);
-		virtual void DataSkipped(IO::Stream *stm, void *stmObj, const UInt8 *buff, UOSInt buffSize);
+		virtual void DataParsed(NotNullPtr<IO::Stream> stm, void *stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize);
+		virtual void DataSkipped(NotNullPtr<IO::Stream> stm, void *stmObj, const UInt8 *buff, UOSInt buffSize);
 	};
 }
 #endif

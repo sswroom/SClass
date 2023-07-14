@@ -20,9 +20,9 @@ namespace Net
 		class TCPServerHandler
 		{
 		public:
-			virtual void *NewConn(Net::TCPClient *cli) = 0;
-			virtual void EndConn(Net::TCPClient *cli, void *cliObj) = 0;
-			virtual UOSInt ReceivedData(Net::TCPClient *cli, void *cliObj, UInt8 *buff, UOSInt buffSize) = 0; //Return buff size unprocessed
+			virtual void *NewConn(NotNullPtr<Net::TCPClient> cli) = 0;
+			virtual void EndConn(NotNullPtr<Net::TCPClient> cli, void *cliObj) = 0;
+			virtual UOSInt ReceivedData(NotNullPtr<Net::TCPClient> cli, void *cliObj, UInt8 *buff, UOSInt buffSize) = 0; //Return buff size unprocessed
 		};
 
 	private:

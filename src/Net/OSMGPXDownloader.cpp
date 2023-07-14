@@ -62,7 +62,7 @@ void Net::OSMGPXDownloader::ItemAdded(Net::RSSItem *item)
 	else
 	{
 		Text::StringBuilderUTF8 sb;
-		Net::HTTPClient *cli;
+		NotNullPtr<Net::HTTPClient> cli;
 		UInt8 buff[2048];
 		UOSInt readSize;
 		UInt64 totalSize;

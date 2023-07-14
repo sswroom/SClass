@@ -79,7 +79,7 @@ UInt32 __stdcall WatchdogThread(void *userObj)
 
 UInt32 __stdcall HTTPThread(void *userObj)
 {
-	Net::HTTPClient *cli;
+	NotNullPtr<Net::HTTPClient> cli;
 	{
 		Text::StringBuilderUTF8 sb;
 		httpRunning = true;
@@ -107,7 +107,7 @@ UInt32 __stdcall HTTPThread(void *userObj)
 				sb.AppendI32(respCode);
 				consoleWriter->WriteLineC(sb.ToString(), sb.GetLength());
 			}
-			DEL_CLASS(cli);
+			cli.Delete();
 			httpEvt->Wait(1000);
 		}
 	}

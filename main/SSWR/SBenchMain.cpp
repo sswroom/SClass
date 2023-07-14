@@ -2195,7 +2195,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			else
 			{
 				Net::SocketFactory *sockf;
-				Net::HTTPClient *cli;
+				NotNullPtr<Net::HTTPClient> cli;
 				UInt64 readSize;
 				UInt8 *txtBuff = MemAlloc(UInt8, (UOSInt)fileSize);
 				fs->SeekFromBeginning(0);

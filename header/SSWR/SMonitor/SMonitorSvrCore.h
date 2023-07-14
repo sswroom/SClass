@@ -73,14 +73,14 @@ namespace SSWR
 			static UInt32 __stdcall CheckThread(void *userObj);
 			static void __stdcall OnDataUDPPacket(const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData);
 
-			virtual void DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize);
-			virtual void DataSkipped(IO::Stream *stm, void *stmObj, const UInt8 *buff, UOSInt buffSize);
+			virtual void DataParsed(NotNullPtr<IO::Stream> stm, void *stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize);
+			virtual void DataSkipped(NotNullPtr<IO::Stream> stm, void *stmObj, const UInt8 *buff, UOSInt buffSize);
 
-			void TCPSendLoginReply(IO::Stream *stm, Int64 cliTime, Int64 svrTime, UInt8 status);
-			void TCPSendKAReply(IO::Stream *stm, Int64 cliTime, Int64 svrTime);
-			void TCPSendCapturePhoto(IO::Stream *stm);
-			void TCPSendPhotoEnd(IO::Stream *stm, Int64 photoTime);
-			void TCPSendSetOutput(IO::Stream *stm, UInt32 outputNum, Bool toHigh);
+			void TCPSendLoginReply(NotNullPtr<IO::Stream> stm, Int64 cliTime, Int64 svrTime, UInt8 status);
+			void TCPSendKAReply(NotNullPtr<IO::Stream> stm, Int64 cliTime, Int64 svrTime);
+			void TCPSendCapturePhoto(NotNullPtr<IO::Stream> stm);
+			void TCPSendPhotoEnd(NotNullPtr<IO::Stream> stm, Int64 photoTime);
+			void TCPSendSetOutput(NotNullPtr<IO::Stream> stm, UInt32 outputNum, Bool toHigh);
 
 			void UDPSendReadingRecv(const Net::SocketUtil::AddressInfo *addr, UInt16 port, Int64 recTime);
 			void UDPSendCapturePhoto(const Net::SocketUtil::AddressInfo *addr, UInt16 port);

@@ -18,8 +18,8 @@ typedef struct
 void __stdcall SSWR::DataSync::SyncServer::OnClientConn(Socket *s, void *userObj)
 {
 	SSWR::DataSync::SyncServer *me = (SSWR::DataSync::SyncServer *)userObj;
-	Net::TCPClient *cli;
-	NEW_CLASS(cli, Net::TCPClient(me->sockf, s));
+	NotNullPtr<Net::TCPClient> cli;
+	NEW_CLASSNN(cli, Net::TCPClient(me->sockf, s));
 	ClientData *data = MemAlloc(ClientData, 1);
 	data->stmData = me->protoHdlr.CreateStreamData(cli);
 	data->buffSize = 0;
@@ -50,7 +50,7 @@ void __stdcall SSWR::DataSync::SyncServer::OnClientEvent(NotNullPtr<Net::TCPClie
 			}
 		}
 		MemFree(data);
-		DEL_CLASS(cli);
+		cli.Delete();
 	}
 }
 
@@ -193,7 +193,7 @@ void SSWR::DataSync::SyncServer::SendUserData(const UInt8 *dataBuff, UOSInt data
 	}
 }
 
-void SSWR::DataSync::SyncServer::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize)
+void SSWR::DataSync::SyncServer::DataParsed(NotNullPtr<IO::Stream> stm, void *stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize)
 {
 	ClientData *data = (ClientData*)stmObj;
 	UInt8 replyBuff[20];
@@ -212,7 +212,7 @@ void SSWR::DataSync::SyncServer::DataParsed(IO::Stream *stm, void *stmObj, Int32
 				if (svr)
 				{
 					Sync::MutexUsage mutUsage(&svr->mut);
-					svr->cli = (Net::TCPClient*)stm;
+					svr->cli = (Net::TCPClient*)stm.Ptr();
 					mutUsage.EndUse();
 				}
 				else
@@ -223,7 +223,7 @@ void SSWR::DataSync::SyncServer::DataParsed(IO::Stream *stm, void *stmObj, Int32
 					sb.AppendC((const UTF8Char*)&cmd[5], cmd[4]);
 					svr->serverName = Text::StrCopyNew(sb.ToString()).Ptr();
 					svr->isLocal = false;
-					svr->cli = (Net::TCPClient*)stm;
+					svr->cli = (Net::TCPClient*)stm.Ptr();
 					this->svrMut.LockWrite();
 					this->svrMap.Put(serverId, svr);
 					this->svrMut.UnlockWrite();
@@ -251,6 +251,6 @@ void SSWR::DataSync::SyncServer::DataParsed(IO::Stream *stm, void *stmObj, Int32
 	}
 }
 
-void SSWR::DataSync::SyncServer::DataSkipped(IO::Stream *stm, void *stmObj, const UInt8 *buff, UOSInt buffSize)
+void SSWR::DataSync::SyncServer::DataSkipped(NotNullPtr<IO::Stream> stm, void *stmObj, const UInt8 *buff, UOSInt buffSize)
 {
 }

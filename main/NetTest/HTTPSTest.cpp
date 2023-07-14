@@ -12,7 +12,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	UOSInt readSize;
 	Net::SocketFactory *sockf;
 	Net::SSLEngine *ssl;
-	Net::HTTPClient *cli;
+	NotNullPtr<Net::HTTPClient> cli;
 	NEW_CLASS(sockf, Net::OSSocketFactory(false));
 	ssl = Net::SSLEngineFactory::Create(sockf, true);
 	cli = Net::HTTPClient::CreateClient(sockf, ssl, CSTR_NULL, true, url.StartsWith(UTF8STRC("https://")));
@@ -24,7 +24,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	}
 	printf("Status code = %d\r\n", cli->GetRespStatus());
 
-	DEL_CLASS(cli);
+	cli.Delete();
 	SDEL_CLASS(ssl);
 	DEL_CLASS(sockf);
 	return 0;

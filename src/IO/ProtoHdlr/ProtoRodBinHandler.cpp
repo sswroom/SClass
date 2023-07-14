@@ -11,16 +11,16 @@ IO::ProtoHdlr::ProtoRodBinHandler::~ProtoRodBinHandler()
 {
 }
 
-void *IO::ProtoHdlr::ProtoRodBinHandler::CreateStreamData(IO::Stream *stm)
+void *IO::ProtoHdlr::ProtoRodBinHandler::CreateStreamData(NotNullPtr<IO::Stream> stm)
 {
 	return 0;
 }
 
-void IO::ProtoHdlr::ProtoRodBinHandler::DeleteStreamData(IO::Stream *stm, void *stmData)
+void IO::ProtoHdlr::ProtoRodBinHandler::DeleteStreamData(NotNullPtr<IO::Stream> stm, void *stmData)
 {
 }
 
-UOSInt IO::ProtoHdlr::ProtoRodBinHandler::ParseProtocol(IO::Stream *stm, void *stmObj, void *stmData, UInt8 *buff, UOSInt buffSize)
+UOSInt IO::ProtoHdlr::ProtoRodBinHandler::ParseProtocol(NotNullPtr<IO::Stream> stm, void *stmObj, void *stmData, UInt8 *buff, UOSInt buffSize)
 {
 	Bool found;
 	while (buffSize >= 10)

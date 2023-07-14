@@ -18,7 +18,7 @@ void GenerateAngle(Media::DrawEngine *deng, UOSInt angleDegree)
 	dimg->DelBrush(b);
 	dimg->DelFont(f);
 	IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-	dimg->SavePng(&fs);
+	dimg->SavePng(fs);
 	deng->DeleteImage(dimg);
 }
 

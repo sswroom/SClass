@@ -20,12 +20,13 @@ void __stdcall SSWR::AVIRead::AVIRADAMForm::OnStreamClicked(void *userObj)
 			return;
 		}
 		IO::StreamType st;
-		me->stm = me->core->OpenStream(&st, me, 0, false);
-		if (me->stm)
+		NotNullPtr<IO::Stream> stm;
+		if (stm.Set(me->core->OpenStream(&st, me, 0, false)))
 		{
+			me->stm = stm.Ptr();
 			UTF8Char sbuff[64];
 			UTF8Char *sptr;
-			NEW_CLASS(me->channel, IO::AdvantechASCIIChannel(me->stm, true));
+			NEW_CLASS(me->channel, IO::AdvantechASCIIChannel(stm, true));
 			me->channelModule = 0;
 			me->txtStream->SetText(IO::StreamTypeGetName(st));
 			me->btnStream->SetText(CSTR("&Close"));

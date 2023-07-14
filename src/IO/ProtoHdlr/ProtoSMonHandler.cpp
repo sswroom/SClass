@@ -17,16 +17,16 @@ IO::ProtoHdlr::ProtoSMonHandler::~ProtoSMonHandler()
 	DEL_CLASS(this->crc);
 }
 
-void *IO::ProtoHdlr::ProtoSMonHandler::CreateStreamData(IO::Stream *stm)
+void *IO::ProtoHdlr::ProtoSMonHandler::CreateStreamData(NotNullPtr<IO::Stream> stm)
 {
 	return 0;
 }
 
-void IO::ProtoHdlr::ProtoSMonHandler::DeleteStreamData(IO::Stream *stm, void *stmData)
+void IO::ProtoHdlr::ProtoSMonHandler::DeleteStreamData(NotNullPtr<IO::Stream> stm, void *stmData)
 {
 }
 
-UOSInt IO::ProtoHdlr::ProtoSMonHandler::ParseProtocol(IO::Stream *stm, void *stmObj, void *stmData, const UInt8 *buff, UOSInt buffSize)
+UOSInt IO::ProtoHdlr::ProtoSMonHandler::ParseProtocol(NotNullPtr<IO::Stream> stm, void *stmObj, void *stmData, const UInt8 *buff, UOSInt buffSize)
 {
 	Bool found;
 	UInt8 crcVal[4];

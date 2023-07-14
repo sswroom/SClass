@@ -17,16 +17,16 @@ IO::ProtoHdlr::ProtoRevGeoHandler::~ProtoRevGeoHandler()
 	DEL_CLASS(this->crc);
 }
 
-void *IO::ProtoHdlr::ProtoRevGeoHandler::CreateStreamData(IO::Stream *stm)
+void *IO::ProtoHdlr::ProtoRevGeoHandler::CreateStreamData(NotNullPtr<IO::Stream> stm)
 {
 	return 0;
 }
 
-void IO::ProtoHdlr::ProtoRevGeoHandler::DeleteStreamData(IO::Stream *stm, void *stmData)
+void IO::ProtoHdlr::ProtoRevGeoHandler::DeleteStreamData(NotNullPtr<IO::Stream> stm, void *stmData)
 {
 }
 
-UOSInt IO::ProtoHdlr::ProtoRevGeoHandler::ParseProtocol(IO::Stream *stm, void *stmObj, void *stmData, const UInt8 *buff, UOSInt buffSize)
+UOSInt IO::ProtoHdlr::ProtoRevGeoHandler::ParseProtocol(NotNullPtr<IO::Stream> stm, void *stmObj, void *stmData, const UInt8 *buff, UOSInt buffSize)
 {
 	Bool found;
 	UInt8 crcVal[4];

@@ -1,7 +1,7 @@
 #ifndef _SM_IO_CORTEXCONTROL
 #define _SM_IO_CORTEXCONTROL
 #include "IO/IProtocolHandler.h"
-#include "IO/Stream.h"
+#include "IO/SerialPort.h"
 #include "IO/Writer.h"
 #include "IO/ProtoHdlr/ProtoCortexHandler.h"
 #include "Sync/Mutex.h"
@@ -11,7 +11,7 @@ namespace IO
 	class CortexControl : public IO::IProtocolHandler::DataListener
 	{
 	private:
-		IO::Stream *stm;
+		NotNullPtr<IO::SerialPort> stm;
 		IO::ProtoHdlr::ProtoCortexHandler protoHdlr;
 
 		IO::Writer *errWriter;
@@ -32,8 +32,8 @@ namespace IO
 
 		Bool IsError();
 
-		virtual void DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize);
-		virtual void DataSkipped(IO::Stream *stm, void *stmObj, const UInt8 *buff, UOSInt buffSize);
+		virtual void DataParsed(NotNullPtr<IO::Stream> stm, void *stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize);
+		virtual void DataSkipped(NotNullPtr<IO::Stream> stm, void *stmObj, const UInt8 *buff, UOSInt buffSize);
 		
 		Bool GetFWVersion(Int32 *majorVer, Int32 *minorVer);
 		Bool ReadDIO(Int32 *dioValues); //bit 0-9 = IN1-10, bit10-11 = OUT1-2

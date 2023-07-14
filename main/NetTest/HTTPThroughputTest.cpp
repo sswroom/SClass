@@ -46,7 +46,7 @@ struct ThreadStatus
 UInt32 __stdcall ProcessThread(void *userObj)
 {
 	ThreadStatus *status = (ThreadStatus*)userObj;
-	Net::HTTPClient *cli = 0;
+	NotNullPtr<Net::HTTPClient> cli;
 //	UInt8 buff[2048];
 	Text::CString url;
 	Double timeDNS;
@@ -129,18 +129,18 @@ UInt32 __stdcall ProcessThread(void *userObj)
 					}
 					if (cli->IsError())
 					{
-						DEL_CLASS(cli);
+						cli.Delete();
 						cli = Net::HTTPClient::CreateClient(sockf, ssl, CSTR_NULL, true, url.StartsWith(UTF8STRC("https://")));
 					}
 				}
 				else
 				{
-					DEL_CLASS(cli);
+					cli.Delete();
 					cli = Net::HTTPClient::CreateClient(sockf, ssl, CSTR_NULL, true, url.StartsWith(UTF8STRC("https://")));
 					status->failCnt++;
 				}
 			}
-			DEL_CLASS(cli);
+			cli.Delete();
 		}
 		else
 		{
@@ -179,7 +179,7 @@ UInt32 __stdcall ProcessThread(void *userObj)
 				{
 					status->failCnt++;
 				}
-				DEL_CLASS(cli);
+				cli.Delete();
 			}
 		}
 	}

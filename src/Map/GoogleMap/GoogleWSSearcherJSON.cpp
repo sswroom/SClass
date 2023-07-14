@@ -109,7 +109,7 @@ UTF8Char *Map::GoogleMap::GoogleWSSearcherJSON::SearchName(UTF8Char *buff, UOSIn
 		}
 	}
 
-	Net::HTTPClient *cli;
+	NotNullPtr<Net::HTTPClient> cli;
 	urlStart = sptr = Text::StrConcatC(url, UTF8STRC("https://maps.googleapis.com"));
 	sptr = Text::StrConcatC(sptr, UTF8STRC("/maps/api/geocode/json?latlng="));
 	sptr = Text::StrDouble(sptr, pos.GetLat());
@@ -262,7 +262,7 @@ UTF8Char *Map::GoogleMap::GoogleWSSearcherJSON::SearchName(UTF8Char *buff, UOSIn
 	}
 
 	this->lastSrchDate.SetCurrTimeUTC();
-	DEL_CLASS(cli);
+	cli.Delete();
 	return buff;
 }
 

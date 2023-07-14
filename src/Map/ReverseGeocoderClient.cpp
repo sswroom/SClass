@@ -7,6 +7,7 @@
 #include "Sync/MutexUsage.h"
 #include "Text/Encoding.h"
 #include "Text/MyString.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/ThreadUtil.h"
 
 UInt32 __stdcall Map::ReverseGeocoderClient::ClientThread(void *userObj)
@@ -15,30 +16,35 @@ UInt32 __stdcall Map::ReverseGeocoderClient::ClientThread(void *userObj)
 	UInt8 *recvBuff;
 	OSInt buffSize = 0;
 	OSInt readSize;
+	NotNullPtr<Net::TCPClient> cli;
 
 	me->cliRunning = true;
 	recvBuff = MemAlloc(UInt8, 4096);
 	while (!me->cliToStop)
 	{
-		if (me->cli == 0)
+		if (!cli.Set(me->cli))
 		{
 			Sync::MutexUsage mutUsage(&me->cliMut);
-			NEW_CLASS(me->cli, Net::TCPClient(me->sockf, me->host->ToCString(), me->port));
-			if (me->cli->IsConnectError())
+			NEW_CLASSNN(cli, Net::TCPClient(me->sockf, me->host->ToCString(), me->port, 15000));
+			if (cli->IsConnectError())
 			{
-				DEL_CLASS(me->cli);
-				me->cli = 0;
+				cli.Delete();
+				if (!me->cliToStop)
+				{
+					Sync::SimpleThread::Sleep(100);
+				}
 			}
 			else
 			{
 				me->lastKASent.SetCurrTimeUTC();
 				me->lastKARecv.SetCurrTimeUTC();
 				me->errWriter->WriteLineC(UTF8STRC("ReverseGeocoder connected"));
+				me->cli = cli.Ptr();
 			}
 		}
-		if (me->cli)
+		else
 		{
-			readSize = me->cli->Read(&recvBuff[buffSize], 4096 - buffSize);
+			readSize = cli->Read(&recvBuff[buffSize], 4096 - buffSize);
 			if (readSize <= 0)
 			{
 				Sync::MutexUsage mutUsage(&me->cliMut);
@@ -50,7 +56,7 @@ UInt32 __stdcall Map::ReverseGeocoderClient::ClientThread(void *userObj)
 			else
 			{
 				buffSize += readSize;
-				readSize = me->protocol.ParseProtocol(me->cli, me, 0, recvBuff, buffSize);
+				readSize = me->protocol.ParseProtocol(cli, me, 0, recvBuff, buffSize);
 				if (readSize >= 4096 || readSize <= 0)
 				{
 					buffSize = 0;
@@ -61,10 +67,6 @@ UInt32 __stdcall Map::ReverseGeocoderClient::ClientThread(void *userObj)
 					buffSize = readSize;
 				}
 			}
-		}
-		else if (!me->cliToStop)
-		{
-			Sync::SimpleThread::Sleep(100);
 		}
 	}
 	{
@@ -153,7 +155,7 @@ Map::ReverseGeocoderClient::~ReverseGeocoderClient()
 	this->host->Release();
 }
 
-void Map::ReverseGeocoderClient::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize)
+void Map::ReverseGeocoderClient::DataParsed(NotNullPtr<IO::Stream> stm, void *stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize)
 {
 	UInt8 buff[512];
 	UInt8 buff2[512];
@@ -227,6 +229,6 @@ void Map::ReverseGeocoderClient::DataParsed(IO::Stream *stm, void *stmObj, Int32
 	}
 }
 
-void Map::ReverseGeocoderClient::DataSkipped(IO::Stream *stm, void *stmObj, const UInt8 *buff, UOSInt buffSize)
+void Map::ReverseGeocoderClient::DataSkipped(NotNullPtr<IO::Stream> stm, void *stmObj, const UInt8 *buff, UOSInt buffSize)
 {
 }

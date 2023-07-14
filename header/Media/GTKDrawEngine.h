@@ -19,7 +19,7 @@ namespace Media
 		virtual DrawImage *CreateImage32(Math::Size2D<UOSInt> size, Media::AlphaType atype);
 		DrawImage *CreateImageScn(void *cr, Math::Coord2D<OSInt> tl, Math::Coord2D<OSInt> br);
 		virtual DrawImage *LoadImage(Text::CString fileName);
-		virtual DrawImage *LoadImageStream(IO::SeekableStream *stm);
+		virtual DrawImage *LoadImageStream(NotNullPtr<IO::SeekableStream> stm);
 		virtual DrawImage *ConvImage(Media::Image *img);
 		virtual DrawImage *CloneImage(DrawImage *img);
 		virtual Bool DeleteImage(DrawImage *img);

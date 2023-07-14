@@ -67,7 +67,7 @@ UInt32 __stdcall IO::AdvantechASCIIChannel::CmdThread(void *userObj)
 	return 0;
 }
 
-IO::AdvantechASCIIChannel::AdvantechASCIIChannel(IO::Stream *stm, Bool needRelease)
+IO::AdvantechASCIIChannel::AdvantechASCIIChannel(NotNullPtr<IO::Stream> stm, Bool needRelease)
 {
 	this->stm = stm;
 	this->stmRelease = needRelease;
@@ -85,11 +85,11 @@ IO::AdvantechASCIIChannel::~AdvantechASCIIChannel()
 	this->Close();
 	if (this->stmRelease)
 	{
-		DEL_CLASS(this->stm);
+		this->stm.Delete();
 	}
 }
 
-IO::Stream *IO::AdvantechASCIIChannel::GetStream()
+NotNullPtr<IO::Stream> IO::AdvantechASCIIChannel::GetStream() const
 {
 	return this->stm;
 }

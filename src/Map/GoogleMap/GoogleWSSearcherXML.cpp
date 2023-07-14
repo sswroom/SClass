@@ -39,7 +39,7 @@ UTF8Char *Map::GoogleMap::GoogleWSSearcherXML::SearchName(UTF8Char *buff, UOSInt
 		Sync::SimpleThread::Sleep(200 - i);
 	}
 
-	Net::HTTPClient *cli;
+	NotNullPtr<Net::HTTPClient> cli;
 	sptr = Text::StrConcatC(url, UTF8STRC("http://maps.googleapis.com/maps/api/geocode/xml?latlng="));
 	sptr = Text::StrDouble(sptr, lat);
 	sptr = Text::StrConcatC(sptr, UTF8STRC(","));

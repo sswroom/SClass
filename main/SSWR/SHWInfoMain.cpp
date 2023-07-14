@@ -117,7 +117,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	Manage::ExceptionRecorder *exHdlr;
 	IO::ConsoleWriter *console;
 
-	IO::FileStream *fs;
+	NotNullPtr<IO::FileStream> fs;
 	Text::UTF8Writer *writer;
 	IO::SystemInfo sysInfo;
 	UInt64 memSize;
@@ -136,7 +136,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 
 	IO::Path::GetProcessFileName(sbuff);
 	sptr = IO::Path::ReplaceExt(sbuff, UTF8STRC("txt"));
-	NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASSNN(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	NEW_CLASS(writer, Text::UTF8Writer(fs));
 
 	console->WriteLineC(UTF8STRC("Computer Info:"));
@@ -1240,7 +1240,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 //-------------------------------------------------------------------------------
 	DEL_CLASS(writer);
 
-	DEL_CLASS(fs);
+	fs.Delete();
 
 	DEL_CLASS(console);
 	DEL_CLASS(exHdlr);

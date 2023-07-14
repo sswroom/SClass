@@ -67,7 +67,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			UOSInt writeSize;
 			Net::SocketFactory *sockf;
 			Net::SSLEngine *ssl;
-			Net::HTTPClient *cli;
+			NotNullPtr<Net::HTTPClient> cli;
 			NEW_CLASS(sockf, Net::OSSocketFactory(true));
 			ssl = Net::SSLEngineFactory::Create(sockf, true);
 			cli = Net::HTTPClient::CreateConnect(sockf, ssl, {url, urlLen}, Net::WebUtil::RequestMethod::HTTP_POST, false);
