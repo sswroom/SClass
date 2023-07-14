@@ -27,7 +27,7 @@ void __stdcall SSWR::DataSync::SyncServer::OnClientConn(Socket *s, void *userObj
 	me->cliMgr->AddClient(cli, data);
 }
 
-void __stdcall SSWR::DataSync::SyncServer::OnClientEvent(Net::TCPClient *cli, void *userObj, void *cliData, Net::TCPClientMgr::TCPEventType evtType)
+void __stdcall SSWR::DataSync::SyncServer::OnClientEvent(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, Net::TCPClientMgr::TCPEventType evtType)
 {
 	SSWR::DataSync::SyncServer *me = (SSWR::DataSync::SyncServer *)userObj;
 	if (evtType == Net::TCPClientMgr::TCP_EVENT_DISCONNECT)
@@ -54,7 +54,7 @@ void __stdcall SSWR::DataSync::SyncServer::OnClientEvent(Net::TCPClient *cli, vo
 	}
 }
 
-void __stdcall SSWR::DataSync::SyncServer::OnClientData(Net::TCPClient *cli, void *userObj, void *cliData, const UInt8 *buff, UOSInt size)
+void __stdcall SSWR::DataSync::SyncServer::OnClientData(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, const UInt8 *buff, UOSInt size)
 {
 	SSWR::DataSync::SyncServer *me = (SSWR::DataSync::SyncServer *)userObj;
 	ClientData *data = (ClientData*)cliData;
@@ -91,7 +91,7 @@ void __stdcall SSWR::DataSync::SyncServer::OnClientData(Net::TCPClient *cli, voi
 	}
 }
 
-void __stdcall SSWR::DataSync::SyncServer::OnClientTimeout(Net::TCPClient *cli, void *userObj, void *cliData)
+void __stdcall SSWR::DataSync::SyncServer::OnClientTimeout(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData)
 {
 
 }

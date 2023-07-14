@@ -115,8 +115,10 @@ Bool IO::Device::AXCAN::SendCommand(Text::CString cmd, UOSInt timeout)
 UInt32 __stdcall IO::Device::AXCAN::SerialThread(void *userObj)
 {
 	IO::Device::AXCAN *me = (IO::Device::AXCAN*)userObj;
+	NotNullPtr<IO::Stream> stm;
+	if (stm.Set(me->stm)) 
 	{
-		Text::UTF8Reader reader(me->stm);
+		Text::UTF8Reader reader(stm);
 		me->ParseReader(&reader);
 	}
 	me->threadRunning = false;
@@ -139,19 +141,19 @@ IO::Device::AXCAN::~AXCAN()
 Bool IO::Device::AXCAN::OpenSerialPort(UOSInt portNum, UInt32 serialBaudRate, CANBitRate bitRate)
 {
 	this->CloseSerialPort(false);
-	IO::SerialPort *port;
-	NEW_CLASS(port, IO::SerialPort(portNum, serialBaudRate, IO::SerialPort::PARITY_NONE, false));
+	NotNullPtr<IO::SerialPort> port;
+	NEW_CLASSNN(port, IO::SerialPort(portNum, serialBaudRate, IO::SerialPort::PARITY_NONE, false));
 	if (port->IsError())
 	{
-		DEL_CLASS(port);
+		port.Delete();
 		return false;
 	}
 	return this->OpenStream(port, bitRate);
 }
 
-Bool IO::Device::AXCAN::OpenStream(IO::Stream *stm, CANBitRate bitRate)
+Bool IO::Device::AXCAN::OpenStream(NotNullPtr<IO::Stream> stm, CANBitRate bitRate)
 {
-	this->stm = stm;
+	this->stm = stm.Ptr();
 	this->threadRunning = true;
 	if (Sync::ThreadUtil::Create(SerialThread, this) == 0)
 	{
@@ -212,7 +214,7 @@ void IO::Device::AXCAN::ParseReader(IO::Reader *reader)
 {
 	Text::StringBuilderUTF8 sb;
 	UInt8 buff[16];
-	while (reader->ReadLine(&sb, 1024))
+	while (reader->ReadLine(sb, 1024))
 	{
 #if defined(VERBOSE)
 		printf("AXCAN Recv: %s\r\n", sb.ToString());

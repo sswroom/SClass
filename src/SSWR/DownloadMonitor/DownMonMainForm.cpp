@@ -491,7 +491,7 @@ void SSWR::DownloadMonitor::DownMonMainForm::LoadList()
 	{
 		IO::FileStream fs(listFile, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 		Text::UTF8Reader reader(fs);
-		while (reader.ReadLine(&sb, 4096))
+		while (reader.ReadLine(sb, 4096))
 		{
 			if (sb.StartsWith(UTF8STRC("https://")) && Text::StrSplitP(sarr, 2, sb, '\t') == 2)
 			{
@@ -556,7 +556,7 @@ void SSWR::DownloadMonitor::DownMonMainForm::SaveList()
 	if (!listFile.Set(this->core->GetListFile()))
 		return;
 	IO::FileStream fs(listFile, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-	Text::UTF8Writer writer(&fs);
+	Text::UTF8Writer writer(fs);
 	writer.WriteSignature();
 	i = 0;
 	j = this->lvFiles->GetCount();

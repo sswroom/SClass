@@ -17,7 +17,7 @@ namespace DB
 		SQLFileReader(NotNullPtr<IO::Stream> stm, DB::SQLType sqlType, Bool mergeInsert);
 		~SQLFileReader();
 
-		Bool NextSQL(Text::StringBuilderUTF8 *sb);
+		Bool NextSQL(NotNullPtr<Text::StringBuilderUTF8> sb);
 	};
 }
 #endif

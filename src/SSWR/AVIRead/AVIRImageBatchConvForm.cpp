@@ -251,7 +251,7 @@ void SSWR::AVIRead::AVIRImageBatchConvForm::ConvertFile(ConvertSess *sess, Text:
 		}
 		{
 			IO::FileStream fs(destFile, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-			if (!sess->exporter->ExportFile(&fs, destFile, imgList, param))
+			if (!sess->exporter->ExportFile(fs, destFile, imgList, param))
 			{
 				Text::StringBuilderUTF8 sb;
 				sb.AppendC(UTF8STRC("Error in converting to "));

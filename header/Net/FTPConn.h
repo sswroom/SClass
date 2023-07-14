@@ -11,7 +11,7 @@ namespace Net
 	class FTPConn
 	{
 	private:
-		Net::TCPClient *cli;
+		Net::TCPClient cli;
 		IO::StreamWriter *writer;
 		Bool threadToStop;
 		Bool threadRunning;

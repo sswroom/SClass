@@ -376,8 +376,7 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnUploadClicked(void *userObj)
 
 
 	Int32 status = 0;
-	Net::HTTPClient *cli;
-	cli = Net::HTTPClient::CreateClient(me->core->GetSocketFactory(), me->ssl, CSTR_NULL, false, url.StartsWith(UTF8STRC("https://")));
+	NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(me->core->GetSocketFactory(), me->ssl, CSTR_NULL, false, url.StartsWith(UTF8STRC("https://")));
 	cli->Connect(url.ToCString(), Net::WebUtil::RequestMethod::HTTP_POST, 0, 0, false);
 	cli->AddHeaderC(CSTR("Iot-Program"), CSTR("margorpnomis"));
 	if (cli->IsError())
@@ -392,7 +391,7 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnUploadClicked(void *userObj)
 		cli->EndRequest(0, 0);
 		status = cli->GetRespStatus();
 	}
-	DEL_CLASS(cli);
+	cli.Delete();
 	if (status == -1)
 	{
 
@@ -470,7 +469,7 @@ void SSWR::AVIRead::AVIRSNBDongleForm::SaveFile()
 	MemFree(dataBuff);
 }
 
-SSWR::AVIRead::AVIRSNBDongleForm::AVIRSNBDongleForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, IO::Stream *stm) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRSNBDongleForm::AVIRSNBDongleForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, NotNullPtr<IO::Stream> stm) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetText(CSTR("SnB Dongle"));
 	this->SetFont(0, 0, 8.25, false);

@@ -79,14 +79,14 @@ Net::HKOWeather::WeatherSignal Net::HKOWeather::GetSignalSummary(Net::SocketFact
 {
 	UInt8 buff[1024];
 	UInt8 *mbuff;
-	Net::HTTPClient *cli;
+	NotNullPtr<Net::HTTPClient> cli;
 	Net::HKOWeather::WeatherSignal signal;
 	UOSInt i;
 
 	cli = Net::HTTPClient::CreateConnect(sockf, ssl, CSTR("http://rss.weather.gov.hk/rss/WeatherWarningSummary.xml"), Net::WebUtil::RequestMethod::HTTP_GET, false);
 	if (cli->IsError())
 	{
-		DEL_CLASS(cli);
+		cli.Delete();
 		return Net::HKOWeather::WS_UNKNOWN;
 	}
 	IO::MemoryStream mstm;
@@ -94,7 +94,7 @@ Net::HKOWeather::WeatherSignal Net::HKOWeather::GetSignalSummary(Net::SocketFact
 	{
 		mstm.Write(buff, i);
 	}
-	DEL_CLASS(cli);
+	cli.Delete();
 
 	mbuff = mstm.GetBuff(&i);
 	Text::XMLDocument doc;
@@ -140,9 +140,9 @@ Bool Net::HKOWeather::GetCurrentTempRH(Net::SocketFactory *sockf, Net::SSLEngine
 			UOSInt i;
 			Net::RSSItem *item = rss->GetItem(0);
 			IO::MemoryReadingStream mstm(item->description->v, item->description->leng);
-			Text::UTF8Reader reader(&mstm);
+			Text::UTF8Reader reader(mstm);
 			Text::StringBuilderUTF8 sb;
-			while (reader.ReadLine(&sb, 512))
+			while (reader.ReadLine(sb, 512))
 			{
 				sb.Trim();
 				if (sb.StartsWith(UTF8STRC("Air temperature : ")))

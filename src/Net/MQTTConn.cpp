@@ -22,7 +22,7 @@
 #endif
 #endif
 
-void Net::MQTTConn::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize)
+void Net::MQTTConn::DataParsed(NotNullPtr<IO::Stream> stm, void *stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize)
 {
 #if defined(DEBUG_PRINT)
 	printf("On MQTT packet: type = %x, size = %d\r\n", cmdType, (UInt32)cmdSize);
@@ -91,7 +91,7 @@ void Net::MQTTConn::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, Int
 	}
 }
 
-void Net::MQTTConn::DataSkipped(IO::Stream *stm, void *stmObj, const UInt8 *buff, UOSInt buffSize)
+void Net::MQTTConn::DataSkipped(NotNullPtr<IO::Stream> stm, void *stmObj, const UInt8 *buff, UOSInt buffSize)
 {
 }
 
@@ -102,6 +102,11 @@ UInt32 __stdcall Net::MQTTConn::RecvThread(void *userObj)
 	UInt8 *buff;
 	UOSInt buffSize;
 	UOSInt readSize;
+	NotNullPtr<IO::Stream> stm;
+	if (!stm.Set(me->stm))
+	{
+		return 0;
+	}
 	me->recvStarted = true;
 	me->recvRunning = true;
 	buffSize = 0;
@@ -113,7 +118,7 @@ UInt32 __stdcall Net::MQTTConn::RecvThread(void *userObj)
 			break;
 		me->totalDownload += readSize;
 		buffSize += readSize;
-		readSize = me->protoHdlr.ParseProtocol(me->stm, me, me->cliData, buff, buffSize);
+		readSize = me->protoHdlr.ParseProtocol(stm, me, me->cliData, buff, buffSize);
 		if (readSize == 0)
 		{
 			buffSize = 0;
@@ -180,10 +185,10 @@ Bool Net::MQTTConn::SendPacket(const UInt8 *packet, UOSInt packetSize)
 	return sendSize == packetSize;
 }
 
-void Net::MQTTConn::InitStream(IO::Stream *stm)
+void Net::MQTTConn::InitStream(NotNullPtr<IO::Stream> stm)
 {
-	this->stm = stm;
-	this->cliData = this->protoHdlr.CreateStreamData(this->stm);
+	this->stm = stm.Ptr();
+	this->cliData = this->protoHdlr.CreateStreamData(stm);
 	Sync::ThreadUtil::Create(RecvThread, this);
 	while (!this->recvStarted)
 	{
@@ -202,28 +207,26 @@ Net::MQTTConn::MQTTConn(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CS
 	this->cliData = 0;
 	this->stm = 0;
 
-	Net::TCPClient *cli;
+	NotNullPtr<Net::TCPClient> cli;
 	if (ssl)
 	{
 		Net::SSLEngine::ErrorType err;
 		sockf->ReloadDNS();
-		cli = ssl->ClientConnect(host, port, &err, timeout);
+		if (!cli.Set(ssl->ClientConnect(host, port, &err, timeout)))
+		{
+			return;
+		}
 #ifdef DEBUG_PRINT
 	printf("MQTTConn: Connect to MQTTS: err = %d\r\n", (UInt32)err);
 #endif
 	}
 	else
 	{
-		NEW_CLASS(cli, Net::TCPClient(sockf, host, port, timeout));
+		NEW_CLASSNN(cli, Net::TCPClient(sockf, host, port, timeout));
 	}
-	if (cli == 0)
+	if (cli->IsConnectError() != 0)
 	{
-
-	}
-	else if (cli->IsConnectError() != 0)
-	{
-		DEL_CLASS(cli);
-		cli = 0;
+		cli.Delete();
 #ifdef DEBUG_PRINT
 		printf("MQTTConn connect error, %d\r\n", 0);
 #endif
@@ -235,7 +238,7 @@ Net::MQTTConn::MQTTConn(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CS
 	}
 }
 
-Net::MQTTConn::MQTTConn(IO::Stream *stm, DisconnectHdlr discHdlr, void *discHdlrObj) : protoHdlr(this)
+Net::MQTTConn::MQTTConn(NotNullPtr<IO::Stream> stm, DisconnectHdlr discHdlr, void *discHdlrObj) : protoHdlr(this)
 {
 	this->recvRunning = false;
 	this->recvStarted = false;
@@ -250,7 +253,8 @@ Net::MQTTConn::MQTTConn(IO::Stream *stm, DisconnectHdlr discHdlr, void *discHdlr
 
 Net::MQTTConn::~MQTTConn()
 {
-	if (this->stm)
+	NotNullPtr<IO::Stream> stm;
+	if (stm.Set(this->stm))
 	{
 		if (this->recvRunning)
 		{
@@ -260,7 +264,7 @@ Net::MQTTConn::~MQTTConn()
 		{
 			Sync::SimpleThread::Sleep(1);
 		}
-		this->protoHdlr.DeleteStreamData(this->stm, this->cliData);
+		this->protoHdlr.DeleteStreamData(stm, this->cliData);
 		DEL_CLASS(this->stm);
 		this->stm = 0;
 	}

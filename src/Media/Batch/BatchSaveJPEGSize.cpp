@@ -45,7 +45,7 @@ void Media::Batch::BatchSaveJPEGSize::ImageOutput(Media::ImageList *imgList, con
 
 	mstm.Clear();
 	this->exporter.SetParamInt32(param, 0, 0);
-	this->exporter.ExportFile(&mstm, CSTRP(sbuff, sptr), imgList, param);
+	this->exporter.ExportFile(mstm, CSTRP(sbuff, sptr), imgList, param);
 	minIndex = 0;
 	minSize = mstm.GetLength();
 	if (minSize > targetSize)
@@ -56,7 +56,7 @@ void Media::Batch::BatchSaveJPEGSize::ImageOutput(Media::ImageList *imgList, con
 	{
 		mstm.Clear();
 		this->exporter.SetParamInt32(param, 0, 100);
-		this->exporter.ExportFile(&mstm, CSTRP(sbuff, sptr), imgList, param);
+		this->exporter.ExportFile(mstm, CSTRP(sbuff, sptr), imgList, param);
 		maxIndex = 100;
 		maxSize = mstm.GetLength();
 		if (maxSize < targetSize)
@@ -82,7 +82,7 @@ void Media::Batch::BatchSaveJPEGSize::ImageOutput(Media::ImageList *imgList, con
 				}
 				mstm.Clear();
 				this->exporter.SetParamInt32(param, 0, currIndex);
-				this->exporter.ExportFile(&mstm, CSTRP(sbuff, sptr), imgList, param);
+				this->exporter.ExportFile(mstm, CSTRP(sbuff, sptr), imgList, param);
 				currSize = mstm.GetLength();
 				if (currSize > targetSize)
 				{
@@ -105,7 +105,7 @@ void Media::Batch::BatchSaveJPEGSize::ImageOutput(Media::ImageList *imgList, con
 	{
 		IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer);
 		this->exporter.SetParamInt32(param, 0, currIndex);
-		this->exporter.ExportFile(&fs, CSTRP(sbuff, sptr), imgList, param);
+		this->exporter.ExportFile(fs, CSTRP(sbuff, sptr), imgList, param);
 	}
 	this->exporter.DeleteParam(param);
 }

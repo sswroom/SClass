@@ -73,31 +73,27 @@ void __stdcall SSWR::AVIRead::AVIRLogExtractForm::OnExtractClicked(void *userObj
 		UOSInt typ = me->cboType->GetSelectedIndex();
 		UOSInt i;
 		Bool hasData;
-		IO::FileStream *fs1;
-		IO::FileStream *fs2;
-		Text::UTF8Reader *reader;
-		Text::UTF8Writer *writer;
-		NEW_CLASS(fs1, IO::FileStream(sb1.ToCString(), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-		NEW_CLASS(reader, Text::UTF8Reader(fs1));
-		NEW_CLASS(fs2, IO::FileStream(sb3.ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-		if (fs2->IsError())
+		IO::FileStream fs1(sb1.ToCString(), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+		Text::UTF8Reader reader(fs1);
+		IO::FileStream fs2(sb3.ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+		if (fs2.IsError())
 		{
 			UI::MessageDialog::ShowDialog(CSTR("Error in creating Output file"), CSTR("Error"), me);
 		}
 		else
 		{
-			NEW_CLASS(writer, Text::UTF8Writer(fs2));
-			writer->WriteSignature();
+			Text::UTF8Writer writer(fs2);
+			writer.WriteSignature();
 
 			sb1.ClearStr();
-			hasData = reader->ReadLine(&sb1, 1024);
+			hasData = reader.ReadLine(sb1, 1024);
 			while (hasData)
 			{
-				reader->GetLastLineBreak(sbuff);
+				reader.GetLastLineBreak(sbuff);
 				while (hasData && sbuff[0] == 0)
 				{
-					hasData = reader->ReadLine(&sb1, 1024);
-					reader->GetLastLineBreak(sbuff);
+					hasData = reader.ReadLine(sb1, 1024);
+					reader.GetLastLineBreak(sbuff);
 				}
 
 				sb1.AppendC(sbSuffix.ToString(), sbSuffix.GetLength());
@@ -108,28 +104,24 @@ void __stdcall SSWR::AVIRead::AVIRLogExtractForm::OnExtractClicked(void *userObj
 					{
 						if (Text::StrStartsWith(sb1.ToString() + i + 1, sb2.ToString()))
 						{
-							writer->WriteLineC(sb1.ToString(), sb1.GetLength());
+							writer.WriteLineC(sb1.ToString(), sb1.GetLength());
 						}
 					}
 					else if (typ == 1)
 					{
 						if (Text::StrStartsWith(sb1.ToString() + i + 1, sb2.ToString()))
 						{
-							writer->WriteLine(sb1.ToCString().Substring(i + 1 + sb2.GetLength()));
+							writer.WriteLine(sb1.ToCString().Substring(i + 1 + sb2.GetLength()));
 						}
 					}
 				}
 
 				sb1.ClearStr();
-				hasData = reader->ReadLine(&sb1, 1024);
+				hasData = reader.ReadLine(sb1, 1024);
 			}
 
 			UI::MessageDialog::ShowDialog(CSTR("Complete log extract"), CSTR("Success"), me);
-			DEL_CLASS(writer);
 		}
-		DEL_CLASS(fs2);
-		DEL_CLASS(reader);
-		DEL_CLASS(fs1);
 	}
 }
 

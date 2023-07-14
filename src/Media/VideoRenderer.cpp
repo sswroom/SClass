@@ -130,7 +130,7 @@ void Media::VideoRenderer::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, Vid
 			imgList.AddImage(simg, 0);
 			Exporter::PNGExporter exporter;
 			IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-			exporter.ExportFile(&fs, CSTRP(sbuff, sptr), &imgList, 0);
+			exporter.ExportFile(fs, CSTRP(sbuff, sptr), &imgList, 0);
 			DEL_CLASS(csconv);
 		}
 	}

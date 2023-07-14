@@ -60,9 +60,9 @@ namespace IO
 		Bool ExecuteCmd(Text::CString cmd);
 		Bool LoadConfigFile(Text::CString cfgFile);
 
-		Bool ParseSource(Data::FastStringMap<Int32> *objList, Data::FastStringMap<Int32> *libList, Data::FastStringMap<Int32> *procList, Data::ArrayListStringNN *headerList, Int64 *latestTime, Text::CString sourceFile, Text::StringBuilderUTF8 *tmpSb);
-		Bool ParseHeader(Data::FastStringMap<Int32> *objList, Data::FastStringMap<Int32> *libList, Data::FastStringMap<Int32> *procList, Data::ArrayListStringNN *headerList, Int64 *latestTime, NotNullPtr<Text::String> headerFile, Text::CString sourceFile, Text::StringBuilderUTF8 *tmpSb);
-		Bool ParseProgInternal(Data::FastStringMap<Int32> *objList, Data::FastStringMap<Int32> *libList, Data::FastStringMap<Int32> *procList, Data::ArrayListStringNN *headerList, Int64 *latestTime, Bool *progGroup, NotNullPtr<const ProgramItem> prog, Text::StringBuilderUTF8 *tmpSb);
+		Bool ParseSource(Data::FastStringMap<Int32> *objList, Data::FastStringMap<Int32> *libList, Data::FastStringMap<Int32> *procList, Data::ArrayListStringNN *headerList, Int64 *latestTime, Text::CString sourceFile, NotNullPtr<Text::StringBuilderUTF8> tmpSb);
+		Bool ParseHeader(Data::FastStringMap<Int32> *objList, Data::FastStringMap<Int32> *libList, Data::FastStringMap<Int32> *procList, Data::ArrayListStringNN *headerList, Int64 *latestTime, NotNullPtr<Text::String> headerFile, Text::CString sourceFile, NotNullPtr<Text::StringBuilderUTF8> tmpSb);
+		Bool ParseProgInternal(Data::FastStringMap<Int32> *objList, Data::FastStringMap<Int32> *libList, Data::FastStringMap<Int32> *procList, Data::ArrayListStringNN *headerList, Int64 *latestTime, Bool *progGroup, NotNullPtr<const ProgramItem> prog, NotNullPtr<Text::StringBuilderUTF8> tmpSb);
 
 		static void __stdcall CompileTask(void *userObj);
 		void CompileObject(Bool *errorState, Text::CString cmd);

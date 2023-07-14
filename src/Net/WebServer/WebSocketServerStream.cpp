@@ -46,7 +46,7 @@ void Net::WebServer::WebSocketServerStream::NextPacket(UInt8 opcode, const UInt8
 	case 0: //continuation frame
 	case 1: //text frame
 	case 2: //binary frame
-		return this->stmHdlr->StreamData(this, this->stmData, buff, buffSize);
+		return this->stmHdlr->StreamData(*this, this->stmData, buff, buffSize);
 	case 8: //connection close
 		if (this->resp)
 		{
@@ -67,7 +67,7 @@ Net::WebServer::WebSocketServerStream::WebSocketServerStream(IO::StreamHandler *
 {
 	this->stmHdlr = stmHdlr;
 	this->resp = resp;
-	this->stmData = this->stmHdlr->StreamCreated(this);
+	this->stmData = this->stmHdlr->StreamCreated(*this);
 
 	this->recvCapacity = 4096;
 	this->recvBuff = MemAlloc(UInt8, this->recvCapacity);
@@ -231,6 +231,6 @@ void Net::WebServer::WebSocketServerStream::ProtocolData(const UInt8 *data, UOSI
 
 void Net::WebServer::WebSocketServerStream::ConnectionClosed()
 {
-	this->stmHdlr->StreamClosed(this, this->stmData);
+	this->stmHdlr->StreamClosed(*this, this->stmData);
 	DEL_CLASS(this);
 }

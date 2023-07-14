@@ -116,7 +116,7 @@ void IO::ATCommandChannel::ClearResults()
 	}
 }
 
-IO::ATCommandChannel::ATCommandChannel(IO::Stream *stm, Bool needRelease)
+IO::ATCommandChannel::ATCommandChannel(NotNullPtr<IO::Stream> stm, Bool needRelease)
 {
 	this->stm = stm;
 	this->stmRelease = needRelease;
@@ -146,11 +146,11 @@ IO::ATCommandChannel::~ATCommandChannel()
 	}
 	if (this->stmRelease)
 	{
-		DEL_CLASS(this->stm);
+		this->stm.Delete();
 	}
 }
 
-IO::Stream *IO::ATCommandChannel::GetStream()
+NotNullPtr<IO::Stream> IO::ATCommandChannel::GetStream() const
 {
 	return this->stm;
 }

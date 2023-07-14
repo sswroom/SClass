@@ -903,7 +903,7 @@ Text::CString Manage::CPUDB::ParseCPUInfo(NotNullPtr<IO::Stream> stm)
 	while (true)
 	{
 		sb.ClearStr();
-		if (!reader->ReadLine(&sb, 512))
+		if (!reader->ReadLine(sb, 512))
 		{
 			break;
 		}

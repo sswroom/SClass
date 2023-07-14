@@ -21,7 +21,7 @@ namespace SSWR
 	{
 		class AVIRSelStreamForm : public UI::GUIForm
 		{
-		public:
+		private:
 			IO::Stream *stm;
 			IO::StreamType stmType;
 		private:
@@ -107,6 +107,9 @@ namespace SSWR
 			void SetInitStreamType(IO::StreamType stype);
 			void SetInitSerialPort(UOSInt port);
 			void SetInitBaudRate(Int32 baudRate);
+
+			NotNullPtr<IO::Stream> GetStream() const;
+			IO::StreamType GetStreamType() const;
 		};
 	}
 }

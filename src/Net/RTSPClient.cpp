@@ -92,7 +92,7 @@ UInt32 __stdcall Net::RTSPClient::ControlThread(void *userObj)
 					mstm.Write(dataBuff, i + 4);
 					mstm.SeekFromBeginning(0);
 					{
-						Text::UTF8Reader reader(&mstm);
+						Text::UTF8Reader reader(mstm);
 						sptr = reader.ReadLine(sbuff, 1021);
 						if (Text::StrSplit(sarr, 3, sbuff, ' ') != 3)
 						{
@@ -296,7 +296,7 @@ Bool Net::RTSPClient::GetOptions(Text::CString url, Data::ArrayList<const UTF8Ch
 	{
 		IO::MemoryStream stm;
 		{
-			Text::UTF8Writer writer(&stm);
+			Text::UTF8Writer writer(stm);
 			writer.WriteStrC(UTF8STRC("OPTIONS "));
 			writer.WriteStr(url);
 			writer.WriteLineC(UTF8STRC(" RTSP/1.0"));
@@ -345,7 +345,7 @@ Net::SDPFile *Net::RTSPClient::GetMediaInfo(Text::CString url)
 	{
 		IO::MemoryStream stm;
 		{
-			Text::UTF8Writer writer(&stm);
+			Text::UTF8Writer writer(stm);
 			writer.WriteStrC(UTF8STRC("DESCRIBE "));
 			writer.WriteStr(url);
 			writer.WriteLineC(UTF8STRC(" RTSP/1.0"));
@@ -383,7 +383,7 @@ UTF8Char *Net::RTSPClient::SetupRTP(UTF8Char *sessIdOut, Text::CString url, Net:
 	{
 		IO::MemoryStream stm;
 		{
-			Text::UTF8Writer writer(&stm);
+			Text::UTF8Writer writer(stm);
 			writer.WriteStrC(UTF8STRC("SETUP "));
 			writer.WriteStr(url);
 			writer.WriteLineC(UTF8STRC(" RTSP/1.0"));
@@ -508,7 +508,7 @@ Bool Net::RTSPClient::Play(Text::CString url, Text::CString sessId)
 	{
 		IO::MemoryStream stm;
 		{
-			Text::UTF8Writer writer(&stm);
+			Text::UTF8Writer writer(stm);
 			writer.WriteStrC(UTF8STRC("PLAY "));
 			writer.WriteStr(url);
 			writer.WriteLineC(UTF8STRC(" RTSP/1.0"));
@@ -547,7 +547,7 @@ Bool Net::RTSPClient::Close(Text::CString url, Text::CString sessId)
 	{
 		IO::MemoryStream stm;
 		{
-			Text::UTF8Writer writer(&stm);
+			Text::UTF8Writer writer(stm);
 			writer.WriteStrC(UTF8STRC("TEARDOWN "));
 			writer.WriteStr(url);
 			writer.WriteLineC(UTF8STRC(" RTSP/1.0"));

@@ -74,7 +74,7 @@ void __stdcall SSWR::AVIRead::AVIRTimedFileCopyForm::OnStartClicked(void *userOb
 		}
 		else
 		{
-			IO::ZIPMTBuilder zip(&fs);
+			IO::ZIPMTBuilder zip(fs);
 			sptr = Text::StrConcatC(sbuff, sb.ToString(), sb.GetLength());
 			if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 			{

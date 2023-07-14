@@ -138,9 +138,9 @@ namespace Media
 		void MulImageAlpha(Double val);
 
 		virtual Media::StaticImage *ToStaticImage() const = 0;
-		virtual UOSInt SavePng(IO::SeekableStream *stm) = 0;
-		virtual UOSInt SaveGIF(IO::SeekableStream *stm) = 0;
-		virtual UOSInt SaveJPG(IO::SeekableStream *stm) = 0;
+		virtual UOSInt SavePng(NotNullPtr<IO::SeekableStream> stm) = 0;
+		virtual UOSInt SaveGIF(NotNullPtr<IO::SeekableStream> stm) = 0;
+		virtual UOSInt SaveJPG(NotNullPtr<IO::SeekableStream> stm) = 0;
 	};
 }
 #endif

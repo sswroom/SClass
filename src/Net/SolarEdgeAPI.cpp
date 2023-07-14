@@ -23,18 +23,14 @@ Text::JSONBase *Net::SolarEdgeAPI::GetJSON(Text::CString url)
 #if defined(VERBOSE)
 	printf("SolarEdgeAPI requesting: %s\r\n", url.v);
 #endif
-	Net::HTTPClient *cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, url, Net::WebUtil::RequestMethod::HTTP_GET, true);
-	if (cli == 0)
-	{
-		return 0;
-	}
+	NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, url, Net::WebUtil::RequestMethod::HTTP_GET, true);
 	Text::StringBuilderUTF8 sb;
 	if (!cli->ReadAllContent(&sb, 8192, 1048576))
 	{
-		DEL_CLASS(cli);
+		cli.Delete();
 		return 0;
 	}
-	DEL_CLASS(cli);
+	cli.Delete();
 #if defined(VERBOSE)
 	printf("SolarEdgeAPI received: %s\r\n", sb.ToString());
 #endif

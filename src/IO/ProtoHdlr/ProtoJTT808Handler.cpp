@@ -18,7 +18,7 @@ IO::ProtoHdlr::ProtoJTT808Handler::~ProtoJTT808Handler()
 {
 }
 
-void *IO::ProtoHdlr::ProtoJTT808Handler::CreateStreamData(IO::Stream *stm)
+void *IO::ProtoHdlr::ProtoJTT808Handler::CreateStreamData(NotNullPtr<IO::Stream> stm)
 {
 	JTT808StreamData *data = MemAlloc(JTT808StreamData, 1);
 	UInt64 devId = this->devId;
@@ -36,13 +36,13 @@ void *IO::ProtoHdlr::ProtoJTT808Handler::CreateStreamData(IO::Stream *stm)
 	return data;
 }
 
-void IO::ProtoHdlr::ProtoJTT808Handler::DeleteStreamData(IO::Stream *stm, void *stmData)
+void IO::ProtoHdlr::ProtoJTT808Handler::DeleteStreamData(NotNullPtr<IO::Stream> stm, void *stmData)
 {
 	JTT808StreamData *data = (JTT808StreamData*)stmData;
 	MemFree(data);
 }
 
-UOSInt IO::ProtoHdlr::ProtoJTT808Handler::ParseProtocol(IO::Stream *stm, void *stmObj, void *stmData, const UInt8 *buff, UOSInt buffSize)
+UOSInt IO::ProtoHdlr::ProtoJTT808Handler::ParseProtocol(NotNullPtr<IO::Stream> stm, void *stmObj, void *stmData, const UInt8 *buff, UOSInt buffSize)
 {
 	JTT808StreamData *data = (JTT808StreamData*)stmData;
 	UInt8 packetBuff[1044];

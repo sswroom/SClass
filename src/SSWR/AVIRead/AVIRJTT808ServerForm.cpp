@@ -61,7 +61,7 @@ void __stdcall SSWR::AVIRead::AVIRJTT808ServerForm::OnLogSelChg(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRJTT808ServerForm::OnClientEvent(Net::TCPClient *cli, void *userObj, void *cliData, Net::TCPClientMgr::TCPEventType evtType)
+void __stdcall SSWR::AVIRead::AVIRJTT808ServerForm::OnClientEvent(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, Net::TCPClientMgr::TCPEventType evtType)
 {
 	SSWR::AVIRead::AVIRJTT808ServerForm *me = (SSWR::AVIRead::AVIRJTT808ServerForm*)userObj;
 	ClientData *data = (ClientData*)cliData;
@@ -76,11 +76,11 @@ void __stdcall SSWR::AVIRead::AVIRJTT808ServerForm::OnClientEvent(Net::TCPClient
 
 		me->protoHdlr->DeleteStreamData(cli, data->cliData);
 		MemFree(data);
-		DEL_CLASS(cli);
+		cli.Delete();
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRJTT808ServerForm::OnClientData(Net::TCPClient *cli, void *userObj, void *cliData, const UInt8 *buff, UOSInt size)
+void __stdcall SSWR::AVIRead::AVIRJTT808ServerForm::OnClientData(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, const UInt8 *buff, UOSInt size)
 {
 	SSWR::AVIRead::AVIRJTT808ServerForm *me = (SSWR::AVIRead::AVIRJTT808ServerForm*)userObj;
 	ClientData *data = (ClientData*)cliData;
@@ -107,16 +107,16 @@ void __stdcall SSWR::AVIRead::AVIRJTT808ServerForm::OnClientData(Net::TCPClient 
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRJTT808ServerForm::OnClientTimeout(Net::TCPClient *cli, void *userObj, void *cliData)
+void __stdcall SSWR::AVIRead::AVIRJTT808ServerForm::OnClientTimeout(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData)
 {
 }
 
 void __stdcall SSWR::AVIRead::AVIRJTT808ServerForm::OnClientConn(Socket *s, void *userObj)
 {
 	SSWR::AVIRead::AVIRJTT808ServerForm *me = (SSWR::AVIRead::AVIRJTT808ServerForm*)userObj;
-	Net::TCPClient *cli;
+	NotNullPtr<Net::TCPClient> cli;
 	ClientData *data;
-	NEW_CLASS(cli, Net::TCPClient(me->core->GetSocketFactory(), s));
+	NEW_CLASSNN(cli, Net::TCPClient(me->core->GetSocketFactory(), s));
 	data = MemAlloc(ClientData, 1);
 	data->buffSize = 0;
 	data->seqId = 0;
@@ -186,7 +186,7 @@ void SSWR::AVIRead::AVIRJTT808ServerForm::OnMonitorChanged()
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 }
 
-void SSWR::AVIRead::AVIRJTT808ServerForm::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize)
+void SSWR::AVIRead::AVIRJTT808ServerForm::DataParsed(NotNullPtr<IO::Stream> stm, void *stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize)
 {
 	ClientData *data = (ClientData*)stmObj;
 	UInt8 packet[256];
@@ -411,7 +411,7 @@ void SSWR::AVIRead::AVIRJTT808ServerForm::DataParsed(IO::Stream *stm, void *stmO
 	}
 }
 
-void SSWR::AVIRead::AVIRJTT808ServerForm::DataSkipped(IO::Stream *stm, void *stmObj, const UInt8 *buff, UOSInt buffSize)
+void SSWR::AVIRead::AVIRJTT808ServerForm::DataSkipped(NotNullPtr<IO::Stream> stm, void *stmObj, const UInt8 *buff, UOSInt buffSize)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;

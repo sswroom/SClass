@@ -108,9 +108,9 @@ Bool IO::ProgramLinkManager::GetLinkDetail(Text::CString linkName, IO::ProgramLi
 		{
 			return false;
 		}
-		Text::UTF8Reader reader(&fs);
+		Text::UTF8Reader reader(fs);
 		Text::StringBuilderUTF8 sb;
-		if (!reader.ReadLine(&sb, 1024))
+		if (!reader.ReadLine(sb, 1024))
 		{
 			return false;
 		}
@@ -120,7 +120,7 @@ Bool IO::ProgramLinkManager::GetLinkDetail(Text::CString linkName, IO::ProgramLi
 			return false;
 		}
 		sb.ClearStr();
-		while (reader.ReadLine(&sb, 1024))
+		while (reader.ReadLine(sb, 1024))
 		{
 			if (sb.GetLength() == 0)
 			{

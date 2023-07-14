@@ -121,8 +121,8 @@ void SSWR::AVIRead::AVIRImageControl::InitDir()
 		IO::FileStream fs(CSTRP(sbuff, sptr3), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential);
 		if (!fs.IsError())
 		{
-			Text::UTF8Reader reader(&fs);
-			while (reader.ReadLine(&sb, 4096))
+			Text::UTF8Reader reader(fs);
+			while (reader.ReadLine(sb, 4096))
 			{
 				sptr3 = sb.v;
 				colCnt = Text::StrSplit(sarr, 11, sptr3, '\t');
@@ -206,7 +206,7 @@ void SSWR::AVIRead::AVIRImageControl::InitDir()
 							mutUsage.BeginUse();
 							{
 								IO::FileStream fs(CSTRP(sbuff2, sptr2End), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer);
-								exporter.ExportFile(&fs, CSTRP(sbuff2, sptr2End), &imgList, 0);
+								exporter.ExportFile(fs, CSTRP(sbuff2, sptr2End), &imgList, 0);
 							}
 							mutUsage.EndUse();
 						}
@@ -305,7 +305,7 @@ void SSWR::AVIRead::AVIRImageControl::ExportQueued()
 				{
 					jpgExporter.SetParamInt32(param, 0, 100);
 				}
-				jpgExporter.ExportFile(&fs, CSTRP(sbuff, sptr2), &imgList, param);
+				jpgExporter.ExportFile(fs, CSTRP(sbuff, sptr2), &imgList, param);
 				if (param)
 				{
 					jpgExporter.DeleteParam(param);
@@ -315,7 +315,7 @@ void SSWR::AVIRead::AVIRImageControl::ExportQueued()
 			{
 				sptr2 = IO::Path::ReplaceExt(sptr, UTF8STRC("tif"));
 				IO::FileStream fs(CSTRP(sbuff, sptr2), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer);
-				tifExporter.ExportFile(&fs, CSTRP(sbuff, sptr2), &imgList, 0);
+				tifExporter.ExportFile(fs, CSTRP(sbuff, sptr2), &imgList, 0);
 			}
 			ioMutUsage.EndUse();
 		}
@@ -468,12 +468,12 @@ Double *SSWR::AVIRead::AVIRImageControl::GetCameraGamma(Text::CString cameraName
 	Data::ArrayList<Double> gammaVals;
 	{
 		IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-		Text::UTF8Reader reader(&fs);
+		Text::UTF8Reader reader(fs);
 		while (true)
 		{
 			Double val;
 			sb.ClearStr();
-			if (!reader.ReadLine(&sb, 512))
+			if (!reader.ReadLine(sb, 512))
 			{
 				break;
 			}
@@ -913,7 +913,7 @@ Bool SSWR::AVIRead::AVIRImageControl::SaveSetting()
 	{
 		return false;
 	}
-	Text::UTF8Writer writer(&fs);
+	Text::UTF8Writer writer(fs);
 	writer.WriteSignature();
 	Sync::MutexUsage mutUsage(&this->imgMut);
 	imgList = this->imgMap.GetValues();

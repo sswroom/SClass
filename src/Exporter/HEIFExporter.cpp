@@ -215,7 +215,7 @@ heif_image *HEIFExporter_CreateImage(Media::Image *img)
 	return image;
 }
 
-Bool Exporter::HEIFExporter::ExportFile(IO::SeekableStream *stm, Text::CString fileName, IO::ParsedObject *pobj, void *param)
+Bool Exporter::HEIFExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CString fileName, IO::ParsedObject *pobj, void *param)
 {
 	if (pobj->GetParserType() != IO::ParserType::ImageList)
 		return false;
@@ -251,7 +251,7 @@ Bool Exporter::HEIFExporter::ExportFile(IO::SeekableStream *stm, Text::CString f
 	heif_writer writer;
 	writer.writer_api_version = 1;
 	writer.write = HEIFExporter_Write;
-	heif_error err = heif_context_write(ctx, &writer, stm);
+	heif_error err = heif_context_write(ctx, &writer, stm.Ptr());
 	heif_context_free(ctx);
 	return err.code == heif_error_Ok;
 }

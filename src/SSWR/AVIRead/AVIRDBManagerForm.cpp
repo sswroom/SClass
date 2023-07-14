@@ -414,9 +414,9 @@ void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnSQLFileClicked(void *userObj)
 		{
 			IO::FileStream fs(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 			fileName->Release();
-			DB::SQLFileReader reader(&fs, db->GetSQLType(), true);
+			DB::SQLFileReader reader(fs, db->GetSQLType(), true);
 			OSInt thisRows;
-			while (reader.NextSQL(&sb))
+			while (reader.NextSQL(sb))
 			{
 				DB::DBReader *r = db->ExecuteReader(sb.ToCString());
 				if (r)

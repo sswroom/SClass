@@ -28,12 +28,12 @@ namespace Text
 		virtual void Close();
 		UTF32Char Peek();
 		UTF32Char Read();
-		virtual Bool ReadLine(Text::StringBuilderUTF8 *sb, UOSInt maxCharCnt);
+		virtual Bool ReadLine(NotNullPtr<Text::StringBuilderUTF8> sb, UOSInt maxCharCnt);
 		virtual UTF8Char *ReadLine(UTF8Char *sbuff, UOSInt maxCharCnt);
 		virtual UTF8Char *GetLastLineBreak(UTF8Char *buff);
-		virtual Bool GetLastLineBreak(Text::StringBuilderUTF8 *sb);
+		virtual Bool GetLastLineBreak(NotNullPtr<Text::StringBuilderUTF8> sb);
 		virtual Bool IsLineBreak();
-		virtual Bool ReadToEnd(Text::StringBuilderUTF8 *sb);
+		virtual Bool ReadToEnd(NotNullPtr<Text::StringBuilderUTF8> sb);
 	};
 }
 #endif

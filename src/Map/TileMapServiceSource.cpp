@@ -16,12 +16,10 @@
 
 void Map::TileMapServiceSource::LoadXML()
 {
-	Net::HTTPClient *cli = Net::HTTPClient::CreateConnect(this->sockf, 0, this->tmsURL->ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, false);
-	if (cli == 0)
-		return;
+	NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->sockf, 0, this->tmsURL->ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, false);
 	if (cli->IsError())
 	{
-		DEL_CLASS(cli);
+		cli.Delete();
 		return;
 	}
 	{
@@ -294,7 +292,7 @@ void Map::TileMapServiceSource::LoadXML()
 			}
 		}
 	}
-	DEL_CLASS(cli);
+	cli.Delete();
 }
 
 Map::TileMapServiceSource::TileMapServiceSource(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, Text::CString tmsURL)
@@ -504,7 +502,7 @@ IO::StreamData *Map::TileMapServiceSource::LoadTileImageData(UOSInt level, Math:
 	Bool hasTime = false;
 	Data::DateTime dt;
 	Data::DateTime currTime;
-	Net::HTTPClient *cli;
+	NotNullPtr<Net::HTTPClient> cli;
 	IO::StreamData *fd;
 	TileLayer *layer = this->layers.GetItem(level);
 	if (layer == 0)
@@ -608,7 +606,7 @@ IO::StreamData *Map::TileMapServiceSource::LoadTileImageData(UOSInt level, Math:
 		printf("Response with status: %d\r\n", (Int32)status);
 #endif
 	}
-	DEL_CLASS(cli);
+	cli.Delete();
 
 	NEW_CLASS(fd, IO::StmData::FileData({filePathU, (UOSInt)(sptru - filePathU)}, false));
 	if (fd)

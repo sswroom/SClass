@@ -471,8 +471,8 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnGPSClicked(void *userObj)
 	else
 	{
 		IO::StreamType st;
-		IO::Stream *stm = me->core->OpenStream(&st, me, 0, true);
-		if (stm)
+		NotNullPtr<IO::Stream> stm;
+		if (stm.Set(me->core->OpenStream(&st, me, 0, true)))
 		{
 			Text::StringBuilderUTF8 sb;
 			sb.Append(stm->GetSourceNameObj());
@@ -527,7 +527,9 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnCaptureClicked(void *userOb
 		sptr = dt.ToString(sptr, "yyyyMMddHHmmss");
 		sptr = Text::StrConcatC(sptr, UTF8STRC(".txt"));
 		Sync::MutexUsage mutUsage(&me->captureMut);
-		NEW_CLASS(me->captureFS, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+		NotNullPtr<IO::FileStream> fs;
+		NEW_CLASSNN(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+		me->captureFS = fs.Ptr();
 		if (me->captureFS->IsError())
 		{
 			DEL_CLASS(me->captureFS);
@@ -536,7 +538,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnCaptureClicked(void *userOb
 		}
 		else
 		{
-			NEW_CLASS(me->captureWriter, Text::UTF8Writer(me->captureFS));
+			NEW_CLASS(me->captureWriter, Text::UTF8Writer(fs));
 			me->lastMotion = -1;
 			me->currActive = true;
 			isError = false;
@@ -582,7 +584,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnLogWifiSaveClicked(void *us
 		if (!fs.IsError())
 		{
 			succ = true;
-			Text::UTF8Writer writer(&fs);
+			Text::UTF8Writer writer(fs);
 			writer.WriteSignature();
 			SSWR::AVIRead::AVIRWifiCaptureForm::WifiLog *wifiLog;
 			i = 0;
@@ -684,7 +686,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnLogWifiSaveFClicked(void *u
 		if (!fs.IsError())
 		{
 			succ = true;
-			Text::UTF8Writer writer(&fs);
+			Text::UTF8Writer writer(fs);
 			writer.WriteSignature();
 			SSWR::AVIRead::AVIRWifiCaptureForm::WifiLog *wifiLog;
 			i = 0;

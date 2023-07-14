@@ -132,7 +132,7 @@ void __stdcall SSWR::AVIRead::AVIRCameraControlForm::OnFilesDblClick(void *userO
 			if (me->camera->GetFile(file, &mstm))
 			{
 				mstm.SeekFromBeginning(0);
-				Map::GPSTrack *trk = IO::GPSNMEA::NMEA2Track(&mstm, {file->fileName, Text::StrCharCnt(file->fileName)});
+				Map::GPSTrack *trk = IO::GPSNMEA::NMEA2Track(mstm, {file->fileName, Text::StrCharCnt(file->fileName)});
 				SSWR::AVIRead::AVIRGISForm *frm = me->core->GetGISForm();
 				if (frm)
 				{

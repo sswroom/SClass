@@ -11,14 +11,14 @@ namespace IO
 	class StreamWriter : public IO::Writer
 	{
 	private:
-		Text::Encoding *enc;
-		IO::Stream *stm;
+		Text::Encoding enc;
+		NotNullPtr<IO::Stream> stm;
 		UInt8 *buff;
 		UInt32 buffSize;
 
 	public:
-		StreamWriter(IO::Stream *stm, Text::Encoding *enc);
-		StreamWriter(IO::Stream *stm, UInt32 codePage);
+		StreamWriter(NotNullPtr<IO::Stream> stm, Text::Encoding *enc);
+		StreamWriter(NotNullPtr<IO::Stream> stm, UInt32 codePage);
 		virtual ~StreamWriter();
 
 		virtual Bool WriteStrC(const UTF8Char *str, UOSInt nChar);

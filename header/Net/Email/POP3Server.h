@@ -39,15 +39,15 @@ namespace Net
 			Net::Email::MailController *mailCtrl;
 			IO::FileStream *rawLog;
 
-			static void __stdcall ConnReady(Net::TCPClient *cli, void *userObj);
+			static void __stdcall ConnReady(NotNullPtr<Net::TCPClient> cli, void *userObj);
 			static void __stdcall ConnHdlr(Socket *s, void *userObj);
-			static void __stdcall ClientEvent(Net::TCPClient *cli, void *userObj, void *cliData, Net::TCPClientMgr::TCPEventType evtType);
-			static void __stdcall ClientData(Net::TCPClient *cli, void *userObj, void *cliData, const UInt8 *buff, UOSInt size);
-			static void __stdcall ClientTimeout(Net::TCPClient *cli, void *userObj, void *cliData);
-			UOSInt WriteMessage(Net::TCPClient *cli, Bool success, const UTF8Char *msg, UOSInt msgLen);
-			UOSInt WriteRAW(Net::TCPClient *cli, const UTF8Char *msg, UOSInt msgLen);
+			static void __stdcall ClientEvent(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, Net::TCPClientMgr::TCPEventType evtType);
+			static void __stdcall ClientData(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, const UInt8 *buff, UOSInt size);
+			static void __stdcall ClientTimeout(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData);
+			UOSInt WriteMessage(NotNullPtr<Net::TCPClient> cli, Bool success, const UTF8Char *msg, UOSInt msgLen);
+			UOSInt WriteRAW(NotNullPtr<Net::TCPClient> cli, const UTF8Char *msg, UOSInt msgLen);
 			//static OSInt WriteMessage(Net::TCPClient *cli, Int32 statusCode, const Char *msg);
-			void ParseCmd(Net::TCPClient *cli, MailStatus *cliStatus, const UTF8Char *cmd, UOSInt cmdLen);
+			void ParseCmd(NotNullPtr<Net::TCPClient> cli, MailStatus *cliStatus, const UTF8Char *cmd, UOSInt cmdLen);
 		public:
 			POP3Server(Net::SocketFactory *sockf, Net::SSLEngine *ssl, UInt16 port, IO::LogTool *log, Text::CString greeting, Net::Email::MailController *mailCtrl, Bool autoStart);
 			~POP3Server();

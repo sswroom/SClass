@@ -25,7 +25,7 @@
 #include "Text/UTF8Reader.h"
 #include "Text/UTF8Writer.h"
 
-void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnClientEvent(Net::TCPClient *cli, void *userObj, void *cliData, Net::TCPClientMgr::TCPEventType evtType)
+void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnClientEvent(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, Net::TCPClientMgr::TCPEventType evtType)
 {
 	SSWR::SMonitor::SMonitorSvrCore *me = (SSWR::SMonitor::SMonitorSvrCore*)userObj;
 	UTF8Char sbuff[32];
@@ -63,7 +63,7 @@ void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnClientEvent(Net::TCPClient *cl
 	}
 }
 
-void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnClientData(Net::TCPClient *cli, void *userObj, void *cliData, const UInt8 *buff, UOSInt size)
+void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnClientData(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, const UInt8 *buff, UOSInt size)
 {
 	SSWR::SMonitor::SMonitorSvrCore *me = (SSWR::SMonitor::SMonitorSvrCore*)userObj;
 	ClientStatus *status = (ClientStatus*)cliData;
@@ -85,7 +85,7 @@ void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnClientData(Net::TCPClient *cli
 	}
 }
 
-void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnClientTimeout(Net::TCPClient *cli, void *userObj, void *cliData)
+void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnClientTimeout(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData)
 {
 	SSWR::SMonitor::SMonitorSvrCore *me = (SSWR::SMonitor::SMonitorSvrCore*)userObj;
 	UTF8Char sbuff[32];

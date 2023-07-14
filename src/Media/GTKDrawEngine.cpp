@@ -1179,7 +1179,7 @@ Media::StaticImage *Media::GTKDrawImage::ToStaticImage() const
 	return 0;
 }
 
-UOSInt Media::GTKDrawImage::SavePng(IO::SeekableStream *stm)
+UOSInt Media::GTKDrawImage::SavePng(NotNullPtr<IO::SeekableStream> stm)
 {
 #if defined(NO_GDK)
 	return 0;
@@ -1212,12 +1212,12 @@ UOSInt Media::GTKDrawImage::SavePng(IO::SeekableStream *stm)
 #endif
 }
 
-UOSInt Media::GTKDrawImage::SaveGIF(IO::SeekableStream *stm)
+UOSInt Media::GTKDrawImage::SaveGIF(NotNullPtr<IO::SeekableStream> stm)
 {
 	return 0;
 }
 
-UOSInt Media::GTKDrawImage::SaveJPG(IO::SeekableStream *stm)
+UOSInt Media::GTKDrawImage::SaveJPG(NotNullPtr<IO::SeekableStream> stm)
 {
 #if defined(NO_GDK)
 	return 0;

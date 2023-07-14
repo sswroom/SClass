@@ -272,7 +272,7 @@ Net::MySQLServer::CharsetInfo Net::MySQLServer::charsets[] = {
 {738, "utf32_thai_520_w2",            "utf32"},
 };
 
-void __stdcall Net::MySQLServer::OnClientEvent(Net::TCPClient *cli, void *userObj, void *cliData, Net::TCPClientMgr::TCPEventType evtType)
+void __stdcall Net::MySQLServer::OnClientEvent(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, Net::TCPClientMgr::TCPEventType evtType)
 {
 	Net::MySQLServer *me = (Net::MySQLServer*)userObj;
 	ClientData *data = (ClientData*)cliData;
@@ -302,11 +302,11 @@ void __stdcall Net::MySQLServer::OnClientEvent(Net::TCPClient *cli, void *userOb
 		DEL_CLASS(data->attrMap);
 		MemFree(data->buff);
 		MemFree(data);
-		DEL_CLASS(cli);
+		cli.Delete();
 	}
 }
 
-void __stdcall Net::MySQLServer::OnClientData(Net::TCPClient *cli, void *userObj, void *cliData, const UInt8 *buff, UOSInt size)
+void __stdcall Net::MySQLServer::OnClientData(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, const UInt8 *buff, UOSInt size)
 {
 	Net::MySQLServer *me = (Net::MySQLServer*)userObj;
 	ClientData *data = (ClientData*)cliData;
@@ -766,7 +766,7 @@ void __stdcall Net::MySQLServer::OnClientData(Net::TCPClient *cli, void *userObj
 	}
 }
 
-void __stdcall Net::MySQLServer::OnClientTimeout(Net::TCPClient *cli, void *userObj, void *cliData)
+void __stdcall Net::MySQLServer::OnClientTimeout(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData)
 {
 }
 
@@ -776,9 +776,9 @@ void __stdcall Net::MySQLServer::OnClientConn(Socket *s, void *userObj)
 	UInt8 buff[128];
 	UInt8 *bptr;
 	OSInt i;
-	Net::TCPClient *cli;
+	NotNullPtr<Net::TCPClient> cli;
 	ClientData *data;
-	NEW_CLASS(cli, Net::TCPClient(me->sockf, s));
+	NEW_CLASSNN(cli, Net::TCPClient(me->sockf, s));
 	data = MemAlloc(ClientData, 1);
 	data->buff = MemAlloc(UInt8, DEFAULT_BUFF_SIZE + 2048);
 	data->buffSize = 0;

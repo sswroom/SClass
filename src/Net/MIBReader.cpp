@@ -2,10 +2,10 @@
 #include "Net/MIBReader.h"
 #include "Text/CharUtil.h"
 
-Bool Net::MIBReader::ReadLineInner(Text::StringBuilderUTF8 *sb)
+Bool Net::MIBReader::ReadLineInner(NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	UOSInt initSize = sb->GetLength();
-	if (!this->reader->ReadLine(sb, 512))
+	if (!this->reader.ReadLine(sb, 512))
 	{
 		return false;
 	}
@@ -92,17 +92,17 @@ Bool Net::MIBReader::ReadLineInner(Text::StringBuilderUTF8 *sb)
 
 Bool Net::MIBReader::ReadWord(Text::StringBuilderUTF8 *sb, Bool move)
 {
-	while (this->currOfst >= this->sbLine->GetCharCnt())
+	while (this->currOfst >= this->sbLine.GetCharCnt())
 	{
-		this->sbLine->ClearStr();
+		this->sbLine.ClearStr();
 		if (!ReadLineInner(this->sbLine))
 		{
 			return false;
 		}
-		this->sbLine->Trim();
+		this->sbLine.Trim();
 		this->currOfst = 0;
 	}
-	UTF8Char *sptr = this->sbLine->v;
+	UTF8Char *sptr = this->sbLine.v;
 	while (Text::CharUtil::IsWS(&sptr[this->currOfst]))
 	{
 		this->currOfst++;
@@ -115,12 +115,12 @@ Bool Net::MIBReader::ReadWord(Text::StringBuilderUTF8 *sb, Bool move)
 		{
 			if (sptr[i] == 0)
 			{
-				this->sbLine->AppendUTF8Char(' ');
+				this->sbLine.AppendUTF8Char(' ');
 				if (!ReadLineInner(this->sbLine))
 				{
 					return false;
 				}
-				sptr = this->sbLine->v;
+				sptr = this->sbLine.v;
 			}
 			else if (sptr[i] == '{')
 			{
@@ -198,12 +198,12 @@ Bool Net::MIBReader::ReadWord(Text::StringBuilderUTF8 *sb, Bool move)
 		{
 			if (sptr[i] == 0)
 			{
-				this->sbLine->AppendUTF8Char(' ');
+				this->sbLine.AppendUTF8Char(' ');
 				if (!ReadLineInner(this->sbLine))
 				{
 					return false;
 				}
-				sptr = this->sbLine->v;
+				sptr = this->sbLine.v;
 			}
 			else if (sptr[i] == '(')
 			{
@@ -240,12 +240,12 @@ Bool Net::MIBReader::ReadWord(Text::StringBuilderUTF8 *sb, Bool move)
 			{
 				break;
 			}
-			reader->GetLastLineBreak(this->sbLine);
+			reader.GetLastLineBreak(this->sbLine);
 			if (!ReadLineInner(this->sbLine))
 			{
 				return false;
 			}
-			sptr = this->sbLine->v;
+			sptr = this->sbLine.v;
 		}
 		sb->AppendC(&sptr[this->currOfst], i + 2);
 		this->currOfst += i + 2;
@@ -257,18 +257,14 @@ Bool Net::MIBReader::ReadWord(Text::StringBuilderUTF8 *sb, Bool move)
 	}
 }
 
-Net::MIBReader::MIBReader(IO::Stream *stm)
+Net::MIBReader::MIBReader(NotNullPtr<IO::Stream> stm) : reader(stm)
 {
-	NEW_CLASS(this->reader, Text::UTF8Reader(stm));
-	NEW_CLASS(this->sbLine, Text::StringBuilderUTF8());
 	this->currOfst = 0;
 	this->escapeType = ET_NONE;
 }
 
 Net::MIBReader::~MIBReader()
 {
-	DEL_CLASS(this->sbLine);
-	DEL_CLASS(this->reader);
 }
 
 Bool Net::MIBReader::PeekWord(Text::StringBuilderUTF8 *sb)
@@ -281,21 +277,21 @@ Bool Net::MIBReader::NextWord(Text::StringBuilderUTF8 *sb)
 	return ReadWord(sb, true);
 }
 
-Bool Net::MIBReader::ReadLine(Text::StringBuilderUTF8 *sb)
+Bool Net::MIBReader::ReadLine(NotNullPtr<Text::StringBuilderUTF8> sb)
 {
-	if (this->currOfst >= this->sbLine->GetCharCnt())
+	if (this->currOfst >= this->sbLine.GetCharCnt())
 	{
 		return ReadLineInner(sb);
 	}
 	else
 	{
-		sb->AppendC(this->sbLine->ToString() + this->currOfst, this->sbLine->GetLength() - this->currOfst);
-		this->currOfst = this->sbLine->GetCharCnt();
+		sb->AppendC(this->sbLine.ToString() + this->currOfst, this->sbLine.GetLength() - this->currOfst);
+		this->currOfst = this->sbLine.GetCharCnt();
 		return true;
 	}
 }
 
-Bool Net::MIBReader::GetLastLineBreak(Text::StringBuilderUTF8 *sb)
+Bool Net::MIBReader::GetLastLineBreak(NotNullPtr<Text::StringBuilderUTF8> sb)
 {
-	return this->reader->GetLastLineBreak(sb);
+	return this->reader.GetLastLineBreak(sb);
 }

@@ -39,9 +39,9 @@ namespace SSWR
 			Data::ArrayList<SyncClient*> syncCliList;
 
 			static void __stdcall OnClientConn(Socket *s, void *userObj);
-			static void __stdcall OnClientEvent(Net::TCPClient *cli, void *userObj, void *cliData, Net::TCPClientMgr::TCPEventType evtType);
-			static void __stdcall OnClientData(Net::TCPClient *cli, void *userObj, void *cliData, const UInt8 *buff, UOSInt size);
-			static void __stdcall OnClientTimeout(Net::TCPClient *cli, void *userObj, void *cliData);
+			static void __stdcall OnClientEvent(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, Net::TCPClientMgr::TCPEventType evtType);
+			static void __stdcall OnClientData(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, const UInt8 *buff, UOSInt size);
+			static void __stdcall OnClientTimeout(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData);
 		public:
 			SyncServer(Net::SocketFactory *sockf, IO::LogTool *log, UInt16 port, Int32 serverId, Text::CString serverName, Text::CString syncClients, DataHandler dataHdlr, void *dataObj, Bool autoStart, Data::Duration cliTimeout);
 			virtual ~SyncServer();

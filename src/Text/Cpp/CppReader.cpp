@@ -2,7 +2,7 @@
 #include "Text/CharUtil.h"
 #include "Text/Cpp/CppReader.h"
 
-Bool Text::Cpp::CppReader::ReadLineInner(Text::StringBuilderUTF8 *sb)
+Bool Text::Cpp::CppReader::ReadLineInner(NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	UOSInt initSize = sb->GetLength();
 	if (!this->reader.ReadLine(sb, 512))
@@ -88,7 +88,7 @@ Bool Text::Cpp::CppReader::ReadWord(Text::StringBuilderUTF8 *sb, Bool move)
 	while (this->currOfst >= this->sbLine.GetCharCnt())
 	{
 		this->sbLine.ClearStr();
-		if (!ReadLineInner(&this->sbLine))
+		if (!ReadLineInner(this->sbLine))
 		{
 			return false;
 		}
@@ -171,8 +171,8 @@ Bool Text::Cpp::CppReader::ReadWord(Text::StringBuilderUTF8 *sb, Bool move)
 		{
 			if (sptr[j] == 0 || (sptr[j] == '\\' && sptr[j + 1] == 0))
 			{
-				reader.GetLastLineBreak(&this->sbLine);
-				if (!ReadLineInner(&this->sbLine))
+				reader.GetLastLineBreak(this->sbLine);
+				if (!ReadLineInner(this->sbLine))
 				{
 					return false;
 				}
@@ -222,7 +222,7 @@ Bool Text::Cpp::CppReader::NextWord(Text::StringBuilderUTF8 *sb)
 	return ReadWord(sb, true);
 }
 
-Bool Text::Cpp::CppReader::ReadLine(Text::StringBuilderUTF8 *sb)
+Bool Text::Cpp::CppReader::ReadLine(NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	if (this->currOfst >= this->sbLine.GetCharCnt())
 	{
@@ -236,7 +236,7 @@ Bool Text::Cpp::CppReader::ReadLine(Text::StringBuilderUTF8 *sb)
 	}
 }
 
-Bool Text::Cpp::CppReader::GetLastLineBreak(Text::StringBuilderUTF8 *sb)
+Bool Text::Cpp::CppReader::GetLastLineBreak(NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	return this->reader.GetLastLineBreak(sb);
 }

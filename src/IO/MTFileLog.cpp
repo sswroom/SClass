@@ -125,13 +125,13 @@ void IO::MTFileLog::WriteArr(NotNullPtr<Text::String> *msgArr, Data::Timestamp *
 		if (newFile)
 		{
 			log->Close();
-			DEL_CLASS(log);
-			DEL_CLASS(cstm);
-			DEL_CLASS(fileStm);
+			log.Delete();
+			cstm.Delete();
+			fileStm.Delete();
 
-			NEW_CLASS(fileStm, FileStream({buff, (UOSInt)(sptr - buff)}, IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-			NEW_CLASS(cstm, IO::BufferedOutputStream(fileStm, 4096));
-			NEW_CLASS(log, Text::UTF8Writer(cstm));
+			NEW_CLASSNN(fileStm, FileStream({buff, (UOSInt)(sptr - buff)}, IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+			NEW_CLASSNN(cstm, IO::BufferedOutputStream(fileStm, 4096));
+			NEW_CLASSNN(log, Text::UTF8Writer(cstm));
 			log->WriteSignature();
 
 			sptr = Text::StrConcatC(time.ToString(buff, (const Char*)this->dateFormat), UTF8STRC("Program running"));
@@ -149,10 +149,7 @@ void IO::MTFileLog::WriteArr(NotNullPtr<Text::String> *msgArr, Data::Timestamp *
 		msgArr[i]->Release();
 		i++;
 	}
-	if (cstm)
-	{
-		cstm->Flush();
-	}
+	cstm->Flush();
 }
 
 UInt32 __stdcall IO::MTFileLog::FileThread(void *userObj)
@@ -246,9 +243,9 @@ void IO::MTFileLog::Init(LogType style, LogGroup groupStyle, const Char *dateFor
 	Data::DateTimeUtil::Instant2TimeValue(ts.inst.sec, ts.inst.nanosec, &tval, ts.tzQhr);
 	sptr = GetNewName(buff, &tval, ts.inst.nanosec, &this->lastVal);
 
-	NEW_CLASS(fileStm, FileStream({buff, (UOSInt)(sptr - buff)}, IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	NEW_CLASS(cstm, IO::BufferedOutputStream(fileStm, 4096));
-	NEW_CLASS(log, Text::UTF8Writer(cstm));
+	NEW_CLASSNN(fileStm, FileStream({buff, (UOSInt)(sptr - buff)}, IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASSNN(cstm, IO::BufferedOutputStream(fileStm, 4096));
+	NEW_CLASSNN(log, Text::UTF8Writer(cstm));
 	if (fileStm->GetPosition() == 0)
 	{
 		this->hasNewFile = true;
@@ -289,9 +286,9 @@ IO::MTFileLog::~MTFileLog()
 	this->fileName->Release();
 	SDEL_STRING(this->extName);
 
-	SDEL_CLASS(log);
-	SDEL_CLASS(cstm);
-	SDEL_CLASS(fileStm);
+	log.Delete();
+	cstm.Delete();
+	fileStm.Delete();
 
 	Text::StrDelNew(this->dateFormat);
 }

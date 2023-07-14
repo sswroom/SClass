@@ -45,7 +45,7 @@ Bool Exporter::SQLiteExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, U
 	return false;
 }
 
-Bool Exporter::SQLiteExporter::ExportFile(IO::SeekableStream *stm, Text::CString fileName, IO::ParsedObject *pobj, void *param)
+Bool Exporter::SQLiteExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CString fileName, IO::ParsedObject *pobj, void *param)
 {
 	if (pobj->GetParserType() != IO::ParserType::ReadingDB)
 	{
@@ -121,7 +121,7 @@ Bool Exporter::SQLiteExporter::ExportFile(IO::SeekableStream *stm, Text::CString
 			{
 				{
 					IO::FileStream debugFS(CSTR("Debug.txt"), IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-					Text::UTF8Writer debugWriter(&debugFS);
+					Text::UTF8Writer debugWriter(debugFS);
 					debugWriter.WriteLineCStr(sql.ToCString());
 				}
 
@@ -150,7 +150,7 @@ Bool Exporter::SQLiteExporter::ExportFile(IO::SeekableStream *stm, Text::CString
 					destDB->GetLastErrorMsg(&sb);
 
 					IO::FileStream debugFS(CSTR("Debug.txt"), IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-					Text::UTF8Writer debugWriter(&debugFS);
+					Text::UTF8Writer debugWriter(debugFS);
 					debugWriter.WriteLineCStr(sql.ToCString());
 					debugWriter.WriteLineCStr(sb.ToCString());
 					succ = false;

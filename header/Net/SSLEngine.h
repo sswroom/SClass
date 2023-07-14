@@ -58,7 +58,7 @@ namespace Net
 			MustExist
 		};
 
-		typedef void (__stdcall *ClientReadyHandler)(Net::TCPClient *cli, void *userObj);
+		typedef void (__stdcall *ClientReadyHandler)(NotNullPtr<Net::TCPClient> cli, void *userObj);
 
 		struct ThreadState
 		{

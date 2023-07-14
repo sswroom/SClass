@@ -73,16 +73,10 @@ Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(Net::WebServer::IWebRequ
 		sbHeader.Append(req->GetReqMethodStr());
 		this->log->LogMessage(sbHeader.ToCString(), IO::LogHandler::LogLevel::Action);
 	}
-	Net::HTTPClient *cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, CSTR("sswr/1.0"), kaConn, sb.StartsWith(UTF8STRC("https://")));
-	if (cli == 0)
-	{
-		resp->ResponseError(req, Net::WebStatus::SC_NOT_FOUND);
-		if (this->reqHdlr) this->reqHdlr(this->reqHdlrObj, req, resp);
-		return true;
-	}
+	NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, CSTR("sswr/1.0"), kaConn, sb.StartsWith(UTF8STRC("https://")));
 	if (!cli->Connect(sb.ToCString(), req->GetReqMethod(), 0, 0, false))
 	{
-		DEL_CLASS(cli);
+		cli.Delete();
 		resp->ResponseError(req, Net::WebStatus::SC_NOT_FOUND);
 		if (this->reqHdlr) this->reqHdlr(this->reqHdlrObj, req, resp);
 		return true;
@@ -210,7 +204,7 @@ Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(Net::WebServer::IWebRequ
 	Net::WebStatus::StatusCode scode = cli->GetRespStatus();
 	if (scode == Net::WebStatus::SC_UNKNOWN)
 	{
-		DEL_CLASS(cli);
+		cli.Delete();
 		resp->ResponseError(req, Net::WebStatus::SC_NOT_FOUND);
 		if (this->reqHdlr) this->reqHdlr(this->reqHdlrObj, req, resp);
 		return true;
@@ -314,7 +308,7 @@ Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(Net::WebServer::IWebRequ
 			this->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Raw);
 		}
 	}
-	DEL_CLASS(cli);
+	cli.Delete();
 	if (this->reqHdlr) this->reqHdlr(this->reqHdlrObj, req, resp);
 	return true;
 }

@@ -15,18 +15,18 @@ void IO::Device::GoProCameraControl::GetMediaList()
 		NEW_CLASS(this->fileList, Data::ArrayList<IO::CameraControl::FileInfo*>());
 		UTF8Char sbuff[512];
 		UTF8Char *sptr;
-		Net::HTTPClient *cli;
-		Text::UTF8Reader *reader;
+		
 		Text::StringBuilderUTF8 sb;
 		IO::CameraControl::FileInfo *file;
 		sptr = Text::StrConcatC(sbuff, UTF8STRC("http://"));
 		sptr = Net::SocketUtil::GetAddrName(sptr, &this->addr);
 		sptr = Text::StrConcatC(sptr, UTF8STRC(":8080/gp/gpMediaList"));
-		cli = Net::HTTPClient::CreateConnect(this->sockf, 0, CSTRP(sbuff, sptr), Net::WebUtil::RequestMethod::HTTP_GET, true);
-		NEW_CLASS(reader, Text::UTF8Reader(cli));
-		reader->ReadToEnd(&sb);
-		DEL_CLASS(reader);
-		DEL_CLASS(cli);
+		NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->sockf, 0, CSTRP(sbuff, sptr), Net::WebUtil::RequestMethod::HTTP_GET, true);
+		{
+			Text::UTF8Reader reader(cli);
+			reader.ReadToEnd(sb);
+		}
+		cli.Delete();
 		Text::JSONBase *jsBase = Text::JSONBase::ParseJSONStr(sb.ToCString());
 		Text::JSONObject *jsObj;
 		Text::JSONBase *jsBase2;
@@ -123,17 +123,16 @@ Bool IO::Device::GoProCameraControl::GetInfo(Data::ArrayListNN<Text::String> *na
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	Net::HTTPClient *cli;
-	Text::UTF8Reader *reader;
 	Text::StringBuilderUTF8 sb;
 	sptr = Text::StrConcatC(sbuff, UTF8STRC("http://"));
 	sptr = Net::SocketUtil::GetAddrName(sptr, &this->addr);
 	sptr = Text::StrConcatC(sptr, UTF8STRC("/gp/gpControl/info"));
-	cli = Net::HTTPClient::CreateConnect(this->sockf, 0, CSTRP(sbuff, sptr), Net::WebUtil::RequestMethod::HTTP_GET, true);
-	NEW_CLASS(reader, Text::UTF8Reader(cli));
-	reader->ReadToEnd(&sb);
-	DEL_CLASS(reader);
-	DEL_CLASS(cli);
+	NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->sockf, 0, CSTRP(sbuff, sptr), Net::WebUtil::RequestMethod::HTTP_GET, true);
+	{
+		Text::UTF8Reader reader(cli);
+		reader.ReadToEnd(sb);
+	}
+	cli.Delete();
 	Text::JSONBase *jsBase = Text::JSONBase::ParseJSONStr(sb.ToCString());
 	Text::JSONObject *jsObj;
 	Text::JSONBase *jsBase2;
@@ -251,20 +250,19 @@ Bool IO::Device::GoProCameraControl::GetFile(IO::CameraControl::FileInfo *file, 
 	UInt64 totalSize = 0;
 	UInt64 totalWriteSize = 0;
 	UTF8Char *sptr;
-	Net::HTTPClient *cli;
 	sptr = Text::StrConcatC(sbuff, UTF8STRC("http://"));
 	sptr = Net::SocketUtil::GetAddrName(sptr, &this->addr);
 	sptr = Text::StrConcatC(sptr, UTF8STRC(":8080/videos/DCIM/"));
 	sptr = Text::StrConcat(sptr, file->filePath);
 	sptr = Text::StrConcatC(sptr, UTF8STRC("/"));
 	sptr = Text::StrConcat(sptr, file->fileName);
-	cli = Net::HTTPClient::CreateConnect(this->sockf, 0, CSTRP(sbuff, sptr), Net::WebUtil::RequestMethod::HTTP_GET, true);
+	NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->sockf, 0, CSTRP(sbuff, sptr), Net::WebUtil::RequestMethod::HTTP_GET, true);
 	while ((readSize = cli->Read(sbuff, 2048)) > 0)
 	{
 		totalSize += readSize;
 		totalWriteSize += outStm->Write(sbuff, readSize);
 	}
-	DEL_CLASS(cli);
+	cli.Delete();
 	return totalSize == file->fileSize && totalSize == totalWriteSize;
 }
 
@@ -274,7 +272,6 @@ Bool IO::Device::GoProCameraControl::GetThumbnailFile(IO::CameraControl::FileInf
 	UOSInt readSize;
 	UInt64 totalSize = 0;
 	UTF8Char *sptr;
-	Net::HTTPClient *cli;
 	UOSInt nameLen = Text::StrCharCnt(file->fileName);
 	if (!Text::StrStartsWithC(file->fileName, nameLen, UTF8STRC("GOPR")))
 	{
@@ -286,13 +283,13 @@ Bool IO::Device::GoProCameraControl::GetThumbnailFile(IO::CameraControl::FileInf
 	sptr = Text::StrConcat(sptr, file->filePath);
 	sptr = Text::StrConcatC(sptr, UTF8STRC("/"));
 	sptr = Text::StrConcatC(sptr, file->fileName, nameLen);
-	cli = Net::HTTPClient::CreateConnect(this->sockf, 0, CSTRP(sbuff, sptr), Net::WebUtil::RequestMethod::HTTP_GET, true);
+	NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->sockf, 0, CSTRP(sbuff, sptr), Net::WebUtil::RequestMethod::HTTP_GET, true);
 	while ((readSize = cli->Read(sbuff, 2048)) > 0)
 	{
 		totalSize += readSize;
 		outStm->Write(sbuff, readSize);
 	}
-	DEL_CLASS(cli);
+	cli.Delete();
 	return totalSize > 512;
 }
 

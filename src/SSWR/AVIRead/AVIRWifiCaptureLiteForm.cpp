@@ -420,7 +420,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnLogWifiSaveClicked(void
 		if (!fs.IsError())
 		{
 			succ = true;
-			Text::UTF8Writer writer(&fs);
+			Text::UTF8Writer writer(fs);
 			writer.WriteSignature();
 			SSWR::AVIRead::AVIRWifiCaptureLiteForm::WifiLog *wifiLog;
 			i = 0;
@@ -527,7 +527,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnLogWifiSaveFClicked(voi
 		if (!fs.IsError())
 		{
 			succ = true;
-			Text::UTF8Writer writer(&fs);
+			Text::UTF8Writer writer(fs);
 			writer.WriteSignature();
 			SSWR::AVIRead::AVIRWifiCaptureLiteForm::WifiLog *wifiLog;
 			i = 0;

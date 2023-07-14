@@ -246,7 +246,7 @@ void __stdcall SSWR::AVIRead::AVIRBenchmarkForm::OnSaveClicked(void *userObj)
 		Text::StringBuilderUTF8 sb;
 		IO::SystemInfo sysInfo;
 		IO::FileStream fs(dlg.GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-		Text::UTF8Writer writer(&fs);
+		Text::UTF8Writer writer(fs);
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("Platform: "));
 		if ((sptr = sysInfo.GetPlatformName(sbuff)) != 0)

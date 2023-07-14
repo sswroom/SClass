@@ -6,7 +6,7 @@
 struct ClientStatus
 {
 	Bool echo;
-	Net::TCPClient *cli;
+	NotNullPtr<Net::TCPClient> cli;
 };
 
 void __stdcall SSWR::AVIRead::AVIRTCPSpdSvrForm::OnStartClick(void *userObj)
@@ -57,8 +57,8 @@ void __stdcall SSWR::AVIRead::AVIRTCPSpdSvrForm::OnStartClick(void *userObj)
 void __stdcall SSWR::AVIRead::AVIRTCPSpdSvrForm::OnClientConn(Socket *s, void *userObj)
 {
 	SSWR::AVIRead::AVIRTCPSpdSvrForm *me = (SSWR::AVIRead::AVIRTCPSpdSvrForm*)userObj;
-	Net::TCPClient *cli;
-	NEW_CLASS(cli, Net::TCPClient(me->core->GetSocketFactory(), s));
+	NotNullPtr<Net::TCPClient> cli;
+	NEW_CLASSNN(cli, Net::TCPClient(me->core->GetSocketFactory(), s));
 	cli->SetNoDelay(true);
 	if (me->cliMgr)
 	{
@@ -73,16 +73,16 @@ void __stdcall SSWR::AVIRead::AVIRTCPSpdSvrForm::OnClientConn(Socket *s, void *u
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRTCPSpdSvrForm::OnClientEvent(Net::TCPClient *cli, void *userObj, void *cliData, Net::TCPClientMgr::TCPEventType evtType)
+void __stdcall SSWR::AVIRead::AVIRTCPSpdSvrForm::OnClientEvent(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, Net::TCPClientMgr::TCPEventType evtType)
 {
 //	SSWR::AVIRead::AVIRTCPSpdSvrForm *me = (SSWR::AVIRead::AVIRTCPSpdSvrForm*)userObj;
 	if (evtType == Net::TCPClientMgr::TCP_EVENT_DISCONNECT)
 	{
-		DEL_CLASS(cli);
+		cli.Delete();
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRTCPSpdSvrForm::OnClientData(Net::TCPClient *cli, void *userObj, void *cliData, const UInt8 *buff, UOSInt size)
+void __stdcall SSWR::AVIRead::AVIRTCPSpdSvrForm::OnClientData(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, const UInt8 *buff, UOSInt size)
 {
 	SSWR::AVIRead::AVIRTCPSpdSvrForm *me = (SSWR::AVIRead::AVIRTCPSpdSvrForm*)userObj;
 	if (me->echo)
@@ -91,7 +91,7 @@ void __stdcall SSWR::AVIRead::AVIRTCPSpdSvrForm::OnClientData(Net::TCPClient *cl
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRTCPSpdSvrForm::OnClientTimeout(Net::TCPClient *cli, void *userObj, void *cliData)
+void __stdcall SSWR::AVIRead::AVIRTCPSpdSvrForm::OnClientTimeout(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData)
 {
 }
 
@@ -109,7 +109,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRTCPSpdSvrForm::RecvThread(void *userObj)
 			cliStatus->cli->Write(recvBuff, recvSize);
 	}
 	MemFree(recvBuff);
-	DEL_CLASS(cliStatus->cli);
+	cliStatus->cli.Delete();
 	MemFree(cliStatus);
 	return 0;
 }

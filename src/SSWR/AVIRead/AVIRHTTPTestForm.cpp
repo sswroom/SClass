@@ -118,7 +118,6 @@ void __stdcall SSWR::AVIRead::AVIRHTTPTestForm::OnURLClearClicked(void *userObj)
 UInt32 __stdcall SSWR::AVIRead::AVIRHTTPTestForm::ProcessThread(void *userObj)
 {
 	ThreadStatus *status = (ThreadStatus*)userObj;
-	Net::HTTPClient *cli = 0;
 //	UInt8 buff[2048];
 	Text::String *url;
 	Double timeDNS;
@@ -134,7 +133,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPTestForm::ProcessThread(void *userObj)
 	status->threadRunning = true;
 	if (status->me->kaConn)
 	{
-		cli = Net::HTTPClient::CreateClient(status->me->sockf, status->me->ssl, CSTR_NULL, true, false);
+		NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(status->me->sockf, status->me->ssl, CSTR_NULL, true, false);
 		while (!status->threadToStop)
 		{
 			url = status->me->GetNextURL();
@@ -189,18 +188,18 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPTestForm::ProcessThread(void *userObj)
 				}
 				if (cli->IsError())
 				{
-					DEL_CLASS(cli);
+					cli.Delete();
 					cli = Net::HTTPClient::CreateClient(status->me->sockf, status->me->ssl, CSTR_NULL, true, url->StartsWith(UTF8STRC("https://")));
 				}
 			}
 			else
 			{
-				DEL_CLASS(cli);
+				cli.Delete();
 				cli = Net::HTTPClient::CreateClient(status->me->sockf, status->me->ssl, CSTR_NULL, true, url->StartsWith(UTF8STRC("https://")));
 				Sync::Interlocked::Increment(&status->me->failCnt);
 			}
 		}
-		DEL_CLASS(cli);
+		cli.Delete();
 	}
 	else
 	{
@@ -209,7 +208,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPTestForm::ProcessThread(void *userObj)
 			url = status->me->GetNextURL();
 			if (url == 0)
 				break;
-			cli = Net::HTTPClient::CreateClient(status->me->sockf, status->me->ssl, CSTR_NULL, true, url->StartsWith(UTF8STRC("https://")));
+			NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(status->me->sockf, status->me->ssl, CSTR_NULL, true, url->StartsWith(UTF8STRC("https://")));
 			if (cli->Connect(url->ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, &timeDNS, &timeConn, false))
 			{
 				if (status->me->enableGZip)
@@ -231,7 +230,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPTestForm::ProcessThread(void *userObj)
 			{
 				Sync::Interlocked::Increment(&status->me->failCnt);
 			}
-			DEL_CLASS(cli);
+			cli.Delete();
 		}
 	}
 	status->threadToStop = false;

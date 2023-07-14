@@ -9,7 +9,7 @@ namespace Map
 	class CSVMapParser
 	{
 	public:
-		static Map::MapDrawLayer *ParseAsPoint(IO::Stream *stm, UInt32 codePage, Text::CString layerName, Text::CString nameCol, Text::CString latCol, Text::CString lonCol, Math::CoordinateSystem *csys);
+		static Map::MapDrawLayer *ParseAsPoint(NotNullPtr<IO::Stream> stm, UInt32 codePage, Text::CString layerName, Text::CString nameCol, Text::CString latCol, Text::CString lonCol, Math::CoordinateSystem *csys);
 	};
 }
 #endif

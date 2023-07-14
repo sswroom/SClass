@@ -159,7 +159,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRFileHashForm::HashThread(void *userObj)
 						exporter->SetCodePage(me->core->GetCurrCodePage());
 						{
 							IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-							exporter->ExportFile(&fs, CSTRP(sbuff, sptr), fchk, 0);
+							exporter->ExportFile(fs, CSTRP(sbuff, sptr), fchk, 0);
 						}
 						DEL_CLASS(exporter);
 					}

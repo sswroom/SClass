@@ -319,13 +319,13 @@ UOSInt Net::WirelessLAN::GetInterfaces(Data::ArrayList<Net::WirelessLAN::Interfa
 		int ioret;
 		buff = MemAlloc(UInt8, buffSize * sizeof(iw_priv_args));
 
-		Text::UTF8Reader reader(&fs);
+		Text::UTF8Reader reader(fs);
 		sb.ClearStr();
-		reader.ReadLine(&sb, 1024);
+		reader.ReadLine(sb, 1024);
 		sb.ClearStr();
-		reader.ReadLine(&sb, 1024);
+		reader.ReadLine(sb, 1024);
 		sb.ClearStr();
-		while (reader.ReadLine(&sb, 1024))
+		while (reader.ReadLine(sb, 1024))
 		{
 			sb.Trim();
 			i = sb.IndexOf(':');

@@ -48,7 +48,7 @@ void SSWR::AVIRead::AVIRXMLWalkForm::LoadFile(Text::CString fileName)
 		mode = Text::XMLReader::PM_XML;
 	}
 	IO::FileStream fs(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-	Text::XMLReader reader(this->core->GetEncFactory(), &fs, mode);
+	Text::XMLReader reader(this->core->GetEncFactory(), fs, mode);
 	while (reader.ReadNext())
 	{
 		sb.ClearStr();

@@ -1229,7 +1229,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(Net::WebServer
 			IO::FileStream fs(CSTRP(sbuff, sptr2), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential);
 			Text::UTF8Reader reader(&fs);
 			sb.ClearStr();
-			while (reader.ReadLine(&sb, 4096))
+			while (reader.ReadLine(sb, 4096))
 			{
 				if (Text::StrSplitP(sarr, 4, sb, '\t') == 3)
 				{
@@ -2318,7 +2318,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(Net::WebSe
 							Text::UTF8Reader reader(&fs);
 							sb.ClearStr();
 							found = false;
-							while (reader.ReadLine(&sb, 4096))
+							while (reader.ReadLine(sb, 4096))
 							{
 								if (Text::StrSplitP(sarr, 4, sb, '\t') == 3)
 								{
@@ -2650,7 +2650,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(Net::WebSe
 							Text::UTF8Reader reader(&fs);
 							sb.ClearStr();
 							found = false;
-							while (reader.ReadLine(&sb, 4096))
+							while (reader.ReadLine(sb, 4096))
 							{
 								if (Text::StrSplitP(sarr, 4, sb, '\t') == 3)
 								{
@@ -2801,7 +2801,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(Net::WebSe
 					sb.ClearStr();
 					found = false;
 					foundNext = false;
-					while (reader.ReadLine(&sb, 4096))
+					while (reader.ReadLine(sb, 4096))
 					{
 						if (Text::StrSplitP(sarr, 4, sb, '\t') == 3)
 						{
@@ -3022,7 +3022,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(Net::WebSe
 							Text::UTF8Reader reader(&fs);
 							sb.ClearStr();
 							found = false;
-							while (reader.ReadLine(&sb, 4096))
+							while (reader.ReadLine(sb, 4096))
 							{
 								if (Text::StrSplitP(sarr, 4, sb, '\t') == 3)
 								{

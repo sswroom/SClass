@@ -36,28 +36,25 @@ Bool SSWR::AVIRead::AVIRWellFormatForm::ParseFile(Text::CString fileName, Text::
 		{
 			ssl = Net::SSLEngineFactory::Create(this->core->GetSocketFactory(), false);
 		}
-		Net::HTTPClient *cli = Net::HTTPClient::CreateConnect(this->core->GetSocketFactory(), ssl, fileName, Net::WebUtil::RequestMethod::HTTP_GET, true);
-		if (cli)
+		NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->core->GetSocketFactory(), ssl, fileName, Net::WebUtil::RequestMethod::HTTP_GET, true);
+		if (!cli->IsError() && cli->GetRespStatus() == Net::WebStatus::SC_OK)
 		{
-			if (!cli->IsError() && cli->GetRespStatus() == Net::WebStatus::SC_OK)
+			Text::CString contType = cli->GetContentType();
+			if (contType.leng == 0)
 			{
-				Text::CString contType = cli->GetContentType();
-				if (contType.leng == 0)
-				{
 
-				}
-				else if (contType.Equals(UTF8STRC("application/xml")))
-				{
-					succ = Text::XMLReader::XMLWellFormat(this->core->GetEncFactory(), cli, 0, output);
-				}
-//				else if (contType.Equals(UTF8STRC("text/")))
-				else
-				{
-					printf("AVIRWellFormat: Unknown content-type: %s\r\n", contType.v);
-				}
 			}
-			DEL_CLASS(cli);
+			else if (contType.Equals(UTF8STRC("application/xml")))
+			{
+				succ = Text::XMLReader::XMLWellFormat(this->core->GetEncFactory(), cli, 0, output);
+			}
+//				else if (contType.Equals(UTF8STRC("text/")))
+			else
+			{
+				printf("AVIRWellFormat: Unknown content-type: %s\r\n", contType.v);
+			}
 		}
+		cli.Delete();
 		SDEL_CLASS(ssl);
 	}
 	else if (fileName.EndsWithICase(UTF8STRC(".json")))
@@ -80,7 +77,7 @@ Bool SSWR::AVIRead::AVIRWellFormatForm::ParseFile(Text::CString fileName, Text::
 		fileLen = fs.GetLength();
 		if (fileLen > 0 && fileLen < 1048576)
 		{
-			succ = Text::HTMLUtil::HTMLWellFormat(this->core->GetEncFactory(), &fs, 0, output);
+			succ = Text::HTMLUtil::HTMLWellFormat(this->core->GetEncFactory(), fs, 0, output);
 		}
 	}
 	else if (fileName.EndsWithICase(UTF8STRC(".xml")) || fileName.EndsWithICase(UTF8STRC(".gml")) || fileName.EndsWithICase(UTF8STRC(".kml")))
@@ -89,7 +86,7 @@ Bool SSWR::AVIRead::AVIRWellFormatForm::ParseFile(Text::CString fileName, Text::
 		fileLen = fs.GetLength();
 		if (fileLen > 0 && fileLen < 10485760)
 		{
-			succ = Text::XMLReader::XMLWellFormat(this->core->GetEncFactory(), &fs, 0, output);
+			succ = Text::XMLReader::XMLWellFormat(this->core->GetEncFactory(), fs, 0, output);
 		}
 	}
 	else if (fileName.EndsWithICase(UTF8STRC(".js")))

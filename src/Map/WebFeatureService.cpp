@@ -27,9 +27,12 @@ void Map::WebFeatureService::LoadXML(Version version)
 		sb.AppendC(UTF8STRC("?SERVICE=WFS&REQUEST=GetCapabilities"));
 		break;
 	}
-	Net::HTTPClient *cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, true);
-	if (cli == 0)
+	NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, true);
+	if (cli->IsError())
+	{
+		cli.Delete();
 		return;
+	}
 	UInt8 buff[2048];
 	UOSInt readSize;
 	IO::MemoryStream mstm;
@@ -37,9 +40,9 @@ void Map::WebFeatureService::LoadXML(Version version)
 	{
 		mstm.Write(buff, readSize);
 	}
-	DEL_CLASS(cli);
+	cli.Delete();
 	mstm.SeekFromBeginning(0);
-	Text::XMLReader reader(this->encFact, &mstm, Text::XMLReader::PM_XML);
+	Text::XMLReader reader(this->encFact, mstm, Text::XMLReader::PM_XML);
 	while (reader.ReadNext())
 	{
 		if (reader.GetNodeType() == Text::XMLNode::NodeType::Element)
@@ -383,7 +386,7 @@ Map::MapDrawLayer *Map::WebFeatureService::LoadAsLayer()
 		sb.ClearStr();
 		sb.Append(this->currFeature->title);
 		sb.AppendC(UTF8STRC(".gml"));
-		IO::ParsedObject *pobj = Parser::FileParser::XMLParser::ParseStream(this->encFact, &mstm, sb.ToCString(), 0, 0, 0);
+		IO::ParsedObject *pobj = Parser::FileParser::XMLParser::ParseStream(this->encFact, mstm, sb.ToCString(), 0, 0, 0);
 		if (pobj)
 		{
 			if (pobj->GetParserType() == IO::ParserType::MapLayer)

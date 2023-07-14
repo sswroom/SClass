@@ -1822,6 +1822,8 @@ IO/MTFileLog.h: ../../src/IO/MTFileLog.cpp
 @MTFileLog.o
 IO/NullIOPin.h: ../../src/IO/NullIOPin.cpp
 @NullIOPin.o
+IO/NullStream.h: ../../src/IO/NullStream.cpp
+@NullStream.o
 IO/NullWriter.h: ../../src/IO/NullWriter.cpp
 @NullWriter.o
 IO/OneWireGPIO.h: ../../src/IO/OneWireGPIO.cpp
@@ -4875,6 +4877,7 @@ ModemController.o: ../../src/IO/ModemController.cpp
 MotionDetectorAccelerometer.o: ../../src/IO/MotionDetectorAccelerometer.cpp
 MTFileLog.o: ../../src/IO/MTFileLog.cpp
 NullIOPin.o: ../../src/IO/NullIOPin.cpp
+NullStream.o: ../../src/IO/NullStream.cpp
 NullWriter.o: ../../src/IO/NullWriter.cpp
 OneWireGPIO.o: ../../src/IO/OneWireGPIO.cpp
 PackageFile.o: ../../src/IO/PackageFile.cpp

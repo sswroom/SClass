@@ -136,8 +136,8 @@ Bool Manage::CPUInfoDetail::GetCPUTemp(UOSInt index, Double *temp)
 	if (!fs.IsError())
 	{
 		Text::StringBuilderUTF8 sb;
-		Text::UTF8Reader reader(&fs);
-		if (reader.ReadLine(&sb, 512))
+		Text::UTF8Reader reader(fs);
+		if (reader.ReadLine(sb, 512))
 		{
 			if (sb.ToInt32(&val))
 			{

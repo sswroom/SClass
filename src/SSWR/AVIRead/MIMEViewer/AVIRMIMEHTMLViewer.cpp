@@ -15,7 +15,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMIMEHTMLViewer::AVIRMIMEHTMLViewer(SSWR::AVIRead:
 	const UInt8 *buff = obj->GetRAWData(&size);
 	IO::MemoryReadingStream mstm(buff, size);
 	Text::StringBuilderUTF8 sb;
-	Text::HTMLUtil::HTMLWellFormat(core->GetEncFactory(), &mstm, 0, &sb);
+	Text::HTMLUtil::HTMLWellFormat(core->GetEncFactory(), mstm, 0, &sb);
 	this->txtHTML->SetText(sb.ToCString());
 }
 

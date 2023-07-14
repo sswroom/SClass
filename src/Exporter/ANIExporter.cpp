@@ -668,7 +668,7 @@ void Exporter::ANIExporter::SetCodePage(UInt32 codePage)
 {
 }
 
-Bool Exporter::ANIExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *fileName, IO::ParsedObject *pobj, void *param)
+Bool Exporter::ANIExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, const UTF8Char *fileName, IO::ParsedObject *pobj, void *param)
 {
 	if (pobj->GetParserType() != IO::ParserType::ImageList)
 		return 0;

@@ -53,7 +53,7 @@ void Exporter::MapCSVExporter::SetCodePage(UInt32 codePage)
 	this->codePage = codePage;
 }
 
-Bool Exporter::MapCSVExporter::ExportFile(IO::SeekableStream *stm, Text::CString fileName, IO::ParsedObject *pobj, void *param)
+Bool Exporter::MapCSVExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CString fileName, IO::ParsedObject *pobj, void *param)
 {
 	if (pobj->GetParserType() != IO::ParserType::MapLayer)
 	{
@@ -68,10 +68,8 @@ Bool Exporter::MapCSVExporter::ExportFile(IO::SeekableStream *stm, Text::CString
 	UTF8Char sbuff[1024];
 	UTF8Char *sptr;
 	Text::Encoding enc(this->codePage);
-	IO::BufferedOutputStream *cstm;
-	IO::StreamWriter *writer;
-	NEW_CLASS(cstm, IO::BufferedOutputStream(stm, 65536));
-	NEW_CLASS(writer, IO::StreamWriter(cstm, &enc));
+	IO::BufferedOutputStream cstm(stm, 65536);
+	IO::StreamWriter writer(cstm, &enc);
 	
 	if (layer->GetObjectClass() == Map::MapDrawLayer::OC_GPS_TRACK)
 	{
@@ -85,7 +83,7 @@ Bool Exporter::MapCSVExporter::ExportFile(IO::SeekableStream *stm, Text::CString
 		UOSInt j = track->GetTrackCnt();
 		Data::DateTime d;
 
-		writer->WriteLineC(UTF8STRC("INDEX, UTC DATE, UTC TIME, VALID, LATITUDE, N/S, LONGITUDE, E/W, HEIGHT, SPEED, HEADING, NSAT(USED/VIEW)"));
+		writer.WriteLineC(UTF8STRC("INDEX, UTC DATE, UTC TIME, VALID, LATITUDE, N/S, LONGITUDE, E/W, HEIGHT, SPEED, HEADING, NSAT(USED/VIEW)"));
 
 		while (i < j)
 		{
@@ -140,7 +138,7 @@ Bool Exporter::MapCSVExporter::ExportFile(IO::SeekableStream *stm, Text::CString
 				sptr = Text::StrInt32(sptr, rec[k].nSateUsedGPS);
 				sptr = Text::StrConcatC(sptr, UTF8STRC("/"));
 				sptr = Text::StrInt32(sptr, rec[k].nSateViewGPS);
-				writer->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
+				writer.WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
 
 				currInd++;
 				k++;
@@ -161,7 +159,7 @@ Bool Exporter::MapCSVExporter::ExportFile(IO::SeekableStream *stm, Text::CString
 		UOSInt k;
 		UOSInt l;
 
-		writer->WriteLineC(UTF8STRC("INDEX, LATITUDE, N/S, LONGITUDE, E/W"));
+		writer.WriteLineC(UTF8STRC("INDEX, LATITUDE, N/S, LONGITUDE, E/W"));
 
 		NEW_CLASS(objIds, Data::ArrayListInt64());
 		Map::GetObjectSess *sess = layer->BeginGetObject();
@@ -200,7 +198,7 @@ Bool Exporter::MapCSVExporter::ExportFile(IO::SeekableStream *stm, Text::CString
 					sptr = Text::StrDouble(sptr, v);
 					sptr = Text::StrConcatC(sptr, UTF8STRC(",E"));
 				}
-				writer->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
+				writer.WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
 				currInd++;
 				k++;
 			}
@@ -210,7 +208,5 @@ Bool Exporter::MapCSVExporter::ExportFile(IO::SeekableStream *stm, Text::CString
 		}
 		layer->EndGetObject(sess);
 	}
-	DEL_CLASS(writer);
-	DEL_CLASS(cstm);
 	return true;
 }

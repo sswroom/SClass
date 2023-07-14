@@ -240,7 +240,7 @@ Bool Media::ProfiledResizer::SaveProfile(Text::CString fileName)
 		return false;
 	}
 
-	Text::UTF8Writer writer(&fs);
+	Text::UTF8Writer writer(fs);
 	i = 0;
 	j = this->profiles.GetCount();
 	while (i < j)

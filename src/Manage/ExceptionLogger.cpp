@@ -359,7 +359,7 @@ Bool Manage::ExceptionLogger::LogToFile(NotNullPtr<Text::String> fileName, UInt3
 	Manage::SymbolResolver *symResol;
 	Manage::Process proc;
 	IO::FileStream fs(fileName, IO::FileMode::Append, IO::FileShare::DenyAll, IO::FileStream::BufferType::Normal);
-	Text::UTF8Writer writer(&fs);
+	Text::UTF8Writer writer(fs);
 	Text::StringBuilderUTF8 sb;
 	Data::DateTime d;
 	UOSInt i;

@@ -229,7 +229,7 @@ namespace SSWR
 			void LoadPhoneBook();
 			void LoadSMS();
 			void LoadPDPContext();
-			void InitStream(IO::Stream *stm, Bool updateSerial);
+			void InitStream(NotNullPtr<IO::Stream> stm, Bool updateSerial);
 			void CloseStream(Bool updateUI);
 		public:
 			AVIRGSMModemForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, IO::Stream *port);

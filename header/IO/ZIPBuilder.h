@@ -23,7 +23,7 @@ namespace IO
 		} FileInfo;
 		
 	private:
-		IO::SeekableStream *stm;
+		NotNullPtr<IO::SeekableStream> stm;
 		Crypto::Hash::CRC32RIEEE crc;
 		UInt64 baseOfst;
 		UInt64 currOfst;
@@ -31,7 +31,7 @@ namespace IO
 		Sync::Mutex mut;
 
 	public:
-		ZIPBuilder(IO::SeekableStream *stm);
+		ZIPBuilder(NotNullPtr<IO::SeekableStream> stm);
 		~ZIPBuilder();
 
 		Bool AddFile(Text::CString fileName, const UInt8 *fileContent, UOSInt fileSize, Int64 fileTimeTicks, Data::Compress::Inflate::CompressionLevel compLevel);

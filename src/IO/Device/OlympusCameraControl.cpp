@@ -10,7 +10,7 @@ void IO::Device::OlympusCameraControl::GetCommandList()
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	Net::HTTPClient *cli;
+	NotNullPtr<Net::HTTPClient> cli;
 	Text::XMLReader *reader;
 	Text::StringBuilderUTF8 sb;
 	Text::XMLAttrib *attr;
@@ -86,7 +86,7 @@ void IO::Device::OlympusCameraControl::GetCommandList()
 		}
 	}
 	DEL_CLASS(reader);
-	DEL_CLASS(cli);
+	cli.Delete();
 }
 
 void IO::Device::OlympusCameraControl::GetImageList()
@@ -96,7 +96,7 @@ void IO::Device::OlympusCameraControl::GetImageList()
 		NEW_CLASS(this->fileList, Data::ArrayList<IO::Device::OlympusCameraControl::FileInfo*>());
 		UTF8Char sbuff[512];
 		UTF8Char *sptr;
-		Net::HTTPClient *cli;
+		NotNullPtr<Net::HTTPClient> cli;
 		Text::UTF8Reader *reader;
 		Text::StringBuilderUTF8 sb;
 		IO::CameraControl::FileInfo *file;
@@ -112,7 +112,7 @@ void IO::Device::OlympusCameraControl::GetImageList()
 		while (true)
 		{
 			sb.ClearStr();
-			if (!reader->ReadLine(&sb, 1024))
+			if (!reader->ReadLine(sb, 1024))
 			{
 				break;
 			}
@@ -139,7 +139,7 @@ void IO::Device::OlympusCameraControl::GetImageList()
 			}
 		}
 		DEL_CLASS(reader);
-		DEL_CLASS(cli);
+		cli.Delete();
 	}
 }
 
@@ -151,7 +151,7 @@ void IO::Device::OlympusCameraControl::GetGPSLogList()
 	}
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	Net::HTTPClient *cli;
+	NotNullPtr<Net::HTTPClient> cli;
 	Text::UTF8Reader *reader;
 	Text::StringBuilderUTF8 sb;
 	IO::CameraControl::FileInfo *file;
@@ -166,7 +166,7 @@ void IO::Device::OlympusCameraControl::GetGPSLogList()
 	while (true)
 	{
 		sb.ClearStr();
-		if (!reader->ReadLine(&sb, 1024))
+		if (!reader->ReadLine(sb, 1024))
 		{
 			break;
 		}
@@ -188,7 +188,7 @@ void IO::Device::OlympusCameraControl::GetGPSLogList()
 		}
 	}
 	DEL_CLASS(reader);
-	DEL_CLASS(cli);
+	cli.Delete();
 }
 
 
@@ -200,7 +200,7 @@ void IO::Device::OlympusCameraControl::GetSNSLogList()
 	}
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	Net::HTTPClient *cli;
+	NotNullPtr<Net::HTTPClient> cli;
 	Text::UTF8Reader *reader;
 	Text::StringBuilderUTF8 sb;
 	IO::CameraControl::FileInfo *file;
@@ -215,7 +215,7 @@ void IO::Device::OlympusCameraControl::GetSNSLogList()
 	while (true)
 	{
 		sb.ClearStr();
-		if (!reader->ReadLine(&sb, 1024))
+		if (!reader->ReadLine(sb, 1024))
 		{
 			break;
 		}
@@ -237,7 +237,7 @@ void IO::Device::OlympusCameraControl::GetSNSLogList()
 		}
 	}
 	DEL_CLASS(reader);
-	DEL_CLASS(cli);
+	cli.Delete();
 }
 
 IO::Device::OlympusCameraControl::OlympusCameraControl(Net::SocketFactory *sockf, Text::EncodingFactory *encFact, const Net::SocketUtil::AddressInfo *addr) : IO::CameraControl()
@@ -320,7 +320,7 @@ Bool IO::Device::OlympusCameraControl::GetFile(IO::Device::OlympusCameraControl:
 	UInt64 totalSize = 0;
 	UInt64 totalWriteSize = 0;
 	UTF8Char *sptr;
-	Net::HTTPClient *cli;
+	NotNullPtr<Net::HTTPClient> cli;
 	sptr = Text::StrConcatC(sbuff, UTF8STRC("http://"));
 	sptr = Net::SocketUtil::GetAddrName(sptr, &this->addr);
 	if (Text::StrEndsWith(file->fileName, (const UTF8Char*)".SNS"))
@@ -342,7 +342,7 @@ Bool IO::Device::OlympusCameraControl::GetFile(IO::Device::OlympusCameraControl:
 		totalSize += readSize;
 		totalWriteSize += outStm->Write(sbuff, readSize);
 	}
-	DEL_CLASS(cli);
+	cli.Delete();
 	return totalSize == file->fileSize && totalSize == totalWriteSize;
 }
 
@@ -352,7 +352,7 @@ Bool IO::Device::OlympusCameraControl::GetThumbnailFile(IO::Device::OlympusCamer
 	UOSInt readSize;
 	UInt64 totalSize = 0;
 	UTF8Char *sptr;
-	Net::HTTPClient *cli;
+	NotNullPtr<Net::HTTPClient> cli;
 	if (Text::StrEndsWith(file->fileName, (const UTF8Char*)".SNS"))
 	{
 		return false;
@@ -371,7 +371,7 @@ Bool IO::Device::OlympusCameraControl::GetThumbnailFile(IO::Device::OlympusCamer
 		totalSize += readSize;
 		outStm->Write(sbuff, readSize);
 	}
-	DEL_CLASS(cli);
+	cli.Delete();
 	return totalSize > 512;
 }
 
@@ -389,7 +389,7 @@ Bool IO::Device::OlympusCameraControl::GetModel(Text::StringBuilderUTF8 *sb)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	Net::HTTPClient *cli;
+	NotNullPtr<Net::HTTPClient> cli;
 	Text::XMLReader *reader;
 	Bool found = false;
 	sptr = Text::StrConcatC(sbuff, UTF8STRC("http://"));
@@ -430,7 +430,7 @@ Bool IO::Device::OlympusCameraControl::GetModel(Text::StringBuilderUTF8 *sb)
 		}
 	}
 	DEL_CLASS(reader);
-	DEL_CLASS(cli);
+	cli.Delete();
 	return found;
 }
 

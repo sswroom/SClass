@@ -14,7 +14,7 @@ IO::ParsedObject *Net::URL::OpenObject(Text::CString url, Text::CString userAgen
 	UTF8Char *sptr;
 	if (url.StartsWithICase(UTF8STRC("http://")))
 	{
-		Net::HTTPClient *cli = Net::HTTPClient::CreateClient(sockf, ssl, userAgent, true, false);
+		NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(sockf, ssl, userAgent, true, false);
 		cli->SetTimeout(timeout);
 		cli->Connect(url, Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, true);
 		if (cli->GetRespStatus() == Net::WebStatus::SC_MOVED_TEMPORARILY || cli->GetRespStatus() == Net::WebStatus::SC_MOVED_PERMANENTLY)
@@ -23,15 +23,15 @@ IO::ParsedObject *Net::URL::OpenObject(Text::CString url, Text::CString userAgen
 			if (newUrl.leng > 0 && !newUrl.Equals(url.v, url.leng) && (newUrl.StartsWith(UTF8STRC("http://")) || newUrl.StartsWith(UTF8STRC("https://"))))
 			{
 				pobj = OpenObject(newUrl, userAgent, sockf, ssl, timeout);
-				DEL_CLASS(cli);
+				cli.Delete();
 				return pobj;
 			}
 		}
-		return cli;
+		return cli.Ptr();
 	}
 	else if (url.StartsWithICase(UTF8STRC("https://")))
 	{
-		Net::HTTPClient *cli = Net::HTTPClient::CreateClient(sockf, ssl, userAgent, true, true);
+		NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(sockf, ssl, userAgent, true, true);
 		cli->SetTimeout(timeout);
 		cli->Connect(url, Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, true);
 		if (cli->GetRespStatus() == Net::WebStatus::SC_MOVED_TEMPORARILY || cli->GetRespStatus() == Net::WebStatus::SC_MOVED_PERMANENTLY)
@@ -40,11 +40,11 @@ IO::ParsedObject *Net::URL::OpenObject(Text::CString url, Text::CString userAgen
 			if (newUrl.leng > 0 && !newUrl.Equals(url.v, url.leng) && (newUrl.StartsWith(UTF8STRC("http://")) || newUrl.StartsWith(UTF8STRC("https://"))))
 			{
 				pobj = OpenObject(newUrl, userAgent, sockf, ssl, timeout);
-				DEL_CLASS(cli);
+				cli.Delete();
 				return pobj;
 			}
 		}
-		return cli;
+		return cli.Ptr();
 	}
 	else if (url.StartsWithICase(UTF8STRC("file:///")))
 	{

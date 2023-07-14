@@ -38,7 +38,8 @@ namespace IO
 		WindowsCOM,
 		MemoryReading,
 		DataCapture,
-		WebSocket
+		WebSocket,
+		Null
 	};
 
 

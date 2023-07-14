@@ -149,14 +149,10 @@ Net::HTTPClient *Net::ACMEConn::ACMEPost(NotNullPtr<Text::String> url, Text::CSt
 	jws = EncodeJWS(ssl, protStr->ToCString(), data, this->key, alg);
 	protStr->Release();
 	UOSInt jwsLen = jws->leng;
-	Net::HTTPClient *cli = 0;
-	cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, url->ToCString(), Net::WebUtil::RequestMethod::HTTP_POST, true);
-	if (cli)
-	{
-		cli->AddContentType(CSTR("application/jose+json"));
-		cli->AddContentLength(jwsLen);
-		cli->Write(jws->v, jwsLen);
-	}
+	NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, url->ToCString(), Net::WebUtil::RequestMethod::HTTP_POST, true);
+	cli->AddContentType(CSTR("application/jose+json"));
+	cli->AddContentLength(jwsLen);
+	cli->Write(jws->v, jwsLen);
 	jws->Release();
 
 	Text::StringBuilderUTF8 sb;
@@ -166,7 +162,7 @@ Net::HTTPClient *Net::ACMEConn::ACMEPost(NotNullPtr<Text::String> url, Text::CSt
 		SDEL_STRING(this->nonce);
 		this->nonce = Text::String::New(sb.ToCString()).Ptr();
 	}
-	return cli;
+	return cli.Ptr();
 }
 
 Net::ACMEConn::Order *Net::ACMEConn::OrderParse(const UInt8 *buff, UOSInt buffSize)
@@ -273,75 +269,72 @@ Net::ACMEConn::ACMEConn(Net::SocketFactory *sockf, Text::CString serverHost, UIn
 		sb.AppendU16(port);
 	}
 	sb.AppendC(UTF8STRC("/directory"));
-	Net::HTTPClient *cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, true);
-	if (cli)
+	NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, true);
+	if (cli->GetRespStatus() == Net::WebStatus::SC_OK)
 	{
-		if (cli->GetRespStatus() == Net::WebStatus::SC_OK)
+		IO::MemoryStream mstm;
+		while (true)
 		{
-			IO::MemoryStream mstm;
-			while (true)
+			recvSize = cli->Read(buff, 2048);
+			if (recvSize <= 0)
 			{
-				recvSize = cli->Read(buff, 2048);
-				if (recvSize <= 0)
-				{
-					break;
-				}
-				mstm.Write(buff, recvSize);
+				break;
 			}
-			if (mstm.GetLength() > 32)
+			mstm.Write(buff, recvSize);
+		}
+		if (mstm.GetLength() > 32)
+		{
+			UInt8 *jsonBuff = mstm.GetBuff(&recvSize);
+			Text::String *s;
+			Text::JSONBase *json = Text::JSONBase::ParseJSONBytes(jsonBuff, recvSize);
+			if (json)
 			{
-				UInt8 *jsonBuff = mstm.GetBuff(&recvSize);
-				Text::String *s;
-				Text::JSONBase *json = Text::JSONBase::ParseJSONBytes(jsonBuff, recvSize);
-				if (json)
+				if (json->GetType() == Text::JSONType::Object)
 				{
-					if (json->GetType() == Text::JSONType::Object)
+					Text::JSONObject *o = (Text::JSONObject*)json;
+					if ((s = o->GetObjectString(CSTR("newNonce"))) != 0)
 					{
-						Text::JSONObject *o = (Text::JSONObject*)json;
-						if ((s = o->GetObjectString(CSTR("newNonce"))) != 0)
+						this->urlNewNonce = s->Clone().Ptr();
+					}
+					if ((s = o->GetObjectString(CSTR("newAccount"))) != 0)
+					{
+						this->urlNewAccount = s->Clone().Ptr();
+					}
+					if ((s = o->GetObjectString(CSTR("newOrder"))) != 0)
+					{
+						this->urlNewOrder = s->Clone().Ptr();
+					}
+					if ((s = o->GetObjectString(CSTR("newAuthz"))) != 0)
+					{
+						this->urlNewAuthz = s->Clone().Ptr();
+					}
+					if ((s = o->GetObjectString(CSTR("revokeCert"))) != 0)
+					{
+						this->urlRevokeCert = s->Clone().Ptr();
+					}
+					if ((s = o->GetObjectString(CSTR("keyChange"))) != 0)
+					{
+						this->urlKeyChange = s->Clone().Ptr();
+					}
+					Text::JSONBase *metaBase = o->GetObjectValue(CSTR("meta"));
+					if (metaBase && metaBase->GetType() == Text::JSONType::Object)
+					{
+						Text::JSONObject *metaObj = (Text::JSONObject*)metaBase;
+						if ((s = metaObj->GetObjectString(CSTR("termsOfService"))) != 0)
 						{
-							this->urlNewNonce = s->Clone().Ptr();
+							this->urlTermOfService = s->Clone().Ptr();
 						}
-						if ((s = o->GetObjectString(CSTR("newAccount"))) != 0)
+						if ((s = metaObj->GetObjectString(CSTR("website"))) != 0)
 						{
-							this->urlNewAccount = s->Clone().Ptr();
-						}
-						if ((s = o->GetObjectString(CSTR("newOrder"))) != 0)
-						{
-							this->urlNewOrder = s->Clone().Ptr();
-						}
-						if ((s = o->GetObjectString(CSTR("newAuthz"))) != 0)
-						{
-							this->urlNewAuthz = s->Clone().Ptr();
-						}
-						if ((s = o->GetObjectString(CSTR("revokeCert"))) != 0)
-						{
-							this->urlRevokeCert = s->Clone().Ptr();
-						}
-						if ((s = o->GetObjectString(CSTR("keyChange"))) != 0)
-						{
-							this->urlKeyChange = s->Clone().Ptr();
-						}
-						Text::JSONBase *metaBase = o->GetObjectValue(CSTR("meta"));
-						if (metaBase && metaBase->GetType() == Text::JSONType::Object)
-						{
-							Text::JSONObject *metaObj = (Text::JSONObject*)metaBase;
-							if ((s = metaObj->GetObjectString(CSTR("termsOfService"))) != 0)
-							{
-								this->urlTermOfService = s->Clone().Ptr();
-							}
-							if ((s = metaObj->GetObjectString(CSTR("website"))) != 0)
-							{
-								this->urlWebsite = s->Clone().Ptr();
-							}
+							this->urlWebsite = s->Clone().Ptr();
 						}
 					}
-					json->EndUse();
 				}
+				json->EndUse();
 			}
 		}
-		DEL_CLASS(cli);
 	}
+	cli.Delete();
 }
 
 Net::ACMEConn::~ACMEConn()
@@ -395,9 +388,10 @@ Bool Net::ACMEConn::NewNonce()
 	{
 		return false;
 	}
-	Net::HTTPClient *cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, this->urlNewNonce->ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, true);
-	if (cli == 0)
+	NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, this->urlNewNonce->ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, true);
+	if (cli->IsError())
 	{
+		cli.Delete();
 		return false;
 	}
 	Bool succ = false;
@@ -411,7 +405,7 @@ Bool Net::ACMEConn::NewNonce()
 			succ = true;
 		}
 	}
-	DEL_CLASS(cli);
+	cli.Delete();
 	return succ;
 }
 

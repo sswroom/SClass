@@ -1029,12 +1029,11 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		{
 			SSWR::AVIRead::AVIRSelStreamForm dlg(0, this->ui, this->core, true, this->ssl);
 			dlg.SetText(CSTR("Select GPS Tracker"));
-			NotNullPtr<IO::Stream> stm;
-			if (dlg.ShowDialog(this) == UI::GUIForm::DR_OK && stm.Set(dlg.stm))
+			if (dlg.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
 				SSWR::AVIRead::AVIRGPSTrackerForm *gpsFrm;
 				IO::GPSNMEA *gps;
-				NEW_CLASS(gps, IO::GPSNMEA(stm, true));
+				NEW_CLASS(gps, IO::GPSNMEA(dlg.GetStream(), true));
 				NEW_CLASS(gpsFrm, SSWR::AVIRead::AVIRGPSTrackerForm(0, this->ui, this->core, gps, true));
 				this->core->ShowForm(gpsFrm);
 			}
@@ -1554,7 +1553,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 			if (dlg.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
 				SSWR::AVIRead::AVIRSNBDongleForm *snbFrm;
-				NEW_CLASS(snbFrm, SSWR::AVIRead::AVIRSNBDongleForm(0, this->ui, this->core, dlg.stm));
+				NEW_CLASS(snbFrm, SSWR::AVIRead::AVIRSNBDongleForm(0, this->ui, this->core, dlg.GetStream()));
 				this->core->ShowForm(snbFrm);
 			}
 		}
@@ -1804,10 +1803,10 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 				SSWR::AVIRead::AVIRVoiceModemForm *innerFrm;
 				IO::Device::RockwellModemController *modem;
 				IO::ATCommandChannel *channel;
-				NEW_CLASS(channel, IO::ATCommandChannel(dlg.stm, false));
+				NEW_CLASS(channel, IO::ATCommandChannel(dlg.GetStream(), false));
 				NEW_CLASS(modem, IO::Device::RockwellModemController(channel, false));
 
-				NEW_CLASS(innerFrm, SSWR::AVIRead::AVIRVoiceModemForm(0, this->ui, this->core, modem, channel, dlg.stm));
+				NEW_CLASS(innerFrm, SSWR::AVIRead::AVIRVoiceModemForm(0, this->ui, this->core, modem, channel, dlg.GetStream()));
 				this->core->ShowForm(innerFrm);
 			}
 		}

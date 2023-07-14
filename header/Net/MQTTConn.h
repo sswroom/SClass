@@ -52,18 +52,18 @@ namespace Net
 		UInt64 totalUpload;
 		UInt64 totalDownload;
 
-		virtual void DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize);
-		virtual void DataSkipped(IO::Stream *stm, void *stmObj, const UInt8 *buff, UOSInt buffSize);
+		virtual void DataParsed(NotNullPtr<IO::Stream> stm, void *stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize);
+		virtual void DataSkipped(NotNullPtr<IO::Stream> stm, void *stmObj, const UInt8 *buff, UOSInt buffSize);
 		static UInt32 __stdcall RecvThread(void *userObj);
 
 		void OnPublishMessage(Text::CString topic, const UInt8 *message, UOSInt msgSize);
 		PacketInfo *GetNextPacket(UInt8 packetType, Data::Duration timeout);
 		Bool SendPacket(const UInt8 *packet, UOSInt packetSize);
 
-		void InitStream(IO::Stream *stm);
+		void InitStream(NotNullPtr<IO::Stream> stm);
 	public:
 		MQTTConn(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CString host, UInt16 port, DisconnectHdlr discHdlr, void *discHdlrObj, Data::Duration timeout);
-		MQTTConn(IO::Stream *stm, DisconnectHdlr discHdlr, void *discHdlrObj);
+		MQTTConn(NotNullPtr<IO::Stream> stm, DisconnectHdlr discHdlr, void *discHdlrObj);
 		virtual ~MQTTConn();
 
 		void HandlePublishMessage(PublishMessageHdlr hdlr, void *userObj);

@@ -47,7 +47,7 @@ Net::SDPFile::SDPFile(UInt8 *buff, UOSInt buffSize)
 	Text::PString sarr[7];
 	Data::ArrayListStrUTF8 *currMedia = 0;
 	IO::MemoryReadingStream mstm(this->buff, this->buffSize);
-	Text::UTF8Reader reader(&mstm);
+	Text::UTF8Reader reader(mstm);
 	while ((sptr = reader.ReadLine(sbuff, 255)) != 0)
 	{
 		if (sbuff[1] == '=')
@@ -323,7 +323,7 @@ Bool Net::SDPFile::BuildBuff()
 	UTF8Char sbuff[3];
 	Text::StringBuilderUTF8 sb;
 	IO::MemoryStream mstm;
-	Text::UTF8Writer writer(&mstm);
+	Text::UTF8Writer writer(mstm);
 	sb.ClearStr();
 
 	sb.AppendC(UTF8STRC("v="));

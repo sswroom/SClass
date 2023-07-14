@@ -102,7 +102,7 @@ void __stdcall SSWR::AVIRead::AVIRLineCounterForm::OnResultSaveClicked(void *use
 		UOSInt i;
 		UOSInt j;
 		IO::FileStream fs(dlg.GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-		IO::StreamWriter writer(&fs, (UInt32)0);
+		IO::StreamWriter writer(fs, (UInt32)0);
 		i = 0;
 		j = me->resList.GetCount();
 		while (i < j)
@@ -166,7 +166,7 @@ void SSWR::AVIRead::AVIRLineCounterForm::CalcDir(UTF8Char *pathBuff, UTF8Char *p
 						while (true)
 						{
 							sb.ClearStr();
-							if (reader.ReadLine(&sb, 4096))
+							if (reader.ReadLine(sb, 4096))
 							{
 								lineCnt++;
 							}

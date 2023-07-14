@@ -307,7 +307,7 @@ Text::CString Net::WebServer::WebRequest::ParseHeaderVal(UTF8Char *headerData, U
 	return {outStr, dataLen};
 }
 
-Net::WebServer::WebRequest::WebRequest(Text::CString requestURI, Net::WebUtil::RequestMethod reqMeth, RequestProtocol reqProto, Net::TCPClient *cli, const Net::SocketUtil::AddressInfo *cliAddr, UInt16 cliPort, UInt16 svrPort)
+Net::WebServer::WebRequest::WebRequest(Text::CString requestURI, Net::WebUtil::RequestMethod reqMeth, RequestProtocol reqProto, NotNullPtr<Net::TCPClient> cli, const Net::SocketUtil::AddressInfo *cliAddr, UInt16 cliPort, UInt16 svrPort)
 {
 	this->requestURI = Text::String::New(requestURI);
 	this->reqMeth = reqMeth;
@@ -619,7 +619,7 @@ const Net::SocketUtil::AddressInfo *Net::WebServer::WebRequest::GetClientAddr() 
 
 Net::NetConnection *Net::WebServer::WebRequest::GetNetConn() const
 {
-	return this->cli;
+	return this->cli.Ptr();
 }
 
 UInt16 Net::WebServer::WebRequest::GetClientPort() const
@@ -642,7 +642,7 @@ Crypto::Cert::X509Cert *Net::WebServer::WebRequest::GetClientCert()
 	{
 		return 0;
 	}
-	Net::SSLClient *cli = (Net::SSLClient*)this->cli;
+	Net::SSLClient *cli = (Net::SSLClient*)this->cli.Ptr();
 	Crypto::Cert::Certificate *cert = cli->GetRemoteCert();
 	if (cert)
 	{

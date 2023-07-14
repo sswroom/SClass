@@ -27,7 +27,7 @@ Bool Exporter::GUITIFExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, U
 	return false;
 }
 
-Bool Exporter::GUITIFExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *fileName, IO::ParsedObject *pobj, void *param)
+Bool Exporter::GUITIFExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, const UTF8Char *fileName, IO::ParsedObject *pobj, void *param)
 {
 	Exporter::TIFFExporter exporter;
 	return exporter.ExportFile(stm, fileName, pobj, 0);

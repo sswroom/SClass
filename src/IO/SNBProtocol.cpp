@@ -64,7 +64,7 @@ UInt32 __stdcall IO::SNBProtocol::RecvThread(void *userObj)
 	return 0;
 }
 
-IO::SNBProtocol::SNBProtocol(IO::Stream *stm, ProtocolHandler protoHdlr, void *userObj)
+IO::SNBProtocol::SNBProtocol(NotNullPtr<IO::Stream> stm, ProtocolHandler protoHdlr, void *userObj)
 {
 	this->stm = stm;
 	this->protoHdlr = protoHdlr;
@@ -87,7 +87,7 @@ IO::SNBProtocol::~SNBProtocol()
 	{
 		Sync::SimpleThread::Sleep(10);
 	}
-	DEL_CLASS(this->stm);
+	this->stm.Delete();
 }
 
 void IO::SNBProtocol::SendCommand(UInt8 cmdType, UOSInt cmdSize, UInt8 *cmd)

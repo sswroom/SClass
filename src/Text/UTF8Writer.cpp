@@ -6,7 +6,7 @@
 #include "Text/MyStringW.h"
 #include "Text/UTF8Writer.h"
 
-Text::UTF8Writer::UTF8Writer(IO::Stream *stm)
+Text::UTF8Writer::UTF8Writer(NotNullPtr<IO::Stream> stm)
 {
 	this->stm = stm;
 }
@@ -133,7 +133,7 @@ void Text::UTF8Writer::WriteSignature()
 {
 	if (this->stm->CanSeek())
 	{
-		if (((IO::SeekableStream*)this->stm)->GetPosition() == 0)
+		if (((IO::SeekableStream*)this->stm.Ptr())->GetPosition() == 0)
 		{
 			const UTF8Char buff[3] = {0xEF, 0xBB, 0xBF};
 			this->stm->Write(buff, 3);

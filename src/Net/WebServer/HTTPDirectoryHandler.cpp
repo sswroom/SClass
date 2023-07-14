@@ -418,7 +418,7 @@ void Net::WebServer::HTTPDirectoryHandler::StatLoad(Net::WebServer::HTTPDirector
 		Text::PString sarr[2];
 		Text::UTF8Reader reader(fs);
 		sb.ClearStr();
-		while (reader.ReadLine(&sb, 1024))
+		while (reader.ReadLine(sb, 1024))
 		{
 			if (Text::StrSplitP(sarr, 2, sb, '\t') == 2)
 			{
@@ -438,7 +438,7 @@ void Net::WebServer::HTTPDirectoryHandler::StatSave(Net::WebServer::HTTPDirector
 		IO::FileStream fs(stat->statFileName, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 		if (!fs.IsError())
 		{
-			Text::UTF8Writer writer(&fs);
+			Text::UTF8Writer writer(fs);
 			UOSInt i;
 			UOSInt j;
 			i = 0;

@@ -893,7 +893,7 @@ Bool Net::OSSocketFactory::LoadHosts(Net::DNSHandler *dnsHdlr)
 	}
 	Text::UTF8Reader reader(fs);
 	Text::StringBuilderUTF8 sb;
-	while (reader.ReadLine(&sb, 512))
+	while (reader.ReadLine(sb, 512))
 	{
 		sb.Trim();
 		if (sb.ToString()[0] == '#')

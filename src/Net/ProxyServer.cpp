@@ -4,26 +4,26 @@
 void __stdcall Net::ProxyServer::OnClientConn(Socket *s, void *userObj)
 {
 	Net::ProxyServer *me = (Net::ProxyServer*)userObj;
-	Net::TCPClient *cli;
-	NEW_CLASS(cli, Net::TCPClient(me->sockf, s));
+	NotNullPtr<Net::TCPClient> cli;
+	NEW_CLASSNN(cli, Net::TCPClient(me->sockf, s));
 	me->cliMgr->AddClient(cli, 0);
 }
 		
-void __stdcall Net::ProxyServer::OnClientEvent(Net::TCPClient *cli, void *userObj, void *cliData, Net::TCPClientMgr::TCPEventType evtType)
+void __stdcall Net::ProxyServer::OnClientEvent(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, Net::TCPClientMgr::TCPEventType evtType)
 {
 //	Net::ProxyServer *me = (Net::ProxyServer*)userObj;
 	if (evtType == Net::TCPClientMgr::TCP_EVENT_DISCONNECT)
 	{
-		DEL_CLASS(cli);
+		cli.Delete();
 	}
 }
 
-void __stdcall Net::ProxyServer::OnClientData(Net::TCPClient *cli, void *userObj, void *cliData, const UInt8 *buff, UOSInt size)
+void __stdcall Net::ProxyServer::OnClientData(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, const UInt8 *buff, UOSInt size)
 {
 //	Net::ProxyServer *me = (Net::ProxyServer*)userObj;
 }
 
-void __stdcall Net::ProxyServer::OnClientTimeout(Net::TCPClient *cli, void *userObj, void *cliData)
+void __stdcall Net::ProxyServer::OnClientTimeout(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData)
 {
 }
 

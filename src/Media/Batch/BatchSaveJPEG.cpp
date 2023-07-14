@@ -27,6 +27,6 @@ void Media::Batch::BatchSaveJPEG::ImageOutput(Media::ImageList *imgList, const U
 	IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer);
 	param = this->exporter.CreateParam(imgList);
 	this->exporter.SetParamInt32(param, 0, (Int32)this->quality);
-	this->exporter.ExportFile(&fs, CSTRP(sbuff, sptr), imgList, param);
+	this->exporter.ExportFile(fs, CSTRP(sbuff, sptr), imgList, param);
 	this->exporter.DeleteParam(param);
 }

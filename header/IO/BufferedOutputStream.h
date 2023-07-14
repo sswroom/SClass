@@ -7,12 +7,12 @@ namespace IO
 	class BufferedOutputStream : public IO::Stream
 	{
 	private:
-		IO::Stream *outStm;
+		NotNullPtr<IO::Stream> outStm;
 		UInt8 *cacheBuff;
 		UOSInt cacheBuffSize;
 		UOSInt cacheSize;
 	public:
-		BufferedOutputStream(IO::Stream *outStm, UOSInt buffSize);
+		BufferedOutputStream(NotNullPtr<IO::Stream> outStm, UOSInt buffSize);
 		virtual ~BufferedOutputStream();
 
 		virtual Bool IsDown() const;

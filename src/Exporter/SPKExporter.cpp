@@ -63,7 +63,7 @@ void Exporter::SPKExporter::SetCodePage(UInt32 codePage)
 {
 }
 
-Bool Exporter::SPKExporter::ExportFile(IO::SeekableStream *stm, Text::CString fileName, IO::ParsedObject *pobj, void *param)
+Bool Exporter::SPKExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CString fileName, IO::ParsedObject *pobj, void *param)
 {
 	if (pobj->GetParserType() == IO::ParserType::PackageFile)
 	{

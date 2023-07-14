@@ -24,7 +24,7 @@
 #define WRITE_BUFFER_SIZE MAX_CHUNK_SIZE
 #endif
 
-Net::WebServer::WebConnection::WebConnection(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Net::TCPClient *cli, WebListener *svr, IWebHandler *hdlr, Bool allowProxy, KeepAlive keepAlive) : Net::WebServer::IWebResponse(CSTR("WebConnection"))
+Net::WebServer::WebConnection::WebConnection(Net::SocketFactory *sockf, Net::SSLEngine *ssl, NotNullPtr<Net::TCPClient> cli, WebListener *svr, IWebHandler *hdlr, Bool allowProxy, KeepAlive keepAlive) : Net::WebServer::IWebResponse(CSTR("WebConnection"))
 {
 	this->sockf = sockf;
 	this->ssl = ssl;
@@ -69,7 +69,7 @@ Net::WebServer::WebConnection::~WebConnection()
 		}
 	}
 	SDEL_CLASS(this->cstm);
-	DEL_CLASS(this->cli);
+	this->cli.Delete();
 	MemFree(this->dataBuff);
 	SDEL_CLASS(this->currReq);
 }
@@ -438,7 +438,7 @@ void Net::WebServer::WebConnection::ProcessResponse()
 	Net::WebUtil::RequestMethod reqMeth = this->currReq->GetReqMethod();
 	if (reqMeth == Net::WebUtil::RequestMethod::HTTP_CONNECT && this->allowProxy)
 	{
-		Net::TCPClient *proxyCli;
+		NotNullPtr<Net::TCPClient> proxyCli;
 		UTF8Char sbuff[512];
 		UTF8Char *sptr;
 		UOSInt i;
@@ -457,10 +457,10 @@ void Net::WebServer::WebConnection::ProcessResponse()
 		}
 	
 		sbuff[i] = 0;
-		NEW_CLASS(proxyCli, Net::TCPClient(this->sockf, {sbuff, i}, (UInt16)Text::StrToInt32(&sbuff[i + 1]), 30000));
+		NEW_CLASSNN(proxyCli, Net::TCPClient(this->sockf, {sbuff, i}, (UInt16)Text::StrToInt32(&sbuff[i + 1]), 30000));
 		if (proxyCli->IsConnectError())
 		{
-			DEL_CLASS(proxyCli);
+			proxyCli.Delete();
 			this->respStatus = Net::WebStatus::SC_NOT_FOUND;
 			this->AddDefHeaders(this->currReq);
 			if (!this->respHeaderSent)
@@ -471,7 +471,7 @@ void Net::WebServer::WebConnection::ProcessResponse()
 			return;
 		}
 		
-		this->proxyCli = proxyCli;
+		this->proxyCli = proxyCli.Ptr();
 		this->AddDefHeaders(this->currReq);
 		if (!this->respHeaderSent)
 		{
@@ -479,7 +479,7 @@ void Net::WebServer::WebConnection::ProcessResponse()
 		}
 		this->svr->LogAccess(this->currReq, this, 0);
 		this->proxyMode = true;
-		this->svr->AddProxyConn(this, this->proxyCli);
+		this->svr->AddProxyConn(this, proxyCli);
 	}
 	else if ((reqMeth == Net::WebUtil::RequestMethod::HTTP_GET || reqMeth == Net::WebUtil::RequestMethod::HTTP_POST) && reqURI->StartsWith(UTF8STRC("http://")))
 	{

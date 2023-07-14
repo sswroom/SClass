@@ -116,7 +116,7 @@ Manage::CPUInfo::CPUInfo()
 		{
 			Text::StringBuilderUTF8 sb;
 			Text::UTF8Reader reader(fs);
-			while (reader.ReadLine(&sb, 512))
+			while (reader.ReadLine(sb, 512))
 			{
 				if (sb.StartsWith(UTF8STRC("model name")))
 				{

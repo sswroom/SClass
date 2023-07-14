@@ -23,7 +23,7 @@ void Map::HKParkingVacancy::LoadParkingInfo()
 		return;
 	}
 	mstm.SeekFromBeginning(0);
-	DB::CSVFile csv(&mstm, 65001);
+	DB::CSVFile csv(mstm, 65001);
 	DB::DBReader *r = csv.QueryTableData(CSTR_NULL, CSTR_NULL, 0, 0, 0, CSTR_NULL, 0);
 	if (r)
 	{
@@ -166,7 +166,7 @@ void Map::HKParkingVacancy::LoadVacancy()
 			return;
 		}
 		mstm.SeekFromBeginning(0);
-		DB::CSVFile csv(&mstm, 65001);
+		DB::CSVFile csv(mstm, 65001);
 		DB::DBReader *r = csv.QueryTableData(CSTR_NULL, CSTR_NULL, 0, 0, 0, CSTR_NULL, 0);
 		if (r)
 		{

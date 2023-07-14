@@ -92,17 +92,17 @@ void __stdcall SSWR::AVIRead::AVIRLogMergeForm::OnConvertClicked(void *userObj)
 		Data::DateTime dt;
 		Int64 t1;
 		Int64 t2;
-		IO::FileStream *fs1;
-		IO::FileStream *fs2;
-		IO::FileStream *fs3;
-		Text::UTF8Reader *reader1;
-		Text::UTF8Reader *reader2;
-		Text::UTF8Writer *writer;
-		NEW_CLASS(fs1, IO::FileStream(sb1.ToCString(), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-		NEW_CLASS(reader1, Text::UTF8Reader(fs1));
-		NEW_CLASS(fs2, IO::FileStream(sb2.ToCString(), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-		NEW_CLASS(reader2, Text::UTF8Reader(fs2));
-		NEW_CLASS(fs3, IO::FileStream(sb3.ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+		NotNullPtr<IO::FileStream> fs1;
+		NotNullPtr<IO::FileStream> fs2;
+		NotNullPtr<IO::FileStream> fs3;
+		NotNullPtr<Text::UTF8Reader> reader1;
+		NotNullPtr<Text::UTF8Reader> reader2;
+		NotNullPtr<Text::UTF8Writer> writer;
+		NEW_CLASSNN(fs1, IO::FileStream(sb1.ToCString(), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+		NEW_CLASSNN(reader1, Text::UTF8Reader(fs1));
+		NEW_CLASSNN(fs2, IO::FileStream(sb2.ToCString(), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+		NEW_CLASSNN(reader2, Text::UTF8Reader(fs2));
+		NEW_CLASSNN(fs3, IO::FileStream(sb3.ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		if (fs3->IsError())
 		{
 			UI::MessageDialog::ShowDialog(CSTR("Error in creating Output file"), CSTR("Error"), me);
@@ -110,12 +110,12 @@ void __stdcall SSWR::AVIRead::AVIRLogMergeForm::OnConvertClicked(void *userObj)
 		else
 		{
 			dt.ToLocalTime();
-			NEW_CLASS(writer, Text::UTF8Writer(fs3));
+			NEW_CLASSNN(writer, Text::UTF8Writer(fs3));
 			writer->WriteSignature();
 			sb1.ClearStr();
-			succ1 = reader1->ReadLine(&sb1, 1024);
+			succ1 = reader1->ReadLine(sb1, 1024);
 			sb2.ClearStr();
-			succ2 = reader2->ReadLine(&sb2, 1024);
+			succ2 = reader2->ReadLine(sb2, 1024);
 			while (succ1 || succ2)
 			{
 				if (succ1 && succ2)
@@ -159,24 +159,24 @@ void __stdcall SSWR::AVIRead::AVIRLogMergeForm::OnConvertClicked(void *userObj)
 						reader1->GetLastLineBreak(sbuff);
 						while (succ1 && sbuff[0] == 0)
 						{
-							succ1 = reader1->ReadLine(&sb1, 1024);
+							succ1 = reader1->ReadLine(sb1, 1024);
 							reader1->GetLastLineBreak(sbuff);
 						}
 						writer->WriteLineC(sb1.ToString(), sb1.GetLength());
 						sb1.ClearStr();
-						succ1 = reader1->ReadLine(&sb1, 1024);
+						succ1 = reader1->ReadLine(sb1, 1024);
 					}
 					else
 					{
 						reader2->GetLastLineBreak(sbuff);
 						while (succ2 && sbuff[0] == 0)
 						{
-							succ2 = reader2->ReadLine(&sb2, 1024);
+							succ2 = reader2->ReadLine(sb2, 1024);
 							reader2->GetLastLineBreak(sbuff);
 						}
 						writer->WriteLineC(sb2.ToString(), sb2.GetLength());
 						sb2.ClearStr();
-						succ2 = reader2->ReadLine(&sb2, 1024);
+						succ2 = reader2->ReadLine(sb2, 1024);
 					}
 				}
 				else if (succ1)
@@ -184,34 +184,34 @@ void __stdcall SSWR::AVIRead::AVIRLogMergeForm::OnConvertClicked(void *userObj)
 					reader1->GetLastLineBreak(sbuff);
 					while (succ1 && sbuff[0] == 0)
 					{
-						succ1 = reader1->ReadLine(&sb1, 1024);
+						succ1 = reader1->ReadLine(sb1, 1024);
 						reader1->GetLastLineBreak(sbuff);
 					}
 					writer->WriteLineC(sb1.ToString(), sb1.GetLength());
 					sb1.ClearStr();
-					succ1 = reader1->ReadLine(&sb1, 1024);
+					succ1 = reader1->ReadLine(sb1, 1024);
 				}
 				else if (succ2)
 				{
 					reader2->GetLastLineBreak(sbuff);
 					while (succ2 && sbuff[0] == 0)
 					{
-						succ2 = reader2->ReadLine(&sb2, 1024);
+						succ2 = reader2->ReadLine(sb2, 1024);
 						reader2->GetLastLineBreak(sbuff);
 					}
 					writer->WriteLineC(sb2.ToString(), sb2.GetLength());
 					sb2.ClearStr();
-					succ2 = reader2->ReadLine(&sb2, 1024);
+					succ2 = reader2->ReadLine(sb2, 1024);
 				}
 			}
 			UI::MessageDialog::ShowDialog(CSTR("Complete log merge"), CSTR("Success"), me);
-			DEL_CLASS(writer);
+			writer.Delete();
 		}
-		DEL_CLASS(fs3);
-		DEL_CLASS(reader2);
-		DEL_CLASS(fs2);
-		DEL_CLASS(reader1);
-		DEL_CLASS(fs1);
+		fs3.Delete();
+		reader2.Delete();
+		fs2.Delete();
+		reader1.Delete();
+		fs1.Delete();
 	}
 }
 

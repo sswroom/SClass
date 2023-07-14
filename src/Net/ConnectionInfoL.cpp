@@ -194,7 +194,7 @@ Net::ConnectionInfo::ConnectionInfo(void *info)
 			Text::PString sarr[3];
 			Text::UTF8Reader reader(fs);
 			sb.ClearStr();
-			while (reader.ReadLine(&sb, 512))
+			while (reader.ReadLine(sb, 512))
 			{
 				sb.Trim();
 				if (sb.ToString()[0] == '#')

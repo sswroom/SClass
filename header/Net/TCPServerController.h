@@ -34,9 +34,9 @@ namespace Net
 
 	private:
 		static void __stdcall ConnHdlr(Socket *s, void *userObj);
-		static void __stdcall EventHdlr(Net::TCPClient *cli, void *userObj, void *cliData, Net::TCPClientMgr::TCPEventType evtType);
-		static void __stdcall DataHdlr(Net::TCPClient *cli, void *userObj, void *cliData, const UInt8 *buff, UOSInt size);
-		static void __stdcall TimeoutHdlr(Net::TCPClient *cli, void *userObj, void *cliData);
+		static void __stdcall EventHdlr(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, Net::TCPClientMgr::TCPEventType evtType);
+		static void __stdcall DataHdlr(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, const UInt8 *buff, UOSInt size);
+		static void __stdcall TimeoutHdlr(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData);
 	public:
 		TCPServerController(Net::SocketFactory *sockf, IO::LogTool *log, UInt16 port, Text::CString prefix, UOSInt maxBuffSize, TCPServerHandler *hdlr, UOSInt workerCnt, Int32 timeoutSec, Bool autoStart);
 		~TCPServerController();

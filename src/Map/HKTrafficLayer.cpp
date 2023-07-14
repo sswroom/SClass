@@ -811,7 +811,7 @@ IO::Stream *Map::HKTrafficLayer::OpenURLStream()
 	else
 	{
 		Int32 status;
-		Net::HTTPClient *cli;
+		NotNullPtr<Net::HTTPClient> cli;
 		cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, this->url->ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, true);
 		while (true)
 		{
@@ -820,7 +820,7 @@ IO::Stream *Map::HKTrafficLayer::OpenURLStream()
 			{
 				Text::StringBuilderUTF8 sb;
 				cli->GetRespHeader(CSTR("Location"), &sb);
-				DEL_CLASS(cli);
+				cli.Delete();
 				if (!this->url->Equals(sb.ToString(), sb.GetLength()))
 				{
 					this->url->Release();
@@ -840,9 +840,9 @@ IO::Stream *Map::HKTrafficLayer::OpenURLStream()
 
 		if (status == 200)
 		{
-			return cli;
+			return cli.Ptr();
 		}
-		DEL_CLASS(cli);
+		cli.Delete();
 		return 0;
 	}
 }

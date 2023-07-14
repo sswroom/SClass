@@ -51,14 +51,16 @@ Bool SSWR::AVIRead::AVIRPerformanceLogForm::Start()
 	if (this->testBuff)
 		return false;
 
-	NEW_CLASS(this->logStream, IO::FileStream(CSTR("Performance.log"), IO::FileMode::Append, IO::FileShare::DenyWrite, IO::FileStream::BufferType::Normal));
+	NotNullPtr<IO::FileStream> fs;
+	NEW_CLASSNN(fs, IO::FileStream(CSTR("Performance.log"), IO::FileMode::Append, IO::FileShare::DenyWrite, IO::FileStream::BufferType::Normal));
+	this->logStream = fs.Ptr();
 	if (this->logStream->IsError())
 	{
 		DEL_CLASS(this->logStream);
 		this->logStream = 0;
 		return false;
 	}
-	NEW_CLASS(this->writer, Text::UTF8Writer(this->logStream));
+	NEW_CLASS(this->writer, Text::UTF8Writer(fs));
 	this->testBuff = MemAllocA(UInt8, TEST_SIZE);
 	NEW_CLASS(this->testTime, Data::DateTime());
 	this->TestSpeed();

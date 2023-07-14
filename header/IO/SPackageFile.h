@@ -20,7 +20,7 @@ namespace IO
 		} FileInfo;
 	private:
 		Data::BTreeUTF8Map<FileInfo*> fileMap;
-		IO::SeekableStream *stm;
+		NotNullPtr<IO::SeekableStream> stm;
 		Bool writeMode;
 		Sync::Mutex mut;
 		Bool toRelease;
@@ -36,8 +36,8 @@ namespace IO
 		void AddPackageInner(IO::PackageFile *pkg, UTF8Char pathSeperator, UTF8Char *pathStart, UTF8Char *pathEnd);
 		Bool OptimizeFileInner(IO::SPackageFile *newFile, UInt64 dirOfst, UInt64 dirSize);
 	public:
-		SPackageFile(IO::SeekableStream *stm, Bool toRelease);
-		SPackageFile(IO::SeekableStream *stm, Bool toRelease, Int32 customType, UOSInt customSize, const UInt8 *customBuff);
+		SPackageFile(NotNullPtr<IO::SeekableStream> stm, Bool toRelease);
+		SPackageFile(NotNullPtr<IO::SeekableStream> stm, Bool toRelease, Int32 customType, UOSInt customSize, const UInt8 *customBuff);
 		SPackageFile(Text::CString fileName);
 		~SPackageFile();
 

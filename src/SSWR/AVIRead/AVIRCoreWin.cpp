@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "IO/MemoryStream.h"
+#include "IO/NullStream.h"
 #include "IO/StmData/MemoryDataCopy.h"
 #include "SSWR/AVIRead/AVIRASN1DataForm.h"
 #include "SSWR/AVIRead/AVIRBTScanLogForm.h"
@@ -325,7 +326,8 @@ void SSWR::AVIRead::AVIRCoreWin::SaveData(UI::GUIForm *ownerForm, IO::ParsedObje
 					{
 						if (suppType == IO::FileExporter::SupportType::PathOnly)
 						{
-							if (!fileExp->ExportFile(0, sfd.GetFileName()->ToCString(), pobj, param))
+							IO::NullStream stm;
+							if (!fileExp->ExportFile(stm, sfd.GetFileName()->ToCString(), pobj, param))
 							{
 								UI::MessageDialog::ShowDialog(CSTR("Error in saving file"), CSTR("Save Data"), ownerForm);
 							}
@@ -333,7 +335,7 @@ void SSWR::AVIRead::AVIRCoreWin::SaveData(UI::GUIForm *ownerForm, IO::ParsedObje
 						else
 						{
 							IO::FileStream fs(sfd.GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-							if (!fileExp->ExportFile(&fs, sfd.GetFileName()->ToCString(), pobj, param))
+							if (!fileExp->ExportFile(fs, sfd.GetFileName()->ToCString(), pobj, param))
 							{
 								UI::MessageDialog::ShowDialog(CSTR("Error in saving file"), CSTR("Save Data"), ownerForm);
 							}
@@ -346,7 +348,8 @@ void SSWR::AVIRead::AVIRCoreWin::SaveData(UI::GUIForm *ownerForm, IO::ParsedObje
 			{
 				if (suppType == IO::FileExporter::SupportType::PathOnly)
 				{
-					if (!fileExp->ExportFile(0, sfd.GetFileName()->ToCString(), pobj, 0))
+					IO::NullStream stm;
+					if (!fileExp->ExportFile(stm, sfd.GetFileName()->ToCString(), pobj, 0))
 					{
 						UI::MessageDialog::ShowDialog(CSTR("Error in saving file"), CSTR("Save Data"), ownerForm);
 					}
@@ -354,7 +357,7 @@ void SSWR::AVIRead::AVIRCoreWin::SaveData(UI::GUIForm *ownerForm, IO::ParsedObje
 				else
 				{
 					IO::FileStream fs(sfd.GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-					if (!fileExp->ExportFile(&fs, sfd.GetFileName()->ToCString(), pobj, 0))
+					if (!fileExp->ExportFile(fs, sfd.GetFileName()->ToCString(), pobj, 0))
 					{
 						UI::MessageDialog::ShowDialog(CSTR("Error in saving file"), CSTR("Save Data"), ownerForm);
 					}

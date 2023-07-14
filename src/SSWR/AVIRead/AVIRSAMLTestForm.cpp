@@ -299,7 +299,7 @@ void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnTimerTick(void *userObj)
 		Text::StringBuilderUTF8 sb;
 		{
 			IO::MemoryReadingStream mstm(me->respNew->v, me->respNew->leng);
-			Text::XMLReader::XMLWellFormat(me->core->GetEncFactory(), &mstm, 0, &sb);
+			Text::XMLReader::XMLWellFormat(me->core->GetEncFactory(), mstm, 0, &sb);
 		}
 		me->txtSAMLRespWF->SetText(sb.ToCString());
 
@@ -309,7 +309,7 @@ void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnTimerTick(void *userObj)
 		{
 			IO::MemoryReadingStream mstm(sb.v, sb.GetLength());
 			Text::StringBuilderUTF8 sb2;
-			Text::XMLReader::XMLWellFormat(me->core->GetEncFactory(), &mstm, 0, &sb2);
+			Text::XMLReader::XMLWellFormat(me->core->GetEncFactory(), mstm, 0, &sb2);
 			me->txtSAMLDecrypt->SetText(sb2.ToCString());
 		}
 		else
@@ -341,14 +341,14 @@ Bool __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnLoginRequest(void *userObj, Ne
 	{
 		IO::MemoryReadingStream mstm(sb.v, sb.GetLength());
 		Text::StringBuilderUTF8 sb2;
-		Text::XMLReader::XMLWellFormat(me->core->GetEncFactory(), &mstm, 0, &sb2);
+		Text::XMLReader::XMLWellFormat(me->core->GetEncFactory(), mstm, 0, &sb2);
 		decMsg = Text::XML::ToNewHTMLTextXMLColor(sb2.ToString()).Ptr();
 	}
 	DEL_CLASS(key);
 	{
 		IO::MemoryReadingStream mstm(msg->rawMessage.v, msg->rawMessage.leng);
 		sb.ClearStr();
-		Text::XMLReader::XMLWellFormat(me->core->GetEncFactory(), &mstm, 0, &sb);
+		Text::XMLReader::XMLWellFormat(me->core->GetEncFactory(), mstm, 0, &sb);
 	}
 	NotNullPtr<Text::String> msgContent = Text::XML::ToNewHTMLTextXMLColor(sb.ToString());
 	sb.ClearStr();

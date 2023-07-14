@@ -22,8 +22,8 @@ namespace Net
 				SSL
 			};
 		private:
-			Net::TCPClient *cli;
-			Text::UTF8Writer *writer;
+			NotNullPtr<Net::TCPClient> cli;
+			NotNullPtr<Text::UTF8Writer> writer;
 			Bool threadToStop;
 			Bool threadRunning;
 			Bool threadStarted;

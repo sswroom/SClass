@@ -24,6 +24,6 @@ void Media::Batch::BatchSaveTIFF::ImageOutput(Media::ImageList *imgList, const U
 	IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer);
 	param = this->exporter.CreateParam(imgList);
 	this->exporter.SetParamBool(param, 0, this->isCompressed);
-	this->exporter.ExportFile(&fs, CSTRP(sbuff, sptr), imgList, param);
+	this->exporter.ExportFile(fs, CSTRP(sbuff, sptr), imgList, param);
 	this->exporter.DeleteParam(param);
 }

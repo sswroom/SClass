@@ -161,9 +161,9 @@ void Net::MACInfoList::Load()
 	IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 	if (!fs.IsError())
 	{
-		Text::UTF8Reader reader(&fs);
+		Text::UTF8Reader reader(fs);
 		sb.ClearStr();
-		while (reader.ReadLine(&sb, 1024))
+		while (reader.ReadLine(sb, 1024))
 		{
 			if (sb.StartsWith(UTF8STRC("\t{")) && sb.EndsWith(UTF8STRC("\")},")))
 			{
@@ -225,8 +225,8 @@ Bool Net::MACInfoList::Store()
 	{
 		Text::StringBuilderUTF8 sb;
 		Net::MACInfo::MACEntry *entry;
-		IO::BufferedOutputStream cstm(&fs, 8192);
-		Text::UTF8Writer writer(&cstm);
+		IO::BufferedOutputStream cstm(fs, 8192);
+		Text::UTF8Writer writer(cstm);
 		writer.WriteSignature();
 		i = 0;
 		j = this->dataList.GetCount();

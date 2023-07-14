@@ -31,7 +31,7 @@ IO::SystemInfo::SystemInfo()
 		{
 			Text::UTF8Reader reader(&fs);
 			sb.ClearStr();
-			while (reader.ReadLine(&sb, 512))
+			while (reader.ReadLine(sb, 512))
 			{
 				if (sb.StartsWith(UTF8STRC("machine")))
 				{
@@ -69,7 +69,7 @@ IO::SystemInfo::SystemInfo()
 		{
 			Text::UTF8Reader reader(&fs);
 			sb.ClearStr();
-			if (reader.ReadLine(&sb, 512))
+			if (reader.ReadLine(sb, 512))
 			{
 				data->platformName = Text::String::New(sb.ToString(), sb.GetLength());
 			}

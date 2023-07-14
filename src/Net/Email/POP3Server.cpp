@@ -12,7 +12,7 @@
 #include <stdio.h>
 #endif
 
-void __stdcall Net::Email::POP3Server::ConnReady(Net::TCPClient *cli, void *userObj)
+void __stdcall Net::Email::POP3Server::ConnReady(NotNullPtr<Net::TCPClient> cli, void *userObj)
 {
 	Net::Email::POP3Server *me = (Net::Email::POP3Server*)userObj;
 	MailStatus *cliStatus;
@@ -37,13 +37,13 @@ void __stdcall Net::Email::POP3Server::ConnHdlr(Socket *s, void *userObj)
 	}
 	else
 	{
-		Net::TCPClient *cli;
-		NEW_CLASS(cli, Net::TCPClient(me->sockf, s));
+		NotNullPtr<Net::TCPClient> cli;
+		NEW_CLASSNN(cli, Net::TCPClient(me->sockf, s));
 		ConnReady(cli, me);
 	}
 }
 
-void __stdcall Net::Email::POP3Server::ClientEvent(Net::TCPClient *cli, void *userObj, void *cliData, Net::TCPClientMgr::TCPEventType evtType)
+void __stdcall Net::Email::POP3Server::ClientEvent(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, Net::TCPClientMgr::TCPEventType evtType)
 {
 	if (evtType == Net::TCPClientMgr::TCP_EVENT_DISCONNECT)
 	{
@@ -65,14 +65,14 @@ void __stdcall Net::Email::POP3Server::ClientEvent(Net::TCPClient *cli, void *us
 			DEL_CLASS(cliStatus->dataStm);
 		}
 		DEL_CLASS(cliStatus);
-		DEL_CLASS(cli);
+		cli.Delete();
 	}
 	else if (evtType == Net::TCPClientMgr::TCP_EVENT_HASDATA)
 	{
 	}
 }
 
-void __stdcall Net::Email::POP3Server::ClientData(Net::TCPClient *cli, void *userObj, void *cliData, const UInt8 *buff, UOSInt size)
+void __stdcall Net::Email::POP3Server::ClientData(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, const UInt8 *buff, UOSInt size)
 {
 	Net::Email::POP3Server *me = (Net::Email::POP3Server*)userObj;
 	MailStatus *cliStatus;
@@ -127,11 +127,11 @@ void __stdcall Net::Email::POP3Server::ClientData(Net::TCPClient *cli, void *use
 	}
 }
 
-void __stdcall Net::Email::POP3Server::ClientTimeout(Net::TCPClient *cli, void *userObj, void *cliData)
+void __stdcall Net::Email::POP3Server::ClientTimeout(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData)
 {
 }
 
-UOSInt Net::Email::POP3Server::WriteMessage(Net::TCPClient *cli, Bool success, const UTF8Char *msg, UOSInt msgLen)
+UOSInt Net::Email::POP3Server::WriteMessage(NotNullPtr<Net::TCPClient> cli, Bool success, const UTF8Char *msg, UOSInt msgLen)
 {
 	Text::StringBuilderUTF8 sb;
 	if (success)
@@ -161,7 +161,7 @@ UOSInt Net::Email::POP3Server::WriteMessage(Net::TCPClient *cli, Bool success, c
 	return buffSize;
 }
 
-UOSInt Net::Email::POP3Server::WriteRAW(Net::TCPClient *cli, const UTF8Char *msg, UOSInt msgLen)
+UOSInt Net::Email::POP3Server::WriteRAW(NotNullPtr<Net::TCPClient> cli, const UTF8Char *msg, UOSInt msgLen)
 {
 	UOSInt buffSize;
 	buffSize = cli->Write(msg, msgLen);
@@ -172,7 +172,7 @@ UOSInt Net::Email::POP3Server::WriteRAW(Net::TCPClient *cli, const UTF8Char *msg
 	return buffSize;
 }
 
-void Net::Email::POP3Server::ParseCmd(Net::TCPClient *cli, MailStatus *cliStatus, const UTF8Char *cmd, UOSInt cmdLen)
+void Net::Email::POP3Server::ParseCmd(NotNullPtr<Net::TCPClient> cli, MailStatus *cliStatus, const UTF8Char *cmd, UOSInt cmdLen)
 {
 #if defined(VERBOSE)
 	printf("%s\r\n", cmd);

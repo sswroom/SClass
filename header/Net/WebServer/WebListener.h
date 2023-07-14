@@ -52,15 +52,15 @@ namespace Net
 			
 
 		private:
-			static void __stdcall ClientReady(Net::TCPClient *cli, void *userObj);
+			static void __stdcall ClientReady(NotNullPtr<Net::TCPClient> cli, void *userObj);
 			static void __stdcall ConnHdlr(Socket *s, void *userObj);
-			static void __stdcall ClientEvent(Net::TCPClient *cli, void *userObj, void *cliData, Net::TCPClientMgr::TCPEventType evtType);
-			static void __stdcall ClientData(Net::TCPClient *cli, void *userObj, void *cliData, const UInt8 *buff, UOSInt size);
-			static void __stdcall ClientTimeout(Net::TCPClient *cli, void *userObj, void *cliData);
+			static void __stdcall ClientEvent(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, Net::TCPClientMgr::TCPEventType evtType);
+			static void __stdcall ClientData(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, const UInt8 *buff, UOSInt size);
+			static void __stdcall ClientTimeout(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData);
 
-			static void __stdcall ProxyClientEvent(Net::TCPClient *cli, void *userObj, void *cliData, Net::TCPClientMgr::TCPEventType evtType);
-			static void __stdcall ProxyClientData(Net::TCPClient *cli, void *userObj, void *cliData, const UInt8 *buff, UOSInt size);
-			static void __stdcall ProxyTimeout(Net::TCPClient *cli, void *userObj, void *cliData);
+			static void __stdcall ProxyClientEvent(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, Net::TCPClientMgr::TCPEventType evtType);
+			static void __stdcall ProxyClientData(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, const UInt8 *buff, UOSInt size);
+			static void __stdcall ProxyTimeout(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData);
 
 			static void __stdcall OnDataSent(void *userObj, UOSInt buffSize);
 		public:
@@ -74,10 +74,10 @@ namespace Net
 			void SetRequestLog(IReqLogger *reqLog);
 			void LogAccess(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Double time);
 			void LogMessageC(Net::WebServer::IWebRequest *req, const UTF8Char *msg, UOSInt msgLen);
-			void AddProxyConn(Net::WebServer::WebConnection *conn, Net::TCPClient *proxyCli);
+			void AddProxyConn(Net::WebServer::WebConnection *conn, NotNullPtr<Net::TCPClient> proxyCli);
 			void HandleTimeout(TimeoutHandler hdlr, void *userObj);
 
-			void ExtendTimeout(Net::TCPClient *cli);
+			void ExtendTimeout(NotNullPtr<Net::TCPClient> cli);
 			void GetStatus(SERVER_STATUS *status);
 			UOSInt GetClientCount() const;
 		};

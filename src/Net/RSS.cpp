@@ -448,7 +448,7 @@ Net::RSS::RSS(Text::CString url, Text::String *userAgent, Net::SocketFactory *so
 	this->ttl = 0;
 
 	IO::ParsedObject *pobj;
-	IO::Stream *stm;
+	NotNullPtr<IO::Stream> stm;
 	pobj = Net::URL::OpenObject(url, STR_CSTR(userAgent), sockf, ssl, timeout);
 	if (pobj == 0)
 	{
@@ -459,8 +459,7 @@ Net::RSS::RSS(Text::CString url, Text::String *userAgent, Net::SocketFactory *so
 		DEL_CLASS(pobj);
 		return;
 	}
-	stm = (IO::Stream*)pobj;
-	if (stm == 0)
+	if (!stm.Set((IO::Stream*)pobj))
 		return;
 
 /*	Text::XMLDocument doc;
@@ -1166,7 +1165,7 @@ Net::RSS::RSS(Text::CString url, Text::String *userAgent, Net::SocketFactory *so
 			reader.SkipElement();
 		}
 	}
-	DEL_CLASS(stm);
+	stm.Delete();
 }
 
 Net::RSS::~RSS()

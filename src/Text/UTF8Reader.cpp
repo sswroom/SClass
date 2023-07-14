@@ -318,7 +318,7 @@ UTF32Char Text::UTF8Reader::Read()
 	return 0;
 }
 
-Bool Text::UTF8Reader::ReadLine(Text::StringBuilderUTF8 *sb, UOSInt maxCharCnt)
+Bool Text::UTF8Reader::ReadLine(NotNullPtr<Text::StringBuilderUTF8> sb, UOSInt maxCharCnt)
 {
 	if (this->currOfst >= this->buffSize)
 	{
@@ -638,7 +638,7 @@ UTF8Char *Text::UTF8Reader::GetLastLineBreak(UTF8Char *buff)
 	return buff;
 }
 
-Bool Text::UTF8Reader::GetLastLineBreak(Text::StringBuilderUTF8 *sb)
+Bool Text::UTF8Reader::GetLastLineBreak(NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	sb->AppendLB(this->lineBreak);
 	return true;
@@ -649,7 +649,7 @@ Bool Text::UTF8Reader::IsLineBreak()
 	return this->lineBreak != Text::LineBreakType::None;
 }
 
-Bool Text::UTF8Reader::ReadToEnd(Text::StringBuilderUTF8 *sb)
+Bool Text::UTF8Reader::ReadToEnd(NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	Bool succ = false;
 	while (this->ReadLine(sb, UTF8READER_BUFFSIZE))

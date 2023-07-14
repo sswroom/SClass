@@ -84,16 +84,17 @@ void __stdcall SSWR::AVIRead::AVIRSSDPClientForm::OnServiceSelChg(void *userObj)
 			Net::SSDPClient::SSDPRoot *root = me->rootMap->Get(svc->location);
 			if (root == 0)
 			{
-				Net::HTTPClient *cli = Net::HTTPClient::CreateConnect(me->sockf, me->ssl, svc->location->ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, true);
-				if (cli == 0)
+				NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(me->sockf, me->ssl, svc->location->ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, true);
+				if (cli->IsError())
 				{
 					root = MemAlloc(Net::SSDPClient::SSDPRoot, 1);
 					MemClear(root, sizeof(Net::SSDPClient::SSDPRoot));
+					cli.Delete();
 				}
 				else
 				{
 					root = Net::SSDPClient::SSDPRootParse(me->core->GetEncFactory(), cli);
-					DEL_CLASS(cli);
+					cli.Delete();
 				}
 				me->rootMap->Put(svc->location, root);
 			}

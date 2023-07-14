@@ -25,7 +25,7 @@ Manage::CPUInfo::CPUInfo()
 //		Int32 cpuPart = 0;
 		Text::StringBuilderUTF8 sb;
 		Text::UTF8Reader reader(&fs);
-		while (reader.ReadLine(&sb, 512))
+		while (reader.ReadLine(sb, 512))
 		{
 			if (sb.StartsWith(UTF8STRC("Hardware"))) //ARM
 			{

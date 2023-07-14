@@ -10,14 +10,14 @@
 UInt32 __stdcall Net::FTPConn::FTPThread(void *userObj)
 {
 	Net::FTPConn *me = (Net::FTPConn *)userObj;
-	IO::StreamReader *reader;
+	NotNullPtr<IO::StreamReader> reader;
 	UTF8Char sbuff[2048];
 	UTF8Char sbuff2[4];
 	UTF8Char *sptr;
 	Int32 msgCode;
 
 	me->threadRunning = true;
-	NEW_CLASS(reader, IO::StreamReader(me->cli, me->codePage));
+	NEW_CLASSNN(reader, IO::StreamReader(me->cli, me->codePage));
 	while (!me->threadToStop)
 	{
 		sptr = reader->ReadLine(sbuff, 2048);
@@ -65,7 +65,7 @@ UInt32 __stdcall Net::FTPConn::FTPThread(void *userObj)
 	}
 	me->statusChg = true;
 	me->evt->Set();
-	DEL_CLASS(reader);
+	reader.Delete();
 	me->threadRunning = false;
 	return 0;
 }
@@ -86,7 +86,7 @@ Int32 Net::FTPConn::WaitForResult()
 		return 0;
 }
 
-Net::FTPConn::FTPConn(Text::CString host, UInt16 port, Net::SocketFactory *sockf, UInt32 codePage, Data::Duration timeout)
+Net::FTPConn::FTPConn(Text::CString host, UInt16 port, Net::SocketFactory *sockf, UInt32 codePage, Data::Duration timeout) : cli(sockf, host, port, timeout)
 {
 	this->codePage = codePage;
 	this->threadRunning = false;
@@ -95,7 +95,6 @@ Net::FTPConn::FTPConn(Text::CString host, UInt16 port, Net::SocketFactory *sockf
 	this->msgRet = 0;
 	this->statusChg = false;
 	NEW_CLASS(this->evt, Sync::Event(true));
-	NEW_CLASS(this->cli, Net::TCPClient(sockf, host, port, timeout));
 	NEW_CLASS(this->writer, IO::StreamWriter(this->cli, codePage));
 	Sync::ThreadUtil::Create(FTPThread, this);
 	WaitForResult();
@@ -104,13 +103,12 @@ Net::FTPConn::FTPConn(Text::CString host, UInt16 port, Net::SocketFactory *sockf
 Net::FTPConn::~FTPConn()
 {
 	this->threadToStop = true;
-	this->cli->Close();
+	this->cli.Close();
 	while (this->threadRunning)
 	{
 		Sync::SimpleThread::Sleep(10);
 	}
 	DEL_CLASS(this->writer);
-	DEL_CLASS(this->cli);
 	DEL_CLASS(this->evt);
 }
 

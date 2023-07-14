@@ -137,8 +137,8 @@ Bool IO::BTDevLog::LoadFile(Text::CString fileName)
 	{
 		return false;
 	}
-	Text::UTF8Reader reader(&fs);
-	while (reader.ReadLine(&sb, 512))
+	Text::UTF8Reader reader(fs);
+	while (reader.ReadLine(sb, 512))
 	{
 		colCnt = Text::StrSplitP(sarr, 9, sb, '\t');
 		if ((colCnt == 4 || colCnt == 6 || colCnt == 7 || colCnt == 8) && sarr[0].leng == 17)
@@ -217,7 +217,7 @@ Bool IO::BTDevLog::StoreFile(Text::CString fileName)
 	{
 		return false;
 	}
-	Text::UTF8Writer writer(&fs);
+	Text::UTF8Writer writer(fs);
 	Data::ArrayList<DevEntry*> logList;
 	logList.AddAll(&this->pubDevs);
 	logList.AddAll(&this->randDevs);

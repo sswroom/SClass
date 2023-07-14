@@ -962,7 +962,7 @@ Bool Net::OSSocketFactory::GetDefDNS(Net::SocketUtil::AddressInfo *addr)
 	while (true)
 	{
 		sb.ClearStr();
-		if (!reader.ReadLine(&sb, 1024))
+		if (!reader.ReadLine(sb, 1024))
 		{
 			break;
 		}
@@ -1003,7 +1003,7 @@ UOSInt Net::OSSocketFactory::GetDNSList(Data::ArrayList<UInt32> *dnsList)
 	while (true)
 	{
 		sb.ClearStr();
-		if (!reader.ReadLine(&sb, 1024))
+		if (!reader.ReadLine(sb, 1024))
 		{
 			break;
 		}
@@ -1044,7 +1044,7 @@ Bool Net::OSSocketFactory::LoadHosts(Net::DNSHandler *dnsHdlr)
 	}
 	Text::UTF8Reader reader(fs);
 	Text::StringBuilderUTF8 sb;
-	while (reader.ReadLine(&sb, 512))
+	while (reader.ReadLine(sb, 512))
 	{
 		sb.Trim();
 		if (sb.ToString()[0] == '#')
@@ -1121,10 +1121,10 @@ UOSInt Net::OSSocketFactory::GetConnInfoList(Data::ArrayList<Net::ConnectionInfo
 	if (!fs.IsError())
 	{
 		Text::UTF8Reader reader(fs);
-		if (reader.ReadLine(&sb, 512))
+		if (reader.ReadLine(sb, 512))
 		{
 			sb.ClearStr();
-			while (reader.ReadLine(&sb, 512))
+			while (reader.ReadLine(sb, 512))
 			{
 				i = Text::StrSplitWS(sarr, 4, sb.v);
 				if (i == 4)
@@ -1226,12 +1226,12 @@ UOSInt OSSocketFactory_LoadPortInfo(Data::ArrayList<Net::SocketFactory::PortInfo
 		UTF8Char *sarr2[3];
 		Text::StringBuilderUTF8 sb;
 		Text::UTF8Reader reader(fs);
-		if (reader.ReadLine(&sb, 1024))
+		if (reader.ReadLine(sb, 1024))
 		{
 			while (true)
 			{
 				sb.ClearStr();
-				if (!reader.ReadLine(&sb, 1024))
+				if (!reader.ReadLine(sb, 1024))
 				{
 					break;
 				}
@@ -1324,12 +1324,12 @@ UOSInt OSSocketFactory_LoadPortInfov4(Data::ArrayList<Net::SocketFactory::PortIn
 		UTF8Char *sarr2[3];
 		Text::StringBuilderUTF8 sb;
 		Text::UTF8Reader reader(fs);
-		if (reader.ReadLine(&sb, 1024))
+		if (reader.ReadLine(sb, 1024))
 		{
 			while (true)
 			{
 				sb.ClearStr();
-				if (!reader.ReadLine(&sb, 1024))
+				if (!reader.ReadLine(sb, 1024))
 				{
 					break;
 				}
@@ -1424,12 +1424,12 @@ UOSInt OSSocketFactory_LoadPortInfov6(Data::ArrayList<Net::SocketFactory::PortIn
 		UTF8Char *sarr2[3];
 		Text::StringBuilderUTF8 sb;
 		Text::UTF8Reader reader(fs);
-		if (reader.ReadLine(&sb, 1024))
+		if (reader.ReadLine(sb, 1024))
 		{
 			while (true)
 			{
 				sb.ClearStr();
-				if (!reader.ReadLine(&sb, 1024))
+				if (!reader.ReadLine(sb, 1024))
 				{
 					break;
 				}

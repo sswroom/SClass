@@ -53,11 +53,11 @@ void Net::MQTTStaticClient::Connect()
 	Net::MQTTConn *conn;
 	if (this->webSocket)
 	{
-		Net::WebSocketClient *ws;
-		NEW_CLASS(ws, Net::WebSocketClient(this->sockf, this->ssl, this->host->ToCString(), this->port, CSTR("/mqtt"), CSTR_NULL, Net::WebSocketClient::Protocol::MQTT, this->connTimeout));
+		NotNullPtr<Net::WebSocketClient> ws;
+		NEW_CLASSNN(ws, Net::WebSocketClient(this->sockf, this->ssl, this->host->ToCString(), this->port, CSTR("/mqtt"), CSTR_NULL, Net::WebSocketClient::Protocol::MQTT, this->connTimeout));
 		if (ws->IsDown())
 		{
-			DEL_CLASS(ws);
+			ws.Delete();
 			if (errLog) errLog->WriteLineC(UTF8STRC("MQTT: Error in initializing websocket"));
 			return;
 		}

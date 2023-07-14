@@ -21,7 +21,7 @@ Manage::CPUInfoDetail::CPUInfoDetail()
 		Text::StringBuilderUTF8 sb;
 		{
 			Text::UTF8Reader reader(&fs);
-			while (reader.ReadLine(&sb, 512))
+			while (reader.ReadLine(sb, 512))
 			{
 				if (sb.StartsWith(UTF8STRC("CPU part	:")))
 				{
@@ -240,7 +240,7 @@ Bool Manage::CPUInfoDetail::GetCPUTemp(UOSInt index, Double *temp)
 		IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 		Text::UTF8Reader reader(&fs);
 		sb.ClearStr();
-		if (reader.ReadLine(&sb, 512))
+		if (reader.ReadLine(sb, 512))
 		{
 			Double val = Text::StrToDouble(sb.ToString());
 			if (val < 100 && val > 0)
@@ -262,7 +262,7 @@ Bool Manage::CPUInfoDetail::GetCPUTemp(UOSInt index, Double *temp)
 		IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 		Text::UTF8Reader reader(&fs);
 		sb.ClearStr();
-		if (reader.ReadLine(&sb, 512))
+		if (reader.ReadLine(sb, 512))
 		{
 			if (sb.ToString()[0] == '+')
 			{

@@ -9,7 +9,7 @@ Bool IO::FileExporter::ExportNewFile(Text::CString fileName, IO::ParsedObject *p
 	{
 		return false;
 	}
-	Bool succ = this->ExportFile(&fs, fileName, pobj, param);
+	Bool succ = this->ExportFile(fs, fileName, pobj, param);
 	return succ;
 }
 

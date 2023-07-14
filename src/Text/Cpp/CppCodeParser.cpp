@@ -2351,7 +2351,7 @@ Bool Text::Cpp::CppCodeParser::ParseFile(const UTF8Char *fileName, UOSInt fileNa
 		status->BeginParseFile({fileName, fileNameLen});
 		succ = true;
 
-		IO::StreamReader reader(&fs, 0);
+		IO::StreamReader reader(fs, 0);
 		while ((sptr = reader.ReadLine(lineBuff, 65535)) != 0)
 		{
 			if (!ParseLine(lineBuff, sptr, status, errMsgs))

@@ -196,7 +196,7 @@ UOSInt Net::TCPClientMgr::GetClientCount() const
 	return this->cliArr.GetCount();
 }
 
-void Net::TCPClientMgr::ExtendTimeout(Net::TCPClient *cli)
+void Net::TCPClientMgr::ExtendTimeout(NotNullPtr<Net::TCPClient> cli)
 {
 	Sync::MutexUsage mutUsage(&this->cliMut);
 	OSInt i = this->cliIdArr.SortedIndexOf(cli->GetCliId());

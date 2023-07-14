@@ -15,7 +15,7 @@ void __stdcall Net::TCPServerController::ConnHdlr(Socket *s, void *userObj)
 	data->cliObj = me->hdlr->NewConn(cli);
 }
 
-void __stdcall Net::TCPServerController::EventHdlr(Net::TCPClient *cli, void *userObj, void *cliData, Net::TCPClientMgr::TCPEventType evtType)
+void __stdcall Net::TCPServerController::EventHdlr(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, Net::TCPClientMgr::TCPEventType evtType)
 {
 	Net::TCPServerController *me = (Net::TCPServerController*)userObj;
 	Net::TCPServerController::ClientData *data = (Net::TCPServerController::ClientData*)cliData;
@@ -32,7 +32,7 @@ void __stdcall Net::TCPServerController::EventHdlr(Net::TCPClient *cli, void *us
 	}
 }
 
-void __stdcall Net::TCPServerController::DataHdlr(Net::TCPClient *cli, void *userObj, void *cliData, const UInt8 *buff, UOSInt size)
+void __stdcall Net::TCPServerController::DataHdlr(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, const UInt8 *buff, UOSInt size)
 {
 	Net::TCPServerController *me = (Net::TCPServerController*)userObj;
 	Net::TCPServerController::ClientData *data = (Net::TCPServerController::ClientData*)cliData;
@@ -63,7 +63,7 @@ void __stdcall Net::TCPServerController::DataHdlr(Net::TCPClient *cli, void *use
 	}
 }
 
-void __stdcall Net::TCPServerController::TimeoutHdlr(Net::TCPClient *cli, void *userObj, void *cliData)
+void __stdcall Net::TCPServerController::TimeoutHdlr(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData)
 {
 }
 

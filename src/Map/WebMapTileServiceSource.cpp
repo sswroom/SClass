@@ -25,12 +25,10 @@ void Map::WebMapTileServiceSource::LoadXML()
 	Text::StringBuilderUTF8 sb;
 	sb.Append(this->wmtsURL);
 	sb.AppendC(UTF8STRC("?REQUEST=GetCapabilities"));
-	Net::HTTPClient *cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, false);
-	if (cli == 0)
-		return;
+	NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, false);
 	if (cli->IsError())
 	{
-		DEL_CLASS(cli);
+		cli.Delete();
 		return;
 	}
 	{
@@ -99,7 +97,7 @@ void Map::WebMapTileServiceSource::LoadXML()
 			}
 		}
 	}
-	DEL_CLASS(cli);
+	cli.Delete();
 	this->SetLayer(0);
 }
 
@@ -903,14 +901,14 @@ Bool Map::WebMapTileServiceSource::QueryInfos(Math::Coord2DDbl coord, UOSInt lev
 #endif
 
 	Text::StringBuilderUTF8 sb;
-	Net::HTTPClient *cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, CSTR("WMTS/1.0 SSWR/1.0"), true, urlSb.StartsWith(UTF8STRC("https://")));
+	NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, CSTR("WMTS/1.0 SSWR/1.0"), true, urlSb.StartsWith(UTF8STRC("https://")));
 	cli->Connect(urlSb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, true);
 	UOSInt readSize;
 	while ((readSize = cli->Read(tmpBuff, 1024)) > 0)
 	{
 		sb.AppendC(tmpBuff, readSize);
 	}
-	DEL_CLASS(cli);
+	cli.Delete();
 
 	if (this->currResourceInfo->format->Equals(UTF8STRC("text/plain")))
 	{
@@ -1018,7 +1016,7 @@ IO::StreamData *Map::WebMapTileServiceSource::LoadTileImageData(UOSInt level, Ma
 	Bool hasTime = false;
 	Data::DateTime dt;
 	Data::DateTime currTime;
-	Net::HTTPClient *cli;
+	NotNullPtr<Net::HTTPClient> cli;
 	IO::StreamData *fd;
 	TileMatrix *tileMatrix = this->GetTileMatrix(level);
 	if (tileMatrix == 0)
@@ -1125,7 +1123,7 @@ IO::StreamData *Map::WebMapTileServiceSource::LoadTileImageData(UOSInt level, Ma
 			}
 		}
 	}
-	DEL_CLASS(cli);
+	cli.Delete();
 
 	NEW_CLASS(fd, IO::StmData::FileData({filePathU, (UOSInt)(sptru - filePathU)}, false));
 	if (fd)

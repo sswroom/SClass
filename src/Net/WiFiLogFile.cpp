@@ -62,11 +62,11 @@ void Net::WiFiLogFile::LoadFile(Text::CString fileName)
 		Net::WiFiLogFile::LogFileEntry *log;
 		Text::StringBuilderUTF8 sb;
 		UInt64 iMAC;
-		Text::UTF8Reader reader(&fs);
+		Text::UTF8Reader reader(fs);
 		sb.ClearStr();
 		buff[0] = 0;
 		buff[1] = 0;
-		while (reader.ReadLine(&sb, 4096))
+		while (reader.ReadLine(sb, 4096))
 		{
 			i = Text::StrSplitP(sarr, 12, sb, '\t');
 			if (i == 4 || i == 7 || i == 9 || i == 10 || i == 11)
@@ -286,8 +286,8 @@ Bool Net::WiFiLogFile::StoreFile(Text::CString fileName)
 	Bool succ = false;
 	IO::FileStream fs(fileName, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 	{
-		IO::BufferedOutputStream cstm(&fs, 8192);
-		Text::UTF8Writer writer(&cstm);
+		IO::BufferedOutputStream cstm(fs, 8192);
+		Text::UTF8Writer writer(cstm);
 		succ = true;
 		i = 0;
 		j = this->logList.GetCount();

@@ -453,7 +453,7 @@ Net::TCPClientMgr::~TCPClientMgr()
 	}
 }
 
-void Net::TCPClientMgr::AddClient(TCPClient *cli, void *cliData)
+void Net::TCPClientMgr::AddClient(NotNullPtr<TCPClient> cli, void *cliData)
 {
 //	printf("Client added and set timeout to %d\r\n", this->timeOutSeconds);
 	cli->SetNoDelay(true);
@@ -549,7 +549,7 @@ UOSInt Net::TCPClientMgr::GetClientCount() const
 	return this->cliArr.GetCount();
 }
 
-void Net::TCPClientMgr::ExtendTimeout(Net::TCPClient *cli)
+void Net::TCPClientMgr::ExtendTimeout(NotNullPtr<Net::TCPClient> cli)
 {
 	Sync::MutexUsage mutUsage(&this->cliMut);
 	OSInt i = this->cliIdArr.SortedIndexOf(cli->GetCliId());
@@ -566,7 +566,7 @@ Net::TCPClient *Net::TCPClientMgr::GetClient(UOSInt index, void **cliData)
 	if (cliStat)
 	{
 		*cliData = cliStat->cliData;
-		return cliStat->cli;
+		return cliStat->cli.Ptr();
 	}
 	return 0;
 }

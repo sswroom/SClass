@@ -60,7 +60,7 @@ Bool Exporter::PEMExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8
 	return false;
 }
 
-Bool Exporter::PEMExporter::ExportFile(IO::SeekableStream *stm, Text::CString fileName, IO::ParsedObject *pobj, void *param)
+Bool Exporter::PEMExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CString fileName, IO::ParsedObject *pobj, void *param)
 {
 	if (pobj->GetParserType() != IO::ParserType::ASN1Data)
 	{
@@ -74,7 +74,7 @@ Bool Exporter::PEMExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 	return ExportStream(stm, (Crypto::Cert::X509File*)asn1);
 }
 
-Bool Exporter::PEMExporter::ExportStream(IO::SeekableStream *stm, Crypto::Cert::X509File *x509)
+Bool Exporter::PEMExporter::ExportStream(NotNullPtr<IO::SeekableStream> stm, Crypto::Cert::X509File *x509)
 {
 	Text::TextBinEnc::Base64Enc b64;
 	Text::StringBuilderUTF8 sb;
@@ -161,6 +161,6 @@ Bool Exporter::PEMExporter::ExportFile(Text::CString fileName, Crypto::Cert::X50
 	{
 		return false;
 	}
-	Bool succ = ExportStream(&fs, x509);
+	Bool succ = ExportStream(fs, x509);
 	return succ;
 }

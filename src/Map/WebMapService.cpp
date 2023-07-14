@@ -41,7 +41,7 @@ void Map::WebMapService::LoadXML(Version version)
 	if (!Net::HTTPClient::LoadContent(this->sockf, this->ssl, sb.ToCString(), &mstm, 1048576))
 		return;
 	mstm.SeekFromBeginning(0);
-	Text::XMLReader reader(this->encFact, &mstm, Text::XMLReader::PM_XML);
+	Text::XMLReader reader(this->encFact, mstm, Text::XMLReader::PM_XML);
 	while (reader.ReadNext())
 	{
 		if (reader.GetNodeType() == Text::XMLNode::NodeType::Element)
@@ -554,7 +554,7 @@ Bool Map::WebMapService::QueryInfos(Math::Coord2DDbl coord, Math::RectAreaDbl bo
 
 	UInt8 dataBuff[2048];
 	UOSInt readSize;
-	Net::HTTPClient *cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, true);
+	NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, true);
 	if (cli->GetRespStatus() == Net::WebStatus::SC_OK)
 	{
 		Text::StringBuilderUTF8 sbData;
@@ -562,7 +562,7 @@ Bool Map::WebMapService::QueryInfos(Math::Coord2DDbl coord, Math::RectAreaDbl bo
 		{
 			sbData.AppendC(dataBuff, readSize);
 		}
-		DEL_CLASS(cli);
+		cli.Delete();
 
 		if (infoFormat->Equals(UTF8STRC("application/json")))
 		{
@@ -583,7 +583,7 @@ Bool Map::WebMapService::QueryInfos(Math::Coord2DDbl coord, Math::RectAreaDbl bo
 		}
 		return false;
 	}
-	DEL_CLASS(cli);
+	cli.Delete();
 	return false;
 }
 
@@ -657,7 +657,7 @@ Media::ImageList *Map::WebMapService::DrawMap(Math::RectAreaDbl bounds, UInt32 w
 	UInt8 dataBuff[2048];
 	UOSInt readSize;
 	Media::ImageList *ret = 0;
-	Net::HTTPClient *cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, true);
+	NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, true);
 	Bool succ = cli->GetRespStatus() == Net::WebStatus::SC_OK;
 	if (succ)
 	{
@@ -689,7 +689,7 @@ Media::ImageList *Map::WebMapService::DrawMap(Math::RectAreaDbl bounds, UInt32 w
 			ret = (Media::ImageList*)parser.ParseFile(&mdr, 0, IO::ParserType::ImageList);
 		}
 	}
-	DEL_CLASS(cli);
+	cli.Delete();
 	return ret;
 }
 

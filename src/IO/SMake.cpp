@@ -173,7 +173,7 @@ Bool IO::SMake::LoadConfigFile(Text::CString cfgFile)
 	Text::UTF8Reader reader(fs);
 	sb.ClearStr();
 	ret = true;
-	while (reader.ReadLine(&sb, 1024))
+	while (reader.ReadLine(sb, 1024))
 	{
 		if (sb.ToString()[0] == '#')
 		{
@@ -476,7 +476,7 @@ Bool IO::SMake::LoadConfigFile(Text::CString cfgFile)
 }
 
 
-Bool IO::SMake::ParseSource(Data::FastStringMap<Int32> *objList, Data::FastStringMap<Int32> *libList, Data::FastStringMap<Int32> *procList, Data::ArrayListStringNN *headerList, Int64 *latestTime, Text::CString sourceFile, Text::StringBuilderUTF8 *tmpSb)
+Bool IO::SMake::ParseSource(Data::FastStringMap<Int32> *objList, Data::FastStringMap<Int32> *libList, Data::FastStringMap<Int32> *procList, Data::ArrayListStringNN *headerList, Int64 *latestTime, Text::CString sourceFile, NotNullPtr<Text::StringBuilderUTF8> tmpSb)
 {
 	Text::CString fileName;
 	if (IO::Path::PATH_SEPERATOR == '\\')
@@ -606,7 +606,7 @@ Bool IO::SMake::ParseSource(Data::FastStringMap<Int32> *objList, Data::FastStrin
 	return true;
 }
 
-Bool IO::SMake::ParseHeader(Data::FastStringMap<Int32> *objList, Data::FastStringMap<Int32> *libList, Data::FastStringMap<Int32> *procList, Data::ArrayListStringNN *headerList, Int64 *latestTime, NotNullPtr<Text::String> headerFile, Text::CString sourceFile, Text::StringBuilderUTF8 *tmpSb)
+Bool IO::SMake::ParseHeader(Data::FastStringMap<Int32> *objList, Data::FastStringMap<Int32> *libList, Data::FastStringMap<Int32> *procList, Data::ArrayListStringNN *headerList, Int64 *latestTime, NotNullPtr<Text::String> headerFile, Text::CString sourceFile, NotNullPtr<Text::StringBuilderUTF8> tmpSb)
 {
 	IO::SMake::ConfigItem *cfg = this->cfgMap.Get(CSTR("INCLUDEPATH"));
 	if (cfg == 0)
@@ -689,7 +689,7 @@ Bool IO::SMake::ParseHeader(Data::FastStringMap<Int32> *objList, Data::FastStrin
 	return false;
 }
 
-Bool IO::SMake::ParseProgInternal(Data::FastStringMap<Int32> *objList, Data::FastStringMap<Int32> *libList, Data::FastStringMap<Int32> *procList, Data::ArrayListStringNN *headerList, Int64 *latestTime, Bool *progGroup, NotNullPtr<const ProgramItem> prog, Text::StringBuilderUTF8 *tmpSb)
+Bool IO::SMake::ParseProgInternal(Data::FastStringMap<Int32> *objList, Data::FastStringMap<Int32> *libList, Data::FastStringMap<Int32> *procList, Data::ArrayListStringNN *headerList, Int64 *latestTime, Bool *progGroup, NotNullPtr<const ProgramItem> prog, NotNullPtr<Text::StringBuilderUTF8> tmpSb)
 {
 	NotNullPtr<Text::String> subItem;
 	IO::SMake::ProgramItem *subProg;
@@ -817,7 +817,7 @@ Bool IO::SMake::CompileProgInternal(NotNullPtr<const ProgramItem> prog, Bool asm
 
 	Text::StringBuilderUTF8 sb;
 
-	if (!this->ParseProgInternal(&objList, &libList, &procList, 0, &latestTime, &progGroup, prog, &sb))
+	if (!this->ParseProgInternal(&objList, &libList, &procList, 0, &latestTime, &progGroup, prog, sb))
 	{
 		return false;
 	}
@@ -1371,7 +1371,7 @@ Bool IO::SMake::ParseProg(Data::FastStringMap<Int32> *objList, Data::FastStringM
 	}
 	else
 	{
-		return this->ParseProgInternal(objList, libList, procList, headerList, latestTime, progGroup, prog, &sb);
+		return this->ParseProgInternal(objList, libList, procList, headerList, latestTime, progGroup, prog, sb);
 	}
 }
 

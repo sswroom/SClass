@@ -41,7 +41,7 @@ Bool Exporter::PDFExporter::GetOutputName(OSInt index, UTF8Char *nameBuff, UTF8C
 	return false;
 }
 
-Bool Exporter::PDFExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *fileName, IO::ParsedObject *pobj, void *param)
+Bool Exporter::PDFExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, const UTF8Char *fileName, IO::ParsedObject *pobj, void *param)
 {
 	if (pobj->GetParserType() != IO::ParserType::VectorDocument)
 	{

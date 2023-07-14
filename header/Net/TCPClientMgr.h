@@ -28,7 +28,7 @@ namespace Net
 		{
 		public:
 			UTF8Char debug[6];
-			TCPClient *cli;
+			NotNullPtr<TCPClient> cli;
 			void *cliData;
 			Data::Timestamp lastDataTime;
 			Sync::Mutex readMut;
@@ -59,9 +59,9 @@ namespace Net
 			TCPClientMgr *me;
 		} WorkerStatus;
 
-		typedef void (__stdcall *TCPClientEvent)(TCPClient *cli, void *userObj, void *cliData, TCPEventType evtType);
-		typedef void (__stdcall *TCPClientData)(TCPClient *cli, void *userObj, void *cliData, const UInt8 *buff, UOSInt size);
-		typedef void (__stdcall *TCPClientTimeout)(TCPClient *cli, void *userObj, void *cliData);
+		typedef void (__stdcall *TCPClientEvent)(NotNullPtr<TCPClient> cli, void *userObj, void *cliData, TCPEventType evtType);
+		typedef void (__stdcall *TCPClientData)(NotNullPtr<TCPClient> cli, void *userObj, void *cliData, const UInt8 *buff, UOSInt size);
+		typedef void (__stdcall *TCPClientTimeout)(NotNullPtr<TCPClient> cli, void *userObj, void *cliData);
 
 	private:
 		TCPClientEvent evtHdlr;
@@ -89,14 +89,14 @@ namespace Net
 		TCPClientMgr(Int32 timeOutSeconds, TCPClientEvent evtHdlr, TCPClientData dataHdlr, void *userObj, UOSInt workerCnt, TCPClientTimeout toHdlr);
 		~TCPClientMgr();
 
-		void AddClient(TCPClient *cli, void *cliData);
+		void AddClient(NotNullPtr<TCPClient> cli, void *cliData);
 		Bool SendClientData(UInt64 cliId, const UInt8 *buff, UOSInt buffSize);
 		Bool IsError();
 		void CloseAll();
 
 		void UseGetClient(Sync::MutexUsage *mutUsage);
 		UOSInt GetClientCount() const;
-		void ExtendTimeout(Net::TCPClient *cli);
+		void ExtendTimeout(NotNullPtr<Net::TCPClient> cli);
 		Net::TCPClient *GetClient(UOSInt index, void **cliData);
 	};
 }

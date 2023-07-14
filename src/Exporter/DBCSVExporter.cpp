@@ -45,7 +45,7 @@ void Exporter::DBCSVExporter::SetCodePage(UInt32 codePage)
 	this->codePage = codePage;
 }
 
-Bool Exporter::DBCSVExporter::ExportFile(IO::SeekableStream *stm, Text::CString fileName, IO::ParsedObject *pobj, void *param)
+Bool Exporter::DBCSVExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CString fileName, IO::ParsedObject *pobj, void *param)
 {
 	if (!DB::ReadingDB::IsDBObj(pobj))
 	{
@@ -65,8 +65,6 @@ Bool Exporter::DBCSVExporter::ExportFile(IO::SeekableStream *stm, Text::CString 
 	{
 		return false;
 	}
-	IO::BufferedOutputStream *cstm;
-	IO::StreamWriter *writer;
 	UTF8Char *lineBuff1;
 	UTF8Char *lineBuff2;
 	UTF8Char *sptr;
@@ -74,9 +72,9 @@ Bool Exporter::DBCSVExporter::ExportFile(IO::SeekableStream *stm, Text::CString 
 	UOSInt i;
 	Bool firstCol;
 
-	NEW_CLASS(cstm, IO::BufferedOutputStream(stm, 65536));
-	NEW_CLASS(writer, IO::StreamWriter(cstm, this->codePage));
-	writer->WriteSignature();
+	IO::BufferedOutputStream cstm(stm, 65536);
+	IO::StreamWriter writer(cstm, this->codePage);
+	writer.WriteSignature();
 
 	lineBuff1 = MemAlloc(UTF8Char, 65536);
 	lineBuff2 = MemAlloc(UTF8Char, 65536);
@@ -106,7 +104,7 @@ Bool Exporter::DBCSVExporter::ExportFile(IO::SeekableStream *stm, Text::CString 
 		}
 		i++;
 	}
-	writer->WriteLineC(lineBuff2, (UOSInt)(sptr - lineBuff2));
+	writer.WriteLineC(lineBuff2, (UOSInt)(sptr - lineBuff2));
 
 	while (r->ReadNext())
 	{
@@ -135,15 +133,13 @@ Bool Exporter::DBCSVExporter::ExportFile(IO::SeekableStream *stm, Text::CString 
 			}
 			i++;
 		}
-		writer->WriteLineC(lineBuff2, (UOSInt)(sptr - lineBuff2));
+		writer.WriteLineC(lineBuff2, (UOSInt)(sptr - lineBuff2));
 	}
 	
 	MemFree(lineBuff2);
 	MemFree(lineBuff1);
 
 	db->CloseReader(r);
-	DEL_CLASS(writer);
-	DEL_CLASS(cstm);
 	return true;
 }
 

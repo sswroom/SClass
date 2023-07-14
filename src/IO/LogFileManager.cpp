@@ -102,7 +102,7 @@ void IO::LogFileManager::WriteLogText(IO::Stream *fs, Text::StyledTextWriter *wr
 {
 	Text::UTF8Reader reader(fs);
 	Text::StringBuilderUTF8 sb;
-	while (reader.ReadLine(&sb, 1024))
+	while (reader.ReadLine(sb, 1024))
 	{
 		reader.GetLastLineBreak(&sb);
 		if (sb.leng <= 20)

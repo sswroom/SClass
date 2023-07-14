@@ -271,7 +271,7 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnConvFileClicked(void *userObj
 	}
 
 	strBuff = MemAlloc(UTF8Char, 16384);
-	Text::UTF8Writer writer(&fs);
+	Text::UTF8Writer writer(fs);
 	sptr = strBuff;
 	i = 0;
 	while (i < colCnt)

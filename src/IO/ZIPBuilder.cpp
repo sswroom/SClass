@@ -8,7 +8,7 @@
 #include "Sync/MutexUsage.h"
 #include "Text/MyString.h"
 
-IO::ZIPBuilder::ZIPBuilder(IO::SeekableStream *stm)
+IO::ZIPBuilder::ZIPBuilder(NotNullPtr<IO::SeekableStream> stm)
 {
 	this->stm = stm;
 	this->baseOfst = this->stm->GetPosition();

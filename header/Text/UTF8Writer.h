@@ -8,9 +8,9 @@ namespace Text
 	class UTF8Writer : public IO::Writer
 	{
 	private:
-		IO::Stream *stm;
+		NotNullPtr<IO::Stream> stm;
 	public:
-		UTF8Writer(IO::Stream *stm);
+		UTF8Writer(NotNullPtr<IO::Stream> stm);
 		virtual ~UTF8Writer();
 
 		virtual Bool WriteStrC(const UTF8Char *str, UOSInt nChar);

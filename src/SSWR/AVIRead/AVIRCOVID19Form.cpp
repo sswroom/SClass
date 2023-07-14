@@ -31,7 +31,7 @@ void __stdcall SSWR::AVIRead::AVIRCOVID19Form::OnDownloadClicked(void *userObj)
 	SSWR::AVIRead::AVIRCOVID19Form *me = (SSWR::AVIRead::AVIRCOVID19Form*)userObj;
 	UInt8 buff[2048];
 	UOSInt i;
-	Net::HTTPClient *cli = Net::HTTPClient::CreateConnect(me->sockf, me->ssl, CSTR("https://covid.ourworldindata.org/data/owid-covid-data.csv"), Net::WebUtil::RequestMethod::HTTP_GET, true);
+	NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(me->sockf, me->ssl, CSTR("https://covid.ourworldindata.org/data/owid-covid-data.csv"), Net::WebUtil::RequestMethod::HTTP_GET, true);
 	IO::MemoryStream mstm(1024);
 	while (true)
 	{
@@ -42,7 +42,7 @@ void __stdcall SSWR::AVIRead::AVIRCOVID19Form::OnDownloadClicked(void *userObj)
 		}
 		mstm.Write(buff, i);
 	}
-	DEL_CLASS(cli);
+	cli.Delete();
 	if (mstm.GetLength() > 100)
 	{
 		me->LoadCSV(mstm);

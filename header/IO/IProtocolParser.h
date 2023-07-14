@@ -7,9 +7,9 @@ namespace IO
 	class IProtocolParser
 	{
 	public:
-		virtual void *CreateStreamData(IO::Stream *stm) = 0;
-		virtual void DeleteStreamData(IO::Stream *stm, void *stmData) = 0;
-		virtual UOSInt ParseProtocol(IO::Stream *stm, void *stmObj, void *stmData, const UInt8 *buff, UOSInt buffSize) = 0; // return unprocessed size
+		virtual void *CreateStreamData(NotNullPtr<IO::Stream> stm) = 0;
+		virtual void DeleteStreamData(NotNullPtr<IO::Stream> stm, void *stmData) = 0;
+		virtual UOSInt ParseProtocol(NotNullPtr<IO::Stream> stm, void *stmObj, void *stmData, const UInt8 *buff, UOSInt buffSize) = 0; // return unprocessed size
 	};
 }
 #endif

@@ -421,7 +421,7 @@ Map::GPSTrack *IO::GPSNMEA::NMEA2Track(NotNullPtr<IO::Stream> stm, Text::CString
 	while (true)
 	{
 		sb.ClearStr();
-		if (!reader.ReadLine(&sb, 1024))
+		if (!reader.ReadLine(sb, 1024))
 		{
 			break;
 		}

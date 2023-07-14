@@ -592,7 +592,7 @@ void SSWR::AVIRead::AVIRMediaForm::EventMenuClicked(UInt16 cmdId)
 				UOSInt j;
 				video = (Media::IVideoSource*)this->popMedia;
 				IO::FileStream fs(dlg.GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-				Text::UTF8Writer writer(&fs);
+				Text::UTF8Writer writer(fs);
 				writer.WriteLineC(UTF8STRC("# timecode format v2"));
 				j = video->GetFrameCount();
 				if (j >= 0)

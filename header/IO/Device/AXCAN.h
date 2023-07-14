@@ -53,7 +53,7 @@ namespace IO
 			virtual ~AXCAN();
 
 			Bool OpenSerialPort(UOSInt portNum, UInt32 serialBaudRate, CANBitRate bitRate);
-			Bool OpenStream(IO::Stream *stm, CANBitRate bitRate);
+			Bool OpenStream(NotNullPtr<IO::Stream> stm, CANBitRate bitRate);
 			void CloseSerialPort(Bool force);
 
 			virtual void CANStop();

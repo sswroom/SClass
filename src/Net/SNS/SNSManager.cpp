@@ -63,8 +63,8 @@ Net::SNS::SNSManager::ChannelData *Net::SNS::SNSManager::ChannelInit(Net::SNS::S
 	sptr = Text::StrConcatC(sptr, UTF8STRC("curritem.txt"));
 	Text::StringBuilderUTF8 sb;
 	IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-	Text::UTF8Reader reader(&fs);
-	while (reader.ReadLine(&sb, 1024))
+	Text::UTF8Reader reader(fs);
+	while (reader.ReadLine(sb, 1024))
 	{
 		if (sb.GetLength() > 0)
 		{
@@ -98,7 +98,7 @@ void Net::SNS::SNSManager::ChannelAddMessage(Net::SNS::SNSManager::ChannelData *
 	NotNullPtr<Text::String> s;
 	{
 		IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-		Text::UTF8Writer writer(&fs);
+		Text::UTF8Writer writer(fs);
 		s = Text::String::NewCSVRec(item->id->v);
 		sb.Append(s);
 		s->Release();
@@ -154,7 +154,7 @@ void Net::SNS::SNSManager::ChannelAddMessage(Net::SNS::SNSManager::ChannelData *
 		UOSInt retryCnt;
 		UInt64 leng;
 		Text::PString sarr[2];
-		Net::HTTPClient *cli;
+		NotNullPtr<Net::HTTPClient> cli;
 		UInt8 *tmpBuff = MemAlloc(UInt8, 65536);
 
 		sptr = this->dataPath->ConcatTo(sbuff);
@@ -231,7 +231,7 @@ void Net::SNS::SNSManager::ChannelAddMessage(Net::SNS::SNSManager::ChannelData *
 					printf("Image download failed: Cannot connect to server, url: %s\r\n", sarr[0].v);
 					retryCnt++;
 				}
-				DEL_CLASS(cli);
+				cli.Delete();
 			}
 
 			if (j != 2)
@@ -287,7 +287,7 @@ void Net::SNS::SNSManager::ChannelAddMessage(Net::SNS::SNSManager::ChannelData *
 						i++;
 					}
 				}
-				DEL_CLASS(cli);
+				cli.Delete();
 
 				if (j != 2)
 				{
@@ -315,7 +315,7 @@ void Net::SNS::SNSManager::ChannelStoreCurr(Net::SNS::SNSManager::ChannelData *c
 	sptr = Text::StrConcatC(sptr, UTF8STRC("curritem.txt"));
 	Text::StringBuilderUTF8 sb;
 	IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-	Text::UTF8Writer writer(&fs);
+	Text::UTF8Writer writer(fs);
 	UOSInt i = 0;
 	UOSInt j = channel->currItems.GetCount();
 	while (i < j)
@@ -461,14 +461,14 @@ Net::SNS::SNSManager::SNSManager(Net::SocketFactory *sockf, Net::SSLEngine *ssl,
 				*sptr2++ = IO::Path::PATH_SEPERATOR;
 				sptr2 = Text::StrConcatC(sptr2, UTF8STRC("channel.txt"));
 				IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-				Text::UTF8Reader reader(&fs);
+				Text::UTF8Reader reader(fs);
 				sb.ClearStr();
-				if (reader.ReadLine(&sb, 1024))
+				if (reader.ReadLine(sb, 1024))
 				{
 					type = Net::SNS::SNSControl::SNSTypeFromName(sb.ToCString());
 				}
 				sb.ClearStr();
-				if (reader.ReadLine(&sb, 1024))
+				if (reader.ReadLine(sb, 1024))
 				{
 					if (sb.GetLength() > 0)
 					{
@@ -552,7 +552,7 @@ Net::SNS::SNSControl *Net::SNS::SNSManager::AddChannel(Net::SNS::SNSControl::SNS
 		sptr = Text::StrConcatC(sptr, UTF8STRC("channel.txt"));
 		{
 			IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-			Text::UTF8Writer writer(&fs);
+			Text::UTF8Writer writer(fs);
 			writer.WriteLine(Net::SNS::SNSControl::SNSTypeGetName(ctrl->GetSNSType()));
 			NotNullPtr<Text::String> s = ctrl->GetChannelId();
 			writer.WriteLineC(s->v, s->leng);

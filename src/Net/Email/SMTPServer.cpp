@@ -6,7 +6,7 @@
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 
-void __stdcall Net::Email::SMTPServer::ClientReady(Net::TCPClient *cli, void *userObj)
+void __stdcall Net::Email::SMTPServer::ClientReady(NotNullPtr<Net::TCPClient> cli, void *userObj)
 {
 	Net::Email::SMTPServer *me = (Net::Email::SMTPServer*)userObj;
 	MailStatus *cliStatus;
@@ -34,19 +34,19 @@ void __stdcall Net::Email::SMTPServer::ClientReady(Net::TCPClient *cli, void *us
 void __stdcall Net::Email::SMTPServer::ConnHdlr(Socket *s, void *userObj)
 {
 	Net::Email::SMTPServer *me = (Net::Email::SMTPServer*)userObj;
-	Net::TCPClient *cli;
+	NotNullPtr<Net::TCPClient> cli;
 	if (me->connType == Net::Email::SMTPConn::ConnType::SSL)
 	{
 		me->ssl->ServerInit(s, ClientReady, me);
 	}
 	else
 	{
-		NEW_CLASS(cli, Net::TCPClient(me->sockf, s));
+		NEW_CLASSNN(cli, Net::TCPClient(me->sockf, s));
 		ClientReady(cli, me);
 	}
 }
 
-void __stdcall Net::Email::SMTPServer::ClientEvent(Net::TCPClient *cli, void *userObj, void *cliData, Net::TCPClientMgr::TCPEventType evtType)
+void __stdcall Net::Email::SMTPServer::ClientEvent(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, Net::TCPClientMgr::TCPEventType evtType)
 {
 	if (evtType == Net::TCPClientMgr::TCP_EVENT_DISCONNECT)
 	{
@@ -65,14 +65,14 @@ void __stdcall Net::Email::SMTPServer::ClientEvent(Net::TCPClient *cli, void *us
 			DEL_CLASS(cliStatus->dataStm);
 		}
 		DEL_CLASS(cliStatus);
-		DEL_CLASS(cli);
+		cli.Delete();
 	}
 	else if (evtType == Net::TCPClientMgr::TCP_EVENT_HASDATA)
 	{
 	}
 }
 
-void __stdcall Net::Email::SMTPServer::ClientData(Net::TCPClient *cli, void *userObj, void *cliData, const UInt8 *buff, UOSInt size)
+void __stdcall Net::Email::SMTPServer::ClientData(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, const UInt8 *buff, UOSInt size)
 {
 	Net::Email::SMTPServer *me = (Net::Email::SMTPServer*)userObj;
 	Net::Email::SMTPServer::MailStatus *cliStatus;
@@ -150,11 +150,11 @@ void __stdcall Net::Email::SMTPServer::ClientData(Net::TCPClient *cli, void *use
 	}
 }
 
-void __stdcall Net::Email::SMTPServer::ClientTimeout(Net::TCPClient *cli, void *userObj, void *cliData)
+void __stdcall Net::Email::SMTPServer::ClientTimeout(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData)
 {
 }
 
-UOSInt Net::Email::SMTPServer::WriteMessage(Net::TCPClient *cli, Int32 statusCode, Text::CString msg)
+UOSInt Net::Email::SMTPServer::WriteMessage(NotNullPtr<Net::TCPClient> cli, Int32 statusCode, Text::CString msg)
 {
 	Text::StringBuilderUTF8 sb;
 	UOSInt i = 0;
@@ -222,7 +222,7 @@ UOSInt Net::Email::SMTPServer::WriteMessage(Net::TCPClient *cli, Int32 statusCod
 	return strLen;
 }*/
 
-void Net::Email::SMTPServer::ParseCmd(Net::TCPClient *cli, Net::Email::SMTPServer::MailStatus *cliStatus, const UTF8Char *cmd, UOSInt cmdLen, Text::LineBreakType lbt)
+void Net::Email::SMTPServer::ParseCmd(NotNullPtr<Net::TCPClient> cli, Net::Email::SMTPServer::MailStatus *cliStatus, const UTF8Char *cmd, UOSInt cmdLen, Text::LineBreakType lbt)
 {
 	if (cliStatus->loginMode)
 	{

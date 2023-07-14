@@ -11,7 +11,7 @@ DB::SQLFileReader::~SQLFileReader()
 {
 }
 
-Bool DB::SQLFileReader::NextSQL(Text::StringBuilderUTF8 *sb)
+Bool DB::SQLFileReader::NextSQL(NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	if (this->mergeInsert)
 	{
@@ -56,14 +56,14 @@ Bool DB::SQLFileReader::NextSQL(Text::StringBuilderUTF8 *sb)
 		UOSInt insertCnt = 1;
 		while (true)
 		{
-			if (!this->reader.ReadLine(&this->sbLastLine, 4096))
+			if (!this->reader.ReadLine(this->sbLastLine, 4096))
 			{
 				return true;
 			}
 			while(!this->sbLastLine.EndsWith(';'))
 			{
-				this->reader.GetLastLineBreak(&this->sbLastLine);
-				if (!this->reader.ReadLine(&this->sbLastLine, 4096))
+				this->reader.GetLastLineBreak(this->sbLastLine);
+				if (!this->reader.ReadLine(this->sbLastLine, 4096))
 					break;
 			}
 			if (this->sbLastLine.EndsWith(';'))

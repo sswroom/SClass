@@ -25,7 +25,7 @@ UInt32 __stdcall Net::Email::SMTPConn::SMTPThread(void *userObj)
 	me->threadStarted = true;
 	me->threadRunning = true;
 	{
-		Text::UTF8Reader reader(NotNullPtr<IO::Stream>::FromPtr(me->cli));
+		Text::UTF8Reader reader(me->cli);
 		while (!me->threadToStop)
 		{
 			sptr = reader.ReadLine(sbuff, 2048);
@@ -130,13 +130,16 @@ Net::Email::SMTPConn::SMTPConn(Net::SocketFactory *sockf, Net::SSLEngine *ssl, T
 	if (connType == ConnType::SSL)
 	{
 		Net::SSLEngine::ErrorType err;
-		this->cli = ssl->ClientConnect(host, port, &err, timeout);
+		if (!this->cli.Set(ssl->ClientConnect(host, port, &err, timeout)))
+		{
+			NEW_CLASSNN(this->cli, Net::TCPClient(sockf, &addr, port, timeout));
+		}
 	}
 	else if (connType == ConnType::STARTTLS)
 	{
 		UInt8 buff[1024];
 		UOSInt buffSize;
-		NEW_CLASS(this->cli, Net::TCPClient(sockf, &addr, port, timeout));
+		NEW_CLASSNN(this->cli, Net::TCPClient(sockf, &addr, port, timeout));
 		this->cli->SetTimeout(2000);
 		buffSize = this->cli->Read(buff, 1024);
 		if (this->logWriter)
@@ -163,14 +166,14 @@ Net::Email::SMTPConn::SMTPConn(Net::SocketFactory *sockf, Net::SSLEngine *ssl, T
 				}
 				Socket *s = this->cli->RemoveSocket();
 				Net::SSLEngine::ErrorType err;
-				Net::TCPClient *cli = ssl->ClientInit(s, host, &err);
-				if (cli)
+				NotNullPtr<Net::TCPClient> cli;				
+				if (cli.Set(ssl->ClientInit(s, host, &err)))
 				{
 					if (this->logWriter)
 					{
 						this->logWriter->WriteLineC(UTF8STRC("SSL Handshake success"));
 					}
-					DEL_CLASS(this->cli);
+					this->cli.Delete();
 					this->cli = cli;
 				}
 				else
@@ -193,11 +196,11 @@ Net::Email::SMTPConn::SMTPConn(Net::SocketFactory *sockf, Net::SSLEngine *ssl, T
 	}
 	else
 	{
-		NEW_CLASS(this->cli, Net::TCPClient(sockf, &addr, port, timeout));
+		NEW_CLASSNN(this->cli, Net::TCPClient(sockf, &addr, port, timeout));
 	}
 	this->cli->SetNoDelay(false);
 	this->cli->SetTimeout(timeout);
-	NEW_CLASS(this->writer, Text::UTF8Writer(this->cli));
+	NEW_CLASSNN(this->writer, Text::UTF8Writer(this->cli));
 	if (this->logWriter)
 	{
 		Text::StringBuilderUTF8 sb;
@@ -231,16 +234,13 @@ Net::Email::SMTPConn::SMTPConn(Net::SocketFactory *sockf, Net::SSLEngine *ssl, T
 Net::Email::SMTPConn::~SMTPConn()
 {
 	this->threadToStop = true;
-	if (this->cli)
-	{
-		this->cli->Close();
-	}
+	this->cli->Close();
 	while (this->threadRunning)
 	{
 		Sync::SimpleThread::Sleep(10);
 	}
-	DEL_CLASS(this->writer);
-	SDEL_CLASS(this->cli);
+	this->writer.Delete();
+	this->cli.Delete();
 }
 
 Bool Net::Email::SMTPConn::IsError()

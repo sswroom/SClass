@@ -107,7 +107,7 @@ void Net::WebServer::WebStandardHandler::WebRequest(Net::WebServer::IWebRequest 
 				resp->AddDefHeaders(req);
 
 				IO::MemoryStream mstm;
-				Text::UTF8Writer writer(&mstm);
+				Text::UTF8Writer writer(mstm);
 				writer.WriteLineC(UTF8STRC("<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML 2.0//EN\">"));
 				writer.WriteLineC(UTF8STRC("<html><head>"));
 				writer.WriteLineC(UTF8STRC("<title>404 Not Found</title>"));

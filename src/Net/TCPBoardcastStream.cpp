@@ -8,8 +8,8 @@
 void __stdcall Net::TCPBoardcastStream::ConnHandler(Socket *s, void *userObj)
 {
 	Net::TCPBoardcastStream *me = (Net::TCPBoardcastStream*)userObj;
-	Net::TCPClient *cli;
-	NEW_CLASS(cli, Net::TCPClient(me->sockf, s));
+	NotNullPtr<Net::TCPClient> cli;
+	NEW_CLASSNN(cli, Net::TCPClient(me->sockf, s));
 	me->cliMgr->AddClient(cli, 0);
 	if (me->writeBuffSize > 0)
 	{
@@ -31,12 +31,12 @@ void __stdcall Net::TCPBoardcastStream::ConnHandler(Socket *s, void *userObj)
 	}
 }
 
-void __stdcall Net::TCPBoardcastStream::ClientEvent(Net::TCPClient *cli, void *userObj, void *cliData, Net::TCPClientMgr::TCPEventType evtType)
+void __stdcall Net::TCPBoardcastStream::ClientEvent(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, Net::TCPClientMgr::TCPEventType evtType)
 {
 	switch (evtType)
 	{
 	case Net::TCPClientMgr::TCP_EVENT_DISCONNECT:
-		DEL_CLASS(cli);
+		cli.Delete();
 		break;
 	case Net::TCPClientMgr::TCP_EVENT_CONNECT:
 	case Net::TCPClientMgr::TCP_EVENT_HASDATA:
@@ -46,7 +46,7 @@ void __stdcall Net::TCPBoardcastStream::ClientEvent(Net::TCPClient *cli, void *u
 	}
 }
 
-void __stdcall Net::TCPBoardcastStream::ClientData(Net::TCPClient *cli, void *userObj, void *cliData, const UInt8 *buff, UOSInt size)
+void __stdcall Net::TCPBoardcastStream::ClientData(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, const UInt8 *buff, UOSInt size)
 {
 	Net::TCPBoardcastStream *me = (Net::TCPBoardcastStream*)userObj;
 	Text::StringBuilderUTF8 sb;
@@ -100,7 +100,7 @@ void __stdcall Net::TCPBoardcastStream::ClientData(Net::TCPClient *cli, void *us
 	}
 }
 
-void __stdcall Net::TCPBoardcastStream::ClientTimeout(Net::TCPClient *cli, void *userObj, void *cliData)
+void __stdcall Net::TCPBoardcastStream::ClientTimeout(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData)
 {
 	Net::TCPBoardcastStream *me = (Net::TCPBoardcastStream*)userObj;
 	if (me->log)

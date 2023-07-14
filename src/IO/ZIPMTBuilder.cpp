@@ -65,7 +65,7 @@ void IO::ZIPMTBuilder::AddTask(FileTask *task)
 	}
 }
 
-IO::ZIPMTBuilder::ZIPMTBuilder(IO::SeekableStream *stm) : zip(stm)
+IO::ZIPMTBuilder::ZIPMTBuilder(NotNullPtr<IO::SeekableStream> stm) : zip(stm)
 {
 	this->toStop = false;
 	this->threadCnt = Sync::ThreadUtil::GetThreadCnt();

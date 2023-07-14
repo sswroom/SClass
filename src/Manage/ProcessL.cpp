@@ -551,7 +551,7 @@ UOSInt Manage::Process::GetModules(Data::ArrayList<Manage::ModuleInfo *> *modLis
 			IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 			Text::UTF8Reader reader(fs);
 			sb.ClearStr();
-			while (reader.ReadLine(&sb, 512))
+			while (reader.ReadLine(sb, 512))
 			{
 				ret = Text::StrSplitTrim(sarr, 6, sb.v, ' ');
 				if (ret == 6)
@@ -752,7 +752,7 @@ Bool Manage::Process::GetMemoryInfo(UOSInt *pageFault, UOSInt *workingSetSize, U
 	IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 	Text::UTF8Reader reader(fs);
 	sb.ClearStr();
-	if (reader.ReadLine(&sb, 512))
+	if (reader.ReadLine(sb, 512))
 	{
 		UTF8Char *sarr[8];
 		if (Text::StrSplit(sarr, 8, sb.v, ' ') == 7)
@@ -795,7 +795,7 @@ Bool Manage::Process::GetTimeInfo(Data::Timestamp *createTime, Data::Timestamp *
 	IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 	Text::UTF8Reader reader(fs);
 	sb.ClearStr();
-	if (reader.ReadLine(&sb, 512))
+	if (reader.ReadLine(sb, 512))
 	{
 		UTF8Char *sarr[24];
 		if (Text::StrSplit(sarr, 24, sb.v, ' ') >= 23)
@@ -1023,7 +1023,7 @@ UTF8Char *Manage::Process::FindProcessNext(UTF8Char *processNameBuff, Manage::Pr
 				{
 					Text::UTF8Reader reader(fs);
 					sb.ClearStr();
-					while (reader.ReadLine(&sb, 512))
+					while (reader.ReadLine(sb, 512))
 					{
 						if (sb.StartsWith(UTF8STRC("PPid:\t")))
 						{
@@ -1045,7 +1045,7 @@ UTF8Char *Manage::Process::FindProcessNext(UTF8Char *processNameBuff, Manage::Pr
 				{
 					Text::UTF8Reader reader(fs);
 					sb.ClearStr();
-					while (reader.ReadLine(&sb, 512))
+					while (reader.ReadLine(sb, 512))
 					{
 					}
 					if (fpsess->procName == 0 || sb.Equals(fpsess->procName) || sb.StartsWith(UTF8STRC("memcheck-")) || sb.StartsWith(UTF8STRC("callgrind-")))
@@ -1090,7 +1090,7 @@ WChar *Manage::Process::FindProcessNextW(WChar *processNameBuff, Manage::Process
 				{
 					Text::UTF8Reader reader(fs);
 					sb.ClearStr();
-					while (reader.ReadLine(&sb, 512))
+					while (reader.ReadLine(sb, 512))
 					{
 						if (sb.StartsWith(UTF8STRC("PPid:\t")))
 						{
@@ -1112,7 +1112,7 @@ WChar *Manage::Process::FindProcessNextW(WChar *processNameBuff, Manage::Process
 				{
 					Text::UTF8Reader reader(fs);
 					sb.ClearStr();
-					while (reader.ReadLine(&sb, 512))
+					while (reader.ReadLine(sb, 512))
 					{
 					}
 					if (fpsess->procName == 0 || sb.Equals(fpsess->procName))

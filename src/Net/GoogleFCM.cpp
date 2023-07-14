@@ -6,11 +6,12 @@
 
 Bool Net::GoogleFCM::SendMessage(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CString apiKey, Text::CString devToken, Text::CString message, Text::StringBuilderUTF8 *sbResult)
 {
-	Net::HTTPClient *cli = Net::HTTPClient::CreateConnect(sockf, ssl, CSTR("https://fcm.googleapis.com/fcm/send"), Net::WebUtil::RequestMethod::HTTP_POST, true);
-	if (cli == 0)
+	NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(sockf, ssl, CSTR("https://fcm.googleapis.com/fcm/send"), Net::WebUtil::RequestMethod::HTTP_POST, true);
+	if (cli->IsError())
 	{
+		cli.Delete();
 		if (sbResult)
-			sbResult->AppendC(UTF8STRC("Error in creating client"));
+			sbResult->AppendC(UTF8STRC("Error connecting to server"));
 		return false;
 	}
 	Text::StringBuilderUTF8 sb;
@@ -70,17 +71,18 @@ Bool Net::GoogleFCM::SendMessage(Net::SocketFactory *sockf, Net::SSLEngine *ssl,
 			sbResult->AppendU32((UInt32)status);
 		}
 	}
-	DEL_CLASS(cli);
+	cli.Delete();
 	return succ;
 }
 
 Bool Net::GoogleFCM::SendMessages(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CString apiKey, Data::ArrayList<Text::String*> *devTokens, Text::CString message, Text::StringBuilderUTF8 *sbResult)
 {
-	Net::HTTPClient *cli = Net::HTTPClient::CreateConnect(sockf, ssl, CSTR("https://fcm.googleapis.com/fcm/send"), Net::WebUtil::RequestMethod::HTTP_POST, true);
-	if (cli == 0)
+	NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(sockf, ssl, CSTR("https://fcm.googleapis.com/fcm/send"), Net::WebUtil::RequestMethod::HTTP_POST, true);
+	if (cli->IsError())
 	{
+		cli.Delete();
 		if (sbResult)
-			sbResult->AppendC(UTF8STRC("Error in creating client"));
+			sbResult->AppendC(UTF8STRC("Error in connecting to server"));
 		return false;
 	}
 	if (devTokens->GetCount() == 0)
@@ -152,6 +154,6 @@ Bool Net::GoogleFCM::SendMessages(Net::SocketFactory *sockf, Net::SSLEngine *ssl
 			sbResult->AppendU32((UInt32)status);
 		}
 	}
-	DEL_CLASS(cli);
+	cli.Delete();
 	return succ;
 }

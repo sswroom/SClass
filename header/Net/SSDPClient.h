@@ -60,7 +60,7 @@ namespace Net
 		Bool Scan();
 		const Data::ReadingList<SSDPDevice*> *GetDevices(Sync::MutexUsage *mutUsage) const;
 
-		static SSDPRoot *SSDPRootParse(Text::EncodingFactory *encFact, IO::Stream *stm);
+		static SSDPRoot *SSDPRootParse(Text::EncodingFactory *encFact, NotNullPtr<IO::Stream> stm);
 		static void SSDPRootFree(SSDPRoot *root);
 	};
 }

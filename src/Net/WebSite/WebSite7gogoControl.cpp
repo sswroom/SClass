@@ -123,7 +123,7 @@ OSInt Net::WebSite::WebSite7gogoControl::GetChannelItems(NotNullPtr<Text::String
 	Data::ArrayListInt64 idList;
 	Text::XMLReader *reader;
 //	printf("Requesting to URL %s\r\n", sb.ToString());
-	Net::HTTPClient *cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, {STR_PTRC(this->userAgent)}, true, true);
+	NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, {STR_PTRC(this->userAgent)}, true, true);
 	cli->Connect(sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, true);
 	NEW_CLASS(reader, Text::XMLReader(this->encFact, cli, Text::XMLReader::PM_HTML));
 	while (reader->ReadNext())
@@ -281,7 +281,7 @@ OSInt Net::WebSite::WebSite7gogoControl::GetChannelItems(NotNullPtr<Text::String
 		printf("Error found, errNo = %d\r\n", (Int32)reader->GetErrorCode());
 	}
 	DEL_CLASS(reader);
-	DEL_CLASS(cli);
+	cli.Delete();
 	return retCnt;
 }
 

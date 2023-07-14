@@ -340,7 +340,7 @@ Bool Net::SAMLUtil::DecryptResponse(Net::SSLEngine *ssl, Crypto::Cert::X509Key *
 Bool Net::SAMLUtil::DecryptResponse(Net::SSLEngine *ssl, Text::EncodingFactory *encFact, Crypto::Cert::X509Key *key, Text::CString responseXML, Text::StringBuilderUTF8 *sbResult)
 {
 	IO::MemoryReadingStream mstm(responseXML.v, responseXML.leng);
-	Text::XMLReader reader(encFact, &mstm, Text::XMLReader::PM_XML);
+	Text::XMLReader reader(encFact, mstm, Text::XMLReader::PM_XML);
 	Text::String *nodeText;
 	while (reader.ReadNext())
 	{

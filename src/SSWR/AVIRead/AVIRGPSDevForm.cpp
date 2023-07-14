@@ -15,14 +15,15 @@ UInt32 __stdcall SSWR::AVIRead::AVIRGPSDevForm::ClientThread(void *userObj)
 	UInt8 *recvBuff;
 	UOSInt recvBuffSize;
 	UOSInt readSize;
+	NotNullPtr<Net::TCPClient> cli;
 	recvBuff = MemAlloc(UInt8, 16384);
 	recvBuffSize = 0;
 	me->threadRunning = true;
 	while (!me->threadToStop)
 	{
-		if (me->cli)
+		if (cli.Set(me->cli))
 		{
-			readSize = me->cli->Read(&recvBuff[recvBuffSize], 16384 - recvBuffSize);
+			readSize = cli->Read(&recvBuff[recvBuffSize], 16384 - recvBuffSize);
 
 			if (readSize == 0)
 			{
@@ -34,7 +35,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRGPSDevForm::ClientThread(void *userObj)
 			else
 			{
 				recvBuffSize += readSize;
-				readSize = me->protoHdlr.ParseProtocol(me->cli, 0, me, recvBuff, recvBuffSize);
+				readSize = me->protoHdlr.ParseProtocol(cli, 0, me, recvBuff, recvBuffSize);
 				if (readSize == 0)
 				{
 					recvBuffSize = 0;
@@ -630,7 +631,7 @@ void SSWR::AVIRead::AVIRGPSDevForm::OnMonitorChanged()
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 }
 
-void SSWR::AVIRead::AVIRGPSDevForm::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize)
+void SSWR::AVIRead::AVIRGPSDevForm::DataParsed(NotNullPtr<IO::Stream> stm, void *stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize)
 {
 	switch (cmdType)
 	{
@@ -1020,6 +1021,6 @@ void SSWR::AVIRead::AVIRGPSDevForm::DataParsed(IO::Stream *stm, void *stmObj, In
 	}
 }
 
-void SSWR::AVIRead::AVIRGPSDevForm::DataSkipped(IO::Stream *stm, void *stmObj, const UInt8 *buff, UOSInt buffSize)
+void SSWR::AVIRead::AVIRGPSDevForm::DataSkipped(NotNullPtr<IO::Stream> stm, void *stmObj, const UInt8 *buff, UOSInt buffSize)
 {
 }

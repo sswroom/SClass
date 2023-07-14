@@ -52,7 +52,7 @@ void Exporter::GPXExporter::SetCodePage(UInt32 codePage)
 	this->codePage = codePage;
 }
 
-Bool Exporter::GPXExporter::ExportFile(IO::SeekableStream *stm, Text::CString fileName, IO::ParsedObject *pobj, void *param)
+Bool Exporter::GPXExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CString fileName, IO::ParsedObject *pobj, void *param)
 {
 	if (pobj->GetParserType() != IO::ParserType::MapLayer)
 	{
@@ -69,83 +69,77 @@ Bool Exporter::GPXExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 	UOSInt j;
 	UOSInt k;
 	UOSInt l;
-	IO::BufferedOutputStream *cstm;
-	IO::StreamWriter *writer;
 	Map::GPSTrack::GPSRecord3 *recs;
 	Data::DateTime dt;
 
 	Text::Encoding enc(this->codePage);
+	IO::BufferedOutputStream cstm(stm, 65536);
+	IO::StreamWriter writer(cstm, &enc);
 
-	NEW_CLASS(cstm, IO::BufferedOutputStream(stm, 65536));
-	NEW_CLASS(writer, IO::StreamWriter(cstm, &enc));
-
-	writer->WriteStrC(UTF8STRC("<?xml version=\"1.0\" encoding=\""));
+	writer.WriteStrC(UTF8STRC("<?xml version=\"1.0\" encoding=\""));
 	sptr = Text::EncodingFactory::GetInternetName(sbuff, this->codePage);
-	writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
-	writer->WriteLineC(UTF8STRC("\"?>"));
-	writer->WriteLineC(UTF8STRC("<gpx version=\"v1.0\" creator=\"iTravel Tech Inc. - http://www.itravel-tech.com\">"));
-	writer->WriteLineC(UTF8STRC("<trk>"));
-	writer->WriteLineC(UTF8STRC("<name>Track</name>"));
+	writer.WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
+	writer.WriteLineC(UTF8STRC("\"?>"));
+	writer.WriteLineC(UTF8STRC("<gpx version=\"v1.0\" creator=\"iTravel Tech Inc. - http://www.itravel-tech.com\">"));
+	writer.WriteLineC(UTF8STRC("<trk>"));
+	writer.WriteLineC(UTF8STRC("<name>Track</name>"));
 	i = 0;
 	j = track->GetTrackCnt();
 	while (i < j)
 	{
-		writer->WriteLineC(UTF8STRC("<trkseg>"));
+		writer.WriteLineC(UTF8STRC("<trkseg>"));
 		k = 0;
 		recs = track->GetTrack(i, &l);
 		while (k < l)
 		{
-			writer->WriteStrC(UTF8STRC("<trkpt lat=\""));
+			writer.WriteStrC(UTF8STRC("<trkpt lat=\""));
 			sptr = Text::StrDouble(sbuff, recs[k].pos.GetLat());
-			writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
-			writer->WriteStrC(UTF8STRC("\" lon=\""));
+			writer.WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
+			writer.WriteStrC(UTF8STRC("\" lon=\""));
 			sptr = Text::StrDouble(sbuff, recs[k].pos.GetLon());
-			writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
-			writer->WriteLineC(UTF8STRC("\">"));
+			writer.WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
+			writer.WriteLineC(UTF8STRC("\">"));
 			
-			writer->WriteStrC(UTF8STRC("<ele>"));
+			writer.WriteStrC(UTF8STRC("<ele>"));
 			sptr = Text::StrDouble(sbuff, recs[k].altitude);
-			writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
-			writer->WriteLineC(UTF8STRC("</ele>"));
+			writer.WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
+			writer.WriteLineC(UTF8STRC("</ele>"));
 
-			writer->WriteStrC(UTF8STRC("<time>"));
+			writer.WriteStrC(UTF8STRC("<time>"));
 			dt.SetInstant(recs[k].recTime);
 			sptr = dt.ToString(sbuff, "yyyy-MM-ddTHH:mm:ssZ");
-			writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
-			writer->WriteLineC(UTF8STRC("</time>"));
+			writer.WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
+			writer.WriteLineC(UTF8STRC("</time>"));
 
-			writer->WriteStrC(UTF8STRC("<desc>lat.="));
+			writer.WriteStrC(UTF8STRC("<desc>lat.="));
 			sptr = Text::StrDoubleFmt(sbuff, recs[k].pos.GetLat(), "0.000000");
-			writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
-			writer->WriteStrC(UTF8STRC(", lon.="));
+			writer.WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
+			writer.WriteStrC(UTF8STRC(", lon.="));
 			sptr = Text::StrDoubleFmt(sbuff, recs[k].pos.GetLon(), "0.000000");
-			writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
-			writer->WriteStrC(UTF8STRC(", Alt.="));
+			writer.WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
+			writer.WriteStrC(UTF8STRC(", Alt.="));
 			sptr = Text::StrDoubleFmt(sbuff, recs[k].altitude, "0.000000");
-			writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
-			writer->WriteStrC(UTF8STRC("m, Speed="));
+			writer.WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
+			writer.WriteStrC(UTF8STRC("m, Speed="));
 			sptr = Text::StrDoubleFmt(sbuff, recs[k].speed * 1.852, "0.000000");
-			writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
-			writer->WriteLineC(UTF8STRC("m/h.</desc>"));
+			writer.WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
+			writer.WriteLineC(UTF8STRC("m/h.</desc>"));
 
-			writer->WriteStrC(UTF8STRC("<speed>"));
+			writer.WriteStrC(UTF8STRC("<speed>"));
 			sptr = Text::StrDoubleFmt(sbuff, recs[k].speed * 1.852 / 3.6, "0.000000");
-			writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
-			writer->WriteLineC(UTF8STRC("</speed>"));
+			writer.WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
+			writer.WriteLineC(UTF8STRC("</speed>"));
 
-			writer->WriteLineC(UTF8STRC("</trkpt>"));
+			writer.WriteLineC(UTF8STRC("</trkpt>"));
 
 			k++;
 		}
 
-		writer->WriteLineC(UTF8STRC("</trkseg>"));
+		writer.WriteLineC(UTF8STRC("</trkseg>"));
 		i++;
 	}
 
-	writer->WriteLineC(UTF8STRC("</trk>"));
-	writer->WriteLineC(UTF8STRC("</gpx>"));
-
-	DEL_CLASS(writer);
-	DEL_CLASS(cstm);
+	writer.WriteLineC(UTF8STRC("</trk>"));
+	writer.WriteLineC(UTF8STRC("</gpx>"));
 	return true;
 }

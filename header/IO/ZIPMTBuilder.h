@@ -45,7 +45,7 @@ namespace IO
 		static void FreeTask(FileTask *task);
 		void AddTask(FileTask *task);
 	public:
-		ZIPMTBuilder(IO::SeekableStream *stm);
+		ZIPMTBuilder(NotNullPtr<IO::SeekableStream> stm);
 		~ZIPMTBuilder();
 
 		Bool AddFile(Text::CString fileName, IO::SeekableStream *stm, Int64 fileTimeTicks, Data::Compress::Inflate::CompressionLevel compLevel);

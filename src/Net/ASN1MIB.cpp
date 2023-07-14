@@ -374,7 +374,7 @@ Bool Net::ASN1MIB::ParseObjectBegin(Net::MIBReader *reader, ObjectInfo *obj, Tex
 	while (true)
 	{
 		sb.ClearStr();
-		if (!reader->ReadLine(&sb))
+		if (!reader->ReadLine(sb))
 		{
 			errMessage->AppendC(UTF8STRC("Object end not found"));
 			return false;
@@ -413,7 +413,7 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 	while (true)
 	{
 		sb.ClearStr();
-		if (!reader->ReadLine(&sb))
+		if (!reader->ReadLine(sb))
 		{
 			errMessage->AppendC(UTF8STRC("Module end not found"));
 			return false;
@@ -461,7 +461,7 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 				}
 				else
 				{
-					reader->GetLastLineBreak(&sbObjValCont);
+					reader->GetLastLineBreak(sbObjValCont);
 				}
 				
 			}
@@ -524,7 +524,7 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 											sb.ClearStr();
 											sb.Append(currObj->typeVal);
 											sb.AppendUTF8Char(' ');
-											if (!reader->ReadLine(&sb))
+											if (!reader->ReadLine(sb))
 											{
 												errMessage->AppendC(UTF8STRC("Unexpected end of file: "));
 												errMessage->AppendC(sb.ToString(), sb.GetLength());
@@ -546,7 +546,7 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 												sb.ClearStr();
 												sb.Append(currObj->typeVal);
 												sb.AppendUTF8Char(' ');
-												if (!reader->ReadLine(&sb))
+												if (!reader->ReadLine(sb))
 												{
 													errMessage->AppendC(UTF8STRC("Unexpected end of file: "));
 													errMessage->AppendC(sb.ToString(), sb.GetLength());
@@ -563,7 +563,7 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 											sb.ClearStr();
 											sb.Append(currObj->typeVal);
 											sb.AppendUTF8Char(' ');
-											if (!reader->ReadLine(&sb))
+											if (!reader->ReadLine(sb))
 											{
 												errMessage->AppendC(UTF8STRC("Unexpected end of file: "));
 												errMessage->AppendC(sb.ToString(), sb.GetLength());
@@ -858,7 +858,7 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 							j = sb.IndexOf(UTF8STRC("\""), i + 1);
 							if (j == INVALID_INDEX)
 							{
-								reader->GetLastLineBreak(&sbObjValCont);
+								reader->GetLastLineBreak(sbObjValCont);
 								isQuotedText = true;
 							}
 						}
@@ -937,7 +937,7 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 									{
 										break;
 									}
-									if (!reader->ReadLine(&sb))
+									if (!reader->ReadLine(sb))
 									{
 										errMessage->AppendC(UTF8STRC("Import module error: "));
 										errMessage->AppendC(sb.ToString(), sb.GetLength());
@@ -1076,7 +1076,7 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 							break;
 						}
 						sb.ClearStr();
-						if (!reader->ReadLine(&sb))
+						if (!reader->ReadLine(sb))
 						{
 							errMessage->AppendC(UTF8STRC("IMPORTS end not found"));
 							return false;
@@ -1094,7 +1094,7 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 						}
 
 						sb.ClearStr();
-						if (!reader->ReadLine(&sb))
+						if (!reader->ReadLine(sb))
 						{
 							errMessage->AppendC(UTF8STRC("EXPORTS end not found"));
 							return false;
@@ -1140,7 +1140,7 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 						else
 						{
 							i = sb.GetLength();
-							if (!reader->ReadLine(&sb))
+							if (!reader->ReadLine(sb))
 							{
 								errMessage->AppendC(UTF8STRC("Unknown format 1: "));
 								errMessage->AppendC(sb.ToString(), sb.GetLength());
@@ -1387,7 +1387,7 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 						if (i == INVALID_INDEX)
 						{
 							i = sb.GetLength();
-							if (!reader->ReadLine(&sb))
+							if (!reader->ReadLine(sb))
 							{
 								errMessage->AppendC(UTF8STRC("Unknown format 3: "));
 								errMessage->AppendC(sb.ToString(), sb.GetLength());
@@ -1704,7 +1704,7 @@ Bool Net::ASN1MIB::LoadFileInner(Text::CString fileName, Text::StringBuilderUTF8
 		return false;
 	}
 	succ = false;
-	Net::MIBReader reader(&fs);
+	Net::MIBReader reader(fs);
 	Text::StringBuilderUTF8 sb;
 	Text::StringBuilderUTF8 sbModuleName;
 	Text::StringBuilderUTF8 sbOID;

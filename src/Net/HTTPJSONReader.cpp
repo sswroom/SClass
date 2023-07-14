@@ -9,13 +9,13 @@
 
 Text::JSONBase *Net::HTTPJSONReader::Read(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CString url)
 {
-	Net::HTTPClient *cli = Net::HTTPClient::CreateConnect(sockf, ssl, url, Net::WebUtil::RequestMethod::HTTP_GET, false);
+	NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(sockf, ssl, url, Net::WebUtil::RequestMethod::HTTP_GET, false);
 	if (cli->IsError())
 	{
 #if defined(VERBOSE)
 		printf("HTTPJSONReader: Error in connecting to server\r\n");
 #endif
-		DEL_CLASS(cli);
+		cli.Delete();
 		return 0;
 	}
 	if (cli->GetRespStatus() == Net::WebStatus::SC_MOVED_PERMANENTLY)
@@ -26,17 +26,17 @@ Text::JSONBase *Net::HTTPJSONReader::Read(Net::SocketFactory *sockf, Net::SSLEng
 #if defined(VERBOSE)
 			printf("HTTPJSONReader: Redirect location found: %s\r\n", newUrl.v);
 #endif
-			Net::HTTPClient *cli2 = Net::HTTPClient::CreateConnect(sockf, ssl, newUrl, Net::WebUtil::RequestMethod::HTTP_GET, false);
+			NotNullPtr<Net::HTTPClient> cli2 = Net::HTTPClient::CreateConnect(sockf, ssl, newUrl, Net::WebUtil::RequestMethod::HTTP_GET, false);
 			if (cli2->IsError())
 			{
 #if defined(VERBOSE)
 				printf("HTTPJSONReader: Error in connecting to server2\r\n");
 #endif
-				DEL_CLASS(cli2);
-				DEL_CLASS(cli);
+				cli2.Delete();
+				cli.Delete();
 				return 0;
 			}
-			DEL_CLASS(cli);
+			cli.Delete();
 			cli = cli2;
 		}
 	}
@@ -46,9 +46,9 @@ Text::JSONBase *Net::HTTPJSONReader::Read(Net::SocketFactory *sockf, Net::SSLEng
 #if defined(VERBOSE)
 		printf("HTTPJSONReader: Error in reading content from server\r\n");
 #endif
-		DEL_CLASS(cli);
+		cli.Delete();
 	}
-	DEL_CLASS(cli);
+	cli.Delete();
 	Text::JSONBase *json = Text::JSONBase::ParseJSONStr(sb.ToCString());
 #if defined(VERBOSE)
 	if (json == 0)

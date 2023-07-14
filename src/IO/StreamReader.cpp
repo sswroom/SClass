@@ -241,7 +241,7 @@ UTF8Char *IO::StreamReader::ReadLine(UTF8Char *buff, UOSInt maxCharCnt)
 	return 0;
 }
 
-Bool IO::StreamReader::ReadLine(Text::StringBuilderUTF8 *sb, UOSInt maxCharCnt)
+Bool IO::StreamReader::ReadLine(NotNullPtr<Text::StringBuilderUTF8> sb, UOSInt maxCharCnt)
 {
 	sb->AllocLeng(maxCharCnt);
 	UTF8Char *endPtr = this->ReadLine(sb->GetEndPtr(), maxCharCnt);
@@ -272,7 +272,7 @@ UTF8Char *IO::StreamReader::GetLastLineBreak(UTF8Char *buff)
 	return buff;
 }
 
-Bool IO::StreamReader::GetLastLineBreak(Text::StringBuilderUTF8 *sb)
+Bool IO::StreamReader::GetLastLineBreak(NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	sb->AppendLB(this->lineBreak);
 	return true;
@@ -283,7 +283,7 @@ Bool IO::StreamReader::IsLineBreak()
 	return this->lineBreak != Text::LineBreakType::None;
 }
 
-Bool IO::StreamReader::ReadToEnd(Text::StringBuilderUTF8 *sb)
+Bool IO::StreamReader::ReadToEnd(NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	Bool succ = false;
 	while (this->ReadLine(sb, BUFFSIZE))

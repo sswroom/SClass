@@ -17,7 +17,7 @@ namespace IO
 		typedef Bool (__stdcall *CommandHandler)(void *userObj, const UTF8Char *cmd, UOSInt cmdLen);
 
 	private:
-		IO::Stream *stm;
+		NotNullPtr<IO::Stream> stm;
 		Bool stmRelease;
 		Sync::Mutex cmdMut;
 		Sync::Event cmdEvt;
@@ -36,10 +36,10 @@ namespace IO
 		static UInt32 __stdcall CmdThread(void *userObj);
 		void ClearResults();
 	public:
-		ATCommandChannel(IO::Stream *stm, Bool needRelease);
+		ATCommandChannel(NotNullPtr<IO::Stream> stm, Bool needRelease);
 		~ATCommandChannel();
 
-		IO::Stream *GetStream();
+		NotNullPtr<IO::Stream> GetStream() const;
 
 		UOSInt SendATCommand(Data::ArrayList<Text::String *> *retArr, const UTF8Char *atCmd, UOSInt atCmdLen, Data::Duration timeout);
 		UOSInt SendATCommands(Data::ArrayList<Text::String *> *retArr, const UTF8Char *atCmd, UOSInt atCmdLen, const UTF8Char *atCmdSub, Data::Duration timeout);

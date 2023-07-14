@@ -136,10 +136,10 @@ IO::Stream *SSWR::AVIRead::AVIRCore::OpenStream(IO::StreamType *st, UI::GUIForm 
 	}
 	if (frm.ShowDialog(ownerFrm) == UI::GUIForm::DR_OK)
 	{
-		retStm = frm.stm;
+		retStm = frm.GetStream().Ptr();
 		if (st)
 		{
-			*st = frm.stmType;
+			*st = frm.GetStreamType();
 		}
 	}
 	return retStm;

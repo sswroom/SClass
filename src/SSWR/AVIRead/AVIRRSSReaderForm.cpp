@@ -162,7 +162,7 @@ void SSWR::AVIRead::AVIRRSSReaderForm::RSSListLoad()
 	{
 		Text::StringBuilderUTF8 sb;
 		Text::UTF8Reader reader(fs);
-		while (reader.ReadLine(&sb, 4096))
+		while (reader.ReadLine(sb, 4096))
 		{
 			i = this->rssList.SortedInsert(Text::String::New(sb.ToString(), sb.GetLength()));
 			this->cboRecent->InsertItem(i, sb.ToCString(), 0);
@@ -182,7 +182,7 @@ void SSWR::AVIRead::AVIRRSSReaderForm::RSSListStore()
 	IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 	if (!fs.IsError())
 	{
-		Text::UTF8Writer writer(&fs);
+		Text::UTF8Writer writer(fs);
 		i = 0;
 		j = this->rssList.GetCount();
 		while (i < j)

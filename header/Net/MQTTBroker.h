@@ -49,7 +49,7 @@ namespace Net
 		struct SubscribeInfo
 		{
 			NotNullPtr<Text::String> topic;
-			IO::Stream *stm;
+			NotNullPtr<IO::Stream> stm;
 			void *cliData;
 		};
 		
@@ -91,22 +91,22 @@ namespace Net
 		TopicUpdateHandler topicUpdHdlr;
 		void *topicUpdObj;
 
-		static void __stdcall OnClientEvent(Net::TCPClient *cli, void *userObj, void *cliData, Net::TCPClientMgr::TCPEventType evtType);
-		static void __stdcall OnClientData(Net::TCPClient *cli, void *userObj, void *cliData, const UInt8 *buff, UOSInt size);
-		static void __stdcall OnClientTimeout(Net::TCPClient *cli, void *userObj, void *cliData);
-		static void __stdcall OnClientReady(Net::TCPClient *cli, void *userObj);
+		static void __stdcall OnClientEvent(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, Net::TCPClientMgr::TCPEventType evtType);
+		static void __stdcall OnClientData(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, const UInt8 *buff, UOSInt size);
+		static void __stdcall OnClientTimeout(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData);
+		static void __stdcall OnClientReady(NotNullPtr<Net::TCPClient> cli, void *userObj);
 		static void __stdcall OnClientConn(Socket *s, void *userObj);
 		
 		static UInt32 __stdcall SysInfoThread(void *userObj);
 
-		virtual void DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize);
-		virtual void DataSkipped(IO::Stream *stm, void *stmObj, const UInt8 *buff, UOSInt buffSize);
+		virtual void DataParsed(NotNullPtr<IO::Stream> stm, void *stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize);
+		virtual void DataSkipped(NotNullPtr<IO::Stream> stm, void *stmObj, const UInt8 *buff, UOSInt buffSize);
 		void UpdateTopic(Text::CString topic, const UInt8 *message, UOSInt msgSize, Bool suppressUnchg);
-		Bool TopicSend(IO::Stream *stm, void *stmData, const TopicInfo *topic);
+		Bool TopicSend(NotNullPtr<IO::Stream> stm, void *stmData, const TopicInfo *topic);
 
-		virtual void *StreamCreated(IO::Stream *stm);
-		virtual void StreamData(IO::Stream *stm, void *stmData, const UInt8 *buff, UOSInt size);
-		virtual void StreamClosed(IO::Stream *stm, void *stmData);
+		virtual void *StreamCreated(NotNullPtr<IO::Stream> stm);
+		virtual void StreamData(NotNullPtr<IO::Stream> stm, void *stmData, const UInt8 *buff, UOSInt size);
+		virtual void StreamClosed(NotNullPtr<IO::Stream> stm, void *stmData);
 	public:
 		MQTTBroker(Net::SocketFactory *sockf, Net::SSLEngine *ssl, UInt16 port, IO::LogTool *log, Bool sysInfo, Bool autoStart);
 		virtual ~MQTTBroker();

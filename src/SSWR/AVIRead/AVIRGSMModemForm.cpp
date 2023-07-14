@@ -354,7 +354,7 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnSMSSaveClick(void *userObj)
 		if (dlg.ShowDialog(me->GetHandle()))
 		{
 			IO::FileStream fs(dlg.GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-			Text::UTF8Writer writer(&fs);
+			Text::UTF8Writer writer(fs);
 			writer.WriteSignature();
 			writer.WriteStrC(UTF8STRC("From: "));
 			writer.WriteLineW(smsMsg->GetAddress());
@@ -429,7 +429,7 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnSMSSaveAllClick(void *userObj)
 				sb.AppendC(UTF8STRC(".sms"));
 
 				IO::FileStream fs(sb.ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-				Text::UTF8Writer writer(&fs);
+				Text::UTF8Writer writer(fs);
 				writer.WriteSignature();
 				writer.WriteStrC(UTF8STRC("From: "));
 				writer.WriteLineW(smsMsg->GetAddress());
@@ -452,11 +452,11 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnSMSSaveAllClick(void *userObj)
 void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnDeviceSerialClk(void *userObj)
 {
 	SSWR::AVIRead::AVIRGSMModemForm *me = (SSWR::AVIRead::AVIRGSMModemForm*)userObj;
-	IO::SerialPort *port;
-	NEW_CLASS(port, IO::SerialPort((UOSInt)me->cboDeviceSerial->GetSelectedItem(), 115200, IO::SerialPort::PARITY_NONE, false));
+	NotNullPtr<IO::SerialPort> port;
+	NEW_CLASSNN(port, IO::SerialPort((UOSInt)me->cboDeviceSerial->GetSelectedItem(), 115200, IO::SerialPort::PARITY_NONE, false));
 	if (port->IsError())
 	{
-		DEL_CLASS(port);
+		port.Delete();
 		me->txtDeviceStatus->SetText(CSTR("Error in opening port"));
 	}
 	else
@@ -475,8 +475,8 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnDeviceOtherClk(void *userObj)
 	else
 	{
 		IO::StreamType st;
-		IO::Stream *port = me->core->OpenStream(&st, me, 115200, false);
-		if (port)
+		NotNullPtr<IO::Stream> port;
+		if (port.Set(me->core->OpenStream(&st, me, 115200, false)))
 		{
 			me->InitStream(port, true);
 		}
@@ -920,11 +920,11 @@ void SSWR::AVIRead::AVIRGSMModemForm::LoadPDPContext()
 	}
 }
 
-void SSWR::AVIRead::AVIRGSMModemForm::InitStream(IO::Stream *stm, Bool updateSerial)
+void SSWR::AVIRead::AVIRGSMModemForm::InitStream(NotNullPtr<IO::Stream> stm, Bool updateSerial)
 {
 	if (this->port == 0)
 	{
-		this->port = stm;
+		this->port = stm.Ptr();
 		this->txtDeviceStatus->SetText(IO::StreamTypeGetName(this->port->GetStreamType()));
 		if (updateSerial && this->port->GetStreamType() == IO::StreamType::SerialPort)
 		{
@@ -944,7 +944,7 @@ void SSWR::AVIRead::AVIRGSMModemForm::InitStream(IO::Stream *stm, Bool updateSer
 		this->btnDeviceSerial->SetEnabled(false);
 		this->btnDeviceOther->SetText(CSTR("Close"));
 
-		NEW_CLASS(this->channel, IO::ATCommandChannel(this->port, false));
+		NEW_CLASS(this->channel, IO::ATCommandChannel(stm, false));
 		this->channel->SetLogger(&this->log);
 		NEW_CLASS(this->modem, IO::GSMModemController(this->channel, false));
 
@@ -1409,9 +1409,10 @@ SSWR::AVIRead::AVIRGSMModemForm::AVIRGSMModemForm(UI::GUIClientControl *parent, 
 		}
 	}
 
-	if (port)
+	NotNullPtr<IO::Stream> nnPort;
+	if (nnPort.Set(port))
 	{
-		this->InitStream(port, true);
+		this->InitStream(nnPort, true);
 	}
 }
 

@@ -44,7 +44,7 @@ UOSInt Net::WebSite::WebSiteTwitterControl::GetChannelItems(NotNullPtr<Text::Str
 #if defined(VERBOSE)
 	printf("Requesting to URL %s\r\n", sb.ToString());
 #endif
-	Net::HTTPClient *cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, {STR_PTRC(this->userAgent)}, true, true);
+	NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, {STR_PTRC(this->userAgent)}, true, true);
 	cli->Connect(sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, false);
 	cli->AddHeaderC(CSTR("Accept"), CSTR("*/*"));
 	cli->AddHeaderC(CSTR("Accept-Charset"), CSTR("*"));
@@ -285,7 +285,7 @@ UOSInt Net::WebSite::WebSiteTwitterControl::GetChannelItems(NotNullPtr<Text::Str
 	SDEL_STRING(message);
 	SDEL_STRING(imgURL);
 	DEL_CLASS(reader);
-	DEL_CLASS(cli);
+	cli.Delete();
 	return retCnt;
 }
 

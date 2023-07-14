@@ -37,12 +37,12 @@ void __stdcall SSWR::AVIRead::AVIRCPUInfoForm::OnUploadClick(void *userObj)
 			sbURL.AppendI32(cpu.GetStepping());
 
 			sbData.AppendP(sbuff, sptr);
-			Net::HTTPClient *cli;
+			NotNullPtr<Net::HTTPClient> cli;
 			cli = Net::HTTPClient::CreateConnect(sockf, me->ssl, sbURL.ToCString(), Net::WebUtil::RequestMethod::HTTP_POST, false);
 			cli->AddContentLength(sbData.GetLength());
 			cli->Write(sbData.ToString(), sbData.GetLength());
 			respStatus = cli->GetRespStatus();
-			DEL_CLASS(cli);
+			cli.Delete();
 			if (respStatus == 200)
 			{
 				UI::MessageDialog::ShowDialog(CSTR("Upload success"), CSTR("CPUInfo"), me);

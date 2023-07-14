@@ -5,29 +5,26 @@
 #include "Text/MyString.h"
 #include "Text/MyStringW.h"
 
-IO::StreamWriter::StreamWriter(IO::Stream *stm, Text::Encoding *enc)
+IO::StreamWriter::StreamWriter(NotNullPtr<IO::Stream> stm, Text::Encoding *enc) : enc(enc->GetEncCodePage())
 {
 	this->stm = stm;
-	NEW_CLASS(this->enc, Text::Encoding(enc->GetEncCodePage()));
 	this->buff = MemAlloc(UInt8, this->buffSize = 256);
 }
 
-IO::StreamWriter::StreamWriter(IO::Stream *stm, UInt32 codePage)
+IO::StreamWriter::StreamWriter(NotNullPtr<IO::Stream> stm, UInt32 codePage) : enc(codePage)
 {
 	this->stm = stm;
-	NEW_CLASS(this->enc, Text::Encoding(codePage));
 	this->buff = MemAlloc(UInt8, this->buffSize = 256);
 }
 
 IO::StreamWriter::~StreamWriter()
 {
-	DEL_CLASS(this->enc);
 	MemFree(this->buff);
 }
 
 Bool IO::StreamWriter::WriteStrC(const UTF8Char *str, UOSInt nChar)
 {
-	if (this->enc->GetEncCodePage() == 65001)
+	if (this->enc.GetEncCodePage() == 65001)
 	{
 		return this->stm->Write(str, nChar) == nChar;
 	}
@@ -47,7 +44,7 @@ Bool IO::StreamWriter::WriteStrC(const UTF8Char *str, UOSInt nChar)
 			MemFree(this->buff);
 			this->buff = MemAlloc(UInt8, this->buffSize);
 		}
-		nChar = enc->WToBytesC(this->buff, ws, wnChar);
+		nChar = enc.WToBytesC(this->buff, ws, wnChar);
 		MemFree(ws);
 		return this->stm->Write(this->buff, nChar) == nChar;
 	}
@@ -55,7 +52,7 @@ Bool IO::StreamWriter::WriteStrC(const UTF8Char *str, UOSInt nChar)
 
 Bool IO::StreamWriter::WriteLineC(const UTF8Char *str, UOSInt nChar)
 {
-	if (this->enc->GetEncCodePage() == 65001)
+	if (this->enc.GetEncCodePage() == 65001)
 	{
 		const UTF8Char crlf[2] = {13, 10};
 		UOSInt ret = this->stm->Write(str, nChar);
@@ -84,7 +81,7 @@ Bool IO::StreamWriter::WriteLineC(const UTF8Char *str, UOSInt nChar)
 			MemFree(this->buff);
 			this->buff = MemAlloc(UInt8, this->buffSize);
 		}
-		nChar = enc->WToBytesC(this->buff, ws, wnChar + 2);
+		nChar = enc.WToBytesC(this->buff, ws, wnChar + 2);
 		MemFree(ws);
 		return this->stm->Write(this->buff, nChar) == nChar;
 	}
@@ -102,7 +99,7 @@ Bool IO::StreamWriter::WriteW(const WChar *str, UOSInt nChar)
 		MemFree(this->buff);
 		this->buff = MemAlloc(UInt8, this->buffSize);
 	}
-	nChar = enc->WToBytesC(this->buff, str, nChar);
+	nChar = enc.WToBytesC(this->buff, str, nChar);
 	return this->stm->Write(this->buff, nChar) == nChar;
 }
 
@@ -123,7 +120,7 @@ Bool IO::StreamWriter::WriteLineW(const WChar *str, UOSInt nChar)
 		MemFree(this->buff);
 		this->buff = MemAlloc(UInt8, this->buffSize);
 	}
-	nChar = enc->WToBytesC(this->buff, str, nChar);
+	nChar = enc.WToBytesC(this->buff, str, nChar);
 	this->buff[nChar] = 0xd;
 	this->buff[nChar + 1] = 0xa;
 	return this->stm->Write(this->buff, nChar + 2) == nChar + 2;
@@ -145,9 +142,9 @@ void IO::StreamWriter::WriteSignature()
 {
 	if (this->stm->CanSeek())
 	{
-		if (((IO::SeekableStream*)this->stm)->GetPosition() == 0)
+		if (((IO::SeekableStream*)this->stm.Ptr())->GetPosition() == 0)
 		{
-			UInt32 cp = enc->GetEncCodePage();
+			UInt32 cp = enc.GetEncCodePage();
 			if (cp == 65001)
 			{
 				buff[0] = 0xef;

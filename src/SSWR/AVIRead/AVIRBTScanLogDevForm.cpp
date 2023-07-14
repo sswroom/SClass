@@ -19,7 +19,7 @@ void __stdcall SSWR::AVIRead::AVIRBTScanLogDevForm::OnCSVClicked(void *userObj)
 		UTF8Char *sptr;
 		IO::FileStream fs(dlg.GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 		{
-			IO::BufferedOutputStream stm(&fs, 8192);
+			IO::BufferedOutputStream stm(fs, 8192);
 			Data::DateTime dt;
 			IO::BTScanLog::LogEntry *log;
 			Int64 lastTick;

@@ -19,11 +19,10 @@ void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnPortClicked(void *userObj)
 	}
 	else
 	{
-		IO::Stream *stm = 0;
 		SSWR::AVIRead::AVIRSelStreamForm frm(0, me->ui, me->core, false, 0);
 		if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 		{
-			stm = frm.stm;
+			NotNullPtr<IO::Stream> stm = frm.GetStream();
 			UOSInt i = me->cboDevType->GetSelectedIndex();
 			if (i == 0)
 			{
@@ -34,10 +33,7 @@ void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnPortClicked(void *userObj)
 				NEW_CLASS(me->scanner, IO::Device::DensoWaveQK30U(stm));
 			}
 			me->scanner->HandleCodeScanned(OnCodeScanned, me);
-		}
 
-		if (me->scanner)
-		{
 			me->txtPort->SetText(stm->GetSourceNameObj()->ToCString());
 			me->btnPort->SetText(CSTR("Close"));
 			me->txtMode->SetText(CSTR("Idle"));

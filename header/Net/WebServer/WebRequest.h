@@ -31,7 +31,7 @@ namespace Net
 			UInt16 cliPort;
 			UInt16 svrPort;
 			RequestProtocol reqProto;
-			Net::TCPClient *cli;
+			NotNullPtr<Net::TCPClient> cli;
 			Data::FastStringMap<Text::String *> *formMap;
 			Data::ArrayList<FormFileInfo*> *formFileList;
 
@@ -47,7 +47,7 @@ namespace Net
 			void ParseFormPart(UInt8 *data, UOSInt dataSize, UOSInt startOfst);
 			Text::CString ParseHeaderVal(UTF8Char *headerData, UOSInt dataLen);
 		public:
-			WebRequest(Text::CString requestURI, Net::WebUtil::RequestMethod reqMeth, RequestProtocol reqProto, Net::TCPClient *cli, const Net::SocketUtil::AddressInfo *cliAddr, UInt16 cliPort, UInt16 svrPort);
+			WebRequest(Text::CString requestURI, Net::WebUtil::RequestMethod reqMeth, RequestProtocol reqProto, NotNullPtr<Net::TCPClient> cli, const Net::SocketUtil::AddressInfo *cliAddr, UInt16 cliPort, UInt16 svrPort);
 			virtual ~WebRequest();
 
 			void AddHeader(Text::CString name, Text::CString value);

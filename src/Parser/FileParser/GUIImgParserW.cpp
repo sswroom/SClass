@@ -310,32 +310,32 @@ IO::ParsedObject *Parser::FileParser::GUIImgParser::ParseFileHdr(IO::StreamData 
 					IO::FileStream fs(sb.ToCString(), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential);
 					IO::StreamReader reader(fs, 0);
 					sb.ClearStr();
-					if (!reader.ReadLine(&sb, 1024) || !Text::StrToDouble(sb.ToString(), &xPxSize))
+					if (!reader.ReadLine(sb, 1024) || !Text::StrToDouble(sb.ToString(), &xPxSize))
 					{
 						valid = false;
 					}
 					sb.ClearStr();
-					if (!reader.ReadLine(&sb, 1024) || !Text::StrToDouble(sb.ToString(), &rotY))
+					if (!reader.ReadLine(sb, 1024) || !Text::StrToDouble(sb.ToString(), &rotY))
 					{
 						valid = false;
 					}
 					sb.ClearStr();
-					if (!reader.ReadLine(&sb, 1024) || !Text::StrToDouble(sb.ToString(), &rotX))
+					if (!reader.ReadLine(sb, 1024) || !Text::StrToDouble(sb.ToString(), &rotX))
 					{
 						valid = false;
 					}
 					sb.ClearStr();
-					if (!reader.ReadLine(&sb, 1024) || !Text::StrToDouble(sb.ToString(), &yPxSize))
+					if (!reader.ReadLine(sb, 1024) || !Text::StrToDouble(sb.ToString(), &yPxSize))
 					{
 						valid = false;
 					}
 					sb.ClearStr();
-					if (!reader.ReadLine(&sb, 1024) || !Text::StrToDouble(sb.ToString(), &xCoord))
+					if (!reader.ReadLine(sb, 1024) || !Text::StrToDouble(sb.ToString(), &xCoord))
 					{
 						valid = false;
 					}
 					sb.ClearStr();
-					if (!reader.ReadLine(&sb, 1024) || !Text::StrToDouble(sb.ToString(), &yCoord))
+					if (!reader.ReadLine(sb, 1024) || !Text::StrToDouble(sb.ToString(), &yCoord))
 					{
 						valid = false;
 					}

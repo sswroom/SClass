@@ -14,7 +14,7 @@ UOSInt PNGExporter_EstimateSize(const UInt8 *data, UOSInt dataSize, UInt8 *tmpBu
 	return Data::Compress::Inflate::Compress(data, dataSize, tmpBuff, false, Data::Compress::Inflate::CompressionLevel::BestSpeed);	
 }
 
-UOSInt PNGExporter_WritePal(IO::Stream *stm, Media::StaticImage *img, Crypto::Hash::CRC32R *crc)
+UOSInt PNGExporter_WritePal(NotNullPtr<IO::Stream> stm, Media::StaticImage *img, Crypto::Hash::CRC32R *crc)
 {
 	UInt8 *palPtr = img->pal;
 	if (palPtr == 0)
@@ -1427,7 +1427,7 @@ Bool Exporter::PNGExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8
 	return false;
 }
 
-Bool Exporter::PNGExporter::ExportFile(IO::SeekableStream *stm, Text::CString fileName, IO::ParsedObject *pobj, void *param)
+Bool Exporter::PNGExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CString fileName, IO::ParsedObject *pobj, void *param)
 {
 	if (IsObjectSupported(pobj) == SupportType::NotSupported)
 		return false;

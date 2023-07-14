@@ -14,8 +14,8 @@ namespace IO
 		IO::LogHandler::LogType logStyle;
 		IO::LogHandler::LogGroup groupStyle;
 		Int32 lastVal;
-		Text::UTF8Writer *log;
-		IO::FileStream *fileStm;
+		NotNullPtr<Text::UTF8Writer> log;
+		NotNullPtr<IO::FileStream> fileStm;
 		const Char *dateFormat;
 		NotNullPtr<Text::String> fileName;
 		const UTF8Char *extName;

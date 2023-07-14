@@ -333,6 +333,7 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(void *userObj)
 	case IO::StreamType::WindowsCOM:
 	case IO::StreamType::MemoryReading:
 	case IO::StreamType::DataCapture:
+	case IO::StreamType::Null:
 		break;
 	}
 }
@@ -726,4 +727,14 @@ void SSWR::AVIRead::AVIRSelStreamForm::SetInitBaudRate(Int32 baudRate)
 	UTF8Char *sptr;
 	sptr = Text::StrInt32(sbuff, baudRate);
 	this->txtBaudRate->SetText(CSTRP(sbuff, sptr));
+}
+
+NotNullPtr<IO::Stream> SSWR::AVIRead::AVIRSelStreamForm::GetStream() const
+{
+	return NotNullPtr<IO::Stream>::FromPtr(this->stm);
+}
+
+IO::StreamType SSWR::AVIRead::AVIRSelStreamForm::GetStreamType() const
+{
+	return this->stmType;
 }

@@ -16,9 +16,9 @@ IO::ConfigFile *IO::WSConfigFile::Parse(Text::CString fileName)
 	Text::StringBuilderUTF8 sb;
 	UOSInt i;
 	Text::PString sarr[2];
-	Text::UTF8Reader reader(&fs);
+	Text::UTF8Reader reader(fs);
 	NEW_CLASS(cfg, IO::ConfigFile());
-	while (reader.ReadLine(&sb, 4096))
+	while (reader.ReadLine(sb, 4096))
 	{
 		i = sb.IndexOf('#');
 		if (i != INVALID_INDEX)

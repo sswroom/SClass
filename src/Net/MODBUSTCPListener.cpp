@@ -9,20 +9,20 @@
 void __stdcall Net::MODBUSTCPListener::OnClientConn(Socket *s, void *userObj)
 {
 	Net::MODBUSTCPListener *me = (Net::MODBUSTCPListener*)userObj;
-	Net::TCPClient *cli;
-	NEW_CLASS(cli, Net::TCPClient(me->sockf, s));
+	NotNullPtr<Net::TCPClient> cli;
+	NEW_CLASSNN(cli, Net::TCPClient(me->sockf, s));
 	me->cliMgr->AddClient(cli, 0);
 }
 
-void __stdcall Net::MODBUSTCPListener::OnClientEvent(Net::TCPClient *cli, void *userObj, void *cliData, Net::TCPClientMgr::TCPEventType evtType)
+void __stdcall Net::MODBUSTCPListener::OnClientEvent(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, Net::TCPClientMgr::TCPEventType evtType)
 {
 	if (evtType == Net::TCPClientMgr::TCP_EVENT_DISCONNECT)
 	{
-		DEL_CLASS(cli);
+		cli.Delete();
 	}
 }
 
-void __stdcall Net::MODBUSTCPListener::OnClientData(Net::TCPClient *cli, void *userObj, void *cliData, const UInt8 *buff, UOSInt size)
+void __stdcall Net::MODBUSTCPListener::OnClientData(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, const UInt8 *buff, UOSInt size)
 {
 	if (size <= 6)
 	{
@@ -292,7 +292,7 @@ void __stdcall Net::MODBUSTCPListener::OnClientData(Net::TCPClient *cli, void *u
 	}
 }
 
-void __stdcall Net::MODBUSTCPListener::OnClientTimeout(Net::TCPClient *cli, void *userObj, void *cliData)
+void __stdcall Net::MODBUSTCPListener::OnClientTimeout(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData)
 {
 
 }

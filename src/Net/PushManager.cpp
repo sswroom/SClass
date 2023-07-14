@@ -33,11 +33,11 @@ void Net::PushManager::LoadData()
 		MemClear(&addr, sizeof(addr));
 		addr.addrType = Net::AddrType::Unknown;
 		Text::StringBuilderUTF8 sb;
-		Text::UTF8Reader reader(&fs);
+		Text::UTF8Reader reader(fs);
 		Text::PString sarr[5];
 		DeviceType devType;
 		this->loading = true;
-		while (reader.ReadLine(&sb, 1024))
+		while (reader.ReadLine(sb, 1024))
 		{
 			if (Text::StrSplitP(sarr, 3, sb, ',') == 3)
 			{
@@ -96,7 +96,7 @@ void Net::PushManager::SaveData()
 	{
 		Text::StringBuilderUTF8 sb;
 		DeviceInfo2 *dev;
-		Text::UTF8Writer writer(&fs);
+		Text::UTF8Writer writer(fs);
 		Sync::MutexUsage mutUsage(&this->dataMut);
 		UOSInt i = 0;
 		UOSInt j = this->devMap.GetCount();

@@ -20,7 +20,7 @@ IO::ProtoHdlr::ProtoMQTTHandler::~ProtoMQTTHandler()
 {
 }
 
-void *IO::ProtoHdlr::ProtoMQTTHandler::CreateStreamData(IO::Stream *stm)
+void *IO::ProtoHdlr::ProtoMQTTHandler::CreateStreamData(NotNullPtr<IO::Stream> stm)
 {
 	ClientData *cliData = MemAlloc(ClientData, 1);
 	cliData->packetBuff = 0;
@@ -30,7 +30,7 @@ void *IO::ProtoHdlr::ProtoMQTTHandler::CreateStreamData(IO::Stream *stm)
 	return cliData;
 }
 
-void IO::ProtoHdlr::ProtoMQTTHandler::DeleteStreamData(IO::Stream *stm, void *stmData)
+void IO::ProtoHdlr::ProtoMQTTHandler::DeleteStreamData(NotNullPtr<IO::Stream> stm, void *stmData)
 {
 	ClientData *cliData = (ClientData*)stmData;
 	if (cliData->packetBuff)
@@ -41,7 +41,7 @@ void IO::ProtoHdlr::ProtoMQTTHandler::DeleteStreamData(IO::Stream *stm, void *st
 	MemFree(cliData);
 }
 
-UOSInt IO::ProtoHdlr::ProtoMQTTHandler::ParseProtocol(IO::Stream *stm, void *stmObj, void *stmData, const UInt8 *buff, UOSInt buffSize)
+UOSInt IO::ProtoHdlr::ProtoMQTTHandler::ParseProtocol(NotNullPtr<IO::Stream> stm, void *stmObj, void *stmData, const UInt8 *buff, UOSInt buffSize)
 {
 	ClientData *cliData = (ClientData*)stmData;
 	if (cliData->packetBuff)

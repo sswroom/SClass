@@ -1104,7 +1104,7 @@ Int32 __stdcall DasmX86_64_GetFuncStack(Manage::DasmX86_64::DasmX86_64_Sess* ses
 			IO::ConsoleWriter console;
 #else
 			IO::FileStream fs(CSTR("ErrorMsg.txt"), IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-			Text::UTF8Writer console(&fs);
+			Text::UTF8Writer console(fs);
 #endif
 			UInt8 *buff;
 			UOSInt buffSize;

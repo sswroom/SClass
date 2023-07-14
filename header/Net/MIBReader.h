@@ -16,21 +16,21 @@ namespace Net
 			ET_STRING
 		} EscapeType;
 	private:
-		Text::UTF8Reader *reader;
-		Text::StringBuilderUTF8 *sbLine;
+		Text::UTF8Reader reader;
+		Text::StringBuilderUTF8 sbLine;
 		UOSInt currOfst;
 		EscapeType escapeType;
 
-		Bool ReadLineInner(Text::StringBuilderUTF8 *sb);
+		Bool ReadLineInner(NotNullPtr<Text::StringBuilderUTF8> sb);
 		Bool ReadWord(Text::StringBuilderUTF8 *sb, Bool move);
 	public:
-		MIBReader(IO::Stream *stm);
+		MIBReader(NotNullPtr<IO::Stream> stm);
 		~MIBReader();
 
 		Bool PeekWord(Text::StringBuilderUTF8 *sb);
 		Bool NextWord(Text::StringBuilderUTF8 *sb);
-		Bool ReadLine(Text::StringBuilderUTF8 *sb);
-		Bool GetLastLineBreak(Text::StringBuilderUTF8 *sb);
+		Bool ReadLine(NotNullPtr<Text::StringBuilderUTF8> sb);
+		Bool GetLastLineBreak(NotNullPtr<Text::StringBuilderUTF8> sb);
 	};
 }
 #endif

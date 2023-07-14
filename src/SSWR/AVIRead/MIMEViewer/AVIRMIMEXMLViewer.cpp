@@ -25,7 +25,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMIMEXMLViewer::AVIRMIMEXMLViewer(SSWR::AVIRead::A
 	UOSInt i;
 	UOSInt j;
 	IO::MemoryReadingStream mstm(buff, size);
-	Text::XMLReader reader(core->GetEncFactory(), &mstm, Text::XMLReader::PM_XML);
+	Text::XMLReader reader(core->GetEncFactory(), mstm, Text::XMLReader::PM_XML);
 	while (reader.ReadNext())
 	{
 		if (reader.GetNodeType() == Text::XMLNode::NodeType::Document)

@@ -3,7 +3,7 @@
 #include "MyMemory.h"
 #include "IO/BufferedOutputStream.h"
 
-IO::BufferedOutputStream::BufferedOutputStream(IO::Stream *outStm, UOSInt buffSize) : IO::Stream(outStm->GetSourceNameObj())
+IO::BufferedOutputStream::BufferedOutputStream(NotNullPtr<IO::Stream> outStm, UOSInt buffSize) : IO::Stream(outStm->GetSourceNameObj())
 {
 	this->outStm = outStm;
 	this->cacheBuffSize = buffSize;

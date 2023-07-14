@@ -564,7 +564,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 			me->reqHeaders = 0;
 			me->reqAllowComp = false;
 			
-			Net::HTTPClient *cli;
+			NotNullPtr<Net::HTTPClient> cli;
 			cli = Net::HTTPClient::CreateClient(me->core->GetSocketFactory(), currOSClient?0:me->ssl, me->userAgent->ToCString(), me->noShutdown, currURL->StartsWith(UTF8STRC("https://")));
 			if (me->cliCert != 0 && me->cliKey != 0)
 			{
@@ -642,7 +642,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 				me->respStatus = cli->GetRespStatus();
 				if (me->respStatus == 401 && currUserName != 0 && currPassword != 0)
 				{
-					DEL_CLASS(cli);
+					cli.Delete();
 					cli = Net::HTTPClient::CreateClient(me->core->GetSocketFactory(), me->ssl, me->userAgent->ToCString(), me->noShutdown, currURL->StartsWith(UTF8STRC("https://")));
 					if (cli->Connect(currURL->ToCString(), currMeth, &me->respTimeDNS, &me->respTimeConn, false))
 					{
@@ -811,7 +811,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 				SDEL_CLASS(me->respCert);
 			}
 
-			DEL_CLASS(cli);
+			cli.Delete();
 			me->respChanged = true;
 
 			currURL->Release();

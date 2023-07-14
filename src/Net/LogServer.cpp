@@ -14,10 +14,10 @@
 void __stdcall Net::LogServer::ConnHdlr(Socket *s, void *userObj)
 {
 	Net::LogServer *me = (Net::LogServer*)userObj;
-	Net::TCPClient *cli;
+	NotNullPtr<Net::TCPClient> cli;
 	ClientStatus *cliStatus;
 	Net::SocketUtil::AddressInfo addr;
-	NEW_CLASS(cli, Net::TCPClient(me->sockf, s));
+	NEW_CLASSNN(cli, Net::TCPClient(me->sockf, s));
 	cliStatus = MemAlloc(ClientStatus, 1);
 	cliStatus->buff = MemAlloc(UInt8, BUFFSIZE);
 	cliStatus->buffSize = 0;
@@ -26,7 +26,7 @@ void __stdcall Net::LogServer::ConnHdlr(Socket *s, void *userObj)
 	me->cliMgr->AddClient(cli, cliStatus);
 }
 
-void __stdcall Net::LogServer::ClientEvent(Net::TCPClient *cli, void *userObj, void *cliData, Net::TCPClientMgr::TCPEventType evtType)
+void __stdcall Net::LogServer::ClientEvent(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, Net::TCPClientMgr::TCPEventType evtType)
 {
 	Net::LogServer *me = (Net::LogServer*)userObj;
 	if (evtType == Net::TCPClientMgr::TCP_EVENT_DISCONNECT)
@@ -39,14 +39,14 @@ void __stdcall Net::LogServer::ClientEvent(Net::TCPClient *cli, void *userObj, v
 		cliStatus = (ClientStatus*)cliData;
 		MemFree(cliStatus->buff);
 		MemFree(cliStatus);
-		DEL_CLASS(cli);
+		cli.Delete();
 	}
 	else if (evtType == Net::TCPClientMgr::TCP_EVENT_HASDATA)
 	{
 	}
 }
 
-void __stdcall Net::LogServer::ClientData(Net::TCPClient *cli, void *userObj, void *cliData, const UInt8 *buff, UOSInt size)
+void __stdcall Net::LogServer::ClientData(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, const UInt8 *buff, UOSInt size)
 {
 	Net::LogServer *me = (Net::LogServer*)userObj;
 	ClientStatus *cliStatus;
@@ -80,7 +80,7 @@ void __stdcall Net::LogServer::ClientData(Net::TCPClient *cli, void *userObj, vo
 	}
 }
 
-void __stdcall Net::LogServer::ClientTimeout(Net::TCPClient *cli, void *userObj, void *cliData)
+void __stdcall Net::LogServer::ClientTimeout(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData)
 {
 }
 
@@ -163,7 +163,7 @@ void Net::LogServer::HandleClientLog(ClientLogHandler hdlr, void *userObj)
 	this->logHdlr = hdlr;
 }
 
-void Net::LogServer::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize)
+void Net::LogServer::DataParsed(NotNullPtr<IO::Stream> stm, void *stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize)
 {
 	UInt8 reply[18];
 	UOSInt replySize;
@@ -185,7 +185,7 @@ void Net::LogServer::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, In
 			Text::StringBuilderUTF8 sb;
 			if (this->log)
 			{
-				sptr = ((Net::TCPClient *)stm)->GetRemoteName(sbuff);
+				sptr = ((Net::TCPClient *)stm.Ptr())->GetRemoteName(sbuff);
 				sb.AppendP(sbuff, sptr);
 				sb.AppendC(UTF8STRC("> "));
 				sb.AppendC(&cmd[8], cmdSize - 8);
@@ -238,7 +238,7 @@ void Net::LogServer::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, In
 	}
 }
 
-void Net::LogServer::DataSkipped(IO::Stream *stm, void *stmObj, const UInt8 *buff, UOSInt buffSize)
+void Net::LogServer::DataSkipped(NotNullPtr<IO::Stream> stm, void *stmObj, const UInt8 *buff, UOSInt buffSize)
 {
 
 }

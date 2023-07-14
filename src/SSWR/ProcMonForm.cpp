@@ -105,7 +105,7 @@ void SSWR::ProcMonForm::LoadProgList()
 		while (true)
 		{
 			sb.ClearStr();
-			if (!reader.ReadLine(&sb, 4096))
+			if (!reader.ReadLine(sb, 4096))
 				break;
 			if (Text::StrSplitP(sarr, 2, sb, ',') == 2)
 			{

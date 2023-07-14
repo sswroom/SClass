@@ -107,14 +107,14 @@ UOSInt Net::ARPInfo::GetARPInfoList(Data::ArrayList<Net::ARPInfo*> *arpInfoList)
 	}
 	else
 	{
-		Text::UTF8Reader reader(&fs);
+		Text::UTF8Reader reader(fs);
 		sb.ClearStr();
-		if (reader.ReadLine(&sb, 1024))
+		if (reader.ReadLine(sb, 1024))
 		{
 			while (true)
 			{
 				sb.ClearStr();
-				if (!reader.ReadLine(&sb, 1024))
+				if (!reader.ReadLine(sb, 1024))
 				{
 					break;
 				}

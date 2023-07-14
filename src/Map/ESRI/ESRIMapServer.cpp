@@ -60,14 +60,14 @@ Map::ESRI::ESRIMapServer::ESRIMapServer(Text::CString url, Net::SocketFactory *s
 	else
 	{
 		sptr = Text::StrConcatC(url.ConcatTo(sbuff), UTF8STRC("?f=json"));
-		Net::HTTPClient *cli = Net::HTTPClient::CreateConnect(sockf, ssl, CSTRP(sbuff, sptr), Net::WebUtil::RequestMethod::HTTP_GET, true);
+		NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(sockf, ssl, CSTRP(sbuff, sptr), Net::WebUtil::RequestMethod::HTTP_GET, true);
 		IO::MemoryStream mstm;
 		while ((readSize = cli->Read(buff, 2048)) > 0)
 		{
 			mstm.Write(buff, readSize);
 		}
 		codePage = cli->GetContentCodePage();
-		DEL_CLASS(cli);
+		cli.Delete();
 
 
 		UInt8 *jsonBuff = mstm.GetBuff(&readSize);
@@ -303,7 +303,7 @@ Bool Map::ESRI::ESRIMapServer::TileLoadToStream(IO::Stream *stm, UOSInt level, I
 	UOSInt readSize;
 	sptr = this->TileGetURL(url, level, tileX, tileY);
 
-	Net::HTTPClient *cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, CSTRP(url, sptr), Net::WebUtil::RequestMethod::HTTP_GET, true);
+	NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, CSTRP(url, sptr), Net::WebUtil::RequestMethod::HTTP_GET, true);
 	Bool succ = cli->GetRespStatus() == Net::WebStatus::SC_OK;
 	while ((readSize = cli->Read(dataBuff, 2048)) > 0)
 	{
@@ -312,7 +312,7 @@ Bool Map::ESRI::ESRIMapServer::TileLoadToStream(IO::Stream *stm, UOSInt level, I
 			succ = false;
 		}
 	}
-	DEL_CLASS(cli);
+	cli.Delete();
 	return succ;
 }
 
@@ -324,7 +324,7 @@ Bool Map::ESRI::ESRIMapServer::TileLoadToFile(Text::CString fileName, UOSInt lev
 	UTF8Char *sptr;
 	sptr = this->TileGetURL(url, level, tileX, tileY);
 
-	Net::HTTPClient *cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, CSTRP(url, sptr), Net::WebUtil::RequestMethod::HTTP_GET, true);
+	NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, CSTRP(url, sptr), Net::WebUtil::RequestMethod::HTTP_GET, true);
 	Bool succ = cli->GetRespStatus() == Net::WebStatus::SC_OK;
 	if (succ)
 	{
@@ -337,7 +337,7 @@ Bool Map::ESRI::ESRIMapServer::TileLoadToFile(Text::CString fileName, UOSInt lev
 			}
 		}
 	}
-	DEL_CLASS(cli);
+	cli.Delete();
 	return succ;
 }
 
@@ -399,7 +399,7 @@ Bool Map::ESRI::ESRIMapServer::QueryInfos(Math::Coord2DDbl coord, Math::RectArea
 	sptr = Text::StrConcatC(sptr, UTF8STRC("&f=json"));
 
 	Bool succ = false;
-	Net::HTTPClient *cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, CSTRP(url, sptr), Net::WebUtil::RequestMethod::HTTP_GET, true);
+	NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, CSTRP(url, sptr), Net::WebUtil::RequestMethod::HTTP_GET, true);
 	if (cli->GetRespStatus() == Net::WebStatus::SC_OK)
 	{
 		IO::MemoryStream mstm;
@@ -469,7 +469,7 @@ Bool Map::ESRI::ESRIMapServer::QueryInfos(Math::Coord2DDbl coord, Math::RectArea
 		}
 		succ = vecList->GetCount() > 0;
 	}
-	DEL_CLASS(cli);
+	cli.Delete();
 	return succ;
 }
 
@@ -512,7 +512,7 @@ Media::ImageList *Map::ESRI::ESRIMapServer::DrawMap(Math::RectAreaDbl bounds, UI
 		sbUrl->AppendC(url, (UOSInt)(sptr - url));
 
 	Media::ImageList *ret = 0;
-	Net::HTTPClient *cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, CSTRP(url, sptr), Net::WebUtil::RequestMethod::HTTP_GET, true);
+	NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, CSTRP(url, sptr), Net::WebUtil::RequestMethod::HTTP_GET, true);
 	Bool succ = cli->GetRespStatus() == Net::WebStatus::SC_OK;
 	if (succ)
 	{
@@ -526,7 +526,7 @@ Media::ImageList *Map::ESRI::ESRIMapServer::DrawMap(Math::RectAreaDbl bounds, UI
 		IO::StmData::MemoryDataRef mdr(mstm.GetBuff(&size), (UOSInt)mstm.GetLength());
 		ret = (Media::ImageList*)parser.ParseFile(&mdr, 0, IO::ParserType::ImageList);
 	}
-	DEL_CLASS(cli);
+	cli.Delete();
 	return ret;
 }
 

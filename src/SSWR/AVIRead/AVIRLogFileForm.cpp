@@ -97,7 +97,7 @@ void SSWR::AVIRead::AVIRLogFileForm::EventMenuClicked(UInt16 cmdId)
 				UOSInt i;
 				UOSInt j;
 				IO::FileStream fs(dlg.GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-				Text::UTF8Writer writer(&fs);
+				Text::UTF8Writer writer(fs);
 				i = 0;
 				j = this->logFile->GetCount(this->logLevel);
 				while (i < j)

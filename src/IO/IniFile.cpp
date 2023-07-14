@@ -105,7 +105,7 @@ IO::ConfigFile *IO::IniFile::ParseReader(IO::StreamReader *reader)
 	return cfg;
 }
 
-Bool IO::IniFile::SaveConfig(IO::Stream *stm, UInt32 codePage, IO::ConfigFile *cfg)
+Bool IO::IniFile::SaveConfig(NotNullPtr<IO::Stream> stm, UInt32 codePage, IO::ConfigFile *cfg)
 {
 	Bool ret;
 	IO::StreamWriter writer(stm, codePage);

@@ -590,7 +590,7 @@ void SSWR::AVIRead::AVIRGISForm::HKOPortal(Text::CString listFile, Text::CString
 	UTF8Char *timeStr;
 	UTF8Char *timeStrEnd;
 	Text::StringBuilderUTF8 sb;
-	Net::HTTPClient *cli;
+	NotNullPtr<Net::HTTPClient> cli;
 	dt.SetCurrTimeUTC();
 	sb.AppendC(UTF8STRC("https://maps.weather.gov.hk/gis-portal/web/data/dirList/"));
 	sb.Append(listFile);
@@ -606,7 +606,7 @@ void SSWR::AVIRead::AVIRGISForm::HKOPortal(Text::CString listFile, Text::CString
 		while (true)
 		{
 			sb.ClearStr();
-			if (!reader.ReadLine(&sb, 4096))
+			if (!reader.ReadLine(sb, 4096))
 				break;
 			if (sb.GetLength() < 30 && Text::StrSplit(sarr, 3, sb.v, ',') == 2)
 			{
@@ -617,7 +617,7 @@ void SSWR::AVIRead::AVIRGISForm::HKOPortal(Text::CString listFile, Text::CString
 			}
 		}
 	}
-	DEL_CLASS(cli);
+	cli.Delete();
 	if (dateStr && timeStr)
 	{
 		sb.ClearStr();
@@ -633,19 +633,16 @@ void SSWR::AVIRead::AVIRGISForm::HKOPortal(Text::CString listFile, Text::CString
 
 void SSWR::AVIRead::AVIRGISForm::OpenCSV(Text::CString url, UInt32 codePage, Text::CString name, Text::CString nameCol, Text::CString latCol, Text::CString lonCol)
 {
-	Net::HTTPClient *cli = Net::HTTPClient::CreateConnect(this->core->GetSocketFactory(), this->ssl, url, Net::WebUtil::RequestMethod::HTTP_GET, true);
-	if (cli)
+	NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->core->GetSocketFactory(), this->ssl, url, Net::WebUtil::RequestMethod::HTTP_GET, true);
+	if (cli->GetRespStatus() == Net::WebStatus::SC_OK)
 	{
-		if (cli->GetRespStatus() == Net::WebStatus::SC_OK)
+		Map::MapDrawLayer *lyr = Map::CSVMapParser::ParseAsPoint(cli, codePage, name, nameCol, latCol, lonCol, Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84));
+		if (lyr)
 		{
-			Map::MapDrawLayer *lyr = Map::CSVMapParser::ParseAsPoint(cli, codePage, name, nameCol, latCol, lonCol, Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84));
-			if (lyr)
-			{
-				this->AddLayer(lyr);
-			}
+			this->AddLayer(lyr);
 		}
-		DEL_CLASS(cli);
 	}
+	cli.Delete();
 }
 
 SSWR::AVIRead::AVIRGISForm::AVIRGISForm(UI::GUIClientControl *parent, UI::GUICore *ui, AVIRead::AVIRCore *core, Map::MapEnv *env, Map::MapView *view) : UI::GUIForm(parent, 1024, 768, ui)
@@ -1241,14 +1238,13 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_MTK_GPS:
 		{
-			IO::SerialPort *port;
-			IO::Device::MTKGPSNMEA *mtk;
-			Map::GPSTrack *trk;
-			UTF8Char *sptr;
-
-			NEW_CLASS(port, IO::SerialPort(IO::Device::MTKGPSNMEA::GetMTKSerialPort(), 115200, IO::SerialPort::PARITY_NONE, true));
+			NotNullPtr<IO::SerialPort> port;
+			NEW_CLASSNN(port, IO::SerialPort(IO::Device::MTKGPSNMEA::GetMTKSerialPort(), 115200, IO::SerialPort::PARITY_NONE, true));
 			if (!port->IsError())
 			{
+				IO::Device::MTKGPSNMEA *mtk;
+				Map::GPSTrack *trk;
+				UTF8Char *sptr;
 				NEW_CLASS(mtk, IO::Device::MTKGPSNMEA(port, true));
 				if (mtk->IsMTKDevice())
 				{
@@ -1288,7 +1284,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 			}
 			else
 			{
-				DEL_CLASS(port);
+				port.Delete();
 				UI::MessageDialog::ShowDialog(CSTR("MTK GPS Tracker not found"), CSTR("MTK Tracker"), this);
 			}
 		}
@@ -1333,7 +1329,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 				SSWR::AVIRead::AVIRGPSTrackerForm *gpsFrm;
 				IO::GPSNMEA *gps;
 				Map::GPSTrack *trk;
-				NEW_CLASS(gps, IO::GPSNMEA(frm.stm, true));
+				NEW_CLASS(gps, IO::GPSNMEA(frm.GetStream(), true));
 				NEW_CLASS(gpsFrm, SSWR::AVIRead::AVIRGPSTrackerForm(0, this->ui, this->core, gps, true));
 				this->AddSubForm(gpsFrm);
 				NEW_CLASS(trk, Map::GPSTrack(CSTR("GPS_Tracker"), true, 0, CSTR_NULL));
@@ -1353,7 +1349,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 				SSWR::AVIRead::AVIRGPSTrackerForm *gpsFrm;
 				IO::GPSNMEA *gps;
 				Map::GPSTrack *trk;
-				NEW_CLASS(gps, IO::Device::MTKGPSNMEA(frm.stm, true));
+				NEW_CLASS(gps, IO::Device::MTKGPSNMEA(frm.GetStream(), true));
 				NEW_CLASS(gpsFrm, SSWR::AVIRead::AVIRGPSTrackerForm(0, this->ui, this->core, gps, true));
 				this->AddSubForm(gpsFrm);
 				NEW_CLASS(trk, Map::GPSTrack(CSTR("MTK_GPS_Tracker"), true, 0, CSTR_NULL));
@@ -1414,7 +1410,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_HKO_CYCLONE:
 		{
-			Net::HTTPClient *cli;
+			NotNullPtr<Net::HTTPClient> cli;
 			Text::UTF8Reader *reader;
 			Text::StringBuilderUTF8 sb;
 			UTF8Char *sptr;
@@ -1423,11 +1419,11 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 			Data::DateTime dt;
 			cli = Net::HTTPClient::CreateConnect(this->core->GetSocketFactory(), this->ssl, CSTR("https://www.weather.gov.hk/wxinfo/currwx/tc_gis_list.xml"), Net::WebUtil::RequestMethod::HTTP_GET, false);
 			NEW_CLASS(reader, Text::UTF8Reader(cli));
-			reader->ReadLine(&sb, 4096);
+			reader->ReadLine(sb, 4096);
 			while (true)
 			{
 				sb.ClearStr();
-				if (!reader->ReadLine(&sb, 4096))
+				if (!reader->ReadLine(sb, 4096))
 					break;
 				sptr = sb.v;
 				i = Text::StrIndexOfC(sptr, sb.GetLength(), UTF8STRC("=\""));
@@ -1456,7 +1452,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 				}
 			}
 			DEL_CLASS(reader);
-			DEL_CLASS(cli);
+			cli.Delete();
 		}
 		break;
 

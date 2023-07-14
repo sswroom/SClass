@@ -24,8 +24,8 @@ UInt32 __stdcall Net::SSLEngine::ServerThread(void *userObj)
 			Socket *s = state->s;
 			state->s = 0;
 
-			Net::TCPClient *cli = state->me->CreateServerConn(s);
-			if (cli)
+			NotNullPtr<Net::TCPClient> cli;
+			if (cli.Set(state->me->CreateServerConn(s)))
 			{
 				state->clientReady(cli, state->clientReadyObj);
 			}

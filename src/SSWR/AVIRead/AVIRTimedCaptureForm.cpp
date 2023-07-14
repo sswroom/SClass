@@ -250,7 +250,7 @@ void __stdcall SSWR::AVIRead::AVIRTimedCaptureForm::OnVideoFrame(UInt32 frameTim
 		me->exporter->SetParamInt32(param, 0, me->jpgQuality);
 		{
 			IO::MemoryStream mstm;
-			me->exporter->ExportFile(&mstm, CSTR("Temp"), imgList, param);
+			me->exporter->ExportFile(mstm, CSTR("Temp"), imgList, param);
 			imgBuff = mstm.GetBuff(&imgSize);
 			me->timedImageList->AddImage(dt.ToTicks(), imgBuff, imgSize, Media::TimedImageList::IF_JPG);
 		}

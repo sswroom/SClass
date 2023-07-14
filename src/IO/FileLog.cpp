@@ -122,8 +122,8 @@ void IO::FileLog::Init(LogType style, LogGroup groupStyle, const Char *dateForma
 	Data::DateTimeUtil::Instant2TimeValue(ts.inst.sec, ts.inst.nanosec, &tval, ts.tzQhr);
 	sptr = GetNewName(buff, &tval, ts.inst.nanosec);
 
-	NEW_CLASS(fileStm, FileStream({buff, (UOSInt)(sptr - buff)}, IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	NEW_CLASS(log, Text::UTF8Writer(fileStm));
+	NEW_CLASSNN(fileStm, FileStream({buff, (UOSInt)(sptr - buff)}, IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASSNN(log, Text::UTF8Writer(fileStm));
 	log->WriteSignature();
 }
 
@@ -149,11 +149,8 @@ IO::FileLog::~FileLog()
 		this->extName = 0;
 	}
 
-	DEL_CLASS(log);
-	log = 0;
-
-	DEL_CLASS(fileStm);
-	fileStm = 0;
+	log.Delete();
+	fileStm.Delete();
 }
 
 void IO::FileLog::LogClosed()
@@ -211,11 +208,11 @@ void IO::FileLog::LogAdded(const Data::Timestamp &time, Text::CString logMsg, Lo
 	if (newFile)
 	{
 		log->Close();
-		DEL_CLASS(log);
-		DEL_CLASS(fileStm);
+		log.Delete();
+		fileStm.Delete();
 
-		NEW_CLASS(fileStm, IO::FileStream({buff, (UOSInt)(sptr - buff)}, IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-		NEW_CLASS(log, Text::UTF8Writer(fileStm));
+		NEW_CLASSNN(fileStm, IO::FileStream({buff, (UOSInt)(sptr - buff)}, IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+		NEW_CLASSNN(log, Text::UTF8Writer(fileStm));
 		log->WriteSignature();
 
 		sptr = Text::StrConcatC(time.ToString(buff, this->dateFormat), UTF8STRC("Program running"));

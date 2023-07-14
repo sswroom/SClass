@@ -221,7 +221,7 @@ void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnEmailDblClicked(void *userO
 	}
 }
 
-UTF8Char *__stdcall SSWR::AVIRead::AVIREmailServerForm::OnMailReceived(UTF8Char *queryId, void *userObj, Net::TCPClient *cli, Net::Email::SMTPServer::MailStatus *mail)
+UTF8Char *__stdcall SSWR::AVIRead::AVIREmailServerForm::OnMailReceived(UTF8Char *queryId, void *userObj, NotNullPtr<Net::TCPClient> cli, Net::Email::SMTPServer::MailStatus *mail)
 {
 	SSWR::AVIRead::AVIREmailServerForm *me = (SSWR::AVIRead::AVIREmailServerForm*)userObj;
 	UTF8Char sbuff[32];

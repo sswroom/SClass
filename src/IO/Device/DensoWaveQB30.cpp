@@ -250,7 +250,7 @@ Bool IO::Device::DensoWaveQB30::WriteCommand(const Char *cmdStr, UOSInt cmdLen)
 	return succ;
 }
 
-IO::Device::DensoWaveQB30::DensoWaveQB30(IO::Stream *stm) : IO::CodeScanner(CSTR("Denso Wave QB30"))
+IO::Device::DensoWaveQB30::DensoWaveQB30(NotNullPtr<IO::Stream> stm) : IO::CodeScanner(CSTR("Denso Wave QB30"))
 {
 	this->stm = stm;
 	this->scanDelay = 1000;
@@ -280,7 +280,7 @@ IO::Device::DensoWaveQB30::~DensoWaveQB30()
 	}
 //	DEL_CLASS(this->nextTime);
 	MemFree(this->recvBuff);
-	DEL_CLASS(this->stm);
+	this->stm.Delete();
 }
 
 void IO::Device::DensoWaveQB30::SetCurrMode(ModeType currMode)

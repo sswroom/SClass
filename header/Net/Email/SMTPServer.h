@@ -32,7 +32,7 @@ namespace Net
 				Text::String *userName;
 			} MailStatus;
 
-			typedef UTF8Char *(__stdcall *MailHandler)(UTF8Char *queryId, void *userObj, Net::TCPClient *cli, MailStatus *mail);
+			typedef UTF8Char *(__stdcall *MailHandler)(UTF8Char *queryId, void *userObj, NotNullPtr<Net::TCPClient> cli, MailStatus *mail);
 			typedef Bool (__stdcall *LoginHandler)(void *userObj, Text::CString userName, Text::CString pwd);
 		private:
 			Net::SocketFactory *sockf;
@@ -50,14 +50,14 @@ namespace Net
 			UInt32 maxMailSize;
 			IO::FileStream *rawLog;
 
-			static void __stdcall ClientReady(Net::TCPClient *cli, void *userObj);
+			static void __stdcall ClientReady(NotNullPtr<Net::TCPClient> cli, void *userObj);
 			static void __stdcall ConnHdlr(Socket *s, void *userObj);
-			static void __stdcall ClientEvent(Net::TCPClient *cli, void *userObj, void *cliData, Net::TCPClientMgr::TCPEventType evtType);
-			static void __stdcall ClientData(Net::TCPClient *cli, void *userObj, void *cliData, const UInt8 *buff, UOSInt size);
-			static void __stdcall ClientTimeout(Net::TCPClient *cli, void *userObj, void *cliData);
-			UOSInt WriteMessage(Net::TCPClient *cli, Int32 statusCode, Text::CString msg);
+			static void __stdcall ClientEvent(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, Net::TCPClientMgr::TCPEventType evtType);
+			static void __stdcall ClientData(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, const UInt8 *buff, UOSInt size);
+			static void __stdcall ClientTimeout(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData);
+			UOSInt WriteMessage(NotNullPtr<Net::TCPClient> cli, Int32 statusCode, Text::CString msg);
 			//static OSInt WriteMessage(Net::TCPClient *cli, Int32 statusCode, const Char *msg);
-			void ParseCmd(Net::TCPClient *cli, MailStatus *cliStatus, const UTF8Char *cmd, UOSInt cmdLen, Text::LineBreakType lbt);
+			void ParseCmd(NotNullPtr<Net::TCPClient> cli, MailStatus *cliStatus, const UTF8Char *cmd, UOSInt cmdLen, Text::LineBreakType lbt);
 		public:
 			SMTPServer(Net::SocketFactory *sockf, Net::SSLEngine *ssl, UInt16 port, Net::Email::SMTPConn::ConnType connType, IO::LogTool *log, Text::CString domain, Text::CString serverName, MailHandler mailHdlr, LoginHandler loginHdlr, void *userObj, Bool autoStart);
 			~SMTPServer();

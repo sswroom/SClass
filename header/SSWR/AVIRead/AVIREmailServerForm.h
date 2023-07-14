@@ -101,7 +101,7 @@ namespace SSWR
 			static void __stdcall OnGCISStartClicked(void *userObj);
 			static void __stdcall OnLogFileClicked(void *userObj);
 			static void __stdcall OnEmailDblClicked(void *userObj, UOSInt index);
-			static UTF8Char *__stdcall OnMailReceived(UTF8Char *queryId, void *userObj, Net::TCPClient *cli, Net::Email::SMTPServer::MailStatus *mail);
+			static UTF8Char *__stdcall OnMailReceived(UTF8Char *queryId, void *userObj, NotNullPtr<Net::TCPClient> cli, Net::Email::SMTPServer::MailStatus *mail);
 			static void __stdcall OnGCISMailReceived(void *userObj, Net::NetConnection *cli, Text::MIMEObj::MailMessage *mail);
 			static Bool __stdcall OnMailLogin(void *userObj, Text::CString userName, Text::CString pwd);
 			static void __stdcall OnTimerTick(void *userObj);

@@ -59,7 +59,7 @@ void Exporter::SHPExporter::SetCodePage(UInt32 codePage)
 	this->codePage = codePage;
 }
 
-Bool Exporter::SHPExporter::ExportFile(IO::SeekableStream *stm, Text::CString fileName, IO::ParsedObject *pobj, void *param)
+Bool Exporter::SHPExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CString fileName, IO::ParsedObject *pobj, void *param)
 {
 	UInt8 buff[256];
 	UTF8Char fileName2[256];
@@ -80,7 +80,6 @@ Bool Exporter::SHPExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 	Double zMax = 0;
 	IO::FileStream *shx;
 	Data::ArrayListInt64 *objIds;
-	Exporter::DBFExporter *exporter;
 	Map::NameArray *nameArr;
 	Map::GetObjectSess *sess;
 	if (layerType != Map::DRAW_LAYER_POINT && layerType != Map::DRAW_LAYER_POINT3D && layerType != Map::DRAW_LAYER_POLYLINE && layerType != Map::DRAW_LAYER_POLYLINE3D && layerType != Map::DRAW_LAYER_POLYGON)
@@ -405,12 +404,12 @@ Bool Exporter::SHPExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 	DEL_CLASS(shx);
 
 	sptr = IO::Path::ReplaceExt(fileName2, UTF8STRC("dbf"));
-	NEW_CLASS(shx, IO::FileStream(CSTRP(fileName2, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	NEW_CLASS(exporter, Exporter::DBFExporter());
-	exporter->SetCodePage(this->codePage);
-	exporter->ExportFile(shx, CSTRP(fileName2, sptr), layer, 0);
-	DEL_CLASS(exporter);
-	DEL_CLASS(shx);
+	{
+		IO::FileStream fs(CSTRP(fileName2, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+		Exporter::DBFExporter exporter;
+		exporter.SetCodePage(this->codePage);
+		exporter.ExportFile(fs, CSTRP(fileName2, sptr), layer, 0);
+	}
 
 	sptr = IO::Path::ReplaceExt(fileName2, UTF8STRC("prj"));
 	Math::CoordinateSystem *csys = layer->GetCoordinateSystem();
@@ -419,9 +418,8 @@ Bool Exporter::SHPExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 		UTF8Char projArr[1024];
 		Math::SRESRIWKTWriter wkt;
 		UTF8Char *cptr = wkt.WriteCSys(csys, projArr, 0, Text::LineBreakType::None);
-		NEW_CLASS(shx, IO::FileStream(CSTRP(fileName2, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-		shx->Write((UInt8*)projArr, (UOSInt)(cptr - projArr));
-		DEL_CLASS(shx);
+		IO::FileStream fs(CSTRP(fileName2, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+		fs.Write((UInt8*)projArr, (UOSInt)(cptr - projArr));
 	}
 	return true;
 }

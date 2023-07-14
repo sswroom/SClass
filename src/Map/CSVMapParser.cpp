@@ -5,7 +5,7 @@
 #include "Math/Geometry/Point.h"
 #include "Text/UTF8Reader.h"
 
-Map::MapDrawLayer *Map::CSVMapParser::ParseAsPoint(IO::Stream *stm, UInt32 codePage, Text::CString layerName, Text::CString nameCol, Text::CString latCol, Text::CString lonCol, Math::CoordinateSystem *csys)
+Map::MapDrawLayer *Map::CSVMapParser::ParseAsPoint(NotNullPtr<IO::Stream> stm, UInt32 codePage, Text::CString layerName, Text::CString nameCol, Text::CString latCol, Text::CString lonCol, Math::CoordinateSystem *csys)
 {
 	Text::PString tmpArr[2];
 	const UTF8Char **tmpcArr2;
@@ -16,14 +16,14 @@ Map::MapDrawLayer *Map::CSVMapParser::ParseAsPoint(IO::Stream *stm, UInt32 codeP
 	UOSInt nameIndex = INVALID_INDEX;
 	UTF8Char sbuff[2048];
 	Data::ArrayList<const UTF8Char *> colNames;
-	IO::Reader *reader;
+	NotNullPtr<IO::Reader> reader;
 	if (codePage == 65001)
 	{
-		NEW_CLASS(reader, Text::UTF8Reader(stm));
+		NEW_CLASSNN(reader, Text::UTF8Reader(stm));
 	}
 	else
 	{
-		NEW_CLASS(reader, IO::StreamReader(stm, codePage));
+		NEW_CLASSNN(reader, IO::StreamReader(stm, codePage));
 	}
 	reader->ReadLine(sbuff, 2048);
 	colCnt = Text::StrCSVSplitP(tmpArr, 2, sbuff);
@@ -75,10 +75,10 @@ Map::MapDrawLayer *Map::CSVMapParser::ParseAsPoint(IO::Stream *stm, UInt32 codeP
 		}		
 
 		MemFree(tmpcArr2);
-		DEL_CLASS(reader);
+		reader.Delete();
 		return lyr;
 	}
 	SDEL_CLASS(csys);
-	DEL_CLASS(reader);
+	reader.Delete();
 	return 0;
 }

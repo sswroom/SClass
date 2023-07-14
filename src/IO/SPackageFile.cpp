@@ -184,7 +184,7 @@ Bool IO::SPackageFile::OptimizeFileInner(IO::SPackageFile *newFile, UInt64 dirOf
 	return succ;
 }
 
-IO::SPackageFile::SPackageFile(IO::SeekableStream *stm, Bool toRelease)
+IO::SPackageFile::SPackageFile(NotNullPtr<IO::SeekableStream> stm, Bool toRelease)
 {
 	UInt8 hdr[24];
 	this->stm = stm;
@@ -209,7 +209,7 @@ IO::SPackageFile::SPackageFile(IO::SeekableStream *stm, Bool toRelease)
 	this->mstm.Write(hdr, 16);
 }
 
-IO::SPackageFile::SPackageFile(IO::SeekableStream *stm, Bool toRelease, Int32 customType, UOSInt customSize, const UInt8 *customBuff)
+IO::SPackageFile::SPackageFile(NotNullPtr<IO::SeekableStream> stm, Bool toRelease, Int32 customType, UOSInt customSize, const UInt8 *customBuff)
 {
 	UInt8 hdr[32];
 	this->stm = stm;
@@ -254,7 +254,7 @@ IO::SPackageFile::SPackageFile(Text::CString fileName)
 	UInt64 flength;
 	UInt64 dirSize;
 	UTF8Char sbuff[512];
-	NEW_CLASS(this->stm, IO::FileStream(fileName, IO::FileMode::Append, IO::FileShare::DenyWrite, IO::FileStream::BufferType::NoWriteBuffer));
+	NEW_CLASSNN(this->stm, IO::FileStream(fileName, IO::FileMode::Append, IO::FileShare::DenyWrite, IO::FileStream::BufferType::NoWriteBuffer));
 	this->toRelease = true;
 	this->customType = 0;
 	this->customSize = 0;
@@ -421,7 +421,7 @@ IO::SPackageFile::~SPackageFile()
 
 	if (this->toRelease)
 	{
-		DEL_CLASS(this->stm);
+		this->stm.Delete();
 	}
 	if (this->customBuff)
 	{
@@ -643,12 +643,12 @@ Bool IO::SPackageFile::OptimizeFile(Text::CString newFile)
 		return false;
 	}
 	this->Commit();
-	IO::FileStream *fs;
+	NotNullPtr<IO::FileStream> fs;
 	IO::SPackageFile *spkg;
-	NEW_CLASS(fs, IO::FileStream(newFile, IO::FileMode::Create, IO::FileShare::DenyWrite, IO::FileStream::BufferType::NoWriteBuffer));
+	NEW_CLASSNN(fs, IO::FileStream(newFile, IO::FileMode::Create, IO::FileShare::DenyWrite, IO::FileStream::BufferType::NoWriteBuffer));
 	if (fs->IsError())
 	{
-		DEL_CLASS(fs);
+		fs.Delete();
 		return false;
 	}
 	if (this->flags & 1)

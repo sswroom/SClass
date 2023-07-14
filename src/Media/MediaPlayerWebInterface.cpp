@@ -56,7 +56,6 @@ void Media::MediaPlayerWebInterface::BrowseRequest(Net::WebServer::IWebRequest *
 			return;
 		}
 	}
-	IO::Writer *writer;
 	IO::Path::PathType pt;
 	IO::Path::FindFileSession *sess;
 	UInt8 *buff;
@@ -65,81 +64,82 @@ void Media::MediaPlayerWebInterface::BrowseRequest(Net::WebServer::IWebRequest *
 	UInt64 fileSize;
 
 	IO::MemoryStream mstm;
-	NEW_CLASS(writer, Text::UTF8Writer(&mstm));
-
-	writer->WriteLineC(UTF8STRC("<html>"));
-	writer->WriteLineC(UTF8STRC("<head><title>HQMP Control</title>"));
-	writer->WriteLineC(UTF8STRC("</head>"));
-	writer->WriteLineC(UTF8STRC("<body>"));
-	writer->WriteLineC(UTF8STRC("<a href=\"/\">Back</a><br/><br/>"));
-	writer->WriteStrC(UTF8STRC("<b>Current File: </b>"));
-	s = Text::XML::ToNewHTMLBodyText(this->iface->GetOpenedFile()->GetSourceNameObj()->v);
-	writer->WriteStrC(s->v, s->leng);
-	s->Release();
-	writer->WriteLineC(UTF8STRC("<hr/>"));
-
-	writer->WriteLineC(UTF8STRC("<table border=\"0\">"));
-	writer->WriteLineC(UTF8STRC("<tr><td>Name</td><td>Size</td><td>MIME Type</td></tr>"));
-
-	sptr2 = Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
-	sess = IO::Path::FindFile(CSTRP(sbuff, sptr2));
-	if (sess)
 	{
-		Data::ArrayList<VideoFileInfo *> fileList;
-		VideoFileInfo *vfile;
+		Text::UTF8Writer writer(mstm);
 
-		while ((sptr2 = IO::Path::FindNextFile(sptr, sess, 0, &pt, &fileSize)) != 0)
+		writer.WriteLineC(UTF8STRC("<html>"));
+		writer.WriteLineC(UTF8STRC("<head><title>HQMP Control</title>"));
+		writer.WriteLineC(UTF8STRC("</head>"));
+		writer.WriteLineC(UTF8STRC("<body>"));
+		writer.WriteLineC(UTF8STRC("<a href=\"/\">Back</a><br/><br/>"));
+		writer.WriteStrC(UTF8STRC("<b>Current File: </b>"));
+		s = Text::XML::ToNewHTMLBodyText(this->iface->GetOpenedFile()->GetSourceNameObj()->v);
+		writer.WriteStrC(s->v, s->leng);
+		s->Release();
+		writer.WriteLineC(UTF8STRC("<hr/>"));
+
+		writer.WriteLineC(UTF8STRC("<table border=\"0\">"));
+		writer.WriteLineC(UTF8STRC("<tr><td>Name</td><td>Size</td><td>MIME Type</td></tr>"));
+
+		sptr2 = Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
+		sess = IO::Path::FindFile(CSTRP(sbuff, sptr2));
+		if (sess)
 		{
-			if (pt == IO::Path::PathType::File)
+			Data::ArrayList<VideoFileInfo *> fileList;
+			VideoFileInfo *vfile;
+
+			while ((sptr2 = IO::Path::FindNextFile(sptr, sess, 0, &pt, &fileSize)) != 0)
 			{
-				vfile = MemAlloc(VideoFileInfo, 1);
-				vfile->fileName = Text::String::New(sptr, (UOSInt)(sptr2 - sptr));
-				vfile->fileSize = fileSize;
-				fileList.Add(vfile);
+				if (pt == IO::Path::PathType::File)
+				{
+					vfile = MemAlloc(VideoFileInfo, 1);
+					vfile->fileName = Text::String::New(sptr, (UOSInt)(sptr2 - sptr));
+					vfile->fileSize = fileSize;
+					fileList.Add(vfile);
+				}
+			}
+			IO::Path::FindFileClose(sess);
+
+			void **arr = (void**)fileList.GetArray(&j);
+			ArtificialQuickSort_SortCmp(arr, VideoFileCompare, 0, (OSInt)j - 1);
+
+			i = 0;
+			j = fileList.GetCount();
+			while (i < j)
+			{
+				vfile = fileList.GetItem(i);
+
+				writer.WriteStrC(UTF8STRC("<tr><td>"));
+				writer.WriteStrC(UTF8STRC("<a href=\"/browse?fname="));
+				Text::TextBinEnc::URIEncoding::URIEncode(sbuff2, vfile->fileName->v);
+				s = Text::XML::ToNewXMLText(sbuff2);
+				writer.WriteStrC(s->v, s->leng);
+				s->Release();
+				writer.WriteStrC(UTF8STRC("\">"));
+
+				s = Text::XML::ToNewHTMLBodyText(vfile->fileName->v);
+				writer.WriteStrC(s->v, s->leng);
+				s->Release();
+				writer.WriteStrC(UTF8STRC("</a></td><td>"));
+				sptr2 = Text::StrUInt64(sbuff2, vfile->fileSize);
+				writer.WriteStrC(sbuff2, (UOSInt)(sptr2 - sbuff));
+				writer.WriteStrC(UTF8STRC("</td><td>"));
+
+				sptr2 = IO::Path::GetFileExt(sbuff2, vfile->fileName->v, vfile->fileName->leng);
+				Text::CString mime = Net::MIME::GetMIMEFromExt(CSTRP(sbuff2, sptr2));
+				writer.WriteStrC(mime.v, mime.leng);
+				writer.WriteLineC(UTF8STRC("</td></tr>"));
+
+				vfile->fileName->Release();
+				MemFree(vfile);
+				i++;
 			}
 		}
-		IO::Path::FindFileClose(sess);
+		writer.WriteLineC(UTF8STRC("</table>"));
 
-		void **arr = (void**)fileList.GetArray(&j);
-		ArtificialQuickSort_SortCmp(arr, VideoFileCompare, 0, (OSInt)j - 1);
-
-		i = 0;
-		j = fileList.GetCount();
-		while (i < j)
-		{
-			vfile = fileList.GetItem(i);
-
-			writer->WriteStrC(UTF8STRC("<tr><td>"));
-			writer->WriteStrC(UTF8STRC("<a href=\"/browse?fname="));
-			Text::TextBinEnc::URIEncoding::URIEncode(sbuff2, vfile->fileName->v);
-			s = Text::XML::ToNewXMLText(sbuff2);
-			writer->WriteStrC(s->v, s->leng);
-			s->Release();
-			writer->WriteStrC(UTF8STRC("\">"));
-
-			s = Text::XML::ToNewHTMLBodyText(vfile->fileName->v);
-			writer->WriteStrC(s->v, s->leng);
-			s->Release();
-			writer->WriteStrC(UTF8STRC("</a></td><td>"));
-			sptr2 = Text::StrUInt64(sbuff2, vfile->fileSize);
-			writer->WriteStrC(sbuff2, (UOSInt)(sptr2 - sbuff));
-			writer->WriteStrC(UTF8STRC("</td><td>"));
-
-			sptr2 = IO::Path::GetFileExt(sbuff2, vfile->fileName->v, vfile->fileName->leng);
-			Text::CString mime = Net::MIME::GetMIMEFromExt(CSTRP(sbuff2, sptr2));
-			writer->WriteStrC(mime.v, mime.leng);
-			writer->WriteLineC(UTF8STRC("</td></tr>"));
-
-			vfile->fileName->Release();
-			MemFree(vfile);
-			i++;
-		}
+		writer.WriteLineC(UTF8STRC("</body>"));
+		writer.WriteLineC(UTF8STRC("</html>"));
 	}
-	writer->WriteLineC(UTF8STRC("</table>"));
-
-	writer->WriteLineC(UTF8STRC("</body>"));
-	writer->WriteLineC(UTF8STRC("</html>"));
-	DEL_CLASS(writer);
 
 	resp->AddDefHeaders(req);
 	resp->AddHeader(CSTR("Cache-Control"), CSTR("no-cache"));
@@ -201,218 +201,218 @@ void Media::MediaPlayerWebInterface::WebRequest(Net::WebServer::IWebRequest *req
 	{
 		this->iface->PBIncAVOfst();
 	}
-	IO::Writer *writer;
 	UInt8 *buff;
 	NotNullPtr<Text::String> s;
 	UOSInt size;
 
 	IO::MemoryStream mstm;
-	NEW_CLASS(writer, Text::UTF8Writer(&mstm));
-
-	writer->WriteLineC(UTF8STRC("<html>"));
-	writer->WriteLineC(UTF8STRC("<head><title>HQMP Control</title>"));
-	writer->WriteLineC(UTF8STRC("</head>"));
-	writer->WriteLineC(UTF8STRC("<body>"));
-	writer->WriteLineC(UTF8STRC("<a href=\"/\">Refresh</a><br/><br/>"));
-	writer->WriteStrC(UTF8STRC("<b>Current File: </b>"));
-	if (this->iface->GetOpenedFile())
 	{
-		s = Text::XML::ToNewHTMLBodyText(this->iface->GetOpenedFile()->GetSourceNameObj()->v);
-		writer->WriteStrC(s->v, s->leng);
-		s->Release();
+		Text::UTF8Writer writer(mstm);
 
-		writer->WriteStrC(UTF8STRC(" <a href=\"/browse\">Browse</a>"));
-	}
-	else
-	{
-		writer->WriteStrC(UTF8STRC("-"));
-	}
-	writer->WriteLineC(UTF8STRC("<br/>"));
+		writer.WriteLineC(UTF8STRC("<html>"));
+		writer.WriteLineC(UTF8STRC("<head><title>HQMP Control</title>"));
+		writer.WriteLineC(UTF8STRC("</head>"));
+		writer.WriteLineC(UTF8STRC("<body>"));
+		writer.WriteLineC(UTF8STRC("<a href=\"/\">Refresh</a><br/><br/>"));
+		writer.WriteStrC(UTF8STRC("<b>Current File: </b>"));
+		if (this->iface->GetOpenedFile())
+		{
+			s = Text::XML::ToNewHTMLBodyText(this->iface->GetOpenedFile()->GetSourceNameObj()->v);
+			writer.WriteStrC(s->v, s->leng);
+			s->Release();
 
-	writer->WriteLineC(UTF8STRC("<input type=\"button\" value=\"Stop\" onclick=\"document.location.replace('/stop')\"/>"));
-	writer->WriteLineC(UTF8STRC("<input type=\"button\" value=\"Start\" onclick=\"document.location.replace('/start')\"/>"));
-	writer->WriteLineC(UTF8STRC("<input type=\"button\" value=\"Pause\" onclick=\"document.location.replace('/pause')\"/>"));
-	writer->WriteLineC(UTF8STRC("<br/>"));
-	writer->WriteLineC(UTF8STRC("<a href=\"/backward60\">Backward 1 Minute</a>"));
-	writer->WriteLineC(UTF8STRC("<a href=\"/backward10\">Backward 10 Seconds</a>"));
-	writer->WriteLineC(UTF8STRC("<a href=\"/forward10\">Forward 10 Seconds</a>"));
-	writer->WriteLineC(UTF8STRC("<a href=\"/forward60\">Forward 1 Minute</a>"));
-	writer->WriteLineC(UTF8STRC("<br/>"));
-	writer->WriteLineC(UTF8STRC("<a href=\"/prevchap\">Previous Chapter</a>"));
-	writer->WriteLineC(UTF8STRC("<a href=\"/nextchap\">Next Chapter</a>"));
-	writer->WriteLineC(UTF8STRC("<a href=\"/avofstdec\">A/V Offset Decrease</a>"));
-	writer->WriteLineC(UTF8STRC("<a href=\"/avofstinc\">A/V Offset Increase</a>"));
-	{
-		Text::StringBuilderUTF8 sb;
-		Media::VideoRenderer::RendererStatus status;
-		UInt32 currTime;
-		UInt32 v;
-
-		writer->WriteLineC(UTF8STRC("<hr/>"));
-		this->iface->GetVideoRenderer()->GetStatus(&status);
-		sb.AppendC(UTF8STRC("Curr Time: "));
-		sb.AppendU32(status.currTime);
-		currTime = status.currTime;
-		v = currTime / 3600000;
-		sb.AppendC(UTF8STRC(" ("));
-		sb.AppendU32(v);
-		sb.AppendC(UTF8STRC(":"));
-		currTime -= v * 3600000;
-		v = currTime / 60000;
-		if (v < 10)
-		{
-			sb.AppendC(UTF8STRC("0"));
-		}
-		sb.AppendU32(v);
-		sb.AppendC(UTF8STRC(":"));
-		currTime -= v * 60000;
-		v = currTime / 1000;
-		if (v < 10)
-		{
-			sb.AppendC(UTF8STRC("0"));
-		}
-		sb.AppendU32(v);
-		sb.AppendC(UTF8STRC("."));
-		currTime -= v * 1000;
-		if (currTime < 10)
-		{
-			sb.AppendC(UTF8STRC("00"));
-			sb.AppendU32(currTime);
-		}
-		else if (currTime < 100)
-		{
-			sb.AppendC(UTF8STRC("0"));
-			sb.AppendU32(currTime);
+			writer.WriteStrC(UTF8STRC(" <a href=\"/browse\">Browse</a>"));
 		}
 		else
 		{
-			sb.AppendU32(currTime);
+			writer.WriteStrC(UTF8STRC("-"));
 		}
-		sb.AppendC(UTF8STRC(")<br/>\r\n"));
-		sb.AppendC(UTF8STRC("Disp Frame Time: "));
-		sb.AppendU32(status.dispFrameTime);
-		sb.AppendC(UTF8STRC("<br/>\r\n"));
-		sb.AppendC(UTF8STRC("Disp Frame Num: "));
-		sb.AppendU32(status.dispFrameNum);
-		sb.AppendC(UTF8STRC("<br/>\r\n"));
-		sb.AppendC(UTF8STRC("Proc Delay: "));
-		sb.AppendI32(status.procDelay);
-		sb.AppendC(UTF8STRC("<br/>\r\n"));
-		sb.AppendC(UTF8STRC("Disp Delay: "));
-		sb.AppendI32(status.dispDelay);
-		sb.AppendC(UTF8STRC("<br/>\r\n"));
-		sb.AppendC(UTF8STRC("Disp Jitter: "));
-		sb.AppendI32(status.dispJitter);
-		sb.AppendC(UTF8STRC("<br/>\r\n"));
-		sb.AppendC(UTF8STRC("Video Delay: "));
-		sb.AppendI32(status.videoDelay);
-		sb.AppendC(UTF8STRC("<br/>\r\n"));
-		sb.AppendC(UTF8STRC("Source Delay: "));
-		sb.AppendI32(status.srcDelay);
-		sb.AppendC(UTF8STRC("<br/>\r\n"));
-		sb.AppendC(UTF8STRC("A/V Offset: "));
-		sb.AppendI32(status.avOfst);
-		sb.AppendC(UTF8STRC("<br/>\r\n"));
-		sb.AppendC(UTF8STRC("Seek Count: "));
-		sb.AppendUOSInt(status.seekCnt);
-		sb.AppendC(UTF8STRC("<br/>\r\n"));
-		sb.AppendC(UTF8STRC("Frame Displayed: "));
-		sb.AppendU32(status.frameDispCnt);
-		sb.AppendC(UTF8STRC("<br/>\r\n"));
-		sb.AppendC(UTF8STRC("Frame Skip before process: "));
-		sb.AppendU32(status.frameSkipBefore);
-		sb.AppendC(UTF8STRC("<br/>\r\n"));
-		sb.AppendC(UTF8STRC("Frame Skip after process: "));
-		sb.AppendU32(status.frameSkipAfter);
-		sb.AppendC(UTF8STRC("<br/>\r\n"));
-		sb.AppendC(UTF8STRC("ProcTimes H: "));
-		Text::SBAppendF64(&sb, status.hTime);
-		sb.AppendC(UTF8STRC("<br/>\r\n"));
-		sb.AppendC(UTF8STRC("ProcTimes V: "));
-		Text::SBAppendF64(&sb, status.vTime);
-		sb.AppendC(UTF8STRC("<br/>\r\n"));
-		sb.AppendC(UTF8STRC("ProcTimes C: "));
-		Text::SBAppendF64(&sb, status.csTime);
-		sb.AppendC(UTF8STRC("<br/>\r\n"));
-		sb.AppendC(UTF8STRC("Buff: "));
-		sb.AppendI32(status.buffProc);
-		sb.AppendC(UTF8STRC(","));
-		sb.AppendI32(status.buffReady);
-		sb.AppendC(UTF8STRC("<br/>\r\n"));
-		sb.AppendC(UTF8STRC("Src Size: "));
-		sb.AppendUOSInt(status.srcSize.x);
-		sb.AppendC(UTF8STRC(" x "));
-		sb.AppendUOSInt(status.srcSize.y);
-		sb.AppendC(UTF8STRC("<br/>\r\n"));
-		sb.AppendC(UTF8STRC("Disp Size: "));
-		sb.AppendUOSInt(status.dispSize.x);
-		sb.AppendC(UTF8STRC(" x "));
-		sb.AppendUOSInt(status.dispSize.y);
-		sb.AppendC(UTF8STRC("<br/>\r\n"));
-		sb.AppendC(UTF8STRC("PAR: "));
-		Text::SBAppendF64(&sb, status.par);
-		sb.AppendC(UTF8STRC("<br/>\r\n"));
-		sb.AppendC(UTF8STRC("Decoder: "));
-		if (status.decoderName.v)
-		{
-			sb.Append(status.decoderName);
-		}
-		else
-		{
-			sb.AppendC(UTF8STRC("-"));
-		}
-		sb.AppendC(UTF8STRC("<br/>\r\n"));
-		sb.AppendC(UTF8STRC("Format: "));
-		sb.Append(Media::CS::CSConverter::GetFormatName(status.format));
-		sb.AppendC(UTF8STRC("<br/>\r\n"));
-		sb.AppendC(UTF8STRC("Output Bitdepth: "));
-		sb.AppendU32(status.dispBitDepth);
-		sb.AppendC(UTF8STRC("<br/>\r\n"));
-		sb.AppendC(UTF8STRC("Src YUV Type: "));
-		sb.Append(Media::ColorProfile::YUVTypeGetName(status.srcYUVType));
-		sb.AppendC(UTF8STRC("<br/>\r\n"));
-		sb.AppendC(UTF8STRC("Src R Transfer: "));
-		sb.Append(Media::CS::TransferTypeGetName(status.color.GetRTranParam()->GetTranType()));
-		sb.AppendC(UTF8STRC("<br/>\r\n"));
-		sb.AppendC(UTF8STRC("Src G Transfer: "));
-		sb.Append(Media::CS::TransferTypeGetName(status.color.GetGTranParam()->GetTranType()));
-		sb.AppendC(UTF8STRC("<br/>\r\n"));
-		sb.AppendC(UTF8STRC("Src B Transfer: "));
-		sb.Append(Media::CS::TransferTypeGetName(status.color.GetBTranParam()->GetTranType()));
-		sb.AppendC(UTF8STRC("<br/>\r\n"));
-		sb.AppendC(UTF8STRC("Src Gamma: "));
-		Text::SBAppendF64(&sb, status.color.GetRTranParam()->GetGamma());
-		sb.AppendC(UTF8STRC("<br/>\r\n"));
-		Media::ColorProfile::ColorPrimaries *primaries = status.color.GetPrimaries(); 
-		sb.AppendC(UTF8STRC("Src RGB Primary: "));
-		sb.Append(Media::ColorProfile::ColorTypeGetName(primaries->colorType));
-		sb.AppendC(UTF8STRC("<br/>\r\n"));
-		sb.AppendC(UTF8STRC("-Red:   "));
-		Text::SBAppendF64(&sb, primaries->rx);
-		sb.AppendC(UTF8STRC(", "));
-		Text::SBAppendF64(&sb, primaries->ry);
-		sb.AppendC(UTF8STRC("<br/>\r\n"));
-		sb.AppendC(UTF8STRC("-Green: "));
-		Text::SBAppendF64(&sb, primaries->gx);
-		sb.AppendC(UTF8STRC(", "));
-		Text::SBAppendF64(&sb, primaries->gy);
-		sb.AppendC(UTF8STRC("<br/>\r\n"));
-		sb.AppendC(UTF8STRC("-Blue:  "));
-		Text::SBAppendF64(&sb, primaries->bx);
-		sb.AppendC(UTF8STRC(", "));
-		Text::SBAppendF64(&sb, primaries->by);
-		sb.AppendC(UTF8STRC("<br/>\r\n"));
-		sb.AppendC(UTF8STRC("-White: "));
-		Text::SBAppendF64(&sb, primaries->wx);
-		sb.AppendC(UTF8STRC(", "));
-		Text::SBAppendF64(&sb, primaries->wy);
-		sb.AppendC(UTF8STRC("<br/>\r\n"));
-		writer->WriteStrC(sb.ToString(), sb.GetLength());
-	}
+		writer.WriteLineC(UTF8STRC("<br/>"));
 
-	writer->WriteLineC(UTF8STRC("</body>"));
-	writer->WriteLineC(UTF8STRC("</html>"));
-	DEL_CLASS(writer);
+		writer.WriteLineC(UTF8STRC("<input type=\"button\" value=\"Stop\" onclick=\"document.location.replace('/stop')\"/>"));
+		writer.WriteLineC(UTF8STRC("<input type=\"button\" value=\"Start\" onclick=\"document.location.replace('/start')\"/>"));
+		writer.WriteLineC(UTF8STRC("<input type=\"button\" value=\"Pause\" onclick=\"document.location.replace('/pause')\"/>"));
+		writer.WriteLineC(UTF8STRC("<br/>"));
+		writer.WriteLineC(UTF8STRC("<a href=\"/backward60\">Backward 1 Minute</a>"));
+		writer.WriteLineC(UTF8STRC("<a href=\"/backward10\">Backward 10 Seconds</a>"));
+		writer.WriteLineC(UTF8STRC("<a href=\"/forward10\">Forward 10 Seconds</a>"));
+		writer.WriteLineC(UTF8STRC("<a href=\"/forward60\">Forward 1 Minute</a>"));
+		writer.WriteLineC(UTF8STRC("<br/>"));
+		writer.WriteLineC(UTF8STRC("<a href=\"/prevchap\">Previous Chapter</a>"));
+		writer.WriteLineC(UTF8STRC("<a href=\"/nextchap\">Next Chapter</a>"));
+		writer.WriteLineC(UTF8STRC("<a href=\"/avofstdec\">A/V Offset Decrease</a>"));
+		writer.WriteLineC(UTF8STRC("<a href=\"/avofstinc\">A/V Offset Increase</a>"));
+		{
+			Text::StringBuilderUTF8 sb;
+			Media::VideoRenderer::RendererStatus status;
+			UInt32 currTime;
+			UInt32 v;
+
+			writer.WriteLineC(UTF8STRC("<hr/>"));
+			this->iface->GetVideoRenderer()->GetStatus(&status);
+			sb.AppendC(UTF8STRC("Curr Time: "));
+			sb.AppendU32(status.currTime);
+			currTime = status.currTime;
+			v = currTime / 3600000;
+			sb.AppendC(UTF8STRC(" ("));
+			sb.AppendU32(v);
+			sb.AppendC(UTF8STRC(":"));
+			currTime -= v * 3600000;
+			v = currTime / 60000;
+			if (v < 10)
+			{
+				sb.AppendC(UTF8STRC("0"));
+			}
+			sb.AppendU32(v);
+			sb.AppendC(UTF8STRC(":"));
+			currTime -= v * 60000;
+			v = currTime / 1000;
+			if (v < 10)
+			{
+				sb.AppendC(UTF8STRC("0"));
+			}
+			sb.AppendU32(v);
+			sb.AppendC(UTF8STRC("."));
+			currTime -= v * 1000;
+			if (currTime < 10)
+			{
+				sb.AppendC(UTF8STRC("00"));
+				sb.AppendU32(currTime);
+			}
+			else if (currTime < 100)
+			{
+				sb.AppendC(UTF8STRC("0"));
+				sb.AppendU32(currTime);
+			}
+			else
+			{
+				sb.AppendU32(currTime);
+			}
+			sb.AppendC(UTF8STRC(")<br/>\r\n"));
+			sb.AppendC(UTF8STRC("Disp Frame Time: "));
+			sb.AppendU32(status.dispFrameTime);
+			sb.AppendC(UTF8STRC("<br/>\r\n"));
+			sb.AppendC(UTF8STRC("Disp Frame Num: "));
+			sb.AppendU32(status.dispFrameNum);
+			sb.AppendC(UTF8STRC("<br/>\r\n"));
+			sb.AppendC(UTF8STRC("Proc Delay: "));
+			sb.AppendI32(status.procDelay);
+			sb.AppendC(UTF8STRC("<br/>\r\n"));
+			sb.AppendC(UTF8STRC("Disp Delay: "));
+			sb.AppendI32(status.dispDelay);
+			sb.AppendC(UTF8STRC("<br/>\r\n"));
+			sb.AppendC(UTF8STRC("Disp Jitter: "));
+			sb.AppendI32(status.dispJitter);
+			sb.AppendC(UTF8STRC("<br/>\r\n"));
+			sb.AppendC(UTF8STRC("Video Delay: "));
+			sb.AppendI32(status.videoDelay);
+			sb.AppendC(UTF8STRC("<br/>\r\n"));
+			sb.AppendC(UTF8STRC("Source Delay: "));
+			sb.AppendI32(status.srcDelay);
+			sb.AppendC(UTF8STRC("<br/>\r\n"));
+			sb.AppendC(UTF8STRC("A/V Offset: "));
+			sb.AppendI32(status.avOfst);
+			sb.AppendC(UTF8STRC("<br/>\r\n"));
+			sb.AppendC(UTF8STRC("Seek Count: "));
+			sb.AppendUOSInt(status.seekCnt);
+			sb.AppendC(UTF8STRC("<br/>\r\n"));
+			sb.AppendC(UTF8STRC("Frame Displayed: "));
+			sb.AppendU32(status.frameDispCnt);
+			sb.AppendC(UTF8STRC("<br/>\r\n"));
+			sb.AppendC(UTF8STRC("Frame Skip before process: "));
+			sb.AppendU32(status.frameSkipBefore);
+			sb.AppendC(UTF8STRC("<br/>\r\n"));
+			sb.AppendC(UTF8STRC("Frame Skip after process: "));
+			sb.AppendU32(status.frameSkipAfter);
+			sb.AppendC(UTF8STRC("<br/>\r\n"));
+			sb.AppendC(UTF8STRC("ProcTimes H: "));
+			Text::SBAppendF64(&sb, status.hTime);
+			sb.AppendC(UTF8STRC("<br/>\r\n"));
+			sb.AppendC(UTF8STRC("ProcTimes V: "));
+			Text::SBAppendF64(&sb, status.vTime);
+			sb.AppendC(UTF8STRC("<br/>\r\n"));
+			sb.AppendC(UTF8STRC("ProcTimes C: "));
+			Text::SBAppendF64(&sb, status.csTime);
+			sb.AppendC(UTF8STRC("<br/>\r\n"));
+			sb.AppendC(UTF8STRC("Buff: "));
+			sb.AppendI32(status.buffProc);
+			sb.AppendC(UTF8STRC(","));
+			sb.AppendI32(status.buffReady);
+			sb.AppendC(UTF8STRC("<br/>\r\n"));
+			sb.AppendC(UTF8STRC("Src Size: "));
+			sb.AppendUOSInt(status.srcSize.x);
+			sb.AppendC(UTF8STRC(" x "));
+			sb.AppendUOSInt(status.srcSize.y);
+			sb.AppendC(UTF8STRC("<br/>\r\n"));
+			sb.AppendC(UTF8STRC("Disp Size: "));
+			sb.AppendUOSInt(status.dispSize.x);
+			sb.AppendC(UTF8STRC(" x "));
+			sb.AppendUOSInt(status.dispSize.y);
+			sb.AppendC(UTF8STRC("<br/>\r\n"));
+			sb.AppendC(UTF8STRC("PAR: "));
+			Text::SBAppendF64(&sb, status.par);
+			sb.AppendC(UTF8STRC("<br/>\r\n"));
+			sb.AppendC(UTF8STRC("Decoder: "));
+			if (status.decoderName.v)
+			{
+				sb.Append(status.decoderName);
+			}
+			else
+			{
+				sb.AppendC(UTF8STRC("-"));
+			}
+			sb.AppendC(UTF8STRC("<br/>\r\n"));
+			sb.AppendC(UTF8STRC("Format: "));
+			sb.Append(Media::CS::CSConverter::GetFormatName(status.format));
+			sb.AppendC(UTF8STRC("<br/>\r\n"));
+			sb.AppendC(UTF8STRC("Output Bitdepth: "));
+			sb.AppendU32(status.dispBitDepth);
+			sb.AppendC(UTF8STRC("<br/>\r\n"));
+			sb.AppendC(UTF8STRC("Src YUV Type: "));
+			sb.Append(Media::ColorProfile::YUVTypeGetName(status.srcYUVType));
+			sb.AppendC(UTF8STRC("<br/>\r\n"));
+			sb.AppendC(UTF8STRC("Src R Transfer: "));
+			sb.Append(Media::CS::TransferTypeGetName(status.color.GetRTranParam()->GetTranType()));
+			sb.AppendC(UTF8STRC("<br/>\r\n"));
+			sb.AppendC(UTF8STRC("Src G Transfer: "));
+			sb.Append(Media::CS::TransferTypeGetName(status.color.GetGTranParam()->GetTranType()));
+			sb.AppendC(UTF8STRC("<br/>\r\n"));
+			sb.AppendC(UTF8STRC("Src B Transfer: "));
+			sb.Append(Media::CS::TransferTypeGetName(status.color.GetBTranParam()->GetTranType()));
+			sb.AppendC(UTF8STRC("<br/>\r\n"));
+			sb.AppendC(UTF8STRC("Src Gamma: "));
+			Text::SBAppendF64(&sb, status.color.GetRTranParam()->GetGamma());
+			sb.AppendC(UTF8STRC("<br/>\r\n"));
+			Media::ColorProfile::ColorPrimaries *primaries = status.color.GetPrimaries(); 
+			sb.AppendC(UTF8STRC("Src RGB Primary: "));
+			sb.Append(Media::ColorProfile::ColorTypeGetName(primaries->colorType));
+			sb.AppendC(UTF8STRC("<br/>\r\n"));
+			sb.AppendC(UTF8STRC("-Red:   "));
+			Text::SBAppendF64(&sb, primaries->rx);
+			sb.AppendC(UTF8STRC(", "));
+			Text::SBAppendF64(&sb, primaries->ry);
+			sb.AppendC(UTF8STRC("<br/>\r\n"));
+			sb.AppendC(UTF8STRC("-Green: "));
+			Text::SBAppendF64(&sb, primaries->gx);
+			sb.AppendC(UTF8STRC(", "));
+			Text::SBAppendF64(&sb, primaries->gy);
+			sb.AppendC(UTF8STRC("<br/>\r\n"));
+			sb.AppendC(UTF8STRC("-Blue:  "));
+			Text::SBAppendF64(&sb, primaries->bx);
+			sb.AppendC(UTF8STRC(", "));
+			Text::SBAppendF64(&sb, primaries->by);
+			sb.AppendC(UTF8STRC("<br/>\r\n"));
+			sb.AppendC(UTF8STRC("-White: "));
+			Text::SBAppendF64(&sb, primaries->wx);
+			sb.AppendC(UTF8STRC(", "));
+			Text::SBAppendF64(&sb, primaries->wy);
+			sb.AppendC(UTF8STRC("<br/>\r\n"));
+			writer.WriteStrC(sb.ToString(), sb.GetLength());
+		}
+
+		writer.WriteLineC(UTF8STRC("</body>"));
+		writer.WriteLineC(UTF8STRC("</html>"));
+	}
 
 	resp->AddDefHeaders(req);
 	resp->AddHeader(CSTR("Cache-Control"), CSTR("no-cache"));

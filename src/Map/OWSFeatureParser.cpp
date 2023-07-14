@@ -114,7 +114,7 @@ Bool Map::OWSFeatureParser::ParseGML(Text::CString txt, UInt32 srid, Bool swapXY
 	UTF8Char *tmpPtr;
 
 	IO::MemoryReadingStream mstm(txt.v, txt.leng);
-	IO::ParsedObject *pobj = Parser::FileParser::XMLParser::ParseStream(encFact, &mstm, CSTR("Temp.gml"), 0, 0, 0);
+	IO::ParsedObject *pobj = Parser::FileParser::XMLParser::ParseStream(encFact, mstm, CSTR("Temp.gml"), 0, 0, 0);
 	if (pobj)
 	{
 		if (pobj->GetParserType() == IO::ParserType::MapLayer)

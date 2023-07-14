@@ -464,7 +464,7 @@ Bool Media::JPEGFile::ParseJPEGHeaders(IO::StreamData *fd, Media::EXIFData **exi
 	return true;
 }
 
-void Media::JPEGFile::WriteJPGBuffer(IO::Stream *stm, const UInt8 *jpgBuff, UOSInt buffSize, Media::Image *oriImg)
+void Media::JPEGFile::WriteJPGBuffer(NotNullPtr<IO::Stream> stm, const UInt8 *jpgBuff, UOSInt buffSize, Media::Image *oriImg)
 {
 	if (oriImg != 0 && (oriImg->exif != 0 || oriImg->info.color->GetRAWICC() != 0) && jpgBuff[0] == 0xff && jpgBuff[1] == 0xd8)
 	{

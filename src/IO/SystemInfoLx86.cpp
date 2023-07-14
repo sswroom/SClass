@@ -20,7 +20,7 @@ struct IO::SystemInfo::ClassData
 	Text::String *platformSN;
 };
 
-Bool SystemInfo_ReadFile(Text::CString fileName, Text::StringBuilderUTF8 *sb)
+Bool SystemInfo_ReadFile(Text::CString fileName, NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	Bool succ = false;
 	IO::FileStream fs(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
@@ -42,19 +42,19 @@ IO::SystemInfo::SystemInfo()
 	info->platformSN = 0;
 
 	Text::StringBuilderUTF8 sb;
-	if (SystemInfo_ReadFile(CSTR("/sys/class/dmi/id/board_vendor"), &sb))
+	if (SystemInfo_ReadFile(CSTR("/sys/class/dmi/id/board_vendor"), sb))
 	{
 		sb.AppendC(UTF8STRC(" "));
-		if (!SystemInfo_ReadFile(CSTR("/sys/class/dmi/id/board_name"), &sb))
+		if (!SystemInfo_ReadFile(CSTR("/sys/class/dmi/id/board_name"), sb))
 		{
 			sb.RemoveChars(1);
 		}
 		info->platformName = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 	}
-	else if (SystemInfo_ReadFile(CSTR("/sys/class/dmi/id/sys_vendor"), &sb))
+	else if (SystemInfo_ReadFile(CSTR("/sys/class/dmi/id/sys_vendor"), sb))
 	{
 		sb.AppendC(UTF8STRC(" "));
-		if (!SystemInfo_ReadFile(CSTR("/sys/class/dmi/id/product_name"), &sb))
+		if (!SystemInfo_ReadFile(CSTR("/sys/class/dmi/id/product_name"), sb))
 		{
 			sb.RemoveChars(1);
 		}
@@ -63,11 +63,11 @@ IO::SystemInfo::SystemInfo()
 
 
 	sb.ClearStr();
-	if (SystemInfo_ReadFile(CSTR("/sys/class/dmi/id/board_serial"), &sb))
+	if (SystemInfo_ReadFile(CSTR("/sys/class/dmi/id/board_serial"), sb))
 	{
 		info->platformSN = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 	}
-	else if (SystemInfo_ReadFile(CSTR("/sys/class/dmi/id/product_serial"), &sb))
+	else if (SystemInfo_ReadFile(CSTR("/sys/class/dmi/id/product_serial"), sb))
 	{
 		info->platformSN = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 	}
@@ -123,7 +123,7 @@ UInt64 IO::SystemInfo::GetTotalUsableMemSize()
 IO::SystemInfo::ChassisType IO::SystemInfo::GetChassisType()
 {
 	Text::StringBuilderUTF8 sb;
-	if (SystemInfo_ReadFile(CSTR("/sys/class/dmi/id/chassis_type"), &sb))
+	if (SystemInfo_ReadFile(CSTR("/sys/class/dmi/id/chassis_type"), sb))
 	{
 		switch (Text::StrToInt32(sb.ToString()))
 		{

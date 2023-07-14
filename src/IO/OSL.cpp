@@ -96,16 +96,16 @@ UTF8Char *IO::OS::GetDistro(UTF8Char *sbuff)
 		{
 			Text::UTF8Reader reader(fs);
 			sb.ClearStr();
-			while (reader.ReadLine(&sb, 512))
+			while (reader.ReadLine(sb, 512))
 			{
 				if (sb.StartsWith(UTF8STRC("##0018")))
 				{
 					sb.ClearStr();
-					reader.ReadLine(&sb, 512);
+					reader.ReadLine(sb, 512);
 					sb.ClearStr();
-					reader.ReadLine(&sb, 512);
+					reader.ReadLine(sb, 512);
 					sb.ClearStr();
-					if (reader.ReadLine(&sb, 512))
+					if (reader.ReadLine(sb, 512))
 					{
 						ret = Text::StrConcatC(sbuff, sb.ToString(), sb.GetLength());
 					}

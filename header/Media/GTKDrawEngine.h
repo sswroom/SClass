@@ -148,9 +148,9 @@ namespace Media
 		virtual void CopyBits(OSInt x, OSInt y, void *imgPtr, UOSInt bpl, UOSInt width, UOSInt height, Bool upsideDown) const; ////////////////////////////////////
 
 		virtual Media::StaticImage *ToStaticImage() const; ////////////////////////////////////
-		virtual UOSInt SavePng(IO::SeekableStream *stm);
-		virtual UOSInt SaveGIF(IO::SeekableStream *stm); ////////////////////////////////////
-		virtual UOSInt SaveJPG(IO::SeekableStream *stm);
+		virtual UOSInt SavePng(NotNullPtr<IO::SeekableStream> stm);
+		virtual UOSInt SaveGIF(NotNullPtr<IO::SeekableStream> stm); ////////////////////////////////////
+		virtual UOSInt SaveJPG(NotNullPtr<IO::SeekableStream> stm);
 
 		virtual Media::Image *Clone() const; ////////////////////////////////////
 		virtual Media::Image::ImageType GetImageType() const;

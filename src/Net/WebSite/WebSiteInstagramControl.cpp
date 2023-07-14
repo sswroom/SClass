@@ -12,10 +12,10 @@ Text::JSONBase *Net::WebSite::WebSiteInstagramControl::ParsePageJSON(Text::CStri
 {
 	Text::StringBuilderUTF8 sb;
 	Text::JSONBase *baseData = 0;
-	Text::XMLReader *reader;
-	Net::HTTPClient *cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, {STR_PTRC(this->userAgent)}, true, true);
+	NotNullPtr<Text::XMLReader> reader;
+	NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, {STR_PTRC(this->userAgent)}, true, true);
 	cli->Connect(url, Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, true);
-	NEW_CLASS(reader, Text::XMLReader(this->encFact, cli, Text::XMLReader::PM_HTML));
+	NEW_CLASSNN(reader, Text::XMLReader(this->encFact, cli, Text::XMLReader::PM_HTML));
 	while (reader->ReadNext())
 	{
 		if (reader->GetNodeType() == Text::XMLNode::NodeType::Element && reader->GetNodeText()->Equals(UTF8STRC("script")))
@@ -32,8 +32,8 @@ Text::JSONBase *Net::WebSite::WebSiteInstagramControl::ParsePageJSON(Text::CStri
 			}
 		}
 	}
-	DEL_CLASS(reader);
-	DEL_CLASS(cli);
+	reader.Delete();
+	cli.Delete();
 	return baseData;
 }
 

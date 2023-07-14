@@ -193,11 +193,11 @@ void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnWiresharkClicked(void *userO
 		UOSInt j;
 		{
 			IO::FileStream fs(dlg.GetFileName(), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-			Text::UTF8Reader reader(&fs);
+			Text::UTF8Reader reader(fs);
 			while (true)
 			{
 				sb.ClearStr();
-				if (!reader.ReadLine(&sb, 512))
+				if (!reader.ReadLine(sb, 512))
 				{
 					break;
 				}
@@ -293,12 +293,12 @@ void SSWR::AVIRead::AVIRMACManagerForm::LogFileLoad(Text::CString fileName)
 		SSWR::AVIRead::AVIRMACManagerForm::LogFileEntry *log;
 		Text::StringBuilderUTF8 sb;
 		{
-			Text::UTF8Reader reader(&fs);
+			Text::UTF8Reader reader(fs);
 			sb.ClearStr();
 			this->LogFileClear();
 			buff[0] = 0;
 			buff[1] = 0;
-			while (reader.ReadLine(&sb, 4096))
+			while (reader.ReadLine(sb, 4096))
 			{
 				i = Text::StrSplitP(sarr, 12, sb, '\t');
 				if (i == 4 || i == 7 || i == 9 || i == 10 || i == 11)
