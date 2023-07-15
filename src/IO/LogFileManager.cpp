@@ -6,7 +6,7 @@
 
 #include <stdio.h>
 
-IO::LogFileManager::LogFileManager(Text::String *logPath)
+IO::LogFileManager::LogFileManager(NotNullPtr<Text::String> logPath)
 {
 	this->logPath = logPath->Clone();
 }
@@ -98,13 +98,13 @@ IO::Stream *IO::LogFileManager::OpenLogFile(UInt32 date)
 	return fs;
 }
 
-void IO::LogFileManager::WriteLogText(IO::Stream *fs, Text::StyledTextWriter *writer)
+void IO::LogFileManager::WriteLogText(NotNullPtr<IO::Stream> fs, Text::StyledTextWriter *writer)
 {
 	Text::UTF8Reader reader(fs);
 	Text::StringBuilderUTF8 sb;
 	while (reader.ReadLine(sb, 1024))
 	{
-		reader.GetLastLineBreak(&sb);
+		reader.GetLastLineBreak(sb);
 		if (sb.leng <= 20)
 		{
 			writer->WriteStr(sb.ToCString());

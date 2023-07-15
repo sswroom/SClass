@@ -19,7 +19,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	imgList.AddImage(simg, 0);
 	{
 		IO::FileStream fs(fileName, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-		exporter.ExportFile(&fs, fileName, &imgList, 0);
+		exporter.ExportFile(fs, fileName, &imgList, 0);
 	}
 	return 0;
 }

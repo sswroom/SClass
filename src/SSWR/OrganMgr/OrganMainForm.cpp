@@ -3367,7 +3367,7 @@ void SSWR::OrganMgr::OrganMainForm::DropData(UI::GUIDropData *data, OSInt x, OSI
 					if (data->GetDataText(fmtSURL, &sb))
 					{
 						IO::MemoryReadingStream mstm(sb.v, sb.GetLength());
-						Text::UTF8Reader reader(&mstm);
+						Text::UTF8Reader reader(mstm);
 						while ((sptr = reader.ReadLine(sbuff, 511)) != 0)
 						{
 							if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("SourceURL:")))

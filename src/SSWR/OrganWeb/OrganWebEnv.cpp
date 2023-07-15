@@ -1916,19 +1916,19 @@ Bool SSWR::OrganWeb::OrganWebEnv::SpeciesAddWebfile(Sync::RWMutexUsage *mutUsage
 		if (species->wfiles.GetItem(i)->imgUrl->Equals(imgURL))
 			return false;
 	}
-	Net::HTTPClient *cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, imgURL, Net::WebUtil::RequestMethod::HTTP_GET, true);
+	NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, imgURL, Net::WebUtil::RequestMethod::HTTP_GET, true);
 	if (cli->IsError() || cli->GetRespStatus() != Net::WebStatus::SC_OK)
 	{
-		DEL_CLASS(cli);
+		cli.Delete();
 		return false;
 	}
 	IO::MemoryStream mstm;
 	if (!cli->ReadAllContent(&mstm, 65536, 10485760))
 	{
-		DEL_CLASS(cli);
+		cli.Delete();
 		return false;
 	}
-	DEL_CLASS(cli);
+	cli.Delete();
 	Crypto::Hash::CRC32RIEEE crc;
 	UInt32 crcVal = crc.CalcDirect(imgURL.v, imgURL.leng);
 	
@@ -2603,7 +2603,7 @@ Int32 SSWR::OrganWeb::OrganWebEnv::UserfileAdd(Sync::RWMutexUsage *mutUsage, Int
 						sptr = Text::StrConcatC(sptr, UTF8STRC(".png"));
 						{
 							IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer);
-							graphImg->SavePng(&fs);
+							graphImg->SavePng(fs);
 						}
 						this->eng->DeleteImage(graphImg);
 

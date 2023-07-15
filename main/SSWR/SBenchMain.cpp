@@ -129,7 +129,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	Manage::ExceptionRecorder *exHdlr;
 	IO::ConsoleWriter *console;
 
-	IO::FileStream *fs;
+	NotNullPtr<IO::FileStream> fs;
 #if defined(EXPORT_IMAGE)
 	IO::FileStream *efs;
 	Text::CString cstr;
@@ -158,7 +158,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 
 	IO::Path::GetProcessFileName(sbuff);
 	sptr = IO::Path::ReplaceExt(sbuff, UTF8STRC("txt"));
-	NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASSNN(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	NEW_CLASS(writer, Text::UTF8Writer(fs));
 
 	console->WriteLineC(UTF8STRC("SBench Result:"));
@@ -2219,7 +2219,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 						console->WriteLineC(UTF8STRC("Error in uploading file"));
 						allowRetry = true;
 					}
-					DEL_CLASS(cli);
+					cli.Delete();
 					DEL_CLASS(sockf);
 				}
 				MemFree(txtBuff);
@@ -2234,7 +2234,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			}
 		}
 	}
-	DEL_CLASS(fs);
+	fs.Delete();
 
 	DEL_CLASS(mainEvt);
 	DEL_CLASS(threadEvt);

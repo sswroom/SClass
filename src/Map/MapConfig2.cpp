@@ -3838,7 +3838,7 @@ Map::MapConfig2::MapConfig2(Text::CString fileName, Media::DrawEngine *eng, Data
 	}
 	else
 	{
-		IO::StreamReader rdr(&fstm);
+		IO::StreamReader rdr(fstm);
 		if (forceBase.leng > 0)
 		{
 			baseDir = forceBase.ConcatTo(layerName);

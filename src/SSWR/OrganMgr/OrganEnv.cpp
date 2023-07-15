@@ -675,7 +675,7 @@ void SSWR::OrganMgr::OrganEnv::ExportWeb(const UTF8Char *exportDir, Bool include
 	UOSInt thisPhSpeciesCnt;
 
 	IO::FileStream fs({sbuff, (UOSInt)(sptrEnd - sbuff)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-	Text::UTF8Writer writer(&fs);
+	Text::UTF8Writer writer(fs);
 
 	ExportBeginPage(&writer, this->currCate->chiName->v);
 	
@@ -858,8 +858,10 @@ void SSWR::OrganMgr::OrganEnv::ExportGroup(OrganGroup *grp, Data::FastMap<Int32,
 					IO::Path::CreateDirectory(CSTRP(fullPath, sptr));
 					sptr = Text::StrConcatC(sptr, UTF8STRC("\\index.html"));
 
-					NEW_CLASS(fs, IO::FileStream({fullPath, (UOSInt)(sptr - fullPath)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-					NEW_CLASS(writer, Text::UTF8Writer(fs));
+					NotNullPtr<IO::FileStream> nnfs;
+					NEW_CLASSNN(nnfs, IO::FileStream({fullPath, (UOSInt)(sptr - fullPath)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+					fs = nnfs.Ptr();
+					NEW_CLASS(writer, Text::UTF8Writer(nnfs));
 					NEW_CLASS(sb, Text::StringBuilderUTF8());
 					sb->AppendC(this->currCate->chiName->v, this->currCate->chiName->leng);
 					sb->AppendC(UTF8STRC(" - "));
@@ -913,8 +915,10 @@ void SSWR::OrganMgr::OrganEnv::ExportGroup(OrganGroup *grp, Data::FastMap<Int32,
 					IO::Path::CreateDirectory(CSTRP(fullPath, sptr));
 					sptr = Text::StrConcatC(sptr, UTF8STRC("\\index.html"));
 
-					NEW_CLASS(fs, IO::FileStream({fullPath, (UOSInt)(sptr - fullPath)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-					NEW_CLASS(writer, Text::UTF8Writer(fs));
+					NotNullPtr<IO::FileStream> nnfs;
+					NEW_CLASSNN(nnfs, IO::FileStream({fullPath, (UOSInt)(sptr - fullPath)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+					fs = nnfs.Ptr();
+					NEW_CLASS(writer, Text::UTF8Writer(nnfs));
 					NEW_CLASS(sb, Text::StringBuilderUTF8());
 					sb->AppendC(this->currCate->chiName->v, this->currCate->chiName->leng);
 					sb->AppendC(UTF8STRC(" - "));
@@ -1039,7 +1043,7 @@ Bool SSWR::OrganMgr::OrganEnv::ExportSpecies(OrganSpecies *sp, const UTF8Char *b
 
 	Text::StringBuilderUTF8 sb;
 	IO::FileStream fs({fullPath, (UOSInt)(sptr - fullPath)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-	Text::UTF8Writer writer(&fs);
+	Text::UTF8Writer writer(fs);
 	sb.AppendC(this->currCate->chiName->v, this->currCate->chiName->leng);
 	sb.AppendC(UTF8STRC(" - "));
 	sb.Append(sp->GetSName());

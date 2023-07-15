@@ -721,17 +721,17 @@ Media::StaticImage *Media::VectorGraph::ToStaticImage() const
 	return 0;
 }
 
-UOSInt Media::VectorGraph::SavePng(IO::SeekableStream *stm)
+UOSInt Media::VectorGraph::SavePng(NotNullPtr<IO::SeekableStream> stm)
 {
 	return 0;
 }
 
-UOSInt Media::VectorGraph::SaveGIF(IO::SeekableStream *stm)
+UOSInt Media::VectorGraph::SaveGIF(NotNullPtr<IO::SeekableStream> stm)
 {
 	return 0;
 }
 
-UOSInt Media::VectorGraph::SaveJPG(IO::SeekableStream *stm)
+UOSInt Media::VectorGraph::SaveJPG(NotNullPtr<IO::SeekableStream> stm)
 {
 	return 0;
 }

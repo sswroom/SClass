@@ -84,7 +84,7 @@ void __stdcall OnDetectResult(void *userObj, UOSInt objCnt, const Media::OpenCV:
 			sptr = dt.ToString(sptr, "yyyyMMdd_HHmmssfff");
 			sptr = Text::StrConcatC(sptr, UTF8STRC(".jpg"));
 			IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-			exporter->ExportFile(&fs, CSTRP(sbuff, sptr), &imgList, 0);
+			exporter->ExportFile(fs, CSTRP(sbuff, sptr), &imgList, 0);
 		}		
 	}
 	lastCnt = thisCnt;

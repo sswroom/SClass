@@ -65,7 +65,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::IndexReq(SSWR::SMonitor::SMon
 				}
 			}
 		}
-		NEW_CLASS(writer, Text::UTF8Writer(&mstm));
+		NEW_CLASS(writer, Text::UTF8Writer(mstm));
 		WriteHeaderBegin(writer);
 		WriteHeaderEnd(writer);
 		writer->WriteLineC(UTF8STRC("<body onload=\"document.getElementById('pwd').focus()\"><center>"));
@@ -83,7 +83,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::IndexReq(SSWR::SMonitor::SMon
 	else
 	{
 		Net::WebServer::IWebSession *sess = me->sessMgr->GetSession(req, resp);
-		NEW_CLASS(writer, Text::UTF8Writer(&mstm));
+		NEW_CLASS(writer, Text::UTF8Writer(mstm));
 		WriteHeaderBegin(writer);
 		WriteHeaderEnd(writer);
 		writer->WriteLineC(UTF8STRC("<body onload=\"window.setTimeout(new Function('document.location.replace(\\'index\\')'), 60000)\">"));
@@ -322,7 +322,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::LoginReq(SSWR::SMonitor::SMon
 	}
 
 	IO::MemoryStream mstm;
-	NEW_CLASS(writer, Text::UTF8Writer(&mstm));
+	NEW_CLASS(writer, Text::UTF8Writer(mstm));
 	WriteHeaderBegin(writer);
 	WriteHeaderEnd(writer);
 	writer->WriteLineC(UTF8STRC("<body onload=\"document.getElementById('user').focus()\">"));
@@ -388,7 +388,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReq(SSWR::SMonitor::SMo
 	}
 
 	IO::MemoryStream mstm;
-	NEW_CLASS(writer, Text::UTF8Writer(&mstm));
+	NEW_CLASS(writer, Text::UTF8Writer(mstm));
 	WriteHeaderBegin(writer);
 	WriteHeaderEnd(writer);
 	writer->WriteLineC(UTF8STRC("<body onload=\"window.setTimeout(new Function('document.location.reload()'), 60000)\">"));
@@ -593,7 +593,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceEditReq(SSWR::SMonitor:
 	}
 
 	IO::MemoryStream mstm;
-	NEW_CLASS(writer, Text::UTF8Writer(&mstm));
+	NEW_CLASS(writer, Text::UTF8Writer(mstm));
 	WriteHeaderBegin(writer);
 	WriteHeaderEnd(writer);
 	writer->WriteLineC(UTF8STRC("<body onload=\"document.forms[0].devName.focus()\">"));
@@ -725,7 +725,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingReq(SSWR::SMonit
 	}
 
 	IO::MemoryStream mstm;
-	NEW_CLASS(writer, Text::UTF8Writer(&mstm));
+	NEW_CLASS(writer, Text::UTF8Writer(mstm));
 	WriteHeaderBegin(writer);
 	WriteHeaderEnd(writer);
 	writer->WriteLineC(UTF8STRC("<body onload=\"document.forms[0].readingName0.focus()\">"));
@@ -867,7 +867,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceDigitalsReq(SSWR::SMoni
 	}
 
 	IO::MemoryStream mstm;
-	NEW_CLASS(writer, Text::UTF8Writer(&mstm));
+	NEW_CLASS(writer, Text::UTF8Writer(mstm));
 	WriteHeaderBegin(writer);
 	WriteHeaderEnd(writer);
 	writer->WriteLineC(UTF8STRC("<body onload=\"document.forms[0].digitalName0.focus()\">"));
@@ -1430,13 +1430,14 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(SSWR::SMo
 	imgList->AddImage(dimg->ToStaticImage(), 0);
 	deng->DeleteImage(dimg);
 
-	NEW_CLASS(mstm, IO::MemoryStream());
+	NotNullPtr<IO::MemoryStream> nnmstm;
+	NEW_CLASSNN(nnmstm, IO::MemoryStream());
 	NEW_CLASS(exporter, Exporter::GUIPNGExporter());
-	exporter->ExportFile(mstm, CSTR("temp.png"), imgList, 0);
+	exporter->ExportFile(nnmstm, CSTR("temp.png"), imgList, 0);
 	DEL_CLASS(exporter);
 	DEL_CLASS(imgList);
 
-	buff = mstm->GetBuff(&buffSize);
+	buff = nnmstm->GetBuff(&buffSize);
 	resp->AddDefHeaders(req);
 	resp->AddContentType(CSTR("image/png"));
 	resp->AddContentLength(buffSize);
@@ -1444,7 +1445,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(SSWR::SMo
 	resp->Write(buff, buffSize);
 
 	mutUsage.ReplaceMutex(&dev->mut, true);
-	mstm = dev->imgCaches.Put((sensorId << 16) + (readingId << 8) + (readingType), mstm);
+	mstm = dev->imgCaches.Put((sensorId << 16) + (readingId << 8) + (readingType), nnmstm.Ptr());
 	mutUsage.EndUse();
 	if (mstm)
 	{
@@ -1476,7 +1477,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataReq(SSWR::SMoni
 	Data::ArrayList<SSWR::SMonitor::ISMonitorCore::DeviceInfo *> devList;
 	SSWR::SMonitor::ISMonitorCore::DeviceInfo *dev;
 	IO::MemoryStream mstm;
-	NEW_CLASS(writer, Text::UTF8Writer(&mstm));
+	NEW_CLASS(writer, Text::UTF8Writer(mstm));
 	WriteHeaderBegin(writer);
 	writer->WriteLineC(UTF8STRC("<script type=\"text/javascript\">"));
 	writer->WriteLineC(UTF8STRC("var clients = new Object();"));
@@ -1777,7 +1778,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataImgReq(SSWR::SM
 
 	IO::MemoryStream mstm;
 	NEW_CLASS(exporter, Exporter::GUIPNGExporter());
-	exporter->ExportFile(&mstm, CSTR("temp.png"), imgList, 0);
+	exporter->ExportFile(mstm, CSTR("temp.png"), imgList, 0);
 	DEL_CLASS(exporter);
 	DEL_CLASS(imgList);
 
@@ -1841,7 +1842,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserPasswordReq(SSWR::SMonito
 	}
 
 	IO::MemoryStream mstm;
-	NEW_CLASS(writer, Text::UTF8Writer(&mstm));
+	NEW_CLASS(writer, Text::UTF8Writer(mstm));
 	WriteHeaderBegin(writer);
 	WriteHeaderEnd(writer);
 	writer->WriteLineC(UTF8STRC("<body onload=\"document.getElementById('password').focus()\">"));
@@ -1898,7 +1899,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UsersReq(SSWR::SMonitor::SMon
 	UOSInt j;
 	me->core->UserGetList(&userList);
 	IO::MemoryStream mstm;
-	NEW_CLASS(writer, Text::UTF8Writer(&mstm));
+	NEW_CLASS(writer, Text::UTF8Writer(mstm));
 	WriteHeaderBegin(writer);
 	WriteHeaderEnd(writer);
 	writer->WriteLineC(UTF8STRC("<body>"));
@@ -1980,7 +1981,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserAddReq(SSWR::SMonitor::SM
 	}
 
 	IO::MemoryStream mstm;
-	NEW_CLASS(writer, Text::UTF8Writer(&mstm));
+	NEW_CLASS(writer, Text::UTF8Writer(mstm));
 	WriteHeaderBegin(writer);
 	WriteHeaderEnd(writer);
 	writer->WriteLineC(UTF8STRC("<body onload=\"document.getElementById('username').focus()\">"));
@@ -2081,7 +2082,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserAssignReq(SSWR::SMonitor:
 	me->core->UserGetDevices(sess->GetValueInt32(UTF8STRC("UserId")), 1, &devList);
 
 	IO::MemoryStream mstm;
-	NEW_CLASS(writer, Text::UTF8Writer(&mstm));
+	NEW_CLASS(writer, Text::UTF8Writer(mstm));
 	WriteHeaderBegin(writer);
 	WriteHeaderEnd(writer);
 	writer->WriteLineC(UTF8STRC("<body onload=\"document.getElementById('username').focus()\">"));

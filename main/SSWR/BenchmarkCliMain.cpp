@@ -45,7 +45,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 
 	IO::SystemInfo sysInfo;
 	Manage::CPUInfo cpuInfo;
-	IO::FileStream *fs;
+	NotNullPtr<IO::FileStream> fs;
 	IO::StreamWriter *writer;
 	UInt64 memSize;
 	Text::StringBuilderUTF8 sb;
@@ -66,7 +66,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	}
 	sptr = Text::StrConcatC(sptr, UTF8STRC(".txt"));
 
-	NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASSNN(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	NEW_CLASS(writer, IO::StreamWriter(fs, 65001));
 
 	sb.ClearStr();
@@ -313,7 +313,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	MemFreeA64(buff2);
 
 	DEL_CLASS(writer);
-	DEL_CLASS(fs);
+	fs.Delete();
 
 
 	DEL_CLASS(console);

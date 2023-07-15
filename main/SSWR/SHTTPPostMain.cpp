@@ -156,7 +156,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 					fileName->Release();
 				}
 			}
-			DEL_CLASS(cli);	
+			cli.Delete();	
 			SDEL_CLASS(ssl);
 			DEL_CLASS(sockf);
 		}

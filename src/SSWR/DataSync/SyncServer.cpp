@@ -42,7 +42,7 @@ void __stdcall SSWR::DataSync::SyncServer::OnClientEvent(NotNullPtr<Net::TCPClie
 			if (svr)
 			{
 				Sync::MutexUsage mutUsage(&svr->mut);
-				if (svr->cli == cli)
+				if (svr->cli == cli.Ptr())
 				{
 					svr->cli = 0;
 				}

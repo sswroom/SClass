@@ -37,7 +37,7 @@ void __stdcall OnGPSPos(void *userObj, Map::GPSTrack::GPSRecord3 *record, UOSInt
 Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	IO::GPIOControl *gpio;
-	IO::RS232GPIO *port;
+	NotNullPtr<IO::RS232GPIO> port;
 	IO::GPSNMEA *gps;
 	Text::StringBuilderUTF8 sb;
 	UInt16 pinNum = 7;
@@ -54,14 +54,14 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	console->WriteLineC(sb.ToString(), sb.GetLength());
 
 	NEW_CLASS(gpio, IO::GPIOControl());
-	NEW_CLASS(port, IO::RS232GPIO(gpio, pinNum, 255, 9600));
+	NEW_CLASSNN(port, IO::RS232GPIO(gpio, pinNum, 255, 9600));
 	NEW_CLASS(gps, IO::GPSNMEA(port, false));
 	gps->RegisterLocationHandler(OnGPSPos, 0);
 
 	progCtrl->WaitForExit(progCtrl);
 
 	DEL_CLASS(gps);
-	DEL_CLASS(port);
+	port.Delete();
 	DEL_CLASS(gpio);
 	DEL_CLASS(console);
 	return 0;

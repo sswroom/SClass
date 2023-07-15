@@ -13,7 +13,7 @@ namespace DB
 	template <class T> class DBDataFile
 	{
 	private:
-		IO::FileStream *fs;
+		NotNullPtr<IO::FileStream> fs;
 		IO::BufferedOutputStream *cstm;
 		Data::NamedClass<T> *cls;
 		UInt8 *recordBuff;
@@ -122,7 +122,7 @@ template <class T> DB::DBDataFile<T>::DBDataFile(Text::CString fileName, Data::N
 	this->colTypes = 0;
 	this->cstm = 0;
 	IO::FileMode fileMode = append?IO::FileMode::Append:IO::FileMode::Create;
-	NEW_CLASS(this->fs, IO::FileStream(fileName, fileMode, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASSNN(this->fs, IO::FileStream(fileName, fileMode, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (this->fs->IsError())
 	{
 		return;
@@ -159,7 +159,7 @@ template <class T> DB::DBDataFile<T>::DBDataFile(Text::CString fileName, Data::N
 template <class T> DB::DBDataFile<T>::~DBDataFile()
 {
 	SDEL_CLASS(this->cstm);
-	DEL_CLASS(this->fs);
+	this->fs.Delete();
 	if (this->recordBuff)
 		MemFree(this->recordBuff);
 	if (this->colTypes)

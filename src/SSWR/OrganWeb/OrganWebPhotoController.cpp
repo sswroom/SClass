@@ -129,7 +129,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhoto(Net::WebServer::IWeb
 					sb.AppendSlow(fileName);
 					sb.AppendC(UTF8STRC("."));
 
-					Text::UTF8Reader reader(&fs);
+					Text::UTF8Reader reader(fs);
 					while ((sptr2 = reader.ReadLine(sbuff2, 511)) != 0)
 					{
 						if (Text::StrSplitP(sarr, 3, {sbuff2, (UOSInt)(sptr2 - sbuff2)}, '\t') == 2)
@@ -317,7 +317,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhoto(Net::WebServer::IWeb
 						Exporter::GUIJPGExporter exporter;
 						param = exporter.CreateParam(&nimgList);
 						exporter.SetParamInt32(param, 0, 95);
-						exporter.ExportFile(&mstm, CSTR(""), &nimgList, param);
+						exporter.ExportFile(mstm, CSTR(""), &nimgList, param);
 						exporter.DeleteParam(param);
 						ResponseMstm(req, resp, &mstm, CSTR("image/jpeg"));
 
@@ -593,7 +593,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoId(Net::WebServer::IW
 					}
 
 					IO::MemoryStream mstm;
-					gimg->SaveJPG(&mstm);
+					gimg->SaveJPG(mstm);
 					ResponseMstm(req, resp, &mstm, CSTR("image/jpeg"));
 
 					if (cacheDir && imgWidth == GetPreviewSize() && imgHeight == GetPreviewSize())
@@ -619,7 +619,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoId(Net::WebServer::IW
 					Exporter::GUIJPGExporter exporter;
 					param = exporter.CreateParam(&nimgList);
 					exporter.SetParamInt32(param, 0, 95);
-					exporter.ExportFile(&mstm, CSTR(""), &nimgList, param);
+					exporter.ExportFile(mstm, CSTR(""), &nimgList, param);
 					exporter.DeleteParam(param);
 					ResponseMstm(req, resp, &mstm, CSTR("image/jpeg"));
 
@@ -828,7 +828,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoWId(Net::WebServer::I
 					Exporter::GUIJPGExporter exporter;
 					param = exporter.CreateParam(&nimgList);
 					exporter.SetParamInt32(param, 0, 95);
-					exporter.ExportFile(&mstm, CSTR(""), &nimgList, param);
+					exporter.ExportFile(mstm, CSTR(""), &nimgList, param);
 					exporter.DeleteParam(param);
 					ResponseMstm(req, resp, &mstm, CSTR("image/jpeg"));
 

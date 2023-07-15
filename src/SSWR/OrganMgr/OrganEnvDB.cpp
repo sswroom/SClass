@@ -11,6 +11,7 @@
 #include "IO/FileUtil.h"
 #include "IO/IniFile.h"
 #include "IO/MemoryStream.h"
+#include "IO/NullStream.h"
 #include "IO/Path.h"
 #include "IO/StreamRecorder.h"
 #include "IO/StmData/FileData.h"
@@ -865,7 +866,7 @@ UOSInt SSWR::OrganMgr::OrganEnvDB::GetSpeciesImages(Data::ArrayList<OrganImageIt
 		if (IO::Path::GetPathType(CSTRP(sbuff, sptr2)) == IO::Path::PathType::File)
 		{
 			IO::FileStream fs(CSTRP(sbuff, sptr2), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential);
-			Text::UTF8Reader reader(&fs);
+			Text::UTF8Reader reader(fs);
 
 			while ((sptr2 = reader.ReadLine(sbuff2, 511)) != 0)
 			{
@@ -1958,7 +1959,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 						sptr = Text::StrConcatC(sptr, UTF8STRC(".png"));
 						{
 							IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer);
-							graphImg->SavePng(&fs);
+							graphImg->SavePng(fs);
 						}
 						this->drawEng->DeleteImage(graphImg);
 
@@ -2239,7 +2240,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesWeb
 		Text::StringBuilderUTF8 sb;
 		sptr = Text::StrConcatC(sptr, UTF8STRC(".txt"));
 		IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-		Text::UTF8Writer writer(&fs);
+		Text::UTF8Writer writer(fs);
 		writer.WriteSignature();
 		sb.AppendP(fileName, fileNameEnd);
 		sb.AppendC(UTF8STRC("\t"));
@@ -2315,13 +2316,13 @@ Bool SSWR::OrganMgr::OrganEnvDB::UpdateSpeciesWebFileOld(OrganSpecies *sp, const
 	Bool found = false;
 	IO::MemoryStream mstm;
 	{
-		Text::UTF8Writer writer(&mstm);
+		Text::UTF8Writer writer(mstm);
 		writer.WriteSignature();
 
 		IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-		Text::UTF8Reader reader(&fs);
+		Text::UTF8Reader reader(fs);
 		sb.ClearStr();
-		while (reader.ReadLine(&sb, 4095))
+		while (reader.ReadLine(sb, 4095))
 		{
 			sb2.ClearStr();
 			sb2.AppendC(sb.ToString(), sb.GetLength());
@@ -2731,7 +2732,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::MoveImages(Data::ArrayList<OrganImages*> *imgLi
 			j = i;
 			i = 0;
 			IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::Append, IO::FileShare::DenyAll, IO::FileStream::BufferType::Normal);
-			Text::UTF8Writer writer(&fs);
+			Text::UTF8Writer writer(fs);
 			while (i < j)
 			{
 				img = imgList->GetItem(i);
@@ -2763,9 +2764,9 @@ Bool SSWR::OrganMgr::OrganEnvDB::MoveImages(Data::ArrayList<OrganImages*> *imgLi
 			Bool found;
 			{
 				IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential);
-				Text::UTF8Reader reader(&fs);
+				Text::UTF8Reader reader(fs);
 				sb.ClearStr();
-				while (reader.ReadLine(&sb, 512))
+				while (reader.ReadLine(sb, 512))
 				{
 					sb2.AppendC(sb.ToString(), sb.GetLength());
 					if (Text::StrSplitP(sarr, 4, sb2, '\t') == 3)
@@ -2800,7 +2801,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::MoveImages(Data::ArrayList<OrganImages*> *imgLi
 			if (webLines.GetCount() > 0)
 			{
 				IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-				Text::UTF8Writer writer(&fs);
+				Text::UTF8Writer writer(fs);
 				i = 0;
 				j = webLines.GetCount();
 				while (i < j)
@@ -4088,7 +4089,7 @@ Media::ImageList *SSWR::OrganMgr::OrganEnvDB::ParseSpImage(OrganSpecies *sp)
 			if (IO::Path::GetPathType(CSTRP(sbuff, sptr2)) == IO::Path::PathType::File)
 			{
 				IO::FileStream fs(CSTRP(sbuff, sptr2), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential);
-				Text::UTF8Reader reader(&fs);
+				Text::UTF8Reader reader(fs);
 				
 				while (reader.ReadLine(sbuff2, 511))
 				{
@@ -4762,7 +4763,7 @@ void SSWR::OrganMgr::OrganEnvDB::UpgradeDB2()
 			allSucc = true;
 			{
 				IO::FileStream fs(CSTRP(sbuff, sptr2), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential);
-				Text::UTF8Reader reader(&fs);
+				Text::UTF8Reader reader(fs);
 
 				while ((sptr2 = reader.ReadLine(sbuff2, 511)) != 0)
 				{
@@ -4999,7 +5000,7 @@ void SSWR::OrganMgr::OrganEnvDB::ExportLite(const UTF8Char *folder)
 		}
 		else
 		{
-			Text::UTF8Writer writer(&fs);
+			Text::UTF8Writer writer(fs);
 			writer.WriteLineC(UTF8STRC("ScreenSize=1200"));
 			writer.WriteLineC(UTF8STRC("MDBFile=OrganWeb.mdb"));
 			writer.WriteLineC(UTF8STRC("ImageDir=Image\\"));
@@ -5015,7 +5016,9 @@ void SSWR::OrganMgr::OrganEnvDB::ExportLite(const UTF8Char *folder)
 	IO::Path::CreateDirectory(CSTRP(sbuff, sptr2));
 	Exporter::MDBExporter exporter;
 	sptr2 = Text::StrConcatC(sptr, UTF8STRC("OrganWeb.mdb"));
-	exporter.ExportFile(0, CSTRP(sbuff, sptr2), this->db->GetDBConn(), 0);
+	
+	IO::NullStream nstm;
+	exporter.ExportFile(nstm, CSTRP(sbuff, sptr2), this->db->GetDBConn(), 0);
 
 	sptr2 = Text::StrConcatC(sptr, UTF8STRC("Image"));
 	IO::Path::CreateDirectory(CSTRP(sbuff, sptr2));
@@ -5117,7 +5120,7 @@ void SSWR::OrganMgr::OrganEnvDB::ExportLite(const UTF8Char *folder)
 						exporter.SetParamInt32(param, 0, 95);
 						{
 							IO::FileStream fs(CSTRP(sbuff, sptr2End), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-							exporter.ExportFile(&fs, CSTRP(sbuff, sptr2End), imgList, param);
+							exporter.ExportFile(fs, CSTRP(sbuff, sptr2End), imgList, param);
 						}
 						DEL_CLASS(imgList);
 					}

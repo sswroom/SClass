@@ -53,7 +53,9 @@ public:
 	{
 		if (fileName.leng > 0)
 		{
-			NEW_CLASS(fs, IO::FileStream(fileName, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+			NotNullPtr<IO::FileStream> fs;
+			NEW_CLASSNN(fs, IO::FileStream(fileName, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+			this->fs = fs.Ptr();
 			NEW_CLASS(writer, Text::UTF8Writer(fs));
 			writer->WriteSignature();
 		}
@@ -4025,9 +4027,10 @@ void Map::MapConfig2TGen::LoadLabels(Media::DrawImage *img, Map::MapConfig2TGen:
 	UTF8Char *sptr;
 	UTF8Char *sptr2;
 	UOSInt i;
-	if (dbStream)
+	NotNullPtr<IO::Stream> stm;
+	if (stm.Set(dbStream))
 	{
-		NEW_CLASS(reader, IO::StreamReader(dbStream));
+		NEW_CLASS(reader, IO::StreamReader(stm));
 	}
 	else
 	{
@@ -4047,13 +4050,15 @@ void Map::MapConfig2TGen::LoadLabels(Media::DrawImage *img, Map::MapConfig2TGen:
 		sptr = Text::StrInt32(sptr, yId);
 		sptr = Text::StrConcatC(sptr, UTF8STRC(".db"));
 
-		NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyAll, IO::FileStream::BufferType::Normal));
-		if (fs->IsError())
+		NotNullPtr<IO::FileStream> nnfs;
+		NEW_CLASSNN(nnfs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyAll, IO::FileStream::BufferType::Normal));
+		if (nnfs->IsError())
 		{
-			DEL_CLASS(fs);
+			nnfs.Delete();
 			return;
 		}
-		NEW_CLASS(reader, IO::StreamReader(fs));
+		fs = nnfs.Ptr();
+		NEW_CLASS(reader, IO::StreamReader(nnfs));
 	}
 
 	while (reader->ReadLine(sbuff, 255))

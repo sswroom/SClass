@@ -62,7 +62,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		if (pinCapture.GetCaptureData(&times, &isHighs) > 0)
 		{
 			IO::FileStream fs(CSTR("Capture.csv"), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-			Text::UTF8Writer writer(&fs);
+			Text::UTF8Writer writer(fs);
 			writer.WriteLineC(UTF8STRC("Time, State"));
 			i = 0;
 			j = times.GetCount();

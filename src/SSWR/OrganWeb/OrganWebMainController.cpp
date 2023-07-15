@@ -305,7 +305,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroup(Net::WebServer::
 		}
 
 		IO::MemoryStream mstm;
-		Text::UTF8Writer writer(&mstm);
+		Text::UTF8Writer writer(mstm);
 
 		sb.ClearStr();
 		sb.Append(cate->chiName);
@@ -697,7 +697,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroupMod(Net::WebServe
 		}
 
 		IO::MemoryStream mstm;
-		Text::UTF8Writer writer(&mstm);
+		Text::UTF8Writer writer(mstm);
 
 		sb.ClearStr();
 		if (modGroup)
@@ -1038,7 +1038,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(Net::WebServer
 		}
 
 		IO::MemoryStream mstm;
-		Text::UTF8Writer writer(&mstm);
+		Text::UTF8Writer writer(mstm);
 
 		sb.ClearStr();
 		sb.Append(cate->chiName);
@@ -1227,7 +1227,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(Net::WebServer
 		{
 			Text::PString sarr[4];
 			IO::FileStream fs(CSTRP(sbuff, sptr2), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential);
-			Text::UTF8Reader reader(&fs);
+			Text::UTF8Reader reader(fs);
 			sb.ClearStr();
 			while (reader.ReadLine(sb, 4096))
 			{
@@ -1802,7 +1802,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpeciesMod(Net::WebSer
 		}
 
 		IO::MemoryStream mstm;
-		Text::UTF8Writer writer(&mstm);
+		Text::UTF8Writer writer(mstm);
 
 		sb.ClearStr();
 		if (species)
@@ -1975,7 +1975,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcList(Net::WebServer::I
 		}
 
 		IO::MemoryStream mstm;
-		Text::UTF8Writer writer(&mstm);
+		Text::UTF8Writer writer(mstm);
 
 		sb.ClearStr();
 		sb.Append(cate->chiName);
@@ -2234,7 +2234,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(Net::WebSe
 				}
 
 				IO::MemoryStream mstm;
-				Text::UTF8Writer writer(&mstm);
+				Text::UTF8Writer writer(mstm);
 
 				sb.ClearStr();
 				sb.Append(cate->chiName);
@@ -2315,7 +2315,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(Net::WebSe
 						{
 							sptrEnd = Text::StrConcatC(sptr, UTF8STRC("web.txt"));
 							IO::FileStream fs({sbuff, (UOSInt)(sptrEnd - sbuff)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential);
-							Text::UTF8Reader reader(&fs);
+							Text::UTF8Reader reader(fs);
 							sb.ClearStr();
 							found = false;
 							while (reader.ReadLine(sb, 4096))
@@ -2575,7 +2575,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(Net::WebSe
 					}
 				}
 				IO::MemoryStream mstm;
-				Text::UTF8Writer writer(&mstm);
+				Text::UTF8Writer writer(mstm);
 
 				sb.ClearStr();
 				sb.Append(cate->chiName);
@@ -2647,7 +2647,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(Net::WebSe
 						{
 							sptrEnd = Text::StrConcatC(sptr, UTF8STRC("web.txt"));
 							IO::FileStream fs({sbuff, (UOSInt)(sptrEnd - sbuff)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential);
-							Text::UTF8Reader reader(&fs);
+							Text::UTF8Reader reader(fs);
 							sb.ClearStr();
 							found = false;
 							while (reader.ReadLine(sb, 4096))
@@ -2797,7 +2797,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(Net::WebSe
 					sptr2 = Text::StrConcatC(Text::StrConcat(sbuff2, &fileName[4]), UTF8STRC("."));
 					Text::StrToUpperC(sbuff2, sbuff2, (UOSInt)(sptr2 - sbuff2));
 					IO::FileStream fs({sbuff, (UOSInt)(sptrEnd - sbuff)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential);
-					Text::UTF8Reader reader(&fs);
+					Text::UTF8Reader reader(fs);
 					sb.ClearStr();
 					found = false;
 					foundNext = false;
@@ -2830,7 +2830,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(Net::WebSe
 				if (found)
 				{
 					IO::MemoryStream mstm;
-					Text::UTF8Writer writer(&mstm);
+					Text::UTF8Writer writer(mstm);
 
 					sb.ClearStr();
 					sb.Append(cate->chiName);
@@ -2982,7 +2982,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(Net::WebSe
 					}
 
 					IO::MemoryStream mstm;
-					Text::UTF8Writer writer(&mstm);
+					Text::UTF8Writer writer(mstm);
 
 					sb.ClearStr();
 					sb.Append(cate->chiName);
@@ -3019,7 +3019,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(Net::WebSe
 						{
 							sptrEnd = Text::StrConcatC(sptr, UTF8STRC("web.txt"));
 							IO::FileStream fs({sbuff, (UOSInt)(sptrEnd - sbuff)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential);
-							Text::UTF8Reader reader(&fs);
+							Text::UTF8Reader reader(fs);
 							sb.ClearStr();
 							found = false;
 							while (reader.ReadLine(sb, 4096))
@@ -3197,7 +3197,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetailD(Net::WebS
 		{
 			UserFileInfo *userFile2;
 			IO::MemoryStream mstm;
-			Text::UTF8Writer writer(&mstm);
+			Text::UTF8Writer writer(mstm);
 
 			dt.SetTicks(userFile->captureTimeTicks);
 			dt.ToString(sbuff, "yyyy-MM-dd");
@@ -3414,7 +3414,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoYear(Net::WebServ
 		UTF8Char *sptr;
 
 		IO::MemoryStream mstm;
-		Text::UTF8Writer writer(&mstm);
+		Text::UTF8Writer writer(mstm);
 
 		sptr = Text::StrUInt16(Text::StrConcatC(sbuff, UTF8STRC("Year ")), y);
 		me->WriteHeader(&writer, sbuff, env.user, env.isMobile);
@@ -3715,7 +3715,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDay(Net::WebServe
 		NotNullPtr<Text::String> s;
 
 		IO::MemoryStream mstm;
-		Text::UTF8Writer writer(&mstm);
+		Text::UTF8Writer writer(mstm);
 
 		dt.SetTicks(d * 86400000LL);
 		sptr = dt.ToString(sbuff, "yyyy-MM-dd");
@@ -3972,7 +3972,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoUpload(Net::WebSe
 	req->ParseHTTPForm();
 
 	IO::MemoryStream mstm;
-	Text::UTF8Writer writer(&mstm);
+	Text::UTF8Writer writer(mstm);
 	Sync::RWMutexUsage mutUsage;
 
 	me->WriteHeader(&writer, (const UTF8Char*)"Photo Upload", env.user, env.isMobile);
@@ -4179,7 +4179,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSearchInside(Net::WebS
 		}
 
 		IO::MemoryStream mstm;
-		Text::UTF8Writer writer(&mstm);
+		Text::UTF8Writer writer(mstm);
 
 		sb.ClearStr();
 		sb.Append(cate->chiName);
@@ -4374,7 +4374,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSearchInsideMoreS(Net:
 		}
 
 		IO::MemoryStream mstm;
-		Text::UTF8Writer writer(&mstm);
+		Text::UTF8Writer writer(mstm);
 
 		sb.ClearStr();
 		sb.Append(cate->chiName);
@@ -4549,7 +4549,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSearchInsideMoreG(Net:
 		}
 
 		IO::MemoryStream mstm;
-		Text::UTF8Writer writer(&mstm);
+		Text::UTF8Writer writer(mstm);
 
 		sb.ClearStr();
 		sb.Append(cate->chiName);
@@ -4722,7 +4722,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcLogin(Net::WebServer::
 				sess->EndUse();
 
 				IO::MemoryStream mstm;
-				Text::UTF8Writer writer(&mstm);
+				Text::UTF8Writer writer(mstm);
 
 				me->WriteHeaderPart1(&writer, (const UTF8Char*)"Index", env.isMobile);
 				writer.WriteLineC(UTF8STRC("<script type=\"text/javascript\">"));
@@ -4743,7 +4743,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcLogin(Net::WebServer::
 	}
 
 	IO::MemoryStream mstm;
-	Text::UTF8Writer writer(&mstm);
+	Text::UTF8Writer writer(mstm);
 
 	me->WriteHeader(&writer, (const UTF8Char*)"Index", env.user, env.isMobile);
 	writer.WriteLineC(UTF8STRC("<center><h1>Login</h1></center>"));
@@ -4782,7 +4782,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcReload(Net::WebServer:
 		Data::DateTime dt;
 
 		IO::MemoryStream mstm;
-		Text::UTF8Writer writer(&mstm);
+		Text::UTF8Writer writer(mstm);
 
 		me->WriteHeader(&writer, (const UTF8Char*)"Reload", env.user, env.isMobile);
 		writer.WriteLineC(UTF8STRC("<center><h1>Reload</h1></center>"));
@@ -4839,7 +4839,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcRestart(Net::WebServer
 	{
 		Data::DateTime dt;
 		IO::MemoryStream mstm;
-		Text::UTF8Writer writer(&mstm);
+		Text::UTF8Writer writer(mstm);
 
 		me->WriteHeader(&writer, (const UTF8Char*)"Restart", env.user, env.isMobile);
 		writer.WriteLineC(UTF8STRC("<center><h1>Restart</h1></center>"));
@@ -4895,7 +4895,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcIndex(Net::WebServer::
 	UTF8Char *sptr;
 
 	IO::MemoryStream mstm;
-	Text::UTF8Writer writer(&mstm);
+	Text::UTF8Writer writer(mstm);
 
 	me->WriteHeader(&writer, (const UTF8Char*)"Index", env.user, env.isMobile);
 	writer.WriteLineC(UTF8STRC("<script type=\"application/javascript\">\r\n"
@@ -5058,7 +5058,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcCate(Net::WebServer::I
 		IO::ConfigFile *lang = me->env->LangGet(req);
 
 		IO::MemoryStream mstm;
-		Text::UTF8Writer writer(&mstm);
+		Text::UTF8Writer writer(mstm);
 
 		me->WriteHeader(&writer, cate->chiName->v, env.user, env.isMobile);
 		writer.WriteStrC(UTF8STRC("<center><h1>"));

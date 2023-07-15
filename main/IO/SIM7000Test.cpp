@@ -51,8 +51,8 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	sb.AppendUOSInt(portNum);
 	console->WriteLineC(sb.ToString(), sb.GetLength());
 
-	IO::SerialPort *port;
-	NEW_CLASS(port, IO::SerialPort(portNum, baudRate, IO::SerialPort::PARITY_NONE, true));
+	NotNullPtr<IO::SerialPort> port;
+	NEW_CLASSNN(port, IO::SerialPort(portNum, baudRate, IO::SerialPort::PARITY_NONE, true));
 	if (port->IsError())
 	{
 		console->WriteLineC(UTF8STRC("Error in opening the port"));
@@ -279,7 +279,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		DEL_CLASS(modem);
 		DEL_CLASS(channel);
 	}
-	DEL_CLASS(port);
+	port.Delete();
 	DEL_CLASS(console);
 	return 0;
 }

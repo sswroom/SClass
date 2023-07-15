@@ -42,7 +42,7 @@ void __stdcall CaptureTest(UInt32 frameTime, UInt32 frameNum, UInt8 **imgData, U
 		}
 		{
 			IO::FileStream fs(fileName, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-			exporter.ExportFile(&fs, fileName, &imgList, 0);
+			exporter.ExportFile(fs, fileName, &imgList, 0);
 		}
 	}
 	frameCnt--;

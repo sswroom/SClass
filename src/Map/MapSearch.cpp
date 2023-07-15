@@ -34,7 +34,7 @@ Map::MapSearch::MapSearch(Text::CString fileName, Map::MapSearchManager *manager
 	}
 
 	IO::FileStream fs(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-	IO::StreamReader reader(&fs);
+	IO::StreamReader reader(fs);
 	sptr = reader.ReadLine(sbuff, 256);
 	while (sptr)
 	{

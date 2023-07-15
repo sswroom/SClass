@@ -22,7 +22,7 @@ Bool IO::StringLogger::IsModified()
 void IO::StringLogger::ReadLogs(IO::Reader *reader)
 {
 	Text::StringBuilderUTF8 sb;
-	while (reader->ReadLine(&sb, 4096))
+	while (reader->ReadLine(sb, 4096))
 	{
 		this->LogStr(sb.ToString(), sb.GetLength());
 		sb.ClearStr();

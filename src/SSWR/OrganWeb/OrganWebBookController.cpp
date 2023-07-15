@@ -41,7 +41,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookList(Net::WebServe
 		}
 
 		IO::MemoryStream mstm;
-		Text::UTF8Writer writer(&mstm);
+		Text::UTF8Writer writer(mstm);
 
 		sb.ClearStr();
 		sb.Append(cate->chiName);
@@ -219,7 +219,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBook(Net::WebServer::I
 		}
 
 		IO::MemoryStream mstm;
-		Text::UTF8Writer writer(&mstm);
+		Text::UTF8Writer writer(mstm);
 
 		sb.ClearStr();
 		sb.Append(cate->chiName);
@@ -518,7 +518,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookPhoto(Net::WebServ
 			}
 		}
 		IO::MemoryStream mstm;
-		Text::UTF8Writer writer(&mstm);
+		Text::UTF8Writer writer(mstm);
 		NotNullPtr<Text::String> s;
 
 		sb.ClearStr();
@@ -779,7 +779,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookAdd(Net::WebServer
 			}
 		}
 		IO::MemoryStream mstm;
-		Text::UTF8Writer writer(&mstm);
+		Text::UTF8Writer writer(mstm);
 		NotNullPtr<Text::String> s;
 
 		me->WriteHeader(&writer, cate->chiName->v, env.user, env.isMobile);

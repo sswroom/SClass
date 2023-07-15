@@ -41,8 +41,8 @@ IO::LoopFileLog::LoopFileLog(Text::CString fileName, Int32 nFiles, LogType style
 	SwapFiles();
 
 	sptr = Text::StrConcatC(fileName.ConcatTo(buff), UTF8STRC("0.log"));
-	NEW_CLASS(fileStm, IO::FileStream({buff, (UOSInt)(sptr - buff)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	NEW_CLASS(log, Text::UTF8Writer(fileStm));
+	NEW_CLASSNN(fileStm, IO::FileStream({buff, (UOSInt)(sptr - buff)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASSNN(log, Text::UTF8Writer(fileStm));
 	log->WriteSignature();
 
 	Data::DateTime dt;
@@ -78,11 +78,8 @@ IO::LoopFileLog::~LoopFileLog()
 		this->extName = 0;
 	}
 
-	DEL_CLASS(log);
-	log = 0;
-
-	DEL_CLASS(fileStm);
-	fileStm = 0;
+	log.Delete();
+	fileStm.Delete();
 }
 
 void IO::LoopFileLog::LogClosed()
@@ -140,14 +137,14 @@ void IO::LoopFileLog::LogAdded(const Data::Timestamp &time, Text::CString logMsg
 	if (newFile)
 	{
 		log->Close();
-		DEL_CLASS(log);
-		DEL_CLASS(fileStm);
+		log.Delete();
+		fileStm.Delete();
 
 		SwapFiles();
 		sptr = Text::StrConcatC(this->fileName->ConcatTo(buff), UTF8STRC("0.log"));
 
-		NEW_CLASS(fileStm, IO::FileStream({buff, (UOSInt)(sptr - buff)}, IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-		NEW_CLASS(log, Text::UTF8Writer(fileStm));
+		NEW_CLASSNN(fileStm, IO::FileStream({buff, (UOSInt)(sptr - buff)}, IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+		NEW_CLASSNN(log, Text::UTF8Writer(fileStm));
 		log->WriteSignature();
 
 		sptr = Text::StrConcatC(time.ToString(buff, "yyyy-MM-dd HH:mm:ss.fff\t"), UTF8STRC("Program running"));

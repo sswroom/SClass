@@ -45,17 +45,17 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::UploadReq(SSWR::Benchmark::
 		{
 			const UTF8Char *platform = 0;
 			const UTF8Char *cpu = 0;
-			IO::MemoryStream *mstm;
+			NotNullPtr<IO::MemoryStream> mstm;
 			Text::UTF8Reader *reader;
 			UTF8Char sbuff[512];
 			UTF8Char *sptr;
-			NEW_CLASS(mstm, IO::MemoryStream(leng));
+			NEW_CLASSNN(mstm, IO::MemoryStream(leng));
 			mstm->Write(data, leng);
 			mstm->SeekFromBeginning(0);
 			NEW_CLASS(reader, Text::UTF8Reader(mstm));
 
 			sb.ClearStr();
-			if (reader->ReadLine(&sb, 512))
+			if (reader->ReadLine(sb, 512))
 			{
 				if (!sb.Equals(UTF8STRC("SBench Result:")))
 				{
@@ -72,7 +72,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::UploadReq(SSWR::Benchmark::
 			if (valid)
 			{
 				sb.ClearStr();
-				if (reader->ReadLine(&sb, 512))
+				if (reader->ReadLine(sb, 512))
 				{
 					if (!sb.Equals(UTF8STRC("Computer Info:")))
 					{
@@ -90,7 +90,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::UploadReq(SSWR::Benchmark::
 			if (valid)
 			{
 				sb.ClearStr();
-				if (reader->ReadLine(&sb, 512))
+				if (reader->ReadLine(sb, 512))
 				{
 					if (sb.StartsWith(UTF8STRC("Platform: ")))
 					{
@@ -112,7 +112,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::UploadReq(SSWR::Benchmark::
 			if (valid)
 			{
 				sb.ClearStr();
-				if (reader->ReadLine(&sb, 512))
+				if (reader->ReadLine(sb, 512))
 				{
 					if (sb.StartsWith(UTF8STRC("CPU: ")))
 					{
@@ -132,7 +132,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::UploadReq(SSWR::Benchmark::
 			}
 
 			DEL_CLASS(reader);
-			DEL_CLASS(mstm);
+			mstm.Delete();
 
 			if (valid)
 			{
@@ -281,7 +281,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(SSWR::Benchmark:
 					IO::MemoryStream mstm(fileSize);
 					mstm.Write(fileBuff, fileSize);
 					mstm.SeekFromBeginning(0);
-					cpuModel = Manage::CPUDB::ParseCPUInfo(&mstm);
+					cpuModel = Manage::CPUDB::ParseCPUInfo(mstm);
 				}
 
 				if (cpuModel.v)

@@ -318,7 +318,7 @@ Int32 AXCAN_BYDC9RTest()
 {
 	Text::CString filePath = CSTR("/home/sswroom/Progs/Temp/20230511 ITT CANBUS/Sampledata.txt");
 	IO::FileStream fs(filePath, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-	Text::UTF8Reader reader(&fs);
+	Text::UTF8Reader reader(fs);
 	TestCANHandler hdlr;
 	IO::Device::AXCAN axcan(&hdlr);
 	axcan.ParseReader(&reader);
