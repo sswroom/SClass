@@ -1107,7 +1107,7 @@ IO::StreamData *Map::WebMapTileServiceSource::LoadTileImageData(UOSInt level, Ma
 	else if (status >= 200 && status < 300)
 	{
 		IO::MemoryStream mstm;
-		if (cli->ReadAllContent(&mstm, 16384, 10485760))
+		if (cli->ReadAllContent(mstm, 16384, 10485760))
 		{
 			IO::FileStream fs({filePathU, (UOSInt)(sptru - filePathU)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer);
 			fs.Write(mstm.GetBuff(), (UOSInt)mstm.GetLength());

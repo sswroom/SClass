@@ -38,7 +38,7 @@ Bool Net::GoogleFCM::SendMessage(Net::SocketFactory *sockf, Net::SSLEngine *ssl,
 	if (status == Net::WebStatus::SC_OK)
 	{
 		sb.ClearStr();
-		cli->ReadAllContent(&sb, 2048, 1048576);
+		cli->ReadAllContent(sb, 2048, 1048576);
 		Text::JSONBase *jobj = Text::JSONBase::ParseJSONStr(sb.ToCString());
 		if (jobj)
 		{
@@ -121,7 +121,7 @@ Bool Net::GoogleFCM::SendMessages(Net::SocketFactory *sockf, Net::SSLEngine *ssl
 	if (status == Net::WebStatus::SC_OK)
 	{
 		sb.ClearStr();
-		cli->ReadAllContent(&sb, 2048, 1048576);
+		cli->ReadAllContent(sb, 2048, 1048576);
 		Text::JSONBase *jobj = Text::JSONBase::ParseJSONStr(sb.ToCString());
 		if (jobj)
 		{

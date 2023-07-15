@@ -1923,7 +1923,7 @@ Bool SSWR::OrganWeb::OrganWebEnv::SpeciesAddWebfile(Sync::RWMutexUsage *mutUsage
 		return false;
 	}
 	IO::MemoryStream mstm;
-	if (!cli->ReadAllContent(&mstm, 65536, 10485760))
+	if (!cli->ReadAllContent(mstm, 65536, 10485760))
 	{
 		cli.Delete();
 		return false;

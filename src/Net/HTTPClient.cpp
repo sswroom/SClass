@@ -254,7 +254,7 @@ UInt64 Net::HTTPClient::GetTotalDownload()
 	return this->totalDownload;
 }
 
-Bool Net::HTTPClient::ReadAllContent(IO::Stream *outStm, UOSInt buffSize, UInt64 maxSize)
+Bool Net::HTTPClient::ReadAllContent(NotNullPtr<IO::Stream> outStm, UOSInt buffSize, UInt64 maxSize)
 {
 	UInt64 contLeng = this->GetContentLength();
 	UOSInt currPos = 0;
@@ -298,7 +298,7 @@ Bool Net::HTTPClient::ReadAllContent(IO::Stream *outStm, UOSInt buffSize, UInt64
 	return false;
 }
 
-Bool Net::HTTPClient::ReadAllContent(Text::StringBuilderUTF8 *sb, UOSInt buffSize, UInt64 maxSize)
+Bool Net::HTTPClient::ReadAllContent(NotNullPtr<Text::StringBuilderUTF8> sb, UOSInt buffSize, UInt64 maxSize)
 {
 	UInt64 contLeng = this->GetContentLength();
 	UOSInt currPos = 0;

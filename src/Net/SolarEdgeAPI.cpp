@@ -25,7 +25,7 @@ Text::JSONBase *Net::SolarEdgeAPI::GetJSON(Text::CString url)
 #endif
 	NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, url, Net::WebUtil::RequestMethod::HTTP_GET, true);
 	Text::StringBuilderUTF8 sb;
-	if (!cli->ReadAllContent(&sb, 8192, 1048576))
+	if (!cli->ReadAllContent(sb, 8192, 1048576))
 	{
 		cli.Delete();
 		return 0;

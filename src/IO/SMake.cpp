@@ -400,6 +400,7 @@ Bool IO::SMake::LoadConfigFile(Text::CString cfgFile)
 							prog->srcFile = 0;
 						}
 						prog->compileCfg = 0;
+						prog->compiled = false;
 						this->progMap.PutNN(prog->name, prog);
 					}
 				}
@@ -428,6 +429,7 @@ Bool IO::SMake::LoadConfigFile(Text::CString cfgFile)
 							prog->srcFile = 0;
 						}
 						prog->compileCfg = 0;
+						prog->compiled = false;
 						this->progMap.PutNN(prog->name, prog);
 					}
 				}
@@ -796,7 +798,7 @@ Bool IO::SMake::CompileProgInternal(NotNullPtr<const ProgramItem> prog, Bool asm
 	UOSInt j;
 	Int64 latestTime = 0;
 	Int64 thisTime;
-	NotNullPtr<const IO::SMake::ProgramItem> subProg;
+	NotNullPtr<IO::SMake::ProgramItem> subProg;
 	Bool progGroup;
 	if (this->messageWriter)
 	{
@@ -909,7 +911,11 @@ Bool IO::SMake::CompileProgInternal(NotNullPtr<const ProgramItem> prog, Bool asm
 			return false;
 		}
 
-		if (subProg->srcFile->v[0] != '@')
+		if (subProg->compiled)
+		{
+			updateToDate = true;
+		}
+		else if (subProg->srcFile->v[0] != '@')
 		{
 			sb.ClearStr();
 			sb.Append(this->basePath);
@@ -1008,6 +1014,7 @@ Bool IO::SMake::CompileProgInternal(NotNullPtr<const ProgramItem> prog, Bool asm
 				}
 
 				this->CompileObject(&errorState, sb.ToCString());
+				subProg->compiled = true;
 			}
 			else if (subProg->srcFile->EndsWith(UTF8STRC(".c")))
 			{
@@ -1047,6 +1054,7 @@ Bool IO::SMake::CompileProgInternal(NotNullPtr<const ProgramItem> prog, Bool asm
 					sb.Append(subProg->srcFile);
 				}
 				this->CompileObject(&errorState, sb.ToCString());
+				subProg->compiled = true;
 			}
 			else if (subProg->srcFile->EndsWith(UTF8STRC(".asm")))
 			{
@@ -1081,6 +1089,7 @@ Bool IO::SMake::CompileProgInternal(NotNullPtr<const ProgramItem> prog, Bool asm
 					sb.Append(subProg->srcFile);
 				}
 				this->CompileObject(&errorState, sb.ToCString());
+				subProg->compiled = true;
 			}
 			else if (subProg->srcFile->EndsWith(UTF8STRC(".s")))
 			{

@@ -39,6 +39,7 @@ namespace IO
 			Text::String *compileCfg;
 			Data::ArrayListNN<Text::String> subItems;
 			Data::ArrayListNN<Text::String> libs;
+			Bool compiled;
 		};
 
 	private:

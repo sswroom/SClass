@@ -294,7 +294,7 @@ Media::ImageList *Map::MercatorTileMap::LoadTileImage(UOSInt level, Math::Coord2
 	else if (status >= 200 && status < 300 && !cli->IsError())
 	{
 		IO::MemoryStream mstm;
-		if (cli->ReadAllContent(&mstm, 16384, 10485760))
+		if (cli->ReadAllContent(mstm, 16384, 10485760))
 		{
 			if (this->cacheDir)
 			{
