@@ -247,7 +247,7 @@ Media::Printer::~Printer()
 
 Bool Media::Printer::IsError()
 {
-	return this->printerName->leng > 0;
+	return this->printerName->leng == 0;
 }
 
 Bool Media::Printer::ShowPrintSettings(void *hWnd)

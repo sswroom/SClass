@@ -5,7 +5,7 @@
 #include "Media/DrawEngineFactory.h"
 #include "Media/Printer.h"
 
-#define PRINTERNAME CSTR("PDFCreator")
+#define PRINTERNAME CSTR("PDF")
 
 class PrintObj : public Media::IPrintHandler
 {
@@ -20,6 +20,7 @@ public:
 
 	virtual Bool BeginPrint(Media::IPrintDocument *doc)
 	{
+		doc->SetDocName(CSTR("PrinterTest"));
 		return true;
 	}
 
