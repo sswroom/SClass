@@ -19,9 +19,9 @@ Bool IO::StreamDataStream::IsDown() const
 	return false;
 }
 
-UOSInt IO::StreamDataStream::Read(UInt8 *buff, UOSInt size)
+UOSInt IO::StreamDataStream::Read(Data::ByteArray buff)
 {
-	UOSInt thisSize = size;
+	UOSInt thisSize = buff.GetSize();
 	if (this->currOfst + thisSize > this->stmDataLeng)
 	{
 		thisSize = (UOSInt)(this->stmDataLeng - this->currOfst);
@@ -36,9 +36,9 @@ UOSInt IO::StreamDataStream::Write(const UInt8 *buff, UOSInt size)
 	return 0;
 }
 
-void *IO::StreamDataStream::BeginRead(UInt8 *buff, UOSInt size, Sync::Event *evt)
+void *IO::StreamDataStream::BeginRead(Data::ByteArray buff, Sync::Event *evt)
 {
-	UOSInt readSize = this->Read(buff, size);
+	UOSInt readSize = this->Read(buff);
 	evt->Set();
 	return (void*)readSize;
 }

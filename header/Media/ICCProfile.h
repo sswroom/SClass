@@ -1,5 +1,6 @@
 #ifndef _SM_MEDIA_ICCPROFILE
 #define _SM_MEDIA_ICCPROFILE
+#include "Data/ByteArray.h"
 #include "Data/DateTime.h"
 #include "IO/FileAnalyse/FrameDetailHandler.h"
 #include "Media/FrameInfo.h"
@@ -53,7 +54,7 @@ namespace Media
 		Bool SetToColorProfile(Media::ColorProfile *colorProfile);
 		void ToString(Text::StringBuilderUTF8 *sb) const;
 
-		static ICCProfile *Parse(const UInt8 *buff, UOSInt buffSize);
+		static ICCProfile *Parse(Data::ByteArrayR buff);
 		static Bool ParseFrame(IO::FileAnalyse::FrameDetailHandler *frame, UOSInt ofst, const UInt8 *buff, UOSInt buffSize);
 
 		static void ReadDateTimeNumber(const UInt8 *buff, Data::DateTime *dt);

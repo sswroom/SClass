@@ -41,7 +41,7 @@ Bool IO::SerialPort::IsDown() const
 	return this->IsError();
 }
 
-UOSInt IO::SerialPort::Read(UInt8 *buff, UOSInt size)
+UOSInt IO::SerialPort::Read(const Data::ByteArray &buff)
 {
 	UOSInt retSize = 1;
 	*buff++ = SerialPort_Read();
@@ -69,7 +69,7 @@ Bool IO::SerialPort::HasData()
 	return SerialPort_Available();
 }
 
-void *IO::SerialPort::BeginRead(UInt8 *buff, UOSInt size, Sync::Event *evt)
+void *IO::SerialPort::BeginRead(const Data::ByteArray &buff, Sync::Event *evt)
 {
 	return 0;
 }

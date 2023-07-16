@@ -4,12 +4,12 @@
 #include "Net/ASN1Util.h"
 #include "Net/SSLEngine.h"
 
-Crypto::Cert::X509CertReq::X509CertReq(NotNullPtr<Text::String> sourceName, const UInt8 *buff, UOSInt buffSize) : Crypto::Cert::X509File(sourceName, buff, buffSize)
+Crypto::Cert::X509CertReq::X509CertReq(NotNullPtr<Text::String> sourceName, Data::ByteArrayR buff) : Crypto::Cert::X509File(sourceName, buff)
 {
 
 }
 
-Crypto::Cert::X509CertReq::X509CertReq(Text::CString sourceName, const UInt8 *buff, UOSInt buffSize) : Crypto::Cert::X509File(sourceName, buff, buffSize)
+Crypto::Cert::X509CertReq::X509CertReq(Text::CString sourceName, Data::ByteArrayR buff) : Crypto::Cert::X509File(sourceName, buff)
 {
 
 }
@@ -28,7 +28,7 @@ void Crypto::Cert::X509CertReq::ToShortName(Text::StringBuilderUTF8 *sb) const
 {
 	UOSInt len = 0;
 	Net::ASN1Util::ItemType itemType = Net::ASN1Util::IT_UNKNOWN;
-	const UInt8 *tmpBuff = Net::ASN1Util::PDUGetItem(this->buff, this->buff + this->buffSize, "1.1.2", &len, &itemType);
+	const UInt8 *tmpBuff = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.1.2", &len, &itemType);
 	if (tmpBuff != 0 && itemType == Net::ASN1Util::IT_SEQUENCE)
 	{
 		NameGetCN(tmpBuff, tmpBuff + len, sb);
@@ -67,15 +67,15 @@ Crypto::Cert::X509File::ValidStatus Crypto::Cert::X509CertReq::IsValid(Net::SSLE
 Net::ASN1Data *Crypto::Cert::X509CertReq::Clone() const
 {
 	Crypto::Cert::X509CertReq *asn1;
-	NEW_CLASS(asn1, Crypto::Cert::X509CertReq(this->GetSourceNameObj(), this->buff, this->buffSize));
+	NEW_CLASS(asn1, Crypto::Cert::X509CertReq(this->GetSourceNameObj(), this->buff));
 	return asn1;
 }
 
 void Crypto::Cert::X509CertReq::ToString(Text::StringBuilderUTF8 *sb) const
 {
-	if (IsCertificateRequest(this->buff, this->buff + this->buffSize, "1"))
+	if (IsCertificateRequest(this->buff.Ptr(), this->buff.PtrEnd(), "1"))
 	{
-		AppendCertificateRequest(this->buff, this->buff + this->buffSize, "1", sb);
+		AppendCertificateRequest(this->buff.Ptr(), this->buff.PtrEnd(), "1", sb);
 	}
 }
 
@@ -83,7 +83,7 @@ Bool Crypto::Cert::X509CertReq::GetNames(CertNames *names) const
 {
 	UOSInt itemLen;
 	Net::ASN1Util::ItemType itemType;
-	const UInt8 *namesPDU = Net::ASN1Util::PDUGetItem(this->buff, this->buff + this->buffSize, "1.1.2", &itemLen, &itemType);
+	const UInt8 *namesPDU = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.1.2", &itemLen, &itemType);
 	if (namesPDU)
 	{
 		return NamesGet(namesPDU, namesPDU + itemLen, names);
@@ -95,7 +95,7 @@ Bool Crypto::Cert::X509CertReq::GetExtensions(CertExtensions *ext) const
 {
 	UOSInt itemLen;
 	Net::ASN1Util::ItemType itemType;
-	const UInt8 *extPDU = Net::ASN1Util::PDUGetItem(this->buff, this->buff + this->buffSize, "1.1.4.1", &itemLen, &itemType);
+	const UInt8 *extPDU = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.1.4.1", &itemLen, &itemType);
 	if (extPDU && itemType == Net::ASN1Util::IT_SEQUENCE)
 	{
 		UOSInt oidLen;
@@ -117,7 +117,7 @@ Crypto::Cert::X509Key *Crypto::Cert::X509CertReq::GetNewPublicKey() const
 {
 	UOSInt itemLen;
 	Net::ASN1Util::ItemType itemType;
-	const UInt8 *keyPDU = Net::ASN1Util::PDUGetItem(this->buff, this->buff + this->buffSize, "1.1.3", &itemLen, &itemType);
+	const UInt8 *keyPDU = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.1.3", &itemLen, &itemType);
 	if (keyPDU)
 	{
 		return PublicKeyGetNew(keyPDU, keyPDU + itemLen);

@@ -9,8 +9,8 @@ namespace Crypto
 		class X509CRL : public Crypto::Cert::X509File
 		{
 		public:
-			X509CRL(NotNullPtr<Text::String> sourceName, const UInt8 *buff, UOSInt buffSize);
-			X509CRL(Text::CString sourceName, const UInt8 *buff, UOSInt buffSize);
+			X509CRL(NotNullPtr<Text::String> sourceName, Data::ByteArrayR buff);
+			X509CRL(Text::CString sourceName, Data::ByteArrayR buff);
 			virtual ~X509CRL();
 
 			virtual FileType GetFileType() const;

@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Data/ByteBuffer.h"
 #include "IO/Device/MTKGPSNMEA.h"
 #include "Map/GPSTrack.h"
 #include "Parser/FileParser/MTKGPSParser.h"
@@ -48,10 +49,9 @@ IO::ParsedObject *Parser::FileParser::MTKGPSParser::ParseFileHdr(IO::StreamData 
 
 	UOSInt i;
 	Map::GPSTrack *trk;
-	UInt8 *fileBuff = MemAlloc(UInt8, (UOSInt)fileLen);
+	Data::ByteBuffer fileBuff((UOSInt)fileLen);
 	if (fd->GetRealData(0, (UOSInt)fileLen, fileBuff) != fileLen)
 	{
-		MemFree(fileBuff);
 		return 0;
 	}
 	NEW_CLASS(trk, Map::GPSTrack(fd->GetFullFileName(), true, 0, 0));
@@ -64,7 +64,6 @@ IO::ParsedObject *Parser::FileParser::MTKGPSParser::ParseFileHdr(IO::StreamData 
 		}
 		i += 65536;
 	}
-	MemFree(fileBuff);
 	if (trk->GetTrackCnt() > 0)
 	{
 		return trk;

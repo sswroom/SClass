@@ -2,6 +2,7 @@
 #include "MyMemory.h"
 #include "Data/ArrayList.h"
 #include "Data/ArrayListInt32.h"
+#include "Data/ByteBuffer.h"
 #include "Data/ByteTool.h"
 #include "IO/Stream.h"
 #include "IO/FileStream.h"
@@ -56,24 +57,22 @@ IO::ParsedObject *Parser::FileParser::WAVParser::ParseFileHdr(IO::StreamData *fd
 	fileSize = ReadUInt32(&hdr[4]) + 8;
 
 	Media::MediaFile *vid;
-	UInt8 *fmt = 0;
+	Data::ByteBuffer fmt;
 	currPos = 12;
 	while (currPos < fileSize)
 	{
-		fd->GetRealData(currPos, 8, (UInt8*)chunkBuff);
+		fd->GetRealData(currPos, 8, BYTEARR(chunkBuff));
 		
 		if (ReadNUInt32(&chunkBuff[0]) == *(UInt32*)"fmt ")
 		{
-			if (fmt)
-				MemFree(fmt);
-			fmt = MemAlloc(UInt8, ReadUInt32(&chunkBuff[4]));
+			fmt.ChangeSize(ReadUInt32(&chunkBuff[4]));
 			fd->GetRealData(currPos + 8, ReadUInt32(&chunkBuff[4]), fmt);
 		}
 		else if (ReadNUInt32(&chunkBuff[0]) == *(UInt32*)"data")
 		{
-			if (fmt)
+			if (!fmt.IsNull())
 			{
-				if (*(Int16*)fmt == 1)
+				if (fmt.ReadI16(0) == 1)
 				{
 					Media::AudioFormat af;
 					af.formatId = 1;
@@ -92,10 +91,9 @@ IO::ParsedObject *Parser::FileParser::WAVParser::ParseFileHdr(IO::StreamData *fd
 
 					NEW_CLASS(vid, Media::MediaFile(fd->GetFullName()));
 					vid->AddSource(src, 0);
-					MemFree(fmt);
 					return vid;
 				}
-				else if (*(Int16*)fmt == 0x2000)
+				else if (fmt.ReadI16(0) == 0x2000)
 				{
 					Media::AudioBlockSource *src;
 					Media::BlockParser::AC3BlockParser ac3Parser;
@@ -106,16 +104,14 @@ IO::ParsedObject *Parser::FileParser::WAVParser::ParseFileHdr(IO::StreamData *fd
 					{
 						NEW_CLASS(vid, Media::MediaFile(fd->GetFullName()));
 						vid->AddSource(src, 0);
-						MemFree(fmt);
 						return vid;
 					}
 					else
 					{
-						MemFree(fmt);
 						return 0;
 					}
 				}
-				else if (*(Int16*)fmt == 0x55)
+				else if (fmt.ReadI16(0) == 0x55)
 				{
 					Media::AudioBlockSource *src;
 					Media::BlockParser::MP3BlockParser mp3Parser;
@@ -126,16 +122,14 @@ IO::ParsedObject *Parser::FileParser::WAVParser::ParseFileHdr(IO::StreamData *fd
 					{
 						NEW_CLASS(vid, Media::MediaFile(fd->GetFullName()));
 						vid->AddSource(src, 0);
-						MemFree(fmt);
 						return vid;
 					}
 					else
 					{
-						MemFree(fmt);
 						return 0;
 					}
 				}
-				else if (*(Int16*)fmt == 0x50)
+				else if (fmt.ReadI16(0) == 0x50)
 				{
 					Media::AudioBlockSource *src;
 					Media::BlockParser::MP2BlockParser mp2Parser;
@@ -146,40 +140,33 @@ IO::ParsedObject *Parser::FileParser::WAVParser::ParseFileHdr(IO::StreamData *fd
 					{
 						NEW_CLASS(vid, Media::MediaFile(fd->GetFullName()));
 						vid->AddSource(src, 0);
-						MemFree(fmt);
 						return vid;
 					}
 					else
 					{
-						MemFree(fmt);
 						return 0;
 					}
 				}
 				else if (*(Int16*)&fmt[12] > 1)
 				{
 					Media::AudioFormat af;
-					af.FromWAVEFORMATEX(fmt);
+					af.FromWAVEFORMATEX(fmt.Ptr());
 					
 					Media::AudioFixBlockSource *src;
 					NEW_CLASS(src, Media::AudioFixBlockSource(fd, currPos + 8, ReadUInt32(&chunkBuff[4]), &af, fd->GetFullName()));
 
 					NEW_CLASS(vid, Media::MediaFile(fd->GetFullName()));
 					vid->AddSource(src, 0);
-					MemFree(fmt);
 					return vid;
 				}
 			}
 		}
 		else if (ReadUInt32(&chunkBuff[0]) & 0x80808080)
 		{
-			if (fmt)
-				MemFree(fmt);
 			return 0;
 		}
 
 		currPos += ReadUInt32(&chunkBuff[4]) + 8;
 	}
-	if (fmt)
-		MemFree(fmt);
 	return 0;
 }

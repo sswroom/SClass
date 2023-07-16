@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Data/ByteBuffer.h"
 #include "Data/ByteTool.h"
 #include "Parser/FileParser/ANIParser.h"
 #include "Media/ImageList.h"
@@ -37,7 +38,6 @@ IO::ParsedObject *Parser::FileParser::ANIParser::ParseFileHdr(IO::StreamData *fd
 	UInt8 riffHdr[24];
 	UInt32 aniSize;
 	Media::ImageList *imgList;
-	UInt8 *buff;
 	UOSInt buffSize;
 	UOSInt buffOfst;
 	UInt32 tmp;
@@ -55,11 +55,11 @@ IO::ParsedObject *Parser::FileParser::ANIParser::ParseFileHdr(IO::StreamData *fd
 
 	while (currOfst < aniSize)
 	{
-		fd->GetRealData(currOfst, 12, riffHdr);
+		fd->GetRealData(currOfst, 12, BYTEARR(riffHdr));
 		if (ReadNUInt32(&riffHdr[0]) == *(UInt32*)"LIST" && ReadNUInt32(&riffHdr[8]) == *(UInt32*)"INFO")
 		{
 			buffSize = ReadUInt32(&riffHdr[4]) - 4;
-			buff = MemAlloc(UInt8, buffSize);
+			Data::ByteBuffer buff(buffSize);
 			buffOfst = 0;
 			fd->GetRealData(currOfst + 12, buffSize, buff);
 			while (buffOfst < buffSize)
@@ -81,21 +81,19 @@ IO::ParsedObject *Parser::FileParser::ANIParser::ParseFileHdr(IO::StreamData *fd
 					buffOfst += 1;
 				}
 			}
-			MemFree(buff);
 		}
 		else if (ReadNUInt32(&riffHdr[0]) == *(UInt32*)"anih")
 		{
 			buffSize = ReadUInt32(&riffHdr[4]);
-			buff = MemAlloc(UInt8, buffSize);
+			Data::ByteBuffer buff(buffSize);
 			fd->GetRealData(currOfst + 8, buffSize, buff);
 			displayRate = ReadUInt32(&buff[28]);
 			nFrames = ReadUInt32(&buff[4]);
-			MemFree(buff);
 		}
 		else if (ReadNUInt32(&riffHdr[0]) == *(UInt32*)"LIST" && ReadNUInt32(&riffHdr[8]) == *(UInt32*)"fram")
 		{
 			buffSize = ReadUInt32(&riffHdr[4]) - 4;
-			buff = MemAlloc(UInt8, 8);
+			Data::ByteBuffer buff(8);
 			buffOfst = 0;
 			while (buffOfst < buffSize)
 			{
@@ -121,7 +119,6 @@ IO::ParsedObject *Parser::FileParser::ANIParser::ParseFileHdr(IO::StreamData *fd
 					buffOfst += 1;
 				}
 			}
-			MemFree(buff);
 
 			if (currImage)
 			{

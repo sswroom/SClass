@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Data/ByteBuffer.h"
 #include "IO/FileStream.h"
 #include "IO/Registry.h"
 #include "Math/Math.h"
@@ -615,17 +616,15 @@ void Media::MonitorColorManager::RemoveSess(Media::ColorManagerSess *colorSess)
 Bool Media::MonitorColorManager::SetFromProfileFile(NotNullPtr<Text::String> fileName)
 {
 	Bool succ = false;
-	UInt8 *fileBuff;
-	UInt64 fileSize;
 	IO::FileStream fs(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-	fileSize = fs.GetLength();
+	UInt64 fileSize = fs.GetLength();
 	if (fileSize > 0 && fileSize < 1048576)
 	{
 		Media::ICCProfile *profile;
-		fileBuff = MemAlloc(UInt8, (UOSInt)fileSize);
-		if (fs.Read(fileBuff, (UOSInt)fileSize) == fileSize)
+		Data::ByteBuffer fileBuff((UOSInt)fileSize);
+		if (fs.Read(fileBuff) == fileSize)
 		{
-			profile = Media::ICCProfile::Parse(fileBuff, (UOSInt)fileSize);
+			profile = Media::ICCProfile::Parse(fileBuff);
 			if (profile)
 			{
 				Media::ColorProfile cp;
@@ -633,13 +632,11 @@ Bool Media::MonitorColorManager::SetFromProfileFile(NotNullPtr<Text::String> fil
 				{
 					succ = true;
 					this->rgb.monProfile.Set(&cp);
-					this->rgb.monProfile.SetRAWICC(fileBuff);
+					this->rgb.monProfile.SetRAWICC(fileBuff.GetPtr());
 				}
 				DEL_CLASS(profile);
 			}
 		}
-
-		MemFree(fileBuff);
 	}
 	return succ;
 }

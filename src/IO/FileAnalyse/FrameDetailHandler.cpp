@@ -261,6 +261,18 @@ void IO::FileAnalyse::FrameDetailHandler::AddHexBuff(UOSInt frameOfst, UOSInt si
 	this->AddField(frameOfst, size, name, sb.ToCString());
 }
 
+void IO::FileAnalyse::FrameDetailHandler::AddHexBuff(UOSInt frameOfst, Text::CString name, Data::ByteArrayR vBuff, Bool multiLine)
+{
+	this->AddHexBuff(frameOfst, name, vBuff, ' ', multiLine);
+}
+
+void IO::FileAnalyse::FrameDetailHandler::AddHexBuff(UOSInt frameOfst, Text::CString name, Data::ByteArrayR vBuff, UTF8Char seperator, Bool multiLine)
+{
+	Text::StringBuilderUTF8 sb;
+	sb.AppendHexBuff(vBuff, seperator, multiLine?Text::LineBreakType::CRLF:Text::LineBreakType::None);
+	this->AddField(frameOfst, vBuff.GetSize(), name, sb.ToCString());
+}
+
 void IO::FileAnalyse::FrameDetailHandler::AddIPv4(UOSInt frameOfst, Text::CString name, const UInt8 *vBuff)
 {
 	UTF8Char sbuff[32];

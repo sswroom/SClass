@@ -26,7 +26,7 @@ Bool Text::MailBase64Stream::IsDown()
 	return this->stm->IsDown();
 }
 
-UOSInt Text::MailBase64Stream::Read(UInt8 *buff, UOSInt size)
+UOSInt Text::MailBase64Stream::Read(const Data::ByteArray &buff)
 {
 	return 0;
 }

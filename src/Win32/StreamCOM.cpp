@@ -31,7 +31,7 @@ Bool Win32::StreamCOM::IsDown() const
 	return false;
 }
 
-UOSInt Win32::StreamCOM::Read(UInt8 *buff, UOSInt size)
+UOSInt Win32::StreamCOM::Read(const Data::ByteArray &buff)
 {
 	UInt32 cbSize = 0;
 	this->stm->Read(buff, (ULONG)size, (ULONG*)&cbSize);

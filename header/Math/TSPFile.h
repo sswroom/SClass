@@ -1,5 +1,6 @@
 #ifndef _SM_MATH_TSPFILE
 #define _SM_MATH_TSPFILE
+#include "Data/ByteBuffer.h"
 #include "DB/DBReader.h"
 #include "DB/ReadingDB.h"
 #include "IO/StreamData.h"
@@ -9,8 +10,8 @@ namespace Math
 	class TSPFile : public DB::ReadingDB
 	{
 	private:
-		UInt8 *ptBuff;
-		UInt8 *hdrBuff;
+		Data::ByteBuffer ptBuff;
+		Data::ByteBuffer hdrBuff;
 		UOSInt rowCnt;
 		UOSInt rowSize;
 		Int32 fileType;

@@ -1,11 +1,12 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Sync/Event.h"
-#include "Text/MyString.h"
+#include "Data/ByteBuffer.h"
 #include "IO/StreamData.h"
 #include "Media/IMediaSource.h"
 #include "Media/IAudioSource.h"
 #include "Media/LPCMSource.h"
+#include "Sync/Event.h"
+#include "Text/MyString.h"
 
 Media::LPCMSource::LPCMSource(NotNullPtr<Text::String> name)
 {
@@ -156,7 +157,7 @@ void Media::LPCMSource::Stop()
 	this->readOfst = 0;
 }
 
-UOSInt Media::LPCMSource::ReadBlock(UInt8 *buff, UOSInt blkSize)
+UOSInt Media::LPCMSource::ReadBlock(Data::ByteArray buff)
 {
 	UOSInt readSize = 0;
 #ifndef HAS_ASM32
@@ -165,7 +166,7 @@ UOSInt Media::LPCMSource::ReadBlock(UInt8 *buff, UOSInt blkSize)
 	if (this->format.intType == Media::AudioFormat::IT_BIGENDIAN)
 	{
 		UInt32 blk = (this->format.nChannels * (UInt32)this->format.bitpersample >> 3);
-		readSize = blkSize / blk;
+		readSize = buff.GetSize() / blk;
 		readSize = this->data->GetRealData(this->readOfst, readSize * blk, buff);
 		if (this->format.bitpersample == 16)
 		{
@@ -241,7 +242,7 @@ rblk1_24exit:
 		if (this->format.bitpersample == 16)
 		{
 			UInt32 blk = (this->format.nChannels * (UInt32)this->format.bitpersample >> 3);
-			readSize = blkSize / blk;
+			readSize = buff.GetSize() / blk;
 			readSize = this->data->GetRealData(this->readOfst, readSize * blk, buff);
 #ifdef HAS_ASM32
 			_asm
@@ -277,7 +278,7 @@ rblk2_16exit:
 			if (this->format.nChannels == 2)
 			{
 				UInt32 blk = 12;//(this->format.nChannels * this->format.bitpersample >> 3);
-				readSize = blkSize / blk;
+				readSize = buff.GetSize() / blk;
 				readSize = this->data->GetRealData(this->readOfst, readSize * blk, buff);
 #ifdef HAS_ASM32
 				_asm
@@ -320,7 +321,7 @@ rblk2_24_2exit:
 					UInt8 tmpVal[4];
 					while (i-- > 0)
 					{
-						*(Int32*)tmpVal = *(Int32*)buff;
+						*(Int32*)tmpVal = buff.ReadNI32(0);
 						buff[1] = tmpVal[1];
 						buff[2] = tmpVal[0];
 						*(Int16*)tmpVal = *(Int16*)&buff[4];
@@ -347,13 +348,13 @@ rblk2_24_2exit:
 	else if (this->format.other)
 	{
 		UInt32 blk = this->format.nChannels * (UInt32)(this->format.bitpersample >> 3) * this->format.other;
-		readSize = blkSize / blk;
+		readSize = buff.GetSize() / blk;
 		if (readSize > 0)
 		{
 			UInt32 ofstPC = (UInt32)(this->format.bitpersample >> 3) * this->format.other;
-			UInt8 *tmpBuff = MemAlloc(UInt8, blkSize * blk);
-			UInt8 *tmpPtr;
-			UInt8 *tmpPtr2;
+			Data::ByteBuffer tmpBuff(buff.GetSize() * blk);
+			Data::ByteArray tmpPtr;
+			Data::ByteArray tmpPtr2;
 			UOSInt cnt;
 			UOSInt cnt2;
 			readSize = this->data->GetRealData(this->readOfst, readSize * blk, tmpBuff);
@@ -368,7 +369,7 @@ rblk2_24_2exit:
 					cnt2 = this->format.nChannels;
 					while (cnt2-- > 0)
 					{
-						*(Int16*)buff = *(Int16*)tmpPtr2;
+						buff.WriteNI16(0, tmpPtr2.ReadNI16(0));
 						buff += 2;
 						tmpPtr2 += ofstPC;
 					}
@@ -377,13 +378,12 @@ rblk2_24_2exit:
 				tmpPtr += blk - ofstPC;
 				sizeLeft -= blk;
 			}
-			MemFree(tmpBuff);
 		}
 	}
 	else
 	{
 		UInt32 blk = (this->format.nChannels * (UInt32)this->format.bitpersample >> 3);
-		readSize = blkSize / blk;
+		readSize = buff.GetSize() / blk;
 		readSize = this->data->GetRealData(this->readOfst, readSize * blk, buff);
 	}
 	this->readOfst += readSize;
@@ -413,19 +413,19 @@ Bool Media::LPCMSource::SupportSampleRead()
 	return true;
 }
 
-UOSInt Media::LPCMSource::ReadSample(UInt64 sampleOfst, UOSInt sampleCount, UInt8 *buff)
+UOSInt Media::LPCMSource::ReadSample(UInt64 sampleOfst, UOSInt sampleCount, Data::ByteArray buff)
 {
 	UOSInt blk = (this->format.nChannels * (UInt32)this->format.bitpersample >> 3);
 	if (sampleOfst < 0)
 	{
 		if (sampleOfst + sampleCount > 0)
 		{
-			MemClear(buff, (UOSInt)-(Int64)sampleOfst * blk);
+			buff.Clear(0, (UOSInt)-(Int64)sampleOfst * blk);
 			return (UOSInt)((this->data->GetRealData(0, (UOSInt)(sampleCount + sampleOfst) * blk, buff - sampleOfst * blk) / blk) - sampleOfst);
 		}
 		else
 		{
-			MemClear(buff, sampleCount * blk);
+			buff.Clear(0, sampleCount * blk);
 			return sampleCount;
 		}
 	}

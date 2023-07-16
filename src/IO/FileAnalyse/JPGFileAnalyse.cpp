@@ -1,4 +1,5 @@
 #include "Stdafx.h"
+#include "Data/ByteBuffer.h"
 #include "Data/ByteTool.h"
 #include "IO/FileAnalyse/JPGFileAnalyse.h"
 #include "Media/EXIFData.h"
@@ -125,7 +126,7 @@ UInt32 __stdcall IO::FileAnalyse::JPGFileAnalyse::ParseThread(void *userObj)
 
 	while (ofst < dataSize - 11 && !me->threadToStop)
 	{
-		if (me->fd->GetRealData(ofst, 4, tagHdr) != 4)
+		if (me->fd->GetRealData(ofst, 4, BYTEARR(tagHdr)) != 4)
 			break;
 		
 		lastSize = ReadMUInt16(&tagHdr[2]);
@@ -143,7 +144,7 @@ UInt32 __stdcall IO::FileAnalyse::JPGFileAnalyse::ParseThread(void *userObj)
 			me->tags.Add(tag);
 			ofst += lastSize + 2;
 
-			me->fd->GetRealData(dataSize - 2, 2, tagHdr);
+			me->fd->GetRealData(dataSize - 2, 2, BYTEARR(tagHdr));
 			if (ReadMUInt16(tagHdr) == 0xffd9) //EOI
 			{
 				tag = MemAlloc(IO::FileAnalyse::JPGFileAnalyse::JPGTag, 1);
@@ -192,7 +193,7 @@ IO::FileAnalyse::JPGFileAnalyse::JPGFileAnalyse(IO::StreamData *fd)
 	this->pauseParsing = false;
 	this->threadToStop = false;
 	this->threadStarted = false;
-	fd->GetRealData(0, 256, buff);
+	fd->GetRealData(0, 256, BYTEARR(buff));
 	if (buff[0] != 0xff || buff[1] != 0xd8)
 	{
 		return;
@@ -254,7 +255,6 @@ Bool IO::FileAnalyse::JPGFileAnalyse::GetFrameName(UOSInt index, Text::StringBui
 
 Bool IO::FileAnalyse::JPGFileAnalyse::GetFrameDetail(UOSInt index, Text::StringBuilderUTF8 *sb)
 {
-	UInt8 *tagData;
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
@@ -278,7 +278,7 @@ Bool IO::FileAnalyse::JPGFileAnalyse::GetFrameDetail(UOSInt index, Text::StringB
 	sb->AppendUOSInt(tag->size);
 	if (tag->tagType == 0xc4)
 	{
-		tagData = MemAlloc(UInt8, tag->size);
+		Data::ByteBuffer tagData(tag->size);
 		this->fd->GetRealData(tag->ofst, tag->size, tagData);
 		sb->AppendC(UTF8STRC("\r\nTable class = "));
 		sb->AppendU16((UInt16)(tagData[4] >> 4));
@@ -294,7 +294,6 @@ Bool IO::FileAnalyse::JPGFileAnalyse::GetFrameDetail(UOSInt index, Text::StringB
 
 			i++;
 		}
-		MemFree(tagData);
 	}
 	else if (tag->tagType == 0xc8)
 	{
@@ -304,7 +303,7 @@ Bool IO::FileAnalyse::JPGFileAnalyse::GetFrameDetail(UOSInt index, Text::StringB
 	}
 	else if (tag->tagType >= 0xc0 && tag->tagType <= 0xcf) //SOFn
 	{
-		tagData = MemAlloc(UInt8, tag->size);
+		Data::ByteBuffer tagData(tag->size);
 		this->fd->GetRealData(tag->ofst, tag->size, tagData);
 		sb->AppendC(UTF8STRC("\r\nSample precision = "));
 		sb->AppendU16(tagData[4]);
@@ -334,11 +333,10 @@ Bool IO::FileAnalyse::JPGFileAnalyse::GetFrameDetail(UOSInt index, Text::StringB
 
 			i++;
 		}
-		MemFree(tagData);
 	}
 	else if (tag->tagType == 0xda) //SOS
 	{
-		tagData = MemAlloc(UInt8, tag->size);
+		Data::ByteBuffer tagData(tag->size);
 		this->fd->GetRealData(tag->ofst, tag->size, tagData);
 		sb->AppendC(UTF8STRC("\r\nNumber of components in scan = "));
 		sb->AppendU16(tagData[4]);
@@ -365,11 +363,10 @@ Bool IO::FileAnalyse::JPGFileAnalyse::GetFrameDetail(UOSInt index, Text::StringB
 		sb->AppendU16((UInt16)(tagData[j + 2] >> 4));
 		sb->AppendC(UTF8STRC("\r\nSuccessive approximation bit position low = "));
 		sb->AppendU16(tagData[j + 2] & 15);
-		MemFree(tagData);
 	}
 	else if (tag->tagType == 0xdb) //DQT
 	{
-		tagData = MemAlloc(UInt8, tag->size);
+		Data::ByteBuffer tagData(tag->size);
 		this->fd->GetRealData(tag->ofst, tag->size, tagData);
 		sb->AppendC(UTF8STRC("\r\nElement precision = "));
 		sb->AppendU16((UInt16)(tagData[4] >> 4));
@@ -440,11 +437,10 @@ Bool IO::FileAnalyse::JPGFileAnalyse::GetFrameDetail(UOSInt index, Text::StringB
 				}
 			}
 		}
-		MemFree(tagData);
 	}
 	else if (tag->tagType == 0xe0) //APP0
 	{
-		tagData = MemAlloc(UInt8, tag->size);
+		Data::ByteBuffer tagData(tag->size);
 		this->fd->GetRealData(tag->ofst, tag->size, tagData);
 		sb->AppendC(UTF8STRC("\r\nIdentifier = "));
 		sb->AppendSlow((const UTF8Char*)&tagData[4]);
@@ -482,17 +478,16 @@ Bool IO::FileAnalyse::JPGFileAnalyse::GetFrameDetail(UOSInt index, Text::StringB
 				sb->AppendC(UTF8STRC(" (24-bit RGB format)"));
 			}
 		}
-		MemFree(tagData);
 	}
 	else if (tag->tagType == 0xe1) //APP1
 	{
-		tagData = MemAlloc(UInt8, tag->size);
+		Data::ByteBuffer tagData(tag->size);
 		this->fd->GetRealData(tag->ofst, tag->size, tagData);
 		sb->AppendC(UTF8STRC("\r\nIdentifier = "));
 		sb->AppendSlow((UTF8Char*)&tagData[4]);
 		if (tagData[4] == 'E' && tagData[5] == 'x' && tagData[6] == 'i' && tagData[7] == 'f' && tagData[8] == 0)
 		{
-			Media::EXIFData *exif = Media::EXIFData::ParseExif(tagData, tag->size);
+			Media::EXIFData *exif = Media::EXIFData::ParseExif(tagData.Ptr(), tag->size);
 			if (exif)
 			{
 				sb->AppendC(UTF8STRC("\r\n"));
@@ -505,17 +500,16 @@ Bool IO::FileAnalyse::JPGFileAnalyse::GetFrameDetail(UOSInt index, Text::StringB
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC((const UTF8Char*)&tagData[33], tag->size - 33);
 		}
-		MemFree(tagData);
 	}
 	else if (tag->tagType == 0xe2) //APP2
 	{
-		tagData = MemAlloc(UInt8, tag->size);
+		Data::ByteBuffer tagData(tag->size);
 		this->fd->GetRealData(tag->ofst, tag->size, tagData);
 		sb->AppendC(UTF8STRC("\r\nIdentifier = "));
 		sb->AppendSlow((UTF8Char*)&tagData[4]);
 		if (Text::StrStartsWithC(&tagData[4], tag->size, UTF8STRC("ICC_PROFILE")))
 		{
-			Media::ICCProfile *icc = Media::ICCProfile::Parse(&tagData[18], tag->size - 18);
+			Media::ICCProfile *icc = Media::ICCProfile::Parse(tagData.SubArray(18, tag->size - 18));
 			if (icc)
 			{
 				sb->AppendC(UTF8STRC("\r\n\r\n"));
@@ -523,23 +517,20 @@ Bool IO::FileAnalyse::JPGFileAnalyse::GetFrameDetail(UOSInt index, Text::StringB
 				DEL_CLASS(icc);
 			}
 		}
-		MemFree(tagData);
 	}
 	else if (tag->tagType == 0xed) //APP13
 	{
-		tagData = MemAlloc(UInt8, tag->size);
+		Data::ByteBuffer tagData(tag->size);
 		this->fd->GetRealData(tag->ofst, tag->size, tagData);
 		sb->AppendC(UTF8STRC("\r\nIdentifier = "));
 		sb->AppendSlow((UTF8Char*)&tagData[4]);
-		MemFree(tagData);
 	}
 	else if (tag->tagType == 0xee) //APP14
 	{
-		tagData = MemAlloc(UInt8, tag->size);
+		Data::ByteBuffer tagData(tag->size);
 		this->fd->GetRealData(tag->ofst, tag->size, tagData);
 		sb->AppendC(UTF8STRC("\r\nIdentifier = "));
 		sb->AppendSlow((UTF8Char*)&tagData[4]);
-		MemFree(tagData);
 	}
 	return true;
 }
@@ -575,7 +566,6 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::JPGFileAnalyse::GetFrameDetail(UO
 	IO::FileAnalyse::FrameDetail *frame;
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
-	UInt8 *tagData;
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
@@ -596,7 +586,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::JPGFileAnalyse::GetFrameDetail(UO
 	frame->AddText(2, CSTRP(sbuff, sptr));
 	if (tag->tagType == 0xc4)
 	{
-		tagData = MemAlloc(UInt8, tag->size);
+		Data::ByteBuffer tagData(tag->size);
 		this->fd->GetRealData(tag->ofst, tag->size, tagData);
 		frame->AddUInt(2, 2, CSTR("Tag Length"), ReadMUInt16(&tagData[2]));
 		frame->AddUInt(4, 1, CSTR("Table class"), (UInt16)(tagData[4] >> 4));
@@ -609,7 +599,6 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::JPGFileAnalyse::GetFrameDetail(UO
 
 			i++;
 		}
-		MemFree(tagData);
 	}
 	else if (tag->tagType == 0xc8)
 	{
@@ -619,7 +608,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::JPGFileAnalyse::GetFrameDetail(UO
 	}
 	else if (tag->tagType >= 0xc0 && tag->tagType <= 0xcf) //SOFn
 	{
-		tagData = MemAlloc(UInt8, tag->size);
+		Data::ByteBuffer tagData(tag->size);
 		this->fd->GetRealData(tag->ofst, tag->size, tagData);
 		frame->AddUInt(2, 2, CSTR("Tag Length"), ReadMUInt16(&tagData[2]));
 		frame->AddUInt(4, 1, CSTR("Sample precision"), tagData[4]);
@@ -640,11 +629,10 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::JPGFileAnalyse::GetFrameDetail(UO
 
 			i++;
 		}
-		MemFree(tagData);
 	}
 	else if (tag->tagType == 0xda) //SOS
 	{
-		tagData = MemAlloc(UInt8, tag->size);
+		Data::ByteBuffer tagData(tag->size);
 		this->fd->GetRealData(tag->ofst, tag->size, tagData);
 		frame->AddUInt(2, 2, CSTR("Tag Length"), ReadMUInt16(&tagData[2]));
 		frame->AddUInt(4, 1, CSTR("Number of components in scan"), tagData[4]);
@@ -664,11 +652,10 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::JPGFileAnalyse::GetFrameDetail(UO
 		frame->AddUInt(j + 1, 1, CSTR("End of spectral selection"), tagData[j + 1]);
 		frame->AddUInt(j + 2, 1, CSTR("Successive approximation bit position high"), (UInt16)(tagData[j + 2] >> 4));
 		frame->AddUInt(j + 2, 1, CSTR("Successive approximation bit position low"), tagData[j + 2] & 15);
-		MemFree(tagData);
 	}
 	else if (tag->tagType == 0xdb) //DQT
 	{
-		tagData = MemAlloc(UInt8, tag->size);
+		Data::ByteBuffer tagData(tag->size);
 		this->fd->GetRealData(tag->ofst, tag->size, tagData);
 		frame->AddUInt(2, 2, CSTR("Tag Length"), ReadMUInt16(&tagData[2]));
 		frame->AddUInt(4, 1, CSTR("Element precision"), (UInt16)(tagData[4] >> 4));
@@ -742,11 +729,10 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::JPGFileAnalyse::GetFrameDetail(UO
 			}
 			frame->AddField(5, 64, CSTR("Table"), sb.ToCString());
 		}
-		MemFree(tagData);
 	}
 	else if (tag->tagType == 0xe0) //APP0
 	{
-		tagData = MemAlloc(UInt8, tag->size);
+		Data::ByteBuffer tagData(tag->size);
 		this->fd->GetRealData(tag->ofst, tag->size, tagData);
 		frame->AddUInt(2, 2, CSTR("Tag Length"), ReadMUInt16(&tagData[2]));
 		frame->AddStrZ(4, CSTR("Identifier"), &tagData[4]);
@@ -777,11 +763,10 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::JPGFileAnalyse::GetFrameDetail(UO
 			}
 			frame->AddUIntName(9, 1, CSTR("Thumbnail format"), tagData[9], vName);
 		}
-		MemFree(tagData);
 	}
 	else if (tag->tagType == 0xe1) //APP1
 	{
-		tagData = MemAlloc(UInt8, tag->size);
+		Data::ByteBuffer tagData(tag->size);
 		this->fd->GetRealData(tag->ofst, tag->size, tagData);
 		frame->AddUInt(2, 2, CSTR("Tag Length"), ReadMUInt16(&tagData[2]));
 		frame->AddStrZ(4, CSTR("Identifier"), &tagData[4]);
@@ -793,11 +778,10 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::JPGFileAnalyse::GetFrameDetail(UO
 		{
 			frame->AddStrC(33, tag->size - 33, CSTR("Data"), &tagData[33]);
 		}
-		MemFree(tagData);
 	}
 	else if (tag->tagType == 0xe2) //APP2
 	{
-		tagData = MemAlloc(UInt8, tag->size);
+		Data::ByteBuffer tagData(tag->size);
 		this->fd->GetRealData(tag->ofst, tag->size, tagData);
 		frame->AddUInt(2, 2, CSTR("Tag Length"), ReadMUInt16(&tagData[2]));
 		frame->AddStrZ(4, CSTR("Identifier"), &tagData[4]);
@@ -805,23 +789,20 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::JPGFileAnalyse::GetFrameDetail(UO
 		{
 			Media::ICCProfile::ParseFrame(frame, 18, &tagData[18], tag->size - 18);
 		}
-		MemFree(tagData);
 	}
 	else if (tag->tagType == 0xed) //APP13
 	{
-		tagData = MemAlloc(UInt8, tag->size);
+		Data::ByteBuffer tagData(tag->size);
 		this->fd->GetRealData(tag->ofst, tag->size, tagData);
 		frame->AddUInt(2, 2, CSTR("Tag Length"), ReadMUInt16(&tagData[2]));
 		frame->AddStrZ(4, CSTR("Identifier"), &tagData[4]);
-		MemFree(tagData);
 	}
 	else if (tag->tagType == 0xee) //APP14
 	{
-		tagData = MemAlloc(UInt8, tag->size);
+		Data::ByteBuffer tagData(tag->size);
 		this->fd->GetRealData(tag->ofst, tag->size, tagData);
 		frame->AddUInt(2, 2, CSTR("Tag Length"), ReadMUInt16(&tagData[2]));
 		frame->AddStrZ(4,CSTR("Identifier"), &tagData[4]);
-		MemFree(tagData);
 	}
 	return frame;
 }

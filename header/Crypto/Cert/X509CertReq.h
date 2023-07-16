@@ -10,8 +10,8 @@ namespace Crypto
 		class X509CertReq : public Crypto::Cert::X509File
 		{
 		public:
-			X509CertReq(NotNullPtr<Text::String> sourceName, const UInt8 *buff, UOSInt buffSize);
-			X509CertReq(Text::CString sourceName, const UInt8 *buff, UOSInt buffSize);
+			X509CertReq(NotNullPtr<Text::String> sourceName, Data::ByteArrayR buff);
+			X509CertReq(Text::CString sourceName, Data::ByteArrayR buff);
 			virtual ~X509CertReq();
 
 			virtual FileType GetFileType() const;

@@ -3,10 +3,9 @@
 
 #define BUFFSIZE 65536
 
-IO::StmData::BufferedStreamData::BufferedStreamData(IO::StreamData *stmData)
+IO::StmData::BufferedStreamData::BufferedStreamData(IO::StreamData *stmData) : buff(BUFFSIZE)
 {
 	this->stmData = stmData;
-	this->buff = MemAlloc(UInt8, BUFFSIZE);
 	this->buffLength = 0;
 	this->buffOfst = 0;
 	this->dataLength = this->stmData->GetDataSize();
@@ -14,11 +13,10 @@ IO::StmData::BufferedStreamData::BufferedStreamData(IO::StreamData *stmData)
 
 IO::StmData::BufferedStreamData::~BufferedStreamData()
 {
-	MemFree(this->buff);
 	DEL_CLASS(this->stmData);
 }
 
-UOSInt IO::StmData::BufferedStreamData::GetRealData(UInt64 offset, UOSInt length, UInt8 *buffer)
+UOSInt IO::StmData::BufferedStreamData::GetRealData(UInt64 offset, UOSInt length, Data::ByteArray buffer)
 {
 	if (offset >= this->dataLength)
 	{
@@ -33,7 +31,7 @@ UOSInt IO::StmData::BufferedStreamData::GetRealData(UInt64 offset, UOSInt length
 	}
 	if (this->buffOfst <= offset && buffEndOfst >= endOfst)
 	{
-		MemCopyNO(buffer, &this->buff[(UOSInt)(offset - this->buffOfst)], length);
+		buffer.CopyFrom(Data::ByteArrayR(&this->buff[(UOSInt)(offset - this->buffOfst)], length));
 		return length;
 	}
 	else if (length >= (BUFFSIZE / 2))
@@ -49,11 +47,11 @@ UOSInt IO::StmData::BufferedStreamData::GetRealData(UInt64 offset, UOSInt length
 		{
 			length = this->buffLength;
 		}
-		MemCopyNO(buffer, this->buff, length);
+		buffer.CopyFrom(this->buff.WithSize(length));
 		return length;
 	}
 	UOSInt ret = (UOSInt)(buffEndOfst - offset);
-	MemCopyNO(buffer, &this->buff[(UOSInt)(offset - this->buffOfst)], ret);
+	buffer.CopyFrom(this->buff.SubArray((UOSInt)(offset - this->buffOfst), ret));
 	buffer += ret;
 	length -= ret;
 	this->buffOfst = buffEndOfst;
@@ -62,7 +60,7 @@ UOSInt IO::StmData::BufferedStreamData::GetRealData(UInt64 offset, UOSInt length
 	{
 		length = this->buffLength;
 	}
-	MemCopyNO(buffer, this->buff, length);
+	buffer.CopyFrom(this->buff.WithSize(length));
 	return length + ret;
 }
 

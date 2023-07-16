@@ -54,7 +54,7 @@ IO::StmData::ConcatStreamData::~ConcatStreamData()
 	}
 }
 
-UOSInt IO::StmData::ConcatStreamData::GetRealData(UInt64 offset, UOSInt length, UInt8 *buffer)
+UOSInt IO::StmData::ConcatStreamData::GetRealData(UInt64 offset, UOSInt length, Data::ByteArray buffer)
 {
 	OSInt si;
 	UOSInt i;

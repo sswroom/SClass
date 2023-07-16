@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Data/ByteBuffer.h"
 #include "Data/ByteTool.h"
 #include "IO/StmData/BlockStreamData.h"
 #include "IO/StmData/ConcatStreamData.h"
@@ -162,7 +163,7 @@ IO::ParsedObject *Parser::FileParser::PSSParser::ParseFileHdr(IO::StreamData *fd
 	UInt8 buff[256];
 	while (true)
 	{
-		if (fd->GetRealData(currOfst, 256, buff) < 4)
+		if (fd->GetRealData(currOfst, 256, BYTEARR(buff)) < 4)
 		{
 //			valid = false;
 			break;
@@ -367,10 +368,9 @@ IO::ParsedObject *Parser::FileParser::PSSParser::ParseFileHdr(IO::StreamData *fd
 					if (formats[stmId]->bitRate == 0)
 					{
 						Media::BlockParser::AC3BlockParser ac3Parser;
-						UInt8 *frameBuff = MemAlloc(UInt8, i - 7 - stmHdrSize);
+						Data::ByteBuffer frameBuff(i - 7 - stmHdrSize);
 						fd->GetRealData(currOfst + 13 + stmHdrSize, i - 7 - stmHdrSize, frameBuff);
-						ac3Parser.ParseStreamFormat(frameBuff, i - 7 - stmHdrSize, formats[stmId]);
-						MemFree(frameBuff);
+						ac3Parser.ParseStreamFormat(frameBuff.Ptr(), i - 7 - stmHdrSize, formats[stmId]);
 					}
 				}
 				else
@@ -598,7 +598,7 @@ IO::ParsedObject *Parser::FileParser::PSSParser::ParseFileHdr(IO::StreamData *fd
 						UOSInt currPtr;
 						Int32 srchByte;
 						UOSInt frameSize = i - stmHdrSize - 3;
-						UInt8 *frameBuff = MemAlloc(UInt8, frameSize);
+						Data::ByteBuffer frameBuff(frameSize);
 						fd->GetRealData(currOfst + 9 + stmHdrSize, frameSize, frameBuff);
 						WriteMInt32((UInt8*)&srchByte, 0x00000100);
 						currPtr = 0;
@@ -616,7 +616,6 @@ IO::ParsedObject *Parser::FileParser::PSSParser::ParseFileHdr(IO::StreamData *fd
 							}
 							currPtr++;
 						}
-						MemFree(frameBuff);
 					}
 				}
 

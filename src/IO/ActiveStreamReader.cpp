@@ -83,7 +83,7 @@ void IO::ActiveStreamReader::ReadStream(IO::ActiveStreamReader::BottleNeckType *
 			}
 			this->emptyEvt.Wait(1000);
 		}
-		actSize = stm->Read(this->buffs[i].buff, readSize);
+		actSize = stm->Read(Data::ByteArray(this->buffs[i].buff, readSize));
 		if (actSize <= 0)
 			break;
 		this->buffs[i].buffSize = actSize;

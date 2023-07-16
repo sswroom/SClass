@@ -13,7 +13,7 @@ IO::StmData::BlockStreamData::~BlockStreamData()
 	DEL_CLASS(this->sd);
 }
 
-UOSInt IO::StmData::BlockStreamData::GetRealData(UInt64 offset, UOSInt length, UInt8 *buffer)
+UOSInt IO::StmData::BlockStreamData::GetRealData(UInt64 offset, UOSInt length, Data::ByteArray buffer)
 {
 	OSInt i = this->dataOfstList.SortedIndexOf(offset);
 	UOSInt totalLength = 0;

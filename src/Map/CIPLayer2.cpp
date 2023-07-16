@@ -55,16 +55,16 @@ Map::CIPLayer2::CIPLayer2(Text::CString layerName) : Map::MapDrawLayer(layerName
 	NEW_CLASS(bstm, IO::BufferedInputStream(file, 65536));
 	if (!file->IsError())
 	{
-		bstm->Read((UInt8*)&this->nblks, 4);
-		bstm->Read((UInt8*)&this->blkScale, 4);
+		bstm->Read(Data::ByteArray((UInt8*)&this->nblks, 4));
+		bstm->Read(Data::ByteArray((UInt8*)&this->blkScale, 4));
 		this->blks = MemAlloc(CIPBlock, this->nblks);
 		i = 0;
 		while (i < this->nblks)
 		{
-			bstm->Read((UInt8*)&this->blks[i], 12);
+			bstm->Read(Data::ByteArray((UInt8*)&this->blks[i], 12));
 			totalCnt += this->blks[i].objCnt;
 			this->blks[i].ids = MemAlloc(Int32, this->blks[i].objCnt);
-			bstm->Read((UInt8*)this->blks[i].ids, this->blks[i].objCnt << 2);
+			bstm->Read(Data::ByteArray((UInt8*)this->blks[i].ids, this->blks[i].objCnt << 2));
 			i++;
 		}
 
@@ -94,7 +94,7 @@ Map::CIPLayer2::CIPLayer2(Text::CString layerName) : Map::MapDrawLayer(layerName
 	{
 		i = (UOSInt)file->GetLength();
 		this->ofsts = (UInt32*)MAlloc(i);
-		file->Read((UInt8*)this->ofsts, i);
+		file->Read(Data::ByteArray((UInt8*)this->ofsts, i));
 		this->maxId = (OSInt)((i - 4) / 8) - 1;
 	}
 	DEL_CLASS(file);
@@ -107,8 +107,8 @@ Map::CIPLayer2::CIPLayer2(Text::CString layerName) : Map::MapDrawLayer(layerName
 		NEW_CLASS(file, IO::FileStream({fname, (UOSInt)(sptr2 - fname)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
 		if (!file->IsError())
 		{
-			file->Read((UInt8*)&i, 4);
-			file->Read((UInt8*)&this->lyrType, 4);
+			file->Read(Data::ByteArray((UInt8*)&i, 4));
+			file->Read(Data::ByteArray((UInt8*)&this->lyrType, 4));
 		}
 		else
 		{
@@ -121,14 +121,14 @@ Map::CIPLayer2::CIPLayer2(Text::CString layerName) : Map::MapDrawLayer(layerName
 		if (!file->IsError())
 		{
 			UInt32 buff[4];
-			file->Read((UInt8*)buff, 8);
+			file->Read(Data::ByteArray((UInt8*)buff, 8));
 			if (buff[0] != this->nblks)
 			{
 				//DebugBreak();
 				missFile = true;
 			}
 			UInt32 *tmpBuff = MemAlloc(UInt32, this->nblks * 4);
-			file->Read((UInt8*)tmpBuff, this->nblks * 16);
+			file->Read(Data::ByteArray((UInt8*)tmpBuff, this->nblks * 16));
 			i = 0;
 			while (i < this->nblks)
 			{
@@ -235,13 +235,13 @@ UOSInt Map::CIPLayer2::GetAllObjectIds(Data::ArrayListInt64 *outArr, NameArray *
 			i = this->blks[k].objCnt;
 			while (i-- > 0)
 			{
-				cis.Read(buff, 5);
+				cis.Read(Data::ByteArray(buff, 5));
 				if (tmpArr->Get(*(Int32*)buff) == 0)
 				{
 					if (buff[4])
 					{
 						strTmp = MemAlloc(UTF16Char, (UOSInt)(buff[4] >> 1) + 1);
-						cis.Read((UInt8*)strTmp, buff[4]);
+						cis.Read(Data::ByteArray((UInt8*)strTmp, buff[4]));
 						strTmp[buff[4] >> 1] = 0;
 						outArr->Add(*(Int32*)buff);
 						tmpArr->Put(*(Int32*)buff, strTmp);
@@ -390,13 +390,13 @@ UOSInt Map::CIPLayer2::GetObjectIds(Data::ArrayListInt64 *outArr, NameArray **na
 				i = (Int32)this->blks[k].objCnt;
 				while (i-- > 0)
 				{
-					cis->Read(buff, 5);
+					cis->Read(Data::ByteArray(buff, 5));
 					if (tmpArr->Get(*(Int32*)buff) == 0)
 					{
 						if (buff[4])
 						{
 							strTmp = MemAlloc(UTF16Char, (UOSInt)(buff[4] >> 1) + 1);
-							cis->Read((UInt8*)strTmp, buff[4]);
+							cis->Read(Data::ByteArray((UInt8*)strTmp, buff[4]));
 							strTmp[buff[4] >> 1] = 0;
 							outArr->Add(*(Int32*)buff);
 							tmpArr->Put(*(Int32*)buff, strTmp);
@@ -639,7 +639,7 @@ Map::CIPLayer2::CIPFileObject *Map::CIPLayer2::GetFileObject(void *session, Int3
 
 	UInt32 ofst = this->ofsts[2 + (id << 1)];
 	cip->SeekFromBeginning(ofst);
-	if (cip->Read((UInt8*)buff, 8) != 8)
+	if (cip->Read(Data::ByteArray((UInt8*)buff, 8)) != 8)
 	{
 		return 0;
 	}
@@ -649,15 +649,15 @@ Map::CIPLayer2::CIPFileObject *Map::CIPLayer2::GetFileObject(void *session, Int3
 	if (buff[1] > 0)
 	{
 		obj->ptOfstArr = MemAlloc(UInt32, (UInt32)buff[1]);
-		cip->Read((UInt8*)obj->ptOfstArr, sizeof(UInt32) * (UInt32)buff[1]);
+		cip->Read(Data::ByteArray((UInt8*)obj->ptOfstArr, sizeof(UInt32) * (UInt32)buff[1]));
 	}
 	else
 	{
 		obj->ptOfstArr = 0;
 	}
-	cip->Read((UInt8*)&obj->nPoint, 4);
+	cip->Read(Data::ByteArray((UInt8*)&obj->nPoint, 4));
 	obj->pointArr = MemAlloc(Int32, obj->nPoint * 2);
-	cip->Read((UInt8*)obj->pointArr, obj->nPoint * 8);
+	cip->Read(Data::ByteArray((UInt8*)obj->pointArr, obj->nPoint * 8));
 	this->currObjs->Put(id, obj);
 	return obj;
 }

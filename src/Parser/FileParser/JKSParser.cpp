@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Crypto/Cert/X509Cert.h"
+#include "Data/ByteBuffer.h"
 #include "Data/ByteTool.h"
 #include "IO/PackageFile.h"
 #include "Parser/FileParser/JKSParser.h"
@@ -47,8 +48,7 @@ IO::ParsedObject *Parser::FileParser::JKSParser::ParseFileHdr(IO::StreamData *fd
 		return 0;
 	}
 	UInt8 buff[256];
-	UInt8 *cerBuff = 0;
-	UOSInt cerBuffSize = 0;
+	Data::ByteBuffer cerBuff;
 	Text::StringBuilderUTF8 sb;
 	IO::PackageFile *pkg;
 	NEW_CLASS(pkg, IO::PackageFile(fd->GetFullFileName()));
@@ -58,7 +58,7 @@ IO::ParsedObject *Parser::FileParser::JKSParser::ParseFileHdr(IO::StreamData *fd
 	UOSInt i = 0;
 	while (i < cnt && ofst < fileSize)
 	{
-		readSize = fd->GetRealData(ofst, 256, buff);
+		readSize = fd->GetRealData(ofst, 256, BYTEARR(buff));
 		if (readSize < 25)
 		{
 			printf("JKS: readSize < 25\r\n");
@@ -83,18 +83,13 @@ IO::ParsedObject *Parser::FileParser::JKSParser::ParseFileHdr(IO::StreamData *fd
 		sb.ClearStr();
 		sb.AppendC(&buff[6], aliasLen);
 		sb.AppendC(UTF8STRC(".cer"));
-		if (cerBuffSize < certLen)
+		if (cerBuff.GetSize() < certLen)
 		{
-			cerBuffSize = certLen;
-			if (cerBuff)
-			{
-				MemFree(cerBuff);
-			}
-			cerBuff = MemAlloc(UInt8, cerBuffSize);
+			cerBuff.ChangeSize(certLen);
 		}
 		NotNullPtr<Text::String> s = Text::String::New(sb.ToCString());
 		fd->GetRealData(ofst + 20 + aliasLen + certTypeLen, certLen, cerBuff);
-		Crypto::Cert::X509Cert *cert = (Crypto::Cert::X509Cert*)Parser::FileParser::X509Parser::ParseBuff(cerBuff, certLen, s);
+		Crypto::Cert::X509Cert *cert = (Crypto::Cert::X509Cert*)Parser::FileParser::X509Parser::ParseBuff(cerBuff.WithSize(certLen), s);
 		s->Release();
 		if (cert)
 		{
@@ -106,10 +101,6 @@ IO::ParsedObject *Parser::FileParser::JKSParser::ParseFileHdr(IO::StreamData *fd
 		}
 		ofst += 20 + aliasLen + certTypeLen + certLen;
 		i++;
-	}
-	if (cerBuff)
-	{
-		MemFree(cerBuff);
 	}
 	return pkg;
 }

@@ -403,7 +403,7 @@ Bool IO::SerialPort::IsDown() const
 	return false;
 }
 
-UOSInt IO::SerialPort::Read(UInt8 *buff, UOSInt size)
+UOSInt IO::SerialPort::Read(Data::ByteArray buff)
 {
 	OSInt readCnt;
 	OSInt h;
@@ -422,7 +422,7 @@ UOSInt IO::SerialPort::Read(UInt8 *buff, UOSInt size)
 	{
 		if (this->handle == 0)
 			break;
-		readCnt = read((int)h, buff, size);
+		readCnt = read((int)h, buff.GetPtr(), buff.GetSize());
 		if (readCnt == -1)
 		{
 			if (errno == EAGAIN)
@@ -455,7 +455,7 @@ UOSInt IO::SerialPort::Write(const UInt8 *buff, UOSInt size)
 	return (UOSInt)writeCnt;
 }
 
-void *IO::SerialPort::BeginRead(UInt8 *buff, UOSInt size, Sync::Event *evt)
+void *IO::SerialPort::BeginRead(Data::ByteArray buff, Sync::Event *evt)
 {
 	return 0;
 }

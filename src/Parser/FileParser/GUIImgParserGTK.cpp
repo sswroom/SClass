@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Data/ByteBuffer.h"
 #include "Data/ByteTool.h"
 #include "IO/FileStream.h"
 #include "IO/Path.h"
@@ -80,97 +81,98 @@ IO::ParsedObject *Parser::FileParser::GUIImgParser::ParseFileHdr(IO::StreamData 
 
 	Media::ImageList *imgList = 0;
 	UInt64 dataSize = fd->GetDataSize();
-	UInt8 *data = MemAlloc(UInt8, (UOSInt)dataSize);
-	fd->GetRealData(0, (UOSInt)dataSize, data);
-	GInputStream *inpStream = g_memory_input_stream_new_from_data(data, (gssize)dataSize, 0);
-	GdkPixbuf *pixBuf = gdk_pixbuf_new_from_stream(inpStream, 0, 0);
-	if (pixBuf)
 	{
-		guint leng;
-		const guint8 *imgPtr = gdk_pixbuf_get_pixels_with_length(pixBuf, &leng);
-		gboolean hasAlpha = gdk_pixbuf_get_has_alpha(pixBuf);
-		int nChannels = gdk_pixbuf_get_n_channels(pixBuf);
-		int bps = gdk_pixbuf_get_bits_per_sample(pixBuf);
-		int width = gdk_pixbuf_get_width(pixBuf);
-		int height = gdk_pixbuf_get_height(pixBuf);
-		UInt32 bpl = (UInt32)gdk_pixbuf_get_rowstride(pixBuf);
-		Double xdpi = 72.0;
-		Double ydpi = 72.0;
-		const gchar *cptr;
-		cptr = gdk_pixbuf_get_option(pixBuf, "x-dpi");
-		if (cptr) Text::StrToDouble(cptr, &xdpi);
-		cptr = gdk_pixbuf_get_option(pixBuf, "y-dpi");
-		if (cptr) Text::StrToDouble(cptr, &ydpi);
-
-		Media::StaticImage *img = 0;
-		Media::AlphaType aType = (isImage == 2||!hasAlpha)?Media::AT_NO_ALPHA:Media::AT_ALPHA;
-
-		if (nChannels == 3 && bps == 8 && !hasAlpha)
+		Data::ByteBuffer data((UOSInt)dataSize);
+		fd->GetRealData(0, (UOSInt)dataSize, data);
+		GInputStream *inpStream = g_memory_input_stream_new_from_data(data.GetPtr(), (gssize)dataSize, 0);
+		GdkPixbuf *pixBuf = gdk_pixbuf_new_from_stream(inpStream, 0, 0);
+		if (pixBuf)
 		{
-			NEW_CLASS(img, Media::StaticImage(Math::Size2D<UOSInt>((UOSInt)width, (UOSInt)height), 0, 24, Media::PF_R8G8B8, 0, 0, Media::ColorProfile::YUVT_UNKNOWN, aType, Media::YCOFST_C_CENTER_LEFT));
-			UInt8 *imgDest = (UInt8*)img->data;
-			if (imgDest)
+			guint leng;
+			const guint8 *imgPtr = gdk_pixbuf_get_pixels_with_length(pixBuf, &leng);
+			gboolean hasAlpha = gdk_pixbuf_get_has_alpha(pixBuf);
+			int nChannels = gdk_pixbuf_get_n_channels(pixBuf);
+			int bps = gdk_pixbuf_get_bits_per_sample(pixBuf);
+			int width = gdk_pixbuf_get_width(pixBuf);
+			int height = gdk_pixbuf_get_height(pixBuf);
+			UInt32 bpl = (UInt32)gdk_pixbuf_get_rowstride(pixBuf);
+			Double xdpi = 72.0;
+			Double ydpi = 72.0;
+			const gchar *cptr;
+			cptr = gdk_pixbuf_get_option(pixBuf, "x-dpi");
+			if (cptr) Text::StrToDouble(cptr, &xdpi);
+			cptr = gdk_pixbuf_get_option(pixBuf, "y-dpi");
+			if (cptr) Text::StrToDouble(cptr, &ydpi);
+
+			Media::StaticImage *img = 0;
+			Media::AlphaType aType = (isImage == 2||!hasAlpha)?Media::AT_NO_ALPHA:Media::AT_ALPHA;
+
+			if (nChannels == 3 && bps == 8 && !hasAlpha)
 			{
-				ImageCopy_ImgCopyR(imgPtr, imgDest, (UOSInt)width * 3, (UOSInt)height, bpl, img->GetDataBpl(), img->IsUpsideDown());
-				NEW_CLASS(imgList, Media::ImageList(fd->GetFullName()));
-				imgList->AddImage(img, 0);
+				NEW_CLASS(img, Media::StaticImage(Math::Size2D<UOSInt>((UOSInt)width, (UOSInt)height), 0, 24, Media::PF_R8G8B8, 0, 0, Media::ColorProfile::YUVT_UNKNOWN, aType, Media::YCOFST_C_CENTER_LEFT));
+				UInt8 *imgDest = (UInt8*)img->data;
+				if (imgDest)
+				{
+					ImageCopy_ImgCopyR(imgPtr, imgDest, (UOSInt)width * 3, (UOSInt)height, bpl, img->GetDataBpl(), img->IsUpsideDown());
+					NEW_CLASS(imgList, Media::ImageList(fd->GetFullName()));
+					imgList->AddImage(img, 0);
+				}
+				else
+				{
+					DEL_CLASS(img);
+					img = 0;
+				}
+			}
+			else if (nChannels == 3 && bps == 8 && hasAlpha)
+			{
+				NEW_CLASS(img, Media::StaticImage(Math::Size2D<UOSInt>((UOSInt)width, (UOSInt)height), 0, 32, Media::PF_R8G8B8A8, 0, 0, Media::ColorProfile::YUVT_UNKNOWN, aType, Media::YCOFST_C_CENTER_LEFT));
+				UInt8 *imgDest = (UInt8*)img->data;
+				if (imgDest)
+				{
+					ImageCopy_ImgCopyR(imgPtr, imgDest, (UOSInt)width * 4, (UOSInt)height, bpl, img->GetDataBpl(), img->IsUpsideDown());
+					NEW_CLASS(imgList, Media::ImageList(fd->GetFullName()));
+					imgList->AddImage(img, 0);
+				}
+				else
+				{
+					DEL_CLASS(img);
+					img = 0;
+				}
+			}
+			else if (nChannels == 4 && bps == 8 && hasAlpha)
+			{
+				NEW_CLASS(img, Media::StaticImage(Math::Size2D<UOSInt>((UOSInt)width, (UOSInt)height), 0, 32, Media::PF_R8G8B8A8, 0, 0, Media::ColorProfile::YUVT_UNKNOWN, aType, Media::YCOFST_C_CENTER_LEFT));
+				UInt8 *imgDest = (UInt8*)img->data;
+				if (imgDest)
+				{
+					ImageCopy_ImgCopyR(imgPtr, imgDest, (UOSInt)width * 4, (UOSInt)height, bpl, img->GetDataBpl(), img->IsUpsideDown());
+					NEW_CLASS(imgList, Media::ImageList(fd->GetFullName()));
+					imgList->AddImage(img, 0);
+				}
+				else
+				{
+					DEL_CLASS(img);
+					img = 0;
+				}
 			}
 			else
 			{
-				DEL_CLASS(img);
-				img = 0;
+				printf("GUIImgParser: unsupport: width = %d, height = %d, nChannels = %d, bps = %d, bpl = %d, xdpi = %lf, ydpi = %lf\r\n", width, height, nChannels, bps, bpl, xdpi, ydpi);
 			}
-		}
-		else if (nChannels == 3 && bps == 8 && hasAlpha)
-		{
-			NEW_CLASS(img, Media::StaticImage(Math::Size2D<UOSInt>((UOSInt)width, (UOSInt)height), 0, 32, Media::PF_R8G8B8A8, 0, 0, Media::ColorProfile::YUVT_UNKNOWN, aType, Media::YCOFST_C_CENTER_LEFT));
-			UInt8 *imgDest = (UInt8*)img->data;
-			if (imgDest)
-			{
-				ImageCopy_ImgCopyR(imgPtr, imgDest, (UOSInt)width * 4, (UOSInt)height, bpl, img->GetDataBpl(), img->IsUpsideDown());
-				NEW_CLASS(imgList, Media::ImageList(fd->GetFullName()));
-				imgList->AddImage(img, 0);
-			}
-			else
-			{
-				DEL_CLASS(img);
-				img = 0;
-			}
-		}
-		else if (nChannels == 4 && bps == 8 && hasAlpha)
-		{
-			NEW_CLASS(img, Media::StaticImage(Math::Size2D<UOSInt>((UOSInt)width, (UOSInt)height), 0, 32, Media::PF_R8G8B8A8, 0, 0, Media::ColorProfile::YUVT_UNKNOWN, aType, Media::YCOFST_C_CENTER_LEFT));
-			UInt8 *imgDest = (UInt8*)img->data;
-			if (imgDest)
-			{
-				ImageCopy_ImgCopyR(imgPtr, imgDest, (UOSInt)width * 4, (UOSInt)height, bpl, img->GetDataBpl(), img->IsUpsideDown());
-				NEW_CLASS(imgList, Media::ImageList(fd->GetFullName()));
-				imgList->AddImage(img, 0);
-			}
-			else
-			{
-				DEL_CLASS(img);
-				img = 0;
-			}
-		}
-		else
-		{
-			printf("GUIImgParser: unsupport: width = %d, height = %d, nChannels = %d, bps = %d, bpl = %d, xdpi = %lf, ydpi = %lf\r\n", width, height, nChannels, bps, bpl, xdpi, ydpi);
-		}
 
-		if (img)
-		{
-			img->info.hdpi = xdpi;
-			img->info.vdpi = ydpi;
-			if (isImage == 2)
+			if (img)
 			{
-				Media::JPEGFile::ParseJPEGHeader(fd, img, imgList, this->parsers);
+				img->info.hdpi = xdpi;
+				img->info.vdpi = ydpi;
+				if (isImage == 2)
+				{
+					Media::JPEGFile::ParseJPEGHeader(fd, img, imgList, this->parsers);
+				}
 			}
+			g_object_unref(pixBuf);
 		}
-		g_object_unref(pixBuf);
+		g_input_stream_close(inpStream, 0, 0);
 	}
-	g_input_stream_close(inpStream, 0, 0);
-	MemFree(data);
 
 	if (targetType != IO::ParserType::ImageList && imgList && imgList->GetCount() >= 1)
 	{

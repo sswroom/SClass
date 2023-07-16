@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Data/ByteBuffer.h"
 #include "Data/ByteTool.h"
 #include "Media/LUT.h"
 #include "Parser/FileParser/LUTParser.h"
@@ -44,7 +45,6 @@ IO::ParsedObject *Parser::FileParser::LUTParser::ParseFileHdr(IO::StreamData *fd
 	UInt32 lutSize = ReadUInt32(&hdr[92]);
 	UInt32 inpLev = (UInt32)(1 << inputBpp);
 //	Int32 outpLev = (1 << outputBpp);
-	UInt8 *lutTable;
 	if (inpLev * inpLev * inpLev * 3 * (outputBpp >> 3) != lutSize)
 	{
 		return 0;
@@ -68,15 +68,14 @@ IO::ParsedObject *Parser::FileParser::LUTParser::ParseFileHdr(IO::StreamData *fd
 		return 0;
 	}
 
-	UInt8 *paramBuff;
+	
 	NEW_CLASS(lut, Media::LUT(3, inpLev, 3, fmt, fd->GetFullName()));
-	paramBuff = MemAlloc(UInt8, paramSize + 1);
+	Data::ByteBuffer paramBuff(paramSize + 1);
 	paramBuff[paramSize] = 0;
 	fd->GetRealData(paramOfst, paramSize, paramBuff);
-	lut->SetRemark({paramBuff, paramSize});
-	MemFree(paramBuff);
+	lut->SetRemark({paramBuff.Ptr(), paramSize});
 
-	lutTable = lut->GetTablePtr();
+	Data::ByteArray lutTable = lut->GetTableArray();
 	fd->GetRealData(lutOfst, lutSize, lutTable);
 	return lut;
 }

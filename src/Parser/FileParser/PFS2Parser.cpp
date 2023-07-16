@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Data/ByteBuffer.h"
 #include "Data/ByteTool.h"
 #include "IO/PackageFile.h"
 #include "Parser/FileParser/PFS2Parser.h"
@@ -47,7 +48,6 @@ IO::ParsedObject *Parser::FileParser::PFS2Parser::ParseFileHdr(IO::StreamData *f
 		return 0;
 
 	UInt32 hdrSize;
-	UInt8 *records;
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
 	OSInt fileCnt = 0;
@@ -61,7 +61,7 @@ IO::ParsedObject *Parser::FileParser::PFS2Parser::ParseFileHdr(IO::StreamData *f
 	hdrSize = ReadUInt32(&hdr[3]);
 	if (hdrSize > fd->GetDataSize() - 7)
 		return 0;
-	records = MemAlloc(UInt8, hdrSize - 8);
+	Data::ByteBuffer records(hdrSize - 8);
 	fd->GetRealData(15, hdrSize - 8, records);
 	IO::PackageFile *pf = 0;
 	NEW_CLASS(pf, IO::PackageFile(fd->GetFullName()));

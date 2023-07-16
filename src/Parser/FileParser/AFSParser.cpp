@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Data/ByteBuffer.h"
 #include "Data/ByteTool.h"
 #include "IO/StreamData.h"
 #include "IO/PackageFile.h"
@@ -39,7 +40,6 @@ IO::ParsedObject *Parser::FileParser::AFSParser::ParseFileHdr(IO::StreamData *fd
 	UTF8Char *namePtr;
 	UInt32 fileCnt;
 	UInt32 i;
-	UInt8 *buff2;
 	UInt32 ofst;
 	UInt32 leng;
 
@@ -56,7 +56,7 @@ IO::ParsedObject *Parser::FileParser::AFSParser::ParseFileHdr(IO::StreamData *fd
 	sbuff[8] = 0;
 
 	fileCnt = ReadUInt32(&hdr[4]);
-	buff2 = MemAlloc(UInt8, fileCnt << 3);
+	Data::ByteBuffer buff2(fileCnt << 3);
 	NEW_CLASS(pf, IO::PackageFile(fd->GetFullName()));
 	fd->GetRealData(8, fileCnt << 3, buff2);
 	i = 0;
@@ -72,14 +72,11 @@ IO::ParsedObject *Parser::FileParser::AFSParser::ParseFileHdr(IO::StreamData *fd
 		leng = ReadUInt32(&buff2[(i << 3) + 4]);
 		if (ofst == 0 || leng == 0)
 		{
-			MemFree(buff2);
 			DEL_CLASS(pf);
 			return 0;
 		}
 		pf->AddData(fd, ofst, leng, {sbuff, 8}, Data::Timestamp(0));
 		i++;
 	}
-	MemFree(buff2);
-
 	return pf;
 }

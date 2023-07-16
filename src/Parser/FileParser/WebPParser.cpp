@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Data/ByteBuffer.h"
 #include "Data/ByteOrderLSB.h"
 #include "Data/ByteOrderMSB.h"
 #include "Media/ICCProfile.h"
@@ -49,19 +50,17 @@ IO::ParsedObject *Parser::FileParser::WebPParser::ParseFileHdr(IO::StreamData *f
 	if (ReadNInt32(&hdr[0]) != *(Int32*)"RIFF" || ReadUInt32(&hdr[4]) != (fileLen - 8) || ReadNInt32(&hdr[8]) != *(Int32*)"WEBP")
 		return 0;
 
-	UInt8 *fileData = MemAlloc(UInt8, (UOSInt)fileLen);
+	Data::ByteBuffer fileData((UOSInt)fileLen);
 	if (fd->GetRealData(0, (UOSInt)fileLen, fileData) != fileLen)
 	{
-		MemFree(fileData);
 		return 0;
 	}
 	WebPData data;
-	data.bytes = fileData;
+	data.bytes = fileData.Ptr();
 	data.size = (size_t)fileLen;
 	WebPDemuxer* demux = WebPDemux(&data);
 	if (demux == 0)
 	{
-		MemFree(fileData);
 		return 0;
 	}
 
@@ -87,7 +86,7 @@ IO::ParsedObject *Parser::FileParser::WebPParser::ParseFileHdr(IO::StreamData *f
 	if (flags & ICCP_FLAG)
 	{
  		WebPDemuxGetChunk(demux, "ICCP", 1, &chunk_iter);
-		Media::ICCProfile *profile = Media::ICCProfile::Parse(chunk_iter.chunk.bytes, (UOSInt)chunk_iter.chunk.size);
+		Media::ICCProfile *profile = Media::ICCProfile::Parse(Data::ByteArrayR(chunk_iter.chunk.bytes, (UOSInt)chunk_iter.chunk.size));
 		if (profile)
 		{
 			profile->SetToColorProfile(simg->info.color);
@@ -142,8 +141,7 @@ IO::ParsedObject *Parser::FileParser::WebPParser::ParseFileHdr(IO::StreamData *f
 		WebPDemuxReleaseChunkIterator(&chunk_iter);
 	}
 	WebPDemuxDelete(demux);
-	MemFree(fileData);
-
+	
 	if (simg->exif)
 	{
 		Double hdpi = simg->exif->GetHDPI();

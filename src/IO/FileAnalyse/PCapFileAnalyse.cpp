@@ -21,7 +21,7 @@ UInt32 __stdcall IO::FileAnalyse::PCapFileAnalyse::ParseThread(void *userObj)
 	dataSize = me->fd->GetDataSize();
 	while (ofst < dataSize - 16 && !me->threadToStop)
 	{
-		if (me->fd->GetRealData(ofst, 16, packetHdr) != 16)
+		if (me->fd->GetRealData(ofst, 16, BYTEARR(packetHdr)) != 16)
 			break;
 		
 		if (me->isBE)
@@ -46,7 +46,7 @@ UInt32 __stdcall IO::FileAnalyse::PCapFileAnalyse::ParseThread(void *userObj)
 	return 0;
 }
 
-IO::FileAnalyse::PCapFileAnalyse::PCapFileAnalyse(IO::StreamData *fd)
+IO::FileAnalyse::PCapFileAnalyse::PCapFileAnalyse(IO::StreamData *fd) : packetBuff(65536)
 {
 	UInt8 buff[24];
 	this->fd = 0;
@@ -55,8 +55,7 @@ IO::FileAnalyse::PCapFileAnalyse::PCapFileAnalyse(IO::StreamData *fd)
 	this->threadToStop = false;
 	this->threadStarted = false;
 	this->isBE = false;
-	this->packetBuff = MemAlloc(UInt8, 65536);
-	if (fd->GetRealData(0, 24, buff) != 24)
+	if (fd->GetRealData(0, 24, BYTEARR(buff)) != 24)
 	{
 		return;
 	}
@@ -96,7 +95,6 @@ IO::FileAnalyse::PCapFileAnalyse::~PCapFileAnalyse()
 	}
 
 	SDEL_CLASS(this->fd);
-	MemFree(this->packetBuff);
 }
 
 Text::CString IO::FileAnalyse::PCapFileAnalyse::GetFormatName()

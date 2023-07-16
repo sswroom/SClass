@@ -8,8 +8,6 @@ Media::Decoder::XADecoder::XADecoder(Media::IAudioSource *sourceAudio)
 	Media::AudioFormat fmt;
 	this->sourceAudio = 0;
 	this->nChannels = 0;
-	this->readBuff = 0;
-	this->readBuffSize = 0;
 	sourceAudio->GetFormat(&fmt);
 	if (fmt.formatId != 0x2082)
 		return;
@@ -34,11 +32,6 @@ Media::Decoder::XADecoder::XADecoder(Media::IAudioSource *sourceAudio)
 
 Media::Decoder::XADecoder::~XADecoder()
 {
-	if (this->readBuff)
-	{
-		MemFree(this->readBuff);
-		this->readBuff = 0;
-	}
 }
 
 void Media::Decoder::XADecoder::GetFormat(AudioFormat *format)
@@ -103,24 +96,20 @@ void Media::Decoder::XADecoder::Stop()
 	this->readEvt = 0;
 }
 
-UOSInt Media::Decoder::XADecoder::ReadBlock(UInt8 *buff, UOSInt blkSize)
+UOSInt Media::Decoder::XADecoder::ReadBlock(Data::ByteArray buff)
 {
 	UOSInt outSize;
 	UOSInt readSize;
-	UInt8 *src;
-	UInt8 *dest;
+	Data::ByteArray src;
+	Data::ByteArray dest;
 
-	blkSize = blkSize / 448;
+	UOSInt blkSize = buff.GetSize() / 448;
 	readSize = blkSize << 7;
-	if (readBuffSize < readSize)
+	if (readBuff.GetSize() < readSize)
 	{
-		if (readBuff)
-		{
-			MemFree(readBuff);
-		}
-		readBuff = MemAlloc(UInt8, readBuffSize = readSize);
+		readBuff.ChangeSize(readSize);
 	}
-	readSize = this->sourceAudio->ReadBlock(readBuff, readSize);
+	readSize = this->sourceAudio->ReadBlock(readBuff.WithSize(readSize));
 	blkSize = readSize >> 7;
 	outSize = blkSize * 448;
 
@@ -151,7 +140,7 @@ else if (((Int32*)&x)[1] == -1) \
 	if (((*(UInt32*)&x) & 0x80000000) == 0) \
 		x = (Int64)0xffffffff80000000LL;
 
-void Media::Decoder::XADecoder::Convert(UInt8 *src, UInt8 *dest, Int32 sampleByte, Int32 channel)
+void Media::Decoder::XADecoder::Convert(Data::ByteArray src, Data::ByteArray dest, Int32 sampleByte, Int32 channel)
 {
 	Int32 j, r0, r1, f;
 	Int32 i;
@@ -200,7 +189,7 @@ void Media::Decoder::XADecoder::Convert(UInt8 *src, UInt8 *dest, Int32 sampleByt
 					if (((*(UInt32*)&x) & 0x80000000) == 0)
 						x = (Int64)0xffffffff80000000LL;
 				adxSample1[0] = x;
-				*(Int16*)dest = (Int16)(x >> 16);
+				dest.WriteNI16(0, (Int16)(x >> 16));
 				dest += 2;
 
 				x = iD >> 4;
@@ -219,7 +208,7 @@ void Media::Decoder::XADecoder::Convert(UInt8 *src, UInt8 *dest, Int32 sampleByt
 					if (((*(UInt32*)&x) & 0x80000000) == 0)
 						x = (Int64)0xffffffff80000000LL;
 				adxSample1[1] = x;
-				*(Int16*)dest = (Int16)(x >> 16);
+				dest.WriteNI16(0, (Int16)(x >> 16));
 				dest += 2;
 
 				j++;
@@ -252,7 +241,7 @@ void Media::Decoder::XADecoder::Convert(UInt8 *src, UInt8 *dest, Int32 sampleByt
 				adxSample2[0] = adxSample1[0];
 				ROUND64_32(x);
 				adxSample1[0] = x;
-				*(Int16*)dest = (Int16)(x >> 16);
+				dest.WriteNI16(0, (Int16)(x >> 16));
 				dest += 2;
 				j++;
 			}
@@ -277,7 +266,7 @@ void Media::Decoder::XADecoder::Convert(UInt8 *src, UInt8 *dest, Int32 sampleByt
 				adxSample2[0] = adxSample1[0];
 				ROUND64_32(x);
 				adxSample1[0] = x;
-				*(Int16*)dest = (Int16)(x >> 16);
+				dest.WriteNI16(0, (Int16)(x >> 16));
 				dest += 2;
 				j++;
 			}

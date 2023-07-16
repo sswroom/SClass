@@ -34,7 +34,7 @@ namespace IO
 			ConcatStreamData(Text::CString fileName);
 			virtual ~ConcatStreamData();
 
-			virtual UOSInt GetRealData(UInt64 offset, UOSInt length, UInt8 *buffer);
+			virtual UOSInt GetRealData(UInt64 offset, UOSInt length, Data::ByteArray buffer);
 			virtual NotNullPtr<Text::String> GetFullName();
 			virtual Text::CString GetShortName();
 			virtual UInt64 GetDataSize();

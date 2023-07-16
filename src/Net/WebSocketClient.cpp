@@ -469,7 +469,7 @@ Bool Net::WebSocketClient::IsDown() const
 	return true;
 }
 
-UOSInt Net::WebSocketClient::Read(UInt8 *buff, UOSInt size)
+UOSInt Net::WebSocketClient::Read(const Data::ByteArray &buff)
 {
 	Sync::MutexUsage mutUsage(&this->recvMut);
 	if (this->recvDataOfst < this->recvDataSize)

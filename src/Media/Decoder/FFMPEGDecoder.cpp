@@ -1557,7 +1557,7 @@ public:
 		this->readEvt = 0;
 	}
 
-	virtual UOSInt ReadBlock(UInt8 *buff, UOSInt blkSize)
+	virtual UOSInt ReadBlock(Data::ByteArray blk)
 	{
 		UOSInt outSize = 0;
 		UOSInt i;
@@ -1576,33 +1576,32 @@ public:
 				this->decFmt->align = 1;
 			}
 		}
-		i = blkSize % this->decFmt->align;
+		i = blk.GetSize() % this->decFmt->align;
 		if (i)
 		{
-			blkSize -= i;
+			blk = blk.WithSize(blk.GetSize() - i);
 		}
 
 		FFMPEGDecoder_av_init_packet(&avpkt);
-		while (blkSize > 0)
+		while (blk.GetSize() > 0)
 		{
 			if (this->frameBuffSize)
 			{
-				if (this->frameBuffSize < blkSize)
+				if (this->frameBuffSize < blk.GetSize())
 				{
-					MemCopyNO(buff, this->frameBuff, this->frameBuffSize);
-					buff += this->frameBuffSize;
+					blk.CopyFrom(Data::ByteArrayR(this->frameBuff, this->frameBuffSize));
+					blk += this->frameBuffSize;
 					outSize += this->frameBuffSize;
-					blkSize -= this->frameBuffSize;
 					this->frameBuffSize = 0;
 				}
 				else
 				{
-					MemCopyNO(buff, this->frameBuff, blkSize);
-					outSize += blkSize;
-					if (this->frameBuffSize > blkSize)
+					blk.CopyFrom(Data::ByteArrayR(this->frameBuff, blk.GetSize()));
+					outSize += blk.GetSize();
+					if (this->frameBuffSize > blk.GetSize())
 					{
-						MemCopyO(this->frameBuff, &this->frameBuff[blkSize], this->frameBuffSize - blkSize);
-						this->frameBuffSize -= blkSize;
+						MemCopyO(this->frameBuff, &this->frameBuff[blk.GetSize()], this->frameBuffSize - blk.GetSize());
+						this->frameBuffSize -= blk.GetSize();
 						if (this->readEvt)
 							this->readEvt->Set();
 						return outSize;
@@ -1617,7 +1616,7 @@ public:
 				}
 			}
 
-			UOSInt srcSize = this->sourceAudio->ReadBlock(this->readBuff, this->readBlockSize);
+			UOSInt srcSize = this->sourceAudio->ReadBlock(Data::ByteArray(this->readBuff, this->readBlockSize));
 			if (srcSize == 0)
 			{
 				if (this->readEvt)
@@ -1818,22 +1817,20 @@ public:
 						}
 						this->frameBuffSize += dataSize;
 
-						if (blkSize >= this->frameBuffSize)
+						if (blk.GetSize() >= this->frameBuffSize)
 						{
-							MemCopyNO(buff, this->frameBuff, this->frameBuffSize);
-							buff += this->frameBuffSize;
+							blk.CopyFrom(Data::ByteArrayR(this->frameBuff, this->frameBuffSize));
+							blk += this->frameBuffSize;
 							outSize += this->frameBuffSize;
-							blkSize -= this->frameBuffSize;
 							this->frameBuffSize = 0;
 						}
-						else if (blkSize > 0)
+						else if (blk.GetSize() > 0)
 						{
-							MemCopyNO(buff, this->frameBuff, blkSize);
-							buff += blkSize;
-							outSize += blkSize;
-							MemCopyO(this->frameBuff, &this->frameBuff[blkSize], this->frameBuffSize - blkSize);
-							this->frameBuffSize -= blkSize;
-							blkSize = 0;
+							blk.CopyFrom(Data::ByteArrayR(this->frameBuff, blk.GetSize()));
+							outSize += blk.GetSize();
+							MemCopyO(this->frameBuff, &this->frameBuff[blk.GetSize()], this->frameBuffSize - blk.GetSize());
+							this->frameBuffSize -= blk.GetSize();
+							blk = blk.WithSize(0);
 						}
 					}
 				}

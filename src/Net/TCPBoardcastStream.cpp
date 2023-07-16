@@ -155,7 +155,7 @@ Bool Net::TCPBoardcastStream::IsDown() const
 	return this->cliMgr->GetClientCount() == 0;
 }
 
-UOSInt Net::TCPBoardcastStream::Read(UInt8 *buff, UOSInt size)
+UOSInt Net::TCPBoardcastStream::Read(const Data::ByteArray &buff)
 {
 	UOSInt readBuffSize;
 

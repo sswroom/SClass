@@ -90,7 +90,7 @@ void Media::Decoder::G711muLawDecoder::Stop()
 	this->readEvt = 0;
 }
 
-UOSInt Media::Decoder::G711muLawDecoder::ReadBlock(UInt8 *buff, UOSInt blkSize)
+UOSInt Media::Decoder::G711muLawDecoder::ReadBlock(Data::ByteArray blk)
 {
 	static Int16 table[] = {
     -32124, -31100, -30076, -29052, -28028, -27004, -25980, -24956,
@@ -132,16 +132,16 @@ UOSInt Media::Decoder::G711muLawDecoder::ReadBlock(UInt8 *buff, UOSInt blkSize)
 			this->readEvt->Set();
 		return 0;
 	}
-	blkSize = blkSize / this->align * this->align;
+	blk = blk.WithSize(blk.GetSize() / this->align * this->align);
 	UOSInt readSize;
-	UOSInt sofst = blkSize >> 1;
+	UOSInt sofst = blk.GetSize() >> 1;
 	UOSInt dofst = 0;
 	UOSInt cnt;
-	readSize = this->sourceAudio->ReadBlock(&buff[sofst], sofst);
+	readSize = this->sourceAudio->ReadBlock(blk.SubArray(sofst, sofst));
 	cnt = readSize;
 	while (cnt-- > 0)
 	{
-		*(Int16*)&buff[dofst] = table[buff[sofst]];
+		*(Int16*)&blk[dofst] = table[blk[sofst]];
 		dofst += 2;
 		sofst++;
 	}

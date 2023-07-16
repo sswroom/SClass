@@ -3,6 +3,7 @@
 #include "Data/ArrayListInt64.h"
 #include "Data/ArrayListUInt32.h"
 #include "Data/ArrayListUInt64.h"
+#include "Data/ByteBuffer.h"
 #include "Data/ByteTool.h"
 #include "IO/StmData/BlockStreamData.h"
 #include "Media/AudioFrameSource.h"
@@ -121,7 +122,6 @@ IO::ParsedObject *Parser::FileParser::AVIParser::ParseFileHdr(IO::StreamData *fd
 	UInt8 chunkBuffer[12];
 	UInt64 offset;
 //	Int32 hdrlSize;
-	UInt8 *buffer;
 	UInt32 i;
 	UInt32 j;
 	UInt32 k;
@@ -138,10 +138,10 @@ IO::ParsedObject *Parser::FileParser::AVIParser::ParseFileHdr(IO::StreamData *fd
 	MyAVIHeader *avih = 0;
 	AVIStream *strl = 0;
 //	Int64 frameCnt;
-	UInt8 *idx1 = 0;
-	UInt8 *info = 0;
+	Data::ByteBuffer idx1;
+	Data::ByteBuffer info;
 	UInt8 *indx = 0;
-	UInt8 *chap = 0;
+	Data::ByteBuffer chap;
 
 	if (*(Int32*)&hdr[0] != *(Int32*)"RIFF" || *(Int32*)&hdr[8] != *(Int32*)"AVI ")
 		return 0;
@@ -152,7 +152,7 @@ IO::ParsedObject *Parser::FileParser::AVIParser::ParseFileHdr(IO::StreamData *fd
 //	hdrlSize = *(Int32*)&chunkBuffer[4];
 
 	offset = 24;
-	offset += fd->GetRealData(offset, 8, chunkBuffer);
+	offset += fd->GetRealData(offset, 8, BYTEARR(chunkBuffer));
 	if (*(Int32*)chunkBuffer != *(Int32*)"avih")
 	{
 		return 0;
@@ -160,19 +160,18 @@ IO::ParsedObject *Parser::FileParser::AVIParser::ParseFileHdr(IO::StreamData *fd
 
 	Text::Encoding enc(this->codePage);
 	avih = (MyAVIHeader*)MAlloc(i = ReadUInt32(&chunkBuffer[4]));
-	offset += fd->GetRealData(offset, i, (UInt8*)avih);
+	offset += fd->GetRealData(offset, i, Data::ByteArray((UInt8*)avih, i));
 
-	offset += fd->GetRealData(offset, 12, chunkBuffer);
+	offset += fd->GetRealData(offset, 12, BYTEARR(chunkBuffer));
 	strl = MemAlloc(AVIStream, i = avih->dwStreams);
 	l = 0;
 	while (*(Int32*)chunkBuffer == *(Int32*)"LIST" && *(Int32*)&chunkBuffer[8] == *(Int32*)"strl")
 	{
-		buffer = MemAlloc(UInt8, i = ReadUInt32(&chunkBuffer[4]) - 4);
+		Data::ByteBuffer buffer(i = ReadUInt32(&chunkBuffer[4]) - 4);
 		offset += fd->GetRealData(offset, i, buffer);
-		if (*(Int32*)buffer != *(Int32*)"strh")
+		if (buffer.ReadI32(0) != *(Int32*)"strh")
 		{
 			l += 1;
-			MemFree(buffer);
 			continue;
 		}
 		MemCopyNO(&strl[l].strh, &buffer[8], ReadUInt32(&buffer[4]));
@@ -181,7 +180,6 @@ IO::ParsedObject *Parser::FileParser::AVIParser::ParseFileHdr(IO::StreamData *fd
 		if (*(Int32*)&buffer[j] != *(Int32*)"strf")
 		{
 			l += 1;
-			MemFree(buffer);
 			continue;
 		}
 
@@ -202,8 +200,7 @@ IO::ParsedObject *Parser::FileParser::AVIParser::ParseFileHdr(IO::StreamData *fd
 			strl[l].otherSize = 0;
 		}
 
-		MemFree(buffer);
-		offset += fd->GetRealData(offset, 12, chunkBuffer);
+		offset += fd->GetRealData(offset, 12, BYTEARR(chunkBuffer));
 		l += 1;
 	}
 
@@ -212,22 +209,20 @@ IO::ParsedObject *Parser::FileParser::AVIParser::ParseFileHdr(IO::StreamData *fd
 		if (*(Int32*)chunkBuffer == *(Int32*)"idx1")
 		{
 			offset -= 8;
-			idx1 = MemAlloc(UInt8, i = ReadUInt32(&chunkBuffer[4]) + 4);
+			idx1.ChangeSize(i = ReadUInt32(&chunkBuffer[4]) + 4);
 			offset += fd->GetRealData(offset, i, idx1);
 		}
 		else if (*(Int32*)chunkBuffer == *(Int32*)"LIST")
 		{
 			if (*(Int32*)&chunkBuffer[8] == *(Int32*)"INFO")
 			{
-				if (info)
-					MemFree(info);
-				info = MemAlloc(UInt8, i = ReadUInt32(&chunkBuffer[4]));
-				WriteUInt32(info, i);
-				offset += fd->GetRealData(offset, i - 4, &info[4]);
+				info.ChangeSize(i = ReadUInt32(&chunkBuffer[4]));
+				WriteUInt32(&info[0], i);
+				offset += fd->GetRealData(offset, i - 4, info.SubArray(4));
 			}
 			else if (*(Int32*)&chunkBuffer[8] == *(Int32*)"odml")
 			{
-				buffer = MemAlloc(UInt8, i = ReadUInt32(&chunkBuffer[4]) - 4);
+				Data::ByteBuffer buffer(i = ReadUInt32(&chunkBuffer[4]) - 4);
 				offset += fd->GetRealData(offset, i, buffer);
 				l = 0;
 				while (l < i)
@@ -239,7 +234,6 @@ IO::ParsedObject *Parser::FileParser::AVIParser::ParseFileHdr(IO::StreamData *fd
 					}
 					l += ReadUInt32(&buffer[l + 4]) + 8;
 				}
-				MemFree(buffer);
 			}
 			else if (*(Int32*)&chunkBuffer[8] == *(Int32*)"movi")
 			{
@@ -258,7 +252,7 @@ IO::ParsedObject *Parser::FileParser::AVIParser::ParseFileHdr(IO::StreamData *fd
 		else if (*(Int32*)chunkBuffer == *(Int32*)"SMCH")
 		{
 			offset -= 4;
-			chap = MemAlloc(UInt8, i = ReadUInt32(&chunkBuffer[4]));
+			chap.ChangeSize(i = ReadUInt32(&chunkBuffer[4]));
 			offset += fd->GetRealData(offset, i, chap);
 			offset += offset & 1;
 		}
@@ -266,7 +260,7 @@ IO::ParsedObject *Parser::FileParser::AVIParser::ParseFileHdr(IO::StreamData *fd
 		{
 			offset += ReadUInt32(&chunkBuffer[4]) - 4;
 		}
-		offset += (i = (UInt32)fd->GetRealData(offset, 12, chunkBuffer));
+		offset += (i = (UInt32)fd->GetRealData(offset, 12, BYTEARR(chunkBuffer)));
 		if (i == 0)
 			break;
 	}
@@ -309,9 +303,7 @@ IO::ParsedObject *Parser::FileParser::AVIParser::ParseFileHdr(IO::StreamData *fd
 				}
 				else if (*(Int32*)&strl[i].others[j] == *(Int32*)"indx")
 				{
-					if (idx1)
-						MemFree(idx1);
-					idx1 = 0;
+					idx1.Delete();
 					indx = (UInt8*)&strl[i].others[j + 8];
 					wLongsPerEntry = ReadUInt16(indx);
 					if (wLongsPerEntry != 4 || indx[3] != 0)
@@ -322,29 +314,25 @@ IO::ParsedObject *Parser::FileParser::AVIParser::ParseFileHdr(IO::StreamData *fd
 					k = 0;
 					while (k < *(UInt32*)&indx[4])
 					{
-						buffer = MemAlloc(UInt8, l = ReadUInt32(&indx[(k << 4) + 32]));
+						Data::ByteBuffer buffer(l = ReadUInt32(&indx[(k << 4) + 32]));
 						if (l > fd->GetRealData(ReadUInt64(&indx[(k << 4) + 24]), l, buffer))
 						{
-							MemFree(buffer);
 							break;
 						}
 
 						if (ReadUInt32(&buffer[4]) != ReadUInt32(&indx[(k << 4) + 32]) - 8 && ReadUInt32(&buffer[4]) != ReadUInt32(&indx[(k << 4) + 32]))
 						{
-							MemFree(buffer);
 							error = true;
 							break;
 						}
 						if (buffer[10])
 						{
-							MemFree(buffer);
 							error = true;
 							break;
 						}
 						wLongsPerEntry = ReadUInt16(&buffer[8]);
 						if (wLongsPerEntry != 2)
 						{
-							MemFree(buffer);
 							error = true;
 							break;
 						}
@@ -360,7 +348,6 @@ IO::ParsedObject *Parser::FileParser::AVIParser::ParseFileHdr(IO::StreamData *fd
 							}
 							l += 8;
 						}
-						MemFree(buffer);
 						k++;
 					}
 
@@ -392,10 +379,10 @@ IO::ParsedObject *Parser::FileParser::AVIParser::ParseFileHdr(IO::StreamData *fd
 				if (j & 1) j++;
 			}
 
-			if (idx1)
+			if (!idx1.IsNull())
 			{
 				k = 4;
-				l = ReadUInt32(idx1);
+				l = ReadUInt32(&idx1[0]);
 				while (k < l)
 				{
 					if (*(Int16*)&idx1[k + 2] == *(Int16*)"dc" || *(Int16*)&idx1[k + 2] == *(Int16*)"db")
@@ -524,9 +511,7 @@ IO::ParsedObject *Parser::FileParser::AVIParser::ParseFileHdr(IO::StreamData *fd
 				}
 				else if (*(Int32*)&strl[i].others[j] == *(Int32*)"indx")
 				{
-					if (idx1)
-						MemFree(idx1);
-					idx1 = 0;
+					idx1.Delete();
 
 					UInt64 totalSize = 0;
 
@@ -549,29 +534,25 @@ IO::ParsedObject *Parser::FileParser::AVIParser::ParseFileHdr(IO::StreamData *fd
 					k = 0;
 					while (k < *(UInt32*)&indx[4])
 					{
-						buffer = MemAlloc(UInt8, l = ReadUInt32(&indx[(k << 4) + 32]));
+						Data::ByteBuffer buffer(l = ReadUInt32(&indx[(k << 4) + 32]));
 						if (l > fd->GetRealData(ReadUInt64(&indx[(k << 4) + 24]), l, buffer))
 						{
-							MemFree(buffer);
 							break;
 						}
 
 						if (*(Int32*)&buffer[4] != *(Int32*)&indx[(k << 4) + 32] - 8 && *(Int32*)&buffer[4] != *(Int32*)&indx[(k << 4) + 32])
 						{
-							MemFree(buffer);
 							error = true;
 							break;
 						}
 						if (buffer[10])
 						{
-							MemFree(buffer);
 							error = true;
 							break;
 						}
 						wLongsPerEntry = *(UInt16*)&buffer[8];
 						if (wLongsPerEntry != 2)
 						{
-							MemFree(buffer);
 							error = true;
 							break;;
 						}
@@ -604,7 +585,6 @@ IO::ParsedObject *Parser::FileParser::AVIParser::ParseFileHdr(IO::StreamData *fd
 								l += 8;
 							}
 						}
-						MemFree(buffer);
 						k++;
 					}
 					if(fmt.formatId == 1)
@@ -630,14 +610,14 @@ IO::ParsedObject *Parser::FileParser::AVIParser::ParseFileHdr(IO::StreamData *fd
 				DEL_CLASS(audsData);
 				audsData = 0;
 			}
-			else if (audsData == 0 && lpcmData == 0 && idx1)
+			else if (audsData == 0 && lpcmData == 0 && !idx1.IsNull())
 			{
 				UInt64 totalSize = 0;
 				if (fmt.formatId == 1)
 				{
 					NEW_CLASS(blkData, IO::StmData::BlockStreamData(fd));
 					k = 4;
-					l = ReadUInt32(idx1);
+					l = ReadUInt32(&idx1[0]);
 					cmpTmp = *(Int32*)"00wb";
 					((Char*)&cmpTmp)[1] = (Char)('0' + (i % 10));
 					*(Char*)&cmpTmp = (Char)('0' + (i / 10));
@@ -654,7 +634,7 @@ IO::ParsedObject *Parser::FileParser::AVIParser::ParseFileHdr(IO::StreamData *fd
 				{
 					NEW_CLASS(audsData, Media::AudioFrameSource(fd, &fmt, audsName));
 					k = 4;
-					l = ReadUInt32(idx1);
+					l = ReadUInt32(&idx1[0]);
 					cmpTmp = *(Int32*)"00wb";
 					((Char*)&cmpTmp)[1] = (Char)('0' + (i % 10));
 					*(Char*)&cmpTmp = (Char)('0' + (i / 10));
@@ -690,15 +670,8 @@ IO::ParsedObject *Parser::FileParser::AVIParser::ParseFileHdr(IO::StreamData *fd
 		i++;
 	}
 
-	if (idx1)
-	{
-		MemFree(idx1);
-	}
-	if (info)
-	{
-		MemFree(info);
-	}
-	if (chap)
+
+	if (!chap.IsNull())
 	{
 		Media::ChapterInfo *chapters;
 		NEW_CLASS(chapters, Media::ChapterInfo());
@@ -726,7 +699,6 @@ IO::ParsedObject *Parser::FileParser::AVIParser::ParseFileHdr(IO::StreamData *fd
 			i++;
 		}
 
-		MemFree(chap);
 		mf->SetChapterInfo(chapters, true);
 	}
 

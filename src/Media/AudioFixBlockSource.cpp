@@ -69,11 +69,11 @@ void Media::AudioFixBlockSource::Stop()
 	this->readOfst = 0;
 }
 
-UOSInt Media::AudioFixBlockSource::ReadBlock(UInt8 *buff, UOSInt blkSize)
+UOSInt Media::AudioFixBlockSource::ReadBlock(Data::ByteArray blk)
 {
-	UInt32 blk = this->format.align;
-	UOSInt readSize = blkSize / blk;
-	readSize = this->data->GetRealData(this->readOfst, readSize * blk, buff);
+	UInt32 blkSize = this->format.align;
+	UOSInt readSize = blk.GetSize() / blkSize;
+	readSize = this->data->GetRealData(this->readOfst, readSize * blkSize, blk);
 	this->readOfst += readSize;
 	if (this->readEvt)
 		this->readEvt->Set();

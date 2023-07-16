@@ -10,8 +10,8 @@ namespace Crypto
 		class X509PubKey : public Crypto::Cert::X509File
 		{
 		public:
-			X509PubKey(NotNullPtr<Text::String> sourceName, const UInt8 *buff, UOSInt buffSize);
-			X509PubKey(Text::CString sourceName, const UInt8 *buff, UOSInt buffSize);
+			X509PubKey(NotNullPtr<Text::String> sourceName, Data::ByteArrayR buff);
+			X509PubKey(Text::CString sourceName, Data::ByteArrayR buff);
 			virtual ~X509PubKey();
 
 			virtual FileType GetFileType() const;

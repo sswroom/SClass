@@ -1,5 +1,6 @@
 #ifndef _SM_MEDIA_STATICIMAGE
 #define _SM_MEDIA_STATICIMAGE
+#include "Data/ByteArray.h"
 #include "Math/RectArea.h"
 #include "Media/DrawEngine.h"
 #include "Media/FrameInfo.h"
@@ -46,6 +47,7 @@ namespace Media
 		Double CalcColorRate() const;
 		UInt8 *CreateNearPixelMask(Math::Coord2D<UOSInt> pxCoord, Int32 maxRate);
 		Math::RectArea<UOSInt> CalcNearPixelRange(Math::Coord2D<UOSInt> pxCoord, Int32 maxRate);
+		Data::ByteArray GetDataArray() const;
 
 	private:
 		void CalcNearPixelMaskH32(UInt8 *pixelMask, UOSInt x, UOSInt y, UInt8 *c, Int32 maxRate);

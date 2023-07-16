@@ -1,5 +1,6 @@
 #ifndef _SM_IO_FILEANALYSE_PCAPNGFILEANALYSE
 #define _SM_IO_FILEANALYSE_PCAPNGFILEANALYSE
+#include "Data/ByteBuffer.h"
 #include "Data/SyncArrayList.h"
 #include "IO/StreamData.h"
 #include "IO/FileAnalyse/IFileAnalyse.h"
@@ -24,7 +25,7 @@ namespace IO
 			IO::StreamData *fd;
 			Bool isBE;
 			Data::SyncArrayList<BlockInfo *> blockList;
-			UInt8 *packetBuff;
+			Data::ByteBuffer packetBuff;
 
 			Bool pauseParsing;
 			Bool threadRunning;

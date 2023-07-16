@@ -18,7 +18,7 @@ Media::AudioBlockParser *Media::AudioBlockParser::CreateParser(IO::StreamData *s
 	UInt8 buff[256];
 	Media::AudioBlockParser *parser;
 
-	stmData->GetRealData(0, 256, buff);
+	stmData->GetRealData(0, 256, BYTEARR(buff));
 	if (buff[0] == 0x0b && buff[1] == 0x77) //AC3
 	{
 		NEW_CLASS(parser, Media::BlockParser::AC3BlockParser());

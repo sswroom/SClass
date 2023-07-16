@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Data/ByteBuffer.h"
 #include "Data/ByteTool.h"
 #include "Media/MSFontRenderer.h"
 #include "Parser/FileParser/FNTParser.h"
@@ -40,7 +41,7 @@ IO::ParsedObject *Parser::FileParser::FNTParser::ParseFile(IO::StreamData *fd, I
 	OSInt hdrSize;
 	UInt32 fsize;
 	Int32 ver;
-	if (fd->GetRealData(0, 118, hdr) != 118)
+	if (fd->GetRealData(0, 118, BYTEARR(hdr)) != 118)
 	{
 		return 0;
 	}
@@ -61,12 +62,11 @@ IO::ParsedObject *Parser::FileParser::FNTParser::ParseFile(IO::StreamData *fd, I
 	Media::FontRenderer *font = 0;
 	if ((OSInt)fsize > hdrSize && fsize <= fd->GetDataSize())
 	{
-		UInt8 *fontBuff = MemAlloc(UInt8, fsize);
+		Data::ByteBuffer fontBuff(fsize);
 		if (fd->GetRealData(0, fsize, fontBuff) == fsize)
 		{
-			font = ParseFontBuff(fd->GetFullName(), fontBuff, fsize);
+			font = ParseFontBuff(fd->GetFullName(), fontBuff.Ptr(), fsize);
 		}
-		MemFree(fontBuff);
 	}
 	return font;
 }

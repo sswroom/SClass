@@ -1,6 +1,7 @@
 #ifndef _SM_IO_FILEANALYSE_PCAPFILEANALYSE
 #define _SM_IO_FILEANALYSE_PCAPFILEANALYSE
 #include "Data/ArrayList.h"
+#include "Data/ByteBuffer.h"
 #include "IO/StreamData.h"
 #include "IO/FileAnalyse/IFileAnalyse.h"
 #include "Sync/Mutex.h"
@@ -19,7 +20,7 @@ namespace IO
 			Data::ArrayList<UInt64> ofstList;
 			Data::ArrayList<UInt64> sizeList;
 			Sync::Mutex dataMut;
-			UInt8 *packetBuff;
+			Data::ByteBuffer packetBuff;
 
 			Bool pauseParsing;
 			Bool threadRunning;

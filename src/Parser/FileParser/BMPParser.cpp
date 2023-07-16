@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Data/ByteBuffer.h"
 #include "Data/ByteTool.h"
 #include "IO/FileStream.h"
 #include "IO/StreamData.h"
@@ -19,11 +20,11 @@ void BMPParser_ReadPal(Media::StaticImage *img, IO::StreamData *fd, UOSInt palSt
 	{
 		if (colorUsed <= 0 || colorUsed >= maxColor)
 		{
-			fd->GetRealData(palStart, maxColor * 4, img->pal);
+			fd->GetRealData(palStart, maxColor * 4, Data::ByteArray(img->pal, maxColor * 4));
 		}
 		else
 		{
-			fd->GetRealData(palStart, colorUsed * 4, img->pal);
+			fd->GetRealData(palStart, colorUsed * 4, Data::ByteArray(img->pal, colorUsed * 4));
 			MemClear(&img->pal[colorUsed * 4], (maxColor - colorUsed) * 4);
 		}
 		UOSInt i;
@@ -38,7 +39,7 @@ void BMPParser_ReadPal(Media::StaticImage *img, IO::StreamData *fd, UOSInt palSt
 		UInt8 palBuff[768];
 		UOSInt i;
 		UOSInt j;
-		fd->GetRealData(palStart, maxColor * 3, palBuff);
+		fd->GetRealData(palStart, maxColor * 3, BYTEARR(palBuff));
 		i = 0;
 		j = 0;
 		while (i < maxColor)
@@ -399,22 +400,21 @@ IO::ParsedObject *Parser::FileParser::BMPParser::ParseFileHdr(IO::StreamData *fd
 			UInt32 iccSize = ReadUInt32(&hdr[130]);
 			if (iccSize > 10 && imgDataSize + 14 + iccSize <= fd->GetDataSize())
 			{
-				UInt8 *iccBuff = MemAlloc(UInt8, iccSize);
+				Data::ByteBuffer iccBuff(iccSize);
 				fd->GetRealData(imgDataSize + 14, iccSize, iccBuff);
-				if (iccSize == ReadMUInt32(iccBuff))
+				if (iccSize == ReadMUInt32(&iccBuff[0]))
 				{
-					Media::ICCProfile *icc = Media::ICCProfile::Parse(iccBuff, iccSize);
+					Media::ICCProfile *icc = Media::ICCProfile::Parse(iccBuff.WithSize(iccSize));
 					if (icc)
 					{
 						icc->GetRedTransferParam(outImg->info.color->GetRTranParam());
 						icc->GetGreenTransferParam(outImg->info.color->GetGTranParam());
 						icc->GetBlueTransferParam(outImg->info.color->GetBTranParam());
 						icc->GetColorPrimaries(outImg->info.color->GetPrimaries());
-						outImg->info.color->SetRAWICC(iccBuff);
+						outImg->info.color->SetRAWICC(iccBuff.Ptr());
 						DEL_CLASS(icc);
 					}
 				}
-				MemFree(iccBuff);
 			}
 		}
 		else if (headerSize >= 108 && ReadInt32(&hdr[70]) == ReadInt32((const UInt8*)"BGRs"))
@@ -482,7 +482,7 @@ IO::ParsedObject *Parser::FileParser::BMPParser::ParseFileHdr(IO::StreamData *fd
 	}
 	if (outImg)
 	{
-		UInt8 *pBits = (UInt8*)outImg->data;
+		Data::ByteArray pBits = outImg->GetDataArray();
 		UInt32 lineW;
 		UInt32 lineW2;
 		UInt32 currOfst;
@@ -715,10 +715,10 @@ IO::ParsedObject *Parser::FileParser::BMPParser::ParseFileHdr(IO::StreamData *fd
 		{
 			BMPParser_ReadPal(outImg, fd, endPos, palType, colorUsed);
 			UOSInt dataSize = (UOSInt)(fd->GetDataSize() - ReadUInt32(&hdr[10]));
-			UInt8 *rleData = MemAlloc(UInt8, dataSize);
-			UInt8 *currPtr;
+			Data::ByteBuffer rleData(dataSize);
+			Data::ByteArray currPtr;
 			OSInt dAdd = (OSInt)outImg->GetDataBpl();
-			MemClear(pBits, uimgHeight * (UOSInt)dAdd);
+			pBits.Clear(0, uimgHeight * (UOSInt)dAdd);
 			fd->GetRealData(ReadUInt32(&hdr[10]), dataSize, rleData);
 			UInt8 c;
 			UInt8 v;
@@ -814,17 +814,16 @@ IO::ParsedObject *Parser::FileParser::BMPParser::ParseFileHdr(IO::StreamData *fd
 					}
 				}
 			}
-			MemFree(rleData);
 		}
 		else if (biCompression == 2 && bpp == 4) // rle4
 		{
 			BMPParser_ReadPal(outImg, fd, endPos, palType, colorUsed);
 			UOSInt dataSize = (UOSInt)(fd->GetDataSize() - ReadUInt32(&hdr[10]));
-			UInt8 *rleData = MemAlloc(UInt8, dataSize);
+			Data::ByteBuffer rleData(dataSize);
 			OSInt dAdd = (OSInt)outImg->GetDataBpl() << 1;
-			UInt8 *tmpData = MemAlloc(UInt8, uimgHeight * (UOSInt)dAdd);
-			UInt8 *currPtr;
-			MemClear(tmpData, (UInt32)imgHeight * (UOSInt)dAdd);
+			Data::ByteBuffer tmpData(uimgHeight * (UOSInt)dAdd);
+			Data::ByteArray currPtr;
+			tmpData.Clear(0, (UInt32)imgHeight * (UOSInt)dAdd);
 			fd->GetRealData(ReadUInt32(&hdr[10]), dataSize, rleData);
 			UInt8 c;
 			UInt8 c2;
@@ -942,9 +941,8 @@ IO::ParsedObject *Parser::FileParser::BMPParser::ParseFileHdr(IO::StreamData *fd
 					}
 				}
 			}
-			MemFree(rleData);
-			pBits = outImg->data;
-			rleData = tmpData;
+			pBits = outImg->GetDataArray();
+			rleData.ReplaceBy(tmpData);
 			if (dAdd < 0)
 			{
 				dAdd = -dAdd;
@@ -955,7 +953,6 @@ IO::ParsedObject *Parser::FileParser::BMPParser::ParseFileHdr(IO::StreamData *fd
 				*pBits++ = (UInt8)((rleData[0] << 4) | rleData[1]);
 				rleData += 2;
 			}
-			MemFree(tmpData);
 		}
 		else if (biCompression == 3) //BitFields
 		{
@@ -964,7 +961,6 @@ IO::ParsedObject *Parser::FileParser::BMPParser::ParseFileHdr(IO::StreamData *fd
 			UInt32 bVal;
 			UInt32 aVal;
 			UInt32 pxVal;
-			UInt8 *readBuff;
 			OSInt dAdd = (OSInt)outImg->GetDataBpl();
 			UOSInt currW;
 			OSInt srcI;
@@ -978,7 +974,7 @@ IO::ParsedObject *Parser::FileParser::BMPParser::ParseFileHdr(IO::StreamData *fd
 				{
 					lineW = lineW + 4 - (lineW & 3);
 				}
-				readBuff = MemAlloc(UInt8, lineW);
+				Data::ByteBuffer readBuff(lineW);
 				currOfst = ReadUInt32(&hdr[10]);
 				if (inv)
 				{
@@ -1423,12 +1419,11 @@ IO::ParsedObject *Parser::FileParser::BMPParser::ParseFileHdr(IO::StreamData *fd
 					}
 					pBits += dAdd;
 				}
-				MemFree(readBuff);
 			}
 			else if (srcBpp == 32)
 			{
 				lineW = imgWidth << 2;
-				readBuff = MemAlloc(UInt8, lineW);
+				Data::ByteBuffer readBuff(lineW);
 				currOfst = ReadUInt32(&hdr[10]);
 				if (inv)
 				{
@@ -1873,7 +1868,6 @@ IO::ParsedObject *Parser::FileParser::BMPParser::ParseFileHdr(IO::StreamData *fd
 					}
 					pBits += dAdd;
 				}
-				MemFree(readBuff);
 			}
 			else
 			{

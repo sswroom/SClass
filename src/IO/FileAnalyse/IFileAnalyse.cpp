@@ -46,7 +46,7 @@ IO::FileAnalyse::IFileAnalyse *IO::FileAnalyse::IFileAnalyse::AnalyseFile(IO::St
 	UInt8 buff[256];
 	UOSInt buffSize;
 	IO::FileAnalyse::IFileAnalyse *analyse = 0;
-	buffSize = fd->GetRealData(0, 256, buff);
+	buffSize = fd->GetRealData(0, 256, BYTEARR(buff));
 	if (buffSize >= 4 && ReadMInt32(&buff[0]) == 0x000001ba)
 	{
 		NEW_CLASS(analyse, IO::FileAnalyse::MPEGFileAnalyse(fd));

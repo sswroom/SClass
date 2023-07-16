@@ -1366,6 +1366,11 @@ Math::RectArea<UOSInt> Media::StaticImage::CalcNearPixelRange(Math::Coord2D<UOSI
 	}
 }
 
+Data::ByteArray Media::StaticImage::GetDataArray() const
+{
+	return Data::ByteArray(this->data, this->GetDataBpl() * this->info.dispSize.y);
+}
+
 void Media::StaticImage::CalcNearPixelMaskH32(UInt8 *pixelMask, UOSInt x, UOSInt y, UInt8 *c, Int32 maxRate)
 {
 	UOSInt w = this->info.dispSize.x;

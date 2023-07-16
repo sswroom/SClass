@@ -38,7 +38,7 @@ void Text::UTF8Reader::FillBuffer()
 		this->buffSize -= this->currOfst;
 		this->currOfst = 0;
 	}
-	readSize = this->stm->Read(&this->buff[this->buffSize], UTF8READER_BUFFSIZE - this->buffSize);;
+	readSize = this->stm->Read(Data::ByteArray(&this->buff[this->buffSize], UTF8READER_BUFFSIZE - this->buffSize));
 #ifdef VERBOSE
 	printf("UTF8Reader.FB read %d bytes, ofst = %d, size = %d\r\n", (UInt32)readSize, (UInt32)this->currOfst, (UInt32)this->buffSize);
 #endif
@@ -51,7 +51,7 @@ void Text::UTF8Reader::CheckHeader()
 	if (this->buffSize != 0)
 		return;
 	UOSInt readSize;
-	readSize = this->stm->Read(&this->buff[this->buffSize], 4 - this->buffSize);
+	readSize = this->stm->Read(Data::ByteArray(&this->buff[this->buffSize], 4 - this->buffSize));
 #ifdef VERBOSE
 	printf("UTF8Reader.CH read %d bytes\r\n", (UInt32)readSize);
 #endif

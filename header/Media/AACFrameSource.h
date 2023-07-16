@@ -13,7 +13,7 @@ namespace Media
 		AACFrameSource(IO::StreamData *fd, Media::AudioFormat *format, Text::CString name);
 		virtual ~AACFrameSource();
 
-		virtual UOSInt ReadBlock(UInt8 *buff, UOSInt blkSize); //ret actual block size
+		virtual UOSInt ReadBlock(Data::ByteArray blk); //ret actual block size
 		virtual UOSInt GetMinBlockSize();
 	private:
 		Int32 GetRateIndex();

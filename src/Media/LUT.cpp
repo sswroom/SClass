@@ -36,7 +36,7 @@ void Media::LUT::Init(UOSInt inputCh, UOSInt inputLev, UOSInt outputCh, DataForm
 		tableSize *= inputLev;
 	}
 	tableSize = tableSize * this->outputCh;
-	this->luTable = MemAlloc(UInt8, tableSize);
+	this->luTable.ChangeSize(tableSize);
 }
 
 Media::LUT::LUT(UOSInt inputCh, UOSInt inputLev, UOSInt outputCh, DataFormat fmt, NotNullPtr<Text::String> sourceName) : IO::ParsedObject(sourceName)
@@ -51,7 +51,6 @@ Media::LUT::LUT(UOSInt inputCh, UOSInt inputLev, UOSInt outputCh, DataFormat fmt
 
 Media::LUT::~LUT()
 {
-	MemFree(this->luTable);
 	SDEL_STRING(this->remark);
 }
 
@@ -99,10 +98,15 @@ UOSInt Media::LUT::GetOutputCh() const
 
 UInt8 *Media::LUT::GetTablePtr()
 {
-	return this->luTable;
+	return this->luTable.Ptr();
 }
 
 const UInt8 *Media::LUT::GetTablePtrRead() const
+{
+	return this->luTable.Ptr();
+}
+
+Data::ByteArray Media::LUT::GetTableArray() const
 {
 	return this->luTable;
 }
@@ -282,7 +286,7 @@ Media::LUT *Media::LUT::Clone() const
 	{
 		newLut->SetRemark(this->remark);
 	}
-	UOSInt tableSize;
+/*	UOSInt tableSize;
 	UOSInt i;
 	if (fmt == Media::LUT::DF_UINT8)
 	{
@@ -305,8 +309,8 @@ Media::LUT *Media::LUT::Clone() const
 	{
 		tableSize *= inputLev;
 	}
-	tableSize = tableSize * this->outputCh;
-	MemCopyNO(newLut->luTable, this->luTable, tableSize);
+	tableSize = tableSize * this->outputCh;*/
+	newLut->luTable.CopyFrom(this->luTable);
 	return newLut;
 }
 
@@ -328,8 +332,8 @@ Bool Media::LUT::Equals(Media::LUT *lut) const
 	j = j * this->outputCh;
 	if (this->fmt == Media::LUT::DF_UINT8)
 	{
-		UInt8 *stab = (UInt8*)this->luTable;
-		UInt8 *dtab = (UInt8*)lut->luTable;
+		UInt8 *stab = (UInt8*)this->luTable.Ptr();
+		UInt8 *dtab = (UInt8*)lut->luTable.Ptr();
 		while (i < j)
 		{
 			if (stab[i] != dtab[i])
@@ -339,8 +343,8 @@ Bool Media::LUT::Equals(Media::LUT *lut) const
 	}
 	else if (this->fmt == Media::LUT::DF_UINT16)
 	{
-		UInt16 *stab = (UInt16*)this->luTable;
-		UInt16 *dtab = (UInt16*)lut->luTable;
+		UInt16 *stab = (UInt16*)this->luTable.Ptr();
+		UInt16 *dtab = (UInt16*)lut->luTable.Ptr();
 		while (i < j)
 		{
 			if (stab[i] != dtab[i])
@@ -350,8 +354,8 @@ Bool Media::LUT::Equals(Media::LUT *lut) const
 	}
 	else if (this->fmt == Media::LUT::DF_SINGLE)
 	{
-		Single *stab = (Single*)this->luTable;
-		Single *dtab = (Single*)lut->luTable;
+		Single *stab = (Single*)this->luTable.Ptr();
+		Single *dtab = (Single*)lut->luTable.Ptr();
 		while (i < j)
 		{
 			if (stab[i] != dtab[i])

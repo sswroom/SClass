@@ -1412,6 +1412,8 @@ Data/BinTool.h: ../../src/Data/BinTool.cpp
 @BinTool.o
 Data/BTreeMap.h:
 Data/BTreeUTF8Map.h:
+Data/ByteArray.h:
+Data/ByteBuffer.h:
 Data/ByteOrder.h:
 Data/ByteOrderLSB.h: ../../src/Data/ByteOrderLSB.cpp
 @ByteOrderLSB.o

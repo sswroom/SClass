@@ -14,7 +14,7 @@ Bool IO::NullStream::IsDown() const
 	return false;
 }
 
-UOSInt IO::NullStream::Read(UInt8 *buff, UOSInt size)
+UOSInt IO::NullStream::Read(const Data::ByteArray &buff)
 {
 	return 0;
 }

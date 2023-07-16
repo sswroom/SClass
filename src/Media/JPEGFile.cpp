@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Data/ByteBuffer.h"
 #include "Data/ByteOrderLSB.h"
 #include "Data/ByteOrderMSB.h"
 #include "Data/ByteTool.h"
@@ -18,20 +19,19 @@ Bool Media::JPEGFile::ParseJPEGHeader(IO::StreamData *fd, Media::Image *img, Med
 	UInt64 nextOfst;
 	UInt32 j;
 	UInt8 buff[18];
-	UInt8 *tagBuff;
 	Bool ret = false;
 	IO::MemoryStream *flirMstm = 0;
 	UInt8 flirMaxSegm;
 	UInt8 flirCurrSegm = 0;
 
-	if (fd->GetRealData(0, 2, buff) != 2)
+	if (fd->GetRealData(0, 2, BYTEARR(buff)) != 2)
 		return false;
 	if (buff[0] != 0xff || buff[1] != 0xd8)
 		return false;
 	ofst = 2;
 	while (true)
 	{
-		if (fd->GetRealData(ofst, 4, buff) != 4)
+		if (fd->GetRealData(ofst, 4, BYTEARR(buff)) != 4)
 		{
 			ret = false;
 			break;
@@ -50,7 +50,7 @@ Bool Media::JPEGFile::ParseJPEGHeader(IO::StreamData *fd, Media::Image *img, Med
 		j = (UInt32)((buff[2] << 8) | buff[3]) - 2;
 		if (buff[1] == 0xe1)
 		{
-			fd->GetRealData(ofst + 4, 14, buff);
+			fd->GetRealData(ofst + 4, 14, BYTEARR(buff));
 			if (*(Int32*)buff == *(Int32*)"Exif")
 			{
 				Data::ByteOrder *bo = 0;
@@ -96,18 +96,16 @@ Bool Media::JPEGFile::ParseJPEGHeader(IO::StreamData *fd, Media::Image *img, Med
 						flirMaxSegm = buff[7];
 						NEW_CLASS(flirMstm, IO::MemoryStream());
 						flirCurrSegm = buff[6];
-						tagBuff = MemAlloc(UInt8, j);
+						Data::ByteBuffer tagBuff(j);
 						fd->GetRealData(ofst + 4, j, tagBuff);
 						flirMstm->Write(&tagBuff[8], j - 8);
-						MemFree(tagBuff);
 					}
 					else if (flirMstm && buff[6] == (flirCurrSegm + 1))
 					{
 						flirCurrSegm = (UInt8)(flirCurrSegm + 1);
-						tagBuff = MemAlloc(UInt8, j);
+						Data::ByteBuffer tagBuff(j);
 						fd->GetRealData(ofst + 4, j, tagBuff);
 						flirMstm->Write(&tagBuff[8], j - 8);
-						MemFree(tagBuff);
 					}
 				}
 				ofst += j + 4;
@@ -119,18 +117,17 @@ Bool Media::JPEGFile::ParseJPEGHeader(IO::StreamData *fd, Media::Image *img, Med
 		}
 		else if (buff[1] == 0xe2)
 		{
-			tagBuff = MemAlloc(UInt8, j);
+			Data::ByteBuffer tagBuff(j);
 			fd->GetRealData(ofst + 4, j, tagBuff);
-			if (Text::StrStartsWithC(tagBuff, j, UTF8STRC("ICC_PROFILE")))
+			if (Text::StrStartsWithC(tagBuff.Ptr(), j, UTF8STRC("ICC_PROFILE")))
 			{
-				Media::ICCProfile *icc = Media::ICCProfile::Parse(&tagBuff[14], j - 14);
+				Media::ICCProfile *icc = Media::ICCProfile::Parse(tagBuff.SubArray(14, j - 14));
 				if (icc)
 				{
 					icc->SetToColorProfile(img->info.color);
 					DEL_CLASS(icc);
 				}
 			}
-			MemFree(tagBuff);
 			ofst += j + 4;
 		}
 		else
@@ -145,12 +142,11 @@ Bool Media::JPEGFile::ParseJPEGHeader(IO::StreamData *fd, Media::Image *img, Med
 		{
 			UOSInt i;
 			UOSInt k;
-			UOSInt buffSize;
 			UInt32 blkOfst;
 			UInt32 blkSize;
 //			UInt32 blkType;
 			UInt32 delay;
-			tagBuff = flirMstm->GetBuff(&buffSize);
+			Data::ByteArray tagBuff = flirMstm->GetArray();
 			if (tagBuff[0] == 'F' && tagBuff[1] == 'F' && tagBuff[2] == 'F')
 			{
 				j = 0x44;
@@ -167,7 +163,7 @@ Bool Media::JPEGFile::ParseJPEGHeader(IO::StreamData *fd, Media::Image *img, Med
 						Media::ImageList *innerImgList;
 						Media::Image *innerImg;
 						{
-							IO::StmData::MemoryDataRef mfd(&tagBuff[blkOfst + 32], blkSize - 32);
+							IO::StmData::MemoryDataRef mfd(tagBuff.SubArray(blkOfst + 13, blkSize - 32));
 							innerImgList = (Media::ImageList*)parsers->ParseFileType(&mfd, IO::ParserType::ImageList);
 						}
 						if (innerImgList)
@@ -246,14 +242,14 @@ Media::EXIFData *Media::JPEGFile::ParseJPEGExif(IO::StreamData *fd)
 	UInt64 nextOfst;
 	UInt32 j;
 	UInt8 buff[18];
-	if (fd->GetRealData(0, 2, buff) != 2)
+	if (fd->GetRealData(0, 2, BYTEARR(buff)) != 2)
 		return 0;
 	if (buff[0] != 0xff || buff[1] != 0xd8)
 		return 0;
 	ofst = 2;
 	while (true)
 	{
-		if (fd->GetRealData(ofst, 4, buff) != 4)
+		if (fd->GetRealData(ofst, 4, BYTEARR(buff)) != 4)
 			return 0;
 		if (buff[0] != 0xff)
 			return 0;
@@ -263,7 +259,7 @@ Media::EXIFData *Media::JPEGFile::ParseJPEGExif(IO::StreamData *fd)
 		j = (UInt32)((buff[2] << 8) | buff[3]) - 2;
 		if (buff[1] == 0xe1)
 		{
-			fd->GetRealData(ofst + 4, 14, buff);
+			fd->GetRealData(ofst + 4, 14, BYTEARR(buff));
 			if (*(Int32*)buff == *(Int32*)"Exif")
 			{
 				Data::ByteOrder *bo;
@@ -313,8 +309,7 @@ Bool Media::JPEGFile::ParseJPEGHeaders(IO::StreamData *fd, Media::EXIFData **exi
 	UInt64 nextOfst;
 	UInt32 j;
 	UInt8 buff[30];
-	UInt8 *tagBuff;
-	if (fd->GetRealData(0, 2, buff) != 2)
+	if (fd->GetRealData(0, 2, BYTEARR(buff)) != 2)
 		return false;
 	if (buff[0] != 0xff || buff[1] != 0xd8)
 		return false;
@@ -333,7 +328,7 @@ Bool Media::JPEGFile::ParseJPEGHeaders(IO::StreamData *fd, Media::EXIFData **exi
 	ofst = 2;
 	while (ofst < fd->GetDataSize())
 	{
-		if (fd->GetRealData(ofst, 4, buff) != 4)
+		if (fd->GetRealData(ofst, 4, BYTEARR(buff)) != 4)
 			return false;
 		if (buff[0] != 0xff)
 			return false;
@@ -342,7 +337,7 @@ Bool Media::JPEGFile::ParseJPEGHeaders(IO::StreamData *fd, Media::EXIFData **exi
 		switch (buff[1])
 		{
 		case 0xe1: //APP1
-			fd->GetRealData(ofst + 4, 30, buff);
+			fd->GetRealData(ofst + 4, 30, BYTEARR(buff));
 			if (*(Int32*)buff == *(Int32*)"Exif")
 			{
 				Data::ByteOrder *bo;
@@ -387,10 +382,10 @@ Bool Media::JPEGFile::ParseJPEGHeaders(IO::StreamData *fd, Media::EXIFData **exi
 					Text::EncodingFactory encFact;
 					if (*xmf)
 						DEL_CLASS(*xmf);
-					tagBuff = MemAlloc(UInt8, j - 29);
+					Data::ByteBuffer tagBuff(j - 29);
 					fd->GetRealData(ofst + 33, j - 29, tagBuff);
 					NEW_CLASS(*xmf, Text::XMLDocument());
-                    if ((*xmf)->ParseBuff(&encFact, tagBuff, j - 29))
+                    if ((*xmf)->ParseBuff(&encFact, tagBuff.Ptr(), j - 29))
 					{
 					}
 					else
@@ -398,7 +393,6 @@ Bool Media::JPEGFile::ParseJPEGHeaders(IO::StreamData *fd, Media::EXIFData **exi
 						DEL_CLASS(*xmf);
 						*xmf = 0;
 					}
-					MemFree(tagBuff);
 				}
 				ofst += j + 4;
 			}
@@ -408,13 +402,14 @@ Bool Media::JPEGFile::ParseJPEGHeaders(IO::StreamData *fd, Media::EXIFData **exi
 			}
 			break;
 		case 0xe2: //APP2
-			tagBuff = MemAlloc(UInt8, j);
+		{
+			Data::ByteBuffer tagBuff(j);
 			fd->GetRealData(ofst + 4, j, tagBuff);
-			if (Text::StrStartsWithC(tagBuff, j, UTF8STRC("ICC_PROFILE")) == 0)
+			if (Text::StrStartsWithC(tagBuff.Ptr(), j, UTF8STRC("ICC_PROFILE")) == 0)
 			{
 				if (icc)
 				{
-					Media::ICCProfile *newIcc = Media::ICCProfile::Parse(&tagBuff[14], j - 14);
+					Media::ICCProfile *newIcc = Media::ICCProfile::Parse(Data::ByteArrayR(&tagBuff[14], j - 14));
 					if (newIcc)
 					{
 						if (*icc)
@@ -425,9 +420,9 @@ Bool Media::JPEGFile::ParseJPEGHeaders(IO::StreamData *fd, Media::EXIFData **exi
 					}
 				}
 			}
-			MemFree(tagBuff);
 			ofst += j + 4;
 			break;
+		}
 		case 0xe0: //APP0
 		case 0xe3: //APP3
 		case 0xe4: //APP4
@@ -450,7 +445,7 @@ Bool Media::JPEGFile::ParseJPEGHeaders(IO::StreamData *fd, Media::EXIFData **exi
 		case 0xc1:
 		case 0xc2:
 		case 0xc3:
-			fd->GetRealData(ofst + 4, 14, buff);
+			fd->GetRealData(ofst + 4, 14, BYTEARR(buff));
 			if (height)
 				*height = ReadMUInt16(&buff[1]);
 			if (width)

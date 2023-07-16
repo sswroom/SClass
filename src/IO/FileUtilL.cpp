@@ -235,7 +235,7 @@ Bool IO::FileUtil::CopyFile(Text::CString file1, Text::CString file2, FileExistA
 		Data::Timestamp ts2;
 		Data::Timestamp ts3;
 		buff = MemAlloc(UInt8, 1048576);
-		writeSize = fs1->Read(buff, (UOSInt)1048576);
+		writeSize = fs1->Read(Data::ByteArray(buff, (UOSInt)1048576));
 		writeSize = fs2->Write(buff, (UOSInt)writeSize);
 		MemFree(buff);
 		fs1->GetFileTimes(&ts1, &ts2, &ts3);
@@ -262,7 +262,7 @@ Bool IO::FileUtil::CopyFile(Text::CString file1, Text::CString file2, FileExistA
 		}
 		while (writeSize < fileSize)
 		{
-			if ((thisSize = fs1->Read(buff, readSize)) <= 0)
+			if ((thisSize = fs1->Read(Data::ByteArray(buff, readSize))) <= 0)
 			{
 				break;
 			}

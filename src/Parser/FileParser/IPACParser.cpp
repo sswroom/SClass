@@ -58,7 +58,7 @@ IO::ParsedObject *Parser::FileParser::IPACParser::ParseFileHdr(IO::StreamData *f
 
 	while (i < recCnt)
 	{
-		fd->GetRealData(hdrOfst, 44, rec);
+		fd->GetRealData(hdrOfst, 44, BYTEARR(rec));
 		startOfst = ReadUInt32(&rec[36]);
 		if (startOfst != currOfst)
 		{

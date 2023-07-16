@@ -1,6 +1,7 @@
 #ifndef _SM_MAP_ESRI_FILEGDBUTIL
 #define _SM_MAP_ESRI_FILEGDBUTIL
 #include "Data/ArrayList.h"
+#include "Data/ByteArray.h"
 #include "Math/ArcGISPRJParser.h"
 #include "Math/CoordinateSystem.h"
 #include "Text/CString.h"
@@ -57,13 +58,15 @@ namespace Map
 		class FileGDBUtil
 		{
 		public:
-			static FileGDBTableInfo *ParseFieldDesc(const UInt8 *fieldDesc, Math::ArcGISPRJParser *prjParser);
+			static FileGDBTableInfo *ParseFieldDesc(Data::ByteArray fieldDesc, Math::ArcGISPRJParser *prjParser);
 			static void FreeFieldInfo(FileGDBFieldInfo *fieldInfo);
 			static void FreeTableInfo(FileGDBTableInfo *tableInfo);
 			static FileGDBFieldInfo *FieldInfoClone(FileGDBFieldInfo *tableInfo);
 			static FileGDBTableInfo *TableInfoClone(FileGDBTableInfo *tableInfo);
 			static UOSInt ReadVarUInt(const UInt8 *buff, UOSInt ofst, UInt64 *val);
 			static UOSInt ReadVarInt(const UInt8 *buff, UOSInt ofst, Int64 *val);
+			static UOSInt ReadVarUInt(Data::ByteArrayR buff, UOSInt ofst, UInt64 *val);
+			static UOSInt ReadVarInt(Data::ByteArrayR buff, UOSInt ofst, Int64 *val);
 
 			static Text::CString GeometryTypeGetName(UInt8 t);
 			static Text::CString FieldTypeGetName(UInt8 t);

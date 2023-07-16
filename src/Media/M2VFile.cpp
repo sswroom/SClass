@@ -17,13 +17,13 @@ UInt32 __stdcall Media::M2VFile::PlayThread(void *userData)
 	buffSize = 0;
 	while (!me->playToStop)
 	{
-		buffSize = me->stmData->GetRealData(me->readOfst, BUFFSIZE - buffSize, &me->readBuff[buffSize]);
+		buffSize = me->stmData->GetRealData(me->readOfst, BUFFSIZE - buffSize, me->readBuff.SubArray(buffSize));
 		if (buffSize == 0)
 		{
 			me->stm->EndFrameStream();
 			break;
 		}
-		me->stm->WriteFrameStream(me->readBuff, buffSize);
+		me->stm->WriteFrameStream(me->readBuff.Ptr(), buffSize);
 		me->readOfst += buffSize;
 		buffSize = 0;
 	}
@@ -32,11 +32,10 @@ UInt32 __stdcall Media::M2VFile::PlayThread(void *userData)
 	return 0;
 }
 
-Media::M2VFile::M2VFile(IO::StreamData *stmData) : Media::MediaFile(stmData->GetFullName())
+Media::M2VFile::M2VFile(IO::StreamData *stmData) : Media::MediaFile(stmData->GetFullName()), readBuff(1048576)
 {
 	this->stmData = stmData->GetPartialData(0, this->fleng = stmData->GetDataSize());
 	this->readOfst = 0;
-	this->readBuff = MemAlloc(UInt8, 1048576);
 	this->playing = false;
 	this->playToStop = false;
 	this->startTime = 0;
@@ -45,9 +44,9 @@ Media::M2VFile::M2VFile(IO::StreamData *stmData) : Media::MediaFile(stmData->Get
 	UInt32 frameRateNorm;
 	UInt32 frameRateDenorm;
 	Media::FrameInfo info;
-	Media::MPEGVideoParser::GetFrameInfo(this->readBuff, 1024, &info, &frameRateNorm, &frameRateDenorm, &this->bitRate, false);
+	Media::MPEGVideoParser::GetFrameInfo(this->readBuff.Ptr(), 1024, &info, &frameRateNorm, &frameRateDenorm, &this->bitRate, false);
 	NEW_CLASS(this->stm, Media::M2VStreamSource(this));
-	this->stm->DetectStreamInfo(this->readBuff, buffSize);
+	this->stm->DetectStreamInfo(this->readBuff.Ptr(), buffSize);
 }
 
 Media::M2VFile::~M2VFile()
@@ -58,7 +57,6 @@ Media::M2VFile::~M2VFile()
 	}
 	DEL_CLASS(this->stm);
 	DEL_CLASS(this->stmData);
-	MemFree(this->readBuff);
 }
 
 UOSInt Media::M2VFile::AddSource(Media::IMediaSource *src, Int32 syncTime)

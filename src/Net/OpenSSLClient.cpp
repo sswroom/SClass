@@ -81,11 +81,11 @@ Net::OpenSSLClient::~OpenSSLClient()
 	MemFree(this->clsData);
 }
 
-UOSInt Net::OpenSSLClient::Read(UInt8 *buff, UOSInt size)
+UOSInt Net::OpenSSLClient::Read(Data::ByteArray buff)
 {
 	if (s && (this->flags & 6) == 0)
 	{
-		int ret = SSL_read(this->clsData->ssl, buff, (int)(OSInt)size);
+		int ret = SSL_read(this->clsData->ssl, buff.Ptr(), (int)(OSInt)buff.GetSize());
 		if (ret > 0)
 		{
 #if defined(VERBOSE)
@@ -143,9 +143,9 @@ UOSInt Net::OpenSSLClient::Write(const UInt8 *buff, UOSInt size)
 	}
 }
 
-void *Net::OpenSSLClient::BeginRead(UInt8 *buff, UOSInt size, Sync::Event *evt)
+void *Net::OpenSSLClient::BeginRead(Data::ByteArray buff, Sync::Event *evt)
 {
-	UOSInt ret = this->Read(buff, size);
+	UOSInt ret = this->Read(buff);
 	if (ret)
 	{
 		evt->Set();

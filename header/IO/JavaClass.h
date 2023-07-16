@@ -152,10 +152,10 @@ namespace IO
 		void AppendCodeMethodCodes(Text::StringBuilderUTF8 *sb, UOSInt lev, Data::ArrayListString *importList, const UTF8Char *packageName, const UInt8 *codeAttr, const UTF8Char *typeBuff, const MethodInfo *method) const;
 		static const UTF8Char *AppendCodeType2String(Text::StringBuilderUTF8 *sb, const UTF8Char *typeStr, Data::ArrayListString *importList, const UTF8Char *packageName);
 
-		void Init(const UInt8 *buff, UOSInt buffSize);
+		void Init(Data::ByteArrayR buff);
 	public:
-		JavaClass(NotNullPtr<Text::String> sourceName, const UInt8 *buff, UOSInt buffSize);
-		JavaClass(Text::CString sourceName, const UInt8 *buff, UOSInt buffSize);
+		JavaClass(NotNullPtr<Text::String> sourceName, Data::ByteArrayR buff);
+		JavaClass(Text::CString sourceName, Data::ByteArrayR buff);
 		virtual ~JavaClass();
 
 		virtual IO::ParserType GetParserType() const;
@@ -179,8 +179,8 @@ namespace IO
 		UTF8Char *DecompileMethod(UInt16 methodIndex, UTF8Char *nameBuff, UInt16 *classIndex, UTF8Char *retType, DecompileEnv *env, Text::StringBuilderUTF8 *sb) const;
 	public:
 		static JavaClass *ParseFile(Text::CString fileName);
-		static JavaClass *ParseBuff(NotNullPtr<Text::String> sourceName, const UInt8 *buff, UOSInt buffSize);
-		static JavaClass *ParseBuff(Text::CString sourceName, const UInt8 *buff, UOSInt buffSize);
+		static JavaClass *ParseBuff(NotNullPtr<Text::String> sourceName, Data::ByteArrayR buff);
+		static JavaClass *ParseBuff(Text::CString sourceName, Data::ByteArrayR buff);
 		static Text::CString EndTypeGetName(EndType et);
 	};
 }

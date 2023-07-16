@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Data/ByteBuffer.h"
 #include "Data/ByteTool.h"
 #include "IO/EXEFile.h"
 #include "Parser/FileParser/EXEParser.h"
@@ -107,7 +108,7 @@ IO::ParsedObject *Parser::FileParser::EXEParser::ParseFileHdr(IO::StreamData *fd
 	exef->AddDOSEnv(fileSize - hdrSize + 256, &regs, 0x70);
 	UInt8 *codePtr = exef->GetDOSCodePtr(&codeLen);
 	exef->SetDOSHasPSP(true);
-	fd->GetRealData(hdrSize, codeLen - 256, &codePtr[256]);
+	fd->GetRealData(hdrSize, codeLen - 256, Data::ByteArray(&codePtr[256], codeLen - 256));
 
 	if (relocSize > 0)
 	{
@@ -116,7 +117,7 @@ IO::ParsedObject *Parser::FileParser::EXEParser::ParseFileHdr(IO::StreamData *fd
 		UInt32 j;
 		UInt8 *u16Ptr;
 		relocTab = MemAlloc(UInt32, relocSize);
-		fd->GetRealData(relocOfst, relocSize << 2, (UInt8*)relocTab);
+		fd->GetRealData(relocOfst, relocSize << 2, Data::ByteArray((UInt8*)relocTab, relocSize * sizeof(UInt32)));
 		while (i-- > 0)
 		{
 			j = relocTab[i];
@@ -179,7 +180,7 @@ IO::ParsedObject *Parser::FileParser::EXEParser::ParseFileHdr(IO::StreamData *fd
 	if (peOfst >= 64 && peOfst <= 1024)
 	{
 		UInt8 peBuff[24];
-		fd->GetRealData(peOfst, 24, peBuff);
+		fd->GetRealData(peOfst, 24, BYTEARR(peBuff));
 		if (*(Int32*)&peBuff[0] == *(Int32*)"PE\0")
 		{
 			UInt16 machine = ReadUInt16(&peBuff[4]);
@@ -276,7 +277,7 @@ IO::ParsedObject *Parser::FileParser::EXEParser::ParseFileHdr(IO::StreamData *fd
 
 			if (sizeOfOptionalHeader >= 96)
 			{
-				UInt8 *optionalHdr = MemAlloc(UInt8, sizeOfOptionalHeader);
+				Data::ByteBuffer optionalHdr(sizeOfOptionalHeader);
 				if (fd->GetRealData(peOfst + 24, sizeOfOptionalHeader, optionalHdr) == sizeOfOptionalHeader)
 				{
 					UInt32 ofst;
@@ -300,7 +301,6 @@ IO::ParsedObject *Parser::FileParser::EXEParser::ParseFileHdr(IO::StreamData *fd
 					if (magic == 0x10b || magic == 0x20b)
 					{
 						UInt32 sizeOfImage;
-						UInt8 *exeImage;
 
 						exef->AddProp(CSTR("Major Linker Version"), CSTRP(sbuff, sptr));
 						sptr = Text::StrInt32(sbuff, optionalHdr[3]);
@@ -492,8 +492,8 @@ IO::ParsedObject *Parser::FileParser::EXEParser::ParseFileHdr(IO::StreamData *fd
 						UInt32 sOfst;
 						UOSInt i;
 						Text::StringBuilderUTF8 sb;
-						UInt8 *sectionHeaders = MemAlloc(UInt8, numberOfSections * 40);
-						exeImage = MemAlloc(UInt8, sizeOfImage);
+						Data::ByteBuffer sectionHeaders(numberOfSections * 40);
+						Data::ByteBuffer exeImage(sizeOfImage);
 						fd->GetRealData(sizeOfOptionalHeader + peOfst + 24, numberOfSections * 40, sectionHeaders);
 						i = 0;
 						sOfst = 0;
@@ -522,7 +522,7 @@ IO::ParsedObject *Parser::FileParser::EXEParser::ParseFileHdr(IO::StreamData *fd
 								readSize = dataSize;
 							}
 
-							fd->GetRealData(dataAddr, readSize, &exeImage[virtAddr]);
+							fd->GetRealData(dataAddr, readSize, exeImage.SubArray(virtAddr));
 							if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC(".text")))
 							{
 							}
@@ -537,7 +537,7 @@ IO::ParsedObject *Parser::FileParser::EXEParser::ParseFileHdr(IO::StreamData *fd
 							}
 							else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC(".rsrc")))
 							{
-								ParseResource(exef, 0, sbuff, sbuff, &exeImage[virtAddr], 0, exeImage);
+								ParseResource(exef, 0, sbuff, sbuff, &exeImage[virtAddr], 0, exeImage.Ptr());
 								sbuff[0] = 0;
 							}
 							else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC(".reloc")))
@@ -609,7 +609,7 @@ IO::ParsedObject *Parser::FileParser::EXEParser::ParseFileHdr(IO::StreamData *fd
 
 							if (dataSize > 0)
 							{
-								fd->GetRealData(dataAddr, dataSize, &exeImage[virtAddr]);
+								fd->GetRealData(dataAddr, dataSize, exeImage.SubArray(virtAddr));
 							}
 							if (virtSize > dataSize)
 							{
@@ -707,19 +707,15 @@ IO::ParsedObject *Parser::FileParser::EXEParser::ParseFileHdr(IO::StreamData *fd
 								}
 							}
 						}
-
-						MemFree(sectionHeaders);
-						MemFree(exeImage);
 					}
 				}
-				MemFree(optionalHdr);
 			}
 		}
 		else if (*(Int16*)&peBuff[0] == *(Int16*)"NE")
 		{
 			UInt8 neBuff[64];
 			MemCopyNO(neBuff, peBuff, 24);
-			fd->GetRealData(peOfst + 24, 40, &neBuff[24]);
+			fd->GetRealData(peOfst + 24, 40, BYTEARR(neBuff).SubArray(24));
 
 			exef->AddProp(CSTR("Extended Header Format"), CSTR("New Executable"));
 			sptr = Text::StrInt32(sbuff, neBuff[2]);
@@ -773,14 +769,13 @@ IO::ParsedObject *Parser::FileParser::EXEParser::ParseFileHdr(IO::StreamData *fd
 
 			UOSInt tableStart;
 			UOSInt tableSize;
-			UInt8 *nameTable;
 			UOSInt j;
 			tableStart = ReadUInt16(&neBuff[38]);
 			tableSize = ReadUInt16(&neBuff[40]) - tableStart;
 			tableStart += peOfst;
 			if (tableSize > 0)
 			{
-				nameTable = MemAlloc(UInt8, tableSize);
+				Data::ByteBuffer nameTable(tableSize);
 				fd->GetRealData(tableStart, tableSize, nameTable);
 				i = 0;
 				j = 0;
@@ -792,14 +787,13 @@ IO::ParsedObject *Parser::FileParser::EXEParser::ParseFileHdr(IO::StreamData *fd
 					i++;
 					j += (UOSInt)nameTable[j] + 1;
 				}
-				MemFree(nameTable);
 			}
 
 			tableStart = ReadUInt32(&neBuff[44]);
 			tableSize = ReadUInt16(&neBuff[32]);
 			if (tableSize > 0)
 			{
-				nameTable = MemAlloc(UInt8, tableSize);
+				Data::ByteBuffer nameTable(tableSize);
 				fd->GetRealData(tableStart, tableSize, nameTable);
 				i = 0;
 				j = 0;
@@ -811,7 +805,6 @@ IO::ParsedObject *Parser::FileParser::EXEParser::ParseFileHdr(IO::StreamData *fd
 					i++;
 					j += (UOSInt)nameTable[j] + 1;
 				}
-				MemFree(nameTable);
 			}
 
 			tableStart = ReadUInt16(&neBuff[34]);
@@ -819,7 +812,7 @@ IO::ParsedObject *Parser::FileParser::EXEParser::ParseFileHdr(IO::StreamData *fd
 			tableStart += peOfst;
 			if (tableSize > 0)
 			{
-				nameTable = MemAlloc(UInt8, tableSize);
+				Data::ByteBuffer nameTable(tableSize);
 				fd->GetRealData(tableStart, tableSize, nameTable);
 				sptr = Text::StrInt32(sbuff, ReadUInt16(&nameTable[0]));
 				exef->AddProp(CSTR("Resource Table: Alignment shift count"), CSTRP(sbuff, sptr));
@@ -849,18 +842,15 @@ IO::ParsedObject *Parser::FileParser::EXEParser::ParseFileHdr(IO::StreamData *fd
 						sptr = Text::StrHexVal16(Text::StrConcatC(sbuff, UTF8STRC("0x")), ReadUInt16(&nameTable[j + 6]));
 						exef->AddProp(CSTR("--Resource ID"), CSTRP(sbuff, sptr));
 
-						UInt8 *resBuff;
 						UOSInt resSize = (UOSInt)ReadUInt16(&nameTable[j + 2]) << ReadUInt16(&nameTable[0]);
-						resBuff = MemAlloc(UInt8, resSize);
+						Data::ByteBuffer resBuff(resSize);
 						fd->GetRealData((UInt64)(ReadUInt16(&nameTable[j]) << ReadUInt16(&nameTable[0])), resSize, resBuff);
 
 						sptr = Text::StrHexVal16(Text::StrConcatC(sbuff, UTF8STRC("Resource 0x")), ReadUInt16(&nameTable[j + 6]));
-						exef->AddResource(CSTRP(sbuff, sptr), resBuff, resSize, 0, rt);
-						MemFree(resBuff);
+						exef->AddResource(CSTRP(sbuff, sptr), resBuff.Ptr(), resSize, 0, rt);
 						j += 12;
 					}
 				}
-				MemFree(nameTable);
 			}
 		}
 	}

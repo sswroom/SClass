@@ -23,6 +23,19 @@ IO::StmData::MemoryDataCopy::MemoryDataCopy(const UInt8 *data, UOSInt dataLength
 	this->dataLength = dataLength;
 }
 
+IO::StmData::MemoryDataCopy::MemoryDataCopy(const Data::ByteArrayR &data)
+{
+	this->stat = MemAlloc(MemoryStats, 1);
+	this->stat->data = MemAlloc(UInt8, data.GetSize());
+	this->stat->dataLength = data.GetSize();
+	MemCopyNO(this->stat->data, data.GetPtr(), data.GetSize());
+	this->stat->useCnt = 1;
+	this->stat->fullName = 0;
+	this->data = this->stat->data;
+	this->dataLength = dataLength;
+}
+
+
 IO::StmData::MemoryDataCopy::~MemoryDataCopy()
 {
 	if (Sync::Interlocked::Decrement(&this->stat->useCnt) == 0)
@@ -33,7 +46,7 @@ IO::StmData::MemoryDataCopy::~MemoryDataCopy()
 	}
 }
 
-UOSInt IO::StmData::MemoryDataCopy::GetRealData(UInt64 offset, UOSInt length, UInt8 *buffer)
+UOSInt IO::StmData::MemoryDataCopy::GetRealData(UInt64 offset, UOSInt length, Data::ByteArray buffer)
 {
 	if (offset >= this->dataLength)
 	{
@@ -45,7 +58,7 @@ UOSInt IO::StmData::MemoryDataCopy::GetRealData(UInt64 offset, UOSInt length, UI
 	}
 	if (length > 0)
 	{
-		MemCopyNO(buffer, &this->data[offset], length);
+		buffer.CopyFrom(Data::ByteArrayR(&this->data[offset], length));
 	}
 	return length;
 }

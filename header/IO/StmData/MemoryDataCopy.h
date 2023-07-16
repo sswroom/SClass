@@ -23,9 +23,10 @@ namespace IO
 			MemoryDataCopy(MemoryStats *stat, const UInt8 *data, UOSInt dataLength);
 		public:
 			MemoryDataCopy(const UInt8 *data, UOSInt dataLength);
+			MemoryDataCopy(const Data::ByteArrayR &data);
 			virtual ~MemoryDataCopy();
 
-			virtual UOSInt GetRealData(UInt64 offset, UOSInt length, UInt8 *buffer);
+			virtual UOSInt GetRealData(UInt64 offset, UOSInt length, Data::ByteArray buffer);
 			virtual NotNullPtr<Text::String> GetFullName();
 			virtual Text::CString GetShortName();
 			virtual void SetFullName(Text::CString fullName);

@@ -97,11 +97,11 @@ void Media::AudioBlockSource::Stop()
 	this->readEvt = 0;
 }
 
-UOSInt Media::AudioBlockSource::ReadBlock(UInt8 *buff, UOSInt blkSize)
+UOSInt Media::AudioBlockSource::ReadBlock(Data::ByteArray buff)
 {
 	if (this->readBlock >= this->blockCnt)
 		return 0;
-	if (this->blocks[this->readBlock].length > blkSize)
+	if (this->blocks[this->readBlock].length > buff.GetSize())
 		return 0;
 	UOSInt readSize = this->data->GetRealData(this->blocks[this->readBlock].offset, this->blocks[this->readBlock].length, buff);
 	this->readBlock++;

@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Data/ByteBuffer.h"
 #include "Data/ByteTool.h"
 #include "IO/PackageFile.h"
 #include "Parser/FileParser/MEDParser.h"
@@ -34,7 +35,6 @@ IO::ParserType Parser::FileParser::MEDParser::GetParserType()
 
 IO::ParsedObject *Parser::FileParser::MEDParser::ParseFileHdr(IO::StreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
-	UInt8 *recBuff;
 	UInt32 recCnt;
 	UInt32 recSize;
 	UInt32 i;
@@ -62,10 +62,9 @@ IO::ParsedObject *Parser::FileParser::MEDParser::ParseFileHdr(IO::StreamData *fd
 	if (recSize * recCnt >= fd->GetDataSize())
 		return 0;
 
-	recBuff = MemAlloc(UInt8, recSize * recCnt);
+	Data::ByteBuffer recBuff(recSize * recCnt);
 	if (fd->GetRealData(16, recSize * recCnt, recBuff) != recSize * recCnt)
 	{
-		MemFree(recBuff);
 		return 0;
 	}
 
@@ -82,7 +81,6 @@ IO::ParsedObject *Parser::FileParser::MEDParser::ParseFileHdr(IO::StreamData *fd
 		fileOfst = ReadUInt32(&recBuff[j + recSize - 4]);
 		if (fileOfst != nextOfst)
 		{
-			MemFree(recBuff);
 			DEL_CLASS(pf);
 			return 0;
 		}
@@ -93,7 +91,5 @@ IO::ParsedObject *Parser::FileParser::MEDParser::ParseFileHdr(IO::StreamData *fd
 		i++;
 		j += recSize;
 	}
-
-	MemFree(recBuff);
 	return pf;
 }

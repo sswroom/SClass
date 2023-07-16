@@ -1,5 +1,6 @@
 #ifndef _SM_IO_STMDATA_MEMORYDATAREF
 #define _SM_IO_STMDATA_MEMORYDATAREF
+#include "Data/ByteArray.h"
 #include "IO/StreamData.h"
 
 namespace IO
@@ -9,14 +10,14 @@ namespace IO
 		class MemoryDataRef : public IO::StreamData
 		{
 		private:
-			const UInt8 *data;
-			UOSInt dataLength;
+			Data::ByteArrayR data;
 
 		public:
 			MemoryDataRef(const UInt8 *data, UOSInt dataLength);
+			MemoryDataRef(const Data::ByteArrayR &data);
 			virtual ~MemoryDataRef();
 
-			virtual UOSInt GetRealData(UInt64 offset, UOSInt length, UInt8 *buffer);
+			virtual UOSInt GetRealData(UInt64 offset, UOSInt length, Data::ByteArray buffer);
 			virtual NotNullPtr<Text::String> GetFullName();
 			virtual Text::CString GetShortName();
 			virtual UInt64 GetDataSize();

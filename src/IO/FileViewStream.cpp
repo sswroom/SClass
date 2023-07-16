@@ -20,7 +20,7 @@ Bool IO::FileViewStream::IsDown()
 	return this->vfb == 0 || this->fptr == 0;
 }
 
-UOSInt IO::FileViewStream::Read(UInt8 *buff, UOSInt size)
+UOSInt IO::FileViewStream::Read(const Data::ByteArray &buff)
 {
 	if (this->fptr == 0)
 		return 0;

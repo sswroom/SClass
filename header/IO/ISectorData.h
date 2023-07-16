@@ -1,5 +1,6 @@
 #ifndef _SM_IO_ISECTORDATA
 #define _SM_IO_ISECTORDATA
+#include "Data/ByteArray.h"
 #include "IO/StreamData.h"
 #include "IO/ParsedObject.h"
 
@@ -13,7 +14,7 @@ namespace IO
 
 		virtual UInt64 GetSectorCount() const = 0;
 		virtual UOSInt GetBytesPerSector() const = 0;
-		virtual Bool ReadSector(UInt64 sectorNum, UInt8 *sectorBuff) = 0;
+		virtual Bool ReadSector(UInt64 sectorNum, Data::ByteArray sectorBuff) = 0;
 		virtual ISectorData *GetPartialData(UInt64 startSector, UInt64 sectorCount) const = 0;
 		virtual IO::StreamData *GetStreamData(UInt64 startSector, UInt64 dataSize) const = 0;
 		virtual UOSInt GetSeekCount() const = 0;

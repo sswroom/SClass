@@ -18,7 +18,7 @@ Media::NWASource::NWASource(IO::StreamData *fd, UInt32 sampleCount, UInt32 block
 	this->blockOfsts = MemAlloc(UInt32, this->nBlocks);
 	this->blockBuff = MemAlloc(UInt8, blockSize * (this->format.bitpersample / 8) * 2);
 	this->currBlock = 0;
-	fd->GetRealData(0x2c, this->nBlocks * 4, (UInt8*)this->blockOfsts);
+	fd->GetRealData(0x2c, this->nBlocks * 4, Data::ByteArray((UInt8*)this->blockOfsts, this->nBlocks * 4));
 }
 
 Media::NWASource::NWASource(IO::StreamData *fd, UInt32 sampleCount, UInt32 blockSize, UInt32 compLevel, UInt32 nBlocks, Media::AudioFormat *format, Text::CString name) : Media::LPCMSource(fd, 0, fd->GetDataSize(), format, name)
@@ -30,7 +30,7 @@ Media::NWASource::NWASource(IO::StreamData *fd, UInt32 sampleCount, UInt32 block
 	this->blockOfsts = MemAlloc(UInt32, this->nBlocks);
 	this->blockBuff = MemAlloc(UInt8, blockSize * (this->format.bitpersample / 8) * 2);
 	this->currBlock = 0;
-	fd->GetRealData(0x2c, this->nBlocks * 4, (UInt8*)this->blockOfsts);
+	fd->GetRealData(0x2c, this->nBlocks * 4, Data::ByteArray((UInt8*)this->blockOfsts, this->nBlocks * 4));
 }
 
 Media::NWASource::~NWASource()
@@ -81,7 +81,7 @@ UOSInt Media::NWASource::ReadBlock(UInt8 *buff, UOSInt blkSize)
 			}
 		}
 		
-		this->data->GetRealData(this->blockOfsts[this->currBlock], compBlockSize, this->blockBuff);
+		this->data->GetRealData(this->blockOfsts[this->currBlock], compBlockSize, Data::ByteArray(this->blockBuff, this->blockSize * (this->format.bitpersample / 8) * 2));
 		this->currBlock++;
 		Int32 d[2];
 		UInt32 currOfst = 0;

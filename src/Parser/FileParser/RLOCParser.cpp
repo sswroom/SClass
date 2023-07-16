@@ -252,7 +252,7 @@ IO::ParsedObject *Parser::FileParser::RLOCParser::ParseFileHdr(IO::StreamData *f
 	{
 		ExtraInfo extInfo;
 
-		fd->GetRealData(currPos, 128, buff);
+		fd->GetRealData(currPos, 128, BYTEARR(buff));
 		extInfo.devId = ReadInt32(&buff[0]);
 		extInfo.devType = ReadInt32(&buff[4]);
 		rec.speed = ReadUInt16(&buff[8]) * 0.1;

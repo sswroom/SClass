@@ -1,7 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Sync/Mutex.h"
-#include "Sync/Event.h"
+#include "Data/ByteBuffer.h"
 #include "IO/Stream.h"
 #include "IO/FileStream.h"
 #include "IO/StreamData.h"
@@ -11,6 +10,8 @@
 #include "Media/ImageList.h"
 #include "Media/StaticImage.h"
 #include "Parser/FileParser/TGAParser.h"
+#include "Sync/Event.h"
+#include "Sync/Mutex.h"
 
 Parser::FileParser::TGAParser::TGAParser()
 {
@@ -52,7 +53,7 @@ IO::ParsedObject *Parser::FileParser::TGAParser::ParseFileHdr(IO::StreamData *fd
 	Media::StaticImage *outImg;
 
 	UInt64 ds = fd->GetDataSize();
-	if (fd->GetRealData(ds - 26, 26, footer) != 26)
+	if (fd->GetRealData(ds - 26, 26, BYTEARR(footer)) != 26)
 	{
 		return 0;
 	}
@@ -117,21 +118,21 @@ IO::ParsedObject *Parser::FileParser::TGAParser::ParseFileHdr(IO::StreamData *fd
 
 	if (outImg)
 	{
-		UInt8 *pBits = (UInt8*)outImg->data;
+		Data::ByteArray pBits = outImg->GetDataArray();
 		UInt32 lineW;
 		UInt32 lineW2;
 		UInt32 currOfst;
 
 		if (hdr[2] == 10)
 		{
-			UInt8 *tmpBuff = MemAlloc(UInt8, (UOSInt)ds - 26 - imgPos);
+			Data::ByteBuffer tmpBuff((UOSInt)ds - 26 - imgPos);
 			UInt8 *tmpBits = 0;
 			fd->GetRealData(imgPos, (UOSInt)ds - 26 - imgPos, tmpBuff);
 
 			if ((hdr[17] & 30) != 20)
 			{
 				tmpBits = MemAlloc(UInt8, imgWidth * imgHeight * bpp >> 3);
-				pBits = tmpBits;
+				pBits = Data::ByteArray(tmpBits, imgWidth * imgHeight * bpp >> 3);
 			}
 			switch (bpp)
 			{
@@ -179,8 +180,8 @@ rle32exit:
 					UInt8 *tmpDPtr;
 					UOSInt cnt = imgHeight * imgWidth;
 					UInt32 tmpVal;
-					tmpSPtr = tmpBuff;
-					tmpDPtr = pBits;
+					tmpSPtr = tmpBuff.GetPtr();
+					tmpDPtr = pBits.GetPtr();
 					while (cnt > 0)
 					{
 						tmpVal = *tmpSPtr;
@@ -222,17 +223,16 @@ rle32exit:
 				{
 					UInt32 bpl = imgWidth * bpp >> 3;
 					UInt8 *tmpOfst = tmpBits + imgHeight * bpl;
-					pBits = (UInt8*)outImg->data;
+					pBits = outImg->GetDataArray();
 					while (imgHeight-- > 0)
 					{
 						tmpOfst -= bpl;
-						MemCopyNO(pBits, tmpOfst, bpl);
+						pBits.CopyFrom(0, Data::ByteArrayR(tmpOfst, bpl));
 						pBits += bpl;
 					}
 				}
 				MemFree(tmpBits);
 			}
-			MemFree(tmpBuff);
 		}
 		else if (hdr[17] & 0x20)
 		{

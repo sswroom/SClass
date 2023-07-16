@@ -456,7 +456,7 @@ IO::StreamData *Map::MercatorTileMap::LoadTileImageData(UOSInt level, Math::Coor
 		if (contLeng > 0 && contLeng <= 10485760)
 		{
 			imgBuff = MemAlloc(UInt8, (UOSInt)contLeng);
-			while ((readSize = cli->Read(&imgBuff[currPos], (UOSInt)contLeng - currPos)) > 0)
+			while ((readSize = cli->Read(Data::ByteArray(&imgBuff[currPos], (UOSInt)contLeng - currPos))) > 0)
 			{
 				currPos += readSize;
 				if (currPos >= contLeng)

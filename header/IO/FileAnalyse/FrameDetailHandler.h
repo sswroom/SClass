@@ -1,5 +1,6 @@
 #ifndef _SM_IO_FILEANALYSE_FRAMEDETAILHANDLER
 #define _SM_IO_FILEANALYSE_FRAMEDETAILHANDLER
+#include "Data/ByteArray.h"
 #include "Text/CString.h"
 
 namespace IO
@@ -43,6 +44,8 @@ namespace IO
 			void AddStrZ(UOSInt frameOfst, Text::CString name, const UTF8Char *vBuff);
 			void AddHexBuff(UOSInt frameOfst, UOSInt size, Text::CString name, const UInt8 *vBuff, Bool multiLine);
 			void AddHexBuff(UOSInt frameOfst, UOSInt size, Text::CString name, const UInt8 *vBuff, UTF8Char seperator, Bool multiLine);
+			void AddHexBuff(UOSInt frameOfst, Text::CString name, Data::ByteArrayR vBuff, Bool multiLine);
+			void AddHexBuff(UOSInt frameOfst, Text::CString name, Data::ByteArrayR vBuff, UTF8Char seperator, Bool multiLine);
 			void AddIPv4(UOSInt frameOfst, Text::CString name, const UInt8 *vBuff);
 			void AddIPv6(UOSInt frameOfst, Text::CString name, const UInt8 *vBuff);
 			void AddMACAddr(UOSInt frameOfst, Text::CString name, const UInt8 *macBuff, Bool showVendor);

@@ -26,7 +26,7 @@ UInt32 __stdcall IO::FileAnalyse::PCapngFileAnalyse::ParseThread(void *userObj)
 	dataSize = me->fd->GetDataSize();
 	while (ofst < dataSize - 16 && !me->threadToStop)
 	{
-		if (me->fd->GetRealData(ofst, 12, packetHdr) != 12)
+		if (me->fd->GetRealData(ofst, 12, BYTEARR(packetHdr)) != 12)
 			break;
 		
 		if (me->isBE)
@@ -60,7 +60,7 @@ UInt32 __stdcall IO::FileAnalyse::PCapngFileAnalyse::ParseThread(void *userObj)
 		}
 		else if (block->blockType == 1)
 		{
-			UInt8 *packetBuff = MemAlloc(UInt8, thisSize);
+			Data::ByteBuffer packetBuff(thisSize);
 			me->fd->GetRealData(ofst, thisSize, packetBuff);
 			UInt16 linkType;
 			Int8 timeResol = 0;
@@ -109,7 +109,6 @@ UInt32 __stdcall IO::FileAnalyse::PCapngFileAnalyse::ParseThread(void *userObj)
 			}
 			resList->Add(timeResol);
 			linkTypeList->Add(linkType);
-			MemFree(packetBuff);
 		}
 		else if (block->blockType == 6 || block->blockType == 5)
 		{
@@ -135,7 +134,7 @@ UInt32 __stdcall IO::FileAnalyse::PCapngFileAnalyse::ParseThread(void *userObj)
 	return 0;
 }
 
-IO::FileAnalyse::PCapngFileAnalyse::PCapngFileAnalyse(IO::StreamData *fd)
+IO::FileAnalyse::PCapngFileAnalyse::PCapngFileAnalyse(IO::StreamData *fd) : packetBuff(65536)
 {
 	UInt8 buff[16];
 	this->fd = 0;
@@ -144,8 +143,7 @@ IO::FileAnalyse::PCapngFileAnalyse::PCapngFileAnalyse(IO::StreamData *fd)
 	this->threadToStop = false;
 	this->threadStarted = false;
 	this->isBE = false;
-	this->packetBuff = MemAlloc(UInt8, 65536);
-	if (fd->GetRealData(0, 16, buff) != 16)
+	if (fd->GetRealData(0, 16, BYTEARR(buff)) != 16)
 	{
 		return;
 	}
@@ -188,7 +186,6 @@ IO::FileAnalyse::PCapngFileAnalyse::~PCapngFileAnalyse()
 
 	SDEL_CLASS(this->fd);
 	LIST_FREE_FUNC(&this->blockList, MemFree);
-	MemFree(this->packetBuff);
 }
 
 Text::CString IO::FileAnalyse::PCapngFileAnalyse::GetFormatName()
@@ -882,12 +879,12 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::PCapngFileAnalyse::GetFrameDetail
 	fd->GetRealData(block->ofst, block->blockLength, this->packetBuff);
 	if (this->isBE)
 	{
-		frame->AddHex32(0, CSTR("Type"), ReadMUInt32(this->packetBuff));
+		frame->AddHex32(0, CSTR("Type"), this->packetBuff.ReadMU32(0));
 		frame->AddUInt(4, 4, CSTR("TotalSize"), ReadMUInt32(&this->packetBuff[4]));
 	}
 	else
 	{
-		frame->AddHex32(0, CSTR("Type"), ReadUInt32(this->packetBuff));
+		frame->AddHex32(0, CSTR("Type"), this->packetBuff.ReadU32(0));
 		frame->AddUInt(4, 4, CSTR("TotalSize"), ReadUInt32(&this->packetBuff[4]));
 	}
 	Text::StringBuilderUTF8 sb;

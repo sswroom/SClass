@@ -602,17 +602,17 @@ void Media::Decoder::MP2Decoder::Stop()
 	this->readEvt = 0;
 }
 
-UOSInt Media::Decoder::MP2Decoder::ReadBlock(UInt8 *buff, UOSInt blkSize)
+UOSInt Media::Decoder::MP2Decoder::ReadBlock(Data::ByteArray blk)
 {
 	if (this->sourceAudio == 0)
 		return 0;
 	UInt8 srcBuff[1440];
-	UOSInt nBlk = blkSize / 4608;
+	UOSInt nBlk = blk.GetSize() / 4608;
 	UOSInt readSize;
 	UOSInt outSize = 0;
 	while (nBlk-- > 0)
 	{
-		readSize = this->sourceAudio->ReadBlock(srcBuff, this->blkSize);
+		readSize = this->sourceAudio->ReadBlock(BYTEARR(srcBuff).WithSize(this->blkSize));
 		this->totalReadSize += readSize;
 		if (readSize == 0)
 		{
@@ -624,14 +624,14 @@ UOSInt Media::Decoder::MP2Decoder::ReadBlock(UInt8 *buff, UOSInt blkSize)
 			UOSInt size;
 			this->sourceAudio->GetFormat(&fmt);
 			size = readSize * 8 * fmt.frequency / fmt.bitRate * fmt.nChannels;
-			MemClear(buff, size);
-			buff += size;
+			blk.Clear(0, size);
+			blk += size;
 			outSize += size;
 		}
 		else
 		{
-			kjmp2_decode_frame((kjmp2_context_t*)this->context, srcBuff, (Int16*)buff);
-			buff += 4608;
+			kjmp2_decode_frame((kjmp2_context_t*)this->context, srcBuff, (Int16*)blk.Ptr());
+			blk += 4608;
 			outSize += 4608;
 		}
 	}

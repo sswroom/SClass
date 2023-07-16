@@ -2,12 +2,12 @@
 #include "Crypto/Cert/X509FileList.h"
 #include "Net/SSLEngine.h"
 
-Crypto::Cert::X509FileList::X509FileList(NotNullPtr<Text::String> sourceName, Crypto::Cert::X509Cert *cert) : Crypto::Cert::X509File(sourceName, cert->GetASN1Buff(), cert->GetASN1BuffSize())
+Crypto::Cert::X509FileList::X509FileList(NotNullPtr<Text::String> sourceName, Crypto::Cert::X509Cert *cert) : Crypto::Cert::X509File(sourceName, cert->GetASN1Array())
 {
 	this->fileList.Add(cert);
 }
 
-Crypto::Cert::X509FileList::X509FileList(Text::CString sourceName, Crypto::Cert::X509Cert *cert) : Crypto::Cert::X509File(sourceName, cert->GetASN1Buff(), cert->GetASN1BuffSize())
+Crypto::Cert::X509FileList::X509FileList(Text::CString sourceName, Crypto::Cert::X509Cert *cert) : Crypto::Cert::X509File(sourceName, cert->GetASN1Array())
 {
 	this->fileList.Add(cert);
 }

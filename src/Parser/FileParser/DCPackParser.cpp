@@ -58,7 +58,7 @@ IO::ParsedObject *Parser::FileParser::DCPackParser::ParseFileHdr(IO::StreamData 
 
 	while (hdrOfst < hdrEnd)
 	{
-		fd->GetRealData(hdrOfst, 64, buff);
+		fd->GetRealData(hdrOfst, 64, BYTEARR(buff));
 		thisOfst = ReadUInt32(&buff[48]);
 		thisSize = ReadUInt32(&buff[56]);
 		if (thisOfst != fileOfst || thisOfst != ReadUInt32(&buff[52]))

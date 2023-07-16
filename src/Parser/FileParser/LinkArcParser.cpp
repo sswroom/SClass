@@ -63,7 +63,7 @@ IO::ParsedObject *Parser::FileParser::LinkArcParser::ParseFileHdr(IO::StreamData
 	
 	while (currOfst < fileSize)
 	{
-		fd->GetRealData(currOfst, 256, recBuff);
+		fd->GetRealData(currOfst, 256, BYTEARR(recBuff));
 		recSize = ReadUInt32(&recBuff[0]);
 		fnameSize = ReadUInt16(&recBuff[13]);
 		if (recSize == 0 && currOfst == fileSize - 4)

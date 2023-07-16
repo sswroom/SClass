@@ -22,7 +22,7 @@ UOSInt IO::CDXAData::GetBytesPerSector() const
 	return 2352;
 }
 
-Bool IO::CDXAData::ReadSector(UInt64 sectorNum, UInt8 *sectorBuff)
+Bool IO::CDXAData::ReadSector(UInt64 sectorNum, Data::ByteArray sectorBuff)
 {
 	return this->data->GetRealData(sectorNum * 2352LL, 2352, sectorBuff) == 2352;
 }

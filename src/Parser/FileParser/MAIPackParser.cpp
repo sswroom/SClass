@@ -58,7 +58,7 @@ IO::ParsedObject *Parser::FileParser::MAIPackParser::ParseFileHdr(IO::StreamData
 
 	while (hdrOfst < hdrEnd)
 	{
-		fd->GetRealData(hdrOfst, 24, recbuff);
+		fd->GetRealData(hdrOfst, 24, BYTEARR(recbuff));
 		thisOfst = ReadUInt32(&recbuff[16]);
 		thisSize = ReadUInt32(&recbuff[20]);
 		if (thisOfst != fileOfst)

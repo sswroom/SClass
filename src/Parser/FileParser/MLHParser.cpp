@@ -65,7 +65,7 @@ IO::ParsedObject *Parser::FileParser::MLHParser::ParseFileHdr(IO::StreamData *fd
 	NEW_CLASS(pf, IO::PackageFile(fd->GetFullName()));
 
 	fileInfo = MemAlloc(MLHFileInfo, fileCnt);
-	fd->GetRealData(fileOfst, fileCnt * sizeof(MLHFileInfo), (UInt8*)fileInfo);
+	fd->GetRealData(fileOfst, fileCnt * sizeof(MLHFileInfo), Data::ByteArray((UInt8*)fileInfo, fileCnt * sizeof(MLHFileInfo)));
 	i = 0;
 	while (i < fileCnt)
 	{

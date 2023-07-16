@@ -53,7 +53,7 @@ Bool Net::TCPServerStream::IsDown() const
 	return false;
 }
 
-UOSInt Net::TCPServerStream::Read(UInt8 *buff, UOSInt size)
+UOSInt Net::TCPServerStream::Read(const Data::ByteArray &buff)
 {
 	Bool toClose = false;
 	UOSInt readSize = 0;

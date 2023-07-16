@@ -114,12 +114,12 @@ Map::SHPData::SHPData(const UInt8 *shpHdr, IO::StreamData *data, UInt32 codePage
 		this->layerType = Map::DRAW_LAYER_POINT;
 		NEW_CLASS(ptX, Data::ArrayListDbl());
 		NEW_CLASS(ptY, Data::ArrayListDbl());
-		while (data->GetRealData(currOfst, 8, shpBuff) == 8)
+		while (data->GetRealData(currOfst, 8, BYTEARR(shpBuff)) == 8)
 		{
 			currOfst += 8;
 			fileLen = ReadMUInt32(&shpBuff[4]);
 
-			data->GetRealData(currOfst, fileLen << 1, shpBuff);
+			data->GetRealData(currOfst, fileLen << 1, BYTEARR(shpBuff));
 			currOfst += fileLen << 1;
 			if (*(Int32*)shpBuff == 1)
 			{
@@ -139,14 +139,14 @@ Map::SHPData::SHPData(const UInt8 *shpHdr, IO::StreamData *data, UInt32 codePage
 		this->layerType = Map::DRAW_LAYER_POLYLINE;
 		NEW_CLASS(this->recs, Data::ArrayList<Map::SHPData::RecHdr*>());
 		NEW_CLASS(this->recsMut, Sync::Mutex());
-		while (data->GetRealData(currOfst, 8, shpBuff) == 8)
+		while (data->GetRealData(currOfst, 8, BYTEARR(shpBuff)) == 8)
 		{
 			currOfst += 8;
 			fileLen = ReadMUInt32(&shpBuff[4]);
 
 			if (fileLen > 22)
 			{
-				data->GetRealData(currOfst, 44, shpBuff);
+				data->GetRealData(currOfst, 44, BYTEARR(shpBuff));
 				if (*(Int32*)shpBuff == 3)
 				{
 					rec = MemAlloc(Map::SHPData::RecHdr, 1);
@@ -178,14 +178,14 @@ Map::SHPData::SHPData(const UInt8 *shpHdr, IO::StreamData *data, UInt32 codePage
 		this->layerType = Map::DRAW_LAYER_POLYGON;
 		NEW_CLASS(this->recs, Data::ArrayList<Map::SHPData::RecHdr*>());
 		NEW_CLASS(this->recsMut, Sync::Mutex());
-		while (data->GetRealData(currOfst, 8, shpBuff) == 8)
+		while (data->GetRealData(currOfst, 8, BYTEARR(shpBuff)) == 8)
 		{
 			currOfst += 8;
 			fileLen = ReadMUInt32(&shpBuff[4]);
 
 			if (fileLen > 22)
 			{
-				data->GetRealData(currOfst, 44, shpBuff);
+				data->GetRealData(currOfst, 44, BYTEARR(shpBuff));
 				if (*(Int32*)shpBuff == 5)
 				{
 					rec = MemAlloc(Map::SHPData::RecHdr, 1);
@@ -218,12 +218,12 @@ Map::SHPData::SHPData(const UInt8 *shpHdr, IO::StreamData *data, UInt32 codePage
 		NEW_CLASS(ptX, Data::ArrayListDbl());
 		NEW_CLASS(ptY, Data::ArrayListDbl());
 		NEW_CLASS(ptZ, Data::ArrayListDbl());
-		while (data->GetRealData(currOfst, 8, shpBuff) == 8)
+		while (data->GetRealData(currOfst, 8, BYTEARR(shpBuff)) == 8)
 		{
 			currOfst += 8;
 			fileLen = ReadMUInt32(&shpBuff[4]);
 
-			data->GetRealData(currOfst, fileLen << 1, shpBuff);
+			data->GetRealData(currOfst, fileLen << 1, BYTEARR(shpBuff));
 			currOfst += fileLen << 1;
 			if (*(Int32*)shpBuff == 11)
 			{
@@ -245,14 +245,14 @@ Map::SHPData::SHPData(const UInt8 *shpHdr, IO::StreamData *data, UInt32 codePage
 		this->layerType = Map::DRAW_LAYER_POLYLINE3D;
 		NEW_CLASS(this->recs, Data::ArrayList<Map::SHPData::RecHdr*>());
 		NEW_CLASS(this->recsMut, Sync::Mutex());
-		while (data->GetRealData(currOfst, 8, shpBuff) == 8)
+		while (data->GetRealData(currOfst, 8, BYTEARR(shpBuff)) == 8)
 		{
 			currOfst += 8;
 			fileLen = ReadMUInt32(&shpBuff[4]);
 
 			if (fileLen > 22)
 			{
-				data->GetRealData(currOfst, 44, shpBuff);
+				data->GetRealData(currOfst, 44, BYTEARR(shpBuff));
 				if (*(Int32*)shpBuff == 13)
 				{
 					rec = MemAlloc(Map::SHPData::RecHdr, 1);
@@ -284,14 +284,14 @@ Map::SHPData::SHPData(const UInt8 *shpHdr, IO::StreamData *data, UInt32 codePage
 		this->layerType = Map::DRAW_LAYER_POLYGON;
 		NEW_CLASS(this->recs, Data::ArrayList<Map::SHPData::RecHdr*>());
 		NEW_CLASS(this->recsMut, Sync::Mutex());
-		while (data->GetRealData(currOfst, 8, shpBuff) == 8)
+		while (data->GetRealData(currOfst, 8, BYTEARR(shpBuff)) == 8)
 		{
 			currOfst += 8;
 			fileLen = ReadMUInt32(&shpBuff[4]);
 
 			if (fileLen > 22)
 			{
-				data->GetRealData(currOfst, 44, shpBuff);
+				data->GetRealData(currOfst, 44, BYTEARR(shpBuff));
 				if (*(Int32*)shpBuff == 15)
 				{
 					rec = MemAlloc(Map::SHPData::RecHdr, 1);
@@ -582,8 +582,8 @@ Math::Geometry::Vector2D *Map::SHPData::GetNewVectorById(GetObjectSess *session,
 			return 0;
 		if (rec->vec) return rec->vec->Clone();
 		NEW_CLASS(pg, Math::Geometry::Polygon(srid, rec->nPtOfst, rec->nPoint, false, false));
-		shpData->GetRealData(rec->ofst, rec->nPtOfst << 2, (UInt8*)pg->GetPtOfstList(&nPoint));
-		shpData->GetRealData(rec->ofst + (rec->nPtOfst << 2), rec->nPoint << 4, (UInt8*)pg->GetPointList(&nPoint));
+		shpData->GetRealData(rec->ofst, rec->nPtOfst << 2, Data::ByteArray((UInt8*)pg->GetPtOfstList(&nPoint), rec->nPtOfst << 2));
+		shpData->GetRealData(rec->ofst + (rec->nPtOfst << 2), rec->nPoint << 4, Data::ByteArray((UInt8*)pg->GetPointList(&nPoint), rec->nPoint << 4));
 		rec->vec = pg->Clone();
 		return pg;
 	}
@@ -596,8 +596,8 @@ Math::Geometry::Vector2D *Map::SHPData::GetNewVectorById(GetObjectSess *session,
 			return 0;
 		if (rec->vec) return rec->vec->Clone();
 		NEW_CLASS(pl, Math::Geometry::Polyline(srid, rec->nPtOfst, rec->nPoint, false, false));
-		shpData->GetRealData(rec->ofst, rec->nPtOfst << 2, (UInt8*)pl->GetPtOfstList(&nPoint));
-		shpData->GetRealData(rec->ofst + (rec->nPtOfst << 2), rec->nPoint << 4, (UInt8*)pl->GetPointList(&nPoint));
+		shpData->GetRealData(rec->ofst, rec->nPtOfst << 2, Data::ByteArray((UInt8*)pl->GetPtOfstList(&nPoint), rec->nPtOfst << 2));
+		shpData->GetRealData(rec->ofst + (rec->nPtOfst << 2), rec->nPoint << 4, Data::ByteArray((UInt8*)pl->GetPointList(&nPoint), rec->nPoint << 4));
 		rec->vec = pl->Clone();
 		return pl;
 	}
@@ -610,9 +610,9 @@ Math::Geometry::Vector2D *Map::SHPData::GetNewVectorById(GetObjectSess *session,
 			return 0;
 		if (rec->vec) return rec->vec->Clone();
 		NEW_CLASS(pl, Math::Geometry::Polyline(srid, rec->nPtOfst, rec->nPoint, true, false));
-		shpData->GetRealData(rec->ofst, rec->nPtOfst << 2, (UInt8*)pl->GetPtOfstList(&nPoint));
-		shpData->GetRealData(rec->ofst + (rec->nPtOfst << 2), rec->nPoint << 4, (UInt8*)pl->GetPointList(&nPoint));
-		shpData->GetRealData(rec->ofst + (rec->nPtOfst << 2) + (rec->nPoint << 4) + 16, rec->nPoint << 3, (UInt8*)pl->GetZList(&nPoint));
+		shpData->GetRealData(rec->ofst, rec->nPtOfst << 2, Data::ByteArray((UInt8*)pl->GetPtOfstList(&nPoint), rec->nPtOfst << 2));
+		shpData->GetRealData(rec->ofst + (rec->nPtOfst << 2), rec->nPoint << 4, Data::ByteArray((UInt8*)pl->GetPointList(&nPoint), rec->nPoint << 4));
+		shpData->GetRealData(rec->ofst + (rec->nPtOfst << 2) + (rec->nPoint << 4) + 16, rec->nPoint << 3, Data::ByteArray((UInt8*)pl->GetZList(&nPoint), rec->nPoint << 3));
 		rec->vec = pl->Clone();
 		return pl;
 	}

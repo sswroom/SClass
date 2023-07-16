@@ -62,7 +62,7 @@ Bool IO::BitReaderMSB::ReadBits(UInt32 *code, UOSInt bitCount)
 				this->buffSize = 0;
 				this->currBytePos = 0;
 			}
-			UOSInt readSize = this->stm->Read(&this->buff[this->buffSize], 1024 - this->buffSize);
+			UOSInt readSize = this->stm->Read(Data::ByteArray(&this->buff[this->buffSize], 1024 - this->buffSize));
 			if (readSize <= 0)
 				return false;
 			this->buffSize += readSize;
@@ -141,7 +141,7 @@ UOSInt IO::BitReaderMSB::ReadBytes(UInt8 *buff, UOSInt cnt)
 	}
 	if (cnt > 0)
 	{
-		UOSInt readSize = this->stm->Read(&buff[ret], cnt);
+		UOSInt readSize = this->stm->Read(Data::ByteArray(&buff[ret], cnt));
 		if (readSize > 0)
 		{
 			ret += cnt;

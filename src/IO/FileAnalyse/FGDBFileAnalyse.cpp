@@ -1,4 +1,5 @@
 #include "Stdafx.h"
+#include "Data/ByteBuffer.h"
 #include "Data/ByteTool.h"
 #include "Data/UUID.h"
 #include "IO/FileAnalyse/FGDBFileAnalyse.h"
@@ -31,7 +32,7 @@ UInt32 __stdcall IO::FileAnalyse::FGDBFileAnalyse::ParseThread(void *userObj)
 	tag->tagType = TagType::Header;
 	me->tags.Add(tag);
 
-	me->fd->GetRealData(40, 4, tagHdr);
+	me->fd->GetRealData(40, 4, BYTEARR(tagHdr));
 	lastSize = ReadUInt32(tagHdr);
 	tag = MemAlloc(IO::FileAnalyse::FGDBFileAnalyse::TagInfo, 1);
 	tag->ofst = 40;
@@ -39,16 +40,17 @@ UInt32 __stdcall IO::FileAnalyse::FGDBFileAnalyse::ParseThread(void *userObj)
 	tag->tagType = TagType::Field;
 	me->tags.Add(tag);
 
-	UInt8 *fieldBuff = MemAlloc(UInt8, tag->size);
-	me->fd->GetRealData(40, tag->size, fieldBuff);
-	me->tableInfo = Map::ESRI::FileGDBUtil::ParseFieldDesc(fieldBuff, &me->prjParser);
-	MemFree(fieldBuff);
+	{
+		Data::ByteBuffer fieldBuff(tag->size);
+		me->fd->GetRealData(40, tag->size, fieldBuff);
+		me->tableInfo = Map::ESRI::FileGDBUtil::ParseFieldDesc(fieldBuff, &me->prjParser);
+	}
 
 	ofst = 40 + tag->size;
 	dataSize = me->fd->GetDataSize();
 	while (ofst < dataSize - 4 && !me->threadToStop)
 	{
-		if (me->fd->GetRealData(ofst, 4, tagHdr) != 4)
+		if (me->fd->GetRealData(ofst, 4, BYTEARR(tagHdr)) != 4)
 			break;
 
 		TagType tagType = TagType::Row;
@@ -83,7 +85,7 @@ IO::FileAnalyse::FGDBFileAnalyse::FGDBFileAnalyse(IO::StreamData *fd)
 	this->threadToStop = false;
 	this->threadStarted = false;
 	this->tableInfo = 0;
-	fd->GetRealData(0, 40, buff);
+	fd->GetRealData(0, 40, BYTEARR(buff));
 	if (ReadUInt64(&buff[24]) != fd->GetDataSize())
 	{
 		return;
@@ -170,7 +172,6 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::FGDBFileAnalyse::GetFrameDetail(U
 	IO::FileAnalyse::FrameDetail *frame;
 	UTF8Char sbuff[1024];
 	UTF8Char *sptr;
-	UInt8 *tagData;
 	IO::FileAnalyse::FGDBFileAnalyse::TagInfo *tag = this->tags.GetItem(index);
 	if (tag == 0)
 		return 0;
@@ -179,7 +180,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::FGDBFileAnalyse::GetFrameDetail(U
 	sptr = TagTypeGetName(tag->tagType).ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("Type=")));
 	frame->AddHeader(CSTRP(sbuff, sptr));
 
-	tagData = MemAlloc(UInt8, tag->size);
+	Data::ByteBuffer tagData(tag->size);
 	this->fd->GetRealData(tag->ofst, tag->size, tagData);
 	if (tag->tagType == TagType::Header)
 	{
@@ -716,10 +717,9 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::FGDBFileAnalyse::GetFrameDetail(U
 	}
 	else if (tag->tagType == TagType::FreeSpace)
 	{
-		frame->AddInt(0, 4, CSTR("Size"), ReadInt32(tagData));
+		frame->AddInt(0, 4, CSTR("Size"), ReadInt32(&tagData[0]));
 		frame->AddHexBuff(4, tag->size - 4, CSTR("Deleted content"), &tagData[4], true);
 	}
-	MemFree(tagData);
 	return frame;
 }
 

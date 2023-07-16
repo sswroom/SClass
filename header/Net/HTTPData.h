@@ -45,7 +45,7 @@ namespace Net
 		HTTPData(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Net::HTTPQueue *queue, Text::CString url, Text::CString localFile, Bool forceReload);
 		virtual ~HTTPData();
 
-		virtual UOSInt GetRealData(UInt64 offset, UOSInt length, UInt8 *buffer);
+		virtual UOSInt GetRealData(UInt64 offset, UOSInt length, Data::ByteArray buffer);
 		virtual NotNullPtr<Text::String> GetFullName();
 		virtual Text::CString GetShortName();
 		virtual void SetFullName(Text::CString fullName);

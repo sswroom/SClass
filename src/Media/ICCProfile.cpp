@@ -931,15 +931,15 @@ void Media::ICCProfile::ToString(Text::StringBuilderUTF8 *sb) const
 	}
 }
 
-Media::ICCProfile *Media::ICCProfile::Parse(const UInt8 *buff, UOSInt buffSize)
+Media::ICCProfile *Media::ICCProfile::Parse(Data::ByteArrayR buff)
 {
 	Media::ICCProfile *profile;
-	if (ReadMUInt32(buff) != buffSize)
+	if (buff.ReadMU32(0) != buff.GetSize())
 		return 0;
-	if (ReadMInt32(&buff[36]) != 0x61637370)
+	if (buff.ReadMI32(36) != 0x61637370)
 		return 0;
 	
-	NEW_CLASS(profile, Media::ICCProfile(buff));
+	NEW_CLASS(profile, Media::ICCProfile(buff.GetPtr()));
 
 	return profile;
 }
@@ -1722,7 +1722,7 @@ UTF8Char *Media::ICCProfile::GetProfilePath(UTF8Char *sbuff)
 
 Media::ICCProfile *Media::ICCProfile::NewSRGBProfile()
 {
-	return Parse(srgbICC, sizeof(srgbICC));
+	return Parse(Data::ByteArrayR(srgbICC, sizeof(srgbICC)));
 }
 
 const UInt8 *Media::ICCProfile::GetSRGBICCData()

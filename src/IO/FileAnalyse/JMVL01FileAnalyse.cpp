@@ -1,4 +1,5 @@
 #include "Stdafx.h"
+#include "Data/ByteBuffer.h"
 #include "Data/ByteTool.h"
 #include "IO/FileAnalyse/JMVL01FileAnalyse.h"
 #include "Sync/SimpleThread.h"
@@ -44,7 +45,7 @@ UInt32 __stdcall IO::FileAnalyse::JMVL01FileAnalyse::ParseThread(void *userObj)
 	
 	while (ofst < dataSize - 10 && !me->threadToStop)
 	{
-		if (me->fd->GetRealData(ofst, 5, tagHdr) != 5)
+		if (me->fd->GetRealData(ofst, 5, BYTEARR(tagHdr)) != 5)
 			break;
 		
 		if (tagHdr[0] == 0x78 && tagHdr[1] == 0x78)
@@ -83,7 +84,7 @@ IO::FileAnalyse::JMVL01FileAnalyse::JMVL01FileAnalyse(IO::StreamData *fd)
 	this->pauseParsing = false;
 	this->threadToStop = false;
 	this->threadStarted = false;
-	fd->GetRealData(0, 256, buff);
+	fd->GetRealData(0, 256, BYTEARR(buff));
 	if (buff[0] != 0x78 || buff[1] != 0x78 || buff[2] != 0x11 || buff[3] != 0x01 || buff[20] != 13 || buff[21] != 10)
 	{
 		return;
@@ -175,7 +176,6 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::JMVL01FileAnalyse::GetFrameDetail
 	IO::FileAnalyse::FrameDetail *frame;
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
-	UInt8 *tagData;
 	IO::FileAnalyse::JMVL01FileAnalyse::JMVL01Tag *tag = this->tags.GetItem(index);
 	if (tag == 0)
 		return 0;
@@ -184,9 +184,9 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::JMVL01FileAnalyse::GetFrameDetail
 	sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Packet ")), index);
 	frame->AddHeader(CSTRP(sbuff, sptr));
 
-	tagData = MemAlloc(UInt8, tag->size);
+	Data::ByteBuffer tagData(tag->size);
 	this->fd->GetRealData(tag->ofst, tag->size, tagData);
-	frame->AddHexBuff(0, 2, CSTR("Start of Packet"), tagData, false);
+	frame->AddHexBuff(0, CSTR("Start of Packet"), tagData.WithSize(2), false);
 	UOSInt frameSize;
 	UOSInt currOfst;
 	Bool parsed = false;
@@ -320,7 +320,6 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::JMVL01FileAnalyse::GetFrameDetail
 	frame->AddUInt(currOfst + frameSize - 4, 2, CSTR("Information Serial Number"), ReadMUInt16(&tagData[currOfst + frameSize - 4]));
 	frame->AddHex16(currOfst + frameSize - 2, CSTR("Error Check"), ReadMUInt16(&tagData[currOfst + frameSize - 2]));
 	frame->AddHexBuff(currOfst + frameSize, 2, CSTR("Stop Bit"), &tagData[currOfst + frameSize], false);
-	MemFree(tagData);
 	return frame;
 }
 

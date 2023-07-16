@@ -25,9 +25,9 @@ Bool IO::WriteCacheStream::IsDown() const
 	return this->outStm->IsDown();
 }
 
-UOSInt IO::WriteCacheStream::Read(UInt8 *buff, UOSInt size)
+UOSInt IO::WriteCacheStream::Read(Data::ByteArray buff)
 {
-	return this->outStm->Read(buff, size);
+	return this->outStm->Read(buff);
 }
 
 UOSInt IO::WriteCacheStream::Write(const UInt8 *buff, UOSInt size)

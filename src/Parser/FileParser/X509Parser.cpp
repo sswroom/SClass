@@ -10,6 +10,7 @@
 #include "Crypto/Cert/X509PKCS12.h"
 #include "Crypto/Cert/X509PrivKey.h"
 #include "Crypto/Cert/X509PubKey.h"
+#include "Data/ByteBuffer.h"
 #include "IO/MemoryReadingStream.h"
 #include "Net/ASN1Util.h"
 #include "Parser/FileParser/X509Parser.h"
@@ -65,14 +66,12 @@ IO::ParsedObject *Parser::FileParser::X509Parser::ParseFileHdr(IO::StreamData *f
 	{
 		if (fileName->EndsWithICase(UTF8STRC(".CRL")) && len <= 10485760)
 		{
-			UInt8 *tmpBuff = MemAlloc(UInt8, len);
+			Data::ByteBuffer tmpBuff(len);
 			if (fd->GetRealData(0, (UOSInt)len, tmpBuff) != len)
 			{
-				MemFree(tmpBuff);
 				return 0;
 			}
-			IO::ParsedObject *pobj = ParseBuff(tmpBuff, len, fileName);
-			MemFree(tmpBuff);
+			IO::ParsedObject *pobj = ParseBuff(tmpBuff, fileName);
 			return pobj;
 		}
 		else
@@ -81,11 +80,11 @@ IO::ParsedObject *Parser::FileParser::X509Parser::ParseFileHdr(IO::StreamData *f
 		}
 	}
 
-	fd->GetRealData(0, (UOSInt)len, buff);
-	return ParseBuff(buff, (UOSInt)len, fd->GetFullFileName());
+	fd->GetRealData(0, (UOSInt)len, BYTEARR(buff));
+	return ParseBuff(BYTEARR(buff), fd->GetFullFileName());
 }
 
-Crypto::Cert::X509File *Parser::FileParser::X509Parser::ParseBuff(const UInt8 *buff, UOSInt buffSize, NotNullPtr<Text::String> fileName)
+Crypto::Cert::X509File *Parser::FileParser::X509Parser::ParseBuff(Data::ByteArrayR buff, NotNullPtr<Text::String> fileName)
 {
 	Crypto::Cert::X509File *ret = 0;
 	UInt8 dataBuff[10240];
@@ -93,12 +92,11 @@ Crypto::Cert::X509File *Parser::FileParser::X509Parser::ParseBuff(const UInt8 *b
 	UOSInt dataLen;
 	if (buff[0] == 0xEF && buff[1] == 0xBB && buff[2] == 0xBF)
 	{
-		buff += 3;
-		buffSize -= 3;
+		buff = buff.SubArray(3);
 	}
-	if (Text::StrStartsWithC(buff, 5, UTF8STRC("-----")))
+	if (Text::StrStartsWithC(buff.GetPtr(), 5, UTF8STRC("-----")))
 	{
-		IO::MemoryReadingStream mstm(buff, buffSize);
+		IO::MemoryReadingStream mstm(buff);
 		Text::UTF8Reader reader(mstm);
 		Text::StringBuilderUTF8 sb;
 		Text::TextBinEnc::Base64Enc b64;
@@ -133,7 +131,7 @@ Crypto::Cert::X509File *Parser::FileParser::X509Parser::ParseBuff(const UInt8 *b
 					NEW_CLASS(fileList, Crypto::Cert::X509FileList(fileName, (Crypto::Cert::X509Cert*)file));
 					file = 0;
 				}
-				NEW_CLASS(file, Crypto::Cert::X509Cert(fileName, dataBuff, dataLen));
+				NEW_CLASS(file, Crypto::Cert::X509Cert(fileName, Data::ByteArrayR(dataBuff, dataLen)));
 				if (fileList)
 				{
 					fileList->AddFile(file);
@@ -174,7 +172,7 @@ Crypto::Cert::X509File *Parser::FileParser::X509Parser::ParseBuff(const UInt8 *b
 						NEW_CLASS(fileList, Crypto::Cert::X509FileList(fileName, (Crypto::Cert::X509Cert*)file));
 						file = 0;
 					}
-					NEW_CLASS(file, Crypto::Cert::X509Key(fileName, dataBuff, dataLen, Crypto::Cert::X509File::KeyType::RSA));
+					NEW_CLASS(file, Crypto::Cert::X509Key(fileName, Data::ByteArrayR(dataBuff, dataLen), Crypto::Cert::X509File::KeyType::RSA));
 					if (fileList)
 					{
 						fileList->AddFile(file);
@@ -209,7 +207,7 @@ Crypto::Cert::X509File *Parser::FileParser::X509Parser::ParseBuff(const UInt8 *b
 					NEW_CLASS(fileList, Crypto::Cert::X509FileList(fileName, (Crypto::Cert::X509Cert*)file));
 					file = 0;
 				}
-				NEW_CLASS(file, Crypto::Cert::X509Key(fileName, dataBuff, dataLen, Crypto::Cert::X509File::KeyType::DSA));
+				NEW_CLASS(file, Crypto::Cert::X509Key(fileName, Data::ByteArrayR(dataBuff, dataLen), Crypto::Cert::X509File::KeyType::DSA));
 				if (fileList)
 				{
 					fileList->AddFile(file);
@@ -243,7 +241,7 @@ Crypto::Cert::X509File *Parser::FileParser::X509Parser::ParseBuff(const UInt8 *b
 					NEW_CLASS(fileList, Crypto::Cert::X509FileList(fileName, (Crypto::Cert::X509Cert*)file));
 					file = 0;
 				}
-				NEW_CLASS(file, Crypto::Cert::X509Key(fileName, dataBuff, dataLen, Crypto::Cert::X509File::KeyType::ECDSA));
+				NEW_CLASS(file, Crypto::Cert::X509Key(fileName, Data::ByteArrayR(dataBuff, dataLen), Crypto::Cert::X509File::KeyType::ECDSA));
 				if (fileList)
 				{
 					fileList->AddFile(file);
@@ -277,7 +275,7 @@ Crypto::Cert::X509File *Parser::FileParser::X509Parser::ParseBuff(const UInt8 *b
 					NEW_CLASS(fileList, Crypto::Cert::X509FileList(fileName, (Crypto::Cert::X509Cert*)file));
 					file = 0;
 				}
-				NEW_CLASS(file, Crypto::Cert::X509PrivKey(fileName, dataBuff, dataLen));
+				NEW_CLASS(file, Crypto::Cert::X509PrivKey(fileName, Data::ByteArrayR(dataBuff, dataLen)));
 				if (fileList)
 				{
 					fileList->AddFile(file);
@@ -311,7 +309,7 @@ Crypto::Cert::X509File *Parser::FileParser::X509Parser::ParseBuff(const UInt8 *b
 					NEW_CLASS(fileList, Crypto::Cert::X509FileList(fileName, (Crypto::Cert::X509Cert*)file));
 					file = 0;
 				}
-				NEW_CLASS(file, Crypto::Cert::X509PubKey(fileName, dataBuff, dataLen));
+				NEW_CLASS(file, Crypto::Cert::X509PubKey(fileName, Data::ByteArrayR(dataBuff, dataLen)));
 				if (fileList)
 				{
 					fileList->AddFile(file);
@@ -345,7 +343,7 @@ Crypto::Cert::X509File *Parser::FileParser::X509Parser::ParseBuff(const UInt8 *b
 					NEW_CLASS(fileList, Crypto::Cert::X509FileList(fileName, (Crypto::Cert::X509Cert*)file));
 					file = 0;
 				}
-				NEW_CLASS(file, Crypto::Cert::X509CertReq(fileName, dataBuff, dataLen));
+				NEW_CLASS(file, Crypto::Cert::X509CertReq(fileName, Data::ByteArrayR(dataBuff, dataLen)));
 				if (fileList)
 				{
 					fileList->AddFile(file);
@@ -379,7 +377,7 @@ Crypto::Cert::X509File *Parser::FileParser::X509Parser::ParseBuff(const UInt8 *b
 					NEW_CLASS(fileList, Crypto::Cert::X509FileList(fileName, (Crypto::Cert::X509Cert*)file));
 					file = 0;
 				}
-				NEW_CLASS(file, Crypto::Cert::X509CertReq(fileName, dataBuff, dataLen));
+				NEW_CLASS(file, Crypto::Cert::X509CertReq(fileName, Data::ByteArrayR(dataBuff, dataLen)));
 				if (fileList)
 				{
 					fileList->AddFile(file);
@@ -413,7 +411,7 @@ Crypto::Cert::X509File *Parser::FileParser::X509Parser::ParseBuff(const UInt8 *b
 					NEW_CLASS(fileList, Crypto::Cert::X509FileList(fileName, (Crypto::Cert::X509Cert*)file));
 					file = 0;
 				}
-				NEW_CLASS(file, Crypto::Cert::X509PKCS7(fileName, dataBuff, dataLen));
+				NEW_CLASS(file, Crypto::Cert::X509PKCS7(fileName, Data::ByteArrayR(dataBuff, dataLen)));
 				if (fileList)
 				{
 					fileList->AddFile(file);
@@ -430,35 +428,35 @@ Crypto::Cert::X509File *Parser::FileParser::X509Parser::ParseBuff(const UInt8 *b
 	{
 		if (fileName->EndsWithICase(UTF8STRC(".P12")))
 		{
-			NEW_CLASS(ret, Crypto::Cert::X509PKCS12(fileName, buff, buffSize));
+			NEW_CLASS(ret, Crypto::Cert::X509PKCS12(fileName, buff));
 		}
 		else if (fileName->EndsWithICase(UTF8STRC(".PFX")))
 		{
-			NEW_CLASS(ret, Crypto::Cert::X509PKCS12(fileName, buff, buffSize));
+			NEW_CLASS(ret, Crypto::Cert::X509PKCS12(fileName, buff));
 		}
 		else if (fileName->EndsWithICase(UTF8STRC(".DER")))
 		{
-			NEW_CLASS(ret, Crypto::Cert::X509Cert(fileName, buff, buffSize));
+			NEW_CLASS(ret, Crypto::Cert::X509Cert(fileName, buff));
 		}
 		else if (fileName->EndsWithICase(UTF8STRC(".CER")))
 		{
-			NEW_CLASS(ret, Crypto::Cert::X509Cert(fileName, buff, buffSize));
+			NEW_CLASS(ret, Crypto::Cert::X509Cert(fileName, buff));
 		}
 		else if (fileName->EndsWithICase(UTF8STRC(".CRT")))
 		{
-			NEW_CLASS(ret, Crypto::Cert::X509Cert(fileName, buff, buffSize));
+			NEW_CLASS(ret, Crypto::Cert::X509Cert(fileName, buff));
 		}
 		else if (fileName->EndsWithICase(UTF8STRC(".P7B")))
 		{
-			NEW_CLASS(ret, Crypto::Cert::X509PKCS7(fileName, buff, buffSize));
+			NEW_CLASS(ret, Crypto::Cert::X509PKCS7(fileName, buff));
 		}
 		else if (fileName->EndsWithICase(UTF8STRC(".P7S")))
 		{
-			NEW_CLASS(ret, Crypto::Cert::X509PKCS7(fileName, buff, buffSize));
+			NEW_CLASS(ret, Crypto::Cert::X509PKCS7(fileName, buff));
 		}
 		else if (fileName->EndsWithICase(UTF8STRC(".CRL")))
 		{
-			NEW_CLASS(ret, Crypto::Cert::X509CRL(fileName, buff, buffSize));
+			NEW_CLASS(ret, Crypto::Cert::X509CRL(fileName, buff));
 		}
 		else
 		{
@@ -508,11 +506,11 @@ Crypto::Cert::X509File *Parser::FileParser::X509Parser::ToType(IO::ParsedObject 
 	return 0;
 }
 
-Crypto::Cert::X509File *Parser::FileParser::X509Parser::ParseBinary(const UInt8 *buff, UOSInt buffSize)
+Crypto::Cert::X509File *Parser::FileParser::X509Parser::ParseBinary(Data::ByteArrayR buff)
 {
-	if (Crypto::Cert::X509File::IsCertificate(buff, buff + buffSize, "1"))
+	if (Crypto::Cert::X509File::IsCertificate(buff.GetPtr(), buff.PtrEnd(), "1"))
 	{
-		return NEW_CLASS_D(Crypto::Cert::X509Cert(CSTR("Certificate.crt"), buff, buffSize));
+		return NEW_CLASS_D(Crypto::Cert::X509Cert(CSTR("Certificate.crt"), buff));
 	}
 	return 0;
 }

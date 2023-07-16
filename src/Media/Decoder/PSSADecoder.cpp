@@ -10,7 +10,6 @@ Media::Decoder::PSSADecoder::PSSADecoder(Media::IAudioSource *sourceAudio)
 	Media::AudioFormat fmt;
 	this->sourceAudio = 0;
 	this->nChannels = 0;
-	this->readBuff = 0;
 	this->readBuffSize = 0;
 	this->buffSize = 0;
 	sourceAudio->GetFormat(&fmt);
@@ -36,16 +35,11 @@ Media::Decoder::PSSADecoder::PSSADecoder(Media::IAudioSource *sourceAudio)
 	}
 	this->sourceAudio = sourceAudio;
 	this->readBuffSize = this->sourceAudio->GetMinBlockSize();
-	this->readBuff = MemAlloc(UInt8, this->readBuffSize);
+	this->readBuff.ChangeSize(this->readBuffSize);
 }
 
 Media::Decoder::PSSADecoder::~PSSADecoder()
 {
-	if (this->readBuff)
-	{
-		MemFree(this->readBuff);
-		this->readBuff = 0;
-	}
 }
 
 void Media::Decoder::PSSADecoder::GetFormat(AudioFormat *format)
@@ -110,12 +104,13 @@ void Media::Decoder::PSSADecoder::Stop()
 	this->readEvt = 0;
 }
 
-UOSInt Media::Decoder::PSSADecoder::ReadBlock(UInt8 *buff, UOSInt blkSize)
+UOSInt Media::Decoder::PSSADecoder::ReadBlock(Data::ByteArray buff)
 {
+	UOSInt blkSize = buff.GetSize();
 	UOSInt outSize = 0;
 	UOSInt readSize;
-	UInt8 *src;
-	UInt8 *dest;
+	Data::ByteArray src;
+	Data::ByteArray dest;
 	if (this->nChannels == 1)
 	{
 		blkSize = blkSize / 56;
@@ -136,9 +131,9 @@ UOSInt Media::Decoder::PSSADecoder::ReadBlock(UInt8 *buff, UOSInt blkSize)
 			{
 				if (buffSize > 0)
 				{
-					MemCopyNO(this->readBuff, src, this->buffSize);
+					this->readBuff.CopyFrom(src.WithSize(this->buffSize));
 				}
-				readSize = this->sourceAudio->ReadBlock(&readBuff[buffSize], this->readBuffSize);
+				readSize = this->sourceAudio->ReadBlock(readBuff.SubArray(buffSize, this->readBuffSize));
 				if (readSize <= 0)
 					break;
 				this->buffSize += readSize;
@@ -147,7 +142,7 @@ UOSInt Media::Decoder::PSSADecoder::ReadBlock(UInt8 *buff, UOSInt blkSize)
 		}
 		if (buffSize > 0)
 		{
-			MemCopyNO(this->readBuff, src, this->buffSize);
+			this->readBuff.CopyFrom(src.WithSize(this->buffSize));
 		}
 		if (this->readEvt)
 			this->readEvt->Set();
@@ -161,7 +156,7 @@ UOSInt Media::Decoder::PSSADecoder::ReadBlock(UInt8 *buff, UOSInt blkSize)
 		{
 			if (this->buffSize >= this->nBlockAlign)
 			{
-				dest = &buff[2];
+				dest = buff.SubArray(2);
 				UOSInt j;
 				j = this->nBlockAlign >> 5;
 				while (j-- > 0)
@@ -185,9 +180,9 @@ UOSInt Media::Decoder::PSSADecoder::ReadBlock(UInt8 *buff, UOSInt blkSize)
 			{
 				if (buffSize > 0)
 				{
-					MemCopyNO(this->readBuff, src, this->buffSize);
+					this->readBuff.CopyFrom(src.WithSize(this->buffSize));
 				}
-				readSize = this->sourceAudio->ReadBlock(&readBuff[buffSize], this->readBuffSize);
+				readSize = this->sourceAudio->ReadBlock(readBuff.SubArray(buffSize, this->readBuffSize));
 				if (readSize <= 0)
 					break;
 				this->buffSize += readSize;
@@ -196,7 +191,7 @@ UOSInt Media::Decoder::PSSADecoder::ReadBlock(UInt8 *buff, UOSInt blkSize)
 		}
 		if (buffSize > 0)
 		{
-			MemCopyNO(this->readBuff, src, this->buffSize);
+			this->readBuff.CopyFrom(src.WithSize(this->buffSize));
 		}
 		if (this->readEvt)
 			this->readEvt->Set();
@@ -221,7 +216,7 @@ UOSInt Media::Decoder::PSSADecoder::GetMinBlockSize()
 	return 0;
 }
 
-void Media::Decoder::PSSADecoder::Convert(UInt8 *src, UInt8 *dest, Int32 sampleByte, Int32 channel)
+void Media::Decoder::PSSADecoder::Convert(Data::ByteArray src, Data::ByteArray dest, Int32 sampleByte, Int32 channel)
 {
 	Int32 j,r,f;
 	Int64 y,x;
@@ -230,7 +225,7 @@ void Media::Decoder::PSSADecoder::Convert(UInt8 *src, UInt8 *dest, Int32 sampleB
 		j = 28;
 		while (j--)
 		{
-			*(Int16*)dest = 0;
+			dest.WriteNI16(0, 0);
 			dest += sampleByte;
 		}
 		return;
@@ -258,7 +253,7 @@ void Media::Decoder::PSSADecoder::Convert(UInt8 *src, UInt8 *dest, Int32 sampleB
 			if (((*(UInt32*)&x) & 0x80000000) == 0)
 				x = (Int64)0xffffffff80000000;
 		adxSample1[channel] = x;
-		*(Int16*)dest = (Int16)(x >> 16);
+		dest.WriteNI16(0, (Int16)(x >> 16));
 		dest += sampleByte;
 
 		x = *src++ >> 4;
@@ -275,7 +270,7 @@ void Media::Decoder::PSSADecoder::Convert(UInt8 *src, UInt8 *dest, Int32 sampleB
 			if (((*(UInt32*)&x) & 0x80000000) == 0)
 				x = (Int64)0xffffffff80000000;
 		adxSample1[channel] = x;
-		*(Int16*)dest = (Int16)(x >> 16);
+		dest.WriteNI16(0, (Int16)(x >> 16));
 		dest += sampleByte;
 	}
 }

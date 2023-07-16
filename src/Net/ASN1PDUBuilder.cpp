@@ -444,3 +444,9 @@ UOSInt Net::ASN1PDUBuilder::GetBuffSize()
 	this->EndAll();
 	return this->currOffset;
 }
+
+Data::ByteArrayR Net::ASN1PDUBuilder::GetArray()
+{
+	this->EndAll();
+	return Data::ByteArrayR(this->buff, this->currOffset);
+}

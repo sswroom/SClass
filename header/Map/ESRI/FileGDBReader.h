@@ -1,5 +1,6 @@
 #ifndef _SM_MAP_ESRI_FILEGDBREADER
 #define _SM_MAP_ESRI_FILEGDBREADER
+#include "Data/ByteBuffer.h"
 #include "Data/QueryConditions.h"
 #include "DB/DBReader.h"
 #include "IO/StreamData.h"
@@ -16,7 +17,7 @@ namespace Map
 			UInt64 currOfst;
 			FileGDBTableInfo *tableInfo;
 			UOSInt rowSize;
-			UInt8 *rowData;
+			Data::ByteBuffer rowData;
 			Int32 objectId;
 			UInt8 *fieldNull;
 			UInt32 *fieldOfst;
@@ -27,7 +28,7 @@ namespace Map
 
 			UOSInt indexCnt;
 			UOSInt indexNext;
-			UInt8 *indexBuff;
+			Data::ByteBuffer indexBuff;
 			
 			UOSInt GetFieldIndex(UOSInt colIndex);
 		public:

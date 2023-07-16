@@ -1,5 +1,6 @@
 #ifndef _SM_IO_BUFFEREDINPUTSTREAM
 #define _SM_IO_BUFFEREDINPUTSTREAM
+#include "Data/ByteBuffer.h"
 #include "IO/SeekableStream.h"
 
 namespace IO
@@ -8,8 +9,7 @@ namespace IO
 	{
 	private:
 		IO::SeekableStream *stm;
-		UOSInt buffSize;
-		UInt8 *buff;
+		Data::ByteBuffer buff;
 		UOSInt buffOfst;
 		UInt64 stmPos;
 		UOSInt stmBuffSize;
@@ -19,10 +19,10 @@ namespace IO
 		virtual ~BufferedInputStream();
 
 		virtual Bool IsDown() const;
-		virtual UOSInt Read(UInt8 *buff, UOSInt size);
+		virtual UOSInt Read(Data::ByteArray buff);
 		virtual UOSInt Write(const UInt8 *buff, UOSInt size);
 
-		virtual void *BeginRead(UInt8 *buff, UOSInt size, Sync::Event *evt);
+		virtual void *BeginRead(Data::ByteArray buff, Sync::Event *evt);
 		virtual UOSInt EndRead(void *reqData, Bool toWait, Bool *incomplete);
 		virtual void CancelRead(void *reqData);
 		virtual void *BeginWrite(const UInt8 *buff, UOSInt size, Sync::Event *evt);

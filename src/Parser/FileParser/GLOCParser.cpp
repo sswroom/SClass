@@ -311,7 +311,7 @@ IO::ParsedObject *Parser::FileParser::GLOCParser::ParseFileHdr(IO::StreamData *f
 	while (currPos < fileSize)
 	{
 		ExtraInfo extInfo;
-		fd->GetRealData(currPos, 128, buff);
+		fd->GetRealData(currPos, 128, BYTEARR(buff));
 		extInfo.termId = ReadUInt32(&buff[0]);
 		extInfo.devType = ReadInt32(&buff[4]);
 		rec.recTime = Data::TimeInstant(ReadUInt32(&buff[8]), 0);

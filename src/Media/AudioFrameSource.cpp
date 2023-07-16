@@ -131,32 +131,31 @@ void Media::AudioFrameSource::Stop()
 	this->readEvt = 0;
 }
 
-UOSInt Media::AudioFrameSource::ReadBlock(UInt8 *buff, UOSInt blkSize)
+UOSInt Media::AudioFrameSource::ReadBlock(Data::ByteArray blk)
 {
 	if (this->format.formatId == 1)
 	{
-		if (blkSize % this->format.align)
+		if (blk.GetSize() % this->format.align)
 		{
-			blkSize -= blkSize % this->format.align;
+			blk = blk.WithSize(blk.GetSize() - (blk.GetSize() % this->format.align));
 		}
 		UOSInt readSize = 0;
 		UOSInt size;
-		while (this->readBlock < this->blockCnt && blkSize > 0)
+		while (this->readBlock < this->blockCnt && blk.GetSize() > 0)
 		{
-			if ((blocks[this->readBlock].length - this->readBlockOfst) > blkSize)
+			if ((blocks[this->readBlock].length - this->readBlockOfst) > blk.GetSize())
 			{
-				this->data->GetRealData(this->blocks[this->readBlock].offset + this->readBlockOfst, blkSize, buff);
-				this->readBlockOfst += blkSize;
-				readSize += blkSize;
-				blkSize = 0;
+				this->data->GetRealData(this->blocks[this->readBlock].offset + this->readBlockOfst, blk.GetSize(), blk);
+				this->readBlockOfst += blk.GetSize();
+				readSize += blk.GetSize();
+				blk = blk.WithSize(0);
 				break;
 			}
 			else
 			{
 				size = this->blocks[this->readBlock].length - this->readBlockOfst;
-				this->data->GetRealData(this->blocks[this->readBlock].offset + this->readBlockOfst, size, buff);
-				buff += size;
-				blkSize -= size;
+				this->data->GetRealData(this->blocks[this->readBlock].offset + this->readBlockOfst, size, blk);
+				blk += size;
 				readSize += size;
 				this->readBlockOfst = 0;
 				this->readBlock++;
@@ -168,9 +167,9 @@ UOSInt Media::AudioFrameSource::ReadBlock(UInt8 *buff, UOSInt blkSize)
 	{
 		if (this->readBlock >= this->blockCnt)
 			return 0;
-		if (this->blocks[this->readBlock].length > blkSize)
+		if (this->blocks[this->readBlock].length > blk.GetSize())
 			return 0;
-		UOSInt readSize = this->data->GetRealData(this->blocks[this->readBlock].offset, this->blocks[this->readBlock].length, buff);
+		UOSInt readSize = this->data->GetRealData(this->blocks[this->readBlock].offset, this->blocks[this->readBlock].length, blk);
 		this->readBlock++;
 		this->readBlockOfst = 0;
 		if (this->readEvt)

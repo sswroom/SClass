@@ -5,12 +5,9 @@
 #include "Net/SocketFactory.h"
 #include "Text/Encoding.h"
 
-IO::UDPFileLog::UDPFileLog(IO::StreamData *fd) : IO::UDPLog(fd->GetFullName())
+IO::UDPFileLog::UDPFileLog(IO::StreamData *fd) : IO::UDPLog(fd->GetFullName()), logBuff(65544)
 {
-	UInt8 *buff;
-
 	this->fd = fd->GetPartialData(0, fd->GetDataSize());
-	this->logBuff = MemAlloc(UInt8, 65544);
 
 	UInt64 currPos;
 	UInt64 buffPos;
@@ -21,7 +18,7 @@ IO::UDPFileLog::UDPFileLog(IO::StreamData *fd) : IO::UDPLog(fd->GetFullName())
 	UInt32 packetSize;
 	UOSInt i;
 
-	buff = MemAlloc(UInt8, 1048576);
+	Data::ByteBuffer buff(1048576);
 	fdSize = this->fd->GetDataSize();
 	buffSize = 0;
 	currPos = 0;
@@ -33,7 +30,7 @@ IO::UDPFileLog::UDPFileLog(IO::StreamData *fd) : IO::UDPLog(fd->GetFullName())
 		{
 			readSize = (UOSInt)(fdSize - currPos);
 		}
-		this->fd->GetRealData(currPos, readSize, &buff[buffSize]);
+		this->fd->GetRealData(currPos, readSize, buff.SubArray(buffSize));
 		buffPos = currPos - buffSize;
 		buffSize += readSize;
 		endOfst = buffSize - 8;
@@ -59,7 +56,7 @@ IO::UDPFileLog::UDPFileLog(IO::StreamData *fd) : IO::UDPLog(fd->GetFullName())
 		}
 		if (i < buffSize)
 		{
-			MemCopyO(buff, &buff[i], buffSize - i);
+			buff.CopyInner(0, i, buffSize - i);
 			buffSize -= i;
 		}
 		else
@@ -69,14 +66,10 @@ IO::UDPFileLog::UDPFileLog(IO::StreamData *fd) : IO::UDPLog(fd->GetFullName())
 
 		currPos += readSize;
 	}
-	
-
-	MemFree(buff);
 }
 
 IO::UDPFileLog::~UDPFileLog()
 {
-	MemFree(this->logBuff);
 	DEL_CLASS(this->fd);
 }
 

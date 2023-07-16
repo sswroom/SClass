@@ -230,7 +230,7 @@ void Media::Decoder::ACMDecoder::Stop()
 	this->readEvt = 0;
 }
 
-UOSInt Media::Decoder::ACMDecoder::ReadBlock(UInt8 *buff, UOSInt blkSize)
+UOSInt Media::Decoder::ACMDecoder::ReadBlock(Data::ByteArray buff)
 {
 	ACMSTREAMHEADER *acmsh = (ACMSTREAMHEADER*)this->acmsh;
 	UOSInt outSize = 0;
@@ -244,28 +244,27 @@ UOSInt Media::Decoder::ACMDecoder::ReadBlock(UInt8 *buff, UOSInt blkSize)
 			this->decFmt->align = 1;
 		}
 	}
-	i = blkSize % this->decFmt->align;
+	i = buff.GetSize() % this->decFmt->align;
 	if (i)
 	{
-		blkSize -= i;
+		buff = buff.WithSize(buff.GetSize() - i);
 	}
 
-	while (blkSize > 0)
+	while (buff.GetSize() > 0)
 	{
 		if (this->acmOupBuffLeft)
 		{
 			if (this->acmOupBuffLeft < blkSize)
 			{
-				MemCopyNO(buff, this->acmOupBuff, this->acmOupBuffLeft);
+				buff.CopyFrom(Data::ByteArrayR(this->acmOupBuff, this->acmOupBuffLeft));
 				buff += this->acmOupBuffLeft;
 				outSize += this->acmOupBuffLeft;
-				blkSize -= this->acmOupBuffLeft;
 				this->acmOupBuffLeft = 0;
 			}
 			else
 			{
-				MemCopyNO(buff, this->acmOupBuff, blkSize);
-				outSize += blkSize;
+				buff.CopyFrom(Data::ByteArrayR(this->acmOupBuff, buff.GetSize()));
+				outSize += buff.GetSize();
 				if (this->acmOupBuffLeft > blkSize)
 				{
 					MemCopyO(this->acmOupBuff, &this->acmOupBuff[blkSize], this->acmOupBuffLeft - blkSize);

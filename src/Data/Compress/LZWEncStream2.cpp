@@ -126,7 +126,7 @@ Bool Data::Compress::LZWEncStream2::IsDown() const
 	return this->stm->IsDown();
 }
 
-UOSInt Data::Compress::LZWEncStream2::Read(UInt8 *buff, UOSInt size)
+UOSInt Data::Compress::LZWEncStream2::Read(const Data::ByteArray &buff)
 {
 	return 0;
 }

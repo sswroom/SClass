@@ -1,4 +1,5 @@
 #include "Stdafx.h"
+#include "Data/ByteBuffer.h"
 #include "Data/ByteTool.h"
 #include "IO/FileAnalyse/EXEFileAnalyse.h"
 #include "Sync/MutexUsage.h"
@@ -19,11 +20,11 @@ UInt32 __stdcall IO::FileAnalyse::EXEFileAnalyse::ParseThread(void *userObj)
 	pack->packSize = 64;
 	pack->packType = 0;
 	me->packs.Add(pack);
-	me->fd->GetRealData(0, 64, buff);
+	me->fd->GetRealData(0, 64, BYTEARR(buff));
 	val = ReadUInt32(&buff[60]);
 	if (val > 64)
 	{
-		me->fd->GetRealData(val, 128, buff);
+		me->fd->GetRealData(val, 128, BYTEARR(buff));
 		if (buff[0] == 'P' && buff[1] == 'E' && buff[2] == 0 && buff[3] == 0)
 		{
 			pack = MemAlloc(IO::FileAnalyse::EXEFileAnalyse::PackInfo, 1);
@@ -64,7 +65,7 @@ UInt32 __stdcall IO::FileAnalyse::EXEFileAnalyse::ParseThread(void *userObj)
 				}
 				if (me->imageSize > 0)
 				{
-					me->imageBuff = MemAlloc(UInt8, me->imageSize);
+					me->imageBuff.ChangeSize(me->imageSize);
 				}
 			}
 			UOSInt ofst = val + 24 + optHdrSize;
@@ -80,20 +81,20 @@ UInt32 __stdcall IO::FileAnalyse::EXEFileAnalyse::ParseThread(void *userObj)
 				pack->packType = 5;
 				me->packs.Add(pack);
 
-				me->fd->GetRealData(ofst, 40, buff);
+				me->fd->GetRealData(ofst, 40, BYTEARR(buff));
 				virtualSize = ReadUInt32(&buff[8]);
 				sizeOfRawData = ReadUInt32(&buff[16]);
-				if (me->imageBuff)
+				if (!me->imageBuff.IsNull())
 				{
 					virtualAddr = ReadUInt32(&buff[12]);
 					if (virtualSize > sizeOfRawData)
 					{
-						me->fd->GetRealData(ReadUInt32(&buff[20]), sizeOfRawData, &me->imageBuff[virtualAddr]);
+						me->fd->GetRealData(ReadUInt32(&buff[20]), sizeOfRawData, me->imageBuff.SubArray(virtualAddr));
 						MemClear(&me->imageBuff[virtualAddr + sizeOfRawData], virtualSize - sizeOfRawData);
 					}
 					else
 					{
-						me->fd->GetRealData(ReadUInt32(&buff[20]), virtualSize, &me->imageBuff[virtualAddr]);
+						me->fd->GetRealData(ReadUInt32(&buff[20]), virtualSize, me->imageBuff.SubArray(virtualAddr));
 					}
 				}
 
@@ -103,7 +104,7 @@ UInt32 __stdcall IO::FileAnalyse::EXEFileAnalyse::ParseThread(void *userObj)
 
 			if (optHdrSize > 0 && tableOfst != 0)
 			{
-				me->fd->GetRealData(tableOfst, 128, buff);
+				me->fd->GetRealData(tableOfst, 128, BYTEARR(buff));
 				virtualAddr = ReadUInt32(&buff[0]);
 				virtualSize = ReadUInt32(&buff[4]);
 				if (virtualAddr != 0 && virtualSize != 0)
@@ -269,9 +270,8 @@ IO::FileAnalyse::EXEFileAnalyse::EXEFileAnalyse(IO::StreamData *fd)
 	this->pauseParsing = false;
 	this->threadToStop = false;
 	this->threadStarted = false;
-	this->imageBuff = 0;
 	this->imageSize = 0;
-	fd->GetRealData(0, 8, buff);
+	fd->GetRealData(0, 8, BYTEARR(buff));
 	if (ReadInt16(buff) != 0x5A4D)
 	{
 		return;
@@ -296,11 +296,6 @@ IO::FileAnalyse::EXEFileAnalyse::~EXEFileAnalyse()
 	}
 	SDEL_CLASS(this->fd);
 	LIST_FREE_FUNC(&this->packs, MemFree);
-	if (this->imageBuff)
-	{
-		MemFree(this->imageBuff);
-		this->imageBuff = 0;
-	}
 }
 
 Text::CString IO::FileAnalyse::EXEFileAnalyse::GetFormatName()
@@ -330,7 +325,6 @@ Bool IO::FileAnalyse::EXEFileAnalyse::GetFrameName(UOSInt index, Text::StringBui
 Bool IO::FileAnalyse::EXEFileAnalyse::GetFrameDetail(UOSInt index, Text::StringBuilderUTF8 *sb)
 {
 	IO::FileAnalyse::EXEFileAnalyse::PackInfo *pack;
-	UInt8 *packBuff;
 	pack = this->packs.GetItem(index);
 	if (pack == 0)
 		return false;
@@ -344,11 +338,11 @@ Bool IO::FileAnalyse::EXEFileAnalyse::GetFrameDetail(UOSInt index, Text::StringB
 
 	if (pack->packType == 0)
 	{
-		packBuff = MemAlloc(UInt8, (UOSInt)pack->packSize);
+		Data::ByteBuffer packBuff((UOSInt)pack->packSize);
 		this->fd->GetRealData(pack->fileOfst, (UOSInt)pack->packSize, packBuff);
 
 		sb->AppendC(UTF8STRC("Magic number = 0x"));
-		sb->AppendHex16(ReadUInt16(packBuff));
+		sb->AppendHex16(ReadUInt16(&packBuff[0]));
 		sb->AppendC(UTF8STRC("\r\nBytes on last page of file = "));
 		sb->AppendU16(ReadUInt16(&packBuff[2]));
 		sb->AppendC(UTF8STRC("\r\nPages in file = "));
@@ -381,20 +375,16 @@ Bool IO::FileAnalyse::EXEFileAnalyse::GetFrameDetail(UOSInt index, Text::StringB
 		sb->AppendU16(ReadUInt16(&packBuff[38]));
 		sb->AppendC(UTF8STRC("\r\nFile address of new exe header = 0x"));
 		sb->AppendHex32(ReadUInt32(&packBuff[60]));
-
-		MemFree(packBuff);
 	}
 	else if (pack->packType == 1)
 	{
-		packBuff = MemAlloc(UInt8, (UOSInt)pack->packSize);
+		Data::ByteBuffer packBuff((UOSInt)pack->packSize);
 		this->fd->GetRealData(pack->fileOfst, (UOSInt)pack->packSize, packBuff);
-		sb->AppendHexBuff(packBuff, (UOSInt)pack->packSize, ' ', Text::LineBreakType::CRLF);
-
-		MemFree(packBuff);
+		sb->AppendHexBuff(packBuff, ' ', Text::LineBreakType::CRLF);
 	}
 	else if (pack->packType == 2)
 	{
-		packBuff = MemAlloc(UInt8, (UOSInt)pack->packSize);
+		Data::ByteBuffer packBuff((UOSInt)pack->packSize);
 		this->fd->GetRealData(pack->fileOfst, (UOSInt)pack->packSize, packBuff);
 
 		sb->AppendC(UTF8STRC("Magic number = PE\\0\\0"));
@@ -512,12 +502,10 @@ Bool IO::FileAnalyse::EXEFileAnalyse::GetFrameDetail(UOSInt index, Text::StringB
 		if (ch & 0x2000) sb->AppendC(UTF8STRC(" DLL"));
 		if (ch & 0x4000) sb->AppendC(UTF8STRC(" UP_SYSTEM_ONLY"));
 		if (ch & 0x8000) sb->AppendC(UTF8STRC(" BYTES_REVERSED_HI"));
-
-		MemFree(packBuff);
 	}
 	else if (pack->packType == 3 || pack->packType == 4)
 	{
-		packBuff = MemAlloc(UInt8, (UOSInt)pack->packSize);
+		Data::ByteBuffer packBuff((UOSInt)pack->packSize);
 		this->fd->GetRealData(pack->fileOfst, (UOSInt)pack->packSize, packBuff);
 
 		sb->AppendC(UTF8STRC("Magic number = 0x"));
@@ -724,16 +712,14 @@ Bool IO::FileAnalyse::EXEFileAnalyse::GetFrameDetail(UOSInt index, Text::StringB
 		sb->AppendC(UTF8STRC("\r\nCLRRuntimeTableSize = "));
 		sb->AppendU32(ReadUInt32(&packBuff[ofst + 124]));
 		//////////////////////
-
-		MemFree(packBuff);
 	}
 	else if (pack->packType == 5)
 	{
-		packBuff = MemAlloc(UInt8, (UOSInt)pack->packSize);
+		Data::ByteBuffer packBuff((UOSInt)pack->packSize);
 		this->fd->GetRealData(pack->fileOfst, (UOSInt)pack->packSize, packBuff);
 
 		sb->AppendC(UTF8STRC("Name = "));
-		sb->AppendS(packBuff, 8);
+		sb->AppendS(packBuff.Ptr(), 8);
 		sb->AppendC(UTF8STRC("\r\nVirtualSize = "));
 		sb->AppendU32(ReadUInt32(&packBuff[8]));
 		sb->AppendC(UTF8STRC("\r\nVirtualAddress = 0x"));
@@ -752,8 +738,6 @@ Bool IO::FileAnalyse::EXEFileAnalyse::GetFrameDetail(UOSInt index, Text::StringB
 		sb->AppendU16(ReadUInt16(&packBuff[34]));
 		sb->AppendC(UTF8STRC("\r\nCharacteristics = 0x"));
 		sb->AppendHex32(ReadUInt32(&packBuff[36]));
-
-		MemFree(packBuff);
 	}
 	else if (pack->packType == 6)
 	{
@@ -859,7 +843,6 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::EXEFileAnalyse::GetFrameDetail(UO
 	Text::CString vName;
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
-	UInt8 *packBuff;
 	pack = this->packs.GetItem(index);
 	if (pack == 0)
 		return 0;
@@ -873,9 +856,9 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::EXEFileAnalyse::GetFrameDetail(UO
 
 	if (pack->packType == 0)
 	{
-		packBuff = MemAlloc(UInt8, (UOSInt)pack->packSize);
+		Data::ByteBuffer packBuff((UOSInt)pack->packSize);
 		this->fd->GetRealData(pack->fileOfst, (UOSInt)pack->packSize, packBuff);
-		frame->AddHex16(0, CSTR("Magic number"), ReadUInt16(packBuff));
+		frame->AddHex16(0, CSTR("Magic number"), ReadUInt16(&packBuff[0]));
 		frame->AddUInt(2, 2, CSTR("Bytes on last page of file"), ReadUInt16(&packBuff[2]));
 		frame->AddUInt(4, 2, CSTR("Pages in file"), ReadUInt16(&packBuff[4]));
 		frame->AddUInt(6, 2, CSTR("Relocations"), ReadUInt16(&packBuff[6]));
@@ -892,18 +875,16 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::EXEFileAnalyse::GetFrameDetail(UO
 		frame->AddUInt(36, 2, CSTR("OEM identifier"), ReadUInt16(&packBuff[36]));
 		frame->AddUInt(38, 2, CSTR("OEM information"), ReadUInt16(&packBuff[38]));
 		frame->AddHex32(60, CSTR("File address of new exe header"), ReadUInt32(&packBuff[60]));
-		MemFree(packBuff);
 	}
 	else if (pack->packType == 1)
 	{
-		packBuff = MemAlloc(UInt8, (UOSInt)pack->packSize);
+		Data::ByteBuffer packBuff((UOSInt)pack->packSize);
 		this->fd->GetRealData(pack->fileOfst, (UOSInt)pack->packSize, packBuff);
-		frame->AddTextHexBuff(0, (UOSInt)pack->packSize, packBuff, true);
-		MemFree(packBuff);
+		frame->AddTextHexBuff(0, (UOSInt)pack->packSize, packBuff.Ptr(), true);
 	}
 	else if (pack->packType == 2)
 	{
-		packBuff = MemAlloc(UInt8, (UOSInt)pack->packSize);
+		Data::ByteBuffer packBuff((UOSInt)pack->packSize);
 		this->fd->GetRealData(pack->fileOfst, (UOSInt)pack->packSize, packBuff);
 		frame->AddField(0, 4, CSTR("Magic number"), CSTR("PE\\0\\0"));
 		vName = CSTR_NULL;
@@ -1016,11 +997,10 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::EXEFileAnalyse::GetFrameDetail(UO
 		if (ch & 0x4000) sb.AppendC(UTF8STRC(" UP_SYSTEM_ONLY"));
 		if (ch & 0x8000) sb.AppendC(UTF8STRC(" BYTES_REVERSED_HI"));
 		frame->AddField(22, 2, CSTR("Characteristics"), sb.ToCString());
-		MemFree(packBuff);
 	}
 	else if (pack->packType == 3 || pack->packType == 4)
 	{
-		packBuff = MemAlloc(UInt8, (UOSInt)pack->packSize);
+		Data::ByteBuffer packBuff((UOSInt)pack->packSize);
 		this->fd->GetRealData(pack->fileOfst, (UOSInt)pack->packSize, packBuff);
 		frame->AddHex16(0, CSTR("Magic number"), ReadUInt16(&packBuff[0]));
 		frame->AddUInt(2, 1, CSTR("LinkerVersionMajor"), packBuff[2]);
@@ -1164,14 +1144,13 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::EXEFileAnalyse::GetFrameDetail(UO
 		frame->AddUInt(ofst + 116, 4, CSTR("DelayImportTableSize"), ReadUInt32(&packBuff[ofst + 116]));
 		frame->AddHex32(ofst + 2120, CSTR("CLRRuntimeTableVAddr"), ReadUInt32(&packBuff[ofst + 120]));
 		frame->AddUInt(ofst + 124, 4, CSTR("CLRRuntimeTableSize"), ReadUInt32(&packBuff[ofst + 124]));
-		MemFree(packBuff);
 	}
 	else if (pack->packType == 5)
 	{
-		packBuff = MemAlloc(UInt8, (UOSInt)pack->packSize);
+		Data::ByteBuffer packBuff((UOSInt)pack->packSize);
 		this->fd->GetRealData(pack->fileOfst, (UOSInt)pack->packSize, packBuff);
 
-		frame->AddStrS(0, 8, CSTR("Name"), packBuff);
+		frame->AddStrS(0, 8, CSTR("Name"), &packBuff[0]);
 		frame->AddUInt(8, 4, CSTR("VirtualSize"), ReadUInt32(&packBuff[8]));
 		frame->AddHex32(12, CSTR("VirtualAddress"), ReadUInt32(&packBuff[12]));
 		frame->AddUInt(16, 4, CSTR("SizeOfRawData"), ReadUInt32(&packBuff[16]));
@@ -1181,7 +1160,6 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::EXEFileAnalyse::GetFrameDetail(UO
 		frame->AddUInt(32, 2, CSTR("NumberOfRelocations"), ReadUInt32(&packBuff[32]));
 		frame->AddUInt(34, 2, CSTR("NumberOfLinenumbers"), ReadUInt32(&packBuff[34]));
 		frame->AddHex32(36, CSTR("Characteristics"), ReadUInt32(&packBuff[36]));
-		MemFree(packBuff);
 	}
 	else if (pack->packType == 6)
 	{

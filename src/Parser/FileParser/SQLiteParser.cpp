@@ -2,6 +2,7 @@
 #include "MyMemory.h"
 #include "Data/ArrayListStrFast.h"
 #include "Data/ArrayListStrFastNN.h"
+#include "Data/ByteBuffer.h"
 #include "Data/Sort/ArtificialQuickSort.h"
 #include "DB/SQLiteFile.h"
 #include "IO/FileStream.h"
@@ -69,16 +70,15 @@ IO::ParsedObject *Parser::FileParser::SQLiteParser::ParseFileHdr(IO::StreamData 
 		Bool valid = false;
 		UInt64 currOfst = 0;
 		UOSInt readSize;
-		UInt8 *buff;
-		buff = MemAlloc(UInt8, 1048576);
 		{
+			Data::ByteBuffer buff(1048576);
 			IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 			while (true)
 			{
 				readSize = fd->GetRealData(currOfst, 1048576, buff);
 				if (readSize <= 0)
 					break;
-				if (fs.Write(buff, readSize) != readSize)
+				if (fs.Write(buff.Ptr(), readSize) != readSize)
 				{
 					valid = false;
 				}

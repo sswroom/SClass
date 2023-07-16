@@ -1,5 +1,6 @@
 #ifndef _SM_MEDIA_VCDMPGFILE
 #define _SM_MEDIA_VCDMPGFILE
+#include "Data/ByteBuffer.h"
 #include "Data/FastMap.h"
 #include "IO/ISectorData.h"
 #include "Media/IAudioSource.h"
@@ -12,7 +13,7 @@ namespace Media
 	{
 	private:
 		IO::ISectorData *data;
-		UInt8 *readBuff;
+		Data::ByteBuffer readBuff;
 		UInt64 readOfst;
 		UInt64 fleng;
 		UInt32 startTime;

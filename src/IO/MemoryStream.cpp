@@ -1,8 +1,8 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Sync/Event.h"
 #include "IO/Stream.h"
 #include "IO/MemoryStream.h"
+#include "Sync/Event.h"
 
 #if defined(CPU_AVR)
 #define MAX_CAPACITY 1024
@@ -12,24 +12,16 @@
 #define DEF_CAPACITY 1024
 #endif
 
-IO::MemoryStream::MemoryStream() : IO::SeekableStream(CSTR("MemoryStream"))
+IO::MemoryStream::MemoryStream() : IO::SeekableStream(CSTR("MemoryStream")), buff(DEF_CAPACITY)
 {
-	capacity = DEF_CAPACITY;
 	currSize = 0;
 	currPtr = 0;
-	memPtr = MemAlloc(UInt8, capacity);
 }
 
-IO::MemoryStream::MemoryStream(UOSInt capacity) : IO::SeekableStream(CSTR("MemoryStream"))
+IO::MemoryStream::MemoryStream(UOSInt capacity) : IO::SeekableStream(CSTR("MemoryStream")), buff((capacity == 0)?DEF_CAPACITY:capacity)
 {
-	if (capacity == 0)
-	{
-		capacity = DEF_CAPACITY;
-	}
-	this->capacity = capacity;
 	currSize = 0;
 	currPtr = 0;
-	memPtr = MemAlloc(UInt8, this->capacity);
 }
 
 /*IO::MemoryStream::MemoryStream(UInt8 *buff, UOSInt buffSize, const UTF8Char *dbg, UOSInt dbgLen) : IO::SeekableStream(CSTR("MemoryStream"))
@@ -42,18 +34,22 @@ IO::MemoryStream::MemoryStream(UOSInt capacity) : IO::SeekableStream(CSTR("Memor
 
 IO::MemoryStream::~MemoryStream()
 {
-	MemFree(memPtr);
 }
 
 UInt8 *IO::MemoryStream::GetBuff()
 {
-	return this->memPtr;
+	return this->buff.GetPtr();
 }
 
 UInt8 *IO::MemoryStream::GetBuff(UOSInt *buffSize)
 {
 	*buffSize = currSize;
-	return this->memPtr;
+	return this->buff.GetPtr();
+}
+
+Data::ByteArray IO::MemoryStream::GetArray() const
+{
+	return this->buff.SubArray(0, currSize);
 }
 
 Bool IO::MemoryStream::IsDown() const
@@ -61,14 +57,14 @@ Bool IO::MemoryStream::IsDown() const
 	return false;
 }
 
-UOSInt IO::MemoryStream::Read(UInt8 *buff, UOSInt size)
+UOSInt IO::MemoryStream::Read(Data::ByteArray buff)
 {
-	UOSInt readSize = size;
+	UOSInt readSize = buff.GetSize();
 	if (this->currSize - this->currPtr < readSize)
 	{
 		readSize = this->currSize - this->currPtr;
 	}
-	MemCopyNO(buff, &this->memPtr[this->currPtr], readSize);
+	buff.CopyFrom(0, this->buff.SubArray(this->currPtr, readSize));
 	this->currPtr += readSize;
 	return readSize;
 }
@@ -77,9 +73,9 @@ UOSInt IO::MemoryStream::Write(const UInt8 *buff, UOSInt size)
 {
 	UOSInt endPos = this->currPtr + size;
 
-	if (endPos <= this->capacity)
+	if (endPos <= this->buff.GetSize())
 	{
-		MemCopyNO(&this->memPtr[this->currPtr], buff, size);
+		this->buff.CopyFrom(this->currPtr, Data::ByteArrayR(buff, size));
 		if (endPos > this->currSize)
 			this->currSize = endPos;
 		this->currPtr = endPos;
@@ -90,22 +86,19 @@ UOSInt IO::MemoryStream::Write(const UInt8 *buff, UOSInt size)
 		size = MAX_CAPACITY - this->currPtr;
 		endPos = MAX_CAPACITY;
 	}
-	while (endPos > this->capacity)
+	while (endPos > this->buff.GetSize())
 	{
-		UOSInt newCapacity = this->capacity << 1;
-		UInt8 *newPtr;
+		UOSInt newCapacity = this->buff.GetSize() << 1;
 		if (newCapacity > MAX_CAPACITY)
 		{
 			newCapacity = MAX_CAPACITY;
 		}
-		newPtr = MemAlloc(UInt8, newCapacity);
-		MemCopyNO(newPtr, this->memPtr, this->currSize);
-		MemFree(this->memPtr);
-		this->memPtr = newPtr;
-		this->capacity = newCapacity;
+		Data::ByteBuffer newBuff(newCapacity);
+		newBuff.CopyFrom(0, this->buff.SubArray(0, this->currSize));
+		this->buff.ReplaceBy(newBuff);
 	}
 
-	MemCopyNO(&this->memPtr[this->currPtr], buff, size);
+	this->buff.CopyFrom(this->currPtr, Data::ByteArrayR(buff, size));
 	if (endPos > this->currSize)
 		this->currSize = endPos;
 	this->currPtr = endPos;
@@ -143,13 +136,11 @@ UInt64 IO::MemoryStream::SeekFromBeginning(UInt64 position)
 		return this->currPtr;
 	}
 
-	while (outPos > this->capacity)
+	while (outPos > this->buff.GetSize())
 	{
-		UInt8 *outPtr = MemAlloc(UInt8, this->capacity << 1);
-		MemCopyNO(outPtr, this->memPtr, this->currSize);
-		this->capacity = this->capacity << 1;
-		MemFree(this->memPtr);
-		this->memPtr = outPtr;
+		Data::ByteBuffer tmpBuff(this->buff.GetSize() << 1);
+		tmpBuff.CopyFrom(0, this->buff.SubArray(0, this->currSize));
+		this->buff.ReplaceBy(tmpBuff);
 	}
 
 	if (this->currSize < outPos)

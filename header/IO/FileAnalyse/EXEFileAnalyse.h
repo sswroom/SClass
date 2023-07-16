@@ -1,5 +1,6 @@
 #ifndef _SM_IO_FILEANALYSE_EXEFILEANALYSE
 #define _SM_IO_FILEANALYSE_EXEFILEANALYSE
+#include "Data/ByteBuffer.h"
 #include "Data/SyncArrayList.h"
 #include "IO/StreamData.h"
 #include "IO/FileAnalyse/IFileAnalyse.h"
@@ -23,7 +24,7 @@ namespace IO
 		private:
 			IO::StreamData *fd;
 			Data::SyncArrayList<PackInfo*> packs;
-			UInt8 *imageBuff;
+			Data::ByteBuffer imageBuff;
 			UOSInt imageSize;
 
 			Bool pauseParsing;

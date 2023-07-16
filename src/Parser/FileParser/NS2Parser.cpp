@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Data/ByteBuffer.h"
 #include "Data/ByteTool.h"
 #include "IO/PackageFile.h"
 #include "IO/StmData/ConcatStreamData.h"
@@ -36,7 +37,6 @@ IO::ParserType Parser::FileParser::NS2Parser::GetParserType()
 
 IO::ParsedObject *Parser::FileParser::NS2Parser::ParseFileHdr(IO::StreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
-	UInt8 *hdrBuff;
 	UInt32 hdrSize;
 	UInt64 fileOfst;
 	UInt32 fileSize;
@@ -62,7 +62,7 @@ IO::ParsedObject *Parser::FileParser::NS2Parser::ParseFileHdr(IO::StreamData *fd
 	IO::PackageFile *pf;
 	Text::Encoding enc(932);
 	hdrSize = ReadUInt32(&hdr[0]);
-	hdrBuff = MemAlloc(UInt8, hdrSize);
+	Data::ByteBuffer hdrBuff(hdrSize);
 	fd->GetRealData(0, hdrSize, hdrBuff);
 	NEW_CLASS(pf, IO::PackageFile(fd->GetFullName()));
 	
@@ -89,7 +89,5 @@ IO::ParsedObject *Parser::FileParser::NS2Parser::ParseFileHdr(IO::StreamData *fd
 		fileOfst += fileSize;
 		i += 5;
 	}
-
-	MemFree(hdrBuff);
 	return pf;
 }

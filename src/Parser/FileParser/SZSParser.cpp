@@ -60,7 +60,7 @@ IO::ParsedObject *Parser::FileParser::SZSParser::ParseFileHdr(IO::StreamData *fd
 	i = 0;
 	while (i < fileCnt)
 	{
-		fd->GetRealData(ofst, 272, fileBuff);
+		fd->GetRealData(ofst, 272, BYTEARR(fileBuff));
 
 		fileOfst = ReadUInt64(&fileBuff[256]);
 		fileSize = ReadUInt64(&fileBuff[264]);

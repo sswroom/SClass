@@ -579,10 +579,9 @@ Media::HTRecFile::HTRecFile(IO::StreamData *stmData) : DB::ReadingDB(stmData->Ge
 	this->time1TS = 0;
 	this->time2TS = 0;
 	this->time3TS = 0;
-	this->recBuff = 0;
 	this->serialNo = 0;
 	this->testName = 0;
-	if (stmData->GetRealData(0, 96, buff) != 96)
+	if (stmData->GetRealData(0, 96, BYTEARR(buff)) != 96)
 	{
 		return;
 	}
@@ -642,24 +641,19 @@ Media::HTRecFile::HTRecFile(IO::StreamData *stmData) : DB::ReadingDB(stmData->Ge
 		this->adjStTimeTicks = this->time3TS * 1000;
 		this->adjRecInterval = this->recInterval * 1000;
 	}
-	this->recBuff = MemAlloc(UInt8, recCnt * 3);
+	this->recBuff.ChangeSize(recCnt * 3);
 	stmData->GetRealData(96, recCnt * 3, this->recBuff);
 }
 
 Media::HTRecFile::~HTRecFile()
 {
-	if (this->recBuff)
-	{
-		MemFree(this->recBuff);
-		this->recBuff = 0;
-	}
 	SDEL_TEXT(this->serialNo);
 	SDEL_TEXT(this->testName);
 }
 
 UOSInt Media::HTRecFile::QueryTableNames(Text::CString schemaName, Data::ArrayListNN<Text::String> *names)
 {
-	if (this->recBuff == 0 || schemaName.leng != 0)
+	if (this->recBuff.IsNull() || schemaName.leng != 0)
 	{
 		return 0;
 	}
@@ -812,5 +806,5 @@ UInt32 Media::HTRecFile::GetAdjRecInterval()
 
 const UInt8 *Media::HTRecFile::GetRecBuff()
 {
-	return this->recBuff;
+	return this->recBuff.Ptr();
 }

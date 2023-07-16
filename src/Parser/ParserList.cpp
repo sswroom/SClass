@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/ArrayList.h"
+#include "Data/ByteBuffer.h"
 #include "IO/StreamData.h"
 #include "Media/IImgResizer.h"
 #include "Media/FrameInfo.h"
@@ -194,7 +195,7 @@ IO::ParsedObject *Parser::ParserList::ParseFile(IO::StreamData *fd, IO::PackageF
 	IO::ParsedObject *result;
 	if (fd->GetDataSize() <= 0)
 		return 0;
-	UInt8 *hdr = MemAlloc(UInt8, IO::FileParser::hdrSize);
+	Data::ByteBuffer hdr(IO::FileParser::hdrSize);
 	UOSInt readSize;
 	readSize = fd->GetRealData(0, IO::FileParser::hdrSize, hdr);
 	if (readSize != IO::FileParser::hdrSize)
@@ -204,7 +205,7 @@ IO::ParsedObject *Parser::ParserList::ParseFile(IO::StreamData *fd, IO::PackageF
 			UOSInt hdrSize = readSize;
 			while (true)
 			{
-				readSize = fd->GetRealData(hdrSize, IO::FileParser::hdrSize - hdrSize, &hdr[hdrSize]);
+				readSize = fd->GetRealData(hdrSize, IO::FileParser::hdrSize - hdrSize, hdr.SubArray(hdrSize));
 				if (readSize == 0)
 				{
 					return 0;
@@ -224,18 +225,16 @@ IO::ParsedObject *Parser::ParserList::ParseFile(IO::StreamData *fd, IO::PackageF
 	while (i < j)
 	{
 		parser = this->filePArr.GetItem(i);
-		if ((result = parser->ParseFileHdr(fd, pkgFile, targetType, hdr)) != 0)
+		if ((result = parser->ParseFileHdr(fd, pkgFile, targetType, hdr.Ptr())) != 0)
 		{
 			if (t)
 			{
 				*t = result->GetParserType();
 			}
-			MemFree(hdr);
 			return result;
 		}
 		i++;
 	}
-	MemFree(hdr);
 	return 0;
 }
 

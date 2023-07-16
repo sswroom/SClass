@@ -41,7 +41,7 @@ void IO::StreamReader::FillBuffer()
 		}
 	}
 
-	buffSize += stm->Read(&buff[buffSize], BUFFSIZE - buffSize);
+	buffSize += stm->Read(Data::ByteArray(&buff[buffSize], BUFFSIZE - buffSize));
 	if (stm->CanSeek())
 	{
 		lastPos = ((IO::SeekableStream*)stm.Ptr())->GetPosition();
@@ -73,7 +73,7 @@ void IO::StreamReader::CheckHeader()
 {
 	if (buffSize != 0)
 		return;
-	buffSize += stm->Read(&buff[buffSize], 4 - buffSize);
+	buffSize += stm->Read(Data::ByteArray(&buff[buffSize], 4 - buffSize));
 	if (buffSize >= 3 && buff[0] == 0xef && buff[1] == 0xbb && buff[2] == 0xbf)
 	{
 		this->enc.SetCodePage(65001);

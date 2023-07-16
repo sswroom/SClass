@@ -244,7 +244,7 @@ WChar *Manage::Process::GetFilename(WChar *buff)
 	{
 		sptr = Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("/proc/")), this->procId), UTF8STRC("/cmdline"));
 		IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-		sz = (OSInt)fs.Read((UInt8*)sbuff2, 511);
+		sz = (OSInt)fs.Read(Data::ByteArray((UInt8*)sbuff2, 511));
 		sbuff2[sz] = 0;
 		buff = Text::StrUTF8_WChar(buff, (const UTF8Char*)sbuff2, 0);
 	}
@@ -273,7 +273,7 @@ Bool Manage::Process::GetFilename(Text::StringBuilderUTF8 *sb)
 		}
 		else
 		{
-			sz = (OSInt)fs.Read((UInt8*)sbuff2, 511);
+			sz = (OSInt)fs.Read(Data::ByteArray((UInt8*)sbuff2, 511));
 		}
 		sbuff2[sz] = 0;
 		sb->AppendC((const UTF8Char*)sbuff2, (UOSInt)sz);
@@ -299,7 +299,7 @@ Bool Manage::Process::GetCommandLine(Text::StringBuilderUTF8 *sb)
 	}
 	else
 	{
-		sz = fs.Read(sbuff, sizeof(sbuff));
+		sz = fs.Read(BYTEARR(sbuff));
 	}
 	sbuff[sz] = 0;
 	Bool needEscape;
@@ -391,7 +391,7 @@ Bool Manage::Process::GetTrueProgramPath(Text::StringBuilderUTF8 *sb)
 	}
 	else
 	{
-		sz = fs.Read(sbuff, sizeof(sbuff));
+		sz = fs.Read(BYTEARR(sbuff));
 	}
 	sbuff[sz] = 0;
 	i = Text::StrCharCnt(sbuff);

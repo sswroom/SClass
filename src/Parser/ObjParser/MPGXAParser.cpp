@@ -46,7 +46,7 @@ IO::ParsedObject *Parser::ObjParser::MPGXAParser::ParseObject(IO::ParsedObject *
 	UInt32 v;
 	while (i < 75)
 	{
-		if (!data->ReadSector(i, buff))
+		if (!data->ReadSector(i, BYTEARR(buff)))
 			return 0;
 		v = ReadMUInt32(&buff[24]);
 		if (v == 0x1ba)

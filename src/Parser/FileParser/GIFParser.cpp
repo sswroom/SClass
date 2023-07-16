@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Data/ByteBuffer.h"
 #include "Data/ByteTool.h"
 #include "Data/Compress/LZWDecStream.h"
 #include "IO/BitReaderLSB.h"
@@ -75,24 +76,24 @@ IO::ParsedObject *Parser::FileParser::GIFParser::ParseFileHdr(IO::StreamData *fd
 	UOSInt readSize;
 	UInt8 disposalMethod = 0;
 	Media::ImageList *imgList;
-	UInt8 *scnImg;
-	UInt8 *scnImg32 = 0;
-	UInt8 *globalColorTable = 0;
-	UInt8 *screenColorTable = 0;
+	;
+	Data::ByteBuffer scnImg32;
+	Data::ByteBuffer globalColorTable;
+	Data::ByteBuffer screenColorTable;
 	Int32 globalTransparentIndex = -1;
 	NEW_CLASS(imgList, Media::ImageList(fd->GetFullName()));
 	if (hdr[10] & 0x80)
 	{
-		globalColorTable = MemAlloc(UInt8, (UOSInt)3 << colorSize);
+		globalColorTable.ChangeSize((UOSInt)3 << colorSize);
 //		colorIndex = hdr[11];
 		fd->GetRealData(currOfst, (UOSInt)3 << colorSize, globalColorTable);
 		currOfst += (UOSInt)3 << colorSize;
 	}
-	scnImg = MemAllocA(UInt8, scnWidth * scnHeight);
+	Data::ByteBuffer scnImg(scnWidth * scnHeight);
 	
 	while (true)
 	{
-		if (fd->GetRealData(currOfst, 1, &blockType) != 1)
+		if (fd->GetRealData(currOfst, 1, Data::ByteArray(&blockType, 1)) != 1)
 			break;
 		currOfst++;
 		if (blockType == 0x2c)
@@ -102,8 +103,8 @@ IO::ParsedObject *Parser::FileParser::GIFParser::ParseFileHdr(IO::StreamData *fd
 			UInt32 top;
 			UInt32 imgW;
 			UInt32 imgH;
-			UInt8 *localColorTable = 0;
-			if (fd->GetRealData(currOfst, 9, imgDesc) != 9)
+			Data::ByteBuffer localColorTable;
+			if (fd->GetRealData(currOfst, 9, BYTEARR(imgDesc)) != 9)
 				break;
 			currOfst += 9;
 
@@ -114,14 +115,14 @@ IO::ParsedObject *Parser::FileParser::GIFParser::ParseFileHdr(IO::StreamData *fd
 			if (imgDesc[8] & 0x80)
 			{
 				Int32 colorSize = (imgDesc[8] & 7) + 1;
-				localColorTable = MemAlloc(UInt8, (UOSInt)3 << colorSize);
+				localColorTable.ChangeSize((UOSInt)3 << colorSize);
 				fd->GetRealData(currOfst, (UOSInt)3 << colorSize, localColorTable);
 				currOfst += (UOSInt)3 << colorSize;
 			}
 
 			while (true)
 			{
-				if (fd->GetRealData(currOfst, 1, &blockType) != 1)
+				if (fd->GetRealData(currOfst, 1, Data::ByteArray(&blockType, 1)) != 1)
 					break;
 				currOfst++;
 				if (blockType < 0x20)
@@ -144,7 +145,7 @@ IO::ParsedObject *Parser::FileParser::GIFParser::ParseFileHdr(IO::StreamData *fd
 					IO::MemoryStream mstm;
 					while (true)
 					{
-						readSize = fd->GetRealData(currOfst, 256, readBlock);
+						readSize = fd->GetRealData(currOfst, 256, BYTEARR(readBlock));
 						if (readSize == 0)
 							break;
 						if (readBlock[0] == 0)
@@ -160,28 +161,27 @@ IO::ParsedObject *Parser::FileParser::GIFParser::ParseFileHdr(IO::StreamData *fd
 					Media::StaticImage *simg;
 					NEW_CLASS(lzw, Data::Compress::LZWDecStream(&mstm, true, blockType, 12, 0));
 					
-					UInt8 *tmpPtr;
-					UInt8 *tmpPtr2;
-					UInt8 *currColorTable;
+					Data::ByteArray tmpPtr;
+					Data::ByteArray tmpPtr2;
+					Data::ByteArray currColorTable;
 					OSInt currColorSize;
 					if (isFirst)
 					{
-						if (localColorTable)
+						if (!localColorTable.IsNull())
 						{
-							screenColorTable = localColorTable;
-							localColorTable = 0;
+							screenColorTable.ReplaceBy(localColorTable);
 						}
 						globalTransparentIndex = transparentIndex;
 					}
-					else if (scnImg32 == 0)
+					else if (scnImg32.IsNull())
 					{
-						if (localColorTable)
+						if (!localColorTable.IsNull())
 						{
-							scnImg32 = MemAllocA(UInt8, scnWidth * scnHeight * 4);
+							scnImg32.ChangeSize(scnWidth * scnHeight * 4);
 							tmpPtr = scnImg;
 							tmpPtr2 = scnImg32;
 							i = scnWidth * scnHeight;
-							if (screenColorTable)
+							if (!screenColorTable.IsNull())
 							{
 								while (i-- > 0)
 								{
@@ -201,7 +201,7 @@ IO::ParsedObject *Parser::FileParser::GIFParser::ParseFileHdr(IO::StreamData *fd
 									tmpPtr2 += 4;
 								}
 							}
-							else if (globalColorTable)
+							else if (!globalColorTable.IsNull())
 							{
 								while (i-- > 0)
 								{
@@ -243,30 +243,30 @@ IO::ParsedObject *Parser::FileParser::GIFParser::ParseFileHdr(IO::StreamData *fd
 						}
 					}
 
-					UInt8 *imgData = 0;
+					Data::ByteBuffer imgData;
 					Media::ColorProfile color(Media::ColorProfile::CPT_PUNKNOWN);
-					if (scnImg32)
+					if (!scnImg32.IsNull())
 					{
 						NEW_CLASS(simg, Media::StaticImage(Math::Size2D<UOSInt>(scnWidth, scnHeight), 0, 32, Media::PF_B8G8R8A8, scnWidth * scnHeight * 4, &color, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_ALPHA, Media::YCOFST_C_CENTER_LEFT));
-						imgData = MemAlloc(UInt8, imgW * imgH);
-						readSize = lzw->Read(imgData, imgW * imgH);
-						if (localColorTable)
+						imgData.ChangeSize(imgW * imgH);
+						readSize = lzw->Read(imgData);
+						if (!localColorTable.IsNull())
 						{
 							currColorTable = localColorTable;
 							currColorSize = (Int32)(1 << ((imgDesc[8] & 7) + 1));
 						}
-						else if (globalColorTable)
+						else if (!globalColorTable.IsNull())
 						{
 							currColorTable = globalColorTable;
 							currColorSize = (Int32)(1 << colorSize);
 						}
 						else
 						{
-							currColorTable = 0;
+							currColorTable = Data::ByteArray(0, 0);
 							currColorSize = 0;
 						}
 
-						if (currColorTable)
+						if (!currColorTable.IsNull())
 						{
 							if (imgDesc[8] & 0x40)
 							{
@@ -504,15 +504,15 @@ IO::ParsedObject *Parser::FileParser::GIFParser::ParseFileHdr(IO::StreamData *fd
 								}
 							}
 						}
-						MemCopyANC(simg->data, scnImg32, scnWidth * scnHeight * 4);
+						MemCopyANC(simg->data, scnImg32.Ptr(), scnWidth * scnHeight * 4);
 					}
 					else
 					{
 						NEW_CLASS(simg, Media::StaticImage(Math::Size2D<UOSInt>(scnWidth, scnHeight), 0, 8, Media::PF_PAL_8, scnWidth * scnHeight, &color, Media::ColorProfile::YUVT_UNKNOWN, (globalTransparentIndex == -1)?Media::AT_NO_ALPHA:Media::AT_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 						if (imgDesc[8] & 0x40)
 						{
-							imgData = MemAlloc(UInt8, imgW * imgH);
-							readSize = lzw->Read(imgData, imgW * imgH);
+							imgData.ChangeSize(imgW * imgH);
+							readSize = lzw->Read(imgData);
 							tmpPtr = imgData;
 							tmpPtr2 = scnImg + top * scnWidth + left;
 							i = 0;
@@ -596,7 +596,7 @@ IO::ParsedObject *Parser::FileParser::GIFParser::ParseFileHdr(IO::StreamData *fd
 							{
 								if (imgW == scnWidth)
 								{
-									readSize = lzw->Read(scnImg, imgW * imgH);
+									readSize = lzw->Read(scnImg.WithSize(imgW * imgH));
 								}
 								else
 								{
@@ -604,7 +604,7 @@ IO::ParsedObject *Parser::FileParser::GIFParser::ParseFileHdr(IO::StreamData *fd
 									i = 0;
 									while (i < imgH)
 									{
-										readSize = lzw->Read(tmpPtr2, imgW);
+										readSize = lzw->Read(tmpPtr2.WithSize(imgW));
 										tmpPtr2 += scnWidth;
 										i++;
 									}
@@ -612,8 +612,8 @@ IO::ParsedObject *Parser::FileParser::GIFParser::ParseFileHdr(IO::StreamData *fd
 							}
 							else
 							{
-								imgData = MemAlloc(UInt8, imgW * imgH);
-								readSize = lzw->Read(imgData, imgW * imgH);
+								imgData.ChangeSize(imgW * imgH);
+								readSize = lzw->Read(imgData);
 								tmpPtr = imgData;
 								tmpPtr2 = scnImg + top * scnWidth + left;
 								i = 0;
@@ -636,29 +636,29 @@ IO::ParsedObject *Parser::FileParser::GIFParser::ParseFileHdr(IO::StreamData *fd
 							}
 						}
 
-						MemCopyANC(simg->data, scnImg, scnWidth * scnHeight);
-						if (localColorTable)
+						MemCopyANC(simg->data, scnImg.Ptr(), scnWidth * scnHeight);
+						if (!localColorTable.IsNull())
 						{
 							readSize = (UInt32)(1 << ((imgDesc[8] & 7) + 1));
 							tmpPtr = localColorTable;
 						}
-						else if (screenColorTable)
+						else if (!screenColorTable.IsNull())
 						{
 							readSize = (UInt32)(1 << colorSize);
 							tmpPtr = screenColorTable;
 						}
-						else if (globalColorTable)
+						else if (!globalColorTable.IsNull())
 						{
 							readSize = (UInt32)(1 << colorSize);
 							tmpPtr = globalColorTable;
 						}
 						else
 						{
-							tmpPtr = 0;
+							tmpPtr = Data::ByteArray(0, 0);
 						}
-						if (tmpPtr)
+						if (!tmpPtr.IsNull())
 						{
-							tmpPtr2 = simg->pal;
+							tmpPtr2 = Data::ByteArray(simg->pal, readSize * 4);
 							i = 0;
 							while (i < readSize)
 							{
@@ -676,11 +676,7 @@ IO::ParsedObject *Parser::FileParser::GIFParser::ParseFileHdr(IO::StreamData *fd
 							}
 						}
 					}
-					if (imgData)
-					{
-						MemFree(imgData);
-					}
-
+					imgData.Delete();
 					imgList->AddImage(simg, frameDelay);
 					isFirst = false;
 
@@ -693,14 +689,11 @@ IO::ParsedObject *Parser::FileParser::GIFParser::ParseFileHdr(IO::StreamData *fd
 					break;
 				}
 			}
-			if (localColorTable)
-			{
-				MemFree(localColorTable);
-			}
+			localColorTable.Delete();
 		}
 		else if (blockType == 0x21)
 		{
-			if (fd->GetRealData(currOfst, 2, readBlock) != 2)
+			if (fd->GetRealData(currOfst, 2, BYTEARR(readBlock)) != 2)
 				break;
 			currOfst += 2;
 			blockType = readBlock[0];
@@ -710,7 +703,7 @@ IO::ParsedObject *Parser::FileParser::GIFParser::ParseFileHdr(IO::StreamData *fd
 
 			if (blockType == 0xf9) //Graphic Control Label
 			{
-				if (fd->GetRealData(currOfst, readSize + 1, readBlock) != (readSize + 1))
+				if (fd->GetRealData(currOfst, readSize + 1, BYTEARR(readBlock)) != (readSize + 1))
 				{
 					break;
 				}
@@ -733,7 +726,7 @@ IO::ParsedObject *Parser::FileParser::GIFParser::ParseFileHdr(IO::StreamData *fd
 			{
 				while (readSize > 0)
 				{
-					if (fd->GetRealData(currOfst, readSize + 1, readBlock) != (readSize + 1))
+					if (fd->GetRealData(currOfst, readSize + 1, BYTEARR(readBlock)) != (readSize + 1))
 					{
 						break;
 					}
@@ -745,7 +738,7 @@ IO::ParsedObject *Parser::FileParser::GIFParser::ParseFileHdr(IO::StreamData *fd
 			{
 				while (readSize > 0)
 				{
-					if (fd->GetRealData(currOfst, readSize + 1, readBlock) != (readSize + 1))
+					if (fd->GetRealData(currOfst, readSize + 1, BYTEARR(readBlock)) != (readSize + 1))
 					{
 						break;
 					}
@@ -757,7 +750,7 @@ IO::ParsedObject *Parser::FileParser::GIFParser::ParseFileHdr(IO::StreamData *fd
 			{
 				while (readSize > 0)
 				{
-					if (fd->GetRealData(currOfst, readSize + 1, readBlock) != (readSize + 1))
+					if (fd->GetRealData(currOfst, readSize + 1, BYTEARR(readBlock)) != (readSize + 1))
 					{
 						break;
 					}
@@ -769,7 +762,7 @@ IO::ParsedObject *Parser::FileParser::GIFParser::ParseFileHdr(IO::StreamData *fd
 			{
 				while (readSize > 0)
 				{
-					if (fd->GetRealData(currOfst, readSize + 1, readBlock) != (readSize + 1))
+					if (fd->GetRealData(currOfst, readSize + 1, BYTEARR(readBlock)) != (readSize + 1))
 					{
 						break;
 					}
@@ -788,19 +781,6 @@ IO::ParsedObject *Parser::FileParser::GIFParser::ParseFileHdr(IO::StreamData *fd
 		}
 	}
 
-	MemFreeA(scnImg);
-	if (scnImg32)
-	{
-		MemFreeA(scnImg32);
-	}
-	if (globalColorTable)
-	{
-		MemFree(globalColorTable);
-	}
-	if (screenColorTable)
-	{
-		MemFree(screenColorTable);
-	}
 	if (imgList->GetCount() == 0)
 	{
 		DEL_CLASS(imgList);

@@ -49,15 +49,15 @@ Map::SPDLayer::SPDLayer(Text::CString layerName) : Map::MapDrawLayer(layerName, 
 	NEW_CLASS(bstm, IO::BufferedInputStream(file, 65536));
 	if (!file->IsError())
 	{
-		bstm->Read((UInt8*)&this->nblks, 4);
-		bstm->Read((UInt8*)&this->blkScale, 4);
+		bstm->Read(Data::ByteArray((UInt8*)&this->nblks, 4));
+		bstm->Read(Data::ByteArray((UInt8*)&this->blkScale, 4));
 		this->blks = MemAlloc(SPDBlock, this->nblks);
 		i = 0;
 		while (i < this->nblks)
 		{
-			bstm->Read((UInt8*)&this->blks[i], 12);
+			bstm->Read(Data::ByteArray((UInt8*)&this->blks[i], 12));
 			this->blks[i].ids = MemAlloc(Int32, this->blks[i].objCnt);
-			bstm->Read((UInt8*)this->blks[i].ids, this->blks[i].objCnt << 2);
+			bstm->Read(Data::ByteArray((UInt8*)this->blks[i].ids, this->blks[i].objCnt << 2));
 			i++;
 		}
 	}
@@ -74,7 +74,7 @@ Map::SPDLayer::SPDLayer(Text::CString layerName) : Map::MapDrawLayer(layerName, 
 	{
 		i = (UOSInt)file->GetLength();
 		this->ofsts = (UInt32*)MAlloc(i);
-		file->Read((UInt8*)this->ofsts, i);
+		file->Read(Data::ByteArray((UInt8*)this->ofsts, i));
 		this->maxId = (OSInt)(i / 8) - 2;
 	}
 	DEL_CLASS(file);
@@ -86,8 +86,8 @@ Map::SPDLayer::SPDLayer(Text::CString layerName) : Map::MapDrawLayer(layerName, 
 		NEW_CLASS(file, IO::FileStream({fname, (UOSInt)(sptr2 - fname)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
 		if (!file->IsError())
 		{
-			file->Read((UInt8*)&i, 4);
-			file->Read((UInt8*)&this->lyrType, 4);
+			file->Read(Data::ByteArray((UInt8*)&i, 4));
+			file->Read(Data::ByteArray((UInt8*)&this->lyrType, 4));
 		}
 		else
 		{
@@ -101,11 +101,11 @@ Map::SPDLayer::SPDLayer(Text::CString layerName) : Map::MapDrawLayer(layerName, 
 		if (!file->IsError())
 		{
 			UInt32 buff[4];
-			bstm->Read((UInt8*)buff, 8);
+			bstm->Read(Data::ByteArray((UInt8*)buff, 8));
 			i = 0;
 			while (i < this->nblks)
 			{
-				bstm->Read((UInt8*)buff, 16);
+				bstm->Read(Data::ByteArray((UInt8*)buff, 16));
 				this->blks[i].sofst = buff[3];
 				i++;
 			}
@@ -194,11 +194,11 @@ UOSInt Map::SPDLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, NameArray **
 			i = this->blks[k].objCnt;
 			while (i-- > 0)
 			{
-				cis->Read(buff, 13);
+				cis->Read(Data::ByteArray(buff, 13));
 				if (buff[4])
 				{
 					strTmp = MemAlloc(WChar, (UOSInt)(buff[12] >> 1) + 1);
-					cis->Read((UInt8*)strTmp, buff[12]);
+					cis->Read(Data::ByteArray((UInt8*)strTmp, buff[12]));
 					strTmp[buff[12] >> 1] = 0;
 					outArr->Add(*(Int32*)buff);
 					tmpArr->Add(strTmp);
@@ -320,11 +320,11 @@ UOSInt Map::SPDLayer::GetObjectIds(Data::ArrayListInt64 *outArr, NameArray **nam
 				i = (Int32)this->blks[k].objCnt;
 				while (i-- > 0)
 				{
-					cis->Read(buff, 13);
+					cis->Read(Data::ByteArray(buff, 13));
 					if (buff[4])
 					{
 						strTmp = MemAlloc(WChar, (UOSInt)(buff[12] >> 1) + 1);
-						cis->Read((UInt8*)strTmp, buff[12]);
+						cis->Read(Data::ByteArray((UInt8*)strTmp, buff[12]));
 						strTmp[buff[12] >> 1] = 0;
 						outArr->Add(*(Int32*)buff);
 						tmpArr->Add(strTmp);
@@ -544,20 +544,20 @@ Math::Geometry::Vector2D *Map::SPDLayer::GetNewVectorById(Map::GetObjectSess *se
 	Math::Coord2DDbl *tmpPoints;
 
 	cip->SeekFromBeginning(ofst);
-	cip->Read((UInt8*)buff, 8);
+	cip->Read(Data::ByteArray((UInt8*)buff, 8));
 	
 	if (buff[1] > 0)
 	{
 		ptOfsts = MemAlloc(UInt32, (UInt32)buff[1]);
-		cip->Read((UInt8*)ptOfsts, sizeof(UInt32) * (UInt32)buff[1]);
+		cip->Read(Data::ByteArray((UInt8*)ptOfsts, sizeof(UInt32) * (UInt32)buff[1]));
 	}
 	else
 	{
 		ptOfsts = 0;
 	}
-	cip->Read((UInt8*)&buff[2], 4);
+	cip->Read(Data::ByteArray((UInt8*)&buff[2], 4));
 	points = MemAlloc(Int32, (UOSInt)buff[2] * 2);
-	cip->Read((UInt8*)points, (UOSInt)buff[2] * 8);
+	cip->Read(Data::ByteArray((UInt8*)points, (UOSInt)buff[2] * 8));
 
 	if (this->lyrType == Map::DRAW_LAYER_POINT)
 	{

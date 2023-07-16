@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Data/ByteBuffer.h"
 #include "Data/ByteTool.h"
 #include "Data/Compress/Inflate.h"
 #include "IO/FileStream.h"
@@ -52,7 +53,6 @@ IO::ParsedObject *Parser::FileParser::OZF2Parser::ParseFileHdr(IO::StreamData *f
 	UInt32 imgHeight;
 	UInt32 scaleCnt;
 	UInt64 fileSize;
-	UInt8 *scaleTable;
 	
 	Media::ImageList *imgList;
 	Media::StaticImage *outImg;
@@ -82,14 +82,13 @@ IO::ParsedObject *Parser::FileParser::OZF2Parser::ParseFileHdr(IO::StreamData *f
 	imgHeight = ReadUInt32(&hdr[22]);
 	scaleCnt = ReadUInt16(&hdr[58]);
 	imgList = 0;
-	fd->GetRealData(fileSize - 4, 4, tmpBuff);
+	fd->GetRealData(fileSize - 4, 4, BYTEARR(tmpBuff));
 	scaleCnt = (UInt32)((fileSize - 4 - ReadUInt32(tmpBuff)) >> 2);
 
-	UInt8 *imgBuff = MemAlloc(UInt8, 4096);
-	UInt8 *srcBuff = MemAlloc(UInt8, 8192);
-	UInt8 *ptrBuff;
+	Data::ByteBuffer imgBuff(4096);
+	Data::ByteBuffer srcBuff(8192);
 	Data::Compress::Inflate inf(false);
-	scaleTable = MemAlloc(UInt8, (scaleCnt + 1) * 4);
+	Data::ByteBuffer scaleTable((scaleCnt + 1) * 4);
 	fd->GetRealData(ReadUInt32(tmpBuff), scaleCnt * 4, scaleTable);
 	NEW_CLASS(imgList, Media::ImageList(fd->GetFullFileName()));
 	i = 0;
@@ -102,7 +101,7 @@ IO::ParsedObject *Parser::FileParser::OZF2Parser::ParseFileHdr(IO::StreamData *f
 		UOSInt xCnt;
 		UOSInt yCnt;
 		UOSInt decSize;
-		fd->GetRealData(ReadUInt32(&scaleTable[i * 4]), 1036, tmpBuff);
+		fd->GetRealData(ReadUInt32(&scaleTable[i * 4]), 1036, BYTEARR(tmpBuff));
 		thisImgWidth = ReadUInt32(&tmpBuff[0]);
 		thisImgHeight = ReadUInt32(&tmpBuff[4]);
 		xCnt = ReadUInt16(&tmpBuff[8]);
@@ -114,7 +113,7 @@ IO::ParsedObject *Parser::FileParser::OZF2Parser::ParseFileHdr(IO::StreamData *f
 			{
 				MemCopyNO(outImg->pal, &tmpBuff[12], 1024);
 
-				ptrBuff = MemAlloc(UInt8, 4 * (xCnt * yCnt + 1));
+				Data::ByteBuffer ptrBuff(4 * (xCnt * yCnt + 1));
 				fd->GetRealData(ReadUInt32(&scaleTable[i * 4]) + 1036, 4 * (xCnt * yCnt + 1), ptrBuff);
 				j = 0;
 				currY = 0;
@@ -131,7 +130,7 @@ IO::ParsedObject *Parser::FileParser::OZF2Parser::ParseFileHdr(IO::StreamData *f
 							if (srcBuff[0] == 0x78 && srcBuff[1] == 0xda)
 							{
 								decSize = 4096;
-								inf.Decompress(imgBuff, &decSize, srcBuff, nextOfst - thisOfst);
+								inf.Decompress(imgBuff.Ptr(), &decSize, srcBuff.Ptr(), nextOfst - thisOfst);
 								if (decSize == 4096)
 								{
 									imgX1 = (OSInt)currX << 6;
@@ -149,25 +148,25 @@ IO::ParsedObject *Parser::FileParser::OZF2Parser::ParseFileHdr(IO::StreamData *f
 										}
 										if (imgX2 > (OSInt)thisImgWidth)
 										{
-											UInt8 *srcPtr = imgBuff + 4096;
-											UInt8 *destPtr = outImg->data + (OSInt)thisImgWidth * imgY1 + imgX1;
+											Data::ByteArray srcPtr = imgBuff + 4096;
+											Data::ByteArray destPtr = outImg->GetDataArray() + (OSInt)thisImgWidth * imgY1 + imgX1;
 											UOSInt w = thisImgWidth - (UOSInt)imgX1;
 											while (imgY1 < imgY2)
 											{
 												srcPtr -= 64;
-												MemCopyNO(destPtr, srcPtr, w);
+												destPtr.CopyFrom(srcPtr.WithSize(w));
 												destPtr += thisImgWidth;
 												imgY1++;
 											}
 										}
 										else
 										{
-											UInt8 *srcPtr = imgBuff + 4096;
-											UInt8 *destPtr = outImg->data + (OSInt)thisImgWidth * imgY1 + imgX1;
+											Data::ByteArray srcPtr = imgBuff + 4096;
+											Data::ByteArray destPtr = outImg->GetDataArray() + (OSInt)thisImgWidth * imgY1 + imgX1;
 											while (imgY1 < imgY2)
 											{
 												srcPtr -= 64;
-												MemCopyNO(destPtr, srcPtr, 64);
+												destPtr.CopyFrom(srcPtr.WithSize(64));
 												destPtr += thisImgWidth;
 												imgY1++;
 											}
@@ -182,16 +181,11 @@ IO::ParsedObject *Parser::FileParser::OZF2Parser::ParseFileHdr(IO::StreamData *f
 					currY++;
 				}
 
-				MemFree(ptrBuff);
-
 				imgList->AddImage(outImg, 0);
 			}
 		}
 		i++;
 	}
-	MemFree(srcBuff);
-	MemFree(imgBuff);
-	MemFree(scaleTable);
 	return imgList;
 
 /*	NEW_CLASS(outImg, Media::StaticImage(imgWidth, imgHeight, 0, bpp, 0, 0, Media::ColorProfile::YUVT_UNKNOWN, (bpp == 32)?Media::AT_ALPHA:Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));

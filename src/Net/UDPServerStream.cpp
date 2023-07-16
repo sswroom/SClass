@@ -60,7 +60,7 @@ Bool Net::UDPServerStream::IsDown() const
 	return this->svr == 0;
 }
 
-UOSInt Net::UDPServerStream::Read(UInt8 *buff, UOSInt size)
+UOSInt Net::UDPServerStream::Read(const Data::ByteArray &buff)
 {
 	while (this->svr != 0 && this->buffSize == 0)
 	{

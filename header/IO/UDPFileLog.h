@@ -2,6 +2,7 @@
 #define _SM_IO_UDPFILELOG
 #include "Data/ArrayListUInt32.h"
 #include "Data/ArrayListUInt64.h"
+#include "Data/ByteBuffer.h"
 #include "IO/StreamData.h"
 #include "IO/UDPLog.h"
 
@@ -13,7 +14,7 @@ namespace IO
 		IO::StreamData *fd;
 		Data::ArrayListUInt64 logPos;
 		Data::ArrayListUInt32 logSize;
-		UInt8 *logBuff;
+		Data::ByteBuffer logBuff;
 
 	public:
 		UDPFileLog(IO::StreamData *fd);

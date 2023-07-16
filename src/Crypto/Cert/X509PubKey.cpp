@@ -3,12 +3,12 @@
 #include "Net/ASN1PDUBuilder.h"
 #include "Net/ASN1Util.h"
 
-Crypto::Cert::X509PubKey::X509PubKey(NotNullPtr<Text::String> sourceName, const UInt8 *buff, UOSInt buffSize) : Crypto::Cert::X509File(sourceName, buff, buffSize)
+Crypto::Cert::X509PubKey::X509PubKey(NotNullPtr<Text::String> sourceName, Data::ByteArrayR buff) : Crypto::Cert::X509File(sourceName, buff)
 {
 
 }
 
-Crypto::Cert::X509PubKey::X509PubKey(Text::CString sourceName, const UInt8 *buff, UOSInt buffSize) : Crypto::Cert::X509File(sourceName, buff, buffSize)
+Crypto::Cert::X509PubKey::X509PubKey(Text::CString sourceName, Data::ByteArrayR buff) : Crypto::Cert::X509File(sourceName, buff)
 {
 
 }
@@ -27,14 +27,14 @@ void Crypto::Cert::X509PubKey::ToShortName(Text::StringBuilderUTF8 *sb) const
 {
 	UOSInt oidLen;
 	Net::ASN1Util::ItemType itemType;
-	const UInt8 *oidPDU = Net::ASN1Util::PDUGetItem(this->buff, this->buff + this->buffSize, "1.1.1", &oidLen, &itemType);
+	const UInt8 *oidPDU = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.1.1", &oidLen, &itemType);
 	if (oidPDU == 0 || itemType != Net::ASN1Util::IT_OID)
 	{
 		return;
 	}
 	KeyType keyType = KeyTypeFromOID(oidPDU, oidLen, true);
 	UOSInt keyLen;
-	const UInt8 *keyPDU = Net::ASN1Util::PDUGetItem(this->buff, this->buff + this->buffSize, "1.2", &keyLen, &itemType);
+	const UInt8 *keyPDU = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.2", &keyLen, &itemType);
 	if (keyPDU && itemType == Net::ASN1Util::IT_OCTET_STRING)
 	{
 		sb->Append(KeyTypeGetName(keyType));
@@ -52,15 +52,15 @@ Crypto::Cert::X509File::ValidStatus Crypto::Cert::X509PubKey::IsValid(Net::SSLEn
 Net::ASN1Data *Crypto::Cert::X509PubKey::Clone() const
 {
 	Crypto::Cert::X509PubKey *asn1;
-	NEW_CLASS(asn1, Crypto::Cert::X509PubKey(this->GetSourceNameObj(), this->buff, this->buffSize));
+	NEW_CLASS(asn1, Crypto::Cert::X509PubKey(this->GetSourceNameObj(), this->buff));
 	return asn1;
 }
 
 void Crypto::Cert::X509PubKey::ToString(Text::StringBuilderUTF8 *sb) const
 {
-	if (IsPublicKeyInfo(this->buff, this->buff + this->buffSize, "1"))
+	if (IsPublicKeyInfo(this->buff.Ptr(), this->buff.PtrEnd(), "1"))
 	{
-		AppendPublicKeyInfo(this->buff, this->buff + this->buffSize, "1", sb);
+		AppendPublicKeyInfo(this->buff.Ptr(), this->buff.PtrEnd(), "1", sb);
 	}
 }
 
@@ -69,8 +69,8 @@ Crypto::Cert::X509Key *Crypto::Cert::X509PubKey::CreateKey() const
 	Net::ASN1Util::ItemType itemType;
 	UOSInt keyTypeLen;
 	UOSInt keyDataLen;
-	const UInt8 *keyTypeOID = Net::ASN1Util::PDUGetItem(this->buff, this->buff + this->buffSize, "1.1.1", &keyTypeLen, &itemType);
-	const UInt8 *keyData = Net::ASN1Util::PDUGetItem(this->buff, this->buff + this->buffSize, "1.2", &keyDataLen, &itemType);
+	const UInt8 *keyTypeOID = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.1.1", &keyTypeLen, &itemType);
+	const UInt8 *keyData = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.2", &keyDataLen, &itemType);
 	if (keyTypeOID != 0 && keyData != 0)
 	{
 		Crypto::Cert::X509Key *key;
@@ -79,7 +79,7 @@ Crypto::Cert::X509Key *Crypto::Cert::X509PubKey::CreateKey() const
 			keyData++;
 			keyDataLen--;
 		}
-		NEW_CLASS(key, Crypto::Cert::X509Key(this->GetSourceNameObj(), keyData, keyDataLen, KeyTypeFromOID(keyTypeOID, keyTypeLen, true)));
+		NEW_CLASS(key, Crypto::Cert::X509Key(this->GetSourceNameObj(), Data::ByteArrayR(keyData, keyDataLen), KeyTypeFromOID(keyTypeOID, keyTypeLen, true)));
 		return key;
 	}
 	return 0;
@@ -104,7 +104,7 @@ Crypto::Cert::X509PubKey *Crypto::Cert::X509PubKey::CreateFromKeyBuff(KeyType ke
 	}
 	keyPDU.EndLevel();
 	Crypto::Cert::X509PubKey *key;
-	NEW_CLASS(key, Crypto::Cert::X509PubKey(sourceName, keyPDU.GetBuff(0), keyPDU.GetBuffSize()));
+	NEW_CLASS(key, Crypto::Cert::X509PubKey(sourceName, keyPDU.GetArray()));
 	return key;
 }
 

@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Data/ByteBuffer.h"
 #include "Data/Compress/LZWDecompressor.h"
 #include "Data/Compress/LZWDecStream.h"
 #include "IO/MemoryReadingStream.h"
@@ -19,7 +20,7 @@ Bool Data::Compress::LZWDecompressor::Decompress(UInt8 *destBuff, UOSInt *destBu
 	Data::Compress::LZWDecStream lzw(&mstm, false, 8, 15, 1);
 	UOSInt writeSize = 0;
 	UOSInt thisSize;
-	while ((thisSize = lzw.Read(destBuff, 4096)) != 0)
+	while ((thisSize = lzw.Read(Data::ByteArray(destBuff, 4096))) != 0)
 	{
 		writeSize += thisSize;
 		destBuff += thisSize;
@@ -34,14 +35,13 @@ Bool Data::Compress::LZWDecompressor::Decompress(UInt8 *destBuff, UOSInt *destBu
 Bool Data::Compress::LZWDecompressor::Decompress(IO::Stream *destStm, IO::StreamData *srcData)
 {
 	IO::StreamDataStream *srcStm;
-	UInt8 *tmpBuff = MemAlloc(UInt8, 65536);
+	Data::ByteBuffer tmpBuff(65536);
 	UOSInt thisSize;
 	NEW_CLASS(srcStm, IO::StreamDataStream(srcData));
-	while ((thisSize = srcStm->Read(tmpBuff, 65536)) != 0)
+	while ((thisSize = srcStm->Read(tmpBuff)) != 0)
 	{
-		destStm->Write(tmpBuff, thisSize);
+		destStm->Write(tmpBuff.Ptr(), thisSize);
 	}
 	DEL_CLASS(srcStm);
-	MemFree(tmpBuff);
 	return true;
 }

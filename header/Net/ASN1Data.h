@@ -1,5 +1,6 @@
 #ifndef _SM_NET_ASN1DATA
 #define _SM_NET_ASN1DATA
+#include "Data/ByteBuffer.h"
 #include "IO/ParsedObject.h"
 #include "Text/StringBuilderUTF8.h"
 
@@ -13,11 +14,10 @@ namespace Net
 			X509
 		};
 	protected:
-		UInt8 *buff;
-		UOSInt buffSize;
+		Data::ByteBuffer buff;
 
-		ASN1Data(NotNullPtr<Text::String> sourceName, const UInt8 *buff, UOSInt buffSize);
-		ASN1Data(Text::CString sourceName, const UInt8 *buff, UOSInt buffSize);
+		ASN1Data(NotNullPtr<Text::String> sourceName, Data::ByteArrayR buff);
+		ASN1Data(Text::CString sourceName, Data::ByteArrayR buff);
 	public:
 		virtual ~ASN1Data();
 
@@ -29,6 +29,7 @@ namespace Net
 		Bool ToASN1String(Text::StringBuilderUTF8 *sb) const;
 		const UInt8 *GetASN1Buff() const;
 		UOSInt GetASN1BuffSize() const;
+		Data::ByteArrayR GetASN1Array() const;
 
 		static void AppendInteger(Text::StringBuilderUTF8 *sb, const UInt8 *pdu, UOSInt len);
 	};

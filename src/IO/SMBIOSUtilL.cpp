@@ -18,7 +18,7 @@ IO::SMBIOS *IO::SMBIOSUtil::GetSMBIOS()
 		IO::FileStream entryPointFS(CSTR("/sys/firmware/dmi/tables/smbios_entry_point"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 		if (!entryPointFS.IsError())
 		{
-			buffSize = entryPointFS.Read(buffTmp, 128);
+			buffSize = entryPointFS.Read(Data::ByteArray(buffTmp, 128));
 			entryPointFS.Close();
 			UInt32 ofst = 0;
 
@@ -58,7 +58,7 @@ IO::SMBIOS *IO::SMBIOSUtil::GetSMBIOS()
 					UOSInt thisRead;
 					while (totalRead < buffSize)
 					{
-						thisRead = fs.Read(&dataBuff[totalRead], buffSize - totalRead);
+						thisRead = fs.Read(Data::ByteArray(&dataBuff[totalRead], buffSize - totalRead));
 						if (thisRead == 0)
 						{
 							MemFree(dataBuff);
@@ -93,7 +93,7 @@ IO::SMBIOS *IO::SMBIOSUtil::GetSMBIOS()
 					IO::FileStream fs(CSTRP(sbuff, sptr2), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 					if (!fs.IsError())
 					{
-						readSize = fs.Read(buffTmp, 1024);
+						readSize = fs.Read(Data::ByteArray(buffTmp, 1024));
 						if (readSize > 0)
 						{
 							mstm.Write(buffTmp, readSize);

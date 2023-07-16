@@ -113,7 +113,7 @@ IO::StmData::FileData::~FileData()
 	this->SetFullName(CSTR_NULL);
 }
 
-UOSInt IO::StmData::FileData::GetRealData(UInt64 offset, UOSInt length, UInt8* buffer)
+UOSInt IO::StmData::FileData::GetRealData(UInt64 offset, UOSInt length, Data::ByteArray buffer)
 {
 	if (fdh == 0)
 		return 0;
@@ -133,9 +133,9 @@ UOSInt IO::StmData::FileData::GetRealData(UInt64 offset, UOSInt length, UInt8* b
 	}
 	UOSInt byteRead;
 	if (length < dataLength - offset)
-		byteRead = fdh->file->Read(buffer, length);
+		byteRead = fdh->file->Read(buffer.SubArray(0, length));
 	else
-		byteRead = fdh->file->Read(buffer, (UOSInt) (dataLength - offset));
+		byteRead = fdh->file->Read(buffer.SubArray(0, (UOSInt) (dataLength - offset)));
 	if (byteRead == 0)
 	{
 		mutUsage.EndUse();

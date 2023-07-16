@@ -1,4 +1,5 @@
 #include "Stdafx.h"
+#include "Data/ByteBuffer.h"
 #include "Data/ByteTool.h"
 #include "IO/FileAnalyse/ZIPFileAnalyse.h"
 #include "Sync/SimpleThread.h"
@@ -239,7 +240,7 @@ UInt32 __stdcall IO::FileAnalyse::ZIPFileAnalyse::ParseThread(void *userObj)
 	me->threadStarted = true;
 	ofst = 0;
 	dataSize = me->fd->GetDataSize();
-	if (me->fd->GetRealData(dataSize - 22, 22, recHdr) == 22)
+	if (me->fd->GetRealData(dataSize - 22, 22, BYTEARR(recHdr)) == 22)
 	{
 		recType = ReadMUInt32(recHdr);
 		if (recType == 0x504B0506)
@@ -248,47 +249,45 @@ UInt32 __stdcall IO::FileAnalyse::ZIPFileAnalyse::ParseThread(void *userObj)
 			UInt32 ofstOfDir = ReadUInt32(&recHdr[16]);
 			if (sizeOfDir == 0xffffffff || ofstOfDir == 0xffffffff)
 			{
-				me->fd->GetRealData(dataSize - 42, 20, z64eocdl);
+				me->fd->GetRealData(dataSize - 42, 20, BYTEARR(z64eocdl));
 
 				if (ReadMUInt32(z64eocdl) == 0x504B0607)
 				{
 					UInt64 z64eocdOfst = ReadUInt64(&z64eocdl[8]);
-					me->fd->GetRealData(z64eocdOfst, 56, z64eocd);
+					me->fd->GetRealData(z64eocdOfst, 56, BYTEARR(z64eocd));
 					if (ReadMUInt32(z64eocd) == 0x504B0606)
 					{
 						UInt64 cdSize = ReadUInt64(&z64eocd[40]);
 						UInt64 cdOfst = ReadUInt64(&z64eocd[48]);
-						UInt8 *cdBuff;
 						if (cdSize <= 1048576)
 						{
-							cdBuff = MemAlloc(UInt8, (UOSInt)cdSize);
+							Data::ByteBuffer cdBuff((UOSInt)cdSize);
 							me->fd->GetRealData(cdOfst, (UOSInt)cdSize, cdBuff);
-							me->ParseCentDir(cdBuff, (UOSInt)cdSize, cdOfst);
-							me->AddCentDir(cdBuff, (UOSInt)cdSize, cdOfst);
-							MemFree(cdBuff);
+							me->ParseCentDir(cdBuff.Ptr(), (UOSInt)cdSize, cdOfst);
+							me->AddCentDir(cdBuff.Ptr(), (UOSInt)cdSize, cdOfst);
 						}
 						else
 						{
-							cdBuff = MemAlloc(UInt8, 1048576);
+							Data::ByteBuffer cdBuff(1048576);
 							UOSInt buffSize = 0;
 							ofst = 0;
 							while (ofst < cdSize)
 							{
 								if (1048576 < cdSize - ofst)
 								{
-									i = me->fd->GetRealData(cdOfst + ofst + buffSize, 1048576 - buffSize, &cdBuff[buffSize]);
+									i = me->fd->GetRealData(cdOfst + ofst + buffSize, 1048576 - buffSize, cdBuff.SubArray(buffSize));
 									buffSize += i;
 								}
 								else
 								{
-									i = me->fd->GetRealData(cdOfst + ofst + buffSize, (UOSInt)(cdSize - ofst), &cdBuff[buffSize]);
+									i = me->fd->GetRealData(cdOfst + ofst + buffSize, (UOSInt)(cdSize - ofst), cdBuff.SubArray(buffSize));
 									buffSize += i;
 								}
 								if (i == 0)
 								{
 									break;
 								}
-								i = me->ParseCentDir(cdBuff, buffSize, cdOfst + ofst);
+								i = me->ParseCentDir(cdBuff.Ptr(), buffSize, cdOfst + ofst);
 								if (i == 0)
 								{
 									break;
@@ -301,7 +300,7 @@ UInt32 __stdcall IO::FileAnalyse::ZIPFileAnalyse::ParseThread(void *userObj)
 								else
 								{
 									ofst += i;
-									MemCopyO(cdBuff, &cdBuff[i], buffSize - i);
+									cdBuff.CopyInner(0, i, buffSize - i);
 									buffSize -= i;
 								}
 							}
@@ -312,19 +311,19 @@ UInt32 __stdcall IO::FileAnalyse::ZIPFileAnalyse::ParseThread(void *userObj)
 							{
 								if (1048576 < cdSize - ofst)
 								{
-									i = me->fd->GetRealData(cdOfst + ofst + buffSize, 1048576 - buffSize, &cdBuff[buffSize]);
+									i = me->fd->GetRealData(cdOfst + ofst + buffSize, 1048576 - buffSize, cdBuff.SubArray(buffSize));
 									buffSize += i;
 								}
 								else
 								{
-									i = me->fd->GetRealData(cdOfst + ofst + buffSize, (UOSInt)(cdSize - ofst), &cdBuff[buffSize]);
+									i = me->fd->GetRealData(cdOfst + ofst + buffSize, (UOSInt)(cdSize - ofst), cdBuff.SubArray(buffSize));
 									buffSize += i;
 								}
 								if (i == 0)
 								{
 									break;
 								}
-								i = me->AddCentDir(cdBuff, buffSize, cdOfst + ofst);
+								i = me->AddCentDir(cdBuff.Ptr(), buffSize, cdOfst + ofst);
 								if (i == 0)
 								{
 									break;
@@ -337,11 +336,10 @@ UInt32 __stdcall IO::FileAnalyse::ZIPFileAnalyse::ParseThread(void *userObj)
 								else
 								{
 									ofst += i;
-									MemCopyO(cdBuff, &cdBuff[i], buffSize - i);
+									cdBuff.CopyInner(0, i, buffSize - i);
 									buffSize -= i;
 								}
 							}
-							MemFree(cdBuff);
 						}
 						
 						rec = MemAlloc(ZIPRecord, 1);
@@ -370,12 +368,11 @@ UInt32 __stdcall IO::FileAnalyse::ZIPFileAnalyse::ParseThread(void *userObj)
 			}
 			else
 			{
-				UInt8 *centDir = MemAlloc(UInt8, sizeOfDir);
+				Data::ByteBuffer centDir(sizeOfDir);
 				if (me->fd->GetRealData(ofstOfDir, sizeOfDir, centDir) == sizeOfDir)
 				{
-					me->ParseCentDir(centDir, sizeOfDir, 0);
-					me->AddCentDir(centDir, sizeOfDir, ofstOfDir);
-					MemFree(centDir);
+					me->ParseCentDir(centDir.Ptr(), sizeOfDir, 0);
+					me->AddCentDir(centDir.Ptr(), sizeOfDir, ofstOfDir);
 
 					commentLen = ReadUInt16(&recHdr[20]);
 					rec = MemAlloc(ZIPRecord, 1);
@@ -387,10 +384,6 @@ UInt32 __stdcall IO::FileAnalyse::ZIPFileAnalyse::ParseThread(void *userObj)
 					me->threadRunning = false;
 					return 0;
 				}
-				else
-				{
-					MemFree(centDir);
-				}
 			}
 		}
 	}
@@ -399,7 +392,7 @@ UInt32 __stdcall IO::FileAnalyse::ZIPFileAnalyse::ParseThread(void *userObj)
 	ofst = 0;
 	while (ofst < dataSize - 12 && !me->threadToStop)
 	{
-		if (me->fd->GetRealData(ofst, 64, recHdr) < 12)
+		if (me->fd->GetRealData(ofst, 64, BYTEARR(recHdr)) < 12)
 			break;
 		
 		recType = ReadMUInt32(recHdr);
@@ -479,7 +472,7 @@ IO::FileAnalyse::ZIPFileAnalyse::ZIPFileAnalyse(IO::StreamData *fd)
 	this->threadToStop = false;
 	this->threadStarted = false;
 	UInt64 fileLength = fd->GetDataSize();
-	fd->GetRealData(fileLength - 22, 22, buff);
+	fd->GetRealData(fileLength - 22, 22, BYTEARR(buff));
 	if (ReadMInt32(buff) != 0x504B0506)
 	{
 		return;
@@ -571,7 +564,6 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::ZIPFileAnalyse::GetFrameDetail(UO
 	IO::FileAnalyse::FrameDetail *frame;
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
-	UInt8 *tagData;
 	IO::FileAnalyse::ZIPFileAnalyse::ZIPRecord *tag = this->tags.GetItem(index);
 	if (tag == 0)
 		return 0;
@@ -592,7 +584,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::ZIPFileAnalyse::GetFrameDetail(UO
 	UInt16 commentLen;
 	UInt32 ofst;
 	UOSInt i;
-	tagData = MemAlloc(UInt8, tag->size);
+	Data::ByteBuffer tagData(tag->size);
 	this->fd->GetRealData(tag->ofst, tag->size, tagData);
 	frame->AddField(0, 4, CSTR("Record Type"), GetTagName(tag->tagType));
 	switch (tag->tagType)
@@ -748,7 +740,6 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::ZIPFileAnalyse::GetFrameDetail(UO
 		frame->AddUInt(16, 4, CSTR("Total number of disks"), ReadUInt32(&tagData[16]));
 		break;
 	}
-	MemFree(tagData);
 	return frame;
 }
 

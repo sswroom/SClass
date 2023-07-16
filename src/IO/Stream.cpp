@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Data/ByteBuffer.h"
 #include "IO/Stream.h"
 
 IO::Stream::Stream(NotNullPtr<Text::String> sourceName) : IO::ParsedObject(sourceName)
@@ -10,9 +11,9 @@ IO::Stream::Stream(Text::CString sourceName) : IO::ParsedObject(sourceName)
 {
 }
 
-void *IO::Stream::BeginRead(UInt8 *buff, UOSInt size, Sync::Event *evt)
+void *IO::Stream::BeginRead(Data::ByteArray buff, Sync::Event *evt)
 {
-	UOSInt retVal = Read(buff, size);
+	UOSInt retVal = Read(buff);
 	evt->Set();
 	return (void*)retVal;
 }
@@ -58,22 +59,21 @@ UInt64 IO::Stream::ReadToEnd(IO::Stream *stm, UOSInt buffSize)
 	UInt64 totalSize = 0;
 	UOSInt readSize;
 	UOSInt writeSize;
-	UInt8 *buff = MemAlloc(UInt8, buffSize);
+	Data::ByteBuffer buff(buffSize);
 	while (true)
 	{
-		readSize = this->Read(buff, buffSize);
+		readSize = this->Read(buff);
 		if (readSize <= 0)
 		{
 			break;
 		}
-		writeSize = stm->Write(buff, readSize);
+		writeSize = stm->Write(buff.GetPtr(), readSize);
 		totalSize += writeSize;
 		if (readSize != writeSize)
 		{
 			break;
 		}
 	}
-	MemFree(buff);
 	return totalSize;
 }
 
@@ -83,7 +83,7 @@ Bool IO::Stream::WriteFromData(IO::StreamData *data, UOSInt buffSize)
 	UInt64 totalSize = 0;
 	UOSInt readSize;
 	UOSInt writeSize;
-	UInt8 *buff = MemAlloc(UInt8, buffSize);
+	Data::ByteBuffer buff(buffSize);
 	while (true)
 	{
 		readSize = data->GetRealData(currOfst, buffSize, buff);
@@ -92,14 +92,13 @@ Bool IO::Stream::WriteFromData(IO::StreamData *data, UOSInt buffSize)
 			break;
 		}
 		currOfst += readSize;
-		writeSize = this->Write(buff, readSize);
+		writeSize = this->Write(buff.GetPtr(), readSize);
 		totalSize += writeSize;
 		if (readSize != writeSize)
 		{
 			break;
 		}
 	}
-	MemFree(buff);
 	return totalSize == data->GetDataSize();
 }
 

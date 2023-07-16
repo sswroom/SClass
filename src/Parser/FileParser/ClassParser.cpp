@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Data/ByteBuffer.h"
 #include "Data/ByteTool.h"
 #include "IO/JavaClass.h"
 #include "Parser/FileParser/ClassParser.h"
@@ -42,11 +43,10 @@ IO::ParsedObject *Parser::FileParser::ClassParser::ParseFileHdr(IO::StreamData *
 		return 0;
 	}
 	IO::JavaClass *cls = 0;
-	UInt8 *buff = MemAlloc(UInt8, (UOSInt)dsize);
+	Data::ByteBuffer buff((UOSInt)dsize);
 	if (fd->GetRealData(0, (UOSInt)dsize, buff) == dsize)
 	{
-		cls = IO::JavaClass::ParseBuff(fd->GetFullFileName(), buff, (UOSInt)dsize);
+		cls = IO::JavaClass::ParseBuff(fd->GetFullFileName(), buff.Ptr(), (UOSInt)dsize);
 	}
-	MemFree(buff);
 	return cls;
 }

@@ -1380,7 +1380,7 @@ Bool Text::XMLDocument::ParseStream(Text::EncodingFactory *encFact, IO::Stream *
 	UInt8 *mbuff;
 	UOSInt buffSize;
 	IO::MemoryStream mstm;
-	while ((buffSize = stm->Read(buff, 2048)) > 0)
+	while ((buffSize = stm->Read(BYTEARR(buff))) > 0)
 	{
 		mstm.Write(buff, buffSize);
 	}

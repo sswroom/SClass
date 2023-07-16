@@ -31,7 +31,7 @@ Bool Net::HTTPOSClient::IsError() const
 	return true;
 }
 
-UOSInt Net::HTTPOSClient::Read(UInt8 *buff, UOSInt size)
+UOSInt Net::HTTPOSClient::Read(const Data::ByteArray &buff)
 {
 	return 0;
 }

@@ -3,26 +3,23 @@
 #include "MyMemory.h"
 #include "IO/CDSectorData.h"
 
-IO::CDSectorData::CDSectorData(IO::ISectorData *data, UOSInt userOfst, UOSInt userDataSize, UInt64 startSector, UInt64 sectorCount) : IO::ISectorData(data->GetSourceNameObj())
+IO::CDSectorData::CDSectorData(IO::ISectorData *data, UOSInt userOfst, UOSInt userDataSize, UInt64 startSector, UInt64 sectorCount) : IO::ISectorData(data->GetSourceNameObj()), sectorBuff(data->GetBytesPerSector())
 {
 	this->data = data->GetPartialData(startSector, sectorCount);
 	this->userOfst = userOfst;
 	this->userDataSize = userDataSize;
-	this->sectorBuff = MemAlloc(UInt8, this->data->GetBytesPerSector());
 }
 
-IO::CDSectorData::CDSectorData(IO::ISectorData *data, UOSInt userOfst, UOSInt userDataSize) : IO::ISectorData(data->GetSourceNameObj())
+IO::CDSectorData::CDSectorData(IO::ISectorData *data, UOSInt userOfst, UOSInt userDataSize) : IO::ISectorData(data->GetSourceNameObj()), sectorBuff(data->GetBytesPerSector())
 {
 	this->data = data->GetPartialData(0, data->GetSectorCount());
 	this->userOfst = userOfst;
 	this->userDataSize = userDataSize;
-	this->sectorBuff = MemAlloc(UInt8, this->data->GetBytesPerSector());
 }
 
 IO::CDSectorData::~CDSectorData()
 {
 	DEL_CLASS(this->data);
-	MemFree(this->sectorBuff);
 }
 
 UInt64 IO::CDSectorData::GetSectorCount() const
@@ -35,11 +32,11 @@ UOSInt IO::CDSectorData::GetBytesPerSector() const
 	return this->userDataSize;
 }
 
-Bool IO::CDSectorData::ReadSector(UInt64 sectorNum, UInt8 *sectorBuff)
+Bool IO::CDSectorData::ReadSector(UInt64 sectorNum, Data::ByteArray sectorBuff)
 {
 	if (!this->data->ReadSector(sectorNum, this->sectorBuff))
 		return false;
-	MemCopyNO(sectorBuff, &this->sectorBuff[this->userOfst], this->userDataSize);
+	sectorBuff.CopyFrom(this->sectorBuff.SubArray(this->userOfst, this->userDataSize));
 	return true;
 }
 
@@ -67,22 +64,19 @@ UOSInt IO::CDSectorData::GetSeekCount() const
 	return this->data->GetSeekCount();
 }
 
-IO::CDSectorStreamData::CDSectorStreamData(IO::ISectorData *data, UOSInt sectorOfst, UInt64 dataSize)
+IO::CDSectorStreamData::CDSectorStreamData(IO::ISectorData *data, UOSInt sectorOfst, UInt64 dataSize) : sectorBuff(data->GetBytesPerSector())
 {
 	this->data = data;
 	this->sectorOfst = sectorOfst;
 	this->dataSize = dataSize;
-	UOSInt sectorSize = this->data->GetBytesPerSector();
-	this->sectorBuff = MemAlloc(UInt8, sectorSize);
 }
 
 IO::CDSectorStreamData::~CDSectorStreamData()
 {
-	MemFree(this->sectorBuff);
 	DEL_CLASS(this->data);
 }
 
-UOSInt IO::CDSectorStreamData::GetRealData(UInt64 offset, UOSInt length, UInt8 *buffer)
+UOSInt IO::CDSectorStreamData::GetRealData(UInt64 offset, UOSInt length, Data::ByteArray buffer)
 {
 	UOSInt retSize = 0;
 	offset += this->sectorOfst;
@@ -102,7 +96,7 @@ UOSInt IO::CDSectorStreamData::GetRealData(UInt64 offset, UOSInt length, UInt8 *
 		{
 			thisSize = length;
 		}
-		MemCopyNO(buffer, &this->sectorBuff[sectorOfst], thisSize);
+		buffer.CopyFrom(Data::ByteArrayR(&this->sectorBuff[sectorOfst], thisSize));
 		sectorOfst = 0;
 		length -= thisSize;
 		buffer += thisSize;

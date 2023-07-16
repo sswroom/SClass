@@ -62,7 +62,7 @@ IO::ParsedObject *Parser::FileParser::SM2MPXParser::ParseFileHdr(IO::StreamData 
 	NEW_CLASS(pf, IO::PackageFile(fd->GetFullName()));
 	while (hdrOfst < endOfst)
 	{
-		fd->GetRealData(hdrOfst, 20, rec);
+		fd->GetRealData(hdrOfst, 20, BYTEARR(rec));
 		thisOfst = ReadUInt32(&rec[12]);
 		thisSize = ReadUInt32(&rec[16]);
 		if (thisOfst < lastOfst)

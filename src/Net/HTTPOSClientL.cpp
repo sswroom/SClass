@@ -126,7 +126,7 @@ Bool Net::HTTPOSClient::IsError() const
 	return this->clsData->curl == 0;
 }
 
-UOSInt Net::HTTPOSClient::Read(UInt8 *buff, UOSInt size)
+UOSInt Net::HTTPOSClient::Read(Data::ByteArray buff)
 {
 	this->EndRequest(0, 0);
 	if (this->clsData->curl == 0)
@@ -134,14 +134,15 @@ UOSInt Net::HTTPOSClient::Read(UInt8 *buff, UOSInt size)
 		return 0;
 	}
 
-	if (size > BUFFSIZE)
+	if (buff.GetSize() > BUFFSIZE)
 	{
-		size = BUFFSIZE;
+		buff = buff.WithSize(BUFFSIZE);
 	}
 
-	if (size > (this->contLeng - this->contRead))
+	if (buff.GetSize() > (this->contLeng - this->contRead))
 	{
-		if ((size = (UOSInt)(this->contLeng - this->contRead)) <= 0)
+		buff = buff.WithSize((UOSInt)(this->contLeng - this->contRead));
+		if (buff.GetSize() <= 0)
 		{
 			return 0;
 		}
@@ -149,20 +150,20 @@ UOSInt Net::HTTPOSClient::Read(UInt8 *buff, UOSInt size)
 
 	if (this->buffSize == 0)
 	{
-		this->buffSize = this->clsData->respData->Read(this->dataBuff, size);
+		this->buffSize = this->clsData->respData->Read(Data::ByteArray(this->dataBuff, buff.GetSize()));
 	}
-	if (this->buffSize >= size)
+	if (this->buffSize >= buff.GetSize())
 	{
-		MemCopyNO(buff, this->dataBuff, size);
-		MemCopyO(this->dataBuff, &this->dataBuff[size], this->buffSize - size);
-		this->buffSize -= size;
-		this->contRead += size;
-		return size;
+		buff.CopyFrom(Data::ByteArray(this->dataBuff, buff.GetSize()));
+		MemCopyO(this->dataBuff, &this->dataBuff[buff.GetSize()], this->buffSize - buff.GetSize());
+		this->buffSize -= buff.GetSize();
+		this->contRead += buff.GetSize();
+		return buff.GetSize();
 	}
 	else
 	{
-		MemCopyNO(buff, this->dataBuff, this->buffSize);
-		size = this->buffSize;
+		buff.CopyFrom(Data::ByteArray(this->dataBuff, this->buffSize));
+		UOSInt size = this->buffSize;
 		this->contRead += this->buffSize;
 		this->buffSize = 0;
 		return size;

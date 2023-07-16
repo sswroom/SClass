@@ -270,7 +270,7 @@ void Crypto::Cert::X509File::AppendTBSCertificate(const UInt8 *pdu, const UInt8 
 			}
 			AppendSubjectPublicKeyInfo(itemPDU + itemOfst, itemPDU + itemOfst + itemLen, sb, name);
 			Crypto::Cert::X509Key *key;
-			Crypto::Cert::X509PubKey pubKey(name, itemPDU, itemOfst + itemLen);
+			Crypto::Cert::X509PubKey pubKey(name, Data::ByteArrayR(itemPDU, itemOfst + itemLen));
 			key = pubKey.CreateKey();
 			if (key)
 			{
@@ -615,7 +615,7 @@ void Crypto::Cert::X509File::AppendPrivateKeyInfo(const UInt8 *pdu, const UInt8 
 			sb->AppendC(UTF8STRC("\r\n"));
 			if (keyType != KeyType::Unknown)
 			{
-				Crypto::Cert::X509Key privkey(CSTR("PrivKey"), itemPDU, len, keyType);
+				Crypto::Cert::X509Key privkey(CSTR("PrivKey"), Data::ByteArrayR(itemPDU, len), keyType);
 				privkey.ToString(sb);
 			}
 		}
@@ -694,7 +694,7 @@ void Crypto::Cert::X509File::AppendCertificateRequestInfo(const UInt8 *pdu, cons
 			AppendSubjectPublicKeyInfo(itemPDU + itemOfst, itemPDU + itemOfst + itemLen, sb, CSTR("subjectPublicKeyInfo"));
 			Crypto::Cert::X509PubKey *pubKey;
 			Crypto::Cert::X509Key *key;
-			NEW_CLASS(pubKey, Crypto::Cert::X509PubKey(CSTR("PubKey"), itemPDU, itemOfst + itemLen));
+			NEW_CLASS(pubKey, Crypto::Cert::X509PubKey(CSTR("PubKey"), Data::ByteArrayR(itemPDU, itemOfst + itemLen)));
 			key = pubKey->CreateKey();
 			if (key)
 			{
@@ -788,7 +788,7 @@ void Crypto::Cert::X509File::AppendPublicKeyInfo(const UInt8 *pdu, const UInt8 *
 		AppendSubjectPublicKeyInfo(buff + itemOfst, buff + itemOfst + buffSize, sb, CSTR("PubKey"));
 		Crypto::Cert::X509PubKey *pubKey;
 		Crypto::Cert::X509Key *key;
-		NEW_CLASS(pubKey, Crypto::Cert::X509PubKey(CSTR("PubKey"), buff, itemOfst + buffSize));
+		NEW_CLASS(pubKey, Crypto::Cert::X509PubKey(CSTR("PubKey"), Data::ByteArrayR(buff, itemOfst + buffSize)));
 		key = pubKey->CreateKey();
 		if (key)
 		{
@@ -1182,7 +1182,7 @@ void Crypto::Cert::X509File::AppendSubjectPublicKeyInfo(const UInt8 *pdu, const 
 			if (keyType != KeyType::Unknown)
 			{
 				sptr = Text::StrConcatC(varName.ConcatTo(sbuff), UTF8STRC(".subjectPublicKey"));
-				Crypto::Cert::X509Key pkey(CSTRP(sbuff, sptr), itemPDU + 1, itemLen - 1, keyType);
+				Crypto::Cert::X509Key pkey(CSTRP(sbuff, sptr), Data::ByteArrayR(itemPDU + 1, itemLen - 1), keyType);
 				pkey.ToString(sb);
 				sb->AppendC(UTF8STRC("\r\n"));
 			}
@@ -2852,7 +2852,7 @@ Crypto::Cert::X509Key *Crypto::Cert::X509File::PublicKeyGetNew(const UInt8 *pdu,
 		else if (keyType != KeyType::Unknown)
 		{
 			Crypto::Cert::X509Key *key;
-			NEW_CLASS(key, Crypto::Cert::X509Key(CSTR("public.key"), bstrPDU + 1, bstrLen - 1, keyType));
+			NEW_CLASS(key, Crypto::Cert::X509Key(CSTR("public.key"), Data::ByteArrayR(bstrPDU + 1, bstrLen - 1), keyType));
 			return key;
 		}
 	}
@@ -3006,11 +3006,11 @@ Bool Crypto::Cert::X509File::AlgorithmIdentifierGet(const UInt8 *pdu, const UInt
 	return true;
 }
 
-Crypto::Cert::X509File::X509File(NotNullPtr<Text::String> sourceName, const UInt8 *buff, UOSInt buffSize) : Net::ASN1Data(sourceName, buff, buffSize)
+Crypto::Cert::X509File::X509File(NotNullPtr<Text::String> sourceName, Data::ByteArrayR buff) : Net::ASN1Data(sourceName, buff)
 {
 }
 
-Crypto::Cert::X509File::X509File(Text::CString sourceName, const UInt8 *buff, UOSInt buffSize) : Net::ASN1Data(sourceName, buff, buffSize)
+Crypto::Cert::X509File::X509File(Text::CString sourceName, Data::ByteArrayR buff) : Net::ASN1Data(sourceName, buff)
 {
 }
 
@@ -3049,10 +3049,10 @@ Bool Crypto::Cert::X509File::IsSignatureKey(Net::SSLEngine *ssl, Crypto::Cert::X
 {
 	UOSInt itemOfst;
 	UOSInt dataSize;
-	const UInt8 *data = Net::ASN1Util::PDUGetItemRAW(this->buff, this->buff + this->buffSize, "1.1", &dataSize, &itemOfst);
+	const UInt8 *data = Net::ASN1Util::PDUGetItemRAW(this->buff.Ptr(), this->buff.PtrEnd(), "1.1", &dataSize, &itemOfst);
 	Net::ASN1Util::ItemType itemType;
 	UOSInt signSize;
-	const UInt8 *signature = Net::ASN1Util::PDUGetItem(this->buff, this->buff + this->buffSize, "1.3", &signSize, &itemType);
+	const UInt8 *signature = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.3", &signSize, &itemType);
 	if (data == 0 || signature == 0 || itemType != Net::ASN1Util::IT_BIT_STRING)
 	{
 		return false;
@@ -3087,18 +3087,18 @@ Bool Crypto::Cert::X509File::GetSignedInfo(SignedInfo *signedInfo) const
 	UOSInt itemLen;
 	UOSInt itemOfst;
 	Net::ASN1Util::ItemType itemType;
-	signedInfo->payload = Net::ASN1Util::PDUGetItemRAW(this->buff, this->buff + this->buffSize, "1.1", &itemLen, &itemOfst);
+	signedInfo->payload = Net::ASN1Util::PDUGetItemRAW(this->buff.Ptr(), this->buff.PtrEnd(), "1.1", &itemLen, &itemOfst);
 	if (signedInfo->payload == 0)
 	{
 		return false;
 	}
 	signedInfo->payloadSize = itemLen + itemOfst;
-	const UInt8 *itemPDU = Net::ASN1Util::PDUGetItem(this->buff, this->buff + this->buffSize, "1.2", &itemLen, &itemType);
+	const UInt8 *itemPDU = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.2", &itemLen, &itemType);
 	if (itemPDU == 0 || itemType != Net::ASN1Util::IT_SEQUENCE || !AlgorithmIdentifierGet(itemPDU, itemPDU + itemLen, &signedInfo->algType))
 	{
 		return false;
 	}
-	if ((itemPDU = Net::ASN1Util::PDUGetItem(this->buff, this->buff + this->buffSize, "1.3", &itemLen, &itemType)) == 0 || itemType != Net::ASN1Util::IT_BIT_STRING)
+	if ((itemPDU = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.3", &itemLen, &itemType)) == 0 || itemType != Net::ASN1Util::IT_BIT_STRING)
 	{
 		return false;
 	}

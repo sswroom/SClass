@@ -1,4 +1,5 @@
 #include "Stdafx.h"
+#include "Data/ByteBuffer.h"
 #include "Data/ByteTool.h"
 #include "IO/FileAnalyse/SHPFileAnalyse.h"
 #include "Sync/SimpleThread.h"
@@ -60,7 +61,7 @@ UInt32 __stdcall IO::FileAnalyse::SHPFileAnalyse::ParseThread(void *userObj)
 	ofst = 100;
 	while (ofst < dataSize && !me->threadToStop)
 	{
-		if (me->fd->GetRealData(ofst, 12, recHdr) != 12)
+		if (me->fd->GetRealData(ofst, 12, BYTEARR(recHdr)) != 12)
 			break;
 		
 		UInt32 recSize = ReadMUInt32(&recHdr[4]);
@@ -91,7 +92,7 @@ IO::FileAnalyse::SHPFileAnalyse::SHPFileAnalyse(IO::StreamData *fd)
 	this->pauseParsing = false;
 	this->threadToStop = false;
 	this->threadStarted = false;
-	fd->GetRealData(0, 256, buff);
+	fd->GetRealData(0, 256, BYTEARR(buff));
 	if (ReadMInt32(buff) != 9994 || ReadInt32(&buff[28]) != 1000 || (ReadMUInt32(&buff[24]) << 1) != fd->GetDataSize())
 	{
 		return;
@@ -174,7 +175,6 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::SHPFileAnalyse::GetFrameDetail(UO
 	IO::FileAnalyse::FrameDetail *frame;
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
-	UInt8 *tagData;
 	IO::FileAnalyse::SHPFileAnalyse::PackInfo *pack = this->packs.GetItem(index);
 	if (pack == 0)
 		return 0;
@@ -183,7 +183,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::SHPFileAnalyse::GetFrameDetail(UO
 	sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Packet ")), index);
 	frame->AddHeader(CSTRP(sbuff, sptr));
 
-	tagData = MemAlloc(UInt8, pack->packSize);
+	Data::ByteBuffer tagData(pack->packSize);
 	this->fd->GetRealData(pack->fileOfst, pack->packSize, tagData);
 	if (index == 0)
 	{
@@ -247,7 +247,6 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::SHPFileAnalyse::GetFrameDetail(UO
 			}
 		}
 	}
-	MemFree(tagData);
 	return frame;
 }
 

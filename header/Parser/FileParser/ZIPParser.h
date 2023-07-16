@@ -28,7 +28,7 @@ namespace Parser
 			virtual IO::ParsedObject *ParseFileHdr(IO::StreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr);
 
 		private:
-			static UOSInt ParseCentDir(IO::PackageFile *pf, Text::Encoding *enc, IO::StreamData *fd, const UInt8 *buff, UOSInt buffSize, UInt64 ofst);
+			static UOSInt ParseCentDir(IO::PackageFile *pf, Text::Encoding *enc, IO::StreamData *fd, Data::ByteArrayR buff, UInt64 ofst);
 		};
 	}
 }

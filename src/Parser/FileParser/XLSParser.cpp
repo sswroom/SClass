@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Data/ByteBuffer.h"
 #include "Data/ByteTool.h"
 #include "DB/WorkbookDB.h"
 #include "IO/StmData/BlockStreamData.h"
@@ -46,7 +47,6 @@ IO::ParsedObject *Parser::FileParser::XLSParser::ParseFileHdr(IO::StreamData *fd
 	}
 	UOSInt i;
 	UOSInt j;
-	UInt8 *fat;
 	UOSInt sectorSize = ((UOSInt)1 << (ReadUInt16(&hdr[30])));
 //	Int32 dirCnt = ReadInt32(&hdr[40]);
 	UInt32 fatCnt = ReadUInt32(&hdr[44]);
@@ -61,20 +61,20 @@ IO::ParsedObject *Parser::FileParser::XLSParser::ParseFileHdr(IO::StreamData *fd
 	createDt.ToUTCTime();
 	modifyDt.ToUTCTime();
 
-	fat = MemAlloc(UInt8, sectorSize * fatCnt);
+	Data::ByteBuffer fat(sectorSize * fatCnt);
 	i = 0;
 	j = fatCnt;
 	if (j > 109)
 		j = 109;
 	while (i < j)
 	{
-		fd->GetRealData(sectorSize * (ReadUInt32(&hdr[76 + i * 4]) + 1), sectorSize, &fat[sectorSize * i]);
+		fd->GetRealData(sectorSize * (ReadUInt32(&hdr[76 + i * 4]) + 1), sectorSize, fat.SubArray(sectorSize * i));
 		i++;
 	}
 
 	while (true)
 	{
-		if (fd->GetRealData(512 + sectorSize * dirSect, sectorSize, buff) != sectorSize)
+		if (fd->GetRealData(512 + sectorSize * dirSect, sectorSize, BYTEARR(buff)) != sectorSize)
 			break;
 		i = 0;
 		while (i < sectorSize)
@@ -141,7 +141,6 @@ IO::ParsedObject *Parser::FileParser::XLSParser::ParseFileHdr(IO::StreamData *fd
 			break;
 		}
 	}
-	MemFree(fat);
 	if (pobj && targetType == IO::ParserType::ReadingDB)
 	{
 		DB::WorkbookDB *db;
@@ -193,7 +192,6 @@ Bool Parser::FileParser::XLSParser::ParseWorkbook(IO::StreamData *fd, UInt64 ofs
 	WorkbookStatus status;
 	Parser::FileParser::XLSParser::FontInfo *font;
 	Text::SpreadSheet::CellStyle *style;
-	UInt8 *readBuff;
 	UOSInt readBuffSize;
 	UOSInt readSize;
 	UOSInt i;
@@ -201,7 +199,7 @@ Bool Parser::FileParser::XLSParser::ParseWorkbook(IO::StreamData *fd, UInt64 ofs
 	UInt16 recLeng;
 	UInt64 currOfst = ofst;
 	Text::String *fmt;
-	readBuff = MemAlloc(UInt8, 1048576);
+	Data::ByteBuffer readBuff(1048576);
 	readBuffSize = 0;
 	Text::SpreadSheet::Workbook::GetDefPalette(status.palette);
 
@@ -247,11 +245,11 @@ Bool Parser::FileParser::XLSParser::ParseWorkbook(IO::StreamData *fd, UInt64 ofs
 	Text::StringBuilderUTF8 sb;
 	while (!eofFound)
 	{
-		readSize = fd->GetRealData(currOfst, 1048576 - readBuffSize, &readBuff[readBuffSize]);
+		readSize = fd->GetRealData(currOfst, 1048576 - readBuffSize, readBuff.SubArray(readBuffSize));
 		if (readSize <= 0)
 			break;
 
-		if (!bofFound && ReadUInt16(readBuff) != 0x809)
+		if (!bofFound && ReadUInt16(&readBuff[0]) != 0x809)
 			break;
 		readBuffSize += readSize;
 		currOfst += readSize;
@@ -548,10 +546,10 @@ Bool Parser::FileParser::XLSParser::ParseWorkbook(IO::StreamData *fd, UInt64 ofs
 								}
 								else
 								{
-									MemCopyO(readBuff, &readBuff[i], readBuffSize - i);
+									readBuff.CopyInner(0, i, readBuffSize - i);
 									readBuffSize -= i;
 								}
-								readSize = fd->GetRealData(currOfst, 1048576 - readBuffSize, &readBuff[readBuffSize]);
+								readSize = fd->GetRealData(currOfst, 1048576 - readBuffSize, readBuff.SubArray(readBuffSize));
 								if (readSize <= 0)
 									break;
 
@@ -577,9 +575,9 @@ Bool Parser::FileParser::XLSParser::ParseWorkbook(IO::StreamData *fd, UInt64 ofs
 								recLeng = ReadUInt16(&readBuff[i + 2]);
 								if (i + 4 + recLeng > readBuffSize)
 								{
-									MemCopyO(readBuff, &readBuff[i], readBuffSize - i);
+									readBuff.CopyInner(0, i, readBuffSize - i);
 									readBuffSize -= i;
-									readSize = fd->GetRealData(currOfst, 1048576 - readBuffSize, &readBuff[readBuffSize]);
+									readSize = fd->GetRealData(currOfst, 1048576 - readBuffSize, readBuff.SubArray(readBuffSize));
 									if (readSize <= 0)
 										break;
 
@@ -748,7 +746,7 @@ Bool Parser::FileParser::XLSParser::ParseWorkbook(IO::StreamData *fd, UInt64 ofs
 		}
 		else
 		{
-			MemCopyO(readBuff, &readBuff[i], readBuffSize - i);
+			readBuff.CopyInner(0, i, readBuffSize - i);
 			readBuffSize -= i;
 		}
 	}
@@ -790,7 +788,6 @@ Bool Parser::FileParser::XLSParser::ParseWorkbook(IO::StreamData *fd, UInt64 ofs
 			fmt->Release();
 		}
 	}
-	MemFree(readBuff);
 	return eofFound;
 }
 
@@ -798,18 +795,17 @@ Bool Parser::FileParser::XLSParser::ParseWorksheet(IO::StreamData *fd, UInt64 of
 {
 	Bool eofFound = false;
 	Bool bofFound = false;
-	UInt8 *readBuff;
 	UOSInt readBuffSize;
 	UOSInt readSize;
 	UOSInt i;
 	UInt16 recNo;
 	UInt16 recLeng;
 	UInt64 currOfst = ofst;
-	readBuff = MemAlloc(UInt8, 1048576);
+	Data::ByteBuffer readBuff(1048576);
 	readBuffSize = 0;
 	while (!eofFound)
 	{
-		readSize = fd->GetRealData(currOfst, 1048576 - readBuffSize, &readBuff[readBuffSize]);
+		readSize = fd->GetRealData(currOfst, 1048576 - readBuffSize, readBuff.SubArray(readBuffSize));
 		if (readSize <= 0)
 			break;
 		readBuffSize += readSize;
@@ -820,7 +816,7 @@ Bool Parser::FileParser::XLSParser::ParseWorksheet(IO::StreamData *fd, UInt64 of
 			if (i + 4 > readBuffSize)
 				break;
 			
-			if (!bofFound && ReadUInt16(readBuff) != 0x809)
+			if (!bofFound && ReadUInt16(&readBuff[0]) != 0x809)
 				break;
 			recNo = ReadUInt16(&readBuff[i]);
 			recLeng = ReadUInt16(&readBuff[i + 2]);
@@ -1027,11 +1023,10 @@ Bool Parser::FileParser::XLSParser::ParseWorksheet(IO::StreamData *fd, UInt64 of
 		}
 		else
 		{
-			MemCopyO(readBuff, &readBuff[i], readBuffSize - i);
+			readBuff.CopyInner(0, i, readBuffSize - i);
 			readBuffSize -= i;
 		}
 	}
-	MemFree(readBuff);
 	return eofFound;
 }
 

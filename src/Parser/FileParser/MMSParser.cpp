@@ -83,7 +83,7 @@ IO::ParsedObject *Parser::FileParser::MMSParser::ParseFileHdr(IO::StreamData *fd
 	{
 		UInt32 hdrSize;
 		UInt32 dataSize;
-		fd->GetRealData(currOfst, 4, buff);
+		fd->GetRealData(currOfst, 4, BYTEARR(buff));
 		hdrSize = buff[0];
 		if (buff[1] & 0x80)
 		{
@@ -95,7 +95,7 @@ IO::ParsedObject *Parser::FileParser::MMSParser::ParseFileHdr(IO::StreamData *fd
 			dataSize = buff[1];
 			currOfst += 2;
 		}
-		fd->GetRealData(currOfst, hdrSize, buff);
+		fd->GetRealData(currOfst, hdrSize, BYTEARR(buff));
 		sbuff[0] = (UTF8Char)(0x41 + fileCnt);
 		sbuff[1] = 0;
 		sptr = &sbuff[1];

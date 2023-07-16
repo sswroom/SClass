@@ -64,7 +64,7 @@ UInt32 __stdcall Media::FileVideoSource::PlayThread(void *userObj)
 				frameSize = 0;
 				while (currPart < nextPart)
 				{
-					frameSize += me->data->GetRealData(me->frameOfsts.GetItem(currPart), me->frameSizes.GetItem(currPart), &frameBuff[frameSize]);
+					frameSize += me->data->GetRealData(me->frameOfsts.GetItem(currPart), me->frameSizes.GetItem(currPart), Data::ByteArray(frameBuff, me->maxFrameSize).SubArray(frameSize));
 					currPart++;
 				}
 				if (frameSize > 0)
@@ -537,7 +537,7 @@ UOSInt Media::FileVideoSource::ReadFrame(UOSInt frameIndex, UInt8 *frameBuff)
 		return 0;
 
 	UOSInt frameSize = this->frameSizes.GetItem(frameIndex);
-	return this->data->GetRealData(this->frameOfsts.GetItem(frameIndex), frameSize, frameBuff);
+	return this->data->GetRealData(this->frameOfsts.GetItem(frameIndex), frameSize, Data::ByteArray(frameBuff, frameSize));
 }
 
 UOSInt Media::FileVideoSource::ReadNextFrame(UInt8 *frameBuff, UInt32 *frameTime, Media::FrameType *ftype)

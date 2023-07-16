@@ -1,4 +1,5 @@
 #include "Stdafx.h"
+#include "Data/ByteBuffer.h"
 #include "Data/ByteOrderLSB.h"
 #include "Data/ByteOrderMSB.h"
 #include "Data/ByteTool.h"
@@ -19,7 +20,7 @@ UInt32 __stdcall IO::FileAnalyse::TIFFFileAnalyse::ParseThread(void *userObj)
 	me->threadRunning = true;
 	me->threadStarted = true;
 
-	me->fd->GetRealData(0, 256, buff);
+	me->fd->GetRealData(0, 256, BYTEARR(buff));
 	UInt16 fmt = me->bo->GetUInt16(&buff[2]);
 	if (fmt == 42)
 	{
@@ -58,14 +59,14 @@ UInt32 __stdcall IO::FileAnalyse::TIFFFileAnalyse::ParseThread(void *userObj)
 		while (nextOfst != 0)
 		{
 			UInt64 nTags;
-			me->fd->GetRealData(nextOfst, 8, buff);
+			me->fd->GetRealData(nextOfst, 8, BYTEARR(buff));
 			nTags = me->bo->GetUInt64(&buff[0]);
 			pack = MemAlloc(PackInfo, 1);
 			pack->fileOfst = nextOfst;
 			pack->packSize = nTags * 20 + 16;
 			pack->packType = PT_IFD8;
 			me->packs.Add(pack);
-			me->fd->GetRealData(nextOfst + nTags * 20 + 8, 8, buff);
+			me->fd->GetRealData(nextOfst + nTags * 20 + 8, 8, BYTEARR(buff));
 			thisOfst = nextOfst + nTags * 20 + 16;
 			nextOfst = me->bo->GetUInt64(&buff[0]);
 			if (nextOfst < thisOfst)
@@ -95,7 +96,7 @@ IO::FileAnalyse::TIFFFileAnalyse::TIFFFileAnalyse(IO::StreamData *fd)
 	this->threadToStop = false;
 	this->threadStarted = false;
 
-	fd->GetRealData(0, 256, buff);
+	fd->GetRealData(0, 256, BYTEARR(buff));
 	if (*(Int16*)&buff[0] == *(Int16*)"MM")
 	{
 		NEW_CLASS(this->bo, Data::ByteOrderMSB());
@@ -212,7 +213,6 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::TIFFFileAnalyse::GetFrameDetail(U
 	PackInfo *pack;
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
-	UInt8 *packBuff;
 	pack = this->packs.GetItem(index);
 	if (pack == 0)
 		return 0;
@@ -238,7 +238,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::TIFFFileAnalyse::GetFrameDetail(U
 
 	if (pack->packType == PT_HEADER)
 	{
-		packBuff = MemAlloc(UInt8, pack->packSize);
+		Data::ByteBuffer packBuff(pack->packSize);
 		this->fd->GetRealData(pack->fileOfst, pack->packSize, packBuff);
 
 		UOSInt verNum = this->bo->GetUInt16(&packBuff[2]);
@@ -247,20 +247,18 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::TIFFFileAnalyse::GetFrameDetail(U
 		frame->AddUInt(4, 2, CSTR("Bytesize of offsets"), this->bo->GetUInt16(&packBuff[4]));
 		frame->AddUInt(6, 2, CSTR("Reserved"), this->bo->GetUInt16(&packBuff[6]));
 		frame->AddUInt64(8, CSTR("Offset to first IFD"), this->bo->GetUInt64(&packBuff[8]));
-		MemFree(packBuff);
 	}
 	else if (pack->packType == PT_RESERVED)
 	{
-		packBuff = MemAlloc(UInt8, pack->packSize);
+		Data::ByteBuffer packBuff(pack->packSize);
 		this->fd->GetRealData(pack->fileOfst, pack->packSize, packBuff);
-		frame->AddStrS(0, pack->packSize, CSTR("Reserved"), packBuff);
-		MemFree(packBuff);
+		frame->AddStrS(0, pack->packSize, CSTR("Reserved"), packBuff.Ptr());
 	}
 	else if (pack->packType == PT_IFD8)
 	{
-		packBuff = MemAlloc(UInt8, pack->packSize);
+		Data::ByteBuffer packBuff(pack->packSize);
 		this->fd->GetRealData(pack->fileOfst, pack->packSize, packBuff);
-		UInt64 tagCnt = this->bo->GetUInt64(packBuff);
+		UInt64 tagCnt = this->bo->GetUInt64(packBuff.Ptr());
 		frame->AddUInt64(0, CSTR("Number of tags in IFD"), tagCnt);
 		UOSInt i = 0;
 		UOSInt ofst = 8;
@@ -276,8 +274,6 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::TIFFFileAnalyse::GetFrameDetail(U
 			ofst += 20;
 		}
 		frame->AddUInt64(ofst, CSTR("Offset to next IFD"), this->bo->GetUInt64(&packBuff[ofst]));
-		MemFree(packBuff);
-
 	}
 	return frame;
 }

@@ -28,7 +28,7 @@ UInt32 __stdcall IO::FileAnalyse::MDBFileAnalyse::ParseThread(void *userObj)
 		}
 		else
 		{
-			readSize = me->fd->GetRealData(readOfst, 4096, readBuff);
+			readSize = me->fd->GetRealData(readOfst, 4096, BYTEARR(readBuff));
 			if (readSize != 4096)
 			{
 				break;
@@ -53,7 +53,7 @@ IO::FileAnalyse::MDBFileAnalyse::MDBFileAnalyse(IO::StreamData *fd)
 	this->pauseParsing = false;
 	this->threadToStop = false;
 	this->threadStarted = false;
-	fd->GetRealData(0, 256, buff);
+	fd->GetRealData(0, 256, BYTEARR(buff));
 	if (ReadInt32(buff) != 0x00000100)
 	{
 		return;
@@ -163,7 +163,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::MDBFileAnalyse::GetFrameDetail(UO
 		return 0;
 
 	NEW_CLASS(frame, IO::FileAnalyse::FrameDetail(pack->fileOfst, (UInt32)pack->packSize));
-	this->fd->GetRealData(pack->fileOfst, pack->packSize, packBuff);
+	this->fd->GetRealData(pack->fileOfst, pack->packSize, BYTEARR(packBuff));
 	frame->AddHex16(0, CSTR("Frame Type"), ReadUInt16(&packBuff[0]));
 	frame->AddUInt(2, 2, CSTR("Free Space"), ReadUInt16(&packBuff[2]));
 	switch (pack->packType)

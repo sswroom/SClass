@@ -42,7 +42,7 @@ namespace Media
 
 		virtual Bool Start(Sync::Event *evt, UOSInt blkSize);
 		virtual void Stop();
-		virtual UOSInt ReadBlock(UInt8 *buff, UOSInt blkSize); //ret actual block size
+		virtual UOSInt ReadBlock(Data::ByteArray blk); //ret actual block size
 		virtual UOSInt GetMinBlockSize();
 		virtual UInt32 GetCurrTime();
 		virtual Bool IsEnd();

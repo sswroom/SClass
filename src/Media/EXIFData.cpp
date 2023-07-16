@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Data/ByteBuffer.h"
 #include "Data/ByteOrderLSB.h"
 #include "Data/ByteOrderMSB.h"
 #include "Data/ByteTool.h"
@@ -5192,7 +5193,6 @@ Media::EXIFData *Media::EXIFData::ParseIFD(const UInt8 *buff, UOSInt buffSize, D
 Media::EXIFData *Media::EXIFData::ParseIFD(IO::StreamData *fd, UInt64 ofst, Data::ByteOrder *bo, UInt64 *nextOfst, UInt64 readBase)
 {
 	Media::EXIFData *exif;
-	UInt8 *ifdEntries;
 	UInt8 ifdBuff[2];
 	UOSInt ifdCnt;
 	UOSInt i;
@@ -5201,20 +5201,18 @@ Media::EXIFData *Media::EXIFData::ParseIFD(IO::StreamData *fd, UInt64 ofst, Data
 	UInt32 tag;
 	UInt32 ftype;
 	UInt32 fcnt;
-	if (fd->GetRealData(ofst, 2, ifdBuff) != 2)
+	if (fd->GetRealData(ofst, 2, BYTEARR(ifdBuff)) != 2)
 	{
 		return 0;
 	}
 	ifdCnt = bo->GetUInt16(ifdBuff);
 
-	ifdEntries = MemAlloc(UInt8, readSize = ifdCnt * 12 + 4);
+	Data::ByteBuffer ifdEntries(readSize = ifdCnt * 12 + 4);
 	if (fd->GetRealData(ofst + 2, readSize, ifdEntries) != readSize)
 	{
-		MemFree(ifdEntries);
 		return 0;
 	}
 
-	UInt8 *tmpBuff;
 	UInt32 j;
 	NEW_CLASS(exif, Media::EXIFData(Media::EXIFData::EM_STANDARD));
 
@@ -5235,10 +5233,9 @@ Media::EXIFData *Media::EXIFData::ParseIFD(IO::StreamData *fd, UInt64 ofst, Data
 			}
 			else
 			{
-				tmpBuff = MemAlloc(UInt8, fcnt);
+				Data::ByteBuffer tmpBuff(fcnt);
 				fd->GetRealData(bo->GetUInt32(&ifdEntries[ifdOfst + 8]) + readBase, fcnt, tmpBuff);
-				exif->AddBytes(tag, fcnt, tmpBuff);
-				MemFree(tmpBuff);
+				exif->AddBytes(tag, fcnt, tmpBuff.Ptr());
 			}
 			break;
 		case 2:
@@ -5248,10 +5245,9 @@ Media::EXIFData *Media::EXIFData::ParseIFD(IO::StreamData *fd, UInt64 ofst, Data
 			}
 			else
 			{
-				tmpBuff = MemAlloc(UInt8, fcnt);
+				Data::ByteBuffer tmpBuff(fcnt);
 				fd->GetRealData(bo->GetUInt32(&ifdEntries[ifdOfst + 8]) + readBase, fcnt, tmpBuff);
-				exif->AddString(tag, fcnt, (Char*)tmpBuff);
-				MemFree(tmpBuff);
+				exif->AddString(tag, fcnt, (Char*)tmpBuff.Ptr());
 			}
 			break;
 		case 3:
@@ -5270,7 +5266,7 @@ Media::EXIFData *Media::EXIFData::ParseIFD(IO::StreamData *fd, UInt64 ofst, Data
 			}
 			else
 			{
-				tmpBuff = MemAlloc(UInt8, fcnt << 1);
+				Data::ByteBuffer tmpBuff(fcnt << 1);
 				fd->GetRealData(bo->GetUInt32(&ifdEntries[ifdOfst + 8]) + readBase, fcnt << 1, tmpBuff);
 				j = fcnt << 1;
 				while (j > 0)
@@ -5278,8 +5274,7 @@ Media::EXIFData *Media::EXIFData::ParseIFD(IO::StreamData *fd, UInt64 ofst, Data
 					j -= 2;
 					*(UInt16*)&tmpBuff[j] = bo->GetUInt16(&tmpBuff[j]);
 				}
-				exif->AddUInt16(tag, fcnt, (UInt16*)tmpBuff);
-				MemFree(tmpBuff);
+				exif->AddUInt16(tag, fcnt, (UInt16*)tmpBuff.Ptr());
 			}
 			break;
 		}
@@ -5304,7 +5299,7 @@ Media::EXIFData *Media::EXIFData::ParseIFD(IO::StreamData *fd, UInt64 ofst, Data
 			}
 			else
 			{
-				tmpBuff = MemAlloc(UInt8, fcnt << 2);
+				Data::ByteBuffer tmpBuff(fcnt << 2);
 				fd->GetRealData(bo->GetUInt32(&ifdEntries[ifdOfst + 8]) + readBase, fcnt << 2, tmpBuff);
 				j = fcnt << 2;
 				while (j > 0)
@@ -5312,23 +5307,23 @@ Media::EXIFData *Media::EXIFData::ParseIFD(IO::StreamData *fd, UInt64 ofst, Data
 					j -= 4;
 					*(UInt32*)&tmpBuff[j] = bo->GetUInt32(&tmpBuff[j]);
 				}
-				exif->AddUInt32(tag, fcnt, (UInt32*)tmpBuff);
-				MemFree(tmpBuff);
+				exif->AddUInt32(tag, fcnt, (UInt32*)tmpBuff.Ptr());
 			}
 			break;
 		}
 		case 5:
-			tmpBuff = MemAlloc(UInt8, fcnt << 3);
-			fd->GetRealData(bo->GetUInt32(&ifdEntries[ifdOfst + 8]) + readBase, fcnt << 3, tmpBuff);
-			j = fcnt << 3;
-			while (j > 0)
 			{
-				j -= 8;
-				*(UInt32*)&tmpBuff[j] = bo->GetUInt32(&tmpBuff[j]);
-				*(UInt32*)&tmpBuff[j + 4] = bo->GetUInt32(&tmpBuff[j + 4]);
+				Data::ByteBuffer tmpBuff(fcnt << 3);
+				fd->GetRealData(bo->GetUInt32(&ifdEntries[ifdOfst + 8]) + readBase, fcnt << 3, tmpBuff);
+				j = fcnt << 3;
+				while (j > 0)
+				{
+					j -= 8;
+					*(UInt32*)&tmpBuff[j] = bo->GetUInt32(&tmpBuff[j]);
+					*(UInt32*)&tmpBuff[j + 4] = bo->GetUInt32(&tmpBuff[j + 4]);
+				}
+				exif->AddRational(tag, fcnt, (UInt32*)tmpBuff.Ptr());
 			}
-			exif->AddRational(tag, fcnt, (UInt32*)tmpBuff);
-			MemFree(tmpBuff);
 			break;
 		case 7:
 			if (fcnt <= 4)
@@ -5337,10 +5332,9 @@ Media::EXIFData *Media::EXIFData::ParseIFD(IO::StreamData *fd, UInt64 ofst, Data
 			}
 			else
 			{
-				tmpBuff = MemAlloc(UInt8, fcnt);
+				Data::ByteBuffer tmpBuff(fcnt);
 				fd->GetRealData(bo->GetUInt32(&ifdEntries[ifdOfst + 8]) + readBase, fcnt, tmpBuff);
-				exif->AddOther(tag, fcnt, tmpBuff);
-				MemFree(tmpBuff);
+				exif->AddOther(tag, fcnt, tmpBuff.Ptr());
 			}
 			break;
 		case 8:
@@ -5353,7 +5347,7 @@ Media::EXIFData *Media::EXIFData::ParseIFD(IO::StreamData *fd, UInt64 ofst, Data
 			}
 			else
 			{
-				tmpBuff = MemAlloc(UInt8, fcnt << 1);
+				Data::ByteBuffer tmpBuff(fcnt << 1);
 				fd->GetRealData(bo->GetUInt32(&ifdEntries[ifdOfst + 8]) + readBase, fcnt << 1, tmpBuff);
 				j = fcnt << 1;
 				while (j > 0)
@@ -5361,8 +5355,7 @@ Media::EXIFData *Media::EXIFData::ParseIFD(IO::StreamData *fd, UInt64 ofst, Data
 					j -= 2;
 					*(Int16*)&tmpBuff[j] = bo->GetInt16(&tmpBuff[j]);
 				}
-				exif->AddInt16(tag, fcnt, (Int16*)tmpBuff);
-				MemFree(tmpBuff);
+				exif->AddInt16(tag, fcnt, (Int16*)tmpBuff.Ptr());
 			}
 			break;
 		}
@@ -5376,7 +5369,7 @@ Media::EXIFData *Media::EXIFData::ParseIFD(IO::StreamData *fd, UInt64 ofst, Data
 			}
 			else
 			{
-				tmpBuff = MemAlloc(UInt8, fcnt << 2);
+				Data::ByteBuffer tmpBuff(fcnt << 2);
 				fd->GetRealData(bo->GetUInt32(&ifdEntries[ifdOfst + 8]) + readBase, fcnt << 2, tmpBuff);
 				j = fcnt << 2;
 				while (j > 0)
@@ -5384,13 +5377,13 @@ Media::EXIFData *Media::EXIFData::ParseIFD(IO::StreamData *fd, UInt64 ofst, Data
 					j -= 4;
 					*(Int32*)&tmpBuff[j] = bo->GetInt32(&tmpBuff[j]);
 				}
-				exif->AddInt32(tag, fcnt, (Int32*)tmpBuff);
-				MemFree(tmpBuff);
+				exif->AddInt32(tag, fcnt, (Int32*)tmpBuff.Ptr());
 			}
 			break;
 		}
 		case 10:
-			tmpBuff = MemAlloc(UInt8, fcnt << 3);
+		{
+			Data::ByteBuffer tmpBuff(fcnt << 3);
 			fd->GetRealData(bo->GetUInt32(&ifdEntries[ifdOfst + 8]) + readBase, fcnt << 3, tmpBuff);
 			j = fcnt << 3;
 			while (j > 0)
@@ -5399,14 +5392,15 @@ Media::EXIFData *Media::EXIFData::ParseIFD(IO::StreamData *fd, UInt64 ofst, Data
 				*(Int32*)&tmpBuff[j] = bo->GetInt32(&tmpBuff[j]);
 				*(Int32*)&tmpBuff[j + 4] = bo->GetInt32(&tmpBuff[j + 4]);
 			}
-			exif->AddSRational(tag, fcnt, (Int32*)tmpBuff);
-			MemFree(tmpBuff);
+			exif->AddSRational(tag, fcnt, (Int32*)tmpBuff.Ptr());
+		}
 			break;
 		case 12:
-			tmpBuff = MemAlloc(UInt8, fcnt << 3);
-			fd->GetRealData(bo->GetUInt32(&ifdEntries[ifdOfst + 8]) + readBase, fcnt << 3, tmpBuff);
-			exif->AddDouble(tag, fcnt, (Double*)tmpBuff);
-			MemFree(tmpBuff);
+			{
+				Data::ByteBuffer tmpBuff(fcnt << 3);
+				fd->GetRealData(bo->GetUInt32(&ifdEntries[ifdOfst + 8]) + readBase, fcnt << 3, tmpBuff);
+				exif->AddDouble(tag, fcnt, (Double*)tmpBuff.Ptr());
+			}
 			break;
 		default:
 			printf("EXIFData.ParseIFD: Unsupported field type: %d, tag = %d\r\n", ftype, tag);
@@ -5422,14 +5416,12 @@ Media::EXIFData *Media::EXIFData::ParseIFD(IO::StreamData *fd, UInt64 ofst, Data
 	{
 		*nextOfst = bo->GetUInt32(&ifdEntries[ifdCnt * 12]);
 	}
-	MemFree(ifdEntries);
 	return exif;
 }
 
 Media::EXIFData *Media::EXIFData::ParseIFD64(IO::StreamData *fd, UInt64 ofst, Data::ByteOrder *bo, UInt64 *nextOfst, UInt64 readBase)
 {
 	Media::EXIFData *exif;
-	UInt8 *ifdEntries;
 	UInt8 ifdBuff[8];
 	UInt64 ifdCnt;
 	UOSInt i;
@@ -5438,20 +5430,18 @@ Media::EXIFData *Media::EXIFData::ParseIFD64(IO::StreamData *fd, UInt64 ofst, Da
 	UInt32 tag;
 	UInt32 ftype;
 	UInt64 fcnt;
-	if (fd->GetRealData(ofst, 8, ifdBuff) != 8)
+	if (fd->GetRealData(ofst, 8, BYTEARR(ifdBuff)) != 8)
 	{
 		return 0;
 	}
 	ifdCnt = bo->GetUInt64(ifdBuff);
 
-	ifdEntries = MemAlloc(UInt8, readSize = ifdCnt * 20 + 8);
+	Data::ByteBuffer ifdEntries(readSize = ifdCnt * 20 + 8);
 	if (fd->GetRealData(ofst + 8, readSize, ifdEntries) != readSize)
 	{
-		MemFree(ifdEntries);
 		return 0;
 	}
 
-	UInt8 *tmpBuff;
 	UInt64 j;
 	NEW_CLASS(exif, Media::EXIFData(Media::EXIFData::EM_STANDARD));
 
@@ -5472,10 +5462,9 @@ Media::EXIFData *Media::EXIFData::ParseIFD64(IO::StreamData *fd, UInt64 ofst, Da
 			}
 			else
 			{
-				tmpBuff = MemAlloc(UInt8, fcnt);
+				Data::ByteBuffer tmpBuff(fcnt);
 				fd->GetRealData(bo->GetUInt64(&ifdEntries[ifdOfst + 12]) + readBase, fcnt, tmpBuff);
-				exif->AddBytes(tag, fcnt, tmpBuff);
-				MemFree(tmpBuff);
+				exif->AddBytes(tag, fcnt, tmpBuff.Ptr());
 			}
 			break;
 		case 2:
@@ -5485,10 +5474,9 @@ Media::EXIFData *Media::EXIFData::ParseIFD64(IO::StreamData *fd, UInt64 ofst, Da
 			}
 			else
 			{
-				tmpBuff = MemAlloc(UInt8, fcnt);
+				Data::ByteBuffer tmpBuff(fcnt);
 				fd->GetRealData(bo->GetUInt64(&ifdEntries[ifdOfst + 12]) + readBase, fcnt, tmpBuff);
-				exif->AddString(tag, fcnt, (Char*)tmpBuff);
-				MemFree(tmpBuff);
+				exif->AddString(tag, fcnt, (Char*)tmpBuff.Ptr());
 			}
 			break;
 		case 3:
@@ -5522,7 +5510,7 @@ Media::EXIFData *Media::EXIFData::ParseIFD64(IO::StreamData *fd, UInt64 ofst, Da
 			}
 			else
 			{
-				tmpBuff = MemAlloc(UInt8, fcnt << 1);
+				Data::ByteBuffer tmpBuff(fcnt << 1);
 				fd->GetRealData(bo->GetUInt64(&ifdEntries[ifdOfst + 12]) + readBase, fcnt << 1, tmpBuff);
 				j = fcnt << 1;
 				while (j > 0)
@@ -5530,8 +5518,7 @@ Media::EXIFData *Media::EXIFData::ParseIFD64(IO::StreamData *fd, UInt64 ofst, Da
 					j -= 2;
 					*(UInt16*)&tmpBuff[j] = bo->GetUInt16(&tmpBuff[j]);
 				}
-				exif->AddUInt16(tag, fcnt, (UInt16*)tmpBuff);
-				MemFree(tmpBuff);
+				exif->AddUInt16(tag, fcnt, (UInt16*)tmpBuff.Ptr());
 			}
 			break;
 		}
@@ -5562,7 +5549,7 @@ Media::EXIFData *Media::EXIFData::ParseIFD64(IO::StreamData *fd, UInt64 ofst, Da
 			}
 			else
 			{
-				tmpBuff = MemAlloc(UInt8, fcnt << 2);
+				Data::ByteBuffer tmpBuff(fcnt << 2);
 				fd->GetRealData(bo->GetUInt64(&ifdEntries[ifdOfst + 12]) + readBase, fcnt << 2, tmpBuff);
 				j = fcnt << 2;
 				while (j > 0)
@@ -5570,8 +5557,7 @@ Media::EXIFData *Media::EXIFData::ParseIFD64(IO::StreamData *fd, UInt64 ofst, Da
 					j -= 4;
 					*(UInt32*)&tmpBuff[j] = bo->GetUInt32(&tmpBuff[j]);
 				}
-				exif->AddUInt32(tag, fcnt, (UInt32*)tmpBuff);
-				MemFree(tmpBuff);
+				exif->AddUInt32(tag, fcnt, (UInt32*)tmpBuff.Ptr());
 			}
 			break;
 		}
@@ -5585,7 +5571,7 @@ Media::EXIFData *Media::EXIFData::ParseIFD64(IO::StreamData *fd, UInt64 ofst, Da
 			}
 			else
 			{
-				tmpBuff = MemAlloc(UInt8, fcnt << 3);
+				Data::ByteBuffer tmpBuff(fcnt << 3);
 				fd->GetRealData(bo->GetUInt64(&ifdEntries[ifdOfst + 12]) + readBase, fcnt << 3, tmpBuff);
 				j = fcnt << 3;
 				while (j > 0)
@@ -5594,8 +5580,7 @@ Media::EXIFData *Media::EXIFData::ParseIFD64(IO::StreamData *fd, UInt64 ofst, Da
 					*(UInt32*)&tmpBuff[j] = bo->GetUInt32(&tmpBuff[j]);
 					*(UInt32*)&tmpBuff[j + 4] = bo->GetUInt32(&tmpBuff[j + 4]);
 				}
-				exif->AddRational(tag, fcnt, (UInt32*)tmpBuff);
-				MemFree(tmpBuff);
+				exif->AddRational(tag, fcnt, (UInt32*)tmpBuff.Ptr());
 			}
 			break;
 		case 7:
@@ -5605,10 +5590,9 @@ Media::EXIFData *Media::EXIFData::ParseIFD64(IO::StreamData *fd, UInt64 ofst, Da
 			}
 			else
 			{
-				tmpBuff = MemAlloc(UInt8, fcnt);
+				Data::ByteBuffer tmpBuff(fcnt);
 				fd->GetRealData(bo->GetUInt64(&ifdEntries[ifdOfst + 12]) + readBase, fcnt, tmpBuff);
-				exif->AddOther(tag, fcnt, tmpBuff);
-				MemFree(tmpBuff);
+				exif->AddOther(tag, fcnt, tmpBuff.Ptr());
 			}
 			break;
 		case 8:
@@ -5642,7 +5626,7 @@ Media::EXIFData *Media::EXIFData::ParseIFD64(IO::StreamData *fd, UInt64 ofst, Da
 			}
 			else
 			{
-				tmpBuff = MemAlloc(UInt8, fcnt << 1);
+				Data::ByteBuffer tmpBuff(fcnt << 1);
 				fd->GetRealData(bo->GetUInt64(&ifdEntries[ifdOfst + 12]) + readBase, fcnt << 1, tmpBuff);
 				j = fcnt << 1;
 				while (j > 0)
@@ -5650,8 +5634,7 @@ Media::EXIFData *Media::EXIFData::ParseIFD64(IO::StreamData *fd, UInt64 ofst, Da
 					j -= 2;
 					*(Int16*)&tmpBuff[j] = bo->GetInt16(&tmpBuff[j]);
 				}
-				exif->AddInt16(tag, fcnt, (Int16*)tmpBuff);
-				MemFree(tmpBuff);
+				exif->AddInt16(tag, fcnt, (Int16*)tmpBuff.Ptr());
 			}
 			break;
 		}
@@ -5663,7 +5646,7 @@ Media::EXIFData *Media::EXIFData::ParseIFD64(IO::StreamData *fd, UInt64 ofst, Da
 			}
 			else
 			{
-				tmpBuff = MemAlloc(UInt8, fcnt << 3);
+				Data::ByteBuffer tmpBuff(fcnt << 3);
 				fd->GetRealData(bo->GetUInt64(&ifdEntries[ifdOfst + 12]) + readBase, fcnt << 3, tmpBuff);
 				j = fcnt << 3;
 				while (j > 0)
@@ -5671,8 +5654,7 @@ Media::EXIFData *Media::EXIFData::ParseIFD64(IO::StreamData *fd, UInt64 ofst, Da
 					j -= 8;
 					*(Double*)&tmpBuff[j] = bo->GetFloat64(&tmpBuff[j]);
 				}
-				exif->AddDouble(tag, fcnt, (Double*)tmpBuff);
-				MemFree(tmpBuff);
+				exif->AddDouble(tag, fcnt, (Double*)tmpBuff.Ptr());
 			}
 			break;
 		case 16: //TIFF_LONG8
@@ -5683,7 +5665,7 @@ Media::EXIFData *Media::EXIFData::ParseIFD64(IO::StreamData *fd, UInt64 ofst, Da
 			}
 			else
 			{
-				tmpBuff = MemAlloc(UInt8, fcnt << 3);
+				Data::ByteBuffer tmpBuff(fcnt << 3);
 				fd->GetRealData(bo->GetUInt64(&ifdEntries[ifdOfst + 12]) + readBase, fcnt << 3, tmpBuff);
 				j = fcnt << 3;
 				while (j > 0)
@@ -5691,8 +5673,7 @@ Media::EXIFData *Media::EXIFData::ParseIFD64(IO::StreamData *fd, UInt64 ofst, Da
 					j -= 8;
 					*(UInt64*)&tmpBuff[j] = bo->GetUInt64(&tmpBuff[j]);
 				}
-				exif->AddUInt64(tag, fcnt, (UInt64*)tmpBuff);
-				MemFree(tmpBuff);
+				exif->AddUInt64(tag, fcnt, (UInt64*)tmpBuff.Ptr());
 			}
 			break;
 		case 17: //TIFF_SLONG8
@@ -5703,7 +5684,7 @@ Media::EXIFData *Media::EXIFData::ParseIFD64(IO::StreamData *fd, UInt64 ofst, Da
 			}
 			else
 			{
-				tmpBuff = MemAlloc(UInt8, fcnt << 3);
+				Data::ByteBuffer tmpBuff(fcnt << 3);
 				fd->GetRealData(bo->GetUInt64(&ifdEntries[ifdOfst + 12]) + readBase, fcnt << 3, tmpBuff);
 				j = fcnt << 3;
 				while (j > 0)
@@ -5711,8 +5692,7 @@ Media::EXIFData *Media::EXIFData::ParseIFD64(IO::StreamData *fd, UInt64 ofst, Da
 					j -= 8;
 					*(Int64*)&tmpBuff[j] = bo->GetInt64(&tmpBuff[j]);
 				}
-				exif->AddInt64(tag, fcnt, (Int64*)tmpBuff);
-				MemFree(tmpBuff);
+				exif->AddInt64(tag, fcnt, (Int64*)tmpBuff.Ptr());
 			}
 			break;
 		case 18: //TIFF_IFD8
@@ -5748,14 +5728,13 @@ Media::EXIFData *Media::EXIFData::ParseIFD64(IO::StreamData *fd, UInt64 ofst, Da
 	{
 		*nextOfst = bo->GetUInt32(&ifdEntries[ifdCnt * 12]);
 	}
-	MemFree(ifdEntries);
 	return exif;
 }
 
 Bool Media::EXIFData::ParseEXIFFrame(IO::FileAnalyse::FrameDetailHandler *frame, UOSInt frameOfst, IO::StreamData *fd, UInt64 ofst)
 {
 	UInt8 hdr[8];
-	if (fd->GetRealData(ofst, 8, hdr) != 8)
+	if (fd->GetRealData(ofst, 8, BYTEARR(hdr)) != 8)
 	{
 		return false;
 	}
@@ -5806,7 +5785,6 @@ Bool Media::EXIFData::ParseEXIFFrame(IO::FileAnalyse::FrameDetailHandler *frame,
 
 Bool Media::EXIFData::ParseFrame(IO::FileAnalyse::FrameDetailHandler *frame, UOSInt frameOfst, IO::StreamData *fd, UInt64 ofst, Data::ByteOrder *bo, UInt32 *nextOfst, UInt32 ifdId, UInt64 readBase)
 {
-	UInt8 *ifdEntries;
 	UInt8 ifdBuff[2];
 	UOSInt ifdCnt;
 	UOSInt i;
@@ -5816,21 +5794,19 @@ Bool Media::EXIFData::ParseFrame(IO::FileAnalyse::FrameDetailHandler *frame, UOS
 	UInt32 ftype;
 	UInt32 fcnt;
 	UInt32 fofst;
-	if (fd->GetRealData(ofst, 2, ifdBuff) != 2)
+	if (fd->GetRealData(ofst, 2, BYTEARR(ifdBuff)) != 2)
 	{
 		return 0;
 	}
 	ifdCnt = bo->GetUInt16(ifdBuff);
 	frame->AddUInt(frameOfst, 2, CSTR("IFD Count"), ifdCnt);
 
-	ifdEntries = MemAlloc(UInt8, readSize = ifdCnt * 12 + 4);
+	Data::ByteBuffer ifdEntries(readSize = ifdCnt * 12 + 4);
 	if (fd->GetRealData(ofst + 2, readSize, ifdEntries) != readSize)
 	{
-		MemFree(ifdEntries);
 		return 0;
 	}
 
-	UInt8 *tmpBuff;
 	UInt32 j;
 
 	ifdOfst = 0;
@@ -5860,10 +5836,9 @@ Bool Media::EXIFData::ParseFrame(IO::FileAnalyse::FrameDetailHandler *frame, UOS
 			{
 				fofst = bo->GetUInt32(&ifdEntries[ifdOfst + 8]);
 				frame->AddUInt(frameOfst + 10 + ifdOfst, 4, CSTR("Field Offset"), fofst);
-				tmpBuff = MemAlloc(UInt8, fcnt);
+				Data::ByteBuffer tmpBuff(fcnt);
 				fd->GetRealData(fofst + readBase, fcnt, tmpBuff);
-				frame->AddHexBuff((UOSInt)(fofst + readBase - ofst + frameOfst), fcnt, GetEXIFName(EM_STANDARD, ifdId, tag), tmpBuff, true);
-				MemFree(tmpBuff);
+				frame->AddHexBuff((UOSInt)(fofst + readBase - ofst + frameOfst), GetEXIFName(EM_STANDARD, ifdId, tag), tmpBuff, true);
 			}
 			break;
 		case 2:
@@ -5880,10 +5855,9 @@ Bool Media::EXIFData::ParseFrame(IO::FileAnalyse::FrameDetailHandler *frame, UOS
 			{
 				fofst = bo->GetUInt32(&ifdEntries[ifdOfst + 8]);
 				frame->AddUInt(frameOfst + 10 + ifdOfst, 4, CSTR("Field Offset"), fofst);
-				tmpBuff = MemAlloc(UInt8, fcnt);
+				Data::ByteBuffer tmpBuff(fcnt);
 				fd->GetRealData(fofst + readBase, fcnt, tmpBuff);
-				frame->AddStrS((UOSInt)(fofst + readBase - ofst + frameOfst), fcnt, GetEXIFName(EM_STANDARD, ifdId, tag), tmpBuff);
-				MemFree(tmpBuff);
+				frame->AddStrS((UOSInt)(fofst + readBase - ofst + frameOfst), fcnt, GetEXIFName(EM_STANDARD, ifdId, tag), tmpBuff.Ptr());
 			}
 			break;
 		case 3:
@@ -5901,7 +5875,7 @@ Bool Media::EXIFData::ParseFrame(IO::FileAnalyse::FrameDetailHandler *frame, UOS
 			{
 				fofst = bo->GetUInt32(&ifdEntries[ifdOfst + 8]);
 				frame->AddUInt(frameOfst + 10 + ifdOfst, 4, CSTR("Field Offset"), fofst);
-				tmpBuff = MemAlloc(UInt8, fcnt << 1);
+				Data::ByteBuffer tmpBuff(fcnt << 1);
 				fd->GetRealData(fofst + readBase, fcnt << 1, tmpBuff);
 				j = fcnt << 1;
 				while (j > 0)
@@ -5909,7 +5883,6 @@ Bool Media::EXIFData::ParseFrame(IO::FileAnalyse::FrameDetailHandler *frame, UOS
 					j -= 2;
 					frame->AddUInt((UOSInt)(fofst + readBase + j - ofst + frameOfst), 2, GetEXIFName(EM_STANDARD, ifdId, tag), bo->GetUInt16(&tmpBuff[j]));
 				}
-				MemFree(tmpBuff);
 			}
 			break;
 		case 4:
@@ -5930,7 +5903,7 @@ Bool Media::EXIFData::ParseFrame(IO::FileAnalyse::FrameDetailHandler *frame, UOS
 			{
 				fofst = bo->GetUInt32(&ifdEntries[ifdOfst + 8]);
 				frame->AddUInt(frameOfst + 10 + ifdOfst, 4, CSTR("Field Offset"), fofst);
-				tmpBuff = MemAlloc(UInt8, fcnt << 2);
+				Data::ByteBuffer tmpBuff(fcnt << 2);
 				fd->GetRealData(fofst + readBase, fcnt << 2, tmpBuff);
 				j = fcnt << 2;
 				while (j > 0)
@@ -5938,7 +5911,6 @@ Bool Media::EXIFData::ParseFrame(IO::FileAnalyse::FrameDetailHandler *frame, UOS
 					j -= 4;
 					frame->AddUInt((UOSInt)(fofst + readBase + j - ofst + frameOfst), 4, GetEXIFName(EM_STANDARD, ifdId, tag), bo->GetUInt32(&tmpBuff[j]));
 				}
-				MemFree(tmpBuff);
 			}
 			break;
 		case 5:
@@ -5946,7 +5918,7 @@ Bool Media::EXIFData::ParseFrame(IO::FileAnalyse::FrameDetailHandler *frame, UOS
 			Text::StringBuilderUTF8 sb;
 			fofst = bo->GetUInt32(&ifdEntries[ifdOfst + 8]);
 			frame->AddUInt(frameOfst + 10 + ifdOfst, 4, CSTR("Field Offset"), fofst);
-			tmpBuff = MemAlloc(UInt8, fcnt << 3);
+			Data::ByteBuffer tmpBuff(fcnt << 3);
 			fd->GetRealData(fofst + readBase, fcnt << 3, tmpBuff);
 			j = fcnt << 3;
 			while (j > 0)
@@ -5958,7 +5930,6 @@ Bool Media::EXIFData::ParseFrame(IO::FileAnalyse::FrameDetailHandler *frame, UOS
 				sb.AppendU32(bo->GetUInt32(&tmpBuff[j + 4]));
 				frame->AddField((UOSInt)(fofst + readBase + j - ofst + frameOfst), 8, GetEXIFName(EM_STANDARD, ifdId, tag), sb.ToCString());
 			}
-			MemFree(tmpBuff);
 			break;
 		}
 		case 7: //Other
@@ -5975,10 +5946,9 @@ Bool Media::EXIFData::ParseFrame(IO::FileAnalyse::FrameDetailHandler *frame, UOS
 			{
 				fofst = bo->GetUInt32(&ifdEntries[ifdOfst + 8]);
 				frame->AddUInt(frameOfst + 10 + ifdOfst, 4, CSTR("Field Offset"), fofst);
-				tmpBuff = MemAlloc(UInt8, fcnt);
+				Data::ByteBuffer tmpBuff(fcnt);
 				fd->GetRealData(fofst + readBase, fcnt, tmpBuff);
-				frame->AddHexBuff((UOSInt)(fofst + readBase - ofst + frameOfst), fcnt, GetEXIFName(EM_STANDARD, ifdId, tag), tmpBuff, true);
-				MemFree(tmpBuff);
+				frame->AddHexBuff((UOSInt)(fofst + readBase - ofst + frameOfst), GetEXIFName(EM_STANDARD, ifdId, tag), tmpBuff, true);
 			}
 			break;
 		case 8:
@@ -5996,7 +5966,7 @@ Bool Media::EXIFData::ParseFrame(IO::FileAnalyse::FrameDetailHandler *frame, UOS
 			{
 				fofst = bo->GetUInt32(&ifdEntries[ifdOfst + 8]);
 				frame->AddUInt(frameOfst + 10 + ifdOfst, 4, CSTR("Field Offset"), fofst);
-				tmpBuff = MemAlloc(UInt8, fcnt << 1);
+				Data::ByteBuffer tmpBuff(fcnt << 1);
 				fd->GetRealData(fofst + readBase, fcnt << 1, tmpBuff);
 				j = fcnt << 1;
 				while (j > 0)
@@ -6004,7 +5974,6 @@ Bool Media::EXIFData::ParseFrame(IO::FileAnalyse::FrameDetailHandler *frame, UOS
 					j -= 2;
 					frame->AddInt((UOSInt)(fofst + readBase + j - ofst + frameOfst), 2, GetEXIFName(EM_STANDARD, ifdId, tag), bo->GetInt16(&tmpBuff[j]));
 				}
-				MemFree(tmpBuff);
 			}
 			break;
 		case 10:
@@ -6012,7 +5981,7 @@ Bool Media::EXIFData::ParseFrame(IO::FileAnalyse::FrameDetailHandler *frame, UOS
 			Text::StringBuilderUTF8 sb;
 			fofst = bo->GetUInt32(&ifdEntries[ifdOfst + 8]);
 			frame->AddUInt(frameOfst + 10 + ifdOfst, 4, CSTR("Field Offset"), fofst);
-			tmpBuff = MemAlloc(UInt8, fcnt << 3);
+			Data::ByteBuffer tmpBuff(fcnt << 3);
 			fd->GetRealData(fofst + readBase, fcnt << 3, tmpBuff);
 			j = fcnt << 3;
 			while (j > 0)
@@ -6024,13 +5993,13 @@ Bool Media::EXIFData::ParseFrame(IO::FileAnalyse::FrameDetailHandler *frame, UOS
 				sb.AppendI32(bo->GetInt32(&tmpBuff[j + 4]));
 				frame->AddField((UOSInt)(fofst + readBase + j - ofst + frameOfst), 8, GetEXIFName(EM_STANDARD, ifdId, tag), sb.ToCString());
 			}
-			MemFree(tmpBuff);
 			break;
 		}
 		case 12:
+		{
 			fofst = bo->GetUInt32(&ifdEntries[ifdOfst + 8]);
 			frame->AddUInt(frameOfst + 10 + ifdOfst, 4, CSTR("Field Offset"), fofst);
-			tmpBuff = MemAlloc(UInt8, fcnt << 3);
+			Data::ByteBuffer tmpBuff(fcnt << 3);
 			fd->GetRealData(fofst + readBase, fcnt << 3, tmpBuff);
 			j = fcnt << 3;
 			while (j > 0)
@@ -6038,8 +6007,8 @@ Bool Media::EXIFData::ParseFrame(IO::FileAnalyse::FrameDetailHandler *frame, UOS
 				j -= 8;
 				frame->AddFloat((UOSInt)(fofst + readBase + j - ofst + frameOfst), 8, GetEXIFName(EM_STANDARD, ifdId, tag), ReadDouble(&tmpBuff[j]));
 			}
-			MemFree(tmpBuff);
 			break;
+		}
 		default:
 			j = 0;
 			break;
@@ -6055,7 +6024,6 @@ Bool Media::EXIFData::ParseFrame(IO::FileAnalyse::FrameDetailHandler *frame, UOS
 	{
 		*nextOfst = fofst;
 	}
-	MemFree(ifdEntries);
 	return true;
 }
 

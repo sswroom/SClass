@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Data/ByteBuffer.h"
 #include "Data/ByteTool.h"
 #include "IO/EXEFile.h"
 #include "Parser/FileParser/ELFParser.h"
@@ -1565,10 +1566,6 @@ IO::ParsedObject *Parser::FileParser::ELFParser::ParseFileHdr(IO::StreamData *fd
 	}
 	sptr = Text::StrUInt32(sbuff, (UInt32)readInt32(&hdr[20]));
 	exef->AddProp(CSTR("Version"), CSTRP(sbuff, sptr));
-	UInt8 *progHdr = 0;
-	UInt8 *secHdr = 0;
-	UInt8 *funcBuff = 0;
-	UOSInt funcBuffSize = 0;
 	UInt32 phSize;
 	UInt32 phCnt;
 	UInt32 shSize;
@@ -1608,7 +1605,7 @@ IO::ParsedObject *Parser::FileParser::ELFParser::ParseFileHdr(IO::StreamData *fd
 
 		if (phSize >= 32)
 		{
-			progHdr = MemAlloc(UInt8, phSize * phCnt);
+			Data::ByteBuffer progHdr(phSize * phCnt);
 			fd->GetRealData(pht, phSize * phCnt, progHdr);
 
 			i = 0;
@@ -1691,19 +1688,18 @@ IO::ParsedObject *Parser::FileParser::ELFParser::ParseFileHdr(IO::StreamData *fd
 				i++;
 				j += phSize;
 			}
-			MemFree(progHdr);
 		}
 
 		if (shSize >= 40)
 		{
-			progHdr = 0;
-			secHdr = MemAlloc(UInt8, shSize * shCnt);
+			Data::ByteBuffer progHdr;
+			Data::ByteBuffer secHdr(shSize * shCnt);
 			fd->GetRealData(sht, shSize * shCnt, secHdr);
 
 			if (readInt32(&secHdr[shSize * secNameInd + 4]) == 3)
 			{
 				UInt32 sz = (UInt32)readInt32(&secHdr[shSize * secNameInd + 20]);
-				progHdr = MemAlloc(UInt8, sz + 1);
+				progHdr.ChangeSize(sz + 1);
 				fd->GetRealData((UInt32)readInt32(&secHdr[shSize * secNameInd + 16]), sz, progHdr);
 				progHdr[sz] = 0;
 			}
@@ -1718,7 +1714,7 @@ IO::ParsedObject *Parser::FileParser::ELFParser::ParseFileHdr(IO::StreamData *fd
 				sptr2 = Text::StrHexVal32(Text::StrConcatC(sbuff2, UTF8STRC("0x")), (UInt32)readInt32(&secHdr[j + 0]));
 				exef->AddProp(CSTRP(sbuff, sptr), CSTRP(sbuff2, sptr2));
 
-				if (progHdr)
+				if (!progHdr.IsNull())
 				{
 					sptr = Text::StrConcatC(sbuff, UTF8STRC("Section Header "));
 					sptr = Text::StrUOSInt(sptr, i);
@@ -1840,7 +1836,7 @@ IO::ParsedObject *Parser::FileParser::ELFParser::ParseFileHdr(IO::StreamData *fd
 				sptr2 = Text::StrUInt32(sbuff2, (UInt32)readInt32(&secHdr[j + 36]));
 				exef->AddProp(CSTRP(sbuff, sptr), CSTRP(sbuff2, sptr2));
 
-				if (progHdr)
+				if (!progHdr.IsNull())
 				{
 					const UTF8Char *name = (const UTF8Char*)&progHdr[readInt32(&secHdr[j + 0])];
 					UInt32 assSec = (UInt32)readInt32(&secHdr[j + 24]);
@@ -1851,8 +1847,8 @@ IO::ParsedObject *Parser::FileParser::ELFParser::ParseFileHdr(IO::StreamData *fd
 						UInt32 tmpVal;
 						UInt32 symSize = (UInt32)readInt32(&secHdr[j + 20]);
 						UInt32 strSize = (UInt32)readInt32(&secHdr[assSec * shSize + 20]);
-						UInt8 *symTab = MemAlloc(UInt8, symSize);
-						UInt8 *strTab = MemAlloc(UInt8, strSize);
+						Data::ByteBuffer symTab(symSize);
+						Data::ByteBuffer strTab(strSize);
 						fd->GetRealData((UInt32)readInt32(&secHdr[j + 16]), symSize, symTab);
 						fd->GetRealData((UInt32)readInt32(&secHdr[assSec * shSize + 16]), strSize, strTab);
 						k = 0;
@@ -1939,18 +1935,10 @@ IO::ParsedObject *Parser::FileParser::ELFParser::ParseFileHdr(IO::StreamData *fd
 							k++;
 							l += 16;
 						}
-						MemFree(symTab);
-						MemFree(strTab);
 					}
 				}
 				i++;
 				j += shSize;
-			}
-			MemFree(secHdr);
-
-			if (progHdr)
-			{
-				MemFree(progHdr);
 			}
 		}
 	}
@@ -1986,7 +1974,7 @@ IO::ParsedObject *Parser::FileParser::ELFParser::ParseFileHdr(IO::StreamData *fd
 
 		if (phSize >= 56)
 		{
-			progHdr = MemAlloc(UInt8, phSize * phCnt);
+			Data::ByteBuffer progHdr(phSize * phCnt);
 			fd->GetRealData(pht, phSize * phCnt, progHdr);
 
 			i = 0;
@@ -2070,19 +2058,19 @@ IO::ParsedObject *Parser::FileParser::ELFParser::ParseFileHdr(IO::StreamData *fd
 				i++;
 				j += phSize;
 			}
-			MemFree(progHdr);
 		}
 
 		if (shSize >= 64)
 		{
-			progHdr = 0;
-			secHdr = MemAlloc(UInt8, shSize * shCnt);
+			Data::ByteBuffer progHdr;
+			Data::ByteBuffer funcBuff;
+			Data::ByteBuffer secHdr(shSize * shCnt);
 			fd->GetRealData(sht, shSize * shCnt, secHdr);
 
 			if (readInt32(&secHdr[shSize * secNameInd + 4]) == 3)
 			{
 				UOSInt sz = (UOSInt)(UInt64)readInt64(&secHdr[shSize * secNameInd + 32]);
-				progHdr = MemAlloc(UInt8, sz + 1);
+				progHdr.ChangeSize(sz + 1);
 				fd->GetRealData((UInt32)readInt64(&secHdr[shSize * secNameInd + 24]), sz, progHdr);
 				progHdr[sz] = 0;
 			}
@@ -2097,7 +2085,7 @@ IO::ParsedObject *Parser::FileParser::ELFParser::ParseFileHdr(IO::StreamData *fd
 				sptr2 = Text::StrHexVal32(Text::StrConcatC(sbuff2, UTF8STRC("0x")), (UInt32)readInt32(&secHdr[j + 0]));
 				exef->AddProp(CSTRP(sbuff, sptr), CSTRP(sbuff2, sptr2));
 
-				if (progHdr)
+				if (!progHdr.IsNull())
 				{
 					sptr = Text::StrConcatC(sbuff, UTF8STRC("Section Header "));
 					sptr = Text::StrUOSInt(sptr, i);
@@ -2219,7 +2207,7 @@ IO::ParsedObject *Parser::FileParser::ELFParser::ParseFileHdr(IO::StreamData *fd
 				sptr2 = Text::StrUInt64(sbuff2, (UInt64)readInt64(&secHdr[j + 56]));
 				exef->AddProp(CSTRP(sbuff, sptr), CSTRP(sbuff2, sptr2));
 
-				if (progHdr)
+				if (!progHdr.IsNull())
 				{
 					const UTF8Char *name = (const UTF8Char*)&progHdr[readInt32(&secHdr[j + 0])];
 					UInt32 assSec = (UInt32)readInt32(&secHdr[j + 40]);
@@ -2243,8 +2231,8 @@ IO::ParsedObject *Parser::FileParser::ELFParser::ParseFileHdr(IO::StreamData *fd
 						UInt64 thisSize;
 						UInt64 symSize = (UInt64)readInt64(&secHdr[j + 32]);
 						UInt64 strSize = (UInt64)readInt64(&secHdr[assSec * shSize + 32]);
-						UInt8 *symTab = MemAlloc(UInt8, (UOSInt)symSize);
-						UInt8 *strTab = MemAlloc(UInt8, (UOSInt)strSize);
+						Data::ByteBuffer symTab((UOSInt)symSize);
+						Data::ByteBuffer strTab((UOSInt)strSize);
 						fd->GetRealData((UInt64)readInt32(&secHdr[j + 24]), symSize, symTab);
 						fd->GetRealData((UInt64)readInt32(&secHdr[assSec * shSize + 24]), strSize, strTab);
 						k = 0;
@@ -2265,14 +2253,9 @@ IO::ParsedObject *Parser::FileParser::ELFParser::ParseFileHdr(IO::StreamData *fd
 								sptr2 = ToFuncName(sbuff2, &strTab[tmpVal]);
 								if (sbuff2[0] != '_' || sbuff2[1] != 'Z')
 								{
-									if (funcBuffSize < thisSize)
+									if (funcBuff.GetSize() < thisSize)
 									{
-										if (funcBuff)
-										{
-											MemFree(funcBuff);
-										}
-										funcBuffSize = (UOSInt)thisSize;
-										funcBuff = MemAlloc(UInt8, funcBuffSize);
+										funcBuff.ChangeSize((UOSInt)thisSize);
 									}
 									fd->GetRealData(thisAddr, (UOSInt)thisSize, funcBuff);
 									//exef->AddFunc(CSTRP(sbuff2, sptr2), thisAddr, thisSize, funcBuff);
@@ -2350,26 +2333,11 @@ IO::ParsedObject *Parser::FileParser::ELFParser::ParseFileHdr(IO::StreamData *fd
 							k++;
 							l += 24;
 						}
-						MemFree(symTab);
-						MemFree(strTab);
 					}
 				}
 
 				i++;
 				j += shSize;
-			}
-
-			MemFree(secHdr);
-
-			if (progHdr)
-			{
-				MemFree(progHdr);
-			}
-
-			if (funcBuff)
-			{
-				MemFree(funcBuff);
-				//exef->EndAddFunc();
 			}
 		}
 	}

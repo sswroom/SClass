@@ -308,7 +308,7 @@ Bool IO::FileStream::IsError()
 	return this->handle == INVALID_HANDLE_VALUE;
 }
 
-UOSInt IO::FileStream::Read(UInt8 *buff, UOSInt size)
+UOSInt IO::FileStream::Read(const Data::ByteArray &buff)
 {
 	if (handle == INVALID_HANDLE_VALUE)
 		return 0;

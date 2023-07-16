@@ -231,11 +231,10 @@ Bool Media::VCDMPGFile::StopPlay()
 	return true;
 }
 
-Media::VCDMPGFile::VCDMPGFile(IO::ISectorData *data, UInt64 startSector, UInt64 endSector) : Media::MediaFile(data->GetSourceNameObj())
+Media::VCDMPGFile::VCDMPGFile(IO::ISectorData *data, UInt64 startSector, UInt64 endSector) : Media::MediaFile(data->GetSourceNameObj()), readBuff(2352)
 {
 	this->data = data->GetPartialData(startSector, endSector - startSector);
 	this->readOfst = 0;
-	this->readBuff = MemAlloc(UInt8, 2352);
 	this->playing = 0;
 	this->playToStop = false;
 	this->startTime = 0;
@@ -426,7 +425,6 @@ Media::VCDMPGFile::~VCDMPGFile()
 	}
 	SDEL_CLASS(this->vstm);
 	DEL_CLASS(this->data);
-	MemFree(this->readBuff);
 }
 
 UOSInt Media::VCDMPGFile::AddSource(Media::IMediaSource *src, Int32 syncTime)

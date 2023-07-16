@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Data/ByteBuffer.h"
 #include "Data/ByteTool.h"
 #include "IO/PackageFile.h"
 #include "Parser/FileParser/ZWEIParser.h"
@@ -56,9 +57,8 @@ IO::ParsedObject *Parser::FileParser::ZWEIParser::ParseFileHdr(IO::StreamData *f
 		return 0;
 	}
 	extOfst = 12 * extCnt + 8;
-	UInt8 *extHdrs = MemAlloc(UInt8, 12 * extCnt);
+	Data::ByteBuffer extHdrs(12 * extCnt);
 	fd->GetRealData(8, 12 * extCnt, extHdrs);
-	UInt8 *recHdrs;
 	UInt32 recCnt;
 	UInt32 fileSize;
 
@@ -83,7 +83,6 @@ IO::ParsedObject *Parser::FileParser::ZWEIParser::ParseFileHdr(IO::StreamData *f
 
 		if (ReadUInt32(&extHdrs[buffOfst + 4]) != extOfst)
 		{
-			MemFree(extHdrs);
 			DEL_CLASS(pf);
 			return 0;
 		}
@@ -91,11 +90,10 @@ IO::ParsedObject *Parser::FileParser::ZWEIParser::ParseFileHdr(IO::StreamData *f
 		recCnt = ReadUInt32(&extHdrs[buffOfst + 8]);
 		if (recCnt <= 0 || recCnt > 65536)
 		{
-			MemFree(extHdrs);
 			DEL_CLASS(pf);
 			return 0;
 		}
-		recHdrs = MemAlloc(UInt8, recCnt << 4);
+		Data::ByteBuffer recHdrs(recCnt << 4);
 		fd->GetRealData(extOfst, recCnt << 4, recHdrs);
 
 		j = 0;
@@ -104,8 +102,6 @@ IO::ParsedObject *Parser::FileParser::ZWEIParser::ParseFileHdr(IO::StreamData *f
 		{
 			if (ReadUInt32(&recHdrs[recOfst + 12]) != fileOfst)
 			{
-				MemFree(extHdrs);
-				MemFree(recHdrs);
 				DEL_CLASS(pf);
 				return 0;
 			}
@@ -121,12 +117,10 @@ IO::ParsedObject *Parser::FileParser::ZWEIParser::ParseFileHdr(IO::StreamData *f
 			j++;
 			recOfst += 16;
 		}
-		MemFree(recHdrs);
 		extOfst += recCnt << 4;
 
 		i++;
 		buffOfst += 12;
 	}
-	MemFree(extHdrs);
 	return pf;
 }

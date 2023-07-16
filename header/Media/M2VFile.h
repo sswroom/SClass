@@ -1,5 +1,6 @@
 #ifndef _SM_MEDIA_M2VFILE
 #define _SM_MEDIA_M2VFILE
+#include "Data/ByteBuffer.h"
 #include "IO/StreamData.h"
 #include "Media/IStreamControl.h"
 #include "Media/MediaFile.h"
@@ -10,7 +11,7 @@ namespace Media
 	{
 	private:
 		IO::StreamData *stmData;
-		UInt8 *readBuff;
+		Data::ByteBuffer readBuff;
 		UInt64 readOfst;
 		UInt64 bitRate;
 		UInt64 fleng;

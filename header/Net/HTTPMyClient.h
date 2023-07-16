@@ -43,8 +43,8 @@ namespace Net
 
 		virtual Bool IsError() const;
 
-		UOSInt ReadRAW(UInt8 *buff, UOSInt size);
-		virtual UOSInt Read(UInt8 *buff, UOSInt size);
+		UOSInt ReadRAW(Data::ByteArray buff);
+		virtual UOSInt Read(Data::ByteArray buff);
 		virtual UOSInt Write(const UInt8 *buff, UOSInt size);
 
 		virtual Int32 Flush();

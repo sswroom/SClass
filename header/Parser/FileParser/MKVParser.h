@@ -16,7 +16,7 @@ namespace Parser
 			{
 				IO::StreamData *fd;
 				UInt64 nextReadOfst;
-				UInt8 *buff;
+				Data::ByteArray buff;
 				UOSInt buffSize;
 				UOSInt currOfst;
 			} MKVStatus;
@@ -32,7 +32,7 @@ namespace Parser
 		private:
 			static UOSInt ReadDataSize(MKVStatus *status, UInt64 *dataSize);
 			static UOSInt ReadID(MKVStatus *status, UInt32 *eleId);
-			static UOSInt ReadData(MKVStatus *status, UInt64 dataSize, UInt8 *buff);
+			static UOSInt ReadData(MKVStatus *status, UInt64 dataSize, Data::ByteArray buff);
 			static UOSInt ReadBuffer(MKVStatus *status);
 			static Bool SkipBuffer(MKVStatus *status, UOSInt skipSize);
 			static Bool ReadHeader(MKVStatus *status, UInt64 dataSize);

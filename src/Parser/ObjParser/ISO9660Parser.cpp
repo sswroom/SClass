@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Data/ByteBuffer.h"
 #include "Data/ByteTool.h"
 #include "IO/CDSectorData.h"
 #include "IO/ISectorData.h"
@@ -63,7 +64,7 @@ IO::ParsedObject *Parser::ObjParser::ISO9660Parser::ParseObject(IO::ParsedObject
 	UInt32 sectorNum9660 = 16;
 	UInt32 sectorNumJoliet = 0;
 
-	if (!data->ReadSector(16, sector))
+	if (!data->ReadSector(16, BYTEARR(sector)))
 	{
 		SDEL_CLASS(cdData);
 		return 0;
@@ -74,7 +75,7 @@ IO::ParsedObject *Parser::ObjParser::ISO9660Parser::ParseObject(IO::ParsedObject
 		return 0;
 	}
 	UInt32 currSector = 17;
-	while (data->ReadSector(currSector, sector))
+	while (data->ReadSector(currSector, BYTEARR(sector)))
 	{
 		if (sector[1] != 0x43 || sector[2] != 0x44 || sector[3] != 0x30 || sector[4] != 0x30 || sector[5] != 0x31 || sector[6] != 0x01 || sector[7] != 0x00)
 			break;
@@ -106,7 +107,7 @@ IO::PackageFile *Parser::ObjParser::ISO9660Parser::ParseVol(IO::ISectorData *sec
 	IO::PackageFile *pkgFile;
 	Text::Encoding enc(codePage);
 
-	sectorData->ReadSector(sectorNum, sector);
+	sectorData->ReadSector(sectorNum, BYTEARR(sector));
 	NEW_CLASS(pkgFile, IO::PackageFile(sectorData->GetSourceNameObj()));
 
 	
@@ -180,8 +181,8 @@ IO::PackageFile *Parser::ObjParser::ISO9660Parser::ParseVol(IO::ISectorData *sec
 
 void Parser::ObjParser::ISO9660Parser::ParseDir(IO::PackageFile *pkgFile, IO::ISectorData *sectorData, UInt32 sectorNum, UInt32 recSize, UTF8Char *fileName, UTF8Char *fileNameEnd, UInt32 codePage)
 {
-	UInt8 *dataBuff = MemAlloc(UInt8, recSize + 2048);
-	UInt8 *recBuff = &dataBuff[2048];
+	Data::ByteBuffer dataBuff(recSize + 2048);
+	Data::ByteArray recBuff = dataBuff.SubArray(2048);
 	UOSInt sizeLeft = recSize;
 	Bool err = false;
 	while (sizeLeft > 0)
@@ -193,13 +194,13 @@ void Parser::ObjParser::ISO9660Parser::ParseDir(IO::PackageFile *pkgFile, IO::IS
 		}
 		if (sizeLeft > 2048)
 		{
-			MemCopyNO(recBuff, dataBuff, 2048);
+			recBuff.CopyFrom(dataBuff.WithSize(2048));
 			recBuff += 2048;
 			sizeLeft -= 2048;
 		}
 		else
 		{
-			MemCopyNO(recBuff, dataBuff, sizeLeft);
+			recBuff.CopyFrom(dataBuff.WithSize(sizeLeft));
 			sizeLeft = 0;
 			break;
 		}
@@ -215,7 +216,7 @@ void Parser::ObjParser::ISO9660Parser::ParseDir(IO::PackageFile *pkgFile, IO::IS
 		UTF8Char *sptr;
 		Text::Encoding enc(codePage);
 
-		recBuff = &dataBuff[2048];
+		recBuff = dataBuff.SubArray(2048);
 		sizeLeft = recSize;
 		while (sizeLeft > 32)
 		{
@@ -263,5 +264,4 @@ void Parser::ObjParser::ISO9660Parser::ParseDir(IO::PackageFile *pkgFile, IO::IS
 			recBuff += fileRecSize;
 		}
 	}
-	MemFree(dataBuff);
 }

@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Data/ByteBuffer.h"
 #include "Data/ByteTool.h"
 #include "IO/FileStream.h"
 #include "IO/StreamData.h"
@@ -37,7 +38,6 @@ IO::ParserType Parser::FileParser::PCXParser::GetParserType()
 
 IO::ParsedObject *Parser::FileParser::PCXParser::ParseFileHdr(IO::StreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
-	UInt8 *dataBuff;
 	UInt8 *lineBuff;
 //	UInt8 pal[1024];
 
@@ -77,12 +77,12 @@ IO::ParsedObject *Parser::FileParser::PCXParser::ParseFileHdr(IO::StreamData *fd
 		UOSInt readSize;
 		UOSInt dataSize = 0;
 		UOSInt lineLeft = imgHeight;
-		dataBuff = MemAlloc(UInt8, bplp << 1);
+		Data::ByteBuffer dataBuff(bplp << 1);
 		lineBuff = MemAlloc(UInt8, bplp);
 
 		while (lineLeft-- > 0)
 		{
-			readSize = fd->GetRealData(filePos, (bplp << 1) - dataSize, &dataBuff[dataSize]);
+			readSize = fd->GetRealData(filePos, (bplp << 1) - dataSize, dataBuff.SubArray(dataSize));
 			dataSize += readSize;
 			filePos += readSize;
 
@@ -153,11 +153,10 @@ lop24:
 			}
 			else
 			{
-				MemCopyO(dataBuff, &dataBuff[i], dataSize - i);
+				dataBuff.CopyInner(0, i, dataSize - i);
 				dataSize -= i;
 			}
 		}
-		MemFree(dataBuff);
 		MemFree(lineBuff);
 
 /*		switch (bpp)

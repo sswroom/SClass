@@ -36,12 +36,10 @@ Map::ESRI::FileGDBReader::FileGDBReader(IO::StreamData *fd, UInt64 ofst, FileGDB
 {
 	this->indexCnt = 0;
 	this->indexNext = 0;
-	this->indexBuff = 0;
 	this->fd = fd->GetPartialData(0, fd->GetDataSize());
 	this->currOfst = ofst;
 	this->tableInfo = Map::ESRI::FileGDBUtil::TableInfoClone(tableInfo);
 	this->rowSize = 0;
-	this->rowData = 0;
 	this->objectId = 0;
 	UOSInt fieldCnt = tableInfo->fields->GetCount();
 	this->fieldNull = MemAlloc(UInt8, fieldCnt);
@@ -89,15 +87,7 @@ Map::ESRI::FileGDBReader::FileGDBReader(IO::StreamData *fd, UInt64 ofst, FileGDB
 Map::ESRI::FileGDBReader::~FileGDBReader()
 {
 	DEL_CLASS(this->fd);
-	if (this->indexBuff)
-	{
-		MemFree(this->indexBuff);
-	}
 	Map::ESRI::FileGDBUtil::FreeTableInfo(this->tableInfo);
-	if (this->rowData)
-	{
-		MemFree(this->rowData);
-	}
 	MemFree(this->fieldNull);
 	MemFree(this->fieldOfst);
 	SDEL_CLASS(this->columnIndices);
@@ -106,12 +96,8 @@ Map::ESRI::FileGDBReader::~FileGDBReader()
 Bool Map::ESRI::FileGDBReader::ReadNext()
 {
 	UInt8 sizeBuff[4];
-	if (this->rowData)
-	{
-		MemFree(this->rowData);
-		this->rowData = 0;
-	}
-	if (this->indexBuff)
+	this->rowData.Delete();
+	if (!this->indexBuff.IsNull())
 	{
 		while (true)
 		{
@@ -126,7 +112,7 @@ Bool Map::ESRI::FileGDBReader::ReadNext()
 			this->objectId = (Int32)this->indexNext;
 			if (this->currOfst != 0)
 			{
-				if (this->fd->GetRealData(this->currOfst, 4, sizeBuff) != 4)
+				if (this->fd->GetRealData(this->currOfst, 4, BYTEARR(sizeBuff)) != 4)
 				{
 					return false;
 				}
@@ -168,7 +154,7 @@ Bool Map::ESRI::FileGDBReader::ReadNext()
 		{
 			while (true)
 			{
-				if (this->fd->GetRealData(this->currOfst, 4, sizeBuff) != 4)
+				if (this->fd->GetRealData(this->currOfst, 4, BYTEARR(sizeBuff)) != 4)
 				{
 					return false;
 				}
@@ -208,11 +194,10 @@ Bool Map::ESRI::FileGDBReader::ReadNext()
 			this->currOfst += 4 + this->rowSize;
 		}
 	}
-	this->rowData = MemAlloc(UInt8, this->rowSize);
+	this->rowData.ChangeSize(this->rowSize);
 	if (this->fd->GetRealData(this->currOfst + 4, this->rowSize, this->rowData) != this->rowSize)
 	{
-		MemFree(this->rowData);
-		this->rowData = 0;
+		this->rowData.Delete();
 		return false;
 	}
 	this->currOfst += 4 + this->rowSize;
@@ -307,7 +292,7 @@ OSInt Map::ESRI::FileGDBReader::GetRowChanged()
 Int32 Map::ESRI::FileGDBReader::GetInt32(UOSInt colIndex)
 {
 	UOSInt fieldIndex = this->GetFieldIndex(colIndex);
-	if (this->rowData == 0)
+	if (this->rowData.IsNull())
 	{
 		return 0;
 	}
@@ -346,7 +331,7 @@ Int32 Map::ESRI::FileGDBReader::GetInt32(UOSInt colIndex)
 Int64 Map::ESRI::FileGDBReader::GetInt64(UOSInt colIndex)
 {
 	UOSInt fieldIndex = this->GetFieldIndex(colIndex);
-	if (this->rowData == 0)
+	if (this->rowData.IsNull())
 	{
 		return 0;
 	}
@@ -395,7 +380,7 @@ WChar *Map::ESRI::FileGDBReader::GetStr(UOSInt colIndex, WChar *buff)
 Bool Map::ESRI::FileGDBReader::GetStr(UOSInt colIndex, Text::StringBuilderUTF8 *sb)
 {
 	UOSInt fieldIndex = this->GetFieldIndex(colIndex);
-	if (this->rowData == 0)
+	if (this->rowData.IsNull())
 	{
 		return false;
 	}
@@ -470,7 +455,7 @@ Text::String *Map::ESRI::FileGDBReader::GetNewStr(UOSInt colIndex)
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
 	UOSInt fieldIndex = this->GetFieldIndex(colIndex);
-	if (this->rowData == 0)
+	if (this->rowData.IsNull())
 	{
 		return 0;
 	}
@@ -555,7 +540,7 @@ UTF8Char *Map::ESRI::FileGDBReader::GetStr(UOSInt colIndex, UTF8Char *buff, UOSI
 Data::Timestamp Map::ESRI::FileGDBReader::GetTimestamp(UOSInt colIndex)
 {
 	UOSInt fieldIndex = this->GetFieldIndex(colIndex);
-	if (this->rowData == 0)
+	if (this->rowData.IsNull())
 	{
 		return Data::Timestamp(0);
 	}
@@ -588,7 +573,7 @@ Data::Timestamp Map::ESRI::FileGDBReader::GetTimestamp(UOSInt colIndex)
 Double Map::ESRI::FileGDBReader::GetDbl(UOSInt colIndex)
 {
 	UOSInt fieldIndex = this->GetFieldIndex(colIndex);
-	if (this->rowData == 0)
+	if (this->rowData.IsNull())
 	{
 		return 0;
 	}
@@ -632,7 +617,7 @@ Bool Map::ESRI::FileGDBReader::GetBool(UOSInt colIndex)
 UOSInt Map::ESRI::FileGDBReader::GetBinarySize(UOSInt colIndex)
 {
 	UOSInt fieldIndex = this->GetFieldIndex(colIndex);
-	if (this->rowData == 0)
+	if (this->rowData.IsNull())
 	{
 		return 0;
 	}
@@ -676,7 +661,7 @@ UOSInt Map::ESRI::FileGDBReader::GetBinarySize(UOSInt colIndex)
 UOSInt Map::ESRI::FileGDBReader::GetBinary(UOSInt colIndex, UInt8 *buff)
 {
 	UOSInt fieldIndex = this->GetFieldIndex(colIndex);
-	if (this->rowData == 0)
+	if (this->rowData.IsNull())
 	{
 		return 0;
 	}
@@ -731,7 +716,7 @@ UOSInt Map::ESRI::FileGDBReader::GetBinary(UOSInt colIndex, UInt8 *buff)
 Math::Geometry::Vector2D *Map::ESRI::FileGDBReader::GetVector(UOSInt colIndex)
 {
 	UOSInt fieldIndex = this->GetFieldIndex(colIndex);
-	if (this->rowData == 0)
+	if (this->rowData.IsNull())
 	{
 		return 0;
 	}
@@ -1216,7 +1201,7 @@ Math::Geometry::Vector2D *Map::ESRI::FileGDBReader::GetVector(UOSInt colIndex)
 Bool Map::ESRI::FileGDBReader::GetUUID(UOSInt colIndex, Data::UUID *uuid)
 {
 	UOSInt fieldIndex = this->GetFieldIndex(colIndex);
-	if (this->rowData == 0)
+	if (this->rowData.IsNull())
 	{
 		return false;
 	}
@@ -1238,7 +1223,7 @@ Bool Map::ESRI::FileGDBReader::GetUUID(UOSInt colIndex, Data::UUID *uuid)
 Bool Map::ESRI::FileGDBReader::GetVariItem(UOSInt colIndex, Data::VariItem *item)
 {
 	UOSInt fieldIndex = this->GetFieldIndex(colIndex);
-	if (this->rowData == 0)
+	if (this->rowData.IsNull())
 	{
 		return false;
 	}
@@ -1649,15 +1634,14 @@ Bool Map::ESRI::FileGDBReader::GetColDef(UOSInt colIndex, DB::ColDef *colDef)
 
 void Map::ESRI::FileGDBReader::SetIndex(IO::StreamData *fd, UOSInt indexCnt)
 {
-	if (this->indexBuff == 0)
+	if (this->indexBuff.IsNull())
 	{
 		this->indexCnt = indexCnt;
 		UOSInt len = this->indexCnt * 5;
-		this->indexBuff = MemAlloc(UInt8, len);
+		this->indexBuff.ChangeSize(len);
 		if (fd->GetRealData(16, len, this->indexBuff) != len)
 		{
-			MemFree(this->indexBuff);
-			this->indexBuff = 0;
+			this->indexBuff.Delete();
 		}
 	}
 }

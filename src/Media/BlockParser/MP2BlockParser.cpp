@@ -15,7 +15,7 @@ Media::AudioBlockSource *Media::BlockParser::MP2BlockParser::ParseStreamData(IO:
 	UInt64 leng = stmData->GetDataSize();
 	UInt8 buff[256];
 	UInt64 currOfst = 0;
-	stmData->GetRealData(0, 7, buff);
+	stmData->GetRealData(0, 7, BYTEARR(buff));
 	if (buff[0] != 0xff || (buff[1] & 0xfe) != 0xfc)
 	{
 		return 0;
@@ -105,7 +105,7 @@ Media::AudioBlockSource *Media::BlockParser::MP2BlockParser::ParseStreamData(IO:
 		currOfst += frameLength;
 		if (currOfst >= leng)
 			break;
-		stmData->GetRealData(currOfst, 4, buff);
+		stmData->GetRealData(currOfst, 4, BYTEARR(buff));
 	}
 	return audio;
 }

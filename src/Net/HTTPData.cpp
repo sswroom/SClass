@@ -73,7 +73,7 @@ UInt32 __stdcall Net::HTTPData::LoadThread(void *userObj)
 			NEW_CLASS(fdh->file, IO::FileStream(fdh->localFile, IO::FileMode::Create, IO::FileShare::DenyWrite, IO::FileStream::BufferType::Normal));
 			while (fdh->loadSize < fdh->fileLength)
 			{
-				readSize = fdh->cli->Read(buff, 2048);
+				readSize = fdh->cli->Read(BYTEARR(buff));
 				if (readSize == 0)
 				{
 					Sync::MutexUsage mutUsage(&fdh->mut);
@@ -113,7 +113,7 @@ UInt32 __stdcall Net::HTTPData::LoadThread(void *userObj)
 				while (true)
 				{
 					readEvt.Clear();
-					sess = fdh->cli->BeginRead(buff, 2048, &readEvt);
+					sess = fdh->cli->BeginRead(BYTEARR(buff), &readEvt);
 					if (sess)
 					{
 						Bool incomplete;
@@ -278,7 +278,7 @@ Net::HTTPData::~HTTPData()
 	Close();
 }
 
-UOSInt Net::HTTPData::GetRealData(UInt64 offset, UOSInt length, UInt8* buffer)
+UOSInt Net::HTTPData::GetRealData(UInt64 offset, UOSInt length, Data::ByteArray buffer)
 {
 	if (fdh == 0)
 		return 0;
@@ -300,9 +300,9 @@ UOSInt Net::HTTPData::GetRealData(UInt64 offset, UOSInt length, UInt8* buffer)
 	}
 	UOSInt byteRead;
 	if (length < this->GetDataSize() - offset)
-		byteRead = fdh->file->Read(buffer, length);
+		byteRead = fdh->file->Read(buffer.WithSize(length));
 	else
-		byteRead = fdh->file->Read(buffer, (UOSInt) (dataLength - offset));
+		byteRead = fdh->file->Read(buffer.WithSize((UOSInt) (dataLength - offset)));
 	if (byteRead == 0)
 	{
 		mutUsage.EndUse();

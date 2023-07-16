@@ -1,5 +1,6 @@
 #ifndef _SM_IO_CDSECTORDATA
 #define _SM_IO_CDSECTORDATA
+#include "Data/ByteBuffer.h"
 #include "IO/ISectorData.h"
 #include "IO/StreamData.h"
 
@@ -11,7 +12,7 @@ namespace IO
 		IO::ISectorData *data;
 		UOSInt userOfst;
 		UOSInt userDataSize;
-		UInt8 *sectorBuff;
+		Data::ByteBuffer sectorBuff;
 
 		CDSectorData(IO::ISectorData *data, UOSInt userOfst, UOSInt userDataSize, UInt64 startSector, UInt64 sectorCount);
 	public:
@@ -20,7 +21,7 @@ namespace IO
 
 		virtual UInt64 GetSectorCount() const;
 		virtual UOSInt GetBytesPerSector() const;
-		virtual Bool ReadSector(UInt64 sectorNum, UInt8 *sectorBuff);
+		virtual Bool ReadSector(UInt64 sectorNum, Data::ByteArray sectorBuff);
 		virtual ISectorData *GetPartialData(UInt64 startSector, UInt64 sectorCount) const;
 		virtual IO::StreamData *GetStreamData(UInt64 startSector, UInt64 dataSize) const;
 		virtual UOSInt GetSeekCount() const;
@@ -32,12 +33,12 @@ namespace IO
 		IO::ISectorData *data;
 		UOSInt sectorOfst;
 		UInt64 dataSize;
-		UInt8 *sectorBuff;
+		Data::ByteBuffer sectorBuff;
 
 	public:
 		CDSectorStreamData(IO::ISectorData *data, UOSInt sectorOfst, UInt64 dataSize);
 		virtual ~CDSectorStreamData();
-		virtual UOSInt GetRealData(UInt64 offset, UOSInt length, UInt8 *buffer);
+		virtual UOSInt GetRealData(UInt64 offset, UOSInt length, Data::ByteArray buffer);
 		virtual NotNullPtr<Text::String> GetFullName();
 		virtual Text::CString GetShortName();
 		virtual UInt64 GetDataSize();

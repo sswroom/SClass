@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Data/ByteBuffer.h"
 #include "Data/ByteTool.h"
 #include "IO/PackageFile.h"
 #include "Parser/FileParser/AOSParser.h"
@@ -39,7 +40,6 @@ IO::ParsedObject *Parser::FileParser::AOSParser::ParseFileHdr(IO::StreamData *fd
 	UInt32 dataOfst;
 	UInt32 recSize;
 	UInt32 recCnt;
-	UInt8 *recBuff;
 	UInt32 i;
 	Int32 j;
 	UInt32 fileSize;
@@ -60,7 +60,7 @@ IO::ParsedObject *Parser::FileParser::AOSParser::ParseFileHdr(IO::StreamData *fd
 		return 0;
 	if (dataOfst - recSize != 273)
 		return 0;
-	if (fd->GetRealData(0, 273, hdrBuff) != 273)
+	if (fd->GetRealData(0, 273, BYTEARR(hdrBuff)) != 273)
 		return 0;
 	Text::Encoding enc(932);
 	sptr = enc.UTF8FromBytes(fileName, &hdrBuff[12], 255, 0);
@@ -74,10 +74,9 @@ IO::ParsedObject *Parser::FileParser::AOSParser::ParseFileHdr(IO::StreamData *fd
 		return 0;
 	}
 
-	recBuff = MemAlloc(UInt8, recSize);
+	Data::ByteBuffer recBuff(recSize);
 	if (fd->GetRealData(273, recSize, recBuff) != recSize)
 	{
-		MemFree(recBuff);
 		return 0;
 	}
 
@@ -93,7 +92,6 @@ IO::ParsedObject *Parser::FileParser::AOSParser::ParseFileHdr(IO::StreamData *fd
 		fileSize = ReadUInt32(&recBuff[j + 36]);
 		if (fileOfst != nextOfst)
 		{
-			MemFree(recBuff);
 			DEL_CLASS(pf);
 			return 0;
 		}
@@ -104,7 +102,5 @@ IO::ParsedObject *Parser::FileParser::AOSParser::ParseFileHdr(IO::StreamData *fd
 		i++;
 		j += 40;
 	}
-
-	MemFree(recBuff);
 	return pf;
 }

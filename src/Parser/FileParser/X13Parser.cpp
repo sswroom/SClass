@@ -1,9 +1,10 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Data/ByteBuffer.h"
+#include "IO/PackageFile.h"
 #include "Parser/FileParser/X13Parser.h"
 #include "Text/Encoding.h"
 #include "Text/MyString.h"
-#include "IO/PackageFile.h"
 
 Parser::FileParser::X13Parser::X13Parser()
 {
@@ -45,7 +46,7 @@ IO::ParsedObject *Parser::FileParser::X13Parser::ParseFileHdr(IO::StreamData *fd
 
 	IO::PackageFile *pf;
 	Text::Encoding enc;
-	UInt8 *recHdrs = MemAlloc(UInt8, ReadUInt32(&hdr[8]));
+	Data::ByteBuffer recHdrs(ReadUInt32(&hdr[8]));
 	fd->GetRealData(ReadUInt32(&hdr[4]), ReadUInt32(&hdr[8]), recHdrs);
 	NEW_CLASS(pf, IO::PackageFile(fd->GetFullName()));
 	buffOfst = 0;
@@ -55,6 +56,5 @@ IO::ParsedObject *Parser::FileParser::X13Parser::ParseFileHdr(IO::StreamData *fd
 		pf->AddData(fd, ReadUInt32(&recHdrs[buffOfst + 56]), ReadUInt32(&recHdrs[buffOfst + 60]), CSTRP(name, sptr), Data::Timestamp(0));
 		buffOfst += 64;
 	}
-	MemFree(recHdrs);
 	return pf;
 }

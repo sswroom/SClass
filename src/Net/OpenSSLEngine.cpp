@@ -105,7 +105,7 @@ Net::SSLClient *Net::OpenSSLEngine::CreateClientConn(void *sslObj, Socket *s, Te
 			return 0;
 		}
 		Crypto::Cert::X509Cert *svrCert;
-		NEW_CLASS(svrCert, Crypto::Cert::X509Cert(hostName, certBuff, (UInt32)certLen));
+		NEW_CLASS(svrCert, Crypto::Cert::X509Cert(hostName, Data::ByteArrayR(certBuff, (UInt32)certLen)));
 		Data::DateTime dt;
 		Int64 currTime;
 		dt.SetCurrTimeUTC();
@@ -630,7 +630,7 @@ Bool Net::OpenSSLEngine::GenerateCert(Text::CString country, Text::CString compa
 		if (readSize > 0)
 		{
 			NotNullPtr<Text::String> fileName = Text::String::New(UTF8STRC("Certificate.key"));
-			pobjKey = Parser::FileParser::X509Parser::ParseBuff(buff, (UInt32)readSize, fileName);
+			pobjKey = Parser::FileParser::X509Parser::ParseBuff(BYTEARR(buff).SubArray(0, (UInt32)readSize), fileName);
 			fileName->Release();
 		}
 		PEM_write_bio_X509(bio1, cert);
@@ -638,7 +638,7 @@ Bool Net::OpenSSLEngine::GenerateCert(Text::CString country, Text::CString compa
 		if (readSize > 0)
 		{
 			NotNullPtr<Text::String> fileName = Text::String::New(UTF8STRC("Certificate.crt"));
-			pobjCert = (Crypto::Cert::X509Cert*)Parser::FileParser::X509Parser::ParseBuff(buff, (UInt32)readSize, fileName);
+			pobjCert = (Crypto::Cert::X509Cert*)Parser::FileParser::X509Parser::ParseBuff(BYTEARR(buff).SubArray(0, (UInt32)readSize), fileName);
 			fileName->Release();
 		}
 		BIO_free(bio1);
@@ -689,7 +689,7 @@ Crypto::Cert::X509Key *Net::OpenSSLEngine::GenerateRSAKey()
 		if (readSize > 0)
 		{
 			Text::String *fileName = Text::String::New(UTF8STRC("RSAKey.key"));
-			pobjKey = Parser::FileParser::X509Parser::ParseBuff(buff, (UOSInt)readSize, fileName);
+			pobjKey = Parser::FileParser::X509Parser::ParseBuff(BYTEARR(buff).SubArray(0, (UOSInt)readSize), fileName);
 			fileName->Release();
 		}
 		BIO_free(bio1);
@@ -718,7 +718,7 @@ Crypto::Cert::X509Key *Net::OpenSSLEngine::GenerateRSAKey()
 		if (readSize > 0)
 		{
 			NotNullPtr<Text::String> fileName = Text::String::New(UTF8STRC("Certificate.key"));
-			pobjKey = Parser::FileParser::X509Parser::ParseBuff(buff, (UInt32)readSize, fileName);
+			pobjKey = Parser::FileParser::X509Parser::ParseBuff(BYTEARR(buff).SubArray(0, (UInt32)readSize), fileName);
 			if (pobjKey && pobjKey->GetFileType() == Crypto::Cert::X509File::FileType::PrivateKey)
 			{
 				Crypto::Cert::X509PrivKey *privKey = (Crypto::Cert::X509PrivKey*)pobjKey;

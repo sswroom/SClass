@@ -1,5 +1,6 @@
 #ifndef _SM_MEDIA_HTRECFILE
 #define _SM_MEDIA_HTRECFILE
+#include "Data/ByteBuffer.h"
 #include "DB/DBReader.h"
 #include "DB/ReadingDB.h"
 #include "IO/StreamData.h"
@@ -62,7 +63,7 @@ namespace Media
 		Int64 time2TS;
 		Int64 time3TS;
 		UOSInt recCount;
-		UInt8 *recBuff;
+		Data::ByteBuffer recBuff;
 		Int64 adjStTimeTicks;
 		UInt32 adjRecInterval;
 

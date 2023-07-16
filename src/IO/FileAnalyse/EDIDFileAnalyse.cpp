@@ -1,4 +1,5 @@
 #include "Stdafx.h"
+#include "Data/ByteBuffer.h"
 #include "Data/ByteTool.h"
 #include "IO/FileAnalyse/EDIDFileAnalyse.h"
 #include "Math/Math.h"
@@ -208,7 +209,7 @@ void IO::FileAnalyse::EDIDFileAnalyse::RemoveNonASCII(UTF8Char *sbuff, UTF8Char 
 IO::FileAnalyse::EDIDFileAnalyse::EDIDFileAnalyse(IO::StreamData *fd)
 {
 	UInt8 buff[128];
-	if (fd->GetRealData(0, 128, buff) != 128 || ReadMInt32(buff) != 0xFFFFFF || ReadUInt32(&buff[4]) != 0xFFFFFF || (((UOSInt)buff[126] + 1) << 7) > fd->GetDataSize() || (fd->GetDataSize() & 127))
+	if (fd->GetRealData(0, 128, BYTEARR(buff)) != 128 || ReadMInt32(buff) != 0xFFFFFF || ReadUInt32(&buff[4]) != 0xFFFFFF || (((UOSInt)buff[126] + 1) << 7) > fd->GetDataSize() || (fd->GetDataSize() & 127))
 	{
 		this->fd = 0;
 		this->blockCnt = 0;
@@ -282,15 +283,13 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::EDIDFileAnalyse::GetFrameDetail(U
 		if (index == this->blockCnt && this->fd && this->blockCnt * 128 < this->fd->GetDataSize())
 		{
 			UOSInt blockSize = (UOSInt)(this->fd->GetDataSize() - index * 128);
-			UInt8* dummyBlock = MemAlloc(UInt8, blockSize);
+			Data::ByteBuffer dummyBlock(blockSize);
 			if (this->fd->GetRealData(index * 128, blockSize, dummyBlock) != blockSize)
 			{
-				MemFree(dummyBlock);
 				return 0;
 			}
 			NEW_CLASS(frame, IO::FileAnalyse::FrameDetail(index << 7, blockSize));
-			frame->AddHexBuff(0, blockSize, CSTR("Dummy data"), dummyBlock, true);
-			MemFree(dummyBlock);
+			frame->AddHexBuff(0, blockSize, CSTR("Dummy data"), dummyBlock.GetPtr(), true);
 			return frame;
 		}
 		return 0;
@@ -302,7 +301,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::EDIDFileAnalyse::GetFrameDetail(U
 	UInt8 buff[128];
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
-	if (this->fd->GetRealData(index << 7, 128, buff) != 128)
+	if (this->fd->GetRealData(index << 7, 128, BYTEARR(buff)) != 128)
 		return 0;
 	NEW_CLASS(frame, IO::FileAnalyse::FrameDetail(index << 7, 128));
 	if (index == 0)

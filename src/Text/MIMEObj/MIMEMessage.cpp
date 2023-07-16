@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Crypto/Encrypt/Base64.h"
+#include "Data/ByteBuffer.h"
 #include "Text/Encoding.h"
 #include "Text/EncodingFactory.h"
 #include "Text/StringBuilderUTF8.h"
@@ -167,7 +168,6 @@ Text::String *Text::MIMEObj::MIMEMessage::GetHeaderValue(UOSInt index) const
 
 Bool Text::MIMEObj::MIMEMessage::ParseFromData(IO::StreamData *fd)
 {
-	UInt8 *buff;
 	UOSInt buffSize;
 	UOSInt readSize;
 	UInt64 fileOfst;
@@ -175,15 +175,15 @@ Bool Text::MIMEObj::MIMEMessage::ParseFromData(IO::StreamData *fd)
 	Text::PString sarr[2];
 	Bool isFirst = true;
 	Bool found = false;
-	UOSInt i;
+	UOSInt i = 0;
 	UOSInt lineStart;
 
-	buff = MemAlloc(UInt8, BUFFSIZE + 1);
+	Data::ByteBuffer buff(BUFFSIZE + 1);
 	fileOfst = 0;
 	buffSize = 0;
 	while (true)
 	{
-		readSize = fd->GetRealData(fileOfst, BUFFSIZE - buffSize, &buff[buffSize]);
+		readSize = fd->GetRealData(fileOfst, BUFFSIZE - buffSize, buff.SubArray(buffSize));
 		if (readSize == 0)
 		{
 			if (buffSize > 0 && (buff[0] == '\r' || buff[0] == '\n'))
@@ -307,7 +307,7 @@ Bool Text::MIMEObj::MIMEMessage::ParseFromData(IO::StreamData *fd)
 			break;
 		if (lineStart < buffSize)
 		{
-			MemCopyO(buff, &buff[lineStart], buffSize - lineStart);
+			buff.CopyInner(0, lineStart, buffSize - lineStart);
 			buffSize -= lineStart;
 		}
 		else
@@ -316,7 +316,6 @@ Bool Text::MIMEObj::MIMEMessage::ParseFromData(IO::StreamData *fd)
 		}
 	}
 
-	MemFree(buff);
 	if (!found)
 	{
 		return false;

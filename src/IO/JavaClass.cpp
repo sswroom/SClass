@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/ArrayList.h"
+#include "Data/ByteBuffer.h"
 #include "Data/ByteTool.h"
 #include "IO/FileStream.h"
 #include "IO/JavaClass.h"
@@ -4901,7 +4902,7 @@ const UTF8Char *IO::JavaClass::AppendCodeType2String(Text::StringBuilderUTF8 *sb
 	return typeStr;
 }
 
-void IO::JavaClass::Init(const UInt8 *buff, UOSInt buffSize)
+void IO::JavaClass::Init(Data::ByteArrayR buff)
 {
 	this->fileBuff = 0;
 	this->fileBuffSize = 0;
@@ -4919,7 +4920,7 @@ void IO::JavaClass::Init(const UInt8 *buff, UOSInt buffSize)
 	this->attrCnt = 0;
 	this->attrs = 0;
 	this->signatureIndex = 0;
-	if (buffSize < 26)
+	if (buff.GetSize() < 26)
 	{
 		return;
 	}
@@ -4927,9 +4928,9 @@ void IO::JavaClass::Init(const UInt8 *buff, UOSInt buffSize)
 	{
 		return;
 	}
-	this->fileBuffSize = buffSize;
-	this->fileBuff = MemAlloc(UInt8, buffSize);
-	MemCopyNO(this->fileBuff, buff, buffSize);
+	this->fileBuffSize = buff.GetSize();
+	this->fileBuff = MemAlloc(UInt8, buff.GetSize());
+	MemCopyNO(this->fileBuff, buff.Ptr(), buff.GetSize());
 
 	UOSInt ofst;
 	UInt16 constant_pool_count = ReadMUInt16(&this->fileBuff[8]);
@@ -5221,14 +5222,14 @@ void IO::JavaClass::Init(const UInt8 *buff, UOSInt buffSize)
 	}
 }
 
-IO::JavaClass::JavaClass(NotNullPtr<Text::String> sourceName, const UInt8 *buff, UOSInt buffSize) : IO::ParsedObject(sourceName)
+IO::JavaClass::JavaClass(NotNullPtr<Text::String> sourceName, Data::ByteArrayR buff) : IO::ParsedObject(sourceName)
 {
-	this->Init(buff, buffSize);
+	this->Init(buff);
 }
 
-IO::JavaClass::JavaClass(Text::CString sourceName, const UInt8 *buff, UOSInt buffSize) : IO::ParsedObject(sourceName)
+IO::JavaClass::JavaClass(Text::CString sourceName, Data::ByteArrayR buff) : IO::ParsedObject(sourceName)
 {
-	this->Init(buff, buffSize);
+	this->Init(buff);
 }
 
 IO::JavaClass::~JavaClass()
@@ -8863,19 +8864,18 @@ IO::JavaClass *IO::JavaClass::ParseFile(Text::CString fileName)
 	fileLen = fs.GetLength();
 	if (fileLen >= 26 && fileLen <= 1048576)
 	{
-		UInt8 *buff = MemAlloc(UInt8, (UOSInt)fileLen);
-		if (fs.Read(buff, (UOSInt)fileLen) == fileLen)
+		Data::ByteBuffer buff((UOSInt)fileLen);
+		if (fs.Read(buff) == fileLen)
 		{
-			cls = ParseBuff(fileName, buff, (UOSInt)fileLen);
+			cls = ParseBuff(fileName, buff);
 		}
-		MemFree(buff);
 	}
 	return cls;
 }
 
-IO::JavaClass *IO::JavaClass::ParseBuff(NotNullPtr<Text::String> sourceName, const UInt8 *buff, UOSInt buffSize)
+IO::JavaClass *IO::JavaClass::ParseBuff(NotNullPtr<Text::String> sourceName, Data::ByteArrayR buff)
 {
-	if (buffSize < 26)
+	if (buff.GetSize() < 26)
 	{
 		return 0;
 	}
@@ -8884,13 +8884,13 @@ IO::JavaClass *IO::JavaClass::ParseBuff(NotNullPtr<Text::String> sourceName, con
 		return 0;
 	}
 	IO::JavaClass *cls;
-	NEW_CLASS(cls, IO::JavaClass(sourceName, buff, buffSize));
+	NEW_CLASS(cls, IO::JavaClass(sourceName, buff));
 	return cls;
 }
 
-IO::JavaClass *IO::JavaClass::ParseBuff(Text::CString sourceName, const UInt8 *buff, UOSInt buffSize)
+IO::JavaClass *IO::JavaClass::ParseBuff(Text::CString sourceName, Data::ByteArrayR buff)
 {
-	if (buffSize < 26)
+	if (buff.GetSize() < 26)
 	{
 		return 0;
 	}
@@ -8899,7 +8899,7 @@ IO::JavaClass *IO::JavaClass::ParseBuff(Text::CString sourceName, const UInt8 *b
 		return 0;
 	}
 	IO::JavaClass *cls;
-	NEW_CLASS(cls, IO::JavaClass(sourceName, buff, buffSize));
+	NEW_CLASS(cls, IO::JavaClass(sourceName, buff));
 	return cls;
 }
 

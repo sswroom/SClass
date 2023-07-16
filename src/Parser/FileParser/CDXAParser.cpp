@@ -50,7 +50,7 @@ IO::ParsedObject *Parser::FileParser::CDXAParser::ParseFileHdr(IO::StreamData *f
 	currPos = 12;
 	while (currPos < fileSize)
 	{
-		fd->GetRealData(currPos, 8, riffBuff);
+		fd->GetRealData(currPos, 8, BYTEARR(riffBuff));
 		
 		if (ReadNInt32(&riffBuff[0]) == *(Int32*)"fmt ")
 		{

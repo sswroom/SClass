@@ -126,7 +126,7 @@ Bool IO::FileStream::IsError()
 	return (Int32)this->handle == -1;
 }
 
-UOSInt IO::FileStream::Read(UInt8 *buff, UOSInt size)
+UOSInt IO::FileStream::Read(const Data::ByteArray &buff)
 {
 	if ((Int32)handle == -1)
 		return 0;

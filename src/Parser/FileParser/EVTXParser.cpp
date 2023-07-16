@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Data/ByteBuffer.h"
 #include "Data/ByteTool.h"
 #include "IO/StringLogFile.h"
 #include "Parser/FileParser/EVTXParser.h"
@@ -47,12 +48,12 @@ IO::ParsedObject *Parser::FileParser::EVTXParser::ParseFileHdr(IO::StreamData *f
 	Data::Timestamp ts;
 	Text::StringBuilderUTF8 sb;
 	Text::StringBuilderUTF8 sbDetail;
-	UInt8 *buff = MemAlloc(UInt8, 65536);
+	Data::ByteBuffer buff(65536);
 	NEW_CLASS(logFile, IO::StringLogFile(fd->GetFullName()));
 
 	while (fd->GetRealData(ofst, 65536, buff) == 65536)
 	{
-		if (*(UInt64*)buff == *(UInt64*)"ElfChnk")
+		if (*(UInt64*)&buff[0] == *(UInt64*)"ElfChnk")
 		{
 //			UInt64 firstEvtRecNum = ReadUInt64(&buff[8]);
 //			UInt64 lastEvtRecNum = ReadUInt64(&buff[16]);
@@ -74,7 +75,7 @@ IO::ParsedObject *Parser::FileParser::EVTXParser::ParseFileHdr(IO::StreamData *f
 				sb.AppendC(UTF8STRC("RecordId = "));
 				sb.AppendU64(evtRecId);
 				sbDetail.ClearStr();
-				ParseBinXML(buff, dataOfst + 24, dataOfst + recSize - 28, &sbDetail, 0, 0);
+				ParseBinXML(buff.Ptr(), dataOfst + 24, dataOfst + recSize - 28, &sbDetail, 0, 0);
 				logFile->AddLog(ts, sb.ToCString(), sbDetail.ToCString());
 
 				dataOfst += recSize;
@@ -82,8 +83,6 @@ IO::ParsedObject *Parser::FileParser::EVTXParser::ParseFileHdr(IO::StreamData *f
 		}
 		ofst += 65536;
 	}
-
-	MemFree(buff);
 	return logFile;
 }
 

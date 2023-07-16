@@ -47,7 +47,7 @@ UInt8 *DDCReader_GetMonitorEDID(void *hMon, UOSInt *edidSizeRet)
 						IO::FileStream fs(CSTRP(sbuff, sptr3), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 						if (!fs.IsError())
 						{
-							edidSize = fs.Read(edid, 1024);
+							edidSize = fs.Read(Data::ByteArray(edid, 1024));
 							if (edidSize > 0)
 							{
 								ret = MemAlloc(UInt8, edidSize);
@@ -85,7 +85,7 @@ UInt8 *DDCReader_GetMonitorEDID(void *hMon, UOSInt *edidSizeRet)
 									IO::FileStream fs(CSTRP(sbuff, sptr4), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 									if (!fs.IsError())
 									{
-										edidSize = fs.Read(edid, 1024);
+										edidSize = fs.Read(Data::ByteArray(edid, 1024));
 										if (edidSize > 0)
 										{
 											ret = MemAlloc(UInt8, edidSize);
@@ -122,7 +122,7 @@ UInt8 *DDCReader_GetMonitorEDID(void *hMon, UOSInt *edidSizeRet)
 		IO::FileStream fs(CSTR("/sys/class/hdmi/hdmi/attr/edid"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 		if (!fs.IsError())
 		{
-			edidSize = fs.Read(edid, 1024);
+			edidSize = fs.Read(Data::ByteArray(edid, 1024));
 			if (edidSize > 0)
 			{
 				*edidSizeRet = edidSize;
@@ -140,7 +140,7 @@ UInt8 *DDCReader_GetMonitorEDID(void *hMon, UOSInt *edidSizeRet)
 		IO::FileStream fs(CSTR("/sys/class/amhdmitx/amhdmitx0/rawedid"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 		if (!fs.IsError())
 		{
-			edidSize = fs.Read(edid, 1024);
+			edidSize = fs.Read(Data::ByteArray(edid, 1024));
 			if (edidSize > 0)
 			{
 				ret = MemAlloc(UInt8, edidSize >> 1);
@@ -237,7 +237,7 @@ UOSInt Media::DDCReader::CreateDDCReaders(Data::ArrayList<DDCReader*> *readerLis
 						IO::FileStream fs(CSTRP(sbuff, sptr3), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 						if (!fs.IsError())
 						{
-							edidSize = fs.Read(edid, 1024);
+							edidSize = fs.Read(Data::ByteArray(edid, 1024));
 							if (edidSize > 0)
 							{
 								NEW_CLASS(reader, Media::DDCReader(edid, edidSize));
@@ -271,7 +271,7 @@ UOSInt Media::DDCReader::CreateDDCReaders(Data::ArrayList<DDCReader*> *readerLis
 									IO::FileStream fs(CSTRP(sbuff, sptr4), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 									if (!fs.IsError())
 									{
-										edidSize = fs.Read(edid, 1024);
+										edidSize = fs.Read(Data::ByteArray(edid, 1024));
 										if (edidSize > 0)
 										{
 											NEW_CLASS(reader, Media::DDCReader(edid, edidSize));
@@ -300,7 +300,7 @@ UOSInt Media::DDCReader::CreateDDCReaders(Data::ArrayList<DDCReader*> *readerLis
 		IO::FileStream fs(CSTR("/sys/class/hdmi/hdmi/attr/edid"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 		if (!fs.IsError())
 		{
-			edidSize = fs.Read(edid, 1024);
+			edidSize = fs.Read(Data::ByteArray(edid, 1024));
 			if (edidSize > 0)
 			{
 				NEW_CLASS(reader, Media::DDCReader(edid, edidSize));
@@ -316,7 +316,7 @@ UOSInt Media::DDCReader::CreateDDCReaders(Data::ArrayList<DDCReader*> *readerLis
 		IO::FileStream fs(CSTR("/sys/class/amhdmitx/amhdmitx0/rawedid"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 		if (!fs.IsError())
 		{
-			edidSize = fs.Read(edid, 1024);
+			edidSize = fs.Read(Data::ByteArray(edid, 1024));
 			if (edidSize > 0)
 			{
 				UInt8 *edidData = MemAlloc(UInt8, edidSize >> 1);

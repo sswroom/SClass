@@ -2,12 +2,12 @@
 #include "Crypto/Cert/X509PKCS12.h"
 #include "Net/ASN1Util.h"
 
-Crypto::Cert::X509PKCS12::X509PKCS12(NotNullPtr<Text::String> sourceName, const UInt8 *buff, UOSInt buffSize) : Crypto::Cert::X509File(sourceName, buff, buffSize)
+Crypto::Cert::X509PKCS12::X509PKCS12(NotNullPtr<Text::String> sourceName, Data::ByteArrayR buff) : Crypto::Cert::X509File(sourceName, buff)
 {
 
 }
 
-Crypto::Cert::X509PKCS12::X509PKCS12(Text::CString sourceName, const UInt8 *buff, UOSInt buffSize) : Crypto::Cert::X509File(sourceName, buff, buffSize)
+Crypto::Cert::X509PKCS12::X509PKCS12(Text::CString sourceName, Data::ByteArrayR buff) : Crypto::Cert::X509File(sourceName, buff)
 {
 
 }
@@ -26,7 +26,7 @@ void Crypto::Cert::X509PKCS12::ToShortName(Text::StringBuilderUTF8 *sb) const
 {
 /*	UOSInt len = 0;
 	Net::ASN1Util::ItemType itemType = Net::ASN1Util::IT_UNKNOWN;
-	const UInt8 *tmpBuff = Net::ASN1Util::PDUGetItem(this->buff, this->buff + this->buffSize, "1.1.2", &len, &itemType);
+	const UInt8 *tmpBuff = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff + this->buffSize, "1.1.2", &len, &itemType);
 	if (tmpBuff != 0 && itemType == Net::ASN1Util::IT_SEQUENCE)
 	{
 		NameGetCN(tmpBuff, tmpBuff + len, sb);
@@ -56,14 +56,14 @@ Crypto::Cert::X509File::ValidStatus Crypto::Cert::X509PKCS12::IsValid(Net::SSLEn
 Net::ASN1Data *Crypto::Cert::X509PKCS12::Clone() const
 {
 	Crypto::Cert::X509PKCS12 *asn1;
-	NEW_CLASS(asn1, Crypto::Cert::X509PKCS12(this->GetSourceNameObj(), this->buff, this->buffSize));
+	NEW_CLASS(asn1, Crypto::Cert::X509PKCS12(this->GetSourceNameObj(), this->buff));
 	return asn1;
 }
 
 void Crypto::Cert::X509PKCS12::ToString(Text::StringBuilderUTF8 *sb) const
 {
-	if (IsPFX(this->buff, this->buff + this->buffSize, "1"))
+	if (IsPFX(this->buff.Ptr(), this->buff.PtrEnd(), "1"))
 	{
-		AppendPFX(this->buff, this->buff + this->buffSize, "1", sb, CSTR_NULL);
+		AppendPFX(this->buff.Ptr(), this->buff.PtrEnd(), "1", sb, CSTR_NULL);
 	}
 }

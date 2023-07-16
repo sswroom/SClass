@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Data/ByteBuffer.h"
 #include "Data/ByteTool.h"
 #include "IO/PackageFile.h"
 #include "Parser/FileParser/NOAParser.h"
@@ -37,7 +38,6 @@ IO::ParsedObject *Parser::FileParser::NOAParser::ParseFileHdr(IO::StreamData *fd
 	UInt8 tagBuff[16];
 	UInt32 tagSize;
 	UInt32 dataOfst;
-	UInt8 *recBuff;
 
 	UInt32 recCnt;
 	UInt32 fnameSize;
@@ -62,15 +62,14 @@ IO::ParsedObject *Parser::FileParser::NOAParser::ParseFileHdr(IO::StreamData *fd
 		return 0;
 	}
 	tagSize = ReadUInt32(&hdr[72]);
-	fd->GetRealData(64 + tagSize + 16, 16, tagBuff);
+	fd->GetRealData(64 + tagSize + 16, 16, BYTEARR(tagBuff));
 	if (ReadInt32(&tagBuff[0]) != 0x656c6966 || ReadInt32(&tagBuff[4]) != 0x61746164)
 	{
 		return 0;
 	}
-	recBuff = MemAlloc(UInt8, tagSize);
+	Data::ByteBuffer recBuff(tagSize);
 	if (fd->GetRealData(64 + 16, tagSize, recBuff) != tagSize)
 	{
-		MemFree(recBuff);
 		return 0;
 	}
 
@@ -93,7 +92,5 @@ IO::ParsedObject *Parser::FileParser::NOAParser::ParseFileHdr(IO::StreamData *fd
 		i++;
 		j += 40 + fnameSize;
 	}
-
-	MemFree(recBuff);
 	return pf;
 }

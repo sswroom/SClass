@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Data/ByteBuffer.h"
 #include "Data/ByteTool.h"
 #include "Media/ImageCopyC.h"
 #include "Media/ImageList.h"
@@ -45,7 +46,6 @@ IO::ParsedObject *Parser::FileParser::ICOParser::ParseFileHdr(IO::StreamData *fd
 	UInt32 imgHeight;
 	UInt32 nextOfst;
 	UInt32 thisSize;
-	UInt8 *imgBuff;
 	UInt16 bitCnt;
 	UInt8 *pal;
 	UInt8 *dbits;
@@ -70,7 +70,7 @@ IO::ParsedObject *Parser::FileParser::ICOParser::ParseFileHdr(IO::StreamData *fd
 	i = 0;
 	while (i < icoCnt)
 	{
-		fd->GetRealData(6 + (i << 4), 16, icoImageHdr);
+		fd->GetRealData(6 + (i << 4), 16, BYTEARR(icoImageHdr));
 
 		imgWidth = icoImageHdr[0];
 		imgHeight = icoImageHdr[1];
@@ -85,11 +85,10 @@ IO::ParsedObject *Parser::FileParser::ICOParser::ParseFileHdr(IO::StreamData *fd
 			return 0;
 		}
 
-		imgBuff = MemAlloc(UInt8, thisSize);
+		Data::ByteBuffer imgBuff(thisSize);
 		fd->GetRealData(nextOfst, thisSize, imgBuff);
 		if (ReadUInt32(&imgBuff[0]) != 40 || ReadUInt32(&imgBuff[4]) != imgWidth || ReadUInt32(&imgBuff[8]) != (imgHeight << 1))
 		{
-			MemFree(imgBuff);
 			DEL_CLASS(imgList);
 			return 0;
 		}
@@ -115,7 +114,6 @@ IO::ParsedObject *Parser::FileParser::ICOParser::ParseFileHdr(IO::StreamData *fd
 
 				if (thisSize != (dataSize + dataAdd) * imgHeight * 2 + 40 + 8)
 				{
-					MemFree(imgBuff);
 					DEL_CLASS(imgList);
 					return 0;
 				}
@@ -168,7 +166,6 @@ IO::ParsedObject *Parser::FileParser::ICOParser::ParseFileHdr(IO::StreamData *fd
 
 				if (thisSize != (imgByteSize + imgByteAdd + maskByteSize + maskByteAdd) * imgHeight + 40 + 64)
 				{
-					MemFree(imgBuff);
 					DEL_CLASS(imgList);
 					return 0;
 				}
@@ -220,7 +217,6 @@ IO::ParsedObject *Parser::FileParser::ICOParser::ParseFileHdr(IO::StreamData *fd
 
 				if (thisSize != (imgWidth + imgByteAdd + maskByteSize + maskByteAdd) * imgHeight + 40 + 1024)
 				{
-					MemFree(imgBuff);
 					DEL_CLASS(imgList);
 					return 0;
 				}
@@ -272,7 +268,6 @@ IO::ParsedObject *Parser::FileParser::ICOParser::ParseFileHdr(IO::StreamData *fd
 
 				if ((OSInt)thisSize != (imgWidth * 3 + (OSInt)imgByteAdd + maskByteSize + maskByteAdd) * (OSInt)imgHeight + 40)
 				{
-					MemFree(imgBuff);
 					DEL_CLASS(imgList);
 					return 0;
 				}
@@ -339,7 +334,6 @@ IO::ParsedObject *Parser::FileParser::ICOParser::ParseFileHdr(IO::StreamData *fd
 				}
 				if (thisSize != (UInt32)((imgWidth * 4) * imgHeight + 40) && thisSize != (imgWidth * 4 + maskByteSize + maskByteAdd) * imgHeight + 40)
 				{
-					MemFree(imgBuff);
 					DEL_CLASS(imgList);
 					return 0;
 				}
@@ -351,7 +345,6 @@ IO::ParsedObject *Parser::FileParser::ICOParser::ParseFileHdr(IO::StreamData *fd
 			break;
 		default:
 			DEL_CLASS(currImg);
-			MemFree(imgBuff);
 			DEL_CLASS(imgList);
 			return 0;
 		}
@@ -361,7 +354,6 @@ IO::ParsedObject *Parser::FileParser::ICOParser::ParseFileHdr(IO::StreamData *fd
 		}
 
 		imgList->AddImage(currImg, 0);
-		MemFree(imgBuff);
 		i++;
 		nextOfst += thisSize;
 	}

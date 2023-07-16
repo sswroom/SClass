@@ -18,7 +18,7 @@ Bool IO::DataCaptureStream::IsDown() const
 	return this->stm->IsDown();
 }
 
-UOSInt IO::DataCaptureStream::Read(UInt8 *buff, UOSInt size)
+UOSInt IO::DataCaptureStream::Read(const Data::ByteArray &buff)
 {
 	UOSInt ret = this->stm->Read(buff, size);
 	if (ret > 0)

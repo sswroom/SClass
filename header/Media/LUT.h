@@ -1,5 +1,6 @@
 #ifndef _SM_MEDIA_LUT
 #define _SM_MEDIA_LUT
+#include "Data/ByteBuffer.h"
 #include "IO/ParsedObject.h"
 
 namespace Media
@@ -18,7 +19,7 @@ namespace Media
 		UOSInt inputCh;
 		UOSInt inputLev;
 		UOSInt outputCh;
-		UInt8 *luTable;
+		Data::ByteBuffer luTable;
 		DataFormat fmt;
 
 		void Init(UOSInt inputCh, UOSInt inputLev, UOSInt outputCh, DataFormat fmt);
@@ -39,6 +40,7 @@ namespace Media
 
 		UInt8 *GetTablePtr();
 		const UInt8 *GetTablePtrRead() const;
+		Data::ByteArray GetTableArray() const;
 		void GetValueUInt8(UInt32 *inputVals, UInt8 *outVals) const;
 		void GetValueUInt16(UInt32 *inputVals, UInt16 *outVals) const;
 		void GetValueSingle(UInt32 *inputVals, Single *outVals) const;

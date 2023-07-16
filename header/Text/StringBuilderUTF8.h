@@ -1,6 +1,7 @@
 #ifndef _SM_TEXT_STRINGBUILDERUTF8
 #define _SM_TEXT_STRINGBUILDERUTF8
 #include "MyMemory.h"
+#include "Data/ByteArray.h"
 #include "Data/DateTime.h"
 #include "Data/Timestamp.h"
 #include "Text/LineBreakType.h"
@@ -411,6 +412,11 @@ namespace Text
 				}
 			}
 			return this;
+		}
+
+		StringBuilderUTF8 *AppendHexBuff(const Data::ByteArrayR &buff, UTF8Char seperator, Text::LineBreakType lineBreak)
+		{
+			return AppendHexBuff(buff.GetPtr(), buff.GetSize(), seperator, lineBreak);
 		}
 
 		StringBuilderUTF8 *AppendHex8LC(UInt8 iVal)

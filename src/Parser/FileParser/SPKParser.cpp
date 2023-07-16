@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Data/ByteBuffer.h"
 #include "Data/ByteTool.h"
 #include "IO/PackageFile.h"
 #include "IO/Path.h"
@@ -90,7 +91,7 @@ IO::ParsedObject *Parser::FileParser::SPKParser::ParseFileHdr(IO::StreamData *fd
 		customSize = ReadUInt32(&hdr[i + 4]);
 		if (customType == 1 && fd->IsFullFile() && this->sockf && this->parsers)
 		{
-			UInt8 *customBuff = MemAlloc(UInt8, customSize);
+			Data::ByteBuffer customBuff(customSize);
 			IO::SPackageFile *spkg;
 			Map::OSM::OSMTileMap *tileMap;
 			fd->GetRealData(i + 8, customSize, customBuff);
@@ -107,7 +108,6 @@ IO::ParsedObject *Parser::FileParser::SPKParser::ParseFileHdr(IO::StreamData *fd
 				tileMap->AddAlternateURL({srcPath, customBuff[j]});
 				i++;
 			}
-			MemFree(customBuff);
 			Map::TileMapLayer *layer;
 			NEW_CLASS(layer, Map::TileMapLayer(tileMap, this->parsers));
 			return layer;
@@ -123,14 +123,13 @@ IO::ParsedObject *Parser::FileParser::SPKParser::ParseFileHdr(IO::StreamData *fd
 	UOSInt l;
 	UTF8Char *sptr;
 	UTF8Char *sptrEnd;
-	UInt8 *dirBuff;
 	if (flags & 2)
 	{
 		UInt64 dirSize;
 		dirSize = ReadUInt64(&hdr[16]);
 		while (dirOfst != 0 && dirSize >= 16 && dirOfst + dirSize <= fileSize)
 		{
-			dirBuff = MemAlloc(UInt8, (UOSInt)dirSize);
+			Data::ByteBuffer dirBuff((UOSInt)dirSize);
 			fd->GetRealData(dirOfst, (UOSInt)dirSize, dirBuff);
 			i = 16;
 			while (i < dirSize)
@@ -187,8 +186,6 @@ IO::ParsedObject *Parser::FileParser::SPKParser::ParseFileHdr(IO::StreamData *fd
 			}
 			dirOfst = ReadUInt64(&dirBuff[0]);
 			dirSize = ReadUInt64(&dirBuff[8]);
-			MemFree(dirBuff);
-			
 		}
 	}
 	else
@@ -196,7 +193,7 @@ IO::ParsedObject *Parser::FileParser::SPKParser::ParseFileHdr(IO::StreamData *fd
 		if (dirOfst < fileSize)
 		{
 			j = (UOSInt)(fileSize - dirOfst);
-			dirBuff = MemAlloc(UInt8, j);
+			Data::ByteBuffer dirBuff(j);
 			fd->GetRealData(dirOfst, j, dirBuff);
 			i = 0;
 			while (i < j)
@@ -251,8 +248,6 @@ IO::ParsedObject *Parser::FileParser::SPKParser::ParseFileHdr(IO::StreamData *fd
 
 				i += 26 + fnameLen;
 			}
-
-			MemFree(dirBuff);
 		}
 	}
 	return pf;

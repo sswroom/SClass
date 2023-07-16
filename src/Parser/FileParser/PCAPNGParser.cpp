@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Data/ByteBuffer.h"
 #include "Data/ByteTool.h"
 #include "IO/BTScanLog.h"
 #include "IO/FileStream.h"
@@ -36,7 +37,6 @@ IO::ParserType Parser::FileParser::PCAPNGParser::GetParserType()
 
 IO::ParsedObject *Parser::FileParser::PCAPNGParser::ParseFileHdr(IO::StreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
-	UInt8 *packetBuff;
 	UInt32 maxSize = 65536;
 	UInt64 currOfst;
 	UInt64 fileSize = fd->GetDataSize();
@@ -63,7 +63,7 @@ IO::ParsedObject *Parser::FileParser::PCAPNGParser::ParseFileHdr(IO::StreamData 
 
 		NEW_CLASS(analyzer, Net::EthernetAnalyzer(0, Net::EthernetAnalyzer::AT_ALL, fd->GetFullFileName()));
 		NEW_CLASS(scanLog, IO::BTScanLog(fd->GetFullFileName()));
-		packetBuff = MemAlloc(UInt8, maxSize);
+		Data::ByteBuffer packetBuff(maxSize);
 		currOfst = 0;
 		while (currOfst + 12 < fileSize)
 		{
@@ -78,7 +78,7 @@ IO::ParsedObject *Parser::FileParser::PCAPNGParser::ParseFileHdr(IO::StreamData 
 			}
 			if (packetSize > 12)
 			{
-				fd->GetRealData(currOfst + 12, packetSize - 12, &packetBuff[12]);
+				fd->GetRealData(currOfst + 12, packetSize - 12, packetBuff.SubArray(12));
 			}
 			packetType = ReadUInt32(&packetBuff[0]);
 			if (packetType == 0x0a0d0d0a)
@@ -149,7 +149,6 @@ IO::ParsedObject *Parser::FileParser::PCAPNGParser::ParseFileHdr(IO::StreamData 
 
 			currOfst += packetSize;
 		}
-		MemFree(packetBuff);
 		if (isBTLink)
 		{
 			DEL_CLASS(analyzer);
@@ -168,7 +167,7 @@ IO::ParsedObject *Parser::FileParser::PCAPNGParser::ParseFileHdr(IO::StreamData 
 
 		NEW_CLASS(analyzer, Net::EthernetAnalyzer(0, Net::EthernetAnalyzer::AT_ALL, fd->GetFullFileName()));
 		NEW_CLASS(scanLog, IO::BTScanLog(fd->GetFullFileName()));
-		packetBuff = MemAlloc(UInt8, maxSize);
+		Data::ByteBuffer packetBuff(maxSize);
 		currOfst = 0;
 		while (currOfst + 12 < fileSize)
 		{
@@ -183,7 +182,7 @@ IO::ParsedObject *Parser::FileParser::PCAPNGParser::ParseFileHdr(IO::StreamData 
 			}
 			if (packetSize > 12)
 			{
-				fd->GetRealData(currOfst + 12, packetSize - 12, &packetBuff[12]);
+				fd->GetRealData(currOfst + 12, packetSize - 12, packetBuff.SubArray(12));
 			}
 			packetType = ReadMUInt32(&packetBuff[0]);
 			if (packetType == 0x0a0d0d0a)
@@ -253,7 +252,6 @@ IO::ParsedObject *Parser::FileParser::PCAPNGParser::ParseFileHdr(IO::StreamData 
 
 			currOfst += packetSize;
 		}
-		MemFree(packetBuff);
 		if (isBTLink)
 		{
 			DEL_CLASS(analyzer);

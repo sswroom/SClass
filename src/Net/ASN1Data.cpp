@@ -3,23 +3,18 @@
 #include "Net/ASN1Data.h"
 #include "Net/ASN1Util.h"
 
-Net::ASN1Data::ASN1Data(NotNullPtr<Text::String> sourceName, const UInt8 *buff, UOSInt buffSize) : IO::ParsedObject(sourceName)
+Net::ASN1Data::ASN1Data(NotNullPtr<Text::String> sourceName, Data::ByteArrayR buff) : IO::ParsedObject(sourceName), buff(buff.GetSize())
 {
-	this->buff = MemAlloc(UInt8, buffSize);
-	this->buffSize = buffSize;
-	MemCopyNO(this->buff, buff, buffSize);
+	this->buff.CopyFrom(buff);
 }
 
-Net::ASN1Data::ASN1Data(Text::CString sourceName, const UInt8 *buff, UOSInt buffSize) : IO::ParsedObject(sourceName)
+Net::ASN1Data::ASN1Data(Text::CString sourceName, Data::ByteArrayR buff) : IO::ParsedObject(sourceName)
 {
-	this->buff = MemAlloc(UInt8, buffSize);
-	this->buffSize = buffSize;
-	MemCopyNO(this->buff, buff, buffSize);
+	this->buff.CopyFrom(buff);
 }
 
 Net::ASN1Data::~ASN1Data()
 {
-	MemFree(this->buff);
 }
 
 IO::ParserType Net::ASN1Data::GetParserType() const
@@ -29,17 +24,22 @@ IO::ParserType Net::ASN1Data::GetParserType() const
 
 Bool Net::ASN1Data::ToASN1String(Text::StringBuilderUTF8 *sb) const
 {
-	return Net::ASN1Util::PDUToString(this->buff, this->buff + this->buffSize, sb, 0);
+	return Net::ASN1Util::PDUToString(this->buff.GetPtr(), this->buff.PtrEnd(), sb, 0);
 }
 
 const UInt8 *Net::ASN1Data::GetASN1Buff() const
 {
-	return this->buff;
+	return this->buff.GetPtr();
 }
 
 UOSInt Net::ASN1Data::GetASN1BuffSize() const
 {
-	return this->buffSize;
+	return this->buff.GetSize();
+}
+
+Data::ByteArrayR Net::ASN1Data::GetASN1Array() const
+{
+	return this->buff;
 }
 
 void Net::ASN1Data::AppendInteger(Text::StringBuilderUTF8 *sb, const UInt8 *pdu, UOSInt len)

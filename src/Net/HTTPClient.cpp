@@ -262,7 +262,7 @@ Bool Net::HTTPClient::ReadAllContent(NotNullPtr<IO::Stream> outStm, UOSInt buffS
 	if (contLeng > 0 && contLeng <= maxSize)
 	{
 		UInt8 *readBuff = MemAlloc(UInt8, buffSize);
-		while ((readSize = this->Read(readBuff, buffSize)) > 0)
+		while ((readSize = this->Read(Data::ByteArray(readBuff, buffSize))) > 0)
 		{
 			outStm->Write(readBuff, readSize);
 			currPos += readSize;
@@ -280,7 +280,7 @@ Bool Net::HTTPClient::ReadAllContent(NotNullPtr<IO::Stream> outStm, UOSInt buffS
 		if (tranEnc.Equals(UTF8STRC("chunked")))
 		{
 			UInt8 *readBuff = MemAlloc(UInt8, buffSize);
-			while ((readSize = this->Read(readBuff, buffSize)) > 0)
+			while ((readSize = this->Read(Data::ByteArray(readBuff, buffSize))) > 0)
 			{
 				outStm->Write(readBuff, readSize);
 				currPos += readSize;
@@ -306,7 +306,7 @@ Bool Net::HTTPClient::ReadAllContent(NotNullPtr<Text::StringBuilderUTF8> sb, UOS
 	if (contLeng > 0 && contLeng <= maxSize)
 	{
 		UInt8 *readBuff = MemAlloc(UInt8, buffSize);
-		while ((readSize = this->Read(readBuff, buffSize)) > 0)
+		while ((readSize = this->Read(Data::ByteArray(readBuff, buffSize))) > 0)
 		{
 			sb->AppendC(readBuff, readSize);
 			currPos += readSize;
@@ -324,7 +324,7 @@ Bool Net::HTTPClient::ReadAllContent(NotNullPtr<Text::StringBuilderUTF8> sb, UOS
 		if (tranEnc.Equals(UTF8STRC("chunked")))
 		{
 			UInt8 *readBuff = MemAlloc(UInt8, buffSize);
-			while ((readSize = this->Read(readBuff, buffSize)) > 0)
+			while ((readSize = this->Read(Data::ByteArray(readBuff, buffSize))) > 0)
 			{
 				sb->AppendC(readBuff, readSize);
 				currPos += readSize;
@@ -443,7 +443,7 @@ Bool Net::HTTPClient::LoadContent(Net::SocketFactory *sockf, Net::SSLEngine *ssl
 	}
 	UInt8 buff[2048];
 	UOSInt readSize;
-	while ((readSize = cli->Read(buff, sizeof(buff))) > 0)
+	while ((readSize = cli->Read(Data::ByteArray(buff, sizeof(buff)))) > 0)
 	{
 		if (readSize > maxSize)
 		{
@@ -467,7 +467,7 @@ Bool Net::HTTPClient::LoadContent(Net::SocketFactory *sockf, Net::SSLEngine *ssl
 	}
 	UInt8 buff[2048];
 	UOSInt readSize;
-	while ((readSize = cli->Read(buff, sizeof(buff))) > 0)
+	while ((readSize = cli->Read(Data::ByteArray(buff, sizeof(buff)))) > 0)
 	{
 		if (readSize > maxSize)
 		{

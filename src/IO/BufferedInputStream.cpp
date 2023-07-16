@@ -2,19 +2,16 @@
 #include "MyMemory.h"
 #include "IO/BufferedInputStream.h"
 
-IO::BufferedInputStream::BufferedInputStream(IO::SeekableStream *stm, UOSInt buffSize) : IO::SeekableStream(stm->GetSourceNameObj())
+IO::BufferedInputStream::BufferedInputStream(IO::SeekableStream *stm, UOSInt buffSize) : IO::SeekableStream(stm->GetSourceNameObj()), buff(buffSize)
 {
 	this->stm = stm;
-	this->buffSize = buffSize;
 	this->buffOfst = 0;
-	this->buff = MemAlloc(UInt8, this->buffSize);
 	this->stmPos = this->stm->GetPosition();
 	this->stmBuffSize = 0;
 }
 
 IO::BufferedInputStream::~BufferedInputStream()
 {
-	MemFree(buff);
 }
 
 Bool IO::BufferedInputStream::IsDown() const
@@ -22,33 +19,32 @@ Bool IO::BufferedInputStream::IsDown() const
 	return this->stm->IsDown();
 }
 
-UOSInt IO::BufferedInputStream::Read(UInt8 *buff, UOSInt size)
+UOSInt IO::BufferedInputStream::Read(Data::ByteArray buff)
 {
 	UOSInt copySize = 0;
-	while (size > 0)
+	while (buff.GetSize() > 0)
 	{
 		if (this->buffOfst < this->stmBuffSize)
 		{
-			if (size <= this->stmBuffSize - this->buffOfst)
+			if (buff.GetSize() <= this->stmBuffSize - this->buffOfst)
 			{
-				MemCopyNO(buff, &this->buff[this->buffOfst], size);
-				this->buffOfst += size;
-				copySize += size;
+				buff.CopyFrom(0, this->buff.SubArray(this->buffOfst, buff.GetSize()));
+				this->buffOfst += buff.GetSize();
+				copySize += buff.GetSize();
 				return copySize;
 			}
 			else
 			{
 				copySize = this->stmBuffSize - this->buffOfst;
-				MemCopyNO(buff, &this->buff[buffOfst], copySize);
-				size -= copySize;
-				buff += copySize;
+				buff.CopyFrom(0, this->buff.SubArray(buffOfst, copySize));
+				buff = buff.SubArray(copySize);
 				this->stmPos += this->stmBuffSize;
 				this->stmBuffSize = 0;
 			}
 		}
 
 
-		this->stmBuffSize = this->stm->Read(this->buff, this->buffSize);
+		this->stmBuffSize = this->stm->Read(this->buff);
 		this->buffOfst = 0;
 		if (this->stmBuffSize <= 0)
 			return copySize;
@@ -61,9 +57,9 @@ UOSInt IO::BufferedInputStream::Write(const UInt8 *buff, UOSInt size)
 	return 0;
 }
 
-void *IO::BufferedInputStream::BeginRead(UInt8 *buff, UOSInt size, Sync::Event *evt)
+void *IO::BufferedInputStream::BeginRead(Data::ByteArray buff, Sync::Event *evt)
 {
-	UOSInt sz = Read(buff, size);
+	UOSInt sz = Read(buff);
 	evt->Set();
 	return (void*)sz;
 }

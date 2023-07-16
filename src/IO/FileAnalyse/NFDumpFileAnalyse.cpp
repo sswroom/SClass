@@ -1,4 +1,5 @@
 #include "Stdafx.h"
+#include "Data/ByteBuffer.h"
 #include "Data/ByteTool.h"
 #include "Data/Compress/LZODecompressor.h"
 #include "IO/FileStream.h"
@@ -43,7 +44,7 @@ UInt32 __stdcall IO::FileAnalyse::NFDumpFileAnalyse::ParseThread(void *userObj)
 		}
 		else
 		{
-			me->fd->GetRealData(ofst, 12, buff);
+			me->fd->GetRealData(ofst, 12, BYTEARR(buff));
 			sz = ReadUInt32(&buff[4]);
 			if (ofst + sz + 12 > endOfst)
 			{
@@ -93,7 +94,7 @@ IO::FileAnalyse::NFDumpFileAnalyse::NFDumpFileAnalyse(IO::StreamData *fd)
 	this->threadStarted = false;
 	this->hasLZODecomp = true;
 
-	fd->GetRealData(0, 256, buff);
+	fd->GetRealData(0, 256, BYTEARR(buff));
 	if (buff[0] != 0x0c || buff[1] != 0xa5 || buff[2] != 1 || buff[3] != 0)
 	{
 		return;
@@ -166,7 +167,6 @@ Bool IO::FileAnalyse::NFDumpFileAnalyse::GetFrameDetail(UOSInt index, Text::Stri
 	UTF8Char *sptr;
 	UInt8 *extBuff;
 	IO::FileAnalyse::NFDumpFileAnalyse::PackInfo *pack;
-	UInt8 *packBuff;
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
@@ -198,7 +198,7 @@ Bool IO::FileAnalyse::NFDumpFileAnalyse::GetFrameDetail(UOSInt index, Text::Stri
 
 	if (pack->packType == 0)
 	{
-		packBuff = MemAlloc(UInt8, pack->packSize);
+		Data::ByteBuffer packBuff(pack->packSize);
 		this->fd->GetRealData(pack->fileOfst, pack->packSize, packBuff);
 
 		sb->AppendC(UTF8STRC("\r\nVersion = "));
@@ -221,12 +221,10 @@ Bool IO::FileAnalyse::NFDumpFileAnalyse::GetFrameDetail(UOSInt index, Text::Stri
 		sb->AppendU32(ReadUInt32(&packBuff[8]));
 		sb->AppendC(UTF8STRC("\r\nIdentifier = "));
 		sb->AppendSlow((UTF8Char*)&packBuff[12]);
-
-		MemFree(packBuff);
 	}
 	else if (pack->packType == 1)
 	{
-		packBuff = MemAlloc(UInt8, pack->packSize);
+		Data::ByteBuffer packBuff(pack->packSize);
 		this->fd->GetRealData(pack->fileOfst, pack->packSize, packBuff);
 
 		sb->AppendC(UTF8STRC("\r\nNumber of flows = "));
@@ -269,12 +267,10 @@ Bool IO::FileAnalyse::NFDumpFileAnalyse::GetFrameDetail(UOSInt index, Text::Stri
 		sb->AppendU16(ReadUInt16(&packBuff[130]));
 		sb->AppendC(UTF8STRC("\r\nSequence Failure = "));
 		sb->AppendU32(ReadUInt32(&packBuff[132]));
-
-		MemFree(packBuff);
 	}
 	else if (pack->packType == 2)
 	{
-		packBuff = MemAlloc(UInt8, pack->packSize);
+		Data::ByteBuffer packBuff(pack->packSize);
 		this->fd->GetRealData(pack->fileOfst, pack->packSize, packBuff);
 
 		sb->AppendC(UTF8STRC("\r\nNumber of records = "));
@@ -297,7 +293,6 @@ Bool IO::FileAnalyse::NFDumpFileAnalyse::GetFrameDetail(UOSInt index, Text::Stri
 		{
 			sb->AppendC(UTF8STRC(" block compressed"));
 		}
-		MemFree(packBuff);
 	}
 	else if (pack->packType == 3)
 	{
@@ -305,17 +300,17 @@ Bool IO::FileAnalyse::NFDumpFileAnalyse::GetFrameDetail(UOSInt index, Text::Stri
 		UOSInt dispSize = size;
 		if (dispSize > 256)
 			dispSize = 256;
-		packBuff = MemAlloc(UInt8, size);
+		Data::ByteBuffer packBuff(size);
 		this->fd->GetRealData(pack->fileOfst, size, packBuff);
 
 		sb->AppendC(UTF8STRC("\r\n\r\n"));
-		sb->AppendHexBuff(packBuff, dispSize, ' ', Text::LineBreakType::CRLF);
+		sb->AppendHexBuff(packBuff.WithSize(dispSize), ' ', Text::LineBreakType::CRLF);
 		if (this->hasLZODecomp)
 		{
 			Data::DateTime dt;
 			UOSInt decBuffSize = 1048576 * 5;
 			UInt8 *decBuff = MemAlloc(UInt8, decBuffSize);
-			decBuffSize = this->LZODecompBlock(packBuff, size, decBuff, decBuffSize);
+			decBuffSize = this->LZODecompBlock(packBuff.Ptr(), size, decBuff, decBuffSize);
 			if (decBuffSize > 0)
 			{
 				UInt32 recType;
@@ -730,7 +725,6 @@ Bool IO::FileAnalyse::NFDumpFileAnalyse::GetFrameDetail(UOSInt index, Text::Stri
 			}
 			MemFree(decBuff);
 		}
-		MemFree(packBuff);
 	}
 	return true;
 }
@@ -765,7 +759,6 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::NFDumpFileAnalyse::GetFrameDetail
 {
 	IO::FileAnalyse::FrameDetail *frame;
 	IO::FileAnalyse::NFDumpFileAnalyse::PackInfo *pack;
-	UInt8 *packBuff;
 	pack = this->packs.GetItem(index);
 	if (pack == 0)
 		return 0;
@@ -790,7 +783,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::NFDumpFileAnalyse::GetFrameDetail
 
 	if (pack->packType == 0)
 	{
-		packBuff = MemAlloc(UInt8, pack->packSize);
+		Data::ByteBuffer packBuff(pack->packSize);
 		this->fd->GetRealData(pack->fileOfst, pack->packSize, packBuff);
 		frame->AddUInt(2, 2, CSTR("Version"), ReadUInt16(&packBuff[2]));
 		frame->AddHex32(4, CSTR("Flags"), ReadUInt32(&packBuff[4]));
@@ -809,11 +802,10 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::NFDumpFileAnalyse::GetFrameDetail
 		frame->AddUInt(8, 4, CSTR("Number of Blocks"), ReadUInt32(&packBuff[8]));
 		UOSInt strLen = Text::StrCharCnt(&packBuff[12]);
 		frame->AddStrS(12, strLen + 1, CSTR("Identifier"), &packBuff[12]);
-		MemFree(packBuff);
 	}
 	else if (pack->packType == 1)
 	{
-		packBuff = MemAlloc(UInt8, pack->packSize);
+		Data::ByteBuffer packBuff(pack->packSize);
 		this->fd->GetRealData(pack->fileOfst, pack->packSize, packBuff);
 		frame->AddUInt64(0, CSTR("Number of flows"), ReadUInt64(&packBuff[0]));
 		frame->AddUInt64(8, CSTR("Number of bytes"), ReadUInt64(&packBuff[8]));
@@ -835,12 +827,10 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::NFDumpFileAnalyse::GetFrameDetail
 		frame->AddUInt(128, 2, CSTR("Number of flows"), ReadUInt16(&packBuff[128]));
 		frame->AddUInt(130, 2, CSTR("Number of flows"), ReadUInt16(&packBuff[130]));
 		frame->AddUInt(132, 4, CSTR("Number of flows"), ReadUInt32(&packBuff[132]));
-
-		MemFree(packBuff);
 	}
 	else if (pack->packType == 2)
 	{
-		packBuff = MemAlloc(UInt8, pack->packSize);
+		Data::ByteBuffer packBuff(pack->packSize);
 		this->fd->GetRealData(pack->fileOfst, pack->packSize, packBuff);
 		frame->AddUInt(0, 4, CSTR("Number of records"), ReadUInt32(&packBuff[0]));
 		frame->AddUInt(4, 4, CSTR("Block size"), ReadUInt32(&packBuff[4]));
@@ -858,25 +848,24 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::NFDumpFileAnalyse::GetFrameDetail
 		{
 			frame->AddField(10, 2, CSTR("Flags"), CSTR("block compressed"));
 		}
-		MemFree(packBuff);
 	}
 	else if (pack->packType == 3)
 	{
 		UOSInt size = pack->packSize;
 		UOSInt dispSize = size;
-		packBuff = MemAlloc(UInt8, size);
+		Data::ByteBuffer packBuff(size);
 		this->fd->GetRealData(pack->fileOfst, size, packBuff);
 
 		if (dispSize > 256)
 		{
 			Text::StringBuilderUTF8 sb;
-			sb.AppendHexBuff(packBuff, 256, ' ', Text::LineBreakType::CRLF);
+			sb.AppendHexBuff(packBuff.WithSize(256), ' ', Text::LineBreakType::CRLF);
 			frame->AddField(0, dispSize, CSTR("LZO Compressed"), sb.ToCString());
 			dispSize = 256;
 		}
 		else
 		{
-			frame->AddHexBuff(0, dispSize, CSTR("LZO Compressed"), packBuff, true);
+			frame->AddHexBuff(0, CSTR("LZO Compressed"), packBuff, true);
 		}
 
 		if (this->hasLZODecomp)
@@ -884,7 +873,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::NFDumpFileAnalyse::GetFrameDetail
 			Data::DateTime dt;
 			UOSInt decBuffSize = 1048576 * 5;
 			UInt8 *decBuff = MemAlloc(UInt8, decBuffSize);
-			decBuffSize = this->LZODecompBlock(packBuff, size, decBuff, decBuffSize);
+			decBuffSize = this->LZODecompBlock(packBuff.Ptr(), size, decBuff, decBuffSize);
 			if (decBuffSize > 0)
 			{
 /*				UInt8 *extBuff;
@@ -1304,7 +1293,6 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::NFDumpFileAnalyse::GetFrameDetail
 			}
 			MemFree(decBuff);
 		}
-		MemFree(packBuff);
 	}
 	return frame;
 }

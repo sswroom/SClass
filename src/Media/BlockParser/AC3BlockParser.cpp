@@ -18,7 +18,7 @@ Media::AudioBlockSource *Media::BlockParser::AC3BlockParser::ParseStreamData(IO:
 	UInt64 leng = stmData->GetDataSize();
 	UInt8 buff[2048];
 	UInt64 currOfst = 0;
-	stmData->GetRealData(0, 2048, buff);
+	stmData->GetRealData(0, 2048, BYTEARR(buff));
 	currOfst = 0;
 	while (currOfst < 1920)
 	{
@@ -141,7 +141,7 @@ Media::AudioBlockSource *Media::BlockParser::AC3BlockParser::ParseStreamData(IO:
 		currOfst += frameSize;
 		if (currOfst >= leng)
 			break;
-		stmData->GetRealData(currOfst, 7, buff);
+		stmData->GetRealData(currOfst, 7, BYTEARR(buff));
 	}
 	return audio;
 }

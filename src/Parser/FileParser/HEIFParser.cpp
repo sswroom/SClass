@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Data/ByteBuffer.h"
 #include "Media/ICCProfile.h"
 #include "Media/ImageCopyC.h"
 #include "Media/ImageList.h"
@@ -305,19 +306,18 @@ Media::StaticImage *HEIFParser_DecodeImage(heif_image_handle *imgHdlr)
 		case heif_color_profile_type_rICC:
 		{
 			UOSInt iccSize = (UInt32)heif_image_handle_get_raw_color_profile_size(imgHdlr);
-			UInt8 *buff = MemAlloc(UInt8, iccSize);
-			struct heif_error error = heif_image_handle_get_raw_color_profile(imgHdlr, buff);
+			Data::ByteBuffer buff(iccSize);
+			struct heif_error error = heif_image_handle_get_raw_color_profile(imgHdlr, buff.Ptr());
 			if (error.code == heif_error_Ok)
 			{
-				Media::ICCProfile *icc = Media::ICCProfile::Parse(buff, iccSize);
+				Media::ICCProfile *icc = Media::ICCProfile::Parse(buff);
 				if (icc)
 				{
 					icc->SetToColorProfile(simg->info.color);
-					simg->info.color->SetRAWICC(buff);
+					simg->info.color->SetRAWICC(buff.Ptr());
 					DEL_CLASS(icc);
 				}
 			}
-			MemFree(buff);
 			break;
 		}
 		case heif_color_profile_type_not_present:
@@ -381,16 +381,15 @@ IO::ParsedObject *Parser::FileParser::HEIFParser::ParseFileHdr(IO::StreamData *f
 	UInt64 fileLen = fd->GetDataSize();
 	if (fileLen < 100 || fileLen > 104857600)
 		return 0;
-	UInt8 *fileBuff = MemAlloc(UInt8, (UOSInt)fileLen);
+	Data::ByteBuffer fileBuff((UOSInt)fileLen);
 	if (fd->GetRealData(0, (UOSInt)fileLen, fileBuff) != fileLen)
 	{
-		MemFree(fileBuff);
 		return 0;
 	}
 	Media::ImageList *imgList = 0;
 	heif_context *ctx = heif_context_alloc();
 #if LIBHEIF_HAVE_VERSION(1, 3, 0)
-	heif_error err = heif_context_read_from_memory_without_copy(ctx, fileBuff, (size_t)fileLen, 0);
+	heif_error err = heif_context_read_from_memory_without_copy(ctx, fileBuff.Ptr(), (size_t)fileLen, 0);
 #else
 	heif_error err = heif_context_read_from_memory(ctx, fileBuff, (size_t)fileLen, 0);
 #endif
@@ -433,14 +432,13 @@ IO::ParsedObject *Parser::FileParser::HEIFParser::ParseFileHdr(IO::StreamData *f
 #endif
 	}
 	heif_context_free(ctx);
-	MemFree(fileBuff);
 	return imgList;
 }
 
 Bool Parser::FileParser::HEIFParser::ParseHeaders(IO::StreamData *fd, Media::EXIFData **exif, Text::XMLDocument **xmf, Media::ICCProfile **icc, UInt32 *width, UInt32 *height)
 {
 	UInt8 hdr[12];
-	if (fd->GetRealData(0, 12, hdr) != 12)
+	if (fd->GetRealData(0, 12, BYTEARR(hdr)) != 12)
 		return false;
 	if (ReadNInt32(&hdr[4]) != *(Int32*)"ftyp" || (ReadNInt32(&hdr[8]) != *(Int32*)"mif1" && ReadNInt32(&hdr[8]) != *(Int32*)"heic"))
 		return false;
@@ -448,16 +446,15 @@ Bool Parser::FileParser::HEIFParser::ParseHeaders(IO::StreamData *fd, Media::EXI
 	UInt64 fileLen = fd->GetDataSize();
 	if (fileLen < 100 || fileLen > 104857600)
 		return 0;
-	UInt8 *fileBuff = MemAlloc(UInt8, (UOSInt)fileLen);
+	Data::ByteBuffer fileBuff((UOSInt)fileLen);
 	if (fd->GetRealData(0, (UOSInt)fileLen, fileBuff) != fileLen)
 	{
-		MemFree(fileBuff);
 		return 0;
 	}
 	Bool succ = false;
 	heif_context *ctx = heif_context_alloc();
 #if LIBHEIF_HAVE_VERSION(1, 3, 0)
-	heif_error err = heif_context_read_from_memory_without_copy(ctx, fileBuff, (size_t)fileLen, 0);
+	heif_error err = heif_context_read_from_memory_without_copy(ctx, fileBuff.Ptr(), (size_t)fileLen, 0);
 #else
 	heif_error err = heif_context_read_from_memory(ctx, fileBuff, (size_t)fileLen, 0);
 #endif
@@ -483,13 +480,12 @@ Bool Parser::FileParser::HEIFParser::ParseHeaders(IO::StreamData *fd, Media::EXI
 			case heif_color_profile_type_rICC:
 			{
 				UOSInt iccSize = (UInt32)heif_image_handle_get_raw_color_profile_size(imgHdlr);
-				UInt8 *buff = MemAlloc(UInt8, iccSize);
-				struct heif_error error = heif_image_handle_get_raw_color_profile(imgHdlr, buff);
+				Data::ByteBuffer buff(iccSize);
+				struct heif_error error = heif_image_handle_get_raw_color_profile(imgHdlr, buff.Ptr());
 				if (error.code == heif_error_Ok)
 				{
-					*icc = Media::ICCProfile::Parse(buff, iccSize);
+					*icc = Media::ICCProfile::Parse(buff);
 				}
-				MemFree(buff);
 				break;
 			}
 			case heif_color_profile_type_not_present:
@@ -524,6 +520,5 @@ Bool Parser::FileParser::HEIFParser::ParseHeaders(IO::StreamData *fd, Media::EXI
 		}
 	}
 	heif_context_free(ctx);
-	MemFree(fileBuff);
 	return succ;
 }

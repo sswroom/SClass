@@ -11,7 +11,7 @@
 #define HAS_M_FLAG 4
 #define HAS_Z_FLAG 2
 
-Map::ESRI::FileGDBTableInfo *Map::ESRI::FileGDBUtil::ParseFieldDesc(const UInt8 *fieldDesc, Math::ArcGISPRJParser *prjParser)
+Map::ESRI::FileGDBTableInfo *Map::ESRI::FileGDBUtil::ParseFieldDesc(Data::ByteArray fieldDesc, Math::ArcGISPRJParser *prjParser)
 {
 	UTF8Char sbuff[1024];
 	UTF8Char *sptr;
@@ -19,7 +19,7 @@ Map::ESRI::FileGDBTableInfo *Map::ESRI::FileGDBUtil::ParseFieldDesc(const UInt8 
 	FileGDBTableInfo *table = MemAlloc(FileGDBTableInfo, 1);
 	MemClear(table, sizeof(FileGDBTableInfo));
 	NEW_CLASS(table->fields, Data::ArrayList<FileGDBFieldInfo*>());
-	UInt32 descSize = ReadUInt32(fieldDesc);
+	UInt32 descSize = ReadUInt32(&fieldDesc[0]);
 	fieldDesc += 4;
 	table->geometryType = fieldDesc[4];
 	table->tableFlags = fieldDesc[5];
@@ -276,6 +276,54 @@ UOSInt Map::ESRI::FileGDBUtil::ReadVarUInt(const UInt8 *buff, UOSInt ofst, UInt6
 }
 
 UOSInt Map::ESRI::FileGDBUtil::ReadVarInt(const UInt8 *buff, UOSInt ofst, Int64 *val)
+{
+	Bool sign = (buff[ofst] & 0x40) != 0;
+	Int64 v = 0;
+	UOSInt i = 0;
+	Int64 currV;
+	currV = buff[ofst];
+	ofst++;
+	i = 6;
+	v = currV & 0x3f;
+	while (currV & 0x80)
+	{
+		currV = buff[ofst];
+		ofst++;
+		v = v | ((currV & 0x7F) << i);
+		i += 7;
+	}
+	if (sign)
+	{
+		*val = -v;
+	}
+	else
+	{
+		*val = v;
+	}
+	return ofst;
+}
+
+UOSInt Map::ESRI::FileGDBUtil::ReadVarUInt(Data::ByteArrayR buff, UOSInt ofst, UInt64 *val)
+{
+	UInt64 v = 0;
+	UOSInt i = 0;
+	UOSInt currV;
+	while (true)
+	{
+		currV = buff[ofst];
+		ofst++;
+		v = v | ((currV & 0x7F) << i);
+		if ((currV & 0x80) == 0)
+		{
+			break;
+		}
+		i += 7;
+	}
+	*val = v;
+	return ofst;
+}
+
+UOSInt Map::ESRI::FileGDBUtil::ReadVarInt(Data::ByteArrayR buff, UOSInt ofst, Int64 *val)
 {
 	Bool sign = (buff[ofst] & 0x40) != 0;
 	Int64 v = 0;

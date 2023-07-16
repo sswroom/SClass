@@ -61,7 +61,7 @@ IO::ParsedObject *Parser::FileParser::NFPParser::ParseFileHdr(IO::StreamData *fd
 	NEW_CLASS(pf, IO::PackageFile(fd->GetFullName()));
 
 	fileInfo = MemAlloc(NFPFileInfo, fileCnt);
-	fd->GetRealData(fileOfst, fileCnt * sizeof(NFPFileInfo), (UInt8*)fileInfo);
+	fd->GetRealData(fileOfst, fileCnt * sizeof(NFPFileInfo), Data::ByteArray((UInt8*)fileInfo, fileCnt * sizeof(NFPFileInfo)));
 	i = 0;
 	while (i < fileCnt)
 	{

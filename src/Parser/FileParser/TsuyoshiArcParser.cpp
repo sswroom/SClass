@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Data/ByteBuffer.h"
 #include "Data/ByteTool.h"
 #include "IO/PackageFile.h"
 #include "Parser/FileParser/TsuyoshiArcParser.h"
@@ -35,7 +36,6 @@ IO::ParserType Parser::FileParser::TsuyoshiArcParser::GetParserType()
 IO::ParsedObject *Parser::FileParser::TsuyoshiArcParser::ParseFileHdr(IO::StreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	UInt32 recCnt;
-	UInt8 *recBuff;
 
 	UInt8 *filePtr;
 	UInt32 recOfst;
@@ -58,10 +58,9 @@ IO::ParsedObject *Parser::FileParser::TsuyoshiArcParser::ParseFileHdr(IO::Stream
 	if (fd->GetDataSize() <= recCnt * 272)
 		return 0;
 	
-	recBuff = MemAlloc(UInt8, recCnt * 272);
+	Data::ByteBuffer recBuff(recCnt * 272);
 	if (fd->GetRealData(4, recCnt * 272, recBuff) != recCnt * 272)
 	{
-		MemFree(recBuff);
 		return 0;
 	}
 
@@ -79,7 +78,6 @@ IO::ParsedObject *Parser::FileParser::TsuyoshiArcParser::ParseFileHdr(IO::Stream
 		recOfst = ReadMUInt32(&recBuff[j + 268]);
 		if (recOfst != nextOfst)
 		{
-			MemFree(recBuff);
 			DEL_CLASS(pf);
 			return 0;
 		}
@@ -113,7 +111,5 @@ IO::ParsedObject *Parser::FileParser::TsuyoshiArcParser::ParseFileHdr(IO::Stream
 		i++;
 		j += 272;
 	}
-
-	MemFree(recBuff);
 	return pf;
 }

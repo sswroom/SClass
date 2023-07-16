@@ -1,5 +1,6 @@
 #ifndef _SM_IO_STREAMDATA
 #define _SM_IO_STREAMDATA
+#include "Data/ByteArray.h"
 #include "Text/CString.h"
 #include "Text/String.h"
 
@@ -9,7 +10,7 @@ namespace IO
 	{
 	public:
 		virtual ~StreamData(){};
-		virtual UOSInt GetRealData(UInt64 offset, UOSInt length, UInt8 *buffer) = 0;
+		virtual UOSInt GetRealData(UInt64 offset, UOSInt length, Data::ByteArray buffer) = 0;
 		virtual NotNullPtr<Text::String> GetFullName() = 0;
 		virtual Text::CString GetShortName() = 0;
 		virtual void SetFullName(Text::CString fullName) {};

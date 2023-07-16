@@ -1,5 +1,6 @@
 #ifndef _SM_NET_ASN1PDUBUILDER
 #define _SM_NET_ASN1PDUBUILDER
+#include "Data/ByteArray.h"
 #include "Data/DateTime.h"
 #include "Text/String.h"
 
@@ -49,6 +50,7 @@ namespace Net
 		const UInt8 *GetItemRAW(const Char *path, UOSInt *itemLen, UOSInt *itemOfst);
 		const UInt8 *GetBuff(UOSInt *buffSize);
 		UOSInt GetBuffSize();
+		Data::ByteArrayR GetArray();
 	};
 }
 #endif

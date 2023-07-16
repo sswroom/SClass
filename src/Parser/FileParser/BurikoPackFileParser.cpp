@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Data/ByteBuffer.h"
 #include "Data/ByteTool.h"
 #include "IO/PackageFile.h"
 #include "Parser/FileParser/BurikoPackFileParser.h"
@@ -36,7 +37,6 @@ IO::ParsedObject *Parser::FileParser::BurikoPackFileParser::ParseFileHdr(IO::Str
 {
 	UInt32 dataOfst;
 	UInt32 recCnt;
-	UInt8 *recBuff;
 	UInt32 i;
 	Int32 j;
 	UInt32 fileSize;
@@ -51,10 +51,9 @@ IO::ParsedObject *Parser::FileParser::BurikoPackFileParser::ParseFileHdr(IO::Str
 	if (recCnt == 0 || recCnt * 32 + 16 > fd->GetDataSize())
 		return 0;
 	dataOfst = recCnt * 32 + 16;
-	recBuff = MemAlloc(UInt8, recCnt * 32);
+	Data::ByteBuffer recBuff(recCnt * 32);
 	if (fd->GetRealData(16, recCnt * 32, recBuff) != recCnt * 32)
 	{
-		MemFree(recBuff);
 		return 0;
 	}
 
@@ -71,7 +70,6 @@ IO::ParsedObject *Parser::FileParser::BurikoPackFileParser::ParseFileHdr(IO::Str
 		fileSize = ReadUInt32(&recBuff[j + 20]);
 		if (fileOfst != nextOfst)
 		{
-			MemFree(recBuff);
 			DEL_CLASS(pf);
 			return 0;
 		}
@@ -82,7 +80,5 @@ IO::ParsedObject *Parser::FileParser::BurikoPackFileParser::ParseFileHdr(IO::Str
 		i++;
 		j += 32;
 	}
-
-	MemFree(recBuff);
 	return pf;
 }

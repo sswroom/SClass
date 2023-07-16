@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Data/ByteBuffer.h"
 #include "Data/ByteTool.h"
 #include "IO/PackageFile.h"
 #include "Parser/FileParser/BSAParser.h"
@@ -39,7 +40,6 @@ IO::ParsedObject *Parser::FileParser::BSAParser::ParseFileHdr(IO::StreamData *fd
 	UInt32 recOfst;
 
 	UOSInt recSize;
-	UInt8 *recBuff;
 	UInt32 i;
 	Int32 j;
 	UInt32 fileSize;
@@ -62,10 +62,9 @@ IO::ParsedObject *Parser::FileParser::BSAParser::ParseFileHdr(IO::StreamData *fd
 		return 0;
 
 	recSize = (UOSInt)(fd->GetDataSize() - recOfst);
-	recBuff = MemAlloc(UInt8, recSize);
+	Data::ByteBuffer recBuff(recSize);
 	if (fd->GetRealData(recOfst, recSize, recBuff) != recSize)
 	{
-		MemFree(recBuff);
 		return 0;
 	}
 
@@ -91,7 +90,5 @@ IO::ParsedObject *Parser::FileParser::BSAParser::ParseFileHdr(IO::StreamData *fd
 		i++;
 		j += 12;
 	}
-
-	MemFree(recBuff);
 	return pf;
 }

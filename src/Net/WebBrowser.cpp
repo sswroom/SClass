@@ -2,6 +2,7 @@
 #include "MyMemory.h"
 #include "Crypto/Hash/CRC32.h"
 #include "Crypto/Hash/CRC32R.h"
+#include "Data/ByteBuffer.h"
 #include "IO/Path.h"
 #include "IO/StmData/FileData.h"
 #include "IO/StmData/MemoryDataCopy.h"
@@ -173,15 +174,13 @@ IO::StreamData *Net::WebBrowser::GetData(Text::CString url, Bool forceReload, UT
 			UOSInt binSize;
 			UTF8Char *strTemp;
 			UTF8Char *sptr;
-			UInt8 *binTemp;
 			textSize = (UOSInt)(urlEnd - urlPtr + 7);
 			strTemp = MemAlloc(UTF8Char, textSize + 1);
 			sptr = Text::TextBinEnc::URIEncoding::URIDecode(strTemp, urlPtr + 7);
 			binSize = b64.CalcBinSize(strTemp, (UOSInt)(sptr - strTemp));
-			binTemp = MemAlloc(UInt8, binSize);
-			b64.DecodeBin(strTemp, (UOSInt)(sptr - strTemp), binTemp);
-			NEW_CLASS(fd, IO::StmData::MemoryDataCopy(binTemp, binSize));
-			MemFree(binTemp);
+			Data::ByteBuffer binTemp(binSize);
+			b64.DecodeBin(strTemp, (UOSInt)(sptr - strTemp), binTemp.Ptr());
+			NEW_CLASS(fd, IO::StmData::MemoryDataCopy(binTemp));
 			MemFree(strTemp);
 			return fd;
 		}

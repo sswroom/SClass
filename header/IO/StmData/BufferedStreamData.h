@@ -1,5 +1,6 @@
 #ifndef _SM_IO_STMDATA_BUFFEREDSTREAMDATA
 #define _SM_IO_STMDATA_BUFFEREDSTREAMDATA
+#include "Data/ByteBuffer.h"
 #include "IO/StreamData.h"
 
 namespace IO
@@ -12,14 +13,14 @@ namespace IO
 			IO::StreamData *stmData;
 			UInt64 buffOfst;
 			UOSInt buffLength;
-			UInt8 *buff;
+			Data::ByteBuffer buff;
 			UInt64 dataLength;
 
 		public:
 			BufferedStreamData(IO::StreamData *stmData);
 			virtual ~BufferedStreamData();
 
-			virtual UOSInt GetRealData(UInt64 offset, UOSInt length, UInt8 *buffer);
+			virtual UOSInt GetRealData(UInt64 offset, UOSInt length, Data::ByteArray buffer);
 			virtual NotNullPtr<Text::String> GetFullName();
 			virtual Text::CString GetShortName();
 			virtual void SetFullName(Text::CString fullName);

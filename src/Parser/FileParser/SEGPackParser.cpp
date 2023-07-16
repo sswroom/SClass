@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Data/ByteBuffer.h"
 #include "Data/ByteTool.h"
 #include "IO/PackageFile.h"
 #include "Parser/FileParser/SEGPackParser.h"
@@ -48,12 +49,11 @@ IO::ParsedObject *Parser::FileParser::SEGPackParser::ParseFileHdr(IO::StreamData
 		return 0;
 	}
 
-	UInt8 *buff;
 	IO::PackageFile *pf;
 	Text::Encoding enc(932);
 
 	NEW_CLASS(pf, IO::PackageFile(fd->GetFullName()));
-	buff = MemAlloc(UInt8, hdrSize);
+	Data::ByteBuffer buff(hdrSize);
 	fd->GetRealData(4, hdrSize, buff);
 	
 	buffOfst = 0;
@@ -65,19 +65,16 @@ IO::ParsedObject *Parser::FileParser::SEGPackParser::ParseFileHdr(IO::StreamData
 		UInt32 thisSize = ReadUInt32(&buff[buffOfst + 12]);
 		if (*(Int32*)&buff[buffOfst + 4] != 0 || packSize > 80 || packSize <= 17 || thisOfst != fileOfst || packSize + buffOfst > hdrSize)
 		{
-			MemFree(buff);
 			DEL_CLASS(pf);
 			return 0;
 		}
 		if (buff[buffOfst + packSize - 1] != 0)
 		{
-			MemFree(buff);
 			DEL_CLASS(pf);
 			return 0;
 		}
 		if (Text::StrCharCnt((Char*)&buff[buffOfst + 16]) != packSize - 17)
 		{
-			MemFree(buff);
 			DEL_CLASS(pf);
 			return 0;
 		}
@@ -88,7 +85,5 @@ IO::ParsedObject *Parser::FileParser::SEGPackParser::ParseFileHdr(IO::StreamData
 		fileOfst += thisSize;
 		buffOfst += packSize;
 	}
-
-	MemFree(buff);
 	return pf;
 }

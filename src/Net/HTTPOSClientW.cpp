@@ -160,7 +160,7 @@ Bool Net::HTTPOSClient::IsError() const
 	return data->hRequest == 0;
 }
 
-UOSInt Net::HTTPOSClient::Read(UInt8 *buff, UOSInt size)
+UOSInt Net::HTTPOSClient::Read(const Data::ByteArray &buff)
 {
 	ClassData *data = this->clsData;
 	this->EndRequest(0, 0);

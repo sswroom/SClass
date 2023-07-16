@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Data/ByteBuffer.h"
 #include "Data/ByteOrderLSB.h"
 #include "Data/ByteOrderMSB.h"
 #include "Data/ByteTool.h"
@@ -411,7 +412,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(IO::StreamData *f
 			if (item)
 			{
 				Media::ICCProfile *icc;
-				icc = Media::ICCProfile::Parse((UInt8*)item->dataBuff, item->cnt);
+				icc = Media::ICCProfile::Parse(Data::ByteArrayR((UInt8*)item->dataBuff, item->cnt));
 				if (icc)
 				{
 					icc->GetRedTransferParam(color.GetRTranParam());
@@ -424,34 +425,32 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(IO::StreamData *f
 			}
 
 			NEW_CLASS(img, Media::StaticImage(Math::Size2D<UOSInt>(imgWidth, imgHeight), 0, storeBPP, pf, 0, &color, Media::ColorProfile::YUVT_UNKNOWN, (bpp == 32 || bpp == 64)?Media::AT_ALPHA:Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
-			UInt8 *imgData;
+			Data::ByteArray imgData;
 			UInt8 *planarBuff = 0;
 			if (sampleFormat == 3)
 			{
 				planarBuff = MemAlloc(UInt8, imgWidth * imgHeight * bpp >> 3);
-				imgData = planarBuff;
+				imgData = Data::ByteArray(planarBuff, imgWidth * imgHeight * bpp >> 3);
 			}
 			else if (planarConfiguration == 2 && nChannels > 1)
 			{
 				planarBuff = MemAlloc(UInt8, imgWidth * imgHeight * bpp >> 3);
-				imgData = planarBuff;
+				imgData = Data::ByteArray(planarBuff, imgWidth * imgHeight * bpp >> 3);
 			}
 			else
 			{
-				imgData = (UInt8*)img->data;
+				imgData = img->GetDataArray();
 			}
 			if (compression == 32773)
 			{
-				UInt8 *compImgData;
 				UOSInt maxLeng;
 				UOSInt lengLeft;
 				UOSInt destSize;
 				if (nStrip == 1)
 				{
-					compImgData = MemAlloc(UInt8, stripLeng);
+					Data::ByteBuffer compImgData(stripLeng);
 					lengLeft = fd->GetRealData(stripOfst, stripLeng, compImgData);
-					Data::Compress::PackBits::Decompress(imgData, &destSize, compImgData, lengLeft);
-					MemFree(compImgData);
+					Data::Compress::PackBits::Decompress(imgData.GetPtr(), &destSize, compImgData.GetPtr(), lengLeft);
 				}
 				else
 				{
@@ -461,7 +460,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(IO::StreamData *f
 						if (stripLengs[i] > maxLeng)
 							maxLeng = stripLengs[i];
 					}
-					compImgData = MemAlloc(UInt8, maxLeng);
+					Data::ByteBuffer compImgData(maxLeng);
 
 //					OSInt dbpl = imgWidth * bpp >> 3;
 //					OSInt decBpl = (((imgWidth * bpp) & ~7) + 7)/ 8;
@@ -472,17 +471,15 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(IO::StreamData *f
 						//imgData += stripLengs[i];
 
 						lengLeft = fd->GetRealData(stripOfsts[i], stripLengs[i], compImgData);
-						Data::Compress::PackBits::Decompress(imgData, &destSize, compImgData, lengLeft);
-						imgData += destSize;
+						Data::Compress::PackBits::Decompress(imgData.GetPtr(), &destSize, compImgData.GetPtr(), lengLeft);
+						imgData = imgData.SubArray(destSize);
 
 						i++;
 					}
-					MemFree(compImgData);
 				}
 			}
 			else if (compression == 5 || compression == 8)
 			{
-				UInt8 *compImgData;
 				UOSInt maxLeng;
 				UOSInt lengLeft;
 				UOSInt destSize;
@@ -491,10 +488,9 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(IO::StreamData *f
 					Data::Compress::LZWDecompressor lzw;
 					if (nStrip == 1)
 					{
-						compImgData = MemAlloc(UInt8, stripLeng);
+						Data::ByteBuffer compImgData(stripLeng);
 						lengLeft = fd->GetRealData(stripOfst, stripLeng, compImgData);
-						lzw.Decompress(imgData, &destSize, compImgData, lengLeft);
-						MemFree(compImgData);
+						lzw.Decompress(imgData.GetPtr(), &destSize, compImgData.GetPtr(), lengLeft);
 					}
 					else
 					{
@@ -504,7 +500,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(IO::StreamData *f
 							if (stripLengs[i] > maxLeng)
 								maxLeng = stripLengs[i];
 						}
-						compImgData = MemAlloc(UInt8, maxLeng);
+						Data::ByteBuffer compImgData(maxLeng);
 
 						UOSInt dbpl = ((imgWidth * bpp) + 7) >> 3;
 //						OSInt decBpl = (((imgWidth * bpp) & ~7) + 7)/ 8;
@@ -518,16 +514,15 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(IO::StreamData *f
 							{
 								i = 4748;
 							}
-							lzw.Decompress(imgData, &destSize, compImgData, lengLeft);
+							lzw.Decompress(imgData.GetPtr(), &destSize, compImgData.GetPtr(), lengLeft);
 							if (destSize != decSize)
 							{
 								destSize = decSize;
 							}
-							imgData += destSize;
+							imgData = imgData.SubArray(destSize);
 
 							i++;
 						}
-						MemFree(compImgData);
 					}
 				}
 				else if (compression == 8)
@@ -535,10 +530,9 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(IO::StreamData *f
 					Data::Compress::Inflate inflate(false);
 					if (nStrip == 1)
 					{
-						compImgData = MemAlloc(UInt8, stripLeng);
+						Data::ByteBuffer compImgData(stripLeng);
 						lengLeft = fd->GetRealData(stripOfst, stripLeng, compImgData);
-						inflate.Decompress(imgData, &destSize, compImgData, lengLeft);
-						MemFree(compImgData);
+						inflate.Decompress(imgData.GetPtr(), &destSize, compImgData.GetPtr(), lengLeft);
 					}
 					else
 					{
@@ -548,7 +542,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(IO::StreamData *f
 							if (stripLengs[i] > maxLeng)
 								maxLeng = stripLengs[i];
 						}
-						compImgData = MemAlloc(UInt8, maxLeng);
+						Data::ByteBuffer compImgData(maxLeng);
 
 //						OSInt dbpl = imgWidth * bpp >> 3;
 //						OSInt decBpl = (((imgWidth * bpp) & ~7) + 7)/ 8;
@@ -559,12 +553,11 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(IO::StreamData *f
 							//imgData += stripLengs[i];
 
 							lengLeft = fd->GetRealData(stripOfsts[i], stripLengs[i], compImgData);
-							inflate.Decompress(imgData, &destSize, compImgData, lengLeft);
-							imgData += destSize;
+							inflate.Decompress(imgData.GetPtr(), &destSize, compImgData.GetPtr(), lengLeft);
+							imgData = imgData.SubArray(destSize);
 
 							i++;
 						}
-						MemFree(compImgData);
 					}
 				}
 			}
@@ -580,7 +573,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(IO::StreamData *f
 					while (i < nStrip)
 					{
 						fd->GetRealData(stripOfsts[i], stripLengs[i], imgData);
-						imgData += stripLengs[i];
+						imgData = imgData.SubArray(stripLengs[i]);
 						i++;
 					}
 				}
@@ -591,13 +584,14 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(IO::StreamData *f
 				UInt8 *tmpBuff;
 				UInt8 *tmpPtr;
 				UInt8 *tmpPtr2;
+				Data::ByteArray tmpArray;
 				UInt8 lastPx[4];
 				UOSInt bytePerChannels = (bpp >> 3) / nChannels;
 				UOSInt l;
 				if (planarConfiguration == 2)
 				{
 					tmpBuff = MemAlloc(UInt8, bytePerChannels * imgWidth);
-					imgData = planarBuff;
+					imgData = Data::ByteArray(planarBuff, imgWidth * imgHeight * bpp >> 3);
 					if (bo->IsBigEndian())
 					{
 						i = nChannels;
@@ -606,7 +600,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(IO::StreamData *f
 							j = imgHeight;
 							while (j-- > 0)
 							{
-								tmpPtr = imgData;
+								tmpPtr = imgData.GetPtr();
 								k = bytePerChannels;
 								while (k-- > 0)
 								{
@@ -620,8 +614,8 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(IO::StreamData *f
 										tmpPtr2 += bytePerChannels;
 									}
 								}
-								MemCopyNO(imgData, tmpBuff, bytePerChannels * imgWidth);
-								imgData += bytePerChannels * imgWidth;
+								imgData.CopyFrom(0, Data::ByteArrayR(tmpBuff, bytePerChannels * imgWidth));
+								imgData = imgData.SubArray(bytePerChannels * imgWidth);
 							}
 						}
 					}
@@ -633,7 +627,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(IO::StreamData *f
 							j = imgHeight;
 							while (j-- > 0)
 							{
-								tmpPtr = imgData;
+								tmpPtr = imgData.GetPtr();
 								k = bytePerChannels;
 								while (k-- > 0)
 								{
@@ -647,8 +641,8 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(IO::StreamData *f
 										tmpPtr2 += bytePerChannels;
 									}
 								}
-								MemCopyNO(imgData, tmpBuff, bytePerChannels * imgWidth);
-								imgData += bytePerChannels * imgWidth;
+								imgData.CopyFrom(0, Data::ByteArrayR(tmpBuff, bytePerChannels * imgWidth));
+								imgData = imgData.SubArray(bytePerChannels * imgWidth);
 							}
 						}
 					}
@@ -660,11 +654,11 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(IO::StreamData *f
 					/////////////////////////////////////////////////////
 					if (bo->IsBigEndian())
 					{
-						imgData = planarBuff;
+						imgData = Data::ByteArray(planarBuff, imgWidth * imgHeight * bpp >> 3);
 						i = imgHeight;
 						while (i-- > 0)
 						{
-							tmpPtr = imgData;
+							tmpArray = imgData;
 							j = bytePerChannels;
 							while (j-- > 0)
 							{
@@ -680,23 +674,24 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(IO::StreamData *f
 									l = nChannels;
 									while (l-- > 0)
 									{
-										lastPx[l] = (UInt8)(lastPx[l] + *tmpPtr++);
+										lastPx[l] = (UInt8)(lastPx[l] + tmpArray[0]);
+										tmpArray++;
 										tmpPtr2[0] = lastPx[l];
 										tmpPtr2 += bytePerChannels;
 									}
 								}
 							}
-							MemCopyNO(imgData, tmpBuff, bytePerChannels * imgWidth * nChannels);
-							imgData = tmpPtr;
+							imgData.CopyFrom(0, Data::ByteArrayR(tmpBuff, bytePerChannels * imgWidth * nChannels));
+							imgData = tmpArray;
 						}
 					}
 					else
 					{
-						imgData = planarBuff;
+						imgData = Data::ByteArray(planarBuff, imgWidth * imgHeight * bpp >> 3);
 						i = imgHeight;
 						while (i-- > 0)
 						{
-							tmpPtr = imgData;
+							tmpArray = imgData;
 							j = bytePerChannels;
 							while (j-- > 0)
 							{
@@ -712,14 +707,15 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(IO::StreamData *f
 									l = nChannels;
 									while (l-- > 0)
 									{
-										lastPx[l] = (UInt8)(lastPx[l] + *tmpPtr++);
+										lastPx[l] = (UInt8)(lastPx[l] + tmpArray[0]);
+										tmpArray++;
 										tmpPtr2[0] = lastPx[l];
 										tmpPtr2 += bytePerChannels;
 									}
 								}
 							}
-							MemCopyNO(imgData, tmpBuff, bytePerChannels * imgWidth * nChannels);
-							imgData = tmpPtr;
+							imgData.CopyFrom(0, Data::ByteArrayR(tmpBuff, bytePerChannels * imgWidth * nChannels));
+							imgData = tmpArray;
 						}
 					}
 					MemFree(tmpBuff);
@@ -733,7 +729,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(IO::StreamData *f
 					if (bpp == 16)
 					{
 						UInt8 *srcPtr = planarBuff;
-						imgData = (UInt8*)img->data;
+						imgData = img->GetDataArray();
 						i = imgWidth * imgHeight;
 						while (i-- > 0)
 						{
@@ -745,7 +741,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(IO::StreamData *f
 					else if (bpp == 24)
 					{
 						UInt8 *srcPtr = planarBuff;
-						imgData = (UInt8*)img->data;
+						imgData = img->GetDataArray();
 						i = imgWidth * imgHeight;
 						while (i-- > 0)
 						{
@@ -757,7 +753,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(IO::StreamData *f
 					else if (bpp == 32)
 					{
 						UInt8 *srcPtr = planarBuff;
-						imgData = (UInt8*)img->data;
+						imgData = img->GetDataArray();
 						i = imgWidth * imgHeight;
 						while (i-- > 0)
 						{
@@ -775,7 +771,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(IO::StreamData *f
 						{
 							UInt8 *wPtr = planarBuff;
 							UInt8 *aPtr = wPtr + imgWidth * imgHeight * 2;
-							imgData = (UInt8*)img->data;
+							imgData = img->GetDataArray();
 							i = imgWidth * imgHeight;
 							while (i-- > 0)
 							{
@@ -789,7 +785,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(IO::StreamData *f
 						else
 						{
 							UInt8 *srcPtr = planarBuff;
-							imgData = (UInt8*)img->data;
+							imgData = img->GetDataArray();;
 							i = imgWidth * imgHeight;
 							while (i-- > 0)
 							{
@@ -806,7 +802,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(IO::StreamData *f
 						{
 							UInt8 *wPtr = planarBuff;
 							UInt8 *aPtr = wPtr + imgWidth * imgHeight * 3;
-							imgData = (UInt8*)img->data;
+							imgData = img->GetDataArray();
 							i = imgWidth * imgHeight;
 							while (i-- > 0)
 							{
@@ -820,7 +816,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(IO::StreamData *f
 						else
 						{
 							UInt8 *srcPtr = planarBuff;
-							imgData = (UInt8*)img->data;
+							imgData = img->GetDataArray();
 							i = imgWidth * imgHeight;
 							while (i-- > 0)
 							{
@@ -837,7 +833,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(IO::StreamData *f
 						{
 							UInt8 *wPtr = planarBuff;
 							UInt8 *aPtr = wPtr + imgWidth * imgHeight * 4;
-							imgData = (UInt8*)img->data;
+							imgData = img->GetDataArray();
 							i = imgWidth * imgHeight;
 							while (i-- > 0)
 							{
@@ -851,7 +847,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(IO::StreamData *f
 						else
 						{
 							UInt8 *srcPtr = planarBuff;
-							imgData = (UInt8*)img->data;
+							imgData = img->GetDataArray();
 							i = imgWidth * imgHeight;
 							while (i-- > 0)
 							{
@@ -872,7 +868,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(IO::StreamData *f
 							UInt8 *rPtr = planarBuff;
 							UInt8 *gPtr = rPtr + imgWidth * imgHeight * 2;
 							UInt8 *bPtr = gPtr + imgWidth * imgHeight * 2;
-							imgData = (UInt8*)img->data;
+							imgData = img->GetDataArray();
 							i = imgWidth * imgHeight;
 							while (i-- > 0)
 							{
@@ -888,7 +884,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(IO::StreamData *f
 						else
 						{
 							UInt8 *srcPtr = planarBuff;
-							imgData = (UInt8*)img->data;
+							imgData = img->GetDataArray();
 							i = imgWidth * imgHeight;
 							while (i-- > 0)
 							{
@@ -907,7 +903,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(IO::StreamData *f
 							UInt8 *rPtr = planarBuff;
 							UInt8 *gPtr = rPtr + imgWidth * imgHeight * 3;
 							UInt8 *bPtr = gPtr + imgWidth * imgHeight * 3;
-							imgData = (UInt8*)img->data;
+							imgData = img->GetDataArray();
 							i = imgWidth * imgHeight;
 							while (i-- > 0)
 							{
@@ -923,7 +919,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(IO::StreamData *f
 						else
 						{
 							UInt8 *srcPtr = planarBuff;
-							imgData = (UInt8*)img->data;
+							imgData = img->GetDataArray();
 							i = imgWidth * imgHeight;
 							while (i-- > 0)
 							{
@@ -942,7 +938,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(IO::StreamData *f
 							UInt8 *rPtr = planarBuff;
 							UInt8 *gPtr = rPtr + imgWidth * imgHeight * 4;
 							UInt8 *bPtr = gPtr + imgWidth * imgHeight * 4;
-							imgData = (UInt8*)img->data;
+							imgData = img->GetDataArray();
 							i = imgWidth * imgHeight;
 							while (i-- > 0)
 							{
@@ -958,7 +954,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(IO::StreamData *f
 						else
 						{
 							UInt8 *srcPtr = planarBuff;
-							imgData = (UInt8*)img->data;
+							imgData = img->GetDataArray();
 							i = imgWidth * imgHeight;
 							while (i-- > 0)
 							{
@@ -981,7 +977,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(IO::StreamData *f
 							UInt8 *gPtr = rPtr + imgWidth * imgHeight * 2;
 							UInt8 *bPtr = gPtr + imgWidth * imgHeight * 2;
 							UInt8 *aPtr = bPtr + imgWidth * imgHeight * 2;
-							imgData = (UInt8*)img->data;
+							imgData = img->GetDataArray();
 							i = imgWidth * imgHeight;
 							while (i-- > 0)
 							{
@@ -999,7 +995,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(IO::StreamData *f
 						else
 						{
 							UInt8 *srcPtr = planarBuff;
-							imgData = (UInt8*)img->data;
+							imgData = img->GetDataArray();
 							i = imgWidth * imgHeight;
 							while (i-- > 0)
 							{
@@ -1020,7 +1016,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(IO::StreamData *f
 							UInt8 *gPtr = rPtr + imgWidth * imgHeight * 3;
 							UInt8 *bPtr = gPtr + imgWidth * imgHeight * 3;
 							UInt8 *aPtr = bPtr + imgWidth * imgHeight * 3;
-							imgData = (UInt8*)img->data;
+							imgData = img->GetDataArray();
 							i = imgWidth * imgHeight;
 							while (i-- > 0)
 							{
@@ -1038,7 +1034,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(IO::StreamData *f
 						else
 						{
 							UInt8 *srcPtr = planarBuff;
-							imgData = (UInt8*)img->data;
+							imgData = img->GetDataArray();
 							i = imgWidth * imgHeight;
 							while (i-- > 0)
 							{
@@ -1059,7 +1055,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(IO::StreamData *f
 							UInt8 *gPtr = rPtr + imgWidth * imgHeight * 4;
 							UInt8 *bPtr = gPtr + imgWidth * imgHeight * 4;
 							UInt8 *aPtr = bPtr + imgWidth * imgHeight * 4;
-							imgData = (UInt8*)img->data;
+							imgData = img->GetDataArray();
 							i = imgWidth * imgHeight;
 							while (i-- > 0)
 							{
@@ -1077,7 +1073,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(IO::StreamData *f
 						else
 						{
 							UInt8 *srcPtr = planarBuff;
-							imgData = (UInt8*)img->data;
+							imgData = img->GetDataArray();
 							i = imgWidth * imgHeight;
 							while (i-- > 0)
 							{
@@ -1123,7 +1119,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(IO::StreamData *f
 						img->pal[(i << 2) + 3] = 0xff;
 					}
 
-					imgData = (UInt8*)img->data;
+					imgData = img->GetDataArray();
 					i = ((imgWidth * bpp + 7) >> 3) * imgHeight;
 					while (i-- > 0)
 					{
@@ -1148,7 +1144,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(IO::StreamData *f
 			}
 			else if (nChannels == 1 && bpp == 16)
 			{
-				imgData = (UInt8*)img->data;
+				imgData = img->GetDataArray();
 				if (bo->IsBigEndian())
 				{
 					i = imgWidth * imgHeight;
@@ -1165,7 +1161,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(IO::StreamData *f
 				{
 					UInt8 *wPtr = planarBuff;
 					UInt8 *aPtr = wPtr + imgWidth * imgHeight;
-					imgData = (UInt8*)img->data;
+					imgData = img->GetDataArray();
 					i = imgWidth * imgHeight;
 					while (i-- > 0)
 					{
@@ -1184,7 +1180,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(IO::StreamData *f
 				{
 					UInt8 *wPtr = planarBuff;
 					UInt8 *aPtr = wPtr + imgWidth * imgHeight * 2;
-					imgData = (UInt8*)img->data;
+					imgData = img->GetDataArray();
 					i = imgWidth * imgHeight;
 					if (bo->IsBigEndian())
 					{
@@ -1213,7 +1209,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(IO::StreamData *f
 				{
 					if (bo->IsBigEndian())
 					{
-						imgData = (UInt8*)img->data;
+						imgData = img->GetDataArray();
 						i = imgWidth * imgHeight;
 						while (i-- > 0)
 						{
@@ -1231,7 +1227,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(IO::StreamData *f
 					UInt8 *rPtr = planarBuff;
 					UInt8 *gPtr = rPtr + imgWidth * imgHeight;
 					UInt8 *bPtr = gPtr + imgWidth * imgHeight;
-					imgData = (UInt8*)img->data;
+					imgData = img->GetDataArray();
 					i = imgWidth * imgHeight;
 					while (i-- > 0)
 					{
@@ -1244,7 +1240,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(IO::StreamData *f
 				else
 				{
 					UInt8 tmpByte;
-					imgData = (UInt8*)img->data;
+					imgData = img->GetDataArray();
 					i = imgWidth * imgHeight;
 					while (i-- > 0)
 					{
@@ -1263,7 +1259,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(IO::StreamData *f
 					UInt8 *gPtr = rPtr + imgWidth * imgHeight;
 					UInt8 *bPtr = gPtr + imgWidth * imgHeight;
 					UInt8 *aPtr = bPtr + imgWidth * imgHeight;
-					imgData = (UInt8*)img->data;
+					imgData = img->GetDataArray();
 					i = imgWidth * imgHeight;
 					while (i-- > 0)
 					{
@@ -1277,7 +1273,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(IO::StreamData *f
 				else
 				{
 					UInt8 tmpByte;
-					imgData = (UInt8*)img->data;
+					imgData = img->GetDataArray();
 					i = imgWidth * imgHeight;
 					while (i-- > 0)
 					{
@@ -1295,7 +1291,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(IO::StreamData *f
 					UInt8 *rPtr = planarBuff;
 					UInt8 *gPtr = rPtr + imgWidth * imgHeight * 2;
 					UInt8 *bPtr = gPtr + imgWidth * imgHeight * 2;
-					imgData = (UInt8*)img->data;
+					imgData = img->GetDataArray();
 					i = imgWidth * imgHeight;
 					if (bo->IsBigEndian())
 					{
@@ -1327,7 +1323,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(IO::StreamData *f
 				else
 				{
 					Int16 tmpByte;
-					imgData = (UInt8*)img->data;
+					imgData = img->GetDataArray();
 					i = imgWidth * imgHeight;
 					if (bo->IsBigEndian())
 					{
@@ -1360,7 +1356,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(IO::StreamData *f
 					UInt8 *gPtr = rPtr + imgWidth * imgHeight * 2;
 					UInt8 *bPtr = gPtr + imgWidth * imgHeight * 2;
 					UInt8 *aPtr = bPtr + imgWidth * imgHeight * 2;
-					imgData = (UInt8*)img->data;
+					imgData = img->GetDataArray();
 					i = imgWidth * imgHeight;
 					if (bo->IsBigEndian())
 					{
@@ -1396,7 +1392,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(IO::StreamData *f
 				else
 				{
 					Int16 tmpByte;
-					imgData = (UInt8*)img->data;
+					imgData = img->GetDataArray();
 					i = imgWidth * imgHeight;
 					if (bo->IsBigEndian())
 					{
@@ -1424,7 +1420,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(IO::StreamData *f
 			}
 			if (predictor == 2)
 			{
-				imgData = (UInt8*)img->data;
+				imgData = img->GetDataArray();
 				if (img->info.pf == Media::PF_PAL_W8)
 				{
 					i = img->info.dispSize.y;

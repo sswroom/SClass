@@ -99,7 +99,7 @@ Bool Net::WebServer::PrintLogWebResponse::IsDown() const
 	return this->resp->IsDown();
 }
 
-UOSInt Net::WebServer::PrintLogWebResponse::Read(UInt8 *buff, UOSInt size)
+UOSInt Net::WebServer::PrintLogWebResponse::Read(const Data::ByteArray &buff)
 {
 	return this->resp->Read(buff, size);
 }

@@ -42,7 +42,7 @@ IO::ParsedObject *Parser::FileParser::ADXParser::ParseFileHdr(IO::StreamData *fd
 	startOfst ^= 0x80000000;
 	if (startOfst > 2048)
 		return 0;
-	fd->GetRealData(4, startOfst, buff);
+	fd->GetRealData(4, startOfst, BYTEARR(buff));
 
 	
 	af.formatId = 0x2080;

@@ -72,7 +72,7 @@ void Media::Decoder::ACMDecoder::Stop()
 	this->readEvt = 0;
 }
 
-UOSInt Media::Decoder::ACMDecoder::ReadBlock(UInt8 *buff, UOSInt blkSize)
+UOSInt Media::Decoder::ACMDecoder::ReadBlock(Data::ByteArray blk)
 {
 	return 0;
 }

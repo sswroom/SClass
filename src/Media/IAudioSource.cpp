@@ -8,22 +8,22 @@ Media::MediaType Media::IAudioSource::GetMediaType()
 	return Media::MEDIA_TYPE_AUDIO;
 }
 
-UOSInt Media::IAudioSource::ReadBlockLPCM(UInt8 *buff, UOSInt blkSize, AudioFormat *format)
+UOSInt Media::IAudioSource::ReadBlockLPCM(Data::ByteArray blk, AudioFormat *format)
 {
 	UOSInt ret;
 	UOSInt i;
 	UInt8 tmp;
 	if (format->intType == Media::AudioFormat::IT_BIGENDIAN16)
 	{
-		ret = ReadBlock(buff, blkSize);
+		ret = ReadBlock(blk);
 		if (format->bitpersample == 16)
 		{
 			i = 0;
 			while (i < ret)
 			{
-				tmp = buff[i];
-				buff[i] = buff[i + 1];
-				buff[i + 1] = tmp;
+				tmp = blk[i];
+				blk[i] = blk[i + 1];
+				blk[i + 1] = tmp;
 				i += 2;
 			}
 		}
@@ -61,18 +61,18 @@ UOSInt Media::IAudioSource::ReadBlockLPCM(UInt8 *buff, UOSInt blkSize, AudioForm
 				i = 0;
 				while (i < ret)
 				{
-					tmp = buff[i + 0];
-					buff[i + 0] = buff[i + 8];
-					buff[i + 8] = buff[i + 4];
-					buff[i + 4] = buff[i + 3];
-					buff[i + 3] = buff[i + 9];
-					buff[i + 9] = buff[i + 11];
-					buff[i + 11] = buff[i + 6];
-					buff[i + 6] = buff[i + 10];
-					buff[i + 10] = buff[i + 7];
-					buff[i + 7] = buff[i + 5];
-					buff[i + 5] = buff[i + 2];
-					buff[i + 2] = tmp;
+					tmp = blk[i + 0];
+					blk[i + 0] = blk[i + 8];
+					blk[i + 8] = blk[i + 4];
+					blk[i + 4] = blk[i + 3];
+					blk[i + 3] = blk[i + 9];
+					blk[i + 9] = blk[i + 11];
+					blk[i + 11] = blk[i + 6];
+					blk[i + 6] = blk[i + 10];
+					blk[i + 10] = blk[i + 7];
+					blk[i + 7] = blk[i + 5];
+					blk[i + 5] = blk[i + 2];
+					blk[i + 2] = tmp;
 					i += 12;
 				}
 			}
@@ -81,15 +81,15 @@ UOSInt Media::IAudioSource::ReadBlockLPCM(UInt8 *buff, UOSInt blkSize, AudioForm
 	}
 	else if (format->intType == Media::AudioFormat::IT_BIGENDIAN)
 	{
-		ret = ReadBlock(buff, blkSize);
+		ret = ReadBlock(blk);
 		if (format->bitpersample == 16)
 		{
 			i = 0;
 			while (i < ret)
 			{
-				tmp = buff[i];
-				buff[i] = buff[i + 1];
-				buff[i + 1] = tmp;
+				tmp = blk[i];
+				blk[i] = blk[i + 1];
+				blk[i + 1] = tmp;
 				i += 2;
 			}
 		}
@@ -98,9 +98,9 @@ UOSInt Media::IAudioSource::ReadBlockLPCM(UInt8 *buff, UOSInt blkSize, AudioForm
 			i = 0;
 			while (i < ret)
 			{
-				tmp = buff[i];
-				buff[i] = buff[i + 2];
-				buff[i + 2] = tmp;
+				tmp = blk[i];
+				blk[i] = blk[i + 2];
+				blk[i + 2] = tmp;
 				i += 3;
 			}
 		}
@@ -108,7 +108,7 @@ UOSInt Media::IAudioSource::ReadBlockLPCM(UInt8 *buff, UOSInt blkSize, AudioForm
 	}
 	else
 	{
-		return ReadBlock(buff, blkSize);
+		return ReadBlock(blk);
 	}
 }
 
@@ -117,7 +117,7 @@ Bool Media::IAudioSource::SupportSampleRead()
 	return false;
 }
 
-UOSInt Media::IAudioSource::ReadSample(UInt64 sampleOfst, UOSInt sampleCount, UInt8 *buff)
+UOSInt Media::IAudioSource::ReadSample(UInt64 sampleOfst, UOSInt sampleCount, Data::ByteArray buff)
 {
 	return 0;
 }

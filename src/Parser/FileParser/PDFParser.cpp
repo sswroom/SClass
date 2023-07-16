@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Data/ByteBuffer.h"
 #include "Data/ByteTool.h"
 #include "IO/FileStream.h"
 #include "IO/StreamData.h"
@@ -13,7 +14,7 @@
 
 struct Parser::FileParser::PDFParser::PDFParseEnv
 {
-	UInt8 *buff;
+	Data::ByteArray buff;
 	UOSInt buffSize;
 	UOSInt currOfst;
 	UOSInt dataSize;
@@ -77,18 +78,18 @@ Bool Parser::FileParser::PDFParser::NextLine(PDFParseEnv *env, Text::StringBuild
 		return false;
 	}
 	env->dataOfst += env->currOfst;
-	MemCopyO(env->buff, &env->buff[env->currOfst], env->dataSize - env->currOfst);
+	env->buff.CopyInner(0, env->currOfst, env->dataSize - env->currOfst);
 	env->dataSize -= env->currOfst;
 	env->currOfst = 0;
 	i = env->dataSize;
-	env->dataSize += env->fd->GetRealData(env->dataOfst + env->dataSize, env->buffSize - env->dataSize, &env->buff[env->dataSize]);
+	env->dataSize += env->fd->GetRealData(env->dataOfst + env->dataSize, env->buffSize - env->dataSize, env->buff.SubArray(env->dataSize));
 	if (i == env->dataSize)
 	{
 		if (env->dataSize > 0 && env->fileSize == env->dataOfst + env->dataSize)
 		{
 			env->currOfst = env->dataSize;
 			env->lineBegin = env->dataOfst;
-			sb->AppendC(env->buff, env->dataSize);
+			sb->AppendC(env->buff.Ptr(), env->dataSize);
 			sb->RTrim();
 			return true;
 		}
@@ -448,7 +449,7 @@ Bool Parser::FileParser::PDFParser::ParseObjectStream(PDFParseEnv *env, Text::St
 		}
 
 		PDFParseEnv innerEnv;
-		innerEnv.buff = buff;
+		innerEnv.buff = BYTEARR(buff);
 		innerEnv.buffSize = sizeof(buff);
 		innerEnv.dataOfst = dataOfst;
 		innerEnv.currOfst = 0;
@@ -851,8 +852,9 @@ IO::ParsedObject *Parser::FileParser::PDFParser::ParseFileHdr(IO::StreamData *fd
 	}
 
 	Media::PDFDocument *doc = 0;
+	Data::ByteBuffer buffTemp(1048576);
 	PDFParseEnv env;
-	env.buff = MemAlloc(UInt8, 1048576);
+	env.buff = buffTemp;
 	env.buffSize = 1048576;
 	env.currOfst = 0;
 	env.dataOfst = 0;
@@ -865,7 +867,7 @@ IO::ParsedObject *Parser::FileParser::PDFParser::ParseFileHdr(IO::StreamData *fd
 	PDFXRef *xref = 0;
 
 	UInt8 tmpBuff[32];
-	env.fd->GetRealData(env.fileSize - 32, 32, tmpBuff);
+	env.fd->GetRealData(env.fileSize - 32, 32, BYTEARR(tmpBuff));
 	UOSInt i = Text::StrIndexOfC(tmpBuff, 32, UTF8STRC("startxref"));
 	UOSInt j;
 	if (i != INVALID_INDEX)
@@ -898,7 +900,6 @@ IO::ParsedObject *Parser::FileParser::PDFParser::ParseFileHdr(IO::StreamData *fd
 	sb.ClearStr();
 	if (!NextLine(&env, &sb, true))
 	{
-		MemFree(env.buff);
 		if (xref)
 			FreeXRef(xref);
 		return 0;
@@ -1100,7 +1101,6 @@ IO::ParsedObject *Parser::FileParser::PDFParser::ParseFileHdr(IO::StreamData *fd
 		printf("PDFParser: Error in parsing next line\r\n");
 	}
 #endif
-	MemFree(env.buff);
 	if (xref)
 		FreeXRef(xref);
 	if (env.succ)

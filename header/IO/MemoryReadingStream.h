@@ -7,15 +7,15 @@ namespace IO
 	class MemoryReadingStream : public SeekableStream
 	{
 	private:
-		const UInt8 *buff;
-		UOSInt buffSize;
+		Data::ByteArrayR buff;
 		UOSInt currPtr;
 	public:
 		MemoryReadingStream(const UInt8 *buff, UOSInt buffSize);
+		MemoryReadingStream(Data::ByteArrayR buff);
 		virtual ~MemoryReadingStream();
 
 		virtual Bool IsDown() const;
-		virtual UOSInt Read(UInt8 *buff, UOSInt size);
+		virtual UOSInt Read(Data::ByteArray buff);
 		virtual UOSInt Write(const UInt8 *buff, UOSInt size);
 
 		virtual Int32 Flush();

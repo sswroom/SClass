@@ -247,7 +247,7 @@ IO::ParsedObject *Parser::FileParser::SMDLParser::ParseFileHdr(IO::StreamData *f
 	sptr -= 4;
 	t = Text::StrToInt32(sbuff);
 	fileSize = fd->GetDataSize();
-	if (fd->GetRealData(0, 252, buff) != 252)
+	if (fd->GetRealData(0, 252, BYTEARR(buff)) != 252)
 		return 0;
 	Data::DateTime dt;
 	dt.SetTicks(ReadInt64(&buff[0]));
@@ -278,7 +278,7 @@ IO::ParsedObject *Parser::FileParser::SMDLParser::ParseFileHdr(IO::StreamData *f
 		UInt16 remotePort;
 		Int32 procTime;
 		UInt32 extraSize;
-		fd->GetRealData(currPos, 96, buff);
+		fd->GetRealData(currPos, 96, BYTEARR(buff));
 		rec.recTime = Data::TimeInstant::FromTicks(ReadInt64(&buff[0]));
 		recvTimeTick = ReadInt64(&buff[8]);
 		rec.pos = Math::Coord2DDbl(ReadDouble(&buff[24]), ReadDouble(&buff[16]));
@@ -318,15 +318,15 @@ IO::ParsedObject *Parser::FileParser::SMDLParser::ParseFileHdr(IO::StreamData *f
 		WriteUInt32(&buff[38], extraSize);
 		if (analogCnt > 0 && analogCnt <= 32)
 		{
-			fd->GetRealData(currPos, 16 * analogCnt, &buff[94]);
+			fd->GetRealData(currPos, 16 * analogCnt, BYTEARR(buff) + 94);
 			currPos += 16 * analogCnt;
-			fd->GetRealData(currPos, extraSize, &buff[42]);
+			fd->GetRealData(currPos, extraSize, BYTEARR(buff) + 42);
 			currPos += extraSize;
 			track->SetExtraDataIndex(ui, buff, 94 + 16 * analogCnt);
 		}
 		else if (analogCnt == 0)
 		{
-			fd->GetRealData(currPos, extraSize, &buff[42]);
+			fd->GetRealData(currPos, extraSize, BYTEARR(buff) + 42);
 			currPos += extraSize;
 			track->SetExtraDataIndex(ui, buff, 42 + extraSize);
 		}

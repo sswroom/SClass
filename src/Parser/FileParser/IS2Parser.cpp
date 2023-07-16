@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Data/ByteBuffer.h"
 #include "Data/ByteTool.h"
 #include "Media/ImageList.h"
 #include "Media/StaticImage.h"
@@ -34,7 +35,6 @@ IO::ParserType Parser::FileParser::IS2Parser::GetParserType()
 
 IO::ParsedObject *Parser::FileParser::IS2Parser::ParseFileHdr(IO::StreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
-	UInt8 *currBuff;
 	if (fd->GetDataSize() < 204)
 		return 0;
 
@@ -70,7 +70,7 @@ IO::ParsedObject *Parser::FileParser::IS2Parser::ParseFileHdr(IO::StreamData *fd
 		currSize = ReadUInt32(&hdr[i + 4]);
 		if (currSize == 0)
 			break;
-		currBuff = MemAlloc(UInt8, currSize);
+		Data::ByteBuffer currBuff(currSize);
 		if (currSize != fd->GetRealData(currOfst, currSize, currBuff))
 		{
 			valid = false;
@@ -141,11 +141,11 @@ IO::ParsedObject *Parser::FileParser::IS2Parser::ParseFileHdr(IO::StreamData *fd
 						Media::StaticImage *img;
 						NEW_CLASS(img, Media::StaticImage(Math::Size2D<UOSInt>(imageWidth, imageHeight), 0, 32, Media::PF_B8G8R8A8, imageWidth * imageHeight * 4, 0, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_TOP_CENTER));
 						UInt8 *dataPtr = img->data;
-						UInt8 *currBuffPtr = currBuff + 60;
+						Data::ByteArray currBuffPtr = currBuff + 60;
 						UInt32 cnt = imageWidth * imageHeight;
 						while (cnt-- > 0)
 						{
-							UInt32 v = *(UInt16*)currBuffPtr;
+							UInt32 v = currBuffPtr.ReadNU16(0);
 							UInt8 r;
 							UInt8 g;
 							UInt8 b;
@@ -196,12 +196,12 @@ IO::ParsedObject *Parser::FileParser::IS2Parser::ParseFileHdr(IO::StreamData *fd
 						Media::StaticImage *img;
 						NEW_CLASS(img, Media::StaticImage(Math::Size2D<UOSInt>(imageWidth, imageHeight), 0, 16, Media::PF_LE_W16, imageWidth * imageHeight * 2, 0, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_TOP_CENTER));
 						UInt8 *dataPtr = img->data;
-						UInt8 *currBuffPtr = currBuff + 64;
+						Data::ByteArray currBuffPtr = currBuff + 64;
 						UInt32 cnt = imageWidth * imageHeight;
 						Int32 v;
 						while (cnt-- > 0)
 						{
-							v = ((*(Int16*)currBuffPtr) - minVal) * 65536 / valDiff;
+							v = (currBuffPtr.ReadNI16(0) - minVal) * 65536 / valDiff;
 							if (v < 0)
 								v = 0;
 							else if (v > 65535)
@@ -212,7 +212,7 @@ IO::ParsedObject *Parser::FileParser::IS2Parser::ParseFileHdr(IO::StreamData *fd
 						}
 						j = imgList->AddImage(img, 0);
 						imgList->SetImageType(j, Media::ImageList::IT_IRIMAGE);
-						imgList->SetThermoImage(Math::Size2D<UOSInt>(imageWidth, imageHeight), 16, currBuff + 64, emissivity, transmission, bkgTemp, Media::ImageList::TT_UNKNOWN);
+						imgList->SetThermoImage(Math::Size2D<UOSInt>(imageWidth, imageHeight), 16, currBuff.Ptr() + 64, emissivity, transmission, bkgTemp, Media::ImageList::TT_UNKNOWN);
 					}
 					break;
 				case 0x22: //Output Image
@@ -222,11 +222,11 @@ IO::ParsedObject *Parser::FileParser::IS2Parser::ParseFileHdr(IO::StreamData *fd
 						Media::StaticImage *img;
 						NEW_CLASS(img, Media::StaticImage(Math::Size2D<UOSInt>(imageWidth, imageHeight), 0, 32, Media::PF_B8G8R8A8, imageWidth * imageHeight * 4, 0, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_TOP_CENTER));
 						UInt8 *dataPtr = img->data;
-						UInt8 *currBuffPtr = currBuff + 56;
+						Data::ByteArray currBuffPtr = currBuff + 56;
 						UInt32 cnt = imageWidth * imageHeight;
 						while (cnt-- > 0)
 						{
-							UInt32 v = *(UInt16*)currBuffPtr;
+							UInt32 v = currBuffPtr.ReadNU16(0);
 							UInt8 r;
 							UInt8 g;
 							UInt8 b;
@@ -247,7 +247,6 @@ IO::ParsedObject *Parser::FileParser::IS2Parser::ParseFileHdr(IO::StreamData *fd
 				}
 			}
 		}
-		MemFree(currBuff);
 		currOfst += currSize;
 		i += 8;
 	}

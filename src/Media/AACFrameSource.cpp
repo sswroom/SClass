@@ -15,27 +15,27 @@ Media::AACFrameSource::~AACFrameSource()
 {
 }
 
-UOSInt Media::AACFrameSource::ReadBlock(UInt8 *buff, UOSInt blkSize)
+UOSInt Media::AACFrameSource::ReadBlock(Data::ByteArray blk)
 {
 	if (this->readBlock >= this->blockCnt)
 		return 0;
-	if (this->blocks[this->readBlock].length > blkSize)
+	if (this->blocks[this->readBlock].length > blk.GetSize())
 		return 0;
 
 	UInt32 thisSize = this->blocks[this->readBlock].length;
-	buff[0] = 0xff;
-	buff[1] = 0xf9;
-	buff[2] = 1 << 6; // profile = 1 (AAC-LC)
-	buff[2] = (UInt8)(buff[2] | (GetRateIndex() << 2));
-	buff[2] = (UInt8)(buff[2] | (this->format.nChannels >> 2));
-	buff[3] = (UInt8)((this->format.nChannels & 3) << 6);
-	buff[3] = (UInt8)(buff[3] | (((thisSize + 7) & 0x1800) >> 11));
-	buff[4] = ((thisSize + 7) & 0x7f8) >> 3;
-	buff[5] = ((thisSize + 7) & 7) << 5;
-	buff[5] |= 0x1f;
-	buff[6] = 0xfc;
-	buff[6] |= 0; // number_of_raw_data_blocks_in_frame
-	UOSInt readSize = this->data->GetRealData(this->blocks[this->readBlock].offset, this->blocks[this->readBlock].length, &buff[7]);
+	blk[0] = 0xff;
+	blk[1] = 0xf9;
+	blk[2] = 1 << 6; // profile = 1 (AAC-LC)
+	blk[2] = (UInt8)(blk[2] | (GetRateIndex() << 2));
+	blk[2] = (UInt8)(blk[2] | (this->format.nChannels >> 2));
+	blk[3] = (UInt8)((this->format.nChannels & 3) << 6);
+	blk[3] = (UInt8)(blk[3] | (((thisSize + 7) & 0x1800) >> 11));
+	blk[4] = ((thisSize + 7) & 0x7f8) >> 3;
+	blk[5] = ((thisSize + 7) & 7) << 5;
+	blk[5] |= 0x1f;
+	blk[6] = 0xfc;
+	blk[6] |= 0; // number_of_raw_data_blocks_in_frame
+	UOSInt readSize = this->data->GetRealData(this->blocks[this->readBlock].offset, this->blocks[this->readBlock].length, blk.SubArray(7));
 	this->readBlock++;
 	if (this->readEvt)
 		this->readEvt->Set();

@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Data/ByteBuffer.h"
 #include "Data/ByteTool.h"
 #include "Data/Compress/InflateStream.h"
 #include "IO/MemoryStream.h"
@@ -2573,7 +2574,6 @@ IO::ParserType Parser::FileParser::PNGParser::GetParserType()
 
 IO::ParsedObject *Parser::FileParser::PNGParser::ParseFileHdr(IO::StreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
-	UInt8 *chunkData;
 	UInt64 ofst;
 	if (hdr[0] != 0x89 && hdr[1] != 0x50 && hdr[2] != 0x4e && hdr[3] != 0x47 && hdr[4] != 0x0d && hdr[5] != 0x0a && hdr[6] != 0x1a && hdr[7] != 0x0a)
 	{
@@ -2607,7 +2607,7 @@ IO::ParsedObject *Parser::FileParser::PNGParser::ParseFileHdr(IO::StreamData *fd
 	ofst = 8;
 	while (true)
 	{
-		if (fd->GetRealData(ofst, 8, buff) != 8)
+		if (fd->GetRealData(ofst, 8, BYTEARR(buff)) != 8)
 		{
 			break;
 		}
@@ -2616,7 +2616,7 @@ IO::ParsedObject *Parser::FileParser::PNGParser::ParseFileHdr(IO::StreamData *fd
 		{
 			if (size >= 13)
 			{
-				chunkData = MemAlloc(UInt8, size);
+				Data::ByteBuffer chunkData(size);
 				if (fd->GetRealData(ofst + 8, size, chunkData) == size)
 				{
 					info.dispSize.x = ReadMUInt32(&chunkData[0]);
@@ -2640,14 +2640,13 @@ IO::ParsedObject *Parser::FileParser::PNGParser::ParseFileHdr(IO::StreamData *fd
 					
 					ihdrFound = true;
 				}
-				MemFree(chunkData);
 			}
 		}
 		else if (*(Int32*)&buff[4] == *(Int32*)"pHYs")
 		{
 			if (size >= 9)
 			{
-				chunkData = MemAlloc(UInt8, size);
+				Data::ByteBuffer chunkData(size);
 				if (fd->GetRealData(ofst + 8, size, chunkData) == size)
 				{
 					if (chunkData[8] == 1)
@@ -2673,14 +2672,13 @@ IO::ParsedObject *Parser::FileParser::PNGParser::ParseFileHdr(IO::StreamData *fd
 						}
 					}
 				}
-				MemFree(chunkData);
 			}
 		}
 		else if (*(Int32*)&buff[4] == *(Int32*)"PLTE")
 		{
 			if (size <= 768 && (size % 3) == 0)
 			{
-				chunkData = MemAlloc(UInt8, size);
+				Data::ByteBuffer chunkData(size);
 				if (fd->GetRealData(ofst + 8, size, chunkData) == size)
 				{
 					if (palette == 0)
@@ -2688,7 +2686,7 @@ IO::ParsedObject *Parser::FileParser::PNGParser::ParseFileHdr(IO::StreamData *fd
 						palette = MemAlloc(UInt8, 1024);
 					}
 					UInt8 *palPtr = palette;
-					UInt8 *dataBuff = chunkData;
+					UInt8 *dataBuff = chunkData.Ptr();
 					UOSInt sizeLeft = size;
 					while (sizeLeft > 0)
 					{
@@ -2701,14 +2699,13 @@ IO::ParsedObject *Parser::FileParser::PNGParser::ParseFileHdr(IO::StreamData *fd
 						sizeLeft -= 3;
 					}
 				}
-				MemFree(chunkData);
 			}
 		}
 		else if (*(Int32*)&buff[4] == *(Int32*)"tRNS")
 		{
 			if (palette != 0 && size <= 256)
 			{
-				chunkData = MemAlloc(UInt8, size);
+				Data::ByteBuffer chunkData(size);
 				if (fd->GetRealData(ofst + 8, size, chunkData) == size)
 				{
 					UOSInt i = 0;
@@ -2718,31 +2715,29 @@ IO::ParsedObject *Parser::FileParser::PNGParser::ParseFileHdr(IO::StreamData *fd
 						i++;
 					}
 				}
-				MemFree(chunkData);
 			}
 		}
 		else if (*(Int32*)&buff[4] == *(Int32*)"iCCP")
 		{
-			chunkData = MemAlloc(UInt8, size);
+			Data::ByteBuffer chunkData(size);
 			if (fd->GetRealData(ofst + 8, size, chunkData) == size)
 			{
-				UOSInt i = Text::StrCharCnt((Char*)chunkData) + 1;
+				UOSInt i = Text::StrCharCnt((Char*)chunkData.Ptr()) + 1;
 				if (chunkData[i] == 0)
 				{
 					IO::MemoryStream mstm;
 					Data::Compress::InflateStream cstm(&mstm, false);
 					if (cstm.Write(&chunkData[i + 3], size - i - 7) == (size - i - 7))
 					{
-						UOSInt iccSize;
-						UInt8 *iccBuff = mstm.GetBuff(&iccSize);
-						Media::ICCProfile *icc = Media::ICCProfile::Parse(iccBuff, iccSize);
+						Data::ByteArray iccBuff = mstm.GetArray();
+						Media::ICCProfile *icc = Media::ICCProfile::Parse(iccBuff);
 						if (icc)
 						{
 							icc->GetColorPrimaries(&info.color->primaries);
 							icc->GetRedTransferParam(&info.color->rtransfer);
 							icc->GetGreenTransferParam(&info.color->gtransfer);
 							icc->GetBlueTransferParam(&info.color->btransfer);
-							info.color->SetRAWICC(iccBuff);
+							info.color->SetRAWICC(iccBuff.Ptr());
 							DEL_CLASS(icc);
 
 							iccpFound = true;
@@ -2750,7 +2745,6 @@ IO::ParsedObject *Parser::FileParser::PNGParser::ParseFileHdr(IO::StreamData *fd
 					}
 				}
 			}
-			MemFree(chunkData);
 		}
 		else if (*(Int32*)&buff[4] == *(Int32*)"sRGB")
 		{
@@ -2764,10 +2758,10 @@ IO::ParsedObject *Parser::FileParser::PNGParser::ParseFileHdr(IO::StreamData *fd
 		{
 			if (!iccpFound && !srgbFound && size >= 4)
 			{
-				chunkData = MemAlloc(UInt8, size);
+				Data::ByteBuffer chunkData(size);
 				if (fd->GetRealData(ofst + 8, size, chunkData) == size)
 				{
-					Double g = (Double)ReadMInt32(chunkData);
+					Double g = (Double)ReadMInt32(&chunkData[0]);
 					if (g != 0)
 					{
 						g = 100000 / g;
@@ -2776,14 +2770,13 @@ IO::ParsedObject *Parser::FileParser::PNGParser::ParseFileHdr(IO::StreamData *fd
 						info.color->btransfer.Set(Media::CS::TRANT_GAMMA, g);
 					}
 				}
-				MemFree(chunkData);
 			}
 		}
 		else if (*(Int32*)&buff[4] == *(Int32*)"cHRM")
 		{
 			if (!iccpFound && !srgbFound && size >= 32)
 			{
-				chunkData = MemAlloc(UInt8, size);
+				Data::ByteBuffer chunkData(size);
 				if (fd->GetRealData(ofst + 8, size, chunkData) == size)
 				{
 					info.color->primaries.SetColorType(Media::ColorProfile::CT_CUSTOM);
@@ -2800,7 +2793,6 @@ IO::ParsedObject *Parser::FileParser::PNGParser::ParseFileHdr(IO::StreamData *fd
 						info.color->primaries.SetColorType(Media::ColorProfile::CT_SRGB);
 					}
 				}
-				MemFree(chunkData);
 			}
 		}
 		else if (*(Int32*)&buff[4] == *(Int32*)"fcTL")
@@ -2823,7 +2815,7 @@ IO::ParsedObject *Parser::FileParser::PNGParser::ParseFileHdr(IO::StreamData *fd
 					mstm = 0;
 				}
 
-				chunkData = MemAlloc(UInt8, size);
+				Data::ByteBuffer chunkData(size);
 				if (fd->GetRealData(ofst + 8, size, chunkData) == size)
 				{
 					imgDelay = 1000 * (UInt32)ReadMUInt16(&chunkData[20]) / ReadMUInt16(&chunkData[22]);
@@ -2832,7 +2824,6 @@ IO::ParsedObject *Parser::FileParser::PNGParser::ParseFileHdr(IO::StreamData *fd
 					imgW = ReadMUInt32(&chunkData[4]);
 					imgH = ReadMUInt32(&chunkData[8]);
 				}
-				MemFree(chunkData);
 			}
 		}
 		else if (*(Int32*)&buff[4] == *(Int32*)"sBIT")
@@ -2842,7 +2833,7 @@ IO::ParsedObject *Parser::FileParser::PNGParser::ParseFileHdr(IO::StreamData *fd
 		{
 			if (ihdrFound)
 			{
-				chunkData = MemAlloc(UInt8, size);
+				Data::ByteBuffer chunkData(size);
 				if (fd->GetRealData(ofst + 8, size, chunkData) == size)
 				{
 					if (mstm == 0)
@@ -2858,21 +2849,20 @@ IO::ParsedObject *Parser::FileParser::PNGParser::ParseFileHdr(IO::StreamData *fd
 						}
 						NEW_CLASS(cstm, Data::Compress::InflateStream(mstm, 2, false));
 						NEW_CLASS(wcstm, IO::WriteCacheStream(cstm));
-						wcstm->Write(chunkData, size);
+						wcstm->Write(chunkData.Ptr(), size);
 					}
 					else
 					{
-						wcstm->Write(chunkData, size);
+						wcstm->Write(chunkData.Ptr(), size);
 					}
 				}
-				MemFree(chunkData);
 			}
 		}
 		else if (*(Int32*)&buff[4] == *(Int32*)"fdAT")
 		{
 			if (ihdrFound)
 			{
-				chunkData = MemAlloc(UInt8, size);
+				Data::ByteBuffer chunkData(size);
 				if (fd->GetRealData(ofst + 8, size, chunkData) == size)
 				{
 					if (mstm == 0)
@@ -2918,7 +2908,6 @@ IO::ParsedObject *Parser::FileParser::PNGParser::ParseFileHdr(IO::StreamData *fd
 						wcstm->Write(&chunkData[4], size - 4);
 					}
 				}
-				MemFree(chunkData);
 			}
 		}
 		else if (*(Int32*)&buff[4] == *(Int32*)"IEND")

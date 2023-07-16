@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Data/ByteBuffer.h"
 #include "Data/ByteTool.h"
 #include "Data/StringUTF8Map.h"
 #include "IO/PackageFile.h"
@@ -107,7 +108,7 @@ IO::ParsedObject *Parser::FileParser::ZIPParser::ParseFileHdr(IO::StreamData *fd
 	dt.ToLocalTime();
 	NEW_CLASS(pf, IO::PackageFile(fd->GetFullName()));
 
-	if (fd->GetRealData(fileSize - 22, 22, recHdr) == 22)
+	if (fd->GetRealData(fileSize - 22, 22, BYTEARR(recHdr)) == 22)
 	{
 		recType = ReadMUInt32(recHdr);
 		if (recType == 0x504B0506)
@@ -116,46 +117,44 @@ IO::ParsedObject *Parser::FileParser::ZIPParser::ParseFileHdr(IO::StreamData *fd
 			UInt32 ofstOfDir = ReadUInt32(&recHdr[16]);
 			if (sizeOfDir == 0xffffffff || ofstOfDir == 0xffffffff)
 			{
-				fd->GetRealData(fileSize - 42, 20, z64eocdl);
+				fd->GetRealData(fileSize - 42, 20, BYTEARR(z64eocdl));
 
 				if (ReadMUInt32(z64eocdl) == 0x504B0607)
 				{
 					UInt64 z64eocdOfst = ReadUInt64(&z64eocdl[8]);
-					fd->GetRealData(z64eocdOfst, 56, z64eocd);
+					fd->GetRealData(z64eocdOfst, 56, BYTEARR(z64eocd));
 					if (ReadMUInt32(z64eocd) == 0x504B0606)
 					{
 						UInt64 cdSize = ReadUInt64(&z64eocd[40]);
 						UInt64 cdOfst = ReadUInt64(&z64eocd[48]);
-						UInt8 *cdBuff;
 						if (cdSize <= 1048576)
 						{
-							cdBuff = MemAlloc(UInt8, (UOSInt)cdSize);
+							Data::ByteBuffer cdBuff((UOSInt)cdSize);
 							fd->GetRealData(cdOfst, (UOSInt)cdSize, cdBuff);
-							ParseCentDir(pf, &enc, fd, cdBuff, (UOSInt)cdSize, cdOfst);
-							MemFree(cdBuff);
+							ParseCentDir(pf, &enc, fd, cdBuff, cdOfst);
 						}
 						else
 						{
-							cdBuff = MemAlloc(UInt8, 1048576);
+							Data::ByteBuffer cdBuff(1048576);
 							UOSInt buffSize = 0;
 							ofst = 0;
 							while (ofst < cdSize)
 							{
 								if (1048576 < cdSize - ofst)
 								{
-									i = fd->GetRealData(cdOfst + ofst + buffSize, 1048576 - buffSize, &cdBuff[buffSize]);
+									i = fd->GetRealData(cdOfst + ofst + buffSize, 1048576 - buffSize, cdBuff.SubArray(buffSize));
 									buffSize += i;
 								}
 								else
 								{
-									i = fd->GetRealData(cdOfst + ofst + buffSize, (UOSInt)(cdSize - ofst), &cdBuff[buffSize]);
+									i = fd->GetRealData(cdOfst + ofst + buffSize, (UOSInt)(cdSize - ofst), cdBuff.SubArray(buffSize));
 									buffSize += i;
 								}
 								if (i == 0)
 								{
 									break;
 								}
-								i = ParseCentDir(pf, &enc, fd, cdBuff, buffSize, cdOfst + ofst);
+								i = ParseCentDir(pf, &enc, fd, cdBuff.WithSize(buffSize), cdOfst + ofst);
 								if (i == 0)
 								{
 									break;
@@ -168,11 +167,10 @@ IO::ParsedObject *Parser::FileParser::ZIPParser::ParseFileHdr(IO::StreamData *fd
 								else
 								{
 									ofst += i;
-									MemCopyO(cdBuff, &cdBuff[i], buffSize - i);
+									cdBuff.CopyInner(0, i, buffSize - i);
 									buffSize -= i;
 								}
 							}
-							MemFree(cdBuff);
 						}
 
 						parseFile = false;
@@ -181,17 +179,11 @@ IO::ParsedObject *Parser::FileParser::ZIPParser::ParseFileHdr(IO::StreamData *fd
 			}
 			else
 			{
-				UInt8 *centDir = MemAlloc(UInt8, sizeOfDir);
+				Data::ByteBuffer centDir(sizeOfDir);
 				if (fd->GetRealData(ofstOfDir, sizeOfDir, centDir) == sizeOfDir)
 				{
-					ParseCentDir(pf, &enc, fd, centDir, sizeOfDir, 0);
-					MemFree(centDir);
-
+					ParseCentDir(pf, &enc, fd, centDir, 0);
 					parseFile = false;
-				}
-				else
-				{
-					MemFree(centDir);
 				}
 			}
 		}
@@ -204,7 +196,7 @@ IO::ParsedObject *Parser::FileParser::ZIPParser::ParseFileHdr(IO::StreamData *fd
 		Data::StringUTF8Map<ZIPInfoEntry*> zipInfos;
 
 		printf("ZIPParser: Scan file\r\n");
-		fd->GetRealData(fileSize - 22, 22, buff);
+		fd->GetRealData(fileSize - 22, 22, BYTEARR(buff));
 		if (ReadInt32(buff) == 0x06054b50)
 		{
 			currOfst = ReadUInt32(&buff[16]);
@@ -216,7 +208,7 @@ IO::ParsedObject *Parser::FileParser::ZIPParser::ParseFileHdr(IO::StreamData *fd
 					{
 						break;
 					}
-					fd->GetRealData(currOfst, 512, buff);
+					fd->GetRealData(currOfst, 512, BYTEARR(buff));
 					if (ReadInt32(buff) == 0x08074b50)
 					{
 						currOfst += 16;
@@ -266,7 +258,7 @@ IO::ParsedObject *Parser::FileParser::ZIPParser::ParseFileHdr(IO::StreamData *fd
 				DEL_CLASS(pf);
 				return 0;
 			}
-			fd->GetRealData(currOfst, 512, buff);
+			fd->GetRealData(currOfst, 512, BYTEARR(buff));
 			if (ReadInt32(buff) == 0x04034b50)
 			{
 				UInt32 fnameSize = ReadUInt16(&buff[26]);
@@ -503,7 +495,7 @@ IO::ParsedObject *Parser::FileParser::ZIPParser::ParseFileHdr(IO::StreamData *fd
 	return pf;
 }
 
-UOSInt Parser::FileParser::ZIPParser::ParseCentDir(IO::PackageFile *pf, Text::Encoding *enc, IO::StreamData *fd, const UInt8 *buff, UOSInt buffSize, UInt64 ofst)
+UOSInt Parser::FileParser::ZIPParser::ParseCentDir(IO::PackageFile *pf, Text::Encoding *enc, IO::StreamData *fd, Data::ByteArrayR buff, UInt64 ofst)
 {
 	Data::DateTime dt;
 	IO::PackageFile *pf2;
@@ -522,9 +514,9 @@ UOSInt Parser::FileParser::ZIPParser::ParseCentDir(IO::PackageFile *pf, Text::En
 	UOSInt i;
 	UOSInt j;
 	i = 0;
-	while (i < buffSize)
+	while (i < buff.GetSize())
 	{
-		if (i + 46 > buffSize)
+		if (i + 46 > buff.GetSize())
 		{
 			return i;
 		}
@@ -544,7 +536,7 @@ UOSInt Parser::FileParser::ZIPParser::ParseCentDir(IO::PackageFile *pf, Text::En
 		dt.ToLocalTime();
 		dt.SetMSDOSTime(ReadUInt16(&buff[i + 14]), ReadUInt16(&buff[i + 12]));
 
-		if (i + 46 + (UOSInt)fnameLen + extraLen + commentLen > buffSize)
+		if (i + 46 + (UOSInt)fnameLen + extraLen + commentLen > buff.GetSize())
 		{
 			return i;
 		}

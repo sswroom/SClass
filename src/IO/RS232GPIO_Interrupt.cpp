@@ -133,7 +133,7 @@ IO::RS232GPIO::~RS232GPIO()
 	this->gpio->UnhandleInterrupt(IntHdlr, this);
 }
 
-UOSInt IO::RS232GPIO::Read(UInt8 *buff, UOSInt size)
+UOSInt IO::RS232GPIO::Read(const Data::ByteArray &buff)
 {
 	Manage::HiResClock clk;
 	clk.Start();
@@ -229,7 +229,7 @@ Bool IO::RS232GPIO::HasData()
 	return this->readBuffStart != this->readBuffEnd;
 }
 
-void *IO::RS232GPIO::BeginRead(UInt8 *buff, UOSInt size, Sync::Event *evt)
+void *IO::RS232GPIO::BeginRead(const Data::ByteArray &buff, Sync::Event *evt)
 {
 	void *ret = (void*)Read(buff, size);
 	if (ret)

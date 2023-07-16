@@ -887,7 +887,7 @@ void Media::ColorProfile::ToString(Text::StringBuilderUTF8 *sb) const
 
 	if (this->rawICC)
 	{
-		Media::ICCProfile *icc = Media::ICCProfile::Parse(rawICC, ReadMUInt32(this->rawICC));
+		Media::ICCProfile *icc = Media::ICCProfile::Parse(Data::ByteArrayR(rawICC, ReadMUInt32(this->rawICC)));
 		if (icc)
 		{
 			sb->AppendC(UTF8STRC("\r\n"));

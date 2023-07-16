@@ -201,12 +201,12 @@ Bool Net::TCPClient::IsDown() const
 	return false;
 }
 
-UOSInt Net::TCPClient::Read(UInt8 *buff, UOSInt size)
+UOSInt Net::TCPClient::Read(Data::ByteArray buff)
 {
 	if (s && (this->flags & 6) == 0)
 	{
 		Net::SocketFactory::ErrorType et;
-		UOSInt recvSize = sockf->ReceiveData(s, buff, size, &et);
+		UOSInt recvSize = sockf->ReceiveData(s, buff.Ptr(), buff.GetSize(), &et);
 		if (recvSize != 0)
 		{
 #ifdef PRINTDEBUG
@@ -292,12 +292,12 @@ UOSInt Net::TCPClient::Write(const UInt8 *buff, UOSInt size)
 	}
 }
 
-void *Net::TCPClient::BeginRead(UInt8 *buff, UOSInt size, Sync::Event *evt)
+void *Net::TCPClient::BeginRead(Data::ByteArray buff, Sync::Event *evt)
 {
 	if (s == 0 || (this->flags & 6) != 0)
 		return 0;
 	Net::SocketFactory::ErrorType et;
-	void *data = sockf->BeginReceiveData(s, buff, size, evt, &et);
+	void *data = sockf->BeginReceiveData(s, buff.Ptr(), buff.GetSize(), evt, &et);
 	if (data == 0)
 	{
 		if (et == Net::SocketFactory::ET_SHUTDOWN)

@@ -53,7 +53,7 @@ Bool Text::XMLReader::IsHTMLSkip()
 
 void Text::XMLReader::InitBuffer()
 {
-	this->rawBuffSize = this->stm->Read(this->rawBuff, BUFFSIZE);
+	this->rawBuffSize = this->stm->Read(Data::ByteArray(this->rawBuff, BUFFSIZE));
 	if (this->rawBuffSize >= 4)
 	{
 		if (this->rawBuff[0] == 0xFF && this->rawBuff[1] == 0xFE)
@@ -92,7 +92,7 @@ UOSInt Text::XMLReader::FillBuffer()
 {
 	if (this->enc && this->stmEnc)
 	{
-		UOSInt rawReadSize = this->stm->Read(&this->rawBuff[this->rawBuffSize], BUFFSIZE - this->rawBuffSize);
+		UOSInt rawReadSize = this->stm->Read(Data::ByteArray(&this->rawBuff[this->rawBuffSize], BUFFSIZE - this->rawBuffSize));
 		this->rawBuffSize += rawReadSize;
 		if (this->buffSize >= (BUFFSIZE >> 1))
 		{
@@ -118,7 +118,7 @@ UOSInt Text::XMLReader::FillBuffer()
 	}
 	else
 	{
-		return this->stm->Read(&this->readBuff[this->buffSize], BUFFSIZE - this->buffSize);
+		return this->stm->Read(Data::ByteArray(&this->readBuff[this->buffSize], BUFFSIZE - this->buffSize));
 	}
 }
 

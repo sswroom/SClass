@@ -1,4 +1,5 @@
 #include "Stdafx.h"
+#include "Data/ByteBuffer.h"
 #include "Data/ByteTool.h"
 #include "Data/UUID.h"
 #include "IO/FileAnalyse/LNKFileAnalyse.h"
@@ -24,12 +25,12 @@ UInt32 __stdcall IO::FileAnalyse::LNKFileAnalyse::ParseThread(void* userObj)
 	tag->tagType = TagType::ShellLinkHeader;
 	me->tags.Add(tag);
 	
-	me->fd->GetRealData(0, 24, tagHdr);
+	me->fd->GetRealData(0, 24, BYTEARR(tagHdr));
 	linkFlags = ReadUInt32(&tagHdr[20]);
 	ofst = 0x4C;
 	if (linkFlags & 1)
 	{
-		me->fd->GetRealData(ofst, 24, tagHdr);
+		me->fd->GetRealData(ofst, 24, BYTEARR(tagHdr));
 		tag = MemAlloc(IO::FileAnalyse::LNKFileAnalyse::TagInfo, 1);
 		tag->ofst = ofst;
 		tag->size = (UOSInt)ReadUInt16(&tagHdr[0]) + 2;
@@ -39,7 +40,7 @@ UInt32 __stdcall IO::FileAnalyse::LNKFileAnalyse::ParseThread(void* userObj)
 	}
 	if (linkFlags & 2)
 	{
-		me->fd->GetRealData(ofst, 24, tagHdr);
+		me->fd->GetRealData(ofst, 24, BYTEARR(tagHdr));
 		tag = MemAlloc(IO::FileAnalyse::LNKFileAnalyse::TagInfo, 1);
 		tag->ofst = ofst;
 		tag->size = ReadUInt32(&tagHdr[0]);
@@ -49,7 +50,7 @@ UInt32 __stdcall IO::FileAnalyse::LNKFileAnalyse::ParseThread(void* userObj)
 	}
 	if (linkFlags & 4)
 	{
-		me->fd->GetRealData(ofst, 24, tagHdr);
+		me->fd->GetRealData(ofst, 24, BYTEARR(tagHdr));
 		tag = MemAlloc(IO::FileAnalyse::LNKFileAnalyse::TagInfo, 1);
 		tag->ofst = ofst;
 		tag->size = (UOSInt)ReadUInt16(&tagHdr[0]) * 2 + 2;
@@ -59,7 +60,7 @@ UInt32 __stdcall IO::FileAnalyse::LNKFileAnalyse::ParseThread(void* userObj)
 	}
 	if (linkFlags & 8)
 	{
-		me->fd->GetRealData(ofst, 24, tagHdr);
+		me->fd->GetRealData(ofst, 24, BYTEARR(tagHdr));
 		tag = MemAlloc(IO::FileAnalyse::LNKFileAnalyse::TagInfo, 1);
 		tag->ofst = ofst;
 		tag->size = (UOSInt)ReadUInt16(&tagHdr[0]) * 2 + 2;
@@ -69,7 +70,7 @@ UInt32 __stdcall IO::FileAnalyse::LNKFileAnalyse::ParseThread(void* userObj)
 	}
 	if (linkFlags & 16)
 	{
-		me->fd->GetRealData(ofst, 24, tagHdr);
+		me->fd->GetRealData(ofst, 24, BYTEARR(tagHdr));
 		tag = MemAlloc(IO::FileAnalyse::LNKFileAnalyse::TagInfo, 1);
 		tag->ofst = ofst;
 		tag->size = (UOSInt)ReadUInt16(&tagHdr[0]) * 2 + 2;
@@ -79,7 +80,7 @@ UInt32 __stdcall IO::FileAnalyse::LNKFileAnalyse::ParseThread(void* userObj)
 	}
 	if (linkFlags & 32)
 	{
-		me->fd->GetRealData(ofst, 24, tagHdr);
+		me->fd->GetRealData(ofst, 24, BYTEARR(tagHdr));
 		tag = MemAlloc(IO::FileAnalyse::LNKFileAnalyse::TagInfo, 1);
 		tag->ofst = ofst;
 		tag->size = (UOSInt)ReadUInt16(&tagHdr[0]) * 2 + 2;
@@ -89,7 +90,7 @@ UInt32 __stdcall IO::FileAnalyse::LNKFileAnalyse::ParseThread(void* userObj)
 	}
 	if (linkFlags & 64)
 	{
-		me->fd->GetRealData(ofst, 24, tagHdr);
+		me->fd->GetRealData(ofst, 24, BYTEARR(tagHdr));
 		tag = MemAlloc(IO::FileAnalyse::LNKFileAnalyse::TagInfo, 1);
 		tag->ofst = ofst;
 		tag->size = (UOSInt)ReadUInt16(&tagHdr[0]) * 2 + 2;
@@ -99,7 +100,7 @@ UInt32 __stdcall IO::FileAnalyse::LNKFileAnalyse::ParseThread(void* userObj)
 	}
 	while (ofst < fileSize)
 	{
-		me->fd->GetRealData(ofst, 24, tagHdr);
+		me->fd->GetRealData(ofst, 24, BYTEARR(tagHdr));
 		UInt32 size = ReadUInt32(&tagHdr[0]);
 		if (size < 4)
 		{
@@ -134,7 +135,7 @@ IO::FileAnalyse::LNKFileAnalyse::LNKFileAnalyse(IO::StreamData* fd)
 	this->pauseParsing = false;
 	this->threadToStop = false;
 	this->threadStarted = false;
-	fd->GetRealData(0, 40, buff);
+	fd->GetRealData(0, 40, BYTEARR(buff));
 	if (ReadUInt32(&buff[0]) != 0x4C || ReadUInt32(&buff[4]) != 0x00021401 || ReadUInt32(&buff[8]) != 0 || ReadUInt32(&buff[12]) != 0xC0 || ReadUInt32(&buff[16]) != 0x46000000)
 	{
 		return;
@@ -216,7 +217,6 @@ IO::FileAnalyse::FrameDetail* IO::FileAnalyse::LNKFileAnalyse::GetFrameDetail(UO
 	IO::FileAnalyse::FrameDetail* frame;
 	UTF8Char sbuff[1024];
 	UTF8Char* sptr;
-	UInt8* tagData;
 	IO::FileAnalyse::LNKFileAnalyse::TagInfo* tag = this->tags.GetItem(index);
 	if (tag == 0)
 		return 0;
@@ -225,7 +225,7 @@ IO::FileAnalyse::FrameDetail* IO::FileAnalyse::LNKFileAnalyse::GetFrameDetail(UO
 	sptr = TagTypeGetName(tag->tagType).ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("Type=")));
 	frame->AddHeader(CSTRP(sbuff, sptr));
 
-	tagData = MemAlloc(UInt8, tag->size);
+	Data::ByteBuffer tagData(tag->size);
 	this->fd->GetRealData(tag->ofst, tag->size, tagData);
 	switch (tag->tagType)
 	{
@@ -588,7 +588,6 @@ IO::FileAnalyse::FrameDetail* IO::FileAnalyse::LNKFileAnalyse::GetFrameDetail(UO
 		break;
 	}
 	}
-	MemFree(tagData);
 	return frame;
 }
 

@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Data/ByteBuffer.h"
 #include "Data/ByteTool.h"
 #include "IO/PackageFile.h"
 #include "Parser/FileParser/PAC2Parser.h"
@@ -40,7 +41,6 @@ IO::ParsedObject *Parser::FileParser::PAC2Parser::ParseFileHdr(IO::StreamData *f
 	UTF8Char *sptr;
 
 	Int64 ofst;
-	UInt8 *recBuff;
 	UInt32 i;
 	UInt32 j;
 	UInt32 fileSize;
@@ -65,10 +65,9 @@ IO::ParsedObject *Parser::FileParser::PAC2Parser::ParseFileHdr(IO::StreamData *f
 		ofst = ofst + 16 - (ofst & 15);
 	if (dataOfst != ofst)
 		return 0;
-	recBuff = MemAlloc(UInt8, 268 * recCnt);
+	Data::ByteBuffer recBuff(268 * recCnt);
 	if (fd->GetRealData(16, 268 * recCnt, recBuff) != 268 * recCnt)
 	{
-		MemFree(recBuff);
 		return 0;
 	}
 
@@ -86,7 +85,6 @@ IO::ParsedObject *Parser::FileParser::PAC2Parser::ParseFileHdr(IO::StreamData *f
 		fnameSize = ReadUInt32(&recBuff[j + 264]);
 		if (fileOfst != nextOfst)
 		{
-			MemFree(recBuff);
 			DEL_CLASS(pf);
 			return 0;
 		}
@@ -99,7 +97,5 @@ IO::ParsedObject *Parser::FileParser::PAC2Parser::ParseFileHdr(IO::StreamData *f
 		i++;
 		j += 268;
 	}
-
-	MemFree(recBuff);
 	return pf;
 }

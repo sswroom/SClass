@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Data/ByteBuffer.h"
 #include "Data/ByteTool.h"
 #include "IO/PackageFile.h"
 #include "Parser/FileParser/PACParser.h"
@@ -35,7 +36,6 @@ IO::ParserType Parser::FileParser::PACParser::GetParserType()
 IO::ParsedObject *Parser::FileParser::PACParser::ParseFileHdr(IO::StreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	UInt32 recCnt;
-	UInt8 *recBuff;
 	UInt32 i;
 	UInt32 j;
 	UInt32 fileSize;
@@ -57,11 +57,10 @@ IO::ParsedObject *Parser::FileParser::PACParser::ParseFileHdr(IO::StreamData *fd
 	}
 	if (recCnt * 40 + 2048 + 4 >= fd->GetDataSize())
 		return 0;
-
-	recBuff = MemAlloc(UInt8, 40 * recCnt);
+	
+	Data::ByteBuffer recBuff(40 * recCnt);
 	if (fd->GetRealData(2052, 40 * recCnt, recBuff) != 40 * recCnt)
 	{
-		MemFree(recBuff);
 		return 0;
 	}
 
@@ -78,7 +77,6 @@ IO::ParsedObject *Parser::FileParser::PACParser::ParseFileHdr(IO::StreamData *fd
 		fileOfst = ReadUInt32(&recBuff[j + 36]);
 		if (fileOfst != nextOfst)
 		{
-			MemFree(recBuff);
 			DEL_CLASS(pf);
 			return 0;
 		}
@@ -89,7 +87,5 @@ IO::ParsedObject *Parser::FileParser::PACParser::ParseFileHdr(IO::StreamData *fd
 		i++;
 		j += 40;
 	}
-
-	MemFree(recBuff);
 	return pf;
 }

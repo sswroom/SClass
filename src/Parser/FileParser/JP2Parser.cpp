@@ -46,7 +46,7 @@ struct JP2Session
 OPJ_SIZE_T JP2Parser_Read(void * p_buffer, OPJ_SIZE_T p_nb_bytes, void * p_user_data)
 {
 	JP2Session *sess = (JP2Session*)p_user_data;
-	UOSInt readSize = sess->fd->GetRealData(sess->currOfst, (UOSInt)p_nb_bytes, (UInt8*)p_buffer);
+	UOSInt readSize = sess->fd->GetRealData(sess->currOfst, (UOSInt)p_nb_bytes, Data::ByteArray((UInt8*)p_buffer, p_nb_bytes));
 	sess->currOfst += readSize;
 	if (readSize == 0 && p_nb_bytes != 0)
 	{

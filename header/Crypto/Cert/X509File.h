@@ -201,8 +201,8 @@ namespace Crypto
 			static ECName ECNameFromOID(const UInt8 *oid, UOSInt oidLen);
 			static Bool AlgorithmIdentifierGet(const UInt8 *pdu, const UInt8 *pduEnd, AlgType *algType);
 
-			X509File(NotNullPtr<Text::String> sourceName, const UInt8 *buff, UOSInt buffSize);
-			X509File(Text::CString sourceName, const UInt8 *buff, UOSInt buffSize);
+			X509File(NotNullPtr<Text::String> sourceName, Data::ByteArrayR buff);
+			X509File(Text::CString sourceName, Data::ByteArrayR buff);
 		public:
 			virtual ~X509File();
 

@@ -87,7 +87,7 @@ Manage::ProcessExecution::~ProcessExecution()
 	MemFree(this->clsData);
 }
 
-UOSInt Manage::ProcessExecution::Read(UInt8 *buff, UOSInt size)
+UOSInt Manage::ProcessExecution::Read(const Data::ByteArray &buff)
 {
 	if (this->clsData->in[0] == 0)
 		return 0;

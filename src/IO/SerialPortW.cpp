@@ -369,7 +369,7 @@ Bool IO::SerialPort::IsDown() const
 	return false;
 }
 
-UOSInt IO::SerialPort::Read(UInt8 *buff, UOSInt size)
+UOSInt IO::SerialPort::Read(const Data::ByteArray &buff)
 {
 	UInt32 readCnt;
 	BOOL ret;
@@ -462,7 +462,7 @@ struct ReadEvent
 	OVERLAPPED ol;
 };
 
-void *IO::SerialPort::BeginRead(UInt8 *buff, UOSInt size, Sync::Event *evt)
+void *IO::SerialPort::BeginRead(const Data::ByteArray &buff, Sync::Event *evt)
 {
 	void *h = this->handle;
 	if (h == 0)

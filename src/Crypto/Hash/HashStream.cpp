@@ -17,12 +17,12 @@ Bool Crypto::Hash::HashStream::IsDown() const
 	return this->srcStm->IsDown();
 }
 
-UOSInt Crypto::Hash::HashStream::Read(UInt8 *buff, UOSInt size)
+UOSInt Crypto::Hash::HashStream::Read(Data::ByteArray buff)
 {
-	UOSInt retSize = this->srcStm->Read(buff, size);
+	UOSInt retSize = this->srcStm->Read(buff);
 	if (retSize > 0)
 	{
-		this->hash->Calc(buff, retSize);
+		this->hash->Calc(buff.Ptr(), retSize);
 	}
 	return retSize;
 }

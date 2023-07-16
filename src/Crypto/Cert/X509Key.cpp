@@ -4,12 +4,12 @@
 #include "Net/ASN1PDUBuilder.h"
 #include "Net/ASN1Util.h"
 
-Crypto::Cert::X509Key::X509Key(NotNullPtr<Text::String> sourceName, const UInt8 *buff, UOSInt buffSize, KeyType keyType) : Crypto::Cert::X509File(sourceName, buff, buffSize)
+Crypto::Cert::X509Key::X509Key(NotNullPtr<Text::String> sourceName, Data::ByteArrayR buff, KeyType keyType) : Crypto::Cert::X509File(sourceName, buff)
 {
 	this->keyType = keyType;
 }
 
-Crypto::Cert::X509Key::X509Key(Text::CString sourceName, const UInt8 *buff, UOSInt buffSize, KeyType keyType) : Crypto::Cert::X509File(sourceName, buff, buffSize)
+Crypto::Cert::X509Key::X509Key(Text::CString sourceName, Data::ByteArrayR buff, KeyType keyType) : Crypto::Cert::X509File(sourceName, buff)
 {
 	this->keyType = keyType;
 }
@@ -44,7 +44,7 @@ Crypto::Cert::X509File::ValidStatus Crypto::Cert::X509Key::IsValid(Net::SSLEngin
 Net::ASN1Data *Crypto::Cert::X509Key::Clone() const
 {
 	Crypto::Cert::X509Key *asn1;
-	NEW_CLASS(asn1, Crypto::Cert::X509Key(this->GetSourceNameObj(), this->buff, this->buffSize, this->keyType));
+	NEW_CLASS(asn1, Crypto::Cert::X509Key(this->GetSourceNameObj(), this->buff, this->keyType));
 	return asn1;
 }
 
@@ -237,7 +237,7 @@ Crypto::Cert::X509File::KeyType Crypto::Cert::X509Key::GetKeyType() const
 
 UOSInt Crypto::Cert::X509Key::GetKeySizeBits() const
 {
-	return KeyGetLeng(this->buff, this->buff + this->buffSize, this->keyType);
+	return KeyGetLeng(this->buff.Ptr(), this->buff.PtrEnd(), this->keyType);
 }
 
 Bool Crypto::Cert::X509Key::IsPrivateKey() const
@@ -275,7 +275,7 @@ Crypto::Cert::X509Key *Crypto::Cert::X509Key::CreatePublicKey() const
 		builder.AppendOther(Net::ASN1Util::IT_INTEGER, buff, buffSize);
 		builder.EndLevel();
 		Crypto::Cert::X509Key *key;
-		NEW_CLASS(key, Crypto::Cert::X509Key(this->GetSourceNameObj(), builder.GetBuff(&buffSize), builder.GetBuffSize(), KeyType::RSAPublic));
+		NEW_CLASS(key, Crypto::Cert::X509Key(this->GetSourceNameObj(), builder.GetArray(), KeyType::RSAPublic));
 		return key;
 	}
 	else if (this->keyType == KeyType::ECPublic)
@@ -306,11 +306,11 @@ const UInt8 *Crypto::Cert::X509Key::GetRSAModulus(UOSInt *size) const
 {
 	if (this->keyType == KeyType::RSA)
 	{
-		return Net::ASN1Util::PDUGetItem(this->buff, this->buff + this->buffSize, "1.2", size, 0);
+		return Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.2", size, 0);
 	}
 	else if (this->keyType == KeyType::RSAPublic)
 	{
-		return Net::ASN1Util::PDUGetItem(this->buff, this->buff + this->buffSize, "1.1", size, 0);
+		return Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.1", size, 0);
 	}
 	else
 	{
@@ -322,11 +322,11 @@ const UInt8 *Crypto::Cert::X509Key::GetRSAPublicExponent(UOSInt *size) const
 {
 	if (this->keyType == KeyType::RSA)
 	{
-		return Net::ASN1Util::PDUGetItem(this->buff, this->buff + this->buffSize, "1.3", size, 0);
+		return Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.3", size, 0);
 	}
 	else if (this->keyType == KeyType::RSAPublic)
 	{
-		return Net::ASN1Util::PDUGetItem(this->buff, this->buff + this->buffSize, "1.2", size, 0);
+		return Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.2", size, 0);
 	}
 	else
 	{
@@ -337,44 +337,44 @@ const UInt8 *Crypto::Cert::X509Key::GetRSAPublicExponent(UOSInt *size) const
 const UInt8 *Crypto::Cert::X509Key::GetRSAPrivateExponent(UOSInt *size) const
 {
 	if (this->keyType != KeyType::RSA) return 0;
-	return Net::ASN1Util::PDUGetItem(this->buff, this->buff + this->buffSize, "1.4", size, 0);
+	return Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.4", size, 0);
 }
 
 const UInt8 *Crypto::Cert::X509Key::GetRSAPrime1(UOSInt *size) const
 {
 	if (this->keyType != KeyType::RSA) return 0;
-	return Net::ASN1Util::PDUGetItem(this->buff, this->buff + this->buffSize, "1.5", size, 0);
+	return Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.5", size, 0);
 }
 
 const UInt8 *Crypto::Cert::X509Key::GetRSAPrime2(UOSInt *size) const
 {
 	if (this->keyType != KeyType::RSA) return 0;
-	return Net::ASN1Util::PDUGetItem(this->buff, this->buff + this->buffSize, "1.6", size, 0);
+	return Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.6", size, 0);
 }
 
 const UInt8 *Crypto::Cert::X509Key::GetRSAExponent1(UOSInt *size) const
 {
 	if (this->keyType != KeyType::RSA) return 0;
-	return Net::ASN1Util::PDUGetItem(this->buff, this->buff + this->buffSize, "1.7", size, 0);
+	return Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.7", size, 0);
 }
 
 const UInt8 *Crypto::Cert::X509Key::GetRSAExponent2(UOSInt *size) const
 {
 	if (this->keyType != KeyType::RSA) return 0;
-	return Net::ASN1Util::PDUGetItem(this->buff, this->buff + this->buffSize, "1.8", size, 0);
+	return Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.8", size, 0);
 }
 
 const UInt8 *Crypto::Cert::X509Key::GetRSACoefficient(UOSInt *size) const
 {
 	if (this->keyType != KeyType::RSA) return 0;
-	return Net::ASN1Util::PDUGetItem(this->buff, this->buff + this->buffSize, "1.9", size, 0);
+	return Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.9", size, 0);
 }
 
 const UInt8 *Crypto::Cert::X509Key::GetECPrivate(UOSInt *size) const
 {
 	if (this->keyType == KeyType::ECDSA)
 	{
-		return Net::ASN1Util::PDUGetItem(this->buff, this->buff + this->buffSize, "1.2", size, 0);
+		return Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.2", size, 0);
 	}
 	else
 	{
@@ -388,7 +388,7 @@ const UInt8 *Crypto::Cert::X509Key::GetECPublic(UOSInt *size) const
 	const UInt8 *itemPDU;
 	if (this->keyType == KeyType::ECPublic)
 	{
-		itemPDU = Net::ASN1Util::PDUGetItem(this->buff, this->buff + this->buffSize, "1.2", &itemLen, &itemType);
+		itemPDU = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.2", &itemLen, &itemType);
 		if (itemPDU != 0 && itemType == Net::ASN1Util::IT_BIT_STRING)
 		{
 			*size = itemLen - 1;
@@ -398,7 +398,7 @@ const UInt8 *Crypto::Cert::X509Key::GetECPublic(UOSInt *size) const
 	}
 	else if (this->keyType == KeyType::ECDSA)
 	{
-		itemPDU = Net::ASN1Util::PDUGetItem(this->buff, this->buff + this->buffSize, "1.3", &itemLen, &itemType);
+		itemPDU = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.3", &itemLen, &itemType);
 		if (itemPDU != 0 && itemType == Net::ASN1Util::IT_CONTEXT_SPECIFIC_1)
 		{
 			itemPDU = Net::ASN1Util::PDUGetItem(itemPDU, itemPDU + itemLen, "1", &itemLen, &itemType);
@@ -409,7 +409,7 @@ const UInt8 *Crypto::Cert::X509Key::GetECPublic(UOSInt *size) const
 			}
 			return 0;
 		}
-		itemPDU = Net::ASN1Util::PDUGetItem(this->buff, this->buff + this->buffSize, "1.4", &itemLen, &itemType);
+		itemPDU = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.4", &itemLen, &itemType);
 		if (itemPDU != 0 && itemType == Net::ASN1Util::IT_CONTEXT_SPECIFIC_1)
 		{
 			itemPDU = Net::ASN1Util::PDUGetItem(itemPDU, itemPDU + itemLen, "1", &itemLen, &itemType);
@@ -434,7 +434,7 @@ Crypto::Cert::X509File::ECName Crypto::Cert::X509Key::GetECName() const
 	{
 		Net::ASN1Util::ItemType itemType;
 		UOSInt size;
-		const UInt8 *itemPDU = Net::ASN1Util::PDUGetItem(this->buff, this->buff + this->buffSize, "1.1.2", &size, &itemType);
+		const UInt8 *itemPDU = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.1.2", &size, &itemType);
 		if (itemPDU != 0 && itemType == Net::ASN1Util::IT_OID)
 		{
 			return ECNameFromOID(itemPDU, size);
@@ -444,7 +444,7 @@ Crypto::Cert::X509File::ECName Crypto::Cert::X509Key::GetECName() const
 	{
 		Net::ASN1Util::ItemType itemType;
 		UOSInt size;
-		const UInt8 *itemPDU = Net::ASN1Util::PDUGetItem(this->buff, this->buff + this->buffSize, "1.3", &size, &itemType);
+		const UInt8 *itemPDU = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.3", &size, &itemType);
 		if (itemPDU != 0 && itemType == Net::ASN1Util::IT_CONTEXT_SPECIFIC_0)
 		{
 			itemPDU = Net::ASN1Util::PDUGetItem(itemPDU, itemPDU + size, "1", &size, &itemType);
@@ -467,6 +467,5 @@ Crypto::Cert::X509Key *Crypto::Cert::X509Key::FromECPublicKey(const UInt8 *buff,
 	pdu.EndLevel();
 	pdu.AppendBitString(0, buff, buffSize);
 	pdu.EndLevel();
-	UOSInt i;
-	return NEW_CLASS_D(X509Key(CSTR("ECPublic.key"), pdu.GetBuff(&i), pdu.GetBuffSize(), KeyType::ECPublic));
+	return NEW_CLASS_D(X509Key(CSTR("ECPublic.key"), pdu.GetArray(), KeyType::ECPublic));
 }

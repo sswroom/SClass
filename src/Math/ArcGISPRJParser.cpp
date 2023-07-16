@@ -47,7 +47,7 @@ Math::CoordinateSystem *Math::ArcGISPRJParser::ParsePRJFile(Text::CString fileNa
 		{
 			return 0;
 		}
-		buffSize = fs.Read(buff, 511);
+		buffSize = fs.Read(Data::ByteArray(buff, 511));
 		buff[buffSize] = 0;
 	}
 	if (buffSize == 511)

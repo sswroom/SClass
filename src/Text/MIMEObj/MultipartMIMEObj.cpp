@@ -393,7 +393,7 @@ Text::MIMEObj::MultipartMIMEObj *Text::MIMEObj::MultipartMIMEObj::ParseFile(Text
 
 			buffSize = (UOSInt)data->GetDataSize();
 			buff = MemAlloc(UInt8, buffSize + 1);
-			data->GetRealData(0, buffSize, buff);
+			data->GetRealData(0, buffSize, Data::ByteArray(buff, buffSize + 1));
 			buff[buffSize] = 0;
 
 			j = Text::StrIndexOfC(buff, buffSize, boundary.ToString(), boundary.GetLength());

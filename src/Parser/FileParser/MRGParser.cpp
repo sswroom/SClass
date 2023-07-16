@@ -55,7 +55,7 @@ IO::ParsedObject *Parser::FileParser::MRGParser::ParseFileHdr(IO::StreamData *fd
 
 	while (hdrOfst < startOfst)
 	{
-		fd->GetRealData(hdrOfst, 76, rec);
+		fd->GetRealData(hdrOfst, 76, BYTEARR(rec));
 		if (*(Int32*)&rec[68] != 0 || *(Int32*)&rec[72] != 0)
 		{
 			DEL_CLASS(pf);

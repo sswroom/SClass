@@ -23,7 +23,7 @@ UOSInt IO::FileSectorData::GetBytesPerSector() const
 	return this->sectorSize;
 }
 
-Bool IO::FileSectorData::ReadSector(UInt64 sectorNum, UInt8 *sectorBuff)
+Bool IO::FileSectorData::ReadSector(UInt64 sectorNum, Data::ByteArray sectorBuff)
 {
 	return this->data->GetRealData(sectorNum * sectorSize, sectorSize, sectorBuff) == sectorSize;
 }

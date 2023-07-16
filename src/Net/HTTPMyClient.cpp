@@ -96,23 +96,24 @@ Bool Net::HTTPMyClient::IsError() const
 	return this->cli == 0;
 }
 
-UOSInt Net::HTTPMyClient::ReadRAW(UInt8 *buff, UOSInt size)
+UOSInt Net::HTTPMyClient::ReadRAW(Data::ByteArray buff)
 {
 	this->EndRequest(0, 0);
 	if (this->respStatus == 0)
 		return 0;
 
-	if (size > BUFFSIZE)
+	if (buff.GetSize() > BUFFSIZE)
 	{
-		size = BUFFSIZE;
+		buff = buff.SubArray(0, BUFFSIZE);
 	}
 
-	if (size > (this->contLeng - this->contRead))
+	if (buff.GetSize() > (this->contLeng - this->contRead))
 	{
-		if ((size = (UOSInt)(this->contLeng - this->contRead)) <= 0)
+		if (this->contLeng <= this->contRead)
 		{
 			return 0;
 		}
+		buff = buff.SubArray(0, (UOSInt)(this->contLeng - this->contRead));
 	}
 #ifdef SHOWDEBUG
 	printf("Read size = %d\r\n", (Int32)size);
@@ -134,7 +135,7 @@ UOSInt Net::HTTPMyClient::ReadRAW(UInt8 *buff, UOSInt size)
 				{
 					return 0;
 				}
-				i = cli->Read(&this->dataBuff[this->buffSize], BUFFSIZE - 1 - this->buffSize);
+				i = cli->Read(Data::ByteArray(&this->dataBuff[this->buffSize], BUFFSIZE - 1 - this->buffSize));
 				if (i == 0 && this->buffSize <= 0)
 				{
 #ifdef SHOWDEBUG
@@ -163,7 +164,7 @@ UOSInt Net::HTTPMyClient::ReadRAW(UInt8 *buff, UOSInt size)
 			{
 				while (this->chunkSizeLeft > this->buffSize)
 				{
-					i = cli->Read(&this->dataBuff[this->buffSize], BUFFSIZE - 1 - this->buffSize);
+					i = cli->Read(Data::ByteArray(&this->dataBuff[this->buffSize], BUFFSIZE - 1 - this->buffSize));
 					if (i == 0)
 					{
 #ifdef SHOWDEBUG
@@ -192,16 +193,15 @@ UOSInt Net::HTTPMyClient::ReadRAW(UInt8 *buff, UOSInt size)
 				this->buffSize -= this->chunkSizeLeft;
 				this->chunkSizeLeft = 0;
 			}
-			else if (size >= this->buffSize)
+			else if (buff.GetSize() >= this->buffSize)
 			{
 				sizeOut = this->buffSize;
 				if (sizeOut > this->chunkSizeLeft)
 				{
 					sizeOut = this->chunkSizeLeft;
 				}
-				MemCopyNO(buff, this->dataBuff, sizeOut);
-				buff += sizeOut;
-				size -= sizeOut;
+				buff.CopyFrom(0, Data::ByteArray(this->dataBuff, sizeOut));
+				buff = buff.SubArray(sizeOut);
 				this->chunkSizeLeft -= sizeOut;
 				this->buffSize -= sizeOut;
 				if (this->buffSize > 0)
@@ -219,14 +219,13 @@ UOSInt Net::HTTPMyClient::ReadRAW(UInt8 *buff, UOSInt size)
 			}
 			else
 			{
-				sizeOut = size;
+				sizeOut = buff.GetSize();
 				if (sizeOut > this->chunkSizeLeft)
 				{
 					sizeOut = this->chunkSizeLeft;
 				}
-				MemCopyNO(buff, this->dataBuff, sizeOut);
-				buff += sizeOut;
-				size -= sizeOut;
+				buff.CopyFrom(0, Data::ByteArray(this->dataBuff, sizeOut));
+				buff = buff.SubArray(sizeOut);
 				this->chunkSizeLeft -= sizeOut;
 				this->buffSize -= sizeOut;
 				if (this->buffSize > 0)
@@ -252,7 +251,7 @@ UOSInt Net::HTTPMyClient::ReadRAW(UInt8 *buff, UOSInt size)
 		}
 		if (buffSize <= 0)
 		{
-			i = cli->Read(&this->dataBuff[this->buffSize], BUFFSIZE - 1 - this->buffSize);
+			i = cli->Read(Data::ByteArray(&this->dataBuff[this->buffSize], BUFFSIZE - 1 - this->buffSize));
 			if (i == 0 && this->buffSize <= 0)
 			{
 #ifdef SHOWDEBUG
@@ -285,7 +284,7 @@ UOSInt Net::HTTPMyClient::ReadRAW(UInt8 *buff, UOSInt size)
 #endif
 				return 0;
 			}
-			i = cli->Read(&this->dataBuff[this->buffSize], BUFFSIZE - 1 - this->buffSize);
+			i = cli->Read(Data::ByteArray(&this->dataBuff[this->buffSize], BUFFSIZE - 1 - this->buffSize));
 			if (i == 0)
 			{
 #ifdef SHOWDEBUG
@@ -354,7 +353,7 @@ UOSInt Net::HTTPMyClient::ReadRAW(UInt8 *buff, UOSInt size)
 		if (this->buffSize == i)
 		{
 			this->buffSize = 0;
-			i = cli->Read(this->dataBuff, BUFFSIZE - 1);
+			i = cli->Read(Data::ByteArray(this->dataBuff, BUFFSIZE - 1));
 			if (i == 0)
 			{
 #ifdef SHOWDEBUG
@@ -377,16 +376,15 @@ UOSInt Net::HTTPMyClient::ReadRAW(UInt8 *buff, UOSInt size)
 		}
 		if (this->buffSize > i)
 		{
-			if (size >= this->buffSize - i)
+			if (buff.GetSize() >= this->buffSize - i)
 			{
 				sizeOut = this->buffSize - i;
 				if (sizeOut > this->chunkSizeLeft)
 				{
 					sizeOut = this->chunkSizeLeft;
 				}
-				MemCopyNO(buff, &this->dataBuff[i], sizeOut);
-				buff += sizeOut;
-				size -= sizeOut;
+				buff.CopyFrom(0, Data::ByteArray(&this->dataBuff[i], sizeOut));
+				buff = buff.SubArray(sizeOut);
 				this->chunkSizeLeft -= sizeOut;
 				this->buffSize -= sizeOut + i;
 				if (this->buffSize > 0)
@@ -404,14 +402,13 @@ UOSInt Net::HTTPMyClient::ReadRAW(UInt8 *buff, UOSInt size)
 			}
 			else
 			{
-				sizeOut = size;
+				sizeOut = buff.GetSize();
 				if (sizeOut > this->chunkSizeLeft)
 				{
 					sizeOut = this->chunkSizeLeft;
 				}
-				MemCopyNO(buff, &this->dataBuff[i], sizeOut);
-				buff += sizeOut;
-				size -= sizeOut;
+				buff.CopyFrom(0, Data::ByteArray(&this->dataBuff[i], sizeOut));
+				buff = buff.SubArray(sizeOut);
 				this->chunkSizeLeft -= sizeOut;
 				this->buffSize -= sizeOut + i;
 				if (this->buffSize > 0)
@@ -445,7 +442,7 @@ UOSInt Net::HTTPMyClient::ReadRAW(UInt8 *buff, UOSInt size)
 			{
 				return 0;
 			}
-			this->buffSize = cli->Read(this->dataBuff, size);
+			this->buffSize = cli->Read(Data::ByteArray(this->dataBuff, buff.GetSize()));
 			this->totalDownload += this->buffSize;
 #ifdef SHOWDEBUG
 			printf("Read from remote(4) = %d\r\n", (Int32)this->buffSize);
@@ -466,24 +463,24 @@ UOSInt Net::HTTPMyClient::ReadRAW(UInt8 *buff, UOSInt size)
 				this->cli = 0;
 			}
 		}
-		if (this->buffSize >= size)
+		if (this->buffSize >= buff.GetSize())
 		{
-			MemCopyNO(buff, this->dataBuff, size);
-			if (this->buffSize > size)
+			buff.CopyFrom(0, Data::ByteArray(this->dataBuff, buff.GetSize()));
+			if (this->buffSize > buff.GetSize())
 			{
-				MemCopyO(this->dataBuff, &this->dataBuff[size], this->buffSize - size);
+				MemCopyO(this->dataBuff, &this->dataBuff[buff.GetSize()], this->buffSize - buff.GetSize());
 			}
-			this->buffSize -= size;
-			this->contRead += size;
+			this->buffSize -= buff.GetSize();
+			this->contRead += buff.GetSize();
 #ifdef SHOWDEBUG
-			printf("Return read size(12) = %d\r\n", (Int32)size);
+			printf("Return read size(12) = %d\r\n", (Int32)buff.GetSize());
 #endif
-			return size;
+			return buff.GetSize();
 		}
 		else
 		{
-			MemCopyNO(buff, this->dataBuff, this->buffSize);
-			size = this->buffSize;
+			buff.CopyFrom(0, Data::ByteArray(this->dataBuff, this->buffSize));
+			UOSInt size = this->buffSize;
 			this->contRead += this->buffSize;
 			this->buffSize = 0;
 #ifdef SHOWDEBUG
@@ -494,13 +491,13 @@ UOSInt Net::HTTPMyClient::ReadRAW(UInt8 *buff, UOSInt size)
 	}
 }
 
-UOSInt Net::HTTPMyClient::Read(UInt8 *buff, UOSInt size)
+UOSInt Net::HTTPMyClient::Read(Data::ByteArray buff)
 {
 	this->EndRequest(0, 0);
 	if (this->respStatus == 0)
 		return 0;
 
-	return this->ReadRAW(buff, size);
+	return this->ReadRAW(buff);
 }
 
 UOSInt Net::HTTPMyClient::Write(const UInt8 *buff, UOSInt size)
@@ -772,7 +769,7 @@ Bool Net::HTTPMyClient::Connect(Text::CString url, Net::WebUtil::RequestMethod m
 			{
 				size = (UOSInt)(this->contLeng - this->contRead);
 			}
-			size = this->cli->Read(this->dataBuff, size);
+			size = this->cli->Read(Data::ByteArray(this->dataBuff, size));
 			this->totalDownload += size;
 #ifdef SHOWDEBUG
 			printf("Read from remote(5), size = %d\r\n", (Int32)size);
@@ -1016,7 +1013,7 @@ void Net::HTTPMyClient::EndRequest(Double *timeReq, Double *timeResp)
 		this->buffSize = 0;
 		while (this->buffSize < 32)
 		{
-			UOSInt recvSize = cli->Read(&this->dataBuff[this->buffSize], BUFFSIZE - 1 - this->buffSize);
+			UOSInt recvSize = cli->Read(Data::ByteArray(&this->dataBuff[this->buffSize], BUFFSIZE - 1 - this->buffSize));
 #ifdef SHOWDEBUG
 			printf("Read from remote(6) = %d\r\n", (Int32)recvSize);
 #endif
@@ -1159,7 +1156,7 @@ void Net::HTTPMyClient::EndRequest(Double *timeReq, Double *timeResp)
 				this->hdrLen += (UOSInt)(ptr - (UTF8Char*)this->dataBuff);
 				this->buffSize = (UOSInt)(ptrEnd - ptr);
 				MemCopyO(this->dataBuff, ptr, this->buffSize);
-				i = cli->Read(&this->dataBuff[this->buffSize], BUFFSIZE - 1 - this->buffSize);
+				i = cli->Read(Data::ByteArray(&this->dataBuff[this->buffSize], BUFFSIZE - 1 - this->buffSize));
 				if (i <= 0)
 				{
 					header = false;

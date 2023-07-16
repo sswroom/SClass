@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Data/ByteBuffer.h"
 #include "Data/ByteTool.h"
 #include "IO/PackageFile.h"
 #include "Parser/FileParser/CABParser.h"
@@ -41,7 +42,6 @@ IO::ParsedObject *Parser::FileParser::CABParser::ParseFileHdr(IO::StreamData *fd
 	UInt32 dataOfst;
 	UInt32 recSize;
 	UInt32 recCnt;
-	UInt8 *recBuff;
 	UInt32 i;
 	Int32 j;
 	UInt32 fileSize;
@@ -78,10 +78,9 @@ IO::ParsedObject *Parser::FileParser::CABParser::ParseFileHdr(IO::StreamData *fd
 		return 0;
 	}
 
-	recBuff = MemAlloc(UInt8, recSize);
+	Data::ByteBuffer recBuff(recSize);
 	if (fd->GetRealData(273, recSize, recBuff) != recSize)
 	{
-		MemFree(recBuff);
 		return 0;
 	}
 
@@ -97,7 +96,6 @@ IO::ParsedObject *Parser::FileParser::CABParser::ParseFileHdr(IO::StreamData *fd
 		fileSize = ReadUInt32(&recBuff[j + 36]);
 		if (fileOfst != nextOfst)
 		{
-			MemFree(recBuff);
 			DEL_CLASS(pf);
 			return 0;
 		}
@@ -108,7 +106,5 @@ IO::ParsedObject *Parser::FileParser::CABParser::ParseFileHdr(IO::StreamData *fd
 		i++;
 		j += 40;
 	}
-
-	MemFree(recBuff);
 	return pf;
 }

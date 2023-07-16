@@ -17,10 +17,10 @@ namespace IO
 		virtual ~StreamDataStream();
 
 		virtual Bool IsDown() const;
-		virtual UOSInt Read(UInt8 *buff, UOSInt size);
+		virtual UOSInt Read(Data::ByteArray buff);
 		virtual UOSInt Write(const UInt8 *buff, UOSInt size);
 
-		virtual void *BeginRead(UInt8 *buff, UOSInt size, Sync::Event *evt);
+		virtual void *BeginRead(Data::ByteArray buff, Sync::Event *evt);
 		virtual UOSInt EndRead(void *reqData, Bool toWait, Bool *incomplete);
 		virtual void CancelRead(void *reqData);
 		virtual void *BeginWrite(const UInt8 *buff, UOSInt size, Sync::Event *evt);

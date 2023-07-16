@@ -185,7 +185,7 @@ void Media::MPAStreamSource::Stop()
 	this->pbEvt = 0;
 }
 
-UOSInt Media::MPAStreamSource::ReadBlock(UInt8 *buff, UOSInt blkSize)
+UOSInt Media::MPAStreamSource::ReadBlock(Data::ByteArray blk)
 {
 	UOSInt bSize;
 	Sync::MutexUsage mutUsage(&this->buffMut);
@@ -317,14 +317,14 @@ UOSInt Media::MPAStreamSource::ReadBlock(UInt8 *buff, UOSInt blkSize)
 			}
 
 			this->lastFrameSize = frameSize;
-			if (blkSize < frStart + frameSize)
+			if (blk.GetSize() < frStart + frameSize)
 			{
 				buffSize2 = frStart;
 				frStart = (UOSInt)-1;
 			}
 			else if (frStart + frameSize <= buffSize2)
 			{
-				MemCopyNO(buff, this->dataBuff2, frStart + frameSize);
+				blk.CopyFrom(Data::ByteArrayR(this->dataBuff2, frStart + frameSize));
 				this->buffStart += frStart + frameSize;
 				if (this->buffStart >= this->buffSize)
 				{
@@ -341,21 +341,21 @@ UOSInt Media::MPAStreamSource::ReadBlock(UInt8 *buff, UOSInt blkSize)
 			}
 		}
 	}
-	if (buffSize2 >= blkSize)
+	if (buffSize2 >= blk.GetSize())
 	{
-		MemCopyNO(buff, this->dataBuff2, blkSize);
-		this->buffStart += blkSize;
+		blk.CopyFrom(Data::ByteArrayR(this->dataBuff2, blk.GetSize()));
+		this->buffStart += blk.GetSize();
 		if (this->buffStart >= this->buffSize)
 		{
 			this->buffStart -= this->buffSize;
 		}
-		this->buffSample += blkSize;
+		this->buffSample += blk.GetSize();
 		mutUsage.EndUse();
-		return blkSize;
+		return blk.GetSize();
 	}
 	else
 	{
-		MemCopyNO(buff, this->dataBuff2, buffSize2);
+		blk.CopyFrom(Data::ByteArrayR(this->dataBuff2, buffSize2));
 		this->buffStart += buffSize2;
 		if (this->buffStart >= this->buffSize)
 		{

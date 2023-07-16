@@ -1,4 +1,5 @@
 #include "Stdafx.h"
+#include "Data/ByteBuffer.h"
 #include "Data/ByteTool.h"
 #include "IO/FileStream.h"
 #include "IO/FileAnalyse/MPEGFileAnalyse.h"
@@ -32,7 +33,7 @@ UInt32 __stdcall IO::FileAnalyse::MPEGFileAnalyse::ParseThread(void *userObj)
 		{
 			if (buffSize < 256)
 			{
-				readSize = me->fd->GetRealData(readOfst, 256 - buffSize, &readBuff[buffSize]);
+				readSize = me->fd->GetRealData(readOfst, 256 - buffSize, BYTEARR(readBuff).SubArray(buffSize));
 				buffSize += readSize;
 				readOfst += readSize;
 			}
@@ -120,7 +121,7 @@ IO::FileAnalyse::MPEGFileAnalyse::MPEGFileAnalyse(IO::StreamData *fd)
 	this->pauseParsing = false;
 	this->threadToStop = false;
 	this->threadStarted = false;
-	fd->GetRealData(0, 256, buff);
+	fd->GetRealData(0, 256, BYTEARR(buff));
 	if (ReadMInt32(buff) != 0x000001ba)
 	{
 		return;
@@ -216,12 +217,11 @@ Bool IO::FileAnalyse::MPEGFileAnalyse::GetFrameName(UOSInt index, Text::StringBu
 Bool IO::FileAnalyse::MPEGFileAnalyse::GetFrameDetail(UOSInt index, Text::StringBuilderUTF8 *sb)
 {
 	IO::FileAnalyse::MPEGFileAnalyse::PackInfo *pack;
-	UInt8 *packBuff;
 	pack = this->packs.GetItem(index);
 	if (pack == 0)
 		return false;
 
-	packBuff = MemAlloc(UInt8, pack->packSize);
+	Data::ByteBuffer packBuff(pack->packSize);
 	this->fd->GetRealData(pack->fileOfst, pack->packSize, packBuff);
 
 	switch (packBuff[3])
@@ -747,8 +747,6 @@ Bool IO::FileAnalyse::MPEGFileAnalyse::GetFrameDetail(UOSInt index, Text::String
 		}
 		break;
 	}
-
-	MemFree(packBuff);
 	return true;
 }
 
@@ -784,14 +782,13 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::MPEGFileAnalyse::GetFrameDetail(U
 	IO::FileAnalyse::MPEGFileAnalyse::PackInfo *pack;
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
-	UInt8 *packBuff;
 	pack = this->packs.GetItem(index);
 	if (pack == 0)
 		return 0;
 
 	NEW_CLASS(frame, IO::FileAnalyse::FrameDetail(pack->fileOfst, (UInt32)pack->packSize));
 
-	packBuff = MemAlloc(UInt8, pack->packSize);
+	Data::ByteBuffer packBuff(pack->packSize);
 	this->fd->GetRealData(pack->fileOfst, pack->packSize, packBuff);
 
 	switch (packBuff[3])
@@ -1213,8 +1210,6 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::MPEGFileAnalyse::GetFrameDetail(U
 		}
 		break;
 	}
-
-	MemFree(packBuff);
 	return frame;
 }
 
@@ -1230,7 +1225,6 @@ Bool IO::FileAnalyse::MPEGFileAnalyse::IsParsing()
 
 Bool IO::FileAnalyse::MPEGFileAnalyse::TrimPadding(Text::CString outputFile)
 {
-	UInt8 *readBuff;
 	UOSInt readSize;
 	UOSInt buffSize;
 	UOSInt j;
@@ -1244,14 +1238,14 @@ Bool IO::FileAnalyse::MPEGFileAnalyse::TrimPadding(Text::CString outputFile)
 		DEL_CLASS(dfs);
 		return false;
 	}
-	readBuff = MemAlloc(UInt8, 1048576);
+	Data::ByteBuffer readBuff(1048576);
 	buffSize = 0;
 	readOfst = 0;
 	while (true)
 	{
 		if (buffSize < 256)
 		{
-			readSize = this->fd->GetRealData(readOfst, 256, &readBuff[buffSize]);
+			readSize = this->fd->GetRealData(readOfst, 256, readBuff.SubArray(buffSize));
 			readOfst += readSize;
 			buffSize += readSize;
 		}
@@ -1268,7 +1262,7 @@ Bool IO::FileAnalyse::MPEGFileAnalyse::TrimPadding(Text::CString outputFile)
 		}
 		if (j >= buffSize - 4 && buffSize > 4)
 		{
-			MemCopyO(readBuff, &readBuff[j], buffSize - j);
+			readBuff.CopyInner(0, j, buffSize - j);
 			buffSize -= j;
 			continue;
 		}
@@ -1307,7 +1301,7 @@ Bool IO::FileAnalyse::MPEGFileAnalyse::TrimPadding(Text::CString outputFile)
 			dfs->Write(&readBuff[j], frameSize);
 			if (j + frameSize < buffSize)
 			{
-				MemCopyO(readBuff, &readBuff[j + frameSize], buffSize - j - frameSize);
+				readBuff.CopyInner(0, j + frameSize, buffSize - j - frameSize);
 				buffSize -= j + frameSize;
 			}
 			else
@@ -1317,7 +1311,7 @@ Bool IO::FileAnalyse::MPEGFileAnalyse::TrimPadding(Text::CString outputFile)
 		}
 		else
 		{
-			readSize = this->fd->GetRealData(readOfst, j + frameSize - buffSize, &readBuff[buffSize]);
+			readSize = this->fd->GetRealData(readOfst, j + frameSize - buffSize, readBuff.SubArray(buffSize));
 			readOfst += readSize;
 			if (readSize == j + frameSize - buffSize)
 			{
@@ -1331,8 +1325,6 @@ Bool IO::FileAnalyse::MPEGFileAnalyse::TrimPadding(Text::CString outputFile)
 			}
 		}
 	}
-
-	MemFree(readBuff);
 	DEL_CLASS(dfs);
 	return valid;
 }

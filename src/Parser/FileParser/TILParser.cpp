@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Data/ByteBuffer.h"
 #include "Data/ByteTool.h"
 #include "IO/PackageFile.h"
 #include "Parser/FileParser/TILParser.h"
@@ -58,7 +59,7 @@ IO::ParsedObject *Parser::FileParser::TILParser::ParseFileHdr(IO::StreamData *fd
 		}
 		UOSInt indexSize = (UOSInt)(fileSize - dirOfst);
 		UOSInt i;
-		UInt8 *indexBuff = MemAlloc(UInt8, indexSize);
+		Data::ByteBuffer indexBuff(indexSize);
 		fd->GetRealData(dirOfst, indexSize, indexBuff);
 		i = 0;
 		while (i < indexSize)
@@ -76,7 +77,6 @@ IO::ParsedObject *Parser::FileParser::TILParser::ParseFileHdr(IO::StreamData *fd
 			pf->AddData(fd, ReadUInt64(&indexBuff[i + 16]), ReadUInt64(&indexBuff[i + 24]), CSTRP(fileName, srcPtr), Data::Timestamp(timeTicks, 0));
 			i += 32;
 		}
-		MemFree(indexBuff);
 	}
 	else if (flags & 1)
 	{
@@ -84,7 +84,7 @@ IO::ParsedObject *Parser::FileParser::TILParser::ParseFileHdr(IO::StreamData *fd
 		dirOfst = 16;
 		while (dirOfst < fileSize)
 		{
-			if (fd->GetRealData(dirOfst, 32, indexBuff) != 32)
+			if (fd->GetRealData(dirOfst, 32, BYTEARR(indexBuff)) != 32)
 				break;
 
 			UInt64 fileOfst;

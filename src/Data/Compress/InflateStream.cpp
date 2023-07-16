@@ -60,7 +60,7 @@ Bool Data::Compress::InflateStream::IsDown() const
 	return this->outStm->IsDown();
 }
 
-UOSInt Data::Compress::InflateStream::Read(UInt8 *buff, UOSInt size)
+UOSInt Data::Compress::InflateStream::Read(Data::ByteArray buff)
 {
 	return 0;
 }

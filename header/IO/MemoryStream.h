@@ -1,5 +1,6 @@
 #ifndef _SM_IO_MEMORYSTREAM
 #define _SM_IO_MEMORYSTREAM
+#include "Data/ByteBuffer.h"
 #include "IO/SeekableStream.h"
 
 namespace IO
@@ -7,10 +8,9 @@ namespace IO
 	class MemoryStream : public SeekableStream
 	{
 	private:
-		UOSInt capacity;
+		Data::ByteBuffer buff;
 		UOSInt currPtr;
 		UOSInt currSize;
-		UInt8 *memPtr;
 	public:
 		MemoryStream();
 		MemoryStream(UOSInt capacity);
@@ -18,9 +18,10 @@ namespace IO
 
 		UInt8 *GetBuff();
 		UInt8 *GetBuff(UOSInt *buffSize);
+		Data::ByteArray GetArray() const;
 
 		virtual Bool IsDown() const;
-		virtual UOSInt Read(UInt8 *buff, UOSInt size);
+		virtual UOSInt Read(Data::ByteArray buff);
 		virtual UOSInt Write(const UInt8 *buff, UOSInt size);
 
 		virtual Int32 Flush();

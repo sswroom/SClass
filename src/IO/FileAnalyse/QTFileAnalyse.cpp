@@ -1,6 +1,7 @@
 #include "Stdafx.h"
-#include "Data/ByteTool.h"
 #include "Data/ArrayListInt32.h"
+#include "Data/ByteBuffer.h"
+#include "Data/ByteTool.h"
 #include "IO/FileAnalyse/QTFileAnalyse.h"
 #include "Sync/SimpleThread.h"
 #include "Sync/ThreadUtil.h"
@@ -29,7 +30,7 @@ void IO::FileAnalyse::QTFileAnalyse::ParseRange(UOSInt lev, UInt64 ofst, UInt64 
 		}
 		else
 		{
-			this->fd->GetRealData(ofst, 16, buff);
+			this->fd->GetRealData(ofst, 16, BYTEARR(buff));
 			sz = ReadMUInt32(&buff[0]);
 			if (sz == 1)
 			{
@@ -109,7 +110,7 @@ IO::FileAnalyse::QTFileAnalyse::QTFileAnalyse(IO::StreamData *fd)
 	this->threadToStop = false;
 	this->threadStarted = false;
 	this->maxLev = 0;
-	fd->GetRealData(0, 8, buff);
+	fd->GetRealData(0, 8, BYTEARR(buff));
 	if (ReadInt32(&buff[4]) != *(Int32*)"ftyp" && ReadInt32(&buff[4]) != *(Int32*)"moov")
 	{
 		return;
@@ -171,7 +172,6 @@ Bool IO::FileAnalyse::QTFileAnalyse::GetFrameName(UOSInt index, Text::StringBuil
 Bool IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOSInt index, Text::StringBuilderUTF8 *sb)
 {
 	IO::FileAnalyse::QTFileAnalyse::PackInfo *pack;
-	UInt8 *packBuff;
 	UInt8 buff[5];
 	UOSInt i;
 	UOSInt j;
@@ -194,7 +194,7 @@ Bool IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOSInt index, Text::StringBu
 
 	if (pack->packType == *(Int32*)"ftyp")
 	{
-		packBuff = MemAlloc(UInt8, (UOSInt)(pack->packSize - 8));
+		Data::ByteBuffer packBuff((UOSInt)(pack->packSize - 8));
 		this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)pack->packSize - 8, packBuff);
 
 		sb->AppendC(UTF8STRC("\r\nMajor_Brand = "));
@@ -214,27 +214,23 @@ Bool IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOSInt index, Text::StringBu
 
 			i += 4;
 		}
-
-		MemFree(packBuff);
 	}
 	else if (pack->packType == *(Int32*)"free")
 	{
 		if (pack->packSize > 8)
 		{
-			packBuff = MemAlloc(UInt8, (UOSInt)(pack->packSize - 8));
+			Data::ByteBuffer packBuff((UOSInt)(pack->packSize - 8));
 			this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
 
 			sb->AppendC(UTF8STRC("\r\nData:\r\n"));
-			sb->AppendHexBuff(packBuff, (UOSInt)(pack->packSize - 8), ' ', Text::LineBreakType::CRLF);
-
-			MemFree(packBuff);
+			sb->AppendHexBuff(packBuff, ' ', Text::LineBreakType::CRLF);
 		}
 	}
 	else if (pack->packType == *(Int32*)"pnot")
 	{
 		if (pack->packSize >= 20)
 		{
-			packBuff = MemAlloc(UInt8, (UOSInt)(pack->packSize - 8));
+			Data::ByteBuffer packBuff((UOSInt)(pack->packSize - 8));
 			this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
 
 			sb->AppendC(UTF8STRC("\r\nModification date = "));
@@ -246,7 +242,6 @@ Bool IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOSInt index, Text::StringBu
 			sb->AppendSlow((UTF8Char*)buff);
 			sb->AppendC(UTF8STRC("\r\nAtom Index = "));
 			sb->AppendU16(ReadMUInt16(&packBuff[10]));
-			MemFree(packBuff);
 		}
 	}
 	else if (pack->packType == *(Int32*)"mvhd")
@@ -254,7 +249,7 @@ Bool IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOSInt index, Text::StringBu
 		if (pack->packSize >= 108)
 		{
 			Data::DateTime dt;
-			packBuff = MemAlloc(UInt8, (UOSInt)(pack->packSize - 8));
+			Data::ByteBuffer packBuff((UOSInt)(pack->packSize - 8));
 			this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
 
 			sb->AppendC(UTF8STRC("\r\nVersion = "));
@@ -310,8 +305,6 @@ Bool IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOSInt index, Text::StringBu
 			sb->AppendI32(ReadMInt32(&packBuff[92]));
 			sb->AppendC(UTF8STRC("\r\nNext track ID = "));
 			sb->AppendI32(ReadMInt32(&packBuff[96]));
-
-			MemFree(packBuff);
 		}
 	}
 	else if (pack->packType == *(Int32*)"tkhd")
@@ -319,7 +312,7 @@ Bool IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOSInt index, Text::StringBu
 		if (pack->packSize >= 92)
 		{
 			Data::DateTime dt;
-			packBuff = MemAlloc(UInt8, (UOSInt)(pack->packSize - 8));
+			Data::ByteBuffer packBuff((UOSInt)(pack->packSize - 8));
 			this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
 
 			sb->AppendC(UTF8STRC("\r\nVersion = "));
@@ -371,8 +364,6 @@ Bool IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOSInt index, Text::StringBu
 			Text::SBAppendF64(sb, ReadMInt32(&packBuff[76]) / 65536.0);
 			sb->AppendC(UTF8STRC("\r\nTrack Height = "));
 			Text::SBAppendF64(sb, ReadMInt32(&packBuff[80]) / 65536.0);
-
-			MemFree(packBuff);
 		}
 	}
 	else if (pack->packType == *(Int32*)"mdhd")
@@ -380,7 +371,7 @@ Bool IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOSInt index, Text::StringBu
 		if (pack->packSize >= 32)
 		{
 			Data::DateTime dt;
-			packBuff = MemAlloc(UInt8, (UOSInt)(pack->packSize - 8));
+			Data::ByteBuffer packBuff((UOSInt)(pack->packSize - 8));
 			this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
 
 			sb->AppendC(UTF8STRC("\r\nVersion = "));
@@ -401,15 +392,13 @@ Bool IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOSInt index, Text::StringBu
 			sb->AppendI16(ReadMInt16(&packBuff[20]));
 			sb->AppendC(UTF8STRC("\r\nQuality = "));
 			sb->AppendI16(ReadMInt16(&packBuff[22]));
-
-			MemFree(packBuff);
 		}
 	}
 	else if (pack->packType == *(Int32*)"hdlr")
 	{
 		if (pack->packSize >= 32)
 		{
-			packBuff = MemAlloc(UInt8, (UOSInt)(pack->packSize - 8));
+			Data::ByteBuffer packBuff((UOSInt)(pack->packSize - 8));
 			this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
 
 			sb->AppendC(UTF8STRC("\r\nVersion = "));
@@ -430,15 +419,13 @@ Bool IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOSInt index, Text::StringBu
 			sb->AppendI32(ReadMInt32(&packBuff[20]));
 			sb->AppendC(UTF8STRC("\r\nComponent name = "));
 			sb->AppendC((UTF8Char*)&packBuff[24], (UOSInt)(pack->packSize - 32));
-
-			MemFree(packBuff);
 		}
 	}
 	else if (pack->packType == *(Int32*)"vmhd")
 	{
 		if (pack->packSize >= 20)
 		{
-			packBuff = MemAlloc(UInt8, (UOSInt)(pack->packSize - 8));
+			Data::ByteBuffer packBuff((UOSInt)(pack->packSize - 8));
 			this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
 
 			sb->AppendC(UTF8STRC("\r\nVersion = "));
@@ -453,15 +440,13 @@ Bool IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOSInt index, Text::StringBu
 			sb->AppendU16(ReadMUInt16(&packBuff[8]));
 			sb->AppendC(UTF8STRC("\r\nOpcolor Blue = "));
 			sb->AppendU16(ReadMUInt16(&packBuff[10]));
-
-			MemFree(packBuff);
 		}
 	}
 	else if (pack->packType == *(Int32*)"smhd")
 	{
 		if (pack->packSize >= 16)
 		{
-			packBuff = MemAlloc(UInt8, (UOSInt)(pack->packSize - 8));
+			Data::ByteBuffer packBuff((UOSInt)(pack->packSize - 8));
 			this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
 
 			sb->AppendC(UTF8STRC("\r\nVersion = "));
@@ -472,15 +457,13 @@ Bool IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOSInt index, Text::StringBu
 			sb->AppendU16(ReadMUInt16(&packBuff[4]));
 			sb->AppendC(UTF8STRC("\r\nReserved = "));
 			sb->AppendU16(ReadMUInt16(&packBuff[6]));
-
-			MemFree(packBuff);
 		}
 	}
 	else if (pack->packType == *(Int32*)"dref")
 	{
 		if (pack->packSize >= 16)
 		{
-			packBuff = MemAlloc(UInt8, (UOSInt)(pack->packSize - 8));
+			Data::ByteBuffer packBuff((UOSInt)(pack->packSize - 8));
 			this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
 
 			sb->AppendC(UTF8STRC("\r\nVersion = "));
@@ -510,15 +493,13 @@ Bool IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOSInt index, Text::StringBu
 				k += l;
 				i++;
 			}
-
-			MemFree(packBuff);
 		}
 	}
 	else if (pack->packType == *(Int32*)"stsd")
 	{
 		if (pack->packSize >= 16)
 		{
-			packBuff = MemAlloc(UInt8, (UOSInt)(pack->packSize - 8));
+			Data::ByteBuffer packBuff((UOSInt)(pack->packSize - 8));
 			this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
 
 			sb->AppendC(UTF8STRC("\r\nVersion = "));
@@ -642,15 +623,13 @@ Bool IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOSInt index, Text::StringBu
 				k += l;
 				i++;
 			}
-
-			MemFree(packBuff);
 		}
 	}
 	else if (pack->packType == *(Int32*)"stts")
 	{
 		if (pack->packSize >= 16)
 		{
-			packBuff = MemAlloc(UInt8, (UOSInt)(pack->packSize - 8));
+			Data::ByteBuffer packBuff((UOSInt)(pack->packSize - 8));
 			this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
 
 			sb->AppendC(UTF8STRC("\r\nVersion = "));
@@ -674,15 +653,13 @@ Bool IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOSInt index, Text::StringBu
 				k += 8;
 				i++;
 			}
-
-			MemFree(packBuff);
 		}
 	}
 	else if (pack->packType == *(Int32*)"ctts")
 	{
 		if (pack->packSize >= 16)
 		{
-			packBuff = MemAlloc(UInt8, (UOSInt)(pack->packSize - 8));
+			Data::ByteBuffer packBuff((UOSInt)(pack->packSize - 8));
 			this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
 
 			sb->AppendC(UTF8STRC("\r\nVersion = "));
@@ -710,15 +687,13 @@ Bool IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOSInt index, Text::StringBu
 				k += 8;
 				i++;
 			}
-
-			MemFree(packBuff);
 		}
 	}
 	else if (pack->packType == *(Int32*)"stss")
 	{
 		if (pack->packSize >= 16)
 		{
-			packBuff = MemAlloc(UInt8, (UOSInt)(pack->packSize - 8));
+			Data::ByteBuffer packBuff((UOSInt)(pack->packSize - 8));
 			this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
 
 			sb->AppendC(UTF8STRC("\r\nVersion = "));
@@ -746,15 +721,13 @@ Bool IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOSInt index, Text::StringBu
 				k += 4;
 				i++;
 			}
-
-			MemFree(packBuff);
 		}
 	}
 	else if (pack->packType == *(Int32*)"stsc")
 	{
 		if (pack->packSize >= 16)
 		{
-			packBuff = MemAlloc(UInt8, (UOSInt)(pack->packSize - 8));
+			Data::ByteBuffer packBuff((UOSInt)(pack->packSize - 8));
 			this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
 
 			sb->AppendC(UTF8STRC("\r\nVersion = "));
@@ -784,15 +757,13 @@ Bool IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOSInt index, Text::StringBu
 				k += 12;
 				i++;
 			}
-
-			MemFree(packBuff);
 		}
 	}
 	else if (pack->packType == *(Int32*)"stsz")
 	{
 		if (pack->packSize >= 20)
 		{
-			packBuff = MemAlloc(UInt8, (UOSInt)(pack->packSize - 8));
+			Data::ByteBuffer packBuff((UOSInt)(pack->packSize - 8));
 			this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
 
 			sb->AppendC(UTF8STRC("\r\nVersion = "));
@@ -822,15 +793,13 @@ Bool IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOSInt index, Text::StringBu
 				k += 4;
 				i++;
 			}
-
-			MemFree(packBuff);
 		}
 	}
 	else if (pack->packType == *(Int32*)"stco")
 	{
 		if (pack->packSize >= 20)
 		{
-			packBuff = MemAlloc(UInt8, (UOSInt)(pack->packSize - 8));
+			Data::ByteBuffer packBuff((UOSInt)(pack->packSize - 8));
 			this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
 
 			sb->AppendC(UTF8STRC("\r\nVersion = "));
@@ -858,15 +827,13 @@ Bool IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOSInt index, Text::StringBu
 				k += 4;
 				i++;
 			}
-
-			MemFree(packBuff);
 		}
 	}
 	else if (pack->packType == *(Int32*)"co64")
 	{
 		if (pack->packSize >= 20)
 		{
-			packBuff = MemAlloc(UInt8, (UOSInt)(pack->packSize - 8));
+			Data::ByteBuffer packBuff((UOSInt)(pack->packSize - 8));
 			this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
 
 			sb->AppendC(UTF8STRC("\r\nVersion = "));
@@ -894,8 +861,6 @@ Bool IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOSInt index, Text::StringBu
 				k += 8;
 				i++;
 			}
-
-			MemFree(packBuff);
 		}
 	}
 	return true;
@@ -924,7 +889,6 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOS
 {
 	IO::FileAnalyse::FrameDetail *frame;
 	IO::FileAnalyse::QTFileAnalyse::PackInfo *pack;
-	UInt8 *packBuff;
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
 	UOSInt i;
@@ -965,7 +929,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOS
 	}
 	else if (pack->packType == *(Int32*)"ftyp")
 	{
-		packBuff = MemAlloc(UInt8, (UOSInt)(pack->packSize - 8));
+		Data::ByteBuffer packBuff((UOSInt)(pack->packSize - 8));
 		this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)pack->packSize - 8, packBuff);
 		frame->AddStrS(8, 4, CSTR("Major_Brand"), &packBuff[0]);
 		frame->AddHex32(12, CSTR("Minor_Version"), ReadMUInt32(&packBuff[4]));
@@ -977,29 +941,26 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOS
 			frame->AddStrS(i + 8, 4, CSTRP(sbuff, sptr), &packBuff[i]);
 			i += 4;
 		}
-		MemFree(packBuff);
 	}
 	else if (pack->packType == *(Int32*)"free")
 	{
 		if (pack->packSize > 8)
 		{
-			packBuff = MemAlloc(UInt8, (UOSInt)(pack->packSize - 8));
+			Data::ByteBuffer packBuff((UOSInt)(pack->packSize - 8));
 			this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
-			frame->AddHexBuff(8, (UOSInt)(pack->packSize - 8), CSTR("Data"), packBuff, true);
-			MemFree(packBuff);
+			frame->AddHexBuff(8, CSTR("Data"), packBuff, true);
 		}
 	}
 	else if (pack->packType == *(Int32*)"pnot")
 	{
 		if (pack->packSize >= 20)
 		{
-			packBuff = MemAlloc(UInt8, (UOSInt)(pack->packSize - 8));
+			Data::ByteBuffer packBuff((UOSInt)(pack->packSize - 8));
 			this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
 			frame->AddInt(8, 4, CSTR("Modification date"), ReadMInt32(&packBuff[0]));
 			frame->AddUInt(12, 2, CSTR("Version number"), ReadMUInt16(&packBuff[4]));
 			frame->AddStrS(14, 4, CSTR("Atom type"), &packBuff[6]);
 			frame->AddInt(18, 2, CSTR("Atom Index"), ReadMUInt16(&packBuff[10]));
-			MemFree(packBuff);
 		}
 	}
 	else if (pack->packType == *(Int32*)"mvhd")
@@ -1007,7 +968,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOS
 		if (pack->packSize >= 108)
 		{
 			Data::DateTime dt;
-			packBuff = MemAlloc(UInt8, (UOSInt)(pack->packSize - 8));
+			Data::ByteBuffer packBuff((UOSInt)(pack->packSize - 8));
 			this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
 			frame->AddUInt(8, 1, CSTR("Version"), packBuff[0]);
 			frame->AddHex24(9, CSTR("Flags"), ReadMUInt24(&packBuff[1]));
@@ -1049,7 +1010,6 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOS
 			frame->AddUInt(96, 4, CSTR("Selection duration"), ReadMUInt32(&packBuff[88]));
 			frame->AddUInt(100, 4, CSTR("Current time"), ReadMUInt32(&packBuff[92]));
 			frame->AddUInt(104, 4, CSTR("Next track ID"), ReadMUInt32(&packBuff[96]));
-			MemFree(packBuff);
 		}
 	}
 	else if (pack->packType == *(Int32*)"tkhd")
@@ -1057,7 +1017,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOS
 		if (pack->packSize >= 92)
 		{
 			Data::DateTime dt;
-			packBuff = MemAlloc(UInt8, (UOSInt)(pack->packSize - 8));
+			Data::ByteBuffer packBuff((UOSInt)(pack->packSize - 8));
 			this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
 			frame->AddUInt(8, 1, CSTR("Version"), packBuff[0]);
 			frame->AddHex24(9, CSTR("Flags"), ReadMUInt24(&packBuff[1]));
@@ -1097,7 +1057,6 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOS
 			frame->AddField(48, 36, CSTR("Matrix"), sb.ToCString());
 			frame->AddFloat(84, 4, CSTR("Track Width"), ReadMInt32(&packBuff[76]) / 65536.0);
 			frame->AddFloat(88, 4, CSTR("Track Height"), ReadMInt32(&packBuff[80]) / 65536.0);
-			MemFree(packBuff);
 		}
 	}
 	else if (pack->packType == *(Int32*)"mdhd")
@@ -1105,7 +1064,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOS
 		if (pack->packSize >= 32)
 		{
 			Data::DateTime dt;
-			packBuff = MemAlloc(UInt8, (UOSInt)(pack->packSize - 8));
+			Data::ByteBuffer packBuff((UOSInt)(pack->packSize - 8));
 			this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
 			frame->AddUInt(8, 1, CSTR("Version"), packBuff[0]);
 			frame->AddHex24(9, CSTR("Flags"), ReadMUInt24(&packBuff[1]));
@@ -1119,14 +1078,13 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOS
 			frame->AddUInt(24, 4, CSTR("Duration"), ReadMUInt32(&packBuff[16]));
 			frame->AddUInt(28, 2, CSTR("Language"), ReadMUInt16(&packBuff[20]));
 			frame->AddUInt(30, 2, CSTR("Quality"), ReadMUInt16(&packBuff[22]));
-			MemFree(packBuff);
 		}
 	}
 	else if (pack->packType == *(Int32*)"hdlr")
 	{
 		if (pack->packSize >= 32)
 		{
-			packBuff = MemAlloc(UInt8, (UOSInt)(pack->packSize - 8));
+			Data::ByteBuffer packBuff((UOSInt)(pack->packSize - 8));
 			this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
 			frame->AddUInt(8, 1, CSTR("Version"), packBuff[0]);
 			frame->AddHex24(9, CSTR("Flags"), ReadMUInt24(&packBuff[1]));
@@ -1136,14 +1094,13 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOS
 			frame->AddUInt(24, 4, CSTR("Component flags"), ReadMUInt32(&packBuff[16]));
 			frame->AddUInt(28, 4, CSTR("Component flags mask"), ReadMUInt32(&packBuff[20]));
 			frame->AddStrC(32, (UOSInt)pack->packSize - 32, CSTR("Component name"),&packBuff[24]);
-			MemFree(packBuff);
 		}
 	}
 	else if (pack->packType == *(Int32*)"vmhd")
 	{
 		if (pack->packSize >= 20)
 		{
-			packBuff = MemAlloc(UInt8, (UOSInt)(pack->packSize - 8));
+			Data::ByteBuffer packBuff((UOSInt)(pack->packSize - 8));
 			this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
 			frame->AddUInt(8, 1, CSTR("Version"), packBuff[0]);
 			frame->AddHex24(9, CSTR("Flags"), ReadMUInt24(&packBuff[1]));
@@ -1151,27 +1108,25 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOS
 			frame->AddUInt(14, 2, CSTR("Opcolor Red"), ReadMUInt16(&packBuff[6]));
 			frame->AddUInt(16, 2, CSTR("Opcolor Green"), ReadMUInt16(&packBuff[8]));
 			frame->AddUInt(18, 2, CSTR("Opcolor Blue"), ReadMUInt16(&packBuff[10]));
-			MemFree(packBuff);
 		}
 	}
 	else if (pack->packType == *(Int32*)"smhd")
 	{
 		if (pack->packSize >= 16)
 		{
-			packBuff = MemAlloc(UInt8, (UOSInt)(pack->packSize - 8));
+			Data::ByteBuffer packBuff((UOSInt)(pack->packSize - 8));
 			this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
 			frame->AddUInt(8, 1, CSTR("Version"), packBuff[0]);
 			frame->AddHex24(9, CSTR("Flags"), ReadMUInt24(&packBuff[1]));
 			frame->AddUInt(12, 2, CSTR("Balance"), ReadMUInt16(&packBuff[4]));
 			frame->AddUInt(14, 2, CSTR("Reserved"), ReadMUInt16(&packBuff[6]));
-			MemFree(packBuff);
 		}
 	}
 	else if (pack->packType == *(Int32*)"dref")
 	{
 		if (pack->packSize >= 16)
 		{
-			packBuff = MemAlloc(UInt8, (UOSInt)(pack->packSize - 8));
+			Data::ByteBuffer packBuff((UOSInt)(pack->packSize - 8));
 			this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
 			frame->AddUInt(8, 1, CSTR("Version"), packBuff[0]);
 			frame->AddHex24(9, CSTR("Flags"), ReadMUInt24(&packBuff[1]));
@@ -1193,15 +1148,13 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOS
 				k += l;
 				i++;
 			}
-
-			MemFree(packBuff);
 		}
 	}
 	else if (pack->packType == *(Int32*)"stsd")
 	{
 		if (pack->packSize >= 16)
 		{
-			packBuff = MemAlloc(UInt8, (UOSInt)(pack->packSize - 8));
+			Data::ByteBuffer packBuff((UOSInt)(pack->packSize - 8));
 			this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
 			frame->AddUInt(8, 1, CSTR("Version"), packBuff[0]);
 			frame->AddHex24(9, CSTR("Flags"), ReadMUInt24(&packBuff[1]));
@@ -1286,15 +1239,13 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOS
 				k += l;
 				i++;
 			}
-
-			MemFree(packBuff);
 		}
 	}
 	else if (pack->packType == *(Int32*)"stts")
 	{
 		if (pack->packSize >= 16)
 		{
-			packBuff = MemAlloc(UInt8, (UOSInt)(pack->packSize - 8));
+			Data::ByteBuffer packBuff((UOSInt)(pack->packSize - 8));
 			this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
 			frame->AddUInt(8, 1, CSTR("Version"), packBuff[0]);
 			frame->AddHex24(9, CSTR("Flags"), ReadMUInt24(&packBuff[1]));
@@ -1312,15 +1263,13 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOS
 				k += 8;
 				i++;
 			}
-
-			MemFree(packBuff);
 		}
 	}
 	else if (pack->packType == *(Int32*)"ctts")
 	{
 		if (pack->packSize >= 16)
 		{
-			packBuff = MemAlloc(UInt8, (UOSInt)(pack->packSize - 8));
+			Data::ByteBuffer packBuff((UOSInt)(pack->packSize - 8));
 			this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
 			frame->AddUInt(8, 1, CSTR("Version"), packBuff[0]);
 			frame->AddHex24(9, CSTR("Flags"), ReadMUInt24(&packBuff[1]));
@@ -1342,15 +1291,13 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOS
 				k += 8;
 				i++;
 			}
-
-			MemFree(packBuff);
 		}
 	}
 	else if (pack->packType == *(Int32*)"stss")
 	{
 		if (pack->packSize >= 16)
 		{
-			packBuff = MemAlloc(UInt8, (UOSInt)(pack->packSize - 8));
+			Data::ByteBuffer packBuff((UOSInt)(pack->packSize - 8));
 			this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
 			frame->AddUInt(8, 1, CSTR("Version"), packBuff[0]);
 			frame->AddHex24(9, CSTR("Flags"), ReadMUInt24(&packBuff[1]));
@@ -1372,15 +1319,13 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOS
 				k += 4;
 				i++;
 			}
-
-			MemFree(packBuff);
 		}
 	}
 	else if (pack->packType == *(Int32*)"stsc")
 	{
 		if (pack->packSize >= 16)
 		{
-			packBuff = MemAlloc(UInt8, (UOSInt)(pack->packSize - 8));
+			Data::ByteBuffer packBuff((UOSInt)(pack->packSize - 8));
 			this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
 			frame->AddUInt(8, 1, CSTR("Version"), packBuff[0]);
 			frame->AddHex24(9, CSTR("Flags"), ReadMUInt24(&packBuff[1]));
@@ -1403,15 +1348,13 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOS
 				k += 12;
 				i++;
 			}
-
-			MemFree(packBuff);
 		}
 	}
 	else if (pack->packType == *(Int32*)"stsz")
 	{
 		if (pack->packSize >= 20)
 		{
-			packBuff = MemAlloc(UInt8, (UOSInt)(pack->packSize - 8));
+			Data::ByteBuffer packBuff((UOSInt)(pack->packSize - 8));
 			this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
 			frame->AddUInt(8, 1, CSTR("Version"), packBuff[0]);
 			frame->AddHex24(9, CSTR("Flags"), ReadMUInt24(&packBuff[1]));
@@ -1434,15 +1377,13 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOS
 				k += 4;
 				i++;
 			}
-
-			MemFree(packBuff);
 		}
 	}
 	else if (pack->packType == *(Int32*)"stco")
 	{
 		if (pack->packSize >= 20)
 		{
-			packBuff = MemAlloc(UInt8, (UOSInt)(pack->packSize - 8));
+			Data::ByteBuffer packBuff((UOSInt)(pack->packSize - 8));
 			this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
 			frame->AddUInt(8, 1, CSTR("Version"), packBuff[0]);
 			frame->AddHex24(9, CSTR("Flags"), ReadMUInt24(&packBuff[1]));
@@ -1464,15 +1405,13 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOS
 				k += 4;
 				i++;
 			}
-
-			MemFree(packBuff);
 		}
 	}
 	else if (pack->packType == *(Int32*)"co64")
 	{
 		if (pack->packSize >= 20)
 		{
-			packBuff = MemAlloc(UInt8, (UOSInt)(pack->packSize - 8));
+			Data::ByteBuffer packBuff((UOSInt)(pack->packSize - 8));
 			this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
 			frame->AddUInt(8, 1, CSTR("Version"), packBuff[0]);
 			frame->AddHex24(9, CSTR("Flags"), ReadMUInt24(&packBuff[1]));
@@ -1494,8 +1433,6 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOS
 				k += 8;
 				i++;
 			}
-
-			MemFree(packBuff);
 		}
 	}
 	return frame;

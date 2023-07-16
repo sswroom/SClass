@@ -2,10 +2,13 @@
 #include "MyMemory.h"
 #include "IO/MemoryReadingStream.h"
 
-IO::MemoryReadingStream::MemoryReadingStream(const UTF8Char *buff, UOSInt buffSize) : IO::SeekableStream(CSTR("MemoryReadingStream"))
+IO::MemoryReadingStream::MemoryReadingStream(const UTF8Char *buff, UOSInt buffSize) : IO::SeekableStream(CSTR("MemoryReadingStream")), buff(buff, buffSize)
 {
-	this->buff = buff;
-	this->buffSize = buffSize;
+	this->currPtr = 0;
+}
+
+IO::MemoryReadingStream::MemoryReadingStream(Data::ByteArrayR buff) : IO::SeekableStream(CSTR("MemoryReadingStream")), buff(buff)
+{
 	this->currPtr = 0;
 }
 
@@ -18,14 +21,14 @@ Bool IO::MemoryReadingStream::IsDown() const
 	return false;
 }
 
-UOSInt IO::MemoryReadingStream::Read(UInt8 *buff, UOSInt size)
+UOSInt IO::MemoryReadingStream::Read(Data::ByteArray buff)
 {
-	UOSInt readSize = size;
-	if (this->buffSize - this->currPtr < readSize)
+	UOSInt readSize = buff.GetSize();
+	if (this->buff.GetSize() - this->currPtr < readSize)
 	{
-		readSize = this->buffSize - this->currPtr;
+		readSize = this->buff.GetSize() - this->currPtr;
 	}
-	MemCopyNO(buff, &this->buff[this->currPtr], readSize);
+	buff.CopyFrom(0, this->buff.SubArray(this->currPtr, readSize));
 	this->currPtr += readSize;
 	return readSize;
 }
@@ -58,7 +61,7 @@ UInt64 IO::MemoryReadingStream::SeekFromBeginning(UInt64 position)
 {
 	UInt64 outPos = position;
 
-	if (outPos > this->buffSize)
+	if (outPos > this->buff.GetSize())
 		return this->currPtr;
 	this->currPtr = (UOSInt)outPos;
 	return this->currPtr;
@@ -79,10 +82,10 @@ UInt64 IO::MemoryReadingStream::SeekFromCurrent(Int64 position)
 UInt64 IO::MemoryReadingStream::SeekFromEnd(Int64 position)
 {
 	UInt64 outPos;
-	if (position < 0 && this->buffSize < (UInt64)-position)
+	if (position < 0 && this->buff.GetSize() < (UInt64)-position)
 		outPos = 0;
 	else
-		outPos = (UInt64)((Int64)this->buffSize + position);
+		outPos = (UInt64)((Int64)this->buff.GetSize() + position);
 	return SeekFromBeginning(outPos);
 }
 
@@ -93,5 +96,5 @@ UInt64 IO::MemoryReadingStream::GetPosition()
 
 UInt64 IO::MemoryReadingStream::GetLength()
 {
-	return this->buffSize;
+	return this->buff.GetSize();
 }

@@ -121,11 +121,11 @@ Bool IO::FileStream::IsError()
 	return (OSInt)this->handle == 0;
 }
 
-UOSInt IO::FileStream::Read(UInt8 *buff, UOSInt size)
+UOSInt IO::FileStream::Read(Data::ByteArray buff)
 {
 	if (this->handle == 0)
 		return 0;
-	OSInt readSize = read((int)(OSInt)this->handle, buff, size);
+	OSInt readSize = read((int)(OSInt)this->handle, buff.GetPtr(), buff.GetSize());
 	if (readSize >= 0)
 	{
 		this->currPos += (UOSInt)readSize;
@@ -518,7 +518,7 @@ UOSInt IO::FileStream::LoadFile(Text::CString fileName, UInt8 *buff, UOSInt maxB
 	{
 		return 0;
 	}
-	UOSInt readSize = fs.Read(buff, maxBuffSize);
+	UOSInt readSize = fs.Read(Data::ByteArray(buff, maxBuffSize));
 	if (readSize == fileLen)
 	{
 		return readSize;

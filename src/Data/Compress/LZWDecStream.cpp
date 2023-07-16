@@ -83,34 +83,32 @@ Bool Data::Compress::LZWDecStream::IsDown() const
 	return false;
 }
 
-UOSInt Data::Compress::LZWDecStream::Read(UInt8 *buff, UOSInt size)
+UOSInt Data::Compress::LZWDecStream::Read(Data::ByteArray buff)
 {
 	UOSInt writeSize = 0;
 	UInt32 code;
 
 	if (this->decBuffSize > 0)
 	{
-		if (this->decBuffSize >= size)
+		if (this->decBuffSize >= buff.GetSize())
 		{
-			MemCopyNO(buff, this->decBuff, size);
-			buff += size;
-			this->decBuffSize -= size;
+			buff.CopyFrom(Data::ByteArrayR(this->decBuff, buff.GetSize()));
+			this->decBuffSize -= buff.GetSize();
 			if (this->decBuffSize > 0)
 			{
-				MemCopyO(this->decBuff, &this->decBuff[size], this->decBuffSize);
+				MemCopyO(this->decBuff, &this->decBuff[buff.GetSize()], this->decBuffSize);
 			}
-			return size;
+			return buff.GetSize();
 		}
 		else
 		{
-			MemCopyNO(buff, this->decBuff, this->decBuffSize);
-			buff += this->decBuffSize;
+			buff.CopyFrom(Data::ByteArrayR(this->decBuff, this->decBuffSize));
 			writeSize += this->decBuffSize;
-			size -= this->decBuffSize;
+			buff += this->decBuffSize;
 			this->decBuffSize = 0;
 		}
 	}
-	if (size <= 0)
+	if (buff.GetSize() <= 0)
 	{
 		return writeSize;
 	}
@@ -138,7 +136,7 @@ UOSInt Data::Compress::LZWDecStream::Read(UInt8 *buff, UOSInt size)
 					*buff++ = (UInt8)code;
 					this->localCode = code;
 					writeSize++;
-					if (--size <= 0)
+					if (buff.GetSize() <= 0)
 					{
 						return writeSize;
 					}
@@ -171,29 +169,27 @@ UOSInt Data::Compress::LZWDecStream::Read(UInt8 *buff, UOSInt size)
 					}
 	
 					code = this->localCode;
-					if (codeSize >= size)
+					if (codeSize >= buff.GetSize())
 					{
-						i = codeSize - size;
+						i = codeSize - buff.GetSize();
 						this->decBuffSize = i;
 						while (i-- > 0)
 						{
 							this->decBuff[i] = this->lzwTable[code * 4 + 2];
 							code = *(UInt16*)&this->lzwTable[code * 4];
 						}
-						i = size;
+						i = buff.GetSize();
 						while (i-- > 0)
 						{
 							buff[i] = this->lzwTable[code * 4 + 2];
 							code = *(UInt16*)&this->lzwTable[code * 4];
 						}
-						buff += size;
-						writeSize += size;
+						writeSize += buff.GetSize();
 						return writeSize;
 					}
 					else
 					{
 						writeSize += codeSize;
-						size -= codeSize;
 						i = codeSize;
 						while (i-- > 0)
 						{

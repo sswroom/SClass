@@ -18,7 +18,7 @@ namespace Crypto
 			virtual ~HashStream();
 
 			virtual Bool IsDown() const;
-			virtual UOSInt Read(UInt8 *buff, UOSInt size);
+			virtual UOSInt Read(Data::ByteArray buff);
 			virtual UOSInt Write(const UInt8 *buff, UOSInt size);
 
 			virtual Int32 Flush();

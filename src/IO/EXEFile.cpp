@@ -256,7 +256,7 @@ Bool IO::EXEFile::GetFileTime(Text::CString fileName, Data::DateTime *fileTimeOu
 	{
 		return false;
 	}
-	if (fs.Read(buff, 64) != 64)
+	if (fs.Read(BYTEARR(buff)) != 64)
 	{
 		return false;
 	}
@@ -270,7 +270,7 @@ Bool IO::EXEFile::GetFileTime(Text::CString fileName, Data::DateTime *fileTimeOu
 		return false;
 	}
 	fs.SeekFromBeginning(ofst);
-	if (fs.Read(buff, 64) != 64)
+	if (fs.Read(BYTEARR(buff)) != 64)
 	{
 		return false;
 	}

@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Data/ByteBuffer.h"
 #include "Data/ByteTool.h"
 #include "IO/PackageFile.h"
 #include "Parser/FileParser/GamedatPac2Parser.h"
@@ -35,7 +36,6 @@ IO::ParserType Parser::FileParser::GamedatPac2Parser::GetParserType()
 IO::ParsedObject *Parser::FileParser::GamedatPac2Parser::ParseFileHdr(IO::StreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	UInt32 recCnt;
-	UInt8 *recBuff;
 	UInt32 i;
 	UInt32 j;
 	UInt32 fileSize;
@@ -55,10 +55,9 @@ IO::ParsedObject *Parser::FileParser::GamedatPac2Parser::ParseFileHdr(IO::Stream
 	if (recCnt == 0 || recCnt >= 65536)
 		return 0;
 
-	recBuff = MemAlloc(UInt8, recCnt * 40);
+	Data::ByteBuffer recBuff(recCnt * 40);
 	if (fd->GetRealData(16, recCnt * 40, recBuff) != recCnt * 40)
 	{
-		MemFree(recBuff);
 		return 0;
 	}
 
@@ -76,7 +75,6 @@ IO::ParsedObject *Parser::FileParser::GamedatPac2Parser::ParseFileHdr(IO::Stream
 		fileSize = ReadUInt32(&recBuff[j + 4]);
 		if (fileOfst != nextOfst)
 		{
-			MemFree(recBuff);
 			DEL_CLASS(pf);
 			return 0;
 		}
@@ -87,7 +85,5 @@ IO::ParsedObject *Parser::FileParser::GamedatPac2Parser::ParseFileHdr(IO::Stream
 		i++;
 		j += 8;
 	}
-
-	MemFree(recBuff);
 	return pf;
 }

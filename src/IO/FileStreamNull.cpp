@@ -31,7 +31,7 @@ Bool IO::FileStream::IsError()
 	return true;
 }
 
-UOSInt IO::FileStream::Read(UInt8 *buff, UOSInt size)
+UOSInt IO::FileStream::Read(const Data::ByteArray &buff)
 {
 	return 0;
 }
