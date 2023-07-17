@@ -63,7 +63,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 				{
 					UOSInt readSize;
 					totalReadSize = 0;
-					while ((readSize = cli->Read(buff, 2048)) > 0)
+					while ((readSize = cli->Read(BYTEARR(buff))) > 0)
 					{
 						totalReadSize += readSize;
 					}

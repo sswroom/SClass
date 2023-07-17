@@ -1,4 +1,5 @@
 #include "Stdafx.h"
+#include "Data/ByteBuffer.h"
 #include "Data/ByteTool.h"
 #include "IO/FileAnalyse/FLVFileAnalyse.h"
 #include "IO/FileAnalyse/SBFrameDetail.h"
@@ -129,7 +130,7 @@ UInt32 __stdcall IO::FileAnalyse::FLVFileAnalyse::ParseThread(void *userObj)
 	lastSize = 0;
 	while (ofst < dataSize - 11 && !me->threadToStop)
 	{
-		if (me->fd->GetRealData(ofst - 4, 15, tagHdr) != 15)
+		if (me->fd->GetRealData(ofst - 4, 15, BYTEARR(tagHdr)) != 15)
 			break;
 		
 		if (ReadMUInt32(tagHdr) != lastSize)
@@ -160,7 +161,7 @@ IO::FileAnalyse::FLVFileAnalyse::FLVFileAnalyse(IO::StreamData *fd)
 	this->pauseParsing = false;
 	this->threadToStop = false;
 	this->threadStarted = false;
-	fd->GetRealData(0, 256, buff);
+	fd->GetRealData(0, 256, BYTEARR(buff));
 	if (buff[0] != 'F' || buff[1] != 'L' || buff[2] != 'V' || buff[3] != 1)
 	{
 		return;
@@ -225,10 +226,9 @@ Bool IO::FileAnalyse::FLVFileAnalyse::GetFrameName(UOSInt index, Text::StringBui
 Bool IO::FileAnalyse::FLVFileAnalyse::GetFrameDetail(UOSInt index, Text::StringBuilderUTF8 *sb)
 {
 	UInt8 buff[128];
-	UInt8 *tagData;
 	if (index == 0)
 	{
-		this->fd->GetRealData(0, this->hdrSize, buff);
+		this->fd->GetRealData(0, this->hdrSize, BYTEARR(buff));
 		sb->AppendC(UTF8STRC("Version = "));
 		sb->AppendU16(buff[3]);
 		sb->AppendC(UTF8STRC("\r\nTypeFlagsReserved = "));
@@ -248,7 +248,7 @@ Bool IO::FileAnalyse::FLVFileAnalyse::GetFrameDetail(UOSInt index, Text::StringB
 		return false;
 	sb->AppendC(UTF8STRC("Tag"));
 	sb->AppendUOSInt(index);
-	this->fd->GetRealData(tag->ofst, 11, buff);
+	this->fd->GetRealData(tag->ofst, 11, BYTEARR(buff));
 	sb->AppendC(UTF8STRC("\r\nReserved = "));
 	sb->AppendU16((UInt16)(buff[0] >> 6));
 	sb->AppendC(UTF8STRC("\r\nFilter = "));
@@ -275,45 +275,40 @@ Bool IO::FileAnalyse::FLVFileAnalyse::GetFrameDetail(UOSInt index, Text::StringB
 	sb->AppendU16(buff[7]);
 	if (tag->tagType == 8)
 	{
-		tagData = MemAlloc(UInt8, tag->size);
+		Data::ByteBuffer tagData(tag->size);
 		this->fd->GetRealData(tag->ofst, tag->size, tagData);
 
 		sb->AppendC(UTF8STRC("\r\n"));
 		if (tag->size >= 256 + 11)
 		{
-			sb->AppendHexBuff(tagData, 256, ' ', Text::LineBreakType::CRLF);
+			sb->AppendHexBuff(tagData.WithSize(256), ' ', Text::LineBreakType::CRLF);
 		}
 		else
 		{
-			sb->AppendHexBuff(tagData, tag->size - 11, ' ', Text::LineBreakType::CRLF);
+			sb->AppendHexBuff(tagData.WithSize(tag->size - 11), ' ', Text::LineBreakType::CRLF);
 		}
-
-		MemFree(tagData);
 	}
 	else if (tag->tagType == 9)
 	{
-		tagData = MemAlloc(UInt8, tag->size);
+		Data::ByteBuffer tagData(tag->size);
 		this->fd->GetRealData(tag->ofst, tag->size, tagData);
 
 		sb->AppendC(UTF8STRC("\r\n"));
 		if (tag->size >= 256 + 11)
 		{
-			sb->AppendHexBuff(tagData, 256, ' ', Text::LineBreakType::CRLF);
+			sb->AppendHexBuff(tagData.WithSize(256), ' ', Text::LineBreakType::CRLF);
 		}
 		else
 		{
-			sb->AppendHexBuff(tagData, tag->size - 11, ' ', Text::LineBreakType::CRLF);
+			sb->AppendHexBuff(tagData.WithSize(tag->size - 11), ' ', Text::LineBreakType::CRLF);
 		}
-
-		MemFree(tagData);
 	}
 	else if (tag->tagType == 18)
 	{
-		tagData = MemAlloc(UInt8, tag->size);
+		Data::ByteBuffer tagData(tag->size);
 		this->fd->GetRealData(tag->ofst, tag->size, tagData);
 		IO::FileAnalyse::SBFrameDetail frame(sb);
-		ParseScriptData(tagData, 11, tag->size, 0, &frame);
-		MemFree(tagData);
+		ParseScriptData(tagData.Ptr(), 11, tag->size, 0, &frame);
 	}
 	return true;
 }
@@ -354,12 +349,11 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::FLVFileAnalyse::GetFrameDetail(UO
 	UInt8 buff[128];
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
-	UInt8 *tagData;
 	Text::CString vName;
 	if (index == 0)
 	{
 		NEW_CLASS(frame, IO::FileAnalyse::FrameDetail(0, (UInt32)this->hdrSize));
-		this->fd->GetRealData(0, this->hdrSize, buff);
+		this->fd->GetRealData(0, this->hdrSize, BYTEARR(buff));
 		sptr = Text::StrConcatC(sbuff, buff, 3);
 		frame->AddField(0, 3, CSTR("Magic"), CSTRP(sbuff, sptr));
 		sptr = Text::StrUInt16(sbuff, buff[3]);
@@ -386,7 +380,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::FLVFileAnalyse::GetFrameDetail(UO
 	sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Tag")), index);
 	frame->AddHeader(CSTRP(sbuff, sptr));
 
-	this->fd->GetRealData(tag->ofst, 11, buff);
+	this->fd->GetRealData(tag->ofst, 11, BYTEARR(buff));
 	frame->AddUInt(0, 1, CSTR("Reserved"), (UInt16)(buff[0] >> 6));
 	frame->AddUInt(0, 1, CSTR("Filter"), (UInt16)((buff[0] >> 5) & 1));
 	vName = CSTR_NULL;
@@ -408,7 +402,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::FLVFileAnalyse::GetFrameDetail(UO
 	frame->AddUInt(7, 1, CSTR("Timestamp Extended"), buff[7]);
 	if (tag->tagType == 8)
 	{
-		tagData = MemAlloc(UInt8, tag->size);
+		Data::ByteBuffer tagData(tag->size);
 		this->fd->GetRealData(tag->ofst, tag->size, tagData);
 
 		if (tag->size >= 256 + 11)
@@ -421,11 +415,10 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::FLVFileAnalyse::GetFrameDetail(UO
 		{
 			frame->AddHexBuff(11, tag->size - 11, CSTR("data"), &tagData[11], true);
 		}
-		MemFree(tagData);
 	}
 	else if (tag->tagType == 9)
 	{
-		tagData = MemAlloc(UInt8, tag->size);
+		Data::ByteBuffer tagData(tag->size);
 		this->fd->GetRealData(tag->ofst, tag->size, tagData);
 		if (tag->size >= 256 + 11)
 		{
@@ -437,14 +430,12 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::FLVFileAnalyse::GetFrameDetail(UO
 		{
 			frame->AddHexBuff(11, tag->size - 11, CSTR("data"), &tagData[11], true);
 		}
-		MemFree(tagData);
 	}
 	else if (tag->tagType == 18)
 	{
-		tagData = MemAlloc(UInt8, tag->size);
+		Data::ByteBuffer tagData(tag->size);
 		this->fd->GetRealData(tag->ofst, tag->size, tagData);
-		ParseScriptData(tagData, 11, tag->size, 0, frame);
-		MemFree(tagData);
+		ParseScriptData(tagData.Ptr(), 11, tag->size, 0, frame);
 	}
 	return frame;
 }

@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Data/ByteBuffer.h"
 #include "IO/FileStream.h"
 #include "Net/HKTrafficImage.h"
 #include "Text/MyString.h"
@@ -124,12 +125,11 @@ Net::HKTrafficImage::HKTrafficImage(Text::EncodingFactory *encFact, Text::CStrin
 	fileSize = fs.GetLength();
 	if (fileSize > 0)
 	{
-		UInt8 *buff = MemAlloc(UInt8, fileSize);
-		if (fs.Read(buff, fileSize) == fileSize)
+		Data::ByteBuffer buff(fileSize);
+		if (fs.Read(buff) == fileSize)
 		{
-			this->Init(encFact, buff, (UOSInt)fileSize);
+			this->Init(encFact, buff.Ptr(), (UOSInt)fileSize);
 		}
-		MemFree(buff);
 	}
 }
 

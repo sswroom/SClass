@@ -47,7 +47,7 @@ void __stdcall SSWR::AVIRead::AVIRCertTextForm::OnLoadClicked(void *userObj)
 		UI::MessageDialog::ShowDialog(CSTR("Unknown Enc Type"), CSTR("Certificate Load from Text"), me);
 		return;
 	}
-	Crypto::Cert::X509File *file = Parser::FileParser::X509Parser::ParseBinary(buff, buffSize);
+	Crypto::Cert::X509File *file = Parser::FileParser::X509Parser::ParseBinary(Data::ByteArray(buff, buffSize));
 	MemFree(buff);
 	if (file)
 	{

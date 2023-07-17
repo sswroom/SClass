@@ -50,7 +50,7 @@ namespace UI
 		void GoToOffset(UInt64 ofst);
 		UInt64 GetCurrOfst();
 		UInt64 GetFileSize();
-		UOSInt GetFileData(UInt64 ofst, UOSInt size, UInt8 *outBuff);
+		UOSInt GetFileData(UInt64 ofst, UOSInt size, Data::ByteArray outBuff);
 
 		void HandleOffsetChg(OffsetChgHandler hdlr, void *hdlrObj);
 

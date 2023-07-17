@@ -5,6 +5,7 @@
 #include "Crypto/Hash/HMAC.h"
 #include "Crypto/Hash/SHA1.h"
 #include "Crypto/Hash/SHA256.h"
+#include "Data/ByteBuffer.h"
 #include "Data/RandomBytesGenerator.h"
 
 UOSInt Crypto::Encrypt::RNCryptor::RemovePadding(UInt8 *buff, UOSInt buffSize)
@@ -27,7 +28,7 @@ Bool Crypto::Encrypt::RNCryptor::Decrypt(IO::SeekableStream *srcStream, IO::Stre
 {
 	UInt8 header[34];
 	UInt64 fileLength = srcStream->GetLength();
-	if (srcStream->Read(header, 34) != 34)
+	if (srcStream->Read(BYTEARR(header)) != 34)
 		return false;
 	if (header[1] != 1)
 		return false;
@@ -46,7 +47,6 @@ Bool Crypto::Encrypt::RNCryptor::Decrypt(IO::SeekableStream *srcStream, IO::Stre
 		aes.SetIV(&header[18]);
 		UInt64 sizeLeft = fileLength - 66;
 		UOSInt readSize;
-		UInt8 *srcBuff;
 		UInt8 *destBuff;
 		Bool succ = true;
 		Crypto::Hash::SHA256 sha256;
@@ -54,18 +54,18 @@ Bool Crypto::Encrypt::RNCryptor::Decrypt(IO::SeekableStream *srcStream, IO::Stre
 		hmac.Calc(header, 34);
 		if (sizeLeft > 1048576)
 		{
-			srcBuff = MemAlloc(UInt8, 1048576);
+			Data::ByteBuffer srcBuff(1048576);
 			destBuff = MemAlloc(UInt8, 1048576);
 			while (sizeLeft > 1048576)
 			{
-				readSize = srcStream->Read(srcBuff, 1048576);
+				readSize = srcStream->Read(srcBuff);
 				if (readSize != 1048576)
 				{
 					succ = false;
 					break;
 				}
-				hmac.Calc(srcBuff, readSize);
-				aes.Decrypt(srcBuff, readSize, destBuff, 0);
+				hmac.Calc(srcBuff.Ptr(), readSize);
+				aes.Decrypt(srcBuff.Ptr(), readSize, destBuff, 0);
 				if (destStream->Write(destBuff, 1048576) != 1048576)
 				{
 					succ = false;
@@ -75,15 +75,15 @@ Bool Crypto::Encrypt::RNCryptor::Decrypt(IO::SeekableStream *srcStream, IO::Stre
 			}
 			if (succ && sizeLeft > 0)
 			{
-				readSize = srcStream->Read(srcBuff, (UOSInt)sizeLeft);
+				readSize = srcStream->Read(srcBuff.WithSize((UOSInt)sizeLeft));
 				if (readSize != sizeLeft)
 				{
 					succ = false;
 				}
 				else
 				{
-					hmac.Calc(srcBuff, readSize);
-					aes.Decrypt(srcBuff, readSize, destBuff, 0);
+					hmac.Calc(srcBuff.Ptr(), readSize);
+					aes.Decrypt(srcBuff.Ptr(), readSize, destBuff, 0);
 					readSize = RemovePadding(destBuff, readSize);
 					if (destStream->Write(destBuff, readSize) != readSize)
 					{
@@ -92,22 +92,21 @@ Bool Crypto::Encrypt::RNCryptor::Decrypt(IO::SeekableStream *srcStream, IO::Stre
 				}
 			}
 			MemFree(destBuff);
-			MemFree(srcBuff);
 		}
 		else
 		{
 			readSize = (UOSInt)sizeLeft;
-			srcBuff = MemAlloc(UInt8, readSize);
+			Data::ByteBuffer srcBuff(readSize);
 			destBuff = MemAlloc(UInt8, readSize);
-			readSize = srcStream->Read(srcBuff, (UOSInt)sizeLeft);
+			readSize = srcStream->Read(srcBuff);
 			if (readSize != sizeLeft)
 			{
 				succ = false;
 			}
 			else
 			{
-				hmac.Calc(srcBuff, readSize);
-				aes.Decrypt(srcBuff, readSize, destBuff, 0);
+				hmac.Calc(srcBuff.Ptr(), readSize);
+				aes.Decrypt(srcBuff.Ptr(), readSize, destBuff, 0);
 				readSize = RemovePadding(destBuff, readSize);
 				if (destStream->Write(destBuff, readSize) != readSize)
 				{
@@ -115,12 +114,11 @@ Bool Crypto::Encrypt::RNCryptor::Decrypt(IO::SeekableStream *srcStream, IO::Stre
 				}
 			}
 			MemFree(destBuff);
-			MemFree(srcBuff);
 		}
 		if (succ)
 		{
 			hmac.GetValue(hmacCalc);
-			if (srcStream->Read(hmacSrc, 32) != 32)
+			if (srcStream->Read(BYTEARR(hmacSrc)) != 32)
 			{
 				succ = false;
 			}
@@ -147,10 +145,9 @@ Bool Crypto::Encrypt::RNCryptor::Encrypt(IO::SeekableStream *srcStream, IO::Stre
 	Data::RandomBytesGenerator rand;
 	rand.NextBytes(&header[2], 32);
 	UInt8 paddingSize = 0;
-	UInt8 *srcBuff = MemAlloc(UInt8, (UOSInt)fileLength + 16);
-	if (srcStream->Read(srcBuff, (UOSInt)fileLength) != fileLength)
+	Data::ByteBuffer srcBuff((UOSInt)fileLength + 16);
+	if (srcStream->Read(srcBuff.WithSize((UOSInt)fileLength)) != fileLength)
 	{
-		MemFree(srcBuff);
 		return false;
 	}
 	if (fileLength & 15)
@@ -179,7 +176,7 @@ Bool Crypto::Encrypt::RNCryptor::Encrypt(IO::SeekableStream *srcStream, IO::Stre
 	Crypto::Hash::SHA256 sha256;
 	Crypto::Hash::HMAC hmac(&sha256, hmacKey, 32);
 	hmac.Calc(header, 34);
-	aes.Encrypt(srcBuff, (UOSInt)fileLength, destBuff, 0);
+	aes.Encrypt(srcBuff.Ptr(), (UOSInt)fileLength, destBuff, 0);
 	hmac.Calc(destBuff, (UOSInt)fileLength);
 	hmac.GetValue(hmacCalc);
 	Bool succ = true;
@@ -189,7 +186,6 @@ Bool Crypto::Encrypt::RNCryptor::Encrypt(IO::SeekableStream *srcStream, IO::Stre
 	{
 		succ = false;
 	}
-	MemFree(srcBuff);
 	MemFree(destBuff);
 	return succ;
 }

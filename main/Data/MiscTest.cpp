@@ -38,7 +38,7 @@ Int32 Test0()
 	IO::FileStream fs(CSTR("/home/sswroom/Progs/Temp/20220519 JM-VL01/1652961383648_B6EF576F_4418r.dat"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 	while (true)
 	{
-		dataLeft = fs.Read(&data[dataSize], 4096 - dataSize);
+		dataLeft = fs.Read(Data::ByteArray(&data[dataSize], 4096 - dataSize));
 		if (dataLeft == 0)
 		{
 			break;

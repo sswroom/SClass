@@ -1,4 +1,5 @@
 #include "Stdafx.h"
+#include "Data/ByteBuffer.h"
 #include "IO/FileStream.h"
 #include "IO/MemoryStream.h"
 #include "IO/Path.h"
@@ -199,15 +200,14 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(SSWR::Benchmark:
 		fileSize = (UOSInt)fs.GetLength();
 		if (fileSize > 0)
 		{
-			UInt8 *fileBuff = MemAlloc(UInt8, fileSize);
-			fs.Read(fileBuff, fileSize);
+			Data::ByteBuffer fileBuff(fileSize);
+			fs.Read(fileBuff);
 
 			resp->SetStatusCode(Net::WebStatus::SC_OK);
 			resp->AddDefHeaders(req);
 			resp->AddContentType(CSTR("text/plain"));
 			resp->AddContentLength(fileSize);
-			resp->Write(fileBuff, fileSize);
-			MemFree(fileBuff);
+			resp->Write(fileBuff.Ptr(), fileSize);
 			return true;
 		}
 	}

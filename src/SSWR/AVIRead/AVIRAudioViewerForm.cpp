@@ -1,4 +1,5 @@
 #include "Stdafx.h"
+#include "Data/ByteBuffer.h"
 #include "Data/ByteTool.h"
 #include "Math/ComplexNumber.h"
 #include "Math/FFT.h"
@@ -63,7 +64,7 @@ void SSWR::AVIRead::AVIRAudioViewerForm::UpdateImages()
 		UOSInt align = this->format->align;
 		gimg = this->eng->CreateImage32(sz, Media::AT_NO_ALPHA);
 
-		UInt8 *buff = MemAlloc(UInt8, this->format->align * sz.x);
+		Data::ByteBuffer buff(this->format->align * sz.x);
 		i = this->audSrc->ReadSample(currSample, sz.x, buff);
 		
 		b = gimg->NewBrushARGB(0xff000000);
@@ -110,7 +111,6 @@ void SSWR::AVIRead::AVIRAudioViewerForm::UpdateImages()
 			gimg->DelPen(p);
 		}
 
-		MemFree(buff);
 		this->pbsSample->SetImageDImg(gimg);
 		if (this->sampleImg)
 		{
@@ -160,7 +160,7 @@ void SSWR::AVIRead::AVIRAudioViewerForm::UpdateFreqImage()
 //		OSInt align = this->format->align;
 		gimg = this->eng->CreateImage32(sz, Media::AT_NO_ALPHA);
 
-		UInt8 *buff = MemAlloc(UInt8, this->format->align * (FFTSAMPLE + FFTAVG - 1));
+		Data::ByteBuffer buff(this->format->align * (FFTSAMPLE + FFTAVG - 1));
 		i = this->audSrc->ReadSample(currSample - FFTSAMPLE + 1, FFTSAMPLE + FFTAVG - 1, buff);
 		
 		b = gimg->NewBrushARGB(0xff000000);
@@ -172,7 +172,7 @@ void SSWR::AVIRead::AVIRAudioViewerForm::UpdateFreqImage()
 		i = 0;
 		while (i < this->format->nChannels)
 		{
-			Math::FFT::ForwardBits(buff + i * (UOSInt)(this->format->bitpersample >> 3), freqData, FFTSAMPLE, FFTAVG, this->format->bitpersample, this->format->nChannels, Math::FFT::WT_BLACKMANN_HARRIS, 1.0);
+			Math::FFT::ForwardBits(buff.Ptr() + i * (UOSInt)(this->format->bitpersample >> 3), freqData, FFTSAMPLE, FFTAVG, this->format->bitpersample, this->format->nChannels, Math::FFT::WT_BLACKMANN_HARRIS, 1.0);
 
 			if (i == 0)
 			{
@@ -216,7 +216,6 @@ void SSWR::AVIRead::AVIRAudioViewerForm::UpdateFreqImage()
 		}
 		MemFree(freqData);
 
-		MemFree(buff);
 		this->pbsFreq->SetImageDImg(gimg);
 		if (this->fftImg)
 		{

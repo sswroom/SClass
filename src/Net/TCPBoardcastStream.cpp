@@ -155,7 +155,7 @@ Bool Net::TCPBoardcastStream::IsDown() const
 	return this->cliMgr->GetClientCount() == 0;
 }
 
-UOSInt Net::TCPBoardcastStream::Read(const Data::ByteArray &buff)
+UOSInt Net::TCPBoardcastStream::Read(Data::ByteArray buff)
 {
 	UOSInt readBuffSize;
 
@@ -178,24 +178,24 @@ UOSInt Net::TCPBoardcastStream::Read(const Data::ByteArray &buff)
 	}
 	Sync::Interlocked::Decrement(&this->readCnt);
 	Sync::MutexUsage mutUsage(&this->readMut);
-	if ((UOSInt)readBuffSize >= size)
+	if ((UOSInt)readBuffSize >= buff.GetSize())
 	{
 	}
 	else
 	{
-		size = readBuffSize;	
+		buff = buff.WithSize(readBuffSize);
 	}
 
-	if (readBuffPtr1 + size > 16384)
+	if (readBuffPtr1 + buff.GetSize() > 16384)
 	{
-		MemCopyNO(buff, &this->readBuff[this->readBuffPtr1], 16384 - readBuffPtr1);
-		MemCopyNO(&buff[16384 - readBuffPtr1], this->readBuff, size - (16384 - readBuffPtr1));
-		readBuffPtr1 = size - (16384 - readBuffPtr1);
+		buff.CopyFrom(Data::ByteArrayR(&this->readBuff[this->readBuffPtr1], 16384 - readBuffPtr1));
+		buff.CopyFrom(16384 - readBuffPtr1, Data::ByteArrayR(this->readBuff, buff.GetSize() - (16384 - readBuffPtr1)));
+		readBuffPtr1 = buff.GetSize() - (16384 - readBuffPtr1);
 	}
 	else
 	{
-		MemCopyNO(buff, &this->readBuff[this->readBuffPtr1], size);
-		this->readBuffPtr1 += size;
+		buff.CopyFrom(Data::ByteArrayR(&this->readBuff[this->readBuffPtr1], buff.GetSize()));
+		this->readBuffPtr1 += buff.GetSize();
 		if (this->readBuffPtr1 >= 16384)
 		{
 			this->readBuffPtr1 -= 16384;
@@ -206,11 +206,11 @@ UOSInt Net::TCPBoardcastStream::Read(const Data::ByteArray &buff)
 	{
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("TBS "));
-		sb.AppendUOSInt(size);
+		sb.AppendUOSInt(buff.GetSize());
 		sb.AppendC(UTF8STRC(" bytes returned"));
 		this->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Raw);
 	}
-	return size;
+	return buff.GetSize();
 }
 
 UOSInt Net::TCPBoardcastStream::Write(const UInt8 *buff, UOSInt size)

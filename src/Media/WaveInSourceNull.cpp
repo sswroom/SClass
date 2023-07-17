@@ -104,7 +104,7 @@ void Media::WaveInSource::Stop()
 	this->started = false;
 }
 
-UOSInt Media::WaveInSource::ReadBlock(UInt8 *buff, UOSInt blkSize)
+UOSInt Media::WaveInSource::ReadBlock(Data::ByteArray blk)
 {
 	return 0;
 }

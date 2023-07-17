@@ -96,7 +96,7 @@ Bool Net::TFTPClient::SendFile(const UTF8Char *fileName, IO::Stream *stm)
 			this->replyRecv = false;
 			WriteMInt16(&packet[0], 3);
 			WriteMInt16(&packet[2], this->nextId);
-			readSize = stm->Read(&packet[4], blockSize);
+			readSize = stm->Read(Data::ByteArray(&packet[4], blockSize));
 			this->evt->Clear();
 			this->svr->SendTo(&this->addr, this->recvPort, packet, readSize + 4);
 			this->evt->Wait(10000);

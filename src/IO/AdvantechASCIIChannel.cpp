@@ -17,7 +17,7 @@ UInt32 __stdcall IO::AdvantechASCIIChannel::CmdThread(void *userObj)
 	me->cmdEvt.Set();
 	while (!me->threadToStop)
 	{
-		readSize = me->stm->Read(&readBuff[buffSize], 64 - buffSize);
+		readSize = me->stm->Read(Data::ByteArray(&readBuff[buffSize], 64 - buffSize));
 		if (readSize == 0)
 		{
 			Sync::SimpleThread::Sleep(100);

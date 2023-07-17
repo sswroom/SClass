@@ -55,7 +55,7 @@ IO::MemFileBuffer::MemFileBuffer(Text::CString fileName)
 		}
 #endif
 		file->SeekFromBeginning(0);
-		file->Read(this->filePtr, (UOSInt)fileSize);
+		file->Read(Data::ByteArray(this->filePtr, (UOSInt)fileSize));
 	}
 	else
 	{

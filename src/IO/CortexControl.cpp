@@ -20,7 +20,7 @@ UInt32 __stdcall IO::CortexControl::RecvThread(void *userObj)
 	while (!me->recvToStop)
 	{
 		if (me->errWriter) me->errWriter->WriteLineC(UTF8STRC("Start Receive"));
-		recvSize = me->stm->Read(&buff[buffSize], 260 - buffSize);
+		recvSize = me->stm->Read(Data::ByteArray(&buff[buffSize], 260 - buffSize));
 		if (me->errWriter) me->errWriter->WriteLineC(UTF8STRC("End Receive"));
 		if (recvSize <= 0)
 		{

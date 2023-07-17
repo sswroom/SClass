@@ -10,7 +10,7 @@
 IO::ParsedObject *IO::FileParser::ParseFile(IO::StreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
 	UInt8 hdr[HDRSIZE];
-	fd->GetRealData(0, HDRSIZE, hdr);
+	fd->GetRealData(0, HDRSIZE, BYTEARR(hdr));
 	return ParseFileHdr(fd, pkgFile, targetType, hdr);
 }
 

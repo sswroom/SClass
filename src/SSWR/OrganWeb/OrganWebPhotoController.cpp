@@ -1,4 +1,5 @@
 #include "Stdafx.h"
+#include "Data/ByteBuffer.h"
 #include "Exporter/GUIJPGExporter.h"
 #include "IO/Path.h"
 #include "IO/StmData/FileData.h"
@@ -95,18 +96,16 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhoto(Net::WebServer::IWeb
 				}
 				else
 				{
-					UInt8 *buff;
 					UOSInt buffSize = (UOSInt)fs.GetLength();
 					if (buffSize > 0)
 					{
-						buff = MemAlloc(UInt8, buffSize);
-						fs.Read(buff, buffSize);
+						Data::ByteBuffer buff(buffSize);
+						fs.Read(buff);
 						resp->AddDefHeaders(req);
 						resp->AddContentLength(buffSize);
 						resp->AddContentType(CSTR("image/jpeg"));
-						resp->Write(buff, buffSize);
+						resp->Write(buff.Ptr(), buffSize);
 						mutUsage.EndUse();
-						MemFree(buff);
 						return;
 					}
 					else
@@ -414,17 +413,15 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoId(Net::WebServer::IW
 			}
 			else
 			{
-				UInt8 *buff;
-				buff = MemAlloc(UInt8, buffSize);
-				fs.Read(buff, buffSize);
+				Data::ByteBuffer buff(buffSize);
+				fs.Read(buff);
 				fs.GetFileTimes(0, 0, &dt2);
 				resp->AddDefHeaders(req);
 				resp->AddContentLength(buffSize);
 				resp->AddContentType(CSTR("image/jpeg"));
 				resp->AddLastModified(&dt2);
-				resp->Write(buff, buffSize);
+				resp->Write(buff.Ptr(), buffSize);
 				mutUsage.EndUse();
-				MemFree(buff);
 				return;
 			}
 		}
@@ -691,15 +688,13 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoWId(Net::WebServer::I
 				}
 				else
 				{
-					UInt8 *buff;
-					buff = MemAlloc(UInt8, buffSize);
-					fs.Read(buff, buffSize);
+					Data::ByteBuffer buff(buffSize);
+					fs.Read(buff);
 					resp->AddDefHeaders(req);
 					resp->AddContentLength(buffSize);
 					resp->AddContentType(CSTR("image/jpeg"));
-					resp->Write(buff, buffSize);
+					resp->Write(buff.Ptr(), buffSize);
 					mutUsage.EndUse();
-					MemFree(buff);
 					return;
 				}
 			}

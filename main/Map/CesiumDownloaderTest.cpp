@@ -127,7 +127,7 @@ private:
 			UOSInt thisRead;
 			IO::MemoryStream *mstm;
 			NEW_CLASS(mstm, IO::MemoryStream());
-			while ((thisRead = cli->Read(buff, 4096)) > 0)
+			while ((thisRead = cli->Read(BYTEARR(buff))) > 0)
 			{
 				mstm->Write(buff, thisRead);
 				totalRead += thisRead;

@@ -1,4 +1,5 @@
 #include "Stdafx.h"
+#include "Data/ByteBuffer.h"
 #include "Data/ByteTool.h"
 #include "IO/FileStream.h"
 #include "IO/Path.h"
@@ -13,8 +14,7 @@ void IO::FileAnalyse::SPKFileAnalyse::ParseV1Directory(UInt64 dirOfst, UInt64 di
 	if (dirSize < 26)
 		return;
 	UOSInt ofst = 0;
-	UInt8 *buff;
-	buff = MemAlloc(UInt8, (UOSInt)dirSize);
+	Data::ByteBuffer buff((UOSInt)dirSize);
 	this->fd->GetRealData(dirOfst, (UOSInt)dirSize, buff);
 	while (dirSize - ofst >= 26)
 	{
@@ -34,7 +34,6 @@ void IO::FileAnalyse::SPKFileAnalyse::ParseV1Directory(UInt64 dirOfst, UInt64 di
 		this->packs.Add(pack);
 		ofst += 26 + (UOSInt)fileNameSize;
 	}
-	MemFree(buff);
 }
 
 void IO::FileAnalyse::SPKFileAnalyse::ParseV2Directory(UInt64 dirOfst, UInt64 dirSize)
@@ -52,7 +51,7 @@ void IO::FileAnalyse::SPKFileAnalyse::ParseV2Directory(UInt64 dirOfst, UInt64 di
 		return;
 	}
 	UInt8 buff[16];
-	this->fd->GetRealData(dirOfst, 16, buff);
+	this->fd->GetRealData(dirOfst, 16, BYTEARR(buff));
 	this->ParseV2Directory(ReadUInt64(&buff[0]), ReadUInt64(&buff[8]));
 	this->ParseV1Directory(dirOfst + 16, dirSize - 16);
 
@@ -72,7 +71,7 @@ UInt32 __stdcall IO::FileAnalyse::SPKFileAnalyse::ParseThread(void *userObj)
 	me->threadRunning = true;
 	me->threadStarted = true;
 
-	me->fd->GetRealData(0, 256, buff);
+	me->fd->GetRealData(0, 256, BYTEARR(buff));
 	Int32 flags = ReadInt32(&buff[4]);
 	UOSInt endOfst;
 	UInt64 lastOfst = ReadUInt64(&buff[8]);
@@ -137,7 +136,7 @@ IO::FileAnalyse::SPKFileAnalyse::SPKFileAnalyse(IO::StreamData *fd)
 	this->threadToStop = false;
 	this->threadStarted = false;
 
-	fd->GetRealData(0, 256, buff);
+	fd->GetRealData(0, 256, BYTEARR(buff));
 	if (buff[0] != 'S' || buff[1] != 'm' || buff[2] != 'p' || buff[3] != 'f')
 	{
 		return;
@@ -240,7 +239,6 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::SPKFileAnalyse::GetFrameDetail(UO
 	IO::FileAnalyse::SPKFileAnalyse::PackInfo *pack;
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
-	UInt8 *packBuff;
 	pack = this->packs.GetItem(index);
 	if (pack == 0)
 		return 0;
@@ -277,7 +275,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::SPKFileAnalyse::GetFrameDetail(UO
 	{
 		UInt32 flags;
 		UOSInt endOfst;
-		packBuff = MemAlloc(UInt8, pack->packSize);
+		Data::ByteBuffer packBuff(pack->packSize);
 		this->fd->GetRealData(pack->fileOfst, pack->packSize, packBuff);
 
 		frame->AddHex32(4, CSTR("Flags"), flags = ReadUInt32(&packBuff[4]));
@@ -318,41 +316,37 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::SPKFileAnalyse::GetFrameDetail(UO
 				frame->AddHexBuff(endOfst + 8, customSize, CSTR("Custom data"), &packBuff[endOfst + 8], false);
 			}
 		}
-		MemFree(packBuff);
 	}
 	else if (pack->packType == PT_V1DIRECTORY)
 	{
-		packBuff = MemAlloc(UInt8, pack->packSize);
+		Data::ByteBuffer packBuff(pack->packSize);
 		this->fd->GetRealData(pack->fileOfst, pack->packSize, packBuff);
-		this->GetDetailDirs(packBuff, pack->packSize, 0, frame);
-		MemFree(packBuff);
+		this->GetDetailDirs(packBuff.Ptr(), pack->packSize, 0, frame);
 	}
 	else if (pack->packType == PT_V2DIRECTORY)
 	{
-		packBuff = MemAlloc(UInt8, pack->packSize);
+		Data::ByteBuffer packBuff(pack->packSize);
 		this->fd->GetRealData(pack->fileOfst, pack->packSize, packBuff);
 		frame->AddUInt64(0, CSTR("Prev Directory Offset"), ReadUInt64(&packBuff[0]));
 		frame->AddUInt64(8, CSTR("Prev Directory Size"), ReadUInt64(&packBuff[8]));
-		this->GetDetailDirs(packBuff + 16, pack->packSize - 16, 16, frame);
-		MemFree(packBuff);
+		this->GetDetailDirs(packBuff.Ptr() + 16, pack->packSize - 16, 16, frame);
 	}
 	else if (pack->packType == PT_FILE)
 	{
 		if (pack->packSize <= 64)
 		{
-			packBuff = MemAlloc(UInt8, pack->packSize);
+			Data::ByteBuffer packBuff(pack->packSize);
 			this->fd->GetRealData(pack->fileOfst, pack->packSize, packBuff);
-			frame->AddHexBuff(0, pack->packSize, CSTR("FileData"), packBuff, true);
-			MemFree(packBuff);
+			frame->AddHexBuff(0, CSTR("FileData"), packBuff, true);
 		}
 		else
 		{
 			UInt8 buff[32];
 			Text::StringBuilderUTF8 sb;
-			this->fd->GetRealData(pack->fileOfst, 32, buff);
+			this->fd->GetRealData(pack->fileOfst, 32, BYTEARR(buff));
 			sb.AppendHexBuff(buff, 32, ' ', Text::LineBreakType::CRLF);
 			sb.AppendC(UTF8STRC("\r\n...\r\n"));
-			this->fd->GetRealData(pack->fileOfst + pack->packSize - 32, 32, buff);
+			this->fd->GetRealData(pack->fileOfst + pack->packSize - 32, 32, BYTEARR(buff));
 			sb.AppendHexBuff(buff, 32, ' ', Text::LineBreakType::CRLF);
 			frame->AddField(0, pack->packSize, CSTR("FileData"), sb.ToCString());
 		}

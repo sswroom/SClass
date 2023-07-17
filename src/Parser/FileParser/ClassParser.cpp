@@ -46,7 +46,7 @@ IO::ParsedObject *Parser::FileParser::ClassParser::ParseFileHdr(IO::StreamData *
 	Data::ByteBuffer buff((UOSInt)dsize);
 	if (fd->GetRealData(0, (UOSInt)dsize, buff) == dsize)
 	{
-		cls = IO::JavaClass::ParseBuff(fd->GetFullFileName(), buff.Ptr(), (UOSInt)dsize);
+		cls = IO::JavaClass::ParseBuff(fd->GetFullFileName(), buff);
 	}
 	return cls;
 }

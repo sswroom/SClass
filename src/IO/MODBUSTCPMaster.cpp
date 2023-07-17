@@ -25,7 +25,7 @@ UInt32 __stdcall IO::MODBUSTCPMaster::ThreadProc(void *userObj)
 	//	Text::StringBuilderUTF8 sb;
 		while (!me->threadToStop)
 		{
-			readSize = me->stm->Read(&buff[buffSize], 1024 - buffSize);
+			readSize = me->stm->Read(BYTEARR(buff).SubArray(buffSize));
 	//		printf("ReadSize: %d\r\n", (UInt32)readSize);
 			if (readSize > 0)
 			{

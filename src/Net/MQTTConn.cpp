@@ -113,7 +113,7 @@ UInt32 __stdcall Net::MQTTConn::RecvThread(void *userObj)
 	buff = MemAlloc(UInt8, maxBuffSize);
 	while (true)
 	{
-		readSize = me->stm->Read(&buff[buffSize], maxBuffSize - buffSize);
+		readSize = me->stm->Read(Data::ByteArray(&buff[buffSize], maxBuffSize - buffSize));
 		if (readSize <= 0)
 			break;
 		me->totalDownload += readSize;

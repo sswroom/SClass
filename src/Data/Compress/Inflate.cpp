@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Data/ByteBuffer.h"
 #include "Data/Compress/Inflate.h"
 //#define _fseeki64 fseek
 //#define _ftelli64 ftell
@@ -31,15 +32,14 @@ Bool Data::Compress::Inflate::Decompress(IO::Stream *destStm, IO::StreamData *sr
 	UInt64 srcOfst = 0;
 	UInt64 srcLen = srcData->GetDataSize();
 	UOSInt srcSize;
-	UInt8 *readBuff;
 	UInt8 *writeBuff;
 	Bool error = false;
 	mz_stream stm;
-	readBuff = MemAlloc(UInt8, 1048576);
+	Data::ByteBuffer readBuff(1048576);
 	writeBuff = MemAlloc(UInt8, 1048576);
 
 	MemClear(&stm, sizeof(stm));
-	stm.next_in = readBuff;
+	stm.next_in = readBuff.Ptr();
 	stm.avail_in = 0;
 	stm.next_out = writeBuff;
 	stm.avail_out = 1048576;
@@ -51,7 +51,7 @@ Bool Data::Compress::Inflate::Decompress(IO::Stream *destStm, IO::StreamData *sr
 			break;
 		srcOfst += srcSize;
 
-		stm.next_in = readBuff;
+		stm.next_in = readBuff.Ptr();
 		stm.avail_in = (unsigned int)srcSize;
 		int ret = MZ_STREAM_END;
 		while (stm.avail_in > 0)
@@ -100,7 +100,6 @@ Bool Data::Compress::Inflate::Decompress(IO::Stream *destStm, IO::StreamData *sr
 		}
 	}
 	mz_inflateEnd(&stm);
-	MemFree(readBuff);
 	MemFree(writeBuff);
 	return !error;
 }

@@ -423,7 +423,7 @@ void SSWR::AVIRead::AVIRSNBDongleForm::LoadFile()
 		{
 			UInt8 *dataBuff = MemAlloc(UInt8, (UOSInt)flen);
 			UOSInt i;
-			fs.Read(dataBuff, (UOSInt)flen);
+			fs.Read(Data::ByteArray(dataBuff, (UOSInt)flen));
 			this->devMut.LockWrite();
 			i = 0;
 			while (i < flen)

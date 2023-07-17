@@ -118,7 +118,7 @@ Bool IO::ZIPMTBuilder::AddFile(Text::CString fileName, IO::SeekableStream *stm, 
 	UOSInt totalSize = 0;
 	while (totalSize < task->fileSize)
 	{
-		readSize = stm->Read(&task->fileBuff[totalSize], task->fileSize - totalSize);
+		readSize = stm->Read(Data::ByteArray(&task->fileBuff[totalSize], task->fileSize - totalSize));
 		if (readSize == 0)
 		{
 			MemFree(task->fileBuff);
@@ -139,7 +139,7 @@ Bool IO::ZIPMTBuilder::AddFile(Text::CString fileName, IO::StreamData *fd, Int64
 	FileTask *task = MemAlloc(FileTask, 1);
 	task->fileSize = (UOSInt)fd->GetDataSize();
 	task->fileBuff = MemAlloc(UInt8, (UOSInt)task->fileSize);
-	if (fd->GetRealData(0, (UOSInt)task->fileSize, task->fileBuff) != task->fileSize)
+	if (fd->GetRealData(0, (UOSInt)task->fileSize, Data::ByteArray(task->fileBuff, task->fileSize)) != task->fileSize)
 	{
 		MemFree(task->fileBuff);
 		MemFree(task);

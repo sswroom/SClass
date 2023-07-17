@@ -54,23 +54,23 @@ UInt32 Media::AudioFilter::AudioAmplifier::SeekToTime(UInt32 time)
 	return 0;
 }
 
-UOSInt Media::AudioFilter::AudioAmplifier::ReadBlock(UInt8 *buff, UOSInt blkSize)
+UOSInt Media::AudioFilter::AudioAmplifier::ReadBlock(Data::ByteArray blk)
 {
 	if (this->sourceAudio == 0)
 		return 0;
 
-	UOSInt readSize = this->sourceAudio->ReadBlock(buff, blkSize);
+	UOSInt readSize = this->sourceAudio->ReadBlock(blk);
 	Double thisVol = this->level;
 	if (thisVol != 1.0)
 	{
 		Int32 iVol = Double2Int32(thisVol * 65536.0);
 		if (this->bitCount == 16)
 		{
-			AudioUtil_Amplify16(buff, readSize, iVol);
+			AudioUtil_Amplify16(blk.Ptr(), readSize, iVol);
 		}
 		else if (this->bitCount == 8)
 		{
-			AudioUtil_Amplify8(buff, readSize, iVol);
+			AudioUtil_Amplify8(blk.Ptr(), readSize, iVol);
 		}
 	}
 	return readSize;

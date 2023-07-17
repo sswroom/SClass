@@ -202,29 +202,29 @@ Media::DrawImage *Media::GDIEngine::CreateImageScn(void *hdc, OSInt left, OSInt 
 
 Media::DrawImage *Media::GDIEngine::LoadImage(Text::CString fileName)
 {
-	IO::FileStream *fstm;
+	NotNullPtr<IO::FileStream> fstm;
 
-	NEW_CLASS(fstm, IO::FileStream(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASSNN(fstm, IO::FileStream(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (fstm->IsError())
 	{
-		DEL_CLASS(fstm);
+		fstm.Delete();
 		return 0;
 	}
 	DrawImage *img = LoadImageStream(fstm);
 
-	DEL_CLASS(fstm);
+	fstm.Delete();
 	return img;
 }
 
 
-Media::DrawImage *Media::GDIEngine::LoadImageStream(IO::SeekableStream *fstm)
+Media::DrawImage *Media::GDIEngine::LoadImageStream(NotNullPtr<IO::SeekableStream> fstm)
 {
 	UInt8 hdr[54];
 	UInt8 pal[1024];
 	BITMAPINFO bmi;
 	DrawImage *img = 0;
 
-	fstm->Read(hdr, 54);
+	fstm->Read(BYTEARR(hdr));
 	if (*(Int16*)hdr != *(Int16*)"BM")
 	{
 #ifdef HAS_GDIPLUS
@@ -339,7 +339,7 @@ Media::DrawImage *Media::GDIEngine::LoadImageStream(IO::SeekableStream *fstm)
 		{
 		case 8:
 			{
-				fstm->Read(pal, 1024);
+				fstm->Read(BYTEARR(pal));
 				fstm->SeekFromBeginning(ReadUInt32(&hdr[10]));
 				lineW = bmi.bmiHeader.biWidth;
 				if (lineW & 3)
@@ -347,7 +347,7 @@ Media::DrawImage *Media::GDIEngine::LoadImageStream(IO::SeekableStream *fstm)
 					lineW = lineW + 4 - (lineW & 3);
 				}
 				buff = MemAlloc(UInt8, buffSize = (UInt32)(lineW * bmi.bmiHeader.biHeight));
-				fstm->Read(buff, buffSize);
+				fstm->Read(Data::ByteArray(buff, buffSize));
 				psrc = (UInt8*)pBits;
 				pdest = (UInt32*)buff;
 				j = bmi.bmiHeader.biHeight;
@@ -380,7 +380,7 @@ Media::DrawImage *Media::GDIEngine::LoadImageStream(IO::SeekableStream *fstm)
 			{
 				fstm->SeekFromBeginning(ReadUInt32(&hdr[10]));
 				buff = MemAlloc(UInt8, buffSize = ((bmi.bmiHeader.biWidth * bmi.bmiHeader.biHeight) << 1));
-				fstm->Read(buff, buffSize);
+				fstm->Read(Data::ByteArray(buff, buffSize));
 				//////////////////////////////////////////////////////////////////////
 				MemFree(buff);
 				Sync::MutexUsage mutUsage(&this->gdiMut);
@@ -405,7 +405,7 @@ Media::DrawImage *Media::GDIEngine::LoadImageStream(IO::SeekableStream *fstm)
 					lineW = lineW + 4 - (lineW & 3);
 				}
 				buff = MemAlloc(UInt8, buffSize = (lineW * bmi.bmiHeader.biHeight));
-				fstm->Read(buff, buffSize);
+				fstm->Read(Data::ByteArray(buff, buffSize));
 				psrc = (UInt8*)pBits;
 				pdest = (UInt32*)buff;
 				j = bmi.bmiHeader.biHeight;
@@ -437,7 +437,7 @@ Media::DrawImage *Media::GDIEngine::LoadImageStream(IO::SeekableStream *fstm)
 		case 32:
 			{
 				fstm->SeekFromBeginning(ReadUInt32(&hdr[10]));
-				fstm->Read((UInt8*)pBits, (bmi.bmiHeader.biWidth * bmi.bmiHeader.biHeight) << 2);
+				fstm->Read(Data::ByteArray((UInt8*)pBits, (bmi.bmiHeader.biWidth * bmi.bmiHeader.biHeight) << 2));
 
 				Sync::MutexUsage mutUsage(&this->gdiMut);
 				hdcBmp = CreateCompatibleDC((HDC)this->hdcScreen);
@@ -2645,7 +2645,7 @@ Media::StaticImage *Media::GDIImage::ToStaticImage() const
 	return CreateStaticImage();
 }
 
-UOSInt Media::GDIImage::SavePng(IO::SeekableStream *stm)
+UOSInt Media::GDIImage::SavePng(NotNullPtr<IO::SeekableStream> stm)
 {
 #ifdef HAS_GDIPLUS
 	CLSID   encoderClsid;
@@ -2682,7 +2682,7 @@ UOSInt Media::GDIImage::SavePng(IO::SeekableStream *stm)
 #endif
 }
 
-UOSInt Media::GDIImage::SaveGIF(IO::SeekableStream *stm)
+UOSInt Media::GDIImage::SaveGIF(NotNullPtr<IO::SeekableStream> stm)
 {
 #ifdef HAS_GDIPLUS
 	CLSID   encoderClsid;
@@ -2761,7 +2761,7 @@ UOSInt Media::GDIImage::SaveGIF(IO::SeekableStream *stm)
 #endif
 }
 
-UOSInt Media::GDIImage::SaveJPG(IO::SeekableStream *stm)
+UOSInt Media::GDIImage::SaveJPG(NotNullPtr<IO::SeekableStream> stm)
 {
 #ifdef HAS_GDIPLUS
 	CLSID   encoderClsid;

@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Data/ByteBuffer.h"
 #include "Data/ByteTool.h"
 #include "IO/StmData/FileData.h"
 #include "Math/Math.h"
@@ -33,14 +34,13 @@ void Media::AudioFilter::FileMixFilter::GetFormat(AudioFormat *format)
 	format->FromAudioFormat(this->format);
 }
 
-UOSInt Media::AudioFilter::FileMixFilter::ReadBlock(UInt8 *buff, UOSInt blkSize)
+UOSInt Media::AudioFilter::FileMixFilter::ReadBlock(Data::ByteArray blk)
 {
 	if (this->sourceAudio == 0)
 		return 0;
-	UOSInt readSize = this->sourceAudio->ReadBlock(buff, blkSize);
+	UOSInt readSize = this->sourceAudio->ReadBlock(blk);
 	if (this->mixing)
 	{
-		UInt8 *fileBuff;
 		UOSInt sampleCnt = readSize / this->format->align;
 		UOSInt readCnt;
 		OSInt i;
@@ -50,7 +50,7 @@ UOSInt Media::AudioFilter::FileMixFilter::ReadBlock(UInt8 *buff, UOSInt blkSize)
 		Int32 v;
 		if (this->chMix)
 		{
-			fileBuff = MemAlloc(UInt8, sampleCnt * this->format->bitpersample);
+			Data::ByteBuffer fileBuff(sampleCnt * this->format->bitpersample);
 			readCnt = this->fileSrc->ReadSample(this->mixOfst, sampleCnt, fileBuff);
 			if (this->format->bitpersample == 16)
 			{
@@ -62,7 +62,7 @@ UOSInt Media::AudioFilter::FileMixFilter::ReadBlock(UInt8 *buff, UOSInt blkSize)
 					l = this->format->nChannels;
 					while (l-- > 0)
 					{
-						v = ReadInt16(&buff[j]) + (Int32)ReadInt16(&fileBuff[i]);
+						v = ReadInt16(&blk[j]) + (Int32)ReadInt16(&fileBuff[i]);
 						if (v > 32767)
 						{
 							v = 32767;
@@ -71,13 +71,12 @@ UOSInt Media::AudioFilter::FileMixFilter::ReadBlock(UInt8 *buff, UOSInt blkSize)
 						{
 							v = -32768;
 						}
-						WriteInt16(&buff[j], v);
+						WriteInt16(&blk[j], v);
 						j += 2;
 					}
 					i += 2;
 				}
 			}
-			MemFree(fileBuff);
 			if (sampleCnt != readCnt)
 			{
 				this->mixing = false;
@@ -89,7 +88,7 @@ UOSInt Media::AudioFilter::FileMixFilter::ReadBlock(UInt8 *buff, UOSInt blkSize)
 		}
 		else
 		{
-			fileBuff = MemAlloc(UInt8, sampleCnt * this->format->align);
+			Data::ByteBuffer fileBuff(sampleCnt * this->format->align);
 			readCnt = this->fileSrc->ReadSample(this->mixOfst, sampleCnt, fileBuff);
 			if (this->format->bitpersample == 16)
 			{
@@ -98,7 +97,7 @@ UOSInt Media::AudioFilter::FileMixFilter::ReadBlock(UInt8 *buff, UOSInt blkSize)
 				k = readCnt * this->format->nChannels;
 				while (k-- > 0)
 				{
-					v = ReadInt16(&buff[j]) + (Int32)ReadInt16(&fileBuff[i]);
+					v = ReadInt16(&blk[j]) + (Int32)ReadInt16(&fileBuff[i]);
 					if (v > 32767)
 					{
 						v = 32767;
@@ -107,12 +106,11 @@ UOSInt Media::AudioFilter::FileMixFilter::ReadBlock(UInt8 *buff, UOSInt blkSize)
 					{
 						v = -32768;
 					}
-					WriteInt16(&buff[j], v);
+					WriteInt16(&blk[j], v);
 					j += 2;
 					i += 2;
 				}
 			}
-			MemFree(fileBuff);
 			if (sampleCnt != readCnt)
 			{
 				this->mixing = false;

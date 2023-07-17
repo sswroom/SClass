@@ -15,7 +15,7 @@
 #define DebugMsg(msg)
 //#define DebugMsg(msg) printf("%s\n", msg);
 
-Win32::COMStream::COMStream(IO::SeekableStream *stm)
+Win32::COMStream::COMStream(NotNullPtr<IO::SeekableStream> stm)
 {
 	this->stm = stm;
 	this->cnt = 0;
@@ -50,9 +50,9 @@ HRESULT __stdcall Win32::COMStream::Read(void *pv, ULONG cb, ULONG *pcbRead)
 {
 	DebugMsg("Read");
 	if (pcbRead)
-		*pcbRead = (ULONG)stm->Read((UInt8*)pv, cb);
+		*pcbRead = (ULONG)stm->Read(Data::ByteArray((UInt8*)pv, cb));
 	else
-		stm->Read((UInt8*)pv, cb);
+		stm->Read(Data::ByteArray((UInt8*)pv, cb));
 	return 0;
 }
 
@@ -105,9 +105,9 @@ HRESULT __stdcall Win32::COMStream::CopyTo(IStream *pstm, ULARGE_INTEGER cb, ULA
 	void *buff = MAlloc((UOSInt)cb.QuadPart);
 	UOSInt readSize;
 	if (pcbRead)
-		readSize = (UOSInt)(pcbRead->QuadPart = stm->Read((UInt8*)buff, (UOSInt)cb.QuadPart));
+		readSize = (UOSInt)(pcbRead->QuadPart = stm->Read(Data::ByteArray((UInt8*)buff, (UOSInt)cb.QuadPart)));
 	else
-		readSize = stm->Read((UInt8*)buff, (UOSInt)cb.QuadPart);
+		readSize = stm->Read(Data::ByteArray((UInt8*)buff, (UOSInt)cb.QuadPart));
 	ULONG ul;
 	pstm->Write(buff, (ULONG)readSize, &ul);
 	if (pcbWritten)

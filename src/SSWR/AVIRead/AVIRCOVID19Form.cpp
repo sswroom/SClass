@@ -35,7 +35,7 @@ void __stdcall SSWR::AVIRead::AVIRCOVID19Form::OnDownloadClicked(void *userObj)
 	IO::MemoryStream mstm(1024);
 	while (true)
 	{
-		i = cli->Read(buff, 2048);
+		i = cli->Read(BYTEARR(buff));
 		if (i <= 0)
 		{
 			break;

@@ -456,7 +456,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookView(Net::WebServe
 		UInt64 sizeLeft = fileLen;
 		while (sizeLeft > 0)
 		{
-			readSize = fs.Read(sbuff, 512);
+			readSize = fs.Read(BYTEARR(sbuff));
 			if (readSize <= 0)
 			{
 				break;

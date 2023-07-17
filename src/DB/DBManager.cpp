@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "Crypto/Encrypt/AES256.h"
 #include "Crypto/Hash/MD5.h"
+#include "Data/ByteBuffer.h"
 #include "DB/DBManager.h"
 #include "DB/MySQLConn.h"
 #include "DB/ODBCConn.h"
@@ -815,10 +816,10 @@ Bool DB::DBManager::RestoreConn(Text::CString fileName, Data::ArrayList<DB::DBMa
 	UInt64 len = fs->GetLength();
 	if (len > 0 && len < 65536)
 	{
-		UInt8 *fileBuff = MemAlloc(UInt8, (UOSInt)len);
+		Data::ByteBuffer fileBuff((UOSInt)len);
 		UInt8 *decBuff = MemAlloc(UInt8, (UOSInt)len + 1);
 		Text::PString sarr[2];
-		fs->Read(fileBuff, (UOSInt)len);
+		fs->Read(fileBuff);
 		UInt8 keyBuff[32];
 		UOSInt cnt;
 		Crypto::Hash::MD5 md5;
@@ -828,7 +829,7 @@ Bool DB::DBManager::RestoreConn(Text::CString fileName, Data::ArrayList<DB::DBMa
 		md5.Calc(keyBuff, 16);
 		md5.GetValue(&keyBuff[16]);
 		Crypto::Encrypt::AES256 aes(keyBuff);
-		aes.Decrypt(fileBuff, (UOSInt)len, decBuff, 0);
+		aes.Decrypt(fileBuff.Ptr(), (UOSInt)len, decBuff, 0);
 		decBuff[(UOSInt)len] = 0;
 		while (len > 0 && decBuff[(UOSInt)len - 1] == 0)
 		{
@@ -848,7 +849,6 @@ Bool DB::DBManager::RestoreConn(Text::CString fileName, Data::ArrayList<DB::DBMa
 			}
 		}
 		MemFree(decBuff);
-		MemFree(fileBuff);
 	}
 	DEL_CLASS(fs);
 	return true;

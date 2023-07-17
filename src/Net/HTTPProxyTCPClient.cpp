@@ -70,7 +70,7 @@ Net::HTTPProxyTCPClient::HTTPProxyTCPClient(Net::SocketFactory *sockf, Text::CSt
 	sptr = Text::StrConcatC(sptr, UTF8STRC("\r\n"));
 	this->Write((UInt8*)reqBuff, (UOSInt)(sptr - reqBuff));
 	this->SetTimeout(4000);
-	respSize = this->Read((UInt8*)reqBuff, 512);
+	respSize = this->Read(BYTEARR(reqBuff));
 	this->SetTimeout(-1);
 
 	if (Text::StrStartsWithC(reqBuff, respSize, UTF8STRC("HTTP/1.1 200")))

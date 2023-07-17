@@ -1,4 +1,5 @@
 #include "Stdafx.h"
+#include "Data/ByteBuffer.h"
 #include "Math/Math.h"
 #include "Text/CharUtil.h"
 #include "Text/MyString.h"
@@ -193,8 +194,7 @@ void UI::GUIHexFileView::DrawImage(Media::DrawImage *dimg)
 		UOSInt j;
 		UTF8Char c;
 		UTF32Char wc;
-		UInt8 *readBuff;
-		UInt8 *currPtr;
+		Data::ByteArray currPtr;
 		UOSInt k;
 		UOSInt readBuffSize = (this->pageLineCnt + 1) * 16;
 		const UTF8Char *textPtr;
@@ -211,7 +211,7 @@ void UI::GUIHexFileView::DrawImage(Media::DrawImage *dimg)
 				fieldInfo = fieldList.GetItem(0);
 			}
 		}
-		readBuff = MemAlloc(UInt8, readBuffSize + 1);
+		Data::ByteBuffer readBuff(readBuffSize + 1);
 		readBuffSize = this->GetFileData(currOfst, readBuffSize, readBuff);
 		currPtr = readBuff;
 		readBuff[readBuffSize] = 0;
@@ -254,7 +254,7 @@ void UI::GUIHexFileView::DrawImage(Media::DrawImage *dimg)
 				k = readBuffSize;
 			}
 			readBuffSize -= k;
-			textPtr = currPtr;
+			textPtr = currPtr.Ptr();
 			j = 0;
 			while (j < k)
 			{
@@ -352,7 +352,6 @@ void UI::GUIHexFileView::DrawImage(Media::DrawImage *dimg)
 		dimg->DelBrush(textBrush);
 		dimg->DelBrush(lineNumBrush);
 		dimg->DelFont(f);
-		MemFree(readBuff);
 	}
 }
 
@@ -536,7 +535,7 @@ UInt64 UI::GUIHexFileView::GetFileSize()
 	return this->fileSize;
 }
 
-UOSInt UI::GUIHexFileView::GetFileData(UInt64 ofst, UOSInt size, UInt8 *outBuff)
+UOSInt UI::GUIHexFileView::GetFileData(UInt64 ofst, UOSInt size, Data::ByteArray outBuff)
 {
 	if (this->fd)
 	{
@@ -545,7 +544,7 @@ UOSInt UI::GUIHexFileView::GetFileData(UInt64 ofst, UOSInt size, UInt8 *outBuff)
 	else if (this->fs)
 	{
 		this->fs->SeekFromBeginning(ofst);
-		return this->fs->Read(outBuff, size);
+		return this->fs->Read(outBuff.WithSize(size));
 	}
 	else
 	{

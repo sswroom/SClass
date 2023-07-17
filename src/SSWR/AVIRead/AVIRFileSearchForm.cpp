@@ -127,7 +127,7 @@ void SSWR::AVIRead::AVIRFileSearchForm::FindDir(UTF8Char *dir, UTF8Char *dirEnd,
 			IO::FileStream fs(CSTRP(dir, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 			while (true)
 			{
-				readSize = fs.Read(&fileBuff[fileBuffSize], FILEBUFFSIZE - fileBuffSize);
+				readSize = fs.Read(Data::ByteArray(&fileBuff[fileBuffSize], FILEBUFFSIZE - fileBuffSize));
 				if (readSize == 0)
 					break;
 				fileBuffSize += readSize;

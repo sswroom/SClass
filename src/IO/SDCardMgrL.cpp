@@ -11,7 +11,7 @@ Bool SDCardMgr_ReadId(Text::CString fileName, UInt8 *buff)
 	Bool ret = false;
 	UInt8 fileBuff[64];
 	IO::FileStream fs(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-	i = fs.Read(fileBuff, 64);
+	i = fs.Read(BYTEARR(fileBuff));
 	if (i >= 32)
 	{
 		fileBuff[32] = 0;

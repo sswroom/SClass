@@ -191,7 +191,7 @@ UInt32 __stdcall Net::TCPClientMgr::ClientThread(void *o)
 						else
 						{
 //							printf("Cli Read Begin %d\r\n", readSize);
-							readSize = cliStat->cli->Read(cliStat->buff, TCP_BUFF_SIZE);
+							readSize = cliStat->cli->Read(Data::ByteArray(cliStat->buff, TCP_BUFF_SIZE));
 //							printf("Cli Read End %d\r\n", readSize);
 							readMutUsage.EndUse();
 						}

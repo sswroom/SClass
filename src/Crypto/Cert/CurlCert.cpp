@@ -82,7 +82,7 @@ Crypto::Cert::X509Cert *Crypto::Cert::CurlCert::CreateX509Cert() const
 			Crypto::Cert::X509File *pobjCert;
 			UOSInt len = Text::StrCharCnt(slist->data);
 			NotNullPtr<Text::String> fileName = Text::String::New(UTF8STRC("Certificate.crt"));
-			pobjCert = (Crypto::Cert::X509File*)Parser::FileParser::X509Parser::ParseBuff((const UInt8*)slist->data + 5, (UOSInt)len - 5, fileName);
+			pobjCert = (Crypto::Cert::X509File*)Parser::FileParser::X509Parser::ParseBuff(Data::ByteArrayR((const UInt8*)slist->data + 5, (UOSInt)len - 5), fileName);
 			fileName->Release();
 			return (Crypto::Cert::X509Cert*)pobjCert;
 		}

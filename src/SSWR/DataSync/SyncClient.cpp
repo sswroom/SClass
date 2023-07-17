@@ -24,7 +24,7 @@ UInt32 __stdcall SSWR::DataSync::SyncClient::RecvThread(void *userObj)
 	{
 		if (cli.Set(me->cli))
 		{
-			recvSize = cli->Read(&buff[buffSize], 8192 - buffSize);
+			recvSize = cli->Read(Data::ByteArray(&buff[buffSize], 8192 - buffSize));
 			if (recvSize <= 0)
 			{
 				Sync::MutexUsage mutUsage(&me->cliMut);

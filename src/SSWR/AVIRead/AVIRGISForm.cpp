@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "Crypto/Hash/CRC32.h"
 #include "Crypto/Hash/CRC32R.h"
+#include "Data/ByteBuffer.h"
 #include "IO/DirectoryPackage.h"
 #include "IO/Path.h"
 #include "IO/SerialPort.h"
@@ -1302,8 +1303,8 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 				{
 					UOSInt i;
 					Map::GPSTrack *trk;
-					UInt8 *fileBuff = MemAlloc(UInt8, (UOSInt)fileSize);
-					fs.Read(fileBuff, (UOSInt)fileSize);
+					Data::ByteBuffer fileBuff((UOSInt)fileSize);
+					fs.Read(fileBuff);
 					NEW_CLASS(trk, Map::GPSTrack(dlg.GetFileName(), true, 0, 0));
 					i = 0;
 					while (i < fileSize)
@@ -1314,7 +1315,6 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 						}
 						i += 65536;
 					}
-					MemFree(fileBuff);
 					this->AddLayer(trk);
 				}
 			}

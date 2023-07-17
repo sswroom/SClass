@@ -17,7 +17,7 @@ UInt32 __stdcall IO::TVCtrl::NECTVControl::RecvThread(void *userObj)
 	me->recvRunning = true;
 	while (!me->recvToStop)
 	{
-		recvSize = me->stm->Read(buff, 256);
+		recvSize = me->stm->Read(BYTEARR(buff));
 		if (recvSize <= 0)
 		{
 			Sync::SimpleThread::Sleep(10);

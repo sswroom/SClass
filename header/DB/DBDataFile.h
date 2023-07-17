@@ -361,7 +361,7 @@ template <class T> Bool DB::DBDataFile<T>::LoadFile(Text::CString fileName, Data
 	UOSInt m3;
 	UOSInt rowSize;
 	Data::VariItem::ItemType *colTypes = MemAlloc(Data::VariItem::ItemType, l);
-	buffSize = fs.Read(buff, maxBuffSize);
+	buffSize = fs.Read(Data::ByteArray(buff, maxBuffSize));
 	if (buff[0] == 'S' && buff[1] == 'M' && buff[2] == 'D' && buff[3] == 'f')
 	{
 		succ = true;
@@ -401,7 +401,7 @@ template <class T> Bool DB::DBDataFile<T>::LoadFile(Text::CString fileName, Data
 						buffSize = 0;
 						m = 0;
 					}
-					m2 = fs.Read(&buff[buffSize], maxBuffSize - buffSize);
+					m2 = fs.Read(Data::ByteArray(&buff[buffSize], maxBuffSize - buffSize));
 					if (m2 == 0)
 					{
 						break;
@@ -427,7 +427,7 @@ template <class T> Bool DB::DBDataFile<T>::LoadFile(Text::CString fileName, Data
 						m2 -= m;
 						m = 0;
 					}
-					k = fs.Read(&buff[buffSize], maxBuffSize - buffSize);
+					k = fs.Read(Data::ByteArray(&buff[buffSize], maxBuffSize - buffSize));
 					if (k == 0)
 					{
 						succ = false;

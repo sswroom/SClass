@@ -10,8 +10,6 @@ Media::Decoder::ADXDecoder::ADXDecoder(Media::IAudioSource *sourceAudio)
 	Media::AudioFormat fmt;
 	this->sourceAudio = 0;
 	this->nChannels = 0;
-	this->readBuff = 0;
-	this->readBuffSize = 0;
 	sourceAudio->GetFormat(&fmt);
 	if (fmt.formatId != 0x2080)
 		return;
@@ -36,11 +34,6 @@ Media::Decoder::ADXDecoder::ADXDecoder(Media::IAudioSource *sourceAudio)
 
 Media::Decoder::ADXDecoder::~ADXDecoder()
 {
-	if (this->readBuff)
-	{
-		MemFree(this->readBuff);
-		this->readBuff = 0;
-	}
 }
 
 void Media::Decoder::ADXDecoder::GetFormat(AudioFormat *format)
@@ -100,30 +93,27 @@ void Media::Decoder::ADXDecoder::Stop()
 	this->readEvt = 0;
 }
 
-UOSInt Media::Decoder::ADXDecoder::ReadBlock(UInt8 *buff, UOSInt blkSize)
+UOSInt Media::Decoder::ADXDecoder::ReadBlock(Data::ByteArray blk)
 {
+	UOSInt blkSize = blk.GetSize();
 	UOSInt outSize;
 	UOSInt readSize;
-	UInt8 *src;
-	UInt8 *dest;
+	Data::ByteArray src;
+	Data::ByteArray dest;
 	if (this->nChannels == 1)
 	{
 		blkSize = blkSize >> 6;
 		readSize = blkSize * 18;
-		if (readBuffSize < readSize)
+		if (readBuff.GetSize() < readSize)
 		{
-			if (readBuff)
-			{
-				MemFree(readBuff);
-			}
-			readBuff = MemAlloc(UInt8, readBuffSize = readSize);
+			readBuff.ChangeSize(readSize);
 		}
-		readSize = this->sourceAudio->ReadBlock(readBuff, readSize);
+		readSize = this->sourceAudio->ReadBlock(readBuff.WithSize(readSize));
 		blkSize = readSize / 18;
 		outSize = blkSize << 6;
 
 		src = readBuff;
-		dest = buff;
+		dest = blk;
 		while (blkSize-- > 0)
 		{
 			Convert(src, dest, 2, 0);
@@ -139,24 +129,20 @@ UOSInt Media::Decoder::ADXDecoder::ReadBlock(UInt8 *buff, UOSInt blkSize)
 		blkSize = blkSize >> 7;
 		outSize = blkSize << 7;
 		readSize = blkSize * 36;
-		if (readBuffSize < readSize)
+		if (readBuff.GetSize() < readSize)
 		{
-			if (readBuff)
-			{
-				MemFree(readBuff);
-			}
-			readBuff = MemAlloc(UInt8, readBuffSize = readSize);
+			readBuff.ChangeSize(readSize);
 		}
-		readSize = this->sourceAudio->ReadBlock(readBuff, readSize);
+		readSize = this->sourceAudio->ReadBlock(readBuff.WithSize(readSize));
 		blkSize = readSize / 36;
 		outSize = blkSize << 7;
 
 		src = readBuff;
-		dest = buff;
+		dest = blk;
 		while (blkSize-- > 0)
 		{
 			Convert(src, dest, 4, 0);
-			Convert(&src[18], &dest[2], 4, 1);
+			Convert(src.SubArray(18), dest.SubArray(2), 4, 1);
 			src += 36;
 			dest += 128;
 		}
@@ -184,7 +170,7 @@ UOSInt Media::Decoder::ADXDecoder::GetMinBlockSize()
 }
 
 
-void Media::Decoder::ADXDecoder::Convert(UInt8 *src, UInt8 *dest, Int32 sampleByte, Int32 channel)
+void Media::Decoder::ADXDecoder::Convert(Data::ByteArray src, Data::ByteArray dest, Int32 sampleByte, Int32 channel)
 {
 	Int32 scale = ( (src[0] << 8) | (src[1])) << 2;
 	//if (scale & 0x8000)
@@ -209,7 +195,7 @@ void Media::Decoder::ADXDecoder::Convert(UInt8 *src, UInt8 *dest, Int32 sampleBy
 			if (((*(Int32*)&s0) & (Int32)0x80000000) == 0)
 				s0 = (Int64)0xffffffff80000000;
 		adxSample1[channel] = s0;
-		*(UInt16*)dest = (UInt16)(s0 >> 16);
+		dest.WriteNU16(0, (UInt16)(s0 >> 16));
 		dest += sampleByte;
 
 
@@ -226,7 +212,7 @@ void Media::Decoder::ADXDecoder::Convert(UInt8 *src, UInt8 *dest, Int32 sampleBy
 			if (((*(Int32*)&s0) & (Int32)0x80000000) == 0)
 				s0 = (Int64)0xffffffff80000000;
 		adxSample1[channel] = s0;
-		*(UInt16*)dest = (UInt16)(s0 >> 16);
+		dest.WriteNU16(0, (UInt16)(s0 >> 16));
 		dest += sampleByte;
 	}
 }

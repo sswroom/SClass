@@ -52,7 +52,7 @@ Bool SSWR::AVIRead::AVIRASN1DataForm::FileIsSign(NotNullPtr<Text::String> fileNa
 	fileLen = fs.GetLength();
 	if (fileLen >= 172 && fileLen <= 174)
 	{
-		if (fs.Read(fileCont, (UOSInt)fileLen) == (UOSInt)fileLen)
+		if (fs.Read(Data::ByteArray(fileCont, (UOSInt)fileLen)) == (UOSInt)fileLen)
 		{
 			Text::TextBinEnc::Base64Enc enc;
 			decSize = enc.DecodeBin(fileCont, (UOSInt)fileLen, decCont);
@@ -369,7 +369,7 @@ UOSInt SSWR::AVIRead::AVIRASN1DataForm::ParseSignature(Text::PString *s, UInt8 *
 		Bool succ = false;
 		if (fileLen >= 172 && fileLen <= 174)
 		{
-			if (fs.Read(fileCont, (UOSInt)fileLen) == fileLen)
+			if (fs.Read(Data::ByteArray(fileCont, (UOSInt)fileLen)) == fileLen)
 			{
 				Text::TextBinEnc::Base64Enc enc;
 				signLen = enc.DecodeBin(fileCont, (UOSInt)fileLen, signBuff);
@@ -381,7 +381,7 @@ UOSInt SSWR::AVIRead::AVIRASN1DataForm::ParseSignature(Text::PString *s, UInt8 *
 		}
 		else if (fileLen >= 344 && fileLen <= 346)
 		{
-			if (fs.Read(fileCont, (UOSInt)fileLen) == fileLen)
+			if (fs.Read(Data::ByteArray(fileCont, (UOSInt)fileLen)) == fileLen)
 			{
 				Text::TextBinEnc::Base64Enc enc;
 				signLen = enc.DecodeBin(fileCont, (UOSInt)fileLen, signBuff);

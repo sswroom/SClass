@@ -53,12 +53,12 @@ Bool Data::Compress::DeflateStream::IsDown() const
 	return this->clsData->srcStm->IsDown();
 }
 
-UOSInt Data::Compress::DeflateStream::Read(const Data::ByteArray &buff)
+UOSInt Data::Compress::DeflateStream::Read(Data::ByteArray buff)
 {
-	UOSInt initSize = size;
+	UOSInt initSize = buff.GetSize();
 	int ret;
-	this->clsData->stm.next_out = buff;
-	this->clsData->stm.avail_out = (unsigned int)size;
+	this->clsData->stm.next_out = buff.Ptr();
+	this->clsData->stm.avail_out = (unsigned int)buff.GetSize();
 	while (this->clsData->stm.avail_out == initSize)
 	{
 		if (this->clsData->stm.avail_in == 0 || this->clsData->srcLeng == 0)
@@ -71,7 +71,7 @@ UOSInt Data::Compress::DeflateStream::Read(const Data::ByteArray &buff)
 				{
 					readSize = (UOSInt)this->clsData->srcLeng;
 				}
-				readSize = this->clsData->srcStm->Read(this->clsData->buff, readSize);
+				readSize = this->clsData->srcStm->Read(Data::ByteArray(this->clsData->buff, readSize));
 				if (readSize > 0 && this->clsData->hash)
 				{
 					this->clsData->hash->Calc(this->clsData->buff, readSize);

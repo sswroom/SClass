@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/ArrayListDbl.h"
+#include "Data/ByteBuffer.h"
 #include "Data/Chart.h"
 #include "Math/FFT.h"
 #include "Math/Math.h"
@@ -43,7 +44,7 @@ Media::DrawImage *Media::FrequencyGraph::CreateGraph(Media::DrawEngine *eng, Med
 	if (fmt.formatId == 1)
 	{
 		UInt64 sampleCnt = (UInt64)audio->GetSampleCount();
-		UInt8 *samples = MemAlloc(UInt8, fftSize * fmt.nChannels * fmt.bitpersample >> 3);
+		Data::ByteBuffer samples(fftSize * fmt.nChannels * fmt.bitpersample >> 3);
 		allFreqs = MemAllocA(Double, fftSize * (timeRes + 1));
 		maxFreq = MemAlloc(Double, fftSize);
 		minFreq = MemAlloc(Double, fftSize);
@@ -92,15 +93,15 @@ Media::DrawImage *Media::FrequencyGraph::CreateGraph(Media::DrawEngine *eng, Med
 		while (i <= j)
 		{
 			currSample = (UOSInt)(sampleCnt * i / j);
-			audio->ReadSample(currSample - (fftSize >> 1), fftSize, (UInt8*)samples);
+			audio->ReadSample(currSample - (fftSize >> 1), fftSize, samples);
 
 			if (fmt.bitpersample == 16)
 			{
-				fft.ForwardBits(samples, freqs, Math::FFTCalc::ST_I16, fmt.nChannels, 1.0);
+				fft.ForwardBits(samples.Ptr(), freqs, Math::FFTCalc::ST_I16, fmt.nChannels, 1.0);
 			}
 			else if (fmt.bitpersample == 24)
 			{
-				fft.ForwardBits(samples, freqs, Math::FFTCalc::ST_I24, fmt.nChannels, 1.0);
+				fft.ForwardBits(samples.Ptr(), freqs, Math::FFTCalc::ST_I24, fmt.nChannels, 1.0);
 			}
 			if (i == 0)
 			{
@@ -289,7 +290,6 @@ Media::DrawImage *Media::FrequencyGraph::CreateGraph(Media::DrawEngine *eng, Med
 
 		MemFree(maxFreq);
 		MemFree(minFreq);
-		MemFree(samples);
 		MemFreeA(allFreqs);
 	}
 	return retImg;

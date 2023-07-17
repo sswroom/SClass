@@ -8,12 +8,12 @@ namespace Win32
 	class COMStream : public IStream
 	{
 	private:
-		IO::SeekableStream *stm;
+		NotNullPtr<IO::SeekableStream> stm;
 		UInt32 cnt;
 		Data::DateTime *dt;
 
 	public:
-		COMStream(IO::SeekableStream *stm);
+		COMStream(NotNullPtr<IO::SeekableStream> stm);
 		virtual ~COMStream();
 		HRESULT __stdcall QueryInterface(const IID &riid, void **ppvObject);
 		ULONG __stdcall AddRef(void);

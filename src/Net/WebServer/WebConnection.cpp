@@ -591,7 +591,7 @@ void Net::WebServer::WebConnection::ProcessResponse()
 				{
 					while (true)
 					{
-						k = httpCli->Read(buff, 2048);
+						k = httpCli->Read(BYTEARR(buff));
 						if (k <= 0)
 							break;
 						if (this->Write(buff, k) == 0)
@@ -602,7 +602,7 @@ void Net::WebServer::WebConnection::ProcessResponse()
 				{
 					while (true)
 					{
-						k = httpCli->Read(buff, 2048);
+						k = httpCli->Read(BYTEARR(buff));
 						if (k <= 0)
 							break;
 						if (this->Write(buff, k) == 0)
@@ -873,7 +873,7 @@ Bool Net::WebServer::WebConnection::IsDown() const
 	return this->respDataEnd;
 }
 
-UOSInt Net::WebServer::WebConnection::Read(const Data::ByteArray &buff)
+UOSInt Net::WebServer::WebConnection::Read(Data::ByteArray buff)
 {
 	return 0;
 }

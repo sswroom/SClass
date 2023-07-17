@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "Data/ArrayListICaseString.h"
+#include "Data/ByteBuffer.h"
 #include "Data/Sort/ArtificialQuickSort.h"
 #include "Exporter/GUIJPGExporter.h"
 #include "IO/Path.h"
@@ -41,12 +42,11 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDown(Net::WebServ
 		userFile = me->env->UserfileGetCheck(&mutUsage, fileId, spId, cateId, env.user, &sptr);
 		if (userFile)
 		{
-			UInt8 *buff;
 			UOSInt buffSize;
 			IO::StmData::FileData fd(CSTRP(sbuff, sptr), false);
 			
 			buffSize = (UOSInt)fd.GetDataSize();
-			buff = MemAlloc(UInt8, buffSize);
+			Data::ByteBuffer buff(buffSize);
 			fd.GetRealData(0, buffSize, buff);
 			resp->AddDefHeaders(req);
 			resp->AddContentDisposition(false, userFile->oriFileName->v, req->GetBrowser());
@@ -60,7 +60,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDown(Net::WebServ
 				resp->AddContentType(CSTR("image/jpeg"));
 			}
 			mutUsage.EndUse();
-			resp->Write(buff, buffSize);
+			resp->Write(buff.Ptr(), buffSize);
 			return true;
 		}
 		else

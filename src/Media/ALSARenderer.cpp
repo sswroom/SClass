@@ -158,7 +158,7 @@ UInt32 __stdcall Media::ALSARenderer::PlayThread(void *obj)
 		{
 			if (me->dataConv)
 			{
-				readSize = me->audsrc->ReadBlockLPCM(readBuff, readBuffLeng, &af);
+				readSize = me->audsrc->ReadBlockLPCM(Data::ByteArray(readBuff, readBuffLeng), &af);
 				if (af.bitpersample == me->dataBits && af.formatId == 1)
 				{
 					buffSize[i] = Media::LPCMConverter::ChannelReduce(me->dataBits, af.nChannels, readBuff, readSize, me->dataNChannel, outBuff[i]);
@@ -174,7 +174,7 @@ UInt32 __stdcall Media::ALSARenderer::PlayThread(void *obj)
 			}
 			else
 			{
-				buffSize[i] = me->audsrc->ReadBlockLPCM(outBuff[i], outBuffLeng, &af);
+				buffSize[i] = me->audsrc->ReadBlockLPCM(Data::ByteArray(outBuff[i], outBuffLeng), &af);
 			}
 			outSize[i] = 0;
 	//		dataExist[i] = true;
@@ -235,7 +235,7 @@ UInt32 __stdcall Media::ALSARenderer::PlayThread(void *obj)
 
 						if (me->dataConv)
 						{
-							readSize = me->audsrc->ReadBlockLPCM(readBuff, readBuffLeng, &af);
+							readSize = me->audsrc->ReadBlockLPCM(Data::ByteArray(readBuff, readBuffLeng), &af);
 							if (af.bitpersample == me->dataBits && af.formatId == 1)
 							{
 								buffSize[nextBlock] = Media::LPCMConverter::ChannelReduce(me->dataBits, af.nChannels, readBuff, readSize, me->dataNChannel, outBuff[nextBlock]);
@@ -251,7 +251,7 @@ UInt32 __stdcall Media::ALSARenderer::PlayThread(void *obj)
 						}
 						else
 						{
-							buffSize[nextBlock] = me->audsrc->ReadBlockLPCM(outBuff[nextBlock], outBuffLeng, &af);
+							buffSize[nextBlock] = me->audsrc->ReadBlockLPCM(Data::ByteArray(outBuff[nextBlock], outBuffLeng), &af);
 						}
 						outSize[nextBlock] = 0;
 		//				dataExist[nextBlock] = true;
@@ -308,7 +308,7 @@ UInt32 __stdcall Media::ALSARenderer::PlayThread(void *obj)
 
 				if (me->dataConv)
 				{
-					readSize = me->audsrc->ReadBlockLPCM(readBuff, readBuffLeng, &af);
+					readSize = me->audsrc->ReadBlockLPCM(Data::ByteArray(readBuff, readBuffLeng), &af);
 					if (af.bitpersample == me->dataBits && af.formatId == 1)
 					{
 						buffSize[nextBlock] = Media::LPCMConverter::ChannelReduce(me->dataBits, af.nChannels, readBuff, readSize, me->dataNChannel, outBuff[nextBlock]);
@@ -324,7 +324,7 @@ UInt32 __stdcall Media::ALSARenderer::PlayThread(void *obj)
 				}
 				else
 				{
-					buffSize[nextBlock] = me->audsrc->ReadBlockLPCM(outBuff[nextBlock], outBuffLeng, &af);
+					buffSize[nextBlock] = me->audsrc->ReadBlockLPCM(Data::ByteArray(outBuff[nextBlock], outBuffLeng), &af);
 				}
 				outSize[nextBlock] = 0;
 	//				dataExist[nextBlock] = true;

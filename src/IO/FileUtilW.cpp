@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Data/ByteBuffer.h"
 #include "Data/DateTime.h"
 #include "IO/ActiveStreamReader.h"
 #include "IO/FileStream.h"
@@ -361,7 +362,6 @@ Bool IO::FileUtil::CopyFile(Text::CString file1, Text::CString file2, FileExistA
 	UInt64 writeSize = 0;
 	UInt64 writenSize;
 	Bool samePart = IO::FileUtil::IsSamePartition(file1.v, file2.v);
-	UInt8 *buff;
 	if (fea == IO::FileUtil::FileExistAction::Continue)
 	{
 		UInt64 destPos = fs2->GetPosition();
@@ -393,10 +393,11 @@ Bool IO::FileUtil::CopyFile(Text::CString file1, Text::CString file2, FileExistA
 		Data::Timestamp ts1;
 		Data::Timestamp ts2;
 		Data::Timestamp ts3;
-		buff = MemAlloc(UInt8, (UOSInt)1048576);
-		writeSize = fs1->Read(buff, (UOSInt)1048576);
-		writeSize = fs2->Write(buff, (UOSInt)writeSize);
-		MemFree(buff);
+		{
+			Data::ByteBuffer buff((UOSInt)1048576);
+			writeSize = fs1->Read(buff);
+			writeSize = fs2->Write(buff.Ptr(), (UOSInt)writeSize);
+		}
 		fs1->GetFileTimes(&ts1, &ts2, &ts3);
 		fs2->SetFileTimes(ts1, ts2, ts3);
 		if (progHdlr)
@@ -411,6 +412,7 @@ Bool IO::FileUtil::CopyFile(Text::CString file1, Text::CString file2, FileExistA
 		Data::Timestamp ts3;
 		UOSInt readSize;
 		UOSInt thisSize;
+		UInt8 *buff;
 		if (fileSize < ramSize)
 		{
 			buff = MemAllocA(UInt8, readSize = (UOSInt)fileSize);
@@ -421,7 +423,7 @@ Bool IO::FileUtil::CopyFile(Text::CString file1, Text::CString file2, FileExistA
 		}
 		while (writeSize < fileSize)
 		{
-			if ((thisSize = fs1->Read(buff, readSize)) <= 0)
+			if ((thisSize = fs1->Read(Data::ByteArray(buff, readSize))) <= 0)
 			{
 				break;
 			}

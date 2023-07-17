@@ -1,5 +1,6 @@
 #ifndef _SM_MEDIA_DECODER_ADXDECODER
 #define _SM_MEDIA_DECODER_ADXDECODER
+#include "Data/ByteBuffer.h"
 #include "Media/Decoder/ADecoderBase.h"
 
 namespace Media
@@ -13,8 +14,7 @@ namespace Media
 			Int64 adxSample1[2];
 			Int64 adxSample2[2];
 
-			UInt8 *readBuff;
-			UOSInt readBuffSize;
+			Data::ByteBuffer readBuff;
 			Sync::Event *readEvt;
 		public:
 			ADXDecoder(IAudioSource *sourceAudio);
@@ -29,7 +29,7 @@ namespace Media
 			virtual UOSInt GetMinBlockSize();
 
 		private:
-			void Convert(UInt8 *src, UInt8 *dest, Int32 sampleByte, Int32 channel);
+			void Convert(Data::ByteArray src, Data::ByteArray dest, Int32 sampleByte, Int32 channel);
 		};
 	}
 }

@@ -1,4 +1,5 @@
 #include "Stdafx.h"
+#include "Data/ByteBuffer.h"
 #include "Data/ByteTool.h"
 #include "Net/TCPClient.h"
 #include "SSWR/AVIRead/AVIRGPSDevForm.h"
@@ -12,50 +13,50 @@
 UInt32 __stdcall SSWR::AVIRead::AVIRGPSDevForm::ClientThread(void *userObj)
 {
 	SSWR::AVIRead::AVIRGPSDevForm *me = (SSWR::AVIRead::AVIRGPSDevForm*)userObj;
-	UInt8 *recvBuff;
 	UOSInt recvBuffSize;
 	UOSInt readSize;
 	NotNullPtr<Net::TCPClient> cli;
-	recvBuff = MemAlloc(UInt8, 16384);
-	recvBuffSize = 0;
-	me->threadRunning = true;
-	while (!me->threadToStop)
 	{
-		if (cli.Set(me->cli))
+		Data::ByteBuffer recvBuff(16384);
+		recvBuffSize = 0;
+		me->threadRunning = true;
+		while (!me->threadToStop)
 		{
-			readSize = cli->Read(&recvBuff[recvBuffSize], 16384 - recvBuffSize);
+			if (cli.Set(me->cli))
+			{
+				readSize = cli->Read(recvBuff.SubArray(recvBuffSize));
 
-			if (readSize == 0)
-			{
-				Sync::MutexUsage mutUsage(&me->cliMut);
-				SDEL_CLASS(me->cli);
-				mutUsage.EndUse();
-				recvBuffSize = 0;
-			}
-			else
-			{
-				recvBuffSize += readSize;
-				readSize = me->protoHdlr.ParseProtocol(cli, 0, me, recvBuff, recvBuffSize);
 				if (readSize == 0)
 				{
+					Sync::MutexUsage mutUsage(&me->cliMut);
+					SDEL_CLASS(me->cli);
+					mutUsage.EndUse();
 					recvBuffSize = 0;
-				}
-				else if (readSize >= recvBuffSize)
-				{
 				}
 				else
 				{
-					MemCopyO(recvBuff, &recvBuff[recvBuffSize - readSize], readSize);
-					recvBuffSize = readSize;
+					recvBuffSize += readSize;
+					readSize = me->protoHdlr.ParseProtocol(cli, 0, me, recvBuff.Ptr(), recvBuffSize);
+					if (readSize == 0)
+					{
+						recvBuffSize = 0;
+					}
+					else if (readSize >= recvBuffSize)
+					{
+					}
+					else
+					{
+						recvBuff.CopyInner(0, recvBuffSize - readSize, readSize);
+						recvBuffSize = readSize;
+					}
 				}
 			}
-		}
-		else
-		{
-			me->threadEvt->Wait(1000);
+			else
+			{
+				me->threadEvt->Wait(1000);
+			}
 		}
 	}
-	MemFree(recvBuff);
 	me->threadRunning = false;
 	return 0;
 }

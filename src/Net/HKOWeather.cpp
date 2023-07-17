@@ -90,7 +90,7 @@ Net::HKOWeather::WeatherSignal Net::HKOWeather::GetSignalSummary(Net::SocketFact
 		return Net::HKOWeather::WS_UNKNOWN;
 	}
 	IO::MemoryStream mstm;
-	while ((i = cli->Read(buff, 1024)) > 0)
+	while ((i = cli->Read(BYTEARR(buff))) > 0)
 	{
 		mstm.Write(buff, i);
 	}

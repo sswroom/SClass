@@ -18,7 +18,7 @@ UInt32 __stdcall IO::SNBProtocol::RecvThread(void *userObj)
 	buffSize = 0;
 	while (!me->toStop)
 	{
-		recvSize = me->stm->Read(&recvBuff[buffSize], 4096 - buffSize);
+		recvSize = me->stm->Read(Data::ByteArray(&recvBuff[buffSize], 4096 - buffSize));
 		if (recvSize <= 0)
 		{
 			Sync::SimpleThread::Sleep(100);

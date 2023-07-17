@@ -106,7 +106,7 @@ Bool Exporter::SPKExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 				}
 				customBuff[0] = (UInt8)i;
 
-				NEW_CLASS(spkg, IO::SPackageFile(stm, false, 1, buffSize, customBuff));
+				NEW_CLASS(spkg, IO::SPackageFile(stm, false, 1, buffSize, Data::ByteArray(customBuff, 2048)));
 				DEL_CLASS(spkg);
 
 				MemFree(customBuff);

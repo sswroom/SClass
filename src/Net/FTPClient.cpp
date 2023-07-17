@@ -147,11 +147,11 @@ Bool Net::FTPClient::IsDown() const
 	return this->cli2 == 0;
 }
 
-UOSInt Net::FTPClient::Read(const Data::ByteArray &buff)
+UOSInt Net::FTPClient::Read(Data::ByteArray buff)
 {
 	if (this->cli2)
 	{
-		return this->cli2->Read(buff, size);
+		return this->cli2->Read(buff);
 	}
 	else
 	{

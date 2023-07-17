@@ -1,5 +1,6 @@
 #ifndef _SM_IO_SPACKAGEFILE
 #define _SM_IO_SPACKAGEFILE
+#include "Data/ByteBuffer.h"
 #include "Data/BTreeUTF8Map.h"
 #include "IO/StreamData.h"
 #include "IO/MemoryStream.h"
@@ -30,14 +31,14 @@ namespace IO
 		UInt64 currOfst;
 		Int32 customType;
 		UOSInt customSize;
-		UInt8 *customBuff;
+		Data::ByteBuffer customBuff;
 
 		void ReadV2DirEnt(UInt64 ofst, UInt64 size);
 		void AddPackageInner(IO::PackageFile *pkg, UTF8Char pathSeperator, UTF8Char *pathStart, UTF8Char *pathEnd);
 		Bool OptimizeFileInner(IO::SPackageFile *newFile, UInt64 dirOfst, UInt64 dirSize);
 	public:
 		SPackageFile(NotNullPtr<IO::SeekableStream> stm, Bool toRelease);
-		SPackageFile(NotNullPtr<IO::SeekableStream> stm, Bool toRelease, Int32 customType, UOSInt customSize, const UInt8 *customBuff);
+		SPackageFile(NotNullPtr<IO::SeekableStream> stm, Bool toRelease, Int32 customType, UOSInt customSize, Data::ByteArrayR customBuff);
 		SPackageFile(Text::CString fileName);
 		~SPackageFile();
 

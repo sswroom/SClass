@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Data/ByteBuffer.h"
 #include "Data/ByteTool.h"
 #include "DB/SQLBuilder.h"
 #include "DB/SQLiteFile.h"
@@ -255,7 +256,7 @@ Bool Exporter::OruxMapExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, T
 						if (fd)
 						{
 							UOSInt imgSize = (UOSInt)fd->GetDataSize();
-							UInt8 *imgBuff = MemAlloc(UInt8, imgSize);
+							Data::ByteBuffer imgBuff(imgSize);
 							fd->GetRealData(0, imgSize, imgBuff);
 							sql.Clear();
 							sql.AppendCmdC(CSTR("insert into tiles (x, y, z, image) values ("));
@@ -265,10 +266,9 @@ Bool Exporter::OruxMapExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, T
 							sql.AppendCmdC(CSTR(", "));
 							sql.AppendInt32((Int32)(UInt32)level);
 							sql.AppendCmdC(CSTR(", "));
-							sql.AppendBinary(imgBuff, imgSize);
+							sql.AppendBinary(imgBuff.Ptr(), imgSize);
 							sql.AppendCmdC(CSTR(")"));
 							db->ExecuteNonQuery(sql.ToCString());
-							MemFree(imgBuff);
 							DEL_CLASS(fd);
 							if (j != 0 && (j & 0x3fff) == 0)
 							{

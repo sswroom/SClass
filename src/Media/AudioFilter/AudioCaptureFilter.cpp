@@ -76,28 +76,28 @@ UInt32 Media::AudioFilter::AudioCaptureFilter::SeekToTime(UInt32 time)
 	return 0;
 }
 
-UOSInt Media::AudioFilter::AudioCaptureFilter::ReadBlock(UInt8 *buff, UOSInt blkSize)
+UOSInt Media::AudioFilter::AudioCaptureFilter::ReadBlock(Data::ByteArray blk)
 {
 	if (this->sourceAudio == 0)
 		return 0;
 
-	UOSInt readSize = this->sourceAudio->ReadBlock(buff, blkSize);
+	UOSInt readSize = this->sourceAudio->ReadBlock(blk);
 	Sync::MutexUsage mutUsage(&this->readMut);
 	if (this->writing)
 	{
 		if (this->readBuffSize >= BUFFSIZE)
 		{
 		}
-		else if (this->readBuffSize + blkSize > BUFFSIZE)
+		else if (this->readBuffSize + blk.GetSize() > BUFFSIZE)
 		{
-			MemCopyNO(&this->readBuff[this->readBuffSize], buff, BUFFSIZE - this->readBuffSize);
+			MemCopyNO(&this->readBuff[this->readBuffSize], blk.Ptr(), BUFFSIZE - this->readBuffSize);
 			this->readBuffSize = BUFFSIZE;
 			this->evt.Set();
 		}
 		else
 		{
-			MemCopyNO(&this->readBuff[this->readBuffSize], buff, blkSize);
-			this->readBuffSize += blkSize;
+			MemCopyNO(&this->readBuff[this->readBuffSize], blk.Ptr(), blk.GetSize());
+			this->readBuffSize += blk.GetSize();
 			this->evt.Set();
 		}
 	}

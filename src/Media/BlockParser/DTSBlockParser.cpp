@@ -14,7 +14,7 @@ Media::AudioBlockSource *Media::BlockParser::DTSBlockParser::ParseStreamData(IO:
 	UInt64 leng = stmData->GetDataSize();
 	UInt8 buff[256];
 	UInt64 currOfst = 0;
-	stmData->GetRealData(0, 16, buff);
+	stmData->GetRealData(0, 16, BYTEARR(buff));
 	if (*(Int32*)&buff[0] != 0x180FE7F || (buff[4] & 0xfc) != 0xfc)
 	{
 		return 0;
@@ -131,7 +131,7 @@ Media::AudioBlockSource *Media::BlockParser::DTSBlockParser::ParseStreamData(IO:
 		currOfst += fsize + 1;
 		if (currOfst >= leng)
 			break;
-		stmData->GetRealData(currOfst, 16, buff);
+		stmData->GetRealData(currOfst, 16, BYTEARR(buff));
 	}
 	return audio;
 }

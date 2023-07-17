@@ -2006,7 +2006,7 @@ UOSInt SSWR::SMonitor::SMonitorSvrCore::DeviceQueryRec(Int64 cliId, Int64 startT
 			fileBuffSize = 0;
 			while (true)
 			{
-				i = fs.Read(&fileBuff[fileBuffSize], 4096 - fileBuffSize);
+				i = fs.Read(Data::ByteArray(&fileBuff[fileBuffSize], 4096 - fileBuffSize));
 				if (i <= 0)
 				{
 					break;

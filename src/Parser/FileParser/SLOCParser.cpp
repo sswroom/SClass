@@ -260,7 +260,7 @@ IO::ParsedObject *Parser::FileParser::SLOCParser::ParseFileHdr(IO::StreamData *f
 	while (currPos < fileSize)
 	{
 		ExtraInfo extInfo;
-		fd->GetRealData(currPos, 84, buff);
+		fd->GetRealData(currPos, 84, BYTEARR(buff));
 		extInfo.termId = ReadInt64(&buff[0]);
 		rec.pos.SetLat(ReadInt32(&buff[8]) / 200000.0);
 		rec.pos.SetLon(ReadInt32(&buff[12]) / 200000.0);

@@ -48,7 +48,7 @@ Net::WebServer::SiteRootHandler::SiteRootHandler(Text::CString faviconPath)
 		{
 			this->faviconSize = (UOSInt)leng;
 			this->faviconBuff = MemAlloc(UInt8, this->faviconSize);
-			if (fs.Read(this->faviconBuff, this->faviconSize) != this->faviconSize)
+			if (fs.Read(Data::ByteArray(this->faviconBuff, this->faviconSize)) != this->faviconSize)
 			{
 				MemFree(this->faviconBuff);
 				this->faviconSize = 0;

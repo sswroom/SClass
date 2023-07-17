@@ -106,7 +106,7 @@ void __stdcall Net::TFTPServer::OnCommandPacket(const Net::SocketUtil::AddressIn
 			UInt8 *packet = MemAlloc(UInt8, sess->blockSize + 4);
 			WriteMInt16(&packet[0], 3);
 			WriteMInt16(&packet[2], sess->currBlock);
-			len = sess->stm->Read(&packet[4], sess->blockSize);
+			len = sess->stm->Read(Data::ByteArray(&packet[4], sess->blockSize));
 			if (len != sess->blockSize)
 			{
 				sess->isLast = true;
@@ -299,7 +299,7 @@ void __stdcall Net::TFTPServer::OnDataPacket(const Net::SocketUtil::AddressInfo 
 					sess->currBlock++;
 					WriteMInt16(&packet[0], 3);
 					WriteMInt16(&packet[2], sess->currBlock);
-					len = sess->stm->Read(&packet[4], sess->blockSize);
+					len = sess->stm->Read(Data::ByteArray(&packet[4], sess->blockSize));
 					if (len != sess->blockSize)
 					{
 						sess->isLast = true;

@@ -95,9 +95,9 @@ void Media::SilentSource::Stop()
 	this->readOfst = 0;
 }
 
-UOSInt Media::SilentSource::ReadBlock(UInt8 *buff, UOSInt blkSize)
+UOSInt Media::SilentSource::ReadBlock(Data::ByteArray blk)
 {
-	UOSInt readSize = blkSize - (blkSize % this->format.align);
+	UOSInt readSize = blk.GetSize() - (blk.GetSize() % this->format.align);
 	UOSInt i = 0;
 	UInt64 endOfst;
 	if (this->sampleCnt == 0)
@@ -120,7 +120,7 @@ UOSInt Media::SilentSource::ReadBlock(UInt8 *buff, UOSInt blkSize)
 	{
 		while (i < readSize)
 		{
-			buff[i] = 0x80;
+			blk[i] = 0x80;
 			i++;
 		}
 	}
@@ -128,7 +128,7 @@ UOSInt Media::SilentSource::ReadBlock(UInt8 *buff, UOSInt blkSize)
 	{
 		while (i < readSize)
 		{
-			WriteInt16(&buff[i], 0);
+			WriteInt16(&blk[i], 0);
 			i += 2;
 		}
 	}
@@ -136,9 +136,9 @@ UOSInt Media::SilentSource::ReadBlock(UInt8 *buff, UOSInt blkSize)
 	{
 		while (i < readSize)
 		{
-			buff[i] = 0;
-			buff[i + 1] = 0;
-			buff[i + 2] = 0;
+			blk[i] = 0;
+			blk[i + 1] = 0;
+			blk[i + 2] = 0;
 			i += 3;
 		}
 	}
@@ -146,7 +146,7 @@ UOSInt Media::SilentSource::ReadBlock(UInt8 *buff, UOSInt blkSize)
 	{
 		while (i < readSize)
 		{
-			WriteInt32(&buff[i], 0);
+			WriteInt32(&blk[i], 0);
 			i += 4;
 		}
 	}

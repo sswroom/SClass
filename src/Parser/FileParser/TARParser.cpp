@@ -74,7 +74,7 @@ IO::ParsedObject *Parser::FileParser::TARParser::ParseFileHdr(IO::StreamData *fd
 			DEL_CLASS(pf);
 			return 0;
 		}
-		fd->GetRealData(currOfst, 512, buff);
+		fd->GetRealData(currOfst, 512, BYTEARR(buff));
 		currOfst += 512;
 
 		itemSize = (UInt64)Text::StrOct2Int64((Char*)&buff[124]);

@@ -1375,7 +1375,7 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(void *userObj)
 		buff = MemAlloc(UInt8, buffCapacity);
 		while (true)
 		{
-			readSize = me->cli->Read(&buff[buffSize], buffCapacity - buffSize);
+			readSize = me->cli->Read(Data::ByteArray(&buff[buffSize], buffCapacity - buffSize));
 			if (readSize <= 0)
 			{
 	#if defined(VERBOSE)

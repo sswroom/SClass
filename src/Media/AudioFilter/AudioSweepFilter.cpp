@@ -27,11 +27,11 @@ void Media::AudioFilter::AudioSweepFilter::GetFormat(AudioFormat *format)
 	format->FromAudioFormat(&this->format);
 }
 
-UOSInt Media::AudioFilter::AudioSweepFilter::ReadBlock(UInt8 *buff, UOSInt blkSize)
+UOSInt Media::AudioFilter::AudioSweepFilter::ReadBlock(Data::ByteArray blk)
 {
 	if (this->sourceAudio == 0)
 		return 0;
-	UOSInt readSize = this->sourceAudio->ReadBlock(buff, blkSize);
+	UOSInt readSize = this->sourceAudio->ReadBlock(blk);
 
 	Double startFreq;
 	Double endFreq;
@@ -76,12 +76,12 @@ UOSInt Media::AudioFilter::AudioSweepFilter::ReadBlock(UInt8 *buff, UOSInt blkSi
 			k = this->format.nChannels;
 			while (k-- > 0)
 			{
-				ivCh = iv + ReadInt16(&buff[i]);
+				ivCh = iv + ReadInt16(&blk[i]);
 				if (ivCh > 32767)
 					ivCh = 32767;
 				if (ivCh < -32768)
 					ivCh = -32768;
-				WriteInt16(&buff[i], (Int16)ivCh);
+				WriteInt16(&blk[i], (Int16)ivCh);
 				i += 2;
 			}
 			pos++;

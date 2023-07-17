@@ -104,7 +104,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRStreamConvForm::Stream1Thread(void *userObj)
 	me->thread1Running = true;
 	while (!me->thread1ToStop)
 	{
-		recvSize = me->stm1->Read(buff, 2048);
+		recvSize = me->stm1->Read(BYTEARR(buff));
 		if (recvSize == 0)
 		{
 			me->remoteClosed1 = true;
@@ -136,7 +136,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRStreamConvForm::Stream2Thread(void *userObj)
 	me->thread2Running = true;
 	while (!me->thread2ToStop)
 	{
-		recvSize = me->stm2->Read(buff, 2048);
+		recvSize = me->stm2->Read(BYTEARR(buff));
 		if (recvSize == 0)
 		{
 			me->remoteClosed2 = true;

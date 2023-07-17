@@ -160,7 +160,7 @@ Bool Net::HTTPOSClient::IsError() const
 	return data->hRequest == 0;
 }
 
-UOSInt Net::HTTPOSClient::Read(const Data::ByteArray &buff)
+UOSInt Net::HTTPOSClient::Read(Data::ByteArray buff)
 {
 	ClassData *data = this->clsData;
 	this->EndRequest(0, 0);
@@ -169,14 +169,15 @@ UOSInt Net::HTTPOSClient::Read(const Data::ByteArray &buff)
 		return 0;
 	}
 
-	if (size > BUFFSIZE)
+	if (buff.GetSize() > BUFFSIZE)
 	{
-		size = BUFFSIZE;
+		buff = buff.WithSize(BUFFSIZE);
 	}
 
-	if (size > (this->contLeng - this->contRead))
+	if (buff.GetSize() > (this->contLeng - this->contRead))
 	{
-		if ((size = (UOSInt)(this->contLeng - this->contRead)) <= 0)
+		buff = buff.WithSize((UOSInt)(this->contLeng - this->contRead));
+		if (buff.GetSize() <= 0)
 		{
 			return 0;
 		}
@@ -185,24 +186,24 @@ UOSInt Net::HTTPOSClient::Read(const Data::ByteArray &buff)
 	if (this->buffSize == 0)
 	{
 		DWORD bytesRead;
-		BOOL succ = WinHttpReadData(data->hRequest, this->dataBuff, (DWORD)size, &bytesRead);
+		BOOL succ = WinHttpReadData(data->hRequest, this->dataBuff, (DWORD)buff.GetSize(), &bytesRead);
 		if (succ)
 		{
 			this->buffSize = bytesRead;
 		}
 	}
-	if (this->buffSize >= size)
+	if (this->buffSize >= buff.GetSize())
 	{
-		MemCopyNO(buff, this->dataBuff, size);
-		MemCopyO(this->dataBuff, &this->dataBuff[size], this->buffSize - size);
-		this->buffSize -= size;
-		this->contRead += size;
-		return size;
+		buff.CopyFrom(Data::ByteArrayR(this->dataBuff, buff.GetSize()));
+		MemCopyO(this->dataBuff, &this->dataBuff[buff.GetSize()], this->buffSize - buff.GetSize());
+		this->buffSize -= buff.GetSize();
+		this->contRead += buff.GetSize();
+		return buff.GetSize();
 	}
 	else
 	{
-		MemCopyNO(buff, this->dataBuff, this->buffSize);
-		size = this->buffSize;
+		buff.CopyFrom(Data::ByteArrayR(this->dataBuff, this->buffSize));
+		UOSInt size = this->buffSize;
 		this->contRead += this->buffSize;
 		this->buffSize = 0;
 		return size;
@@ -719,12 +720,12 @@ const Data::ReadingList<Crypto::Cert::Certificate *> *Net::HTTPOSClient::GetServ
 	DWORD dwVerificationFlags = 0;
 	Crypto::Cert::X509Cert* cert;
 	NEW_CLASS(this->clsData->certs, Data::ArrayList<Crypto::Cert::Certificate*>());
-	NEW_CLASS(cert, Crypto::Cert::X509Cert(CSTR("RemoteCert"), serverCert->pbCertEncoded, serverCert->cbCertEncoded));
+	NEW_CLASS(cert, Crypto::Cert::X509Cert(CSTR("RemoteCert"), Data::ByteArrayR(serverCert->pbCertEncoded, serverCert->cbCertEncoded)));
 	this->clsData->certs->Add(cert);
 	thisCert = CertGetIssuerCertificateFromStore(serverCert->hCertStore, serverCert, NULL, &dwVerificationFlags);
 	while (thisCert)
 	{
-		NEW_CLASS(cert, Crypto::Cert::X509Cert(CSTR("RemoteCert"), thisCert->pbCertEncoded, thisCert->cbCertEncoded));
+		NEW_CLASS(cert, Crypto::Cert::X509Cert(CSTR("RemoteCert"), Data::ByteArrayR(thisCert->pbCertEncoded, thisCert->cbCertEncoded)));
 		this->clsData->certs->Add(cert);
 		lastCert = thisCert;
 		thisCert = CertGetIssuerCertificateFromStore(serverCert->hCertStore, lastCert, NULL, &dwVerificationFlags);

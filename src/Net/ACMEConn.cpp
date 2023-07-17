@@ -275,7 +275,7 @@ Net::ACMEConn::ACMEConn(Net::SocketFactory *sockf, Text::CString serverHost, UIn
 		IO::MemoryStream mstm;
 		while (true)
 		{
-			recvSize = cli->Read(buff, 2048);
+			recvSize = cli->Read(BYTEARR(buff));
 			if (recvSize <= 0)
 			{
 				break;
@@ -728,7 +728,7 @@ Bool Net::ACMEConn::LoadKey(Text::CString fileName)
 		return false;
 	}
 	NotNullPtr<Text::String> s = Text::String::New(fileName.v, fileName.leng);
-	Crypto::Cert::X509File *x509 = Parser::FileParser::X509Parser::ParseBuff(keyPEM, keyPEMSize, s);
+	Crypto::Cert::X509File *x509 = Parser::FileParser::X509Parser::ParseBuff(Data::ByteArrayR(keyPEM, keyPEMSize), s);
 	s->Release();
 	if (x509 == 0)
 	{

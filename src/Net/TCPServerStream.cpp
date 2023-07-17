@@ -53,7 +53,7 @@ Bool Net::TCPServerStream::IsDown() const
 	return false;
 }
 
-UOSInt Net::TCPServerStream::Read(const Data::ByteArray &buff)
+UOSInt Net::TCPServerStream::Read(Data::ByteArray buff)
 {
 	Bool toClose = false;
 	UOSInt readSize = 0;
@@ -62,7 +62,7 @@ UOSInt Net::TCPServerStream::Read(const Data::ByteArray &buff)
 		Sync::MutexUsage readMutUsage(&this->readMut);
 		if (this->currCli)
 		{
-			readSize = this->currCli->Read(buff, size);
+			readSize = this->currCli->Read(buff);
 			if (readSize == 0)
 				toClose = true;
 		}

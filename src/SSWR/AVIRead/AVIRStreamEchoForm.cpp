@@ -61,7 +61,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRStreamEchoForm::RecvThread(void *userObj)
 	me->threadRunning = true;
 	while (!me->threadToStop)
 	{
-		recvSize = me->stm->Read(buff, 2048);
+		recvSize = me->stm->Read(BYTEARR(buff));
 		if (recvSize <= 0)
 		{
 			me->remoteClosed = true;

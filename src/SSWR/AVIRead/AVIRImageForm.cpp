@@ -552,7 +552,7 @@ void __stdcall SSWR::AVIRead::AVIRImageForm::OnInfoICCClicked(void *userObj)
 		const UInt8 *iccBuff = me->currImg->info.color->rawICC;
 		if (iccBuff)
 		{
-			Media::ICCProfile *icc = Media::ICCProfile::Parse(iccBuff, ReadMUInt32(iccBuff));
+			Media::ICCProfile *icc = Media::ICCProfile::Parse(Data::ByteArrayR(iccBuff, ReadMUInt32(iccBuff)));
 			if (icc)
 			{
 				SSWR::AVIRead::AVIRICCInfoForm *frm;

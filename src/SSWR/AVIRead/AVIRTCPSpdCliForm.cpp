@@ -1,4 +1,5 @@
 #include "Stdafx.h"
+#include "Data/ByteBuffer.h"
 #include "SSWR/AVIRead/AVIRTCPSpdCliForm.h"
 #include "Sync/Interlocked.h"
 #include "Sync/MutexUsage.h"
@@ -150,35 +151,35 @@ UInt32 __stdcall SSWR::AVIRead::AVIRTCPSpdCliForm::ProcThread(void *userObj)
 UInt32 __stdcall SSWR::AVIRead::AVIRTCPSpdCliForm::RecvThread(void *userObj)
 {
 	SSWR::AVIRead::AVIRTCPSpdCliForm *me = (SSWR::AVIRead::AVIRTCPSpdCliForm*)userObj;
-	UInt8 *recvBuff;
 	UOSInt recvSize;
 	me->recvRunning = true;
 	me->mainEvt.Set();
-	recvBuff = MemAlloc(UInt8, RECVBUFFSIZE);
-	while (!me->toStop)
 	{
-		if (me->cli)
+		Data::ByteBuffer recvBuff(RECVBUFFSIZE);
+		while (!me->toStop)
 		{
-			recvSize = me->cli->Read(recvBuff, RECVBUFFSIZE);
-			if (recvSize > 0)
+			if (me->cli)
 			{
-				Sync::Interlocked::Add(&me->recvSize, recvSize);
+				recvSize = me->cli->Read(recvBuff);
+				if (recvSize > 0)
+				{
+					Sync::Interlocked::Add(&me->recvSize, recvSize);
+				}
+				else
+				{
+					Sync::MutexUsage mutUsage(&me->cliMut);
+					DEL_CLASS(me->cli);
+					me->cli = 0;
+					mutUsage.EndUse();
+					me->recvEvt.Wait(1000);
+				}
 			}
 			else
 			{
-				Sync::MutexUsage mutUsage(&me->cliMut);
-				DEL_CLASS(me->cli);
-				me->cli = 0;
-				mutUsage.EndUse();
 				me->recvEvt.Wait(1000);
 			}
 		}
-		else
-		{
-			me->recvEvt.Wait(1000);
-		}
 	}
-	MemFree(recvBuff);
 	me->recvRunning = false;
 	me->mainEvt.Set();
 	return 0;

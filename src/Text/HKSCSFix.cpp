@@ -23,7 +23,7 @@ Text::HKSCSFix::HKSCSFix()
 		if (file.GetLength() == 32768)
 		{
 			this->tab = MemAlloc(Int32, 8192);
-			file.Read((UInt8*)this->tab, 32768);
+			file.Read(Data::ByteArray((UInt8*)this->tab, 32768));
 		}
 	}
 }

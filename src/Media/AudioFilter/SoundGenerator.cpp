@@ -33,11 +33,11 @@ void Media::AudioFilter::SoundGenerator::GetFormat(AudioFormat *format)
 	format->FromAudioFormat(&this->format);
 }
 
-UOSInt Media::AudioFilter::SoundGenerator::ReadBlock(UInt8 *buff, UOSInt blkSize)
+UOSInt Media::AudioFilter::SoundGenerator::ReadBlock(Data::ByteArray blk)
 {
 	if (this->sourceAudio == 0)
 		return 0;
-	UOSInt readSize = this->sourceAudio->ReadBlock(buff, blkSize);
+	UOSInt readSize = this->sourceAudio->ReadBlock(blk);
 	Media::AudioFilter::SoundGen::ISoundGen *sndGen;
 	UOSInt sampleCnt = readSize / (this->format.align);
 	Double *sndBuff;
@@ -68,18 +68,18 @@ UOSInt Media::AudioFilter::SoundGenerator::ReadBlock(UInt8 *buff, UOSInt blkSize
 			j = this->format.nChannels;
 			while (j-- > 0)
 			{
-				v2 = sndBuff[i] * 32768.0 + ReadInt16(&buff[l]);
+				v2 = sndBuff[i] * 32768.0 + ReadInt16(&blk[l]);
 				if (v2 >= 32767.0)
 				{
-					WriteInt16(&buff[l], 32767);
+					WriteInt16(&blk[l], 32767);
 				}
 				else if (v2 <= -32768.0)
 				{
-					WriteInt16(&buff[l], -32768);
+					WriteInt16(&blk[l], -32768);
 				}
 				else
 				{
-					WriteInt16(&buff[l], Double2Int32(v2));
+					WriteInt16(&blk[l], Double2Int32(v2));
 				}
 				l += 2;
 			}
@@ -101,18 +101,18 @@ UOSInt Media::AudioFilter::SoundGenerator::ReadBlock(UInt8 *buff, UOSInt blkSize
 			j = this->format.nChannels;
 			while (j-- > 0)
 			{
-				v2 = sndBuff[i] * 128.0 + buff[l];
+				v2 = sndBuff[i] * 128.0 + blk[l];
 				if (v2 >= 255.0)
 				{
-					buff[l] = 255;
+					blk[l] = 255;
 				}
 				else if (v2 <= 0)
 				{
-					buff[l] = 0;
+					blk[l] = 0;
 				}
 				else
 				{
-					buff[l] = (UInt8)Double2Int32(v2);
+					blk[l] = (UInt8)Double2Int32(v2);
 				}
 				l += 1;
 			}

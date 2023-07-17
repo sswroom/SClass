@@ -146,7 +146,7 @@ UInt32 __stdcall Media::WaveOutRenderer::PlayThread(void *obj)
 		hdrs[i].lpData = MemAlloc(CHAR, buffLeng);
 		hdrs[i].dwUser = i;
 		me->buffEmpty[i] = false;
-		hdrs[i].dwBufferLength = (DWORD)me->audsrc->ReadBlockLPCM((UInt8*)hdrs[i].lpData, buffLeng, &af);
+		hdrs[i].dwBufferLength = (DWORD)me->audsrc->ReadBlockLPCM(Data::ByteArray((UInt8*)hdrs[i].lpData, buffLeng), &af);
 
 		waveOutPrepareHeader((HWAVEOUT)me->hwo, &hdrs[i], sizeof(WAVEHDR));
 		waveOutWrite((HWAVEOUT)me->hwo, &hdrs[i], sizeof(WAVEHDR));
@@ -175,7 +175,7 @@ UInt32 __stdcall Media::WaveOutRenderer::PlayThread(void *obj)
 				}
 				else
 				{
-					hdrs[i].dwBufferLength = (DWORD)me->audsrc->ReadBlockLPCM((UInt8*)hdrs[i].lpData, buffLeng, &af);
+					hdrs[i].dwBufferLength = (DWORD)me->audsrc->ReadBlockLPCM(Data::ByteArray((UInt8*)hdrs[i].lpData, buffLeng), &af);
 					if (hdrs[i].dwBufferLength == 0)
 					{
 						hdrs[i].dwBufferLength = (DWORD)buffLeng;

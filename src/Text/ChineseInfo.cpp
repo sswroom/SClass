@@ -31,7 +31,7 @@ Bool Text::ChineseInfo::GetCharInfo(UInt32 charCode, CharacterInfo *chInfo)
 	{
 		if (fs->SeekFromBeginning(startOfst) == startOfst)
 		{
-			if (fs->Read(this->currCharBuff, 256) == 256)
+			if (fs->Read(Data::ByteArray(this->currCharBuff, 256)) == 256)
 			{
 				this->currCharCode = charCode;
 			}
@@ -208,7 +208,7 @@ Bool Text::ChineseInfo::GetRelatedChars(UInt32 charCode, Data::ArrayList<UInt32>
 	}
 	if (this->fs->SeekFromBeginning(startOfst) != startOfst)
 		return false;
-	if (this->fs->Read(buff, 256) != 256)
+	if (this->fs->Read(BYTEARR(buff)) != 256)
 		return false;
 
 	code = ReadUInt32(&buff[16]);
@@ -230,7 +230,7 @@ Bool Text::ChineseInfo::GetRelatedChars(UInt32 charCode, Data::ArrayList<UInt32>
 		}
 		if (this->fs->SeekFromBeginning(startOfst) != startOfst)
 			return false;
-		if (this->fs->Read(buff, 256) != 256)
+		if (this->fs->Read(BYTEARR(buff)) != 256)
 			return false;
 		code = ReadUInt32(&buff[16]);
 	}
@@ -248,7 +248,7 @@ Bool Text::ChineseInfo::AddRelation(UInt32 charCode, UInt32 relatedCharCode)
 	}
 	if (this->fs->SeekFromBeginning(startOfst) != startOfst)
 		return false;
-	if (this->fs->Read(buff, 256) != 256)
+	if (this->fs->Read(BYTEARR(buff)) != 256)
 		return false;
 
 	if (ReadInt32(&buff[16]) != 0)
@@ -275,7 +275,7 @@ Bool Text::ChineseInfo::AddRelation(UInt32 charCode, UInt32 relatedCharCode)
 		}
 		if (this->fs->SeekFromBeginning(startOfst) != startOfst)
 			return false;
-		if (this->fs->Read(buff, 256) != 256)
+		if (this->fs->Read(BYTEARR(buff)) != 256)
 			return false;
 
 		nextCode = ReadUInt32(&buff[16]);

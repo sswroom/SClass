@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Data/ByteBuffer.h"
 #include "Data/ByteTool.h"
 #include "Data/DateTime.h"
 #include "IO/Path.h"
@@ -17,52 +18,53 @@
 UInt32 __stdcall Net::LogClient::RecvThread(void *userObj)
 {
 	Net::LogClient *me = (Net::LogClient*)userObj;
-	UInt8 *recvBuff;
 	UOSInt recvSize = 0;
 	UOSInt readSize;
 	NotNullPtr<Net::TCPClient> cli;
 	me->recvRunning = true;
-	recvBuff = MemAlloc(UInt8, BUFFSIZE);
-	while (!me->recvToStop)
 	{
-		if (cli.Set(me->cli))
+		Data::ByteBuffer recvBuff(BUFFSIZE);
+		while (!me->recvToStop)
 		{
-			readSize = cli->Read(recvBuff, BUFFSIZE - recvSize);
-			if (readSize == 0)
+			if (cli.Set(me->cli))
 			{
-				recvSize = 0;
-				Sync::MutexUsage mutUsage(&me->cliMut);
-				DEL_CLASS(me->cli);
-				me->cli = 0;
-				mutUsage.EndUse();
+				readSize = cli->Read(recvBuff.SubArray(recvSize));
+				if (readSize == 0)
+				{
+					recvSize = 0;
+					Sync::MutexUsage mutUsage(&me->cliMut);
+					DEL_CLASS(me->cli);
+					me->cli = 0;
+					mutUsage.EndUse();
+				}
+				else
+				{
+					recvSize += readSize;
+					readSize = me->protoHdlr.ParseProtocol(cli, me,0, recvBuff.Ptr(), recvSize);
+					if (readSize <= 0)
+					{
+						recvSize = 0;
+					}
+					else if (readSize < recvSize)
+					{
+						recvBuff.CopyInner(0, recvSize - readSize, readSize);
+						recvSize = readSize;
+					}
+				}
 			}
 			else
 			{
-				recvSize += readSize;
-				readSize = me->protoHdlr.ParseProtocol(cli, me,0, recvBuff, recvSize);
-				if (readSize <= 0)
-				{
-					recvSize = 0;
-				}
-				else if (readSize < recvSize)
-				{
-					MemCopyO(recvBuff, &recvBuff[recvSize - readSize], readSize);
-					recvSize = readSize;
-				}
+				me->recvEvt.Wait(1000);
 			}
 		}
-		else
-		{
-			me->recvEvt.Wait(1000);
-		}
-	}
 
-	if (me->cli)
-	{
-		Sync::MutexUsage mutUsage(&me->cliMut);
-		DEL_CLASS(me->cli);
-		me->cli = 0;
-		mutUsage.EndUse();
+		if (me->cli)
+		{
+			Sync::MutexUsage mutUsage(&me->cliMut);
+			DEL_CLASS(me->cli);
+			me->cli = 0;
+			mutUsage.EndUse();
+		}
 	}
 	me->recvRunning = false;
 	return 0;

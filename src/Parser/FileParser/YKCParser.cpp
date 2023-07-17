@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Data/ByteBuffer.h"
 #include "Data/ByteTool.h"
 #include "IO/PackageFile.h"
 #include "Parser/FileParser/YKCParser.h"
@@ -36,7 +37,6 @@ IO::ParsedObject *Parser::FileParser::YKCParser::ParseFileHdr(IO::StreamData *fd
 {
 	UInt32 recOfst;
 	UInt32 recSize;
-	UInt8 *recBuff;
 
 	UInt32 i;
 	UInt32 fnameOfst;
@@ -60,10 +60,9 @@ IO::ParsedObject *Parser::FileParser::YKCParser::ParseFileHdr(IO::StreamData *fd
 	recSize = ReadUInt32(&hdr[20]);
 	if (recOfst + recSize != fd->GetDataSize())
 		return 0;
-	recBuff = MemAlloc(UInt8, recSize);
+	Data::ByteBuffer recBuff(recSize);
 	if (fd->GetRealData(recOfst, recSize, recBuff) != recSize)
 	{
-		MemFree(recBuff);
 		return 0;
 	}
 
@@ -81,18 +80,15 @@ IO::ParsedObject *Parser::FileParser::YKCParser::ParseFileHdr(IO::StreamData *fd
 		fileSize = ReadUInt32(&recBuff[i + 12]);
 		if (fileOfst != nextOfst || fnameSize == 0 || fnameSize >= 256)
 		{
-			MemFree(recBuff);
 			DEL_CLASS(pf);
 			return 0;
 		}
-		fd->GetRealData(fnameOfst, fnameSize, fnameBuff);
+		fd->GetRealData(fnameOfst, fnameSize, BYTEARR(fnameBuff));
 		sptr = enc.UTF8FromBytes(fileName, fnameBuff, fnameSize, 0);
 		pf->AddData(fd, fileOfst, fileSize, CSTRP(fileName, sptr), 0);
 
 		nextOfst = fileOfst + fileSize;
 		i += 20;
 	}
-
-	MemFree(recBuff);
 	return pf;
 }

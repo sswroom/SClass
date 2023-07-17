@@ -56,9 +56,9 @@ void Net::RTPASource::Stop()
 	this->hdlr->Stop();
 }
 
-UOSInt Net::RTPASource::ReadBlock(UInt8 *buff, UOSInt blkSize)
+UOSInt Net::RTPASource::ReadBlock(Data::ByteArray blk)
 {
-	return this->hdlr->ReadBlock(buff, blkSize);
+	return this->hdlr->ReadBlock(blk);
 }
 
 UOSInt Net::RTPASource::GetMinBlockSize()

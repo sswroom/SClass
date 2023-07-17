@@ -1,4 +1,5 @@
 #include "Stdafx.h"
+#include "Data/ByteBuffer.h"
 #include "IO/FileStream.h"
 #include "Media/ICCProfile.h"
 #include "Media/LUT.h"
@@ -9,21 +10,21 @@ void __stdcall SSWR::AVIRead::AVIRICCInfoForm::OnFileDrop(void *userObj, NotNull
 {
 	SSWR::AVIRead::AVIRICCInfoForm *me = (SSWR::AVIRead::AVIRICCInfoForm*)userObj;
 	UOSInt i;
-	UInt8 *buff = MemAlloc(UInt8, 1048576);
+	Data::ByteBuffer buff(1048576);
 	UOSInt fileSize;
 	i = 0;
 	while (i < fileCnt)
 	{
 		{
 			IO::FileStream fs(files[i], IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoBuffer);
-			fileSize = fs.Read(buff, 1048576);
+			fileSize = fs.Read(buff);
 		}
 		if (fileSize == 0 || fileSize >= 1048576)
 		{
 		}
 		else
 		{
-			Media::ICCProfile *icc = Media::ICCProfile::Parse(buff, fileSize);
+			Media::ICCProfile *icc = Media::ICCProfile::Parse(buff.WithSize(fileSize));
 			if (icc)
 			{
 				me->SetICCProfile(icc, files[i]->ToCString());
@@ -32,7 +33,6 @@ void __stdcall SSWR::AVIRead::AVIRICCInfoForm::OnFileDrop(void *userObj, NotNull
 		}
 		i++;
 	}
-	MemFree(buff);
 }
 
 void __stdcall SSWR::AVIRead::AVIRICCInfoForm::OnRLUTClicked(void *userObj)

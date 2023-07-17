@@ -1,4 +1,5 @@
 #include "Stdafx.h"
+#include "Data/ByteBuffer.h"
 #include "IO/StmData/FileData.h"
 #include "SSWR/AVIRead/AVIRGLBViewerForm.h"
 #include "Text/JSText.h"
@@ -22,7 +23,7 @@ Bool SSWR::AVIRead::AVIRGLBViewerForm::LoadFile(NotNullPtr<Text::String> fileNam
 {
 	UInt8 hdr[40];
 	IO::StmData::FileData fd(fileName, false);
-	if (fd.GetRealData(0, 40, hdr) != 40)
+	if (fd.GetRealData(0, 40, BYTEARR(hdr)) != 40)
 	{
 		return false;
 	}
@@ -31,7 +32,7 @@ Bool SSWR::AVIRead::AVIRGLBViewerForm::LoadFile(NotNullPtr<Text::String> fileNam
 	if (ReadNInt32(hdr) == *(Int32*)"b3dm" && ReadUInt32(&hdr[4]) == 1 && ReadUInt32(&hdr[8]) == fileLen && ReadNInt32(&hdr[28]) == *(Int32*)"glTF" && ReadUInt32(&hdr[36]) == fileLen - 28)
 	{
 		fileOfst = 28;
-		if (fd.GetRealData(28, 40, hdr) != 40)
+		if (fd.GetRealData(28, 40, BYTEARR(hdr)) != 40)
 		{
 			return false;
 		}
@@ -66,7 +67,7 @@ Bool SSWR::AVIRead::AVIRGLBViewerForm::LoadFile(NotNullPtr<Text::String> fileNam
 			return false;
 		}
 		UInt64 ofst = 20 + jsonLen;
-		if (fd.GetRealData(fileOfst + ofst, 8, &hdr[12]) != 8)
+		if (fd.GetRealData(fileOfst + ofst, 8, BYTEARR(hdr).SubArray(12)) != 8)
 		{
 			return false;
 		}
@@ -85,18 +86,16 @@ Bool SSWR::AVIRead::AVIRGLBViewerForm::LoadFile(NotNullPtr<Text::String> fileNam
 Bool SSWR::AVIRead::AVIRGLBViewerForm::LoadData(IO::StreamData *jsonFD, IO::StreamData *binBuffFD)
 {
 	UOSInt jsonLen = (UOSInt)jsonFD->GetDataSize();
-	UInt8 *jsonBuff = MemAlloc(UInt8, jsonLen);
+	Data::ByteBuffer jsonBuff(jsonLen);
 	if (jsonFD->GetRealData(0, jsonLen, jsonBuff) != jsonLen)
 	{
 		DEL_CLASS(jsonFD);
 		DEL_CLASS(binBuffFD);
-		MemFree(jsonBuff);
 		return false;
 	}
 	Text::StringBuilderUTF8 sb;
-	Text::JSText::JSONWellFormat(jsonBuff, jsonLen, 0, &sb);
+	Text::JSText::JSONWellFormat(jsonBuff.Ptr(), jsonLen, 0, &sb);
 	this->txtJSON->SetText(sb.ToCString());
-	MemFree(jsonBuff);
 	this->hfvBinBuff->LoadData(binBuffFD, 0);
 	DEL_CLASS(jsonFD);
 	return true;

@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Data/ByteBuffer.h"
 #include "IO/Path.h"
 #include "IO/StmData/FileData.h"
 #include "Net/MIME.h"
@@ -26,7 +27,6 @@ Text::IMIMEObj *Text::IMIMEObj::ParseFromData(IO::StreamData *data, Text::CStrin
 {
 	Text::IMIMEObj *obj;
 	UOSInt buffSize;
-	UInt8 *buff;
 	if (data->GetDataSize() > 104857600)
 	{
 		return 0;
@@ -34,10 +34,9 @@ Text::IMIMEObj *Text::IMIMEObj::ParseFromData(IO::StreamData *data, Text::CStrin
 	if (contentType.leng == 0)
 	{
 		buffSize = (UOSInt)data->GetDataSize();
-		buff = MemAlloc(UInt8, buffSize);
+		Data::ByteBuffer buff(buffSize);
 		data->GetRealData(0, buffSize, buff);
-		NEW_CLASS(obj, Text::MIMEObj::TextMIMEObj(buff, buffSize, 0));
-		MemFree(buff);
+		NEW_CLASS(obj, Text::MIMEObj::TextMIMEObj(buff.Ptr(), buffSize, 0));
 		return obj;
 	}
 	else if (contentType.StartsWith(UTF8STRC("message/rfc822")))
@@ -65,10 +64,9 @@ Text::IMIMEObj *Text::IMIMEObj::ParseFromData(IO::StreamData *data, Text::CStrin
 		}
 
 		buffSize = (UOSInt)data->GetDataSize();
-		buff = MemAlloc(UInt8, buffSize);
+		Data::ByteBuffer buff(buffSize);
 		data->GetRealData(0, buffSize, buff);
-		NEW_CLASS(obj, Text::MIMEObj::TextMIMEObj(buff, buffSize, codePage));
-		MemFree(buff);
+		NEW_CLASS(obj, Text::MIMEObj::TextMIMEObj(buff.Ptr(), buffSize, codePage));
 		return obj;
 	}
 	else if (contentType.StartsWith(UTF8STRC("multipart/mixed;")) ||
@@ -81,10 +79,9 @@ Text::IMIMEObj *Text::IMIMEObj::ParseFromData(IO::StreamData *data, Text::CStrin
 			return obj;
 	}
 	buffSize = (UOSInt)data->GetDataSize();
-	buff = MemAlloc(UInt8, buffSize);
+	Data::ByteBuffer buff(buffSize);
 	data->GetRealData(0, buffSize, buff);
-	NEW_CLASS(obj, Text::MIMEObj::UnknownMIMEObj(buff, buffSize, contentType));
-	MemFree(buff);
+	NEW_CLASS(obj, Text::MIMEObj::UnknownMIMEObj(buff.Ptr(), buffSize, contentType));
 	return obj;
 }
 

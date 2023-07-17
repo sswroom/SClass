@@ -69,12 +69,12 @@ Net::WinSSLClient::WinSSLClient(Net::SocketFactory *sockf, Socket *s, void *ctxt
 		DWORD dwVerificationFlags = 0;
 		Crypto::Cert::X509Cert* cert;
 		NEW_CLASS(this->clsData->remoteCerts, Data::ArrayList<Crypto::Cert::Certificate*>());
-		NEW_CLASS(cert, Crypto::Cert::X509Cert(CSTR("RemoteCert"), serverCert->pbCertEncoded, serverCert->cbCertEncoded));
+		NEW_CLASS(cert, Crypto::Cert::X509Cert(CSTR("RemoteCert"), Data::ByteArrayR(serverCert->pbCertEncoded, serverCert->cbCertEncoded)));
 		this->clsData->remoteCerts->Add(cert);
 		thisCert = CertGetIssuerCertificateFromStore(serverCert->hCertStore, serverCert, NULL, &dwVerificationFlags);
 		while (thisCert)
 		{
-			NEW_CLASS(cert, Crypto::Cert::X509Cert(CSTR("RemoteCert"), thisCert->pbCertEncoded, thisCert->cbCertEncoded));
+			NEW_CLASS(cert, Crypto::Cert::X509Cert(CSTR("RemoteCert"), Data::ByteArrayR(thisCert->pbCertEncoded, thisCert->cbCertEncoded)));
 			this->clsData->remoteCerts->Add(cert);
 			lastCert = thisCert;
 			thisCert = CertGetIssuerCertificateFromStore(serverCert->hCertStore, lastCert, NULL, &dwVerificationFlags);
@@ -113,7 +113,7 @@ Net::WinSSLClient::~WinSSLClient()
 	MemFree(this->clsData);
 }
 
-UOSInt Net::WinSSLClient::Read(const Data::ByteArray &buff)
+UOSInt Net::WinSSLClient::Read(Data::ByteArray buff)
 {
 	if (this->clsData->step == 0)
 	{
@@ -126,13 +126,13 @@ UOSInt Net::WinSSLClient::Read(const Data::ByteArray &buff)
 	UOSInt ret = 0;
 	if (this->clsData->decSize > 0)
 	{
-		if (this->clsData->decSize >= size)
+		if (this->clsData->decSize >= buff.GetSize())
 		{
-			MemCopyNO(buff, this->clsData->decBuff, size);
-			if (this->clsData->decSize > size)
+			buff.CopyFrom(Data::ByteArrayR(this->clsData->decBuff, buff.GetSize()));
+			if (this->clsData->decSize > buff.GetSize())
 			{
-				MemCopyO(this->clsData->decBuff, &this->clsData->decBuff[size], this->clsData->decSize - size);
-				this->clsData->decSize -= size;
+				MemCopyO(this->clsData->decBuff, &this->clsData->decBuff[buff.GetSize()], this->clsData->decSize - buff.GetSize());
+				this->clsData->decSize -= buff.GetSize();
 			}
 			else
 			{
@@ -141,11 +141,11 @@ UOSInt Net::WinSSLClient::Read(const Data::ByteArray &buff)
 #if defined(DEBUG_PRINT)
 			debugDt.SetCurrTime();
 			debugDt.ToString(debugBuff, "HH:mm:ss.fff");
-			printf("%s Return size1 = %d, \r\n", debugBuff, (UInt32)size);
+			printf("%s Return size1 = %d, \r\n", debugBuff, (UInt32)buff.GetSize());
 #endif
-			return size;
+			return buff.GetSize();
 		}
-		MemCopyNO(buff, this->clsData->decBuff, this->clsData->decSize);
+		buff.CopyFrom(Data::ByteArray(this->clsData->decBuff, this->clsData->decSize));
 		ret = this->clsData->decSize;
 		this->clsData->decSize = 0;
 #if defined(DEBUG_PRINT)
@@ -208,32 +208,31 @@ UOSInt Net::WinSSLClient::Read(const Data::ByteArray &buff)
 		{
 			if (buffs[i].BufferType == SECBUFFER_DATA)
 			{
-				if (buffs[i].cbBuffer <= size)
+				if (buffs[i].cbBuffer <= buff.GetSize())
 				{
 #if defined(DEBUG_PRINT)
 					debugDt.SetCurrTime();
 					debugDt.ToString(debugBuff, "HH:mm:ss.fff");
 					printf("%s Dec size1 = %d, size = %d\r\n", debugBuff, (UInt32)buffs[i].cbBuffer, (UInt32)size);
 #endif
-					MemCopyNO(buff, buffs[i].pvBuffer, buffs[i].cbBuffer);
-					size -= buffs[i].cbBuffer;
-					buff += buffs[i].cbBuffer;
+					buff.CopyFrom(Data::ByteArrayR((UInt8*)buffs[i].pvBuffer, buffs[i].cbBuffer));
+					buff += (UInt32)buffs[i].cbBuffer;
 					ret += buffs[i].cbBuffer;
 				}
 				else
 				{
-					if (size > 0)
+					if (buff.GetSize() > 0)
 					{
 #if defined(DEBUG_PRINT)
 						debugDt.SetCurrTime();
 						debugDt.ToString(debugBuff, "HH:mm:ss.fff");
 						printf("%s Dec size2 = %d, size = %d\r\n", debugBuff, (UInt32)buffs[i].cbBuffer, (UInt32)size);
 #endif
-						MemCopyNO(buff, buffs[i].pvBuffer, size);
-						ret += size;
-						MemCopyNO(&this->clsData->decBuff[this->clsData->decSize], size + (UInt8*)buffs[i].pvBuffer, buffs[i].cbBuffer - size);
-						this->clsData->decSize += buffs[i].cbBuffer - size;
-						size = 0;
+						buff.CopyFrom(Data::ByteArrayR((UInt8*)buffs[i].pvBuffer, buff.GetSize()));
+						ret += buff.GetSize();
+						MemCopyNO(&this->clsData->decBuff[this->clsData->decSize], buff.GetSize() + (UInt8*)buffs[i].pvBuffer, buffs[i].cbBuffer - buff.GetSize());
+						this->clsData->decSize += buffs[i].cbBuffer - buff.GetSize();
+						buff += buff.GetSize();
 					}
 					else
 					{
@@ -344,14 +343,14 @@ UOSInt Net::WinSSLClient::Write(const UInt8 *buff, UOSInt size)
 	}
 }
 
-void *Net::WinSSLClient::BeginRead(const Data::ByteArray &buff, Sync::Event *evt)
+void *Net::WinSSLClient::BeginRead(Data::ByteArray buff, Sync::Event *evt)
 {
 	if (this->clsData->step == 0)
 	{
 		return 0;
 	}
-	this->clsData->readBuff = buff;
-	this->clsData->readSize = size;
+	this->clsData->readBuff = buff.Ptr();
+	this->clsData->readSize = buff.GetSize();
 	if (this->clsData->decSize > 0)
 	{
 		evt->Set();

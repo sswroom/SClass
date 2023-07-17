@@ -48,7 +48,7 @@ UInt16 PCIInfo_ReadI16(Text::CString fileName)
 	UInt8 buff[33];
 	UOSInt readSize;
 	IO::FileStream fs(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-	readSize = fs.Read(buff, 32);
+	readSize = fs.Read(BYTEARR(buff).WithSize(32));
 	buff[readSize] = 0;
 	while (readSize > 0)
 	{

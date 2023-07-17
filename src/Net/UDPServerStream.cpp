@@ -60,7 +60,7 @@ Bool Net::UDPServerStream::IsDown() const
 	return this->svr == 0;
 }
 
-UOSInt Net::UDPServerStream::Read(const Data::ByteArray &buff)
+UOSInt Net::UDPServerStream::Read(Data::ByteArray buff)
 {
 	while (this->svr != 0 && this->buffSize == 0)
 	{
@@ -70,16 +70,16 @@ UOSInt Net::UDPServerStream::Read(const Data::ByteArray &buff)
 		return 0;
 	UOSInt ret;
 	Sync::MutexUsage mutUsage(&this->dataMut);
-	if (this->buffSize > size)
+	if (this->buffSize > buff.GetSize())
 	{
-		MemCopyNO(buff, this->buff, size);
-		MemCopyO(this->buff, &this->buff[size], this->buffSize - size);
-		this->buffSize -= size;
-		ret = size;
+		buff.CopyFrom(Data::ByteArrayR(this->buff, buff.GetSize()));
+		MemCopyO(this->buff, &this->buff[buff.GetSize()], this->buffSize - buff.GetSize());
+		this->buffSize -= buff.GetSize();
+		ret = buff.GetSize();
 	}
 	else
 	{
-		MemCopyNO(buff, this->buff, this->buffSize);
+		buff.CopyFrom(Data::ByteArrayR(this->buff, this->buffSize));
 		ret = this->buffSize;
 		this->buffSize = 0;
 	}

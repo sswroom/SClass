@@ -342,8 +342,6 @@ void SSWR::AVIRead::AVIRGISTileDownloadForm::SaveTilesFile(Text::CString fileNam
 UInt32 __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::ProcThread(void *userObj)
 {
 	ThreadStat *stat = (ThreadStat*)userObj;
-	UInt8 *fileBuff = 0;
-	UOSInt fileBuffSize = 0;
 	Map::TileMap::ImageType it;
 	IO::StreamData *fd;
 	Math::RectAreaDbl bounds;
@@ -352,6 +350,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::ProcThread(void *userOb
 
 	stat->threadStat = 1;
 	{
+		Data::ByteBuffer fileBuff;
 		Text::StringBuilderUTF8 sb;
 		stat->me->mainEvt.Set();
 		while (true)
@@ -367,14 +366,9 @@ UInt32 __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::ProcThread(void *userOb
 				if (fd)
 				{
 					fileSize = fd->GetDataSize();
-					if (fileSize > fileBuffSize)
+					if (fileSize > fileBuff.GetSize())
 					{
-						fileBuffSize = (UOSInt)fileSize;
-						if (fileBuff)
-						{
-							MemFree(fileBuff);
-						}
-						fileBuff = MemAlloc(UInt8, fileBuffSize);
+						fileBuff.ChangeSize((UOSInt)fileSize);
 					}
 					if (fd->GetRealData(0, (UOSInt)fileSize, fileBuff) == fileSize)
 					{
@@ -395,7 +389,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::ProcThread(void *userOb
 								sb.AppendC(UTF8STRC(".jpg"));
 							}
 	//						stat->pkgMut->Lock();
-							stat->spkg->AddFile(fileBuff, (UOSInt)fileSize, sb.ToCString(), Data::Timestamp::UtcNow());
+							stat->spkg->AddFile(fileBuff.Ptr(), (UOSInt)fileSize, sb.ToCString(), Data::Timestamp::UtcNow());
 	//						stat->pkgMut->Unlock();
 						}
 						else
@@ -418,7 +412,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::ProcThread(void *userOb
 								sb.AppendC(UTF8STRC(".jpg"));
 							}
 							IO::FileStream fs(sb.ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer);
-							fs.Write(fileBuff, (UOSInt)fileSize);
+							fs.Write(fileBuff.Ptr(), (UOSInt)fileSize);
 						}
 					}
 					DEL_CLASS(fd);
@@ -435,11 +429,6 @@ UInt32 __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::ProcThread(void *userOb
 				break;
 			}
 			stat->threadEvt->Wait(1000);
-		}
-		if (fileBuff)
-		{
-			MemFree(fileBuff);
-			fileBuff = 0;
 		}
 	}
 	stat->threadStat = 0;

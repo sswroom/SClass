@@ -1,4 +1,5 @@
 #include "Stdafx.h"
+#include "Data/ByteBuffer.h"
 #include "IO/FileStream.h"
 #include "SSWR/AVIRead/AVIRFileTextEncryptForm.h"
 #include "UI/MessageDialog.h"
@@ -56,18 +57,17 @@ void __stdcall SSWR::AVIRead::AVIRFileTextEncryptForm::OnConvertClicked(void *us
 			return;
 		}
 		UOSInt buffSize = (UOSInt)len;
-		UInt8 *decBuff = MemAlloc(UInt8, buffSize);
-		if (fs.Read(decBuff, buffSize) != buffSize)
+		Data::ByteBuffer decBuff(buffSize);
+		if (fs.Read(decBuff) != buffSize)
 		{
 			UI::MessageDialog::ShowDialog(CSTR("Error in reading source file"), CSTR("File Text Encrypt"), me);
 			return;
 		}
 		sbSrc.ClearStr();
-		destEnc->EncodeBin(&sbSrc, decBuff, buffSize);
+		destEnc->EncodeBin(&sbSrc, decBuff.Ptr(), buffSize);
 
 		IO::FileStream fs2(sbDest.ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 		fs2.Write(sbSrc.v, sbSrc.leng);
-		MemFree(decBuff);
 	}
 }
 

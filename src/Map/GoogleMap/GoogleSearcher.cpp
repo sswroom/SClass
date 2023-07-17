@@ -143,7 +143,7 @@ UTF8Char *Map::GoogleMap::GoogleSearcher::SearchName(UTF8Char *buff, UOSInt buff
 		Int32 status = cli->GetRespStatus();
 		UOSInt readSize;
 		databuffSize = 0;
-		while ((readSize = cli->Read(&databuff[databuffSize], 2047 - databuffSize)) > 0)
+		while ((readSize = cli->Read(Data::ByteArray(&databuff[databuffSize], 2047 - databuffSize))) > 0)
 		{
 			databuffSize += readSize;
 		}

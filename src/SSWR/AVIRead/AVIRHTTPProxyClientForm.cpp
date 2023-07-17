@@ -75,7 +75,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPProxyClientForm::ProcessThread(void *use
 			cli->AddHeaderC(CSTR("Accept"), CSTR("*/*"));
 			cli->AddHeaderC(CSTR("Accept-Charset"), CSTR("*"));
 			cli->EndRequest(&me->respTimeReq, &me->respTimeResp);
-			while (cli->Read(buff, 4096) > 0);
+			while (cli->Read(BYTEARR(buff)) > 0);
 			me->respTimeTotal = cli->GetTotalTime();
 			me->ClearHeaders();
 			i = 0;

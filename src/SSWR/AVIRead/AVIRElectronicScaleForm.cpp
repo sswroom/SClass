@@ -111,7 +111,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRElectronicScaleForm::RecvThread(void *userOb
 	me->threadRunning = true;
 	while (!me->threadToStop)
 	{
-		recvSize = me->stm->Read(&buff[buffSize], 128);
+		recvSize = me->stm->Read(Data::ByteArray(&buff[buffSize], 128));
 		if (recvSize <= 0)
 		{
 			me->remoteClosed = true;

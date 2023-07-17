@@ -1,5 +1,6 @@
 #ifndef _SM_MEDIA_MPGFILE
 #define _SM_MEDIA_MPGFILE
+#include "Data/ByteBuffer.h"
 #include "Data/FastMap.h"
 #include "IO/StreamData.h"
 #include "Media/IAudioSource.h"
@@ -13,7 +14,7 @@ namespace Media
 	{
 	private:
 		IO::StreamData *stmData;
-		UInt8 *readBuff;
+		Data::ByteBuffer readBuff;
 		UInt64 readOfst;
 		UInt64 bitRate;
 		UInt64 fleng;

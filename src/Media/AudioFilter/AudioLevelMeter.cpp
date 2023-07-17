@@ -65,12 +65,12 @@ UInt32 Media::AudioFilter::AudioLevelMeter::SeekToTime(UInt32 time)
 	return 0;
 }
 
-UOSInt Media::AudioFilter::AudioLevelMeter::ReadBlock(UInt8 *buff, UOSInt blkSize)
+UOSInt Media::AudioFilter::AudioLevelMeter::ReadBlock(Data::ByteArray blk)
 {
 	if (this->sourceAudio == 0)
 		return 0;
 
-	UOSInt readSize = this->sourceAudio->ReadBlock(buff, blkSize);
+	UOSInt readSize = this->sourceAudio->ReadBlock(blk);
 	if (this->bitCount == 16)
 	{
 		UOSInt i = 0;
@@ -78,7 +78,7 @@ UOSInt Media::AudioFilter::AudioLevelMeter::ReadBlock(UInt8 *buff, UOSInt blkSiz
 		Sync::MutexUsage mutUsage(&this->mut);
 		UInt32 k = this->soundBuffOfst;
 		Int32 v;
-		while (i < blkSize)
+		while (i < blk.GetSize())
 		{
 			j = 0;
 			while (j < this->nChannel)
@@ -88,7 +88,7 @@ UOSInt Media::AudioFilter::AudioLevelMeter::ReadBlock(UInt8 *buff, UOSInt blkSiz
 				{
 					this->status[j].levelChanged = true;
 				}
-				v = ReadInt16(&buff[i]);
+				v = ReadInt16(&blk[i]);
 				this->soundBuff[k + j] = v;
 				if (v > this->status[j].maxLevel)
 				{
@@ -113,7 +113,7 @@ UOSInt Media::AudioFilter::AudioLevelMeter::ReadBlock(UInt8 *buff, UOSInt blkSiz
 		Sync::MutexUsage mutUsage(&this->mut);
 		UInt32 k = this->soundBuffOfst;
 		Int32 v;
-		while (i < blkSize)
+		while (i < blk.GetSize())
 		{
 			j = 0;
 			while (j < this->nChannel)
@@ -123,7 +123,7 @@ UOSInt Media::AudioFilter::AudioLevelMeter::ReadBlock(UInt8 *buff, UOSInt blkSiz
 				{
 					this->status[j].levelChanged = true;
 				}
-				v = buff[i] - 128;
+				v = blk[i] - 128;
 				this->soundBuff[k + j] = v;
 				if (v > this->status[j].maxLevel)
 				{

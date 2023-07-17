@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Data/ByteBuffer.h"
 #include "Data/ByteTool.h"
 #include "Data/Sort/ArtificialQuickSortC.h"
 #include "IO/DirectoryPackage.h"
@@ -301,20 +302,18 @@ Bool Net::WebServer::HTTPDirectoryHandler::ResponsePackageFileItem(Net::WebServe
 			resp->Write(compBuff, 10);
 
 			UInt64 dataSize = pitem->fd->GetDataSize();
-			UInt8 *buff;
 			UInt64 ofst;
 			UOSInt readSize;
 			if (dataSize < 1048576)
 			{
-				buff = MemAlloc(UInt8, (UOSInt)dataSize);
+				Data::ByteBuffer buff((UOSInt)dataSize);
 				pitem->fd->GetRealData(0, (UOSInt)dataSize, buff);
-				resp->Write(buff, (UOSInt)dataSize);
-				MemFree(buff);
+				resp->Write(buff.Ptr(), (UOSInt)dataSize);
 			}
 			else
 			{
 				ofst = 0;
-				buff = MemAlloc(UInt8, 1048576);
+				Data::ByteBuffer buff(1048576);
 				while (dataSize > 0)
 				{
 					if (dataSize > 1048576)
@@ -326,11 +325,10 @@ Bool Net::WebServer::HTTPDirectoryHandler::ResponsePackageFileItem(Net::WebServe
 						readSize = (UOSInt)dataSize;
 					}
 					pitem->fd->GetRealData(ofst, readSize, buff);
-					resp->Write(buff, readSize);
+					resp->Write(buff.Ptr(), readSize);
 					ofst += readSize;
 					dataSize -= readSize;
 				}
-				MemFree(buff);
 			}
 			WriteUInt32(&compBuff[0], ReadMUInt32(pitem->compInfo->checkBytes));
 			WriteUInt32(&compBuff[4], (UInt32)pitem->compInfo->decSize);
@@ -352,20 +350,18 @@ Bool Net::WebServer::HTTPDirectoryHandler::ResponsePackageFileItem(Net::WebServe
 			resp->AddHeader(CSTR("Transfer-Encoding"), CSTR("chunked"));
 
 			UInt64 dataSize = pitem->fd->GetDataSize();
-			UInt8 *buff;
 			UInt64 ofst;
 			UOSInt readSize;
 			if (dataSize < 1048576)
 			{
-				buff = MemAlloc(UInt8, (UOSInt)dataSize);
+				Data::ByteBuffer buff((UOSInt)dataSize);
 				pitem->fd->GetRealData(0, (UOSInt)dataSize, buff);
-				resp->Write(buff, (UOSInt)dataSize);
-				MemFree(buff);
+				resp->Write(buff.Ptr(), (UOSInt)dataSize);
 			}
 			else
 			{
 				ofst = 0;
-				buff = MemAlloc(UInt8, 1048576);
+				Data::ByteBuffer buff(1048576);
 				while (dataSize > 0)
 				{
 					if (dataSize > 1048576)
@@ -377,11 +373,10 @@ Bool Net::WebServer::HTTPDirectoryHandler::ResponsePackageFileItem(Net::WebServe
 						readSize = (UOSInt)dataSize;
 					}
 					pitem->fd->GetRealData(ofst, readSize, buff);
-					resp->Write(buff, readSize);
+					resp->Write(buff.Ptr(), readSize);
 					ofst += readSize;
 					dataSize -= readSize;
 				}
-				MemFree(buff);
 			}
 			return true;
 		}
@@ -390,7 +385,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ResponsePackageFileItem(Net::WebServe
 	if (stmData)
 	{
 		UOSInt dataLen = (UOSInt)stmData->GetDataSize();
-		UInt8 *dataBuff = MemAlloc(UInt8, dataLen);
+		Data::ByteBuffer dataBuff(dataLen);
 		stmData->GetRealData(0, dataLen, dataBuff);
 		DEL_CLASS(stmData);
 
@@ -402,8 +397,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ResponsePackageFileItem(Net::WebServe
 			resp->AddHeader(CSTR("Access-Control-Allow-Origin"), this->allowOrigin->ToCString());
 		}
 		resp->AddContentType(mime);
-		Net::WebServer::HTTPServerUtil::SendContent(req, resp, mime, dataLen, dataBuff);
-		MemFree(dataBuff);
+		Net::WebServer::HTTPServerUtil::SendContent(req, resp, mime, dataLen, dataBuff.Ptr());
 		return true;
 	}
 	return false;
@@ -645,7 +639,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(Net::WebServer::IWebReq
 							if (stmData)
 							{
 								UOSInt dataLen = (UOSInt)stmData->GetDataSize();
-								UInt8 *dataBuff = MemAlloc(UInt8, dataLen);
+								Data::ByteBuffer dataBuff(dataLen);
 								stmData->GetRealData(0, dataLen, dataBuff);
 								DEL_CLASS(stmData);
 								mime = Net::MIME::GetMIMEFromExt(CSTR("html"));
@@ -658,8 +652,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(Net::WebServer::IWebReq
 									resp->AddHeader(CSTR("Access-Control-Allow-Origin"), this->allowOrigin->ToCString());
 								}
 								resp->AddContentType(mime);
-								Net::WebServer::HTTPServerUtil::SendContent(req, resp, mime, dataLen, dataBuff);
-								MemFree(dataBuff);
+								Net::WebServer::HTTPServerUtil::SendContent(req, resp, mime, dataLen, dataBuff.Ptr());
 							}
 							else
 							{
@@ -846,7 +839,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(Net::WebServer::IWebReq
 				cache->buff = MemAlloc(UInt8, (UOSInt)sizeLeft);
 				cache->buffSize = (UOSInt)sizeLeft;
 				cache->t = t;
-				readSize = fs.Read(cache->buff, (UOSInt)sizeLeft);
+				readSize = fs.Read(Data::ByteArray(cache->buff, (UOSInt)sizeLeft));
 				if (readSize == sizeLeft)
 				{
 					Net::WebServer::HTTPServerUtil::SendContent(req, resp, mime, sizeLeft, cache->buff);
@@ -1425,7 +1418,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(Net::WebServer::IWebReq
 		if (sizeLeft <= 0)
 		{
 			UOSInt readSize;
-			readSize = fs.Read(buff, 2048);
+			readSize = fs.Read(BYTEARR(buff));
 			if (readSize == 0)
 			{
 				Net::WebServer::HTTPServerUtil::SendContent(req, resp, mime, sizeLeft, &fs);
@@ -1436,7 +1429,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(Net::WebServer::IWebReq
 				while (readSize > 0)
 				{
 					sizeLeft += mstm.Write(buff, readSize);
-					readSize = fs.Read(buff, 2048);
+					readSize = fs.Read(BYTEARR(buff));
 				}
 				mstm.SeekFromBeginning(0);
 				Net::WebServer::HTTPServerUtil::SendContent(req, resp, mime, sizeLeft, &mstm);
@@ -1449,7 +1442,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(Net::WebServer::IWebReq
 			cache->buff = MemAlloc(UInt8, (UOSInt)sizeLeft);
 			cache->buffSize = (UOSInt)sizeLeft;
 			cache->t = ts;
-			readSize = fs.Read(cache->buff, (UOSInt)sizeLeft);
+			readSize = fs.Read(Data::ByteArray(cache->buff, (UOSInt)sizeLeft));
 			if (readSize == sizeLeft)
 			{
 				Net::WebServer::HTTPServerUtil::SendContent(req, resp, mime, sizeLeft, cache->buff);

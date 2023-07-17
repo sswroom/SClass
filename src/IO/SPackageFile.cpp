@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Data/ByteBuffer.h"
 #include "Data/ByteTool.h"
 #include "IO/FileStream.h"
 #include "IO/SPackageFile.h"
@@ -53,9 +54,9 @@ void IO::SPackageFile::ReadV2DirEnt(UInt64 ofst, UInt64 size)
 		return;
 	UInt64 nextOfst;
 	UInt64 nextSize;
-	UInt8 *dirBuff = MemAlloc(UInt8, (UOSInt)size);
+	Data::ByteBuffer dirBuff((UOSInt)size);
 	this->stm->SeekFromBeginning(ofst);
-	this->stm->Read(dirBuff, (UOSInt)size);
+	this->stm->Read(dirBuff);
 	nextOfst = ReadUInt64(&dirBuff[0]);
 	nextSize = ReadUInt64(&dirBuff[8]);
 	this->ReadV2DirEnt(nextOfst, nextSize);
@@ -83,7 +84,6 @@ void IO::SPackageFile::ReadV2DirEnt(UInt64 ofst, UInt64 size)
 		i += 26 + nameSize;
 	}
 	MemFree(sbuff);
-	MemFree(dirBuff);
 }
 
 void IO::SPackageFile::AddPackageInner(IO::PackageFile *pkg, UTF8Char pathSeperator, UTF8Char *pathStart, UTF8Char *pathEnd)
@@ -128,9 +128,9 @@ Bool IO::SPackageFile::OptimizeFileInner(IO::SPackageFile *newFile, UInt64 dirOf
 	UOSInt i;
 	UOSInt j;
 	Bool succ = true;
-	UInt8 *dirBuff = MemAlloc(UInt8, (UOSInt)dirSize);
+	Data::ByteBuffer dirBuff((UOSInt)dirSize);
 	this->stm->SeekFromBeginning(dirOfst);
-	if (this->stm->Read(dirBuff, (UOSInt)dirSize) == dirSize)
+	if (this->stm->Read(dirBuff) == dirSize)
 	{
 		lastOfst = ReadUInt64(&dirBuff[0]);
 		lastSize = ReadUInt64(&dirBuff[8]);
@@ -145,7 +145,6 @@ Bool IO::SPackageFile::OptimizeFileInner(IO::SPackageFile *newFile, UInt64 dirOf
 		UInt64 thisOfst;
 		UInt64 thisSize;
 		UTF8Char *sbuff = MemAlloc(UTF8Char, 512);
-		UInt8 *fileBuff;
 		lastOfst = 0;
 		lastSize = 0;
 		i = 16;
@@ -156,14 +155,14 @@ Bool IO::SPackageFile::OptimizeFileInner(IO::SPackageFile *newFile, UInt64 dirOf
 			j = ReadUInt16(&dirBuff[i + 24]);
 			MemCopyNO(sbuff, &dirBuff[i + 26], j);
 			sbuff[j] = 0;
-			fileBuff = MemAlloc(UInt8, (UOSInt)thisSize);
+			Data::ByteBuffer fileBuff((UOSInt)thisSize);
 			if (thisOfst != lastOfst + lastSize)
 			{
 				this->stm->SeekFromBeginning(thisOfst);
 			}
-			if (this->stm->Read(fileBuff, (UOSInt)thisSize) == thisSize)
+			if (this->stm->Read(fileBuff) == thisSize)
 			{
-				newFile->AddFile(fileBuff, (UOSInt)thisSize, {sbuff, j}, Data::Timestamp(ReadInt64(&dirBuff[i + 16]), 0));
+				newFile->AddFile(fileBuff.Ptr(), (UOSInt)thisSize, {sbuff, j}, Data::Timestamp(ReadInt64(&dirBuff[i + 16]), 0));
 				lastOfst = thisOfst;
 				lastSize = thisSize;
 			}
@@ -171,7 +170,6 @@ Bool IO::SPackageFile::OptimizeFileInner(IO::SPackageFile *newFile, UInt64 dirOf
 			{
 				succ = false;
 			}
-			MemFree(fileBuff);
 			i += 26 + j;
 		}
 		MemFree(sbuff);
@@ -180,7 +178,6 @@ Bool IO::SPackageFile::OptimizeFileInner(IO::SPackageFile *newFile, UInt64 dirOf
 	{
 		succ = false;
 	}
-	MemFree(dirBuff);
 	return succ;
 }
 
@@ -200,7 +197,6 @@ IO::SPackageFile::SPackageFile(NotNullPtr<IO::SeekableStream> stm, Bool toReleas
 	this->stm->Write(hdr, 24);
 	this->customType = 0;
 	this->customSize = 0;
-	this->customBuff = 0;
 	this->writeMode = true;
 	this->flags = 2;
 	this->pauseCommit = false;
@@ -209,7 +205,7 @@ IO::SPackageFile::SPackageFile(NotNullPtr<IO::SeekableStream> stm, Bool toReleas
 	this->mstm.Write(hdr, 16);
 }
 
-IO::SPackageFile::SPackageFile(NotNullPtr<IO::SeekableStream> stm, Bool toRelease, Int32 customType, UOSInt customSize, const UInt8 *customBuff)
+IO::SPackageFile::SPackageFile(NotNullPtr<IO::SeekableStream> stm, Bool toRelease, Int32 customType, UOSInt customSize, Data::ByteArrayR customBuff)
 {
 	UInt8 hdr[32];
 	this->stm = stm;
@@ -227,19 +223,15 @@ IO::SPackageFile::SPackageFile(NotNullPtr<IO::SeekableStream> stm, Bool toReleas
 	this->stm->Write(hdr, 32);
 	if (customSize > 0)
 	{
-		this->stm->Write(customBuff, customSize);
+		this->stm->Write(customBuff.Ptr(), customSize);
 	}
 	this->flags = 3;
 	this->customType = customType;
 	this->customSize = customSize;
 	if (customSize > 0)
 	{
-		this->customBuff = MemAlloc(UInt8, customSize);
-		MemCopyNO(this->customBuff, customBuff, customSize);
-	}
-	else
-	{
-		this->customBuff = 0;
+		this->customBuff.ChangeSize(customSize);
+		this->customBuff.CopyFrom(customBuff.WithSize(customSize));
 	}
 	this->writeMode = true;
 	this->pauseCommit = false;
@@ -258,12 +250,11 @@ IO::SPackageFile::SPackageFile(Text::CString fileName)
 	this->toRelease = true;
 	this->customType = 0;
 	this->customSize = 0;
-	this->customBuff = 0;
 	flength = this->stm->GetLength();
 	if (flength >= 16)
 	{
 		this->stm->SeekFromBeginning(0);
-		this->stm->Read(hdr, 24);
+		this->stm->Read(BYTEARR(hdr));
 		if (hdr[0] == 'S' && hdr[1] == 'm' && hdr[2] == 'p' && hdr[3] == 'f')
 		{
 			this->flags = ReadInt32(&hdr[4]);
@@ -294,13 +285,13 @@ IO::SPackageFile::SPackageFile(Text::CString fileName)
 					if (this->flags & 1)
 					{
 						UInt8 customBuff[8];
-						this->stm->Read(customBuff, 8);
+						this->stm->Read(BYTEARR(customBuff));
 						this->customType = ReadInt32(&customBuff[0]);
 						this->customSize = ReadUInt32(&customBuff[4]);
 						if (this->customSize > 0)
 						{
-							this->customBuff = MemAlloc(UInt8, this->customSize);
-							this->stm->Read(this->customBuff, this->customSize);
+							this->customBuff.ChangeSize(this->customSize);
+							this->stm->Read(this->customBuff);
 						}
 					}
 					this->mstm.Write(&hdr[8], 16);
@@ -314,11 +305,11 @@ IO::SPackageFile::SPackageFile(Text::CString fileName)
 				dirSize = flength - this->currOfst;
 				if (dirSize > 0)
 				{
-					UInt8 *dirBuff = MemAlloc(UInt8, (UOSInt)dirSize);
+					Data::ByteBuffer dirBuff((UOSInt)dirSize);
 					this->stm->SeekFromBeginning(this->currOfst);
-					this->stm->Read(dirBuff, (UOSInt)dirSize);
+					this->stm->Read(dirBuff);
 					this->stm->SeekFromBeginning(this->currOfst);
-					this->mstm.Write(dirBuff, (UOSInt)dirSize);
+					this->mstm.Write(dirBuff.Ptr(), (UOSInt)dirSize);
 
 					UOSInt i;
 					UOSInt nameSize;
@@ -340,7 +331,6 @@ IO::SPackageFile::SPackageFile(Text::CString fileName)
 						}
 						i += 26 + nameSize;
 					}
-					MemFree(dirBuff);
 				}
 				else
 				{
@@ -423,11 +413,6 @@ IO::SPackageFile::~SPackageFile()
 	{
 		this->stm.Delete();
 	}
-	if (this->customBuff)
-	{
-		MemFree(this->customBuff);
-		this->customBuff = 0;
-	}
 	if (!this->fileMap.IsEmpty())
 	{
 		UOSInt i;
@@ -469,13 +454,12 @@ Bool IO::SPackageFile::AddFile(IO::StreamData *fd, Text::CString fileName, const
 	}
 
 	writeSize = 0;
-	UInt8 *fileBuff;
 	if (dataSize > 1048576)
 	{
 		UOSInt readSize;
 		UInt64 sizeLeft = dataSize;
 		UInt64 fileOfst = 0;
-		fileBuff = MemAlloc(UInt8, 1048576);
+		Data::ByteBuffer fileBuff(1048576);
 		while (sizeLeft > 0)
 		{
 			if (sizeLeft > 1048576)
@@ -487,18 +471,16 @@ Bool IO::SPackageFile::AddFile(IO::StreamData *fd, Text::CString fileName, const
 				readSize = (UOSInt)sizeLeft;
 			}
 			fd->GetRealData(fileOfst, readSize, fileBuff);
-			writeSize += this->stm->Write(fileBuff, readSize);
+			writeSize += this->stm->Write(fileBuff.Ptr(), readSize);
 			fileOfst += readSize;
 			sizeLeft -= readSize;
 		}
-		MemFree(fileBuff);
 	}
 	else
 	{
-		fileBuff = MemAlloc(UInt8, (UOSInt)dataSize);
+		Data::ByteBuffer fileBuff((UOSInt)dataSize);
 		fd->GetRealData(0, (UOSInt)dataSize, fileBuff);
-		writeSize = this->stm->Write(fileBuff, (UOSInt)dataSize);
-		MemFree(fileBuff);
+		writeSize = this->stm->Write(fileBuff.Ptr(), (UOSInt)dataSize);
 	}
 	Bool succ = false;
 	if (writeSize == dataSize)
@@ -663,7 +645,7 @@ Bool IO::SPackageFile::OptimizeFile(Text::CString newFile)
 	Sync::MutexUsage mutUsage(&this->mut);
 	this->writeMode = false;
 	this->stm->SeekFromBeginning(0);
-	this->stm->Read(hdr, 24);
+	this->stm->Read(BYTEARR(hdr));
 	UInt64 lastOfst = ReadUInt64(&hdr[8]);
 	UInt64 lastSize = ReadUInt64(&hdr[16]);
 	if (lastSize > 0)
@@ -687,12 +669,11 @@ IO::StreamData *IO::SPackageFile::CreateStreamData(Text::CString fileName)
 	FileInfo *file = this->fileMap.Get(fileName);
 	if (file)
 	{
-		UInt8 *fileBuff = MemAlloc(UInt8, (UOSInt)file->size);
+		Data::ByteBuffer fileBuff((UOSInt)file->size);
 		this->writeMode = false;
 		this->stm->SeekFromBeginning(file->ofst);
-		this->stm->Read(fileBuff, (UOSInt)file->size);
-		NEW_CLASS(fd, IO::StmData::MemoryDataCopy(fileBuff, (UOSInt)file->size));
-		MemFree(fileBuff);
+		this->stm->Read(fileBuff);
+		NEW_CLASS(fd, IO::StmData::MemoryDataCopy(fileBuff));
 	}
 	mutUsage.EndUse();
 	return fd;

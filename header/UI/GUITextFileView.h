@@ -1,6 +1,7 @@
 #ifndef _SM_UI_GUITEXTFILEVIEW
 #define _SM_UI_GUITEXTFILEVIEW
 #include "Data/ArrayListUInt64.h"
+#include "Data/ByteBuffer.h"
 #include "IO/FileStream.h"
 #include "Sync/Event.h"
 #include "Sync/Mutex.h"
@@ -21,7 +22,7 @@ namespace UI
 		UOSInt lastLineCnt;
 
 		NotNullPtr<Text::String> fileName;
-		UInt8 *readBuff;
+		Data::ByteBuffer readBuff;
 		UInt64 readBuffOfst;
 		UOSInt readBuffSize;
 		Data::ArrayListUInt64 lineOfsts;

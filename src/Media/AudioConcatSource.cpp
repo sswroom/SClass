@@ -181,9 +181,9 @@ void Media::AudioConcatSource::Stop()
 	this->readEvt = 0;
 }
 
-UOSInt Media::AudioConcatSource::ReadBlock(UInt8 *buff, UOSInt blkSize)
+UOSInt Media::AudioConcatSource::ReadBlock(Data::ByteArray blk)
 {
-	UOSInt readSize = ((Media::IAudioSource*)this->stmList->GetItem(this->currStm))->ReadBlock(buff, blkSize);
+	UOSInt readSize = ((Media::IAudioSource*)this->stmList->GetItem(this->currStm))->ReadBlock(blk);
 	if (readSize > 0)
 		return readSize;
 	if (this->currStm + 1 >= this->stmList->GetCount())
@@ -200,7 +200,7 @@ UOSInt Media::AudioConcatSource::ReadBlock(UInt8 *buff, UOSInt blkSize)
 	{
 		this->currStm++;
 	}
-	return ((Media::IAudioSource*)this->stmList->GetItem(this->currStm))->ReadBlock(buff, blkSize);
+	return ((Media::IAudioSource*)this->stmList->GetItem(this->currStm))->ReadBlock(blk);
 }
 
 UInt32 Media::AudioConcatSource::GetCurrTime()

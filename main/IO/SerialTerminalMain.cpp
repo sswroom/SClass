@@ -20,7 +20,7 @@ UInt32 __stdcall RecvThread(void *userObj)
 	threadRunning = true;
 	while (!threadToStop)
 	{
-		buffSize = port->Read(buff, 512);
+		buffSize = port->Read(BYTEARR(buff));
 		if (buffSize > 0)
 		{
 			buff[buffSize] = 0;

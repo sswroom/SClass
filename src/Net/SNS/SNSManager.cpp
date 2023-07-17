@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "Data/ArrayListString.h"
+#include "Data/ByteBuffer.h"
 #include "Data/FastMap.h"
 #include "IO/FileStream.h"
 #include "IO/Path.h"
@@ -155,7 +156,7 @@ void Net::SNS::SNSManager::ChannelAddMessage(Net::SNS::SNSManager::ChannelData *
 		UInt64 leng;
 		Text::PString sarr[2];
 		NotNullPtr<Net::HTTPClient> cli;
-		UInt8 *tmpBuff = MemAlloc(UInt8, 65536);
+		Data::ByteBuffer tmpBuff(65536);
 
 		sptr = this->dataPath->ConcatTo(sbuff);
 		if (sptr[-1] != IO::Path::PATH_SEPERATOR)
@@ -200,12 +201,12 @@ void Net::SNS::SNSManager::ChannelAddMessage(Net::SNS::SNSManager::ChannelData *
 						IO::FileStream fs(CSTRP(sbuff, sptr2), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 						while (true)
 						{
-							k = cli->Read(tmpBuff, 65536);
+							k = cli->Read(tmpBuff);
 							if (k <= 0)
 							{
 								break;
 							}
-							leng += fs.Write(tmpBuff, k);
+							leng += fs.Write(tmpBuff.Ptr(), k);
 						}
 					}
 					if (cli->GetContentLength() > 0 && cli->GetContentLength() != leng)
@@ -264,12 +265,12 @@ void Net::SNS::SNSManager::ChannelAddMessage(Net::SNS::SNSManager::ChannelData *
 						IO::FileStream fs(CSTRP(sbuff, sptr2), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 						while (true)
 						{
-							k = cli->Read(tmpBuff, 65536);
+							k = cli->Read(tmpBuff);
 							if (k <= 0)
 							{
 								break;
 							}
-							leng += fs.Write(tmpBuff, k);
+							leng += fs.Write(tmpBuff.Ptr(), k);
 						}
 					}
 					if (cli->GetContentLength() > 0 && cli->GetContentLength() != leng)
@@ -295,8 +296,6 @@ void Net::SNS::SNSManager::ChannelAddMessage(Net::SNS::SNSManager::ChannelData *
 				}
 			}
 		}
-
-		MemFree(tmpBuff);
 	}
 }
 

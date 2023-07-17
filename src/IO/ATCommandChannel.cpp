@@ -27,7 +27,7 @@ UInt32 __stdcall IO::ATCommandChannel::CmdThread(void *userObj)
 	me->cmdEvt.Set();
 	while (!me->threadToStop)
 	{
-		readSize = me->stm->Read(&readBuff[buffSize], 2048 - buffSize);
+		readSize = me->stm->Read(Data::ByteArray(&readBuff[buffSize], 2048 - buffSize));
 		if (readSize == 0)
 		{
 			Sync::SimpleThread::Sleep(100);

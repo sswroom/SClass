@@ -275,7 +275,7 @@ Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(Net::WebServer::IWebRequ
 	sbHeader.ClearStr();
 	while (true)
 	{
-		i = cli->Read(buff, 2048);
+		i = cli->Read(BYTEARR(buff));
 		if (i > 0)
 		{
 			j = resp->Write(buff, i);

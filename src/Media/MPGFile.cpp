@@ -36,7 +36,7 @@ UInt32 __stdcall Media::MPGFile::PlayThread(void *userData)
 	Bool endFound = false;
 	while (!me->playToStop)
 	{
-		readSize = me->stmData->GetRealData(me->readOfst, BUFFSIZE - buffSize, &me->readBuff[buffSize]);
+		readSize = me->stmData->GetRealData(me->readOfst, BUFFSIZE - buffSize, me->readBuff.SubArray(buffSize));
 		buffSize += readSize;
 		endOfst = buffSize - 3;
 		if (readSize == 0)
@@ -360,7 +360,7 @@ UInt32 __stdcall Media::MPGFile::PlayThread(void *userData)
 		me->readOfst += readSize;
 		if (i < buffSize)
 		{
-			MemCopyO(me->readBuff, &me->readBuff[i], buffSize - i);
+			me->readBuff.CopyInner(0, i, buffSize - i);
 			buffSize -= i;
 		}
 		else
@@ -417,12 +417,11 @@ Bool Media::MPGFile::StopPlay()
 	return true;
 }
 
-Media::MPGFile::MPGFile(IO::StreamData *stmData) : Media::MediaFile(stmData->GetFullName())
+Media::MPGFile::MPGFile(IO::StreamData *stmData) : Media::MediaFile(stmData->GetFullName()), readBuff(1048576)
 {
 	this->stmData = stmData->GetPartialData(0, this->fleng = stmData->GetDataSize());
 	this->bitRate = 0;
 	this->readOfst = 0;
-	this->readBuff = MemAlloc(UInt8, 1048576);
 	this->playing = 0;
 	this->playToStop = false;
 	this->startTime = 0;
@@ -614,10 +613,9 @@ Media::MPGFile::MPGFile(IO::StreamData *stmData) : Media::MediaFile(stmData->Get
 						}
 						if (!mstm->IsReady())
 						{
-							UInt8 *frameBuff = MemAlloc(UInt8, i - 7 - stmHdrSize);
+							Data::ByteBuffer frameBuff(i - 7 - stmHdrSize);
 							stmData->GetRealData(currOfst + 13 + j + stmHdrSize, i - 7 - stmHdrSize, frameBuff);
-							mstm->ParseHeader(frameBuff, i - 7 - stmHdrSize);
-							MemFree(frameBuff);
+							mstm->ParseHeader(frameBuff.Ptr(), i - 7 - stmHdrSize);
 						}
 					}
 				}
@@ -820,7 +818,6 @@ Media::MPGFile::~MPGFile()
 	}
 	SDEL_CLASS(this->vstm);
 	DEL_CLASS(this->stmData);
-	MemFree(this->readBuff);
 }
 
 UOSInt Media::MPGFile::AddSource(Media::IMediaSource *src, Int32 syncTime)

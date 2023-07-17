@@ -1,4 +1,5 @@
 #include "Stdafx.h"
+#include "Data/ByteBuffer.h"
 #include "SSWR/AVIRead/AVIRTCPSpdSvrForm.h"
 #include "Sync/ThreadUtil.h"
 #include "UI/MessageDialog.h"
@@ -98,17 +99,16 @@ void __stdcall SSWR::AVIRead::AVIRTCPSpdSvrForm::OnClientTimeout(NotNullPtr<Net:
 UInt32 __stdcall SSWR::AVIRead::AVIRTCPSpdSvrForm::RecvThread(void *userObj)
 {
 	ClientStatus *cliStatus = (ClientStatus*)userObj;
-	UInt8 *recvBuff = MemAlloc(UInt8, 9000);
+	Data::ByteBuffer recvBuff(9000);
 	UOSInt recvSize;
 	while (true)
 	{
-		recvSize = cliStatus->cli->Read(recvBuff, 9000);
+		recvSize = cliStatus->cli->Read(recvBuff);
 		if (recvSize <= 0)
 			break;
 		if (cliStatus->echo)
-			cliStatus->cli->Write(recvBuff, recvSize);
+			cliStatus->cli->Write(recvBuff.Ptr(), recvSize);
 	}
-	MemFree(recvBuff);
 	cliStatus->cli.Delete();
 	MemFree(cliStatus);
 	return 0;

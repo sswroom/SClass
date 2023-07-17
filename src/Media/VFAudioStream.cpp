@@ -94,10 +94,10 @@ void Media::VFAudioStream::Stop()
 	this->readEvt = 0;
 }
 
-UOSInt Media::VFAudioStream::ReadBlock(UInt8 *buff, UOSInt blkSize)
+UOSInt Media::VFAudioStream::ReadBlock(Data::ByteArray blk)
 {
 	VF_PluginFunc *funcs = (VF_PluginFunc*)mfile->plugin->funcs;
-	UOSInt sampleCnt = blkSize / this->fmt.nChannels / ((UOSInt)this->fmt.bitpersample >> 3);
+	UOSInt sampleCnt = blk.GetSize() / this->fmt.nChannels / ((UOSInt)this->fmt.bitpersample >> 3);
 	if (sampleCnt + this->currSample > this->sampleCnt)
 	{
 		sampleCnt = (UOSInt)(this->sampleCnt - this->currSample);
@@ -114,8 +114,8 @@ UOSInt Media::VFAudioStream::ReadBlock(UInt8 *buff, UOSInt blkSize)
 	*(UInt64*)&rd.dwSamplePosL = this->currSample;
 	rd.dwSampleCount = (DWORD)sampleCnt;
 	rd.dwReadedSampleCount = 0;
-	rd.dwBufSize = (DWORD)blkSize;
-	rd.lpBuf = buff;
+	rd.dwBufSize = (DWORD)blk.GetSize();
+	rd.lpBuf = blk.Ptr();
 	funcs->ReadData(mfile->file, VF_STREAM_AUDIO, &rd);
 	this->currSample += rd.dwReadedSampleCount;
 	readSize = rd.dwReadedSampleCount * this->fmt.nChannels * ((UOSInt)this->fmt.bitpersample >> 3);

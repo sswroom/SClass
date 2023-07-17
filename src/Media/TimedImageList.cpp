@@ -1,4 +1,5 @@
 #include "Stdafx.h"
+#include "Data/ByteBuffer.h"
 #include "Data/ByteTool.h"
 #include "Media/TimedImageList.h"
 
@@ -9,7 +10,7 @@ void Media::TimedImageList::ScanFile()
 	this->flags &= ~2;
 	this->changed = true;
 	this->fs->SeekFromBeginning(16);
-	while (this->fs->Read(indexBuff, 32) == 32)
+	while (this->fs->Read(BYTEARR(indexBuff)) == 32)
 	{
 		if (ReadUInt64(&indexBuff[16]) == currOfst + 32)
 		{
@@ -60,7 +61,7 @@ Media::TimedImageList::TimedImageList(Text::CString fileName)
 	else
 	{
 		this->fs->SeekFromBeginning(0);
-		this->fs->Read(hdr, 16);
+		this->fs->Read(BYTEARR(hdr));
 		if (hdr[0] != 'S' || hdr[1] != 'T' || hdr[2] != 'i' || hdr[3] != 'l')
 		{
 			DEL_CLASS(this->fs);
@@ -74,11 +75,10 @@ Media::TimedImageList::TimedImageList(Text::CString fileName)
 			UInt64 indexSize = fileSize - this->currFileOfst;
 			if (fileSize >= this->currFileOfst && (indexSize & 31) == 0)
 			{
-				UInt8 *indexBuff = MemAlloc(UInt8, (UOSInt)indexSize);
+				Data::ByteBuffer indexBuff((UOSInt)indexSize);
 				this->fs->SeekFromBeginning(this->currFileOfst);
-				this->fs->Read(indexBuff, (UOSInt)indexSize);
-				this->indexStm.Write(indexBuff, (UOSInt)indexSize);
-				MemFree(indexBuff);
+				this->fs->Read(indexBuff);
+				this->indexStm.Write(indexBuff.Ptr(), (UOSInt)indexSize);
 				this->fs->SeekFromBeginning(this->currFileOfst);
 			}
 			else if (this->flags & 1)

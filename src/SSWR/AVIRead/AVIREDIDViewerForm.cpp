@@ -1,4 +1,5 @@
 #include "Stdafx.h"
+#include "Data/ByteBuffer.h"
 #include "IO/FileStream.h"
 #include "IO/StmData/MemoryDataCopy.h"
 #include "Math/Math.h"
@@ -141,7 +142,6 @@ void __stdcall SSWR::AVIRead::AVIREDIDViewerForm::OnHexClicked(void *userObj)
 void __stdcall SSWR::AVIRead::AVIREDIDViewerForm::OnFileDrop(void *userObj, NotNullPtr<Text::String> *fileNames, UOSInt fileCnt)
 {
 	SSWR::AVIRead::AVIREDIDViewerForm *me = (SSWR::AVIRead::AVIREDIDViewerForm*)userObj;
-	UInt8 *fileCont;
 	UOSInt fileSize;
 	UOSInt i;
 	Bool found = false;
@@ -153,8 +153,8 @@ void __stdcall SSWR::AVIRead::AVIREDIDViewerForm::OnFileDrop(void *userObj, NotN
 			fileSize = (UOSInt)fs.GetLength();
 			if (fileSize >= 128 && fileSize <= 1024 && (fileSize & 127) == 0)
 			{
-				fileCont = MemAlloc(UInt8, fileSize);
-				fs.Read(fileCont, fileSize);
+				Data::ByteBuffer fileCont(fileSize);
+				fs.Read(fileCont);
 				if (fileCont[0] == 0 && fileCont[1] == 0xff && fileCont[2] == 0xff && fileCont[3] == 0xff && fileCont[4] == 0xff && fileCont[5] == 0xff && fileCont[6] == 0xff && fileCont[7] == 0)
 				{
 					if (me->edid)
@@ -164,11 +164,9 @@ void __stdcall SSWR::AVIRead::AVIREDIDViewerForm::OnFileDrop(void *userObj, NotN
 					}
 					me->edid = MemAlloc(UInt8, fileSize);
 					me->edidSize = fileSize;
-					MemCopyNO(me->edid, fileCont, fileSize);
+					MemCopyNO(me->edid, fileCont.Ptr(), fileSize);
 					found = true;
 				}
-
-				MemFree(fileCont);
 			}
 		}
 

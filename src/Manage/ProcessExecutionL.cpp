@@ -104,11 +104,11 @@ Bool Manage::ProcessExecution::IsDown() const
 	return !this->IsRunning();
 }
 
-UOSInt Manage::ProcessExecution::Read(const Data::ByteArray &buff)
+UOSInt Manage::ProcessExecution::Read(Data::ByteArray buff)
 {
 	if (this->clsData->in[0] == 0)
 		return 0;
-	OSInt readSize = read(this->clsData->out[0], buff, size);
+	OSInt readSize = read(this->clsData->out[0], buff.Ptr(), (size_t)buff.GetSize());
 	if (readSize >= 0)
 	{
 		return (UOSInt)readSize;

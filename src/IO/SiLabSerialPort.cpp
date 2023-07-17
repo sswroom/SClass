@@ -55,7 +55,7 @@ Bool IO::SiLabSerialPort::IsDown() const
 	return this->handle == 0;
 }
 
-UOSInt IO::SiLabSerialPort::Read(const Data::ByteArray &buff)
+UOSInt IO::SiLabSerialPort::Read(Data::ByteArray buff)
 {
 	UInt32 readCnt;
 	Bool ret;
@@ -72,7 +72,7 @@ UOSInt IO::SiLabSerialPort::Read(const Data::ByteArray &buff)
 	ol.Offset = 0;
 	ol.OffsetHigh = 0;
 	this->reading = true;
-	this->driver->SI_Read(h, buff, (UInt32)size, &readCnt, &ol);
+	this->driver->SI_Read(h, buff.Ptr(), (UInt32)buff.GetSize(), &readCnt, &ol);
 #if defined(_WIN32) && !defined(_WIN32_WCE)
 	this->rdEvt.Wait();
 	if (this->handle == 0)
@@ -143,22 +143,22 @@ struct ReadEvent
 	OVERLAPPED ol;
 };
 
-void *IO::SiLabSerialPort::BeginRead(const Data::ByteArray &buff, Sync::Event *evt)
+void *IO::SiLabSerialPort::BeginRead(Data::ByteArray buff, Sync::Event *evt)
 {
 	void *h = this->handle;
 	if (h == 0)
 		return 0;
 
 	ReadEvent *re = MemAlloc(ReadEvent, 1);
-	re->buff = buff;
+	re->buff = buff.Ptr();
 	re->evt = evt;
-	re->size = size;
+	re->size = buff.GetSize();
 	re->ol.hEvent = evt->hand;
 	re->ol.Internal = 0;
 	re->ol.InternalHigh = 0;
 	re->ol.Offset = 0;
 	re->ol.OffsetHigh = 0;
-	this->driver->SI_Read(h, (void*)buff, (UInt32)size, &re->readSize, &re->ol);
+	this->driver->SI_Read(h, (void*)buff.Ptr(), (UInt32)buff.GetSize(), &re->readSize, &re->ol);
 	return re;
 }
 

@@ -558,7 +558,7 @@ Bool Map::WebMapService::QueryInfos(Math::Coord2DDbl coord, Math::RectAreaDbl bo
 	if (cli->GetRespStatus() == Net::WebStatus::SC_OK)
 	{
 		Text::StringBuilderUTF8 sbData;
-		while ((readSize = cli->Read(dataBuff, 2048)) > 0)
+		while ((readSize = cli->Read(BYTEARR(dataBuff))) > 0)
 		{
 			sbData.AppendC(dataBuff, readSize);
 		}
@@ -662,7 +662,7 @@ Media::ImageList *Map::WebMapService::DrawMap(Math::RectAreaDbl bounds, UInt32 w
 	if (succ)
 	{
 		IO::MemoryStream mstm;
-		while ((readSize = cli->Read(dataBuff, 2048)) > 0)
+		while ((readSize = cli->Read(BYTEARR(dataBuff))) > 0)
 		{
 			mstm.Write(dataBuff, readSize);
 		}

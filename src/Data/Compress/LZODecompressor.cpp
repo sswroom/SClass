@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Data/ByteBuffer.h"
 #include "Data/Compress/LZODecompressor.h"
 
 Data::Compress::LZODecompressor::LZODecompressor()
@@ -18,21 +19,19 @@ Bool Data::Compress::LZODecompressor::Decompress(UInt8 *destBuff, UOSInt *destBu
 Bool Data::Compress::LZODecompressor::Decompress(IO::Stream *destStm, IO::StreamData *srcData)
 {
 	UInt64 srcSize = srcData->GetDataSize();
-	UInt8 *srcBuff = MemAlloc(UInt8, (UOSInt)srcSize);
+	Data::ByteBuffer srcBuff((UOSInt)srcSize);
 	srcData->GetRealData(0, (UOSInt)srcSize, srcBuff);
-	UOSInt destSize = LZODecompressor_CalcDecSize(srcBuff, (UOSInt)srcSize);
+	UOSInt destSize = LZODecompressor_CalcDecSize(srcBuff.Ptr(), (UOSInt)srcSize);
 	if (destSize > 0)
 	{
 		UInt8 *destBuff = MemAlloc(UInt8, destSize);
-		LZODecompressor_Decompress(srcBuff, (UOSInt)srcSize, destBuff, &destSize);
+		LZODecompressor_Decompress(srcBuff.Ptr(), (UOSInt)srcSize, destBuff, &destSize);
 		destStm->Write(destBuff, destSize);
 		MemFree(destBuff);
-		MemFree(srcBuff);
 		return true;
 	}
 	else
 	{
-		MemFree(srcBuff);
 		return false;
 	}
 }

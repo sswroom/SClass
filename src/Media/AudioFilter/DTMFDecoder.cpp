@@ -489,12 +489,12 @@ UInt32 Media::AudioFilter::DTMFDecoder::SeekToTime(UInt32 time)
 	return 0;
 }
 
-UOSInt Media::AudioFilter::DTMFDecoder::ReadBlock(UInt8 *buff, UOSInt blkSize)
+UOSInt Media::AudioFilter::DTMFDecoder::ReadBlock(Data::ByteArray blk)
 {
 	if (this->sourceAudio == 0)
 		return 0;
 
-	UOSInt readSize = this->sourceAudio->ReadBlock(buff, blkSize);
+	UOSInt readSize = this->sourceAudio->ReadBlock(blk);
 	UOSInt sizeLeft = readSize;
 	UOSInt thisSize;
 	UOSInt samples = readSize / this->align;
@@ -503,16 +503,16 @@ UOSInt Media::AudioFilter::DTMFDecoder::ReadBlock(UInt8 *buff, UOSInt blkSize)
 		thisSize = this->calcLeft * this->align;
 		if (this->sampleOfst + thisSize >= this->sampleBuffSize)
 		{
-			MemCopyNO(&this->sampleBuff[this->sampleOfst], buff, this->sampleBuffSize - this->sampleOfst);
-			buff += this->sampleBuffSize - this->sampleOfst;
+			MemCopyNO(&this->sampleBuff[this->sampleOfst], blk.Ptr(), this->sampleBuffSize - this->sampleOfst);
+			blk += this->sampleBuffSize - this->sampleOfst;
 			thisSize -= this->sampleBuffSize - this->sampleOfst;
 			sizeLeft -= this->sampleBuffSize - this->sampleOfst;
 			this->sampleOfst = 0;
 		}
 		else if (thisSize > 0)
 		{
-			MemCopyNO(&this->sampleBuff[this->sampleOfst], buff, thisSize);
-			buff += thisSize;
+			MemCopyNO(&this->sampleBuff[this->sampleOfst], blk.Ptr(), thisSize);
+			blk += thisSize;
 			sizeLeft -= thisSize;
 			this->sampleOfst += thisSize;
 		}
@@ -531,16 +531,16 @@ UOSInt Media::AudioFilter::DTMFDecoder::ReadBlock(UInt8 *buff, UOSInt blkSize)
 
 	if (this->sampleOfst + sizeLeft >= this->sampleBuffSize)
 	{
-		MemCopyNO(&this->sampleBuff[this->sampleOfst], buff, this->sampleBuffSize - this->sampleOfst);
-		buff += this->sampleBuffSize - this->sampleOfst;
+		MemCopyNO(&this->sampleBuff[this->sampleOfst], blk.Ptr(), this->sampleBuffSize - this->sampleOfst);
+		blk += this->sampleBuffSize - this->sampleOfst;
 		sizeLeft -= this->sampleBuffSize - this->sampleOfst;
 		this->calcLeft -= (this->sampleBuffSize - this->sampleOfst) / this->align;
 		this->sampleOfst = 0;
 	}
 	if (sizeLeft > 0)
 	{
-		MemCopyNO(&this->sampleBuff[this->sampleOfst], buff, sizeLeft);
-		buff += sizeLeft;
+		MemCopyNO(&this->sampleBuff[this->sampleOfst], blk.Ptr(), sizeLeft);
+		blk += sizeLeft;
 		this->sampleOfst += sizeLeft;
 		this->calcLeft -= sizeLeft / this->align;
 	}

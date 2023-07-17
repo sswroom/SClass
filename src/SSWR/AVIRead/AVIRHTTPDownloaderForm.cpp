@@ -144,7 +144,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPDownloaderForm::ProcessThread(void *user
 			}
 			me->respHdrChanged = true;
 
-			while ((i = cli->Read(buff, 4096)) > 0)
+			while ((i = cli->Read(BYTEARR(buff))) > 0)
 			{
 				fs.Write(buff, i);
 				me->currSize += i;

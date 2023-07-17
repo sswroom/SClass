@@ -180,7 +180,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPTestForm::ProcessThread(void *userObj)
 							i = 0;
 						}
 					}
-					while (cli->Read(buff, 2048));
+					while (cli->Read(BYTEARR(buff)));
 				}
 				else
 				{

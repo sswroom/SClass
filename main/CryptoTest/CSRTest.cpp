@@ -26,7 +26,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	}
 	Parser::FileParser::X509Parser parser;
 	NotNullPtr<Text::String> s = Text::String::NewP(sbuff, sptr);
-	Crypto::Cert::X509File *x509 = parser.ParseBuff(buff, buffSize, s);
+	Crypto::Cert::X509File *x509 = parser.ParseBuff(Data::ByteArray(buff, buffSize), s);
 	s->Release();
 	if (x509 == 0)
 	{

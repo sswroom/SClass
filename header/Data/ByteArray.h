@@ -3,7 +3,7 @@
 #include "MyMemory.h"
 #include "Data/ByteTool.h"
 
-#define CHECK_RANGE
+//#define CHECK_RANGE
 #if defined(CHECK_RANGE)
 #include <stdio.h>
 #endif
@@ -496,6 +496,14 @@ namespace Data
 
 	class ByteArrayR : public ByteArrayBase<const UInt8>
 	{
+#if defined(CHECK_RANGE)
+	private:
+		ByteArrayR(const UInt8 *buff, UOSInt buffSize, UOSInt prevSize) : ByteArrayBase(buff, buffSize)
+		{
+			this->prevSize = prevSize;
+		}
+#endif
+
 	public:
 		ByteArrayR(const ByteArray &arr) : ByteArrayBase(arr.GetPtr(), arr.GetSize())
 		{
@@ -527,6 +535,17 @@ namespace Data
 			CheckError(ofst);
 			return ByteArrayR(&buff[ofst], this->buffSize - ofst);
 		}
+
+		ByteArrayR WithSize(UOSInt size) const
+		{
+			CheckError(size);
+#if defined(CHECK_RANGE)
+			return ByteArrayR(buff, size, this->prevSize);
+#else
+			return ByteArrayR(buff, size);
+#endif
+		}
+		
 	};
 
 	void FORCEINLINE ByteArray::CopyArray(Data::ByteArray destArr, const ByteArrayR &srcArr)

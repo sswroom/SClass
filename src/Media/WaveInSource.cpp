@@ -242,7 +242,7 @@ void Media::WaveInSource::Stop()
 	}
 }
 
-UOSInt Media::WaveInSource::ReadBlock(UInt8 *buff, UOSInt blkSize)
+UOSInt Media::WaveInSource::ReadBlock(Data::ByteArray blk)
 {
 	UInt32 j = (UInt32)-1;
 	UOSInt k = this->nextId;
@@ -282,7 +282,7 @@ UOSInt Media::WaveInSource::ReadBlock(UInt8 *buff, UOSInt blkSize)
 		UInt32 retSize;
 		hdr = &((WAVEHDR*)hdrs)[j];
 		retSize = hdr->dwBytesRecorded;
-		MemCopyNO(buff, hdr->lpData, retSize);
+		blk.CopyFrom(Data::ByteArrayR((UInt8*)hdr->lpData, retSize));
 		waveInAddBuffer((HWAVEIN)this->hWaveIn, hdr, sizeof(WAVEHDR));
 		return retSize;
 	}

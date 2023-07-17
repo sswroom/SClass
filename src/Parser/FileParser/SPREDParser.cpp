@@ -187,7 +187,7 @@ IO::ParsedObject *Parser::FileParser::SPREDParser::ParseFileHdr(IO::StreamData *
 		}
 		if (currPos >= fileSize)
 			break;
-		readSize = fd->GetRealData(currPos, 384 - buffSize, &buff[buffSize]);
+		readSize = fd->GetRealData(currPos, 384 - buffSize, BYTEARR(buff).SubArray(buffSize));
 		if (readSize == 0)
 		{
 			error = true;

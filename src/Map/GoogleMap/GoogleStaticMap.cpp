@@ -217,7 +217,7 @@ UOSInt Map::GoogleMap::GoogleStaticMap::GetMap(UInt8 *buff, Double lat, Double l
 			cli->AddHeaderC(CSTR("Accept-Language"), lang);
 		}
 
-		while ((thisSize = cli->Read(buff, 2048)) > 0)
+		while ((thisSize = cli->Read(Data::ByteArray(buff, 2048))) > 0)
 		{
 			retSize += thisSize;
 			buff = &buff[thisSize];

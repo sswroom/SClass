@@ -71,10 +71,10 @@ void Media::AVIUtl::AUIAudio::Stop()
 	this->playEvt = 0;
 }
 
-UOSInt Media::AVIUtl::AUIAudio::ReadBlock(UInt8 *buff, UOSInt blkSize)
+UOSInt Media::AVIUtl::AUIAudio::ReadBlock(Data::ByteArray blk)
 {
-	UOSInt nSample = blkSize / this->format->align;
-	UOSInt readCnt = this->plugin->GetAudioData(this->input->hand, this->currSample, nSample, buff);
+	UOSInt nSample = blk.GetSize() / this->format->align;
+	UOSInt readCnt = this->plugin->GetAudioData(this->input->hand, this->currSample, nSample, blk.Ptr());
 	this->currSample += readCnt;
 	if (this->playEvt)
 		this->playEvt->Set();

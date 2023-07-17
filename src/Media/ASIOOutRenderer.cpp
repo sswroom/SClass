@@ -428,7 +428,7 @@ UInt32 __stdcall Media::ASIOOutRenderer::PlayThread(void *obj)
 	audStartTime = me->audSrc->GetCurrTime();
 	me->audSrc->Start(evt, nSamples * blkAlign);
 
-	me->audSrc->ReadBlockLPCM(sampleBuff, nSamples * blkAlign, &fmt);
+	me->audSrc->ReadBlockLPCM(Data::ByteArray(sampleBuff, nSamples * blkAlign), &fmt);
 	asio->start();
 	while (!me->toStop)
 	{
@@ -622,7 +622,7 @@ UInt32 __stdcall Media::ASIOOutRenderer::PlayThread(void *obj)
 				me->bufferFilled = true;
 				asio->outputReady();
 			}
-			if (me->audSrc->ReadBlockLPCM(sampleBuff, nSamples * blkAlign, &fmt) == 0)
+			if (me->audSrc->ReadBlockLPCM(Data::ByteArray(sampleBuff, nSamples * blkAlign), &fmt) == 0)
 				break;
 		}
 		me->bufferEvt->Wait();

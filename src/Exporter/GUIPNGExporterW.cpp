@@ -69,7 +69,7 @@ Bool Exporter::GUIPNGExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Te
 
 	IO::MemoryStream mstm;
 	{
-		Win32::COMStream cstm(&mstm);
+		Win32::COMStream cstm(mstm);
 
 		if (param)
 		{

@@ -23,7 +23,7 @@ UInt32 __stdcall IO::Device::QQZMSerialCamera::RecvThread(void *userObj)
 	NEW_CLASS(dt, Data::DateTime());
 	while (!me->threadToStop)
 	{
-		recvSize = me->stm->Read(&buff[buffSize], 2048 - buffSize);
+		recvSize = me->stm->Read(Data::ByteArray(&buff[buffSize], 2048 - buffSize));
 		if (recvSize < 0)
 		{
 			if (!me->threadToStop)

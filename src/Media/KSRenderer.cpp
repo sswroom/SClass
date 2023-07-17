@@ -115,11 +115,11 @@ UInt32 __stdcall Media::KSRenderer::PlayThread(void *obj)
 	i = 0;
 	while (i < cPackets)
 	{
-		Packets[i].Header.DataUsed = (ULONG)me->audsrc->ReadBlockLPCM((UInt8*)Packets[i].Header.Data, blkReadSize, &af);
+		Packets[i].Header.DataUsed = (ULONG)me->audsrc->ReadBlockLPCM(Data::ByteArray((UInt8*)Packets[i].Header.Data, blkReadSize), &af);
 		if (Packets[i].Header.DataUsed == 0)
 		{
 			me->playEvt->Wait(500);
-			Packets[i].Header.DataUsed = (ULONG)me->audsrc->ReadBlockLPCM((UInt8*)Packets[i].Header.Data, blkReadSize, &af);
+			Packets[i].Header.DataUsed = (ULONG)me->audsrc->ReadBlockLPCM(Data::ByteArray((UInt8*)Packets[i].Header.Data, blkReadSize), &af);
 		}
 		ResetEvent(Packets[i].Signal.hEvent);
 
@@ -174,7 +174,7 @@ UInt32 __stdcall Media::KSRenderer::PlayThread(void *obj)
 			if (i < cPackets)
 			{
 				Packets[i].Header.FrameExtent = (ULONG)buffLeng;
-				Packets[i].Header.DataUsed = (ULONG)me->audsrc->ReadBlockLPCM((UInt8*)Packets[i].Header.Data, blkReadSize, &af);
+				Packets[i].Header.DataUsed = (ULONG)me->audsrc->ReadBlockLPCM(Data::ByteArray((UInt8*)Packets[i].Header.Data, blkReadSize), &af);
 				if (Packets[i].Header.DataUsed == 0)
 				{
 					buffEndCnt++;

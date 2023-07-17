@@ -56,7 +56,7 @@ UInt16 USBInfo_ReadI16(Text::CString fileName)
 	UInt8 buff[33];
 	UOSInt readSize;
 	IO::FileStream fs(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-	readSize = fs.Read(buff, 32);
+	readSize = fs.Read(Data::ByteArray(buff, 32));
 	buff[readSize] = 0;
 	while (readSize > 0)
 	{
@@ -165,7 +165,7 @@ UOSInt IO::USBInfo::GetUSBList(Data::ArrayList<USBInfo*> *usbList)
 							IO::FileStream fs(CSTRP(sbuff, sptr2End), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 							if (!fs.IsError())
 							{
-								readSize = fs.Read(cbuff, 250);
+								readSize = fs.Read(BYTEARR(cbuff).WithSize(250));
 								cbuff[readSize] = 0;
 								while (readSize > 0)
 								{
@@ -191,7 +191,7 @@ UOSInt IO::USBInfo::GetUSBList(Data::ArrayList<USBInfo*> *usbList)
 							IO::FileStream fs(CSTRP(sbuff, sptr2End), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 							if (!fs.IsError())
 							{
-								readSize = fs.Read(cbuff, 250);
+								readSize = fs.Read(Data::ByteArray(cbuff, 250));
 								cbuff[readSize] = 0;
 								while (readSize > 0)
 								{

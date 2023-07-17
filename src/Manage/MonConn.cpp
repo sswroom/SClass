@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/ArrayList.h"
+#include "Data/ByteBuffer.h"
 #include "Data/ByteTool.h"
 #include "Data/DateTime.h"
 #include "IO/Stream.h"
@@ -123,99 +124,97 @@ void Manage::MonConn::ParsePacket(UInt8 *buff, UInt16 *cmdSize, UInt16 *cmdType,
 UInt32 __stdcall Manage::MonConn::ConnRThread(void *conn)
 {
 	Manage::MonConn *me = (Manage::MonConn*)conn;
-	UInt8 *dataBuff;
 	UOSInt buffSize;
-
 	me->ConnRRunning = true;
-	dataBuff = MemAlloc(UInt8, 3000);
-
-	while (!me->ToStop || me->ConnTRunning)
 	{
-		if (me->cli == 0)
-		{
-			me->cliErr = true;
-			NEW_CLASS(me->cli, Net::TCPClient(me->sockf, CSTR("127.0.0.1"), me->port, me->timeout));
-			me->cliErr = me->cli->IsConnectError();
-			if (!me->cliErr)
-				me->svrMonConn++;
-			me->requesting = false;
-		}
+		Data::ByteBuffer dataBuff(3000);
 
-		if (me->cliErr)
+		while (!me->ToStop || me->ConnTRunning)
 		{
-			DEL_CLASS(me->cli);
-			me->cli = 0;
-		}
-
-		if (me->cli)
-		{
-			buffSize = me->cli->Read(dataBuff, 3000);
-			if (buffSize)
+			if (me->cli == 0)
 			{
-				UInt8 *packet = dataBuff;
-				while ((packet = Manage::MonConn::FindPacket(packet, buffSize - (UOSInt)(packet - dataBuff))) != 0)
+				me->cliErr = true;
+				NEW_CLASS(me->cli, Net::TCPClient(me->sockf, CSTR("127.0.0.1"), me->port, me->timeout));
+				me->cliErr = me->cli->IsConnectError();
+				if (!me->cliErr)
+					me->svrMonConn++;
+				me->requesting = false;
+			}
+
+			if (me->cliErr)
+			{
+				DEL_CLASS(me->cli);
+				me->cli = 0;
+			}
+
+			if (me->cli)
+			{
+				buffSize = me->cli->Read(dataBuff);
+				if (buffSize)
 				{
-					if (Manage::MonConn::IsCompletePacket(packet, buffSize - (UOSInt)(packet - dataBuff)))
+					UInt8 *packet = dataBuff.Ptr();
+					while ((packet = Manage::MonConn::FindPacket(packet, buffSize - (UOSInt)(packet - dataBuff.Ptr()))) != 0)
 					{
-						UInt16 cmdSize;
-						UInt16 cmdType;
-						UInt16 cmdSeq;
-						UInt8 *data;
-						Manage::MonConn::ParsePacket(packet, &cmdSize, &cmdType, &cmdSeq, &data);
-
-						if (cmdType & 0x8000)
+						if (Manage::MonConn::IsCompletePacket(packet, buffSize - (UOSInt)(packet - dataBuff.Ptr())))
 						{
-							UInt8 *lastCmd;
-							if (me->cmdList.GetCount())
+							UInt16 cmdSize;
+							UInt16 cmdType;
+							UInt16 cmdSeq;
+							UInt8 *data;
+							Manage::MonConn::ParsePacket(packet, &cmdSize, &cmdType, &cmdSeq, &data);
+
+							if (cmdType & 0x8000)
 							{
-								lastCmd = me->cmdList.GetItem(0);
-								if ((cmdType & 0x7fff) == ReadUInt16(&lastCmd[4]) && cmdSeq == ReadUInt16(&lastCmd[6]))
+								UInt8 *lastCmd;
+								if (me->cmdList.GetCount())
 								{
-									MemFree(me->cmdList.RemoveAt(0));
-									me->requesting = false;
-									me->connTEvt->Set();
-
-
-									if (cmdType == 0x8000)
+									lastCmd = me->cmdList.GetItem(0);
+									if ((cmdType & 0x7fff) == ReadUInt16(&lastCmd[4]) && cmdSeq == ReadUInt16(&lastCmd[6]))
 									{
-										if (ReadUInt16(data) != 0)
+										MemFree(me->cmdList.RemoveAt(0));
+										me->requesting = false;
+										me->connTEvt->Set();
+
+
+										if (cmdType == 0x8000)
 										{
-											me->hdlr(Manage::MON_EVT_PROCESS_START_ERR, ReadUInt16(data), me->userObj);
+											if (ReadUInt16(data) != 0)
+											{
+												me->hdlr(Manage::MON_EVT_PROCESS_START_ERR, ReadUInt16(data), me->userObj);
+											}
 										}
 									}
 								}
 							}
+							else
+							{
+
+							}
+
+							packet = packet + cmdSize;
 						}
 						else
 						{
-
+							break;
 						}
-
-						packet = packet + cmdSize;
 					}
-					else
-					{
-						break;
-					}
+				}
+				else
+				{
+					me->cliErr = true;
 				}
 			}
 			else
 			{
-				me->cliErr = true;
+				me->connREvt->Wait(1000);
 			}
 		}
-		else
+		if (me->cli)
 		{
-			me->connREvt->Wait(1000);
+			DEL_CLASS(me->cli);
+			me->cli = 0;
 		}
 	}
-	if (me->cli)
-	{
-		DEL_CLASS(me->cli);
-		me->cli = 0;
-	}
-
-	MemFree(dataBuff);
 	me->ConnRRunning = false;
 	me->msgWriter->WriteLineC(UTF8STRC("MonConn RThread Stopped"));
 	return 0;
@@ -314,7 +313,7 @@ Manage::MonConn::MonConn(EventHandler hdlr, void *userObj, Net::SocketFactory *s
 		IO::FileStream file(CSTRP(buff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 		if (!file.IsError())
 		{
-			file.Read((UInt8*)&this->port, 2);
+			file.Read(Data::ByteArray((UInt8*)&this->port, 2));
 		}
 	}
 	if (this->port)

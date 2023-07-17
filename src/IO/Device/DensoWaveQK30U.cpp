@@ -22,7 +22,7 @@ UInt32 __stdcall IO::Device::DensoWaveQK30U::RecvThread(void *userObj)
 	sbuff = MemAlloc(UTF8Char, RECVBUFFSIZE + 1);
 	while (!me->recvToStop)
 	{
-		recvSize = me->stm->Read(buff, 256);
+		recvSize = me->stm->Read(BYTEARR(buff));
 		if (recvSize <= 0)
 		{
 			Sync::SimpleThread::Sleep(10);

@@ -257,7 +257,7 @@ Bool IO::Device::GoProCameraControl::GetFile(IO::CameraControl::FileInfo *file, 
 	sptr = Text::StrConcatC(sptr, UTF8STRC("/"));
 	sptr = Text::StrConcat(sptr, file->fileName);
 	NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->sockf, 0, CSTRP(sbuff, sptr), Net::WebUtil::RequestMethod::HTTP_GET, true);
-	while ((readSize = cli->Read(sbuff, 2048)) > 0)
+	while ((readSize = cli->Read(BYTEARR(sbuff))) > 0)
 	{
 		totalSize += readSize;
 		totalWriteSize += outStm->Write(sbuff, readSize);
@@ -284,7 +284,7 @@ Bool IO::Device::GoProCameraControl::GetThumbnailFile(IO::CameraControl::FileInf
 	sptr = Text::StrConcatC(sptr, UTF8STRC("/"));
 	sptr = Text::StrConcatC(sptr, file->fileName, nameLen);
 	NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->sockf, 0, CSTRP(sbuff, sptr), Net::WebUtil::RequestMethod::HTTP_GET, true);
-	while ((readSize = cli->Read(sbuff, 2048)) > 0)
+	while ((readSize = cli->Read(BYTEARR(sbuff))) > 0)
 	{
 		totalSize += readSize;
 		outStm->Write(sbuff, readSize);

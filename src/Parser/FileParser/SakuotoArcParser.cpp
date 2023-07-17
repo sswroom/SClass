@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Data/ByteBuffer.h"
 #include "Data/ByteTool.h"
 #include "IO/PackageFile.h"
 #include "Parser/FileParser/SakuotoArcParser.h"
@@ -34,7 +35,6 @@ IO::ParserType Parser::FileParser::SakuotoArcParser::GetParserType()
 
 IO::ParsedObject *Parser::FileParser::SakuotoArcParser::ParseFileHdr(IO::StreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
-	UInt8 *recBuff;
 	UInt64 dataOfst;
 	UInt32 recCnt;
 	UInt32 recSize;
@@ -56,11 +56,10 @@ IO::ParsedObject *Parser::FileParser::SakuotoArcParser::ParseFileHdr(IO::StreamD
 		return 0;
 	}
 
-	recBuff = MemAlloc(UInt8, recSize);
+	Data::ByteBuffer recBuff(recSize);
 	dataOfst = recSize + 8;
 	if (fd->GetRealData(8, recSize, recBuff) != recSize)
 	{
-		MemFree(recBuff);
 		return 0;
 	}
 
@@ -76,7 +75,6 @@ IO::ParsedObject *Parser::FileParser::SakuotoArcParser::ParseFileHdr(IO::StreamD
 		fileOfst = ReadUInt32(&recBuff[i + 4]);
 		if (fileOfst != nextOfst)
 		{
-			MemFree(recBuff);
 			DEL_CLASS(pf);
 			return 0;
 		}
@@ -87,10 +85,8 @@ IO::ParsedObject *Parser::FileParser::SakuotoArcParser::ParseFileHdr(IO::StreamD
 		s->Release();
 
 		nextOfst = fileOfst + fileSize;
-		i = (UInt32)(((UInt8*)fileName) - recBuff);
+		i = (UInt32)(((UInt8*)fileName) - recBuff.Ptr());
 		j++;
 	}
-
-	MemFree(recBuff);
 	return pf;
 }

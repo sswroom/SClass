@@ -4,7 +4,7 @@
             "name": "Linux_x64",
             "includePath": [
                 "${workspaceFolder}/../SClass/header",
-                "${workspaceFolder}/../SClass/ThirdParty/miniz",
+                "${workspaceFolder}/../SClass/ThirdParty/miniz/**",
                 "${workspaceFolder}/../SClass/ThirdParty/sqlite3",
                 "${workspaceFolder}/../SClass/ThirdParty/KSSample",
                 "${workspaceFolder}/../SClass/ThirdParty/adl",

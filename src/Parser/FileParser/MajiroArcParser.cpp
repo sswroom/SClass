@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Data/ByteBuffer.h"
 #include "Data/ByteTool.h"
 #include "IO/PackageFile.h"
 #include "Parser/FileParser/MajiroArcParser.h"
@@ -49,10 +50,8 @@ IO::ParserType Parser::FileParser::MajiroArcParser::GetParserType()
 
 IO::ParsedObject *Parser::FileParser::MajiroArcParser::ParseFileHdr(IO::StreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
-	UInt8 *recBuff;
-	UInt8 *fileNameBuff;
-	UInt8 *fileNamePtr;
-	UInt8 *fileNamePtr2;
+	Data::ByteArray fileNamePtr;
+	Data::ByteArray fileNamePtr2;
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
 	UInt32 i;
@@ -64,10 +63,10 @@ IO::ParsedObject *Parser::FileParser::MajiroArcParser::ParseFileHdr(IO::StreamDa
 	UInt32 fileCnt = ReadUInt32(&hdr[16]);
 	UInt32 fileNameOfst = ReadUInt32(&hdr[20]);
 	UInt32 fileNameEndOfst = ReadUInt32(&hdr[24]);
-	fileNameBuff = MemAlloc(UInt8, fileNameEndOfst - fileNameOfst);
+	Data::ByteBuffer fileNameBuff(fileNameEndOfst - fileNameOfst);
 	fd->GetRealData(fileNameOfst, fileNameEndOfst - fileNameOfst, fileNameBuff);
-	recBuff = MemAlloc(UInt8, fileCnt * 16);
-	fd->GetRealData(28, 16 * fileCnt, (UInt8*)recBuff);
+	Data::ByteBuffer recBuff(fileCnt * 16);
+	fd->GetRealData(28, 16 * fileCnt, recBuff);
 
 	IO::PackageFile *pf;
 	Text::Encoding enc(932);
@@ -79,13 +78,11 @@ IO::ParsedObject *Parser::FileParser::MajiroArcParser::ParseFileHdr(IO::StreamDa
 	{
 		fileNamePtr2 = fileNamePtr;
 		while (*fileNamePtr2++);
-		sptr = enc.UTF8FromBytes(sbuff, fileNamePtr, (UOSInt)(fileNamePtr2 - fileNamePtr - 1), 0);
+		sptr = enc.UTF8FromBytes(sbuff, fileNamePtr.Ptr(), (UOSInt)(fileNamePtr2 - fileNamePtr - 1), 0);
 		pf->AddData(fd, ReadUInt32(&recBuff[i * 16 + 8]), ReadUInt32(&recBuff[i * 16 + 12]), CSTRP(sbuff, sptr), 0);
 
 		fileNamePtr = fileNamePtr2;
 		i++;
 	}
-	MemFree(fileNameBuff);
-	MemFree(recBuff);
 	return pf;
 }

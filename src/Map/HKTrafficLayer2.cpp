@@ -190,7 +190,7 @@ void Map::HKTrafficLayer2::ReloadData()
 		IO::MemoryStream mstm;
 		while (true)
 		{
-			readSize = stm->Read(buff, 2048);
+			readSize = stm->Read(BYTEARR(buff));
 			if (readSize <= 0)
 				break;
 			mstm.Write(buff, readSize);

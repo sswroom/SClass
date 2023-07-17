@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "Crypto/Cert/X509File.h"
+#include "Data/ByteBuffer.h"
 #include "Net/ASN1Util.h"
 #include "SSWR/AVIRead/AVIRASN1ParseForm.h"
 #include "Text/TextBinEnc/Base64Enc.h"
@@ -17,31 +18,28 @@ void __stdcall SSWR::AVIRead::AVIRASN1ParseForm::OnParseClicked(void *userObj)
 	}
 	Text::TextBinEnc::Base64Enc b64;
 	UOSInt len = b64.CalcBinSize(sb.ToString(), sb.GetLength());
-	UInt8 *buff = MemAlloc(UInt8, len);
-	if (b64.DecodeBin(sb.ToString(), sb.GetLength(), buff) != len)
+	Data::ByteBuffer buff(len);
+	if (b64.DecodeBin(sb.ToString(), sb.GetLength(), buff.Ptr()) != len)
 	{
-		MemFree(buff);
 		UI::MessageDialog::ShowDialog(CSTR("Error in decoding Base64 data"), CSTR("ASN.1 Parse"), me);
 		return;
 	}
 	if (buff[0] != 0x30)
 	{
-		MemFree(buff);
 		UI::MessageDialog::ShowDialog(CSTR("Data is not valid ASN.1 format"), CSTR("ASN.1 Parse"), me);
 		return;
 	}
 	UInt32 baseLen;
-	UOSInt ofst = Net::ASN1Util::PDUParseLen(buff, 1, len, &baseLen);
+	UOSInt ofst = Net::ASN1Util::PDUParseLen(buff.Ptr(), 1, len, &baseLen);
 	if (ofst + baseLen == len)
 	{
 		Crypto::Cert::X509File *x509 = 0;
 		switch (me->cboType->GetSelectedIndex())
 		{
 		case 0:
-			NEW_CLASS(x509, Crypto::Cert::X509Cert(CSTR("Cert"), buff, len));
+			NEW_CLASS(x509, Crypto::Cert::X509Cert(CSTR("Cert"), buff));
 			break;
 		}
-		MemFree(buff);
 		if (x509)
 		{
 			me->core->OpenObject(x509);
@@ -53,7 +51,6 @@ void __stdcall SSWR::AVIRead::AVIRASN1ParseForm::OnParseClicked(void *userObj)
 	}
 	else
 	{
-		MemFree(buff);
 		UI::MessageDialog::ShowDialog(CSTR("Data seems not valid ASN.1 format"), CSTR("ASN.1 Parse"), me);
 	}
 }

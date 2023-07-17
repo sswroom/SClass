@@ -126,7 +126,7 @@ Bool Net::WebServer::HTTPServerUtil::SendContent(Net::WebServer::IWebRequest *re
 						Crypto::Hash::CRC32RIEEE crc;
 						Data::Compress::DeflateStream dstm(fs, contLeng, &crc, compLevel, false);
 						UOSInt readSize;
-						while ((readSize = dstm.Read(compBuff, BUFFSIZE)) != 0)
+						while ((readSize = dstm.Read(BYTEARR(compBuff))) != 0)
 						{
 							succ = succ && (resp->Write(compBuff, readSize) == readSize);
 						}
@@ -149,7 +149,7 @@ Bool Net::WebServer::HTTPServerUtil::SendContent(Net::WebServer::IWebRequest *re
 
 						Data::Compress::DeflateStream dstm(fs, contLeng, 0, compLevel, true);
 						UOSInt readSize;
-						while ((readSize = dstm.Read(compBuff, BUFFSIZE)) != 0)
+						while ((readSize = dstm.Read(BYTEARR(compBuff))) != 0)
 						{
 							succ = succ && (resp->Write(compBuff, readSize) == readSize);
 						}
@@ -168,7 +168,7 @@ Bool Net::WebServer::HTTPServerUtil::SendContent(Net::WebServer::IWebRequest *re
 		while (contLeng > 0)
 		{
 			UOSInt writeSize;
-			UOSInt readSize = fs->Read(compBuff, BUFFSIZE);
+			UOSInt readSize = fs->Read(BYTEARR(compBuff));
 			if (readSize <= 0)
 			{
 				break;
@@ -232,7 +232,7 @@ Bool Net::WebServer::HTTPServerUtil::SendContent(Net::WebServer::IWebRequest *re
 					IO::MemoryReadingStream mstm(buff, (UOSInt)contLeng);
 					Data::Compress::DeflateStream dstm(&mstm, contLeng, 0, compLevel, false);
 					UOSInt readSize;
-					while ((readSize = dstm.Read(compBuff, BUFFSIZE)) != 0)
+					while ((readSize = dstm.Read(BYTEARR(compBuff))) != 0)
 					{
 						succ = succ && (resp->Write(compBuff, readSize) == readSize);
 					}
@@ -252,7 +252,7 @@ Bool Net::WebServer::HTTPServerUtil::SendContent(Net::WebServer::IWebRequest *re
 						IO::MemoryReadingStream mstm(buff, (UOSInt)contLeng);
 						Data::Compress::DeflateStream dstm(&mstm, contLeng, 0, compLevel, true);
 						UOSInt readSize;
-						while ((readSize = dstm.Read(compBuff, BUFFSIZE)) != 0)
+						while ((readSize = dstm.Read(BYTEARR(compBuff))) != 0)
 						{
 							succ = succ && (resp->Write(compBuff, readSize) == readSize);
 						}
@@ -396,7 +396,7 @@ Bool Net::WebServer::HTTPServerUtil::ResponseFile(Net::WebServer::IWebRequest *r
 	{
 		UInt8 buff[BUFFSIZE];
 		UOSInt readSize;
-		readSize = fs.Read(buff, BUFFSIZE);
+		readSize = fs.Read(BYTEARR(buff));
 		if (readSize == 0)
 		{
 			Net::WebServer::HTTPServerUtil::SendContent(req, resp, mime, sizeLeft, &fs);
@@ -407,7 +407,7 @@ Bool Net::WebServer::HTTPServerUtil::ResponseFile(Net::WebServer::IWebRequest *r
 			while (readSize > 0)
 			{
 				sizeLeft += mstm.Write(buff, readSize);
-				readSize = fs.Read(buff, BUFFSIZE);
+				readSize = fs.Read(BYTEARR(buff));
 			}
 			mstm.SeekFromBeginning(0);
 			Net::WebServer::HTTPServerUtil::SendContent(req, resp, mime, sizeLeft, &mstm);

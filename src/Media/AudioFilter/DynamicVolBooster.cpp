@@ -79,12 +79,12 @@ UInt32 Media::AudioFilter::DynamicVolBooster::SeekToTime(UInt32 time)
 	return 0;
 }
 
-UOSInt Media::AudioFilter::DynamicVolBooster::ReadBlock(UInt8 *buff, UOSInt blkSize)
+UOSInt Media::AudioFilter::DynamicVolBooster::ReadBlock(Data::ByteArray blk)
 {
 	if (this->sourceAudio == 0)
 		return 0;
 
-	UOSInt readSize = this->sourceAudio->ReadBlock(buff, blkSize);
+	UOSInt readSize = this->sourceAudio->ReadBlock(blk);
 	if (this->enabled)
 	{
 		if (this->bitCount == 16)
@@ -104,7 +104,7 @@ UOSInt Media::AudioFilter::DynamicVolBooster::ReadBlock(UInt8 *buff, UOSInt blkS
 				j = this->nChannels;
 				while (j-- > 0)
 				{
-					currSample = *(Int16*)&buff[i + j * 2];
+					currSample = *(Int16*)&blk[i + j * 2];
 					if (currSample < 0)
 					{
 						absVol = -(Int32)currSample;
@@ -144,11 +144,11 @@ UOSInt Media::AudioFilter::DynamicVolBooster::ReadBlock(UInt8 *buff, UOSInt blkS
 				{
 					if (thisVol > noiseVol)
 					{
-						currSample = Double2Int32(*(Int16*)&buff[i + j * 2] * 32767 / (thisVol * log32768 / Math_Log10(thisVol)));
+						currSample = Double2Int32(*(Int16*)&blk[i + j * 2] * 32767 / (thisVol * log32768 / Math_Log10(thisVol)));
 					}
 					else
 					{
-						currSample = Double2Int32(*(Int16*)&buff[i + j * 2] * 32767 / (noiseVol * log32768 / log32));
+						currSample = Double2Int32(*(Int16*)&blk[i + j * 2] * 32767 / (noiseVol * log32768 / log32));
 					}
 					if (currSample > 32767)
 					{
@@ -158,7 +158,7 @@ UOSInt Media::AudioFilter::DynamicVolBooster::ReadBlock(UInt8 *buff, UOSInt blkS
 					{
 						currSample = -32768;
 					}
-					*(Int16*)&buff[i + j * 2] = (Int16)currSample;
+					*(Int16*)&blk[i + j * 2] = (Int16)currSample;
 				}
 				lastVol = thisVol;
 
@@ -183,7 +183,7 @@ UOSInt Media::AudioFilter::DynamicVolBooster::ReadBlock(UInt8 *buff, UOSInt blkS
 				j = this->nChannels;
 				while (j-- > 0)
 				{
-					currSample = buff[i + j] - 0x80;
+					currSample = blk[i + j] - 0x80;
 					if (currSample < 0)
 					{
 						absVol = -(Int32)currSample;
@@ -223,11 +223,11 @@ UOSInt Media::AudioFilter::DynamicVolBooster::ReadBlock(UInt8 *buff, UOSInt blkS
 				{
 					if (thisVol > noiseVol)
 					{
-						currSample = Double2Int32((buff[i + j] - 128) * 127 / (thisVol * log32768 / Math_Log10(thisVol)));
+						currSample = Double2Int32((blk[i + j] - 128) * 127 / (thisVol * log32768 / Math_Log10(thisVol)));
 					}
 					else
 					{
-						currSample = Double2Int32((buff[i + j] - 128) * 127 / (noiseVol * log32768 / log32));
+						currSample = Double2Int32((blk[i + j] - 128) * 127 / (noiseVol * log32768 / log32));
 					}
 					if (currSample > 127)
 					{
@@ -237,7 +237,7 @@ UOSInt Media::AudioFilter::DynamicVolBooster::ReadBlock(UInt8 *buff, UOSInt blkS
 					{
 						currSample = -128;
 					}
-					buff[i + j] = (UInt8)(currSample + 128);
+					blk[i + j] = (UInt8)(currSample + 128);
 				}
 				lastVol = thisVol;
 

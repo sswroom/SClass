@@ -41,7 +41,7 @@ UInt32 __stdcall Net::RTSPClient::ControlThread(void *userObj)
 			}
 			if (content)
 			{
-				thisSize = cliData->cli->Read(dataBuff, 2048);
+				thisSize = cliData->cli->Read(BYTEARR(dataBuff));
 				if (thisSize == 0)
 				{
 					Sync::MutexUsage mutUsage(&cliData->cliMut);
@@ -71,7 +71,7 @@ UInt32 __stdcall Net::RTSPClient::ControlThread(void *userObj)
 			}
 			else
 			{
-				thisSize = cliData->cli->Read(&dataBuff[buffSize], 2048 - buffSize);
+				thisSize = cliData->cli->Read(Data::ByteArray(&dataBuff[buffSize], 2048 - buffSize));
 				if (thisSize == 0)
 				{
 					Sync::MutexUsage mutUsage(&cliData->cliMut);

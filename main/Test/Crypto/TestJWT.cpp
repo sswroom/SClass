@@ -82,7 +82,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		{
 			Crypto::Cert::X509Key *key = 0;
 			NotNullPtr<Text::String> s = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
-			Crypto::Cert::X509File *x509 = Parser::FileParser::X509Parser::ParseBuff(keyBuff, keySize, s);
+			Crypto::Cert::X509File *x509 = Parser::FileParser::X509Parser::ParseBuff(Data::ByteArray(keyBuff, keySize), s);
 			s->Release();
 			if (x509 == 0)
 			{

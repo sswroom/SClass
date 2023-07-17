@@ -11,7 +11,7 @@ IO::FileAnalyse::TSFileAnalyse::TSFileAnalyse(IO::StreamData *fd)
 	this->packSize = 192;
 	this->fileSize = 0;
 	this->hasTime = false;
-	fd->GetRealData(0, 256, buff);
+	fd->GetRealData(0, 256, BYTEARR(buff));
 	if (buff[0] == 0x47 && buff[188] == 0x47)
 	{
 		this->packSize = 188;
@@ -64,7 +64,7 @@ Bool IO::FileAnalyse::TSFileAnalyse::GetFrameDetail(UOSInt index, Text::StringBu
 		return false;
 
 	UInt8 buff[192];
-	fd->GetRealData(fileOfst, this->packSize, buff);
+	fd->GetRealData(fileOfst, this->packSize, BYTEARR(buff));
 	sb->AppendHexBuff(buff, this->packSize, ' ', Text::LineBreakType::CRLF);
 	sb->AppendC(UTF8STRC("\r\n"));
 
@@ -284,7 +284,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::TSFileAnalyse::GetFrameDetail(UOS
 	UTF8Char *sptr;
 	NEW_CLASS(frame, IO::FileAnalyse::FrameDetail(fileOfst, this->packSize));
 	UInt8 buff[192];
-	fd->GetRealData(fileOfst, this->packSize, buff);
+	fd->GetRealData(fileOfst, this->packSize, BYTEARR(buff));
 
 	UOSInt currOfst;
 	if (this->hasTime)

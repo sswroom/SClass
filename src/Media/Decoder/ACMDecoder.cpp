@@ -254,7 +254,7 @@ UOSInt Media::Decoder::ACMDecoder::ReadBlock(Data::ByteArray buff)
 	{
 		if (this->acmOupBuffLeft)
 		{
-			if (this->acmOupBuffLeft < blkSize)
+			if (this->acmOupBuffLeft < buff.GetSize())
 			{
 				buff.CopyFrom(Data::ByteArrayR(this->acmOupBuff, this->acmOupBuffLeft));
 				buff += this->acmOupBuffLeft;
@@ -265,10 +265,10 @@ UOSInt Media::Decoder::ACMDecoder::ReadBlock(Data::ByteArray buff)
 			{
 				buff.CopyFrom(Data::ByteArrayR(this->acmOupBuff, buff.GetSize()));
 				outSize += buff.GetSize();
-				if (this->acmOupBuffLeft > blkSize)
+				if (this->acmOupBuffLeft > buff.GetSize())
 				{
-					MemCopyO(this->acmOupBuff, &this->acmOupBuff[blkSize], this->acmOupBuffLeft - blkSize);
-					this->acmOupBuffLeft -= blkSize;
+					MemCopyO(this->acmOupBuff, &this->acmOupBuff[buff.GetSize()], this->acmOupBuffLeft - buff.GetSize());
+					this->acmOupBuffLeft -= buff.GetSize();
 					if (this->readEvt)
 						this->readEvt->Set();
 					return outSize;
@@ -284,7 +284,7 @@ UOSInt Media::Decoder::ACMDecoder::ReadBlock(Data::ByteArray buff)
 		}
 
 		acmsh->cbDstLengthUsed = 0;
-		UOSInt srcSize = this->sourceAudio->ReadBlock(this->acmInpBuff, this->acmInpBuffSize);
+		UOSInt srcSize = this->sourceAudio->ReadBlock(Data::ByteArray(this->acmInpBuff, this->acmInpBuffSize));
 		if (srcSize == 0)
 		{
 			if (this->readEvt)

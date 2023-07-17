@@ -62,7 +62,7 @@ Map::ESRI::ESRIMapServer::ESRIMapServer(Text::CString url, Net::SocketFactory *s
 		sptr = Text::StrConcatC(url.ConcatTo(sbuff), UTF8STRC("?f=json"));
 		NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(sockf, ssl, CSTRP(sbuff, sptr), Net::WebUtil::RequestMethod::HTTP_GET, true);
 		IO::MemoryStream mstm;
-		while ((readSize = cli->Read(buff, 2048)) > 0)
+		while ((readSize = cli->Read(BYTEARR(buff))) > 0)
 		{
 			mstm.Write(buff, readSize);
 		}
@@ -305,7 +305,7 @@ Bool Map::ESRI::ESRIMapServer::TileLoadToStream(IO::Stream *stm, UOSInt level, I
 
 	NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, CSTRP(url, sptr), Net::WebUtil::RequestMethod::HTTP_GET, true);
 	Bool succ = cli->GetRespStatus() == Net::WebStatus::SC_OK;
-	while ((readSize = cli->Read(dataBuff, 2048)) > 0)
+	while ((readSize = cli->Read(BYTEARR(dataBuff))) > 0)
 	{
 		if (readSize != stm->Write(dataBuff, readSize))
 		{
@@ -329,7 +329,7 @@ Bool Map::ESRI::ESRIMapServer::TileLoadToFile(Text::CString fileName, UOSInt lev
 	if (succ)
 	{
 		IO::FileStream fs(fileName, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-		while ((readSize = cli->Read(dataBuff, 2048)) > 0)
+		while ((readSize = cli->Read(BYTEARR(dataBuff))) > 0)
 		{
 			if (readSize != fs.Write(dataBuff, readSize))
 			{
@@ -403,7 +403,7 @@ Bool Map::ESRI::ESRIMapServer::QueryInfos(Math::Coord2DDbl coord, Math::RectArea
 	if (cli->GetRespStatus() == Net::WebStatus::SC_OK)
 	{
 		IO::MemoryStream mstm;
-		while ((readSize = cli->Read(dataBuff, 2048)) > 0)
+		while ((readSize = cli->Read(BYTEARR(dataBuff))) > 0)
 		{
 			mstm.Write(dataBuff, readSize);
 		}
@@ -517,7 +517,7 @@ Media::ImageList *Map::ESRI::ESRIMapServer::DrawMap(Math::RectAreaDbl bounds, UI
 	if (succ)
 	{
 		IO::MemoryStream mstm;
-		while ((readSize = cli->Read(dataBuff, 2048)) > 0)
+		while ((readSize = cli->Read(BYTEARR(dataBuff))) > 0)
 		{
 			mstm.Write(dataBuff, readSize);
 		}

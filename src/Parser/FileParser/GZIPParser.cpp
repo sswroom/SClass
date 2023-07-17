@@ -73,7 +73,7 @@ IO::ParsedObject *Parser::FileParser::GZIPParser::ParseFileHdr(IO::StreamData *f
 		}
 	}
 	fileLeng = fd->GetDataSize();
-	fd->GetRealData(fileLeng - 8, 8, footer);
+	fd->GetRealData(fileLeng - 8, 8, BYTEARR(footer));
 
 	IO::PackageFile *pf;
 	IO::PackFileItem::CompressInfo cinfo;

@@ -141,7 +141,7 @@ Net::Email::SMTPConn::SMTPConn(Net::SocketFactory *sockf, Net::SSLEngine *ssl, T
 		UOSInt buffSize;
 		NEW_CLASSNN(this->cli, Net::TCPClient(sockf, &addr, port, timeout));
 		this->cli->SetTimeout(2000);
-		buffSize = this->cli->Read(buff, 1024);
+		buffSize = this->cli->Read(BYTEARR(buff));
 		if (this->logWriter)
 		{
 			this->logWriter->WriteStrC(buff, buffSize);
@@ -153,7 +153,7 @@ Net::Email::SMTPConn::SMTPConn(Net::SocketFactory *sockf, Net::SSLEngine *ssl, T
 				this->logWriter->WriteLineC(UTF8STRC("STARTTLS"));
 			}
 			this->cli->Write((const UInt8*)"STARTTLS\r\n", 10);
-			buffSize = this->cli->Read(buff, 1024);
+			buffSize = this->cli->Read(BYTEARR(buff));
 			if (this->logWriter)
 			{
 				this->logWriter->WriteStrC(buff, buffSize);

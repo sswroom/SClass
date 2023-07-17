@@ -1,4 +1,5 @@
 #include "Stdafx.h"
+#include "Data/ByteBuffer.h"
 #include "Data/ByteTool.h"
 #include "Data/UUID.h"
 #include "Data/Sort/ArtificialQuickSort.h"
@@ -39,7 +40,7 @@ UInt32 __stdcall IO::FileAnalyse::DWGFileAnalyse::ParseThread(void *userObj)
 	me->threadStarted = true;
 	if (me->fileVer == 12 || me->fileVer == 14 || me->fileVer == 15)
 	{
-		me->fd->GetRealData(0, 256, buff);
+		me->fd->GetRealData(0, 256, BYTEARR(buff));
 		UOSInt sectionCnt = ReadUInt32(&buff[21]);
 		UOSInt i;
 		UOSInt ofst;
@@ -92,7 +93,7 @@ UInt32 __stdcall IO::FileAnalyse::DWGFileAnalyse::ParseThread(void *userObj)
 		}
 
 		UInt32 imgAddr = ReadUInt32(&buff[13]);
-		me->fd->GetRealData(imgAddr, 256, buff);
+		me->fd->GetRealData(imgAddr, 256, BYTEARR(buff));
 		UInt32 imgSize = ReadUInt32(&buff[16]);
 		pack = MemAlloc(IO::FileAnalyse::DWGFileAnalyse::PackInfo, 1);
 		pack->fileOfst = imgAddr;
@@ -118,7 +119,7 @@ IO::FileAnalyse::DWGFileAnalyse::DWGFileAnalyse(IO::StreamData *fd)
 	this->threadToStop = false;
 	this->threadStarted = false;
 	this->fileVer = 0;
-	fd->GetRealData(0, 6, buff);
+	fd->GetRealData(0, 6, BYTEARR(buff));
 	if (ReadNInt32(buff) != *(Int32*)"AC10")
 	{
 		return;
@@ -220,7 +221,6 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::DWGFileAnalyse::GetFrameDetail(UO
 	Text::CString vName;
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
-	UInt8 *packBuff;
 	pack = this->packs.GetItem(index);
 	if (pack == 0)
 		return 0;
@@ -239,9 +239,10 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::DWGFileAnalyse::GetFrameDetail(UO
 	switch (pack->packType)
 	{
 	case PackType::FileHeaderV1:
-		packBuff = MemAlloc(UInt8, (UOSInt)pack->packSize);
+	{
+		Data::ByteBuffer packBuff((UOSInt)pack->packSize);
 		this->fd->GetRealData(pack->fileOfst, (UOSInt)pack->packSize, packBuff);
-		frame->AddStrC(0, 4, CSTR("Magic number"), packBuff);
+		frame->AddStrC(0, 4, CSTR("Magic number"), &packBuff[0]);
 		frame->AddUInt(4, 2, CSTR("File Version"), this->fileVer);
 		frame->AddHexBuff(6, 5, CSTR("All Zero"), &packBuff[6], false);
 		frame->AddUInt(11, 1, CSTR("Maintenance release version"), packBuff[11]);
@@ -268,14 +269,14 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::DWGFileAnalyse::GetFrameDetail(UO
 		uuid.SetValue(&packBuff[ofst + 2]);
 		sptr = uuid.ToString(sbuff);
 		frame->AddField(ofst + 2, 16, CSTR("Section Type"), CSTRP(sbuff, sptr));
-
-		MemFree(packBuff);
 		break;
+	}
 	case PackType::PreviewImage:
-		packBuff = MemAlloc(UInt8, (UOSInt)pack->packSize);
+	{
+		Data::ByteBuffer packBuff((UOSInt)pack->packSize);
 		this->fd->GetRealData(pack->fileOfst, (UOSInt)pack->packSize, packBuff);
 
-		uuid.SetValue(packBuff);
+		uuid.SetValue(packBuff.Ptr());
 		sptr = uuid.ToString(sbuff);
 		frame->AddField(0, 16, CSTR("Image Type"), CSTRP(sbuff, sptr));
 		frame->AddUInt(16, 4, CSTR("Overall Size"), ReadUInt32(&packBuff[16]));
@@ -303,9 +304,8 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::DWGFileAnalyse::GetFrameDetail(UO
 		uuid.SetValue(&packBuff[pack->packSize - 16]);
 		sptr = uuid.ToString(sbuff);
 		frame->AddField((UOSInt)pack->packSize - 16, 16, CSTR("Section Type"), CSTRP(sbuff, sptr));
-
-		MemFree(packBuff);
 		break;
+	}
 	case PackType::HeaderVariables:
 	case PackType::ClassSection:
 	case PackType::ObjectMap:

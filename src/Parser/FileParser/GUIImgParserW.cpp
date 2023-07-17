@@ -76,7 +76,7 @@ IO::ParserType Parser::FileParser::GUIImgParser::GetParserType()
 
 IO::ParsedObject *Parser::FileParser::GUIImgParser::ParseFileHdr(IO::StreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
-	IO::StreamDataStream *stm;
+	NotNullPtr<IO::StreamDataStream> stm;
 	Win32::COMStream *cstm;
 	Int32 isImage = 0;
 	if (ReadUInt32(&hdr[0]) == 0x474e5089 && ReadUInt32(&hdr[4]) == 0x0a1a0a0d)
@@ -101,7 +101,7 @@ IO::ParsedObject *Parser::FileParser::GUIImgParser::ParseFileHdr(IO::StreamData 
 	Media::ImageList *imgList = 0;
 
 	Sync::MutexUsage mutUsage(&this->clsData->mut);
-	NEW_CLASS(stm, IO::StreamDataStream(fd));
+	NEW_CLASSNN(stm, IO::StreamDataStream(fd));
 	NEW_CLASS(cstm, Win32::COMStream(stm));
 	Gdiplus::Bitmap *bmp = Gdiplus::Bitmap::FromStream(cstm, 0);
 	if (bmp)
@@ -261,7 +261,7 @@ IO::ParsedObject *Parser::FileParser::GUIImgParser::ParseFileHdr(IO::StreamData 
 		delete bmp;
 	}
 	DEL_CLASS(cstm);
-	DEL_CLASS(stm);
+	stm.Delete();
 	mutUsage.EndUse();
 
 	if (targetType != IO::ParserType::ImageList && imgList && imgList->GetCount() == 1)

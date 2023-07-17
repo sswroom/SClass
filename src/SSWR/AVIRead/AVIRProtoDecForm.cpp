@@ -1,4 +1,5 @@
 #include "Stdafx.h"
+#include "Data/ByteBuffer.h"
 #include "IO/FileStream.h"
 #include "SSWR/AVIRead/AVIRProtoDecForm.h"
 #include "Text/MyString.h"
@@ -12,15 +13,13 @@ void __stdcall SSWR::AVIRead::AVIRProtoDecForm::OnLogSelChg(void *userObj)
 	if (item && me->currFile)
 	{
 		Text::StringBuilderUTF8 sb;
-		UInt8 *buff;
-		buff = MemAlloc(UInt8, item->size);
+		Data::ByteBuffer buff(item->size);
 		me->currFile->SeekFromBeginning(item->fileOfst);
-		me->currFile->Read(buff, item->size);
-		sb.AppendHexBuff(buff, item->size, ' ', Text::LineBreakType::CRLF);
+		me->currFile->Read(buff);
+		sb.AppendHexBuff(buff, ' ', Text::LineBreakType::CRLF);
 		sb.AppendC(UTF8STRC("\r\n\r\n"));
-		me->currDec->GetProtocolDetail(buff, item->size, &sb);
+		me->currDec->GetProtocolDetail(buff.Ptr(), item->size, &sb);
 		me->txtLogs->SetText(sb.ToCString());
-		MemFree(buff);
 	}
 	else
 	{
@@ -64,20 +63,19 @@ void __stdcall SSWR::AVIRead::AVIRProtoDecForm::OnLoadClicked(void *userObj)
 			return;
 		}
 		me->currDec = protoDec;
-		UInt8 *buff;
 		UOSInt buffSize;
 		UOSInt readSize;
 		UInt64 fileOfst;
-		buff = MemAlloc(UInt8, 65536);
+		Data::ByteBuffer buff(65536);
 		buffSize = 0;
 		fileOfst = 0;
 		while (true)
 		{
-			readSize = me->currFile->Read(&buff[buffSize], 65536 - buffSize);
+			readSize = me->currFile->Read(buff.SubArray(buffSize));
 			if (readSize == 0)
 				break;
 			buffSize += readSize;
-			readSize = protoDec->ParseProtocol(OnProtocolEntry, me, fileOfst, buff, buffSize);
+			readSize = protoDec->ParseProtocol(OnProtocolEntry, me, fileOfst, buff.Ptr(), buffSize);
 			fileOfst += readSize;
 			if (readSize >= buffSize)
 			{
@@ -85,7 +83,7 @@ void __stdcall SSWR::AVIRead::AVIRProtoDecForm::OnLoadClicked(void *userObj)
 			}
 			else if (readSize > 0)
 			{
-				MemCopyO(buff, &buff[readSize], buffSize - readSize);
+				buff.CopyInner(0, readSize, buffSize - readSize);
 				buffSize -= readSize;
 			}
 			else
@@ -93,7 +91,6 @@ void __stdcall SSWR::AVIRead::AVIRProtoDecForm::OnLoadClicked(void *userObj)
 				break;
 			}
 		}
-		MemFree(buff);
 	}
 }
 

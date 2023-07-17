@@ -904,7 +904,7 @@ Bool Map::WebMapTileServiceSource::QueryInfos(Math::Coord2DDbl coord, UOSInt lev
 	NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, CSTR("WMTS/1.0 SSWR/1.0"), true, urlSb.StartsWith(UTF8STRC("https://")));
 	cli->Connect(urlSb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, true);
 	UOSInt readSize;
-	while ((readSize = cli->Read(tmpBuff, 1024)) > 0)
+	while ((readSize = cli->Read(BYTEARR(tmpBuff))) > 0)
 	{
 		sb.AppendC(tmpBuff, readSize);
 	}

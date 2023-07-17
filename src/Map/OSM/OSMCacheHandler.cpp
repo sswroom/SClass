@@ -1,4 +1,5 @@
 #include "Stdafx.h"
+#include "Data/ByteBuffer.h"
 #include "IO/Path.h"
 #include "Map/OSM/OSMCacheHandler.h"
 #include "Net/HTTPClient.h"
@@ -85,11 +86,10 @@ IO::SeekableStream *Map::OSM::OSMCacheHandler::GetTileData(Int32 lev, Int32 xTil
 		UInt64 contLeng = cli->GetContentLength();
 		UOSInt currPos = 0;
 		UOSInt readSize;
-		UInt8 *imgBuff;
 		if (contLeng > 0 && contLeng <= 10485760)
 		{
-			imgBuff = MemAlloc(UInt8, (UOSInt)contLeng);
-			while ((readSize = cli->Read(&imgBuff[currPos], (UOSInt)contLeng - currPos)) > 0)
+			Data::ByteBuffer imgBuff((UOSInt)contLeng);
+			while ((readSize = cli->Read(imgBuff.SubArray(currPos, (UOSInt)contLeng - currPos))) > 0)
 			{
 				currPos += readSize;
 				if (currPos >= contLeng)
@@ -104,7 +104,7 @@ IO::SeekableStream *Map::OSM::OSMCacheHandler::GetTileData(Int32 lev, Int32 xTil
 					mutUsage->ReplaceMutex(this->ioMut);
 				}
 				NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyRead, IO::FileStream::BufferType::NoWriteBuffer));
-				fs->Write(imgBuff, (UOSInt)contLeng);
+				fs->Write(imgBuff.Ptr(), (UOSInt)contLeng);
 				if (cli->GetLastModified(&dt))
 				{
 					currTime.SetCurrTimeUTC();
@@ -122,7 +122,6 @@ IO::SeekableStream *Map::OSM::OSMCacheHandler::GetTileData(Int32 lev, Int32 xTil
 			{
 				Sync::Interlocked::Increment(&this->status.remoteErrCnt);
 			}
-			MemFree(imgBuff);
 		}
 		else
 		{
@@ -215,12 +214,12 @@ Bool Map::OSM::OSMCacheHandler::ProcessRequest(Net::WebServer::IWebRequest *req,
 		dt.AddMinute(1440);
 		resp->AddExpireTime(&dt);
 
-		UInt8 *buff = MemAlloc(UInt8, (UOSInt)stmLeng);
+		Data::ByteBuffer buff((UOSInt)stmLeng);
 		UOSInt buffSize = 0;
 		UOSInt readSize;
 		while (buffSize < stmLeng)
 		{
-			readSize = stm->Read(&buff[buffSize], (UOSInt)(stmLeng - buffSize));
+			readSize = stm->Read(buff.SubArray(buffSize, (UOSInt)(stmLeng - buffSize)));
 			if (readSize == 0)
 			{
 				break;
@@ -248,7 +247,6 @@ Bool Map::OSM::OSMCacheHandler::ProcessRequest(Net::WebServer::IWebRequest *req,
 				break;
 			}
 		}
-		MemFree(buff);
 	}
 	return true;
 }

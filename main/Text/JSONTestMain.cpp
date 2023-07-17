@@ -16,7 +16,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	if (flen > 0)
 	{
 		buff = MemAlloc(UInt8, (UOSInt)flen + 1);
-		fs.Read(buff, (UOSInt)flen);
+		fs.Read(Data::ByteArray(buff, (UOSInt)flen));
 		buff[flen] = 0;
 		Text::JSONBase *obj = Text::JSONBase::ParseJSONStr(Text::CString(buff, (UOSInt)flen));
 		if (obj)

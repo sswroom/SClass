@@ -44,7 +44,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMultipartViewer::AVIRMultipartViewer(SSWR::AVIRea
 			{
 				UOSInt dataSize;
 				const UInt8 *data = ((Text::MIMEObj::UnknownMIMEObj*)subObj)->GetRAWData(&dataSize);
-				Net::ASN1Data *asn1 = Parser::FileParser::X509Parser::ParseBuff(data, dataSize, subObj->GetSourceNameObj());
+				Net::ASN1Data *asn1 = Parser::FileParser::X509Parser::ParseBuff(Data::ByteArrayR(data, dataSize), subObj->GetSourceNameObj());
 				if (asn1)
 				{
 					if (asn1->GetASN1Type() == Net::ASN1Data::ASN1Type::X509)

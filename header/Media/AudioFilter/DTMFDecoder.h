@@ -44,7 +44,7 @@ namespace Media
 			virtual ~DTMFDecoder();
 
 			virtual UInt32 SeekToTime(UInt32 time); //ms, ret actual time
-			virtual UOSInt ReadBlock(UInt8 *buff, UOSInt blkSize); //ret actual block size
+			virtual UOSInt ReadBlock(Data::ByteArray blk); //ret actual block size
 
 			void HandleToneChange(ToneChangeEvent hdlr, void *userObj);
 		};

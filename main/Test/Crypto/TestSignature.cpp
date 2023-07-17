@@ -47,7 +47,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	if (ssl)
 	{
 		NotNullPtr<Text::String> fileName = Text::String::New(UTF8STRC("Temp.key"));
-		x509 = Parser::FileParser::X509Parser::ParseBuff((const UInt8*)key, sizeof(key) - 1, fileName);
+		x509 = Parser::FileParser::X509Parser::ParseBuff(Data::ByteArrayR((const UInt8*)key, sizeof(key) - 1), fileName);
 		fileName->Release();
 	}
 	if (x509 && x509->GetFileType() == Crypto::Cert::X509File::FileType::Key)

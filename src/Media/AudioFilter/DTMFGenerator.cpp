@@ -31,11 +31,11 @@ void Media::AudioFilter::DTMFGenerator::GetFormat(AudioFormat *format)
 	format->FromAudioFormat(&this->format);
 }
 
-UOSInt Media::AudioFilter::DTMFGenerator::ReadBlock(UInt8 *buff, UOSInt blkSize)
+UOSInt Media::AudioFilter::DTMFGenerator::ReadBlock(Data::ByteArray blk)
 {
 	if (this->sourceAudio == 0)
 		return 0;
-	UOSInt readSize = this->sourceAudio->ReadBlock(buff, blkSize);
+	UOSInt readSize = this->sourceAudio->ReadBlock(blk);
 
 	if (this->format.bitpersample == 16)
 	{
@@ -54,12 +54,12 @@ UOSInt Media::AudioFilter::DTMFGenerator::ReadBlock(UInt8 *buff, UOSInt blkSize)
 			j = this->format.nChannels;
 			while (j-- > 0)
 			{
-				ivCh = iv + ReadInt16(&buff[i]);
+				ivCh = iv + ReadInt16(&blk[i]);
 				if (ivCh > 32767)
 					ivCh = 32767;
 				if (ivCh < -32768)
 					ivCh = -32768;
-				WriteInt16(&buff[i], ivCh);
+				WriteInt16(&blk[i], ivCh);
 				i += 2;
 			}
 		}
@@ -184,12 +184,12 @@ UOSInt Media::AudioFilter::DTMFGenerator::ReadBlock(UInt8 *buff, UOSInt blkSize)
 						j = this->format.nChannels;
 						while (j-- > 0)
 						{
-							ivCh = iv + ReadInt16(&buff[i]);
+							ivCh = iv + ReadInt16(&blk[i]);
 							if (ivCh > 32767)
 								ivCh = 32767;
 							if (ivCh < -32768)
 								ivCh = -32768;
-							WriteInt16(&buff[i], ivCh);
+							WriteInt16(&blk[i], ivCh);
 							i += 2;
 						}
 					}
@@ -230,12 +230,12 @@ UOSInt Media::AudioFilter::DTMFGenerator::ReadBlock(UInt8 *buff, UOSInt blkSize)
 			j = this->format.nChannels;
 			while (j-- > 0)
 			{
-				ivCh = iv + buff[i];
+				ivCh = iv + blk[i];
 				if (ivCh > 255)
 					ivCh = 255;
 				if (ivCh < 0)
 					ivCh = 0;
-				buff[i] = (UInt8)ivCh;
+				blk[i] = (UInt8)ivCh;
 				i += 1;
 			}
 		}

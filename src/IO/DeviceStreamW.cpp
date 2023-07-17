@@ -29,7 +29,7 @@ Bool IO::DeviceStream::IsDown() const
 	return this->hand == 0;
 }
 
-UOSInt IO::DeviceStream::Read(const Data::ByteArray &buff)
+UOSInt IO::DeviceStream::Read(Data::ByteArray buff)
 {
 	if (this->hand)
 	{

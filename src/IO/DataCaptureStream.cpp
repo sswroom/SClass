@@ -18,12 +18,12 @@ Bool IO::DataCaptureStream::IsDown() const
 	return this->stm->IsDown();
 }
 
-UOSInt IO::DataCaptureStream::Read(const Data::ByteArray &buff)
+UOSInt IO::DataCaptureStream::Read(Data::ByteArray buff)
 {
-	UOSInt ret = this->stm->Read(buff, size);
+	UOSInt ret = this->stm->Read(buff);
 	if (ret > 0)
 	{
-		this->recvHdlr(this->hdlrObj, buff, ret);
+		this->recvHdlr(this->hdlrObj, buff.Ptr(), ret);
 	}
 	return ret;
 }

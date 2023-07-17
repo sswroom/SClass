@@ -1,6 +1,7 @@
 ﻿#include "Stdafx.h"
 #include "Crypto/Hash/CRC32R.h"
 #include "Crypto/Hash/MD5.h"
+#include "Data/ByteBuffer.h"
 #include "Data/ByteTool.h"
 #include "Data/Sort/ArtificialQuickSort.h"
 #include "DB/DBReader.h"
@@ -1490,8 +1491,6 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 	}
 	if (fileType == 1)
 	{
-		UInt8 *readBuff;
-		UOSInt readSize;
 		IO::MemoryStream *mstm;
 		{
 			IO::FileStream fs(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoBuffer);
@@ -1499,19 +1498,19 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 			{
 				return FS_ERROR;
 			}
-			readBuff = MemAlloc(UInt8, 1048576);
+			Data::ByteBuffer readBuff(1048576);
+			UOSInt readSize;
 			NEW_CLASS(mstm, IO::MemoryStream((UOSInt)fs.GetLength()));
 			while (true)
 			{
-				readSize = fs.Read(readBuff, 1048576);
+				readSize = fs.Read(readBuff);
 				if (readSize == 0)
 					break;
-				mstm->Write(readBuff, readSize);
+				mstm->Write(readBuff.Ptr(), readSize);
 			}
-			MemFree(readBuff);
 		}
 
-		readBuff = mstm->GetBuff(&readSize);
+		Data::ByteArray readBuff = mstm->GetArray();
 		IO::ParserType t;
 		IO::ParsedObject *pobj;
 		Bool valid = false;
@@ -1522,7 +1521,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 		UInt32 crcVal = 0;
 
 		{
-			IO::StmData::MemoryDataRef md(readBuff, readSize);
+			IO::StmData::MemoryDataRef md(readBuff);
 			pobj = this->parsers.ParseFile(&md, &t);
 		}
 		if (pobj)
@@ -1576,7 +1575,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 
 				UInt8 crcBuff[4];
 				Crypto::Hash::CRC32R crc;
-				crc.Calc(readBuff, readSize);
+				crc.Calc(readBuff.Ptr(), readBuff.GetSize());
 				crc.GetValue(crcBuff);
 				crcVal = ReadMUInt32(crcBuff);
 			}
@@ -1755,8 +1754,6 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 	else if (fileType == 3)
 	{
 		Crypto::Hash::CRC32R crc;
-		UInt8 *readBuff;
-		UOSInt readSize;
 		IO::StmData::FileData *fd;
 		UInt32 crcVal;
 		IO::ParsedObject *pobj;
@@ -1771,15 +1768,15 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 			{
 				return FS_ERROR;
 			}
-			readBuff = MemAlloc(UInt8, 1048576);
+			Data::ByteBuffer readBuff(1048576);
+			UOSInt readSize;
 			while (true)
 			{
-				readSize = fs.Read(readBuff, 1048576);
+				readSize = fs.Read(readBuff);
 				if (readSize == 0)
 					break;
-				crc.Calc(readBuff, readSize);
+				crc.Calc(readBuff.Ptr(), readSize);
 			}
-			MemFree(readBuff);
 		}
 		UInt8 crcBuff[4];
 		crc.GetValue(crcBuff);
@@ -2070,7 +2067,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesWeb
 	}
 
 	IO::MemoryStream mstm;
-	while ((i = stm->Read(sbuff2, sizeof(sbuff2))) > 0)
+	while ((i = stm->Read(BYTEARR(sbuff2))) > 0)
 	{
 		mstm.Write(sbuff2, i);
 	}

@@ -1,4 +1,5 @@
 #include "Stdafx.h"
+#include "Data/ByteBuffer.h"
 #include "IO/FileStream.h"
 #include "Net/HTTPClient.h"
 #include "Net/SSLEngineFactory.h"
@@ -27,7 +28,6 @@ Bool SSWR::AVIRead::AVIRWellFormatForm::ParseFile(Text::CString fileName, Text::
 {
 	Bool succ = false;
 	UInt64 fileLen;
-	UInt8 *buff;
 	Bool reqSSL = false;
 	if (fileName.StartsWith(UTF8STRC("http://")) || (reqSSL = fileName.StartsWith(UTF8STRC("https://"))))
 	{
@@ -63,12 +63,11 @@ Bool SSWR::AVIRead::AVIRWellFormatForm::ParseFile(Text::CString fileName, Text::
 		fileLen = fs.GetLength();
 		if (fileLen > 0 && fileLen < 1048576)
 		{
-			buff = MemAlloc(UInt8, (UOSInt)fileLen);
-			if (fs.Read(buff, (UOSInt)fileLen) == fileLen)
+			Data::ByteBuffer buff((UOSInt)fileLen);
+			if (fs.Read(buff) == fileLen)
 			{
-				succ = Text::JSText::JSONWellFormat(buff, (UOSInt)fileLen, 0, output);
+				succ = Text::JSText::JSONWellFormat(buff.Ptr(), (UOSInt)fileLen, 0, output);
 			}
-			MemFree(buff);
 		}
 	}
 	else if (fileName.EndsWithICase(UTF8STRC(".html")) || fileName.EndsWith(UTF8STRC(".htm")))

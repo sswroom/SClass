@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Data/ByteBuffer.h"
 #include "Media/IMediaSource.h"
 #include "Media/IAudioSource.h"
 #include "Media/NullRenderer.h"
@@ -13,7 +14,6 @@ UInt32 __stdcall Media::NullRenderer::PlayThread(void *obj)
 {
 	Media::NullRenderer *me = (Media::NullRenderer *)obj;
 	Media::AudioFormat af;
-	UInt8 *tmpBuff;
 	UInt32 audStartTime;
 	UOSInt buffLeng = 16384;
 	UOSInt minLeng;
@@ -32,7 +32,7 @@ UInt32 __stdcall Media::NullRenderer::PlayThread(void *obj)
 	if (minLeng > buffLeng)
 		buffLeng = minLeng;
 
-	tmpBuff = MemAlloc(UInt8, buffLeng);
+	Data::ByteBuffer tmpBuff(buffLeng);
 
 	if (me->clk)
 	{
@@ -42,7 +42,7 @@ UInt32 __stdcall Media::NullRenderer::PlayThread(void *obj)
 
 	while (!me->stopPlay)
 	{
-		readSize = me->audsrc->ReadBlockLPCM(tmpBuff, buffLeng, &af);
+		readSize = me->audsrc->ReadBlockLPCM(tmpBuff, &af);
 		if (readSize == 0)
 		{
 			if (me->audsrc->IsEnd())
@@ -57,7 +57,6 @@ UInt32 __stdcall Media::NullRenderer::PlayThread(void *obj)
 			me->sampleCnt += readSize / af.align;
 		}
 	}
-	MemFree(tmpBuff);
 
 	me->playing = false;
 

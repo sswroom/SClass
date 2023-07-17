@@ -1,4 +1,5 @@
 #include "Stdafx.h"
+#include "Data/ByteBuffer.h"
 #include "IO/FileStream.h"
 #include "IO/Path.h"
 #include "SSWR/AVIRead/AVIRFileExForm.h"
@@ -64,7 +65,6 @@ void __stdcall SSWR::AVIRead::AVIRFileExForm::OnStartClicked(void *userObj)
 	UInt64 sizeLeft;
 	UOSInt thisSize;
 	UOSInt readSize;
-	UInt8 *buff;
 	IO::FileStream *srcFS;
 	IO::FileStream *destFS;
 	me->txtStartOfst->GetText(&sb);
@@ -113,20 +113,19 @@ void __stdcall SSWR::AVIRead::AVIRFileExForm::OnStartClicked(void *userObj)
 	}
 	srcFS->SeekFromBeginning(startOfst);
 	sizeLeft = endOfst - startOfst;
-	buff = MemAlloc(UInt8, 1048576);
+	Data::ByteBuffer buff(1048576);
 	destFS->SetLength(sizeLeft);
 	while (sizeLeft > 0)
 	{
 		thisSize = 1048576;
 		if (thisSize > sizeLeft)
 			thisSize = (UOSInt)sizeLeft;
-		readSize = srcFS->Read(buff, thisSize);
+		readSize = srcFS->Read(buff.WithSize(thisSize));
 		if (readSize == 0)
 			break;
-		destFS->Write(buff, readSize);
+		destFS->Write(buff.Ptr(), readSize);
 		sizeLeft -= readSize;
 	}
-	MemFree(buff);
 
 	DEL_CLASS(destFS);
 	DEL_CLASS(srcFS);

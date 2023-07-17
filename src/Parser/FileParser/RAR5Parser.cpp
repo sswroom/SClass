@@ -79,7 +79,7 @@ IO::ParsedObject *Parser::FileParser::RAR5Parser::ParseFileHdr(IO::StreamData *f
 
 	while (currOfst + 8 <= endOfst)
 	{
-		fd->GetRealData(currOfst, 512, buff);
+		fd->GetRealData(currOfst, 512, BYTEARR(buff));
 		buffPtr = buff + 4;
 		buffPtr = ReadVInt(buffPtr, &iVal);
 		if (iVal >= 1048576 * 2)

@@ -151,7 +151,7 @@ UTF8Char *Map::GoogleMap::GoogleWSSearcherJSON::SearchName(UTF8Char *buff, UOSIn
 		Int32 status = cli->GetRespStatus();
 
 		Text::StringBuilderUTF8 sb;
-		while ((readSize = cli->Read(databuff, 2048)) > 0)
+		while ((readSize = cli->Read(BYTEARR(databuff))) > 0)
 		{
 			sb.AppendC(databuff, readSize);
 		}

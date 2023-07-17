@@ -24,7 +24,7 @@ static UInt32 __stdcall SerialViewer(void *userObj)
 		Data::DateTime dt;
 		while (!toStop)
 		{
-			readSize = port->Read(readBuff, 1024);
+			readSize = port->Read(BYTEARR(readBuff));
 			if (readSize <= 0)
 			{
 				readError = true;

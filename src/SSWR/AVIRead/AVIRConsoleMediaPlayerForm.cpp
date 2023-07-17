@@ -1,4 +1,5 @@
 #include "Stdafx.h"
+#include "Data/ByteBuffer.h"
 #include "Media/ICCProfile.h"
 #include "SSWR/AVIRead/AVIRCaptureDevForm.h"
 #include "SSWR/AVIRead/AVIRConsoleMediaPlayerForm.h"
@@ -146,10 +147,10 @@ Bool SSWR::AVIRead::AVIRConsoleMediaPlayerForm::OpenICC(Text::CString iccFile)
 	Bool changed = false;
 	if (len > 4 && len <= 16384)
 	{
-		UInt8 *buff = MemAlloc(UInt8, (UOSInt)len);
-		if (fs.Read(buff, (UOSInt)len) == len)
+		Data::ByteBuffer buff((UOSInt)len);
+		if (fs.Read(buff) == len)
 		{
-			Media::ICCProfile *icc = Media::ICCProfile::Parse(buff, (UOSInt)len);
+			Media::ICCProfile *icc = Media::ICCProfile::Parse(buff);
 			if (icc)
 			{
 				Media::CS::TransferParam param;
@@ -168,7 +169,6 @@ Bool SSWR::AVIRead::AVIRConsoleMediaPlayerForm::OpenICC(Text::CString iccFile)
 				succ = true;
 			}
 		}
-		MemFree(buff);
 	}
 	if (changed)
 	{

@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Core/Core.h"
+#include "Data/ByteBuffer.h"
 #include "IO/ConsoleWriter.h"
 #include "IO/FileStream.h"
 #include "IO/MemoryStream.h"
@@ -102,35 +103,35 @@ UInt32 __stdcall ProcThread(void *userObj)
 
 UInt32 __stdcall RecvThread(void *userObj)
 {
-	UInt8 *recvBuff;
 	UOSInt recvSize;
 	recvRunning = true;
 	mainEvt->Set();
-	recvBuff = MemAlloc(UInt8, 9000);
-	while (!toStop)
 	{
-		if (cli)
+		Data::ByteBuffer recvBuff(9000);
+		while (!toStop)
 		{
-			recvSize = cli->Read(recvBuff, 9000);
-			if (recvSize > 0)
+			if (cli)
 			{
-				Sync::Interlocked::Add(&totalRecvSize, recvSize);
+				recvSize = cli->Read(recvBuff);
+				if (recvSize > 0)
+				{
+					Sync::Interlocked::Add(&totalRecvSize, recvSize);
+				}
+				else
+				{
+					Sync::MutexUsage mutUsage(cliMut);
+					DEL_CLASS(cli);
+					cli = 0;
+					mutUsage.EndUse();
+					recvEvt->Wait(1000);
+				}
 			}
 			else
 			{
-				Sync::MutexUsage mutUsage(cliMut);
-				DEL_CLASS(cli);
-				cli = 0;
-				mutUsage.EndUse();
 				recvEvt->Wait(1000);
 			}
 		}
-		else
-		{
-			recvEvt->Wait(1000);
-		}
 	}
-	MemFree(recvBuff);
 	recvRunning = false;
 	mainEvt->Set();
 	return 0;

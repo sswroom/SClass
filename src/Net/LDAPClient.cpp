@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Data/ByteBuffer.h"
 #include "Data/ByteTool.h"
 #include "Manage/HiResClock.h"
 #include "Net/ASN1PDUBuilder.h"
@@ -21,7 +22,6 @@
 UInt32 __stdcall Net::LDAPClient::RecvThread(void *userObj)
 {
 	Net::LDAPClient *me = (Net::LDAPClient*)userObj;
-	UInt8 *recvBuff;
 	UOSInt buffSize;
 	UOSInt recvSize;
 	UOSInt i;
@@ -30,7 +30,7 @@ UInt32 __stdcall Net::LDAPClient::RecvThread(void *userObj)
 	me->recvRunning = true;
 	{
 		buffSize = 0;
-		recvBuff = MemAlloc(UInt8, RECVBUFFSIZE);
+		Data::ByteBuffer recvBuff(RECVBUFFSIZE);
 		Manage::HiResClock clk;
 		#if defined(VERBOSE)
 		Text::StringBuilderUTF8 sb;
@@ -38,7 +38,7 @@ UInt32 __stdcall Net::LDAPClient::RecvThread(void *userObj)
 		while (!me->recvToStop)
 		{
 			clk.Start();
-			recvSize = me->cli->Read(&recvBuff[buffSize], RECVBUFFSIZE - buffSize);
+			recvSize = me->cli->Read(recvBuff.SubArray(buffSize));
 			if (recvSize == 0)
 			{
 				break;
@@ -144,11 +144,10 @@ UInt32 __stdcall Net::LDAPClient::RecvThread(void *userObj)
 			}
 			else if (i > 0)
 			{
-				MemCopyNO(recvBuff, &recvBuff[i], buffSize - i);
+				recvBuff.CopyInner(0, i, buffSize - i);
 				buffSize -= i;
 			}
 		}
-		MemFree(recvBuff);
 	}
 	me->recvRunning = false;
 	return 0;

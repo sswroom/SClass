@@ -110,7 +110,7 @@ Bool Exporter::WAVExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 	NEW_CLASS(evt, Sync::Event(true));
 	if (audio->Start(evt, (UOSInt)(1048576 - headerSize)))
 	{
-		while ((blockSize = audio->ReadBlock(&buff[(UOSInt)headerSize], (UOSInt)(1048576 - headerSize))) > 0)
+		while ((blockSize = audio->ReadBlock(Data::ByteArray(&buff[(UOSInt)headerSize], (UOSInt)(1048576 - headerSize)))) > 0)
 		{
 			stm->Write(&buff[(UOSInt)headerSize], blockSize);
 			fileSize += blockSize;

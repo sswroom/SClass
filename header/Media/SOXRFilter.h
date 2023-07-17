@@ -13,7 +13,7 @@ namespace Media
 		SOXRFilter(Media::IAudioSource *sourceAudio, UInt32 targetFreq);
 		virtual ~SOXRFilter();
 
-		virtual UOSInt ReadBlock(UInt8 *buff, UOSInt blkSize); //ret actual block size
+		virtual UOSInt ReadBlock(Data::ByteArray blk); //ret actual block size
 	};
 }
 #endif

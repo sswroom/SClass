@@ -1,4 +1,5 @@
 #include "Stdafx.h"
+#include "Data/ByteBuffer.h"
 #include "Data/ByteTool.h"
 #include "SSWR/AVIRead/AVIRHexViewerForm.h"
 #include "SSWR/AVIRead/AVIRHexViewerGoToForm.h"
@@ -42,7 +43,7 @@ void __stdcall SSWR::AVIRead::AVIRHexViewerForm::OnOffsetChg(void *userObj, UInt
 	UInt8 buff[8];
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
-	UOSInt readSize = me->hexView->GetFileData(ofst, 8, buff);
+	UOSInt readSize = me->hexView->GetFileData(ofst, 8, BYTEARR(buff));
 	Bool bigEndian = me->radEndianBig->IsSelected();
 	if (readSize >= 1)
 	{
@@ -256,7 +257,6 @@ void __stdcall SSWR::AVIRead::AVIRHexViewerForm::OnExtractClicked(void *userObj)
 		return;
 	}
 	endOfst -= beginOfst;
-	UInt8 *buff;
 	UOSInt buffSize;
 	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"HexViewerExtract", true);
 	dlg.AddFilter(CSTR("*.dat"), CSTR("Data File"));
@@ -265,19 +265,18 @@ void __stdcall SSWR::AVIRead::AVIRHexViewerForm::OnExtractClicked(void *userObj)
 		IO::FileStream fs(dlg.GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 		if (endOfst < 1048576)
 		{
-			buff = MemAlloc(UInt8, (UOSInt)endOfst);
+			Data::ByteBuffer buff((UOSInt)endOfst);
 			buffSize = me->hexView->GetFileData(beginOfst, (UOSInt)endOfst, buff);
-			fs.Write(buff, buffSize);
-			MemFree(buff);
+			fs.Write(buff.Ptr(), buffSize);
 		}
 		else
 		{
 			Bool hasError = false;
-			buff = MemAlloc(UInt8, 1048576);
+			Data::ByteBuffer buff(1048576);
 			while (endOfst >= 1048576)
 			{
 				buffSize = me->hexView->GetFileData(beginOfst, 1048576, buff);
-				fs.Write(buff, buffSize);
+				fs.Write(buff.Ptr(), buffSize);
 				beginOfst += 1048576;
 				endOfst -= 1048576;
 				if (buffSize != 1048576)
@@ -289,7 +288,7 @@ void __stdcall SSWR::AVIRead::AVIRHexViewerForm::OnExtractClicked(void *userObj)
 			if (!hasError && endOfst > 0)
 			{
 				buffSize = me->hexView->GetFileData(beginOfst, (UOSInt)endOfst, buff);
-				fs.Write(buff, buffSize);
+				fs.Write(buff.Ptr(), buffSize);
 				beginOfst += endOfst;
 				if (buffSize != endOfst)
 				{

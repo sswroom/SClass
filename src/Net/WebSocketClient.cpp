@@ -236,7 +236,7 @@ const UInt8 *Net::WebSocketClient::NextPacket(UInt8 *opcode, UOSInt *packetSize)
 				this->recvParseOfst = 0;
 			}
 		}
-		UOSInt readSize = this->cli->Read(&this->recvBuff[this->recvSize], this->recvCapacity - this->recvSize);
+		UOSInt readSize = this->cli->Read(Data::ByteArray(&this->recvBuff[this->recvSize], this->recvCapacity - this->recvSize));
 		if (readSize == 0)
 			return 0;
 		this->recvSize += readSize;
@@ -373,7 +373,7 @@ Net::WebSocketClient::WebSocketClient(Net::SocketFactory *sockf, Net::SSLEngine 
 		}
 		sb.ClearStr();
 		sb.AllocLeng(4096);
-		UOSInt readSize = this->cli->Read(sb.v, 4096);
+		UOSInt readSize = this->cli->Read(Data::ByteArray(sb.v, 4096));
 		if (readSize <= 0)
 		{
 #if defined(VERBOSE)
@@ -469,21 +469,21 @@ Bool Net::WebSocketClient::IsDown() const
 	return true;
 }
 
-UOSInt Net::WebSocketClient::Read(const Data::ByteArray &buff)
+UOSInt Net::WebSocketClient::Read(Data::ByteArray buff)
 {
 	Sync::MutexUsage mutUsage(&this->recvMut);
 	if (this->recvDataOfst < this->recvDataSize)
 	{
-		if (this->recvDataSize - this->recvDataOfst > size)
+		if (this->recvDataSize - this->recvDataOfst > buff.GetSize())
 		{
-			MemCopyNO(buff, &this->recvData[this->recvDataOfst], size);
-			this->recvDataOfst += size;
-			return size;
+			buff.CopyFrom(Data::ByteArrayR(&this->recvData[this->recvDataOfst], buff.GetSize()));
+			this->recvDataOfst += buff.GetSize();
+			return buff.GetSize();
 		}
 		else
 		{
-			size = this->recvDataSize - this->recvDataOfst;
-			MemCopyNO(buff, &this->recvData[this->recvDataOfst], size);
+			UOSInt size = this->recvDataSize - this->recvDataOfst;
+			buff.CopyFrom(Data::ByteArrayR(&this->recvData[this->recvDataOfst], size));
 			this->recvDataOfst = this->recvDataSize;
 			return size;
 		}
@@ -492,23 +492,23 @@ UOSInt Net::WebSocketClient::Read(const Data::ByteArray &buff)
 	const UInt8 *packetBuff = this->NextPacket(&mutUsage, &packetSize);
 	if (packetBuff == 0)
 		return 0;
-	if (packetSize <= size)
+	if (packetSize <= buff.GetSize())
 	{
-		MemCopyNO(buff, packetBuff, packetSize);
+		buff.CopyFrom(Data::ByteArrayR(packetBuff, packetSize));
 		return packetSize;
 	}
-	MemCopyNO(buff, packetBuff, size);
-	if (packetSize - size > this->recvDataCap)
+	buff.CopyFrom(Data::ByteArrayR(packetBuff, buff.GetSize()));
+	if (packetSize - buff.GetSize() > this->recvDataCap)
 	{
 		if (this->recvData)
 			MemFree(this->recvData);
-		this->recvDataCap = packetSize - size;
+		this->recvDataCap = packetSize - buff.GetSize();
 		this->recvData = MemAlloc(UInt8, this->recvDataCap);
 	}
-	this->recvDataSize = packetSize - size;
-	MemCopyNO(this->recvData, &packetBuff[size], this->recvDataSize);
+	this->recvDataSize = packetSize - buff.GetSize();
+	MemCopyNO(this->recvData, &packetBuff[buff.GetSize()], this->recvDataSize);
 	this->recvDataOfst = 0;
-	return size;
+	return buff.GetSize();
 }
 
 UOSInt Net::WebSocketClient::Write(const UInt8 *buff, UOSInt size)

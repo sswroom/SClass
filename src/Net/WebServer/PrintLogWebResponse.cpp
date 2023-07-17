@@ -99,9 +99,9 @@ Bool Net::WebServer::PrintLogWebResponse::IsDown() const
 	return this->resp->IsDown();
 }
 
-UOSInt Net::WebServer::PrintLogWebResponse::Read(const Data::ByteArray &buff)
+UOSInt Net::WebServer::PrintLogWebResponse::Read(Data::ByteArray buff)
 {
-	return this->resp->Read(buff, size);
+	return this->resp->Read(buff);
 }
 
 UOSInt Net::WebServer::PrintLogWebResponse::Write(const UInt8 *buff, UOSInt size)

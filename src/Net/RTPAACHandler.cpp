@@ -253,7 +253,7 @@ void Net::RTPAACHandler::Stop()
 	SDEL_CLASS(this->dataEvt);
 }
 
-UOSInt Net::RTPAACHandler::ReadBlock(UInt8 *buff, UOSInt blkSize)
+UOSInt Net::RTPAACHandler::ReadBlock(Data::ByteArray blk)
 {
 	while (this->buffSize == 0 && this->dataEvt)
 	{
@@ -265,16 +265,16 @@ UOSInt Net::RTPAACHandler::ReadBlock(UInt8 *buff, UOSInt blkSize)
 		mutUsage.EndUse();
 		return 0;
 	}
-	if (this->buffSize < blkSize)
+	if (this->buffSize < blk.GetSize())
 	{
-		blkSize = this->buffSize;
+		blk = blk.WithSize(this->buffSize);
 	}
-	MemCopyNO(buff, this->buff, blkSize);
-	MemCopyO(this->buff, &this->buff[blkSize], this->buffSize - blkSize);
-	this->buffSize -= blkSize;
+	blk.CopyFrom(Data::ByteArrayR(this->buff, blk.GetSize()));
+	MemCopyO(this->buff, &this->buff[blk.GetSize()], this->buffSize - blk.GetSize());
+	this->buffSize -= blk.GetSize();
 	mutUsage.EndUse();
 
-	return blkSize;
+	return blk.GetSize();
 }
 
 UOSInt Net::RTPAACHandler::GetMinBlockSize()

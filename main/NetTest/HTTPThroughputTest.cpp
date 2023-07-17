@@ -111,7 +111,7 @@ UInt32 __stdcall ProcessThread(void *userObj)
 								i = 0;
 							}
 						}
-						while ((recvSize = cli->Read(buff, 2048)) > 0)
+						while ((recvSize = cli->Read(BYTEARR(buff))) > 0)
 						{
 							status->recvSize += recvSize;
 						}
@@ -157,7 +157,7 @@ UInt32 __stdcall ProcessThread(void *userObj)
 					cli->EndRequest(&timeReq, &timeResp);
 					if (timeResp >= 0)
 					{
-						while ((recvSize = cli->Read(buff, 2048)) > 0)
+						while ((recvSize = cli->Read(BYTEARR(buff))) > 0)
 						{
 							status->recvSize += recvSize;
 						}

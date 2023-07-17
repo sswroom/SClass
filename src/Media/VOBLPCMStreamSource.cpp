@@ -121,14 +121,13 @@ UOSInt Media::VOBLPCMStreamSource::ReadBlock(Data::ByteArray blk)
 		if (this->buffStart + blk.GetSize() >= this->buffSize)
 		{
 			byteCopied = this->buffSize - this->buffStart;
-			MemCopyNO(buff, &this->dataBuff[this->buffStart], this->buffSize - this->buffStart);
-			blkSize -= this->buffSize - this->buffStart;
-			buff += this->buffSize - this->buffStart;
+			blk.CopyFrom(Data::ByteArrayR(&this->dataBuff[this->buffStart], this->buffSize - this->buffStart));
+			blk += this->buffSize - this->buffStart;
 			this->buffStart = 0;
 		}
 		if (blk.GetSize() > 0)
 		{
-			MemCopyNO(buff, &this->dataBuff[this->buffStart], blkSize);
+			blk.CopyFrom(Data::ByteArrayR(&this->dataBuff[this->buffStart], blk.GetSize()));
 			this->buffStart += blk.GetSize();
 			byteCopied += blk.GetSize();
 		}
@@ -142,14 +141,13 @@ UOSInt Media::VOBLPCMStreamSource::ReadBlock(Data::ByteArray blk)
 		if (this->buffStart > this->buffEnd)
 		{
 			byteCopied = this->buffSize - this->buffStart;
-			MemCopyNO(buff, &this->dataBuff[this->buffStart], this->buffSize - this->buffStart);
-			blkSize -= this->buffSize - this->buffStart;
-			buff += this->buffSize - this->buffStart;
+			blk.CopyFrom(Data::ByteArrayR(&this->dataBuff[this->buffStart], this->buffSize - this->buffStart));
+			blk += this->buffSize - this->buffStart;
 			this->buffStart = 0;
 		}
 		if (this->buffStart < this->buffEnd)
 		{
-			MemCopyNO(buff, &this->dataBuff[this->buffStart], this->buffEnd - this->buffStart);
+			blk.CopyFrom(Data::ByteArrayR(&this->dataBuff[this->buffStart], this->buffEnd - this->buffStart));
 			byteCopied += this->buffEnd - this->buffStart;
 			this->buffStart = this->buffEnd;
 		}

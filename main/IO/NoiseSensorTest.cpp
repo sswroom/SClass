@@ -20,7 +20,7 @@ UInt32 __stdcall ReadThread(void *userObj)
 	threadRunning = true;
 	while (!threadToStop)
 	{
-		readSize = port->Read(&readBuff[buffSize], 1024 - buffSize);
+		readSize = port->Read(Data::ByteArray(&readBuff[buffSize], 1024 - buffSize));
 		if (readSize > 0)
 		{
 			buffSize += readSize;

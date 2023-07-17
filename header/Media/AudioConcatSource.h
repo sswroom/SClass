@@ -35,7 +35,7 @@ namespace Media
 		virtual UInt32 SeekToTime(UInt32 time); //ms, ret actual time
 		virtual Bool Start(Sync::Event *evt, UOSInt blkSize);
 		virtual void Stop();
-		virtual UOSInt ReadBlock(UInt8 *buff, UOSInt blkSize); //ret actual block size
+		virtual UOSInt ReadBlock(Data::ByteArray blk); //ret actual block size
 		virtual UInt32 GetCurrTime();
 		virtual UOSInt GetMinBlockSize();
 		virtual Bool IsEnd();

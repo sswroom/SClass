@@ -476,7 +476,7 @@ Net::Email::EmailMessage::Attachment *Net::Email::EmailMessage::AddAttachment(Te
 	Attachment *attachment = MemAlloc(Attachment, 1);
 	attachment->contentLen = (UOSInt)len;
 	attachment->content = MemAlloc(UInt8, attachment->contentLen);
-	if (fs.Read(attachment->content, attachment->contentLen) != attachment->contentLen)
+	if (fs.Read(Data::ByteArray(attachment->content, attachment->contentLen)) != attachment->contentLen)
 	{
 		MemFree(attachment->content);
 		MemFree(attachment);

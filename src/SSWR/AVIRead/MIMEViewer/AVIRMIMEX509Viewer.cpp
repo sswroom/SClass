@@ -20,7 +20,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMIMEX509Viewer::AVIRMIMEX509Viewer(SSWR::AVIRead:
 
 	UOSInt dataSize;
 	const UInt8 *data = this->obj->GetRAWData(&dataSize);
-	Net::ASN1Data *asn1 = Parser::FileParser::X509Parser::ParseBuff(data, dataSize, obj->GetSourceNameObj());
+	Net::ASN1Data *asn1 = Parser::FileParser::X509Parser::ParseBuff(Data::ByteArrayR(data, dataSize), obj->GetSourceNameObj());
 	if (asn1)
 	{
 		Text::StringBuilderUTF8 sb;

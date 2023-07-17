@@ -48,9 +48,9 @@ Media::SOXRFilter::~SOXRFilter()
 	MemFree(this->clsData);
 }
 
-UOSInt Media::SOXRFilter::ReadBlock(UInt8 *buff, UOSInt blkSize)
+UOSInt Media::SOXRFilter::ReadBlock(Data::ByteArray blk)
 {
-	UOSInt nOutSample = blkSize / this->clsData->afmt.align;
+	UOSInt nOutSample = blk.GetSize() / this->clsData->afmt.align;
 	UOSInt nInSample = nOutSample * this->clsData->afmt.frequency / this->clsData->targetFreq;
 	if (this->clsData->afmt.formatId == 3)
 	{
@@ -64,9 +64,9 @@ UOSInt Media::SOXRFilter::ReadBlock(UInt8 *buff, UOSInt blkSize)
 			}
 			this->clsData->inReadBuff = MemAlloc(UInt8, readBlkSize);
 		}
-		UOSInt actSize = this->sourceAudio->ReadBlock(this->clsData->inReadBuff, readBlkSize);
+		UOSInt actSize = this->sourceAudio->ReadBlock(Data::ByteArray(this->clsData->inReadBuff, readBlkSize));
 		size_t outSize;
-		this->clsData->error = soxr_process(this->clsData->soxr, this->clsData->inReadBuff, (actSize >> 2) / this->clsData->afmt.nChannels, 0, buff, (blkSize >> 2) / this->clsData->afmt.nChannels, &outSize);
+		this->clsData->error = soxr_process(this->clsData->soxr, this->clsData->inReadBuff, (actSize >> 2) / this->clsData->afmt.nChannels, 0, blk.Ptr(), (blk.GetSize() >> 2) / this->clsData->afmt.nChannels, &outSize);
 		return (UOSInt)outSize * 4 * this->clsData->afmt.nChannels;
 	}
 	else
@@ -97,14 +97,14 @@ UOSInt Media::SOXRFilter::ReadBlock(UInt8 *buff, UOSInt blkSize)
 			}
 			this->clsData->outFloatBuff = MemAlloc(UInt8, outFloatSize);
 		}
-		UOSInt actReadSize = this->sourceAudio->ReadBlock(this->clsData->inReadBuff, readBlkSize);
+		UOSInt actReadSize = this->sourceAudio->ReadBlock(Data::ByteArray(this->clsData->inReadBuff, readBlkSize));
 		size_t outSize;
 		switch (this->clsData->afmt.bitpersample)
 		{
 		case 16:
 			AudioUtil_ConvI16_F32(this->clsData->inReadBuff, this->clsData->inFloatBuff, actReadSize >> 1);
 			this->clsData->error = soxr_process(this->clsData->soxr, this->clsData->inFloatBuff, (actReadSize >> 1) / this->clsData->afmt.nChannels, 0, this->clsData->outFloatBuff, (outFloatSize >> 2) / this->clsData->afmt.nChannels, &outSize);
-			AudioUtil_ConvF32_I16(this->clsData->outFloatBuff, buff, (UOSInt)outSize);
+			AudioUtil_ConvF32_I16(this->clsData->outFloatBuff, blk.Ptr(), (UOSInt)outSize);
 			return (UOSInt)outSize * 2 * this->clsData->afmt.nChannels;
 		}
 		return 0;

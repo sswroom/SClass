@@ -369,7 +369,7 @@ Bool IO::SerialPort::IsDown() const
 	return false;
 }
 
-UOSInt IO::SerialPort::Read(const Data::ByteArray &buff)
+UOSInt IO::SerialPort::Read(Data::ByteArray buff)
 {
 	UInt32 readCnt;
 	BOOL ret;
@@ -390,7 +390,7 @@ UOSInt IO::SerialPort::Read(const Data::ByteArray &buff)
 	ol.OffsetHigh = 0;
 	this->reading = true;
 	ADDMESSAGE("Reading\r\n");
-	ReadFile(h, buff, (DWORD)size, (DWORD*)&readCnt, &ol);
+	ReadFile(h, buff.Ptr(), (DWORD)buff.GetSize(), (DWORD*)&readCnt, &ol);
 
 	ADDMESSAGE("Waiting\r\n");
 	this->rdEvt->Wait();
@@ -462,7 +462,7 @@ struct ReadEvent
 	OVERLAPPED ol;
 };
 
-void *IO::SerialPort::BeginRead(const Data::ByteArray &buff, Sync::Event *evt)
+void *IO::SerialPort::BeginRead(Data::ByteArray buff, Sync::Event *evt)
 {
 	void *h = this->handle;
 	if (h == 0)
@@ -470,7 +470,7 @@ void *IO::SerialPort::BeginRead(const Data::ByteArray &buff, Sync::Event *evt)
 
 #ifdef _WIN32_WCE
 	UInt32 readSize;
-	if (ReadFile(h, buff, size, (LPDWORD)&readSize, 0))
+	if (ReadFile(h, buff.Ptr(), buff.GetSize(), (LPDWORD)&readSize, 0))
 	{
 		return (void*)(OSInt)readSize;
 	}
@@ -480,15 +480,15 @@ void *IO::SerialPort::BeginRead(const Data::ByteArray &buff, Sync::Event *evt)
 	}
 #else
 	ReadEvent *re = MemAlloc(ReadEvent, 1);
-	re->buff = buff;
+	re->buff = buff.Ptr();
 	re->evt = evt;
-	re->size = size;
+	re->size = buff.GetSize();
 	re->ol.hEvent = evt->hand;
 	re->ol.Internal = 0;
 	re->ol.InternalHigh = 0;
 	re->ol.Offset = 0;
 	re->ol.OffsetHigh = 0;
-	ReadFile(h, buff, (DWORD)size, (DWORD*)&re->readSize, &re->ol);
+	ReadFile(h, buff.Ptr(), (DWORD)buff.GetSize(), (DWORD*)&re->readSize, &re->ol);
 	return re;
 #endif
 }

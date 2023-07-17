@@ -99,7 +99,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRStreamLatencyForm::RecvThread(void *userObj)
 		Text::StringBuilderUTF8 sb;
 		while (!me->threadToStop)
 		{
-			recvSize = me->stm->Read(&buff[buffSize], 2048);
+			recvSize = me->stm->Read(Data::ByteArray(&buff[buffSize], 2048));
 			if (recvSize <= 0)
 			{
 				me->remoteClosed = true;

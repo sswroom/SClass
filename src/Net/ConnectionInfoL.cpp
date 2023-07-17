@@ -143,7 +143,7 @@ Net::ConnectionInfo::ConnectionInfo(void *info)
 		UOSInt readSize;
 		{
 			IO::FileStream fs(sb.ToCString(), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-			readSize = fs.Read(buff, 63);
+			readSize = fs.Read(BYTEARR(buff).WithSize(63));
 		}
 		buff[readSize] = 0;
 		this->ent.physicalAddr = 0;

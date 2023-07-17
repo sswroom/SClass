@@ -126,7 +126,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnRequestClicked(void *userObj
 			IO::FileStream fs(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 			me->reqBodyLen = (UOSInt)fs.GetLength();
 			me->reqBody = MemAlloc(UInt8, me->reqBodyLen);
-			fs.Read((UInt8*)me->reqBody, me->reqBodyLen);
+			fs.Read(Data::ByteArray((UInt8*)me->reqBody, me->reqBodyLen));
 		}
 		if ((sptr = IO::Path::GetFileExt(sbuff, fileName->v, fileName->leng)) != 0)
 		{
@@ -209,7 +209,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnRequestClicked(void *userObj
 				ofst = 0;
 				while (ofst < fileLength)
 				{
-					k = fs.Read(fileBuff, 4096);
+					k = fs.Read(BYTEARR(fileBuff));
 					if (k <= 0)
 					{
 						break;
@@ -630,7 +630,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 				cli->EndRequest(&me->respTimeReq, &me->respTimeResp);
 				UInt64 totalRead = 0;
 				UOSInt thisRead;
-				while ((thisRead = cli->Read(buff, 4096)) > 0)
+				while ((thisRead = cli->Read(BYTEARR(buff))) > 0)
 				{
 					mstm->Write(buff, thisRead);
 					totalRead += thisRead;
@@ -694,7 +694,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 
 						cli->EndRequest(&me->respTimeReq, &me->respTimeResp);
 						totalRead = 0;
-						while ((thisRead = cli->Read(buff, 4096)) > 0)
+						while ((thisRead = cli->Read(BYTEARR(buff))) > 0)
 						{
 							mstm->Write(buff, thisRead);
 							totalRead += thisRead;

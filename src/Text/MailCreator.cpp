@@ -472,7 +472,7 @@ Bool Text::MailCreator::SetContentFile(Text::CString filePath)
 		}
 		buffSize = (UOSInt)fs.GetLength();
 		buff = MemAlloc(UInt8, buffSize);
-		fs.Read(buff, buffSize);
+		fs.Read(Data::ByteArray(buff, buffSize));
 	}
 	obj = ParseContentHTML(buff, buffSize, 65001, filePath);
 	MemFree(buff);

@@ -337,7 +337,7 @@ Bool IO::Device::OlympusCameraControl::GetFile(IO::Device::OlympusCameraControl:
 	}
 	sptr = Text::StrConcat(sptr, file->fileName);
 	cli = Net::HTTPClient::CreateConnect(this->sockf, 0, CSTRP(sbuff, sptr), Net::WebUtil::RequestMethod::HTTP_GET, true);
-	while ((readSize = cli->Read(sbuff, 2048)) > 0)
+	while ((readSize = cli->Read(BYTEARR(sbuff))) > 0)
 	{
 		totalSize += readSize;
 		totalWriteSize += outStm->Write(sbuff, readSize);
@@ -366,7 +366,7 @@ Bool IO::Device::OlympusCameraControl::GetThumbnailFile(IO::Device::OlympusCamer
 	sptr = Text::StrConcatC(sptr, UTF8STRC("/get_thumbnail.cgi?DIR=/DCIM/100OLYMP/"));
 	sptr = Text::StrConcat(sptr, file->fileName);
 	cli = Net::HTTPClient::CreateConnect(this->sockf, 0, CSTRP(sbuff, sptr), Net::WebUtil::RequestMethod::HTTP_GET, true);
-	while ((readSize = cli->Read(sbuff, 2048)) > 0)
+	while ((readSize = cli->Read(BYTEARR(sbuff))) > 0)
 	{
 		totalSize += readSize;
 		outStm->Write(sbuff, readSize);

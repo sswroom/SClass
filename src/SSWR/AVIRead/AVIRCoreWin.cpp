@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Data/ByteBuffer.h"
 #include "IO/MemoryStream.h"
 #include "IO/NullStream.h"
 #include "IO/StmData/MemoryDataCopy.h"
@@ -109,24 +110,23 @@ void SSWR::AVIRead::AVIRCoreWin::OpenObject(IO::ParsedObject *pobj)
 		{
 			UInt64 totalSize = 0;
 			UOSInt thisSize;
-			UInt8 *buff;
 			IO::Stream *stm = (IO::Stream *)pobj;
 			IO::MemoryStream *mstm;
 			NEW_CLASS(mstm, IO::MemoryStream());
-			buff = MemAlloc(UInt8, 1048576);
-			while (totalSize < 104857600)
 			{
-				thisSize = stm->Read(buff, 1048576);
-				if (thisSize == 0)
-					break;
-				mstm->Write(buff, thisSize);
-				totalSize += thisSize;
+				Data::ByteBuffer buff(1048576);
+				while (totalSize < 104857600)
+				{
+					thisSize = stm->Read(buff);
+					if (thisSize == 0)
+						break;
+					mstm->Write(buff.Ptr(), thisSize);
+					totalSize += thisSize;
+				}
 			}
-			MemFree(buff);
-			buff = mstm->GetBuff(&thisSize);
-			if (thisSize > 0)
+			if (mstm->GetLength() > 0)
 			{
-				IO::StmData::MemoryDataCopy data(buff, thisSize);
+				IO::StmData::MemoryDataCopy data(mstm->GetArray());
 				data.SetFullName(stm->GetSourceNameObj()->ToCString());
 				DEL_CLASS(mstm);
 				this->LoadData(&data, 0);

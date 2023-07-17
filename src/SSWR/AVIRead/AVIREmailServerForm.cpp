@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "Crypto/Cert/CertUtil.h"
+#include "Data/ByteBuffer.h"
 #include "IO/FileStream.h"
 #include "IO/Path.h"
 #include "IO/StmData/FileData.h"
@@ -659,19 +660,18 @@ Bool SSWR::AVIRead::AVIREmailServerForm::GetMessageContent(Int32 userId, UInt32 
 	UInt64 fileLength = fd->GetDataSize();
 	if (fileLength < 1048576)
 	{
-		UInt8 *buff = MemAlloc(UInt8, (UOSInt)fileLength);
+		Data::ByteBuffer buff((UOSInt)fileLength);
 		if (fd->GetRealData(0, (UOSInt)fileLength, buff) == fileLength)
 		{
-			stm->Write(buff, (UOSInt)fileLength);
+			stm->Write(buff.Ptr(), (UOSInt)fileLength);
 			succ = true;
 		}
-		MemFree(buff);
 	}
 	else
 	{
 		UOSInt readSize;
 		UInt64 ofst = 0;
-		UInt8 *buff = MemAlloc(UInt8, 1048576);
+		Data::ByteBuffer buff(1048576);
 		succ = true;
 		while (ofst < fileLength)
 		{
@@ -688,14 +688,13 @@ Bool SSWR::AVIRead::AVIREmailServerForm::GetMessageContent(Int32 userId, UInt32 
 				succ = false;
 				break;
 			}
-			else if (stm->Write(buff, readSize) != readSize)
+			else if (stm->Write(buff.Ptr(), readSize) != readSize)
 			{
 				succ = false;
 				break;
 			}
 			ofst += readSize;
 		}
-		MemFree(buff);
 	}
 	DEL_CLASS(fd);
 

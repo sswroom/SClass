@@ -2,6 +2,7 @@
 #include "MyMemory.h"
 #include "Crypto/Hash/HashCreator.h"
 #include "Crypto/Hash/HashStream.h"
+#include "Data/ByteBuffer.h"
 #include "Data/ByteTool.h"
 #include "Data/ICaseStringMap.h"
 #include "IO/FileStream.h"
@@ -654,18 +655,17 @@ Bool IO::PackageFile::CopyTo(UOSInt index, Text::CString destPath, Bool fullFile
 
 			if (fileSize < 1048576)
 			{
-				UInt8 *tmpBuff = MemAlloc(UInt8, (UOSInt)fileSize);
+				Data::ByteBuffer tmpBuff((UOSInt)fileSize);
 				succ = (item->fd->GetRealData(0, (UOSInt)fileSize, tmpBuff) == fileSize);
 				if (succ)
 				{
 					IO::FileStream fs(sb.ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer);
-					succ = (fs.Write(tmpBuff, (UOSInt)fileSize) == fileSize);
+					succ = (fs.Write(tmpBuff.Ptr(), (UOSInt)fileSize) == fileSize);
 				}
-				MemFree(tmpBuff);
 			}
 			else
 			{
-				UInt8 *tmpBuff = MemAlloc(UInt8, 1048576);
+				Data::ByteBuffer tmpBuff(1048576);
 				UInt64 currOfst = 0;
 				{
 					IO::FileStream fs(sb.ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer);
@@ -684,7 +684,7 @@ Bool IO::PackageFile::CopyTo(UOSInt index, Text::CString destPath, Bool fullFile
 							succ = false;
 							break;
 						}
-						if (fs.Write(tmpBuff, readSize) != readSize)
+						if (fs.Write(tmpBuff.Ptr(), readSize) != readSize)
 						{
 							succ = false;
 							break;
@@ -697,7 +697,6 @@ Bool IO::PackageFile::CopyTo(UOSInt index, Text::CString destPath, Bool fullFile
 				{
 					IO::Path::DeleteFile(sb.ToString());
 				}
-				MemFree(tmpBuff);
 			}
 
 			return succ;

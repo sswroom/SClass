@@ -308,12 +308,12 @@ Bool IO::FileStream::IsError()
 	return this->handle == INVALID_HANDLE_VALUE;
 }
 
-UOSInt IO::FileStream::Read(const Data::ByteArray &buff)
+UOSInt IO::FileStream::Read(Data::ByteArray buff)
 {
 	if (handle == INVALID_HANDLE_VALUE)
 		return 0;
 	UInt32 readSize;
-	if (ReadFile(handle, buff, (UInt32)size, (DWORD*)&readSize, 0))
+	if (ReadFile(handle, buff.Ptr(), (UInt32)buff.GetSize(), (DWORD*)&readSize, 0))
 	{
 		this->currPos += readSize;
 		return readSize;
@@ -629,7 +629,7 @@ UOSInt IO::FileStream::LoadFile(Text::CString fileName, UInt8 *buff, UOSInt maxB
 	{
 		return 0;
 	}
-	UOSInt readSize = fs.Read(buff, maxBuffSize);
+	UOSInt readSize = fs.Read(Data::ByteArray(buff, maxBuffSize));
 	if (readSize == fileLen)
 	{
 		return readSize;

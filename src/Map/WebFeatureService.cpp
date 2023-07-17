@@ -36,7 +36,7 @@ void Map::WebFeatureService::LoadXML(Version version)
 	UInt8 buff[2048];
 	UOSInt readSize;
 	IO::MemoryStream mstm;
-	while ((readSize = cli->Read(buff, sizeof(readSize))) > 0)
+	while ((readSize = cli->Read(BYTEARR(buff))) > 0)
 	{
 		mstm.Write(buff, readSize);
 	}

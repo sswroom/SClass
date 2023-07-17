@@ -361,14 +361,14 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CString sourceFile, Text:
 		UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("Error"), this);
 		return 0;
 	}
-	fs.Read(buff, 100);
+	fs.Read(Data::ByteArray(buff, 100));
 	fileLeng = ReadMUInt32(&buff[24]) * 2;
 	shpType = ReadInt32(&buff[32]);
 	filePos = 100;
 	nRecords = 0;
 	while (filePos < fileLeng)
 	{
-		if (fs.Read(buff, 8) != 8)
+		if (fs.Read(Data::ByteArray(buff, 8)) != 8)
 			break;
 		fs.SeekFromCurrent(ReadMUInt32(&buff[4]) * 2);
 		filePos += ReadMUInt32(&buff[4]) * 2 + 8;
@@ -426,7 +426,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CString sourceFile, Text:
 				{
 					progress->ProgressUpdate(tRec, nRecords);
 				}
-				fs.Read(buff, 12);
+				fs.Read(Data::ByteArray(buff, 12));
 
 				Int32 recSize = ReadMInt32(&buff[4]);
 				Bool chkVal = true;
@@ -451,7 +451,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CString sourceFile, Text:
 				}
 				else
 				{
-					fs.Read(&buff[12], 32);
+					fs.Read(Data::ByteArray(&buff[12], 32));
 					xMin = ReadDouble(&buff[12]);
 					yMin = ReadDouble(&buff[20]);
 					xMax = ReadDouble(&buff[28]);
@@ -490,7 +490,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CString sourceFile, Text:
 				}
 				if (chkVal)
 				{
-					fs.Read(buff, 8);
+					fs.Read(Data::ByteArray(buff, 8));
 					nParts = ReadUInt32(&buff[0]);
 					nPoints = ReadUInt32(&buff[4]);
 //					'tmpWriter.WriteLine(nParts.ToString() + ControlChars.Tab + nPoints.ToString())
@@ -503,7 +503,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CString sourceFile, Text:
 					cip.Write(buff, 8);
 					cipPos += 8;
 					outBuff = MemAlloc(UInt8, nParts * 4 + 4);
-					fs.Read(outBuff, nParts * 4);
+					fs.Read(Data::ByteArray(outBuff, nParts * 4));
 					WriteUInt32(&outBuff[nParts * 4], nPoints);
 					cip.Write(outBuff, nParts * 4 + 4);
 					cipPos += nParts * 4 + 4;
@@ -511,7 +511,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CString sourceFile, Text:
 
 					if (isGrid80)
 					{
-						fs.Read(&buff[16], 16);
+						fs.Read(Data::ByteArray(&buff[16], 16));
 						currX = ReadDouble(&buff[16]);
 						currY = ReadDouble(&buff[24]);
 						WriteInt32(&buff[0], Double2Int32(currX));
@@ -525,7 +525,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CString sourceFile, Text:
 						i = 1;
 						while (i < nPoints)
 						{
-							fs.Read(&buff[16], 16);
+							fs.Read(Data::ByteArray(&buff[16], 16));
 							currX = ReadDouble(&buff[16]);
 							currY = ReadDouble(&buff[24]);
 							WriteInt32(&buff[0], Double2Int32(currX));
@@ -544,7 +544,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CString sourceFile, Text:
 					{
 //						Double lastX;
 //						Double lastY;
-						fs.Read(&buff[16], 16);
+						fs.Read(Data::ByteArray(&buff[16], 16));
 						currX = ReadDouble(&buff[16]);
 						currY = ReadDouble(&buff[24]);
 						WriteInt32(&buff[0], Double2Int32(currX * LATSCALE));
@@ -562,7 +562,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CString sourceFile, Text:
 						i = 1;
 						while (i < nPoints)
 						{
-							fs.Read(&buff[16], 16);
+							fs.Read(Data::ByteArray(&buff[16], 16));
 							currX = ReadDouble(&buff[16]);
 							currY = ReadDouble(&buff[24]);
 							WriteInt32(&buff[0], Double2Int32(currX * LATSCALE));
@@ -830,7 +830,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CString sourceFile, Text:
 
 			while (tRec < nRecords)
 			{
-				fs.Read(buff, 12);
+				fs.Read(Data::ByteArray(buff, 12));
 				if ((tRec % 100) == 0)
 				{
 					progress->ProgressUpdate(tRec, nRecords);
@@ -848,7 +848,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CString sourceFile, Text:
 				}
 				else
 				{
-					fs.Read(&buff[12], recSize * 2 - 4);
+					fs.Read(Data::ByteArray(&buff[12], recSize * 2 - 4));
 					if (shpType == 11)
 					{
 						currX = ReadDouble(&buff[12]);
@@ -1131,7 +1131,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::LoadShape(Text::CString fileName, Bool upd
 			return 0;
 		}
 
-		fs.Read(buff, 100);
+		fs.Read(BYTEARR(buff));
 		if (ReadMInt32(buff) != 9994)
 		{
 			UI::MessageDialog::ShowDialog(CSTR("File is not valid shape file"), CSTR("Error"), this);

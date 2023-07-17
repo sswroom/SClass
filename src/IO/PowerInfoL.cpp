@@ -11,7 +11,7 @@ Bool Power_ReadIntFile(Text::CString filePath, Int32 *val)
 	IO::FileStream fs(filePath, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 	if (!fs.IsError())
 	{
-		readSize = fs.Read(buff, 127);
+		readSize = fs.Read(BYTEARR(buff).WithSize(127));
 		if (readSize > 0)
 		{
 			buff[readSize] = 0;
@@ -43,7 +43,7 @@ Bool Power_ReadStrFile(Text::CString filePath, UTF8Char *val, UOSInt maxCharCnt)
 	IO::FileStream fs(filePath, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 	if (!fs.IsError())
 	{
-		readSize = fs.Read(val, maxCharCnt);
+		readSize = fs.Read(Data::ByteArray(val, maxCharCnt));
 		if (readSize > 0)
 		{
 			val[readSize] = 0;

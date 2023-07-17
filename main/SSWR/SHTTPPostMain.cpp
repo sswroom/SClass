@@ -38,7 +38,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		if (fileSize > 0)
 		{
 			fileBuff = MemAlloc(UInt8, fileSize);
-			if (fs->Read(fileBuff, fileSize) != fileSize)
+			if (fs->Read(Data::ByteArray(fileBuff, fileSize)) != fileSize)
 			{
 				console->WriteLineC(UTF8STRC("Error in reading file"));
 				fileSize = 0;
@@ -106,7 +106,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 				IO::MemoryStream mstm;
 				UOSInt readSize;
 
-				while ((readSize = cli->Read(buff, 2048)) > 0)
+				while ((readSize = cli->Read(BYTEARR(buff))) > 0)
 				{
 					mstm.Write(buff, readSize);
 				}
