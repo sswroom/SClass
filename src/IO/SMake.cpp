@@ -774,17 +774,24 @@ void IO::SMake::CompileTask(void *userObj)
 	CompileReq *req = (CompileReq *)userObj;
 	if (!req->me->ExecuteCmd(req->cmd->ToCString()))
 	{
-		req->errorState[0] = true;
+		req->me->error = true;
 	}
 	req->cmd->Release();
 	MemFree(req);
 }
 
-void IO::SMake::CompileObject(Bool *errorState, Text::CString cmd)
+void IO::SMake::CompileObject(Text::CString cmd)
 {
 	CompileReq *req = MemAlloc(CompileReq, 1);
-	req->errorState = errorState;
 	req->cmd = Text::String::New(cmd);
+	req->me = this;
+	this->tasks->AddTask(CompileTask, req);
+}
+
+void IO::SMake::CompileObject(NotNullPtr<Text::String> cmd)
+{
+	CompileReq *req = MemAlloc(CompileReq, 1);
+	req->cmd = cmd;
 	req->me = this;
 	this->tasks->AddTask(CompileTask, req);
 }
@@ -856,7 +863,6 @@ Bool IO::SMake::CompileProgInternal(NotNullPtr<const ProgramItem> prog, Bool asm
 	IO::SMake::ConfigItem *libsCfg = this->cfgMap.Get(CSTR("LIBS"));
 	Data::DateTime dt1;
 	Data::DateTime dt2;
-	Bool errorState = false;
 	if (cppCfg == 0)
 	{
 		this->SetErrorMsg(CSTR("CXX config not found"));
@@ -905,7 +911,7 @@ Bool IO::SMake::CompileProgInternal(NotNullPtr<const ProgramItem> prog, Bool asm
 
 		Bool updateToDate = false;
 		Int64 lastTime;
-		if (errorState)
+		if (this->HasError())
 		{
 			this->tasks->WaitForIdle();
 			return false;
@@ -1013,7 +1019,7 @@ Bool IO::SMake::CompileProgInternal(NotNullPtr<const ProgramItem> prog, Bool asm
 					sb.Append(subProg->srcFile);
 				}
 
-				this->CompileObject(&errorState, sb.ToCString());
+				this->CompileObject(sb.ToCString());
 				subProg->compiled = true;
 			}
 			else if (subProg->srcFile->EndsWith(UTF8STRC(".c")))
@@ -1053,7 +1059,7 @@ Bool IO::SMake::CompileProgInternal(NotNullPtr<const ProgramItem> prog, Bool asm
 				{
 					sb.Append(subProg->srcFile);
 				}
-				this->CompileObject(&errorState, sb.ToCString());
+				this->CompileObject(sb.ToCString());
 				subProg->compiled = true;
 			}
 			else if (subProg->srcFile->EndsWith(UTF8STRC(".asm")))
@@ -1088,7 +1094,7 @@ Bool IO::SMake::CompileProgInternal(NotNullPtr<const ProgramItem> prog, Bool asm
 				{
 					sb.Append(subProg->srcFile);
 				}
-				this->CompileObject(&errorState, sb.ToCString());
+				this->CompileObject(sb.ToCString());
 				subProg->compiled = true;
 			}
 			else if (subProg->srcFile->EndsWith(UTF8STRC(".s")))
@@ -1108,8 +1114,9 @@ Bool IO::SMake::CompileProgInternal(NotNullPtr<const ProgramItem> prog, Bool asm
 
 		i++;
 	}
-	this->tasks->WaitForIdle();
-	if (errorState)
+	if (!this->asyncMode)
+		this->tasks->WaitForIdle();
+	if (this->HasError())
 	{
 		return false;
 	}
@@ -1171,39 +1178,63 @@ Bool IO::SMake::CompileProgInternal(NotNullPtr<const ProgramItem> prog, Bool asm
 			AppendCfg(&sb, lib->ToCString());
 			i++;
 		}
-		if (!this->ExecuteCmd(sb.ToCString()))
+		if (this->asyncMode)
 		{
-			return false;
+			this->linkCmds.Add(Text::String::New(sb.ToCString()));
+		}
+		else
+		{
+			if (!this->ExecuteCmd(sb.ToCString()))
+			{
+				return false;
+			}
 		}
 	}
 
 	if (enableTest)
 	{
-		if (this->cmdWriter)
+		if (this->asyncMode)
 		{
-			sb.ClearStr();
-			sb.AppendC(UTF8STRC("Testing "));
-			sb.Append(prog->name);
-			this->cmdWriter->WriteLineC(sb.ToString(), sb.GetLength());
+			this->testProgs.Add(prog);
 		}
-		sb.ClearStr();
-		sb.Append(this->basePath);
-		sb.AppendC(UTF8STRC("bin"));
-		sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
-		sb.Append(prog->name);
-
-		Text::StringBuilderUTF8 sbRet;
-		Int32 ret = Manage::Process::ExecuteProcess(sb.ToCString(), &sbRet);
-		if (ret != 0)
+		else
 		{
-			sb.ClearStr();
-			sb.AppendC(UTF8STRC("Test failed: "));
-			sb.Append(prog->name);
-			this->SetErrorMsg(sb.ToCString());
-			return false;
+			if (!this->TestProg(prog, sb))
+			{
+				return false;
+			}
 		}
 	}
 
+	return true;
+}
+
+Bool IO::SMake::TestProg(NotNullPtr<const ProgramItem> prog, NotNullPtr<Text::StringBuilderUTF8> sb)
+{
+	if (this->cmdWriter)
+	{
+		sb->ClearStr();
+		sb->AppendC(UTF8STRC("Testing "));
+		sb->Append(prog->name);
+		this->cmdWriter->WriteLineC(sb->ToString(), sb->GetLength());
+	}
+	sb->ClearStr();
+	sb->Append(this->basePath);
+	sb->AppendC(UTF8STRC("bin"));
+	sb->AppendChar(IO::Path::PATH_SEPERATOR, 1);
+	sb->Append(prog->name);
+
+	Text::StringBuilderUTF8 sbRet;
+	Int32 ret = Manage::Process::ExecuteProcess(sb->ToCString(), &sbRet);
+	if (ret != 0)
+	{
+		sb->ClearStr();
+		sb->AppendC(UTF8STRC("Test failed: "));
+		sb->Append(prog->name);
+		this->SetErrorMsg(sb->ToCString());
+		this->error = true;
+		return false;
+	}
 	return true;
 }
 
@@ -1218,6 +1249,8 @@ IO::SMake::SMake(Text::CString cfgFile, UOSInt threadCnt, IO::Writer *messageWri
 {
 	NEW_CLASS(this->tasks, Sync::ParallelTask(threadCnt, false));
 	this->errorMsg = 0;
+	this->error = false;
+	this->asyncMode = false;
 	UOSInt i = cfgFile.LastIndexOf(IO::Path::PATH_SEPERATOR);
 	UTF8Char sbuff[512];
 	if (i != INVALID_INDEX)
@@ -1254,6 +1287,7 @@ IO::SMake::~SMake()
 		cfg->value->Release();
 		MemFree(cfg);
 	}
+	this->ClearLinks();
 
 //	Data::ArrayList<IO::SMake::ProgramItem*> *progList = progMap->GetValues();
 	IO::SMake::ProgramItem *prog;
@@ -1289,9 +1323,30 @@ IO::ParserType IO::SMake::GetParserType() const
 	return ParserType::Smake;
 }
 
+void IO::SMake::ClearLinks()
+{
+	LIST_FREE_STRING(&this->linkCmds);
+	this->testProgs.Clear();
+}
+
+void IO::SMake::ClearStatus()
+{
+	this->error = false;
+	UOSInt i = this->progMap.GetCount();
+	while (i-- > 0)
+	{
+		this->progMap.GetItem(i)->compiled = false;
+	}
+}
+
 Bool IO::SMake::IsLoadFailed() const
 {
 	return this->errorMsg != 0;
+}
+
+Bool IO::SMake::HasError() const
+{
+	return this->error;
 }
 
 Bool IO::SMake::GetLastErrorMsg(Text::StringBuilderUTF8 *sb) const
@@ -1335,6 +1390,48 @@ void IO::SMake::SetThreadCnt(UOSInt threadCnt)
 	{
 		DEL_CLASS(this->tasks);
 		NEW_CLASS(this->tasks, Sync::ParallelTask(threadCnt, false));
+	}
+}
+
+void IO::SMake::SetAsyncMode(Bool asyncMode)
+{
+	this->asyncMode = asyncMode;
+}
+
+void IO::SMake::AsyncPostCompile()
+{
+	this->tasks->WaitForIdle();
+	NotNullPtr<Text::String> cmd;
+	UOSInt i = this->linkCmds.GetCount();
+	while (!this->error)
+	{
+		if (i == 0)
+			break;
+		i--;
+		if (cmd.Set(this->linkCmds.RemoveAt(i)))
+		{
+			CompileObject(cmd);
+		}
+	}
+
+	if (!this->error)
+	{
+		i = this->testProgs.GetCount();
+		if (i > 0)
+		{
+			Text::StringBuilderUTF8 sb;
+			NotNullPtr<const ProgramItem> prog;
+			while (i-- > 0)
+			{
+				if (prog.Set(this->testProgs.RemoveAt(i)))
+				{
+					if (!TestProg(prog, sb))
+					{
+						return;
+					}
+				}
+			}
+		}
 	}
 }
 

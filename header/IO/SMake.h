@@ -21,7 +21,6 @@ namespace IO
 		typedef struct
 		{
 			NotNullPtr<Text::String> cmd;
-			Bool *errorState;
 			SMake *me;
 		} CompileReq;
 	public:
@@ -53,6 +52,10 @@ namespace IO
 		IO::Writer *cmdWriter;
 		Text::String *debugObj;
 		Sync::ParallelTask *tasks;
+		Bool error;
+		Bool asyncMode;
+		Data::ArrayListNN<Text::String> linkCmds;
+		Data::ArrayListNN<const ProgramItem> testProgs;
 
 		void AppendCfgItem(Text::StringBuilderUTF8 *sb, Text::CString val);
 		void AppendCfgPath(Text::StringBuilderUTF8 *sb, Text::CString path);
@@ -66,8 +69,11 @@ namespace IO
 		Bool ParseProgInternal(Data::FastStringMap<Int32> *objList, Data::FastStringMap<Int32> *libList, Data::FastStringMap<Int32> *procList, Data::ArrayListStringNN *headerList, Int64 *latestTime, Bool *progGroup, NotNullPtr<const ProgramItem> prog, NotNullPtr<Text::StringBuilderUTF8> tmpSb);
 
 		static void __stdcall CompileTask(void *userObj);
-		void CompileObject(Bool *errorState, Text::CString cmd);
+		static void __stdcall TestTask(void *userObj);
+		void CompileObject(Text::CString cmd);
+		void CompileObject(NotNullPtr<Text::String> cmd);
 		Bool CompileProgInternal(NotNullPtr<const ProgramItem> prog, Bool asmListing, Bool enableTest);
+		Bool TestProg(NotNullPtr<const ProgramItem> prog, NotNullPtr<Text::StringBuilderUTF8> sb);
 
 		void SetErrorMsg(Text::CString msg);
 	public:
@@ -76,12 +82,18 @@ namespace IO
 
 		virtual IO::ParserType GetParserType() const;
 
+		void ClearLinks();
+		void ClearStatus();
 		Bool IsLoadFailed() const;
+		Bool HasError() const;
 		Bool GetLastErrorMsg(Text::StringBuilderUTF8 *sb) const;
 		void SetMessageWriter(IO::Writer *messageWriter);
 		void SetCommandWriter(IO::Writer *cmdWriter);
 		void SetDebugObj(Text::CString debugObj);
 		void SetThreadCnt(UOSInt threadCnt);
+		void SetAsyncMode(Bool asyncMode);
+
+		void AsyncPostCompile();
 
 		const Data::ArrayList<ConfigItem*> *GetConfigList() const;
 		Bool HasProg(Text::CString progName) const;

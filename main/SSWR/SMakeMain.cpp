@@ -16,6 +16,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	UOSInt k;
 	UTF8Char **cmdLines = progCtrl->GetCommandLines(progCtrl, &cmdCnt);
 	showHelp = true;
+	Bool asyncMode = true;
 
 	Bool verbose = false;
 	i = 1;
@@ -82,10 +83,18 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 				{
 					smake.SetThreadCnt(1);
 				}
+				else if (cmdLines[i][1] == 'S')
+				{
+					asyncMode = false;
+				}
 			}
 			i++;
 		}
 
+		if (asyncMode)
+		{
+			smake.SetAsyncMode(true);
+		}
 		i = 1;
 		while (i < cmdCnt)
 		{
@@ -125,6 +134,10 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			}
 			i++;
 		}
+		if (asyncMode && !showHelp)
+		{
+			smake.AsyncPostCompile();
+		}
 	}
 	if (showHelp)
 	{
@@ -135,6 +148,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		console.WriteLineC(UTF8STRC("-a                 Assembly listing"));
 		console.WriteLineC(UTF8STRC("-q                 Quiet"));
 		console.WriteLineC(UTF8STRC("-s                 Single Thread"));
+		console.WriteLineC(UTF8STRC("-S                 Sync Mode (disable Async Mode)"));
 	}
 	return 0;
 }
