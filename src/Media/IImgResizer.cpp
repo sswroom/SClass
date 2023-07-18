@@ -53,6 +53,8 @@ Media::StaticImage *Media::IImgResizer::ProcessToNew(const Media::Image *srcImag
 void Media::IImgResizer::CalOutputSize(const Media::FrameInfo *srcInfo, Math::Size2D<UOSInt> targetSize, Media::FrameInfo *destInfo, Media::IImgResizer::ResizeAspectRatio rar)
 {
 	destInfo->Set(srcInfo);
+	if (targetSize.x == 0 && targetSize.y == 0)
+		return;
 	if (rar == Media::IImgResizer::RAR_IGNOREAR)
 	{
 		destInfo->dispSize = targetSize;

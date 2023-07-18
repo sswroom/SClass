@@ -14,26 +14,25 @@ DB::DBList::~DBList()
 
 void DB::DBList::Close()
 {
-	DBInfo *db;
-	UOSInt i = this->dbList.GetCount();
-	while (i-- > 0)
+	NotNullPtr<DBInfo> db;
+	Data::ArrayIterator<NotNullPtr<DBInfo>> it = this->dbList.Iterator();
+	while (it.HasNext())
 	{
-		db = this->dbList.GetItem(i);
-		DEL_CLASS(db->db);
-		MemFree(db);
+		db = it.Next();
+		db->db.Delete();
+		MemFreeNN(db);
 	}
 	this->dbList.Clear();
 }
 
-void DB::DBList::AddDB(DB::DBTool *db)
+void DB::DBList::AddDB(NotNullPtr<DB::DBTool> db)
 {
-	DBInfo *dbInfo;
+	NotNullPtr<DBInfo> dbInfo;
 	Sync::MutexUsage mutUsage(&this->dbMut);
-	dbInfo = MemAlloc(DBInfo, 1);
+	dbInfo = MemAllocNN(DBInfo, 1);
 	dbInfo->db = db;
 	dbInfo->isUsing = false;
 	this->dbList.Add(dbInfo);
-	mutUsage.EndUse();
 }
 
 DB::DBTool *DB::DBList::UseDB()
@@ -65,7 +64,7 @@ DB::DBTool *DB::DBList::UseDB()
 				dbInfo->isUsing = true;
 				this->nextIndex = k;
 				mutUsage.EndUse();
-				return dbInfo->db;
+				return dbInfo->db.Ptr();
 			}
 		}
 		mutUsage.EndUse();
@@ -83,17 +82,16 @@ void DB::DBList::UnuseDB(DB::DBTool *db)
 	while (i-- > 0)
 	{
 		dbInfo = this->dbList.GetItem(i);
-		if (dbInfo->db == db)
+		if (dbInfo->db.Ptr() == db)
 		{
 			dbInfo->isUsing = false;
 			this->dbEvt.Set();
 			break;
 		}
 	}
-	mutUsage.EndUse();
 }
 
-UOSInt DB::DBList::GetCount()
+UOSInt DB::DBList::GetCount() const
 {
 	return this->dbList.GetCount();
 }

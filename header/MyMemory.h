@@ -41,9 +41,11 @@ void MemDecCounter(void *ptr);
 #define SDEL_CLASS(variable) if (variable) {DEL_CLASS(variable); variable = 0;}
 
 #define MemAlloc(T, cnt) (T*)MAlloc(sizeof(T) * (cnt))
+#define MemAllocNN(T, cnt) NotNullPtr<T>::FromPtr((T*)MAlloc(sizeof(T) * (cnt)))
 #define MemAllocA(T, cnt) (T*)MAllocA64(sizeof(T) * (cnt))
 #define MemAllocA64(T, cnt) (T*)MAllocA64(sizeof(T) * (cnt))
 #define MemFreeA64(ptr) MemFreeA(ptr)
+#define MemFreeNN(ptr) MemFree(ptr.Ptr())
 
 void MemPtrChk(void *ptr);
 void MemInit();

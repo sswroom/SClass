@@ -12,12 +12,12 @@ namespace DB
 	private:
 		typedef struct
 		{
-			DB::DBTool *db;
+			NotNullPtr<DB::DBTool> db;
 			Bool isUsing;
 		} DBInfo;
 
 	private:
-		Data::ArrayList<DBInfo *> dbList;
+		Data::ArrayListNN<DBInfo> dbList;
 		Sync::Mutex dbMut;
 		Sync::Event dbEvt;
 		UOSInt nextIndex;
@@ -27,10 +27,10 @@ namespace DB
 		~DBList();
 
 		void Close();
-		void AddDB(DB::DBTool *db);
+		void AddDB(NotNullPtr<DB::DBTool> db);
 		DB::DBTool *UseDB();
 		void UnuseDB(DB::DBTool *db);
-		UOSInt GetCount();
+		UOSInt GetCount() const;
 	};
 }
 #endif
