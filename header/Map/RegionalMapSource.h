@@ -43,7 +43,7 @@ namespace Map
 		static MapInfo maps[];
 	public:
 		static const MapInfo *GetMapInfos(UOSInt *cnt);
-		static Map::MapDrawLayer *OpenMap(const MapInfo *map, Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, Parser::ParserList *parsers, Net::WebBrowser *browser);
+		static Map::MapDrawLayer *OpenMap(const MapInfo *map, NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, Parser::ParserList *parsers, Net::WebBrowser *browser);
 	};
 }
 #endif

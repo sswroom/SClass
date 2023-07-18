@@ -18,7 +18,6 @@ IO::Writer *console;
 Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	Net::WebServer::WebListener *svr;
-	Net::SocketFactory *sockf;
 	Net::WebServer::WebStandardHandler *hdlr;
 	Text::StringBuilderUTF8 sb;
 	UInt16 port;
@@ -50,7 +49,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	sb.AppendC(UTF8STRC("Listening to port "));
 	sb.AppendI32(port);
 	console->WriteLineC(sb.ToString(), sb.GetLength());
-	NEW_CLASS(sockf, Net::OSSocketFactory(true));
+	Net::OSSocketFactory sockf(true);
 	NEW_CLASS(hdlr, Net::WebServer::HTTPDirectoryHandler(path, true, 65536, true));
 	NEW_CLASS(svr, Net::WebServer::WebListener(sockf, 0, hdlr, port, 120, 8, CSTR("sswr/1.0"), false, Net::WebServer::KeepAlive::Default, true));
 	if (!svr->IsError())
@@ -63,7 +62,6 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	}
 	DEL_CLASS(svr);
 	hdlr->Release();
-	DEL_CLASS(sockf);
 	DEL_CLASS(console);
 
 	return 0;

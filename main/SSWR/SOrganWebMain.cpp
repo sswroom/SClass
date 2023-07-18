@@ -22,12 +22,10 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		IO::ConsoleWriter console;
 		UInt32 scnSize = 0;
 		Int32 unorganizedGroupId = 0;
-		SSWR::OrganWeb::OrganWebEnv *env;
 		Net::OSSocketFactory sockf(true);
 		Net::SSLEngine *ssl = 0;
 		IO::LogTool log;
 		Text::String *s;
-		env = 0;
 		Text::CString osmCacheDir;
 		UTF8Char sbuff[512];
 		UTF8Char *sptr;
@@ -46,7 +44,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			{
 				if (s->ToUInt16(&sslPort) && sslPort != 0)
 				{
-					ssl =  Net::SSLEngineFactory::Create(&sockf, false);
+					ssl =  Net::SSLEngineFactory::Create(sockf, false);
 					if (ssl == 0)
 					{
 						console.WriteLineC(UTF8STRC("Error in initializing SSL engine"));
@@ -91,7 +89,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			}
 			else if (cfg->GetValue(CSTR("MySQLServer")))
 			{
-				db = Net::MySQLTCPClient::CreateDBTool(&sockf, cfg->GetValue(CSTR("MySQLServer")), cfg->GetValue(CSTR("MySQLDB")), Text::String::OrEmpty(cfg->GetValue(CSTR("MySQLUID"))), Text::String::OrEmpty(cfg->GetValue(CSTR("MySQLPwd"))), &log, CSTR("DB: "));
+				db = Net::MySQLTCPClient::CreateDBTool(sockf, cfg->GetValue(CSTR("MySQLServer")), cfg->GetValue(CSTR("MySQLDB")), Text::String::OrEmpty(cfg->GetValue(CSTR("MySQLUID"))), Text::String::OrEmpty(cfg->GetValue(CSTR("MySQLPwd"))), &log, CSTR("DB: "));
 			}
 			else
 			{
@@ -110,10 +108,10 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 				sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("OSMTile"));
 				osmCacheDir = CSTRP(sbuff, sptr);
 			}
-			NEW_CLASS(env, SSWR::OrganWeb::OrganWebEnv(&sockf, ssl, &log, db, cfg->GetValue(CSTR("ImageDir")), port, sslPort, cfg->GetValue(CSTR("CacheDir")), cfg->GetValue(CSTR("DataDir")), scnSize, cfg->GetValue(CSTR("ReloadPwd")), unorganizedGroupId, Media::DrawEngineFactory::CreateDrawEngine(), osmCacheDir));
+			SSWR::OrganWeb::OrganWebEnv env(sockf, ssl, &log, db, cfg->GetValue(CSTR("ImageDir")), port, sslPort, cfg->GetValue(CSTR("CacheDir")), cfg->GetValue(CSTR("DataDir")), scnSize, cfg->GetValue(CSTR("ReloadPwd")), unorganizedGroupId, Media::DrawEngineFactory::CreateDrawEngine(), osmCacheDir);
 			DEL_CLASS(cfg);
 
-			if (env->IsError())
+			if (env.IsError())
 			{
 				console.WriteLineC(UTF8STRC("Error in starting server"));
 			}
@@ -122,8 +120,6 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 				console.WriteLineC(UTF8STRC("SOrganWeb started"));
 				progCtrl->WaitForExit(progCtrl);
 			}
-
-			DEL_CLASS(env);
 		}
 
 		SDEL_CLASS(ssl);

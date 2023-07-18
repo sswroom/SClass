@@ -20,10 +20,9 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	UTF8Char *sptr;
 
 	NEW_CLASS(console, IO::ConsoleWriter());
-	Net::SocketFactory *sockf;
 	Net::SSLEngine *ssl;
 	Bool succ = true;
-	NEW_CLASS(sockf, Net::OSSocketFactory(false));
+	Net::OSSocketFactory sockf(false);
 	ssl = Net::SSLEngineFactory::Create(sockf, true);
 	if (ssl == 0)
 	{
@@ -57,7 +56,6 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		hdlr->Release();
 	}
 	SDEL_CLASS(ssl);
-	DEL_CLASS(sockf);
 	DEL_CLASS(console);
 	return 0;
 }

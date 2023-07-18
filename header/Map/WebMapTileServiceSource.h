@@ -78,7 +78,7 @@ namespace Map
 		Text::EncodingFactory *encFact;
 		NotNullPtr<Text::String> wmtsURL;
 		NotNullPtr<Text::String> cacheDir;
-		Net::SocketFactory *sockf;
+		NotNullPtr<Net::SocketFactory> sockf;
 		Net::SSLEngine *ssl;
 		Data::FastStringMap<TileLayer*> layers;
 		TileLayer *currLayer;
@@ -101,7 +101,7 @@ namespace Map
 		void ReleaseTileMatrixDefSet(TileMatrixDefSet *set);
 		void ReleaseResourceURL(ResourceURL *resourceURL);
 	public:
-		WebMapTileServiceSource(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, Text::CString wmtsURL);
+		WebMapTileServiceSource(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, Text::CString wmtsURL);
 		virtual ~WebMapTileServiceSource();
 
 		virtual Text::CString GetName();

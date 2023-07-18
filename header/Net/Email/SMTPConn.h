@@ -40,7 +40,7 @@ namespace Net
 			static UInt32 __stdcall SMTPThread(void *userObj);
 			UInt32 WaitForResult(UTF8Char **msgRetEnd);
 		public:
-			SMTPConn(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CString host, UInt16 port, ConnType connType, IO::Writer *logWriter, Data::Duration timeout);
+			SMTPConn(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::CString host, UInt16 port, ConnType connType, IO::Writer *logWriter, Data::Duration timeout);
 			~SMTPConn();
 
 			Bool IsError();

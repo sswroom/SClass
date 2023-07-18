@@ -27,7 +27,7 @@ namespace SSWR
 			UI::GUIButton *btnRequest;
 			UI::GUIListBox *lbResponse;
 
-			Net::SocketFactory *sockf;
+			NotNullPtr<Net::SocketFactory> sockf;
 
 			static void __stdcall OnRequestClicked(void *userObj);
 		public:

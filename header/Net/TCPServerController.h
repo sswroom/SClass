@@ -28,7 +28,7 @@ namespace Net
 	private:
 		Net::TCPClientMgr *cliMgr;
 		Net::TCPServer *svr;
-		Net::SocketFactory *sockf;
+		NotNullPtr<Net::SocketFactory> sockf;
 		UOSInt maxBuffSize;
 		TCPServerHandler *hdlr;
 
@@ -38,7 +38,7 @@ namespace Net
 		static void __stdcall DataHdlr(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, const UInt8 *buff, UOSInt size);
 		static void __stdcall TimeoutHdlr(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData);
 	public:
-		TCPServerController(Net::SocketFactory *sockf, IO::LogTool *log, UInt16 port, Text::CString prefix, UOSInt maxBuffSize, TCPServerHandler *hdlr, UOSInt workerCnt, Int32 timeoutSec, Bool autoStart);
+		TCPServerController(NotNullPtr<Net::SocketFactory> sockf, IO::LogTool *log, UInt16 port, Text::CString prefix, UOSInt maxBuffSize, TCPServerHandler *hdlr, UOSInt workerCnt, Int32 timeoutSec, Bool autoStart);
 		~TCPServerController();
 
 		Bool Start();

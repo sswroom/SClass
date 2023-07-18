@@ -188,7 +188,7 @@ Bool Net::OpenSSLEngine::SetRSAPadding(void *ctx, Crypto::Encrypt::RSACipher::Pa
 	return EVP_PKEY_CTX_set_rsa_padding((EVP_PKEY_CTX*)ctx, ipadding) > 0;
 }
 
-Net::OpenSSLEngine::OpenSSLEngine(Net::SocketFactory *sockf, Method method) : Net::SSLEngine(sockf)
+Net::OpenSSLEngine::OpenSSLEngine(NotNullPtr<Net::SocketFactory> sockf, Method method) : Net::SSLEngine(sockf)
 {
 	Net::OpenSSLCore::Init();
 	const SSL_METHOD *m = 0;

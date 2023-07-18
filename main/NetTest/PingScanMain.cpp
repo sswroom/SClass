@@ -10,7 +10,7 @@
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
 
-Net::SocketFactory *sockf;
+NotNullPtr<Net::SocketFactory> sockf;
 IO::ConsoleWriter *console;
 Net::ICMPScanner *scanner;
 
@@ -57,7 +57,7 @@ void PingScan(UInt32 ip)
 
 Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
-	NEW_CLASS(sockf, Net::OSSocketFactory(true));
+	NEW_CLASSNN(sockf, Net::OSSocketFactory(true));
 	NEW_CLASS(console, IO::ConsoleWriter());
 	NEW_CLASS(scanner, Net::ICMPScanner(sockf));
 
@@ -95,6 +95,6 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 
 	DEL_CLASS(scanner);
 	DEL_CLASS(console);
-	DEL_CLASS(sockf);
+	sockf.Delete();
 	return 0;
 }

@@ -67,7 +67,7 @@ void Net::NetBIOSScanner::FreeAnswer(NameAnswer *ans)
 	MemFree(ans);
 }
 
-Net::NetBIOSScanner::NetBIOSScanner(Net::SocketFactory *sockf)
+Net::NetBIOSScanner::NetBIOSScanner(NotNullPtr<Net::SocketFactory> sockf)
 {
 	NEW_CLASS(this->svr, Net::UDPServer(sockf, 0, 0, CSTR_NULL, OnUDPPacket, this, 0, CSTR_NULL, 2, false));
 	this->hdlr = 0;

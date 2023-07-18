@@ -18,7 +18,7 @@ namespace Map
 			Text::String *gooCliId;
 			UInt8 *gooPrivKey;
 			UOSInt gooPrivKeyLeng;
-			Net::SocketFactory *sockf;
+			NotNullPtr<Net::SocketFactory> sockf;
 			Net::SSLEngine *ssl;
 			Data::DateTime lastSrchDate;
 			Sync::Mutex mut;
@@ -27,8 +27,8 @@ namespace Map
 			UInt32 srchCnt;
 			
 		public:
-			GoogleSearcher(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::String *gooKey, Text::String *gooCliId, Text::String *gooPrivKey, IO::Writer *errWriter);
-			GoogleSearcher(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CString gooKey, Text::CString gooCliId, Text::CString gooPrivKey, IO::Writer *errWriter);
+			GoogleSearcher(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::String *gooKey, Text::String *gooCliId, Text::String *gooPrivKey, IO::Writer *errWriter);
+			GoogleSearcher(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::CString gooKey, Text::CString gooCliId, Text::CString gooPrivKey, IO::Writer *errWriter);
 			virtual ~GoogleSearcher();
 
 			UTF8Char *SearchName(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl pos, Text::CString lang); //lang = en-us, zh-cn, zh-tw

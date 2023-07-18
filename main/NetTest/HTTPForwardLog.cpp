@@ -70,9 +70,8 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	IO::ConfigFile *cfg = IO::IniFile::ParseProgConfig(0);
 	if (cfg)
 	{
-		Net::SocketFactory *sockf;
 		Bool succ = true;
-		NEW_CLASS(sockf, Net::OSSocketFactory(false));
+		Net::OSSocketFactory sockf(false);
 		if ((s = cfg->GetValue(CSTR("ListenPort"))) == 0 || !s->ToUInt16(&listenPort))
 		{
 			console->WriteLineC(UTF8STRC("Config ListenPort is not valid"));
@@ -113,7 +112,6 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			DEL_CLASS(svr);
 			hdlr->Release();
 		}
-		DEL_CLASS(sockf);
 		DEL_CLASS(cfg);
 	}
 	DEL_CLASS(logger);

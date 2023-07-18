@@ -431,7 +431,7 @@ Text::String *Net::RSSItem::GetId()
 	}
 }
 
-Net::RSS::RSS(Text::CString url, Text::String *userAgent, Net::SocketFactory *sockf, Net::SSLEngine *ssl, Data::Duration timeout)
+Net::RSS::RSS(Text::CString url, Text::String *userAgent, NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Data::Duration timeout)
 {
 	this->isError = true;
 	this->title = 0;

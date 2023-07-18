@@ -12,7 +12,7 @@ namespace Net
 	class MODBUSTCPListener
 	{
 	private:
-		Net::SocketFactory *sockf;
+		NotNullPtr<Net::SocketFactory> sockf;
 		Net::TCPServer *svr;
 		Net::TCPClientMgr *cliMgr;
 		UInt32 delay;
@@ -24,7 +24,7 @@ namespace Net
 		static void __stdcall OnClientData(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, const UInt8 *buff, UOSInt size);
 		static void __stdcall OnClientTimeout(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData);
 	public:
-		MODBUSTCPListener(Net::SocketFactory *sockf, UInt16 port, IO::LogTool *log, Bool autoStart);
+		MODBUSTCPListener(NotNullPtr<Net::SocketFactory> sockf, UInt16 port, IO::LogTool *log, Bool autoStart);
 		virtual ~MODBUSTCPListener();
 
 		Bool Start();

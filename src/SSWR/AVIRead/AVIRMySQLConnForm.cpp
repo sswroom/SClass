@@ -20,7 +20,7 @@ void __stdcall SSWR::AVIRead::AVIRMySQLConnForm::OnOKClicked(void *userObj)
 	UInt16 port;
 
 	Net::MySQLTCPClient *conn;
-	Net::SocketFactory *sockf = me->core->GetSocketFactory();
+	NotNullPtr<Net::SocketFactory> sockf = me->core->GetSocketFactory();
 	Net::SocketUtil::AddressInfo addr;
 	if (!sbPort.ToUInt16(&port))
 	{

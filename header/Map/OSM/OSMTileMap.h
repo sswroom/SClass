@@ -17,8 +17,8 @@ namespace Map
 
 			Text::String *GetNextURL();
 		public:
-			OSMTileMap(Text::CString url, Text::CString cacheDir, UOSInt maxLevel, Net::SocketFactory *sockf, Net::SSLEngine *ssl);
-			OSMTileMap(Text::CString url, IO::SPackageFile *spkg, UOSInt maxLevel, Net::SocketFactory *sockf, Net::SSLEngine *ssl);
+			OSMTileMap(Text::CString url, Text::CString cacheDir, UOSInt maxLevel, NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl);
+			OSMTileMap(Text::CString url, IO::SPackageFile *spkg, UOSInt maxLevel, NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl);
 			virtual ~OSMTileMap();
 
 			void AddAlternateURL(Text::CString url);

@@ -13,7 +13,7 @@ namespace Net
 	class WebBrowser
 	{
 	private:
-		Net::SocketFactory *sockf;
+		NotNullPtr<Net::SocketFactory> sockf;
 		Net::SSLEngine *ssl;
 		NotNullPtr<Text::String> cacheDir;
 		Crypto::Hash::CRC32RIEEE hash;
@@ -21,7 +21,7 @@ namespace Net
 
 		UTF8Char *GetLocalFileName(UTF8Char *sbuff, const UTF8Char *url, UOSInt urlLen);
 	public:
-		WebBrowser(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CString cacheDir);
+		WebBrowser(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::CString cacheDir);
 		~WebBrowser();
 
 		IO::StreamData *GetData(Text::CString url, Bool forceReload, UTF8Char *contentType);

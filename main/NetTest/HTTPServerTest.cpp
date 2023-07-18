@@ -64,7 +64,6 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	Net::WebServer::WebListener *svr;
-	Net::SocketFactory *sockf;
 	Net::SSLEngine *ssl;
 	Net::WebServer::WebStandardHandler *hdlr;
 	Text::StringBuilderUTF8 sb;
@@ -92,7 +91,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 #endif
 	}
 
-	NEW_CLASS(sockf, Net::OSSocketFactory(true));
+	Net::OSSocketFactory sockf(true);
 #if defined(USESSL)
 	ssl = Net::SSLEngineFactory::Create(sockf, true);
 	if (ssl == 0 || !ssl->ServerSetCerts(CSTR("test.crt"), CSTR("test.key")))
@@ -129,7 +128,6 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		hdlr->Release();
 	}
 	SDEL_CLASS(ssl);
-	DEL_CLASS(sockf);
 	DEL_CLASS(console);
 	return 0;
 }

@@ -21,7 +21,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	UInt8 signData[2048];
 	UOSInt signLen;
 	Net::OSSocketFactory sockf(true);
-	Net::SSLEngine *ssl = Net::SSLEngineFactory::Create(&sockf, true);
+	Net::SSLEngine *ssl = Net::SSLEngineFactory::Create(sockf, true);
 	Crypto::Cert::X509File *x509 = 0;
 	if (ssl)
 	{

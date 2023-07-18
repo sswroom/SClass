@@ -174,7 +174,7 @@ namespace Net
 		typedef void (__stdcall *UpdateHandler)(WeatherSignal updatedSignal);
 	private:
 		UpdateHandler hdlr;
-		Net::SocketFactory *sockf;
+		NotNullPtr<Net::SocketFactory> sockf;
 		Net::SSLEngine *ssl;
 		Text::EncodingFactory *encFact;
 		Net::RSSReader *rss;
@@ -182,16 +182,16 @@ namespace Net
 
 		static WeatherSignal String2Signal(Text::String *textMessage);
 	public:
-		static WeatherSignal GetSignalSummary(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact);
-		static Bool GetCurrentTempRH(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Int32 *temperature, Int32 *rh);
-		static Bool GetWeatherForecast(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Language lang, WeatherForecast *weatherForecast);
+		static WeatherSignal GetSignalSummary(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact);
+		static Bool GetCurrentTempRH(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Int32 *temperature, Int32 *rh);
+		static Bool GetWeatherForecast(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Language lang, WeatherForecast *weatherForecast);
 		static void FreeWeatherForecast(WeatherForecast *weatherForecast);
-		static Bool GetLocalForecast(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Language lang, LocalForecast *localForecast);
+		static Bool GetLocalForecast(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Language lang, LocalForecast *localForecast);
 		static void FreeLocalForecast(LocalForecast *localForecast);
-		static Bool GetWarningSummary(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Data::ArrayList<WarningSummary*> *warnings);
+		static Bool GetWarningSummary(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Data::ArrayList<WarningSummary*> *warnings);
 		static void FreeWarningSummary(Data::ArrayList<WarningSummary*> *warnings);
 
-		HKOWeather(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, UpdateHandler hdlr);
+		HKOWeather(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, UpdateHandler hdlr);
 		virtual ~HKOWeather();
 
 		virtual void ItemAdded(Net::RSSItem *item);

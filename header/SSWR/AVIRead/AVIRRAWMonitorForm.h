@@ -46,7 +46,7 @@ namespace SSWR
 
 		private:
 			SSWR::AVIRead::AVIRCore *core;
-			Net::SocketFactory *sockf;
+			NotNullPtr<Net::SocketFactory> sockf;
 			IO::LogTool log;
 			UI::ListBoxLogger *logger;
 			Net::WebServer::WebListener *listener;

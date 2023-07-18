@@ -23,7 +23,7 @@ namespace Net
 		} DeviceStatus;
 		
 	private:
-		Net::SocketFactory *sockf;
+		NotNullPtr<Net::SocketFactory> sockf;
 		Net::UDPServer *svr;
 		UInt32 infIndex;
 		UInt32 infIP;
@@ -40,7 +40,7 @@ namespace Net
 
 		static void __stdcall PacketHdlr(const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData);
 	public:
-		DHCPServer(Net::SocketFactory *sockf, UInt32 infIP, UInt32 subnet, UInt32 firstIP, UInt32 devCount, UInt32 gateway, Data::ArrayList<UInt32> *dnsList);
+		DHCPServer(NotNullPtr<Net::SocketFactory> sockf, UInt32 infIP, UInt32 subnet, UInt32 firstIP, UInt32 devCount, UInt32 gateway, Data::ArrayList<UInt32> *dnsList);
 		~DHCPServer();
 
 		Bool IsError() const;

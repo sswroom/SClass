@@ -548,7 +548,7 @@ const UTF8Char *Net::LDAPClient::ParseFilter(Net::ASN1PDUBuilder *pdu, const UTF
 	}
 }
 
-Net::LDAPClient::LDAPClient(Net::SocketFactory *sockf, const Net::SocketUtil::AddressInfo *addr, UInt16 port, Data::Duration timeout)
+Net::LDAPClient::LDAPClient(NotNullPtr<Net::SocketFactory> sockf, const Net::SocketUtil::AddressInfo *addr, UInt16 port, Data::Duration timeout)
 {
 	this->sockf = sockf;
 	this->recvRunning = false;

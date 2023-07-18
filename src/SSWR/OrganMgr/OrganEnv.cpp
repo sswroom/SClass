@@ -140,7 +140,7 @@ OSInt SSWR::OrganMgr::WebFileSpeciesComparator::Compare(WebFileInfo *a, WebFileI
 SSWR::OrganMgr::OrganEnv::OrganEnv()
 {
 	this->drawEng = Media::DrawEngineFactory::CreateDrawEngine();
-	NEW_CLASS(this->sockf, Net::OSSocketFactory(true));
+	NEW_CLASSNN(this->sockf, Net::OSSocketFactory(true));
 	this->ssl = Net::SSLEngineFactory::Create(this->sockf, true);
 	this->currCate = 0;
 	this->cateIsFullDir = false;
@@ -208,7 +208,7 @@ SSWR::OrganMgr::OrganEnv::~OrganEnv()
 	SDEL_CLASS(this->langFile);
 	DEL_CLASS(this->drawEng);
 	SDEL_CLASS(this->ssl);
-	DEL_CLASS(this->sockf);
+	this->sockf.Delete();
 }
 
 Media::DrawEngine *SSWR::OrganMgr::OrganEnv::GetDrawEngine()
@@ -221,7 +221,7 @@ Parser::ParserList *SSWR::OrganMgr::OrganEnv::GetParserList()
 	return &this->parsers;
 }
 
-Net::SocketFactory *SSWR::OrganMgr::OrganEnv::GetSocketFactory()
+NotNullPtr<Net::SocketFactory> SSWR::OrganMgr::OrganEnv::GetSocketFactory()
 {
 	return this->sockf;
 }

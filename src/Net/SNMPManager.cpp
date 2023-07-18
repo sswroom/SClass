@@ -16,7 +16,7 @@ void Net::SNMPManager::FreeAllItems(Data::ArrayList<Net::SNMPUtil::BindingItem*>
 	itemList->Clear();
 }
 
-Net::SNMPManager::SNMPManager(Net::SocketFactory *sockf)
+Net::SNMPManager::SNMPManager(NotNullPtr<Net::SocketFactory> sockf)
 {
 	NEW_CLASS(this->cli, Net::SNMPClient(sockf));
 }

@@ -18,7 +18,7 @@ namespace Net
 		Net::SSLClient *CreateClientConn(void *sslObj, Socket *s, Text::CString hostName, ErrorType *err);
 		virtual Net::SSLClient *CreateServerConn(Socket *s);
 	public:
-		WinSSLEngine(Net::SocketFactory *sockf, Method method);
+		WinSSLEngine(NotNullPtr<Net::SocketFactory> sockf, Method method);
 		virtual ~WinSSLEngine();
 		
 		virtual Bool IsError();

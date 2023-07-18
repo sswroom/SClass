@@ -200,7 +200,7 @@ Bool SSWR::DataSync::SyncClient::SendUserData(const UInt8 *data, UOSInt dataSize
 	return succ;
 }
 
-SSWR::DataSync::SyncClient::SyncClient(Net::SocketFactory *sockf, Int32 serverId, Text::CString serverName, Text::CString clientHost, UInt16 cliPort, Data::Duration timeout) : protoHdlr(this)
+SSWR::DataSync::SyncClient::SyncClient(NotNullPtr<Net::SocketFactory> sockf, Int32 serverId, Text::CString serverName, Text::CString clientHost, UInt16 cliPort, Data::Duration timeout) : protoHdlr(this)
 {
 	this->sockf = sockf;
 	this->serverId = serverId;

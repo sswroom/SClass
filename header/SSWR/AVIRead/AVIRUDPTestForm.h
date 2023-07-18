@@ -32,7 +32,7 @@ namespace SSWR
 			} ThreadStatus;
 		private:
 			SSWR::AVIRead::AVIRCore *core;
-			Net::SocketFactory *sockf;
+			NotNullPtr<Net::SocketFactory> sockf;
 			Net::UDPServer *udp;
 			Bool autoReply;
 			Sync::Mutex mut;

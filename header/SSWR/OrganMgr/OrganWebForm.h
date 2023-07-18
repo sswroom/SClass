@@ -14,7 +14,7 @@ namespace SSWR
 		private:
 			UI::GUIButton *btnReload;
 
-			Net::SocketFactory *sockf;
+			NotNullPtr<Net::SocketFactory> sockf;
 			IO::LogTool *log;
 			OrganWebEnv *env;
 			

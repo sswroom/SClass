@@ -30,7 +30,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		sptr = Text::StrConcatC(sptr, UTF8STRC("log"));
 
 		log.AddFileLog(CSTRP(sbuff, sptr), IO::LogHandler::LogType::PerDay, IO::LogHandler::LogGroup::PerMonth, IO::LogHandler::LogLevel::Raw, "yyyy-MM-dd HH:mm:ss.fff", false);
-		Net::LoRaGWMonitor lora(&sockf, 1700, OnMessage, &log);
+		Net::LoRaGWMonitor lora(sockf, 1700, OnMessage, &log);
 		if (!lora.IsError())
 		{
 			console.WriteLineC(UTF8STRC("Listening to LoRa Gateway data"));

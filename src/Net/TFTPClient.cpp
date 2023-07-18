@@ -42,7 +42,7 @@ void __stdcall Net::TFTPClient::OnDataPacket(const Net::SocketUtil::AddressInfo 
 	}
 }
 
-Net::TFTPClient::TFTPClient(Net::SocketFactory *sockf, const Net::SocketUtil::AddressInfo *addr, UInt16 port)
+Net::TFTPClient::TFTPClient(NotNullPtr<Net::SocketFactory> sockf, const Net::SocketUtil::AddressInfo *addr, UInt16 port)
 {
 	this->addr = *addr;
 	this->port = port;

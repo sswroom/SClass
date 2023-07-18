@@ -67,7 +67,7 @@ void __stdcall Net::TCPServerController::TimeoutHdlr(NotNullPtr<Net::TCPClient> 
 {
 }
 
-Net::TCPServerController::TCPServerController(Net::SocketFactory *sockf, IO::LogTool *log, UInt16 port, Text::CString prefix, UOSInt maxBuffSize, Net::TCPServerController::TCPServerHandler *hdlr, UOSInt workerCnt, Int32 timeoutSec, Bool autoStart)
+Net::TCPServerController::TCPServerController(NotNullPtr<Net::SocketFactory> sockf, IO::LogTool *log, UInt16 port, Text::CString prefix, UOSInt maxBuffSize, Net::TCPServerController::TCPServerHandler *hdlr, UOSInt workerCnt, Int32 timeoutSec, Bool autoStart)
 {
 	this->cliMgr = 0;
 	this->sockf = sockf;

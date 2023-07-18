@@ -1071,7 +1071,7 @@ void SSWR::SMonitor::SMonitorSvrCore::UserPwdCalc(const UTF8Char *userName, cons
 
 SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(IO::Writer *writer, Media::DrawEngine *deng) : protoHdlr(this)
 {
-	NEW_CLASS(this->sockf, Net::OSSocketFactory(true));
+	NEW_CLASSNN(this->sockf, Net::OSSocketFactory(true));
 	NEW_CLASS(this->parsers, Parser::FullParserList());
 	this->deng = deng;
 	this->dataDir = 0;
@@ -1412,7 +1412,7 @@ SSWR::SMonitor::SMonitorSvrCore::~SMonitorSvrCore()
 
 	SDEL_CLASS(this->dataCRC);
 	DEL_CLASS(this->parsers);
-	DEL_CLASS(this->sockf);
+	this->sockf.Delete();
 	DEL_CLASS(this->deng);
 	SDEL_STRING(this->dataDir);
 }

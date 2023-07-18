@@ -26,7 +26,7 @@ namespace SSWR
 
 			typedef void (__stdcall *DataHandler)(void *userObj, const UInt8 *data, UOSInt dataSize);
 		private:
-			Net::SocketFactory *sockf;
+			NotNullPtr<Net::SocketFactory> sockf;
 			IO::ProtoHdlr::ProtoSyncHandler protoHdlr;
 			Net::TCPServer *svr;
 			Net::TCPClientMgr *cliMgr;
@@ -43,7 +43,7 @@ namespace SSWR
 			static void __stdcall OnClientData(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, const UInt8 *buff, UOSInt size);
 			static void __stdcall OnClientTimeout(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData);
 		public:
-			SyncServer(Net::SocketFactory *sockf, IO::LogTool *log, UInt16 port, Int32 serverId, Text::CString serverName, Text::CString syncClients, DataHandler dataHdlr, void *dataObj, Bool autoStart, Data::Duration cliTimeout);
+			SyncServer(NotNullPtr<Net::SocketFactory> sockf, IO::LogTool *log, UInt16 port, Int32 serverId, Text::CString serverName, Text::CString syncClients, DataHandler dataHdlr, void *dataObj, Bool autoStart, Data::Duration cliTimeout);
 			virtual ~SyncServer();
 
 			Bool Start();

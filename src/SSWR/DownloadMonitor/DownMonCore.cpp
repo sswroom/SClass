@@ -480,7 +480,7 @@ SSWR::DownloadMonitor::DownMonCore::DownMonCore() : checker(false)
 {
 	this->chkRunning = false;
 	this->chkToStop = false;
-	NEW_CLASS(this->sockf, Net::OSSocketFactory(true));
+	NEW_CLASSNN(this->sockf, Net::OSSocketFactory(true));
 	this->ssl = Net::SSLEngineFactory::Create(this->sockf, true);
 	this->chkStatus = CS_IDLE;
 
@@ -545,7 +545,7 @@ SSWR::DownloadMonitor::DownMonCore::~DownMonCore()
 	}
 
 	SDEL_CLASS(this->ssl);
-	DEL_CLASS(this->sockf);
+	this->sockf.Delete();
 }
 
 Bool SSWR::DownloadMonitor::DownMonCore::IsError()
@@ -553,7 +553,7 @@ Bool SSWR::DownloadMonitor::DownMonCore::IsError()
 	return !this->chkRunning;
 }
 
-Net::SocketFactory *SSWR::DownloadMonitor::DownMonCore::GetSocketFactory()
+NotNullPtr<Net::SocketFactory> SSWR::DownloadMonitor::DownMonCore::GetSocketFactory()
 {
 	return this->sockf;
 }

@@ -15,7 +15,7 @@
 #include "Text/StringBuilderUTF8.h"
 #endif
 
-Net::TCPClient::TCPClient(Net::SocketFactory *sockf, Text::CString name, UInt16 port, Data::Duration timeout) : IO::Stream(name)
+Net::TCPClient::TCPClient(NotNullPtr<Net::SocketFactory> sockf, Text::CString name, UInt16 port, Data::Duration timeout) : IO::Stream(name)
 {
 	this->currCnt = 0;
 	this->flags = 0;
@@ -64,7 +64,7 @@ Net::TCPClient::TCPClient(Net::SocketFactory *sockf, Text::CString name, UInt16 
 	this->cliId = sockf->GenSocketId(s);
 }
 
-Net::TCPClient::TCPClient(Net::SocketFactory *sockf, UInt32 ip, UInt16 port, Data::Duration timeout) : IO::Stream(CSTR(""))
+Net::TCPClient::TCPClient(NotNullPtr<Net::SocketFactory> sockf, UInt32 ip, UInt16 port, Data::Duration timeout) : IO::Stream(CSTR(""))
 {
 	this->currCnt = 0;
 	this->s = 0;
@@ -99,7 +99,7 @@ Net::TCPClient::TCPClient(Net::SocketFactory *sockf, UInt32 ip, UInt16 port, Dat
 	this->cliId = sockf->GenSocketId(s);
 }
 
-Net::TCPClient::TCPClient(Net::SocketFactory *sockf, const Net::SocketUtil::AddressInfo *addr, UInt16 port, Data::Duration timeout) : IO::Stream(CSTR(""))
+Net::TCPClient::TCPClient(NotNullPtr<Net::SocketFactory> sockf, const Net::SocketUtil::AddressInfo *addr, UInt16 port, Data::Duration timeout) : IO::Stream(CSTR(""))
 {
 	this->currCnt = 0;
 	this->s = 0;
@@ -161,7 +161,7 @@ Net::TCPClient::TCPClient(Net::SocketFactory *sockf, const Net::SocketUtil::Addr
 	this->cliId = sockf->GenSocketId(s);
 }
 
-Net::TCPClient::TCPClient(Net::SocketFactory *sockf, Socket *s) : IO::Stream(CSTR(""))
+Net::TCPClient::TCPClient(NotNullPtr<Net::SocketFactory> sockf, Socket *s) : IO::Stream(CSTR(""))
 {
 	this->sockf = sockf;
 	this->s = s;

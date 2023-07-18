@@ -37,7 +37,7 @@ Text::JSONBase *Net::WebSite::WebSiteInstagramControl::ParsePageJSON(Text::CStri
 	return baseData;
 }
 
-Net::WebSite::WebSiteInstagramControl::WebSiteInstagramControl(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, Text::String *userAgent)
+Net::WebSite::WebSiteInstagramControl::WebSiteInstagramControl(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, Text::String *userAgent)
 {
 	this->sockf = sockf;
 	this->ssl = ssl;

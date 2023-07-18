@@ -34,7 +34,7 @@ namespace Manage
 		UInt16 port;
 		Int32 svrMonConn;
 
-		Net::SocketFactory *sockf;
+		NotNullPtr<Net::SocketFactory> sockf;
 		Net::TCPClient *cli;
 		Bool cliErr;
 		Sync::Event *connREvt;
@@ -50,7 +50,7 @@ namespace Manage
 		static UInt32 __stdcall ConnRThread(void *conn);
 		void AddCommand(UInt8 *data, UOSInt dataSize, UInt16 cmdType);
 	public:
-		MonConn(EventHandler hdlr, void *userObj, Net::SocketFactory *sockf, IO::Writer *msgWriter, Data::Duration timeout);
+		MonConn(EventHandler hdlr, void *userObj, NotNullPtr<Net::SocketFactory> sockf, IO::Writer *msgWriter, Data::Duration timeout);
 		~MonConn();
 
 		Bool IsError();

@@ -9,7 +9,7 @@
 #include "Text/StringBuilder.h"
 #include "Text/XMLDOM.h"
 
-Map::MapBar::MapBarAdjuster::MapBarAdjuster(Net::SocketFactory *sockf, IO::Writer *errWriter)
+Map::MapBar::MapBarAdjuster::MapBarAdjuster(NotNullPtr<Net::SocketFactory> sockf, IO::Writer *errWriter)
 {
 	this->sockf = sockf;
 	this->errWriter = errWriter;

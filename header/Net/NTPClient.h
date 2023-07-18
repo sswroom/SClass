@@ -9,7 +9,7 @@ namespace Net
 	{
 	private:
 		Net::UDPServer *svr;
-		Net::SocketFactory *sockf;
+		NotNullPtr<Net::SocketFactory> sockf;
 		Sync::Mutex mut;
 		Sync::Event evt;
 
@@ -18,7 +18,7 @@ namespace Net
 
 		static void __stdcall PacketHdlr(const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData);
 	public:
-		NTPClient(Net::SocketFactory *sockf, UInt16 port);
+		NTPClient(NotNullPtr<Net::SocketFactory> sockf, UInt16 port);
 		~NTPClient();
 
 		Bool GetServerTime(Text::CString host, UInt16 port, Data::DateTime *svrTime); //def = 123

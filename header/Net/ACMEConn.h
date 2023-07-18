@@ -52,7 +52,7 @@ namespace Net
 			NotNullPtr<Text::String> token;
 		};
 	private:
-		Net::SocketFactory *sockf;
+		NotNullPtr<Net::SocketFactory> sockf;
 		Net::SSLEngine *ssl;
 		Crypto::Cert::X509Key *key;
 		NotNullPtr<Text::String> serverHost;
@@ -77,7 +77,7 @@ namespace Net
 		Challenge *ChallengeJSON(Text::JSONBase *json);
 		Challenge *ChallengeParse(const UInt8 *buff, UOSInt buffSize);
 	public:
-		ACMEConn(Net::SocketFactory *sockf, Text::CString serverHost, UInt16 port);
+		ACMEConn(NotNullPtr<Net::SocketFactory> sockf, Text::CString serverHost, UInt16 port);
 		~ACMEConn();
 
 		Bool IsError();

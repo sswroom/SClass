@@ -19,7 +19,7 @@
 #include "Text/MyStringFloat.h"
 #include "Text/TextBinEnc/Base64Enc.h"
 
-Map::GoogleMap::GoogleSearcher::GoogleSearcher(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::String *gooKey, Text::String *gooCliId, Text::String *gooPrivKey, IO::Writer *errWriter)
+Map::GoogleMap::GoogleSearcher::GoogleSearcher(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::String *gooKey, Text::String *gooCliId, Text::String *gooPrivKey, IO::Writer *errWriter)
 {
 	this->sockf = sockf;
 	this->ssl = ssl;
@@ -44,7 +44,7 @@ Map::GoogleMap::GoogleSearcher::GoogleSearcher(Net::SocketFactory *sockf, Net::S
 	this->lastSrchDate.SetCurrTimeUTC();
 }
 
-Map::GoogleMap::GoogleSearcher::GoogleSearcher(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CString gooKey, Text::CString gooCliId, Text::CString gooPrivKey, IO::Writer *errWriter)
+Map::GoogleMap::GoogleSearcher::GoogleSearcher(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::CString gooKey, Text::CString gooCliId, Text::CString gooPrivKey, IO::Writer *errWriter)
 {
 	this->sockf = sockf;
 	this->ssl = ssl;

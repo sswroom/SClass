@@ -33,7 +33,7 @@ namespace SSWR
 			Int32 currMapType;
 			Parser::ParserList *parsers;
 			Media::ColorManager *colorMgr;
-			Net::SocketFactory *sockf;
+			NotNullPtr<Net::SocketFactory> sockf;
 			Media::ColorManagerSess *colorSess;
 			Map::MapView *mapView;
 
@@ -44,7 +44,7 @@ namespace SSWR
 			static void __stdcall OnFileDrop(void *userObj, const WChar **files, OSInt nFiles);
 			static void __stdcall OnLayerDblClicked(void *userObj);
 		public:
-			MapReplayForm(UI::MSWindowUI *ui, UI::MSWindowForm *parent, Media::GDIEngine *eng, Parser::ParserList *parsers, Media::ColorManager *colorMgr, Net::SocketFactory *sockf);
+			MapReplayForm(UI::MSWindowUI *ui, UI::MSWindowForm *parent, Media::GDIEngine *eng, Parser::ParserList *parsers, Media::ColorManager *colorMgr, NotNullPtr<Net::SocketFactory> sockf);
 			virtual ~MapReplayForm();
 
 			virtual void EventMenuClicked(UInt16 cmdId);

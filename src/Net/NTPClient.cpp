@@ -29,7 +29,7 @@ void __stdcall Net::NTPClient::PacketHdlr(const Net::SocketUtil::AddressInfo *ad
 	}
 }
 
-Net::NTPClient::NTPClient(Net::SocketFactory *sockf, UInt16 port)
+Net::NTPClient::NTPClient(NotNullPtr<Net::SocketFactory> sockf, UInt16 port)
 {
 	this->sockf = sockf;
 	this->resultTime = 0;

@@ -56,7 +56,7 @@ void __stdcall Net::SNMPClient::OnSNMPPacket(const Net::SocketUtil::AddressInfo 
 	}
 }
 
-Net::SNMPClient::SNMPClient(Net::SocketFactory *sockf)
+Net::SNMPClient::SNMPClient(NotNullPtr<Net::SocketFactory> sockf)
 {
 	this->scanList = 0;
 	NEW_CLASS(this->svr, Net::UDPServer(sockf, 0, 0, CSTR_NULL, OnSNMPPacket, this, 0, CSTR_NULL, 1, false));

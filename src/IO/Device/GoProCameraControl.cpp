@@ -186,7 +186,7 @@ Bool IO::Device::GoProCameraControl::GetInfo(Data::ArrayListNN<Text::String> *na
 	return false;
 }
 
-IO::Device::GoProCameraControl::GoProCameraControl(Net::SocketFactory *sockf, const Net::SocketUtil::AddressInfo *addr) : IO::CameraControl()
+IO::Device::GoProCameraControl::GoProCameraControl(NotNullPtr<Net::SocketFactory> sockf, const Net::SocketUtil::AddressInfo *addr) : IO::CameraControl()
 {
 	this->addr = *addr;
 	this->sockf = sockf;
@@ -293,7 +293,7 @@ Bool IO::Device::GoProCameraControl::GetThumbnailFile(IO::CameraControl::FileInf
 	return totalSize > 512;
 }
 
-IO::Device::GoProCameraControl *IO::Device::GoProCameraControl::CreateControl(Net::SocketFactory *sockf)
+IO::Device::GoProCameraControl *IO::Device::GoProCameraControl::CreateControl(NotNullPtr<Net::SocketFactory> sockf)
 {
 	Data::ArrayList<Net::ConnectionInfo*> connInfoList;
 	Net::ConnectionInfo *connInfo;

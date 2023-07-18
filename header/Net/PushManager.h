@@ -36,7 +36,7 @@ namespace Net
 			Data::FastStringMap<DeviceInfo2*> devMap;
 		};
 
-		Net::SocketFactory *sockf;
+		NotNullPtr<Net::SocketFactory> sockf;
 		Net::SSLEngine *ssl;
 		NotNullPtr<Text::String> fcmKey;
 		IO::LogTool *log;
@@ -50,7 +50,7 @@ namespace Net
 		void LoadData();
 		void SaveData();
 	public:
-		PushManager(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CString fcmKey, IO::LogTool *log);
+		PushManager(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::CString fcmKey, IO::LogTool *log);
 		~PushManager();
 
 		Bool Subscribe(Text::CString token, Text::CString userName, DeviceType devType, const Net::SocketUtil::AddressInfo *remoteAddr, Text::CString devModel);

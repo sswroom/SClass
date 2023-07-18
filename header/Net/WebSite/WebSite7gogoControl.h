@@ -31,14 +31,14 @@ namespace Net
 			} ChannelInfo;
 			
 		private:
-			Net::SocketFactory *sockf;
+			NotNullPtr<Net::SocketFactory> sockf;
 			Net::SSLEngine *ssl;
 			Text::EncodingFactory *encFact;
 			Text::String *userAgent;
 
 			ItemData *ParsePost(Text::JSONObject *postObj);
 		public:
-			WebSite7gogoControl(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, Text::String *userAgent);
+			WebSite7gogoControl(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, Text::String *userAgent);
 			~WebSite7gogoControl();
 
 			OSInt GetChannelItems(NotNullPtr<Text::String> channelId, OSInt pageNo, Data::ArrayList<ItemData*> *itemList, ChannelInfo *chInfo);

@@ -4,7 +4,7 @@
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 
-Net::LoggedSocketFactory::LoggedSocketFactory(Net::SocketFactory *sockf, IO::LogTool *log, Text::CString logPrefix) : Net::SocketFactory(false)
+Net::LoggedSocketFactory::LoggedSocketFactory(NotNullPtr<Net::SocketFactory> sockf, IO::LogTool *log, Text::CString logPrefix) : Net::SocketFactory(false)
 {
 	this->sockf = sockf;
 	this->log = log;

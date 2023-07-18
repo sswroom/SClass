@@ -28,7 +28,7 @@ namespace Parser
 		void SetEncFactory(Text::EncodingFactory *encFact);
 		void SetWebBrowser(Net::WebBrowser *browser);
 		void SetProgressHandler(IO::ProgressHandler *progHdlr);
-		void SetSocketFactory(Net::SocketFactory *sockf);
+		void SetSocketFactory(NotNullPtr<Net::SocketFactory> sockf);
 		void SetSSLEngine(Net::SSLEngine *ssl);
 		void SetArcGISPRJParser(Math::ArcGISPRJParser *prjParser);
 		void PrepareSelector(IO::FileSelector *selector, IO::ParserType t);

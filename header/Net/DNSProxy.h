@@ -46,7 +46,7 @@ namespace Net
 	public:
 		typedef void (__stdcall *DNSProxyRequest)(void *userObj, Text::CString reqName, Int32 reqType, Int32 reqClass, const Net::SocketUtil::AddressInfo *addr, UInt16 reqPort, UInt32 reqId, Double timeUsed);
 	private:
-		Net::SocketFactory *sockf;
+		NotNullPtr<Net::SocketFactory> sockf;
 		Net::UDPServer *cli;
 		Net::DNSServer *svr;
 
@@ -98,7 +98,7 @@ namespace Net
 		static UOSInt BuildEmptyReply(UInt8 *buff, UInt32 id, const UTF8Char *reqName, Int32 reqType, Int32 reqClass, Bool disableV6);
 		static UOSInt BuildAddressReply(UInt8 *buff, UInt32 id, const UTF8Char *reqName, Int32 reqClass, const Net::SocketUtil::AddressInfo *addr);
 	public:
-		DNSProxy(Net::SocketFactory *sockf, Bool analyzeTarget);
+		DNSProxy(NotNullPtr<Net::SocketFactory> sockf, Bool analyzeTarget);
 		~DNSProxy();
 
 		Bool IsError();

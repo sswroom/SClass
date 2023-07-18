@@ -19,7 +19,7 @@ namespace Net
 		public:
 			typedef void (__stdcall *SendLogger)(void *userObj, UOSInt buffSize);
 		private:
-			Net::SocketFactory *sockf;
+			NotNullPtr<Net::SocketFactory> sockf;
 			Net::SSLEngine *ssl;
 			NotNullPtr<Net::TCPClient> cli;
 			IO::BufferedOutputStream *cstm;
@@ -50,7 +50,7 @@ namespace Net
 			SSEDisconnectHandler sseHdlr;
 			void *sseHdlrObj;
 		public:
-			WebConnection(Net::SocketFactory *sockf, Net::SSLEngine *ssl, NotNullPtr<Net::TCPClient> cli, WebListener *svr, IWebHandler *hdlr, Bool allowProxy, KeepAlive KeepAlive);
+			WebConnection(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, NotNullPtr<Net::TCPClient> cli, WebListener *svr, IWebHandler *hdlr, Bool allowProxy, KeepAlive KeepAlive);
 			virtual ~WebConnection();
 
 			void ReceivedData(const UInt8 *buff, UOSInt size);

@@ -824,7 +824,7 @@ void __stdcall Net::MySQLServer::OnClientConn(Socket *s, void *userObj)
 }
 
 
-Net::MySQLServer::MySQLServer(Net::SocketFactory *sockf, UInt16 port, DB::DBMS *dbms, Bool autoStart) : rand((UInt32)(Data::DateTimeUtil::GetCurrTimeMillis() & 0xffffffff))
+Net::MySQLServer::MySQLServer(NotNullPtr<Net::SocketFactory> sockf, UInt16 port, DB::DBMS *dbms, Bool autoStart) : rand((UInt32)(Data::DateTimeUtil::GetCurrTimeMillis() & 0xffffffff))
 {
 	this->sockf = sockf;
 	this->dbms = dbms;

@@ -12,13 +12,13 @@ namespace Net
 	{
 	private:
 		IO::LogTool *log;
-		Net::SocketFactory *sockf;
+		NotNullPtr<Net::SocketFactory> sockf;
 		Net::SSLEngine *ssl;
 		Text::EncodingFactory *encFact;
 		Text::String *userName;
 		Text::String *password;
 	public:
-		SMSGatewayIntersoft(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, IO::LogTool *log);
+		SMSGatewayIntersoft(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, IO::LogTool *log);
 		virtual ~SMSGatewayIntersoft();
 
 		virtual Bool IsTargetValid(Text::CString targetNum);

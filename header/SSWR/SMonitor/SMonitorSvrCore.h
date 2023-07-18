@@ -35,7 +35,7 @@ namespace SSWR
 			} ClientStatus;
 
 		private:
-			Net::SocketFactory *sockf;
+			NotNullPtr<Net::SocketFactory> sockf;
 			IO::LogTool log;
 			Net::TCPServer *cliSvr;
 			Net::TCPClientMgr *cliMgr;

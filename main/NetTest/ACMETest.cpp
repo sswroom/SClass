@@ -12,11 +12,10 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	IO::ConsoleWriter *console;
-	Net::SocketFactory *sockf;
 	Net::ACMEClient *acme;
 
 	NEW_CLASS(console, IO::ConsoleWriter());
-	NEW_CLASS(sockf, Net::OSSocketFactory(true));
+	Net::OSSocketFactory sockf(true);
 
 	sptr = IO::Path::GetProcessFileName(sbuff);
 	sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("ACMEKey.pem"));
@@ -56,7 +55,6 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	}
 	DEL_CLASS(acme);
 
-	DEL_CLASS(sockf);
 	DEL_CLASS(console);
 	return 0;
 }

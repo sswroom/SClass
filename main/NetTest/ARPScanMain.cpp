@@ -13,7 +13,7 @@
 #include "Text/StringBuilderUTF8.h"
 
 IO::ConsoleWriter *console;
-Net::SocketFactory *sockf;
+NotNullPtr<Net::SocketFactory> sockf;
 Data::ArrayListUInt32 *ipList;
 
 void __stdcall ARPHandler(const UInt8 *hwAddr, UInt32 ipv4, void *userData)
@@ -45,7 +45,7 @@ void __stdcall ARPHandler(const UInt8 *hwAddr, UInt32 ipv4, void *userData)
 Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	NEW_CLASS(console, IO::ConsoleWriter());
-	NEW_CLASS(sockf, Net::OSSocketFactory(true));
+	NEW_CLASSNN(sockf, Net::OSSocketFactory(true));
 	NEW_CLASS(ipList, Data::ArrayListUInt32());
 
 	Text::StringBuilderUTF8 sb;
@@ -165,7 +165,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	}
 
 	DEL_CLASS(ipList);
-	DEL_CLASS(sockf);
+	sockf.Delete();
 	DEL_CLASS(console);
 	return 0;
 }

@@ -12,13 +12,13 @@ namespace IO
 		{
 		private:
 			Net::SocketUtil::AddressInfo addr;
-			Net::SocketFactory *sockf;
+			NotNullPtr<Net::SocketFactory> sockf;
 			Data::ArrayList<IO::CameraControl::FileInfo*> *fileList;
 
 			void GetMediaList();
 			Bool GetInfo(Data::ArrayListNN<Text::String> *nameList, Data::ArrayListNN<Text::String> *valueList);			
 		public:
-			GoProCameraControl(Net::SocketFactory *sockf, const Net::SocketUtil::AddressInfo *addr);
+			GoProCameraControl(NotNullPtr<Net::SocketFactory> sockf, const Net::SocketUtil::AddressInfo *addr);
 			virtual ~GoProCameraControl();
 
 			virtual UOSInt GetInfoList(Data::ArrayListNN<Text::String> *nameList, Data::ArrayListNN<Text::String> *valueList);
@@ -27,7 +27,7 @@ namespace IO
 			virtual Bool GetFile(FileInfo *file, IO::Stream *outStm);
 			virtual Bool GetThumbnailFile(FileInfo *file, IO::Stream *outStm);
 
-			static GoProCameraControl *CreateControl(Net::SocketFactory *sockf);
+			static GoProCameraControl *CreateControl(NotNullPtr<Net::SocketFactory> sockf);
 		};
 	}
 }

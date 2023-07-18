@@ -13,7 +13,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	Data::DateTime dt;
 	IO::ConsoleWriter writer;
 	Net::OSSocketFactory sockf(false);
-	Net::SSLEngine *ssl = Net::SSLEngineFactory::Create(&sockf, true);
+	Net::SSLEngine *ssl = Net::SSLEngineFactory::Create(sockf, true);
 	{
 		Net::Email::EmailMessage message;
 		message.SetSubject(CSTR("Email Testing"));
@@ -25,7 +25,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 //		message.AddAttachment(CSTR("/home/sswroom/Progs/Temp/OCR2.jpg"));
 		message.AddSignature(ssl, (Crypto::Cert::X509Cert*)parser.ParseFilePath(CSTR("/home/sswroom/Progs/VCClass/keystore/Simon_SMIME.crt")),
 			(Crypto::Cert::X509Key*)parser.ParseFilePath(CSTR("/home/sswroom/Progs/VCClass/keystore/Simon_SMIME.key")));
-		Net::Email::SMTPClient client(&sockf, ssl, CSTR("127.0.0.1"), 25, Net::Email::SMTPConn::ConnType::Plain, &writer, 30000);
+		Net::Email::SMTPClient client(sockf, ssl, CSTR("127.0.0.1"), 25, Net::Email::SMTPConn::ConnType::Plain, &writer, 30000);
 		client.Send(&message);
 	}
 	SDEL_CLASS(ssl);

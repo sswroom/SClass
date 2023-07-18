@@ -1255,7 +1255,7 @@ Net::SSLClient *Net::WinSSLEngine::CreateServerConn(Socket *s)
 	return cli;
 }
 
-Net::WinSSLEngine::WinSSLEngine(Net::SocketFactory *sockf, Method method) : Net::SSLEngine(sockf)
+Net::WinSSLEngine::WinSSLEngine(NotNullPtr<Net::SocketFactory> sockf, Method method) : Net::SSLEngine(sockf)
 {
 	this->clsData = MemAlloc(ClassData, 1);
 	MemClear(this->clsData, sizeof(ClassData));

@@ -21,7 +21,7 @@ namespace Net
 		} ThreadStat;
 
 	private:
-		Net::SocketFactory *sockf;
+		NotNullPtr<Net::SocketFactory> sockf;
 		Socket *soc;
 		RAWDataHdlr hdlr;
 		void *userData;
@@ -35,7 +35,7 @@ namespace Net
 		static UInt32 __stdcall DataThread(void *obj);
 
 	public:
-		SocketMonitor(Net::SocketFactory *sockf, Socket *soc, RAWDataHdlr hdlr, void *userData, UOSInt workerCnt);
+		SocketMonitor(NotNullPtr<Net::SocketFactory> sockf, Socket *soc, RAWDataHdlr hdlr, void *userData, UOSInt workerCnt);
 		~SocketMonitor();
 	};
 };

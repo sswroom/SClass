@@ -25,7 +25,7 @@ namespace Net
 			Data::ArrayListNN<Text::String> injHeaders;
 			UOSInt nextURL;
 			Sync::Mutex mut;
-			Net::SocketFactory *sockf;
+			NotNullPtr<Net::SocketFactory> sockf;
 			Net::SSLEngine *ssl;
 			ForwardType fwdType;
 			ReqHandler reqHdlr;
@@ -35,7 +35,7 @@ namespace Net
 
 			virtual Text::String *GetNextURL(Net::WebServer::IWebRequest *req);
 		public:
-			HTTPForwardHandler(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CString forwardURL, ForwardType fwdType);
+			HTTPForwardHandler(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::CString forwardURL, ForwardType fwdType);
 		protected:
 			virtual ~HTTPForwardHandler();
 		public:

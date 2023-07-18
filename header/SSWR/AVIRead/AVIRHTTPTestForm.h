@@ -32,7 +32,7 @@ namespace SSWR
 		private:
 			SSWR::AVIRead::AVIRCore *core;
 			Manage::HiResClock clk;
-			Net::SocketFactory *sockf;
+			NotNullPtr<Net::SocketFactory> sockf;
 			Net::SSLEngine *ssl;
 			ThreadStatus *threadStatus;
 			Sync::Mutex connMut;

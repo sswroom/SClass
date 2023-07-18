@@ -29,7 +29,7 @@ namespace SSWR
 			} ThreadStatus;
 		private:
 			SSWR::AVIRead::AVIRCore *core;
-			Net::SocketFactory *sockf;
+			NotNullPtr<Net::SocketFactory> sockf;
 			ThreadStatus *threadStatus;
 			UInt32 svrIP;
 			UInt16 svrPort;

@@ -29,7 +29,7 @@ namespace Net
 		};
 
 	private:
-		Net::SocketFactory *sockf;
+		NotNullPtr<Net::SocketFactory> sockf;
 		Socket *soc;
 		IPScanHandler hdlr;
 		void *userData;
@@ -44,7 +44,7 @@ namespace Net
 		static UInt32 __stdcall DataThread(void *obj);
 
 	public:
-		IPScanDetector(Net::SocketFactory *sockf, IPScanHandler hdlr, void *userData, UOSInt workerCnt);
+		IPScanDetector(NotNullPtr<Net::SocketFactory> sockf, IPScanHandler hdlr, void *userData, UOSInt workerCnt);
 		~IPScanDetector();
 
 		Bool IsError();

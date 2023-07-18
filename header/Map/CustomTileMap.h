@@ -13,7 +13,7 @@ namespace Map
 		Math::RectAreaDbl bounds;
 
 	public:
-		CustomTileMap(Text::CString url, Text::CString cacheDir, UOSInt minLevel, UOSInt maxLevel, Net::SocketFactory *sockf, Net::SSLEngine *ssl);
+		CustomTileMap(Text::CString url, Text::CString cacheDir, UOSInt minLevel, UOSInt maxLevel, NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl);
 		virtual ~CustomTileMap();
 
 		virtual Text::CString GetName();

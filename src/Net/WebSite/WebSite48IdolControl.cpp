@@ -8,7 +8,7 @@
 #define BASEURL "https://48idol.tv/archive/"
 #define TVBASEURL "https://48idol.tv/all-videos"
 
-Net::WebSite::WebSite48IdolControl::WebSite48IdolControl(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, Text::String *userAgent)
+Net::WebSite::WebSite48IdolControl::WebSite48IdolControl(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, Text::String *userAgent)
 {
 	this->sockf = sockf;
 	this->ssl = ssl;

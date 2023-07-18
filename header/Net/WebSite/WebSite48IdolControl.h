@@ -19,13 +19,13 @@ namespace Net
 			} ItemData;
 			
 		private:
-			Net::SocketFactory *sockf;
+			NotNullPtr<Net::SocketFactory> sockf;
 			Net::SSLEngine *ssl;
 			Text::EncodingFactory *encFact;
 			Text::String *userAgent;
 
 		public:
-			WebSite48IdolControl(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, Text::String *userAgent);
+			WebSite48IdolControl(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, Text::String *userAgent);
 			~WebSite48IdolControl();
 
 			OSInt GetTVPageItems(OSInt pageNo, Data::ArrayList<ItemData*> *itemList);

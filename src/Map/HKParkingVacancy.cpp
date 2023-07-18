@@ -243,7 +243,7 @@ void Map::HKParkingVacancy::ParkingInfoFree(ParkingInfo *parking)
 	MemFree(parking);
 }
 
-Map::HKParkingVacancy::HKParkingVacancy(Net::SocketFactory *sockf, Net::SSLEngine *ssl) : Map::MapDrawLayer(CSTR("HKParkingVacancy"), 16, CSTR("HKParkingVacancy"))
+Map::HKParkingVacancy::HKParkingVacancy(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl) : Map::MapDrawLayer(CSTR("HKParkingVacancy"), 16, CSTR("HKParkingVacancy"))
 {
 	this->sockf = sockf;
 	this->ssl = ssl;

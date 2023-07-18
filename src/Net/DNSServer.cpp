@@ -39,7 +39,7 @@ void __stdcall Net::DNSServer::PacketHdlr(const Net::SocketUtil::AddressInfo *ad
 	}
 }
 
-void Net::DNSServer::InitServer(Net::SocketFactory *sockf, UInt16 port)
+void Net::DNSServer::InitServer(NotNullPtr<Net::SocketFactory> sockf, UInt16 port)
 {
 	this->sockf = sockf;
 	this->reqHdlr = 0;
@@ -49,12 +49,12 @@ void Net::DNSServer::InitServer(Net::SocketFactory *sockf, UInt16 port)
 	this->svr->SetBuffSize(65536);
 }
 
-Net::DNSServer::DNSServer(Net::SocketFactory *sockf, UInt16 port)
+Net::DNSServer::DNSServer(NotNullPtr<Net::SocketFactory> sockf, UInt16 port)
 {
 	InitServer(sockf, port);
 }
 
-Net::DNSServer::DNSServer(Net::SocketFactory *sockf)
+Net::DNSServer::DNSServer(NotNullPtr<Net::SocketFactory> sockf)
 {
 	InitServer(sockf, 53);
 }

@@ -22,7 +22,7 @@ namespace Net
 		} CharsetInfo;
 
 	private:
-		Net::SocketFactory *sockf;
+		NotNullPtr<Net::SocketFactory> sockf;
 		IO::LogTool *log;
 		Net::TCPServer *svr;
 		DB::DBMS *dbms;
@@ -39,7 +39,7 @@ namespace Net
 		static void __stdcall OnClientConn(Socket *s, void *userObj);
 		
 	public:
-		MySQLServer(Net::SocketFactory *sockf, UInt16 port, DB::DBMS *dbms, Bool autoStart);
+		MySQLServer(NotNullPtr<Net::SocketFactory> sockf, UInt16 port, DB::DBMS *dbms, Bool autoStart);
 		~MySQLServer();
 
 		Bool Start();

@@ -156,7 +156,7 @@ SSWR::AVIRead::AVIRNetBIOSScannerForm::AVIRNetBIOSScannerForm(UI::GUIClientContr
 	this->lvEntries->AddColumn(CSTR("TypeName"), 150);
 	this->lvEntries->AddColumn(CSTR("Flags"), 80);
 
-	Net::SocketFactory *sockf = this->core->GetSocketFactory();
+	NotNullPtr<Net::SocketFactory> sockf = this->core->GetSocketFactory();
 	NEW_CLASS(this->netbios, Net::NetBIOSScanner(sockf));
 	if (this->netbios->IsError())
 	{

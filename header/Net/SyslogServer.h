@@ -21,7 +21,7 @@ namespace Net
 		
 		typedef void (__stdcall *ClientLogHandler)(void *userObj, UInt32 ip, Text::CString logMessage);
 	private:
-		Net::SocketFactory *sockf;
+		NotNullPtr<Net::SocketFactory> sockf;
 		Net::UDPServer *svr;
 		NotNullPtr<Text::String> logPath;
 		IO::LogTool *log;
@@ -35,7 +35,7 @@ namespace Net
 
 		IPStatus *GetIPStatus(const Net::SocketUtil::AddressInfo *addr);
 	public:
-		SyslogServer(Net::SocketFactory *sockf, UInt16 port, Text::CString logPath, IO::LogTool *svrLog, Bool redirLog);
+		SyslogServer(NotNullPtr<Net::SocketFactory> sockf, UInt16 port, Text::CString logPath, IO::LogTool *svrLog, Bool redirLog);
 		~SyslogServer();
 
 		Bool IsError();

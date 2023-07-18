@@ -59,7 +59,7 @@ namespace Net
 		typedef ConnectStatus (__stdcall *SubscribeHandler)(void *userObj, Text::String *clientId, Text::CString topic);
 		typedef void (__stdcall *TopicUpdateHandler)(void *userObj, Text::CString topic, const UInt8 *message, UOSInt msgSize);
 	private:
-		Net::SocketFactory *sockf;
+		NotNullPtr<Net::SocketFactory> sockf;
 		IO::LogTool *log;
 		Data::ArrayList<Listener*> listeners;
 		IO::ProtoHdlr::ProtoMQTTHandler protoHdlr;
@@ -108,7 +108,7 @@ namespace Net
 		virtual void StreamData(NotNullPtr<IO::Stream> stm, void *stmData, const UInt8 *buff, UOSInt size);
 		virtual void StreamClosed(NotNullPtr<IO::Stream> stm, void *stmData);
 	public:
-		MQTTBroker(Net::SocketFactory *sockf, Net::SSLEngine *ssl, UInt16 port, IO::LogTool *log, Bool sysInfo, Bool autoStart);
+		MQTTBroker(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, UInt16 port, IO::LogTool *log, Bool sysInfo, Bool autoStart);
 		virtual ~MQTTBroker();
 
 		Bool AddListener(Net::SSLEngine *ssl, UInt16 port, Bool autoStart);

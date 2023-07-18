@@ -11,15 +11,15 @@ namespace Net
 		typedef void (__stdcall *DNSRequest)(void *userObj, Text::CString reqName, Int32 reqType, Int32 reqClass, const Net::SocketUtil::AddressInfo *reqAddr, UInt16 reqPort, UInt32 reqId);
 	private:
 		Net::UDPServer *svr;
-		Net::SocketFactory *sockf;
+		NotNullPtr<Net::SocketFactory> sockf;
 		DNSRequest reqHdlr;
 		void *reqObj;
 
 		static void __stdcall PacketHdlr(const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData);
-		void InitServer(Net::SocketFactory *sockf, UInt16 port);
+		void InitServer(NotNullPtr<Net::SocketFactory> sockf, UInt16 port);
 	public:
-		DNSServer(Net::SocketFactory *sockf, UInt16 port);
-		DNSServer(Net::SocketFactory *sockf);
+		DNSServer(NotNullPtr<Net::SocketFactory> sockf, UInt16 port);
+		DNSServer(NotNullPtr<Net::SocketFactory> sockf);
 		~DNSServer();
 
 		Bool IsError();

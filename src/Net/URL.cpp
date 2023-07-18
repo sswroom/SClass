@@ -7,7 +7,7 @@
 #include "Text/MyString.h"
 #include "Text/URLString.h"
 
-IO::ParsedObject *Net::URL::OpenObject(Text::CString url, Text::CString userAgent, Net::SocketFactory *sockf, Net::SSLEngine *ssl, Data::Duration timeout)
+IO::ParsedObject *Net::URL::OpenObject(Text::CString url, Text::CString userAgent, NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Data::Duration timeout)
 {
 	IO::ParsedObject *pobj;
 	UTF8Char sbuff[512];

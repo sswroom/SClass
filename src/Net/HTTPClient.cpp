@@ -15,7 +15,7 @@
 #include "Text/StringBuilderUTF8.h"
 #include "Text/TextBinEnc/URIEncoding.h"
 
-Net::HTTPClient::HTTPClient(Net::SocketFactory *sockf, Bool kaConn) : IO::Stream(CSTR("HTTPClient"))
+Net::HTTPClient::HTTPClient(NotNullPtr<Net::SocketFactory> sockf, Bool kaConn) : IO::Stream(CSTR("HTTPClient"))
 {
 	this->sockf = sockf;
 	this->canWrite = false;
@@ -399,7 +399,7 @@ void Net::HTTPClient::ParseDateStr(Data::DateTime *dt, Text::CString dateStr)
 	}
 }
 
-NotNullPtr<Net::HTTPClient> Net::HTTPClient::CreateClient(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CString userAgent, Bool kaConn, Bool isSecure)
+NotNullPtr<Net::HTTPClient> Net::HTTPClient::CreateClient(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::CString userAgent, Bool kaConn, Bool isSecure)
 {
 	NotNullPtr<Net::HTTPClient> cli;
 	if (isSecure && ssl == 0)
@@ -413,7 +413,7 @@ NotNullPtr<Net::HTTPClient> Net::HTTPClient::CreateClient(Net::SocketFactory *so
 	return cli;
 }
 
-NotNullPtr<Net::HTTPClient> Net::HTTPClient::CreateConnect(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CString url, Net::WebUtil::RequestMethod method, Bool kaConn)
+NotNullPtr<Net::HTTPClient> Net::HTTPClient::CreateConnect(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::CString url, Net::WebUtil::RequestMethod method, Bool kaConn)
 {
 	NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(sockf, ssl, CSTR_NULL, kaConn, url.StartsWithICase(UTF8STRC("HTTPS://")));
 	cli->Connect(url, method, 0, 0, true);
@@ -433,7 +433,7 @@ void Net::HTTPClient::PrepareSSL(Net::SSLEngine *ssl)
 {
 }
 
-Bool Net::HTTPClient::LoadContent(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CString url, IO::Stream *stm, UInt64 maxSize)
+Bool Net::HTTPClient::LoadContent(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::CString url, IO::Stream *stm, UInt64 maxSize)
 {
 	NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(sockf, ssl, url, Net::WebUtil::RequestMethod::HTTP_GET, true);
 	if (cli->GetRespStatus() != Net::WebStatus::SC_OK)
@@ -457,7 +457,7 @@ Bool Net::HTTPClient::LoadContent(Net::SocketFactory *sockf, Net::SSLEngine *ssl
 	return true;
 }
 
-Bool Net::HTTPClient::LoadContent(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CString url, Text::StringBuilderUTF8 *sb, UInt64 maxSize)
+Bool Net::HTTPClient::LoadContent(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::CString url, Text::StringBuilderUTF8 *sb, UInt64 maxSize)
 {
 	NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(sockf, ssl, url, Net::WebUtil::RequestMethod::HTTP_GET, true);
 	if (cli->GetRespStatus() != Net::WebStatus::SC_OK)

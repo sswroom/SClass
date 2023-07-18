@@ -15,7 +15,7 @@
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
 
-Net::SocketFactory *sockf;
+NotNullPtr<Net::SocketFactory> sockf;
 Manage::HiResClock *clk;
 IO::ConsoleWriter *console;
 Bool toStop;
@@ -149,7 +149,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	}
 	else
 	{
-		NEW_CLASS(sockf, Net::OSSocketFactory(true));
+		NEW_CLASSNN(sockf, Net::OSSocketFactory(true));
 		totalSendSize = 0;
 		totalRecvSize = 0;
 		lastTime = 0;
@@ -246,7 +246,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		DEL_CLASS(dispEvt);
 		DEL_CLASS(cliMut);
 		DEL_CLASS(clk);
-		DEL_CLASS(sockf);
+		sockf.Delete();
 	}
 
 	DEL_CLASS(console);

@@ -241,7 +241,7 @@ Net::ACMEConn::Challenge *Net::ACMEConn::ChallengeParse(const UInt8 *buff, UOSIn
 	return chall;
 }
 
-Net::ACMEConn::ACMEConn(Net::SocketFactory *sockf, Text::CString serverHost, UInt16 port)
+Net::ACMEConn::ACMEConn(NotNullPtr<Net::SocketFactory> sockf, Text::CString serverHost, UInt16 port)
 {
 	UInt8 buff[2048];
 	UOSInt recvSize;

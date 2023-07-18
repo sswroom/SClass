@@ -82,7 +82,7 @@ UInt32 __stdcall Net::RTPAudioSession::SendThread(void *userObj)
 	return 0;
 }
 
-Net::RTPAudioSession::RTPAudioSession(Net::SocketFactory *sockf, const Char *ip, UInt16 port, IO::LogTool *log)
+Net::RTPAudioSession::RTPAudioSession(NotNullPtr<Net::SocketFactory> sockf, const Char *ip, UInt16 port, IO::LogTool *log)
 {
 	this->sockf = sockf;
 	this->log = log;

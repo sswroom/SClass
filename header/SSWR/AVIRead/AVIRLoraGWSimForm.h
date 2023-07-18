@@ -33,7 +33,7 @@ namespace SSWR
 			static PredefData pdata[];
 
 			SSWR::AVIRead::AVIRCore *core;
-			Net::SocketFactory *sockf;
+			NotNullPtr<Net::SocketFactory> sockf;
 
 			Net::LoRaGateway *lora;
 			IO::LogTool log;

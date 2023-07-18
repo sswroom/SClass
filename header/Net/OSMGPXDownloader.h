@@ -10,12 +10,12 @@ namespace Net
 	{
 	private:
 		Net::RSSReader *reader;
-		Net::SocketFactory *sockf;
+		NotNullPtr<Net::SocketFactory> sockf;
 		Text::String *storeDir;
 		IO::Writer *writer;
 
 	public:
-		OSMGPXDownloader(Net::SocketFactory *sockf, Text::CString storeDir, IO::Writer *writer);
+		OSMGPXDownloader(NotNullPtr<Net::SocketFactory> sockf, Text::CString storeDir, IO::Writer *writer);
 		virtual ~OSMGPXDownloader();
 
 		virtual void ItemAdded(Net::RSSItem *item);

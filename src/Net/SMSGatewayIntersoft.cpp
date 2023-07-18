@@ -9,7 +9,7 @@
 #include <stdio.h>
 #endif
 
-Net::SMSGatewayIntersoft::SMSGatewayIntersoft(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, IO::LogTool *log)
+Net::SMSGatewayIntersoft::SMSGatewayIntersoft(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, IO::LogTool *log)
 {
 	this->sockf = sockf;
 	this->ssl = ssl;

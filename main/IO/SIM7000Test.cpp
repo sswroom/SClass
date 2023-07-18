@@ -113,8 +113,8 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 				console->WriteLineC(UTF8STRC("UE Sys Info: Error in getting the value"));
 			}
 
-			IO::Device::SIM7000SocketFactory *sockf;
-			NEW_CLASS(sockf, IO::Device::SIM7000SocketFactory(modem, false));
+			NotNullPtr<IO::Device::SIM7000SocketFactory> sockf;
+			NEW_CLASSNN(sockf, IO::Device::SIM7000SocketFactory(modem, false));
 			if (sockf->NetworkStart())
 			{
 				Net::SocketUtil::AddressInfo addr;
@@ -268,7 +268,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 				console.WriteLineC(UTF8STRC("Network cannot end");
 			}*/
 
-			DEL_CLASS(sockf);			
+			sockf.Delete();	
 		}
 		else
 		{

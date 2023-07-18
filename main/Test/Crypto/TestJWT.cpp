@@ -16,8 +16,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	UTF8Char *sptr;
 	Text::StringBuilderUTF8 sb;
 	Crypto::Token::JWTHandler *jwt;
-	Net::SocketFactory *sockf;
-	NEW_CLASS(sockf, Net::OSSocketFactory(false));
+	Net::OSSocketFactory sockf(false);
 	Net::SSLEngine *ssl = Net::SSLEngineFactory::Create(sockf, true);
 	NEW_CLASS(jwt, Crypto::Token::JWTHandler(ssl, Crypto::Token::JWSignature::Algorithm::HS256, UTF8STRC("your-256-bit-secret")));
 
@@ -33,7 +32,6 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	{
 		DEL_CLASS(jwt);
 		SDEL_CLASS(ssl);
-		DEL_CLASS(sockf);
 		return 1;	
 	}
 	
@@ -43,7 +41,6 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		jwt->FreeResult(result);
 		DEL_CLASS(jwt);
 		SDEL_CLASS(ssl);
-		DEL_CLASS(sockf);
 		return 1;
 	}
 	if (!s.Set(param.GetSubject()) || !s->Equals(UTF8STRC("1234567890")))
@@ -51,7 +48,6 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		jwt->FreeResult(result);
 		DEL_CLASS(jwt);
 		SDEL_CLASS(ssl);
-		DEL_CLASS(sockf);
 		return 1;
 	}
 	if (param.GetIssuedAt() != 1516239022)
@@ -59,7 +55,6 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		jwt->FreeResult(result);
 		DEL_CLASS(jwt);
 		SDEL_CLASS(ssl);
-		DEL_CLASS(sockf);
 		return 1;
 	}
 	jwt->FreeResult(result);
@@ -75,7 +70,6 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		if (keySize == 0)
 		{
 			SDEL_CLASS(ssl);
-			DEL_CLASS(sockf);
 			return 1;
 		}
 		else
@@ -87,7 +81,6 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			if (x509 == 0)
 			{
 				SDEL_CLASS(ssl);
-				DEL_CLASS(sockf);
 				return 1;
 			}
 			else
@@ -105,7 +98,6 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 				{
 					DEL_CLASS(x509);
 					SDEL_CLASS(ssl);
-					DEL_CLASS(sockf);
 					return 1;
 				}
 				DEL_CLASS(x509);
@@ -122,6 +114,5 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		}
 	}
 	SDEL_CLASS(ssl);
-	DEL_CLASS(sockf);
 	return 0;
 }

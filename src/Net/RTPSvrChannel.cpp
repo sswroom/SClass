@@ -170,7 +170,7 @@ void __stdcall Net::RTPSvrChannel::PacketCtrlHdlr(const Net::SocketUtil::Address
 	}
 }
 
-Net::RTPSvrChannel::RTPSvrChannel(Net::SocketFactory *sockf, UInt16 port, Int32 ssrc, const Net::SocketUtil::AddressInfo *targetAddr, UInt16 targetPort, Net::RTPSessionController *sessCtrl)
+Net::RTPSvrChannel::RTPSvrChannel(NotNullPtr<Net::SocketFactory> sockf, UInt16 port, Int32 ssrc, const Net::SocketUtil::AddressInfo *targetAddr, UInt16 targetPort, Net::RTPSessionController *sessCtrl)
 {
 	this->rtpUDP = 0;
 	this->rtcpUDP = 0;

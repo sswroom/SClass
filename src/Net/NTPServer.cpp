@@ -118,7 +118,7 @@ UInt32 __stdcall Net::NTPServer::CheckThread(void *userObj)
 	return 0;
 }
 
-void Net::NTPServer::InitServer(Net::SocketFactory *sockf, UInt16 port)
+void Net::NTPServer::InitServer(NotNullPtr<Net::SocketFactory> sockf, UInt16 port)
 {
 	Net::UDPServer *svr;
 	NEW_CLASS(svr, Net::UDPServer(sockf, 0, port, CSTR_NULL, PacketHdlr, this, 0, CSTR_NULL, 2, false));
@@ -132,7 +132,7 @@ void Net::NTPServer::InitServer(Net::SocketFactory *sockf, UInt16 port)
 	}
 }
 
-Net::NTPServer::NTPServer(Net::SocketFactory *sockf, UInt16 port, IO::LogTool *log, Text::CString timeServer)
+Net::NTPServer::NTPServer(NotNullPtr<Net::SocketFactory> sockf, UInt16 port, IO::LogTool *log, Text::CString timeServer)
 {
 	this->sockf = sockf;
 	this->svr = 0;

@@ -73,7 +73,7 @@ UInt32 __stdcall Net::TCPPortScanner::ScanThread(void *userObj)
 	return 0;
 }
 
-Net::TCPPortScanner::TCPPortScanner(Net::SocketFactory *sockf, UOSInt threadCnt, PortUpdatedHandler hdlr, void *userObj)
+Net::TCPPortScanner::TCPPortScanner(NotNullPtr<Net::SocketFactory> sockf, UOSInt threadCnt, PortUpdatedHandler hdlr, void *userObj)
 {
 	this->sockf = sockf;
 	this->portList = MemAlloc(UInt8, 65536);

@@ -12,7 +12,7 @@ namespace Net
 
 		UInt32 GetLastErrorCode();
 	public:
-		OpenSSLClient(Net::SocketFactory *sockf, void *ssl, Socket *s);
+		OpenSSLClient(NotNullPtr<Net::SocketFactory> sockf, void *ssl, Socket *s);
 		virtual ~OpenSSLClient();
 
 		virtual UOSInt Read(Data::ByteArray buff);

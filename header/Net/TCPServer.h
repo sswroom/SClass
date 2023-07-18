@@ -20,7 +20,7 @@ namespace Net
 		} SubthreadStatus;
 
 	private:
-		SocketFactory *socf;
+		NotNullPtr<SocketFactory> socf;
 
 	public:
 		UInt16 port;
@@ -46,7 +46,7 @@ namespace Net
 		static UInt32 __stdcall WorkerThread(void *o);
 		void AcceptSocket(Socket *svrSoc);
 	public:
-		TCPServer(SocketFactory *socf, UInt16 port, IO::LogTool *log, TCPServerConn hdlr, void *userObj, Text::CString logPrefix, Bool autoStart);
+		TCPServer(NotNullPtr<SocketFactory> socf, UInt16 port, IO::LogTool *log, TCPServerConn hdlr, void *userObj, Text::CString logPrefix, Bool autoStart);
 		~TCPServer();
 
 		Bool Start();

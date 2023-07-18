@@ -10,10 +10,10 @@ namespace Map
 		class MapBarAdjuster
 		{
 		private:
-			Net::SocketFactory *sockf;
+			NotNullPtr<Net::SocketFactory> sockf;
 			IO::Writer *errWriter;
 		public:
-			MapBarAdjuster(Net::SocketFactory *sockf, IO::Writer *errWriter);
+			MapBarAdjuster(NotNullPtr<Net::SocketFactory> sockf, IO::Writer *errWriter);
 			virtual ~MapBarAdjuster();
 
 			Bool AdjustPoints(Double *srcLatLons, Double *destLatLons, Int32 imgWidth, Int32 imgHeight, OSInt nPoints);

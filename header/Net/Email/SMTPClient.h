@@ -13,7 +13,7 @@ namespace Net
 		class SMTPClient
 		{
 		private:
-			Net::SocketFactory *sockf;
+			NotNullPtr<Net::SocketFactory> sockf;
 			Net::SSLEngine *ssl;
 			Net::Email::SMTPConn::ConnType connType;
 			NotNullPtr<Text::String> host;
@@ -24,7 +24,7 @@ namespace Net
 			Text::String *authPassword;
 
 		public:
-			SMTPClient(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CString host, UInt16 port, Net::Email::SMTPConn::ConnType connType, IO::Writer *logWriter, Data::Duration timeout);
+			SMTPClient(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::CString host, UInt16 port, Net::Email::SMTPConn::ConnType connType, IO::Writer *logWriter, Data::Duration timeout);
 			~SMTPClient();
 
 			void SetPlainAuth(Text::CString userName, Text::CString password);

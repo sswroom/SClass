@@ -9,7 +9,7 @@
 #include "Net/HTTPClient.h"
 #include "Text/MyString.h"
 
-Map::MercatorTileMap::MercatorTileMap(Text::CString cacheDir, UOSInt minLevel, UOSInt maxLevel, Net::SocketFactory *sockf, Net::SSLEngine *ssl)
+Map::MercatorTileMap::MercatorTileMap(Text::CString cacheDir, UOSInt minLevel, UOSInt maxLevel, NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl)
 {
 	this->cacheDir = Text::String::NewOrNull(cacheDir);
 	this->spkg = 0;

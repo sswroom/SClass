@@ -14,7 +14,7 @@ namespace SSWR
 		class SyncClient : public IO::IProtocolHandler::DataListener
 		{
 		private:
-			Net::SocketFactory *sockf;
+			NotNullPtr<Net::SocketFactory> sockf;
 			IO::ProtoHdlr::ProtoSyncHandler protoHdlr;
 			Int32 serverId;
 			NotNullPtr<Text::String> serverName;
@@ -40,7 +40,7 @@ namespace SSWR
 			Bool SendKA();
 			Bool SendUserData(const UInt8 *data, UOSInt dataSize);
 		public:
-			SyncClient(Net::SocketFactory *sockf, Int32 serverId, Text::CString serverName, Text::CString clientHost, UInt16 cliPort, Data::Duration timeout);
+			SyncClient(NotNullPtr<Net::SocketFactory> sockf, Int32 serverId, Text::CString serverName, Text::CString clientHost, UInt16 cliPort, Data::Duration timeout);
 			virtual ~SyncClient();
 
 			virtual void DataParsed(NotNullPtr<IO::Stream> stm, void *stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize);

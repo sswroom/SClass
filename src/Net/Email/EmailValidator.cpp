@@ -2,7 +2,7 @@
 #include "Net/Email/EmailValidator.h"
 #include "Net/Email/SMTPConn.h"
 
-Net::Email::EmailValidator::EmailValidator(Net::SocketFactory *sockf)
+Net::Email::EmailValidator::EmailValidator(NotNullPtr<Net::SocketFactory> sockf)
 {
 	Net::SocketUtil::AddressInfo dnsAddr;
 	this->sockf = sockf;

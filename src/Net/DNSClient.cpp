@@ -55,7 +55,7 @@ UInt32 Net::DNSClient::NextId()
 	return this->lastID;
 }
 
-Net::DNSClient::DNSClient(Net::SocketFactory *sockf, const Net::SocketUtil::AddressInfo *serverAddr)
+Net::DNSClient::DNSClient(NotNullPtr<Net::SocketFactory> sockf, const Net::SocketUtil::AddressInfo *serverAddr)
 {
 	Data::RandomOS random;
 	this->sockf = sockf;

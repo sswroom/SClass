@@ -46,14 +46,14 @@ namespace Map
 
 			NotNullPtr<Text::String> cacheDir;
 			Int32 maxLevel;
-			Net::SocketFactory *sockf;
+			NotNullPtr<Net::SocketFactory> sockf;
 			Net::SSLEngine *ssl;
 			CacheStatus status;
 			Sync::Mutex *ioMut;
 
 			IO::SeekableStream *GetTileData(Int32 lev, Int32 xTile, Int32 yTile, Sync::MutexUsage *mutUsage);
 		public:
-			OSMCacheHandler(Text::CString url, Text::CString cacheDir, Int32 maxLevel, Net::SocketFactory *sockf, Net::SSLEngine *ssl);
+			OSMCacheHandler(Text::CString url, Text::CString cacheDir, Int32 maxLevel, NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl);
 			virtual ~OSMCacheHandler();
 
 			void AddAlternateURL(Text::CString url);

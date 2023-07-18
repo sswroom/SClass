@@ -109,7 +109,7 @@ void Parser::ParserList::SetWebBrowser(Net::WebBrowser *browser)
 	}
 }
 
-void Parser::ParserList::SetSocketFactory(Net::SocketFactory *sockf)
+void Parser::ParserList::SetSocketFactory(NotNullPtr<Net::SocketFactory> sockf)
 {
 	IO::ParserBase *parser;
 	UOSInt i = this->filePArr.GetCount();

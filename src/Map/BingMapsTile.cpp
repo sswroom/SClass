@@ -20,7 +20,7 @@ Text::String *Map::BingMapsTile::GetNextSubdomain()
 	return thisUrl;
 }
 
-Map::BingMapsTile::BingMapsTile(ImagerySet is, Text::CString key, Text::CString cacheDir, Net::SocketFactory *sockf, Net::SSLEngine *ssl) : Map::MercatorTileMap(cacheDir, 1, 19, sockf, ssl)
+Map::BingMapsTile::BingMapsTile(ImagerySet is, Text::CString key, Text::CString cacheDir, NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl) : Map::MercatorTileMap(cacheDir, 1, 19, sockf, ssl)
 {
 	this->url = 0;
 	this->key = Text::String::NewOrNull(key);

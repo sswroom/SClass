@@ -27,7 +27,7 @@ namespace Map
 		Math::CoordinateSystem *CreateCoordinateSystem();
 		Map::HKSpeedLimit *CreateSpeedLimit();
 		Map::MapDrawLayer *CreateTonnesSignLayer();
-		Map::HKTrafficLayer2 *CreateTrafficLayer(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact);
+		Map::HKTrafficLayer2 *CreateTrafficLayer(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact);
 
 		static Text::CString GetDownloadURL();
 		static Text::CString GetDefFileName();

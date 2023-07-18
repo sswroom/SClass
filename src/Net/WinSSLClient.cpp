@@ -39,7 +39,7 @@ struct Net::WinSSLClient::ClassData
 	Data::ArrayList<Crypto::Cert::Certificate *> *remoteCerts;
 };
 
-Net::WinSSLClient::WinSSLClient(Net::SocketFactory *sockf, Socket *s, void *ctxt) : SSLClient(sockf, s)
+Net::WinSSLClient::WinSSLClient(NotNullPtr<Net::SocketFactory> sockf, Socket *s, void *ctxt) : SSLClient(sockf, s)
 {
 	this->clsData = MemAlloc(ClassData, 1);
 	this->clsData->ctxt = *(CredHandle*)ctxt;

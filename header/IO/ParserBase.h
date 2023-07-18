@@ -42,7 +42,7 @@ namespace IO
 		virtual void SetMapManager(Map::MapManager *mapMgr) {};
 		virtual void SetEncFactory(Text::EncodingFactory *encFact) {};
 		virtual void SetProgressHandler(IO::ProgressHandler *progHdlr) {};
-		virtual void SetSocketFactory(Net::SocketFactory *sockf) {};
+		virtual void SetSocketFactory(NotNullPtr<Net::SocketFactory> sockf) {};
 		virtual void SetSSLEngine(Net::SSLEngine *ssl) {};
 		virtual void SetArcGISPRJParser(Math::ArcGISPRJParser *prjParser) {};
 		virtual void PrepareSelector(IO::FileSelector *selector, IO::ParserType t) = 0;

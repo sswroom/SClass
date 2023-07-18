@@ -30,7 +30,7 @@ namespace Map
 	public:
 		static UOSInt GetLayerTypes(Data::ArrayList<BaseLayerType> *layerTypes);
 		static Text::CString BaseLayerTypeGetName(BaseLayerType blt);
-		static Map::MapDrawLayer *CreateLayer(BaseLayerType blt, Net::SocketFactory *sockf, Net::SSLEngine *ssl, Parser::ParserList *parsers);
+		static Map::MapDrawLayer *CreateLayer(BaseLayerType blt, NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Parser::ParserList *parsers);
 	};
 }
 #endif

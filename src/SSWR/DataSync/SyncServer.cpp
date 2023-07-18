@@ -96,7 +96,7 @@ void __stdcall SSWR::DataSync::SyncServer::OnClientTimeout(NotNullPtr<Net::TCPCl
 
 }
 
-SSWR::DataSync::SyncServer::SyncServer(Net::SocketFactory *sockf, IO::LogTool *log, UInt16 port, Int32 serverId, Text::CString serverName, Text::CString syncClients, DataHandler dataHdlr, void *dataObj, Bool autoStart, Data::Duration cliTimeout) : protoHdlr(this)
+SSWR::DataSync::SyncServer::SyncServer(NotNullPtr<Net::SocketFactory> sockf, IO::LogTool *log, UInt16 port, Int32 serverId, Text::CString serverName, Text::CString syncClients, DataHandler dataHdlr, void *dataObj, Bool autoStart, Data::Duration cliTimeout) : protoHdlr(this)
 {
 	this->sockf = sockf;
 	this->dataHdlr = dataHdlr;

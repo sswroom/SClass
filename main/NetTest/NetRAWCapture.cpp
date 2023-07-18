@@ -12,7 +12,6 @@
 Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	Net::RAWAnalyzer *analyzer;
-	Net::SocketFactory *sockf;
 	IO::Writer *console;
 	UInt16 portNum = 8089;
 	UOSInt argc;
@@ -27,7 +26,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 #else
 	NEW_CLASS(console, IO::ConsoleWriter());
 #endif
-	NEW_CLASS(sockf, Net::OSSocketFactory(true));
+	Net::OSSocketFactory sockf(true);
 	NEW_CLASS(analyzer, Net::RAWAnalyzer(sockf, portNum, console, Net::EthernetAnalyzer::AT_ALL));
 	if (!analyzer->IsError())
 	{
@@ -40,7 +39,6 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	}
 	
 	DEL_CLASS(analyzer);
-	DEL_CLASS(sockf);
 	DEL_CLASS(console);
 	return 0;
 }

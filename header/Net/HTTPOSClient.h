@@ -29,7 +29,7 @@ namespace Net
 		UOSInt buffSize;
 
 	public:
-		HTTPOSClient(Net::SocketFactory *sockf, Text::CString userAgent, Bool kaConn);
+		HTTPOSClient(NotNullPtr<Net::SocketFactory> sockf, Text::CString userAgent, Bool kaConn);
 		virtual ~HTTPOSClient();
 
 		virtual Bool IsError() const;

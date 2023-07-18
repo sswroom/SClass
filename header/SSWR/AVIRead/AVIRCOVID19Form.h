@@ -34,7 +34,7 @@ namespace SSWR
 			} CountryInfo;
 		private:
 			SSWR::AVIRead::AVIRCore *core;
-			Net::SocketFactory *sockf;
+			NotNullPtr<Net::SocketFactory> sockf;
 			Net::SSLEngine *ssl;
 			Data::StringMap<CountryInfo*> countries;
 

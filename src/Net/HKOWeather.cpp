@@ -75,7 +75,7 @@ Net::HKOWeather::WeatherSignal Net::HKOWeather::String2Signal(Text::String *text
 	return signal;
 }
 
-Net::HKOWeather::WeatherSignal Net::HKOWeather::GetSignalSummary(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact)
+Net::HKOWeather::WeatherSignal Net::HKOWeather::GetSignalSummary(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact)
 {
 	UInt8 buff[1024];
 	UInt8 *mbuff;
@@ -123,7 +123,7 @@ Net::HKOWeather::WeatherSignal Net::HKOWeather::GetSignalSummary(Net::SocketFact
 	return signal;
 }
 
-Bool Net::HKOWeather::GetCurrentTempRH(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Int32 *temperature, Int32 *rh)
+Bool Net::HKOWeather::GetCurrentTempRH(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Int32 *temperature, Int32 *rh)
 {
 	Bool succ = false;
 	Net::RSS *rss;
@@ -172,7 +172,7 @@ Bool Net::HKOWeather::GetCurrentTempRH(Net::SocketFactory *sockf, Net::SSLEngine
 	return succ;
 }
 
-Bool Net::HKOWeather::GetWeatherForecast(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Language lang, WeatherForecast *weatherForecast)
+Bool Net::HKOWeather::GetWeatherForecast(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Language lang, WeatherForecast *weatherForecast)
 {
 	Text::CString url;
 	switch (lang)
@@ -270,7 +270,7 @@ void Net::HKOWeather::FreeWeatherForecast(WeatherForecast *weatherForecast)
 	}
 }
 
-Bool Net::HKOWeather::GetLocalForecast(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Language lang, LocalForecast *localForecast)
+Bool Net::HKOWeather::GetLocalForecast(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Language lang, LocalForecast *localForecast)
 {
 	Text::CString url;
 	switch (lang)
@@ -330,7 +330,7 @@ void Net::HKOWeather::FreeLocalForecast(LocalForecast *localForecast)
 	SDEL_STRING(localForecast->outlook);
 }
 
-Bool Net::HKOWeather::GetWarningSummary(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Data::ArrayList<WarningSummary*> *warnings)
+Bool Net::HKOWeather::GetWarningSummary(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Data::ArrayList<WarningSummary*> *warnings)
 {
 	Text::JSONBase *json = Net::HTTPJSONReader::Read(sockf, ssl, CSTR("https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=warnsum&lang=en"));
 	if (json)
@@ -391,7 +391,7 @@ void Net::HKOWeather::FreeWarningSummary(Data::ArrayList<WarningSummary*> *warni
 	LIST_FREE_FUNC(warnings, MemFree);
 }
 
-Net::HKOWeather::HKOWeather(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, UpdateHandler hdlr)
+Net::HKOWeather::HKOWeather(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, UpdateHandler hdlr)
 {
 	this->sockf = sockf;
 	this->ssl = ssl;

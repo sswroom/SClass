@@ -14,7 +14,7 @@ namespace SSWR
 		public:
 			typedef void (__stdcall *RecordReplyHandler)(void *userObj, Int64 recTime, Int64 svrTime);
 		private:
-			Net::SocketFactory *sockf;
+			NotNullPtr<Net::SocketFactory> sockf;
 			Net::UDPServer *svr;
 			NotNullPtr<Text::String> hostName;
 			UInt16 port;
@@ -26,8 +26,8 @@ namespace SSWR
 			static void __stdcall OnDataUDPPacket(const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData);
 			void CalcCRC(const UInt8 *buff, UOSInt size, UInt8 *crcVal);
 		public:
-			SMonitorRedir(Net::SocketFactory *sockf);
-			SMonitorRedir(Net::SocketFactory *sockf, NotNullPtr<Text::String> hostName, UInt16 port);
+			SMonitorRedir(NotNullPtr<Net::SocketFactory> sockf);
+			SMonitorRedir(NotNullPtr<Net::SocketFactory> sockf, NotNullPtr<Text::String> hostName, UInt16 port);
 			~SMonitorRedir();
 
 			Bool IsError();

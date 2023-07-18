@@ -11,7 +11,7 @@ namespace Net
 	class TCPClient : public IO::Stream, public Net::NetConnection
 	{
 	protected:
-		Net::SocketFactory *sockf;
+		NotNullPtr<Net::SocketFactory> sockf;
 		Socket *s;
 		UInt64 currCnt;
 		UInt64 cliId;
@@ -22,10 +22,10 @@ namespace Net
 		Sync::Event *writeEvent;
 
 	public:
-		TCPClient(Net::SocketFactory *sockf, Text::CString name, UInt16 port, Data::Duration timeout);
-		TCPClient(Net::SocketFactory *sockf, UInt32 ip, UInt16 port, Data::Duration timeout);
-		TCPClient(Net::SocketFactory *sockf, const Net::SocketUtil::AddressInfo *addr, UInt16 port, Data::Duration timeout);
-		TCPClient(Net::SocketFactory *sockf, Socket *s);
+		TCPClient(NotNullPtr<Net::SocketFactory> sockf, Text::CString name, UInt16 port, Data::Duration timeout);
+		TCPClient(NotNullPtr<Net::SocketFactory> sockf, UInt32 ip, UInt16 port, Data::Duration timeout);
+		TCPClient(NotNullPtr<Net::SocketFactory> sockf, const Net::SocketUtil::AddressInfo *addr, UInt16 port, Data::Duration timeout);
+		TCPClient(NotNullPtr<Net::SocketFactory> sockf, Socket *s);
 		virtual ~TCPClient();
 
 		virtual Bool IsDown() const;

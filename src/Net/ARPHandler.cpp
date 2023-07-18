@@ -41,7 +41,7 @@ UInt32 __stdcall Net::ARPHandler::DataThread(void *obj)
 	return 0;
 }
 
-Net::ARPHandler::ARPHandler(Net::SocketFactory *sockf, const UTF8Char *ifName, const UInt8 *hwAddr, UInt32 adapterIP, ARPResponseHdlr hdlr, void *userData, UOSInt threadCnt)
+Net::ARPHandler::ARPHandler(NotNullPtr<Net::SocketFactory> sockf, const UTF8Char *ifName, const UInt8 *hwAddr, UInt32 adapterIP, ARPResponseHdlr hdlr, void *userData, UOSInt threadCnt)
 {
 	UOSInt i;
 	this->threadCnt = threadCnt;

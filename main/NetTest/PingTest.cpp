@@ -7,15 +7,14 @@
 
 Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
-	Net::SocketFactory *sockf;
-	NEW_CLASS(sockf, Net::OSSocketFactory(true));
+	Net::OSSocketFactory sockf(true);
 	UInt32 respTime;
 	UInt32 ttl;
 	Net::SocketUtil::AddressInfo addr;
 	Net::SocketUtil::GetIPAddr(CSTR("127.0.0.1"), &addr);
 	while (true)
 	{
-		if (sockf->IcmpSendEcho2(&addr, &respTime, &ttl))
+		if (sockf.IcmpSendEcho2(&addr, &respTime, &ttl))
 		{
 //			printf("Received reply: %d, %d\r\n", respTime, ttl);
 		}
@@ -25,6 +24,5 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		}
 		Sync::SimpleThread::Sleep(60000);
 	}
-	DEL_CLASS(sockf);
 	return 0;
 }

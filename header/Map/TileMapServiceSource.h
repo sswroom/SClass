@@ -28,7 +28,7 @@ namespace Map
 		NotNullPtr<Text::String> tmsURL;
 		Text::String *title;
 		NotNullPtr<Text::String> cacheDir;
-		Net::SocketFactory *sockf;
+		NotNullPtr<Net::SocketFactory> sockf;
 		Net::SSLEngine *ssl;
 		Data::ArrayList<TileLayer*> layers;
 		Math::CoordinateSystem *csys;
@@ -36,7 +36,7 @@ namespace Map
 
 		void LoadXML();
 	public:
-		TileMapServiceSource(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, Text::CString tmsURL);
+		TileMapServiceSource(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, Text::CString tmsURL);
 		virtual ~TileMapServiceSource();
 
 		virtual Text::CString GetName();

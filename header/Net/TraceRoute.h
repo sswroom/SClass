@@ -8,7 +8,7 @@ namespace Net
 	class TraceRoute
 	{
 	private:
-		Net::SocketFactory *sockf;
+		NotNullPtr<Net::SocketFactory> sockf;
 		Socket *socV4;
 		Bool threadRunning;
 		Bool threadToStop;
@@ -22,7 +22,7 @@ namespace Net
 		static UInt32 __stdcall RecvThread(void *userObj);
 		void ICMPChecksum(UInt8 *buff, UOSInt buffSize);
 	public:
-		TraceRoute(Net::SocketFactory *sockf, UInt32 ip);
+		TraceRoute(NotNullPtr<Net::SocketFactory> sockf, UInt32 ip);
 		~TraceRoute();
 
 		Bool IsError();

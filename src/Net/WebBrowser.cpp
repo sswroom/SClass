@@ -55,7 +55,7 @@ UTF8Char *Net::WebBrowser::GetLocalFileName(UTF8Char *sbuff, const UTF8Char *url
 	}
 }
 
-Net::WebBrowser::WebBrowser(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CString cacheDir) : queue(sockf, ssl)
+Net::WebBrowser::WebBrowser(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::CString cacheDir) : queue(sockf, ssl)
 {
 	this->sockf = sockf;
 	this->ssl = ssl;

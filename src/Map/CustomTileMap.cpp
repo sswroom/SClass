@@ -3,7 +3,7 @@
 
 #include <stdio.h>
 
-Map::CustomTileMap::CustomTileMap(Text::CString url, Text::CString cacheDir, UOSInt minLevel, UOSInt maxLevel, Net::SocketFactory *sockf, Net::SSLEngine *ssl) : Map::MercatorTileMap(cacheDir, minLevel, maxLevel, sockf, ssl)
+Map::CustomTileMap::CustomTileMap(Text::CString url, Text::CString cacheDir, UOSInt minLevel, UOSInt maxLevel, NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl) : Map::MercatorTileMap(cacheDir, minLevel, maxLevel, sockf, ssl)
 {
 	this->url = Text::String::New(url);
 	this->name = Text::String::New(UTF8STRC("Custom Tile Map"));

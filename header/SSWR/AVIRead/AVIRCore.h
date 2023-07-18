@@ -42,7 +42,7 @@ namespace SSWR
 			Map::MapManager mapMgr;
 			Media::ColorManager colorMgr;
 			IO::SiLabDriver *siLabDriver;
-			Net::SocketFactory *sockf;
+			NotNullPtr<Net::SocketFactory> sockf;
 			Net::SSLEngine *ssl;
 			Net::WebBrowser *browser;
 			Text::EncodingFactory encFact;
@@ -89,7 +89,7 @@ namespace SSWR
 			Parser::ParserList *GetParserList();
 			Map::MapManager *GetMapManager();
 			Media::ColorManager *GetColorMgr();
-			Net::SocketFactory *GetSocketFactory();
+			NotNullPtr<Net::SocketFactory> GetSocketFactory();
 			Media::DrawEngine *GetDrawEngine();
 			Text::EncodingFactory *GetEncFactory();
 			IO::SiLabDriver *GetSiLabDriver();

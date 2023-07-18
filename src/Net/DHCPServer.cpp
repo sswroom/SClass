@@ -263,7 +263,7 @@ void __stdcall Net::DHCPServer::PacketHdlr(const Net::SocketUtil::AddressInfo *a
 	}
 }
 
-Net::DHCPServer::DHCPServer(Net::SocketFactory *sockf, UInt32 infIP, UInt32 subnet, UInt32 firstIP, UInt32 devCount, UInt32 gateway, Data::ArrayList<UInt32> *dnsList)
+Net::DHCPServer::DHCPServer(NotNullPtr<Net::SocketFactory> sockf, UInt32 infIP, UInt32 subnet, UInt32 firstIP, UInt32 devCount, UInt32 gateway, Data::ArrayList<UInt32> *dnsList)
 {
 	this->sockf = sockf;
 	this->svr = 0;

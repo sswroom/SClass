@@ -613,7 +613,7 @@ UOSInt Net::DNSProxy::BuildAddressReply(UInt8 *buff, UInt32 id, const UTF8Char *
 	return i;
 }
 
-Net::DNSProxy::DNSProxy(Net::SocketFactory *sockf, Bool analyzeTarget)
+Net::DNSProxy::DNSProxy(NotNullPtr<Net::SocketFactory> sockf, Bool analyzeTarget)
 {
 	this->sockf = sockf;
 	this->disableV6 = false;

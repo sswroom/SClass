@@ -31,7 +31,7 @@ namespace Map
 	private:
 		Text::EncodingFactory *encFact;
 		NotNullPtr<Text::String> wfsURL;
-		Net::SocketFactory *sockf;
+		NotNullPtr<Net::SocketFactory> sockf;
 		Net::SSLEngine *ssl;
 
 		Text::String *version;
@@ -41,7 +41,7 @@ namespace Map
 		void LoadXML(Version version);
 		void LoadXMLFeatureType(Text::XMLReader *reader);
 	public:
-		WebFeatureService(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, Text::CString wfsURL, Version version);
+		WebFeatureService(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, Text::CString wfsURL, Version version);
 		virtual ~WebFeatureService();
 
 		Bool IsError() const;

@@ -20,7 +20,7 @@ namespace Net
 	class HTTPClient : public IO::Stream
 	{
 	protected:
-		Net::SocketFactory *sockf;
+		NotNullPtr<Net::SocketFactory> sockf;
 		Manage::HiResClock clk;
 
 		Net::SocketUtil::AddressInfo svrAddr;
@@ -38,7 +38,7 @@ namespace Net
 		UInt64 totalUpload;
 		UInt64 totalDownload;
 
-		HTTPClient(Net::SocketFactory *sockf, Bool kaConn);
+		HTTPClient(NotNullPtr<Net::SocketFactory> sockf, Bool kaConn);
 	public:
 		virtual ~HTTPClient();
 
@@ -85,12 +85,12 @@ namespace Net
 		Bool ReadAllContent(NotNullPtr<Text::StringBuilderUTF8> sb, UOSInt buffSize, UInt64 maxSize);
 
 		static void ParseDateStr(Data::DateTime *dt, Text::CString dateStr);
-		static NotNullPtr<Net::HTTPClient> CreateClient(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CString userAgent, Bool kaConn, Bool isSecure);
-		static NotNullPtr<Net::HTTPClient> CreateConnect(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CString url, Net::WebUtil::RequestMethod method, Bool kaConn);
+		static NotNullPtr<Net::HTTPClient> CreateClient(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::CString userAgent, Bool kaConn, Bool isSecure);
+		static NotNullPtr<Net::HTTPClient> CreateConnect(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::CString url, Net::WebUtil::RequestMethod method, Bool kaConn);
 		static Bool IsHTTPURL(Text::CString url);
 		static void PrepareSSL(Net::SSLEngine *ssl);
-		static Bool LoadContent(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CString url, IO::Stream *stm, UInt64 maxSize);
-		static Bool LoadContent(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CString url, Text::StringBuilderUTF8 *sb, UInt64 maxSize);
+		static Bool LoadContent(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::CString url, IO::Stream *stm, UInt64 maxSize);
+		static Bool LoadContent(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::CString url, Text::StringBuilderUTF8 *sb, UInt64 maxSize);
 	};
 }
 #endif

@@ -2,7 +2,7 @@
 #include "Net/PushServer.h"
 #include "Net/PushServerHandler.h"
 
-Net::PushServer::PushServer(Net::SocketFactory *sockf, Net::SSLEngine *ssl, UInt16 port, Text::CString fcmKey, IO::LogTool *log) : mgr(sockf, ssl, fcmKey, log)
+Net::PushServer::PushServer(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, UInt16 port, Text::CString fcmKey, IO::LogTool *log) : mgr(sockf, ssl, fcmKey, log)
 {
 	this->sockf = sockf;
 	this->listener = 0;

@@ -7,7 +7,7 @@ namespace Net
 	class WhoisGlobalClient : public WhoisClient
 	{
 	public:
-		WhoisGlobalClient(Net::SocketFactory *sockf);
+		WhoisGlobalClient(NotNullPtr<Net::SocketFactory> sockf);
 		virtual ~WhoisGlobalClient();
 
 		virtual WhoisRecord *RequestIP(UInt32 ip, Data::Duration timeout);

@@ -10,10 +10,9 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	Text::CString url = CSTR("https://resource.data.one.gov.hk/td/speedmap.xml");
 	UInt8 buff[2048];
 	UOSInt readSize;
-	Net::SocketFactory *sockf;
 	Net::SSLEngine *ssl;
 	NotNullPtr<Net::HTTPClient> cli;
-	NEW_CLASS(sockf, Net::OSSocketFactory(false));
+	Net::OSSocketFactory sockf(false);
 	ssl = Net::SSLEngineFactory::Create(sockf, true);
 	cli = Net::HTTPClient::CreateClient(sockf, ssl, CSTR_NULL, true, url.StartsWith(UTF8STRC("https://")));
 	printf("Connecting to %s\r\n", url.v);
@@ -26,6 +25,5 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 
 	cli.Delete();
 	SDEL_CLASS(ssl);
-	DEL_CLASS(sockf);
 	return 0;
 }

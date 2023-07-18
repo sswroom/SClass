@@ -21,7 +21,7 @@
 
 #define BUFFSIZE 2048
 
-Net::HTTPProxyClient::HTTPProxyClient(Net::SocketFactory *sockf, Bool noShutdown, UInt32 proxyIP, UInt16 proxyPort) : Net::HTTPMyClient(sockf, 0, CSTR_NULL, noShutdown)
+Net::HTTPProxyClient::HTTPProxyClient(NotNullPtr<Net::SocketFactory> sockf, Bool noShutdown, UInt32 proxyIP, UInt16 proxyPort) : Net::HTTPMyClient(sockf, 0, CSTR_NULL, noShutdown)
 {
 	this->proxyIP = proxyIP;
 	this->proxyPort = proxyPort;

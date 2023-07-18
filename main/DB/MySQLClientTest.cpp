@@ -448,7 +448,7 @@ void TestBinaryRead(DB::DBTool *db)
 	}
 }
 
-void TempTest(Net::SocketFactory *sockf, IO::Writer *console)
+void TempTest(NotNullPtr<Net::SocketFactory> sockf, IO::Writer *console)
 {
 	Text::CString mysqlServer;
 	Text::CString mysqlDB;
@@ -493,10 +493,9 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	mysqlPWD = CSTR("organ");
 
 	IO::LogTool log;
-	Net::SocketFactory *sockf;
 	DB::DBTool *db;
 	NEW_CLASS(console, IO::ConsoleWriter());
-	NEW_CLASS(sockf, Net::OSSocketFactory(false));
+	Net::OSSocketFactory sockf(false);
 	TempTest(sockf, console);
 	db = Net::MySQLTCPClient::CreateDBTool(sockf, mysqlServer, mysqlDB, mysqlUID, mysqlPWD, &log, CSTR("DB: "));
 	if (db)
@@ -510,7 +509,6 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	{
 		console->WriteLineC(UTF8STRC("Error in opening database"));
 	}
-	DEL_CLASS(sockf);
 	DEL_CLASS(console);
 	return 0;
 }

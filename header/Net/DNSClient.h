@@ -31,7 +31,7 @@ namespace Net
 		};
 
 		Net::UDPServer *svr;
-		Net::SocketFactory *sockf;
+		NotNullPtr<Net::SocketFactory> sockf;
 		UInt32 lastID;
 		Net::SocketUtil::AddressInfo serverAddr;
 
@@ -43,7 +43,7 @@ namespace Net
 		void DelReq(UInt32 id);
 		UInt32 NextId();
 	public:
-		DNSClient(Net::SocketFactory *sockf, const Net::SocketUtil::AddressInfo *serverAddr);
+		DNSClient(NotNullPtr<Net::SocketFactory> sockf, const Net::SocketUtil::AddressInfo *serverAddr);
 		~DNSClient();
 
 		UOSInt GetByEmailDomainName(Data::ArrayList<RequestAnswer*> *answers, Text::CString domain);

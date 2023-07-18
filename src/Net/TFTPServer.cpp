@@ -355,7 +355,7 @@ void Net::TFTPServer::ReleaseSess(SessionInfo *sess)
 	MemFree(sess);
 }
 
-Net::TFTPServer::TFTPServer(Net::SocketFactory *sockf, UInt16 port, IO::LogTool *log, Text::CString path)
+Net::TFTPServer::TFTPServer(NotNullPtr<Net::SocketFactory> sockf, UInt16 port, IO::LogTool *log, Text::CString path)
 {
 	this->log = log;
 	this->svr = 0;

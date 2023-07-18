@@ -9,7 +9,7 @@
 #include <stdio.h>
 #endif
 
-Net::WebSite::WebSiteTwitterControl::WebSiteTwitterControl(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, Text::String *userAgent)
+Net::WebSite::WebSiteTwitterControl::WebSiteTwitterControl(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, Text::String *userAgent)
 {
 	this->sockf = sockf;
 	this->ssl = ssl;

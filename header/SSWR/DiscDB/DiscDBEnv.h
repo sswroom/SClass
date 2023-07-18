@@ -76,7 +76,7 @@ namespace SSWR
 			} DVDVideoInfo;
 		private:
 			ErrorType err;
-			Net::SocketFactory *sockf;
+			NotNullPtr<Net::SocketFactory> sockf;
 			DB::DBTool *db;
 			IO::LogTool *log;
 			Media::MonitorMgr *monMgr;

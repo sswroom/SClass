@@ -23,7 +23,7 @@ namespace SSWR
 		{
 		private:
 			SSWR::AVIRead::AVIRCore *core;
-			Net::SocketFactory *sockf;
+			NotNullPtr<Net::SocketFactory> sockf;
 			Net::WhoisHandler whois;
 
 			UI::GUIPanel *pnlControl;

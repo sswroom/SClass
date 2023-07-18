@@ -2195,7 +2195,6 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			}
 			else
 			{
-				Net::SocketFactory *sockf;
 				NotNullPtr<Net::HTTPClient> cli;
 				UInt64 readSize;
 				Data::ByteBuffer txtBuff((UOSInt)fileSize);
@@ -2206,7 +2205,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 				}
 				else
 				{
-					NEW_CLASS(sockf, Net::OSSocketFactory(false));
+					Net::OSSocketFactory sockf(false);
 					cli = Net::HTTPClient::CreateConnect(sockf, 0, CSTR("http://sswroom.no-ip.org:5080/benchmark/upload"), Net::WebUtil::RequestMethod::HTTP_POST, false);
 					cli->AddContentType(CSTR("text/plain"));
 					cli->AddContentLength(fileSize);
@@ -2221,7 +2220,6 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 						allowRetry = true;
 					}
 					cli.Delete();
-					DEL_CLASS(sockf);
 				}
 			}
 			if (!allowRetry)

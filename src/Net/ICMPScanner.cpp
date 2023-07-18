@@ -201,7 +201,7 @@ void Net::ICMPScanner::AppendMACs(UInt32 ip)
 	}
 }
 
-Net::ICMPScanner::ICMPScanner(Net::SocketFactory *sockf)
+Net::ICMPScanner::ICMPScanner(NotNullPtr<Net::SocketFactory> sockf)
 {
 	this->sockf = sockf;
 }

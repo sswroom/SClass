@@ -27,7 +27,7 @@ void __stdcall SSWR::AVIRead::AVIRCPUInfoForm::OnUploadClick(void *userObj)
 		{
 			Int32 respStatus;
 			Text::StringBuilderUTF8 sbData;
-			Net::SocketFactory *sockf = me->core->GetSocketFactory();
+			NotNullPtr<Net::SocketFactory> sockf = me->core->GetSocketFactory();
 			Text::StringBuilderUTF8 sbURL;
 			sbURL.AppendC(UTF8STRC("http://sswroom.no-ip.org:5080/benchmark/cpuinfo?family="));
 			sbURL.AppendI32(cpu.GetFamilyId());

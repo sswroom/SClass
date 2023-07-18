@@ -17,14 +17,14 @@ namespace Net
 			Net::HTTPClient *req2;
 		} DomainStatus;
 	private:
-		Net::SocketFactory *sockf;
+		NotNullPtr<Net::SocketFactory> sockf;
 		Net::SSLEngine *ssl;
 		Data::StringUTF8Map<DomainStatus*> statusMap;
 		Sync::Mutex statusMut;
 		Sync::Event statusEvt;
 
 	public:
-		HTTPQueue(Net::SocketFactory *sockf, Net::SSLEngine *ssl);
+		HTTPQueue(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl);
 		~HTTPQueue();
 
 		NotNullPtr<Net::HTTPClient> MakeRequest(Text::CString url, Net::WebUtil::RequestMethod method, Bool noShutdown);

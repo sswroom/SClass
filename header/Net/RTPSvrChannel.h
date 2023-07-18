@@ -26,7 +26,7 @@ namespace Net
 		static void __stdcall PacketCtrlHdlr(const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData);
 
 	public:
-		RTPSvrChannel(Net::SocketFactory *sockf, UInt16 port, Int32 ssrc, const Net::SocketUtil::AddressInfo *targetAddr, UInt16 targetPort, Net::RTPSessionController *sessCtrl);
+		RTPSvrChannel(NotNullPtr<Net::SocketFactory> sockf, UInt16 port, Int32 ssrc, const Net::SocketUtil::AddressInfo *targetAddr, UInt16 targetPort, Net::RTPSessionController *sessCtrl);
 		~RTPSvrChannel();
 
 		const Net::SocketUtil::AddressInfo *GetTargetAddr();

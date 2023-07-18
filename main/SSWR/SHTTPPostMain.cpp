@@ -65,10 +65,9 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			Int32 httpStatus;
 			UOSInt totalSize = 0;
 			UOSInt writeSize;
-			Net::SocketFactory *sockf;
 			Net::SSLEngine *ssl;
 			NotNullPtr<Net::HTTPClient> cli;
-			NEW_CLASS(sockf, Net::OSSocketFactory(true));
+			Net::OSSocketFactory sockf(true);
 			ssl = Net::SSLEngineFactory::Create(sockf, true);
 			cli = Net::HTTPClient::CreateConnect(sockf, ssl, {url, urlLen}, Net::WebUtil::RequestMethod::HTTP_POST, false);
 			if (mime.v)
@@ -158,7 +157,6 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			}
 			cli.Delete();	
 			SDEL_CLASS(ssl);
-			DEL_CLASS(sockf);
 		}
 		else
 		{

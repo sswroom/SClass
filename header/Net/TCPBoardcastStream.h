@@ -10,7 +10,7 @@ namespace Net
 	class TCPBoardcastStream : public IO::Stream
 	{
 	public:
-		Net::SocketFactory *sockf;
+		NotNullPtr<Net::SocketFactory> sockf;
 		Net::TCPServer *svr;
 		Net::TCPClientMgr *cliMgr;
 		IO::LogTool *log;
@@ -27,7 +27,7 @@ namespace Net
 		static void __stdcall ClientData(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, const UInt8 *buff, UOSInt size);
 		static void __stdcall ClientTimeout(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData);
 	public:
-		TCPBoardcastStream(Net::SocketFactory *sockf, UInt16 port, IO::LogTool *log);
+		TCPBoardcastStream(NotNullPtr<Net::SocketFactory> sockf, UInt16 port, IO::LogTool *log);
 		~TCPBoardcastStream();
 
 		virtual Bool IsDown() const;

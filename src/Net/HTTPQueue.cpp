@@ -4,7 +4,7 @@
 #include "Sync/SimpleThread.h"
 #include "Text/URLString.h"
 
-Net::HTTPQueue::HTTPQueue(Net::SocketFactory *sockf, Net::SSLEngine *ssl)
+Net::HTTPQueue::HTTPQueue(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl)
 {
 	this->sockf = sockf;
 	this->ssl = ssl;

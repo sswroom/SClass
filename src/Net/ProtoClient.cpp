@@ -87,7 +87,7 @@ UInt32 __stdcall Net::ProtoClient::ProtoThread(void *userObj)
 	return 0;
 }
 
-Net::ProtoClient::ProtoClient(Net::SocketFactory *sockf, Text::CString cliAddr, UInt16 cliPort, IO::IProtocolHandler *proto, Net::ProtoClient::IProtoClientHandler *cliHdlr)
+Net::ProtoClient::ProtoClient(NotNullPtr<Net::SocketFactory> sockf, Text::CString cliAddr, UInt16 cliPort, IO::IProtocolHandler *proto, Net::ProtoClient::IProtoClientHandler *cliHdlr)
 {
 	this->sockf = sockf;
 	this->cli = 0;

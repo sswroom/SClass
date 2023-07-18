@@ -44,7 +44,7 @@ UInt32 __stdcall Net::SSLEngine::ServerThread(void *userObj)
 	return 0;
 }
 
-Net::SSLEngine::SSLEngine(Net::SocketFactory *sockf)
+Net::SSLEngine::SSLEngine(NotNullPtr<Net::SocketFactory> sockf)
 {
 	this->sockf = sockf;
 	this->maxThreadCnt = 10;

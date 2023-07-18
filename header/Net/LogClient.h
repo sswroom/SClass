@@ -16,7 +16,7 @@ namespace Net
 	{
 	private:
 		IO::ProtoHdlr::ProtoLogCliHandler protoHdlr;
-		Net::SocketFactory *sockf;
+		NotNullPtr<Net::SocketFactory> sockf;
 		Net::SocketUtil::AddressInfo addr;
 		UInt16 port;
 
@@ -39,7 +39,7 @@ namespace Net
 		static UInt32 __stdcall RecvThread(void *userObj);
 		static UInt32 __stdcall SendThread(void *userObj);
 	public:
-		LogClient(Net::SocketFactory *sockf, const Net::SocketUtil::AddressInfo *addr, UInt16 port, Data::Duration timeout);
+		LogClient(NotNullPtr<Net::SocketFactory> sockf, const Net::SocketUtil::AddressInfo *addr, UInt16 port, Data::Duration timeout);
 		virtual ~LogClient();
 		virtual void LogClosed();
 		virtual void LogAdded(const Data::Timestamp &logTime, Text::CString logMsg, LogLevel logLev);

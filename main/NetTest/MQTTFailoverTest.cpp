@@ -7,9 +7,8 @@
 
 Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
-	Net::SocketFactory *sockf;
 	Net::MQTTFailoverClient *cli;
-	NEW_CLASS(sockf, Net::OSSocketFactory(true));
+	Net::OSSocketFactory sockf(true);
 	NEW_CLASS(cli, Net::MQTTFailoverClient(Net::FT_MASTER_SLAVE, sockf, 0, 30));
 	cli->AddClient(CSTR("127.0.0.1"), 1883, CSTR_NULL, CSTR_NULL, false);
 	cli->AddClient(CSTR("127.0.0.1"), 1884, CSTR_NULL, CSTR_NULL, false);
@@ -25,6 +24,5 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		Sync::SimpleThread::Sleep(1000);
 	}
 	DEL_CLASS(cli);
-	DEL_CLASS(sockf);
 	return 0;
 }

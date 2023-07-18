@@ -3,7 +3,7 @@
 #include "Net/WhoisHandler.h"
 #include "Sync/MutexUsage.h"
 
-Net::WhoisHandler::WhoisHandler(Net::SocketFactory *sockf, Data::Duration timeout) : client(sockf)
+Net::WhoisHandler::WhoisHandler(NotNullPtr<Net::SocketFactory> sockf, Data::Duration timeout) : client(sockf)
 {
 	WhoisRecord *rec;
 	this->timeout = timeout;

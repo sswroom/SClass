@@ -17,7 +17,7 @@ namespace Net
 
 		static Bool SetRSAPadding(void *ctx, Crypto::Encrypt::RSACipher::Padding rsaPadding);
 	public:
-		OpenSSLEngine(Net::SocketFactory *sockf, Method method);
+		OpenSSLEngine(NotNullPtr<Net::SocketFactory> sockf, Method method);
 		virtual ~OpenSSLEngine();
 		
 		virtual Bool IsError();

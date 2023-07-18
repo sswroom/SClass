@@ -39,9 +39,8 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		DEL_CLASS(x509);
 		return 0;
 	}
-	Net::SocketFactory *sockf;
 	Net::SSLEngine *ssl;
-	NEW_CLASS(sockf, Net::OSSocketFactory(false));
+	Net::OSSocketFactory sockf(false);
 	ssl = Net::SSLEngineFactory::Create(sockf, true);
 	Crypto::Cert::X509Key *key = (Crypto::Cert::X509Key*)x509;
 	Crypto::Cert::CertNames names;
@@ -75,6 +74,5 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	Crypto::Cert::CertNames::FreeNames(&names);
 	DEL_CLASS(key);
 	SDEL_CLASS(ssl);
-	DEL_CLASS(sockf);
 	return 0;
 }

@@ -9,7 +9,7 @@ namespace DB
 	class DBConfig
 	{
 	public:
-		static DB::DBTool *LoadFromConfig(Net::SocketFactory *sockf, IO::ConfigFile *cfg, IO::LogTool *log);
+		static DB::DBTool *LoadFromConfig(NotNullPtr<Net::SocketFactory> sockf, IO::ConfigFile *cfg, IO::LogTool *log);
 	};
 }
 #endif

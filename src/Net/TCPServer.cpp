@@ -309,7 +309,7 @@ void Net::TCPServer::AcceptSocket(Socket *svrSoc)
 		this->hdlr((UInt32*)s, this->userObj);*/
 	}	
 }
-Net::TCPServer::TCPServer(SocketFactory *socf, UInt16 port, IO::LogTool *log, TCPServerConn hdlr, void *userObj, Text::CString logPrefix, Bool autoStart)
+Net::TCPServer::TCPServer(NotNullPtr<SocketFactory> socf, UInt16 port, IO::LogTool *log, TCPServerConn hdlr, void *userObj, Text::CString logPrefix, Bool autoStart)
 {
 	UTF8Char buff[1024];
 	UTF8Char *str;

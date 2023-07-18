@@ -48,7 +48,7 @@ namespace SSWR
 			UI::GUITextBox *txtAnsRD;
 
 			Data::ArrayList<Net::DNSClient::RequestAnswer*> *ansList;
-			Net::SocketFactory *sockf;
+			NotNullPtr<Net::SocketFactory> sockf;
 
 			static void __stdcall OnRequestClicked(void *userObj);
 			static void __stdcall OnAnswerSelChg(void *userObj);

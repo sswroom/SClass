@@ -122,7 +122,7 @@ void Net::SSDPClient::SSDPDeviceFree(SSDPDevice *dev)
 	DEL_CLASS(dev);
 }
 
-Net::SSDPClient::SSDPClient(Net::SocketFactory *sockf, Text::CString userAgent)
+Net::SSDPClient::SSDPClient(NotNullPtr<Net::SocketFactory> sockf, Text::CString userAgent)
 {
 	this->userAgent = Text::String::NewOrNull(userAgent);
 	NEW_CLASS(this->udp, Net::UDPServer(sockf, 0, 0, CSTR_NULL, OnPacketRecv, this, 0, CSTR_NULL, 2, false));

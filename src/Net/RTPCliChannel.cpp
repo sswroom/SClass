@@ -317,7 +317,7 @@ void Net::RTPCliChannel::SetPlayControl(Net::IRTPController *playCtrl)
 	this->chData->playCtrl = playCtrl;
 }
 
-Net::RTPCliChannel::RTPCliChannel(Net::SocketFactory *sockf, UInt16 port)
+Net::RTPCliChannel::RTPCliChannel(NotNullPtr<Net::SocketFactory> sockf, UInt16 port)
 {
 	NEW_CLASS(this->chData, ChannelData());
 	this->chData->useCnt = 1;
@@ -566,7 +566,7 @@ Bool Net::RTPCliChannel::SetPayloadFormat(Int32 payloadType, const UTF8Char *for
 	return false;
 }
 
-Net::RTPCliChannel *Net::RTPCliChannel::CreateChannel(Net::SocketFactory *sockf, Data::ArrayList<const UTF8Char *> *sdpDesc, Text::CString ctrlURL, Net::IRTPController *playCtrl)
+Net::RTPCliChannel *Net::RTPCliChannel::CreateChannel(NotNullPtr<Net::SocketFactory> sockf, Data::ArrayList<const UTF8Char *> *sdpDesc, Text::CString ctrlURL, Net::IRTPController *playCtrl)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;

@@ -80,7 +80,7 @@ void __stdcall SSWR::SDNSProxy::SDNSProxyCore::OnDNSRequest(void *userObj, Text:
 SSWR::SDNSProxy::SDNSProxyCore::SDNSProxyCore(IO::ConfigFile *cfg, IO::Writer *console)
 {
 	this->console = console;
-	NEW_CLASS(this->sockf, Net::OSSocketFactory(false));
+	NEW_CLASSNN(this->sockf, Net::OSSocketFactory(false));
 	this->lastHour = 0;
 	this->lastMinute = 0;
 	this->lastCnt = 0;
@@ -211,7 +211,7 @@ SSWR::SDNSProxy::SDNSProxyCore::~SDNSProxyCore()
 		DEL_CLASS(cli);
 	}
 
-	DEL_CLASS(this->sockf);
+	this->sockf.Delete();
 }
 
 Bool SSWR::SDNSProxy::SDNSProxyCore::IsError()

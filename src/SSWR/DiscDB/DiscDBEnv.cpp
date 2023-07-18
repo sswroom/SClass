@@ -127,7 +127,7 @@ SSWR::DiscDB::DiscDBEnv::DiscDBEnv()
 {
 	IO::ConfigFile *cfg;
 	this->db = 0;
-	NEW_CLASS(this->sockf, Net::OSSocketFactory(false));
+	NEW_CLASSNN(this->sockf, Net::OSSocketFactory(false));
 	NEW_CLASS(this->log, IO::LogTool());
 	NEW_CLASS(this->monMgr, Media::MonitorMgr());
 	NEW_CLASS(this->discMap, Data::FastStringMap<BurntDiscInfo*>());
@@ -251,7 +251,7 @@ SSWR::DiscDB::DiscDBEnv::~DiscDBEnv()
 		MemFree(dvdVideo);
 	}
 	DEL_CLASS(this->dvdVideoMap);
-	DEL_CLASS(this->sockf);
+	this->sockf.Delete();
 }
 
 SSWR::DiscDB::DiscDBEnv::ErrorType SSWR::DiscDB::DiscDBEnv::GetErrorType()

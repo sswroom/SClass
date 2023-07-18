@@ -376,7 +376,7 @@ SSWR::AVIRead::AVIRSNMPManagerForm::AVIRSNMPManagerForm(UI::GUIClientControl *pa
 
 	this->AddTimer(1000, OnTimerTick, this);
 
-	Net::SocketFactory *sockf = this->core->GetSocketFactory();
+	NotNullPtr<Net::SocketFactory> sockf = this->core->GetSocketFactory();
 	NEW_CLASS(this->redir, SSWR::SMonitor::SMonitorRedir(sockf));
 	NEW_CLASS(this->mgr, Net::SNMPManager(sockf));
 	if (this->mgr->IsError())

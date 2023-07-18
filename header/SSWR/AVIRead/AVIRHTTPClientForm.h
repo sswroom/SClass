@@ -116,7 +116,7 @@ namespace SSWR
 			UI::GUITabPage *tpCookie;
 			UI::GUIListView *lvCookie;
 
-			Net::SocketFactory *sockf;
+			NotNullPtr<Net::SocketFactory> sockf;
 			Net::SSLEngine *ssl;
 			Bool threadRunning;
 			Bool threadToStop;

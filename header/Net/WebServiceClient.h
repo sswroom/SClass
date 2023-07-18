@@ -21,7 +21,7 @@ namespace Net
 			const UTF8Char *val;
 		} ParamInfo;
 	private:
-		Net::SocketFactory *sockf;
+		NotNullPtr<Net::SocketFactory> sockf;
 		Net::SSLEngine *ssl;
 		Text::String *serviceAddr;
 		const UTF8Char *serviceName;
@@ -31,7 +31,7 @@ namespace Net
 		const UTF8Char *responseVal;
 
 	public:
-		WebServiceClient(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CString serviceAddr, const UTF8Char *serviceName, const UTF8Char *targetNS);
+		WebServiceClient(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::CString serviceAddr, const UTF8Char *serviceName, const UTF8Char *targetNS);
 		~WebServiceClient();
 
 		void AddParam(const UTF8Char *paramName, const UTF8Char *paramVal);

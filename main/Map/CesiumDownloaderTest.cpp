@@ -47,7 +47,7 @@ private:
 		Text::String *currURL;
 	};
 private:
-	Net::SocketFactory *sockf;
+	NotNullPtr<Net::SocketFactory> sockf;
 	Net::SSLEngine *ssl;
 	UOSInt threadCount;
 	Bool threadToStop;
@@ -222,7 +222,7 @@ private:
 	}
 
 public:
-	CesiumDownloader(Net::SocketFactory *sockf, UOSInt threadCount, Bool useComp)
+	CesiumDownloader(NotNullPtr<Net::SocketFactory> sockf, UOSInt threadCount, Bool useComp)
 	{
 		this->sockf = sockf;
 		this->ssl = Net::SSLEngineFactory::Create(sockf, true);
@@ -483,7 +483,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	Net::OSSocketFactory sockf(true);
 	IO::ConsoleWriter console;
-	CesiumDownloader downloader(&sockf, 16, true);
+	CesiumDownloader downloader(sockf, 16, true);
 /*	TestURL(&console, &downloader, CSTR("http://127.0.0.1:12345/mapSvc/cesiumdata?file=20220411HAD01_Cesium.json&range=114.22109831332,22.361996166922,114.2219974849,22.364057802242&minErr=0"));
 	TestURL(&console, &downloader, CSTR("http://127.0.0.1:12345/mapSvc/cesiumdata?file=20220411HAD01_Cesium.json&range=114.22109831332,22.361996166922,114.2219974849,22.364057802242&minErr=0.8"));
 	TestURL(&console, &downloader, CSTR("http://127.0.0.1:12345/mapSvc/cesiumdata?file=20220411HAD01_Cesium.json&range=114.22109831332,22.361996166922,114.2219974849,22.364057802242&minErr=0.4"));

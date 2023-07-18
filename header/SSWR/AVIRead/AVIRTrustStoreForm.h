@@ -19,7 +19,7 @@ namespace SSWR
 		private:
 			SSWR::AVIRead::AVIRCore *core;
 			Net::SSLEngine *ssl;
-			Net::SocketFactory *sockf;
+			NotNullPtr<Net::SocketFactory> sockf;
 			Crypto::Cert::CertStore *store;
 
 			UI::GUIListView *lvTrustCert;

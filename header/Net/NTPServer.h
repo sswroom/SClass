@@ -11,7 +11,7 @@ namespace Net
 	class NTPServer
 	{
 	private:
-		Net::SocketFactory *sockf;
+		NotNullPtr<Net::SocketFactory> sockf;
 		Net::UDPServer *svr;
 		IO::LogTool *log;
 		NotNullPtr<Text::String> timeServer;
@@ -24,9 +24,9 @@ namespace Net
 
 		static void __stdcall PacketHdlr(const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData);
 		static UInt32 __stdcall CheckThread(void *userObj);
-		void InitServer(Net::SocketFactory *sockf, UInt16 port);
+		void InitServer(NotNullPtr<Net::SocketFactory> sockf, UInt16 port);
 	public:
-		NTPServer(Net::SocketFactory *sockf, UInt16 port, IO::LogTool *log, Text::CString timeServer);
+		NTPServer(NotNullPtr<Net::SocketFactory> sockf, UInt16 port, IO::LogTool *log, Text::CString timeServer);
 		~NTPServer();
 
 		Bool IsError();

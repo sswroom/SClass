@@ -30,7 +30,7 @@ void __stdcall Net::SNMPTrapMonitor::OnSNMPPacket(const Net::SocketUtil::Address
 	}
 }
 
-Net::SNMPTrapMonitor::SNMPTrapMonitor(Net::SocketFactory *sockf, SNMPTrapHandler hdlr, void *userObj)
+Net::SNMPTrapMonitor::SNMPTrapMonitor(NotNullPtr<Net::SocketFactory> sockf, SNMPTrapHandler hdlr, void *userObj)
 {
 	this->hdlr = hdlr;
 	this->hdlrObj = userObj;

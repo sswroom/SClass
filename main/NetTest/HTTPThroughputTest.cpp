@@ -27,7 +27,7 @@ UInt32 threadCurrCnt;
 Int32 connLeft;
 Manage::HiResClock *clk;
 Double t;
-Net::SocketFactory *sockf;
+NotNullPtr<Net::SocketFactory> sockf;
 Net::SSLEngine *ssl;
 
 struct ThreadStatus
@@ -261,7 +261,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	Manage::HiResClock localClk;
 	Net::OSSocketFactory localSockf(true);
 	clk = &localClk;
-	sockf = &localSockf;
+	sockf = localSockf;
 	ssl = Net::SSLEngineFactory::Create(sockf, true);
 	ThreadStatus *threadStatus = MemAlloc(ThreadStatus, threadCnt);
 	clk->Start();

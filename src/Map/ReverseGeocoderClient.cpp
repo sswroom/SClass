@@ -116,7 +116,7 @@ UInt32 __stdcall Map::ReverseGeocoderClient::MonThread(void *userObj)
 	return 0;
 }
 
-Map::ReverseGeocoderClient::ReverseGeocoderClient(Net::SocketFactory *sockf, Text::CString host, UInt16 port, Map::IReverseGeocoder *revGeo, IO::Writer *errWriter) : protocol(this)
+Map::ReverseGeocoderClient::ReverseGeocoderClient(NotNullPtr<Net::SocketFactory> sockf, Text::CString host, UInt16 port, Map::IReverseGeocoder *revGeo, IO::Writer *errWriter) : protocol(this)
 {
 	this->sockf = sockf;
 	this->host = Text::String::New(host);

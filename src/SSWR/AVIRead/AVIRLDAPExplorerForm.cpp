@@ -21,7 +21,7 @@ void __stdcall SSWR::AVIRead::AVIRLDAPExplorerForm::OnConnectClicked(void *userO
 	Text::StringBuilderUTF8 sb;
 	Net::SocketUtil::AddressInfo addr;
 	UInt16 port;
-	Net::SocketFactory *sockf = me->core->GetSocketFactory();
+	NotNullPtr<Net::SocketFactory> sockf = me->core->GetSocketFactory();
 	me->txtHost->GetText(&sb);
 	if (sb.GetLength() == 0)
 	{

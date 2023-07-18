@@ -141,7 +141,7 @@ UInt16 Net::MQTTStaticClient::GetNextPacketId()
 	return this->packetId++;
 }
 
-Net::MQTTStaticClient::MQTTStaticClient(Net::MQTTConn::PublishMessageHdlr hdlr, void *userObj, IO::Writer *errLog)
+Net::MQTTStaticClient::MQTTStaticClient(NotNullPtr<Net::SocketFactory> sockf, Net::MQTTConn::PublishMessageHdlr hdlr, void *userObj, IO::Writer *errLog)
 {
 	this->kaRunning = false;
 	this->kaToStop = false;
@@ -160,7 +160,7 @@ Net::MQTTStaticClient::MQTTStaticClient(Net::MQTTConn::PublishMessageHdlr hdlr, 
 	this->hdlrList.Add(hdlr);
 	this->hdlrObjList.Add(userObj);
 
-	this->sockf = 0;
+	this->sockf = sockf;
 	this->ssl = 0;
 	this->host = 0;
 	this->port = 0;
@@ -169,9 +169,8 @@ Net::MQTTStaticClient::MQTTStaticClient(Net::MQTTConn::PublishMessageHdlr hdlr, 
 	this->webSocket = false;
 }
 
-Net::MQTTStaticClient::MQTTStaticClient(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CString host, UInt16 port, Text::CString username, Text::CString password, Bool webSocket, Net::MQTTConn::PublishMessageHdlr hdlr, void *userObj, UInt16 kaSeconds, IO::Writer *errLog) : Net::MQTTStaticClient(hdlr, userObj, errLog)
+Net::MQTTStaticClient::MQTTStaticClient(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::CString host, UInt16 port, Text::CString username, Text::CString password, Bool webSocket, Net::MQTTConn::PublishMessageHdlr hdlr, void *userObj, UInt16 kaSeconds, IO::Writer *errLog) : Net::MQTTStaticClient(sockf, hdlr, userObj, errLog)
 {
-	this->sockf = sockf;
 	this->ssl = ssl;
 	this->host = Text::String::New(host).Ptr();
 	this->port = port;

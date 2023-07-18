@@ -67,7 +67,6 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	Text::String *smtpTo = cfg->GetValue(CSTR("SMTPTo"));
 	Text::String *smtpUser = cfg->GetValue(CSTR("SMTPUser"));
 	Text::String *smtpPassword = cfg->GetValue(CSTR("SMTPPassword"));
-	Net::SocketFactory *sockf;
 	Net::MySQLTCPClient *cli;
 	DB::MySQLMaintance *mysql;
 	Net::SocketUtil::AddressInfo addr;
@@ -95,8 +94,8 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	}
 
 	Int32 retNum = 0;
-	NEW_CLASS(sockf, Net::OSSocketFactory(false));
-	if (!sockf->DNSResolveIP(mysqlServer->ToCString(), &addr))
+	Net::OSSocketFactory sockf(false);
+	if (!sockf.DNSResolveIP(mysqlServer->ToCString(), &addr))
 	{
 		console.WriteLineC(UTF8STRC("MySQLServer cannot be resolved"));
 		return 4;
@@ -182,6 +181,5 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		}
 	}
 	DEL_CLASS(cfg);
-	DEL_CLASS(sockf);
 	return retNum;
 }

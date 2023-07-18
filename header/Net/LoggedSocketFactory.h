@@ -9,11 +9,11 @@ namespace Net
 	class LoggedSocketFactory : public Net::SocketFactory
 	{
 	private:
-		Net::SocketFactory *sockf;
+		NotNullPtr<Net::SocketFactory> sockf;
 		IO::LogTool *log;
 		Text::String *logPrefix;
 	public:
-		LoggedSocketFactory(Net::SocketFactory *sockf, IO::LogTool *log, Text::CString logPrefix);
+		LoggedSocketFactory(NotNullPtr<Net::SocketFactory> sockf, IO::LogTool *log, Text::CString logPrefix);
 		virtual ~LoggedSocketFactory();
 
 		virtual Socket *CreateTCPSocketv4();

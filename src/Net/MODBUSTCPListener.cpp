@@ -297,7 +297,7 @@ void __stdcall Net::MODBUSTCPListener::OnClientTimeout(NotNullPtr<Net::TCPClient
 
 }
 
-Net::MODBUSTCPListener::MODBUSTCPListener(Net::SocketFactory *sockf, UInt16 port, IO::LogTool *log, Bool autoStart)
+Net::MODBUSTCPListener::MODBUSTCPListener(NotNullPtr<Net::SocketFactory> sockf, UInt16 port, IO::LogTool *log, Bool autoStart)
 {
 	this->sockf = sockf;
 	this->delay = 0;

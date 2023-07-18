@@ -74,7 +74,7 @@ void __stdcall Net::RAWCapture::DataHandler(void *userData, const UInt8 *packetD
 	mutUsage.EndUse();
 }
 
-Net::RAWCapture::RAWCapture(Net::SocketFactory *sockf, UInt32 adapterIP, CaptureType type, FileFormat format, Text::CString fileName, Text::CString appName)
+Net::RAWCapture::RAWCapture(NotNullPtr<Net::SocketFactory> sockf, UInt32 adapterIP, CaptureType type, FileFormat format, Text::CString fileName, Text::CString appName)
 {
 	if (appName.leng == 0)
 	{

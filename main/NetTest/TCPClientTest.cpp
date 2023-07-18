@@ -11,7 +11,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	Net::OSSocketFactory sockf(true);
 	Data::Timestamp ts = Data::Timestamp::UtcNow();
 	Net::TCPClient *cli;
-	NEW_CLASS(cli, Net::TCPClient(&sockf, CSTR("sswroom.no-ip.org"), 80, 10000));
+	NEW_CLASS(cli, Net::TCPClient(sockf, CSTR("sswroom.no-ip.org"), 80, 10000));
 	DEL_CLASS(cli);
 	Double t = Data::Timestamp::UtcNow().DiffSecDbl(ts);
 	Text::StringBuilderUTF8 sb;

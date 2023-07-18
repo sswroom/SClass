@@ -10,8 +10,8 @@
                 "${workspaceFolder}/../SClass/ThirdParty/adl",
                 "/usr/include/**",
                 "/usr/lib/x86_64-linux-gnu/**",
-                "/usr/lib/jvm/java-11-openjdk-amd64/include",
-                "/usr/lib/jvm/java-11-openjdk-amd64/include/linux"
+                "/usr/lib/jvm/java-17-openjdk-amd64/include",
+                "/usr/lib/jvm/java-17-openjdk-amd64/include/linux"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/gcc",

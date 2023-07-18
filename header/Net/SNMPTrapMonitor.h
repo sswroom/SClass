@@ -16,7 +16,7 @@ namespace Net
 
 		static void __stdcall OnSNMPPacket(const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData);
 	public:
-		SNMPTrapMonitor(Net::SocketFactory *sockf, SNMPTrapHandler hdlr, void *userObj);
+		SNMPTrapMonitor(NotNullPtr<Net::SocketFactory> sockf, SNMPTrapHandler hdlr, void *userObj);
 		~SNMPTrapMonitor();
 
 		Bool IsError();

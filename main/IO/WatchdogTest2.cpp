@@ -26,7 +26,7 @@ Bool toStop;
 Sync::Event *evt;
 Sync::Event *httpEvt;
 IO::Device::AM2315 *am2315;
-Net::SocketFactory *sockf;
+NotNullPtr<Net::SocketFactory> sockf;
 Net::SSLEngine *ssl;
 IO::ConsoleWriter *consoleWriter;
 
@@ -144,7 +144,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 
 	NEW_CLASS(evt, Sync::Event(true));
 	NEW_CLASS(httpEvt, Sync::Event(true));
-	NEW_CLASS(sockf, Net::OSSocketFactory(false));
+	NEW_CLASSNN(sockf, Net::OSSocketFactory(false));
 	ssl = Net::SSLEngineFactory::Create(sockf, true);
 
 	wd = IO::Watchdog::Create(1);
@@ -204,7 +204,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	DEL_CLASS(evt);
 	DEL_CLASS(httpEvt);
 	SDEL_CLASS(ssl);
-	DEL_CLASS(sockf);
+	sockf.Delete();
 	DEL_CLASS(am2315);
 	return 0;
 }

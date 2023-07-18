@@ -51,7 +51,7 @@ namespace SSWR
 			UI::GUITextBox *txtTimeTotal;
 			UI::GUIListView *lvHeaders;
 
-			Net::SocketFactory *sockf;
+			NotNullPtr<Net::SocketFactory> sockf;
 			Net::SSLEngine *ssl;
 			Bool threadRunning;
 			Bool threadToStop;

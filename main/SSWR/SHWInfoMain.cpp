@@ -707,8 +707,8 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		Data::Timestamp ts;
 		Net::ConnectionInfo *connInfo;
 		Data::ArrayList<Net::ConnectionInfo*> connInfoList;
-		Net::SocketFactory *sockf;
-		NEW_CLASS(sockf, Net::OSSocketFactory(true));
+		NotNullPtr<Net::SocketFactory> sockf;
+		NEW_CLASSNN(sockf, Net::OSSocketFactory(true));
 		sockf->GetConnInfoList(&connInfoList);
 		console->WriteLine();
 		writer->WriteLine();
@@ -867,7 +867,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			DEL_CLASS(connInfo);
 			i++;
 		}
-		DEL_CLASS(sockf);
+		sockf.Delete();
 	}
 //-------------------------------------------------------------------------------
 	{

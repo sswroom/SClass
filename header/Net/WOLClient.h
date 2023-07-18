@@ -8,12 +8,12 @@ namespace Net
 	{
 	private:
 		Net::UDPServer *svr;
-		Net::SocketFactory *sockf;
+		NotNullPtr<Net::SocketFactory> sockf;
 		UInt32 adapterIP;
 
 		static void __stdcall PacketHdlr(const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData);
 	public:
-		WOLClient(Net::SocketFactory *sockf, UInt32 adapterIP);
+		WOLClient(NotNullPtr<Net::SocketFactory> sockf, UInt32 adapterIP);
 		~WOLClient();
 
 		Bool IsError();

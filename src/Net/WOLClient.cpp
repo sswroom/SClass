@@ -7,7 +7,7 @@ void __stdcall Net::WOLClient::PacketHdlr(const Net::SocketUtil::AddressInfo *ad
 {
 }
 
-Net::WOLClient::WOLClient(Net::SocketFactory *sockf, UInt32 adapterIP)
+Net::WOLClient::WOLClient(NotNullPtr<Net::SocketFactory> sockf, UInt32 adapterIP)
 {
 	this->sockf = sockf;
 	this->adapterIP = Net::SocketUtil::IPv4ToBroadcast(adapterIP);

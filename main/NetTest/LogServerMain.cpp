@@ -33,7 +33,7 @@ public:
 Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	Net::LogServer *svr;
-	Net::SocketFactory *sockf;
+	NotNullPtr<Net::SocketFactory> sockf;
 	IO::LogTool *log;
 	Text::StringBuilderUTF8 sb;
 	MyLogHandler *logHdlr;
@@ -51,7 +51,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	sb.AppendC(UTF8STRC("Listening to port "));
 	sb.AppendI32(port);
 	console->WriteLineC(sb.ToString(), sb.GetLength());
-	NEW_CLASS(sockf, Net::OSSocketFactory(true));
+	NEW_CLASSNN(sockf, Net::OSSocketFactory(true));
 	NEW_CLASS(log, IO::LogTool());
 	NEW_CLASS(logHdlr, MyLogHandler());
 	log->AddLogHandler(logHdlr, IO::LogHandler::LogLevel::Raw);
@@ -67,7 +67,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	DEL_CLASS(svr);
 	DEL_CLASS(log);
 	DEL_CLASS(logHdlr);
-	DEL_CLASS(sockf);
+	sockf.Delete();
 	DEL_CLASS(console);
 	return 0;
 }

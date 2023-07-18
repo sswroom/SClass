@@ -10,7 +10,7 @@
 #include "Text/StringBuilderUTF8.h"
 #include "Text/XMLDOM.h"
 
-Map::MapBar::MapBarRevGeo::MapBarRevGeo(Net::SocketFactory *sockf, IO::Writer *errWriter, Map::MapBar::MapBarAdjuster *adjuster, Int32 imgWidth, Int32 imgHeight)
+Map::MapBar::MapBarRevGeo::MapBarRevGeo(NotNullPtr<Net::SocketFactory> sockf, IO::Writer *errWriter, Map::MapBar::MapBarAdjuster *adjuster, Int32 imgWidth, Int32 imgHeight)
 {
 	this->sockf = sockf;
 	this->errWriter = errWriter;

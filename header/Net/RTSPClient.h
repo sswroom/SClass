@@ -16,7 +16,7 @@ namespace Net
 		{
 			Int32 useCnt;
 
-			Net::SocketFactory *sockf;
+			NotNullPtr<Net::SocketFactory> sockf;
 			Net::TCPClient *cli;
 			Sync::Mutex cliMut;
 			NotNullPtr<Text::String> host;
@@ -45,14 +45,14 @@ namespace Net
 
 		RTSPClient(const RTSPClient *cli);
 	public:
-		RTSPClient(Net::SocketFactory *sockf, Text::CString host, UInt16 port, Data::Duration timeout);
+		RTSPClient(NotNullPtr<Net::SocketFactory> sockf, Text::CString host, UInt16 port, Data::Duration timeout);
 		~RTSPClient();
 
 
 		Bool GetOptions(Text::CString url, Data::ArrayList<const UTF8Char *> *options);
 		Net::SDPFile *GetMediaInfo(Text::CString url);
 
-		static IO::ParsedObject *ParseURL(Net::SocketFactory *sockf, Text::CString url, Data::Duration timeout);
+		static IO::ParsedObject *ParseURL(NotNullPtr<Net::SocketFactory> sockf, Text::CString url, Data::Duration timeout);
 
 	private:
 		UTF8Char *SetupRTP(UTF8Char *sessIdOut, Text::CString url, Net::RTPCliChannel *rtpChannel);

@@ -8,7 +8,7 @@ namespace Net
 	class LoRaGateway
 	{
 	private:
-		Net::SocketFactory *sockf;
+		NotNullPtr<Net::SocketFactory> sockf;
 		Net::UDPServer udp;
 		Net::SocketUtil::AddressInfo svrAddr;
 		UInt16 svrPort;
@@ -35,7 +35,7 @@ namespace Net
 		Bool SendPullData();
 		Bool SendStatData();
 	public:
-		LoRaGateway(Net::SocketFactory *sockf, const Net::SocketUtil::AddressInfo *svrAddr, UInt16 svrPort, const UInt8 *gatewayEUI, IO::LogTool *log);
+		LoRaGateway(NotNullPtr<Net::SocketFactory> sockf, const Net::SocketUtil::AddressInfo *svrAddr, UInt16 svrPort, const UInt8 *gatewayEUI, IO::LogTool *log);
 		~LoRaGateway();
 
 		void UpdatePos(Double lat, Double lon, Int32 altitude);

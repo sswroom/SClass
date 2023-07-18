@@ -84,7 +84,7 @@ void Net::TraceRoute::ICMPChecksum(UInt8 *buff, UOSInt buffSize)
 }
 
 
-Net::TraceRoute::TraceRoute(Net::SocketFactory *sockf, UInt32 ip)
+Net::TraceRoute::TraceRoute(NotNullPtr<Net::SocketFactory> sockf, UInt32 ip)
 {
 	this->sockf = sockf;
 	this->socV4 = this->sockf->CreateICMPIPv4Socket(ip);

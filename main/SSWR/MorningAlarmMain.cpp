@@ -44,7 +44,7 @@ Bool threadRunning;
 Data::DateTime *startDt;
 Text::String *audioDevice; //L"Realtek HD Audio output"
 IO::ConsoleWriter *console;
-Net::SocketFactory *sockf;
+NotNullPtr<Net::SocketFactory> sockf;
 Net::SSLEngine *ssl;
 Text::EncodingFactory *encFact;
 Net::NTPClient *timeCli;
@@ -269,7 +269,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	IO::ConsoleInput::InputReturnType irt;
 
 	NEW_CLASS(console, IO::ConsoleWriter());
-	NEW_CLASS(sockf, Net::OSSocketFactory(true));
+	NEW_CLASSNN(sockf, Net::OSSocketFactory(true));
 	ssl = Net::SSLEngineFactory::Create(sockf, true);
 	NEW_CLASS(encFact, Text::EncodingFactory());
 	NEW_CLASS(timeCli, Net::NTPClient(sockf, 14562));
@@ -364,7 +364,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	DEL_CLASS(timeCli);
 	DEL_CLASS(encFact);
 	SDEL_CLASS(ssl);
-	DEL_CLASS(sockf);
+	sockf.Delete();
 	DEL_CLASS(console);
 	return 0;
 }

@@ -11,7 +11,7 @@ namespace Net
 	class ProxyServer
 	{
 	private:
-		Net::SocketFactory *sockf;
+		NotNullPtr<Net::SocketFactory> sockf;
 		IO::LogTool *log;
 		UInt16 port;
 		Net::TCPServer *svr;
@@ -23,7 +23,7 @@ namespace Net
 		static void __stdcall OnClientTimeout(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData);
 
 	public:
-		ProxyServer(Net::SocketFactory *sockf, UInt16 port, IO::LogTool *log, Bool autoStart);
+		ProxyServer(NotNullPtr<Net::SocketFactory> sockf, UInt16 port, IO::LogTool *log, Bool autoStart);
 		~ProxyServer();
 
 		Bool Start();

@@ -35,7 +35,7 @@ namespace Net
 			typedef UTF8Char *(__stdcall *MailHandler)(UTF8Char *queryId, void *userObj, NotNullPtr<Net::TCPClient> cli, MailStatus *mail);
 			typedef Bool (__stdcall *LoginHandler)(void *userObj, Text::CString userName, Text::CString pwd);
 		private:
-			Net::SocketFactory *sockf;
+			NotNullPtr<Net::SocketFactory> sockf;
 			Net::SSLEngine *ssl;
 			Net::Email::SMTPConn::ConnType connType;
 			Net::TCPServer *svr;
@@ -59,7 +59,7 @@ namespace Net
 			//static OSInt WriteMessage(Net::TCPClient *cli, Int32 statusCode, const Char *msg);
 			void ParseCmd(NotNullPtr<Net::TCPClient> cli, MailStatus *cliStatus, const UTF8Char *cmd, UOSInt cmdLen, Text::LineBreakType lbt);
 		public:
-			SMTPServer(Net::SocketFactory *sockf, Net::SSLEngine *ssl, UInt16 port, Net::Email::SMTPConn::ConnType connType, IO::LogTool *log, Text::CString domain, Text::CString serverName, MailHandler mailHdlr, LoginHandler loginHdlr, void *userObj, Bool autoStart);
+			SMTPServer(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, UInt16 port, Net::Email::SMTPConn::ConnType connType, IO::LogTool *log, Text::CString domain, Text::CString serverName, MailHandler mailHdlr, LoginHandler loginHdlr, void *userObj, Bool autoStart);
 			~SMTPServer();
 
 			Bool Start();

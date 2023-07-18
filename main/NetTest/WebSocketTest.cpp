@@ -26,7 +26,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 //	NEW_CLASSNN(cli, Net::WebSocketClient(&sockf, 0, CSTR("192.168.1.24"), 9001, CSTR("/mqtt"), CSTR_NULL, Net::WebSocketClient::Protocol::MQTT, 30000));
 //	NEW_CLASSNN(cli, Net::WebSocketClient(&sockf, 0, CSTR("ws.vi-server.org"), 80, CSTR("/mirror"), CSTR("http://127.0.0.1"), Net::WebSocketClient::Protocol::Chat, 30000));
 //	NEW_CLASSNN(cli, Net::WebSocketClient(&sockf, 0, CSTR("test.mosquitto.org"), 8080, CSTR("/mqtt"), CSTR_NULL, Net::WebSocketClient::Protocol::MQTT, 30000));
-	NEW_CLASSNN(cli, Net::WebSocketClient(&sockf, 0, CSTR("127.0.0.1"), 9001, CSTR("/mqtt"), CSTR_NULL, Net::WebSocketClient::Protocol::MQTT, 30000));
+	NEW_CLASSNN(cli, Net::WebSocketClient(sockf, 0, CSTR("127.0.0.1"), 9001, CSTR("/mqtt"), CSTR_NULL, Net::WebSocketClient::Protocol::MQTT, 30000));
 	disconnected = false;
 	if (!cli->IsDown())
 	{

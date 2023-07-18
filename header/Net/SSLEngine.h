@@ -70,7 +70,7 @@ namespace Net
 			SSLEngine *me;
 		};
 	protected:
-		Net::SocketFactory *sockf;
+		NotNullPtr<Net::SocketFactory> sockf;
 		UOSInt maxThreadCnt;
 		UOSInt currThreadCnt;
 		Bool threadToStop;
@@ -83,7 +83,7 @@ namespace Net
 
 		static UInt32 __stdcall ServerThread(void *userObj);
 		virtual Net::SSLClient *CreateServerConn(Socket *s) = 0;
-		SSLEngine(Net::SocketFactory *sockf);
+		SSLEngine(NotNullPtr<Net::SocketFactory> sockf);
 	public:
 		virtual ~SSLEngine();
 		

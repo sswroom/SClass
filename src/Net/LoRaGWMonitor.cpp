@@ -25,7 +25,7 @@ void __stdcall Net::LoRaGWMonitor::OnRAWPacket(void *userData, const UInt8 *pack
 	}
 }
 
-Net::LoRaGWMonitor::LoRaGWMonitor(Net::SocketFactory *sockf, UInt16 port, GWMPMessage msgHdlr, void *msgHdlrObj)
+Net::LoRaGWMonitor::LoRaGWMonitor(NotNullPtr<Net::SocketFactory> sockf, UInt16 port, GWMPMessage msgHdlr, void *msgHdlrObj)
 {
 	this->sockf = sockf;
 	this->port = port;

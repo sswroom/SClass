@@ -136,7 +136,7 @@ SSWR::AVIRead::AVIRMACGenForm::AVIRMACGenForm(UI::GUIClientControl *parent, UI::
 		this->cboVendor->SetSelectedIndex(0);
 	}
 
-	Net::SocketFactory *sockf = this->core->GetSocketFactory();
+	NotNullPtr<Net::SocketFactory> sockf = this->core->GetSocketFactory();
 	Data::ArrayList<Net::ConnectionInfo*> connInfoList;
 	Net::ConnectionInfo *connInfo;
 	UTF8Char sbuff[64];

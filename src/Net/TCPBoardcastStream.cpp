@@ -115,7 +115,7 @@ void __stdcall Net::TCPBoardcastStream::ClientTimeout(NotNullPtr<Net::TCPClient>
 	}
 }
 
-Net::TCPBoardcastStream::TCPBoardcastStream(Net::SocketFactory *sockf, UInt16 port, IO::LogTool *log) : IO::Stream(CSTR("Net.TCPBoardcastSream"))
+Net::TCPBoardcastStream::TCPBoardcastStream(NotNullPtr<Net::SocketFactory> sockf, UInt16 port, IO::LogTool *log) : IO::Stream(CSTR("Net.TCPBoardcastSream"))
 {
 	this->sockf = sockf;
 	this->log = log;

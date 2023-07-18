@@ -22,7 +22,7 @@ IO::Writer *console;
 Int32 threadCnt;
 Bool threadToStop;
 Socket *rawSock;
-Net::SocketFactory *sockf;
+NotNullPtr<Net::SocketFactory> sockf;
 IO::LogTool *logTool;
 
 UInt32 __stdcall RecvThread(void *userObj)
@@ -130,7 +130,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 #else
 	NEW_CLASS(console, IO::ConsoleWriter());
 #endif
-	NEW_CLASS(sockf, Net::OSSocketFactory(true));
+	NEW_CLASSNN(sockf, Net::OSSocketFactory(true));
 	console->WriteLineC(UTF8STRC("PingMonitor Started"));
 	rawSock = sockf->CreateRAWSocket();
 	if (rawSock)
@@ -160,7 +160,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	{
 		console->WriteLineC(UTF8STRC("Error in creating RAW socket"));
 	}
-	DEL_CLASS(sockf);
+	sockf.Delete();
 	DEL_CLASS(console);
 	return 0;
 }

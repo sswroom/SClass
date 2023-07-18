@@ -5,7 +5,7 @@
 #include "Text/MyString.h"
 #include "Text/UTF8Reader.h"
 
-Net::WhoisClient::WhoisClient(Net::SocketFactory *sockf, UInt32 whoisIP, Text::CString prefix)
+Net::WhoisClient::WhoisClient(NotNullPtr<Net::SocketFactory> sockf, UInt32 whoisIP, Text::CString prefix)
 {
 	this->sockf = sockf;
 	this->whoisIP = whoisIP;
