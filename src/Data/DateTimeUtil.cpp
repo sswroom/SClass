@@ -1375,7 +1375,8 @@ UTF8Char *Data::DateTimeUtil::ToString(UTF8Char *sbuff, const TimeValue *tval, I
 
 Bool Data::DateTimeUtil::String2TimeValue(Text::CString dateStr, TimeValue *tval, Int8 *tzQhr, UInt32 *nanosec)
 {
-	UTF8Char buff[32];
+	UTF8Char buff[64];
+	UTF8Char *longBuff = 0;
 	Text::PString strs2[5];
 	Text::PString strs[3];
 	UOSInt nStrs;
@@ -1386,11 +1387,21 @@ Bool Data::DateTimeUtil::String2TimeValue(Text::CString dateStr, TimeValue *tval
 		while (dateStr.v[0] == ' ')
 			dateStr = dateStr.Substring(1);
 	}
-	dateStr.ConcatTo(buff);
-	nStrs = Text::StrSplitTrimP(strs2, 5, {buff, dateStr.leng}, ' ');
+	if (dateStr.leng >= 64)
+	{
+		longBuff = MemAlloc(UTF8Char, dateStr.leng + 1);
+		dateStr.ConcatTo(longBuff);
+		strs[0] = {longBuff, dateStr.leng};
+	}
+	else
+	{
+		dateStr.ConcatTo(buff);
+		strs[0] = {buff, dateStr.leng};
+	}
+	nStrs = Text::StrSplitTrimP(strs2, 5, strs[0], ' ');
 	if (nStrs == 1)
 	{
-		nStrs = Text::StrSplitP(strs2, 3, {buff, dateStr.leng}, 'T');
+		nStrs = Text::StrSplitP(strs2, 3, strs[0], 'T');
 	}
 	if (nStrs == 2)
 	{
@@ -1695,6 +1706,7 @@ Bool Data::DateTimeUtil::String2TimeValue(Text::CString dateStr, TimeValue *tval
 			}
 		}
 	}
+	if (longBuff) MemFree(longBuff);
 	return succ;
 }
 
