@@ -201,7 +201,7 @@ Bool Net::WebServer::RESTfulHandler::ProcessRequest(Net::WebServer::IWebRequest 
 			Text::StringBuilderUTF8 sbURI;
 			Text::StringBuilderUTF8 sb;
 			{
-				Text::JSONBuilder json(&sb, Text::JSONBuilder::OT_OBJECT);
+				Text::JSONBuilder json(sb, Text::JSONBuilder::OT_OBJECT);
 				this->BuildJSON(&json, row);
 				if (!this->noLinks)
 				{
@@ -240,7 +240,7 @@ Bool Net::WebServer::RESTfulHandler::ProcessRequest(Net::WebServer::IWebRequest 
 			else
 			{
 				DB::PageRequest *page = ParsePageReq(req);
-				Text::JSONBuilder json(&sb, Text::JSONBuilder::OT_OBJECT);
+				Text::JSONBuilder json(sb, Text::JSONBuilder::OT_OBJECT);
 				Data::ArrayList<DB::DBRow*> rows;
 				DB::DBRow *row;
 				Int64 ikey;

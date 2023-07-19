@@ -239,7 +239,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnRequestClicked(void *userObj
 		SSWR::AVIRead::AVIRHTTPClientForm::ParamValue *param;
 		Text::StringBuilderUTF8 sb2;
 		{
-			Text::JSONBuilder json(&sb2, Text::JSONBuilder::OT_OBJECT);
+			Text::JSONBuilder json(sb2, Text::JSONBuilder::OT_OBJECT);
 			while (i < j)
 			{
 				param = me->params.GetItem(i);

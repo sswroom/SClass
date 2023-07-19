@@ -22,7 +22,7 @@ Bool Net::GoogleFCM::SendMessage(NotNullPtr<Net::SocketFactory> sockf, Net::SSLE
 
 	sb.ClearStr();
 	{
-		Text::JSONBuilder json(&sb, Text::JSONBuilder::OT_OBJECT);
+		Text::JSONBuilder json(sb, Text::JSONBuilder::OT_OBJECT);
 		json.ObjectBeginArray(CSTR("registration_ids"));
 		json.ArrayAddStrUTF8(devToken.v);
 		json.ArrayEnd();
@@ -99,7 +99,7 @@ Bool Net::GoogleFCM::SendMessages(NotNullPtr<Net::SocketFactory> sockf, Net::SSL
 
 	sb.ClearStr();
 	{
-		Text::JSONBuilder json(&sb, Text::JSONBuilder::OT_OBJECT);
+		Text::JSONBuilder json(sb, Text::JSONBuilder::OT_OBJECT);
 		json.ObjectBeginArray(CSTR("registration_ids"));
 		UOSInt i = 0;
 		UOSInt j = devTokens->GetCount();

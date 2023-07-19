@@ -102,7 +102,7 @@ void Text::JSONBuilder::AppendStrW(const WChar *val)
 	this->sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
 }
 
-Text::JSONBuilder::JSONBuilder(Text::StringBuilderUTF8 *sb, ObjectType rootType)
+Text::JSONBuilder::JSONBuilder(NotNullPtr<Text::StringBuilderUTF8> sb, ObjectType rootType)
 {
 	this->sb = sb;
 	this->currType = rootType;
@@ -180,7 +180,7 @@ Bool Text::JSONBuilder::ArrayAddFloat64(Double val)
 	{
 		this->sb->AppendC(UTF8STRC(","));
 	}
-	Text::SBAppendF64(this->sb, val);
+	this->sb->AppendDouble(val);
 	return true;
 }
 
@@ -361,7 +361,7 @@ Bool Text::JSONBuilder::ObjectAddFloat64(Text::CString name, Double val)
 	}
 	this->AppendStr(name);
 	this->sb->AppendC(UTF8STRC(":"));
-	Text::SBAppendF64(this->sb, val);
+	this->sb->AppendDouble(val);
 	return true;
 }
 

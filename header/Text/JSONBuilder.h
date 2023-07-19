@@ -15,7 +15,7 @@ namespace Text
 			OT_ARRAY
 		} ObjectType;
 	private:
-		Text::StringBuilderUTF8 *sb;
+		NotNullPtr<Text::StringBuilderUTF8> sb;
 		Data::ArrayList<ObjectType> objTypes;
 		ObjectType currType;
 		Bool isFirst;
@@ -24,7 +24,7 @@ namespace Text
 		void AppendStrUTF8(const UTF8Char *val);
 		void AppendStrW(const WChar *val);
 	public:
-		JSONBuilder(Text::StringBuilderUTF8 *sb, ObjectType rootType);
+		JSONBuilder(NotNullPtr<Text::StringBuilderUTF8> sb, ObjectType rootType);
 		~JSONBuilder();
 
 		Bool ArrayAddInt32(Int32 val);

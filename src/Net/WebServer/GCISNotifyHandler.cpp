@@ -12,7 +12,7 @@ Bool __stdcall Net::WebServer::GCISNotifyHandler::NotifyFunc(Net::WebServer::IWe
 	Text::StringBuilderUTF8 sb;
 	Text::StringBuilderUTF8 sb2;
 	{
-		Text::JSONBuilder builder(&sb, Text::JSONBuilder::OT_OBJECT);
+		Text::JSONBuilder builder(sb, Text::JSONBuilder::OT_OBJECT);
 		if (cert == 0)
 		{
 			resp->SetStatusCode(Net::WebStatus::SC_INTERNAL_SERVER_ERROR);
@@ -214,7 +214,7 @@ Bool __stdcall Net::WebServer::GCISNotifyHandler::BatchUplFunc(Net::WebServer::I
 	UTF8Char *sptr;
 	sb.ClearStr();
 	{
-		Text::JSONBuilder builder(&sb, Text::JSONBuilder::OT_OBJECT);
+		Text::JSONBuilder builder(sb, Text::JSONBuilder::OT_OBJECT);
 		sptr = Text::StrInt64(sbuff, Data::DateTimeUtil::GetCurrTimeMillis());
 		builder.ObjectAddStr(CSTR("UploadRefNum"), CSTRP(sbuff, sptr));
 		builder.ObjectAddStr(CSTR("ResultCd"), CSTR("0000"));

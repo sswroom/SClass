@@ -41,7 +41,7 @@ Bool Crypto::Token::JWTHandler::Generate(Text::StringBuilderUTF8 *sb, Data::Stri
 	Text::String *key;
 	UOSInt i;
 	UOSInt j;
-	NEW_CLASS(json, Text::JSONBuilder(&sbJson, Text::JSONBuilder::OT_OBJECT));
+	NEW_CLASS(json, Text::JSONBuilder(sbJson, Text::JSONBuilder::OT_OBJECT));
 	i = 0;
 	j = keys->GetCount();
 	while (i < j)

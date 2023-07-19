@@ -140,7 +140,7 @@ Bool __stdcall Net::PushServerHandler::UsersHandler(Net::WebServer::IWebRequest 
 	Net::PushServerHandler *me = (Net::PushServerHandler*)svc;
 	Text::StringBuilderUTF8 sb;
 	{
-		Text::JSONBuilder json(&sb, Text::JSONBuilder::OT_OBJECT);
+		Text::JSONBuilder json(sb, Text::JSONBuilder::OT_OBJECT);
 		json.ObjectBeginArray(CSTR("users"));
 		Sync::MutexUsage mutUsage;
 		Data::ArrayListNN<Text::String> userList;
