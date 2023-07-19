@@ -113,7 +113,7 @@ Net::WinSSLClient::~WinSSLClient()
 	MemFree(this->clsData);
 }
 
-UOSInt Net::WinSSLClient::Read(Data::ByteArray buff)
+UOSInt Net::WinSSLClient::Read(const Data::ByteArray &buff)
 {
 	if (this->clsData->step == 0)
 	{
@@ -343,7 +343,7 @@ UOSInt Net::WinSSLClient::Write(const UInt8 *buff, UOSInt size)
 	}
 }
 
-void *Net::WinSSLClient::BeginRead(Data::ByteArray buff, Sync::Event *evt)
+void *Net::WinSSLClient::BeginRead(const Data::ByteArray &buff, Sync::Event *evt)
 {
 	if (this->clsData->step == 0)
 	{

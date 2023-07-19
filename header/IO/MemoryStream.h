@@ -21,7 +21,7 @@ namespace IO
 		Data::ByteArray GetArray() const;
 
 		virtual Bool IsDown() const;
-		virtual UOSInt Read(Data::ByteArray buff);
+		virtual UOSInt Read(const Data::ByteArray &buff);
 		virtual UOSInt Write(const UInt8 *buff, UOSInt size);
 
 		virtual Int32 Flush();

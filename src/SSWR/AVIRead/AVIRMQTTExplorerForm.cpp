@@ -386,14 +386,14 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnTimerTick(void *userObj)
 }
 
 
-void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnPublishMessage(void *userObj, Text::CString topic, const UInt8 *message, UOSInt msgSize)
+void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnPublishMessage(void *userObj, Text::CString topic, const Data::ByteArrayR &message)
 {
 	SSWR::AVIRead::AVIRMQTTExplorerForm *me = (SSWR::AVIRead::AVIRMQTTExplorerForm*)userObj;
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("Received message, topic = "));
 	sb.Append(topic);
 	sb.AppendC(UTF8STRC(", message = "));
-	sb.AppendC((const UTF8Char*)message, msgSize);
+	sb.AppendC((const UTF8Char*)message.Ptr(), message.GetSize());
 	me->log.LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Command);
 
 	Data::DateTime dt;
@@ -410,9 +410,9 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnPublishMessage(void *userO
 
 		topicSt = MemAlloc(SSWR::AVIRead::AVIRMQTTExplorerForm::TopicStatus, 1);
 		topicSt->topic = Text::String::New(topic);
-		topicSt->currValue = MemAlloc(UTF8Char, msgSize + 1);
-		Text::StrConcatC(topicSt->currValue, message, msgSize);
-		topicSt->currValueLen = msgSize;
+		topicSt->currValue = MemAlloc(UTF8Char, message.GetSize() + 1);
+		Text::StrConcatC(topicSt->currValue, message.Ptr(), message.GetSize());
+		topicSt->currValueLen = message.GetSize();
 		topicSt->updated = true;
 		topicSt->recvCnt = 1;
 		topicSt->lastRecvTime = dt.ToTicks();
@@ -422,9 +422,9 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnPublishMessage(void *userO
 	else
 	{
 		MemFree(topicSt->currValue);
-		topicSt->currValue = MemAlloc(UTF8Char, msgSize + 1);
-		Text::StrConcatC(topicSt->currValue, message, msgSize);	
-		topicSt->currValueLen = msgSize;
+		topicSt->currValue = MemAlloc(UTF8Char, message.GetSize() + 1);
+		Text::StrConcatC(topicSt->currValue, message.Ptr(), message.GetSize());	
+		topicSt->currValueLen = message.GetSize();
 		topicSt->updated = true;
 		topicSt->recvCnt++;
 		topicSt->lastRecvTime = dt.ToTicks();

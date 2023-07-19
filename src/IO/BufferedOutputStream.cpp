@@ -26,7 +26,7 @@ Bool IO::BufferedOutputStream::IsDown() const
 	return this->outStm->IsDown();
 }
 
-UOSInt IO::BufferedOutputStream::Read(Data::ByteArray buff)
+UOSInt IO::BufferedOutputStream::Read(const Data::ByteArray &buff)
 {
 	return this->outStm->Read(buff);
 }

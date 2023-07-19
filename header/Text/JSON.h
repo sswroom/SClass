@@ -61,6 +61,7 @@ namespace Text
 
 		static JSONBase *ParseJSONStr(Text::CString jsonStr);
 		static JSONBase *ParseJSONBytes(const UInt8 *jsonBytes, UOSInt len);
+		static JSONBase *ParseJSONBytes(const Data::ByteArrayR &jsonBytes);
 
 	private:
 		static const UTF8Char *ClearWS(const UTF8Char *jsonStr);

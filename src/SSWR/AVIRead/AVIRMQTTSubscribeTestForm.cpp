@@ -308,7 +308,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeTestForm::OnTimerTick(void *userO
 }
 
 
-void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeTestForm::OnPublishMessage(void *userObj, Text::CString topic, const UInt8 *message, UOSInt msgSize)
+void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeTestForm::OnPublishMessage(void *userObj, Text::CString topic, const Data::ByteArrayR &message)
 {
 	SSWR::AVIRead::AVIRMQTTSubscribeTestForm *me = (SSWR::AVIRead::AVIRMQTTSubscribeTestForm*)userObj;
 	Sync::Interlocked::Increment(&me->totalCount);

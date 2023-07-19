@@ -14,7 +14,7 @@ void __stdcall OnDisconnect(void *userObj)
 	printf("Disconnected\r\n");
 }
 
-void __stdcall OnMessage(void *userObj, Text::CString topic, const UInt8 *buff, UOSInt buffSize)
+void __stdcall OnMessage(void *userObj, Text::CString topic, const Data::ByteArrayR &buff)
 {
 	printf("Data from topic: %s\r\n", topic.v);
 }

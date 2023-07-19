@@ -81,7 +81,7 @@ Net::OpenSSLClient::~OpenSSLClient()
 	MemFree(this->clsData);
 }
 
-UOSInt Net::OpenSSLClient::Read(Data::ByteArray buff)
+UOSInt Net::OpenSSLClient::Read(const Data::ByteArray &buff)
 {
 	if (s && (this->flags & 6) == 0)
 	{
@@ -143,7 +143,7 @@ UOSInt Net::OpenSSLClient::Write(const UInt8 *buff, UOSInt size)
 	}
 }
 
-void *Net::OpenSSLClient::BeginRead(Data::ByteArray buff, Sync::Event *evt)
+void *Net::OpenSSLClient::BeginRead(const Data::ByteArray &buff, Sync::Event *evt)
 {
 	UOSInt ret = this->Read(buff);
 	if (ret)

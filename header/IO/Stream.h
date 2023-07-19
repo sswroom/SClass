@@ -51,10 +51,10 @@ namespace IO
 		Stream(Text::CString sourceName);
 		virtual ~Stream(){};
 		virtual Bool IsDown() const = 0;
-		virtual UOSInt Read(Data::ByteArray buff) = 0;
+		virtual UOSInt Read(const Data::ByteArray &buff) = 0;
 		virtual UOSInt Write(const UInt8 *buff, UOSInt size) = 0;
 
-		virtual void *BeginRead(Data::ByteArray buff, Sync::Event *evt);
+		virtual void *BeginRead(const Data::ByteArray &buff, Sync::Event *evt);
 		virtual UOSInt EndRead(void *reqData, Bool toWait, Bool *incomplete);
 		virtual void CancelRead(void *reqData);
 		virtual void *BeginWrite(const UInt8 *buff, UOSInt size, Sync::Event *evt);

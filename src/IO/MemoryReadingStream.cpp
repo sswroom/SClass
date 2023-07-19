@@ -21,7 +21,7 @@ Bool IO::MemoryReadingStream::IsDown() const
 	return false;
 }
 
-UOSInt IO::MemoryReadingStream::Read(Data::ByteArray buff)
+UOSInt IO::MemoryReadingStream::Read(const Data::ByteArray &buff)
 {
 	UOSInt readSize = buff.GetSize();
 	if (this->buff.GetSize() - this->currPtr < readSize)

@@ -155,7 +155,7 @@ Bool Net::TCPBoardcastStream::IsDown() const
 	return this->cliMgr->GetClientCount() == 0;
 }
 
-UOSInt Net::TCPBoardcastStream::Read(Data::ByteArray buff)
+UOSInt Net::TCPBoardcastStream::Read(const Data::ByteArray &buff)
 {
 	UOSInt readBuffSize;
 
@@ -178,24 +178,25 @@ UOSInt Net::TCPBoardcastStream::Read(Data::ByteArray buff)
 	}
 	Sync::Interlocked::Decrement(&this->readCnt);
 	Sync::MutexUsage mutUsage(&this->readMut);
-	if ((UOSInt)readBuffSize >= buff.GetSize())
+	Data::ByteArray myBuff = buff;
+	if ((UOSInt)readBuffSize >= myBuff.GetSize())
 	{
 	}
 	else
 	{
-		buff = buff.WithSize(readBuffSize);
+		myBuff = myBuff.WithSize(readBuffSize);
 	}
 
-	if (readBuffPtr1 + buff.GetSize() > 16384)
+	if (readBuffPtr1 + myBuff.GetSize() > 16384)
 	{
-		buff.CopyFrom(Data::ByteArrayR(&this->readBuff[this->readBuffPtr1], 16384 - readBuffPtr1));
-		buff.CopyFrom(16384 - readBuffPtr1, Data::ByteArrayR(this->readBuff, buff.GetSize() - (16384 - readBuffPtr1)));
-		readBuffPtr1 = buff.GetSize() - (16384 - readBuffPtr1);
+		myBuff.CopyFrom(Data::ByteArrayR(&this->readBuff[this->readBuffPtr1], 16384 - readBuffPtr1));
+		myBuff.CopyFrom(16384 - readBuffPtr1, Data::ByteArrayR(this->readBuff, myBuff.GetSize() - (16384 - readBuffPtr1)));
+		readBuffPtr1 = myBuff.GetSize() - (16384 - readBuffPtr1);
 	}
 	else
 	{
-		buff.CopyFrom(Data::ByteArrayR(&this->readBuff[this->readBuffPtr1], buff.GetSize()));
-		this->readBuffPtr1 += buff.GetSize();
+		myBuff.CopyFrom(Data::ByteArrayR(&this->readBuff[this->readBuffPtr1], myBuff.GetSize()));
+		this->readBuffPtr1 += myBuff.GetSize();
 		if (this->readBuffPtr1 >= 16384)
 		{
 			this->readBuffPtr1 -= 16384;
@@ -206,11 +207,11 @@ UOSInt Net::TCPBoardcastStream::Read(Data::ByteArray buff)
 	{
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("TBS "));
-		sb.AppendUOSInt(buff.GetSize());
+		sb.AppendUOSInt(myBuff.GetSize());
 		sb.AppendC(UTF8STRC(" bytes returned"));
 		this->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Raw);
 	}
-	return buff.GetSize();
+	return myBuff.GetSize();
 }
 
 UOSInt Net::TCPBoardcastStream::Write(const UInt8 *buff, UOSInt size)

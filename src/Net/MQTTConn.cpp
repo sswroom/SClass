@@ -98,6 +98,7 @@ void Net::MQTTConn::DataSkipped(NotNullPtr<IO::Stream> stm, void *stmObj, const 
 UInt32 __stdcall Net::MQTTConn::RecvThread(void *userObj)
 {
 	Net::MQTTConn *me = (Net::MQTTConn*)userObj;
+	Sync::ThreadUtil::SetName((const UTF8Char*)"MQTTConnRecv");
 	UOSInt maxBuffSize = 9000;
 	UInt8 *buff;
 	UOSInt buffSize;
@@ -144,7 +145,7 @@ void Net::MQTTConn::OnPublishMessage(Text::CString topic, const UInt8 *message, 
 	UOSInt i = this->hdlrList.GetCount();
 	while (i-- > 0)
 	{
-		this->hdlrList.GetItem(i)(this->hdlrObjList.GetItem(i), topic, message, msgSize);
+		this->hdlrList.GetItem(i)(this->hdlrObjList.GetItem(i), topic, Data::ByteArrayR(message, msgSize));
 	}
 }
 

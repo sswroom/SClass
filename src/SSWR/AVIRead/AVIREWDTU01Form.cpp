@@ -9,10 +9,10 @@
 
 #include <stdio.h>
 
-void __stdcall SSWR::AVIRead::AVIREWDTU01Form::OnMQTTMessage(void *userObj, Text::CString topic, const UInt8 *buff, UOSInt buffSize)
+void __stdcall SSWR::AVIRead::AVIREWDTU01Form::OnMQTTMessage(void *userObj, Text::CString topic, const Data::ByteArrayR &buff)
 {
 	SSWR::AVIRead::AVIREWDTU01Form *me = (SSWR::AVIRead::AVIREWDTU01Form *)userObj;
-	Text::JSONBase *jsonObj = Text::JSONBase::ParseJSONBytes(buff, buffSize);
+	Text::JSONBase *jsonObj = Text::JSONBase::ParseJSONBytes(buff.Ptr(), buff.GetSize());
 	Text::JSONObject *obj;
 	Text::JSONBase *baseObj;
 	Text::JSONArray *arr;

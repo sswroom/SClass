@@ -83,32 +83,33 @@ Bool Data::Compress::LZWDecStream::IsDown() const
 	return false;
 }
 
-UOSInt Data::Compress::LZWDecStream::Read(Data::ByteArray buff)
+UOSInt Data::Compress::LZWDecStream::Read(const Data::ByteArray &buff)
 {
 	UOSInt writeSize = 0;
 	UInt32 code;
+	Data::ByteArray myBuff = buff;
 
 	if (this->decBuffSize > 0)
 	{
-		if (this->decBuffSize >= buff.GetSize())
+		if (this->decBuffSize >= myBuff.GetSize())
 		{
-			buff.CopyFrom(Data::ByteArrayR(this->decBuff, buff.GetSize()));
-			this->decBuffSize -= buff.GetSize();
+			myBuff.CopyFrom(Data::ByteArrayR(this->decBuff, myBuff.GetSize()));
+			this->decBuffSize -= myBuff.GetSize();
 			if (this->decBuffSize > 0)
 			{
-				MemCopyO(this->decBuff, &this->decBuff[buff.GetSize()], this->decBuffSize);
+				MemCopyO(this->decBuff, &this->decBuff[myBuff.GetSize()], this->decBuffSize);
 			}
-			return buff.GetSize();
+			return myBuff.GetSize();
 		}
 		else
 		{
-			buff.CopyFrom(Data::ByteArrayR(this->decBuff, this->decBuffSize));
+			myBuff.CopyFrom(Data::ByteArrayR(this->decBuff, this->decBuffSize));
 			writeSize += this->decBuffSize;
-			buff += this->decBuffSize;
+			myBuff += this->decBuffSize;
 			this->decBuffSize = 0;
 		}
 	}
-	if (buff.GetSize() <= 0)
+	if (myBuff.GetSize() <= 0)
 	{
 		return writeSize;
 	}
@@ -133,10 +134,10 @@ UOSInt Data::Compress::LZWDecStream::Read(Data::ByteArray buff)
 			{
 				if (this->localCode == (UInt32)-1)
 				{
-					*buff++ = (UInt8)code;
+					*myBuff++ = (UInt8)code;
 					this->localCode = code;
 					writeSize++;
-					if (buff.GetSize() <= 0)
+					if (myBuff.GetSize() <= 0)
 					{
 						return writeSize;
 					}
@@ -169,22 +170,22 @@ UOSInt Data::Compress::LZWDecStream::Read(Data::ByteArray buff)
 					}
 	
 					code = this->localCode;
-					if (codeSize >= buff.GetSize())
+					if (codeSize >= myBuff.GetSize())
 					{
-						i = codeSize - buff.GetSize();
+						i = codeSize - myBuff.GetSize();
 						this->decBuffSize = i;
 						while (i-- > 0)
 						{
 							this->decBuff[i] = this->lzwTable[code * 4 + 2];
 							code = *(UInt16*)&this->lzwTable[code * 4];
 						}
-						i = buff.GetSize();
+						i = myBuff.GetSize();
 						while (i-- > 0)
 						{
-							buff[i] = this->lzwTable[code * 4 + 2];
+							myBuff[i] = this->lzwTable[code * 4 + 2];
 							code = *(UInt16*)&this->lzwTable[code * 4];
 						}
-						writeSize += buff.GetSize();
+						writeSize += myBuff.GetSize();
 						return writeSize;
 					}
 					else
@@ -193,10 +194,10 @@ UOSInt Data::Compress::LZWDecStream::Read(Data::ByteArray buff)
 						i = codeSize;
 						while (i-- > 0)
 						{
-							buff[i] = this->lzwTable[code * 4 + 2];
+							myBuff[i] = this->lzwTable[code * 4 + 2];
 							code = *(UInt16*)&this->lzwTable[code * 4];
 						}
-						buff += codeSize;
+						myBuff += codeSize;
 					}
 				}
 			}

@@ -39,7 +39,7 @@ Bool IO::StreamLogger::IsDown() const
 	return this->stm->IsDown();
 }
 
-UOSInt IO::StreamLogger::Read(Data::ByteArray buff)
+UOSInt IO::StreamLogger::Read(const Data::ByteArray &buff)
 {
 	UOSInt readCnt = this->stm->Read(buff);
 	if (readCnt > 0 && this->readLog)
@@ -59,7 +59,7 @@ UOSInt IO::StreamLogger::Write(const UInt8 *buff, UOSInt size)
 	return writeCnt;
 }
 
-void *IO::StreamLogger::BeginRead(Data::ByteArray buff, Sync::Event *evt)
+void *IO::StreamLogger::BeginRead(const Data::ByteArray &buff, Sync::Event *evt)
 {
 	void *reqData = this->stm->BeginRead(buff, evt);
 	MyReqData *myReqData;

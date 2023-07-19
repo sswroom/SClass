@@ -53,7 +53,7 @@ Bool Data::Compress::DeflateStream::IsDown() const
 	return this->clsData->srcStm->IsDown();
 }
 
-UOSInt Data::Compress::DeflateStream::Read(Data::ByteArray buff)
+UOSInt Data::Compress::DeflateStream::Read(const Data::ByteArray &buff)
 {
 	UOSInt initSize = buff.GetSize();
 	int ret;

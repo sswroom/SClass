@@ -17,7 +17,7 @@ Bool Crypto::Hash::HashStream::IsDown() const
 	return this->srcStm->IsDown();
 }
 
-UOSInt Crypto::Hash::HashStream::Read(Data::ByteArray buff)
+UOSInt Crypto::Hash::HashStream::Read(const Data::ByteArray &buff)
 {
 	UOSInt retSize = this->srcStm->Read(buff);
 	if (retSize > 0)

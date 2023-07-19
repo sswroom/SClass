@@ -134,7 +134,7 @@ Bool IO::RS232GPIO::IsDown() const
 	return !this->running;
 }
 
-UOSInt IO::RS232GPIO::Read(Data::ByteArray buff)
+UOSInt IO::RS232GPIO::Read(const Data::ByteArray &buff)
 {
 	Manage::HiResClock clk;
 	clk.Start();
@@ -163,27 +163,28 @@ UOSInt IO::RS232GPIO::Read(Data::ByteArray buff)
 	UOSInt bStart = this->readBuffStart;
 	UOSInt bEnd = this->readBuffEnd;
 	UOSInt buffSize = bEnd - bStart;
+	Data::ByteArray myBuff = buff;
 	if ((OSInt)buffSize < 0)
 	{
 		buffSize += RS232GPIO_BUFFSIZE;
 	}
-	if (buffSize > buff.GetSize())
+	if (buffSize > myBuff.GetSize())
 	{
-		bEnd -= buffSize - buff.GetSize();
+		bEnd -= buffSize - myBuff.GetSize();
 		if ((OSInt)bEnd < 0)
 		{
 			bEnd += RS232GPIO_BUFFSIZE;
 		}
-		buffSize = buff.GetSize();
+		buffSize = myBuff.GetSize();
 	}
 
 	if (bEnd < bStart)
 	{
-		buff.CopyFrom(Data::ByteArray(&this->readBuff[bStart], RS232GPIO_BUFFSIZE - bStart));
-		buff += RS232GPIO_BUFFSIZE - bStart;
+		myBuff.CopyFrom(Data::ByteArray(&this->readBuff[bStart], RS232GPIO_BUFFSIZE - bStart));
+		myBuff += RS232GPIO_BUFFSIZE - bStart;
 		bStart = 0;
 	}
-	buff.CopyFrom(Data::ByteArray(&this->readBuff[bStart], bEnd - bStart));
+	myBuff.CopyFrom(Data::ByteArray(&this->readBuff[bStart], bEnd - bStart));
 	this->readBuffStart = bEnd;
 	return buffSize;
 }
@@ -232,7 +233,7 @@ Bool IO::RS232GPIO::HasData()
 	return this->readBuffStart != this->readBuffEnd;
 }
 
-void *IO::RS232GPIO::BeginRead(Data::ByteArray buff, Sync::Event *evt)
+void *IO::RS232GPIO::BeginRead(const Data::ByteArray &buff, Sync::Event *evt)
 {
 	void *ret = (void*)Read(buff);
 	if (ret)

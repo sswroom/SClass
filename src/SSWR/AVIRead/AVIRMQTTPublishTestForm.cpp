@@ -318,7 +318,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTPublishTestForm::OnTimerTick(void *userObj
 }
 
 
-void __stdcall SSWR::AVIRead::AVIRMQTTPublishTestForm::OnPublishMessage(void *userObj, Text::CString topic, const UInt8 *message, UOSInt msgSize)
+void __stdcall SSWR::AVIRead::AVIRMQTTPublishTestForm::OnPublishMessage(void *userObj, Text::CString topic, const Data::ByteArrayR &message)
 {
 //	SSWR::AVIRead::AVIRMQTTPublishTestForm *me = (SSWR::AVIRead::AVIRMQTTPublishTestForm*)userObj;
 }

@@ -57,7 +57,7 @@ Bool IO::MemoryStream::IsDown() const
 	return false;
 }
 
-UOSInt IO::MemoryStream::Read(Data::ByteArray buff)
+UOSInt IO::MemoryStream::Read(const Data::ByteArray &buff)
 {
 	UOSInt readSize = buff.GetSize();
 	if (this->currSize - this->currPtr < readSize)

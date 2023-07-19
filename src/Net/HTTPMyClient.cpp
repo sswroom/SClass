@@ -491,7 +491,7 @@ UOSInt Net::HTTPMyClient::ReadRAW(Data::ByteArray buff)
 	}
 }
 
-UOSInt Net::HTTPMyClient::Read(Data::ByteArray buff)
+UOSInt Net::HTTPMyClient::Read(const Data::ByteArray &buff)
 {
 	this->EndRequest(0, 0);
 	if (this->respStatus == 0)

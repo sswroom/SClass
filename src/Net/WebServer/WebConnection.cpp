@@ -873,7 +873,7 @@ Bool Net::WebServer::WebConnection::IsDown() const
 	return this->respDataEnd;
 }
 
-UOSInt Net::WebServer::WebConnection::Read(Data::ByteArray buff)
+UOSInt Net::WebServer::WebConnection::Read(const Data::ByteArray &buff)
 {
 	return 0;
 }

@@ -92,7 +92,7 @@ namespace SSWR
 			static void __stdcall OnTopicSelChg(void *userObj);
 			static void __stdcall OnPingTimerTick(void *userObj);
 			static void __stdcall OnTimerTick(void *userObj);
-			static void __stdcall OnPublishMessage(void *userObj, Text::CString topic, const UInt8 *message, UOSInt msgSize);
+			static void __stdcall OnPublishMessage(void *userObj, Text::CString topic, const Data::ByteArrayR &message);
 
 			void UpdateTopicChart();
 			void ServerStop();

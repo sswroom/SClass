@@ -11,7 +11,7 @@ IO::Stream::Stream(Text::CString sourceName) : IO::ParsedObject(sourceName)
 {
 }
 
-void *IO::Stream::BeginRead(Data::ByteArray buff, Sync::Event *evt)
+void *IO::Stream::BeginRead(const Data::ByteArray &buff, Sync::Event *evt)
 {
 	UOSInt retVal = Read(buff);
 	evt->Set();

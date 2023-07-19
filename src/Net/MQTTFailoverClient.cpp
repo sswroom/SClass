@@ -6,7 +6,7 @@ void Net::MQTTFailoverClient::FreeClient(ClientInfo *cliInfo)
 	MemFree(cliInfo);
 }
 
-void __stdcall Net::MQTTFailoverClient::OnMessage(void *userObj, Text::CString topic, const UInt8 *buff, UOSInt buffSize)
+void __stdcall Net::MQTTFailoverClient::OnMessage(void *userObj, Text::CString topic, const Data::ByteArrayR &buff)
 {
 	ClientInfo *cliInfo = (ClientInfo *)userObj;
 	if (cliInfo->me->foHdlr.GetCurrChannel() == cliInfo->client)
@@ -15,7 +15,7 @@ void __stdcall Net::MQTTFailoverClient::OnMessage(void *userObj, Text::CString t
 		UOSInt i = cliInfo->me->hdlrList.GetCount();
 		while (i-- > 0)
 		{
-			cliInfo->me->hdlrList.GetItem(i)(cliInfo->me->hdlrObjList.GetItem(i), topic, buff, buffSize);
+			cliInfo->me->hdlrList.GetItem(i)(cliInfo->me->hdlrObjList.GetItem(i), topic, buff);
 		}
 	}
 }

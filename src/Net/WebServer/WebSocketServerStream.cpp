@@ -84,7 +84,7 @@ Bool Net::WebServer::WebSocketServerStream::IsDown() const
 	return false;
 }
 
-UOSInt Net::WebServer::WebSocketServerStream::Read(Data::ByteArray buff)
+UOSInt Net::WebServer::WebSocketServerStream::Read(const Data::ByteArray &buff)
 {
 	return 0;
 }

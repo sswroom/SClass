@@ -19,25 +19,26 @@ Bool IO::BufferedInputStream::IsDown() const
 	return this->stm->IsDown();
 }
 
-UOSInt IO::BufferedInputStream::Read(Data::ByteArray buff)
+UOSInt IO::BufferedInputStream::Read(const Data::ByteArray &buff)
 {
 	UOSInt copySize = 0;
-	while (buff.GetSize() > 0)
+	Data::ByteArray myBuff = buff;
+	while (myBuff.GetSize() > 0)
 	{
 		if (this->buffOfst < this->stmBuffSize)
 		{
-			if (buff.GetSize() <= this->stmBuffSize - this->buffOfst)
+			if (myBuff.GetSize() <= this->stmBuffSize - this->buffOfst)
 			{
-				buff.CopyFrom(0, this->buff.SubArray(this->buffOfst, buff.GetSize()));
-				this->buffOfst += buff.GetSize();
-				copySize += buff.GetSize();
+				myBuff.CopyFrom(0, this->buff.SubArray(this->buffOfst, myBuff.GetSize()));
+				this->buffOfst += myBuff.GetSize();
+				copySize += myBuff.GetSize();
 				return copySize;
 			}
 			else
 			{
 				copySize = this->stmBuffSize - this->buffOfst;
-				buff.CopyFrom(0, this->buff.SubArray(buffOfst, copySize));
-				buff = buff.SubArray(copySize);
+				myBuff.CopyFrom(0, this->buff.SubArray(buffOfst, copySize));
+				myBuff = myBuff.SubArray(copySize);
 				this->stmPos += this->stmBuffSize;
 				this->stmBuffSize = 0;
 			}
@@ -57,7 +58,7 @@ UOSInt IO::BufferedInputStream::Write(const UInt8 *buff, UOSInt size)
 	return 0;
 }
 
-void *IO::BufferedInputStream::BeginRead(Data::ByteArray buff, Sync::Event *evt)
+void *IO::BufferedInputStream::BeginRead(const Data::ByteArray &buff, Sync::Event *evt)
 {
 	UOSInt sz = Read(buff);
 	evt->Set();

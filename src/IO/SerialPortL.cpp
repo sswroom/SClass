@@ -403,7 +403,7 @@ Bool IO::SerialPort::IsDown() const
 	return false;
 }
 
-UOSInt IO::SerialPort::Read(Data::ByteArray buff)
+UOSInt IO::SerialPort::Read(const Data::ByteArray &buff)
 {
 	OSInt readCnt;
 	OSInt h;
@@ -455,7 +455,7 @@ UOSInt IO::SerialPort::Write(const UInt8 *buff, UOSInt size)
 	return (UOSInt)writeCnt;
 }
 
-void *IO::SerialPort::BeginRead(Data::ByteArray buff, Sync::Event *evt)
+void *IO::SerialPort::BeginRead(const Data::ByteArray &buff, Sync::Event *evt)
 {
 	return 0;
 }

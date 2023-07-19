@@ -126,7 +126,7 @@ Bool Net::HTTPOSClient::IsError() const
 	return this->clsData->curl == 0;
 }
 
-UOSInt Net::HTTPOSClient::Read(Data::ByteArray buff)
+UOSInt Net::HTTPOSClient::Read(const Data::ByteArray &buff)
 {
 	this->EndRequest(0, 0);
 	if (this->clsData->curl == 0)
@@ -134,15 +134,16 @@ UOSInt Net::HTTPOSClient::Read(Data::ByteArray buff)
 		return 0;
 	}
 
-	if (buff.GetSize() > BUFFSIZE)
+	Data::ByteArray myBuff = buff;
+	if (myBuff.GetSize() > BUFFSIZE)
 	{
-		buff = buff.WithSize(BUFFSIZE);
+		myBuff = myBuff.WithSize(BUFFSIZE);
 	}
 
-	if (buff.GetSize() > (this->contLeng - this->contRead))
+	if (myBuff.GetSize() > (this->contLeng - this->contRead))
 	{
-		buff = buff.WithSize((UOSInt)(this->contLeng - this->contRead));
-		if (buff.GetSize() <= 0)
+		myBuff = myBuff.WithSize((UOSInt)(this->contLeng - this->contRead));
+		if (myBuff.GetSize() <= 0)
 		{
 			return 0;
 		}
@@ -150,19 +151,19 @@ UOSInt Net::HTTPOSClient::Read(Data::ByteArray buff)
 
 	if (this->buffSize == 0)
 	{
-		this->buffSize = this->clsData->respData->Read(Data::ByteArray(this->dataBuff, buff.GetSize()));
+		this->buffSize = this->clsData->respData->Read(Data::ByteArray(this->dataBuff, myBuff.GetSize()));
 	}
-	if (this->buffSize >= buff.GetSize())
+	if (this->buffSize >= myBuff.GetSize())
 	{
-		buff.CopyFrom(Data::ByteArray(this->dataBuff, buff.GetSize()));
-		MemCopyO(this->dataBuff, &this->dataBuff[buff.GetSize()], this->buffSize - buff.GetSize());
-		this->buffSize -= buff.GetSize();
-		this->contRead += buff.GetSize();
-		return buff.GetSize();
+		myBuff.CopyFrom(Data::ByteArray(this->dataBuff, myBuff.GetSize()));
+		MemCopyO(this->dataBuff, &this->dataBuff[myBuff.GetSize()], this->buffSize - myBuff.GetSize());
+		this->buffSize -= myBuff.GetSize();
+		this->contRead += myBuff.GetSize();
+		return myBuff.GetSize();
 	}
 	else
 	{
-		buff.CopyFrom(Data::ByteArray(this->dataBuff, this->buffSize));
+		myBuff.CopyFrom(Data::ByteArray(this->dataBuff, this->buffSize));
 		UOSInt size = this->buffSize;
 		this->contRead += this->buffSize;
 		this->buffSize = 0;

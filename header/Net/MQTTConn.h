@@ -1,6 +1,7 @@
 #ifndef _SM_NET_MQTTCONN
 #define _SM_NET_MQTTCONN
 #include "Data/ArrayList.h"
+#include "Data/ByteArray.h"
 #include "IO/ProtoHdlr/ProtoMQTTHandler.h"
 #include "Net/SSLEngine.h"
 #include "Net/TCPClient.h"
@@ -31,7 +32,7 @@ namespace Net
 			UInt8 content[1];
 		} PacketInfo;
 
-		typedef void (__stdcall *PublishMessageHdlr)(void *userObj, Text::CString topic, const UInt8 *buff, UOSInt buffSize);
+		typedef void (__stdcall *PublishMessageHdlr)(void *userObj, Text::CString topic, const Data::ByteArrayR &buff);
 		typedef void (__stdcall *DisconnectHdlr)(void *userObj);
 	private:
 		IO::ProtoHdlr::ProtoMQTTHandler protoHdlr;

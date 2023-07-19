@@ -55,7 +55,7 @@ Bool IO::SiLabSerialPort::IsDown() const
 	return this->handle == 0;
 }
 
-UOSInt IO::SiLabSerialPort::Read(Data::ByteArray buff)
+UOSInt IO::SiLabSerialPort::Read(const Data::ByteArray &buff)
 {
 	UInt32 readCnt;
 	Bool ret;
@@ -143,7 +143,7 @@ struct ReadEvent
 	OVERLAPPED ol;
 };
 
-void *IO::SiLabSerialPort::BeginRead(Data::ByteArray buff, Sync::Event *evt)
+void *IO::SiLabSerialPort::BeginRead(const Data::ByteArray &buff, Sync::Event *evt)
 {
 	void *h = this->handle;
 	if (h == 0)

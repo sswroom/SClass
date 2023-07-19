@@ -379,6 +379,16 @@ Text::JSONBase *Text::JSONBase::ParseJSONBytes(const UInt8 *jsonBytes, UOSInt le
 	return ret;
 }
 
+Text::JSONBase *Text::JSONBase::ParseJSONBytes(const Data::ByteArrayR &jsonBytes)
+{
+	UTF8Char *s = MemAlloc(UTF8Char, jsonBytes.GetSize() + 1);
+	const UTF8Char *endPtr;
+	Text::StringBuilderUTF8 sbEnv;
+	Text::JSONBase *ret = ParseJSONStr2(s, Text::StrConcatC(s, jsonBytes.Ptr(), jsonBytes.GetSize()), &endPtr, &sbEnv);
+	MemFree(s);
+	return ret;
+}
+
 const UTF8Char *Text::JSONBase::ClearWS(const UTF8Char *jsonStr)
 {
 	UTF8Char c;

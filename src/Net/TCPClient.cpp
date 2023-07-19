@@ -201,7 +201,7 @@ Bool Net::TCPClient::IsDown() const
 	return false;
 }
 
-UOSInt Net::TCPClient::Read(Data::ByteArray buff)
+UOSInt Net::TCPClient::Read(const Data::ByteArray &buff)
 {
 	if (s && (this->flags & 6) == 0)
 	{
@@ -292,7 +292,7 @@ UOSInt Net::TCPClient::Write(const UInt8 *buff, UOSInt size)
 	}
 }
 
-void *Net::TCPClient::BeginRead(Data::ByteArray buff, Sync::Event *evt)
+void *Net::TCPClient::BeginRead(const Data::ByteArray &buff, Sync::Event *evt)
 {
 	if (s == 0 || (this->flags & 6) != 0)
 		return 0;
