@@ -572,7 +572,7 @@ typedef UInt32 UTF32Char;
 #define ASTRUCT struct
 #endif
 
-#if __cplusplus >= 201103L
+#if __cplusplus >= 201103L || (defined(_MSC_VER) && _MSC_VER >= 1900)
 #define U8STR(s) ((const UTF8Char*)(u8 ## s))
 #define U8STRLEN(s) (sizeof(u8 ## s) - 1)
 #define U16STR(s) ((const UTF16Char*)(u ## s))

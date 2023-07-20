@@ -366,7 +366,7 @@ namespace Data
 		ByteArray &operator-=(UOSInt ofst)
 		{
 			CheckErrorPrev(ofst);
-			this->buff = &buff[-ofst];
+			this->buff = &buff[-(OSInt)ofst];
 			this->buffSize += ofst;
 #if defined(CHECK_RANGE)
 			this->prevSize -= ofst;

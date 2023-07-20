@@ -68,7 +68,7 @@ Net::WebServer::HTTPFormParser::HTTPFormParser(Net::WebServer::IWebRequest *req,
 					tmpBuff2 = MemAlloc(UTF8Char, tmpBuffSize2);
 				}
 				sptr = enc.UTF8FromBytes(tmpBuff2, tmpBuff, size1, &size2);
-				l = this->strNames->SortedInsert(Text::StrCopyNewC(tmpBuff2, (UOSInt)(sptr - tmpBuff2)));
+				l = this->strNames->SortedInsert(Text::StrCopyNewC(tmpBuff2, (UOSInt)(sptr - tmpBuff2)).Ptr());
 				if (k < i)
 				{
 					if (i - k - 1 > tmpBuffSize)
@@ -87,11 +87,11 @@ Net::WebServer::HTTPFormParser::HTTPFormParser(Net::WebServer::IWebRequest *req,
 						tmpBuff2 = MemAlloc(UTF8Char, tmpBuffSize2);
 					}
 					sptr = enc.UTF8FromBytes(tmpBuff2, tmpBuff, size1, &size2);
-					this->strValues->Insert(l, Text::StrCopyNewC(tmpBuff2, (UOSInt)(sptr - tmpBuff2)));
+					this->strValues->Insert(l, Text::StrCopyNewC(tmpBuff2, (UOSInt)(sptr - tmpBuff2)).Ptr());
 				}
 				else
 				{
-					this->strValues->Insert(l, Text::StrCopyNewC(UTF8STRC("")));
+					this->strValues->Insert(l, Text::StrCopyNewC(UTF8STRC("")).Ptr());
 				}
 
 				if (i == buffSize)
