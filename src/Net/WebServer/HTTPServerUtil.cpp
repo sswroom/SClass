@@ -437,5 +437,5 @@ Bool Net::WebServer::HTTPServerUtil::AllowDeflate(Net::BrowserInfo::BrowserType 
 
 Bool Net::WebServer::HTTPServerUtil::AllowKA(Net::BrowserInfo::BrowserType browser)
 {
-	return browser == Net::BrowserInfo::BT_FIREFOX;
+	return false;// browser == Net::BrowserInfo::BT_FIREFOX;
 }

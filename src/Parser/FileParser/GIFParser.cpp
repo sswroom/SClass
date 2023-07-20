@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/ByteBuffer.h"
+#include "Data/ByteBufferA.h"
 #include "Data/ByteTool.h"
 #include "Data/Compress/LZWDecStream.h"
 #include "IO/BitReaderLSB.h"
@@ -77,7 +78,7 @@ IO::ParsedObject *Parser::FileParser::GIFParser::ParseFileHdr(IO::StreamData *fd
 	UInt8 disposalMethod = 0;
 	Media::ImageList *imgList;
 	;
-	Data::ByteBuffer scnImg32;
+	Data::ByteBufferA scnImg32;
 	Data::ByteBuffer globalColorTable;
 	Data::ByteBuffer screenColorTable;
 	Int32 globalTransparentIndex = -1;
@@ -89,7 +90,7 @@ IO::ParsedObject *Parser::FileParser::GIFParser::ParseFileHdr(IO::StreamData *fd
 		fd->GetRealData(currOfst, (UOSInt)3 << colorSize, globalColorTable);
 		currOfst += (UOSInt)3 << colorSize;
 	}
-	Data::ByteBuffer scnImg(scnWidth * scnHeight);
+	Data::ByteBufferA scnImg(scnWidth * scnHeight);
 	
 	while (true)
 	{
