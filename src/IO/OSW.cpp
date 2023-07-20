@@ -4,7 +4,7 @@
 #include "Manage/EnvironmentVar.h"
 #include "Text/MyString.h"
 #include <windows.h>
-
+#include <versionhelpers.h>
 
 static Bool OS_VersionLoaded = false;
 static UInt32 OS_MajorVersion = 0;
@@ -48,20 +48,15 @@ void OS_LoadVersion()
 
 UTF8Char *IO::OS::GetDistro(UTF8Char *sbuff)
 {
-	OSVERSIONINFOEX v;
-	v.dwOSVersionInfoSize = sizeof(OSVERSIONINFOEX);
-	if (GetVersionEx((LPOSVERSIONINFO)&v))
+	
+	if (IsWindowsServer())
 	{
-		if (v.wProductType == VER_NT_WORKSTATION)
-		{
-			return Text::StrConcatC(sbuff, UTF8STRC("WindowsNT"));
-		}
-		else
-		{
-			return Text::StrConcatC(sbuff, UTF8STRC("Windows Server"));
-		}
+		return Text::StrConcatC(sbuff, UTF8STRC("Windows Server"));
 	}
-	return 0;
+	else
+	{
+		return Text::StrConcatC(sbuff, UTF8STRC("WindowsNT"));
+	}
 }
 
 UTF8Char *IO::OS::GetVersion(UTF8Char *sbuff)
