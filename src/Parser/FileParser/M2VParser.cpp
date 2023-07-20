@@ -37,7 +37,7 @@ IO::ParserType Parser::FileParser::M2VParser::GetParserType()
 IO::ParsedObject *Parser::FileParser::M2VParser::ParseFile(IO::StreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
 	UInt8 tmpBuff[1024];
-	OSInt readSize = fd->GetRealData(0, 1024, tmpBuff);
+	OSInt readSize = fd->GetRealData(0, 1024, BYTEARR(tmpBuff));
 	Media::FrameInfo info;
 	UInt32 frameRateNorm;
 	UInt32 frameRateDenorm;
@@ -64,7 +64,7 @@ IO::ParsedObject *Parser::FileParser::M2VParser::ParseFile(IO::StreamData *fd, I
 	currOfst = 3;
 	while (currOfst < fleng)
 	{
-		readSize = fd->GetRealData(currOfst, 1021, &tmpBuff[3]);
+		readSize = fd->GetRealData(currOfst, 1021, BYTEARR(tmpBuff).SubArray(3));
 		if (readSize == 0)
 		{
 			DEL_CLASS(vSource);
