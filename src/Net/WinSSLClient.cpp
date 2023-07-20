@@ -123,16 +123,17 @@ UOSInt Net::WinSSLClient::Read(const Data::ByteArray &buff)
 	UTF8Char debugBuff[64];
 	Data::DateTime debugDt;
 #endif
+	Data::ByteArray myBuff = buff;
 	UOSInt ret = 0;
 	if (this->clsData->decSize > 0)
 	{
-		if (this->clsData->decSize >= buff.GetSize())
+		if (this->clsData->decSize >= myBuff.GetSize())
 		{
-			buff.CopyFrom(Data::ByteArrayR(this->clsData->decBuff, buff.GetSize()));
-			if (this->clsData->decSize > buff.GetSize())
+			myBuff.CopyFrom(Data::ByteArrayR(this->clsData->decBuff, myBuff.GetSize()));
+			if (this->clsData->decSize > myBuff.GetSize())
 			{
-				MemCopyO(this->clsData->decBuff, &this->clsData->decBuff[buff.GetSize()], this->clsData->decSize - buff.GetSize());
-				this->clsData->decSize -= buff.GetSize();
+				MemCopyO(this->clsData->decBuff, &this->clsData->decBuff[myBuff.GetSize()], this->clsData->decSize - myBuff.GetSize());
+				this->clsData->decSize -= myBuff.GetSize();
 			}
 			else
 			{
@@ -141,11 +142,11 @@ UOSInt Net::WinSSLClient::Read(const Data::ByteArray &buff)
 #if defined(DEBUG_PRINT)
 			debugDt.SetCurrTime();
 			debugDt.ToString(debugBuff, "HH:mm:ss.fff");
-			printf("%s Return size1 = %d, \r\n", debugBuff, (UInt32)buff.GetSize());
+			printf("%s Return size1 = %d, \r\n", debugBuff, (UInt32)myBuff.GetSize());
 #endif
-			return buff.GetSize();
+			return myBuff.GetSize();
 		}
-		buff.CopyFrom(Data::ByteArray(this->clsData->decBuff, this->clsData->decSize));
+		myBuff.CopyFrom(Data::ByteArray(this->clsData->decBuff, this->clsData->decSize));
 		ret = this->clsData->decSize;
 		this->clsData->decSize = 0;
 #if defined(DEBUG_PRINT)
@@ -208,31 +209,31 @@ UOSInt Net::WinSSLClient::Read(const Data::ByteArray &buff)
 		{
 			if (buffs[i].BufferType == SECBUFFER_DATA)
 			{
-				if (buffs[i].cbBuffer <= buff.GetSize())
+				if (buffs[i].cbBuffer <= myBuff.GetSize())
 				{
 #if defined(DEBUG_PRINT)
 					debugDt.SetCurrTime();
 					debugDt.ToString(debugBuff, "HH:mm:ss.fff");
-					printf("%s Dec size1 = %d, size = %d\r\n", debugBuff, (UInt32)buffs[i].cbBuffer, (UInt32)size);
+					printf("%s Dec size1 = %d, size = %d\r\n", debugBuff, (UInt32)buffs[i].cbBuffer, (UInt32)myBuff.GetSize());
 #endif
-					buff.CopyFrom(Data::ByteArrayR((UInt8*)buffs[i].pvBuffer, buffs[i].cbBuffer));
-					buff += (UInt32)buffs[i].cbBuffer;
+					myBuff.CopyFrom(Data::ByteArrayR((UInt8*)buffs[i].pvBuffer, buffs[i].cbBuffer));
+					myBuff += (UInt32)buffs[i].cbBuffer;
 					ret += buffs[i].cbBuffer;
 				}
 				else
 				{
-					if (buff.GetSize() > 0)
+					if (myBuff.GetSize() > 0)
 					{
 #if defined(DEBUG_PRINT)
 						debugDt.SetCurrTime();
 						debugDt.ToString(debugBuff, "HH:mm:ss.fff");
 						printf("%s Dec size2 = %d, size = %d\r\n", debugBuff, (UInt32)buffs[i].cbBuffer, (UInt32)size);
 #endif
-						buff.CopyFrom(Data::ByteArrayR((UInt8*)buffs[i].pvBuffer, buff.GetSize()));
-						ret += buff.GetSize();
-						MemCopyNO(&this->clsData->decBuff[this->clsData->decSize], buff.GetSize() + (UInt8*)buffs[i].pvBuffer, buffs[i].cbBuffer - buff.GetSize());
-						this->clsData->decSize += buffs[i].cbBuffer - buff.GetSize();
-						buff += buff.GetSize();
+						myBuff.CopyFrom(Data::ByteArrayR((UInt8*)buffs[i].pvBuffer, myBuff.GetSize()));
+						ret += myBuff.GetSize();
+						MemCopyNO(&this->clsData->decBuff[this->clsData->decSize], myBuff.GetSize() + (UInt8*)buffs[i].pvBuffer, buffs[i].cbBuffer - myBuff.GetSize());
+						this->clsData->decSize += buffs[i].cbBuffer - myBuff.GetSize();
+						myBuff += myBuff.GetSize();
 					}
 					else
 					{

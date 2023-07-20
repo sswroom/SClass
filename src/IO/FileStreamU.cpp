@@ -289,28 +289,28 @@ void IO::FileStream::GetFileTimes(Data::DateTime *creationTime, Data::DateTime *
 #if defined(__APPLE__)
 	if (creationTime)
 	{
-		creationTime->SetUnixTimestamp(s.st_ctimespec.tv_sec);
+		creationTime->SetValue(Data::TimeInstant(s.st_ctimespec.tv_sec, (UInt32)s.st_ctimespec.tv_nsec), 0);
 	}
 	if (lastAccessTime)
 	{
-		lastAccessTime->SetUnixTimestamp(s.st_atimespec.tv_sec);
+		lastAccessTime->SetValue(Data::TimeInstant(s.st_atimespec.tv_sec, (UInt32)s.st_atimespec.tv_nsec), 0);
 	}
 	if (lastWriteTime)
 	{
-		lastWriteTime->SetUnixTimestamp(s.st_mtimespec.tv_sec);
+		lastWriteTime->SetValue(Data::TimeInstant(s.st_mtimespec.tv_sec, (UInt32)s.st_mtimespec.tv_nsec), 0);
 	}
 #else
 	if (creationTime)
 	{
-		creationTime->SetUnixTimestamp(s.st_ctim.tv_sec);
+		creationTime->SetValue(Data::TimeInstant(s.st_ctim.tv_sec, (UInt32)s.st_ctim.tv_nsec), 0);
 	}
 	if (lastAccessTime)
 	{
-		lastAccessTime->SetUnixTimestamp(s.st_atim.tv_sec);
+		lastAccessTime->SetValue(Data::TimeInstant(s.st_atim.tv_sec, (UInt32)s.st_atim.tv_nsec), 0);
 	}
 	if (lastWriteTime)
 	{
-		lastWriteTime->SetUnixTimestamp(s.st_mtim.tv_sec);
+		lastWriteTime->SetValue(Data::TimeInstant(s.st_mtim.tv_sec, (UInt32)s.st_mtim.tv_nsec), 0);
 	}
 #endif
 }

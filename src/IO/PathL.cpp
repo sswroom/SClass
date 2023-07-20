@@ -479,7 +479,11 @@ UTF8Char *IO::Path::FindNextFile(UTF8Char *buff, IO::Path::FindFileSession *sess
 			{
 				if (modTime)
 				{
+#if defined(__APPLE__)
+					*modTime = Data::Timestamp::FromSecNS(s.st_mtimespec.tv_sec, (UInt32)s.st_mtimespec.tv_nsec, 0);
+#else
 					*modTime = Data::Timestamp::FromSecNS(s.st_mtim.tv_sec, (UInt32)s.st_mtim.tv_nsec, 0);
+#endif
 				}
 				if (pt)
 				{
@@ -522,7 +526,11 @@ WChar *IO::Path::FindNextFileW(WChar *buff, IO::Path::FindFileSession *sess, Dat
 			{
 				if (modTime)
 				{
+#if defined(__APPLE__)
+					*modTime = Data::Timestamp::FromSecNS(s.st_mtimespec.tv_sec, (UInt32)s.st_mtimespec.tv_nsec, 0);
+#else
 					*modTime = Data::Timestamp::FromSecNS(s.st_mtim.tv_sec, (UInt32)s.st_mtim.tv_nsec, 0);
+#endif
 				}
 				if (pt)
 				{
