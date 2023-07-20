@@ -120,7 +120,7 @@ namespace Data
 
 		Bool IsNull() const
 		{
-			return this->buff != 0;
+			return this->buff == 0;
 		}
 
 		UOSInt GetSize() const
