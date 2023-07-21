@@ -14,7 +14,7 @@ namespace Media
 		UOSInt currGraph;
 		Data::ArrayList<Media::VectorGraph*> *items;
 		Media::IPrintDocument *currDoc;
-		Media::DrawEngine *refEng;
+		NotNullPtr<Media::DrawEngine> refEng;
 		UInt32 srid;
 
 		Text::String *docName;
@@ -27,8 +27,8 @@ namespace Media
 		Int64 modTimeTicks;
 
 	public:
-		VectorDocument(UInt32 srid, Media::DrawEngine *refEng);
-		VectorDocument(UInt32 srid, Text::CString name, Media::DrawEngine *refEng);
+		VectorDocument(UInt32 srid, NotNullPtr<Media::DrawEngine> refEng);
+		VectorDocument(UInt32 srid, Text::CString name, NotNullPtr<Media::DrawEngine> refEng);
 		virtual ~VectorDocument();
 
 		Media::VectorGraph *AddGraph(Double width, Double height, Math::Unit::Distance::DistanceUnit unit);

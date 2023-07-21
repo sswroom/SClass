@@ -2,7 +2,7 @@
 #include "Sync/MutexUsage.h"
 #include "UI/DObj/LabelDObj.h"
 
-UI::DObj::LabelDObj::LabelDObj(Media::DrawEngine *deng, Text::CString txt, Text::CString fontName, Double fontSizePx, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 fontColor, Math::Coord2D<OSInt> tl, UInt32 codePage) : DirectObject(tl)
+UI::DObj::LabelDObj::LabelDObj(NotNullPtr<Media::DrawEngine> deng, Text::CString txt, Text::CString fontName, Double fontSizePx, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 fontColor, Math::Coord2D<OSInt> tl, UInt32 codePage) : DirectObject(tl)
 {
 	this->deng = deng;
 	this->txtChg = true;

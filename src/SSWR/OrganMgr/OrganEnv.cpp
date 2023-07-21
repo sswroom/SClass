@@ -206,12 +206,12 @@ SSWR::OrganMgr::OrganEnv::~OrganEnv()
 	this->TripRelease();
 	SDEL_CLASS(this->gpsTrk);
 	SDEL_CLASS(this->langFile);
-	DEL_CLASS(this->drawEng);
+	this->drawEng.Delete();
 	SDEL_CLASS(this->ssl);
 	this->sockf.Delete();
 }
 
-Media::DrawEngine *SSWR::OrganMgr::OrganEnv::GetDrawEngine()
+NotNullPtr<Media::DrawEngine> SSWR::OrganMgr::OrganEnv::GetDrawEngine()
 {
 	return this->drawEng;
 }

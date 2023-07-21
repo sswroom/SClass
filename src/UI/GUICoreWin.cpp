@@ -84,10 +84,10 @@ void UI::GUICoreWin::Exit()
 	PostQuitMessage(0);
 }
 
-Media::DrawEngine *UI::GUICoreWin::CreateDrawEngine()
+NotNullPtr<Media::DrawEngine> UI::GUICoreWin::CreateDrawEngine()
 {
-	Media::DrawEngine *deng;
-	NEW_CLASS(deng, Media::GDIEngine());
+	NotNullPtr<Media::DrawEngine> deng;
+	NEW_CLASSNN(deng, Media::GDIEngine());
 	return deng;
 }
 

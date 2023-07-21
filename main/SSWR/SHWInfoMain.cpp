@@ -576,50 +576,44 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		{
 			Text::String *s;
 			Media::Printer *printer;
-			Media::DrawEngine *deng = Media::DrawEngineFactory::CreateDrawEngine();
+			NotNullPtr<Media::DrawEngine> deng = Media::DrawEngineFactory::CreateDrawEngine();
 			while (i-- > 0)
 			{
 				s = printerList.GetItem(i);
 
-				if (deng)
-				{
-					sb.ClearStr();
-					sb.AppendC(UTF8STRC("Test Printing with "));
-					sb.Append(s);
-					console->WriteLineC(sb.ToString(), sb.GetLength());
-					writer->WriteLineC(sb.ToString(), sb.GetLength());
+				sb.ClearStr();
+				sb.AppendC(UTF8STRC("Test Printing with "));
+				sb.Append(s);
+				console->WriteLineC(sb.ToString(), sb.GetLength());
+				writer->WriteLineC(sb.ToString(), sb.GetLength());
 
-					NEW_CLASS(printer, Media::Printer(s->ToCString()));
-					if (printer->IsError())
+				NEW_CLASS(printer, Media::Printer(s->ToCString()));
+				if (printer->IsError())
+				{
+					console->WriteLineC(UTF8STRC("Error in opening printer"));
+					writer->WriteLineC(UTF8STRC("Error in opening printer"));
+				}
+				else
+				{
+					PrintTest *test;
+					NEW_CLASS(test, PrintTest());
+					Media::IPrintDocument *doc = printer->StartPrint(test, deng);
+					if (doc)
 					{
-						console->WriteLineC(UTF8STRC("Error in opening printer"));
-						writer->WriteLineC(UTF8STRC("Error in opening printer"));
+						printer->EndPrint(doc);
 					}
 					else
 					{
-						PrintTest *test;
-						NEW_CLASS(test, PrintTest());
-						Media::IPrintDocument *doc = printer->StartPrint(test, deng);
-						if (doc)
-						{
-							printer->EndPrint(doc);
-						}
-						else
-						{
-							console->WriteLineC(UTF8STRC("Error in start printing"));
-							writer->WriteLineC(UTF8STRC("Error in start printing"));
-						}
-						DEL_CLASS(test);
+						console->WriteLineC(UTF8STRC("Error in start printing"));
+						writer->WriteLineC(UTF8STRC("Error in start printing"));
 					}
-					DEL_CLASS(printer);
+					DEL_CLASS(test);
 				}
+				DEL_CLASS(printer);
 
 				s->Release();
 			}
-			if (deng)
-			{
-				DEL_CLASS(deng);
-			}
+			deng.Delete();
 		}
 	}
 //-------------------------------------------------------------------------------

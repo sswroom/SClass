@@ -70,7 +70,7 @@ namespace Map
 
 	private:
 		Map::MapScheduler mapSch;
-		Media::DrawEngine *eng;
+		NotNullPtr<Media::DrawEngine> eng;
 		Map::MapEnv *env;
 		Media::Resizer::LanczosResizer8_C8 *resizer;
 		Bool lastLayerEmpty;
@@ -99,7 +99,7 @@ namespace Map
 		static void DrawCharsL(DrawEnv *denv, Text::CString str1, Math::Coord2DDbl *mapPts, Math::Coord2D<Int32> *scnPts, UOSInt nPoints, UOSInt thisPt, Double scaleN, Double scaleD, Map::MapEnv::FontType fontType, UOSInt fontStyle, Math::RectAreaDbl *realBounds);
 		static void DrawCharsLA(DrawEnv *denv, Text::CString str1, Math::Coord2DDbl *mapPts, Math::Coord2D<Int32> *scnPts, UOSInt nPoints, UOSInt thisPt, Double scaleN, Double scaleD, Map::MapEnv::FontType fontType, UOSInt fontStyle, Math::RectAreaDbl *realBounds);
 	public:
-		DrawMapRenderer(Media::DrawEngine *eng, Map::MapEnv *env, const Media::ColorProfile *color, Media::ColorManagerSess *colorSess, DrawType drawType);
+		DrawMapRenderer(NotNullPtr<Media::DrawEngine> eng, Map::MapEnv *env, const Media::ColorProfile *color, Media::ColorManagerSess *colorSess, DrawType drawType);
 		virtual ~DrawMapRenderer();
 
 		virtual void DrawMap(Media::DrawImage *img, Map::MapView *view, UInt32 *imgDurMS);

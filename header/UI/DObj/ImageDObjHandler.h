@@ -16,7 +16,7 @@ namespace UI
 		protected:
 			virtual void DrawBkg(Media::DrawImage *dimg);
 		public:
-			ImageDObjHandler(Media::DrawEngine *deng, Text::CString fileName);
+			ImageDObjHandler(NotNullPtr<Media::DrawEngine> deng, Text::CString fileName);
 			virtual ~ImageDObjHandler();
 
 			void SetBGColor(UInt32 bgColor);

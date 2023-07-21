@@ -5,7 +5,7 @@
 #include "Media/DrawEngineFactory.h"
 #include "Text/MyString.h"
 
-void GenerateAngle(Media::DrawEngine *deng, UOSInt angleDegree)
+void GenerateAngle(NotNullPtr<Media::DrawEngine> deng, UOSInt angleDegree)
 {
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
@@ -24,7 +24,7 @@ void GenerateAngle(Media::DrawEngine *deng, UOSInt angleDegree)
 
 Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
-	Media::DrawEngine *deng = Media::DrawEngineFactory::CreateDrawEngine();
+	NotNullPtr<Media::DrawEngine> deng = Media::DrawEngineFactory::CreateDrawEngine();
 	GenerateAngle(deng, 0);
 	GenerateAngle(deng, 45);
 	GenerateAngle(deng, 90);
@@ -33,6 +33,6 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	GenerateAngle(deng, 225);
 	GenerateAngle(deng, 270);
 	GenerateAngle(deng, 315);
-	DEL_CLASS(deng);
+	deng.Delete();
 	return 0;
 }

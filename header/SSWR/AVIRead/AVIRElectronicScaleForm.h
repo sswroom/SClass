@@ -21,7 +21,7 @@ namespace SSWR
 		{
 		private:
 			SSWR::AVIRead::AVIRCore *core;
-			Media::DrawEngine *eng;
+			NotNullPtr<Media::DrawEngine> eng;
 			Media::DrawImage *dimg;
 
 			UI::GUIPanel *pnlCtrl;

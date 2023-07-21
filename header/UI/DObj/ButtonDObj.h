@@ -11,7 +11,7 @@ namespace UI
 		class ButtonDObj : public DirectObject
 		{
 		private:
-			Media::DrawEngine *deng;
+			NotNullPtr<Media::DrawEngine> deng;
 			Media::DrawImage *bmpUnclick;
 			Media::DrawImage *bmpClicked;
 			Double alpha;
@@ -30,7 +30,7 @@ namespace UI
 
 			static UInt32 __stdcall ClickThread(void *userObj);
 		public:
-			ButtonDObj(Media::DrawEngine *deng, Text::CString fileNameUnclick, Text::CString fileNameClicked, Math::Coord2D<OSInt> tl, Bool rectMode, UI::UIEvent clkHdlr, void *clkUserObj);
+			ButtonDObj(NotNullPtr<Media::DrawEngine> deng, Text::CString fileNameUnclick, Text::CString fileNameClicked, Math::Coord2D<OSInt> tl, Bool rectMode, UI::UIEvent clkHdlr, void *clkUserObj);
 			virtual ~ButtonDObj();
 
 			void SetRectMode(Bool rectMode);

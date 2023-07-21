@@ -26,7 +26,7 @@ namespace Media
 		
 		Bool IsError();
 		Bool ShowPrintSettings(void *hWnd);
-		IPrintDocument *StartPrint(IPrintHandler *hdlr, Media::DrawEngine *eng);
+		IPrintDocument *StartPrint(IPrintHandler *hdlr, NotNullPtr<Media::DrawEngine> eng);
 		void EndPrint(IPrintDocument *doc);
 	};
 };

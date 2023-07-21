@@ -56,7 +56,7 @@ namespace Media
 
 		void ReleaseProfile(ResizeProfile *profile);
 	public:
-		ProfiledResizer(Parser::ParserList *parsers, Media::ColorManagerSess *colorSess, Media::DrawEngine *deng);
+		ProfiledResizer(Parser::ParserList *parsers, Media::ColorManagerSess *colorSess, NotNullPtr<Media::DrawEngine> deng);
 		~ProfiledResizer();
 
 		UOSInt GetProfileCount();

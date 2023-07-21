@@ -378,12 +378,12 @@ Bool Media::Printer::ShowPrintSettings(void *hWnd)
 	return IDOK == lReturn;
 }
 
-Media::IPrintDocument *Media::Printer::StartPrint(Media::IPrintHandler *hdlr, Media::DrawEngine *eng)
+Media::IPrintDocument *Media::Printer::StartPrint(Media::IPrintHandler *hdlr, NotNullPtr<Media::DrawEngine> eng)
 {
 	Media::GDIPrintDocument *doc;
-	if (this->devMode == 0 || eng == 0)
+	if (this->devMode == 0)
 		return 0;
-	NEW_CLASS(doc, Media::GDIPrintDocument(this->printerName, this->devMode, (Media::GDIEngine*)eng, hdlr));
+	NEW_CLASS(doc, Media::GDIPrintDocument(this->printerName, this->devMode, (Media::GDIEngine*)eng.Ptr(), hdlr));
 	if (doc->IsError())
 	{
 		DEL_CLASS(doc);

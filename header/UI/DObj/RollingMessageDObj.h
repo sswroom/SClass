@@ -20,7 +20,7 @@ namespace UI
 			};
 		private:
 			Math::Size2D<UOSInt> size;
-			Media::DrawEngine *deng;
+			NotNullPtr<Media::DrawEngine> deng;
 			Double rollSpeed;
 			OSInt lastRollPos;
 			Data::DateTime startTime;
@@ -33,11 +33,11 @@ namespace UI
 			OSInt lastMsgOfst;
 
 		protected:
-			virtual Media::DrawImage *GenerateImage(Media::DrawEngine *deng, NotNullPtr<Text::String> message, Math::Size2D<UOSInt> drawSize, Media::DrawImage *scnImg) = 0;
+			virtual Media::DrawImage *GenerateImage(NotNullPtr<Media::DrawEngine> deng, NotNullPtr<Text::String> message, Math::Size2D<UOSInt> drawSize, Media::DrawImage *scnImg) = 0;
 		private:
 			void FreeMessage(MessageInfo *msg);
 		public:
-			RollingMessageDObj(Media::DrawEngine *deng, Math::Coord2D<OSInt> tl, Math::Size2D<UOSInt> size, Double rollSpeed);
+			RollingMessageDObj(NotNullPtr<Media::DrawEngine> deng, Math::Coord2D<OSInt> tl, Math::Size2D<UOSInt> size, Double rollSpeed);
 			virtual ~RollingMessageDObj();
 
 			virtual Bool IsChanged();

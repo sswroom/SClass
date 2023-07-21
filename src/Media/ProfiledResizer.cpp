@@ -20,7 +20,7 @@ void Media::ProfiledResizer::ReleaseProfile(Media::ProfiledResizer::ResizeProfil
 	MemFree(profile);
 }
 
-Media::ProfiledResizer::ProfiledResizer(Parser::ParserList *parsers, Media::ColorManagerSess *colorSess, Media::DrawEngine *deng)
+Media::ProfiledResizer::ProfiledResizer(Parser::ParserList *parsers, Media::ColorManagerSess *colorSess, NotNullPtr<Media::DrawEngine> deng)
 {
 	this->currProfile = (UOSInt)-1;
 	this->saver = 0;

@@ -31,14 +31,14 @@ namespace SSWR
 			UI::GUITextBox *txtY2;
 			UI::GUIButton *btnOK;
 			UI::GUIButton *btnCancel;
-			Media::DrawEngine *deng;
+			NotNullPtr<Media::DrawEngine> deng;
 			Media::MonitorMgr *monMgr;
 			MapFilter *filter;
 
 			static void __stdcall OnOKClicked(void *userObj);
 			static void __stdcall OnCancelClicked(void *userObj);
 		public:
-			SHPConvRangeFilterForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, Media::DrawEngine *deng);
+			SHPConvRangeFilterForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<Media::DrawEngine> deng);
 			virtual ~SHPConvRangeFilterForm();
 
 			virtual void OnMonitorChanged();

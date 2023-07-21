@@ -46,7 +46,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	UOSInt j;
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
-	Media::DrawEngine *eng;
+	NotNullPtr<Media::DrawEngine> eng;
 	Media::Printer *printer;
 	Media::IPrintDocument *doc;
 	PrintObj *prtobj;
@@ -73,7 +73,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	}
 	DEL_CLASS(prtobj);
 	DEL_CLASS(printer);
-	DEL_CLASS(eng);
+	eng.Delete();
 
 	DEL_CLASS(console);
 	return 0;

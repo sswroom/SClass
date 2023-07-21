@@ -12,7 +12,7 @@ namespace UI
 		class OverlayDObj : public DirectObject
 		{
 		private:
-			Media::DrawEngine *deng;
+			NotNullPtr<Media::DrawEngine> deng;
 			Media::DrawImage *bmp;
 			Media::ImageList *imgList;
 			Bool noRelease;
@@ -22,8 +22,8 @@ namespace UI
 			OSInt lastFrameNum;
 
 		public:
-			OverlayDObj(Media::DrawEngine *deng, Media::DrawImage *bmp, Math::Coord2D<OSInt> tl);
-			OverlayDObj(Media::DrawEngine *deng, Text::CString fileName, Math::Coord2D<OSInt> tl, Parser::ParserList *parsers);
+			OverlayDObj(NotNullPtr<Media::DrawEngine> deng, Media::DrawImage *bmp, Math::Coord2D<OSInt> tl);
+			OverlayDObj(NotNullPtr<Media::DrawEngine> deng, Text::CString fileName, Math::Coord2D<OSInt> tl, Parser::ParserList *parsers);
 			virtual ~OverlayDObj();
 
 			virtual Bool IsChanged();

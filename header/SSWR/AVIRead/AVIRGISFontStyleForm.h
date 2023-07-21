@@ -24,7 +24,7 @@ namespace SSWR
 			Map::MapEnv *env;
 			UOSInt fontStyle;
 			Bool changed;
-			Media::DrawEngine *eng;
+			NotNullPtr<Media::DrawEngine> eng;
 
 			UI::GUIPanel *pnlBtn;
 			UI::GUIButton *btnOK;
@@ -47,7 +47,7 @@ namespace SSWR
 
 			void UpdatePreview();
 		public:
-			AVIRGISFontStyleForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, Map::MapEnv *env, Media::DrawEngine *eng, UOSInt fontStyle);
+			AVIRGISFontStyleForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, Map::MapEnv *env, NotNullPtr<Media::DrawEngine> eng, UOSInt fontStyle);
 			virtual ~AVIRGISFontStyleForm();
 
 			virtual void OnMonitorChanged();

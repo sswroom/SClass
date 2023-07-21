@@ -31,7 +31,7 @@ namespace SSWR
 
 			SSWR::AVIRead::AVIRCore *core;
 			Media::IAudioSource *audSrc;
-			Media::DrawEngine *eng;
+			NotNullPtr<Media::DrawEngine> eng;
 			Media::DrawImage *sampleImg;
 			Media::DrawImage *fftImg;
 			UInt64 currSample;

@@ -3,7 +3,7 @@
 #include "Math/Math.h"
 #include "UI/DObj/OverlayDObj.h"
 
-UI::DObj::OverlayDObj::OverlayDObj(Media::DrawEngine *deng, Media::DrawImage *bmp, Math::Coord2D<OSInt> tl) : DirectObject(tl)
+UI::DObj::OverlayDObj::OverlayDObj(NotNullPtr<Media::DrawEngine> deng, Media::DrawImage *bmp, Math::Coord2D<OSInt> tl) : DirectObject(tl)
 {
 	this->deng = deng;
 	this->noRelease = true;
@@ -13,7 +13,7 @@ UI::DObj::OverlayDObj::OverlayDObj(Media::DrawEngine *deng, Media::DrawImage *bm
 	this->clk = 0;
 }
 
-UI::DObj::OverlayDObj::OverlayDObj(Media::DrawEngine *deng, Text::CString fileName, Math::Coord2D<OSInt> tl, Parser::ParserList *parsers) : DirectObject(tl)
+UI::DObj::OverlayDObj::OverlayDObj(NotNullPtr<Media::DrawEngine> deng, Text::CString fileName, Math::Coord2D<OSInt> tl, Parser::ParserList *parsers) : DirectObject(tl)
 {
 	this->deng = deng;
 	this->noRelease = false;

@@ -75,9 +75,9 @@ void UI::GUICoreJava::Exit()
 	this->waitEvt->Set();
 }
 
-Media::DrawEngine *UI::GUICoreJava::CreateDrawEngine()
+NotNullPtr<Media::DrawEngine> UI::GUICoreJava::CreateDrawEngine()
 {
-	Media::DrawEngine *deng = 0;
+	NotNullPtr<Media::DrawEngine> deng = 0;
 //	NEW_CLASS(deng, Media::GTKDrawEngine());
 	return deng;
 }

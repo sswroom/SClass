@@ -16,7 +16,7 @@ namespace UI
 		virtual void ProcessMessages();
 		virtual void WaitForMessages();
 		virtual void Exit();
-		virtual Media::DrawEngine *CreateDrawEngine();
+		virtual NotNullPtr<Media::DrawEngine> CreateDrawEngine();
 		virtual Double GetMagnifyRatio(MonitorHandle *hMonitor);
 		virtual void UseDevice(Bool useSystem, Bool useDisplay);
 		virtual void SetNoDisplayOff(Bool noDispOff);

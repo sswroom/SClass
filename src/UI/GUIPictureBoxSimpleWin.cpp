@@ -183,7 +183,7 @@ void UI::GUIPictureBoxSimple::UpdatePreview()
 	this->Redraw();
 }
 
-UI::GUIPictureBoxSimple::GUIPictureBoxSimple(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, Media::DrawEngine *eng, Bool hasBorder) : UI::GUIControl(ui, parent)
+UI::GUIPictureBoxSimple::GUIPictureBoxSimple(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, NotNullPtr<Media::DrawEngine> eng, Bool hasBorder) : UI::GUIControl(ui, parent)
 {
 	this->hasBorder = hasBorder;
 	this->eng = eng;
@@ -261,7 +261,7 @@ void UI::GUIPictureBoxSimple::SetImageDImg(Media::DrawImage *img)
 	}
 	if (img)
 	{
-		this->prevImageD = ((Media::GDIEngine*)this->eng)->CloneImage((Media::GDIImage*)img);
+		this->prevImageD = ((Media::GDIEngine*)this->eng.Ptr())->CloneImage((Media::GDIImage*)img);
 	}
 	this->Redraw();
 }

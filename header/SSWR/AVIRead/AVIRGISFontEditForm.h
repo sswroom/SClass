@@ -24,7 +24,7 @@ namespace SSWR
 			Map::MapEnv *env;
 			UOSInt fontStyle;
 			Bool changed;
-			Media::DrawEngine *eng;
+			NotNullPtr<Media::DrawEngine> eng;
 
 			Text::String *currFontName;
 			Double currFontSizePt;
@@ -60,7 +60,7 @@ namespace SSWR
 			void UpdateFontPreview();
 			void UpdateDisplay();
 		public:
-			AVIRGISFontEditForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, Map::MapEnv *env, Media::DrawEngine *eng, UOSInt fontStyle);
+			AVIRGISFontEditForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, Map::MapEnv *env, NotNullPtr<Media::DrawEngine> eng, UOSInt fontStyle);
 			virtual ~AVIRGISFontEditForm();
 
 			virtual void OnMonitorChanged();

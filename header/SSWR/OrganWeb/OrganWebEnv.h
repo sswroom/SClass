@@ -45,7 +45,7 @@ namespace SSWR
 
 			Media::ColorManager colorMgr;
 			Media::ColorManagerSess *colorSess;
-			Media::DrawEngine *eng;
+			NotNullPtr<Media::DrawEngine> eng;
 			Map::OSM::OSMCacheHandler *osmHdlr;
 			Net::WebServer::HTTPDirectoryHandler *mapDirHdlr;
 			SSWR::OrganWeb::OrganWebHandler *webHdlr;
@@ -80,7 +80,7 @@ namespace SSWR
 			void FreeUsers();
 			void ClearUsers();
 		public:
-			OrganWebEnv(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, IO::LogTool *log, DB::DBTool *db, Text::String *imageDir, UInt16 port, UInt16 sslPort, Text::String *cacheDir, Text::String *dataDir, UInt32 scnSize, Text::String *reloadPwd, Int32 unorganizedGroupId, Media::DrawEngine *eng, Text::CString osmCachePath);
+			OrganWebEnv(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, IO::LogTool *log, DB::DBTool *db, Text::String *imageDir, UInt16 port, UInt16 sslPort, Text::String *cacheDir, Text::String *dataDir, UInt32 scnSize, Text::String *reloadPwd, Int32 unorganizedGroupId, NotNullPtr<Media::DrawEngine> eng, Text::CString osmCachePath);
 			~OrganWebEnv();
 
 			Bool IsError();
@@ -94,7 +94,7 @@ namespace SSWR
 			Text::String *GetCacheDir() const;
 			Text::String *GetDataDir() const;
 			Media::ColorManagerSess *GetColorSess() const;
-			Media::DrawEngine *GetDrawEngine() const;
+			NotNullPtr<Media::DrawEngine> GetDrawEngine() const;
 
 			void CalcGroupCount(Sync::RWMutexUsage *mutUsage, GroupInfo *group);
 			void GetGroupSpecies(Sync::RWMutexUsage *mutUsage, GroupInfo *group, Data::DataMap<Text::String*, SpeciesInfo*> *spMap, WebUserInfo *user);

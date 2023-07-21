@@ -1426,7 +1426,7 @@ void UtilUI::ColorDialog::UpdateColor()
 	DEL_CLASS(srcBTran);
 }
 
-UtilUI::ColorDialog::ColorDialog(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, Media::ColorManager *colorMgr, Media::DrawEngine *eng, ColorCorrType colorCorr, Media::ColorProfile *colorProfile, Media::MonitorMgr *monMgr) : UI::GUIForm(parent, 756, 640, ui)
+UtilUI::ColorDialog::ColorDialog(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, Media::ColorManager *colorMgr, NotNullPtr<Media::DrawEngine> eng, ColorCorrType colorCorr, Media::ColorProfile *colorProfile, Media::MonitorMgr *monMgr) : UI::GUIForm(parent, 756, 640, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("Color Setting"));

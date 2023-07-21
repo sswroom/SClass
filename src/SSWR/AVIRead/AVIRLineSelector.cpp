@@ -25,7 +25,7 @@ void SSWR::AVIRead::AVIRLineSelector::OnDraw(Media::DrawImage *img)
 	UInt32 itemTH = (UInt32)Double2Int32(24 * hdpi / ddpi);
 	UInt32 itemL = (UInt32)Double2Int32(5 * hdpi / ddpi);
 	UInt32 itemW = (UInt32)Double2Int32(120 * hdpi / ddpi);
-	Media::DrawEngine *deng = this->core->GetDrawEngine();
+	NotNullPtr<Media::DrawEngine> deng = this->core->GetDrawEngine();
 	Media::DrawImage *tmpBmp;
 	if (w >= itemW)
 	{

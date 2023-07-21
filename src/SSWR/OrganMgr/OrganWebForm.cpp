@@ -13,7 +13,7 @@ void __stdcall SSWR::OrganMgr::OrganWebForm::OnReloadClicked(void *userObj)
 	me->env->Reload();
 }
 
-SSWR::OrganMgr::OrganWebForm::OrganWebForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, Media::DrawEngine *eng) : UI::GUIForm(parent, 160, 100, ui)
+SSWR::OrganMgr::OrganWebForm::OrganWebForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<Media::DrawEngine> eng) : UI::GUIForm(parent, 160, 100, ui)
 {
 	this->SetFont(0, 0, 10.5, false);
 	this->SetText(CSTR("OrganWeb"));

@@ -45,7 +45,7 @@ namespace SSWR
 			Net::WebServer::WebListener *listener;
 			Net::WebServer::HTTPDirectoryHandler *webHdlr;
 			Text::String *dataDir;
-			Media::DrawEngine *deng;
+			NotNullPtr<Media::DrawEngine> deng;
 			Parser::ParserList *parsers;
 			Bool initErr;
 
@@ -95,11 +95,11 @@ namespace SSWR
 			DB::DBTool *UseDB(Sync::MutexUsage *mut);
 			void UserPwdCalc(const UTF8Char *userName, const UTF8Char *pwd, UInt8 *buff);
 		public:
-			SMonitorSvrCore(IO::Writer *writer, Media::DrawEngine *deng);
+			SMonitorSvrCore(IO::Writer *writer, NotNullPtr<Media::DrawEngine> deng);
 			virtual ~SMonitorSvrCore();
 
 			Bool IsError();
-			virtual Media::DrawEngine *GetDrawEngine();
+			virtual NotNullPtr<Media::DrawEngine> GetDrawEngine();
 
 			DeviceInfo *DevGet(Int64 cliId, Bool toAdd);
 			DeviceInfo *DevAdd(Int64 cliId, Text::CString cpuName, Text::CString platformName);

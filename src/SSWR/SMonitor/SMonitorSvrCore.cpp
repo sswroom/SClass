@@ -1069,7 +1069,7 @@ void SSWR::SMonitor::SMonitorSvrCore::UserPwdCalc(const UTF8Char *userName, cons
 	md5.GetValue(buff);
 }
 
-SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(IO::Writer *writer, Media::DrawEngine *deng) : protoHdlr(this)
+SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(IO::Writer *writer, NotNullPtr<Media::DrawEngine> deng) : protoHdlr(this)
 {
 	NEW_CLASSNN(this->sockf, Net::OSSocketFactory(true));
 	NEW_CLASS(this->parsers, Parser::FullParserList());
@@ -1413,7 +1413,7 @@ SSWR::SMonitor::SMonitorSvrCore::~SMonitorSvrCore()
 	SDEL_CLASS(this->dataCRC);
 	DEL_CLASS(this->parsers);
 	this->sockf.Delete();
-	DEL_CLASS(this->deng);
+	this->deng.Delete();
 	SDEL_STRING(this->dataDir);
 }
 
@@ -1422,7 +1422,7 @@ Bool SSWR::SMonitor::SMonitorSvrCore::IsError()
 	return this->cliSvr == 0 || this->db == 0 || this->listener == 0 || this->dataDir == 0 || this->initErr;
 }
 
-Media::DrawEngine *SSWR::SMonitor::SMonitorSvrCore::GetDrawEngine()
+NotNullPtr<Media::DrawEngine> SSWR::SMonitor::SMonitorSvrCore::GetDrawEngine()
 {
 	return this->deng;
 }

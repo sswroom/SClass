@@ -11,7 +11,7 @@ namespace Map
 		UInt32 imgSize;
 		const UTF8Char *tileDir;
 		Map::MapConfig2TGen *mcfg;
-		Media::DrawEngine *geng;
+		NotNullPtr<Media::DrawEngine> geng;
 		UOSInt osSize;
 
 		Data::ArrayListInt64 dbGenList;
@@ -25,7 +25,7 @@ namespace Map
 		void AppendDBFile(IO::Writer *writer, Int32 x, Int32 y, UInt32 scale, Int32 xOfst, Int32 yOfst);
 		Bool GenerateDBFile(Int32 x, Int32 y, UInt32 scale, Map::MapScheduler *mapSch);
 	public:
-		TileMapGenerator(Map::MapConfig2TGen *mcfg, Media::DrawEngine *geng, const UTF8Char *tileDir, UOSInt osSize);
+		TileMapGenerator(Map::MapConfig2TGen *mcfg, NotNullPtr<Media::DrawEngine> geng, const UTF8Char *tileDir, UOSInt osSize);
 		~TileMapGenerator();
 
 		static Int64 GetTileID(Double lat, Double lon, UInt32 scale, UInt32 imgSize);

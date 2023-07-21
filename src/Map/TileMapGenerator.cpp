@@ -122,7 +122,7 @@ Bool Map::TileMapGenerator::GenerateDBFile(Int32 x, Int32 y, UInt32 scale, Map::
 	return true;
 }
 
-Map::TileMapGenerator::TileMapGenerator(Map::MapConfig2TGen *mcfg, Media::DrawEngine *geng, const UTF8Char *tileDir, UOSInt osSize)
+Map::TileMapGenerator::TileMapGenerator(Map::MapConfig2TGen *mcfg, NotNullPtr<Media::DrawEngine> geng, const UTF8Char *tileDir, UOSInt osSize)
 {
 	this->imgSize = 512;
 	this->geng = geng;

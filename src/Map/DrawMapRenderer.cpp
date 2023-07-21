@@ -3621,7 +3621,7 @@ void Map::DrawMapRenderer::DrawCharsLA(DrawEnv *denv, Text::CString str1, Math::
 	realBounds->br = max;
 }
 
-Map::DrawMapRenderer::DrawMapRenderer(Media::DrawEngine *eng, Map::MapEnv *env, const Media::ColorProfile *color, Media::ColorManagerSess *colorSess, DrawType drawType)
+Map::DrawMapRenderer::DrawMapRenderer(NotNullPtr<Media::DrawEngine> eng, Map::MapEnv *env, const Media::ColorProfile *color, Media::ColorManagerSess *colorSess, DrawType drawType)
 {
 	this->eng = eng;
 	this->env = env;

@@ -175,7 +175,7 @@ namespace SSWR
 		protected:
 			Media::ColorManager colorMgr;
 			Parser::FullParserList parsers;
-			Media::DrawEngine *drawEng;
+			NotNullPtr<Media::DrawEngine> drawEng;
 			NotNullPtr<Net::SocketFactory> sockf;
 			Net::SSLEngine *ssl;
 			Media::MonitorMgr monMgr;
@@ -206,7 +206,7 @@ namespace SSWR
 			OrganEnv();
 			virtual ~OrganEnv();
 
-			Media::DrawEngine *GetDrawEngine();
+			NotNullPtr<Media::DrawEngine> GetDrawEngine();
 			Parser::ParserList *GetParserList();
 			NotNullPtr<Net::SocketFactory> GetSocketFactory();
 			Net::SSLEngine *GetSSLEngine();

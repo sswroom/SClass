@@ -122,7 +122,7 @@ void UI::GUICustomDrawVScroll::OnPaint()
 
 	RECT rc;
 	GetClientRect((HWND)this->hwnd, &rc);
-	Media::DrawImage *dimg = ((Media::GDIEngine*)this->deng)->CreateImageScn(ps.hdc, 0, 0, rc.right - rc.left, rc.bottom - rc.top);
+	Media::DrawImage *dimg = ((Media::GDIEngine*)this->deng.Ptr())->CreateImageScn(ps.hdc, 0, 0, rc.right - rc.left, rc.bottom - rc.top);
 	Double hdpi = this->GetHDPI();
 	Double ddpi = this->GetDDPI();
 	dimg->SetHDPI(hdpi / ddpi * 96.0);
@@ -170,7 +170,7 @@ void UI::GUICustomDrawVScroll::ClearBackground(Media::DrawImage *img)
 	}
 }
 
-UI::GUICustomDrawVScroll::GUICustomDrawVScroll(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, Media::DrawEngine *deng) : UI::GUIControl(ui, parent)
+UI::GUICustomDrawVScroll::GUICustomDrawVScroll(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, NotNullPtr<Media::DrawEngine> deng) : UI::GUIControl(ui, parent)
 {
 	if (Sync::Interlocked::Increment(&useCnt) == 1)
 	{

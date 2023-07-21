@@ -153,7 +153,7 @@ Media::DrawBrush *Media::VectorGraph::VectorBrushStyle::CreateDrawBrush(Double o
 	return dimg->NewBrushARGB(this->color);
 }
 
-Media::VectorGraph::VectorGraph(UInt32 srid, Double width, Double height, Math::Unit::Distance::DistanceUnit unit, Media::DrawEngine *refEng, Media::ColorProfile *colorProfile)
+Media::VectorGraph::VectorGraph(UInt32 srid, Double width, Double height, Math::Unit::Distance::DistanceUnit unit, NotNullPtr<Media::DrawEngine> refEng, Media::ColorProfile *colorProfile)
 {
 	this->size = Math::Size2DDbl(width, height);
 	this->unit = unit;

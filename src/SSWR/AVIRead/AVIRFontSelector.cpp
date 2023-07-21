@@ -26,7 +26,7 @@ void SSWR::AVIRead::AVIRFontSelector::OnDraw(Media::DrawImage *img)
 	UInt32 itemTH = (UInt32)Double2Int32(80 * hdpi / ddpi);
 	w = img->GetWidth();
 	h = img->GetHeight();
-	Media::DrawEngine *deng = this->core->GetDrawEngine();
+	NotNullPtr<Media::DrawEngine> deng = this->core->GetDrawEngine();
 	Media::DrawImage *tmpBmp;
 	if (UOSInt2Double(w) >= (138 * hdpi / ddpi))
 	{

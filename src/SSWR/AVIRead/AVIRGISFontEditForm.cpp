@@ -182,7 +182,7 @@ void SSWR::AVIRead::AVIRGISFontEditForm::UpdateDisplay()
 	this->pbBufferColor->SetBGColor(this->colorConv->ConvRGB8(this->currBuffColor));
 }
 
-SSWR::AVIRead::AVIRGISFontEditForm::AVIRGISFontEditForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, Map::MapEnv *env, Media::DrawEngine *eng, UOSInt fontStyle) : UI::GUIForm(parent, 480, 306, ui)
+SSWR::AVIRead::AVIRGISFontEditForm::AVIRGISFontEditForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, Map::MapEnv *env, NotNullPtr<Media::DrawEngine> eng, UOSInt fontStyle) : UI::GUIForm(parent, 480, 306, ui)
 {
 	this->core = core;
 	this->env = env;

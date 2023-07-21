@@ -10,7 +10,7 @@ namespace UI
 		class RollingTextDObj : public DirectObject
 		{
 		private:
-			Media::DrawEngine *deng;
+			NotNullPtr<Media::DrawEngine> deng;
 			Text::String *txt;
 			NotNullPtr<Text::String> fontName;
 			Double fontSize;
@@ -25,7 +25,7 @@ namespace UI
 
 			void UpdateBGImg();
 		public:
-			RollingTextDObj(Media::DrawEngine *deng, Text::CString txt, Text::CString fontName, Double fontSize, UInt32 fontColor, UInt32 codePage, Math::Coord2D<OSInt> tl, Math::Size2D<UOSInt> size, Double rollSpeed);
+			RollingTextDObj(NotNullPtr<Media::DrawEngine> deng, Text::CString txt, Text::CString fontName, Double fontSize, UInt32 fontColor, UInt32 codePage, Math::Coord2D<OSInt> tl, Math::Size2D<UOSInt> size, Double rollSpeed);
 			virtual ~RollingTextDObj();
 
 			virtual Bool IsChanged();

@@ -4,7 +4,7 @@
 #include "Media/DrawEngine.h"
 #include "UI/DObj/DynamicOverlayDObj.h"
 
-UI::DObj::DynamicOverlayDObj::DynamicOverlayDObj(Media::DrawEngine *deng, Text::CString fileName1, Text::CString fileName2, Math::Coord2D<OSInt> tl) : DirectObject(tl)
+UI::DObj::DynamicOverlayDObj::DynamicOverlayDObj(NotNullPtr<Media::DrawEngine> deng, Text::CString fileName1, Text::CString fileName2, Math::Coord2D<OSInt> tl) : DirectObject(tl)
 {
 	this->deng = deng;
 	if (fileName1.leng == 0)

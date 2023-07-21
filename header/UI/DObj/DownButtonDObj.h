@@ -10,7 +10,7 @@ namespace UI
 		class DownButtonDObj : public DirectObject
 		{
 		private:
-			Media::DrawEngine *deng;
+			NotNullPtr<Media::DrawEngine> deng;
 			Media::DrawImage *bmpUnclick;
 			Media::DrawImage *bmpClicked;
 			Bool isMouseDown;
@@ -20,7 +20,7 @@ namespace UI
 			Bool updated;
 
 		public:
-			DownButtonDObj(Media::DrawEngine *deng, Text::CString fileNameUnclick, Text::CString fileNameClicked, Math::Coord2D<OSInt> tl, UI::UIEvent clkHdlr, void *clkUserObj);
+			DownButtonDObj(NotNullPtr<Media::DrawEngine> deng, Text::CString fileNameUnclick, Text::CString fileNameClicked, Math::Coord2D<OSInt> tl, UI::UIEvent clkHdlr, void *clkUserObj);
 			virtual ~DownButtonDObj();
 
 			virtual Bool IsChanged();

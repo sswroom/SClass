@@ -4,7 +4,7 @@
 #include "Sync/MutexUsage.h"
 #include "UI/DObj/SizedOverlayDObj.h"
 
-UI::DObj::SizedOverlayDObj::SizedOverlayDObj(Media::DrawEngine *deng, Text::CString fileName, Math::Coord2D<OSInt> tl, Math::Size2D<UOSInt> size, Parser::ParserList *parsers, Media::Resizer::LanczosResizer8_C8 *resizer) : DirectObject(tl)
+UI::DObj::SizedOverlayDObj::SizedOverlayDObj(NotNullPtr<Media::DrawEngine> deng, Text::CString fileName, Math::Coord2D<OSInt> tl, Math::Size2D<UOSInt> size, Parser::ParserList *parsers, Media::Resizer::LanczosResizer8_C8 *resizer) : DirectObject(tl)
 {
 	this->deng = deng;
 	this->noRelease = false;

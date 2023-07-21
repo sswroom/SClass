@@ -88,7 +88,7 @@ void SSWR::AVIRead::AVIRSetDPIForm::UpdatePreview()
 	UTF8Char sbuff[10];
 	UTF8Char *sptr;
 	Math::Size2DDbl sz;
-	Media::DrawEngine *eng;
+	NotNullPtr<Media::DrawEngine> eng;
 	Media::DrawImage *gimg;
 	Media::DrawBrush *b;
 	Media::DrawFont *f;

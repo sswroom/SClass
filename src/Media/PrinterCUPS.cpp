@@ -255,12 +255,10 @@ Bool Media::Printer::ShowPrintSettings(void *hWnd)
 	return false;
 }
 
-Media::IPrintDocument *Media::Printer::StartPrint(IPrintHandler *hdlr, Media::DrawEngine *eng)
+Media::IPrintDocument *Media::Printer::StartPrint(IPrintHandler *hdlr, NotNullPtr<Media::DrawEngine> eng)
 {
 	Media::CUPSPrintDocument *doc;
-	if (eng == 0)
-		return 0;
-	NEW_CLASS(doc, Media::CUPSPrintDocument(this->printerName, (Media::GTKDrawEngine*)eng, hdlr));
+	NEW_CLASS(doc, Media::CUPSPrintDocument(this->printerName, (Media::GTKDrawEngine*)eng.Ptr(), hdlr));
 	if (doc->IsError())
 	{
 		DEL_CLASS(doc);

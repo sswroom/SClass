@@ -46,7 +46,7 @@ namespace SSWR
 			Net::SSLEngine *ssl;
 			Net::WebBrowser *browser;
 			Text::EncodingFactory encFact;
-			Media::DrawEngine *eng;
+			NotNullPtr<Media::DrawEngine> eng;
 			NotNullPtr<UI::GUICore> ui;
 			Exporter::ExporterList exporters;
 			UInt32 currCodePage;
@@ -90,7 +90,7 @@ namespace SSWR
 			Map::MapManager *GetMapManager();
 			Media::ColorManager *GetColorMgr();
 			NotNullPtr<Net::SocketFactory> GetSocketFactory();
-			Media::DrawEngine *GetDrawEngine();
+			NotNullPtr<Media::DrawEngine> GetDrawEngine();
 			Text::EncodingFactory *GetEncFactory();
 			IO::SiLabDriver *GetSiLabDriver();
 			Net::WebBrowser *GetWebBrowser();
@@ -112,10 +112,10 @@ namespace SSWR
 			Int32 GetAudioAPIType();
 			Media::IAudioRenderer *BindAudio(Media::IAudioSource *audSrc);
 
-			Bool GenLinePreview(Media::DrawImage *img, Media::DrawEngine *eng, UOSInt lineThick, UInt32 lineColor, Media::ColorConv *colorConv);
-			Bool GenLineStylePreview(Media::DrawImage *img, Media::DrawEngine *eng, Map::MapEnv *env, UOSInt lineStyle, Media::ColorConv *colorConv);
-			Bool GenFontStylePreview(Media::DrawImage *img, Media::DrawEngine *eng, Map::MapEnv *env, UOSInt fontStyle, Media::ColorConv *colorConv);
-			Bool GenFontPreview(Media::DrawImage *img, Media::DrawEngine *eng, Text::CString fontName, Double fontSizePt, UInt32 fontColor, Media::ColorConv *colorConv);
+			Bool GenLinePreview(Media::DrawImage *img, NotNullPtr<Media::DrawEngine> eng, UOSInt lineThick, UInt32 lineColor, Media::ColorConv *colorConv);
+			Bool GenLineStylePreview(Media::DrawImage *img, NotNullPtr<Media::DrawEngine> eng, Map::MapEnv *env, UOSInt lineStyle, Media::ColorConv *colorConv);
+			Bool GenFontStylePreview(Media::DrawImage *img, NotNullPtr<Media::DrawEngine> eng, Map::MapEnv *env, UOSInt fontStyle, Media::ColorConv *colorConv);
+			Bool GenFontPreview(Media::DrawImage *img, NotNullPtr<Media::DrawEngine> eng, Text::CString fontName, Double fontSizePt, UInt32 fontColor, Media::ColorConv *colorConv);
 			void ShowForm(UI::GUIForm *frm);
 			void CloseAllForm();
 			void SetGISForm(SSWR::AVIRead::AVIRGISForm *frm);

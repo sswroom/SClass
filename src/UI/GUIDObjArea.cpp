@@ -181,7 +181,7 @@ void __stdcall UI::GUIDObjArea::OnUpdateSize(void *userObj)
 	}
 }
 
-UI::GUIDObjArea::GUIDObjArea(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent, Media::DrawEngine *deng, Media::ColorManagerSess *colorSess) : UI::GUIDDrawControl(ui, parent, false, colorSess)
+UI::GUIDObjArea::GUIDObjArea(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent, NotNullPtr<Media::DrawEngine> deng, Media::ColorManagerSess *colorSess) : UI::GUIDDrawControl(ui, parent, false, colorSess)
 {
 	this->deng = deng;
 	this->colorSess = colorSess;

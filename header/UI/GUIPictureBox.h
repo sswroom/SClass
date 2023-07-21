@@ -20,7 +20,7 @@ namespace UI
 		Bool hasBorder;
 		Bool allowResize;
 		Bool noBGColor;
-		Media::DrawEngine *eng;
+		NotNullPtr<Media::DrawEngine> eng;
 		Data::ArrayList<MouseEventHandler> mouseDownHdlrs;
 		Data::ArrayList<void *> mouseDownObjs;
 		Data::ArrayList<MouseEventHandler> mouseMoveHdlrs;
@@ -35,7 +35,7 @@ namespace UI
 		void Deinit(void *hInst);
 		void UpdatePreview();
 	public:
-		GUIPictureBox(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent, Media::DrawEngine *eng, Bool hasBorder, Bool allowResize);
+		GUIPictureBox(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent, NotNullPtr<Media::DrawEngine> eng, Bool hasBorder, Bool allowResize);
 		virtual ~GUIPictureBox();
 
 		virtual Text::CString GetObjectClass();

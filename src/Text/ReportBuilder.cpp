@@ -945,7 +945,7 @@ Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 	}
 }
 
-Media::VectorDocument *Text::ReportBuilder::CreateVDoc(Int32 id, Media::DrawEngine *deng)
+Media::VectorDocument *Text::ReportBuilder::CreateVDoc(Int32 id, NotNullPtr<Media::DrawEngine> deng)
 {
 	Media::VectorDocument *doc;
 	Media::VectorGraph *g;

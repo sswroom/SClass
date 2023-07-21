@@ -19,7 +19,7 @@ namespace Map
 			Media::DrawImage *img;
 		} CachedImage;
 	private:
-		Media::DrawEngine *eng;
+		NotNullPtr<Media::DrawEngine> eng;
 		Map::TileMap *map;
 		Parser::ParserList *parsers;
 
@@ -28,7 +28,7 @@ namespace Map
 		Data::ArrayList<CachedImage *> *lastImgs;
 
 	public:
-		TileMapRenderer(Media::DrawEngine *eng, Map::TileMap *map, Parser::ParserList *parsers);
+		TileMapRenderer(NotNullPtr<Media::DrawEngine> eng, Map::TileMap *map, Parser::ParserList *parsers);
 		virtual ~TileMapRenderer();
 
 		virtual void DrawMap(Media::DrawImage *img, Map::MapView *view);

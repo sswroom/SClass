@@ -453,7 +453,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnPublishMessage(void *userO
 void SSWR::AVIRead::AVIRMQTTExplorerForm::UpdateTopicChart()
 {
 	Media::DrawImage *dimg;
-	Media::DrawEngine *deng = this->core->GetDrawEngine();
+	NotNullPtr<Media::DrawEngine> deng = this->core->GetDrawEngine();
 	Math::Size2D<UOSInt> sz = this->pbRecvTopic->GetSizeP();
 	if (sz.x > 0 && sz.y > 0)
 	{

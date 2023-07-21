@@ -18,7 +18,7 @@ namespace UI
 		Data::ArrayList<void *> numInputObj;
 
 	public:
-		GUISudokuViewer(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent, Media::DrawEngine *eng, Game::Sudoku::SudokuBoard *board);
+		GUISudokuViewer(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent, NotNullPtr<Media::DrawEngine> eng, Game::Sudoku::SudokuBoard *board);
 		virtual ~GUISudokuViewer();
 
 		virtual Bool OnMouseDown(Math::Coord2D<OSInt> scnPos, MouseButton btn);

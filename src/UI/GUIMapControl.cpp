@@ -687,7 +687,7 @@ void UI::GUIMapControl::ReleaseSelVecList()
 	this->selVecList.Clear();
 }
 
-UI::GUIMapControl::GUIMapControl(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, Media::DrawEngine *eng, UInt32 bgColor, Map::DrawMapRenderer *renderer, Map::MapView *view, Media::ColorManagerSess *colorSess) : UI::GUICustomDraw(ui, parent, eng)
+UI::GUIMapControl::GUIMapControl(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, NotNullPtr<Media::DrawEngine> eng, UInt32 bgColor, Map::DrawMapRenderer *renderer, Map::MapView *view, Media::ColorManagerSess *colorSess) : UI::GUICustomDraw(ui, parent, eng)
 {
 	this->colorSess = colorSess;
 	if (this->colorSess)
@@ -727,7 +727,7 @@ UI::GUIMapControl::GUIMapControl(NotNullPtr<UI::GUICore> ui, UI::GUIClientContro
 	}
 }
 
-UI::GUIMapControl::GUIMapControl(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent, Media::DrawEngine *eng, Map::MapEnv *mapEnv, Media::ColorManagerSess *colorSess) : UI::GUICustomDraw(ui, parent, eng)
+UI::GUIMapControl::GUIMapControl(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent, NotNullPtr<Media::DrawEngine> eng, Map::MapEnv *mapEnv, Media::ColorManagerSess *colorSess) : UI::GUICustomDraw(ui, parent, eng)
 {
 	this->colorSess = colorSess;
 	if (this->colorSess)

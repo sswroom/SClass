@@ -43,7 +43,7 @@ void __stdcall SSWR::SHPConv::SHPConvAddFilterForm::OnCancelClicked(void *userOb
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 
-SSWR::SHPConv::SHPConvAddFilterForm::SHPConvAddFilterForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, DB::DBFFile *dbf, Media::DrawEngine *deng) : UI::GUIForm(parent, 222, 118, ui)
+SSWR::SHPConv::SHPConvAddFilterForm::SHPConvAddFilterForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, DB::DBFFile *dbf, NotNullPtr<Media::DrawEngine> deng) : UI::GUIForm(parent, 222, 118, ui)
 {
 	this->SetText(CSTR("Add Filter"));
 	this->SetFont(0, 0, 8.25, false);

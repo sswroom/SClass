@@ -317,7 +317,7 @@ Data::Timestamp SSWR::AVIRead::AVIRSolarEdgeForm::GetDefaultEndTime(const Data::
 
 void SSWR::AVIRead::AVIRSolarEdgeForm::UpdateSiteEnergyGraph()
 {
-	Media::DrawEngine *deng = this->core->GetDrawEngine();
+	NotNullPtr<Media::DrawEngine> deng = this->core->GetDrawEngine();
 	Math::Size2D<UOSInt> size = this->pbSiteEnergy->GetSizeP();
 	if (this->siteEnergyList.GetCount() > 0 && size.x > 0 && size.y > 0)
 	{
@@ -351,7 +351,7 @@ void SSWR::AVIRead::AVIRSolarEdgeForm::UpdateSiteEnergyGraph()
 
 void SSWR::AVIRead::AVIRSolarEdgeForm::UpdateSitePowerGraph()
 {
-	Media::DrawEngine *deng = this->core->GetDrawEngine();
+	NotNullPtr<Media::DrawEngine> deng = this->core->GetDrawEngine();
 	Math::Size2D<UOSInt> size = this->pbSitePower->GetSizeP();
 	if (this->sitePowerList.GetCount() > 0 && size.x > 0 && size.y > 0)
 	{

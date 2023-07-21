@@ -5,7 +5,7 @@
 #include "Text/MyString.h"
 #include "UI/GUISudokuViewer.h"
 
-UI::GUISudokuViewer::GUISudokuViewer(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, Media::DrawEngine *eng, Game::Sudoku::SudokuBoard *board) : UI::GUICustomDraw(ui, parent, eng)
+UI::GUISudokuViewer::GUISudokuViewer(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, NotNullPtr<Media::DrawEngine> eng, Game::Sudoku::SudokuBoard *board) : UI::GUICustomDraw(ui, parent, eng)
 {
 	this->board = board;
 	this->selX = 0;

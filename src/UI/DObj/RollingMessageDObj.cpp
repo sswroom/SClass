@@ -17,7 +17,7 @@ void UI::DObj::RollingMessageDObj::FreeMessage(MessageInfo *msg)
 	MemFree(msg);
 }
 
-UI::DObj::RollingMessageDObj::RollingMessageDObj(Media::DrawEngine *deng, Math::Coord2D<OSInt> tl, Math::Size2D<UOSInt> size, Double rollSpeed) : DirectObject(tl)
+UI::DObj::RollingMessageDObj::RollingMessageDObj(NotNullPtr<Media::DrawEngine> deng, Math::Coord2D<OSInt> tl, Math::Size2D<UOSInt> size, Double rollSpeed) : DirectObject(tl)
 {
 	this->deng = deng;
 	this->size = size;

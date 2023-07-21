@@ -447,7 +447,7 @@ void UI::GUITextView::SetCaretPos(OSInt scnX, OSInt scnY)
 
 }
 
-UI::GUITextView::GUITextView(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, Media::DrawEngine *deng) : UI::GUIControl(ui, parent)
+UI::GUITextView::GUITextView(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, NotNullPtr<Media::DrawEngine> deng) : UI::GUIControl(ui, parent)
 {
 	this->deng = deng;
 	this->drawBuff = 0;
@@ -757,7 +757,7 @@ void UI::GUITextView::OnDraw(void *cr)
 		hasHScr = true;
 		drawHeight -= clsData->scrSize;
 	}
-	Media::DrawImage *dimg = ((Media::GTKDrawEngine*)this->deng)->CreateImageScn(cr, Math::Coord2D<OSInt>(0, 0), Math::Coord2D<OSInt>((OSInt)drawWidth, (OSInt)drawHeight));
+	Media::DrawImage *dimg = ((Media::GTKDrawEngine*)this->deng.Ptr())->CreateImageScn(cr, Math::Coord2D<OSInt>(0, 0), Math::Coord2D<OSInt>((OSInt)drawWidth, (OSInt)drawHeight));
 	this->clsData->scrSize = (UOSInt)Double2OSInt(8.0 * this->GetHDPI() / this->GetDDPI());
 	dimg->SetHDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
 	dimg->SetVDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
@@ -766,7 +766,7 @@ void UI::GUITextView::OnDraw(void *cr)
 
 	if (hasVScr)
 	{
-		dimg = ((Media::GTKDrawEngine*)this->deng)->CreateImageScn(cr, Math::Coord2D<OSInt>((OSInt)(sz.x - clsData->scrSize), 0), Math::Coord2D<OSInt>((OSInt)clsData->scrSize, (OSInt)drawHeight));
+		dimg = ((Media::GTKDrawEngine*)this->deng.Ptr())->CreateImageScn(cr, Math::Coord2D<OSInt>((OSInt)(sz.x - clsData->scrSize), 0), Math::Coord2D<OSInt>((OSInt)clsData->scrSize, (OSInt)drawHeight));
 		dimg->SetHDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
 		dimg->SetVDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
 		Media::DrawBrush *b = dimg->NewBrushARGB(this->bgColor);
@@ -785,7 +785,7 @@ void UI::GUITextView::OnDraw(void *cr)
 	}
 	if (hasHScr)
 	{
-		dimg = ((Media::GTKDrawEngine*)this->deng)->CreateImageScn(cr, Math::Coord2D<OSInt>(0, (OSInt)(sz.y - clsData->scrSize)), Math::Coord2D<OSInt>((OSInt)drawWidth, (OSInt)clsData->scrSize));
+		dimg = ((Media::GTKDrawEngine*)this->deng.Ptr())->CreateImageScn(cr, Math::Coord2D<OSInt>(0, (OSInt)(sz.y - clsData->scrSize)), Math::Coord2D<OSInt>((OSInt)drawWidth, (OSInt)clsData->scrSize));
 		dimg->SetHDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
 		dimg->SetVDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
 		Media::DrawBrush *b = dimg->NewBrushARGB(this->bgColor);

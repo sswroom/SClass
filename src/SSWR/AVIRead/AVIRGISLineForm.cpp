@@ -64,7 +64,7 @@ void SSWR::AVIRead::AVIRGISLineForm::UpdatePreview()
 	this->pbPreview->SetImage(this->prevImg);
 }
 
-SSWR::AVIRead::AVIRGISLineForm::AVIRGISLineForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, Media::DrawEngine *eng, UOSInt lineThick, UInt32 lineColor) : UI::GUIForm(parent, 462, 334, ui)
+SSWR::AVIRead::AVIRGISLineForm::AVIRGISLineForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, NotNullPtr<Media::DrawEngine> eng, UOSInt lineThick, UInt32 lineColor) : UI::GUIForm(parent, 462, 334, ui)
 {
 	UTF8Char sbuff[16];
 	UTF8Char *sptr;

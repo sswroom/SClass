@@ -60,7 +60,7 @@ void __stdcall SSWR::AVIRead::AVIRCOVID19Form::OnNewCasesSizeChanged(void *userO
 	SSWR::AVIRead::AVIRCOVID19Form::CountryInfo *country = (SSWR::AVIRead::AVIRCOVID19Form::CountryInfo*)me->lvCountry->GetSelectedItem();
 	if (country == 0)
 		return;
-	Media::DrawEngine *deng = me->core->GetDrawEngine();
+	NotNullPtr<Media::DrawEngine> deng = me->core->GetDrawEngine();
 	Math::Size2D<UOSInt> sz = me->pbNewCases->GetSizeP();
 	Media::DrawImage *dimg = deng->CreateImage32(sz, Media::AT_NO_ALPHA);
 	SSWR::AVIRead::AVIRCOVID19Form::DailyRecord *record;

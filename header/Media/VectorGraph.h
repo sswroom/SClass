@@ -75,7 +75,7 @@ namespace Media
 		} VectorStyles;
 
 	private:
-		Media::DrawEngine *refEng;
+		NotNullPtr<Media::DrawEngine> refEng;
 		Media::ColorProfile *colorProfile;
 		UInt32 srid;
 		Math::Size2DDbl size;
@@ -89,7 +89,7 @@ namespace Media
 		Media::DrawEngine::DrawPos align;
 		
 	public:
-		VectorGraph(UInt32 srid, Double visibleWidth, Double visibleHeight, Math::Unit::Distance::DistanceUnit unit, Media::DrawEngine *refEng, Media::ColorProfile *colorProfile);
+		VectorGraph(UInt32 srid, Double visibleWidth, Double visibleHeight, Math::Unit::Distance::DistanceUnit unit, NotNullPtr<Media::DrawEngine> refEng, Media::ColorProfile *colorProfile);
 		virtual ~VectorGraph();
 
 		Math::Size2DDbl GetSizeDbl() const;

@@ -11,14 +11,14 @@ namespace UI
 		class ClickAreaDObj : public DirectObject
 		{
 		private:
-			Media::DrawEngine *deng;
+			NotNullPtr<Media::DrawEngine> deng;
 			UI::UIEvent clkHdlr;
 			void *clkUserObj;
 			OSInt width;
 			OSInt height;
 
 		public:
-			ClickAreaDObj(Media::DrawEngine *deng, Math::Coord2D<OSInt> tl, OSInt width, OSInt height, UI::UIEvent clkHdlr, void *clkUserObj);
+			ClickAreaDObj(NotNullPtr<Media::DrawEngine> deng, Math::Coord2D<OSInt> tl, OSInt width, OSInt height, UI::UIEvent clkHdlr, void *clkUserObj);
 			virtual ~ClickAreaDObj();
 
 			virtual Bool IsChanged();

@@ -99,7 +99,7 @@ namespace SSWR
 			};
 
 		public:
-			virtual Media::DrawEngine *GetDrawEngine() = 0;
+			virtual NotNullPtr<Media::DrawEngine> GetDrawEngine() = 0;
 
 			virtual DeviceInfo *DeviceGet(Int64 cliId) = 0;
 			virtual Bool DeviceModify(Int64 cliId, Text::CString devName, Int32 flags) = 0;

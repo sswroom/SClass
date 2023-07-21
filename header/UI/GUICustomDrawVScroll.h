@@ -8,7 +8,7 @@ namespace UI
 	class GUICustomDrawVScroll : public UI::GUIControl
 	{
 	public:
-		Media::DrawEngine *deng;
+		NotNullPtr<Media::DrawEngine> deng;
 		void *clsData;
 		typedef enum
 		{
@@ -33,7 +33,7 @@ namespace UI
 		void ClearBackground(Media::DrawImage *img);
 
 	public:
-		GUICustomDrawVScroll(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, Media::DrawEngine *deng);
+		GUICustomDrawVScroll(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, NotNullPtr<Media::DrawEngine> deng);
 		virtual ~GUICustomDrawVScroll();
 
 		virtual Text::CString GetObjectClass();

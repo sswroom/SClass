@@ -15,7 +15,7 @@ namespace UI
 		Media::DrawImage *prevImageD;
 		Bool hasBorder;
 		Bool noBGColor;
-		Media::DrawEngine *eng;
+		NotNullPtr<Media::DrawEngine> eng;
 		Data::ArrayList<MouseEventHandler> mouseDownHdlrs;
 		Data::ArrayList<void *> mouseDownObjs;
 		Data::ArrayList<MouseEventHandler> mouseMoveHdlrs;
@@ -29,7 +29,7 @@ namespace UI
 		void Deinit(void *hInst);
 		void UpdatePreview();
 	public:
-		GUIPictureBoxSimple(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent, Media::DrawEngine *eng, Bool hasBorder);
+		GUIPictureBoxSimple(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent, NotNullPtr<Media::DrawEngine> eng, Bool hasBorder);
 		virtual ~GUIPictureBoxSimple();
 
 		virtual Text::CString GetObjectClass();

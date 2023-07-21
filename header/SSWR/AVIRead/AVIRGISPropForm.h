@@ -46,7 +46,7 @@ namespace SSWR
 			UI::GUIButton *btnOK;
 			UI::GUIButton *btnCancel;
 
-			Media::DrawEngine *eng;
+			NotNullPtr<Media::DrawEngine> eng;
 			Media::StaticImage *imgLine;
 			Media::StaticImage *imgFont;
 			Map::MapEnv *env;

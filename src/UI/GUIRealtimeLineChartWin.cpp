@@ -34,7 +34,7 @@ OSInt __stdcall UI::GUIRealtimeLineChart::RLCWndProc(void *hWnd, UInt32 msg, UIn
 			PAINTSTRUCT ps;
 			GetClientRect((HWND)hWnd, &rc);
 			BeginPaint((HWND)hWnd, &ps);
-			Media::DrawImage *scn = ((Media::GDIEngine*)me->eng)->CreateImageScn(ps.hdc, rc.left, rc.top, rc.right, rc.bottom);
+			Media::DrawImage *scn = ((Media::GDIEngine*)me->eng.Ptr())->CreateImageScn(ps.hdc, rc.left, rc.top, rc.right, rc.bottom);
 			me->OnPaint(scn);
 			me->eng->DeleteImage(scn);
 			EndPaint((HWND)hWnd, &ps);
@@ -179,7 +179,7 @@ void UI::GUIRealtimeLineChart::Deinit(void *hInst)
 	UnregisterClassW(CLASSNAME, (HINSTANCE)hInst);
 }
 
-UI::GUIRealtimeLineChart::GUIRealtimeLineChart(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, Media::DrawEngine *eng, UOSInt lineCnt, UOSInt sampleCnt, UInt32 updateInterval) : UI::GUIControl(ui, parent)
+UI::GUIRealtimeLineChart::GUIRealtimeLineChart(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, NotNullPtr<Media::DrawEngine> eng, UOSInt lineCnt, UOSInt sampleCnt, UInt32 updateInterval) : UI::GUIControl(ui, parent)
 {
 	this->eng = eng;
 	this->lineCnt = lineCnt;

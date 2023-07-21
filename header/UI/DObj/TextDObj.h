@@ -16,7 +16,7 @@ namespace UI
 				TA_RIGHT
 			} TextAlign;
 		private:
-			Media::DrawEngine *deng;
+			NotNullPtr<Media::DrawEngine> deng;
 			Text::String *txt;
 			NotNullPtr<Text::String> fontName;
 			Double fontSize;
@@ -31,7 +31,7 @@ namespace UI
 			Data::ArrayListNN<Text::String> lines;
 
 		public:
-			TextDObj(Media::DrawEngine *deng, Text::CString txt, Text::CString fontName, Double fontSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 fontColor, UInt32 codePage, Math::Coord2D<OSInt> tl, Math::Size2D<UOSInt> size);
+			TextDObj(NotNullPtr<Media::DrawEngine> deng, Text::CString txt, Text::CString fontName, Double fontSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 fontColor, UInt32 codePage, Math::Coord2D<OSInt> tl, Math::Size2D<UOSInt> size);
 			virtual ~TextDObj();
 
 			virtual Bool IsChanged();

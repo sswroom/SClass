@@ -4,7 +4,7 @@
 #include "Data/ArrayListInt64.h"
 #include "Map/TileMapRenderer.h"
 
-Map::TileMapRenderer::TileMapRenderer(Media::DrawEngine *eng, Map::TileMap *map, Parser::ParserList *parsers)
+Map::TileMapRenderer::TileMapRenderer(NotNullPtr<Media::DrawEngine> eng, Map::TileMap *map, Parser::ParserList *parsers)
 {
 	this->eng = eng;
 	this->map = map;

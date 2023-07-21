@@ -48,7 +48,7 @@ OSInt __stdcall UI::GUICustomDraw::FormWndProc(void *hWnd, UInt32 msg, UOSInt wP
 		{
 			PAINTSTRUCT ps;
 			HDC hdc = BeginPaint((HWND)me->hwnd, &ps);
-			Media::DrawImage *dimg = ((Media::GDIEngine*)me->eng)->CreateImageScn(hdc, 0, 0, ps.rcPaint.right - ps.rcPaint.left, ps.rcPaint.bottom - ps.rcPaint.top);
+			Media::DrawImage *dimg = ((Media::GDIEngine*)me->eng.Ptr())->CreateImageScn(hdc, 0, 0, ps.rcPaint.right - ps.rcPaint.left, ps.rcPaint.bottom - ps.rcPaint.top);
 			dimg->SetHDPI(me->GetHDPI() / me->GetDDPI() * 96.0);
 			dimg->SetVDPI(me->GetHDPI() / me->GetDDPI() * 96.0);
 			me->OnDraw(dimg);
@@ -224,7 +224,7 @@ void UI::GUICustomDraw::InitJS()
 	}
 }
 
-UI::GUICustomDraw::GUICustomDraw(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, Media::DrawEngine *eng) : UI::GUIControl(ui, parent)
+UI::GUICustomDraw::GUICustomDraw(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, NotNullPtr<Media::DrawEngine> eng) : UI::GUIControl(ui, parent)
 {
 	this->eng = eng;
 	NEW_CLASS(this->lib, IO::Library((const UTF8Char*)"User32.dll"));

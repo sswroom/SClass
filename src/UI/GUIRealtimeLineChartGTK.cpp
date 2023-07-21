@@ -23,7 +23,7 @@ OSInt __stdcall UI::GUIRealtimeLineChart::RLCWndProc(void *hWnd, UInt32 msg, UIn
 			cairo_t *cr = (cairo_t*)lParam;
 			UInt32 w = (UInt32)gtk_widget_get_allocated_width((GtkWidget*)me->hwnd);
 			UInt32 h = (UInt32)gtk_widget_get_allocated_height((GtkWidget*)me->hwnd);
-			Media::DrawImage *scn = ((Media::GTKDrawEngine*)me->eng)->CreateImageScn(cr, Math::Coord2D<OSInt>(0, 0), Math::Coord2D<OSInt>((OSInt)w, (OSInt)h));
+			Media::DrawImage *scn = ((Media::GTKDrawEngine*)me->eng.Ptr())->CreateImageScn(cr, Math::Coord2D<OSInt>(0, 0), Math::Coord2D<OSInt>((OSInt)w, (OSInt)h));
 			me->OnPaint(scn);
 			me->eng->DeleteImage(scn);
 		}
@@ -156,7 +156,7 @@ void UI::GUIRealtimeLineChart::OnPaint(Media::DrawImage *dimg)
 	this->eng->DeleteImage(img);
 }
 
-UI::GUIRealtimeLineChart::GUIRealtimeLineChart(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, Media::DrawEngine *eng, UOSInt lineCnt, UOSInt sampleCnt, UInt32 updateInterval) : UI::GUIControl(ui, parent)
+UI::GUIRealtimeLineChart::GUIRealtimeLineChart(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, NotNullPtr<Media::DrawEngine> eng, UOSInt lineCnt, UOSInt sampleCnt, UInt32 updateInterval) : UI::GUIControl(ui, parent)
 {
 	this->eng = eng;
 	this->lineCnt = lineCnt;

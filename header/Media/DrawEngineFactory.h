@@ -7,7 +7,7 @@ namespace Media
 	class DrawEngineFactory
 	{
 	public:
-		static Media::DrawEngine *CreateDrawEngine();
+		static NotNullPtr<Media::DrawEngine> CreateDrawEngine();
 	};
 }
 #endif

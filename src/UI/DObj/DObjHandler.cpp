@@ -7,7 +7,7 @@ void UI::DObj::DObjHandler::OnObjectClear()
 {
 }
 
-UI::DObj::DObjHandler::DObjHandler(Media::DrawEngine *deng)
+UI::DObj::DObjHandler::DObjHandler(NotNullPtr<Media::DrawEngine> deng)
 {
 	this->shown = false;
 	this->deng = deng;

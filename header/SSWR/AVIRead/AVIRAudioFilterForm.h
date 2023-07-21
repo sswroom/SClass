@@ -149,7 +149,7 @@ namespace SSWR
 			Int32 audRenderType;
 			Media::IAudioRenderer *audRender;
 			Media::RefClock clk;
-			Media::DrawEngine *eng;
+			NotNullPtr<Media::DrawEngine> eng;
 			Media::DrawImage *sampleImg;
 			Media::DrawImage *fftImg;
 			UInt8 *sampleBuff;

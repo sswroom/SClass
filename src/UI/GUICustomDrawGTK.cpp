@@ -30,7 +30,7 @@ Int32 GUICustomDraw_OnTick(void *userObj)
 gboolean GUICustomDraw_OnDraw(GtkWidget *widget, cairo_t *cr, gpointer data)
 {
 	UI::GUICustomDraw *me = (UI::GUICustomDraw*)data;
-	Media::DrawImage *dimg = ((Media::GTKDrawEngine*)me->eng)->CreateImageScn(cr, Math::Coord2D<OSInt>(0, 0), Math::Coord2D<OSInt>(gtk_widget_get_allocated_width(widget), gtk_widget_get_allocated_height(widget)));
+	Media::DrawImage *dimg = ((Media::GTKDrawEngine*)me->eng.Ptr())->CreateImageScn(cr, Math::Coord2D<OSInt>(0, 0), Math::Coord2D<OSInt>(gtk_widget_get_allocated_width(widget), gtk_widget_get_allocated_height(widget)));
 	dimg->SetHDPI(me->GetHDPI() / me->GetDDPI() * 96.0);
 	dimg->SetVDPI(me->GetHDPI() / me->GetDDPI() * 96.0);
 	me->OnDraw(dimg);
@@ -311,7 +311,7 @@ void UI::GUICustomDraw::InitJS()
 	}*/
 }
 
-UI::GUICustomDraw::GUICustomDraw(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, Media::DrawEngine *eng) : UI::GUIControl(ui, parent)
+UI::GUICustomDraw::GUICustomDraw(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, NotNullPtr<Media::DrawEngine> eng) : UI::GUIControl(ui, parent)
 {
 	this->eng = eng;
 	ClassData *data = MemAlloc(ClassData, 1);

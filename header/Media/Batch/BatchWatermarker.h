@@ -13,13 +13,13 @@ namespace Media
 		{
 		private:
 			Data::RandomOS rnd;
-			Media::DrawEngine *deng;
+			NotNullPtr<Media::DrawEngine> deng;
 			Media::ABlend::AlphaBlend8_8 ablend;
 			Text::String *watermark;
 			Media::Batch::BatchHandler *hdlr;
 
 		public:
-			BatchWatermarker(Media::DrawEngine *deng, Media::Batch::BatchHandler *hdlr);
+			BatchWatermarker(NotNullPtr<Media::DrawEngine> deng, Media::Batch::BatchHandler *hdlr);
 			virtual ~BatchWatermarker();
 			
 			void SetWatermark(Text::CString watermark);

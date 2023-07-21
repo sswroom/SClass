@@ -1024,7 +1024,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(SSWR::SMo
 		return true;
 	}
 
-	Media::DrawEngine *deng = me->core->GetDrawEngine();
+	NotNullPtr<Media::DrawEngine> deng = me->core->GetDrawEngine();
 	Media::DrawImage *dimg = deng->CreateImage32(Math::Size2D<UOSInt>(640, 120), Media::AT_NO_ALPHA);
 	Media::DrawFont *f;
 	Media::DrawBrush *b;
@@ -1648,7 +1648,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataImgReq(SSWR::SM
 	UInt8 *buff;
 	UOSInt buffSize;
 
-	Media::DrawEngine *deng = me->core->GetDrawEngine();
+	NotNullPtr<Media::DrawEngine> deng = me->core->GetDrawEngine();
 	Media::DrawImage *dimg = deng->CreateImage32(Math::Size2D<UOSInt>(640, 120), Media::AT_NO_ALPHA);
 	Media::DrawFont *f;
 	Media::DrawBrush *b;

@@ -20,13 +20,13 @@ namespace UI
 			Bool shown;
 			DirectObject *moveObj;
 			DirectObject *downObj;
-			Media::DrawEngine *deng;
+			NotNullPtr<Media::DrawEngine> deng;
 
 		protected:
 			virtual void DrawBkg(Media::DrawImage *dimg) = 0;
 			virtual void OnObjectClear();
 		public:
-			DObjHandler(Media::DrawEngine *deng);
+			DObjHandler(NotNullPtr<Media::DrawEngine> deng);
 			virtual ~DObjHandler();
 
 			void SetColorSess(Media::ColorManagerSess *colorSess);

@@ -28,7 +28,7 @@ UOSInt Media::CodeImageGen::QRCodeImageGen::GetMaxLength()
 	return 7089;
 }
 
-Media::DrawImage *Media::CodeImageGen::QRCodeImageGen::GenCode(Text::CString code, UOSInt codeWidth, Media::DrawEngine *eng)
+Media::DrawImage *Media::CodeImageGen::QRCodeImageGen::GenCode(Text::CString code, UOSInt codeWidth, NotNullPtr<Media::DrawEngine> eng)
 {
 	if (code.v == 0 || code.leng == 0)
 		return 0;

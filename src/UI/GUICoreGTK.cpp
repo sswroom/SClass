@@ -42,10 +42,10 @@ void UI::GUICoreGTK::Exit()
 	gtk_main_quit();
 }
 
-Media::DrawEngine *UI::GUICoreGTK::CreateDrawEngine()
+NotNullPtr<Media::DrawEngine> UI::GUICoreGTK::CreateDrawEngine()
 {
-	Media::DrawEngine *deng;
-	NEW_CLASS(deng, Media::GTKDrawEngine());
+	NotNullPtr<Media::DrawEngine> deng;
+	NEW_CLASSNN(deng, Media::GTKDrawEngine());
 	return deng;
 };
 

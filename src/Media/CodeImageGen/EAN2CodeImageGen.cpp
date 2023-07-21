@@ -27,7 +27,7 @@ UOSInt Media::CodeImageGen::EAN2CodeImageGen::GetMaxLength()
 	return 2;
 }
 
-Media::DrawImage *Media::CodeImageGen::EAN2CodeImageGen::GenCode(Text::CString code, UOSInt codeWidth, Media::DrawEngine *eng)
+Media::DrawImage *Media::CodeImageGen::EAN2CodeImageGen::GenCode(Text::CString code, UOSInt codeWidth, NotNullPtr<Media::DrawEngine> eng)
 {
 	UTF8Char sbuff[2];
 	if (code.v == 0)

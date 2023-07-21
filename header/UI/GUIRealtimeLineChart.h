@@ -11,7 +11,7 @@ namespace UI
 	private:
 		static Int32 useCnt;
 
-		Media::DrawEngine *eng;
+		NotNullPtr<Media::DrawEngine> eng;
 		const UTF8Char *unit;
 		UOSInt lineCnt;
 		UOSInt sampleCnt;
@@ -35,7 +35,7 @@ namespace UI
 		void Init(void *hInst);
 		void Deinit(void *hInst);
 	public:
-		GUIRealtimeLineChart(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent, Media::DrawEngine *eng, UOSInt lineCnt, UOSInt sampleCnt, UInt32 updateIntervalMS);
+		GUIRealtimeLineChart(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent, NotNullPtr<Media::DrawEngine> eng, UOSInt lineCnt, UOSInt sampleCnt, UInt32 updateIntervalMS);
 		virtual ~GUIRealtimeLineChart();
 
 		virtual Text::CString GetObjectClass();

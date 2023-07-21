@@ -20,14 +20,14 @@ namespace SSWR
 			UI::GUIButton *btnOK;
 			UI::GUIButton *btnCancel;
 			DB::DBFFile *dbf;
-			Media::DrawEngine *deng;
+			NotNullPtr<Media::DrawEngine> deng;
 			Media::MonitorMgr *monMgr;
 			MapFilter *filter;
 
 			static void __stdcall OnOKClicked(void *userObj);
 			static void __stdcall OnCancelClicked(void *userObj);
 		public:
-			SHPConvAddFilterForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, DB::DBFFile *dbf, Media::DrawEngine *deng);
+			SHPConvAddFilterForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, DB::DBFFile *dbf, NotNullPtr<Media::DrawEngine> deng);
 			virtual ~SHPConvAddFilterForm();
 
 			virtual void OnMonitorChanged();

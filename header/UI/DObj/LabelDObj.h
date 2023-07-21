@@ -10,7 +10,7 @@ namespace UI
 		class LabelDObj : public DirectObject
 		{
 		private:
-			Media::DrawEngine *deng;
+			NotNullPtr<Media::DrawEngine> deng;
 			Text::String *txt;
 			Sync::Mutex txtMut;
 			Bool txtChg;
@@ -21,7 +21,7 @@ namespace UI
 			UInt32 codePage;
 
 		public:
-			LabelDObj(Media::DrawEngine *deng, Text::CString txt, Text::CString fontName, Double fontSizePx, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 fontColor, Math::Coord2D<OSInt> tl, UInt32 codePage);
+			LabelDObj(NotNullPtr<Media::DrawEngine> deng, Text::CString txt, Text::CString fontName, Double fontSizePx, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 fontColor, Math::Coord2D<OSInt> tl, UInt32 codePage);
 			virtual ~LabelDObj();
 
 			virtual Bool IsChanged();

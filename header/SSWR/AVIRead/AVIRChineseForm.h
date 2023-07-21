@@ -21,7 +21,7 @@ namespace SSWR
 		private:
 			SSWR::AVIRead::AVIRCore *core;
 			Text::ChineseInfo *chinese;
-			Media::DrawEngine *deng;
+			NotNullPtr<Media::DrawEngine> deng;
 			UInt32 currChar;
 			Media::DrawImage *charImg;
 			NotNullPtr<Text::String> currFont;

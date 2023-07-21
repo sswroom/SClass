@@ -20,7 +20,7 @@ namespace SSWR
 			UI::GUIButton *btnAdd;
 			UI::GUIButton *btnDelete;
 			DB::DBFFile *dbf;
-			Media::DrawEngine *deng;
+			NotNullPtr<Media::DrawEngine> deng;
 			Media::MonitorMgr *monMgr;
 			Data::ArrayList<MapFilter*> *filters;
 
@@ -28,7 +28,7 @@ namespace SSWR
 			static void __stdcall OnDeleteClicked(void *userObj);
 			static void __stdcall OnOkClicked(void *userObj);
 		public:
-			SHPConvCurrFilterForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, DB::DBFFile *dbf, Data::ArrayList<MapFilter*> *filters, Media::DrawEngine *deng);
+			SHPConvCurrFilterForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, DB::DBFFile *dbf, Data::ArrayList<MapFilter*> *filters, NotNullPtr<Media::DrawEngine> deng);
 			virtual ~SHPConvCurrFilterForm();
 
 			virtual void OnMonitorChanged();

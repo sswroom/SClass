@@ -5,7 +5,7 @@
 #include "Media/StaticImage.h"
 #include "Media/Batch/BatchWatermarker.h"
 
-Media::Batch::BatchWatermarker::BatchWatermarker(Media::DrawEngine *deng, Media::Batch::BatchHandler *hdlr)
+Media::Batch::BatchWatermarker::BatchWatermarker(NotNullPtr<Media::DrawEngine> deng, Media::Batch::BatchHandler *hdlr)
 {
 	this->deng = deng;
 	this->hdlr = hdlr;
