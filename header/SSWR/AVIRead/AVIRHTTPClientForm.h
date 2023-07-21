@@ -177,7 +177,7 @@ namespace SSWR
 			HTTPCookie *SetCookie(Text::CString cookieStr, Text::CString reqURL);
 			UTF8Char *AppendCookie(UTF8Char *sbuff, Text::CString reqURL);
 		public:
-			AVIRHTTPClientForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRHTTPClientForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRHTTPClientForm();
 
 			virtual void OnMonitorChanged();

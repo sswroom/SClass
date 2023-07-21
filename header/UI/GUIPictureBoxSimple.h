@@ -29,7 +29,7 @@ namespace UI
 		void Deinit(void *hInst);
 		void UpdatePreview();
 	public:
-		GUIPictureBoxSimple(GUICore *ui, UI::GUIClientControl *parent, Media::DrawEngine *eng, Bool hasBorder);
+		GUIPictureBoxSimple(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent, Media::DrawEngine *eng, Bool hasBorder);
 		virtual ~GUIPictureBoxSimple();
 
 		virtual Text::CString GetObjectClass();

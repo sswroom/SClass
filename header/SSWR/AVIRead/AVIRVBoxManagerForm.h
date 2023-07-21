@@ -35,7 +35,7 @@ namespace SSWR
 			static void __stdcall OnVMSSelChg(void *userObj);
 			void UpdateVMInfo();
 		public:
-			AVIRVBoxManagerForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRVBoxManagerForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRVBoxManagerForm();
 
 			virtual void OnMonitorChanged();

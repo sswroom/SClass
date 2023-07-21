@@ -36,7 +36,7 @@ namespace SSWR
 			static void __stdcall OnUploadClick(void *userObj);
 			static void __stdcall OnCopyInfoClick(void *userObj);
 		public:
-			AVIRCPUInfoForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRCPUInfoForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRCPUInfoForm();
 
 			virtual void OnMonitorChanged();

@@ -61,7 +61,7 @@ namespace SSWR
 			void UpdateKeyDetail();
 			void UpdateNames(Crypto::Cert::CertNames *names);
 		public:
-			AVIRCAUtilForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRCAUtilForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRCAUtilForm();
 
 			virtual void OnMonitorChanged();

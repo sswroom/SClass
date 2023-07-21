@@ -26,7 +26,7 @@ void __stdcall SSWR::AVIRead::AVIRGoogleTileMapForm::OnOKClicked(void *userObj)
 	}
 }
 
-SSWR::AVIRead::AVIRGoogleTileMapForm::AVIRGoogleTileMapForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Net::SSLEngine *ssl) : UI::GUIForm(parent, 400, 120, ui)
+SSWR::AVIRead::AVIRGoogleTileMapForm::AVIRGoogleTileMapForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, Net::SSLEngine *ssl) : UI::GUIForm(parent, 400, 120, ui)
 {
 	this->SetText(CSTR("Google Tile Map"));
 	this->SetFont(0, 0, 8.25, false);

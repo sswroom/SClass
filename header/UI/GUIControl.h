@@ -221,7 +221,7 @@ namespace UI
 		ControlHandle *hwnd;
 		void *hFont;
 		void *hbrBackground;
-		GUICore *ui;
+		NotNullPtr<GUICore> ui;
 		DockType dockType;
 		GUIClientControl *parent;
 		Double lxPos;
@@ -243,7 +243,7 @@ namespace UI
 		void InitControl(void *hInst, void *parentHWnd, const WChar *className, const UTF8Char *txt, UInt32 style, UInt32 exStyle, Double x, Double y, Double w, Double h);
 		void InitControl(void *hInst, UI::GUIClientControl *parent, const WChar *className, const UTF8Char *txt, UInt32 style, UInt32 exStyle, Double x, Double y, Double w, Double h);
 
-		GUIControl(GUICore *ui, UI::GUIClientControl *parent);
+		GUIControl(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent);
 	public:
 		virtual ~GUIControl();
 

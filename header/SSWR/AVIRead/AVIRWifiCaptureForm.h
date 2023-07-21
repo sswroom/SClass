@@ -113,7 +113,7 @@ namespace SSWR
 			static Bool __stdcall OnFormClosing(void *userObj, CloseReason reason);
 			static void __stdcall OnGPSData(void *userObj, Map::GPSTrack::GPSRecord3 *record, UOSInt sateCnt, Map::ILocationService::SateStatus *sates);
 		public:
-			AVIRWifiCaptureForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRWifiCaptureForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRWifiCaptureForm();
 
 			virtual void OnMonitorChanged();

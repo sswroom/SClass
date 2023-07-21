@@ -29,7 +29,7 @@ struct UI::GUIComboBox::ClassData
 	GtkTreeModel *model;
 };
 
-UI::GUIComboBox::GUIComboBox(UI::GUICore *ui, UI::GUIClientControl *parent, Bool allowEdit) : UI::GUIControl(ui, parent)
+UI::GUIComboBox::GUIComboBox(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, Bool allowEdit) : UI::GUIControl(ui, parent)
 {
 	this->clsData = MemAlloc(ClassData, 1);
 	this->clsData->model = 0;

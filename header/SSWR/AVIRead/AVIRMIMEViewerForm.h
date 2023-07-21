@@ -18,7 +18,7 @@ namespace SSWR
 			Media::ColorManagerSess *sess;
 
 		public:
-			AVIRMIMEViewerForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Text::IMIMEObj *obj);
+			AVIRMIMEViewerForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, Text::IMIMEObj *obj);
 			virtual ~AVIRMIMEViewerForm();
 
 			virtual void OnMonitorChanged();

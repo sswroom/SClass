@@ -54,7 +54,7 @@ void __stdcall SSWR::AVIRead::AVIRPushServerForm::OnStartClicked(void *userObj)
 	me->txtPort->SetReadOnly(true);
 }
 
-SSWR::AVIRead::AVIRPushServerForm::AVIRPushServerForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 800, 156, ui)
+SSWR::AVIRead::AVIRPushServerForm::AVIRPushServerForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 800, 156, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("PushServer"));

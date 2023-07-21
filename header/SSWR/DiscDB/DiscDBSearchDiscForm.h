@@ -32,7 +32,7 @@ namespace SSWR
 
 			static void __stdcall OnSearchClicked(void *userObj);
 		public:
-			DiscDBSearchDiscForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::DiscDB::DiscDBEnv *env);
+			DiscDBSearchDiscForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::DiscDB::DiscDBEnv *env);
 			virtual ~DiscDBSearchDiscForm();
 
 			virtual void OnMonitorChanged();

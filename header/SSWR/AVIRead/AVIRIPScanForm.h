@@ -31,7 +31,7 @@ namespace SSWR
 			static void __stdcall OnStartClicked(void *userObj);
 			static void __stdcall OnTimerTick(void *userObj);
 		public:
-			AVIRIPScanForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRIPScanForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRIPScanForm();
 
 			virtual void OnMonitorChanged();

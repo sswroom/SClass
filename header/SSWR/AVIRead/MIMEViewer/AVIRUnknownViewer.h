@@ -19,7 +19,7 @@ namespace SSWR
 				Text::IMIMEObj *obj;
 
 			public:
-				AVIRUnknownViewer(SSWR::AVIRead::AVIRCore *core, UI::GUICore *ui, UI::GUIClientControl *ctrl, Media::ColorManagerSess *sess, Text::IMIMEObj *obj);
+				AVIRUnknownViewer(SSWR::AVIRead::AVIRCore *core, NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *ctrl, Media::ColorManagerSess *sess, Text::IMIMEObj *obj);
 				virtual ~AVIRUnknownViewer();
 			};
 		}

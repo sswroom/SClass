@@ -4,7 +4,7 @@
 #include "UI/GUIGroupBox.h"
 #include <gtk/gtk.h>
 
-UI::GUIGroupBox::GUIGroupBox(UI::GUICore *ui, UI::GUIClientControl *parent, Text::CString text) : UI::GUIClientControl(ui, parent)
+UI::GUIGroupBox::GUIGroupBox(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, Text::CString text) : UI::GUIClientControl(ui, parent)
 {
 	this->hwnd = (ControlHandle*)gtk_frame_new((const Char*)text.v);
 	parent->AddChild(this);

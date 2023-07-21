@@ -40,7 +40,7 @@ namespace SSWR
 			static void __stdcall OnCertClicked(void *userObj);
 
 		public:
-			AVIRSSLInfoForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRSSLInfoForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRSSLInfoForm();
 
 			virtual void OnMonitorChanged();

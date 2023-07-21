@@ -183,7 +183,7 @@ void __stdcall SSWR::AVIRead::AVIRTVControlForm::OnCmdChanged(void *userObj)
 	}
 }
 
-SSWR::AVIRead::AVIRTVControlForm::AVIRTVControlForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 640, 480, ui)
+SSWR::AVIRead::AVIRTVControlForm::AVIRTVControlForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 640, 480, ui)
 {
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;

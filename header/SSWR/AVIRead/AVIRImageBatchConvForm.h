@@ -72,7 +72,7 @@ namespace SSWR
 			void MTConvertFile(ConvertSess *sess, Text::CString srcFile, Text::CString destFile);
 			void ConvertFile(ConvertSess *sess, Text::CString srcFile, Text::CString destFile);
 		public:
-			AVIRImageBatchConvForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRImageBatchConvForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRImageBatchConvForm();
 
 			virtual void OnMonitorChanged();

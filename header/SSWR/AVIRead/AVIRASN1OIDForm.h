@@ -30,7 +30,7 @@ namespace SSWR
 
 			static void __stdcall OnConvertClicked(void *userObj);
 		public:
-			AVIRASN1OIDForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRASN1OIDForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRASN1OIDForm();
 
 			virtual void OnMonitorChanged();

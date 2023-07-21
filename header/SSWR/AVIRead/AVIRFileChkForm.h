@@ -20,7 +20,7 @@ namespace SSWR
 			IO::FileCheck *fileChk;
 
 		public:
-			AVIRFileChkForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, IO::FileCheck *fileChk);
+			AVIRFileChkForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, IO::FileCheck *fileChk);
 			virtual ~AVIRFileChkForm();
 
 			virtual void EventMenuClicked(UInt16 cmdId);

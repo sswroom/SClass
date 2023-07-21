@@ -25,7 +25,7 @@ namespace SSWR
 
 			static void __stdcall OnValidateClicked(void *userObj);
 		public:
-			AVIREmailAddrValidForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
+			AVIREmailAddrValidForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIREmailAddrValidForm();
 
 			virtual void OnMonitorChanged();

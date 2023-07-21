@@ -79,7 +79,7 @@ namespace SSWR
 			void AddFile(Text::CString fileName);
 			void UpdateUI();
 		public:
-			AVIRFileHashForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRFileHashForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRFileHashForm();
 
 			virtual void OnMonitorChanged();

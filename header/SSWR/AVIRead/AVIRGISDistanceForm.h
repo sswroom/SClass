@@ -46,7 +46,7 @@ namespace SSWR
 			void UpdateDistDisp();
 
 		public:
-			AVIRGISDistanceForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, IMapNavigator *navi);
+			AVIRGISDistanceForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, IMapNavigator *navi);
 			virtual ~AVIRGISDistanceForm();
 
 			virtual void OnMonitorChanged();

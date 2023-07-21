@@ -21,7 +21,7 @@ typedef struct
 	Bool noChgEvt;
 } GUIListViewData;
 
-UI::GUICheckedListBox::GUICheckedListBox(GUICore *ui, UI::GUIClientControl *parent) : UI::GUIListView(ui, parent, UI::GUIListView::LVSTYLE_SMALLICON, 1)
+UI::GUICheckedListBox::GUICheckedListBox(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent) : UI::GUIListView(ui, parent, UI::GUIListView::LVSTYLE_SMALLICON, 1)
 {
 }
 

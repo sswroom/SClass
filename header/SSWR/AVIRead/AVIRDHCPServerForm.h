@@ -42,7 +42,7 @@ namespace SSWR
 			static void __stdcall OnStartClicked(void *userObj);
 			static void __stdcall OnTimerTick(void *userObj);
 		public:
-			AVIRDHCPServerForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRDHCPServerForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRDHCPServerForm();
 
 			virtual void OnMonitorChanged();

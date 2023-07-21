@@ -21,11 +21,11 @@ namespace UI
 		Bool showWeeknum;
 		void *clsData;
 
-		Data::ArrayList<DateChangedHandler> *dateChangedHdlrs;
-		Data::ArrayList<void*> *dateChangedObjs;
+		Data::ArrayList<DateChangedHandler> dateChangedHdlrs;
+		Data::ArrayList<void*> dateChangedObjs;
 
 	public:
-		GUIDateTimePicker(GUICore *ui, UI::GUIClientControl *parent, SelectType st);
+		GUIDateTimePicker(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent, SelectType st);
 		virtual ~GUIDateTimePicker();
 
 		virtual Text::CString GetObjectClass();

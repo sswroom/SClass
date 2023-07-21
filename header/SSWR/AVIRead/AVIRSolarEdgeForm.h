@@ -110,7 +110,7 @@ namespace SSWR
 			void UpdateSiteEnergyGraph();
 			void UpdateSitePowerGraph();
 		public:
-			AVIRSolarEdgeForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRSolarEdgeForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRSolarEdgeForm();
 
 			virtual void OnMonitorChanged();

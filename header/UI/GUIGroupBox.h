@@ -11,7 +11,7 @@ namespace UI
 
 		static OSInt __stdcall GBWndProc(void *hWnd, UInt32 msg, UOSInt wParam, OSInt lParam);
 	public:
-		GUIGroupBox(GUICore *ui, UI::GUIClientControl *parent, Text::CString name);
+		GUIGroupBox(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent, Text::CString name);
 		virtual ~GUIGroupBox();
 
 		virtual void GetClientOfst(Double *x, Double *y);

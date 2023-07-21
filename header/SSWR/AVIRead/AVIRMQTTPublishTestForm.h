@@ -65,7 +65,7 @@ namespace SSWR
 
 			void ServerStop();
 		public:
-			AVIRMQTTPublishTestForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRMQTTPublishTestForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRMQTTPublishTestForm();
 
 			virtual void OnMonitorChanged();

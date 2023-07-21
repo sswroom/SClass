@@ -60,7 +60,7 @@ void __stdcall SSWR::DiscDB::DiscDBMainForm::OnFileDrop(void *userObj, NotNullPt
 	}
 }
 
-SSWR::DiscDB::DiscDBMainForm::DiscDBMainForm(UI::GUICore *ui, UI::GUIClientControl *parent, SSWR::DiscDB::DiscDBEnv *env) : UI::GUIForm(parent, 430, 344, ui)
+SSWR::DiscDB::DiscDBMainForm::DiscDBMainForm(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, SSWR::DiscDB::DiscDBEnv *env) : UI::GUIForm(parent, 430, 344, ui)
 {
 	this->SetText(CSTR("Main Menu"));
 	this->SetFont(0, 0, 8.25, false);

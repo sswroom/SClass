@@ -311,7 +311,7 @@ namespace SSWR
 			virtual Media::ImageList *ParseSpImage(OrganSpecies *sp) = 0;
 			virtual Media::ImageList *ParseFileImage(UserFileInfo *userFile) = 0;
 			virtual Media::ImageList *ParseWebImage(WebFileInfo *webFile) = 0;
-			Text::String *GetLocName(Int32 userId, const Data::Timestamp &ts, UI::GUIForm *ownerFrm, UI::GUICore *ui);
+			Text::String *GetLocName(Int32 userId, const Data::Timestamp &ts, UI::GUIForm *ownerFrm, NotNullPtr<UI::GUICore> ui);
 			virtual OrganGroup *SearchObject(const UTF8Char *searchStr, UTF8Char *resultStr, UOSInt resultStrBuffSize, Int32 *parentId) = 0;
 
 			void SetCurrCategory(Category *currCate);

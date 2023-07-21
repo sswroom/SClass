@@ -4,7 +4,7 @@
 #include <windows.h>
 #include <commctrl.h>
 
-UI::GUICheckedListBox::GUICheckedListBox(GUICore *ui, UI::GUIClientControl *parent) : UI::GUIListView(ui, parent, UI::GUIListView::LVSTYLE_SMALLICON, 0)
+UI::GUICheckedListBox::GUICheckedListBox(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent) : UI::GUIListView(ui, parent, UI::GUIListView::LVSTYLE_SMALLICON, 0)
 {
 	SendMessage((HWND)this->hwnd, LVM_SETEXTENDEDLISTVIEWSTYLE, LVS_EX_CHECKBOXES, LVS_EX_CHECKBOXES);
 }

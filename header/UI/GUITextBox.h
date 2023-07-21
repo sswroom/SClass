@@ -16,8 +16,8 @@ namespace UI
 		Data::ArrayList<void *> keyDownObjs;
 
 	public:
-		GUITextBox(GUICore *ui, UI::GUIClientControl *parent, Text::CString initText);
-		GUITextBox(GUICore *ui, UI::GUIClientControl *parent, Text::CString initText, Bool isMultiline);
+		GUITextBox(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent, Text::CString initText);
+		GUITextBox(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent, Text::CString initText, Bool isMultiline);
 		virtual ~GUITextBox();
 
 		void EventTextChange();

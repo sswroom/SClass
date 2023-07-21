@@ -68,7 +68,7 @@ namespace SSWR
 			static void __stdcall OnQuickClicked(void *userObj);
 			static void __stdcall OnSaveClicked(void *userObj);
 		public:
-			AVIRBenchmarkForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRBenchmarkForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRBenchmarkForm();
 
 			virtual void OnMonitorChanged();

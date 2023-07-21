@@ -583,7 +583,7 @@ void SSWR::OrganMgr::OrganEnv::BooksDeinit()
 	}
 }
 
-Text::String *SSWR::OrganMgr::OrganEnv::GetLocName(Int32 userId, const Data::Timestamp &ts, UI::GUIForm *ownerFrm, UI::GUICore *ui)
+Text::String *SSWR::OrganMgr::OrganEnv::GetLocName(Int32 userId, const Data::Timestamp &ts, UI::GUIForm *ownerFrm, NotNullPtr<UI::GUICore> ui)
 {
 	Trip *tr = this->TripGet(userId, ts);
 	if (tr)

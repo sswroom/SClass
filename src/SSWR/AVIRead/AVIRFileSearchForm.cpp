@@ -171,7 +171,7 @@ void SSWR::AVIRead::AVIRFileSearchForm::FindDir(UTF8Char *dir, UTF8Char *dirEnd,
 	}
 }
 
-SSWR::AVIRead::AVIRFileSearchForm::AVIRFileSearchForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 750, 344, ui)
+SSWR::AVIRead::AVIRFileSearchForm::AVIRFileSearchForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 750, 344, ui)
 {
 	this->SetText(CSTR("File Search"));
 	this->SetFont(0, 0, 8.25, false);

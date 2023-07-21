@@ -51,14 +51,14 @@ OSInt __stdcall UI::GUIGroupBox::GBWndProc(void *hWnd, UInt32 msg, UOSInt wParam
 	return 0;
 }
 
-UI::GUIGroupBox::GUIGroupBox(UI::GUICore *ui, UI::GUIClientControl *parent, Text::CString text) : UI::GUIClientControl(ui, parent)
+UI::GUIGroupBox::GUIGroupBox(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, Text::CString text) : UI::GUIClientControl(ui, parent)
 {
 	UInt32 style = WS_CLIPSIBLINGS | WS_CHILD | BS_GROUPBOX;
 	if (parent->IsChildVisible())
 	{
 		style = style | WS_VISIBLE;
 	}
-	this->InitControl(((UI::GUICoreWin*)ui)->GetHInst(), parent, L"BUTTON", text.v, style, WS_EX_CONTROLPARENT, 0, 0, 200, 200);
+	this->InitControl(((UI::GUICoreWin*)ui.Ptr())->GetHInst(), parent, L"BUTTON", text.v, style, WS_EX_CONTROLPARENT, 0, 0, 200, 200);
 	this->oriWndProc = (void*)UI::GUICoreWin::MSSetWindowObj(this->hwnd, GWLP_WNDPROC, (OSInt)GBWndProc);
 }
 

@@ -34,7 +34,7 @@ namespace Crypto
 			Bool GetSubjNames(CertNames *names) const;
 			Bool GetExtensions(CertExtensions *ext) const;
 			Crypto::Cert::X509Key *GetNewPublicKey() const;
-			Bool GetKeyId(UInt8 *keyId) const;
+			Bool GetKeyId(const Data::ByteArray &keyId) const; //20 bytes
 			Bool GetNotBefore(Data::DateTime *dt) const;
 			Bool GetNotAfter(Data::DateTime *dt) const;
 			Bool DomainValid(Text::CString domain) const;

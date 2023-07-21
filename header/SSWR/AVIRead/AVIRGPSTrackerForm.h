@@ -27,7 +27,7 @@ namespace SSWR
 			private:
 				AVIRGPSTrackerForm *frm;
 			public:
-				DisplayOffButton(UI::GUICore *ui, UI::GUIClientControl *parent, Text::CString txt, AVIRGPSTrackerForm *frm);
+				DisplayOffButton(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, Text::CString txt, AVIRGPSTrackerForm *frm);
 				virtual ~DisplayOffButton();
 
 				virtual void OnFocusLost();
@@ -156,7 +156,7 @@ namespace SSWR
 				MemFreeA(p);
 			}
 #endif
-			AVIRGPSTrackerForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Map::ILocationService *locSvc, Bool toRelease);
+			AVIRGPSTrackerForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, Map::ILocationService *locSvc, Bool toRelease);
 			virtual ~AVIRGPSTrackerForm();
 
 			virtual void OnMonitorChanged();

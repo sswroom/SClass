@@ -158,7 +158,7 @@ void SSWR::AVIRead::AVIRLoRaJSONForm::MACPayloadDetail(Text::StringBuilderUTF8 *
 	sb->AppendC(UTF8STRC("\r\n"));
 }
 
-SSWR::AVIRead::AVIRLoRaJSONForm::AVIRLoRaJSONForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRLoRaJSONForm::AVIRLoRaJSONForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetText(CSTR("LoRa JSON Parser"));
 	this->SetFont(0, 0, 8.25, false);

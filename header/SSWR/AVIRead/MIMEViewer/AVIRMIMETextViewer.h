@@ -19,7 +19,7 @@ namespace SSWR
 				Text::MIMEObj::TextMIMEObj *txt;
 
 			public:
-				AVIRMIMETextViewer(SSWR::AVIRead::AVIRCore *core, UI::GUICore *ui, UI::GUIClientControl *ctrl, Media::ColorManagerSess *sess, Text::MIMEObj::TextMIMEObj *txt);
+				AVIRMIMETextViewer(SSWR::AVIRead::AVIRCore *core, NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *ctrl, Media::ColorManagerSess *sess, Text::MIMEObj::TextMIMEObj *txt);
 				virtual ~AVIRMIMETextViewer();
 			};
 		}

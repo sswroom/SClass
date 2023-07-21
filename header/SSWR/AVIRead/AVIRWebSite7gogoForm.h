@@ -28,7 +28,7 @@ namespace SSWR
 
 			static void __stdcall OnRequestPageClicked(void *userObj);
 		public:
-			AVIRWebSite7gogoForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRWebSite7gogoForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRWebSite7gogoForm();
 
 			virtual void OnMonitorChanged();

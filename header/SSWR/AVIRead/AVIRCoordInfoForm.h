@@ -34,7 +34,7 @@ namespace SSWR
 
 			void ShowInfo(const Math::CoordinateSystemManager::SpatialRefInfo *srinfo);
 		public:
-			AVIRCoordInfoForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRCoordInfoForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRCoordInfoForm();
 
 			virtual void OnMonitorChanged();

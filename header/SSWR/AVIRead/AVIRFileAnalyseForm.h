@@ -48,7 +48,7 @@ namespace SSWR
 			static void __stdcall OnPackItemChanged(void *userObj);
 			Bool OpenFile(Text::CString fileName);
 		public:
-			AVIRFileAnalyseForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRFileAnalyseForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRFileAnalyseForm();
 
 			virtual void OnMonitorChanged();

@@ -183,7 +183,7 @@ void UI::GUIPictureBoxSimple::UpdatePreview()
 	this->Redraw();
 }
 
-UI::GUIPictureBoxSimple::GUIPictureBoxSimple(UI::GUICore *ui, UI::GUIClientControl *parent, Media::DrawEngine *eng, Bool hasBorder) : UI::GUIControl(ui, parent)
+UI::GUIPictureBoxSimple::GUIPictureBoxSimple(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, Media::DrawEngine *eng, Bool hasBorder) : UI::GUIControl(ui, parent)
 {
 	this->hasBorder = hasBorder;
 	this->eng = eng;
@@ -193,7 +193,7 @@ UI::GUIPictureBoxSimple::GUIPictureBoxSimple(UI::GUICore *ui, UI::GUIClientContr
 
 	if (Sync::Interlocked::Increment(&useCnt) == 1)
 	{
-		Init(((UI::GUICoreWin*)this->ui)->GetHInst());
+		Init(((UI::GUICoreWin*)this->ui.Ptr())->GetHInst());
 	}
 
 	UInt32 style = WS_CLIPSIBLINGS | WS_CHILD;
@@ -201,7 +201,7 @@ UI::GUIPictureBoxSimple::GUIPictureBoxSimple(UI::GUICore *ui, UI::GUIClientContr
 	{
 		style = style | WS_VISIBLE;
 	}
-	this->InitControl(((UI::GUICoreWin*)this->ui)->GetHInst(), parent, CLASSNAME, (const UTF8Char*)"", style, 0, 0, 0, 200, 200);
+	this->InitControl(((UI::GUICoreWin*)this->ui.Ptr())->GetHInst(), parent, CLASSNAME, (const UTF8Char*)"", style, 0, 0, 0, 200, 200);
 }
 
 UI::GUIPictureBoxSimple::~GUIPictureBoxSimple()
@@ -213,7 +213,7 @@ UI::GUIPictureBoxSimple::~GUIPictureBoxSimple()
 	}
 	if (Sync::Interlocked::Decrement(&useCnt) == 0)
 	{
-		Deinit(((UI::GUICoreWin*)this->ui)->GetHInst());
+		Deinit(((UI::GUICoreWin*)this->ui.Ptr())->GetHInst());
 	}
 }
 

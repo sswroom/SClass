@@ -216,7 +216,7 @@ void SSWR::AVIRead::AVIRProfiledResizerForm::UpdateProfileList()
 
 }
 
-SSWR::AVIRead::AVIRProfiledResizerForm::AVIRProfiledResizerForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 320, 320, ui)
+SSWR::AVIRead::AVIRProfiledResizerForm::AVIRProfiledResizerForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 320, 320, ui)
 {
 	UI::GUILabel *lbl;
 	this->SetText(CSTR("Profiled Resizer"));

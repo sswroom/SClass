@@ -113,7 +113,7 @@ namespace SSWR
 
 			Text::String *GetUserName(Int32 userId);
 		public:
-			AVIREmailServerForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
+			AVIREmailServerForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIREmailServerForm();
 
 			virtual void OnMonitorChanged();

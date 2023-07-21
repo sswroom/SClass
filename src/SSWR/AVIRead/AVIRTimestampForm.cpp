@@ -105,7 +105,7 @@ void SSWR::AVIRead::AVIRTimestampForm::DisplayTime(const Data::Timestamp &ts)
 	this->txtLocalTime->SetText(CSTRP(sbuff, sptr));
 }
 
-SSWR::AVIRead::AVIRTimestampForm::AVIRTimestampForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 480, 216, ui)
+SSWR::AVIRead::AVIRTimestampForm::AVIRTimestampForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 480, 216, ui)
 {
 	this->core = core;
 	this->SetText(CSTR("Timestamp"));

@@ -246,7 +246,7 @@ OSInt __stdcall UI::GUIForm::FormWndProc(void *hWnd, UInt32 msg, UOSInt wParam, 
 		me->OnFocusLost();
 		break;
 	case WM_SETFOCUS:
-		((UI::GUICoreWin*)me->ui)->SetFocusWnd(hWnd, me->hAcc);
+		((UI::GUICoreWin*)me->ui.Ptr())->SetFocusWnd(hWnd, me->hAcc);
 		me->OnFocus();
 		break;
 	case WM_HOTKEY:
@@ -393,10 +393,10 @@ void UI::GUIForm::UpdateHAcc()
 	}
 	if (this->IsFormFocused())
 	{
-		((UI::GUICoreWin*)this->ui)->SetFocusWnd(this->hwnd, this->hAcc);
+		((UI::GUICoreWin*)this->ui.Ptr())->SetFocusWnd(this->hwnd, this->hAcc);
 	}
 }
-UI::GUIForm::GUIForm(ControlHandle *hWnd) : UI::GUIClientControl(0, 0)
+UI::GUIForm::GUIForm(NotNullPtr<UI::GUICore> ui, ControlHandle *hWnd) : UI::GUIClientControl(ui, 0)
 {
 	this->hwnd = hWnd;
 	this->hAcc = 0;
@@ -405,7 +405,7 @@ UI::GUIForm::GUIForm(ControlHandle *hWnd) : UI::GUIClientControl(0, 0)
 	this->fs = false;
 }
 
-UI::GUIForm *UI::GUIForm::FindForm(const UTF8Char *formName)
+UI::GUIForm *UI::GUIForm::FindForm(NotNullPtr<UI::GUICore> ui, const UTF8Char *formName)
 {
 	HWND hWnd;
 	const WChar *wptr = Text::StrToWCharNew(formName);
@@ -414,18 +414,18 @@ UI::GUIForm *UI::GUIForm::FindForm(const UTF8Char *formName)
 	if (hWnd == 0)
 		return 0;
 	UI::GUIForm *frm;
-	NEW_CLASS(frm, UI::GUIForm((ControlHandle*)hWnd));
+	NEW_CLASS(frm, UI::GUIForm(ui, (ControlHandle*)hWnd));
 	return frm;
 }
 
-UI::GUIForm::GUIForm(UI::GUIClientControl *parent, Double initW, Double initH, UI::GUICore *ui) : UI::GUIClientControl(ui, parent)
+UI::GUIForm::GUIForm(UI::GUIClientControl *parent, Double initW, Double initH, NotNullPtr<UI::GUICore> ui) : UI::GUIClientControl(ui, parent)
 {
 	this->virtualMode = false;
 	this->hAcc = 0;
 	this->currDialog = 0;
 	if (Sync::Interlocked::Increment(&useCnt) == 1)
 	{
-		Init(((UI::GUICoreWin*)ui)->GetHInst());
+		Init(((UI::GUICoreWin*)ui.Ptr())->GetHInst());
 	}
 	this->closingHdlr = 0;
 	this->closingHdlrObj = 0;
@@ -527,7 +527,7 @@ UI::GUIForm::GUIForm(UI::GUIClientControl *parent, Double initW, Double initH, U
 	this->undockTop = 0;
 	this->undockRight = w;
 	this->undockBottom = h;
-	this->InitControl(((UI::GUICoreWin*)this->ui)->GetHInst(), parent, L"WinForm", (const UTF8Char*)"Form", WS_OVERLAPPED | WS_SYSMENU | WS_MINIMIZEBOX, 0, initX, initY, initW, initH);// | WS_THICKFRAME | WS_MAXIMIZEBOX
+	this->InitControl(((UI::GUICoreWin*)this->ui.Ptr())->GetHInst(), parent, L"WinForm", (const UTF8Char*)"Form", WS_OVERLAPPED | WS_SYSMENU | WS_MINIMIZEBOX, 0, initX, initY, initW, initH);// | WS_THICKFRAME | WS_MAXIMIZEBOX
 	this->SetFont(0, 0, 0, false);
 	SetNoResize(false);
 }
@@ -552,7 +552,7 @@ UI::GUIForm::~GUIForm()
 		}
 		if (Sync::Interlocked::Decrement(&useCnt) == 0)
 		{
-			Deinit(((UI::GUICoreWin*)this->ui)->GetHInst());
+			Deinit(((UI::GUICoreWin*)this->ui.Ptr())->GetHInst());
 		}
 		if (this->hAcc)
 		{
@@ -1042,7 +1042,7 @@ void UI::GUIForm::FromFullScn()
 	}
 }
 
-UI::GUICore *UI::GUIForm::GetUI()
+NotNullPtr<UI::GUICore> UI::GUIForm::GetUI()
 {
 	return this->ui;
 }

@@ -20,7 +20,7 @@ namespace SSWR
 				Media::ImageList *imgList;
 
 			public:
-				AVIRMIMEImageViewer(SSWR::AVIRead::AVIRCore *core, UI::GUICore *ui, UI::GUIClientControl *ctrl, Media::ColorManagerSess *sess, Text::MIMEObj::UnknownMIMEObj *obj);
+				AVIRMIMEImageViewer(SSWR::AVIRead::AVIRCore *core, NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *ctrl, Media::ColorManagerSess *sess, Text::MIMEObj::UnknownMIMEObj *obj);
 				virtual ~AVIRMIMEImageViewer();
 			};
 		}

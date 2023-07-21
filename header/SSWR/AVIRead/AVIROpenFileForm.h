@@ -31,7 +31,7 @@ namespace SSWR
 			static void __stdcall OnOKClicked(void *userObj);
 			static void __stdcall OnCancelClicked(void *userObj);
 		public:
-			AVIROpenFileForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, IO::ParserType t);
+			AVIROpenFileForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, IO::ParserType t);
 			virtual ~AVIROpenFileForm();
 
 			virtual void OnMonitorChanged();

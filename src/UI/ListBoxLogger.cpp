@@ -181,7 +181,7 @@ void UI::ListBoxLogger::SetTimeFormat(const Char *timeFormat)
 	mutUsage.EndUse();
 }
 
-UI::ListBoxLogger *UI::ListBoxLogger::CreateUI(UI::GUIForm *frm, UI::GUICore *ui, UI::GUIClientControl *ctrl, UOSInt maxLog, Bool reverse)
+UI::ListBoxLogger *UI::ListBoxLogger::CreateUI(UI::GUIForm *frm, NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *ctrl, UOSInt maxLog, Bool reverse)
 {
 	UI::GUITextBox *txt;
 	UI::GUIListBox *lb;

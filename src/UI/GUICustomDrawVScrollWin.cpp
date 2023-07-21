@@ -170,11 +170,11 @@ void UI::GUICustomDrawVScroll::ClearBackground(Media::DrawImage *img)
 	}
 }
 
-UI::GUICustomDrawVScroll::GUICustomDrawVScroll(UI::GUICore *ui, UI::GUIClientControl *parent, Media::DrawEngine *deng) : UI::GUIControl(ui, parent)
+UI::GUICustomDrawVScroll::GUICustomDrawVScroll(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, Media::DrawEngine *deng) : UI::GUIControl(ui, parent)
 {
 	if (Sync::Interlocked::Increment(&useCnt) == 1)
 	{
-		Init(((UI::GUICoreWin*)this->ui)->GetHInst());
+		Init(((UI::GUICoreWin*)this->ui.Ptr())->GetHInst());
 	}
 	this->deng = deng;
 
@@ -183,14 +183,14 @@ UI::GUICustomDrawVScroll::GUICustomDrawVScroll(UI::GUICore *ui, UI::GUIClientCon
 	{
 		style = style | WS_VISIBLE;
 	}
-	this->InitControl(((UI::GUICoreWin*)ui)->GetHInst(), parent, CLASSNAME, (const UTF8Char*)"", style, 0, 0, 0, 200, 200);
+	this->InitControl(((UI::GUICoreWin*)ui.Ptr())->GetHInst(), parent, CLASSNAME, (const UTF8Char*)"", style, 0, 0, 0, 200, 200);
 }
 
 UI::GUICustomDrawVScroll::~GUICustomDrawVScroll()
 {
 	if (Sync::Interlocked::Decrement(&useCnt) == 0)
 	{
-		Deinit(((UI::GUICoreWin*)this->ui)->GetHInst());
+		Deinit(((UI::GUICoreWin*)this->ui.Ptr())->GetHInst());
 	}
 }
 

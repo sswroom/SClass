@@ -61,7 +61,7 @@ namespace SSWR
 			static void __stdcall OnPingClicked(void *userObj);
 			static void __stdcall OnTimerTick(void *userObj);
 		public:
-			AVIRARPPingForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRARPPingForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRARPPingForm();
 
 			virtual void OnMonitorChanged();

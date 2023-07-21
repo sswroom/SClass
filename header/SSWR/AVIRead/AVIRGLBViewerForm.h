@@ -31,7 +31,7 @@ namespace SSWR
 			Bool LoadFile(NotNullPtr<Text::String> fileName);
 			Bool LoadData(IO::StreamData *jsonFD, IO::StreamData *binBuffFD);
 		public:
-			AVIRGLBViewerForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRGLBViewerForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRGLBViewerForm();
 
 			virtual void OnMonitorChanged();

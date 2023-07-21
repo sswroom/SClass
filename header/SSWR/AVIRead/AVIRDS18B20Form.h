@@ -36,7 +36,7 @@ namespace SSWR
 			static void __stdcall OnTimerTick(void *userObj);
 			void ReadData();
 		public:
-			AVIRDS18B20Form(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, IO::IOPin *pin);
+			AVIRDS18B20Form(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, IO::IOPin *pin);
 			virtual ~AVIRDS18B20Form();
 
 			virtual void OnMonitorChanged();

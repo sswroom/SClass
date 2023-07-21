@@ -68,7 +68,7 @@ namespace SSWR
 			void StopStream1();
 			void StopStream2();
 		public:
-			AVIRStreamConvForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRStreamConvForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRStreamConvForm();
 
 			virtual void OnMonitorChanged();

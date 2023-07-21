@@ -43,7 +43,7 @@ namespace SSWR
 			static void __stdcall OnLogSel(void *userObj);
 			static void __stdcall OnTimerTick(void *userObj);
 		public:
-			AVIRNTPServerForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRNTPServerForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRNTPServerForm();
 
 			virtual void OnMonitorChanged();

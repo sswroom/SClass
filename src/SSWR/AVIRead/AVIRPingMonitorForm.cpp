@@ -215,7 +215,7 @@ void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnTimerTick(void *userObj)
 	}
 }
 
-SSWR::AVIRead::AVIRPingMonitorForm::AVIRPingMonitorForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui), whois(core->GetSocketFactory(), 15000), analyzer(0, Net::EthernetAnalyzer::AT_ICMP, CSTR("PingMonitor"))
+SSWR::AVIRead::AVIRPingMonitorForm::AVIRPingMonitorForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui), whois(core->GetSocketFactory(), 15000), analyzer(0, Net::EthernetAnalyzer::AT_ICMP, CSTR("PingMonitor"))
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("Ping Monitor"));

@@ -10,11 +10,8 @@ typedef struct
 	const Char *format;
 } DateTimePickerData;
 
-UI::GUIDateTimePicker::GUIDateTimePicker(UI::GUICore *ui, UI::GUIClientControl *parent, SelectType st) : UI::GUIControl(ui, parent)
+UI::GUIDateTimePicker::GUIDateTimePicker(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, SelectType st) : UI::GUIControl(ui, parent)
 {
-	NEW_CLASS(this->dateChangedHdlrs, Data::ArrayList<DateChangedHandler>());
-	NEW_CLASS(this->dateChangedObjs, Data::ArrayList<void*>());
-
 	DateTimePickerData *data = MemAlloc(DateTimePickerData, 1);
 	data->format = 0;
 	data->widget = gtk_entry_new();
@@ -32,8 +29,6 @@ UI::GUIDateTimePicker::~GUIDateTimePicker()
 	DateTimePickerData *data = (DateTimePickerData*)this->clsData;
 	SDEL_TEXT(data->format);
 	MemFree(data);
-	DEL_CLASS(this->dateChangedHdlrs);
-	DEL_CLASS(this->dateChangedObjs);
 }
 
 
@@ -106,6 +101,6 @@ void UI::GUIDateTimePicker::SetCalShowWeeknum(Bool showWeeknum)
 
 void UI::GUIDateTimePicker::HandleDateChange(DateChangedHandler hdlr, void *obj)
 {
-	this->dateChangedHdlrs->Add(hdlr);
-	this->dateChangedObjs->Add(obj);
+	this->dateChangedHdlrs.Add(hdlr);
+	this->dateChangedObjs.Add(obj);
 }

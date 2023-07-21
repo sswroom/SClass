@@ -52,7 +52,7 @@ namespace SSWR
 			static UInt32 __stdcall ProcessThread(void *userObj);
 			void CancelQueues();
 		public:
-			AVIRVideoCheckerForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRVideoCheckerForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRVideoCheckerForm();
 
 			virtual void OnMonitorChanged();

@@ -65,7 +65,7 @@ namespace SSWR
 			void SendAgentValues(Data::ArrayList<Net::SNMPManager::AgentInfo *> *agentList);
 
 		public:
-			AVIRSNMPManagerForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRSNMPManagerForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRSNMPManagerForm();
 
 			virtual void OnMonitorChanged();

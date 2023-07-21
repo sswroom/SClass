@@ -156,7 +156,7 @@ void SSWR::AVIRead::AVIRVideoCheckerForm::CancelQueues()
 	}
 }
 
-SSWR::AVIRead::AVIRVideoCheckerForm::AVIRVideoCheckerForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 640, 480, ui), checker(false)
+SSWR::AVIRead::AVIRVideoCheckerForm::AVIRVideoCheckerForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 640, 480, ui), checker(false)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("Video Checker"));

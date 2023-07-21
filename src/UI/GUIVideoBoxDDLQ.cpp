@@ -369,7 +369,7 @@ void UI::GUIVideoBoxDDLQ::CreateThreadResizer(ThreadStat *tstat)
 	tstat->resizer10Bit = this->curr10Bit;
 }
 
-UI::GUIVideoBoxDDLQ::GUIVideoBoxDDLQ(UI::GUICore *ui, UI::GUIClientControl *parent, Media::ColorManagerSess *colorSess, UOSInt buffCnt, UOSInt threadCnt) : UI::GUIVideoBoxDD(ui, parent, colorSess, buffCnt, threadCnt)
+UI::GUIVideoBoxDDLQ::GUIVideoBoxDDLQ(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, Media::ColorManagerSess *colorSess, UOSInt buffCnt, UOSInt threadCnt) : UI::GUIVideoBoxDD(ui, parent, colorSess, buffCnt, threadCnt)
 {
 }
 

@@ -37,14 +37,14 @@ OSInt __stdcall UI::GUIButton::BTNWndProc(void *hWnd, UInt32 msg, UInt32 wParam,
 	return 0;
 }
 
-UI::GUIButton::GUIButton(GUICore *ui, UI::GUIClientControl *parent, Text::CString txt) : UI::GUIControl(ui, parent)
+UI::GUIButton::GUIButton(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent, Text::CString txt) : UI::GUIControl(ui, parent)
 {
 	UInt32 style = WS_CHILD | WS_TABSTOP;
 	if (parent->IsChildVisible())
 	{
 		style |= WS_VISIBLE;
 	}
-	this->InitControl(((UI::GUICoreWin*)ui)->GetHInst(), parent, L"BUTTON", txt.v, style, 0, 0, 0, 200, 24);
+	this->InitControl(((UI::GUICoreWin*)ui.Ptr())->GetHInst(), parent, L"BUTTON", txt.v, style, 0, 0, 0, 200, 24);
 #ifndef _WIN32_WCE
 	SetWindowLongPtr((HWND)this->hwnd, GWLP_ID, (Int32)(this->btnId = nextId++));
 #else

@@ -33,7 +33,7 @@ namespace SSWR
 			static void __stdcall OnConv2Clicked(void *userObj);
 			void ConvEnum();
 		public:
-			AVIRCppEnumForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRCppEnumForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRCppEnumForm();
 
 			virtual void OnMonitorChanged();

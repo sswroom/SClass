@@ -53,7 +53,7 @@ namespace SSWR
 			void AppendTime(Text::StringBuilderUTF8 *sb, UInt32 t);
 			void ClearDecode();
 		public:
-			AVIRVideoInfoForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRVideoInfoForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRVideoInfoForm();
 
 			virtual void OnMonitorChanged();

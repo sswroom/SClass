@@ -49,7 +49,7 @@ namespace SSWR
 			static void __stdcall OnProtocolEntry(void *userObj, UInt64 fileOfst, UOSInt size, Text::CString typeName);
 			void ClearList();
 		public:
-			AVIRProtoDecForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRProtoDecForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRProtoDecForm();
 
 			virtual void OnMonitorChanged();

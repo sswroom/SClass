@@ -9,7 +9,7 @@ namespace SSWR
 		class AVIRCoreWin : public AVIRCore
 		{
 		public:
-			AVIRCoreWin(UI::GUICore *ui);
+			AVIRCoreWin(NotNullPtr<UI::GUICore> ui);
 			virtual ~AVIRCoreWin();
 
 			virtual void OpenObject(IO::ParsedObject *pobj);

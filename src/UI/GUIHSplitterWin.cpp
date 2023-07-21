@@ -283,14 +283,14 @@ void UI::GUIHSplitter::CalDragRange()
 	this->dragMin = min;
 }
 
-UI::GUIHSplitter::GUIHSplitter(UI::GUICore *ui, UI::GUIClientControl *parent, Int32 width, Bool isRight) : UI::GUIControl(ui, parent)
+UI::GUIHSplitter::GUIHSplitter(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, Int32 width, Bool isRight) : UI::GUIControl(ui, parent)
 {
 	this->dragMode = false;
 	this->isRight = isRight;
 
 	if (Sync::Interlocked::Increment(&useCnt) == 1)
 	{
-		Init(((UI::GUICoreWin*)this->ui)->GetHInst());
+		Init(((UI::GUICoreWin*)this->ui.Ptr())->GetHInst());
 	}
 
 	UInt32 style = WS_CHILD;
@@ -298,7 +298,7 @@ UI::GUIHSplitter::GUIHSplitter(UI::GUICore *ui, UI::GUIClientControl *parent, In
 	{
 		style = style | WS_VISIBLE;
 	}
-	this->InitControl(((UI::GUICoreWin*)this->ui)->GetHInst(), parent, CLASSNAME, 0, style, 0, 0, 0, width, 10);
+	this->InitControl(((UI::GUICoreWin*)this->ui.Ptr())->GetHInst(), parent, CLASSNAME, 0, style, 0, 0, 0, width, 10);
 	this->SetDockType(isRight?DOCK_RIGHT:DOCK_LEFT);
 }
 
@@ -306,7 +306,7 @@ UI::GUIHSplitter::~GUIHSplitter()
 {
 	if (Sync::Interlocked::Decrement(&useCnt) == 0)
 	{
-		Deinit(((UI::GUICoreWin*)this->ui)->GetHInst());
+		Deinit(((UI::GUICoreWin*)this->ui.Ptr())->GetHInst());
 	}
 }
 

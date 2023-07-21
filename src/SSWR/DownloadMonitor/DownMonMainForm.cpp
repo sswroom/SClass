@@ -593,7 +593,7 @@ void SSWR::DownloadMonitor::DownMonMainForm::SaveList()
 	}
 }
 
-SSWR::DownloadMonitor::DownMonMainForm::DownMonMainForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::DownloadMonitor::DownMonCore *core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::DownloadMonitor::DownMonMainForm::DownMonMainForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::DownloadMonitor::DownMonCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->core = core;
 	this->SetText(CSTR("Download Monitor"));

@@ -32,7 +32,7 @@ void __stdcall SSWR::AVIRead::AVIRFCMForm::OnSendClicked(void *userObj)
 	me->txtStatus->SetText(sbStatus.ToCString());
 }
 
-SSWR::AVIRead::AVIRFCMForm::AVIRFCMForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 800, 156, ui)
+SSWR::AVIRead::AVIRFCMForm::AVIRFCMForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 800, 156, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("Google FCM"));

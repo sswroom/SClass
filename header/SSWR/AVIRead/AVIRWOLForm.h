@@ -24,7 +24,7 @@ namespace SSWR
 
 			static void __stdcall OnSendClicked(void *userObj);
 		public:
-			AVIRWOLForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRWOLForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRWOLForm();
 
 			virtual void OnMonitorChanged();

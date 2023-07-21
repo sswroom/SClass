@@ -9,7 +9,7 @@
 
 #define NMEAMAXSIZE 128
 
-SSWR::AVIRead::AVIRGPSTrackerForm::DisplayOffButton::DisplayOffButton(UI::GUICore *ui, UI::GUIClientControl *parent, Text::CString txt, AVIRGPSTrackerForm *frm) : UI::GUIButton(ui, parent, txt)
+SSWR::AVIRead::AVIRGPSTrackerForm::DisplayOffButton::DisplayOffButton(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, Text::CString txt, AVIRGPSTrackerForm *frm) : UI::GUIButton(ui, parent, txt)
 {
 	this->frm = frm;
 }
@@ -269,7 +269,7 @@ void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnNMEALine(void *userObj, cons
 	me->nmeaUpdated = true;
 }
 
-SSWR::AVIRead::AVIRGPSTrackerForm::AVIRGPSTrackerForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Map::ILocationService *locSvc, Bool toRelease) : UI::GUIForm(parent, 340, 540, ui)
+SSWR::AVIRead::AVIRGPSTrackerForm::AVIRGPSTrackerForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, Map::ILocationService *locSvc, Bool toRelease) : UI::GUIForm(parent, 340, 540, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("GPS Tracker"));

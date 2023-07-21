@@ -48,7 +48,7 @@ namespace SSWR
 
 			void ReleaseFormats();
 		public:
-			AVIRCaptureDevForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRCaptureDevForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRCaptureDevForm();
 
 			virtual void OnMonitorChanged();

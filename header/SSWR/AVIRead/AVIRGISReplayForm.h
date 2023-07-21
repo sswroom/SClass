@@ -59,7 +59,7 @@ namespace SSWR
 			void FreeNames();
 
 		public:
-			AVIRGISReplayForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Map::GPSTrack *track, IMapNavigator *navi);
+			AVIRGISReplayForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, Map::GPSTrack *track, IMapNavigator *navi);
 			virtual ~AVIRGISReplayForm();
 
 			virtual void EventMenuClicked(UInt16 cmdId);

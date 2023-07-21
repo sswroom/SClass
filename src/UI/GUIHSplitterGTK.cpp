@@ -74,7 +74,7 @@ gboolean GUIHSplitter_OnMouseUp(GtkWidget *widget, GdkEvent *event, gpointer dat
 	return false;
 }
 
-UI::GUIHSplitter::GUIHSplitter(UI::GUICore *ui, UI::GUIClientControl *parent, Int32 width, Bool isRight) : UI::GUIControl(ui, parent)
+UI::GUIHSplitter::GUIHSplitter(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, Int32 width, Bool isRight) : UI::GUIControl(ui, parent)
 {
 	this->dragMode = false;
 	this->isRight = isRight;

@@ -219,7 +219,7 @@ void Crypto::Cert::X509Key::ToString(Text::StringBuilderUTF8 *sb) const
 	}
 
 	UInt8 keyId[20];
-	if (this->GetKeyId(keyId))
+	if (this->GetKeyId(BYTEARR(keyId)))
 	{
 		if (found) sb->AppendLB(Text::LineBreakType::CRLF);
 		found = true;
@@ -288,14 +288,18 @@ Crypto::Cert::X509Key *Crypto::Cert::X509Key::CreatePublicKey() const
 	}
 }
 
-Bool Crypto::Cert::X509Key::GetKeyId(UInt8 *keyId) const
+Bool Crypto::Cert::X509Key::GetKeyId(const Data::ByteArray &keyId) const
 {
+	if (keyId.GetSize() < 20)
+	{
+		return false;
+	}
 	Crypto::Cert::X509Key *pubKey = this->CreatePublicKey();
 	if (pubKey)
 	{
 		Crypto::Hash::SHA1 sha1;
 		sha1.Calc(pubKey->GetASN1Buff(), pubKey->GetASN1BuffSize());
-		sha1.GetValue(keyId);
+		sha1.GetValue(keyId.Ptr());
 		DEL_CLASS(pubKey);
 		return true;
 	}

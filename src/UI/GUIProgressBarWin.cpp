@@ -7,7 +7,7 @@
 #include <windows.h>
 #include <commctrl.h>
 
-UI::GUIProgressBar::GUIProgressBar(UI::GUICore *ui, UI::GUIClientControl *parent, UInt64 totalCnt) : UI::GUIControl(ui, parent)
+UI::GUIProgressBar::GUIProgressBar(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, UInt64 totalCnt) : UI::GUIControl(ui, parent)
 {
     INITCOMMONCONTROLSEX icex;
 
@@ -20,7 +20,7 @@ UI::GUIProgressBar::GUIProgressBar(UI::GUICore *ui, UI::GUIClientControl *parent
 	{
 		style = style | WS_VISIBLE;
 	}
-	this->InitControl(((UI::GUICoreWin*)ui)->GetHInst(), parent, PROGRESS_CLASSW, (const UTF8Char*)"", style, 0, 0, 0, 200, 24);
+	this->InitControl(((UI::GUICoreWin*)ui.Ptr())->GetHInst(), parent, PROGRESS_CLASSW, (const UTF8Char*)"", style, 0, 0, 0, 200, 24);
 	this->totalCnt = totalCnt;
 	SendMessage((HWND)this->hwnd, PBM_SETRANGE32, 0, 65536);
 	SendMessage((HWND)this->hwnd, PBM_SETPOS, 0, 0);

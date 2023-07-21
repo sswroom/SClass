@@ -42,7 +42,7 @@ gboolean GUIButton_OnFocusLost(void *window, void *userObj)
 	return FALSE;
 }
 
-UI::GUIButton::GUIButton(UI::GUICore *ui, UI::GUIClientControl *parent, Text::CString label) : UI::GUIControl(ui, parent)
+UI::GUIButton::GUIButton(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, Text::CString label) : UI::GUIControl(ui, parent)
 {
 	this->hwnd = (ControlHandle*)gtk_button_new();
 	this->SetText(label);

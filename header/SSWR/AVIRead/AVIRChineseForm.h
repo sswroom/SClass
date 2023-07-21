@@ -75,7 +75,7 @@ namespace SSWR
 			void UpdateImg();
 			void UpdateRelation();
 		public:
-			AVIRChineseForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRChineseForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRChineseForm();
 
 			virtual void OnMonitorChanged();

@@ -21,7 +21,7 @@ namespace UtilUI
 		static void __stdcall OnOKClicked(void *userObj);
 		static void __stdcall OnCancelClicked(void *userObj);
 	public:
-		TextInputDialog(UI::GUIClientControl *parent, UI::GUICore *ui, Media::MonitorMgr *monMgr, Text::CString title, Text::CString message);
+		TextInputDialog(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, Media::MonitorMgr *monMgr, Text::CString title, Text::CString message);
 		virtual ~TextInputDialog();
 
 		virtual void OnShow();

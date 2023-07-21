@@ -167,7 +167,7 @@ void SSWR::AVIRead::AVIRHQMPPlaylistForm::UpdatePlaylist()
 	}
 }
 
-SSWR::AVIRead::AVIRHQMPPlaylistForm::AVIRHQMPPlaylistForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Media::Playlist *playlist) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRHQMPPlaylistForm::AVIRHQMPPlaylistForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, Media::Playlist *playlist) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("Create Playlist"));

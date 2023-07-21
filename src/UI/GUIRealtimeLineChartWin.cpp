@@ -179,7 +179,7 @@ void UI::GUIRealtimeLineChart::Deinit(void *hInst)
 	UnregisterClassW(CLASSNAME, (HINSTANCE)hInst);
 }
 
-UI::GUIRealtimeLineChart::GUIRealtimeLineChart(UI::GUICore *ui, UI::GUIClientControl *parent, Media::DrawEngine *eng, UOSInt lineCnt, UOSInt sampleCnt, UInt32 updateInterval) : UI::GUIControl(ui, parent)
+UI::GUIRealtimeLineChart::GUIRealtimeLineChart(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, Media::DrawEngine *eng, UOSInt lineCnt, UOSInt sampleCnt, UInt32 updateInterval) : UI::GUIControl(ui, parent)
 {
 	this->eng = eng;
 	this->lineCnt = lineCnt;
@@ -215,7 +215,7 @@ UI::GUIRealtimeLineChart::GUIRealtimeLineChart(UI::GUICore *ui, UI::GUIClientCon
 
 	if (Sync::Interlocked::Increment(&useCnt) == 1)
 	{
-		Init(((UI::GUICoreWin*)this->ui)->GetHInst());
+		Init(((UI::GUICoreWin*)this->ui.Ptr())->GetHInst());
 	}
 
 	UInt32 style = WS_CHILD;
@@ -223,7 +223,7 @@ UI::GUIRealtimeLineChart::GUIRealtimeLineChart(UI::GUICore *ui, UI::GUIClientCon
 	{
 		style = style | WS_VISIBLE;
 	}
-	this->InitControl(((UI::GUICoreWin*)this->ui)->GetHInst(), parent, CLASSNAME, (const UTF8Char*)"", style, 0, 0, 0, 200, 200);
+	this->InitControl(((UI::GUICoreWin*)this->ui.Ptr())->GetHInst(), parent, CLASSNAME, (const UTF8Char*)"", style, 0, 0, 0, 200, 200);
 
 	SetTimer((HWND)this->hwnd, 1, updateInterval, 0);
 }
@@ -233,7 +233,7 @@ UI::GUIRealtimeLineChart::~GUIRealtimeLineChart()
 	KillTimer((HWND)this->hwnd, 1);
 	if (Sync::Interlocked::Decrement(&useCnt) == 0)
 	{
-		Deinit(((UI::GUICoreWin*)this->ui)->GetHInst());
+		Deinit(((UI::GUICoreWin*)this->ui.Ptr())->GetHInst());
 	}
 	MemFree(this->chartVal);
 	SDEL_TEXT(this->unit);

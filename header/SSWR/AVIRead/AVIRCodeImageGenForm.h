@@ -37,7 +37,7 @@ namespace SSWR
 			static void __stdcall OnCodeTypeChanged(void *userObj);
 			static void __stdcall OnCodeGenClicked(void *userObj);
 		public:
-			AVIRCodeImageGenForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRCodeImageGenForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRCodeImageGenForm();
 
 			virtual void OnMonitorChanged();

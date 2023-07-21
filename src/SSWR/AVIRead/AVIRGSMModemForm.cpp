@@ -992,7 +992,7 @@ void SSWR::AVIRead::AVIRGSMModemForm::CloseStream(Bool updateUI)
 	}
 }
 
-SSWR::AVIRead::AVIRGSMModemForm::AVIRGSMModemForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, IO::Stream *port) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRGSMModemForm::AVIRGSMModemForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, IO::Stream *port) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetText(CSTR("GSM Modem"));
 	this->SetFont(0, 0, 8.25, false);

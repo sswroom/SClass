@@ -40,7 +40,7 @@ namespace SSWR
 			void Stop();
 			void TestSpeed();
 		public:
-			AVIRPerformanceLogForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRPerformanceLogForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRPerformanceLogForm();
 
 			virtual void OnMonitorChanged();

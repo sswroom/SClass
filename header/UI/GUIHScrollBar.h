@@ -20,7 +20,7 @@ namespace UI
 		static void Init(void *hInst);
 		static void Deinit(void *hInst);
 	public:
-		GUIHScrollBar(GUICore *ui, UI::GUIClientControl *parent, Int32 width);
+		GUIHScrollBar(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent, Int32 width);
 		virtual ~GUIHScrollBar();
 
 		void InitScrollBar(UOSInt minVal, UOSInt maxVal, UOSInt currVal, UOSInt largeChg);

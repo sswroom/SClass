@@ -45,7 +45,7 @@ gboolean GUIListView_ButtonClick(GtkWidget *widget, GdkEventButton *event, gpoin
 	return false;
 }
 
-UI::GUIListView::GUIListView(GUICore *ui, GUIClientControl *parent, ListViewStyle lvstyle, UOSInt colCount) : UI::GUIControl(ui, parent)
+UI::GUIListView::GUIListView(NotNullPtr<GUICore> ui, GUIClientControl *parent, ListViewStyle lvstyle, UOSInt colCount) : UI::GUIControl(ui, parent)
 {
 	GUIListViewData *data = MemAlloc(GUIListViewData, 1);
 	data->noChgEvt = false;

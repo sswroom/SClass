@@ -10,11 +10,8 @@
 
 Int32 UI::GUIDateTimePicker::useCnt = 0;
 
-UI::GUIDateTimePicker::GUIDateTimePicker(GUICore *ui, UI::GUIClientControl *parent, SelectType st) : UI::GUIControl(ui, parent)
+UI::GUIDateTimePicker::GUIDateTimePicker(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent, SelectType st) : UI::GUIControl(ui, parent)
 {
-	NEW_CLASS(this->dateChangedHdlrs, Data::ArrayList<DateChangedHandler>());
-	NEW_CLASS(this->dateChangedObjs, Data::ArrayList<void*>());
-
 	if (Sync::Interlocked::Increment(&useCnt) == 1)
 	{
 		INITCOMMONCONTROLSEX icex;
@@ -33,7 +30,7 @@ UI::GUIDateTimePicker::GUIDateTimePicker(GUICore *ui, UI::GUIClientControl *pare
 	{
 		style = style | WS_VISIBLE;
 	}
-	this->InitControl(((GUICoreWin*)ui)->GetHInst(), parent, DATETIMEPICK_CLASS, (const UTF8Char*)"", style, WS_EX_CLIENTEDGE, 0, 0, 200, 200);
+	this->InitControl(((GUICoreWin*)ui.Ptr())->GetHInst(), parent, DATETIMEPICK_CLASS, (const UTF8Char*)"", style, WS_EX_CLIENTEDGE, 0, 0, 200, 200);
 	this->SetFormat("yyyy-MM-dd HH:mm:ss");
 }
 
@@ -42,8 +39,6 @@ UI::GUIDateTimePicker::~GUIDateTimePicker()
 	if (Sync::Interlocked::Decrement(&useCnt) == 0)
 	{
 	}
-	DEL_CLASS(this->dateChangedHdlrs);
-	DEL_CLASS(this->dateChangedObjs);
 }
 
 Text::CString UI::GUIDateTimePicker::GetObjectClass()
@@ -62,10 +57,10 @@ OSInt UI::GUIDateTimePicker::OnNotify(UInt32 code, void *lParam)
 	case DTN_DATETIMECHANGE:
 		chg = (LPNMDATETIMECHANGE)lParam;
 		dt.SetValueSYSTEMTIME(&chg->st);
-		i = this->dateChangedHdlrs->GetCount();
+		i = this->dateChangedHdlrs.GetCount();
 		while (i-- > 0)
 		{
-			this->dateChangedHdlrs->GetItem(i)(this->dateChangedObjs->GetItem(i), &dt);
+			this->dateChangedHdlrs.GetItem(i)(this->dateChangedObjs.GetItem(i), &dt);
 		}
 		break;
 	case DTN_DROPDOWN:
@@ -137,6 +132,6 @@ void UI::GUIDateTimePicker::SetCalShowWeeknum(Bool showWeeknum)
 
 void UI::GUIDateTimePicker::HandleDateChange(DateChangedHandler hdlr, void *obj)
 {
-	this->dateChangedHdlrs->Add(hdlr);
-	this->dateChangedObjs->Add(obj);
+	this->dateChangedHdlrs.Add(hdlr);
+	this->dateChangedObjs.Add(obj);
 }

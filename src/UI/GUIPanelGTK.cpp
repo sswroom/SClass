@@ -20,7 +20,7 @@ void UI::GUIPanel::UpdateScrollBars()
 {
 }
 
-UI::GUIPanel::GUIPanel(UI::GUICore *ui, void *parentHWnd) : UI::GUIClientControl(ui, 0)
+UI::GUIPanel::GUIPanel(NotNullPtr<UI::GUICore> ui, void *parentHWnd) : UI::GUIClientControl(ui, 0)
 {
 	this->minW = 0;
 	this->minH = 0;
@@ -31,7 +31,7 @@ UI::GUIPanel::GUIPanel(UI::GUICore *ui, void *parentHWnd) : UI::GUIClientControl
 	this->hwnd = (ControlHandle*)gtk_fixed_new();
 }
 
-UI::GUIPanel::GUIPanel(UI::GUICore *ui, UI::GUIClientControl *parent) : UI::GUIClientControl(ui, parent)
+UI::GUIPanel::GUIPanel(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent) : UI::GUIClientControl(ui, parent)
 {
 	this->minW = 0;
 	this->minH = 0;

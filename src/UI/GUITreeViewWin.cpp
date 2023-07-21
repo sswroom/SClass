@@ -165,7 +165,7 @@ void UI::GUITreeView::FreeItems()
 	}
 }
 
-UI::GUITreeView::GUITreeView(UI::GUICore *ui, UI::GUIClientControl *parent) : UI::GUIControl(ui, parent)
+UI::GUITreeView::GUITreeView(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent) : UI::GUIControl(ui, parent)
 {
 	Double w;
 	Double h;
@@ -175,7 +175,7 @@ UI::GUITreeView::GUITreeView(UI::GUICore *ui, UI::GUIClientControl *parent) : UI
 	{
 		style = style | WS_VISIBLE;
 	}
-	this->InitControl(((UI::GUICoreWin*)ui)->GetHInst(), parent, WC_TREEVIEWW, (const UTF8Char*)"TreeView", style, WS_EX_CLIENTEDGE, 0, 0, w, h);
+	this->InitControl(((UI::GUICoreWin*)ui.Ptr())->GetHInst(), parent, WC_TREEVIEWW, (const UTF8Char*)"TreeView", style, WS_EX_CLIENTEDGE, 0, 0, w, h);
 	this->oriWndProc = (void*)UI::GUICoreWin::MSSetWindowObj(this->hwnd, GWLP_WNDPROC, (OSInt)TVWndProc);
 	this->autoFocus = false;
 	this->editing = false;

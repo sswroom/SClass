@@ -25,7 +25,7 @@ void __stdcall SSWR::SHPConv::SHPConvElevationFilterForm::OnCancelClicked(void *
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 
-SSWR::SHPConv::SHPConvElevationFilterForm::SHPConvElevationFilterForm(UI::GUIClientControl *parent, UI::GUICore *ui, DB::DBFFile *dbf) : UI::GUIForm(parent, 294, 104, ui)
+SSWR::SHPConv::SHPConvElevationFilterForm::SHPConvElevationFilterForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, DB::DBFFile *dbf) : UI::GUIForm(parent, 294, 104, ui)
 {
 	this->SetText(CSTR("Elevation Filter"));
 	this->SetFont(0, 0, 8.25, false);

@@ -43,7 +43,7 @@ namespace SSWR
 			static void __stdcall OnTimerTick(void *userObj);
 
 		public:
-			AVIRNetRAWCaptureForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRNetRAWCaptureForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRNetRAWCaptureForm();
 
 			virtual void OnMonitorChanged();

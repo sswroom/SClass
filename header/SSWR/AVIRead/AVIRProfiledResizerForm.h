@@ -67,7 +67,7 @@ namespace SSWR
 			void UpdateProfileDisp();
 			void UpdateProfileList();
 		public:
-			AVIRProfiledResizerForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRProfiledResizerForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRProfiledResizerForm();
 
 			virtual void OnMonitorChanged();

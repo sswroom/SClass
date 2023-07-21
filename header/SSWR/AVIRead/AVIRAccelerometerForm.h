@@ -28,7 +28,7 @@ namespace SSWR
 
 			static void __stdcall OnTimerTick(void *userObj);
 		public:
-			AVIRAccelerometerForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, IO::SensorAccelerometer *acc);
+			AVIRAccelerometerForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, IO::SensorAccelerometer *acc);
 			virtual ~AVIRAccelerometerForm();
 
 			virtual void OnMonitorChanged();

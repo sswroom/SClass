@@ -36,7 +36,7 @@ namespace SSWR
 			void WifiScan();
 			void WifiClear();
 		public:
-			AVIRWifiScanForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRWifiScanForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRWifiScanForm();
 
 			virtual void OnMonitorChanged();

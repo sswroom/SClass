@@ -154,7 +154,7 @@ namespace SSWR
 			void StopStream(Bool clearUI);
 
 		public:
-			AVIRMODBUSMasterForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRMODBUSMasterForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRMODBUSMasterForm();
 
 			virtual void OnMonitorChanged();

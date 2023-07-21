@@ -32,7 +32,7 @@ void __stdcall SSWR::OrganMgr::OrganSearchForm::OnCancelClicked(void *userObj)
 	me->SetDialogResult(DR_CANCEL);
 }
 
-SSWR::OrganMgr::OrganSearchForm::OrganSearchForm(UI::GUIClientControl *parent, UI::GUICore *ui, OrganEnv *env) : UI::GUIForm(0, 340, 90, ui)
+SSWR::OrganMgr::OrganSearchForm::OrganSearchForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, OrganEnv *env) : UI::GUIForm(0, 340, 90, ui)
 {
 	this->SetFont(0, 0, 10.5, false);
 	this->SetNoResize(true);

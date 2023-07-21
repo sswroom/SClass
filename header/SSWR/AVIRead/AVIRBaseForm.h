@@ -19,7 +19,7 @@ namespace SSWR
 		private:
 			static void __stdcall FileHandler(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles);
 		public:
-			AVIRBaseForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRBaseForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRBaseForm();
 
 			virtual void EventMenuClicked(UInt16 cmdId);

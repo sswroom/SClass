@@ -36,7 +36,7 @@ namespace SSWR
 			static void __stdcall OnAnswerUpdated(void *userObj, UInt32 sortableIP);
 
 		public:
-			AVIRNetBIOSScannerForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRNetBIOSScannerForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRNetBIOSScannerForm();
 
 			virtual void OnMonitorChanged();

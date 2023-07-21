@@ -315,7 +315,7 @@ void UI::GUIPanel::UpdateScrollBars()
 	}
 }
 
-UI::GUIPanel::GUIPanel(UI::GUICore *ui, void *parentHWnd) : UI::GUIClientControl(ui, 0)
+UI::GUIPanel::GUIPanel(NotNullPtr<UI::GUICore> ui, void *parentHWnd) : UI::GUIClientControl(ui, 0)
 {
 	this->minW = 0;
 	this->minH = 0;
@@ -325,18 +325,18 @@ UI::GUIPanel::GUIPanel(UI::GUICore *ui, void *parentHWnd) : UI::GUIClientControl
 	this->currScrY = 0;
 	if (Sync::Interlocked::Increment(&useCnt) == 1)
 	{
-		Init(((UI::GUICoreWin*)this->ui)->GetHInst());
+		Init(((UI::GUICoreWin*)this->ui.Ptr())->GetHInst());
 	}
 
 	UInt32 style = WS_CLIPSIBLINGS | WS_CHILD | WS_VISIBLE;
 #ifdef _WIN32_WCE
 	this->InitControl(((UI::GUICoreWin*)this->ui)->GetHInst(), parentHWnd, CLASSNAME, (const UTF8Char*)"", style, 0, 0, 0, 200, 200);
 #else
-	this->InitControl(((UI::GUICoreWin*)this->ui)->GetHInst(), parentHWnd, CLASSNAME, (const UTF8Char*)"", style, WS_EX_CONTROLPARENT, 0, 0, 200, 200);
+	this->InitControl(((UI::GUICoreWin*)this->ui.Ptr())->GetHInst(), parentHWnd, CLASSNAME, (const UTF8Char*)"", style, WS_EX_CONTROLPARENT, 0, 0, 200, 200);
 #endif
 }
 
-UI::GUIPanel::GUIPanel(UI::GUICore *ui, UI::GUIClientControl *parent) : UI::GUIClientControl(ui, parent)
+UI::GUIPanel::GUIPanel(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent) : UI::GUIClientControl(ui, parent)
 {
 	this->minW = 0;
 	this->minH = 0;
@@ -346,7 +346,7 @@ UI::GUIPanel::GUIPanel(UI::GUICore *ui, UI::GUIClientControl *parent) : UI::GUIC
 	this->currScrY = 0;
 	if (Sync::Interlocked::Increment(&useCnt) == 1)
 	{
-		Init(((UI::GUICoreWin*)this->ui)->GetHInst());
+		Init(((UI::GUICoreWin*)this->ui.Ptr())->GetHInst());
 	}
 
 	UInt32 style = WS_CLIPSIBLINGS | WS_CHILD;
@@ -355,9 +355,9 @@ UI::GUIPanel::GUIPanel(UI::GUICore *ui, UI::GUIClientControl *parent) : UI::GUIC
 		style = style | WS_VISIBLE;
 	}
 #ifdef _WIN32_WCE
-	this->InitControl(((UI::GUICoreWin*)this->ui)->GetHInst(), parent, CLASSNAME, (const UTF8Char*)"", style, 0, 0, 0, 200, 200);
+	this->InitControl(((UI::GUICoreWin*)this->ui.Ptr())->GetHInst(), parent, CLASSNAME, (const UTF8Char*)"", style, 0, 0, 0, 200, 200);
 #else
-	this->InitControl(((UI::GUICoreWin*)this->ui)->GetHInst(), parent, CLASSNAME, (const UTF8Char*)"", style, WS_EX_CONTROLPARENT, 0, 0, 200, 200);
+	this->InitControl(((UI::GUICoreWin*)this->ui.Ptr())->GetHInst(), parent, CLASSNAME, (const UTF8Char*)"", style, WS_EX_CONTROLPARENT, 0, 0, 200, 200);
 #endif
 }
 
@@ -365,7 +365,7 @@ UI::GUIPanel::~GUIPanel()
 {
 	if (Sync::Interlocked::Decrement(&useCnt) == 0)
 	{
-		Deinit(((UI::GUICoreWin*)this->ui)->GetHInst());
+		Deinit(((UI::GUICoreWin*)this->ui.Ptr())->GetHInst());
 	}
 }
 

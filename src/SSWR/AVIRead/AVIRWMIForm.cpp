@@ -59,7 +59,7 @@ void __stdcall SSWR::AVIRead::AVIRWMIForm::OnDblClicked(void *userObj)
 	}
 }
 
-SSWR::AVIRead::AVIRWMIForm::AVIRWMIForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 456, 200, ui)
+SSWR::AVIRead::AVIRWMIForm::AVIRWMIForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 456, 200, ui)
 {
 	this->SetText(CSTR("Select WMI Namespace"));
 	this->SetFont(0, 0, 8.25, false);

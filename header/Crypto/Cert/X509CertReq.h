@@ -1,6 +1,7 @@
 #ifndef _SM_CRYPTO_CERT_X509CERTREQ
 #define _SM_CRYPTO_CERT_X509CERTREQ
 #include "Crypto/Cert/X509File.h"
+#include "Data/ByteArray.h"
 
 namespace Crypto
 {
@@ -24,7 +25,7 @@ namespace Crypto
 			Bool GetNames(CertNames *names) const;
 			Bool GetExtensions(CertExtensions *ext) const;
 			Crypto::Cert::X509Key *GetNewPublicKey() const;
-			Bool GetKeyId(UInt8 *keyId) const;
+			Bool GetKeyId(const Data::ByteArray &keyId) const; //20 bytes
 		};
 	}
 }

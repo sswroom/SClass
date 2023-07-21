@@ -24,7 +24,7 @@ namespace SSWR
 
 			void Reload();
 		public:
-			AVIRHKOWarningSummaryForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRHKOWarningSummaryForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRHKOWarningSummaryForm();
 
 			virtual void OnMonitorChanged();

@@ -114,7 +114,7 @@ namespace SSWR
 			virtual NotNullPtr<Text::String> GetNewDBFName(DB::DBFFile *dbf, Data::ArrayList<const UTF8Char*> *dbCols, UOSInt currRec, Data::ArrayList<UInt32> *dbcols2);
 
 		public:
-			SHPConvMainForm(UI::GUIClientControl *parent, UI::GUICore *ui, Media::DrawEngine *deng, Media::MonitorMgr *monMgr);
+			SHPConvMainForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, Media::DrawEngine *deng, Media::MonitorMgr *monMgr);
 			virtual ~SHPConvMainForm();
 
 			virtual void OnMonitorChanged();

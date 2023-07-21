@@ -18,7 +18,7 @@ namespace SSWR
 			Math::CoordinateSystem *csys;
 
 		public:
-			AVIRCoordSysForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Math::CoordinateSystem *csys);
+			AVIRCoordSysForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, Math::CoordinateSystem *csys);
 			virtual ~AVIRCoordSysForm();
 
 			virtual void OnMonitorChanged();

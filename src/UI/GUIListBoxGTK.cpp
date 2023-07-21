@@ -49,7 +49,7 @@ void GUIListBox_Show(GtkWidget *widget, gpointer user_data)
 	data->showTime = Data::DateTimeUtil::GetCurrTimeMillis();
 }
 
-UI::GUIListBox::GUIListBox(UI::GUICore *ui, UI::GUIClientControl *parent, Bool multiSelect) : UI::GUIControl(ui, parent)
+UI::GUIListBox::GUIListBox(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, Bool multiSelect) : UI::GUIControl(ui, parent)
 {
 	this->mulSel = multiSelect;
 	ClassData *data = MemAlloc(ClassData, 1);

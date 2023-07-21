@@ -79,7 +79,7 @@ namespace SSWR
 			static void __stdcall OnTimerTick(void *userObj);
 			void ClearHeaders();
 		public:
-			AVIRHTTPDownloaderForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRHTTPDownloaderForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRHTTPDownloaderForm();
 
 			virtual void OnMonitorChanged();

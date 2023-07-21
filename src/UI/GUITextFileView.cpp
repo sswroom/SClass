@@ -849,7 +849,7 @@ void UI::GUITextFileView::EventTextPosUpdated()
 	}
 }
 
-UI::GUITextFileView::GUITextFileView(UI::GUICore *ui, UI::GUIClientControl *parent, Media::DrawEngine *deng) : UI::GUITextView(ui, parent, deng), readBuff(READBUFFSIZE)
+UI::GUITextFileView::GUITextFileView(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, Media::DrawEngine *deng) : UI::GUITextView(ui, parent, deng), readBuff(READBUFFSIZE)
 {
 	this->fileName = Text::String::NewEmpty();
 	this->threadToStop = false;

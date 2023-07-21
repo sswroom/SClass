@@ -37,7 +37,7 @@ namespace SSWR
 			static void __stdcall OnCancelClick(void *userObj);
 
 		public:
-			AVIRGISCombineForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Data::ArrayList<Map::MapDrawLayer*> *layers);
+			AVIRGISCombineForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, Data::ArrayList<Map::MapDrawLayer*> *layers);
 			virtual ~AVIRGISCombineForm();
 
 			virtual void OnMonitorChanged();

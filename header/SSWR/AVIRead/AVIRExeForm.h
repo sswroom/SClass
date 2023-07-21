@@ -65,7 +65,7 @@ namespace SSWR
 			static void __stdcall OnResourceSelChg(void *userObj);
 			static void __stdcall OnResourceDblClk(void *userObj);
 		public:
-			AVIRExeForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, IO::EXEFile *exeFile);
+			AVIRExeForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, IO::EXEFile *exeFile);
 			virtual ~AVIRExeForm();
 
 			virtual void OnMonitorChanged();

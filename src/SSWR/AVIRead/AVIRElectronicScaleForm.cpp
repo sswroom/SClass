@@ -202,7 +202,7 @@ void SSWR::AVIRead::AVIRElectronicScaleForm::StopStream()
 	}
 }
 
-SSWR::AVIRead::AVIRElectronicScaleForm::AVIRElectronicScaleForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 456, 200, ui)
+SSWR::AVIRead::AVIRElectronicScaleForm::AVIRElectronicScaleForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 456, 200, ui)
 {
 	this->SetText(CSTR("Electronic Scale"));
 	this->SetFont(0, 0, 8.25, false);

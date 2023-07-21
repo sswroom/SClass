@@ -10,13 +10,13 @@ namespace UI
 		typedef void (__stdcall *SelectedChangeHandler)(void *userObj, Bool newState);
 	private:
 		Bool selected;
-		Data::ArrayList<SelectedChangeHandler> *selectedChangeHdlrs;
-		Data::ArrayList<void*> *selectedChangeObjs;
+		Data::ArrayList<SelectedChangeHandler> selectedChangeHdlrs;
+		Data::ArrayList<void*> selectedChangeObjs;
 
 	public:
 		void ChangeSelected(Bool selVal);
 	public:
-		GUIRadioButton(GUICore *ui, UI::GUIClientControl *parent, Text::CString initText, Bool selected);
+		GUIRadioButton(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent, Text::CString initText, Bool selected);
 		virtual ~GUIRadioButton();
 
 		virtual Text::CString GetObjectClass();

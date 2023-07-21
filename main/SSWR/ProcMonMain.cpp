@@ -6,16 +6,15 @@
 
 Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
-	UI::GUICore *ui;
+	NotNullPtr<UI::GUICore> ui;
 	SSWR::ProcMonForm *frm;
-	ui = progCtrl->CreateGUICore(progCtrl);
-	if (ui)
+	if (ui.Set(progCtrl->CreateGUICore(progCtrl)))
 	{
 		NEW_CLASS(frm, SSWR::ProcMonForm(0, ui));
 		frm->SetExitOnClose(true);
 		frm->Show();
 		ui->Run();
-		DEL_CLASS(ui);
+		ui.Delete();
 	}
 	return 0;
 }

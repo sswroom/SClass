@@ -41,7 +41,7 @@ namespace SSWR
 			static void __stdcall OnDate1HrClicked(void *userObj);
 			static void __stdcall OnLocationLastClicked(void *userObj);
 		public:
-			OrganTripForm(UI::GUIClientControl *parent, UI::GUICore *ui, OrganEnv *env);
+			OrganTripForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, OrganEnv *env);
 			~OrganTripForm();
 
 			virtual void OnMonitorChanged();

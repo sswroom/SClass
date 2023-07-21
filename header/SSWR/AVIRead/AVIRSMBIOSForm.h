@@ -23,7 +23,7 @@ namespace SSWR
 
 			static void __stdcall OnHexClicked(void *userObj);
 		public:
-			AVIRSMBIOSForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRSMBIOSForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRSMBIOSForm();
 
 			virtual void OnMonitorChanged();

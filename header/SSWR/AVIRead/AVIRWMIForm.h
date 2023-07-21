@@ -27,7 +27,7 @@ namespace SSWR
 			static void __stdcall OnDblClicked(void *userObj);
 
 		public:
-			AVIRWMIForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRWMIForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRWMIForm();
 
 			virtual void OnMonitorChanged();

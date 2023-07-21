@@ -11,7 +11,7 @@ namespace UI
 		void *clsData;
 		UInt64 totalCnt;
 	public:
-		GUIProgressBar(GUICore *ui, UI::GUIClientControl *parent, UInt64 totalCnt);
+		GUIProgressBar(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent, UInt64 totalCnt);
 		virtual ~GUIProgressBar();
 
 		virtual Text::CString GetObjectClass();

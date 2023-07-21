@@ -86,11 +86,11 @@ void UI::GUIHScrollBar::Deinit(void *hInst)
 	UnregisterClassW(CLASSNAME, (HINSTANCE)hInst);
 }
 
-UI::GUIHScrollBar::GUIHScrollBar(UI::GUICore *ui, UI::GUIClientControl *parent, Int32 width) : UI::GUIControl(ui, parent)
+UI::GUIHScrollBar::GUIHScrollBar(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, Int32 width) : UI::GUIControl(ui, parent)
 {
 	if (Sync::Interlocked::Increment(&useCnt) == 1)
 	{
-		Init(((UI::GUICoreWin*)this->ui)->GetHInst());
+		Init(((UI::GUICoreWin*)this->ui.Ptr())->GetHInst());
 	}
 
 	UInt32 style = WS_CHILD| WS_HSCROLL | WS_TABSTOP;
@@ -98,14 +98,14 @@ UI::GUIHScrollBar::GUIHScrollBar(UI::GUICore *ui, UI::GUIClientControl *parent, 
 	{
 		style = style | WS_VISIBLE;
 	}
-	this->InitControl(((UI::GUICoreWin*)ui)->GetHInst(), parent, CLASSNAME, 0, style, 0, 0, 0, width, GetSystemMetrics(SM_CYHSCROLL) + 1);
+	this->InitControl(((UI::GUICoreWin*)ui.Ptr())->GetHInst(), parent, CLASSNAME, 0, style, 0, 0, 0, width, GetSystemMetrics(SM_CYHSCROLL) + 1);
 }
 
 UI::GUIHScrollBar::~GUIHScrollBar()
 {
 	if (Sync::Interlocked::Decrement(&useCnt) == 0)
 	{
-		Deinit(((UI::GUICoreWin*)this->ui)->GetHInst());
+		Deinit(((UI::GUICoreWin*)this->ui.Ptr())->GetHInst());
 	}
 }
 

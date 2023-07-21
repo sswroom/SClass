@@ -16,7 +16,7 @@ void __stdcall SSWR::AVIRead::AVIRSudokuForm::EventNumInput(void *userObj, UOSIn
 	me->svMain->Redraw();
 }
 
-SSWR::AVIRead::AVIRSudokuForm::AVIRSudokuForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 640, 768, ui)
+SSWR::AVIRead::AVIRSudokuForm::AVIRSudokuForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 640, 768, ui)
 {
 	this->SetText(CSTR("Sudoku Solver"));
 

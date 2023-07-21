@@ -33,7 +33,7 @@ Int32 MyAdd(Int32 a, Int32 b)
 
 Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
-	UI::GUICore *ui;
+	NotNullPtr<UI::GUICore> ui;
 	SSWR::AVIRead::AVIRBaseForm *frm;
 	SSWR::AVIRead::AVIRCore *core;
 	Manage::ExceptionRecorder *exHdlr;
@@ -59,30 +59,32 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	IO::Path::GetProcessFileName(sbuff);
 	sptr = IO::Path::ReplaceExt(sbuff, UTF8STRC("log"));
 	NEW_CLASS(exHdlr, Manage::ExceptionRecorder(CSTRP(sbuff, sptr), Manage::ExceptionRecorder::EA_CLOSE));
-	ui = Core::IProgControl::CreateGUICore(progCtrl);
-	NEW_CLASS(core, SSWR::AVIRead::AVIRCoreWin(ui));
-	NEW_CLASS(frm, SSWR::AVIRead::AVIRBaseForm(0, ui, core));
-	frm->SetExitOnClose(true);
-	frm->Show();
-	argv = progCtrl->GetCommandLines(progCtrl, &argc);
-	if (argc > 1)
+	if (ui.Set(Core::IProgControl::CreateGUICore(progCtrl)))
 	{
-		core->BeginLoad();
-		i = 1;
-		while (i < argc)
+		NEW_CLASS(core, SSWR::AVIRead::AVIRCoreWin(ui));
+		NEW_CLASS(frm, SSWR::AVIRead::AVIRBaseForm(0, ui, core));
+		frm->SetExitOnClose(true);
+		frm->Show();
+		argv = progCtrl->GetCommandLines(progCtrl, &argc);
+		if (argc > 1)
 		{
-			NEW_CLASS(fd, IO::StmData::FileData({argv[i], Text::StrCharCnt(argv[i])}, false));
-			core->LoadData(fd, 0);
-			DEL_CLASS(fd);
+			core->BeginLoad();
+			i = 1;
+			while (i < argc)
+			{
+				NEW_CLASS(fd, IO::StmData::FileData({argv[i], Text::StrCharCnt(argv[i])}, false));
+				core->LoadData(fd, 0);
+				DEL_CLASS(fd);
 
-			i++;
+				i++;
+			}
+			core->EndLoad();
 		}
-		core->EndLoad();
-	}
-	ui->Run();
+		ui->Run();
 
-	DEL_CLASS(core);
-	DEL_CLASS(ui);
+		DEL_CLASS(core);
+		ui.Delete();
+	}
 	DEL_CLASS(exHdlr);
 	return 0;
 }

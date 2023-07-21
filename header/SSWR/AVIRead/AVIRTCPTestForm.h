@@ -65,7 +65,7 @@ namespace SSWR
 			static void __stdcall OnTimerTick(void *userObj);
 			void StopThreads();
 		public:
-			AVIRTCPTestForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRTCPTestForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRTCPTestForm();
 
 			virtual void OnMonitorChanged();

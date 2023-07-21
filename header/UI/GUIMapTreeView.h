@@ -29,7 +29,7 @@ namespace UI
 		void AddTreeNode(UI::GUITreeView::TreeItem *item, Map::MapEnv::GroupItem *group, UOSInt index);
 		void UpdateTreeStatus(UI::GUITreeView::TreeItem *item);
 	public:
-		GUIMapTreeView(UI::GUICore *ui, UI::GUIClientControl *parent, Map::MapEnv *env);
+		GUIMapTreeView(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, Map::MapEnv *env);
 		virtual ~GUIMapTreeView();
 
 		virtual OSInt EventBeginLabelEdit(TreeItem *item);

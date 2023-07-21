@@ -52,7 +52,7 @@ namespace UI
 		static OSInt __stdcall TVWndProc(void *hWnd, UInt32 msg, UOSInt wParam, OSInt lParam);
 		void FreeItems();
 	public:
-		GUITreeView(GUICore *ui, UI::GUIClientControl *parent);
+		GUITreeView(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent);
 		virtual ~GUITreeView();
 
 		void EventSelectionChange();

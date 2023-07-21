@@ -26,7 +26,7 @@ namespace SSWR
 			static void __stdcall OnLogSelChg(void *userObj);
 
 		public:
-			AVIRIPScanDetectorForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRIPScanDetectorForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRIPScanDetectorForm();
 
 			virtual void OnMonitorChanged();

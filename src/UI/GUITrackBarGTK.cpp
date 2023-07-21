@@ -25,7 +25,7 @@ void UI::GUITrackBar::EventScrolled()
 	}
 }
 
-UI::GUITrackBar::GUITrackBar(UI::GUICore *ui, UI::GUIClientControl *parent, UOSInt minVal, UOSInt maxVal, UOSInt currVal) : UI::GUIControl(ui, parent)
+UI::GUITrackBar::GUITrackBar(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, UOSInt minVal, UOSInt maxVal, UOSInt currVal) : UI::GUIControl(ui, parent)
 {
 	if (minVal >= maxVal)
 	{

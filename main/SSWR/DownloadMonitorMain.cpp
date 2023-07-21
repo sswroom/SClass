@@ -10,8 +10,8 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	Media::Decoder::FFMPEGDecoder::Enable();
 #endif
 
-	UI::GUICore *ui = progCtrl->CreateGUICore(progCtrl);
-	if (ui)
+	NotNullPtr<UI::GUICore> ui;
+	if (ui.Set(progCtrl->CreateGUICore(progCtrl)))
 	{
 		SSWR::DownloadMonitor::DownMonCore *core;
 		NEW_CLASS(core, SSWR::DownloadMonitor::DownMonCore());
@@ -28,7 +28,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			ui->Run();
 		}
 		DEL_CLASS(core);
-		DEL_CLASS(ui);
+		ui.Delete();
 	}
 	return 0;
 }

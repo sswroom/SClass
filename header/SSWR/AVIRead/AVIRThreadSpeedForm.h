@@ -33,7 +33,7 @@ namespace SSWR
 			static UInt32 __stdcall TestThread(void *userObj);
 			static void __stdcall OnTestClicked(void *userObj);
 		public:
-			AVIRThreadSpeedForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRThreadSpeedForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRThreadSpeedForm();
 
 			virtual void OnMonitorChanged();

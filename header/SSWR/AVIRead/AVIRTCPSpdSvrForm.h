@@ -35,7 +35,7 @@ namespace SSWR
 			static void __stdcall OnClientTimeout(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData);
 			static UInt32 __stdcall RecvThread(void *userObj);
 		public:
-			AVIRTCPSpdSvrForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRTCPSpdSvrForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRTCPSpdSvrForm();
 
 			virtual void OnMonitorChanged();

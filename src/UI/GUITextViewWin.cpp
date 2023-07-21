@@ -526,7 +526,7 @@ void UI::GUITextView::SetCaretPos(OSInt scnX, OSInt scnY)
 	::SetCaretPos((int)scnX, (int)scnY);
 }
 
-UI::GUITextView::GUITextView(UI::GUICore *ui, UI::GUIClientControl *parent, Media::DrawEngine *deng) : UI::GUIControl(ui, parent)
+UI::GUITextView::GUITextView(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, Media::DrawEngine *deng) : UI::GUIControl(ui, parent)
 {
 	this->deng = deng;
 	this->drawBuff = 0;
@@ -535,7 +535,7 @@ UI::GUITextView::GUITextView(UI::GUICore *ui, UI::GUIClientControl *parent, Medi
 
 	if (Sync::Interlocked::Increment(&useCnt) == 1)
 	{
-		Init(((UI::GUICoreWin*)this->ui)->GetHInst());
+		Init(((UI::GUICoreWin*)this->ui.Ptr())->GetHInst());
 	}
 
 	UInt32 style = WS_CHILD | WS_HSCROLL | WS_VSCROLL | WS_TABSTOP;
@@ -543,7 +543,7 @@ UI::GUITextView::GUITextView(UI::GUICore *ui, UI::GUIClientControl *parent, Medi
 	{
 		style = style | WS_VISIBLE;
 	}
-	this->InitControl(((UI::GUICoreWin*)this->ui)->GetHInst(), parent, CLASSNAME, (const UTF8Char*)"", style, WS_EX_CONTROLPARENT, 0, 0, 200, 200);
+	this->InitControl(((UI::GUICoreWin*)this->ui.Ptr())->GetHInst(), parent, CLASSNAME, (const UTF8Char*)"", style, WS_EX_CONTROLPARENT, 0, 0, 200, 200);
 	SetTimer((HWND)this->hwnd, 1, 1000, 0);
 
 	this->bgColor = this->GetColorBg();
@@ -564,7 +564,7 @@ UI::GUITextView::~GUITextView()
 	}
 	if (Sync::Interlocked::Decrement(&useCnt) == 0)
 	{
-		Deinit(((UI::GUICoreWin*)this->ui)->GetHInst());
+		Deinit(((UI::GUICoreWin*)this->ui.Ptr())->GetHInst());
 	}
 }
 

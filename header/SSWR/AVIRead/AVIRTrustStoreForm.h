@@ -25,7 +25,7 @@ namespace SSWR
 			UI::GUIListView *lvTrustCert;
 			static void __stdcall OnTrustCertDblClicked(void *userObj, UOSInt index);
 		public:
-			AVIRTrustStoreForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Crypto::Cert::CertStore *store);
+			AVIRTrustStoreForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, Crypto::Cert::CertStore *store);
 			virtual ~AVIRTrustStoreForm();
 
 			virtual void OnMonitorChanged();

@@ -28,7 +28,7 @@ namespace SSWR
 			static void __stdcall OnLoadClicked(void *userObj);
 			static void __stdcall OnOKClicked(void *userObj);
 		public:
-			AVIRTMSForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Net::SSLEngine *ssl);
+			AVIRTMSForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, Net::SSLEngine *ssl);
 			virtual ~AVIRTMSForm();
 
 			virtual void OnMonitorChanged();

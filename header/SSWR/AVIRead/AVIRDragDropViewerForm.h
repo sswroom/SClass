@@ -23,7 +23,7 @@ namespace SSWR
 			static void __stdcall OnTypeSelChg(void *userObj);
 			void ClearDrops();
 		public:
-			AVIRDragDropViewerForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRDragDropViewerForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRDragDropViewerForm();
 
 			virtual void OnMonitorChanged();

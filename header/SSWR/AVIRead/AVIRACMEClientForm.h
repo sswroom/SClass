@@ -33,7 +33,7 @@ namespace SSWR
 
 			static void __stdcall OnStartClicked(void *userObj);
 		public:
-			AVIRACMEClientForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRACMEClientForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRACMEClientForm();
 
 			virtual void OnMonitorChanged();

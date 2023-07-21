@@ -80,7 +80,7 @@ namespace SSWR
 			UOSInt ParseSignature(Text::PString *s, UInt8 *sign);
 			Crypto::Cert::X509Key *GetNewKey();
 		public:
-			AVIRASN1DataForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Net::ASN1Data *asn1);
+			AVIRASN1DataForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, Net::ASN1Data *asn1);
 			virtual ~AVIRASN1DataForm();
 
 			virtual void OnMonitorChanged();

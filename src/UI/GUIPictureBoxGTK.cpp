@@ -261,7 +261,7 @@ void UI::GUIPictureBox::UpdatePreview()
 	this->Redraw();
 }
 
-UI::GUIPictureBox::GUIPictureBox(UI::GUICore *ui, UI::GUIClientControl *parent, Media::DrawEngine *eng, Bool hasBorder, Bool allowResize) : UI::GUIControl(ui, parent)
+UI::GUIPictureBox::GUIPictureBox(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, Media::DrawEngine *eng, Bool hasBorder, Bool allowResize) : UI::GUIControl(ui, parent)
 {
 	this->hasBorder = hasBorder;
 	this->allowResize = allowResize;

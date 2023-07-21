@@ -72,7 +72,7 @@ void __stdcall SSWR::SHPConv::SHPConvRangeFilterForm::OnCancelClicked(void *user
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 
-SSWR::SHPConv::SHPConvRangeFilterForm::SHPConvRangeFilterForm(UI::GUIClientControl *parent, UI::GUICore *ui, Media::DrawEngine *deng) : UI::GUIForm(parent, 350, 232, ui)
+SSWR::SHPConv::SHPConvRangeFilterForm::SHPConvRangeFilterForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, Media::DrawEngine *deng) : UI::GUIForm(parent, 350, 232, ui)
 {
 	this->SetText(CSTR("Range Filter"));
 	this->SetFont(0, 0, 8.25, false);

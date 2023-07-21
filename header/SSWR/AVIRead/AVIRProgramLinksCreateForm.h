@@ -38,7 +38,7 @@ namespace SSWR
 			static void __stdcall OnCreateClicked(void *userObj);
 			static void __stdcall OnCancelClicked(void *userObj);
 		public:
-			AVIRProgramLinksCreateForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, IO::ProgramLinkManager *progMgr);
+			AVIRProgramLinksCreateForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, IO::ProgramLinkManager *progMgr);
 			virtual ~AVIRProgramLinksCreateForm();
 
 			virtual void OnMonitorChanged();

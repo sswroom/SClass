@@ -30,7 +30,7 @@ namespace SSWR
 			static void __stdcall GenerateClicked(void *userObj);
 			static void __stdcall CancelClicked(void *userObj);
 		public:
-			AVIRGenImageForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRGenImageForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRGenImageForm();
 
 			virtual void OnMonitorChanged();

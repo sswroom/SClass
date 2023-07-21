@@ -29,7 +29,7 @@ namespace SSWR
 			static void __stdcall OnSleepClicked(void *userObj);
 			static void __stdcall OnDisplayOffClicked(void *userObj);
 		public:
-			AVIRPowerForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRPowerForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRPowerForm();
 
 			virtual void OnMonitorChanged();

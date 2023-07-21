@@ -26,7 +26,7 @@ namespace SSWR
 			static void __stdcall OnStartTimeClicked(void *userObj);
 			void UpdateFileList();
 		public:
-			OrganDataFileForm(UI::GUIClientControl *parent, UI::GUICore *ui, OrganEnv *env);
+			OrganDataFileForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, OrganEnv *env);
 			virtual ~OrganDataFileForm();
 
 			virtual void OnMonitorChanged();

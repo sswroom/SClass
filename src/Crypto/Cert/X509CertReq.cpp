@@ -125,7 +125,7 @@ Crypto::Cert::X509Key *Crypto::Cert::X509CertReq::GetNewPublicKey() const
 	return 0;
 }
 
-Bool Crypto::Cert::X509CertReq::GetKeyId(UInt8 *keyId) const
+Bool Crypto::Cert::X509CertReq::GetKeyId(const Data::ByteArray &keyId) const
 {
 	Crypto::Cert::X509Key *key = GetNewPublicKey();
 	if (key == 0)

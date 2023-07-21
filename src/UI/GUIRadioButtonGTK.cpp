@@ -24,18 +24,16 @@ void UI::GUIRadioButton::ChangeSelected(Bool selVal)
 	{
 		this->selected = false;
 	}
-	UOSInt i = this->selectedChangeHdlrs->GetCount();
+	UOSInt i = this->selectedChangeHdlrs.GetCount();
 	while (i-- > 0)
 	{
-		this->selectedChangeHdlrs->GetItem(i)(this->selectedChangeObjs->GetItem(i), this->selected);
+		this->selectedChangeHdlrs.GetItem(i)(this->selectedChangeObjs.GetItem(i), this->selected);
 	}
 }
 
-UI::GUIRadioButton::GUIRadioButton(UI::GUICore *ui, UI::GUIClientControl *parent, Text::CString initText, Bool selected) : UI::GUIControl(ui, parent)
+UI::GUIRadioButton::GUIRadioButton(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, Text::CString initText, Bool selected) : UI::GUIControl(ui, parent)
 {
 	this->selected = selected;
-	NEW_CLASS(this->selectedChangeHdlrs, Data::ArrayList<SelectedChangeHandler>());
-	NEW_CLASS(this->selectedChangeObjs, Data::ArrayList<void *>());
 
 	GUIRadioButton *radioBtn = 0;
 	UOSInt i = 0;
@@ -71,8 +69,6 @@ UI::GUIRadioButton::GUIRadioButton(UI::GUICore *ui, UI::GUIClientControl *parent
 
 UI::GUIRadioButton::~GUIRadioButton()
 {
-	DEL_CLASS(this->selectedChangeHdlrs);
-	DEL_CLASS(this->selectedChangeObjs);
 }
 
 Text::CString UI::GUIRadioButton::GetObjectClass()
@@ -97,7 +93,7 @@ void UI::GUIRadioButton::Select()
 
 void UI::GUIRadioButton::HandleSelectedChange(SelectedChangeHandler hdlr, void *userObj)
 {
-	this->selectedChangeHdlrs->Add(hdlr);
-	this->selectedChangeObjs->Add(userObj);
+	this->selectedChangeHdlrs.Add(hdlr);
+	this->selectedChangeObjs.Add(userObj);
 }
 

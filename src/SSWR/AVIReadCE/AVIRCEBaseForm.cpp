@@ -150,7 +150,7 @@ SSWR::AVIReadCE::AVIRCEBaseForm::MenuInfo *__stdcall SSWR::AVIReadCE::AVIRCEBase
 	return info;
 }
 
-SSWR::AVIReadCE::AVIRCEBaseForm::AVIRCEBaseForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 480, ui)
+SSWR::AVIReadCE::AVIRCEBaseForm::AVIRCEBaseForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 480, ui)
 {
 	this->core = core;
 	this->SetText(CSTR("AVIRead"));

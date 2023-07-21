@@ -49,7 +49,7 @@ namespace SSWR
 			static void __stdcall OnObjectsDblClk(void *userObj);
 
 		public:
-			AVIRLDAPExplorerForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRLDAPExplorerForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRLDAPExplorerForm();
 
 			virtual void OnMonitorChanged();

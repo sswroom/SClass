@@ -27,7 +27,7 @@ namespace SSWR
 			static void __stdcall OnConv2Clicked(void *userObj);
 			void ConvAsm();
 		public:
-			AVIRAsmConvForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRAsmConvForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRAsmConvForm();
 
 			virtual void OnMonitorChanged();

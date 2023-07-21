@@ -10,35 +10,37 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	Manage::ExceptionRecorder exHdlr(CSTR("Error.txt"), Manage::ExceptionRecorder::EA_CLOSE);
 	SSWR::AVIRead::AVIRImageViewerForm *frm;
 	SSWR::AVIRead::AVIRCore *core;
-	UI::GUICore *ui;
+	NotNullPtr<UI::GUICore> ui;
 	UTF8Char **argv;
 	IO::StmData::FileData *fd;
 	Bool succ;
 	UOSInt argc;
 	UInt32 i;
-	ui = progCtrl->CreateGUICore(progCtrl);
-	NEW_CLASS(core, SSWR::AVIRead::AVIRCoreWin(ui));
-	NEW_CLASS(frm, SSWR::AVIRead::AVIRImageViewerForm(0, ui, core));
-	frm->SetExitOnClose(true);
-	frm->Show();
-	argv = progCtrl->GetCommandLines(progCtrl, &argc);
-	if (argc > 1)
+	if (ui.Set(progCtrl->CreateGUICore(progCtrl)))
 	{
-		i = 1;
-		while (i < argc)
+		NEW_CLASS(core, SSWR::AVIRead::AVIRCoreWin(ui));
+		NEW_CLASS(frm, SSWR::AVIRead::AVIRImageViewerForm(0, ui, core));
+		frm->SetExitOnClose(true);
+		frm->Show();
+		argv = progCtrl->GetCommandLines(progCtrl, &argc);
+		if (argc > 1)
 		{
-			NEW_CLASS(fd, IO::StmData::FileData({argv[i], Text::StrCharCnt(argv[i])}, false));
-			succ = frm->ParseFile(fd);
-			DEL_CLASS(fd);
-			if (succ)
+			i = 1;
+			while (i < argc)
 			{
-				break;
+				NEW_CLASS(fd, IO::StmData::FileData({argv[i], Text::StrCharCnt(argv[i])}, false));
+				succ = frm->ParseFile(fd);
+				DEL_CLASS(fd);
+				if (succ)
+				{
+					break;
+				}
+				i++;
 			}
-			i++;
 		}
+		ui->Run();
+		DEL_CLASS(core);
+		ui.Delete();
 	}
-	ui->Run();
-	DEL_CLASS(core);
-	DEL_CLASS(ui);
 	return 0;
 }

@@ -1,6 +1,7 @@
 #ifndef _SM_CRYPTO_CERT_X509RSAKEY
 #define _SM_CRYPTO_CERT_X509RSAKEY
 #include "Crypto/Cert/X509File.h"
+#include "Data/ByteArray.h"
 
 namespace Crypto
 {
@@ -26,7 +27,7 @@ namespace Crypto
 			UOSInt GetKeySizeBits() const;
 			Bool IsPrivateKey() const;
 			Crypto::Cert::X509Key *CreatePublicKey() const;
-			Bool GetKeyId(UInt8 *keyId) const; //20 bytes
+			Bool GetKeyId(const Data::ByteArray &keyId) const; //20 bytes
 
 			const UInt8 *GetRSAModulus(UOSInt *size) const;
 			const UInt8 *GetRSAPublicExponent(UOSInt *size) const;

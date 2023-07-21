@@ -17,7 +17,7 @@ namespace UI
 
 //		static OSInt __stdcall LBWndProc(void *hWnd, UInt32 msg, UInt32 wParam, OSInt lParam);
 	public:
-		GUICheckedListBox(GUICore *ui, UI::GUIClientControl *parent);
+		GUICheckedListBox(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent);
 		virtual ~GUICheckedListBox();
 
 //		void EventSelectionChange();

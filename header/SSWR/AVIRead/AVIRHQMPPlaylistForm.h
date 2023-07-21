@@ -34,7 +34,7 @@ namespace SSWR
 			Bool AddFolder(UTF8Char *folderBuff, UTF8Char *folderBuffEnd);
 			void UpdatePlaylist();
 		public:
-			AVIRHQMPPlaylistForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Media::Playlist *playlist);
+			AVIRHQMPPlaylistForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, Media::Playlist *playlist);
 			virtual ~AVIRHQMPPlaylistForm();
 
 			virtual void OnMonitorChanged();

@@ -35,7 +35,7 @@ void GUIControl_SizeChanged(GtkWidget *wnd, GdkEvent *event, gpointer data)
 	me->OnSizeChanged(false);
 }
 
-UI::GUIControl::GUIControl(UI::GUICore *ui, GUIClientControl *parent)
+UI::GUIControl::GUIControl(NotNullPtr<UI::GUICore> ui, GUIClientControl *parent)
 {
 	this->ui = ui;
 	this->parent = parent;

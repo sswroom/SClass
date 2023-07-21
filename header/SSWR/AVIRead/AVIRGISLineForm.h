@@ -44,7 +44,7 @@ namespace SSWR
 			static void __stdcall OnCancelClicked(void *userObj);
 			void UpdatePreview();
 		public:
-			AVIRGISLineForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Media::DrawEngine *eng, UOSInt lineThick, UInt32 lineColor);
+			AVIRGISLineForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, Media::DrawEngine *eng, UOSInt lineThick, UInt32 lineColor);
 			virtual ~AVIRGISLineForm();
 
 			virtual void OnMonitorChanged();

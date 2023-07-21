@@ -41,7 +41,7 @@ namespace SSWR
 			static void __stdcall OnIPSelChg(void *userObj);
 
 		public:
-			AVIRTraceRouteForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRTraceRouteForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRTraceRouteForm();
 
 			virtual void OnMonitorChanged();

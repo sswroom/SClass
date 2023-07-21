@@ -20,7 +20,7 @@ namespace SSWR
 				AVIRMIMEViewer(SSWR::AVIRead::AVIRCore *core, UI::GUIClientControl *ctrl, Text::IMIMEObj *obj);
 				virtual ~AVIRMIMEViewer();
 
-				static AVIRMIMEViewer *CreateViewer(SSWR::AVIRead::AVIRCore *core, UI::GUICore *ui, UI::GUIClientControl *ctrl, Media::ColorManagerSess *sess, Text::IMIMEObj *obj);
+				static AVIRMIMEViewer *CreateViewer(SSWR::AVIRead::AVIRCore *core, NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *ctrl, Media::ColorManagerSess *sess, Text::IMIMEObj *obj);
 			};
 		}
 	}

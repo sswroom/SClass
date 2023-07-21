@@ -77,7 +77,7 @@ namespace SSWR
 
 			void ServerStop();
 		public:
-			AVIRMQTTBrokerForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRMQTTBrokerForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRMQTTBrokerForm();
 
 			virtual void OnMonitorChanged();

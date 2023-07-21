@@ -47,7 +47,7 @@ namespace SSWR
 			Net::WebBrowser *browser;
 			Text::EncodingFactory encFact;
 			Media::DrawEngine *eng;
-			UI::GUICore *ui;
+			NotNullPtr<UI::GUICore> ui;
 			Exporter::ExporterList exporters;
 			UInt32 currCodePage;
 			IO::LogTool log;
@@ -69,7 +69,7 @@ namespace SSWR
 			static void __stdcall FormClosed(void *userObj, UI::GUIForm *frm);
 			void InitForm(UI::GUIForm *frm);
 
-			AVIRCore(UI::GUICore *ui);
+			AVIRCore(NotNullPtr<UI::GUICore> ui);
 		public:
 			virtual ~AVIRCore();
 

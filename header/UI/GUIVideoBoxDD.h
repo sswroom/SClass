@@ -38,7 +38,7 @@ namespace UI
 		virtual void BeginUpdateSize();
 		virtual void EndUpdateSize();
 	public:
-		GUIVideoBoxDD(GUICore *ui, UI::GUIClientControl *parent, Media::ColorManagerSess *colorSess, UOSInt buffCnt, UOSInt threadCnt);
+		GUIVideoBoxDD(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent, Media::ColorManagerSess *colorSess, UOSInt buffCnt, UOSInt threadCnt);
 		virtual ~GUIVideoBoxDD();
 
 		virtual Text::CString GetObjectClass();

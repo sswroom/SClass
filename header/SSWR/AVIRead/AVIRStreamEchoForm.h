@@ -43,7 +43,7 @@ namespace SSWR
 			void StopStream();
 
 		public:
-			AVIRStreamEchoForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRStreamEchoForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRStreamEchoForm();
 
 			virtual void OnMonitorChanged();

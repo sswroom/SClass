@@ -92,7 +92,7 @@ OSInt __stdcall SSWR::AVIRead::AVIRUSBDeviceForm::ItemCompare(void *item1, void 
 	}
 }
 
-SSWR::AVIRead::AVIRUSBDeviceForm::AVIRUSBDeviceForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRUSBDeviceForm::AVIRUSBDeviceForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->core = core;
 	this->SetText(CSTR("USB Devices"));

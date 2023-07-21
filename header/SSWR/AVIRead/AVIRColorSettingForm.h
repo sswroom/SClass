@@ -170,7 +170,7 @@ namespace SSWR
 			static void __stdcall OnYUVDefSMPTE240MChg(void *userObj, Bool checked);
 			
 		public:
-			AVIRColorSettingForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, MonitorHandle *hMon);
+			AVIRColorSettingForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, MonitorHandle *hMon);
 			virtual ~AVIRColorSettingForm();
 
 			virtual void OnMonitorChanged();

@@ -45,7 +45,7 @@ void __stdcall SSWR::AVIRead::AVIRGPUInfoForm::OnGPUSelChange(void *userObj)
 	}
 }
 
-SSWR::AVIRead::AVIRGPUInfoForm::AVIRGPUInfoForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 800, 600, ui)
+SSWR::AVIRead::AVIRGPUInfoForm::AVIRGPUInfoForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 800, 600, ui)
 {
 	this->SetText(CSTR("GPU Info"));
 	this->SetFont(0, 0, 8.25, false);

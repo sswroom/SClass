@@ -98,7 +98,7 @@ namespace SSWR
 			void ServerStop();
 			void ClearTopics();
 		public:
-			AVIRMQTTExplorerForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRMQTTExplorerForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRMQTTExplorerForm();
 
 			virtual void OnMonitorChanged();

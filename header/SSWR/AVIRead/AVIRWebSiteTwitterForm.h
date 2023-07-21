@@ -28,7 +28,7 @@ namespace SSWR
 
 			static void __stdcall OnRequestPageClicked(void *userObj);
 		public:
-			AVIRWebSiteTwitterForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRWebSiteTwitterForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRWebSiteTwitterForm();
 
 			virtual void OnMonitorChanged();

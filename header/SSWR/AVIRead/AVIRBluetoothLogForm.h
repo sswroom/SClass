@@ -40,7 +40,7 @@ namespace SSWR
 
 			void UpdateStatus();
 		public:
-			AVIRBluetoothLogForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRBluetoothLogForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRBluetoothLogForm();
 
 			virtual void OnMonitorChanged();

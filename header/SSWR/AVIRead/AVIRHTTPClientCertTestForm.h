@@ -38,7 +38,7 @@ namespace SSWR
 			static void __stdcall OnStopClick(void *userObj);
 			static void __stdcall OnSSLCertClicked(void *userObj);
 		public:
-			AVIRHTTPClientCertTestForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRHTTPClientCertTestForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRHTTPClientCertTestForm();
 
 			virtual void OnMonitorChanged();

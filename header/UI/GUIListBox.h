@@ -25,7 +25,7 @@ namespace UI
 
 		static OSInt __stdcall LBWndProc(void *hWnd, UInt32 msg, UOSInt wParam, OSInt lParam);
 	public:
-		GUIListBox(GUICore *ui, UI::GUIClientControl *parent, Bool multiSelect);
+		GUIListBox(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent, Bool multiSelect);
 		virtual ~GUIListBox();
 
 		void EventSelectionChange();

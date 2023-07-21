@@ -54,7 +54,7 @@ namespace SSWR
 			static void __stdcall OnStrConvClicked(void *userObj);
 			void DisplayTime(const Data::Timestamp &ts);
 		public:
-			AVIRTimestampForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRTimestampForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRTimestampForm();
 
 			virtual void OnMonitorChanged();

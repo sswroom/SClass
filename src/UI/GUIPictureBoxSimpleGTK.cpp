@@ -181,7 +181,7 @@ void UI::GUIPictureBoxSimple::UpdatePreview()
 	this->Redraw();
 }
 
-UI::GUIPictureBoxSimple::GUIPictureBoxSimple(UI::GUICore *ui, UI::GUIClientControl *parent, Media::DrawEngine *eng, Bool hasBorder) : UI::GUIControl(ui, parent)
+UI::GUIPictureBoxSimple::GUIPictureBoxSimple(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, Media::DrawEngine *eng, Bool hasBorder) : UI::GUIControl(ui, parent)
 {
 	this->hasBorder = hasBorder;
 	this->eng = eng;

@@ -26,7 +26,7 @@ namespace SSWR
 			virtual void OnKeyDown(UInt32 keyCode);
 
 		public:
-			AVIRFontSelector(UI::GUICore *ui, UI::GUIClientControl *parent, SSWR::AVIRead::AVIRCore *core, Map::MapEnv *env, UOSInt initFontStyle, Media::ColorManagerSess *colorSess);
+			AVIRFontSelector(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, SSWR::AVIRead::AVIRCore *core, Map::MapEnv *env, UOSInt initFontStyle, Media::ColorManagerSess *colorSess);
 			virtual ~AVIRFontSelector();
 
 			virtual void YUVParamChanged(const Media::IColorHandler::YUVPARAM *yuvParam);

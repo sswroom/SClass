@@ -11,7 +11,7 @@
 #include <windows.h>
 #include <commctrl.h>
 
-UI::GUIComboBox::GUIComboBox(GUICore *ui, UI::GUIClientControl *parent, Bool allowTyping) : UI::GUIControl(ui, parent)
+UI::GUIComboBox::GUIComboBox(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent, Bool allowTyping) : UI::GUIControl(ui, parent)
 {
 	this->autoComplete = false;
 	this->minVisible = 5;
@@ -29,7 +29,7 @@ UI::GUIComboBox::GUIComboBox(GUICore *ui, UI::GUIClientControl *parent, Bool all
 	{
 		style = style | CBS_DROPDOWNLIST;
 	}
-	this->InitControl(((GUICoreWin*)ui)->GetHInst(), parent, L"COMBOBOX", (const UTF8Char*)"", style, 0, 0, 0, 200, 28);
+	this->InitControl(((GUICoreWin*)ui.Ptr())->GetHInst(), parent, L"COMBOBOX", (const UTF8Char*)"", style, 0, 0, 0, 200, 28);
 	if (allowTyping)
 	{
 		SendMessage((HWND)this->hwnd, CB_LIMITTEXT, 0, 0);

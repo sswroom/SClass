@@ -56,9 +56,9 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientCertTestForm::OnStartClick(void *use
 		sanList.Add(Text::String::New(CSTR("127.0.0.1")));
 		ext.subjectAltName = &sanList;
 		ext.useSubjKeyId = true;
-		key->GetKeyId(ext.subjKeyId);
+		key->GetKeyId(BYTEARR(ext.subjKeyId));
 		ext.useAuthKeyId = true;
-		key->GetKeyId(ext.authKeyId);
+		key->GetKeyId(BYTEARR(ext.authKeyId));
 		me->sslCert = Crypto::Cert::CertUtil::SelfSignedCertCreate(ssl, &names, key, 30, &ext);
 		Crypto::Cert::CertNames::FreeNames(&names);
 		LIST_FREE_STRING(&sanList);
@@ -156,7 +156,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientCertTestForm::OnSSLCertClicked(void 
 	}
 }
 
-SSWR::AVIRead::AVIRHTTPClientCertTestForm::AVIRHTTPClientCertTestForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRHTTPClientCertTestForm::AVIRHTTPClientCertTestForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->core = core;
 	this->SetText(CSTR("HTTP Client Cert Test"));

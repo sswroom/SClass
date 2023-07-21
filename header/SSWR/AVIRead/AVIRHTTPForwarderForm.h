@@ -49,7 +49,7 @@ namespace SSWR
 			static void __stdcall OnStopClick(void *userObj);
 			static void __stdcall OnSSLCertClicked(void *userObj);
 		public:
-			AVIRHTTPForwarderForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRHTTPForwarderForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRHTTPForwarderForm();
 
 			virtual void OnMonitorChanged();

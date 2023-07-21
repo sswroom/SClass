@@ -45,7 +45,7 @@ namespace SSWR
 			static void __stdcall OnCancelClick(void *userObj);
 			static void __stdcall OnPinTypeChg(void *userObj);
 		public:
-			AVIRSelIOPinForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRSelIOPinForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRSelIOPinForm();
 
 			virtual void OnMonitorChanged();

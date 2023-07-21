@@ -52,7 +52,7 @@ void __stdcall SSWR::AVIRead::AVIRGenImageForm::CancelClicked(void *userObj)
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 
-SSWR::AVIRead::AVIRGenImageForm::AVIRGenImageForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 350, 296, ui)
+SSWR::AVIRead::AVIRGenImageForm::AVIRGenImageForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 350, 296, ui)
 {
 	this->SetText(CSTR("Generate Image"));
 	this->SetFont(0, 0, 8.25, false);

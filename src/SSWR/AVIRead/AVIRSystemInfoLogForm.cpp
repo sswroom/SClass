@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "SSWR/AVIRead/AVIRSystemInfoLogForm.h"
 
-SSWR::AVIRead::AVIRSystemInfoLogForm::AVIRSystemInfoLogForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, IO::SystemInfoLog *sysInfo) : UI::GUIForm(parent, 800, 600, ui)
+SSWR::AVIRead::AVIRSystemInfoLogForm::AVIRSystemInfoLogForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, IO::SystemInfoLog *sysInfo) : UI::GUIForm(parent, 800, 600, ui)
 {
 	this->SetText(CSTR("System Info Log"));
 	this->SetFont(0, 0, 8.25, false);

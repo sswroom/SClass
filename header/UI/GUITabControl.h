@@ -19,7 +19,7 @@ namespace UI
 
 		static OSInt __stdcall TCWndProc(void *hWnd, UInt32 msg, UOSInt wParam, OSInt lParam);
 	public:
-		GUITabControl(GUICore *ui, UI::GUIClientControl *parent);
+		GUITabControl(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent);
 		virtual ~GUITabControl();
 
 		GUITabPage *AddTabPage(NotNullPtr<Text::String> itemText);

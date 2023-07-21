@@ -39,7 +39,7 @@ Bool Media::DRMMonitorSurfaceMgr::OpenCard(UOSInt cardNum)
 	return true;
 }
 
-Media::DRMMonitorSurfaceMgr::DRMMonitorSurfaceMgr(UOSInt cardNum, UI::GUICore *ui, Media::ColorManagerSess *colorSess)
+Media::DRMMonitorSurfaceMgr::DRMMonitorSurfaceMgr(UOSInt cardNum, NotNullPtr<UI::GUICore> ui, Media::ColorManagerSess *colorSess)
 {
 	this->monMgr = 0;
 	this->colorMgr = 0;

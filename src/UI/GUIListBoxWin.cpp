@@ -33,7 +33,7 @@ OSInt __stdcall UI::GUIListBox::LBWndProc(void *hWnd, UInt32 msg, UOSInt wParam,
 	return 0;
 }
 
-UI::GUIListBox::GUIListBox(UI::GUICore *ui, UI::GUIClientControl *parent, Bool multiSelect) : UI::GUIControl(ui, parent)
+UI::GUIListBox::GUIListBox(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, Bool multiSelect) : UI::GUIControl(ui, parent)
 {
 	Double w;
 	Double h;
@@ -49,7 +49,7 @@ UI::GUIListBox::GUIListBox(UI::GUICore *ui, UI::GUIClientControl *parent, Bool m
 	{
 		style = style | LBS_EXTENDEDSEL;
 	}
-	this->InitControl(((UI::GUICoreWin*)ui)->GetHInst(), parent, L"LISTBOX", (const UTF8Char*)"ListBox", style, WS_EX_CLIENTEDGE, 0, 0, w, h);
+	this->InitControl(((UI::GUICoreWin*)ui.Ptr())->GetHInst(), parent, L"LISTBOX", (const UTF8Char*)"ListBox", style, WS_EX_CLIENTEDGE, 0, 0, w, h);
 	this->clsData = (ClassData*)UI::GUICoreWin::MSSetWindowObj(this->hwnd, GWLP_WNDPROC, (OSInt)LBWndProc);
 }
 

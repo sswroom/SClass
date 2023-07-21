@@ -136,7 +136,7 @@ namespace SSWR
 			static void __stdcall OnAccessSelChg(void *userObj);
 			static void __stdcall OnSSLCertClicked(void *userObj);
 		public:
-			AVIRHTTPSvrForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRHTTPSvrForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRHTTPSvrForm();
 
 			virtual void OnMonitorChanged();

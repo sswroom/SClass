@@ -20,8 +20,8 @@ namespace UI
 		static void Deinit(void *hInst);
 		void UpdateScrollBars();
 	public:
-		GUIPanel(GUICore *ui, void *parentHWnd);
-		GUIPanel(GUICore *ui, UI::GUIClientControl *parent);
+		GUIPanel(NotNullPtr<GUICore> ui, void *parentHWnd);
+		GUIPanel(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent);
 		virtual ~GUIPanel();
 
 		virtual Bool IsChildVisible();

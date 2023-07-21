@@ -27,7 +27,7 @@ namespace SSWR
 			virtual void OnKeyDown(UInt32 keyCode);
 
 		public:
-			AVIRLineSelector(UI::GUICore *ui, UI::GUIClientControl *parent, SSWR::AVIRead::AVIRCore *core, Map::MapEnv *env, UOSInt initLineStyle, Media::ColorManagerSess *colorSess);
+			AVIRLineSelector(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, SSWR::AVIRead::AVIRCore *core, Map::MapEnv *env, UOSInt initLineStyle, Media::ColorManagerSess *colorSess);
 			virtual ~AVIRLineSelector();
 
 			virtual void YUVParamChanged(const Media::IColorHandler::YUVPARAM *yuvParam);

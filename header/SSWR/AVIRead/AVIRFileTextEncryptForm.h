@@ -28,7 +28,7 @@ namespace SSWR
 			static void __stdcall OnFileDrop(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles);
 			static void __stdcall OnConvertClicked(void *userObj);
 		public:
-			AVIRFileTextEncryptForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRFileTextEncryptForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRFileTextEncryptForm();
 
 			virtual void OnMonitorChanged();

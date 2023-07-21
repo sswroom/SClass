@@ -48,7 +48,7 @@ namespace SSWR
 			static void __stdcall OnTimerTick(void *userObj);
 			void DataClear();
 		public:
-			AVIREWDTU01Form(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
+			AVIREWDTU01Form(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIREWDTU01Form();
 
 			virtual void OnMonitorChanged();

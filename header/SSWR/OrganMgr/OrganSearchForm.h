@@ -26,7 +26,7 @@ namespace SSWR
 			static void __stdcall OnOKClicked(void *userObj);
 			static void __stdcall OnCancelClicked(void *userObj);
 		public:
-			OrganSearchForm(UI::GUIClientControl *parent, UI::GUICore *ui, OrganEnv *env);
+			OrganSearchForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, OrganEnv *env);
 			virtual ~OrganSearchForm();
 
 			virtual void OnMonitorChanged();

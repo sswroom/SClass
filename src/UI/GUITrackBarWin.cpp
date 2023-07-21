@@ -19,7 +19,7 @@ void UI::GUITrackBar::EventScrolled()
 	}
 }
 
-UI::GUITrackBar::GUITrackBar(UI::GUICore *ui, UI::GUIClientControl *parent, UOSInt minVal, UOSInt maxVal, UOSInt currVal) : UI::GUIControl(ui, parent)
+UI::GUITrackBar::GUITrackBar(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, UOSInt minVal, UOSInt maxVal, UOSInt currVal) : UI::GUIControl(ui, parent)
 {
     INITCOMMONCONTROLSEX icex;
 
@@ -32,7 +32,7 @@ UI::GUITrackBar::GUITrackBar(UI::GUICore *ui, UI::GUIClientControl *parent, UOSI
 	{
 		style = style | WS_VISIBLE;
 	}
-	this->InitControl(((UI::GUICoreWin*)ui)->GetHInst(), parent, TRACKBAR_CLASSW, (const UTF8Char*)"", style, 0, 0, 0, 200, 24);
+	this->InitControl(((UI::GUICoreWin*)ui.Ptr())->GetHInst(), parent, TRACKBAR_CLASSW, (const UTF8Char*)"", style, 0, 0, 0, 200, 24);
 	SendMessage((HWND)this->hwnd, TBM_SETRANGEMIN, 0, (LPARAM)minVal);
 	SendMessage((HWND)this->hwnd, TBM_SETRANGEMAX, 0, (LPARAM)maxVal);
 	SendMessage((HWND)this->hwnd, TBM_SETPOS, 0, (LPARAM)currVal);

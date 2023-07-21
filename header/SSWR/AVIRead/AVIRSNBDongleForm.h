@@ -102,7 +102,7 @@ namespace SSWR
 			void LoadFile();
 			void SaveFile();
 		public:
-			AVIRSNBDongleForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, NotNullPtr<IO::Stream> stm);
+			AVIRSNBDongleForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, NotNullPtr<IO::Stream> stm);
 			virtual ~AVIRSNBDongleForm();
 
 			virtual void OnMonitorChanged();

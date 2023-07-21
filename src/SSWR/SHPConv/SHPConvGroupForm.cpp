@@ -13,7 +13,7 @@ void __stdcall SSWR::SHPConv::SHPConvGroupForm::OnCancelClicked(void *userObj)
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 
-SSWR::SHPConv::SHPConvGroupForm::SHPConvGroupForm(UI::GUIClientControl *parent, UI::GUICore *ui) : UI::GUIForm(parent, 300, 216, ui)
+SSWR::SHPConv::SHPConvGroupForm::SHPConvGroupForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui) : UI::GUIForm(parent, 300, 216, ui)
 {
 	this->SetText(CSTR("Group"));
 	this->SetFont(0, 0, 8.25, false);

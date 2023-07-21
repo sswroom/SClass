@@ -53,7 +53,7 @@ namespace SSWR
 			void ClearExts();
 			void ClearResult();
 		public:
-			AVIRLineCounterForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRLineCounterForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRLineCounterForm();
 
 			virtual void OnMonitorChanged();

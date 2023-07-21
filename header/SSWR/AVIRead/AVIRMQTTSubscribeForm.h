@@ -94,7 +94,7 @@ namespace SSWR
 			void UpdateTopicChart();
 			void ServerStop();
 		public:
-			AVIRMQTTSubscribeForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRMQTTSubscribeForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRMQTTSubscribeForm();
 
 			virtual void OnMonitorChanged();

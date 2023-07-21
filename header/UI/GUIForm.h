@@ -80,12 +80,12 @@ namespace UI
 		static void Deinit(void *hInst);
 
 		void UpdateHAcc();
-		GUIForm(ControlHandle *hWnd);
+		GUIForm(NotNullPtr<UI::GUICore> ui, ControlHandle *hWnd);
 	public:
-		static GUIForm *FindForm(const UTF8Char *formName);
+		static GUIForm *FindForm(NotNullPtr<UI::GUICore> ui, const UTF8Char *formName);
 
 	public:
-		GUIForm(UI::GUIClientControl *parent, Double initW, Double initH, UI::GUICore *ui);
+		GUIForm(UI::GUIClientControl *parent, Double initW, Double initH, NotNullPtr<UI::GUICore> ui);
 		virtual ~GUIForm();
 
 		void SetFormState(FormState fs);
@@ -141,7 +141,7 @@ namespace UI
 
 		void ToFullScn();
 		void FromFullScn();
-		UI::GUICore *GetUI();
+		NotNullPtr<UI::GUICore> GetUI();
 	};
 }
 #endif

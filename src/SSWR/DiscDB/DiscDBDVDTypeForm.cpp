@@ -77,7 +77,7 @@ Bool SSWR::DiscDB::DiscDBDVDTypeForm::UpdateRow()
 	}
 }
 
-SSWR::DiscDB::DiscDBDVDTypeForm::DiscDBDVDTypeForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::DiscDB::DiscDBEnv *env) : UI::GUIForm(parent, 358, 223, ui)
+SSWR::DiscDB::DiscDBDVDTypeForm::DiscDBDVDTypeForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::DiscDB::DiscDBEnv *env) : UI::GUIForm(parent, 358, 223, ui)
 {
 	this->SetText(CSTR("Maintain DVD Types"));
 	this->SetFont(0, 0, 8.25, false);

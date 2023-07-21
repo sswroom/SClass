@@ -87,7 +87,7 @@ namespace SSWR
 			static void __stdcall OnTimerTick(void *userObj);
 
 		public:
-			AVIRPingMonitorForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRPingMonitorForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRPingMonitorForm();
 
 			virtual void OnMonitorChanged();

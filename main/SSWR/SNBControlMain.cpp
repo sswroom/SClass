@@ -10,7 +10,7 @@
 
 Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
-	UI::GUICore *ui;
+	NotNullPtr<UI::GUICore> ui;
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 
@@ -23,8 +23,8 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("SNBControl.log"));
 #endif
 	Manage::ExceptionRecorder exHdlr(CSTRP(sbuff, sptr), Manage::ExceptionRecorder::EA_CLOSE);
+	if (ui.Set(progCtrl->CreateGUICore(progCtrl)))
 	{
-		ui = progCtrl->CreateGUICore(progCtrl);
 		SSWR::AVIRead::AVIRCoreWin core(ui);
 		SSWR::AVIRead::AVIRSNBDongleForm *snbFrm = 0;
 		{
@@ -41,7 +41,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		{
 			ui->Run();
 		}
-		DEL_CLASS(ui);
+		ui.Delete();
 	}
 	return 0;
 }

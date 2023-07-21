@@ -101,7 +101,7 @@ namespace SSWR
 			void HKOPortal(Text::CString listFile, Text::CString filePath);
 			void OpenCSV(Text::CString url, UInt32 codePage, Text::CString name, Text::CString nameCol, Text::CString latCol, Text::CString lonCol);
 		public:
-			AVIRGISForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Map::MapEnv *env, Map::MapView *view);
+			AVIRGISForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, Map::MapEnv *env, Map::MapView *view);
 			virtual ~AVIRGISForm();
 
 			virtual void EventMenuClicked(UInt16 cmdId);

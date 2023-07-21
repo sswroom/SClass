@@ -31,7 +31,7 @@ namespace SSWR
 			static void __stdcall OnDevicesSelChg(void *userObj);
 			static OSInt __stdcall ItemCompare(void *item1, void *item2);
 		public:
-			AVIRHIDDeviceForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRHIDDeviceForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRHIDDeviceForm();
 
 			virtual void OnMonitorChanged();

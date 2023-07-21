@@ -23,7 +23,7 @@ namespace UI
 		Bool nonUIEvent;
 
 	public:
-		GUIComboBox(GUICore *ui, UI::GUIClientControl *parent, Bool allowEditing);
+		GUIComboBox(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent, Bool allowEditing);
 		virtual ~GUIComboBox();
 
 		void EventSelectionChange();

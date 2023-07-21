@@ -116,7 +116,7 @@ namespace SSWR
 			static void __stdcall OnAllFileClicked(void *userObj);
 
 		public:
-			DiscDBBurntDiscForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::DiscDB::DiscDBEnv *env);
+			DiscDBBurntDiscForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::DiscDB::DiscDBEnv *env);
 			virtual ~DiscDBBurntDiscForm();
 
 			virtual void OnMonitorChanged();

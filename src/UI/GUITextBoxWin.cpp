@@ -11,17 +11,17 @@
 #include <richedit.h>
 #endif
 
-UI::GUITextBox::GUITextBox(UI::GUICore *ui, UI::GUIClientControl *parent, Text::CString initText) : UI::GUIControl(ui, parent)
+UI::GUITextBox::GUITextBox(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, Text::CString initText) : UI::GUIControl(ui, parent)
 {
 	UInt32 style = WS_BORDER | WS_TABSTOP | WS_CHILD | ES_AUTOHSCROLL;
 	if (parent->IsChildVisible())
 	{
 		style = style | WS_VISIBLE;
 	}
-	this->InitControl(((UI::GUICoreWin*)ui)->GetHInst(), parent, L"EDIT", initText.v, style, WS_EX_CLIENTEDGE, 0, 0, 200, 28);
+	this->InitControl(((UI::GUICoreWin*)ui.Ptr())->GetHInst(), parent, L"EDIT", initText.v, style, WS_EX_CLIENTEDGE, 0, 0, 200, 28);
 }
 
-UI::GUITextBox::GUITextBox(UI::GUICore *ui, UI::GUIClientControl *parent, Text::CString initText, Bool isMultiline) : UI::GUIControl(ui, parent)
+UI::GUITextBox::GUITextBox(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, Text::CString initText, Bool isMultiline) : UI::GUIControl(ui, parent)
 {
 	UInt32 style = WS_BORDER | WS_TABSTOP | WS_CHILD | ES_AUTOHSCROLL;
 	if (parent->IsChildVisible())
@@ -32,7 +32,7 @@ UI::GUITextBox::GUITextBox(UI::GUICore *ui, UI::GUIClientControl *parent, Text::
 	{
 		style |= ES_WANTRETURN | ES_MULTILINE | ES_AUTOVSCROLL | WS_VSCROLL;
 	}
-	this->InitControl(((UI::GUICoreWin*)ui)->GetHInst(), parent, L"EDIT", initText.v, style, WS_EX_CLIENTEDGE, 0, 0, 200, 28);
+	this->InitControl(((UI::GUICoreWin*)ui.Ptr())->GetHInst(), parent, L"EDIT", initText.v, style, WS_EX_CLIENTEDGE, 0, 0, 200, 28);
 }
 
 UI::GUITextBox::~GUITextBox()

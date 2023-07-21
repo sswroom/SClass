@@ -32,7 +32,7 @@ namespace SSWR
 
 			static void __stdcall OnParseClicked(void *userObj);
 		public:
-			AVIRUserAgentParseForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRUserAgentParseForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRUserAgentParseForm();
 
 			virtual void OnMonitorChanged();

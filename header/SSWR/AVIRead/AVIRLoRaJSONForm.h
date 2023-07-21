@@ -35,7 +35,7 @@ namespace SSWR
 			static void PHYPayloadDetail(Text::StringBuilderUTF8 *sb, const UInt8 *buff, UOSInt buffSize);
 			static void MACPayloadDetail(Text::StringBuilderUTF8 *sb, Bool downLink, const UInt8 *buff, UOSInt buffSize);
 		public:
-			AVIRLoRaJSONForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRLoRaJSONForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRLoRaJSONForm();
 
 			virtual void OnMonitorChanged();

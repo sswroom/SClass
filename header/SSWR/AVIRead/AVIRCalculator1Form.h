@@ -74,7 +74,7 @@ namespace SSWR
 			static void __stdcall OnKeyDot(void *userObj);
 			static void __stdcall OnKeyEqual(void *userObj);
 		public:
-			AVIRCalculator1Form(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRCalculator1Form(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRCalculator1Form();
 
 			virtual void EventMenuClicked(UInt16 cmdId);

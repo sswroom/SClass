@@ -32,7 +32,7 @@ namespace UI
 		void InitJS();
 
 	public:
-		GUICustomDraw(GUICore *ui, UI::GUIClientControl *parent, Media::DrawEngine *eng);
+		GUICustomDraw(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent, Media::DrawEngine *eng);
 		virtual ~GUICustomDraw();
 
 		virtual Text::CString GetObjectClass();

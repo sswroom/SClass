@@ -96,7 +96,7 @@ void UI::GUIControl::InitControl(void *hInst, UI::GUIClientControl *parent, cons
 //	UpdateBGColor();
 }
 
-UI::GUIControl::GUIControl(GUICore *ui, UI::GUIClientControl *parent)
+UI::GUIControl::GUIControl(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent)
 {
 	this->dropHdlr = 0;
 	this->inited = false;
@@ -152,7 +152,7 @@ UI::GUIControl::~GUIControl()
 
 void *UI::GUIControl::GetHInst()
 {
-	return ((GUICoreWin*)ui)->GetHInst();
+	return ((GUICoreWin*)ui.Ptr())->GetHInst();
 }
 
 void *UI::GUIControl::GetFont()

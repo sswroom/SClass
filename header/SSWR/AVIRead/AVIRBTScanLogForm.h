@@ -38,7 +38,7 @@ namespace SSWR
 
 			void UpdateStatus();
 		public:
-			AVIRBTScanLogForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, IO::BTScanLog *btLog);
+			AVIRBTScanLogForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, IO::BTScanLog *btLog);
 			virtual ~AVIRBTScanLogForm();
 
 			virtual void OnMonitorChanged();

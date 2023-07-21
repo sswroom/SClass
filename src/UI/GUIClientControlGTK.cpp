@@ -45,7 +45,7 @@ void UI::GUIClientControl::InitContainer()
 	gtk_widget_show(data->scrolledWin);
 }
 
-UI::GUIClientControl::GUIClientControl(UI::GUICore *ui, UI::GUIClientControl *parent) : UI::GUIControl(ui, parent)
+UI::GUIClientControl::GUIClientControl(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent) : UI::GUIControl(ui, parent)
 {
 	this->container = 0;
 }

@@ -23,7 +23,7 @@ namespace SSWR
 			static void __stdcall OnRenameExtUpperClicked(void *userObj);
 			static void __stdcall OnRenameExtLowerClicked(void *userObj);
 		public:
-			AVIRBatchRenameForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRBatchRenameForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRBatchRenameForm();
 
 			virtual void OnMonitorChanged();

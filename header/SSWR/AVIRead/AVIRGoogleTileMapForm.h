@@ -26,7 +26,7 @@ namespace SSWR
 
 			static void __stdcall OnOKClicked(void *userObj);
 		public:
-			AVIRGoogleTileMapForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Net::SSLEngine *ssl);
+			AVIRGoogleTileMapForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, Net::SSLEngine *ssl);
 			virtual ~AVIRGoogleTileMapForm();
 
 			virtual void OnMonitorChanged();

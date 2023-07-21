@@ -23,7 +23,7 @@ namespace SSWR
 			static void __stdcall OnErrorCodeChanged(void *userObj);
 
 		public:
-			AVIRWindowsErrorForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRWindowsErrorForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRWindowsErrorForm();
 
 			virtual void OnMonitorChanged();

@@ -49,7 +49,7 @@ void SSWR::OrganMgr::OrganUserForm::UpdateUserList()
 	}
 }
 
-SSWR::OrganMgr::OrganUserForm::OrganUserForm(UI::GUIClientControl *parent, UI::GUICore *ui, OrganEnv *env) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::OrganMgr::OrganUserForm::OrganUserForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, OrganEnv *env) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 10.5, false);
 

@@ -51,7 +51,7 @@ namespace SSWR
 			static void __stdcall OnLogSel(void *userObj);
 			static void __stdcall OnTimerTick(void *userObj);
 		public:
-			AVIRMyDBMSForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRMyDBMSForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRMyDBMSForm();
 
 			virtual void OnMonitorChanged();

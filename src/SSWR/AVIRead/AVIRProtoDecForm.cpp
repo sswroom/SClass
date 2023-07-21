@@ -123,7 +123,7 @@ void SSWR::AVIRead::AVIRProtoDecForm::ClearList()
 	this->lvLogs->ClearItems();
 }
 
-SSWR::AVIRead::AVIRProtoDecForm::AVIRProtoDecForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRProtoDecForm::AVIRProtoDecForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetText(CSTR("Protocol Decoder"));
 	this->SetFont(0, 0, 8.25, false);

@@ -15,7 +15,7 @@
 
 OSInt UI::GUIListView::useCnt = 0;
 
-UI::GUIListView::GUIListView(UI::GUICore *ui, UI::GUIClientControl *parent, ListViewStyle lvstyle, UOSInt colCount) : UI::GUIControl(ui, parent)
+UI::GUIListView::GUIListView(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, ListViewStyle lvstyle, UOSInt colCount) : UI::GUIControl(ui, parent)
 {
 	Double w;
 	Double h;
@@ -53,7 +53,7 @@ UI::GUIListView::GUIListView(UI::GUICore *ui, UI::GUIClientControl *parent, List
 	{
 		style = style | WS_VISIBLE;
 	}
-	this->InitControl(((UI::GUICoreWin*)ui)->GetHInst(), parent, WC_LISTVIEWW, (const UTF8Char*)"ListView", style, WS_EX_CLIENTEDGE, 0, 0, w, h);
+	this->InitControl(((UI::GUICoreWin*)ui.Ptr())->GetHInst(), parent, WC_LISTVIEWW, (const UTF8Char*)"ListView", style, WS_EX_CLIENTEDGE, 0, 0, w, h);
 }
 
 UI::GUIListView::~GUIListView()

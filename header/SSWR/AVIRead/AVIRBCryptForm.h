@@ -37,7 +37,7 @@ namespace SSWR
 			static void __stdcall OnGenHashClicked(void *userObj);
 			static void __stdcall OnCheckClicked(void *userObj);
 		public:
-			AVIRBCryptForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRBCryptForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRBCryptForm();
 
 			virtual void OnMonitorChanged();

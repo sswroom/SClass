@@ -232,7 +232,7 @@ namespace SSWR
 			void InitStream(NotNullPtr<IO::Stream> stm, Bool updateSerial);
 			void CloseStream(Bool updateUI);
 		public:
-			AVIRGSMModemForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, IO::Stream *port);
+			AVIRGSMModemForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, IO::Stream *port);
 			virtual ~AVIRGSMModemForm();
 
 			virtual void OnMonitorChanged();

@@ -62,7 +62,7 @@ namespace SSWR
 			static Bool __stdcall OnSNMPTrapPacket(void *userObj, const Net::SocketUtil::AddressInfo *addr, UInt16 port, const Net::SNMPUtil::TrapInfo *trap, Data::ArrayList<Net::SNMPUtil::BindingItem*> *itemList);
 
 		public:
-			AVIRSNMPTrapMonitorForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRSNMPTrapMonitorForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRSNMPTrapMonitorForm();
 
 			virtual void OnMonitorChanged();

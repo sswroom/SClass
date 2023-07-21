@@ -38,7 +38,7 @@ void SSWR::AVIRead::AVIRCore::InitForm(UI::GUIForm *frm)
 	this->frms.Add(frm);
 }
 
-SSWR::AVIRead::AVIRCore::AVIRCore(UI::GUICore *ui) : vioPinMgr(4)
+SSWR::AVIRead::AVIRCore::AVIRCore(NotNullPtr<UI::GUICore> ui) : vioPinMgr(4)
 {
 	WChar wbuff[512];
 	WChar wbuff2[32];

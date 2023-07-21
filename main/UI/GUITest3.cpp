@@ -6,8 +6,8 @@
 
 Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
-	UI::GUICore *core = progCtrl->CreateGUICore(progCtrl);
-	if (core)
+	NotNullPtr<UI::GUICore> core;
+	if (core.Set(progCtrl->CreateGUICore(progCtrl)))
 	{
 		UI::GUIForm *frm;
 		NEW_CLASS(frm, UI::GUIForm(0, 640, 480, core));
@@ -16,7 +16,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		frm->SetExitOnClose(true);
 		frm->Show();
 		core->Run();
-		DEL_CLASS(core);
+		core.Delete();
 	}
 	return 0;
 }

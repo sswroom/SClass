@@ -31,7 +31,7 @@ namespace SSWR
 			static void __stdcall OnCancelClick(void *userObj);
 			static void __stdcall OnGPSClick(void *userObj);
 		public:
-			AVIRSetLocationSvcForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRSetLocationSvcForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRSetLocationSvcForm();
 
 			virtual void OnMonitorChanged();

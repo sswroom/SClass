@@ -60,7 +60,7 @@ namespace SSWR
 
 			void UpdateLinkList();
 		public:
-			AVIRProgramLinksForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRProgramLinksForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRProgramLinksForm();
 
 			virtual void OnMonitorChanged();

@@ -14,7 +14,7 @@ namespace SSWR
 
 			static void __stdcall OKClicked(void *userObj);
 		public:
-			AVIRCEAboutForm(UI::GUIClientControl *parent, UI::GUICore *ui);
+			AVIRCEAboutForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui);
 			virtual ~AVIRCEAboutForm();
 		};
 	};

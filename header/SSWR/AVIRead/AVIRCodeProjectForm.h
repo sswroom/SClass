@@ -32,7 +32,7 @@ namespace SSWR
 			void DisplayStatus(Text::StringBuilderUTF8 *sb, Text::Cpp::CppParseStatus *status);
 			void AddTreeObj(UI::GUITreeView::TreeItem *parent, Text::CodeContainer *container);
 		public:
-			AVIRCodeProjectForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Text::CodeProject *proj);
+			AVIRCodeProjectForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, Text::CodeProject *proj);
 			virtual ~AVIRCodeProjectForm();
 
 			virtual void OnMonitorChanged();

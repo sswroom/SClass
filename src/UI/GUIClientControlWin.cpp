@@ -5,18 +5,13 @@
 #include "UI/GUIClientControl.h"
 #include <windows.h>
 
-UI::GUIClientControl::GUIClientControl(GUICore *ui, UI::GUIClientControl *parent) : UI::GUIControl(ui, parent)
+UI::GUIClientControl::GUIClientControl(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent) : UI::GUIControl(ui, parent)
 {
 	this->hasFillCtrl = false;
 	this->undockLeft = 0;
 	this->undockRight = 0;
 	this->undockTop = 0;
 	this->undockBottom = 0;
-}
-
-UI::GUIClientControl::GUIClientControl(Bool forVirtualUse) : UI::GUIControl(0, 0)
-{
-	this->parent = 0;
 }
 
 UI::GUIClientControl::~GUIClientControl()

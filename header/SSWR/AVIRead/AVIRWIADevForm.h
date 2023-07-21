@@ -28,7 +28,7 @@ namespace SSWR
 			static void __stdcall OnCancelClick(void *userObj);
 
 		public:
-			AVIRWIADevForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRWIADevForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRWIADevForm();
 
 			virtual void OnMonitorChanged();

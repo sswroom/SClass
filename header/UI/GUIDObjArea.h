@@ -29,7 +29,7 @@ namespace UI
 		static UInt32 __stdcall ProcessThread(void *userObj);
 		static void __stdcall OnUpdateSize(void *userObj);
 	public:
-		GUIDObjArea(GUICore *ui, UI::GUIClientControl *parent, Media::DrawEngine *deng, Media::ColorManagerSess *colorSess);
+		GUIDObjArea(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent, Media::DrawEngine *deng, Media::ColorManagerSess *colorSess);
 		virtual ~GUIDObjArea();
 
 		void SetHandler(UI::DObj::DObjHandler *dobjHdlr);

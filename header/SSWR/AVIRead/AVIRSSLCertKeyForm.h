@@ -57,7 +57,7 @@ namespace SSWR
 			void LoadFile(Text::CString fileName);
 
 		public:
-			AVIRSSLCertKeyForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Net::SSLEngine *ssl, Crypto::Cert::X509Cert *cert, Crypto::Cert::X509File *key);
+			AVIRSSLCertKeyForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, Net::SSLEngine *ssl, Crypto::Cert::X509Cert *cert, Crypto::Cert::X509File *key);
 			virtual ~AVIRSSLCertKeyForm();
 
 			virtual void OnMonitorChanged();

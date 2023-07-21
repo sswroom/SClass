@@ -51,7 +51,7 @@ namespace SSWR
 			static void __stdcall OnTimerTick(void *userObj);
 			static void __stdcall OnEGaugeData(void *userObj, const UInt8 *data, UOSInt dataSize);
 		public:
-			AVIReGaugeSvrForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
+			AVIReGaugeSvrForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIReGaugeSvrForm();
 
 			virtual void OnMonitorChanged();

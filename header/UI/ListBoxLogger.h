@@ -34,7 +34,7 @@ namespace UI
 
 		void SetTimeFormat(const Char *timeFormat);
 
-		static ListBoxLogger *CreateUI(UI::GUIForm *frm, UI::GUICore *ui, UI::GUIClientControl *ctrl, UOSInt maxLog, Bool reverse);
+		static ListBoxLogger *CreateUI(UI::GUIForm *frm, NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *ctrl, UOSInt maxLog, Bool reverse);
 	};
 }
 #endif

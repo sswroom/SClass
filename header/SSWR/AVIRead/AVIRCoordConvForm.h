@@ -68,7 +68,7 @@ namespace SSWR
 			void FillCoordGeo(UI::GUIComboBox *cbo);
 			void FillCoordProj(UI::GUIComboBox *cbo);
 		public:
-			AVIRCoordConvForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRCoordConvForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRCoordConvForm();
 
 			virtual void OnMonitorChanged();

@@ -224,7 +224,7 @@ void UI::GUICustomDraw::InitJS()
 	}
 }
 
-UI::GUICustomDraw::GUICustomDraw(UI::GUICore *ui, UI::GUIClientControl *parent, Media::DrawEngine *eng) : UI::GUIControl(ui, parent)
+UI::GUICustomDraw::GUICustomDraw(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, Media::DrawEngine *eng) : UI::GUIControl(ui, parent)
 {
 	this->eng = eng;
 	NEW_CLASS(this->lib, IO::Library((const UTF8Char*)"User32.dll"));
@@ -232,7 +232,7 @@ UI::GUICustomDraw::GUICustomDraw(UI::GUICore *ui, UI::GUIClientControl *parent, 
 
 	if (Sync::Interlocked::Increment(&useCnt) == 1)
 	{
-		Init(((UI::GUICoreWin*)this->ui)->GetHInst());
+		Init(((UI::GUICoreWin*)this->ui.Ptr())->GetHInst());
 	}
 
 	UInt32 style = WS_CHILD;
@@ -240,7 +240,7 @@ UI::GUICustomDraw::GUICustomDraw(UI::GUICore *ui, UI::GUIClientControl *parent, 
 	{
 		style = style | WS_VISIBLE;
 	}
-	this->InitControl(((UI::GUICoreWin*)this->ui)->GetHInst(), parent, CLASSNAME, (const UTF8Char*)"MapControl", style, 0, 0, 0, 640, 480);
+	this->InitControl(((UI::GUICoreWin*)this->ui.Ptr())->GetHInst(), parent, CLASSNAME, (const UTF8Char*)"MapControl", style, 0, 0, 0, 640, 480);
 	this->InitJS();
 	SetTimer((HWND)this->hwnd, 1000, 18, 0);
 }
@@ -250,7 +250,7 @@ UI::GUICustomDraw::~GUICustomDraw()
 	DEL_CLASS(this->lib);
 	if (Sync::Interlocked::Decrement(&useCnt) == 0)
 	{
-		Deinit(((UI::GUICoreWin*)this->ui)->GetHInst());
+		Deinit(((UI::GUICoreWin*)this->ui.Ptr())->GetHInst());
 	}
 }
 

@@ -262,9 +262,9 @@ void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnSelfSignedCertClicked(void *us
 	MemClear(&ext, sizeof(ext));
 	ext.subjectAltName = me->sanList;
 	ext.useSubjKeyId = true;
-	me->key->GetKeyId(ext.subjKeyId);
+	me->key->GetKeyId(BYTEARR(ext.subjKeyId));
 	ext.useAuthKeyId = true;
-	me->key->GetKeyId(ext.authKeyId);
+	me->key->GetKeyId(BYTEARR(ext.authKeyId));
 	ext.caCert = me->chkCACert->IsChecked();
 	ext.digitalSign = me->chkDigitalSign->IsChecked();
 	Crypto::Cert::X509Cert *cert = Crypto::Cert::CertUtil::SelfSignedCertCreate(me->ssl, &names, me->key, validDays, &ext);
@@ -350,16 +350,22 @@ void SSWR::AVIRead::AVIRCertUtilForm::UpdateKeyDetail()
 {
 	if (this->key == 0)
 	{
-		this->lblKeyDetail->SetText(CSTR("-"));
+		this->txtKeyDetail->SetText(CSTR("-"));
 	}
 	else
 	{
+		UInt8 keyId[20];
 		Text::StringBuilderUTF8 sb;
 		sb.Append(Crypto::Cert::X509File::KeyTypeGetName(this->key->GetKeyType()));
 		sb.AppendC(UTF8STRC(", "));
 		sb.AppendUOSInt(key->GetKeySizeBits());
 		sb.AppendC(UTF8STRC(" bits"));
-		this->lblKeyDetail->SetText(sb.ToCString());
+		if (this->key->GetKeyId(BYTEARR(keyId)))
+		{
+			sb.AppendC(UTF8STRC(", id="));
+			sb.AppendHexBuff(BYTEARR(keyId), 0, Text::LineBreakType::None);
+		}
+		this->txtKeyDetail->SetText(sb.ToCString());
 	}
 }
 
@@ -399,7 +405,7 @@ void SSWR::AVIRead::AVIRCertUtilForm::ClearExtensions()
 	this->lbSAN->ClearItems();
 }
 
-SSWR::AVIRead::AVIRCertUtilForm::AVIRCertUtilForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRCertUtilForm::AVIRCertUtilForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetText(CSTR("Cert Utility"));
 	this->SetFont(0, 0, 8.25, false);
@@ -411,8 +417,9 @@ SSWR::AVIRead::AVIRCertUtilForm::AVIRCertUtilForm(UI::GUIClientControl *parent, 
 
 	NEW_CLASS(this->lblKey, UI::GUILabel(ui, this, CSTR("Key")));
 	this->lblKey->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->lblKeyDetail, UI::GUILabel(ui, this, CSTR("-")));
-	this->lblKeyDetail->SetRect(104, 4, 200, 23, false);
+	NEW_CLASS(this->txtKeyDetail, UI::GUITextBox(ui, this, CSTR("-")));
+	this->txtKeyDetail->SetReadOnly(true);
+	this->txtKeyDetail->SetRect(104, 4, 200, 23, false);
 	NEW_CLASS(this->btnKeyGenerate, UI::GUIButton(ui, this, CSTR("Generate")));
 	this->btnKeyGenerate->SetRect(304, 4, 75, 23, false);
 	this->btnKeyGenerate->HandleButtonClick(OnKeyGenerateClicked, this);

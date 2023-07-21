@@ -16,7 +16,7 @@ namespace SSWR
 
 			static void __stdcall OKClicked(void *userObj);
 		public:
-			AVIRAboutForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRAboutForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRAboutForm();
 
 			virtual void OnMonitorChanged();

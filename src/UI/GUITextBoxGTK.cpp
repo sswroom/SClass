@@ -62,7 +62,7 @@ void GUITextBox_InitTextBox(UI::GUITextBox::ClassData *txt, Text::CString lbl, B
 	}
 }
 
-UI::GUITextBox::GUITextBox(UI::GUICore *ui, UI::GUIClientControl *parent, Text::CString initText) : UI::GUIControl(ui, parent)
+UI::GUITextBox::GUITextBox(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, Text::CString initText) : UI::GUIControl(ui, parent)
 {
 	this->clsData = MemAlloc(ClassData, 1);
 	GUITextBox_InitTextBox(this->clsData, initText, false, this);
@@ -71,7 +71,7 @@ UI::GUITextBox::GUITextBox(UI::GUICore *ui, UI::GUIClientControl *parent, Text::
 	this->Show();
 }
 
-UI::GUITextBox::GUITextBox(UI::GUICore *ui, UI::GUIClientControl *parent, Text::CString initText, Bool isMultiline) : UI::GUIControl(ui, parent)
+UI::GUITextBox::GUITextBox(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, Text::CString initText, Bool isMultiline) : UI::GUIControl(ui, parent)
 {
 	this->clsData = MemAlloc(ClassData, 1);
 	GUITextBox_InitTextBox(this->clsData, initText, isMultiline, this);

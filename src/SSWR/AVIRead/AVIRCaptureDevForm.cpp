@@ -171,7 +171,7 @@ void SSWR::AVIRead::AVIRCaptureDevForm::ReleaseFormats()
 	}
 }
 
-SSWR::AVIRead::AVIRCaptureDevForm::AVIRCaptureDevForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 768, 200, ui)
+SSWR::AVIRead::AVIRCaptureDevForm::AVIRCaptureDevForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 768, 200, ui)
 {
 	this->SetText(CSTR("Select Capture Device"));
 	this->SetFont(0, 0, 8.25, false);

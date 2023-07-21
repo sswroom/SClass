@@ -104,7 +104,7 @@ void SSWR::AVIRead::AVIRPerformanceLogForm::TestSpeed()
 	this->txtCurrWRate->SetText(sb.ToCString());
 }
 
-SSWR::AVIRead::AVIRPerformanceLogForm::AVIRPerformanceLogForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 640, 480, ui)
+SSWR::AVIRead::AVIRPerformanceLogForm::AVIRPerformanceLogForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 640, 480, ui)
 {
 	this->SetText(CSTR("Performance Log"));
 	this->SetFont(0, 0, 8.25, false);

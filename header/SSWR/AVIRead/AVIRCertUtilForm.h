@@ -21,7 +21,7 @@ namespace SSWR
 			Crypto::Cert::X509Key *key;
 
 			UI::GUILabel *lblKey;
-			UI::GUILabel *lblKeyDetail;
+			UI::GUITextBox *txtKeyDetail;
 			UI::GUIButton *btnKeyGenerate;
 			UI::GUIButton *btnKeyView;
 			UI::GUIButton *btnKeySave;
@@ -72,7 +72,7 @@ namespace SSWR
 			void UpdateExtensions(Crypto::Cert::CertExtensions *exts);
 			void ClearExtensions();
 		public:
-			AVIRCertUtilForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRCertUtilForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRCertUtilForm();
 
 			virtual void OnMonitorChanged();

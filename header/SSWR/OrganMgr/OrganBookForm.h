@@ -65,7 +65,7 @@ namespace SSWR
 
 			void UpdateBookList();
 		public:
-			OrganBookForm(UI::GUIClientControl *parent, UI::GUICore *ui, OrganEnv *env);
+			OrganBookForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, OrganEnv *env);
 			virtual ~OrganBookForm();
 
 			virtual void OnMonitorChanged();

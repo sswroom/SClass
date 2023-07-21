@@ -186,7 +186,7 @@ void SSWR::AVIRead::AVIRMODBUSTCPSimForm::UpdateDevValues()
 	}
 }
 
-SSWR::AVIRead::AVIRMODBUSTCPSimForm::AVIRMODBUSTCPSimForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 576, 480, ui)
+SSWR::AVIRead::AVIRMODBUSTCPSimForm::AVIRMODBUSTCPSimForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 576, 480, ui)
 {
 	this->SetText(CSTR("MODBUS TCP Simulator"));
 	this->SetFont(0, 0, 8.25, false);

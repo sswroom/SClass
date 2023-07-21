@@ -48,7 +48,7 @@ void __stdcall SSWR::AVIRead::AVIRPDFObjectForm::OnObjectDblClk(void *userObj)
 	}
 }
 
-SSWR::AVIRead::AVIRPDFObjectForm::AVIRPDFObjectForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Media::PDFDocument *doc) : UI::GUIForm(parent, 640, 480, ui)
+SSWR::AVIRead::AVIRPDFObjectForm::AVIRPDFObjectForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, Media::PDFDocument *doc) : UI::GUIForm(parent, 640, 480, ui)
 {
 	this->SetText(CSTR("PDF Objects"));
 	this->SetFont(0, 0, 8.25, false);

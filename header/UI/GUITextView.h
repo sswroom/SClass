@@ -45,7 +45,7 @@ namespace UI
 		void GetDrawSize(WChar *str, UOSInt strLen, UOSInt *width, UOSInt *height);
 		void SetCaretPos(OSInt scnX, OSInt scnY);
 	public:
-		GUITextView(UI::GUICore *ui, UI::GUIClientControl *parent, Media::DrawEngine *deng);
+		GUITextView(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, Media::DrawEngine *deng);
 		virtual ~GUITextView();
 
 		virtual Text::CString GetObjectClass();

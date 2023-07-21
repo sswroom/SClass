@@ -48,7 +48,7 @@ namespace SSWR
 			static void __stdcall OKClicked(void *userObj);
 			static void __stdcall CancelClicked(void *userObj);
 		public:
-			AVIRGISLineStyleForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Map::MapEnv *env, Media::DrawEngine *eng, UOSInt lineStyle);
+			AVIRGISLineStyleForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, Map::MapEnv *env, Media::DrawEngine *eng, UOSInt lineStyle);
 			virtual ~AVIRGISLineStyleForm();
 
 			virtual void EventMenuClicked(UInt16 cmdId);

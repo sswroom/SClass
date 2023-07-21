@@ -67,7 +67,7 @@ namespace SSWR
 			static void __stdcall OnDeviceSelChg(void *userObj);
 			static void __stdcall OnServiceSelChg(void *userObj);
 		public:
-			AVIRSSDPClientForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRSSDPClientForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRSSDPClientForm();
 
 			virtual void OnMonitorChanged();

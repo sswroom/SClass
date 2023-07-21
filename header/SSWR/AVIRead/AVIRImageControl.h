@@ -105,7 +105,7 @@ namespace SSWR
 			Bool GetCameraName(Text::StringBuilderUTF8 *sb, Media::EXIFData *exif);
 			Double *GetCameraGamma(Text::CString cameraName, UInt32 *gammaCnt);
 		public:
-			AVIRImageControl(UI::GUICore *ui, UI::GUIClientControl *parent, SSWR::AVIRead::AVIRCore *core, UI::GUIForm *frm, Media::ColorManagerSess *colorSess);
+			AVIRImageControl(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, SSWR::AVIRead::AVIRCore *core, UI::GUIForm *frm, Media::ColorManagerSess *colorSess);
 			virtual ~AVIRImageControl();
 
 			virtual Text::CString GetObjectClass();

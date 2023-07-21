@@ -22,7 +22,7 @@ namespace SSWR
 			static void __stdcall OnMapsSelChg(void *userObj);
 			static void __stdcall OnMapsDblClk(void *userObj, UOSInt index);
 		public:
-			AVIRRegionalMapForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Net::SSLEngine *ssl);
+			AVIRRegionalMapForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, Net::SSLEngine *ssl);
 			virtual ~AVIRRegionalMapForm();
 
 			virtual void OnMonitorChanged();

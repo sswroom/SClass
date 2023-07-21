@@ -27,7 +27,7 @@ namespace SSWR
 			static void __stdcall OnOKClicked(void *userObj);
 			static void __stdcall OnCancelClicked(void *userObj);
 		public:
-			SHPConvAddFilterForm(UI::GUIClientControl *parent, UI::GUICore *ui, DB::DBFFile *dbf, Media::DrawEngine *deng);
+			SHPConvAddFilterForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, DB::DBFFile *dbf, Media::DrawEngine *deng);
 			virtual ~SHPConvAddFilterForm();
 
 			virtual void OnMonitorChanged();

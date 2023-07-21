@@ -10,7 +10,7 @@
 
 Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
-	UI::GUICore *ui;
+	NotNullPtr<UI::GUICore> ui;
 	SSWR::AVIRead::AVIRHQMPForm *frm;
 
 //	MemSetBreakPoint(0x01088d78);
@@ -20,7 +20,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 #endif
 
 	Manage::ExceptionRecorder exHdlr(CSTR("Error.log"), Manage::ExceptionRecorder::EA_CLOSE);
-	ui = progCtrl->CreateGUICore(progCtrl);
+	if (ui.Set(progCtrl->CreateGUICore(progCtrl)))
 	{
 		SSWR::AVIRead::AVIRCoreWin core(ui);
 		NEW_CLASS(frm, SSWR::AVIRead::AVIRHQMPForm(0, ui, &core, SSWR::AVIRead::AVIRHQMPForm::QM_HQ));
@@ -39,7 +39,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 
 		frm->Show();
 		ui->Run();
+		ui.Delete();
 	}
-	DEL_CLASS(ui);
 	return 0;
 }

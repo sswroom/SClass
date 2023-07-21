@@ -61,7 +61,7 @@ namespace SSWR
 			void ExportTableData(DB::SQLType sqlType, Bool axisAware);
 			void ExportTableCSV();
 		public:
-			AVIRDBForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, DB::ReadingDB *db, Bool needRelease);
+			AVIRDBForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, DB::ReadingDB *db, Bool needRelease);
 			virtual ~AVIRDBForm();
 
 			void UpdateSchemas();

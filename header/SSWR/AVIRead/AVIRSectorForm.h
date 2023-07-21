@@ -24,7 +24,7 @@ namespace SSWR
 
 			static void __stdcall OnParseClicked(void *userObj);
 		public:
-			AVIRSectorForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, IO::ISectorData *data);
+			AVIRSectorForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, IO::ISectorData *data);
 			virtual ~AVIRSectorForm();
 
 			virtual void OnMonitorChanged();

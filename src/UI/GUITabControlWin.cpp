@@ -77,7 +77,7 @@ OSInt __stdcall UI::GUITabControl::TCWndProc(void *hWnd, UInt32 msg, UOSInt wPar
 	return 0;
 }
 
-UI::GUITabControl::GUITabControl(UI::GUICore *ui, UI::GUIClientControl *parent) : UI::GUIControl(ui, parent)
+UI::GUITabControl::GUITabControl(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent) : UI::GUIControl(ui, parent)
 {
 	Double w;
 	Double h;
@@ -93,12 +93,12 @@ UI::GUITabControl::GUITabControl(UI::GUICore *ui, UI::GUIClientControl *parent) 
 		style = style | WS_VISIBLE;
 	}
 	parent->GetClientSize(&w, &h);
-	this->InitControl(((UI::GUICoreWin*)ui)->GetHInst(), parent, WC_TABCONTROLW, (const UTF8Char*)"", style, WS_EX_CONTROLPARENT, 0, 0, w, h);
+	this->InitControl(((UI::GUICoreWin*)ui.Ptr())->GetHInst(), parent, WC_TABCONTROLW, (const UTF8Char*)"", style, WS_EX_CONTROLPARENT, 0, 0, w, h);
 	this->oriWndProc = (void*)UI::GUICoreWin::MSSetWindowObj(this->hwnd, GWLP_WNDPROC, (OSInt)TCWndProc);
 	this->selIndex = 0;
 
 	WNDCLASSW wc;
-	GetClassInfoW((HINSTANCE)((UI::GUICoreWin*)ui)->GetHInst(), WC_TABCONTROLW, &wc);
+	GetClassInfoW((HINSTANCE)((UI::GUICoreWin*)ui.Ptr())->GetHInst(), WC_TABCONTROLW, &wc);
 	this->hbrBackground = wc.hbrBackground;
 }
 

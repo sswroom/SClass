@@ -25,7 +25,7 @@ namespace SSWR
 			static void __stdcall OnHexClicked(void *userObj);
 			static void __stdcall OnFileDrop(void *userObj, NotNullPtr<Text::String> *fileNames, UOSInt fileCnt);
 		public:
-			AVIREDIDViewerForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
+			AVIREDIDViewerForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIREDIDViewerForm();
 
 			virtual void OnMonitorChanged();

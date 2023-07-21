@@ -33,7 +33,7 @@
 #include "UI/FileDialog.h"
 #include "UI/MessageDialog.h"
 
-SSWR::AVIRead::AVIRCoreWin::AVIRCoreWin(UI::GUICore *ui) : SSWR::AVIRead::AVIRCore(ui)
+SSWR::AVIRead::AVIRCoreWin::AVIRCoreWin(NotNullPtr<UI::GUICore> ui) : SSWR::AVIRead::AVIRCore(ui)
 {
 }
 

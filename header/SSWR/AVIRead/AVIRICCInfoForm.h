@@ -30,7 +30,7 @@ namespace SSWR
 			static void __stdcall OnGLUTClicked(void *userObj);
 			static void __stdcall OnBLUTClicked(void *userObj);
 		public:
-			AVIRICCInfoForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRICCInfoForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRICCInfoForm();
 
 			virtual void OnMonitorChanged();

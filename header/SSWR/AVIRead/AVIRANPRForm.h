@@ -63,7 +63,7 @@ namespace SSWR
 			static void __stdcall OnANPRResult(void *userObj, Media::StaticImage *simg, Math::RectArea<UOSInt> *area, NotNullPtr<Text::String> result, Double maxTileAngle, Double pxArea, UOSInt confidence, Media::StaticImage *plateImg);
 			void ClearResults();
 		public:
-			AVIRANPRForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRANPRForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRANPRForm();
 
 			virtual void OnMonitorChanged();

@@ -24,7 +24,7 @@ void __stdcall SSWR::OrganMgr::OrganImageWebForm::OnCancelClicked(void *userObj)
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 
-SSWR::OrganMgr::OrganImageWebForm::OrganImageWebForm(UI::GUIClientControl *parent, UI::GUICore *ui, OrganEnv *env, OrganImageItem *imgItem, SSWR::OrganMgr::WebFileInfo *wfile) : UI::GUIForm(parent, 800, 176, ui)
+SSWR::OrganMgr::OrganImageWebForm::OrganImageWebForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, OrganEnv *env, OrganImageItem *imgItem, SSWR::OrganMgr::WebFileInfo *wfile) : UI::GUIForm(parent, 800, 176, ui)
 {
 	this->SetNoResize(true);
 	this->SetFont(0, 0, 10.5, false);

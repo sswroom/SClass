@@ -32,7 +32,7 @@ void __stdcall SSWR::AVIRead::AVIRUserAgentParseForm::OnParseClicked(void *userO
 	}
 }
 
-SSWR::AVIRead::AVIRUserAgentParseForm::AVIRUserAgentParseForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 800, 200, ui)
+SSWR::AVIRead::AVIRUserAgentParseForm::AVIRUserAgentParseForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 800, 200, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("User Agent Parse"));

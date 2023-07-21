@@ -107,7 +107,7 @@ void UI::GUIForm::UpdateHAcc()
 	}
 }
 
-UI::GUIForm::GUIForm(GUIClientControl *parent, Double initW, Double initH, GUICore *ui) : UI::GUIClientControl(ui, parent)
+UI::GUIForm::GUIForm(GUIClientControl *parent, Double initW, Double initH, NotNullPtr<GUICore> ui) : UI::GUIClientControl(ui, parent)
 {
 	this->exitOnClose = false;
 	this->isDialog = false;
@@ -667,7 +667,7 @@ void UI::GUIForm::FromFullScn()
 	}
 }
 
-UI::GUICore *UI::GUIForm::GetUI()
+NotNullPtr<UI::GUICore> UI::GUIForm::GetUI()
 {
 	return this->ui;
 }

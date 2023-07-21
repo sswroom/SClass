@@ -35,7 +35,7 @@ namespace SSWR
 			static void __stdcall OnDeviceUpdated(IO::BTScanLog::ScanRecord3 *dev, IO::BTScanner::UpdateType updateType, void *userObj);
 			UOSInt UpdateList(Data::FastMap<UInt64, IO::BTScanLog::ScanRecord3*> *devMap, Data::FastMap<UInt64, UInt32> *statusMap, UOSInt baseIndex);
 		public:
-			AVIRBluetoothCtlForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRBluetoothCtlForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRBluetoothCtlForm();
 
 			virtual void OnMonitorChanged();

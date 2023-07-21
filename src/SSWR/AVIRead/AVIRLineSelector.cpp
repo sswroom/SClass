@@ -125,7 +125,7 @@ void SSWR::AVIRead::AVIRLineSelector::OnKeyDown(UInt32 keyCode)
 {
 }
 
-SSWR::AVIRead::AVIRLineSelector::AVIRLineSelector(UI::GUICore *ui, UI::GUIClientControl *parent, SSWR::AVIRead::AVIRCore *core, Map::MapEnv *env, UOSInt initLineStyle, Media::ColorManagerSess *colorSess) : UI::GUICustomDrawVScroll(ui, parent, core->GetDrawEngine())
+SSWR::AVIRead::AVIRLineSelector::AVIRLineSelector(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, SSWR::AVIRead::AVIRCore *core, Map::MapEnv *env, UOSInt initLineStyle, Media::ColorManagerSess *colorSess) : UI::GUICustomDrawVScroll(ui, parent, core->GetDrawEngine())
 {
 	this->core = core;
 	this->env = env;

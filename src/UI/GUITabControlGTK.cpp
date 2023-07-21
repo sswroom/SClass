@@ -25,7 +25,7 @@ gboolean GUITabControl_OnShow(gpointer user_data)
 	return false;
 }
 
-UI::GUITabControl::GUITabControl(UI::GUICore *ui, UI::GUIClientControl *parent) : UI::GUIControl(ui, parent)
+UI::GUITabControl::GUITabControl(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent) : UI::GUIControl(ui, parent)
 {
 	this->selIndex = 0;
 	this->hwnd = (ControlHandle*)gtk_notebook_new();

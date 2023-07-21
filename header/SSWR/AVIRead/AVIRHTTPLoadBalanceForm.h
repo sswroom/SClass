@@ -98,7 +98,7 @@ namespace SSWR
 			static void __stdcall OnAccessSelChg(void *userObj);
 			static void __stdcall OnSSLCertClicked(void *userObj);
 		public:
-			AVIRHTTPLoadBalanceForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRHTTPLoadBalanceForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRHTTPLoadBalanceForm();
 
 			virtual void OnMonitorChanged();

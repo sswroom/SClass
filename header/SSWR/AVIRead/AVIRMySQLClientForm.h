@@ -65,7 +65,7 @@ namespace SSWR
 			static void __stdcall OnTimerTick(void *userObj);
 			void UpdateResult(DB::DBReader *r);
 		public:
-			AVIRMySQLClientForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRMySQLClientForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRMySQLClientForm();
 
 			virtual void OnMonitorChanged();

@@ -23,7 +23,7 @@ void __stdcall SSWR::AVIRead::AVIRCodePageForm::CancelClicked(void *userObj)
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 
-SSWR::AVIRead::AVIRCodePageForm::AVIRCodePageForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 260, 664, ui)
+SSWR::AVIRead::AVIRCodePageForm::AVIRCodePageForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 260, 664, ui)
 {
 	this->SetText(CSTR("Select Code Page"));
 	this->SetFont(0, 0, 8.25, false);

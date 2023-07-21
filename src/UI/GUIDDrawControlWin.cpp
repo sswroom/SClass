@@ -452,7 +452,7 @@ void UI::GUIDDrawControl::EndUpdateSize()
 	this->switching = false;
 }
 
-UI::GUIDDrawControl::GUIDDrawControl(GUICore *ui, UI::GUIClientControl *parent, Bool directMode, Media::ColorManagerSess *colorSess) : UI::GUIControl(ui, parent)
+UI::GUIDDrawControl::GUIDDrawControl(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent, Bool directMode, Media::ColorManagerSess *colorSess) : UI::GUIControl(ui, parent)
 {
 	this->inited = false;
 	this->primarySurface = 0;
@@ -479,7 +479,7 @@ UI::GUIDDrawControl::GUIDDrawControl(GUICore *ui, UI::GUIClientControl *parent, 
 
 	if (Sync::Interlocked::Increment(&useCnt) == 1)
 	{
-		Init(((GUICoreWin*)ui)->GetHInst());
+		Init(((GUICoreWin*)ui.Ptr())->GetHInst());
 	}
 	this->HandleSizeChanged(OnResized, this);
 
@@ -488,7 +488,7 @@ UI::GUIDDrawControl::GUIDDrawControl(GUICore *ui, UI::GUIClientControl *parent, 
 	{
 		style = style | WS_VISIBLE;
 	}
-	this->InitControl(((GUICoreWin*)ui)->GetHInst(), parent, CLASSNAME, (const UTF8Char*)"DDrawControl", style, 0, 0, 0, 640, 480);
+	this->InitControl(((GUICoreWin*)ui.Ptr())->GetHInst(), parent, CLASSNAME, (const UTF8Char*)"DDrawControl", style, 0, 0, 0, 640, 480);
 
 	this->currScnMode = SM_VFS;
 	this->surfaceMon = 0;
@@ -537,7 +537,7 @@ UI::GUIDDrawControl::~GUIDDrawControl()
 {
 	if (Sync::Interlocked::Decrement(&useCnt) == 0)
 	{
-		Deinit(((GUICoreWin*)ui)->GetHInst());
+		Deinit(((GUICoreWin*)ui.Ptr())->GetHInst());
 	}
 	if (this->joystickId > 0)
 	{

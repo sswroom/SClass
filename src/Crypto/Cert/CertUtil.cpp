@@ -490,8 +490,8 @@ Crypto::Cert::X509Cert *Crypto::Cert::CertUtil::IssueCert(Net::SSLEngine *ssl, C
 	Crypto::Cert::CertExtensions ext;
 	MemClear(&ext, sizeof(ext));
 	csr->GetExtensions(&ext);
-	ext.useAuthKeyId = caKey->GetKeyId(ext.authKeyId);
-	ext.useSubjKeyId = csr->GetKeyId(ext.subjKeyId);
+	ext.useAuthKeyId = caKey->GetKeyId(BYTEARR(ext.authKeyId));
+	ext.useSubjKeyId = csr->GetKeyId(BYTEARR(ext.subjKeyId));
 	AppendExtensions(&builder, &ext);
 	Crypto::Cert::CertExtensions::FreeExtensions(&ext);
 	builder.EndLevel();
@@ -531,7 +531,7 @@ Crypto::Cert::X509Cert *Crypto::Cert::CertUtil::FindIssuer(Crypto::Cert::X509Cer
 		Crypto::Cert::CertExtensions::FreeExtensions(&ext);
 		return 0;
 	}
-	if (!cert->GetKeyId(keyId))
+	if (!cert->GetKeyId(BYTEARR(keyId)))
 	{
 		Crypto::Cert::CertExtensions::FreeExtensions(&ext);
 		return 0;
@@ -567,7 +567,7 @@ Crypto::Cert::X509Cert *Crypto::Cert::CertUtil::FindIssuer(Crypto::Cert::X509Cer
 						else
 						{
 							Crypto::Cert::X509Cert *srchCert = (Crypto::Cert::X509Cert*)x509;
-							if (!srchCert->GetKeyId(keyId))
+							if (!srchCert->GetKeyId(BYTEARR(keyId)))
 							{
 								DEL_CLASS(srchCert);
 							}

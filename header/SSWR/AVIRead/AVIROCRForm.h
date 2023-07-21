@@ -42,7 +42,7 @@ namespace SSWR
 			static void __stdcall OnOCRResult(void *userObj, NotNullPtr<Text::String> txt, Double confidence, Math::RectArea<OSInt> boundary);
 			void ClearResults();
 		public:
-			AVIROCRForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
+			AVIROCRForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIROCRForm();
 
 			virtual void OnMonitorChanged();

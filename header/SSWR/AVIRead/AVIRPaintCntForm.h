@@ -21,7 +21,7 @@ namespace SSWR
 
 			static void __stdcall OnTimerTick(void *userObj);
 		public:
-			AVIRPaintCntForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRPaintCntForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRPaintCntForm();
 
 			virtual Bool OnPaint();

@@ -80,7 +80,7 @@ namespace UI
 		virtual void EndUpdateSize();
 
 	public:
-		GUIDDrawControl(GUICore *ui, UI::GUIClientControl *parent, Bool directMode, Media::ColorManagerSess *colorSess);
+		GUIDDrawControl(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent, Bool directMode, Media::ColorManagerSess *colorSess);
 		virtual ~GUIDDrawControl();
 
 		void SetUserFSMode(ScreenMode fullScnMode);

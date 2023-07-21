@@ -28,7 +28,7 @@ namespace SSWR
 			static void __stdcall OnRecvClick(void *userObj);
 			static void __stdcall OnSendClick(void *userObj);
 		public:
-			AVIRTFTPClientForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRTFTPClientForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRTFTPClientForm();
 
 			virtual void OnMonitorChanged();

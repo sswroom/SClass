@@ -39,7 +39,7 @@ OSInt __stdcall SSWR::AVIRead::AVIRMACManagerEntryForm::MACCompare(void *obj1, v
 	return Text::StrCompareFastC(mac1->name, mac1->nameLen, mac2->name, mac2->nameLen);
 }
 
-SSWR::AVIRead::AVIRMACManagerEntryForm::AVIRMACManagerEntryForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, const UInt8 *mac, Text::CString name) : UI::GUIForm(parent, 480, 104, ui)
+SSWR::AVIRead::AVIRMACManagerEntryForm::AVIRMACManagerEntryForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, const UInt8 *mac, Text::CString name) : UI::GUIForm(parent, 480, 104, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("MAC Entry"));

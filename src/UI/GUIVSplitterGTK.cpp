@@ -75,7 +75,7 @@ gboolean GUIVSplitter_OnMouseUp(GtkWidget *widget, GdkEvent *event, gpointer dat
 	return false;
 }
 
-UI::GUIVSplitter::GUIVSplitter(UI::GUICore *ui, UI::GUIClientControl *parent, Int32 height, Bool isBottom) : UI::GUIControl(ui, parent)
+UI::GUIVSplitter::GUIVSplitter(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, Int32 height, Bool isBottom) : UI::GUIControl(ui, parent)
 {
 	this->dragMode = false;
 	this->isBottom = isBottom;

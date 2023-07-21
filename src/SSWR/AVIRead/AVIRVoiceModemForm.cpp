@@ -168,7 +168,7 @@ void __stdcall SSWR::AVIRead::AVIRVoiceModemForm::OnModemEvent(void *userObj, UI
 	}
 }
 
-SSWR::AVIRead::AVIRVoiceModemForm::AVIRVoiceModemForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, IO::Device::RockwellModemController *modem, IO::ATCommandChannel *channel, NotNullPtr<IO::Stream> port) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRVoiceModemForm::AVIRVoiceModemForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, IO::Device::RockwellModemController *modem, IO::ATCommandChannel *channel, NotNullPtr<IO::Stream> port) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetText(CSTR("Voice Modem"));
 	this->SetFont(0, 0, 8.25, false);

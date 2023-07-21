@@ -13,7 +13,7 @@ namespace UI
 		UOSInt index;
 		void *custObj;
 	public:
-		GUITabPage(GUICore *ui, UI::GUIClientControl *parent, UI::GUITabControl *ctrl, UOSInt index);
+		GUITabPage(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent, UI::GUITabControl *ctrl, UOSInt index);
 		virtual ~GUITabPage();
 
 		virtual void *GetFont();

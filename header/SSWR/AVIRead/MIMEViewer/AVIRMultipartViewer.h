@@ -26,7 +26,7 @@ namespace SSWR
 				Text::MIMEObj::MultipartMIMEObj *obj;
 
 			public:
-				AVIRMultipartViewer(SSWR::AVIRead::AVIRCore *core, UI::GUICore *ui, UI::GUIClientControl *ctrl, Media::ColorManagerSess *sess, Text::MIMEObj::MultipartMIMEObj *obj);
+				AVIRMultipartViewer(SSWR::AVIRead::AVIRCore *core, NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *ctrl, Media::ColorManagerSess *sess, Text::MIMEObj::MultipartMIMEObj *obj);
 				virtual ~AVIRMultipartViewer();
 			};
 		}

@@ -109,7 +109,7 @@ namespace SSWR
 			static void __stdcall OnStatusDblClick(void *userObj, UOSInt index);
 			void DisplayPackFile(IO::PackageFile *packFile);
 		public:
-			AVIRPackageForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, IO::PackageFile *packFile);
+			AVIRPackageForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, IO::PackageFile *packFile);
 			virtual ~AVIRPackageForm();
 
 			virtual void EventMenuClicked(UInt16 cmdId);

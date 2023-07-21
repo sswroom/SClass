@@ -50,7 +50,7 @@ namespace SSWR
 
 			void ServerStop();
 		public:
-			AVIRJTT808ServerForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRJTT808ServerForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRJTT808ServerForm();
 
 			virtual void OnMonitorChanged();
