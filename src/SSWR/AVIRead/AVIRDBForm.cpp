@@ -234,11 +234,9 @@ void SSWR::AVIRead::AVIRDBForm::UpdateResult(DB::DBReader *r)
 	{
 		k += colSize[i];
 	}
-	Double w;
-	Double h;
 	if (k > 0)
 	{
-		this->lvResult->GetSize(&w, &h);
+		Double w = this->lvResult->GetSize().x;
 		w -= UOSInt2Double(20 + j * 6);
 		if (w < 0)
 			w = 0;

@@ -127,7 +127,7 @@ gboolean GUICustomDrawVScroll_OnMouseDown(GtkWidget *widget, GdkEvent *event, gp
 			{
 				keys = (UI::GUICustomDrawVScroll::KeyButton)(keys | UI::GUICustomDrawVScroll::KBTN_CONTROL);
 			}
-			me->OnMouseDown((OSInt)clsData->currPos, Double2Int32(evt->x), Double2Int32(evt->y), btn, keys);
+			me->OnMouseDown((OSInt)clsData->currPos, Math::Coord2D<OSInt>(Double2OSInt(evt->x), Double2OSInt(evt->y)), btn, keys);
 		}
 	}
 	return false;
@@ -298,7 +298,7 @@ void UI::GUICustomDrawVScroll::OnSizeChanged(Bool updateScn)
 	}
 }
 
-void UI::GUICustomDrawVScroll::OnMouseDown(OSInt scrollY, Int32 xPos, Int32 yPos, UI::GUIClientControl::MouseButton btn, UI::GUICustomDrawVScroll::KeyButton keys)
+void UI::GUICustomDrawVScroll::OnMouseDown(OSInt scrollY, Math::Coord2D<OSInt> pos, UI::GUIClientControl::MouseButton btn, UI::GUICustomDrawVScroll::KeyButton keys)
 {
 }
 

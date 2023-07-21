@@ -740,7 +740,7 @@ void SSWR::AVIRead::AVIRImageControl::OnDraw(Media::DrawImage *dimg)
 	dimg->DelBrush(barr[0]);
 }
 
-void SSWR::AVIRead::AVIRImageControl::OnMouseDown(OSInt scrollY, Int32 xPos, Int32 yPos, UI::GUIClientControl::MouseButton btn, KeyButton keys)
+void SSWR::AVIRead::AVIRImageControl::OnMouseDown(OSInt scrollY, Math::Coord2D<OSInt> pos, UI::GUIClientControl::MouseButton btn, KeyButton keys)
 {
 	if (btn == UI::GUIClientControl::MBTN_LEFT)
 	{
@@ -749,7 +749,7 @@ void SSWR::AVIRead::AVIRImageControl::OnMouseDown(OSInt scrollY, Int32 xPos, Int
 		Double hdpi = this->GetHDPI();
 		Double ddpi = this->GetDDPI();
 		Int32 scrPos = Double2Int32(OSInt2Double(scrollY) * hdpi / ddpi);
-		UOSInt clickIndex = (UInt32)((scrPos + yPos) / Double2Int32((20 + 12 + 12 + this->previewSize) * hdpi / ddpi));
+		UOSInt clickIndex = (UInt32)((scrPos + pos.y) / Double2Int32((20 + 12 + 12 + this->previewSize) * hdpi / ddpi));
 		if (keys & UI::GUICustomDrawVScroll::KBTN_CONTROL)
 		{
 			Sync::MutexUsage mutUsage(&this->imgMut);

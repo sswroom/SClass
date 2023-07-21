@@ -53,8 +53,6 @@ OSInt __stdcall UI::GUIVSplitter::FormWndProc(void *hWnd, UInt32 msg, UOSInt wPa
 		if (me->dragMode)
 		{
 			OSInt drawY;
-			OSInt x;
-			OSInt y;
 			Math::Size2D<UOSInt> sz;
 			Bool foundThis;
 			UI::GUIControl::DockType dockType;
@@ -66,8 +64,8 @@ OSInt __stdcall UI::GUIVSplitter::FormWndProc(void *hWnd, UInt32 msg, UOSInt wPa
 			me->DrawXorBar(hdc, me->lastX, me->lastY);
 			ReleaseDC((HWND)me->parent->GetHandle(), hdc);
 
-			me->GetPositionP(0, &y);
-			drawY = y + me->lastY - me->dragY;
+			Math::Coord2D<OSInt> pos = me->GetPositionP();
+			drawY = pos.y + me->lastY - me->dragY;
 			if (drawY < me->dragMin)
 			{
 				drawY = me->dragMin;
@@ -90,17 +88,17 @@ OSInt __stdcall UI::GUIVSplitter::FormWndProc(void *hWnd, UInt32 msg, UOSInt wPa
 					dockType = ctrl->GetDockType();
 					if (dockType == UI::GUIControl::DOCK_BOTTOM && me->isBottom)
 					{
-						ctrl->GetPositionP(&x, &y);
+						pos = ctrl->GetPositionP();
 						sz = ctrl->GetSizeP();
-						ctrl->SetAreaP(x, drawY, x + (OSInt)sz.x, y + (OSInt)sz.y, false);
+						ctrl->SetAreaP(pos.x, drawY, pos.x + (OSInt)sz.x, pos.y + (OSInt)sz.y, false);
 						me->parent->UpdateChildrenSize(true);
 						break;
 					}
 					else if (dockType == UI::GUIControl::DOCK_TOP && !me->isBottom)
 					{
-						ctrl->GetPositionP(&x, &y);
+						pos = ctrl->GetPositionP();
 						sz = ctrl->GetSizeP();
-						ctrl->SetAreaP(x, y, x + (OSInt)sz.x, drawY, false);
+						ctrl->SetAreaP(pos.x, pos.y, pos.x + (OSInt)sz.x, drawY, false);
 						me->parent->UpdateChildrenSize(true);
 						break;
 					}
@@ -163,17 +161,13 @@ void UI::GUIVSplitter::DrawXorBar(void *hdc, Int32 x, Int32 y)
 
 	OSInt cliOfstX = 0;
 	OSInt cliOfstY = 0;
-	Double lcliOfstX = 0;
-	Double lcliOfstY = 0;
-	OSInt posX;
-	OSInt posY;
 	Math::Size2D<UOSInt> sz;
-	this->parent->GetClientOfst(&lcliOfstX, &lcliOfstY);
-	cliOfstX = Double2Int32(lcliOfstX * this->hdpi / 96.0);
-	cliOfstY = Double2Int32(lcliOfstY * this->hdpi / 96.0);
-	this->GetPositionP(&posX, &posY);
+	Math::Coord2DDbl lcliOfst = this->parent->GetClientOfst();
+	cliOfstX = Double2Int32(lcliOfst.x * this->hdpi / 96.0);
+	cliOfstY = Double2Int32(lcliOfst.y * this->hdpi / 96.0);
+	Math::Coord2D<OSInt> pos = this->GetPositionP();
 	sz = this->GetSizeP();
-	drawY = posY + y - this->dragY;
+	drawY = pos.y + y - this->dragY;
 	if (drawY < dragMin)
 	{
 		drawY = dragMin;
@@ -186,10 +180,10 @@ void UI::GUIVSplitter::DrawXorBar(void *hdc, Int32 x, Int32 y)
 	hbm = CreateBitmap(8, 8, 1, 1, _dotPatternBmp);
 	hbr = CreatePatternBrush(hbm);
 
-	SetBrushOrgEx((HDC)hdc, (int)(posX + cliOfstX), (int)(drawY + cliOfstY), 0);
+	SetBrushOrgEx((HDC)hdc, (int)(pos.x + cliOfstX), (int)(drawY + cliOfstY), 0);
 	hbrushOld = (HBRUSH)SelectObject((HDC)hdc, hbr);
 
-	PatBlt((HDC)hdc, (int)(posX + cliOfstX), (int)(drawY + cliOfstY), (int)sz.x, (int)sz.y, PATINVERT);
+	PatBlt((HDC)hdc, (int)(pos.x + cliOfstX), (int)(drawY + cliOfstY), (int)sz.x, (int)sz.y, PATINVERT);
 	
 	SelectObject((HDC)hdc, hbrushOld);
 	DeleteObject(hbr);
@@ -207,8 +201,7 @@ void UI::GUIVSplitter::CalDragRange()
 	UI::GUIControl *ctrl;
 	UI::GUIControl::DockType dockType;
 	min = 0;
-	Double maxD;
-	this->parent->GetClientSize(&maxD, 0);
+	Double maxD = this->parent->GetClientSize().x;
 	max = Double2Int32(maxD * this->hdpi / 96.0);
 
 	i = this->parent->GetChildCount();
@@ -229,7 +222,7 @@ void UI::GUIVSplitter::CalDragRange()
 					if (foundThis && !foundBottom)
 					{
 						foundBottom = true;
-						ctrl->GetPositionP(0, &max);
+						max = ctrl->GetPositionP().y;
 						max += (OSInt)ctrl->GetSizeP().y;
 					}
 				}
@@ -238,7 +231,7 @@ void UI::GUIVSplitter::CalDragRange()
 					if (!foundTop)
 					{
 						foundTop = true;
-						ctrl->GetPositionP(0, &min);
+						min = ctrl->GetPositionP().y;
 						min += (OSInt)ctrl->GetSizeP().y;
 					}
 				}
@@ -262,7 +255,7 @@ void UI::GUIVSplitter::CalDragRange()
 					if (!foundBottom)
 					{
 						foundBottom = true;
-						ctrl->GetPositionP(0, &max);
+						max = ctrl->GetPositionP().y;
 					}
 				}
 				else if (dockType == UI::GUIControl::DOCK_TOP)
@@ -270,7 +263,7 @@ void UI::GUIVSplitter::CalDragRange()
 					if (foundThis && !foundTop)
 					{
 						foundTop = true;
-						ctrl->GetPositionP(0, &min);
+						min = ctrl->GetPositionP().y;
 					}
 				}
 			}

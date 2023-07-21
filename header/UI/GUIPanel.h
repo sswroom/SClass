@@ -26,8 +26,8 @@ namespace UI
 
 		virtual Bool IsChildVisible();
 
-		virtual void GetClientOfst(Double *x, Double *y);
-		virtual void GetClientSize(Double *w, Double *h);
+		virtual Math::Coord2DDbl GetClientOfst();
+		virtual Math::Size2DDbl GetClientSize();
 		virtual Text::CString GetObjectClass();
 		virtual OSInt OnNotify(UInt32 code, void *lParam);
 

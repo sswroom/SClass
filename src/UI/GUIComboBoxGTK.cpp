@@ -277,13 +277,12 @@ void *UI::GUIComboBox::GetItem(UOSInt index)
 	return this->items.GetItem(index);
 }
 
-void UI::GUIComboBox::GetSize(Double *width, Double *height)
+Math::Size2DDbl UI::GUIComboBox::GetSize()
 {
 	gint w;
 	gint h;
 	gtk_widget_get_size_request((GtkWidget*)this->hwnd, &w, &h);
-	*width = w * this->ddpi / this->hdpi;
-	*height = h * this->ddpi / this->hdpi;
+	return Math::Size2DDbl(w, h) * this->ddpi / this->hdpi;
 	///////////////////////////////
 }
 

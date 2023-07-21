@@ -761,11 +761,9 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateResult(DB::DBReader *r, UI::GUIList
 	{
 		k += colSize[i];
 	}
-	Double w;
-	Double h;
 	if (k > 0)
 	{
-		lv->GetSize(&w, &h);
+		Double w = lv->GetSize().x;
 		w -= 20 + UOSInt2Double(j) * 6;
 		if (w < 0)
 			w = 0;

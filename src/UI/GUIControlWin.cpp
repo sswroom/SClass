@@ -51,19 +51,17 @@ void UI::GUIControl::InitControl(void *hInst, UI::GUIClientControl *parent, cons
 	this->fontHeightPt = 0.0;
 	if (parent)
 	{
-		Double xOfst = 0;
-		Double yOfst = 0;
-		parent->GetClientOfst(&xOfst, &yOfst);
+		Math::Coord2DDbl ofst = parent->GetClientOfst();
 		this->hdpi = parent->GetHDPI();
 		this->ddpi = parent->GetDDPI();
 		if (txt == 0)
 		{
-			this->hwnd = (ControlHandle*)CreateWindowExW(exStyle, className, 0, style, Double2Int32((x + xOfst) * this->hdpi / this->ddpi), Double2Int32((y + yOfst) * this->hdpi / this->ddpi), Double2Int32(w * this->hdpi / this->ddpi), Double2Int32(h * this->hdpi / this->ddpi), (HWND)parent->GetHandle(), 0, (HINSTANCE)hInst, 0);
+			this->hwnd = (ControlHandle*)CreateWindowExW(exStyle, className, 0, style, Double2Int32((x + ofst.x) * this->hdpi / this->ddpi), Double2Int32((y + ofst.y) * this->hdpi / this->ddpi), Double2Int32(w * this->hdpi / this->ddpi), Double2Int32(h * this->hdpi / this->ddpi), (HWND)parent->GetHandle(), 0, (HINSTANCE)hInst, 0);
 		}
 		else
 		{
 			const WChar *wptr = Text::StrToWCharNew(txt);
-			this->hwnd = (ControlHandle*)CreateWindowExW(exStyle, className, wptr, style, Double2Int32((x + xOfst) * this->hdpi / this->ddpi), Double2Int32((y + yOfst) * this->hdpi / this->ddpi), Double2Int32(w * this->hdpi / this->ddpi), Double2Int32(h * this->hdpi / this->ddpi), (HWND)parent->GetHandle(), 0, (HINSTANCE)hInst, 0);
+			this->hwnd = (ControlHandle*)CreateWindowExW(exStyle, className, wptr, style, Double2Int32((x + ofst.x) * this->hdpi / this->ddpi), Double2Int32((y + ofst.y) * this->hdpi / this->ddpi), Double2Int32(w * this->hdpi / this->ddpi), Double2Int32(h * this->hdpi / this->ddpi), (HWND)parent->GetHandle(), 0, (HINSTANCE)hInst, 0);
 			Text::StrDelNew(wptr);
 		}
 		this->lxPos = x;
@@ -217,12 +215,9 @@ void UI::GUIControl::SetSizeP(Math::Size2D<UOSInt> size)
 	this->SetArea(this->lxPos, this->lyPos, this->lxPos + UOSInt2Double(size.x) * this->ddpi / this->hdpi, this->lyPos + UOSInt2Double(size.y) * this->ddpi / this->hdpi, true);
 }
 
-void UI::GUIControl::GetSize(Double *width, Double *height)
+Math::Size2DDbl UI::GUIControl::GetSize()
 {
-	if (width)
-		*width = this->lxPos2 - this->lxPos;
-	if (height)
-		*height = this->lyPos2 - this->lyPos;
+	return Math::Size2DDbl(this->lxPos2 - this->lxPos, this->lyPos2 - this->lyPos);
 }
 
 Math::Size2D<UOSInt> UI::GUIControl::GetSizeP()
@@ -236,38 +231,31 @@ void UI::GUIControl::SetPosition(Double x, Double y)
 	SetArea(x, y, x + this->lxPos2 - this->lxPos, y + this->lyPos2 - this->lyPos, true);
 }
 
-void UI::GUIControl::GetPositionP(OSInt *x, OSInt *y)
+Math::Coord2D<OSInt> UI::GUIControl::GetPositionP()
 {
-	if (x)
-		*x = Double2Int32(this->lxPos * this->hdpi / this->ddpi);
-	if (y)
-		*y = Double2Int32(this->lyPos * this->hdpi / this->ddpi);
+	return Math::Coord2D<OSInt>(Double2OSInt(this->lxPos * this->hdpi / this->ddpi), Double2OSInt(this->lyPos * this->hdpi / this->ddpi));
 }
 
-void UI::GUIControl::GetScreenPosP(OSInt *x, OSInt *y)
+Math::Coord2D<OSInt> UI::GUIControl::GetScreenPosP()
 {
 	RECT rc;
 	GetWindowRect((HWND)hwnd, &rc);
-	if (x)
-		*x = rc.left;
-	if (y)
-		*y = rc.top;
+	return Math::Coord2D<OSInt>(rc.left, rc.top);
 }
 
 void UI::GUIControl::SetArea(Double left, Double top, Double right, Double bottom, Bool updateScn)
 {
 	if (left == this->lxPos && top == this->lyPos && right == this->lxPos2 && bottom == this->lyPos2)
 		return;
-	Double xOfst = 0;
-	Double yOfst = 0;
+	Math::Coord2DDbl ofst = Math::Coord2DDbl(0, 0);
 	if (this->parent)
 	{
-		this->parent->GetClientOfst(&xOfst, &yOfst);
+		ofst = this->parent->GetClientOfst();
 	}
 	this->lxPos = left;
 	this->lyPos = top;
 	this->selfResize = true;
-	MoveWindow((HWND)hwnd, Double2Int32((left + xOfst) * this->hdpi / this->ddpi), Double2Int32((top + yOfst) * this->hdpi / this->ddpi), Double2Int32((right - left) * this->hdpi / this->ddpi), Double2Int32((bottom - top) * this->hdpi / this->ddpi), updateScn?TRUE:FALSE);
+	MoveWindow((HWND)hwnd, Double2Int32((left + ofst.x) * this->hdpi / this->ddpi), Double2Int32((top + ofst.y) * this->hdpi / this->ddpi), Double2Int32((right - left) * this->hdpi / this->ddpi), Double2Int32((bottom - top) * this->hdpi / this->ddpi), updateScn?TRUE:FALSE);
 	RECT rect;
 	GetWindowRect((HWND)hwnd, &rect);
 	this->lxPos2 = left + (rect.right - rect.left) * this->ddpi / this->hdpi;
@@ -278,16 +266,15 @@ void UI::GUIControl::SetArea(Double left, Double top, Double right, Double botto
 
 void UI::GUIControl::SetAreaP(OSInt left, OSInt top, OSInt right, OSInt bottom, Bool updateScn)
 {
-	Double xOfst = 0;
-	Double yOfst = 0;
+	Math::Coord2DDbl ofst = Math::Coord2DDbl(0, 0);
 	if (this->parent)
 	{
-		this->parent->GetClientOfst(&xOfst, &yOfst);
+		ofst = this->parent->GetClientOfst();
 	}
 	this->lxPos = OSInt2Double(left) * this->ddpi / this->hdpi;
 	this->lyPos = OSInt2Double(top) * this->ddpi / this->hdpi;
 	this->selfResize = true;
-	MoveWindow((HWND)hwnd, Double2Int32(OSInt2Double(left) + xOfst * this->hdpi / this->ddpi), Double2Int32(OSInt2Double(top) + yOfst * this->hdpi / this->ddpi), (int)(right - left), (int)(bottom - top), updateScn?TRUE:FALSE);
+	MoveWindow((HWND)hwnd, Double2Int32(OSInt2Double(left) + ofst.x * this->hdpi / this->ddpi), Double2Int32(OSInt2Double(top) + ofst.y * this->hdpi / this->ddpi), (int)(right - left), (int)(bottom - top), updateScn?TRUE:FALSE);
 	RECT rect;
 	GetWindowRect((HWND)hwnd, &rect);
 	this->lxPos2 = OSInt2Double(left + rect.right - rect.left) * this->ddpi / this->hdpi;
@@ -552,10 +539,8 @@ void UI::GUIControl::UpdatePos(Bool redraw)
 
 	if (this->parent)
 	{
-		Double xOfst = 0;
-		Double yOfst = 0;
-		this->parent->GetClientOfst(&xOfst, &yOfst);
-		MoveWindow((HWND)hwnd, Double2Int32((this->lxPos + xOfst) * this->hdpi / this->ddpi), Double2Int32((this->lyPos + yOfst) * this->hdpi / this->ddpi), Double2Int32((this->lxPos2 - this->lxPos) * this->hdpi / this->ddpi), Double2Int32((this->lyPos2 - this->lyPos) * this->hdpi / this->ddpi), redraw?TRUE:FALSE);
+		Math::Coord2DDbl ofst = this->parent->GetClientOfst();
+		MoveWindow((HWND)hwnd, Double2Int32((this->lxPos + ofst.x) * this->hdpi / this->ddpi), Double2Int32((this->lyPos + ofst.y) * this->hdpi / this->ddpi), Double2Int32((this->lxPos2 - this->lxPos) * this->hdpi / this->ddpi), Double2Int32((this->lyPos2 - this->lyPos) * this->hdpi / this->ddpi), redraw?TRUE:FALSE);
 	}
 	else
 	{

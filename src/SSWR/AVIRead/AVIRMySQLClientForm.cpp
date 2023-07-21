@@ -237,11 +237,9 @@ void SSWR::AVIRead::AVIRMySQLClientForm::UpdateResult(DB::DBReader *r)
 		{
 			k += colSize[i];
 		}
-		Double w;
-		Double h;
 		if (k > 0)
 		{
-			this->lvQueryResult->GetSize(&w, &h);
+			Double w = this->lvQueryResult->GetSize().x;
 			w -= UOSInt2Double(20 + j * 6);
 			if (w < 0)
 				w = 0;

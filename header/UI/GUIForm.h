@@ -111,7 +111,7 @@ namespace UI
 		UI::GUIButton *GetDefaultButton();
 		UI::GUIButton *GetCancelButton();
 
-		virtual void GetClientSize(Double *w, Double *h);
+		virtual Math::Size2DDbl GetClientSize();
 		virtual Bool IsChildVisible();
 
 		virtual Text::CString GetObjectClass();

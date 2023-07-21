@@ -439,15 +439,14 @@ UI::GUIForm::GUIForm(UI::GUIClientControl *parent, Double initW, Double initH, N
 	this->cancelBtn = 0;
 	this->fs = false;
 
-	Double w;
-	Double h;
+	Math::Size2DDbl sz;
 	Double initX;
 	Double initY;
 	if (parent)
 	{
-		parent->GetClientSize(&w, &h);
-		initX = (w - initW) * 0.5;
-		initY = (h - initH) * 0.5;
+		sz = parent->GetClientSize();
+		initX = (sz.x - initW) * 0.5;
+		initY = (sz.y - initH) * 0.5;
 	}
 	else
 	{
@@ -485,18 +484,18 @@ UI::GUIForm::GUIForm(UI::GUIClientControl *parent, Double initW, Double initH, N
 			if (::GetMonitorInfoW(hMon, &info))
 			{
 				found = true;
-				w = (info.rcMonitor.right - info.rcMonitor.left);
-				h = (info.rcMonitor.bottom - info.rcMonitor.top);
-				if (initW > w)
+				sz.x = (info.rcMonitor.right - info.rcMonitor.left);
+				sz.y = (info.rcMonitor.bottom - info.rcMonitor.top);
+				if (initW > sz.x)
 				{
-					initW = w;
+					initW = sz.x;
 				}
-				if (initH > h)
+				if (initH > sz.y)
 				{
-					initH = h;
+					initH = sz.y;
 				}
-				initX = info.rcMonitor.left + ((w - initW) * 0.5);
-				initY = info.rcMonitor.top + ((h - initH) * 0.5);
+				initX = info.rcMonitor.left + ((sz.x - initW) * 0.5);
+				initY = info.rcMonitor.top + ((sz.y - initH) * 0.5);
 			}
 #endif
 		}
@@ -509,24 +508,24 @@ UI::GUIForm::GUIForm(UI::GUIClientControl *parent, Double initW, Double initH, N
 		{
 			RECT rc;
 			GetClientRect(GetDesktopWindow(), &rc);
-			w = (rc.right - rc.left);
-			h = (rc.bottom - rc.top);
-			if (initW > w)
+			sz.x = (rc.right - rc.left);
+			sz.y = (rc.bottom - rc.top);
+			if (initW > sz.x)
 			{
-				initW = w;
+				initW = sz.x;
 			}
-			if (initH > h)
+			if (initH > sz.y)
 			{
-				initH = h;
+				initH = sz.y;
 			}
-			initX = (w - initW) * 0.5;
-			initY = (h - initH) * 0.5;
+			initX = (sz.x - initW) * 0.5;
+			initY = (sz.y - initH) * 0.5;
 		}
 	}
 	this->undockLeft = 0;
 	this->undockTop = 0;
-	this->undockRight = w;
-	this->undockBottom = h;
+	this->undockRight = sz.x;
+	this->undockBottom = sz.y;
 	this->InitControl(((UI::GUICoreWin*)this->ui.Ptr())->GetHInst(), parent, L"WinForm", (const UTF8Char*)"Form", WS_OVERLAPPED | WS_SYSMENU | WS_MINIMIZEBOX, 0, initX, initY, initW, initH);// | WS_THICKFRAME | WS_MAXIMIZEBOX
 	this->SetFont(0, 0, 0, false);
 	SetNoResize(false);
@@ -758,14 +757,11 @@ UI::GUIButton *UI::GUIForm::GetCancelButton()
 	return this->cancelBtn;
 }
 
-void UI::GUIForm::GetClientSize(Double *w, Double *h)
+Math::Size2DDbl UI::GUIForm::GetClientSize()
 {
 	RECT rc;
 	GetClientRect((HWND)this->hwnd, &rc);
-	if (w)
-		*w = (rc.right - rc.left) * this->ddpi / this->hdpi;
-	if (h)
-		*h = (rc.bottom - rc.top) * this->ddpi / this->hdpi;
+	return Math::Size2DDbl(rc.right - rc.left, rc.bottom - rc.top) * this->ddpi / this->hdpi;
 }
 
 Bool UI::GUIForm::IsChildVisible()

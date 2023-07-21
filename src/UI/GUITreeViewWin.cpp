@@ -167,15 +167,13 @@ void UI::GUITreeView::FreeItems()
 
 UI::GUITreeView::GUITreeView(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent) : UI::GUIControl(ui, parent)
 {
-	Double w;
-	Double h;
-	parent->GetClientSize(&w, &h);
+	Math::Size2DDbl sz = parent->GetClientSize();
 	UInt32 style = WS_TABSTOP | WS_CHILD | WS_VSCROLL | WS_BORDER | TVS_EDITLABELS;
 	if (parent->IsChildVisible())
 	{
 		style = style | WS_VISIBLE;
 	}
-	this->InitControl(((UI::GUICoreWin*)ui.Ptr())->GetHInst(), parent, WC_TREEVIEWW, (const UTF8Char*)"TreeView", style, WS_EX_CLIENTEDGE, 0, 0, w, h);
+	this->InitControl(((UI::GUICoreWin*)ui.Ptr())->GetHInst(), parent, WC_TREEVIEWW, (const UTF8Char*)"TreeView", style, WS_EX_CLIENTEDGE, 0, 0, sz.x, sz.y);
 	this->oriWndProc = (void*)UI::GUICoreWin::MSSetWindowObj(this->hwnd, GWLP_WNDPROC, (OSInt)TVWndProc);
 	this->autoFocus = false;
 	this->editing = false;

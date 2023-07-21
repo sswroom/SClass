@@ -37,7 +37,7 @@ gboolean GUIListBox_ButtonPress(GtkWidget *widget, GdkEvent *event, gpointer dat
 	}
 	else if (event->button.button == 3)
 	{
-		me->EventRightClick(Double2OSInt(event->button.x), Double2OSInt(event->button.y));
+		me->EventRightClick(Math::Coord2D<OSInt>(Double2OSInt(event->button.x), Double2OSInt(event->button.y)));
 	}
 	return false;
 }
@@ -119,22 +119,22 @@ void UI::GUIListBox::EventDoubleClick()
 	}
 }
 
-void UI::GUIListBox::EventRightClick(OSInt x, OSInt y)
+void UI::GUIListBox::EventRightClick(Math::Coord2D<OSInt> pos)
 {
 	ClassData *data = this->clsData;
 	UOSInt i = this->rightClickHdlrs.GetCount();
-	GtkListBoxRow *row = gtk_list_box_get_row_at_y((GtkListBox*)data->listbox, (gint)y);
+	GtkListBoxRow *row = gtk_list_box_get_row_at_y((GtkListBox*)data->listbox, (gint)pos.y);
 	if (row)
 	{
 		gtk_list_box_select_row((GtkListBox*)data->listbox, row);
 	}
 	GtkAdjustment *adj = gtk_scrolled_window_get_vadjustment((GtkScrolledWindow*)this->hwnd);
-	y -= (Int32)gtk_adjustment_get_value(adj);
+	pos.y -= (Int32)gtk_adjustment_get_value(adj);
 	if (i > 0)
 	{
 		while (i-- > 0)
 		{
-			this->rightClickHdlrs.GetItem(i)(this->rightClickObjs.GetItem(i), Math::Coord2D<OSInt>(x, y), UI::GUIControl::MBTN_RIGHT);
+			this->rightClickHdlrs.GetItem(i)(this->rightClickObjs.GetItem(i), pos, UI::GUIControl::MBTN_RIGHT);
 		}
 	}
 }

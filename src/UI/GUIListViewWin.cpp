@@ -17,8 +17,6 @@ OSInt UI::GUIListView::useCnt = 0;
 
 UI::GUIListView::GUIListView(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, ListViewStyle lvstyle, UOSInt colCount) : UI::GUIControl(ui, parent)
 {
-	Double w;
-	Double h;
 	if (Sync::Interlocked::Increment(&useCnt) == 1)
 	{
 		INITCOMMONCONTROLSEX icex;
@@ -29,7 +27,7 @@ UI::GUIListView::GUIListView(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *p
 
 	this->himgList = 0;
 	this->lvStyle = lvstyle;
-	parent->GetClientSize(&w, &h);
+	Math::Size2DDbl sz = parent->GetClientSize();
 	UInt32 style = WS_TABSTOP | WS_CHILD | WS_VSCROLL | WS_BORDER;
 	if (lvstyle == LVSTYLE_ICON)
 	{
@@ -53,7 +51,7 @@ UI::GUIListView::GUIListView(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *p
 	{
 		style = style | WS_VISIBLE;
 	}
-	this->InitControl(((UI::GUICoreWin*)ui.Ptr())->GetHInst(), parent, WC_LISTVIEWW, (const UTF8Char*)"ListView", style, WS_EX_CLIENTEDGE, 0, 0, w, h);
+	this->InitControl(((UI::GUICoreWin*)ui.Ptr())->GetHInst(), parent, WC_LISTVIEWW, (const UTF8Char*)"ListView", style, WS_EX_CLIENTEDGE, 0, 0, sz.x, sz.y);
 }
 
 UI::GUIListView::~GUIListView()

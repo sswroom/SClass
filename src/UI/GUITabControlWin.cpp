@@ -79,8 +79,6 @@ OSInt __stdcall UI::GUITabControl::TCWndProc(void *hWnd, UInt32 msg, UOSInt wPar
 
 UI::GUITabControl::GUITabControl(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent) : UI::GUIControl(ui, parent)
 {
-	Double w;
-	Double h;
     INITCOMMONCONTROLSEX icex;
 
 	icex.dwSize = sizeof(INITCOMMONCONTROLSEX);
@@ -92,8 +90,8 @@ UI::GUITabControl::GUITabControl(NotNullPtr<UI::GUICore> ui, UI::GUIClientContro
 	{
 		style = style | WS_VISIBLE;
 	}
-	parent->GetClientSize(&w, &h);
-	this->InitControl(((UI::GUICoreWin*)ui.Ptr())->GetHInst(), parent, WC_TABCONTROLW, (const UTF8Char*)"", style, WS_EX_CONTROLPARENT, 0, 0, w, h);
+	Math::Size2DDbl sz = parent->GetClientSize();
+	this->InitControl(((UI::GUICoreWin*)ui.Ptr())->GetHInst(), parent, WC_TABCONTROLW, (const UTF8Char*)"", style, WS_EX_CONTROLPARENT, 0, 0, sz.x, sz.y);
 	this->oriWndProc = (void*)UI::GUICoreWin::MSSetWindowObj(this->hwnd, GWLP_WNDPROC, (OSInt)TCWndProc);
 	this->selIndex = 0;
 

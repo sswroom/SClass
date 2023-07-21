@@ -138,12 +138,9 @@ void UI::GUIControl::SetSizeP(Math::Size2D<UOSInt> size)
 	this->SetArea(this->lxPos, this->lyPos, this->lxPos + UOSInt2Double(size.x) * this->ddpi / this->hdpi, this->lyPos + UOSInt2Double(size.y) * this->ddpi / this->hdpi, true);
 }
 
-void UI::GUIControl::GetSize(Double *width, Double *height)
+Math::Size2DDbl UI::GUIControl::GetSize()
 {
-	if (width)
-		*width = this->lxPos2 - this->lxPos;
-	if (height)
-		*height = this->lyPos2 - this->lyPos;
+	return Math::Size2DDbl(this->lxPos2 - this->lxPos, this->lyPos2 - this->lyPos);
 //	printf("Control.GetSize %lf, %lf\r\n", *width, *height);
 }
 
@@ -159,32 +156,24 @@ void UI::GUIControl::SetPosition(Double x, Double y)
 	SetArea(x, y, x + this->lxPos2 - this->lxPos, y + this->lyPos2 - this->lyPos, true);
 }
 
-void UI::GUIControl::GetPositionP(OSInt *x, OSInt *y)
+Math::Coord2D<OSInt> UI::GUIControl::GetPositionP()
 {
-	if (x)
-		*x = Double2Int32(this->lxPos * this->hdpi / this->ddpi);
-	if (y)
-		*y = Double2Int32(this->lyPos * this->hdpi / this->ddpi);
+	return Math::Coord2D<OSInt>(Double2Int32(this->lxPos * this->hdpi / this->ddpi), Double2Int32(this->lyPos * this->hdpi / this->ddpi));
 }
 
-void UI::GUIControl::GetScreenPosP(OSInt *x, OSInt *y)
+Math::Coord2D<OSInt> UI::GUIControl::GetScreenPosP()
 {
-	if (x)
-		*x = 0;
-	if (y)
-		*y = 0;
-	///////////////////////////////
+	return Math::Coord2D<OSInt>(0, 0);
 }
 
 void UI::GUIControl::SetArea(Double left, Double top, Double right, Double bottom, Bool updateScn)
 {
 	if (left == this->lxPos && top == this->lyPos && right == this->lxPos2 && bottom == this->lyPos2)
 		return;
-	Double xOfst = 0;
-	Double yOfst = 0;
+	Math::Coord2DDbl ofst = Math::Coord2DDbl(0, 0);
 	if (this->parent)
 	{
-		this->parent->GetClientOfst(&xOfst, &yOfst);
+		ofst = this->parent->GetClientOfst();
 	}
 	this->lxPos = left;
 	this->lyPos = top;
@@ -193,7 +182,7 @@ void UI::GUIControl::SetArea(Double left, Double top, Double right, Double botto
 	if (this->parent)
 	{
 		void *container = this->parent->GetContainer();
-		gtk_fixed_move((GtkFixed*)container, (GtkWidget*)this->hwnd, Double2Int32((left + xOfst) * this->hdpi / this->ddpi), Double2Int32((top + yOfst) * this->hdpi / this->ddpi));
+		gtk_fixed_move((GtkFixed*)container, (GtkWidget*)this->hwnd, Double2Int32((left + ofst.x) * this->hdpi / this->ddpi), Double2Int32((top + ofst.y) * this->hdpi / this->ddpi));
 	}
 	if ((right - left) < 0)
 	{
@@ -237,11 +226,10 @@ void UI::GUIControl::SetAreaP(OSInt left, OSInt top, OSInt right, OSInt bottom, 
 {
 	if (OSInt2Double(left) == this->lxPos && OSInt2Double(top) == this->lyPos && OSInt2Double(right) == this->lxPos2 && OSInt2Double(bottom) == this->lyPos2)
 		return;
-	Double xOfst = 0;
-	Double yOfst = 0;
+	Math::Coord2DDbl ofst = Math::Coord2DDbl(0, 0);
 	if (this->parent)
 	{
-		this->parent->GetClientOfst(&xOfst, &yOfst);
+		ofst = this->parent->GetClientOfst();
 	}
 	this->lxPos = OSInt2Double(left) * this->ddpi / this->hdpi;
 	this->lyPos = OSInt2Double(top) * this->ddpi / this->hdpi;
@@ -250,7 +238,7 @@ void UI::GUIControl::SetAreaP(OSInt left, OSInt top, OSInt right, OSInt bottom, 
 	if (this->parent)
 	{
 		void *container = this->parent->GetContainer();
-		gtk_fixed_move((GtkFixed*)container, (GtkWidget*)this->hwnd, Double2Int32(OSInt2Double(left) + xOfst * this->hdpi / this->ddpi), Double2Int32(OSInt2Double(top) + yOfst * this->hdpi / this->ddpi));
+		gtk_fixed_move((GtkFixed*)container, (GtkWidget*)this->hwnd, Double2Int32(OSInt2Double(left) + ofst.x * this->hdpi / this->ddpi), Double2Int32(OSInt2Double(top) + ofst.y * this->hdpi / this->ddpi));
 	}
 	if ((right - left) < 0)
 	{
@@ -513,11 +501,9 @@ void UI::GUIControl::UpdatePos(Bool redraw)
 
 	if (this->parent)
 	{
-		Double xOfst = 0;
-		Double yOfst = 0;
-		this->parent->GetClientOfst(&xOfst, &yOfst);
+		Math::Coord2DDbl ofst = this->parent->GetClientOfst();
 		void *container = this->parent->GetContainer();
-		gtk_fixed_move((GtkFixed*)container, (GtkWidget*)this->hwnd, Double2Int32((this->lxPos + xOfst) * this->hdpi / this->ddpi), Double2Int32((this->lyPos + yOfst) * this->hdpi / this->ddpi));
+		gtk_fixed_move((GtkFixed*)container, (GtkWidget*)this->hwnd, Double2Int32((this->lxPos + ofst.x) * this->hdpi / this->ddpi), Double2Int32((this->lyPos + ofst.y) * this->hdpi / this->ddpi));
 		if (this->lxPos2 < this->lxPos)
 		{
 			this->lxPos2 = this->lxPos;

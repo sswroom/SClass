@@ -92,9 +92,9 @@ void SSWR::AVIRead::AVIRFontSelector::OnDraw(Media::DrawImage *img)
 	deng->DeleteImage(tmpBmp);
 }
 
-void SSWR::AVIRead::AVIRFontSelector::OnMouseDown(OSInt scrollY, Int32 xPos, Int32 yPos, UI::GUIClientControl::MouseButton btn, KeyButton keys)
+void SSWR::AVIRead::AVIRFontSelector::OnMouseDown(OSInt scrollY, Math::Coord2D<OSInt> pos, UI::GUIClientControl::MouseButton btn, KeyButton keys)
 {
-	OSInt i = scrollY + (yPos / Double2Int32(80 * this->GetHDPI() / this->GetDDPI()));
+	OSInt i = scrollY + (pos.y / Double2Int32(80 * this->GetHDPI() / this->GetDDPI()));
 	if (i >= (OSInt)this->env->GetFontStyleCount())
 	{
 		i = -1;
@@ -109,10 +109,7 @@ void SSWR::AVIRead::AVIRFontSelector::OnMouseDown(OSInt scrollY, Int32 xPos, Int
 		}
 		if (btn == UI::GUIClientControl::MBTN_RIGHT && this->mnuLayers)
 		{
-			OSInt x;
-			OSInt y;
-			this->GetScreenPosP(&x, &y);
-			this->mnuLayers->ShowMenu(this, Math::Coord2D<OSInt>(xPos + x, yPos + y));
+			this->mnuLayers->ShowMenu(this, this->GetScreenPosP() + pos);
 		}
 	}
 }
@@ -123,15 +120,13 @@ void SSWR::AVIRead::AVIRFontSelector::OnKeyDown(UInt32 keyCode)
 	{
 	case UI::GUIControl::GK_PAGEUP:
 		{
-			Double w;
-			Double h;
-			this->GetSize(&w, &h);
-			h = h / 80;
-			if (h <= 0)
+			Math::Size2DDbl sz = this->GetSize();
+			sz.y = sz.y / 80;
+			if (sz.y <= 0)
 			{
-				h = 1;
+				sz.y = 1;
 			}
-			this->currFontStyle -= (UOSInt)h;
+			this->currFontStyle -= (UOSInt)sz.y;
 			if (this->currFontStyle == INVALID_INDEX)
 			{
 				this->currFontStyle = 0;
@@ -144,15 +139,13 @@ void SSWR::AVIRead::AVIRFontSelector::OnKeyDown(UInt32 keyCode)
 		break;
 	case UI::GUIControl::GK_PAGEDOWN:
 		{
-			Double w;
-			Double h;
-			this->GetSize(&w, &h);
-			h = h / 80;
-			if (h <= 0)
+			Math::Size2DDbl sz = this->GetSize();
+			sz.y = sz.y / 80;
+			if (sz.y <= 0)
 			{
-				h = 1;
+				sz.y = 1;
 			}
-			this->currFontStyle += (UOSInt)h;
+			this->currFontStyle += (UOSInt)sz.y;
 			if (this->currFontStyle >= this->env->GetFontStyleCount())
 			{
 				this->currFontStyle = this->env->GetFontStyleCount() - 1;
@@ -370,11 +363,8 @@ void SSWR::AVIRead::AVIRFontSelector::SetPopupMenu(UI::GUIPopupMenu *mnuLayers)
 
 void SSWR::AVIRead::AVIRFontSelector::UpdateFontStyles()
 {
-	Double w;
-	Double h;
-
-	this->GetSize(&w, &h);
-	UOSInt pageCnt = (UOSInt)Double2Int32(h / 80);
+	Math::Size2DDbl sz = this->GetSize();
+	UOSInt pageCnt = (UOSInt)Double2Int32(sz.y / 80);
 	if (pageCnt <= 0)
 		pageCnt = 1;
 	this->SetVScrollBar(0, this->env->GetFontStyleCount(), pageCnt);

@@ -374,15 +374,12 @@ Bool UI::GUIPanel::IsChildVisible()
 	return true;
 }
 
-void UI::GUIPanel::GetClientOfst(Double *x, Double *y)
+Math::Coord2DDbl UI::GUIPanel::GetClientOfst()
 {
-	if (x)
-		*x = -this->currScrX;
-	if (y)
-		*y = -this->currScrY;
+	return Math::Coord2DDbl(-this->currScrX, -this->currScrY);
 }
 
-void UI::GUIPanel::GetClientSize(Double *w, Double *h)
+Math::Size2DDbl UI::GUIPanel::GetClientSize()
 {
 	Int32 cliW;
 	Int32 cliH;
@@ -394,10 +391,7 @@ void UI::GUIPanel::GetClientSize(Double *w, Double *h)
 		cliW = this->minW;
 	if (cliH < this->minH)
 		cliH = this->minH;
-	if (w)
-		*w = cliW * this->ddpi / this->hdpi;
-	if (h)
-		*h = cliH * this->ddpi / this->hdpi;
+	return Math::Size2DDbl(cliW, cliH) * this->ddpi / this->hdpi;
 }
 
 Text::CString UI::GUIPanel::GetObjectClass()

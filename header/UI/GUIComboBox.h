@@ -49,7 +49,7 @@ namespace UI
 		UTF8Char *GetItemText(UTF8Char *buff, UOSInt index);
 		void *GetItem(UOSInt index);
 
-		virtual void GetSize(Double *width, Double *height);
+		virtual Math::Size2DDbl GetSize();
 		virtual void SetArea(Double left, Double top, Double right, Double bottom, Bool updateScn);
 
 		virtual Text::CString GetObjectClass();

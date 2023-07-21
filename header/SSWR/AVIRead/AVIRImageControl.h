@@ -117,7 +117,7 @@ namespace SSWR
 			virtual void SetDPI(Double hdpi, Double ddpi);
 
 			virtual void OnDraw(Media::DrawImage *img);
-			virtual void OnMouseDown(OSInt scrollY, Int32 xPos, Int32 yPos, UI::GUIClientControl::MouseButton btn, KeyButton keys);
+			virtual void OnMouseDown(OSInt scrollY, Math::Coord2D<OSInt> pos, UI::GUIClientControl::MouseButton btn, KeyButton keys);
 			virtual void OnKeyDown(UInt32 keyCode);
 
 			void SetFolder(Text::CString folderPath);

@@ -30,7 +30,7 @@ namespace UI
 
 		void EventSelectionChange();
 		void EventDoubleClick();
-		void EventRightClick(OSInt x, OSInt y);
+		void EventRightClick(Math::Coord2D<OSInt> pos);
 
 		UOSInt AddItem(NotNullPtr<Text::String> itemText, void *itemObj);
 		UOSInt AddItem(Text::CString itemText, void *itemObj);

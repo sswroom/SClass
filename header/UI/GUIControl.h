@@ -256,11 +256,11 @@ namespace UI
 		virtual Bool GetText(Text::StringBuilderUTF8 *sb);
 		virtual void SetSize(Double width, Double height);
 		virtual void SetSizeP(Math::Size2D<UOSInt> size);
-		virtual void GetSize(Double *width, Double *height);
+		virtual Math::Size2DDbl GetSize();
 		virtual Math::Size2D<UOSInt> GetSizeP();
 		virtual void SetPosition(Double x, Double y);
-		virtual void GetPositionP(OSInt *x, OSInt *y);
-		virtual void GetScreenPosP(OSInt *x, OSInt *y);
+		virtual Math::Coord2D<OSInt> GetPositionP();
+		virtual Math::Coord2D<OSInt> GetScreenPosP();
 		virtual void SetArea(Double left, Double top, Double right, Double bottom, Bool updateScn);
 		virtual void SetAreaP(OSInt left, OSInt top, OSInt right, OSInt bottom, Bool updateScn);
 		void SetRect(Double left, Double top, Double width, Double height, Bool updateScn);

@@ -24,8 +24,8 @@ namespace UI
 	public:
 		virtual ~GUIClientControl();
 
-		virtual void GetClientOfst(Double *x, Double *y);
-		virtual void GetClientSize(Double *w, Double *h);
+		virtual Math::Coord2DDbl GetClientOfst();
+		virtual Math::Size2DDbl GetClientSize();
 		virtual void AddChild(GUIControl *child);
 		virtual Bool IsChildVisible() = 0;
 		

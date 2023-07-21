@@ -31,8 +31,8 @@ namespace UI
 
 		virtual Text::CString GetObjectClass();
 		virtual OSInt OnNotify(UInt32 code, void *lParam);
-		void EventMouseDown(UI::GUIControl::MouseButton btn, OSInt x, OSInt y);
-		void EventMouseUp(UI::GUIControl::MouseButton btn, OSInt x, OSInt y);
+		void EventMouseDown(UI::GUIControl::MouseButton btn, Math::Coord2D<OSInt> pos);
+		void EventMouseUp(UI::GUIControl::MouseButton btn, Math::Coord2D<OSInt> pos);
 	};
 }
 #endif

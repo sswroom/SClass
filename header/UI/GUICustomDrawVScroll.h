@@ -41,7 +41,7 @@ namespace UI
 		virtual void OnSizeChanged(Bool updateScn);
 
 		virtual void OnDraw(Media::DrawImage *img) = 0;
-		virtual void OnMouseDown(OSInt scrollY, Int32 xPos, Int32 yPos, UI::GUIClientControl::MouseButton btn, KeyButton keys);
+		virtual void OnMouseDown(OSInt scrollY, Math::Coord2D<OSInt> pos, UI::GUIClientControl::MouseButton btn, KeyButton keys);
 		virtual void OnKeyDown(UInt32 keyCode);
 
 		void HandleSelChg(UI::UIEvent hdlr, void *userObj);

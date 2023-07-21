@@ -34,7 +34,7 @@ gboolean GUIHSplitter_OnMouseDown(GtkWidget *widget, GdkEvent *event, gpointer d
 		}
 		if (btn == UI::GUIControl::MBTN_LEFT)
 		{
-			me->EventMouseDown(btn, Double2OSInt(evt->x), Double2OSInt(evt->y));
+			me->EventMouseDown(btn, Math::Coord2D<OSInt>(Double2OSInt(evt->x), Double2OSInt(evt->y)));
 		}
 	}
 	return false;
@@ -68,7 +68,7 @@ gboolean GUIHSplitter_OnMouseUp(GtkWidget *widget, GdkEvent *event, gpointer dat
 		}
 		if (btn == UI::GUIControl::MBTN_LEFT)
 		{
-			me->EventMouseUp(btn, Double2OSInt(evt->x), Double2OSInt(evt->y));
+			me->EventMouseUp(btn, Math::Coord2D<OSInt>(Double2OSInt(evt->x), Double2OSInt(evt->y)));
 		}
 	}
 	return false;
@@ -103,18 +103,18 @@ OSInt UI::GUIHSplitter::OnNotify(UInt32 code, void *lParam)
 	return 0;
 }
 
-void UI::GUIHSplitter::EventMouseDown(UI::GUIControl::MouseButton btn, OSInt x, OSInt y)
+void UI::GUIHSplitter::EventMouseDown(UI::GUIControl::MouseButton btn, Math::Coord2D<OSInt> pos)
 {
 	if (btn == UI::GUIControl::MBTN_LEFT)
 	{
 		this->dragMode = true;
-		this->dragX = (Int32)x;
-		this->dragY = (Int32)y;
+		this->dragX = (Int32)pos.x;
+		this->dragY = (Int32)pos.y;
 		this->SetCapture();
 	}
 }
 
-void UI::GUIHSplitter::EventMouseUp(UI::GUIControl::MouseButton btn, OSInt x, OSInt y)
+void UI::GUIHSplitter::EventMouseUp(UI::GUIControl::MouseButton btn, Math::Coord2D<OSInt> pos)
 {
 	if (btn == UI::GUIControl::MBTN_LEFT)
 	{
@@ -122,9 +122,9 @@ void UI::GUIHSplitter::EventMouseUp(UI::GUIControl::MouseButton btn, OSInt x, OS
 		{
 			UI::GUIControl *ctrl;
 			Bool foundThis = false;
-			OSInt drawX = x - this->dragX;
-			this->GetPositionP(&x, &y);
-			drawX += x;
+			OSInt drawX = pos.x - this->dragX;
+			pos = this->GetPositionP();
+			drawX += pos.x;
 			Math::Size2D<UOSInt> sz;
 			UOSInt i = this->parent->GetChildCount();
 			while (i-- > 0)
@@ -139,17 +139,17 @@ void UI::GUIHSplitter::EventMouseUp(UI::GUIControl::MouseButton btn, OSInt x, OS
 					dockType = ctrl->GetDockType();
 					if (dockType == UI::GUIControl::DOCK_RIGHT && this->isRight)
 					{
-						ctrl->GetPositionP(&x, &y);
+						pos = ctrl->GetPositionP();
 						sz = ctrl->GetSizeP();
-						ctrl->SetAreaP(drawX, y, x + (OSInt)sz.x, y + (OSInt)sz.y, false);
+						ctrl->SetAreaP(drawX, pos.y, pos.x + (OSInt)sz.x, pos.y + (OSInt)sz.y, false);
 						this->parent->UpdateChildrenSize(true);
 						break;
 					}
 					else if (dockType == UI::GUIControl::DOCK_LEFT && !this->isRight)
 					{
-						ctrl->GetPositionP(&x, &y);
+						pos = ctrl->GetPositionP();
 						sz = ctrl->GetSizeP();
-						ctrl->SetAreaP(x, y, drawX, y + (OSInt)sz.y, false);
+						ctrl->SetAreaP(pos.x, pos.y, drawX, pos.y + (OSInt)sz.y, false);
 						this->parent->UpdateChildrenSize(true);
 						break;
 					}

@@ -68,22 +68,16 @@ Bool UI::GUIClientControl::MyEraseBkg(void *hdc)
 	return true;
 }
 
-void UI::GUIClientControl::GetClientOfst(Double *x, Double *y)
+Math::Coord2DDbl UI::GUIClientControl::GetClientOfst()
 {
-	if (x)
-		*x = 0;
-	if (y)
-		*y = 0;
+	return Math::Coord2DDbl(0, 0);
 }
 
-void UI::GUIClientControl::GetClientSize(Double *w, Double *h)
+Math::Size2DDbl UI::GUIClientControl::GetClientSize()
 {
 	RECT rc;
 	GetClientRect((HWND)this->hwnd, &rc);
-	if (w)
-		*w = (rc.right - rc.left) * this->ddpi / this->hdpi;
-	if (h)
-		*h = (rc.bottom - rc.top) * this->ddpi / this->hdpi;
+	return Math::Size2DDbl(rc.right - rc.left, rc.bottom - rc.top) * this->ddpi / this->hdpi;
 }
 
 void UI::GUIClientControl::AddChild(GUIControl *child)
@@ -107,15 +101,13 @@ void UI::GUIClientControl::UpdateChildrenSize(Bool redraw)
 	UOSInt j;
 	Double left = 0;
 	Double top = 0;
-	Double right;
-	Double bottom;
-	Double ctrlW;
-	Double ctrlH;
+	Math::Size2DDbl br;
+	Math::Size2DDbl ctrlSz;
 	Bool hasFill = false;
 	GUIControl *ctrl;
 	DockType dt;
 
-	GetClientSize(&right, &bottom);
+	br = GetClientSize();
 	i = 0;
 	j = this->children.GetCount();
 	while (i < j)
@@ -128,37 +120,37 @@ void UI::GUIClientControl::UpdateChildrenSize(Bool redraw)
 		}
 		else if (dt == UI::GUIControl::DOCK_FILL)
 		{
-			ctrl->SetArea(left, top, right, bottom, false);
-			ctrl->GetSize(&ctrlW, &ctrlH);
+			ctrl->SetArea(left, top, br.x, br.y, false);
+			ctrlSz = ctrl->GetSize();
 			//top += ctrlH;
 			hasFill = true;
 		}
 		else
 		{
-			ctrl->GetSize(&ctrlW, &ctrlH);
+			ctrlSz = ctrl->GetSize();
 			if (dt == UI::GUIControl::DOCK_LEFT)
 			{
-				ctrl->SetArea(left, top, left + ctrlW, bottom, false);
-				ctrl->GetSize(&ctrlW, &ctrlH);
-				left += ctrlW;
+				ctrl->SetArea(left, top, left + ctrlSz.x, br.y, false);
+				ctrlSz = ctrl->GetSize();
+				left += ctrlSz.x;
 			}
 			else if (dt == UI::GUIControl::DOCK_TOP)
 			{
-				ctrl->SetArea(left, top, right, top + ctrlH, false);
-				ctrl->GetSize(&ctrlW, &ctrlH);
-				top += ctrlH;
+				ctrl->SetArea(left, top, br.x, top + ctrlSz.y, false);
+				ctrlSz = ctrl->GetSize();
+				top += ctrlSz.y;
 			}
 			else if (dt == UI::GUIControl::DOCK_RIGHT)
 			{
-				ctrl->SetArea(right - ctrlW, top, right, bottom, false);
-				ctrl->GetSize(&ctrlW, &ctrlH);
-				right -= ctrlW;
+				ctrl->SetArea(br.x - ctrlSz.x, top, br.x, br.y, false);
+				ctrlSz = ctrl->GetSize();
+				br.x -= ctrlSz.x;
 			}
 			else if (dt == UI::GUIControl::DOCK_BOTTOM)
 			{
-				ctrl->SetArea(left, bottom - ctrlH, right, bottom, false);
-				ctrl->GetSize(&ctrlW, &ctrlH);
-				bottom -= ctrlH;
+				ctrl->SetArea(left, br.y - ctrlSz.y, br.x, br.y, false);
+				ctrlSz = ctrl->GetSize();
+				br.y -= ctrlSz.y;
 			}
 		}
 
@@ -166,8 +158,8 @@ void UI::GUIClientControl::UpdateChildrenSize(Bool redraw)
 	}
 	this->undockLeft = left;
 	this->undockTop = top;
-	this->undockRight = right;
-	this->undockBottom = bottom;
+	this->undockRight = br.x;
+	this->undockBottom = br.y;
 	this->hasFillCtrl = hasFill;
 	if (redraw && j > 0 && this->hwnd)
 	{

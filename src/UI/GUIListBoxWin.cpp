@@ -25,7 +25,7 @@ OSInt __stdcall UI::GUIListBox::LBWndProc(void *hWnd, UInt32 msg, UOSInt wParam,
 //		y = HIWORD(lParam);
 		index = SendMessage((HWND)hWnd, LB_ITEMFROMPOINT, 0, lParam);
 		me->SetSelectedIndex((UOSInt)index);
-		me->EventRightClick((Int16)LOWORD(lParam), (Int16)HIWORD(lParam));
+		me->EventRightClick(Math::Coord2D<OSInt>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)));
 		break;
 	default:
 		return CallWindowProc((WNDPROC)me->clsData, (HWND)hWnd, msg, wParam, lParam);
@@ -35,11 +35,9 @@ OSInt __stdcall UI::GUIListBox::LBWndProc(void *hWnd, UInt32 msg, UOSInt wParam,
 
 UI::GUIListBox::GUIListBox(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, Bool multiSelect) : UI::GUIControl(ui, parent)
 {
-	Double w;
-	Double h;
 	this->mulSel = multiSelect;
 
-	parent->GetClientSize(&w, &h);
+	Math::Size2DDbl sz = parent->GetClientSize();
 	UInt32 style = WS_TABSTOP | WS_CHILD | LBS_NOTIFY | WS_VSCROLL | WS_BORDER;
 	if (parent->IsChildVisible())
 	{
@@ -49,7 +47,7 @@ UI::GUIListBox::GUIListBox(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *par
 	{
 		style = style | LBS_EXTENDEDSEL;
 	}
-	this->InitControl(((UI::GUICoreWin*)ui.Ptr())->GetHInst(), parent, L"LISTBOX", (const UTF8Char*)"ListBox", style, WS_EX_CLIENTEDGE, 0, 0, w, h);
+	this->InitControl(((UI::GUICoreWin*)ui.Ptr())->GetHInst(), parent, L"LISTBOX", (const UTF8Char*)"ListBox", style, WS_EX_CLIENTEDGE, 0, 0, sz.x, sz.y);
 	this->clsData = (ClassData*)UI::GUICoreWin::MSSetWindowObj(this->hwnd, GWLP_WNDPROC, (OSInt)LBWndProc);
 }
 
@@ -76,17 +74,15 @@ void UI::GUIListBox::EventDoubleClick()
 	}
 }
 
-void UI::GUIListBox::EventRightClick(OSInt x, OSInt y)
+void UI::GUIListBox::EventRightClick(Math::Coord2D<OSInt> pos)
 {
 	UOSInt i = this->rightClickHdlrs.GetCount();
 	if (i > 0)
 	{
-		OSInt scnX;
-		OSInt scnY;
-		this->GetScreenPosP(&scnX, &scnY);
+		Math::Coord2D<OSInt> scnPos = this->GetScreenPosP();
 		while (i-- > 0)
 		{
-			this->rightClickHdlrs.GetItem(i)(this->rightClickObjs.GetItem(i), Math::Coord2D<OSInt>(x + scnX, y + scnY), UI::GUIControl::MBTN_RIGHT);
+			this->rightClickHdlrs.GetItem(i)(this->rightClickObjs.GetItem(i), pos + scnPos, UI::GUIControl::MBTN_RIGHT);
 		}
 	}
 }

@@ -123,15 +123,14 @@ UI::GUIForm::GUIForm(GUIClientControl *parent, Double initW, Double initH, NotNu
 	g_signal_connect((GtkWidget*)this->hwnd, "destroy", G_CALLBACK(GUIForm_EventDestroy), this);
 
 	this->selfResize = true;
-	Double w;
-	Double h;
+	Math::Size2DDbl sz;
 	Double initX;
 	Double initY;
 	if (parent)
 	{
-		parent->GetClientSize(&w, &h);
-		initX = (w - initW) * 0.5;
-		initY = (h - initH) * 0.5;
+		sz = parent->GetClientSize();
+		initX = (sz.x - initW) * 0.5;
+		initY = (sz.y - initH) * 0.5;
 	}
 	else
 	{
@@ -154,8 +153,8 @@ UI::GUIForm::GUIForm(GUIClientControl *parent, Double initW, Double initH, NotNu
 		gint monNum = gdk_screen_get_monitor_at_point(scn, x, y);
 		gdk_screen_get_monitor_geometry(scn, monNum, &rect);
 #endif
-/*		w = rect.width;
-		h = rect.height;
+/*		sz.x = rect.width;
+		sz.y = rect.height;
 		initW = initW * this->hdpi / this->ddpi;
 		initH = initH * this->hdpi / this->ddpi;
 		if (initW > w)
@@ -176,10 +175,9 @@ UI::GUIForm::GUIForm(GUIClientControl *parent, Double initW, Double initH, NotNu
 	initY = initY * this->ddpi / this->hdpi;
 	initW = initW * this->ddpi / this->hdpi;
 	initH = initH * this->ddpi / this->hdpi;*/
-		w = rect.width * 96.0 / this->hdpi;
-		h = rect.height * 96.0 / this->hdpi;
-		initX = (rect.x * 96.0 / this->hdpi) + ((w - initW) * 0.5);
-		initY = (rect.y * 96.0 / this->hdpi) + ((h - initH) * 0.5);
+		sz = Math::Size2DDbl(rect.width, rect.height) * 96.0 / this->hdpi;
+		initX = (rect.x * 96.0 / this->hdpi) + ((sz.x - initW) * 0.5);
+		initY = (rect.y * 96.0 / this->hdpi) + ((sz.y - initH) * 0.5);
 	}
 	gtk_window_move((GtkWindow*)this->hwnd, Double2Int32(initX), Double2Int32(initY));
 	gtk_window_set_default_size((GtkWindow*)this->hwnd, Double2Int32(initW * this->hdpi / 96.0), Double2Int32(initH * this->hdpi / 96.0));
@@ -416,7 +414,7 @@ UI::GUIButton *UI::GUIForm::GetCancelButton()
 	return this->cancelBtn;
 }
 
-void UI::GUIForm::GetClientSize(Double *w, Double *h)
+Math::Size2DDbl UI::GUIForm::GetClientSize()
 {
 	int width;
 	int height;
@@ -433,8 +431,7 @@ void UI::GUIForm::GetClientSize(Double *w, Double *h)
 			}
 		}
 	}
-	*w = width * this->ddpi / this->hdpi;
-	*h = height * this->ddpi / this->hdpi;
+	return Math::Size2DDbl(width, height) * this->ddpi / this->hdpi;
 }
 
 Bool UI::GUIForm::IsChildVisible()

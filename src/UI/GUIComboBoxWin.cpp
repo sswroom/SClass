@@ -278,29 +278,25 @@ void *UI::GUIComboBox::GetItem(UOSInt index)
 	return (void*)SendMessage((HWND)hwnd, CB_GETITEMDATA, index, 0);
 }
 
-void UI::GUIComboBox::GetSize(Double *width, Double *height)
+Math::Size2DDbl UI::GUIComboBox::GetSize()
 {
 //	OSInt itemHeight = GetSelectionHeight();
 	RECT rect;
 	GetWindowRect((HWND)hwnd, &rect);
-	if (width)
-		*width = (rect.right - rect.left) * this->ddpi / this->hdpi;
-	if (height)
-		*height = (rect.bottom - rect.top) * this->ddpi / this->hdpi;// - itemHeight * this->minVisible;
+	return Math::Size2DDbl(rect.right - rect.left, rect.bottom - rect.top) * this->ddpi / this->hdpi;
 }
 
 void UI::GUIComboBox::SetArea(Double left, Double top, Double right, Double bottom, Bool updateScn)
 {
 	UOSInt itemHeight = GetSelectionHeight();
-	Double xOfst = 0;
-	Double yOfst = 0;
+	Math::Coord2DDbl ofst = Math::Coord2DDbl(0, 0);
 	if (this->parent)
 	{
-		this->parent->GetClientOfst(&xOfst, &yOfst);
+		ofst = this->parent->GetClientOfst();
 	}
 	this->lxPos = left;
 	this->lyPos = top;
-	MoveWindow((HWND)hwnd, (int)((left + xOfst) * this->hdpi / this->ddpi), (int)((top + yOfst) * this->hdpi / this->ddpi), (int)((right - left) * this->hdpi / this->ddpi), (int)((bottom - top + UOSInt2Double(itemHeight * this->minVisible)) * this->hdpi / this->ddpi), updateScn?TRUE:FALSE);
+	MoveWindow((HWND)hwnd, (int)((left + ofst.x) * this->hdpi / this->ddpi), (int)((top + ofst.y) * this->hdpi / this->ddpi), (int)((right - left) * this->hdpi / this->ddpi), (int)((bottom - top + UOSInt2Double(itemHeight * this->minVisible)) * this->hdpi / this->ddpi), updateScn?TRUE:FALSE);
 	this->lxPos2 = left + right - left;
 	this->lyPos2 = top + bottom - top;
 	this->OnSizeChanged(updateScn);
@@ -339,13 +335,12 @@ void UI::GUIComboBox::HandleSelectionChange(UI::UIEvent hdlr, void *userObj)
 void UI::GUIComboBox::UpdatePos(Bool redraw)
 {
 	UOSInt itemHeight = GetSelectionHeight();
-	Double xOfst = 0;
-	Double yOfst = 0;
+	Math::Coord2DDbl ofst = Math::Coord2DDbl(0, 0);
 	if (this->parent)
 	{
-		this->parent->GetClientOfst(&xOfst, &yOfst);
+		ofst = this->parent->GetClientOfst();
 	}
-	MoveWindow((HWND)hwnd, (int)((this->lxPos + xOfst) * this->hdpi / this->ddpi), (int)((this->lyPos + yOfst) * this->hdpi / this->ddpi), (int)((this->lxPos2 - this->lxPos) * this->hdpi / this->ddpi), (int)((this->lyPos2 - this->lyPos + UOSInt2Double(itemHeight * this->minVisible)) * this->hdpi / this->ddpi), redraw?TRUE:FALSE);
+	MoveWindow((HWND)hwnd, (int)((this->lxPos + ofst.x) * this->hdpi / this->ddpi), (int)((this->lyPos + ofst.y) * this->hdpi / this->ddpi), (int)((this->lxPos2 - this->lxPos) * this->hdpi / this->ddpi), (int)((this->lyPos2 - this->lyPos + UOSInt2Double(itemHeight * this->minVisible)) * this->hdpi / this->ddpi), redraw?TRUE:FALSE);
 }
 
 void UI::GUIComboBox::SetAutoComplete(Bool autoComplete)

@@ -54,23 +54,14 @@ Bool UI::GUIPanel::IsChildVisible()
 	return true;
 }
 
-void UI::GUIPanel::GetClientOfst(Double *x, Double *y)
+Math::Coord2DDbl UI::GUIPanel::GetClientOfst()
 {
-	if (x)
-		*x = -this->currScrX;
-	if (y)
-		*y = -this->currScrY;
+	return Math::Coord2DDbl(-this->currScrX, -this->currScrY);
 }
 
-void UI::GUIPanel::GetClientSize(Double *w, Double *h)
+Math::Size2DDbl UI::GUIPanel::GetClientSize()
 {
-	Double cliW;
-	Double cliH;
-	this->GetSize(&cliW, &cliH);
-	if (w)
-		*w = cliW;
-	if (h)
-		*h = cliH;
+	return this->GetSize();
 }
 
 Text::CString UI::GUIPanel::GetObjectClass()

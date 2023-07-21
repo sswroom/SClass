@@ -95,10 +95,8 @@ OSInt __stdcall UI::GUIDDrawControl::FormWndProc(void *hWnd, UInt32 msg, UOSInt 
 		return 0;
 	case WM_MOUSEWHEEL:
 		{
-			OSInt scnX;
-			OSInt scnY;
-			me->GetScreenPosP(&scnX, &scnY);
-			me->OnMouseWheel(Math::Coord2D<OSInt>(-scnX + (Int16)LOWORD(lParam), -scnY + (Int16)HIWORD(lParam)), (Int16)HIWORD(wParam));
+			Math::Coord2D<OSInt> scnPos = me->GetScreenPosP();
+			me->OnMouseWheel(Math::Coord2D<OSInt>(-scnPos.x + (Int16)LOWORD(lParam), -scnPos.y + (Int16)HIWORD(lParam)), (Int16)HIWORD(wParam));
 		}
 		return 0;
 	case WM_SIZE:

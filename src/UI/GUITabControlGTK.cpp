@@ -169,11 +169,9 @@ void UI::GUITabControl::GetTabPageRect(OSInt *x, OSInt *y, UOSInt *w, UOSInt *h)
 	}
 	else
 	{
-		OSInt posX;
-		OSInt posY;
-		this->GetPositionP(&posX, &posY);
+		Math::Coord2D<OSInt> pos = this->GetPositionP();
 //		printf("TabPage clip.y = %d, clip.height = %d, height = %d, posY = %d\r\n", clip.y, clip.height, (UInt32)height, (Int32)posY);
-		btnH = clip.y - posY;
+		btnH = clip.y - pos.y;
 	}
 	if (x)
 		*x = 0;

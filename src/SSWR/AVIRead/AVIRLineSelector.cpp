@@ -96,9 +96,9 @@ void SSWR::AVIRead::AVIRLineSelector::OnDraw(Media::DrawImage *img)
 	deng->DeleteImage(tmpBmp);
 }
 
-void SSWR::AVIRead::AVIRLineSelector::OnMouseDown(OSInt scrollY, Int32 xPos, Int32 yPos, UI::GUIClientControl::MouseButton btn, KeyButton keys)
+void SSWR::AVIRead::AVIRLineSelector::OnMouseDown(OSInt scrollY, Math::Coord2D<OSInt> pos, UI::GUIClientControl::MouseButton btn, KeyButton keys)
 {
-	OSInt i = scrollY + (yPos / Double2Int32(24 * this->GetHDPI() / this->GetDDPI()));
+	OSInt i = scrollY + (pos.y / Double2Int32(24 * this->GetHDPI() / this->GetDDPI()));
 	if (i >= (OSInt)this->env->GetLineStyleCount())
 	{
 		i = -1;
@@ -113,10 +113,8 @@ void SSWR::AVIRead::AVIRLineSelector::OnMouseDown(OSInt scrollY, Int32 xPos, Int
 		}
 		if (btn == UI::GUIClientControl::MBTN_RIGHT && this->mnuLayers)
 		{
-			OSInt x;
-			OSInt y;
-			this->GetScreenPosP(&x, &y);
-			this->mnuLayers->ShowMenu(this, Math::Coord2D<OSInt>(x + xPos, y + yPos));
+			Math::Coord2D<OSInt> scnPos = this->GetScreenPosP();
+			this->mnuLayers->ShowMenu(this, scnPos + pos);
 		}
 	}
 }
@@ -171,11 +169,8 @@ void SSWR::AVIRead::AVIRLineSelector::SetPopupMenu(UI::GUIPopupMenu *mnuLayers)
 
 void SSWR::AVIRead::AVIRLineSelector::UpdateLineStyles()
 {
-	Double w;
-	Double h;
-
-	this->GetSize(&w, &h);
-	UOSInt page = (UOSInt)(h / 24);
+	Math::Size2DDbl sz = this->GetSize();
+	UOSInt page = (UOSInt)(sz.y / 24);
 	if (page <= 0)
 		page = 1;
 	this->SetVScrollBar(0, this->env->GetLineStyleCount(), page);

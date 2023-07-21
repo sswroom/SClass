@@ -27,9 +27,9 @@ namespace UI
 		virtual ~GUIPictureList();
 
 		virtual void OnDraw(Media::DrawImage *img);
-		virtual void OnMouseDown(OSInt scrollY, Int32 xPos, Int32 yPos, UI::GUIClientControl::MouseButton btn, KeyButton keys);
+		virtual void OnMouseDown(OSInt scrollY, Math::Coord2D<OSInt> pos, UI::GUIClientControl::MouseButton btn, KeyButton keys);
 
-		UOSInt IndexFromPoint(Int32 x, Int32 y);
+		UOSInt IndexFromPoint(Math::Coord2D<OSInt> pos);
 		void Add(Media::Image *img);
 		UOSInt GetCount();
 		void RemoveAt(UOSInt index);

@@ -65,14 +65,14 @@ OSInt __stdcall UI::GUICustomDrawVScroll::CDVSWndProc(void *hWnd, UInt32 msg, UI
 		yPos = (Int16)HIWORD(lParam);
 		xPos = (Int16)LOWORD(lParam);
 		keys = (KeyButton)wParam;
-		me->OnMouseDown(GetScrollPos((HWND)hWnd, SB_VERT), xPos, yPos, UI::GUIClientControl::MBTN_LEFT, keys);
+		me->OnMouseDown(GetScrollPos((HWND)hWnd, SB_VERT), Math::Coord2D<OSInt>(xPos, yPos), UI::GUIClientControl::MBTN_LEFT, keys);
 		return 0;
 	case WM_RBUTTONDOWN:
 		me->Focus();
 		yPos = (Int16)HIWORD(lParam);
 		xPos = (Int16)LOWORD(lParam);
 		keys = (KeyButton)wParam;
-		me->OnMouseDown(GetScrollPos((HWND)hWnd, SB_VERT), xPos, yPos, UI::GUIClientControl::MBTN_RIGHT, keys);
+		me->OnMouseDown(GetScrollPos((HWND)hWnd, SB_VERT), Math::Coord2D<OSInt>(xPos, yPos), UI::GUIClientControl::MBTN_RIGHT, keys);
 		return 0;
 	case WM_LBUTTONDBLCLK:
 		me->EventDblClk();
@@ -213,7 +213,7 @@ void UI::GUICustomDrawVScroll::OnSizeChanged(Bool updateScn)
 	}
 }
 
-void UI::GUICustomDrawVScroll::OnMouseDown(OSInt scrollY, Int32 xPos, Int32 yPos, UI::GUIClientControl::MouseButton btn, KeyButton keys)
+void UI::GUICustomDrawVScroll::OnMouseDown(OSInt scrollY, Math::Coord2D<OSInt> pos, UI::GUIClientControl::MouseButton btn, KeyButton keys)
 {
 }
 

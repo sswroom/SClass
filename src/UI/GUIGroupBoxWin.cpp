@@ -62,23 +62,14 @@ UI::GUIGroupBox::GUIGroupBox(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *p
 	this->oriWndProc = (void*)UI::GUICoreWin::MSSetWindowObj(this->hwnd, GWLP_WNDPROC, (OSInt)GBWndProc);
 }
 
-void UI::GUIGroupBox::GetClientOfst(Double *x, Double *y)
+Math::Coord2DDbl UI::GUIGroupBox::GetClientOfst()
 {
-	if (x)
-		*x = 3;
-	if (y)
-		*y = 15;
+	return Math::Coord2DDbl(3, 15);
 }
 
-void UI::GUIGroupBox::GetClientSize(Double *w, Double *h)
+Math::Size2DDbl UI::GUIGroupBox::GetClientSize()
 {
-	Double width;
-	Double height;
-	this->GetSize(&width, &height);
-	if (w)
-		*w = width - 6;
-	if (h)
-		*h = height - 18;
+	return this->GetSize() - Math::Double2D(6, 18);
 }
 
 Bool UI::GUIGroupBox::IsChildVisible()

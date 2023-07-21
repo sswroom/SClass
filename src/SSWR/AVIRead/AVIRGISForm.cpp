@@ -140,13 +140,11 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::FileHandler(void *userObj, NotNullPtr
 	IO::ParsedObject *pobj;
 	IO::ParserType pt;
 	Data::ArrayList<Map::MapDrawLayer *> *layers;
-	OSInt scnX;
-	OSInt scnY;
 	Math::Size2D<UOSInt> sz;
 	Math::Coord2D<OSInt> mousePos = me->ui->GetCursorPos();
-	me->mapCtrl->GetScreenPosP(&scnX, &scnY);
-	mousePos.x = mousePos.x - scnX;
-	mousePos.y = mousePos.y - scnY;
+	Math::Coord2D<OSInt> scnPos = me->mapCtrl->GetScreenPosP();
+	mousePos.x = mousePos.x - scnPos.x;
+	mousePos.y = mousePos.y - scnPos.y;
 	sz = me->mapCtrl->GetSizeP();
 	if (mousePos.x >= 0 && mousePos.y >= 0 && mousePos.x < (OSInt)sz.x && mousePos.y < (OSInt)sz.y)
 	{

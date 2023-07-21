@@ -119,10 +119,10 @@ void UI::GUIPictureList::OnDraw(Media::DrawImage *img)
 	}
 }
 
-void UI::GUIPictureList::OnMouseDown(OSInt scrollY, Int32 xPos, Int32 yPos, UI::GUIClientControl::MouseButton btn, KeyButton keys)
+void UI::GUIPictureList::OnMouseDown(OSInt scrollY, Math::Coord2D<OSInt> pos, UI::GUIClientControl::MouseButton btn, KeyButton keys)
 {
 	UOSInt i;
-	i = this->IndexFromPoint(xPos, yPos);
+	i = this->IndexFromPoint(pos);
 	if (i != INVALID_INDEX && i != this->selectedIndex)
 	{
 		this->selectedIndex = i;
@@ -130,18 +130,18 @@ void UI::GUIPictureList::OnMouseDown(OSInt scrollY, Int32 xPos, Int32 yPos, UI::
 	}
 }
 
-UOSInt UI::GUIPictureList::IndexFromPoint(Int32 x, Int32 y)
+UOSInt UI::GUIPictureList::IndexFromPoint(Math::Coord2D<OSInt> pos)
 {
 	UOSInt index;
 	UOSInt currY = this->GetVScrollPos();
 	Math::Size2D<UOSInt> sz = this->GetSizeP();
-	if (x < 0 || x >= (OSInt)sz.x || y < 0 || y >= (OSInt)sz.y)
+	if (pos.x < 0 || pos.x >= (OSInt)sz.x || pos.y < 0 || pos.y >= (OSInt)sz.y)
 	{
 		return INVALID_INDEX;
 	}
 	if (sz.x <= this->iconSize.x + ICONPADDING)
 	{
-		index = ((UInt32)y + currY) / (this->iconSize.y + ICONPADDING);
+		index = ((UInt32)pos.y + currY) / (this->iconSize.y + ICONPADDING);
 		if (index >= this->imgList.GetCount())
 			return INVALID_INDEX;
 		return index;
@@ -149,9 +149,9 @@ UOSInt UI::GUIPictureList::IndexFromPoint(Int32 x, Int32 y)
 	else
 	{
 		UOSInt iconPerRow = sz.x / (this->iconSize.x + ICONPADDING);
-		if (x >= (OSInt)(iconPerRow * (this->iconSize.x + ICONPADDING)))
+		if (pos.x >= (OSInt)(iconPerRow * (this->iconSize.x + ICONPADDING)))
 			return INVALID_INDEX;
-		index = ((UInt32)y + currY) / (this->iconSize.y + ICONPADDING) * iconPerRow + (UInt32)x / (this->iconSize.x + ICONPADDING);
+		index = ((UInt32)pos.y + currY) / (this->iconSize.y + ICONPADDING) * iconPerRow + (UInt32)pos.x / (this->iconSize.x + ICONPADDING);
 		if (index >= this->imgList.GetCount())
 			return INVALID_INDEX;
 		return index;

@@ -23,22 +23,20 @@ void UI::GUIClientControl::InitContainer()
 	gtk_box_pack_start(GTK_BOX(data->vbox), data->scrolledWin, true, true, 0);
 	gtk_container_add(GTK_CONTAINER(this->hwnd), data->vbox);
 
-	Double outW;
-	Double outH;
-	this->GetClientSize(&outW, &outH);
-	if (outW < 0)
+	Math::Size2DDbl outSz = this->GetClientSize();
+	if (outSz.x < 0)
 	{
-		outW = 0;
+		outSz.x = 0;
 	}
-	if (outH < 0)
+	if (outSz.y < 0)
 	{
-		outH = 0;
+		outSz.y = 0;
 	}
 	if (!this->GetObjectClass().Equals(UTF8STRC("WinForm")))
 	{
-		gtk_widget_set_size_request(data->scrolledWin, Double2Int32(outW * this->hdpi / this->ddpi), Double2Int32(outH * this->hdpi / this->ddpi));
+		gtk_widget_set_size_request(data->scrolledWin, Double2Int32(outSz.x * this->hdpi / this->ddpi), Double2Int32(outSz.y * this->hdpi / this->ddpi));
 	}
-	gtk_widget_set_size_request(data->container, Double2Int32(outW * this->hdpi / this->ddpi), Double2Int32(outH * this->hdpi / this->ddpi));
+	gtk_widget_set_size_request(data->container, Double2Int32(outSz.x * this->hdpi / this->ddpi), Double2Int32(outSz.y * this->hdpi / this->ddpi));
 
 	gtk_widget_show(data->container);
 	gtk_widget_show(data->vbox);
@@ -90,17 +88,14 @@ void UI::GUIClientControl::ClearChildren()
 }
 
 
-void UI::GUIClientControl::GetClientOfst(Double *x, Double *y)
+Math::Coord2DDbl UI::GUIClientControl::GetClientOfst()
 {
-	if (x)
-		*x = 0;
-	if (y)
-		*y = 0;
+	return Math::Coord2DDbl(0, 0);
 }
 
-void UI::GUIClientControl::GetClientSize(Double *w, Double *h)
+Math::Size2DDbl UI::GUIClientControl::GetClientSize()
 {
-	this->GetSize(w, h);
+	return this->GetSize();
 }
 
 void UI::GUIClientControl::AddChild(GUIControl *child)
@@ -141,16 +136,14 @@ void UI::GUIClientControl::UpdateChildrenSize(Bool redraw)
 	UOSInt j;
 	Double left = 0;
 	Double top = 0;
-	Double right;
-	Double bottom;
-	Double ctrlW;
-	Double ctrlH;
+	Math::Coord2DDbl br;
+	Math::Size2DDbl ctrlSz;
 	Bool hasFill = false;
 	GUIControl *ctrl;
 	DockType dt;
 
 	this->selfResize = true;
-	GetClientSize(&right, &bottom);
+	br = GetClientSize();
 //	printf("UpdateChildrenSize: %lf, %lf, %lf, %lf\r\n", right, bottom, this->hdpi, this->ddpi);
 	i = 0;
 	j = this->children.GetCount();
@@ -165,46 +158,46 @@ void UI::GUIClientControl::UpdateChildrenSize(Bool redraw)
 		else if (dt == UI::GUIControl::DOCK_FILL)
 		{
 //			printf("UpdateChildrenSize: %s Fill: %lf, %lf, %lf, %lf\r\n", ctrl->GetObjectClass(), left, top, right, bottom);
-			ctrl->SetArea(left, top, right, bottom, false);
-			ctrl->GetSize(&ctrlW, &ctrlH);
+			ctrl->SetArea(left, top, br.x, br.y, false);
+			ctrlSz = ctrl->GetSize();
 //			printf("UpdateChildrenSize: %s Size: %lf, %lf\r\n", ctrl->GetObjectClass(), ctrlW, ctrlH);
 			//top += ctrlH;
 			hasFill = true;
 		}
 		else
 		{
-			ctrl->GetSize(&ctrlW, &ctrlH);
+			ctrlSz = ctrl->GetSize();
 			if (dt == UI::GUIControl::DOCK_LEFT)
 			{
 //				printf("UpdateChildrenSize: %s Left: %lf, %lf, %lf, %lf\r\n", ctrl->GetObjectClass(), left, top, left + ctrlW, bottom);
-				ctrl->SetArea(left, top, left + ctrlW, bottom, false);
-				ctrl->GetSize(&ctrlW, &ctrlH);
+				ctrl->SetArea(left, top, left + ctrlSz.x, br.y, false);
+				ctrlSz = ctrl->GetSize();
 //				printf("UpdateChildrenSize: %s Size: %lf, %lf\r\n", ctrl->GetObjectClass(), ctrlW, ctrlH);
-				left += ctrlW;
+				left += ctrlSz.x;
 			}
 			else if (dt == UI::GUIControl::DOCK_TOP)
 			{
 //				printf("UpdateChildrenSize: %s Top: %lf, %lf, %lf, %lf\r\n", ctrl->GetObjectClass(), left, top, right, top + ctrlH);
-				ctrl->SetArea(left, top, right, top + ctrlH, false);
-				ctrl->GetSize(&ctrlW, &ctrlH);
+				ctrl->SetArea(left, top, br.x, top + ctrlSz.y, false);
+				ctrlSz = ctrl->GetSize();
 //				printf("UpdateChildrenSize: %s Size: %lf, %lf\r\n", ctrl->GetObjectClass(), ctrlW, ctrlH);
-				top += ctrlH;
+				top += ctrlSz.y;
 			}
 			else if (dt == UI::GUIControl::DOCK_RIGHT)
 			{
 //				printf("UpdateChildrenSize: %s Right: %lf, %lf, %lf, %lf\r\n", ctrl->GetObjectClass(), right - ctrlW, top, right, bottom);
-				ctrl->SetArea(right - ctrlW, top, right, bottom, false);
-				ctrl->GetSize(&ctrlW, &ctrlH);
+				ctrl->SetArea(br.x - ctrlSz.x, top, br.x, br.y, false);
+				ctrlSz = ctrl->GetSize();
 //				printf("UpdateChildrenSize: %s Size: %lf, %lf\r\n", ctrl->GetObjectClass(), ctrlW, ctrlH);
-				right -= ctrlW;
+				br.x -= ctrlSz.x;
 			}
 			else if (dt == UI::GUIControl::DOCK_BOTTOM)
 			{
 //				printf("UpdateChildrenSize: %s Bottom: %lf, %lf, %lf, %lf\r\n", ctrl->GetObjectClass(), left, bottom - ctrlH, right, bottom);
-				ctrl->SetArea(left, bottom - ctrlH, right, bottom , false);
-				ctrl->GetSize(&ctrlW, &ctrlH);
+				ctrl->SetArea(left, br.y - ctrlSz.y, br.x, br.y , false);
+				ctrlSz = ctrl->GetSize();
 //				printf("UpdateChildrenSize: %s Size: %lf, %lf\r\n", ctrl->GetObjectClass(), ctrlW, ctrlH);
-				bottom -= ctrlH;
+				br.x -= ctrlSz.y;
 			}
 		}
 
@@ -213,8 +206,8 @@ void UI::GUIClientControl::UpdateChildrenSize(Bool redraw)
 	this->selfResize = false;
 	this->undockLeft = left;
 	this->undockTop = top;
-	this->undockRight = right;
-	this->undockBottom = bottom;
+	this->undockRight = br.x;
+	this->undockBottom = br.y;
 	this->hasFillCtrl = hasFill;
 /*	if (redraw && j > 0 && this->hwnd)
 	{
