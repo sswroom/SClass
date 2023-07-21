@@ -10,7 +10,7 @@
 #include "Text/MyStringFloat.h"
 #include "Text/MyStringW.h"
 
-Math::TSPFile::TSPFile(IO::StreamData *fd) : DB::ReadingDB(fd->GetFullName())
+Math::TSPFile::TSPFile(NotNullPtr<IO::StreamData> fd) : DB::ReadingDB(fd->GetFullName())
 {
 	UInt8 hdr[8];
 	fd->GetRealData(0, 8, BYTEARR(hdr));

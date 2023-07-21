@@ -38,7 +38,7 @@ IO::ParserType Parser::FileParser::ID3Parser::GetParserType()
 	return IO::ParserType::MediaFile;
 }
 
-IO::ParsedObject *Parser::FileParser::ID3Parser::ParseFileHdr(IO::StreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::ID3Parser::ParseFileHdr(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	UInt32 headerSize;
 	if (hdr[0] != 'I' || hdr[1] != 'D' || hdr[2] != '3')
@@ -48,9 +48,9 @@ IO::ParsedObject *Parser::FileParser::ID3Parser::ParseFileHdr(IO::StreamData *fd
 	Media::AudioBlockSource *src = 0;
 	Media::MediaFile *vid;
 	Media::BlockParser::MP3BlockParser mp3Parser;
-	IO::StreamData *data = fd->GetPartialData(headerSize + 10, fd->GetDataSize() - headerSize - 10);
+	NotNullPtr<IO::StreamData> data = fd->GetPartialData(headerSize + 10, fd->GetDataSize() - headerSize - 10);
 	src = mp3Parser.ParseStreamData(data);
-	DEL_CLASS(data);
+	data.Delete();
 	if (src)
 	{
 		NEW_CLASS(vid, Media::MediaFile(fd->GetFullName()));

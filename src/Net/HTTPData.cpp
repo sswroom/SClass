@@ -370,10 +370,10 @@ const UInt8 *Net::HTTPData::GetPointer()
 	return 0;
 }
 
-IO::StreamData *Net::HTTPData::GetPartialData(UInt64 offset, UInt64 length)
+NotNullPtr<IO::StreamData> Net::HTTPData::GetPartialData(UInt64 offset, UInt64 length)
 {
-	Net::HTTPData *data;
-	NEW_CLASS(data, Net::HTTPData(this, offset, length));
+	NotNullPtr<Net::HTTPData> data;
+	NEW_CLASSNN(data, Net::HTTPData(this, offset, length));
 	return data;
 }
 

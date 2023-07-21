@@ -45,7 +45,7 @@ namespace IO
 
 			static UInt32 __stdcall ParseThread(void *userObj);
 		public:
-			DWGFileAnalyse(IO::StreamData *fd);
+			DWGFileAnalyse(NotNullPtr<IO::StreamData> fd);
 			virtual ~DWGFileAnalyse();
 
 			virtual Text::CString GetFormatName();

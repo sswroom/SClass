@@ -19,7 +19,7 @@ namespace IO
 			Bool hasTime;
 
 		public:
-			TSFileAnalyse(IO::StreamData *fd);
+			TSFileAnalyse(NotNullPtr<IO::StreamData> fd);
 			virtual ~TSFileAnalyse();
 
 			virtual Text::CString GetFormatName();

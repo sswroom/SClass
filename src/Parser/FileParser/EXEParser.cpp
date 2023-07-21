@@ -36,7 +36,7 @@ IO::ParserType Parser::FileParser::EXEParser::GetParserType()
 	return IO::ParserType::EXEFile;
 }
 
-IO::ParsedObject *Parser::FileParser::EXEParser::ParseFileHdr(IO::StreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::EXEParser::ParseFileHdr(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	if (*(Int16*)&hdr[0] != *(Int16*)"MZ")
 	{

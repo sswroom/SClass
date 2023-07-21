@@ -29,7 +29,7 @@ namespace IO
 			static Text::CString ShapeTypeGetName(UInt32 shapeType);
 			static UInt32 __stdcall ParseThread(void *userObj);
 		public:
-			SHPFileAnalyse(IO::StreamData *fd);
+			SHPFileAnalyse(NotNullPtr<IO::StreamData> fd);
 			virtual ~SHPFileAnalyse();
 
 			virtual Text::CString GetFormatName();

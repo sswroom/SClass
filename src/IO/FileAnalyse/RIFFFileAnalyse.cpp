@@ -100,7 +100,7 @@ UOSInt IO::FileAnalyse::RIFFFileAnalyse::GetFrameIndex(UOSInt lev, UInt64 ofst)
 	return INVALID_INDEX;
 }
 
-IO::FileAnalyse::RIFFFileAnalyse::RIFFFileAnalyse(IO::StreamData *fd)
+IO::FileAnalyse::RIFFFileAnalyse::RIFFFileAnalyse(NotNullPtr<IO::StreamData> fd)
 {
 	UInt8 buff[256];
 	this->fd = 0;
@@ -119,7 +119,7 @@ IO::FileAnalyse::RIFFFileAnalyse::RIFFFileAnalyse(IO::StreamData *fd)
 	{
 		return;
 	}
-	this->fd = fd->GetPartialData(0, fd->GetDataSize());
+	this->fd = fd->GetPartialData(0, fd->GetDataSize()).Ptr();
 	Sync::ThreadUtil::Create(ParseThread, this);
 	while (!this->threadStarted)
 	{
@@ -465,8 +465,9 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::RIFFFileAnalyse::GetFrameDetail(U
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
+	NotNullPtr<IO::StreamData> fd;
 	pack = this->packs.GetItem(index);
-	if (pack == 0)
+	if (pack == 0 || !fd.Set(this->fd))
 		return 0;
 
 	NEW_CLASS(frame, IO::FileAnalyse::FrameDetail(pack->fileOfst, (UInt32)pack->packSize));

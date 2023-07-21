@@ -641,11 +641,8 @@ void SSWR::OrganMgr::OrganEnv::FreeCategory(Category *cate)
 
 Media::EXIFData *SSWR::OrganMgr::OrganEnv::ParseJPGExif(Text::CString fileName)
 {
-	IO::StmData::FileData *fd;
-	NEW_CLASS(fd, IO::StmData::FileData(fileName, false));
-	Media::EXIFData *exif = Media::JPEGFile::ParseJPEGExif(fd);
-	DEL_CLASS(fd);
-	return exif;
+	IO::StmData::FileData fd(fileName, false);
+	return Media::JPEGFile::ParseJPEGExif(fd);
 }
 
 Media::EXIFData *SSWR::OrganMgr::OrganEnv::ParseTIFExif(Text::CString fileName)

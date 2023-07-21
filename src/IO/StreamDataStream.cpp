@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "IO/StreamDataStream.h"
 
-IO::StreamDataStream::StreamDataStream(IO::StreamData *data) : IO::SeekableStream(data->GetFullName())
+IO::StreamDataStream::StreamDataStream(NotNullPtr<IO::StreamData> data) : IO::SeekableStream(data->GetFullName())
 {
 	this->currOfst = 0;
 	this->stmDataLeng = data->GetDataSize();
@@ -11,7 +11,7 @@ IO::StreamDataStream::StreamDataStream(IO::StreamData *data) : IO::SeekableStrea
 
 IO::StreamDataStream::~StreamDataStream()
 {
-	DEL_CLASS(data);
+	this->data.Delete();
 }
 
 Bool IO::StreamDataStream::IsDown() const

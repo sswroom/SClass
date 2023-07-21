@@ -31,7 +31,7 @@ namespace IO
 
 			static UInt32 __stdcall ParseThread(void *userObj);
 		public:
-			PNGFileAnalyse(IO::StreamData *fd);
+			PNGFileAnalyse(NotNullPtr<IO::StreamData> fd);
 			virtual ~PNGFileAnalyse();
 
 			virtual Text::CString GetFormatName();

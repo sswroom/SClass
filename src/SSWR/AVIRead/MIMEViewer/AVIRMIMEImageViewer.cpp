@@ -10,7 +10,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMIMEImageViewer::AVIRMIMEImageViewer(SSWR::AVIRea
 	const UInt8 *buff = this->obj->GetRAWData(&buffSize);
 	{
 		IO::StmData::MemoryDataRef data(buff, buffSize);
-		this->imgList = (Media::ImageList*)core->GetParserList()->ParseFileType(&data, IO::ParserType::ImageList);
+		this->imgList = (Media::ImageList*)core->GetParserList()->ParseFileType(data, IO::ParserType::ImageList);
 	}
 
 	NEW_CLASS(this->pbContent, UI::GUIPictureBoxDD(ui, ctrl, sess, true, false));

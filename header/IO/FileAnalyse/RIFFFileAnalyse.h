@@ -35,7 +35,7 @@ namespace IO
 			static UInt32 __stdcall ParseThread(void *userObj);
 			UOSInt GetFrameIndex(UOSInt lev, UInt64 ofst);
 		public:
-			RIFFFileAnalyse(IO::StreamData *fd);
+			RIFFFileAnalyse(NotNullPtr<IO::StreamData> fd);
 			virtual ~RIFFFileAnalyse();
 
 			virtual Text::CString GetFormatName();

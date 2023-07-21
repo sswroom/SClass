@@ -30,10 +30,11 @@ void __stdcall SSWR::AVIRead::AVIRGISHKTrafficForm::OnOKClicked(void *userObj)
 	SSWR::AVIRead::AVIRGISHKTrafficForm *me = (SSWR::AVIRead::AVIRGISHKTrafficForm*)userObj;
 	Text::StringBuilderUTF8 sb;
 	me->txtRoadCenterline->GetText(&sb);
-	IO::StmData::FileData *fd;
-	NEW_CLASS(fd, IO::StmData::FileData(sb.ToCString(), false));
-	Map::MapDrawLayer *lyr = (Map::MapDrawLayer*)me->core->GetParserList()->ParseFileType(fd, IO::ParserType::MapLayer);
-	DEL_CLASS(fd);
+	Map::MapDrawLayer *lyr;
+	{
+		IO::StmData::FileData fd(sb.ToCString(), false);
+		lyr = (Map::MapDrawLayer*)me->core->GetParserList()->ParseFileType(fd, IO::ParserType::MapLayer);
+	}
 	if (lyr)
 	{
 		Map::DrawLayerType lyrType = lyr->GetLayerType();

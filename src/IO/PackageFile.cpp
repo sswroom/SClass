@@ -96,12 +96,12 @@ IO::ParserType IO::PackageFile::GetParserType() const
 	return IO::ParserType::PackageFile;
 }
 
-void IO::PackageFile::AddData(IO::StreamData *fd, UInt64 ofst, UInt64 length, Text::CString name, const Data::Timestamp &modTime)
+void IO::PackageFile::AddData(NotNullPtr<IO::StreamData> fd, UInt64 ofst, UInt64 length, Text::CString name, const Data::Timestamp &modTime)
 {
 	PackFileItem *item;
 	item = MemAlloc(PackFileItem, 1);
 	item->itemType = IO::PackFileItem::PackItemType::Uncompressed;
-	item->fd = fd->GetPartialData(ofst, length);
+	item->fd = fd->GetPartialData(ofst, length).Ptr();
 	item->name = Text::String::New(name);
 	item->pobj = 0;
 	item->compInfo = 0;
@@ -133,12 +133,12 @@ void IO::PackageFile::AddObject(IO::ParsedObject *pobj, Text::CString name, cons
 	this->namedItems->PutNN(item->name, item);
 }
 
-void IO::PackageFile::AddCompData(IO::StreamData *fd, UInt64 ofst, UInt64 length, IO::PackFileItem::CompressInfo *compInfo, Text::CString name, const Data::Timestamp &modTime)
+void IO::PackageFile::AddCompData(NotNullPtr<IO::StreamData> fd, UInt64 ofst, UInt64 length, IO::PackFileItem::CompressInfo *compInfo, Text::CString name, const Data::Timestamp &modTime)
 {
 	PackFileItem *item;
 	item = MemAlloc(PackFileItem, 1);
 	item->itemType = IO::PackFileItem::PackItemType::Compressed;
-	item->fd = fd->GetPartialData(ofst, length);
+	item->fd = fd->GetPartialData(ofst, length).Ptr();
 	item->name = Text::String::New(name);
 	item->pobj = 0;
 	item->compInfo = MemAlloc(PackFileItem::CompressInfo, 1);
@@ -178,7 +178,7 @@ IO::PackageFile *IO::PackageFile::GetPackFile(Text::CString name) const
 	return 0;
 }
 
-Bool IO::PackageFile::UpdateCompInfo(const UTF8Char *name, IO::StreamData *fd, UInt64 ofst, Int32 crc, UOSInt compSize, UInt32 decSize)
+Bool IO::PackageFile::UpdateCompInfo(const UTF8Char *name, NotNullPtr<IO::StreamData> fd, UInt64 ofst, Int32 crc, UOSInt compSize, UInt32 decSize)
 {
 	UOSInt i;
 	IO::PackFileItem *item;
@@ -193,7 +193,7 @@ Bool IO::PackageFile::UpdateCompInfo(const UTF8Char *name, IO::StreamData *fd, U
 			{
 				item->compInfo->decSize = decSize;
 				DEL_CLASS(item->fd);
-				item->fd = fd->GetPartialData(ofst, compSize);
+				item->fd = fd->GetPartialData(ofst, compSize).Ptr();
 				WriteMInt32(item->compInfo->checkBytes, crc);
 				return true;
 			}
@@ -279,19 +279,20 @@ IO::StreamData *IO::PackageFile::GetPItemStmDataNew(const PackFileItem *item) co
 	{
 		if (item->itemType == IO::PackFileItem::PackItemType::Uncompressed)
 		{
-			IO::StreamData *data = item->fd->GetPartialData(0, item->fd->GetDataSize());
+			NotNullPtr<IO::StreamData> data = item->fd->GetPartialData(0, item->fd->GetDataSize());
 			Text::StringBuilderUTF8 sb;
 			sb.Append(this->sourceName);
 			sb.AppendC(UTF8STRC("\\"));
 			sb.Append(item->name);
 			data->SetFullName(sb.ToCString());
-			return data;
+			return data.Ptr();
 		}
 		else if (item->itemType == IO::PackFileItem::PackItemType::Compressed)
 		{
 			Data::Compress::Decompressor *decomp = Data::Compress::Decompressor::CreateDecompressor(item->compInfo->compMethod);
 			Crypto::Hash::IHash *hash;
-			if (decomp == 0)
+			NotNullPtr<IO::StreamData> fd;
+			if (decomp == 0 || !fd.Set(item->fd))
 				return 0;
 
 			hash = Crypto::Hash::HashCreator::CreateHash(item->compInfo->checkMethod);
@@ -318,7 +319,7 @@ IO::StreamData *IO::PackageFile::GetPItemStmDataNew(const PackFileItem *item) co
 				Crypto::Hash::HashStream hashStm(&fs, hash);
 
 				hash->Clear();
-				decomp->Decompress(&hashStm, item->fd);
+				decomp->Decompress(&hashStm, fd);
 				resSize = hash->GetResultSize();
 				hash->GetValue(chkResult);
 
@@ -602,7 +603,8 @@ Bool IO::PackageFile::CopyTo(UOSInt index, Text::CString destPath, Bool fullFile
 
 			Data::Compress::Decompressor *decomp = Data::Compress::Decompressor::CreateDecompressor(item->compInfo->compMethod);
 			Crypto::Hash::IHash *hash;
-			if (decomp == 0)
+			NotNullPtr<IO::StreamData> fd;
+			if (decomp == 0 || !fd.Set(item->fd))
 				return false;
 
 			hash = Crypto::Hash::HashCreator::CreateHash(item->compInfo->checkMethod);
@@ -620,7 +622,7 @@ Bool IO::PackageFile::CopyTo(UOSInt index, Text::CString destPath, Bool fullFile
 				Crypto::Hash::HashStream hashStm(&fs, hash);
 
 				hash->Clear();
-				decomp->Decompress(&hashStm, item->fd);
+				decomp->Decompress(&hashStm, fd);
 				resSize = hash->GetResultSize();
 				hash->GetValue(chkResult);
 

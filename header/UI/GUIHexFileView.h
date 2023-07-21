@@ -45,7 +45,7 @@ namespace UI
 		virtual void UpdateCaretPos();
 
 		Bool LoadFile(Text::CString fileName, Bool dynamicSize);
-		Bool LoadData(IO::StreamData *data, IO::FileAnalyse::IFileAnalyse *fileAnalyse);
+		Bool LoadData(NotNullPtr<IO::StreamData> data, IO::FileAnalyse::IFileAnalyse *fileAnalyse);
 		void GetTextPos(Double scnPosX, Double scnPosY, UInt64 *byteOfst);
 		void GoToOffset(UInt64 ofst);
 		UInt64 GetCurrOfst();

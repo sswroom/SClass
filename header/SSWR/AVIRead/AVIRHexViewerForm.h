@@ -91,7 +91,7 @@ namespace SSWR
 			virtual void EventMenuClicked(UInt16 cmdId);
 			virtual void OnMonitorChanged();
 
-			void SetData(IO::StreamData *fd, IO::FileAnalyse::IFileAnalyse *fileAnalyse);
+			void SetData(NotNullPtr<IO::StreamData> fd, IO::FileAnalyse::IFileAnalyse *fileAnalyse);
 		};
 	}
 }

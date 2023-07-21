@@ -47,15 +47,15 @@ IO::ISectorData *IO::CDSectorData::GetPartialData(UInt64 startSector, UInt64 sec
 	return data;
 }
 
-IO::StreamData *IO::CDSectorData::GetStreamData(UInt64 startSector, UInt64 dataSize) const
+NotNullPtr<IO::StreamData> IO::CDSectorData::GetStreamData(UInt64 startSector, UInt64 dataSize) const
 {
-	IO::StreamData *data;
+	NotNullPtr<IO::StreamData> data;
 	UInt64 sectorCnt = dataSize / this->userDataSize;
 	if ((dataSize % this->userDataSize) != 0)
 	{
 		sectorCnt++;
 	}
-	NEW_CLASS(data, IO::CDSectorStreamData(this->GetPartialData(startSector, sectorCnt), 0, dataSize));
+	NEW_CLASSNN(data, IO::CDSectorStreamData(this->GetPartialData(startSector, sectorCnt), 0, dataSize));
 	return data;
 }
 
@@ -126,7 +126,7 @@ const UInt8 *IO::CDSectorStreamData::GetPointer()
 	return 0;
 }
 
-IO::StreamData *IO::CDSectorStreamData::GetPartialData(UInt64 offset, UInt64 length)
+NotNullPtr<IO::StreamData> IO::CDSectorStreamData::GetPartialData(UInt64 offset, UInt64 length)
 {
 	UInt64 endOfst = offset + length;
 	if (endOfst > (this->dataSize + this->sectorOfst))
@@ -138,8 +138,8 @@ IO::StreamData *IO::CDSectorStreamData::GetPartialData(UInt64 offset, UInt64 len
 	UInt64 startSector = rawOfst / sectorSize;
 	UInt64 endSector = (endOfst + sectorSize - 1) / sectorSize;
 
-	IO::StreamData *data;
-	NEW_CLASS(data, CDSectorStreamData(this->data->GetPartialData(startSector, endSector - startSector), (UOSInt)(rawOfst % sectorSize), endOfst - rawOfst));
+	NotNullPtr<IO::StreamData> data;
+	NEW_CLASSNN(data, CDSectorStreamData(this->data->GetPartialData(startSector, endSector - startSector), (UOSInt)(rawOfst % sectorSize), endOfst - rawOfst));
 	return data;
 }
 

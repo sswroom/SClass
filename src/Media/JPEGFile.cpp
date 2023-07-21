@@ -13,7 +13,7 @@
 //http://stackoverflow.com/questions/662565/how-to-create-huffman-tree-from-ffc4-dht-header-in-jpeg-file
 //http://u88.n24.queensu.ca/exiftool/forum/index.php?topic=4898.0 FLIR
 
-Bool Media::JPEGFile::ParseJPEGHeader(IO::StreamData *fd, Media::Image *img, Media::ImageList *imgList, Parser::ParserList *parsers)
+Bool Media::JPEGFile::ParseJPEGHeader(NotNullPtr<IO::StreamData> fd, Media::Image *img, Media::ImageList *imgList, Parser::ParserList *parsers)
 {
 	UInt64 ofst;
 	UInt64 nextOfst;
@@ -164,7 +164,7 @@ Bool Media::JPEGFile::ParseJPEGHeader(IO::StreamData *fd, Media::Image *img, Med
 						Media::Image *innerImg;
 						{
 							IO::StmData::MemoryDataRef mfd(tagBuff.SubArray(blkOfst + 13, blkSize - 32));
-							innerImgList = (Media::ImageList*)parsers->ParseFileType(&mfd, IO::ParserType::ImageList);
+							innerImgList = (Media::ImageList*)parsers->ParseFileType(mfd, IO::ParserType::ImageList);
 						}
 						if (innerImgList)
 						{
@@ -194,7 +194,7 @@ Bool Media::JPEGFile::ParseJPEGHeader(IO::StreamData *fd, Media::Image *img, Med
 							Media::StaticImage *stImg;
 							{
 								IO::StmData::MemoryDataRef mfd(&tagBuff[blkOfst + 32], blkSize - 32);
-								innerImgList = (Media::ImageList*)parsers->ParseFileType(&mfd, IO::ParserType::ImageList);
+								innerImgList = (Media::ImageList*)parsers->ParseFileType(mfd, IO::ParserType::ImageList);
 							}
 							if (innerImgList)
 							{
@@ -236,7 +236,7 @@ Bool Media::JPEGFile::ParseJPEGHeader(IO::StreamData *fd, Media::Image *img, Med
 	return ret;
 }
 
-Media::EXIFData *Media::JPEGFile::ParseJPEGExif(IO::StreamData *fd)
+Media::EXIFData *Media::JPEGFile::ParseJPEGExif(NotNullPtr<IO::StreamData> fd)
 {
 	UInt64 ofst;
 	UInt64 nextOfst;
@@ -303,7 +303,7 @@ Media::EXIFData *Media::JPEGFile::ParseJPEGExif(IO::StreamData *fd)
 	}
 }
 
-Bool Media::JPEGFile::ParseJPEGHeaders(IO::StreamData *fd, Media::EXIFData **exif, Text::XMLDocument **xmf, Media::ICCProfile **icc, UInt32 *width, UInt32 *height)
+Bool Media::JPEGFile::ParseJPEGHeaders(NotNullPtr<IO::StreamData> fd, Media::EXIFData **exif, Text::XMLDocument **xmf, Media::ICCProfile **icc, UInt32 *width, UInt32 *height)
 {
 	UInt64 ofst;
 	UInt64 nextOfst;

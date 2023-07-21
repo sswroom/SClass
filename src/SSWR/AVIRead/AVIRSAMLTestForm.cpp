@@ -25,7 +25,7 @@ void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnFormFiles(void *userObj, NotNu
 	{
 		{
 			IO::StmData::FileData fd(files[i], false);
-			pobj = parsers->ParseFileType(&fd, IO::ParserType::ASN1Data);
+			pobj = parsers->ParseFileType(fd, IO::ParserType::ASN1Data);
 		}
 		if (pobj)
 		{

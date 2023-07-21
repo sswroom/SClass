@@ -4297,10 +4297,10 @@ Bool IO::SMBIOS::ToString(Text::StringBuilderUTF8 *sb) const
 	return true;
 }
 
-IO::StreamData *IO::SMBIOS::CreateStreamData() const
+NotNullPtr<IO::StreamData> IO::SMBIOS::CreateStreamData() const
 {
-	IO::StreamData *ret;
-	NEW_CLASS(ret, IO::StmData::MemoryDataCopy(this->smbiosBuff, this->smbiosBuffSize));
+	NotNullPtr<IO::StreamData> ret;
+	NEW_CLASSNN(ret, IO::StmData::MemoryDataCopy(this->smbiosBuff, this->smbiosBuffSize));
 	return ret;
 }
 

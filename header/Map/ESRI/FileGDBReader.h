@@ -13,7 +13,7 @@ namespace Map
 		class FileGDBReader : public DB::DBReader, public Data::ObjectGetter
 		{
 		private:
-			IO::StreamData *fd;
+			NotNullPtr<IO::StreamData> fd;
 			UInt64 currOfst;
 			FileGDBTableInfo *tableInfo;
 			UOSInt rowSize;
@@ -32,7 +32,7 @@ namespace Map
 			
 			UOSInt GetFieldIndex(UOSInt colIndex);
 		public:
-			FileGDBReader(IO::StreamData *fd, UInt64 ofst, FileGDBTableInfo *tableInfo, Data::ArrayListNN<Text::String> *columnNames, UOSInt dataOfst, UOSInt maxCnt, Data::QueryConditions *conditions);
+			FileGDBReader(NotNullPtr<IO::StreamData> fd, UInt64 ofst, FileGDBTableInfo *tableInfo, Data::ArrayListNN<Text::String> *columnNames, UOSInt dataOfst, UOSInt maxCnt, Data::QueryConditions *conditions);
 			virtual ~FileGDBReader();
 
 			virtual Bool ReadNext();
@@ -60,7 +60,7 @@ namespace Map
 			virtual DB::DBUtil::ColType GetColType(UOSInt colIndex, UOSInt *colSize);
 			virtual Bool GetColDef(UOSInt colIndex, DB::ColDef *colDef);
 
-			void SetIndex(IO::StreamData *fd, UOSInt indexCnt);
+			void SetIndex(NotNullPtr<IO::StreamData> fd, UOSInt indexCnt);
 		};
 	}
 }

@@ -35,7 +35,7 @@ IO::ParserType Parser::FileParser::MPGParser::GetParserType()
 	return IO::ParserType::MediaFile;
 }
 
-IO::ParsedObject *Parser::FileParser::MPGParser::ParseFileHdr(IO::StreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::MPGParser::ParseFileHdr(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	IO::StreamData *concatFile = 0;
 
@@ -69,9 +69,9 @@ IO::ParsedObject *Parser::FileParser::MPGParser::ParseFileHdr(IO::StreamData *fd
 			if (fd->IsFullFile())
 			{
 				Int32 stmId;
-				IO::StmData::ConcatStreamData *data;
+				NotNullPtr<IO::StmData::ConcatStreamData> data;
 				stmId = 2;
-				NEW_CLASS(data, IO::StmData::ConcatStreamData(fd->GetFullName()));
+				NEW_CLASSNN(data, IO::StmData::ConcatStreamData(fd->GetFullName()));
 				data->AddData(fd->GetPartialData(0, fd->GetDataSize()));
 				
 				NotNullPtr<Text::String> s = fd->GetFullFileName();
@@ -79,25 +79,25 @@ IO::ParsedObject *Parser::FileParser::MPGParser::ParseFileHdr(IO::StreamData *fd
 				while (true)
 				{
 					sptr2 = Text::StrConcatC(Text::StrInt32(sptr, stmId), UTF8STRC(".vob"));
-					NEW_CLASS(concatFile, IO::StmData::FileData(CSTRP(sbuff, sptr2), false));
-					if (concatFile->GetDataSize() <= 0)
+					NEW_CLASSNN(fd, IO::StmData::FileData(CSTRP(sbuff, sptr2), false));
+					if (fd->GetDataSize() <= 0)
 					{
-						DEL_CLASS(concatFile);
+						fd.Delete();
 						break;
 					}
-					data->AddData(concatFile);
+					data->AddData(fd);
 					stmId++;
 				}
-				concatFile = data;
+				concatFile = data.Ptr();
 				fd = data;
 			}
 			else if (pkgFile)
 			{
 				Int32 stmId;
 				UOSInt ind;
-				IO::StmData::ConcatStreamData *data;
+				NotNullPtr<IO::StmData::ConcatStreamData> data;
 				stmId = 2;
-				NEW_CLASS(data, IO::StmData::ConcatStreamData(fd->GetFullName()));
+				NEW_CLASSNN(data, IO::StmData::ConcatStreamData(fd->GetFullName()));
 				data->AddData(fd->GetPartialData(0, fd->GetDataSize()));
 				
 				sptr = fd->GetShortName().ConcatTo(sbuff) - 5;
@@ -109,15 +109,14 @@ IO::ParsedObject *Parser::FileParser::MPGParser::ParseFileHdr(IO::StreamData *fd
 					{
 						break;
 					}
-					concatFile = pkgFile->GetItemStmDataNew(ind);
-					if (concatFile == 0)
+					if (!fd.Set(pkgFile->GetItemStmDataNew(ind)))
 					{
 						break;
 					}
-					data->AddData(concatFile);
+					data->AddData(fd);
 					stmId++;
 				}
-				concatFile = data;
+				concatFile = data.Ptr();
 				fd = data;
 			}
 		}

@@ -182,7 +182,7 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnConvFileClicked(void *userObj
 		if (db == 0)
 		{
 			IO::StmData::FileData fd(dlg.GetFileName(), false);
-			db = (DB::ReadingDB*)parsers->ParseFileType(&fd, IO::ParserType::ReadingDB);
+			db = (DB::ReadingDB*)parsers->ParseFileType(fd, IO::ParserType::ReadingDB);
 			if (db == 0)
 			{
 				UI::MessageDialog::ShowDialog(CSTR("File is not a database file"), CSTR("Error"), me);
@@ -384,7 +384,7 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnFileDrop(void *userObj, NotNu
 	while (i < nFiles)
 	{
 		IO::StmData::FileData fd(files[i], false);
-		Media::ImageList *imgList = (Media::ImageList*)parsers->ParseFileType(&fd, IO::ParserType::ImageList);
+		Media::ImageList *imgList = (Media::ImageList*)parsers->ParseFileType(fd, IO::ParserType::ImageList);
 		if (imgList)
 		{
 			Media::Image *img = imgList->GetImage(0, 0);

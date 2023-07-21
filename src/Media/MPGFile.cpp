@@ -417,7 +417,7 @@ Bool Media::MPGFile::StopPlay()
 	return true;
 }
 
-Media::MPGFile::MPGFile(IO::StreamData *stmData) : Media::MediaFile(stmData->GetFullName()), readBuff(1048576)
+Media::MPGFile::MPGFile(NotNullPtr<IO::StreamData> stmData) : Media::MediaFile(stmData->GetFullName()), readBuff(1048576)
 {
 	this->stmData = stmData->GetPartialData(0, this->fleng = stmData->GetDataSize());
 	this->bitRate = 0;
@@ -817,7 +817,7 @@ Media::MPGFile::~MPGFile()
 		DEL_CLASS(stm);
 	}
 	SDEL_CLASS(this->vstm);
-	DEL_CLASS(this->stmData);
+	this->stmData.Delete();
 }
 
 UOSInt Media::MPGFile::AddSource(Media::IMediaSource *src, Int32 syncTime)

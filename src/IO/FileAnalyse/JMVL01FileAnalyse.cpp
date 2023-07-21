@@ -76,7 +76,7 @@ UInt32 __stdcall IO::FileAnalyse::JMVL01FileAnalyse::ParseThread(void *userObj)
 	return 0;
 }
 
-IO::FileAnalyse::JMVL01FileAnalyse::JMVL01FileAnalyse(IO::StreamData *fd)
+IO::FileAnalyse::JMVL01FileAnalyse::JMVL01FileAnalyse(NotNullPtr<IO::StreamData> fd)
 {
 	UInt8 buff[256];
 	this->fd = 0;
@@ -89,7 +89,7 @@ IO::FileAnalyse::JMVL01FileAnalyse::JMVL01FileAnalyse(IO::StreamData *fd)
 	{
 		return;
 	}
-	this->fd = fd->GetPartialData(0, fd->GetDataSize());
+	this->fd = fd->GetPartialData(0, fd->GetDataSize()).Ptr();
 
 	Sync::ThreadUtil::Create(ParseThread, this);
 	while (!this->threadStarted)

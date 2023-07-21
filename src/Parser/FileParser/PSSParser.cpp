@@ -42,7 +42,7 @@ IO::ParserType Parser::FileParser::PSSParser::GetParserType()
 	return IO::ParserType::MediaFile;
 }
 
-IO::ParsedObject *Parser::FileParser::PSSParser::ParseFileHdr(IO::StreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::PSSParser::ParseFileHdr(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr2;
@@ -103,9 +103,9 @@ IO::ParsedObject *Parser::FileParser::PSSParser::ParseFileHdr(IO::StreamData *fd
 	{
 		if (fd->IsFullFile())
 		{
-			IO::StmData::ConcatStreamData *data;
+			NotNullPtr<IO::StmData::ConcatStreamData> data;
 			stmId = 2;
-			NEW_CLASS(data, IO::StmData::ConcatStreamData(fd->GetFullName()));
+			NEW_CLASSNN(data, IO::StmData::ConcatStreamData(fd->GetFullName()));
 			data->AddData(fd->GetPartialData(0, fd->GetDataSize()));
 			
 			NotNullPtr<Text::String> s = fd->GetFullFileName();
@@ -113,16 +113,16 @@ IO::ParsedObject *Parser::FileParser::PSSParser::ParseFileHdr(IO::StreamData *fd
 			while (true)
 			{
 				sptr2 = Text::StrConcatC(Text::StrInt32(sptr, stmId), UTF8STRC(".vob"));
-				NEW_CLASS(concatFile, IO::StmData::FileData(CSTRP(sbuff, sptr2), false));
-				if (concatFile->GetDataSize() <= 0)
+				NEW_CLASSNN(fd, IO::StmData::FileData(CSTRP(sbuff, sptr2), false));
+				if (fd->GetDataSize() <= 0)
 				{
-					DEL_CLASS(concatFile);
+					fd.Delete();
 					break;
 				}
-				data->AddData(concatFile);
+				data->AddData(fd);
 				stmId++;
 			}
-			concatFile = data;
+			concatFile = data.Ptr();
 			fd = data;
 		}
 		else if (pkgFile)
@@ -696,21 +696,22 @@ IO::ParsedObject *Parser::FileParser::PSSParser::ParseFileHdr(IO::StreamData *fd
 	i = 0;
 	while (i < 4)
 	{
-		if (formats[i]->formatId)
+		NotNullPtr<IO::StreamData> stmFD;
+		if (formats[i]->formatId && stmFD.Set(stmData[i]))
 		{
 			if (formats[i]->formatId == 1)
 			{
 				Media::IAudioSource *as;
-				NEW_CLASS(as, Media::LPCMSource(stmData[i], 0, stmData[i]->GetDataSize(), formats[i], fd->GetFullName()));
+				NEW_CLASS(as, Media::LPCMSource(stmFD, 0, stmFD->GetDataSize(), formats[i], fd->GetFullName()));
 				file->AddSource(as, audDelay[i]);
-				DEL_CLASS(stmData[i]);
+				stmFD.Delete();
 			}
 			else if (formats[i]->formatId == 0x50)
 			{
 				Media::IAudioSource *as;
 				Media::BlockParser::MP2BlockParser mp2Parser;
-				as = mp2Parser.ParseStreamData(stmData[i]);
-				DEL_CLASS(stmData[i]);
+				as = mp2Parser.ParseStreamData(stmFD);
+				stmFD.Delete();
 				if (as)
 				{
 					file->AddSource(as, audDelay[i]);
@@ -720,8 +721,8 @@ IO::ParsedObject *Parser::FileParser::PSSParser::ParseFileHdr(IO::StreamData *fd
 			{
 				Media::IAudioSource *as;
 				Media::BlockParser::MP3BlockParser mp3Parser;
-				as = mp3Parser.ParseStreamData(stmData[i]);
-				DEL_CLASS(stmData[i]);
+				as = mp3Parser.ParseStreamData(stmFD);
+				stmFD.Delete();
 				if (as)
 				{
 					file->AddSource(as, audDelay[i]);
@@ -731,8 +732,8 @@ IO::ParsedObject *Parser::FileParser::PSSParser::ParseFileHdr(IO::StreamData *fd
 			{
 				Media::IAudioSource *as;
 				Media::BlockParser::AC3BlockParser ac3Parser;
-				as = ac3Parser.ParseStreamData(stmData[i]);
-				DEL_CLASS(stmData[i]);
+				as = ac3Parser.ParseStreamData(stmFD);
+				stmFD.Delete();
 				if (as)
 				{
 					file->AddSource(as, audDelay[i]);
@@ -741,16 +742,20 @@ IO::ParsedObject *Parser::FileParser::PSSParser::ParseFileHdr(IO::StreamData *fd
 			else if (formats[i]->formatId == 0x2080)
 			{
 				Media::IAudioSource *as;
-				NEW_CLASS(as, Media::AudioFixBlockSource(stmData[i], 0, stmData[i]->GetDataSize(), formats[i], fd->GetFullName()));
+				NEW_CLASS(as, Media::AudioFixBlockSource(stmFD, 0, stmFD->GetDataSize(), formats[i], fd->GetFullName()));
 				file->AddSource(as, audDelay[i]);
-				DEL_CLASS(stmData[i]);
+				stmFD.Delete();
 			}
 			else if (formats[i]->formatId == 0x2081)
 			{
 				Media::IAudioSource *as;
-				NEW_CLASS(as, Media::AudioFixBlockSource(stmData[i], 0, stmData[i]->GetDataSize(), formats[i], fd->GetFullName()));
+				NEW_CLASS(as, Media::AudioFixBlockSource(stmFD, 0, stmFD->GetDataSize(), formats[i], fd->GetFullName()));
 				file->AddSource(as, audDelay[i]);
-				DEL_CLASS(stmData[i]);
+				stmFD.Delete();
+			}
+			else
+			{
+				stmFD.Delete();
 			}
 		}
 		DEL_CLASS(formats[i]);

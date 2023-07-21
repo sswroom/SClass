@@ -10,7 +10,7 @@ void __stdcall SSWR::AVIRead::AVIROCRForm::OnFileHandler(void *userObj, NotNullP
 	while (i < nFiles)
 	{
 		IO::StmData::FileData fd(files[i], false);
-		Media::ImageList *imgList = (Media::ImageList*)parsers->ParseFileType(&fd, IO::ParserType::ImageList);
+		Media::ImageList *imgList = (Media::ImageList*)parsers->ParseFileType(fd, IO::ParserType::ImageList);
 		if (imgList)
 		{
 			imgList->ToStaticImage(0);

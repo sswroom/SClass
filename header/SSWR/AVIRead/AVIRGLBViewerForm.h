@@ -29,7 +29,7 @@ namespace SSWR
 
 			static void __stdcall OnFileDrop(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles);
 			Bool LoadFile(NotNullPtr<Text::String> fileName);
-			Bool LoadData(IO::StreamData *jsonFD, IO::StreamData *binBuffFD);
+			Bool LoadData(NotNullPtr<IO::StreamData> jsonFD, NotNullPtr<IO::StreamData> binBuffFD);
 		public:
 			AVIRGLBViewerForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRGLBViewerForm();

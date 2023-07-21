@@ -13,7 +13,7 @@
 #include "Sync/MutexUsage.h"
 #include "Text/MyString.h"
 
-Map::SHPData::SHPData(const UInt8 *shpHdr, IO::StreamData *data, UInt32 codePage, Math::ArcGISPRJParser *prjParser) : Map::MapDrawLayer(data->GetFullName(), 0, 0)
+Map::SHPData::SHPData(const UInt8 *shpHdr, NotNullPtr<IO::StreamData> data, UInt32 codePage, Math::ArcGISPRJParser *prjParser) : Map::MapDrawLayer(data->GetFullName(), 0, 0)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
@@ -69,7 +69,7 @@ Map::SHPData::SHPData(const UInt8 *shpHdr, IO::StreamData *data, UInt32 codePage
 		return;
 	}
 	this->isPoint = false;
-	this->shpData = data->GetPartialData(0, data->GetDataSize());
+	this->shpData = data->GetPartialData(0, data->GetDataSize()).Ptr();
 	this->min.x = ReadDouble(&shpHdr[36]);
 	this->min.y = ReadDouble(&shpHdr[44]);
 	this->max.x = ReadDouble(&shpHdr[52]);
@@ -328,7 +328,7 @@ Map::SHPData::SHPData(const UInt8 *shpHdr, IO::StreamData *data, UInt32 codePage
 	IO::StmData::FileData dbfData({sbuff, (UOSInt)(sptr - sbuff)}, false);
 	if (dbfData.GetDataSize() > 0)
 	{
-		NEW_CLASS(this->dbf, DB::DBFFile(&dbfData, codePage));
+		NEW_CLASS(this->dbf, DB::DBFFile(dbfData, codePage));
 		if (this->dbf->IsError())
 		{
 			DEL_CLASS(this->dbf);

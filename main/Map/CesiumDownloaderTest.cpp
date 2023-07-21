@@ -148,7 +148,7 @@ private:
 						thisRead = 10;
 						IO::StmData::MemoryDataRef mdata(&respData[thisRead], respSize - thisRead - 8);
 						NEW_CLASS(mstm2, IO::MemoryStream(ReadUInt32(&respData[respSize - 4])));
-						if (inflate.Decompress(mstm2, &mdata))
+						if (inflate.Decompress(mstm2, mdata))
 						{
 							DEL_CLASS(mstm);
 							mstm = mstm2;

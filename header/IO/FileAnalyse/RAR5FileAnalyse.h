@@ -38,7 +38,7 @@ namespace IO
 			static Data::ByteArray AddVHex(IO::FileAnalyse::FrameDetail *frame, UOSInt ofst, Text::CString name, Data::ByteArray buffPtr, UInt64 *val);
 			static UInt32 __stdcall ParseThread(void *userObj);
 		public:
-			RAR5FileAnalyse(IO::StreamData *fd);
+			RAR5FileAnalyse(NotNullPtr<IO::StreamData> fd);
 			virtual ~RAR5FileAnalyse();
 
 			virtual Text::CString GetFormatName();

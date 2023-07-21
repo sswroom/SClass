@@ -7,11 +7,11 @@
 
 void Media::ClockSpeechCh::AppendWAV(Media::AudioConcatSource *source, Parser::FileParser::WAVParser *parser, Text::CString fileName)
 {
-	IO::StmData::FileData *fd;
-	NEW_CLASS(fd, IO::StmData::FileData(fileName, false));
-	IO::ParsedObject *pobj = parser->ParseFile(fd, 0, IO::ParserType::MediaFile);
-	DEL_CLASS(fd);
-
+	IO::ParsedObject *pobj;
+	{
+		IO::StmData::FileData fd(fileName, false);
+		pobj = parser->ParseFile(fd, 0, IO::ParserType::MediaFile);
+	}
 	if (pobj == 0)
 		return;
 

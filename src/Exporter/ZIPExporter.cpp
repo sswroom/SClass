@@ -52,7 +52,7 @@ Bool Exporter::ZIPExporter::ExportPackage(IO::ZIPMTBuilder *zip, UTF8Char *buffS
 	UOSInt j;
 	UTF8Char *sptr;
 	IO::PackageFile::PackObjectType itemType;
-	IO::StreamData *fd;
+	NotNullPtr<IO::StreamData> fd;
 	i = 0;
 	j = pkg->GetCount();
 	while (i < j)
@@ -61,13 +61,15 @@ Bool Exporter::ZIPExporter::ExportPackage(IO::ZIPMTBuilder *zip, UTF8Char *buffS
 		sptr = pkg->GetItemName(buffEnd, i);
 		if (itemType == IO::PackageFile::PackObjectType::StreamData)
 		{
-			fd = pkg->GetItemStmDataNew(i);
-			if (!zip->AddFile(CSTRP(buffStart, sptr), fd, pkg->GetItemModTime(i).ToTicks(), Data::Compress::Inflate::CompressionLevel::BestCompression))
+			if (fd.Set(pkg->GetItemStmDataNew(i)))
 			{
-				DEL_CLASS(fd);
-				return false;
+				if (!zip->AddFile(CSTRP(buffStart, sptr), fd, pkg->GetItemModTime(i).ToTicks(), Data::Compress::Inflate::CompressionLevel::BestCompression))
+				{
+					fd.Delete();
+					return false;
+				}
+				fd.Delete();
 			}
-			DEL_CLASS(fd);
 		}
 		else if (itemType == IO::PackageFile::PackObjectType::PackageFileType)
 		{

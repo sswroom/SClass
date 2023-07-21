@@ -463,7 +463,7 @@ UInt32 __stdcall IO::FileAnalyse::ZIPFileAnalyse::ParseThread(void *userObj)
 	return 0;
 }
 
-IO::FileAnalyse::ZIPFileAnalyse::ZIPFileAnalyse(IO::StreamData *fd)
+IO::FileAnalyse::ZIPFileAnalyse::ZIPFileAnalyse(NotNullPtr<IO::StreamData> fd)
 {
 	UInt8 buff[256];
 	this->fd = 0;
@@ -477,7 +477,7 @@ IO::FileAnalyse::ZIPFileAnalyse::ZIPFileAnalyse(IO::StreamData *fd)
 	{
 		return;
 	}
-	this->fd = fd->GetPartialData(0, fd->GetDataSize());
+	this->fd = fd->GetPartialData(0, fd->GetDataSize()).Ptr();
 
 	Sync::ThreadUtil::Create(ParseThread, this);
 	while (!this->threadStarted)

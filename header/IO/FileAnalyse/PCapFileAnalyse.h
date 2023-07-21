@@ -29,7 +29,7 @@ namespace IO
 
 			static UInt32 __stdcall ParseThread(void *userObj);
 		public:
-			PCapFileAnalyse(IO::StreamData *fd);
+			PCapFileAnalyse(NotNullPtr<IO::StreamData> fd);
 			virtual ~PCapFileAnalyse();
 
 			virtual Text::CString GetFormatName();

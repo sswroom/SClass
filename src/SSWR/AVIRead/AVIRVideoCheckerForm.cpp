@@ -97,7 +97,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRVideoCheckerForm::ProcessThread(void *userOb
 			{
 				{
 					IO::StmData::FileData fd(file->fileName, false);
-					mediaFile = (Media::MediaFile*)me->core->GetParserList()->ParseFileType(&fd, IO::ParserType::MediaFile);
+					mediaFile = (Media::MediaFile*)me->core->GetParserList()->ParseFileType(fd, IO::ParserType::MediaFile);
 				}
 
 				update = MemAlloc(UpdateQueue, 1);

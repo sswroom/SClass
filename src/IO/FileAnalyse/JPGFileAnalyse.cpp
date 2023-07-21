@@ -185,7 +185,7 @@ UInt32 __stdcall IO::FileAnalyse::JPGFileAnalyse::ParseThread(void *userObj)
 	return 0;
 }
 
-IO::FileAnalyse::JPGFileAnalyse::JPGFileAnalyse(IO::StreamData *fd)
+IO::FileAnalyse::JPGFileAnalyse::JPGFileAnalyse(NotNullPtr<IO::StreamData> fd)
 {
 	UInt8 buff[256];
 	this->fd = 0;
@@ -198,7 +198,7 @@ IO::FileAnalyse::JPGFileAnalyse::JPGFileAnalyse(IO::StreamData *fd)
 	{
 		return;
 	}
-	this->fd = fd->GetPartialData(0, fd->GetDataSize());
+	this->fd = fd->GetPartialData(0, fd->GetDataSize()).Ptr();
 
 	Sync::ThreadUtil::Create(ParseThread, this);
 	while (!this->threadStarted)
@@ -571,7 +571,8 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::JPGFileAnalyse::GetFrameDetail(UO
 	UOSInt k;
 	Int32 v;
 	IO::FileAnalyse::JPGFileAnalyse::JPGTag *tag = this->tags.GetItem(index);
-	if (tag == 0)
+	NotNullPtr<IO::StreamData> fd;
+	if (tag == 0 || !fd.Set(this->fd))
 		return 0;
 	
 	NEW_CLASS(frame, IO::FileAnalyse::FrameDetail(tag->ofst, (UInt32)tag->size));

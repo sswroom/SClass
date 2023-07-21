@@ -212,7 +212,7 @@ void Parser::ObjParser::ISO9660Parser::ParseDir(IO::PackageFile *pkgFile, IO::IS
 		UOSInt fileRecSize;
 		UInt32 sectorNum;
 		UInt32 fileSize;
-		IO::StreamData *fd;
+		NotNullPtr<IO::StreamData> fd;
 		UTF8Char *sptr;
 		Text::Encoding enc(codePage);
 
@@ -257,7 +257,7 @@ void Parser::ObjParser::ISO9660Parser::ParseDir(IO::PackageFile *pkgFile, IO::IS
 				}
 				fd = sectorData->GetStreamData(sectorNum, fileSize);
 				pkgFile->AddData(fd, 0, fileSize, CSTRP(fileNameEnd, sptr), Data::Timestamp(dt.ToTicks(), 0));
-				DEL_CLASS(fd);
+				fd.Delete();
 			}
 
 			sizeLeft -= fileRecSize;

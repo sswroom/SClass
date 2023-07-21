@@ -23,21 +23,21 @@ Map::OruxDBLayer::OruxDBLayer(Text::CString sourceName, Text::CString layerName,
 	sptr = sourceName.ConcatTo(sbuff);
 	this->db = 0;
 	sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("OruxMapsImages.db"));
-	IO::StmData::FileData *fd;
-	NEW_CLASS(fd, IO::StmData::FileData(CSTRP(sbuff, sptr), false));
-	DB::ReadingDB *db = (DB::ReadingDB*)parsers->ParseFileType(fd, IO::ParserType::ReadingDB);
-	if (db)
 	{
-		if (db->IsFullConn())
+		IO::StmData::FileData fd(CSTRP(sbuff, sptr), false);
+		DB::ReadingDB *db = (DB::ReadingDB*)parsers->ParseFileType(fd, IO::ParserType::ReadingDB);
+		if (db)
 		{
-			this->db = (DB::DBConn*)db;
-		}
-		else
-		{
-			DEL_CLASS(db);
+			if (db->IsFullConn())
+			{
+				this->db = (DB::DBConn*)db;
+			}
+			else
+			{
+				DEL_CLASS(db);
+			}
 		}
 	}
-	DEL_CLASS(fd);
 	this->SetCoordinateSystem(Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84));
 }
 
@@ -304,7 +304,7 @@ Math::Geometry::Vector2D *Map::OruxDBLayer::GetNewVectorById(GetObjectSess *sess
 		UInt8 *buff = MemAlloc(UInt8, size);
 		r->GetBinary(0, buff);
 		IO::StmData::MemoryDataRef fd(buff, size);
-		imgList = (Media::ImageList*)this->parsers->ParseFileType(&fd, IO::ParserType::ImageList);
+		imgList = (Media::ImageList*)this->parsers->ParseFileType(fd, IO::ParserType::ImageList);
 		MemFree(buff);
 	}
 	this->db->CloseReader(r);

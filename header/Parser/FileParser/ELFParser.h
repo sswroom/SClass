@@ -41,7 +41,7 @@ namespace Parser
 			virtual Int32 GetName();
 			virtual void PrepareSelector(IO::FileSelector *selector, IO::ParserType t);
 			virtual IO::ParserType GetParserType();
-			virtual IO::ParsedObject *ParseFileHdr(IO::StreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr);
+			virtual IO::ParsedObject *ParseFileHdr(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr);
 
 			static UTF8Char *ToFuncName(UTF8Char *sbuff, const UTF8Char *funcName);
 		};

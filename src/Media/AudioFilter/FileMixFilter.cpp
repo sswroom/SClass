@@ -127,11 +127,10 @@ UOSInt Media::AudioFilter::FileMixFilter::ReadBlock(Data::ByteArray blk)
 Bool Media::AudioFilter::FileMixFilter::LoadFile(NotNullPtr<Text::String> fileName)
 {
 	Media::MediaFile *mf;
-	IO::StmData::FileData *fd;
-	NEW_CLASS(fd, IO::StmData::FileData(fileName, false));
-	mf = (Media::MediaFile*)this->parsers->ParseFileType(fd, IO::ParserType::MediaFile);
-	DEL_CLASS(fd);
-
+	{
+		IO::StmData::FileData fd(fileName, false);
+		mf = (Media::MediaFile*)this->parsers->ParseFileType(fd, IO::ParserType::MediaFile);
+	}
 	if (mf)
 	{
 		this->StopMix();

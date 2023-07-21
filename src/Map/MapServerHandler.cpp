@@ -587,7 +587,7 @@ Bool Map::MapServerHandler::AddAsset(Text::CString filePath)
 	if (pt == IO::Path::PathType::File)
 	{
 		IO::StmData::FileData fd(filePath, false);
-		pobj = this->parsers->ParseFile(&fd, &t);
+		pobj = this->parsers->ParseFile(fd, &t);
 	}
 	else if (pt == IO::Path::PathType::Directory)
 	{

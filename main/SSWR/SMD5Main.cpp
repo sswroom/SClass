@@ -144,11 +144,11 @@ Bool ParseFile(const UTF8Char *fileName, UOSInt fileNameLen)
 	{
 		Parser::FileParser::MD5Parser parser;
 		Bool succ = true;
-		IO::StmData::FileData *fd;
 		IO::FileCheck *fileChk;
-		NEW_CLASS(fd, IO::StmData::FileData({fileName, fileNameLen}, false));
-		fileChk = (IO::FileCheck *)parser.ParseFile(fd, 0, IO::ParserType::FileCheck);
-		DEL_CLASS(fd);
+		{
+			IO::StmData::FileData fd({fileName, fileNameLen}, false);
+			fileChk = (IO::FileCheck *)parser.ParseFile(fd, 0, IO::ParserType::FileCheck);
+		}
 		if (fileChk == 0)
 		{
 			console->WriteLineC(UTF8STRC("Error in parsing the file"));

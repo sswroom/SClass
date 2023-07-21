@@ -4,7 +4,7 @@
 #include "IO/FileAnalyse/TSFileAnalyse.h"
 #include "Sync/ThreadUtil.h"
 
-IO::FileAnalyse::TSFileAnalyse::TSFileAnalyse(IO::StreamData *fd)
+IO::FileAnalyse::TSFileAnalyse::TSFileAnalyse(NotNullPtr<IO::StreamData> fd)
 {
 	UInt8 buff[256];
 	this->fd = 0;
@@ -27,7 +27,7 @@ IO::FileAnalyse::TSFileAnalyse::TSFileAnalyse(IO::StreamData *fd)
 		return;
 	}
 	this->fileSize = fd->GetDataSize();
-	this->fd = fd->GetPartialData(0, this->fileSize);
+	this->fd = fd->GetPartialData(0, this->fileSize).Ptr();
 }
 
 IO::FileAnalyse::TSFileAnalyse::~TSFileAnalyse()

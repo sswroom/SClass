@@ -500,7 +500,7 @@ void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnFileHandler(void *userObj, No
 	while (i < nFiles)
 	{
 		IO::StmData::FileData fd(files[i], false);
-		DB::ReadingDB *db = (DB::ReadingDB*)me->core->GetParserList()->ParseFileType(&fd, IO::ParserType::ReadingDB);
+		DB::ReadingDB *db = (DB::ReadingDB*)me->core->GetParserList()->ParseFileType(fd, IO::ParserType::ReadingDB);
 		if (db)
 		{
 			DB::DBManagerCtrl *ctrl = DB::DBManagerCtrl::CreateFromFile(db, files[i], &me->log, me->core->GetSocketFactory(), me->core->GetParserList());

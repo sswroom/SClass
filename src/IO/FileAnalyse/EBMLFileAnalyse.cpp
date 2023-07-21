@@ -435,7 +435,7 @@ UOSInt IO::FileAnalyse::EBMLFileAnalyse::GetFrameIndex(UOSInt lev, UInt64 ofst)
 	return INVALID_INDEX;
 }
 
-IO::FileAnalyse::EBMLFileAnalyse::EBMLFileAnalyse(IO::StreamData *fd)
+IO::FileAnalyse::EBMLFileAnalyse::EBMLFileAnalyse(NotNullPtr<IO::StreamData> fd)
 {
 	UInt8 buff[256];
 	this->fd = 0;
@@ -449,7 +449,7 @@ IO::FileAnalyse::EBMLFileAnalyse::EBMLFileAnalyse(IO::StreamData *fd)
 	{
 		return;
 	}
-	this->fd = fd->GetPartialData(0, fd->GetDataSize());
+	this->fd = fd->GetPartialData(0, fd->GetDataSize()).Ptr();
 	Sync::ThreadUtil::Create(ParseThread, this);
 	while (!this->threadStarted)
 	{

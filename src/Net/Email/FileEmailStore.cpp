@@ -132,7 +132,7 @@ Net::Email::FileEmailStore::FileEmailStore()
 		while ((sptr2 = IO::Path::FindNextFile(sptr, sess, 0, &pt, &fileSize)) != 0)
 		{
 			IO::StmData::FileData fd(CSTRP(sbuff, sptr2), false);
-			Text::MIMEObj::MailMessage *mail = Text::MIMEObj::MailMessage::ParseFile(&fd);
+			Text::MIMEObj::MailMessage *mail = Text::MIMEObj::MailMessage::ParseFile(fd);
 			if (mail)
 			{
 				AddMail(mail, sbuff, sptr, sptr2, fileSize);

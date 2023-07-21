@@ -77,7 +77,7 @@ UInt64 IO::Stream::ReadToEnd(IO::Stream *stm, UOSInt buffSize)
 	return totalSize;
 }
 
-Bool IO::Stream::WriteFromData(IO::StreamData *data, UOSInt buffSize)
+Bool IO::Stream::WriteFromData(NotNullPtr<IO::StreamData> data, UOSInt buffSize)
 {
 	UInt64 currOfst = 0;
 	UInt64 totalSize = 0;

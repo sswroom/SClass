@@ -33,7 +33,7 @@ IO::ParserType Parser::FileParser::SFVParser::GetParserType()
 	return IO::ParserType::FileCheck;
 }
 
-IO::ParsedObject *Parser::FileParser::SFVParser::ParseFileHdr(IO::StreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::SFVParser::ParseFileHdr(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;

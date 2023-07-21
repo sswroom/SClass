@@ -60,7 +60,7 @@ Media::DrawImage *Media::GTKDrawEngine::LoadImage(Text::CString fileName)
 		if (imgList == 0)
 		{
 			Parser::FileParser::GUIImgParser parser;
-			imgList = (Media::ImageList*)parser.ParseFile(&fd, 0, IO::ParserType::ImageList);
+			imgList = (Media::ImageList*)parser.ParseFile(fd, 0, IO::ParserType::ImageList);
 		}
 	}
 

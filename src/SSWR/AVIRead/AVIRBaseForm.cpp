@@ -506,7 +506,7 @@ void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(void *userObj, NotNullPt
 {
 	SSWR::AVIRead::AVIRBaseForm *me = (AVIRead::AVIRBaseForm*)userObj;
 	IO::Path::PathType pt;
-	IO::StmData::FileData *fd;
+	NotNullPtr<IO::StmData::FileData> fd;
 	IO::DirectoryPackage *pkg;
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("Cannot parse:"));
@@ -561,9 +561,9 @@ void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(void *userObj, NotNullPt
 		}
 		else if (pt == IO::Path::PathType::File)
 		{
-			NEW_CLASS(fd, IO::StmData::FileData(files[i]->ToCString(), false));
+			NEW_CLASSNN(fd, IO::StmData::FileData(files[i]->ToCString(), false));
 			IO::StmData::BufferedStreamData buffFd(fd);
-			if (!me->core->LoadData(&buffFd, 0))
+			if (!me->core->LoadData(buffFd, 0))
 			{
 				sb.AppendC(UTF8STRC("\n"));
 				sb.Append(files[i]);
@@ -1163,7 +1163,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 						}
 						else
 						{
-							this->core->LoadDataType(&fd, 0, dlg.GetParserType());
+							this->core->LoadDataType(fd, 0, dlg.GetParserType());
 						}
 					}
 				}
@@ -1623,7 +1623,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 				IO::PackageFile *pkg;
 				{
 					IO::StmData::FileData fd(dlg.GetFileName(), false);
-					pkg = (IO::PackageFile*)parsers->ParseFileType(&fd, IO::ParserType::PackageFile);
+					pkg = (IO::PackageFile*)parsers->ParseFileType(fd, IO::ParserType::PackageFile);
 				}
 				if (pkg)
 				{

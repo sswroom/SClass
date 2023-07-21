@@ -31,7 +31,7 @@ IO::ParserType Parser::FileParser::DTSParser::GetParserType()
 	return IO::ParserType::MediaFile;
 }
 
-IO::ParsedObject *Parser::FileParser::DTSParser::ParseFileHdr(IO::StreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::DTSParser::ParseFileHdr(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	if (ReadUInt32(&hdr[0]) != 0x180FE7F || (hdr[4] & 0xfc) != 0xfc)
 	{
@@ -41,8 +41,9 @@ IO::ParsedObject *Parser::FileParser::DTSParser::ParseFileHdr(IO::StreamData *fd
 	Media::AudioBlockSource *src = 0;
 	Media::MediaFile *vid;
 	Media::BlockParser::DTSBlockParser dtsParser;
-	IO::StreamData *data = fd->GetPartialData(0, fd->GetDataSize());
+	NotNullPtr<IO::StreamData> data = fd->GetPartialData(0, fd->GetDataSize());
 	src = dtsParser.ParseStreamData(data);
+	data.Delete();
 	if (src)
 	{
 		NEW_CLASS(vid, Media::MediaFile(fd->GetFullName()));
@@ -51,7 +52,6 @@ IO::ParsedObject *Parser::FileParser::DTSParser::ParseFileHdr(IO::StreamData *fd
 	}
 	else
 	{
-		DEL_CLASS(data);
 		return 0;
 	}
 }

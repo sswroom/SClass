@@ -13,7 +13,7 @@ namespace Media
 	class MPGFile : public Media::MediaFile, public Media::IStreamControl
 	{
 	private:
-		IO::StreamData *stmData;
+		NotNullPtr<IO::StreamData> stmData;
 		Data::ByteBuffer readBuff;
 		UInt64 readOfst;
 		UInt64 bitRate;
@@ -34,7 +34,7 @@ namespace Media
 		Bool StartPlay();
 		Bool StopPlay();
 	public:
-		MPGFile(IO::StreamData *stmData);
+		MPGFile(NotNullPtr<IO::StreamData> stmData);
 		virtual ~MPGFile();
 		
 		virtual UOSInt AddSource(Media::IMediaSource *src, Int32 syncTime);

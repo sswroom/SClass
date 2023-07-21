@@ -12,15 +12,15 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	Text::CString fileName = CSTR("/media/sswroom/Extreme SSD/Map/HKTIle.spk");
 	Text::CString destFile = CSTR("/media/sswroom/Extreme SSD/Map/Temp/Temp.otrk2.xml");
 	Parser::ParserList *parsers;
-	IO::StmData::FileData *fd;
 	IO::PackageFile *pkg;
 	Map::OSM::OSMLocalTileMap *tileMap;
 	Map::TileMapLayer *mapLyr;
 	NEW_CLASS(parsers, Parser::FullParserList());
 
-	NEW_CLASS(fd, IO::StmData::FileData(fileName, false));
-	pkg = (IO::PackageFile*)parsers->ParseFileType(fd, IO::ParserType::PackageFile);
-	DEL_CLASS(fd);
+	{
+		IO::StmData::FileData fd(fileName, false);
+		pkg = (IO::PackageFile*)parsers->ParseFileType(fd, IO::ParserType::PackageFile);
+	}
 	if (pkg)
 	{
 		NEW_CLASS(tileMap, Map::OSM::OSMLocalTileMap(pkg));

@@ -67,9 +67,9 @@ Media::ImageList *Media::PDFDocument::CreateImage(UInt32 id, Parser::ParserList 
 		return 0;
 	if (!obj->IsImage())
 		return 0;
-	IO::StreamData *fd = obj->GetData();
+	NotNullPtr<IO::StreamData> fd;
 	Text::String *filter = obj->GetFilter();
-	if (fd && filter)
+	if (fd.Set(obj->GetData()) && filter)
 	{
 		if (filter->Equals(UTF8STRC("DCTDecode")))
 		{

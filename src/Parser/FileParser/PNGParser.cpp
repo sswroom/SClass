@@ -2572,7 +2572,7 @@ IO::ParserType Parser::FileParser::PNGParser::GetParserType()
 	return IO::ParserType::ImageList;
 }
 
-IO::ParsedObject *Parser::FileParser::PNGParser::ParseFileHdr(IO::StreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::PNGParser::ParseFileHdr(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	UInt64 ofst;
 	if (hdr[0] != 0x89 && hdr[1] != 0x50 && hdr[2] != 0x4e && hdr[3] != 0x47 && hdr[4] != 0x0d && hdr[5] != 0x0a && hdr[6] != 0x1a && hdr[7] != 0x0a)

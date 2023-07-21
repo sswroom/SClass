@@ -53,7 +53,7 @@ IO::ParserType Parser::FileParser::X509Parser::GetParserType()
 	return IO::ParserType::ASN1Data;
 }
 
-IO::ParsedObject *Parser::FileParser::X509Parser::ParseFileHdr(IO::StreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::X509Parser::ParseFileHdr(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	UInt8 buff[10240];
 	UInt64 len = fd->GetDataSize();

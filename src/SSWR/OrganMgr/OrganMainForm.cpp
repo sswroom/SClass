@@ -1611,12 +1611,12 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnMapMouseMove(void *userObj, Math
 				if (scnPos.x >= dispPos.x - 3 && scnPos.x <= dispPos.x + 3 && scnPos.y >= dispPos.y - 3 && scnPos.y <= dispPos.y + 3)
 				{
 					Text::StringBuilderUTF8 sb;
-					IO::StmData::FileData *fd;
 					Media::ImageList *imgList;
 					me->env->GetUserFilePath(ufile, &sb);
-					NEW_CLASS(fd, IO::StmData::FileData(sb.ToCString(), false));
-					imgList = (Media::ImageList*)me->env->GetParserList()->ParseFileType(fd, IO::ParserType::ImageList);
-					DEL_CLASS(fd);
+					{
+						IO::StmData::FileData fd(sb.ToCString(), false);
+						imgList = (Media::ImageList*)me->env->GetParserList()->ParseFileType(fd, IO::ParserType::ImageList);
+					}
 
 					if (imgList)
 					{

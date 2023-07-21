@@ -197,10 +197,10 @@ const UInt8 *IO::StmData::FileData::GetPointer()
 	return 0;
 }
 
-IO::StreamData *IO::StmData::FileData::GetPartialData(UInt64 offset, UInt64 length)
+NotNullPtr<IO::StreamData> IO::StmData::FileData::GetPartialData(UInt64 offset, UInt64 length)
 {
-	IO::StmData::FileData *data;
-	NEW_CLASS(data, IO::StmData::FileData(this, offset, length));
+	NotNullPtr<IO::StmData::FileData> data;
+	NEW_CLASSNN(data, IO::StmData::FileData(this, offset, length));
 	return data;
 }
 

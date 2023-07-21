@@ -31,7 +31,7 @@ IO::ParserType Parser::FileParser::LUTParser::GetParserType()
 	return IO::ParserType::LUT;
 }
 
-IO::ParsedObject *Parser::FileParser::LUTParser::ParseFileHdr(IO::StreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::LUTParser::ParseFileHdr(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	if (*(Int32*)&hdr[0] != *(Int32*)"3DLT" || ReadInt32(&hdr[4]) != 1 || ReadInt32(&hdr[84]) != 0)
 	{

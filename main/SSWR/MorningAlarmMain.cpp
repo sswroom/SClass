@@ -55,7 +55,6 @@ UInt32 __stdcall PlayThread(void *obj)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
-	IO::StmData::FileData *fd;
 	Parser::FileParser::WAVParser *parser;
 	Media::RefClock *clk;
 	Data::DateTime *currDt;
@@ -88,9 +87,10 @@ UInt32 __stdcall PlayThread(void *obj)
 		sptr = Text::StrUOSInt(sptr, i);
 		sptr = Text::StrConcatC(sptr, UTF8STRC(".wav"));
 
-		NEW_CLASS(fd, IO::StmData::FileData(CSTRP(sbuff, sptr), false));
-		file = (Media::MediaFile*)parser->ParseFile(fd, 0, IO::ParserType::MediaFile);
-		DEL_CLASS(fd);
+		{
+			IO::StmData::FileData fd(CSTRP(sbuff, sptr), false);
+			file = (Media::MediaFile*)parser->ParseFile(fd, 0, IO::ParserType::MediaFile);
+		}
 		if (file)
 		{
 			stmList->Add(file);

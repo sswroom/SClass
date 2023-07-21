@@ -13,7 +13,7 @@ Media::AudioBlockParser::~AudioBlockParser()
 {
 }
 
-Media::AudioBlockParser *Media::AudioBlockParser::CreateParser(IO::StreamData *stmData)
+Media::AudioBlockParser *Media::AudioBlockParser::CreateParser(NotNullPtr<IO::StreamData> stmData)
 {
 	UInt8 buff[256];
 	Media::AudioBlockParser *parser;

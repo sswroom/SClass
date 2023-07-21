@@ -25,10 +25,8 @@ UI::DObj::OverlayDObj::OverlayDObj(NotNullPtr<Media::DrawEngine> deng, Text::CSt
 	}
 	else
 	{
-		IO::StmData::FileData *fd;
-		NEW_CLASS(fd, IO::StmData::FileData(fileName, false));
-		this->imgList = (Media::ImageList*)parsers->ParseFileType(fd,IO::ParserType::ImageList);
-		DEL_CLASS(fd);
+		IO::StmData::FileData fd(fileName, false);
+		this->imgList = (Media::ImageList*)parsers->ParseFileType(fd, IO::ParserType::ImageList);
 		this->frameDelay = 500;
 		this->startTime = 0;
 		this->lastFrameNum = -1;

@@ -31,7 +31,7 @@ IO::ParserType Parser::FileParser::COMParser::GetParserType()
 	return IO::ParserType::EXEFile;
 }
 
-IO::ParsedObject *Parser::FileParser::COMParser::ParseFileHdr(IO::StreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::COMParser::ParseFileHdr(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	if (!fd->GetFullName()->EndsWithICase(UTF8STRC(".COM")))
 	{

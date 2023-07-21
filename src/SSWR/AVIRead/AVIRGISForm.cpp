@@ -136,7 +136,6 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::FileHandler(void *userObj, NotNullPtr
 {
 	SSWR::AVIRead::AVIRGISForm *me = (SSWR::AVIRead::AVIRGISForm*)userObj;
 	Parser::ParserList *parsers = me->core->GetParserList();
-	IO::StmData::FileData *fd;
 	IO::ParsedObject *pobj;
 	IO::ParserType pt;
 	Data::ArrayList<Map::MapDrawLayer *> *layers;
@@ -163,9 +162,8 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::FileHandler(void *userObj, NotNullPtr
 		pobj = 0;
 		if (pathType == IO::Path::PathType::File)
 		{
-			NEW_CLASS(fd, IO::StmData::FileData(files[i], false));
+			IO::StmData::FileData fd(files[i], false);
 			pobj = parsers->ParseFile(fd, &pt);
-			DEL_CLASS(fd);
 		}
 		else if (pathType == IO::Path::PathType::Directory)
 		{
@@ -555,8 +553,8 @@ Bool SSWR::AVIRead::AVIRGISForm::ParseObject(IO::ParsedObject *pobj)
 void SSWR::AVIRead::AVIRGISForm::OpenURL(Text::CString url, Text::CString customName)
 {
 	Net::WebBrowser *browser = this->core->GetWebBrowser();
-	IO::StreamData *fd = browser->GetData(url, false, 0);
-	if (fd)
+	NotNullPtr<IO::StreamData> fd;
+	if (fd.Set(browser->GetData(url, false, 0)))
 	{
 		if (customName.leng > 0)
 		{
@@ -564,7 +562,7 @@ void SSWR::AVIRead::AVIRGISForm::OpenURL(Text::CString url, Text::CString custom
 		}
 		IO::ParserType pt;
 		IO::ParsedObject *pobj = this->core->GetParserList()->ParseFile(fd, &pt);
-		DEL_CLASS(fd);
+		fd.Delete();
 		if (pobj)
 		{
 			if (pt == IO::ParserType::MapLayer)
@@ -1191,10 +1189,8 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 						this->core->GetParserList()->PrepareSelector(&dlg, IO::ParserType::PackageFile);
 						if (dlg.ShowDialog(this->GetHandle()))
 						{
-							IO::StmData::FileData *fd;
-							NEW_CLASS(fd, IO::StmData::FileData(dlg.GetFileName(), false));
+							IO::StmData::FileData fd(dlg.GetFileName(), false);
 							IO::PackageFile *pkg = (IO::PackageFile*)this->core->GetParserList()->ParseFileType(fd, IO::ParserType::PackageFile);
-							DEL_CLASS(fd);
 							if (pkg)
 							{
 								osm->ImportTiles(pkg);
@@ -1378,9 +1374,8 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 				UOSInt i = fname->IndexOf(':');
 				if (i == INVALID_INDEX || i == 1)
 				{
-					IO::StmData::FileData *fd;
-					NEW_CLASS(fd, IO::StmData::FileData(fname, false));
-					if (fd->GetDataSize() == 0)
+					IO::StmData::FileData fd(fname, false);
+					if (fd.GetDataSize() == 0)
 					{
 						UI::MessageDialog::ShowDialog(CSTR("Error in loading file"), CSTR("AVIRead"), this);
 					}
@@ -1388,7 +1383,6 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 					{
 						this->core->LoadDataType(fd, 0, frm.GetParserType());
 					}
-					DEL_CLASS(fd);
 				}
 				else
 				{

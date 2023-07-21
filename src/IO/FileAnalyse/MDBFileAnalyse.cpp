@@ -45,7 +45,7 @@ UInt32 __stdcall IO::FileAnalyse::MDBFileAnalyse::ParseThread(void *userObj)
 	return 0;
 }
 
-IO::FileAnalyse::MDBFileAnalyse::MDBFileAnalyse(IO::StreamData *fd)
+IO::FileAnalyse::MDBFileAnalyse::MDBFileAnalyse(NotNullPtr<IO::StreamData> fd)
 {
 	UInt8 buff[256];
 	this->fd = 0;
@@ -71,7 +71,7 @@ IO::FileAnalyse::MDBFileAnalyse::MDBFileAnalyse(IO::StreamData *fd)
 		return;
 	}
 	this->fileVer = ReadUInt32(&buff[20]);
-	this->fd = fd->GetPartialData(0, fd->GetDataSize());
+	this->fd = fd->GetPartialData(0, fd->GetDataSize()).Ptr();
 	Sync::ThreadUtil::Create(ParseThread, this);
 	while (!this->threadStarted)
 	{

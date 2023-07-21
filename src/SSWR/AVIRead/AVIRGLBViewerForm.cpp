@@ -83,21 +83,21 @@ Bool SSWR::AVIRead::AVIRGLBViewerForm::LoadFile(NotNullPtr<Text::String> fileNam
 	}
 }
 
-Bool SSWR::AVIRead::AVIRGLBViewerForm::LoadData(IO::StreamData *jsonFD, IO::StreamData *binBuffFD)
+Bool SSWR::AVIRead::AVIRGLBViewerForm::LoadData(NotNullPtr<IO::StreamData> jsonFD, NotNullPtr<IO::StreamData> binBuffFD)
 {
 	UOSInt jsonLen = (UOSInt)jsonFD->GetDataSize();
 	Data::ByteBuffer jsonBuff(jsonLen);
 	if (jsonFD->GetRealData(0, jsonLen, jsonBuff) != jsonLen)
 	{
-		DEL_CLASS(jsonFD);
-		DEL_CLASS(binBuffFD);
+		jsonFD.Delete();
+		binBuffFD.Delete();
 		return false;
 	}
 	Text::StringBuilderUTF8 sb;
 	Text::JSText::JSONWellFormat(jsonBuff.Ptr(), jsonLen, 0, &sb);
 	this->txtJSON->SetText(sb.ToCString());
 	this->hfvBinBuff->LoadData(binBuffFD, 0);
-	DEL_CLASS(jsonFD);
+	jsonFD.Delete();
 	return true;
 }
 

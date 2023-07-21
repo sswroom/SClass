@@ -20,7 +20,7 @@ struct Parser::FileParser::PDFParser::PDFParseEnv
 	UOSInt dataSize;
 	UInt64 dataOfst;
 	UInt64 fileSize;
-	IO::StreamData *fd;
+	NotNullPtr<IO::StreamData> fd;
 	UInt64 lineBegin;
 	Bool normalEnd;
 	Bool succ;
@@ -844,7 +844,7 @@ IO::ParserType Parser::FileParser::PDFParser::GetParserType()
 	return IO::ParserType::PDFDocument;
 }
 
-IO::ParsedObject *Parser::FileParser::PDFParser::ParseFileHdr(IO::StreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::PDFParser::ParseFileHdr(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	if (ReadNInt32(hdr) != ReadNInt32("%PDF") || hdr[4] != '-' || hdr[6] != '.')
 	{

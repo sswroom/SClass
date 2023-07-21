@@ -41,7 +41,7 @@ typedef struct
 	UInt32 storeSize;
 } NFPFileInfo;
 
-IO::ParsedObject *Parser::FileParser::NFPParser::ParseFileHdr(IO::StreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::NFPParser::ParseFileHdr(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	UInt32 fileCnt;
 	UInt32 fileOfst;

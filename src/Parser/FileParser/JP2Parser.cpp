@@ -39,7 +39,7 @@ IO::ParserType Parser::FileParser::JP2Parser::GetParserType()
 
 struct JP2Session
 {
-	IO::StreamData *fd;
+	NotNullPtr<IO::StreamData> fd;
 	UInt64 currOfst;
 };
 
@@ -55,7 +55,7 @@ OPJ_SIZE_T JP2Parser_Read(void * p_buffer, OPJ_SIZE_T p_nb_bytes, void * p_user_
 	return (OPJ_SIZE_T)readSize;
 }
 
-IO::ParsedObject *Parser::FileParser::JP2Parser::ParseFileHdr(IO::StreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::JP2Parser::ParseFileHdr(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	if (ReadMUInt32(hdr) != 12 || *(Int32*)&hdr[4] != *(Int32*)"jP  " || ReadMUInt32(&hdr[8]) != 0x0d0a870a)
 	{

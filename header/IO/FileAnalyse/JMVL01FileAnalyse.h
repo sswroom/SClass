@@ -31,7 +31,7 @@ namespace IO
 			static Text::CString GetTagName(UInt8 tagType);
 			static UInt32 __stdcall ParseThread(void *userObj);
 		public:
-			JMVL01FileAnalyse(IO::StreamData *fd);
+			JMVL01FileAnalyse(NotNullPtr<IO::StreamData> fd);
 			virtual ~JMVL01FileAnalyse();
 
 			virtual Text::CString GetFormatName();

@@ -51,7 +51,6 @@ void __stdcall SSWR::AVIRead::AVIRGISHKTDTonnesForm::OnOKClicked(void *userObj)
 	Text::StringBuilderUTF8 sb2;
 	me->txtRoadRoute->GetText(&sb);
 	me->txtVehicleRes->GetText(&sb2);
-	IO::StmData::FileData *fd;
 	if (sb.GetLength() == 0)
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Please input Road Route"), CSTR("HK Tonnes Sign"), me);
@@ -62,9 +61,11 @@ void __stdcall SSWR::AVIRead::AVIRGISHKTDTonnesForm::OnOKClicked(void *userObj)
 	}
 	else
 	{
-		NEW_CLASS(fd, IO::StmData::FileData(sb.ToCString(), false));
-		Map::MapDrawLayer *lyr = (Map::MapDrawLayer*)me->core->GetParserList()->ParseFileType(fd, IO::ParserType::MapLayer);
-		DEL_CLASS(fd);
+		Map::MapDrawLayer *lyr;
+		{
+			IO::StmData::FileData fd(sb.ToCString(), false);
+			lyr = (Map::MapDrawLayer*)me->core->GetParserList()->ParseFileType(fd, IO::ParserType::MapLayer);
+		}
 		DB::DBTool *db = DB::MDBFileConn::CreateDBTool(sb2.ToCString(), 0, CSTR_NULL);
 		if (lyr && db)
 		{

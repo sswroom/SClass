@@ -40,7 +40,7 @@ namespace Map
 		Double mapRate;
 
 	public:
-		SHPData(const UInt8 *hdr, IO::StreamData *data, UInt32 codePage, Math::ArcGISPRJParser *prjParser);
+		SHPData(const UInt8 *hdr, NotNullPtr<IO::StreamData> data, UInt32 codePage, Math::ArcGISPRJParser *prjParser);
 		virtual ~SHPData();
 
 		Bool IsError();

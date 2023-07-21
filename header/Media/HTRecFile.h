@@ -68,7 +68,7 @@ namespace Media
 		UInt32 adjRecInterval;
 
 	public:
-		HTRecFile(IO::StreamData *stmData);
+		HTRecFile(NotNullPtr<IO::StreamData> stmData);
 		virtual ~HTRecFile();
 
 		virtual UOSInt QueryTableNames(Text::CString schemaName, Data::ArrayListNN<Text::String> *names);

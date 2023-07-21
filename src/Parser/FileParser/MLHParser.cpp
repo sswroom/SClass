@@ -41,7 +41,7 @@ typedef struct
 	Int32 unk;
 } MLHFileInfo;
 
-IO::ParsedObject *Parser::FileParser::MLHParser::ParseFileHdr(IO::StreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::MLHParser::ParseFileHdr(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 //	UInt32 fileSize;
 	UInt32 fileCnt;

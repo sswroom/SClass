@@ -17,7 +17,7 @@ void __stdcall SSWR::AVIRead::AVIRSAMLDecryptForm::OnFormFiles(void *userObj, No
 	{
 		{
 			IO::StmData::FileData fd(files[i], false);
-			pobj = parsers->ParseFileType(&fd, IO::ParserType::ASN1Data);
+			pobj = parsers->ParseFileType(fd, IO::ParserType::ASN1Data);
 		}
 		if (pobj)
 		{
@@ -71,7 +71,7 @@ void __stdcall SSWR::AVIRead::AVIRSAMLDecryptForm::OnDecryptClicked(void *userOb
 	}
 	{
 		IO::StmData::FileData fd(sb.ToCString(), false);
-		pobj = me->core->GetParserList()->ParseFileType(&fd, IO::ParserType::ASN1Data);
+		pobj = me->core->GetParserList()->ParseFileType(fd, IO::ParserType::ASN1Data);
 	}
 	if (pobj == 0)
 	{

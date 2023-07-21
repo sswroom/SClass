@@ -24,7 +24,7 @@ namespace Media
 		void ParseXMF(Text::XMLDocument *xmf);
 		Double ParseFraction(Text::String *s);
 	public:
-		PhotoInfo(IO::StreamData *fd);
+		PhotoInfo(NotNullPtr<IO::StreamData> fd);
 		~PhotoInfo();
 
 		Bool HasInfo() const;

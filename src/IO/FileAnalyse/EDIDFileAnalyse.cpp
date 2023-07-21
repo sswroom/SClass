@@ -206,7 +206,7 @@ void IO::FileAnalyse::EDIDFileAnalyse::RemoveNonASCII(UTF8Char *sbuff, UTF8Char 
 	}
 }
 
-IO::FileAnalyse::EDIDFileAnalyse::EDIDFileAnalyse(IO::StreamData *fd)
+IO::FileAnalyse::EDIDFileAnalyse::EDIDFileAnalyse(NotNullPtr<IO::StreamData> fd)
 {
 	UInt8 buff[128];
 	if (fd->GetRealData(0, 128, BYTEARR(buff)) != 128 || ReadMInt32(buff) != 0xFFFFFF || ReadUInt32(&buff[4]) != 0xFFFFFF || (((UOSInt)buff[126] + 1) << 7) > fd->GetDataSize() || (fd->GetDataSize() & 127))
@@ -215,7 +215,7 @@ IO::FileAnalyse::EDIDFileAnalyse::EDIDFileAnalyse(IO::StreamData *fd)
 		this->blockCnt = 0;
 		return;
 	}
-	this->fd = fd->GetPartialData(0, fd->GetDataSize());
+	this->fd = fd->GetPartialData(0, fd->GetDataSize()).Ptr();
 	this->blockCnt = (UOSInt)buff[126] + 1;
 }
 

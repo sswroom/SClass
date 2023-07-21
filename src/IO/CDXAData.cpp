@@ -2,14 +2,14 @@
 #include "MyMemory.h"
 #include "IO/CDXAData.h"
 
-IO::CDXAData::CDXAData(IO::StreamData *data, UInt64 ofst, UInt64 dataSize) : IO::ISectorData(data->GetFullName())
+IO::CDXAData::CDXAData(NotNullPtr<IO::StreamData> data, UInt64 ofst, UInt64 dataSize) : IO::ISectorData(data->GetFullName())
 {
 	this->data = data->GetPartialData(ofst, dataSize);
 }
 
 IO::CDXAData::~CDXAData()
 {
-	DEL_CLASS(this->data);
+	this->data.Delete();
 }
 
 UInt64 IO::CDXAData::GetSectorCount() const
@@ -34,7 +34,7 @@ IO::ISectorData *IO::CDXAData::GetPartialData(UInt64 startSector, UInt64 sectorC
 	return data;
 }
 
-IO::StreamData *IO::CDXAData::GetStreamData(UInt64 startSector, UInt64 dataSize) const
+NotNullPtr<IO::StreamData> IO::CDXAData::GetStreamData(UInt64 startSector, UInt64 dataSize) const
 {
 	return this->data->GetPartialData(startSector * 2352, dataSize);
 }

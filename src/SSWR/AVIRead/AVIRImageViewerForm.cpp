@@ -24,15 +24,13 @@ typedef enum
 void __stdcall SSWR::AVIRead::AVIRImageViewerForm::OnFileDrop(void *userObj, NotNullPtr<Text::String> *files, UOSInt fileCnt)
 {
 	SSWR::AVIRead::AVIRImageViewerForm *me = (SSWR::AVIRead::AVIRImageViewerForm *)userObj;
-	IO::StmData::FileData *fd;
 	UOSInt i;
 	Bool succ;
 	i = 0;
 	while (i < fileCnt)
 	{
-		NEW_CLASS(fd, IO::StmData::FileData(files[i], false));
+		IO::StmData::FileData fd(files[i], false);
 		succ = me->ParseFile(fd);
-		DEL_CLASS(fd);
 		if (succ)
 			break;
 		i++;
@@ -44,7 +42,7 @@ void __stdcall SSWR::AVIRead::AVIRImageViewerForm::OnMoveToNext(void *userObj)
 	SSWR::AVIRead::AVIRImageViewerForm *me = (SSWR::AVIRead::AVIRImageViewerForm *)userObj;
 	if (me->pkgFile && me->fileIndex != (UOSInt)-1)
 	{
-		IO::StreamData *fd;
+		NotNullPtr<IO::StreamData> fd;
 		UTF8Char sbuff[512];
 		UTF8Char *sptr;
 		UOSInt i;
@@ -60,11 +58,10 @@ void __stdcall SSWR::AVIRead::AVIRImageViewerForm::OnMoveToNext(void *userObj)
 				sptr = me->pkgFile->GetItemName(sbuff, i);
 				if (IsImageFileName(CSTRP(sbuff, sptr)))
 				{
-					fd = me->pkgFile->GetItemStmDataNew(i);
-					if (fd)
+					if (fd.Set(me->pkgFile->GetItemStmDataNew(i)))
 					{
 						pobj = me->core->GetParserList()->ParseFileType(fd, IO::ParserType::ImageList);
-						DEL_CLASS(fd);
+						fd.Delete();
 						if (pobj)
 						{
 							me->SetImage((Media::ImageList*)pobj, true);
@@ -89,11 +86,10 @@ void __stdcall SSWR::AVIRead::AVIRImageViewerForm::OnMoveToNext(void *userObj)
 				sptr = me->pkgFile->GetItemName(sbuff, i);
 				if (IsImageFileName(CSTRP(sbuff, sptr)))
 				{
-					fd = me->pkgFile->GetItemStmDataNew(i);
-					if (fd)
+					if (fd.Set(me->pkgFile->GetItemStmDataNew(i)))
 					{
 						pobj = me->core->GetParserList()->ParseFileType(fd, IO::ParserType::ImageList);
-						DEL_CLASS(fd);
+						fd.Delete();
 						if (pobj)
 						{
 							me->SetImage((Media::ImageList*)pobj, true);
@@ -114,7 +110,7 @@ void __stdcall SSWR::AVIRead::AVIRImageViewerForm::OnMoveToPrev(void *userObj)
 	SSWR::AVIRead::AVIRImageViewerForm *me = (SSWR::AVIRead::AVIRImageViewerForm *)userObj;
 	if (me->pkgFile && me->fileIndex != (UOSInt)-1)
 	{
-		IO::StreamData *fd;
+		NotNullPtr<IO::StreamData> fd;
 		UTF8Char sbuff[512];
 		UTF8Char *sptr;
 		UOSInt i;
@@ -128,11 +124,10 @@ void __stdcall SSWR::AVIRead::AVIRImageViewerForm::OnMoveToPrev(void *userObj)
 				sptr = me->pkgFile->GetItemName(sbuff, i);
 				if (IsImageFileName(CSTRP(sbuff, sptr)))
 				{
-					fd = me->pkgFile->GetItemStmDataNew(i);
-					if (fd)
+					if (fd.Set(me->pkgFile->GetItemStmDataNew(i)))
 					{
 						pobj = me->core->GetParserList()->ParseFileType(fd, IO::ParserType::ImageList);
-						DEL_CLASS(fd);
+						fd.Delete();
 						if (pobj)
 						{
 							me->SetImage((Media::ImageList*)pobj, true);
@@ -156,11 +151,10 @@ void __stdcall SSWR::AVIRead::AVIRImageViewerForm::OnMoveToPrev(void *userObj)
 				sptr = me->pkgFile->GetItemName(sbuff, i);
 				if (IsImageFileName(CSTRP(sbuff, sptr)))
 				{
-					fd = me->pkgFile->GetItemStmDataNew(i);
-					if (fd)
+					if (fd.Set(me->pkgFile->GetItemStmDataNew(i)))
 					{
 						pobj = me->core->GetParserList()->ParseFileType(fd, IO::ParserType::ImageList);
-						DEL_CLASS(fd);
+						fd.Delete();
 						if (pobj)
 						{
 							me->SetImage((Media::ImageList*)pobj, true);
@@ -431,11 +425,11 @@ void SSWR::AVIRead::AVIRImageViewerForm::SetImage(Media::ImageList *imgList, Boo
 	}
 }
 
-Bool SSWR::AVIRead::AVIRImageViewerForm::ParseFile(IO::StreamData *fd)
+Bool SSWR::AVIRead::AVIRImageViewerForm::ParseFile(NotNullPtr<IO::StreamData> fd)
 {
 	IO::ParsedObject *pobj;
 	IO::ParserType pt;
-	IO::StreamData *fd2;
+	NotNullPtr<IO::StreamData> fd2;
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 
@@ -465,11 +459,10 @@ Bool SSWR::AVIRead::AVIRImageViewerForm::ParseFile(IO::StreamData *fd)
 				sptr = pf->GetItemName(sbuff, i);
 				if (IsImageFileName(CSTRP(sbuff, sptr)))
 				{
-					fd2 = pf->GetItemStmDataNew(i);
-					if (fd2)
+					if (fd2.Set(pf->GetItemStmDataNew(i)))
 					{
 						pobj2 = this->core->GetParserList()->ParseFile(fd2, &pt);
-						DEL_CLASS(fd2);
+						fd2.Delete();
 						if (pobj2)
 						{
 							if (pt == IO::ParserType::ImageList)

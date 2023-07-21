@@ -62,7 +62,7 @@ IO::ParserType Parser::FileParser::TIFFParser::GetParserType()
 	return IO::ParserType::ImageList;
 }
 
-IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(IO::StreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	Data::ByteOrder *bo;
 
@@ -257,12 +257,12 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(IO::StreamData *f
 			if (nStrip == 1)
 			{
 				Media::ImageList *innerImgList = 0;
-				IO::StreamData *jpgFd = fd->GetPartialData(stripOfst, stripLeng);
+				NotNullPtr<IO::StreamData> jpgFd = fd->GetPartialData(stripOfst, stripLeng);
 				if (this->parsers)
 				{
 					innerImgList = (Media::ImageList*)this->parsers->ParseFileType(jpgFd, IO::ParserType::ImageList); 
 				}
-				DEL_CLASS(jpgFd);
+				jpgFd.Delete();
 				if (innerImgList)
 				{
 					Media::Image *innerImg;

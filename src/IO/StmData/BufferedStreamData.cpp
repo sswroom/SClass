@@ -3,7 +3,7 @@
 
 #define BUFFSIZE 65536
 
-IO::StmData::BufferedStreamData::BufferedStreamData(IO::StreamData *stmData) : buff(BUFFSIZE)
+IO::StmData::BufferedStreamData::BufferedStreamData(NotNullPtr<IO::StreamData> stmData) : buff(BUFFSIZE)
 {
 	this->stmData = stmData;
 	this->buffLength = 0;
@@ -13,7 +13,7 @@ IO::StmData::BufferedStreamData::BufferedStreamData(IO::StreamData *stmData) : b
 
 IO::StmData::BufferedStreamData::~BufferedStreamData()
 {
-	DEL_CLASS(this->stmData);
+	this->stmData.Delete();
 }
 
 UOSInt IO::StmData::BufferedStreamData::GetRealData(UInt64 offset, UOSInt length, Data::ByteArray buffer)
@@ -89,7 +89,7 @@ const UInt8 *IO::StmData::BufferedStreamData::GetPointer()
 	return this->stmData->GetPointer();
 }
 
-IO::StreamData *IO::StmData::BufferedStreamData::GetPartialData(UInt64 offset, UInt64 length)
+NotNullPtr<IO::StreamData> IO::StmData::BufferedStreamData::GetPartialData(UInt64 offset, UInt64 length)
 {
 	return this->stmData->GetPartialData(offset, length);
 }

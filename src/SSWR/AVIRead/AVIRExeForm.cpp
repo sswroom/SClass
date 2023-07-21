@@ -291,7 +291,7 @@ void __stdcall SSWR::AVIRead::AVIRExeForm::OnResourceDblClk(void *userObj)
 		else if (res->rt == IO::EXEFile::RT_ICON || res->rt == IO::EXEFile::RT_CURSOR)
 		{
 			IO::StmData::MemoryDataCopy fd(res->data, res->dataSize);
-			me->core->LoadData(&fd, 0);
+			me->core->LoadData(fd, 0);
 		}
 		else if (res->rt == IO::EXEFile::RT_FONT)
 		{

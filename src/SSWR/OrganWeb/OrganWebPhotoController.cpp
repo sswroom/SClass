@@ -179,7 +179,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhoto(Net::WebServer::IWeb
 			Media::StaticImage *dimg;
 			{
 				IO::StmData::FileData fd(sb.ToCString(), false);
-				imgList = (Media::ImageList*)this->env->ParseFileType(&fd, IO::ParserType::ImageList);
+				imgList = (Media::ImageList*)this->env->ParseFileType(fd, IO::ParserType::ImageList);
 			}
 			if (imgList)
 			{
@@ -435,7 +435,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoId(Net::WebServer::IW
 		Media::StaticImage *dimg;
 		{
 			IO::StmData::FileData fd({sbuff, (UOSInt)(sptr - sbuff)}, false);
-			imgList = (Media::ImageList*)this->env->ParseFileType(&fd, IO::ParserType::ImageList);
+			imgList = (Media::ImageList*)this->env->ParseFileType(fd, IO::ParserType::ImageList);
 		}
 		if (imgList)
 		{
@@ -718,7 +718,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoWId(Net::WebServer::I
 			Media::StaticImage *dimg;
 			{
 				IO::StmData::FileData fd(CSTRP(sbuff, sptr), false);
-				imgList = (Media::ImageList*)this->env->ParseFileType(&fd, IO::ParserType::ImageList);
+				imgList = (Media::ImageList*)this->env->ParseFileType(fd, IO::ParserType::ImageList);
 			}
 			if (imgList)
 			{

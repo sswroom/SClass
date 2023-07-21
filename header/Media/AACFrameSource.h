@@ -9,8 +9,8 @@ namespace Media
 	class AACFrameSource : public AudioFrameSource
 	{
 	public:
-		AACFrameSource(IO::StreamData *fd, Media::AudioFormat *format, NotNullPtr<Text::String> name);
-		AACFrameSource(IO::StreamData *fd, Media::AudioFormat *format, Text::CString name);
+		AACFrameSource(NotNullPtr<IO::StreamData> fd, Media::AudioFormat *format, NotNullPtr<Text::String> name);
+		AACFrameSource(NotNullPtr<IO::StreamData> fd, Media::AudioFormat *format, Text::CString name);
 		virtual ~AACFrameSource();
 
 		virtual UOSInt ReadBlock(Data::ByteArray blk); //ret actual block size

@@ -76,7 +76,7 @@ UInt32 __stdcall IO::FileAnalyse::FGDBFileAnalyse::ParseThread(void *userObj)
 	return 0;
 }
 
-IO::FileAnalyse::FGDBFileAnalyse::FGDBFileAnalyse(IO::StreamData *fd)
+IO::FileAnalyse::FGDBFileAnalyse::FGDBFileAnalyse(NotNullPtr<IO::StreamData> fd)
 {
 	UInt8 buff[40];
 	this->fd = 0;
@@ -90,7 +90,7 @@ IO::FileAnalyse::FGDBFileAnalyse::FGDBFileAnalyse(IO::StreamData *fd)
 	{
 		return;
 	}
-	this->fd = fd->GetPartialData(0, fd->GetDataSize());
+	this->fd = fd->GetPartialData(0, fd->GetDataSize()).Ptr();
 
 	Sync::ThreadUtil::Create(ParseThread, this);
 	while (!this->threadStarted)

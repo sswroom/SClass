@@ -395,19 +395,19 @@ Bool UI::GUIHexFileView::LoadFile(Text::CString fileName, Bool dynamicSize)
 	}
 	else
 	{
-		IO::StmData::FileData *fd;
-		NEW_CLASS(fd, IO::StmData::FileData(fileName, false));
+		NotNullPtr<IO::StmData::FileData> fd;
+		NEW_CLASSNN(fd, IO::StmData::FileData(fileName, false));
 		if (fd->IsError())
 		{
-			DEL_CLASS(fd);
+			fd.Delete();
 			return false;
 		}
 		SDEL_CLASS(this->analyse);
 		SDEL_CLASS(this->fs);
 		SDEL_CLASS(this->fd);
 		SDEL_CLASS(this->frame);
-		this->fd = fd;
-		this->analyse = IO::FileAnalyse::IFileAnalyse::AnalyseFile(this->fd);
+		this->fd = fd.Ptr();
+		this->analyse = IO::FileAnalyse::IFileAnalyse::AnalyseFile(fd);
 		this->fileSize = this->fd->GetDataSize();
 		this->currOfst = 1;
 		this->SetScrollVRange(0, (UOSInt)(this->fileSize >> 4));
@@ -417,20 +417,20 @@ Bool UI::GUIHexFileView::LoadFile(Text::CString fileName, Bool dynamicSize)
 	return true;
 }
 
-Bool UI::GUIHexFileView::LoadData(IO::StreamData *data, IO::FileAnalyse::IFileAnalyse *fileAnalyse)
+Bool UI::GUIHexFileView::LoadData(NotNullPtr<IO::StreamData> data, IO::FileAnalyse::IFileAnalyse *fileAnalyse)
 {
 	SDEL_CLASS(this->analyse);
 	SDEL_CLASS(this->fs);
 	SDEL_CLASS(this->fd);
 	SDEL_CLASS(this->frame);
-	this->fd = data;
+	this->fd = data.Ptr();
 	if (fileAnalyse)
 	{
 		this->analyse = fileAnalyse;
 	}
 	else
 	{
-		this->analyse = IO::FileAnalyse::IFileAnalyse::AnalyseFile(this->fd);
+		this->analyse = IO::FileAnalyse::IFileAnalyse::AnalyseFile(data);
 	}
 	this->fileSize = this->fd->GetDataSize();
 	this->currOfst = 1;

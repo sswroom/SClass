@@ -110,11 +110,11 @@ void IO::SPackageFile::AddPackageInner(IO::PackageFile *pkg, UTF8Char pathSepera
 		}
 		else if (pt == IO::PackageFile::PackObjectType::StreamData)
 		{
-			IO::StreamData *fd = pkg->GetItemStmDataNew(i);
-			if (fd)
+			NotNullPtr<IO::StreamData> fd;
+			if (fd.Set(pkg->GetItemStmDataNew(i)))
 			{
 				this->AddFile(fd, {pathStart, (UOSInt)(sptr - pathStart)}, pkg->GetItemModTime(i));
-				DEL_CLASS(fd);
+				fd.Delete();
 			}
 		}
 		i++;
@@ -425,7 +425,7 @@ IO::SPackageFile::~SPackageFile()
 	}
 }
 
-Bool IO::SPackageFile::AddFile(IO::StreamData *fd, Text::CString fileName, const Data::Timestamp &modTime)
+Bool IO::SPackageFile::AddFile(NotNullPtr<IO::StreamData> fd, Text::CString fileName, const Data::Timestamp &modTime)
 {
 	UInt8 dataBuff[512];
 	UInt64 dataSize = fd->GetDataSize();

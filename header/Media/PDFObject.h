@@ -17,8 +17,8 @@ namespace Media
 		PDFObject(UInt32 id);
 		~PDFObject();
 
-		void SetStream(IO::StreamData *fd, UInt64 ofst, UInt64 len);
-		void SetData(IO::StreamData *fd, UInt64 ofst, UInt64 len);
+		void SetStream(NotNullPtr<IO::StreamData> fd, UInt64 ofst, UInt64 len);
+		void SetData(NotNullPtr<IO::StreamData> fd, UInt64 ofst, UInt64 len);
 		void SetParameter(PDFParameter *parameter);
 		PDFParameter *GetParameter() const;
 		UInt32 GetId() const;

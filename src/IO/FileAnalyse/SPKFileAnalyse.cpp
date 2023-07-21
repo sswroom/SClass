@@ -127,7 +127,7 @@ void IO::FileAnalyse::SPKFileAnalyse::FreePackInfo(IO::FileAnalyse::SPKFileAnaly
 	MemFree(pack);
 }
 
-IO::FileAnalyse::SPKFileAnalyse::SPKFileAnalyse(IO::StreamData *fd)
+IO::FileAnalyse::SPKFileAnalyse::SPKFileAnalyse(NotNullPtr<IO::StreamData> fd)
 {
 	UInt8 buff[256];
 	this->fd = 0;
@@ -141,7 +141,7 @@ IO::FileAnalyse::SPKFileAnalyse::SPKFileAnalyse(IO::StreamData *fd)
 	{
 		return;
 	}
-	this->fd = fd->GetPartialData(0, fd->GetDataSize());
+	this->fd = fd->GetPartialData(0, fd->GetDataSize()).Ptr();
 	Sync::ThreadUtil::Create(ParseThread, this);
 	while (!this->threadStarted)
 	{

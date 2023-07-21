@@ -262,11 +262,11 @@ void __stdcall SSWR::AVIRead::AVIRVideoInfoForm::OnDecodeClicked(void *userObj)
 
 Bool SSWR::AVIRead::AVIRVideoInfoForm::OpenFile(Text::CString fileName)
 {
-	IO::StmData::FileData *fd;
 	Media::MediaFile *mediaFile;
-	NEW_CLASS(fd, IO::StmData::FileData(fileName, false));
-	mediaFile = (Media::MediaFile*)this->core->GetParserList()->ParseFileType(fd, IO::ParserType::MediaFile);
-	DEL_CLASS(fd);
+	{
+		IO::StmData::FileData fd(fileName, false);
+		mediaFile = (Media::MediaFile*)this->core->GetParserList()->ParseFileType(fd, IO::ParserType::MediaFile);
+	}
 	if (mediaFile == 0)
 	{
 		return false;

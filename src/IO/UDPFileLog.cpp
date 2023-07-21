@@ -5,7 +5,7 @@
 #include "Net/SocketFactory.h"
 #include "Text/Encoding.h"
 
-IO::UDPFileLog::UDPFileLog(IO::StreamData *fd) : IO::UDPLog(fd->GetFullName()), logBuff(65544)
+IO::UDPFileLog::UDPFileLog(NotNullPtr<IO::StreamData> fd) : IO::UDPLog(fd->GetFullName()), logBuff(65544)
 {
 	this->fd = fd->GetPartialData(0, fd->GetDataSize());
 
@@ -70,7 +70,7 @@ IO::UDPFileLog::UDPFileLog(IO::StreamData *fd) : IO::UDPLog(fd->GetFullName()), 
 
 IO::UDPFileLog::~UDPFileLog()
 {
-	DEL_CLASS(this->fd);
+	this->fd.Delete();
 }
 
 UOSInt IO::UDPFileLog::GetCount(IO::LogHandler::LogLevel logLevel) const

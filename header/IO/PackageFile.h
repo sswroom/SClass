@@ -83,12 +83,12 @@ namespace IO
 
 		virtual IO::ParserType GetParserType() const;
 
-		void AddData(StreamData *fd, UInt64 ofst, UInt64 length, Text::CString name, const Data::Timestamp &modTime);
+		void AddData(NotNullPtr<StreamData> fd, UInt64 ofst, UInt64 length, Text::CString name, const Data::Timestamp &modTime);
 		void AddObject(IO::ParsedObject *pobj, Text::CString name, const Data::Timestamp &modTime);
-		void AddCompData(StreamData *fd, UInt64 ofst, UInt64 length, PackFileItem::CompressInfo *compInfo, Text::CString name, const Data::Timestamp &modTime);
+		void AddCompData(NotNullPtr<StreamData> fd, UInt64 ofst, UInt64 length, PackFileItem::CompressInfo *compInfo, Text::CString name, const Data::Timestamp &modTime);
 		void AddPack(IO::PackageFile *pkg, Text::CString name, const Data::Timestamp &modTime);
 		IO::PackageFile *GetPackFile(Text::CString name) const;
-		Bool UpdateCompInfo(const UTF8Char *name, IO::StreamData *fd, UInt64 ofst, Int32 crc, UOSInt compSize, UInt32 decSize);
+		Bool UpdateCompInfo(const UTF8Char *name, NotNullPtr<IO::StreamData> fd, UInt64 ofst, Int32 crc, UOSInt compSize, UInt32 decSize);
 
 		virtual const PackFileItem *GetPackFileItem(const UTF8Char *name) const;
 		virtual PackObjectType GetPItemType(const PackFileItem *itemObj) const;

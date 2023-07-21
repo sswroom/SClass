@@ -8,12 +8,12 @@ namespace IO
 	class StreamDataStream : public IO::SeekableStream
 	{
 	private:
-		IO::StreamData *data;
+		NotNullPtr<IO::StreamData> data;
 		UInt64 currOfst;
 		UInt64 stmDataLeng;
 
 	public:
-		StreamDataStream(IO::StreamData *data);
+		StreamDataStream(NotNullPtr<IO::StreamData> data);
 		virtual ~StreamDataStream();
 
 		virtual Bool IsDown() const;

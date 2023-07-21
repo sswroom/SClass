@@ -37,7 +37,7 @@ Map::MapDrawLayer *Map::MapManager::LoadLayer(Text::CString fileName, Parser::Pa
 	IO::ParserType pt;
 	{
 		IO::StmData::FileData fd(fileName, false);
-		pobj = parsers->ParseFile(&fd, &pt);
+		pobj = parsers->ParseFile(fd, &pt);
 	}
 	if (pt != IO::ParserType::MapLayer)
 	{

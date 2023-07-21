@@ -41,7 +41,7 @@ Bool IO::FileAnalyse::IFileAnalyse::GetFrameDetail(UOSInt index, Text::StringBui
 	return true;
 }
 
-IO::FileAnalyse::IFileAnalyse *IO::FileAnalyse::IFileAnalyse::AnalyseFile(IO::StreamData *fd)
+IO::FileAnalyse::IFileAnalyse *IO::FileAnalyse::IFileAnalyse::AnalyseFile(NotNullPtr<IO::StreamData> fd)
 {
 	UInt8 buff[256];
 	UOSInt buffSize;

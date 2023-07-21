@@ -24,7 +24,7 @@ namespace DB
 
 	private:
 		//IO::SeekableStream *stm;
-		IO::StreamData *stmData;
+		NotNullPtr<IO::StreamData> stmData;
 		Text::Encoding enc;
 //		Sync::Mutex *mut;
 		UInt64 refPos;
@@ -35,7 +35,7 @@ namespace DB
 		NotNullPtr<Text::String> name;
 
 	public:
-		DBFFile(IO::StreamData *stmData, UInt32 codePage);
+		DBFFile(NotNullPtr<IO::StreamData> stmData, UInt32 codePage);
 		virtual ~DBFFile();
 
 		virtual UOSInt QueryTableNames(Text::CString schemaName, Data::ArrayListNN<Text::String> *names);

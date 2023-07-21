@@ -26,7 +26,7 @@ Media::LPCMSource::LPCMSource(Text::CString name)
 	this->readOfst = 0;
 }
 
-void Media::LPCMSource::SetData(IO::StreamData *fd, UInt64 ofst, UInt64 length, Media::AudioFormat *format)
+void Media::LPCMSource::SetData(NotNullPtr<IO::StreamData> fd, UInt64 ofst, UInt64 length, Media::AudioFormat *format)
 {
 	if (this->data)
 	{
@@ -34,22 +34,22 @@ void Media::LPCMSource::SetData(IO::StreamData *fd, UInt64 ofst, UInt64 length, 
 	}
 	this->format.FromAudioFormat(format);
 
-	this->data = fd->GetPartialData(ofst, length);
+	this->data = fd->GetPartialData(ofst, length).Ptr();
 }
 
-Media::LPCMSource::LPCMSource(IO::StreamData *fd, UInt64 ofst, UInt64 length, Media::AudioFormat *format, NotNullPtr<Text::String> name)
+Media::LPCMSource::LPCMSource(NotNullPtr<IO::StreamData> fd, UInt64 ofst, UInt64 length, Media::AudioFormat *format, NotNullPtr<Text::String> name)
 {
 	this->format.FromAudioFormat(format);
-	this->data = fd->GetPartialData(ofst, length);
+	this->data = fd->GetPartialData(ofst, length).Ptr();
 	this->name = name->Clone();
 	this->readEvt = 0;
 	this->readOfst = 0;
 }
 
-Media::LPCMSource::LPCMSource(IO::StreamData *fd, UInt64 ofst, UInt64 length, Media::AudioFormat *format, Text::CString name)
+Media::LPCMSource::LPCMSource(NotNullPtr<IO::StreamData> fd, UInt64 ofst, UInt64 length, Media::AudioFormat *format, Text::CString name)
 {
 	this->format.FromAudioFormat(format);
-	this->data = fd->GetPartialData(ofst, length);
+	this->data = fd->GetPartialData(ofst, length).Ptr();
 	this->name = Text::String::New(name);
 	this->readEvt = 0;
 	this->readOfst = 0;
@@ -91,9 +91,9 @@ Bool Media::LPCMSource::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, Int
 		if (trimTimeStart >= 0)
 		{
 			UInt64 ofst = trimTimeStart * (UInt64)this->format.frequency / 1000 * blk;
-			IO::StreamData *newData = this->data->GetPartialData(ofst, this->data->GetDataSize() - ofst);
+			NotNullPtr<IO::StreamData> newData = this->data->GetPartialData(ofst, this->data->GetDataSize() - ofst);
 			DEL_CLASS(this->data);
-			this->data = newData;
+			this->data = newData.Ptr();
 			if (syncTime)
 			{
 				*syncTime = 0;
@@ -116,9 +116,9 @@ Bool Media::LPCMSource::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, Int
 			ofst2 = dataSize;
 		if (trimTimeStart >= 0)
 		{
-			IO::StreamData *newData = this->data->GetPartialData(ofst1, ofst2 - ofst1);
+			NotNullPtr<IO::StreamData> newData = this->data->GetPartialData(ofst1, ofst2 - ofst1);
 			DEL_CLASS(this->data);
-			this->data = newData;
+			this->data = newData.Ptr();
 			if (syncTime)
 			{
 				*syncTime = 0;
@@ -126,9 +126,9 @@ Bool Media::LPCMSource::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, Int
 		}
 		else
 		{
-			IO::StreamData *newData = this->data->GetPartialData(0, ofst2);
+			NotNullPtr<IO::StreamData> newData = this->data->GetPartialData(0, ofst2);
 			DEL_CLASS(this->data);
-			this->data = newData;
+			this->data = newData.Ptr();
 			if (syncTime)
 			{
 				*syncTime = (Int32)trimTimeStart;

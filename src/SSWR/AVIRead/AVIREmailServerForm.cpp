@@ -200,11 +200,11 @@ void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnEmailDblClicked(void *userO
 	if (email)
 	{
 		Text::MIMEObj::MailMessage *mail;
-		IO::StreamData *fd = me->store->OpenEmailData(email->id);
-		if (fd)
+		NotNullPtr<IO::StreamData> fd;
+		if (fd.Set(me->store->OpenEmailData(email->id)))
 		{
 			mail = Text::MIMEObj::MailMessage::ParseFile(fd);
-			DEL_CLASS(fd);
+			fd.Delete();
 		}
 		else
 		{

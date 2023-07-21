@@ -37,7 +37,7 @@ IO::ParserType Parser::FileParser::ISOParser::GetParserType()
 	return IO::ParserType::SectorData;
 }
 
-IO::ParsedObject *Parser::FileParser::ISOParser::ParseFileHdr(IO::StreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::ISOParser::ParseFileHdr(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	UInt8 buff[32];
 	UInt64 fileSize = fd->GetDataSize();

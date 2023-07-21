@@ -33,7 +33,7 @@ IO::ParserType Parser::FileParser::SPREDParser::GetParserType()
 	return IO::ParserType::MapLayer;
 }
 
-IO::ParsedObject *Parser::FileParser::SPREDParser::ParseFileHdr(IO::StreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::SPREDParser::ParseFileHdr(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	Data::ArrayList<Map::GPSTrack::GPSRecord3*> *currDev = 0;
 	Int32 currDevId = -1;

@@ -7,7 +7,7 @@
 
 #define HDRSIZE 512
 
-IO::ParsedObject *IO::FileParser::ParseFile(IO::StreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
+IO::ParsedObject *IO::FileParser::ParseFile(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
 	UInt8 hdr[HDRSIZE];
 	fd->GetRealData(0, HDRSIZE, BYTEARR(hdr));
@@ -27,7 +27,7 @@ IO::ParsedObject *IO::FileParser::ParseFilePath(Text::CString filePath)
 	IO::ParsedObject *pobj;
 	{
 		IO::StmData::FileData fd(filePath, false);	
-		pobj = this->ParseFile(&fd, pkg, IO::ParserType::Unknown);
+		pobj = this->ParseFile(fd, pkg, IO::ParserType::Unknown);
 	}
 	SDEL_CLASS(pkg);
 	return pobj;

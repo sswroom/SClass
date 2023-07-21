@@ -17,18 +17,18 @@ Media::PDFObject::~PDFObject()
 	SDEL_CLASS(this->parameter);
 }
 
-void Media::PDFObject::SetStream(IO::StreamData *fd, UInt64 ofst, UInt64 len)
+void Media::PDFObject::SetStream(NotNullPtr<IO::StreamData> fd, UInt64 ofst, UInt64 len)
 {
 	SDEL_CLASS(this->fd);
 	this->streamData = true;
-	this->fd = fd->GetPartialData(ofst, len);
+	this->fd = fd->GetPartialData(ofst, len).Ptr();
 }
 
-void Media::PDFObject::SetData(IO::StreamData *fd, UInt64 ofst, UInt64 len)
+void Media::PDFObject::SetData(NotNullPtr<IO::StreamData> fd, UInt64 ofst, UInt64 len)
 {
 	SDEL_CLASS(this->fd);
 	this->streamData = false;
-	this->fd = fd->GetPartialData(ofst, len);
+	this->fd = fd->GetPartialData(ofst, len).Ptr();
 }
 
 void Media::PDFObject::SetParameter(PDFParameter *parameter)
@@ -149,17 +149,18 @@ Bool Media::PDFObject::SaveFile(Text::CString fileName)
 
 Bool Media::PDFObject::SaveStream(IO::Stream *stm)
 {
-	if (this->fd)
+	NotNullPtr<IO::StreamData> fd;
+	if (fd.Set(this->fd))
 	{
 		Text::String *filter = this->GetFilter();
 		if (filter && filter->Equals(UTF8STRC("FlateDecode")))
 		{
 			Data::Compress::InflateStream infStm(stm, true);
-			return infStm.WriteFromData(this->fd, 1048576);
+			return infStm.WriteFromData(fd, 1048576);
 		}
 		else
 		{
-			return stm->WriteFromData(this->fd, 1048576);
+			return stm->WriteFromData(fd, 1048576);
 		}
 	}
 	return false;

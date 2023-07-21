@@ -100,7 +100,7 @@ void Text::MIMEObj::MultipartMIMEObj::ParsePart(UInt8 *buff, UOSInt buffSize)
 				j = b64.DecodeBin(&buff[lineStart], buffSize - lineStart, tmpBuff);
 
 				IO::StmData::MemoryDataRef mdata(tmpBuff, j);
-				obj = Text::IMIMEObj::ParseFromData(&mdata, contType->ToCString());
+				obj = Text::IMIMEObj::ParseFromData(mdata, contType->ToCString());
 				MemFree(tmpBuff);
 			}
 			else if (tenc->Equals(UTF8STRC("quoted-printable")))
@@ -110,13 +110,13 @@ void Text::MIMEObj::MultipartMIMEObj::ParsePart(UInt8 *buff, UOSInt buffSize)
 				j = qpenc.DecodeBin(&buff[lineStart], buffSize - lineStart, tmpBuff);
 
 				IO::StmData::MemoryDataRef mdata(tmpBuff, j);
-				obj = Text::IMIMEObj::ParseFromData(&mdata, contType->ToCString());
+				obj = Text::IMIMEObj::ParseFromData(mdata, contType->ToCString());
 				MemFree(tmpBuff);
 			}
 			else if (tenc->Equals(UTF8STRC("7bit")))
 			{
 				IO::StmData::MemoryDataRef mdata(&buff[lineStart], buffSize - lineStart);
-				obj = Text::IMIMEObj::ParseFromData(&mdata, contType->ToCString());
+				obj = Text::IMIMEObj::ParseFromData(mdata, contType->ToCString());
 			}
 			else
 			{
@@ -127,7 +127,7 @@ void Text::MIMEObj::MultipartMIMEObj::ParsePart(UInt8 *buff, UOSInt buffSize)
 		else
 		{
 			IO::StmData::MemoryDataRef mdata(&buff[lineStart], buffSize - lineStart);
-			obj = Text::IMIMEObj::ParseFromData(&mdata, contType->ToCString());
+			obj = Text::IMIMEObj::ParseFromData(mdata, contType->ToCString());
 		}
 
 		if (obj)
@@ -335,7 +335,7 @@ UOSInt Text::MIMEObj::MultipartMIMEObj::GetPartCount() const
 	return this->parts.GetCount();
 }
 
-Text::MIMEObj::MultipartMIMEObj *Text::MIMEObj::MultipartMIMEObj::ParseFile(Text::CString contentType, IO::StreamData *data)
+Text::MIMEObj::MultipartMIMEObj *Text::MIMEObj::MultipartMIMEObj::ParseFile(Text::CString contentType, NotNullPtr<IO::StreamData> data)
 {
 	UOSInt j;
 	if (contentType.StartsWith(UTF8STRC("multipart/mixed;")))

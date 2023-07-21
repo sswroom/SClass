@@ -51,19 +51,19 @@ const UInt8 *IO::StmData::MemoryDataRef::GetPointer()
 	return this->data.Ptr();
 }
 
-IO::StreamData *IO::StmData::MemoryDataRef::GetPartialData(UInt64 offset, UInt64 length)
+NotNullPtr<IO::StreamData> IO::StmData::MemoryDataRef::GetPartialData(UInt64 offset, UInt64 length)
 {
-	IO::StmData::MemoryDataRef *data;
+	NotNullPtr<IO::StmData::MemoryDataRef> data;
 	if (offset >= this->data.GetSize())
 	{
-		NEW_CLASS(data, IO::StmData::MemoryDataRef(this->data.Ptr(), 0));
+		NEW_CLASSNN(data, IO::StmData::MemoryDataRef(this->data.Ptr(), 0));
 		return data;
 	}
 	if (offset + length > this->data.GetSize())
 	{
 		length = this->data.GetSize() - offset;
 	}
-	NEW_CLASS(data, IO::StmData::MemoryDataRef(this->data.SubArray(offset, (UOSInt)length)));
+	NEW_CLASSNN(data, IO::StmData::MemoryDataRef(this->data.SubArray(offset, (UOSInt)length)));
 	return data;
 }
 

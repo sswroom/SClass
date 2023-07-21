@@ -134,7 +134,7 @@ Bool IO::ZIPMTBuilder::AddFile(Text::CString fileName, IO::SeekableStream *stm, 
 	return true;
 }
 
-Bool IO::ZIPMTBuilder::AddFile(Text::CString fileName, IO::StreamData *fd, Int64 fileTimeTicks, Data::Compress::Inflate::CompressionLevel compLevel)
+Bool IO::ZIPMTBuilder::AddFile(Text::CString fileName, NotNullPtr<IO::StreamData> fd, Int64 fileTimeTicks, Data::Compress::Inflate::CompressionLevel compLevel)
 {
 	FileTask *task = MemAlloc(FileTask, 1);
 	task->fileSize = (UOSInt)fd->GetDataSize();

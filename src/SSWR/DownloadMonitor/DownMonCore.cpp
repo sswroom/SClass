@@ -91,12 +91,12 @@ Bool SSWR::DownloadMonitor::DownMonCore::ExtractZIP(Text::CString zipFile, Text:
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	IO::StmData::FileData *fd;
 	IO::PackageFile *pkgFile;
 	Bool valid = false;
-	NEW_CLASS(fd, IO::StmData::FileData(zipFile, false));
-	pkgFile = (IO::PackageFile*)this->parsers->ParseFileType(fd, IO::ParserType::PackageFile);
-	DEL_CLASS(fd);
+	{
+		IO::StmData::FileData fd(zipFile, false);
+		pkgFile = (IO::PackageFile*)this->parsers->ParseFileType(fd, IO::ParserType::PackageFile);
+	}
 	if (pkgFile)
 	{
 		if (pkgFile->GetCount() == 1)
@@ -115,14 +115,12 @@ Bool SSWR::DownloadMonitor::DownMonCore::ExtractZIP(Text::CString zipFile, Text:
 
 Bool SSWR::DownloadMonitor::DownMonCore::VideoValid(Text::CString fileName)
 {
-	IO::StmData::FileData *fd;
 	Media::MediaFile *mediaFile;
 	Bool valid = false;
-
-	NEW_CLASS(fd, IO::StmData::FileData(fileName, false));
-	mediaFile = (Media::MediaFile*)this->parsers->ParseFileType(fd, IO::ParserType::MediaFile);
-	DEL_CLASS(fd);
-
+	{
+		IO::StmData::FileData fd(fileName, false);
+		mediaFile = (Media::MediaFile*)this->parsers->ParseFileType(fd, IO::ParserType::MediaFile);
+	}
 	if (mediaFile)
 	{
 		valid = this->checker.IsValid(mediaFile);

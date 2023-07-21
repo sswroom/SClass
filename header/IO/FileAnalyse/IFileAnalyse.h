@@ -28,7 +28,7 @@ namespace IO
 			virtual Bool IsParsing() = 0;
 			virtual Bool TrimPadding(Text::CString outputFile) = 0;
 
-			static IFileAnalyse *AnalyseFile(IO::StreamData *fd);
+			static IFileAnalyse *AnalyseFile(NotNullPtr<IO::StreamData> fd);
 			static void AddFilters(IO::FileSelector *selector);
 		};
 	}

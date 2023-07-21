@@ -129,7 +129,7 @@ void SSWR::AVIRead::AVIRCoreWin::OpenObject(IO::ParsedObject *pobj)
 				IO::StmData::MemoryDataCopy data(mstm->GetArray());
 				data.SetFullName(stm->GetSourceNameObj()->ToCString());
 				DEL_CLASS(mstm);
-				this->LoadData(&data, 0);
+				this->LoadData(data, 0);
 			}
 			else
 			{

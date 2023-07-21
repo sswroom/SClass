@@ -34,7 +34,7 @@ namespace IO
 
 			static UInt32 __stdcall ParseThread(void *userObj);
 		public:
-			EXEFileAnalyse(IO::StreamData *fd);
+			EXEFileAnalyse(NotNullPtr<IO::StreamData> fd);
 			virtual ~EXEFileAnalyse();
 
 			virtual Text::CString GetFormatName();

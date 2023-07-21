@@ -49,7 +49,7 @@ namespace IO
 		~ZIPMTBuilder();
 
 		Bool AddFile(Text::CString fileName, IO::SeekableStream *stm, Int64 fileTimeTicks, Data::Compress::Inflate::CompressionLevel compLevel);
-		Bool AddFile(Text::CString fileName, IO::StreamData *fd, Int64 fileTimeTicks, Data::Compress::Inflate::CompressionLevel compLevel);
+		Bool AddFile(Text::CString fileName, NotNullPtr<IO::StreamData> fd, Int64 fileTimeTicks, Data::Compress::Inflate::CompressionLevel compLevel);
 	};
 }
 #endif

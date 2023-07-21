@@ -373,7 +373,7 @@ Bool Net::SAMLUtil::DecodeRequest(Text::CString requestB64, Text::StringBuilderU
 	Data::Compress::Inflate inf(false);
 	IO::MemoryStream mstm;
 	IO::StmData::MemoryDataRef fd(decBuff, decSize);
-	Bool succ = inf.Decompress(&mstm, &fd);
+	Bool succ = inf.Decompress(&mstm, fd);
 	MemFree(decBuff);
 	if (succ)
 	{

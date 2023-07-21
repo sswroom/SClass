@@ -4,7 +4,7 @@
 #include "Map/ESRI/FileGDBReader.h"
 #include "Map/ESRI/FileGDBTable.h"
 
-Map::ESRI::FileGDBTable::FileGDBTable(Text::CString tableName, IO::StreamData *gdbtableFD, IO::StreamData *gdbtablxFD, Math::ArcGISPRJParser *prjParser)
+Map::ESRI::FileGDBTable::FileGDBTable(Text::CString tableName, NotNullPtr<IO::StreamData> gdbtableFD, IO::StreamData *gdbtablxFD, Math::ArcGISPRJParser *prjParser)
 {
 	this->tableName = Text::String::New(tableName);
 	this->gdbtableFD = gdbtableFD->GetPartialData(0, gdbtableFD->GetDataSize());
@@ -22,7 +22,7 @@ Map::ESRI::FileGDBTable::FileGDBTable(Text::CString tableName, IO::StreamData *g
 			this->indexCnt = ReadUInt32(&hdrBuff[8]);
 			if (gdbtablxFD->GetDataSize() >= 16 + this->indexCnt * 5)
 			{
-				this->gdbtablxFD = gdbtablxFD->GetPartialData(0, gdbtablxFD->GetDataSize());
+				this->gdbtablxFD = gdbtablxFD->GetPartialData(0, gdbtablxFD->GetDataSize()).Ptr();
 			}
 		}
 	}
@@ -60,7 +60,7 @@ Map::ESRI::FileGDBTable::FileGDBTable(Text::CString tableName, IO::StreamData *g
 
 Map::ESRI::FileGDBTable::~FileGDBTable()
 {
-	DEL_CLASS(this->gdbtableFD);
+	this->gdbtableFD.Delete();
 	SDEL_CLASS(this->gdbtablxFD);
 	this->tableName->Release();
 	if (this->tableInfo)
@@ -88,9 +88,10 @@ DB::DBReader *Map::ESRI::FileGDBTable::OpenReader(Data::ArrayListNN<Text::String
 	}
 	Map::ESRI::FileGDBReader *reader;
 	NEW_CLASS(reader, Map::ESRI::FileGDBReader(this->gdbtableFD, this->dataOfst, this->tableInfo, columnNames, dataOfst, maxCnt, conditions));
-	if (this->gdbtablxFD)
+	NotNullPtr<IO::StreamData> fd;
+	if (fd.Set(this->gdbtablxFD))
 	{
-		reader->SetIndex(this->gdbtablxFD, this->indexCnt);
+		reader->SetIndex(fd, this->indexCnt);
 	}
 	return reader;
 }

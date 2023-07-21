@@ -46,7 +46,7 @@ UInt32 __stdcall IO::FileAnalyse::PCapFileAnalyse::ParseThread(void *userObj)
 	return 0;
 }
 
-IO::FileAnalyse::PCapFileAnalyse::PCapFileAnalyse(IO::StreamData *fd) : packetBuff(65536)
+IO::FileAnalyse::PCapFileAnalyse::PCapFileAnalyse(NotNullPtr<IO::StreamData> fd) : packetBuff(65536)
 {
 	UInt8 buff[24];
 	this->fd = 0;
@@ -61,13 +61,13 @@ IO::FileAnalyse::PCapFileAnalyse::PCapFileAnalyse(IO::StreamData *fd) : packetBu
 	}
 	if (ReadUInt32(buff) == 0xa1b2c3d4)
 	{
-		this->fd = fd->GetPartialData(0, fd->GetDataSize());
+		this->fd = fd->GetPartialData(0, fd->GetDataSize()).Ptr();
 		this->isBE = false;
 		this->linkType = ReadUInt32(&buff[20]);
 	}
 	else if (ReadMUInt32(buff) == 0xa1b2c3d4)
 	{
-		this->fd = fd->GetPartialData(0, fd->GetDataSize());
+		this->fd = fd->GetPartialData(0, fd->GetDataSize()).Ptr();
 		this->isBE = true;
 		this->linkType = ReadMUInt32(&buff[20]);
 	}

@@ -54,7 +54,7 @@ UInt32 __stdcall IO::FileAnalyse::PNGFileAnalyse::ParseThread(void *userObj)
 	return 0;
 }
 
-IO::FileAnalyse::PNGFileAnalyse::PNGFileAnalyse(IO::StreamData *fd)
+IO::FileAnalyse::PNGFileAnalyse::PNGFileAnalyse(NotNullPtr<IO::StreamData> fd)
 {
 	UInt8 buff[256];
 	this->fd = 0;
@@ -67,7 +67,7 @@ IO::FileAnalyse::PNGFileAnalyse::PNGFileAnalyse(IO::StreamData *fd)
 	{
 		return;
 	}
-	this->fd = fd->GetPartialData(0, fd->GetDataSize());
+	this->fd = fd->GetPartialData(0, fd->GetDataSize()).Ptr();
 
 	Sync::ThreadUtil::Create(ParseThread, this);
 	while (!this->threadStarted)
@@ -259,7 +259,7 @@ Bool IO::FileAnalyse::PNGFileAnalyse::GetFrameDetail(UOSInt index, Text::StringB
 			sb->AppendC(UTF8STRC("\r\nCheck value = 0x"));
 			sb->AppendHex32(ReadMUInt32(&tagData[tag->size - 8]));
 
-			IO::StreamData *stmData = this->fd->GetPartialData(tag->ofst + i + 3, tag->size - i - 12);
+			NotNullPtr<IO::StreamData> stmData = this->fd->GetPartialData(tag->ofst + i + 3, tag->size - i - 12);
 			Data::Compress::Inflate comp(false);
 			IO::MemoryStream mstm;
 			if (!comp.Decompress(&mstm, stmData))
@@ -272,7 +272,7 @@ Bool IO::FileAnalyse::PNGFileAnalyse::GetFrameDetail(UOSInt index, Text::StringB
 					DEL_CLASS(icc);
 				}
 			}
-			DEL_CLASS(stmData);
+			stmData.Delete();
 		}
 	}
 	else if (tag->tagType == *(Int32*)"PLTE")
@@ -434,7 +434,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::PNGFileAnalyse::GetFrameDetail(UO
 			frame->AddHex32(tag->size - 8, CSTR("Check value"), ReadMUInt32(&tagData[tag->size - 8]));
 
 /*			IO::MemoryStream *mstm;
-			IO::StreamData *stmData = this->fd->GetPartialData(tag->ofst + i + 3, tag->size - i - 12);
+			NotNullPtr<IO::StreamData> stmData = this->fd->GetPartialData(tag->ofst + i + 3, tag->size - i - 12);
 			Data::Compress::Inflate comp;
 			NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"IO.FileAnalyse.PNGFileAnalyse"));
 			if (!comp.Decompress(mstm, stmData))

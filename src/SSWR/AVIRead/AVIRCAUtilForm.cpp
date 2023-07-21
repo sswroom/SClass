@@ -17,14 +17,14 @@ void __stdcall SSWR::AVIRead::AVIRCAUtilForm::OnFileDrop(void *userObj, NotNullP
 	Parser::ParserList *parsers = me->core->GetParserList();
 
 	UOSInt i = 0;
-	IO::StmData::FileData *fd;
 	IO::ParserType t;
 	IO::ParsedObject *pobj;
 	while (i < nFiles)
 	{
-		NEW_CLASS(fd, IO::StmData::FileData(files[i]->ToCString(), false));
-		pobj = parsers->ParseFile(fd, &t);
-		DEL_CLASS(fd);
+		{
+			IO::StmData::FileData fd(files[i]->ToCString(), false);
+			pobj = parsers->ParseFile(fd, &t);
+		}
 		if (pobj)
 		{
 			if (t == IO::ParserType::ASN1Data)

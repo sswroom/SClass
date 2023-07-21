@@ -42,7 +42,7 @@ namespace IO
 		SPackageFile(Text::CString fileName);
 		~SPackageFile();
 
-		Bool AddFile(IO::StreamData *fd, Text::CString fileName, const Data::Timestamp &modTime);
+		Bool AddFile(NotNullPtr<IO::StreamData> fd, Text::CString fileName, const Data::Timestamp &modTime);
 		Bool AddFile(const UInt8 *fileBuff, UOSInt fileSize, Text::CString fileName, const Data::Timestamp &modTime);
 		Bool AddPackage(IO::PackageFile *pkg, UTF8Char pathSeperator);
 		Bool Commit();

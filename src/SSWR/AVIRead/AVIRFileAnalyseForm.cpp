@@ -156,11 +156,11 @@ void __stdcall SSWR::AVIRead::AVIRFileAnalyseForm::OnPackItemChanged(void *userO
 
 Bool SSWR::AVIRead::AVIRFileAnalyseForm::OpenFile(Text::CString fileName)
 {
-	IO::StmData::FileData *fd;
 	IO::FileAnalyse::IFileAnalyse *file;
-	NEW_CLASS(fd, IO::StmData::FileData(fileName, false));
-	file = IO::FileAnalyse::IFileAnalyse::AnalyseFile(fd);
-	DEL_CLASS(fd);
+	{
+		IO::StmData::FileData fd(fileName, false);
+		file = IO::FileAnalyse::IFileAnalyse::AnalyseFile(fd);
+	}
 	if (file)
 	{
 		SDEL_CLASS(this->file);

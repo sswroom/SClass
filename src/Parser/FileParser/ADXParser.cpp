@@ -31,7 +31,7 @@ void Parser::FileParser::ADXParser::PrepareSelector(IO::FileSelector *selector, 
 	}
 }
 
-IO::ParsedObject *Parser::FileParser::ADXParser::ParseFileHdr(IO::StreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::ADXParser::ParseFileHdr(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	UInt32 startOfst;
 	UInt8 buff[2048];

@@ -3,7 +3,7 @@
 #include "Text/MyString.h"
 #include "Media/AudioFixBlockSource.h"
 
-Media::AudioFixBlockSource::AudioFixBlockSource(IO::StreamData *fd, UInt64 ofst, UInt64 length, Media::AudioFormat *format, NotNullPtr<Text::String> name)
+Media::AudioFixBlockSource::AudioFixBlockSource(NotNullPtr<IO::StreamData> fd, UInt64 ofst, UInt64 length, Media::AudioFormat *format, NotNullPtr<Text::String> name)
 {
 	this->format.FromAudioFormat(format);
 	this->data = fd->GetPartialData(ofst, length);
@@ -14,7 +14,7 @@ Media::AudioFixBlockSource::AudioFixBlockSource(IO::StreamData *fd, UInt64 ofst,
 
 Media::AudioFixBlockSource::~AudioFixBlockSource()
 {
-	DEL_CLASS(this->data);
+	this->data.Delete();
 	this->name->Release();
 }
 

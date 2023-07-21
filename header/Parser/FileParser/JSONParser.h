@@ -17,7 +17,7 @@ namespace Parser
 			virtual Int32 GetName();
 			virtual void PrepareSelector(IO::FileSelector *selector, IO::ParserType t);
 			virtual IO::ParserType GetParserType();
-			virtual IO::ParsedObject *ParseFileHdr(IO::StreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr);
+			virtual IO::ParsedObject *ParseFileHdr(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr);
 
 			static IO::ParsedObject *ParseJSON(Text::JSONBase *fileJSON, NotNullPtr<Text::String> sourceName, Text::CString layerName, IO::ParserType targetType);
 			static Math::Geometry::Vector2D *ParseGeomJSON(Text::JSONObject *obj, UInt32 srid);

@@ -11,13 +11,13 @@ namespace Media
 	{
 	private:
 		Media::AudioFormat format;
-		IO::StreamData *data;
+		NotNullPtr<IO::StreamData> data;
 		NotNullPtr<Text::String> name;
 
 		UInt64 readOfst;
 		Sync::Event *readEvt;
 	public:
-		AudioFixBlockSource(IO::StreamData *fd, UInt64 ofst, UInt64 length, Media::AudioFormat *format, NotNullPtr<Text::String> name);
+		AudioFixBlockSource(NotNullPtr<IO::StreamData> fd, UInt64 ofst, UInt64 length, Media::AudioFormat *format, NotNullPtr<Text::String> name);
 		virtual ~AudioFixBlockSource();
 
 		virtual UTF8Char *GetSourceName(UTF8Char *buff);

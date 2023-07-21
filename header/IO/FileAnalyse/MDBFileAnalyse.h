@@ -31,7 +31,7 @@ namespace IO
 			Bool threadStarted;
 			static UInt32 __stdcall ParseThread(void *userObj);
 		public:
-			MDBFileAnalyse(IO::StreamData *fd);
+			MDBFileAnalyse(NotNullPtr<IO::StreamData> fd);
 			virtual ~MDBFileAnalyse();
 
 			virtual Text::CString GetFormatName();

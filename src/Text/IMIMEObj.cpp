@@ -23,7 +23,7 @@ IO::ParserType Text::IMIMEObj::GetParserType() const
 	return IO::ParserType::MIMEObject;
 }
 
-Text::IMIMEObj *Text::IMIMEObj::ParseFromData(IO::StreamData *data, Text::CString contentType)
+Text::IMIMEObj *Text::IMIMEObj::ParseFromData(NotNullPtr<IO::StreamData> data, Text::CString contentType)
 {
 	Text::IMIMEObj *obj;
 	UOSInt buffSize;
@@ -88,14 +88,13 @@ Text::IMIMEObj *Text::IMIMEObj::ParseFromData(IO::StreamData *data, Text::CStrin
 Text::IMIMEObj *Text::IMIMEObj::ParseFromFile(Text::CString fileName)
 {
 	Text::CString contentType;
-	IO::StmData::FileData *fd;
 	Text::IMIMEObj *obj;
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
 	sptr = IO::Path::GetFileExt(sbuff, fileName.v, fileName.leng);
 	contentType = Net::MIME::GetMIMEFromExt(CSTRP(sbuff, sptr));
-	NEW_CLASS(fd, IO::StmData::FileData(fileName, false));
-	if (fd->GetDataSize() <= 0)
+	IO::StmData::FileData fd(fileName, false);
+	if (fd.GetDataSize() <= 0)
 	{
 		obj = 0;
 	}
@@ -103,6 +102,5 @@ Text::IMIMEObj *Text::IMIMEObj::ParseFromFile(Text::CString fileName)
 	{
 		obj = ParseFromData(fd, contentType);
 	}
-	DEL_CLASS(fd);
 	return obj;
 }

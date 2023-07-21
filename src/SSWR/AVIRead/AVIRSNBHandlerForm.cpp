@@ -34,10 +34,11 @@ void __stdcall SSWR::AVIRead::AVIRSNBHandlerForm::OnTypeSelChg(void *userObj)
 	SDEL_CLASS(me->simg);
 
 	Parser::ParserList *parsers = me->core->GetParserList();
-	IO::StmData::FileData *fd;
-	NEW_CLASS(fd, IO::StmData::FileData(CSTRP(sbuff, sptr), false));
-	Media::ImageList *imgList = (Media::ImageList*)parsers->ParseFileType(fd, IO::ParserType::ImageList);
-	DEL_CLASS(fd);
+	Media::ImageList *imgList;
+	{
+		IO::StmData::FileData fd(CSTRP(sbuff, sptr), false);
+		imgList = (Media::ImageList*)parsers->ParseFileType(fd, IO::ParserType::ImageList);
+	}
 	if (imgList)
 	{
 		UInt32 delay;

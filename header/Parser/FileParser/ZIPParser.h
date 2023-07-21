@@ -25,10 +25,10 @@ namespace Parser
 			virtual void SetEncFactory(Text::EncodingFactory *encFact);
 			virtual void PrepareSelector(IO::FileSelector *selector, IO::ParserType t);
 			virtual IO::ParserType GetParserType();
-			virtual IO::ParsedObject *ParseFileHdr(IO::StreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr);
+			virtual IO::ParsedObject *ParseFileHdr(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr);
 
 		private:
-			static UOSInt ParseCentDir(IO::PackageFile *pf, Text::Encoding *enc, IO::StreamData *fd, Data::ByteArrayR buff, UInt64 ofst);
+			static UOSInt ParseCentDir(IO::PackageFile *pf, Text::Encoding *enc, NotNullPtr<IO::StreamData> fd, Data::ByteArrayR buff, UInt64 ofst);
 		};
 	}
 }

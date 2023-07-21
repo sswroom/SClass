@@ -101,19 +101,19 @@ const UInt8 *IO::StmData::MemoryDataCopy::GetPointer()
 	return this->data;
 }
 
-IO::StreamData *IO::StmData::MemoryDataCopy::GetPartialData(UInt64 offset, UInt64 length)
+NotNullPtr<IO::StreamData> IO::StmData::MemoryDataCopy::GetPartialData(UInt64 offset, UInt64 length)
 {
-	IO::StmData::MemoryDataCopy *data;
+	NotNullPtr<IO::StmData::MemoryDataCopy> data;
 	if (offset >= this->dataLength)
 	{
-		NEW_CLASS(data, IO::StmData::MemoryDataCopy(this->stat, this->data, 0));
+		NEW_CLASSNN(data, IO::StmData::MemoryDataCopy(this->stat, this->data, 0));
 		return data;
 	}
 	if (offset + length > this->dataLength)
 	{
 		length = this->dataLength - offset;
 	}
-	NEW_CLASS(data, IO::StmData::MemoryDataCopy(this->stat, &this->data[offset], (UOSInt)length));
+	NEW_CLASSNN(data, IO::StmData::MemoryDataCopy(this->stat, &this->data[offset], (UOSInt)length));
 	return data;
 }
 

@@ -40,7 +40,7 @@ namespace IO
 			static UInt32 __stdcall ParseThread(void *userObj);
 			static void FreePackInfo(PackInfo *pack);
 		public:
-			SPKFileAnalyse(IO::StreamData *fd);
+			SPKFileAnalyse(NotNullPtr<IO::StreamData> fd);
 			virtual ~SPKFileAnalyse();
 
 			virtual Text::CString GetFormatName();

@@ -386,11 +386,11 @@ void __stdcall SSWR::AVIRead::AVIRPackageForm::LVDblClick(void *userObj, UOSInt 
 	}
 	else if (pot == IO::PackageFile::PackObjectType::StreamData)
 	{
-		IO::StreamData *data = me->packFile->GetItemStmDataNew(index);
-		if (data)
+		NotNullPtr<IO::StreamData> data;
+		if (data.Set(me->packFile->GetItemStmDataNew(index)))
 		{
 			me->core->LoadData(data, me->packFile);
-			DEL_CLASS(data);
+			data.Delete();
 		}
 	}
 }

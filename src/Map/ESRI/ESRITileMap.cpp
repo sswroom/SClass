@@ -213,7 +213,7 @@ Media::ImageList *Map::ESRI::ESRITileMap::LoadTileImage(UOSInt level, Math::Coor
 		if (fd.GetDataSize() > 0)
 		{
 			IO::ParserType pt;
-			pobj = parsers->ParseFile(&fd, &pt);
+			pobj = parsers->ParseFile(fd, &pt);
 			if (pobj)
 			{
 				if (pt == IO::ParserType::ImageList)
@@ -233,7 +233,7 @@ Media::ImageList *Map::ESRI::ESRITileMap::LoadTileImage(UOSInt level, Math::Coor
 	if (fd.GetDataSize() > 0)
 	{
 		IO::ParserType pt;
-		pobj = parsers->ParseFile(&fd, &pt);
+		pobj = parsers->ParseFile(fd, &pt);
 		if (pobj)
 		{
 			if (pt == IO::ParserType::ImageList)

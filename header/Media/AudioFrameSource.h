@@ -19,7 +19,7 @@ namespace Media
 
 	protected:
 		Media::AudioFormat format;
-		IO::StreamData *data;
+		NotNullPtr<IO::StreamData> data;
 		NotNullPtr<Text::String> name;
 
 		UOSInt readBlock;
@@ -33,8 +33,8 @@ namespace Media
 		UOSInt totalSampleCnt;
 		UInt64 totalSize;
 	public:
-		AudioFrameSource(IO::StreamData *fd, Media::AudioFormat *format, NotNullPtr<Text::String> name);
-		AudioFrameSource(IO::StreamData *fd, Media::AudioFormat *format, Text::CString name);
+		AudioFrameSource(NotNullPtr<IO::StreamData> fd, Media::AudioFormat *format, NotNullPtr<Text::String> name);
+		AudioFrameSource(NotNullPtr<IO::StreamData> fd, Media::AudioFormat *format, Text::CString name);
 		virtual ~AudioFrameSource();
 
 		virtual UTF8Char *GetSourceName(UTF8Char *buff);

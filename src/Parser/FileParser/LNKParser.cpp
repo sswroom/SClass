@@ -29,7 +29,7 @@ IO::ParserType Parser::FileParser::LNKParser::GetParserType()
 	return IO::ParserType::PackageFile;
 }
 
-IO::ParsedObject *Parser::FileParser::LNKParser::ParseFile(IO::StreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::LNKParser::ParseFile(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
 	return 0;
 }

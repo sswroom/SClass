@@ -17,7 +17,7 @@ namespace IO
 		virtual UInt64 GetDataSize() = 0;
 		virtual const UInt8 *GetPointer() = 0;
 
-		virtual StreamData *GetPartialData(UInt64 offset, UInt64 length) = 0;
+		virtual NotNullPtr<StreamData> GetPartialData(UInt64 offset, UInt64 length) = 0;
 		virtual Bool IsFullFile() = 0;
 		virtual NotNullPtr<Text::String> GetFullFileName() {return GetFullName();};
 		virtual Bool IsLoading() = 0;

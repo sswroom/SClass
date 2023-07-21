@@ -12,7 +12,7 @@ namespace Media
 			MP3BlockParser();
 			virtual ~MP3BlockParser();
 
-			virtual Media::AudioBlockSource *ParseStreamData(IO::StreamData *stmData);
+			virtual Media::AudioBlockSource *ParseStreamData(NotNullPtr<IO::StreamData> stmData);
 			Bool ParseStreamFormat(UInt8 *buff, UOSInt buffSize, Media::AudioFormat *fmt);
 		};
 	}

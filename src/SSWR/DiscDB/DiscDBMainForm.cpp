@@ -17,19 +17,19 @@ typedef enum
 void __stdcall SSWR::DiscDB::DiscDBMainForm::OnFileDrop(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles)
 {
 	SSWR::DiscDB::DiscDBMainForm *me = (SSWR::DiscDB::DiscDBMainForm *)userObj;
-	IO::StmData::FileData *fd;
 	Bool succ;
 	Bool failed = false;
 	UOSInt i = 0;
 	while (i < nFiles)
 	{
 		succ = false;
-		NEW_CLASS(fd, IO::StmData::FileData(files[i], false));
-		if (fd->GetDataSize() > 0)
 		{
-			succ = me->env->AddMD5(fd);
+			IO::StmData::FileData fd(files[i], false);
+			if (fd.GetDataSize() > 0)
+			{
+				succ = me->env->AddMD5(fd);
+			}
 		}
-		DEL_CLASS(fd);
 		if (!succ)
 		{
 			Text::StringBuilderUTF8 sb;

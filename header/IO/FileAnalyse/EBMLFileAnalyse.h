@@ -59,7 +59,7 @@ namespace IO
 			static UInt32 __stdcall ParseThread(void *userObj);
 			UOSInt GetFrameIndex(UOSInt lev, UInt64 ofst);
 		public:
-			EBMLFileAnalyse(IO::StreamData *fd);
+			EBMLFileAnalyse(NotNullPtr<IO::StreamData> fd);
 			virtual ~EBMLFileAnalyse();
 
 			virtual Text::CString GetFormatName();

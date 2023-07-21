@@ -134,7 +134,7 @@ UInt32 __stdcall IO::FileAnalyse::PCapngFileAnalyse::ParseThread(void *userObj)
 	return 0;
 }
 
-IO::FileAnalyse::PCapngFileAnalyse::PCapngFileAnalyse(IO::StreamData *fd) : packetBuff(65536)
+IO::FileAnalyse::PCapngFileAnalyse::PCapngFileAnalyse(NotNullPtr<IO::StreamData> fd) : packetBuff(65536)
 {
 	UInt8 buff[16];
 	this->fd = 0;
@@ -153,12 +153,12 @@ IO::FileAnalyse::PCapngFileAnalyse::PCapngFileAnalyse(IO::StreamData *fd) : pack
 	}
 	if (ReadInt32(&buff[8]) == 0x1a2b3c4d)
 	{
-		this->fd = fd->GetPartialData(0, fd->GetDataSize());
+		this->fd = fd->GetPartialData(0, fd->GetDataSize()).Ptr();
 		this->isBE = false;
 	}
 	else if (ReadMInt32(&buff[8]) == 0x1a2b3c4d)
 	{
-		this->fd = fd->GetPartialData(0, fd->GetDataSize());
+		this->fd = fd->GetPartialData(0, fd->GetDataSize()).Ptr();
 		this->isBE = true;
 	}
 	else

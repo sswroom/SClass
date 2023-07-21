@@ -29,7 +29,7 @@ namespace IO
 			Bool threadStarted;
 			static UInt32 __stdcall ParseThread(void *userObj);
 		public:
-			MPEGFileAnalyse(IO::StreamData *fd);
+			MPEGFileAnalyse(NotNullPtr<IO::StreamData> fd);
 			virtual ~MPEGFileAnalyse();
 
 			virtual Text::CString GetFormatName();

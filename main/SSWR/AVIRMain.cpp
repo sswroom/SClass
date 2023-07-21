@@ -39,7 +39,6 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	Manage::ExceptionRecorder *exHdlr;
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	IO::StmData::FileData *fd;
 	UOSInt argc;
 	UOSInt i;
 	UTF8Char **argv;
@@ -72,9 +71,8 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			i = 1;
 			while (i < argc)
 			{
-				NEW_CLASS(fd, IO::StmData::FileData({argv[i], Text::StrCharCnt(argv[i])}, false));
+				IO::StmData::FileData fd({argv[i], Text::StrCharCnt(argv[i])}, false);
 				core->LoadData(fd, 0);
-				DEL_CLASS(fd);
 
 				i++;
 			}

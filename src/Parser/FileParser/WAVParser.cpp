@@ -45,7 +45,7 @@ IO::ParserType Parser::FileParser::WAVParser::GetParserType()
 	return IO::ParserType::MediaFile;
 }
 
-IO::ParsedObject *Parser::FileParser::WAVParser::ParseFileHdr(IO::StreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::WAVParser::ParseFileHdr(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	UInt8 chunkBuff[16];
 	UInt32 fileSize;
@@ -97,9 +97,9 @@ IO::ParsedObject *Parser::FileParser::WAVParser::ParseFileHdr(IO::StreamData *fd
 				{
 					Media::AudioBlockSource *src;
 					Media::BlockParser::AC3BlockParser ac3Parser;
-					IO::StreamData *data = fd->GetPartialData(currPos + 8, ReadUInt32(&chunkBuff[4]));
+					NotNullPtr<IO::StreamData> data = fd->GetPartialData(currPos + 8, ReadUInt32(&chunkBuff[4]));
 					src = ac3Parser.ParseStreamData(data);
-					DEL_CLASS(data);
+					data.Delete();
 					if (src)
 					{
 						NEW_CLASS(vid, Media::MediaFile(fd->GetFullName()));
@@ -115,9 +115,9 @@ IO::ParsedObject *Parser::FileParser::WAVParser::ParseFileHdr(IO::StreamData *fd
 				{
 					Media::AudioBlockSource *src;
 					Media::BlockParser::MP3BlockParser mp3Parser;
-					IO::StreamData *data = fd->GetPartialData(currPos + 8, ReadUInt32(&chunkBuff[4]));
+					NotNullPtr<IO::StreamData> data = fd->GetPartialData(currPos + 8, ReadUInt32(&chunkBuff[4]));
 					src = mp3Parser.ParseStreamData(data);
-					DEL_CLASS(data);
+					data.Delete();
 					if (src)
 					{
 						NEW_CLASS(vid, Media::MediaFile(fd->GetFullName()));
@@ -133,9 +133,9 @@ IO::ParsedObject *Parser::FileParser::WAVParser::ParseFileHdr(IO::StreamData *fd
 				{
 					Media::AudioBlockSource *src;
 					Media::BlockParser::MP2BlockParser mp2Parser;
-					IO::StreamData *data = fd->GetPartialData(currPos + 8, ReadUInt32(&chunkBuff[4]));
+					NotNullPtr<IO::StreamData> data = fd->GetPartialData(currPos + 8, ReadUInt32(&chunkBuff[4]));
 					src = mp2Parser.ParseStreamData(data);
-					DEL_CLASS(data);
+					data.Delete();
 					if (src)
 					{
 						NEW_CLASS(vid, Media::MediaFile(fd->GetFullName()));

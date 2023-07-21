@@ -10,7 +10,7 @@ namespace Media
 	class M2VFile : public Media::MediaFile, public Media::IStreamControl
 	{
 	private:
-		IO::StreamData *stmData;
+		NotNullPtr<IO::StreamData> stmData;
 		Data::ByteBuffer readBuff;
 		UInt64 readOfst;
 		UInt64 bitRate;
@@ -24,7 +24,7 @@ namespace Media
 
 		static UInt32 __stdcall PlayThread(void *userData);
 	public:
-		M2VFile(IO::StreamData *stmData);
+		M2VFile(NotNullPtr<IO::StreamData> stmData);
 		virtual ~M2VFile();
 		
 		virtual UOSInt AddSource(Media::IMediaSource *src, Int32 syncTime);

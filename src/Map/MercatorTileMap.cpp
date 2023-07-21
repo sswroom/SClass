@@ -184,7 +184,6 @@ Media::ImageList *Map::MercatorTileMap::LoadTileImage(UOSInt level, Math::Coord2
 	Data::Timestamp ts;
 	Data::Timestamp currTS;
 	NotNullPtr<Net::HTTPClient> cli;
-	IO::StreamData *fd;
 	IO::ParsedObject *pobj;
 	if (level < this->minLevel || level > this->maxLevel)
 		return 0;
@@ -210,16 +209,16 @@ Media::ImageList *Map::MercatorTileMap::LoadTileImage(UOSInt level, Math::Coord2
 		*sptru++ = IO::Path::PATH_SEPERATOR;
 		sptru = Text::StrInt32(sptru, tileId.y);
 		sptru = Text::StrConcatC(sptru, UTF8STRC(".png"));
-		NEW_CLASS(fd, IO::StmData::FileData({filePathU, (UOSInt)(sptru - filePathU)}, false));
-		if (fd->GetDataSize() > 0)
+		IO::StmData::FileData fd({filePathU, (UOSInt)(sptru - filePathU)}, false);
+		if (fd.GetDataSize() > 0)
 		{
 			currTS = Data::Timestamp::UtcNow().AddDay(-7);
-			ts = ((IO::StmData::FileData*)fd)->GetFileStream()->GetCreateTime();
+			ts = fd.GetFileStream()->GetCreateTime();
 			if (ts > currTS)
 			{
 				IO::ParserType pt;
 				IO::StmData::BufferedStreamData bsd(fd);
-				pobj = parsers->ParseFile(&bsd, &pt);
+				pobj = parsers->ParseFile(bsd, &pt);
 				if (pobj)
 				{
 					if (pt == IO::ParserType::ImageList)
@@ -232,12 +231,7 @@ Media::ImageList *Map::MercatorTileMap::LoadTileImage(UOSInt level, Math::Coord2
 			else
 			{
 				hasTime = true;
-				DEL_CLASS(fd);
 			}
-		}
-		else
-		{
-			DEL_CLASS(fd);
 		}
 	}
 	else if (this->spkg)
@@ -248,12 +242,12 @@ Media::ImageList *Map::MercatorTileMap::LoadTileImage(UOSInt level, Math::Coord2
 		*sptru++ = '/';
 		sptru = Text::StrInt32(sptru, tileId.y);
 		sptru = Text::StrConcatC(sptru, UTF8STRC(".png"));
-		fd = this->spkg->CreateStreamData({filePathU, (UOSInt)(sptru - filePathU)});
-		if (fd)
+		NotNullPtr<IO::StreamData> fd;
+		if (fd.Set(this->spkg->CreateStreamData({filePathU, (UOSInt)(sptru - filePathU)})))
 		{
 			IO::ParserType pt;
 			IO::StmData::BufferedStreamData bsd(fd);
-			pobj = parsers->ParseFile(&bsd, &pt);
+			pobj = parsers->ParseFile(bsd, &pt);
 			if (pobj)
 			{
 				if (pt == IO::ParserType::ImageList)
@@ -321,7 +315,7 @@ Media::ImageList *Map::MercatorTileMap::LoadTileImage(UOSInt level, Math::Coord2
 	}
 	cli.Delete();
 
-	fd = 0;
+	IO::StreamData *fd = 0;
 	if (this->cacheDir)
 	{
 		NEW_CLASS(fd, IO::StmData::FileData({filePathU, (UOSInt)(sptru - filePathU)}, false));
@@ -330,13 +324,14 @@ Media::ImageList *Map::MercatorTileMap::LoadTileImage(UOSInt level, Math::Coord2
 	{
 		fd = this->spkg->CreateStreamData({filePathU, (UOSInt)(sptru - filePathU)});
 	}
-	if (fd)
+	NotNullPtr<IO::StreamData> nnfd;
+	if (nnfd.Set(fd))
 	{
-		if (fd->GetDataSize() > 0)
+		if (nnfd->GetDataSize() > 0)
 		{
 			IO::ParserType pt;
-			IO::StmData::BufferedStreamData bsd(fd);
-			pobj = parsers->ParseFile(&bsd, &pt);
+			IO::StmData::BufferedStreamData bsd(nnfd);
+			pobj = parsers->ParseFile(bsd, &pt);
 			if (pobj)
 			{
 				if (pt == IO::ParserType::ImageList)
@@ -348,7 +343,7 @@ Media::ImageList *Map::MercatorTileMap::LoadTileImage(UOSInt level, Math::Coord2
 		}
 		else
 		{
-			DEL_CLASS(fd);
+			nnfd.Delete();
 		}
 	}
 	return 0;

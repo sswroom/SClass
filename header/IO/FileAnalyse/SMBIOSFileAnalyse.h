@@ -22,7 +22,7 @@ namespace IO
 			Data::ArrayList<PackInfo*> packs;
 
 		public:
-			SMBIOSFileAnalyse(IO::StreamData *fd);
+			SMBIOSFileAnalyse(NotNullPtr<IO::StreamData> fd);
 			virtual ~SMBIOSFileAnalyse();
 
 			virtual Text::CString GetFormatName();

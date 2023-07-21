@@ -50,7 +50,7 @@ namespace Text
 			
 			Text::IMIMEObj *GetRAWContent() const;
 
-			static MailMessage *ParseFile(IO::StreamData *fd);
+			static MailMessage *ParseFile(NotNullPtr<IO::StreamData> fd);
 
 		private:
 			UOSInt ParseAddrList(const UTF8Char *hdr, UOSInt hdrLen, Data::ArrayList<MailAddress*> *recpList, AddressType type) const;

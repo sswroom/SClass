@@ -4033,7 +4033,7 @@ Map::MapConfig2::MapConfig2(Text::CString fileName, NotNullPtr<Media::DrawEngine
 					IO::ParserType pt;
 					{
 						IO::StmData::FileData fd(strs[4].ToCString(), false);
-						obj = parserList->ParseFile(&fd, &pt);
+						obj = parserList->ParseFile(fd, &pt);
 					}
 					if (obj)
 					{

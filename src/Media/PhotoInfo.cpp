@@ -58,7 +58,7 @@ Double Media::PhotoInfo::ParseFraction(Text::String *s)
 	}
 }
 
-Media::PhotoInfo::PhotoInfo(IO::StreamData *fd)
+Media::PhotoInfo::PhotoInfo(NotNullPtr<IO::StreamData> fd)
 {
 	Media::EXIFData *exif;
 	Text::XMLDocument *xmf;

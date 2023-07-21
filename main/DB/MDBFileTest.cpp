@@ -25,11 +25,10 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	NEW_CLASS(log, IO::LogTool());
 
 	Parser::FullParserList *parsers;
-	IO::StmData::FileData *fd;
 	IO::ParserType pt;
 	IO::ParsedObject *pobj;
 	NEW_CLASS(parsers, Parser::FullParserList());
-	NEW_CLASS(fd, IO::StmData::FileData(fileName, false));
+	IO::StmData::FileData fd(fileName, false);
 	pobj = parsers->ParseFile(fd, &pt);
 	if (pobj)
 	{
@@ -56,7 +55,6 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 
 		DEL_CLASS(pobj);
 	}
-	DEL_CLASS(fd);
 	DEL_CLASS(parsers);
 
 	DEL_CLASS(log);

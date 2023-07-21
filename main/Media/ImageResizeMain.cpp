@@ -45,62 +45,62 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 
 	Manage::HiResClock clk;
 	Parser::FileParser::GUIImgParser parser;
-	IO::StmData::FileData *fd;
 	Media::ImageList *imgList;
-	NEW_CLASS(fd, IO::StmData::FileData(srcFile, false));
-	if (fd->GetDataSize() == 0)
 	{
-		sb.ClearStr();
-		sb.AppendC(UTF8STRC("Error in opening srcFile: "));
-		sb.Append(srcFile);
-		console.WriteLineC(sb.ToString(), sb.GetLength());
-	}
-	else if ((imgList = (Media::ImageList*)parser.ParseFile(fd, 0, IO::ParserType::ImageList)) == 0)
-	{
-		sb.ClearStr();
-		sb.AppendC(UTF8STRC("Error in parsing srcFile: "));
-		sb.Append(srcFile);
-		console.WriteLineC(sb.ToString(), sb.GetLength());
-	}
-	else
-	{
-		UInt32 delay;
-		imgList->ToStaticImage(0);
-		Media::Image *img = imgList->GetImage(0, &delay);
-		Media::Resizer::LanczosResizer8_C8 resizer(4, 4, img->info.color, img->info.color, 0, img->info.atype);
-		resizer.SetTargetSize(Math::Size2D<UOSInt>(pxSize, pxSize));
-		Media::StaticImage *simg = (Media::StaticImage*)img;
-		simg->To32bpp();
-		Media::StaticImage *newImg = resizer.ProcessToNew(simg);
-		DEL_CLASS(imgList);
-		if (newImg)
+		IO::StmData::FileData fd(srcFile, false);
+		if (fd.GetDataSize() == 0)
 		{
-			Exporter::GUIJPGExporter exporter;
-			NEW_CLASS(imgList, Media::ImageList(destFile));
-			imgList->AddImage(newImg, 0);
-			IO::FileStream fs(destFile, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-			if (exporter.ExportFile(fs, destFile, imgList, 0))
+			sb.ClearStr();
+			sb.AppendC(UTF8STRC("Error in opening srcFile: "));
+			sb.Append(srcFile);
+			console.WriteLineC(sb.ToString(), sb.GetLength());
+		}
+		else if ((imgList = (Media::ImageList*)parser.ParseFile(fd, 0, IO::ParserType::ImageList)) == 0)
+		{
+			sb.ClearStr();
+			sb.AppendC(UTF8STRC("Error in parsing srcFile: "));
+			sb.Append(srcFile);
+			console.WriteLineC(sb.ToString(), sb.GetLength());
+		}
+		else
+		{
+			UInt32 delay;
+			imgList->ToStaticImage(0);
+			Media::Image *img = imgList->GetImage(0, &delay);
+			Media::Resizer::LanczosResizer8_C8 resizer(4, 4, img->info.color, img->info.color, 0, img->info.atype);
+			resizer.SetTargetSize(Math::Size2D<UOSInt>(pxSize, pxSize));
+			Media::StaticImage *simg = (Media::StaticImage*)img;
+			simg->To32bpp();
+			Media::StaticImage *newImg = resizer.ProcessToNew(simg);
+			DEL_CLASS(imgList);
+			if (newImg)
 			{
-				ret = 0;
+				Exporter::GUIJPGExporter exporter;
+				NEW_CLASS(imgList, Media::ImageList(destFile));
+				imgList->AddImage(newImg, 0);
+				IO::FileStream fs(destFile, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+				if (exporter.ExportFile(fs, destFile, imgList, 0))
+				{
+					ret = 0;
+				}
+				else
+				{
+					sb.ClearStr();
+					sb.AppendC(UTF8STRC("Error in saving destFile: "));
+					sb.Append(destFile);
+					console.WriteLineC(sb.ToString(), sb.GetLength());
+				}
+				DEL_CLASS(imgList);
 			}
 			else
 			{
 				sb.ClearStr();
-				sb.AppendC(UTF8STRC("Error in saving destFile: "));
-				sb.Append(destFile);
+				sb.AppendC(UTF8STRC("Error in resizing image: "));
+				sb.Append(srcFile);
 				console.WriteLineC(sb.ToString(), sb.GetLength());
 			}
-			DEL_CLASS(imgList);
-		}
-		else
-		{
-			sb.ClearStr();
-			sb.AppendC(UTF8STRC("Error in resizing image: "));
-			sb.Append(srcFile);
-			console.WriteLineC(sb.ToString(), sb.GetLength());
 		}
 	}
-	DEL_CLASS(fd);
 	Double t = clk.GetTimeDiff();
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("Time used = "));

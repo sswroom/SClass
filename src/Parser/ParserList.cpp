@@ -187,7 +187,7 @@ void Parser::ParserList::PrepareSelector(IO::FileSelector *selector, IO::ParserT
 	}
 }
 
-IO::ParsedObject *Parser::ParserList::ParseFile(IO::StreamData *fd, IO::PackageFile *pkgFile, IO::ParserType *t, IO::ParserType targetType)
+IO::ParsedObject *Parser::ParserList::ParseFile(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType *t, IO::ParserType targetType)
 {
 	UOSInt i = 0;
 	UOSInt j = this->filePArr.GetCount();
@@ -238,17 +238,17 @@ IO::ParsedObject *Parser::ParserList::ParseFile(IO::StreamData *fd, IO::PackageF
 	return 0;
 }
 
-IO::ParsedObject *Parser::ParserList::ParseFile(IO::StreamData *fd, IO::PackageFile *pkgFile, IO::ParserType *t)
+IO::ParsedObject *Parser::ParserList::ParseFile(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType *t)
 {
 	return ParseFile(fd, pkgFile, t, IO::ParserType::Unknown);
 }
 
-IO::ParsedObject *Parser::ParserList::ParseFile(IO::StreamData *fd, IO::ParserType *t)
+IO::ParsedObject *Parser::ParserList::ParseFile(NotNullPtr<IO::StreamData> fd, IO::ParserType *t)
 {
 	return ParseFile(fd, 0, t, IO::ParserType::Unknown);
 }
 
-IO::ParsedObject *Parser::ParserList::ParseFileType(IO::StreamData *fd, IO::ParserType t)
+IO::ParsedObject *Parser::ParserList::ParseFileType(NotNullPtr<IO::StreamData> fd, IO::ParserType t)
 {
 	IO::ParserType pt;
 	IO::ParsedObject *pobj = this->ParseFile(fd, 0, &pt, t);

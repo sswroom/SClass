@@ -95,7 +95,8 @@ void Map::WebImageLayer::LoadImage(Map::WebImageLayer::ImageStat *stat)
 	printf("WebImageLayer: loading %s\r\n", stat->url->v);
 #endif
 	stat->data = this->browser->GetData(stat->url->ToCString(), false, 0);
-	if (stat->data == 0)
+	NotNullPtr<IO::StreamData> fd;
+	if (!fd.Set(stat->data))
 	{
 		if (stat->name)
 		{
@@ -104,7 +105,7 @@ void Map::WebImageLayer::LoadImage(Map::WebImageLayer::ImageStat *stat)
 		stat->url->Release();
 		DEL_CLASS(stat);
 	}
-	else if (stat->data->IsLoading())
+	else if (fd->IsLoading())
 	{
 		this->loadingList.Add(stat);
 		this->loadEvt.Set();
@@ -114,8 +115,8 @@ void Map::WebImageLayer::LoadImage(Map::WebImageLayer::ImageStat *stat)
 		IO::ParsedObject *pobj;
 		IO::ParserType pt;
 		{
-			IO::StmData::BufferedStreamData buffFd(stat->data);
-			pobj = this->parsers->ParseFile(&buffFd, &pt);
+			IO::StmData::BufferedStreamData buffFd(fd);
+			pobj = this->parsers->ParseFile(buffFd, &pt);
 		}
 		if (pobj == 0 || pt != IO::ParserType::ImageList)
 		{
@@ -162,6 +163,7 @@ UInt32 __stdcall Map::WebImageLayer::LoadThread(void *userObj)
 	UOSInt i;
 	IO::ParserType pt;
 	IO::ParsedObject *pobj;
+	NotNullPtr<IO::StreamData> fd;
 
 	me->threadRunning = true;
 	while (!me->threadToStop)
@@ -171,11 +173,11 @@ UInt32 __stdcall Map::WebImageLayer::LoadThread(void *userObj)
 		while (i-- > 0)
 		{
 			stat = me->loadingList.GetItem(i);
-			if (!stat->data->IsLoading())
+			if (fd.Set(stat->data) && !stat->data->IsLoading())
 			{
 				me->loadingList.RemoveAt(i);
-				pobj = me->parsers->ParseFile(stat->data, &pt);
-				DEL_CLASS(stat->data);
+				pobj = me->parsers->ParseFile(fd, &pt);
+				fd.Delete();
 				if (pobj == 0 || pt != IO::ParserType::ImageList)
 				{
 					if (stat->name)

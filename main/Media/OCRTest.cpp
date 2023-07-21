@@ -104,7 +104,7 @@ void TestFile2(Text::CString imgPath, Parser::ParserList *parsers, Media::ANPR *
 	UTF8Char *sptr;
 	sptr = IO::Path::GetRealPath(sbuff, imgPath.v, imgPath.leng);
 	IO::StmData::FileData fd(CSTRP(sbuff, sptr), false);
-	Media::ImageList *imgList = (Media::ImageList*)parsers->ParseFileType(&fd, IO::ParserType::ImageList);
+	Media::ImageList *imgList = (Media::ImageList*)parsers->ParseFileType(fd, IO::ParserType::ImageList);
 	if (imgList)
 	{
 		apnr->ParseImage((Media::StaticImage*)imgList->GetImage(0, 0));

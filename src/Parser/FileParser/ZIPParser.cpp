@@ -77,7 +77,7 @@ typedef struct
 	UInt32 commentSize;
 } ZIPInfoEntry;
 
-IO::ParsedObject *Parser::FileParser::ZIPParser::ParseFileHdr(IO::StreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::ZIPParser::ParseFileHdr(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
@@ -460,13 +460,17 @@ IO::ParsedObject *Parser::FileParser::ZIPParser::ParseFileHdr(IO::StreamData *fd
 			sptr = pf->GetItemName(sbuff, ui);
 			if (Text::StrEndsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC(".kml")) && pf->GetItemType(ui) == IO::PackageFile::PackObjectType::StreamData)
 			{
-				IO::StreamData *stmData = pf->GetItemStmDataNew(ui);
-				Parser::FileParser::XMLParser xmlParser;
-				xmlParser.SetParserList(this->parsers);
-				xmlParser.SetEncFactory(this->encFact);
-				xmlParser.SetWebBrowser(this->browser);
-				IO::ParsedObject *pobj = xmlParser.ParseFile(stmData, pf, IO::ParserType::MapLayer);
-				DEL_CLASS(stmData);
+				NotNullPtr<IO::StreamData> stmData;
+				IO::ParsedObject *pobj = 0;
+				if (stmData.Set(pf->GetItemStmDataNew(ui)))
+				{
+					Parser::FileParser::XMLParser xmlParser;
+					xmlParser.SetParserList(this->parsers);
+					xmlParser.SetEncFactory(this->encFact);
+					xmlParser.SetWebBrowser(this->browser);
+					pobj = xmlParser.ParseFile(stmData, pf, IO::ParserType::MapLayer);
+					stmData.Delete();
+				}
 				if (pobj)
 				{
 					if (pobj->GetParserType() == IO::ParserType::MapLayer)
@@ -495,7 +499,7 @@ IO::ParsedObject *Parser::FileParser::ZIPParser::ParseFileHdr(IO::StreamData *fd
 	return pf;
 }
 
-UOSInt Parser::FileParser::ZIPParser::ParseCentDir(IO::PackageFile *pf, Text::Encoding *enc, IO::StreamData *fd, Data::ByteArrayR buff, UInt64 ofst)
+UOSInt Parser::FileParser::ZIPParser::ParseCentDir(IO::PackageFile *pf, Text::Encoding *enc, NotNullPtr<IO::StreamData> fd, Data::ByteArrayR buff, UInt64 ofst)
 {
 	Data::DateTime dt;
 	IO::PackageFile *pf2;

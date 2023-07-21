@@ -116,7 +116,7 @@ namespace SSWR
 			UOSInt GetDVDVideos(Data::ArrayList<DVDVideoInfo*> *dvdVideoList);
 			const DVDVideoInfo *GetDVDVideo(Int32 videoId);
 			Bool NewMovies(const UTF8Char *discId, UOSInt fileId, const UTF8Char *mainTitle, NotNullPtr<Text::String> type, const UTF8Char *chapter, const UTF8Char *chapterTitle, Text::CString videoFormat, Int32 width, Int32 height, Int32 fps, Int32 length, Text::CString audioFormat, Int32 samplingRate, Int32 bitRate, const UTF8Char *aspectRatio, const UTF8Char *remark);
-			Bool AddMD5(IO::StreamData *fd);
+			Bool AddMD5(NotNullPtr<IO::StreamData> fd);
 		};
 	}
 }

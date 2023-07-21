@@ -11,13 +11,13 @@ namespace IO
 	class UDPFileLog : public IO::UDPLog
 	{
 	private:
-		IO::StreamData *fd;
+		NotNullPtr<IO::StreamData> fd;
 		Data::ArrayListUInt64 logPos;
 		Data::ArrayListUInt32 logSize;
 		Data::ByteBuffer logBuff;
 
 	public:
-		UDPFileLog(IO::StreamData *fd);
+		UDPFileLog(NotNullPtr<IO::StreamData> fd);
 		virtual ~UDPFileLog();
 
 		virtual UOSInt GetCount(IO::LogHandler::LogLevel logLevel) const;

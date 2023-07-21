@@ -69,7 +69,7 @@ namespace IO
 
 		virtual IO::ParserType GetParserType() const;
 		UInt64 ReadToEnd(IO::Stream *stm, UOSInt buffSize);
-		Bool WriteFromData(IO::StreamData *data, UOSInt buffSize);
+		Bool WriteFromData(NotNullPtr<IO::StreamData> data, UOSInt buffSize);
 	};
 
 	Text::CString StreamTypeGetName(StreamType st);

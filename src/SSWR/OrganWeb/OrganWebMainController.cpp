@@ -2400,7 +2400,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(Net::WebSe
 					{
 						IO::StmData::FileData fd(CSTRP(sbuff, sptr), false);
 						fileSize = fd.GetDataSize();
-						mediaFile = (Media::MediaFile*)me->env->ParseFileType(&fd, IO::ParserType::MediaFile);
+						mediaFile = (Media::MediaFile*)me->env->ParseFileType(fd, IO::ParserType::MediaFile);
 					}
 
 					if (mediaFile)
@@ -2458,7 +2458,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(Net::WebSe
 				{
 					sptr = me->env->UserfileGetPath(sbuff, userFile);
 					IO::StmData::FileData fd(CSTRP(sbuff, sptr), false);
-					Media::PhotoInfo info(&fd);
+					Media::PhotoInfo info(fd);
 					if (info.HasInfo())
 					{
 						sb.ClearStr();
@@ -3096,7 +3096,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(Net::WebSe
 					sptrEnd = Text::StrConcatC(Text::StrConcat(sptr, fileName), UTF8STRC(".jpg"));
 					{
 						IO::StmData::FileData fd({sbuff, (UOSInt)(sptrEnd - sbuff)}, false);
-						Media::PhotoInfo info(&fd);
+						Media::PhotoInfo info(fd);
 						if (info.HasInfo())
 						{
 							Data::DateTime dt;
@@ -3267,7 +3267,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetailD(Net::WebS
 				{
 					IO::StmData::FileData fd(CSTRP(sbuff, sptr), false);
 					fileSize = fd.GetDataSize();
-					mediaFile = (Media::MediaFile*)me->env->ParseFileType(&fd, IO::ParserType::MediaFile);
+					mediaFile = (Media::MediaFile*)me->env->ParseFileType(fd, IO::ParserType::MediaFile);
 				}
 				if (mediaFile)
 				{
@@ -3326,7 +3326,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetailD(Net::WebS
 			{
 				sptr = me->env->UserfileGetPath(sbuff, userFile);
 				IO::StmData::FileData fd(CSTRP(sbuff, sptr), false);
-				Media::PhotoInfo info(&fd);
+				Media::PhotoInfo info(fd);
 				if (info.HasInfo())
 				{
 					sb.ClearStr();

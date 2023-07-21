@@ -157,7 +157,7 @@ void __stdcall SSWR::SHPConv::SHPConvMainForm::OnFilterClicked(void *userObj)
 		return;
 	}
 	IO::StmData::FileData fd(sb.ToCString(), false);
-	DB::DBFFile dbf(&fd, (UInt32)(UOSInt)me->lstLang->GetSelectedItem());
+	DB::DBFFile dbf(fd, (UInt32)(UOSInt)me->lstLang->GetSelectedItem());
 	if (!dbf.IsError())
 	{
 		SSWR::SHPConv::SHPConvCurrFilterForm frm(0, me->ui, &dbf, &me->globalFilters, me->deng);
@@ -176,7 +176,7 @@ void __stdcall SSWR::SHPConv::SHPConvMainForm::OnPreviewClicked(void *userObj)
 	IO::StmData::FileData fd(sb.ToCString(), false);
 	if (fd.GetDataSize() > 0)
 	{
-		DB::DBFFile dbf(&fd, (UInt32)(UOSInt)me->lstLang->GetSelectedItem());
+		DB::DBFFile dbf(fd, (UInt32)(UOSInt)me->lstLang->GetSelectedItem());
 		if (!dbf.IsError())
 		{
 			sb.ClearStr();
@@ -259,7 +259,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::GroupConvert(Text::CString sourceFile, Tex
 	sb.AppendC(UTF8STRC("dbf"));
 	{
 		IO::StmData::FileData fd(sb.ToCString(), false);
-		DB::DBFFile dbf(&fd, (UInt32)(UOSInt)this->lstLang->GetSelectedItem());
+		DB::DBFFile dbf(fd, (UInt32)(UOSInt)this->lstLang->GetSelectedItem());
 		r = dbf.QueryTableData(CSTR_NULL, CSTR_NULL, 0, 0, 0, CSTR_NULL, 0);
 		if (r)
 		{
@@ -402,7 +402,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CString sourceFile, Text:
 			}
 			sb.AppendC(UTF8STRC(".dbf"));
 			IO::StmData::FileData fd(sb.ToCString(), false);
-			DB::DBFFile dbf(&fd, (UInt32)(UOSInt)this->lstLang->GetSelectedItem());
+			DB::DBFFile dbf(fd, (UInt32)(UOSInt)this->lstLang->GetSelectedItem());
 			dbfr = dbf.QueryTableData(CSTR_NULL, CSTR_NULL, 0, 0, 0, CSTR_NULL, 0);
 			StrRecord *strRec;
 
@@ -810,7 +810,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CString sourceFile, Text:
 			}
 			sb.AppendC(UTF8STRC(".dbf"));
 			IO::StmData::FileData fd(sb.ToCString(), false);
-			DB::DBFFile dbf(&fd, (UInt32)(UOSInt)this->lstLang->GetSelectedItem());
+			DB::DBFFile dbf(fd, (UInt32)(UOSInt)this->lstLang->GetSelectedItem());
 			dbfr = dbf.QueryTableData(CSTR_NULL, CSTR_NULL, 0, 0, 0, CSTR_NULL, 0);
 
 			StrRecord *strRec;
@@ -1181,7 +1181,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::LoadShape(Text::CString fileName, Bool upd
 
 	{
 		IO::StmData::FileData fd(CSTRP(sbuff, sptr), false);
-		DB::DBFFile dbf(&fd, (UInt32)(UOSInt)this->lstLang->GetSelectedItem());
+		DB::DBFFile dbf(fd, (UInt32)(UOSInt)this->lstLang->GetSelectedItem());
 		if (!dbf.IsError())
 		{
 			this->lstRecords->ClearItems();

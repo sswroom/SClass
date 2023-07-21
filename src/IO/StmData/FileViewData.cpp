@@ -112,7 +112,7 @@ const UInt8 *IO::StmData::FileViewData::GetPointer()
 	return &fdh->fptr[this->dataOffset];
 }
 
-IO::StreamData *IO::StmData::FileViewData::GetPartialData(UInt64 offset, UInt64 length)
+NotNullPtr<IO::StreamData> IO::StmData::FileViewData::GetPartialData(UInt64 offset, UInt64 length)
 {
 	IO::StmData::FileViewData *data;
 	NEW_CLASS(data, IO::StmData::FileViewData(this, offset, length));

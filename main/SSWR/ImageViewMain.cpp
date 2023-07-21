@@ -12,7 +12,6 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	SSWR::AVIRead::AVIRCore *core;
 	NotNullPtr<UI::GUICore> ui;
 	UTF8Char **argv;
-	IO::StmData::FileData *fd;
 	Bool succ;
 	UOSInt argc;
 	UInt32 i;
@@ -28,9 +27,8 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			i = 1;
 			while (i < argc)
 			{
-				NEW_CLASS(fd, IO::StmData::FileData({argv[i], Text::StrCharCnt(argv[i])}, false));
+				IO::StmData::FileData fd({argv[i], Text::StrCharCnt(argv[i])}, false);
 				succ = frm->ParseFile(fd);
-				DEL_CLASS(fd);
 				if (succ)
 				{
 					break;

@@ -34,7 +34,7 @@ IO::ParserType Parser::FileParser::M2VParser::GetParserType()
 	return IO::ParserType::MediaFile;
 }
 
-IO::ParsedObject *Parser::FileParser::M2VParser::ParseFile(IO::StreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::M2VParser::ParseFile(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
 	UInt8 tmpBuff[1024];
 	OSInt readSize = fd->GetRealData(0, 1024, BYTEARR(tmpBuff));

@@ -10,14 +10,14 @@ namespace IO
 		class BufferedStreamData : public IO::StreamData
 		{
 		private:
-			IO::StreamData *stmData;
+			NotNullPtr<IO::StreamData> stmData;
 			UInt64 buffOfst;
 			UOSInt buffLength;
 			Data::ByteBuffer buff;
 			UInt64 dataLength;
 
 		public:
-			BufferedStreamData(IO::StreamData *stmData);
+			BufferedStreamData(NotNullPtr<IO::StreamData> stmData);
 			virtual ~BufferedStreamData();
 
 			virtual UOSInt GetRealData(UInt64 offset, UOSInt length, Data::ByteArray buffer);
@@ -27,7 +27,7 @@ namespace IO
 			virtual UInt64 GetDataSize();
 			virtual const UInt8 *GetPointer();
 
-			virtual IO::StreamData *GetPartialData(UInt64 offset, UInt64 length);
+			virtual NotNullPtr<IO::StreamData> GetPartialData(UInt64 offset, UInt64 length);
 			virtual Bool IsFullFile();
 			virtual NotNullPtr<Text::String> GetFullFileName();
 			virtual Bool IsLoading();

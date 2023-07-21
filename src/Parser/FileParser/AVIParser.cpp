@@ -115,7 +115,7 @@ IO::ParserType Parser::FileParser::AVIParser::GetParserType()
 	return IO::ParserType::MediaFile;
 }
 
-IO::ParsedObject *Parser::FileParser::AVIParser::ParseFileHdr(IO::StreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::AVIParser::ParseFileHdr(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -491,7 +491,6 @@ IO::ParsedObject *Parser::FileParser::AVIParser::ParseFileHdr(IO::StreamData *fd
 			Media::AudioFormat fmt;
 			Media::AudioFrameSource *audsData = 0;
 			Media::LPCMSource *lpcmData = 0;
-			IO::StmData::BlockStreamData *blkData = 0;
 			Int32 audDelay = 0;
 			Bool error;
 
@@ -514,6 +513,7 @@ IO::ParsedObject *Parser::FileParser::AVIParser::ParseFileHdr(IO::StreamData *fd
 					idx1.Delete();
 
 					UInt64 totalSize = 0;
+					IO::StmData::BlockStreamData *blkData = 0;
 
 					if (fmt.formatId == 1)
 					{
@@ -587,10 +587,11 @@ IO::ParsedObject *Parser::FileParser::AVIParser::ParseFileHdr(IO::StreamData *fd
 						}
 						k++;
 					}
-					if(fmt.formatId == 1)
+					NotNullPtr<IO::StreamData> fd;
+					if(fmt.formatId == 1 && fd.Set(blkData))
 					{
-						NEW_CLASS(lpcmData, Media::LPCMSource(blkData, 0, blkData->GetDataSize(), &fmt, audsName));
-						DEL_CLASS(blkData);
+						NEW_CLASS(lpcmData, Media::LPCMSource(fd, 0, blkData->GetDataSize(), &fmt, audsName));
+						fd.Delete();
 					}
 
 					j += (*(UInt32*)&strl[i].others[j + 4]) + 8;
@@ -615,7 +616,7 @@ IO::ParsedObject *Parser::FileParser::AVIParser::ParseFileHdr(IO::StreamData *fd
 				UInt64 totalSize = 0;
 				if (fmt.formatId == 1)
 				{
-					NEW_CLASS(blkData, IO::StmData::BlockStreamData(fd));
+					IO::StmData::BlockStreamData blkData(fd);
 					k = 4;
 					l = ReadUInt32(&idx1[0]);
 					cmpTmp = *(Int32*)"00wb";
@@ -624,11 +625,10 @@ IO::ParsedObject *Parser::FileParser::AVIParser::ParseFileHdr(IO::StreamData *fd
 					while (k < l)
 					{
 						if (*(Int32*)&idx1[k] == cmpTmp)
-							blkData->Append(base + ReadUInt32(&idx1[k + 8]) + 4, ReadUInt32(&idx1[k + 12]));
+							blkData.Append(base + ReadUInt32(&idx1[k + 8]) + 4, ReadUInt32(&idx1[k + 12]));
 						k += 16;
 					}
-					NEW_CLASS(lpcmData, Media::LPCMSource(blkData, 0,  blkData->GetDataSize(), &fmt, audsName));
-					DEL_CLASS(blkData);
+					NEW_CLASS(lpcmData, Media::LPCMSource(blkData, 0,  blkData.GetDataSize(), &fmt, audsName));
 				}
 				else
 				{

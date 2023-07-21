@@ -381,13 +381,13 @@ Bool Net::WebServer::HTTPDirectoryHandler::ResponsePackageFileItem(Net::WebServe
 			return true;
 		}
 	}
-	IO::StreamData *stmData = packageFile->GetPItemStmDataNew(pitem);
-	if (stmData)
+	NotNullPtr<IO::StreamData> stmData;
+	if (stmData.Set(packageFile->GetPItemStmDataNew(pitem)))
 	{
 		UOSInt dataLen = (UOSInt)stmData->GetDataSize();
 		Data::ByteBuffer dataBuff(dataLen);
 		stmData->GetRealData(0, dataLen, dataBuff);
-		DEL_CLASS(stmData);
+		stmData.Delete();
 
 		resp->EnableWriteBuffer();
 		resp->AddDefHeaders(req);
@@ -635,13 +635,13 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(Net::WebServer::IWebReq
 						const IO::PackFileItem *pitem2 = innerPF->GetPackFileItem((const UTF8Char*)"index.html");
 						if (pitem2 && innerPF->GetPItemType(pitem2) == IO::PackageFile::PackObjectType::StreamData)
 						{
-							IO::StreamData *stmData = innerPF->GetPItemStmDataNew(pitem2);
-							if (stmData)
+							NotNullPtr<IO::StreamData> stmData;
+							if (stmData.Set(innerPF->GetPItemStmDataNew(pitem2)))
 							{
 								UOSInt dataLen = (UOSInt)stmData->GetDataSize();
 								Data::ByteBuffer dataBuff(dataLen);
 								stmData->GetRealData(0, dataLen, dataBuff);
-								DEL_CLASS(stmData);
+								stmData.Delete();
 								mime = Net::MIME::GetMIMEFromExt(CSTR("html"));
 
 								resp->EnableWriteBuffer();
@@ -1624,7 +1624,7 @@ void Net::WebServer::HTTPDirectoryHandler::ExpandPackageFiles(Parser::ParserList
 			{
 				{
 					IO::StmData::FileData fd(CSTRP(sbuff, sptr2), false);
-					pf = (IO::PackageFile*)parsers->ParseFileType(&fd, IO::ParserType::PackageFile);
+					pf = (IO::PackageFile*)parsers->ParseFileType(fd, IO::ParserType::PackageFile);
 				}
 				if (pf)
 				{

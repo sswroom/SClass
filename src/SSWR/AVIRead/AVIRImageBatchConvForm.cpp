@@ -238,7 +238,7 @@ void SSWR::AVIRead::AVIRImageBatchConvForm::ConvertFile(ConvertSess *sess, Text:
 	void *param;
 	{
 		IO::StmData::FileData fd(srcFile, false);
-		imgList = (Media::ImageList*)this->core->GetParserList()->ParseFileType(&fd, IO::ParserType::ImageList);
+		imgList = (Media::ImageList*)this->core->GetParserList()->ParseFileType(fd, IO::ParserType::ImageList);
 	}
 	if (imgList)
 	{

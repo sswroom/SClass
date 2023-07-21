@@ -4516,13 +4516,14 @@ Map::MapConfig2TGen::MapConfig2TGen(Text::CString fileName, NotNullPtr<Media::Dr
 				currLayer->img = 0;
 				if (currLayer->minScale < maxScale && currLayer->maxScale >= minScale)
 				{
-					IO::StmData::FileData *fd;
 					IO::ParserType pt;
+					IO::ParsedObject *obj;
 					sptr = fileName.ConcatTo(sbuff);
 					sptr = IO::Path::AppendPath(sbuff, sptr, strs[4].ToCString());
-					NEW_CLASS(fd, IO::StmData::FileData(CSTRP(sbuff, sptr), false));
-					IO::ParsedObject *obj = parserList->ParseFile(fd, &pt);
-					DEL_CLASS(fd);
+					{
+						IO::StmData::FileData fd(CSTRP(sbuff, sptr), false);
+						obj = parserList->ParseFile(fd, &pt);
+					}
 					if (obj)
 					{
 						if (obj->GetParserType() == IO::ParserType::ImageList)

@@ -126,18 +126,19 @@ void Map::NetworkLinkLayer::LoadLink(LinkInfo *link)
 #endif
 		data = this->browser->GetData(sb.ToCString(), true, 0);
 	}
-	if (data)
+	NotNullPtr<IO::StreamData> fd;
+	if (fd.Set(data))
 	{
-		while (data->IsLoading())
+		while (fd->IsLoading())
 		{
 			Sync::SimpleThread::Sleep(10);
 		}
 #if defined(VERBOSE)
-		printf("NetworkLnkLayer: Data size: %lld\r\n", data->GetDataSize());
+		printf("NetworkLnkLayer: Data size: %lld\r\n", fd->GetDataSize());
 #endif
 		link->lastUpdated = Data::Timestamp::UtcNow();
-		IO::ParsedObject *pobj = this->parsers->ParseFileType(data, IO::ParserType::MapLayer);
-		DEL_CLASS(data);
+		IO::ParsedObject *pobj = this->parsers->ParseFileType(fd, IO::ParserType::MapLayer);
+		fd.Delete();
 		if (pobj)
 		{
 			UOSInt j;

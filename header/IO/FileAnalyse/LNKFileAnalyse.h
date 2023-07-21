@@ -44,7 +44,7 @@ namespace IO
 
 			static UInt32 __stdcall ParseThread(void *userObj);
 		public:
-			LNKFileAnalyse(IO::StreamData *fd);
+			LNKFileAnalyse(NotNullPtr<IO::StreamData> fd);
 			virtual ~LNKFileAnalyse();
 
 			virtual Text::CString GetFormatName();

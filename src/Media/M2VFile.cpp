@@ -32,7 +32,7 @@ UInt32 __stdcall Media::M2VFile::PlayThread(void *userData)
 	return 0;
 }
 
-Media::M2VFile::M2VFile(IO::StreamData *stmData) : Media::MediaFile(stmData->GetFullName()), readBuff(1048576)
+Media::M2VFile::M2VFile(NotNullPtr<IO::StreamData> stmData) : Media::MediaFile(stmData->GetFullName()), readBuff(1048576)
 {
 	this->stmData = stmData->GetPartialData(0, this->fleng = stmData->GetDataSize());
 	this->readOfst = 0;
@@ -56,7 +56,7 @@ Media::M2VFile::~M2VFile()
 		this->StopVideo();
 	}
 	DEL_CLASS(this->stm);
-	DEL_CLASS(this->stmData);
+	this->stmData.Delete();
 }
 
 UOSInt Media::M2VFile::AddSource(Media::IMediaSource *src, Int32 syncTime)

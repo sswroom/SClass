@@ -84,7 +84,7 @@ UOSInt IO::FileAnalyse::NFDumpFileAnalyse::LZODecompBlock(UInt8 *srcBlock, UOSIn
 	}
 }
 
-IO::FileAnalyse::NFDumpFileAnalyse::NFDumpFileAnalyse(IO::StreamData *fd)
+IO::FileAnalyse::NFDumpFileAnalyse::NFDumpFileAnalyse(NotNullPtr<IO::StreamData> fd)
 {
 	UInt8 buff[256];
 	this->fd = 0;
@@ -99,7 +99,7 @@ IO::FileAnalyse::NFDumpFileAnalyse::NFDumpFileAnalyse(IO::StreamData *fd)
 	{
 		return;
 	}
-	this->fd = fd->GetPartialData(0, fd->GetDataSize());
+	this->fd = fd->GetPartialData(0, fd->GetDataSize()).Ptr();
 	Sync::ThreadUtil::Create(ParseThread, this);
 	while (!this->threadStarted)
 	{

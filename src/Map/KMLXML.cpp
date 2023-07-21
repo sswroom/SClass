@@ -1455,9 +1455,10 @@ Map::MapDrawLayer *Map::KMLXML::ParseKMLPlacemarkLyr(Text::XMLReader *reader, Da
 					{
 						fd = browser->GetData(style->iconURL->ToCString(), false, 0);
 					}
-					if (fd)
+					NotNullPtr<IO::StreamData> nnfd;
+					if (nnfd.Set(fd))
 					{
-						Media::ImageList *imgList = (Media::ImageList*)parsers->ParseFileType(fd, IO::ParserType::ImageList);
+						Media::ImageList *imgList = (Media::ImageList*)parsers->ParseFileType(nnfd, IO::ParserType::ImageList);
 						if (imgList)
 						{
 							if (style->iconColor != 0)
@@ -1472,7 +1473,7 @@ Map::MapDrawLayer *Map::KMLXML::ParseKMLPlacemarkLyr(Text::XMLReader *reader, Da
 							}
 							NEW_CLASS(style->img, Media::SharedImage(imgList, false));
 						}
-						DEL_CLASS(fd);
+						nnfd.Delete();
 					}
 				}
 				if (style->img)

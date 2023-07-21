@@ -6,11 +6,11 @@
 void __stdcall SSWR::AVIRead::AVIRSMBIOSForm::OnHexClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRSMBIOSForm *me = (SSWR::AVIRead::AVIRSMBIOSForm*)userObj;
-	IO::StreamData *fd = me->smbios->CreateStreamData();
+	NotNullPtr<IO::StreamData> fd = me->smbios->CreateStreamData();
 	IO::FileAnalyse::SMBIOSFileAnalyse *fileAnalyse;
 	NEW_CLASS(fileAnalyse, IO::FileAnalyse::SMBIOSFileAnalyse(fd));
 	me->core->OpenHex(fd, fileAnalyse);
-	DEL_CLASS(fd);
+	fd.Delete();
 }
 
 SSWR::AVIRead::AVIRSMBIOSForm::AVIRSMBIOSForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)

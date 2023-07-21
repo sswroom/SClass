@@ -16,7 +16,7 @@ namespace IO
 			static void ParseDescriptor(FrameDetail *frame, const UInt8 *buff, UOSInt ofst);
 			static void RemoveNonASCII(UTF8Char *sbuff, UTF8Char *sbuffEnd);
 		public:
-			EDIDFileAnalyse(IO::StreamData *fd);
+			EDIDFileAnalyse(NotNullPtr<IO::StreamData> fd);
 			virtual ~EDIDFileAnalyse();
 
 			virtual Text::CString GetFormatName();

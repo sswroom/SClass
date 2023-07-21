@@ -32,10 +32,10 @@ namespace Parser
 		void SetSSLEngine(Net::SSLEngine *ssl);
 		void SetArcGISPRJParser(Math::ArcGISPRJParser *prjParser);
 		void PrepareSelector(IO::FileSelector *selector, IO::ParserType t);
-		IO::ParsedObject *ParseFile(IO::StreamData *fd, IO::PackageFile *pkgFile, IO::ParserType *t, IO::ParserType targetType);
-		IO::ParsedObject *ParseFile(IO::StreamData *fd, IO::PackageFile *pkgFile, IO::ParserType *t);
-		IO::ParsedObject *ParseFile(IO::StreamData *fd, IO::ParserType *t);
-		IO::ParsedObject *ParseFileType(IO::StreamData *fd, IO::ParserType t);
+		IO::ParsedObject *ParseFile(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType *t, IO::ParserType targetType);
+		IO::ParsedObject *ParseFile(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType *t);
+		IO::ParsedObject *ParseFile(NotNullPtr<IO::StreamData> fd, IO::ParserType *t);
+		IO::ParsedObject *ParseFileType(NotNullPtr<IO::StreamData> fd, IO::ParserType t);
 		IO::ParsedObject *ParseObject(IO::ParsedObject *pobj, IO::ParserType *t);
 		IO::ParsedObject *ParseObjectType(IO::ParsedObject *pobj, IO::ParserType *t, IO::ParserType targetType);
 	};

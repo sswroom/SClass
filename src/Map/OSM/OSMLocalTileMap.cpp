@@ -392,14 +392,13 @@ UOSInt Map::OSM::OSMLocalTileMap::GetTileImageIDs(UOSInt level, Math::RectAreaDb
 Media::ImageList *Map::OSM::OSMLocalTileMap::LoadTileImage(UOSInt level, Math::Coord2D<Int32> tileId, Parser::ParserList *parsers, Math::RectAreaDbl *bounds, Bool localOnly)
 {
 	ImageType it;
-	IO::StreamData *fd;
+	NotNullPtr<IO::StreamData> fd;
 	IO::ParsedObject *pobj;
-	fd = this->LoadTileImageData(level, tileId, bounds, localOnly, &it);
-	if (fd)
+	if (fd.Set(this->LoadTileImageData(level, tileId, bounds, localOnly, &it)))
 	{
 		IO::ParserType pt;
 		pobj = parsers->ParseFile(fd, &pt);
-		DEL_CLASS(fd);
+		fd.Delete();
 		if (pobj)
 		{
 			if (pt == IO::ParserType::ImageList)
@@ -432,7 +431,7 @@ UTF8Char *Map::OSM::OSMLocalTileMap::GetTileImageURL(UTF8Char *sbuff, UOSInt lev
 	return sptr;
 }
 
-/*IO::StreamData *Map::OSM::OSMLocalTileMap::LoadTileImageData(OSInt level, Int64 imgId, Double *boundsXY, Bool localOnly, Int32 *blockX, Int32 *blockY, ImageType *it)
+/*NotNullPtr<IO::StreamData> Map::OSM::OSMLocalTileMap::LoadTileImageData(OSInt level, Int64 imgId, Double *boundsXY, Bool localOnly, Int32 *blockX, Int32 *blockY, ImageType *it)
 {
 	WChar filePath[512];
 	WChar *wptr;

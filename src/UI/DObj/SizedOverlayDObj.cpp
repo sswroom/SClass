@@ -22,7 +22,7 @@ UI::DObj::SizedOverlayDObj::SizedOverlayDObj(NotNullPtr<Media::DrawEngine> deng,
 	{
 		{
 			IO::StmData::FileData fd(fileName, false);
-			this->imgList = (Media::ImageList*)parsers->ParseFileType(&fd, IO::ParserType::ImageList);
+			this->imgList = (Media::ImageList*)parsers->ParseFileType(fd, IO::ParserType::ImageList);
 		}
 		this->frameDelay = 500;
 		if (this->imgList)
@@ -160,7 +160,7 @@ void UI::DObj::SizedOverlayDObj::SetImage(Text::CString fileName, Parser::Parser
 	Media::ImageList *imgList;
 	{
 		IO::StmData::FileData fd(fileName, false);
-		imgList = (Media::ImageList*)parsers->ParseFileType(&fd, IO::ParserType::ImageList);
+		imgList = (Media::ImageList*)parsers->ParseFileType(fd, IO::ParserType::ImageList);
 	}
 	{
 		Sync::MutexUsage imgMutUsage(&this->imgMut);

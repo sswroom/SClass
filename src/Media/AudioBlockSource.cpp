@@ -3,7 +3,7 @@
 #include "Text/MyString.h"
 #include "Media/AudioBlockSource.h"
 
-Media::AudioBlockSource::AudioBlockSource(IO::StreamData *fd, Media::AudioFormat *format, NotNullPtr<Text::String> name, UInt32 samplePerBlock)
+Media::AudioBlockSource::AudioBlockSource(NotNullPtr<IO::StreamData> fd, Media::AudioFormat *format, NotNullPtr<Text::String> name, UInt32 samplePerBlock)
 {
 	this->format.FromAudioFormat(format);
 
@@ -21,7 +21,7 @@ Media::AudioBlockSource::AudioBlockSource(IO::StreamData *fd, Media::AudioFormat
 
 Media::AudioBlockSource::~AudioBlockSource()
 {
-	DEL_CLASS(this->data);
+	this->data.Delete();
 	this->name->Release();
 	MemFree(this->blocks);
 }

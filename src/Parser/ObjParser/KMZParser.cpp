@@ -48,7 +48,6 @@ IO::ParsedObject *Parser::ObjParser::KMZParser::ParseObject(IO::ParsedObject *po
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
 	Data::ArrayList<IO::ParsedObject*> *pobjList;
-	IO::StreamData *fd;
 	IO::ParsedObject *pobj2;
 	NEW_CLASS(pobjList, Data::ArrayList<IO::ParsedObject*>());
 	UOSInt i;
@@ -60,11 +59,11 @@ IO::ParsedObject *Parser::ObjParser::KMZParser::ParseObject(IO::ParsedObject *po
 		sptr = pkg->GetItemName(sbuff, i);
 		if (Text::StrEndsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC(".kml")))
 		{
-			fd = pkg->GetItemStmDataNew(i);
-			if (fd)
+			NotNullPtr<IO::StreamData> fd;
+			if (fd.Set(pkg->GetItemStmDataNew(i)))
 			{
 				pobj2 = this->parsers->ParseFile(fd, &pt);
-				DEL_CLASS(fd);
+				fd.Delete();
 				if (pobj2)
 				{
 					if (pobj->GetSourceNameObj()->EndsWithICase(UTF8STRC(".kmz")))

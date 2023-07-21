@@ -573,7 +573,7 @@ Bool Media::HTRecFile::HTRecReader::GetColDefV(UOSInt colIndex, DB::ColDef *colD
 	return false;
 }
 
-Media::HTRecFile::HTRecFile(IO::StreamData *stmData) : DB::ReadingDB(stmData->GetFullName())
+Media::HTRecFile::HTRecFile(NotNullPtr<IO::StreamData> stmData) : DB::ReadingDB(stmData->GetFullName())
 {
 	UInt8 buff[96];
 	this->time1TS = 0;

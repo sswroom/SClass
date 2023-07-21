@@ -42,7 +42,7 @@ namespace IO
 
 			static UInt32 __stdcall ParseThread(void *userObj);
 		public:
-			FGDBFileAnalyse(IO::StreamData *fd);
+			FGDBFileAnalyse(NotNullPtr<IO::StreamData> fd);
 			virtual ~FGDBFileAnalyse();
 
 			virtual Text::CString GetFormatName();

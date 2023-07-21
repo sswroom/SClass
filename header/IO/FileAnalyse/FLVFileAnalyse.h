@@ -33,7 +33,7 @@ namespace IO
 			void ParseScriptData(UInt8 *data, UOSInt ofst, UOSInt endOfst, UOSInt frameOfst, IO::FileAnalyse::FrameDetailHandler *frame);
 			static UInt32 __stdcall ParseThread(void *userObj);
 		public:
-			FLVFileAnalyse(IO::StreamData *fd);
+			FLVFileAnalyse(NotNullPtr<IO::StreamData> fd);
 			virtual ~FLVFileAnalyse();
 
 			virtual Text::CString GetFormatName();

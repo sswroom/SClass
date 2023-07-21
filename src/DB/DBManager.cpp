@@ -502,7 +502,7 @@ DB::ReadingDB *DB::DBManager::OpenConn(Text::CString connStr, IO::LogTool *log, 
 	else if (connStr.StartsWith(UTF8STRC("file:")))
 	{
 		IO::StmData::FileData fd(connStr.Substring(5), false);
-		DB::ReadingDB *rdb = (DB::ReadingDB*)parsers->ParseFileType(&fd, IO::ParserType::ReadingDB);
+		DB::ReadingDB *rdb = (DB::ReadingDB*)parsers->ParseFileType(fd, IO::ParserType::ReadingDB);
 		if (rdb)
 		{
 			return rdb;

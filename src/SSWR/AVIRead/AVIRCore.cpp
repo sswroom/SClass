@@ -145,7 +145,7 @@ IO::Stream *SSWR::AVIRead::AVIRCore::OpenStream(IO::StreamType *st, UI::GUIForm 
 	return retStm;
 }
 
-void SSWR::AVIRead::AVIRCore::OpenHex(IO::StreamData *fd, IO::FileAnalyse::IFileAnalyse *fileAnalyse)
+void SSWR::AVIRead::AVIRCore::OpenHex(NotNullPtr<IO::StreamData> fd, IO::FileAnalyse::IFileAnalyse *fileAnalyse)
 {
 	SSWR::AVIRead::AVIRHexViewerForm *frm;
 	NEW_CLASS(frm, SSWR::AVIRead::AVIRHexViewerForm(0, ui, this));
@@ -186,7 +186,7 @@ void SSWR::AVIRead::AVIRCore::EndLoad()
 	}
 }
 
-Bool SSWR::AVIRead::AVIRCore::LoadData(IO::StreamData *data, IO::PackageFile *pkgFile)
+Bool SSWR::AVIRead::AVIRCore::LoadData(NotNullPtr<IO::StreamData> data, IO::PackageFile *pkgFile)
 {
 	IO::ParserType pt;
 	IO::ParsedObject *pobj;
@@ -202,7 +202,7 @@ Bool SSWR::AVIRead::AVIRCore::LoadData(IO::StreamData *data, IO::PackageFile *pk
 	}
 }
 
-Bool SSWR::AVIRead::AVIRCore::LoadDataType(IO::StreamData *data, IO::PackageFile *pkgFile, IO::ParserType targetType)
+Bool SSWR::AVIRead::AVIRCore::LoadDataType(NotNullPtr<IO::StreamData> data, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
 	IO::ParsedObject *pobj;
 	IO::ParserType pt;

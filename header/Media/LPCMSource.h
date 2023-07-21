@@ -18,10 +18,10 @@ namespace Media
 	protected:
 		LPCMSource(NotNullPtr<Text::String> name);
 		LPCMSource(Text::CString name);
-		void SetData(IO::StreamData *fd, UInt64 ofst, UInt64 length, Media::AudioFormat *format);
+		void SetData(NotNullPtr<IO::StreamData> fd, UInt64 ofst, UInt64 length, Media::AudioFormat *format);
 	public:
-		LPCMSource(IO::StreamData *fd, UInt64 ofst, UInt64 length, Media::AudioFormat *format, NotNullPtr<Text::String> name);
-		LPCMSource(IO::StreamData *fd, UInt64 ofst, UInt64 length, Media::AudioFormat *format, Text::CString name);
+		LPCMSource(NotNullPtr<IO::StreamData> fd, UInt64 ofst, UInt64 length, Media::AudioFormat *format, NotNullPtr<Text::String> name);
+		LPCMSource(NotNullPtr<IO::StreamData> fd, UInt64 ofst, UInt64 length, Media::AudioFormat *format, Text::CString name);
 		virtual ~LPCMSource();
 
 		virtual UTF8Char *GetSourceName(UTF8Char *buff);

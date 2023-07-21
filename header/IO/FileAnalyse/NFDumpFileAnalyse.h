@@ -32,7 +32,7 @@ namespace IO
 			static UInt32 __stdcall ParseThread(void *userObj);
 			UOSInt LZODecompBlock(UInt8 *srcBlock, UOSInt srcSize, UInt8 *outBlock, UOSInt maxOutSize);
 		public:
-			NFDumpFileAnalyse(IO::StreamData *fd);
+			NFDumpFileAnalyse(NotNullPtr<IO::StreamData> fd);
 			virtual ~NFDumpFileAnalyse();
 
 			virtual Text::CString GetFormatName();

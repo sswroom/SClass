@@ -110,7 +110,7 @@ UInt32 __stdcall IO::FileAnalyse::DWGFileAnalyse::ParseThread(void *userObj)
 	return 0;
 }
 
-IO::FileAnalyse::DWGFileAnalyse::DWGFileAnalyse(IO::StreamData *fd)
+IO::FileAnalyse::DWGFileAnalyse::DWGFileAnalyse(NotNullPtr<IO::StreamData> fd)
 {
 	UInt8 buff[8];
 	this->fd = 0;
@@ -143,7 +143,7 @@ IO::FileAnalyse::DWGFileAnalyse::DWGFileAnalyse(IO::StreamData *fd)
 	default:
 		return;
 	}
-	this->fd = fd->GetPartialData(0, fd->GetDataSize());
+	this->fd = fd->GetPartialData(0, fd->GetDataSize()).Ptr();
 	Sync::ThreadUtil::Create(ParseThread, this);
 	while (!this->threadStarted)
 	{

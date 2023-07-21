@@ -84,7 +84,7 @@ UI::DObj::VideoDObjHandler::VideoDObjHandler(UI::GUIForm *ownerFrm, NotNullPtr<M
 	this->frameImg = this->deng->CreateImage32(videoSize, Media::AT_NO_ALPHA);
 	{
 		IO::StmData::FileData fd(videoFileName, false);
-		this->mf = (Media::MediaFile*)parsers->ParseFileType(&fd, IO::ParserType::MediaFile);
+		this->mf = (Media::MediaFile*)parsers->ParseFileType(fd, IO::ParserType::MediaFile);
 	}
 	if (this->mf)
 	{

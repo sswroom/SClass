@@ -38,7 +38,7 @@ Bool Media::MediaPlayerInterface::OpenFile(Text::CString fileName, IO::ParserTyp
 	IO::ParsedObject *pobj;
 
 	IO::StmData::FileData fd(fileName, false);
-	pobj = this->parsers->ParseFileType(&fd, targetType);
+	pobj = this->parsers->ParseFileType(fd, targetType);
 	if (pobj)
 	{
 		return OpenVideo((Media::MediaFile*)pobj);
@@ -124,7 +124,7 @@ Bool Media::MediaPlayerInterface::OpenVideo(Media::MediaFile *mf)
 								Media::MediaFile *audFile;
 								{
 									IO::StmData::FileData fd(CSTRP(sbuff, sptr), false);
-									audFile = (Media::MediaFile*)this->parsers->ParseFileType(&fd, IO::ParserType::MediaFile);
+									audFile = (Media::MediaFile*)this->parsers->ParseFileType(fd, IO::ParserType::MediaFile);
 								}
 								if (audFile)
 								{

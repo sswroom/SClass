@@ -48,7 +48,7 @@ IO::ParserType Parser::FileParser::OziMapParser::GetParserType()
 	return IO::ParserType::MapLayer;
 }
 
-IO::ParsedObject *Parser::FileParser::OziMapParser::ParseFileHdr(IO::StreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::OziMapParser::ParseFileHdr(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	UTF8Char sbuff[1024];
 	UTF8Char *sptr;
@@ -176,13 +176,13 @@ IO::ParsedObject *Parser::FileParser::OziMapParser::ParseFileHdr(IO::StreamData 
 
 		if (valid)
 		{
-			IO::StmData::FileData *imgFd;
 			Media::ImageList *imgList = 0;
 			sptr = fd->GetFullFileName()->ConcatTo(sbuff);
 			sptr = IO::Path::AppendPath(sbuff, sptr, fileName->ToCString());
-			NEW_CLASS(imgFd, IO::StmData::FileData(CSTRP(sbuff, sptr), false));
-			imgList = (Media::ImageList*)this->parsers->ParseFileType(imgFd, IO::ParserType::ImageList);
-			DEL_CLASS(imgFd);
+			{
+				IO::StmData::FileData imgFd(CSTRP(sbuff, sptr), false);
+				imgList = (Media::ImageList*)this->parsers->ParseFileType(imgFd, IO::ParserType::ImageList);
+			}
 
 			if (imgList)
 			{

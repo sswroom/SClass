@@ -136,7 +136,7 @@ void __stdcall SSWR::AVIRead::AVIREDIDViewerForm::OnHexClicked(void *userObj)
 		return;
 	}
 	IO::StmData::MemoryDataCopy fd(me->edid, me->edidSize);
-	me->core->OpenHex(&fd, 0);
+	me->core->OpenHex(fd, 0);
 }
 
 void __stdcall SSWR::AVIRead::AVIREDIDViewerForm::OnFileDrop(void *userObj, NotNullPtr<Text::String> *fileNames, UOSInt fileCnt)

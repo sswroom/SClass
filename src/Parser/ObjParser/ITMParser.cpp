@@ -57,9 +57,13 @@ IO::ParsedObject *Parser::ObjParser::ITMParser::ParseObject(IO::ParsedObject *po
 		{
 			if (pkg->GetItemType(i) == IO::PackageFile::PackObjectType::StreamData)
 			{
-				IO::StreamData *fd = pkg->GetItemStmDataNew(i);
-				IO::ParsedObject *pobj2 = parsers->ParseFile(fd, &pt);
-				DEL_CLASS(fd);
+				NotNullPtr<IO::StreamData> fd;
+				IO::ParsedObject *pobj2 = 0;
+				if (fd.Set(pkg->GetItemStmDataNew(i)))
+				{
+					pobj2 = parsers->ParseFile(fd, &pt);
+					fd.Delete();
+				}
 				if (pobj2)
 				{
 					if (pt == IO::ParserType::ReadingDB)

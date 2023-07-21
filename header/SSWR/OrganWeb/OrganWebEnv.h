@@ -88,7 +88,7 @@ namespace SSWR
 			void Reload();
 			void Restart();
 
-			IO::ParsedObject *ParseFileType(IO::StreamData *fd, IO::ParserType targetType);
+			IO::ParsedObject *ParseFileType(NotNullPtr<IO::StreamData> fd, IO::ParserType targetType);
 			Bool HasReloadPwd() const;
 			Bool ReloadPwdMatches(Text::String *pwd) const;
 			Text::String *GetCacheDir() const;

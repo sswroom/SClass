@@ -17,7 +17,7 @@ namespace Math
 		Int32 fileType;
 
 	public:
-		TSPFile(IO::StreamData *fd);
+		TSPFile(NotNullPtr<IO::StreamData> fd);
 		virtual ~TSPFile();
 
 		virtual UOSInt QueryTableNames(Text::CString schemaName, Data::ArrayListNN<Text::String> *names);

@@ -13,7 +13,7 @@
 #include "Parser/ParserList.h"
 #include "Parser/FileParser/BMPParser.h"
 
-void BMPParser_ReadPal(Media::StaticImage *img, IO::StreamData *fd, UOSInt palStart, Int32 palType, UOSInt colorUsed)
+void BMPParser_ReadPal(Media::StaticImage *img, NotNullPtr<IO::StreamData> fd, UOSInt palStart, Int32 palType, UOSInt colorUsed)
 {
 	UOSInt maxColor = (UOSInt)1 << img->info.storeBPP;
 	if (palType == 0)
@@ -88,7 +88,7 @@ IO::ParserType Parser::FileParser::BMPParser::GetParserType()
 	return IO::ParserType::ImageList;
 }
 
-IO::ParsedObject *Parser::FileParser::BMPParser::ParseFileHdr(IO::StreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::BMPParser::ParseFileHdr(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	UInt32 imgWidth;
 	Int32 imgHeight;
@@ -382,9 +382,9 @@ IO::ParsedObject *Parser::FileParser::BMPParser::ParseFileHdr(IO::StreamData *fd
 		if (this->parsers)
 		{
 			UInt32 currOfst = ReadUInt32(&hdr[10]);
-			IO::StreamData *innerFd = fd->GetPartialData(currOfst, fd->GetDataSize() - currOfst);
+			NotNullPtr<IO::StreamData> innerFd = fd->GetPartialData(currOfst, fd->GetDataSize() - currOfst);
 			pobj = this->parsers->ParseFile(innerFd, &pt);
-			DEL_CLASS(innerFd);
+			innerFd.Delete();
 			return pobj;
 		}
 	}

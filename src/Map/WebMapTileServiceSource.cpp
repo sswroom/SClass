@@ -965,14 +965,13 @@ UOSInt Map::WebMapTileServiceSource::GetTileImageIDs(UOSInt level, Math::RectAre
 Media::ImageList *Map::WebMapTileServiceSource::LoadTileImage(UOSInt level, Math::Coord2D<Int32> tileId, Parser::ParserList *parsers, Math::RectAreaDbl *bounds, Bool localOnly)
 {
 	ImageType it;
-	IO::StreamData *fd;
+	NotNullPtr<IO::StreamData> fd;
 	IO::ParsedObject *pobj;
-	fd = this->LoadTileImageData(level, tileId, bounds, localOnly, &it);
-	if (fd)
+	if (fd.Set(this->LoadTileImageData(level, tileId, bounds, localOnly, &it)))
 	{
 		IO::ParserType pt;
 		pobj = parsers->ParseFile(fd, &pt);
-		DEL_CLASS(fd);
+		fd.Delete();
 		if (pobj)
 		{
 			if (pt == IO::ParserType::ImageList)
@@ -1017,7 +1016,7 @@ IO::StreamData *Map::WebMapTileServiceSource::LoadTileImageData(UOSInt level, Ma
 	Data::DateTime dt;
 	Data::DateTime currTime;
 	NotNullPtr<Net::HTTPClient> cli;
-	IO::StreamData *fd;
+	NotNullPtr<IO::StreamData> fd;
 	TileMatrix *tileMatrix = this->GetTileMatrix(level);
 	if (tileMatrix == 0)
 		return 0;
@@ -1050,24 +1049,24 @@ IO::StreamData *Map::WebMapTileServiceSource::LoadTileImageData(UOSInt level, Ma
 		sptru = Text::StrInt32(sptru, tileId.y);
 		*sptru++ = '.';
 		sptru = GetExt(this->currResource->imgType).ConcatTo(sptru);
-		NEW_CLASS(fd, IO::StmData::FileData({filePathU, (UOSInt)(sptru - filePathU)}, false));
+		NEW_CLASSNN(fd, IO::StmData::FileData({filePathU, (UOSInt)(sptru - filePathU)}, false));
 		if (fd->GetDataSize() > 0)
 		{
 			currTime.SetCurrTimeUTC();
 			currTime.AddDay(-7);
-			((IO::StmData::FileData*)fd)->GetFileStream()->GetFileTimes(&dt, 0, 0);
+			((IO::StmData::FileData*)fd.Ptr())->GetFileStream()->GetFileTimes(&dt, 0, 0);
 			if (dt.CompareTo(&currTime) > 0)
 			{
 				if (it)
 					*it = this->currResource->imgType;
-				return fd;
+				return fd.Ptr();
 			}
 			else
 			{
 				hasTime = true;
 			}
 		}
-		DEL_CLASS(fd);
+		fd.Delete();
 	}
 
 	if (localOnly)
@@ -1125,17 +1124,14 @@ IO::StreamData *Map::WebMapTileServiceSource::LoadTileImageData(UOSInt level, Ma
 	}
 	cli.Delete();
 
-	NEW_CLASS(fd, IO::StmData::FileData({filePathU, (UOSInt)(sptru - filePathU)}, false));
-	if (fd)
+	NEW_CLASSNN(fd, IO::StmData::FileData({filePathU, (UOSInt)(sptru - filePathU)}, false));
+	if (fd->GetDataSize() > 0)
 	{
-		if (fd->GetDataSize() > 0)
-		{
-			if (it)
-				*it = IT_PNG;
-			return fd;
-		}
-		DEL_CLASS(fd);
+		if (it)
+			*it = IT_PNG;
+		return fd.Ptr();
 	}
+	fd.Delete();
 	return 0;
 }
 

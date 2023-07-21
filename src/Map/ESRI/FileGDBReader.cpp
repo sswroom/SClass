@@ -32,7 +32,7 @@ UOSInt Map::ESRI::FileGDBReader::GetFieldIndex(UOSInt colIndex)
 	}
 }
 
-Map::ESRI::FileGDBReader::FileGDBReader(IO::StreamData *fd, UInt64 ofst, FileGDBTableInfo *tableInfo, Data::ArrayListNN<Text::String> *columnNames, UOSInt dataOfst, UOSInt maxCnt, Data::QueryConditions *conditions)
+Map::ESRI::FileGDBReader::FileGDBReader(NotNullPtr<IO::StreamData> fd, UInt64 ofst, FileGDBTableInfo *tableInfo, Data::ArrayListNN<Text::String> *columnNames, UOSInt dataOfst, UOSInt maxCnt, Data::QueryConditions *conditions)
 {
 	this->indexCnt = 0;
 	this->indexNext = 0;
@@ -86,7 +86,7 @@ Map::ESRI::FileGDBReader::FileGDBReader(IO::StreamData *fd, UInt64 ofst, FileGDB
 
 Map::ESRI::FileGDBReader::~FileGDBReader()
 {
-	DEL_CLASS(this->fd);
+	this->fd.Delete();
 	Map::ESRI::FileGDBUtil::FreeTableInfo(this->tableInfo);
 	MemFree(this->fieldNull);
 	MemFree(this->fieldOfst);
@@ -1632,7 +1632,7 @@ Bool Map::ESRI::FileGDBReader::GetColDef(UOSInt colIndex, DB::ColDef *colDef)
 	return true;
 }
 
-void Map::ESRI::FileGDBReader::SetIndex(IO::StreamData *fd, UOSInt indexCnt)
+void Map::ESRI::FileGDBReader::SetIndex(NotNullPtr<IO::StreamData> fd, UOSInt indexCnt)
 {
 	if (this->indexBuff.IsNull())
 	{

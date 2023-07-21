@@ -22,7 +22,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	{
 		IO::StmData::FileData fd(path, false);
 		clk.Start();
-		pobj = parsers.ParseFile(&fd, &pt);
+		pobj = parsers.ParseFile(fd, &pt);
 		t = clk.GetTimeDiff();
 	}
 	if (pobj)

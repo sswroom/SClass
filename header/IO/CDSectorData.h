@@ -23,7 +23,7 @@ namespace IO
 		virtual UOSInt GetBytesPerSector() const;
 		virtual Bool ReadSector(UInt64 sectorNum, Data::ByteArray sectorBuff);
 		virtual ISectorData *GetPartialData(UInt64 startSector, UInt64 sectorCount) const;
-		virtual IO::StreamData *GetStreamData(UInt64 startSector, UInt64 dataSize) const;
+		virtual NotNullPtr<IO::StreamData> GetStreamData(UInt64 startSector, UInt64 dataSize) const;
 		virtual UOSInt GetSeekCount() const;
 	};
 
@@ -44,7 +44,7 @@ namespace IO
 		virtual UInt64 GetDataSize();
 		virtual const UInt8 *GetPointer();
 
-		virtual StreamData *GetPartialData(UInt64 offset, UInt64 length);
+		virtual NotNullPtr<StreamData> GetPartialData(UInt64 offset, UInt64 length);
 		virtual Bool IsFullFile();
 		virtual Bool IsLoading();
 		virtual UOSInt GetSeekCount();

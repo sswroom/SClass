@@ -34,7 +34,7 @@ IO::ParserType Parser::FileParser::CDXAParser::GetParserType()
 	return IO::ParserType::SectorData;
 }
 
-IO::ParsedObject *Parser::FileParser::CDXAParser::ParseFileHdr(IO::StreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::CDXAParser::ParseFileHdr(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	UInt32 fileSize;
 	UInt64 currPos;

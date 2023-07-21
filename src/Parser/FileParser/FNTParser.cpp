@@ -35,7 +35,7 @@ IO::ParserType Parser::FileParser::FNTParser::GetParserType()
 	return IO::ParserType::FontRenderer;
 }
 
-IO::ParsedObject *Parser::FileParser::FNTParser::ParseFile(IO::StreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::FNTParser::ParseFile(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
 	UInt8 hdr[118];
 	OSInt hdrSize;

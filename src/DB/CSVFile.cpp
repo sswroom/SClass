@@ -44,7 +44,7 @@ DB::CSVFile::CSVFile(NotNullPtr<IO::SeekableStream> stm, UInt32 codePage) : DB::
 	this->nullIfEmpty = false;
 }
 
-DB::CSVFile::CSVFile(IO::StreamData *fd, UInt32 codePage) : DB::ReadingDB(fd->GetFullName())
+DB::CSVFile::CSVFile(NotNullPtr<IO::StreamData> fd, UInt32 codePage) : DB::ReadingDB(fd->GetFullName())
 {
 	this->fileName = fd->GetFullName()->Clone();
 	NEW_CLASS(this->stm, IO::StreamDataStream(fd));

@@ -37,7 +37,7 @@ namespace Text
 			MIMEMessage *GetPart(UOSInt partIndex) const;
 			UOSInt GetPartCount() const;
 
-			static MultipartMIMEObj *ParseFile(Text::CString contentType, IO::StreamData *data);
+			static MultipartMIMEObj *ParseFile(Text::CString contentType, NotNullPtr<IO::StreamData> data);
 		};
 	}
 }

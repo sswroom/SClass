@@ -381,7 +381,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnViewClicked(void *userObj)
 			{
 				contType = CSTR("application/octet-stream");
 			}
-			mimeObj = Text::IMIMEObj::ParseFromData(&md, contType);
+			mimeObj = Text::IMIMEObj::ParseFromData(md, contType);
 		}
 		if (mimeObj)
 		{
@@ -745,7 +745,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 							i = 10;
 							IO::StmData::MemoryDataRef mdata(&respData[i], respSize - i - 8);
 							NEW_CLASS(mstm2, IO::MemoryStream(ReadUInt32(&respData[respSize - 4])));
-							if (inflate.Decompress(mstm2, &mdata))
+							if (inflate.Decompress(mstm2, mdata))
 							{
 								DEL_CLASS(mstm);
 								mstm = mstm2;

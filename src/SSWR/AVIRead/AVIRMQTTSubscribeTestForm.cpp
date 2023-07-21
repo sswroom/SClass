@@ -170,10 +170,11 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeTestForm::OnCliCertClicked(void *
 	dlg.SetAllowMultiSel(false);
 	if (dlg.ShowDialog(me->GetHandle()))
 	{
-		IO::StmData::FileData *fd;
-		NEW_CLASS(fd, IO::StmData::FileData(dlg.GetFileName(), false));
-		Net::ASN1Data *asn1 = (Net::ASN1Data*)me->core->GetParserList()->ParseFileType(fd, IO::ParserType::ASN1Data);
-		DEL_CLASS(fd);
+		Net::ASN1Data *asn1;
+		{
+			IO::StmData::FileData fd(dlg.GetFileName(), false);
+			asn1 = (Net::ASN1Data*)me->core->GetParserList()->ParseFileType(fd, IO::ParserType::ASN1Data);
+		}
 		if (asn1 == 0)
 		{
 			UI::MessageDialog::ShowDialog(CSTR("Error in parsing file"), CSTR("MQTT Subscribe Test"), me);
@@ -208,10 +209,11 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeTestForm::OnCliKeyClicked(void *u
 	dlg.SetAllowMultiSel(false);
 	if (dlg.ShowDialog(me->GetHandle()))
 	{
-		IO::StmData::FileData *fd;
-		NEW_CLASS(fd, IO::StmData::FileData(dlg.GetFileName(), false));
-		Net::ASN1Data *asn1 = (Net::ASN1Data*)me->core->GetParserList()->ParseFileType(fd, IO::ParserType::ASN1Data);
-		DEL_CLASS(fd);
+		Net::ASN1Data *asn1;
+		{
+			IO::StmData::FileData fd(dlg.GetFileName(), false);
+			asn1 = (Net::ASN1Data*)me->core->GetParserList()->ParseFileType(fd, IO::ParserType::ASN1Data);
+		}
 		if (asn1 == 0)
 		{
 			UI::MessageDialog::ShowDialog(CSTR("Error in parsing file"), CSTR("MQTT Subscribe Test"), me);

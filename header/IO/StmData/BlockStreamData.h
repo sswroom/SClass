@@ -12,14 +12,14 @@ namespace IO
 		class BlockStreamData : public IO::StreamData
 		{
 		private:
-			IO::StreamData *sd;
+			NotNullPtr<IO::StreamData> sd;
 			Data::ArrayListUInt64 dataOfstList;
 			Data::ArrayListUInt64 stmOfstList;
 			Data::ArrayListUInt32 lengthList;
 			UInt64 totalSize;
 
 		public:
-			BlockStreamData(IO::StreamData *sd);
+			BlockStreamData(NotNullPtr<IO::StreamData> sd);
 			virtual ~BlockStreamData();
 
 			virtual UOSInt GetRealData(UInt64 offset, UOSInt length, Data::ByteArray buffer);
@@ -28,7 +28,7 @@ namespace IO
 			virtual UInt64 GetDataSize();
 			virtual const UInt8 *GetPointer();
 
-			virtual IO::StreamData *GetPartialData(UInt64 offset, UInt64 length);
+			virtual NotNullPtr<IO::StreamData> GetPartialData(UInt64 offset, UInt64 length);
 			virtual Bool IsFullFile();
 			virtual Bool IsLoading();
 			virtual UOSInt GetSeekCount();

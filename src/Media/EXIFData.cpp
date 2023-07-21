@@ -5190,7 +5190,7 @@ Media::EXIFData *Media::EXIFData::ParseIFD(const UInt8 *buff, UOSInt buffSize, D
 	return exif;
 }
 
-Media::EXIFData *Media::EXIFData::ParseIFD(IO::StreamData *fd, UInt64 ofst, Data::ByteOrder *bo, UInt64 *nextOfst, UInt64 readBase)
+Media::EXIFData *Media::EXIFData::ParseIFD(NotNullPtr<IO::StreamData> fd, UInt64 ofst, Data::ByteOrder *bo, UInt64 *nextOfst, UInt64 readBase)
 {
 	Media::EXIFData *exif;
 	UInt8 ifdBuff[2];
@@ -5419,7 +5419,7 @@ Media::EXIFData *Media::EXIFData::ParseIFD(IO::StreamData *fd, UInt64 ofst, Data
 	return exif;
 }
 
-Media::EXIFData *Media::EXIFData::ParseIFD64(IO::StreamData *fd, UInt64 ofst, Data::ByteOrder *bo, UInt64 *nextOfst, UInt64 readBase)
+Media::EXIFData *Media::EXIFData::ParseIFD64(NotNullPtr<IO::StreamData> fd, UInt64 ofst, Data::ByteOrder *bo, UInt64 *nextOfst, UInt64 readBase)
 {
 	Media::EXIFData *exif;
 	UInt8 ifdBuff[8];
@@ -5731,7 +5731,7 @@ Media::EXIFData *Media::EXIFData::ParseIFD64(IO::StreamData *fd, UInt64 ofst, Da
 	return exif;
 }
 
-Bool Media::EXIFData::ParseEXIFFrame(IO::FileAnalyse::FrameDetailHandler *frame, UOSInt frameOfst, IO::StreamData *fd, UInt64 ofst)
+Bool Media::EXIFData::ParseEXIFFrame(IO::FileAnalyse::FrameDetailHandler *frame, UOSInt frameOfst, NotNullPtr<IO::StreamData> fd, UInt64 ofst)
 {
 	UInt8 hdr[8];
 	if (fd->GetRealData(ofst, 8, BYTEARR(hdr)) != 8)
@@ -5783,7 +5783,7 @@ Bool Media::EXIFData::ParseEXIFFrame(IO::FileAnalyse::FrameDetailHandler *frame,
 	return true;
 }
 
-Bool Media::EXIFData::ParseFrame(IO::FileAnalyse::FrameDetailHandler *frame, UOSInt frameOfst, IO::StreamData *fd, UInt64 ofst, Data::ByteOrder *bo, UInt32 *nextOfst, UInt32 ifdId, UInt64 readBase)
+Bool Media::EXIFData::ParseFrame(IO::FileAnalyse::FrameDetailHandler *frame, UOSInt frameOfst, NotNullPtr<IO::StreamData> fd, UInt64 ofst, Data::ByteOrder *bo, UInt32 *nextOfst, UInt32 ifdId, UInt64 readBase)
 {
 	UInt8 ifdBuff[2];
 	UOSInt ifdCnt;

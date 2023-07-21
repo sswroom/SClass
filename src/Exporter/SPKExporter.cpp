@@ -182,7 +182,7 @@ void Exporter::SPKExporter::ExportPackageFile(IO::SPackageFile *spkg, IO::Packag
 	UOSInt i;
 	UOSInt j;
 	UTF8Char *sptr;
-	IO::StreamData *fd;
+	NotNullPtr<IO::StreamData> fd;
 	IO::PackageFile::PackObjectType pot;
 	IO::PackageFile *subPkg;
 	i = 0;
@@ -205,11 +205,10 @@ void Exporter::SPKExporter::ExportPackageFile(IO::SPackageFile *spkg, IO::Packag
 		else if (pot == IO::PackageFile::PackObjectType::StreamData)
 		{
 			sptr = pkgFile->GetItemName(buffEnd, i);
-			fd = pkgFile->GetItemStmDataNew(i);
-			if (fd)
+			if (fd.Set(pkgFile->GetItemStmDataNew(i)))
 			{
 				spkg->AddFile(fd, {buff, (UOSInt)(sptr - buff)}, pkgFile->GetItemModTime(i));
-				DEL_CLASS(fd);
+				fd.Delete();
 			}
 		}
 		i++;

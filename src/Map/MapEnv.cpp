@@ -1096,16 +1096,17 @@ Media::StaticImage *Map::MapEnv::GetImage(UOSInt index, UInt32 *imgDurMS) const
 OSInt Map::MapEnv::AddImage(Text::CString fileName, Parser::ParserList *parserList)
 {
 	Sync::MutexUsage mutUsage(&this->mut);
-	IO::StmData::FileData *fd;
 	ImageInfo *imgInfo;
 	if ((imgInfo = this->images.Get(fileName)) != 0)
 	{
 		return (OSInt)imgInfo->index;
 	}
-	NEW_CLASS(fd, IO::StmData::FileData(fileName, false));
 	IO::ParserType pt;
-	IO::ParsedObject *pobj = parserList->ParseFile(fd, &pt);
-	DEL_CLASS(fd);
+	IO::ParsedObject *pobj;
+	{
+		IO::StmData::FileData fd(fileName, false);
+		pobj = parserList->ParseFile(fd, &pt);
+	}
 	if (pobj)
 	{
 		if (pt == IO::ParserType::ImageList)

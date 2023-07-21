@@ -671,22 +671,22 @@ Media::ImageList *Map::WebMapService::DrawMap(Math::RectAreaDbl bounds, UInt32 w
 		if (imgFormat->StartsWith(UTF8STRC("image/png")))
 		{
 			Parser::FileParser::PNGParser parser;
-			ret = (Media::ImageList*)parser.ParseFile(&mdr, 0, IO::ParserType::ImageList);
+			ret = (Media::ImageList*)parser.ParseFile(mdr, 0, IO::ParserType::ImageList);
 		}
 		else if (imgFormat->StartsWith(UTF8STRC("image/geotiff")) || imgFormat->StartsWith(UTF8STRC("image/tiff")))
 		{
 			Parser::FileParser::TIFFParser parser;
-			ret = (Media::ImageList*)parser.ParseFile(&mdr, 0, IO::ParserType::ImageList);
+			ret = (Media::ImageList*)parser.ParseFile(mdr, 0, IO::ParserType::ImageList);
 		}
 		else if (imgFormat->Equals(UTF8STRC("image/gif")))
 		{
 			Parser::FileParser::GIFParser parser;
-			ret = (Media::ImageList*)parser.ParseFile(&mdr, 0, IO::ParserType::ImageList);
+			ret = (Media::ImageList*)parser.ParseFile(mdr, 0, IO::ParserType::ImageList);
 		}
 		else if (imgFormat->Equals(UTF8STRC("image/jpeg")))
 		{
 			Parser::FileParser::GUIImgParser parser;
-			ret = (Media::ImageList*)parser.ParseFile(&mdr, 0, IO::ParserType::ImageList);
+			ret = (Media::ImageList*)parser.ParseFile(mdr, 0, IO::ParserType::ImageList);
 		}
 	}
 	cli.Delete();

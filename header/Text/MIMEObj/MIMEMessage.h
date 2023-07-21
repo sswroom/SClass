@@ -39,7 +39,7 @@ namespace Text
 			Text::String *GetHeaderName(UOSInt index) const;
 			Text::String *GetHeaderValue(UOSInt index) const;
 
-			Bool ParseFromData(IO::StreamData *fd);
+			Bool ParseFromData(NotNullPtr<IO::StreamData> fd);
 
 			static UTF8Char *ParseHeaderStr(UTF8Char *sbuff, const UTF8Char *value);
 		};

@@ -934,7 +934,7 @@ void SSWR::OrganWeb::OrganWebEnv::Restart()
 	///////////////////////////
 }
 
-IO::ParsedObject *SSWR::OrganWeb::OrganWebEnv::ParseFileType(IO::StreamData *fd, IO::ParserType targetType)
+IO::ParsedObject *SSWR::OrganWeb::OrganWebEnv::ParseFileType(NotNullPtr<IO::StreamData> fd, IO::ParserType targetType)
 {
 	Sync::MutexUsage mutUsage(&this->parserMut);
 	return this->parsers.ParseFileType(fd, targetType);
@@ -1933,7 +1933,7 @@ Bool SSWR::OrganWeb::OrganWebEnv::SpeciesAddWebfile(Sync::RWMutexUsage *mutUsage
 	UInt32 crcVal = crc.CalcDirect(imgURL.v, imgURL.leng);
 	
 	IO::StmData::MemoryDataRef fd(mstm.GetBuff(), mstm.GetLength());
-	Media::ImageList *imgList = (Media::ImageList*)this->parsers.ParseFileType(&fd, IO::ParserType::ImageList);
+	Media::ImageList *imgList = (Media::ImageList*)this->parsers.ParseFileType(fd, IO::ParserType::ImageList);
 	if (imgList == 0)
 		return false;
 	DEL_CLASS(imgList);
@@ -2157,7 +2157,7 @@ Int32 SSWR::OrganWeb::OrganWebEnv::UserfileAdd(Sync::RWMutexUsage *mutUsage, Int
 
 		{
 			IO::StmData::MemoryDataRef md(fileCont, fileSize);
-			pobj = this->parsers.ParseFile(&md, &t);
+			pobj = this->parsers.ParseFile(md, &t);
 		}
 		if (pobj)
 		{
@@ -2424,7 +2424,7 @@ Int32 SSWR::OrganWeb::OrganWebEnv::UserfileAdd(Sync::RWMutexUsage *mutUsage, Int
 
 		{
 			IO::StmData::FileData fd(fileName, false);
-			pobj = this->parsers.ParseFile(&fd, &t);
+			pobj = this->parsers.ParseFile(fd, &t);
 		}
 		if (pobj)
 		{

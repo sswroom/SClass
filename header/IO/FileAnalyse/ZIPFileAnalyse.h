@@ -34,7 +34,7 @@ namespace IO
 			UOSInt AddCentDir(const UInt8 *buff, UOSInt buffSize, UInt64 ofst);
 			static UInt32 __stdcall ParseThread(void *userObj);
 		public:
-			ZIPFileAnalyse(IO::StreamData *fd);
+			ZIPFileAnalyse(NotNullPtr<IO::StreamData> fd);
 			virtual ~ZIPFileAnalyse();
 
 			virtual Text::CString GetFormatName();

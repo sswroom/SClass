@@ -43,7 +43,7 @@ IO::ParserType Parser::FileParser::QTParser::GetParserType()
 	return IO::ParserType::MediaFile;
 }
 
-IO::ParsedObject *Parser::FileParser::QTParser::ParseFileHdr(IO::StreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::QTParser::ParseFileHdr(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	UInt64 size;
 	UInt64 ofst = 0;
@@ -107,7 +107,7 @@ IO::ParsedObject *Parser::FileParser::QTParser::ParseFileHdr(IO::StreamData *fd,
 	return 0;
 }
 
-Media::MediaFile *Parser::FileParser::QTParser::ParseMoovAtom(IO::StreamData *fd, UInt64 ofst, UInt64 size)
+Media::MediaFile *Parser::FileParser::QTParser::ParseMoovAtom(NotNullPtr<IO::StreamData> fd, UInt64 ofst, UInt64 size)
 {
 	UInt64 i;
 	UInt8 hdr[8];
@@ -196,7 +196,7 @@ Media::MediaFile *Parser::FileParser::QTParser::ParseMoovAtom(IO::StreamData *fd
 	return file;
 }
 
-Media::IMediaSource *Parser::FileParser::QTParser::ParseTrakAtom(IO::StreamData *fd, UInt64 ofst, UInt32 size, Int32 *trackDelay, Int32 *trackSkipMS, UInt32 mvTimeScale)
+Media::IMediaSource *Parser::FileParser::QTParser::ParseTrakAtom(NotNullPtr<IO::StreamData> fd, UInt64 ofst, UInt32 size, Int32 *trackDelay, Int32 *trackSkipMS, UInt32 mvTimeScale)
 {
 	UInt32 i;
 	UInt8 hdr[8];
@@ -280,7 +280,7 @@ Media::IMediaSource *Parser::FileParser::QTParser::ParseTrakAtom(IO::StreamData 
 	return src;
 }
 
-Media::IMediaSource *Parser::FileParser::QTParser::ParseMdiaAtom(IO::StreamData *fd, UInt64 ofst, UInt32 size, UInt32 *timeScaleOut)
+Media::IMediaSource *Parser::FileParser::QTParser::ParseMdiaAtom(NotNullPtr<IO::StreamData> fd, UInt64 ofst, UInt32 size, UInt32 *timeScaleOut)
 {
 	UInt32 i;
 	UInt8 hdr[8];
@@ -354,7 +354,7 @@ Media::IMediaSource *Parser::FileParser::QTParser::ParseMdiaAtom(IO::StreamData 
 	return src;
 }
 
-Media::IMediaSource *Parser::FileParser::QTParser::ParseMinfAtom(IO::StreamData *fd, UInt64 ofst, UInt32 size, Media::MediaType mtyp, UInt32 timeScale)
+Media::IMediaSource *Parser::FileParser::QTParser::ParseMinfAtom(NotNullPtr<IO::StreamData> fd, UInt64 ofst, UInt32 size, Media::MediaType mtyp, UInt32 timeScale)
 {
 	UInt32 i;
 	UInt8 hdr[8];
@@ -400,7 +400,7 @@ Media::IMediaSource *Parser::FileParser::QTParser::ParseMinfAtom(IO::StreamData 
 	return src;
 }
 
-Media::IMediaSource *Parser::FileParser::QTParser::ParseStblAtom(IO::StreamData *fd, UInt64 ofst, UInt32 size, Media::MediaType mtyp, UInt32 timeScale)
+Media::IMediaSource *Parser::FileParser::QTParser::ParseStblAtom(NotNullPtr<IO::StreamData> fd, UInt64 ofst, UInt32 size, Media::MediaType mtyp, UInt32 timeScale)
 {
 	UInt32 i;
 	UInt8 hdr[8];
@@ -1609,7 +1609,7 @@ array_item:
 	return src;
 }
 
-Bool Parser::FileParser::QTParser::ParseEdtsAtom(IO::StreamData *fd, UInt64 ofst, UInt32 size, Int32 *delay, Int32 *sampleSkip)
+Bool Parser::FileParser::QTParser::ParseEdtsAtom(NotNullPtr<IO::StreamData> fd, UInt64 ofst, UInt32 size, Int32 *delay, Int32 *sampleSkip)
 {
 	UInt32 i;
 	UInt8 hdr[8];

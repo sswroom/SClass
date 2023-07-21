@@ -158,11 +158,11 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			if (Text::StrEndsWithICaseC(cmdLines[1], cmdLen, UTF8STRC(".SFV")))
 			{
 				Parser::FileParser::SFVParser parser;
-				IO::StmData::FileData *fd;
 				IO::FileCheck *fileChk;
-				NEW_CLASS(fd, IO::StmData::FileData({cmdLines[1], cmdLen}, false));
-				fileChk = (IO::FileCheck *)parser.ParseFile(fd, 0, IO::ParserType::FileCheck);
-				DEL_CLASS(fd);
+				{
+					IO::StmData::FileData fd({cmdLines[1], cmdLen}, false);
+					fileChk = (IO::FileCheck *)parser.ParseFile(fd, 0, IO::ParserType::FileCheck);
+				}
 				if (fileChk == 0)
 				{
 					console->WriteLineC(UTF8STRC("Error in parsing the file"));

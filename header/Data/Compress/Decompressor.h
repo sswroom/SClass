@@ -24,7 +24,7 @@ namespace Data
 			virtual ~Decompressor();
 
 			virtual Bool Decompress(UInt8 *destBuff, UOSInt *destBuffSize, const UInt8 *srcBuff, UOSInt srcBuffSize) = 0;
-			virtual Bool Decompress(IO::Stream *destStm, IO::StreamData *srcData) = 0;
+			virtual Bool Decompress(IO::Stream *destStm, NotNullPtr<IO::StreamData> srcData) = 0;
 
 			static Data::Compress::Decompressor *CreateDecompressor(CompressMethod compMeth);
 			static Text::CString GetCompMethName(CompressMethod compMethod);

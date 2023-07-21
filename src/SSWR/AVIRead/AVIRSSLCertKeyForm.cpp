@@ -100,10 +100,11 @@ void __stdcall SSWR::AVIRead::AVIRSSLCertKeyForm::OnFileDrop(void *userObj, NotN
 
 void SSWR::AVIRead::AVIRSSLCertKeyForm::LoadFile(Text::CString fileName)
 {
-	IO::StmData::FileData *fd;
-	NEW_CLASS(fd, IO::StmData::FileData(fileName, false));
-	Net::ASN1Data *asn1 = (Net::ASN1Data*)this->core->GetParserList()->ParseFileType(fd, IO::ParserType::ASN1Data);
-	DEL_CLASS(fd);
+	Net::ASN1Data *asn1;
+	{
+		IO::StmData::FileData fd(fileName, false);
+		asn1 = (Net::ASN1Data*)this->core->GetParserList()->ParseFileType(fd, IO::ParserType::ASN1Data);
+	}
 	if (asn1 == 0)
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Error in parsing file"), CSTR("SSL Cert/Key"), this);

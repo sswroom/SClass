@@ -49,7 +49,7 @@ IO::ParserType Parser::FileParser::MEVParser::GetParserType()
 	return IO::ParserType::MapEnv;
 }
 
-IO::ParsedObject *Parser::FileParser::MEVParser::ParseFileHdr(IO::StreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::MEVParser::ParseFileHdr(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	UInt8 buff[512];
 	UInt32 currPos = 0;
@@ -231,7 +231,7 @@ IO::ParsedObject *Parser::FileParser::MEVParser::ParseFileHdr(IO::StreamData *fd
 	return env;
 }
 
-void Parser::FileParser::MEVParser::ReadItems(IO::StreamData *fd, Map::MapEnv *env, UInt32 itemCnt, UInt32 *currPos, Map::MapEnv::GroupItem *group, const WChar **dirArr, MEVImageInfo *imgInfos)
+void Parser::FileParser::MEVParser::ReadItems(NotNullPtr<IO::StreamData> fd, Map::MapEnv *env, UInt32 itemCnt, UInt32 *currPos, Map::MapEnv::GroupItem *group, const WChar **dirArr, MEVImageInfo *imgInfos)
 {
 	UInt8 buff[512];
 	WChar wbuff[256];

@@ -40,7 +40,7 @@ IO::ParserType Parser::FileParser::CUEParser::GetParserType()
 	return IO::ParserType::MediaFile;
 }
 
-IO::ParsedObject *Parser::FileParser::CUEParser::ParseFileHdr(IO::StreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::CUEParser::ParseFileHdr(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	UTF8Char sbuff[512];
 	UTF8Char sbuff2[512];
@@ -138,15 +138,15 @@ IO::ParsedObject *Parser::FileParser::CUEParser::ParseFileHdr(IO::StreamData *fd
 
 	if (!errorFound && fileName)
 	{
-		IO::StmData::FileData *data;
 		IO::ParserType pt;
 		IO::ParsedObject *pobj;
 
 		sptr = fd->GetFullName()->ConcatTo(sbuff);
 		sptr = IO::Path::AppendPath(sbuff, sptr, fileName->ToCString());
-		NEW_CLASS(data, IO::StmData::FileData(CSTRP(sbuff, sptr), false));
-		pobj = this->parsers->ParseFile(data, &pt);
-		DEL_CLASS(data);
+		{
+			IO::StmData::FileData data(CSTRP(sbuff, sptr), false);
+			pobj = this->parsers->ParseFile(data, &pt);
+		}
 		if (pobj)
 		{
 			if (pt == IO::ParserType::MediaFile)

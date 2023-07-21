@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "IO/StmData/BlockStreamData.h"
 
-IO::StmData::BlockStreamData::BlockStreamData(IO::StreamData *sd)
+IO::StmData::BlockStreamData::BlockStreamData(NotNullPtr<IO::StreamData> sd)
 {
 	this->sd = sd->GetPartialData(0, sd->GetDataSize());
 	this->totalSize = 0;
@@ -10,7 +10,7 @@ IO::StmData::BlockStreamData::BlockStreamData(IO::StreamData *sd)
 
 IO::StmData::BlockStreamData::~BlockStreamData()
 {
-	DEL_CLASS(this->sd);
+	this->sd.Delete();
 }
 
 UOSInt IO::StmData::BlockStreamData::GetRealData(UInt64 offset, UOSInt length, Data::ByteArray buffer)
@@ -74,10 +74,10 @@ const UInt8 *IO::StmData::BlockStreamData::GetPointer()
 	return 0;
 }
 
-IO::StreamData *IO::StmData::BlockStreamData::GetPartialData(UInt64 offset, UInt64 length)
+NotNullPtr<IO::StreamData> IO::StmData::BlockStreamData::GetPartialData(UInt64 offset, UInt64 length)
 {
-	IO::StmData::BlockStreamData *data;
-	NEW_CLASS(data, IO::StmData::BlockStreamData(this->sd));
+	NotNullPtr<IO::StmData::BlockStreamData> data;
+	NEW_CLASSNN(data, IO::StmData::BlockStreamData(this->sd));
 	OSInt i = this->dataOfstList.SortedIndexOf(offset);
 	UInt64 totalLength = 0;
 	UOSInt thisLength;

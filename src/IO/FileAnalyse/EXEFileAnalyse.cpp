@@ -262,7 +262,7 @@ UInt32 __stdcall IO::FileAnalyse::EXEFileAnalyse::ParseThread(void *userObj)
 	return 0;
 }
 
-IO::FileAnalyse::EXEFileAnalyse::EXEFileAnalyse(IO::StreamData *fd)
+IO::FileAnalyse::EXEFileAnalyse::EXEFileAnalyse(NotNullPtr<IO::StreamData> fd)
 {
 	UInt8 buff[8];
 	this->fd = 0;
@@ -276,7 +276,7 @@ IO::FileAnalyse::EXEFileAnalyse::EXEFileAnalyse(IO::StreamData *fd)
 	{
 		return;
 	}
-	this->fd = fd->GetPartialData(0, fd->GetDataSize());
+	this->fd = fd->GetPartialData(0, fd->GetDataSize()).Ptr();
 	Sync::ThreadUtil::Create(ParseThread, this);
 	while (!this->threadStarted)
 	{

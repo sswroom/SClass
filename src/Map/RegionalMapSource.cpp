@@ -291,12 +291,12 @@ Map::MapDrawLayer *Map::RegionalMapSource::OpenMap(const MapInfo *map, NotNullPt
 	}
 	case MapType::File:
 	{
-		IO::StreamData *fd = browser->GetData(Text::CString(map->url, map->urlLen), false, 0);
-		if (fd)
+		NotNullPtr<IO::StreamData> fd;
+		if (fd.Set(browser->GetData(Text::CString(map->url, map->urlLen), false, 0)))
 		{
 			IO::ParserType pt;
 			IO::ParsedObject *pobj = parsers->ParseFile(fd, &pt);
-			DEL_CLASS(fd);
+			fd.Delete();
 			if (pobj)
 			{
 				if (pt == IO::ParserType::MapLayer)

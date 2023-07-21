@@ -8,7 +8,7 @@
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
 
-IO::FileAnalyse::SMBIOSFileAnalyse::SMBIOSFileAnalyse(IO::StreamData *fd)
+IO::FileAnalyse::SMBIOSFileAnalyse::SMBIOSFileAnalyse(NotNullPtr<IO::StreamData> fd)
 {
 	UOSInt leng = (UOSInt)fd->GetDataSize();
 	this->fd = 0;
@@ -21,7 +21,7 @@ IO::FileAnalyse::SMBIOSFileAnalyse::SMBIOSFileAnalyse(IO::StreamData *fd)
 	{
 		return;
 	}
-	this->fd = fd->GetPartialData(0, leng);
+	this->fd = fd->GetPartialData(0, leng).Ptr();
 	PackInfo *pack;
 	UOSInt fileOfst = 0;
 	UOSInt i;

@@ -62,13 +62,14 @@ void __stdcall SSWR::AVIRead::AVIRImagePSNRForm::OnCompareClicked(void *userObj)
 	Media::ImageList *imgList2 = 0;
 	Media::StaticImage *simg1;
 	Media::StaticImage *simg2;
-	IO::StmData::FileData *fd;
-	NEW_CLASS(fd, IO::StmData::FileData(sb.ToCString(), false));
-	imgList1 = (Media::ImageList*)me->core->GetParserList()->ParseFileType(fd, IO::ParserType::ImageList);
-	DEL_CLASS(fd);
-	NEW_CLASS(fd, IO::StmData::FileData(sb2.ToCString(), false));
-	imgList2 = (Media::ImageList*)me->core->GetParserList()->ParseFileType(fd, IO::ParserType::ImageList);
-	DEL_CLASS(fd);
+	{
+		IO::StmData::FileData fd(sb.ToCString(), false);
+		imgList1 = (Media::ImageList*)me->core->GetParserList()->ParseFileType(fd, IO::ParserType::ImageList);
+	}
+	{
+		IO::StmData::FileData fd(sb2.ToCString(), false);
+		imgList2 = (Media::ImageList*)me->core->GetParserList()->ParseFileType(fd, IO::ParserType::ImageList);
+	}
 	if (imgList1 && imgList2)
 	{
 		imgList1->ToStaticImage(0);

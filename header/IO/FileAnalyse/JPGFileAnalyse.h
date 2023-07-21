@@ -31,7 +31,7 @@ namespace IO
 			static Text::CString GetTagName(UInt8 tagType);
 			static UInt32 __stdcall ParseThread(void *userObj);
 		public:
-			JPGFileAnalyse(IO::StreamData *fd);
+			JPGFileAnalyse(NotNullPtr<IO::StreamData> fd);
 			virtual ~JPGFileAnalyse();
 
 			virtual Text::CString GetFormatName();

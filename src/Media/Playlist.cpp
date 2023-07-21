@@ -55,10 +55,10 @@ IO::ParserType Media::Playlist::GetParserType() const
 Bool Media::Playlist::AddFile(Text::CString fileName)
 {
 	Media::MediaFile *file;
-	IO::StmData::FileData *fd;
-	NEW_CLASS(fd, IO::StmData::FileData(fileName, false));
-	file = (Media::MediaFile*)this->parsers->ParseFileType(fd, IO::ParserType::MediaFile);
-	DEL_CLASS(fd);
+	{
+		IO::StmData::FileData fd(fileName, false);
+		file = (Media::MediaFile*)this->parsers->ParseFileType(fd, IO::ParserType::MediaFile);
+	}
 	if (file == 0)
 	{
 		return false;
@@ -238,10 +238,10 @@ Bool Media::Playlist::OpenItem(UOSInt index)
 
 	this->player->LoadMedia(0);
 	SDEL_CLASS(this->currFile);
-	IO::StmData::FileData *fd;
-	NEW_CLASS(fd, IO::StmData::FileData(ent->fileName, false));
-	this->currFile = (Media::MediaFile*)this->parsers->ParseFileType(fd, IO::ParserType::MediaFile);
-	DEL_CLASS(fd);
+	{
+		IO::StmData::FileData fd(ent->fileName, false);
+		this->currFile = (Media::MediaFile*)this->parsers->ParseFileType(fd, IO::ParserType::MediaFile);
+	}
 
 	if (this->currFile == 0)
 		return false;

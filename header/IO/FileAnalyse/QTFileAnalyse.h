@@ -33,7 +33,7 @@ namespace IO
 			static UInt32 __stdcall ParseThread(void *userObj);
 			UOSInt GetFrameIndex(UOSInt lev, UInt64 ofst);
 		public:
-			QTFileAnalyse(IO::StreamData *fd);
+			QTFileAnalyse(NotNullPtr<IO::StreamData> fd);
 			virtual ~QTFileAnalyse();
 
 			virtual Text::CString GetFormatName();
