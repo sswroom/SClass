@@ -521,7 +521,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateDatabaseList()
 		return;
 	}
 	Text::String *dbName;
-	Data::ArrayList<Text::String*> dbNames;
+	Data::ArrayListNN<Text::String> dbNames;
 	UOSInt i = 0;
 	UOSInt j = this->currDB->GetDatabaseNames(&dbNames);
 	ArtificialQuickSort_Sort(&dbNames, 0, (OSInt)(j - 1));
