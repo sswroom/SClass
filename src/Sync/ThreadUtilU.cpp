@@ -8,7 +8,7 @@
 #include <sys/time.h>
 #include <stdio.h>
 
-#if defined(__FreeBSD__)
+#if defined(__FreeBSD__) || defined(__APPLE__)
 #include <sys/types.h>
 #include <sys/sysctl.h>
 #elif defined(__linux__)
@@ -120,7 +120,7 @@ UInt32 Sync::ThreadUtil::GetThreadId()
 
 UOSInt Sync::ThreadUtil::GetThreadCnt()
 {
-#if defined(__FreeBSD__)
+#if defined(__FreeBSD__) || defined(__APPLE__)
 	int mib[2];
 	mib[0] = CTL_HW;
 	mib[1] = HW_NCPU;
@@ -217,5 +217,9 @@ void Sync::ThreadUtil::SetPriority(ThreadPriority priority)
 
 Bool Sync::ThreadUtil::SetName(const UTF8Char *name)
 {
+#if defined(__APPLE__)
+	return pthread_setname_np((const char*)name) == 0;
+#else
 	return pthread_setname_np(pthread_self(), (const char*)name) == 0;
+#endif
 }

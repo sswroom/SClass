@@ -103,6 +103,9 @@ Net::ConnectionInfo::ConnectionInfo(void *info)
 	{
 		this->ent.mtu = 0;
 	}
+#if defined(__APPLE__)
+	this->ent.index = 0;
+#else
 	if (ioctl(data->sock, SIOCGIFINDEX, &ifr) == 0)
 	{
 		this->ent.index = (UInt32)ifr.ifr_ifru.ifru_ivalue;
@@ -111,7 +114,7 @@ Net::ConnectionInfo::ConnectionInfo(void *info)
 	{
 		this->ent.index = 0;
 	}
-
+#endif
 #if defined(__FreeBSD__) || defined(__MACH__)
 	UInt8 macAddr[6];
 	ifr.ifr_ifru.ifru_data = (caddr_t)macAddr;

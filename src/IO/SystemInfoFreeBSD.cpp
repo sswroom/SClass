@@ -1,13 +1,13 @@
 #include "Stdafx.h"
 #include "Manage/CPUInfo.h"
 #include "IO/FileStream.h"
+#include "IO/SMBIOS.h"
+#include "IO/SMBIOSUtil.h"
 #include "IO/SystemInfo.h"
 #include "Manage/Process.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 #include "Text/UTF8Reader.h"
-#include "Win32/SMBIOS.h"
-#include "Win32/SMBIOSUtil.h"
 #include <sys/types.h>
 #include <sys/sysctl.h>
 
@@ -17,13 +17,13 @@ struct IO::SystemInfo::ClassData
 	Text::String *platformName;
 };
 
-Bool SystemInfo_ReadFile(const UTF8Char *fileName, Text::StringBuilderUTF8 *sb)
+Bool SystemInfo_ReadFile(Text::CString fileName, NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	Bool succ = false;
 	IO::FileStream fs(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 	if (!fs.IsError())
 	{
-		Text::UTF8Reader reader(&fs));
+		Text::UTF8Reader reader(fs);
 		while (reader.ReadLine(sb, 512))
 		{
 		}
@@ -50,7 +50,7 @@ IO::SystemInfo::SystemInfo()
 	{
 		sb.ClearStr();
 		sb.AppendC((const UTF8Char*)sbuff, size);
-		info->platformName = Text::String::New(sb.ToString(), sb.GetLength());
+		info->platformName = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 	}
 #endif
 
@@ -130,11 +130,11 @@ UOSInt IO::SystemInfo::GetRAMInfo(Data::ArrayList<RAMInfo*> *ramList)
 {
 	UOSInt retCnt = 0;
 	RAMInfo *ram;
-	Win32::SMBIOS *smbios = Win32::SMBIOSUtil::GetSMBIOS();
+	IO::SMBIOS *smbios = IO::SMBIOSUtil::GetSMBIOS();
 	if (smbios)
 	{
-		Data::ArrayList<Win32::SMBIOS::MemoryDeviceInfo *> memList;
-		Win32::SMBIOS::MemoryDeviceInfo *mem;
+		Data::ArrayList<IO::SMBIOS::MemoryDeviceInfo *> memList;
+		IO::SMBIOS::MemoryDeviceInfo *mem;
 		Text::StringBuilderUTF8 sb;
 		smbios->GetMemoryInfo(&memList);
 		if (memList.GetCount() > 0)
@@ -149,7 +149,7 @@ UOSInt IO::SystemInfo::GetRAMInfo(Data::ArrayList<RAMInfo*> *ramList)
 				{
 					sb.ClearStr();
 					sb.AppendSlow((const UTF8Char*)mem->deviceLocator);
-					ram->deviceLocator = Text::String::New(sb.ToCString());
+					ram->deviceLocator = Text::String::New(sb.ToCString()).Ptr();
 				}
 				else
 				{
@@ -159,7 +159,7 @@ UOSInt IO::SystemInfo::GetRAMInfo(Data::ArrayList<RAMInfo*> *ramList)
 				{
 					sb.ClearStr();
 					sb.AppendSlow((const UTF8Char*)mem->manufacturer);
-					ram->manufacturer = Text::String::New(sb.ToCString());
+					ram->manufacturer = Text::String::New(sb.ToCString()).Ptr();
 				}
 				else
 				{
@@ -169,7 +169,7 @@ UOSInt IO::SystemInfo::GetRAMInfo(Data::ArrayList<RAMInfo*> *ramList)
 				{
 					sb.ClearStr();
 					sb.AppendSlow((const UTF8Char*)mem->partNo);
-					ram->partNo = Text::String::New(sb.ToCString());
+					ram->partNo = Text::String::New(sb.ToCString()).Ptr();
 				}
 				else
 				{
@@ -179,7 +179,7 @@ UOSInt IO::SystemInfo::GetRAMInfo(Data::ArrayList<RAMInfo*> *ramList)
 				{
 					sb.ClearStr();
 					sb.AppendSlow((const UTF8Char*)mem->sn);
-					ram->sn = Text::String::New(sb.ToCString());
+					ram->sn = Text::String::New(sb.ToCString()).Ptr();
 				}
 				else
 				{

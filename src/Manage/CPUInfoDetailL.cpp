@@ -20,7 +20,7 @@ Manage::CPUInfoDetail::CPUInfoDetail()
 		Int32 cpuPart = 0;
 		Text::StringBuilderUTF8 sb;
 		{
-			Text::UTF8Reader reader(&fs);
+			Text::UTF8Reader reader(fs);
 			while (reader.ReadLine(sb, 512))
 			{
 				if (sb.StartsWith(UTF8STRC("CPU part	:")))
@@ -31,7 +31,7 @@ Manage::CPUInfoDetail::CPUInfoDetail()
 			}
 		}
 		fs.SeekFromBeginning(0);
-		this->cpuModel = Manage::CPUDB::ParseCPUInfo(&fs);
+		this->cpuModel = Manage::CPUDB::ParseCPUInfo(fs);
 		if (this->cpuModel.v == 0)
 		{
 			if (this->clsData && Text::StrEquals((const UTF8Char*)this->clsData, (const UTF8Char*)"spade"))
@@ -90,7 +90,7 @@ Manage::CPUInfoDetail::CPUInfoDetail()
 				IO::FileStream fs2(CSTR("/sys/devices/soc0/machine"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 				if (!fs2.IsError())
 				{
-					UOSInt i = fs2.Read(fileBuff, 32);
+					UOSInt i = fs2.Read(BYTEARR(fileBuff).WithSize(32));
 					fileBuff[i] = 0;
 					while (i > 0)
 					{
@@ -238,7 +238,7 @@ Bool Manage::CPUInfoDetail::GetCPUTemp(UOSInt index, Double *temp)
 	Text::StringBuilderUTF8 sb;
 	{
 		IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-		Text::UTF8Reader reader(&fs);
+		Text::UTF8Reader reader(fs);
 		sb.ClearStr();
 		if (reader.ReadLine(sb, 512))
 		{
@@ -260,7 +260,7 @@ Bool Manage::CPUInfoDetail::GetCPUTemp(UOSInt index, Double *temp)
 	sptr = Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("/sys/class/hwmon/hwmon")), index), UTF8STRC("/device/temperature"));
 	{
 		IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-		Text::UTF8Reader reader(&fs);
+		Text::UTF8Reader reader(fs);
 		sb.ClearStr();
 		if (reader.ReadLine(sb, 512))
 		{

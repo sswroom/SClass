@@ -32,7 +32,7 @@ IO::StmData::MemoryDataCopy::MemoryDataCopy(const Data::ByteArrayR &data)
 	this->stat->useCnt = 1;
 	this->stat->fullName = 0;
 	this->data = this->stat->data;
-	this->dataLength = dataLength;
+	this->dataLength = data.GetSize();
 }
 
 

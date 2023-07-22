@@ -220,7 +220,7 @@ void Sync::Mutex_Lock(Sync::MutexData *data)
 	if (mut->lockTID == currTID)
 	{
 		mut->lockCnt++;
-		printf("Mutex Relocked cnt = %d, tid = %d\r\n", mut->lockCnt, currTID);
+		printf("Mutex Relocked cnt = %d, tid = %d\r\n", (Int32)mut->lockCnt, (Int32)(OSInt)currTID);
 	}
 	else
 	{
@@ -252,7 +252,7 @@ Bool Sync::Mutex_TryLock(Sync::MutexData *data)
 	if (mut->lockTID == currTID)
 	{
 		mut->lockCnt++;
-		printf("Mutex Relocked cnt = %d, tid = %d\r\n", mut->lockCnt, currTID);
+		printf("Mutex Relocked cnt = %d, tid = %d\r\n", (Int32)mut->lockCnt, (Int32)(OSInt)currTID);
 		return true;
 	}
 	else

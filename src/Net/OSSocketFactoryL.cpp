@@ -133,6 +133,9 @@ Socket *Net::OSSocketFactory::CreateRAWIPv4Socket(UInt32 ip)
 
 Socket *Net::OSSocketFactory::CreateARPSocket()
 {
+#if defined(__APPLE__) || defined(__FreeBSD__)
+	return 0;
+#else
 	int s = socket(AF_INET, SOCK_PACKET, htons(ETH_P_ARP)) + 1;
 	if (s)
 	{
@@ -144,6 +147,7 @@ Socket *Net::OSSocketFactory::CreateARPSocket()
 		bind(s - 1, (struct sockaddr *)&s_ll, sizeof(s_ll));
 	}
 	return (Socket*)(OSInt)s;
+#endif
 }
 
 Socket *Net::OSSocketFactory::CreateRAWSocket()
@@ -211,6 +215,9 @@ Bool Net::OSSocketFactory::SocketBind(Socket *socket, const Net::SocketUtil::Add
 
 Bool Net::OSSocketFactory::SocketBindRAWIf(Socket *socket, UOSInt ifIndex)
 {
+#if defined(__APPLE__) || defined(__FreeBSD__)
+	return false;
+#else
 	struct sockaddr_ll sll;
 	MemClear(&sll, sizeof(sll));
 	sll.sll_family          = AF_PACKET;
@@ -223,6 +230,7 @@ Bool Net::OSSocketFactory::SocketBindRAWIf(Socket *socket, UOSInt ifIndex)
 	mr.mr_ifindex = (int)ifIndex;
 	mr.mr_type    = PACKET_MR_PROMISC;
 	return (setsockopt(this->SocketGetFD(socket), SOL_PACKET, PACKET_ADD_MEMBERSHIP, &mr, sizeof(mr)) != -1) && ret;
+#endif
 }
 
 Bool Net::OSSocketFactory::SocketListen(Socket *socket)
@@ -388,8 +396,13 @@ void Net::OSSocketFactory::SetNoDelay(Socket *socket, Bool val)
 void Net::OSSocketFactory::SetSendTimeout(Socket *socket, Data::Duration timeout)
 {
 	struct timeval tv;
+#if defined(__APPLE__)
+	tv.tv_sec = (time_t)timeout.GetSeconds();
+	tv.tv_usec = (suseconds_t)timeout.GetNS() / 1000;
+#else
 	tv.tv_sec = (__time_t)timeout.GetSeconds();
 	tv.tv_usec = (__suseconds_t)timeout.GetNS() / 1000;
+#endif
 	if (setsockopt(this->SocketGetFD(socket), SOL_SOCKET, SO_SNDTIMEO, (char*)&tv, sizeof(tv)))
 	{
 		printf("Error in set SO_SNDTIMEO\r\n");
@@ -399,8 +412,13 @@ void Net::OSSocketFactory::SetSendTimeout(Socket *socket, Data::Duration timeout
 void Net::OSSocketFactory::SetRecvTimeout(Socket *socket, Data::Duration timeout)
 {
 	struct timeval tv;
+#if defined(__APPLE__)
+	tv.tv_sec = (time_t)timeout.GetSeconds();
+	tv.tv_usec = (suseconds_t)timeout.GetNS() / 1000;
+#else
 	tv.tv_sec = (__time_t)timeout.GetSeconds();
 	tv.tv_usec = (__suseconds_t)timeout.GetNS() / 1000;
+#endif
 	if (setsockopt(this->SocketGetFD(socket), SOL_SOCKET, SO_RCVTIMEO, (char*)&tv, sizeof(tv)))
 	{
 		printf("Error in set SO_RCVTIMEO\r\n");
@@ -1089,6 +1107,7 @@ UOSInt Net::OSSocketFactory::GetConnInfoList(Data::ArrayList<Net::ConnectionInfo
 	ConnectionData data;
 	UOSInt ret = 0;
 	Char buff[1024];
+#if !defined(__APPLE__)
 	ifconf ifc;
 	ifreq *ifrend;
 	ifreq *ifrcurr;
@@ -1109,6 +1128,7 @@ UOSInt Net::OSSocketFactory::GetConnInfoList(Data::ArrayList<Net::ConnectionInfo
 			ifrcurr++;
 		}
 	}
+#endif
 	close(sock);
 
 	UTF8Char sbuff[128];

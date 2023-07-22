@@ -24,7 +24,7 @@ Manage::CPUInfo::CPUInfo()
 	{
 //		Int32 cpuPart = 0;
 		Text::StringBuilderUTF8 sb;
-		Text::UTF8Reader reader(&fs);
+		Text::UTF8Reader reader(fs);
 		while (reader.ReadLine(sb, 512))
 		{
 			if (sb.StartsWith(UTF8STRC("Hardware"))) //ARM
@@ -34,7 +34,7 @@ Manage::CPUInfo::CPUInfo()
 				{
 					if (this->clsData)
 						Text::StrDelNew((const UTF8Char*)this->clsData);
-					this->clsData = (void*)Text::StrCopyNew(sb.ToString() + i + 2);
+					this->clsData = (void*)Text::StrCopyNew(sb.ToString() + i + 2).Ptr();
 					sysType = 2;
 				}
 				if (sb.IndexOf(UTF8STRC(": BCM")) != INVALID_INDEX)
@@ -87,7 +87,7 @@ Manage::CPUInfo::CPUInfo()
 				i = sb.IndexOf(UTF8STRC(": "));
 				if (this->clsData)
 					Text::StrDelNew((const UTF8Char*)this->clsData);
-				this->clsData = (void*)Text::StrCopyNew(sb.ToString() + i + 2);
+				this->clsData = (void*)Text::StrCopyNew(sb.ToString() + i + 2).Ptr();
 				sysType = 3;
 			}
 			else if (sb.StartsWith(UTF8STRC("CPU architecture")))
@@ -112,7 +112,7 @@ Manage::CPUInfo::CPUInfo()
 				{
 					if (this->clsData)
 						Text::StrDelNew((const UTF8Char*)this->clsData);
-					this->clsData = (void*)Text::StrCopyNew(sb.ToString() + i + 2);
+					this->clsData = (void*)Text::StrCopyNew(sb.ToString() + i + 2).Ptr();
 					sysType = 1;
 				}
 			}
