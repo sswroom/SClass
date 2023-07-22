@@ -12,7 +12,7 @@ DB/MySQLConn.h: ../../src/DB/MySQLConn.cpp
 @MySQLConn.o
 DB/ODBCConn.h: ../../src/DB/ODBCConn.cpp
 @ODBCConn.o
-DB/PostgreSQLConn.h: ../../src/DB/PostgreSQLConn.cpp
+DB/PostgreSQLConn.h: ../../src/DB/PostgreSQLConnNul.cpp
 @PostgreSQLConn.o
 
 Exporter/HEIFExporter.h: ../../src/Exporter/HEIFExporter.cpp
@@ -83,7 +83,7 @@ Net/WirelessLAN.h: ../../src/Net/WirelessLANNull.cpp
 
 Parser/FileParser/HEIFParser.h: ../../src/Parser/FileParser/HEIFParser.cpp
 @HEIFParser.o
-Parser/FileParser/JP2Parser.h: ../../src/Parser/FileParser/JP2Parser.cpp
+Parser/FileParser/JP2Parser.h: ../../src/Parser/FileParser/JP2Parser_Null.cpp
 @JP2Parser.o
 Parser/FileParser/WebPParser.h: ../../src/Parser/FileParser/WebPParser.cpp
 @WebPParser.o
@@ -112,9 +112,7 @@ $-I /opt/local/include/mariadb/mysql
 ODBCConn.o: ../../src/DB/ODBCConn.cpp
 !-lodbc
 !-lodbcinst
-PostgreSQLConn.o: ../../src/DB/PostgreSQLConn.cpp
-$`pkg-config --cflags libpq`
-!`pkg-config --libs libpq`
+PostgreSQLConn.o: ../../src/DB/PostgreSQLConnNul.cpp
 HEIFExporter.o: ../../src/Exporter/HEIFExporter.cpp
 !-lheif
 WebPExporter.o: ../../src/Exporter/WebPExporter.cpp
@@ -170,8 +168,7 @@ SSLEngineFactory.o: ../../src/Net/SSLEngineFactoryOpenSSL.cpp
 WirelessLAN.o: ../../src/Net/WirelessLANNull.cpp
 HEIFParser.o: ../../src/Parser/FileParser/HEIFParser.cpp
 !-lheif
-JP2Parser.o: ../../src/Parser/FileParser/JP2Parser.cpp
-!-lopenjp2
+JP2Parser.o: ../../src/Parser/FileParser/JP2Parser_Null.cpp
 WebPParser.o: ../../src/Parser/FileParser/WebPParser.cpp
 !-lwebp
 !-lwebpdemux

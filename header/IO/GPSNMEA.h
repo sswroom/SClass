@@ -41,7 +41,7 @@ namespace IO
 		Bool threadRunning;
 		Bool threadToStop;
 	private:
-		virtual void ParseUnknownCmd(const UTF8Char *cmd);
+		virtual void ParseUnknownCmd(const UTF8Char *cmd, UOSInt cmdLen);
 		static ParseStatus ParseNMEALine(UTF8Char *line, UOSInt lineLen, Map::GPSTrack::GPSRecord3 *record, SateRecord *sateRec);
 		static UInt32 __stdcall NMEAThread(void *userObj);
 	public:

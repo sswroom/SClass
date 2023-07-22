@@ -137,8 +137,8 @@ UI::GUIForm::GUIForm(GUIClientControl *parent, Double initW, Double initH, NotNu
 		GdkDisplay *display = gdk_display_get_default();
 		GdkScreen *scn;
 		GdkRectangle rect;
-		gint x;
-		gint y;
+		gint x = 0;
+		gint y = 0;
 #if GDK_MAJOR_VERSION > 3 || (GDK_MAJOR_VERSION == 3 && GDK_MINOR_VERSION >= 22)
 		GdkSeat *seat = gdk_display_get_default_seat(display);
 		GdkDevice *dev = gdk_seat_get_pointer(seat);

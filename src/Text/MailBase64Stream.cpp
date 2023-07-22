@@ -21,7 +21,7 @@ Text::MailBase64Stream::~MailBase64Stream()
 	DEL_CLASS(this->b64);
 }
 
-Bool Text::MailBase64Stream::IsDown()
+Bool Text::MailBase64Stream::IsDown() const
 {
 	return this->stm->IsDown();
 }

@@ -6,18 +6,36 @@
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 #include "Text/UTF8Reader.h"
-
+#if defined(__APPLE__)
+#include <sys/sysctl.h>
+#endif
 Manage::CPUInfo::CPUInfo()
 {
-	UOSInt i;
-	OSInt sysType = 0;
-
 	this->infoCnt = 0;
 	this->brand = Manage::CPUVendor::CB_UNKNOWN;
 	this->familyId = 0;
 	this->model = 0;
 	this->steppingId = 0;
 	this->clsData = 0;
+
+#if defined(__APPLE__)
+	UTF8Char sbuff[256];
+	size_t size = sizeof(sbuff);
+	if (sysctlbyname("machdep.cpu.brand_string", sbuff, &size, 0, 0) == 0)
+	{
+		this->clsData = (void*)Text::StrCopyNewC(sbuff, size).Ptr();
+		if (Text::StrStartsWithC(sbuff, (UOSInt)size, UTF8STRC("Apple")))
+		{
+			this->brand = Manage::CPUVendor::CB_APPLE;
+		}
+		else if (Text::StrStartsWithC(sbuff, (UOSInt)size, UTF8STRC("Intel")))
+		{
+			this->brand = Manage::CPUVendor::CB_INTEL;
+		}
+	}
+#else
+	UOSInt i;
+	OSInt sysType = 0;
 
 	IO::FileStream fs(CSTR("/proc/cpuinfo"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 	if (!fs.IsError())
@@ -123,6 +141,7 @@ Manage::CPUInfo::CPUInfo()
 			sb.ClearStr();
 		}
 	}
+#endif
 }
 
 Manage::CPUVendor::CPU_BRAND Manage::CPUInfo::GetBrand()

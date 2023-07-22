@@ -51,13 +51,13 @@ UInt32 Media::NWASource::SeekToTime(UInt32 time)
 	return this->currBlock * blkSample * 1000 / this->format.frequency;
 }
 
-UOSInt Media::NWASource::ReadBlock(UInt8 *buff, UOSInt blkSize)
+UOSInt Media::NWASource::ReadBlock(Data::ByteArray buff)
 {
 	UInt32 byps = (this->format.bitpersample / 8);
 	UInt32 retSize = 0;
-	while (blkSize > 0)
+	while (buff.GetSize() > 0)
 	{
-		if (blkSize < this->blockSize * byps)
+		if (buff.GetSize() < this->blockSize * byps)
 			return retSize;
 		UInt32 decSize;
 		UInt32 compBlockSize;
@@ -203,7 +203,7 @@ UOSInt Media::NWASource::ReadBlock(UInt8 *buff, UOSInt blkSize)
 						}
 						else
 						{
-							WriteInt16(buff, d[flipFlag]);
+							WriteInt16(&buff[0], d[flipFlag]);
 							buff += 2;
 						}
 						if (this->format.nChannels == 2)
@@ -220,7 +220,7 @@ UOSInt Media::NWASource::ReadBlock(UInt8 *buff, UOSInt blkSize)
 			}
 			else
 			{
-				WriteInt16(buff, d[flipFlag]);
+				WriteInt16(&buff[0], d[flipFlag]);
 				buff += 2;
 			}
 			if (this->format.nChannels == 2)
@@ -228,7 +228,6 @@ UOSInt Media::NWASource::ReadBlock(UInt8 *buff, UOSInt blkSize)
 			i++;
 		}
 		retSize += i * byps;
-		blkSize -= i * byps;
 		if (i != dSize)
 			break;
 	}

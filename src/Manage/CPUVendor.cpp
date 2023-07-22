@@ -50,6 +50,8 @@ Text::CString Manage::CPUVendor::GetBrandName(CPU_BRAND brand)
 		return CSTR("Spreadtrum");
 	case CB_NXP:
 		return CSTR("NXP");
+	case CB_APPLE:
+		return CSTR("Apple");
 	case CB_UNKNOWN:
 	default:
 		return CSTR("Unknown");

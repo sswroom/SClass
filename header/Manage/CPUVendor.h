@@ -31,7 +31,8 @@ namespace Manage
 			CB_HISILICON,
 			CB_SAMSUNG,
 			CB_SPREADTRUM,
-			CB_NXP
+			CB_NXP,
+			CB_APPLE
 		} CPU_BRAND;
 
 		static Text::CString GetBrandName(CPU_BRAND brand);

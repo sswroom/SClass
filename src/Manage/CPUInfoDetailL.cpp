@@ -9,11 +9,26 @@
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
 #include "Text/UTF8Reader.h"
+#if defined(__APPLE__)
+#include <sys/sysctl.h>
+#endif
 
 Manage::CPUInfoDetail::CPUInfoDetail()
 {
 	this->cpuModel = CSTR_NULL;
 
+#if defined(__APPLE__)
+	UTF8Char sbuff[256];
+	size_t size = sizeof(sbuff);
+	if (sysctlbyname("machdep.cpu.brand_string", sbuff, &size, 0, 0) == 0)
+	{
+		const Manage::CPUDB::CPUSpec *cpu = Manage::CPUDB::GetCPUSpec(Text::CString(sbuff, size));
+		if (cpu)
+		{
+			this->cpuModel = Text::CString(cpu->model, cpu->modelLen);
+		}
+	}
+#else
 	IO::FileStream fs(CSTR("/proc/cpuinfo"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 	if (!fs.IsError())
 	{
@@ -213,6 +228,7 @@ Manage::CPUInfoDetail::CPUInfoDetail()
 			}
 		}
 	}
+#endif
 }
 
 Manage::CPUInfoDetail::~CPUInfoDetail()

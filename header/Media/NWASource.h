@@ -23,7 +23,7 @@ namespace Media
 
 		virtual Int32 GetStreamTime(); //ms
 		virtual UInt32 SeekToTime(UInt32 time); //ms, ret actual time
-		virtual UOSInt ReadBlock(UInt8 *buff, UOSInt blkSize); //ret actual block size
+		virtual UOSInt ReadBlock(Data::ByteArray buff); //ret actual block size
 		virtual UOSInt GetMinBlockSize();
 		virtual UInt32 GetCurrTime();
 	};

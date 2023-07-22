@@ -10,7 +10,7 @@
 #include "Text/StringBuilderUTF8.h"
 #include "Text/UTF8Reader.h"
 
-void IO::GPSNMEA::ParseUnknownCmd(const UTF8Char *cmd)
+void IO::GPSNMEA::ParseUnknownCmd(const UTF8Char *cmd, UOSInt cmdLenå)
 {
 }
 
@@ -282,7 +282,7 @@ UInt32 __stdcall IO::GPSNMEA::NMEAThread(void *userObj)
 				case ParseStatus::NotNMEA:
 					break;
 				case ParseStatus::Unsupported:
-					me->ParseUnknownCmd(sbuff);
+					me->ParseUnknownCmd(sbuff, (UOSInt)(sptr - sbuff));
 					break;
 				case ParseStatus::NewRecord:
 					{
