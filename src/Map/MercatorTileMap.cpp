@@ -209,11 +209,12 @@ Media::ImageList *Map::MercatorTileMap::LoadTileImage(UOSInt level, Math::Coord2
 		*sptru++ = IO::Path::PATH_SEPERATOR;
 		sptru = Text::StrInt32(sptru, tileId.y);
 		sptru = Text::StrConcatC(sptru, UTF8STRC(".png"));
-		IO::StmData::FileData fd({filePathU, (UOSInt)(sptru - filePathU)}, false);
-		if (fd.GetDataSize() > 0)
+		NotNullPtr<IO::StmData::FileData> fd;
+		NEW_CLASSNN(fd, IO::StmData::FileData({filePathU, (UOSInt)(sptru - filePathU)}, false));
+		if (fd->GetDataSize() > 0)
 		{
 			currTS = Data::Timestamp::UtcNow().AddDay(-7);
-			ts = fd.GetFileStream()->GetCreateTime();
+			ts = fd->GetFileStream()->GetCreateTime();
 			if (ts > currTS)
 			{
 				IO::ParserType pt;
@@ -231,7 +232,12 @@ Media::ImageList *Map::MercatorTileMap::LoadTileImage(UOSInt level, Math::Coord2
 			else
 			{
 				hasTime = true;
+				fd.Delete();
 			}
+		}
+		else
+		{
+			fd.Delete();
 		}
 	}
 	else if (this->spkg)

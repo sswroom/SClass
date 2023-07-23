@@ -197,7 +197,7 @@ void UI::GUIClientControl::UpdateChildrenSize(Bool redraw)
 				ctrl->SetArea(left, br.y - ctrlSz.y, br.x, br.y , false);
 				ctrlSz = ctrl->GetSize();
 //				printf("UpdateChildrenSize: %s Size: %lf, %lf\r\n", ctrl->GetObjectClass(), ctrlW, ctrlH);
-				br.x -= ctrlSz.y;
+				br.y -= ctrlSz.y;
 			}
 		}
 
