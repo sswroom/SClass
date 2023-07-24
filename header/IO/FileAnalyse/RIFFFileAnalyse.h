@@ -23,7 +23,6 @@ namespace IO
 		private:
 			IO::StreamData *fd;
 			Data::SyncArrayList<PackInfo*> packs;
-			Int32 mpgVer;
 
 			Bool pauseParsing;
 			Bool threadRunning;

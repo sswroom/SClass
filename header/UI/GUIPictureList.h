@@ -20,7 +20,6 @@ namespace UI
 		Media::IImgResizer *resizer;
 		Math::Size2D<UOSInt> iconSize;
 		Bool hasBorder;
-		Bool allowResize;
 
 	public:
 		GUIPictureList(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent, NotNullPtr<Media::DrawEngine> eng, Bool hasBorder, Math::Size2D<UOSInt> iconSize);

@@ -76,7 +76,6 @@ Media::AudioBlockSource *Media::BlockParser::MP2BlockParser::ParseStreamData(Not
 	*(Int32*)&format.extra[2] = 211712;
 	*(Int32*)&format.extra[6] = 65537;
 	*(Int16*)&format.extra[10] = 1;
-	Int32 blkCnt = 0;
 
 	NEW_CLASS(audio, Media::AudioBlockSource(stmData, &format, stmData->GetFullName(), 1152));
 	while (currOfst < leng)
@@ -101,7 +100,6 @@ Media::AudioBlockSource *Media::BlockParser::MP2BlockParser::ParseStreamData(Not
 			frameLength = 144 * bitrateL2[bitrateIndex] / 32;
 		}
 		audio->AddBlock(currOfst, frameLength);
-		blkCnt++;
 		currOfst += frameLength;
 		if (currOfst >= leng)
 			break;

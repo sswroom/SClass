@@ -243,7 +243,6 @@ void SSWR::AVIRead::AVIRImageBatchConvForm::ConvertFile(ConvertSess *sess, Text:
 	if (imgList)
 	{
 		imgList->ToStaticImage(0);
-		((Media::StaticImage*)imgList->GetImage(0, 0));
 		param = sess->exporter->CreateParam(imgList);
 		if (param)
 		{

@@ -1,5 +1,5 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRFILECHKFORM
-#define _SM_SSWR_AVIREAD_AVIRFiLECHKFORM
+#define _SM_SSWR_AVIREAD_AVIRFILECHKFORM
 #include "IO/FileCheck.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "UI/GUIForm.h"

@@ -21,7 +21,6 @@ namespace SSWR
 			SSWR::AVIRead::AVIRCore *core;
 			Media::ColorManagerSess *colorSess;
 			Media::ColorConv *colorConv;
-			Map::MapEnv *env;
 			Bool changed;
 			NotNullPtr<Media::DrawEngine> eng;
 

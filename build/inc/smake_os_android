@@ -64,6 +64,8 @@ Media/AndroidVideoCapture.h: ../../src/Media/AndroidVideoCapture.cpp
 @AndroidVideoCapture.o
 Media/AudioDevice.h: ../../src/Media/AudioDeviceAndroid.cpp
 @AudioDevice.o
+Media/FBMonitorSurfaceMgr.h: ../../src/Media/FBMonitorSurfaceMgr_Null.cpp
+@FBMonitorSurfaceMgr.o
 Media/MonitorSurfaceMgrFactory.h: ../../src/Media/MonitorSurfaceMgrFactoryNull.cpp
 @MonitorSurfaceMgrFactory.o
 Media/OCREngine.h: ../../src/Media/OCREngine_Null.cpp
@@ -146,6 +148,7 @@ AAudioRenderer.o: ../../src/Media/AAudioRenderer.cpp
 AndroidVideoCapture.o: ../../src/Media/AndroidVideoCapture.cpp
 !?(ANDROID_API >= 24) -lcamera2ndk -lmediandk
 AudioDevice.o: ../../src/Media/AudioDeviceAndroid.cpp
+FBMonitorSurfaceMgr.o: ../../src/Media/FBMonitorSurfaceMgr_Null.cpp
 MonitorSurfaceMgrFactory.o: ../../src/Media/MonitorSurfaceMgrFactoryNull.cpp
 OCREngine.o: ../../src/Media/OCREngine_Null.cpp
 OpenSLESRenderer.o: ../../src/Media/OpenSLESRenderer.cpp

@@ -16,7 +16,6 @@ namespace Media
 			UInt8 *frameBuff;
 			UOSInt frameSize;
 			Bool lastIsField;
-			Bool lastFieldTime;
 			Bool spsFound;
 			UInt8 *sps;
 			UOSInt spsSize;

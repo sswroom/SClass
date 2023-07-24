@@ -503,7 +503,6 @@ UOSInt Manage::Process::GetModules(Data::ArrayList<Manage::ModuleInfo *> *modLis
 		OSInt ret = (OSInt)_dyld_image_count;
 		UTF8Char sbuff[512];
 		const Char *name;
-		const struct mach_header *hdr;
 		i = 0;
 		while (i < ret)
 		{

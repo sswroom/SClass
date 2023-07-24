@@ -43,9 +43,7 @@ namespace Media
 	private:
 		Data::ArrayList<ResizeProfile *> profiles;
 		UOSInt currProfile;
-		Parser::ParserList *parsers;
 
-		Media::ColorManager *colorMgr;
 		Media::Resizer::LanczosResizerLR_C32 *resizer;
 		Media::Batch::BatchLoader *loader;
 		Media::Batch::BatchToLRGB *conv;

@@ -12,9 +12,9 @@ IO::BTController::BTDevice::~BTDevice()
 {
 }
 
-Text::String *IO::BTController::BTDevice::GetName()
+NotNullPtr<Text::String> IO::BTController::BTDevice::GetName() const
 {
-	return 0;
+	return Text::String::NewEmpty();
 }
 
 UInt8 *IO::BTController::BTDevice::GetAddress()
@@ -89,7 +89,7 @@ IO::BTController::BTController(void *internalData, void *hand)
 	this->addr[3] = 0;
 	this->addr[4] = 0;
 	this->addr[5] = 0;
-	this->name = 0;
+	this->name = Text::String::NewEmpty();
 	this->devClass = 0;
 	this->manufacturer = 0;
 	this->subversion = 0;
@@ -97,6 +97,7 @@ IO::BTController::BTController(void *internalData, void *hand)
 
 IO::BTController::~BTController()
 {
+	this->name->Release();
 }
 
 OSInt IO::BTController::CreateDevices(Data::ArrayList<BTDevice*> *devList, Bool toSearch)
@@ -109,7 +110,7 @@ UInt8 *IO::BTController::GetAddress()
 	return this->addr;
 }
 
-Text::String *IO::BTController::GetName()
+NotNullPtr<Text::String> IO::BTController::GetName() const
 {
 	return this->name;
 }

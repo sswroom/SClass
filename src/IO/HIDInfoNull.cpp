@@ -35,7 +35,7 @@ UInt16 IO::HIDInfo::GetProductId()
 
 Text::String *IO::HIDInfo::GetDevPath()
 {
-	return Text::String::NewEmpty();
+	return Text::String::NewEmpty().Ptr();
 }
 
 IO::Stream *IO::HIDInfo::OpenHID()

@@ -733,7 +733,7 @@ void Media::Resizer::LanczosResizer16_C8::Resize(const UInt8 *src, OSInt sbpl, D
 	}
 }
 
-Bool Media::Resizer::LanczosResizer16_C8::Resize(Media::StaticImage *srcImg, Media::StaticImage *destImg)
+Bool Media::Resizer::LanczosResizer16_C8::Resize(const Media::StaticImage *srcImg, Media::StaticImage *destImg)
 {
 	if (srcImg->info.fourcc != 0 && srcImg->info.fourcc != *(UInt32*)"DIB")
 		return false;

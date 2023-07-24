@@ -112,18 +112,18 @@ void IO::Registry::CloseRegistry(IO::Registry *reg)
 
 IO::Registry::Registry(void *hand)
 {
-	this->hand = hand;
+	this->clsData = (ClassData*)hand;
 }
 
 IO::Registry::~Registry()
 {
-	RegCloseKey((HKEY)this->hand);
+	RegCloseKey((HKEY)this->clsData);
 }
 
 IO::Registry *IO::Registry::OpenSubReg(const WChar *name)
 {
 	void *newHand;
-	if (RegCreateKeyW((HKEY)this->hand, name, (HKEY*)&newHand) == 0)
+	if (RegCreateKeyW((HKEY)this->clsData, name, (HKEY*)&newHand) == 0)
 	{
 		IO::Registry *reg;
 		NEW_CLASS(reg, IO::Registry(newHand));
@@ -135,31 +135,31 @@ IO::Registry *IO::Registry::OpenSubReg(const WChar *name)
 WChar *IO::Registry::GetSubReg(WChar *buff, UOSInt index)
 {
 	DWORD buffSize = 256;
-	if (RegEnumKeyExW((HKEY)this->hand, (DWORD)index, buff, &buffSize, 0, 0, 0, 0) == ERROR_SUCCESS)
+	if (RegEnumKeyExW((HKEY)this->clsData, (DWORD)index, buff, &buffSize, 0, 0, 0, 0) == ERROR_SUCCESS)
 		return &buff[Text::StrCharCnt(buff)];
 	return 0;
 }
 
 void IO::Registry::SetValue(const WChar *name, Int32 value)
 {
-	RegSetValueExW((HKEY)this->hand, name, 0, REG_DWORD, (LPBYTE)&value, 4);
+	RegSetValueExW((HKEY)this->clsData, name, 0, REG_DWORD, (LPBYTE)&value, 4);
 }
 
 void IO::Registry::SetValue(const WChar *name, const WChar *value)
 {
 	if (value == 0)
 	{
-		RegDeleteValueW((HKEY)this->hand, name);
+		RegDeleteValueW((HKEY)this->clsData, name);
 	}
 	else
 	{
-		RegSetValueExW((HKEY)this->hand, name, 0, REG_SZ, (LPBYTE)value, (DWORD)(Text::StrCharCnt(value) * sizeof(WChar)));
+		RegSetValueExW((HKEY)this->clsData, name, 0, REG_SZ, (LPBYTE)value, (DWORD)(Text::StrCharCnt(value) * sizeof(WChar)));
 	}
 }
 
 void IO::Registry::DelValue(const WChar *name)
 {
-	RegDeleteValueW((HKEY)this->hand, name);
+	RegDeleteValueW((HKEY)this->clsData, name);
 }
 
 Int32 IO::Registry::GetValueI32(const WChar *name)
@@ -167,7 +167,7 @@ Int32 IO::Registry::GetValueI32(const WChar *name)
 	DWORD regType;
 	BYTE buff[512];
 	DWORD cbData = 512;
-	if (RegQueryValueExW((HKEY)this->hand, name, 0, &regType, buff, &cbData) == ERROR_SUCCESS)
+	if (RegQueryValueExW((HKEY)this->clsData, name, 0, &regType, buff, &cbData) == ERROR_SUCCESS)
 	{
 		if (regType == REG_DWORD)
 		{
@@ -197,7 +197,7 @@ WChar *IO::Registry::GetValueStr(const WChar *name, WChar *buff)
 	Int32 result;
 	DWORD regType;
 	DWORD cbData = 512;
-	if ((result = RegQueryValueExW((HKEY)this->hand, name, 0, &regType, (LPBYTE)buff, &cbData)) == ERROR_SUCCESS)
+	if ((result = RegQueryValueExW((HKEY)this->clsData, name, 0, &regType, (LPBYTE)buff, &cbData)) == ERROR_SUCCESS)
 	{
 		if (regType == REG_SZ)
 		{
@@ -227,7 +227,7 @@ Bool IO::Registry::GetValueI32(const WChar *name, Int32 *value)
 	DWORD regType;
 	BYTE buff[512];
 	DWORD cbData = 512;
-	if (RegQueryValueExW((HKEY)this->hand, name, 0, &regType, buff, &cbData) == ERROR_SUCCESS)
+	if (RegQueryValueExW((HKEY)this->clsData, name, 0, &regType, buff, &cbData) == ERROR_SUCCESS)
 	{
 		if (regType == REG_DWORD)
 		{
@@ -258,7 +258,7 @@ WChar *IO::Registry::GetName(WChar *nameBuff, UOSInt index)
 {
 	Int32 result;
 	UInt32 buffSize = 256;
-	if ((result = RegEnumValueW((HKEY)this->hand, (DWORD)index, nameBuff, (LPDWORD)&buffSize, 0, 0, 0, 0)) == ERROR_SUCCESS)
+	if ((result = RegEnumValueW((HKEY)this->clsData, (DWORD)index, nameBuff, (LPDWORD)&buffSize, 0, 0, 0, 0)) == ERROR_SUCCESS)
 	{
 		return &nameBuff[buffSize];
 	}

@@ -16,7 +16,6 @@ namespace Media
 			UInt8 *frameBuff;
 			UOSInt frameSize;
 			Bool lastIsField;
-			Bool lastFieldTime;
 			Bool spsFound;
 			UInt8 *sps;
 			UOSInt spsSize;
@@ -26,7 +25,6 @@ namespace Media
 			Bool size32;
 			Bool firstFrame;
 			Bool discontTime;
-			UInt8 *readBuff;
 			Media::H264Parser::H264Flags h264Flags;
 			Bool skipHeader;
 

@@ -18,7 +18,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPProxyClientForm::OnRequestClicked(void *us
 	me->txtProxyPort->GetText(&sb);
 	port = 0;
 	sb.ToUInt16(&port);
-	if (port <= 0 || port >= 65536)
+	if (port <= 0)
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Please enter valid proxy port"), CSTR("Request"), me);
 		return;

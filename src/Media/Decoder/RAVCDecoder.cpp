@@ -89,7 +89,7 @@ void Media::Decoder::RAVCDecoder::ProcVideoFrame(UInt32 frameTime, UInt32 frameN
 		{
 			UOSInt i = 1;
 			UInt32 payloadType = 0;
-			UInt32 payloadSize = 0;
+//			UInt32 payloadSize = 0;
 			if (imgData[0][imgOfst + i] == 0xff)
 			{
 				payloadType += 255;
@@ -99,10 +99,10 @@ void Media::Decoder::RAVCDecoder::ProcVideoFrame(UInt32 frameTime, UInt32 frameN
 			i++;
 			if (imgData[0][imgOfst + i] == 0xff)
 			{
-				payloadSize += 255;
+//				payloadSize += 255;
 				i++;
 			}
-			payloadSize += imgData[0][imgOfst + i];
+//			payloadSize += imgData[0][imgOfst + i];
 			i++;
 
 			if (payloadType == 1)

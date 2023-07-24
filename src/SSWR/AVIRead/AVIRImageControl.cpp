@@ -94,7 +94,7 @@ void SSWR::AVIRead::AVIRImageControl::InitDir()
 	UTF8Char *sptr2;
 	UTF8Char *sptr2End;
 	UTF8Char *sptr3;
-	UTF8Char *sarr[6];
+	UTF8Char *sarr[11];
 	IO::Path::FindFileSession *sess;
 	IO::Path::PathType pt;
 	Text::StringBuilderUTF8 sb;

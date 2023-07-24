@@ -1,6 +1,5 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRGISPROPFORM
 #define _SM_SSWR_AVIREAD_AVIRGISPROPFORM
-#include "Media/Resizer/LanczosResizer8_C8.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "Text/String.h"
 #include "UI/GUIButton.h"
@@ -50,7 +49,6 @@ namespace SSWR
 			Media::StaticImage *imgLine;
 			Media::StaticImage *imgFont;
 			Map::MapEnv *env;
-			Media::Resizer::LanczosResizer8_C8 *resizer;
 			SSWR::AVIRead::AVIRCore *core;
 			Media::ColorManagerSess *colorSess;
 			Media::ColorConv *colorConv;

@@ -316,7 +316,7 @@ void Map::MapScheduler::SetDrawType(Map::MapDrawLayer *lyr, Media::DrawPen *p, M
 	{
 		this->finishEvt.Wait();
 	}
-	this->dt = dt;
+	this->dt = ThreadState::Drawing;
 	this->p = p;
 	this->b = b;
 	this->ico = ico;

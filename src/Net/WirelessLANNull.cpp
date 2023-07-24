@@ -14,7 +14,7 @@ Net::WirelessLAN::Network::Network(Text::CString ssid, Double rssi)
 	this->rssi = rssi;
 }
 
-Net::WirelessLAN::Network::Network(Text::String *ssid, Double rssi)
+Net::WirelessLAN::Network::Network(NotNullPtr<Text::String> ssid, Double rssi)
 {
 	this->ssid = ssid->Clone();
 	this->rssi = rssi;
@@ -25,19 +25,19 @@ Net::WirelessLAN::Network::~Network()
 	this->ssid->Release();
 }
 
-Double Net::WirelessLAN::Network::GetRSSI()
+Double Net::WirelessLAN::Network::GetRSSI() const
 {
 	return this->rssi;
 }
 
-Text::String *Net::WirelessLAN::Network::GetSSID()
+NotNullPtr<Text::String> Net::WirelessLAN::Network::GetSSID() const
 {
 	return this->ssid;
 }
 
 Net::WirelessLAN::BSSInfo::BSSInfo(Text::CString ssid, const void *bssEntry)
 {
-	this->ssid = 0;
+	this->ssid = Text::String::New(ssid);
 	this->phyId = 0;
 	MemClear(this->mac, 6);
 	this->bssType = Net::WirelessLAN::BST_INFRASTRUCTURE;
@@ -68,13 +68,13 @@ Net::WirelessLAN::BSSInfo::~BSSInfo()
 		ie = this->ieList.GetItem(i);
 		DEL_CLASS(ie);
 	}
-	SDEL_STRING(this->ssid);
+	this->ssid->Release();
 	SDEL_STRING(this->devManuf);
 	SDEL_STRING(this->devModel);
 	SDEL_STRING(this->devSN);
 }
 
-Text::String *Net::WirelessLAN::BSSInfo::GetSSID()
+NotNullPtr<Text::String> Net::WirelessLAN::BSSInfo::GetSSID() const
 {
 	return this->ssid;
 }
@@ -158,15 +158,15 @@ Net::WirelessLANIE *Net::WirelessLAN::BSSInfo::GetIE(UOSInt index)
 
 Net::WirelessLAN::Interface::Interface()
 {
-	this->name = 0;
+	this->name = Text::String::NewEmpty();
 }
 
 Net::WirelessLAN::Interface::~Interface()
 {
-	SDEL_STRING(this->name);
+	this->name->Release();
 }
 
-Text::String *Net::WirelessLAN::Interface::GetName()
+NotNullPtr<Text::String> Net::WirelessLAN::Interface::GetName() const
 {
 	return this->name;
 }

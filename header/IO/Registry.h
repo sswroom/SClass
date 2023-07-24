@@ -18,7 +18,6 @@ namespace IO
 		static void *thisRegistryFile;
 		static void *allRegistryFile;
 		ClassData *clsData;
-		void *hand;
 
 		static void *OpenUserType(RegistryUser usr);
 		static void CloseInternal(void *reg);

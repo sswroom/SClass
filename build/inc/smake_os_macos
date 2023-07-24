@@ -8,7 +8,7 @@ DB/MDBFileConn.h: ../../src/DB/MDBFileConn.cpp
 @MDBFileConn.o
 DB/MongoDB.h: ../../src/DB/MongoDB.cpp
 @MongoDB.o
-DB/MySQLConn.h: ../../src/DB/MySQLConn.cpp
+DB/MySQLConn.h: ../../src/DB/MySQLConnNull.cpp
 @MySQLConn.o
 DB/ODBCConn.h: ../../src/DB/ODBCConn.cpp
 @ODBCConn.o
@@ -34,10 +34,14 @@ IO/I2CChannelOS.h: ../../src/IO/I2CChannelOSNull.cpp
 @I2CChannelOS.o
 IO/OS.h: ../../src/IO/OSDarwin.cpp
 @OS.o
+IO/ProgramLinkManager.h: ../../src/IO/ProgramLinkManagerNull.cpp
+@ProgramLinkManager.o
 IO/SDCardMgr.h: ../../src/IO/SDCardMgrNull.cpp
 @SDCardMgr.o
 IO/SensorManager.h: ../../src/IO/SensorManagerNull.cpp
 @SensorManager.o
+IO/ServiceManager.h: ../../src/IO/ServiceManagerNull.cpp
+@ServiceManager.o
 IO/Watchdog.h: ../../src/IO/WatchdogNull.cpp
 @Watchdog.o
 
@@ -52,13 +56,15 @@ Manage/ThreadInfo.h: ../../src/Manage/ThreadInfoL.cpp
 
 Media/AudioDevice.h: ../../src/Media/AudioDeviceNull.cpp
 @AudioDevice.o
+Media/FBMonitorSurfaceMgr.h: ../../src/Media/FBMonitorSurfaceMgr_Null.cpp
+@FBMonitorSurfaceMgr.o
 Media/MonitorSurfaceMgrFactory.h: ../../src/Media/MonitorSurfaceMgrFactoryNull.cpp
 @MonitorSurfaceMgrFactory.o
 Media/OCREngine.h: ../../src/Media/OCREngine.cpp
 @OCREngine.o
 Media/Printer.h: ../../src/Media/PrinterCUPS.cpp
 @Printer.o
-Media/ZXingWriter.h: ../../src/Media/ZXingWriter.cpp
+Media/ZXingWriter.h: ../../src/Media/ZXingWriter_Null.cpp
 @ZXingWriter.o
 Media/Decoder/FFMPEGDecoder.h: ../../src/Media/Decoder/FFMPEGDecoder.cpp
 @FFMPEGDecoder.o
@@ -105,10 +111,7 @@ MongoDB.o: ../../src/DB/MongoDB.cpp
 $`pkg-config --cflags libmongoc-1.0`
 !-lmongoc-1.0
 !-lbson-1.0
-MySQLConn.o: ../../src/DB/MySQLConn.cpp
-$-I /opt/local/include/mariadb/mysql
-!-L /opt/local/lib/mariadb/mysql
-!-lmysqlclient
+MySQLConn.o: ../../src/DB/MySQLConnNull.cpp
 ODBCConn.o: ../../src/DB/ODBCConn.cpp
 !-lodbc
 !-lodbcinst
@@ -125,8 +128,10 @@ DebugWriter.o: ../../src/IO/DebugWriter_Null.cpp
 HIDInfo.o: ../../src/IO/HIDInfoNull.cpp
 I2CChannelOS.o: ../../src/IO/I2CChannelOSNull.cpp
 OS.o: ../../src/IO/OSDarwin.cpp
+ProgramLinkManager.o: ../../src/IO/ProgramLinkManagerNull.cpp
 SDCardMgr.o: ../../src/IO/SDCardMgrNull.cpp
 SensorManager.o: ../../src/IO/SensorManagerNull.cpp
+ServiceManager.o: ../../src/IO/ServiceManagerNull.cpp
 Watchdog.o: ../../src/IO/WatchdogNull.cpp
 Computer.o: ../../src/Manage/ComputerL.cpp
 ComputerUser.o: ../../src/Manage/ComputerUserL.cpp
@@ -134,6 +139,7 @@ SymbolResolver.o: ../../src/Manage/SymbolResolverL.cpp
 ThreadInfo.o: ../../src/Manage/ThreadInfoL.cpp
 !-lpthread
 AudioDevice.o: ../../src/Media/AudioDeviceNull.cpp
+FBMonitorSurfaceMgr.o: ../../src/Media/FBMonitorSurfaceMgr_Null.cpp
 MonitorSurfaceMgrFactory.o: ../../src/Media/MonitorSurfaceMgrFactoryNull.cpp
 OCREngine.o: ../../src/Media/OCREngine.cpp
 !-llept
@@ -141,27 +147,25 @@ OCREngine.o: ../../src/Media/OCREngine.cpp
 Printer.o: ../../src/Media/PrinterCUPS.cpp
 $`pkg-config --cflags --libs cairo` `cups-config --cflags`
 !`cups-config --libs`
-ZXingWriter.o: ../../src/Media/ZXingWriter.cpp
-!-lZXing
+ZXingWriter.o: ../../src/Media/ZXingWriter_Null.cpp
 FFMPEGDecoder.o: ../../src/Media/Decoder/FFMPEGDecoder.cpp
 !-lavutil
 !-lavcodec
 OCVFrame.o: ../../src/Media/OpenCV/OCVFrame.cpp
-#$`pkg-config --cflags opencv4`
-!`pkg-config --libs opencv`
+$-I /opt/local/include/opencv4
+!-L /opt/local/lib/opencv4 -lopencv_core
 OCVFrameFeeder.o: ../../src/Media/OpenCV/OCVFrameFeeder.cpp
-#$`pkg-config --cflags opencv4`
-!`pkg-config --libs opencv`
+$-I /opt/local/include/opencv4
+!-L /opt/local/lib/opencv4 -lopencv_core
 OCVNumPlateFinder.o: ../../src/Media/OpenCV/OCVNumPlateFinder.cpp
-#$@(pkg-config --exists opencv4) `pkg-config --cflags opencv4`
-!@(pkg-config --exists opencv) `pkg-config --libs opencv`
-!@(pkg-config --exists opencv4) `pkg-config --libs opencv4`
+$-I /opt/local/include/opencv4
+!-L /opt/local/lib/opencv4 -lopencv_core
 OCVObjectDetector.o: ../../src/Media/OpenCV/OCVObjectDetector.cpp
-#$`pkg-config --cflags opencv4`
-!`pkg-config --libs opencv`
+$-I /opt/local/include/opencv4
+!-L /opt/local/lib/opencv4 -lopencv_core
 OCVUtil.o: ../../src/Media/OpenCV/OCVUtil.cpp
-#$`pkg-config --cflags opencv4`
-!`pkg-config --libs opencv`
+$-I /opt/local/include/opencv4
+!-L /opt/local/lib/opencv4 -lopencv_core
 HTTPOSClient.o: ../../src/Net/HTTPOSClientL.cpp
 !-lcurl
 SSLEngineFactory.o: ../../src/Net/SSLEngineFactoryOpenSSL.cpp

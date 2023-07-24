@@ -75,7 +75,6 @@ void SSWR::AVIRead::AVIRGISFontForm::UpdateFontPreview()
 SSWR::AVIRead::AVIRGISFontForm::AVIRGISFontForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, NotNullPtr<Media::DrawEngine> eng, Text::String *fontName, Double fontSizePt, UInt32 fontColor) : UI::GUIForm(parent, 480, 306, ui)
 {
 	this->core = core;
-	this->env = env;
 	this->eng = eng;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->colorSess = this->core->GetColorMgr()->CreateSess(this->GetHMonitor());

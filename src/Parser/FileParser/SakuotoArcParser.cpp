@@ -39,7 +39,6 @@ IO::ParsedObject *Parser::FileParser::SakuotoArcParser::ParseFileHdr(NotNullPtr<
 	UInt32 recCnt;
 	UInt32 recSize;
 	UInt32 i;
-	UInt32 j;
 	UInt32 fileSize;
 	UInt32 fileOfst;
 	UInt32 nextOfst;
@@ -66,7 +65,6 @@ IO::ParsedObject *Parser::FileParser::SakuotoArcParser::ParseFileHdr(NotNullPtr<
 	IO::PackageFile *pf;
 	NEW_CLASS(pf, IO::PackageFile(fd->GetFullName()));
 	
-	j = 0;
 	i = 0;
 	nextOfst = 0;
 	while (i < recSize)
@@ -86,7 +84,6 @@ IO::ParsedObject *Parser::FileParser::SakuotoArcParser::ParseFileHdr(NotNullPtr<
 
 		nextOfst = fileOfst + fileSize;
 		i = (UInt32)(((UInt8*)fileName) - recBuff.Ptr());
-		j++;
 	}
 	return pf;
 }

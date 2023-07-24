@@ -289,7 +289,7 @@ void UI::GUIVideoBoxDDLQ::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, Vide
 	}
 }
 
-Media::IImgResizer *UI::GUIVideoBoxDDLQ::CreateResizer(Media::ColorManagerSess *colorMgr, Int32 bitDepth)
+Media::IImgResizer *UI::GUIVideoBoxDDLQ::CreateResizer(Media::ColorManagerSess *colorMgr, UInt32 bitDepth, Double srcRefLuminance)
 {
 	Media::IImgResizer *resizer;
 	NEW_CLASS(resizer, Media::Resizer::LanczosResizerH8_8(4, 3, Media::AT_NO_ALPHA));

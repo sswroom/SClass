@@ -1104,10 +1104,10 @@ UOSInt Net::OSSocketFactory::GetConnInfoList(Data::ArrayList<Net::ConnectionInfo
 		return 0;
 
 	Net::ConnectionInfo *connInfo;
-	ConnectionData data;
 	UOSInt ret = 0;
-	Char buff[1024];
 #if !defined(__APPLE__)
+	ConnectionData data;
+	Char buff[1024];
 	ifconf ifc;
 	ifreq *ifrend;
 	ifreq *ifrcurr;

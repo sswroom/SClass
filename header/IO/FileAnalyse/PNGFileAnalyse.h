@@ -22,7 +22,6 @@ namespace IO
 		private:
 			IO::StreamData *fd;
 			Data::SyncArrayList<PNGTag*> tags;
-			UOSInt hdrSize;
 
 			Bool pauseParsing;
 			Bool threadRunning;

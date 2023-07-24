@@ -28,7 +28,6 @@ namespace Net
 
 		ThreadStat *threadStats;
 		UOSInt threadCnt;
-		UInt16 port;
 		Sync::Event *ctrlEvt;
 
 	private:

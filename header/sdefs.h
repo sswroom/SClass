@@ -188,6 +188,10 @@ typedef unsigned short WChar;
 #define HAS_GCCASM64
 #elif defined(__i386__)
 #define HAS_GCCASM32
+#elif defined(__aarch64__)
+#define HAS_GCCASMA64
+#elif defined(__arm__)
+#define HAS_GCCASMA32
 #endif
 #define HAS_INTRIN
 #endif
@@ -441,6 +445,41 @@ __inline UOSInt MyDIV_UOS(UOSInt lo, UOSInt hi, UOSInt divider, UOSInt* reminder
 #define BSWAPU32(x) OSSwapInt32(x)
 #define BSWAP64(x) OSSwapInt64(x)
 #define BSWAPU64(x) OSSwapInt64(x)
+#define MyADC_UOS(v1, v2, outPtr) __builtin_add_overflow(v1, v2, outPtr)
+
+UOSInt __inline MyMUL_UOS(UOSInt x, UOSInt y, UOSInt* hi)
+{
+	UInt64 v = ((UInt64)x * (UInt64)y);
+	*hi = (UOSInt)(v >> 32);
+	return (UInt32)v;
+}
+
+__inline UOSInt MyDIV_UOS(UOSInt lo, UOSInt hi, UOSInt divider, UOSInt *reminder)
+{
+	UInt64 v = (lo | (((UInt64)hi) << 32));
+	*reminder = (UOSInt)(v % divider);
+    return (UOSInt)(v / divider);
+}
+
+Int32 __inline MulDiv32(Int32 x, Int32 y, Int32 z)
+{
+	return (Int32)(((Int64)x * (Int64)y) / z);
+}
+
+UInt32 __inline MulDivU32(UInt32 x, UInt32 y, UInt32 z)
+{
+	return (UInt32)(((UInt64)x * (UInt64)y) / z);
+}
+
+OSInt __inline MulDivOS(OSInt x, OSInt y, OSInt z)
+{
+	 return (OSInt)(((__int128)x * (__int128)y) / z);
+}
+
+UOSInt __inline MulDivUOS(UOSInt x, UOSInt y, UOSInt z)
+{
+	 return (UOSInt)(((unsigned __int128)x * (unsigned __int128)y) / z);
+}
 #elif defined(__sun) || defined(sun)
 #include <sys/byteorder.h>
 #define BSWAP32(x) BSWAP_32(x)

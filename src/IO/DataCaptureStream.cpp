@@ -40,7 +40,7 @@ UOSInt IO::DataCaptureStream::Write(const UInt8 *buff, UOSInt size)
 
 Int32 IO::DataCaptureStream::Flush()
 {
-	return this->Flush();
+	return this->stm->Flush();
 }
 
 void IO::DataCaptureStream::Close()

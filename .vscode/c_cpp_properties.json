@@ -45,7 +45,7 @@
                 "${workspaceFolder}/../SClass/ThirdParty/sqlite3",
                 "${workspaceFolder}/../SClass/ThirdParty/KSSample",
                 "${workspaceFolder}/../SClass/ThirdParty/adl",
-                "/opt/local/include"
+                "/opt/local/include/**"
             ],
             "defines": [
                 "__APPLE__"

@@ -54,6 +54,8 @@ Media/AndroidVideoCapture.h: ../../src/Media/AndroidVideoCaptureNull.cpp
 @AndroidVideoCapture.o
 Media/AudioDevice.h: ../../src/Media/AudioDeviceNull.cpp
 @AudioDevice.o
+Media/FBMonitorSurfaceMgr.h: ../../src/Media/FBMonitorSurfaceMgr_Null.cpp
+@FBMonitorSurfaceMgr.o
 Media/MonitorSurfaceMgrFactory.h: ../../src/Media/MonitorSurfaceMgrFactoryNull.cpp
 @MonitorSurfaceMgrFactory.o
 Media/OCREngine.h: ../../src/Media/OCREngine.cpp
@@ -131,6 +133,7 @@ ThreadInfo.o: ../../src/Manage/ThreadInfoL.cpp
 !-lpthread
 AndroidVideoCapture.o: ../../src/Media/AndroidVideoCaptureNull.cpp
 AudioDevice.o: ../../src/Media/AudioDeviceNull.cpp
+FBMonitorSurfaceMgr.o: ../../src/Media/FBMonitorSurfaceMgr_Null.cpp
 MonitorSurfaceMgrFactory.o: ../../src/Media/MonitorSurfaceMgrFactoryNull.cpp
 OCREngine.o: ../../src/Media/OCREngine.cpp
 !-llept

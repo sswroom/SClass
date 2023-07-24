@@ -29,7 +29,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnStartClicked(void *userObj)
 		{
 			UI::MessageDialog::ShowDialog(CSTR("Port is not valid"), CSTR("Error"), me);
 		}
-		else if (port <= 0 || port >= 65536)
+		else if (port <= 0)
 		{
 			UI::MessageDialog::ShowDialog(CSTR("Port is out of range"), CSTR("Error"), me);
 		}

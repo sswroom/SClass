@@ -22,7 +22,6 @@ namespace Map
 		UOSInt zCol;
 		DB::TableDef *tabDef;
 		Data::FastMap<Int64, Math::Geometry::Vector2D*> vecMap;
-		Math::Geometry::Vector2D::VectorType mixedType;
 		MixedData mixedData;
 
 		void ClearDB();

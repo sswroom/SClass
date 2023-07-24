@@ -36,7 +36,6 @@ namespace SSWR
 				AT_RETRYMOVE
 			} ActionType;
 		private:
-			UI::GUIPanel *pnlCtrl;
 			UI::GUITabControl *tcMain;
 			UI::GUIProgressBar *prgStatus;
 

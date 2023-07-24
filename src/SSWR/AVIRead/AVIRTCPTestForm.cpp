@@ -28,7 +28,7 @@ void __stdcall SSWR::AVIRead::AVIRTCPTestForm::OnStartClicked(void *userObj)
 	}
 	sb.ClearStr();
 	me->txtPort->GetText(&sb);
-	if (!sb.ToUInt16(&me->svrPort) || me->svrPort <= 0 || me->svrPort >= 65536)
+	if (!sb.ToUInt16(&me->svrPort) || me->svrPort <= 0)
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Please enter valid Port"), CSTR("Start"), me);
 		return;

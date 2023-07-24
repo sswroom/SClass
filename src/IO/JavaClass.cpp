@@ -966,7 +966,6 @@ void IO::JavaClass::DetailNameType(UInt16 nameIndex, UInt16 typeIndex, UInt16 cl
 	const UInt8 *ptr = this->constPool[typeIndex];
 	UInt16 strLen = ReadMUInt16(&ptr[1]);
 	const UInt8 *strEnd;
-	UOSInt cnt = 0;
 	UInt32 paramIndex;
 	UInt32 paramId;
 	UOSInt i;
@@ -1031,7 +1030,6 @@ void IO::JavaClass::DetailNameType(UInt16 nameIndex, UInt16 typeIndex, UInt16 cl
 				sbParam.AppendU32(paramId);
 			}
 			paramIndex++;
-			cnt++;
 		}
 		sbParam.AppendUTF8Char(')');
 		ptr++;

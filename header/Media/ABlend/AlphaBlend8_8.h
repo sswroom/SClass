@@ -25,7 +25,6 @@ namespace Media
 				UOSInt height;
 			} ThreadStat;
 		private:
-			UInt8 *rgbTable;
 			ThreadStat *stats;
 			UOSInt threadCnt;
 			Sync::Mutex mut;
