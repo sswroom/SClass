@@ -14,6 +14,8 @@ DB/ODBCConn.h: ../../src/DB/ODBCConn.cpp
 @ODBCConn.o
 DB/PostgreSQLConn.h: ../../src/DB/PostgreSQLConn.cpp
 @PostgreSQLConn.o
+DB/TDSConn.h: ../../src/DB/TDSConn.cpp
+@TDSConn.o
 
 Exporter/HEIFExporter.h: ../../src/Exporter/HEIFExporter.cpp
 @HEIFExporter.o
@@ -146,6 +148,8 @@ ODBCConn.o: ../../src/DB/ODBCConn.cpp
 PostgreSQLConn.o: ../../src/DB/PostgreSQLConn.cpp
 $`pkg-config --cflags libpq`
 !`pkg-config --libs libpq`
+TDSConn.o: ../../src/DB/TDSConn.cpp
+!-lsybdb
 HEIFExporter.o: ../../src/Exporter/HEIFExporter.cpp
 !-lheif
 WebPExporter.o: ../../src/Exporter/WebPExporter.cpp

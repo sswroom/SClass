@@ -74,7 +74,7 @@ void LanczosResampler(Double *srcBuff, UOSInt srcSize, Double *destBuff, UOSInt 
 		Double tval;
 		Double lv;
 		Double v;
-		Double phase;
+//		Double phase;
 
 		i = 0;
 		while (i < destSize)
@@ -88,9 +88,9 @@ void LanczosResampler(Double *srcBuff, UOSInt srcSize, Double *destBuff, UOSInt 
 			j = 0;
 			while (j < effTap)
 			{
-				phase = (OSInt2Double(n) + 0.5) * UOSInt2Double(destSize);
-				phase /= UOSInt2Double(srcSize);
-				phase -= (UOSInt2Double(i) + 0.5);
+//				phase = (OSInt2Double(n) + 0.5) * UOSInt2Double(destSize);
+//				phase /= UOSInt2Double(srcSize);
+//				phase -= (UOSInt2Double(i) + 0.5);
 
 				if (n < 0)
 				{

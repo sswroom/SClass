@@ -73,7 +73,6 @@ namespace SSWR
 
 			Media::Printer *printer;
 
-			Int32 lcid;
 			CursorType currCursor;
 
 		private:

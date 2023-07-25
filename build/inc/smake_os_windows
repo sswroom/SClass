@@ -18,6 +18,8 @@ DB/ODBCConn.h: ../../src/DB/ODBCConn.cpp
 @ODBCConn.o
 DB/PostgreSQLConn.h: ../../src/DB/PostgreSQLConnNul.cpp
 @PostgreSQLConn.o
+DB/TDSConn.h: ../../src/DB/TDSConn_Null.cpp
+@TDSConn.o
 
 Exporter/HEIFExporter.h: ../../src/Exporter/HEIFExporter_Null.cpp
 @HEIFExporter.o
@@ -187,6 +189,7 @@ ODBCConn.o: ../../src/DB/ODBCConn.cpp
 !-lodbc32
 !-lodbccp32
 PostgreSQLConn.o: ../../src/DB/PostgreSQLConnNul.cpp
+TDSConn.o: ../../src/DB/TDSConn_Null.cpp
 HEIFExporter.o: ../../src/Exporter/HEIFExporter_Null.cpp
 WebPExporter.o: ../../src/Exporter/WebPExporter_Null.cpp
 AMDGPUControl.o: ../../src/IO/AMDGPUControl.cpp

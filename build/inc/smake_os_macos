@@ -14,6 +14,8 @@ DB/ODBCConn.h: ../../src/DB/ODBCConn.cpp
 @ODBCConn.o
 DB/PostgreSQLConn.h: ../../src/DB/PostgreSQLConnNul.cpp
 @PostgreSQLConn.o
+DB/TDSConn.h: ../../src/DB/TDSConn.cpp
+@TDSConn.o
 
 Exporter/HEIFExporter.h: ../../src/Exporter/HEIFExporter.cpp
 @HEIFExporter.o
@@ -116,6 +118,9 @@ ODBCConn.o: ../../src/DB/ODBCConn.cpp
 !-lodbc
 !-lodbcinst
 PostgreSQLConn.o: ../../src/DB/PostgreSQLConnNul.cpp
+TDSConn.o: ../../src/DB/TDSConn.cpp
+$-I /opt/local/include/freetds
+!-lsybdb
 HEIFExporter.o: ../../src/Exporter/HEIFExporter.cpp
 !-lheif
 WebPExporter.o: ../../src/Exporter/WebPExporter.cpp
@@ -153,19 +158,27 @@ FFMPEGDecoder.o: ../../src/Media/Decoder/FFMPEGDecoder.cpp
 !-lavcodec
 OCVFrame.o: ../../src/Media/OpenCV/OCVFrame.cpp
 $-I /opt/local/include/opencv4
-!-L /opt/local/lib/opencv4 -lopencv_core
+!-L /opt/local/lib/opencv4
+!-lopencv_core
+!-lopencv_imgproc
+!-lopencv_highgui
 OCVFrameFeeder.o: ../../src/Media/OpenCV/OCVFrameFeeder.cpp
 $-I /opt/local/include/opencv4
-!-L /opt/local/lib/opencv4 -lopencv_core
+!-L /opt/local/lib/opencv4
+!-lopencv_core
 OCVNumPlateFinder.o: ../../src/Media/OpenCV/OCVNumPlateFinder.cpp
 $-I /opt/local/include/opencv4
-!-L /opt/local/lib/opencv4 -lopencv_core
+!-L /opt/local/lib/opencv4
+!-lopencv_core
 OCVObjectDetector.o: ../../src/Media/OpenCV/OCVObjectDetector.cpp
 $-I /opt/local/include/opencv4
-!-L /opt/local/lib/opencv4 -lopencv_core
+!-L /opt/local/lib/opencv4
+!-lopencv_core
+!-lopencv_objdetect
 OCVUtil.o: ../../src/Media/OpenCV/OCVUtil.cpp
 $-I /opt/local/include/opencv4
-!-L /opt/local/lib/opencv4 -lopencv_core
+!-L /opt/local/lib/opencv4
+!-lopencv_core
 HTTPOSClient.o: ../../src/Net/HTTPOSClientL.cpp
 !-lcurl
 SSLEngineFactory.o: ../../src/Net/SSLEngineFactoryOpenSSL.cpp

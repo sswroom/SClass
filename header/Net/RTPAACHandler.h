@@ -35,9 +35,6 @@ namespace Net
 		Sync::Event *dataEvt;
 
 		Sync::Mutex mut;
-		IO::MemoryStream *mstm;
-		UInt32 lastSeq;
-		Bool missSeq;
 
 		UInt8 GetRateIndex();
 	public:

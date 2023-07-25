@@ -686,7 +686,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImgDirClicked(void *userObj)
 		else
 		{
             gi = (OrganGroupItem*)me->lbObj->GetItem(i);
-			if (gi->GetItemType() == -1)
+			if (gi->GetItemType() == OrganGroupItem::ItemType::IT_PARENT)
 				return;
 		}
 
@@ -1053,7 +1053,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnSpPasteSNameClicked(void *userOb
 			sb.Trim();
 			sptr = sb.v;
 			c = *sptr;
-			if (c >= 256)
+			if (c >= 128)
 			{
 				chiPtr = sb.v;
 			}
@@ -1098,7 +1098,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnSpPasteSNameClicked(void *userOb
 						found = true;
 					}
 				}
-				if (c >= 256 && sciPtr == 0)
+				if (c >= 128 && sciPtr == 0)
 				{
 				}
 				else if (c != '-' && (c < 'a' || c > 'z'))

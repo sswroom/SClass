@@ -13,7 +13,6 @@ namespace Net
 		private:
 			IO::MODBUSDevSim *dev;
 			Net::MODBUSTCPListener *listener;
-			UOSInt faviconSize;
 
 		protected:
 			virtual Bool ProcessRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq);

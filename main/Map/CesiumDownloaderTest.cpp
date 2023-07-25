@@ -123,14 +123,14 @@ private:
 				cli->AddHeaderC(CSTR("Accept-Encoding"), CSTR("gzip, deflate"));
 			}
 			cli->EndRequest(0, 0);
-			UInt64 totalRead = 0;
+//			UInt64 totalRead = 0;
 			UOSInt thisRead;
 			IO::MemoryStream *mstm;
 			NEW_CLASS(mstm, IO::MemoryStream());
 			while ((thisRead = cli->Read(BYTEARR(buff))) > 0)
 			{
 				mstm->Write(buff, thisRead);
-				totalRead += thisRead;
+//				totalRead += thisRead;
 			}
 			stat->totalDownload += cli->GetTotalDownload();
 			stat->totalUpload += cli->GetTotalUpload();

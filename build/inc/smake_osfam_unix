@@ -9,8 +9,6 @@ Crypto/Encrypt/RSAEnc.h: ../../src/Crypto/Encrypt/RSAEnc.cpp
 
 DB/OLEDBConn.h: ../../src/DB/OLEDBConnNull.cpp
 @OLEDBConn.o
-DB/TDSConn.h: ../../src/DB/TDSConn.cpp
-@TDSConn.o
 
 IO/BuildTime.h: ../../src/IO/BuildTime.cpp
 @BuildTime.o
@@ -121,8 +119,6 @@ OpenSSLCert.o: ../../src/Crypto/Cert/OpenSSLCert.cpp
 RSAEnc.o: ../../src/Crypto/Encrypt/RSAEnc.cpp
 !-lcrypto
 OLEDBConn.o: ../../src/DB/OLEDBConnNull.cpp
-TDSConn.o: ../../src/DB/TDSConn.cpp
-!-lsybdb
 BuildTime.o: @../../src/IO/BuildTime.cpp
 Console.o: ../../src/IO/ConsoleL.cpp
 ConsoleWriter.o: ../../src/IO/ConsoleWriterL.cpp

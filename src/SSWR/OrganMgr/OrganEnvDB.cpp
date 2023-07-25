@@ -907,7 +907,7 @@ UOSInt SSWR::OrganMgr::OrganEnvDB::GetSpeciesImages(Data::ArrayList<OrganImageIt
 		sql.AppendInt32(sp->GetSpeciesId());
 		this->db->ExecuteNonQuery(sql.ToCString());
 	}
-	return 0;
+	return retCnt;
 }
 
 UOSInt SSWR::OrganMgr::OrganEnvDB::GetGroupAllSpecies(Data::ArrayList<OrganSpecies*> *items, OrganGroup *grp)
