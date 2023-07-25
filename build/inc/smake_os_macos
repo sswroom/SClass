@@ -150,7 +150,7 @@ OCREngine.o: ../../src/Media/OCREngine.cpp
 !-llept
 !-ltesseract
 Printer.o: ../../src/Media/PrinterCUPS.cpp
-$`pkg-config --cflags --libs cairo` `cups-config --cflags`
+$`pkg-config --cflags cairo` `cups-config --cflags`
 !`cups-config --libs`
 ZXingWriter.o: ../../src/Media/ZXingWriter_Null.cpp
 FFMPEGDecoder.o: ../../src/Media/Decoder/FFMPEGDecoder.cpp

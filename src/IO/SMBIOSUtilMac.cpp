@@ -7,23 +7,24 @@
 #include "IO/SMBIOSUtil.h"
 #include "Text/MyString.h"
 
-namespace
-{
-	#include <stdlib.h>
-	#include <IOKit/IOKitLib.h>
-}
+#undef UTF8Char
+#undef UTF16Char
+#undef UTF32Char
+#include <stdlib.h>
+#include <IOKit/IOKitLib.h>
+#define UTF8Char UTF8Ch
+#define UTF16Char UTF16Ch
+#define UTF32Char UTF32Ch
 
 IO::SMBIOS *IO::SMBIOSUtil::GetSMBIOS()
 {
 	IO::SMBIOS *smbios;
-	mach_port_t myMasterPort;
 	CFMutableDictionaryRef	myMatchingDictionary;
 	kern_return_t result;
 	io_object_t foundService;
-
-	IOMasterPort(MACH_PORT_NULL, &myMasterPort);
+	
 	myMatchingDictionary = IOServiceMatching("AppleSMBIOS");
-	foundService = IOServiceGetMatchingService( myMasterPort, myMatchingDictionary );
+	foundService = IOServiceGetMatchingService( kIOMainPortDefault, myMatchingDictionary );
 
 	if (foundService == 0) {
 		return 0;

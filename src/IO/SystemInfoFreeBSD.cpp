@@ -6,10 +6,21 @@
 #include "IO/SystemInfo.h"
 #include "Manage/Process.h"
 #include "Text/MyString.h"
+#include "Text/MyStringW.h"
 #include "Text/StringBuilderUTF8.h"
 #include "Text/UTF8Reader.h"
 #include <sys/types.h>
 #include <sys/sysctl.h>
+#if defined(__APPLE__)
+#undef UTF8Char
+#undef UTF16Char
+#undef UTF32Char
+#include <stdlib.h>
+#include <IOKit/IOKitLib.h>
+#define UTF8Char UTF8Ch
+#define UTF16Char UTF16Ch
+#define UTF32Char UTF32Ch
+#endif
 
 struct IO::SystemInfo::ClassData
 {
@@ -74,6 +85,36 @@ UTF8Char *IO::SystemInfo::GetPlatformName(UTF8Char *sbuff)
 
 UTF8Char *IO::SystemInfo::GetPlatformSN(UTF8Char *sbuff)
 {
+#if defined(__APPLE__)
+	io_service_t platformExpert = IOServiceGetMatchingService(kIOMasterPortDefault,
+                                                                         IOServiceMatching("IOPlatformExpertDevice"));
+
+	if (platformExpert) {
+		CFTypeRef serialNumberAsCFString = 
+			IORegistryEntryCreateCFProperty(platformExpert,
+											CFSTR(kIOPlatformSerialNumberKey),
+											kCFAllocatorDefault, 0);
+		if (serialNumberAsCFString)
+		{
+			CFStringRef sn = (CFStringRef)serialNumberAsCFString;
+			if (CFStringGetCString(sn, (char*)sbuff, 128, kCFStringEncodingUTF8))
+			{
+				sbuff += Text::StrCharCnt(sbuff);
+			}
+			else
+			{
+				sbuff = 0;
+			}
+		}
+		else
+		{
+			sbuff = 0;
+		}
+
+		IOObjectRelease(platformExpert);
+		return sbuff;
+	}
+#endif
 	return 0;
 }
 
