@@ -4,7 +4,10 @@
 #pragma warning (disable: 4985)
 #endif
 
+namespace
+{
 #include <math.h>
+}
 
 Double Math_MyLog10(Double val);
 Double Math_MyLn(Double val);

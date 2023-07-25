@@ -282,14 +282,14 @@ namespace Text
 	UOSInt StrUTF32_UTF16Cnt(const UTF32Char *strToJoin, UOSInt charCnt);
 
 #if _WCHAR_SIZE == 4
-	FORCEINLINE WChar *StrUTF8_WCharC(WChar *buff, const UTF8Char *bytes, UOSInt byteSize, UOSInt *byteConv) { return StrUTF8_UTF32C(buff, bytes, byteSize, byteConv); }
+	FORCEINLINE WChar *StrUTF8_WCharC(WChar *buff, const UTF8Char *bytes, UOSInt byteSize, UOSInt *byteConv) { return (WChar*)StrUTF8_UTF32C((UTF32Char*)buff, bytes, byteSize, byteConv); }
 	FORCEINLINE UOSInt StrUTF8_WCharCntC(const UTF8Char *bytes, UOSInt byteSize) { return StrUTF8_UTF32CntC(bytes, byteSize); }
-	FORCEINLINE WChar *StrUTF8_WChar(WChar *buff, const UTF8Char *bytes, UOSInt *byteConv) { return StrUTF8_UTF32(buff, bytes, byteConv); }
+	FORCEINLINE WChar *StrUTF8_WChar(WChar *buff, const UTF8Char *bytes, UOSInt *byteConv) { return (WChar*)StrUTF8_UTF32((UTF32Char*)buff, bytes, byteConv); }
 	FORCEINLINE UOSInt StrUTF8_WCharCnt(const UTF8Char *bytes) { return StrUTF8_UTF32Cnt(bytes); }
-	FORCEINLINE UTF8Char *StrWChar_UTF8C(UTF8Char *bytes, const WChar *wstr, UOSInt strLen) { return StrUTF32_UTF8C(bytes, wstr, strLen); }
-	FORCEINLINE UOSInt StrWChar_UTF8CntC(const WChar *stri, UOSInt strLen) { return StrUTF32_UTF8CntC(stri, strLen); }
-	FORCEINLINE UTF8Char *StrWChar_UTF8(UTF8Char *bytes, const WChar *wstr) { return StrUTF32_UTF8(bytes, wstr); }
-	FORCEINLINE UOSInt StrWChar_UTF8Cnt(const WChar *stri) { return StrUTF32_UTF8Cnt(stri); }
+	FORCEINLINE UTF8Char *StrWChar_UTF8C(UTF8Char *bytes, const WChar *wstr, UOSInt strLen) { return StrUTF32_UTF8C(bytes, (const UTF32Char*)wstr, strLen); }
+	FORCEINLINE UOSInt StrWChar_UTF8CntC(const WChar *stri, UOSInt strLen) { return StrUTF32_UTF8CntC((const UTF32Char*)stri, strLen); }
+	FORCEINLINE UTF8Char *StrWChar_UTF8(UTF8Char *bytes, const WChar *wstr) { return StrUTF32_UTF8(bytes, (const UTF32Char*)wstr); }
+	FORCEINLINE UOSInt StrWChar_UTF8Cnt(const WChar *stri) { return StrUTF32_UTF8Cnt((const UTF32Char*)stri); }
 #elif _WCHAR_SIZE == 2
 	FORCEINLINE WChar *StrUTF8_WCharC(WChar *buff, const UTF8Char *bytes, UOSInt byteSize, UOSInt *byteConv) { return StrUTF8_UTF16C(buff, bytes, byteSize, byteConv); }
 	FORCEINLINE UOSInt StrUTF8_WCharCntC(const UTF8Char *bytes, UOSInt byteSize) { return StrUTF8_UTF16CntC(bytes, byteSize); }

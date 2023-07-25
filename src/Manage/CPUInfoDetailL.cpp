@@ -13,6 +13,8 @@
 #include <sys/sysctl.h>
 #endif
 
+#include <stdio.h>
+
 Manage::CPUInfoDetail::CPUInfoDetail()
 {
 	this->cpuModel = CSTR_NULL;
@@ -22,7 +24,7 @@ Manage::CPUInfoDetail::CPUInfoDetail()
 	size_t size = sizeof(sbuff);
 	if (sysctlbyname("machdep.cpu.brand_string", sbuff, &size, 0, 0) == 0)
 	{
-		const Manage::CPUDB::CPUSpec *cpu = Manage::CPUDB::GetCPUSpec(Text::CString(sbuff, size));
+		const Manage::CPUDB::CPUSpec *cpu = Manage::CPUDB::GetCPUSpec(Text::CString(sbuff, size - 1));
 		if (cpu)
 		{
 			this->cpuModel = Text::CString(cpu->model, cpu->modelLen);

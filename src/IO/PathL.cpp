@@ -13,6 +13,8 @@
 #if defined(__FreeBSD__)
 #include <limits.h>
 #include <sys/sysctl.h>
+#elif defined(__APPLE__)
+#include <mach-o/dyld.h>
 #endif
 
 #include <stdio.h>
@@ -149,6 +151,16 @@ UTF8Char *IO::Path::GetProcessFileName(UTF8Char *buff)
 	size_t size = 512;
 	if (sysctl(mib, 4, (Char*)buff, &size, 0, 0) != 0)
 		return 0;
+#elif defined(__APPLE__)
+	uint32_t size = PATH_MAX;
+	if (_NSGetExecutablePath((char*)buff, &size))
+	{
+		size = 0;
+	}
+	else
+	{
+		size = (uint32_t)Text::StrCharCnt(buff);		
+	}
 #else
 	ssize_t size = readlink("/proc/self/exe", (Char*)buff, 1024);
 	if (size == -1)

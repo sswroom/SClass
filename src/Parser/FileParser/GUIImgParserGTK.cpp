@@ -17,9 +17,12 @@
 #include "Parser/FileParser/GUIImgParser.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
-#include <gdk/gdk.h>
-#include <gdk-pixbuf/gdk-pixbuf.h>
-#include <stdio.h>
+namespace
+{
+	#include <gdk/gdk.h>
+	#include <gdk-pixbuf/gdk-pixbuf.h>
+	#include <stdio.h>
+}
 
 Parser::FileParser::GUIImgParser::GUIImgParser()
 {

@@ -34,8 +34,6 @@
 #include "Text/StringBuilderUTF8.h"
 #include "Text/UTF8Writer.h"
 
-#include <stdio.h>
-
 class PrintTest : public Media::IPrintHandler
 {
 private:
@@ -119,9 +117,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 
 	NotNullPtr<IO::FileStream> fs;
 	Text::UTF8Writer *writer;
-	IO::SystemInfo sysInfo;
 	UInt64 memSize;
-	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	UOSInt i;
@@ -139,67 +135,42 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	NEW_CLASSNN(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	NEW_CLASS(writer, Text::UTF8Writer(fs));
 
-	console->WriteLineC(UTF8STRC("Computer Info:"));
-	writer->WriteLineC(UTF8STRC("Computer Info:"));
-	sb.ClearStr();
-	sb.AppendC(UTF8STRC("OS: "));
-	if ((sptr = IO::OS::GetDistro(sbuff)) != 0)
+	Text::StringBuilderUTF8 sb;
 	{
-		sb.AppendP(sbuff, sptr);
-	}
-	else
-	{
-		sb.AppendC(UTF8STRC("Unknown"));
-	}
-	if ((sptr = IO::OS::GetVersion(sbuff)) != 0)
-	{
-		sb.AppendC(UTF8STRC(" "));
-		sb.AppendP(sbuff, sptr);
-	}
-	console->WriteLineC(sb.ToString(), sb.GetLength());
-	writer->WriteLineC(sb.ToString(), sb.GetLength());
-	{
-		Data::DateTime dt;
+		IO::SystemInfo sysInfo;
+		console->WriteLineC(UTF8STRC("Computer Info:"));
+		writer->WriteLineC(UTF8STRC("Computer Info:"));
 		sb.ClearStr();
-		sb.AppendC(UTF8STRC("Build Time: "));
-		IO::BuildTime::GetBuildTime(&dt);
-		dt.ToUTCTime();
-		sb.AppendDate(&dt);
+		sb.AppendC(UTF8STRC("OS: "));
+		if ((sptr = IO::OS::GetDistro(sbuff)) != 0)
+		{
+			sb.AppendP(sbuff, sptr);
+		}
+		else
+		{
+			sb.AppendC(UTF8STRC("Unknown"));
+		}
+		if ((sptr = IO::OS::GetVersion(sbuff)) != 0)
+		{
+			sb.AppendC(UTF8STRC(" "));
+			sb.AppendP(sbuff, sptr);
+		}
 		console->WriteLineC(sb.ToString(), sb.GetLength());
 		writer->WriteLineC(sb.ToString(), sb.GetLength());
-	}
+		{
+			Data::DateTime dt;
+			sb.ClearStr();
+			sb.AppendC(UTF8STRC("Build Time: "));
+			IO::BuildTime::GetBuildTime(&dt);
+			dt.ToUTCTime();
+			sb.AppendDate(&dt);
+			console->WriteLineC(sb.ToString(), sb.GetLength());
+			writer->WriteLineC(sb.ToString(), sb.GetLength());
+		}
 
-	sb.ClearStr();
-	sb.AppendC(UTF8STRC("Platform: "));
-	if ((sptr = sysInfo.GetPlatformName(sbuff)) != 0)
-	{
-		sb.AppendP(sbuff, sptr);
-	}
-	else
-	{
-		sb.AppendC(UTF8STRC("-"));
-	}
-	console->WriteLineC(sb.ToString(), sb.GetLength());
-	writer->WriteLineC(sb.ToString(), sb.GetLength());
-
-	sb.ClearStr();
-	sb.AppendC(UTF8STRC("Platform SN: "));
-	if ((sptr = sysInfo.GetPlatformSN(sbuff)) != 0)
-	{
-		sb.AppendP(sbuff, sptr);
-	}
-	else
-	{
-		sb.AppendC(UTF8STRC("-"));
-	}
-	console->WriteLineC(sb.ToString(), sb.GetLength());
-	writer->WriteLineC(sb.ToString(), sb.GetLength());
-
-	{
-		Manage::CPUInfoDetail cpuInfo;
 		sb.ClearStr();
-		sb.AppendC(UTF8STRC("CPU Name: "));
-		if ((sptr = cpuInfo.GetCPUName(sbuff)) != 0)
+		sb.AppendC(UTF8STRC("Platform: "));
+		if ((sptr = sysInfo.GetPlatformName(sbuff)) != 0)
 		{
 			sb.AppendP(sbuff, sptr);
 		}
@@ -210,13 +181,11 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		console->WriteLineC(sb.ToString(), sb.GetLength());
 		writer->WriteLineC(sb.ToString(), sb.GetLength());
 
-		const Manage::CPUDB::CPUSpec *cpuSpec = 0;
 		sb.ClearStr();
-		sb.AppendC(UTF8STRC("CPU Model: "));
-		if (cpuInfo.GetCPUModel().v)
+		sb.AppendC(UTF8STRC("Platform SN: "));
+		if ((sptr = sysInfo.GetPlatformSN(sbuff)) != 0)
 		{
-			sb.Append(cpuInfo.GetCPUModel());
-			cpuSpec = Manage::CPUDB::GetCPUSpec(cpuInfo.GetCPUModel());
+			sb.AppendP(sbuff, sptr);
 		}
 		else
 		{
@@ -225,122 +194,152 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		console->WriteLineC(sb.ToString(), sb.GetLength());
 		writer->WriteLineC(sb.ToString(), sb.GetLength());
 
-		sb.ClearStr();
-		sb.AppendC(UTF8STRC("CPU Brand Name: "));
-		if (cpuSpec)
 		{
-			sb.Append(Manage::CPUVendor::GetBrandName(cpuSpec->brand));
-			sb.AppendC(UTF8STRC(" "));
-			sb.AppendSlow((const UTF8Char*)cpuSpec->name);
-		}
-		else
-		{
-			sb.AppendC(UTF8STRC("-"));
-		}
-		console->WriteLineC(sb.ToString(), sb.GetLength());
-		writer->WriteLineC(sb.ToString(), sb.GetLength());
-
-#if defined(CPU_X86_32) || defined(CPU_X86_64)
-		sb.ClearStr();
-		sb.AppendC(UTF8STRC("CPU FamilyId = "));
-		sb.AppendI32(cpuInfo.GetFamilyId());
-		sb.AppendC(UTF8STRC(", ModelId = "));
-		sb.AppendI32(cpuInfo.GetModelId());
-		sb.AppendC(UTF8STRC(", Stepping = "));
-		sb.AppendI32(cpuInfo.GetStepping());
-		console->WriteLineC(sb.ToString(), sb.GetLength());
-		writer->WriteLineC(sb.ToString(), sb.GetLength());
-#endif
-
-		sb.ClearStr();
-		sb.AppendC(UTF8STRC("CPU Thread Count: "));
-		sb.AppendUOSInt(threadCnt);
-		console->WriteLineC(sb.ToString(), sb.GetLength());
-		writer->WriteLineC(sb.ToString(), sb.GetLength());
-
-		i = 0;
-		while (true)
-		{
-			Double temp;
-
-			if (!cpuInfo.GetCPUTemp(i, &temp))
-				break;
-
+			Manage::CPUInfoDetail cpuInfo;
 			sb.ClearStr();
-			sb.AppendC(UTF8STRC("CPU Temp "));
-			sb.AppendUOSInt(i);
-			sb.AppendC(UTF8STRC(": "));
-			Text::SBAppendF64(&sb, temp);
+			sb.AppendC(UTF8STRC("CPU Name: "));
+			if ((sptr = cpuInfo.GetCPUName(sbuff)) != 0)
+			{
+				sb.AppendP(sbuff, sptr);
+			}
+			else
+			{
+				sb.AppendC(UTF8STRC("-"));
+			}
 			console->WriteLineC(sb.ToString(), sb.GetLength());
 			writer->WriteLineC(sb.ToString(), sb.GetLength());
 
-			i++;
-		}
-	}
-
-	sb.ClearStr();
-	sb.AppendC(UTF8STRC("Total Memory Size: "));
-	memSize = sysInfo.GetTotalMemSize();
-	sptr = ByteDisp(sbuff, memSize);
-	sb.AppendP(sbuff, sptr);
-	console->WriteLineC(sb.ToString(), sb.GetLength());
-	writer->WriteLineC(sb.ToString(), sb.GetLength());
-
-	sb.ClearStr();
-	sb.AppendC(UTF8STRC("Total Usable Memory Size: "));
-	memSize = sysInfo.GetTotalUsableMemSize();
-	sptr = ByteDisp(sbuff, memSize);
-	sb.AppendP(sbuff, sptr);
-	console->WriteLineC(sb.ToString(), sb.GetLength());
-	writer->WriteLineC(sb.ToString(), sb.GetLength());
-
-	{
-		Data::ArrayList<IO::SystemInfo::RAMInfo*> ramList;
-		IO::SystemInfo::RAMInfo *ram;
-		sysInfo.GetRAMInfo(&ramList);
-		i = 0;
-		j = ramList.GetCount();
-		while (i < j)
-		{
-			ram = ramList.GetItem(i);
+			const Manage::CPUDB::CPUSpec *cpuSpec = 0;
 			sb.ClearStr();
-			sb.AppendC(UTF8STRC("RAM: "));
-			if (ram->deviceLocator)
+			sb.AppendC(UTF8STRC("CPU Model: "));
+			if (cpuInfo.GetCPUModel().v)
 			{
-				sb.Append(ram->deviceLocator);
+				sb.Append(cpuInfo.GetCPUModel());
+				cpuSpec = Manage::CPUDB::GetCPUSpec(cpuInfo.GetCPUModel());
 			}
-			sb.AppendC(UTF8STRC("\t"));
-			if (ram->manufacturer)
+			else
 			{
-				sb.Append(ram->manufacturer);
+				sb.AppendC(UTF8STRC("-"));
 			}
-			sb.AppendC(UTF8STRC("\t"));
-			if (ram->partNo)
-			{
-				sb.Append(ram->partNo);
-			}
-			sb.AppendC(UTF8STRC("\t"));
-			if (ram->sn)
-			{
-				sb.Append(ram->sn);
-			}
-			sb.AppendC(UTF8STRC("\t"));
-			sb.AppendU64(ram->defSpdMHz);
-			sb.AppendC(UTF8STRC("\t"));
-			sb.AppendU64(ram->confSpdMHz);
-			sb.AppendC(UTF8STRC("\t"));
-			sb.AppendU32(ram->dataWidth);
-			sb.AppendC(UTF8STRC("\t"));
-			sb.AppendU32(ram->totalWidth);
-			sb.AppendC(UTF8STRC("\t"));
-			sb.AppendU64(ram->memorySize);
 			console->WriteLineC(sb.ToString(), sb.GetLength());
 			writer->WriteLineC(sb.ToString(), sb.GetLength());
-			i++;
-		}
-		sysInfo.FreeRAMInfo(&ramList);
-	}
 
+			sb.ClearStr();
+			sb.AppendC(UTF8STRC("CPU Brand Name: "));
+			if (cpuSpec)
+			{
+				sb.Append(Manage::CPUVendor::GetBrandName(cpuSpec->brand));
+				sb.AppendC(UTF8STRC(" "));
+				sb.AppendSlow((const UTF8Char*)cpuSpec->name);
+			}
+			else
+			{
+				sb.AppendC(UTF8STRC("-"));
+			}
+			console->WriteLineC(sb.ToString(), sb.GetLength());
+			writer->WriteLineC(sb.ToString(), sb.GetLength());
+
+	#if defined(CPU_X86_32) || defined(CPU_X86_64)
+			sb.ClearStr();
+			sb.AppendC(UTF8STRC("CPU FamilyId = "));
+			sb.AppendI32(cpuInfo.GetFamilyId());
+			sb.AppendC(UTF8STRC(", ModelId = "));
+			sb.AppendI32(cpuInfo.GetModelId());
+			sb.AppendC(UTF8STRC(", Stepping = "));
+			sb.AppendI32(cpuInfo.GetStepping());
+			console->WriteLineC(sb.ToString(), sb.GetLength());
+			writer->WriteLineC(sb.ToString(), sb.GetLength());
+	#endif
+
+			sb.ClearStr();
+			sb.AppendC(UTF8STRC("CPU Thread Count: "));
+			sb.AppendUOSInt(threadCnt);
+			console->WriteLineC(sb.ToString(), sb.GetLength());
+			writer->WriteLineC(sb.ToString(), sb.GetLength());
+
+			i = 0;
+			while (true)
+			{
+				Double temp;
+
+				if (!cpuInfo.GetCPUTemp(i, &temp))
+					break;
+
+				sb.ClearStr();
+				sb.AppendC(UTF8STRC("CPU Temp "));
+				sb.AppendUOSInt(i);
+				sb.AppendC(UTF8STRC(": "));
+				Text::SBAppendF64(&sb, temp);
+				console->WriteLineC(sb.ToString(), sb.GetLength());
+				writer->WriteLineC(sb.ToString(), sb.GetLength());
+
+				i++;
+			}
+		}
+
+		sb.ClearStr();
+		sb.AppendC(UTF8STRC("Total Memory Size: "));
+		memSize = sysInfo.GetTotalMemSize();
+		sptr = ByteDisp(sbuff, memSize);
+		sb.AppendP(sbuff, sptr);
+		console->WriteLineC(sb.ToString(), sb.GetLength());
+		writer->WriteLineC(sb.ToString(), sb.GetLength());
+
+		sb.ClearStr();
+		sb.AppendC(UTF8STRC("Total Usable Memory Size: "));
+		memSize = sysInfo.GetTotalUsableMemSize();
+		sptr = ByteDisp(sbuff, memSize);
+		sb.AppendP(sbuff, sptr);
+		console->WriteLineC(sb.ToString(), sb.GetLength());
+		writer->WriteLineC(sb.ToString(), sb.GetLength());
+
+		{
+			Data::ArrayList<IO::SystemInfo::RAMInfo*> ramList;
+			IO::SystemInfo::RAMInfo *ram;
+			sysInfo.GetRAMInfo(&ramList);
+			i = 0;
+			j = ramList.GetCount();
+			while (i < j)
+			{
+				ram = ramList.GetItem(i);
+				sb.ClearStr();
+				sb.AppendC(UTF8STRC("RAM: "));
+				if (ram->deviceLocator)
+				{
+					sb.Append(ram->deviceLocator);
+				}
+				sb.AppendC(UTF8STRC("\t"));
+				if (ram->manufacturer)
+				{
+					sb.Append(ram->manufacturer);
+				}
+				sb.AppendC(UTF8STRC("\t"));
+				if (ram->partNo)
+				{
+					sb.Append(ram->partNo);
+				}
+				sb.AppendC(UTF8STRC("\t"));
+				if (ram->sn)
+				{
+					sb.Append(ram->sn);
+				}
+				sb.AppendC(UTF8STRC("\t"));
+				sb.AppendU64(ram->defSpdMHz);
+				sb.AppendC(UTF8STRC("\t"));
+				sb.AppendU64(ram->confSpdMHz);
+				sb.AppendC(UTF8STRC("\t"));
+				sb.AppendU32(ram->dataWidth);
+				sb.AppendC(UTF8STRC("\t"));
+				sb.AppendU32(ram->totalWidth);
+				sb.AppendC(UTF8STRC("\t"));
+				sb.AppendU64(ram->memorySize);
+				console->WriteLineC(sb.ToString(), sb.GetLength());
+				writer->WriteLineC(sb.ToString(), sb.GetLength());
+				i++;
+			}
+			sysInfo.FreeRAMInfo(&ramList);
+		}
+	}
 	{
 		Data::ArrayList<Media::DDCReader *> readerList;
 		Media::DDCReader *reader;

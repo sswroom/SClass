@@ -3,7 +3,7 @@ IO/GPUManager.h: ../../src/IO/GPUManagerNull.cpp
 @GPUManager.o
 IO/RobustelInfo.h: ../../src/IO/RobustelInfo_Null.cpp
 @RobustelInfo.o
-IO/SMBIOSUtil.h: ../../src/IO/SMBIOSUtilL.cpp
+IO/SMBIOSUtil.h: ../../src/IO/SMBIOSUtilMac.cpp
 @SMBIOSUtil.o
 IO/SystemInfo.h: ../../src/IO/SystemInfoFreeBSD.cpp
 @SystemInfo.o
@@ -18,7 +18,9 @@ Media/VideoCaptureMgr.h: ../../src/Media/VideoCaptureMgrNull.cpp
 DeviceBase.o: ../../src/DeviceBase_Null.cpp
 GPUManager.o: ../../src/IO/GPUManagerNull.cpp
 RobustelInfo.o: ../../src/IO/RobustelInfo_Null.cpp
-SMBIOSUtil.o: ../../src/IO/SMBIOSUtilL.cpp
+SMBIOSUtil.o: ../../src/IO/SMBIOSUtilMac.cpp
+!-framework IOKit
+!-framework Cocoa
 SystemInfo.o: ../../src/IO/SystemInfoFreeBSD.cpp
 CameraManager.o: ../../src/Media/CameraManagerNul.cpp
 DDCReader.o: ../../src/Media/DDCReaderL.cpp

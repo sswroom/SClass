@@ -8,8 +8,11 @@
 #include "UI/GUIClientControl.h"
 #include "UI/GUIControl.h"
 #include "UI/GUIDragDropGTK.h"
-#include <gtk/gtk.h>
-#include <stdio.h>
+namespace
+{
+	#include <gtk/gtk.h>
+	#include <stdio.h>
+}
 
 #define GDK_VERSION_AFTER(major, minor) (GDK_MAJOR_VERSION > major || (GDK_MAJOR_VERSION == major && GDK_MINOR_VERSION >= minor))
 /*

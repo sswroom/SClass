@@ -6,7 +6,10 @@
 #include "Text/MyStringFloat.h"
 #include "UI/GUIButton.h"
 #include "UI/GUIClientControl.h"
+namespace
+{
 #include <gtk/gtk.h>
+}
 
 #define GDK_VERSION_AFTER(major, minor) (GDK_MAJOR_VERSION > major || (GDK_MAJOR_VERSION == major && GDK_MINOR_VERSION >= minor))
 

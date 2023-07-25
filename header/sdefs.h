@@ -33,7 +33,8 @@ ASTRUCT
 #endif
 #endif
 
-
+namespace SSWR
+{
 #if defined(__WCHAR_MAX__) && (__WCHAR_MAX__ >= 0x10000)
 #define _WCHAR_SIZE 4
 #elif !defined(__WCHAR_MAX__) || (__WCHAR_MAX__ >= 0x100)
@@ -625,5 +626,7 @@ typedef UInt32 UTF32Char;
 #define U16STR(s) ((const UTF16Char*)(L ## s))
 #endif
 #endif
+}
 
+using namespace SSWR;
 #endif
