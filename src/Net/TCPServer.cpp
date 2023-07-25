@@ -38,7 +38,7 @@ void Net::TCPServer::AddLogMsgC(const UTF8Char *msg, UOSInt msgLen, IO::LogHandl
 UInt32 __stdcall Net::TCPServer::Svrv4Subthread(void *o)
 {
 	SubthreadStatus *status = (SubthreadStatus*)o;
-	Sync::ThreadUtil::SetName((const UTF8Char*)"TCPSvrv4Sub");
+	Sync::ThreadUtil::SetName(CSTR("TCPSvrv4Sub"));
 	status->threadRunning = true;
 	status->threadEvt->Set();
 	while (!status->toStop)
@@ -62,7 +62,7 @@ UInt32 __stdcall Net::TCPServer::Svrv4Thread(void *o)
 	Sync::Event *threadEvt = 0;
 
 	Sync::ThreadUtil::SetPriority(Sync::ThreadUtil::TP_HIGHEST);
-	Sync::ThreadUtil::SetName((const UTF8Char*)"TCPSvrv4");
+	Sync::ThreadUtil::SetName(CSTR("TCPSvrv4"));
 	svr->threadRunning |= 1;
 	str = Text::StrConcatC(buff, UTF8STRC("Start listening to v4 port "));
 	str = Text::StrInt32(str, svr->port);
@@ -146,7 +146,7 @@ UInt32 __stdcall Net::TCPServer::Svrv4Thread(void *o)
 UInt32 __stdcall Net::TCPServer::Svrv6Subthread(void *o)
 {
 	SubthreadStatus *status = (SubthreadStatus*)o;
-	Sync::ThreadUtil::SetName((const UTF8Char*)"TCPSvrv6Sub");
+	Sync::ThreadUtil::SetName(CSTR("TCPSvrv6Sub"));
 	status->threadRunning = true;
 	status->threadEvt->Set();
 	while (!status->toStop)
@@ -170,7 +170,7 @@ UInt32 __stdcall Net::TCPServer::Svrv6Thread(void *o)
 	Sync::Event *threadEvt = 0;
 
 	Sync::ThreadUtil::SetPriority(Sync::ThreadUtil::TP_HIGHEST);
-	Sync::ThreadUtil::SetName((const UTF8Char*)"TCPSvrv6");
+	Sync::ThreadUtil::SetName(CSTR("TCPSvrv6"));
 	svr->threadRunning |= 4;
 	str = Text::StrConcatC(buff, UTF8STRC("Start listening to v6 port "));
 	str = Text::StrInt32(str, svr->port);
@@ -257,7 +257,7 @@ UInt32 __stdcall Net::TCPServer::WorkerThread(void *o)
 	UTF8Char buff[256];
 	UTF8Char *str;
 
-	Sync::ThreadUtil::SetName((const UTF8Char*)"TCPSvrWork");
+	Sync::ThreadUtil::SetName(CSTR("TCPSvrWork"));
 	svr->threadRunning |= 2;
 
 	while (!svr->toStop)

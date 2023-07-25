@@ -27,6 +27,7 @@ namespace Media
 			typedef struct
 			{
 				IVTCFilter *me;
+				UOSInt index;
 				Int32 threadStat;
 				Int32 currCmd;
 				Sync::Event *evt;

@@ -215,11 +215,11 @@ void Sync::ThreadUtil::SetPriority(ThreadPriority priority)
 	SetThreadPriority(GetCurrentThread(), threadPriority);*/
 }
 
-Bool Sync::ThreadUtil::SetName(const UTF8Char *name)
+Bool Sync::ThreadUtil::SetName(Text::CString name)
 {
 #if defined(__APPLE__)
-	return pthread_setname_np((const char*)name) == 0;
+	return pthread_setname_np((const char*)name.v) == 0;
 #else
-	return pthread_setname_np(pthread_self(), (const char*)name) == 0;
+	return pthread_setname_np(pthread_self(), (const char*)name.v) == 0;
 #endif
 }

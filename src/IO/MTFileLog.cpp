@@ -155,7 +155,7 @@ void IO::MTFileLog::WriteArr(NotNullPtr<Text::String> *msgArr, Data::Timestamp *
 UInt32 __stdcall IO::MTFileLog::FileThread(void *userObj)
 {
 	IO::MTFileLog *me = (IO::MTFileLog*)userObj;
-	Sync::ThreadUtil::SetName((const UTF8Char*)"MTFileLog");
+	Sync::ThreadUtil::SetName(CSTR("MTFileLog"));
 	UOSInt arrCnt;
 	NotNullPtr<Text::String> *msgArr = 0;
 	Data::Timestamp *dateArr = 0;

@@ -19,7 +19,7 @@ UInt32 __stdcall IO::MODBUSTCPMaster::ThreadProc(void *userObj)
 	UOSInt i;
 	Bool incomplete;
 	AddrResultCb *cb;
-	Sync::ThreadUtil::SetName((const UTF8Char*)"MODBUSTCP");
+	Sync::ThreadUtil::SetName(CSTR("MODBUSTCP"));
 	{
 		me->threadRunning = true;
 	//	Text::StringBuilderUTF8 sb;

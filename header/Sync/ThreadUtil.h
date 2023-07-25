@@ -1,6 +1,7 @@
 #ifndef _SM_SYNC_THREADUTIL
 #define _SM_SYNC_THREADUTIL
 #include "Data/Duration.h"
+#include "Text/CString.h"
 namespace Sync
 {
 	typedef UInt32 (__stdcall *ThreadProc)(void *userObj);
@@ -28,7 +29,7 @@ namespace Sync
 		static Bool EnableInterrupt();
 		static Bool Interrupt(UInt32 threadId);
 		static void SetPriority(ThreadPriority priority);
-		static Bool SetName(const UTF8Char *name);
+		static Bool SetName(Text::CString name);
 	};
 }
 #endif

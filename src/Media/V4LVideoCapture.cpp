@@ -18,6 +18,7 @@
 UInt32 __stdcall Media::V4LVideoCapture::PlayThread(void *userObj)
 {
 	Media::V4LVideoCapture *me = (Media::V4LVideoCapture*)userObj;
+	Sync::ThreadUtil::SetName(CSTR("V4LVideoCap"));
 	struct timeval tv;
 	fd_set fds;
 	UInt32 frameNum;

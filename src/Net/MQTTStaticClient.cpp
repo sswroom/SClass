@@ -10,7 +10,7 @@
 UInt32 __stdcall Net::MQTTStaticClient::KAThread(void *userObj)
 {
 	Net::MQTTStaticClient *me = (Net::MQTTStaticClient*)userObj;
-	Sync::ThreadUtil::SetName((const UTF8Char*)"MQTTStaticCliKA");
+	Sync::ThreadUtil::SetName(CSTR("MQTTStaticCliKA"));
 	me->kaRunning = true;
 	while (!me->kaToStop)
 	{

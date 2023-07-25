@@ -545,11 +545,12 @@ void UI::GUIDDrawControl::DisplayFromSurface(Media::MonitorSurface *surface, Mat
 			if (this->clsData->pSurfaceUpdated)
 			{
 				this->clsData->pSurfaceUpdated = false;
-				g_idle_add(GUIDDrawControl_ToGenDrawSignal, this->clsData->imgCtrl);
+				gdk_threads_add_idle(GUIDDrawControl_ToGenDrawSignal, this->clsData->imgCtrl);
+//				g_idle_add(GUIDDrawControl_ToGenDrawSignal, this->clsData->imgCtrl);
 			}
 			else
 			{
-				g_idle_add(GUIDDrawControl_ToGenDrawSignal, this->clsData->imgCtrl);
+				gdk_threads_add_idle(GUIDDrawControl_ToGenDrawSignal, this->clsData->imgCtrl);
 			}
 //			printf("Draw from buff 2 %lld\r\n", t);
 		}

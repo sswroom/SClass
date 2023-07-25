@@ -79,7 +79,7 @@ UInt32 __stdcall Net::TCPClientMgr::ClientThread(void *o)
 	UOSInt pollReqCnt;
 	Bool pollPreData = false;
 
-	Sync::ThreadUtil::SetName((const UTF8Char*)"TCPCliMgr");
+	Sync::ThreadUtil::SetName(CSTR("TCPCliMgr"));
 	me->clientThreadRunning = true;
 	Sync::ThreadUtil::SetPriority(Sync::ThreadUtil::TP_REALTIME);
 	while (!me->toStop)
@@ -261,8 +261,9 @@ UInt32 __stdcall Net::TCPClientMgr::WorkerThread(void *o)
 	Data::Timestamp lastCheckTime = 0;
 	UOSInt i;
 	UTF8Char sbuff[16];
-	Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("TCPCliMgr")), stat->index);
-	Sync::ThreadUtil::SetName(sbuff);
+	UTF8Char *sptr;
+	sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("TCPCliMgr")), stat->index);
+	Sync::ThreadUtil::SetName(CSTRP(sbuff, sptr));
 	{
 		Sync::Event evt;
 		stat->evt = &evt;

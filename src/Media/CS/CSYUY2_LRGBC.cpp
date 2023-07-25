@@ -39,6 +39,7 @@ Media::CS::CSYUY2_LRGBC::CSYUY2_LRGBC(const Media::ColorProfile *srcProfile, con
 {
 	UOSInt i;
 	this->nThread = Sync::ThreadUtil::GetThreadCnt();
+	if (this->nThread > 8) this->nThread = 8;
 
 	NEW_CLASS(evtMain, Sync::Event());
 	stats = MemAlloc(THREADSTAT, nThread);

@@ -93,13 +93,13 @@ void Sync::ThreadUtil::SetPriority(ThreadPriority priority)
 
 typedef HRESULT (WINAPI *SetThreadDescriptionFunc)(HANDLE hThread, PCWSTR lpThreadDescription);
 
-Bool Sync::ThreadUtil::SetName(const UTF8Char *name)
+Bool Sync::ThreadUtil::SetName(Text::CString name)
 {
 	IO::Library lib((const UTF8Char*)"Kernel32.dll");
 	SetThreadDescriptionFunc SetThreadDescription = (SetThreadDescriptionFunc)lib.GetFunc("SetThreadDescription");
 	if (SetThreadDescription == 0)
 		return false;
-	const WChar *wName = Text::StrToWCharNew(name);
+	const WChar *wName = Text::StrToWCharNew(name.v);
 	HRESULT hr = SetThreadDescription(GetCurrentThread(), wName);
 	Text::StrDelNew(wName);
 	return hr == 0;

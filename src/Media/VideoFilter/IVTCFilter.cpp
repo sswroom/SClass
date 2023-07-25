@@ -1246,6 +1246,7 @@ void Media::VideoFilter::IVTCFilter::StartIVTC(UInt32 frameTime, UInt32 frameNum
 UInt32 __stdcall Media::VideoFilter::IVTCFilter::IVTCThread(void *userObj)
 {
 	Media::VideoFilter::IVTCFilter *me = (Media::VideoFilter::IVTCFilter *)userObj;
+	Sync::ThreadUtil::SetName(CSTR("IVTCFilterIVTC"));
 	Sync::ThreadUtil::SetPriority(Sync::ThreadUtil::TP_HIGHEST);
 	me->ivtcTStatus = 1;
 	me->mainEvt.Set();
@@ -1279,6 +1280,10 @@ UInt32 __stdcall Media::VideoFilter::IVTCFilter::IVTCThread(void *userObj)
 UInt32 __stdcall Media::VideoFilter::IVTCFilter::CalcThread(void *userObj)
 {
 	ThreadStat *tStat = (ThreadStat*)userObj;
+	UTF8Char sbuff[16];
+	UTF8Char *sptr;
+	sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("IVTCFilterC")), tStat->index);
+	Sync::ThreadUtil::SetName(CSTRP(sbuff, sptr));
 	Sync::ThreadUtil::SetPriority(Sync::ThreadUtil::TP_HIGHEST);
 	tStat->threadStat = 1;
 	{
@@ -1975,6 +1980,7 @@ Media::VideoFilter::IVTCFilter::IVTCFilter(Media::IVideoSource *srcVideo) : Medi
 		this->threadStats[i].threadStat = 0;
 		this->threadStats[i].me = this;
 		this->threadStats[i].currCmd = 0;
+		this->threadStats[i].index = i;
 		Sync::ThreadUtil::Create(CalcThread, &this->threadStats[i]);
 	}
 

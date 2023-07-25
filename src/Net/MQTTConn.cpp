@@ -98,7 +98,7 @@ void Net::MQTTConn::DataSkipped(NotNullPtr<IO::Stream> stm, void *stmObj, const 
 UInt32 __stdcall Net::MQTTConn::RecvThread(void *userObj)
 {
 	Net::MQTTConn *me = (Net::MQTTConn*)userObj;
-	Sync::ThreadUtil::SetName((const UTF8Char*)"MQTTConnRecv");
+	Sync::ThreadUtil::SetName(CSTR("MQTTConnRecv"));
 	UOSInt maxBuffSize = 9000;
 	UInt8 *buff;
 	UOSInt buffSize;

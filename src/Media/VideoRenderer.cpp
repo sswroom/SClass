@@ -1176,6 +1176,7 @@ void __stdcall Media::VideoRenderer::OnVideoChange(Media::IVideoSource::FrameCha
 UInt32 __stdcall Media::VideoRenderer::ProcessThread(void *userObj)
 {
 	ThreadStat *tstat = (ThreadStat*)userObj;
+	Sync::ThreadUtil::SetName(CSTR("VideoRendererP"));
 	UOSInt i;
 	VideoBuff *buff = 0;
 	VideoBuff *buff2;
@@ -1338,6 +1339,7 @@ UInt32 __stdcall Media::VideoRenderer::ProcessThread(void *userObj)
 UInt32 __stdcall Media::VideoRenderer::DisplayThread(void *userObj)
 {
 	Media::VideoRenderer *me = (Media::VideoRenderer*)userObj;
+	Sync::ThreadUtil::SetName(CSTR("VideoRendererD"));
 	UOSInt i;
 	Bool found;
 	Bool found2;

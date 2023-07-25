@@ -6,6 +6,10 @@
 UInt32 __stdcall Sync::ParallelTask::WorkerThread(void *userObj)
 {
 	ThreadStatus *stat = (ThreadStatus*)userObj;
+	UTF8Char sbuff[16];
+	UTF8Char *sptr;
+	sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("ParallelTask")), stat->index);
+	Sync::ThreadUtil::SetName(CSTRP(sbuff, sptr));
 	{
 		Sync::Event evt;
 		stat->evt = &evt;
@@ -45,6 +49,7 @@ Sync::ParallelTask::ParallelTask(UOSInt threadCnt, Bool taskQueue)
 		while (i-- > 0)
 		{
 			this->stats[i].me = this;
+			this->stats[i].index = i;
 			this->stats[i].running = false;
 			this->stats[i].toStop = false;
 			this->stats[i].currTaskFunc = 0;

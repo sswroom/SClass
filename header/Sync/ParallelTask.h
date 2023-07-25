@@ -12,6 +12,7 @@ namespace Sync
 		typedef struct
 		{
 			ParallelTask *me;
+			UOSInt index;
 			Sync::Event *evt;
 			Bool running;
 			Bool toStop;

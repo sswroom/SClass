@@ -11,7 +11,11 @@ extern "C"
 UInt32 Media::CS::CSUYVY_LRGBC::WorkerThread(void *obj)
 {
 	CSUYVY_LRGBC *converter = (CSUYVY_LRGBC*)obj;
+	UTF8Char sbuff[16];
+	UTF8Char *sptr;
 	UOSInt threadId = converter->currId;
+	sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("CSUYVY_LRGBC")), threadId);
+	Sync::ThreadUtil::SetName(CSTRP(sbuff, sptr));
 	THREADSTAT *ts = &converter->stats[threadId];
 
 	ts->status = 1;
@@ -39,6 +43,10 @@ Media::CS::CSUYVY_LRGBC::CSUYVY_LRGBC(const Media::ColorProfile *srcProfile, con
 {
 	UOSInt i;
 	this->nThread = Sync::ThreadUtil::GetThreadCnt();
+	if (this->nThread > 8)
+	{
+		this->nThread = 8;
+	}
 
 	NEW_CLASS(evtMain, Sync::Event());
 	stats = MemAlloc(THREADSTAT, nThread);
