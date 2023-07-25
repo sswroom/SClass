@@ -12,15 +12,12 @@
 #include "Parser/FileParser/GUIImgParser.h"
 #include "Text/MyStringW.h"
 
-namespace
-{
 #if defined(NO_GDK)
 #include <cairo/cairo.h>
 #else
 #include <gdk/gdk.h>
 #endif
 #include <stdio.h>
-}
 
 Media::GTKDrawEngine::GTKDrawEngine() : iab(0, true)
 {

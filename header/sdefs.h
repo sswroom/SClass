@@ -33,8 +33,6 @@ ASTRUCT
 #endif
 #endif
 
-namespace SSWR
-{
 #if defined(__WCHAR_MAX__) && (__WCHAR_MAX__ >= 0x10000)
 #define _WCHAR_SIZE 4
 #elif !defined(__WCHAR_MAX__) || (__WCHAR_MAX__ >= 0x100)
@@ -177,6 +175,29 @@ typedef wchar_t WChar;
 #else
 typedef unsigned short WChar;
 #endif
+
+typedef UInt8 UTF8Ch;
+#if defined(__cplusplus) && __cplusplus >= 201103L
+#if _WCHAR_SIZE == 4
+typedef char16_t UTF16Ch;
+typedef WChar UTF32Ch;
+#else
+typedef WChar UTF16Ch;
+typedef char32_t UTF32Ch;
+#endif
+#else
+#if _WCHAR_SIZE == 4
+typedef UInt16 UTF16Ch;
+typedef WChar UTF32Ch;
+#else
+typedef WChar UTF16Ch;
+typedef UInt32 UTF32Ch;
+#endif
+#endif
+
+#define UTF8Char UTF8Ch
+#define UTF16Char UTF16Ch
+#define UTF32Char UTF32Ch
 
 #if defined(_MSC_VER) && !defined(_WIN32_WCE)
 #if defined(CPU_X86_32)
@@ -563,25 +584,6 @@ __inline UOSInt MyDIV_UOS(UOSInt lo, UOSInt hi, UOSInt divider, UOSInt *reminder
 #define MulDivUOS(x, y, z) ((x) * (y) / (z))
 #endif
 
-typedef UInt8 UTF8Char;
-#if defined(__cplusplus) && __cplusplus >= 201103L
-#if _WCHAR_SIZE == 4
-typedef char16_t UTF16Char;
-typedef WChar UTF32Char;
-#else
-typedef WChar UTF16Char;
-typedef char32_t UTF32Char;
-#endif
-#else
-#if _WCHAR_SIZE == 4
-typedef UInt16 UTF16Char;
-typedef WChar UTF32Char;
-#else
-typedef WChar UTF16Char;
-typedef UInt32 UTF32Char;
-#endif
-#endif
-
 #define Double2Int32(val) (((val) < 0)?(Int32)(val - 0.5):(Int32)(val + 0.5))
 #define Double2Int64(val) (((val) < 0)?(Int64)(val - 0.5):(Int64)(val + 0.5))
 #if _OSINT_SIZE == 64
@@ -626,7 +628,5 @@ typedef UInt32 UTF32Char;
 #define U16STR(s) ((const UTF16Char*)(L ## s))
 #endif
 #endif
-}
 
-using namespace SSWR;
 #endif

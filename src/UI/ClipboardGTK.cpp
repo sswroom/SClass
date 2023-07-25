@@ -7,11 +7,8 @@
 #include "Text/StringBuilderUTF8.h"
 #include "Text/URLString.h"
 #include "UI/Clipboard.h"
-namespace
-{
 #include <gtk/gtk.h>
 #include <wchar.h>
-}
 
 UI::Clipboard::Clipboard(void *hwnd)
 {

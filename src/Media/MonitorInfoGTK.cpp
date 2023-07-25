@@ -4,10 +4,7 @@
 #include "Media/EDID.h"
 #include "Media/MonitorInfo.h"
 #include "Text/MyString.h"
-namespace
-{
 #include <gtk/gtk.h>
-}
 
 Media::MonitorInfo::MonitorInfo(MonitorHandle *hMonitor)
 {

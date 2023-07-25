@@ -257,11 +257,14 @@ void FORCEINLINE PStoreInt32x8NC(void *ptr, Int32x8 v)
 
 #endif
 #elif defined(ENABLE_NEON) && (defined(__ARM_NEON) || defined(__ARM_NEON__) || defined(__ARM_ARCH_7) || defined(_M_ARM64) || defined(_M_ARM64EC))
+namespace
+{
 #if defined(_M_ARM64) || defined(_M_ARM64EC)
 #include <arm64_neon.h>
 #else
 #include <arm_neon.h>
 #endif
+}
 typedef uint8x8_t UInt8x4;
 typedef uint8x8_t UInt8x8;
 typedef uint8x16_t UInt8x16;

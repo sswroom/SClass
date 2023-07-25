@@ -3,7 +3,10 @@
 #include "Text/StringBase.h"
 //#define DEBUGNULL
 #if defined(DEBUGNULL)
+namespace
+{
 #include <stdio.h>
+}
 #endif
 
 #define CSTR(str) Text::CString(UTF8STRC(str))
