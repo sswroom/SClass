@@ -1657,12 +1657,12 @@ Bool Data::DateTimeUtil::String2TimeValue(Text::CString dateStr, TimeValue *tval
 					i = Text::StrIndexOfChar(strs2[j].v, '/');
 					if (i != INVALID_INDEX && i > 0)
 					{
-						if (Text::StrSplitP(strs, 3, strs2[0], '/') == 3)
+						if (Text::StrSplitP(strs, 3, strs2[j], '/') == 3)
 						{
 							TimeValueSetDate(tval, strs);
 						}
 					}
-					else if (Text::StrSplitP(strs, 3, strs2[0], '-') == 3)
+					else if (Text::StrSplitP(strs, 3, strs2[j], '-') == 3)
 					{
 						TimeValueSetDate(tval, strs);
 					}

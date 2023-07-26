@@ -296,8 +296,8 @@ namespace Data
 		{
 			Int32 days = (Int32)variTime;
 			Double ds = (variTime - days);
-			OSInt s = Double2OSInt(ds * 86400);
-			return Data::TimeInstant(((Int64)days - 25569) * 86400000LL + Double2OSInt(ds * 86400000), (UInt32)((ds * 86400 - (Double)s) * 1000000000));
+			OSInt s = (OSInt)(ds * 86400);
+			return Data::TimeInstant(((Int64)days - 25569) * 86400000LL + (OSInt)(ds * 86400000), (UInt32)((ds * 86400 - (Double)s) * 1000000000));
 		}
 
 		static TimeInstant FromTicks(Int64 ticks)

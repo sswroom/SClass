@@ -1,6 +1,6 @@
 <html>
 	<head><title>Testing</title>
-		<script src="sswr.js" type="text/javascript"></script>
+		<script src="sswr.js" type="module"></script>
 		<script type="text/javascript">
 			function burialSiteReceived(result)
 			{
@@ -24,6 +24,8 @@
 				console.log(sswr.math.roundToStr(89.687835, 5));
 				console.log(sswr.math.roundToStr(0.000005, 5));
 				console.log(sswr.math.roundToStr(0.000004, 5));
+				console.log(sswr.data.Timestamp.utcNow().toStringISO8601());
+				console.log(performance.timeOrigin + performance.now());
 			}
 		</script>
 	</head>
