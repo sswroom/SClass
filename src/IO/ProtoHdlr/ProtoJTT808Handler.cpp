@@ -42,7 +42,7 @@ void IO::ProtoHdlr::ProtoJTT808Handler::DeleteStreamData(NotNullPtr<IO::Stream> 
 	MemFree(data);
 }
 
-UOSInt IO::ProtoHdlr::ProtoJTT808Handler::ParseProtocol(NotNullPtr<IO::Stream> stm, void *stmObj, void *stmData, const UInt8 *buff, UOSInt buffSize)
+UOSInt IO::ProtoHdlr::ProtoJTT808Handler::ParseProtocol(NotNullPtr<IO::Stream> stm, void *stmObj, void *stmData, const Data::ByteArrayR &buff)
 {
 	JTT808StreamData *data = (JTT808StreamData*)stmData;
 	UInt8 packetBuff[1044];
@@ -51,7 +51,7 @@ UOSInt IO::ProtoHdlr::ProtoJTT808Handler::ParseProtocol(NotNullPtr<IO::Stream> s
 	UOSInt i;
 	UOSInt j;
 	i = 0;
-	while (i < buffSize)
+	while (i < buff.GetSize())
 	{
 		if (buff[i] == 0x7e)
 		{
@@ -133,7 +133,7 @@ UOSInt IO::ProtoHdlr::ProtoJTT808Handler::ParseProtocol(NotNullPtr<IO::Stream> s
 		}
 		i++;
 	}
-	return buffSize - parseOfst;
+	return buff.GetSize() - parseOfst;
 }
 
 UOSInt IO::ProtoHdlr::ProtoJTT808Handler::BuildPacket(UInt8 *buff, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize, void *stmData)

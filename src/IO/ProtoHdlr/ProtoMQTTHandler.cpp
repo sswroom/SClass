@@ -41,38 +41,38 @@ void IO::ProtoHdlr::ProtoMQTTHandler::DeleteStreamData(NotNullPtr<IO::Stream> st
 	MemFree(cliData);
 }
 
-UOSInt IO::ProtoHdlr::ProtoMQTTHandler::ParseProtocol(NotNullPtr<IO::Stream> stm, void *stmObj, void *stmData, const UInt8 *buff, UOSInt buffSize)
+UOSInt IO::ProtoHdlr::ProtoMQTTHandler::ParseProtocol(NotNullPtr<IO::Stream> stm, void *stmObj, void *stmData, const Data::ByteArrayR &srcBuff)
 {
 	ClientData *cliData = (ClientData*)stmData;
+	Data::ByteArrayR buff = srcBuff;
 	if (cliData->packetBuff)
 	{
-		if (cliData->packetSize - cliData->packetDataSize <= buffSize)
+		if (cliData->packetSize - cliData->packetDataSize <= buff.GetSize())
 		{
-			MemCopyNO(&cliData->packetBuff[cliData->packetDataSize], buff, cliData->packetSize - cliData->packetDataSize);
+			MemCopyNO(&cliData->packetBuff[cliData->packetDataSize], buff.Ptr(), cliData->packetSize - cliData->packetDataSize);
 			this->listener->DataParsed(stm, stmObj, cliData->packetType, 0, cliData->packetBuff, cliData->packetSize);
 			MemFree(cliData->packetBuff);
 			cliData->packetBuff = 0;
-			if (cliData->packetSize - cliData->packetDataSize == buffSize)
+			if (cliData->packetSize - cliData->packetDataSize == buff.GetSize())
 			{
 				return 0;
 			}
 			buff += cliData->packetSize - cliData->packetDataSize;
-			buffSize -= cliData->packetSize - cliData->packetDataSize;
 		}
 		else
 		{
-			MemCopyNO(&cliData->packetBuff[cliData->packetDataSize], buff, buffSize);
-			cliData->packetDataSize += buffSize;
+			MemCopyNO(&cliData->packetBuff[cliData->packetDataSize], buff.Ptr(), buff.GetSize());
+			cliData->packetDataSize += buff.GetSize();
 			return 0;
 		}
 	}
 	UOSInt packetSize;
 	UOSInt i;
-	while (buffSize >= 2)
+	while (buff.GetSize() >= 2)
 	{
 		if (buff[1] & 0x80)
 		{
-			if (buffSize < 5)
+			if (buff.GetSize() < 5)
 				break;
 			if (buff[2] & 0x80)
 			{
@@ -98,27 +98,26 @@ UOSInt IO::ProtoHdlr::ProtoMQTTHandler::ParseProtocol(NotNullPtr<IO::Stream> stm
 			packetSize = buff[1];
 			i = 2;
 		}
-		if (buffSize >= packetSize + i)
+		if (buff.GetSize() >= packetSize + i)
 		{
 			this->listener->DataParsed(stm, stmObj, buff[0], 0, &buff[i], packetSize);
-			if (buffSize == packetSize + i)
+			if (buff.GetSize() == packetSize + i)
 			{
 				return 0;
 			}
 			buff += packetSize + i;
-			buffSize -= packetSize + i;
 		}
 		else
 		{
 			cliData->packetBuff = MemAlloc(UInt8, packetSize);
 			cliData->packetSize = packetSize;
 			cliData->packetType = buff[0];
-			MemCopyNO(cliData->packetBuff, &buff[i], buffSize - i);
-			cliData->packetDataSize = buffSize - i;
+			MemCopyNO(cliData->packetBuff, &buff[i], buff.GetSize() - i);
+			cliData->packetDataSize = buff.GetSize() - i;
 			return 0;
 		}
 	}
-	return buffSize;
+	return buff.GetSize();
 }
 
 UOSInt IO::ProtoHdlr::ProtoMQTTHandler::BuildPacket(UInt8 *buff, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize, void *stmData)

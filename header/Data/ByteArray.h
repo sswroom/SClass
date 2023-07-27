@@ -545,7 +545,62 @@ namespace Data
 			return ByteArrayR(buff, size);
 #endif
 		}
-		
+
+		ByteArrayR &operator+=(UOSInt ofst)
+		{
+			CheckError(ofst);
+			this->buff = &buff[ofst];
+			this->buffSize -= ofst;
+#if defined(CHECK_RANGE)
+			this->prevSize += ofst;
+#endif
+			return *this;
+		}
+
+		ByteArrayR &operator+=(OSInt ofst)
+		{
+#if defined(CHECK_RANGE)
+			if (ofst < 0)
+				CheckErrorPrev((UOSInt)-ofst);
+			else
+				CheckError((UOSInt)ofst);
+#endif
+			this->buff = &buff[ofst];
+			this->buffSize -= (UOSInt)ofst;
+#if defined(CHECK_RANGE)
+			this->prevSize += (UOSInt)ofst;
+#endif
+			return *this;
+		}
+
+#if _OSINT_SIZE == 64
+		ByteArrayR &operator+=(UInt32 ofst)
+		{
+			CheckError(ofst);
+			this->buff = &buff[ofst];
+			this->buffSize -= ofst;
+#if defined(CHECK_RANGE)
+			this->prevSize += ofst;
+#endif
+			return *this;
+		}
+
+		ByteArrayR &operator+=(Int32 ofst)
+		{
+#if defined(CHECK_RANGE)
+			if (ofst < 0)
+				CheckErrorPrev((UOSInt)-(OSInt)ofst);
+			else
+				CheckError((UOSInt)ofst);
+#endif
+			this->buff = &buff[ofst];
+			this->buffSize -= (UOSInt)(OSInt)ofst;
+#if defined(CHECK_RANGE)
+			this->prevSize += (UOSInt)(OSInt)ofst;
+#endif
+			return *this;
+		}
+#endif
 	};
 
 	void FORCEINLINE ByteArray::CopyArray(Data::ByteArray destArr, const ByteArrayR &srcArr)

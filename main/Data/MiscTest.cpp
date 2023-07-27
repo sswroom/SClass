@@ -44,7 +44,7 @@ Int32 Test0()
 			break;
 		}
 		dataSize += dataLeft;
-		dataLeft = protoHdlr.ParseProtocol(fs, 0, 0, data, dataSize);
+		dataLeft = protoHdlr.ParseProtocol(fs, 0, 0, Data::ByteArrayR(data, dataSize));
 		if (dataLeft == dataSize)
 		{
 

@@ -39,10 +39,10 @@ void __stdcall Net::MQTTBroker::OnClientEvent(NotNullPtr<Net::TCPClient> cli, vo
 	}
 }
 
-void __stdcall Net::MQTTBroker::OnClientData(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, const UInt8 *buff, UOSInt size)
+void __stdcall Net::MQTTBroker::OnClientData(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, const Data::ByteArrayR &buff)
 {
 	Listener *listener = (Listener*)userObj;
-	listener->me->StreamData(cli, cliData, buff, size);
+	listener->me->StreamData(cli, cliData, buff);
 }
 
 void __stdcall Net::MQTTBroker::OnClientTimeout(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData)
@@ -888,25 +888,25 @@ void *Net::MQTTBroker::StreamCreated(NotNullPtr<IO::Stream> stm)
 	return data;
 }
 
-void Net::MQTTBroker::StreamData(NotNullPtr<IO::Stream> stm, void *stmData, const UInt8 *buff, UOSInt size)
+void Net::MQTTBroker::StreamData(NotNullPtr<IO::Stream> stm, void *stmData, const Data::ByteArrayR &buff)
 {
 	ClientData *data = (ClientData*)stmData;
-	Sync::Interlocked::Add(&this->infoTotalRecv, (OSInt)size);
+	Sync::Interlocked::Add(&this->infoTotalRecv, (OSInt)buff.GetSize());
 
 	if (this->log)
 	{
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("Received "));
-		sb.AppendUOSInt(size);
+		sb.AppendUOSInt(buff.GetSize());
 		sb.AppendC(UTF8STRC(" bytes"));
 		this->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Action);
 	}
 	UOSInt i;
 	if (data->buffSize > 0)
 	{
-		MemCopyNO(&data->recvBuff[data->buffSize], buff, size);
-		data->buffSize += size;
-		i = this->protoHdlr.ParseProtocol(stm, data, data->cliData, data->recvBuff, data->buffSize);
+		MemCopyNO(&data->recvBuff[data->buffSize], buff.Ptr(), buff.GetSize());
+		data->buffSize += buff.GetSize();
+		i = this->protoHdlr.ParseProtocol(stm, data, data->cliData, Data::ByteArrayR(data->recvBuff, data->buffSize));
 		if (i > 0)
 		{
 			MemCopyO(data->recvBuff, &data->recvBuff[data->buffSize - i], i);
@@ -919,10 +919,10 @@ void Net::MQTTBroker::StreamData(NotNullPtr<IO::Stream> stm, void *stmData, cons
 	}
 	else
 	{
-		i = this->protoHdlr.ParseProtocol(stm, data, data->cliData, buff, size);
+		i = this->protoHdlr.ParseProtocol(stm, data, data->cliData, buff);
 		if (i > 0)
 		{
-			MemCopyNO(data->recvBuff, &buff[size - i], i);
+			MemCopyNO(data->recvBuff, &buff[buff.GetSize() - i], i);
 			data->buffSize = i;
 		}
 	}

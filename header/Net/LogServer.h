@@ -43,7 +43,7 @@ namespace Net
 
 		static void __stdcall ConnHdlr(Socket *s, void *userObj);
 		static void __stdcall ClientEvent(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, Net::TCPClientMgr::TCPEventType evtType);
-		static void __stdcall ClientData(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, const UInt8 *buff, UOSInt size);
+		static void __stdcall ClientData(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, const Data::ByteArrayR &buff);
 		static void __stdcall ClientTimeout(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData);
 
 		IPStatus *GetIPStatus(const Net::SocketUtil::AddressInfo *addr);

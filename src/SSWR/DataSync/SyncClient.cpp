@@ -35,7 +35,7 @@ UInt32 __stdcall SSWR::DataSync::SyncClient::RecvThread(void *userObj)
 			else
 			{
 				buffSize += recvSize;
-				recvSize = me->protoHdlr.ParseProtocol(cli, 0, 0, buff, buffSize);
+				recvSize = me->protoHdlr.ParseProtocol(cli, 0, 0, Data::ByteArrayR(buff, buffSize));
 				if (recvSize <= 0)
 				{
 					buffSize = 0;

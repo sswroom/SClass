@@ -23,24 +23,24 @@ void IO::ProtoHdlr::ProtoJMVL01Handler::DeleteStreamData(NotNullPtr<IO::Stream> 
 {
 }
 
-UOSInt IO::ProtoHdlr::ProtoJMVL01Handler::ParseProtocol(NotNullPtr<IO::Stream> stm, void *stmObj, void *stmData, const UInt8 *buff, UOSInt buffSize)
+UOSInt IO::ProtoHdlr::ProtoJMVL01Handler::ParseProtocol(NotNullPtr<IO::Stream> stm, void *stmObj, void *stmData, const Data::ByteArrayR &buff)
 {
 	UInt16 crcVal;
 	UInt16 len;
 	UOSInt i;
 	i = 0;
-	while (i < buffSize - 1)
+	while (i < buff.GetSize() - 1)
 	{
 		if (buff[i] == 0x78 && buff[i + 1] == 0x78)
 		{
-			if (i + 11 > buffSize)
+			if (i + 11 > buff.GetSize())
 			{
-				return buffSize - i;
+				return buff.GetSize() - i;
 			}
 			len = buff[i + 2];
-			if (len + i + 5 > buffSize)
+			if (len + i + 5 > buff.GetSize())
 			{
-				return buffSize - i;
+				return buff.GetSize() - i;
 			}
 			crcVal = this->crc.CalcDirect(&buff[i + 2], (UOSInt)len - 1);
 			if (crcVal == ReadMUInt16(&buff[i + 1 + len]) && buff[i + 3 + len] == 13 && buff[i + 4 + len] == 10)
@@ -51,14 +51,14 @@ UOSInt IO::ProtoHdlr::ProtoJMVL01Handler::ParseProtocol(NotNullPtr<IO::Stream> s
 		}
 		else if (buff[i] == 0x79 && buff[i + 1] == 0x79)
 		{
-			if (i + 12 > buffSize)
+			if (i + 12 > buff.GetSize())
 			{
-				return buffSize - i;
+				return buff.GetSize() - i;
 			}
 			len = ReadMUInt16(&buff[i + 2]);
-			if (len + i + 6 > buffSize)
+			if (len + i + 6 > buff.GetSize())
 			{
-				return buffSize - i;
+				return buff.GetSize() - i;
 			}
 			crcVal = this->crc.CalcDirect(&buff[i + 2], len);
 			if (crcVal == ReadMUInt16(&buff[i + 2 + len]) && buff[i + 4 + len] == 13 && buff[i + 5 + len] == 10)
@@ -69,7 +69,7 @@ UOSInt IO::ProtoHdlr::ProtoJMVL01Handler::ParseProtocol(NotNullPtr<IO::Stream> s
 		}
 		i++;
 	}
-	return buffSize - i;
+	return buff.GetSize() - i;
 }
 
 UOSInt IO::ProtoHdlr::ProtoJMVL01Handler::BuildPacket(UInt8 *buff, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize, void *stmData)

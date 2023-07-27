@@ -72,33 +72,33 @@ void __stdcall Net::Email::SMTPServer::ClientEvent(NotNullPtr<Net::TCPClient> cl
 	}
 }
 
-void __stdcall Net::Email::SMTPServer::ClientData(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, const UInt8 *buff, UOSInt size)
+void __stdcall Net::Email::SMTPServer::ClientData(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, const Data::ByteArrayR &srcBuff)
 {
 	Net::Email::SMTPServer *me = (Net::Email::SMTPServer*)userObj;
 	Net::Email::SMTPServer::MailStatus *cliStatus;
+	Data::ByteArrayR buff = srcBuff;
 	cliStatus = (Net::Email::SMTPServer::MailStatus*)cliData;
-	while (size > 0)
+	while (buff.GetSize() > 0)
 	{
-		if (cliStatus->buffSize + size > 4096)
+		if (cliStatus->buffSize + buff.GetSize() > 4096)
 		{
 			if (me->rawLog)
 			{
-				me->rawLog->Write(buff, 4096 - cliStatus->buffSize);
+				me->rawLog->Write(buff.Ptr(), 4096 - cliStatus->buffSize);
 			}
-			MemCopyNO(&cliStatus->buff[cliStatus->buffSize], buff, 4096 - cliStatus->buffSize);
+			MemCopyNO(&cliStatus->buff[cliStatus->buffSize], buff.Ptr(), 4096 - cliStatus->buffSize);
 			buff += 4096 - cliStatus->buffSize;
-			size -= 4096 - cliStatus->buffSize;
 			cliStatus->buffSize = 4096;
 		}
 		else
 		{
 			if (me->rawLog)
 			{
-				me->rawLog->Write(buff, size);
+				me->rawLog->Write(buff.Ptr(), buff.GetSize());
 			}
-			MemCopyNO(&cliStatus->buff[cliStatus->buffSize], buff, size);
-			cliStatus->buffSize += size;
-			size = 0;
+			MemCopyNO(&cliStatus->buff[cliStatus->buffSize], buff.Ptr(), buff.GetSize());
+			cliStatus->buffSize += buff.GetSize();
+			buff += buff.GetSize();
 		}
 		UOSInt i;
 		UOSInt j;

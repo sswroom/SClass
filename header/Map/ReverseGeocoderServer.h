@@ -42,7 +42,7 @@ namespace Map
 
 		virtual void *NewConn(NotNullPtr<Net::TCPClient> cli);
 		virtual void EndConn(NotNullPtr<Net::TCPClient> cli, void *cliObj);
-		virtual UOSInt ReceivedData(NotNullPtr<Net::TCPClient> cli, void *cliObj, UInt8 *buff, UOSInt buffSize); //Return buff size unprocessed
+		virtual UOSInt ReceivedData(NotNullPtr<Net::TCPClient> cli, void *cliObj, const Data::ByteArrayR &buff); //Return buff size unprocessed
 
 		virtual void DataParsed(NotNullPtr<IO::Stream> stm, void *cliObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize);
 		virtual void DataSkipped(NotNullPtr<IO::Stream> stm, void *cliObj, const UInt8 *buff, UOSInt buffSize);

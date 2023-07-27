@@ -39,7 +39,7 @@ UInt32 __stdcall IO::CortexControl::RecvThread(void *userObj)
 				me->errWriter->WriteLineC(sb.ToString(), sb.GetLength());
 			}
 			buffSize += recvSize;
-			recvSize = me->protoHdlr.ParseProtocol(me->stm, 0, 0, buff, buffSize);
+			recvSize = me->protoHdlr.ParseProtocol(me->stm, 0, 0, Data::ByteArrayR(buff, buffSize));
 			if (recvSize <= 0)
 			{
 				buffSize = 0;

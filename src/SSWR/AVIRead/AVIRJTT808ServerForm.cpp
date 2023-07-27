@@ -80,7 +80,7 @@ void __stdcall SSWR::AVIRead::AVIRJTT808ServerForm::OnClientEvent(NotNullPtr<Net
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRJTT808ServerForm::OnClientData(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, const UInt8 *buff, UOSInt size)
+void __stdcall SSWR::AVIRead::AVIRJTT808ServerForm::OnClientData(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, const Data::ByteArrayR &buff)
 {
 	SSWR::AVIRead::AVIRJTT808ServerForm *me = (SSWR::AVIRead::AVIRJTT808ServerForm*)userObj;
 	ClientData *data = (ClientData*)cliData;
@@ -88,14 +88,14 @@ void __stdcall SSWR::AVIRead::AVIRJTT808ServerForm::OnClientData(NotNullPtr<Net:
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
 	sptr = Text::StrConcatC(sbuff, UTF8STRC("Received "));
-	sptr = Text::StrUOSInt(sptr, size);
+	sptr = Text::StrUOSInt(sptr, buff.GetSize());
 	sptr = Text::StrConcatC(sptr, UTF8STRC(" bytes"));
 	me->log->LogMessage(CSTRP(sbuff, sptr), IO::LogHandler::LogLevel::Action);
 
-	MemCopyNO(&data->recvBuff[data->buffSize], buff, size);
-	data->buffSize += size;
+	MemCopyNO(&data->recvBuff[data->buffSize], buff.Ptr(), buff.GetSize());
+	data->buffSize += buff.GetSize();
 	
-	size = me->protoHdlr->ParseProtocol(cli, data, data->cliData, data->recvBuff, data->buffSize);
+	UOSInt size = me->protoHdlr->ParseProtocol(cli, data, data->cliData, Data::ByteArrayR(data->recvBuff, data->buffSize));
 	if (size >= 2048 || size <= 0)
 	{
 		data->buffSize = 0;

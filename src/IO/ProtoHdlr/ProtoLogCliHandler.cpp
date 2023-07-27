@@ -22,44 +22,43 @@ void IO::ProtoHdlr::ProtoLogCliHandler::DeleteStreamData(NotNullPtr<IO::Stream> 
 {
 }
 
-UOSInt IO::ProtoHdlr::ProtoLogCliHandler::ParseProtocol(NotNullPtr<IO::Stream> stm, void *stmObj, void *stmData, const UInt8 *buff, UOSInt buffSize)
+UOSInt IO::ProtoHdlr::ProtoLogCliHandler::ParseProtocol(NotNullPtr<IO::Stream> stm, void *stmObj, void *stmData, const Data::ByteArrayR &buff)
 {
 	Bool found;
 	UInt8 crcVal[4];
-	while (buffSize >= 8)
+	Data::ByteArrayR myBuff = buff;
+	while (myBuff.GetSize() >= 8)
 	{
 		found = false;
-		if (*(Int16*)buff == *(Int16*)"lC")
+		if (*(Int16*)&myBuff[0] == *(Int16*)"lC")
 		{
-			UInt32 packetSize = ReadUInt16(&buff[2]);
+			UInt32 packetSize = ReadUInt16(&myBuff[2]);
 			if (packetSize <= 4096)
 			{
-				if (packetSize > buffSize)
-					return buffSize;
+				if (packetSize > myBuff.GetSize())
+					return myBuff.GetSize();
 
 				Sync::MutexUsage mutUsage(&this->crcMut);
 				this->crc.Clear();
-				this->crc.Calc(buff, packetSize - 2);
+				this->crc.Calc(myBuff.Ptr(), packetSize - 2);
 				this->crc.GetValue(crcVal);
 				mutUsage.EndUse();
-				if (ReadMUInt16(&crcVal[2]) == ReadUInt16(&buff[packetSize - 2]))
+				if (ReadMUInt16(&crcVal[2]) == ReadUInt16(&myBuff[packetSize - 2]))
 				{
-					this->listener->DataParsed(stm, stmObj, ReadUInt16(&buff[4]), 0, &buff[6], packetSize - 8);
+					this->listener->DataParsed(stm, stmObj, ReadUInt16(&myBuff[4]), 0, &myBuff[6], packetSize - 8);
 
 					found = true;
-					buff += packetSize;
-					buffSize -= packetSize;
+					myBuff += packetSize;
 				}
 			}
 		}
 
 		if (!found)
 		{
-			buff++;
-			buffSize--;
+			myBuff += 1;
 		}
 	}
-	return buffSize;
+	return myBuff.GetSize();
 }
 
 UOSInt IO::ProtoHdlr::ProtoLogCliHandler::BuildPacket(UInt8 *buff, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize, void *stmData)

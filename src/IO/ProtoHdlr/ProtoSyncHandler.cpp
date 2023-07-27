@@ -22,22 +22,23 @@ void IO::ProtoHdlr::ProtoSyncHandler::DeleteStreamData(NotNullPtr<IO::Stream> st
 {
 }
 
-UOSInt IO::ProtoHdlr::ProtoSyncHandler::ParseProtocol(NotNullPtr<IO::Stream> stm, void *stmObj, void *stmData, const UInt8 *buff, UOSInt buffSize)
+UOSInt IO::ProtoHdlr::ProtoSyncHandler::ParseProtocol(NotNullPtr<IO::Stream> stm, void *stmObj, void *stmData, const Data::ByteArrayR &srcBuff)
 {
 	Bool found;
 	UInt32 crcVal;
-	while (buffSize >= 10)
+	Data::ByteArrayR buff = srcBuff;
+	while (buff.GetSize() >= 10)
 	{
 		found = false;
-		if (*(Int16*)buff == *(Int16*)"Sy")
+		if (*(Int16*)&buff[0] == *(Int16*)"Sy")
 		{
 			UInt32 packetSize = ReadUInt16(&buff[2]);
 			if (packetSize <= 8192)
 			{
-				if (packetSize > buffSize)
-					return buffSize;
+				if (packetSize > buff.GetSize())
+					return buff.GetSize();
 
-				crcVal = this->crc.CalcDirect(buff, packetSize - 2);
+				crcVal = this->crc.CalcDirect(buff.Ptr(), packetSize - 2);
 				if ((crcVal & 0xffff) == ReadUInt16(&buff[packetSize - 2]))
 				{
 					Int32 cmdType = ReadUInt16(&buff[4]);
@@ -46,18 +47,16 @@ UOSInt IO::ProtoHdlr::ProtoSyncHandler::ParseProtocol(NotNullPtr<IO::Stream> stm
 
 					found = true;
 					buff += packetSize;
-					buffSize -= packetSize;
 				}
 			}
 		}
 
 		if (!found)
 		{
-			buff++;
-			buffSize--;
+			buff += 1;
 		}
 	}
-	return buffSize;
+	return buff.GetSize();
 }
 
 UOSInt IO::ProtoHdlr::ProtoSyncHandler::BuildPacket(UInt8 *buff, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize, void *stmData)

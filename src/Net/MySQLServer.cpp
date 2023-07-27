@@ -306,7 +306,7 @@ void __stdcall Net::MySQLServer::OnClientEvent(NotNullPtr<Net::TCPClient> cli, v
 	}
 }
 
-void __stdcall Net::MySQLServer::OnClientData(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, const UInt8 *buff, UOSInt size)
+void __stdcall Net::MySQLServer::OnClientData(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, const Data::ByteArrayR &buff)
 {
 	Net::MySQLServer *me = (Net::MySQLServer*)userObj;
 	ClientData *data = (ClientData*)cliData;
@@ -314,7 +314,7 @@ void __stdcall Net::MySQLServer::OnClientData(NotNullPtr<Net::TCPClient> cli, vo
 	#if defined(VERBOSE)
 	{
 		Text::StringBuilderUTF8 sb;
-		sb.AppendHexBuff(buff, size, ' ', Text::LineBreakType::CRLF);
+		sb.AppendHexBuff(buff, ' ', Text::LineBreakType::CRLF);
 		printf("Received:\r\n%s\r\n", sb.ToString());
 	}
 	#endif
@@ -322,12 +322,12 @@ void __stdcall Net::MySQLServer::OnClientData(NotNullPtr<Net::TCPClient> cli, vo
 	{
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("Received "));
-		sb.AppendUOSInt(size);
+		sb.AppendUOSInt(buff.GetSize());
 		sb.AppendC(UTF8STRC(" bytes"));
 		me->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Action);
 	}
-	MemCopyNO(&data->buff[data->buffSize], buff, size);
-	data->buffSize += size;
+	MemCopyNO(&data->buff[data->buffSize], buff.Ptr(), buff.GetSize());
+	data->buffSize += buff.GetSize();
 	if (data->mode == 0)
 	{
 		if (data->buffSize >= 4)

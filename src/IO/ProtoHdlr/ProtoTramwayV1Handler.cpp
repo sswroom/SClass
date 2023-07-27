@@ -26,7 +26,7 @@ void IO::ProtoHdlr::ProtoTramwayV1Handler::DeleteStreamData(NotNullPtr<IO::Strea
 	MemFree(stat);
 }
 
-UOSInt IO::ProtoHdlr::ProtoTramwayV1Handler::ParseProtocol(NotNullPtr<IO::Stream> stm, void *stmObj, void *stmData, const UInt8 *buff, UOSInt buffSize)
+UOSInt IO::ProtoHdlr::ProtoTramwayV1Handler::ParseProtocol(NotNullPtr<IO::Stream> stm, void *stmObj, void *stmData, const Data::ByteArrayR &buff)
 {
 	ProtocolStatus *stat = (ProtocolStatus *)stmData;;
 	UOSInt skipStart = 0;
@@ -34,11 +34,11 @@ UOSInt IO::ProtoHdlr::ProtoTramwayV1Handler::ParseProtocol(NotNullPtr<IO::Stream
 	UOSInt j;
 	UOSInt packetSize = 0;
 	UInt8 v;
-	while (i < buffSize)
+	while (i < buff.GetSize())
 	{
 		if (stat->buffSize < 4)
 		{
-			while (i < buffSize - 1)
+			while (i < buff.GetSize() - 1)
 			{
 				if (buff[i] == 0xff && buff[i + 1] != 0xff)
 				{
@@ -50,13 +50,13 @@ UOSInt IO::ProtoHdlr::ProtoTramwayV1Handler::ParseProtocol(NotNullPtr<IO::Stream
 			{
 				this->listener->DataSkipped(stm, stmObj, &buff[skipStart], i - skipStart);
 			}
-			if (i == buffSize - 1)
+			if (i == buff.GetSize() - 1)
 			{
 				return 1;
 			}
-			if (i > buffSize - 4)
+			if (i > buff.GetSize() - 4)
 			{
-				return buffSize - i;
+				return buff.GetSize() - i;
 			}
 			*(Int32*)stat->packetBuff = *(Int32*)&buff[i];
 			stat->buffSize = 4;
@@ -66,7 +66,7 @@ UOSInt IO::ProtoHdlr::ProtoTramwayV1Handler::ParseProtocol(NotNullPtr<IO::Stream
 		j = stat->buffSize;
 		while (j < packetSize)
 		{
-			if (i >= buffSize)
+			if (i >= buff.GetSize())
 			{
 				stat->buffSize = j;
 				return 0;
@@ -74,7 +74,7 @@ UOSInt IO::ProtoHdlr::ProtoTramwayV1Handler::ParseProtocol(NotNullPtr<IO::Stream
 
 			if ((v = buff[i]) == 0xff)
 			{
-				if (i == buffSize - 1)
+				if (i == buff.GetSize() - 1)
 				{
 					stat->buffSize = j;
 					return 1;

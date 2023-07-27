@@ -83,12 +83,12 @@ void __stdcall SSWR::AVIRead::AVIRTCPSpdSvrForm::OnClientEvent(NotNullPtr<Net::T
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRTCPSpdSvrForm::OnClientData(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, const UInt8 *buff, UOSInt size)
+void __stdcall SSWR::AVIRead::AVIRTCPSpdSvrForm::OnClientData(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, const Data::ByteArrayR &buff)
 {
 	SSWR::AVIRead::AVIRTCPSpdSvrForm *me = (SSWR::AVIRead::AVIRTCPSpdSvrForm*)userObj;
 	if (me->echo)
 	{
-		cli->Write(buff, size);
+		cli->Write(buff.GetPtr(), buff.GetSize());
 	}
 }
 

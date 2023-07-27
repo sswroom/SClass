@@ -46,29 +46,29 @@ void __stdcall Net::LogServer::ClientEvent(NotNullPtr<Net::TCPClient> cli, void 
 	}
 }
 
-void __stdcall Net::LogServer::ClientData(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, const UInt8 *buff, UOSInt size)
+void __stdcall Net::LogServer::ClientData(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, const Data::ByteArrayR &buff)
 {
 	Net::LogServer *me = (Net::LogServer*)userObj;
 	ClientStatus *cliStatus;
 	cliStatus = (ClientStatus*)cliData;
-	if (size > BUFFSIZE)
+	if (buff.GetSize() > BUFFSIZE)
 	{
-		MemCopyNO(cliStatus->buff, &buff[size - BUFFSIZE], BUFFSIZE);
+		MemCopyNO(cliStatus->buff, &buff[buff.GetSize() - BUFFSIZE], BUFFSIZE);
 		cliStatus->buffSize = BUFFSIZE;
 	}
-	else if (cliStatus->buffSize + size > BUFFSIZE)
+	else if (cliStatus->buffSize + buff.GetSize() > BUFFSIZE)
 	{
-		MemCopyO(cliStatus->buff, &cliStatus->buff[cliStatus->buffSize - BUFFSIZE + size], BUFFSIZE - size);
-		MemCopyNO(&cliStatus->buff[BUFFSIZE - size], buff, size);
+		MemCopyO(cliStatus->buff, &cliStatus->buff[cliStatus->buffSize - BUFFSIZE + buff.GetSize()], BUFFSIZE - buff.GetSize());
+		MemCopyNO(&cliStatus->buff[BUFFSIZE - buff.GetSize()], buff.Ptr(), buff.GetSize());
 		cliStatus->buffSize = BUFFSIZE;
 	}
 	else
 	{
-		MemCopyNO(&cliStatus->buff[cliStatus->buffSize], buff, size);
-		cliStatus->buffSize += size;
+		MemCopyNO(&cliStatus->buff[cliStatus->buffSize], buff.Ptr(), buff.GetSize());
+		cliStatus->buffSize += buff.GetSize();
 	}
 
-	UOSInt sizeLeft = me->protoHdlr.ParseProtocol(cli, cliStatus, 0, cliStatus->buff, cliStatus->buffSize);
+	UOSInt sizeLeft = me->protoHdlr.ParseProtocol(cli, cliStatus, 0, Data::ByteArrayR(cliStatus->buff, cliStatus->buffSize));
 	if (sizeLeft <= 0)
 	{
 		cliStatus->buffSize = 0;

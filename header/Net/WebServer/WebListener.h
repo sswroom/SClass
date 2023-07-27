@@ -55,11 +55,11 @@ namespace Net
 			static void __stdcall ClientReady(NotNullPtr<Net::TCPClient> cli, void *userObj);
 			static void __stdcall ConnHdlr(Socket *s, void *userObj);
 			static void __stdcall ClientEvent(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, Net::TCPClientMgr::TCPEventType evtType);
-			static void __stdcall ClientData(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, const UInt8 *buff, UOSInt size);
+			static void __stdcall ClientData(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, const Data::ByteArrayR &buff);
 			static void __stdcall ClientTimeout(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData);
 
 			static void __stdcall ProxyClientEvent(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, Net::TCPClientMgr::TCPEventType evtType);
-			static void __stdcall ProxyClientData(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, const UInt8 *buff, UOSInt size);
+			static void __stdcall ProxyClientData(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, const Data::ByteArrayR &buff);
 			static void __stdcall ProxyTimeout(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData);
 
 			static void __stdcall OnDataSent(void *userObj, UOSInt buffSize);

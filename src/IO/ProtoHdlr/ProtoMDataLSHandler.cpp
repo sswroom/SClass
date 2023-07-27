@@ -26,40 +26,39 @@ void IO::ProtoHdlr::ProtoMDataLSHandler::DeleteStreamData(NotNullPtr<IO::Stream>
 {
 }
 
-UOSInt IO::ProtoHdlr::ProtoMDataLSHandler::ParseProtocol(NotNullPtr<IO::Stream> stm, void *stmObj, void *stmData, const UInt8 *buff, UOSInt buffSize)
+UOSInt IO::ProtoHdlr::ProtoMDataLSHandler::ParseProtocol(NotNullPtr<IO::Stream> stm, void *stmObj, void *stmData, const Data::ByteArrayR &srcBuff)
 {
 	Bool found;
 	UInt8 crcVal[4];
-	while (buffSize >= 8)
+	Data::ByteArrayR buff = srcBuff;
+	while (buff.GetSize() >= 8)
 	{
 		found = false;
-		if (*(Int16*)buff == *(Int16*)"ls")
+		if (*(Int16*)&buff[0] == *(Int16*)"ls")
 		{
 			UInt32 packetSize = ReadUInt16(&buff[2]);
 			if (packetSize <= 2048)
 			{
-				if (packetSize > buffSize)
-					return buffSize;
+				if (packetSize > buff.GetSize())
+					return buff.GetSize();
 
-				this->crc->Calc(buff, packetSize - 2, crcVal);
+				this->crc->Calc(buff.Ptr(), packetSize - 2, crcVal);
 				if (ReadMUInt16(&crcVal[2]) == ReadUInt16(&buff[packetSize - 2]))
 				{
 					this->listener->DataParsed(stm, stmObj, ReadUInt16(&buff[4]), 0, &buff[6], packetSize - 8);
 
 					found = true;
 					buff += packetSize;
-					buffSize -= packetSize;
 				}
 			}
 		}
 
 		if (!found)
 		{
-			buff++;
-			buffSize--;
+			buff += 1;
 		}
 	}
-	return buffSize;
+	return buff.GetSize();
 }
 
 UOSInt IO::ProtoHdlr::ProtoMDataLSHandler::BuildPacket(UInt8 *buff, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize, void *stmData)

@@ -92,7 +92,7 @@ namespace Net
 		void *topicUpdObj;
 
 		static void __stdcall OnClientEvent(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, Net::TCPClientMgr::TCPEventType evtType);
-		static void __stdcall OnClientData(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, const UInt8 *buff, UOSInt size);
+		static void __stdcall OnClientData(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, const Data::ByteArrayR &buff);
 		static void __stdcall OnClientTimeout(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData);
 		static void __stdcall OnClientReady(NotNullPtr<Net::TCPClient> cli, void *userObj);
 		static void __stdcall OnClientConn(Socket *s, void *userObj);
@@ -105,7 +105,7 @@ namespace Net
 		Bool TopicSend(NotNullPtr<IO::Stream> stm, void *stmData, const TopicInfo *topic);
 
 		virtual void *StreamCreated(NotNullPtr<IO::Stream> stm);
-		virtual void StreamData(NotNullPtr<IO::Stream> stm, void *stmData, const UInt8 *buff, UOSInt size);
+		virtual void StreamData(NotNullPtr<IO::Stream> stm, void *stmData, const Data::ByteArrayR &buff);
 		virtual void StreamClosed(NotNullPtr<IO::Stream> stm, void *stmData);
 	public:
 		MQTTBroker(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, UInt16 port, IO::LogTool *log, Bool sysInfo, Bool autoStart);

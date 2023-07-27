@@ -46,7 +46,7 @@ void __stdcall Net::TCPBoardcastStream::ClientEvent(NotNullPtr<Net::TCPClient> c
 	}
 }
 
-void __stdcall Net::TCPBoardcastStream::ClientData(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, const UInt8 *buff, UOSInt size)
+void __stdcall Net::TCPBoardcastStream::ClientData(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, const Data::ByteArrayR &buff)
 {
 	Net::TCPBoardcastStream *me = (Net::TCPBoardcastStream*)userObj;
 	Text::StringBuilderUTF8 sb;
@@ -58,7 +58,7 @@ void __stdcall Net::TCPBoardcastStream::ClientData(NotNullPtr<Net::TCPClient> cl
 		sptr = cli->GetRemoteName(sbuff);
 		sb.AppendP(sbuff, sptr);
 		sb.AppendC(UTF8STRC(" with "));
-		sb.AppendUOSInt(size);
+		sb.AppendUOSInt(buff.GetSize());
 		me->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Raw);
 	}
 	Sync::MutexUsage mutUsage(&me->readMut);
@@ -67,6 +67,7 @@ void __stdcall Net::TCPBoardcastStream::ClientData(NotNullPtr<Net::TCPClient> cl
 	{
 		readBuffSize += 16384;
 	}
+	UOSInt size = buff.GetSize();
 	if (readBuffSize + size >= 16384)
 	{
 		size = 16383 - readBuffSize;
@@ -75,13 +76,13 @@ void __stdcall Net::TCPBoardcastStream::ClientData(NotNullPtr<Net::TCPClient> cl
 	{
 		if (me->readBuffPtr2 + size > 16384)
 		{
-			MemCopyNO(&me->readBuff[me->readBuffPtr2], buff, 16384 - me->readBuffPtr2);
+			MemCopyNO(&me->readBuff[me->readBuffPtr2], buff.Ptr(), 16384 - me->readBuffPtr2);
 			MemCopyNO(me->readBuff, &buff[16384 - me->readBuffPtr2], size - (16384 - me->readBuffPtr2));
 			me->readBuffPtr2 = size - (16384 - me->readBuffPtr2);
 		}
 		else
 		{
-			MemCopyNO(&me->readBuff[me->readBuffPtr2], buff, size);
+			MemCopyNO(&me->readBuff[me->readBuffPtr2], buff.Ptr(), size);
 			me->readBuffPtr2 += size;
 			if (me->readBuffPtr2 >= 16384)
 			{

@@ -10,7 +10,7 @@ namespace IO
 		virtual ~StreamHandler() {};
 
 		virtual void *StreamCreated(NotNullPtr<IO::Stream> stm) = 0;
-		virtual void StreamData(NotNullPtr<IO::Stream> stm, void *stmData, const UInt8 *buff, UOSInt size) = 0;
+		virtual void StreamData(NotNullPtr<IO::Stream> stm, void *stmData, const Data::ByteArrayR &buff) = 0;
 		virtual void StreamClosed(NotNullPtr<IO::Stream> stm, void *stmData) = 0;
 	};
 }

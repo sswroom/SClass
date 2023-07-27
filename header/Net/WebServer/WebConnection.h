@@ -53,8 +53,8 @@ namespace Net
 			WebConnection(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, NotNullPtr<Net::TCPClient> cli, WebListener *svr, IWebHandler *hdlr, Bool allowProxy, KeepAlive KeepAlive);
 			virtual ~WebConnection();
 
-			void ReceivedData(const UInt8 *buff, UOSInt size);
-			void ProxyData(const UInt8 *buff, UOSInt size);
+			void ReceivedData(const Data::ByteArrayR &buff);
+			void ProxyData(const Data::ByteArrayR &buff);
 			void EndProxyConn();
 			void ProxyShutdown();
 			void ProcessTimeout();

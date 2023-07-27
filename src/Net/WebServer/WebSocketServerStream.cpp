@@ -46,7 +46,7 @@ void Net::WebServer::WebSocketServerStream::NextPacket(UInt8 opcode, const UInt8
 	case 0: //continuation frame
 	case 1: //text frame
 	case 2: //binary frame
-		return this->stmHdlr->StreamData(*this, this->stmData, buff, buffSize);
+		return this->stmHdlr->StreamData(*this, this->stmData, Data::ByteArrayR(buff, buffSize));
 	case 8: //connection close
 		if (this->resp)
 		{

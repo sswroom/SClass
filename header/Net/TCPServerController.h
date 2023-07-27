@@ -22,7 +22,7 @@ namespace Net
 		public:
 			virtual void *NewConn(NotNullPtr<Net::TCPClient> cli) = 0;
 			virtual void EndConn(NotNullPtr<Net::TCPClient> cli, void *cliObj) = 0;
-			virtual UOSInt ReceivedData(NotNullPtr<Net::TCPClient> cli, void *cliObj, UInt8 *buff, UOSInt buffSize) = 0; //Return buff size unprocessed
+			virtual UOSInt ReceivedData(NotNullPtr<Net::TCPClient> cli, void *cliObj, const Data::ByteArrayR &buff) = 0; //Return buff size unprocessed
 		};
 
 	private:
@@ -35,7 +35,7 @@ namespace Net
 	private:
 		static void __stdcall ConnHdlr(Socket *s, void *userObj);
 		static void __stdcall EventHdlr(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, Net::TCPClientMgr::TCPEventType evtType);
-		static void __stdcall DataHdlr(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, const UInt8 *buff, UOSInt size);
+		static void __stdcall DataHdlr(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, const Data::ByteArrayR &buff);
 		static void __stdcall TimeoutHdlr(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData);
 	public:
 		TCPServerController(NotNullPtr<Net::SocketFactory> sockf, IO::LogTool *log, UInt16 port, Text::CString prefix, UOSInt maxBuffSize, TCPServerHandler *hdlr, UOSInt workerCnt, Int32 timeoutSec, Bool autoStart);

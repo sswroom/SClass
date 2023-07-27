@@ -22,9 +22,9 @@ void __stdcall Net::MODBUSTCPListener::OnClientEvent(NotNullPtr<Net::TCPClient> 
 	}
 }
 
-void __stdcall Net::MODBUSTCPListener::OnClientData(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, const UInt8 *buff, UOSInt size)
+void __stdcall Net::MODBUSTCPListener::OnClientData(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, const Data::ByteArrayR &buff)
 {
-	if (size <= 6)
+	if (buff.GetSize() <= 6)
 	{
 		return;
 	}
@@ -38,7 +38,7 @@ void __stdcall Net::MODBUSTCPListener::OnClientData(NotNullPtr<Net::TCPClient> c
 	UInt16 iVal;
 	UOSInt i;
 	UOSInt j;
-	if (packetSize >= 4 && size == (UOSInt)packetSize + 6)
+	if (packetSize >= 4 && buff.GetSize() == (UOSInt)packetSize + 6)
 	{
 		UInt8 addr = buff[6];
 		Sync::MutexUsage mutUsage(&me->devMut);
@@ -276,7 +276,7 @@ void __stdcall Net::MODBUSTCPListener::OnClientData(NotNullPtr<Net::TCPClient> c
 					sb.AppendC(UTF8STRC(", packetSize = "));
 					sb.AppendU16(packetSize);
 					sb.AppendC(UTF8STRC(", "));
-					sb.AppendHexBuff(buff + 6, packetSize, ' ', Text::LineBreakType::CRLF);
+					sb.AppendHexBuff(&buff[6], packetSize, ' ', Text::LineBreakType::CRLF);
 					printf("%s\r\n", sb.ToString());
 				}
 				break;
@@ -287,7 +287,7 @@ void __stdcall Net::MODBUSTCPListener::OnClientData(NotNullPtr<Net::TCPClient> c
 	{
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("Received: "));
-		sb.AppendHexBuff(buff, size, ' ', Text::LineBreakType::CRLF);
+		sb.AppendHexBuff(buff, ' ', Text::LineBreakType::CRLF);
 		printf("%s\r\n", sb.ToString());
 	}
 }

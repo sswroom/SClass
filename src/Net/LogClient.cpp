@@ -40,7 +40,7 @@ UInt32 __stdcall Net::LogClient::RecvThread(void *userObj)
 				else
 				{
 					recvSize += readSize;
-					readSize = me->protoHdlr.ParseProtocol(cli, me,0, recvBuff.Ptr(), recvSize);
+					readSize = me->protoHdlr.ParseProtocol(cli, me,0, recvBuff.WithSize(recvSize));
 					if (readSize <= 0)
 					{
 						recvSize = 0;

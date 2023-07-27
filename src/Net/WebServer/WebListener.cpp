@@ -47,12 +47,12 @@ void __stdcall Net::WebServer::WebListener::ClientEvent(NotNullPtr<Net::TCPClien
 	}
 }
 
-void __stdcall Net::WebServer::WebListener::ClientData(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, const UInt8 *buff, UOSInt size)
+void __stdcall Net::WebServer::WebListener::ClientData(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, const Data::ByteArrayR &buff)
 {
 	Net::WebServer::WebListener *me = (Net::WebServer::WebListener*)userObj;
 	Net::WebServer::WebConnection *conn = (Net::WebServer::WebConnection*)cliData;
-	conn->ReceivedData(buff, size);
-	Interlocked_AddU64(&me->status.totalRead, size);
+	conn->ReceivedData(buff);
+	Interlocked_AddU64(&me->status.totalRead, buff.GetSize());
 }
 
 void __stdcall Net::WebServer::WebListener::ClientTimeout(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData)
@@ -81,11 +81,11 @@ void __stdcall Net::WebServer::WebListener::ProxyClientEvent(NotNullPtr<Net::TCP
 	}
 }
 
-void __stdcall Net::WebServer::WebListener::ProxyClientData(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, const UInt8 *buff, UOSInt size)
+void __stdcall Net::WebServer::WebListener::ProxyClientData(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, const Data::ByteArrayR &buff)
 {
 //	Net::WebServer::WebListener *me = (Net::WebServer::WebListener*)userObj;
 	Net::WebServer::WebConnection *conn = (Net::WebServer::WebConnection*)cliData;
-	conn->ProxyData(buff, size);
+	conn->ProxyData(buff);
 }
 
 void __stdcall Net::WebServer::WebListener::ProxyTimeout(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData)

@@ -277,7 +277,7 @@ UInt32 __stdcall Net::TCPClientMgr::WorkerThread(void *o)
 				cliStat->timeStart = currTime;
 				cliStat->timeAlerted = false;
 				cliStat->processing = true;
-				me->dataHdlr(cliStat->cli, me->userObj, cliStat->cliData, cliStat->buff, cliStat->buffSize);
+				me->dataHdlr(cliStat->cli, me->userObj, cliStat->cliData, Data::ByteArrayR(cliStat->buff, cliStat->buffSize));
 				cliStat->processing = false;
 				Sync::MutexUsage mutUsage(&cliStat->readMut);
 				cliStat->recvDataExist = cliStat->cli->GetRecvBuffSize() > 0;

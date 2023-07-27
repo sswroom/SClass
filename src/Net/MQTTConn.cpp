@@ -119,7 +119,7 @@ UInt32 __stdcall Net::MQTTConn::RecvThread(void *userObj)
 			break;
 		me->totalDownload += readSize;
 		buffSize += readSize;
-		readSize = me->protoHdlr.ParseProtocol(stm, me, me->cliData, buff, buffSize);
+		readSize = me->protoHdlr.ParseProtocol(stm, me, me->cliData, Data::ByteArrayR(buff, buffSize));
 		if (readSize == 0)
 		{
 			buffSize = 0;

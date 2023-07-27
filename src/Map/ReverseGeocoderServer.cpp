@@ -183,10 +183,10 @@ void Map::ReverseGeocoderServer::EndConn(NotNullPtr<Net::TCPClient> cli, void *c
 	MemFree(stat);
 }
 
-UOSInt Map::ReverseGeocoderServer::ReceivedData(NotNullPtr<Net::TCPClient> cli, void *cliObj, UInt8 *buff, UOSInt buffSize)
+UOSInt Map::ReverseGeocoderServer::ReceivedData(NotNullPtr<Net::TCPClient> cli, void *cliObj, const Data::ByteArrayR &buff)
 {
 	ClientStatus *stat = (ClientStatus *)cliObj;
-	return this->protocol.ParseProtocol(cli, cliObj, stat->cliData, buff, buffSize);
+	return this->protocol.ParseProtocol(cli, cliObj, stat->cliData, buff);
 }
 
 void Map::ReverseGeocoderServer::DataParsed(NotNullPtr<IO::Stream> stm, void *cliObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize)

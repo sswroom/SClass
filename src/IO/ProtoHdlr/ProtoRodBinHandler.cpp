@@ -20,42 +20,41 @@ void IO::ProtoHdlr::ProtoRodBinHandler::DeleteStreamData(NotNullPtr<IO::Stream> 
 {
 }
 
-UOSInt IO::ProtoHdlr::ProtoRodBinHandler::ParseProtocol(NotNullPtr<IO::Stream> stm, void *stmObj, void *stmData, UInt8 *buff, UOSInt buffSize)
+UOSInt IO::ProtoHdlr::ProtoRodBinHandler::ParseProtocol(NotNullPtr<IO::Stream> stm, void *stmObj, void *stmData, const Data::ByteArrayR &srcBuff)
 {
 	Bool found;
-	while (buffSize >= 10)
+	Data::ByteArrayR buff = srcBuff;
+	while (buff.GetSize() >= 10)
 	{
 		found = false;
-		if (*(Int16*)buff == *(Int16*)"Af")
+		if (*(Int16*)&buff[0] == *(Int16*)"Af")
 		{
 			UInt32 packetSize = *(UInt16*)&buff[6];
 			if (packetSize <= 2048)
 			{
-				if (packetSize > buffSize)
-					return buffSize;
+				if (packetSize > buff.GetSize())
+					return buff.GetSize();
 
-				UInt16 chk = CalCheck(buff, packetSize - 2);
+				UInt16 chk = CalCheck(buff.Ptr(), packetSize - 2);
 				if (chk == *(UInt16*)&buff[packetSize - 2])
 				{
 					this->listener->DataParsed(stm, stmObj, *(UInt16*)&buff[2], *(UInt16*)&buff[4], &buff[8], packetSize - 10);
 
 					found = true;
 					buff += packetSize;
-					buffSize -= packetSize;
 				}
 			}
 		}
 
 		if (!found)
 		{
-			buff++;
-			buffSize--;
+			buff += 1;
 		}
 	}
-	return buffSize;
+	return buff.GetSize();
 }
 
-UOSInt IO::ProtoHdlr::ProtoRodBinHandler::BuildPacket(UInt8 *buff, Int32 cmdType, Int32 seqId, UInt8 *cmd, UOSInt cmdSize, void *stmData)
+UOSInt IO::ProtoHdlr::ProtoRodBinHandler::BuildPacket(UInt8 *buff, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize, void *stmData)
 {
 	*(Int16*)buff = *(Int16*)"Af";
 	*(Int16*)&buff[2] = cmdType;
@@ -69,7 +68,7 @@ UOSInt IO::ProtoHdlr::ProtoRodBinHandler::BuildPacket(UInt8 *buff, Int32 cmdType
 	return cmdSize + 10;
 }
 
-UInt16 IO::ProtoHdlr::ProtoRodBinHandler::CalCheck(UInt8 *buff, UOSInt buffSize)
+UInt16 IO::ProtoHdlr::ProtoRodBinHandler::CalCheck(const UInt8 *buff, UOSInt buffSize)
 {
 	UInt8 chkBytes[2];
 	UOSInt i;

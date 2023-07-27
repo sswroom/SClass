@@ -36,7 +36,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRGPSDevForm::ClientThread(void *userObj)
 				else
 				{
 					recvBuffSize += readSize;
-					readSize = me->protoHdlr.ParseProtocol(cli, 0, me, recvBuff.Ptr(), recvBuffSize);
+					readSize = me->protoHdlr.ParseProtocol(cli, 0, me, recvBuff.WithSize(recvBuffSize));
 					if (readSize == 0)
 					{
 						recvBuffSize = 0;

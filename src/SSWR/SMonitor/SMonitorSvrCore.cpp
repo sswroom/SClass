@@ -63,14 +63,14 @@ void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnClientEvent(NotNullPtr<Net::TC
 	}
 }
 
-void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnClientData(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, const UInt8 *buff, UOSInt size)
+void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnClientData(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, const Data::ByteArrayR &buff)
 {
 	SSWR::SMonitor::SMonitorSvrCore *me = (SSWR::SMonitor::SMonitorSvrCore*)userObj;
 	ClientStatus *status = (ClientStatus*)cliData;
-	MemCopyNO(&status->dataBuff[status->dataSize], buff, size);
-	status->dataSize += size;
+	MemCopyNO(&status->dataBuff[status->dataSize], buff.Ptr(), buff.GetSize());
+	status->dataSize += buff.GetSize();
 
-	UOSInt retSize = me->protoHdlr.ParseProtocol(cli, status, status->stmData, status->dataBuff, status->dataSize);
+	UOSInt retSize = me->protoHdlr.ParseProtocol(cli, status, status->stmData, Data::ByteArrayR(status->dataBuff, status->dataSize));
 	if (retSize == 0)
 	{
 		status->dataSize = 0;

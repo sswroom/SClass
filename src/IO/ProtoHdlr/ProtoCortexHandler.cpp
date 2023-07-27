@@ -20,7 +20,7 @@ void IO::ProtoHdlr::ProtoCortexHandler::DeleteStreamData(NotNullPtr<IO::Stream> 
 {
 }
 
-UOSInt IO::ProtoHdlr::ProtoCortexHandler::ParseProtocol(NotNullPtr<IO::Stream> stm, void *stmObj, void *stmData, const UInt8 *buff, UOSInt buffSize)
+UOSInt IO::ProtoHdlr::ProtoCortexHandler::ParseProtocol(NotNullPtr<IO::Stream> stm, void *stmObj, void *stmData, const Data::ByteArrayR &buff)
 {
 	UOSInt i;
 	UOSInt j;
@@ -29,7 +29,7 @@ UOSInt IO::ProtoHdlr::ProtoCortexHandler::ParseProtocol(NotNullPtr<IO::Stream> s
 	UInt8 chk;
 	i = 0;
 	j = 0;
-	while (i < buffSize)
+	while (i < buff.GetSize())
 	{
 		if (buff[i] == 0xff)
 		{
@@ -38,11 +38,11 @@ UOSInt IO::ProtoHdlr::ProtoCortexHandler::ParseProtocol(NotNullPtr<IO::Stream> s
 				this->listener->DataSkipped(stm, stmObj, &buff[j], i - j);
 				j = i;
 			}
-			if (i + 4 > buffSize)
-				return buffSize - i;
+			if (i + 4 > buff.GetSize())
+				return buff.GetSize() - i;
 			cmdSize = buff[i + 2];
-			if (i + 4 + cmdSize > buffSize)
-				return buffSize - i;
+			if (i + 4 + cmdSize > buff.GetSize())
+				return buff.GetSize() - i;
 			k = i + 3 + cmdSize;
 			chk = 0;
 			while (k-- > i)

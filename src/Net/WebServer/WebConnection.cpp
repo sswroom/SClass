@@ -74,10 +74,10 @@ Net::WebServer::WebConnection::~WebConnection()
 	SDEL_CLASS(this->currReq);
 }
 
-void Net::WebServer::WebConnection::ReceivedData(const UInt8 *buff, UOSInt size)
+void Net::WebServer::WebConnection::ReceivedData(const Data::ByteArrayR &buff)
 {
 #if defined(VERBOSE)
-	printf("WebConn: Received %d bytes\r\n", (UInt32)size);
+	printf("WebConn: Received %d bytes\r\n", (UInt32)buff.GetSize());
 #endif		
 	Text::PString sarr[4];
 	UOSInt i;
@@ -86,12 +86,12 @@ void Net::WebServer::WebConnection::ReceivedData(const UInt8 *buff, UOSInt size)
 	UOSInt strIndex;
 	if (this->protoHdlr)
 	{
-		this->protoHdlr->ProtocolData(buff, size);
+		this->protoHdlr->ProtocolData(buff.Ptr(), buff.GetSize());
 		return;
 	}
 	else if (this->proxyMode)
 	{
-		if (this->proxyCli->Write(buff, size) != size)
+		if (this->proxyCli->Write(buff.Ptr(), buff.GetSize()) != buff.GetSize())
 		{
 			this->proxyCli->Close();
 			this->cli->Close();
@@ -100,9 +100,9 @@ void Net::WebServer::WebConnection::ReceivedData(const UInt8 *buff, UOSInt size)
 	}
 	else
 	{
-		if (this->dataBuffSize < this->buffSize + size)
+		if (this->dataBuffSize < this->buffSize + buff.GetSize())
 		{
-			while (this->dataBuffSize < this->buffSize + size)
+			while (this->dataBuffSize < this->buffSize + buff.GetSize())
 			{
 				this->dataBuffSize = this->dataBuffSize << 1;
 			}
@@ -111,8 +111,8 @@ void Net::WebServer::WebConnection::ReceivedData(const UInt8 *buff, UOSInt size)
 			MemFree(this->dataBuff);
 			this->dataBuff = newBuff;
 		}
-		MemCopyNO(&this->dataBuff[this->buffSize], buff, size);
-		this->buffSize += size;
+		MemCopyNO(&this->dataBuff[this->buffSize], buff.Ptr(), buff.GetSize());
+		this->buffSize += buff.GetSize();
 
 		j = this->buffSize - 1;
 		i = 0;
@@ -122,7 +122,7 @@ void Net::WebServer::WebConnection::ReceivedData(const UInt8 *buff, UOSInt size)
 			Sync::MutexUsage mutUsage(&this->procMut);
 			if (this->currReq && this->currReq->DataStarted())
 			{
-				i += this->currReq->DataPut(buff, size);
+				i += this->currReq->DataPut(buff.Ptr(), buff.GetSize());
 				if (!this->currReq->DataFull())
 				{
 					this->buffSize = 0;
@@ -313,19 +313,19 @@ void Net::WebServer::WebConnection::ReceivedData(const UInt8 *buff, UOSInt size)
 	}
 }
 
-void Net::WebServer::WebConnection::ProxyData(const UInt8 *buff, UOSInt size)
+void Net::WebServer::WebConnection::ProxyData(const Data::ByteArrayR &buff)
 {
 	if (this->cstm)
 	{
-		this->cstm->Write(buff, size);
+		this->cstm->Write(buff.Ptr(), buff.GetSize());
 	}
 	else
 	{
-		this->cli->Write(buff, size);
+		this->cli->Write(buff.Ptr(), buff.GetSize());
 	}
 	if (this->logger)
 	{
-		this->logger(this->loggerObj, size);
+		this->logger(this->loggerObj, buff.GetSize());
 	}
 }
 

@@ -22,24 +22,25 @@ void IO::ProtoHdlr::ProtoGPSDevInfoHandler::DeleteStreamData(NotNullPtr<IO::Stre
 {
 }
 
-UOSInt IO::ProtoHdlr::ProtoGPSDevInfoHandler::ParseProtocol(NotNullPtr<IO::Stream> stm, void *stmObj, void *stmData, const UInt8 *buff, UOSInt buffSize)
+UOSInt IO::ProtoHdlr::ProtoGPSDevInfoHandler::ParseProtocol(NotNullPtr<IO::Stream> stm, void *stmObj, void *stmData, const Data::ByteArrayR &srcBuff)
 {
 	Bool found;
 	UInt8 crcVal[4];
-	while (buffSize >= 8)
+	Data::ByteArrayR buff = srcBuff;
+	while (buff.GetSize() >= 8)
 	{
 		found = false;
-		if (ReadNInt16(buff) == ReadNInt16((const UInt8*)"GD"))
+		if (buff.ReadNI16(0) == ReadNInt16((const UInt8*)"GD"))
 		{
 			UInt32 packetSize = ReadUInt16(&buff[2]);
 			if (packetSize <= 14336)
 			{
-				if (packetSize > buffSize)
-					return buffSize;
+				if (packetSize > buff.GetSize())
+					return buff.GetSize();
 
 				Sync::MutexUsage mutUsage(&this->crcMut);
 				this->crc.Clear();
-				this->crc.Calc(buff, packetSize - 2);
+				this->crc.Calc(buff.Ptr(), packetSize - 2);
 				this->crc.GetValue(crcVal);
 				mutUsage.EndUse();
 				if (ReadMUInt16(&crcVal[2]) == ReadUInt16(&buff[packetSize - 2]))
@@ -48,18 +49,16 @@ UOSInt IO::ProtoHdlr::ProtoGPSDevInfoHandler::ParseProtocol(NotNullPtr<IO::Strea
 
 					found = true;
 					buff += packetSize;
-					buffSize -= packetSize;
 				}
 			}
 		}
 
 		if (!found)
 		{
-			buff++;
-			buffSize--;
+			buff += 1;
 		}
 	}
-	return buffSize;
+	return buff.GetSize();
 }
 
 UOSInt IO::ProtoHdlr::ProtoGPSDevInfoHandler::BuildPacket(UInt8 *buff, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize, void *stmData)

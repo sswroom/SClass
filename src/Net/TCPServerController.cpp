@@ -32,25 +32,25 @@ void __stdcall Net::TCPServerController::EventHdlr(NotNullPtr<Net::TCPClient> cl
 	}
 }
 
-void __stdcall Net::TCPServerController::DataHdlr(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, const UInt8 *buff, UOSInt size)
+void __stdcall Net::TCPServerController::DataHdlr(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, const Data::ByteArrayR &srcBuff)
 {
 	Net::TCPServerController *me = (Net::TCPServerController*)userObj;
 	Net::TCPServerController::ClientData *data = (Net::TCPServerController::ClientData*)cliData;
 	UOSInt copySize;
 
-	while (size > 0)
+	Data::ByteArrayR buff = srcBuff;
+	while (buff.GetSize() > 0)
 	{
-		copySize = size;
+		copySize = buff.GetSize();
 		if (copySize + data->buffSize > me->maxBuffSize)
 		{
 			copySize = me->maxBuffSize - data->buffSize;
 		}
-		MemCopyNO(&data->buff[data->buffSize], buff, copySize);
-		size -= copySize;
+		MemCopyNO(&data->buff[data->buffSize], buff.Ptr(), copySize);
 		buff += copySize;
 		data->buffSize += copySize;
 
-		copySize = me->hdlr->ReceivedData(cli, data->cliObj, data->buff, data->buffSize);
+		copySize = me->hdlr->ReceivedData(cli, data->cliObj, Data::ByteArrayR(data->buff, data->buffSize));
 		if (copySize >= me->maxBuffSize || copySize <= 0)
 		{
 			data->buffSize = 0;

@@ -18,7 +18,7 @@ void __stdcall Net::ProxyServer::OnClientEvent(NotNullPtr<Net::TCPClient> cli, v
 	}
 }
 
-void __stdcall Net::ProxyServer::OnClientData(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, const UInt8 *buff, UOSInt size)
+void __stdcall Net::ProxyServer::OnClientData(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, const Data::ByteArrayR &buff)
 {
 //	Net::ProxyServer *me = (Net::ProxyServer*)userObj;
 }

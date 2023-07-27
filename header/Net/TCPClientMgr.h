@@ -2,6 +2,7 @@
 #define _SM_NET_TCPCLIENTMGR
 #include "Data/ArrayList.h"
 #include "Data/ArrayListUInt64.h"
+#include "Data/ByteArray.h"
 #include "Data/SyncCircularBuff.h"
 #include "Data/Timestamp.h"
 #include "Net/TCPClient.h"
@@ -60,7 +61,7 @@ namespace Net
 		} WorkerStatus;
 
 		typedef void (__stdcall *TCPClientEvent)(NotNullPtr<TCPClient> cli, void *userObj, void *cliData, TCPEventType evtType);
-		typedef void (__stdcall *TCPClientData)(NotNullPtr<TCPClient> cli, void *userObj, void *cliData, const UInt8 *buff, UOSInt size);
+		typedef void (__stdcall *TCPClientData)(NotNullPtr<TCPClient> cli, void *userObj, void *cliData, const Data::ByteArrayR &buff);
 		typedef void (__stdcall *TCPClientTimeout)(NotNullPtr<TCPClient> cli, void *userObj, void *cliData);
 
 	private:
