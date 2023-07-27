@@ -1,5 +1,11 @@
-if (window.sswr == null) window.sswr = new Object();
-window.sswr.cesium = new Object();
+import math from "./math.h";
+import text from "./text.h";
+
+let cesium = new Object();
+var sswr = new Object();
+sswr.cesium = cesium;
+sswr.math = math;
+sswr.text = text;
 
 sswr.cesium.screenToLatLon = function(viewer, x, y, ellipsoid)
 {
@@ -176,3 +182,5 @@ sswr.cesium.fromPolygonGraphics = function(viewer, pg)
 	var pg = new Cesium.PolygonGraphics(o);
 	return pg;
 }*/
+
+export default cesium;

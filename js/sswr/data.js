@@ -690,7 +690,7 @@ sswr.data.DateTimeUtil.toString = function(tval, pattern)
 			}
 			else
 			{
-				output.push(""+tval.nanosec);
+				output.push(""+zpadStr(tval.nanosec, 9));
 				i += 9;
 				while (i < pattern.length && pattern.charAt(i) == 'f')
 				{
@@ -1341,7 +1341,20 @@ sswr.data.TimeInstant = function(sec, nanosec)
 
 sswr.data.TimeInstant.now = function()
 {
-	return sswr.data.TimeInstant.fromTicks(Date.now());
+	if (window.performance)
+	{
+		var t1 = performance.now();
+		var t2 = performance.timeOrigin;
+		var secs = Math.floor((t1 + t2) / 1000);
+		var ns = (t1 / 1000) - Math.floor(t1 / 1000) + (t2 / 1000) - Math.floor(t2 / 1000);
+		if (ns >= 1)
+			ns -= 1;
+		return new sswr.data.TimeInstant(secs, Math.round(ns * 1000000000));
+	}
+	else
+	{
+		return sswr.data.TimeInstant.fromTicks(Date.now());
+	}
 }
 
 sswr.data.TimeInstant.fromVariTime = function(variTime)
