@@ -196,7 +196,7 @@ Media::ABlend::AlphaBlend8_8::~AlphaBlend8_8()
 
 void Media::ABlend::AlphaBlend8_8::Blend(UInt8 *dest, OSInt dbpl, const UInt8 *src, OSInt sbpl, UOSInt width, UOSInt height, Media::AlphaType srcAType)
 {
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	if (srcAType == Media::AT_PREMUL_ALPHA)
 	{
 		this->MTBlendPA(dest, dbpl, src, sbpl, width, height);

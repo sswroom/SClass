@@ -56,7 +56,7 @@ Bool Net::DNSHandler::GetByDomainNamev4(Net::SocketUtil::AddressInfo *addr, Text
 	UOSInt j;
 	Data::Timestamp currTime;
 	Net::DNSClient::RequestAnswer *ans;
-	Sync::MutexUsage mutUsage(&this->reqv4Mut);
+	Sync::MutexUsage mutUsage(this->reqv4Mut);
 	dnsStat = this->reqv4Map.Get(domain);
 	if (dnsStat)
 	{
@@ -144,7 +144,7 @@ Bool Net::DNSHandler::GetByDomainNamev6(Net::SocketUtil::AddressInfo *addr, Text
 	UOSInt j;
 	Net::DNSClient::RequestAnswer *ans;
 	Data::Timestamp currTime;
-	Sync::MutexUsage mutUsage(&this->reqv6Mut);
+	Sync::MutexUsage mutUsage(this->reqv6Mut);
 	dnsStat = this->reqv6Map.Get(domain);
 	if (dnsStat)
 	{
@@ -237,7 +237,7 @@ UOSInt Net::DNSHandler::GetByDomainNamesv4(Net::SocketUtil::AddressInfo *addrs, 
 	Data::Timestamp currTime;
 	Net::DNSClient::RequestAnswer *ans;
 	UOSInt ret = 0;
-	Sync::MutexUsage mutUsage(&this->reqv4Mut);
+	Sync::MutexUsage mutUsage(this->reqv4Mut);
 	dnsStat = this->reqv4Map.Get(domain);
 	if (dnsStat)
 	{
@@ -334,7 +334,7 @@ UOSInt Net::DNSHandler::GetByDomainNamesv6(Net::SocketUtil::AddressInfo *addrs, 
 	UOSInt j;
 	Net::DNSClient::RequestAnswer *ans;
 	Data::Timestamp currTime;
-	Sync::MutexUsage mutUsage(&this->reqv6Mut);
+	Sync::MutexUsage mutUsage(this->reqv6Mut);
 	UOSInt ret = 0;
 	dnsStat = this->reqv6Map.Get(domain);
 	if (dnsStat)
@@ -424,7 +424,7 @@ Bool Net::DNSHandler::AddHost(const Net::SocketUtil::AddressInfo *addr, const UT
 	DomainStatus *dnsStat;
 	if (addr->addrType == Net::AddrType::IPv4)
 	{
-		Sync::MutexUsage mutUsage(&this->reqv4Mut);
+		Sync::MutexUsage mutUsage(this->reqv4Mut);
 		dnsStat = this->reqv4Map.Get({domain, domainLen});
 		if (dnsStat)
 		{
@@ -443,7 +443,7 @@ Bool Net::DNSHandler::AddHost(const Net::SocketUtil::AddressInfo *addr, const UT
 	}
 	else if (addr->addrType == Net::AddrType::IPv6)
 	{
-		Sync::MutexUsage mutUsage(&this->reqv6Mut);
+		Sync::MutexUsage mutUsage(this->reqv6Mut);
 		dnsStat = this->reqv6Map.Get({domain, domainLen});
 		if (dnsStat)
 		{

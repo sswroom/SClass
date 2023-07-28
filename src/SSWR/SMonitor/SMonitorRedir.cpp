@@ -54,7 +54,7 @@ void __stdcall SSWR::SMonitor::SMonitorRedir::OnDataUDPPacket(const Net::SocketU
 
 void SSWR::SMonitor::SMonitorRedir::CalcCRC(const UInt8 *buff, UOSInt size, UInt8 *crcVal)
 {
-	Sync::MutexUsage mutUsage(&this->dataCRCMut);
+	Sync::MutexUsage mutUsage(this->dataCRCMut);
 	this->dataCRC.Clear();
 	this->dataCRC.Calc(buff, size);
 	this->dataCRC.GetValue(crcVal);
@@ -160,7 +160,7 @@ Bool SSWR::SMonitor::SMonitorRedir::SendDevPlatform(Int64 cliId, const UTF8Char 
 	WriteInt64(&buff[4], cliId);
 	size = (UOSInt)(Text::StrConcatC(&buff[12], platform, nameLen) - buff);
 	UInt8 calcVal[2];
-	Sync::MutexUsage mutUsage(&this->dataCRCMut);
+	Sync::MutexUsage mutUsage(this->dataCRCMut);
 	this->dataCRC.Clear();
 	this->dataCRC.Calc(buff, size);
 	this->dataCRC.GetValue(calcVal);

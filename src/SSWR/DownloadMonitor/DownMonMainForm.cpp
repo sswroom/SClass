@@ -50,7 +50,7 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnTimerTick(void *userObj
 	UOSInt i;
 	UOSInt j;
 	Int32 id;
-	Sync::MutexUsage mutUsage(&me->endedMut);
+	Sync::MutexUsage mutUsage(me->endedMut);
 	while (me->endedList.GetCount() > 0)
 	{
 		id = me->endedList.RemoveAt(0);
@@ -335,7 +335,7 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnFileEndClicked(void *us
 		if (UI::MessageDialog::ShowYesNoDialog(CSTR("Are you sure to remove selected file?"), CSTR("Question"), me))
 		{
 			me->core->FileEnd(id & 0xffffff, id >> 24);
-			Sync::MutexUsage mutUsage(&me->endedMut);
+			Sync::MutexUsage mutUsage(me->endedMut);
 			me->endedList.Add(id);
 			mutUsage.EndUse();
 		}
@@ -435,7 +435,7 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::On30MinutesClicked(void *
 void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnFileEnd(void *userObj, Int32 fileId, Int32 webType)
 {
 	SSWR::DownloadMonitor::DownMonMainForm *me = (SSWR::DownloadMonitor::DownMonMainForm*)userObj;
-	Sync::MutexUsage mutUsage(&me->endedMut);
+	Sync::MutexUsage mutUsage(me->endedMut);
 	me->endedList.Add((webType << 24) | fileId);
 	mutUsage.EndUse();
 }

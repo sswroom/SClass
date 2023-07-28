@@ -226,7 +226,7 @@ void __stdcall UI::GUIDDrawControl::OnResized(void *userObj)
 	}
 	else
 	{
-		Sync::MutexUsage mutUsage(&me->surfaceMut);
+		Sync::MutexUsage mutUsage(me->surfaceMut);
 		Math::Size2D<UOSInt> sz = me->GetSizeP();
 		me->surfaceSize = sz;
 		me->ReleaseSubSurface();
@@ -275,7 +275,7 @@ void UI::GUIDDrawControl::OnPaint()
 {
 	if (this->currScnMode != SM_FS && this->currScnMode != SM_VFS)
 	{
-		Sync::MutexUsage mutUsage(&this->surfaceMut);
+		Sync::MutexUsage mutUsage(this->surfaceMut);
 		DrawToScreen();
 		mutUsage.EndUse();
 	}
@@ -565,7 +565,7 @@ void UI::GUIDDrawControl::SetUserFSMode(ScreenMode fullScnMode)
 
 void UI::GUIDDrawControl::DrawToScreen()
 {
-	Sync::MutexUsage mutUsage(&this->surfaceMut);
+	Sync::MutexUsage mutUsage(this->surfaceMut);
 	if (this->debugWriter)
 	{
 		Text::StringBuilderUTF8 sb;
@@ -663,7 +663,7 @@ void UI::GUIDDrawControl::SwitchFullScreen(Bool fullScn, Bool vfs)
 		if (this->currScnMode == SM_WINDOWED || this->currScnMode == SM_WINDOWED_DIR)
 			return;
 	}
-	Sync::MutexUsage mutUsage(&this->surfaceMut);
+	Sync::MutexUsage mutUsage(this->surfaceMut);
 	if (fullScn && !vfs)
 	{
 		this->BeginUpdateSize();

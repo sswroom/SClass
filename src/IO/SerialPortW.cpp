@@ -308,17 +308,12 @@ Bool IO::SerialPort::ResetPort(UOSInt portNum)
 IO::SerialPort::SerialPort(UOSInt portNum, UInt32 baudRate, ParityType parity, Bool flowCtrl) : IO::Stream(CSTR("SerialPort"))
 {
 	this->handle = 0;
-	this->rdEvt = 0;
-	this->rdMut = 0;
 	this->reading = 0;
 	this->portNum = portNum;
 	this->baudRate = baudRate;
 	this->parity = parity;
 	this->flowCtrl = flowCtrl;
 	this->InitStream();
-
-	NEW_CLASS(this->rdEvt, Sync::Event());
-	NEW_CLASS(this->rdMut, Sync::Mutex());
 }
 
 IO::SerialPort::~SerialPort()
@@ -333,23 +328,12 @@ IO::SerialPort::~SerialPort()
 	}
 	
 	ADDMESSAGE("Set event\r\n");
-	if (this->rdEvt)
-		this->rdEvt->Set();
+	this->rdEvt.Set();
 	while (this->reading)
 	{
 		Sleep(10);
 	}
 
-	if (this->rdEvt)
-	{
-		DEL_CLASS(this->rdEvt);
-		this->rdEvt = 0;
-	}
-	if (this->rdMut)
-	{
-		DEL_CLASS(this->rdMut);
-		this->rdMut = 0;
-	}
 }
 
 Bool IO::SerialPort::IsDown() const
@@ -383,7 +367,7 @@ UOSInt IO::SerialPort::Read(const Data::ByteArray &buff)
 	ret = ReadFile(h, buff, size, (DWORD*)&readCnt, 0);
 #else
 	OVERLAPPED ol;
-	ol.hEvent = this->rdEvt->hand;
+	ol.hEvent = this->rdEvt.hand;
 	ol.Internal = 0;
 	ol.InternalHigh = 0;
 	ol.Offset = 0;
@@ -393,7 +377,7 @@ UOSInt IO::SerialPort::Read(const Data::ByteArray &buff)
 	ReadFile(h, buff.Ptr(), (DWORD)buff.GetSize(), (DWORD*)&readCnt, &ol);
 
 	ADDMESSAGE("Waiting\r\n");
-	this->rdEvt->Wait();
+	this->rdEvt.Wait();
 	if (this->handle == 0)
 	{
 		this->reading = false;
@@ -553,10 +537,7 @@ void IO::SerialPort::Close()
 		CancelIo(h);
 		CloseHandle(h);
 	}
-	if (this->rdEvt)
-	{
-		this->rdEvt->Set();
-	}
+	this->rdEvt.Set();
 }
 
 Bool IO::SerialPort::Recover()

@@ -30,7 +30,7 @@ Bool Media::ConsoleVideoRenderer::IsError()
 
 void Media::ConsoleVideoRenderer::SetRotateType(Media::RotateType rotateType)
 {
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	if (this->primarySurface)
 	{
 		Media::RotateType rtChange = Media::RotateTypeCalc(this->primarySurface->info.rotateType, rotateType);
@@ -46,7 +46,7 @@ void Media::ConsoleVideoRenderer::SetRotateType(Media::RotateType rotateType)
 
 void Media::ConsoleVideoRenderer::SetSurfaceBugMode(Bool surfaceBugMode)
 {
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	if (this->primarySurface)
 	{
 		this->primarySurface->SetSurfaceBugMode(surfaceBugMode);
@@ -60,12 +60,12 @@ Bool Media::ConsoleVideoRenderer::IsUpdatingSize()
 
 void Media::ConsoleVideoRenderer::LockUpdateSize(Sync::MutexUsage *mutUsage)
 {
-	mutUsage->ReplaceMutex(&this->mut);
+	mutUsage->ReplaceMutex(this->mut);
 }
 
 void Media::ConsoleVideoRenderer::DrawFromSurface(Media::MonitorSurface *surface, Math::Coord2D<OSInt> destTL, Math::Size2D<UOSInt> buffSize, Bool clearScn)
 {
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	if (this->primarySurface)
 	{
 		this->primarySurface->DrawFromSurface(surface, destTL, buffSize, clearScn, true);

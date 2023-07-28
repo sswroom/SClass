@@ -146,7 +146,7 @@ UTF8Char *Map::AssistedReverseGeocoderPL::SearchName(UTF8Char *buff, UOSInt buff
 	AddressEntry *entry;
 	OSInt index;
 
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	lcidInfo = this->lcidMap.Get(lcid);
 	if (lcidInfo == 0)
 	{

@@ -8,7 +8,7 @@
 
 Net::Email::FileEmailStore::FileInfo *Net::Email::FileEmailStore::GetFileInfo(Int64 id)
 {
-	Sync::MutexUsage mutUsage(&this->fileMut);
+	Sync::MutexUsage mutUsage(this->fileMut);
 	return this->fileMap.Get(id);
 }
 
@@ -101,9 +101,9 @@ void Net::Email::FileEmailStore::AddMail(const Text::MIMEObj::MailMessage *mail,
 			k++;
 		}
 
-		Sync::MutexUsage mutUsage(&this->mailMut);
+		Sync::MutexUsage mutUsage(this->mailMut);
 		this->mailList.Add(email);
-		mutUsage.ReplaceMutex(&this->fileMut);
+		mutUsage.ReplaceMutex(this->fileMut);
 		this->fileMap.Put(file->id, file);
 	}
 	SDEL_STRING(remoteIP);
@@ -164,7 +164,7 @@ Net::Email::FileEmailStore::~FileEmailStore()
 
 Int64 Net::Email::FileEmailStore::NextEmailId()
 {
-	Sync::MutexUsage mutUsage(&this->currIdMut);
+	Sync::MutexUsage mutUsage(this->currIdMut);
 	Int64 id = this->currId++;
 	mutUsage.EndUse();
 	return id;
@@ -248,9 +248,9 @@ Bool Net::Email::FileEmailStore::NewEmail(Int64 id, const Net::SocketUtil::Addre
 		fs.Write(buff, buffSize);
 	}
 
-	Sync::MutexUsage mutUsage(&this->mailMut);
+	Sync::MutexUsage mutUsage(this->mailMut);
 	this->mailList.Add(email);
-	mutUsage.ReplaceMutex(&this->fileMut);
+	mutUsage.ReplaceMutex(this->fileMut);
 	this->fileMap.Put(file->id, file);
 	return true;
 }
@@ -334,9 +334,9 @@ Bool Net::Email::FileEmailStore::NewEmail(Int64 id, const Net::SocketUtil::Addre
 	email->recvTime = currTime.ToTicks();
 	email->isDeleted = false;
 	email->fileSize = (UOSInt)fileSize;
-	Sync::MutexUsage mutUsage(&this->mailMut);
+	Sync::MutexUsage mutUsage(this->mailMut);
 	this->mailList.Add(email);
-	mutUsage.ReplaceMutex(&this->fileMut);
+	mutUsage.ReplaceMutex(this->fileMut);
 	this->fileMap.Put(file->id, file);
 	return true;
 }
@@ -359,7 +359,7 @@ const UTF8Char *Net::Email::FileEmailStore::GetEmailUid(Int64 id)
 
 UOSInt Net::Email::FileEmailStore::GetRcptList(Int64 id, Data::ArrayList<Text::String*> *rcptList)
 {
-	Sync::MutexUsage mutUsage(&this->fileMut);
+	Sync::MutexUsage mutUsage(this->fileMut);
 	FileInfo *fileInfo = this->fileMap.Get(id);
 	if (fileInfo == 0)
 		return 0;
@@ -369,7 +369,7 @@ UOSInt Net::Email::FileEmailStore::GetRcptList(Int64 id, Data::ArrayList<Text::S
 Net::Email::MailController::RemoveStatus Net::Email::FileEmailStore::RemoveMessage(Text::CString userName, UOSInt msgIndex)
 {
 	Net::Email::EmailStore::EmailInfo *email;
-	Sync::MutexUsage mutUsage(&this->mailMut);
+	Sync::MutexUsage mutUsage(this->mailMut);
 	email = this->mailList.GetItem(msgIndex);
 	if (email == 0)
 		return Net::Email::MailController::RS_NOT_FOUND;
@@ -386,7 +386,7 @@ Net::Email::MailController::RemoveStatus Net::Email::FileEmailStore::RemoveMessa
 
 Net::Email::EmailStore::EmailInfo *Net::Email::FileEmailStore::GetEmailByIndex(Text::CString userName, UOSInt msgIndex)
 {
-	Sync::MutexUsage mutUsage(&this->mailMut);
+	Sync::MutexUsage mutUsage(this->mailMut);
 	return this->mailList.GetItem(msgIndex);
 }
 
@@ -400,7 +400,7 @@ void Net::Email::FileEmailStore::GetMessageStat(Text::CString userName, MessageS
 	unreadSize = 0;
 	unreadCount = 0;
 
-	Sync::MutexUsage mutUsage(&this->mailMut);
+	Sync::MutexUsage mutUsage(this->mailMut);
 	totalCnt = this->mailList.GetCount();
 	i = this->recvIndex;
 	while (i < totalCnt)
@@ -423,7 +423,7 @@ UOSInt Net::Email::FileEmailStore::GetUnreadIndices(Text::CString userName, Data
 	UOSInt i;
 	EmailInfo *email;
 
-	Sync::MutexUsage mutUsage(&this->mailMut);
+	Sync::MutexUsage mutUsage(this->mailMut);
 	totalCnt = this->mailList.GetCount();
 	i = this->recvIndex;
 	while (i < totalCnt)

@@ -231,7 +231,7 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnVolBoostBGChg(void *userObj
 void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnDTMFClearClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRAudioFilterForm *me = (SSWR::AVIRead::AVIRAudioFilterForm *)userObj;
-	Sync::MutexUsage mutUsage(&me->dtmfMut);
+	Sync::MutexUsage mutUsage(me->dtmfMut);
 	me->dtmfSb.ClearStr();
 	me->dtmfMod = true;
 	mutUsage.EndUse();
@@ -776,7 +776,7 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnLevelTimerTick(void *userOb
 	if (me->dtmfMod)
 	{
 		me->dtmfMod = false;
-		Sync::MutexUsage mutUsage(&me->dtmfMut);
+		Sync::MutexUsage mutUsage(me->dtmfMut);
 		me->txtDTMFDecode->SetText(me->dtmfSb.ToCString());
 		mutUsage.EndUse();
 	}
@@ -791,7 +791,7 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnDTMFToneChange(void *userOb
 	}
 	else
 	{
-		Sync::MutexUsage mutUsage(&me->dtmfMut);
+		Sync::MutexUsage mutUsage(me->dtmfMut);
 		me->dtmfSb.AppendChar(tone, 1);
 		me->dtmfMod = true;
 		mutUsage.EndUse();

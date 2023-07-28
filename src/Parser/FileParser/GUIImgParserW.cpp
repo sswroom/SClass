@@ -100,7 +100,7 @@ IO::ParsedObject *Parser::FileParser::GUIImgParser::ParseFileHdr(NotNullPtr<IO::
 
 	Media::ImageList *imgList = 0;
 
-	Sync::MutexUsage mutUsage(&this->clsData->mut);
+	Sync::MutexUsage mutUsage(this->clsData->mut);
 	NEW_CLASSNN(stm, IO::StreamDataStream(fd));
 	NEW_CLASS(cstm, Win32::COMStream(stm));
 	Gdiplus::Bitmap *bmp = Gdiplus::Bitmap::FromStream(cstm, 0);

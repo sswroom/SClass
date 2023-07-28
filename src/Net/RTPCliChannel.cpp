@@ -55,7 +55,7 @@ void __stdcall Net::RTPCliChannel::PacketHdlr(const Net::SocketUtil::AddressInfo
 //	Text::StrConcatC(Text::StrInt32(wbuff, seqNum), UTF8STRC("\r\n"));
 //	IO::Console::PrintStrO(wbuff);
 
-	Sync::MutexUsage mutUsage(&chData->packMut);
+	Sync::MutexUsage mutUsage(chData->packMut);
 	if (chData->packCnt >= chData->buffCnt)
 	{
 		Bool lastExist = false;

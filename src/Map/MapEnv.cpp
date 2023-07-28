@@ -179,7 +179,7 @@ UOSInt Map::MapEnv::GetDefLineStyle() const
 
 void Map::MapEnv::SetDefLineStyle(UOSInt lineStyle)
 {
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	if (lineStyle < this->lineStyles.GetCount())
 	{
 		this->defLineStyle = lineStyle;
@@ -193,7 +193,7 @@ UOSInt Map::MapEnv::GetDefFontStyle() const
 
 void Map::MapEnv::SetDefFontStyle(UOSInt fontStyle)
 {
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	if (fontStyle < this->fontStyles.GetCount())
 	{
 		this->defFontStyle = fontStyle;
@@ -202,7 +202,7 @@ void Map::MapEnv::SetDefFontStyle(UOSInt fontStyle)
 
 UOSInt Map::MapEnv::AddLineStyle()
 {
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	UOSInt cnt = this->lineStyles.GetCount();
 	Map::MapEnv::LineStyle *style;
 	if (cnt == 0)
@@ -226,7 +226,7 @@ UOSInt Map::MapEnv::AddLineStyle()
 
 Bool Map::MapEnv::SetLineStyleName(UOSInt index, Text::CString name)
 {
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	UOSInt cnt = this->lineStyles.GetCount();
 	if (index >= cnt)
 	{
@@ -260,7 +260,7 @@ UTF8Char *Map::MapEnv::GetLineStyleName(UOSInt index, UTF8Char *buff) const
 
 Bool Map::MapEnv::AddLineStyleLayer(UOSInt index, UInt32 color, UOSInt thick, const UInt8 *pattern, UOSInt npattern)
 {
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	UOSInt cnt = this->lineStyles.GetCount();
 	if (index >= cnt)
 	{
@@ -324,7 +324,7 @@ Bool Map::MapEnv::ChgLineStyleLayer(UOSInt index, UOSInt layerId, UInt32 color, 
 
 Bool Map::MapEnv::RemoveLineStyleLayer(UOSInt index, UOSInt layerId)
 {
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	UOSInt cnt = this->lineStyles.GetCount();
 	if (index >= cnt)
 	{
@@ -348,7 +348,7 @@ Bool Map::MapEnv::RemoveLineStyleLayer(UOSInt index, UOSInt layerId)
 
 Bool Map::MapEnv::RemoveLineStyle(UOSInt index)
 {
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	UOSInt cnt = this->lineStyles.GetCount();
 	if (index >= cnt)
 	{
@@ -417,7 +417,7 @@ UOSInt Map::MapEnv::AddFontStyle(Text::CString styleName, Text::CString fontName
 	Map::MapEnv::FontStyle *style;
 	if (fontName.leng == 0)
 		return (UOSInt)-1;
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	style = MemAlloc(Map::MapEnv::FontStyle, 1);
 	style->styleName = Text::String::NewOrNull(styleName);
 	style->fontName = Text::String::New(fontName);
@@ -431,7 +431,7 @@ UOSInt Map::MapEnv::AddFontStyle(Text::CString styleName, Text::CString fontName
 
 Bool Map::MapEnv::SetFontStyleName(UOSInt index, Text::CString name)
 {
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	Map::MapEnv::FontStyle *style = this->fontStyles.GetItem(index);
 	if (style == 0)
 		return false;
@@ -452,7 +452,7 @@ UTF8Char *Map::MapEnv::GetFontStyleName(UOSInt index, UTF8Char *buff) const
 
 Bool Map::MapEnv::RemoveFontStyle(UOSInt index)
 {
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	Map::MapEnv::FontStyle *style = this->fontStyles.RemoveAt(index);
 	if (style == 0)
 		return false;
@@ -512,7 +512,7 @@ Bool Map::MapEnv::ChgFontStyle(UOSInt index, Text::String *fontName, Double font
 
 UOSInt Map::MapEnv::AddLayer(Map::MapEnv::GroupItem *group, Map::MapDrawLayer *layer, Bool needRelease)
 {
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	if (layer->GetObjectClass() == Map::MapDrawLayer::OC_MAP_LAYER_COLL)// && layer->GetLayerType() == Map::DRAW_LAYER_MIXED)
 	{
 		UTF8Char sbuff[512];
@@ -666,7 +666,7 @@ Bool Map::MapEnv::ReplaceLayer(Map::MapEnv::GroupItem *group, UOSInt index, Map:
 
 Map::MapEnv::GroupItem *Map::MapEnv::AddGroup(Map::MapEnv::GroupItem *group, NotNullPtr<Text::String> subgroupName)
 {
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	Map::MapEnv::GroupItem *newG;
 	newG = MemAlloc(Map::MapEnv::GroupItem, 1);
 	newG->itemType = Map::MapEnv::IT_GROUP;
@@ -687,7 +687,7 @@ Map::MapEnv::GroupItem *Map::MapEnv::AddGroup(Map::MapEnv::GroupItem *group, Not
 
 Map::MapEnv::GroupItem *Map::MapEnv::AddGroup(Map::MapEnv::GroupItem *group, Text::CString subgroupName)
 {
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	Map::MapEnv::GroupItem *newG;
 	newG = MemAlloc(Map::MapEnv::GroupItem, 1);
 	newG->itemType = Map::MapEnv::IT_GROUP;
@@ -708,7 +708,7 @@ Map::MapEnv::GroupItem *Map::MapEnv::AddGroup(Map::MapEnv::GroupItem *group, Tex
 
 void Map::MapEnv::RemoveItem(Map::MapEnv::GroupItem *group, UOSInt index)
 {
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	Map::MapEnv::MapItem *item;
 
 	if (group)
@@ -745,7 +745,7 @@ void Map::MapEnv::RemoveItem(Map::MapEnv::GroupItem *group, UOSInt index)
 
 void Map::MapEnv::MoveItem(Map::MapEnv::GroupItem *group, UOSInt fromIndex, UOSInt toIndex)
 {
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	if (fromIndex == toIndex)
 		return;
 
@@ -781,7 +781,7 @@ void Map::MapEnv::MoveItem(Map::MapEnv::GroupItem *fromGroup, UOSInt fromIndex, 
 		MoveItem(fromGroup, fromIndex, toIndex);
 		return;
 	}
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	if (fromGroup)
 	{
 		item = fromGroup->subitems->RemoveAt(fromIndex);
@@ -845,14 +845,14 @@ NotNullPtr<Text::String> Map::MapEnv::GetGroupName(Map::MapEnv::GroupItem *group
 
 void Map::MapEnv::SetGroupName(Map::MapEnv::GroupItem *group, Text::CString name)
 {
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	group->groupName->Release();
 	group->groupName = Text::String::New(name);
 }
 
 void Map::MapEnv::SetGroupHide(Map::MapEnv::GroupItem *group, Bool isHide)
 {
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	group->groupHide = isHide;
 }
 
@@ -896,7 +896,7 @@ Bool Map::MapEnv::GetLayerProp(Map::MapEnv::LayerItem *setting, Map::MapEnv::Gro
 
 Bool Map::MapEnv::SetLayerProp(Map::MapEnv::LayerItem *setting, Map::MapEnv::GroupItem *group, UOSInt index)
 {
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	Map::MapEnv::MapItem *item;
 	if (group == 0)
 	{
@@ -1028,7 +1028,7 @@ void Map::MapEnv::SetNString(UOSInt nStr)
 {
 	if (nStr <= 10 || nStr > 10000)
 		return;
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	this->nStr = nStr;
 }
 
@@ -1095,7 +1095,7 @@ Media::StaticImage *Map::MapEnv::GetImage(UOSInt index, UInt32 *imgDurMS) const
 
 OSInt Map::MapEnv::AddImage(Text::CString fileName, Parser::ParserList *parserList)
 {
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	ImageInfo *imgInfo;
 	if ((imgInfo = this->images.Get(fileName)) != 0)
 	{
@@ -1147,7 +1147,7 @@ OSInt Map::MapEnv::AddImage(Text::CString fileName, Parser::ParserList *parserLi
 
 UOSInt Map::MapEnv::AddImage(Text::CString fileName, Media::ImageList *imgList)
 {
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	ImageInfo *imgInfo;
 	if ((imgInfo = this->images.Get(fileName)) != 0)
 	{
@@ -1184,7 +1184,7 @@ UOSInt Map::MapEnv::AddImageSquare(UInt32 color, UOSInt size)
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
 	ImageInfo *imgInfo;
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	imgInfo = MemAlloc(ImageInfo, 1);
 	imgInfo->index = this->GetImageCnt();
 	sptr = Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Image")), imgInfo->index), UTF8STRC(".png"));
@@ -1246,13 +1246,13 @@ UOSInt Map::MapEnv::GetLayersOfType(Data::ArrayList<Map::MapDrawLayer *> *layers
 
 void Map::MapEnv::AddUpdatedHandler(Map::MapDrawLayer::UpdatedHandler hdlr, void *obj)
 {
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	this->AddGroupUpdatedHandler(0, hdlr, obj);
 }
 
 void Map::MapEnv::RemoveUpdatedHandler(Map::MapDrawLayer::UpdatedHandler hdlr, void *obj)
 {
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	this->RemoveGroupUpdatedHandler(0, hdlr, obj);
 }
 
@@ -1342,7 +1342,7 @@ Int64 Map::MapEnv::GetTimeStartTS(Map::MapEnv::GroupItem *group) const
 
 void Map::MapEnv::SetCurrTimeTS(Map::MapEnv::GroupItem *group, Int64 timeStamp)
 {
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	Data::ArrayList<Map::MapEnv::MapItem*> *objs;
 	Map::MapEnv::MapItem *item;
 	UOSInt i;
@@ -1533,5 +1533,5 @@ UInt32 Map::MapEnv::GetSRID() const
 
 void Map::MapEnv::BeginUse(Sync::MutexUsage *mutUsage) const
 {
-	mutUsage->ReplaceMutex(&this->mut);
+	mutUsage->ReplaceMutex(this->mut);
 }

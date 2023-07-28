@@ -50,7 +50,7 @@ namespace Net
 
 	template <class T> T *FailoverHandler<T>::GetCurrChannel()
 	{
-		Sync::MutexUsage mutUsage(&this->mut);
+		Sync::MutexUsage mutUsage(this->mut);
 		if (this->channelList.GetCount() == 0)
 		{
 			return 0;
@@ -94,7 +94,7 @@ namespace Net
 
 	template <class T> void FailoverHandler<T>::GetOtherChannels(Data::ArrayList<T *> *chList)
 	{
-		Sync::MutexUsage mutUsage(&this->mut);
+		Sync::MutexUsage mutUsage(this->mut);
 		T *channel;
 		UOSInt j = this->channelList.GetCount();
 		UOSInt i = (this->lastIndex + 1) % j;
@@ -111,7 +111,7 @@ namespace Net
 
 	template <class T> void FailoverHandler<T>::SetCurrChannel(T *channel)
 	{
-		Sync::MutexUsage mutUsage(&this->mut);
+		Sync::MutexUsage mutUsage(this->mut);
 		UOSInt i = this->channelList.IndexOf(channel);
 		if (i != INVALID_INDEX)
 		{
@@ -122,13 +122,13 @@ namespace Net
 
 	template <class T> void FailoverHandler<T>::GetAllChannels(Data::ArrayList<T *> *chList)
 	{
-		Sync::MutexUsage mutUsage(&this->mut);
+		Sync::MutexUsage mutUsage(this->mut);
 		chList->AddAll(this->channelList);
 	}
 
 	template <class T> void FailoverHandler<T>::AddChannel(T *channel)
 	{
-		Sync::MutexUsage mutUsage(&this->mut);
+		Sync::MutexUsage mutUsage(this->mut);
 		this->channelList.Add(channel);
 	}
 }

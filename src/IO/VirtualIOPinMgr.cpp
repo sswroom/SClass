@@ -31,7 +31,7 @@ IO::VirtualIOPinMgr::~VirtualIOPinMgr()
 	while (i-- > 0)
 	{
 		status = this->pins[i];
-		Sync::MutexUsage mutUsage(&status->mut);
+		Sync::MutexUsage mutUsage(status->mut);
 		toRel = (status->useCnt-- <= 1);
 		mutUsage.EndUse();
 
@@ -68,7 +68,7 @@ IO::VirtualIOPin::VirtualIOPin(IO::VirtualIOPinMgr::PinStatus *pinStatus)
 {
 	this->pinStatus = pinStatus;
 	this->isOutput = false;
-	Sync::MutexUsage mutUsage(&this->pinStatus->mut);
+	Sync::MutexUsage mutUsage(this->pinStatus->mut);
 	this->pinStatus->useCnt++;
 	mutUsage.EndUse();
 }
@@ -76,7 +76,7 @@ IO::VirtualIOPin::VirtualIOPin(IO::VirtualIOPinMgr::PinStatus *pinStatus)
 IO::VirtualIOPin::~VirtualIOPin()
 {
 	Bool isRel;
-	Sync::MutexUsage mutUsage(&this->pinStatus->mut);
+	Sync::MutexUsage mutUsage(this->pinStatus->mut);
 	isRel = (this->pinStatus->useCnt-- <= 1);
 	if (this->isOutput)
 	{
@@ -93,7 +93,7 @@ IO::VirtualIOPin::~VirtualIOPin()
 Bool IO::VirtualIOPin::IsPinHigh()
 {
 	Bool ret;
-	Sync::MutexUsage mutUsage(&this->pinStatus->mut);
+	Sync::MutexUsage mutUsage(this->pinStatus->mut);
 	if (this->pinStatus->outputCnt > 0)
 	{
 		ret = this->pinStatus->outputHigh;
@@ -118,13 +118,13 @@ void IO::VirtualIOPin::SetPinOutput(Bool isOutput)
 		if (isOutput)
 		{
 			this->isOutput = true;
-			Sync::MutexUsage mutUsage(&this->pinStatus->mut);
+			Sync::MutexUsage mutUsage(this->pinStatus->mut);
 			this->pinStatus->outputCnt++;
 		}
 		else
 		{
 			this->isOutput = false;
-			Sync::MutexUsage mutUsage(&this->pinStatus->mut);
+			Sync::MutexUsage mutUsage(this->pinStatus->mut);
 			this->pinStatus->outputCnt--;
 		}
 	}
@@ -134,7 +134,7 @@ void IO::VirtualIOPin::SetPinState(Bool isHigh)
 {
 	if (this->isOutput)
 	{
-		Sync::MutexUsage mutUsage(&this->pinStatus->mut);
+		Sync::MutexUsage mutUsage(this->pinStatus->mut);
 		this->pinStatus->outputHigh = isHigh;
 	}
 }

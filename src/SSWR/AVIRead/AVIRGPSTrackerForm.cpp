@@ -27,7 +27,7 @@ void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnGPSUpdate(void *userObj, Map
 {
 	SSWR::AVIRead::AVIRGPSTrackerForm *me = (SSWR::AVIRead::AVIRGPSTrackerForm*)userObj;
 	Double dist;
-	Sync::MutexUsage mutUsage(&me->recMut);
+	Sync::MutexUsage mutUsage(me->recMut);
 	MemCopyNO(&me->recCurr, record, sizeof(Map::GPSTrack::GPSRecord3));
 	me->recSateCnt = sateCnt;
 	MemCopyNO(me->recSates, sates, sateCnt * sizeof(Map::ILocationService::SateStatus));
@@ -70,7 +70,7 @@ void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnTimerTick(void *userObj)
 	if (me->recUpdated)
 	{
 		me->lastUpdateTime.SetCurrTimeUTC();
-		Sync::MutexUsage mutUsage(&me->recMut);
+		Sync::MutexUsage mutUsage(me->recMut);
 		dt.SetInstant(me->recCurr.recTime);
 		sptr = dt.ToStringNoZone(sbuff);
 		me->txtGPSTime->SetText(CSTRP(sbuff, sptr));
@@ -156,7 +156,7 @@ void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnTimerTick(void *userObj)
 	}
 	if (me->nmeaUpdated)
 	{
-		Sync::MutexUsage nmeaMut(&me->nmeaMut);
+		Sync::MutexUsage nmeaMutUsage(me->nmeaMut);
 		me->nmeaUpdated = false;
 		UOSInt i = me->nmeaIndex;
 		me->lbNMEA->ClearItems();
@@ -262,7 +262,7 @@ void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnTopMostChg(void *userObj, Bo
 void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnNMEALine(void *userObj, const UTF8Char *line, UOSInt lineLen)
 {
 	SSWR::AVIRead::AVIRGPSTrackerForm *me = (SSWR::AVIRead::AVIRGPSTrackerForm*)userObj;
-	Sync::MutexUsage mutUsage(&me->nmeaMut);
+	Sync::MutexUsage mutUsage(me->nmeaMut);
 	SDEL_STRING(me->nmeaBuff[me->nmeaIndex]);
 	me->nmeaBuff[me->nmeaIndex] = Text::String::New(line, lineLen).Ptr();
 	me->nmeaIndex = (me->nmeaIndex + 1) & (NMEAMAXSIZE - 1);
@@ -517,7 +517,7 @@ void SSWR::AVIRead::AVIRGPSTrackerForm::OnFocus()
 
 void SSWR::AVIRead::AVIRGPSTrackerForm::SetGPSTrack(Map::GPSTrack *gpsTrk)
 {
-	Sync::MutexUsage mutUsage(&this->recMut);
+	Sync::MutexUsage mutUsage(this->recMut);
 	this->gpsTrk = gpsTrk;
 	mutUsage.EndUse();
 }

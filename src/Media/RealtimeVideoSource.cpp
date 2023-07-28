@@ -7,7 +7,7 @@
 void __stdcall Media::RealtimeVideoSource::FrameCB(UInt32 frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, FrameStruct frameStruct, void *userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
 {
 	Media::RealtimeVideoSource *me = (Media::RealtimeVideoSource*)userData;
-	Sync::MutexUsage mutUsage(&me->frameMut);
+	Sync::MutexUsage mutUsage(me->frameMut);
 	me->frameTime = frameTime;
 	me->frameNum = frameNum;
 	MemCopyNO(me->frameBuff, imgData[0], dataSize);
@@ -106,7 +106,7 @@ OSInt Media::RealtimeVideoSource::ReadNextFrame(UInt8 *frameBuff, Int32 *frameTi
 		return 0;
 	}
 	OSInt frameSize;
-	Sync::MutexUsage mutUsage(&this->frameMut);
+	Sync::MutexUsage mutUsage(this->frameMut);
 	frameSize = this->frameSize;
 	this->lastFrameTime = this->frameTime;
 	MemCopyNO(frameBuff, this->frameBuff, frameSize);

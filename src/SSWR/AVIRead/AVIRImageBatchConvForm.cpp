@@ -255,7 +255,7 @@ void SSWR::AVIRead::AVIRImageBatchConvForm::ConvertFile(ConvertSess *sess, Text:
 				Text::StringBuilderUTF8 sb;
 				sb.AppendC(UTF8STRC("Error in converting to "));
 				sb.Append(destFile);
-				Sync::MutexUsage mutUsage(&sess->mut);
+				Sync::MutexUsage mutUsage(sess->mut);
 				sess->succ = false;
 				SDEL_STRING(sess->errMsg);
 				sess->errMsg = Text::String::New(sb.ToCString()).Ptr();
@@ -273,7 +273,7 @@ void SSWR::AVIRead::AVIRImageBatchConvForm::ConvertFile(ConvertSess *sess, Text:
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("Error in loading "));
 		sb.Append(srcFile);
-		Sync::MutexUsage mutUsage(&sess->mut);
+		Sync::MutexUsage mutUsage(sess->mut);
 		sess->succ = false;
 		SDEL_STRING(sess->errMsg);
 		sess->errMsg = Text::String::New(sb.ToCString()).Ptr();

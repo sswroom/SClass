@@ -465,7 +465,7 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnTimerTick(void *userObj)
 	if (me->recvUpdated)
 	{
 		Text::StringBuilderUTF8 sb;
-		Sync::MutexUsage mutUsage(&me->recvMut);
+		Sync::MutexUsage mutUsage(me->recvMut);
 		me->recvBuff.ToString(&sb);
 		me->recvUpdated = false;
 		mutUsage.EndUse();
@@ -474,7 +474,7 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnTimerTick(void *userObj)
 	if (me->sendUpdated)
 	{
 		Text::StringBuilderUTF8 sb;
-		Sync::MutexUsage mutUsage(&me->sendMut);
+		Sync::MutexUsage mutUsage(me->sendMut);
 		me->sendBuff.ToString(&sb);
 		me->sendUpdated = false;
 		mutUsage.EndUse();
@@ -491,7 +491,7 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnDataRecv(void *userObj, co
 	sb.AppendC(UTF8STRC(" bytes"));
 	me->log.LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Raw);
 
-	Sync::MutexUsage mutUsage(&me->recvMut);
+	Sync::MutexUsage mutUsage(me->recvMut);
 	me->recvBuff.AppendBytes(data, dataSize);
 	me->recvUpdated = true;
 }
@@ -505,7 +505,7 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnDataSend(void *userObj, co
 	sb.AppendC(UTF8STRC(" bytes"));
 	me->log.LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Raw);
 
-	Sync::MutexUsage mutUsage(&me->sendMut);
+	Sync::MutexUsage mutUsage(me->sendMut);
 	me->sendBuff.AppendBytes(data, dataSize);
 	me->sendUpdated = true;
 }

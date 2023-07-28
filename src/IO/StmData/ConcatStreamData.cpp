@@ -9,7 +9,7 @@ IO::StmData::ConcatStreamData::ConcatStreamData(IO::StmData::ConcatStreamData::C
 	this->cdb = cdb;
 	this->dataOffset = dataOffset;
 	this->dataLength = dataLength;
-	Sync::MutexUsage mutUsage(&this->cdb->mut);
+	Sync::MutexUsage mutUsage(this->cdb->mut);
 	this->cdb->objectCnt++;
 }
 
@@ -36,7 +36,7 @@ IO::StmData::ConcatStreamData::ConcatStreamData(Text::CString fileName)
 IO::StmData::ConcatStreamData::~ConcatStreamData()
 {
 	UInt32 cnt;
-	Sync::MutexUsage mutUsage(&this->cdb->mut);
+	Sync::MutexUsage mutUsage(this->cdb->mut);
 	cnt = this->cdb->objectCnt--;
 	mutUsage.EndUse();
 	if (cnt == 1)
@@ -185,7 +185,7 @@ UOSInt IO::StmData::ConcatStreamData::GetSeekCount()
 
 void IO::StmData::ConcatStreamData::AddData(NotNullPtr<IO::StreamData> data)
 {
-	Sync::MutexUsage mutUsage(&this->cdb->mut);
+	Sync::MutexUsage mutUsage(this->cdb->mut);
 	this->cdb->dataList.Add(data);
 	this->cdb->ofstList.Add(this->cdb->totalSize);
 	this->cdb->totalSize += data->GetDataSize();

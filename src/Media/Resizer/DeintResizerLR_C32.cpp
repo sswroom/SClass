@@ -125,7 +125,7 @@ void Media::Resizer::DeintResizerLR_C32::DeintResize(Media::IDeintResizer::Deint
 	{
 		if (swidth != UOSInt2Double(dwidth))
 		{
-			Sync::MutexUsage mutUsage(&this->mut);
+			Sync::MutexUsage mutUsage(this->mut);
 			if (this->hsSize != swidth || this->hdSize != dwidth)
 			{
 				DestoryHori();
@@ -172,7 +172,7 @@ void Media::Resizer::DeintResizerLR_C32::DeintResize(Media::IDeintResizer::Deint
 		}
 		else
 		{
-			Sync::MutexUsage mutUsage(&this->mut);
+			Sync::MutexUsage mutUsage(this->mut);
 			if (osSize != sheight || odSize != dheight || osStep != (OSInt)sbpl)
 			{
 				DestoryVertO();
@@ -201,7 +201,7 @@ void Media::Resizer::DeintResizerLR_C32::DeintResize(Media::IDeintResizer::Deint
 	{
 		if (swidth != UOSInt2Double(dwidth))
 		{
-			Sync::MutexUsage mutUsage(&this->mut);
+			Sync::MutexUsage mutUsage(this->mut);
 			if (this->hsSize != swidth || this->hdSize != dwidth)
 			{
 				DestoryHori();
@@ -248,7 +248,7 @@ void Media::Resizer::DeintResizerLR_C32::DeintResize(Media::IDeintResizer::Deint
 		}
 		else
 		{
-			Sync::MutexUsage mutUsage(&this->mut);
+			Sync::MutexUsage mutUsage(this->mut);
 			if (esSize != sheight || edSize != dheight || esStep != (OSInt)sbpl)
 			{
 				DestoryVertE();
@@ -277,7 +277,7 @@ void Media::Resizer::DeintResizerLR_C32::DeintResize(Media::IDeintResizer::Deint
 	{
 		if (swidth != UOSInt2Double(dwidth) && sheight != UOSInt2Double(dheight))
 		{
-			Sync::MutexUsage mutUsage(&this->mut);
+			Sync::MutexUsage mutUsage(this->mut);
 			if (this->hsSize != swidth || this->hdSize != dwidth)
 			{
 				DestoryHori();
@@ -324,7 +324,7 @@ void Media::Resizer::DeintResizerLR_C32::DeintResize(Media::IDeintResizer::Deint
 		}
 		else if (swidth != UOSInt2Double(dwidth))
 		{
-			Sync::MutexUsage mutUsage(&this->mut);
+			Sync::MutexUsage mutUsage(this->mut);
 			if (hsSize != swidth || hdSize != dwidth)
 			{
 				DestoryHori();
@@ -350,7 +350,7 @@ void Media::Resizer::DeintResizerLR_C32::DeintResize(Media::IDeintResizer::Deint
 		}
 		else if (sheight != UOSInt2Double(dheight))
 		{
-			Sync::MutexUsage mutUsage(&this->mut);
+			Sync::MutexUsage mutUsage(this->mut);
 			if (vsSize != sheight || vdSize != dheight || vsStep != (OSInt)sbpl)
 			{
 				DestoryVert();
@@ -376,7 +376,7 @@ void Media::Resizer::DeintResizerLR_C32::DeintResize(Media::IDeintResizer::Deint
 		}
 		else
 		{
-			Sync::MutexUsage mutUsage(&this->mut);
+			Sync::MutexUsage mutUsage(this->mut);
 			action->DoCollapse(src, dest, (UInt32)siWidth, dheight, sstep, dstep, this->Media::IImgResizer::srcAlphaType);
 			mutUsage.EndUse();
 

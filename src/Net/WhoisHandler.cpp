@@ -63,7 +63,7 @@ Net::WhoisRecord *Net::WhoisHandler::RequestIP(UInt32 ip)
 	OSInt k;
 	WhoisRecord *rec;
 	
-	Sync::MutexUsage mutUsage(&this->recordMut);
+	Sync::MutexUsage mutUsage(this->recordMut);
 	i = 0;
 	j = (OSInt)this->recordList.GetCount() - 1;
 	while (i <= j)

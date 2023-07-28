@@ -66,7 +66,7 @@
 #endif
 
 Manage::HiResClock *clk;
-Sync::Mutex *mut;
+NotNullPtr<Sync::Mutex> mut;
 Sync::Event *threadEvt;
 Sync::Event *mainEvt;
 Double threadT;
@@ -153,7 +153,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	NEW_CLASS(exHdlr, Manage::ExceptionRecorder(CSTR("SBench.log"), Manage::ExceptionRecorder::EA_CLOSE));
 	NEW_CLASS(console, IO::ConsoleWriter());
 	NEW_CLASS(clk, Manage::HiResClock());
-	NEW_CLASS(mut, Sync::Mutex());
+	NEW_CLASSNN(mut, Sync::Mutex());
 	NEW_CLASS(threadEvt, Sync::Event(true));
 	NEW_CLASS(mainEvt, Sync::Event(true));
 
@@ -2236,7 +2236,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 
 	DEL_CLASS(mainEvt);
 	DEL_CLASS(threadEvt);
-	DEL_CLASS(mut);
+	mut.Delete();
 	DEL_CLASS(clk);
 	DEL_CLASS(console);
 	DEL_CLASS(exHdlr);

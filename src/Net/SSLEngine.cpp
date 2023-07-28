@@ -144,7 +144,7 @@ void Net::SSLEngine::ServerInit(Socket *s, ClientReadyHandler readyHdlr, void *u
 	UOSInt i = 0;
 	UOSInt j = INVALID_INDEX;
 	Bool found = false;
-	Sync::MutexUsage mutUsage(&this->threadMut);
+	Sync::MutexUsage mutUsage(this->threadMut);
 	while (!found)
 	{
 		i = 0;

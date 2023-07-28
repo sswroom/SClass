@@ -21,20 +21,20 @@ DB::SQLType DB::SharedDBConn::GetSQLType()
 
 void DB::SharedDBConn::Reconnect()
 {
-	Sync::MutexUsage mutUsage(&this->mutConn);
+	Sync::MutexUsage mutUsage(this->mutConn);
 	this->conn->Reconnect();
 }
 
 void DB::SharedDBConn::UseObject()
 {
-	Sync::MutexUsage mutUsage(&this->mutObj);
+	Sync::MutexUsage mutUsage(this->mutObj);
 	this->useCnt++;
 }
 
 void DB::SharedDBConn::UnuseObject()
 {
 	OSInt i;
-	Sync::MutexUsage mutUsage(&this->mutObj);
+	Sync::MutexUsage mutUsage(this->mutObj);
 	i = --this->useCnt;
 	mutUsage.EndUse();
 	if (i <= 0)
@@ -45,6 +45,6 @@ void DB::SharedDBConn::UnuseObject()
 
 DB::DBConn *DB::SharedDBConn::UseConn(Sync::MutexUsage *mutUsage)
 {
-	mutUsage->ReplaceMutex(&this->mutConn);
+	mutUsage->ReplaceMutex(this->mutConn);
 	return this->conn;
 }

@@ -90,7 +90,7 @@ Map::DrawLayerType Map::GPSTrack::GetLayerType()
 
 UOSInt Map::GPSTrack::GetAllObjectIds(Data::ArrayListInt64 *outArr, NameArray **nameArr)
 {
-	Sync::MutexUsage mutUsage(&this->recMut);
+	Sync::MutexUsage mutUsage(this->recMut);
 	UOSInt i = 0;
 	UOSInt j = this->currTracks.GetCount();
 	while (i < j)
@@ -118,7 +118,7 @@ UOSInt Map::GPSTrack::GetObjectIds(Data::ArrayListInt64 *outArr, NameArray **nam
 
 UOSInt Map::GPSTrack::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
-	Sync::MutexUsage mutUsage(&this->recMut);
+	Sync::MutexUsage mutUsage(this->recMut);
 	rect = rect.Reorder();
 	UOSInt cnt = 0;
 	UOSInt i = 0;
@@ -352,7 +352,7 @@ Math::Geometry::Vector2D *Map::GPSTrack::GetNewVectorById(Map::GetObjectSess *se
 	Double *altList;
 	if (id < 0)
 		return 0;
-	Sync::MutexUsage mutUsage(&this->recMut);
+	Sync::MutexUsage mutUsage(this->recMut);
 	if ((UInt64)id > this->currTracks.GetCount())
 	{
 		mutUsage.EndUse();
@@ -483,7 +483,7 @@ Math::Geometry::Vector2D *Map::GPSTrack::GetNewVectorById(Map::GetObjectSess *se
 
 void Map::GPSTrack::AddUpdatedHandler(UpdatedHandler hdlr, void *obj)
 {
-	Sync::MutexUsage mutUsage(&this->updMut);
+	Sync::MutexUsage mutUsage(this->updMut);
 	this->updHdlrs.Add(hdlr);
 	this->updObjs.Add(obj);
 	mutUsage.EndUse();
@@ -492,7 +492,7 @@ void Map::GPSTrack::AddUpdatedHandler(UpdatedHandler hdlr, void *obj)
 void Map::GPSTrack::RemoveUpdatedHandler(UpdatedHandler hdlr, void *obj)
 {
 	UOSInt i;
-	Sync::MutexUsage mutUsage(&this->updMut);
+	Sync::MutexUsage mutUsage(this->updMut);
 	i = this->updHdlrs.GetCount();
 	while (i-- > 0)
 	{
@@ -577,7 +577,7 @@ void Map::GPSTrack::NewTrack()
 {
 	if (this->currTimes.GetCount() > 0)
 	{
-		Sync::MutexUsage mutUsage(&this->recMut);
+		Sync::MutexUsage mutUsage(this->recMut);
 		Map::GPSTrack::TrackRecord *rec;
 		Map::GPSTrack::GPSRecord3 *recPtr;
 		Map::GPSTrack::GPSRecord3 *gpsrec;
@@ -620,7 +620,7 @@ void Map::GPSTrack::NewTrack()
 
 UOSInt Map::GPSTrack::AddRecord(Map::GPSTrack::GPSRecord3 *rec)
 {
-	Sync::MutexUsage mutUsage(&this->recMut);
+	Sync::MutexUsage mutUsage(this->recMut);
 	if (this->currTimes.GetCount() == 0)
 	{
 		this->currMaxLat = this->currMinLat = rec->pos.GetLat();
@@ -683,7 +683,7 @@ UOSInt Map::GPSTrack::AddRecord(Map::GPSTrack::GPSRecord3 *rec)
 	mutUsage.EndUse();
 	
 	UOSInt j;
-	Sync::MutexUsage updMutUsage(&this->updMut);
+	Sync::MutexUsage updMutUsage(this->updMut);
 	j = this->updHdlrs.GetCount();
 	while (j-- > 0)
 	{
@@ -706,7 +706,7 @@ Bool Map::GPSTrack::RemoveRecordRange(UOSInt index, UOSInt recStart, UOSInt recE
 	else if (index == this->currTracks.GetCount())
 	{
 		const UInt8 *data;
-		Sync::MutexUsage mutUsage(&this->recMut);
+		Sync::MutexUsage mutUsage(this->recMut);
 		this->currTimes.RemoveRange(recStart, recEnd - recStart + 1);
 		recEnd++;
 		while (recEnd-- > recStart)
@@ -729,7 +729,7 @@ Bool Map::GPSTrack::RemoveRecordRange(UOSInt index, UOSInt recStart, UOSInt recE
 	else
 	{
 		UOSInt currCnt;
-		Sync::MutexUsage mutUsage(&this->recMut);
+		Sync::MutexUsage mutUsage(this->recMut);
 		Map::GPSTrack::TrackRecord *recs = this->currTracks.GetItem(index);
 		currCnt = recs->nRecords;
 		recEnd++;
@@ -947,7 +947,7 @@ void Map::GPSTrack::SetExtraParser(GPSExtraParser *parser)
 
 void Map::GPSTrack::SetExtraDataIndex(UOSInt recIndex, const UInt8 *data, UOSInt dataSize)
 {
-	Sync::MutexUsage mutUsage(&this->recMut);
+	Sync::MutexUsage mutUsage(this->recMut);
 	if (recIndex < this->currExtraData.GetCount())
 	{
 		UInt8 *newData = MemAlloc(UInt8, dataSize);
@@ -972,7 +972,7 @@ const UInt8 *Map::GPSTrack::GetExtraData(UOSInt trackIndex, UOSInt recIndex, UOS
 		if (this->currTimes.GetCount() <= recIndex)
 			return 0;
 		const UInt8 *data;
-		Sync::MutexUsage mutUsage(&this->recMut);
+		Sync::MutexUsage mutUsage(this->recMut);
 		*dataSize = this->currExtraSize.GetItem(recIndex);
 		data = this->currExtraData.GetItem(recIndex);
 		mutUsage.EndUse();

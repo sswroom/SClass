@@ -7,7 +7,7 @@
 
 Text::String *Net::WebServer::HTTPForwardHandler::GetNextURL(Net::WebServer::IWebRequest *req)
 {
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	UOSInt i = this->nextURL;
 	this->nextURL = (i + 1) % this->forwardAddrs.GetCount();
 	return this->forwardAddrs.GetItem(i);
@@ -315,7 +315,7 @@ Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(Net::WebServer::IWebRequ
 
 void Net::WebServer::HTTPForwardHandler::AddForwardURL(Text::CString url)
 {
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	this->forwardAddrs.Add(Text::String::New(url));
 }
 

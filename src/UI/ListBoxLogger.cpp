@@ -16,7 +16,7 @@ void __stdcall UI::ListBoxLogger::TimerTick(void *userObj)
 		UOSInt curr;
 		UOSInt cnt;
 		UOSInt i;
-		Sync::MutexUsage mutUsage(&me->mut);
+		Sync::MutexUsage mutUsage(me->mut);
 		cnt = me->logCnt;
 		curr = me->logIndex - cnt;
 		if ((OSInt)curr < 0)
@@ -148,7 +148,7 @@ void UI::ListBoxLogger::LogAdded(const Data::Timestamp &logTime, Text::CString l
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	if (this->timeFormat)
 	{
 		sptr = logTime.ToString(sbuff, this->timeFormat);
@@ -175,7 +175,7 @@ void UI::ListBoxLogger::LogAdded(const Data::Timestamp &logTime, Text::CString l
 
 void UI::ListBoxLogger::SetTimeFormat(const Char *timeFormat)
 {
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	SDEL_TEXT(this->timeFormat);
 	this->timeFormat = Text::StrCopyNew(timeFormat);
 	mutUsage.EndUse();

@@ -78,7 +78,7 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothCtlForm::OnTimerTick(void *userObj)
 void __stdcall SSWR::AVIRead::AVIRBluetoothCtlForm::OnDeviceUpdated(IO::BTScanLog::ScanRecord3 *dev, IO::BTScanner::UpdateType updateType, void *userObj)
 {
 	SSWR::AVIRead::AVIRBluetoothCtlForm *me = (SSWR::AVIRead::AVIRBluetoothCtlForm*)userObj;
-	Sync::MutexUsage mutUsage(&me->devMut);
+	Sync::MutexUsage mutUsage(me->devMut);
 	if (dev->addrType == IO::BTScanLog::AT_RANDOM)
 	{
 		if (me->randDevMap.GetIndex(dev->macInt) >= 0)
@@ -113,7 +113,7 @@ UOSInt SSWR::AVIRead::AVIRBluetoothCtlForm::UpdateList(NotNullPtr<Data::FastMap<
 	{
 		dev = devMap->GetItem(j);
 		i = j + baseIndex;
-		Sync::MutexUsage devMutUsage(&this->devMut);
+		Sync::MutexUsage devMutUsage(this->devMut);
 		if (statusMap->GetIndex(dev->macInt) < 0)
 		{
 			sptr = Text::StrHexBytes(sbuff, dev->mac, 6, ':');

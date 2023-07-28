@@ -271,7 +271,7 @@ void UI::GUIVideoBoxDDLQ::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, Vide
 		vbuff2->destSurface->UnlockSurface();
 		vbuff2->frameNum = vbuff->frameNum;
 		vbuff2->frameTime = vbuff->frameTime + 17;
-		Sync::MutexUsage mutUsage(&this->buffMut);
+		Sync::MutexUsage mutUsage(this->buffMut);
 		vbuff->isOutputReady = true;
 		vbuff->isProcessing = false;
 		vbuff2->isOutputReady = true;
@@ -281,7 +281,7 @@ void UI::GUIVideoBoxDDLQ::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, Vide
 	}
 	else
 	{
-		Sync::MutexUsage mutUsage(&this->buffMut);
+		Sync::MutexUsage mutUsage(this->buffMut);
 		vbuff->isOutputReady = true;
 		vbuff->isProcessing = false;
 		mutUsage.EndUse();

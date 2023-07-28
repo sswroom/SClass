@@ -200,7 +200,7 @@ UInt32 __stdcall Media::DDrawRenderer2::ScnUpdater(void *obj)
 			{
 				if (me->clk->GetCurrTime() > me->surfaceBuff[me->surfaceBuffStart].frameTime)
 				{
-					Sync::MutexUsage mutUsage(&me->surfaceBuffMut);
+					Sync::MutexUsage mutUsage(me->surfaceBuffMut);
 					if (me->surfaceBuff[me->surfaceBuffStart].surface == 0)
 					{
 						break;
@@ -263,7 +263,7 @@ UInt32 __stdcall Media::DDrawRenderer2::FrameProcesser(void *obj)
 					ZeroMemory(&ddsd, sizeof(ddsd));
 					ddsd.dwSize = sizeof(ddsd);
 
-					Sync::MutexUsage mutUsage(&me->surfaceBuffMut);
+					Sync::MutexUsage mutUsage(me->surfaceBuffMut);
 					surface = (LPDIRECTDRAWSURFACE7)me->surfaceBuff[i].surface;
 					if (surface)
 					{
@@ -523,7 +523,7 @@ Media::DDrawRenderer2::~DDrawRenderer2()
 
 void Media::DDrawRenderer2::OnSizeChanged()
 {
-	Sync::MutexUsage mutUsage(&this->surfaceBuffMut);
+	Sync::MutexUsage mutUsage(this->surfaceBuffMut);
 	this->ReleaseSubSurface();
 	this->CreateSubSurface();
 }

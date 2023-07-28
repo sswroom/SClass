@@ -16,7 +16,7 @@ UInt32 __stdcall Net::HTTPData::LoadThread(void *userObj)
 	HTTPDATAHANDLE *fdh = (HTTPDATAHANDLE*)userObj;
 	if (fdh->queue)
 	{
-		Sync::MutexUsage mutUsage(&fdh->mut);
+		Sync::MutexUsage mutUsage(fdh->mut);
 		fdh->cli = fdh->queue->MakeRequest(fdh->url->ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, true).Ptr();
 		mutUsage.EndUse();
 	}
@@ -43,7 +43,7 @@ UInt32 __stdcall Net::HTTPData::LoadThread(void *userObj)
 		{
 			if (fdh->queue)
 			{
-				Sync::MutexUsage mutUsage(&fdh->mut);
+				Sync::MutexUsage mutUsage(fdh->mut);
 				fdh->queue->EndRequest(fdh->cli);
 				fdh->cli = fdh->queue->MakeRequest(sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, true).Ptr();
 				mutUsage.EndUse();
@@ -76,7 +76,7 @@ UInt32 __stdcall Net::HTTPData::LoadThread(void *userObj)
 				readSize = fdh->cli->Read(BYTEARR(buff));
 				if (readSize == 0)
 				{
-					Sync::MutexUsage mutUsage(&fdh->mut);
+					Sync::MutexUsage mutUsage(fdh->mut);
 					DEL_CLASS(fdh->file);
 					fdh->file = 0;
 					fdh->fileLength = 0;
@@ -84,7 +84,7 @@ UInt32 __stdcall Net::HTTPData::LoadThread(void *userObj)
 					IO::Path::DeleteFile(fdh->localFile->v);
 					break;
 				}
-				Sync::MutexUsage mutUsage(&fdh->mut);
+				Sync::MutexUsage mutUsage(fdh->mut);
 				if (fdh->currentOffset != fdh->loadSize)
 				{
 					fdh->file->SeekFromBeginning(fdh->loadSize);
@@ -130,7 +130,7 @@ UInt32 __stdcall Net::HTTPData::LoadThread(void *userObj)
 						break;
 					}
 					
-					Sync::MutexUsage mutUsage(&fdh->mut);
+					Sync::MutexUsage mutUsage(fdh->mut);
 					if (fdh->currentOffset != fdh->loadSize)
 					{
 						fdh->file->SeekFromBeginning(fdh->loadSize);
@@ -150,7 +150,7 @@ UInt32 __stdcall Net::HTTPData::LoadThread(void *userObj)
 			}
 		}
 	}
-	Sync::MutexUsage mutUsage(&fdh->mut);
+	Sync::MutexUsage mutUsage(fdh->mut);
 	if (fdh->queue)
 	{
 		fdh->queue->EndRequest(fdh->cli);
@@ -282,7 +282,7 @@ UOSInt Net::HTTPData::GetRealData(UInt64 offset, UOSInt length, Data::ByteArray 
 {
 	if (fdh == 0)
 		return 0;
-	Sync::MutexUsage mutUsage(&fdh->mut);
+	Sync::MutexUsage mutUsage(fdh->mut);
 	while (fdh->isLoading && (dataOffset + offset + length > fdh->loadSize))
 	{
 		mutUsage.EndUse();
@@ -349,7 +349,7 @@ void Net::HTTPData::SetFullName(Text::CString fullName)
 	if (fdh == 0 || fullName.leng == 0)
 		return;
 	UOSInt i;
-	Sync::MutexUsage mutUsage(&fdh->mut);
+	Sync::MutexUsage mutUsage(fdh->mut);
 	fdh->url->Release();
 	fdh->url = Text::String::New(fullName);
 	i = fdh->url->LastIndexOf('/');
@@ -402,7 +402,7 @@ void Net::HTTPData::Close()
 	{
 		if (--(fdh->objectCnt) == 0)
 		{
-			Sync::MutexUsage mutUsage(&fdh->mut);
+			Sync::MutexUsage mutUsage(fdh->mut);
 			if (fdh->isLoading)
 				fdh->cli->Close();
 			mutUsage.EndUse();

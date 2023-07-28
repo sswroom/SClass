@@ -86,7 +86,7 @@ void IO::LoopFileLog::LogClosed()
 {
 	if (!closed)
 	{
-		Sync::MutexUsage mutUsage(&this->mut);
+		Sync::MutexUsage mutUsage(this->mut);
 		log->Close();
 		closed = true;
 	}
@@ -97,7 +97,7 @@ void IO::LoopFileLog::LogAdded(const Data::Timestamp &time, Text::CString logMsg
 	UTF8Char buff[256];
 	UTF8Char *sptr;
 
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	Data::DateTimeUtil::TimeValue tval;
 	time.ToTimeValue(&tval);
 

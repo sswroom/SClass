@@ -10,7 +10,7 @@
 void __stdcall Net::UDPServerStream::OnUDPPacket(const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData)
 {
 	Net::UDPServerStream *me = (Net::UDPServerStream*)userData;
-	Sync::MutexUsage mutUsage(&me->dataMut);
+	Sync::MutexUsage mutUsage(me->dataMut);
 	me->lastAddr = *addr;
 	me->lastPort = port;
 	if (dataSize >= BUFFSIZE)
@@ -69,7 +69,7 @@ UOSInt Net::UDPServerStream::Read(const Data::ByteArray &buff)
 	if (this->svr == 0 || this->buffSize == 0)
 		return 0;
 	UOSInt ret;
-	Sync::MutexUsage mutUsage(&this->dataMut);
+	Sync::MutexUsage mutUsage(this->dataMut);
 	if (this->buffSize > buff.GetSize())
 	{
 		buff.CopyFrom(Data::ByteArrayR(this->buff, buff.GetSize()));
@@ -88,7 +88,7 @@ UOSInt Net::UDPServerStream::Read(const Data::ByteArray &buff)
 
 UOSInt Net::UDPServerStream::Write(const UInt8 *buff, UOSInt size)
 {
-	Sync::MutexUsage mutUsage(&this->dataMut);
+	Sync::MutexUsage mutUsage(this->dataMut);
 	if (this->lastAddr.addrType == Net::AddrType::Unknown)
 	{
 		return 0;

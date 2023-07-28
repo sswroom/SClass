@@ -278,7 +278,7 @@ UInt32 __stdcall Manage::MonConn::ConnTThread(void *conn)
 void Manage::MonConn::AddCommand(UInt8 *data, UOSInt dataSize, UInt16 cmdType)
 {
 	UInt8 *buff = MemAlloc(UInt8, dataSize + 10);
-	Sync::MutexUsage mutUsage(&this->cmdSeqMut);
+	Sync::MutexUsage mutUsage(this->cmdSeqMut);
 	Manage::MonConn::BuildPacket(buff, data, dataSize, cmdType, cmdSeq++);
 	mutUsage.EndUse();
 	this->cmdList.Add(buff);

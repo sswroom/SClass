@@ -752,7 +752,7 @@ void Map::HKTrafficLayer::SetSpeedMap(Int32 fromId, Int32 toId, SaturationLevel 
 	Int64 id = (((Int64)fromId) << 32) | (UInt32)toId;
 	RoadInfo *road;
 
-	Sync::MutexUsage mutUsage(&this->roadMut);
+	Sync::MutexUsage mutUsage(this->roadMut);
 	road = this->roadMap.Get(id);
 	if (road == 0)
 	{
@@ -1130,7 +1130,7 @@ UOSInt Map::HKTrafficLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, NameAr
 	UOSInt i;
 	UOSInt j;
 	RoadInfo *road;
-	Sync::MutexUsage mutUsage(&this->roadMut);
+	Sync::MutexUsage mutUsage(this->roadMut);
 	i = 0;
 	j = this->roadMap.GetCount();
 	while (i < j)
@@ -1158,7 +1158,7 @@ UOSInt Map::HKTrafficLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, Name
 	UOSInt i;
 	UOSInt j;
 	rect = rect.Reorder();
-	Sync::MutexUsage mutUsage(&this->roadMut);
+	Sync::MutexUsage mutUsage(this->roadMut);
 	i = 0;
 	j = this->roadMap.GetCount();
 	while (i < j)
@@ -1176,7 +1176,7 @@ UOSInt Map::HKTrafficLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, Name
 
 Int64 Map::HKTrafficLayer::GetObjectIdMax()
 {
-	Sync::MutexUsage mutUsage(&this->roadMut);
+	Sync::MutexUsage mutUsage(this->roadMut);
 	return this->roadMap.GetKey(this->roadMap.GetCount() - 1);
 }
 
@@ -1238,7 +1238,7 @@ Math::Geometry::Vector2D *Map::HKTrafficLayer::GetNewVectorById(GetObjectSess *s
 {
 	RoadInfo *road;
 	Math::Geometry::Vector2D *vec = 0;
-	Sync::MutexUsage mutUsage(&this->roadMut);
+	Sync::MutexUsage mutUsage(this->roadMut);
 	road = this->roadMap.Get(id);
 	if (road && road->vec)
 	{

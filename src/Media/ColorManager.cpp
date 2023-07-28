@@ -596,7 +596,7 @@ void Media::MonitorColorManager::Set10BitColor(Bool color10Bit)
 
 void Media::MonitorColorManager::AddSess(Media::ColorManagerSess *colorSess)
 {
-	Sync::MutexUsage mutUsage(&this->sessMut);
+	Sync::MutexUsage mutUsage(this->sessMut);
 	this->sessList.Add(colorSess);
 	mutUsage.EndUse();
 }
@@ -604,7 +604,7 @@ void Media::MonitorColorManager::AddSess(Media::ColorManagerSess *colorSess)
 void Media::MonitorColorManager::RemoveSess(Media::ColorManagerSess *colorSess)
 {
 	UOSInt i;
-	Sync::MutexUsage mutUsage(&this->sessMut);
+	Sync::MutexUsage mutUsage(this->sessMut);
 	i = this->sessList.IndexOf(colorSess);
 	if (i != INVALID_INDEX)
 	{
@@ -721,7 +721,7 @@ void Media::MonitorColorManager::SetEDIDProfile()
 void Media::MonitorColorManager::RGBUpdated()
 {
 	Media::ColorManagerSess *colorSess;
-	Sync::MutexUsage mutUsage(&this->sessMut);
+	Sync::MutexUsage mutUsage(this->sessMut);
 	UOSInt i = this->sessList.GetCount();
 	while (i-- > 0)
 	{
@@ -734,7 +734,7 @@ void Media::MonitorColorManager::RGBUpdated()
 void Media::MonitorColorManager::YUVUpdated()
 {
 	Media::ColorManagerSess *colorSess;
-	Sync::MutexUsage mutUsage(&this->sessMut);
+	Sync::MutexUsage mutUsage(this->sessMut);
 	UOSInt i = this->sessList.GetCount();
 	while (i-- > 0)
 	{
@@ -875,7 +875,7 @@ Media::ColorProfile::YUVType Media::ColorManager::GetDefYUVType()
 Media::MonitorColorManager *Media::ColorManager::GetMonColorManager(Text::String *profileName)
 {
 	Media::MonitorColorManager *monColor;
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	if (profileName == 0)
 	{
 		monColor = this->monColor.GetC(CSTR(""));
@@ -933,13 +933,13 @@ Media::ColorManagerSess::~ColorManagerSess()
 
 void Media::ColorManagerSess::AddHandler(Media::IColorHandler *hdlr)
 {
-	Sync::MutexUsage mutUsage(&this->hdlrMut);
+	Sync::MutexUsage mutUsage(this->hdlrMut);
 	this->hdlrs.Add(hdlr);
 }
 
 void Media::ColorManagerSess::RemoveHandler(Media::IColorHandler *hdlr)
 {
-	Sync::MutexUsage mutUsage(&this->hdlrMut);
+	Sync::MutexUsage mutUsage(this->hdlrMut);
 	UOSInt index = this->hdlrs.IndexOf(hdlr);
 	if (index != INVALID_INDEX)
 	{
@@ -950,13 +950,13 @@ void Media::ColorManagerSess::RemoveHandler(Media::IColorHandler *hdlr)
 
 const Media::IColorHandler::YUVPARAM *Media::ColorManagerSess::GetYUVParam()
 {
-	Sync::RWMutexUsage mutUsage(&this->mut, false);
+	Sync::RWMutexUsage mutUsage(this->mut, false);
 	return this->monColor->GetYUVParam();
 }
 
 const Media::IColorHandler::RGBPARAM2 *Media::ColorManagerSess::GetRGBParam()
 {
-	Sync::RWMutexUsage mutUsage(&this->mut, false);
+	Sync::RWMutexUsage mutUsage(this->mut, false);
 	return this->monColor->GetRGBParam();
 }
 
@@ -1002,7 +1002,7 @@ void Media::ColorManagerSess::ChangeMonitor(MonitorHandle *hMon)
 
 void Media::ColorManagerSess::RGBUpdated(const Media::IColorHandler::RGBPARAM2 *rgbParam)
 {
-	Sync::MutexUsage mutUsage(&this->hdlrMut);
+	Sync::MutexUsage mutUsage(this->hdlrMut);
 	UOSInt i = this->hdlrs.GetCount();
 	while (i-- > 0)
 	{
@@ -1013,7 +1013,7 @@ void Media::ColorManagerSess::RGBUpdated(const Media::IColorHandler::RGBPARAM2 *
 
 void Media::ColorManagerSess::YUVUpdated(const Media::IColorHandler::YUVPARAM *yuvParam)
 {
-	Sync::MutexUsage mutUsage(&this->hdlrMut);
+	Sync::MutexUsage mutUsage(this->hdlrMut);
 	UOSInt i = this->hdlrs.GetCount();
 	while (i-- > 0)
 	{

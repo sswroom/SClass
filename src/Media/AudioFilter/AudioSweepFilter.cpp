@@ -37,7 +37,7 @@ UOSInt Media::AudioFilter::AudioSweepFilter::ReadBlock(Data::ByteArray blk)
 	Double endFreq;
 	UInt32 currSample;
 	UInt32 endSample;
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	startFreq = this->startFreq;
 	endFreq = this->endFreq;
 	currSample = this->currSample;
@@ -102,7 +102,7 @@ void Media::AudioFilter::AudioSweepFilter::SetVolume(Double vol)
 
 Bool Media::AudioFilter::AudioSweepFilter::StartSweep(Double startFreq, Double endFreq, UInt32 timeSeconds)
 {
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	this->startFreq = startFreq;
 	this->endFreq = endFreq;
 	this->currSample = 0;

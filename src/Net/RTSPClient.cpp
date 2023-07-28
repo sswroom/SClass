@@ -36,7 +36,7 @@ UInt32 __stdcall Net::RTSPClient::ControlThread(void *userObj)
 		{
 			if (cliData->cli == 0)
 			{
-				Sync::MutexUsage mutUsage(&cliData->cliMut);
+				Sync::MutexUsage mutUsage(cliData->cliMut);
 				NEW_CLASS(cliData->cli, Net::TCPClient(cliData->sockf, cliData->host->ToCString(), cliData->port, cliData->timeout));
 			}
 			if (content)
@@ -44,7 +44,7 @@ UInt32 __stdcall Net::RTSPClient::ControlThread(void *userObj)
 				thisSize = cliData->cli->Read(BYTEARR(dataBuff));
 				if (thisSize == 0)
 				{
-					Sync::MutexUsage mutUsage(&cliData->cliMut);
+					Sync::MutexUsage mutUsage(cliData->cliMut);
 					DEL_CLASS(cliData->cli);
 					cliData->cli = 0;
 					continue;
@@ -74,7 +74,7 @@ UInt32 __stdcall Net::RTSPClient::ControlThread(void *userObj)
 				thisSize = cliData->cli->Read(Data::ByteArray(&dataBuff[buffSize], 2048 - buffSize));
 				if (thisSize == 0)
 				{
-					Sync::MutexUsage mutUsage(&cliData->cliMut);
+					Sync::MutexUsage mutUsage(cliData->cliMut);
 					DEL_CLASS(cliData->cli);
 					cliData->cli = 0;
 					continue;
@@ -223,7 +223,7 @@ Bool Net::RTSPClient::WaitForReply()
 Bool Net::RTSPClient::SendData(UInt8 *buff, UOSInt buffSize)
 {
 	Bool succ = false;
-	Sync::MutexUsage mutUsage(&this->cliData->cliMut);
+	Sync::MutexUsage mutUsage(this->cliData->cliMut);
 	if (this->cliData->cli)
 	{
 		succ = this->cliData->cli->Write(buff, buffSize) == buffSize;
@@ -265,7 +265,7 @@ Net::RTSPClient::~RTSPClient()
 	if (--this->cliData->useCnt == 0)
 	{
 		this->cliData->threadToStop = true;
-		Sync::MutexUsage mutUsage(&this->cliData->cliMut);
+		Sync::MutexUsage mutUsage(this->cliData->cliMut);
 		if (this->cliData->cli)
 		{
 			this->cliData->cli->Close();
@@ -290,7 +290,7 @@ Bool Net::RTSPClient::GetOptions(Text::CString url, Data::ArrayList<const UTF8Ch
 	UOSInt i;
 	UOSInt buffSize;
 
-	Sync::MutexUsage mutUsage(&this->cliData->reqMut);
+	Sync::MutexUsage mutUsage(this->cliData->reqMut);
 	Int32 reqId = this->NextRequest();
 
 	{
@@ -339,7 +339,7 @@ Net::SDPFile *Net::RTSPClient::GetMediaInfo(Text::CString url)
 	UInt8 *buff;
 	UOSInt buffSize;
 
-	Sync::MutexUsage mutUsage(&this->cliData->reqMut);
+	Sync::MutexUsage mutUsage(this->cliData->reqMut);
 	Int32 reqId = this->NextRequest();
 
 	{
@@ -377,7 +377,7 @@ UTF8Char *Net::RTSPClient::SetupRTP(UTF8Char *sessIdOut, Text::CString url, Net:
 	UInt8 *buff;
 	UOSInt buffSize;
 
-	Sync::MutexUsage mutUsage(&this->cliData->reqMut);
+	Sync::MutexUsage mutUsage(this->cliData->reqMut);
 	Int32 reqId = this->NextRequest();
 
 	{
@@ -502,7 +502,7 @@ Bool Net::RTSPClient::Play(Text::CString url, Text::CString sessId)
 	UInt8 *buff;
 	UOSInt buffSize;
 
-	Sync::MutexUsage mutUsage(&this->cliData->reqMut);
+	Sync::MutexUsage mutUsage(this->cliData->reqMut);
 	Int32 reqId = this->NextRequest();
 
 	{
@@ -541,7 +541,7 @@ Bool Net::RTSPClient::Close(Text::CString url, Text::CString sessId)
 	UInt8 *buff;
 	UOSInt buffSize;
 
-	Sync::MutexUsage mutUsage(&this->cliData->reqMut);
+	Sync::MutexUsage mutUsage(this->cliData->reqMut);
 	Int32 reqId = this->NextRequest();
 
 	{

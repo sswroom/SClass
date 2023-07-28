@@ -393,7 +393,7 @@ UInt32 __stdcall Net::SNS::SNSManager::ThreadProc(void *userObj)
 		while (!me->threadToStop)
 		{
 			t = Data::DateTimeUtil::GetCurrTimeMillis();
-			Sync::MutexUsage mutUsage(&me->mut);
+			Sync::MutexUsage mutUsage(me->mut);
 			cntMap.Clear();
 			i = me->channelList.GetCount();
 			while (i-- > 0)
@@ -557,7 +557,7 @@ Net::SNS::SNSControl *Net::SNS::SNSManager::AddChannel(Net::SNS::SNSControl::SNS
 			writer.WriteLineC(s->v, s->leng);
 		}
 		Net::SNS::SNSManager::ChannelData *channel = this->ChannelInit(ctrl);
-		Sync::MutexUsage mutUsage(&this->mut);
+		Sync::MutexUsage mutUsage(this->mut);
 		this->channelList.Add(channel);
 		this->ChannelUpdate(channel);
 		mutUsage.EndUse();
@@ -567,7 +567,7 @@ Net::SNS::SNSControl *Net::SNS::SNSManager::AddChannel(Net::SNS::SNSControl::SNS
 
 void Net::SNS::SNSManager::Use(Sync::MutexUsage *mutUsage)
 {
-	mutUsage->ReplaceMutex(&this->mut);
+	mutUsage->ReplaceMutex(this->mut);
 }
 
 UOSInt Net::SNS::SNSManager::GetCount() const

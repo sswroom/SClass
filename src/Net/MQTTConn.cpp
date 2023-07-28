@@ -84,7 +84,7 @@ void Net::MQTTConn::DataParsed(NotNullPtr<IO::Stream> stm, void *stmObj, Int32 c
 		packet->size = cmdSize;
 		MemCopyNO(packet->content, cmd, cmdSize);
 		{
-			Sync::MutexUsage mutUsage(&this->packetMut);
+			Sync::MutexUsage mutUsage(this->packetMut);
 			this->packetList.Add(packet);
 		}
 		this->packetEvt.Set();
@@ -158,7 +158,7 @@ Net::MQTTConn::PacketInfo *Net::MQTTConn::GetNextPacket(UInt8 packetType, Data::
 	{
 		while (this->packetList.GetCount() > 0)
 		{
-			Sync::MutexUsage mutUsage(&this->packetMut);
+			Sync::MutexUsage mutUsage(this->packetMut);
 			packet = this->packetList.RemoveAt(0);
 			mutUsage.EndUse();
 			if ((packet->packetType & 0xf0) == packetType)
@@ -180,7 +180,7 @@ Bool Net::MQTTConn::SendPacket(const UInt8 *packet, UOSInt packetSize)
 	{
 		return false;
 	}
-	Sync::MutexUsage mutUsage(&this->cliMut);
+	Sync::MutexUsage mutUsage(this->cliMut);
 	UOSInt sendSize = this->stm->Write(packet, packetSize);
 	this->totalUpload += sendSize;
 	return sendSize == packetSize;
@@ -488,7 +488,7 @@ UInt8 Net::MQTTConn::WaitSubAck(UInt16 packetId, Data::Duration timeout)
 
 void Net::MQTTConn::ClearPackets()
 {
-	Sync::MutexUsage mutUsage(&this->packetMut);
+	Sync::MutexUsage mutUsage(this->packetMut);
 	LIST_FREE_FUNC(&this->packetList, MemFree);
 	this->packetList.Clear();
 }

@@ -67,7 +67,7 @@ UInt32 __stdcall Net::ICMPScanner::Ping1Thread(void *userObj)
 				result->mac[3] = 0;
 				result->mac[4] = 0;
 				result->mac[5] = 0;
-				Sync::MutexUsage mutUsage(&status->me->resultMut);
+				Sync::MutexUsage mutUsage(status->me->resultMut);
 				status->me->results.Put(Net::SocketUtil::IPv4ToSortable(result->ip), result);
 				mutUsage.EndUse();
 			}
@@ -115,7 +115,7 @@ UInt32 __stdcall Net::ICMPScanner::Ping2Thread(void *userObj)
 
 				if (ipData[0] == 0 && ipDataSize >= 8)
 				{
-					Sync::MutexUsage mutUsage(&me->resultMut);
+					Sync::MutexUsage mutUsage(me->resultMut);
 					result = me->results.Get(ReadMUInt32(&readBuff[12]));
 					if (result == 0)
 					{

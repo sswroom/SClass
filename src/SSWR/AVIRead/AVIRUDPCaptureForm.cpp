@@ -65,7 +65,7 @@ void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnTimerTick(void *userObj)
 		Data::DateTime dt;
 		OSInt i;
 		me->packetsChg = false;
-		Sync::MutexUsage mutUsage(&me->packetMut);
+		Sync::MutexUsage mutUsage(me->packetMut);
 		me->lbData->ClearItems();
 		i = me->packetCurr;
 		while (true)
@@ -107,7 +107,7 @@ void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnDataSelChg(void *userObj)
 		Text::StringBuilderUTF8 sb;
 		Data::DateTime dt;
 		i = (UOSInt)me->lbData->GetItem(i);
-		Sync::MutexUsage mutUsage(&me->packetMut);
+		Sync::MutexUsage mutUsage(me->packetMut);
 		sb.AppendC(UTF8STRC("Recv Time: "));
 		dt.SetTicks(me->packets[i].recvTime);
 		dt.ToLocalTime();
@@ -145,7 +145,7 @@ void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnUDPPacket(const Net::SocketU
 	SSWR::AVIRead::AVIRUDPCaptureForm *me = (SSWR::AVIRead::AVIRUDPCaptureForm*)userData;
 	Data::DateTime dt;
 	dt.SetCurrTimeUTC();
-	Sync::MutexUsage mutUsage(&me->packetMut);
+	Sync::MutexUsage mutUsage(me->packetMut);
 	if (me->packets[me->packetCurr].buff)
 	{
 		MemFree(me->packets[me->packetCurr].buff);

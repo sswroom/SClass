@@ -162,7 +162,7 @@ void Media::VideoRenderer::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, Vid
 		vbuff->destSurface->UnlockSurface();
 		tstat->csTime = clk.GetTimeDiff();
 
-		Sync::MutexUsage mutUsage(&tstat->me->buffMut);
+		Sync::MutexUsage mutUsage(tstat->me->buffMut);
 		vbuff->isOutputReady = true;
 		vbuff->isProcessing = false;
 		mutUsage.EndUse();
@@ -398,7 +398,7 @@ void Media::VideoRenderer::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, Vid
 				vbuff2->frameNum = vbuff->frameNum;
 				vbuff2->frameTime = vbuff->frameTime + 16;
 
-				Sync::MutexUsage mutUsage(&tstat->me->buffMut);
+				Sync::MutexUsage mutUsage(tstat->me->buffMut);
 				vbuff->isOutputReady = true;
 				vbuff->isProcessing = false;
 				mutUsage.EndUse();
@@ -423,7 +423,7 @@ void Media::VideoRenderer::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, Vid
 			}
 			else
 			{
-				Sync::MutexUsage mutUsage(&tstat->me->buffMut);
+				Sync::MutexUsage mutUsage(tstat->me->buffMut);
 				vbuff->isOutputReady = true;
 				vbuff->isProcessing = false;
 				mutUsage.EndUse();
@@ -656,7 +656,7 @@ void Media::VideoRenderer::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, Vid
 				vbuff2->frameNum = vbuff->frameNum;
 				vbuff2->frameTime = vbuff->frameTime + 16;
 
-				Sync::MutexUsage mutUsage(&tstat->me->buffMut);
+				Sync::MutexUsage mutUsage(tstat->me->buffMut);
 				vbuff->isOutputReady = true;
 				vbuff->isProcessing = false;
 				mutUsage.EndUse();
@@ -682,7 +682,7 @@ void Media::VideoRenderer::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, Vid
 			}
 			else
 			{
-				Sync::MutexUsage mutUsage(&tstat->me->buffMut);
+				Sync::MutexUsage mutUsage(tstat->me->buffMut);
 				vbuff->isOutputReady = true;
 				vbuff->isProcessing = false;
 				mutUsage.EndUse();
@@ -868,7 +868,7 @@ void __stdcall Media::VideoRenderer::OnVideoFrame(UInt32 frameTime, UInt32 frame
 	{
 		buffCnt = me->allBuffCnt;
 	}
-	Sync::MutexUsage mutUsage(&me->buffMut);
+	Sync::MutexUsage mutUsage(me->buffMut);
 	while (!found)
 	{
 		mutUsage.BeginUse();
@@ -1191,7 +1191,7 @@ UInt32 __stdcall Media::VideoRenderer::ProcessThread(void *userObj)
 	{
 		found = false;
 		hasNew = false;
-		Sync::MutexUsage mutUsage(&tstat->me->buffMut);
+		Sync::MutexUsage mutUsage(tstat->me->buffMut);
 		i = tstat->me->allBuffCnt;
 		while (i-- > 0)
 		{
@@ -2337,7 +2337,7 @@ void Media::VideoRenderer::GetStatus(RendererStatus *status)
 	status->vTime = vTime / UOSInt2Double(this->threadCnt);
 	status->csTime = csTime / UOSInt2Double(this->threadCnt);
 
-	Sync::MutexUsage mutUsage(&this->buffMut);
+	Sync::MutexUsage mutUsage(this->buffMut);
 	i = 0;
 	while (i < this->allBuffCnt)
 	{

@@ -214,7 +214,7 @@ Bool IO::CortexControl::GetFWVersion(Int32 *majorVer, Int32 *minorVer)
 	Double t;
 	Bool succ = false;
 	packetSize = this->protoHdlr.BuildPacket(buff, 0, 0, 0, 0, 0);
-	Sync::MutexUsage mutUsage(&this->sendMut);
+	Sync::MutexUsage mutUsage(this->sendMut);
 	this->sendType = 0;
 	this->sendHasResult = false;
 	clk.Start();
@@ -250,7 +250,7 @@ Bool IO::CortexControl::ReadDIO(Int32 *dioValues)
 	Double t;
 	Bool succ = false;
 	packetSize = this->protoHdlr.BuildPacket(buff, 1, 0, 0, 0, 0);
-	Sync::MutexUsage mutUsage(&this->sendMut);
+	Sync::MutexUsage mutUsage(this->sendMut);
 	this->sendType = 1;
 	this->sendHasResult = false;
 	clk.Start();
@@ -288,7 +288,7 @@ Bool IO::CortexControl::WriteDIO(Int32 outVal, Int32 outMask)
 	cmd[0] = (UInt8)(outVal & 0xff);
 	cmd[1] = (UInt8)(outMask & 0xff);
 	packetSize = this->protoHdlr.BuildPacket(buff, 2, 0, cmd, 2, 0);
-	Sync::MutexUsage mutUsage(&this->sendMut);
+	Sync::MutexUsage mutUsage(this->sendMut);
 	this->sendType = 2;
 	this->sendHasResult = false;
 	clk.Start();
@@ -322,7 +322,7 @@ Bool IO::CortexControl::ReadVin(Int32 *voltage)
 	Double t;
 	Bool succ = false;
 	packetSize = this->protoHdlr.BuildPacket(buff, 3, 0, 0, 0, 0);
-	Sync::MutexUsage mutUsage(&this->sendMut);
+	Sync::MutexUsage mutUsage(this->sendMut);
 	this->sendType = 3;
 	this->sendHasResult = false;
 	clk.Start();
@@ -357,7 +357,7 @@ Bool IO::CortexControl::ReadVBatt(Int32 *voltage)
 	Double t;
 	Bool succ = false;
 	packetSize = this->protoHdlr.BuildPacket(buff, 6, 0, 0, 0, 0);
-	Sync::MutexUsage mutUsage(&this->sendMut);
+	Sync::MutexUsage mutUsage(this->sendMut);
 	this->sendType = 6;
 	this->sendHasResult = false;
 	clk.Start();
@@ -392,7 +392,7 @@ Bool IO::CortexControl::ReadOdometerCounter(Int32 *odoCount)
 	Double t;
 	Bool succ = false;
 	packetSize = this->protoHdlr.BuildPacket(buff, 7, 0, 0, 0, 0);
-	Sync::MutexUsage mutUsage(&this->sendMut);
+	Sync::MutexUsage mutUsage(this->sendMut);
 	this->sendType = 7;
 	this->sendHasResult = false;
 	clk.Start();
@@ -427,7 +427,7 @@ Bool IO::CortexControl::ResetOdometerCounter()
 	Double t;
 	Bool succ = false;
 	packetSize = this->protoHdlr.BuildPacket(buff, 8, 0, 0, 0, 0);
-	Sync::MutexUsage mutUsage(&this->sendMut);
+	Sync::MutexUsage mutUsage(this->sendMut);
 	this->sendType = 8;
 	this->sendHasResult = false;
 	clk.Start();
@@ -461,7 +461,7 @@ Bool IO::CortexControl::ReadEnvBrightness(Int32 *brightness)
 	Double t;
 	Bool succ = false;
 	packetSize = this->protoHdlr.BuildPacket(buff, 10, 0, 0, 0, 0);
-	Sync::MutexUsage mutUsage(&this->sendMut);
+	Sync::MutexUsage mutUsage(this->sendMut);
 	this->sendType = 10;
 	this->sendHasResult = false;
 	clk.Start();
@@ -496,7 +496,7 @@ Bool IO::CortexControl::ReadTemperature(Int32 *temperature)
 	Double t;
 	Bool succ = false;
 	packetSize = this->protoHdlr.BuildPacket(buff, 11, 0, 0, 0, 0);
-	Sync::MutexUsage mutUsage(&this->sendMut);
+	Sync::MutexUsage mutUsage(this->sendMut);
 	this->sendType = 11;
 	this->sendHasResult = false;
 	clk.Start();
@@ -531,7 +531,7 @@ Bool IO::CortexControl::PowerOff()
 	Double t;
 	Bool succ = false;
 	packetSize = this->protoHdlr.BuildPacket(buff, 13, 0, 0, 0, 0);
-	Sync::MutexUsage mutUsage(&this->sendMut);
+	Sync::MutexUsage mutUsage(this->sendMut);
 	this->sendType = 13;
 	this->sendHasResult = false;
 	clk.Start();
@@ -567,7 +567,7 @@ Bool IO::CortexControl::HDACodecPower(Bool turnOn)
 	Bool succ = false;
 	cmd = turnOn?1:0;
 	packetSize = this->protoHdlr.BuildPacket(buff, 14, 0, &cmd, 1, 0);
-	Sync::MutexUsage mutUsage(&this->sendMut);
+	Sync::MutexUsage mutUsage(this->sendMut);
 	this->sendType = 14;
 	this->sendHasResult = false;
 	clk.Start();
@@ -601,7 +601,7 @@ Bool IO::CortexControl::SetWatchdogTimeout(UInt8 timeout)
 	Double t;
 	Bool succ = false;
 	packetSize = this->protoHdlr.BuildPacket(buff, 15, 0, &timeout, 1, 0);
-	Sync::MutexUsage mutUsage(&this->sendMut);
+	Sync::MutexUsage mutUsage(this->sendMut);
 	this->sendType = 15;
 	this->sendHasResult = false;
 	clk.Start();

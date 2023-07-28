@@ -11,7 +11,7 @@ void __stdcall IO::RadioSignalLogger::OnWiFiUpdate(Net::WirelessLAN::BSSInfo *bs
 		UTF8Char sbuff[64];
 		UTF8Char *sptr;
 		Data::DateTime dt;
-		Sync::MutexUsage mutUsage(&me->fsMut);
+		Sync::MutexUsage mutUsage(me->fsMut);
 		Text::StringBuilderUTF8 sb;
 		sptr = scanTime.ToLocalTime().ToStringNoZone(sbuff);
 		sb.AppendP(sbuff, sptr);
@@ -35,7 +35,7 @@ void __stdcall IO::RadioSignalLogger::OnBTUpdate(IO::BTScanLog::ScanRecord3 *dev
 		UTF8Char sbuff[64];
 		UTF8Char *sptr;
 		Data::DateTime dt;
-		Sync::MutexUsage mutUsage(&me->fsMut);
+		Sync::MutexUsage mutUsage(me->fsMut);
 		Text::StringBuilderUTF8 sb;
 		dt.SetTicks(dev->lastSeenTime);
 		dt.ToLocalTime();

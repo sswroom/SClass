@@ -8,7 +8,7 @@
 DB::DBCache::TableInfo *DB::DBCache::GetTableInfo(Text::CString tableName)
 {
 	DB::DBCache::TableInfo *table;
-	Sync::MutexUsage mutUsage(&this->tableMut);
+	Sync::MutexUsage mutUsage(this->tableMut);
 	table = this->tableMap.Get(tableName);
 	mutUsage.EndUse();
 	if (table)
@@ -49,7 +49,7 @@ DB::DBCache::TableInfo *DB::DBCache::GetTableInfo(DB::TableDef *tableDef)
 {
 	DB::DBCache::TableInfo *table;
 	UOSInt i;
-	Sync::MutexUsage mutUsage(&this->tableMut);
+	Sync::MutexUsage mutUsage(this->tableMut);
 	NotNullPtr<const Data::ArrayList<DB::DBCache::TableInfo*>> tableList = this->tableMap.GetValues();
 	i = tableList->GetCount();
 	while (i-- > 0)

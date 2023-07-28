@@ -57,7 +57,7 @@ private:
 	Sync::Event nextRowEvt;
 	Sync::MutexUsage mutUsage;
 public:
-	MySQLTCPReader(Sync::Mutex *mut)
+	MySQLTCPReader(NotNullPtr<Sync::Mutex> mut)
 	{
 		this->mutUsage.ReplaceMutex(mut);
 		this->rowChanged = -1;
@@ -492,7 +492,7 @@ private:
 	UOSInt rowNum;
 	UInt32 stmtId;
 public:
-	MySQLTCPBinaryReader(Sync::Mutex *mut)
+	MySQLTCPBinaryReader(NotNullPtr<Sync::Mutex> mut)
 	{
 		this->mutUsage.ReplaceMutex(mut);
 		this->colTypes = 0;
@@ -2172,7 +2172,7 @@ DB::DBReader *Net::MySQLTCPClient::ExecuteReaderText(Text::CString sql)
 		Sync::SimpleThread::Sleep(10);
 	}
 	MySQLTCPReader *reader;
-	NEW_CLASS(reader, MySQLTCPReader(&this->cmdMut));
+	NEW_CLASS(reader, MySQLTCPReader(this->cmdMut));
 	this->cmdResultType = CmdResultType::Processing;
 	this->cmdSeqNum = 1;
 	this->cmdReader = reader;
@@ -2226,7 +2226,7 @@ DB::DBReader *Net::MySQLTCPClient::ExecuteReaderBinary(Text::CString sql)
 		Sync::SimpleThread::Sleep(10);
 	}
 	MySQLTCPBinaryReader *reader;
-	NEW_CLASS(reader, MySQLTCPBinaryReader(&this->cmdMut));
+	NEW_CLASS(reader, MySQLTCPBinaryReader(this->cmdMut));
 	this->cmdResultType = CmdResultType::ProcessingBinary;
 	this->cmdSeqNum = 1;
 	this->cmdReader = reader;

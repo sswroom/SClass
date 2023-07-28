@@ -51,7 +51,7 @@ void Map::TileMapGenerator::AppendDBFile(IO::Writer *writer, Int32 x, Int32 y, U
 	Bool generating;
 	while (true)
 	{
-		Sync::MutexUsage mutUsage(&this->dbMut);
+		Sync::MutexUsage mutUsage(this->dbMut);
 		generating = this->dbGenList.SortedIndexOf(id) >= 0;
 		mutUsage.EndUse();
 		if (!generating)
@@ -89,7 +89,7 @@ Bool Map::TileMapGenerator::GenerateDBFile(Int32 x, Int32 y, UInt32 scale, Map::
 
 	Int64 id = ((Int64)x) << 32 | (UInt32)y;
 	Bool generating;
-	Sync::MutexUsage mutUsage(&this->dbMut);
+	Sync::MutexUsage mutUsage(this->dbMut);
 	generating = this->dbGenList.SortedIndexOf(id) >= 0;
 	if (generating)
 	{

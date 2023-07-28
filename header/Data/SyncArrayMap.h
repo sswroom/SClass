@@ -44,7 +44,7 @@ namespace Data
 
 	template <class T, class V> V SyncArrayMap<T, V>::Put(T key, V val)
 	{
-		Sync::MutexUsage mutUsage(&this->mut);
+		Sync::MutexUsage mutUsage(this->mut);
 		OSInt i;
 		i = this->keys->SortedIndexOf(key);
 		if (i >= 0)
@@ -63,7 +63,7 @@ namespace Data
 
 	template <class T, class V> V SyncArrayMap<T, V>::Get(T key)
 	{
-		Sync::MutexUsage mutUsage(&this->mut);
+		Sync::MutexUsage mutUsage(this->mut);
 		OSInt i;
 		i = this->keys->SortedIndexOf(key);
 		if (i >= 0)
@@ -78,7 +78,7 @@ namespace Data
 
 	template <class T, class V> V SyncArrayMap<T, V>::Remove(T key)
 	{
-		Sync::MutexUsage mutUsage(&this->mut);
+		Sync::MutexUsage mutUsage(this->mut);
 		OSInt i;
 		i = this->keys->SortedIndexOf(key);
 		if (i >= 0)
@@ -94,7 +94,7 @@ namespace Data
 
 	template <class T, class V> T SyncArrayMap<T, V>::GetKey(UOSInt index)
 	{
-		Sync::MutexUsage mutUsage(&this->mut);
+		Sync::MutexUsage mutUsage(this->mut);
 		return this->keys->GetItem(index);
 	}
 
@@ -116,19 +116,19 @@ namespace Data
 
 	template <class T, class V> OSInt SyncArrayMap<T, V>::GetIndex(T key)
 	{
-		Sync::MutexUsage mutUsage(&this->mut);
+		Sync::MutexUsage mutUsage(this->mut);
 		return this->keys->SortedIndexOf(key);
 	}
 
 	template <class T, class V> UOSInt SyncArrayMap<T, V>::GetValues(Data::ArrayList<V> *values)
 	{
-		Sync::MutexUsage mutUsage(&this->mut);
+		Sync::MutexUsage mutUsage(this->mut);
 		return values->AddRange(this->vals);
 	}
 
 	template <class T, class V> UOSInt SyncArrayMap<T, V>::GetKeys(Data::ArrayList<T> *keys)
 	{
-		Sync::MutexUsage mutUsage(&this->mut);
+		Sync::MutexUsage mutUsage(this->mut);
 		return keys->AddRange(this->keys);
 	}
 
@@ -144,7 +144,7 @@ namespace Data
 
 	template <class T, class V> V *SyncArrayMap<T, V>::ToArray(UOSInt *objCnt)
 	{
-		Sync::MutexUsage mutUsage(&this->mut);
+		Sync::MutexUsage mutUsage(this->mut);
 		UOSInt cnt;
 		V *arr = this->vals.GetArray(&cnt);
 		V *outArr = MemAlloc(V, cnt);
@@ -155,7 +155,7 @@ namespace Data
 
 	template <class T, class V> void SyncArrayMap<T, V>::Clear()
 	{
-		Sync::MutexUsage mutUsage(&this->mut);
+		Sync::MutexUsage mutUsage(this->mut);
 		this->keys->Clear();
 		this->vals.Clear();
 	}

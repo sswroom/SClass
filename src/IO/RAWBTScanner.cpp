@@ -160,13 +160,13 @@ Bool IO::RAWBTScanner::SetScanMode(ScanMode scanMode)
 
 NotNullPtr<Data::FastMap<UInt64, IO::BTScanLog::ScanRecord3*>> IO::RAWBTScanner::GetPublicMap(Sync::MutexUsage *mutUsage)
 {
-	mutUsage->ReplaceMutex(&this->recMut);
+	mutUsage->ReplaceMutex(this->recMut);
 	return this->pubRecMap;	
 }
 
 NotNullPtr<Data::FastMap<UInt64, IO::BTScanLog::ScanRecord3*>> IO::RAWBTScanner::GetRandomMap(Sync::MutexUsage *mutUsage)
 {
-	mutUsage->ReplaceMutex(&this->recMut);
+	mutUsage->ReplaceMutex(this->recMut);
 	return this->randRecMap;	
 }
 
@@ -176,7 +176,7 @@ void IO::RAWBTScanner::OnPacket(Int64 timeTicks, const UInt8 *packet, UOSInt pac
 	if (IO::BTScanLog::ParseBTRAWPacket(&rec, timeTicks, packet, packetSize))
 	{
 		IO::BTScanLog::ScanRecord3 *dev;
-		Sync::MutexUsage mutUsage(&this->recMut);
+		Sync::MutexUsage mutUsage(this->recMut);
 		if (rec.addrType == IO::BTScanLog::AT_RANDOM)
 		{
 			dev = this->randRecMap.Get(rec.macInt);

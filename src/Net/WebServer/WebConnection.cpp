@@ -119,7 +119,7 @@ void Net::WebServer::WebConnection::ReceivedData(const Data::ByteArrayR &buff)
 		lineStart = 0;
 
 		{
-			Sync::MutexUsage mutUsage(&this->procMut);
+			Sync::MutexUsage mutUsage(this->procMut);
 			if (this->currReq && this->currReq->DataStarted())
 			{
 				i += this->currReq->DataPut(buff.Ptr(), buff.GetSize());
@@ -143,7 +143,7 @@ void Net::WebServer::WebConnection::ReceivedData(const Data::ByteArrayR &buff)
 #endif		
 				if (lineStart == i)
 				{
-					Sync::MutexUsage mutUsage(&this->procMut);
+					Sync::MutexUsage mutUsage(this->procMut);
 					if (this->currReq)
 					{
 						if (this->currReq->HasData())
@@ -178,7 +178,7 @@ void Net::WebServer::WebConnection::ReceivedData(const Data::ByteArrayR &buff)
 							UInt16 svrPort = this->cli->GetLocalPort();
 
 							{
-								Sync::MutexUsage mutUsage(&this->procMut);
+								Sync::MutexUsage mutUsage(this->procMut);
 								SDEL_CLASS(this->currReq);
 							}
 
@@ -237,7 +237,7 @@ void Net::WebServer::WebConnection::ReceivedData(const Data::ByteArrayR &buff)
 							UInt16 svrPort = this->cli->GetLocalPort();
 
 							{
-								Sync::MutexUsage mutUsage(&this->procMut);
+								Sync::MutexUsage mutUsage(this->procMut);
 								SDEL_CLASS(this->currReq);
 							}
 

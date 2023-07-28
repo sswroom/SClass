@@ -87,7 +87,7 @@ UOSInt Media::VOBLPCMStreamSource::ReadBlock(Data::ByteArray blk)
 	{
 		blk = blk.WithSize(blk.GetSize() - v);
 	}
-	Sync::MutexUsage mutUsage(&this->buffMut);
+	Sync::MutexUsage mutUsage(this->buffMut);
 	if (this->buffStart == this->buffEnd)
 	{
 		mutUsage.EndUse();
@@ -220,7 +220,7 @@ void Media::VOBLPCMStreamSource::DetectStreamInfo(UInt8 *header, UOSInt headerSi
 
 void Media::VOBLPCMStreamSource::ClearFrameBuff()
 {
-	Sync::MutexUsage mutUsage(&this->buffMut);
+	Sync::MutexUsage mutUsage(this->buffMut);
 	this->buffStart = 0;
 	this->buffEnd = 0;
 	this->buffSample = 0;
@@ -228,7 +228,7 @@ void Media::VOBLPCMStreamSource::ClearFrameBuff()
 
 void Media::VOBLPCMStreamSource::SetStreamTime(UInt32 time)
 {
-	Sync::MutexUsage mutUsage(&this->buffMut);
+	Sync::MutexUsage mutUsage(this->buffMut);
 	this->buffSample = (UInt64)time * this->fmt.bitRate / 8000;
 }
 
@@ -244,7 +244,7 @@ void Media::VOBLPCMStreamSource::WriteFrameStream(UInt8 *buff, UOSInt buffSize)
 				if (this->pbEvt == 0 || !this->pbc->IsRunning())
 					break;
 			
-				Sync::MutexUsage mutUsage(&this->buffMut);
+				Sync::MutexUsage mutUsage(this->buffMut);
 				if (this->buffStart > this->buffEnd)
 				{
 					buffWriten = this->buffSize - this->buffStart + this->buffEnd;
@@ -280,7 +280,7 @@ void Media::VOBLPCMStreamSource::WriteFrameStream(UInt8 *buff, UOSInt buffSize)
 		}
 		else
 		{
-			Sync::MutexUsage mutUsage(&this->buffMut);
+			Sync::MutexUsage mutUsage(this->buffMut);
 			if (this->buffStart > this->buffEnd)
 			{
 				buffWriten = this->buffSize - this->buffStart + this->buffEnd;
@@ -315,7 +315,7 @@ void Media::VOBLPCMStreamSource::WriteFrameStream(UInt8 *buff, UOSInt buffSize)
 Int32 Media::VOBLPCMStreamSource::GetFrameStreamTime()
 {
 	Int32 t;
-	Sync::MutexUsage mutUsage(&this->buffMut);
+	Sync::MutexUsage mutUsage(this->buffMut);
 	UOSInt buffSize;
 	if (this->buffEnd < this->buffStart)
 	{

@@ -24,7 +24,7 @@ NotNullPtr<Net::HTTPClient> Net::HTTPQueue::MakeRequest(Text::CString url, Net::
 	NotNullPtr<Net::HTTPClient> cli;
 	while (true)
 	{
-		Sync::MutexUsage mutUsage(&this->statusMut);
+		Sync::MutexUsage mutUsage(this->statusMut);
 		status = this->statusMap.Get(sbuff);
 		if (status)
 		{
@@ -66,7 +66,7 @@ void Net::HTTPQueue::EndRequest(Net::HTTPClient *cli)
 	Text::String *url = cli->GetURL();
 	Text::URLString::GetURLDomain(sbuff, url->ToCString(), 0);
 
-	Sync::MutexUsage mutUsage(&this->statusMut);
+	Sync::MutexUsage mutUsage(this->statusMut);
 	status = this->statusMap.Get(sbuff);
 	if (status)
 	{
@@ -99,7 +99,7 @@ void Net::HTTPQueue::Clear()
 	DomainStatus *status;
 	UOSInt i;
 
-	Sync::MutexUsage mutUsage(&this->statusMut);
+	Sync::MutexUsage mutUsage(this->statusMut);
 	statusList = this->statusMap.GetValues();
 	i = statusList->GetCount();
 	while (i-- > 0)

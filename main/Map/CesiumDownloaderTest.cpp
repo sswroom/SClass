@@ -161,7 +161,7 @@ private:
 				}
 			}
 			stat->totalContentSize += mstm->GetLength();
-			Sync::MutexUsage mutUsage(&stat->me->filesMut);
+			Sync::MutexUsage mutUsage(stat->me->filesMut);
 			FileEntry *file = MemAlloc(FileEntry, 1);
 			file->url = url->Clone();
 			file->downloadSize = cli->GetTotalDownload();
@@ -405,7 +405,7 @@ public:
 
 	void ClearFiles()
 	{
-		Sync::MutexUsage mutUsage(&this->filesMut);
+		Sync::MutexUsage mutUsage(this->filesMut);
 		UOSInt i = this->filesList.GetCount();
 		FileEntry *file;
 		while (i-- > 0)

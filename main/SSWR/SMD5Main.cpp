@@ -24,7 +24,7 @@ Bool showHelp;
 class ProgressHandler : public IO::ProgressHandler
 {
 private:
-	Sync::Mutex *mut;
+	Sync::Mutex mut;
 	Text::String *name;
 	Text::CString fileName;
 	UInt64 currCount;
@@ -83,7 +83,6 @@ private:
 public:
 	ProgressHandler()
 	{
-		NEW_CLASS(mut, Sync::Mutex());
 		this->currCount = 0;
 		this->lastCount = 0;
 		this->name = 0;
@@ -110,7 +109,6 @@ public:
 		DEL_CLASS(this->evt);
 		SDEL_STRING(this->name);
 		this->fileName = CSTR_NULL;
-		DEL_CLASS(mut);
 	}
 
 	virtual void ProgressStart(Text::CString name, UInt64 count)

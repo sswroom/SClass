@@ -142,7 +142,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRStreamTermForm::RecvThread(void *userObj)
 		}
 		else
 		{
-			Sync::MutexUsage mutUsage(&me->recvMut);
+			Sync::MutexUsage mutUsage(me->recvMut);
 			me->recvBuff.Write(buff, recvSize);
 			mutUsage.EndUse();
 			me->recvUpdated = true;
@@ -179,7 +179,7 @@ void SSWR::AVIRead::AVIRStreamTermForm::UpdateRecvDisp()
 	UInt8 *buff;
 	UOSInt buffSize;
 	UOSInt j;
-	Sync::MutexUsage mutUsage(&this->recvMut);
+	Sync::MutexUsage mutUsage(this->recvMut);
 	buff = this->recvBuff.GetBuff(&buffSize);
 	UOSInt i = this->cboRecvType->GetSelectedIndex();
 	if (buffSize > 0)

@@ -206,7 +206,7 @@ Bool IO::Device::MTKGPSNMEA::ReadLogPart(UOSInt addr, UInt8 *buff)
 	Text::String *resp = 0;
 	Text::String *cmdRes;
 	i = GenNMEACommand(sbuff, (UOSInt)(sptr - sbuff), cbuff);
-	Sync::MutexUsage mutUsage(&this->cmdMut);
+	Sync::MutexUsage mutUsage(this->cmdMut);
 	this->stm->Write(cbuff, i);
 	
 	dt.SetCurrTimeUTC();
@@ -525,7 +525,7 @@ Text::String *IO::Device::MTKGPSNMEA::SendMTKCommand(const UInt8 *cmdBuff, UOSIn
 	Data::DateTime dt2;
 	Text::String *cmdRes;
 
-	Sync::MutexUsage mutUsage(&this->cmdMut);
+	Sync::MutexUsage mutUsage(this->cmdMut);
 	this->stm->Write(cmdBuff, cmdSize);
 	Text::String *resultStr = 0;
 	

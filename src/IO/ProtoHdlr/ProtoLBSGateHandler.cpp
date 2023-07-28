@@ -37,7 +37,7 @@ UOSInt IO::ProtoHdlr::ProtoLBSGateHandler::ParseProtocol(NotNullPtr<IO::Stream> 
 				if (packetSize > buff.GetSize())
 					return buff.GetSize();
 
-				Sync::MutexUsage mutUsage(&this->crcMut);
+				Sync::MutexUsage mutUsage(this->crcMut);
 				this->crc.Clear();
 				this->crc.Calc(buff.Ptr(), packetSize - 2);
 				this->crc.GetValue((UInt8*)&crcVal);
@@ -69,7 +69,7 @@ UOSInt IO::ProtoHdlr::ProtoLBSGateHandler::BuildPacket(UInt8 *buff, Int32 cmdTyp
 	{
 		MemCopyNO(&buff[6], cmd, cmdSize);
 	}
-	Sync::MutexUsage mutUsage(&this->crcMut);
+	Sync::MutexUsage mutUsage(this->crcMut);
 	this->crc.Clear();
 	this->crc.Calc(buff, cmdSize + 6);
 	this->crc.GetValue(&buff[cmdSize + 6]);

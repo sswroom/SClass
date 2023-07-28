@@ -28,9 +28,10 @@ IO::SeekableStream *Map::OSM::OSMCacheHandler::GetTileData(Int32 lev, Int32 xTil
 	Data::DateTime dt;
 	Data::DateTime currTime;
 
-	if (this->ioMut)
+	NotNullPtr<Sync::Mutex> ioMut;
+	if (ioMut.Set(this->ioMut))
 	{
-		mutUsage->ReplaceMutex(this->ioMut);
+		mutUsage->ReplaceMutex(ioMut);
 	}
 
 	IO::FileStream *fs;
@@ -54,7 +55,7 @@ IO::SeekableStream *Map::OSM::OSMCacheHandler::GetTileData(Int32 lev, Int32 xTil
 	mutUsage->EndUse();
 
 	Text::String *thisUrl;
-	Sync::MutexUsage urlMutUsage(&this->urlMut);
+	Sync::MutexUsage urlMutUsage(this->urlMut);
 	if (this->urls.GetCount() == 0)
 	{
 		return 0;
@@ -99,9 +100,10 @@ IO::SeekableStream *Map::OSM::OSMCacheHandler::GetTileData(Int32 lev, Int32 xTil
 			}
 			if (currPos >= contLeng)
 			{
-				if (this->ioMut)
+				NotNullPtr<Sync::Mutex> ioMut;
+				if (ioMut.Set(this->ioMut))
 				{
-					mutUsage->ReplaceMutex(this->ioMut);
+					mutUsage->ReplaceMutex(ioMut);
 				}
 				NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyRead, IO::FileStream::BufferType::NoWriteBuffer));
 				fs->Write(imgBuff.Ptr(), (UOSInt)contLeng);

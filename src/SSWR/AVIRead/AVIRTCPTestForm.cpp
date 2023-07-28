@@ -77,7 +77,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRTCPTestForm::ProcessThread(void *userObj)
 	status->threadRunning = true;
 	while (!status->threadToStop)
 	{
-		Sync::MutexUsage mutUsage(&status->me->connMut);
+		Sync::MutexUsage mutUsage(status->me->connMut);
 		if (status->me->connLeftCnt <= 0)
 		{
 			mutUsage.EndUse();

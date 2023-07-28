@@ -38,7 +38,7 @@ UInt32 __stdcall IO::AdvantechASCIIChannel::CmdThread(void *userObj)
 					else
 					{
 						{
-							Sync::MutexUsage mutUsage(&me->cmdResMut);
+							Sync::MutexUsage mutUsage(me->cmdResMut);
 							if (me->cmdResBuff)
 							{
 								me->cmdResEnd = Text::StrConcatC(me->cmdResBuff, &readBuff[cmdStart], i - cmdStart);
@@ -100,7 +100,7 @@ UTF8Char *IO::AdvantechASCIIChannel::SendCommand(UTF8Char *replyBuff, const UTF8
 		return 0;
 	Text::StrConcatC(replyBuff, cmd, cmdLen);
 	replyBuff[cmdLen] = 13;
-	Sync::MutexUsage mutUsage(&this->cmdResMut);
+	Sync::MutexUsage mutUsage(this->cmdResMut);
 	this->stm->Write(replyBuff, cmdLen + 1);
 	this->cmdResBuff = replyBuff;
 	this->cmdResEnd = 0;

@@ -1311,7 +1311,7 @@ void Map::DrawMapRenderer::DrawLayers(Map::DrawMapRenderer::DrawEnv *denv, Map::
 	Map::MapEnv::LayerItem layer;
 	Map::MapEnv::MapItem *item;
 
-	Sync::MutexUsage mutUsage(0);
+	Sync::MutexUsage mutUsage;
 	denv->env->BeginUse(&mutUsage);
 	UOSInt i = 0;
 	UOSInt j = denv->env->GetItemCount(group);

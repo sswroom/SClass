@@ -115,7 +115,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRStreamConvForm::Stream1Thread(void *userObj)
 			{
 				me->stmLog1->Write(buff, recvSize);
 			}
-			Sync::MutexUsage mutUsage(&me->mut2);
+			Sync::MutexUsage mutUsage(me->mut2);
 			if (me->stm2)
 			{
 				me->stm2->Write(buff, recvSize);
@@ -147,7 +147,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRStreamConvForm::Stream2Thread(void *userObj)
 			{
 				me->stmLog2->Write(buff, recvSize);
 			}
-			Sync::MutexUsage mutUsage(&me->mut1);
+			Sync::MutexUsage mutUsage(me->mut1);
 			if (me->stm1)
 			{
 				me->stm1->Write(buff, recvSize);
@@ -165,7 +165,7 @@ void SSWR::AVIRead::AVIRStreamConvForm::StopStream1()
 	if (this->stm1)
 	{
 		this->thread1ToStop = true;
-		Sync::MutexUsage mutUsage(&this->mut1);
+		Sync::MutexUsage mutUsage(this->mut1);
 		this->stm1->Close();
 		while (this->thread1Running)
 		{
@@ -187,7 +187,7 @@ void SSWR::AVIRead::AVIRStreamConvForm::StopStream2()
 	if (this->stm2)
 	{
 		this->thread2ToStop = true;
-		Sync::MutexUsage mutUsage(&this->mut2);
+		Sync::MutexUsage mutUsage(this->mut2);
 		this->stm2->Close();
 		while (this->thread2Running)
 		{

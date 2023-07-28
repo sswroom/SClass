@@ -10,7 +10,7 @@ void IO::StmData::FileData::ReopenFile()
 {
 	if (fdh == 0)
 		return;
-	Sync::MutexUsage mutUsage(&fdh->mut);
+	Sync::MutexUsage mutUsage(fdh->mut);
 	IO::FileStream *fs;
 	NEW_CLASS(fs, IO::FileStream(fdh->filePath->ToCString(), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (fs->IsError())
@@ -117,7 +117,7 @@ UOSInt IO::StmData::FileData::GetRealData(UInt64 offset, UOSInt length, Data::By
 {
 	if (fdh == 0)
 		return 0;
-	Sync::MutexUsage mutUsage(&fdh->mut);
+	Sync::MutexUsage mutUsage(fdh->mut);
 	if (fdh->currentOffset != dataOffset + offset)
 	{
 		if ((fdh->currentOffset = fdh->file->SeekFromBeginning(dataOffset + offset)) != dataOffset + offset)

@@ -38,7 +38,7 @@ void IO::LogTool::Close()
 	if (closed)
 		return;
 	closed = true;
-	Sync::MutexUsage mutUsage(&this->hdlrMut);
+	Sync::MutexUsage mutUsage(this->hdlrMut);
 	UOSInt i = this->hdlrArr.GetCount();
 	Data::Timestamp ts = Data::Timestamp::Now();
 	while (i-- > 0)
@@ -93,7 +93,7 @@ void IO::LogTool::AddLogHandler(LogHandler *hdlr, IO::LogHandler::LogLevel logLe
 	if (closed)
 		return;
 	{
-		Sync::MutexUsage mutUsage(&this->hdlrMut);
+		Sync::MutexUsage mutUsage(this->hdlrMut);
 		this->hdlrArr.Add(hdlr);
 		this->levArr.Add(logLev);
 	}
@@ -120,7 +120,7 @@ void IO::LogTool::RemoveLogHandler(LogHandler *hdlr)
 {
 	if (closed)
 		return;
-	Sync::MutexUsage mutUsage(&this->hdlrMut);
+	Sync::MutexUsage mutUsage(this->hdlrMut);
 	UOSInt i = this->hdlrArr.GetCount();
 	while (i-- > 0)
 	{
@@ -136,7 +136,7 @@ void IO::LogTool::RemoveLogHandler(LogHandler *hdlr)
 void IO::LogTool::LogMessage(Text::CString logMsg, LogHandler::LogLevel level)
 {
 	Data::Timestamp ts = Data::Timestamp::Now();
-	Sync::MutexUsage mutUsage(&this->hdlrMut);
+	Sync::MutexUsage mutUsage(this->hdlrMut);
 	UOSInt i = this->hdlrArr.GetCount();
 	while (i-- > 0)
 	{

@@ -1240,7 +1240,7 @@ Bool IO::SMake::TestProg(NotNullPtr<const ProgramItem> prog, NotNullPtr<Text::St
 
 void IO::SMake::SetErrorMsg(Text::CString msg)
 {
-	Sync::MutexUsage mutUsage(&this->errorMsgMut);
+	Sync::MutexUsage mutUsage(this->errorMsgMut);
 	SDEL_STRING(this->errorMsg);
 	this->errorMsg = Text::String::New(msg).Ptr();
 }
@@ -1352,7 +1352,7 @@ Bool IO::SMake::HasError() const
 Bool IO::SMake::GetLastErrorMsg(Text::StringBuilderUTF8 *sb) const
 {
 	Bool ret;
-	Sync::MutexUsage mutUsage(&this->errorMsgMut);
+	Sync::MutexUsage mutUsage(this->errorMsgMut);
 	if (this->errorMsg)
 	{
 		sb->Append(this->errorMsg);

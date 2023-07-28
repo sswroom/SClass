@@ -34,7 +34,7 @@ Double Media::MonitorMgr::GetMonitorHDPI(MonitorHandle *hMonitor)
 	MonitorSetting *mon;
 	Double hdpi;
 	Double ddpi;
-	Sync::MutexUsage mutUsage(&this->monMut);
+	Sync::MutexUsage mutUsage(this->monMut);
 	mon = this->monMap.GetNN(monName);
 	if (mon)
 	{
@@ -153,7 +153,7 @@ void Media::MonitorMgr::SetMonitorHDPI(MonitorHandle *hMonitor, Double monitorHD
 	NotNullPtr<Text::String> monName = Text::String::OrEmpty(monInfo.GetMonitorID());
 	Text::String *monDesc = monInfo.GetDesc();
 	MonitorSetting *mon;
-	Sync::MutexUsage mutUsage(&this->monMut);
+	Sync::MutexUsage mutUsage(this->monMut);
 	mon = this->monMap.GetNN(monName);
 	if (mon)
 	{
@@ -195,7 +195,7 @@ Double Media::MonitorMgr::GetMonitorDDPI(MonitorHandle *hMonitor)
 	NotNullPtr<Text::String> monName = Text::String::OrEmpty(monInfo.GetMonitorID());
 	MonitorSetting *mon;
 	Double ddpi;
-	Sync::MutexUsage mutUsage(&this->monMut);
+	Sync::MutexUsage mutUsage(this->monMut);
 	mon = this->monMap.GetNN(monName);
 	if (mon)
 	{
@@ -228,7 +228,7 @@ void Media::MonitorMgr::SetMonitorDDPI(MonitorHandle *hMonitor, Double monitorDD
 	NotNullPtr<Text::String> monName = Text::String::OrEmpty(monInfo.GetMonitorID());
 	Text::String *monDesc = monInfo.GetDesc();
 	MonitorSetting *mon;
-	Sync::MutexUsage mutUsage(&this->monMut);
+	Sync::MutexUsage mutUsage(this->monMut);
 	mon = this->monMap.GetNN(monName);
 	if (mon)
 	{

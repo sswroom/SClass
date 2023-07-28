@@ -28,7 +28,7 @@ void __stdcall SSWR::AVIRead::AVIRVideoCheckerForm::OnFileHandler(void *userObj,
 		file = MemAlloc(FileQueue, 1);
 		file->fileName = files[i]->Clone();
 		file->index = j;
-		Sync::MutexUsage mutUsage(&me->fileMut);
+		Sync::MutexUsage mutUsage(me->fileMut);
 		me->fileList.Add(file);
 		mutUsage.EndUse();
 		i++;
@@ -53,7 +53,7 @@ void __stdcall SSWR::AVIRead::AVIRVideoCheckerForm::OnTimerTick(void *userObj)
 	while (me->updateList.GetCount() > 0)
 	{
 		UpdateQueue *update;
-		Sync::MutexUsage mutUsage(&me->updateMut);
+		Sync::MutexUsage mutUsage(me->updateMut);
 		update = me->updateList.RemoveAt(me->updateList.GetCount() - 1);
 		mutUsage.EndUse();
 		if (update->status == 0)
@@ -90,7 +90,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRVideoCheckerForm::ProcessThread(void *userOb
 		Manage::HiResClock clk;
 		while (!me->threadToStop)
 		{
-			Sync::MutexUsage mutUsage(&me->fileMut);
+			Sync::MutexUsage mutUsage(me->fileMut);
 			file = me->fileList.RemoveAt(0);
 			mutUsage.EndUse();
 			if (file)
@@ -126,7 +126,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRVideoCheckerForm::ProcessThread(void *userOb
 				file->fileName->Release();
 				MemFree(file);
 
-				Sync::MutexUsage mutUsage(&me->updateMut);
+				Sync::MutexUsage mutUsage(me->updateMut);
 				me->updateList.Add(update);
 				mutUsage.EndUse();
 			}
@@ -144,7 +144,7 @@ void SSWR::AVIRead::AVIRVideoCheckerForm::CancelQueues()
 {
 	UOSInt i;
 	FileQueue *file;
-	Sync::MutexUsage mutUsage(&this->fileMut);
+	Sync::MutexUsage mutUsage(this->fileMut);
 	i = this->fileList.GetCount();
 	while (i-- > 0)
 	{

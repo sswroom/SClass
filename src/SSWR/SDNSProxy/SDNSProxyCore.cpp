@@ -27,7 +27,7 @@ void __stdcall SSWR::SDNSProxy::SDNSProxyCore::OnDNSRequest(void *userObj, Text:
 	ClientInfo *cli;
 	dt.SetCurrTimeUTC();
 	UInt32 cliId = Net::SocketUtil::CalcCliId(reqAddr);
-	Sync::MutexUsage mutUsage(&me->cliInfoMut);
+	Sync::MutexUsage mutUsage(me->cliInfoMut);
 	cli = me->cliInfos.Get(cliId);
 	if (cli == 0)
 	{
@@ -51,7 +51,7 @@ void __stdcall SSWR::SDNSProxy::SDNSProxyCore::OnDNSRequest(void *userObj, Text:
 	mutUsage.EndUse();
 
 	HourInfo *hInfo;
-	mutUsage.ReplaceMutex(&cli->mut);
+	mutUsage.ReplaceMutex(cli->mut);
 	hInfo = cli->hourInfos.GetItem(0);
 	if (hInfo != 0 && hInfo->year == dt.GetYear() && hInfo->month == dt.GetMonth() && hInfo->day == dt.GetDay() && hInfo->hour == dt.GetHour())
 	{
@@ -229,7 +229,7 @@ void SSWR::SDNSProxy::SDNSProxyCore::Run(NotNullPtr<Core::IProgControl> progCtrl
 UOSInt SSWR::SDNSProxy::SDNSProxyCore::GetClientList(Data::ArrayList<SSWR::SDNSProxy::SDNSProxyCore::ClientInfo *> *cliList)
 {
 	UOSInt initSize = cliList->GetCount();
-	Sync::MutexUsage mutUsage(&this->cliInfoMut);
+	Sync::MutexUsage mutUsage(this->cliInfoMut);
 	cliList->AddAll(this->cliInfos);
 	mutUsage.EndUse();
 	return cliList->GetCount() - initSize;

@@ -26,7 +26,7 @@ Bool IO::ModemController::IsCmdSucceed()
 
 UTF8Char *IO::ModemController::SendStringCommand(UTF8Char *buff, const UTF8Char *cmd, UOSInt cmdLen, Data::Duration timeout)
 {
-	Sync::MutexUsage mutUsage(&this->cmdMut);
+	Sync::MutexUsage mutUsage(this->cmdMut);
 	this->channel->SendATCommand(&this->cmdResults, cmd, cmdLen, timeout);
 	UOSInt i = this->cmdResults.GetCount();
 	UOSInt j;
@@ -74,7 +74,7 @@ UTF8Char *IO::ModemController::SendStringCommand(UTF8Char *buff, const UTF8Char 
 
 Bool IO::ModemController::SendStringCommand(Data::ArrayListNN<Text::String> *resList, const UTF8Char *cmd, UOSInt cmdLen, Data::Duration timeout)
 {
-	Sync::MutexUsage mutUsage(&this->cmdMut);
+	Sync::MutexUsage mutUsage(this->cmdMut);
 	this->channel->SendATCommand(&this->cmdResults, cmd, cmdLen, timeout);
 	UOSInt i = this->cmdResults.GetCount();
 	UOSInt j;
@@ -113,7 +113,7 @@ Bool IO::ModemController::SendStringCommand(Data::ArrayListNN<Text::String> *res
 
 UTF8Char *IO::ModemController::SendStringCommandDirect(UTF8Char *buff, const UTF8Char *cmd, UOSInt cmdLen, Data::Duration timeout)
 {
-	Sync::MutexUsage mutUsage(&this->cmdMut);
+	Sync::MutexUsage mutUsage(this->cmdMut);
 	this->channel->SendATCommand(&this->cmdResults, cmd, cmdLen, timeout);
 	UOSInt i = this->cmdResults.GetCount();
 	UOSInt j;
@@ -145,7 +145,7 @@ UTF8Char *IO::ModemController::SendStringCommandDirect(UTF8Char *buff, const UTF
 
 Bool IO::ModemController::SendStringListCommand(Text::StringBuilderUTF8 *sb, const UTF8Char *cmd, UOSInt cmdLen)
 {
-	Sync::MutexUsage mutUsage(&this->cmdMut);
+	Sync::MutexUsage mutUsage(this->cmdMut);
 	this->channel->SendATCommand(&this->cmdResults, cmd, cmdLen, 3000);
 	UOSInt i = this->cmdResults.GetCount();
 	UOSInt j;
@@ -187,7 +187,7 @@ Bool IO::ModemController::SendBoolCommandC(const UTF8Char *cmd, UOSInt cmdLen)
 Bool IO::ModemController::SendBoolCommandC(const UTF8Char *cmd, UOSInt cmdLen, Data::Duration timeout)
 {
 	Bool isSucc;
-	Sync::MutexUsage mutUsage(&this->cmdMut);
+	Sync::MutexUsage mutUsage(this->cmdMut);
 	this->channel->SendATCommand(&this->cmdResults, cmd, cmdLen, timeout);
 	isSucc = this->IsCmdSucceed();
 	ClearCmdResult();
@@ -196,7 +196,7 @@ Bool IO::ModemController::SendBoolCommandC(const UTF8Char *cmd, UOSInt cmdLen, D
 
 IO::ModemController::DialResult IO::ModemController::SendDialCommand(const UTF8Char *cmd, UOSInt cmdLen)
 {
-	Sync::MutexUsage mutUsage(&this->cmdMut);
+	Sync::MutexUsage mutUsage(this->cmdMut);
 	this->channel->SendDialCommand(&this->cmdResults, cmd, cmdLen, 30000);
 	UOSInt i = this->cmdResults.GetCount();
 	Text::String *val;
@@ -263,7 +263,7 @@ Bool IO::ModemController::HangUp()
 Bool IO::ModemController::ResetModem()
 {
 	Bool isSucc;
-	Sync::MutexUsage mutUsage(&this->cmdMut);
+	Sync::MutexUsage mutUsage(this->cmdMut);
 	this->channel->SendATCommand(&this->cmdResults, UTF8STRC("ATZ"), 3000);
 	isSucc = this->IsCmdSucceed();
 	ClearCmdResult();

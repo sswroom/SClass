@@ -966,7 +966,7 @@ void Media::Resizer::LanczosResizerH8_8::Resize(const UInt8 *src, OSInt sbpl, Do
 
 	if (siWidth != dwidth && siHeight != dheight)
 	{
-		Sync::MutexUsage mutUsage(&this->mut);
+		Sync::MutexUsage mutUsage(this->mut);
 		if (this->hsSize != swidth || this->hdSize != dwidth || this->hsOfst != xOfst)
 		{
 			DestoryHori();
@@ -1035,7 +1035,7 @@ void Media::Resizer::LanczosResizerH8_8::Resize(const UInt8 *src, OSInt sbpl, Do
 	}
 	else if (siWidth != dwidth)
 	{
-		Sync::MutexUsage mutUsage(&this->mut);
+		Sync::MutexUsage mutUsage(this->mut);
 		if (hsSize != swidth || hdSize != dwidth || hsOfst != xOfst)
 		{
 			DestoryHori();
@@ -1078,7 +1078,7 @@ void Media::Resizer::LanczosResizerH8_8::Resize(const UInt8 *src, OSInt sbpl, Do
 	}
 	else if (siHeight != dheight)
 	{
-		Sync::MutexUsage mutUsage(&this->mut);
+		Sync::MutexUsage mutUsage(this->mut);
 		if (vsSize != sheight || vdSize != dheight || vsStep != sbpl || vsOfst != yOfst)
 		{
 			DestoryVert();

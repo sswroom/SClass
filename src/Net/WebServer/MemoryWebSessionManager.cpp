@@ -32,7 +32,7 @@ UInt32 __stdcall Net::WebServer::MemoryWebSessionManager::CheckThread(void *user
 				i = me->sesses.GetCount();
 				while (i-- > 0)
 				{
-					Sync::MutexUsage mutUsage(&me->mut);
+					Sync::MutexUsage mutUsage(me->mut);
 					sess = me->sesses.GetItem(i);
 					sessId = me->sessIds.GetItem(i);
 					mutUsage.EndUse();
@@ -167,7 +167,7 @@ Net::WebServer::IWebSession *Net::WebServer::MemoryWebSessionManager::CreateSess
 	resp->AddSetCookie(this->cookieName->ToCString(), CSTRP(sbuff, sptr), this->path->ToCString(), true, req->IsSecure(), Net::WebServer::SameSiteType::Strict, 0);
 	UOSInt i;
 	NEW_CLASS(sess, Net::WebServer::MemoryWebSession(sessId, req->GetBrowser(), req->GetOS()));
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	i = this->sessIds.SortedInsert(sessId);
 	this->sesses.Insert(i, (Net::WebServer::MemoryWebSession*)sess);
 	mutUsage.EndUse();
@@ -183,7 +183,7 @@ void Net::WebServer::MemoryWebSessionManager::DeleteSession(Net::WebServer::IWeb
 	if (sessId != 0)
 	{
 		sess = 0;
-		Sync::MutexUsage mutUsage(&this->mut);
+		Sync::MutexUsage mutUsage(this->mut);
 		i = this->sessIds.SortedIndexOf(sessId);
 		if (i >= 0)
 		{
@@ -228,7 +228,7 @@ Net::WebServer::IWebSession *Net::WebServer::MemoryWebSessionManager::CreateSess
 {
 	OSInt si;
 	Net::WebServer::MemoryWebSession *sess = 0;
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	si = this->sessIds.SortedIndexOf(sessId);
 	if (si < 0)
 	{
@@ -246,7 +246,7 @@ Net::WebServer::IWebSession *Net::WebServer::MemoryWebSessionManager::GetSession
 	Net::WebServer::IWebSession *sess;
 	OSInt i;
 	sess = 0;
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	i = this->sessIds.SortedIndexOf(sessId);
 	if (i >= 0)
 	{
@@ -265,7 +265,7 @@ void Net::WebServer::MemoryWebSessionManager::DeleteSession(Int64 sessId)
 	OSInt i;
 	Net::WebServer::MemoryWebSession *sess;
 	sess = 0;
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	i = this->sessIds.SortedIndexOf(sessId);
 	if (i >= 0)
 	{
@@ -284,7 +284,7 @@ void Net::WebServer::MemoryWebSessionManager::DeleteSession(Int64 sessId)
 
 void Net::WebServer::MemoryWebSessionManager::GetSessionIds(Data::ArrayList<Int64> *sessIds)
 {
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	sessIds->AddAll(this->sessIds);
 	mutUsage.EndUse();
 }

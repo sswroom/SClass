@@ -54,7 +54,7 @@ void SSWR::AVIRead::AVIRHTTPLog::LogRequest(Net::WebServer::IWebRequest *req)
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
-	Sync::MutexUsage mutUsage(&this->entMut);
+	Sync::MutexUsage mutUsage(this->entMut);
 	i = this->currEnt;
 	this->currEnt++;
 	if (this->currEnt >= this->logCnt)
@@ -99,7 +99,7 @@ UOSInt SSWR::AVIRead::AVIRHTTPLog::GetNextIndex()
 
 void SSWR::AVIRead::AVIRHTTPLog::Use(Sync::MutexUsage *mutUsage)
 {
-	mutUsage->ReplaceMutex(&this->entMut);
+	mutUsage->ReplaceMutex(this->entMut);
 }
 
 void SSWR::AVIRead::AVIRHTTPLog::GetEntries(Data::ArrayList<LogEntry*> *logs, Data::ArrayList<UOSInt> *logIndex)

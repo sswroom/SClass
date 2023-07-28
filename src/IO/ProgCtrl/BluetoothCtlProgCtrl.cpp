@@ -34,7 +34,7 @@ UInt32 __stdcall IO::ProgCtrl::BluetoothCtlProgCtrl::ReadThread(void *obj)
 			sarr[1] = sbBuff;
 			while ((i = Text::StrSplitLineP(sarr, 2, sarr[1])) == 2)
 			{
-				Sync::MutexUsage mutUsage(&me->lastCmdMut);
+				Sync::MutexUsage mutUsage(me->lastCmdMut);
 				if (me->lastCmd && me->lastCmd->Equals(sarr[0].v, sarr[0].leng))
 				{
 					me->cmdReady = true;
@@ -316,7 +316,7 @@ void IO::ProgCtrl::BluetoothCtlProgCtrl::SendCmd(const UTF8Char *cmd, UOSInt cmd
 	//printf("cmdReady = false\r\n");
 	this->cmdReady = false;
 	{
-		Sync::MutexUsage mutUsage(&this->lastCmdMut);
+		Sync::MutexUsage mutUsage(this->lastCmdMut);
 		SDEL_STRING(this->lastCmd);
 		this->lastCmd = Text::String::New(cmd, cmdLen).Ptr();
 	}
@@ -361,7 +361,7 @@ IO::BTScanLog::ScanRecord3 *IO::ProgCtrl::BluetoothCtlProgCtrl::DeviceGetByStr(c
 	macBuff[7] = Text::StrHex2UInt8C(sarr[5]);
 	UInt64 macInt = ReadMUInt64(macBuff);
 	IO::BTScanLog::ScanRecord3 *dev;
-	Sync::MutexUsage mutUsage(&this->devMut);
+	Sync::MutexUsage mutUsage(this->devMut);
 	dev = this->devMap.Get(macInt);
 	if (dev)
 		return dev;
@@ -497,12 +497,12 @@ Bool IO::ProgCtrl::BluetoothCtlProgCtrl::WaitForCmdReady()
 
 NotNullPtr<Data::FastMap<UInt64, IO::BTScanLog::ScanRecord3*>> IO::ProgCtrl::BluetoothCtlProgCtrl::GetPublicMap(Sync::MutexUsage *mutUsage)
 {
-	mutUsage->ReplaceMutex(&this->devMut);
+	mutUsage->ReplaceMutex(this->devMut);
 	return this->devMap;
 }
 
 NotNullPtr<Data::FastMap<UInt64, IO::BTScanLog::ScanRecord3*>> IO::ProgCtrl::BluetoothCtlProgCtrl::GetRandomMap(Sync::MutexUsage *mutUsage)
 {
-	mutUsage->ReplaceMutex(&this->devMut);
+	mutUsage->ReplaceMutex(this->devMut);
 	return this->devMap;
 }

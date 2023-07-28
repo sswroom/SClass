@@ -157,7 +157,7 @@ void IO::FileLog::LogClosed()
 {
 	if (!closed)
 	{
-		Sync::MutexUsage mutUsage(&this->mut);
+		Sync::MutexUsage mutUsage(this->mut);
 		log->Close();
 		mutUsage.EndUse();
 		closed = true;
@@ -165,7 +165,7 @@ void IO::FileLog::LogClosed()
 }
 void IO::FileLog::LogAdded(const Data::Timestamp &time, Text::CString logMsg, LogLevel logLev)
 {
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	Bool newFile = false;
 	UTF8Char buff[256];
 	UTF8Char *sptr;

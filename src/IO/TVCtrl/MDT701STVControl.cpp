@@ -20,7 +20,7 @@ UInt32 __stdcall IO::TVCtrl::MDT701STVControl::RecvThread(void *userObj)
 		}
 		else
 		{
-			Sync::MutexUsage mutUsage(&me->mut);
+			Sync::MutexUsage mutUsage(me->mut);
 			if (me->recvSize >= MDT701STVCONTROL_RECVBUFFSIZE)
 			{
 			}
@@ -53,7 +53,7 @@ Bool IO::TVCtrl::MDT701STVControl::SendBasicCommand(const Char *buff, UOSInt buf
 		Sync::SimpleThread::Sleep((UInt32)timeDiff);
 	}
 	
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	this->recvSize = 0;
 	mutUsage.EndUse();
 

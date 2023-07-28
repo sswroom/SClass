@@ -31,7 +31,7 @@ UTF8Char *Map::GoogleMap::GoogleWSSearcherXML::SearchName(UTF8Char *buff, UOSInt
 	UInt8 databuff[2048];
 	Int32 i;
 
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	currDt.SetCurrTimeUTC();
 	this->lastIsError = false;
 	if ((i = (Int32)currDt.DiffMS(&this->lastSrchDate)) < 200)

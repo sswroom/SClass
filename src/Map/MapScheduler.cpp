@@ -22,7 +22,7 @@ UInt32 __stdcall Map::MapScheduler::MapThread(void *obj)
 		Math::Geometry::Vector2D *vec;
 		if (me->dt == ThreadState::Clearing)
 		{
-			Sync::MutexUsage mutUsage(&me->taskMut);
+			Sync::MutexUsage mutUsage(me->taskMut);
 			j = me->tasks.GetCount();
 			while (j-- > 0)
 			{
@@ -39,7 +39,7 @@ UInt32 __stdcall Map::MapScheduler::MapThread(void *obj)
 		{
 			while (true)
 			{
-				Sync::MutexUsage mutUsage(&me->taskMut);
+				Sync::MutexUsage mutUsage(me->taskMut);
 				j = me->tasks.GetCount();
 				if (i < j)
 				{
@@ -336,7 +336,7 @@ void Map::MapScheduler::SetDrawObjs(Math::RectAreaDbl *objBounds, UOSInt *objCnt
 
 void Map::MapScheduler::Draw(Math::Geometry::Vector2D *vec)
 {
-	Sync::MutexUsage mutUsage(&this->taskMut);
+	Sync::MutexUsage mutUsage(this->taskMut);
 	this->taskFinish = false;
 	this->tasks.Add(vec);
 	mutUsage.EndUse();
@@ -361,7 +361,7 @@ void Map::MapScheduler::DrawNextType(Media::DrawPen *p, Media::DrawBrush *b)
 	}
 	this->p = p;
 	this->b = b;
-	Sync::MutexUsage mutUsage(&this->taskMut);
+	Sync::MutexUsage mutUsage(this->taskMut);
 	this->taskFinish = false;
 	this->isFirst = false;
 	this->tasks.Add(0);

@@ -443,7 +443,7 @@ void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnPOP3SSLChanged(void *userOb
 
 Text::String *SSWR::AVIRead::AVIREmailServerForm::GetUserName(Int32 userId)
 {
-	Sync::MutexUsage mutUsage(&this->userMut);
+	Sync::MutexUsage mutUsage(this->userMut);
 	return this->userList.GetItem((UInt32)userId - 1);
 }
 
@@ -599,7 +599,7 @@ void SSWR::AVIRead::AVIREmailServerForm::OnMonitorChanged()
 
 Bool SSWR::AVIRead::AVIREmailServerForm::Login(Text::CString user, Text::CString pwd, Int32 *userId)
 {
-	Sync::MutexUsage mutUsage(&this->userMut);
+	Sync::MutexUsage mutUsage(this->userMut);
 	UOSInt index = this->userMap.GetC(user);
 	if (index == 0)
 	{

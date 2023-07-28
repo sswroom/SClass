@@ -35,7 +35,7 @@ UInt32 __stdcall Net::TCPClientMgr::ClientThread(void *o)
 	while (!me->toStop)
 	{
 		currTime = Data::Timestamp::UtcNow();
-		Sync::MutexUsage mutUsage(&me->cliMut);
+		Sync::MutexUsage mutUsage(me->cliMut);
 		i = me->cliArr.GetCount();
 		while (i-- > 0)
 		{
@@ -63,7 +63,7 @@ UInt32 __stdcall Net::TCPClientMgr::WorkerThread(void *o)
 		OSInt readSize = tdata->cliStat->cli->Read(tdata->cliStat->buff, TCP_BUFF_SIZE);
 		if (readSize <= 0)
 		{
-			Sync::MutexUsage mutUsage(&tdata->me->cliMut);
+			Sync::MutexUsage mutUsage(tdata->me->cliMut);
 			i = tdata->me->cliIdArr.SortedIndexOf(tdata->cliStat->cli->GetCliId());
 			tdata->me->cliArr.RemoveAt(i);
 			tdata->me->cliIdArr.RemoveAt(i);
@@ -127,13 +127,13 @@ void Net::TCPClientMgr::AddClient(TCPClient *cli, void *cliData)
 {
 	cli->SetNoDelay(true);
 	cli->SetTimeout(this->timeout);
-	Sync::MutexUsage mutUsage(&this->cliMut);
+	Sync::MutexUsage mutUsage(this->cliMut);
 	Net::TCPClientMgr::TCPClientStatus *cliStat;
 	NEW_CLASS(cliStat, Net::TCPClientMgr::TCPClientStatus());
 	cliStat->cli = cli;
 	cliStat->cliData = cliData;
 	cliStat->lastDataTime = Data::Timestamp::UtcNow();
-	Sync::MutexUsage readMutUsage(&cliStat->readMut);
+	Sync::MutexUsage readMutUsage(cliStat->readMut);
 	cliStat->reading = true;
 	this->cliArr.Insert(this->cliIdArr.SortedInsert(cli->GetCliId()), cliStat);
 	readMutUsage.EndUse();
@@ -148,7 +148,7 @@ Bool Net::TCPClientMgr::SendClientData(UInt64 cliId, const UInt8 *buff, UOSInt b
 {
 	OSInt i;
 	Net::TCPClientMgr::TCPClientStatus *cliStat = 0;
-	Sync::MutexUsage mutUsage(&this->cliMut);
+	Sync::MutexUsage mutUsage(this->cliMut);
 	i = this->cliIdArr.SortedIndexOf(cliId);
 	if (i >= 0)
 	{
@@ -173,7 +173,7 @@ Bool Net::TCPClientMgr::IsError()
 void Net::TCPClientMgr::CloseAll()
 {
 	OSInt i = this->cliArr.GetCount();
-	Sync::MutexUsage mutUsage(&this->cliMut);
+	Sync::MutexUsage mutUsage(this->cliMut);
 	while (i-- > 0)
 	{
 		Net::TCPClientMgr::TCPClientStatus *cliStat;
@@ -188,7 +188,7 @@ void Net::TCPClientMgr::CloseAll()
 
 void Net::TCPClientMgr::UseGetClient(Sync::MutexUsage *mutUsage)
 {
-	mutUsage->ReplaceMutex(&this->cliMut);
+	mutUsage->ReplaceMutex(this->cliMut);
 }
 
 UOSInt Net::TCPClientMgr::GetClientCount() const
@@ -198,7 +198,7 @@ UOSInt Net::TCPClientMgr::GetClientCount() const
 
 void Net::TCPClientMgr::ExtendTimeout(NotNullPtr<Net::TCPClient> cli)
 {
-	Sync::MutexUsage mutUsage(&this->cliMut);
+	Sync::MutexUsage mutUsage(this->cliMut);
 	OSInt i = this->cliIdArr.SortedIndexOf(cli->GetCliId());
 	if (i >= 0)
 	{

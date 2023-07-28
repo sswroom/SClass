@@ -11,7 +11,7 @@ void __stdcall Net::MQTTFailoverClient::OnMessage(void *userObj, Text::CString t
 	ClientInfo *cliInfo = (ClientInfo *)userObj;
 	if (cliInfo->me->foHdlr.GetCurrChannel() == cliInfo->client)
 	{
-		Sync::MutexUsage mutUsage(&cliInfo->me->hdlrMut);
+		Sync::MutexUsage mutUsage(cliInfo->me->hdlrMut);
 		UOSInt i = cliInfo->me->hdlrList.GetCount();
 		while (i-- > 0)
 		{
@@ -43,7 +43,7 @@ void Net::MQTTFailoverClient::AddClient(Text::CString host, UInt16 port, Text::C
 
 void Net::MQTTFailoverClient::HandlePublishMessage(Net::MQTTConn::PublishMessageHdlr hdlr, void *hdlrObj)
 {
-	Sync::MutexUsage mutUsage(&this->hdlrMut);
+	Sync::MutexUsage mutUsage(this->hdlrMut);
 	this->hdlrList.Add(hdlr);
 	this->hdlrObjList.Add(hdlrObj);
 }

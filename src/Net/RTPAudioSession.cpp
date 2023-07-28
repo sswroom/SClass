@@ -224,7 +224,7 @@ UOSInt Net::RTPAudioSession::ReadBlock(UInt8 *buff, UOSInt blkSize)
 	if (!started)
 		return 0;
 	UOSInt retSize;
-	Sync::MutexUsage mutUsage(&this->readMut);
+	Sync::MutexUsage mutUsage(this->readMut);
 	this->sizeRead = 0;
 	this->readBuffSize = blkSize;
 	this->readBuff = buff;

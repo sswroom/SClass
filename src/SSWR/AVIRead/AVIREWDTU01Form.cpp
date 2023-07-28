@@ -31,7 +31,7 @@ void __stdcall SSWR::AVIRead::AVIREWDTU01Form::OnMQTTMessage(void *userObj, Text
 	}
 	if (jsonObj->GetType() == Text::JSONType::Array)
 	{
-		Sync::MutexUsage mutUsage(&me->dataMut);
+		Sync::MutexUsage mutUsage(me->dataMut);
 		me->dataChg = true;
 		me->DataClear();
 		arr = (Text::JSONArray*)jsonObj;
@@ -132,7 +132,7 @@ void __stdcall SSWR::AVIRead::AVIREWDTU01Form::OnTimerTick(void *userObj)
 		DeviceEntry *entry;
 		const Net::MACInfo::MACEntry *macEntry;
 		NotNullPtr<Text::String> s;
-		Sync::MutexUsage mutUsage(&me->dataMut);
+		Sync::MutexUsage mutUsage(me->dataMut);
 		me->lvDevices->ClearItems();
 		UOSInt i = 0;
 		UOSInt j = me->dataMap.GetCount();

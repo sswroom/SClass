@@ -6,7 +6,7 @@ void __stdcall Map::MapLayerCollection::InnerUpdated(void *userObj)
 {
 	Map::MapLayerCollection *me = (Map::MapLayerCollection*)userObj;
 	UOSInt i;
-	Sync::RWMutexUsage mutUsage(&me->mut, false);
+	Sync::RWMutexUsage mutUsage(me->mut, false);
 	i = me->updHdlrs.GetCount();
 	while (i-- > 0)
 	{
@@ -30,14 +30,14 @@ Map::MapLayerCollection::~MapLayerCollection()
 UOSInt Map::MapLayerCollection::Add(Map::MapDrawLayer * val)
 {
 	val->AddUpdatedHandler(InnerUpdated, this);
-	Sync::RWMutexUsage mutUsage(&this->mut, true);
+	Sync::RWMutexUsage mutUsage(this->mut, true);
 	return this->layerList.Add(val);
 }
 
 Map::MapDrawLayer *Map::MapLayerCollection::RemoveAt(UOSInt index)
 {
 	Map::MapDrawLayer *lyr;
-	Sync::RWMutexUsage mutUsage(&this->mut, true);
+	Sync::RWMutexUsage mutUsage(this->mut, true);
 	lyr = this->layerList.RemoveAt(index);
 	if (lyr)
 	{
@@ -49,7 +49,7 @@ Map::MapDrawLayer *Map::MapLayerCollection::RemoveAt(UOSInt index)
 void Map::MapLayerCollection::Clear()
 {
 	UOSInt i;
-	Sync::RWMutexUsage mutUsage(&this->mut, true);
+	Sync::RWMutexUsage mutUsage(this->mut, true);
 	i = this->layerList.GetCount();
 	while (i-- > 0)
 	{
@@ -65,19 +65,19 @@ UOSInt Map::MapLayerCollection::GetCount() const
 
 Map::MapDrawLayer *Map::MapLayerCollection::GetItem(UOSInt Index)
 {
-	Sync::RWMutexUsage mutUsage(&this->mut, false);
+	Sync::RWMutexUsage mutUsage(this->mut, false);
 	return this->layerList.GetItem(Index);
 }
 
 void Map::MapLayerCollection::SetItem(UOSInt Index, Map::MapDrawLayer *Val)
 {
-	Sync::RWMutexUsage mutUsage(&this->mut, true);
+	Sync::RWMutexUsage mutUsage(this->mut, true);
 	this->layerList.SetItem(Index, Val);
 }
 
 void Map::MapLayerCollection::SetCurrScale(Double scale)
 {
-	Sync::RWMutexUsage mutUsage(&this->mut, false);
+	Sync::RWMutexUsage mutUsage(this->mut, false);
 	UOSInt i = this->layerList.GetCount();
 	while (i-- > 0)
 	{
@@ -87,7 +87,7 @@ void Map::MapLayerCollection::SetCurrScale(Double scale)
 
 void Map::MapLayerCollection::SetCurrTimeTS(Int64 timeStamp)
 {
-	Sync::RWMutexUsage mutUsage(&this->mut, false);
+	Sync::RWMutexUsage mutUsage(this->mut, false);
 	UOSInt i = this->layerList.GetCount();
 	while (i-- > 0)
 	{
@@ -99,7 +99,7 @@ Int64 Map::MapLayerCollection::GetTimeStartTS()
 {
 	Int64 timeStart = 0;
 	Int64 v;
-	Sync::RWMutexUsage mutUsage(&this->mut, false);
+	Sync::RWMutexUsage mutUsage(this->mut, false);
 	UOSInt i = this->layerList.GetCount();
 	while (i-- > 0)
 	{
@@ -120,7 +120,7 @@ Int64 Map::MapLayerCollection::GetTimeEndTS()
 {
 	Int64 timeEnd = 0;
 	Int64 v;
-	Sync::RWMutexUsage mutUsage(&this->mut, false);
+	Sync::RWMutexUsage mutUsage(this->mut, false);
 	UOSInt i = this->layerList.GetCount();
 	while (i-- > 0)
 	{
@@ -140,7 +140,7 @@ Int64 Map::MapLayerCollection::GetTimeEndTS()
 Map::DrawLayerType Map::MapLayerCollection::GetLayerType()
 {
 	Map::DrawLayerType lyrType = Map::DRAW_LAYER_UNKNOWN;
-	Sync::RWMutexUsage mutUsage(&this->mut, false);
+	Sync::RWMutexUsage mutUsage(this->mut, false);
 	UOSInt i = this->layerList.GetCount();
 	while (i-- > 0)
 	{
@@ -167,7 +167,7 @@ UOSInt Map::MapLayerCollection::GetAllObjectIds(Data::ArrayListInt64 *outArr, Na
 	UOSInt ret;
 	Int64 currId = 0;
 	Int64 maxId;
-	Sync::RWMutexUsage mutUsage(&this->mut, false);
+	Sync::RWMutexUsage mutUsage(this->mut, false);
 	ret = 0;
 	k = 0;
 	l = this->layerList.GetCount();
@@ -201,7 +201,7 @@ UOSInt Map::MapLayerCollection::GetObjectIds(Data::ArrayListInt64 *outArr, NameA
 	UOSInt ret = 0;
 	Int64 currId = 0;
 	Int64 maxId;
-	Sync::RWMutexUsage mutUsage(&this->mut, false);
+	Sync::RWMutexUsage mutUsage(this->mut, false);
 	k = 0;
 	l = this->layerList.GetCount();
 	while (k < l)
@@ -234,7 +234,7 @@ UOSInt Map::MapLayerCollection::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, 
 	UOSInt ret = 0;
 	Int64 currId = 0;
 	Int64 maxId;
-	Sync::RWMutexUsage mutUsage(&this->mut, false);
+	Sync::RWMutexUsage mutUsage(this->mut, false);
 	k = 0;
 	l = this->layerList.GetCount();
 	while (k < l)
@@ -263,7 +263,7 @@ Int64 Map::MapLayerCollection::GetObjectIdMax()
 	Map::MapDrawLayer *lyr;
 	Int64 maxId;
 	Int64 currId = 0;
-	Sync::RWMutexUsage mutUsage(&this->mut, false);
+	Sync::RWMutexUsage mutUsage(this->mut, false);
 	k = 0;
 	l = this->layerList.GetCount();
 	while (k < l)
@@ -336,7 +336,7 @@ Bool Map::MapLayerCollection::GetBounds(Math::RectAreaDbl *bounds)
 	Math::RectAreaDbl minMax;
 	Math::RectAreaDbl thisBounds;
 
-	Sync::RWMutexUsage mutUsage(&this->mut, false);
+	Sync::RWMutexUsage mutUsage(this->mut, false);
 	Map::MapDrawLayer *lyr;
 	k = 0;
 	l = this->layerList.GetCount();
@@ -388,7 +388,7 @@ Math::Geometry::Vector2D *Map::MapLayerCollection::GetNewVectorById(GetObjectSes
 	Int64 maxId;
 	Map::MapDrawLayer *lyr;
 	Math::Geometry::Vector2D *vec = 0;
-	Sync::RWMutexUsage mutUsage(&this->mut, false);
+	Sync::RWMutexUsage mutUsage(this->mut, false);
 	k = 0;
 	l = this->layerList.GetCount();
 	while (k < l)
@@ -411,7 +411,7 @@ Math::Geometry::Vector2D *Map::MapLayerCollection::GetNewVectorById(GetObjectSes
 
 void Map::MapLayerCollection::AddUpdatedHandler(UpdatedHandler hdlr, void *obj)
 {
-	Sync::RWMutexUsage mutUsage(&this->mut, true);
+	Sync::RWMutexUsage mutUsage(this->mut, true);
 	this->updHdlrs.Add(hdlr);
 	this->updObjs.Add(obj);
 }
@@ -419,7 +419,7 @@ void Map::MapLayerCollection::AddUpdatedHandler(UpdatedHandler hdlr, void *obj)
 void Map::MapLayerCollection::RemoveUpdatedHandler(UpdatedHandler hdlr, void *obj)
 {
 	UOSInt i;
-	Sync::RWMutexUsage mutUsage(&this->mut, true);
+	Sync::RWMutexUsage mutUsage(this->mut, true);
 	i = this->updHdlrs.GetCount();
 	while (i-- > 0)
 	{
@@ -439,7 +439,7 @@ Map::MapDrawLayer::ObjectClass Map::MapLayerCollection::GetObjectClass()
 Math::CoordinateSystem *Map::MapLayerCollection::GetCoordinateSystem()
 {
 	Math::CoordinateSystem *csys = 0;
-	Sync::RWMutexUsage mutUsage(&this->mut, false);
+	Sync::RWMutexUsage mutUsage(this->mut, false);
 	UOSInt i = 0;
 	UOSInt j = this->layerList.GetCount();
 	while (i < j)
@@ -456,7 +456,7 @@ Math::CoordinateSystem *Map::MapLayerCollection::GetCoordinateSystem()
 
 void Map::MapLayerCollection::SetCoordinateSystem(Math::CoordinateSystem *csys)
 {
-	Sync::RWMutexUsage mutUsage(&this->mut, false);
+	Sync::RWMutexUsage mutUsage(this->mut, false);
 	UOSInt i = this->layerList.GetCount();
 	while (i-- > 0)
 	{
@@ -467,7 +467,7 @@ void Map::MapLayerCollection::SetCoordinateSystem(Math::CoordinateSystem *csys)
 void Map::MapLayerCollection::ReleaseAll()
 {
 	Map::MapDrawLayer *lyr;
-	Sync::RWMutexUsage mutUsage(&this->mut, true);
+	Sync::RWMutexUsage mutUsage(this->mut, true);
 	UOSInt i = this->layerList.GetCount();
 	while (i-- > 0)
 	{

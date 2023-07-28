@@ -15,7 +15,7 @@ UInt32 __stdcall Net::TCPPortScanner::ScanThread(void *userObj)
 	while (!me->threadToStop)
 	{
 		me->threadEvt.Wait(10000);
-		Sync::MutexUsage mutUsage(&me->portMut);
+		Sync::MutexUsage mutUsage(me->portMut);
 		addr = me->addr;
 		if (addr.addrType != Net::AddrType::Unknown)
 		{
@@ -109,7 +109,7 @@ void Net::TCPPortScanner::Start(Net::SocketUtil::AddressInfo *addr, UInt16 maxPo
 {
 	OSInt i;
 	OSInt j = maxPort + 1;
-	Sync::MutexUsage mutUsage(&this->portMut);
+	Sync::MutexUsage mutUsage(this->portMut);
 	this->addr = *addr;
 	i = 0;
 	while (i < j)
@@ -125,7 +125,7 @@ Bool Net::TCPPortScanner::IsFinished()
 {
 	Bool ret = true;
 	UInt16 i = 0;
-	Sync::MutexUsage mutUsage(&this->portMut);
+	Sync::MutexUsage mutUsage(this->portMut);
 	while (i < 65535)
 	{
 		if ((this->portList[i] & 1) == 1)
@@ -147,7 +147,7 @@ UOSInt Net::TCPPortScanner::GetAvailablePorts(Data::ArrayList<UInt16> *portList)
 {
 	UOSInt initCnt = portList->GetCount();
 	UInt16 i = 0;
-	Sync::MutexUsage mutUsage(&this->portMut);
+	Sync::MutexUsage mutUsage(this->portMut);
 	while (i < 65535)
 	{
 		if (this->portList[i] == 2)

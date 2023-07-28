@@ -27,7 +27,7 @@ UInt32 __stdcall SSWR::DataSync::SyncClient::RecvThread(void *userObj)
 			recvSize = cli->Read(Data::ByteArray(&buff[buffSize], 8192 - buffSize));
 			if (recvSize <= 0)
 			{
-				Sync::MutexUsage mutUsage(&me->cliMut);
+				Sync::MutexUsage mutUsage(me->cliMut);
 				DEL_CLASS(me->cli);
 				me->cli = 0;
 				mutUsage.EndUse();
@@ -57,7 +57,7 @@ UInt32 __stdcall SSWR::DataSync::SyncClient::RecvThread(void *userObj)
 			}
 			else
 			{
-				Sync::MutexUsage mutUsage(&me->cliMut);
+				Sync::MutexUsage mutUsage(me->cliMut);
 				me->cli = cli.Ptr();
 				me->cliKATime.SetCurrTimeUTC();
 				mutUsage.EndUse();
@@ -68,7 +68,7 @@ UInt32 __stdcall SSWR::DataSync::SyncClient::RecvThread(void *userObj)
 	}
 	if (me->cli)
 	{
-		Sync::MutexUsage mutUsage(&me->cliMut);
+		Sync::MutexUsage mutUsage(me->cliMut);
 		DEL_CLASS(me->cli);
 		me->cli = 0;
 		mutUsage.EndUse();
@@ -91,7 +91,7 @@ UInt32 __stdcall SSWR::DataSync::SyncClient::KAThread(void *userObj)
 			if (me->cli)
 			{
 				currTime.SetCurrTimeUTC();
-				Sync::MutexUsage mutUsage(&me->cliMut);
+				Sync::MutexUsage mutUsage(me->cliMut);
 				if (me->cli && currTime.DiffMS(&me->cliKATime) >= 120000)
 				{
 					me->cliKATime.SetCurrTimeUTC();
@@ -143,7 +143,7 @@ Bool SSWR::DataSync::SyncClient::SendLogin()
 	this->serverName->ConcatTo((UTF8Char*)&cmdBuff[5]);
 	len = this->protoHdlr.BuildPacket(packetBuff, 0, 0, cmdBuff, len + 5, 0);
 	
-	Sync::MutexUsage mutUsage(&this->cliMut);
+	Sync::MutexUsage mutUsage(this->cliMut);
 	if (this->cli)
 	{
 		succ = (this->cli->Write(packetBuff, len) == len);
@@ -159,7 +159,7 @@ Bool SSWR::DataSync::SyncClient::SendKA()
 	UOSInt len;
 	len = this->protoHdlr.BuildPacket(packetBuff, 2, 0, 0, 0, 0);
 	
-	Sync::MutexUsage mutUsage(&this->cliMut);
+	Sync::MutexUsage mutUsage(this->cliMut);
 	if (this->cli)
 	{
 		succ = (this->cli->Write(packetBuff, len) == len);
@@ -178,7 +178,7 @@ Bool SSWR::DataSync::SyncClient::SendUserData(const UInt8 *data, UOSInt dataSize
 		UInt8 *dataBuff = MemAlloc(UInt8, dataSize + 10);
 		len = this->protoHdlr.BuildPacket(dataBuff, 4, 0, data, dataSize, 0);
 		
-		Sync::MutexUsage mutUsage(&this->cliMut);
+		Sync::MutexUsage mutUsage(this->cliMut);
 		if (this->cli)
 		{
 			succ = (this->cli->Write(dataBuff, len) == len);
@@ -190,7 +190,7 @@ Bool SSWR::DataSync::SyncClient::SendUserData(const UInt8 *data, UOSInt dataSize
 	{
 		len = this->protoHdlr.BuildPacket(packetBuff, 4, 0, data, dataSize, 0);
 		
-		Sync::MutexUsage mutUsage(&this->cliMut);
+		Sync::MutexUsage mutUsage(this->cliMut);
 		if (this->cli)
 		{
 			succ = (this->cli->Write(packetBuff, len) == len);
@@ -227,7 +227,7 @@ SSWR::DataSync::SyncClient::~SyncClient()
 	this->toStop = true;
 	this->recvEvt.Set();
 	this->kaEvt.Set();
-	Sync::MutexUsage mutUsage(&this->cliMut);
+	Sync::MutexUsage mutUsage(this->cliMut);
 	if (this->cli)
 	{
 		this->cli->Close();

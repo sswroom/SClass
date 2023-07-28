@@ -309,7 +309,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnTimerTick(void *userObj)
 	SSWR::AVIRead::AVIRMQTTExplorerForm::TopicStatus *topicSt;
 	UOSInt i;
 	UOSInt j;
-	Sync::MutexUsage mutUsage(&me->topicMut);
+	Sync::MutexUsage mutUsage(me->topicMut);
 	topicList = me->topicMap.GetValues();
 	i = 0;
 	j = topicList->GetCount();
@@ -401,7 +401,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnPublishMessage(void *userO
 	Data::DateTime dt;
 	dt.SetCurrTimeUTC();
 	SSWR::AVIRead::AVIRMQTTExplorerForm::TopicStatus *topicSt;
-	Sync::MutexUsage mutUsage(&me->topicMut);
+	Sync::MutexUsage mutUsage(me->topicMut);
 	topicSt = me->topicMap.Get(topic);
 	if (topicSt == 0)
 	{

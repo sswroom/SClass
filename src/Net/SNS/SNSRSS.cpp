@@ -8,7 +8,7 @@
 
 void Net::SNS::SNSRSS::CalcCRC(const UInt8 *buff, UOSInt size, UInt8 *hashVal)
 {
-	Sync::MutexUsage(&this->crcMut);
+	Sync::MutexUsage mutUsage(this->crcMut);
 	this->crc.Clear();
 	this->crc.Calc(buff, size);
 	this->crc.GetValue(hashVal);

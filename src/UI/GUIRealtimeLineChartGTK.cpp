@@ -78,7 +78,7 @@ void UI::GUIRealtimeLineChart::OnPaint(Media::DrawImage *dimg)
 	img->DrawRect(Math::Coord2DDbl(0, 0), img->GetSize().ToDouble(), 0, b);
 	img->DelBrush(b);
 
-	Sync::MutexUsage mutUsage(&this->chartMut);
+	Sync::MutexUsage mutUsage(this->chartMut);
 	if (this->chartMaxChg)
 	{
 		this->chartMaxChg = false;
@@ -218,7 +218,7 @@ OSInt UI::GUIRealtimeLineChart::OnNotify(UInt32 code, void *lParam)
 
 void UI::GUIRealtimeLineChart::AddSample(Double *samples)
 {
-	Sync::MutexUsage mutUsage(&this->chartMut);
+	Sync::MutexUsage mutUsage(this->chartMut);
 	UOSInt ofst = this->chartOfst * this->lineCnt;
 	UOSInt i = 0;
 	while (i < lineCnt)
@@ -270,7 +270,7 @@ void UI::GUIRealtimeLineChart::ClearChart()
 {
 	UOSInt i;
 	UOSInt j;
-	Sync::MutexUsage mutUsage(&this->chartMut);
+	Sync::MutexUsage mutUsage(this->chartMut);
 	i = 0;
 	j = this->lineCnt * this->sampleCnt;
 	while (i < j)

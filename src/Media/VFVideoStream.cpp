@@ -49,7 +49,7 @@ Media::VFVideoStream::VFVideoStream(Media::VFMediaFile *mfile)
 {
 	this->mfile = mfile;
 	{
-		Sync::MutexUsage mutUsage(&this->mfile->mut);
+		Sync::MutexUsage mutUsage(this->mfile->mut);
 		this->mfile->useCnt++;
 	}
 	this->seeked = true;
@@ -130,7 +130,7 @@ Media::VFVideoStream::~VFVideoStream()
 	}
 
 	{
-		Sync::MutexUsage mutUsage(&this->mfile->mut);
+		Sync::MutexUsage mutUsage(this->mfile->mut);
 		useCnt = --this->mfile->useCnt;
 	}
 	if (useCnt == 0)

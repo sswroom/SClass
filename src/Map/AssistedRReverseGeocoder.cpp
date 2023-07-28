@@ -77,7 +77,7 @@ UTF8Char *Map::AssistedRReverseGeocoder::SearchName(UTF8Char *buff, UOSInt buffS
 	Int32 xind = Double2Int32(pos.lon * 5000);
 	Int32 yind = Double2Int32(pos.lat * 5000);
 
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	NEW_CLASS(sql, DB::SQLBuilder(this->conn));
 	sql->AppendCmdC(CSTR("select name from mapaddr where lang = "));
 	sql->AppendInt32(lang);
@@ -157,7 +157,7 @@ UTF8Char *Map::AssistedRReverseGeocoder::CacheName(UTF8Char *buff, UOSInt buffSi
 	Int32 xind = Double2Int32(pos.lon * 5000);
 	Int32 yind = Double2Int32(pos.lat * 5000);
 
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	NEW_CLASS(sql, DB::SQLBuilder(this->conn));
 	sql->AppendCmdC(CSTR("select name from mapaddr where lang = "));
 	sql->AppendInt32(lang);

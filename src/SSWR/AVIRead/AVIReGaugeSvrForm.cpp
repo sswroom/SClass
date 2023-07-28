@@ -83,7 +83,7 @@ void __stdcall SSWR::AVIRead::AVIReGaugeSvrForm::OnTimerTick(void *userObj)
 	SSWR::AVIRead::AVIReGaugeSvrForm *me = (SSWR::AVIRead::AVIReGaugeSvrForm*)userObj;
 	if (me->reqUpdated)
 	{
-		Sync::MutexUsage mutUsage(&me->reqMut);
+		Sync::MutexUsage mutUsage(me->reqMut);
 		me->reqUpdated = false;
 		me->txtReqText->SetText(me->reqLast->ToCString());
 	}
@@ -92,7 +92,7 @@ void __stdcall SSWR::AVIRead::AVIReGaugeSvrForm::OnTimerTick(void *userObj)
 void __stdcall SSWR::AVIRead::AVIReGaugeSvrForm::OnEGaugeData(void *userObj, const UInt8 *data, UOSInt dataSize)
 {
 	SSWR::AVIRead::AVIReGaugeSvrForm *me = (SSWR::AVIRead::AVIReGaugeSvrForm*)userObj;
-	Sync::MutexUsage mutUsage(&me->reqMut);
+	Sync::MutexUsage mutUsage(me->reqMut);
 	if (me->reqLast)
 	{
 		me->reqLast->Release();

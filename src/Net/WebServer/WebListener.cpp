@@ -161,14 +161,14 @@ NotNullPtr<Text::String> Net::WebServer::WebListener::GetServerName() const
 
 void Net::WebServer::WebListener::SetAccessLog(IO::LogTool *accLog, IO::LogHandler::LogLevel accLogLev)
 {
-	Sync::MutexUsage mutUsage(&this->accLogMut);
+	Sync::MutexUsage mutUsage(this->accLogMut);
 	this->accLog = accLog;
 	this->accLogLev = accLogLev;
 }
 
 void Net::WebServer::WebListener::SetRequestLog(Net::WebServer::IReqLogger *reqLog)
 {
-	Sync::MutexUsage mutUsage(&this->accLogMut);
+	Sync::MutexUsage mutUsage(this->accLogMut);
 	this->reqLog = reqLog;
 }
 
@@ -178,7 +178,7 @@ void Net::WebServer::WebListener::LogAccess(Net::WebServer::IWebRequest *req, Ne
 	UTF8Char *sptr;
 	Text::CString cstr;
 	Interlocked_IncrementU32(&this->status.reqCnt);
-	Sync::MutexUsage accLogMutUsage(&this->accLogMut);
+	Sync::MutexUsage accLogMutUsage(this->accLogMut);
 	if (this->reqLog)
 	{
 		this->reqLog->LogRequest(req);
@@ -234,7 +234,7 @@ void Net::WebServer::WebListener::LogAccess(Net::WebServer::IWebRequest *req, Ne
 void Net::WebServer::WebListener::LogMessageC(Net::WebServer::IWebRequest *req, const UTF8Char *msg, UOSInt msgLen)
 {
 	UTF8Char sbuff[32];
-	Sync::MutexUsage mutUsage(&this->accLogMut);
+	Sync::MutexUsage mutUsage(this->accLogMut);
 	if (this->accLog)
 	{
 		if (req)

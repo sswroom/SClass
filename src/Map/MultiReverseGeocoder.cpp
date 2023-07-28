@@ -24,7 +24,7 @@ Map::MultiReverseGeocoder::~MultiReverseGeocoder()
 UTF8Char *Map::MultiReverseGeocoder::SearchName(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl pos, UInt32 lcid)
 {
 	UTF8Char *sptr = 0;
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	OSInt i = this->revGeos.GetCount();
 	while (i-- > 0)
 	{
@@ -51,7 +51,7 @@ UTF8Char *Map::MultiReverseGeocoder::SearchName(UTF8Char *buff, UOSInt buffSize,
 UTF8Char *Map::MultiReverseGeocoder::CacheName(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl pos, UInt32 lcid)
 {
 	UTF8Char *sptr = 0;
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	OSInt i = this->revGeos.GetCount();
 	while (i-- > 0)
 	{

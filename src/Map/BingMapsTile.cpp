@@ -14,7 +14,7 @@
 
 Text::String *Map::BingMapsTile::GetNextSubdomain()
 {
-	Sync::MutexUsage mutUsage(&this->urlMut);
+	Sync::MutexUsage mutUsage(this->urlMut);
 	Text::String *thisUrl = this->subdomains.GetItem(this->urlNext);
 	this->urlNext = (this->urlNext + 1) % this->subdomains.GetCount();
 	return thisUrl;

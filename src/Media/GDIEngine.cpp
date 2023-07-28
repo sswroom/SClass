@@ -128,7 +128,7 @@ Media::DrawImage *Media::GDIEngine::CreateImage32(Math::Size2D<UOSInt> size, Med
 		GDIImage *img;
 		HDC hdcBmp;
 		Int32 i = 10;
-		Sync::MutexUsage mutUsage(&this->gdiMut);
+		Sync::MutexUsage mutUsage(this->gdiMut);
 		while ((hdcBmp = CreateCompatibleDC((HDC)this->hdcScreen)) == 0)
 		{
 			if (i-- <= 0)
@@ -273,7 +273,7 @@ Media::DrawImage *Media::GDIEngine::LoadImageStream(NotNullPtr<IO::SeekableStrea
 					imgSrc += sbpl;
 				}
 				
-				Sync::MutexUsage mutUsage(&this->gdiMut);
+				Sync::MutexUsage mutUsage(this->gdiMut);
 				hdcBmp = CreateCompatibleDC((HDC)this->hdcScreen);
 				mutUsage.EndUse();
 				if (hdcBmp)
@@ -363,7 +363,7 @@ Media::DrawImage *Media::GDIEngine::LoadImageStream(NotNullPtr<IO::SeekableStrea
 				}
 				MemFree(buff);
 
-				Sync::MutexUsage mutUsage(&this->gdiMut);
+				Sync::MutexUsage mutUsage(this->gdiMut);
 				hdcBmp = CreateCompatibleDC((HDC)this->hdcScreen);
 				mutUsage.EndUse();
 				if (hdcBmp)
@@ -383,7 +383,7 @@ Media::DrawImage *Media::GDIEngine::LoadImageStream(NotNullPtr<IO::SeekableStrea
 				fstm->Read(Data::ByteArray(buff, buffSize));
 				//////////////////////////////////////////////////////////////////////
 				MemFree(buff);
-				Sync::MutexUsage mutUsage(&this->gdiMut);
+				Sync::MutexUsage mutUsage(this->gdiMut);
 				hdcBmp = CreateCompatibleDC((HDC)this->hdcScreen);
 				mutUsage.EndUse();
 				if (hdcBmp)
@@ -421,7 +421,7 @@ Media::DrawImage *Media::GDIEngine::LoadImageStream(NotNullPtr<IO::SeekableStrea
 				}
 				MemFree(buff);
 
-				Sync::MutexUsage mutUsage(&this->gdiMut);
+				Sync::MutexUsage mutUsage(this->gdiMut);
 				hdcBmp = CreateCompatibleDC((HDC)this->hdcScreen);
 				mutUsage.EndUse();
 				if (hdcBmp)
@@ -439,7 +439,7 @@ Media::DrawImage *Media::GDIEngine::LoadImageStream(NotNullPtr<IO::SeekableStrea
 				fstm->SeekFromBeginning(ReadUInt32(&hdr[10]));
 				fstm->Read(Data::ByteArray((UInt8*)pBits, (bmi.bmiHeader.biWidth * bmi.bmiHeader.biHeight) << 2));
 
-				Sync::MutexUsage mutUsage(&this->gdiMut);
+				Sync::MutexUsage mutUsage(this->gdiMut);
 				hdcBmp = CreateCompatibleDC((HDC)this->hdcScreen);
 				mutUsage.EndUse();
 				if (hdcBmp)

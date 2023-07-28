@@ -5,7 +5,7 @@
 
 Text::String *Map::OSM::OSMTileMap::GetNextURL()
 {
-	Sync::MutexUsage mutUsage(&this->urlMut);
+	Sync::MutexUsage mutUsage(this->urlMut);
 	Text::String *thisUrl = this->urls.GetItem(this->urlNext);
 	this->urlNext = (this->urlNext + 1) % this->urls.GetCount();
 	return thisUrl;

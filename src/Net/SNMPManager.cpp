@@ -97,7 +97,7 @@ void Net::SNMPManager::UpdateValues()
 UOSInt Net::SNMPManager::GetAgentList(Data::ArrayList<AgentInfo*> *agentList)
 {
 	UOSInt ret;
-	Sync::MutexUsage mutUsage(&this->agentMut);
+	Sync::MutexUsage mutUsage(this->agentMut);
 	ret = this->agentList.GetCount();
 	agentList->AddAll(this->agentList);
 	return ret;
@@ -140,7 +140,7 @@ Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(const Net::SocketUtil::A
 			agent->cpuName = 0;
 			MemClear(agent->mac, 6);
 			NEW_CLASS(agent->readingList, Data::ArrayList<ReadingInfo*>());
-			Sync::MutexUsage mutUsage(&this->agentMut);
+			Sync::MutexUsage mutUsage(this->agentMut);
 			this->agentList.Add(agent);
 			if (addr->addrType == Net::AddrType::IPv4)
 			{

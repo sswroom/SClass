@@ -64,7 +64,7 @@ UOSInt IO::SiLabSerialPort::Read(const Data::ByteArray &buff)
 	if (h == 0)
 		return 0;
 	
-	Sync::MutexUsage mutUsage(&this->rdMut);
+	Sync::MutexUsage mutUsage(this->rdMut);
 	OVERLAPPED ol;
 	ol.hEvent = this->rdEvt.hand;
 	ol.Internal = 0;

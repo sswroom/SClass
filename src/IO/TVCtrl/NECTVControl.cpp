@@ -24,7 +24,7 @@ UInt32 __stdcall IO::TVCtrl::NECTVControl::RecvThread(void *userObj)
 		}
 		else
 		{
-			Sync::MutexUsage mutUsage(&me->mut);
+			Sync::MutexUsage mutUsage(me->mut);
 			if (me->recvSize >= NECTVCONTROL_RECVBUFFSIZE)
 			{
 			}
@@ -90,7 +90,7 @@ Bool IO::TVCtrl::NECTVControl::SendCommand(Text::CString cmd, UTF8Char *cmdReply
 	buff[9 + cmdLen] = bcc;
 	buff[10 + cmdLen] = 13;
 
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	this->recvSize = 0;
 	mutUsage.EndUse();
 
@@ -181,7 +181,7 @@ Bool IO::TVCtrl::NECTVControl::GetParameter(UInt8 opCodePage, UInt8 opCode, UInt
 	buff[13] = bcc;
 	buff[14] = 13;
 
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	this->recvSize = 0;
 	mutUsage.EndUse();
 
@@ -278,7 +278,7 @@ Bool IO::TVCtrl::NECTVControl::SetParameter(UInt8 opCodePage, UInt8 opCode, UInt
 	buff[17] = bcc;
 	buff[18] = 13;
 
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	this->recvSize = 0;
 	mutUsage.EndUse();
 

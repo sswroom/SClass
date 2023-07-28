@@ -271,7 +271,7 @@ Media::ABlend::AlphaBlend8_C8::~AlphaBlend8_C8()
 
 void Media::ABlend::AlphaBlend8_C8::Blend(UInt8 *dest, OSInt dbpl, const UInt8 *src, OSInt sbpl, UOSInt width, UOSInt height, Media::AlphaType srcAType)
 {
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	if (this->changed)
 	{
 		this->changed = false;
@@ -299,7 +299,7 @@ void Media::ABlend::AlphaBlend8_C8::PremulAlpha(UInt8 *dest, OSInt dbpl, const U
 
 	sbpl = sbpl - (OSInt)(width << 2);
 	dbpl = dbpl - (OSInt)(width << 2);
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	if (this->changed)
 	{
 		this->changed = false;
@@ -336,7 +336,7 @@ void Media::ABlend::AlphaBlend8_C8::RGBParamChanged(const Media::IColorHandler::
 {
 	if (this->lutList)
 	{
-		Sync::MutexUsage mutUsage(&this->mut);
+		Sync::MutexUsage mutUsage(this->mut);
 		LUTInfo *lut;
 		UOSInt i;
 		i = this->lutList->GetCount();

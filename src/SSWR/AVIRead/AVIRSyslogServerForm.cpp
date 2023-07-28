@@ -66,7 +66,7 @@ void __stdcall SSWR::AVIRead::AVIRSyslogServerForm::OnClientLog(void *userObj, U
 {
 	SSWR::AVIRead::AVIRSyslogServerForm *me = (SSWR::AVIRead::AVIRSyslogServerForm*)userObj;
 	IPLog *ipLog;
-	Sync::MutexUsage mutUsage(&me->ipMut);
+	Sync::MutexUsage mutUsage(me->ipMut);
 	ipLog = me->ipMap.Get(ip);
 	if (ipLog == 0)
 	{
@@ -98,7 +98,7 @@ void __stdcall SSWR::AVIRead::AVIRSyslogServerForm::OnTimerTick(void *userObj)
 	if (me->ipListUpd)
 	{
 		me->ipListUpd = false;
-		Sync::MutexUsage mutUsage(&me->ipMut);
+		Sync::MutexUsage mutUsage(me->ipMut);
 		me->lbClient->ClearItems();
 		i = 0;
 		j = me->ipMap.GetCount();
@@ -113,7 +113,7 @@ void __stdcall SSWR::AVIRead::AVIRSyslogServerForm::OnTimerTick(void *userObj)
 	{
 		me->msgListUpd = false;
 		IPLog *ipLog;
-		Sync::MutexUsage mutUsage(&me->ipMut);
+		Sync::MutexUsage mutUsage(me->ipMut);
 		me->lbLog->ClearItems();
 		ipLog = me->ipMap.Get(me->currIP);
 		if (ipLog)

@@ -29,7 +29,7 @@ void __stdcall IO::MODBUSController::SetResult(void *userObj, UInt8 funcCode, UI
 Bool IO::MODBUSController::ReadRegister(UInt8 devAddr, UInt32 regAddr, UInt8 *resBuff, UInt16 resSize)
 {
 	Bool succ;
-	Sync::MutexUsage mutUsage(&this->reqMut);
+	Sync::MutexUsage mutUsage(this->reqMut);
 	if (!this->devMap.Get(devAddr))
 	{
 		this->devMap.Put(devAddr, 1);
@@ -136,7 +136,7 @@ Bool IO::MODBUSController::ReadRegister(UInt8 devAddr, UInt32 regAddr, UInt8 *re
 Bool IO::MODBUSController::WriteRegister(UInt8 devAddr, UInt32 regAddr, UInt8 *regBuff, UInt16 regSize)
 {
 	Bool succ;
-	Sync::MutexUsage mutUsage(&this->reqMut);
+	Sync::MutexUsage mutUsage(this->reqMut);
 	if (!this->devMap.Get(devAddr))
 	{
 		this->devMap.Put(devAddr, 1);

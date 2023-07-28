@@ -57,7 +57,7 @@ void __stdcall Net::TFTPServer::OnCommandPacket(const Net::SocketUtil::AddressIn
 	}
 	UInt64 sessId = (((UInt64)ReadMUInt32(addr->addr)) << 16) | port;
 	SessionInfo *sess;
-	Sync::MutexUsage mutUsage(&me->mut);
+	Sync::MutexUsage mutUsage(me->mut);
 	sess = me->sessMap.Get(sessId);
 	mutUsage.EndUse();
 	if (sess)
@@ -100,7 +100,7 @@ void __stdcall Net::TFTPServer::OnCommandPacket(const Net::SocketUtil::AddressIn
 			sess->isLast = false;
 			sess->currBlock = 1;
 			sess->fileName = Text::String::New(sb.ToString(), sb.GetLength());
-			Sync::MutexUsage mutUsage(&me->mut);
+			Sync::MutexUsage mutUsage(me->mut);
 			me->sessMap.Put(sess->sessId, sess);
 
 			UInt8 *packet = MemAlloc(UInt8, sess->blockSize + 4);
@@ -175,7 +175,7 @@ void __stdcall Net::TFTPServer::OnCommandPacket(const Net::SocketUtil::AddressIn
 			sess->isLast = false;
 			sess->currBlock = 0;
 			sess->fileName = Text::String::New(sb.ToString(), sb.GetLength());
-			Sync::MutexUsage mutUsage(&me->mut);
+			Sync::MutexUsage mutUsage(me->mut);
 			me->sessMap.Put(sess->sessId, sess);
 			mutUsage.EndUse();
 
@@ -213,7 +213,7 @@ void __stdcall Net::TFTPServer::OnDataPacket(const Net::SocketUtil::AddressInfo 
 	SessionInfo *sess;
 	UInt8 repBuff[32];
 	UTF8Char *sptr;
-	Sync::MutexUsage mutUsage(&me->mut);
+	Sync::MutexUsage mutUsage(me->mut);
 	sess = me->sessMap.Get(sessId);
 	if (sess == 0)
 	{
@@ -324,7 +324,7 @@ UInt32 __stdcall Net::TFTPServer::CheckThread(void *userObj)
 	me->threadRunning = true;
 	while (!me->threadToStop)
 	{
-		Sync::MutexUsage mutUsage(&me->mut);
+		Sync::MutexUsage mutUsage(me->mut);
 		currTime = Data::DateTimeUtil::GetCurrTimeMillis();
 		i = me->sessMap.GetCount();
 		while (i-- > 0)

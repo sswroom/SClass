@@ -60,7 +60,7 @@ UInt32 __stdcall Net::WiFiCapturer::ScanThread(void *userObj)
 						maxRSSI = Double2Int32(bss->GetRSSI());
 						maxIMAC = imac;
 					}
-					Sync::MutexUsage mutUsage(&me->logMut);
+					Sync::MutexUsage mutUsage(me->logMut);
 					entry = me->wifiLog.AddBSSInfo(bss, &si);
 					entry->lastScanTime = currTime;
 					mutUsage.EndUse();
@@ -74,7 +74,7 @@ UInt32 __stdcall Net::WiFiCapturer::ScanThread(void *userObj)
 
 				if (maxRSSI >= -60 && maxRSSI < 0)
 				{
-					Sync::MutexUsage mutUsage(&me->logMut);
+					Sync::MutexUsage mutUsage(me->logMut);
 					entry = me->wifiLog.Get(maxIMAC);
 					i = 0;
 					j = bssList.GetCount();
@@ -259,7 +259,7 @@ void Net::WiFiCapturer::StoreStatus()
 	sptr = dt.ToString(sptr, "yyyyMMddHHmmss");
 	sptr = Text::StrConcatC(sptr, UTF8STRC(".txt"));
 
-	Sync::MutexUsage mutUsage(&this->logMut);
+	Sync::MutexUsage mutUsage(this->logMut);
 	if (this->wifiLog.StoreFile(CSTRP(sbuff, sptr)))
 	{
 		if (this->lastFileName)
@@ -273,7 +273,7 @@ void Net::WiFiCapturer::StoreStatus()
 
 NotNullPtr<Data::ArrayList<Net::WiFiLogFile::LogFileEntry*>> Net::WiFiCapturer::GetLogList(Sync::MutexUsage *mutUsage)
 {
-	mutUsage->ReplaceMutex(&this->logMut);
+	mutUsage->ReplaceMutex(this->logMut);
 	return this->wifiLog.GetLogList();
 }
 

@@ -209,7 +209,7 @@ DB::DBQueue::~DBQueue()
 		DEL_CLASS(dbHdlr);
 	}
 
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	i = (UOSInt)DB::DBQueue::Priority::Highest + 1;
 	while (i-- > 0)
 	{
@@ -304,7 +304,7 @@ void DB::DBQueue::AddSQL(const UTF8Char *sql, UOSInt sqlLen, Priority priority, 
 	if (priority < DB::DBQueue::Priority::Lowest)
 		priority = DB::DBQueue::Priority::Lowest;
 	UOSInt ipriority = (UOSInt)priority;
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	SQLCmd *cmd;
 	NEW_CLASS(cmd, SQLCmd(sql, sqlLen, progId, hdlr, userData, userData2));
 	sqlList[ipriority]->Add(cmd);
@@ -356,7 +356,7 @@ void DB::DBQueue::AddTrans(Priority priority, Int32 progId, DBToolHdlr hdlr, voi
 	UOSInt ipriority = (UOSInt)priority;
 	DB::DBQueue::SQLTrans *trans;
 	NEW_CLASS(trans, DB::DBQueue::SQLTrans(progId, hdlr, userData, userData2));
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	sqlList[ipriority]->Add(trans);
 	this->dbList.GetItem(this->nextDB)->Wake();
 	this->nextDB = (this->nextDB + 1) % this->dbList.GetCount();
@@ -372,7 +372,7 @@ void DB::DBQueue::GetDB(Priority priority, Int32 progId, DBToolHdlr hdlr, void *
 	UOSInt ipriority = (UOSInt)priority;
 	DB::DBQueue::SQLGetDB *trans;
 	NEW_CLASS(trans, DB::DBQueue::SQLGetDB(progId, hdlr, userData, userData2));
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	sqlList[ipriority]->Add(trans);
 	this->dbList.GetItem(this->nextDB)->Wake();
 	this->nextDB = (this->nextDB + 1) % this->dbList.GetCount();
@@ -384,7 +384,7 @@ void DB::DBQueue::RemoveSQLs(Int32 progId)
 	UOSInt i = (UOSInt)DB::DBQueue::Priority::Highest + 1;
 	UOSInt j;
 	DB::DBQueue::IDBCmd *cmd;
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	while (i-- > 0)
 	{
 		j = sqlList[i]->GetCount();
@@ -416,7 +416,7 @@ UOSInt DB::DBQueue::GetQueueCnt() const
 {
 	UOSInt cnt = 0;
 	UOSInt i = (UOSInt)DB::DBQueue::Priority::Highest + 1;
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	while (i-- > 0)
 	{
 		cnt += sqlList2[i]->GetCount() * 200;
@@ -453,7 +453,7 @@ Int8 DB::DBQueue::GetTzQhr() const
 
 UOSInt DB::DBQueue::GetNextCmds(IDBCmd **cmds)
 {
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	void **c;
 	UOSInt i;
 	UOSInt j;
@@ -564,7 +564,7 @@ void DB::DBHandler::WriteError(const UTF8Char *errMsg, NotNullPtr<Text::String> 
 {
 	this->dbQ->log->LogMessage(CSTR("SQL: Failed"), IO::LogHandler::LogLevel::Error);
 
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	{
 		IO::FileStream fs(CSTR("FailSQL.txt"), IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 		Text::UTF8Writer writer(fs);

@@ -305,7 +305,7 @@ void SSWR::AVIRead::AVIRHTTPTestForm::ClearURLs()
 Text::String *SSWR::AVIRead::AVIRHTTPTestForm::GetNextURL()
 {
 	Text::String *url;
-	Sync::MutexUsage mutUsage(&this->connMut);
+	Sync::MutexUsage mutUsage(this->connMut);
 	if (this->connLeftCnt <= 0)
 	{
 		mutUsage.EndUse();

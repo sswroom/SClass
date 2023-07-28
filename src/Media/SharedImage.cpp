@@ -9,7 +9,7 @@
 Media::SharedImage::SharedImage(Media::SharedImage::ImageStatus *status)
 {
 	this->imgStatus = status;
-	Sync::MutexUsage mutUsage(&this->imgStatus->mut);
+	Sync::MutexUsage mutUsage(this->imgStatus->mut);
 	this->imgStatus->useCnt++;
 	mutUsage.EndUse();
 }
@@ -59,7 +59,7 @@ Media::SharedImage::SharedImage(Media::ImageList *imgList, Bool genPreview)
 Media::SharedImage::~SharedImage()
 {
 	Bool toDelete = false;
-	Sync::MutexUsage mutUsage(&this->imgStatus->mut);
+	Sync::MutexUsage mutUsage(this->imgStatus->mut);
 	if (--this->imgStatus->useCnt <= 0)
 	{
 		toDelete = true;

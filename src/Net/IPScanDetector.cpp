@@ -43,7 +43,7 @@ UInt32 __stdcall Net::IPScanDetector::DataThread(void *obj)
 				MemCopyNO(&macBuff[2], &buff[6], 6);
 				iMAC = ReadMUInt64(macBuff);
 				ip = ReadMUInt32(&buff[38]);
-				Sync::MutexUsage mutUsage(&stat->me->adapterMut);
+				Sync::MutexUsage mutUsage(stat->me->adapterMut);
 				adapter = stat->me->adapterMap.Get(iMAC);
 				if (adapter)
 				{
@@ -92,7 +92,7 @@ UInt32 __stdcall Net::IPScanDetector::DataThread(void *obj)
 				MemCopyNO(&macBuff[2], &buff[0], 6);
 				iMAC = ReadMUInt64(macBuff);
 				ip = ReadMUInt32(&buff[28]);
-				Sync::MutexUsage mutUsage(&stat->me->adapterMut);
+				Sync::MutexUsage mutUsage(stat->me->adapterMut);
 				adapter = stat->me->adapterMap.Get(iMAC);
 				if (adapter)
 				{

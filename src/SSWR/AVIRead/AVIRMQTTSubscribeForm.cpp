@@ -194,7 +194,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnTimerTick(void *userObj)
 	TopicStatus *topicSt;
 	UOSInt i;
 	UOSInt j;
-	Sync::MutexUsage mutUsage(&me->topicMut);
+	Sync::MutexUsage mutUsage(me->topicMut);
 	topicList = me->topicMap.GetValues();
 	i = 0;
 	j = topicList->GetCount();
@@ -264,7 +264,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnPublishMessage(void *user
 	Data::DateTime dt;
 	dt.SetCurrTimeUTC();
 	TopicStatus *topicSt;
-	Sync::MutexUsage mutUsage(&me->topicMut);
+	Sync::MutexUsage mutUsage(me->topicMut);
 	topicSt = me->topicMap.Get(topic);
 	if (topicSt == 0)
 	{

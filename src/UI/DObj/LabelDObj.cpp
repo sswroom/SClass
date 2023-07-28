@@ -47,7 +47,7 @@ Bool UI::DObj::LabelDObj::DoEvents()
 void UI::DObj::LabelDObj::DrawObject(Media::DrawImage *dimg)
 {
 	this->txtChg = false;
-	Sync::MutexUsage mutUsage(&this->txtMut);
+	Sync::MutexUsage mutUsage(this->txtMut);
 	NotNullPtr<Text::String> s;
 	if (s.Set(this->txt))
 	{
@@ -81,7 +81,7 @@ void UI::DObj::LabelDObj::OnMouseClick()
 
 void UI::DObj::LabelDObj::SetFont(Text::CString fontName, Double fontSizePx)
 {
-	Sync::MutexUsage mutUsage(&this->txtMut);
+	Sync::MutexUsage mutUsage(this->txtMut);
 	if (fontName.leng == 0)
 	{
 		fontName = CSTR("Arial");
@@ -101,7 +101,7 @@ void UI::DObj::LabelDObj::SetFont(Text::CString fontName, Double fontSizePx)
 
 void UI::DObj::LabelDObj::SetText(Text::CString txt)
 {
-	Sync::MutexUsage mutUsage(&this->txtMut);
+	Sync::MutexUsage mutUsage(this->txtMut);
 	if (this->txt == 0 && txt.leng == 0)
 		return;
 	if (txt.leng == 0)

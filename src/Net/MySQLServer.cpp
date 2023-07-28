@@ -792,7 +792,7 @@ void __stdcall Net::MySQLServer::OnClientConn(Socket *s, void *userObj)
 	data->userNameLen = 0;
 	data->database[0] = 0;
 	NEW_CLASS(data->attrMap, Data::StringUTF8Map<const UTF8Char*>());
-	Sync::MutexUsage mutUsage(&me->randMut);
+	Sync::MutexUsage mutUsage(me->randMut);
 	i = 0;
 	while (i < 20)
 	{

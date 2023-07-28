@@ -38,7 +38,7 @@ UOSInt IO::ProtoHdlr::ProtoGPSDevInfoHandler::ParseProtocol(NotNullPtr<IO::Strea
 				if (packetSize > buff.GetSize())
 					return buff.GetSize();
 
-				Sync::MutexUsage mutUsage(&this->crcMut);
+				Sync::MutexUsage mutUsage(this->crcMut);
 				this->crc.Clear();
 				this->crc.Calc(buff.Ptr(), packetSize - 2);
 				this->crc.GetValue(crcVal);
@@ -71,7 +71,7 @@ UOSInt IO::ProtoHdlr::ProtoGPSDevInfoHandler::BuildPacket(UInt8 *buff, Int32 cmd
 		MemCopyNO(&buff[6], cmd, cmdSize);
 	}
 	UInt8 crcVal[4];
-	Sync::MutexUsage mutUsage(&this->crcMut);
+	Sync::MutexUsage mutUsage(this->crcMut);
 	this->crc.Clear();
 	this->crc.Calc(buff, cmdSize + 6);
 	this->crc.GetValue(crcVal);

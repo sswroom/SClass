@@ -50,49 +50,49 @@ namespace Data
 
 	template <class T> UOSInt SyncArrayList<T>::Add(T val)
 	{
-		Sync::MutexUsage mutUsage(&this->mut);
+		Sync::MutexUsage mutUsage(this->mut);
 		return this->arr.Add(val);
 	}
 
 	template <class T> UOSInt Data::SyncArrayList<T>::AddRange(T *arr, UOSInt cnt)
 	{
-		Sync::MutexUsage mutUsage(&this->mut);
+		Sync::MutexUsage mutUsage(this->mut);
 		return this->arr.AddRange(arr, cnt);
 	}
 
 	template <class T> Bool Data::SyncArrayList<T>::Remove(T val)
 	{
-		Sync::MutexUsage mutUsage(&this->mut);
+		Sync::MutexUsage mutUsage(this->mut);
 		return this->arr.Remove(val);
 	}
 
 	template <class T> T Data::SyncArrayList<T>::RemoveAt(UOSInt index)
 	{
-		Sync::MutexUsage mutUsage(&this->mut);
+		Sync::MutexUsage mutUsage(this->mut);
 		return this->arr.RemoveAt(index);
 	}
 
 	template <class T> void Data::SyncArrayList<T>::Insert(UOSInt index, T val)
 	{
-		Sync::MutexUsage mutUsage(&this->mut);
+		Sync::MutexUsage mutUsage(this->mut);
 		this->arr.Insert(index, val);
 	}
 
 	template <class T> UOSInt Data::SyncArrayList<T>::IndexOf(T val) const
 	{
-		Sync::MutexUsage mutUsage(&this->mut);
+		Sync::MutexUsage mutUsage(this->mut);
 		return this->arr.IndexOf(val);
 	}
 
 	template <class T> void Data::SyncArrayList<T>::Clear()
 	{
-		Sync::MutexUsage mutUsage(&this->mut);
+		Sync::MutexUsage mutUsage(this->mut);
 		this->arr.Clear();
 	}
 
 	template <class T> T Data::SyncArrayList<T>::RemoveLast()
 	{
-		Sync::MutexUsage mutUsage(&this->mut);
+		Sync::MutexUsage mutUsage(this->mut);
 		UOSInt i = this->arr.GetCount();
 		if (i > 0)
 		{
@@ -104,7 +104,7 @@ namespace Data
 	template <class T> Data::SyncArrayList<T> *Data::SyncArrayList<T>::Clone() const
 	{
 		Data::SyncArrayList<T> *newArr;
-		Sync::MutexUsage mutUsage(&this->mut);
+		Sync::MutexUsage mutUsage(this->mut);
 		NEW_CLASS(newArr, Data::SyncArrayList<T>(this->arr.GetCapacity()));
 		newArr->arr.AddRange(&this->arr);
 		return newArr;
@@ -122,19 +122,19 @@ namespace Data
 
 	template <class T> T Data::SyncArrayList<T>::GetItem(UOSInt index) const
 	{
-		Sync::MutexUsage mutUsage(&this->mut);
+		Sync::MutexUsage mutUsage(this->mut);
 		return this->arr.GetItem(index);
 	}
 
 	template <class T> void Data::SyncArrayList<T>::SetItem(UOSInt index, T val)
 	{
-		Sync::MutexUsage mutUsage(&this->mut);
+		Sync::MutexUsage mutUsage(this->mut);
 		this->arr.SetItem(index, val);
 	}
 
 	template <class T> Data::ArrayList<T> *Data::SyncArrayList<T>::GetArrayList(Sync::MutexUsage *mutUsage)
 	{
-		mutUsage->ReplaceMutex(&this->mut);
+		mutUsage->ReplaceMutex(this->mut);
 		return &this->arr;
 	}
 }

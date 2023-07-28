@@ -33,8 +33,8 @@ namespace IO
 		UInt32 baudRate;
 		ParityType parity;
 		Bool flowCtrl;
-		Sync::Event *rdEvt;
-		Sync::Mutex *rdMut;
+		Sync::Event rdEvt;
+		Sync::Mutex rdMut;
 		Bool reading;
 
 		Bool InitStream();

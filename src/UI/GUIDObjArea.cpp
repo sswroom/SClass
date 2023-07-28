@@ -145,7 +145,7 @@ UInt32 __stdcall UI::GUIDObjArea::ProcessThread(void *userObj)
 	me->mainEvt.Set();
 	while (!me->processToStop)
 	{
-		Sync::MutexUsage mutUsage(&me->dobjMut);
+		Sync::MutexUsage mutUsage(me->dobjMut);
 		if (!me->drawUpdated && me->dobjHdlr && me->currDrawImg)
 		{
 			Bool changed = me->dobjHdlr->Check(me->currDrawImg);
@@ -174,7 +174,7 @@ UInt32 __stdcall UI::GUIDObjArea::ProcessThread(void *userObj)
 void __stdcall UI::GUIDObjArea::OnUpdateSize(void *userObj)
 {
 	UI::GUIDObjArea *me = (UI::GUIDObjArea*)userObj;
-	Sync::MutexUsage mutUsage(&me->dobjMut);
+	Sync::MutexUsage mutUsage(me->dobjMut);
 	if (me->dobjHdlr)
 	{
 		me->dobjHdlr->SizeChanged(me->GetSizeP());
@@ -229,7 +229,7 @@ UI::GUIDObjArea::~GUIDObjArea()
 
 void UI::GUIDObjArea::SetHandler(UI::DObj::DObjHandler *dobjHdlr)
 {
-	Sync::MutexUsage mutUsage(&this->dobjMut);
+	Sync::MutexUsage mutUsage(this->dobjMut);
 	if (this->dobjHdlr)
 	{
 		DEL_CLASS(this->dobjHdlr);
@@ -253,7 +253,7 @@ OSInt UI::GUIDObjArea::OnNotify(UInt32 code, void *lParam)
 
 void UI::GUIDObjArea::OnSurfaceCreated()
 {
-	Sync::MutexUsage mutUsage(&this->dobjMut);
+	Sync::MutexUsage mutUsage(this->dobjMut);
 	if (this->currDrawImg)
 	{
 		this->deng->DeleteImage(this->currDrawImg);
@@ -269,7 +269,7 @@ void UI::GUIDObjArea::OnMouseWheel(Math::Coord2D<OSInt> scnPos, Int32 amount)
 
 void UI::GUIDObjArea::OnMouseMove(Math::Coord2D<OSInt> scnPos)
 {
-	Sync::MutexUsage mutUsage(&this->dobjMut);
+	Sync::MutexUsage mutUsage(this->dobjMut);
 	if (this->dobjHdlr)
 	{
 		this->dobjHdlr->OnMouseMove(scnPos);
@@ -278,7 +278,7 @@ void UI::GUIDObjArea::OnMouseMove(Math::Coord2D<OSInt> scnPos)
 
 void UI::GUIDObjArea::OnMouseDown(Math::Coord2D<OSInt> scnPos, MouseButton button)
 {
-	Sync::MutexUsage mutUsage(&this->dobjMut);
+	Sync::MutexUsage mutUsage(this->dobjMut);
 	if (this->dobjHdlr)
 	{
 		this->dobjHdlr->OnMouseDown(scnPos, button);
@@ -287,7 +287,7 @@ void UI::GUIDObjArea::OnMouseDown(Math::Coord2D<OSInt> scnPos, MouseButton butto
 
 void UI::GUIDObjArea::OnMouseUp(Math::Coord2D<OSInt> scnPos, MouseButton button)
 {
-	Sync::MutexUsage mutUsage(&this->dobjMut);
+	Sync::MutexUsage mutUsage(this->dobjMut);
 	if (this->dobjHdlr)
 	{
 		this->dobjHdlr->OnMouseUp(scnPos, button);

@@ -58,7 +58,7 @@ void Media::AudioFilter::SoundGen::BellSoundGen::GenSignals(Double *buff, UOSInt
 	}
 
 
-	Sync::MutexUsage mutUsage(&this->soundMut);
+	Sync::MutexUsage mutUsage(this->soundMut);
 	norVol = this->sampleVol / paramCnt;
 	if (norVol <= 0)
 	{
@@ -98,7 +98,7 @@ Media::AudioFilter::SoundGen::ISoundGen::SoundType Media::AudioFilter::SoundGen:
 
 Bool Media::AudioFilter::SoundGen::BellSoundGen::GenSound(Double sampleVol)
 {
-	Sync::MutexUsage mutUsage(&this->soundMut);
+	Sync::MutexUsage mutUsage(this->soundMut);
 	this->sampleVol = sampleVol;
 	this->currSample = 0;
 	return true;

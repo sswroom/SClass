@@ -16,7 +16,7 @@ void Map::HKParkingVacancy::LoadParkingInfo()
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	Sync::MutexUsage mutUsage(&this->parkingMut);
+	Sync::MutexUsage mutUsage(this->parkingMut);
 	IO::MemoryStream mstm;
 	if (!Net::HTTPClient::LoadContent(this->sockf, this->ssl, CSTR("https://ogciopsi.blob.core.windows.net/dataset/parking-vacancy/parking-vacancy-info.csv"), &mstm, 10485760))
 	{
@@ -159,7 +159,7 @@ void Map::HKParkingVacancy::LoadVacancy()
 	UTF8Char *sptr;
 	if (this->parkingMap.GetCount() > 0)
 	{
-		Sync::MutexUsage mutUsage(&this->parkingMut);
+		Sync::MutexUsage mutUsage(this->parkingMut);
 		IO::MemoryStream mstm;
 		if (!Net::HTTPClient::LoadContent(this->sockf, this->ssl, CSTR("https://dashboard.data.gov.hk/api/parking-vacancy?format=csv"), &mstm, 10485760))
 		{
@@ -321,7 +321,7 @@ void Map::HKParkingVacancy::ReleaseNameArr(NameArray *nameArr)
 
 UTF8Char *Map::HKParkingVacancy::GetString(UTF8Char *buff, UOSInt buffSize, NameArray *nameArr, Int64 id, UOSInt strIndex)
 {
-	Sync::MutexUsage mutUsage(&this->parkingMut);
+	Sync::MutexUsage mutUsage(this->parkingMut);
 	ParkingInfo *parking = this->parkingMap.GetItem((UOSInt)id);
 	if (parking == 0)
 	{
@@ -547,7 +547,7 @@ void Map::HKParkingVacancy::EndGetObject(GetObjectSess *session)
 
 Math::Geometry::Vector2D *Map::HKParkingVacancy::GetNewVectorById(GetObjectSess *session, Int64 id)
 {
-	Sync::MutexUsage mutUsage(&this->parkingMut);
+	Sync::MutexUsage mutUsage(this->parkingMut);
 	ParkingInfo *parking = this->parkingMap.GetItem((UOSInt)id);
 	if (parking)
 	{

@@ -39,14 +39,14 @@ void UI::DObj::VideoDObjHandler::DrawVideo(Media::DrawImage *dimg)
 {
 	if (this->frameImg)
 	{
-		Sync::MutexUsage mutUsage(&this->frameMut);
+		Sync::MutexUsage mutUsage(this->frameMut);
 		dimg->DrawImagePt(this->frameImg, this->videoTL.ToDouble());
 	}
 }
 
 void UI::DObj::VideoDObjHandler::LockUpdateSize(Sync::MutexUsage *mutUsage)
 {
-	mutUsage->ReplaceMutex(&this->frameMut);
+	mutUsage->ReplaceMutex(this->frameMut);
 }
 
 void UI::DObj::VideoDObjHandler::DrawFromSurface(Media::MonitorSurface *surface, Math::Coord2D<OSInt> destTL, Math::Size2D<UOSInt> buffSize, Bool clearScn)
@@ -56,7 +56,7 @@ void UI::DObj::VideoDObjHandler::DrawFromSurface(Media::MonitorSurface *surface,
 #endif
 	if (this->frameImg)
 	{
-		Sync::MutexUsage mutUsage(&this->frameMut);
+		Sync::MutexUsage mutUsage(this->frameMut);
 		Bool revOrder;
 		UInt8 *bits = this->frameImg->GetImgBits(&revOrder);
 		if (bits)
@@ -114,7 +114,7 @@ UI::DObj::VideoDObjHandler::~VideoDObjHandler()
 
 void UI::DObj::VideoDObjHandler::UpdateVideoArea(Math::Coord2D<OSInt> videoTL, Math::Size2D<UOSInt> videoSize)
 {
-	Sync::MutexUsage mutUsage(&this->frameMut);
+	Sync::MutexUsage mutUsage(this->frameMut);
 	this->deng->DeleteImage(this->frameImg);
 	this->videoTL = videoTL;
 	this->videoSize = videoSize;

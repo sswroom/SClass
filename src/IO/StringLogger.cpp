@@ -32,7 +32,7 @@ void IO::StringLogger::ReadLogs(IO::Reader *reader)
 
 void IO::StringLogger::LogStr(const UTF8Char *s, UOSInt len)
 {
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	OSInt i = this->strList.SortedIndexOfPtr(s, len);
 	if (i < 0)
 	{
@@ -43,7 +43,7 @@ void IO::StringLogger::LogStr(const UTF8Char *s, UOSInt len)
 
 void IO::StringLogger::WriteLogs(IO::Writer *writer)
 {
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	Text::String *s;
 	UOSInt i = 0;
 	UOSInt j = this->strList.GetCount();	

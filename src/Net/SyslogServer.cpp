@@ -49,7 +49,7 @@ Net::SyslogServer::IPStatus *Net::SyslogServer::GetIPStatus(const Net::SocketUti
 	{
 		UInt32 ip = ReadMUInt32(addr->addr);
 		Net::SyslogServer::IPStatus *status;
-		Sync::MutexUsage mutUsage(&this->ipMut);
+		Sync::MutexUsage mutUsage(this->ipMut);
 		status = this->ipMap.Get(ip);
 		if (status)
 		{

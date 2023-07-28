@@ -45,7 +45,7 @@ Bool __stdcall IO::Device::SIM7000::CheckATCommand(void *userObj, const UTF8Char
 				sarr[2].v++;
 				sarr[2].leng = i;
 			}
-			Sync::MutexUsage mutUsage(&me->dnsMut);
+			Sync::MutexUsage mutUsage(me->dnsMut);
 			if (me->dnsReq.v && me->dnsResp)
 			{
 				if (sarr[1].Equals(me->dnsReq.v, me->dnsReq.leng) && Net::SocketUtil::GetIPAddr(sarr[2].ToCString(), me->dnsResp))
@@ -152,7 +152,7 @@ void IO::Device::SIM7000::SetReceiveHandler(ReceiveHandler recvHdlr, void *userO
 
 Bool IO::Device::SIM7000::SIMCOMPowerDown()
 {
-	Sync::MutexUsage mutUsage(&this->cmdMut);
+	Sync::MutexUsage mutUsage(this->cmdMut);
 	this->channel->SendATCommand(&this->cmdResults, UTF8STRC("AT+CPOWD=1"), 2000);
 	UOSInt i = this->cmdResults.GetCount();
 	Text::String *val;
@@ -420,7 +420,7 @@ Bool IO::Device::SIM7000::NetDNSResolveIP(Text::CString domain, Net::SocketUtil:
 	sptr = domain.ConcatTo(sptr);
 	*sptr++ = '"';
 	*sptr = 0;
-	Sync::MutexUsage mutUsage(&this->dnsMut);
+	Sync::MutexUsage mutUsage(this->dnsMut);
 	while (this->dnsReq.v)
 	{
 		mutUsage.EndUse();

@@ -547,6 +547,7 @@ Math::Geometry::Vector2D *Map::SHPData::GetNewVectorById(GetObjectSess *session,
 {
 	Map::SHPData::RecHdr *rec;
 	UOSInt nPoint;
+	NotNullPtr<Sync::Mutex> mut;
 
 	UInt32 srid = 0;
 	if (this->csys)
@@ -573,10 +574,10 @@ Math::Geometry::Vector2D *Map::SHPData::GetNewVectorById(GetObjectSess *session,
 		NEW_CLASS(pt, Math::Geometry::PointZ(srid, this->ptX->GetItem((UOSInt)id), this->ptY->GetItem((UOSInt)id), this->ptZ->GetItem((UOSInt)id)));
 		return pt;
 	}
-	else if (this->layerType == Map::DRAW_LAYER_POLYGON)
+	else if (this->layerType == Map::DRAW_LAYER_POLYGON && mut.Set(this->recsMut))
 	{
 		Math::Geometry::Polygon *pg;
-		Sync::MutexUsage mutUsage(this->recsMut);
+		Sync::MutexUsage mutUsage(mut);
 		rec = (Map::SHPData::RecHdr*)this->recs->GetItem((UOSInt)id);
 		if (rec == 0)
 			return 0;
@@ -587,10 +588,10 @@ Math::Geometry::Vector2D *Map::SHPData::GetNewVectorById(GetObjectSess *session,
 		rec->vec = pg->Clone();
 		return pg;
 	}
-	else if (this->layerType == Map::DRAW_LAYER_POLYLINE)
+	else if (this->layerType == Map::DRAW_LAYER_POLYLINE && mut.Set(this->recsMut))
 	{
 		Math::Geometry::Polyline *pl;
-		Sync::MutexUsage mutUsage(this->recsMut);
+		Sync::MutexUsage mutUsage(mut);
 		rec = (Map::SHPData::RecHdr*)this->recs->GetItem((UOSInt)id);
 		if (rec == 0)
 			return 0;
@@ -601,10 +602,10 @@ Math::Geometry::Vector2D *Map::SHPData::GetNewVectorById(GetObjectSess *session,
 		rec->vec = pl->Clone();
 		return pl;
 	}
-	else if (this->layerType == Map::DRAW_LAYER_POLYLINE3D)
+	else if (this->layerType == Map::DRAW_LAYER_POLYLINE3D && mut.Set(this->recsMut))
 	{
 		Math::Geometry::Polyline *pl;
-		Sync::MutexUsage mutUsage(this->recsMut);
+		Sync::MutexUsage mutUsage(mut);
 		rec = (Map::SHPData::RecHdr*)this->recs->GetItem((UOSInt)id);
 		if (rec == 0)
 			return 0;

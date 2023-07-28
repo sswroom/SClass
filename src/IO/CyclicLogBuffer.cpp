@@ -33,7 +33,7 @@ void IO::CyclicLogBuffer::LogAdded(const Data::Timestamp &logTime, Text::CString
 	*sptr++ = '\t';
 	sptr = logMsg.ConcatTo(sptr);
 
-	Sync::MutexUsage mutUsage(&this->logMut);
+	Sync::MutexUsage mutUsage(this->logMut);
 	if (this->logBuff[this->logInd])
 	{
 		MemFree(this->logBuff[this->logInd]);
@@ -53,7 +53,7 @@ void IO::CyclicLogBuffer::LogClosed()
 
 void IO::CyclicLogBuffer::GetLogs(Text::StringBuilderUTF8 *sb, Text::CString seperator)
 {
-	Sync::MutexUsage mutUsage(&this->logMut);
+	Sync::MutexUsage mutUsage(this->logMut);
 	UOSInt i = this->logInd;
 	while (i-- > 0)
 	{

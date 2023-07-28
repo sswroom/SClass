@@ -27,7 +27,7 @@ UInt32 __stdcall Map::DrawMapServiceLayer::TaskThread(void *userObj)
 		{
 			while (thisId != me->dispId)
 			{
-				Sync::MutexUsage mutUsage(&me->dispMut);
+				Sync::MutexUsage mutUsage(me->dispMut);
 				thisId = me->dispId;
 				bounds = me->dispBounds;
 				size = me->dispSize;
@@ -42,7 +42,7 @@ UInt32 __stdcall Map::DrawMapServiceLayer::TaskThread(void *userObj)
 					{
 						NEW_CLASS(me->dispImage, Media::SharedImage(imgList, false));
 						me->dispImageURL = Text::String::New(sb.ToCString()).Ptr();
-						mutUsage.ReplaceMutex(&me->updMut);
+						mutUsage.ReplaceMutex(me->updMut);
 						UOSInt i = me->updHdlrs.GetCount();
 						while (i-- > 0)
 						{
@@ -59,7 +59,7 @@ UInt32 __stdcall Map::DrawMapServiceLayer::TaskThread(void *userObj)
 						me->lastDPI = dpi;
 						NEW_CLASS(me->lastImage, Media::SharedImage(imgList, false));
 						me->lastImageURL = Text::String::New(sb.ToCString()).Ptr();
-						mutUsage.ReplaceMutex(&me->updMut);
+						mutUsage.ReplaceMutex(me->updMut);
 						UOSInt i = me->updHdlrs.GetCount();
 						while (i-- > 0)
 						{
@@ -120,7 +120,7 @@ Map::DrawMapServiceLayer::DrawMapServiceLayer(Map::DrawMapService *mapService) :
 
 Map::DrawMapServiceLayer::~DrawMapServiceLayer()
 {
-	Sync::MutexUsage mutUsage(&this->updMut);
+	Sync::MutexUsage mutUsage(this->updMut);
 	this->updHdlrs.Clear();
 	this->updObjs.Clear();
 	mutUsage.EndUse();
@@ -165,7 +165,7 @@ UOSInt Map::DrawMapServiceLayer::GetObjectIds(Data::ArrayListInt64 *outArr, Name
 
 UOSInt Map::DrawMapServiceLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
-	Sync::MutexUsage mutUsage(&this->dispMut);
+	Sync::MutexUsage mutUsage(this->dispMut);
 	if (this->dispBounds == rect)
 	{
 		if (this->dispImage)
@@ -275,7 +275,7 @@ Bool Map::DrawMapServiceLayer::GetBounds(Math::RectAreaDbl *bounds)
 
 void Map::DrawMapServiceLayer::SetDispSize(Math::Size2DDbl size, Double dpi)
 {
-	Sync::MutexUsage mutUsage(&this->dispMut);
+	Sync::MutexUsage mutUsage(this->dispMut);
 	if (this->dispSize != size || this->dispDPI != dpi)
 	{
 		this->ClearDisp();
@@ -296,7 +296,7 @@ void Map::DrawMapServiceLayer::EndGetObject(GetObjectSess *session)
 
 Math::Geometry::Vector2D *Map::DrawMapServiceLayer::GetNewVectorById(GetObjectSess *session, Int64 id)
 {
-	Sync::MutexUsage mutUsage(&this->dispMut);
+	Sync::MutexUsage mutUsage(this->dispMut);
 	if (this->dispId == id && this->dispImage)
 	{
 		Math::Geometry::Vector2D *vec;
@@ -329,7 +329,7 @@ Bool Map::DrawMapServiceLayer::QueryInfos(Math::Coord2DDbl coord, Data::ArrayLis
 
 void Map::DrawMapServiceLayer::AddUpdatedHandler(Map::MapRenderer::UpdatedHandler hdlr, void *obj)
 {
-	Sync::MutexUsage mutUsage(&this->updMut);
+	Sync::MutexUsage mutUsage(this->updMut);
 	this->updHdlrs.Add(hdlr);
 	this->updObjs.Add(obj);
 	mutUsage.EndUse();
@@ -338,7 +338,7 @@ void Map::DrawMapServiceLayer::AddUpdatedHandler(Map::MapRenderer::UpdatedHandle
 void Map::DrawMapServiceLayer::RemoveUpdatedHandler(Map::MapRenderer::UpdatedHandler hdlr, void *obj)
 {
 	UOSInt i;
-	Sync::MutexUsage mutUsage(&this->updMut);
+	Sync::MutexUsage mutUsage(this->updMut);
 	i = this->updHdlrs.GetCount();
 	while (i-- > 0)
 	{

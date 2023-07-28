@@ -140,7 +140,7 @@ Bool IO::ZIPBuilder::AddFile(Text::CString fileName, const UInt8 *fileContent, U
 	file->uncompSize = fileSize;
 	file->compMeth = 8;
 	file->compSize = compSize;
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	file->fileOfst = this->currOfst;
 	this->files.Add(file);
 	if (compSize >= fileSize)

@@ -59,7 +59,7 @@ void __stdcall Net::SSDPClient::OnPacketRecv(const Net::SocketUtil::AddressInfo 
 			
 			if (usn.leng > 0)
 			{
-				Sync::MutexUsage mutUsage(&me->mut);
+				Sync::MutexUsage mutUsage(me->mut);
 				UInt32 ip = ReadNUInt32(addr->addr);
 				SSDPDevice *dev = me->devMap.Get(ip);
 				SSDPService *svc;
@@ -163,7 +163,7 @@ Bool Net::SSDPClient::Scan()
 
 const Data::ReadingList<Net::SSDPClient::SSDPDevice*> *Net::SSDPClient::GetDevices(Sync::MutexUsage *mutUsage) const
 {
-	mutUsage->ReplaceMutex(&this->mut);
+	mutUsage->ReplaceMutex(this->mut);
 	return &this->devMap;
 }
 

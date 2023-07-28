@@ -1160,7 +1160,7 @@ void Media::Resizer::LanczosResizerLR_C32::Resize(const UInt8 *src, OSInt sbpl, 
 	{
 		if (dwidth < this->hnTap || dheight < this->vnTap)
 			return;
-		Sync::MutexUsage mutUsage(&this->mut);
+		Sync::MutexUsage mutUsage(this->mut);
 		if (this->hsSize != swidth || this->hdSize != dwidth || this->hsOfst != xOfst)
 		{
 			DestoryHori();
@@ -1211,7 +1211,7 @@ void Media::Resizer::LanczosResizerLR_C32::Resize(const UInt8 *src, OSInt sbpl, 
 	{
 		if (dwidth < this->hnTap)
 			return;
-		Sync::MutexUsage mutUsage(&this->mut);
+		Sync::MutexUsage mutUsage(this->mut);
 		if (hsSize != swidth || hdSize != dwidth || hsOfst != xOfst)
 		{
 			DestoryHori();
@@ -1239,7 +1239,7 @@ void Media::Resizer::LanczosResizerLR_C32::Resize(const UInt8 *src, OSInt sbpl, 
 	{
 		if (dheight < this->vnTap)
 			return;
-		Sync::MutexUsage mutUsage(&this->mut);
+		Sync::MutexUsage mutUsage(this->mut);
 		if (vsSize != sheight || vdSize != dheight || vsStep != sbpl || vsOfst != yOfst)
 		{
 			DestoryVert();
@@ -1266,7 +1266,7 @@ void Media::Resizer::LanczosResizerLR_C32::Resize(const UInt8 *src, OSInt sbpl, 
 	}
 	else
 	{
-		Sync::MutexUsage mutUsage(&this->mut);
+		Sync::MutexUsage mutUsage(this->mut);
 		action->DoCollapse(src, dest, (UOSInt)siWidth, dheight, sbpl, dbpl, this->srcAlphaType);
 		mutUsage.EndUse();
 

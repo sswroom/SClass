@@ -161,7 +161,7 @@ UInt32 __stdcall IO::MTFileLog::FileThread(void *userObj)
 	Data::Timestamp *dateArr = 0;
 	while (!me->closed)
 	{
-		Sync::MutexUsage mutUsage(&me->mut);
+		Sync::MutexUsage mutUsage(me->mut);
 		if ((arrCnt = me->msgList.GetCount()) > 0)
 		{
 			msgArr = MemAlloc(NotNullPtr<Text::String>, arrCnt);
@@ -280,7 +280,7 @@ IO::MTFileLog::~MTFileLog()
 	{
 		Sync::SimpleThread::Sleep(10);
 	}
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	log->Close();
 	mutUsage.EndUse();
 
@@ -307,7 +307,7 @@ void IO::MTFileLog::LogAdded(const Data::Timestamp &time, Text::CString logMsg, 
 	if (closed)
 		return;
 
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	this->msgList.Add(Text::String::New(logMsg));
 	this->dateList.Add(time);
 	mutUsage.EndUse();

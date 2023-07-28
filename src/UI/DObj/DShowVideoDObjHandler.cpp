@@ -31,7 +31,7 @@ void __stdcall UI::DObj::DShowVideoDObjHandler::OnVideoFrame(void *userObj, UInt
 	UInt8 *bptr = dimg->GetImgBits(&revOrder);
 	if (bptr)
 	{
-		Sync::MutexUsage mutUsage(&me->frameMut);
+		Sync::MutexUsage mutUsage(me->frameMut);
 		if (revOrder)
 		{
 			me->resizer->Resize(frameBuff, frameW << 2, frameW, frameH, 0, 0, bptr + (Int32)(me->videoSize.y - ((me->videoSize.y - outH) >> 1)) * dbpl - dbpl + (((me->videoSize.x - outW) >> 1) << 2), -dbpl, outW, outH);
@@ -67,7 +67,7 @@ void UI::DObj::DShowVideoDObjHandler::DrawVideo(Media::DrawImage *dimg)
 {
 	if (this->frameImg)
 	{
-		Sync::MutexUsage mutUsage(&this->frameMut);
+		Sync::MutexUsage mutUsage(this->frameMut);
 		dimg->DrawImagePt(this->frameImg, this->videoTL.ToDouble());
 	}
 }

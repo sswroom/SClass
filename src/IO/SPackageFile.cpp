@@ -432,7 +432,7 @@ Bool IO::SPackageFile::AddFile(NotNullPtr<IO::StreamData> fd, Text::CString file
 	UOSInt writeSize;
 	Bool needCommit = false;
 
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	if (this->fileMap.Get(fileName) == 0)
 	{
 	}
@@ -514,7 +514,7 @@ Bool IO::SPackageFile::AddFile(const UInt8 *fileBuff, UOSInt fileSize, Text::CSt
 {
 	UInt8 dataBuff[512];
 	Bool needCommit = false;
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	if (this->fileMap.Get(fileName) == 0)
 	{
 	}
@@ -577,7 +577,7 @@ Bool IO::SPackageFile::Commit()
 	UInt8 *buff;
 	UInt8 hdr[16];
 	Bool succ = false;
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	buff = this->mstm.GetBuff(&buffSize);
 	if (this->flags & 2)
 	{
@@ -642,7 +642,7 @@ Bool IO::SPackageFile::OptimizeFile(Text::CString newFile)
 		NEW_CLASS(spkg, IO::SPackageFile(fs, true));
 	}
 	spkg->PauseCommit(true);
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	this->writeMode = false;
 	this->stm->SeekFromBeginning(0);
 	this->stm->Read(BYTEARR(hdr));
@@ -665,7 +665,7 @@ void IO::SPackageFile::PauseCommit(Bool pauseCommit)
 IO::StreamData *IO::SPackageFile::CreateStreamData(Text::CString fileName)
 {
 	IO::StreamData *fd = 0;
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	FileInfo *file = this->fileMap.Get(fileName);
 	if (file)
 	{

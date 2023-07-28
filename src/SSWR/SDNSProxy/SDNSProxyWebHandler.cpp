@@ -419,7 +419,7 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::TargetReq(SSWR::SDNSProxy::
 		sbOut.AppendC(UTF8STRC("</h3>\r\n"));
 
 		target = targetList.GetItem((UOSInt)targetIndex);
-		Sync::MutexUsage mutUsage(&target->mut);
+		Sync::MutexUsage mutUsage(target->mut);
 		i = 0;
 		j = target->addrList.GetCount();
 		while (i < j)
@@ -559,7 +559,7 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::ClientReq(SSWR::SDNSProxy::
 		sbOut.AppendC(UTF8STRC("</h3>"));
 		sbOut.AppendC(UTF8STRC("<table border=\"1\"><tr><td>Time</td><td>Count</td></tr>"));
 		SSWR::SDNSProxy::SDNSProxyCore::HourInfo *hInfo;
-		Sync::MutexUsage mutUsage(&selCli->mut);
+		Sync::MutexUsage mutUsage(selCli->mut);
 		i = selCli->hourInfos.GetCount();
 		while (i-- > 0)
 		{

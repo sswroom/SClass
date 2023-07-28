@@ -13,7 +13,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRThreadSpeedForm::TestThread(void *userObj)
 	me->t = me->clk.GetTimeDiff();
 	me->clk.Start();
 	me->mainEvt.Set();
-	Sync::MutexUsage mutUsage(&me->mut);
+	Sync::MutexUsage mutUsage(me->mut);
 	Sync::SimpleThread::Sleep(500);
 	me->clk.Start();
 	return 0;
@@ -55,7 +55,7 @@ void __stdcall SSWR::AVIRead::AVIRThreadSpeedForm::OnTestClicked(void *userObj)
 	i = 1000;
 	while (i-- > 0)
 	{
-		Sync::MutexUsage mutUsage(&me->mut);
+		Sync::MutexUsage mutUsage(me->mut);
 	}
 	t = me->clk.GetTimeDiff();
 	i = me->lvResult->AddItem(CSTR("Mutex Lock Unlock"), 0);
@@ -99,7 +99,7 @@ void __stdcall SSWR::AVIRead::AVIRThreadSpeedForm::OnTestClicked(void *userObj)
 
 	Sync::SimpleThread::Sleep(100);
 	{
-		Sync::MutexUsage mutUsage(&me->mut);
+		Sync::MutexUsage mutUsage(me->mut);
 		t = me->clk.GetTimeDiff();
 	}
 	i = me->lvResult->AddItem(CSTR("Mutex Lock Relase"), 0);

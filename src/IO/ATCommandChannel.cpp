@@ -64,7 +64,7 @@ UInt32 __stdcall IO::ATCommandChannel::CmdThread(void *userObj)
 						}
 						else
 						{
-							Sync::MutexUsage mutUsage(&me->cmdResultMut);
+							Sync::MutexUsage mutUsage(me->cmdResultMut);
 							me->cmdResults.Add(cmdResult);
 							mutUsage.EndUse();
 							me->cmdEvt.Set();
@@ -109,7 +109,7 @@ void IO::ATCommandChannel::ClearResults()
 	Text::String *cmdRes;
 	while (this->cmdResults.GetCount() > 0)
 	{
-		Sync::MutexUsage mutUsage(&this->cmdResultMut);
+		Sync::MutexUsage mutUsage(this->cmdResultMut);
 		cmdRes = this->cmdResults.RemoveAt(0);
 		mutUsage.EndUse();
 		cmdRes->Release();
@@ -324,7 +324,7 @@ Bool IO::ATCommandChannel::UseCmd(Sync::MutexUsage *mutUsage)
 {
 	if (!this->threadRunning)
 		return false;
-	mutUsage->ReplaceMutex(&this->cmdMut);
+	mutUsage->ReplaceMutex(this->cmdMut);
 	this->ClearResults();
 	return true;
 }
@@ -340,7 +340,7 @@ Text::String *IO::ATCommandChannel::CmdGetNextResult(Data::Duration timeout)
 	this->cmdEvt.Clear();
 	if (this->cmdResults.GetCount() > 0)
 	{
-		Sync::MutexUsage mutUsage(&this->cmdResultMut);
+		Sync::MutexUsage mutUsage(this->cmdResultMut);
 		cmdRes = this->cmdResults.RemoveAt(0);
 		mutUsage.EndUse();
 		return cmdRes;
@@ -348,7 +348,7 @@ Text::String *IO::ATCommandChannel::CmdGetNextResult(Data::Duration timeout)
 	this->cmdEvt.Wait(timeout);
 	if (this->cmdResults.GetCount() > 0)
 	{
-		Sync::MutexUsage mutUsage(&this->cmdResultMut);
+		Sync::MutexUsage mutUsage(this->cmdResultMut);
 		cmdRes = this->cmdResults.RemoveAt(0);
 		mutUsage.EndUse();
 		return cmdRes;

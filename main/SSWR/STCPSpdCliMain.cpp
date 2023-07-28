@@ -26,7 +26,7 @@ Sync::Event *mainEvt;
 Sync::Event *procEvt;
 Sync::Event *recvEvt;
 Sync::Event *dispEvt;
-Sync::Mutex *cliMut;
+NotNullPtr<Sync::Mutex> cliMut;
 Net::TCPClient *cli;
 UInt64 totalRecvSize;
 UInt64 totalSendSize;
@@ -159,7 +159,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		toStop = false;
 		procRunning = 0;
 		recvRunning = false;
-		NEW_CLASS(cliMut, Sync::Mutex());
+		NEW_CLASSNN(cliMut, Sync::Mutex());
 		NEW_CLASS(clk, Manage::HiResClock());
 		NEW_CLASS(mainEvt, Sync::Event(true));
 		NEW_CLASS(recvEvt, Sync::Event(true));
@@ -244,7 +244,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		DEL_CLASS(procEvt);
 		DEL_CLASS(recvEvt);
 		DEL_CLASS(dispEvt);
-		DEL_CLASS(cliMut);
+		cliMut.Delete();
 		DEL_CLASS(clk);
 		sockf.Delete();
 	}

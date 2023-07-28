@@ -19,7 +19,7 @@ void Media::VideoFilter::IVTCFilter::ProcessVideoFrame(UInt32 frameTime, UInt32 
 {
 	if (flags & Media::IVideoSource::FF_DISCONTTIME)
 	{
-		Sync::MutexUsage mutUsage(&this->mut);
+		Sync::MutexUsage mutUsage(this->mut);
 		if (this->enabled)
 		{
 			this->ClearIVTC();
@@ -33,7 +33,7 @@ void Media::VideoFilter::IVTCFilter::ProcessVideoFrame(UInt32 frameTime, UInt32 
 	{
 		this->mainEvt.Wait(100);
 	}
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	if (this->enabled)
 	{
 		if (this->fieldExist)
@@ -395,7 +395,7 @@ void Media::VideoFilter::IVTCFilter::OnFrameChange(Media::IVideoSource::FrameCha
 
 void Media::VideoFilter::IVTCFilter::do_IVTC(UInt32 frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
 {
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	if (this->enabled)
 	{
 		if (frameType == Media::FT_INTERLACED_TFF || frameType == Media::FT_INTERLACED_BFF)
@@ -2064,7 +2064,7 @@ Text::CString Media::VideoFilter::IVTCFilter::GetFilterName()
 
 void Media::VideoFilter::IVTCFilter::SetEnabled(Bool enabled)
 {
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	this->enabled = enabled;
 	this->ClearIVTC();
 	mutUsage.EndUse();

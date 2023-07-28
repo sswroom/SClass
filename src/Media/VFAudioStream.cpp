@@ -10,7 +10,7 @@ Media::VFAudioStream::VFAudioStream(Media::VFMediaFile *mfile)
 {
 	this->mfile = mfile;
 	{
-		Sync::MutexUsage mutUsage(&this->mfile->mut);
+		Sync::MutexUsage mutUsage(this->mfile->mut);
 		this->mfile->useCnt++;
 	}
 
@@ -37,7 +37,7 @@ Media::VFAudioStream::~VFAudioStream()
 {
 	UOSInt useCnt;
 	{
-		Sync::MutexUsage mutUsage(&this->mfile->mut);
+		Sync::MutexUsage mutUsage(this->mfile->mut);
 		useCnt = --this->mfile->useCnt;
 	}
 	if (useCnt == 0)

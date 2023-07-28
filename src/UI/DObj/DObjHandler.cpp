@@ -38,7 +38,7 @@ void UI::DObj::DObjHandler::ClearObjects()
 {
 	UOSInt i;
 	DirectObject *obj;
-	Sync::MutexUsage mutUsage(&this->objMut);
+	Sync::MutexUsage mutUsage(this->objMut);
 	i = this->objList.GetCount();
 	while (i-- > 0)
 	{
@@ -55,7 +55,7 @@ void UI::DObj::DObjHandler::ClearObjects()
 
 void UI::DObj::DObjHandler::AddObject(DirectObject *obj)
 {
-	Sync::MutexUsage mutUsage(&this->objMut);
+	Sync::MutexUsage mutUsage(this->objMut);
 	this->objList.Add(obj);
 	this->shown = false;
 }
@@ -65,7 +65,7 @@ Bool UI::DObj::DObjHandler::Check(Media::DrawImage *dimg)
 	Bool isChanged = !this->shown;
 	UOSInt i;
 	DirectObject *obj;
-	Sync::MutexUsage mutUsage(&this->objMut);
+	Sync::MutexUsage mutUsage(this->objMut);
 	i = this->objList.GetCount();
 	while (i-- > 0)
 	{
@@ -96,13 +96,13 @@ Bool UI::DObj::DObjHandler::Check(Media::DrawImage *dimg)
 void UI::DObj::DObjHandler::DrawAll(Media::DrawImage *dimg)
 {
 	this->shown = true;
-	Sync::MutexUsage updMutUsage(&this->updMut);
+	Sync::MutexUsage updMutUsage(this->updMut);
 	this->DrawBkg(dimg);
 
 	UOSInt i;
 	UOSInt j;
 	DirectObject *obj;
-	Sync::MutexUsage mutUsage(&this->objMut);
+	Sync::MutexUsage mutUsage(this->objMut);
 	i = 0;
 	j = this->objList.GetCount();
 	while (i < j)
@@ -130,7 +130,7 @@ void UI::DObj::DObjHandler::OnMouseDown(Math::Coord2D<OSInt> scnPos, UI::GUICont
 	{
 		UOSInt i;
 		DirectObject *obj;
-		Sync::MutexUsage mutUsage(&this->objMut);
+		Sync::MutexUsage mutUsage(this->objMut);
 		i = this->objList.GetCount();
 		while (i-- > 0)
 		{
@@ -149,7 +149,7 @@ void UI::DObj::DObjHandler::OnMouseUp(Math::Coord2D<OSInt> scnPos, UI::GUIContro
 {
 	if (button == UI::GUIControl::MBTN_LEFT)
 	{
-		Sync::MutexUsage mutUsage(&this->objMut);
+		Sync::MutexUsage mutUsage(this->objMut);
 		if (this->downObj != 0)
 		{
 			this->downObj->OnMouseUp();
@@ -168,7 +168,7 @@ void UI::DObj::DObjHandler::OnMouseMove(Math::Coord2D<OSInt> scnPos)
 	
 	UOSInt i;
 	DirectObject *obj;
-	Sync::MutexUsage mutUsage(&this->objMut);
+	Sync::MutexUsage mutUsage(this->objMut);
 	i = this->objList.GetCount();
 	while (i-- > 0)
 	{

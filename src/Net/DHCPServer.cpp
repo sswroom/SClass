@@ -75,7 +75,7 @@ void __stdcall Net::DHCPServer::PacketHdlr(const Net::SocketUtil::AddressInfo *a
 			WriteMUInt32(&repBuff[4], transactionId);
 			WriteMUInt64(&repBuff[26], hwAddr);
 			WriteNUInt32(&repBuff[20], me->infIP);
-			Sync::MutexUsage mutUsage(&me->devMut);
+			Sync::MutexUsage mutUsage(me->devMut);
 			dev = me->devMap.Get(hwAddr);
 			if (dev)
 			{
@@ -197,7 +197,7 @@ void __stdcall Net::DHCPServer::PacketHdlr(const Net::SocketUtil::AddressInfo *a
 			repBuff[2] = 6;
 			WriteMUInt32(&repBuff[4], transactionId);
 			WriteMUInt64(&repBuff[26], hwAddr);
-			Sync::MutexUsage mutUsage(&me->devMut);
+			Sync::MutexUsage mutUsage(me->devMut);
 			dev = me->devMap.Get(hwAddr);
 			if (dev == 0)
 			{
@@ -359,7 +359,7 @@ Bool Net::DHCPServer::IsError() const
 
 void Net::DHCPServer::UseStatus(Sync::MutexUsage *mutUsage) const
 {
-	mutUsage->ReplaceMutex(&this->devMut);
+	mutUsage->ReplaceMutex(this->devMut);
 }
 
 const Data::ReadingList<Net::DHCPServer::DeviceStatus*> *Net::DHCPServer::StatusGetList() const

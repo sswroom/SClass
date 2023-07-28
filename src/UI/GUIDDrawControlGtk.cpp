@@ -218,7 +218,7 @@ void __stdcall UI::GUIDDrawControl::OnResized(void *userObj)
 	}
 	else
 	{
-		Sync::MutexUsage mutUsage(&data->me->surfaceMut);
+		Sync::MutexUsage mutUsage(data->me->surfaceMut);
 		data->me->surfaceSize = Math::Size2D<UOSInt>((UOSInt)data->allocation->width, (UOSInt)data->allocation->height);
 		data->me->ReleaseSubSurface();
 		data->me->CreateSubSurface();
@@ -250,7 +250,7 @@ void UI::GUIDDrawControl::OnPaint()
 {
 	if (this->currScnMode != SM_FS && this->currScnMode != SM_VFS)
 	{
-		Sync::MutexUsage mutUsage(&this->surfaceMut);
+		Sync::MutexUsage mutUsage(this->surfaceMut);
 		DrawToScreen();
 		mutUsage.EndUse();
 	}
@@ -526,7 +526,7 @@ void UI::GUIDDrawControl::DrawToScreen()
 
 void UI::GUIDDrawControl::DisplayFromSurface(Media::MonitorSurface *surface, Math::Coord2D<OSInt> tl, Math::Size2D<UOSInt> drawSize, Bool clearScn)
 {
-	Sync::MutexUsage mutUsage(&this->surfaceMut);
+	Sync::MutexUsage mutUsage(this->surfaceMut);
 	if (this->primarySurface)
 	{
 		if (this->clsData->drawPause)
@@ -661,7 +661,7 @@ void *UI::GUIDDrawControl::GetPixBuf()
 
 void UI::GUIDDrawControl::UseDrawSurface(Sync::MutexUsage *mutUsage)
 {
-	mutUsage->ReplaceMutex(&this->surfaceMut);
+	mutUsage->ReplaceMutex(this->surfaceMut);
 }
 
 void UI::GUIDDrawControl::UnuseDrawSurface(Sync::MutexUsage *mutUsage)

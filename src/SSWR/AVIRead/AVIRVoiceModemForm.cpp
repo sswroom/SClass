@@ -17,7 +17,7 @@ void __stdcall SSWR::AVIRead::AVIRVoiceModemForm::OnTimerTick(void *userObj)
 	if (me->toneChg)
 	{
 		me->toneChg = false;
-		Sync::MutexUsage mutUsage(&me->toneMut);
+		Sync::MutexUsage mutUsage(me->toneMut);
 		me->txtDialTones->SetText(me->toneSb.ToCString());
 	}
 
@@ -160,7 +160,7 @@ void __stdcall SSWR::AVIRead::AVIRVoiceModemForm::OnModemEvent(void *userObj, UI
 	case 'C':
 	case 'D':
 		{
-			Sync::MutexUsage mutUsage(&me->toneMut);
+			Sync::MutexUsage mutUsage(me->toneMut);
 			me->toneSb.AppendUTF8Char(evtType);
 			me->toneChg = true;
 		}

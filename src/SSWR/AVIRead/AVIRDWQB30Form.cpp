@@ -254,7 +254,7 @@ void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnSetCmdClicked(void *userObj)
 void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnCodeScanned(void *userObj, Text::CString code)
 {
 	SSWR::AVIRead::AVIRDWQB30Form *me = (SSWR::AVIRead::AVIRDWQB30Form*)userObj;
-	Sync::MutexUsage mutUsage(&me->codeMut);
+	Sync::MutexUsage mutUsage(me->codeMut);
 	SDEL_STRING(me->newCode);
 	me->newCode = Text::String::New(code).Ptr();
 	me->codeUpdate = true;
@@ -267,7 +267,7 @@ void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnTimerTick(void *userObj)
 	{
 		me->codeUpdate = false;
 		NotNullPtr<Text::String> s;
-		Sync::MutexUsage mutUsage(&me->codeMut);
+		Sync::MutexUsage mutUsage(me->codeMut);
 		if (s.Set(me->newCode))
 		{
 			me->txtScan->SetText(s->ToCString());

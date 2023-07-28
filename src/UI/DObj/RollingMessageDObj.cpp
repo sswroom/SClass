@@ -68,7 +68,7 @@ Bool UI::DObj::RollingMessageDObj::DoEvents()
 
 void UI::DObj::RollingMessageDObj::DrawObject(Media::DrawImage *dimg)
 {
-	Sync::MutexUsage mutUsage(&this->msgMut);
+	Sync::MutexUsage mutUsage(this->msgMut);
 	Math::Coord2DDbl scnPos = this->GetCurrPos().ToDouble();
 	if (this->lastMessage || this->thisMessage)
 	{
@@ -242,7 +242,7 @@ UInt32 UI::DObj::RollingMessageDObj::AddMessage(Text::CString message)
 	msg->message = Text::String::New(message);
 	msg->img = 0;
 	msg->deleted = false;
-	Sync::MutexUsage mutUsage(&this->msgMut);
+	Sync::MutexUsage mutUsage(this->msgMut);
 	this->msgMap.Put(msg->id, msg);
 	return msg->id;
 }
@@ -255,7 +255,7 @@ UInt32 UI::DObj::RollingMessageDObj::AddMessage(NotNullPtr<Text::String> message
 	msg->message = message->Clone();
 	msg->img = 0;
 	msg->deleted = false;
-	Sync::MutexUsage mutUsage(&this->msgMut);
+	Sync::MutexUsage mutUsage(this->msgMut);
 	this->msgMap.Put(msg->id, msg);
 	return msg->id;
 }
@@ -263,7 +263,7 @@ UInt32 UI::DObj::RollingMessageDObj::AddMessage(NotNullPtr<Text::String> message
 void UI::DObj::RollingMessageDObj::RemoveMessage(UInt32 msgId)
 {
 	MessageInfo *msg;
-	Sync::MutexUsage mutUsage(&this->msgMut);
+	Sync::MutexUsage mutUsage(this->msgMut);
 	msg = this->msgMap.Remove(msgId);
 	if (msg)
 	{
@@ -280,7 +280,7 @@ void UI::DObj::RollingMessageDObj::RemoveMessage(UInt32 msgId)
 
 void UI::DObj::RollingMessageDObj::SetSize(Math::Size2D<UOSInt> size)
 {
-	Sync::MutexUsage mutUsage(&this->msgMut);
+	Sync::MutexUsage mutUsage(this->msgMut);
 	if (this->lastMessage && this->lastMessage->img)
 	{
 		this->deng->DeleteImage(this->lastMessage->img);

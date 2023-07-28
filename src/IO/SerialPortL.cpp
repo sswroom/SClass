@@ -350,17 +350,12 @@ Bool IO::SerialPort::ResetPort(UOSInt portNum)
 IO::SerialPort::SerialPort(UOSInt portNum, UInt32 baudRate, ParityType parity, Bool flowCtrl) : IO::Stream(CSTR("SerialPort"))
 {
 	this->handle = 0;
-	this->rdEvt = 0;
-	this->rdMut = 0;
 	this->reading = 0;
 	this->portNum = portNum;
 	this->baudRate = baudRate;
 	this->parity = parity;
 	this->flowCtrl = flowCtrl;
 	this->InitStream();
-
-	NEW_CLASS(this->rdEvt, Sync::Event());
-	NEW_CLASS(this->rdMut, Sync::Mutex());
 }
 
 IO::SerialPort::~SerialPort()
@@ -375,15 +370,11 @@ IO::SerialPort::~SerialPort()
 	}
 
 	ADDMESSAGE("Set event\r\n");
-	if (this->rdEvt)
-		this->rdEvt->Set();
+	this->rdEvt.Set();
 	while (this->reading)
 	{
 		Sync::SimpleThread::Sleep(10);
 	}
-
-	SDEL_CLASS(this->rdEvt);
-	SDEL_CLASS(this->rdMut);
 }
 
 Bool IO::SerialPort::IsDown() const
@@ -438,7 +429,7 @@ UOSInt IO::SerialPort::Read(const Data::ByteArray &buff)
 		}
 		if (readCnt > 0)
 			break;
-		this->rdEvt->Wait(10);
+		this->rdEvt.Wait(10);
 	}
 	this->reading = false;
 	mutUsage.EndUse();
@@ -505,10 +496,7 @@ void IO::SerialPort::Close()
 		flock((int)h, LOCK_UN);
 		close((int)h);
 	}
-	if (this->rdEvt)
-	{
-		this->rdEvt->Set();
-	}
+	this->rdEvt.Set();
 }
 
 Bool IO::SerialPort::Recover()

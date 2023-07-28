@@ -14,7 +14,7 @@ void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnPingPacket(void *userData, 
 	IPInfo *ipInfo;
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
-	Sync::MutexUsage mutUsage(&me->ipMut);
+	Sync::MutexUsage mutUsage(me->ipMut);
 	ipInfo = me->ipMap.Get(sortableIP);
 	if (ipInfo == 0)
 	{
@@ -196,7 +196,7 @@ void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnTimerTick(void *userObj)
 		UOSInt i;
 		UOSInt j;
 		me->ipListUpdated = false;
-		Sync::MutexUsage mutUsage(&me->ipMut);
+		Sync::MutexUsage mutUsage(me->ipMut);
 		me->lbIP->ClearItems();
 		i = 0;
 		j = me->ipMap.GetCount();

@@ -14,7 +14,7 @@ UInt32 __stdcall Net::MQTTStaticClient::KAThread(void *userObj)
 	me->kaRunning = true;
 	while (!me->kaToStop)
 	{
-		Sync::MutexUsage mutUsage(&me->connMut);
+		Sync::MutexUsage mutUsage(me->connMut);
 		if (me->conn)
 		{
 			me->conn->ClearPackets();
@@ -40,7 +40,7 @@ void __stdcall Net::MQTTStaticClient::OnDisconnect(void *userObj)
 	{
 		return;
 	}
-	Sync::MutexUsage mutUsage(&me->connMut);
+	Sync::MutexUsage mutUsage(me->connMut);
 	if (me->conn)
 	{
 		DEL_CLASS(me->conn);
@@ -75,7 +75,7 @@ void Net::MQTTStaticClient::Connect()
 		return;
 	}
 	this->packetId = 1;
-	Sync::MutexUsage mutUsage(&this->hdlrMut);
+	Sync::MutexUsage mutUsage(this->hdlrMut);
 	UOSInt i = 0;
 	UOSInt j = this->hdlrList.GetCount();
 	while (i < j)
@@ -98,7 +98,7 @@ void Net::MQTTStaticClient::Connect()
 	}
 	else
 	{
-		mutUsage.ReplaceMutex(&this->connMut);
+		mutUsage.ReplaceMutex(this->connMut);
 		if (conn->IsError())
 		{
 			if (errLog) errLog->WriteLineC(UTF8STRC("MQTT: Connection is error"));
@@ -110,7 +110,7 @@ void Net::MQTTStaticClient::Connect()
 			this->conn = conn;
 		}
 		Data::ArrayList<Text::String*> topicList;
-		mutUsage.ReplaceMutex(&this->topicMut);
+		mutUsage.ReplaceMutex(this->topicMut);
 		topicList.AddAll(this->topicList);
 		mutUsage.EndUse();
 		
@@ -118,7 +118,7 @@ void Net::MQTTStaticClient::Connect()
 		j = topicList.GetCount();
 		while (i < j)
 		{
-			mutUsage.ReplaceMutex(&this->connMut);
+			mutUsage.ReplaceMutex(this->connMut);
 			if (this->conn == 0)
 			{
 				mutUsage.EndUse();
@@ -138,7 +138,7 @@ void Net::MQTTStaticClient::Connect()
 
 UInt16 Net::MQTTStaticClient::GetNextPacketId()
 {
-	Sync::MutexUsage mutUsage(&this->packetIdMut);
+	Sync::MutexUsage mutUsage(this->packetIdMut);
 	return this->packetId++;
 }
 
@@ -200,7 +200,7 @@ Net::MQTTStaticClient::~MQTTStaticClient()
 			Sync::SimpleThread::Sleep(10);
 		}
 	}
-	Sync::MutexUsage mutUsage(&this->connMut);
+	Sync::MutexUsage mutUsage(this->connMut);
 	SDEL_CLASS(this->conn);
 	mutUsage.EndUse();
 	LIST_FREE_STRING(&this->topicList);
@@ -222,16 +222,16 @@ Bool Net::MQTTStaticClient::ChannelFailure()
 
 void Net::MQTTStaticClient::HandlePublishMessage(Net::MQTTConn::PublishMessageHdlr hdlr, void *hdlrObj)
 {
-	Sync::MutexUsage mutUsage(&this->hdlrMut);
+	Sync::MutexUsage mutUsage(this->hdlrMut);
 	this->hdlrList.Add(hdlr);
 	this->hdlrObjList.Add(hdlrObj);
 }
 
 Bool Net::MQTTStaticClient::Subscribe(Text::CString topic)
 {
-	Sync::MutexUsage mutUsage(&this->topicMut);
+	Sync::MutexUsage mutUsage(this->topicMut);
 	this->topicList.Add(Text::String::New(topic).Ptr());
-	mutUsage.ReplaceMutex(&this->connMut);
+	mutUsage.ReplaceMutex(this->connMut);
 	if (this->conn == 0) return false;
 	UInt16 packetId = GetNextPacketId();
 	if (this->conn->SendSubscribe(packetId, topic))
@@ -246,7 +246,7 @@ Bool Net::MQTTStaticClient::Subscribe(Text::CString topic)
 
 Bool Net::MQTTStaticClient::Publish(Text::CString topic, Text::CString message)
 {
-	Sync::MutexUsage mutUsage(&this->connMut);
+	Sync::MutexUsage mutUsage(this->connMut);
 	if (this->conn == 0) return false;
 	return this->conn->SendPublish(topic, message);
 }

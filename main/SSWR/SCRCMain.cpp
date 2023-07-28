@@ -23,7 +23,7 @@ IO::ConsoleWriter *console;
 class ProgressHandler : public IO::ProgressHandler
 {
 private:
-	Sync::Mutex *mut;
+	Sync::Mutex mut;
 	Text::String *name;
 	const UTF8Char *fileName;
 	UInt64 currCount;
@@ -82,7 +82,6 @@ private:
 public:
 	ProgressHandler()
 	{
-		NEW_CLASS(mut, Sync::Mutex());
 		this->currCount = 0;
 		this->lastCount = 0;
 		this->name = 0;
@@ -109,7 +108,6 @@ public:
 		DEL_CLASS(this->evt);
 		SDEL_STRING(this->name);
 		this->fileName = 0;
-		DEL_CLASS(mut);
 	}
 
 	virtual void ProgressStart(Text::CString name, UInt64 count)

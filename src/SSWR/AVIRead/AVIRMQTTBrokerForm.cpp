@@ -144,7 +144,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnTimerTick(void *userObj)
 	me->dispCount = thisCount;
 	me->dispTime = ts;
 	
-	Sync::MutexUsage mutUsage(&me->topicMut);
+	Sync::MutexUsage mutUsage(me->topicMut);
 	topicList = me->topicMap.GetValues();
 	i = 0;
 	j = topicList->GetCount();
@@ -197,7 +197,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnTopicUpdate(void *userObj, T
 	Data::DateTime dt;
 	dt.SetCurrTimeUTC();
 	Sync::Interlocked::Increment(&me->totalCount);
-	Sync::MutexUsage mutUsage(&me->topicMut);
+	Sync::MutexUsage mutUsage(me->topicMut);
 	topicSt = me->topicMap.Get(topic);
 	if (topicSt)
 	{

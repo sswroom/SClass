@@ -61,7 +61,7 @@ void __stdcall Net::TCPBoardcastStream::ClientData(NotNullPtr<Net::TCPClient> cl
 		sb.AppendUOSInt(buff.GetSize());
 		me->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Raw);
 	}
-	Sync::MutexUsage mutUsage(&me->readMut);
+	Sync::MutexUsage mutUsage(me->readMut);
 	UOSInt readBuffSize = me->readBuffPtr2 - me->readBuffPtr1;
 	if ((OSInt)readBuffSize < 0)
 	{
@@ -178,7 +178,7 @@ UOSInt Net::TCPBoardcastStream::Read(const Data::ByteArray &buff)
 		Sync::SimpleThread::Sleep(10);
 	}
 	Sync::Interlocked::Decrement(&this->readCnt);
-	Sync::MutexUsage mutUsage(&this->readMut);
+	Sync::MutexUsage mutUsage(this->readMut);
 	Data::ByteArray myBuff = buff;
 	if ((UOSInt)readBuffSize >= myBuff.GetSize())
 	{

@@ -28,7 +28,7 @@ void DB::DBList::Close()
 void DB::DBList::AddDB(NotNullPtr<DB::DBTool> db)
 {
 	NotNullPtr<DBInfo> dbInfo;
-	Sync::MutexUsage mutUsage(&this->dbMut);
+	Sync::MutexUsage mutUsage(this->dbMut);
 	dbInfo = MemAllocNN(DBInfo, 1);
 	dbInfo->db = db;
 	dbInfo->isUsing = false;
@@ -46,7 +46,7 @@ DB::DBTool *DB::DBList::UseDB()
 
 	while (true)
 	{
-		Sync::MutexUsage mutUsage(&this->dbMut);
+		Sync::MutexUsage mutUsage(this->dbMut);
 		j = this->dbList.GetCount();
 		i = j;
 		k = this->nextIndex;
@@ -77,7 +77,7 @@ void DB::DBList::UnuseDB(DB::DBTool *db)
 {
 	UOSInt i;
 	DBInfo *dbInfo;
-	Sync::MutexUsage mutUsage(&this->dbMut);
+	Sync::MutexUsage mutUsage(this->dbMut);
 	i = this->dbList.GetCount();
 	while (i-- > 0)
 	{

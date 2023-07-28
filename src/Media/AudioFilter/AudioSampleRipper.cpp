@@ -7,7 +7,7 @@
 
 void Media::AudioFilter::AudioSampleRipper::ResetStatus()
 {
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	MemClear(this->soundBuff, this->soundBuffLeng);
 	this->soundBuffOfst = 0;
 	this->changed = true;
@@ -56,7 +56,7 @@ UOSInt Media::AudioFilter::AudioSampleRipper::ReadBlock(Data::ByteArray blk)
 	UOSInt readSize = this->sourceAudio->ReadBlock(blk);
 	UOSInt thisSize;
 	UOSInt sizeLeft;
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	sizeLeft = readSize;
 	while (sizeLeft > 0)
 	{
@@ -87,7 +87,7 @@ Bool Media::AudioFilter::AudioSampleRipper::IsChanged()
 
 Bool Media::AudioFilter::AudioSampleRipper::GetSamples(UInt8 *samples)
 {
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	MemCopyNO(samples, &this->soundBuff[this->soundBuffOfst], this->soundBuffLeng - this->soundBuffOfst);
 	samples += this->soundBuffLeng - this->soundBuffOfst;
 	if (this->soundBuffOfst > 0)

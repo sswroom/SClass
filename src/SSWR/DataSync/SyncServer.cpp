@@ -41,7 +41,7 @@ void __stdcall SSWR::DataSync::SyncServer::OnClientEvent(NotNullPtr<Net::TCPClie
 			me->svrMut.UnlockRead();
 			if (svr)
 			{
-				Sync::MutexUsage mutUsage(&svr->mut);
+				Sync::MutexUsage mutUsage(svr->mut);
 				if (svr->cli == cli.Ptr())
 				{
 					svr->cli = 0;
@@ -211,7 +211,7 @@ void SSWR::DataSync::SyncServer::DataParsed(NotNullPtr<IO::Stream> stm, void *st
 				this->svrMut.UnlockRead();
 				if (svr)
 				{
-					Sync::MutexUsage mutUsage(&svr->mut);
+					Sync::MutexUsage mutUsage(svr->mut);
 					svr->cli = (Net::TCPClient*)stm.Ptr();
 					mutUsage.EndUse();
 				}

@@ -41,7 +41,7 @@ void __stdcall Net::MODBUSTCPListener::OnClientData(NotNullPtr<Net::TCPClient> c
 	if (packetSize >= 4 && buff.GetSize() == (UOSInt)packetSize + 6)
 	{
 		UInt8 addr = buff[6];
-		Sync::MutexUsage mutUsage(&me->devMut);
+		Sync::MutexUsage mutUsage(me->devMut);
 		IO::MODBUSDevSim *dev = me->devMap.Get(addr);
 		if (dev)
 		{
@@ -331,7 +331,7 @@ Bool Net::MODBUSTCPListener::IsError()
 
 void Net::MODBUSTCPListener::AddDevice(UInt8 addr, IO::MODBUSDevSim *dev)
 {
-	Sync::MutexUsage mutUsage(&this->devMut);
+	Sync::MutexUsage mutUsage(this->devMut);
 	dev = this->devMap.Put(addr, dev);
 	SDEL_CLASS(dev);
 }

@@ -95,7 +95,7 @@ void Data::Sort::ArtificialQuickSort::DoSortInt32(ThreadStat *stat, Int32 *arr, 
 							++right1;
 							if (right1 < right)
 							{
-								Sync::MutexUsage mutUsage(&this->mut);
+								Sync::MutexUsage mutUsage(this->mut);
 								this->tasks[this->taskCnt * 2] = right1;
 								this->tasks[this->taskCnt * 2 + 1] = right;
 								this->taskCnt++;
@@ -124,7 +124,7 @@ void Data::Sort::ArtificialQuickSort::DoSortInt32(ThreadStat *stat, Int32 *arr, 
 
 		Bool found = false;
 		{
-			Sync::MutexUsage mutUsage(&this->mut);
+			Sync::MutexUsage mutUsage(this->mut);
 			if (this->taskCnt > 0)
 			{
 				found = true;
@@ -216,7 +216,7 @@ void Data::Sort::ArtificialQuickSort::DoSortUInt32(ThreadStat *stat, UInt32 *arr
 							++right1;
 							if (right1 < right)
 							{
-								Sync::MutexUsage mutUsage(&this->mut);
+								Sync::MutexUsage mutUsage(this->mut);
 								this->tasks[this->taskCnt * 2] = right1;
 								this->tasks[this->taskCnt * 2 + 1] = right;
 								this->taskCnt++;
@@ -244,7 +244,7 @@ void Data::Sort::ArtificialQuickSort::DoSortUInt32(ThreadStat *stat, UInt32 *arr
 		}
 
 		Bool found = false;
-		Sync::MutexUsage mutUsage(&this->mut);
+		Sync::MutexUsage mutUsage(this->mut);
 		if (this->taskCnt > 0)
 		{
 			found = true;
@@ -321,7 +321,7 @@ void Data::Sort::ArtificialQuickSort::DoSortStr(ThreadStat *stat, UTF8Char **arr
 					++right1;
 					if (right1 < right)
 					{
-						Sync::MutexUsage mutUsage(&this->mut);
+						Sync::MutexUsage mutUsage(this->mut);
 						this->tasks[this->taskCnt * 2] = right1;
 						this->tasks[this->taskCnt * 2 + 1] = right;
 						this->taskCnt++;
@@ -339,7 +339,7 @@ void Data::Sort::ArtificialQuickSort::DoSortStr(ThreadStat *stat, UTF8Char **arr
 		}
 
 		Bool found = false;
-		Sync::MutexUsage mutUsage(&this->mut);
+		Sync::MutexUsage mutUsage(this->mut);
 		if (this->taskCnt > 0)
 		{
 			found = true;
@@ -372,7 +372,7 @@ UInt32 __stdcall Data::Sort::ArtificialQuickSort::ProcessThread(void *userObj)
 					stat->state = 2;
 					while (stat->me->taskCnt > 0)
 					{
-						Sync::MutexUsage mutUsage(&stat->me->mut);
+						Sync::MutexUsage mutUsage(stat->me->mut);
 						if (stat->me->taskCnt > 0)
 						{
 							found = true;
@@ -400,7 +400,7 @@ UInt32 __stdcall Data::Sort::ArtificialQuickSort::ProcessThread(void *userObj)
 					stat->state = 2;
 					while (stat->me->taskCnt > 0)
 					{
-						Sync::MutexUsage mutUsage(&stat->me->mut);
+						Sync::MutexUsage mutUsage(stat->me->mut);
 						if (stat->me->taskCnt > 0)
 						{
 							found = true;
@@ -428,7 +428,7 @@ UInt32 __stdcall Data::Sort::ArtificialQuickSort::ProcessThread(void *userObj)
 					stat->state = 2;
 					while (stat->me->taskCnt > 0)
 					{
-						Sync::MutexUsage mutUsage(&stat->me->mut);
+						Sync::MutexUsage mutUsage(stat->me->mut);
 						if (stat->me->taskCnt > 0)
 						{
 							found = true;
@@ -536,7 +536,7 @@ void Data::Sort::ArtificialQuickSort::SortInt32(Int32 *arr, OSInt firstIndex, OS
 	this->arr = arr;
 	this->arrType = AT_INT32;
 	ArtificialQuickSort_PreSortInt32(arr, firstIndex, lastIndex);
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	this->tasks[0] = firstIndex;
 	this->tasks[1] = lastIndex;
 	this->taskCnt = 1;
@@ -582,7 +582,7 @@ void Data::Sort::ArtificialQuickSort::SortUInt32(UInt32 *arr, OSInt firstIndex, 
 	this->arr = arr;
 	this->arrType = AT_UINT32;
 	ArtificialQuickSort_PreSortUInt32(arr, firstIndex, lastIndex);
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	this->tasks[0] = firstIndex;
 	this->tasks[1] = lastIndex;
 	this->taskCnt = 1;
@@ -628,7 +628,7 @@ void Data::Sort::ArtificialQuickSort::SortStr(UTF8Char **arr, OSInt firstIndex, 
 	this->arr = arr;
 	this->arrType = AT_STRUTF8;
 	ArtificialQuickSort_PreSortStr(arr, firstIndex, lastIndex);
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	this->tasks[0] = firstIndex;
 	this->tasks[1] = lastIndex;
 	this->taskCnt = 1;

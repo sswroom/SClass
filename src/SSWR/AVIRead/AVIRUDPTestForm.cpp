@@ -17,7 +17,7 @@ void __stdcall SSWR::AVIRead::AVIRUDPTestForm::OnUDPPacket(const Net::SocketUtil
 	{
 		me->udp->SendTo(addr, port, buff, dataSize);
 	}
-	Sync::MutexUsage mutUsage(&me->mut);
+	Sync::MutexUsage mutUsage(me->mut);
 	me->recvCnt++;
 	me->recvSize += dataSize;
 	mutUsage.EndUse();

@@ -17,7 +17,7 @@ void __stdcall Map::NetworkLinkLayer::InnerUpdated(void *userObj)
 {
 	Map::NetworkLinkLayer *me = (Map::NetworkLinkLayer*)userObj;
 	UOSInt i;
-	Sync::RWMutexUsage mutUsage(&me->linkMut, false);
+	Sync::RWMutexUsage mutUsage(me->linkMut, false);
 	i = me->updHdlrs.GetCount();
 	while (i-- > 0)
 	{
@@ -42,7 +42,7 @@ void Map::NetworkLinkLayer::CheckLinks(Bool manualRequest)
 {
 	UOSInt i;
 	Data::Timestamp currTime = Data::Timestamp::UtcNow();
-	Sync::RWMutexUsage mutUsage(&this->linkMut, false);
+	Sync::RWMutexUsage mutUsage(this->linkMut, false);
 	i = this->links.GetCount();
 	mutUsage.EndUse();
 	while (i-- > 0)
@@ -108,7 +108,7 @@ void Map::NetworkLinkLayer::LoadLink(LinkInfo *link)
 		sb.Append(link->url);
 		sb.AppendUTF8Char('?');
 		sb.Append(link->viewFormat);
-		Sync::MutexUsage dispMutUsage(&this->dispMut);
+		Sync::MutexUsage dispMutUsage(this->dispMut);
 		sptr = Text::StrDouble(sbuff, this->dispRect.tl.x);
 		sb.ReplaceStr(UTF8STRC("[bboxWest]"), sbuff, (UOSInt)(sptr - sbuff));
 		sptr = Text::StrDouble(sbuff, this->dispRect.tl.y);
@@ -142,7 +142,7 @@ void Map::NetworkLinkLayer::LoadLink(LinkInfo *link)
 		if (pobj)
 		{
 			UOSInt j;
-			Sync::RWMutexUsage mutUsage(&this->linkMut, true);
+			Sync::RWMutexUsage mutUsage(this->linkMut, true);
 			SDEL_CLASS(link->innerLayer);
 			link->innerLayer = (Map::MapDrawLayer*)pobj;
 			link->innerLayerType = link->innerLayer->GetLayerType();
@@ -230,7 +230,7 @@ Map::NetworkLinkLayer::~NetworkLinkLayer()
 void Map::NetworkLinkLayer::SetCurrScale(Double scale)
 {
 	UOSInt i;
-	Sync::RWMutexUsage mutUsage(&this->linkMut, false);
+	Sync::RWMutexUsage mutUsage(this->linkMut, false);
 	this->currScale = scale;
 	i = this->links.GetCount();
 	while (i-- > 0)
@@ -246,7 +246,7 @@ void Map::NetworkLinkLayer::SetCurrScale(Double scale)
 void Map::NetworkLinkLayer::SetCurrTimeTS(Int64 timeStamp)
 {
 	UOSInt i;
-	Sync::RWMutexUsage mutUsage(&this->linkMut, false);
+	Sync::RWMutexUsage mutUsage(this->linkMut, false);
 	this->currTime = timeStamp;
 	i = this->links.GetCount();
 	while (i-- > 0)
@@ -265,7 +265,7 @@ Int64 Map::NetworkLinkLayer::GetTimeStartTS()
 	Int64 timeStart = 0;
 	Int64 v;
 	UOSInt i;
-	Sync::RWMutexUsage mutUsage(&this->linkMut, false);
+	Sync::RWMutexUsage mutUsage(this->linkMut, false);
 	i = this->links.GetCount();
 	while (i-- > 0)
 	{
@@ -296,7 +296,7 @@ Int64 Map::NetworkLinkLayer::GetTimeEndTS()
 	Int64 timeEnd = 0;
 	Int64 v;
 	UOSInt i;
-	Sync::RWMutexUsage mutUsage(&this->linkMut, false);
+	Sync::RWMutexUsage mutUsage(this->linkMut, false);
 	i = this->links.GetCount();
 	while (i-- > 0)
 	{
@@ -338,7 +338,7 @@ UOSInt Map::NetworkLinkLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, Name
 	Int64 maxId;
 	UOSInt ret = 0;
 	Data::ArrayListInt64 tmpArr;
-	Sync::RWMutexUsage mutUsage(&this->linkMut, false);
+	Sync::RWMutexUsage mutUsage(this->linkMut, false);
 	i = 0;
 	j = this->links.GetCount();
 	while (i < j)
@@ -366,7 +366,7 @@ UOSInt Map::NetworkLinkLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, Name
 UOSInt Map::NetworkLinkLayer::GetObjectIds(Data::ArrayListInt64 *outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
 {
 	{
-		Sync::MutexUsage mutUsage(&this->dispMut);
+		Sync::MutexUsage mutUsage(this->dispMut);
 		Math::RectAreaDbl newRect = rect.ToDouble() / mapRate;
 		if (this->dispRect != newRect)
 		{
@@ -385,7 +385,7 @@ UOSInt Map::NetworkLinkLayer::GetObjectIds(Data::ArrayListInt64 *outArr, NameArr
 	Int64 maxId;
 	UOSInt ret = 0;
 	Data::ArrayListInt64 tmpArr;
-	Sync::RWMutexUsage mutUsage(&this->linkMut, false);
+	Sync::RWMutexUsage mutUsage(this->linkMut, false);
 	i = 0;
 	j = this->links.GetCount();
 	while (i < j)
@@ -413,7 +413,7 @@ UOSInt Map::NetworkLinkLayer::GetObjectIds(Data::ArrayListInt64 *outArr, NameArr
 UOSInt Map::NetworkLinkLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
 	{
-		Sync::MutexUsage mutUsage(&this->dispMut);
+		Sync::MutexUsage mutUsage(this->dispMut);
 		if (this->dispRect != rect)
 		{
 			this->dispRect = rect;
@@ -431,7 +431,7 @@ UOSInt Map::NetworkLinkLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, Na
 	Int64 maxId;
 	UOSInt ret = 0;
 	Data::ArrayListInt64 tmpArr;
-	Sync::RWMutexUsage mutUsage(&this->linkMut, false);
+	Sync::RWMutexUsage mutUsage(this->linkMut, false);
 	i = 0;
 	j = this->links.GetCount();
 	while (i < j)
@@ -461,7 +461,7 @@ Int64 Map::NetworkLinkLayer::GetObjectIdMax()
 	UOSInt i;
 	Int64 currId = 0;
 	Int64 maxId;
-	Sync::RWMutexUsage mutUsage(&this->linkMut, false);
+	Sync::RWMutexUsage mutUsage(this->linkMut, false);
 	i = this->links.GetCount();
 	while (i-- > 0)
 	{
@@ -487,7 +487,7 @@ UTF8Char *Map::NetworkLinkLayer::GetString(UTF8Char *buff, UOSInt buffSize, Name
 	UOSInt j;
 	Int64 currId = 0;
 	Int64 maxId;
-	Sync::RWMutexUsage mutUsage(&this->linkMut, false);
+	Sync::RWMutexUsage mutUsage(this->linkMut, false);
 	i = 0;
 	j = this->links.GetCount();
 	while (i < j)
@@ -543,7 +543,7 @@ Bool Map::NetworkLinkLayer::GetBounds(Math::RectAreaDbl *bounds)
 	UOSInt i;
 	Math::RectAreaDbl minMax;
 	Math::RectAreaDbl thisBounds;
-	Sync::RWMutexUsage mutUsage(&this->linkMut, false);
+	Sync::RWMutexUsage mutUsage(this->linkMut, false);
 	i = this->links.GetCount();
 	while (i-- > 0)
 	{
@@ -580,7 +580,7 @@ Bool Map::NetworkLinkLayer::GetBounds(Math::RectAreaDbl *bounds)
 
 void Map::NetworkLinkLayer::SetDispSize(Math::Size2DDbl size, Double dpi)
 {
-	Sync::MutexUsage mutUsage(&this->dispMut);
+	Sync::MutexUsage mutUsage(this->dispMut);
 	this->dispSize = size;
 	this->dispDPI = dpi;
 #if defined(VERBOSE)
@@ -626,7 +626,7 @@ Math::Geometry::Vector2D *Map::NetworkLinkLayer::GetNewVectorById(GetObjectSess 
 	Int64 maxId;
 	Math::Geometry::Vector2D *vec = 0;
 	i = 0;
-	Sync::RWMutexUsage mutUsage(&this->linkMut, false);
+	Sync::RWMutexUsage mutUsage(this->linkMut, false);
 	j = this->links.GetCount();
 	while (i < j)
 	{
@@ -666,7 +666,7 @@ Math::CoordinateSystem *Map::NetworkLinkLayer::GetCoordinateSystem()
 {
 	Math::CoordinateSystem *csys = 0;
 	UOSInt i;
-	Sync::RWMutexUsage mutUsage(&this->linkMut, false);
+	Sync::RWMutexUsage mutUsage(this->linkMut, false);
 	i = this->links.GetCount();
 	while (i-- > 0)
 	{
@@ -687,7 +687,7 @@ Math::CoordinateSystem *Map::NetworkLinkLayer::GetCoordinateSystem()
 void Map::NetworkLinkLayer::SetCoordinateSystem(Math::CoordinateSystem *csys)
 {
 	UOSInt i;
-	Sync::RWMutexUsage mutUsage(&this->linkMut, true);
+	Sync::RWMutexUsage mutUsage(this->linkMut, true);
 	i = this->links.GetCount();
 	while (i-- > 0)
 	{
@@ -705,7 +705,7 @@ void Map::NetworkLinkLayer::AddUpdatedHandler(UpdatedHandler hdlr, void *obj)
 {
 	UOSInt i;
 	LinkInfo *link;
-	Sync::RWMutexUsage mutUsage(&this->linkMut, true);
+	Sync::RWMutexUsage mutUsage(this->linkMut, true);
 	this->updHdlrs.Add(hdlr);
 	this->updObjs.Add(obj);
 	i = this->links.GetCount();
@@ -724,7 +724,7 @@ void Map::NetworkLinkLayer::RemoveUpdatedHandler(UpdatedHandler hdlr, void *obj)
 	UOSInt i;
 	LinkInfo *link;
 	Bool chg = false;
-	Sync::RWMutexUsage mutUsage(&this->linkMut, true);
+	Sync::RWMutexUsage mutUsage(this->linkMut, true);
 	i = this->updHdlrs.GetCount();
 	while (i-- > 0)
 	{
@@ -769,7 +769,7 @@ UOSInt Map::NetworkLinkLayer::AddLink(Text::CString name, Text::CString url, Tex
 	{
 		link->lastUpdated = Data::Timestamp::UtcNow();
 	}
-	Sync::RWMutexUsage mutUsage(&this->linkMut, true);
+	Sync::RWMutexUsage mutUsage(this->linkMut, true);
 	UOSInt ret = this->links.Add(link);
 	mutUsage.EndUse();
 	this->ctrlEvt.Set();

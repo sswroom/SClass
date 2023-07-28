@@ -15,10 +15,10 @@ UInt32 __stdcall Media::AudioFilter::AudioCaptureFilter::CaptureThread(void *use
 	me->running = true;
 	while (!me->toStop)
 	{
-		Sync::MutexUsage writeMutUsage(&me->writeMut);
+		Sync::MutexUsage writeMutUsage(me->writeMut);
 		while (me->readBuffSize > 0)
 		{
-			Sync::MutexUsage readMutUsage(&me->readMut);
+			Sync::MutexUsage readMutUsage(me->readMut);
 			tmpBuff = me->writeBuff;
 			me->writeBuff = me->readBuff;
 			me->readBuff = tmpBuff;
@@ -82,7 +82,7 @@ UOSInt Media::AudioFilter::AudioCaptureFilter::ReadBlock(Data::ByteArray blk)
 		return 0;
 
 	UOSInt readSize = this->sourceAudio->ReadBlock(blk);
-	Sync::MutexUsage mutUsage(&this->readMut);
+	Sync::MutexUsage mutUsage(this->readMut);
 	if (this->writing)
 	{
 		if (this->readBuffSize >= BUFFSIZE)
@@ -127,7 +127,7 @@ Bool Media::AudioFilter::AudioCaptureFilter::StartCapture(Text::CString fileName
 	WriteUInt16(&buff[68], (UInt16)format.align);
 	WriteUInt16(&buff[70], format.bitpersample);
 	WriteUInt16(&buff[72], (UInt16)format.extraSize);
-	Sync::MutexUsage mutUsage(&this->writeMut);
+	Sync::MutexUsage mutUsage(this->writeMut);
 	NEW_CLASS(this->waveStm, IO::FileStream(fileName, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	this->waveStm->Write(buff, 74);
 	if (format.extraSize > 0)
@@ -151,7 +151,7 @@ Bool Media::AudioFilter::AudioCaptureFilter::StartCapture(Text::CString fileName
 void Media::AudioFilter::AudioCaptureFilter::StopCapture()
 {
 	this->writing = false;
-	Sync::MutexUsage mutUsage(&this->writeMut);
+	Sync::MutexUsage mutUsage(this->writeMut);
 	if (this->waveStm)
 	{
 		if (this->fileSize >= 0x100000000LL)

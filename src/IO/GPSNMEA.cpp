@@ -286,7 +286,7 @@ UInt32 __stdcall IO::GPSNMEA::NMEAThread(void *userObj)
 					break;
 				case ParseStatus::NewRecord:
 					{
-						Sync::RWMutexUsage mutUsage(&me->hdlrMut, false);
+						Sync::RWMutexUsage mutUsage(me->hdlrMut, false);
 						UOSInt i = me->hdlrList.GetCount();
 						while (i-- > 0)
 						{
@@ -350,14 +350,14 @@ Bool IO::GPSNMEA::IsDown()
 
 void IO::GPSNMEA::RegisterLocationHandler(LocationHandler hdlr, void *userObj)
 {
-	Sync::RWMutexUsage mutUsage(&this->hdlrMut, true);
+	Sync::RWMutexUsage mutUsage(this->hdlrMut, true);
 	this->hdlrList.Add(hdlr);
 	this->hdlrObjs.Add(userObj);
 }
 
 void IO::GPSNMEA::UnregisterLocationHandler(LocationHandler hdlr, void *userObj)
 {
-	Sync::RWMutexUsage mutUsage(&this->hdlrMut, true);
+	Sync::RWMutexUsage mutUsage(this->hdlrMut, true);
 	UOSInt i = this->hdlrList.GetCount();
 	while (i-- > 0)
 	{

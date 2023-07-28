@@ -68,7 +68,7 @@ UOSInt IO::StmData::FileViewData::GetRealData(UInt64 offset, UOSInt length, UInt
 {
 	if (fdh == 0)
 		return 0;
-	Sync::MutexUsage mutUsage(&fdh->mut);
+	Sync::MutexUsage mutUsage(fdh->mut);
 	UInt64 startOfst = dataOffset + offset;
 	UInt64 endOfst = startOfst + length;
 	if (startOfst < 0)

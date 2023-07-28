@@ -13,7 +13,7 @@ void __stdcall Net::DNSClient::PacketHdlr(const Net::SocketUtil::AddressInfo *ad
 {
 	Net::DNSClient *me = (Net::DNSClient*)userData;
 	RequestStatus *req;
-	Sync::MutexUsage mutUsage(&me->reqMut);
+	Sync::MutexUsage mutUsage(me->reqMut);
 	req = me->reqMap.Get(ReadMUInt16(buff));
 	if (req)
 	{
@@ -29,7 +29,7 @@ Net::DNSClient::RequestStatus *Net::DNSClient::NewReq(UInt32 id)
 	RequestStatus *req;
 	NEW_CLASS(req, RequestStatus());
 	req->respSize = 0;
-	Sync::MutexUsage mutUsage(&this->reqMut);
+	Sync::MutexUsage mutUsage(this->reqMut);
 	this->reqMap.Put(id, req);
 	mutUsage.EndUse();
 	return req;
@@ -38,7 +38,7 @@ Net::DNSClient::RequestStatus *Net::DNSClient::NewReq(UInt32 id)
 void Net::DNSClient::DelReq(UInt32 id)
 {
 	RequestStatus *req;
-	Sync::MutexUsage mutUsage(&this->reqMut);
+	Sync::MutexUsage mutUsage(this->reqMut);
 	req = this->reqMap.Remove(id);
 	mutUsage.EndUse();
 	if (req)

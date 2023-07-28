@@ -562,7 +562,7 @@ void Media::Resizer::LanczosResizer16_C8::Resize(const UInt8 *src, OSInt sbpl, D
 
 	if (siWidth != dwidth && siHeight != dheight)
 	{
-		Sync::MutexUsage mutUsage(&this->mut);
+		Sync::MutexUsage mutUsage(this->mut);
 		if (this->hsSize != swidth || this->hdSize != dwidth || this->hsOfst != xOfst)
 		{
 			DestoryHori();
@@ -631,7 +631,7 @@ void Media::Resizer::LanczosResizer16_C8::Resize(const UInt8 *src, OSInt sbpl, D
 	}
 	else if ((UOSInt)siWidth != dwidth)
 	{
-		Sync::MutexUsage mutUsage(&this->mut);
+		Sync::MutexUsage mutUsage(this->mut);
 		if (hsSize != swidth || hdSize != dwidth || hsOfst != xOfst)
 		{
 			DestoryHori();
@@ -675,7 +675,7 @@ void Media::Resizer::LanczosResizer16_C8::Resize(const UInt8 *src, OSInt sbpl, D
 	}
 	else if (siHeight != dheight)
 	{
-		Sync::MutexUsage mutUsage(&this->mut);
+		Sync::MutexUsage mutUsage(this->mut);
 		if (vsSize != sheight || vdSize != dheight || vsStep != (OSInt)siWidth * 8 || vsOfst != yOfst)
 		{
 			DestoryVert();
@@ -720,7 +720,7 @@ void Media::Resizer::LanczosResizer16_C8::Resize(const UInt8 *src, OSInt sbpl, D
 	}
 	else
 	{
-		Sync::MutexUsage mutUsage(&this->mut);
+		Sync::MutexUsage mutUsage(this->mut);
 		if (this->srcAlphaType == Media::AT_ALPHA)
 		{
 			mt_copy_pa(src, dest, (UOSInt)siWidth, dheight, sbpl, dbpl);

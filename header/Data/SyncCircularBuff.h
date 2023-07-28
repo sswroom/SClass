@@ -43,13 +43,13 @@ template<typename T> Data::SyncCircularBuff<T>::~SyncCircularBuff()
 
 template<typename T> Bool Data::SyncCircularBuff<T>::HasItems()
 {
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	return this->getIndex != this->putIndex;
 }
 
 template<typename T> void Data::SyncCircularBuff<T>::Put(T item)
 {
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	if (((this->putIndex + 1) & (this->capacity - 1)) == this->getIndex)
 	{
 		UOSInt oldCapacity = this->capacity;
@@ -75,7 +75,7 @@ template<typename T> void Data::SyncCircularBuff<T>::Put(T item)
 
 template<typename T> T Data::SyncCircularBuff<T>::Get()
 {
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	if (this->getIndex == this->putIndex)
 	{
 		return 0;
@@ -87,7 +87,7 @@ template<typename T> T Data::SyncCircularBuff<T>::Get()
 
 template<typename T> T Data::SyncCircularBuff<T>::GetNoRemove()
 {
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	if (this->getIndex == this->putIndex)
 	{
 		return 0;
@@ -97,7 +97,7 @@ template<typename T> T Data::SyncCircularBuff<T>::GetNoRemove()
 
 template<typename T> T Data::SyncCircularBuff<T>::GetLastNoRemove()
 {
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	if (this->getIndex == this->putIndex)
 	{
 		return 0;
@@ -108,7 +108,7 @@ template<typename T> T Data::SyncCircularBuff<T>::GetLastNoRemove()
 
 template<typename T> UOSInt Data::SyncCircularBuff<T>::GetCount()
 {
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	if (this->getIndex <= this->putIndex)
 	{
 		return this->putIndex - this->getIndex;
@@ -121,7 +121,7 @@ template<typename T> UOSInt Data::SyncCircularBuff<T>::GetCount()
 
 template<typename T> UOSInt Data::SyncCircularBuff<T>::IndexOf(T item)
 {
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	UOSInt andVal = this->capacity - 1;
 	UOSInt i = 0;
 	UOSInt j;

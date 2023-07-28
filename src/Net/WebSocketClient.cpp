@@ -14,7 +14,7 @@ Bool Net::WebSocketClient::SendPacket(UInt8 opcode, const UInt8 *buff, UOSInt bu
 	if (this->cli == 0)
 		return false;
 	UInt8 packetBuff[130];
-	Sync::MutexUsage mutUsage(&this->sendMut);
+	Sync::MutexUsage mutUsage(this->sendMut);
 	UInt32 mask;
 	UOSInt i;
 	if (buffSize < 126)
@@ -245,7 +245,7 @@ const UInt8 *Net::WebSocketClient::NextPacket(UInt8 *opcode, UOSInt *packetSize)
 
 const UInt8 *Net::WebSocketClient::NextPacket(Sync::MutexUsage *mutUsage, UOSInt *packetSize)
 {
-	mutUsage->ReplaceMutex(&this->recvMut);
+	mutUsage->ReplaceMutex(this->recvMut);
 	if (this->cli == 0)
 		return 0;
 
@@ -471,7 +471,7 @@ Bool Net::WebSocketClient::IsDown() const
 
 UOSInt Net::WebSocketClient::Read(const Data::ByteArray &buff)
 {
-	Sync::MutexUsage mutUsage(&this->recvMut);
+	Sync::MutexUsage mutUsage(this->recvMut);
 	if (this->recvDataOfst < this->recvDataSize)
 	{
 		if (this->recvDataSize - this->recvDataOfst > buff.GetSize())

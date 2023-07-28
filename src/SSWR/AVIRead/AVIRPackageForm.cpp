@@ -37,7 +37,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRPackageForm::ProcessThread(void *userObj)
 	while (!me->threadToStop)
 	{
 		found = false;
-		Sync::MutexUsage mutUsage(&me->fileMut);
+		Sync::MutexUsage mutUsage(me->fileMut);
 		i = 0;
 		j = me->fileNames.GetCount();
 		while (!found && i < j)
@@ -203,7 +203,7 @@ void __stdcall SSWR::AVIRead::AVIRPackageForm::OnTimerTick(void *userObj)
 		Text::String *fname;
 		me->statusChg = false;
 		me->lvStatus->ClearItems();
-		Sync::MutexUsage mutUsage(&me->fileMut);
+		Sync::MutexUsage mutUsage(me->fileMut);
 		i = 0;
 		j = me->fileNames.GetCount();
 		while (i < j)
@@ -251,7 +251,7 @@ void __stdcall SSWR::AVIRead::AVIRPackageForm::OnTimerTick(void *userObj)
 	UInt64 readCurr;
 	Int64 timeDiff;
 	Double spd;
-	Sync::MutexUsage readMutUsage(&me->readMut);
+	Sync::MutexUsage readMutUsage(me->readMut);
 	readPos = me->readLast;
 	readCurr = me->readCurr;
 	me->readCurr = 0;
@@ -269,7 +269,7 @@ void __stdcall SSWR::AVIRead::AVIRPackageForm::OnTimerTick(void *userObj)
 	}
 	me->rlcStatus->AddSample(&spd);
 
-	Sync::MutexUsage progMutUsage(&me->progMut);
+	Sync::MutexUsage progMutUsage(me->progMut);
 	if (me->progStarted)
 	{
 		me->progStarted = false;
@@ -295,7 +295,7 @@ void __stdcall SSWR::AVIRead::AVIRPackageForm::OnTimerTick(void *userObj)
 	UInt64 fileSize = 0;
 	if (me->statusFileChg)
 	{
-		Sync::MutexUsage mutUsage(&me->statusFileMut);
+		Sync::MutexUsage mutUsage(me->statusFileMut);
 		hasFile = (me->statusFile != 0);
 		if (hasFile)
 		{
@@ -313,7 +313,7 @@ void __stdcall SSWR::AVIRead::AVIRPackageForm::OnTimerTick(void *userObj)
 	}
 	else
 	{
-		Sync::MutexUsage mutUsage(&me->statusFileMut);
+		Sync::MutexUsage mutUsage(me->statusFileMut);
 		hasFile = (me->statusFile != 0);
 		fileSize = me->statusFileSize;
 		mutUsage.EndUse();
@@ -398,7 +398,7 @@ void __stdcall SSWR::AVIRead::AVIRPackageForm::LVDblClick(void *userObj, UOSInt 
 void __stdcall SSWR::AVIRead::AVIRPackageForm::OnStatusDblClick(void *userObj, UOSInt index)
 {
 	SSWR::AVIRead::AVIRPackageForm *me = (SSWR::AVIRead::AVIRPackageForm*)userObj;
-	Sync::MutexUsage mutUsage(&me->fileMut);
+	Sync::MutexUsage mutUsage(me->fileMut);
 	if (me->fileAction.GetItem(index) == AT_COPYFAIL)
 	{
 		me->fileAction.SetItem(index, AT_RETRYCOPY);
@@ -638,7 +638,7 @@ void SSWR::AVIRead::AVIRPackageForm::EventMenuClicked(UInt16 cmdId)
 			fpt = clipboard.GetDataFiles(&fileNames);
 			if (fpt == UI::Clipboard::FPT_MOVE)
 			{
-				Sync::MutexUsage mutUsage(&this->fileMut);
+				Sync::MutexUsage mutUsage(this->fileMut);
 				i = 0;
 				j = fileNames.GetCount();
 				while (i < j)
@@ -653,7 +653,7 @@ void SSWR::AVIRead::AVIRPackageForm::EventMenuClicked(UInt16 cmdId)
 			}
 			else if (fpt == UI::Clipboard::FPT_COPY)
 			{
-				Sync::MutexUsage mutUsage(&this->fileMut);
+				Sync::MutexUsage mutUsage(this->fileMut);
 				i = 0;
 				j = fileNames.GetCount();
 				while (i < j)
@@ -729,14 +729,14 @@ void SSWR::AVIRead::AVIRPackageForm::OnMonitorChanged()
 void SSWR::AVIRead::AVIRPackageForm::ProgressStart(Text::CString name, UInt64 count)
 {
 	{
-		Sync::MutexUsage mutUsage(&this->readMut);
+		Sync::MutexUsage mutUsage(this->readMut);
 		this->readLast = 0;
 		this->readCurrFile = name;
 		this->readFileCnt = count;
 	}
 
 	{
-		Sync::MutexUsage mutUsage(&this->statusFileMut);
+		Sync::MutexUsage mutUsage(this->statusFileMut);
 		SDEL_STRING(this->statusFile);
 		this->statusFile = Text::String::New(name).Ptr();
 		this->statusFileSize = count;
@@ -744,7 +744,7 @@ void SSWR::AVIRead::AVIRPackageForm::ProgressStart(Text::CString name, UInt64 co
 	}
 
 	{
-		Sync::MutexUsage mutUsage(&this->progMut);
+		Sync::MutexUsage mutUsage(this->progMut);
 		this->progStarted = true;
 		SDEL_STRING(this->progName);
 		this->progName = Text::String::New(name).Ptr();
@@ -756,7 +756,7 @@ void SSWR::AVIRead::AVIRPackageForm::ProgressStart(Text::CString name, UInt64 co
 void SSWR::AVIRead::AVIRPackageForm::ProgressUpdate(UInt64 currCount, UInt64 newCount)
 {
 	{
-		Sync::MutexUsage mutUsage(&this->readMut);
+		Sync::MutexUsage mutUsage(this->readMut);
 		UInt64 readThis = currCount - this->readLast;
 		if ((Int64)readThis < 0)
 			readThis = 0;
@@ -767,7 +767,7 @@ void SSWR::AVIRead::AVIRPackageForm::ProgressUpdate(UInt64 currCount, UInt64 new
 	}
 
 	{
-		Sync::MutexUsage mutUsage(&this->progMut);
+		Sync::MutexUsage mutUsage(this->progMut);
 		this->progUpdated = true;
 		this->progUpdateCurr = currCount;
 		this->progUpdateNew = newCount;
@@ -779,12 +779,12 @@ void SSWR::AVIRead::AVIRPackageForm::ProgressEnd()
 {
 	this->readLast = 0;
 	this->readFileCnt = 0;
-	Sync::MutexUsage mutUsage(&this->progMut);
+	Sync::MutexUsage mutUsage(this->progMut);
 	this->progEnd = true;
 	mutUsage.EndUse();
 
 	{
-		Sync::MutexUsage mutUsage(&this->statusFileMut);
+		Sync::MutexUsage mutUsage(this->statusFileMut);
 		SDEL_STRING(this->statusFile);
 		this->statusFileChg = true;
 	}

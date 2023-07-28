@@ -77,7 +77,7 @@ void Net::RTPAACHandler::MediaDataReceived(UInt8 *buff, UOSInt dataSize, UInt32 
 	UOSInt i = 0;
 	UInt32 thisSize;
 
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	switch (this->aacm)
 	{
 	case AACM_AAC_HBR:
@@ -259,7 +259,7 @@ UOSInt Net::RTPAACHandler::ReadBlock(Data::ByteArray blk)
 	{
 		this->dataEvt->Wait(1000);
 	}
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	if (this->buffSize <= 0)
 	{
 		mutUsage.EndUse();

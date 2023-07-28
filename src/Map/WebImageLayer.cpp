@@ -80,7 +80,7 @@ Map::WebImageLayer::ImageStat *Map::WebImageLayer::GetImageStat(Int32 id)
 {
 	OSInt ind;
 	Map::WebImageLayer::ImageStat *stat = 0;
-	Sync::RWMutexUsage mutUsage(&this->loadedMut, false);
+	Sync::RWMutexUsage mutUsage(this->loadedMut, false);
 	ind = this->GetImageStatIndex(id);
 	if (ind >= 0)
 	{
@@ -141,11 +141,11 @@ void Map::WebImageLayer::LoadImage(Map::WebImageLayer::ImageStat *stat)
 				simg->MultiplyAlpha(stat->alpha);
 			}
 			NEW_CLASS(stat->simg, Media::SharedImage(imgList, true));
-			Sync::RWMutexUsage loadedMutUsage(&this->loadedMut, true);
+			Sync::RWMutexUsage loadedMutUsage(this->loadedMut, true);
 			this->loadedList.Insert((UOSInt)~this->GetImageStatIndex(stat->id), stat);
 			loadedMutUsage.EndUse();
 
-			Sync::MutexUsage mutUsage(&this->updMut);
+			Sync::MutexUsage mutUsage(this->updMut);
 			UOSInt i = this->updHdlrs.GetCount();
 			while (i-- > 0)
 			{
@@ -168,7 +168,7 @@ UInt32 __stdcall Map::WebImageLayer::LoadThread(void *userObj)
 	me->threadRunning = true;
 	while (!me->threadToStop)
 	{
-		Sync::MutexUsage mutUsage(&me->loadingMut);
+		Sync::MutexUsage mutUsage(me->loadingMut);
 		i = me->loadingList.GetCount();
 		while (i-- > 0)
 		{
@@ -201,11 +201,11 @@ UInt32 __stdcall Map::WebImageLayer::LoadThread(void *userObj)
 						simg->MultiplyAlpha(stat->alpha);
 					}
 					NEW_CLASS(stat->simg, Media::SharedImage(imgList, true));
-					Sync::RWMutexUsage loadedMutUsage(&me->loadedMut, true);
+					Sync::RWMutexUsage loadedMutUsage(me->loadedMut, true);
 					me->loadedList.Insert((UOSInt)~me->GetImageStatIndex(stat->id), stat);
 					loadedMutUsage.EndUse();
 
-					Sync::MutexUsage mutUsage(&me->updMut);
+					Sync::MutexUsage mutUsage(me->updMut);
 					UOSInt j = me->updHdlrs.GetCount();
 					while (j-- > 0)
 					{
@@ -251,7 +251,7 @@ Map::WebImageLayer::~WebImageLayer()
 {
 	UOSInt i;
 	ImageStat *stat;
-	Sync::MutexUsage mutUsage(&this->updMut);
+	Sync::MutexUsage mutUsage(this->updMut);
 	this->updHdlrs.Clear();
 	this->updObjs.Clear();
 	mutUsage.EndUse();
@@ -319,7 +319,7 @@ void Map::WebImageLayer::SetCurrTimeTS(Int64 timeStamp)
 	oldTime = this->currTime;
 	this->currTime = timeStamp;
 
-	Sync::RWMutexUsage loadedMutUsage(&this->loadedMut, false);
+	Sync::RWMutexUsage loadedMutUsage(this->loadedMut, false);
 	i = this->loadedList.GetCount();
 	while (i-- > 0)
 	{
@@ -350,7 +350,7 @@ void Map::WebImageLayer::SetCurrTimeTS(Int64 timeStamp)
 
 	if (changed)
 	{
-		Sync::MutexUsage mutUsage(&this->updMut);
+		Sync::MutexUsage mutUsage(this->updMut);
 		i = this->updHdlrs.GetCount();
 		while (i-- > 0)
 		{
@@ -382,7 +382,7 @@ UOSInt Map::WebImageLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, NameArr
 	ImageStat *stat;
 	ImageStat **imgArr;
 	Data::ArrayList<ImageStat *> imgList;
-	Sync::RWMutexUsage loadedMutUsage(&this->loadedMut, false);
+	Sync::RWMutexUsage loadedMutUsage(this->loadedMut, false);
 	imgList.AddAll(this->loadedList);
 	loadedMutUsage.EndUse();
 
@@ -415,7 +415,7 @@ UOSInt Map::WebImageLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, NameA
 
 	rect = rect.Reorder();
 
-	Sync::RWMutexUsage loadedMutUsage(&this->loadedMut, false);
+	Sync::RWMutexUsage loadedMutUsage(this->loadedMut, false);
 	i = 0;
 	retCnt = this->loadedList.GetCount();
 	while (i < retCnt)
@@ -484,7 +484,7 @@ UOSInt Map::WebImageLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, NameA
 Int64 Map::WebImageLayer::GetObjectIdMax()
 {
 	Int64 maxId = -1;
-	Sync::RWMutexUsage loadedMutUsage(&this->loadedMut, false);
+	Sync::RWMutexUsage loadedMutUsage(this->loadedMut, false);
 	Map::WebImageLayer::ImageStat *stat = this->loadedList.GetItem(this->loadedList.GetCount() - 1);
 	if (stat)
 	{
@@ -602,7 +602,7 @@ Map::MapDrawLayer::ObjectClass Map::WebImageLayer::GetObjectClass()
 
 void Map::WebImageLayer::AddUpdatedHandler(UpdatedHandler hdlr, void *obj)
 {
-	Sync::MutexUsage mutUsage(&this->updMut);
+	Sync::MutexUsage mutUsage(this->updMut);
 	this->updHdlrs.Add(hdlr);
 	this->updObjs.Add(obj);
 }
@@ -610,7 +610,7 @@ void Map::WebImageLayer::AddUpdatedHandler(UpdatedHandler hdlr, void *obj)
 void Map::WebImageLayer::RemoveUpdatedHandler(UpdatedHandler hdlr, void *obj)
 {
 	UOSInt i;
-	Sync::MutexUsage mutUsage(&this->updMut);
+	Sync::MutexUsage mutUsage(this->updMut);
 	i = this->updHdlrs.GetCount();
 	while (i-- > 0)
 	{
@@ -726,7 +726,7 @@ void Map::WebImageLayer::AddImage(Text::CString name, Text::CString url, Int32 z
 	stat->alpha = alpha;
 	stat->hasAltitude = hasAltitude;
 	stat->altitude = altitude;
-	Sync::MutexUsage mutUsage(&this->loadingMut);
+	Sync::MutexUsage mutUsage(this->loadingMut);
 	if (this->loadingList.GetCount() >= 2)
 	{
 		this->pendingList.Add(stat);

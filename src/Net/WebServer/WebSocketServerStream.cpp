@@ -7,7 +7,7 @@ Bool Net::WebServer::WebSocketServerStream::SendPacket(UInt8 opcode, const UInt8
 	if (this->resp == 0)
 		return false;
 	UInt8 packetBuff[130];
-	Sync::MutexUsage mutUsage(&this->sendMut);
+	Sync::MutexUsage mutUsage(this->sendMut);
 	if (buffSize < 126)
 	{
 		packetBuff[0] = (UInt8)(0x80 | (opcode));

@@ -35,7 +35,7 @@ void SSWR::VAMS::VAMSBTList::AddItem(Text::String *avlNo, Int32 progId, Int64 ts
 	{
 		return;
 	}
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	Data::FastStringMap<AvlBleItem*> *progMap = this->itemMap.Get(progId);
 	if (progMap == 0)
 	{
@@ -64,7 +64,7 @@ UOSInt SSWR::VAMS::VAMSBTList::QueryByProgId(Data::ArrayList<AvlBleItem *> *item
 {
 	UOSInt ret = 0;
 	AvlBleItem *item;
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	Data::FastStringMap<AvlBleItem *> *progMap = this->itemMap.Get(progId);
 	if (progMap == 0)
 	{
@@ -93,25 +93,25 @@ void SSWR::VAMS::VAMSBTList::KARecv(Int32 progId)
 {
 	Data::DateTime dt;
 	dt.SetCurrTimeUTC();
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	this->kaMap.Put(progId, dt.ToTicks());
 }
 
 Int64 SSWR::VAMS::VAMSBTList::GetLastKeepAlive(Int32 progId)
 {
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	return this->kaMap.Get(progId);
 }
 
 Bool SSWR::VAMS::VAMSBTList::HasProg(Int32 progId)
 {
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	return this->itemMap.ContainsKey(progId);
 }
 
 
 UOSInt SSWR::VAMS::VAMSBTList::GetProgList(Data::ArrayList<Int32> *progList)
 {
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	return this->itemMap.AddKeysTo(progList);
 }

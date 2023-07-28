@@ -67,7 +67,7 @@ Bool Net::NTPClient::GetServerTime(const Net::SocketUtil::AddressInfo *addr, UIn
 		port = 123;
 	}
 
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	MemClear(buff, 48);
 	buff[0] = 0xe3;
 	buff[12] = 'S';
@@ -105,7 +105,7 @@ Bool Net::NTPClient::GetServerTime(const Net::SocketUtil::AddressInfo *addr, UIn
 		port = 123;
 	}
 
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	MemClear(buff, 48);
 	buff[0] = 0xe3;
 	buff[12] = 'S';

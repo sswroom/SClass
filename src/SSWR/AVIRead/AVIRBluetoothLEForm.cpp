@@ -71,7 +71,7 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothLEForm::OnTimerTick(void *userObj)
 	BTDevice *dev;
 	NotNullPtr<Text::String> s;
 
-	Sync::MutexUsage mutUsage(&me->devMut);
+	Sync::MutexUsage mutUsage(me->devMut);
 	i = 0;
 	j = me->devMap.GetCount();
 	while (i < j)
@@ -112,7 +112,7 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothLEForm::OnLEScanItem(void *userObj, U
 {
 	SSWR::AVIRead::AVIRBluetoothLEForm *me = (SSWR::AVIRead::AVIRBluetoothLEForm*)userObj;
 	BTDevice *dev;
-	Sync::MutexUsage mutUsage(&me->devMut);
+	Sync::MutexUsage mutUsage(me->devMut);
 	dev = me->devMap.Get(mac);
 	if (dev)
 	{

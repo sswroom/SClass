@@ -74,7 +74,7 @@ UOSInt Crypto::Hash::BruteForceAttack::GetNextKey(UInt8 *keyBuff, UTF8Char *resu
 	UOSInt len;
 	UOSInt i;
 	UInt8 c;
-	Sync::MutexUsage mutUsage(&this->keyMut);
+	Sync::MutexUsage mutUsage(this->keyMut);
 	len = (UOSInt)(Text::StrConcat(resultBuff, this->keyBuff) - resultBuff);
 	if (len > this->maxLeng)
 	{
@@ -188,7 +188,7 @@ UTF8Char *Crypto::Hash::BruteForceAttack::GetCurrKey(UTF8Char *key)
 {
 	if (this->threadCnt > 0)
 	{
-		Sync::MutexUsage mutUsage(&this->keyMut);
+		Sync::MutexUsage mutUsage(this->keyMut);
 		key = Text::StrConcat(key, this->keyBuff);
 		mutUsage.EndUse();
 		return key;
@@ -201,7 +201,7 @@ UOSInt Crypto::Hash::BruteForceAttack::GetKeyLeng()
 	UOSInt len;
 	if (this->threadCnt > 0)
 	{
-		Sync::MutexUsage mutUsage(&this->keyMut);
+		Sync::MutexUsage mutUsage(this->keyMut);
 		len = Text::StrCharCnt(this->keyBuff);
 		mutUsage.EndUse();
 		return len;

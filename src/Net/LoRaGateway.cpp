@@ -114,7 +114,7 @@ Bool Net::LoRaGateway::IsError()
 
 UInt16 Net::LoRaGateway::NextToken()
 {
-	Sync::MutexUsage mutUsage(&this->tokenMut);
+	Sync::MutexUsage mutUsage(this->tokenMut);
 	return this->tokenNext++;
 }
 

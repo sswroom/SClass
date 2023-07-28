@@ -110,7 +110,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnTimerTick(void *userObj)
 		me->lbClientIP->ClearItems();
 		me->lvClient->ClearItems();
 
-		Sync::MutexUsage mutUsage(&me->cliInfoMut);
+		Sync::MutexUsage mutUsage(me->cliInfoMut);
 		i = 0;
 		j = me->cliInfos.GetCount();
 		while (i < j)
@@ -420,7 +420,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnTargetSelChg(void *userObj)
 			me->txtTargetName->SetText(CSTR(""));
 			me->txtTargetCountry->SetText(CSTR(""));
 		}
-		Sync::MutexUsage mutUsage(&target->mut);
+		Sync::MutexUsage mutUsage(target->mut);
 		me->lbTargetDomains->ClearItems();
 		i = 0;
 		j = target->addrList.GetCount();
@@ -629,7 +629,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnClientSelChg(void *userObj)
 		UOSInt i;
 		UOSInt j;
 		HourInfo *hInfo;
-		Sync::MutexUsage mutUsage(&cli->mut);
+		Sync::MutexUsage mutUsage(cli->mut);
 		i = cli->hourInfos.GetCount();
 		while (i-- > 0)
 		{
@@ -710,7 +710,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnDNSRequest(void *userObj, Text
 
 	ClientInfo *cli;
 	UInt32 cliId = Net::SocketUtil::CalcCliId(reqAddr);
-	Sync::MutexUsage cimutUsage(&me->cliInfoMut);
+	Sync::MutexUsage ciMutUsage(me->cliInfoMut);
 	cli = me->cliInfos.Get(cliId);
 	if (cli == 0)
 	{
@@ -720,11 +720,11 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnDNSRequest(void *userObj, Text
 		me->cliInfos.Put(cliId, cli);
 		me->cliChg = true;
 	}
-	cimutUsage.EndUse();
+	ciMutUsage.EndUse();
 	Data::DateTime dt;
 	HourInfo *hInfo;
 	dt.SetCurrTimeUTC();
-	Sync::MutexUsage mutUsage(&cli->mut);
+	Sync::MutexUsage mutUsage(cli->mut);
 	hInfo = cli->hourInfos.GetItem(0);
 	if (hInfo != 0 && hInfo->year == dt.GetYear() && hInfo->month == dt.GetMonth() && hInfo->day == dt.GetDay() && hInfo->hour == dt.GetHour())
 	{

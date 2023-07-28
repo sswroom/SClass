@@ -87,7 +87,7 @@ UInt32 __stdcall Media::AudioFilter::DTMFDecoder::CalcThread(void *userObj)
 				{
 					align = me->nChannels << 1;
 
-					Sync::MutexUsage mutUsage(&me->calcMut);
+					Sync::MutexUsage mutUsage(me->calcMut);
 					MemCopyNO(tmpBuff, me->calcBuff, me->sampleBuffSize);
 					mutUsage.EndUse();
 					
@@ -431,7 +431,7 @@ UInt32 __stdcall Media::AudioFilter::DTMFDecoder::CalcThread(void *userObj)
 
 void Media::AudioFilter::DTMFDecoder::ResetStatus()
 {
-	Sync::MutexUsage mutUsage(&this->sampleMut);
+	Sync::MutexUsage mutUsage(this->sampleMut);
 	this->calcReady = false;
 	this->calcLeft = this->sampleCnt;
 	this->sampleOfst = 0;
@@ -516,7 +516,7 @@ UOSInt Media::AudioFilter::DTMFDecoder::ReadBlock(Data::ByteArray blk)
 			sizeLeft -= thisSize;
 			this->sampleOfst += thisSize;
 		}
-		Sync::MutexUsage mutUsage(&this->calcMut);
+		Sync::MutexUsage mutUsage(this->calcMut);
 		MemCopyNO(this->calcBuff, &this->sampleBuff[this->sampleOfst], this->sampleBuffSize - this->sampleOfst);
 		if (this->sampleBuffSize > 0)
 		{

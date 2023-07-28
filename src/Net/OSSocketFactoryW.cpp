@@ -31,8 +31,8 @@
 
 struct Net::OSSocketFactory::ClassData
 {
-	Sync::Mutex *socMut;
-	Data::FastMap<Int32, UInt8> *acceptedSoc;
+	Sync::Mutex socMut;
+	Data::Int32FastMap<UInt8> acceptedSoc;
 };
 
 Bool Net::OSSocketFactory::MyConnect(Socket *socket, const UInt8 *addrBuff, UOSInt addrLen, Data::Duration timeout)
@@ -77,17 +77,13 @@ Net::OSSocketFactory::OSSocketFactory(Bool noV6DNS) : Net::SocketFactory(noV6DNS
 	WSAStartup(MAKEWORD(2, 2), &data);
 	this->toRelease = true;
 	this->icmpHand = 0;
-	this->clsData = MemAlloc(ClassData, 1);
-	NEW_CLASS(this->clsData->socMut, Sync::Mutex());
-	NEW_CLASS(this->clsData->acceptedSoc, Data::Int32FastMap<UInt8>());
+	NEW_CLASS(this->clsData, ClassData());
 }
 
 Net::OSSocketFactory::~OSSocketFactory()
 {
 	SDEL_CLASS(this->dnsHdlr);
-	DEL_CLASS(this->clsData->acceptedSoc);
-	DEL_CLASS(this->clsData->socMut);
-	MemFree(this->clsData);
+	DEL_CLASS(this->clsData);
 	if (this->toRelease)
 	{
 		WSACleanup();
@@ -105,7 +101,7 @@ Socket *Net::OSSocketFactory::CreateTCPSocketv4()
 	if (s == INVALID_SOCKET)
 		return 0;
 	Sync::MutexUsage mutUsage(this->clsData->socMut);
-	this->clsData->acceptedSoc->Put((Int32)s, 1);
+	this->clsData->acceptedSoc.Put((Int32)s, 1);
 	return (Socket*)s;
 }
 
@@ -115,7 +111,7 @@ Socket *Net::OSSocketFactory::CreateTCPSocketv6()
 	if (s == INVALID_SOCKET)
 		return 0;
 	Sync::MutexUsage mutUsage(this->clsData->socMut);
-	this->clsData->acceptedSoc->Put((Int32)s, 1);
+	this->clsData->acceptedSoc.Put((Int32)s, 1);
 	return (Socket*)s;
 }
 
@@ -193,7 +189,7 @@ Socket *Net::OSSocketFactory::CreateRAWSocket()
 void Net::OSSocketFactory::DestroySocket(Socket *socket)
 {
 	Sync::MutexUsage mutUsage(this->clsData->socMut);
-	this->clsData->acceptedSoc->Put((Int32)(OSInt)socket, 0);
+	this->clsData->acceptedSoc.Put((Int32)(OSInt)socket, 0);
 	mutUsage.EndUse();
 	closesocket((SOCKET)socket);
 }
@@ -279,9 +275,9 @@ Socket *Net::OSSocketFactory::SocketAccept(Socket *socket)
 			return (Socket*)s;
 		}
 		Sync::MutexUsage mutUsage(this->clsData->socMut);
-		if (this->clsData->acceptedSoc->Get((Int32)s) == 0)
+		if (this->clsData->acceptedSoc.Get((Int32)s) == 0)
 		{
-			this->clsData->acceptedSoc->Put((Int32)s, 2);
+			this->clsData->acceptedSoc.Put((Int32)s, 2);
 #if defined(VERBOSE)
 			debugDt.SetCurrTime();
 			debugDt.ToString(debugBuff, "HH:mm:ss.fff");

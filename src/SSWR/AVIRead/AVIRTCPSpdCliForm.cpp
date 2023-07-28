@@ -20,7 +20,7 @@ void __stdcall SSWR::AVIRead::AVIRTCPSpdCliForm::OnConnClick(void *userObj)
 	if (me->connected)
 	{
 		me->connected = false;
-		Sync::MutexUsage mutUsage(&me->cliMut);
+		Sync::MutexUsage mutUsage(me->cliMut);
 		if (me->cli)
 		{
 			me->cli->Close();
@@ -122,7 +122,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRTCPSpdCliForm::ProcThread(void *userObj)
 	sendBuff = MemAlloc(UInt8, sendBuffSize);
 	while (!me->toStop)
 	{
-		Sync::MutexUsage mutUsage(&me->cliMut);
+		Sync::MutexUsage mutUsage(me->cliMut);
 		if (me->cli)
 		{
 			sendSize = me->cli->Write(sendBuff, sendBuffSize);
@@ -167,7 +167,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRTCPSpdCliForm::RecvThread(void *userObj)
 				}
 				else
 				{
-					Sync::MutexUsage mutUsage(&me->cliMut);
+					Sync::MutexUsage mutUsage(me->cliMut);
 					DEL_CLASS(me->cli);
 					me->cli = 0;
 					mutUsage.EndUse();

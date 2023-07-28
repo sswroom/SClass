@@ -93,7 +93,7 @@ Net::LogServer::IPStatus *Net::LogServer::GetIPStatus(const Net::SocketUtil::Add
 	{
 		UInt32 ip = ReadMUInt32(addr->addr);
 		IPStatus *status;
-		Sync::MutexUsage mutUsage(&this->ipMut);
+		Sync::MutexUsage mutUsage(this->ipMut);
 		status = this->ipMap.Get(ip);
 		if (status)
 		{

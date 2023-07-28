@@ -72,7 +72,7 @@ void Media::Batch::BatchResizer::ImageOutput(Media::ImageList *imgList, const UT
 	{
 		param = this->targetParam.GetItem(i);
 
-		Sync::MutexUsage mutUsage(&this->resizeMut);
+		Sync::MutexUsage mutUsage(this->resizeMut);
 		if (param->sizeType == 0)
 		{
 			resizer->SetTargetSize(Math::Size2D<UOSInt>(param->width, param->height));

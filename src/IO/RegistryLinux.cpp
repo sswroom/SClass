@@ -18,7 +18,7 @@ void *IO::Registry::allRegistryFile = 0;
 struct Registry_File
 {
 	NotNullPtr<Text::String> fileName;
-	Sync::Mutex *mut;
+	Sync::Mutex mut;
 	IO::ConfigFile *cfg;
 	UInt32 useCnt;
 	Bool modified;
@@ -58,12 +58,11 @@ void *IO::Registry::OpenUserType(RegistryUser usr)
 		sptr = Text::StrConcatC(sptr, UTF8STRC("/.sswr"));
 		IO::Path::CreateDirectory(CSTRP(sbuff, sptr));
 		sptr = Text::StrConcatC(sptr, UTF8STRC("/alluser.reg"));
-		reg = MemAlloc(Registry_File, 1);
+		NEW_CLASS(reg, Registry_File());
 		allRegistryFile = reg;
 		reg->useCnt = 1;
 		reg->usr = usr;
 		reg->fileName = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
-		NEW_CLASS(reg->mut, Sync::Mutex());
 		reg->cfg = IO::IniFile::Parse(reg->fileName->ToCString(), 65001);
 		reg->modified = false;
 		return reg;
@@ -82,12 +81,11 @@ void *IO::Registry::OpenUserType(RegistryUser usr)
 		IO::Path::CreateDirectory(CSTRP(sbuff, sptr));
 		sptr = Text::StrConcatC(sptr, UTF8STRC("/thisuser.reg"));
 
-		reg = MemAlloc(Registry_File, 1);
+		NEW_CLASS(reg, Registry_File());
 		thisRegistryFile = reg;
 		reg->useCnt = 1;
 		reg->usr = usr;
 		reg->fileName = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
-		NEW_CLASS(reg->mut, Sync::Mutex());
 		reg->cfg = IO::IniFile::Parse(reg->fileName->ToCString(), 65001);
 		reg->modified = false;
 		return reg;
@@ -107,7 +105,6 @@ void IO::Registry::CloseInternal(void *data)
 			IO::IniFile::SaveConfig(fs, 65001, reg->cfg);
 			reg->modified = false;
 		}
-		DEL_CLASS(reg->mut);
 		SDEL_CLASS(reg->cfg);
 		reg->fileName->Release();
 		if (reg->usr == REG_USER_ALL)
@@ -118,7 +115,7 @@ void IO::Registry::CloseInternal(void *data)
 		{
 			thisRegistryFile = 0;
 		}
-		MemFree(reg);
+		DEL_CLASS(reg);
 	}
 }
 

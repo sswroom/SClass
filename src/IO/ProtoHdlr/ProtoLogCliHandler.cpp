@@ -38,7 +38,7 @@ UOSInt IO::ProtoHdlr::ProtoLogCliHandler::ParseProtocol(NotNullPtr<IO::Stream> s
 				if (packetSize > myBuff.GetSize())
 					return myBuff.GetSize();
 
-				Sync::MutexUsage mutUsage(&this->crcMut);
+				Sync::MutexUsage mutUsage(this->crcMut);
 				this->crc.Clear();
 				this->crc.Calc(myBuff.Ptr(), packetSize - 2);
 				this->crc.GetValue(crcVal);
@@ -71,7 +71,7 @@ UOSInt IO::ProtoHdlr::ProtoLogCliHandler::BuildPacket(UInt8 *buff, Int32 cmdType
 		MemCopyNO(&buff[6], cmd, cmdSize);
 	}
 	UInt8 crcVal[4];
-	Sync::MutexUsage mutUsage(&this->crcMut);
+	Sync::MutexUsage mutUsage(this->crcMut);
 	this->crc.Clear();
 	this->crc.Calc(buff, cmdSize + 6);
 	this->crc.GetValue(crcVal);

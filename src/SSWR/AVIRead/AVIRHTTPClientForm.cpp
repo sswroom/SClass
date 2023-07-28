@@ -343,7 +343,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnSaveClicked(void *userObj)
 		Bool succ = false;
 		{
 			IO::FileStream fs(dlg.GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-			Sync::MutexUsage mutUsage(&me->respMut);
+			Sync::MutexUsage mutUsage(me->respMut);
 			if (me->respData)
 			{
 				UOSInt buffSize;
@@ -364,7 +364,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnSaveClicked(void *userObj)
 void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnViewClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRHTTPClientForm *me = (SSWR::AVIRead::AVIRHTTPClientForm*)userObj;
-	Sync::MutexUsage mutUsage(&me->respMut);
+	Sync::MutexUsage mutUsage(me->respMut);
 	if (me->respData)
 	{
 		UOSInt buffSize;
@@ -758,7 +758,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 					}
 				}
 				me->respSvrAddr = *cli->GetSvrAddr();
-				Sync::MutexUsage respMutUsage(&me->respMut);
+				Sync::MutexUsage respMutUsage(me->respMut);
 				SDEL_STRING(me->respReqURL)
 				SDEL_STRING(me->respContType);
 				SDEL_CLASS(me->respData);
@@ -802,7 +802,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 				me->respULSize = 0;
 				me->respDLSize = 0;
 				me->respStatus = 0;
-				Sync::MutexUsage mutUsage(&me->respMut);
+				Sync::MutexUsage mutUsage(me->respMut);
 				SDEL_STRING(me->respReqURL)
 				SDEL_CLASS(me->respData);
 				SDEL_STRING(me->respContType);
@@ -1111,7 +1111,7 @@ SSWR::AVIRead::AVIRHTTPClientForm::HTTPCookie *SSWR::AVIRead::AVIRHTTPClientForm
 			}
 			if (eq)
 			{
-				Sync::MutexUsage mutUsage(&this->cookieMut);
+				Sync::MutexUsage mutUsage(this->cookieMut);
 				cookie->value->Release();
 				cookie->value  = Text::String::NewP(&cookieValue[i + 1], cookieValueEnd);
 				mutUsage.EndUse();
@@ -1133,7 +1133,7 @@ SSWR::AVIRead::AVIRHTTPClientForm::HTTPCookie *SSWR::AVIRead::AVIRHTTPClientForm
 		cookie->expireTime = expiryTime;
 		cookie->name = cookieName;
 		cookie->value = Text::String::NewP(&cookieValue[i + 1], cookieValueEnd);
-		Sync::MutexUsage mutUsage(&this->cookieMut);
+		Sync::MutexUsage mutUsage(this->cookieMut);
 		this->cookieList.Add(cookie);
 		mutUsage.EndUse();
 		return cookie;
@@ -1160,7 +1160,7 @@ UTF8Char *SSWR::AVIRead::AVIRHTTPClientForm::AppendCookie(UTF8Char *sbuff, Text:
 	pathPtr = sptr + 1;
 	pathPtrEnd = Text::URLString::GetURLPath(pathPtr, reqURL);
 	len1 = (UOSInt)(sptr - buff);;
-	Sync::MutexUsage mutUsage(&this->cookieMut);
+	Sync::MutexUsage mutUsage(this->cookieMut);
 	i = 0;
 	j = this->cookieList.GetCount();
 	while (i < j)

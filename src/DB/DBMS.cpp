@@ -1815,7 +1815,7 @@ Bool DB::DBMS::UserAdd(Int32 userId, Text::CString userName, Text::CString passw
 	#if defined(VERBOSE)
 	printf("UserAdd %s/%s@%s\r\n", userName.v, password.v, host.v);
 	#endif
-	Sync::MutexUsage mutUsage(&this->loginMut);
+	Sync::MutexUsage mutUsage(this->loginMut);
 	login = this->loginMap.GetC(userName);
 	if (login == 0)
 	{
@@ -1871,7 +1871,7 @@ Int32 DB::DBMS::UserLoginMySQL(Int32 sessId, Text::CString userName, const UInt8
 	#if defined(VERBOSE)
 	printf("mysql_native_password auth\r\n");
 	#endif
-	Sync::MutexUsage mutUsage(&this->loginMut);
+	Sync::MutexUsage mutUsage(this->loginMut);
 	login = this->loginMap.GetC(userName);
 	if (login)
 	{
@@ -1914,7 +1914,7 @@ Int32 DB::DBMS::UserLoginMySQL(Int32 sessId, Text::CString userName, const UInt8
 			if (userId != 0)
 			{
 				DB::DBMS::SessionInfo *sess;
-				Sync::MutexUsage mutUsage(&this->sessMut);
+				Sync::MutexUsage mutUsage(this->sessMut);
 				sess = this->sessMap.Get(sessId);
 				if (sess == 0)
 				{
@@ -3004,7 +3004,7 @@ void DB::DBMS::CloseReader(DB::DBReader *r)
 UTF8Char *DB::DBMS::GetErrMessage(Int32 sessId, UTF8Char *msgBuff)
 {
 	DB::DBMS::SessionInfo *sess;
-	Sync::MutexUsage mutUsage(&this->sessMut);
+	Sync::MutexUsage mutUsage(this->sessMut);
 	sess = this->sessMap.Get(sessId);
 	if (sess && sess->lastError)
 	{
@@ -3017,7 +3017,7 @@ UTF8Char *DB::DBMS::GetErrMessage(Int32 sessId, UTF8Char *msgBuff)
 DB::DBMS::SessionInfo *DB::DBMS::SessGet(Int32 sessId)
 {
 	DB::DBMS::SessionInfo *sess;
-	Sync::MutexUsage mutUsage(&this->sessMut);
+	Sync::MutexUsage mutUsage(this->sessMut);
 	sess = this->sessMap.Get(sessId);
 	mutUsage.EndUse();
 	return sess;
@@ -3030,7 +3030,7 @@ void DB::DBMS::SessEnd(Int32 sessId)
 	{
 		return;
 	}
-	Sync::MutexUsage mutUsage(&this->sessMut);
+	Sync::MutexUsage mutUsage(this->sessMut);
 	sess = this->sessMap.Remove(sessId);
 	mutUsage.EndUse();
 	if (sess)

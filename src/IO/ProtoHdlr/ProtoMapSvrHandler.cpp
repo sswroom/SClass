@@ -92,7 +92,7 @@ UOSInt IO::ProtoHdlr::ProtoMapSvrHandler::ParseProtocol(NotNullPtr<IO::Stream> s
 				if (packetSize > buff.GetSize())
 					return buff.GetSize();
 
-				Sync::MutexUsage mutUsage(&this->crcMut);
+				Sync::MutexUsage mutUsage(this->crcMut);
 				this->crc.Clear();
 				this->crc.Calc(buff.Ptr(), packetSize - 2);
 				this->crc.GetValue((UInt8*)&crcVal);
@@ -129,7 +129,7 @@ UOSInt IO::ProtoHdlr::ProtoMapSvrHandler::BuildPacket(UInt8 *buff, Int32 cmdType
 		UInt32 crcVal;
 		*(Int16*)buff = *(Int16*)"ma";
 
-		Sync::MutexUsage mutUsage(&this->crcMut);
+		Sync::MutexUsage mutUsage(this->crcMut);
 		this->crc.Clear();
 		this->crc.Calc(buff, cmdSize + 6);
 		this->crc.GetValue((UInt8*)&crcVal);

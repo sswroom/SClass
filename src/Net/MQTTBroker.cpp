@@ -659,12 +659,12 @@ void Net::MQTTBroker::DataParsed(NotNullPtr<IO::Stream> stm, void *stmObj, Int32
 				subscribe->topic = Text::String::New(sbTopic.ToCString());
 				subscribe->stm = stm;
 				subscribe->cliData = data;
-				Sync::MutexUsage subscribeMutUsage(&this->subscribeMut);
+				Sync::MutexUsage subscribeMutUsage(this->subscribeMut);
 				this->subscribeList.Add(subscribe);
 				subscribeMutUsage.EndUse();
 
 				TopicInfo *topicInfo;
-				Sync::MutexUsage topicMutUsage(&this->topicMut);
+				Sync::MutexUsage topicMutUsage(this->topicMut);
 				i = 0;
 				j = this->topicMap.GetCount();
 				while (i < j)
@@ -770,7 +770,7 @@ void Net::MQTTBroker::UpdateTopic(Text::CString topic, const UInt8 *message, UOS
 {
 	TopicInfo *topicInfo;
 	Bool unchanged = false;
-	Sync::MutexUsage topicMutUsage(&this->topicMut);
+	Sync::MutexUsage topicMutUsage(this->topicMut);
 	topicInfo = this->topicMap.GetC(topic);
 	if (topicInfo == 0)
 	{
@@ -825,7 +825,7 @@ void Net::MQTTBroker::UpdateTopic(Text::CString topic, const UInt8 *message, UOS
 
 	SubscribeInfo *subscribe;
 	UOSInt i;
-	Sync::MutexUsage subscribeMutUsage(&this->subscribeMut);
+	Sync::MutexUsage subscribeMutUsage(this->subscribeMut);
 	i = this->subscribeList.GetCount();
 	while (i-- > 0)
 	{
@@ -937,7 +937,7 @@ void Net::MQTTBroker::StreamClosed(NotNullPtr<IO::Stream> stm, void *stmData)
 
 	UOSInt i;
 	SubscribeInfo *subscribe;
-	Sync::MutexUsage mutUsage(&this->subscribeMut);
+	Sync::MutexUsage mutUsage(this->subscribeMut);
 	i = this->subscribeList.GetCount();
 	while (i-- > 0)
 	{
@@ -1138,7 +1138,7 @@ void Net::MQTTBroker::HandleTopicUpdate(TopicUpdateHandler topicUpdHdlr, void *u
 		TopicInfo *topic;
 		UOSInt i;
 		UOSInt j;
-		Sync::MutexUsage mutUsage(&this->topicMut);
+		Sync::MutexUsage mutUsage(this->topicMut);
 		i = 0;
 		j = this->topicMap.GetCount();
 		while (i < j)

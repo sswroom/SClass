@@ -16,15 +16,11 @@ namespace Sync
 			this->used = false;
 		}
 
-		MutexUsage(const Sync::Mutex *mut)
+		MutexUsage(NotNullPtr<const Sync::Mutex> mut)
 		{
-			this->mut = mut;
-			this->used = false;
-			if (this->mut)
-			{
-				this->used = true;
-				this->mut->Lock();
-			}
+			this->mut = mut.Ptr();
+			this->used = true;
+			this->mut->Lock();
 		}
 
 		~MutexUsage()
@@ -50,11 +46,12 @@ namespace Sync
 			}
 		}
 
-		void ReplaceMutex(const Sync::Mutex *mut)
+		void ReplaceMutex(NotNullPtr<const Sync::Mutex> mut)
 		{
 			this->EndUse();
-			this->mut = mut;
-			this->BeginUse();
+			this->mut = mut.Ptr();
+			this->mut->Lock();
+			this->used = true;
 		}
 	};
 }

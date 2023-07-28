@@ -35,7 +35,7 @@ void Media::Batch::BatchToLRGB::ImageOutput(Media::ImageList *imgList, const UTF
 		simg = (Media::StaticImage*)imgList->GetImage(i, 0);
 		if (simg->info.fourcc != *(UInt32*)"LRGB")
 		{
-			Sync::MutexUsage mutUsage(&this->mut);
+			Sync::MutexUsage mutUsage(this->mut);
 			if (this->csconv == 0 || this->srcFCC != simg->info.fourcc || this->srcBpp != simg->info.storeBPP || this->srcPF != simg->info.pf || !simg->info.color->Equals(&this->srcProfile))
 			{
 				SDEL_CLASS(this->csconv);

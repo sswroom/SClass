@@ -15,7 +15,7 @@ void __stdcall SSWR::AVIRead::AVIRARPScanForm::OnARPHandler(const UInt8 *hwAddr,
 {
 	SSWR::AVIRead::AVIRARPScanForm *me = (SSWR::AVIRead::AVIRARPScanForm *)userObj;
 	SSWR::AVIRead::AVIRARPScanForm::IPMapInfo *ipInfo;
-	Sync::MutexUsage mutUsage(&me->arpMut);
+	Sync::MutexUsage mutUsage(me->arpMut);
 	ipInfo = me->arpMap.Get(ipAddr);
 	if (ipInfo == 0)
 	{
@@ -75,7 +75,7 @@ void __stdcall SSWR::AVIRead::AVIRARPScanForm::OnScanClicked(void *userObj)
 		else
 		{
 			buff[3] = 1;
-			Sync::MutexUsage mutUsage(&me->arpMut);
+			Sync::MutexUsage mutUsage(me->arpMut);
 			while (buff[3] < 255)
 			{
 				ipInfo = me->arpMap.Get(ReadNUInt32(buff));
@@ -102,7 +102,7 @@ void SSWR::AVIRead::AVIRARPScanForm::UpdateARPList()
 
 	const Net::MACInfo::MACEntry *macEntry;
 	SSWR::AVIRead::AVIRARPScanForm::IPMapInfo *ipInfo;
-	Sync::MutexUsage mutUsage(&this->arpMut);
+	Sync::MutexUsage mutUsage(this->arpMut);
 	this->lvARP->ClearItems();
 	i = 0;
 	j = this->arpMap.GetCount();

@@ -21,7 +21,7 @@ UInt32 __stdcall Media::AVIUtl::AUIVideo::PlayThread(void *userObj)
 	{
 		if (me->playing)
 		{
-			Sync::MutexUsage mutUsage(&me->frameNumMut);
+			Sync::MutexUsage mutUsage(me->frameNumMut);
 			thisFrameNum = me->currFrameNum;
 			me->currFrameNum++;
 			mutUsage.EndUse();
@@ -144,7 +144,7 @@ Bool Media::AVIUtl::AUIVideo::Start()
 void Media::AVIUtl::AUIVideo::Stop()
 {
 	this->playing = false;
-	Sync::MutexUsage mutUsage(&this->frameNumMut);
+	Sync::MutexUsage mutUsage(this->frameNumMut);
 	this->currFrameNum = 0;
 }
 
@@ -165,7 +165,7 @@ Bool Media::AVIUtl::AUIVideo::CanSeek()
 
 UInt32 Media::AVIUtl::AUIVideo::SeekToTime(UInt32 time)
 {
-	Sync::MutexUsage mutUsage(&this->frameNumMut);
+	Sync::MutexUsage mutUsage(this->frameNumMut);
 	this->currFrameNum = MulDivU32(time, this->frameRateNorm, this->frameRateDenorm * 1000);
 	if (this->currFrameNum > this->frameCnt)
 		this->currFrameNum = this->frameCnt;

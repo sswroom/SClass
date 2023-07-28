@@ -39,7 +39,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(void *userObj)
 			me->txtBattery->SetText(CSTRP(sbuff, sptr));
 			if (power.batteryPercent <= 15 && me->captureWriter)
 			{
-				Sync::MutexUsage mutUsage(&me->captureMut);
+				Sync::MutexUsage mutUsage(me->captureMut);
 				DEL_CLASS(me->captureWriter);
 				DEL_CLASS(me->captureFS);
 				me->captureWriter = 0;
@@ -63,7 +63,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(void *userObj)
 		if (me->motion->IsMovving())
 		{
 			me->txtMotion->SetText(CSTR("Moving"));
-			Sync::MutexUsage mutUsage(&me->captureMut);
+			Sync::MutexUsage mutUsage(me->captureMut);
 			if (me->captureWriter && me->lastMotion != 1)
 			{
 				me->lastMotion = 1;
@@ -77,7 +77,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(void *userObj)
 		else
 		{
 			me->txtMotion->SetText(CSTR("Stopped"));
-			Sync::MutexUsage mutUsage(&me->captureMut);
+			Sync::MutexUsage mutUsage(me->captureMut);
 			if (me->captureWriter && me->lastMotion != 0)
 			{
 				me->lastMotion = 0;
@@ -129,7 +129,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(void *userObj)
 
 				maxIMAC = 0;
 				maxRSSI = -128;
-				Sync::MutexUsage mutUsage(&me->captureMut);
+				Sync::MutexUsage mutUsage(me->captureMut);
 				if (me->captureWriter)
 				{
 					sb.ClearStr();
@@ -489,7 +489,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnCaptureClicked(void *userOb
 	SSWR::AVIRead::AVIRWifiCaptureForm *me = (SSWR::AVIRead::AVIRWifiCaptureForm*)userObj;
 	if (me->captureWriter)
 	{
-		Sync::MutexUsage mutUsage(&me->captureMut);
+		Sync::MutexUsage mutUsage(me->captureMut);
 		DEL_CLASS(me->captureWriter);
 		DEL_CLASS(me->captureFS);
 		me->captureWriter = 0;
@@ -526,7 +526,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnCaptureClicked(void *userOb
 		dt.SetCurrTimeUTC();
 		sptr = dt.ToString(sptr, "yyyyMMddHHmmss");
 		sptr = Text::StrConcatC(sptr, UTF8STRC(".txt"));
-		Sync::MutexUsage mutUsage(&me->captureMut);
+		Sync::MutexUsage mutUsage(me->captureMut);
 		NotNullPtr<IO::FileStream> fs;
 		NEW_CLASSNN(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		me->captureFS = fs.Ptr();
@@ -753,7 +753,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnGPSData(void *userObj, Map:
 	SSWR::AVIRead::AVIRWifiCaptureForm *me = (SSWR::AVIRead::AVIRWifiCaptureForm*)userObj;
 	if (me->currActive || record->valid != 0)
 	{
-		Sync::MutexUsage mutUsage(&me->captureMut);
+		Sync::MutexUsage mutUsage(me->captureMut);
 		if (me->captureWriter)
 		{
 			Text::StringBuilderUTF8 sb;

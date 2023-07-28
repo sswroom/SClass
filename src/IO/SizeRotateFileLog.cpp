@@ -96,7 +96,7 @@ void IO::SizeRotateFileLog::LogAdded(Data::DateTime *time, Text::CString logMsg,
 	UTF8Char buff[256];
 	UTF8Char *sptr;
 
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	if (this->fileStm == 0 || this->fileStm->GetLength() > this->fileSize)
 	{
 		newFile = true;

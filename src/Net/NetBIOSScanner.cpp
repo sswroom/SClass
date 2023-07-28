@@ -21,7 +21,7 @@ void __stdcall Net::NetBIOSScanner::OnUDPPacket(const Net::SocketUtil::AddressIn
 		if (dataLen >= 7 + nName * 18)
 		{
 			NameAnswer *ans;
-			Sync::MutexUsage mutUsage(&me->ansMut);
+			Sync::MutexUsage mutUsage(me->ansMut);
 			ans = me->answers.Get(sortableIP);
 			if (ans == 0)
 			{
@@ -117,6 +117,6 @@ void Net::NetBIOSScanner::SetAnswerHandler(AnswerUpdated hdlr, void *userObj)
 
 const Data::ReadingList<Net::NetBIOSScanner::NameAnswer*> *Net::NetBIOSScanner::GetAnswers(Sync::MutexUsage *mutUsage) const
 {
-	mutUsage->ReplaceMutex(&this->ansMut);
+	mutUsage->ReplaceMutex(this->ansMut);
 	return &this->answers;
 }

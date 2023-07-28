@@ -36,7 +36,7 @@ UInt32 __stdcall IO::FileAnalyse::PCapFileAnalyse::ParseThread(void *userObj)
 		{
 			break;
 		}
-		Sync::MutexUsage mutUsage(&me->dataMut);
+		Sync::MutexUsage mutUsage(me->dataMut);
 		me->ofstList.Add(ofst);
 		me->sizeList.Add(thisSize + 16);
 		mutUsage.EndUse();
@@ -121,7 +121,7 @@ Bool IO::FileAnalyse::PCapFileAnalyse::GetFrameName(UOSInt index, Text::StringBu
 	{
 		return false;
 	}
-	Sync::MutexUsage mutUsage(&this->dataMut);
+	Sync::MutexUsage mutUsage(this->dataMut);
 	ofst = this->ofstList.GetItem(index - 1);
 	size = this->sizeList.GetItem(index - 1);
 	mutUsage.EndUse();
@@ -204,7 +204,7 @@ Bool IO::FileAnalyse::PCapFileAnalyse::GetFrameDetail(UOSInt index, Text::String
 	{
 		return false;
 	}
-	Sync::MutexUsage mutUsage(&this->dataMut);
+	Sync::MutexUsage mutUsage(this->dataMut);
 	ofst = this->ofstList.GetItem(index - 1);
 	size = this->sizeList.GetItem(index - 1);
 	mutUsage.EndUse();
@@ -321,7 +321,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::PCapFileAnalyse::GetFrameDetail(U
 	{
 		return 0;
 	}
-	Sync::MutexUsage mutUsage(&this->dataMut);
+	Sync::MutexUsage mutUsage(this->dataMut);
 	ofst = this->ofstList.GetItem(index - 1);
 	size = this->sizeList.GetItem(index - 1);
 	mutUsage.EndUse();

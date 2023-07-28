@@ -55,7 +55,7 @@ UI::DObj::SizedOverlayDObj::~SizedOverlayDObj()
 
 Bool UI::DObj::SizedOverlayDObj::IsChanged()
 {
-	Sync::MutexUsage mutUsage(&this->imgMut);
+	Sync::MutexUsage mutUsage(this->imgMut);
 	if (this->imgList)
 	{
 		if (this->imgList->GetCount() <= 1)
@@ -81,7 +81,7 @@ Bool UI::DObj::SizedOverlayDObj::DoEvents()
 
 void UI::DObj::SizedOverlayDObj::DrawObject(Media::DrawImage *dimg)
 {
-	Sync::MutexUsage imgMutUsage(&this->imgMut);
+	Sync::MutexUsage imgMutUsage(this->imgMut);
 	if (this->imgList)
 	{
 		UOSInt frameNum;
@@ -99,7 +99,7 @@ void UI::DObj::SizedOverlayDObj::DrawObject(Media::DrawImage *dimg)
 				this->startTime += OSInt2Double(this->frameDelay * (OSInt)this->imgList->GetCount()) * 0.001;
 			}
 		}
-		Sync::MutexUsage mutUsage(&this->dispMut);
+		Sync::MutexUsage mutUsage(this->dispMut);
 		if (this->dispImg == 0 || this->dispFrameNum != frameNum)
 		{
 			SDEL_CLASS(this->dispImg);
@@ -151,7 +151,7 @@ void UI::DObj::SizedOverlayDObj::SetFrameDelay(OSInt frameDelay)
 void UI::DObj::SizedOverlayDObj::SetSize(Math::Size2D<UOSInt> size)
 {
 	this->size = size;
-	Sync::MutexUsage mutUsage(&this->dispMut);
+	Sync::MutexUsage mutUsage(this->dispMut);
 	SDEL_CLASS(this->dispImg);	
 }
 
@@ -163,7 +163,7 @@ void UI::DObj::SizedOverlayDObj::SetImage(Text::CString fileName, Parser::Parser
 		imgList = (Media::ImageList*)parsers->ParseFileType(fd, IO::ParserType::ImageList);
 	}
 	{
-		Sync::MutexUsage imgMutUsage(&this->imgMut);
+		Sync::MutexUsage imgMutUsage(this->imgMut);
 		SDEL_CLASS(this->imgList);
 		this->imgList = imgList;
 	}

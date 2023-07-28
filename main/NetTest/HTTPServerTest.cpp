@@ -18,14 +18,14 @@ IO::ConsoleWriter *console;
 class MyHandler : public Net::WebServer::WebServiceHandler
 {
 private:
-	Data::ArrayList<Net::WebServer::IWebResponse*> *sseConns;
-	Sync::Mutex *sseMut;
+	Data::ArrayList<Net::WebServer::IWebResponse*> sseConns;
+	Sync::Mutex sseMut;
 
 	static void __stdcall SSEDisconnect(Net::WebServer::IWebResponse *resp, void *userObj)
 	{
 		MyHandler *me = (MyHandler*)userObj;
 		Sync::MutexUsage mutUsage(me->sseMut);
-		me->sseConns->Remove(resp);
+		me->sseConns.Remove(resp);
 		console->WriteLineC(UTF8STRC("Disconnected"));
 	}
 
@@ -36,7 +36,7 @@ private:
 		if (resp->ResponseSSE(30000, SSEDisconnect, myHdlr))
 		{
 			Sync::MutexUsage mutUsage(myHdlr->sseMut);
-			myHdlr->sseConns->Add(resp);
+			myHdlr->sseConns.Add(resp);
 			
 			resp->SSESend((const UTF8Char*)"INIT", 0);
 			resp->SSESend((const UTF8Char*)"Test", (const UTF8Char*)"ABC");
@@ -47,15 +47,11 @@ private:
 public:
 	MyHandler()
 	{
-		NEW_CLASS(this->sseConns, Data::ArrayList<Net::WebServer::IWebResponse*>());
-		NEW_CLASS(this->sseMut, Sync::Mutex());
 		this->AddService(CSTR("/sse"), Net::WebUtil::RequestMethod::HTTP_GET, SSEHandler);
 	}
 
 	virtual ~MyHandler()
 	{
-		DEL_CLASS(this->sseConns);
-		DEL_CLASS(this->sseMut);
 	}
 };
 

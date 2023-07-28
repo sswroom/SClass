@@ -24,7 +24,7 @@ UInt32 __stdcall Map::ReverseGeocoderClient::ClientThread(void *userObj)
 	{
 		if (!cli.Set(me->cli))
 		{
-			Sync::MutexUsage mutUsage(&me->cliMut);
+			Sync::MutexUsage mutUsage(me->cliMut);
 			NEW_CLASSNN(cli, Net::TCPClient(me->sockf, me->host->ToCString(), me->port, 15000));
 			if (cli->IsConnectError())
 			{
@@ -47,7 +47,7 @@ UInt32 __stdcall Map::ReverseGeocoderClient::ClientThread(void *userObj)
 			readSize = cli->Read(&recvBuff[buffSize], 4096 - buffSize);
 			if (readSize <= 0)
 			{
-				Sync::MutexUsage mutUsage(&me->cliMut);
+				Sync::MutexUsage mutUsage(me->cliMut);
 				DEL_CLASS(me->cli);
 				me->cli = 0;
 				mutUsage.EndUse();
@@ -70,7 +70,7 @@ UInt32 __stdcall Map::ReverseGeocoderClient::ClientThread(void *userObj)
 		}
 	}
 	{
-		Sync::MutexUsage mutUsage(&me->cliMut);
+		Sync::MutexUsage mutUsage(me->cliMut);
 		if (me->cli)
 		{
 			DEL_CLASS(me->cli);
@@ -93,7 +93,7 @@ UInt32 __stdcall Map::ReverseGeocoderClient::MonThread(void *userObj)
 		currTime.SetCurrTimeUTC();
 		if (currTime.DiffMS(&me->lastKARecv) > 600000)
 		{
-			Sync::MutexUsage mutUsage(&me->cliMut);
+			Sync::MutexUsage mutUsage(me->cliMut);
 			if (me->cli)
 			{
 				me->errWriter->WriteLineC(UTF8STRC("ReverseGeocoder timed out"));
@@ -102,7 +102,7 @@ UInt32 __stdcall Map::ReverseGeocoderClient::MonThread(void *userObj)
 		}
 		else if (currTime.DiffMS(&me->lastKASent) > 180000)
 		{
-			Sync::MutexUsage mutUsage(&me->cliMut);
+			Sync::MutexUsage mutUsage(me->cliMut);
 			if (me->cli)
 			{
 				me->cli->Write(kaBuff, me->protocol.BuildPacket(kaBuff, 4, 0, 0, 0, 0));

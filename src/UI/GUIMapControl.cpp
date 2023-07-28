@@ -273,7 +273,7 @@ void UI::GUIMapControl::OnDraw(Media::DrawImage *img)
 		Media::Resizer::LanczosResizerH8_8 resizer(4, 3, Media::AT_NO_ALPHA);
 		Math::Size2D<UOSInt> sz;
 
-		Sync::MutexUsage mutUsage(&this->drawMut);
+		Sync::MutexUsage mutUsage(this->drawMut);
 		if (this->drawHdlr)
 		{
 			Media::DrawImage *tmpImg = this->eng->CloneImage(this->bgImg);
@@ -381,7 +381,7 @@ void UI::GUIMapControl::OnDraw(Media::DrawImage *img)
 		}
 		img->DelBrush(bgBrush);
 
-		Sync::MutexUsage mutUsage(&this->drawMut);
+		Sync::MutexUsage mutUsage(this->drawMut);
 		if (this->drawHdlr)
 		{
 			Media::DrawImage *drawImg = this->eng->CloneImage(this->bgImg);
@@ -799,7 +799,7 @@ UI::GUIMapControl::~GUIMapControl()
 
 void UI::GUIMapControl::OnSizeChanged(Bool updateScn)
 {
-	Sync::MutexUsage mutUsage(&this->drawMut);
+	Sync::MutexUsage mutUsage(this->drawMut);
 	this->currSize = this->GetSizeP();
 	this->view->UpdateSize(this->currSize.ToDouble());
 	if (this->bgImg)
@@ -879,7 +879,7 @@ void UI::GUIMapControl::SetBGColor(UInt32 bgColor)
 
 void UI::GUIMapControl::SetRenderer(Map::DrawMapRenderer *renderer)
 {
-	Sync::MutexUsage mutUsage(&this->drawMut);
+	Sync::MutexUsage mutUsage(this->drawMut);
 	if (this->renderer)
 	{
 		this->renderer->SetUpdatedHandler(0, 0);
@@ -898,7 +898,7 @@ void UI::GUIMapControl::SetRenderer(Map::DrawMapRenderer *renderer)
 
 void UI::GUIMapControl::UpdateMap()
 {
-	Sync::MutexUsage mutUsage(&this->drawMut);
+	Sync::MutexUsage mutUsage(this->drawMut);
 	if (this->bgImg && this->renderer)
 	{
 		Double t;

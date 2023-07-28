@@ -35,7 +35,7 @@ Bool Net::SocketFactory::AdapterEnable(Text::CString adapterName, Bool enable)
 
 Bool Net::SocketFactory::ReloadDNS()
 {
-	Sync::MutexUsage mutUsage(&this->dnsMut);
+	Sync::MutexUsage mutUsage(this->dnsMut);
 	SDEL_CLASS(this->dnsHdlr);
 	return true;
 }
@@ -48,7 +48,7 @@ Bool Net::SocketFactory::DNSResolveIP(Text::CString host, Net::SocketUtil::Addre
 		return true;
 
 	UTF8Char *sptr = Text::TextBinEnc::Punycode::Encode(sbuff, host);
-	Sync::MutexUsage mutUsage(&this->dnsMut);
+	Sync::MutexUsage mutUsage(this->dnsMut);
 	if (this->dnsHdlr == 0)
 	{
 		Net::SocketUtil::AddressInfo dnsAddr;
@@ -80,7 +80,7 @@ UOSInt Net::SocketFactory::DNSResolveIPs(Text::CString host, Net::SocketUtil::Ad
 		return 1;
 
 	UTF8Char *sptr = Text::TextBinEnc::Punycode::Encode(sbuff, host);
-	Sync::MutexUsage mutUsage(&this->dnsMut);
+	Sync::MutexUsage mutUsage(this->dnsMut);
 	if (this->dnsHdlr == 0)
 	{
 		Net::SocketUtil::AddressInfo dnsAddr;
@@ -115,7 +115,7 @@ UInt32 Net::SocketFactory::DNSResolveIPv4(Text::CString host)
 	}
 
 	UTF8Char *sptr = Text::TextBinEnc::Punycode::Encode(sbuff, host);
-	Sync::MutexUsage mutUsage(&this->dnsMut);
+	Sync::MutexUsage mutUsage(this->dnsMut);
 	if (this->dnsHdlr == 0)
 	{
 		Net::SocketUtil::AddressInfo dnsAddr;

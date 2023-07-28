@@ -31,7 +31,7 @@ void __stdcall SSWR::AVIRead::AVIRFileHashForm::OnTimerTick(void *userObj)
 	me->UpdateUI();
 	Data::DateTime currTime;
 	currTime.SetCurrTimeUTC();
-	Sync::MutexUsage mutUsage(&me->readMut);
+	Sync::MutexUsage mutUsage(me->readMut);
 	if (me->progNameChg)
 	{
 		me->txtFileName->SetText(me->progName->ToCString());
@@ -88,7 +88,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRFileHashForm::HashThread(void *userObj)
 	me->threadStatus = 1;
 	while (!me->threadToStop)
 	{
-		Sync::MutexUsage mutUsage(&me->fileMut);
+		Sync::MutexUsage mutUsage(me->fileMut);
 		found = false;
 		i = 0;
 		j = me->fileList.GetCount();
@@ -189,7 +189,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRFileHashForm::HashThread(void *userObj)
 void SSWR::AVIRead::AVIRFileHashForm::AddFile(Text::CString fileName)
 {
 	FileStatus *status;
-	Sync::MutexUsage mutUsage(&this->fileMut);
+	Sync::MutexUsage mutUsage(this->fileMut);
 	status = MemAlloc(FileStatus, 1);
 	status->fchk = 0;
 	status->status = 0;
@@ -215,7 +215,7 @@ void SSWR::AVIRead::AVIRFileHashForm::UpdateUI()
 		this->fileListChg = false;
 		this->lvFiles->ClearItems();
 		this->lvTasks->ClearItems();
-		Sync::MutexUsage mutUsage(&this->fileMut);
+		Sync::MutexUsage mutUsage(this->fileMut);
 		i = 0;
 		j = this->fileList.GetCount();
 		while (i < j)
@@ -385,7 +385,7 @@ void SSWR::AVIRead::AVIRFileHashForm::OnMonitorChanged()
 
 void SSWR::AVIRead::AVIRFileHashForm::ProgressStart(Text::CString name, UInt64 count)
 {
-	Sync::MutexUsage mutUsage(&this->readMut);
+	Sync::MutexUsage mutUsage(this->readMut);
 	if (this->progName)
 	{
 		this->progName->Release();
@@ -400,7 +400,7 @@ void SSWR::AVIRead::AVIRFileHashForm::ProgressStart(Text::CString name, UInt64 c
 
 void SSWR::AVIRead::AVIRFileHashForm::ProgressUpdate(UInt64 currCount, UInt64 newCount)
 {
-	Sync::MutexUsage mutUsage(&this->readMut);
+	Sync::MutexUsage mutUsage(this->readMut);
 	this->readSize += currCount - this->progCurr;
 	this->totalRead += currCount - this->progCurr;
 	this->progCurr = currCount;

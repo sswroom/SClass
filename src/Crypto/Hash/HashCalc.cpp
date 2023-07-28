@@ -16,7 +16,7 @@ Crypto::Hash::HashCalc::~HashCalc()
 
 void Crypto::Hash::HashCalc::Calc(const UInt8 *buff, UOSInt size, UInt8 *hashVal)
 {
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	this->hash->Clear();
 	this->hash->Calc(buff, size);
 	this->hash->GetValue(hashVal);

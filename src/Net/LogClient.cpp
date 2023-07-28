@@ -32,7 +32,7 @@ UInt32 __stdcall Net::LogClient::RecvThread(void *userObj)
 				if (readSize == 0)
 				{
 					recvSize = 0;
-					Sync::MutexUsage mutUsage(&me->cliMut);
+					Sync::MutexUsage mutUsage(me->cliMut);
 					DEL_CLASS(me->cli);
 					me->cli = 0;
 					mutUsage.EndUse();
@@ -60,7 +60,7 @@ UInt32 __stdcall Net::LogClient::RecvThread(void *userObj)
 
 		if (me->cli)
 		{
-			Sync::MutexUsage mutUsage(&me->cliMut);
+			Sync::MutexUsage mutUsage(me->cliMut);
 			DEL_CLASS(me->cli);
 			me->cli = 0;
 			mutUsage.EndUse();
@@ -94,7 +94,7 @@ UInt32 __stdcall Net::LogClient::SendThread(void *userObj)
 			}
 			else
 			{
-				Sync::MutexUsage mutUsage(&me->cliMut);
+				Sync::MutexUsage mutUsage(me->cliMut);
 				me->cli = cli;
 				mutUsage.EndUse();
 				nextKATime = Data::DateTimeUtil::GetCurrTimeMillis();
@@ -102,7 +102,7 @@ UInt32 __stdcall Net::LogClient::SendThread(void *userObj)
 		}
 
 		t = Data::DateTimeUtil::GetCurrTimeMillis();
-		Sync::MutexUsage mutUsage(&me->cliMut);
+		Sync::MutexUsage mutUsage(me->cliMut);
 		if (me->cli)
 		{
 			if (t >= nextKATime)
@@ -114,7 +114,7 @@ UInt32 __stdcall Net::LogClient::SendThread(void *userObj)
 
 			if (t >= me->lastSendTime + 30000)
 			{
-				Sync::MutexUsage mutUsage(&me->mut);
+				Sync::MutexUsage mutUsage(me->mut);
 				if (me->msgList.GetCount() > 0)
 				{
 					UInt8 *buff1;
@@ -171,7 +171,7 @@ Net::LogClient::~LogClient()
 	this->sendToStop = true;
 	this->recvEvt.Set();
 	this->sendEvt.Set();
-	Sync::MutexUsage mutUsage(&this->cliMut);
+	Sync::MutexUsage mutUsage(this->cliMut);
 	if (this->cli)
 	{
 		this->cli->Close();
@@ -191,7 +191,7 @@ void Net::LogClient::LogClosed()
 
 void Net::LogClient::LogAdded(const Data::Timestamp &time, Text::CString logMsg, LogLevel logLev)
 {
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	this->msgList.Add(Text::String::New(logMsg));
 	this->dateList.Add(time);
 	mutUsage.EndUse();
@@ -207,7 +207,7 @@ void Net::LogClient::DataParsed(NotNullPtr<IO::Stream> stm, void *stmObj, Int32 
 	case 3: //Log Reply
 		{
 			Int64 msgTime = ReadInt64(cmd);
-			Sync::MutexUsage mutUsage(&this->mut);
+			Sync::MutexUsage mutUsage(this->mut);
 			if (msgTime == this->dateList.GetItem(0).ToTicks())
 			{
 				this->dateList.RemoveAt(0);

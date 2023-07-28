@@ -20,7 +20,7 @@ void __stdcall IO::Device::SIM7000SocketFactory::OnReceiveData(void *userObj, UO
 		packet->remotePort = remotePort;
 		packet->dataSize = buffSize;
 		MemCopyNO(packet->data, buff, buffSize);
-		Sync::MutexUsage mutUsage(&me->status[index].dataMut);
+		Sync::MutexUsage mutUsage(me->status[index].dataMut);
 		me->status[index].dataList.Put(packet);
 		me->status[index].dataEvt.Set();
 		mutUsage.EndUse();
@@ -47,7 +47,7 @@ void IO::Device::SIM7000SocketFactory::CloseAllSockets()
 			{
 				this->modem->NetCloseSocket(i);
 				this->status[i].state = SocketState::Empty;
-				Sync::MutexUsage mutUsage(&this->status[i].dataMut);
+				Sync::MutexUsage mutUsage(this->status[i].dataMut);
 				while ((packet = (DataPacket*)this->status[i].dataList.Get()) != 0)
 				{
 					MemFree(packet);
@@ -242,7 +242,7 @@ void IO::Device::SIM7000SocketFactory::DestroySocket(Socket *socket)
 		{
 			this->modem->NetCloseSocket(i);
 			this->status[i].state = SocketState::Empty;
-			Sync::MutexUsage mutUsage(&this->status[i].dataMut);
+			Sync::MutexUsage mutUsage(this->status[i].dataMut);
 			while ((packet = (DataPacket*)this->status[i].dataList.Get()) != 0)
 			{
 				MemFree(packet);
@@ -417,7 +417,7 @@ UOSInt IO::Device::SIM7000SocketFactory::UDPReceive(Socket *socket, UInt8 *buff,
 	{
 		if (this->status[i].dataList.GetCount() > 0)
 		{
-			Sync::MutexUsage mutUsage(&this->status[i].dataMut);
+			Sync::MutexUsage mutUsage(this->status[i].dataMut);
 			packet = (DataPacket*)this->status[i].dataList.Get();
 			mutUsage.EndUse();
 			if (packet)

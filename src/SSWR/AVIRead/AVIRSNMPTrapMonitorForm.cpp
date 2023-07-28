@@ -90,7 +90,7 @@ void __stdcall SSWR::AVIRead::AVIRSNMPTrapMonitorForm::OnTimerTick(void *userObj
 		Data::DateTime dt;
 		UTF8Char sbuff[32];
 		UTF8Char *sptr;
-		Sync::MutexUsage mutUsage(&me->packetMut);
+		Sync::MutexUsage mutUsage(me->packetMut);
 		while (i < j)
 		{
 			packet = me->packetList.GetItem(i);
@@ -116,7 +116,7 @@ Bool __stdcall SSWR::AVIRead::AVIRSNMPTrapMonitorForm::OnSNMPTrapPacket(void *us
 	MemCopyNO(&packet->trap, trap.Ptr(), sizeof(Net::SNMPUtil::TrapInfo));
 	NEW_CLASS(packet->itemList, Data::ArrayList<Net::SNMPUtil::BindingItem*>());
 	packet->itemList->AddAll(itemList);
-	Sync::MutexUsage mutUsage(&me->packetMut);
+	Sync::MutexUsage mutUsage(me->packetMut);
 	me->packetList.Add(packet);
 	return true;
 }

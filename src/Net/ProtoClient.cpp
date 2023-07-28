@@ -18,7 +18,7 @@ UInt32 __stdcall Net::ProtoClient::ProtoThread(void *userObj)
 	{
 		if (me->started && me->cli == 0)
 		{
-			Sync::MutexUsage mutUsage(&me->cliMut);
+			Sync::MutexUsage mutUsage(me->cliMut);
 			NEW_CLASS(me->cli, Net::TCPClient(me->sockf, &me->cliAddr, me->cliPort));
 			if (me->cli->IsConnectError())
 			{
@@ -39,7 +39,7 @@ UInt32 __stdcall Net::ProtoClient::ProtoThread(void *userObj)
 			readSize = me->cli->Read(&buff[buffSize], 2048);
 			if (readSize == 0)
 			{
-				Sync::MutexUsage mutUsage(&me->cliMut);
+				Sync::MutexUsage mutUsage(me->cliMut);
 				me->proto->DeleteStreamData(me->cli, me->cliData);
 				DEL_CLASS(me->cli);
 				me->cli = 0;
@@ -75,7 +75,7 @@ UInt32 __stdcall Net::ProtoClient::ProtoThread(void *userObj)
 	}
 	if (me->cli)
 	{
-		Sync::MutexUsage mutUsage(&me->cliMut);
+		Sync::MutexUsage mutUsage(me->cliMut);
 		me->proto->DeleteStreamData(me->cli, me->cliData);
 		DEL_CLASS(me->cli);
 		me->cli = 0;
@@ -110,7 +110,7 @@ Net::ProtoClient::~ProtoClient()
 {
 	this->threadToStop = true;
 	{
-		Sync::MutexUsage mutUsage(&this->cliMut);
+		Sync::MutexUsage mutUsage(this->cliMut);
 		if (this->cli)
 		{
 			this->cli->Close();
@@ -132,7 +132,7 @@ void Net::ProtoClient::Start()
 }
 void Net::ProtoClient::Reconnect()
 {
-	Sync::MutexUsage mutUsage(&this->cliMut);
+	Sync::MutexUsage mutUsage(this->cliMut);
 	if (this->cli)
 	{
 		this->cli->Close();
@@ -149,7 +149,7 @@ Bool Net::ProtoClient::SendPacket(UInt8 *buff, OSInt buffSize, Int32 cmdType, In
 	UInt8 sendBuff[2048];
 	OSInt sendSize;
 	Bool succ = true;
-	Sync::MutexUsage mutUsage(&this->cliMut);
+	Sync::MutexUsage mutUsage(this->cliMut);
 	if (this->cli)
 	{
 		sendSize = this->proto->BuildPacket(sendBuff, cmdType, seqId, buff, buffSize, 0);
@@ -168,7 +168,7 @@ Bool Net::ProtoClient::SendPacket(UInt8 *buff, OSInt buffSize, Int32 cmdType, In
 Bool Net::ProtoClient::SendPacket(UInt8 *buff, OSInt buffSize)
 {
 	Bool succ = true;
-	Sync::MutexUsage mutUsage(&this->cliMut);
+	Sync::MutexUsage mutUsage(this->cliMut);
 	if (this->cli)
 	{
 		if (this->cli->Write(buff, buffSize) != buffSize)

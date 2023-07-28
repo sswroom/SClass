@@ -174,7 +174,7 @@ Bool IO::MODBUSTCPMaster::ReadCoils(UInt8 devAddr, UInt16 coilAddr, UInt16 coilC
 	WriteMInt16(&buff[10], coilCnt);
 	if (this->stm)
 	{
-		Sync::MutexUsage mutUsage(&this->stmMut);
+		Sync::MutexUsage mutUsage(this->stmMut);
 		Double t = this->clk.GetTimeDiff();
 		if (t < CMDDELAY * 0.001)
 		{
@@ -202,7 +202,7 @@ Bool IO::MODBUSTCPMaster::ReadInputs(UInt8 devAddr, UInt16 inputAddr, UInt16 inp
 	WriteMInt16(&buff[10], inputCnt);
 	if (this->stm)
 	{
-		Sync::MutexUsage mutUsage(&this->stmMut);
+		Sync::MutexUsage mutUsage(this->stmMut);
 		Double t = this->clk.GetTimeDiff();
 		if (t < CMDDELAY * 0.001)
 		{
@@ -230,7 +230,7 @@ Bool IO::MODBUSTCPMaster::ReadHoldingRegisters(UInt8 devAddr, UInt16 regAddr, UI
 	WriteMInt16(&buff[10], regCnt);
 	if (this->stm)
 	{
-		Sync::MutexUsage mutUsage(&this->stmMut);
+		Sync::MutexUsage mutUsage(this->stmMut);
 		Double t = this->clk.GetTimeDiff();
 		if (t < CMDDELAY * 0.001)
 		{
@@ -258,7 +258,7 @@ Bool IO::MODBUSTCPMaster::ReadInputRegisters(UInt8 devAddr, UInt16 regAddr, UInt
 	WriteMInt16(&buff[10], regCnt);
 	if (this->stm)
 	{
-		Sync::MutexUsage mutUsage(&this->stmMut);
+		Sync::MutexUsage mutUsage(this->stmMut);
 		Double t = this->clk.GetTimeDiff();
 		if (t < CMDDELAY * 0.001)
 		{
@@ -293,7 +293,7 @@ Bool IO::MODBUSTCPMaster::WriteCoil(UInt8 devAddr, UInt16 coilAddr, Bool isHigh)
 	}	
 	if (this->stm)
 	{
-		Sync::MutexUsage mutUsage(&this->stmMut);
+		Sync::MutexUsage mutUsage(this->stmMut);
 		Double t = this->clk.GetTimeDiff();
 		if (t < CMDDELAY * 0.001)
 		{
@@ -321,7 +321,7 @@ Bool IO::MODBUSTCPMaster::WriteHoldingRegister(UInt8 devAddr, UInt16 regAddr, UI
 	WriteMInt16(&buff[10], val);
 	if (this->stm)
 	{
-		Sync::MutexUsage mutUsage(&this->stmMut);
+		Sync::MutexUsage mutUsage(this->stmMut);
 		Double t = this->clk.GetTimeDiff();
 		if (t < CMDDELAY * 0.001)
 		{
@@ -352,7 +352,7 @@ Bool IO::MODBUSTCPMaster::WriteHoldingRegisters(UInt8 devAddr, UInt16 regAddr, U
 	MemCopyNO(&buff[13], val, (UOSInt)cnt * 2);
 	if (this->stm)
 	{
-		Sync::MutexUsage mutUsage(&this->stmMut);
+		Sync::MutexUsage mutUsage(this->stmMut);
 		Double t = this->clk.GetTimeDiff();
 		if (t < CMDDELAY * 0.001)
 		{

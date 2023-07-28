@@ -10,17 +10,17 @@ void __stdcall Net::TCPServerStream::ConnHandler(Socket *s, void *userObj)
 	Net::TCPServerStream *me = (Net::TCPServerStream*)userObj;
 	Net::TCPClient *cli;
 	NEW_CLASS(cli, Net::TCPClient(me->sockf, s));
-	Sync::MutexUsage connMutUsage(&me->connMut);
+	Sync::MutexUsage connMutUsage(me->connMut);
 	if (me->currCli)
 	{
 		me->currCli->Close();
-		Sync::MutexUsage mutUsage(&me->readMut);
+		Sync::MutexUsage mutUsage(me->readMut);
 		DEL_CLASS(me->currCli);
 		me->currCli = cli;
 	}
 	else
 	{
-		Sync::MutexUsage mutUsage(&me->readMut);
+		Sync::MutexUsage mutUsage(me->readMut);
 		me->currCli = cli;
 	}
 	connMutUsage.EndUse();
@@ -59,7 +59,7 @@ UOSInt Net::TCPServerStream::Read(const Data::ByteArray &buff)
 	UOSInt readSize = 0;
 	while (this->svr)
 	{
-		Sync::MutexUsage readMutUsage(&this->readMut);
+		Sync::MutexUsage readMutUsage(this->readMut);
 		if (this->currCli)
 		{
 			readSize = this->currCli->Read(buff);
@@ -72,7 +72,7 @@ UOSInt Net::TCPServerStream::Read(const Data::ByteArray &buff)
 		readMutUsage.EndUse();
 		if (toClose)
 		{
-			Sync::MutexUsage mutUsage(&this->connMut);
+			Sync::MutexUsage mutUsage(this->connMut);
 			readMutUsage.BeginUse();
 			SDEL_CLASS(this->currCli);
 			readMutUsage.EndUse();
@@ -91,7 +91,7 @@ UOSInt Net::TCPServerStream::Write(const UInt8 *buff, UOSInt size)
 {
 	Bool toClose = false;
 	Net::TCPClient *cli = 0;
-	Sync::MutexUsage mutUsage(&this->connMut);
+	Sync::MutexUsage mutUsage(this->connMut);
 	if (this->currCli)
 	{
 		cli = this->currCli;
@@ -107,7 +107,7 @@ UOSInt Net::TCPServerStream::Write(const UInt8 *buff, UOSInt size)
 	if (toClose)
 	{
 		mutUsage.BeginUse();
-		Sync::MutexUsage readMutUsage(&this->readMut);
+		Sync::MutexUsage readMutUsage(this->readMut);
 		if (this->currCli != 0 && this->currCli == cli)
 		{
 			SDEL_CLASS(this->currCli);
@@ -126,14 +126,14 @@ Int32 Net::TCPServerStream::Flush()
 void Net::TCPServerStream::Close()
 {
 	SDEL_CLASS(this->svr);
-	Sync::MutexUsage mutUsage(&this->connMut);
+	Sync::MutexUsage mutUsage(this->connMut);
 	if (this->currCli != 0)
 	{
 		this->currCli->Close();
 	}
 	mutUsage.EndUse();
 	mutUsage.BeginUse();
-	Sync::MutexUsage readMutUsage(&this->readMut);
+	Sync::MutexUsage readMutUsage(this->readMut);
 	if (this->currCli != 0)
 	{
 		SDEL_CLASS(this->currCli);

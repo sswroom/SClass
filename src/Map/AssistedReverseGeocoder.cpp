@@ -39,7 +39,7 @@ UTF8Char *Map::AssistedReverseGeocoder::SearchName(UTF8Char *buff, UOSInt buffSi
 	if (keyx == 0 && keyy == 0)
 		return 0;
 
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	DB::SQLBuilder sql(this->conn);
 	sql.AppendCmdC(CSTR("select address from addrdb where lcid = "));
 	sql.AppendInt32((Int32)lcid);
@@ -108,7 +108,7 @@ UTF8Char *Map::AssistedReverseGeocoder::CacheName(UTF8Char *buff, UOSInt buffSiz
 	Int32 keyx = Double2Int32(pos.GetLon() * 5000);
 	Int32 keyy = Double2Int32(pos.GetLat() * 5000);
 
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	DB::SQLBuilder sql(this->conn);
 	sql.AppendCmdC(CSTR("select address from addrdb where lcid = "));
 	sql.AppendInt32((Int32)lcid);

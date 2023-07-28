@@ -55,7 +55,7 @@ void Net::PushManager::LoadData()
 						}
 						this->Subscribe(sarr[2].ToCString(), sarr[4].ToCString(), devType, &addr, sarr[1].ToCString());
 						{
-							Sync::MutexUsage mutUsage(&this->dataMut);
+							Sync::MutexUsage mutUsage(this->dataMut);
 							DeviceInfo2 *dev = this->devMap.GetC(sarr[2].ToCString());
 							if (dev)
 							{
@@ -97,7 +97,7 @@ void Net::PushManager::SaveData()
 		Text::StringBuilderUTF8 sb;
 		DeviceInfo2 *dev;
 		Text::UTF8Writer writer(fs);
-		Sync::MutexUsage mutUsage(&this->dataMut);
+		Sync::MutexUsage mutUsage(this->dataMut);
 		UOSInt i = 0;
 		UOSInt j = this->devMap.GetCount();
 		while (i < j)
@@ -165,7 +165,7 @@ Net::PushManager::~PushManager()
 
 Bool Net::PushManager::Subscribe(Text::CString token, Text::CString userName, DeviceType devType, const Net::SocketUtil::AddressInfo *remoteAddr, Text::CString devModel)
 {
-	Sync::MutexUsage mutUsage(&this->dataMut);
+	Sync::MutexUsage mutUsage(this->dataMut);
 	DeviceInfo2 *dev = this->devMap.GetC(token);
 	UserInfo *user;
 	if (dev)
@@ -230,7 +230,7 @@ Bool Net::PushManager::Subscribe(Text::CString token, Text::CString userName, De
 
 Bool Net::PushManager::Unsubscribe(Text::CString token)
 {
-	Sync::MutexUsage mutUsage(&this->dataMut);
+	Sync::MutexUsage mutUsage(this->dataMut);
 	DeviceInfo2 *dev = this->devMap.RemoveC(token);
 	UserInfo *user;
 	if (dev)
@@ -255,7 +255,7 @@ Bool Net::PushManager::Unsubscribe(Text::CString token)
 
 Bool Net::PushManager::Send(Data::ArrayList<Text::String*> *userNames, Text::String *message)
 {
-	Sync::MutexUsage mutUsage(&this->dataMut);
+	Sync::MutexUsage mutUsage(this->dataMut);
 	UserInfo *user;
 	Data::ArrayListNN<Text::String> tokenList;
 	UOSInt i = 0;
@@ -300,7 +300,7 @@ Bool Net::PushManager::Send(Data::ArrayList<Text::String*> *userNames, Text::Str
 
 UOSInt Net::PushManager::GetUsers(Data::ArrayListNN<Text::String> *users, Sync::MutexUsage *mutUsage)
 {
-	mutUsage->ReplaceMutex(&this->dataMut);
+	mutUsage->ReplaceMutex(this->dataMut);
 	UOSInt i = 0;
 	UOSInt j = this->userMap.GetCount();
 	UOSInt ret = 0;
@@ -320,7 +320,7 @@ UOSInt Net::PushManager::GetUsers(Data::ArrayListNN<Text::String> *users, Sync::
 
 const Data::ReadingList<Net::PushManager::DeviceInfo2*> *Net::PushManager::GetDevices(Sync::MutexUsage *mutUsage)
 {
-	mutUsage->ReplaceMutex(&this->dataMut);
+	mutUsage->ReplaceMutex(this->dataMut);
 	return &this->devMap;
 }
 

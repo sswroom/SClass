@@ -103,7 +103,7 @@ Bool IO::Device::AXCAN::SendCommand(Text::CString cmd, UOSInt timeout)
 		return false;
 	if (timeout == 0)
 		return this->stm->Write(buff, cmd.leng + 1) == cmd.leng + 1;
-	Sync::MutexUsage mutUsage(&this->cmdMut);
+	Sync::MutexUsage mutUsage(this->cmdMut);
 	this->cmdEvent.Clear();
 	this->cmdResultCode = INVALID_INDEX;
 	if (this->stm->Write(buff, cmd.leng + 1) != cmd.leng + 1)

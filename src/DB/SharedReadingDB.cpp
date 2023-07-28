@@ -16,20 +16,20 @@ DB::SharedReadingDB::SharedReadingDB(DB::ReadingDB *db)
 
 void DB::SharedReadingDB::Reconnect()
 {
-	Sync::MutexUsage mutUsage(&this->mutDB);
+	Sync::MutexUsage mutUsage(this->mutDB);
 	this->db->Reconnect();
 }
 
 void DB::SharedReadingDB::UseObject()
 {
-	Sync::MutexUsage mutUsage(&this->mutObj);
+	Sync::MutexUsage mutUsage(this->mutObj);
 	this->useCnt++;
 }
 
 void DB::SharedReadingDB::UnuseObject()
 {
 	OSInt i;
-	Sync::MutexUsage mutUsage(&this->mutObj);
+	Sync::MutexUsage mutUsage(this->mutObj);
 	i = --this->useCnt;
 	mutUsage.EndUse();
 	if (i <= 0)
@@ -40,6 +40,6 @@ void DB::SharedReadingDB::UnuseObject()
 
 DB::ReadingDB *DB::SharedReadingDB::UseDB(Sync::MutexUsage *mutUsage)
 {
-	mutUsage->ReplaceMutex(&this->mutDB);
+	mutUsage->ReplaceMutex(this->mutDB);
 	return this->db;
 }

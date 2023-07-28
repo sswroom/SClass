@@ -31,7 +31,7 @@ Bool Data::SyncLinkedList::HasItems()
 
 void Data::SyncLinkedList::Put(void *item)
 {
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	if (this->lastItem)
 	{
 		this->lastItem->nextItem = MemAlloc(Data::LinkedListItem, 1);
@@ -49,7 +49,7 @@ void *Data::SyncLinkedList::Get()
 {
 	Data::LinkedListItem *item;
 	void *obj = 0;
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	if (this->firstItem)
 	{
 		item = this->firstItem;
@@ -67,7 +67,7 @@ void *Data::SyncLinkedList::Get()
 void *Data::SyncLinkedList::GetNoRemove()
 {
 	void *obj = 0;
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	if (this->firstItem)
 	{
 		obj = this->firstItem->item;
@@ -78,7 +78,7 @@ void *Data::SyncLinkedList::GetNoRemove()
 void *Data::SyncLinkedList::GetLastNoRemove()
 {
 	void *obj = 0;
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	if (this->lastItem)
 	{
 		obj = this->lastItem->item;
@@ -89,7 +89,7 @@ void *Data::SyncLinkedList::GetLastNoRemove()
 UOSInt Data::SyncLinkedList::GetCount()
 {
 	UOSInt cnt = 0;
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	Data::LinkedListItem *item = this->firstItem;
 	while (item)
 	{
@@ -102,7 +102,7 @@ UOSInt Data::SyncLinkedList::GetCount()
 UOSInt Data::SyncLinkedList::IndexOf(void *item)
 {
 	UOSInt cnt = 0;
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	Data::LinkedListItem *llItem = this->firstItem;
 	while (llItem)
 	{

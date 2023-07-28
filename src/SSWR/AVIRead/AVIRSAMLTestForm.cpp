@@ -292,7 +292,7 @@ void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnStartClicked(void *userObj)
 void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnTimerTick(void *userObj)
 {
 	SSWR::AVIRead::AVIRSAMLTestForm *me = (SSWR::AVIRead::AVIRSAMLTestForm*)userObj;
-	Sync::MutexUsage mutUsage(&me->respMut);
+	Sync::MutexUsage mutUsage(me->respMut);
 	if (me->respNew)
 	{
 		me->txtSAMLResp->SetText(me->respNew->ToCString());
@@ -326,7 +326,7 @@ void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnTimerTick(void *userObj)
 void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnSAMLResponse(void *userObj, Text::CString msg)
 {
 	SSWR::AVIRead::AVIRSAMLTestForm *me = (SSWR::AVIRead::AVIRSAMLTestForm*)userObj;
-	Sync::MutexUsage mutUsage(&me->respMut);
+	Sync::MutexUsage mutUsage(me->respMut);
 	SDEL_STRING(me->respNew);
 	me->respNew = Text::String::New(msg).Ptr();
 }

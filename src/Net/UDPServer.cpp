@@ -45,7 +45,7 @@ UInt32 __stdcall Net::UDPServer::DataV4Thread(void *obj)
 
 				if (stat->me->logPrefix)
 				{
-					Sync::MutexUsage mutUsage(&stat->me->logFileMut);
+					Sync::MutexUsage mutUsage(stat->me->logFileMut);
 					if ((!logTime.SameDate(stat->me->logDateR)) || (stat->me->logFileR == 0))
 					{
 						if (stat->me->logFileR)
@@ -120,7 +120,7 @@ UInt32 __stdcall Net::UDPServer::DataV6Thread(void *obj)
 
 				if (stat->me->logPrefix)
 				{
-					Sync::MutexUsage mutUsage(&stat->me->logFileMut);
+					Sync::MutexUsage mutUsage(stat->me->logFileMut);
 					if ((!logTime.SameDate(stat->me->logDateR)) || (stat->me->logFileR == 0))
 					{
 						if (stat->me->logFileR)
@@ -418,7 +418,7 @@ Bool Net::UDPServer::SendTo(const Net::SocketUtil::AddressInfo *addr, UInt16 por
 	{
 		Data::Timestamp logTime = Data::Timestamp::UtcNow();
 
-		Sync::MutexUsage mutUsage(&this->logFileMut);
+		Sync::MutexUsage mutUsage(this->logFileMut);
 		if ((!logTime.SameDate(this->logDateS)) || (logFileS == 0))
 		{
 			if (logFileS)

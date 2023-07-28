@@ -7,7 +7,7 @@
 
 void Media::AudioFilter::AudioLevelMeter::ResetStatus()
 {
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	UOSInt i = this->soundBuffLeng;
 	while (i-- > 0)
 	{
@@ -75,7 +75,7 @@ UOSInt Media::AudioFilter::AudioLevelMeter::ReadBlock(Data::ByteArray blk)
 	{
 		UOSInt i = 0;
 		UOSInt j;
-		Sync::MutexUsage mutUsage(&this->mut);
+		Sync::MutexUsage mutUsage(this->mut);
 		UInt32 k = this->soundBuffOfst;
 		Int32 v;
 		while (i < blk.GetSize())
@@ -110,7 +110,7 @@ UOSInt Media::AudioFilter::AudioLevelMeter::ReadBlock(Data::ByteArray blk)
 	{
 		UOSInt i = 0;
 		UOSInt j;
-		Sync::MutexUsage mutUsage(&this->mut);
+		Sync::MutexUsage mutUsage(this->mut);
 		UInt32 k = this->soundBuffOfst;
 		Int32 v;
 		while (i < blk.GetSize())
@@ -150,7 +150,7 @@ Double Media::AudioFilter::AudioLevelMeter::GetLevel(UOSInt channel)
 	Int32 v;
 	if (channel >= this->nChannel)
 		return 0;
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	if (this->status[channel].levelChanged)
 	{
 		this->status[channel].levelChanged = false;

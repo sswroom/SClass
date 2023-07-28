@@ -11,7 +11,7 @@
 
 void Media::Decoder::RAVCDecoder::ProcVideoFrame(UInt32 frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
 {
-	Sync::MutexUsage mutUsage(&this->frameMut);
+	Sync::MutexUsage mutUsage(this->frameMut);
 	Bool found = false;
 	Media::FrameType seiFrameType = Media::FT_INTERLACED_TFF;
 

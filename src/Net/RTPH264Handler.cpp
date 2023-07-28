@@ -54,7 +54,7 @@ Net::RTPH264Handler::~RTPH264Handler()
 void Net::RTPH264Handler::MediaDataReceived(UInt8 *buff, UOSInt dataSize, UInt32 seqNum, UInt32 ts)
 {
 	UTF8Char sbuff[32];
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	Text::StrConcatC(Text::StrInt64(Text::StrConcatC(sbuff, UTF8STRC("ts: ")), ts), UTF8STRC("\r\n"));
 	IO::Console::PrintStrO(sbuff);
 

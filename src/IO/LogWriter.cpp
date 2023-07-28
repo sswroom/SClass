@@ -31,7 +31,7 @@ IO::LogWriter::~LogWriter()
 Bool IO::LogWriter::WriteStrC(const UTF8Char *str, UOSInt nChar)
 {
 	{
-		Sync::MutexUsage mutUsage(&this->mut);
+		Sync::MutexUsage mutUsage(this->mut);
 		this->sb.AppendC(str, nChar);
 	}
 	this->CheckLines();
@@ -40,7 +40,7 @@ Bool IO::LogWriter::WriteStrC(const UTF8Char *str, UOSInt nChar)
 
 Bool IO::LogWriter::WriteLineC(const UTF8Char *str, UOSInt nChar)
 {
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	this->sb.AppendC(str, nChar);
 	this->CheckLines();
 	if (this->sb.GetLength() > 0)
@@ -53,7 +53,7 @@ Bool IO::LogWriter::WriteLineC(const UTF8Char *str, UOSInt nChar)
 
 Bool IO::LogWriter::WriteLine()
 {
-	Sync::MutexUsage mutUsage(&this->mut);
+	Sync::MutexUsage mutUsage(this->mut);
 	if (this->sb.GetLength() > 0)
 	{
 		this->log->LogMessage(this->sb.ToCString(), this->logLev);

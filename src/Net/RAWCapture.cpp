@@ -12,7 +12,7 @@ void __stdcall Net::RAWCapture::DataHandler(void *userData, const UInt8 *packetD
 {
 	Net::RAWCapture *me = (Net::RAWCapture*)userData;
 	UInt8 buff[256];
-	Sync::MutexUsage mutUsage(&me->mut);
+	Sync::MutexUsage mutUsage(me->mut);
 	me->packetCnt++;
 	me->dataSize += packetSize;
 	if (me->format == FF_PCAP)

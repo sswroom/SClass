@@ -19,7 +19,7 @@ UInt32 __stdcall Map::ResizableTileMapRenderer::TaskThread(void *userObj)
 		while (!stat->toStop)
 		{
 			{
-				Sync::MutexUsage mutUsage(&stat->me->taskMut);
+				Sync::MutexUsage mutUsage(stat->me->taskMut);
 				cimg = (CachedImage*)stat->me->taskQueued.Get();
 			}
 			if (cimg == 0)
@@ -57,7 +57,7 @@ UInt32 __stdcall Map::ResizableTileMapRenderer::TaskThread(void *userObj)
 void Map::ResizableTileMapRenderer::AddTask(CachedImage *cimg)
 {
 	{
-		Sync::MutexUsage mutUsage(&this->taskMut);
+		Sync::MutexUsage mutUsage(this->taskMut);
 		this->taskQueued.Put(cimg);
 	}
 	this->threads[this->threadNext].evt->Set();
