@@ -1272,7 +1272,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(Net::WebServer
 			writer.WriteLineC(UTF8STRC("<table border=\"0\" width=\"100%\">"));
 
 			Data::ArrayList<UserFileInfo*> fileList;
-			fileList.AddAll(&species->files);
+			fileList.AddAll(species->files);
 			if (env.user != 0)
 			{
 				UserFileDescComparator comparator(&env);
@@ -2001,7 +2001,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcList(Net::WebServer::I
 		Data::StringMap<SpeciesInfo*> spMap;
 		me->env->GetGroupSpecies(&mutUsage, group, &spMap, env.user);
 		Data::ArrayList<SpeciesInfo*> speciesTmp;
-		const Data::ReadingList<SpeciesInfo*> *spList;
+		NotNullPtr<const Data::ReadingList<SpeciesInfo*>> spList;
 		spList = spMap.GetValues();
 		if (imageOnly)
 		{
@@ -2017,7 +2017,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcList(Net::WebServer::I
 				}
 				i++;
 			}
-			spList = &speciesTmp;
+			spList = speciesTmp;
 		}
 		UOSInt perPage = GetPerPage(env.isMobile);
 		i = page * perPage;
@@ -2032,7 +2032,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcList(Net::WebServer::I
 			species.Add(spList->GetItem(i));
 			i++;
 		}
-		me->WriteSpeciesTable(&mutUsage, &writer, &species, env.scnWidth, group->cateId, false, (env.user && env.user->userType == 0));
+		me->WriteSpeciesTable(&mutUsage, &writer, species, env.scnWidth, group->cateId, false, (env.user && env.user->userType == 0));
 		writer.WriteLineC(UTF8STRC("<hr/>"));
 
 		if (imageOnly)
@@ -4248,7 +4248,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSearchInside(Net::WebS
 			{
 				speciesList.Add(speciesObjs.GetItem(i));
 			}
-			me->WriteSpeciesTable(&mutUsage, &writer, &speciesList, env.scnWidth, group->cateId, false, (env.user && env.user->userType == 0));
+			me->WriteSpeciesTable(&mutUsage, &writer, speciesList, env.scnWidth, group->cateId, false, (env.user && env.user->userType == 0));
 			if (j > 0)
 			{
 				sptr = Text::TextBinEnc::URIEncoding::URIEncode(sbuff, searchStr->v);
@@ -4285,7 +4285,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSearchInside(Net::WebS
 			{
 				groupList.Add(groupObjs.GetItem(i));
 			}
-			me->WriteGroupTable(&mutUsage, &writer, &groupList, env.scnWidth, false, env.user != 0 && env.user->userType == 0);
+			me->WriteGroupTable(&mutUsage, &writer, groupList, env.scnWidth, false, env.user != 0 && env.user->userType == 0);
 			if (j > 0)
 			{
 				sptr = Text::TextBinEnc::URIEncoding::URIEncode(sbuff, searchStr->v);
@@ -4440,7 +4440,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSearchInsideMoreS(Net:
 			{
 				speciesList.Add(speciesObjs.GetItem(j));
 			}
-			me->WriteSpeciesTable(&mutUsage, &writer, &speciesList, env.scnWidth, group->cateId, false, (env.user && env.user->userType == 0));
+			me->WriteSpeciesTable(&mutUsage, &writer, speciesList, env.scnWidth, group->cateId, false, (env.user && env.user->userType == 0));
 			if (pageNo > 0)
 			{
 				sptr = Text::TextBinEnc::URIEncoding::URIEncode(sbuff, searchStr->v);
@@ -4615,7 +4615,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSearchInsideMoreG(Net:
 			{
 				groupList.Add(groupObjs.GetItem(j));
 			}
-			me->WriteGroupTable(&mutUsage, &writer, &groupList, env.scnWidth, false, env.user && env.user->userType == 0);
+			me->WriteGroupTable(&mutUsage, &writer, groupList, env.scnWidth, false, env.user && env.user->userType == 0);
 			if (pageNo > 0)
 			{
 				sptr = Text::TextBinEnc::URIEncoding::URIEncode(sbuff, STR_PTR(searchStr));
@@ -5110,7 +5110,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcCate(Net::WebServer::I
 		writer.WriteLineC(UTF8STRC("\">Book List</a>"));*/
 		me->WriteLocator(&mutUsage, &writer, 0, 0);
 		writer.WriteLineC(UTF8STRC("<hr/>"));
-		me->WriteGroupTable(&mutUsage, &writer, &groups, env.scnWidth, false, env.user && env.user->userType == 0);
+		me->WriteGroupTable(&mutUsage, &writer, groups, env.scnWidth, false, env.user && env.user->userType == 0);
 		writer.WriteLineC(UTF8STRC("<hr/>"));
 		writer.WriteStrC(UTF8STRC("<a href=\"/\">"));
 		writer.WriteStr(LangGetValue(lang, UTF8STRC("Back")));

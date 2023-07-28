@@ -243,10 +243,10 @@ void Media::ImageTo8Bit::From32bpp(UInt8 *src, UInt8 *dest, UInt8 *palette, UOSI
 		i = 256;
 		while (i-- > 0)
 		{
-			currArr = arr[i];
-			if (currArr)
+			NotNullPtr<Data::ArrayListCmp> carr;
+			if (carr.Set(arr[i]))
 			{
-				cArr->AddAll(currArr);
+				cArr->AddAll(carr);
 			}
 		}
 		UOSInt arrSize;

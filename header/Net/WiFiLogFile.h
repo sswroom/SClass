@@ -40,7 +40,7 @@ namespace Net
 		void Clear();
 		LogFileEntry *Get(UInt64 iMAC);
 		OSInt GetIndex(UInt64 iMAC);
-		Data::ArrayList<LogFileEntry*> *GetLogList();
+		NotNullPtr<Data::ArrayList<LogFileEntry*>> GetLogList();
 		const LogFileEntry *GetItem(UOSInt index);
 
 		LogFileEntry *AddBSSInfo(Net::WirelessLAN::BSSInfo *bss, OSInt *lastIndex);

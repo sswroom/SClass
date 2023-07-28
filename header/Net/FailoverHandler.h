@@ -123,7 +123,7 @@ namespace Net
 	template <class T> void FailoverHandler<T>::GetAllChannels(Data::ArrayList<T *> *chList)
 	{
 		Sync::MutexUsage mutUsage(&this->mut);
-		chList->AddAll(&this->channelList);
+		chList->AddAll(this->channelList);
 	}
 
 	template <class T> void FailoverHandler<T>::AddChannel(T *channel)

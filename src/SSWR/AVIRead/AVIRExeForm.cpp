@@ -47,7 +47,7 @@ void SSWR::AVIRead::AVIRExeForm::ParseSess16(Manage::DasmX86_16::DasmX86_16_Sess
 			{
 				UInt32 nextAddr = sess->regs.CS;
 				nextAddr = (nextAddr << 16) + sess->endIP;
-				OSInt i = sess->jmpAddrs->SortedIndexOf(nextAddr);
+				OSInt i = sess->jmpAddrs.SortedIndexOf(nextAddr);
 				if (i < 0)
 				{
 					break;

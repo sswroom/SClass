@@ -42,7 +42,7 @@ namespace Net
 			virtual NotNullPtr<Text::String> GetChannelId() const = 0;
 			virtual NotNullPtr<Text::String> GetName() const = 0;
 			virtual UTF8Char *GetDirName(UTF8Char *dirName) = 0;
-			virtual UOSInt GetCurrItems(Data::ArrayList<SNSItem*> *itemList) = 0;
+			virtual UOSInt GetCurrItems(NotNullPtr<Data::ArrayList<SNSItem*>> itemList) = 0;
 			virtual UTF8Char *GetItemShortId(UTF8Char *buff, SNSItem *item) = 0;
 			virtual Int32 GetMinIntevalMS() = 0;
 			virtual Bool Reload() = 0;

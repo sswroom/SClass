@@ -15,7 +15,7 @@ Data::VariObject::VariObject(NameType nameType)
 
 Data::VariObject::~VariObject()
 {
-	const Data::ArrayList<Data::VariItem*> *itemList = this->items.GetValues();
+	NotNullPtr<const Data::ArrayList<Data::VariItem*>> itemList = this->items.GetValues();
 	UOSInt i = itemList->GetCount();
 	while (i-- > 0)
 	{
@@ -156,8 +156,8 @@ void Data::VariObject::ToString(Text::StringBuilderUTF8 *sb) const
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	sb->AppendUTF8Char('{');
-	Data::ArrayList<const UTF8Char*> *keys = this->items.GetKeys();
-	const Data::ArrayList<VariItem*> *values = this->items.GetValues();
+	NotNullPtr<Data::ArrayList<const UTF8Char*>> keys = this->items.GetKeys();
+	NotNullPtr<const Data::ArrayList<VariItem*>> values = this->items.GetValues();
 	UOSInt i = 0;
 	UOSInt j = keys->GetCount();
 	while (i < j)
@@ -198,8 +198,8 @@ Data::Class *Data::VariObject::CreateClass() const
 	Data::Class *cls;
 	OSInt currPos = 0;
 	NEW_CLASS(cls, Data::Class(0));
-	Data::ArrayList<const UTF8Char*> *keys = this->items.GetKeys();
-	const Data::ArrayList<VariItem*> *values = this->items.GetValues();
+	NotNullPtr<Data::ArrayList<const UTF8Char*>> keys = this->items.GetKeys();
+	NotNullPtr<const Data::ArrayList<VariItem*>> values = this->items.GetValues();
 	UOSInt i = 0;
 	UOSInt j = keys->GetCount();
 	while (i < j)

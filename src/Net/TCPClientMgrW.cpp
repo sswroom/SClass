@@ -27,7 +27,7 @@ UInt32 __stdcall Net::TCPClientMgr::ClientThread(void *o)
 	UOSInt readSize;
 	Bool found;
 	Net::TCPClientMgr::TCPClientStatus *cliStat;
-	Sync::ThreadUtil::SetName((const UTF8Char*)"TCPCliMgr");
+	Sync::ThreadUtil::SetName(CSTR("TCPCliMgr"));
 	me->clientThreadRunning = true;
 	{
 		Manage::HiResClock clk;
@@ -166,8 +166,9 @@ UInt32 __stdcall Net::TCPClientMgr::WorkerThread(void *o)
 	Net::TCPClientMgr *me = stat->me;
 	Net::TCPClientMgr::TCPClientStatus *cliStat;
 	UTF8Char sbuff[16];
-	Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("TCPCliMgr")), stat->index);
-	Sync::ThreadUtil::SetName(sbuff);
+	UTF8Char *sptr;
+	sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("TCPCliMgr")), stat->index);
+	Sync::ThreadUtil::SetName(CSTRP(sbuff, sptr));
 	stat->state = WorkerState::Idle;
 	while (!stat->toStop)
 	{
@@ -177,7 +178,7 @@ UInt32 __stdcall Net::TCPClientMgr::WorkerThread(void *o)
 			cliStat->timeStart = Data::Timestamp::UtcNow();
 			cliStat->timeAlerted = false;
 			cliStat->processing = true;
-			me->dataHdlr(cliStat->cli, me->userObj, cliStat->cliData, cliStat->buff, cliStat->buffSize);
+			me->dataHdlr(cliStat->cli, me->userObj, cliStat->cliData, Data::ByteArrayR(cliStat->buff, cliStat->buffSize));
 			cliStat->processing = false;
 			Bool setEvt = false;
 			if (cliStat->cli->GetRecvBuffSize() > 0)

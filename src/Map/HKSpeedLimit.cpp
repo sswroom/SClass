@@ -102,8 +102,8 @@ void Map::HKSpeedLimit::BuildIndex()
 void Map::HKSpeedLimit::AppendRouteIds(Data::ArrayList<Int32> *routeList, Int32 x, Int32 y)
 {
 	Int64 key = (((Int64)x) << 32) | (UInt32)y;
-	Data::ArrayList<Int32> *index = this->indexMap.Get(key);
-	if (index)
+	NotNullPtr<Data::ArrayList<Int32>> index;
+	if (index.Set(this->indexMap.Get(key)))
 	{
 		routeList->AddAll(index);
 	}

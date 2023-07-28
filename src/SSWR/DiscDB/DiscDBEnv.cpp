@@ -130,11 +130,11 @@ SSWR::DiscDB::DiscDBEnv::DiscDBEnv()
 	NEW_CLASSNN(this->sockf, Net::OSSocketFactory(false));
 	NEW_CLASS(this->log, IO::LogTool());
 	NEW_CLASS(this->monMgr, Media::MonitorMgr());
-	NEW_CLASS(this->discMap, Data::FastStringMap<BurntDiscInfo*>());
+	NEW_CLASSNN(this->discMap, Data::FastStringMap<BurntDiscInfo*>());
 	NEW_CLASS(this->dvdTypeMap, Data::FastStringMap<DVDTypeInfo*>());
-	NEW_CLASS(this->cateMap, Data::FastStringMap<CategoryInfo*>());
-	NEW_CLASS(this->discTypeMap, Data::FastStringMap<DiscTypeInfo*>());
-	NEW_CLASS(this->dvdVideoMap, Data::Int32FastMap<DVDVideoInfo*>());
+	NEW_CLASSNN(this->cateMap, Data::FastStringMap<CategoryInfo*>());
+	NEW_CLASSNN(this->discTypeMap, Data::FastStringMap<DiscTypeInfo*>());
+	NEW_CLASSNN(this->dvdVideoMap, Data::Int32FastMap<DVDVideoInfo*>());
 
 	cfg = IO::IniFile::ParseProgConfig(0);
 	if (cfg)
@@ -196,7 +196,7 @@ SSWR::DiscDB::DiscDBEnv::~DiscDBEnv()
 		disc->discTypeId->Release();
 		MemFree(disc);
 	}
-	DEL_CLASS(this->discMap);
+	this->discMap.Delete();
 
 	DVDTypeInfo *dvdType;
 	i = this->dvdTypeMap->GetCount();
@@ -219,7 +219,7 @@ SSWR::DiscDB::DiscDBEnv::~DiscDBEnv()
 		cate->name->Release();
 		MemFree(cate);
 	}
-	DEL_CLASS(this->cateMap);
+	this->cateMap.Delete();
 
 	DiscTypeInfo *discType;
 	i = this->discTypeMap->GetCount();
@@ -237,7 +237,7 @@ SSWR::DiscDB::DiscDBEnv::~DiscDBEnv()
 		SDEL_TEXT(discType->remark);
 		MemFree(discType);
 	}
-	DEL_CLASS(this->discTypeMap);
+	this->discTypeMap.Delete();
 
 	DVDVideoInfo *dvdVideo;
 	i = this->dvdVideoMap->GetCount();
@@ -250,7 +250,7 @@ SSWR::DiscDB::DiscDBEnv::~DiscDBEnv()
 		dvdVideo->dvdType->Release();
 		MemFree(dvdVideo);
 	}
-	DEL_CLASS(this->dvdVideoMap);
+	this->dvdVideoMap.Delete();
 	this->sockf.Delete();
 }
 

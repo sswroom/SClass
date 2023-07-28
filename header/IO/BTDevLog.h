@@ -32,13 +32,13 @@ namespace IO
 		~BTDevLog();
 
 		DevEntry *AddEntry(UInt64 macInt, Text::String *name, Int8 txPower, Int8 measurePower, IO::BTScanLog::RadioType radioType, IO::BTScanLog::AddressType addrType, UInt16 company, IO::BTScanLog::AdvType advType);
-		void AppendList(Data::FastMap<UInt64, IO::BTScanLog::ScanRecord3*> *devMap);
+		void AppendList(NotNullPtr<Data::FastMap<UInt64, IO::BTScanLog::ScanRecord3*>> devMap);
 		void ClearList();
 		Bool LoadFile(Text::CString fileName);
 		Bool StoreFile(Text::CString fileName);
 
-		const Data::ReadingList<IO::BTDevLog::DevEntry*> *GetPublicList() const;
-		const Data::ReadingList<IO::BTDevLog::DevEntry*> *GetRandomList() const;
+		NotNullPtr<const Data::ReadingList<IO::BTDevLog::DevEntry*>> GetPublicList() const;
+		NotNullPtr<const Data::ReadingList<IO::BTDevLog::DevEntry*>> GetRandomList() const;
 	};
 }
 #endif

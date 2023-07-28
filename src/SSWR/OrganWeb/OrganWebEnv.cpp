@@ -171,7 +171,7 @@ void SSWR::OrganWeb::OrganWebEnv::LoadSpecies()
 
 		SpeciesSciNameComparator comparator;
 		Data::ArrayList<SpeciesInfo*> speciesList(this->spMap.GetCount());
-		speciesList.AddAll(&this->spMap);
+		speciesList.AddAll(this->spMap);
 		Data::Sort::ArtificialQuickSort::Sort(&speciesList, &comparator);
 		UOSInt i = 0;
 		UOSInt j = speciesList.GetCount();
@@ -426,7 +426,7 @@ void SSWR::OrganWeb::OrganWebEnv::LoadUsers(Sync::RWMutexUsage *mutUsage)
 
 		UserFileTimeComparator comparator;
 		Data::ArrayList<UserFileInfo*> userFileList(this->userFileMap.GetCount());
-		userFileList.AddAll(&this->userFileMap);
+		userFileList.AddAll(this->userFileMap);
 		Data::Sort::ArtificialQuickSort::Sort(&userFileList, &comparator);
 		i = 0;
 		j = userFileList.GetCount();
@@ -1193,7 +1193,7 @@ UTF8Char *SSWR::OrganWeb::OrganWebEnv::BookGetPath(UTF8Char *sbuff, Int32 bookId
 void SSWR::OrganWeb::OrganWebEnv::BookGetList(Sync::RWMutexUsage *mutUsage, Data::ArrayList<BookInfo*> *bookList)
 {
 	mutUsage->ReplaceMutex(&this->dataMut, false);
-	bookList->AddAll(&this->bookMap);
+	bookList->AddAll(this->bookMap);
 }
 
 Bool SSWR::OrganWeb::OrganWebEnv::BookFileExist(BookInfo *book)
@@ -1818,7 +1818,7 @@ Bool SSWR::OrganWeb::OrganWebEnv::SpeciesMerge(Sync::RWMutexUsage *mutUsage, Int
 			{
 				srcSpecies->files.GetItem(i)->speciesId = destSpeciesId;
 			}
-			destSpecies->files.AddAll(&srcSpecies->files);
+			destSpecies->files.AddAll(srcSpecies->files);
 			srcSpecies->files.Clear();
 			if ((newFlags & SF_HAS_MYPHOTO) == 0)
 			{
@@ -1870,7 +1870,7 @@ Bool SSWR::OrganWeb::OrganWebEnv::SpeciesMerge(Sync::RWMutexUsage *mutUsage, Int
 			{
 				srcSpecies->books.GetItem(i)->speciesId = destSpeciesId;
 			}
-			destSpecies->books.AddAll(&srcSpecies->books);
+			destSpecies->books.AddAll(srcSpecies->books);
 			srcSpecies->books.Clear();
 		}
 		else

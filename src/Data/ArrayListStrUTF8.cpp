@@ -11,11 +11,11 @@ Data::ArrayListStrUTF8::ArrayListStrUTF8(UOSInt capacity) : Data::SortableArrayL
 {
 }
 
-Data::ArrayList<const UTF8Char*> *Data::ArrayListStrUTF8::Clone() const
+NotNullPtr<Data::ArrayList<const UTF8Char*>> Data::ArrayListStrUTF8::Clone() const
 {
-	Data::ArrayListStrUTF8 *newArr;
-	NEW_CLASS(newArr, Data::ArrayListStrUTF8(this->capacity));
-	newArr->AddAll(this);
+	NotNullPtr<Data::ArrayListStrUTF8> newArr;
+	NEW_CLASSNN(newArr, Data::ArrayListStrUTF8(this->capacity));
+	newArr->AddAll(*this);
 	return newArr;
 }
 

@@ -21,14 +21,14 @@ namespace Data
 		virtual ~ArrayListA();
 
 		virtual UOSInt Add(T val);
-		UOSInt AddAll(const ReadingList<T> *arr);
+		UOSInt AddAll(NotNullPtr<const ReadingList<T>> arr);
 		virtual UOSInt AddRange(T *arr, UOSInt cnt);
 		virtual Bool Remove(T val);
 		virtual T RemoveAt(UOSInt index);
 		virtual void Insert(UOSInt index, T val);
 		virtual UOSInt IndexOf(T val) const;
 		virtual void Clear();
-		virtual ArrayListA<T> *Clone() const;
+		virtual NotNullPtr<ArrayListA<T>> Clone() const;
 
 		virtual UOSInt GetCount() const;
 		virtual UOSInt GetCapacity() const;
@@ -82,7 +82,7 @@ namespace Data
 		return ret;
 	}
 
-	template <class T> UOSInt ArrayListA<T>::AddAll(const ReadingList<T> *arr)
+	template <class T> UOSInt ArrayListA<T>::AddAll(NotNullPtr<const ReadingList<T>> arr)
 	{
 		UOSInt cnt = arr->GetCount();
 		if (objCnt + cnt >= this->capacity)
@@ -224,10 +224,11 @@ namespace Data
 		this->objCnt = 0;
 	}
 
-	template <class T> ArrayListA<T> *ArrayListA<T>::Clone() const
+	template <class T> NotNullPtr<ArrayListA<T>> ArrayListA<T>::Clone() const
 	{
-		ArrayListA<T> *newArr = new ArrayListA<T>(this->capacity);
-		newArr->AddAll(this);
+		NotNullPtr<ArrayListA<T>> newArr;
+		NEW_CLASSNN(newArr, ArrayListA<T>(this->capacity));
+		newArr->AddAll(*this);
 		return newArr;
 	}
 

@@ -417,9 +417,9 @@ public:
 		this->filesList.Clear();
 	}
 
-	const Data::ArrayList<FileEntry*> *GetFilesList()
+	NotNullPtr<const Data::ArrayList<FileEntry*>> GetFilesList()
 	{
-		return &this->filesList;
+		return this->filesList;
 	}
 };
 

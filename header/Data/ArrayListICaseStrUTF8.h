@@ -10,7 +10,7 @@ namespace Data
 		ArrayListICaseStrUTF8();
 		ArrayListICaseStrUTF8(UOSInt capacity);
 
-		virtual Data::ArrayList<const UTF8Char*> *Clone() const;
+		virtual NotNullPtr<Data::ArrayList<const UTF8Char*>> Clone() const;
 		virtual OSInt CompareItem(const UTF8Char* obj1, const UTF8Char* obj2) const;
 	};
 }

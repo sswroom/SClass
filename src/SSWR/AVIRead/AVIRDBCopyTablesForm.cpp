@@ -89,7 +89,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnSourceSelectClicked(void *
 		SDEL_STRING(me->dataSchema);
 		LIST_FREE_STRING(&me->dataTables);
 		me->dataSchema = Text::String::NewP(sbuff, sptr).Ptr();
-		me->dataTables.AddAll(&tableNames);
+		me->dataTables.AddAll(tableNames);
 		me->lvData->ClearItems();
 		UOSInt i = 0;
 		UOSInt j = tableNames.GetCount();

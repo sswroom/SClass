@@ -99,7 +99,7 @@ UOSInt Net::SNMPManager::GetAgentList(Data::ArrayList<AgentInfo*> *agentList)
 	UOSInt ret;
 	Sync::MutexUsage mutUsage(&this->agentMut);
 	ret = this->agentList.GetCount();
-	agentList->AddAll(&this->agentList);
+	agentList->AddAll(this->agentList);
 	return ret;
 }
 

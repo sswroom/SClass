@@ -40,7 +40,7 @@ Map::MapDrawLayer *Map::KMLXML::ParseKMLRoot(Text::XMLReader *reader, Text::CStr
 	}*/
 	Map::MapDrawLayer *lyr = ParseKMLContainer(reader, &styles, fileName, parsers, browser, pkgFile);
 
-	const Data::ArrayList<KMLStyle*> *styleList = styles.GetValues();
+	NotNullPtr<const Data::ArrayList<KMLStyle*>> styleList = styles.GetValues();
 	KMLStyle *style;
 /*		UOSInt i;
 	UOSInt j;

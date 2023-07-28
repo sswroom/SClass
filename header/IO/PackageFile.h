@@ -70,7 +70,7 @@ namespace IO
 		} InfoType;
 
 	private:
-		Data::ArrayList<PackFileItem *> *items;
+		NotNullPtr<Data::ArrayList<PackFileItem *>> items;
 		Data::StringMap<PackFileItem *> *namedItems;
 		Data::FastStringMap<PackFileItem *> pkgFiles;
 		Data::FastMap<Int32, const UTF8Char *> infoMap;

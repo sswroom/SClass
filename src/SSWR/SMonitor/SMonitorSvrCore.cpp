@@ -150,7 +150,7 @@ UInt32 __stdcall SSWR::SMonitor::SMonitorSvrCore::CheckThread(void *userObj)
 			if (t >= me->currDate + 86400000)
 			{
 				Sync::RWMutexUsage mutUsage(&me->devMut, false);
-				devList.AddAll(&me->devMap);
+				devList.AddAll(me->devMap);
 				mutUsage.EndUse();
 
 				mutUsage.ReplaceMutex(&me->dateMut, true);
@@ -160,7 +160,7 @@ UInt32 __stdcall SSWR::SMonitor::SMonitorSvrCore::CheckThread(void *userObj)
 				{
 					dev = devList.GetItem(i);
 					Sync::RWMutexUsage mutUsage(&dev->mut, true);
-					recList.AddAll(&dev->yesterdayRecs);
+					recList.AddAll(dev->yesterdayRecs);
 					dev->yesterdayRecs.Clear();
 					dev->yesterdayRecs.PutAll(&dev->todayRecs);
 					dev->todayRecs.Clear();
@@ -702,7 +702,7 @@ void SSWR::SMonitor::SMonitorSvrCore::SaveDatas()
 	UInt8 fsBuff[32];
 
 	Sync::RWMutexUsage mutUsage(&this->devMut, false);
-	devList.AddAll(&this->devMap);
+	devList.AddAll(this->devMap);
 	mutUsage.EndUse();
 	dt.ToUTCTime();
 	fs = 0;
@@ -712,7 +712,7 @@ void SSWR::SMonitor::SMonitorSvrCore::SaveDatas()
 	{
 		dev = devList.GetItem(i);
 		Sync::RWMutexUsage mutUsage(&dev->mut, true);
-		recList.AddAll(&dev->recToStore);
+		recList.AddAll(dev->recToStore);
 		dev->recToStore.Clear();
 		mutUsage.EndUse();
 
@@ -781,7 +781,7 @@ void SSWR::SMonitor::SMonitorSvrCore::SaveDatas()
 		if (recList2.GetCount() > 0)
 		{
 			Sync::RWMutexUsage mutUsage(&dev->mut, true);
-			dev->recToStore.AddAll(&recList2);
+			dev->recToStore.AddAll(recList2);
 			mutUsage.EndUse();
 			recList2.Clear();
 		}
@@ -2330,7 +2330,7 @@ UOSInt SSWR::SMonitor::SMonitorSvrCore::UserGetList(Data::ArrayList<WebUser*> *u
 {
 	UOSInt ret = userList->GetCount();
 	Sync::RWMutexUsage mutUsage(&this->userMut, false);
-	userList->AddAll(&this->userMap);
+	userList->AddAll(this->userMap);
 	return userList->GetCount() - ret;
 }
 

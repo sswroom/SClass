@@ -187,7 +187,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnPingTimerTick(void *userO
 void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnTimerTick(void *userObj)
 {
 	SSWR::AVIRead::AVIRMQTTSubscribeForm *me = (SSWR::AVIRead::AVIRMQTTSubscribeForm*)userObj;
-	const Data::ArrayList<TopicStatus*> *topicList;
+	NotNullPtr<const Data::ArrayList<TopicStatus*>> topicList;
 	Data::DateTime dt;
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
@@ -486,7 +486,7 @@ SSWR::AVIRead::AVIRMQTTSubscribeForm::~AVIRMQTTSubscribeForm()
 	this->ServerStop();
 	UOSInt i;
 	TopicStatus *topicSt;
-	const Data::ArrayList<TopicStatus*> *topicList;
+	NotNullPtr<const Data::ArrayList<TopicStatus*>> topicList;
 	topicList = this->topicMap.GetValues();
 	i = topicList->GetCount();
 	while (i-- > 0)

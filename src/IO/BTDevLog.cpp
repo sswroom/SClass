@@ -105,7 +105,7 @@ IO::BTDevLog::DevEntry *IO::BTDevLog::AddEntry(UInt64 macInt, Text::String *name
 	return log;
 }
 
-void IO::BTDevLog::AppendList(Data::FastMap<UInt64, IO::BTScanLog::ScanRecord3*> *devMap)
+void IO::BTDevLog::AppendList(NotNullPtr<Data::FastMap<UInt64, IO::BTScanLog::ScanRecord3*>> devMap)
 {
 	IO::BTScanLog::ScanRecord3 *rec;
 	UOSInt i = devMap->GetCount();
@@ -219,8 +219,8 @@ Bool IO::BTDevLog::StoreFile(Text::CString fileName)
 	}
 	Text::UTF8Writer writer(fs);
 	Data::ArrayList<DevEntry*> logList;
-	logList.AddAll(&this->pubDevs);
-	logList.AddAll(&this->randDevs);
+	logList.AddAll(this->pubDevs);
+	logList.AddAll(this->randDevs);
 	DevEntry *log;
 	UOSInt i = 0;
 	UOSInt j = logList.GetCount();
@@ -276,12 +276,12 @@ Bool IO::BTDevLog::StoreFile(Text::CString fileName)
 	return true;
 }
 
-const Data::ReadingList<IO::BTDevLog::DevEntry*> *IO::BTDevLog::GetPublicList() const
+NotNullPtr<const Data::ReadingList<IO::BTDevLog::DevEntry*>> IO::BTDevLog::GetPublicList() const
 {
-	return &this->pubDevs;
+	return this->pubDevs;
 }
 
-const Data::ReadingList<IO::BTDevLog::DevEntry*> *IO::BTDevLog::GetRandomList() const
+NotNullPtr<const Data::ReadingList<IO::BTDevLog::DevEntry*>> IO::BTDevLog::GetRandomList() const
 {
-	return &this->randDevs;
+	return this->randDevs;
 }

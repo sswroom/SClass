@@ -117,7 +117,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnLogSelChg(void *userObj)
 void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnTimerTick(void *userObj)
 {
 	SSWR::AVIRead::AVIRMQTTBrokerForm *me = (SSWR::AVIRead::AVIRMQTTBrokerForm*)userObj;
-	const Data::ArrayList<SSWR::AVIRead::AVIRMQTTBrokerForm::TopicStatus*> *topicList;
+	NotNullPtr<const Data::ArrayList<SSWR::AVIRead::AVIRMQTTBrokerForm::TopicStatus*>> topicList;
 	SSWR::AVIRead::AVIRMQTTBrokerForm::TopicStatus *topicSt;
 	Text::StringBuilderUTF8 sb;
 	Data::DateTime dt;
@@ -310,7 +310,7 @@ SSWR::AVIRead::AVIRMQTTBrokerForm::~AVIRMQTTBrokerForm()
 	this->ServerStop();
 	this->log.RemoveLogHandler(this->logger);
 	DEL_CLASS(this->logger);
-	const Data::ArrayList<SSWR::AVIRead::AVIRMQTTBrokerForm::TopicStatus*> *topicList = this->topicMap.GetValues();
+	NotNullPtr<const Data::ArrayList<SSWR::AVIRead::AVIRMQTTBrokerForm::TopicStatus*>> topicList = this->topicMap.GetValues();
 	SSWR::AVIRead::AVIRMQTTBrokerForm::TopicStatus *topic;
 	UOSInt i = topicList->GetCount();
 	while (i-- > 0)

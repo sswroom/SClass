@@ -645,7 +645,7 @@ Text::SearchIndexer *Map::MapDrawLayer::CreateSearchIndexer(Text::TextAnalyzer *
 UOSInt Map::MapDrawLayer::SearchString(Data::ArrayListString *outArr, Text::SearchIndexer *srchInd, NameArray *nameArr, const UTF8Char *srchStr, UOSInt maxResult, UOSInt strIndex)
 {
 	Data::ArrayListInt64 *objIds;
-	Data::ArrayListICaseString *strList;
+	NotNullPtr<Data::ArrayListICaseString> strList;
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
 	Text::PString s;
@@ -654,7 +654,7 @@ UOSInt Map::MapDrawLayer::SearchString(Data::ArrayListString *outArr, Text::Sear
 		return 0;
 
 	NEW_CLASS(objIds, Data::ArrayListInt64());
-	NEW_CLASS(strList, Data::ArrayListICaseString());
+	NEW_CLASSNN(strList, Data::ArrayListICaseString());
 	srchInd->SearchString(objIds, srchStr, maxResult * 10);
 	
 	UOSInt i = 0;
@@ -682,7 +682,7 @@ UOSInt Map::MapDrawLayer::SearchString(Data::ArrayListString *outArr, Text::Sear
 	}
 
 	outArr->AddAll(strList);
-	DEL_CLASS(strList);
+	strList.Delete();
 	DEL_CLASS(objIds);
 	return resCnt;
 }

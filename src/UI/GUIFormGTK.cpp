@@ -90,7 +90,7 @@ void UI::GUIForm::UpdateHAcc()
 		UOSInt i;
 		Data::ArrayList<UI::GUIMenu::ShortcutKey*> keys;
 		UI::GUIMenu::ShortcutKey *key;
-		this->menu->GetAllKeys(&keys);
+		this->menu->GetAllKeys(keys);
 		i = keys.GetCount();
 		while (i-- > 0)
 		{

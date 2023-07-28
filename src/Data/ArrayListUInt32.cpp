@@ -14,10 +14,10 @@ Data::ArrayListUInt32::~ArrayListUInt32()
 {
 }
 
-Data::ArrayList<UInt32> *Data::ArrayListUInt32::Clone() const
+NotNullPtr<Data::ArrayList<UInt32>> Data::ArrayListUInt32::Clone() const
 {
-	Data::ArrayListUInt32 *newArr;
-	NEW_CLASS(newArr, Data::ArrayListUInt32(this->capacity));
-	newArr->AddAll(this);
+	NotNullPtr<Data::ArrayListUInt32> newArr;
+	NEW_CLASSNN(newArr, Data::ArrayListUInt32(this->capacity));
+	newArr->AddAll(*this);
 	return newArr;
 }

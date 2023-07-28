@@ -26,7 +26,7 @@ typedef struct
 	Text::String *devSN;
 	UTF8Char country[3];
 	UInt8 ouis[WLAN_OUI_CNT][3];
-	Data::ArrayList<Net::WirelessLANIE*> *ieList;
+	Data::ArrayList<Net::WirelessLANIE*> ieList;
 } BSSEntry;
 
 void Net::WLANLinuxInterface::Reopen()
@@ -103,7 +103,6 @@ UOSInt Net::WLANLinuxInterface::GetBSSList(Data::ArrayList<Net::WirelessLAN::BSS
 	int ret;
 	UInt8 *buff;
 	UOSInt buffSize = IW_SCAN_MAX_DATA;
-	NEW_CLASS(bss.ieList, Data::ArrayList<Net::WirelessLANIE*>());
 	this->name->ConcatTo((UTF8Char*)wrq.ifr_ifrn.ifrn_name);
 
 
@@ -142,14 +141,12 @@ UOSInt Net::WLANLinuxInterface::GetBSSList(Data::ArrayList<Net::WirelessLAN::BSS
 		{
 //			printf("SIOCGIWSCAN return %d, errno = %d, buffSize = %d, buff = %x \r\n", ret, errno, buffSize, (int)(OSInt)buff);
 			MemFree(buff);
-			DEL_CLASS(bss.ieList);
 			return 0;
 		}
 		else
 		{
 			printf("SIOCGIWSCAN return %d, errno = %d, buffSize = %d, buff = %x \r\n", ret, errno, (UInt32)buffSize, (int)(OSInt)buff);
 			MemFree(buff);
-			DEL_CLASS(bss.ieList);
 			return 0;
 		}
 	}
@@ -441,7 +438,7 @@ C0 05 01 2A 00 C0 FF C3 04 02 12 12 12 DD 1E 00
 						break;
 					}
 					NEW_CLASS(ie, Net::WirelessLANIE(ptrCurr - 2));
-					bss.ieList->Add(ie);
+					bss.ieList.Add(ie);
 					switch (ieCmd)
 					{
 					case 0:
@@ -541,10 +538,9 @@ C0 05 01 2A 00 C0 FF C3 04 02 12 12 12 DD 1E 00
 		SDEL_STRING(bss.devManuf);
 		SDEL_STRING(bss.devModel);
 		SDEL_STRING(bss.devSN);
-		bss.ieList->Clear();
+		bss.ieList.Clear();
 	}
 	
 	MemFree(buff);
-	DEL_CLASS(bss.ieList);
 	return retVal;
 }

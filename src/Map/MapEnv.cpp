@@ -138,7 +138,7 @@ Map::MapEnv::~MapEnv()
 		RemoveItem(0, i);
 	}
 
-	const Data::ArrayList<ImageInfo*> *imgs = this->images.GetValues();
+	NotNullPtr<const Data::ArrayList<ImageInfo*>> imgs = this->images.GetValues();
 	i = imgs->GetCount();
 	while (i-- > 0)
 	{

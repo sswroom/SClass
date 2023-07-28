@@ -97,8 +97,8 @@ namespace IO
 		LogEntry *AddScanRec(const ScanRecord3 *rec);
 		void AddBTRAWPacket(Int64 timeTicks, const UInt8 *buff, UOSInt buffSize);
 		void ClearList();
-		const Data::ReadingList<IO::BTScanLog::DevEntry*> *GetPublicList() const;
-		const Data::ReadingList<IO::BTScanLog::DevEntry*> *GetRandomList() const;
+		NotNullPtr<const Data::ReadingList<IO::BTScanLog::DevEntry*>> GetPublicList() const;
+		NotNullPtr<const Data::ReadingList<IO::BTScanLog::DevEntry*>> GetRandomList() const;
 
 		static Text::CString RadioTypeGetName(RadioType radioType);
 		static Text::CString AddressTypeGetName(AddressType addrType);

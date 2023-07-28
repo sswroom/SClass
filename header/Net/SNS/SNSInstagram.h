@@ -19,7 +19,7 @@ namespace Net
 			NotNullPtr<Text::String> chName;
 			Text::String *chDesc;
 			Bool chError;
-			Data::FastStringMap<SNSItem *> *itemMap;
+			Data::FastStringMap<SNSItem *> itemMap;
 
 		public:
 			SNSInstagram(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, Text::String *userAgent, Text::CString channelId);
@@ -30,7 +30,7 @@ namespace Net
 			virtual NotNullPtr<Text::String> GetChannelId() const;
 			virtual NotNullPtr<Text::String> GetName() const;
 			virtual UTF8Char *GetDirName(UTF8Char *dirName);
-			virtual UOSInt GetCurrItems(Data::ArrayList<SNSItem*> *itemList);
+			virtual UOSInt GetCurrItems(NotNullPtr<Data::ArrayList<SNSItem*>> itemList);
 			virtual UTF8Char *GetItemShortId(UTF8Char *buff, SNSItem *item);
 			virtual Int32 GetMinIntevalMS();
 			virtual Bool Reload();

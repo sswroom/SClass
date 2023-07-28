@@ -103,7 +103,7 @@ void __stdcall SSWR::AVIRead::AVIRSNMPTrapMonitorForm::OnTimerTick(void *userObj
 	}
 }
 
-Bool __stdcall SSWR::AVIRead::AVIRSNMPTrapMonitorForm::OnSNMPTrapPacket(void *userObj, const Net::SocketUtil::AddressInfo *addr, UInt16 port, const Net::SNMPUtil::TrapInfo *trap, Data::ArrayList<Net::SNMPUtil::BindingItem*> *itemList)
+Bool __stdcall SSWR::AVIRead::AVIRSNMPTrapMonitorForm::OnSNMPTrapPacket(void *userObj, const Net::SocketUtil::AddressInfo *addr, UInt16 port, NotNullPtr<const Net::SNMPUtil::TrapInfo> trap, NotNullPtr<Data::ArrayList<Net::SNMPUtil::BindingItem*>> itemList)
 {
 	SSWR::AVIRead::AVIRSNMPTrapMonitorForm *me = (SSWR::AVIRead::AVIRSNMPTrapMonitorForm*)userObj;
 	SNMPPacket *packet;
@@ -113,7 +113,7 @@ Bool __stdcall SSWR::AVIRead::AVIRSNMPTrapMonitorForm::OnSNMPTrapPacket(void *us
 	packet->t = dt.ToTicks();
 	packet->addr = *addr;
 	packet->port = port;
-	MemCopyNO(&packet->trap, trap, sizeof(Net::SNMPUtil::TrapInfo));
+	MemCopyNO(&packet->trap, trap.Ptr(), sizeof(Net::SNMPUtil::TrapInfo));
 	NEW_CLASS(packet->itemList, Data::ArrayList<Net::SNMPUtil::BindingItem*>());
 	packet->itemList->AddAll(itemList);
 	Sync::MutexUsage mutUsage(&me->packetMut);

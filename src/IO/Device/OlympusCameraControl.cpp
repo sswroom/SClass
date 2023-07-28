@@ -309,7 +309,7 @@ UOSInt IO::Device::OlympusCameraControl::GetFileList(Data::ArrayList<IO::Device:
 		this->GetGPSLogList();
 		this->GetSNSLogList();
 	}
-	fileList->AddAll(this->fileList);
+	fileList->AddAll(NotNullPtr<Data::ArrayList<IO::Device::OlympusCameraControl::FileInfo*>>::FromPtr(this->fileList));
 	return this->fileList->GetCount();
 }
 

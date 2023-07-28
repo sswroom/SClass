@@ -206,7 +206,7 @@ void SSWR::AVIRead::AVIRFileSizePackForm::GenList()
 	if (totalFileSize <= maxSize)
 	{
 		this->lbFilePack->ClearItems();
-		this->packList.AddAll(&this->fileList);
+		this->packList.AddAll(this->fileList);
 		i = 0;
 		j = this->fileList.GetCount();
 		while (i < j)

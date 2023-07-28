@@ -254,7 +254,7 @@ DB::TextDB::~TextDB()
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
-	const Data::ArrayList<DBData*> *dbList = this->dbMap.GetValues();
+	NotNullPtr<const Data::ArrayList<DBData*>> dbList = this->dbMap.GetValues();
 	DBData *data;
 	Text::String **vals;
 	k = dbList->GetCount();
@@ -284,7 +284,7 @@ DB::TextDB::~TextDB()
 
 UOSInt DB::TextDB::QueryTableNames(Text::CString schemaName, Data::ArrayListNN<Text::String> *names)
 {
-	Data::ArrayList<Text::String*> *keys = this->dbMap.GetKeys();
+	NotNullPtr<Data::ArrayList<Text::String*>> keys = this->dbMap.GetKeys();
 	UOSInt i = 0;
 	UOSInt j = keys->GetCount();
 	while (i < j)

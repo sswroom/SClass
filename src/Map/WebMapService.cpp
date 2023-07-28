@@ -357,7 +357,7 @@ void Map::WebMapService::LoadXMLLayers(Text::XMLReader *reader)
 					NEW_CLASS(layer, LayerInfo());
 					layer->name = s;
 					layer->title = layerTitle;
-					layer->crsList.AddAll(&layerCRS);
+					layer->crsList.AddAll(layerCRS);
 					layer->queryable = queryable;
 					this->layers.Add(layer);
 				}

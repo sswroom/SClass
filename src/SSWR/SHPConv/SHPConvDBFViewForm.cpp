@@ -44,7 +44,7 @@ SSWR::SHPConv::SHPConvDBFViewForm::SHPConvDBFViewForm(UI::GUIClientControl *pare
 	NotNullPtr<Text::String> s;
 	while (i < j)
 	{
-		s = eng->GetNewDBFName(dbf, &dbCols, i, &dbCols2);
+		s = eng->GetNewDBFName(dbf, &dbCols, i, dbCols2);
 		m = this->lvDBF->AddItem(s, 0);
 		s->Release();
 		k = 0;

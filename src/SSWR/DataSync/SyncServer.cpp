@@ -180,7 +180,7 @@ Bool SSWR::DataSync::SyncServer::IsError()
 UOSInt SSWR::DataSync::SyncServer::GetServerList(Data::ArrayList<ServerInfo*> *svrList)
 {
 	UOSInt i = svrList->GetCount();
-	svrList->AddAll(&this->svrMap);
+	svrList->AddAll(this->svrMap);
 	return svrList->GetCount() - i;
 }
 

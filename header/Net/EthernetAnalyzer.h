@@ -199,12 +199,12 @@ namespace Net
 		UInt64 GetPacketCnt() const;
 		UInt64 GetPacketTotalSize() const;
 		void UseIPTran(Sync::MutexUsage *mutUsage);
-		const Data::ReadingList<IPTranStatus*> *IPTranGetList() const;
+		NotNullPtr<const Data::ReadingList<IPTranStatus*>> IPTranGetList() const;
 		UOSInt IPTranGetCount() const;
 		void UseMAC(Sync::MutexUsage *mutUsage);
 		const Data::ReadingList<MACStatus*> *MACGetList() const;
 		void UseDNSCli(Sync::MutexUsage *mutUsage);
-		const Data::ReadingList<DNSClientInfo*> *DNSCliGetList() const;
+		NotNullPtr<const Data::ReadingList<DNSClientInfo*>> DNSCliGetList() const;
 		UOSInt DNSCliGetCount();
 		UOSInt DNSReqv4GetList(Data::ArrayList<Text::String *> *reqList); //no need release
 		UOSInt DNSReqv4GetCount();
@@ -222,7 +222,7 @@ namespace Net
 		void UseDHCP(Sync::MutexUsage *mutUsage);
 		const Data::ReadingList<DHCPInfo*> *DHCPGetList() const;
 		void UseIPLog(Sync::MutexUsage *mutUsage);
-		const Data::ReadingList<IPLogInfo*> *IPLogGetList() const;
+		NotNullPtr<const Data::ReadingList<IPLogInfo*>> IPLogGetList() const;
 		UOSInt IPLogGetCount() const;
 		Bool TCP4SYNIsDiff(UOSInt lastIndex) const;
 		UOSInt TCP4SYNGetList(Data::ArrayList<TCP4SYNInfo> *synList, UOSInt *thisIndex) const;

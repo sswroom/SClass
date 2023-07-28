@@ -363,7 +363,7 @@ SSWR::OrganMgr::OrganTimeAdjForm::OrganTimeAdjForm(UI::GUIClientControl *parent,
 		}
 		i++;
 	}
-	Data::ArrayList<Text::String *> *cameraList = this->cameraMap->GetKeys();
+	NotNullPtr<Data::ArrayList<Text::String *>> cameraList = this->cameraMap->GetKeys();
 	Text::StringBuilderUTF8 sbu8;
 	i = 0;
 	j = cameraList->GetCount();

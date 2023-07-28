@@ -11,11 +11,11 @@ Data::ArrayListICaseStrUTF8::ArrayListICaseStrUTF8(UOSInt capacity) : Data::Arra
 {
 }
 
-Data::ArrayList<const UTF8Char*> *Data::ArrayListICaseStrUTF8::Clone() const
+NotNullPtr<Data::ArrayList<const UTF8Char*>> Data::ArrayListICaseStrUTF8::Clone() const
 {
-	Data::ArrayListICaseStrUTF8 *newArr;
-	NEW_CLASS(newArr, Data::ArrayListICaseStrUTF8(this->capacity));
-	newArr->AddAll(this);
+	NotNullPtr<Data::ArrayList<const UTF8Char*>> newArr;
+	NEW_CLASSNN(newArr, Data::ArrayListICaseStrUTF8(this->capacity));
+	newArr->AddAll(*this);
 	return newArr;
 }
 

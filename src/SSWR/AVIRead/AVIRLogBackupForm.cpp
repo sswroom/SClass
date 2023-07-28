@@ -22,7 +22,7 @@ void __stdcall SSWR::AVIRead::AVIRLogBackupForm::OnStartClicked(void *userObj)
 	IO::Path::FindFileSession *sess;
 	Data::DateTime currTime;
 	Data::StringUTF8Map<LogGroup*> logGrps;
-	const Data::ArrayList<LogGroup*> *logGrpList;
+	NotNullPtr<const Data::ArrayList<LogGroup*>> logGrpList;
 	LogGroup *logGrp;
 	UOSInt i;
 	UOSInt j;

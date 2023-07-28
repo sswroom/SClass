@@ -37,7 +37,7 @@ Bool Crypto::Token::JWTHandler::Generate(Text::StringBuilderUTF8 *sb, Data::Stri
 	sb->AppendUTF8Char('.');
 	Text::StringBuilderUTF8 sbJson;
 	Text::JSONBuilder *json;
-	Data::ArrayList<Text::String*> *keys = payload->GetKeys();
+	NotNullPtr<Data::ArrayList<Text::String*>> keys = payload->GetKeys();
 	Text::String *key;
 	UOSInt i;
 	UOSInt j;
@@ -253,7 +253,7 @@ void Crypto::Token::JWTHandler::FreeResult(Data::StringMap<Text::String*> *resul
 {
 	if (result)
 	{
-		const Data::ArrayList<Text::String*>* vals = result->GetValues();
+		NotNullPtr<const Data::ArrayList<Text::String*>> vals = result->GetValues();
 		LIST_FREE_STRING_NO_CLEAR(vals);
 		DEL_CLASS(result);
 	}

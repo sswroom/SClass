@@ -389,7 +389,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBook(Net::WebServer::I
 			i++;
 		}
 		writer.WriteLineC(UTF8STRC("<hr/>"));
-		me->WriteSpeciesTable(&mutUsage, &writer, &tempList, env.scnWidth, cateId, false, (env.user && env.user->userType == 0));
+		me->WriteSpeciesTable(&mutUsage, &writer, tempList, env.scnWidth, cateId, false, (env.user && env.user->userType == 0));
 		writer.WriteLineC(UTF8STRC("<hr/>"));
 
 		writer.WriteStrC(UTF8STRC("<a href=\"booklist.html?id="));

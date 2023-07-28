@@ -111,7 +111,7 @@ void Net::MQTTStaticClient::Connect()
 		}
 		Data::ArrayList<Text::String*> topicList;
 		mutUsage.ReplaceMutex(&this->topicMut);
-		topicList.AddAll(&this->topicList);
+		topicList.AddAll(this->topicList);
 		mutUsage.EndUse();
 		
 		i = 0;

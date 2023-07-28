@@ -49,7 +49,7 @@ namespace UI
 		void AddSeperator();
 		GUIMenu *AddSubMenu(Text::CString name);
 		void *GetHMenu();
-		UOSInt GetAllKeys(Data::ArrayList<ShortcutKey*> *keys);
+		UOSInt GetAllKeys(NotNullPtr<Data::ArrayList<ShortcutKey*>> keys);
 		UOSInt GetShortcutKeyCnt();
 		ShortcutKey *GetShortcutKey(UOSInt index);
 		void SetItemEnabled(UInt16 cmdId, Bool enabled); /////////////////////////

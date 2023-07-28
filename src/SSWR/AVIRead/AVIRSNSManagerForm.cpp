@@ -33,7 +33,7 @@ void __stdcall SSWR::AVIRead::AVIRSNSManagerForm::OnChannelsSelChg(void *userObj
 		UTF8Char *sptr;
 		Sync::MutexUsage mutUsage;
 		me->mgr->Use(&mutUsage);
-		ctrl->GetCurrItems(&itemList);
+		ctrl->GetCurrItems(itemList);
 		i = itemList.GetCount();
 		while (i-- > 0)
 		{

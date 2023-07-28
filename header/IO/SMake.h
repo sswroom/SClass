@@ -95,7 +95,7 @@ namespace IO
 
 		void AsyncPostCompile();
 
-		const Data::ArrayList<ConfigItem*> *GetConfigList() const;
+		NotNullPtr<const Data::ArrayList<ConfigItem*>> GetConfigList() const;
 		Bool HasProg(Text::CString progName) const;
 		Bool CompileProg(Text::CString progName, Bool asmListing);
 		Bool ParseProg(Data::FastStringMap<Int32> *objList, Data::FastStringMap<Int32> *libList, Data::FastStringMap<Int32> *procList, Data::ArrayListStringNN *headerList, Int64 *latestTime, Bool *progGroup, Text::String *progName);

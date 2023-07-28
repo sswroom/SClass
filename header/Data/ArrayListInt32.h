@@ -10,7 +10,7 @@ namespace Data
 		ArrayListInt32();
 		ArrayListInt32(UOSInt capacity);
 
-		virtual ArrayList<Int32> *Clone() const;
+		virtual NotNullPtr<ArrayList<Int32>> Clone() const;
 	};
 }
 #endif

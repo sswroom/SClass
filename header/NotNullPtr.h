@@ -1,9 +1,6 @@
 #ifndef _SM_NOTNULLPTR
 #define _SM_NOTNULLPTR
-namespace
-{
 #include <stdio.h>
-}
 
 template <typename T> struct NotNullPtr
 {

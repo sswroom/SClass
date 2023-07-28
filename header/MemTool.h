@@ -33,8 +33,6 @@ extern "C"
 	void MemFillW(UInt8 *buff, UOSInt wordCnt, UInt16 val);
 };
 
-namespace
-{
 #if defined(HAS_ASM32)
 #include <string.h>
 #include <memory.h>
@@ -78,7 +76,6 @@ extern "C" void MemClear(void *buff, UOSInt count);
 #define MemClear(buff, count) memset(buff, 0, count);
 #endif
 #define MemCopyNOShort(destPtr, srcPtr, len) memcpy(destPtr, srcPtr, len)
-}
 
 #if defined(HAS_ASM32)
 extern "C"

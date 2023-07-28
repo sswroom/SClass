@@ -10,7 +10,7 @@ namespace Data
 		ArrayListDbl();
 		ArrayListDbl(UOSInt capacity);
 
-		virtual ArrayList<Double> *Clone() const;
+		virtual NotNullPtr<ArrayList<Double>> Clone() const;
 	};
 }
 #endif

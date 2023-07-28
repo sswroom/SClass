@@ -1396,7 +1396,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnObjPickClicked(void *userObj)
 	if (newList.GetCount() > 0)
 	{
 		me->ClearPicks();
-		me->pickObjs.AddAll(&newList);
+		me->pickObjs.AddAll(newList);
 		me->UpdatePicks();
 	}
 }
@@ -1933,7 +1933,7 @@ void SSWR::OrganMgr::OrganMainForm::UpdateImgDir()
 			}
 			
 			this->mapUFiles.Clear();
-			this->mapUFiles.AddAll(&ufileList);
+			this->mapUFiles.AddAll(ufileList);
 			this->mcMap->UpdateMap();
 			this->mcMap->Redraw();
 		}
@@ -2107,7 +2107,7 @@ void SSWR::OrganMgr::OrganMainForm::UpdateImgDir()
 			}
 
 			this->mapUFiles.Clear();
-			this->mapUFiles.AddAll(&ufileList);
+			this->mapUFiles.AddAll(ufileList);
 			this->mcMap->UpdateMap();
 			this->mcMap->Redraw();
 		}

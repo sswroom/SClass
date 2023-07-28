@@ -435,9 +435,9 @@ OSInt Net::WiFiLogFile::GetIndex(UInt64 iMAC)
 	return ~i;
 }
 
-Data::ArrayList<Net::WiFiLogFile::LogFileEntry*> *Net::WiFiLogFile::GetLogList()
+NotNullPtr<Data::ArrayList<Net::WiFiLogFile::LogFileEntry*>> Net::WiFiLogFile::GetLogList()
 {
-	return &this->logList;
+	return this->logList;
 }
 
 const Net::WiFiLogFile::LogFileEntry *Net::WiFiLogFile::GetItem(UOSInt index)

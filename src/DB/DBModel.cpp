@@ -57,7 +57,7 @@ DB::TableDef *DB::DBModel::GetTable(Text::CString tableName)
 
 UOSInt DB::DBModel::GetTableNames(Data::ArrayList<Text::CString> *tableNames)
 {
-	Data::ArrayList<Text::String*> *keys = this->tableMap.GetKeys();
+	NotNullPtr<Data::ArrayList<Text::String*>> keys = this->tableMap.GetKeys();
 	UOSInt i = 0;
 	UOSInt j = keys->GetCount();
 	while (i < j)

@@ -648,7 +648,7 @@ Net::DNSProxy::~DNSProxy()
 	DEL_CLASS(this->svr);
 	DEL_CLASS(this->cli);
 
-	const Data::ArrayList<RequestResult*> *reqList;
+	NotNullPtr<const Data::ArrayList<RequestResult*>> reqList;
 	RequestResult *req;
 	UOSInt i;
 	reqList = this->reqv4Map.GetValues();
@@ -767,18 +767,19 @@ UOSInt Net::DNSProxy::GetReqOthList(Data::ArrayList<Text::String *> *reqList)
 
 UOSInt Net::DNSProxy::GetTargetList(Data::ArrayList<TargetInfo*> *targetList)
 {
-	if (this->targetMap == 0)
+	NotNullPtr<const Data::ReadingList<TargetInfo*>> thisList;
+	if (!thisList.Set(this->targetMap))
 		return 0;
 	Sync::MutexUsage mutUsage(this->targetMut);
-	targetList->AddAll(this->targetMap);
+	targetList->AddAll(thisList);
 	mutUsage.EndUse();
 	return targetList->GetCount();
 }
 
 UOSInt Net::DNSProxy::SearchIPv4(Data::ArrayList<Text::String *> *reqList, UInt32 ip, UInt32 mask)
 {
-	Data::ArrayList<Text::String *> *keys;
-	const Data::ArrayList<RequestResult*> *results;
+	NotNullPtr<Data::ArrayList<Text::String *>> keys;
+	NotNullPtr<const Data::ArrayList<RequestResult*>> results;
 	Data::ArrayList<Net::DNSClient::RequestAnswer*> ansList;
 	Net::DNSClient::RequestAnswer *ans;
 	RequestResult *result;
@@ -906,7 +907,7 @@ void Net::DNSProxy::SetServerIP(UInt32 serverIP)
 void Net::DNSProxy::GetDNSList(Data::ArrayList<UInt32> *dnsList)
 {
 	Sync::MutexUsage mutUsage(&this->dnsMut);
-	dnsList->AddAll(&this->dnsList);
+	dnsList->AddAll(this->dnsList);
 	mutUsage.EndUse();
 }
 
@@ -941,7 +942,7 @@ UOSInt Net::DNSProxy::GetBlackList(Data::ArrayList<Text::String*> *blackList)
 	UOSInt ret;
 	Sync::MutexUsage mutUsage(&this->blackListMut);
 	ret = this->blackList.GetCount();
-	blackList->AddAll(&this->blackList);
+	blackList->AddAll(this->blackList);
 	mutUsage.EndUse();
 	return ret;
 }
@@ -964,8 +965,8 @@ Bool Net::DNSProxy::AddBlackList(Text::CString blackList)
 	UOSInt i;
 	RequestResult *req;
 	Text::String *reqName;
-	const Data::ArrayList<RequestResult*> *reqList;
-	Data::ArrayList<Text::String *> *reqNames;
+	NotNullPtr<const Data::ArrayList<RequestResult*>> reqList;
+	NotNullPtr<Data::ArrayList<Text::String *>> reqNames;
 	Sync::MutexUsage reqv4MutUsage(&this->reqv4Mut);
 	reqList = this->reqv4Map.GetValues();
 	reqNames = this->reqv4Map.GetKeys();

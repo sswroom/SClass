@@ -8,7 +8,7 @@ namespace Net
 	class SNMPTrapMonitor
 	{
 	public:
-		typedef Bool (__stdcall *SNMPTrapHandler)(void *userObj, const Net::SocketUtil::AddressInfo *addr, UInt16 port, const Net::SNMPUtil::TrapInfo *trap, Data::ArrayList<Net::SNMPUtil::BindingItem*> *itemList); // return true = no need to release
+		typedef Bool (__stdcall *SNMPTrapHandler)(void *userObj, const Net::SocketUtil::AddressInfo *addr, UInt16 port, NotNullPtr<const Net::SNMPUtil::TrapInfo> trap, NotNullPtr<Data::ArrayList<Net::SNMPUtil::BindingItem*>> itemList); // return true = no need to release
 	private:
 		Net::UDPServer *svr;
 		SNMPTrapHandler hdlr;

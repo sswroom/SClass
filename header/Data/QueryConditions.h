@@ -106,7 +106,7 @@ namespace Data
 			Data::ArrayList<Int32> vals;
 
 		public:
-			Int32InCondition(Text::CString fieldName, Data::ArrayList<Int32> *val);
+			Int32InCondition(Text::CString fieldName, NotNullPtr<Data::ArrayList<Int32>> val);
 			virtual ~Int32InCondition();
 
 			virtual ConditionType GetType();
@@ -265,7 +265,7 @@ namespace Data
 		QueryConditions *InnerCond(QueryConditions *cond);
 		QueryConditions *Int32Equals(Text::CString fieldName, Int32 val);
 		QueryConditions *Int64Equals(Text::CString fieldName, Int64 val);
-		QueryConditions *Int32In(Text::CString fieldName, Data::ArrayList<Int32> *val);
+		QueryConditions *Int32In(Text::CString fieldName, NotNullPtr<Data::ArrayList<Int32>> val);
 		QueryConditions *DoubleGE(Text::CString fieldName, Double val);
 		QueryConditions *DoubleLE(Text::CString fieldName, Double val);
 		QueryConditions *StrIn(Text::CString fieldName, Data::ArrayList<const UTF8Char*> *vals);

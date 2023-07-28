@@ -101,7 +101,7 @@ void __stdcall SSWR::AVIRead::AVIRCOVID19Form::OnNewCasesSizeChanged(void *userO
 void SSWR::AVIRead::AVIRCOVID19Form::ClearRecords()
 {
 	SSWR::AVIRead::AVIRCOVID19Form::CountryInfo *country;
-	const Data::ArrayList<SSWR::AVIRead::AVIRCOVID19Form::CountryInfo*> *countryList = this->countries.GetValues();
+	NotNullPtr<const Data::ArrayList<SSWR::AVIRead::AVIRCOVID19Form::CountryInfo*>> countryList = this->countries.GetValues();
 	UOSInt i = countryList->GetCount();
 	UOSInt j;
 	while (i-- > 0)
@@ -212,7 +212,7 @@ Bool SSWR::AVIRead::AVIRCOVID19Form::LoadCSV(NotNullPtr<IO::SeekableStream> stm)
 		}
 		csv.CloseReader(r);
 	}
-	const Data::ArrayList<SSWR::AVIRead::AVIRCOVID19Form::CountryInfo *> *countryList;
+	NotNullPtr<const Data::ArrayList<SSWR::AVIRead::AVIRCOVID19Form::CountryInfo *>> countryList;
 	countryList = this->countries.GetValues();
 	i = 0;
 	j = countryList->GetCount();

@@ -11,9 +11,10 @@ Data::ArrayListDbl::ArrayListDbl(UOSInt capacity) : Data::SortableArrayListNativ
 {
 }
 
-Data::ArrayList<Double> *Data::ArrayListDbl::Clone() const
+NotNullPtr<Data::ArrayList<Double>> Data::ArrayListDbl::Clone() const
 {
-	Data::ArrayListDbl *newArr = new Data::ArrayListDbl(this->capacity);
-	newArr->AddAll(this);
+	NotNullPtr<Data::ArrayList<Double>> newArr;
+	NEW_CLASSNN(newArr, Data::ArrayListDbl(this->capacity));
+	newArr->AddAll(*this);
 	return newArr;
 }

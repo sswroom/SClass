@@ -102,14 +102,14 @@ void IO::BTScanLog::ClearList()
 	this->randDevs.Clear();
 }
 
-const Data::ReadingList<IO::BTScanLog::DevEntry*> *IO::BTScanLog::GetPublicList() const
+NotNullPtr<const Data::ReadingList<IO::BTScanLog::DevEntry*>> IO::BTScanLog::GetPublicList() const
 {
-	return &this->pubDevs;
+	return this->pubDevs;
 }
 
-const Data::ReadingList<IO::BTScanLog::DevEntry*> *IO::BTScanLog::GetRandomList() const
+NotNullPtr<const Data::ReadingList<IO::BTScanLog::DevEntry*>> IO::BTScanLog::GetRandomList() const
 {
-	return &this->randDevs;
+	return this->randDevs;
 }
 
 Text::CString IO::BTScanLog::RadioTypeGetName(RadioType radioType)

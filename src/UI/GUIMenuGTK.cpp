@@ -577,10 +577,10 @@ void *UI::GUIMenu::GetHMenu()
 	return this->hMenu;
 }
 
-UOSInt UI::GUIMenu::GetAllKeys(Data::ArrayList<ShortcutKey*> *keys)
+UOSInt UI::GUIMenu::GetAllKeys(NotNullPtr<Data::ArrayList<ShortcutKey*>> keys)
 {
 	UOSInt keyCnt = this->keys.GetCount();
-	keys->AddAll(&this->keys);
+	keys->AddAll(this->keys);
 	UOSInt j = this->subMenus.GetCount();
 	UOSInt i = 0;
 	while (i < j)

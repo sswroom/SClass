@@ -101,8 +101,8 @@ void Map::TileMapLayer::CheckCache(Data::ArrayListInt64 *currIDs)
 	OSInt j;
 	UOSInt k;
 	Sync::MutexUsage lastMutUsage(&this->lastMut);
-	cacheIds.AddAll(&this->lastIds);
-	cacheImgs.AddAll(&this->lastImgs);
+	cacheIds.AddAll(this->lastIds);
+	cacheImgs.AddAll(this->lastImgs);
 	this->lastIds.Clear();
 	this->lastImgs.Clear();
 
@@ -315,7 +315,7 @@ Map::MapView *Map::TileMapLayer::CreateMapView(Math::Size2DDbl scnSize)
 		Math::RectAreaDbl bounds;
 		this->tileMap->GetBounds(&bounds);
 		Math::CoordinateSystem *csys = this->tileMap->GetCoordinateSystem();
-		NEW_CLASS(view, Map::LeveledMapView(csys && csys->IsProjected(), scnSize, bounds.GetCenter(), &scales));
+		NEW_CLASS(view, Map::LeveledMapView(csys && csys->IsProjected(), scnSize, bounds.GetCenter(), scales));
 		return view;
 	}
 }

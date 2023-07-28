@@ -160,5 +160,5 @@ Net::HKTrafficImage::~HKTrafficImage()
 
 UOSInt Net::HKTrafficImage::GetGroups(Data::ArrayList<Net::HKTrafficImage::GroupInfo*> *groups)
 {
-	return groups->AddAll(&this->groupMap);
+	return groups->AddAll(this->groupMap);
 }

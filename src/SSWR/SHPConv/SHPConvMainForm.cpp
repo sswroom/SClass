@@ -217,11 +217,11 @@ void __stdcall SSWR::SHPConv::SHPConvMainForm::OnConvertClicked(void *userObj)
 	sb.RemoveChars(4);
 	if (me->currGroup == (UOSInt)-1)
 	{
-		me->ConvertShp(srcFile->ToCString(), sb.ToCString(), &dbCols, blkScale, &me->globalFilters, me, &dbCols2);
+		me->ConvertShp(srcFile->ToCString(), sb.ToCString(), &dbCols, blkScale, me->globalFilters, me, dbCols2);
 	}
 	else
 	{
-		me->GroupConvert(srcFile->ToCString(), sb.ToCString(), &dbCols, blkScale, &me->globalFilters, me, me->currGroup, 0, &dbCols2);
+		me->GroupConvert(srcFile->ToCString(), sb.ToCString(), &dbCols, blkScale, me->globalFilters, me, me->currGroup, 0, dbCols2);
 	}
 	srcFile->Release();
 	me->FreeLabelStr(&dbCols, &dbCols2);
@@ -243,7 +243,7 @@ void __stdcall SSWR::SHPConv::SHPConvMainForm::OnFile(void *userObj, NotNullPtr<
 	me->txtBlkScale->SetText(CSTRP(sbuff, sptr));
 }
 
-Int32 SSWR::SHPConv::SHPConvMainForm::GroupConvert(Text::CString sourceFile, Text::CString outFilePrefix, Data::ArrayList<const UTF8Char*> *dbCols, Int32 blkScale, Data::ArrayList<MapFilter*> *filters, IO::ProgressHandler *progress, UOSInt groupCol, Data::ArrayList<const UTF8Char*> *outNames, Data::ArrayList<UInt32> *dbCols2)
+Int32 SSWR::SHPConv::SHPConvMainForm::GroupConvert(Text::CString sourceFile, Text::CString outFilePrefix, Data::ArrayList<const UTF8Char*> *dbCols, Int32 blkScale, NotNullPtr<Data::ArrayList<MapFilter*>> filters, IO::ProgressHandler *progress, UOSInt groupCol, Data::ArrayList<const UTF8Char*> *outNames, NotNullPtr<Data::ArrayList<UInt32>> dbCols2)
 {
 	UOSInt i;
 	OSInt si;
@@ -300,7 +300,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::GroupConvert(Text::CString sourceFile, Tex
 			sb2.Append(outFilePrefix);
 			sb2.AppendUTF8Char('_');
 			sb2.AppendC(sb.ToString(), sb.GetLength());
-			shpType = this->ConvertShp(sourceFile, sb2.ToCString(), dbCols, blkScale, &newFilters, progress, dbCols2);
+			shpType = this->ConvertShp(sourceFile, sb2.ToCString(), dbCols, blkScale, newFilters, progress, dbCols2);
 			newFilters.RemoveAt(newFilters.GetCount() - 1);
 		}
 		if (outNames)
@@ -312,7 +312,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::GroupConvert(Text::CString sourceFile, Tex
 	return shpType;
 }
 
-Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CString sourceFile, Text::CString outFilePrefix, Data::ArrayList<const UTF8Char*> *dbCols, Int32 blkScale, Data::ArrayList<MapFilter*> *filters, IO::ProgressHandler *progress, Data::ArrayList<UInt32> *dbCols2)
+Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CString sourceFile, Text::CString outFilePrefix, Data::ArrayList<const UTF8Char*> *dbCols, Int32 blkScale, NotNullPtr<Data::ArrayList<MapFilter*>> filters, IO::ProgressHandler *progress, NotNullPtr<Data::ArrayList<UInt32>> dbCols2)
 {
 	Text::StringBuilderUTF8 sb;
 	UInt8 buff[259];
@@ -1313,7 +1313,7 @@ void SSWR::SHPConv::SHPConvMainForm::FreeLabelStr(Data::ArrayList<const UTF8Char
 	dbCols2->Clear();
 }
 
-NotNullPtr<Text::String> SSWR::SHPConv::SHPConvMainForm::GetNewDBFName(DB::DBFFile *dbf, Data::ArrayList<const UTF8Char*> *dbCols, UOSInt currRec, Data::ArrayList<UInt32> *dbCols2)
+NotNullPtr<Text::String> SSWR::SHPConv::SHPConvMainForm::GetNewDBFName(DB::DBFFile *dbf, Data::ArrayList<const UTF8Char*> *dbCols, UOSInt currRec, NotNullPtr<Data::ArrayList<UInt32>> dbCols2)
 {
 	Text::StringBuilderUTF16 output;
 	UOSInt i;

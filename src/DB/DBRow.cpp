@@ -342,7 +342,7 @@ DB::DBRow::DBRow(TableDef *table)
 
 DB::DBRow::~DBRow()
 {
-	const Data::ArrayList<Field*> *fieldList = this->dataMap.GetValues();
+	NotNullPtr<const Data::ArrayList<Field*>> fieldList = this->dataMap.GetValues();
 	LIST_CALL_FUNC(fieldList, this->FreeField);
 }
 
@@ -579,7 +579,7 @@ const UInt8 *DB::DBRow::GetValueBinary(const UTF8Char *fieldName, UOSInt *buffSi
 
 void DB::DBRow::Commit()
 {
-	const Data::ArrayList<DB::DBRow::Field*> *fieldList = this->dataMap.GetValues();
+	NotNullPtr<const Data::ArrayList<DB::DBRow::Field*>> fieldList = this->dataMap.GetValues();
 	DB::DBRow::Field *field;
 	UOSInt i = fieldList->GetCount();
 	while (i-- > 0)
@@ -632,7 +632,7 @@ void DB::DBRow::Commit()
 
 void DB::DBRow::Rollback()
 {
-	const Data::ArrayList<DB::DBRow::Field*> *fieldList = this->dataMap.GetValues();
+	NotNullPtr<const Data::ArrayList<DB::DBRow::Field*>> fieldList = this->dataMap.GetValues();
 	DB::DBRow::Field *field;
 	UOSInt i = fieldList->GetCount();
 	while (i-- > 0)
@@ -675,7 +675,7 @@ void DB::DBRow::Rollback()
 Bool DB::DBRow::GetSinglePKI64(Int64 *key) const
 {
 	Bool hasKey = false;
-	const Data::ArrayList<DB::DBRow::Field*> *fieldList = this->dataMap.GetValues();
+	NotNullPtr<const Data::ArrayList<DB::DBRow::Field*>> fieldList = this->dataMap.GetValues();
 	DB::DBRow::Field *field;
 	UOSInt i = fieldList->GetCount();
 	while (i-- > 0)

@@ -1,5 +1,10 @@
 {
 	"editor.insertSpaces": false,
 	"editor.detectIndentation": false,
-	"cmake.configureOnOpen": false
+	"cmake.configureOnOpen": false,
+	"C_Cpp.files.exclude": {
+		"**/build": true,
+		"**/.vscode": true,
+		"**/.vs": true
+	}
 }

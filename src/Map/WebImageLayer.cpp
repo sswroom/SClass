@@ -383,7 +383,7 @@ UOSInt Map::WebImageLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, NameArr
 	ImageStat **imgArr;
 	Data::ArrayList<ImageStat *> imgList;
 	Sync::RWMutexUsage loadedMutUsage(&this->loadedMut, false);
-	imgList.AddAll(&this->loadedList);
+	imgList.AddAll(this->loadedList);
 	loadedMutUsage.EndUse();
 
 	imgArr = imgList.GetArray(&retCnt);

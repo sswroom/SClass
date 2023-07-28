@@ -133,7 +133,7 @@ DB::SortableDBReader::SortableDBReader(DB::ReadingDB *db, Text::CString schemaNa
 			i++;
 		}
 
-		const Data::ArrayList<DB::ColDef *> *colList = tmpCols.GetValues();
+		NotNullPtr<const Data::ArrayList<DB::ColDef *>> colList = tmpCols.GetValues();
 		i = colList->GetCount();
 		while (i-- > 0)
 		{

@@ -12,7 +12,7 @@ namespace SSWR
 		public:
 			virtual void ParseLabelStr(Text::CString labelStr, Data::ArrayList<const UTF8Char*> *dbCols, Data::ArrayList<UInt32> *dbCols2) = 0;
 			virtual void FreeLabelStr(Data::ArrayList<const UTF8Char*> *dbCols, Data::ArrayList<UInt32> *dbCols2) = 0;
-			virtual NotNullPtr<Text::String> GetNewDBFName(DB::DBFFile *dbf, Data::ArrayList<const UTF8Char*> *dbCols, UOSInt currRec, Data::ArrayList<UInt32> *dbcols2) = 0;
+			virtual NotNullPtr<Text::String> GetNewDBFName(DB::DBFFile *dbf, Data::ArrayList<const UTF8Char*> *dbCols, UOSInt currRec, NotNullPtr<Data::ArrayList<UInt32>> dbcols2) = 0;
 		};
 	}
 }

@@ -41,7 +41,7 @@ UI::GUIWindowDragData::~GUIWindowDragData()
 	if (this->dataMap)
 	{
 		FORMATETC *fmt;
-		const Data::ArrayList<FORMATETC *> *fmtList = this->dataMap->GetValues();
+		NotNullPtr<const Data::ArrayList<FORMATETC *>> fmtList = this->dataMap->GetValues();
 		UOSInt i = fmtList->GetCount();
 		while (i-- > 0)
 		{

@@ -78,7 +78,7 @@ Bool Net::DNSHandler::GetByDomainNamev4(Net::SocketUtil::AddressInfo *addr, Text
 				mutUsage.BeginUse();
 				this->dnsCli.FreeAnswers(&dnsStat->answers);
 				dnsStat->answers.Clear();
-				dnsStat->answers.AddAll(&ansArr);
+				dnsStat->answers.AddAll(ansArr);
 				newReq = true;
 			}
 			i = 0;
@@ -166,7 +166,7 @@ Bool Net::DNSHandler::GetByDomainNamev6(Net::SocketUtil::AddressInfo *addr, Text
 				mutUsage.BeginUse();
 				this->dnsCli.FreeAnswers(&dnsStat->answers);
 				dnsStat->answers.Clear();
-				dnsStat->answers.AddAll(&ansArr);
+				dnsStat->answers.AddAll(ansArr);
 				newReq = true;
 			}
 			i = 0;
@@ -259,7 +259,7 @@ UOSInt Net::DNSHandler::GetByDomainNamesv4(Net::SocketUtil::AddressInfo *addrs, 
 				mutUsage.BeginUse();
 				this->dnsCli.FreeAnswers(&dnsStat->answers);
 				dnsStat->answers.Clear();
-				dnsStat->answers.AddAll(&ansArr);
+				dnsStat->answers.AddAll(ansArr);
 				newReq = true;
 			}
 			i = 0;
@@ -357,7 +357,7 @@ UOSInt Net::DNSHandler::GetByDomainNamesv6(Net::SocketUtil::AddressInfo *addrs, 
 				mutUsage.BeginUse();
 				this->dnsCli.FreeAnswers(&dnsStat->answers);
 				dnsStat->answers.Clear();
-				dnsStat->answers.AddAll(&ansArr);
+				dnsStat->answers.AddAll(ansArr);
 				newReq = true;
 			}
 			i = 0;

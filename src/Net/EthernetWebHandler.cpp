@@ -175,7 +175,7 @@ Bool __stdcall Net::EthernetWebHandler::IPTransferReq(EthernetWebHandler *me, Ne
 	{
 		UOSInt i;
 		UOSInt j;
-		const Data::ReadingList<Net::EthernetAnalyzer::IPTranStatus*> *ipTranList;
+		NotNullPtr<const Data::ReadingList<Net::EthernetAnalyzer::IPTranStatus*>> ipTranList;
 		Net::EthernetAnalyzer::IPTranStatus *ipTran;
 		Text::StringBuilderUTF8 sb;
 		AppendHeader(&sb);
@@ -669,7 +669,7 @@ Bool __stdcall Net::EthernetWebHandler::DNSClientReq(EthernetWebHandler *me, Net
 		UOSInt j;
 		OSInt dnsCliInd = -1;
 		UInt32 qryVal = 0;
-		const Data::ReadingList<Net::EthernetAnalyzer::DNSClientInfo*> *dnsCliList;
+		NotNullPtr<const Data::ReadingList<Net::EthernetAnalyzer::DNSClientInfo*>> dnsCliList;
 		Net::EthernetAnalyzer::DNSClientInfo *dnsCli;
 		Text::StringBuilderUTF8 sb;
 		AppendHeader(&sb);
@@ -878,7 +878,7 @@ Bool __stdcall Net::EthernetWebHandler::IPLogReq(EthernetWebHandler *me, Net::We
 		UOSInt j;
 		OSInt ipLogInd = -1;
 		UInt32 qryVal = 0;
-		const Data::ReadingList<Net::EthernetAnalyzer::IPLogInfo*> *ipLogList;
+		NotNullPtr<const Data::ReadingList<Net::EthernetAnalyzer::IPLogInfo*>> ipLogList;
 		Net::EthernetAnalyzer::IPLogInfo *ipLog;
 		Text::StringBuilderUTF8 sb;
 		AppendHeader(&sb);

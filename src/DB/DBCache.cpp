@@ -50,7 +50,7 @@ DB::DBCache::TableInfo *DB::DBCache::GetTableInfo(DB::TableDef *tableDef)
 	DB::DBCache::TableInfo *table;
 	UOSInt i;
 	Sync::MutexUsage mutUsage(&this->tableMut);
-	const Data::ArrayList<DB::DBCache::TableInfo*> *tableList = this->tableMap.GetValues();
+	NotNullPtr<const Data::ArrayList<DB::DBCache::TableInfo*>> tableList = this->tableMap.GetValues();
 	i = tableList->GetCount();
 	while (i-- > 0)
 	{
@@ -72,7 +72,7 @@ DB::DBCache::DBCache(DB::DBModel *model, DB::DBTool *db)
 
 DB::DBCache::~DBCache()
 {
-	const Data::ArrayList<DB::DBCache::TableInfo*> *tableList = this->tableMap.GetValues();
+	NotNullPtr<const Data::ArrayList<DB::DBCache::TableInfo*>> tableList = this->tableMap.GetValues();
 	DB::DBCache::TableInfo *table;
 	UOSInt i = tableList->GetCount();
 	while (i-- > 0)

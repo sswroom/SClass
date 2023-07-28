@@ -146,7 +146,7 @@ void SSWR::AVIRead::AVIRWiFiLogManagerForm::LogUIUpdate()
 	const Net::MACInfo::MACEntry *entry;
 	const Net::MACInfo::MACEntry *entry2;
 	Net::WiFiLogFile::LogFileEntry *log;
-	Data::ArrayList<Net::WiFiLogFile::LogFileEntry*> *logList = this->wifiLogFile->GetLogList();
+	NotNullPtr<Data::ArrayList<Net::WiFiLogFile::LogFileEntry*>> logList = this->wifiLogFile->GetLogList();
 	Bool unkOnly = this->chkUnkOnly->IsChecked();
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;

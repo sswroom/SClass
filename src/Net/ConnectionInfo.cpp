@@ -38,8 +38,8 @@ Net::ConnectionInfo::ConnectionInfo(const Net::ConnectionInfo::ConnectionEntry *
 	{
 		this->ent.dnsSuffix = 0;
 	}
-	this->ent.ipaddr.AddAll(&ent->ipaddr);
-	this->ent.dnsaddr.AddAll(&ent->dnsaddr);
+	this->ent.ipaddr.AddAll(ent->ipaddr);
+	this->ent.dnsaddr.AddAll(ent->dnsaddr);
 	this->ent.defGW = ent->defGW;
 	this->ent.dhcpSvr = ent->dhcpSvr;
 	this->ent.dhcpLeaseTime = ent->dhcpLeaseTime;

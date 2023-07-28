@@ -271,7 +271,7 @@ void Net::WiFiCapturer::StoreStatus()
 	}
 }
 
-Data::ArrayList<Net::WiFiLogFile::LogFileEntry*> *Net::WiFiCapturer::GetLogList(Sync::MutexUsage *mutUsage)
+NotNullPtr<Data::ArrayList<Net::WiFiLogFile::LogFileEntry*>> Net::WiFiCapturer::GetLogList(Sync::MutexUsage *mutUsage)
 {
 	mutUsage->ReplaceMutex(&this->logMut);
 	return this->wifiLog.GetLogList();

@@ -11,11 +11,11 @@ Data::ArrayListICaseString::ArrayListICaseString(UOSInt capacity) : Data::ArrayL
 {
 }
 
-Data::ArrayList<Text::String*> *Data::ArrayListICaseString::Clone() const
+NotNullPtr<Data::ArrayList<Text::String*>> Data::ArrayListICaseString::Clone() const
 {
-	Data::ArrayListICaseString *newArr;
-	NEW_CLASS(newArr, Data::ArrayListICaseString(this->capacity));
-	newArr->AddAll(this);
+	NotNullPtr<Data::ArrayList<Text::String*>> newArr;
+	NEW_CLASSNN(newArr, Data::ArrayListICaseString(this->capacity));
+	newArr->AddAll(*this);
 	return newArr;
 }
 

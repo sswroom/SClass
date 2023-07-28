@@ -36,8 +36,8 @@ void Text::StringTool::BuildString(Text::StringBuilderUTF8 *sb, Data::StringMap<
 		return;
 	}
 	sb->AppendUTF8Char('{');
-	Data::ArrayList<Text::String *> *keys = map->GetKeys();
-	const Data::ArrayList<Text::String *> *vals = map->GetValues();
+	NotNullPtr<Data::ArrayList<Text::String *>> keys = map->GetKeys();
+	NotNullPtr<const Data::ArrayList<Text::String *>> vals = map->GetValues();
 	UOSInt i = 0;
 	UOSInt j = keys->GetCount();
 	while (i < j)
@@ -63,8 +63,8 @@ void Text::StringTool::BuildString(Text::StringBuilderUTF8 *sb, Data::StringUTF8
 		return;
 	}
 	sb->AppendUTF8Char('{');
-	Data::ArrayList<const UTF8Char *> *keys = map->GetKeys();
-	const Data::ArrayList<Text::String *> *vals = map->GetValues();
+	NotNullPtr<Data::ArrayList<const UTF8Char *>> keys = map->GetKeys();
+	NotNullPtr<const Data::ArrayList<Text::String *>> vals = map->GetValues();
 	UOSInt i = 0;
 	UOSInt j = keys->GetCount();
 	while (i < j)
@@ -90,8 +90,8 @@ void Text::StringTool::BuildString(Text::StringBuilderUTF8 *sb, Data::StringUTF8
 		return;
 	}
 	sb->AppendUTF8Char('{');
-	Data::ArrayList<const UTF8Char *> *keys = map->GetKeys();
-	const Data::ArrayList<const UTF8Char *> *vals = map->GetValues();
+	NotNullPtr<Data::ArrayList<const UTF8Char *>> keys = map->GetKeys();
+	NotNullPtr<const Data::ArrayList<const UTF8Char *>> vals = map->GetValues();
 	UOSInt i = 0;
 	UOSInt j = keys->GetCount();
 	while (i < j)

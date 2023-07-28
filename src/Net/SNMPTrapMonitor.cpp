@@ -11,7 +11,7 @@ void __stdcall Net::SNMPTrapMonitor::OnSNMPPacket(const Net::SocketUtil::Address
 	err = Net::SNMPUtil::PDUParseTrapMessage(buff, dataSize, &trap, &itemList);
 	if (err == Net::SNMPUtil::ES_NOERROR)
 	{
-		if (!me->hdlr(me->hdlrObj, addr, port, &trap, &itemList))
+		if (!me->hdlr(me->hdlrObj, addr, port, trap, itemList))
 		{
 			UOSInt i = itemList.GetCount();
 			while (i-- > 0)

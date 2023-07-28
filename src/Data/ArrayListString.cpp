@@ -11,11 +11,11 @@ Data::ArrayListString::ArrayListString(UOSInt capacity) : Data::SortableArrayLis
 {
 }
 
-Data::ArrayList<Text::String*> *Data::ArrayListString::Clone() const
+NotNullPtr<Data::ArrayList<Text::String*>> Data::ArrayListString::Clone() const
 {
-	Data::ArrayListString *newArr;
-	NEW_CLASS(newArr, Data::ArrayListString(this->capacity));
-	newArr->AddAll(this);
+	NotNullPtr<Data::ArrayListString> newArr;
+	NEW_CLASSNN(newArr, Data::ArrayListString(this->capacity));
+	newArr->AddAll(*this);
 	return newArr;
 }
 

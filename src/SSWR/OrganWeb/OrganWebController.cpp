@@ -236,7 +236,7 @@ void SSWR::OrganWeb::OrganWebController::WriteLocatorText(Sync::RWMutexUsage *mu
 	writer->WriteLineC(sb.ToString(), sb.GetLength());
 }
 
-void SSWR::OrganWeb::OrganWebController::WriteGroupTable(Sync::RWMutexUsage *mutUsage, IO::Writer *writer, const Data::ReadingList<GroupInfo *> *groupList, UInt32 scnWidth, Bool showSelect, Bool showAll)
+void SSWR::OrganWeb::OrganWebController::WriteGroupTable(Sync::RWMutexUsage *mutUsage, IO::Writer *writer, NotNullPtr<const Data::ReadingList<GroupInfo *>> groupList, UInt32 scnWidth, Bool showSelect, Bool showAll)
 {
 	GroupInfo *group;
 	NotNullPtr<Text::String> s;
@@ -430,7 +430,7 @@ void SSWR::OrganWeb::OrganWebController::WriteGroupTable(Sync::RWMutexUsage *mut
 	}
 }
 
-void SSWR::OrganWeb::OrganWebController::WriteSpeciesTable(Sync::RWMutexUsage *mutUsage, IO::Writer *writer, const Data::ArrayList<SpeciesInfo *> *spList, UInt32 scnWidth, Int32 cateId, Bool showSelect, Bool showModify)
+void SSWR::OrganWeb::OrganWebController::WriteSpeciesTable(Sync::RWMutexUsage *mutUsage, IO::Writer *writer, NotNullPtr<const Data::ArrayList<SpeciesInfo *>> spList, UInt32 scnWidth, Int32 cateId, Bool showSelect, Bool showModify)
 {
 	SpeciesInfo *sp;
 	NotNullPtr<Text::String> s;
@@ -842,7 +842,7 @@ void SSWR::OrganWeb::OrganWebController::WritePickObjs(Sync::RWMutexUsage *mutUs
 			}
 			i++;
 		}
-		WriteSpeciesTable(mutUsage, writer, &spList, scnSize, 0, true, true);
+		WriteSpeciesTable(mutUsage, writer, spList, scnSize, 0, true, true);
 		writer->WriteLineC(UTF8STRC("<input type=\"submit\" value=\"Place Selected\"/>"));
 		writer->WriteLineC(UTF8STRC("<input type=\"button\" value=\"Place All\" onclick=\"document.forms.pickfiles.action.value='placeall';document.forms.pickfiles.submit();\"/>"));
 		if (allowMerge)
@@ -875,7 +875,7 @@ void SSWR::OrganWeb::OrganWebController::WritePickObjs(Sync::RWMutexUsage *mutUs
 			}
 			i++;
 		}
-		WriteGroupTable(mutUsage, writer, &groupList, scnSize, true, true);
+		WriteGroupTable(mutUsage, writer, groupList, scnSize, true, true);
 		writer->WriteLineC(UTF8STRC("<input type=\"submit\" value=\"Place Selected\"/>"));
 		writer->WriteLineC(UTF8STRC("<input type=\"button\" value=\"Place All\" onclick=\"document.forms.pickfiles.action.value='placeall';document.forms.pickfiles.submit();\"/>"));
 		writer->WriteLineC(UTF8STRC("</form>"));

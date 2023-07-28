@@ -65,7 +65,7 @@ typedef struct
 	Text::String *devSN;
 	UTF8Char country[3];
 	UInt8 ouis[WLAN_OUI_CNT][3];
-	Data::ArrayList<Net::WirelessLANIE*> *ieList;
+	Data::ArrayList<Net::WirelessLANIE*> ieList;
 } BSSEntry;
 
 typedef struct
@@ -134,7 +134,7 @@ Net::WirelessLAN::BSSInfo::BSSInfo(Text::CString ssid, const void *bssEntry)
 		i++;
 	}
 	this->ieList.AddAll(bss->ieList);
-	bss->ieList->Clear();
+	bss->ieList.Clear();
 }
 
 Net::WirelessLAN::BSSInfo::~BSSInfo()

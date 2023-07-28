@@ -745,7 +745,7 @@ Bool Net::LDAPClient::Search(Text::CString baseObject, ScopeType scope, DerefTyp
 	mutUsage.EndUse();
 	if (valid)
 	{
-		results->AddAll(&resObjs);
+		results->AddAll(resObjs);
 	}
 	else
 	{

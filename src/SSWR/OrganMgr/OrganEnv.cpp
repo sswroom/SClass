@@ -258,7 +258,7 @@ Text::CString SSWR::OrganMgr::OrganEnv::GetLang(const UTF8Char *name, UOSInt nam
 
 UOSInt SSWR::OrganMgr::OrganEnv::GetCategories(Data::ArrayList<Category*> *categories)
 {
-	categories->AddAll(&this->categories);
+	categories->AddAll(this->categories);
 	return this->categories.GetCount();
 }
 
@@ -308,8 +308,13 @@ Bool SSWR::OrganMgr::OrganEnv::SetSpeciesMapColor(OrganSpecies *sp, UInt32 mapCo
 
 UOSInt SSWR::OrganMgr::OrganEnv::GetBooksAll(Data::ArrayList<OrganBook*> *items)
 {
-	items->AddAll(this->bookObjs);
-	return this->bookObjs->GetCount();
+	NotNullPtr<Data::ArrayList<OrganBook*>> books;
+	if (books.Set(this->bookObjs))
+	{
+		items->AddAll(books);
+		return books->GetCount();
+	}
+	return 0;
 }
 
 UOSInt SSWR::OrganMgr::OrganEnv::GetBooksOfYear(Data::ArrayList<OrganBook*> *items, Int32 year)

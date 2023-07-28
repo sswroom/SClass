@@ -143,7 +143,7 @@ Net::EthernetAnalyzer::~EthernetAnalyzer()
 		DEL_CLASS(dnsCli);
 	}
 
-	const Data::ArrayList<Net::EthernetAnalyzer::DNSRequestResult*> *dnsReqList;
+	NotNullPtr<const Data::ArrayList<Net::EthernetAnalyzer::DNSRequestResult*>> dnsReqList;
 	Net::EthernetAnalyzer::DNSRequestResult *req;
 	dnsReqList = this->dnsReqv4Map.GetValues();
 	i = dnsReqList->GetCount();
@@ -224,9 +224,9 @@ void Net::EthernetAnalyzer::UseIPTran(Sync::MutexUsage *mutUsage)
 	mutUsage->ReplaceMutex(&this->ipTranMut);
 }
 
-const Data::ReadingList<Net::EthernetAnalyzer::IPTranStatus*> *Net::EthernetAnalyzer::IPTranGetList() const
+NotNullPtr<const Data::ReadingList<Net::EthernetAnalyzer::IPTranStatus*>> Net::EthernetAnalyzer::IPTranGetList() const
 {
-	return &this->ipTranMap;
+	return this->ipTranMap;
 }
 
 UOSInt Net::EthernetAnalyzer::IPTranGetCount() const
@@ -249,9 +249,9 @@ void Net::EthernetAnalyzer::UseDNSCli(Sync::MutexUsage *mutUsage)
 	mutUsage->ReplaceMutex(&this->dnsCliInfoMut);
 }
 
-const Data::ReadingList<Net::EthernetAnalyzer::DNSClientInfo*> *Net::EthernetAnalyzer::DNSCliGetList() const
+NotNullPtr<const Data::ReadingList<Net::EthernetAnalyzer::DNSClientInfo*>> Net::EthernetAnalyzer::DNSCliGetList() const
 {
-	return &this->dnsCliInfos;
+	return this->dnsCliInfos;
 }
 
 UOSInt Net::EthernetAnalyzer::DNSCliGetCount()
@@ -361,7 +361,7 @@ Bool Net::EthernetAnalyzer::DNSReqOthGetInfo(Text::CString req, Data::ArrayList<
 UOSInt Net::EthernetAnalyzer::DNSTargetGetList(Data::ArrayList<Net::EthernetAnalyzer::DNSTargetInfo *> *targetList)
 {
 	Sync::MutexUsage mutUsage(&this->dnsTargetMut);
-	targetList->AddAll(&this->dnsTargetMap);
+	targetList->AddAll(this->dnsTargetMap);
 	mutUsage.EndUse();
 	return targetList->GetCount();
 }
@@ -374,7 +374,7 @@ UOSInt Net::EthernetAnalyzer::DNSTargetGetCount()
 UOSInt Net::EthernetAnalyzer::MDNSGetList(Data::ArrayList<Net::DNSClient::RequestAnswer *> *mdnsList)
 {
 	Sync::MutexUsage mutUsage(&this->mdnsMut);
-	mdnsList->AddAll(&this->mdnsList);
+	mdnsList->AddAll(this->mdnsList);
 	return this->mdnsList.GetCount();
 }
 
@@ -398,9 +398,9 @@ void Net::EthernetAnalyzer::UseIPLog(Sync::MutexUsage *mutUsage)
 	mutUsage->ReplaceMutex(&this->ipLogMut);
 }
 
-const Data::ReadingList<Net::EthernetAnalyzer::IPLogInfo*> *Net::EthernetAnalyzer::IPLogGetList() const
+NotNullPtr<const Data::ReadingList<Net::EthernetAnalyzer::IPLogInfo*>> Net::EthernetAnalyzer::IPLogGetList() const
 {
-	return &this->ipLogMap;
+	return this->ipLogMap;
 }
 
 UOSInt Net::EthernetAnalyzer::IPLogGetCount() const

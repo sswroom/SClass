@@ -1098,7 +1098,7 @@ UOSInt SSWR::OrganMgr::OrganEnvDB::GetGroupAllUserFile(Data::ArrayList<UserFileI
 			species = this->speciesMap.Get(v);
 			if (species != 0)
 			{
-				items->AddAll(&species->files);
+				items->AddAll(species->files);
 				i = species->files.GetCount();
 				colors->EnsureCapacity(i);
 				while (i-- > 0)
@@ -2848,7 +2848,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::CombineSpecies(OrganSpecies *destSp, OrganSpeci
 	SpeciesInfo *spInfod = this->speciesMap.Get(destSp->GetSpeciesId());
 	if (spInfos && spInfod)
 	{
-		spInfod->files.AddAll(&spInfos->files);
+		spInfod->files.AddAll(spInfos->files);
 		spInfos->files.Clear();
 	}
 	return true;

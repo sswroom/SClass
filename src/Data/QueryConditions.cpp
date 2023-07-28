@@ -207,7 +207,7 @@ Data::QueryConditions::CompareCondition Data::QueryConditions::Int32Condition::G
 	return this->cond;
 }
 
-Data::QueryConditions::Int32InCondition::Int32InCondition(Text::CString fieldName, Data::ArrayList<Int32> *val) : FieldCondition(fieldName)
+Data::QueryConditions::Int32InCondition::Int32InCondition(Text::CString fieldName, NotNullPtr<Data::ArrayList<Int32>> val) : FieldCondition(fieldName)
 {
 	this->vals.AddAll(val);
 }
@@ -1161,7 +1161,7 @@ Data::QueryConditions *Data::QueryConditions::Int32Equals(Text::CString fieldNam
 	return this;
 }
 
-Data::QueryConditions *Data::QueryConditions::Int32In(Text::CString fieldName, Data::ArrayList<Int32> *vals)
+Data::QueryConditions *Data::QueryConditions::Int32In(Text::CString fieldName, NotNullPtr<Data::ArrayList<Int32>> vals)
 {
 	this->conditionList.Add(NEW_CLASS_D(Int32InCondition(fieldName, vals)));
 	return this;

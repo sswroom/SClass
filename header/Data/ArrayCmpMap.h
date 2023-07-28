@@ -23,8 +23,8 @@ namespace Data
 		Bool ContainsKey(T key) const;
 
 		void AllocSize(UOSInt cnt);
-		const Data::ArrayList<V> *GetValues() const;
-		Data::SortableArrayList<T> *GetKeys() const;
+		NotNullPtr<const Data::ArrayList<V>> GetValues() const;
+		NotNullPtr<Data::SortableArrayList<T>> GetKeys() const;
 		virtual UOSInt GetCount() const;
 		virtual V GetItem(UOSInt index) const;
 		virtual Bool IsEmpty() const;
@@ -111,14 +111,14 @@ namespace Data
 		this->vals.EnsureCapacity(newSize);
 	}
 
-	template <class T, class V> const Data::ArrayList<V> *ArrayCmpMap<T, V>::GetValues() const
+	template <class T, class V> NotNullPtr<const Data::ArrayList<V>> ArrayCmpMap<T, V>::GetValues() const
 	{
-		return &this->vals;
+		return this->vals;
 	}
 
-	template <class T, class V> Data::SortableArrayList<T> *ArrayCmpMap<T, V>::GetKeys() const
+	template <class T, class V> NotNullPtr<Data::SortableArrayList<T>> ArrayCmpMap<T, V>::GetKeys() const
 	{
-		return this->keys;
+		return NotNullPtr<Data::SortableArrayList<T>>::FromPtr(this->keys);
 	}
 
 	template <class T, class V> UOSInt ArrayCmpMap<T, V>::GetCount() const

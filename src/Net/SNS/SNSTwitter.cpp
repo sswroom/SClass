@@ -88,9 +88,9 @@ UTF8Char *Net::SNS::SNSTwitter::GetDirName(UTF8Char *dirName)
 	return dirName;
 }
 
-UOSInt Net::SNS::SNSTwitter::GetCurrItems(Data::ArrayList<SNSItem*> *itemList)
+UOSInt Net::SNS::SNSTwitter::GetCurrItems(NotNullPtr<Data::ArrayList<SNSItem*>> itemList)
 {
-	return itemList->AddAll(&this->itemMap);
+	return itemList->AddAll(this->itemMap);
 }
 
 UTF8Char *Net::SNS::SNSTwitter::GetItemShortId(UTF8Char *buff, SNSItem *item)

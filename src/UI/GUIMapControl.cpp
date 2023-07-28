@@ -1048,7 +1048,7 @@ void UI::GUIMapControl::SetSelectedVector(Math::Geometry::Vector2D *vec)
 	this->Redraw();
 }
 
-void UI::GUIMapControl::SetSelectedVectors(Data::ArrayList<Math::Geometry::Vector2D*> *vecList)
+void UI::GUIMapControl::SetSelectedVectors(NotNullPtr<Data::ArrayList<Math::Geometry::Vector2D*>> vecList)
 {
 	this->ReleaseSelVecList();
 	this->selVecList.AddAll(vecList);

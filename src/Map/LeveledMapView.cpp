@@ -5,7 +5,7 @@
 
 void Map::LeveledMapView::UpdateVals()
 {
-	Double scale = this->scales->GetItem(this->level);
+	Double scale = this->scales.GetItem(this->level);
 	Math::Coord2DDbl diff;
 	if (this->projected)
 	{
@@ -20,19 +20,17 @@ void Map::LeveledMapView::UpdateVals()
 	this->br = this->centMap + diff;
 }
 
-Map::LeveledMapView::LeveledMapView(Bool projected, Math::Size2DDbl scnSize, Math::Coord2DDbl center, Data::ArrayListDbl *scales) : Map::MapView(scnSize)
+Map::LeveledMapView::LeveledMapView(Bool projected, Math::Size2DDbl scnSize, Math::Coord2DDbl center, NotNullPtr<const Data::ArrayListDbl> scales) : Map::MapView(scnSize)
 {
 	this->projected = projected;
 	this->hdpi = 96.0;
 	this->ddpi = 96.0;
-	NEW_CLASS(this->scales, Data::ArrayListDbl());
-	this->scales->AddAll(scales);
-	ChangeViewXY(scnSize, center, Double2Int32(this->scales->GetItem(this->scales->GetCount() >> 1)));
+	this->scales.AddAll(scales);
+	ChangeViewXY(scnSize, center, Double2Int32(this->scales.GetItem(this->scales.GetCount() >> 1)));
 }
 
 Map::LeveledMapView::~LeveledMapView()
 {
-	DEL_CLASS(this->scales);
 }
 
 void Map::LeveledMapView::ChangeViewXY(Math::Size2DDbl scnSize, Math::Coord2DDbl centMap, Double scale)
@@ -57,10 +55,10 @@ void Map::LeveledMapView::SetMapScale(Double scale)
 	Double logResol = Math_Log10(scale);
 	minInd = 0;
 	minDiff = 100000.0;
-	i = this->scales->GetCount();
+	i = this->scales.GetCount();
 	while (i-- > 0)
 	{
-		ldiff = Math_Log10(this->scales->GetItem(i)) - logResol;
+		ldiff = Math_Log10(this->scales.GetItem(i)) - logResol;
 		if (ldiff < 0)
 			ldiff = -ldiff;
 		if (ldiff < minDiff)
@@ -102,12 +100,12 @@ Math::RectAreaDbl Map::LeveledMapView::GetVerticalRect() const
 
 Double Map::LeveledMapView::GetMapScale() const
 {
-	return this->scales->GetItem(this->level);
+	return this->scales.GetItem(this->level);
 }
 
 Double Map::LeveledMapView::GetViewScale() const
 {
-	return this->scales->GetItem(this->level);
+	return this->scales.GetItem(this->level);
 }
 
 Math::Coord2DDbl Map::LeveledMapView::GetCenter() const

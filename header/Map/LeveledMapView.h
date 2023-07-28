@@ -16,13 +16,13 @@ namespace Map
 		UInt32 level;
 		Bool projected;
 
-		Data::ArrayListDbl *scales;
+		Data::ArrayListDbl scales;
 
 	private:
 		void UpdateVals();
 
 	public:
-		LeveledMapView(Bool projected, Math::Size2DDbl scnSize, Math::Coord2DDbl center, Data::ArrayListDbl *scales);
+		LeveledMapView(Bool projected, Math::Size2DDbl scnSize, Math::Coord2DDbl center, NotNullPtr<const Data::ArrayListDbl> scales);
 		virtual ~LeveledMapView();
 
 		virtual void ChangeViewXY(Math::Size2DDbl scnSize, Math::Coord2DDbl centMap, Double scale);

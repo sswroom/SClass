@@ -1278,7 +1278,7 @@ IO::SMake::~SMake()
 	UOSInt i;
 	UOSInt j;
 	IO::SMake::ConfigItem *cfg;
-	const Data::ArrayList<IO::SMake::ConfigItem *> *cfgList = this->cfgMap.GetValues();
+	NotNullPtr<const Data::ArrayList<IO::SMake::ConfigItem *>> cfgList = this->cfgMap.GetValues();
 	i = cfgList->GetCount();
 	while (i-- > 0)
 	{
@@ -1435,7 +1435,7 @@ void IO::SMake::AsyncPostCompile()
 	}
 }
 
-const Data::ArrayList<IO::SMake::ConfigItem*> *IO::SMake::GetConfigList() const
+NotNullPtr<const Data::ArrayList<IO::SMake::ConfigItem*>> IO::SMake::GetConfigList() const
 {
 	return this->cfgMap.GetValues();
 }

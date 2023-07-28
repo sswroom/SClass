@@ -111,7 +111,7 @@ void SSWR::AVIRead::AVIRImageControl::InitDir()
 
 	UOSInt i;
 	UOSInt colCnt;
-	const Data::ArrayList<ImageSetting*> *imgSettList;
+	NotNullPtr<const Data::ArrayList<ImageSetting*>> imgSettList;
 	ImageSetting *imgSett;
 	SSWR::AVIRead::AVIRImageControl::ImageStatus *status;
 	Parser::ParserList *parsers;
@@ -352,7 +352,7 @@ void SSWR::AVIRead::AVIRImageControl::EndFolder()
 	IO::Path::PathType pt;
 	UOSInt i;
 	SSWR::AVIRead::AVIRImageControl::ImageStatus *status;
-	const Data::ArrayList<SSWR::AVIRead::AVIRImageControl::ImageStatus*> *imgList;
+	NotNullPtr<const Data::ArrayList<SSWR::AVIRead::AVIRImageControl::ImageStatus*>> imgList;
 	if (this->folderPath == 0)
 		return;
 	sptr = this->folderPath->ConcatTo(sbuff);
@@ -537,7 +537,7 @@ SSWR::AVIRead::AVIRImageControl::~AVIRImageControl()
 		this->folderCtrlEvt.Wait(10);
 	}
 	UOSInt i;
-	const Data::ArrayList<SSWR::AVIRead::AVIRImageControl::CameraCorr *> *cameraList = this->cameraMap.GetValues();
+	NotNullPtr<const Data::ArrayList<SSWR::AVIRead::AVIRImageControl::CameraCorr *>> cameraList = this->cameraMap.GetValues();
 	CameraCorr *camera;
 	i = cameraList->GetCount();
 	while (i-- > 0)
@@ -570,7 +570,7 @@ void SSWR::AVIRead::AVIRImageControl::YUVParamChanged(const Media::IColorHandler
 
 void SSWR::AVIRead::AVIRImageControl::RGBParamChanged(const Media::IColorHandler::RGBPARAM2 *rgbParam)
 {
-	const Data::ArrayList<SSWR::AVIRead::AVIRImageControl::ImageStatus *> *imgList;
+	NotNullPtr<const Data::ArrayList<SSWR::AVIRead::AVIRImageControl::ImageStatus *>> imgList;
 	SSWR::AVIRead::AVIRImageControl::ImageStatus *status;
 	UOSInt i;
 
@@ -591,7 +591,7 @@ void SSWR::AVIRead::AVIRImageControl::RGBParamChanged(const Media::IColorHandler
 
 void SSWR::AVIRead::AVIRImageControl::SetDPI(Double hdpi, Double ddpi)
 {
-	const Data::ArrayList<SSWR::AVIRead::AVIRImageControl::ImageStatus *> *imgList;
+	NotNullPtr<const Data::ArrayList<SSWR::AVIRead::AVIRImageControl::ImageStatus *>> imgList;
 	SSWR::AVIRead::AVIRImageControl::ImageStatus *status;
 	UOSInt i;
 
@@ -627,7 +627,7 @@ void SSWR::AVIRead::AVIRImageControl::OnDraw(Media::DrawImage *dimg)
 	Media::DrawBrush *b;
 	Media::DrawFont *f;
 	Media::DrawBrush *barr[5];
-	const Data::ArrayList<SSWR::AVIRead::AVIRImageControl::ImageStatus*> *imgList;
+	NotNullPtr<const Data::ArrayList<SSWR::AVIRead::AVIRImageControl::ImageStatus*>> imgList;
 	SSWR::AVIRead::AVIRImageControl::ImageStatus *status;
 	UOSInt i;
 	UOSInt j;
@@ -761,7 +761,7 @@ void SSWR::AVIRead::AVIRImageControl::OnMouseDown(OSInt scrollY, Math::Coord2D<O
 		}
 		else if (keys & UI::GUICustomDrawVScroll::KBTN_SHIFT)
 		{
-			const Data::ArrayList<SSWR::AVIRead::AVIRImageControl::ImageStatus*> *imgList;
+			NotNullPtr<const Data::ArrayList<SSWR::AVIRead::AVIRImageControl::ImageStatus*>> imgList;
 			SSWR::AVIRead::AVIRImageControl::ImageStatus *status;
 			Sync::MutexUsage mutUsage(&this->imgMut);
 			imgList = this->imgMap.GetValues();
@@ -796,7 +796,7 @@ void SSWR::AVIRead::AVIRImageControl::OnMouseDown(OSInt scrollY, Math::Coord2D<O
 		}
 		else
 		{
-			const Data::ArrayList<SSWR::AVIRead::AVIRImageControl::ImageStatus*> *imgList;
+			NotNullPtr<const Data::ArrayList<SSWR::AVIRead::AVIRImageControl::ImageStatus*>> imgList;
 			SSWR::AVIRead::AVIRImageControl::ImageStatus *status;
 			Sync::MutexUsage mutUsage(&this->imgMut);
 			imgList = this->imgMap.GetValues();
@@ -893,7 +893,7 @@ Bool SSWR::AVIRead::AVIRImageControl::SaveSetting()
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	const Data::ArrayList<SSWR::AVIRead::AVIRImageControl::ImageStatus*> *imgList;
+	NotNullPtr<const Data::ArrayList<SSWR::AVIRead::AVIRImageControl::ImageStatus*>> imgList;
 	UOSInt i;
 	UOSInt j;
 	SSWR::AVIRead::AVIRImageControl::ImageStatus *status;
@@ -1071,7 +1071,7 @@ void SSWR::AVIRead::AVIRImageControl::UpdateImgPreview(SSWR::AVIRead::AVIRImageC
 
 void SSWR::AVIRead::AVIRImageControl::UpdateImgSetting(SSWR::AVIRead::AVIRImageControl::ImageSetting *setting)
 {
-	const Data::ArrayList<ImageStatus*> *imgList;
+	NotNullPtr<const Data::ArrayList<ImageStatus*>> imgList;
 	ImageStatus *status;
 	UOSInt i;
 	Bool chg = false;
@@ -1118,7 +1118,7 @@ UOSInt SSWR::AVIRead::AVIRImageControl::ExportSelected()
 {
 	ImageStatus *status;
 	ImageStatus *status2;
-	const Data::ArrayList<ImageStatus*> *imgList;
+	NotNullPtr<const Data::ArrayList<ImageStatus*>> imgList;
 	UOSInt i;
 	UOSInt j;
 	UOSInt cnt = 0;
@@ -1154,8 +1154,8 @@ UOSInt SSWR::AVIRead::AVIRImageControl::ExportSelected()
 
 void SSWR::AVIRead::AVIRImageControl::MoveUp()
 {
-	Data::SortableArrayList<const UTF8Char *> *nameList;
-	const Data::ArrayList<ImageStatus *> *imgList;
+	NotNullPtr<Data::SortableArrayList<const UTF8Char *>> nameList;
+	NotNullPtr<const Data::ArrayList<ImageStatus *>> imgList;
 	ImageStatus *status;
 	OSInt i;
 	UOSInt j;
@@ -1220,8 +1220,8 @@ void SSWR::AVIRead::AVIRImageControl::MoveUp()
 
 void SSWR::AVIRead::AVIRImageControl::MoveDown()
 {
-	Data::SortableArrayList<const UTF8Char *> *nameList;
-	const Data::ArrayList<ImageStatus *> *imgList;
+	NotNullPtr<Data::SortableArrayList<const UTF8Char *>> nameList;
+	NotNullPtr<const Data::ArrayList<ImageStatus *>> imgList;
 	ImageStatus *status;
 	OSInt i;
 	UOSInt j;
@@ -1287,7 +1287,7 @@ void SSWR::AVIRead::AVIRImageControl::MoveDown()
 void SSWR::AVIRead::AVIRImageControl::SelectAll()
 {
 	Sync::MutexUsage mutUsage(&this->imgMut);
-	const Data::ArrayList<ImageStatus*> *imgList = this->imgMap.GetValues();
+	NotNullPtr<const Data::ArrayList<ImageStatus*>> imgList = this->imgMap.GetValues();
 	UOSInt i = imgList->GetCount();
 	ImageStatus *status;
 	while (i-- > 0)

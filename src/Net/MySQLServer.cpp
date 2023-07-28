@@ -293,7 +293,7 @@ void __stdcall Net::MySQLServer::OnClientEvent(NotNullPtr<Net::TCPClient> cli, v
 		#if defined(VERBOSE)
 		printf("Client disconnected\r\n");
 		#endif
-		const Data::ArrayList<const UTF8Char*> *attrList = data->attrMap->GetValues();
+		NotNullPtr<const Data::ArrayList<const UTF8Char*>> attrList = data->attrMap->GetValues();
 		i = attrList->GetCount();
 		while (i-- > 0)
 		{

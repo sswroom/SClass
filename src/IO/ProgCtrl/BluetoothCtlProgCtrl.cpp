@@ -495,14 +495,14 @@ Bool IO::ProgCtrl::BluetoothCtlProgCtrl::WaitForCmdReady()
 	return this->cmdReady;
 }
 
-Data::FastMap<UInt64, IO::BTScanLog::ScanRecord3*> *IO::ProgCtrl::BluetoothCtlProgCtrl::GetPublicMap(Sync::MutexUsage *mutUsage)
+NotNullPtr<Data::FastMap<UInt64, IO::BTScanLog::ScanRecord3*>> IO::ProgCtrl::BluetoothCtlProgCtrl::GetPublicMap(Sync::MutexUsage *mutUsage)
 {
 	mutUsage->ReplaceMutex(&this->devMut);
-	return &this->devMap;
+	return this->devMap;
 }
 
-Data::FastMap<UInt64, IO::BTScanLog::ScanRecord3*> *IO::ProgCtrl::BluetoothCtlProgCtrl::GetRandomMap(Sync::MutexUsage *mutUsage)
+NotNullPtr<Data::FastMap<UInt64, IO::BTScanLog::ScanRecord3*>> IO::ProgCtrl::BluetoothCtlProgCtrl::GetRandomMap(Sync::MutexUsage *mutUsage)
 {
 	mutUsage->ReplaceMutex(&this->devMut);
-	return &this->devMap;
+	return this->devMap;
 }

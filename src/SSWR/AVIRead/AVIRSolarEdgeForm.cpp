@@ -229,7 +229,7 @@ void __stdcall SSWR::AVIRead::AVIRSolarEdgeForm::OnSiteEnergyClicked(void *userO
 		if (me->seAPI->GetSiteEnergy(site->id, startTime, endTime, timeUnit, &values))
 		{
 			me->siteEnergyList.Clear();
-			me->siteEnergyList.AddAll(&values);
+			me->siteEnergyList.AddAll(values);
 			me->UpdateSiteEnergyGraph();
 		}
 	}
@@ -261,7 +261,7 @@ void __stdcall SSWR::AVIRead::AVIRSolarEdgeForm::OnSitePowerClicked(void *userOb
 		if (me->seAPI->GetSitePower(site->id, startTime, endTime, &values))
 		{
 			me->sitePowerList.Clear();
-			me->sitePowerList.AddAll(&values);
+			me->sitePowerList.AddAll(values);
 			me->UpdateSitePowerGraph();
 		}
 	}

@@ -60,7 +60,7 @@ Bool Exporter::MEVExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
 	Text::String *tmpStr;
-	const Data::ArrayList<Exporter::MEVExporter::MEVStrRecord*> *tmpArr;
+	NotNullPtr<const Data::ArrayList<Exporter::MEVExporter::MEVStrRecord*>> tmpArr;
 	Data::ArrayListICaseString dirArr;
 	Data::StringMap<Exporter::MEVExporter::MEVStrRecord*> strArr;
 

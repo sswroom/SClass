@@ -80,11 +80,11 @@ namespace SSWR
 			DB::DBTool *db;
 			IO::LogTool *log;
 			Media::MonitorMgr *monMgr;
-			Data::FastStringMap<BurntDiscInfo*> *discMap;
+			NotNullPtr<Data::FastStringMap<BurntDiscInfo*>> discMap;
 			Data::FastStringMap<DVDTypeInfo*> *dvdTypeMap;
-			Data::FastStringMap<CategoryInfo*> *cateMap;
-			Data::FastStringMap<DiscTypeInfo*> *discTypeMap;
-			Data::FastMap<Int32, DVDVideoInfo*> *dvdVideoMap;
+			NotNullPtr<Data::FastStringMap<CategoryInfo*>> cateMap;
+			NotNullPtr<Data::FastStringMap<DiscTypeInfo*>> discTypeMap;
+			NotNullPtr<Data::FastMap<Int32, DVDVideoInfo*>> dvdVideoMap;
 			
 			void LoadDB();
 		public:

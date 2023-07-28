@@ -363,7 +363,7 @@ UOSInt Net::Email::FileEmailStore::GetRcptList(Int64 id, Data::ArrayList<Text::S
 	FileInfo *fileInfo = this->fileMap.Get(id);
 	if (fileInfo == 0)
 		return 0;
-	return rcptList->AddAll(&fileInfo->rcptList);
+	return rcptList->AddAll(fileInfo->rcptList);
 }
 
 Net::Email::MailController::RemoveStatus Net::Email::FileEmailStore::RemoveMessage(Text::CString userName, UOSInt msgIndex)

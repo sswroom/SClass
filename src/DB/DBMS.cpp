@@ -3041,7 +3041,7 @@ void DB::DBMS::SessEnd(Int32 sessId)
 
 void DB::DBMS::SessDelete(DB::DBMS::SessionInfo *sess)
 {
-	const Data::ArrayList<Text::String*> *varList = sess->userVars->GetValues();
+	NotNullPtr<const Data::ArrayList<Text::String*>> varList = sess->userVars->GetValues();
 	UOSInt i = varList->GetCount();
 	Text::String *var;
 	while (i-- > 0)

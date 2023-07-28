@@ -9,7 +9,6 @@ Net::SNS::SNSInstagram::SNSInstagram(NotNullPtr<Net::SocketFactory> sockf, Net::
 	this->channelId = Text::String::New(channelId);
 	this->chDesc = 0;
 	this->chError = false;
-	NEW_CLASS(this->itemMap, Data::FastStringMap<SNSItem*>());
 
 	SNSItem *snsItem;
 	Net::WebSite::WebSiteInstagramControl::ItemData *item;
@@ -94,7 +93,7 @@ Net::SNS::SNSInstagram::SNSInstagram(NotNullPtr<Net::SocketFactory> sockf, Net::
 		NotNullPtr<Text::String> s = Text::String::New(sb.ToString(), sb.GetLength());
 		snsItem = CreateItem(item->shortCode, item->recTime, 0, item->message, s.Ptr(), item->imgURL, item->videoURL);
 		s->Release();
-		this->itemMap->PutNN(item->shortCode, snsItem);
+		this->itemMap.PutNN(item->shortCode, snsItem);
 	}
 	this->ctrl->FreeItems(&itemList);
 }
@@ -105,12 +104,11 @@ Net::SNS::SNSInstagram::~SNSInstagram()
 	DEL_CLASS(this->ctrl);
 	this->chName->Release();
 	SDEL_STRING(this->chDesc);
-	i = this->itemMap->GetCount();
+	i = this->itemMap.GetCount();
 	while (i-- > 0)
 	{
-		FreeItem(this->itemMap->GetItem(i));
+		FreeItem(this->itemMap.GetItem(i));
 	}
-	DEL_CLASS(this->itemMap);
 }
 
 Bool Net::SNS::SNSInstagram::IsError()
@@ -140,7 +138,7 @@ UTF8Char *Net::SNS::SNSInstagram::GetDirName(UTF8Char *dirName)
 	return dirName;
 }
 
-UOSInt Net::SNS::SNSInstagram::GetCurrItems(Data::ArrayList<SNSItem*> *itemList)
+UOSInt Net::SNS::SNSInstagram::GetCurrItems(NotNullPtr<Data::ArrayList<SNSItem*>> itemList)
 {
 	UOSInt initCnt = itemList->GetCount();
 	itemList->AddAll(this->itemMap);
@@ -166,11 +164,11 @@ Bool Net::SNS::SNSInstagram::Reload()
 	Data::ArrayListString idList;
 	Bool changed = false;
 	UOSInt i = 0;
-	UOSInt j = this->itemMap->GetCount();
+	UOSInt j = this->itemMap.GetCount();
 	idList.EnsureCapacity(j);
 	while (i < j)
 	{
-		idList.Add(this->itemMap->GetKey(i));
+		idList.Add(this->itemMap.GetKey(i));
 		i++;
 	}
 
@@ -247,7 +245,7 @@ Bool Net::SNS::SNSInstagram::Reload()
 				NotNullPtr<Text::String> s = Text::String::New(sb.ToString(), sb.GetLength());
 				snsItem = CreateItem(item->shortCode, item->recTime, 0, item->message, s.Ptr(), item->imgURL, item->videoURL);
 				s->Release();
-				this->itemMap->PutNN(item->shortCode, snsItem);
+				this->itemMap.PutNN(item->shortCode, snsItem);
 				changed = true;
 			}
 		}
@@ -256,7 +254,7 @@ Bool Net::SNS::SNSInstagram::Reload()
 		i = idList.GetCount();
 		while (i-- > 0)
 		{
-			snsItem = this->itemMap->Remove(idList.GetItem(i));
+			snsItem = this->itemMap.Remove(idList.GetItem(i));
 			FreeItem(snsItem);
 			changed = true;
 		}

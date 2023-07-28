@@ -24,7 +24,7 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::IndexFunc(Net::WebServer::IWe
 		sb.AppendTS(lastScanTime);
 		sb.AppendC(UTF8STRC("<br/>\r\n"));
 		Sync::MutexUsage mutUsage;
-		Data::ArrayList<Net::WiFiLogFile::LogFileEntry*> *logList = me->wifiCapture->GetLogList(&mutUsage);
+		NotNullPtr<Data::ArrayList<Net::WiFiLogFile::LogFileEntry*>> logList = me->wifiCapture->GetLogList(&mutUsage);
 		sb.AppendC(UTF8STRC("<a href=\"wifidet.html\">"));
 		sb.AppendC(UTF8STRC("Wifi Record count = "));
 		sb.AppendUOSInt(logList->GetCount());
@@ -113,7 +113,7 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::BTCurrentFunc(Net::WebServer:
 	sb.AppendC(UTF8STRC("<meta http-equiv=\"refresh\" content=\"10\">\r\n"));
 	sb.AppendC(UTF8STRC("</head><body>\r\n"));
 	sb.AppendC(UTF8STRC("Current Bluetooth:<br/>\r\n"));
-	AppendBTTable(&sb, req, &entryList, true);
+	AppendBTTable(&sb, req, entryList, true);
 	mutUsage.EndUse();
 	sb.AppendC(UTF8STRC("</body><html>"));
 
@@ -146,7 +146,7 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::BTDetailFunc(Net::WebServer::
 	sb.AppendC(UTF8STRC("All Bluetooth Count = "));
 	sb.AppendUOSInt(entryList.GetCount());
 	sb.AppendC(UTF8STRC("<br/>\r\n"));
-	AppendBTTable(&sb, req, &entryList, false);
+	AppendBTTable(&sb, req, entryList, false);
 	mutUsage.EndUse();
 	sb.AppendC(UTF8STRC("</body><html>"));
 
@@ -168,7 +168,7 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::BTDetailPubFunc(Net::WebServe
 		return true;
 	}
 	Text::StringBuilderUTF8 sb;
-	const Data::ReadingList<IO::BTScanLog::ScanRecord3*> *entryList;
+	NotNullPtr<const Data::ReadingList<IO::BTScanLog::ScanRecord3*>> entryList;
 
 	Sync::MutexUsage mutUsage;
 	entryList = me->btCapture->GetPublicList(&mutUsage);
@@ -199,7 +199,7 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::WiFiCurrentFunc(Net::WebServe
 		return true;
 	}
 	Text::StringBuilderUTF8 sb;
-	Data::ArrayList<Net::WiFiLogFile::LogFileEntry*> *entryList;
+	NotNullPtr<Data::ArrayList<Net::WiFiLogFile::LogFileEntry*>> entryList;
 
 	Sync::MutexUsage mutUsage;
 	entryList = me->wifiCapture->GetLogList(&mutUsage);
@@ -233,7 +233,7 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::WiFiDetailFunc(Net::WebServer
 		return true;
 	}
 	Text::StringBuilderUTF8 sb;
-	Data::ArrayList<Net::WiFiLogFile::LogFileEntry*> *entryList;
+	NotNullPtr<Data::ArrayList<Net::WiFiLogFile::LogFileEntry*>> entryList;
 
 	Sync::MutexUsage mutUsage;
 	entryList = me->wifiCapture->GetLogList(&mutUsage);
@@ -269,7 +269,7 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::WiFiDownloadFunc(Net::WebServ
 	UOSInt j;
 	UOSInt k;
 	Text::StringBuilderUTF8 sb;
-	Data::ArrayList<Net::WiFiLogFile::LogFileEntry*> *entryList;
+	NotNullPtr<Data::ArrayList<Net::WiFiLogFile::LogFileEntry*>> entryList;
 	Net::WiFiLogFile::LogFileEntry *entry;
 	Sync::MutexUsage mutUsage;
 	entryList = me->wifiCapture->GetLogList(&mutUsage);
@@ -340,7 +340,7 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::WiFiDownloadFunc(Net::WebServ
 	return true;
 }
 
-void Net::WebServer::CapturerWebHandler::AppendWiFiTable(Text::StringBuilderUTF8 *sb, Net::WebServer::IWebRequest *req, Data::ArrayList<Net::WiFiLogFile::LogFileEntry*> *entryList, const Data::Timestamp &scanTime)
+void Net::WebServer::CapturerWebHandler::AppendWiFiTable(Text::StringBuilderUTF8 *sb, Net::WebServer::IWebRequest *req, NotNullPtr<Data::ArrayList<Net::WiFiLogFile::LogFileEntry*>> entryList, const Data::Timestamp &scanTime)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -367,7 +367,7 @@ void Net::WebServer::CapturerWebHandler::AppendWiFiTable(Text::StringBuilderUTF8
 	if (sort == 1)
 	{
 		sortList.AddAll(entryList);
-		entryList = &sortList;
+		entryList = sortList;
 		ArtificialQuickSort_SortCmp((void**)sortList.GetArray(&j), WiFiLogRSSICompare, 0, (OSInt)sortList.GetCount() - 1);
 	}
 
@@ -404,7 +404,7 @@ void Net::WebServer::CapturerWebHandler::AppendWiFiTable(Text::StringBuilderUTF8
 	sb->AppendC(UTF8STRC("</table>"));
 }
 
-void Net::WebServer::CapturerWebHandler::AppendBTTable(Text::StringBuilderUTF8 *sb, Net::WebServer::IWebRequest *req, const Data::ReadingList<IO::BTScanLog::ScanRecord3*> *entryList, Bool inRangeOnly)
+void Net::WebServer::CapturerWebHandler::AppendBTTable(Text::StringBuilderUTF8 *sb, Net::WebServer::IWebRequest *req, NotNullPtr<const Data::ReadingList<IO::BTScanLog::ScanRecord3*>> entryList, Bool inRangeOnly)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -435,7 +435,7 @@ void Net::WebServer::CapturerWebHandler::AppendBTTable(Text::StringBuilderUTF8 *
 	if (sort == 1)
 	{
 		sortList.AddAll(entryList);
-		entryList = &sortList;
+		entryList = sortList;
 		ArtificialQuickSort_SortCmp((void**)sortList.GetArray(&j), BTLogRSSICompare, 0, (OSInt)sortList.GetCount() - 1);
 	}
 

@@ -35,7 +35,7 @@ IO::PackageFile::PackageFile(const PackageFile *pkg) : IO::ParsedObject(pkg->Get
 
 IO::PackageFile::PackageFile(NotNullPtr<Text::String> fileName) : IO::ParsedObject(fileName)
 {
-	NEW_CLASS(this->items, Data::ArrayList<PackFileItem*>());
+	NEW_CLASSNN(this->items, Data::ArrayList<PackFileItem*>());
 	if (IO::Path::PATH_SEPERATOR == '\\')
 	{
 		NEW_CLASS(this->namedItems, Data::ICaseStringMap<PackFileItem*>());
@@ -48,7 +48,7 @@ IO::PackageFile::PackageFile(NotNullPtr<Text::String> fileName) : IO::ParsedObje
 
 IO::PackageFile::PackageFile(Text::CString fileName) : IO::ParsedObject(fileName)
 {
-	NEW_CLASS(this->items, Data::ArrayList<PackFileItem*>());
+	NEW_CLASSNN(this->items, Data::ArrayList<PackFileItem*>());
 	if (IO::Path::PATH_SEPERATOR == '\\')
 	{
 		NEW_CLASS(this->namedItems, Data::ICaseStringMap<PackFileItem*>());
@@ -82,7 +82,7 @@ IO::PackageFile::~PackageFile()
 			MemFree(item);
 		}
 	}
-	DEL_CLASS(this->items);
+	this->items.Delete();
 	DEL_CLASS(this->namedItems);
 	i = this->infoMap.GetCount();
 	while (i-- > 0)

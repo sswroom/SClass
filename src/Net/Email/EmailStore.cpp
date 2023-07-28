@@ -23,6 +23,6 @@ Net::Email::EmailStore::~EmailStore()
 UOSInt Net::Email::EmailStore::GetAllEmails(Data::ArrayList<EmailInfo*> *emailList)
 {
 	Sync::MutexUsage mutUsage(&this->mailMut);
-	emailList->AddAll(&this->mailList);
+	emailList->AddAll(this->mailList);
 	return this->mailList.GetCount();
 }

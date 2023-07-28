@@ -369,7 +369,7 @@ void UI::GUIForm::UpdateHAcc()
 		ACCEL *accels;
 		Data::ArrayList<UI::GUIMenu::ShortcutKey*> keys;
 		UI::GUIMenu::ShortcutKey *key;
-		this->menu->GetAllKeys(&keys);
+		this->menu->GetAllKeys(keys);
 		i = keys.GetCount();
 		if (i > 0)
 		{

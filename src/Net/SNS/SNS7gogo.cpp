@@ -93,10 +93,10 @@ UTF8Char *Net::SNS::SNS7gogo::GetDirName(UTF8Char *dirName)
 	return dirName;
 }
 
-UOSInt Net::SNS::SNS7gogo::GetCurrItems(Data::ArrayList<SNSItem*> *itemList)
+UOSInt Net::SNS::SNS7gogo::GetCurrItems(NotNullPtr<Data::ArrayList<SNSItem*>> itemList)
 {
 	UOSInt initCnt = itemList->GetCount();
-	itemList->AddAll(&this->itemMap);
+	itemList->AddAll(this->itemMap);
 	return itemList->GetCount() - initCnt;
 }
 

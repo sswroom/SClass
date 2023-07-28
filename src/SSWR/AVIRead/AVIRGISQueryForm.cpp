@@ -59,7 +59,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseUp(void *userObj, Math::C
 					}
 				}
 
-				me->navi->SetSelectedVectors(&me->queryVecList);
+				me->navi->SetSelectedVectors(me->queryVecList);
 				me->layerNames = false;
 				return false;
 			}
@@ -128,7 +128,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseUp(void *userObj, Math::C
 			me->SetQueryItem(0);
 			me->lyr->ReleaseNameArr(nameArr);
 			me->lyr->FreeObjects(&objList);
-			me->navi->SetSelectedVectors(&me->queryVecList);
+			me->navi->SetSelectedVectors(me->queryVecList);
 		}
 		me->lyr->EndGetObject(sess);
 	}

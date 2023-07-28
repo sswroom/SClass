@@ -443,7 +443,7 @@ IO::ParsedObject *Parser::FileParser::ZIPParser::ParseFileHdr(NotNullPtr<IO::Str
 				break;
 			}
 		}
-		const Data::ArrayList<ZIPInfoEntry*> *zipInfoList = zipInfos.GetValues();
+		NotNullPtr<const Data::ArrayList<ZIPInfoEntry*>> zipInfoList = zipInfos.GetValues();
 		ui = zipInfoList->GetCount();
 		while (ui-- > 0)
 		{

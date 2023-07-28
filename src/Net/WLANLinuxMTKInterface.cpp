@@ -26,7 +26,7 @@ typedef struct
 	Text::String *devSN;
 	UTF8Char country[3];
 	UInt8 ouis[WLAN_OUI_CNT][3];
-	Data::ArrayList<Net::WirelessLANIE*> *ieList;
+	Data::ArrayList<Net::WirelessLANIE*> ieList;
 } BSSEntry;
 
 void Net::WLANLinuxMTKInterface::Reopen()
@@ -107,7 +107,6 @@ UOSInt Net::WLANLinuxMTKInterface::GetBSSList(Data::ArrayList<Net::WirelessLAN::
 	int ret;
 	UInt8 *buff;
 	UOSInt buffSize = IW_SCAN_MAX_DATA;
-	NEW_CLASS(bss.ieList, Data::ArrayList<Net::WirelessLANIE*>());
 	this->name->ConcatTo((UTF8Char*)wrq.ifr_ifrn.ifrn_name);
 
 	buff = MemAlloc(UInt8, buffSize);
@@ -390,6 +389,5 @@ UOSInt Net::WLANLinuxMTKInterface::GetBSSList(Data::ArrayList<Net::WirelessLAN::
 		printf("get_site_survey return %d, errno = %d, len = %d\r\n", ret, errno, wrq.u.data.length);
 	}
 	MemFree(buff);
-	DEL_CLASS(bss.ieList);
 	return 0;
 }
