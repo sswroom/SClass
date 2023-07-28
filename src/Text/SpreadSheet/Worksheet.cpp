@@ -10,7 +10,7 @@ using namespace Text::SpreadSheet;
 Text::SpreadSheet::Worksheet::RowData *Text::SpreadSheet::Worksheet::CreateRow(UOSInt row)
 {
 	RowData *rowData;
-	if (row >= 65536)
+	if (row >= 1048576)
 		return 0;
 	while (row >= this->rows->GetCount())
 	{
@@ -43,6 +43,8 @@ Text::SpreadSheet::Worksheet::CellData *Text::SpreadSheet::Worksheet::GetCellDat
 	while (true)
 	{
 		rowData = CreateRow(row);
+		if (rowData == 0)
+			return 0;
 		while (col >= rowData->cells->GetCount())
 		{
 			rowData->cells->Add(0);

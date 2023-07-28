@@ -81,7 +81,7 @@ IO::ParsedObject *Parser::FileParser::X509Parser::ParseFileHdr(NotNullPtr<IO::St
 	}
 
 	fd->GetRealData(0, (UOSInt)len, BYTEARR(buff));
-	return ParseBuff(BYTEARR(buff), fd->GetFullFileName());
+	return ParseBuff(BYTEARR(buff).WithSize(len), fd->GetFullFileName());
 }
 
 Crypto::Cert::X509File *Parser::FileParser::X509Parser::ParseBuff(Data::ByteArrayR buff, NotNullPtr<Text::String> fileName)

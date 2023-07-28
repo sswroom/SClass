@@ -320,6 +320,9 @@ UTF32Char Text::UTF8Reader::Read()
 
 Bool Text::UTF8Reader::ReadLine(NotNullPtr<Text::StringBuilderUTF8> sb, UOSInt maxCharCnt)
 {
+#if defined(VERBOSE)
+	printf("UTF8Reader.RLS: ofst = %d, size = %d\r\n", (UInt32)this->currOfst, (UInt32)this->buffSize);
+#endif
 	if (this->currOfst >= this->buffSize)
 	{
 		this->FillBuffer();
