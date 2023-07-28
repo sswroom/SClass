@@ -56,8 +56,8 @@ IO::ParsedObject *Parser::ObjParser::FileGDB2Parser::ParseObject(IO::ParsedObjec
 		SDEL_CLASS(relObj);
 		return 0;
 	}
-	Map::ESRI::FileGDBDir *fgdb = Map::ESRI::FileGDBDir::OpenDir(pkg, this->prjParser);
-	if (fgdb == 0)
+	NotNullPtr<Map::ESRI::FileGDBDir> fgdb;
+	if (!fgdb.Set(Map::ESRI::FileGDBDir::OpenDir(pkg, this->prjParser)))
 	{
 		SDEL_CLASS(relObj);
 		return 0;
@@ -111,5 +111,5 @@ IO::ParsedObject *Parser::ObjParser::FileGDB2Parser::ParseObject(IO::ParsedObjec
 		}
 	}
 	SDEL_CLASS(relObj);
-	return fgdb;
+	return fgdb.Ptr();
 }

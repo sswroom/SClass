@@ -369,7 +369,7 @@ void Net::TCPClientMgr::CloseAll()
 	mutUsage.EndUse();
 }
 
-void Net::TCPClientMgr::UseGetClient(Sync::MutexUsage *mutUsage)
+void Net::TCPClientMgr::UseGetClient(NotNullPtr<Sync::MutexUsage> mutUsage)
 {
 	mutUsage->ReplaceMutex(this->cliMut);
 }

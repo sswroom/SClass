@@ -61,7 +61,7 @@
 	
 }*/
 
-void UI::GUIVideoBoxDD::LockUpdateSize(Sync::MutexUsage *mutUsage)
+void UI::GUIVideoBoxDD::LockUpdateSize(NotNullPtr<Sync::MutexUsage> mutUsage)
 {
 	mutUsage->ReplaceMutex(this->surfaceMut);
 }

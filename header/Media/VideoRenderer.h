@@ -222,7 +222,7 @@ namespace Media
 		void UpdateOutputSize(Math::Size2D<UOSInt> outputSize);
 		void UpdateDispInfo(Math::Size2D<UOSInt> outputSize, UInt32 bpp, Media::PixelFormat pf);
 
-		virtual void LockUpdateSize(Sync::MutexUsage *mutUsage) = 0;
+		virtual void LockUpdateSize(NotNullPtr<Sync::MutexUsage> mutUsage) = 0;
 		virtual void DrawFromSurface(Media::MonitorSurface *surface, Math::Coord2D<OSInt> destTL, Math::Size2D<UOSInt> buffSize, Bool clearScn) = 0;
 	public:
 		VideoRenderer(Media::ColorManagerSess *colorSess, Media::MonitorSurfaceMgr *surfaceMgr, UOSInt buffCnt, UOSInt threadCnt);

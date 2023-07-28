@@ -28,7 +28,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookList(Net::WebServe
 		Text::StringBuilderUTF8 sb;
 		IO::ConfigFile *lang = me->env->LangGet(req);
 		Sync::RWMutexUsage mutUsage;
-		cate = me->env->CateGet(&mutUsage, id);
+		cate = me->env->CateGet(mutUsage, id);
 		if (cate == 0)
 		{
 			mutUsage.EndUse();
@@ -63,7 +63,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookList(Net::WebServe
 		writer.WriteLineC(UTF8STRC("<td>Publish Date</td>"));
 		writer.WriteLineC(UTF8STRC("</tr>"));
 
-		me->env->BookGetList(&mutUsage, &sortBookList);
+		me->env->BookGetList(mutUsage, &sortBookList);
 		Data::Sort::ArtificialQuickSort::Sort(&sortBookList, me);
 
 		i = 0;
@@ -131,7 +131,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookList(Net::WebServe
 			writer.WriteStrC(UTF8STRC(">"));
 			writer.WriteStr(LangGetValue(lang, UTF8STRC("New Book")));
 			writer.WriteStrC(UTF8STRC("</a><br/>"));
-			BookInfo *book = me->env->BookGetSelected(&mutUsage);
+			BookInfo *book = me->env->BookGetSelected(mutUsage);
 			if (book)
 			{
 				writer.WriteStrC(UTF8STRC("Selected book: "));
@@ -199,14 +199,14 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBook(Net::WebServer::I
 		IO::ConfigFile *lang = me->env->LangGet(req);
 		Text::StringBuilderUTF8 sb;
 		Sync::RWMutexUsage mutUsage;
-		cate = me->env->CateGet(&mutUsage, cateId);
+		cate = me->env->CateGet(mutUsage, cateId);
 		if (cate == 0)
 		{
 			mutUsage.EndUse();
 			resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
 			return true;
 		}
-		book = me->env->BookGet(&mutUsage, id);
+		book = me->env->BookGet(mutUsage, id);
 		if (book == 0)
 		{
 			mutUsage.EndUse();
@@ -236,10 +236,10 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBook(Net::WebServer::I
 
 		if (book->userfileId != 0)
 		{
-			UserFileInfo *userFile = me->env->UserfileGet(&mutUsage, book->userfileId);
+			UserFileInfo *userFile = me->env->UserfileGet(mutUsage, book->userfileId);
 			if (userFile)
 			{
-				SpeciesInfo *sp = me->env->SpeciesGet(&mutUsage, userFile->speciesId);
+				SpeciesInfo *sp = me->env->SpeciesGet(mutUsage, userFile->speciesId);
 				if (sp)
 				{
 					writer.WriteStrC(UTF8STRC("<img src="));
@@ -336,7 +336,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBook(Net::WebServer::I
 		while (i < j)
 		{
 			bookSp = book->species.GetItem(i);
-			species = me->env->SpeciesGet(&mutUsage, bookSp->speciesId);
+			species = me->env->SpeciesGet(mutUsage, bookSp->speciesId);
 			if (species)
 			{
 				speciesMap.PutNN(species->sciName, species);
@@ -389,7 +389,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBook(Net::WebServer::I
 			i++;
 		}
 		writer.WriteLineC(UTF8STRC("<hr/>"));
-		me->WriteSpeciesTable(&mutUsage, &writer, tempList, env.scnWidth, cateId, false, (env.user && env.user->userType == 0));
+		me->WriteSpeciesTable(mutUsage, &writer, tempList, env.scnWidth, cateId, false, (env.user && env.user->userType == 0));
 		writer.WriteLineC(UTF8STRC("<hr/>"));
 
 		writer.WriteStrC(UTF8STRC("<a href=\"booklist.html?id="));
@@ -423,7 +423,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookView(Net::WebServe
 		UTF8Char *sptr;
 		BookInfo *book;
 		Sync::RWMutexUsage mutUsage;
-		book = me->env->BookGet(&mutUsage, id);
+		book = me->env->BookGet(mutUsage, id);
 		if (env.user == 0 || env.user->userType != 0)
 		{
 			mutUsage.EndUse();
@@ -490,8 +490,8 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookPhoto(Net::WebServ
 		BookInfo *book;
 		CategoryInfo *cate;
 		Sync::RWMutexUsage mutUsage;
-		book = me->env->BookGet(&mutUsage, id);
-		cate = me->env->CateGet(&mutUsage, cateId);
+		book = me->env->BookGet(mutUsage, id);
+		cate = me->env->CateGet(mutUsage, cateId);
 		if (env.user == 0 || env.user->userType != 0)
 		{
 			mutUsage.EndUse();
@@ -508,7 +508,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookPhoto(Net::WebServ
 		Int32 fileId;
 		if (req->GetQueryValueI32(CSTR("fileId"), &fileId))
 		{
-			if (me->env->BookSetPhoto(&mutUsage, id, fileId))
+			if (me->env->BookSetPhoto(mutUsage, id, fileId))
 			{
 				sb.AppendC(UTF8STRC("book.html?id="));
 				sb.AppendI32(book->id);
@@ -534,10 +534,10 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookPhoto(Net::WebServ
 
 		if (book->userfileId != 0)
 		{
-			UserFileInfo *userFile = me->env->UserfileGet(&mutUsage, book->userfileId);
+			UserFileInfo *userFile = me->env->UserfileGet(mutUsage, book->userfileId);
 			if (userFile)
 			{
-				SpeciesInfo *sp = me->env->SpeciesGet(&mutUsage, userFile->speciesId);
+				SpeciesInfo *sp = me->env->SpeciesGet(mutUsage, userFile->speciesId);
 				if (sp)
 				{
 					writer.WriteStrC(UTF8STRC("<img src="));
@@ -615,7 +615,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookPhoto(Net::WebServ
 			currColumn = 0;
 			while (i < j)
 			{
-				userFile = me->env->UserfileGet(&mutUsage, env.pickObjs->GetItem(i));
+				userFile = me->env->UserfileGet(mutUsage, env.pickObjs->GetItem(i));
 				if (currColumn == 0)
 				{
 					writer.WriteLineC(UTF8STRC("<tr>"));
@@ -636,7 +636,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookPhoto(Net::WebServ
 				writer.WriteLineC(sb.ToString(), sb.GetLength());
 
 				writer.WriteStrC(UTF8STRC("<img src="));
-				SpeciesInfo *sp = me->env->SpeciesGet(&mutUsage, userFile->speciesId);
+				SpeciesInfo *sp = me->env->SpeciesGet(mutUsage, userFile->speciesId);
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("photo.html?id="));
 				sb.AppendI32(userFile->speciesId);
@@ -716,7 +716,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookAdd(Net::WebServer
 		UTF8Char *sptr;
 		CategoryInfo *cate;
 		Sync::RWMutexUsage mutUsage;
-		cate = me->env->CateGet(&mutUsage, cateId);
+		cate = me->env->CateGet(mutUsage, cateId);
 		if (env.user == 0 || env.user->userType != 0)
 		{
 			mutUsage.EndUse();
@@ -766,7 +766,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookAdd(Net::WebServer
 			}
 			else
 			{
-				if (me->env->BookAdd(&mutUsage, title, author, press, ts, url))
+				if (me->env->BookAdd(mutUsage, title, author, press, ts, url))
 				{
 					sptr = Text::StrConcatC(sbuff, UTF8STRC("booklist.html?id="));
 					sptr = Text::StrInt32(sptr, cate->cateId);

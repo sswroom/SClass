@@ -30,7 +30,7 @@ UInt32 __stdcall Net::TCPClientMgr::ClientThread(void *o)
 	Sync::Event *cliEvt = (Sync::Event*)me->clsData;
 	OSInt i;
 	Net::TCPClientMgr::TCPClientStatus *cliStat;
-	Sync::ThreadUtil::SetName((const UTF8Char*)"TCPCliMgr");
+	Sync::ThreadUtil::SetName(CSTR("TCPCliMgr"));
 	me->clientThreadRunning = true;
 	while (!me->toStop)
 	{
@@ -60,7 +60,7 @@ UInt32 __stdcall Net::TCPClientMgr::WorkerThread(void *o)
 	OSInt i;
 	while (true)
 	{
-		OSInt readSize = tdata->cliStat->cli->Read(tdata->cliStat->buff, TCP_BUFF_SIZE);
+		OSInt readSize = tdata->cliStat->cli->Read(Data::ByteArray(tdata->cliStat->buff, TCP_BUFF_SIZE));
 		if (readSize <= 0)
 		{
 			Sync::MutexUsage mutUsage(tdata->me->cliMut);
@@ -77,7 +77,7 @@ UInt32 __stdcall Net::TCPClientMgr::WorkerThread(void *o)
 		{
 			tdata->cliStat->lastDataTime = Data::Timestamp::UtcNow();
 			tdata->me->evtHdlr(tdata->cliStat->cli, tdata->me->userObj, tdata->cliStat->cliData, Net::TCPClientMgr::TCP_EVENT_HASDATA);
-			tdata->me->dataHdlr(tdata->cliStat->cli, tdata->me->userObj, tdata->cliStat->cliData, tdata->cliStat->buff, readSize);
+			tdata->me->dataHdlr(tdata->cliStat->cli, tdata->me->userObj, tdata->cliStat->cliData, Data::ByteArrayR(tdata->cliStat->buff, readSize));
 		}
 	}
 	MemFree(tdata);
@@ -123,7 +123,7 @@ Net::TCPClientMgr::~TCPClientMgr()
 	DEL_CLASS(cliEvt);
 }
 
-void Net::TCPClientMgr::AddClient(TCPClient *cli, void *cliData)
+void Net::TCPClientMgr::AddClient(NotNullPtr<TCPClient> cli, void *cliData)
 {
 	cli->SetNoDelay(true);
 	cli->SetTimeout(this->timeout);
@@ -186,7 +186,7 @@ void Net::TCPClientMgr::CloseAll()
 	mutUsage.EndUse();
 }
 
-void Net::TCPClientMgr::UseGetClient(Sync::MutexUsage *mutUsage)
+void Net::TCPClientMgr::UseGetClient(NotNullPtr<Sync::MutexUsage> mutUsage)
 {
 	mutUsage->ReplaceMutex(this->cliMut);
 }
@@ -213,7 +213,7 @@ Net::TCPClient *Net::TCPClientMgr::GetClient(UOSInt index, void **cliData)
 	if (cliStat)
 	{
 		*cliData = cliStat->cliData;
-		return cliStat->cli;
+		return cliStat->cli.Ptr();
 	}
 	return 0;
 }

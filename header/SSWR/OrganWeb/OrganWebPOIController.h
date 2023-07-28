@@ -14,8 +14,8 @@ namespace SSWR
 			static Bool __stdcall SvcSpeciesPOI(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq, Net::WebServer::WebController *parent);
 			static Bool __stdcall SvcDayPOI(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq, Net::WebServer::WebController *parent);
 
-			void AddGroupPOI(Sync::RWMutexUsage *mutUsage, Text::StringBuilderUTF8 *sb, GroupInfo *group, Int32 userId);
-			void AddSpeciesPOI(Sync::RWMutexUsage *mutUsage, Text::StringBuilderUTF8 *sb, SpeciesInfo *species, Int32 userId, Bool publicGroup);
+			void AddGroupPOI(NotNullPtr<Sync::RWMutexUsage> mutUsage, Text::StringBuilderUTF8 *sb, GroupInfo *group, Int32 userId);
+			void AddSpeciesPOI(NotNullPtr<Sync::RWMutexUsage> mutUsage, Text::StringBuilderUTF8 *sb, SpeciesInfo *species, Int32 userId, Bool publicGroup);
 			void AddUserfilePOI(Text::StringBuilderUTF8 *sb, SpeciesInfo *species, UserFileInfo *file);
 
 		public:

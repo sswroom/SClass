@@ -309,7 +309,7 @@ Bool IO::Device::SIM7000::NetIPSend(UOSInt index, const UInt8 *buff, UOSInt buff
 	Text::StringBuilderUTF8 sb;
 	Sync::MutexUsage mutUsage;
 	Text::String *cmdRes;
-	if (!this->channel->UseCmd(&mutUsage))
+	if (!this->channel->UseCmd(mutUsage))
 		return false;
 	sb.AppendC(UTF8STRC("AT+CIPSEND="));
 	sb.AppendUOSInt(index);

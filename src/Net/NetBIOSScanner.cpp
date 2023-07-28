@@ -115,8 +115,8 @@ void Net::NetBIOSScanner::SetAnswerHandler(AnswerUpdated hdlr, void *userObj)
 	this->hdlr = hdlr;
 }
 
-const Data::ReadingList<Net::NetBIOSScanner::NameAnswer*> *Net::NetBIOSScanner::GetAnswers(Sync::MutexUsage *mutUsage) const
+NotNullPtr<const Data::ReadingList<Net::NetBIOSScanner::NameAnswer*>> Net::NetBIOSScanner::GetAnswers(NotNullPtr<Sync::MutexUsage> mutUsage) const
 {
 	mutUsage->ReplaceMutex(this->ansMut);
-	return &this->answers;
+	return this->answers;
 }

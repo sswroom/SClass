@@ -51,7 +51,7 @@ namespace Map
 			CacheStatus status;
 			Sync::Mutex *ioMut;
 
-			IO::SeekableStream *GetTileData(Int32 lev, Int32 xTile, Int32 yTile, Sync::MutexUsage *mutUsage);
+			IO::SeekableStream *GetTileData(Int32 lev, Int32 xTile, Int32 yTile, NotNullPtr<Sync::MutexUsage> mutUsage);
 		public:
 			OSMCacheHandler(Text::CString url, Text::CString cacheDir, Int32 maxLevel, NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl);
 			virtual ~OSMCacheHandler();

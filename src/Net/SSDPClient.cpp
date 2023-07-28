@@ -161,7 +161,7 @@ Bool Net::SSDPClient::Scan()
 	return this->udp->SendTo(&addr, 1900, sb.ToString(), sb.GetLength());
 }
 
-const Data::ReadingList<Net::SSDPClient::SSDPDevice*> *Net::SSDPClient::GetDevices(Sync::MutexUsage *mutUsage) const
+const Data::ReadingList<Net::SSDPClient::SSDPDevice*> *Net::SSDPClient::GetDevices(NotNullPtr<Sync::MutexUsage> mutUsage) const
 {
 	mutUsage->ReplaceMutex(this->mut);
 	return &this->devMap;

@@ -34,7 +34,7 @@ namespace Net
 		void Stop();
 
 		void StoreStatus();
-		NotNullPtr<Data::ArrayList<Net::WiFiLogFile::LogFileEntry*>> GetLogList(Sync::MutexUsage *mutUsage);
+		NotNullPtr<Data::ArrayList<Net::WiFiLogFile::LogFileEntry*>> GetLogList(NotNullPtr<Sync::MutexUsage> mutUsage);
 		void SetUpdateHandler(UpdateHandler hdlr, void *hdlrObj);
 	};
 }

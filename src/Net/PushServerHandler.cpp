@@ -145,7 +145,7 @@ Bool __stdcall Net::PushServerHandler::UsersHandler(Net::WebServer::IWebRequest 
 		Sync::MutexUsage mutUsage;
 		Data::ArrayListNN<Text::String> userList;
 		UOSInt i = 0;
-		UOSInt j = me->mgr->GetUsers(&userList, &mutUsage);
+		UOSInt j = me->mgr->GetUsers(&userList, mutUsage);
 		while (i < j)
 		{
 			json.ArrayAddStr(userList.GetItem(i));
@@ -180,7 +180,7 @@ Bool __stdcall Net::PushServerHandler::ListDevicesHandler(Net::WebServer::IWebRe
 		UTF8Char sbuff[128];
 		UTF8Char *sptr;
 		Sync::MutexUsage mutUsage;
-		const Data::ReadingList<Net::PushManager::DeviceInfo2*> *devList = me->mgr->GetDevices(&mutUsage);
+		const Data::ReadingList<Net::PushManager::DeviceInfo2*> *devList = me->mgr->GetDevices(mutUsage);
 		Net::PushManager::DeviceInfo2 *dev;
 		UOSInt i = 0;
 		UOSInt j = devList->GetCount();

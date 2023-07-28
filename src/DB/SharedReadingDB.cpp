@@ -5,10 +5,10 @@
 
 DB::SharedReadingDB::~SharedReadingDB()
 {
-	DEL_CLASS(this->db);
+	this->db.Delete();
 }
 
-DB::SharedReadingDB::SharedReadingDB(DB::ReadingDB *db)
+DB::SharedReadingDB::SharedReadingDB(NotNullPtr<DB::ReadingDB> db)
 {
 	this->db = db;
 	this->useCnt = 1;
@@ -38,7 +38,7 @@ void DB::SharedReadingDB::UnuseObject()
 	}
 }
 
-DB::ReadingDB *DB::SharedReadingDB::UseDB(Sync::MutexUsage *mutUsage)
+NotNullPtr<DB::ReadingDB> DB::SharedReadingDB::UseDB(NotNullPtr<Sync::MutexUsage> mutUsage)
 {
 	mutUsage->ReplaceMutex(this->mutDB);
 	return this->db;

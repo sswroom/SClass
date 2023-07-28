@@ -45,7 +45,7 @@ namespace IO
 		UOSInt SendATCommands(Data::ArrayList<Text::String *> *retArr, const UTF8Char *atCmd, UOSInt atCmdLen, const UTF8Char *atCmdSub, Data::Duration timeout);
 		UOSInt SendDialCommand(Data::ArrayList<Text::String *> *retArr, const UTF8Char *atCmd, UOSInt atCmdLen, Data::Duration timeout);
 
-		Bool UseCmd(Sync::MutexUsage *mutUsage);
+		Bool UseCmd(NotNullPtr<Sync::MutexUsage> mutUsage);
 		UOSInt CmdSend(const UInt8 *data, UOSInt dataSize);
 		Text::String *CmdGetNextResult(Data::Duration timeout);
 

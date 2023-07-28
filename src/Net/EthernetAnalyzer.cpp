@@ -219,7 +219,7 @@ UInt64 Net::EthernetAnalyzer::GetPacketTotalSize() const
 	return this->packetTotalSize;
 }
 
-void Net::EthernetAnalyzer::UseIPTran(Sync::MutexUsage *mutUsage)
+void Net::EthernetAnalyzer::UseIPTran(NotNullPtr<Sync::MutexUsage> mutUsage)
 {
 	mutUsage->ReplaceMutex(this->ipTranMut);
 }
@@ -234,7 +234,7 @@ UOSInt Net::EthernetAnalyzer::IPTranGetCount() const
 	return this->ipTranMap.GetCount();
 }
 
-void Net::EthernetAnalyzer::UseMAC(Sync::MutexUsage *mutUsage)
+void Net::EthernetAnalyzer::UseMAC(NotNullPtr<Sync::MutexUsage> mutUsage)
 {
 	mutUsage->ReplaceMutex(this->macMut);
 }
@@ -244,7 +244,7 @@ const Data::ReadingList<Net::EthernetAnalyzer::MACStatus*> *Net::EthernetAnalyze
 	return &this->macMap;
 }
 
-void Net::EthernetAnalyzer::UseDNSCli(Sync::MutexUsage *mutUsage)
+void Net::EthernetAnalyzer::UseDNSCli(NotNullPtr<Sync::MutexUsage> mutUsage)
 {
 	mutUsage->ReplaceMutex(this->dnsCliInfoMut);
 }
@@ -383,7 +383,7 @@ UOSInt Net::EthernetAnalyzer::MDNSGetCount()
 	return this->mdnsList.GetCount();
 }
 
-void Net::EthernetAnalyzer::UseDHCP(Sync::MutexUsage *mutUsage)
+void Net::EthernetAnalyzer::UseDHCP(NotNullPtr<Sync::MutexUsage> mutUsage)
 {
 	mutUsage->ReplaceMutex(this->dhcpMut);
 }
@@ -393,7 +393,7 @@ const Data::ReadingList<Net::EthernetAnalyzer::DHCPInfo*> *Net::EthernetAnalyzer
 	return &this->dhcpMap;
 }
 
-void Net::EthernetAnalyzer::UseIPLog(Sync::MutexUsage *mutUsage)
+void Net::EthernetAnalyzer::UseIPLog(NotNullPtr<Sync::MutexUsage> mutUsage)
 {
 	mutUsage->ReplaceMutex(this->ipLogMut);
 }

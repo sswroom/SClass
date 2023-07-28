@@ -126,7 +126,7 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnPasteTableClicked(void 
 				if (me->core->FileAdd(id, webType, s))
 				{
 					Sync::MutexUsage mutUsage;
-					SSWR::DownloadMonitor::DownMonCore::FileInfo *file = me->core->FileGet(id, webType, &mutUsage);
+					SSWR::DownloadMonitor::DownMonCore::FileInfo *file = me->core->FileGet(id, webType, mutUsage);
 					if (file != 0)
 					{
 						sptr = Text::StrInt32(sbuff, file->id);
@@ -252,7 +252,7 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnPasteHTMLClicked(void *
 						if (me->core->FileAdd(id, webType, s))
 						{
 							Sync::MutexUsage mutUsage;
-							SSWR::DownloadMonitor::DownMonCore::FileInfo *file = me->core->FileGet(id, 3, &mutUsage);
+							SSWR::DownloadMonitor::DownMonCore::FileInfo *file = me->core->FileGet(id, 3, mutUsage);
 							if (file != 0)
 							{
 								sptr = Text::StrInt32(sbuff, file->id);
@@ -286,7 +286,7 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnCopyTableClicked(void *
 	{
 		Int32 id = (Int32)(OSInt)me->lvFiles->GetItem(i);
 		Sync::MutexUsage mutUsage;
-		SSWR::DownloadMonitor::DownMonCore::FileInfo *file = me->core->FileGet(id & 0xffffff, id >> 24, &mutUsage);
+		SSWR::DownloadMonitor::DownMonCore::FileInfo *file = me->core->FileGet(id & 0xffffff, id >> 24, mutUsage);
 		if (file != 0)
 		{
 			if (file->webType == 2)
@@ -396,7 +396,7 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnWebUpdateClicked(void *
 			if (me->core->FileAdd(item->id, webType, item->title))
 			{
 				Sync::MutexUsage mutUsage;
-				SSWR::DownloadMonitor::DownMonCore::FileInfo *file = me->core->FileGet(item->id, webType, &mutUsage);
+				SSWR::DownloadMonitor::DownMonCore::FileInfo *file = me->core->FileGet(item->id, webType, mutUsage);
 				UOSInt j;
 				if (file != 0)
 				{
@@ -521,7 +521,7 @@ void SSWR::DownloadMonitor::DownMonMainForm::LoadList()
 					if (this->core->FileAdd(id, webType, s))
 					{
 						Sync::MutexUsage mutUsage;
-						SSWR::DownloadMonitor::DownMonCore::FileInfo *file = this->core->FileGet(id, webType, &mutUsage);
+						SSWR::DownloadMonitor::DownMonCore::FileInfo *file = this->core->FileGet(id, webType, mutUsage);
 						if (file != 0)
 						{
 							sptr = Text::StrInt32(sbuff, file->id);
@@ -564,7 +564,7 @@ void SSWR::DownloadMonitor::DownMonMainForm::SaveList()
 	{
 		Int32 id = (Int32)(OSInt)this->lvFiles->GetItem(i);
 		Sync::MutexUsage mutUsage;
-		SSWR::DownloadMonitor::DownMonCore::FileInfo *file = this->core->FileGet(id & 0xffffff, id >> 24, &mutUsage);
+		SSWR::DownloadMonitor::DownMonCore::FileInfo *file = this->core->FileGet(id & 0xffffff, id >> 24, mutUsage);
 		if (file != 0)
 		{
 			sb.ClearStr();

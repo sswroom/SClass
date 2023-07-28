@@ -58,7 +58,7 @@ Bool Media::ConsoleVideoRenderer::IsUpdatingSize()
 	return false;
 }
 
-void Media::ConsoleVideoRenderer::LockUpdateSize(Sync::MutexUsage *mutUsage)
+void Media::ConsoleVideoRenderer::LockUpdateSize(NotNullPtr<Sync::MutexUsage> mutUsage)
 {
 	mutUsage->ReplaceMutex(this->mut);
 }

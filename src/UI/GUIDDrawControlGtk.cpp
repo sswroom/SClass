@@ -32,7 +32,7 @@ gboolean GUIDDrawControl_OnDDDraw(GtkWidget *widget, cairo_t *cr, gpointer user_
 {
 	UI::GUIDDrawControl *me = (UI::GUIDDrawControl*)user_data;
 	Sync::MutexUsage mutUsage;
-	me->UseDrawSurface(&mutUsage);
+	me->UseDrawSurface(mutUsage);
 	GdkPixbuf *pixBuf = (GdkPixbuf*)me->GetPixBuf();
 	if (pixBuf)
 	{
@@ -53,7 +53,7 @@ gboolean GUIDDrawControl_OnDDDraw(GtkWidget *widget, cairo_t *cr, gpointer user_
 	{
 		printf("DDraw: Error in drawing\r\n");
 	}
-	me->UnuseDrawSurface(&mutUsage);
+	me->UnuseDrawSurface(mutUsage);
 	return true;
 }
 
@@ -659,12 +659,12 @@ void *UI::GUIDDrawControl::GetPixBuf()
 	return this->clsData->pixBuf;
 }
 
-void UI::GUIDDrawControl::UseDrawSurface(Sync::MutexUsage *mutUsage)
+void UI::GUIDDrawControl::UseDrawSurface(NotNullPtr<Sync::MutexUsage> mutUsage)
 {
 	mutUsage->ReplaceMutex(this->surfaceMut);
 }
 
-void UI::GUIDDrawControl::UnuseDrawSurface(Sync::MutexUsage *mutUsage)
+void UI::GUIDDrawControl::UnuseDrawSurface(NotNullPtr<Sync::MutexUsage> mutUsage)
 {
 	this->clsData->drawPause = 0;
 	mutUsage->EndUse();

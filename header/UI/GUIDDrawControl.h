@@ -106,8 +106,8 @@ namespace UI
 		virtual void OnJSAxis(OSInt axis1, OSInt axis2, OSInt axis3, OSInt axis4);
 
 		void *GetPixBuf();
-		void UseDrawSurface(Sync::MutexUsage *mut);
-		void UnuseDrawSurface(Sync::MutexUsage *mut);
+		void UseDrawSurface(NotNullPtr<Sync::MutexUsage> mut);
+		void UnuseDrawSurface(NotNullPtr<Sync::MutexUsage> mut);
 	};
 }
 #endif

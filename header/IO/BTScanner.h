@@ -37,8 +37,8 @@ namespace IO
 		virtual void Close() = 0;
 		virtual Bool SetScanMode(ScanMode scanMode) = 0;
 
-		virtual NotNullPtr<Data::FastMap<UInt64, IO::BTScanLog::ScanRecord3*>> GetPublicMap(Sync::MutexUsage *mutUsage) = 0;
-		virtual NotNullPtr<Data::FastMap<UInt64, IO::BTScanLog::ScanRecord3*>> GetRandomMap(Sync::MutexUsage *mutUsage) = 0;
+		virtual NotNullPtr<Data::FastMap<UInt64, IO::BTScanLog::ScanRecord3*>> GetPublicMap(NotNullPtr<Sync::MutexUsage> mutUsage) = 0;
+		virtual NotNullPtr<Data::FastMap<UInt64, IO::BTScanLog::ScanRecord3*>> GetRandomMap(NotNullPtr<Sync::MutexUsage> mutUsage) = 0;
 
 		static BTScanner *CreateScanner();
 	};

@@ -164,7 +164,7 @@ UOSInt IO::ATCommandChannel::SendATCommand(Data::ArrayList<Text::String *> *retA
 	Bool cmdEnd = false;
 	Text::String *cmdRes;
 	Sync::MutexUsage mutUsage;
-	if (!this->UseCmd(&mutUsage))
+	if (!this->UseCmd(mutUsage))
 		return 0;
 	this->CmdSend((UInt8*)atCmd, atCmdLen);
 	this->CmdSend((UInt8*)"\r", 1);
@@ -212,7 +212,7 @@ UOSInt IO::ATCommandChannel::SendATCommands(Data::ArrayList<Text::String *> *ret
 	Bool cmdEnd = false;
 	Text::String *cmdRes;
 	Sync::MutexUsage mutUsage;
-	if (!this->UseCmd(&mutUsage))
+	if (!this->UseCmd(mutUsage))
 		return 0;
 	this->CmdSend((UInt8*)atCmd, atCmdLen);
 	this->CmdSend((UInt8*)"\r", 1);
@@ -262,7 +262,7 @@ UOSInt IO::ATCommandChannel::SendDialCommand(Data::ArrayList<Text::String *> *re
 	Bool cmdEnd = false;
 	Text::String *cmdRes;
 	Sync::MutexUsage mutUsage;
-	if (!this->UseCmd(&mutUsage))
+	if (!this->UseCmd(mutUsage))
 		return 0;
 	this->CmdSend((UInt8*)atCmd, atCmdLen);
 	this->CmdSend((UInt8*)"\r", 1);
@@ -320,7 +320,7 @@ UOSInt IO::ATCommandChannel::SendDialCommand(Data::ArrayList<Text::String *> *re
 	return retSize;
 }
 
-Bool IO::ATCommandChannel::UseCmd(Sync::MutexUsage *mutUsage)
+Bool IO::ATCommandChannel::UseCmd(NotNullPtr<Sync::MutexUsage> mutUsage)
 {
 	if (!this->threadRunning)
 		return false;

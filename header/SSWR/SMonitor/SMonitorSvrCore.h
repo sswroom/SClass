@@ -92,7 +92,7 @@ namespace SSWR
 			void SavePhoto(Int64 cliId, Int64 photoTime, Int32 photoFmt, UInt8 *photoBuff, UOSInt photoSize);
 
 			void LoadData();
-			DB::DBTool *UseDB(Sync::MutexUsage *mut);
+			DB::DBTool *UseDB(NotNullPtr<Sync::MutexUsage> mut);
 			void UserPwdCalc(const UTF8Char *userName, const UTF8Char *pwd, UInt8 *buff);
 		public:
 			SMonitorSvrCore(IO::Writer *writer, NotNullPtr<Media::DrawEngine> deng);

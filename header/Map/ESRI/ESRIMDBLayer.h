@@ -69,9 +69,9 @@ namespace Map
 		private:
 			DB::DBConn *conn;
 			DB::DBReader *r;
-			Sync::MutexUsage *mutUsage;
+			NotNullPtr<Sync::MutexUsage> mutUsage;
 		public:
-			ESRIMDBReader(DB::DBConn *conn, DB::DBReader *r, Sync::MutexUsage *mutUsage);
+			ESRIMDBReader(DB::DBConn *conn, DB::DBReader *r, NotNullPtr<Sync::MutexUsage> mutUsage);
 			virtual ~ESRIMDBReader();
 
 			virtual Bool ReadNext();

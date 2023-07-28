@@ -50,7 +50,7 @@ namespace Net
 
 			Net::SNS::SNSControl *AddChannel(Net::SNS::SNSControl::SNSType type, Text::CString channelId);
 
-			void Use(Sync::MutexUsage *mutUsage);
+			void Use(NotNullPtr<Sync::MutexUsage> mutUsage);
 			virtual UOSInt GetCount() const;
 			virtual Net::SNS::SNSControl* GetItem(UOSInt index) const;
 		};

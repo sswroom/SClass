@@ -565,7 +565,7 @@ Net::SNS::SNSControl *Net::SNS::SNSManager::AddChannel(Net::SNS::SNSControl::SNS
 	return ctrl;
 }
 
-void Net::SNS::SNSManager::Use(Sync::MutexUsage *mutUsage)
+void Net::SNS::SNSManager::Use(NotNullPtr<Sync::MutexUsage> mutUsage)
 {
 	mutUsage->ReplaceMutex(this->mut);
 }

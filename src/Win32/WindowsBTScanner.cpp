@@ -321,13 +321,13 @@ Bool Win32::WindowsBTScanner::SetScanMode(ScanMode scanMode)
 	return false;
 }
 
-Data::FastMap<UInt64, IO::BTScanLog::ScanRecord3*> *Win32::WindowsBTScanner::GetPublicMap(Sync::MutexUsage *mutUsage)
+Data::FastMap<UInt64, IO::BTScanLog::ScanRecord3*> *Win32::WindowsBTScanner::GetPublicMap(NotNullPtr<Sync::MutexUsage> mutUsage)
 {
 	mutUsage->ReplaceMutex(this->devMut);
 	return &this->pubDevMap;
 }
 
-Data::FastMap<UInt64, IO::BTScanLog::ScanRecord3*> *Win32::WindowsBTScanner::GetRandomMap(Sync::MutexUsage *mutUsage)
+Data::FastMap<UInt64, IO::BTScanLog::ScanRecord3*> *Win32::WindowsBTScanner::GetRandomMap(NotNullPtr<Sync::MutexUsage> mutUsage)
 {
 	mutUsage->ReplaceMutex(this->devMut);
 	return &this->randDevMap;

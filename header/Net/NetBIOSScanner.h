@@ -43,7 +43,7 @@ namespace Net
 		Bool IsError() const;
 		void SendRequest(UInt32 ip);
 		void SetAnswerHandler(AnswerUpdated hdlr, void *userObj);
-		const Data::ReadingList<NameAnswer*> *GetAnswers(Sync::MutexUsage *mutUsage) const;
+		NotNullPtr<const Data::ReadingList<NameAnswer*>> GetAnswers(NotNullPtr<Sync::MutexUsage> mutUsage) const;
 	};
 }
 #endif

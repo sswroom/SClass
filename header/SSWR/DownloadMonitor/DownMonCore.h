@@ -89,7 +89,7 @@ namespace SSWR
 
 			void FileFree(FileInfo *file);
 			Bool FileAdd(Int32 id, Int32 webType, NotNullPtr<Text::String> dbName);
-			FileInfo *FileGet(Int32 id, Int32 webType, Sync::MutexUsage *mutUsage);
+			FileInfo *FileGet(Int32 id, Int32 webType, NotNullPtr<Sync::MutexUsage> mutUsage);
 			Int32 FileGetByName(Text::CString fileName, Int32 *webType);
 			Bool FileEnd(Int32 id, Int32 webType);
 			Bool FileStart(Int32 id, Int32 webType, ControlHandle *formHand);

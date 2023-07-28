@@ -32,7 +32,7 @@ namespace Data
 
 		virtual T GetItem(UOSInt index) const;
 		virtual void SetItem(UOSInt index, T val);
-		Data::ArrayList<T> *GetArrayList(Sync::MutexUsage *mutUsage);
+		NotNullPtr<Data::ArrayList<T>> GetArrayList(NotNullPtr<Sync::MutexUsage> mutUsage);
 	};
 
 
@@ -132,10 +132,10 @@ namespace Data
 		this->arr.SetItem(index, val);
 	}
 
-	template <class T> Data::ArrayList<T> *Data::SyncArrayList<T>::GetArrayList(Sync::MutexUsage *mutUsage)
+	template <class T> NotNullPtr<Data::ArrayList<T>> Data::SyncArrayList<T>::GetArrayList(NotNullPtr<Sync::MutexUsage> mutUsage)
 	{
 		mutUsage->ReplaceMutex(this->mut);
-		return &this->arr;
+		return this->arr;
 	}
 }
 #endif

@@ -664,7 +664,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(void *userObj)
 		UOSInt i;
 		UOSInt j;
 		Sync::MutexUsage mutUsage;
-		me->analyzer->UseDNSCli(&mutUsage);
+		me->analyzer->UseDNSCli(mutUsage);
 		cliList.AddAll(me->analyzer->DNSCliGetList());
 		mutUsage.EndUse();
 		me->lbDNSClient->ClearItems();
@@ -690,7 +690,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(void *userObj)
 		UOSInt i;
 		UOSInt j;
 		Sync::MutexUsage mutUsage;
-		me->analyzer->UseIPLog(&mutUsage);
+		me->analyzer->UseIPLog(mutUsage);
 		ipLogList.AddAll(me->analyzer->IPLogGetList());
 		mutUsage.EndUse();
 		me->lbIPLog->ClearItems();
@@ -718,7 +718,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(void *userObj)
 		IPTranInfo *ipTran;
 		Sync::MutexUsage mutUsage;
 		me->adapterChanged = false;
-		me->analyzer->UseIPTran(&mutUsage);
+		me->analyzer->UseIPTran(mutUsage);
 		ipTranList.AddAll(me->analyzer->IPTranGetList());
 		mutUsage.EndUse();
 		me->ipTranCnt = ipTranList.GetCount();
@@ -883,7 +883,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(void *userObj)
 		const Net::MACInfo::MACEntry *entry;
 		UInt8 macBuff[8];
 		Sync::MutexUsage mutUsage;
-		me->analyzer->UseMAC(&mutUsage);
+		me->analyzer->UseMAC(mutUsage);
 		macList = me->analyzer->MACGetList();
 		j = macList->GetCount();
 		if (j != me->lvDevice->GetCount())
@@ -965,7 +965,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(void *userObj)
 		Net::EthernetAnalyzer::DHCPInfo *dhcp;
 		const Net::MACInfo::MACEntry *macInfo;
 		Sync::MutexUsage mutUsage;
-		me->analyzer->UseDHCP(&mutUsage);
+		me->analyzer->UseDHCP(mutUsage);
 		const Data::ReadingList<Net::EthernetAnalyzer::DHCPInfo*> *dhcpList = me->analyzer->DHCPGetList();
 		if (dhcpList->GetCount() != me->lvDHCP->GetCount())
 		{
@@ -1058,7 +1058,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnDeviceSelChg(void *userObj)
 		UOSInt cnt;
 		UOSInt i;
 		Sync::MutexUsage mutUsage;
-		me->analyzer->UseMAC(&mutUsage);
+		me->analyzer->UseMAC(mutUsage);
 		cnt = (UOSInt)(mac->ipv4SrcCnt + mac->ipv6SrcCnt + mac->othSrcCnt);
 		if (cnt <= 16)
 		{

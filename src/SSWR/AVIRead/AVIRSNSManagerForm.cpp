@@ -32,7 +32,7 @@ void __stdcall SSWR::AVIRead::AVIRSNSManagerForm::OnChannelsSelChg(void *userObj
 		UTF8Char sbuff[32];
 		UTF8Char *sptr;
 		Sync::MutexUsage mutUsage;
-		me->mgr->Use(&mutUsage);
+		me->mgr->Use(mutUsage);
 		ctrl->GetCurrItems(itemList);
 		i = itemList.GetCount();
 		while (i-- > 0)
@@ -101,7 +101,7 @@ SSWR::AVIRead::AVIRSNSManagerForm::AVIRSNSManagerForm(UI::GUIClientControl *pare
 	this->cboChannel->SetSelectedIndex(0);
 
 	Sync::MutexUsage mutUsage;
-	this->mgr->Use(&mutUsage);
+	this->mgr->Use(mutUsage);
 	Net::SNS::SNSControl *ctrl;
 	UOSInt j = this->mgr->GetCount();
 	i = 0;

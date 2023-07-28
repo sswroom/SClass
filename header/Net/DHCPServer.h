@@ -45,7 +45,7 @@ namespace Net
 
 		Bool IsError() const;
 
-		void UseStatus(Sync::MutexUsage *mutUsage) const;
+		void UseStatus(NotNullPtr<Sync::MutexUsage> mutUsage) const;
 		const Data::ReadingList<DeviceStatus*> *StatusGetList() const;
 		UInt32 GetIPLeaseTime() const;
 	};

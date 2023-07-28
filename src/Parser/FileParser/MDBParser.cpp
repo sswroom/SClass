@@ -70,11 +70,11 @@ IO::ParsedObject *Parser::FileParser::MDBParser::ParseFileHdr(NotNullPtr<IO::Str
 		return 0;
 	}
 #ifndef _WIN32_WCE
-	DB::MDBFileConn *mdb;
-	NEW_CLASS(mdb, DB::MDBFileConn(fd->GetFullFileName()->ToCString(), 0, this->codePage, 0, 0));
+	NotNullPtr<DB::MDBFileConn> mdb;
+	NEW_CLASSNN(mdb, DB::MDBFileConn(fd->GetFullFileName()->ToCString(), 0, this->codePage, 0, 0));
 	if (mdb->GetConnError() != DB::ODBCConn::CE_NONE)
 	{
-		DEL_CLASS(mdb);
+		mdb.Delete();
 		return 0;
 	}
 
@@ -191,7 +191,7 @@ IO::ParsedObject *Parser::FileParser::MDBParser::ParseFileHdr(NotNullPtr<IO::Str
 	else
 	{
 		LIST_FREE_STRING(&tableNames);
-		return mdb;
+		return mdb.Ptr();
 	}
 #else
 	return 0;

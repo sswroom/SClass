@@ -198,12 +198,12 @@ namespace Net
 
 		UInt64 GetPacketCnt() const;
 		UInt64 GetPacketTotalSize() const;
-		void UseIPTran(Sync::MutexUsage *mutUsage);
+		void UseIPTran(NotNullPtr<Sync::MutexUsage> mutUsage);
 		NotNullPtr<const Data::ReadingList<IPTranStatus*>> IPTranGetList() const;
 		UOSInt IPTranGetCount() const;
-		void UseMAC(Sync::MutexUsage *mutUsage);
+		void UseMAC(NotNullPtr<Sync::MutexUsage> mutUsage);
 		const Data::ReadingList<MACStatus*> *MACGetList() const;
-		void UseDNSCli(Sync::MutexUsage *mutUsage);
+		void UseDNSCli(NotNullPtr<Sync::MutexUsage> mutUsage);
 		NotNullPtr<const Data::ReadingList<DNSClientInfo*>> DNSCliGetList() const;
 		UOSInt DNSCliGetCount();
 		UOSInt DNSReqv4GetList(Data::ArrayList<Text::String *> *reqList); //no need release
@@ -219,9 +219,9 @@ namespace Net
 		UOSInt DNSTargetGetCount();
 		UOSInt MDNSGetList(Data::ArrayList<Net::DNSClient::RequestAnswer *> *mdnsList); //no need release
 		UOSInt MDNSGetCount();
-		void UseDHCP(Sync::MutexUsage *mutUsage);
+		void UseDHCP(NotNullPtr<Sync::MutexUsage> mutUsage);
 		const Data::ReadingList<DHCPInfo*> *DHCPGetList() const;
-		void UseIPLog(Sync::MutexUsage *mutUsage);
+		void UseIPLog(NotNullPtr<Sync::MutexUsage> mutUsage);
 		NotNullPtr<const Data::ReadingList<IPLogInfo*>> IPLogGetList() const;
 		UOSInt IPLogGetCount() const;
 		Bool TCP4SYNIsDiff(UOSInt lastIndex) const;

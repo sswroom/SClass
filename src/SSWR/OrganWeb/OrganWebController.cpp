@@ -116,7 +116,7 @@ void SSWR::OrganWeb::OrganWebController::WriteFooter(IO::Writer *writer)
 	writer->WriteLineC(UTF8STRC("</HTML>"));
 }
 
-void SSWR::OrganWeb::OrganWebController::WriteLocator(Sync::RWMutexUsage *mutUsage, IO::Writer *writer, GroupInfo *group, CategoryInfo *cate)
+void SSWR::OrganWeb::OrganWebController::WriteLocator(NotNullPtr<Sync::RWMutexUsage> mutUsage, IO::Writer *writer, GroupInfo *group, CategoryInfo *cate)
 {
 	GroupTypeInfo *grpType;
 	NotNullPtr<Text::String> s;
@@ -198,7 +198,7 @@ void SSWR::OrganWeb::OrganWebController::WriteLocator(Sync::RWMutexUsage *mutUsa
 	writer->WriteLineC(UTF8STRC("</center>"));
 }
 
-void SSWR::OrganWeb::OrganWebController::WriteLocatorText(Sync::RWMutexUsage *mutUsage, IO::Writer *writer, GroupInfo *group, CategoryInfo *cate)
+void SSWR::OrganWeb::OrganWebController::WriteLocatorText(NotNullPtr<Sync::RWMutexUsage> mutUsage, IO::Writer *writer, GroupInfo *group, CategoryInfo *cate)
 {
 	Text::StringBuilderUTF8 sb;
 	Data::ArrayList<GroupInfo *> groupList;
@@ -236,7 +236,7 @@ void SSWR::OrganWeb::OrganWebController::WriteLocatorText(Sync::RWMutexUsage *mu
 	writer->WriteLineC(sb.ToString(), sb.GetLength());
 }
 
-void SSWR::OrganWeb::OrganWebController::WriteGroupTable(Sync::RWMutexUsage *mutUsage, IO::Writer *writer, NotNullPtr<const Data::ReadingList<GroupInfo *>> groupList, UInt32 scnWidth, Bool showSelect, Bool showAll)
+void SSWR::OrganWeb::OrganWebController::WriteGroupTable(NotNullPtr<Sync::RWMutexUsage> mutUsage, IO::Writer *writer, NotNullPtr<const Data::ReadingList<GroupInfo *>> groupList, UInt32 scnWidth, Bool showSelect, Bool showAll)
 {
 	GroupInfo *group;
 	NotNullPtr<Text::String> s;
@@ -430,7 +430,7 @@ void SSWR::OrganWeb::OrganWebController::WriteGroupTable(Sync::RWMutexUsage *mut
 	}
 }
 
-void SSWR::OrganWeb::OrganWebController::WriteSpeciesTable(Sync::RWMutexUsage *mutUsage, IO::Writer *writer, NotNullPtr<const Data::ArrayList<SpeciesInfo *>> spList, UInt32 scnWidth, Int32 cateId, Bool showSelect, Bool showModify)
+void SSWR::OrganWeb::OrganWebController::WriteSpeciesTable(NotNullPtr<Sync::RWMutexUsage> mutUsage, IO::Writer *writer, NotNullPtr<const Data::ArrayList<SpeciesInfo *>> spList, UInt32 scnWidth, Int32 cateId, Bool showSelect, Bool showModify)
 {
 	SpeciesInfo *sp;
 	NotNullPtr<Text::String> s;
@@ -654,7 +654,7 @@ void SSWR::OrganWeb::OrganWebController::WriteSpeciesTable(Sync::RWMutexUsage *m
 	}
 }
 
-void SSWR::OrganWeb::OrganWebController::WritePickObjs(Sync::RWMutexUsage *mutUsage, IO::Writer *writer, RequestEnv *env, const UTF8Char *url, Bool allowMerge)
+void SSWR::OrganWeb::OrganWebController::WritePickObjs(NotNullPtr<Sync::RWMutexUsage> mutUsage, IO::Writer *writer, RequestEnv *env, const UTF8Char *url, Bool allowMerge)
 {
 	Text::StringBuilderUTF8 sb;
 	UOSInt i;

@@ -97,7 +97,7 @@ UOSInt SSWR::AVIRead::AVIRHTTPLog::GetNextIndex()
 	return this->currEnt;
 }
 
-void SSWR::AVIRead::AVIRHTTPLog::Use(Sync::MutexUsage *mutUsage)
+void SSWR::AVIRead::AVIRHTTPLog::Use(NotNullPtr<Sync::MutexUsage> mutUsage)
 {
 	mutUsage->ReplaceMutex(this->entMut);
 }
@@ -367,7 +367,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnTimerTick(void *userObj)
 		Sync::MutexUsage mutUsage;
 
 		me->lastAccessIndex = i;
-		me->reqLog->Use(&mutUsage);
+		me->reqLog->Use(mutUsage);
 		me->reqLog->GetEntries(&logs, &logIndex);
 		me->lbAccess->ClearItems();
 		me->txtAccess->SetText(CSTR(""));
@@ -397,7 +397,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnAccessSelChg(void *userObj)
 	Sync::MutexUsage mutUsage;
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
-	me->reqLog->Use(&mutUsage);
+	me->reqLog->Use(mutUsage);
 	UOSInt i = (UOSInt)me->lbAccess->GetSelectedItem();
 	UOSInt j;
 	SSWR::AVIRead::AVIRHTTPLog::LogEntry *log;

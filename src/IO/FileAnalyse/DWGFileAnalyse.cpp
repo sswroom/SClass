@@ -103,7 +103,7 @@ UInt32 __stdcall IO::FileAnalyse::DWGFileAnalyse::ParseThread(void *userObj)
 
 		DWGFileAnalyseComparator comparator;
 		Sync::MutexUsage mutUsage;
-		Data::Sort::ArtificialQuickSort::Sort(me->packs.GetArrayList(&mutUsage), &comparator);
+		Data::Sort::ArtificialQuickSort::Sort(me->packs.GetArrayList(mutUsage).Ptr(), &comparator);
 		mutUsage.EndUse();
 	}
 	me->threadRunning = false;

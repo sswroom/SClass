@@ -1471,7 +1471,7 @@ UInt32 __stdcall Media::VideoRenderer::DisplayThread(void *userObj)
 							clk.Start();
 							me->VideoBeginProc();
 							Sync::MutexUsage mutUsage;
-							me->LockUpdateSize(&mutUsage);
+							me->LockUpdateSize(mutUsage);
 
 							DrawRect rect;
 							UOSInt vwidth = me->videoInfo.dispSize.x - me->cropLeft - me->cropRight;

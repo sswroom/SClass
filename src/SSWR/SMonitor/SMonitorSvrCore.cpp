@@ -818,7 +818,7 @@ void SSWR::SMonitor::SMonitorSvrCore::LoadData()
 	Text::StringBuilderUTF8 sb;
 	Data::DateTime dt;
 	Sync::MutexUsage mutUsage;
-	DB::DBTool *db = this->UseDB(&mutUsage);
+	DB::DBTool *db = this->UseDB(mutUsage);
 	DB::DBReader *r;
 	WebUser *user;
 	UTF8Char *sarr[2];
@@ -1052,7 +1052,7 @@ void SSWR::SMonitor::SMonitorSvrCore::LoadData()
 	}
 }
 
-DB::DBTool *SSWR::SMonitor::SMonitorSvrCore::UseDB(Sync::MutexUsage *mutUsage)
+DB::DBTool *SSWR::SMonitor::SMonitorSvrCore::UseDB(NotNullPtr<Sync::MutexUsage> mutUsage)
 {
 	NotNullPtr<Sync::Mutex> mut;
 	if (mut.Set(this->dbMut))
@@ -1456,7 +1456,7 @@ SSWR::SMonitor::SMonitorSvrCore::DeviceInfo *SSWR::SMonitor::SMonitorSvrCore::De
 
 	Data::Timestamp ts = Data::Timestamp::UtcNow();
 	Sync::MutexUsage dbMutUsage;
-	DB::DBTool *db = this->UseDB(&dbMutUsage);
+	DB::DBTool *db = this->UseDB(dbMutUsage);
 	DB::SQLBuilder sql(this->db);
 	sql.AppendCmdC(CSTR("insert into device (id, cpuName, platformName, lastKATime, flags) values ("));
 	sql.AppendInt64(cliId);
@@ -1524,7 +1524,7 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceRecvReading(DeviceInfo *dev, Int64 c
 	if (cliTime > dev->readingTime && cliTime < t + 300000)
 	{
 		Sync::MutexUsage dbMutUsage;
-		DB::DBTool *db = this->UseDB(&dbMutUsage);
+		DB::DBTool *db = this->UseDB(dbMutUsage);
 		DB::SQLBuilder sql(this->db);
 		if (nReading > SMONITORCORE_DEVREADINGCNT)
 		{
@@ -1633,7 +1633,7 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceKARecv(DeviceInfo *dev, Int64 kaTime
 	Bool succ = false;
 
 	Sync::MutexUsage dbMutUsage;
-	DB::DBTool *db = this->UseDB(&dbMutUsage);
+	DB::DBTool *db = this->UseDB(dbMutUsage);
 	DB::SQLBuilder sql(this->db);
 	sql.AppendCmdC(CSTR("update device set lastKATime = "));
 	sql.AppendTS(ts);
@@ -1663,7 +1663,7 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetName(Int64 cliId, NotNullPtr<Text
 	Bool succ = false;
 
 	Sync::MutexUsage dbMutUsage;
-	DB::DBTool *db = this->UseDB(&dbMutUsage);
+	DB::DBTool *db = this->UseDB(dbMutUsage);
 	DB::SQLBuilder sql(this->db);
 	sql.AppendCmdC(CSTR("update device set devName = "));
 	sql.AppendStr(devName);
@@ -1696,7 +1696,7 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetPlatform(Int64 cliId, NotNullPtr<
 	Bool succ = false;
 
 	Sync::MutexUsage dbMutUsage;
-	DB::DBTool *db = this->UseDB(&dbMutUsage);
+	DB::DBTool *db = this->UseDB(dbMutUsage);
 	DB::SQLBuilder sql(this->db);
 	sql.AppendCmdC(CSTR("update device set platformName = "));
 	sql.AppendStr(platformName);
@@ -1729,7 +1729,7 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetCPUName(Int64 cliId, NotNullPtr<T
 	Bool succ = false;
 
 	Sync::MutexUsage dbMutUsage;
-	DB::DBTool *db = this->UseDB(&dbMutUsage);
+	DB::DBTool *db = this->UseDB(dbMutUsage);
 	DB::SQLBuilder sql(this->db);
 	sql.AppendCmdC(CSTR("update device set cpuName = "));
 	sql.AppendStr(cpuName);
@@ -1789,7 +1789,7 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetReading(Int64 cliId, UInt32 index
 	Bool succ = false;
 
 	Sync::MutexUsage dbMutUsage;
-	DB::DBTool *db = this->UseDB(&dbMutUsage);
+	DB::DBTool *db = this->UseDB(dbMutUsage);
 	DB::SQLBuilder sql(this->db);
 	sql.AppendCmdC(CSTR("update device set readingNames = "));
 	sql.AppendStrUTF8(sb.ToString());
@@ -1817,7 +1817,7 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetVersion(Int64 cliId, Int64 versio
 	Bool succ = false;
 
 	Sync::MutexUsage dbMutUsage;
-	DB::DBTool *db = this->UseDB(&dbMutUsage);
+	DB::DBTool *db = this->UseDB(dbMutUsage);
 	DB::SQLBuilder sql(this->db);
 	sql.AppendCmdC(CSTR("update device set version = "));
 	sql.AppendInt64(version);
@@ -1852,7 +1852,7 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceModify(Int64 cliId, Text::CString de
 	Bool succ = false;
 
 	Sync::MutexUsage dbMutUsage;
-	DB::DBTool *db = this->UseDB(&dbMutUsage);
+	DB::DBTool *db = this->UseDB(dbMutUsage);
 	DB::SQLBuilder sql(this->db);
 	sql.AppendCmdC(CSTR("update device set devName = "));
 	sql.AppendStrC(devName);
@@ -1885,7 +1885,7 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetReadings(DeviceInfo *dev, const U
 	Bool succ = false;
 
 	Sync::MutexUsage dbMutUsage;
-	DB::DBTool *db = this->UseDB(&dbMutUsage);
+	DB::DBTool *db = this->UseDB(dbMutUsage);
 	DB::SQLBuilder sql(this->db);
 	sql.AppendCmdC(CSTR("update device set readingNames = "));
 	sql.AppendStrUTF8(readings);
@@ -1937,7 +1937,7 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetDigitals(DeviceInfo *dev, const U
 	Bool succ = false;
 
 	Sync::MutexUsage dbMutUsage;
-	DB::DBTool *db = this->UseDB(&dbMutUsage);
+	DB::DBTool *db = this->UseDB(dbMutUsage);
 	DB::SQLBuilder sql(this->db);
 	sql.AppendCmdC(CSTR("update device set digitalNames = "));
 	sql.AppendStrUTF8(digitals);
@@ -2124,7 +2124,7 @@ Bool SSWR::SMonitor::SMonitorSvrCore::UserAdd(const UTF8Char *userName, const UT
 	Text::StrHexBytes(sbuff, pwdBuff, 16, 0);
 
 	Sync::MutexUsage dbMutUsage;
-	DB::DBTool *db = this->UseDB(&dbMutUsage);
+	DB::DBTool *db = this->UseDB(dbMutUsage);
 	DB::SQLBuilder sql(this->db);
 	sql.AppendCmdC(CSTR("insert into webuser (userName, pwd, userType) values ("));
 	sql.AppendStrUTF8(userName);
@@ -2168,7 +2168,7 @@ Bool SSWR::SMonitor::SMonitorSvrCore::UserSetPassword(Int32 userId, const UTF8Ch
 	userMutUsage.EndUse();
 
 	Sync::MutexUsage dbMutUsage;
-	DB::DBTool *db = this->UseDB(&dbMutUsage);
+	DB::DBTool *db = this->UseDB(dbMutUsage);
 	DB::SQLBuilder sql(this->db);
 	sql.AppendCmdC(CSTR("update webuser set pwd = "));
 	sql.AppendStrUTF8(sbuff);
@@ -2379,7 +2379,7 @@ Bool SSWR::SMonitor::SMonitorSvrCore::UserAssign(Int32 userId, Data::ArrayList<I
 	}
 
 	Sync::MutexUsage dbMutUsage;
-	DB::DBTool *db = this->UseDB(&dbMutUsage);
+	DB::DBTool *db = this->UseDB(dbMutUsage);
 	DB::SQLBuilder sql(this->db);
 	sql.AppendCmdC(CSTR("delete from webuser_device where webuser_id = "));
 	sql.AppendInt32(user->userId);

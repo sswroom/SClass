@@ -9,7 +9,7 @@ void __stdcall SSWR::AVIRead::AVIRSSDPClientForm::OnTimerTick(void *userObj)
 {
 	SSWR::AVIRead::AVIRSSDPClientForm *me = (SSWR::AVIRead::AVIRSSDPClientForm*)userObj;
 	Sync::MutexUsage mutUsage;
-	const Data::ReadingList<Net::SSDPClient::SSDPDevice*> *devList = me->ssdp->GetDevices(&mutUsage);
+	const Data::ReadingList<Net::SSDPClient::SSDPDevice*> *devList = me->ssdp->GetDevices(mutUsage);
 	UInt8 sbuff[128];
 	UTF8Char *sptr;
 	if (devList->GetCount() != me->lbDevice->GetCount())
@@ -32,7 +32,7 @@ void __stdcall SSWR::AVIRead::AVIRSSDPClientForm::OnDeviceSelChg(void *userObj)
 {
 	SSWR::AVIRead::AVIRSSDPClientForm *me = (SSWR::AVIRead::AVIRSSDPClientForm*)userObj;
 	Sync::MutexUsage mutUsage;
-	me->ssdp->GetDevices(&mutUsage);
+	me->ssdp->GetDevices(mutUsage);
 	Net::SSDPClient::SSDPDevice *dev = (Net::SSDPClient::SSDPDevice*)me->lbDevice->GetSelectedItem();
 	me->lbService->ClearItems();
 	if (dev == 0)
@@ -54,7 +54,7 @@ void __stdcall SSWR::AVIRead::AVIRSSDPClientForm::OnServiceSelChg(void *userObj)
 {
 	SSWR::AVIRead::AVIRSSDPClientForm *me = (SSWR::AVIRead::AVIRSSDPClientForm*)userObj;
 	Sync::MutexUsage mutUsage;
-	me->ssdp->GetDevices(&mutUsage);
+	me->ssdp->GetDevices(mutUsage);
 	Net::SSDPClient::SSDPService *svc = (Net::SSDPClient::SSDPService*)me->lbService->GetSelectedItem();
 	if (svc)
 	{

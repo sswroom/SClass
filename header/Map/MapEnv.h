@@ -211,7 +211,7 @@ namespace Map
 		Math::CoordinateSystem *GetCoordinateSystem() const;
 		UInt32 GetSRID() const;
 
-		void BeginUse(Sync::MutexUsage *mutUsage) const;
+		void BeginUse(NotNullPtr<Sync::MutexUsage> mutUsage) const;
 	};
 }
 #endif

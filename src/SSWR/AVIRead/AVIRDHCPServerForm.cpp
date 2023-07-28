@@ -150,7 +150,7 @@ void __stdcall SSWR::AVIRead::AVIRDHCPServerForm::OnTimerTick(void *userObj)
 		const Net::MACInfo::MACEntry *macInfo;
 		NotNullPtr<Text::String> s;
 		Sync::MutexUsage mutUsage;
-		me->svr->UseStatus(&mutUsage);
+		me->svr->UseStatus(mutUsage);
 		const Data::ReadingList<Net::DHCPServer::DeviceStatus*> *dhcpList = me->svr->StatusGetList();
 		if (dhcpList->GetCount() != me->lvDevices->GetCount())
 		{

@@ -609,12 +609,12 @@ Bool SSWR::DownloadMonitor::DownMonCore::FileAdd(Int32 id, Int32 webType, NotNul
 	return true;
 }
 
-SSWR::DownloadMonitor::DownMonCore::FileInfo *SSWR::DownloadMonitor::DownMonCore::FileGet(Int32 id, Int32 webType, Sync::MutexUsage *mutUsage)
+SSWR::DownloadMonitor::DownMonCore::FileInfo *SSWR::DownloadMonitor::DownMonCore::FileGet(Int32 id, Int32 webType, NotNullPtr<Sync::MutexUsage> mutUsage)
 {
 	SSWR::DownloadMonitor::DownMonCore::FileInfo *file;
 	mutUsage->ReplaceMutex(this->fileMut);
 	file = this->fileTypeMap.Get((webType << 24) | id);
-	if (file != 0 && mutUsage != 0)
+	if (file != 0)
 	{
 		mutUsage->ReplaceMutex(file->mut);
 	}

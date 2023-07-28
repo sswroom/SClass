@@ -22,7 +22,7 @@ Net::TCPClient *Map::ReverseGeocoderServer::GetLatestClient(UOSInt retryCnt)
 	currTime = dt.ToTicks();
 
 	Sync::MutexUsage mutUsage;
-	this->ctrl->UseGetCli(&mutUsage);
+	this->ctrl->UseGetCli(mutUsage);
 	UOSInt i = this->ctrl->GetCliCount();
 	if (i <= retryCnt)
 	{

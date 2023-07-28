@@ -5,10 +5,10 @@
 
 DB::SharedDBConn::~SharedDBConn()
 {
-	DEL_CLASS(this->conn);
+	this->conn.Delete();
 }
 
-DB::SharedDBConn::SharedDBConn(DB::DBConn *conn)
+DB::SharedDBConn::SharedDBConn(NotNullPtr<DB::DBConn> conn)
 {
 	this->conn = conn;
 	this->useCnt = 1;
@@ -43,7 +43,7 @@ void DB::SharedDBConn::UnuseObject()
 	}
 }
 
-DB::DBConn *DB::SharedDBConn::UseConn(Sync::MutexUsage *mutUsage)
+NotNullPtr<DB::DBConn> DB::SharedDBConn::UseConn(NotNullPtr<Sync::MutexUsage> mutUsage)
 {
 	mutUsage->ReplaceMutex(this->mutConn);
 	return this->conn;

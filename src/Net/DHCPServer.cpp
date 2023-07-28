@@ -357,7 +357,7 @@ Bool Net::DHCPServer::IsError() const
 	return this->svr->IsError();
 }
 
-void Net::DHCPServer::UseStatus(Sync::MutexUsage *mutUsage) const
+void Net::DHCPServer::UseStatus(NotNullPtr<Sync::MutexUsage> mutUsage) const
 {
 	mutUsage->ReplaceMutex(this->devMut);
 }

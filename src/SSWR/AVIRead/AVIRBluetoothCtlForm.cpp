@@ -37,9 +37,9 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothCtlForm::OnStoreListClicked(void *use
 	dt.SetCurrTimeUTC();
 	sptr = Text::StrConcatC(Text::StrInt64(sbuff, dt.ToTicks()), UTF8STRC("bt.txt"));
 	Sync::MutexUsage mutUsage;
-	btLog.AppendList(me->bt->GetPublicMap(&mutUsage));
+	btLog.AppendList(me->bt->GetPublicMap(mutUsage));
 	mutUsage.EndUse();
-	btLog.AppendList(me->bt->GetRandomMap(&mutUsage));
+	btLog.AppendList(me->bt->GetRandomMap(mutUsage));
 	mutUsage.EndUse();
 	if (btLog.StoreFile(CSTRP(sbuff, sptr)))
 	{
@@ -71,8 +71,8 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothCtlForm::OnTimerTick(void *userObj)
 {
 	SSWR::AVIRead::AVIRBluetoothCtlForm *me = (SSWR::AVIRead::AVIRBluetoothCtlForm*)userObj;
 	Sync::MutexUsage mutUsage;
-	UOSInt i = me->UpdateList(me->bt->GetPublicMap(&mutUsage), &me->pubDevMap, 0);
-	me->UpdateList(me->bt->GetRandomMap(&mutUsage), &me->randDevMap, i);
+	UOSInt i = me->UpdateList(me->bt->GetPublicMap(mutUsage), &me->pubDevMap, 0);
+	me->UpdateList(me->bt->GetRandomMap(mutUsage), &me->randDevMap, i);
 }
 
 void __stdcall SSWR::AVIRead::AVIRBluetoothCtlForm::OnDeviceUpdated(IO::BTScanLog::ScanRecord3 *dev, IO::BTScanner::UpdateType updateType, void *userObj)

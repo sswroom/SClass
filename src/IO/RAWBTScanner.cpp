@@ -158,13 +158,13 @@ Bool IO::RAWBTScanner::SetScanMode(ScanMode scanMode)
 	return false;
 }
 
-NotNullPtr<Data::FastMap<UInt64, IO::BTScanLog::ScanRecord3*>> IO::RAWBTScanner::GetPublicMap(Sync::MutexUsage *mutUsage)
+NotNullPtr<Data::FastMap<UInt64, IO::BTScanLog::ScanRecord3*>> IO::RAWBTScanner::GetPublicMap(NotNullPtr<Sync::MutexUsage> mutUsage)
 {
 	mutUsage->ReplaceMutex(this->recMut);
 	return this->pubRecMap;	
 }
 
-NotNullPtr<Data::FastMap<UInt64, IO::BTScanLog::ScanRecord3*>> IO::RAWBTScanner::GetRandomMap(Sync::MutexUsage *mutUsage)
+NotNullPtr<Data::FastMap<UInt64, IO::BTScanLog::ScanRecord3*>> IO::RAWBTScanner::GetRandomMap(NotNullPtr<Sync::MutexUsage> mutUsage)
 {
 	mutUsage->ReplaceMutex(this->recMut);
 	return this->randRecMap;	

@@ -8,7 +8,7 @@
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 
-IO::SeekableStream *Map::OSM::OSMCacheHandler::GetTileData(Int32 lev, Int32 xTile, Int32 yTile, Sync::MutexUsage *mutUsage)
+IO::SeekableStream *Map::OSM::OSMCacheHandler::GetTileData(Int32 lev, Int32 xTile, Int32 yTile, NotNullPtr<Sync::MutexUsage> mutUsage)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -198,7 +198,7 @@ Bool Map::OSM::OSMCacheHandler::ProcessRequest(Net::WebServer::IWebRequest *req,
 	yTile = Text::StrToInt32(sarr[3]);
 
 	Sync::MutexUsage mutUsage;
-	IO::SeekableStream *stm = GetTileData(lev, xTile, yTile, &mutUsage);
+	IO::SeekableStream *stm = GetTileData(lev, xTile, yTile, mutUsage);
 	if (stm == 0)
 	{
 		resp->ResponseError(req, Net::WebStatus::SC_NOT_FOUND);

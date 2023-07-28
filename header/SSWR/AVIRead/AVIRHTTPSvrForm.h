@@ -46,7 +46,7 @@ namespace SSWR
 
 			virtual void LogRequest(Net::WebServer::IWebRequest *req);
 			UOSInt GetNextIndex();
-			void Use(Sync::MutexUsage *mutUsage);
+			void Use(NotNullPtr<Sync::MutexUsage> mutUsage);
 			void GetEntries(Data::ArrayList<LogEntry*> *logs, Data::ArrayList<UOSInt> *logIndex);
 			LogEntry *GetEntry(UOSInt index);
 		};

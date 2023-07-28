@@ -1531,7 +1531,7 @@ UInt32 Map::MapEnv::GetSRID() const
 	return 0;
 }
 
-void Map::MapEnv::BeginUse(Sync::MutexUsage *mutUsage) const
+void Map::MapEnv::BeginUse(NotNullPtr<Sync::MutexUsage> mutUsage) const
 {
 	mutUsage->ReplaceMutex(this->mut);
 }

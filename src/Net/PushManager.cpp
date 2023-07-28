@@ -298,7 +298,7 @@ Bool Net::PushManager::Send(Data::ArrayList<Text::String*> *userNames, Text::Str
 	}
 }
 
-UOSInt Net::PushManager::GetUsers(Data::ArrayListNN<Text::String> *users, Sync::MutexUsage *mutUsage)
+UOSInt Net::PushManager::GetUsers(Data::ArrayListNN<Text::String> *users, NotNullPtr<Sync::MutexUsage> mutUsage)
 {
 	mutUsage->ReplaceMutex(this->dataMut);
 	UOSInt i = 0;
@@ -318,7 +318,7 @@ UOSInt Net::PushManager::GetUsers(Data::ArrayListNN<Text::String> *users, Sync::
 	return ret;
 }
 
-const Data::ReadingList<Net::PushManager::DeviceInfo2*> *Net::PushManager::GetDevices(Sync::MutexUsage *mutUsage)
+const Data::ReadingList<Net::PushManager::DeviceInfo2*> *Net::PushManager::GetDevices(NotNullPtr<Sync::MutexUsage> mutUsage)
 {
 	mutUsage->ReplaceMutex(this->dataMut);
 	return &this->devMap;

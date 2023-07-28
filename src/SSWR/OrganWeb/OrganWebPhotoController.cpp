@@ -60,11 +60,11 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhoto(Net::WebServer::IWeb
 	UTF8Char *sptr;
 	UTF8Char *sptrEnd = sbuff;
 	Sync::RWMutexUsage mutUsage;
-	sp = this->env->SpeciesGet(&mutUsage, speciesId);
+	sp = this->env->SpeciesGet(mutUsage, speciesId);
 	Bool notAdmin = (user == 0 || user->userType != 0);
 	if (sp && sp->cateId == cateId)
 	{
-		cate = this->env->CateGet(&mutUsage, sp->cateId);
+		cate = this->env->CateGet(mutUsage, sp->cateId);
 		if (cate && ((cate->flags & 1) == 0 || !notAdmin))
 		{
 			Text::StringBuilderUTF8 sb;
@@ -365,19 +365,19 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoId(Net::WebServer::IW
 	UserFileInfo *userFile;
 	Int32 rotateType = 0;
 	Sync::RWMutexUsage mutUsage;
-	sp = this->env->SpeciesGet(&mutUsage, speciesId);
-	userFile = this->env->UserfileGet(&mutUsage, fileId);
+	sp = this->env->SpeciesGet(mutUsage, speciesId);
+	userFile = this->env->UserfileGet(mutUsage, fileId);
 	if (sp && sp->cateId == cateId && userFile && userFile->speciesId == speciesId && (userFile->fileType == 1 || userFile->fileType == 3))
 	{
 		if (sp->photoId == fileId && userFile->speciesId != sp->speciesId)
 		{
-			this->env->SpeciesUpdateDefPhoto(&mutUsage, sp->speciesId);
+			this->env->SpeciesUpdateDefPhoto(mutUsage, sp->speciesId);
 		}
 
 		Text::String *cacheDir = this->env->GetCacheDir();
 		Data::DateTime dt;
 		WebUserInfo *user;
-		user = this->env->UserGet(&mutUsage, userFile->webuserId);
+		user = this->env->UserGet(mutUsage, userFile->webuserId);
 		dt.SetTicks(userFile->fileTimeTicks);
 		dt.ToUTCTime();
 		rotateType = userFile->rotType;
@@ -600,7 +600,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoId(Net::WebServer::IW
 						fs.Write(buff, buffSize);
 						if (userFile->prevUpdated)
 						{
-							this->env->UserFilePrevUpdated(&mutUsage, userFile);
+							this->env->UserFilePrevUpdated(mutUsage, userFile);
 						}
 					}
 
@@ -627,7 +627,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoId(Net::WebServer::IW
 						fs.Write(buff, buffSize);
 						if (userFile->prevUpdated)
 						{
-							this->env->UserFilePrevUpdated(&mutUsage, userFile);
+							this->env->UserFilePrevUpdated(mutUsage, userFile);
 						}
 					}
 				}
@@ -662,7 +662,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoWId(Net::WebServer::I
 	WebFileInfo *wfile;
 	Int32 rotateType = 0;
 	Sync::RWMutexUsage mutUsage;
-	sp = this->env->SpeciesGet(&mutUsage, speciesId);
+	sp = this->env->SpeciesGet(mutUsage, speciesId);
 	if (sp && sp->cateId == cateId)
 	{
 		wfile = sp->wfiles.Get(fileWId);
@@ -834,7 +834,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoWId(Net::WebServer::I
 						fs.Write(buff, buffSize);
 						if (wfile->prevUpdated)
 						{
-							this->env->WebFilePrevUpdated(&mutUsage, wfile);
+							this->env->WebFilePrevUpdated(mutUsage, wfile);
 						}
 					}
 				}

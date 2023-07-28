@@ -197,7 +197,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnTimerTick(void *userObj
 		Sync::MutexUsage mutUsage;
 
 		me->lastAccessIndex = i;
-		me->reqLog->Use(&mutUsage);
+		me->reqLog->Use(mutUsage);
 		me->reqLog->GetEntries(&logs, &logIndex);
 		me->lbAccess->ClearItems();
 		me->txtAccess->SetText(CSTR(""));
@@ -227,7 +227,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnAccessSelChg(void *user
 	Sync::MutexUsage mutUsage;
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
-	me->reqLog->Use(&mutUsage);
+	me->reqLog->Use(mutUsage);
 	UOSInt i = (UOSInt)me->lbAccess->GetSelectedItem();
 	UOSInt j;
 	SSWR::AVIRead::AVIRHTTPLog::LogEntry *log;

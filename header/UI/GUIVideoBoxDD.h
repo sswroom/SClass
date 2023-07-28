@@ -32,7 +32,7 @@ namespace UI
 
 	protected:
 		//void UpdateFromBuff(VideoBuff *vbuff);
-		virtual void LockUpdateSize(Sync::MutexUsage *mutUsage);
+		virtual void LockUpdateSize(NotNullPtr<Sync::MutexUsage> mutUsage);
 		virtual void DrawFromSurface(Media::MonitorSurface *surface, Math::Coord2D<OSInt> destTL, Math::Size2D<UOSInt> buffSize, Bool clearScn);
 
 		virtual void BeginUpdateSize();

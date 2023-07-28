@@ -44,7 +44,7 @@ void UI::DObj::VideoDObjHandler::DrawVideo(Media::DrawImage *dimg)
 	}
 }
 
-void UI::DObj::VideoDObjHandler::LockUpdateSize(Sync::MutexUsage *mutUsage)
+void UI::DObj::VideoDObjHandler::LockUpdateSize(NotNullPtr<Sync::MutexUsage> mutUsage)
 {
 	mutUsage->ReplaceMutex(this->frameMut);
 }

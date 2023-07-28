@@ -9,7 +9,7 @@ namespace DB
 	class SharedReadingDB
 	{
 	private:
-		DB::ReadingDB *db;
+		NotNullPtr<DB::ReadingDB> db;
 		Sync::Mutex mutDB;
 		Sync::Mutex mutObj;
 		OSInt useCnt;
@@ -17,13 +17,13 @@ namespace DB
 	private:
 		~SharedReadingDB();
 	public:
-		SharedReadingDB(DB::ReadingDB *conn);
+		SharedReadingDB(NotNullPtr<DB::ReadingDB> conn);
 
 		void Reconnect();
 		void UseObject();
 		void UnuseObject();
 
-		DB::ReadingDB *UseDB(Sync::MutexUsage *mutUsage);
+		NotNullPtr<DB::ReadingDB> UseDB(NotNullPtr<Sync::MutexUsage> mutUsage);
 	};
 }
 #endif

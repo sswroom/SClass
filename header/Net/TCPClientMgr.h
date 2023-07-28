@@ -95,7 +95,7 @@ namespace Net
 		Bool IsError();
 		void CloseAll();
 
-		void UseGetClient(Sync::MutexUsage *mutUsage);
+		void UseGetClient(NotNullPtr<Sync::MutexUsage> mutUsage);
 		UOSInt GetClientCount() const;
 		void ExtendTimeout(NotNullPtr<Net::TCPClient> cli);
 		Net::TCPClient *GetClient(UOSInt index, void **cliData);

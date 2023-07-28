@@ -41,7 +41,7 @@ void __stdcall SSWR::AVIRead::AVIRNetBIOSScannerForm::OnAnswerSelChg(void *userO
 {
 	SSWR::AVIRead::AVIRNetBIOSScannerForm *me = (SSWR::AVIRead::AVIRNetBIOSScannerForm*)userObj;
 	Sync::MutexUsage mutUsage;
-	me->netbios->GetAnswers(&mutUsage);
+	me->netbios->GetAnswers(mutUsage);
 	Net::NetBIOSScanner::NameAnswer *ans = (Net::NetBIOSScanner::NameAnswer*)me->lvAnswers->GetSelectedItem();
 	me->lvEntries->ClearItems();
 	if (ans)
@@ -73,7 +73,7 @@ void __stdcall SSWR::AVIRead::AVIRNetBIOSScannerForm::OnTimerTick(void *userObj)
 		me->tableUpdated = false;
 		me->lvAnswers->ClearItems();
 		Sync::MutexUsage mutUsage;
-		const Data::ReadingList<Net::NetBIOSScanner::NameAnswer*> *ansList = me->netbios->GetAnswers(&mutUsage);
+		NotNullPtr<const Data::ReadingList<Net::NetBIOSScanner::NameAnswer*>> ansList = me->netbios->GetAnswers(mutUsage);
 		Net::NetBIOSScanner::NameAnswer *ans;
 		UOSInt i = 0;
 		UOSInt j = ansList->GetCount();

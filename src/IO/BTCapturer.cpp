@@ -100,8 +100,8 @@ void IO::BTCapturer::StoreStatus()
 	UTF8Char *sptr;
 	IO::BTDevLog btLog;
 	Sync::MutexUsage mutUsage;
-	btLog.AppendList(this->bt->GetPublicMap(&mutUsage));
-	btLog.AppendList(this->bt->GetRandomMap(&mutUsage));
+	btLog.AppendList(this->bt->GetPublicMap(mutUsage));
+	btLog.AppendList(this->bt->GetRandomMap(mutUsage));
 	UOSInt i;
 	Data::DateTime dt;
 	dt.SetCurrTime();
@@ -122,12 +122,12 @@ void IO::BTCapturer::StoreStatus()
 	}
 }
 
-NotNullPtr<const Data::ReadingList<IO::BTScanLog::ScanRecord3*>> IO::BTCapturer::GetPublicList(Sync::MutexUsage *mutUsage) const
+NotNullPtr<const Data::ReadingList<IO::BTScanLog::ScanRecord3*>> IO::BTCapturer::GetPublicList(NotNullPtr<Sync::MutexUsage> mutUsage) const
 {
 	return this->bt->GetPublicMap(mutUsage);
 }
 
-NotNullPtr<const Data::ReadingList<IO::BTScanLog::ScanRecord3*>> IO::BTCapturer::GetRandomList(Sync::MutexUsage *mutUsage) const
+NotNullPtr<const Data::ReadingList<IO::BTScanLog::ScanRecord3*>> IO::BTCapturer::GetRandomList(NotNullPtr<Sync::MutexUsage> mutUsage) const
 {
 	return this->bt->GetRandomMap(mutUsage);
 }

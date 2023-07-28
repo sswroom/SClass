@@ -74,7 +74,7 @@ Bool __stdcall Net::EthernetWebHandler::DeviceReq(EthernetWebHandler *me, Net::W
 		sb.AppendC(UTF8STRC("<td>IP List</td>"));
 		sb.AppendC(UTF8STRC("</tr>\r\n"));
 		Sync::MutexUsage mutUsage;
-		me->analyzer->UseMAC(&mutUsage);
+		me->analyzer->UseMAC(mutUsage);
 		macList = me->analyzer->MACGetList();
 		i = 0;
 		j = macList->GetCount();
@@ -189,7 +189,7 @@ Bool __stdcall Net::EthernetWebHandler::IPTransferReq(EthernetWebHandler *me, Ne
 		sb.AppendC(UTF8STRC("<td>Other Cnt</td>"));
 		sb.AppendC(UTF8STRC("</tr>\r\n"));
 		Sync::MutexUsage mutUsage;
-		me->analyzer->UseIPTran(&mutUsage);
+		me->analyzer->UseIPTran(mutUsage);
 		ipTranList = me->analyzer->IPTranGetList();
 		i = 0;
 		j = ipTranList->GetCount();
@@ -685,7 +685,7 @@ Bool __stdcall Net::EthernetWebHandler::DNSClientReq(EthernetWebHandler *me, Net
 			qryVal = Text::StrToUInt32(sbuff);
 		}
 		Sync::MutexUsage mutUsage;
-		me->analyzer->UseDNSCli(&mutUsage);
+		me->analyzer->UseDNSCli(mutUsage);
 		dnsCliList = me->analyzer->DNSCliGetList();
 		i = 0;
 		j = dnsCliList->GetCount();
@@ -788,7 +788,7 @@ Bool __stdcall Net::EthernetWebHandler::DHCPReq(EthernetWebHandler *me, Net::Web
 		sb.AppendC(UTF8STRC("<td>Vendor Class</td>"));
 		sb.AppendC(UTF8STRC("</tr>\r\n"));
 		Sync::MutexUsage mutUsage;
-		me->analyzer->UseDHCP(&mutUsage);
+		me->analyzer->UseDHCP(mutUsage);
 		dhcpList = me->analyzer->DHCPGetList();
 		i = 0;
 		j = dhcpList->GetCount();
@@ -894,7 +894,7 @@ Bool __stdcall Net::EthernetWebHandler::IPLogReq(EthernetWebHandler *me, Net::We
 			qryVal = Text::StrToUInt32(sbuff);
 		}
 		Sync::MutexUsage mutUsage;
-		me->analyzer->UseIPLog(&mutUsage);
+		me->analyzer->UseIPLog(mutUsage);
 		ipLogList = me->analyzer->IPLogGetList();
 		i = 0;
 		j = ipLogList->GetCount();

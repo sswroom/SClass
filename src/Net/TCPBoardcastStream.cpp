@@ -225,7 +225,7 @@ UOSInt Net::TCPBoardcastStream::Write(const UInt8 *buff, UOSInt size)
 	Text::StringBuilderUTF8 sb;
 	void *cliData;
 	Sync::MutexUsage mutUsage;
-	this->cliMgr->UseGetClient(&mutUsage);
+	this->cliMgr->UseGetClient(mutUsage);
 	i = this->cliMgr->GetClientCount();
 	while (i-- > 0)
 	{

@@ -243,7 +243,7 @@ const UInt8 *Net::WebSocketClient::NextPacket(UInt8 *opcode, UOSInt *packetSize)
 	}
 }
 
-const UInt8 *Net::WebSocketClient::NextPacket(Sync::MutexUsage *mutUsage, UOSInt *packetSize)
+const UInt8 *Net::WebSocketClient::NextPacket(NotNullPtr<Sync::MutexUsage> mutUsage, UOSInt *packetSize)
 {
 	mutUsage->ReplaceMutex(this->recvMut);
 	if (this->cli == 0)
@@ -489,7 +489,7 @@ UOSInt Net::WebSocketClient::Read(const Data::ByteArray &buff)
 		}
 	}
 	UOSInt packetSize;
-	const UInt8 *packetBuff = this->NextPacket(&mutUsage, &packetSize);
+	const UInt8 *packetBuff = this->NextPacket(mutUsage, &packetSize);
 	if (packetBuff == 0)
 		return 0;
 	if (packetSize <= buff.GetSize())
