@@ -459,38 +459,74 @@ namespace Data
 
 		void WriteI16(UOSInt ofst, Int16 val)
 		{
-			CheckError(ofst);
+			CheckError(ofst + 2);
 			WriteInt16(&buff[ofst], val);
 		}
 
 		void WriteU16(UOSInt ofst, UInt16 val)
 		{
-			CheckError(ofst);
+			CheckError(ofst + 2);
 			WriteUInt16(&buff[ofst], val);
 		}
 
 		void WriteMI16(UOSInt ofst, Int16 val)
 		{
-			CheckError(ofst);
+			CheckError(ofst + 2);
 			WriteMInt16(&buff[ofst], val);
 		}
 
 		void WriteMU16(UOSInt ofst, UInt16 val)
 		{
-			CheckError(ofst);
+			CheckError(ofst + 2);
 			WriteMUInt16(&buff[ofst], val);
 		}
 
 		void WriteNI16(UOSInt ofst, Int16 val)
 		{
-			CheckError(ofst);
+			CheckError(ofst + 2);
 			WriteNInt16(&buff[ofst], val);
 		}
 
 		void WriteNU16(UOSInt ofst, UInt16 val)
 		{
-			CheckError(ofst);
+			CheckError(ofst + 2);
 			WriteNUInt16(&buff[ofst], val);
+		}
+
+		void WriteI32(UOSInt ofst, Int32 val)
+		{
+			CheckError(ofst + 4);
+			WriteInt32(&buff[ofst], val);
+		}
+
+		void WriteU32(UOSInt ofst, UInt32 val)
+		{
+			CheckError(ofst + 4);
+			WriteUInt32(&buff[ofst], val);
+		}
+
+		void WriteMI32(UOSInt ofst, Int32 val)
+		{
+			CheckError(ofst + 4);
+			WriteMInt32(&buff[ofst], val);
+		}
+
+		void WriteMU32(UOSInt ofst, UInt32 val)
+		{
+			CheckError(ofst + 4);
+			WriteMUInt32(&buff[ofst], val);
+		}
+
+		void WriteNI32(UOSInt ofst, Int32 val)
+		{
+			CheckError(ofst + 4);
+			WriteNInt32(&buff[ofst], val);
+		}
+
+		void WriteNU32(UOSInt ofst, UInt32 val)
+		{
+			CheckError(ofst + 4);
+			WriteNUInt32(&buff[ofst], val);
 		}
 	};
 

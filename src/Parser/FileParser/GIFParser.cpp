@@ -659,7 +659,7 @@ IO::ParsedObject *Parser::FileParser::GIFParser::ParseFileHdr(NotNullPtr<IO::Str
 						}
 						if (!tmpPtr.IsNull())
 						{
-							tmpPtr2 = Data::ByteArray(simg->pal, readSize * 4);
+							tmpPtr2 = Data::ByteArray(simg->pal, 256 * 4);
 							i = 0;
 							while (i < readSize)
 							{
@@ -670,6 +670,12 @@ IO::ParsedObject *Parser::FileParser::GIFParser::ParseFileHdr(NotNullPtr<IO::Str
 								tmpPtr2 += 4;
 								tmpPtr += 3;
 								i++;
+							}
+							i = 256 - readSize;
+							while (i-- > 0)
+							{
+								tmpPtr2.WriteNI32(0, 0);
+								tmpPtr2 += 4;
 							}
 							if (globalTransparentIndex >= 0)
 							{
