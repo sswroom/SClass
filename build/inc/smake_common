@@ -2026,6 +2026,8 @@ IO/FileAnalyse/SHPFileAnalyse.h: ../../src/IO/FileAnalyse/SHPFileAnalyse.cpp
 @SHPFileAnalyse.o
 IO/FileAnalyse/SMBIOSFileAnalyse.h: ../../src/IO/FileAnalyse/SMBIOSFileAnalyse.cpp
 @SMBIOSFileAnalyse.o
+IO/FileAnalyse/SMTCFileAnalyse.h: ../../src/IO/FileAnalyse/SMTCFileAnalyse.cpp
+@SMTCFileAnalyse.o
 IO/FileAnalyse/SPKFileAnalyse.h: ../../src/IO/FileAnalyse/SPKFileAnalyse.cpp
 @SPKFileAnalyse.o
 IO/FileAnalyse/TIFFFileAnalyse.h: ../../src/IO/FileAnalyse/TIFFFileAnalyse.cpp
@@ -4975,6 +4977,7 @@ RIFFFileAnalyse.o: ../../src/IO/FileAnalyse/RIFFFileAnalyse.cpp
 SBFrameDetail.o: ../../src/IO/FileAnalyse/SBFrameDetail.cpp
 SHPFileAnalyse.o: ../../src/IO/FileAnalyse/SHPFileAnalyse.cpp
 SMBIOSFileAnalyse.o: ../../src/IO/FileAnalyse/SMBIOSFileAnalyse.cpp
+SMTCFileAnalyse.o: ../../src/IO/FileAnalyse/SMTCFileAnalyse.cpp
 SPKFileAnalyse.o: ../../src/IO/FileAnalyse/SPKFileAnalyse.cpp
 TIFFFileAnalyse.o: ../../src/IO/FileAnalyse/TIFFFileAnalyse.cpp
 TSFileAnalyse.o: ../../src/IO/FileAnalyse/TSFileAnalyse.cpp

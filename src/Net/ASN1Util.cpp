@@ -524,7 +524,7 @@ Bool Net::ASN1Util::PDUToString(const UInt8 *pdu, const UInt8 *pduEnd, NotNullPt
 				else
 				{
 					sb->AppendC(UTF8STRC(" ("));
-					if (Text::StringTool::IsASCIIText(&pdu[ofst], len))
+					if (Text::StringTool::IsASCIIText(Data::ByteArrayR(&pdu[ofst], len)))
 					{
 						sb->AppendC(&pdu[ofst], len);
 					}
@@ -619,7 +619,7 @@ Bool Net::ASN1Util::PDUToString(const UInt8 *pdu, const UInt8 *pduEnd, NotNullPt
 				else
 				{
 					sb->AppendC(UTF8STRC(" ("));
-					if (Text::StringTool::IsASCIIText(&pdu[ofst], len))
+					if (Text::StringTool::IsASCIIText(Data::ByteArrayR(&pdu[ofst], len)))
 					{
 						sb->AppendC(&pdu[ofst], len);
 					}

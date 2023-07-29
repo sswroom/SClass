@@ -159,6 +159,11 @@ NotNullPtr<Text::String> Net::WebServer::WebListener::GetServerName() const
 	return this->svrName;
 }
 
+void Net::WebServer::WebListener::SetClientLog(Text::CString logFile)
+{
+	this->cliMgr.SetLogFile(logFile);
+}
+
 void Net::WebServer::WebListener::SetAccessLog(IO::LogTool *accLog, IO::LogHandler::LogLevel accLogLev)
 {
 	Sync::MutexUsage mutUsage(this->accLogMut);

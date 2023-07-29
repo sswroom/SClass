@@ -409,7 +409,7 @@ Bool UI::GUIHexFileView::LoadFile(Text::CString fileName, Bool dynamicSize)
 		this->fd = fd.Ptr();
 		this->analyse = IO::FileAnalyse::IFileAnalyse::AnalyseFile(fd);
 		this->fileSize = this->fd->GetDataSize();
-		this->currOfst = 1;
+		this->currOfst = 0;
 		this->SetScrollVRange(0, (UOSInt)(this->fileSize >> 4));
 		this->GoToOffset(0);
 	}
@@ -433,7 +433,7 @@ Bool UI::GUIHexFileView::LoadData(NotNullPtr<IO::StreamData> data, IO::FileAnaly
 		this->analyse = IO::FileAnalyse::IFileAnalyse::AnalyseFile(data);
 	}
 	this->fileSize = this->fd->GetDataSize();
-	this->currOfst = 1;
+	this->currOfst = 0;
 	this->SetScrollVRange(0, (UOSInt)(this->fileSize >> 4));
 	this->GoToOffset(0);
 	this->Redraw();

@@ -5,6 +5,7 @@
 #include "Data/ByteArray.h"
 #include "Data/SyncCircularBuff.h"
 #include "Data/Timestamp.h"
+#include "IO/FileStream.h"
 #include "Net/TCPClient.h"
 #include "Sync/Mutex.h"
 #include "Sync/MutexUsage.h"
@@ -83,13 +84,19 @@ namespace Net
 		UOSInt workerCnt;
 		Data::SyncCircularBuff<TCPClientStatus*> workerTasks;
 
+		Sync::Mutex logMut;
+		IO::FileStream *logFS;
+
 		static UInt32 __stdcall ClientThread(void *o);
 		static UInt32 __stdcall WorkerThread(void *o);
 		void ProcessClient(TCPClientStatus *cliStat);
+		void LogDisconnect(NotNullPtr<TCPClient> cli);
+		void LogDataRecv(NotNullPtr<TCPClient> cli, const UInt8 *buff, UOSInt size);
 	public:
 		TCPClientMgr(Int32 timeOutSeconds, TCPClientEvent evtHdlr, TCPClientData dataHdlr, void *userObj, UOSInt workerCnt, TCPClientTimeout toHdlr);
 		~TCPClientMgr();
 
+		void SetLogFile(Text::CString logFile);
 		void AddClient(NotNullPtr<TCPClient> cli, void *cliData);
 		Bool SendClientData(UInt64 cliId, const UInt8 *buff, UOSInt buffSize);
 		Bool IsError();

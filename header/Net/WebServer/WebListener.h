@@ -70,6 +70,7 @@ namespace Net
 			Bool Start();
 			Bool IsError();
 			NotNullPtr<Text::String> GetServerName() const;
+			void SetClientLog(Text::CString logFile);
 			void SetAccessLog(IO::LogTool *accLog, IO::LogHandler::LogLevel accLogLev);
 			void SetRequestLog(IReqLogger *reqLog);
 			void LogAccess(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Double time);

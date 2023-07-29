@@ -21,6 +21,7 @@
 #include "IO/FileAnalyse/RIFFFileAnalyse.h"
 #include "IO/FileAnalyse/SHPFileAnalyse.h"
 #include "IO/FileAnalyse/SPKFileAnalyse.h"
+#include "IO/FileAnalyse/SMTCFileAnalyse.h"
 #include "IO/FileAnalyse/TIFFFileAnalyse.h"
 #include "IO/FileAnalyse/TSFileAnalyse.h"
 #include "IO/FileAnalyse/ZIPFileAnalyse.h"
@@ -146,6 +147,10 @@ IO::FileAnalyse::IFileAnalyse *IO::FileAnalyse::IFileAnalyse::AnalyseFile(NotNul
 	else if (buffSize >= 128 && buff[0] == 'M' && buff[1] == 'M' && (ReadMUInt16(&buff[2]) == 42 || ReadMUInt16(&buff[2]) == 43))
 	{
 		NEW_CLASS(analyse, IO::FileAnalyse::TIFFFileAnalyse(fd));
+	}
+	else if (buffSize >= 25 && *(Int32*)&buff[0] == *(Int32*)"SmTC" && buff[24] == 0)
+	{
+		NEW_CLASS(analyse, IO::FileAnalyse::SMTCFileAnalyse(fd));
 	}
 
 	if (analyse && analyse->IsError())

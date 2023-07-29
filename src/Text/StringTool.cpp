@@ -183,12 +183,13 @@ Bool Text::StringTool::IsNonASCII(const UTF8Char *s)
 	return false;
 }
 
-Bool Text::StringTool::IsASCIIText(const UInt8 *buff, UOSInt buffLen)
+Bool Text::StringTool::IsASCIIText(const Data::ByteArrayR &buff)
 {
 	UInt8 b;
-	while (buffLen-- > 0)
+	UOSInt index = 0;
+	while (index < buff.GetSize())
 	{
-		b = *buff++;
+		b = buff[index++];
 		if ((b >= 0x20 && b < 0x7F) || b == 13 || b == 10)
 		{
 

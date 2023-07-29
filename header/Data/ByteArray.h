@@ -206,6 +206,44 @@ namespace Data
 			CheckError(index + 4);
 			return ReadNUInt32(&buff[index]);
 		}
+
+#ifdef HAS_INT64
+		Int64 ReadI64(UOSInt index) const
+		{
+			CheckError(index + 8);
+			return ReadInt64(&buff[index]);
+		}
+
+		UInt64 ReadU64(UOSInt index) const
+		{
+			CheckError(index + 8);
+			return ReadUInt64(&buff[index]);
+		}
+
+		Int64 ReadMI64(UOSInt index) const
+		{
+			CheckError(index + 8);
+			return ReadMInt64(&buff[index]);
+		}
+
+		UInt64 ReadMU64(UOSInt index) const
+		{
+			CheckError(index + 8);
+			return ReadMUInt64(&buff[index]);
+		}
+
+		Int64 ReadNI64(UOSInt index) const
+		{
+			CheckError(index + 8);
+			return ReadNInt64(&buff[index]);
+		}
+
+		UInt64 ReadNU64(UOSInt index) const
+		{
+			CheckError(index + 8);
+			return ReadNUInt64(&buff[index]);
+		}
+#endif
 	};
 
 	class ByteArray : public ByteArrayBase<UInt8>
@@ -352,7 +390,7 @@ namespace Data
 		}
 #endif
 
-		ByteArray &operator++(int)
+		UInt8 *operator++(int)
 		{
 			CheckError(1);
 			this->buff = buff + 1;
@@ -360,7 +398,7 @@ namespace Data
 #if defined(CHECK_RANGE)
 			this->prevSize++;
 #endif
-			return *this;
+			return &this->buff[-1];
 		}
 
 		ByteArray &operator-=(UOSInt ofst)
