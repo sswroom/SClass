@@ -19,8 +19,8 @@ namespace Crypto
 			virtual ~Bcrypt();
 			
 			Bool Matches(const UTF8Char *hash, UOSInt hashLen, const UTF8Char *password, UOSInt pwdLen);
-			Bool GenHash(Text::StringBuilderUTF8 *sb, UInt32 cost, const UTF8Char *password, UOSInt pwdLen);
-			Bool GenHash(Text::StringBuilderUTF8 *sb, UInt32 cost, const UInt8 *salt, const UTF8Char *password, UOSInt pwdLen);
+			Bool GenHash(NotNullPtr<Text::StringBuilderUTF8> sb, UInt32 cost, const UTF8Char *password, UOSInt pwdLen);
+			Bool GenHash(NotNullPtr<Text::StringBuilderUTF8> sb, UInt32 cost, const UInt8 *salt, const UTF8Char *password, UOSInt pwdLen);
 		};
 	}
 }

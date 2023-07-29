@@ -118,7 +118,7 @@ void Map::WebMapTileServiceSource::ReadLayer(Text::XMLReader *reader)
 			if (name->Equals(UTF8STRC("ows:Title")))
 			{
 				sb.ClearStr();
-				reader->ReadNodeText(&sb);
+				reader->ReadNodeText(sb);
 				if (sb.GetLength() > 0)
 				{
 					SDEL_STRING(layer->title);
@@ -136,7 +136,7 @@ void Map::WebMapTileServiceSource::ReadLayer(Text::XMLReader *reader)
 						if (name->Equals(UTF8STRC("ows:LowerCorner")))
 						{
 							sb.ClearStr();
-							reader->ReadNodeText(&sb);
+							reader->ReadNodeText(sb);
 							if (Text::StrSplitP(sarr, 3, sb, ' ') == 2)
 							{
 								layer->wgs84Bounds.tl.x = sarr[0].ToDouble();
@@ -146,7 +146,7 @@ void Map::WebMapTileServiceSource::ReadLayer(Text::XMLReader *reader)
 						else if (name->Equals(UTF8STRC("ows:UpperCorner")))
 						{
 							sb.ClearStr();
-							reader->ReadNodeText(&sb);
+							reader->ReadNodeText(sb);
 							if (Text::StrSplitP(sarr, 3, sb, ' ') == 2)
 							{
 								layer->wgs84Bounds.br.x = sarr[0].ToDouble();
@@ -167,7 +167,7 @@ void Map::WebMapTileServiceSource::ReadLayer(Text::XMLReader *reader)
 			else if (name->Equals(UTF8STRC("ows:Identifier")))
 			{
 				sb.ClearStr();
-				reader->ReadNodeText(&sb);
+				reader->ReadNodeText(sb);
 				if (sb.GetLength() > 0)
 				{
 					SDEL_STRING(layer->id);
@@ -182,7 +182,7 @@ void Map::WebMapTileServiceSource::ReadLayer(Text::XMLReader *reader)
 			else if (name->Equals(UTF8STRC("Format")))
 			{
 				sb.ClearStr();
-				reader->ReadNodeText(&sb);
+				reader->ReadNodeText(sb);
 				if (sb.GetLength() > 0)
 				{
 					layer->format.Add(Text::String::New(sb.ToCString()));
@@ -191,7 +191,7 @@ void Map::WebMapTileServiceSource::ReadLayer(Text::XMLReader *reader)
 			else if (name->Equals(UTF8STRC("InfoFormat")))
 			{
 				sb.ClearStr();
-				reader->ReadNodeText(&sb);
+				reader->ReadNodeText(sb);
 				if (sb.GetLength() > 0)
 				{
 					layer->infoFormat.Add(Text::String::New(sb.ToCString()));
@@ -302,7 +302,7 @@ Map::WebMapTileServiceSource::TileMatrixSet *Map::WebMapTileServiceSource::ReadT
 			if (name->Equals(UTF8STRC("TileMatrixSet")))
 			{
 				sb.ClearStr();
-				reader->ReadNodeText(&sb);
+				reader->ReadNodeText(sb);
 				if (sb.GetLength() > 0)
 				{
 					set->id->Release();
@@ -333,7 +333,7 @@ Map::WebMapTileServiceSource::TileMatrixSet *Map::WebMapTileServiceSource::ReadT
 									if (name->Equals(UTF8STRC("TileMatrix")))
 									{
 										sb.ClearStr();
-										reader->ReadNodeText(&sb);
+										reader->ReadNodeText(sb);
 										if (sb.GetLength() > 0)
 										{
 											SDEL_STRING(id);
@@ -343,7 +343,7 @@ Map::WebMapTileServiceSource::TileMatrixSet *Map::WebMapTileServiceSource::ReadT
 									else if (name->Equals(UTF8STRC("MinTileRow")))
 									{
 										sb.ClearStr();
-										reader->ReadNodeText(&sb);
+										reader->ReadNodeText(sb);
 										if (sb.GetLength() > 0)
 										{
 											minRow = sb.ToInt32();
@@ -352,7 +352,7 @@ Map::WebMapTileServiceSource::TileMatrixSet *Map::WebMapTileServiceSource::ReadT
 									else if (name->Equals(UTF8STRC("MaxTileRow")))
 									{
 										sb.ClearStr();
-										reader->ReadNodeText(&sb);
+										reader->ReadNodeText(sb);
 										if (sb.GetLength() > 0)
 										{
 											maxRow = sb.ToInt32();
@@ -361,7 +361,7 @@ Map::WebMapTileServiceSource::TileMatrixSet *Map::WebMapTileServiceSource::ReadT
 									else if (name->Equals(UTF8STRC("MinTileCol")))
 									{
 										sb.ClearStr();
-										reader->ReadNodeText(&sb);
+										reader->ReadNodeText(sb);
 										if (sb.GetLength() > 0)
 										{
 											minCol = sb.ToInt32();
@@ -370,7 +370,7 @@ Map::WebMapTileServiceSource::TileMatrixSet *Map::WebMapTileServiceSource::ReadT
 									else if (name->Equals(UTF8STRC("MaxTileCol")))
 									{
 										sb.ClearStr();
-										reader->ReadNodeText(&sb);
+										reader->ReadNodeText(sb);
 										if (sb.GetLength() > 0)
 										{
 											maxCol = sb.ToInt32();
@@ -449,7 +449,7 @@ Map::WebMapTileServiceSource::TileMatrixDefSet *Map::WebMapTileServiceSource::Re
 			if (name->Equals(UTF8STRC("ows:Identifier")))
 			{
 				sb.ClearStr();
-				reader->ReadNodeText(&sb);
+				reader->ReadNodeText(sb);
 				if (sb.GetLength() > 0)
 				{
 					SDEL_STRING(set->id);
@@ -459,7 +459,7 @@ Map::WebMapTileServiceSource::TileMatrixDefSet *Map::WebMapTileServiceSource::Re
 			else if (name->Equals(UTF8STRC("ows:SupportedCRS")))
 			{
 				sb.ClearStr();
-				reader->ReadNodeText(&sb);
+				reader->ReadNodeText(sb);
 				if (sb.GetLength() > 0)
 				{
 					SDEL_CLASS(set->csys);
@@ -485,7 +485,7 @@ Map::WebMapTileServiceSource::TileMatrixDefSet *Map::WebMapTileServiceSource::Re
 						if (name->Equals(UTF8STRC("ows:Identifier")))
 						{
 							sb.ClearStr();
-							reader->ReadNodeText(&sb);
+							reader->ReadNodeText(sb);
 							if (sb.GetLength() > 0)
 							{
 								SDEL_STRING(id);
@@ -495,7 +495,7 @@ Map::WebMapTileServiceSource::TileMatrixDefSet *Map::WebMapTileServiceSource::Re
 						else if (name->Equals(UTF8STRC("ScaleDenominator")))
 						{
 							sb.ClearStr();
-							reader->ReadNodeText(&sb);
+							reader->ReadNodeText(sb);
 							if (sb.GetLength() > 0)
 							{
 								scaleDenom = sb.ToDouble();
@@ -504,7 +504,7 @@ Map::WebMapTileServiceSource::TileMatrixDefSet *Map::WebMapTileServiceSource::Re
 						else if (name->Equals(UTF8STRC("TopLeftCorner")))
 						{
 							sb.ClearStr();
-							reader->ReadNodeText(&sb);
+							reader->ReadNodeText(sb);
 							if (sb.GetLength() > 0)
 							{
 								Text::PString sarr[3];
@@ -518,7 +518,7 @@ Map::WebMapTileServiceSource::TileMatrixDefSet *Map::WebMapTileServiceSource::Re
 						else if (name->Equals(UTF8STRC("TileWidth")))
 						{
 							sb.ClearStr();
-							reader->ReadNodeText(&sb);
+							reader->ReadNodeText(sb);
 							if (sb.GetLength() > 0)
 							{
 								tileWidth = sb.ToUInt32();
@@ -527,7 +527,7 @@ Map::WebMapTileServiceSource::TileMatrixDefSet *Map::WebMapTileServiceSource::Re
 						else if (name->Equals(UTF8STRC("TileHeight")))
 						{
 							sb.ClearStr();
-							reader->ReadNodeText(&sb);
+							reader->ReadNodeText(sb);
 							if (sb.GetLength() > 0)
 							{
 								tileHeight = sb.ToUInt32();
@@ -536,7 +536,7 @@ Map::WebMapTileServiceSource::TileMatrixDefSet *Map::WebMapTileServiceSource::Re
 						else if (name->Equals(UTF8STRC("MatrixWidth")))
 						{
 							sb.ClearStr();
-							reader->ReadNodeText(&sb);
+							reader->ReadNodeText(sb);
 							if (sb.GetLength() > 0)
 							{
 								matrixWidth = sb.ToUInt32();
@@ -545,7 +545,7 @@ Map::WebMapTileServiceSource::TileMatrixDefSet *Map::WebMapTileServiceSource::Re
 						else if (name->Equals(UTF8STRC("MatrixHeight")))
 						{
 							sb.ClearStr();
-							reader->ReadNodeText(&sb);
+							reader->ReadNodeText(sb);
 							if (sb.GetLength() > 0)
 							{
 								matrixHeight = sb.ToUInt32();

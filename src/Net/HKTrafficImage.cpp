@@ -57,31 +57,31 @@ void Net::HKTrafficImage::Init(Text::EncodingFactory *encFact, const UInt8 *buff
 							{
 								if (node3->name->EqualsICase(UTF8STRC("key")))
 								{
-									node3->GetInnerText(&sbKey);
+									node3->GetInnerText(sbKey);
 								}
 								else if (node3->name->EqualsICase(UTF8STRC("region")))
 								{
-									node3->GetInnerText(&sbRegion);
+									node3->GetInnerText(sbRegion);
 								}
 								else if (node3->name->EqualsICase(UTF8STRC("description")))
 								{
-									node3->GetInnerText(&sbDesc);
+									node3->GetInnerText(sbDesc);
 								}
 								else if (node3->name->EqualsICase(UTF8STRC("latitude")))
 								{
 									sb.ClearStr();
-									node3->GetInnerText(&sb);
+									node3->GetInnerText(sb);
 									lat = Text::StrToDouble(sb.ToString());
 								}
 								else if (node3->name->EqualsICase(UTF8STRC("longitude")))
 								{
 									sb.ClearStr();
-									node3->GetInnerText(&sb);
+									node3->GetInnerText(sb);
 									lon = Text::StrToDouble(sb.ToString());
 								}
 								else if (node3->name->EqualsICase(UTF8STRC("url")))
 								{
-									node3->GetInnerText(&sbURL);
+									node3->GetInnerText(sbURL);
 								}
 							}
 						}

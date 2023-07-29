@@ -20,7 +20,7 @@ void __stdcall SSWR::AVIRead::AVIRBYDC9RForm::OnCANBusClicked(void *userObj)
 		{
 			me->listener = dlg.GetListener();
 			Text::StringBuilderUTF8 sb;
-			me->listener->ToString(&sb);
+			me->listener->ToString(sb);
 			me->txtCANBus->SetText(sb.ToCString());
 			me->btnCANBus->SetText(CSTR("Close"));
 		}

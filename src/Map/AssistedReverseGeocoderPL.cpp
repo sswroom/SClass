@@ -62,7 +62,7 @@ Map::AssistedReverseGeocoderPL::AssistedReverseGeocoderPL(DB::DBTool *db, IO::Wr
 				entry->keyx = r->GetInt32(1);
 				entry->keyy = r->GetInt32(2);
 				sb.ClearStr();
-				r->GetStr(3, &sb);
+				r->GetStr(3, sb);
 				addr = this->strMap.Get(sb.ToCString());
 				if (addr == 0)
 				{

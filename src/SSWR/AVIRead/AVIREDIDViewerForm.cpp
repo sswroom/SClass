@@ -46,7 +46,7 @@ void SSWR::AVIRead::AVIREDIDViewerForm::UpdateEDIDDisp()
 			sb.AppendC(UTF8STRC(" x "));
 			sb.AppendU32(info.dispPhysicalH_mm);
 			sb.AppendC(UTF8STRC(" ("));
-			Text::SBAppendF64(&sb, Math::Unit::Distance::Convert(Math::Unit::Distance::DU_MILLIMETER, Math::Unit::Distance::DU_INCH, Math_Sqrt(info.dispPhysicalW_mm * info.dispPhysicalW_mm + info.dispPhysicalH_mm * info.dispPhysicalH_mm)));
+			sb.AppendDouble(Math::Unit::Distance::Convert(Math::Unit::Distance::DU_MILLIMETER, Math::Unit::Distance::DU_INCH, Math_Sqrt(info.dispPhysicalW_mm * info.dispPhysicalW_mm + info.dispPhysicalH_mm * info.dispPhysicalH_mm)));
 			sb.AppendC(UTF8STRC("\")"));
 			if (info.monitorName[0])
 			{
@@ -65,23 +65,23 @@ void SSWR::AVIRead::AVIREDIDViewerForm::UpdateEDIDDisp()
 			}
 			sb.AppendC(UTF8STRC("\r\n\r\nColor Primaries:"));
 			sb.AppendC(UTF8STRC("\r\nGamma: "));
-			Text::SBAppendF64(&sb, info.gamma);
+			sb.AppendDouble(info.gamma);
 			sb.AppendC(UTF8STRC("\r\nRed: "));
-			Text::SBAppendF64(&sb, info.rx);
+			sb.AppendDouble(info.rx);
 			sb.AppendC(UTF8STRC(", "));
-			Text::SBAppendF64(&sb, info.ry);
+			sb.AppendDouble(info.ry);
 			sb.AppendC(UTF8STRC("\r\nGreen: "));
-			Text::SBAppendF64(&sb, info.gx);
+			sb.AppendDouble(info.gx);
 			sb.AppendC(UTF8STRC(", "));
-			Text::SBAppendF64(&sb, info.gy);
+			sb.AppendDouble(info.gy);
 			sb.AppendC(UTF8STRC("\r\nBlue: "));
-			Text::SBAppendF64(&sb, info.bx);
+			sb.AppendDouble(info.bx);
 			sb.AppendC(UTF8STRC(", "));
-			Text::SBAppendF64(&sb, info.by);
+			sb.AppendDouble(info.by);
 			sb.AppendC(UTF8STRC("\r\nWhite: "));
-			Text::SBAppendF64(&sb, info.wx);
+			sb.AppendDouble(info.wx);
 			sb.AppendC(UTF8STRC(", "));
-			Text::SBAppendF64(&sb, info.wy);
+			sb.AppendDouble(info.wy);
 			this->txtEDID->SetText(sb.ToCString());
 		}
 		else

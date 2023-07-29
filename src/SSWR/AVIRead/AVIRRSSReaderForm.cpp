@@ -15,7 +15,7 @@ void __stdcall SSWR::AVIRead::AVIRRSSReaderForm::OnRequestClicked(void *userObj)
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
 	Text::StringBuilderUTF8 sb;
-	me->txtURL->GetText(&sb);
+	me->txtURL->GetText(sb);
 	me->lvInfo->ClearItems();
 	me->lvItems->ClearItems();
 	SDEL_CLASS(me->rss);
@@ -116,7 +116,7 @@ void __stdcall SSWR::AVIRead::AVIRRSSReaderForm::OnRequestClicked(void *userObj)
 				if (item->description)
 				{
 					sb.ClearStr();
-					Text::HTMLUtil::HTMLGetText(me->core->GetEncFactory(), item->description->v, item->description->leng, true, &sb, 0);
+					Text::HTMLUtil::HTMLGetText(me->core->GetEncFactory(), item->description->v, item->description->leng, true, sb, 0);
 					me->lvItems->SetSubItem(i, 2, sb.ToCString());
 				}
 				i++;

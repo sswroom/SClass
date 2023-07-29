@@ -175,7 +175,7 @@ UOSInt IO::FileAnalyse::DWGFileAnalyse::GetFrameCount()
 	return this->packs.GetCount();
 }
 
-Bool IO::FileAnalyse::DWGFileAnalyse::GetFrameName(UOSInt index, Text::StringBuilderUTF8 *sb)
+Bool IO::FileAnalyse::DWGFileAnalyse::GetFrameName(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	IO::FileAnalyse::DWGFileAnalyse::PackInfo *pack;
 	pack = this->packs.GetItem(index);

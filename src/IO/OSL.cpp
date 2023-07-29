@@ -12,7 +12,7 @@ UTF8Char *IO::OS::GetDistro(UTF8Char *sbuff)
 	if (IO::Path::GetPathType(CSTR("/bin/nvram")) == IO::Path::PathType::File)
 	{
 		Text::StringBuilderUTF8 sb;
-		Manage::Process::ExecuteProcess(CSTR("nvram get productid"), &sb);
+		Manage::Process::ExecuteProcess(CSTR("nvram get productid"), sb);
 		while (sb.EndsWith('\r') || sb.EndsWith('\n'))
 		{
 			sb.RemoveChars(1);
@@ -125,7 +125,7 @@ UTF8Char *IO::OS::GetVersion(UTF8Char *sbuff)
 	if (IO::Path::GetPathType(CSTR("/bin/nvram")) == IO::Path::PathType::File)
 	{
 		Text::StringBuilderUTF8 sb;
-		Manage::Process::ExecuteProcess(CSTR("nvram get firmver"), &sb);
+		Manage::Process::ExecuteProcess(CSTR("nvram get firmver"), sb);
 		while (sb.EndsWith('\r') || sb.EndsWith('\n'))
 		{
 			sb.RemoveChars(1);
@@ -135,7 +135,7 @@ UTF8Char *IO::OS::GetVersion(UTF8Char *sbuff)
 			return Text::StrConcatC(sbuff, sb.ToString(), sb.GetLength());
 		}
 
-		Manage::Process::ExecuteProcess(CSTR("nvram get FirmwareVersion"), &sb);
+		Manage::Process::ExecuteProcess(CSTR("nvram get FirmwareVersion"), sb);
 		while (sb.EndsWith('\r') || sb.EndsWith('\n'))
 		{
 			sb.RemoveChars(1);
@@ -190,7 +190,7 @@ UTF8Char *IO::OS::GetVersion(UTF8Char *sbuff)
 	if (IO::Path::GetPathType(CSTR("/sbin/getcfg")) == IO::Path::PathType::File)
 	{
 		Text::StringBuilderUTF8 sb;
-		Manage::Process::ExecuteProcess(CSTR("getcfg system version"), &sb);
+		Manage::Process::ExecuteProcess(CSTR("getcfg system version"), sb);
 		if (sb.GetLength() > 0)
 		{
 			while (sb.EndsWith('\r') || sb.EndsWith('\n'))

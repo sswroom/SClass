@@ -64,9 +64,9 @@ namespace Net
 			SAMLHandler(SAMLConfig *cfg, Net::SSLEngine *ssl, WebStandardHandler *defHdlr);
 
 			SAMLError GetInitError();
-			Bool GetLogoutURL(Text::StringBuilderUTF8 *sb);
-			Bool GetMetadataURL(Text::StringBuilderUTF8 *sb);
-			Bool GetSSOURL(Text::StringBuilderUTF8 *sb);
+			Bool GetLogoutURL(NotNullPtr<Text::StringBuilderUTF8> sb);
+			Bool GetMetadataURL(NotNullPtr<Text::StringBuilderUTF8> sb);
+			Bool GetSSOURL(NotNullPtr<Text::StringBuilderUTF8> sb);
 			void HandleRAWSAMLResponse(SAMLStrFunc hdlr, void *userObj);
 			void HandleLoginRequest(SAMLLoginFunc hdlr, void *userObj);
 			Crypto::Cert::X509PrivKey *GetKey();

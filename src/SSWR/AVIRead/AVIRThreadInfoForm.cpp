@@ -156,7 +156,7 @@ void __stdcall SSWR::AVIRead::AVIRThreadInfoForm::OnMyStackDblClk(void *userObj,
 	UOSInt i;
 	Int64 funcOfst;
 	Text::StringBuilderUTF8 sb;
-	me->lvMyStack->GetSubItem(index, 3, &sb);
+	me->lvMyStack->GetSubItem(index, 3, sb);
 	if (sb.StartsWith(UTF8STRC("call 0x")))
 	{
 		Text::StrConcatS(sbuff, sb.ToString() + 7, 17);
@@ -322,7 +322,7 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(UI::GUIClientControl *pare
 			ebp = (UInt32)context->GetFrameAddr();
 			Manage::DasmX86_32 dasm;
 
-			Text::StringBuilderWriter sbWriter(&sb);
+			Text::StringBuilderWriter sbWriter(sb);
 			Manage::DasmX86_32::DasmX86_32_Regs regs;
 			context->GetRegs(&regs);
 			callLev = 0;
@@ -411,7 +411,7 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(UI::GUIClientControl *pare
 			rbp = context->GetFrameAddr();
 			Manage::DasmX86_64 dasm;
 
-			Text::StringBuilderWriter sbWriter(&sb);
+			Text::StringBuilderWriter sbWriter(sb);
 			Manage::DasmX86_64::DasmX86_64_Regs regs;
 			context->GetRegs(&regs);
 			callLev = 0;
@@ -516,7 +516,7 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(UI::GUIClientControl *pare
 			lr = context->GetFrameAddr();
 			Manage::DasmARM64 dasm;
 
-			Text::StringBuilderWriter sbWriter(&sb);
+			Text::StringBuilderWriter sbWriter(sb);
 			Manage::DasmARM64::DasmARM64_Regs regs;
 			context->GetRegs(&regs);
 			callLev = 0;
@@ -555,7 +555,7 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(UI::GUIClientControl *pare
 				this->stacksMem.Add(Text::StrCopyNew(sb.ToString()));
 
 				sb.ClearStr();
-				ret = dasm.Disasm64(&sbWriter, symbol, &pc, &sp, &lr, &callAddrs, &jmpAddrs, &blockStart, &blockEnd, &regs, proc, true);
+				ret = dasm.Disasm64(sbWriter, symbol, &pc, &sp, &lr, &callAddrs, &jmpAddrs, &blockStart, &blockEnd, &regs, proc, true);
 				this->stacks.Add(Text::StrCopyNew(sb.ToString()));
 				if (!ret)
 					break;

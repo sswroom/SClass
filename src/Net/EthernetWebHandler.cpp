@@ -6,12 +6,12 @@
 #include "Sync/MutexUsage.h"
 #include "Text/StringBuilderUTF8.h"
 
-void Net::EthernetWebHandler::AppendHeader(Text::StringBuilderUTF8 *sbOut)
+void Net::EthernetWebHandler::AppendHeader(NotNullPtr<Text::StringBuilderUTF8> sbOut)
 {
 	sbOut->AppendC(UTF8STRC("<html><head><title>NetRAWCapture</title></head><body>\r\n"));
 }
 
-void Net::EthernetWebHandler::AppendMenu(Text::StringBuilderUTF8 *sbOut)
+void Net::EthernetWebHandler::AppendMenu(NotNullPtr<Text::StringBuilderUTF8> sbOut)
 {
 	Net::EthernetAnalyzer::AnalyzeType atype = this->analyzer->GetAnalyzeType();
 	sbOut->AppendC(UTF8STRC("<table border=\"1\"><tr>"));
@@ -36,7 +36,7 @@ void Net::EthernetWebHandler::AppendMenu(Text::StringBuilderUTF8 *sbOut)
 	sbOut->AppendC(UTF8STRC("</tr></table>\r\n"));
 }
 
-void Net::EthernetWebHandler::AppendFooter(Text::StringBuilderUTF8 *sbOut)
+void Net::EthernetWebHandler::AppendFooter(NotNullPtr<Text::StringBuilderUTF8> sbOut)
 {
 	sbOut->AppendC(UTF8STRC("</body></html>"));
 }
@@ -53,8 +53,8 @@ Bool __stdcall Net::EthernetWebHandler::DeviceReq(EthernetWebHandler *me, Net::W
 		Net::EthernetAnalyzer::MACStatus *mac;
 		const Net::MACInfo::MACEntry *macInfo;
 		Text::StringBuilderUTF8 sb;
-		AppendHeader(&sb);
-		me->AppendMenu(&sb);
+		AppendHeader(sb);
+		me->AppendMenu(sb);
 		sb.AppendC(UTF8STRC("Packet cnt = "));
 		sb.AppendU64(me->analyzer->GetPacketCnt());
 		sb.AppendC(UTF8STRC(", Total size = "));
@@ -152,7 +152,7 @@ Bool __stdcall Net::EthernetWebHandler::DeviceReq(EthernetWebHandler *me, Net::W
 		}
 		mutUsage.EndUse();
 		sb.AppendC(UTF8STRC("</table>"));
-		AppendFooter(&sb);
+		AppendFooter(sb);
 
 		resp->AddDefHeaders(req);
 		resp->AddHeader(CSTR("Cache-Control"), CSTR("no-cache"));
@@ -178,8 +178,8 @@ Bool __stdcall Net::EthernetWebHandler::IPTransferReq(EthernetWebHandler *me, Ne
 		NotNullPtr<const Data::ReadingList<Net::EthernetAnalyzer::IPTranStatus*>> ipTranList;
 		Net::EthernetAnalyzer::IPTranStatus *ipTran;
 		Text::StringBuilderUTF8 sb;
-		AppendHeader(&sb);
-		me->AppendMenu(&sb);
+		AppendHeader(sb);
+		me->AppendMenu(sb);
 
 		sb.AppendC(UTF8STRC("<table border=\"1\"><tr>"));
 		sb.AppendC(UTF8STRC("<td>IP List</td>"));
@@ -215,7 +215,7 @@ Bool __stdcall Net::EthernetWebHandler::IPTransferReq(EthernetWebHandler *me, Ne
 		}
 		mutUsage.EndUse();
 		sb.AppendC(UTF8STRC("</table>"));
-		AppendFooter(&sb);
+		AppendFooter(sb);
 
 		resp->AddDefHeaders(req);
 		resp->AddHeader(CSTR("Cache-Control"), CSTR("no-cache"));
@@ -243,8 +243,8 @@ Bool __stdcall Net::EthernetWebHandler::DNSReqv4Req(EthernetWebHandler *me, Net:
 		Text::String *name;
 		UOSInt nameLen;
 
-		AppendHeader(&sb);
-		me->AppendMenu(&sb);
+		AppendHeader(sb);
+		me->AppendMenu(sb);
 
 		sb.AppendC(UTF8STRC("<table border=\"1\"><tr>"));
 		sb.AppendC(UTF8STRC("<td>Reqv4 List</td>"));
@@ -328,7 +328,7 @@ Bool __stdcall Net::EthernetWebHandler::DNSReqv4Req(EthernetWebHandler *me, Net:
 		}
 
 		sb.AppendC(UTF8STRC("</td></tr></table>\r\n"));
-		AppendFooter(&sb);
+		AppendFooter(sb);
 
 		resp->AddDefHeaders(req);
 		resp->AddHeader(CSTR("Cache-Control"), CSTR("no-cache"));
@@ -356,8 +356,8 @@ Bool __stdcall Net::EthernetWebHandler::DNSReqv6Req(EthernetWebHandler *me, Net:
 		Text::String *name;
 		UOSInt nameLen;
 
-		AppendHeader(&sb);
-		me->AppendMenu(&sb);
+		AppendHeader(sb);
+		me->AppendMenu(sb);
 
 		sb.AppendC(UTF8STRC("<table border=\"1\"><tr>"));
 		sb.AppendC(UTF8STRC("<td>Reqv6 List</td>"));
@@ -441,7 +441,7 @@ Bool __stdcall Net::EthernetWebHandler::DNSReqv6Req(EthernetWebHandler *me, Net:
 		}
 
 		sb.AppendC(UTF8STRC("</td></tr></table>\r\n"));
-		AppendFooter(&sb);
+		AppendFooter(sb);
 
 		resp->AddDefHeaders(req);
 		resp->AddHeader(CSTR("Cache-Control"), CSTR("no-cache"));
@@ -469,8 +469,8 @@ Bool __stdcall Net::EthernetWebHandler::DNSReqOthReq(EthernetWebHandler *me, Net
 		Text::String *name;
 		UOSInt nameLen;
 
-		AppendHeader(&sb);
-		me->AppendMenu(&sb);
+		AppendHeader(sb);
+		me->AppendMenu(sb);
 
 		sb.AppendC(UTF8STRC("<table border=\"1\"><tr>"));
 		sb.AppendC(UTF8STRC("<td>Req Oth List</td>"));
@@ -554,7 +554,7 @@ Bool __stdcall Net::EthernetWebHandler::DNSReqOthReq(EthernetWebHandler *me, Net
 		}
 
 		sb.AppendC(UTF8STRC("</td></tr></table>\r\n"));
-		AppendFooter(&sb);
+		AppendFooter(sb);
 
 		resp->AddDefHeaders(req);
 		resp->AddHeader(CSTR("Cache-Control"), CSTR("no-cache"));
@@ -583,8 +583,8 @@ Bool __stdcall Net::EthernetWebHandler::DNSTargetReq(EthernetWebHandler *me, Net
 		UInt32 targetIP = 0;
 		OSInt targetIndex = -1;
 
-		AppendHeader(&sb);
-		me->AppendMenu(&sb);
+		AppendHeader(sb);
+		me->AppendMenu(sb);
 
 		sb.AppendC(UTF8STRC("<table border=\"0\"><tr><td>DNS Target</td><td>Info</td></tr>\r\n"));
 		sb.AppendC(UTF8STRC("<tr><td>\r\n"));
@@ -644,7 +644,7 @@ Bool __stdcall Net::EthernetWebHandler::DNSTargetReq(EthernetWebHandler *me, Net
 		}
 
 		sb.AppendC(UTF8STRC("</td></tr></table>\r\n"));
-		AppendFooter(&sb);
+		AppendFooter(sb);
 
 		resp->AddDefHeaders(req);
 		resp->AddHeader(CSTR("Cache-Control"), CSTR("no-cache"));
@@ -672,8 +672,8 @@ Bool __stdcall Net::EthernetWebHandler::DNSClientReq(EthernetWebHandler *me, Net
 		NotNullPtr<const Data::ReadingList<Net::EthernetAnalyzer::DNSClientInfo*>> dnsCliList;
 		Net::EthernetAnalyzer::DNSClientInfo *dnsCli;
 		Text::StringBuilderUTF8 sb;
-		AppendHeader(&sb);
-		me->AppendMenu(&sb);
+		AppendHeader(sb);
+		me->AppendMenu(sb);
 
 		sb.AppendC(UTF8STRC("<table border=\"1\"><tr>"));
 		sb.AppendC(UTF8STRC("<td>DNSClient List</td>"));
@@ -741,7 +741,7 @@ Bool __stdcall Net::EthernetWebHandler::DNSClientReq(EthernetWebHandler *me, Net
 		sb.AppendC(UTF8STRC("</td></tr>\r\n"));
 		mutUsage.EndUse();
 		sb.AppendC(UTF8STRC("</table>\r\n"));
-		AppendFooter(&sb);
+		AppendFooter(sb);
 
 		resp->AddDefHeaders(req);
 		resp->AddHeader(CSTR("Cache-Control"), CSTR("no-cache"));
@@ -769,8 +769,8 @@ Bool __stdcall Net::EthernetWebHandler::DHCPReq(EthernetWebHandler *me, Net::Web
 		Net::EthernetAnalyzer::DHCPInfo *dhcp;
 		const Net::MACInfo::MACEntry *macInfo;
 		Text::StringBuilderUTF8 sb;
-		AppendHeader(&sb);
-		me->AppendMenu(&sb);
+		AppendHeader(sb);
+		me->AppendMenu(sb);
 		sb.AppendC(UTF8STRC("<table border=\"1\"><tr>"));
 		sb.AppendC(UTF8STRC("<td>MAC</td>"));
 		sb.AppendC(UTF8STRC("<td>Vendor</td>"));
@@ -853,7 +853,7 @@ Bool __stdcall Net::EthernetWebHandler::DHCPReq(EthernetWebHandler *me, Net::Web
 		}
 		mutUsage.EndUse();
 		sb.AppendC(UTF8STRC("</table>"));
-		AppendFooter(&sb);
+		AppendFooter(sb);
 
 		resp->AddDefHeaders(req);
 		resp->AddHeader(CSTR("Cache-Control"), CSTR("no-cache"));
@@ -881,8 +881,8 @@ Bool __stdcall Net::EthernetWebHandler::IPLogReq(EthernetWebHandler *me, Net::We
 		NotNullPtr<const Data::ReadingList<Net::EthernetAnalyzer::IPLogInfo*>> ipLogList;
 		Net::EthernetAnalyzer::IPLogInfo *ipLog;
 		Text::StringBuilderUTF8 sb;
-		AppendHeader(&sb);
-		me->AppendMenu(&sb);
+		AppendHeader(sb);
+		me->AppendMenu(sb);
 
 		sb.AppendC(UTF8STRC("<table border=\"1\"><tr>"));
 		sb.AppendC(UTF8STRC("<td>IP Log List</td>"));
@@ -937,7 +937,7 @@ Bool __stdcall Net::EthernetWebHandler::IPLogReq(EthernetWebHandler *me, Net::We
 		sb.AppendC(UTF8STRC("</td></tr>\r\n"));
 		mutUsage.EndUse();
 		sb.AppendC(UTF8STRC("</table>\r\n"));
-		AppendFooter(&sb);
+		AppendFooter(sb);
 
 		resp->AddDefHeaders(req);
 		resp->AddHeader(CSTR("Cache-Control"), CSTR("no-cache"));

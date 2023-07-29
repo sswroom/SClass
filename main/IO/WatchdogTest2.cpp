@@ -51,16 +51,16 @@ UInt32 __stdcall WatchdogThread(void *userObj)
 				{
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("AM2315: Temp = "));
-					Text::SBAppendF64(&sb, tempVal);
+					sb.AppendDouble(tempVal);
 					sb.AppendC(UTF8STRC(", RH = "));
-					Text::SBAppendF64(&sb, rhVal);
+					sb.AppendDouble(rhVal);
 					consoleWriter->WriteLineC(sb.ToString(), sb.GetLength());
 				}
 				else
 				{
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("AM2315: Temp = "));
-					Text::SBAppendF64(&sb, tempVal);
+					sb.AppendDouble(tempVal);
 					sb.AppendC(UTF8STRC(", RH = error"));
 					consoleWriter->WriteLineC(sb.ToString(), sb.GetLength());
 				}

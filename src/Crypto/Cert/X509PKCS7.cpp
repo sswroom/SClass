@@ -23,7 +23,7 @@ Crypto::Cert::X509File::FileType Crypto::Cert::X509PKCS7::GetFileType() const
 	return FileType::PKCS7;
 }
 
-void Crypto::Cert::X509PKCS7::ToShortName(Text::StringBuilderUTF8 *sb) const
+void Crypto::Cert::X509PKCS7::ToShortName(NotNullPtr<Text::StringBuilderUTF8> sb) const
 {
 /*	UOSInt len = 0;
 	Net::ASN1Util::ItemType itemType = Net::ASN1Util::IT_UNKNOWN;
@@ -46,7 +46,7 @@ UOSInt Crypto::Cert::X509PKCS7::GetCertCount()
 	return Net::ASN1Util::PDUCountItem(certListPDU, certListPDU + len, 0);
 }
 
-Bool Crypto::Cert::X509PKCS7::GetCertName(UOSInt index, Text::StringBuilderUTF8 *sb)
+Bool Crypto::Cert::X509PKCS7::GetCertName(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	Net::ASN1Util::ItemType itemType;
 	UOSInt len;
@@ -113,7 +113,7 @@ Net::ASN1Data *Crypto::Cert::X509PKCS7::Clone() const
 	return asn1;
 }
 
-void Crypto::Cert::X509PKCS7::ToString(Text::StringBuilderUTF8 *sb) const
+void Crypto::Cert::X509PKCS7::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
 {
 	if (IsContentInfo(this->buff.Ptr(), this->buff.PtrEnd(), "1"))
 	{

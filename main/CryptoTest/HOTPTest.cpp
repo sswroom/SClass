@@ -24,7 +24,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	Text::TextBinEnc::Base32Enc b32;
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("B32: "));
-	b32.EncodeBin(&sb, key, 10);
+	b32.EncodeBin(sb, key, 10);
 	console.WriteLineC(sb.ToString(), sb.GetLength());
 	UOSInt decLen = b32.DecodeBin(sb.ToString() + 5, sb.GetLength() - 5, decKey);
 	sb.ClearStr();
@@ -46,10 +46,10 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		i++;
 	}
 	sb.ClearStr();
-	hotp.GenURI(&sb, (const UTF8Char*)"Test By Counter");
+	hotp.GenURI(sb, (const UTF8Char*)"Test By Counter");
 	Net::GoogleQRCode qrCode(200, 200, sb.ToCString());
 	sb.ClearStr();
-	qrCode.GetImageURL(&sb);
+	qrCode.GetImageURL(sb);
 	console.WriteLineC(sb.ToString(), sb.GetLength());
 	return 0;
 }

@@ -26,7 +26,7 @@ Text::CString IO::PrintMODBUSDevSim::GetValueName(UOSInt index)
 	return CSTR_NULL;
 }
 
-Bool IO::PrintMODBUSDevSim::GetValue(UOSInt index, Text::StringBuilderUTF8 *sb)
+Bool IO::PrintMODBUSDevSim::GetValue(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	return false;
 }

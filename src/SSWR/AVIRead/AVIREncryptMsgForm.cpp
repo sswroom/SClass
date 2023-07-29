@@ -30,7 +30,7 @@ Crypto::Encrypt::ICrypto *SSWR::AVIRead::AVIREncryptMsgForm::InitCrypto()
 		return 0;
 	}
 	Text::StringBuilderUTF8 sb;
-	this->txtKey->GetText(&sb);
+	this->txtKey->GetText(sb);
 	if (sb.GetLength() == 0)
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Key cannot be empty"), CSTR("Encrypt Message"), this);
@@ -76,7 +76,7 @@ Crypto::Encrypt::ICrypto *SSWR::AVIRead::AVIREncryptMsgForm::InitCrypto()
 UInt8 *SSWR::AVIRead::AVIREncryptMsgForm::InitInput(UOSInt blockSize, UOSInt *dataSize)
 {
 	Text::StringBuilderUTF8 sb;
-	this->txtInputMsg->GetText(&sb);
+	this->txtInputMsg->GetText(sb);
 	if (sb.GetLength() == 0)
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Input Msg is empty"), CSTR("Encrypt Message"), this);
@@ -109,7 +109,7 @@ UInt8 *SSWR::AVIRead::AVIREncryptMsgForm::InitIV(Crypto::Encrypt::ICrypto *crypt
 	case 1:
 		{
 			Text::StringBuilderUTF8 sb;
-			this->txtIV->GetText(&sb);
+			this->txtIV->GetText(sb);
 			if (sb.GetLength() > sizeof(tmpbuff) || sb.Hex2Bytes(tmpbuff) != blockSize)
 			{
 				UI::MessageDialog::ShowDialog(CSTR("IV input length not valid"), CSTR("Encrypt Message"), this);
@@ -121,7 +121,7 @@ UInt8 *SSWR::AVIRead::AVIREncryptMsgForm::InitIV(Crypto::Encrypt::ICrypto *crypt
 	case 2:
 		{
 			Text::StringBuilderUTF8 sb;
-			this->txtIV->GetText(&sb);
+			this->txtIV->GetText(sb);
 			if (sb.GetLength() > sizeof(tmpbuff))
 			{
 				UI::MessageDialog::ShowDialog(CSTR("IV input length too long"), CSTR("Encrypt Message"), this);
@@ -164,7 +164,7 @@ void SSWR::AVIRead::AVIREncryptMsgForm::ShowOutput(const UInt8 *buff, UOSInt buf
 {
 	Text::TextBinEnc::ITextBinEnc *enc = GetTextEncType(this->cboOutputType);
 	Text::StringBuilderUTF8 sb;
-	enc->EncodeBin(&sb, buff, buffSize);
+	enc->EncodeBin(sb, buff, buffSize);
 	this->txtOutputMsg->SetText(sb.ToCString());
 	DEL_CLASS(enc);
 }

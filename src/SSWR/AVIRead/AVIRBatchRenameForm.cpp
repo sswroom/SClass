@@ -14,7 +14,7 @@ void __stdcall SSWR::AVIRead::AVIRBatchRenameForm::OnRenameExtUpperClicked(void 
 	UTF8Char *sptr2;
 	UTF8Char *sptr2End;
 	Text::StringBuilderUTF8 sb;
-	me->txtDirectory->GetText(&sb);
+	me->txtDirectory->GetText(sb);
 	if (IO::Path::GetPathType(sb.ToCString()) != IO::Path::PathType::Directory)
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Please enter valid directory path"), CSTR("Batch Rename"), me);
@@ -59,7 +59,7 @@ void __stdcall SSWR::AVIRead::AVIRBatchRenameForm::OnRenameExtLowerClicked(void 
 	UTF8Char *sptr2;
 	UTF8Char *sptr2End;
 	Text::StringBuilderUTF8 sb;
-	me->txtDirectory->GetText(&sb);
+	me->txtDirectory->GetText(sb);
 	if (IO::Path::GetPathType(sb.ToCString()) != IO::Path::PathType::Directory)
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Please enter valid directory path"), CSTR("Batch Rename"), me);

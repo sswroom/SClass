@@ -57,7 +57,7 @@ namespace Map
 
 		void SetHideLogo(Bool hideLogo);
 		
-		static void GetDefaultCacheDir(ImagerySet is, Text::StringBuilderUTF8 *sb);
+		static void GetDefaultCacheDir(ImagerySet is, NotNullPtr<Text::StringBuilderUTF8> sb);
 		static Text::CString ImagerySetGetName(ImagerySet is);
 		static UTF8Char *GenQuadkey(UTF8Char *sbuff, UOSInt level, Int32 imgX, Int32 imgY);
 	};

@@ -11,7 +11,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	IO::StmData::FileData fd(filePath, false);
 	Media::PhotoInfo photoInfo(fd);
 	Text::StringBuilderUTF8 sb;
-	photoInfo.ToString(&sb);
+	photoInfo.ToString(sb);
 	printf("%s\r\n", sb.ToString());
 	return 0;
 }

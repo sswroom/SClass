@@ -73,7 +73,7 @@ void __stdcall SSWR::AVIRead::AVIRCaptureDevForm::OnDevChg(void *userObj)
 		sptr = me->currCapture->GetSourceName(sbuff);
 		devInfo.AppendP(sbuff, sptr);
 		devInfo.AppendC(UTF8STRC("\r\n"));
-		me->currCapture->GetInfo(&devInfo);
+		me->currCapture->GetInfo(devInfo);
 		devInfo.AppendC(UTF8STRC("Supported Formats:\r\n"));
 		fmtCnt = me->currCapture->GetSupportedFormats(fmts, 80);
 		i = 0;

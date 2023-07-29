@@ -105,7 +105,7 @@ UTF8Char *Manage::ThreadContextARM::GetRegister(UOSInt index, UTF8Char *buff, UI
 	}
 }
 
-void Manage::ThreadContextARM::ToString(Text::StringBuilderUTF8 *sb)
+void Manage::ThreadContextARM::ToString(NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;

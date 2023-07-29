@@ -1101,7 +1101,7 @@ Bool DB::SQLGenerator::GenInsertCmd(DB::SQLBuilder *sql, Text::CString schemaNam
 			case DB::DBUtil::CT_Unknown:
 			default:
 				sb.ClearStr();
-				r->GetStr(i, &sb);
+				r->GetStr(i, sb);
 				sql->AppendStrC(sb.ToCString());
 				break;
 			}

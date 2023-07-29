@@ -40,9 +40,9 @@ Text::String *Net::ACMEConn::JWK(Crypto::Cert::X509Key *key, Crypto::Token::JWSi
 			}
 			Text::StringBuilderUTF8 sb;
 			sb.AppendC(UTF8STRC("{\"e\":\""));
-			b64.EncodeBin(&sb, e, eSize);
+			b64.EncodeBin(sb, e, eSize);
 			sb.AppendC(UTF8STRC("\",\"kty\":\"RSA\",\"n\":\""));
-			b64.EncodeBin(&sb, m, mSize);
+			b64.EncodeBin(sb, m, mSize);
 			sb.AppendC(UTF8STRC("\"}"));
 			*alg = Crypto::Token::JWSignature::Algorithm::RS256;
 			return Text::String::New(sb.ToCString()).Ptr();
@@ -92,20 +92,20 @@ NotNullPtr<Text::String> Net::ACMEConn::EncodeJWS(Net::SSLEngine *ssl, Text::CSt
 {
 	Text::StringBuilderUTF8 sb;
 	Text::TextBinEnc::Base64Enc b64(Text::TextBinEnc::Base64Enc::Charset::URL, true);
-	b64.EncodeBin(&sb, protStr.v, protStr.leng);
+	b64.EncodeBin(sb, protStr.v, protStr.leng);
 	sb.AppendUTF8Char('.');
-	b64.EncodeBin(&sb, data.v, data.leng);
+	b64.EncodeBin(sb, data.v, data.leng);
 	Crypto::Token::JWSignature *sign;
 	NEW_CLASS(sign, Crypto::Token::JWSignature(ssl, alg, key->GetASN1Buff(), key->GetASN1BuffSize()));
 	sign->CalcHash(sb.ToString(), sb.GetLength());
 
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("{\"protected\":\""));
-	b64.EncodeBin(&sb, protStr.v, protStr.leng);
+	b64.EncodeBin(sb, protStr.v, protStr.leng);
 	sb.AppendC(UTF8STRC("\",\"payload\":\""));
-	b64.EncodeBin(&sb, data.v, data.leng);
+	b64.EncodeBin(sb, data.v, data.leng);
 	sb.AppendC(UTF8STRC("\",\"signature\":\""));
-	sign->GetHashB64(&sb);
+	sign->GetHashB64(sb);
 	sb.AppendC(UTF8STRC("\"}"));
 	DEL_CLASS(sign);
 	printf("Protected: %s\r\n", protStr.v);
@@ -114,7 +114,7 @@ NotNullPtr<Text::String> Net::ACMEConn::EncodeJWS(Net::SSLEngine *ssl, Text::CSt
 	return Text::String::New(sb.ToString(), sb.GetLength());
 }
 
-Bool Net::ACMEConn::KeyHash(Crypto::Cert::X509Key *key, Text::StringBuilderUTF8 *sb)
+Bool Net::ACMEConn::KeyHash(Crypto::Cert::X509Key *key, NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	Crypto::Token::JWSignature::Algorithm alg;
 	Text::String *jwk = JWK(key, &alg);
@@ -157,7 +157,7 @@ Net::HTTPClient *Net::ACMEConn::ACMEPost(NotNullPtr<Text::String> url, Text::CSt
 
 	Text::StringBuilderUTF8 sb;
 	cli->GetRespStatus();
-	if (cli->GetRespHeader(CSTR("Replay-Nonce"), &sb))
+	if (cli->GetRespHeader(CSTR("Replay-Nonce"), sb))
 	{
 		SDEL_STRING(this->nonce);
 		this->nonce = Text::String::New(sb.ToCString()).Ptr();
@@ -398,7 +398,7 @@ Bool Net::ACMEConn::NewNonce()
 	if (cli->GetRespStatus() == Net::WebStatus::SC_NO_CONTENT)
 	{
 		Text::StringBuilderUTF8 sb;
-		if (cli->GetRespHeader(CSTR("Replay-Nonce"), &sb))
+		if (cli->GetRespHeader(CSTR("Replay-Nonce"), sb))
 		{
 			SDEL_STRING(this->nonce);
 			this->nonce = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
@@ -447,7 +447,7 @@ Bool Net::ACMEConn::AccountNew()
 						mstm.Clear();
 						cli->ReadToEnd(&mstm, 4096);
 						sb.ClearStr();
-						if (cli->GetRespStatus() == Net::WebStatus::SC_CREATED && cli->GetRespHeader(CSTR("Location"), &sb))
+						if (cli->GetRespStatus() == Net::WebStatus::SC_CREATED && cli->GetRespHeader(CSTR("Location"), sb))
 						{
 							SDEL_STRING(this->accountId);
 							this->accountId = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
@@ -485,7 +485,7 @@ Bool Net::ACMEConn::AccountRetr()
 	if (cli->GetRespStatus() == Net::WebStatus::SC_OK)
 	{
 		Text::StringBuilderUTF8 sb;
-		if (cli->GetRespHeader(CSTR("Location"), &sb))
+		if (cli->GetRespHeader(CSTR("Location"), sb))
 		{
 			SDEL_STRING(this->accountId);
 			this->accountId = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
@@ -544,7 +544,7 @@ Net::ACMEConn::Order *Net::ACMEConn::OrderNew(const UTF8Char *domainNames, UOSIn
 		Text::StringBuilderUTF8 sb;
 		IO::MemoryStream mstm;
 		cli->ReadToEnd(&mstm, 2048);
-		cli->GetRespHeader(CSTR("Location"), &sb);
+		cli->GetRespHeader(CSTR("Location"), sb);
 		DEL_CLASS(cli);
 
 		const UInt8 *replyBuff = mstm.GetBuff(&i);

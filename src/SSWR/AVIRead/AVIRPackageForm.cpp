@@ -603,7 +603,7 @@ SSWR::AVIRead::AVIRPackageForm::AVIRPackageForm(UI::GUIClientControl *parent, No
 	this->txtInfo->SetReadOnly(true);
 	this->txtInfo->SetDockType(UI::GUIControl::DOCK_FILL);
 	Text::StringBuilderUTF8 sb;
-	this->packFile->GetInfoText(&sb);
+	this->packFile->GetInfoText(sb);
 	this->txtInfo->SetText(sb.ToCString());
 
 	this->SetMenu(mnuMain);

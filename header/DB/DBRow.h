@@ -92,9 +92,9 @@ namespace DB
 		void Rollback();
 
 		Bool GetSinglePKI64(Int64 *key) const;
-		void ToString(Text::StringBuilderUTF8 *sb) const;
-		void AppendTableName(Text::StringBuilderUTF8 *sb) const;
-		void AppendVarNameForm(Text::StringBuilderUTF8 *sb, const UTF8Char *colName) const;
+		void ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const;
+		void AppendTableName(NotNullPtr<Text::StringBuilderUTF8> sb) const;
+		void AppendVarNameForm(NotNullPtr<Text::StringBuilderUTF8> sb, const UTF8Char *colName) const;
 
 		TableDef *GetTableDef();
 	};

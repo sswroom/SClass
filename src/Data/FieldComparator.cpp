@@ -61,7 +61,7 @@ Bool Data::FieldComparator::IsValid()
 	return this->fieldNames.GetCount() > 0;
 }
 
-Bool Data::FieldComparator::ToOrderClause(Text::StringBuilderUTF8 *sb, DB::SQLType sqlType)
+Bool Data::FieldComparator::ToOrderClause(NotNullPtr<Text::StringBuilderUTF8> sb, DB::SQLType sqlType)
 {
 	if (this->fieldNames.GetCount() == 0)
 	{
@@ -162,8 +162,8 @@ OSInt Data::FieldComparator::Compare(VariItem *a, VariItem *b)
 	{
 		Text::StringBuilderUTF8 sbA;
 		Text::StringBuilderUTF8 sbB;
-		a->ToString(&sbA);
-		b->ToString(&sbB);
+		a->ToString(sbA);
+		b->ToString(sbB);
 		return Text::StrCompare(sbA.ToString(), sbB.ToString());
 	}
 }

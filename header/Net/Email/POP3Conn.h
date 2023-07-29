@@ -58,7 +58,7 @@ namespace Net
 			ResultStatus SendPass(Text::CString password);
 			ResultStatus SendNoop();
 			ResultStatus SendStat(UOSInt *msgCount, UOSInt *msgSize);
-			ResultStatus SendRetr(UOSInt msgIndex, Text::StringBuilderUTF8 *msgBuff);
+			ResultStatus SendRetr(UOSInt msgIndex, NotNullPtr<Text::StringBuilderUTF8> msgBuff);
 			ResultStatus SendDele(UOSInt msgIndex);
 			ResultStatus SendQuit();
 

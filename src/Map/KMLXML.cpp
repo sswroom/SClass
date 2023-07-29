@@ -133,7 +133,7 @@ Map::MapDrawLayer *Map::KMLXML::ParseKMLContainer(Text::XMLReader *reader, Data:
 					if (nodeName->EqualsICase(UTF8STRC("NAME")))
 					{
 						sb.ClearStr();
-						reader->ReadNodeText(&sb);
+						reader->ReadNodeText(sb);
 						lyr->SetLayerName(sb.ToCString());
 						layerName->Release();
 						layerName = Text::String::New(sb.ToCString());
@@ -146,21 +146,21 @@ Map::MapDrawLayer *Map::KMLXML::ParseKMLContainer(Text::XMLReader *reader, Data:
 							if (nodeName->Equals(UTF8STRC("href")))
 							{
 								sb.ClearStr();
-								reader->ReadNodeText(&sb);
+								reader->ReadNodeText(sb);
 								url->Release();
 								url = Text::String::New(sb.ToCString());
 							}
 							else if (nodeName->Equals(UTF8STRC("refreshInterval")))
 							{
 								sb.ClearStr();
-								reader->ReadNodeText(&sb);
+								reader->ReadNodeText(sb);
 								interval = sb.ToInt32();
 								mode = Map::NetworkLinkLayer::RefreshMode::OnInterval;
 							}
 							else if (nodeName->Equals(UTF8STRC("refreshMode")))
 							{
 								sb.ClearStr();
-								reader->ReadNodeText(&sb);
+								reader->ReadNodeText(sb);
 								if (sb.Equals(UTF8STRC("onInterval")))
 								{
 									mode = Map::NetworkLinkLayer::RefreshMode::OnInterval;
@@ -175,7 +175,7 @@ Map::MapDrawLayer *Map::KMLXML::ParseKMLContainer(Text::XMLReader *reader, Data:
 							else if (nodeName->EqualsICase(UTF8STRC("viewRefreshMode")))
 							{
 								sb.ClearStr();
-								reader->ReadNodeText(&sb);
+								reader->ReadNodeText(sb);
 								if (sb.Equals(UTF8STRC("never")))
 								{
 								}
@@ -195,14 +195,14 @@ Map::MapDrawLayer *Map::KMLXML::ParseKMLContainer(Text::XMLReader *reader, Data:
 							else if (nodeName->Equals(UTF8STRC("viewRefreshTime")))
 							{
 								sb.ClearStr();
-								reader->ReadNodeText(&sb);
+								reader->ReadNodeText(sb);
 								interval = sb.ToInt32();
 								mode = Map::NetworkLinkLayer::RefreshMode::OnStop;
 							}
 							else if (nodeName->Equals(UTF8STRC("viewFormat")))
 							{
 								sb.ClearStr();
-								reader->ReadNodeText(&sb);
+								reader->ReadNodeText(sb);
 								sb.TrimWSCRLF();
 								viewFormat->Release();
 								viewFormat = Text::String::New(sb.ToCString());
@@ -230,25 +230,25 @@ Map::MapDrawLayer *Map::KMLXML::ParseKMLContainer(Text::XMLReader *reader, Data:
 									if (nodeName->Equals(UTF8STRC("north")))
 									{
 										sb.ClearStr();
-										reader->ReadNodeText(&sb);
+										reader->ReadNodeText(sb);
 										north = sb.ToDouble();
 									}
 									else if (nodeName->Equals(UTF8STRC("south")))
 									{
 										sb.ClearStr();
-										reader->ReadNodeText(&sb);
+										reader->ReadNodeText(sb);
 										south = sb.ToDouble();
 									}
 									else if (nodeName->Equals(UTF8STRC("east")))
 									{
 										sb.ClearStr();
-										reader->ReadNodeText(&sb);
+										reader->ReadNodeText(sb);
 										east = sb.ToDouble();
 									}
 									else if (nodeName->Equals(UTF8STRC("west")))
 									{
 										sb.ClearStr();
-										reader->ReadNodeText(&sb);
+										reader->ReadNodeText(sb);
 										west = sb.ToDouble();
 									}
 									else
@@ -318,7 +318,7 @@ Map::MapDrawLayer *Map::KMLXML::ParseKMLContainer(Text::XMLReader *reader, Data:
 						if (reader->GetNodeText()->EqualsICase(UTF8STRC("COLOR")))
 						{
 							sb.ClearStr();
-							reader->ReadNodeText(&sb);
+							reader->ReadNodeText(sb);
 							style->lineColor = Text::StrHex2UInt32C(sb.ToString());
 							style->lineColor = (style->lineColor & 0xff00ff00) | ((style->lineColor & 0xff) << 16) | ((style->lineColor & 0xff0000) >> 16);
 							style->flags |= 1;
@@ -326,7 +326,7 @@ Map::MapDrawLayer *Map::KMLXML::ParseKMLContainer(Text::XMLReader *reader, Data:
 						else if (reader->GetNodeText()->EqualsICase(UTF8STRC("WIDTH")))
 						{
 							sb.ClearStr();
-							reader->ReadNodeText(&sb);
+							reader->ReadNodeText(sb);
 							sb.ToUInt32S(&style->lineWidth, 0);
 							style->flags |= 2;
 						}
@@ -343,7 +343,7 @@ Map::MapDrawLayer *Map::KMLXML::ParseKMLContainer(Text::XMLReader *reader, Data:
 						if (reader->GetNodeText()->EqualsICase(UTF8STRC("COLOR")))
 						{
 							sb.ClearStr();
-							reader->ReadNodeText(&sb);
+							reader->ReadNodeText(sb);
 							style->iconColor = Text::StrHex2UInt32C(sb.ToString());
 							style->iconColor = (style->iconColor & 0xff00ff00) | ((style->iconColor & 0xff) << 16) | ((style->iconColor & 0xff0000) >> 16);
 						}
@@ -354,7 +354,7 @@ Map::MapDrawLayer *Map::KMLXML::ParseKMLContainer(Text::XMLReader *reader, Data:
 								if (reader->GetNodeText()->EqualsICase(UTF8STRC("HREF")))
 								{
 									sb.ClearStr();
-									reader->ReadNodeText(&sb);
+									reader->ReadNodeText(sb);
 									if (sb.GetLength() > 0)
 									{
 										SDEL_STRING(style->iconURL);
@@ -383,7 +383,7 @@ Map::MapDrawLayer *Map::KMLXML::ParseKMLContainer(Text::XMLReader *reader, Data:
 								}
 							}
 							sb.ClearStr();
-							reader->ReadNodeText(&sb);
+							reader->ReadNodeText(sb);
 							sb.ToUInt32S(&style->lineWidth, 0);
 						}
 						else
@@ -399,7 +399,7 @@ Map::MapDrawLayer *Map::KMLXML::ParseKMLContainer(Text::XMLReader *reader, Data:
 						if (reader->GetNodeText()->EqualsICase(UTF8STRC("COLOR")))
 						{
 							sb.ClearStr();
-							reader->ReadNodeText(&sb);
+							reader->ReadNodeText(sb);
 							style->fillColor = Text::StrHex2UInt32C(sb.ToString());
 							style->fillColor = (style->fillColor & 0xff00ff00) | ((style->fillColor & 0xff) << 16) | ((style->fillColor & 0xff0000) >> 16);
 							style->flags |= 4;
@@ -463,7 +463,7 @@ Map::MapDrawLayer *Map::KMLXML::ParseKMLContainer(Text::XMLReader *reader, Data:
 						if (reader->GetNodeText()->EqualsICase(UTF8STRC("KEY")))
 						{
 							sb.ClearStr();
-							reader->ReadNodeText(&sb);
+							reader->ReadNodeText(sb);
 							if (sb.Equals(UTF8STRC("normal")))
 							{
 								isNormal = true;
@@ -472,7 +472,7 @@ Map::MapDrawLayer *Map::KMLXML::ParseKMLContainer(Text::XMLReader *reader, Data:
 						else if (reader->GetNodeText()->EqualsICase(UTF8STRC("STYLEURL")))
 						{
 							sb.ClearStr();
-							reader->ReadNodeText(&sb);
+							reader->ReadNodeText(sb);
 							if (isNormal && sb.StartsWith(UTF8STRC("#")))
 							{
 								KMLStyle *style2 = styles->Get({sb.ToString() + 1, sb.GetLength() - 1});
@@ -559,20 +559,20 @@ Map::MapDrawLayer *Map::KMLXML::ParseKMLContainer(Text::XMLReader *reader, Data:
 				if (reader->GetNodeText()->EqualsICase(UTF8STRC("NAME")))
 				{
 					sb.ClearStr();
-					reader->ReadNodeText(&sb);
+					reader->ReadNodeText(sb);
 					name->Release();
 					name = Text::String::New(sb.ToCString());
 				}
 				else if (reader->GetNodeText()->EqualsICase(UTF8STRC("COLOR")))
 				{
 					sb.ClearStr();
-					reader->ReadNodeText(&sb);
+					reader->ReadNodeText(sb);
 					color = Text::StrHex2UInt32C(sb.ToString());
 				}
 				else if (reader->GetNodeText()->EqualsICase(UTF8STRC("DRAWORDER")))
 				{
 					sb.ClearStr();
-					reader->ReadNodeText(&sb);
+					reader->ReadNodeText(sb);
 					zIndex = Text::StrToInt32(sb.ToString());
 				}
 				else if (reader->GetNodeText()->EqualsICase(UTF8STRC("ICON")))
@@ -582,7 +582,7 @@ Map::MapDrawLayer *Map::KMLXML::ParseKMLContainer(Text::XMLReader *reader, Data:
 						if (reader->GetNodeText()->EqualsICase(UTF8STRC("HREF")))
 						{
 							sb.ClearStr();
-							reader->ReadNodeText(&sb);
+							reader->ReadNodeText(sb);
 							sbuffEnd = imgLyr->GetSourceName(sbuff);
 							sbuffEnd = Text::URLString::AppendURLPath(sbuff, sbuffEnd, sb.ToCString());
 						}
@@ -599,14 +599,14 @@ Map::MapDrawLayer *Map::KMLXML::ParseKMLContainer(Text::XMLReader *reader, Data:
 						if (reader->GetNodeText()->EqualsICase(UTF8STRC("BEGIN")))
 						{
 							sb.ClearStr();
-							reader->ReadNodeText(&sb);
+							reader->ReadNodeText(sb);
 							dt.SetValue(sb.ToCString());
 							timeStart = dt.ToUnixTimestamp();
 						}
 						else if (reader->GetNodeText()->EqualsICase(UTF8STRC("END")))
 						{
 							sb.ClearStr();
-							reader->ReadNodeText(&sb);
+							reader->ReadNodeText(sb);
 							dt.SetValue(sb.ToCString());
 							timeEnd = dt.ToUnixTimestamp();
 						}
@@ -670,7 +670,7 @@ Map::MapDrawLayer *Map::KMLXML::ParseKMLContainer(Text::XMLReader *reader, Data:
 				else if (reader->GetNodeText()->EqualsICase(UTF8STRC("ALTITUDE")))
 				{
 					sb.ClearStr();
-					reader->ReadNodeText(&sb);
+					reader->ReadNodeText(sb);
 					hasAltitude = true;
 					altitude = Text::StrToDouble(sb.ToString());
 				}
@@ -710,20 +710,20 @@ Map::MapDrawLayer *Map::KMLXML::ParseKMLContainer(Text::XMLReader *reader, Data:
 				if (reader->GetNodeText()->EqualsICase(UTF8STRC("NAME")))
 				{
 					sb.ClearStr();
-					reader->ReadNodeText(&sb);
+					reader->ReadNodeText(sb);
 					name->Release();
 					name = Text::String::New(sb.ToCString());
 				}
 				else if (reader->GetNodeText()->EqualsICase(UTF8STRC("COLOR")))
 				{
 					sb.ClearStr();
-					reader->ReadNodeText(&sb);
+					reader->ReadNodeText(sb);
 					alpha = ((Text::StrHex2Int32C(sb.ToString()) >> 24) & 0xff) / 255.0;
 				}
 				else if (reader->GetNodeText()->EqualsICase(UTF8STRC("DRAWORDER")))
 				{
 					sb.ClearStr();
-					reader->ReadNodeText(&sb);
+					reader->ReadNodeText(sb);
 					zIndex = Text::StrToInt32(sb.ToString());
 				}
 				else if (reader->GetNodeText()->EqualsICase(UTF8STRC("ICON")))
@@ -733,7 +733,7 @@ Map::MapDrawLayer *Map::KMLXML::ParseKMLContainer(Text::XMLReader *reader, Data:
 						if (reader->GetNodeText()->EqualsICase(UTF8STRC("HREF")))
 						{
 							sb.ClearStr();
-							reader->ReadNodeText(&sb);
+							reader->ReadNodeText(sb);
 							sbuffEnd = imgLyr->GetSourceName(sbuff);
 							sbuffEnd = Text::URLString::AppendURLPath(sbuff, sbuffEnd, sb.ToCString());
 						}
@@ -750,14 +750,14 @@ Map::MapDrawLayer *Map::KMLXML::ParseKMLContainer(Text::XMLReader *reader, Data:
 						if (reader->GetNodeText()->EqualsICase(UTF8STRC("BEGIN")))
 						{
 							sb.ClearStr();
-							reader->ReadNodeText(&sb);
+							reader->ReadNodeText(sb);
 							dt.SetValue(sb.ToCString());
 							timeStart = dt.ToUnixTimestamp();
 						}
 						else if (reader->GetNodeText()->EqualsICase(UTF8STRC("END")))
 						{
 							sb.ClearStr();
-							reader->ReadNodeText(&sb);
+							reader->ReadNodeText(sb);
 							dt.SetValue(sb.ToCString());
 							timeEnd = dt.ToUnixTimestamp();
 						}
@@ -774,25 +774,25 @@ Map::MapDrawLayer *Map::KMLXML::ParseKMLContainer(Text::XMLReader *reader, Data:
 						if (reader->GetNodeText()->EqualsICase(UTF8STRC("NORTH")))
 						{
 							sb.ClearStr();
-							reader->ReadNodeText(&sb);
+							reader->ReadNodeText(sb);
 							maxY = Text::StrToDouble(sb.ToString());
 						}
 						else if (reader->GetNodeText()->EqualsICase(UTF8STRC("SOUTH")))
 						{
 							sb.ClearStr();
-							reader->ReadNodeText(&sb);
+							reader->ReadNodeText(sb);
 							minY = Text::StrToDouble(sb.ToString());
 						}
 						else if (reader->GetNodeText()->EqualsICase(UTF8STRC("EAST")))
 						{
 							sb.ClearStr();
-							reader->ReadNodeText(&sb);
+							reader->ReadNodeText(sb);
 							maxX = Text::StrToDouble(sb.ToString());
 						}
 						else if (reader->GetNodeText()->EqualsICase(UTF8STRC("WEST")))
 						{
 							sb.ClearStr();
-							reader->ReadNodeText(&sb);
+							reader->ReadNodeText(sb);
 							minX = Text::StrToDouble(sb.ToString());
 						}
 						else
@@ -814,7 +814,7 @@ Map::MapDrawLayer *Map::KMLXML::ParseKMLContainer(Text::XMLReader *reader, Data:
 				else if (reader->GetNodeText()->EqualsICase(UTF8STRC("ALTITUDE")))
 				{
 					sb.ClearStr();
-					reader->ReadNodeText(&sb);
+					reader->ReadNodeText(sb);
 					hasAltitude = true;
 					altitude = Text::StrToDouble(sb.ToString());
 				}
@@ -921,13 +921,13 @@ void Map::KMLXML::ParseKMLPlacemarkTrack(Text::XMLReader *reader, Map::GPSTrack 
 						if (reader->GetNodeText()->EqualsICase(UTF8STRC("WHEN")))
 						{
 							sb.ClearStr();
-							reader->ReadNodeText(&sb);
+							reader->ReadNodeText(sb);
 							timeList.Add(Text::String::New(sb.ToString(), sb.GetLength()));
 						}
 						else if (reader->GetNodeText()->EqualsICase(UTF8STRC("GX:COORD")))
 						{
 							sb.ClearStr();
-							reader->ReadNodeText(&sb);
+							reader->ReadNodeText(sb);
 							coordList.Add(Text::String::New(sb.ToString(), sb.GetLength()));
 						}
 						else if (reader->GetNodeText()->EqualsICase(UTF8STRC("EXTENDEDDATA")))
@@ -1014,7 +1014,7 @@ void Map::KMLXML::ParseKMLPlacemarkTrack(Text::XMLReader *reader, Map::GPSTrack 
 															if (reader->GetNodeText()->EqualsICase(UTF8STRC("GX:VALUE")))
 															{
 																sb.ClearStr();
-																reader->ReadNodeText(&sb);
+																reader->ReadNodeText(sb);
 																if (j < recCnt)
 																{
 																	recs[j].speed = Text::StrToDouble(sb.ToString());
@@ -1035,7 +1035,7 @@ void Map::KMLXML::ParseKMLPlacemarkTrack(Text::XMLReader *reader, Map::GPSTrack 
 															if (reader->GetNodeText()->EqualsICase(UTF8STRC("GX:VALUE")))
 															{
 																sb.ClearStr();
-																reader->ReadNodeText(&sb);
+																reader->ReadNodeText(sb);
 																if (j < recCnt)
 																{
 																	recs[j].heading = Text::StrToDouble(sb.ToString());
@@ -1056,7 +1056,7 @@ void Map::KMLXML::ParseKMLPlacemarkTrack(Text::XMLReader *reader, Map::GPSTrack 
 															if (reader->GetNodeText()->EqualsICase(UTF8STRC("GX:VALUE")))
 															{
 																sb.ClearStr();
-																reader->ReadNodeText(&sb);
+																reader->ReadNodeText(sb);
 																if (j < recCnt)
 																{
 																	recs[j].nSateUsed = (UInt8)Double2Int32(Text::StrToDouble(sb.ToString()));
@@ -1175,13 +1175,13 @@ void Map::KMLXML::ParseKMLPlacemarkTrack(Text::XMLReader *reader, Map::GPSTrack 
 				if (reader->GetNodeText()->EqualsICase(UTF8STRC("WHEN")))
 				{
 					sb.ClearStr();
-					reader->ReadNodeText(&sb);
+					reader->ReadNodeText(sb);
 					timeList.Add(Text::String::New(sb.ToString(), sb.GetLength()));
 				}
 				else if (reader->GetNodeText()->EqualsICase(UTF8STRC("GX:COORD")))
 				{
 					sb.ClearStr();
-					reader->ReadNodeText(&sb);
+					reader->ReadNodeText(sb);
 					coordList.Add(Text::String::New(sb.ToString(), sb.GetLength()));
 				}
 				else
@@ -1252,7 +1252,7 @@ void Map::KMLXML::ParseKMLPlacemarkTrack(Text::XMLReader *reader, Map::GPSTrack 
 			if (!lyr->HasLineStyle())
 			{
 				Text::StringBuilderUTF8 sb;
-				reader->ReadNodeText(&sb);
+				reader->ReadNodeText(sb);
 				if (sb.StartsWith(UTF8STRC("#")))
 				{
 					KMLStyle *style = styles->Get({sb.ToString() + 1, sb.GetLength() - 1});
@@ -1282,12 +1282,12 @@ Map::MapDrawLayer *Map::KMLXML::ParseKMLPlacemarkLyr(Text::XMLReader *reader, Da
 		if (reader->GetNodeText()->EqualsICase(UTF8STRC("NAME")))
 		{
 			lyrNameSb.ClearStr();
-			reader->ReadNodeText(&lyrNameSb);
+			reader->ReadNodeText(lyrNameSb);
 		}
 		else if (reader->GetNodeText()->EqualsICase(UTF8STRC("STYLEURL")))
 		{
 			sb.ClearStr();
-			reader->ReadNodeText(&sb);
+			reader->ReadNodeText(sb);
 			if (sb.ToString()[0] == '#')
 			{
 				style = styles->Get({sb.ToString() + 1, sb.GetLength() - 1});
@@ -1316,7 +1316,7 @@ Map::MapDrawLayer *Map::KMLXML::ParseKMLPlacemarkLyr(Text::XMLReader *reader, Da
 					UOSInt i;
 
 					sb.ClearStr();
-					reader->ReadNodeText(&sb);
+					reader->ReadNodeText(sb);
 					sptr = sb.v;
 					while (true)
 					{
@@ -1410,7 +1410,7 @@ Map::MapDrawLayer *Map::KMLXML::ParseKMLPlacemarkLyr(Text::XMLReader *reader, Da
 				if (reader->GetNodeText()->EqualsICase(UTF8STRC("COORDINATES")))
 				{
 					sb.ClearStr();
-					reader->ReadNodeText(&sb);
+					reader->ReadNodeText(sb);
 
 					Double x;
 					Double y;
@@ -1618,7 +1618,7 @@ void Map::KMLXML::ParseCoordinates(Text::XMLReader *reader, Data::ArrayList<Doub
 		else if (reader->GetNodeText()->EqualsICase(UTF8STRC("COORDINATES")))
 		{
 			Text::StringBuilderUTF8 sb;
-			reader->ReadNodeText(&sb);
+			reader->ReadNodeText(sb);
 			sptr = sb.v;
 			while (true)
 			{

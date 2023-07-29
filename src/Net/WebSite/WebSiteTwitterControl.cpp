@@ -240,7 +240,7 @@ UOSInt Net::WebSite::WebSiteTwitterControl::GetChannelItems(NotNullPtr<Text::Str
 						if (reader->GetNodeText()->Equals(UTF8STRC("h1")))
 						{
 							sb.ClearStr();
-							reader->ReadNodeText(&sb);
+							reader->ReadNodeText(sb);
 							sb.TrimWSCRLF();
 							if (chInfo)
 							{
@@ -258,7 +258,7 @@ UOSInt Net::WebSite::WebSiteTwitterControl::GetChannelItems(NotNullPtr<Text::Str
 								if (attr->name->Equals(UTF8STRC("class")) && attr->value && attr->value->StartsWith(UTF8STRC("ProfileHeaderCard-bio")))
 								{
 									sb.ClearStr();
-									reader->ReadNodeText(&sb);
+									reader->ReadNodeText(sb);
 									sb.TrimWSCRLF();
 									if (chInfo)
 									{

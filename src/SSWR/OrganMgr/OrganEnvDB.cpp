@@ -382,19 +382,19 @@ UOSInt SSWR::OrganMgr::OrganEnvDB::GetGroupItems(Data::ArrayList<OrganGroupItem*
 			NEW_CLASS(newGrp, OrganGroup());
 			newGrp->SetGroupId(r->GetInt32(0));
 			sb.ClearStr();
-			r->GetStr(3, &sb);
+			r->GetStr(3, sb);
 			newGrp->SetCName(sb.ToCString());
 			sb.ClearStr();
-			r->GetStr(2, &sb);
+			r->GetStr(2, sb);
 			newGrp->SetEName(sb.ToCString());
 			newGrp->SetGroupType(r->GetInt32(1));
 			sb.ClearStr();
-			r->GetStr(4, &sb);
+			r->GetStr(4, sb);
 			newGrp->SetDesc(sb.ToCString());
 			newGrp->SetPhotoGroup(photoGroup);
 			newGrp->SetPhotoSpecies(photoSpecies);
 			sb.ClearStr();
-			r->GetStr(7, &sb);
+			r->GetStr(7, sb);
 			newGrp->SetIDKey(sb.ToCString());
 			if (newGrp->GetGroupId() == photoGrp)
 				newGrp->SetIsDefault(true);
@@ -425,25 +425,25 @@ UOSInt SSWR::OrganMgr::OrganEnvDB::GetGroupItems(Data::ArrayList<OrganGroupItem*
 				
 				sp->SetSpeciesId(r->GetInt32(0));
 				sb.ClearStr();
-				r->GetStr(1, &sb);
+				r->GetStr(1, sb);
 				sp->SetCName(sb.ToCString());
 				sb.ClearStr();
-				r->GetStr(2, &sb);
+				r->GetStr(2, sb);
 				sp->SetSName(sb.ToCString());
 				sb.ClearStr();
-				r->GetStr(3, &sb);
+				r->GetStr(3, sb);
 				sp->SetEName(sb.ToCString());
 				sb.ClearStr();
-				r->GetStr(4, &sb);
+				r->GetStr(4, sb);
 				sp->SetDesc(sb.ToCString());
 				sb.ClearStr();
-				r->GetStr(5, &sb);
+				r->GetStr(5, sb);
 				sp->SetDirName(sb.ToCString());
 				sb.ClearStr();
-				r->GetStr(6, &sb);
+				r->GetStr(6, sb);
 				sp->SetPhoto(sb.ToCString());
 				sb.ClearStr();
-				r->GetStr(7, &sb);
+				r->GetStr(7, sb);
 				sp->SetIDKey(sb.ToCString());
 				sp->SetFlags(r->GetInt32(8));
 				sp->SetPhotoId(r->GetInt32(9));
@@ -492,9 +492,9 @@ UOSInt SSWR::OrganMgr::OrganEnvDB::GetGroupImages(Data::ArrayList<OrganImageItem
 			NEW_CLASS(item, OrganImageItem(this->userId));
 			
 			sb.ClearStr();
-			r->GetStr(1, &sb);
+			r->GetStr(1, sb);
 			sb.AppendC(UTF8STRC(" ("));
-			r->GetStr(2, &sb);
+			r->GetStr(2, sb);
 			sb.AppendC(UTF8STRC(")"));
 			item->SetDispName(sb.ToCString());
 
@@ -537,9 +537,9 @@ UOSInt SSWR::OrganMgr::OrganEnvDB::GetGroupImages(Data::ArrayList<OrganImageItem
 				}
 				sb.Append(this->currCate->srcDir);
 				sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
-				r->GetStr(5, &sb);
+				r->GetStr(5, sb);
 				sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
-				r->GetStr(6, &sb);
+				r->GetStr(6, sb);
 				sptr = Text::StrConcatC(sbuff, sb.ToString(), sb.GetLength());
 
 				exist = false;
@@ -987,25 +987,25 @@ UOSInt SSWR::OrganMgr::OrganEnvDB::GetGroupAllSpecies(Data::ArrayList<OrganSpeci
 			NEW_CLASS(sp, OrganSpecies());
 			sp->SetSpeciesId(r->GetInt32(0));
 			sb.ClearStr();
-			r->GetStr(1, &sb);
+			r->GetStr(1, sb);
 			sp->SetCName(sb.ToCString());
 			sb.ClearStr();
-			r->GetStr(2, &sb);
+			r->GetStr(2, sb);
 			sp->SetSName(sb.ToCString());
 			sb.ClearStr();
-			r->GetStr(3, &sb);
+			r->GetStr(3, sb);
 			sp->SetEName(sb.ToCString());
 			sb.ClearStr();
-			r->GetStr(4, &sb);
+			r->GetStr(4, sb);
 			sp->SetDesc(sb.ToCString());
 			sb.ClearStr();
-			r->GetStr(5, &sb);
+			r->GetStr(5, sb);
 			sp->SetDirName(sb.ToCString());
 			sb.ClearStr();
-			r->GetStr(6, &sb);
+			r->GetStr(6, sb);
 			sp->SetPhoto(sb.ToCString());
 			sb.ClearStr();
-			r->GetStr(7, &sb);
+			r->GetStr(7, sb);
 			sp->SetIDKey(sb.ToCString());
 			sp->SetFlags(r->GetInt32(8));
 			sp->SetPhotoId(r->GetInt32(9));
@@ -1147,25 +1147,25 @@ UOSInt SSWR::OrganMgr::OrganEnvDB::GetSpeciesItems(Data::ArrayList<OrganGroupIte
 			
 			sp->SetSpeciesId(r->GetInt32(0));
 			sb.ClearStr();
-			r->GetStr(1, &sb);
+			r->GetStr(1, sb);
 			sp->SetCName(sb.ToCString());
 			sb.ClearStr();
-			r->GetStr(2, &sb);
+			r->GetStr(2, sb);
 			sp->SetSName(sb.ToCString());
 			sb.ClearStr();
-			r->GetStr(3, &sb);
+			r->GetStr(3, sb);
 			sp->SetEName(sb.ToCString());
 			sb.ClearStr();
-			r->GetStr(4, &sb);
+			r->GetStr(4, sb);
 			sp->SetDesc(sb.ToCString());
 			sb.ClearStr();
-			r->GetStr(5, &sb);
+			r->GetStr(5, sb);
 			sp->SetDirName(sb.ToCString());
 			sb.ClearStr();
-			r->GetStr(6, &sb);
+			r->GetStr(6, sb);
 			sp->SetPhoto(sb.ToCString());
 			sb.ClearStr();
-			r->GetStr(7, &sb);
+			r->GetStr(7, sb);
 			sp->SetIDKey(sb.ToCString());
 			sp->SetFlags(r->GetInt32(8));
 			sp->SetPhotoId(r->GetInt32(9));
@@ -1209,19 +1209,19 @@ SSWR::OrganMgr::OrganGroup *SSWR::OrganMgr::OrganEnvDB::GetGroup(Int32 groupId, 
 			NEW_CLASS(foundGroup, OrganGroup());
 			foundGroup->SetGroupId(r->GetInt32(0));
 			sb.ClearStr();
-			r->GetStr(3, &sb);//chiName
+			r->GetStr(3, sb);//chiName
 			foundGroup->SetCName(sb.ToCString());
 			sb.ClearStr();
-			r->GetStr(2, &sb);//engName
+			r->GetStr(2, sb);//engName
 			foundGroup->SetEName(sb.ToCString());
 			foundGroup->SetGroupType(r->GetInt32(1));
 			sb.ClearStr();
-			r->GetStr(4, &sb);
+			r->GetStr(4, sb);
 			foundGroup->SetDesc(sb.ToCString());
 			foundGroup->SetPhotoGroup(photoGroup);
 			foundGroup->SetPhotoSpecies(photoSpecies);
 			sb.ClearStr();
-			r->GetStr(8, &sb);
+			r->GetStr(8, sb);
 			foundGroup->SetIDKey(sb.ToCString());
 			flags = r->GetInt32(9);
 			foundGroup->SetAdminOnly(flags & 1);
@@ -1251,26 +1251,26 @@ SSWR::OrganMgr::OrganSpecies *SSWR::OrganMgr::OrganEnvDB::GetSpecies(Int32 speci
 			NEW_CLASS(sp, OrganSpecies());
 			sp->SetSpeciesId(r->GetInt32(0));
 			sb.ClearStr();
-			r->GetStr(1, &sb);
+			r->GetStr(1, sb);
 			sp->SetCName(sb.ToCString());
 			sb.ClearStr();
-			r->GetStr(2, &sb);
+			r->GetStr(2, sb);
 			sp->SetSName(sb.ToCString());
 			sb.ClearStr();
-			r->GetStr(3, &sb);
+			r->GetStr(3, sb);
 			sp->SetEName(sb.ToCString());
 			sp->SetGroupId(r->GetInt32(4));
 			sb.ClearStr();
-			r->GetStr(5, &sb);
+			r->GetStr(5, sb);
 			sp->SetDesc(sb.ToCString());
 			sb.ClearStr();
-			r->GetStr(6, &sb);
+			r->GetStr(6, sb);
 			sp->SetDirName(sb.ToCString());
 			sb.ClearStr();
-			r->GetStr(7, &sb);
+			r->GetStr(7, sb);
 			sp->SetPhoto(sb.ToCString());
 			sb.ClearStr();
-			r->GetStr(8, &sb);
+			r->GetStr(8, sb);
 			sp->SetIDKey(sb.ToCString());
 			sp->SetFlags(r->GetInt32(9));
 			sp->SetPhotoId(r->GetInt32(10));
@@ -1327,7 +1327,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::IsSpeciesExist(const UTF8Char *sName)
 	return found;
 }
 
-Bool SSWR::OrganMgr::OrganEnvDB::IsBookSpeciesExist(const UTF8Char *sName, Text::StringBuilderUTF8 *sb)
+Bool SSWR::OrganMgr::OrganEnvDB::IsBookSpeciesExist(const UTF8Char *sName, NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	Data::ArrayListInt32 spList;
 	DB::SQLBuilder sql(this->db);
@@ -3493,7 +3493,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::UpdateUserFilePos(UserFileInfo *userFile, const
 	return succ;
 }
 
-Bool SSWR::OrganMgr::OrganEnvDB::GetUserFilePath(UserFileInfo *userFile, Text::StringBuilderUTF8 *sb)
+Bool SSWR::OrganMgr::OrganEnvDB::GetUserFilePath(UserFileInfo *userFile, NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	Data::Timestamp ts = userFile->fileTime.ToUTCTime();
 	sb->Append(this->cfgDataPath);
@@ -3790,18 +3790,18 @@ void SSWR::OrganMgr::OrganEnvDB::BooksInit()
 		NEW_CLASS(book, OrganBook());
 		book->SetBookId(r->GetInt32(0));
 		sb.ClearStr();
-		r->GetStr(1, &sb);
+		r->GetStr(1, sb);
 		book->SetTitle(&sb);
 		sb.ClearStr();
-		r->GetStr(2, &sb);
+		r->GetStr(2, sb);
 		book->SetDispAuthor(&sb);
 		sb.ClearStr();
-		r->GetStr(3, &sb);
+		r->GetStr(3, sb);
 		book->SetPress(&sb);
 		book->SetPublishDate(r->GetTimestamp(4));
 		book->SetGroupId(r->GetInt32(5));
 		sb.ClearStr();
-		r->GetStr(6, &sb);
+		r->GetStr(6, sb);
 		book->SetURL(&sb);
 		i = this->bookIds->SortedInsert(book->GetBookId());
 		this->bookObjs->Insert(i, book);
@@ -4332,12 +4332,12 @@ SSWR::OrganMgr::OrganGroup *SSWR::OrganMgr::OrganEnvDB::SearchObject(const UTF8C
 			foundGroup->SetEName(CSTRP(sbuff, sptr));
 			foundGroup->SetGroupType(r->GetInt32(1));
 			sb.ClearStr();
-			r->GetStr(4, &sb);
+			r->GetStr(4, sb);
 			foundGroup->SetDesc(sb.ToCString());
 			foundGroup->SetPhotoGroup(photoGroup);
 			foundGroup->SetPhotoSpecies(photoSpecies);
 			sb.ClearStr();
-			r->GetStr(8, &sb);
+			r->GetStr(8, sb);
 			foundGroup->SetIDKey(sb.ToCString());
 			flags = r->GetInt32(9);
 			foundGroup->SetAdminOnly(flags & 1);
@@ -4372,12 +4372,12 @@ SSWR::OrganMgr::OrganGroup *SSWR::OrganMgr::OrganEnvDB::SearchObject(const UTF8C
 						foundGroup->SetEName(sb.ToCString());
 						foundGroup->SetGroupType(r->GetInt32(1));
 						sb.ClearStr();
-						r->GetStr(4, &sb);
+						r->GetStr(4, sb);
 						foundGroup->SetDesc(sb.ToCString());
 						foundGroup->SetPhotoGroup(photoGroup);
 						foundGroup->SetPhotoSpecies(photoSpecies);
 						sb.ClearStr();
-						r->GetStr(8, &sb);
+						r->GetStr(8, sb);
 						foundGroup->SetIDKey(sb.ToCString());
 						flags = r->GetInt32(9);
 						foundGroup->SetAdminOnly(flags & 1);
@@ -4461,19 +4461,19 @@ Data::FastMap<Int32, Data::ArrayList<SSWR::OrganMgr::OrganGroup*>*> *SSWR::Organ
 			NEW_CLASS(newGrp, OrganGroup());
 			newGrp->SetGroupId(r->GetInt32(0));
 			sb.ClearStr();
-			r->GetStr(3, &sb);
+			r->GetStr(3, sb);
 			newGrp->SetCName(sb.ToCString());
 			sb.ClearStr();
-			r->GetStr(2, &sb);
+			r->GetStr(2, sb);
 			newGrp->SetEName(sb.ToCString());
 			newGrp->SetGroupType(r->GetInt32(1));
 			sb.ClearStr();
-			r->GetStr(4, &sb);
+			r->GetStr(4, sb);
 			newGrp->SetDesc(sb.ToCString());
 			newGrp->SetPhotoGroup(photoGroup);
 			newGrp->SetPhotoSpecies(photoSpecies);
 			sb.ClearStr();
-			r->GetStr(7, &sb);
+			r->GetStr(7, sb);
 			newGrp->SetIDKey(sb.ToCString());
 			flags = r->GetInt32(9);
 			newGrp->SetAdminOnly(flags & 1);
@@ -4517,25 +4517,25 @@ Data::FastMap<Int32, Data::ArrayList<SSWR::OrganMgr::OrganSpecies*>*> *SSWR::Org
 			
 			sp->SetSpeciesId(r->GetInt32(0));
 			sb.ClearStr();
-			r->GetStr(1, &sb);
+			r->GetStr(1, sb);
 			sp->SetCName(sb.ToCString());
 			sb.ClearStr();
-			r->GetStr(2, &sb);
+			r->GetStr(2, sb);
 			sp->SetSName(sb.ToCString());
 			sb.ClearStr();
-			r->GetStr(3, &sb);
+			r->GetStr(3, sb);
 			sp->SetEName(sb.ToCString());
 			sb.ClearStr();
-			r->GetStr(4, &sb);
+			r->GetStr(4, sb);
 			sp->SetDesc(sb.ToCString());
 			sb.ClearStr();
-			r->GetStr(5, &sb);
+			r->GetStr(5, sb);
 			sp->SetDirName(sb.ToCString());
 			sb.ClearStr();
-			r->GetStr(6, &sb);
+			r->GetStr(6, sb);
 			sp->SetPhoto(sb.ToCString());
 			sb.ClearStr();
-			r->GetStr(7, &sb);
+			r->GetStr(7, sb);
 			sp->SetIDKey(sb.ToCString());
 			sp->SetFlags(r->GetInt32(8));
 			sp->SetPhotoId(r->GetInt32(10));
@@ -5035,7 +5035,7 @@ void SSWR::OrganMgr::OrganEnvDB::ExportLite(const UTF8Char *folder)
 		while (r->ReadNext())
 		{
 			sb.ClearStr();
-			r->GetStr(0, &sb);
+			r->GetStr(0, sb);
 			if (sb.GetLength() > 0)
 			{
 				sptr2End = Text::StrConcatC(sptr2, sb.ToString(), sb.GetLength());
@@ -5086,7 +5086,7 @@ void SSWR::OrganMgr::OrganEnvDB::ExportLite(const UTF8Char *folder)
 			IO::Path::CreateDirectory(CSTRP(sbuff, sptr2End));
 
 			sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
-			r->GetStr(3, &sb);
+			r->GetStr(3, sb);
 			
 			sptr2End = Text::StrConcatC(sptr2, sb.ToString(), sb.GetLength());
 			sptr3End = Text::StrConcatC(sptr3, sb.ToString(), sb.GetLength());

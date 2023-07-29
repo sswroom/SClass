@@ -24,7 +24,7 @@ void SSWR::AVIRead::AVIRWellFormatForm::AddFilters(IO::FileSelector *selector)
 	selector->AddFilter(CSTR("*.kml"), CSTR("KML File"));
 }
 
-Bool SSWR::AVIRead::AVIRWellFormatForm::ParseFile(Text::CString fileName, Text::StringBuilderUTF8 *output)
+Bool SSWR::AVIRead::AVIRWellFormatForm::ParseFile(Text::CString fileName, NotNullPtr<Text::StringBuilderUTF8> output)
 {
 	Bool succ = false;
 	UInt64 fileLen;
@@ -118,12 +118,12 @@ void __stdcall SSWR::AVIRead::AVIRWellFormatForm::OnParseToTextClicked(void *use
 	SSWR::AVIRead::AVIRWellFormatForm *me = (SSWR::AVIRead::AVIRWellFormatForm*)userObj;
 	Text::StringBuilderUTF8 sbFile;
 	Text::StringBuilderUTF8 sbOutput;
-	me->txtFile->GetText(&sbFile);
+	me->txtFile->GetText(sbFile);
 	if (sbFile.GetLength() <= 0)
 	{
 		return;
 	}
-	if (me->ParseFile(sbFile.ToCString(), &sbOutput))
+	if (me->ParseFile(sbFile.ToCString(), sbOutput))
 	{
 		me->txtOutput->SetText(sbOutput.ToCString());
 	}
@@ -134,12 +134,12 @@ void __stdcall SSWR::AVIRead::AVIRWellFormatForm::OnParseToFileClicked(void *use
 	SSWR::AVIRead::AVIRWellFormatForm *me = (SSWR::AVIRead::AVIRWellFormatForm*)userObj;
 	Text::StringBuilderUTF8 sbFile;
 	Text::StringBuilderUTF8 sbOutput;
-	me->txtFile->GetText(&sbFile);
+	me->txtFile->GetText(sbFile);
 	if (sbFile.GetLength() <= 0)
 	{
 		return;
 	}
-	if (me->ParseFile(sbFile.ToCString(), &sbOutput))
+	if (me->ParseFile(sbFile.ToCString(), sbOutput))
 	{
 		UI::FileDialog dlg(L"SSWR", L"AVIRead", L"WellFormatParse", true);
 		AddFilters(&dlg);

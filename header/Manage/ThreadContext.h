@@ -25,7 +25,7 @@ namespace Manage
 
 		virtual UOSInt GetRegisterCnt() const = 0;
 		virtual UTF8Char *GetRegister(UOSInt index, UTF8Char *buff, UInt8 *regVal, UInt32 *regBitCount) const = 0;
-		virtual void ToString(Text::StringBuilderUTF8 *sb) const = 0;
+		virtual void ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const = 0;
 		virtual ContextType GetType() const = 0;
 		virtual UOSInt GetThreadId() const = 0;
 		virtual UOSInt GetProcessId() const = 0;

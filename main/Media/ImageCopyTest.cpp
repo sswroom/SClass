@@ -33,7 +33,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	Double t = clk.GetTimeDiff();
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("t = "));
-	Text::SBAppendF64(&sb, t);
+	sb.AppendDouble(t);
 	console->WriteLineC(sb.ToString(), sb.GetLength());
 	MemFreeA(imgBuff1);
 	MemFreeA(imgBuff2);

@@ -16,7 +16,7 @@ void __stdcall SSWR::AVIRead::AVIRASN1MIBForm::OnBrowseClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRASN1MIBForm *me = (SSWR::AVIRead::AVIRASN1MIBForm*)userObj;
 	Text::StringBuilderUTF8 sb;
-	me->txtFile->GetText(&sb);
+	me->txtFile->GetText(sb);
 	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"ASN1MIB", false);
 	dlg.AddFilter(CSTR("*.asn"), CSTR("ASN.1 MIB File"));
 	dlg.AddFilter(CSTR("*.mib"), CSTR("MIB file"));
@@ -51,7 +51,7 @@ void SSWR::AVIRead::AVIRASN1MIBForm::LoadFile(Text::CString fileName)
 	this->mib.UnloadAll();
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("Error in loading MIB file: "));
-	if (this->mib.LoadFile(fileName, &sb))
+	if (this->mib.LoadFile(fileName, sb))
 	{
 
 	}
@@ -80,7 +80,7 @@ void SSWR::AVIRead::AVIRASN1MIBForm::LoadFile(Text::CString fileName)
 		if (obj->oidLen > 0)
 		{
 			sb.ClearStr();
-			Net::ASN1Util::OIDToString(obj->oid, obj->oidLen, &sb);
+			Net::ASN1Util::OIDToString(obj->oid, obj->oidLen, sb);
 			this->lvObjects->SetSubItem(i, 1, sb.ToCString());
 		}
 		if (s.Set(obj->typeName))
@@ -100,7 +100,7 @@ void SSWR::AVIRead::AVIRASN1MIBForm::LoadFile(Text::CString fileName)
 	{
 		obj = module->oidList.GetItem(i);
 		sb.ClearStr();
-		Net::ASN1Util::OIDToString(obj->oid, obj->oidLen, &sb);
+		Net::ASN1Util::OIDToString(obj->oid, obj->oidLen, sb);
 		this->lvOID->AddItem(sb.ToCString(), obj);
 		const Net::ASN1OIDDB::OIDInfo *entry = Net::ASN1OIDDB::OIDGetEntry(obj->oid, obj->oidLen);
 		if (entry)
@@ -109,7 +109,7 @@ void SSWR::AVIRead::AVIRASN1MIBForm::LoadFile(Text::CString fileName)
 		}
 		this->lvOID->SetSubItem(i, 2, Text::String::OrEmpty(obj->objectName));
 
-		Net::ASN1Util::OIDToCPPCode(obj->oid, obj->oidLen, obj->objectName->v, obj->objectName->leng, &sbOIDText);
+		Net::ASN1Util::OIDToCPPCode(obj->oid, obj->oidLen, obj->objectName->v, obj->objectName->leng, sbOIDText);
 		i++;
 	}
 	this->txtOIDText->SetText(sbOIDText.ToCString());

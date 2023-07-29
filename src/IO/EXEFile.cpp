@@ -330,7 +330,7 @@ Text::CString IO::EXEFile::GetResourceTypeName(ResourceType rt)
 	}
 }
 
-void IO::EXEFile::GetResourceDesc(const ResourceInfo *res, Text::StringBuilderUTF8 *sb)
+void IO::EXEFile::GetResourceDesc(const ResourceInfo *res, NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;

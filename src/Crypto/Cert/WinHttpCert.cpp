@@ -49,7 +49,7 @@ Crypto::Cert::X509Cert *Crypto::Cert::WinHttpCert::CreateX509Cert() const
 	return 0;
 }
 
-void Crypto::Cert::WinHttpCert::ToString(Text::StringBuilderUTF8 *sb) const
+void Crypto::Cert::WinHttpCert::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
 {
 	Data::DateTime dt;
 	sb->AppendC(UTF8STRC("Not Before: "));

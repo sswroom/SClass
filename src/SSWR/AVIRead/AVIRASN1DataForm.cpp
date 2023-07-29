@@ -71,7 +71,7 @@ void __stdcall SSWR::AVIRead::AVIRASN1DataForm::OnVerifyClicked(void *userObj)
 	UInt8 signBuff[256];
 	UOSInt signLen = 128;
 	Text::StringBuilderUTF8 sb;
-	me->txtVerifySignature->GetText(&sb);
+	me->txtVerifySignature->GetText(sb);
 	signLen = me->ParseSignature(&sb, signBuff);
 	if (signLen == 0)
 	{
@@ -79,7 +79,7 @@ void __stdcall SSWR::AVIRead::AVIRASN1DataForm::OnVerifyClicked(void *userObj)
 	}
 
 	sb.ClearStr();
-	me->txtVerifyPayloadFile->GetText(&sb);
+	me->txtVerifyPayloadFile->GetText(sb);
 	if (sb.GetLength() == 0)
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Please enter Payload"), CSTR("Verify Signature"), me);
@@ -122,7 +122,7 @@ void __stdcall SSWR::AVIRead::AVIRASN1DataForm::OnVerifySignInfoClicked(void *us
 	UInt8 decBuff[256];
 	UOSInt decLen = 0;
 	Text::StringBuilderUTF8 sb;
-	me->txtVerifySignature->GetText(&sb);
+	me->txtVerifySignature->GetText(sb);
 	signLen = me->ParseSignature(&sb, signBuff);
 	if (signLen == 0)
 	{
@@ -168,7 +168,7 @@ void __stdcall SSWR::AVIRead::AVIRASN1DataForm::OnEncryptEncryptClicked(void *us
 {
 	SSWR::AVIRead::AVIRASN1DataForm *me = (SSWR::AVIRead::AVIRASN1DataForm*)userObj;
 	Text::StringBuilderUTF8 sb;
-	me->txtEncryptInput->GetText(&sb);
+	me->txtEncryptInput->GetText(sb);
 	if (sb.GetLength() == 0)
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Input is empty"), CSTR("Encrypt"), me);
@@ -226,13 +226,13 @@ void __stdcall SSWR::AVIRead::AVIRASN1DataForm::OnEncryptEncryptClicked(void *us
 	if (type == 0)
 	{
 		Text::TextBinEnc::Base64Enc enc;
-		enc.EncodeBin(&sb, outData, outSize);
+		enc.EncodeBin(sb, outData, outSize);
 		me->txtEncryptOutput->SetText(sb.ToCString());
 	}
 	else if (type == 1)
 	{
 		Text::TextBinEnc::HexTextBinEnc enc;
-		enc.EncodeBin(&sb, outData, outSize);
+		enc.EncodeBin(sb, outData, outSize);
 		me->txtEncryptOutput->SetText(sb.ToCString());
 	}
 	else
@@ -246,7 +246,7 @@ void __stdcall SSWR::AVIRead::AVIRASN1DataForm::OnEncryptDecryptClicked(void *us
 {
 	SSWR::AVIRead::AVIRASN1DataForm *me = (SSWR::AVIRead::AVIRASN1DataForm*)userObj;
 	Text::StringBuilderUTF8 sb;
-	me->txtEncryptInput->GetText(&sb);
+	me->txtEncryptInput->GetText(sb);
 	if (sb.GetLength() == 0)
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Input is empty"), CSTR("Decrypt"), me);
@@ -304,13 +304,13 @@ void __stdcall SSWR::AVIRead::AVIRASN1DataForm::OnEncryptDecryptClicked(void *us
 	if (type == 0)
 	{
 		Text::TextBinEnc::Base64Enc enc;
-		enc.EncodeBin(&sb, outData, outSize);
+		enc.EncodeBin(sb, outData, outSize);
 		me->txtEncryptOutput->SetText(sb.ToCString());
 	}
 	else if (type == 1)
 	{
 		Text::TextBinEnc::HexTextBinEnc enc;
-		enc.EncodeBin(&sb, outData, outSize);
+		enc.EncodeBin(sb, outData, outSize);
 		me->txtEncryptOutput->SetText(sb.ToCString());
 	}
 	else
@@ -505,7 +505,7 @@ SSWR::AVIRead::AVIRASN1DataForm::AVIRASN1DataForm(UI::GUIClientControl *parent, 
 			while (i < j)
 			{
 				sb.ClearStr();
-				if (!x509->GetCertName(i, &sb))
+				if (!x509->GetCertName(i, sb))
 				{
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("Cert "));
@@ -548,10 +548,10 @@ SSWR::AVIRead::AVIRASN1DataForm::AVIRASN1DataForm(UI::GUIClientControl *parent, 
 	this->txtASN1->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	sb.ClearStr();
-	this->asn1->ToString(&sb);
+	this->asn1->ToString(sb);
 	this->txtDesc->SetText(sb.ToCString());
 	sb.ClearStr();
-	this->asn1->ToASN1String(&sb);
+	this->asn1->ToASN1String(sb);
 	this->txtASN1->SetText(sb.ToCString());
 
 	if (this->asn1->GetASN1Type() == Net::ASN1Data::ASN1Type::X509)
@@ -575,7 +575,7 @@ SSWR::AVIRead::AVIRASN1DataForm::AVIRASN1DataForm(UI::GUIClientControl *parent, 
 			hasPubKey = true;
 			sb.ClearStr();
 			Crypto::Cert::X509Cert *cert = (Crypto::Cert::X509Cert*)fileList->GetFile(0);
-			if (cert->GetSubjectCN(&sb))
+			if (cert->GetSubjectCN(sb))
 			{
 				this->tcMain->SetTabPageName(1, sb.ToCString());
 			}
@@ -593,10 +593,10 @@ SSWR::AVIRead::AVIRASN1DataForm::AVIRASN1DataForm(UI::GUIClientControl *parent, 
 			{
 				file = fileList->GetFile(i);
 				sb.ClearStr();
-				file->ToShortName(&sb);
+				file->ToShortName(sb);
 				tp = this->tcMain->AddTabPage(sb.ToCString());
 				sb.ClearStr();
-				file->ToASN1String(&sb);
+				file->ToASN1String(sb);
 				NEW_CLASS(txt, UI::GUITextBox(ui, tp, sb.ToCString(), true));
 				txt->SetDockType(UI::GUIControl::DOCK_FILL);
 

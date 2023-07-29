@@ -10,7 +10,7 @@ void __stdcall SSWR::AVIRead::AVIRWebSite48IdolForm::OnRequestPageClicked(void *
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
 	Int32 pageNo = 0;
-	me->txtPageNo->GetText(&sb);
+	me->txtPageNo->GetText(sb);
 	sb.ToInt32(&pageNo);
 	me->lvItems->ClearItems();
 	if (pageNo > 0)
@@ -32,7 +32,7 @@ void __stdcall SSWR::AVIRead::AVIRWebSite48IdolForm::OnRequestPageClicked(void *
 			sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
 			me->lvItems->SetSubItem(i, 1, CSTRP(sbuff, sptr));
 			sb.ClearStr();
-			Net::WebSite::WebSite48IdolControl::Title2DisplayName(item->title, &sb);
+			Net::WebSite::WebSite48IdolControl::Title2DisplayName(item->title, sb);
 			me->lvItems->SetSubItem(i, 2, sb.ToCString());
 			i++;
 		}
@@ -45,12 +45,12 @@ void __stdcall SSWR::AVIRead::AVIRWebSite48IdolForm::OnDownloadLinkClicked(void 
 	SSWR::AVIRead::AVIRWebSite48IdolForm *me = (SSWR::AVIRead::AVIRWebSite48IdolForm*)userObj;
 	Text::StringBuilderUTF8 sb;
 	Int32 videoId = 0;
-	me->txtVideoId->GetText(&sb);
+	me->txtVideoId->GetText(sb);
 	sb.ToInt32(&videoId);
 	if (videoId != 0)
 	{
 		sb.ClearStr();
-		if (me->ctrl->GetDownloadLink(videoId, 0, &sb))
+		if (me->ctrl->GetDownloadLink(videoId, 0, sb))
 		{
 			me->txtDownloadLink->SetText(sb.ToCString());
 		}
@@ -66,12 +66,12 @@ void __stdcall SSWR::AVIRead::AVIRWebSite48IdolForm::OnVideoNameClicked(void *us
 	SSWR::AVIRead::AVIRWebSite48IdolForm *me = (SSWR::AVIRead::AVIRWebSite48IdolForm*)userObj;
 	Text::StringBuilderUTF8 sb;
 	Int32 videoId = 0;
-	me->txtNameVideoId->GetText(&sb);
+	me->txtNameVideoId->GetText(sb);
 	sb.ToInt32(&videoId);
 	if (videoId != 0)
 	{
 		sb.ClearStr();
-		if (me->ctrl->GetVideoName(videoId, &sb))
+		if (me->ctrl->GetVideoName(videoId, sb))
 		{
 			me->txtVideoName->SetText(sb.ToCString());
 		}

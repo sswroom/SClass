@@ -90,19 +90,19 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnGroupAddClicked(void *userObj)
 			grpType = (OrganGroupType*)me->cboGroupType->GetItem((UOSInt)me->cboGroupType->GetSelectedIndex());
 			newGrp->SetGroupType(grpType->GetSeq());
 			sb.ClearStr();
-			me->txtGroupEName->GetText(&sb);
+			me->txtGroupEName->GetText(sb);
 			sb.Trim();
 			newGrp->SetEName(sb.ToCString());
 			sb.ClearStr();
-			me->txtGroupCName->GetText(&sb);
+			me->txtGroupCName->GetText(sb);
 			sb.Trim();
 			newGrp->SetCName(sb.ToCString());
 			sb.ClearStr();
-			me->txtGroupDesc->GetText(&sb);
+			me->txtGroupDesc->GetText(sb);
 			sb.Trim();
 			newGrp->SetDesc(sb.ToCString());
 			sb.ClearStr();
-			me->txtGroupKey->GetText(&sb);
+			me->txtGroupKey->GetText(sb);
 			newGrp->SetIDKey(sb.ToCString());
 			newGrp->SetAdminOnly(me->chkGroupAdmin->IsChecked());
 			
@@ -737,7 +737,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImageSaveClicked(void *userObj)
 		{
 			Text::StringBuilderUTF8 sb;
 			UserFileInfo *userFile = imgItem->GetUserFile();
-			if (me->env->GetUserFilePath(userFile, &sb))
+			if (me->env->GetUserFilePath(userFile, sb))
 			{
 				UI::FileDialog dlg(L"SSWR", L"AVIRead", L"OrganMgrSave", true);
 				dlg.AddFilter(CSTR("*.jpg"), CSTR("JPEG File"));
@@ -773,7 +773,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImageSaveAllClicked(void *userOb
 				{
 					UserFileInfo *userFile = imgItem->GetUserFile();
 					sb.ClearStr();
-					if (me->env->GetUserFilePath(userFile, &sb))
+					if (me->env->GetUserFilePath(userFile, sb))
 					{
 						sb2.ClearStr();
 						sb2.Append(dlg.GetFolder());
@@ -840,8 +840,8 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImageClipboardClicked(void *user
 					Bool succ;
 					Text::StringBuilderUTF8 urlSb;
 					Text::StringBuilderUTF8 fileNameSb;
-					clipboard.GetDataText(urlFmt, &urlSb);
-					clipboard.GetDataText(filePathFmt, &fileNameSb);
+					clipboard.GetDataText(urlFmt, urlSb);
+					clipboard.GetDataText(filePathFmt, fileNameSb);
 
 					if (IO::Path::GetFileSize(fileNameSb.ToString()) > 0)
 					{
@@ -864,7 +864,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImageClipboardClicked(void *user
 				{
 					Text::StringBuilderUTF8 sb;
 
-					if (clipboard.GetDataText(filePathFmt, &sb))
+					if (clipboard.GetDataText(filePathFmt, sb))
 					{
 						Bool chg = false;
 						Bool firstPhoto = me->lbImage->GetCount() == 0;
@@ -946,14 +946,14 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnSpAddClicked(void *userObj)
 			OrganGroupItem *gi;
 			Int32 id = grp->GetGroupId();
 			sb.ClearStr();
-			me->txtSpeciesSName->GetText(&sb);
+			me->txtSpeciesSName->GetText(sb);
 			if (me->env->IsSpeciesExist(sb.ToString()))
 			{
 				UI::MessageDialog::ShowDialog(CSTR("Species already exist"), CSTR("Add Species"), me);
 				return;
 			}
 			sb2.AppendC(UTF8STRC("Species already exist in book:\r\n"));
-			if (me->env->IsBookSpeciesExist(sb.ToString(), &sb2))
+			if (me->env->IsBookSpeciesExist(sb.ToString(), sb2))
 			{
 				sb2.AppendC(UTF8STRC("\r\n, continue?"));
 				if (!UI::MessageDialog::ShowYesNoDialog(sb2.ToCString(), CSTR("Add Species"), me))
@@ -965,23 +965,23 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnSpAddClicked(void *userObj)
 			OrganSpecies *sp;
 			NEW_CLASS(sp, OrganSpecies());
 			sb3.ClearStr();
-			me->txtSpeciesEName->GetText(&sb3);
+			me->txtSpeciesEName->GetText(sb3);
 			sp->SetEName(sb3.ToCString());
 			sb3.ClearStr();
-			me->txtSpeciesCName->GetText(&sb3);
+			me->txtSpeciesCName->GetText(sb3);
 			sp->SetCName(sb3.ToCString());
 			sb3.ClearStr();
-			me->txtSpeciesSName->GetText(&sb3);
+			me->txtSpeciesSName->GetText(sb3);
 			sp->SetSName(sb3.ToCString());
 			sp->SetGroupId(id);
 			sb3.ClearStr();
-			me->txtSpeciesDesc->GetText(&sb3);
+			me->txtSpeciesDesc->GetText(sb3);
 			sp->SetDesc(sb3.ToCString());
 			sb3.ClearStr();
-			me->txtSpeciesDName->GetText(&sb3);
+			me->txtSpeciesDName->GetText(sb3);
 			sp->SetDirName(sb3.ToCString());
 			sb3.ClearStr();
-			me->txtSpeciesKey->GetText(&sb3);
+			me->txtSpeciesKey->GetText(sb3);
 			sp->SetIDKey(sb3.ToCString());
 			if (me->env->AddSpecies(sp))
 			{
@@ -1043,7 +1043,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnSpPasteSNameClicked(void *userOb
 	if (me->inputMode == IM_SPECIES || me->inputMode == IM_EMPTY)
 	{
 		Text::StringBuilderUTF8 sb;
-		if (UI::Clipboard::GetString(me->GetHandle(), &sb))
+		if (UI::Clipboard::GetString(me->GetHandle(), sb))
 		{
 			UTF8Char *sciPtr = 0;
 			UTF8Char *chiPtr = 0;
@@ -1117,7 +1117,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnSpBookYearChg(void *userObj)
 	Int32 spBkYr;
 	OrganBook *book;
 	sb.ClearStr();
-	me->txtSpBookYear->GetText(&sb);
+	me->txtSpBookYear->GetText(sb);
 	spBkYr = Text::StrToInt32(sb.ToString());
 	Data::ArrayList<OrganBook *> items;
 	if (spBkYr == 0)
@@ -1136,7 +1136,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnSpBookYearChg(void *userObj)
 	{
 		book = items.GetItem(i);
 		sb.ClearStr();
-		book->GetString(&sb);
+		book->GetString(sb);
 		me->cboSpBook->AddItem(sb.ToCString(), book);
 
 		i++;
@@ -1160,7 +1160,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnSpBookAddClicked(void *userObj)
 	}
 	OrganBook *bk = (OrganBook*)me->cboSpBook->GetItem(i);
 	sb.ClearStr();
-	me->txtSpBook->GetText(&sb);
+	me->txtSpBook->GetText(sb);
 	if (sb.ToString()[0] == 0)
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Please enter display name to add"), CSTR("Add Book"), me);
@@ -1180,7 +1180,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnSpBookAddClicked(void *userObj)
 		UOSInt i;
 		i = me->lvSpBook->AddItem(sb.ToCString(), 0);
 		sb.ClearStr();
-		bk->GetString(&sb);
+		bk->GetString(sb);
 		me->lvSpBook->SetSubItem(i, 1, sb.ToCString());
 	}
 }
@@ -1202,7 +1202,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnSpeciesSNameChg(void *userObj)
 	if (me->newDirName)
 	{
 		Text::StringBuilderUTF8 sb;;
-		me->txtSpeciesSName->GetText(&sb);
+		me->txtSpeciesSName->GetText(sb);
 		sb.ToLower();
 		sb.ReplaceStr(UTF8STRC(" "), UTF8STRC("_"));
 		sb.ReplaceStr(UTF8STRC("."), UTF8STRC(""));
@@ -1612,7 +1612,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnMapMouseMove(void *userObj, Math
 				{
 					Text::StringBuilderUTF8 sb;
 					Media::ImageList *imgList;
-					me->env->GetUserFilePath(ufile, &sb);
+					me->env->GetUserFilePath(ufile, sb);
 					{
 						IO::StmData::FileData fd(sb.ToCString(), false);
 						imgList = (Media::ImageList*)me->env->GetParserList()->ParseFileType(fd, IO::ParserType::ImageList);
@@ -2129,7 +2129,7 @@ void SSWR::OrganMgr::OrganMainForm::UpdateSpBook()
 		spBook = spBooks.GetItem(i);
 		this->lvSpBook->AddItem(spBook->dispName, 0);
 		sb.ClearStr();
-		spBook->book->GetString(&sb);
+		spBook->book->GetString(sb);
 		this->lvSpBook->SetSubItem(i, 1, sb.ToCString());
 
 		i++;
@@ -2150,7 +2150,7 @@ void SSWR::OrganMgr::OrganMainForm::UpdateSpBookList()
 	{
 		book = bookList.GetItem(i);
 		sb.ClearStr();
-		book->GetString(&sb);
+		book->GetString(sb);
 		this->cboSpBook->AddItem(sb.ToCString(), book);
 
 		i++;
@@ -2196,16 +2196,16 @@ Bool SSWR::OrganMgr::OrganMainForm::ToSaveGroup()
 			grpType = (OrganGroupType*)this->cboGroupType->GetItem(i);
 			this->lastGroupObj->SetGroupType(grpType->GetSeq());
 			sb.ClearStr();
-			this->txtGroupEName->GetText(&sb);
+			this->txtGroupEName->GetText(sb);
 			this->lastGroupObj->SetEName(sb.ToCString());
 			sb.ClearStr();
-			this->txtGroupCName->GetText(&sb);
+			this->txtGroupCName->GetText(sb);
 			this->lastGroupObj->SetCName(sb.ToCString());
 			sb.ClearStr();
-			this->txtGroupDesc->GetText(&sb);
+			this->txtGroupDesc->GetText(sb);
 			this->lastGroupObj->SetDesc(sb.ToCString());
 			sb.ClearStr();
-			this->txtGroupKey->GetText(&sb);
+			this->txtGroupKey->GetText(sb);
 			this->lastGroupObj->SetIDKey(sb.ToCString());
 			this->lastGroupObj->SetAdminOnly(this->chkGroupAdmin->IsChecked());
 			if (!this->env->SaveGroup(this->lastGroupObj))
@@ -2265,19 +2265,19 @@ Bool SSWR::OrganMgr::OrganMainForm::ToSaveSpecies()
 			}
 			Text::StringBuilderUTF8 sb;
 			sb.ClearStr();
-			this->txtSpeciesEName->GetText(&sb);
+			this->txtSpeciesEName->GetText(sb);
 			this->lastSpeciesObj->SetEName(sb.ToCString());
 			sb.ClearStr();
-			this->txtSpeciesCName->GetText(&sb);
+			this->txtSpeciesCName->GetText(sb);
 			this->lastSpeciesObj->SetCName(sb.ToCString());
 			sb.ClearStr();
-			this->txtSpeciesSName->GetText(&sb);
+			this->txtSpeciesSName->GetText(sb);
 			this->lastSpeciesObj->SetSName(sb.ToCString());
 			sb.ClearStr();
-			this->txtSpeciesDesc->GetText(&sb);
+			this->txtSpeciesDesc->GetText(sb);
 			this->lastSpeciesObj->SetDesc(sb.ToCString());
 			sb.ClearStr();
-			this->txtSpeciesKey->GetText(&sb);
+			this->txtSpeciesKey->GetText(sb);
 			this->lastSpeciesObj->SetIDKey(sb.ToCString());
 			if (!this->env->SaveSpecies(this->lastSpeciesObj))
 			{
@@ -3364,7 +3364,7 @@ void SSWR::OrganMgr::OrganMainForm::DropData(UI::GUIDropData *data, OSInt x, OSI
 
 				if (fmtSURL)
 				{
-					if (data->GetDataText(fmtSURL, &sb))
+					if (data->GetDataText(fmtSURL, sb))
 					{
 						IO::MemoryReadingStream mstm(sb.v, sb.GetLength());
 						Text::UTF8Reader reader(mstm);
@@ -3387,7 +3387,7 @@ void SSWR::OrganMgr::OrganMainForm::DropData(UI::GUIDropData *data, OSInt x, OSI
 
 				if (fmtIURL)
 				{
-					hasIURL = data->GetDataText(fmtIURL, &iURL);
+					hasIURL = data->GetDataText(fmtIURL, iURL);
 				}
 
 				if (hasSURL && hasIURL)
@@ -3425,7 +3425,7 @@ void SSWR::OrganMgr::OrganMainForm::DropData(UI::GUIDropData *data, OSInt x, OSI
 					SDEL_STRING(this->initSelImg);
 
 					sb.ClearStr();
-					if (data->GetDataText(fmtHDrop, &sb))
+					if (data->GetDataText(fmtHDrop, sb))
 					{
 						Text::PString sarr[2];
 						sarr[1] = sb;

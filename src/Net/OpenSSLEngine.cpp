@@ -783,7 +783,7 @@ EVP_PKEY *OpenSSLEngine_LoadKey(Crypto::Cert::X509Key *key, Bool privateKeyOnly)
 	else if (key->GetKeyType() == Crypto::Cert::X509File::KeyType::ECPublic)
 	{
 		Text::StringBuilderUTF8 sb;
-		key->ToASN1String(&sb);
+		key->ToASN1String(sb);
 		printf("%s\r\n", sb.ToString());
 		Crypto::Cert::X509File::ECName ecName = key->GetECName();
 		UOSInt keyLen;

@@ -380,7 +380,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("Monitor Size: "));
-					Text::SBAppendF64(&sb, Math::Unit::Distance::Convert(Math::Unit::Distance::DU_MILLIMETER, Math::Unit::Distance::DU_INCH, Math_Sqrt(edidInfo.dispPhysicalW_mm * edidInfo.dispPhysicalW_mm + edidInfo.dispPhysicalH_mm * edidInfo.dispPhysicalH_mm)));
+					sb.AppendDouble(Math::Unit::Distance::Convert(Math::Unit::Distance::DU_MILLIMETER, Math::Unit::Distance::DU_INCH, Math_Sqrt(edidInfo.dispPhysicalW_mm * edidInfo.dispPhysicalW_mm + edidInfo.dispPhysicalH_mm * edidInfo.dispPhysicalH_mm)));
 					sb.AppendC(UTF8STRC("\" ("));
 					sb.AppendU32(edidInfo.dispPhysicalW_mm);
 					sb.AppendC(UTF8STRC(" x "));
@@ -405,33 +405,33 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("Monitor White: x = "));
-					Text::SBAppendF64(&sb, edidInfo.wx);
+					sb.AppendDouble(edidInfo.wx);
 					sb.AppendC(UTF8STRC(", y = "));
-					Text::SBAppendF64(&sb, edidInfo.wy);
+					sb.AppendDouble(edidInfo.wy);
 					console->WriteLineC(sb.ToString(), sb.GetLength());
 					writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("Monitor Red x = "));
-					Text::SBAppendF64(&sb, edidInfo.rx);
+					sb.AppendDouble(edidInfo.rx);
 					sb.AppendC(UTF8STRC(", y = "));
-					Text::SBAppendF64(&sb, edidInfo.ry);
+					sb.AppendDouble(edidInfo.ry);
 					console->WriteLineC(sb.ToString(), sb.GetLength());
 					writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("Monitor Green: x = "));
-					Text::SBAppendF64(&sb, edidInfo.gx);
+					sb.AppendDouble(edidInfo.gx);
 					sb.AppendC(UTF8STRC(", y = "));
-					Text::SBAppendF64(&sb, edidInfo.gy);
+					sb.AppendDouble(edidInfo.gy);
 					console->WriteLineC(sb.ToString(), sb.GetLength());
 					writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("Monitor Blue: x = "));
-					Text::SBAppendF64(&sb, edidInfo.bx);
+					sb.AppendDouble(edidInfo.bx);
 					sb.AppendC(UTF8STRC(", y = "));
-					Text::SBAppendF64(&sb, edidInfo.by);
+					sb.AppendDouble(edidInfo.by);
 					console->WriteLineC(sb.ToString(), sb.GetLength());
 					writer->WriteLineC(sb.ToString(), sb.GetLength());
 				}
@@ -451,7 +451,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	t = clk->GetTimeDiff();
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("Check Time: "));
-	Text::SBAppendF64(&sb, t);
+	sb.AppendDouble(t);
 	console->WriteLineC(sb.ToString(), sb.GetLength());
 	writer->WriteLineC(sb.ToString(), sb.GetLength());
 
@@ -464,7 +464,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	t = clk->GetTimeDiff();
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("GetThreadId: "));
-	Text::SBAppendF64(&sb, t / 1000.0);
+	sb.AppendDouble(t / 1000.0);
 	console->WriteLineC(sb.ToString(), sb.GetLength());
 	writer->WriteLineC(sb.ToString(), sb.GetLength());
 
@@ -478,7 +478,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	t = clk->GetTimeDiff();
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("Mutex Lock Unlock: "));
-	Text::SBAppendF64(&sb, t / 1000.0);
+	sb.AppendDouble(t / 1000.0);
 	console->WriteLineC(sb.ToString(), sb.GetLength());
 	writer->WriteLineC(sb.ToString(), sb.GetLength());
 
@@ -492,7 +492,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	t = clk->GetTimeDiff();
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("Interlocked Increment: "));
-	Text::SBAppendF64(&sb, t / 1000.0);
+	sb.AppendDouble(t / 1000.0);
 	console->WriteLineC(sb.ToString(), sb.GetLength());
 	writer->WriteLineC(sb.ToString(), sb.GetLength());
 
@@ -505,7 +505,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	t = clk->GetTimeDiff();
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("Event.Set: "));
-	Text::SBAppendF64(&sb, t / 1000.0);
+	sb.AppendDouble(t / 1000.0);
 	console->WriteLineC(sb.ToString(), sb.GetLength());
 	writer->WriteLineC(sb.ToString(), sb.GetLength());
 
@@ -515,7 +515,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	t = clk->GetTimeDiff();
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("Event.Wait(100): "));
-	Text::SBAppendF64(&sb, t);
+	sb.AppendDouble(t);
 	console->WriteLineC(sb.ToString(), sb.GetLength());
 	writer->WriteLineC(sb.ToString(), sb.GetLength());
 
@@ -527,13 +527,13 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	t = clk->GetTimeDiff();
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("Thread Create: "));
-	Text::SBAppendF64(&sb, threadT);
+	sb.AppendDouble(threadT);
 	console->WriteLineC(sb.ToString(), sb.GetLength());
 	writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("Event Wake: "));
-	Text::SBAppendF64(&sb, t);
+	sb.AppendDouble(t);
 	console->WriteLineC(sb.ToString(), sb.GetLength());
 	writer->WriteLineC(sb.ToString(), sb.GetLength());
 
@@ -543,7 +543,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	mutUsage.EndUse();
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("Mutex Lock Release: "));
-	Text::SBAppendF64(&sb, t);
+	sb.AppendDouble(t);
 	console->WriteLineC(sb.ToString(), sb.GetLength());
 	writer->WriteLineC(sb.ToString(), sb.GetLength());
 #endif
@@ -569,7 +569,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	t = clk->GetTimeDiff();
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("MemAlloc: "));
-	Text::SBAppendF64(&sb, t / 1000.0);
+	sb.AppendDouble(t / 1000.0);
 	console->WriteLineC(sb.ToString(), sb.GetLength());
 	writer->WriteLineC(sb.ToString(), sb.GetLength());
 
@@ -582,7 +582,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	t = clk->GetTimeDiff();
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("MemFree: "));
-	Text::SBAppendF64(&sb, t / 1000.0);
+	sb.AppendDouble(t / 1000.0);
 	console->WriteLineC(sb.ToString(), sb.GetLength());
 	writer->WriteLineC(sb.ToString(), sb.GetLength());
 
@@ -595,7 +595,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	t = clk->GetTimeDiff();
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("MemAllocA: "));
-	Text::SBAppendF64(&sb, t / 1000.0);
+	sb.AppendDouble(t / 1000.0);
 	console->WriteLineC(sb.ToString(), sb.GetLength());
 	writer->WriteLineC(sb.ToString(), sb.GetLength());
 
@@ -608,7 +608,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	t = clk->GetTimeDiff();
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("MemFreeA: "));
-	Text::SBAppendF64(&sb, t / 1000.0);
+	sb.AppendDouble(t / 1000.0);
 	console->WriteLineC(sb.ToString(), sb.GetLength());
 	writer->WriteLineC(sb.ToString(), sb.GetLength());
 
@@ -633,7 +633,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	t = clk->GetTimeDiff();
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("StrInt32 (UTF8 0 - 99999999): "));
-	Text::SBAppendF64(&sb, t);
+	sb.AppendDouble(t);
 	console->WriteLineC(sb.ToString(), sb.GetLength());
 	writer->WriteLineC(sb.ToString(), sb.GetLength());
 
@@ -646,7 +646,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	t = clk->GetTimeDiff();
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("StrInt32 (UTF16 0 - 99999999): "));
-	Text::SBAppendF64(&sb, t);
+	sb.AppendDouble(t);
 	console->WriteLineC(sb.ToString(), sb.GetLength());
 	writer->WriteLineC(sb.ToString(), sb.GetLength());
 
@@ -659,7 +659,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	t = clk->GetTimeDiff();
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("StrInt32 (UTF32 0 - 99999999): "));
-	Text::SBAppendF64(&sb, t);
+	sb.AppendDouble(t);
 	console->WriteLineC(sb.ToString(), sb.GetLength());
 	writer->WriteLineC(sb.ToString(), sb.GetLength());
 
@@ -672,7 +672,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	t = clk->GetTimeDiff();
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("StrInt64 (UTF8 100000000000 - 100099999999): "));
-	Text::SBAppendF64(&sb, t);
+	sb.AppendDouble(t);
 	console->WriteLineC(sb.ToString(), sb.GetLength());
 	writer->WriteLineC(sb.ToString(), sb.GetLength());
 
@@ -685,7 +685,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	t = clk->GetTimeDiff();
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("StrInt64 (UTF16 100000000000 - 100099999999): "));
-	Text::SBAppendF64(&sb, t);
+	sb.AppendDouble(t);
 	console->WriteLineC(sb.ToString(), sb.GetLength());
 	writer->WriteLineC(sb.ToString(), sb.GetLength());
 
@@ -698,7 +698,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	t = clk->GetTimeDiff();
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("StrInt64 (UTF32 100000000000 - 100099999999): "));
-	Text::SBAppendF64(&sb, t);
+	sb.AppendDouble(t);
 	console->WriteLineC(sb.ToString(), sb.GetLength());
 	writer->WriteLineC(sb.ToString(), sb.GetLength());
 
@@ -711,7 +711,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	t = clk->GetTimeDiff();
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("StrDouble (UTF8 PI): "));
-	Text::SBAppendF64(&sb, t / 10000.0);
+	sb.AppendDouble(t / 10000.0);
 	console->WriteLineC(sb.ToString(), sb.GetLength());
 	writer->WriteLineC(sb.ToString(), sb.GetLength());
 
@@ -724,7 +724,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	t = clk->GetTimeDiff();
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("StrDouble (UTF16 PI): "));
-	Text::SBAppendF64(&sb, t / 10000.0);
+	sb.AppendDouble(t / 10000.0);
 	console->WriteLineC(sb.ToString(), sb.GetLength());
 	writer->WriteLineC(sb.ToString(), sb.GetLength());
 
@@ -737,7 +737,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	t = clk->GetTimeDiff();
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("StrDouble (UTF32 PI): "));
-	Text::SBAppendF64(&sb, t / 10000.0);
+	sb.AppendDouble(t / 10000.0);
 	console->WriteLineC(sb.ToString(), sb.GetLength());
 	writer->WriteLineC(sb.ToString(), sb.GetLength());
 
@@ -761,7 +761,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		sb.AppendC(UTF8STRC("ArrayList<Int32>.Add (0 - "));
 		sb.AppendU64(maxVal - 1);
 		sb.AppendC(UTF8STRC("): "));
-		Text::SBAppendF64(&sb, t);
+		sb.AppendDouble(t);
 		console->WriteLineC(sb.ToString(), sb.GetLength());
 		writer->WriteLineC(sb.ToString(), sb.GetLength());
 
@@ -775,7 +775,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		sb.AppendC(UTF8STRC("ArrayList<Int32>.RemoveAt(Last) * "));
 		sb.AppendU64(maxVal);
 		sb.AppendC(UTF8STRC(": "));
-		Text::SBAppendF64(&sb, t);
+		sb.AppendDouble(t);
 		console->WriteLineC(sb.ToString(), sb.GetLength());
 		writer->WriteLineC(sb.ToString(), sb.GetLength());
 
@@ -788,7 +788,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		t = clk->GetTimeDiff();
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("ArrayListInt32.SortedInsert(rand) * 100000: "));
-		Text::SBAppendF64(&sb, t);
+		sb.AppendDouble(t);
 		console->WriteLineC(sb.ToString(), sb.GetLength());
 		writer->WriteLineC(sb.ToString(), sb.GetLength());
 
@@ -867,7 +867,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	sb.AppendC(UTF8STRC(", seed = "));
 	sb.AppendU32(seed);
 	sb.AppendC(UTF8STRC(", time = "));
-	Text::SBAppendF64(&sb, t);
+	sb.AppendDouble(t);
 	sb.AppendC(UTF8STRC("s"));
 	console->WriteLineC(sb.ToString(), sb.GetLength());
 	writer->WriteLineC(sb.ToString(), sb.GetLength());
@@ -884,7 +884,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		sb.AppendC(UTF8STRC("AQuickSort 1 Thread N = "));
 		sb.AppendUOSInt(noOfRec);
 		sb.AppendC(UTF8STRC(", Sort time = "));
-		Text::SBAppendF64(&sb, t);
+		sb.AppendDouble(t);
 		sb.AppendC(UTF8STRC("s"));
 
 		valid = true;
@@ -934,7 +934,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			sb.AppendC(UTF8STRC(" Thread N = "));
 			sb.AppendUOSInt(noOfRec);
 			sb.AppendC(UTF8STRC(", Sort time = "));
-			Text::SBAppendF64(&sb, t);
+			sb.AppendDouble(t);
 			sb.AppendC(UTF8STRC("s"));
 			valid = true;
 			i = 0;
@@ -979,7 +979,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		sb.AppendC(UTF8STRC("BubbleSortv1 1 Thread N = "));
 		sb.AppendUOSInt(noOfRec);
 		sb.AppendC(UTF8STRC(", Sort time = "));
-		Text::SBAppendF64(&sb, t);
+		sb.AppendDouble(t);
 		sb.AppendC(UTF8STRC("s"));
 		valid = true;
 		i = 0;
@@ -1021,7 +1021,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		sb.AppendC(UTF8STRC("InsertionSort 1 Thread N = "));
 		sb.AppendUOSInt(noOfRec);
 		sb.AppendC(UTF8STRC(", Sort time = "));
-		Text::SBAppendF64(&sb, t);
+		sb.AppendDouble(t);
 		sb.AppendC(UTF8STRC("s"));
 		valid = true;
 		i = 0;
@@ -1063,7 +1063,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		sb.AppendC(UTF8STRC("BitonicSort 1 Thread N = "));
 		sb.AppendUOSInt(noOfRec);
 		sb.AppendC(UTF8STRC(", Sort time = "));
-		Text::SBAppendF64(&sb, t);
+		sb.AppendDouble(t);
 		sb.AppendC(UTF8STRC("s"));
 		valid = true;
 		i = 0;
@@ -1112,7 +1112,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			sb.AppendC(UTF8STRC(" Thread N = ");
 			sb.AppendOSInt(noOfRec);
 			sb.AppendC(UTF8STRC(", Sort time = ");
-			Text::SBAppendF64(&sb, t);
+			sb.AppendDouble(t);
 			sb.AppendC(UTF8STRC("s");
 			valid = true;
 			i = 0;
@@ -1158,7 +1158,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		sb.AppendC(UTF8STRC("BCountSort 1 Thread N = "));
 		sb.AppendUOSInt(noOfRec);
 		sb.AppendC(UTF8STRC(", Sort time = "));
-		Text::SBAppendF64(&sb, t);
+		sb.AppendDouble(t);
 		sb.AppendC(UTF8STRC("s"));
 		valid = true;
 		i = 0;
@@ -1263,7 +1263,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 				sb.AppendC(UTF8STRC("\t"));
 				sb.AppendUOSInt(loopCnt);
 				sb.AppendC(UTF8STRC("\t"));
-				Text::SBAppendF64(&sb, t);
+				sb.AppendDouble(t);
 				console->WriteLineC(sb.ToString(), sb.GetLength());
 				writer->WriteLineC(sb.ToString(), sb.GetLength());
 				break;
@@ -1303,7 +1303,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 				sb.AppendC(UTF8STRC("\t"));
 				sb.AppendUOSInt(loopCnt);
 				sb.AppendC(UTF8STRC("\t"));
-				Text::SBAppendF64(&sb, t);
+				sb.AppendDouble(t);
 				console->WriteLineC(sb.ToString(), sb.GetLength());
 				writer->WriteLineC(sb.ToString(), sb.GetLength());
 				break;
@@ -1343,7 +1343,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 				sb.AppendC(UTF8STRC("\t"));
 				sb.AppendUOSInt(loopCnt);
 				sb.AppendC(UTF8STRC("\t"));
-				Text::SBAppendF64(&sb, t);
+				sb.AppendDouble(t);
 				console->WriteLineC(sb.ToString(), sb.GetLength());
 				writer->WriteLineC(sb.ToString(), sb.GetLength());
 				break;
@@ -1387,7 +1387,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 				sb.AppendC(UTF8STRC("\t"));
 				sb.AppendUOSInt(loopCnt);
 				sb.AppendC(UTF8STRC("\t"));
-				Text::SBAppendF64(&sb, t);
+				sb.AppendDouble(t);
 				console->WriteLineC(sb.ToString(), sb.GetLength());
 				writer->WriteLineC(sb.ToString(), sb.GetLength());
 				break;
@@ -1431,7 +1431,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 				sb.AppendC(UTF8STRC("\t"));
 				sb.AppendUOSInt(loopCnt);
 				sb.AppendC(UTF8STRC("\t"));
-				Text::SBAppendF64(&sb, t);
+				sb.AppendDouble(t);
 				console->WriteLineC(sb.ToString(), sb.GetLength());
 				writer->WriteLineC(sb.ToString(), sb.GetLength());
 				break;
@@ -1475,7 +1475,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 				sb.AppendC(UTF8STRC("\t"));
 				sb.AppendUOSInt(loopCnt);
 				sb.AppendC(UTF8STRC("\t"));
-				Text::SBAppendF64(&sb, t);
+				sb.AppendDouble(t);
 				console->WriteLineC(sb.ToString(), sb.GetLength());
 				writer->WriteLineC(sb.ToString(), sb.GetLength());
 				break;
@@ -1519,7 +1519,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 				sb.AppendC(UTF8STRC("\t"));
 				sb.AppendUOSInt(loopCnt);
 				sb.AppendC(UTF8STRC("\t"));
-				Text::SBAppendF64(&sb, t);
+				sb.AppendDouble(t);
 				console->WriteLineC(sb.ToString(), sb.GetLength());
 				writer->WriteLineC(sb.ToString(), sb.GetLength());
 				break;
@@ -1584,7 +1584,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Generate Rings Image: t = "));
-			Text::SBAppendF64(&sb, t);
+			sb.AppendDouble(t);
 			sb.AppendC(UTF8STRC(", size = "));
 			sb.AppendUOSInt(imgWidth);
 			sb.AppendC(UTF8STRC(" x "));
@@ -1613,7 +1613,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			t = clk->GetTimeDiff();
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Create Image: t = "));
-			Text::SBAppendF64(&sb, t);
+			sb.AppendDouble(t);
 			sb.AppendC(UTF8STRC(", size = "));
 			sb.AppendUOSInt(imgWidth >> 1);
 			sb.AppendC(UTF8STRC(" x "));
@@ -1642,7 +1642,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			t = clk->GetTimeDiff();
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Resize (1st): t = "));
-			Text::SBAppendF64(&sb, t);
+			sb.AppendDouble(t);
 			console->WriteLineC(sb.ToString(), sb.GetLength());
 			writer->WriteLineC(sb.ToString(), sb.GetLength());
 
@@ -1659,7 +1659,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			t = clk->GetTimeDiff() / UOSInt2Double(cnt);
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Resize (2nd): t = "));
-			Text::SBAppendF64(&sb, t);
+			sb.AppendDouble(t);
 			console->WriteLineC(sb.ToString(), sb.GetLength());
 			writer->WriteLineC(sb.ToString(), sb.GetLength());
 			DEL_CLASS(resizer);
@@ -1677,7 +1677,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			t = clk->GetTimeDiff();
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Delete Image List: t = "));
-			Text::SBAppendF64(&sb, t);
+			sb.AppendDouble(t);
 			sb.AppendC(UTF8STRC(", size = "));
 			sb.AppendUOSInt(imgWidth >> 1);
 			sb.AppendC(UTF8STRC(" x "));
@@ -1691,7 +1691,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			t = clk->GetTimeDiff();
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Create Image: t = "));
-			Text::SBAppendF64(&sb, t);
+			sb.AppendDouble(t);
 			sb.AppendC(UTF8STRC(", size = "));
 			sb.AppendUOSInt(imgWidth >> 1);
 			sb.AppendC(UTF8STRC(" x "));
@@ -1713,7 +1713,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			t = clk->GetTimeDiff();
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Resize (1st): t = "));
-			Text::SBAppendF64(&sb, t);
+			sb.AppendDouble(t);
 			console->WriteLineC(sb.ToString(), sb.GetLength());
 			writer->WriteLineC(sb.ToString(), sb.GetLength());
 
@@ -1730,7 +1730,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			t = clk->GetTimeDiff() / UOSInt2Double(cnt);
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Resize (2nd): t = "));
-			Text::SBAppendF64(&sb, t);
+			sb.AppendDouble(t);
 			console->WriteLineC(sb.ToString(), sb.GetLength());
 			writer->WriteLineC(sb.ToString(), sb.GetLength());
 			DEL_CLASS(resizer);
@@ -1753,7 +1753,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			t = clk->GetTimeDiff();
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Resize (1st): t = "));
-			Text::SBAppendF64(&sb, t);
+			sb.AppendDouble(t);
 			console->WriteLineC(sb.ToString(), sb.GetLength());
 			writer->WriteLineC(sb.ToString(), sb.GetLength());
 
@@ -1770,7 +1770,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			t = clk->GetTimeDiff() / UOSInt2Double(cnt);
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Resize (2nd): t = "));
-			Text::SBAppendF64(&sb, t);
+			sb.AppendDouble(t);
 			console->WriteLineC(sb.ToString(), sb.GetLength());
 			writer->WriteLineC(sb.ToString(), sb.GetLength());
 			DEL_CLASS(resizer);
@@ -1792,7 +1792,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			t = clk->GetTimeDiff();
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Resize (1st): t = ");
-			Text::SBAppendF64(&sb, t);
+			sb.AppendDouble(t);
 			console->WriteLineC(sb.ToString(), sb.GetLength());
 			writer->WriteLineC(sb.ToString(), sb.GetLength());
 
@@ -1809,7 +1809,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			t = clk->GetTimeDiff() / OSInt2Double(cnt);
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Resize (2nd): t = ");
-			Text::SBAppendF64(&sb, t);
+			sb.AppendDouble(t);
 			console->WriteLineC(sb.ToString(), sb.GetLength());
 			writer->WriteLineC(sb.ToString(), sb.GetLength());
 			DEL_CLASS(resizer);
@@ -1830,7 +1830,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			t = clk->GetTimeDiff();
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("CSConv (1st): t = "));
-			Text::SBAppendF64(&sb, t);
+			sb.AppendDouble(t);
 			console->WriteLineC(sb.ToString(), sb.GetLength());
 			writer->WriteLineC(sb.ToString(), sb.GetLength());
 
@@ -1847,7 +1847,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			t = clk->GetTimeDiff() / UOSInt2Double(cnt);
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("CSConv (2nd): t = "));
-			Text::SBAppendF64(&sb, t);
+			sb.AppendDouble(t);
 			console->WriteLineC(sb.ToString(), sb.GetLength());
 			writer->WriteLineC(sb.ToString(), sb.GetLength());
 			DEL_CLASS(csconv);
@@ -1880,7 +1880,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			t = clk->GetTimeDiff();
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Resize (1st): t = "));
-			Text::SBAppendF64(&sb, t);
+			sb.AppendDouble(t);
 			console->WriteLineC(sb.ToString(), sb.GetLength());
 			writer->WriteLineC(sb.ToString(), sb.GetLength());
 
@@ -1897,7 +1897,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			t = clk->GetTimeDiff() / UOSInt2Double(cnt);
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Resize (2nd): t = "));
-			Text::SBAppendF64(&sb, t);
+			sb.AppendDouble(t);
 			console->WriteLineC(sb.ToString(), sb.GetLength());
 			writer->WriteLineC(sb.ToString(), sb.GetLength());
 			DEL_CLASS(resizer);
@@ -1921,7 +1921,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			t = clk->GetTimeDiff();
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Resize (1st): t = "));
-			Text::SBAppendF64(&sb, t);
+			sb.AppendDouble(t);
 			console->WriteLineC(sb.ToString(), sb.GetLength());
 			writer->WriteLineC(sb.ToString(), sb.GetLength());
 
@@ -1938,7 +1938,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			t = clk->GetTimeDiff() / UOSInt2Double(cnt);
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Resize (2nd): t = "));
-			Text::SBAppendF64(&sb, t);
+			sb.AppendDouble(t);
 			console->WriteLineC(sb.ToString(), sb.GetLength());
 			writer->WriteLineC(sb.ToString(), sb.GetLength());
 			DEL_CLASS(resizer);
@@ -1957,7 +1957,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			t = clk->GetTimeDiff();
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("To 32bpp: t = "));
-			Text::SBAppendF64(&sb, t);
+			sb.AppendDouble(t);
 			sb.AppendC(UTF8STRC(", size = "));
 			sb.AppendUOSInt(imgWidth);
 			sb.AppendC(UTF8STRC(" x "));
@@ -1987,7 +1987,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			t = clk->GetTimeDiff();
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Resize (1st): t = "));
-			Text::SBAppendF64(&sb, t);
+			sb.AppendDouble(t);
 			console->WriteLineC(sb.ToString(), sb.GetLength());
 			writer->WriteLineC(sb.ToString(), sb.GetLength());
 
@@ -2004,7 +2004,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			t = clk->GetTimeDiff() / UOSInt2Double(cnt);
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Resize (2nd): t = "));
-			Text::SBAppendF64(&sb, t);
+			sb.AppendDouble(t);
 			console->WriteLineC(sb.ToString(), sb.GetLength());
 			writer->WriteLineC(sb.ToString(), sb.GetLength());
 			DEL_CLASS(resizer);
@@ -2028,7 +2028,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			t = clk->GetTimeDiff();
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Resize (1st): t = "));
-			Text::SBAppendF64(&sb, t);
+			sb.AppendDouble(t);
 			console->WriteLineC(sb.ToString(), sb.GetLength());
 			writer->WriteLineC(sb.ToString(), sb.GetLength());
 
@@ -2045,7 +2045,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			t = clk->GetTimeDiff() / UOSInt2Double(cnt);
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Resize (2nd): t = "));
-			Text::SBAppendF64(&sb, t);
+			sb.AppendDouble(t);
 			console->WriteLineC(sb.ToString(), sb.GetLength());
 			writer->WriteLineC(sb.ToString(), sb.GetLength());
 			DEL_CLASS(resizer);
@@ -2069,7 +2069,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			t = clk->GetTimeDiff();
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Resize (1st): t = "));
-			Text::SBAppendF64(&sb, t);
+			sb.AppendDouble(t);
 			console->WriteLineC(sb.ToString(), sb.GetLength());
 			writer->WriteLineC(sb.ToString(), sb.GetLength());
 
@@ -2086,7 +2086,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			t = clk->GetTimeDiff() / UOSInt2Double(cnt);
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Resize (2nd): t = "));
-			Text::SBAppendF64(&sb, t);
+			sb.AppendDouble(t);
 			console->WriteLineC(sb.ToString(), sb.GetLength());
 			writer->WriteLineC(sb.ToString(), sb.GetLength());
 			DEL_CLASS(resizer);
@@ -2110,7 +2110,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			t = clk->GetTimeDiff();
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Resize (1st): t = "));
-			Text::SBAppendF64(&sb, t);
+			sb.AppendDouble(t);
 			console->WriteLineC(sb.ToString(), sb.GetLength());
 			writer->WriteLineC(sb.ToString(), sb.GetLength());
 
@@ -2127,7 +2127,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			t = clk->GetTimeDiff() / UOSInt2Double(cnt);
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Resize (2nd): t = "));
-			Text::SBAppendF64(&sb, t);
+			sb.AppendDouble(t);
 			console->WriteLineC(sb.ToString(), sb.GetLength());
 			writer->WriteLineC(sb.ToString(), sb.GetLength());
 			DEL_CLASS(resizer);
@@ -2146,7 +2146,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			t = clk->GetTimeDiff();
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Delete Image List: t = "));
-			Text::SBAppendF64(&sb, t);
+			sb.AppendDouble(t);
 			sb.AppendC(UTF8STRC(", size = "));
 			sb.AppendUOSInt(imgWidth >> 1);
 			sb.AppendC(UTF8STRC(" x "));
@@ -2160,7 +2160,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			t = clk->GetTimeDiff();
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Delete Image: t = "));
-			Text::SBAppendF64(&sb, t);
+			sb.AppendDouble(t);
 			sb.AppendC(UTF8STRC(", size = "));
 			sb.AppendUOSInt(imgWidth);
 			sb.AppendC(UTF8STRC(" x "));

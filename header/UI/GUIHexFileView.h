@@ -55,7 +55,7 @@ namespace UI
 		void HandleOffsetChg(OffsetChgHandler hdlr, void *hdlrObj);
 
 		Text::CString GetAnalyzerName();
-		Bool GetFrameName(Text::StringBuilderUTF8 *sb);
+		Bool GetFrameName(NotNullPtr<Text::StringBuilderUTF8> sb);
 		UOSInt GetFieldInfos(Data::ArrayList<const IO::FileAnalyse::FrameDetail::FieldInfo *> *fieldList);
 		Bool GoToNextUnkField();
 	};

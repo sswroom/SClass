@@ -11,7 +11,7 @@ void __stdcall SSWR::AVIRead::AVIRGISHKTrafficForm::OnRoadCenterlineClicked(void
 {
 	SSWR::AVIRead::AVIRGISHKTrafficForm *me = (SSWR::AVIRead::AVIRGISHKTrafficForm*)userObj;
 	Text::StringBuilderUTF8 sb;
-	me->txtRoadCenterline->GetText(&sb);
+	me->txtRoadCenterline->GetText(sb);
 	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"HKTraffic", false);
 	if (sb.GetLength() > 0)
 	{
@@ -29,7 +29,7 @@ void __stdcall SSWR::AVIRead::AVIRGISHKTrafficForm::OnOKClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRGISHKTrafficForm *me = (SSWR::AVIRead::AVIRGISHKTrafficForm*)userObj;
 	Text::StringBuilderUTF8 sb;
-	me->txtRoadCenterline->GetText(&sb);
+	me->txtRoadCenterline->GetText(sb);
 	Map::MapDrawLayer *lyr;
 	{
 		IO::StmData::FileData fd(sb.ToCString(), false);

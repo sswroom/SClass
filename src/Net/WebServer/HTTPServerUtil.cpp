@@ -95,7 +95,7 @@ Bool Net::WebServer::HTTPServerUtil::SendContent(Net::WebServer::IWebRequest *re
 		Text::PString sarr[10];
 		Text::StringBuilderUTF8 sb;
 
-		if (needComp && req->GetHeaderC(&sb, CSTR("Accept-Encoding")))
+		if (needComp && req->GetHeaderC(sb, CSTR("Accept-Encoding")))
 		{
 			Net::BrowserInfo::BrowserType browser = req->GetBrowser();
 			Manage::OSInfo::OSType os = req->GetOS();
@@ -202,7 +202,7 @@ Bool Net::WebServer::HTTPServerUtil::SendContent(Net::WebServer::IWebRequest *re
 		Text::PString sarr[10];
 		Text::StringBuilderUTF8 sb;
 
-		if (needComp && req->GetHeaderC(&sb, CSTR("Accept-Encoding")))
+		if (needComp && req->GetHeaderC(sb, CSTR("Accept-Encoding")))
 		{
 			Net::BrowserInfo::BrowserType browser = req->GetBrowser();
 			j = Text::StrSplitTrimP(sarr, 10, sb, ',');
@@ -284,7 +284,7 @@ Bool Net::WebServer::HTTPServerUtil::ResponseFile(Net::WebServer::IWebRequest *r
 	IO::FileStream fs(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential);
 	fs.GetFileTimes(0, 0, &t);
 
-	if (req->GetHeaderC(&sb2, CSTR("If-Modified-Since")))
+	if (req->GetHeaderC(sb2, CSTR("If-Modified-Since")))
 	{
 		Data::DateTime t2;
 		t2.SetValue(sb2.ToCString());
@@ -305,7 +305,7 @@ Bool Net::WebServer::HTTPServerUtil::ResponseFile(Net::WebServer::IWebRequest *r
 
 	sizeLeft = fs.GetLength();
 	sb2.ClearStr();
-	if (req->GetHeaderC(&sb2, CSTR("Range")))
+	if (req->GetHeaderC(sb2, CSTR("Range")))
 	{
 		UInt64 fileSize = sizeLeft;
 		if (!sb2.StartsWith(UTF8STRC("bytes=")))

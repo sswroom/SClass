@@ -47,7 +47,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnRequestClicked(void *userObj
 	Text::StringBuilderUTF8 sb;
 	Text::StringBuilderUTF8 sbTmp;
 	Text::CString mime;
-	me->txtURL->GetText(&sb);
+	me->txtURL->GetText(sb);
 	if (!sb.StartsWith(UTF8STRC("http://")) && !sb.StartsWith(UTF8STRC("https://")))
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Please enter valid http URL"), CSTR("Request"), me);
@@ -55,17 +55,17 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnRequestClicked(void *userObj
 	}
 
 	sbTmp.ClearStr();
-	if (me->txtUserName->GetText(&sbTmp) && sbTmp.GetCharCnt() > 0)
+	if (me->txtUserName->GetText(sbTmp) && sbTmp.GetCharCnt() > 0)
 	{
 		me->reqUserName = Text::String::New(sbTmp.ToCString()).Ptr();
 	}
 	sbTmp.ClearStr();
-	if (me->txtPassword->GetText(&sbTmp) && sbTmp.GetCharCnt() > 0)
+	if (me->txtPassword->GetText(sbTmp) && sbTmp.GetCharCnt() > 0)
 	{
 		me->reqPassword = Text::String::New(sbTmp.ToCString()).Ptr();
 	}
 	sbTmp.ClearStr();
-	if (me->txtHeaders->GetText(&sbTmp) && sbTmp.GetCharCnt() > 0)
+	if (me->txtHeaders->GetText(sbTmp) && sbTmp.GetCharCnt() > 0)
 	{
 		me->reqHeaders = Text::String::New(sbTmp.ToCString()).Ptr();
 	}
@@ -171,7 +171,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnRequestClicked(void *userObj
 		}
 
 		sb2.ClearStr();
-		me->txtFileFormName->GetText(&sb2);
+		me->txtFileFormName->GetText(sb2);
 		UInt8 fileBuff[4096];
 		i = 0;
 		j = me->fileList.GetCount();
@@ -399,7 +399,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnDataStrClicked(void *userObj
 	UTF8Char *sbuff;
 	UTF8Char sbuffLocal[512];
 	UTF8Char *sbuffPtr = 0;
-	me->txtDataStr->GetText(&sb);
+	me->txtDataStr->GetText(sb);
 	me->ClearParams();
 	me->lvReqData->ClearItems();
 	if (sb.GetCharCnt() > 0)
@@ -514,9 +514,9 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnClientCertClicked(void *user
 		me->cliCert = frm.GetCert();
 		me->cliKey = frm.GetKey();
 		Text::StringBuilderUTF8 sb;
-		me->cliCert->ToShortString(&sb);
+		me->cliCert->ToShortString(sb);
 		sb.AppendC(UTF8STRC(", "));
-		me->cliKey->ToShortString(&sb);
+		me->cliKey->ToShortString(sb);
 		me->lblClientCert->SetText(sb.ToCString());
 	}
 }
@@ -654,7 +654,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 						Text::StringBuilderUTF8 sbAuth;
 						sbAuth.AppendC(UTF8STRC("Basic "));
 						Text::TextBinEnc::Base64Enc b64Enc;
-						b64Enc.EncodeBin(&sbAuth, buff, i);
+						b64Enc.EncodeBin(sbAuth, buff, i);
 						cli->AddHeaderC(CSTR("Authorization"), sbAuth.ToCString());
 						
 						sptr = me->AppendCookie(sbuff, currURL->ToCString());
@@ -727,12 +727,12 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 					i++;
 				}
 				Text::StringBuilderUTF8 sb;
-				if (cli->GetRespHeader(CSTR("Content-Type"), &sb))
+				if (cli->GetRespHeader(CSTR("Content-Type"), sb))
 				{
 					contType = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 				}
 				sb.ClearStr();
-				if (cli->GetRespHeader(CSTR("Content-Encoding"), &sb))
+				if (cli->GetRespHeader(CSTR("Content-Encoding"), sb))
 				{
 					if (sb.Equals(UTF8STRC("gzip")))
 					{
@@ -774,7 +774,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 					Crypto::Cert::X509File *x509 = Crypto::Cert::X509File::CreateFromCerts(certs);
 					if (x509)
 					{
-						x509->ToString(&sb);
+						x509->ToString(sb);
 						me->respCert = x509;
 					}
 					else
@@ -783,7 +783,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 						UOSInt j = certs->GetCount();
 						while (i < j)
 						{
-							certs->GetItem(i)->ToString(&sb);
+							certs->GetItem(i)->ToString(sb);
 							i++;
 						}
 					}

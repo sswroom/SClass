@@ -25,7 +25,7 @@ SSWR::AVIRead::AVIRSMBIOSForm::AVIRSMBIOSForm(UI::GUIClientControl *parent, NotN
 	Text::StringBuilderUTF8 sb;
 	if (this->smbios)
 	{
-		this->smbios->ToString(&sb);
+		this->smbios->ToString(sb);
 	}
 	NEW_CLASS(this->pnlControl, UI::GUIPanel(ui, this));
 	this->pnlControl->SetRect(0, 0, 100, 31, false);

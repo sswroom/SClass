@@ -66,7 +66,7 @@ DB::DBTool *DB::MySQLConn::CreateDBTool(NotNullPtr<Net::SocketFactory> sockf, Te
 				sb.Append(logPrefix);
 			}
 			sb.AppendC(UTF8STRC("Error in connecting to MySQL Server: "));
-			conn->GetLastErrorMsg(&sb);
+			conn->GetLastErrorMsg(sb);
 			log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Error);
 		}
 		DEL_CLASS(conn);
@@ -109,7 +109,7 @@ DB::DBTool *DB::MySQLConn::CreateDBTool(NotNullPtr<Net::SocketFactory> sockf, Te
 				sb.Append(logPrefix);
 			}
 			sb.AppendC(UTF8STRC("Error in connecting to MySQL Server: "));
-			conn->GetLastErrorMsg(&sb);
+			conn->GetLastErrorMsg(sb);
 			log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Error);
 		}
 		DEL_CLASS(conn);

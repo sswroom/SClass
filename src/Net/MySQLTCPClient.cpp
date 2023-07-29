@@ -175,7 +175,7 @@ public:
 		return Text::StrUTF8_WChar(buff, this->currRow[colIndex]->v, 0);
 	}
 
-	virtual Bool GetStr(UOSInt colIndex, Text::StringBuilderUTF8 *sb)
+	virtual Bool GetStr(UOSInt colIndex, NotNullPtr<Text::StringBuilderUTF8> sb)
 	{
 		if (this->currRow == 0)
 		{
@@ -645,11 +645,11 @@ public:
 			return 0;
 		}
 		Text::StringBuilderUTF8 sb;
-		item.GetAsString(&sb);
+		item.GetAsString(sb);
 		return Text::StrUTF8_WChar(buff, sb.ToString(), 0);
 	}
 
-	virtual Bool GetStr(UOSInt colIndex, Text::StringBuilderUTF8 *sb)
+	virtual Bool GetStr(UOSInt colIndex, NotNullPtr<Text::StringBuilderUTF8> sb)
 	{
 		Data::VariItem item;
 		if (!this->GetVariItem(colIndex, &item))
@@ -684,7 +684,7 @@ public:
 		else
 		{
 			Text::StringBuilderUTF8 sb;
-			item.GetAsString(&sb);
+			item.GetAsString(sb);
 			return Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 		}
 	}
@@ -1966,7 +1966,7 @@ void Net::MySQLTCPClient::SetLastError(Text::CString errMsg)
 	this->lastError = Text::String::New(errMsg).Ptr();
 #if defined(VERBOSE)
 	Text::StringBuilderUTF8 sb;
-	this->GetLastErrorMsg(&sb);
+	this->GetLastErrorMsg(sb);
 	UInt32 port;
 	if (this->cli)
 	{
@@ -2098,7 +2098,7 @@ void Net::MySQLTCPClient::ForceTz(Int8 tzQhr)
 
 }
 
-void Net::MySQLTCPClient::GetConnName(Text::StringBuilderUTF8 *sb)
+void Net::MySQLTCPClient::GetConnName(NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
@@ -2278,7 +2278,7 @@ void Net::MySQLTCPClient::CloseReader(DB::DBReader *r)
 	DEL_CLASS(reader);
 }
 
-void Net::MySQLTCPClient::GetLastErrorMsg(Text::StringBuilderUTF8 *str)
+void Net::MySQLTCPClient::GetLastErrorMsg(NotNullPtr<Text::StringBuilderUTF8> str)
 {
 	if (this->lastError)
 	{
@@ -2415,7 +2415,7 @@ DB::DBReader *Net::MySQLTCPClient::QueryTableData(Text::CString schemaName, Text
 	if (condition)
 	{
 		sb.AppendC(UTF8STRC(" where "));
-		condition->ToWhereClause(&sb, DB::SQLType::MySQL, 0, 100, 0);
+		condition->ToWhereClause(sb, DB::SQLType::MySQL, 0, 100, 0);
 	}
 	if (ordering.leng > 0)
 	{

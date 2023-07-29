@@ -12,7 +12,7 @@ void __stdcall SSWR::AVIRead::AVIRLineCounterForm::OnExtensionsAddClicked(void *
 {
 	SSWR::AVIRead::AVIRLineCounterForm *me = (SSWR::AVIRead::AVIRLineCounterForm*)userObj;
 	Text::StringBuilderUTF8 sb;
-	me->txtExtensions->GetText(&sb);
+	me->txtExtensions->GetText(sb);
 	if (sb.GetLength() == 0)
 		return;
 	UOSInt i = me->extList.GetCount();
@@ -51,7 +51,7 @@ void __stdcall SSWR::AVIRead::AVIRLineCounterForm::OnCalcClicked(void *userObj)
 	Text::StringBuilderUTF8 sb;
 	if (me->extList.GetCount() <= 0)
 		return;
-	me->txtPath->GetText(&sb);
+	me->txtPath->GetText(sb);
 	if (sb.GetLength() == 0)
 	{
 		return;

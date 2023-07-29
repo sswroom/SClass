@@ -66,7 +66,7 @@ SSWR::AVIRead::AVIRTrustStoreForm::AVIRTrustStoreForm(UI::GUIClientControl *pare
 	{
 		cert = store->GetItem(i);
 		sb.ClearStr();
-		cert->GetSubjectCN(&sb);
+		cert->GetSubjectCN(sb);
 		entry = MemAlloc(CertEntry, 1);
 		entry->cert = cert;
 		entry->subjectCN = Text::String::New(sb.ToCString());
@@ -87,7 +87,7 @@ SSWR::AVIRead::AVIRTrustStoreForm::AVIRTrustStoreForm(UI::GUIClientControl *pare
 		entry = certs.GetItem(i);
 		k = this->lvTrustCert->AddItem(entry->subjectCN, entry->cert);
 		sb.ClearStr();
-		entry->cert->GetIssuerCN(&sb);
+		entry->cert->GetIssuerCN(sb);
 		this->lvTrustCert->SetSubItem(k, 1, sb.ToCString());
 		if (entry->cert->GetNotBefore(&dt))
 		{

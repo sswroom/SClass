@@ -56,7 +56,7 @@ Net::Spring::SpringBootApplication::SpringBootApplication(Text::CString appName)
 	sb.AppendC(UTF8STRC(" with PID "));
 	sb.AppendUOSInt(Manage::Process::GetCurrProcId());
 	sb.AppendC(UTF8STRC(" ("));
-	IO::Path::GetProcessFileName(&sb);
+	IO::Path::GetProcessFileName(sb);
 	sb.AppendC(UTF8STRC(" started by "));
 	sptr = Manage::ComputerUser::GetProcessUser(sbuff);
 	if (sptr)

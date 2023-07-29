@@ -2581,7 +2581,7 @@ void Media::EXIFData::SetHeight(UInt32 height)
 	}
 }
 
-Bool Media::EXIFData::ToString(Text::StringBuilderUTF8 *sb, Text::CString linePrefix) const
+Bool Media::EXIFData::ToString(NotNullPtr<Text::StringBuilderUTF8> sb, Text::CString linePrefix) const
 {
 	Data::ArrayList<UInt32> exifIds;
 	Media::EXIFData::EXIFItem *exItem;
@@ -3212,7 +3212,7 @@ Bool Media::EXIFData::ToString(Text::StringBuilderUTF8 *sb, Text::CString linePr
 	return true;
 }
 
-Bool Media::EXIFData::ToStringCanonCameraSettings(Text::StringBuilderUTF8 *sb, Text::CString linePrefix, UInt16 *valBuff, UOSInt valCnt) const
+Bool Media::EXIFData::ToStringCanonCameraSettings(NotNullPtr<Text::StringBuilderUTF8> sb, Text::CString linePrefix, UInt16 *valBuff, UOSInt valCnt) const
 {
 	Bool isInt16;
 	Bool isUInt16;
@@ -4143,7 +4143,7 @@ Bool Media::EXIFData::ToStringCanonCameraSettings(Text::StringBuilderUTF8 *sb, T
 	return true;
 }
 
-Bool Media::EXIFData::ToStringCanonFocalLength(Text::StringBuilderUTF8 *sb, Text::CString linePrefix, UInt16 *valBuff, UOSInt valCnt) const
+Bool Media::EXIFData::ToStringCanonFocalLength(NotNullPtr<Text::StringBuilderUTF8> sb, Text::CString linePrefix, UInt16 *valBuff, UOSInt valCnt) const
 {
 	Bool isInt16;
 	Bool isUInt16;
@@ -4206,7 +4206,7 @@ Bool Media::EXIFData::ToStringCanonFocalLength(Text::StringBuilderUTF8 *sb, Text
 	return true;
 }
 
-Bool Media::EXIFData::ToStringCanonShotInfo(Text::StringBuilderUTF8 *sb, Text::CString linePrefix, UInt16 *valBuff, UOSInt valCnt) const
+Bool Media::EXIFData::ToStringCanonShotInfo(NotNullPtr<Text::StringBuilderUTF8> sb, Text::CString linePrefix, UInt16 *valBuff, UOSInt valCnt) const
 {
 	Bool isInt16;
 	Bool isUInt16;
@@ -4492,7 +4492,7 @@ Bool Media::EXIFData::ToStringCanonShotInfo(Text::StringBuilderUTF8 *sb, Text::C
 	return true;
 }
 
-Bool Media::EXIFData::ToStringCanonLensType(Text::StringBuilderUTF8 *sb, UInt16 lensType) const
+Bool Media::EXIFData::ToStringCanonLensType(NotNullPtr<Text::StringBuilderUTF8> sb, UInt16 lensType) const
 {
 	sb->AppendC(UTF8STRC("0x"));
 	sb->AppendHex16(lensType);

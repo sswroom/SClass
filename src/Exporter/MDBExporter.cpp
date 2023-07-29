@@ -119,7 +119,7 @@ Bool Exporter::MDBExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 				if (mdb->ExecuteNonQuery(sql.ToCString()) <= 0)
 				{
 					sb.ClearStr();
-					mdb->GetLastErrorMsg(&sb);
+					mdb->GetLastErrorMsg(sb);
 					succ = false;
 					break;
 				}

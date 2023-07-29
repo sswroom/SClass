@@ -124,7 +124,7 @@ Bool Crypto::Cert::CertStore::LoadJavaCACerts(Text::CString jksPath)
 void Crypto::Cert::CertStore::AddCert(Crypto::Cert::X509Cert *cert)
 {
 	Text::StringBuilderUTF8 sb;
-	cert->GetSubjectCN(&sb);
+	cert->GetSubjectCN(sb);
 	if (sb.GetLength() > 0)
 	{
 		cert = this->certMap.PutC(sb.ToCString(), cert);

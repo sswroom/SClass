@@ -18,22 +18,22 @@ namespace Math
 		Bool reverseAxis;
 
 		void SetLastError(Text::CString lastError);
-		static void AppendLineString(Text::StringBuilderUTF8 *sb, Math::Geometry::LineString *pl, Bool reverseAxis);
-		static void AppendPolygon(Text::StringBuilderUTF8 *sb, Math::Geometry::Polygon *pg, Bool reverseAxis);
-		static void AppendPolygonZ(Text::StringBuilderUTF8 *sb, Math::Geometry::Polygon *pg, Bool reverseAxis);
-		static void AppendPolyline(Text::StringBuilderUTF8 *sb, Math::Geometry::Polyline *pl, Bool reverseAxis);
-		static void AppendPolylineZ(Text::StringBuilderUTF8 *sb, Math::Geometry::Polyline *pl, Bool reverseAxis);
-		static void AppendPolylineZM(Text::StringBuilderUTF8 *sb, Math::Geometry::Polyline *pl, Bool reverseAxis);
-		static void AppendCompoundCurve(Text::StringBuilderUTF8 *sb, Math::Geometry::CompoundCurve *cc, Bool reverseAxis);
-		static void AppendCurvePolygon(Text::StringBuilderUTF8 *sb, Math::Geometry::CurvePolygon *cpg, Bool reverseAxis);
-		static void AppendMultiSurface(Text::StringBuilderUTF8 *sb, Math::Geometry::MultiSurface *ms, Bool reverseAxis);
-		Bool AppendGeometryCollection(Text::StringBuilderUTF8 *sb, Math::Geometry::GeometryCollection *geoColl);
+		static void AppendLineString(NotNullPtr<Text::StringBuilderUTF8> sb, Math::Geometry::LineString *pl, Bool reverseAxis);
+		static void AppendPolygon(NotNullPtr<Text::StringBuilderUTF8> sb, Math::Geometry::Polygon *pg, Bool reverseAxis);
+		static void AppendPolygonZ(NotNullPtr<Text::StringBuilderUTF8> sb, Math::Geometry::Polygon *pg, Bool reverseAxis);
+		static void AppendPolyline(NotNullPtr<Text::StringBuilderUTF8> sb, Math::Geometry::Polyline *pl, Bool reverseAxis);
+		static void AppendPolylineZ(NotNullPtr<Text::StringBuilderUTF8> sb, Math::Geometry::Polyline *pl, Bool reverseAxis);
+		static void AppendPolylineZM(NotNullPtr<Text::StringBuilderUTF8> sb, Math::Geometry::Polyline *pl, Bool reverseAxis);
+		static void AppendCompoundCurve(NotNullPtr<Text::StringBuilderUTF8> sb, Math::Geometry::CompoundCurve *cc, Bool reverseAxis);
+		static void AppendCurvePolygon(NotNullPtr<Text::StringBuilderUTF8> sb, Math::Geometry::CurvePolygon *cpg, Bool reverseAxis);
+		static void AppendMultiSurface(NotNullPtr<Text::StringBuilderUTF8> sb, Math::Geometry::MultiSurface *ms, Bool reverseAxis);
+		Bool AppendGeometryCollection(NotNullPtr<Text::StringBuilderUTF8> sb, Math::Geometry::GeometryCollection *geoColl);
 	public:
 		WKTWriter();
 		virtual ~WKTWriter();
 
 		virtual Text::CString GetWriterName();
-		virtual Bool ToText(Text::StringBuilderUTF8 *sb, Math::Geometry::Vector2D *vec);
+		virtual Bool ToText(NotNullPtr<Text::StringBuilderUTF8> sb, Math::Geometry::Vector2D *vec);
 		virtual Text::String *GetLastError();
 
 		void SetReverseAxis(Bool reverseAxis);

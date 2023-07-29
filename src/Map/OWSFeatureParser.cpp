@@ -90,7 +90,7 @@ Bool Map::OWSFeatureParser::ParseJSON(Text::CString txt, UInt32 srid, Data::Arra
 								name = names.GetItem(k);
 								nameList->Add(name->Clone());
 								sb.ClearStr();
-								obj->GetValue(name->ToCString())->ToString(&sb);
+								obj->GetValue(name->ToCString())->ToString(sb);
 								valueList->Add(Text::String::New(sb.ToCString()).Ptr());
 								k++;
 							}

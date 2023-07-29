@@ -72,7 +72,7 @@ IO::Stream *Map::HKTrafficLayer2::OpenURLStream()
 			if (status == 301 || status == 302)
 			{
 				Text::StringBuilderUTF8 sb;
-				cli->GetRespHeader(CSTR("Location"), &sb);
+				cli->GetRespHeader(CSTR("Location"), sb);
 				cli.Delete();
 				if (!this->url->Equals(sb.ToString(), sb.GetLength()))
 				{
@@ -249,19 +249,19 @@ void Map::HKTrafficLayer2::ReloadData()
 													if (nodeName->Equals(UTF8STRC("segment_id")))
 													{
 														sb.ClearStr();
-														reader.ReadNodeText(&sb);
+														reader.ReadNodeText(sb);
 														sb.ToInt32(&segmentId);
 													}
 													else if (nodeName->Equals(UTF8STRC("speed")))
 													{
 														sb.ClearStr();
-														reader.ReadNodeText(&sb);
+														reader.ReadNodeText(sb);
 														sb.ToDouble(&speed);
 													}
 													else if (nodeName->Equals(UTF8STRC("valid")))
 													{
 														sb.ClearStr();
-														reader.ReadNodeText(&sb);
+														reader.ReadNodeText(sb);
 														valid = sb.Equals(UTF8STRC("Y"));
 													}
 													else

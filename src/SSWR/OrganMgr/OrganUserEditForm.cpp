@@ -8,16 +8,16 @@ void __stdcall SSWR::OrganMgr::OrganUserEditForm::OnOKClicked(void *userObj)
 	Text::StringBuilderUTF8 sb1;
 	Text::StringBuilderUTF8 sb2;
 	Text::StringBuilderUTF8 sb3;
-	me->txtPassword->GetText(&sb1);
-	me->txtRetype->GetText(&sb2);
+	me->txtPassword->GetText(sb1);
+	me->txtRetype->GetText(sb2);
 	if (!sb1.Equals(&sb2))
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Password and retype password do not match"), CSTR("Error"), me);
 		return;
 	}
 	sb1.ClearStr();
-	me->txtUserName->GetText(&sb1);
-	me->txtWatermark->GetText(&sb3);
+	me->txtUserName->GetText(sb1);
+	me->txtWatermark->GetText(sb3);
 	if (sb1.GetLength() == 0)
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Please enter user name"), CSTR("Error"), me);

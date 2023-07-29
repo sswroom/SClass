@@ -61,7 +61,7 @@ Bool IO::ServiceManager::ServiceCreate(Text::CString svcName, Text::CString svcD
 		fs.Write(sb.ToString(), sb.GetLength());
 	}
 	sb.ClearStr();
-	Manage::Process::ExecuteProcess(CSTR("systemctl daemon-reload"), &sb);
+	Manage::Process::ExecuteProcess(CSTR("systemctl daemon-reload"), sb);
 	if (stype == IO::ServiceInfo::ServiceState::Active)
 	{
 		this->ServiceEnable(svcName);
@@ -76,7 +76,7 @@ Bool IO::ServiceManager::ServiceDelete(Text::CString svcName)
 	sbCmd.AppendC(UTF8STRC("systemctl status "));
 	sbCmd.Append(svcName);
 	sbCmd.AppendC(UTF8STRC(" --no-pager"));
-	Int32 ret = Manage::Process::ExecuteProcess(sbCmd.ToCString(), &sb);
+	Int32 ret = Manage::Process::ExecuteProcess(sbCmd.ToCString(), sb);
 	if (ret == 4 || ret == -1)
 	{
 		return false;
@@ -136,7 +136,7 @@ Bool IO::ServiceManager::ServiceDelete(Text::CString svcName)
 			if (IO::Path::DeleteFile(svcFile.v))
 			{
 				sb.ClearStr();
-				Manage::Process::ExecuteProcess(CSTR("systemctl daemon-reload"), &sb);
+				Manage::Process::ExecuteProcess(CSTR("systemctl daemon-reload"), sb);
 				return true;
 			}
 		}
@@ -156,7 +156,7 @@ Bool IO::ServiceManager::ServiceStart(Text::CString svcName)
 	sbCmd.AppendC(UTF8STRC("systemctl start "));
 	sbCmd.Append(svcName);
 	sbCmd.AppendC(UTF8STRC(" --no-pager"));
-	Int32 ret = Manage::Process::ExecuteProcess(sbCmd.ToCString(), &sb);
+	Int32 ret = Manage::Process::ExecuteProcess(sbCmd.ToCString(), sb);
 	printf("Start ret = %d\r\n", ret);
 	printf("Start msg = %s\r\n", sb.ToString());
 	if (ret != 0)
@@ -174,7 +174,7 @@ Bool IO::ServiceManager::ServiceStop(Text::CString svcName)
 	sbCmd.AppendC(UTF8STRC("systemctl stop "));
 	sbCmd.Append(svcName);
 	sbCmd.AppendC(UTF8STRC(" --no-pager"));
-	Int32 ret = Manage::Process::ExecuteProcess(sbCmd.ToCString(), &sb);
+	Int32 ret = Manage::Process::ExecuteProcess(sbCmd.ToCString(), sb);
 	printf("Stop ret = %d\r\n", ret);
 	printf("Stop msg = %s\r\n", sb.ToString());
 	if (ret != 0)
@@ -191,7 +191,7 @@ Bool IO::ServiceManager::ServiceEnable(Text::CString svcName)
 	sbCmd.AppendC(UTF8STRC("systemctl enable "));
 	sbCmd.Append(svcName);
 	sbCmd.AppendC(UTF8STRC(" --no-pager"));
-	Int32 ret = Manage::Process::ExecuteProcess(sbCmd.ToCString(), &sb);
+	Int32 ret = Manage::Process::ExecuteProcess(sbCmd.ToCString(), sb);
 	printf("Enable ret = %d\r\n", ret);
 	printf("Enable msg = %s\r\n", sb.ToString());
 	if (ret != 0)
@@ -208,7 +208,7 @@ Bool IO::ServiceManager::ServiceDisable(Text::CString svcName)
 	sbCmd.AppendC(UTF8STRC("systemctl disable "));
 	sbCmd.Append(svcName);
 	sbCmd.AppendC(UTF8STRC(" --no-pager"));
-	Int32 ret = Manage::Process::ExecuteProcess(sbCmd.ToCString(), &sb);
+	Int32 ret = Manage::Process::ExecuteProcess(sbCmd.ToCString(), sb);
 	printf("Disable ret = %d\r\n", ret);
 	printf("Disable msg = %s\r\n", sb.ToString());
 	if (ret != 0)
@@ -225,7 +225,7 @@ Bool IO::ServiceManager::ServiceGetDetail(Text::CString svcName, ServiceDetail *
 	sbCmd.AppendC(UTF8STRC("systemctl status "));
 	sbCmd.Append(svcName);
 	sbCmd.AppendC(UTF8STRC(" --no-pager"));
-	Int32 ret = Manage::Process::ExecuteProcess(sbCmd.ToCString(), &sb);
+	Int32 ret = Manage::Process::ExecuteProcess(sbCmd.ToCString(), sb);
 	if (ret == 4 || ret == -1)
 	{
 		return false;
@@ -404,7 +404,7 @@ Bool IO::ServiceManager::ServiceGetDetail(Text::CString svcName, ServiceDetail *
 UOSInt IO::ServiceManager::QueryServiceList(Data::ArrayList<ServiceItem*> *svcList)
 {
 	Text::StringBuilderUTF8 sb;
-	Manage::Process::ExecuteProcess(CSTR("systemctl list-unit-files --no-pager"), &sb);
+	Manage::Process::ExecuteProcess(CSTR("systemctl list-unit-files --no-pager"), sb);
 	Text::PString lines[2];
 	Text::PString svcName;
 	Text::PString states[2];

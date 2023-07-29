@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "Text/Builder/HTMLBuilder.h"
 
-Text::Builder::HTMLBuilder::HTMLBuilder(Text::StringBuilderUTF8 *sb, Bool bodyContent)
+Text::Builder::HTMLBuilder::HTMLBuilder(NotNullPtr<Text::StringBuilderUTF8> sb, Bool bodyContent)
 {
 	this->sb = sb;
 	this->bodyContent = bodyContent;

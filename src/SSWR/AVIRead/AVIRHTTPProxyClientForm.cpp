@@ -15,7 +15,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPProxyClientForm::OnRequestClicked(void *us
 	Text::StringBuilderUTF8 sb;
 	UInt32 ip;
 	UInt16 port;
-	me->txtProxyPort->GetText(&sb);
+	me->txtProxyPort->GetText(sb);
 	port = 0;
 	sb.ToUInt16(&port);
 	if (port <= 0)
@@ -24,7 +24,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPProxyClientForm::OnRequestClicked(void *us
 		return;
 	}
 	sb.ClearStr();
-	me->txtProxySvr->GetText(&sb);
+	me->txtProxySvr->GetText(sb);
 	ip = me->sockf->DNSResolveIPv4(sb.ToCString());
 	if (ip == 0)
 	{
@@ -33,7 +33,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPProxyClientForm::OnRequestClicked(void *us
 	}
 
 	sb.ClearStr();
-	me->txtURL->GetText(&sb);
+	me->txtURL->GetText(sb);
 	if (!sb.StartsWith(UTF8STRC("http://")))
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Please enter valid http URL"), CSTR("Request"), me);

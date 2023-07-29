@@ -23,7 +23,7 @@ Crypto::Cert::X509File::FileType Crypto::Cert::X509PrivKey::GetFileType() const
 	return FileType::PrivateKey;
 }
 
-void Crypto::Cert::X509PrivKey::ToShortName(Text::StringBuilderUTF8 *sb) const
+void Crypto::Cert::X509PrivKey::ToShortName(NotNullPtr<Text::StringBuilderUTF8> sb) const
 {
 	UOSInt oidLen;
 	Net::ASN1Util::ItemType itemType;
@@ -56,7 +56,7 @@ Net::ASN1Data *Crypto::Cert::X509PrivKey::Clone() const
 	return asn1;
 }
 
-void Crypto::Cert::X509PrivKey::ToString(Text::StringBuilderUTF8 *sb) const
+void Crypto::Cert::X509PrivKey::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
 {
 	if (IsPrivateKeyInfo(this->buff.Ptr(), this->buff.PtrEnd(), "1"))
 	{

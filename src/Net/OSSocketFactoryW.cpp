@@ -1338,7 +1338,7 @@ Bool Net::OSSocketFactory::AdapterEnable(Text::CString adapterName, Bool enable)
 	{
 		sbCmd.AppendC(UTF8STRC("\" DISABLED"));
 	}
-	Int32 ret = Manage::Process::ExecuteProcess(sbCmd.ToCString(), &sb);
+	Int32 ret = Manage::Process::ExecuteProcess(sbCmd.ToCString(), sb);
 	return ret == 0;
 }
 

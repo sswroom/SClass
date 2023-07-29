@@ -19,14 +19,14 @@ void __stdcall SSWR::AVIRead::AVIRPushServerForm::OnStartClicked(void *userObj)
 	}
 	UInt16 port;
 	Text::StringBuilderUTF8 sbAPIKey;
-	me->txtPort->GetText(&sbAPIKey);
+	me->txtPort->GetText(sbAPIKey);
 	if (!sbAPIKey.ToUInt16(&port))
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Please enter valid port number"), CSTR("PushServer"), me);
 		return;
 	}
 	sbAPIKey.ClearStr();
-	me->txtAPIKey->GetText(&sbAPIKey);
+	me->txtAPIKey->GetText(sbAPIKey);
 	if (sbAPIKey.leng == 0)
 	{
 		UI::MessageDialog::ShowDialog(CSTR("API Key is empty"), CSTR("PushServer"), me);

@@ -21,7 +21,7 @@ namespace Crypto
 
 			virtual Crypto::Cert::X509Cert *CreateX509Cert() const;
 
-			virtual void ToString(Text::StringBuilderUTF8 *sb) const;
+			virtual void ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const;
 		};
 	}
 }

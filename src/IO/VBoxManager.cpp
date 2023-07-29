@@ -10,7 +10,7 @@ UOSInt IO::VBoxManager::GetVMList(Data::ArrayList<VMId*> *vms)
 	sb.Append(this->progPath);
 	sb.AppendC(UTF8STRC(" list vms"));
 	Text::StringBuilderUTF8 sbResult;
-	Manage::Process::ExecuteProcess(sb.ToCString(), &sbResult);
+	Manage::Process::ExecuteProcess(sb.ToCString(), sbResult);
 	UOSInt lineCnt;
 	Text::PString sarr[2];
 	VMId *vm;
@@ -39,7 +39,7 @@ IO::VBoxManager::VBoxManager()
 	this->progPath = 0;
 	this->version = 0;
 	Text::StringBuilderUTF8 sb;
-	Manage::Process::ExecuteProcess(CSTR("vboxmanage --version"), &sb);
+	Manage::Process::ExecuteProcess(CSTR("vboxmanage --version"), sb);
 	if (sb.leng > 0)
 	{
 		sb.TrimWSCRLF();
@@ -78,10 +78,10 @@ IO::VBoxVMInfo *IO::VBoxManager::GetVMInfo(VMId *vm) const
 	Text::StringBuilderUTF8 sb;
 	sb.Append(this->progPath);
 	sb.AppendC(UTF8STRC(" showvminfo "));
-	vm->uuid.ToString(&sb);
+	vm->uuid.ToString(sb);
 	Text::StringBuilderUTF8 sbResult;
 	printf("Cmd: %s\r\n", sb.v);
-	Manage::Process::ExecuteProcess(sb.ToCString(), &sbResult);
+	Manage::Process::ExecuteProcess(sb.ToCString(), sbResult);
 	UOSInt lineCnt;
 	Text::PString sarr[2];
 	VBoxVMInfo *info = 0;

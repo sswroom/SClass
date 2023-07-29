@@ -29,7 +29,7 @@ Text::CString Math::GeoJSONWriter::GetWriterName()
 	return CSTR("GeoJSON");
 }
 
-Bool Math::GeoJSONWriter::ToText(Text::StringBuilderUTF8 *sb, Math::Geometry::Vector2D *vec)
+Bool Math::GeoJSONWriter::ToText(NotNullPtr<Text::StringBuilderUTF8> sb, Math::Geometry::Vector2D *vec)
 {
 	if (vec == 0)
 	{
@@ -332,7 +332,7 @@ Text::String *Math::GeoJSONWriter::GetLastError()
 	return this->lastError;
 }
 
-Bool Math::GeoJSONWriter::ToGeometry(Text::StringBuilderUTF8 *sb, Math::Geometry::Vector2D *vec)
+Bool Math::GeoJSONWriter::ToGeometry(NotNullPtr<Text::StringBuilderUTF8> sb, Math::Geometry::Vector2D *vec)
 {
 	if (vec == 0)
 	{

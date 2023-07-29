@@ -104,7 +104,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	Double t = clk.GetTimeDiff();
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("Time used = "));
-	Text::SBAppendF64(&sb, t);
+	sb.AppendDouble(t);
 	sb.AppendC(UTF8STRC("s"));
 	console.WriteLineC(sb.ToString(), sb.GetLength());
 

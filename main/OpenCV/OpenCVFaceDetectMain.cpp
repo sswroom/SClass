@@ -237,7 +237,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	if (capture)
 	{
 		Text::StringBuilderUTF8 sb;
-		capture->GetInfo(&sb);
+		capture->GetInfo(sb);
 		console->WriteLineC(sb.ToString(), sb.GetLength());
 
 		Media::OpenCV::OCVObjectDetector *objDetect;

@@ -13,7 +13,7 @@
 
 #define OBJECTPATH "obj"
 
-void IO::SMake::AppendCfgItem(Text::StringBuilderUTF8 *sb, Text::CString val)
+void IO::SMake::AppendCfgItem(NotNullPtr<Text::StringBuilderUTF8> sb, Text::CString val)
 {
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
@@ -56,13 +56,13 @@ void IO::SMake::AppendCfgItem(Text::StringBuilderUTF8 *sb, Text::CString val)
 	sb->AppendC(&val.v[i], (UOSInt)(valEnd - &val.v[i]));
 }
 
-void IO::SMake::AppendCfgPath(Text::StringBuilderUTF8 *sb, Text::CString path)
+void IO::SMake::AppendCfgPath(NotNullPtr<Text::StringBuilderUTF8> sb, Text::CString path)
 {
 	if (path.StartsWith(UTF8STRC("~/")))
 	{
 		Manage::EnvironmentVar env;
 		const UTF8Char *csptr = env.GetValue(CSTR("HOME"));
-		if (sb)
+		if (csptr)
 		{
 			sb->AppendSlow(csptr);
 			sb->Append(path.Substring(1));
@@ -78,7 +78,7 @@ void IO::SMake::AppendCfgPath(Text::StringBuilderUTF8 *sb, Text::CString path)
 	}
 }
 
-void IO::SMake::AppendCfg(Text::StringBuilderUTF8 *sb, Text::CString compileCfg)
+void IO::SMake::AppendCfg(NotNullPtr<Text::StringBuilderUTF8> sb, Text::CString compileCfg)
 {
 	UOSInt i = compileCfg.IndexOf('`');
 	if (i != INVALID_INDEX)
@@ -127,7 +127,7 @@ Bool IO::SMake::ExecuteCmd(Text::CString cmd)
 		this->cmdWriter->WriteLineC(cmd.v, cmd.leng);
 	}
 	Text::StringBuilderUTF8 sbRet;
-	Int32 ret = Manage::Process::ExecuteProcess(cmd, &sbRet);
+	Int32 ret = Manage::Process::ExecuteProcess(cmd, sbRet);
 	if (ret != 0)
 	{
 		this->SetErrorMsg(sbRet.ToCString());
@@ -248,7 +248,7 @@ Bool IO::SMake::LoadConfigFile(Text::CString cfgFile)
 					Text::StringBuilderUTF8 result;
 					NotNullPtr<Text::String> cmd = Text::String::New(&str1.v[2], i - 2);
 					Int32 ret;
-					if ((ret = Manage::Process::ExecuteProcess(cmd->ToCString(), &result)) != 0)
+					if ((ret = Manage::Process::ExecuteProcess(cmd->ToCString(), result)) != 0)
 					{
 						valid = false;
 					}
@@ -276,7 +276,7 @@ Bool IO::SMake::LoadConfigFile(Text::CString cfgFile)
 					Text::StringBuilderUTF8 result;
 					NotNullPtr<Text::String> cmd = Text::String::New(&str1.v[2], (UOSInt)i - 2);
 					Int32 ret;
-					if ((ret = Manage::Process::ExecuteProcess(cmd->ToCString(), &result)) != 0)
+					if ((ret = Manage::Process::ExecuteProcess(cmd->ToCString(), result)) != 0)
 					{
 						valid = false;
 					}
@@ -331,7 +331,7 @@ Bool IO::SMake::LoadConfigFile(Text::CString cfgFile)
 					sb2.ClearStr();
 					sb2.Append(cfg->value);
 					sb2.AppendUTF8Char(' ');
-					AppendCfgItem(&sb2, str2.ToCString());
+					AppendCfgItem(sb2, str2.ToCString());
 					cfg->value->Release();
 					cfg->value = Text::String::New(sb2.ToString(), sb2.GetLength());
 				}
@@ -339,7 +339,7 @@ Bool IO::SMake::LoadConfigFile(Text::CString cfgFile)
 				{
 					cfg->value->Release();
 					sb2.ClearStr();
-					AppendCfgItem(&sb2, str2.ToCString());
+					AppendCfgItem(sb2, str2.ToCString());
 					cfg->value = Text::String::New(sb2.ToString(), sb2.GetLength());
 				}
 			}
@@ -348,7 +348,7 @@ Bool IO::SMake::LoadConfigFile(Text::CString cfgFile)
 				cfg = MemAlloc(IO::SMake::ConfigItem, 1);
 				cfg->name = Text::String::New(str1.ToCString());
 				sb2.ClearStr();
-				AppendCfgItem(&sb2, str2.ToCString());
+				AppendCfgItem(sb2, str2.ToCString());
 				cfg->value = Text::String::New(sb2.ToString(), sb2.GetLength());
 				this->cfgMap.PutNN(cfg->name, cfg);
 			}
@@ -364,7 +364,7 @@ Bool IO::SMake::LoadConfigFile(Text::CString cfgFile)
 				{
 					cfg->value->Release();
 					sb2.ClearStr();
-					AppendCfgItem(&sb2, str2.ToCString());
+					AppendCfgItem(sb2, str2.ToCString());
 					cfg->value = Text::String::New(sb2.ToString(), sb2.GetLength());
 				}
 				else
@@ -372,7 +372,7 @@ Bool IO::SMake::LoadConfigFile(Text::CString cfgFile)
 					cfg = MemAlloc(IO::SMake::ConfigItem, 1);
 					cfg->name = Text::String::New(str1.ToCString());
 					sb2.ClearStr();
-					AppendCfgItem(&sb2, str2.ToCString());
+					AppendCfgItem(sb2, str2.ToCString());
 					cfg->value = Text::String::New(sb2.ToString(), sb2.GetLength());
 					this->cfgMap.PutNN(cfg->name, cfg);
 				}
@@ -925,7 +925,7 @@ Bool IO::SMake::CompileProgInternal(NotNullPtr<const ProgramItem> prog, Bool asm
 		{
 			sb.ClearStr();
 			sb.Append(this->basePath);
-			IO::Path::AppendPath(&sb, subProg->srcFile->v, subProg->srcFile->leng);
+			IO::Path::AppendPath(sb, subProg->srcFile->v, subProg->srcFile->leng);
 			if (!IO::Path::GetFileTime(sb.ToString(), &dt1, 0, 0))
 			{
 				sb.ClearStr();
@@ -979,7 +979,7 @@ Bool IO::SMake::CompileProgInternal(NotNullPtr<const ProgramItem> prog, Bool asm
 			if (subProg->srcFile->EndsWith(UTF8STRC(".cpp")))
 			{
 				sb.ClearStr();
-				AppendCfgPath(&sb, cppCfg->value->ToCString());
+				AppendCfgPath(sb, cppCfg->value->ToCString());
 				sb.AppendUTF8Char(' ');
 				if (cflagsCfg)
 				{
@@ -993,7 +993,7 @@ Bool IO::SMake::CompileProgInternal(NotNullPtr<const ProgramItem> prog, Bool asm
 				}
 				if (subProg->compileCfg)
 				{
-					this->AppendCfg(&sb, subProg->compileCfg->ToCString());
+					this->AppendCfg(sb, subProg->compileCfg->ToCString());
 					sb.AppendUTF8Char(' ');
 				}
 				if (asmListing)
@@ -1025,7 +1025,7 @@ Bool IO::SMake::CompileProgInternal(NotNullPtr<const ProgramItem> prog, Bool asm
 			else if (subProg->srcFile->EndsWith(UTF8STRC(".c")))
 			{
 				sb.ClearStr();
-				AppendCfgPath(&sb, ccCfg->value->ToCString());
+				AppendCfgPath(sb, ccCfg->value->ToCString());
 				sb.AppendUTF8Char(' ');
 				if (cflagsCfg)
 				{
@@ -1034,7 +1034,7 @@ Bool IO::SMake::CompileProgInternal(NotNullPtr<const ProgramItem> prog, Bool asm
 				}
 				if (subProg->compileCfg)
 				{
-					this->AppendCfg(&sb, subProg->compileCfg->ToCString());
+					this->AppendCfg(sb, subProg->compileCfg->ToCString());
 					sb.AppendUTF8Char(' ');
 				}
 				if (asmListing)
@@ -1065,7 +1065,7 @@ Bool IO::SMake::CompileProgInternal(NotNullPtr<const ProgramItem> prog, Bool asm
 			else if (subProg->srcFile->EndsWith(UTF8STRC(".asm")))
 			{
 				sb.ClearStr();
-				AppendCfgPath(&sb, asmCfg->value->ToCString());
+				AppendCfgPath(sb, asmCfg->value->ToCString());
 				sb.AppendUTF8Char(' ');
 				if (asmflagsCfg)
 				{
@@ -1145,7 +1145,7 @@ Bool IO::SMake::CompileProgInternal(NotNullPtr<const ProgramItem> prog, Bool asm
 	if (!skipLink)
 	{
 		sb.ClearStr();
-		AppendCfgPath(&sb, cppCfg->value->ToCString());
+		AppendCfgPath(sb, cppCfg->value->ToCString());
 		sb.AppendUTF8Char(' ');
 		sb.AppendC(UTF8STRC("-o bin/"));
 		sb.Append(prog->name);
@@ -1175,7 +1175,7 @@ Bool IO::SMake::CompileProgInternal(NotNullPtr<const ProgramItem> prog, Bool asm
 	//		printf("Libs: %s\r\n", libList.GetItem(i));
 			sb.AppendUTF8Char(' ');
 			Text::String *lib = libList.GetKey(i);
-			AppendCfg(&sb, lib->ToCString());
+			AppendCfg(sb, lib->ToCString());
 			i++;
 		}
 		if (this->asyncMode)
@@ -1225,7 +1225,7 @@ Bool IO::SMake::TestProg(NotNullPtr<const ProgramItem> prog, NotNullPtr<Text::St
 	sb->Append(prog->name);
 
 	Text::StringBuilderUTF8 sbRet;
-	Int32 ret = Manage::Process::ExecuteProcess(sb->ToCString(), &sbRet);
+	Int32 ret = Manage::Process::ExecuteProcess(sb->ToCString(), sbRet);
 	if (ret != 0)
 	{
 		sb->ClearStr();
@@ -1349,7 +1349,7 @@ Bool IO::SMake::HasError() const
 	return this->error;
 }
 
-Bool IO::SMake::GetLastErrorMsg(Text::StringBuilderUTF8 *sb) const
+Bool IO::SMake::GetLastErrorMsg(NotNullPtr<Text::StringBuilderUTF8> sb) const
 {
 	Bool ret;
 	Sync::MutexUsage mutUsage(this->errorMsgMut);

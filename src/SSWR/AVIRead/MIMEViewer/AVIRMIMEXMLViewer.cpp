@@ -37,7 +37,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMIMEXMLViewer::AVIRMIMEXMLViewer(SSWR::AVIRead::A
 				sbCont.ClearStr();
 			}
 			sbPath.ClearStr();
-			reader.GetCurrPath(&sbPath);
+			reader.GetCurrPath(sbPath);
 			if (reader.GetPathLev() > 0)
 			{
 				sbCont.AppendChar(' ', reader.GetPathLev() << 1);
@@ -77,7 +77,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMIMEXMLViewer::AVIRMIMEXMLViewer(SSWR::AVIRead::A
 			sbCont.Append(reader.GetNodeText());
 			sbCont.AppendC(UTF8STRC(">"));
 			sb.ClearStr();
-			reader.GetCurrPath(&sb);
+			reader.GetCurrPath(sb);
 			i = this->lvXML->AddItem(sb.ToCString(), 0);
 			this->lvXML->SetSubItem(i, 1, sbCont.ToCString());
 			sbCont.ClearStr();
@@ -94,7 +94,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMIMEXMLViewer::AVIRMIMEXMLViewer(SSWR::AVIRead::A
 				s->Release();
 				if (sbPath.GetLength() == 0)
 				{
-					reader.GetCurrPath(&sbPath);
+					reader.GetCurrPath(sbPath);
 				}
 			}
 		}
@@ -107,7 +107,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMIMEXMLViewer::AVIRMIMEXMLViewer(SSWR::AVIRead::A
 				sbCont.ClearStr();
 			}
 			sbPath.ClearStr();
-			reader.GetCurrPath(&sbPath);
+			reader.GetCurrPath(sbPath);
 			if (reader.GetPathLev() > 0)
 			{
 				sbCont.AppendChar(' ', reader.GetPathLev() << 1);

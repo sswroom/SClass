@@ -64,7 +64,7 @@ namespace Net
 		UOSInt GetRespHeaderCnt();
 		UTF8Char *GetRespHeader(UOSInt index, UTF8Char *buff);
 		UTF8Char *GetRespHeader(Text::CString name, UTF8Char *valueBuff);
-		Bool GetRespHeader(Text::CString name, Text::StringBuilderUTF8 *sb);
+		Bool GetRespHeader(Text::CString name, NotNullPtr<Text::StringBuilderUTF8> sb);
 		Text::CString GetRespHeader(Text::CString name);
 		Text::String *GetRespHeader(UOSInt index);
 		UInt64 GetContentLength();
@@ -90,7 +90,7 @@ namespace Net
 		static Bool IsHTTPURL(Text::CString url);
 		static void PrepareSSL(Net::SSLEngine *ssl);
 		static Bool LoadContent(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::CString url, IO::Stream *stm, UInt64 maxSize);
-		static Bool LoadContent(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::CString url, Text::StringBuilderUTF8 *sb, UInt64 maxSize);
+		static Bool LoadContent(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::CString url, NotNullPtr<Text::StringBuilderUTF8> sb, UInt64 maxSize);
 	};
 }
 #endif

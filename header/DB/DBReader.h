@@ -32,15 +32,15 @@ namespace DB
 		virtual Int32 GetInt32(UOSInt colIndex) = 0;
 		virtual Int64 GetInt64(UOSInt colIndex) = 0;
 		virtual WChar *GetStr(UOSInt colIndex, WChar *buff) = 0;
-		virtual Bool GetStr(UOSInt colIndex, Text::StringBuilderUTF8 *sb) = 0;
-		Bool GetStrN(UOSInt colIndex, Text::StringBuilderUTF8 *sb) { sb->ClearStr(); return GetStr(colIndex, sb); }
+		virtual Bool GetStr(UOSInt colIndex, NotNullPtr<Text::StringBuilderUTF8> sb) = 0;
+		Bool GetStrN(UOSInt colIndex, NotNullPtr<Text::StringBuilderUTF8> sb) { sb->ClearStr(); return GetStr(colIndex, sb); }
 		virtual Text::String *GetNewStr(UOSInt colIndex) = 0;
 		NotNullPtr<Text::String> GetNewStrNN(UOSInt colIndex)
 		{
 			return Text::String::OrEmpty(GetNewStr(colIndex));
 		}
 		
-		Text::String *GetNewStrB(UOSInt colIndex, Text::StringBuilderUTF8 *tmpBuff)
+		Text::String *GetNewStrB(UOSInt colIndex, NotNullPtr<Text::StringBuilderUTF8> tmpBuff)
 		{
 			tmpBuff->ClearStr();
 			if (GetStr(colIndex, tmpBuff))
@@ -49,7 +49,7 @@ namespace DB
 				return 0;
 		}
 
-		NotNullPtr<Text::String> GetNewStrBNN(UOSInt colIndex, Text::StringBuilderUTF8 *tmpBuff)
+		NotNullPtr<Text::String> GetNewStrBNN(UOSInt colIndex, NotNullPtr<Text::StringBuilderUTF8> tmpBuff)
 		{
 			tmpBuff->ClearStr();
 			if (GetStr(colIndex, tmpBuff))

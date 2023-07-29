@@ -23,7 +23,7 @@ Crypto::Cert::X509File::FileType Crypto::Cert::X509CRL::GetFileType() const
 	return FileType::CRL;
 }
 
-void Crypto::Cert::X509CRL::ToShortName(Text::StringBuilderUTF8 *sb) const
+void Crypto::Cert::X509CRL::ToShortName(NotNullPtr<Text::StringBuilderUTF8> sb) const
 {
 	UOSInt len = 0;
 	Net::ASN1Util::ItemType itemType = Net::ASN1Util::IT_UNKNOWN;
@@ -49,7 +49,7 @@ Crypto::Cert::X509File::ValidStatus Crypto::Cert::X509CRL::IsValid(Net::SSLEngin
 		trustStore = ssl->GetTrustStore();
 	}
 	Text::StringBuilderUTF8 sb;
-	if (!this->GetIssuerCN(&sb))
+	if (!this->GetIssuerCN(sb))
 	{
 		return Crypto::Cert::X509File::ValidStatus::FileFormatInvalid;
 	}
@@ -107,7 +107,7 @@ Net::ASN1Data *Crypto::Cert::X509CRL::Clone() const
 	return asn1;
 }
 
-void Crypto::Cert::X509CRL::ToString(Text::StringBuilderUTF8 *sb) const
+void Crypto::Cert::X509CRL::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
 {
 	if (IsCertificateList(this->buff.Ptr(), this->buff.PtrEnd(), "1"))
 	{
@@ -126,7 +126,7 @@ Bool Crypto::Cert::X509CRL::HasVersion() const
 	return false;
 }
 
-Bool Crypto::Cert::X509CRL::GetIssuerCN(Text::StringBuilderUTF8 *sb) const
+Bool Crypto::Cert::X509CRL::GetIssuerCN(NotNullPtr<Text::StringBuilderUTF8> sb) const
 {
 	UOSInt len = 0;
 	Net::ASN1Util::ItemType itemType = Net::ASN1Util::IT_UNKNOWN;

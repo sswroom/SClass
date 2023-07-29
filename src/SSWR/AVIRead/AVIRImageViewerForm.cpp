@@ -342,7 +342,7 @@ void SSWR::AVIRead::AVIRImageViewerForm::EventMenuClicked(UInt16 cmdId)
 		{
 			Text::StringBuilderUTF8 sbImg;
 			Text::StringBuilderUTF8 sbTitle;
-			this->imgList->ToString(&sbImg);
+			this->imgList->ToString(sbImg);
 			sbTitle.AppendC(UTF8STRC("Image info for "));
 			sbTitle.Append(this->imgList->GetSourceNameObj());
 			SSWR::AVIRead::AVIRStringMsgForm frm(0, this->ui, this->core, sbTitle.ToCString(), sbImg.ToCString());

@@ -47,7 +47,7 @@ namespace Text
 		XMLReader(Text::EncodingFactory *encFact, NotNullPtr<IO::Stream> stm, ParseMode mode);
 		~XMLReader();
 
-		void GetCurrPath(Text::StringBuilderUTF8 *sb) const;
+		void GetCurrPath(NotNullPtr<Text::StringBuilderUTF8> sb) const;
 		UOSInt GetPathLev() const;
 		Text::XMLNode::NodeType GetNodeType() const;
 		Text::String *GetNodeText() const; //TextNode = Value, ElementNode = Name
@@ -57,15 +57,15 @@ namespace Text
 		Text::XMLAttrib *GetAttrib(const UTF8Char *name, UOSInt nameLen) const;
 
 		Bool ReadNext();
-		Bool ReadNodeText(Text::StringBuilderUTF8 *sb);
+		Bool ReadNodeText(NotNullPtr<Text::StringBuilderUTF8> sb);
 		Bool NextElement();
 		Bool SkipElement();
 		Bool IsElementEmpty() const;
 		Bool IsComplete() const;
 		UOSInt GetErrorCode() const;
-		Bool ToString(Text::StringBuilderUTF8 *sb) const;
+		Bool ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const;
 
-		static Bool XMLWellFormat(Text::EncodingFactory *encFact, NotNullPtr<IO::Stream> stm, UOSInt lev, Text::StringBuilderUTF8 *sb);
+		static Bool XMLWellFormat(Text::EncodingFactory *encFact, NotNullPtr<IO::Stream> stm, UOSInt lev, NotNullPtr<Text::StringBuilderUTF8> sb);
 	};
 }
 #endif

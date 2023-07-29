@@ -15,28 +15,28 @@ void __stdcall SSWR::SHPConv::SHPConvRangeFilterForm::OnOKClicked(void *userObj)
 	Text::StringBuilderUTF8 sb;
 
 	sb.ClearStr();
-	me->txtX1->GetText(&sb);
+	me->txtX1->GetText(sb);
 	if (!Text::StrToDouble(sb.ToString(), &x1))
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Invalid input values"), CSTR("Error"), me);
 		return;
 	}
 	sb.ClearStr();
-	me->txtY1->GetText(&sb);
+	me->txtY1->GetText(sb);
 	if (!Text::StrToDouble(sb.ToString(), &y1))
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Invalid input values"), CSTR("Error"), me);
 		return;
 	}
 	sb.ClearStr();
-	me->txtX2->GetText(&sb);
+	me->txtX2->GetText(sb);
 	if (!Text::StrToDouble(sb.ToString(), &x2))
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Invalid input values"), CSTR("Error"), me);
 		return;
 	}
 	sb.ClearStr();
-	me->txtY2->GetText(&sb);
+	me->txtY2->GetText(sb);
 	if (!Text::StrToDouble(sb.ToString(), &y2))
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Invalid input values"), CSTR("Error"), me);

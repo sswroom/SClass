@@ -9,7 +9,7 @@ void __stdcall SSWR::AVIRead::AVIRWebSiteInstagramForm::OnRequestUserClicked(voi
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
-	me->txtChannelId->GetText(&sb);
+	me->txtChannelId->GetText(sb);
 	me->lvItems->ClearItems();
 	if (sb.GetLength() > 0)
 	{
@@ -58,7 +58,7 @@ void __stdcall SSWR::AVIRead::AVIRWebSiteInstagramForm::OnPageClicked(void *user
 {
 	SSWR::AVIRead::AVIRWebSiteInstagramForm *me = (SSWR::AVIRead::AVIRWebSiteInstagramForm*)userObj;
 	Text::StringBuilderUTF8 sb;
-	me->txtShortCode->GetText(&sb);
+	me->txtShortCode->GetText(sb);
 	me->lbImageURL->ClearItems();
 	if (sb.GetLength() > 0)
 	{

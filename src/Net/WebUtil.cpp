@@ -152,7 +152,7 @@ UTF8Char *Net::WebUtil::Date2Str(UTF8Char *sbuff, const Data::Timestamp &ts)
 	return Text::StrConcatC(t.ToString(Text::StrConcatC(sbuff, (const UTF8Char*)wds[wd], 5), "dd MMM yyyy HH:mm:ss"), UTF8STRC(" GMT"));	
 }
 
-void Net::WebUtil::Date2Str(Text::StringBuilderUTF8 *sb, const Data::Timestamp &ts)
+void Net::WebUtil::Date2Str(NotNullPtr<Text::StringBuilderUTF8> sb, const Data::Timestamp &ts)
 {
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;

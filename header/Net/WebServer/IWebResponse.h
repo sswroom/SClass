@@ -203,7 +203,7 @@ namespace Net
 				if (!expires.IsNull())
 				{
 					sb.AppendC(UTF8STRC("; Expires="));
-					Net::WebUtil::Date2Str(&sb, expires);
+					Net::WebUtil::Date2Str(sb, expires);
 				}
 				return this->AddHeader(CSTR("Set-Cookie"), sb.ToCString());
 			}

@@ -38,7 +38,7 @@ namespace Crypto
 			Int64 GetIssuedAt() const;
 			void SetJWTId(Text::String *id);
 			Text::String *GetJWTId() const;
-			void ToString(Text::StringBuilderUTF8 *sb) const;
+			void ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const;
 		};
 	}
 }

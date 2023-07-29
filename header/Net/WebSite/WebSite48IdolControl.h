@@ -32,10 +32,10 @@ namespace Net
 			OSInt GetArcPageItems(OSInt pageNo, Data::ArrayList<ItemData*> *itemList);
 			void FreeItems(Data::ArrayList<ItemData*> *itemList);
 
-			Bool GetDownloadLink(Int32 videoId, Int32 linkId, Text::StringBuilderUTF8 *link);
-			Bool GetVideoName(Int32 videoId, Text::StringBuilderUTF8 *name);
+			Bool GetDownloadLink(Int32 videoId, Int32 linkId, NotNullPtr<Text::StringBuilderUTF8> link);
+			Bool GetVideoName(Int32 videoId, NotNullPtr<Text::StringBuilderUTF8> name);
 
-			static void Title2DisplayName(NotNullPtr<Text::String> title, Text::StringBuilderUTF8 *dispName);
+			static void Title2DisplayName(NotNullPtr<Text::String> title, NotNullPtr<Text::StringBuilderUTF8> dispName);
 		};
 	}
 }

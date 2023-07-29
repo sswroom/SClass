@@ -67,7 +67,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			{
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("Temperature = "));
-				Text::SBAppendF64(&sb, temp);
+				sb.AppendDouble(temp);
 				console.WriteLineC(sb.ToString(), sb.GetLength());
 			}
 			Sync::SimpleThread::Sleep(3000);

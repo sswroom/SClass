@@ -103,7 +103,7 @@ UOSInt IO::FileAnalyse::MDBFileAnalyse::GetFrameCount()
 	return this->packs.GetCount();
 }
 
-Bool IO::FileAnalyse::MDBFileAnalyse::GetFrameName(UOSInt index, Text::StringBuilderUTF8 *sb)
+Bool IO::FileAnalyse::MDBFileAnalyse::GetFrameName(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	IO::FileAnalyse::MDBFileAnalyse::PackInfo *pack;
 	pack = this->packs.GetItem(index);

@@ -124,7 +124,7 @@ void DB::DBFFile::CloseReader(DBReader *r)
 	DEL_CLASS(rdr);
 }
 
-void DB::DBFFile::GetLastErrorMsg(Text::StringBuilderUTF8 *str)
+void DB::DBFFile::GetLastErrorMsg(NotNullPtr<Text::StringBuilderUTF8> str)
 {
 }
 
@@ -599,7 +599,7 @@ WChar *DB::DBFReader::GetStr(UOSInt colIndex, WChar *buff)
 	}
 }
 
-Bool DB::DBFReader::GetStr(UOSInt colIndex, Text::StringBuilderUTF8 *sb)
+Bool DB::DBFReader::GetStr(UOSInt colIndex, NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	if (!this->recordExist)
 		return false;

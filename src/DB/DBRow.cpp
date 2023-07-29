@@ -702,7 +702,7 @@ Bool DB::DBRow::GetSinglePKI64(Int64 *key) const
 	return hasKey;
 }
 
-void DB::DBRow::ToString(Text::StringBuilderUTF8 *sb) const
+void DB::DBRow::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
 {
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
@@ -802,7 +802,7 @@ void DB::DBRow::ToString(Text::StringBuilderUTF8 *sb) const
 	sb->AppendUTF8Char(']');
 }
 
-void DB::DBRow::AppendTableName(Text::StringBuilderUTF8 *sb) const
+void DB::DBRow::AppendTableName(NotNullPtr<Text::StringBuilderUTF8> sb) const
 {
 	Text::CString tableName = this->table->GetTableName()->ToCString();
 	UOSInt i = tableName.IndexOf('.');
@@ -849,7 +849,7 @@ void DB::DBRow::AppendTableName(Text::StringBuilderUTF8 *sb) const
 	}
 }
 
-void DB::DBRow::AppendVarNameForm(Text::StringBuilderUTF8 *sb, const UTF8Char *colName) const
+void DB::DBRow::AppendVarNameForm(NotNullPtr<Text::StringBuilderUTF8> sb, const UTF8Char *colName) const
 {
 	Bool nextCap = false;
 	UTF8Char c;

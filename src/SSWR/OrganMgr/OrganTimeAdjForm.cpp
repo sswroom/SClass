@@ -98,7 +98,7 @@ void __stdcall SSWR::OrganMgr::OrganTimeAdjForm::OnCameraChg(void *userObj)
 	UTF8Char sbuff[16];
 	UTF8Char *sptr;
 	Int32 timeAdj;
-	me->cboCamera->GetText(&sb);
+	me->cboCamera->GetText(sb);
 	timeAdj = me->cameraMap->Get(sb.ToCString());
 	sptr = Text::StrInt32(sbuff, timeAdj);
 	me->txtTimeAdj->SetText(CSTRP(sbuff, sptr));
@@ -110,7 +110,7 @@ void __stdcall SSWR::OrganMgr::OrganTimeAdjForm::OnPasteClicked(void *userObj)
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[16];
 	UTF8Char *sptr;
-	if (UI::Clipboard::GetString(me->GetHandle(), &sb))
+	if (UI::Clipboard::GetString(me->GetHandle(), sb))
 	{
 		sb.Trim();
 
@@ -120,7 +120,7 @@ void __stdcall SSWR::OrganMgr::OrganTimeAdjForm::OnPasteClicked(void *userObj)
 			sptr = Text::StrInt32(sbuff, timeAdj);
 			me->txtTimeAdj->SetText(CSTRP(sbuff, sptr));
 			sb.ClearStr();
-			me->cboCamera->GetText(&sb);
+			me->cboCamera->GetText(sb);
 			me->cameraMap->Put(sb.ToCString(), timeAdj);
 			me->adjLyr->SetTimeAdj(sb.ToCString(), timeAdj);
 			me->mapMain->UpdateMap();
@@ -137,7 +137,7 @@ void __stdcall SSWR::OrganMgr::OrganTimeAdjForm::OnTimeAddClicked(void *userObj)
 	UTF8Char sbuff[16];
 	UTF8Char *sptr;
 	Int32 timeAdj;
-	me->cboCamera->GetText(&sb);
+	me->cboCamera->GetText(sb);
 	timeAdj = me->cameraMap->Get(sb.ToCString());
 	timeAdj++;
 	me->adjLyr->SetTimeAdj(sb.ToCString(), timeAdj);
@@ -156,7 +156,7 @@ void __stdcall SSWR::OrganMgr::OrganTimeAdjForm::OnTimeSubClicked(void *userObj)
 	UTF8Char sbuff[16];
 	UTF8Char *sptr;
 	Int32 timeAdj;
-	me->cboCamera->GetText(&sb);
+	me->cboCamera->GetText(sb);
 	timeAdj = me->cameraMap->Get(sb.ToCString());
 	timeAdj--;
 	me->adjLyr->SetTimeAdj(sb.ToCString(), timeAdj);
@@ -181,7 +181,7 @@ void __stdcall SSWR::OrganMgr::OrganTimeAdjForm::OnTimeApplyClicked(void *userOb
 	Math::Coord2DDbl pos;
 	Data::Timestamp ts;
 
-	me->cboCamera->GetText(&sb);
+	me->cboCamera->GetText(sb);
 	timeAdj = me->cameraMap->Get(sb.ToCString());
 	i = 0;
 	j = me->userFileList->GetCount();

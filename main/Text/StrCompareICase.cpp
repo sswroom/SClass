@@ -30,7 +30,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	sb.AppendC(UTF8STRC("Compare value1 = "));
 	sb.AppendOSInt(val);
 	sb.AppendC(UTF8STRC(", t = "));
-	Text::SBAppendF64(&sb, spd1);
+	sb.AppendDouble(spd1);
 	console.WriteLineC(sb.ToString(), sb.GetLength());
 
 	i = 10000000;
@@ -44,7 +44,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	sb.AppendC(UTF8STRC("Compare value2 = "));
 	sb.AppendOSInt(val2);
 	sb.AppendC(UTF8STRC(", t = "));
-	Text::SBAppendF64(&sb, spd2);
+	sb.AppendDouble(spd2);
 	console.WriteLineC(sb.ToString(), sb.GetLength());
 
 	DEL_CLASS(clk);

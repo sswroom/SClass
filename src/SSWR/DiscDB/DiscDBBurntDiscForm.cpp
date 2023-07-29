@@ -105,7 +105,7 @@ void SSWR::DiscDB::DiscDBBurntDiscForm::UpdateSeries()
 	OSInt k;
 	Data::ArrayListString seriesList;
 
-	this->cboDVDName->GetText(&sb);
+	this->cboDVDName->GetText(sb);
 	this->cboSeries->ClearItems();
 	this->env->GetDVDVideos(&dvdVideoList);
 	i = 0;
@@ -150,8 +150,8 @@ void SSWR::DiscDB::DiscDBBurntDiscForm::UpdateVolume()
 	UOSInt i;
 	UOSInt j;
 
-	this->cboDVDName->GetText(&sbName);
-	this->cboSeries->GetText(&sbSeries);
+	this->cboDVDName->GetText(sbName);
+	this->cboSeries->GetText(sbSeries);
 	this->cboVolume->ClearItems();
 	this->env->GetDVDVideos(&dvdVideoList);
 	i = 0;
@@ -185,9 +185,9 @@ Bool SSWR::DiscDB::DiscDBBurntDiscForm::UpdateFileInfo()
 	Int32 volume;
 	UOSInt i;
 	UOSInt j;
-	this->cboDVDName->GetText(&sbName);
-	this->cboSeries->GetText(&sbSeries);
-	this->cboVolume->GetText(&sbVolume);
+	this->cboDVDName->GetText(sbName);
+	this->cboSeries->GetText(sbSeries);
+	this->cboVolume->GetText(sbVolume);
 	if (sbName.GetLength() == 0)
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Error found in DVD Name"), CSTR("Burnt Disc"), this);
@@ -245,7 +245,7 @@ Bool SSWR::DiscDB::DiscDBBurntDiscForm::UpdateFileInfo()
 	if (UI::MessageDialog::ShowYesNoDialog(CSTR("Do you want to add new anime"), CSTR("Question"), this))
 	{
 		Text::StringBuilderUTF8 sbDVDType;
-		this->cboDVDType->GetText(&sbDVDType);
+		this->cboDVDType->GetText(sbDVDType);
 		maxId = this->env->NewDVDVideo(sbName.ToString(), sbSeries.ToString(), sbVolume.ToString(), sbDVDType.ToString());
 		if (maxId >= 0)
 		{
@@ -276,9 +276,9 @@ void SSWR::DiscDB::DiscDBBurntDiscForm::UpdateType()
 	UOSInt j;
 	NotNullPtr<Text::String> s;
 
-	this->cboDVDName->GetText(&sbName);
-	this->cboSeries->GetText(&sbSeries);
-	this->cboVolume->GetText(&sbVolume);
+	this->cboDVDName->GetText(sbName);
+	this->cboSeries->GetText(sbSeries);
+	this->cboVolume->GetText(sbVolume);
 	this->env->GetDVDVideos(&dvdVideoList);
 	i = 0;
 	j = dvdVideoList.GetCount();
@@ -1139,7 +1139,7 @@ void __stdcall SSWR::DiscDB::DiscDBBurntDiscForm::OnFinishClicked(void *userObj)
 	Text::StringBuilderUTF8 sbDate;
 	Text::StringBuilderUTF8 sbDiscId;
 	Text::StringBuilderUTF8 sbDVDId;
-	me->txtDate->GetText(&sbDate);
+	me->txtDate->GetText(sbDate);
 	theDate = Data::Timestamp::FromStr(sbDate.ToCString(), 0);
 	if (theDate.IsNull())
 	{
@@ -1147,14 +1147,14 @@ void __stdcall SSWR::DiscDB::DiscDBBurntDiscForm::OnFinishClicked(void *userObj)
 		me->txtDate->Focus();
 		return;
 	}
-	me->txtDiscType->GetText(&sbDiscId);
+	me->txtDiscType->GetText(sbDiscId);
 	if (me->env->GetDiscType(sbDiscId.ToCString()) == 0)
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Error in the Disc Type"), CSTR("Burnt Disc"), me);
 		me->txtDiscType->Focus();
 		return;
 	}
-	me->txtDiscId->GetText(&sbDVDId);
+	me->txtDiscId->GetText(sbDVDId);
 	if (sbDVDId.GetLength() < 3)
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Invalid Disc Id"), CSTR("Burnt Disc"), me);
@@ -1253,7 +1253,7 @@ void __stdcall SSWR::DiscDB::DiscDBBurntDiscForm::OnDiscIdTextChg(void *userObj)
 {
 	SSWR::DiscDB::DiscDBBurntDiscForm *me = (SSWR::DiscDB::DiscDBBurntDiscForm*)userObj;
 	Text::StringBuilderUTF8 sb;
-	me->txtDiscId->GetText(&sb);
+	me->txtDiscId->GetText(sb);
     if (sb.GetLength() <= 0)
 	{
         me->lbDiscId->SetSelectedIndex(0);
@@ -1276,7 +1276,7 @@ void __stdcall SSWR::DiscDB::DiscDBBurntDiscForm::OnSectorSizeClicked(void *user
 	UInt64 size;
 	UInt64 baseSize;
 	Text::StringBuilderUTF8 sb;
-	me->txtSectorSize->GetText(&sb);
+	me->txtSectorSize->GetText(sb);
 	if (sb.GetLength() > 6)
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Sector Size too long"), CSTR("Burnt Disc"), me);

@@ -190,7 +190,7 @@ namespace Media
 		const Media::CS::TransferParam *GetBTranParamRead() const;
 		Media::ColorProfile::ColorPrimaries *GetPrimaries();
 		const Media::ColorProfile::ColorPrimaries *GetPrimariesRead() const;
-		void ToString(Text::StringBuilderUTF8 *sb) const;
+		void ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const;
 
 		void SetRAWICC(const UInt8 *iccData);
 		const UInt8 *GetRAWICC() const;

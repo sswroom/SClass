@@ -845,7 +845,7 @@ Bool Media::ICCProfile::SetToColorProfile(Media::ColorProfile *colorProfile)
 	return false;
 }
 
-void Media::ICCProfile::ToString(Text::StringBuilderUTF8 *sb) const
+void Media::ICCProfile::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
 {
 	UInt8 majorVer;
 	UInt8 minorVer;
@@ -1382,7 +1382,7 @@ Text::CString Media::ICCProfile::GetNameStandardIlluminent(Int32 val)
 	}
 }
 
-void Media::ICCProfile::GetDispCIEXYZ(Text::StringBuilderUTF8 *sb, CIEXYZ *xyz)
+void Media::ICCProfile::GetDispCIEXYZ(NotNullPtr<Text::StringBuilderUTF8> sb, CIEXYZ *xyz)
 {
 	sb->AppendC(UTF8STRC("X = "));
 	Text::SBAppendF64(sb, xyz->val[0]);
@@ -1401,7 +1401,7 @@ void Media::ICCProfile::GetDispCIEXYZ(Text::StringBuilderUTF8 *sb, CIEXYZ *xyz)
 	}
 }
 
-void Media::ICCProfile::GetDispTagType(Text::StringBuilderUTF8 *sb, UInt8 *buff, UInt32 leng)
+void Media::ICCProfile::GetDispTagType(NotNullPtr<Text::StringBuilderUTF8> sb, UInt8 *buff, UInt32 leng)
 {
 	Int32 typ = ReadMInt32(buff);
 	Int32 nCh;
@@ -1735,7 +1735,7 @@ void Media::ICCProfile::FrameAddXYZNumber(IO::FileAnalyse::FrameDetailHandler *f
 	Media::ICCProfile::CIEXYZ xyz;
 	ReadXYZNumber(xyzBuff, &xyz);
 	Text::StringBuilderUTF8 sb;
-	GetDispCIEXYZ(&sb, &xyz);
+	GetDispCIEXYZ(sb, &xyz);
 	frame->AddField(ofst, 12, fieldName, sb.ToCString());
 }
 
@@ -1772,9 +1772,9 @@ void Media::ICCProfile::FrameDispTagType(IO::FileAnalyse::FrameDetailHandler *fr
 					sb.AppendC(UTF8STRC(", "));
 				}
 				sb.AppendC(UTF8STRC("("));
-				Text::SBAppendF64(&sb, ReadU16Fixed16Number(&buff[val * 8 + 12]));
+				sb.AppendDouble(ReadU16Fixed16Number(&buff[val * 8 + 12]));
 				sb.AppendC(UTF8STRC(", "));
-				Text::SBAppendF64(&sb, ReadU16Fixed16Number(&buff[val * 8 + 16]));
+				sb.AppendDouble(ReadU16Fixed16Number(&buff[val * 8 + 16]));
 				sb.AppendC(UTF8STRC(")"));
 				val++;
 			}
@@ -1804,7 +1804,7 @@ void Media::ICCProfile::FrameDispTagType(IO::FileAnalyse::FrameDetailHandler *fr
 				if (nCh)
 					sb.AppendC(UTF8STRC("  "));
 				ReadXYZNumber(&buff[val], &xyz);
-				GetDispCIEXYZ(&sb, &xyz);
+				GetDispCIEXYZ(sb, &xyz);
 				val += 12;
 				nCh++;
 			}
@@ -1816,11 +1816,11 @@ void Media::ICCProfile::FrameDispTagType(IO::FileAnalyse::FrameDetailHandler *fr
 			Text::StringBuilderUTF8 sb;
 			sb.AppendC(UTF8STRC("Illuminant: {"));
 			ReadXYZNumber(&buff[8], &xyz);
-			GetDispCIEXYZ(&sb, &xyz);
+			GetDispCIEXYZ(sb, &xyz);
 
 			sb.AppendC(UTF8STRC("}, Surround: {"));
 			ReadXYZNumber(&buff[20], &xyz);
-			GetDispCIEXYZ(&sb, &xyz);
+			GetDispCIEXYZ(sb, &xyz);
 			sb.AppendC(UTF8STRC("}, Illuminant type = "));
 			sb.AppendI32(ReadMInt32(&buff[32]));
 			frame->AddField(ofst + 8, leng - 8, fieldName, sb.ToCString());
@@ -1833,7 +1833,7 @@ void Media::ICCProfile::FrameDispTagType(IO::FileAnalyse::FrameDetailHandler *fr
 			sb.Append(GetNameStandardObserver(ReadMInt32(&buff[8])));
 			sb.AppendC(UTF8STRC(", Measurement backing: {"));
 			ReadXYZNumber(&buff[12], &xyz);
-			GetDispCIEXYZ(&sb, &xyz);
+			GetDispCIEXYZ(sb, &xyz);
 			sb.AppendC(UTF8STRC("}, Measurement geometry = "));
 			sb.AppendI32(ReadMInt32(&buff[24]));
 			sb.AppendC(UTF8STRC(", Measurement flare = "));
@@ -1876,7 +1876,7 @@ void Media::ICCProfile::FrameDispTagType(IO::FileAnalyse::FrameDetailHandler *fr
 			if (tt == Media::CS::TRANT_GAMMA)
 			{
 				sb.AppendC(UTF8STRC(", gamma = "));
-				Text::SBAppendF64(&sb, gamma);
+				sb.AppendDouble(gamma);
 			}
 			frame->AddField(ofst + 8, leng - 8, fieldName, sb.ToCString());
 		}
@@ -1899,7 +1899,7 @@ void Media::ICCProfile::FrameDispTagType(IO::FileAnalyse::FrameDetailHandler *fr
 			case 0:
 				g = ReadS15Fixed16Number(&buff[12]);
 				sb.AppendC(UTF8STRC(" Y = X ^ "));
-				Text::SBAppendF64(&sb, g);
+				sb.AppendDouble(g);
 				break;
 			case 1:
 				g = ReadS15Fixed16Number(&buff[12]);
@@ -1919,15 +1919,15 @@ void Media::ICCProfile::FrameDispTagType(IO::FileAnalyse::FrameDetailHandler *fr
 				c = ReadS15Fixed16Number(&buff[24]);
 				d = ReadS15Fixed16Number(&buff[28]);
 				sb.AppendC(UTF8STRC(" if (X >= "));
-				Text::SBAppendF64(&sb, d);
+				sb.AppendDouble(d);
 				sb.AppendC(UTF8STRC(") Y = ("));
-				Text::SBAppendF64(&sb, a);
+				sb.AppendDouble(a);
 				sb.AppendC(UTF8STRC(" * X + "));
-				Text::SBAppendF64(&sb, b);
+				sb.AppendDouble(b);
 				sb.AppendC(UTF8STRC(") ^ "));
-				Text::SBAppendF64(&sb, g);
+				sb.AppendDouble(g);
 				sb.AppendC(UTF8STRC(" else Y = "));
-				Text::SBAppendF64(&sb, c);
+				sb.AppendDouble(c);
 				sb.AppendC(UTF8STRC(" * X"));
 				break;
 			case 4:
@@ -1939,19 +1939,19 @@ void Media::ICCProfile::FrameDispTagType(IO::FileAnalyse::FrameDetailHandler *fr
 				e = ReadS15Fixed16Number(&buff[32]);
 				f = ReadS15Fixed16Number(&buff[36]);
 				sb.AppendC(UTF8STRC(" if (X >= "));
-				Text::SBAppendF64(&sb, d);
+				sb.AppendDouble(d);
 				sb.AppendC(UTF8STRC(") Y = ("));
-				Text::SBAppendF64(&sb, a);
+				sb.AppendDouble(a);
 				sb.AppendC(UTF8STRC(" * X + "));
-				Text::SBAppendF64(&sb, b);
+				sb.AppendDouble(b);
 				sb.AppendC(UTF8STRC(") ^ "));
-				Text::SBAppendF64(&sb, g);
+				sb.AppendDouble(g);
 				sb.AppendC(UTF8STRC(" + "));
-				Text::SBAppendF64(&sb, e);
+				sb.AppendDouble(e);
 				sb.AppendC(UTF8STRC(" else Y = "));
-				Text::SBAppendF64(&sb, c);
+				sb.AppendDouble(c);
 				sb.AppendC(UTF8STRC(" * X + "));
-				Text::SBAppendF64(&sb, f);
+				sb.AppendDouble(f);
 				break;
 			default:
 				break;

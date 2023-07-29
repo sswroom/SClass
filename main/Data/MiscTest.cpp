@@ -96,13 +96,13 @@ Int32 Test1()
 						sb.AppendUTF8Char('{');
 						if (reader.NextElement())
 						{
-							reader.ReadNodeText(&sb);
+							reader.ReadNodeText(sb);
 							if (reader.NextElement())
 							{
 								sb2.ClearStr();
-								reader.ReadNodeText(&sb2);
+								reader.ReadNodeText(sb2);
 								sb.AppendC(UTF8STRC(", UTF8STRC("));
-								Text::CPPText::ToCPPString(&sb, sb2.v, sb2.leng);
+								Text::CPPText::ToCPPString(sb, sb2.v, sb2.leng);
 								sb.AppendUTF8Char(')');
 								while (reader.NextElement())
 								{
@@ -117,9 +117,9 @@ Int32 Test1()
 						if (reader.NextElement())
 						{
 							sb2.ClearStr();
-							reader.ReadNodeText(&sb2);
+							reader.ReadNodeText(sb2);
 							sb.AppendC(UTF8STRC(", UTF8STRC("));
-							Text::CPPText::ToCPPString(&sb, sb2.v, sb2.leng);
+							Text::CPPText::ToCPPString(sb, sb2.v, sb2.leng);
 							sb.AppendUTF8Char(')');
 							while (reader.NextElement())
 							{

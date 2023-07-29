@@ -191,7 +191,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 						{
 							sb.ClearStr();
 							sb.AppendC(UTF8STRC("Resp time = "));
-							Text::SBAppendF64(&sb, respTime / 1000000.0);
+							sb.AppendDouble(respTime / 1000000.0);
 							sb.AppendC(UTF8STRC("s, TTL = "));
 							sb.AppendU32(ttl);
 							console->WriteLineC(sb.ToString(), sb.GetLength());

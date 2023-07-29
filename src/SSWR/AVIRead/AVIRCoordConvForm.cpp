@@ -67,19 +67,19 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnAddClicked(void *userObj)
 	Double x;
 	Double y;
 	Double z;
-	me->txtEasting->GetText(&sb);
+	me->txtEasting->GetText(sb);
 	if (!Text::StrToDouble(sb.ToString(), &x))
 		return;
 	sb.ClearStr();
-	me->txtNorthing->GetText(&sb);
+	me->txtNorthing->GetText(sb);
 	if (!Text::StrToDouble(sb.ToString(), &y))
 		return;
 	sb.ClearStr();
-	me->txtHeight->GetText(&sb);
+	me->txtHeight->GetText(sb);
 	if (!Text::StrToDouble(sb.ToString(), &z))
 		return;
 	sb.ClearStr();
-	me->txtName->GetText(&sb);
+	me->txtName->GetText(sb);
 	if (sb.GetLength() <= 0)
 		return;
 	me->nameList.Add(Text::String::New(sb.ToCString()));
@@ -111,19 +111,19 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnCopyAllClicked(void *userObj)
 		{
 			sb.AppendC(UTF8STRC("\r\n"));
 		}
-		me->lvCoord->GetSubItem(i, 0, &sb);
+		me->lvCoord->GetSubItem(i, 0, sb);
 		sb.AppendUTF8Char('\t');
-		me->lvCoord->GetSubItem(i, 1, &sb);
+		me->lvCoord->GetSubItem(i, 1, sb);
 		sb.AppendUTF8Char('\t');
-		me->lvCoord->GetSubItem(i, 2, &sb);
+		me->lvCoord->GetSubItem(i, 2, sb);
 		sb.AppendUTF8Char('\t');
-		me->lvCoord->GetSubItem(i, 3, &sb);
+		me->lvCoord->GetSubItem(i, 3, sb);
 		sb.AppendUTF8Char('\t');
-		me->lvCoord->GetSubItem(i, 4, &sb);
+		me->lvCoord->GetSubItem(i, 4, sb);
 		sb.AppendUTF8Char('\t');
-		me->lvCoord->GetSubItem(i, 5, &sb);
+		me->lvCoord->GetSubItem(i, 5, sb);
 		sb.AppendUTF8Char('\t');
-		me->lvCoord->GetSubItem(i, 6, &sb);
+		me->lvCoord->GetSubItem(i, 6, sb);
 		i++;
 	}
 	if (UI::Clipboard::SetString(me->GetHandle(), sb.ToCString()))
@@ -348,20 +348,20 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnCoordDblClk(void *userObj, UO
 	SSWR::AVIRead::AVIRCoordConvForm *me = (SSWR::AVIRead::AVIRCoordConvForm *)userObj;
 	Text::StringBuilderUTF8 sb;
 	Text::StringBuilderUTF8 sb2;
-	me->lvCoord->GetSubItem(itemIndex, 0, &sb);
-	sb2.Append(&sb);
+	me->lvCoord->GetSubItem(itemIndex, 0, sb);
+	sb2.Append(sb);
 	sb.AppendUTF8Char('\t');
-	me->lvCoord->GetSubItem(itemIndex, 1, &sb);
+	me->lvCoord->GetSubItem(itemIndex, 1, sb);
 	sb.AppendUTF8Char('\t');
-	me->lvCoord->GetSubItem(itemIndex, 2, &sb);
+	me->lvCoord->GetSubItem(itemIndex, 2, sb);
 	sb.AppendUTF8Char('\t');
-	me->lvCoord->GetSubItem(itemIndex, 3, &sb);
+	me->lvCoord->GetSubItem(itemIndex, 3, sb);
 	sb.AppendUTF8Char('\t');
-	me->lvCoord->GetSubItem(itemIndex, 4, &sb);
+	me->lvCoord->GetSubItem(itemIndex, 4, sb);
 	sb.AppendUTF8Char('\t');
-	me->lvCoord->GetSubItem(itemIndex, 5, &sb);
+	me->lvCoord->GetSubItem(itemIndex, 5, sb);
 	sb.AppendUTF8Char('\t');
-	me->lvCoord->GetSubItem(itemIndex, 6, &sb);
+	me->lvCoord->GetSubItem(itemIndex, 6, sb);
 	sb2.AppendC(UTF8STRC(" copied"));
 	if (UI::Clipboard::SetString(me->GetHandle(), sb.ToCString()))
 	{

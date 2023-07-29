@@ -13,7 +13,7 @@ namespace Math
 		virtual ~VectorTextWriter() {}
 
 		virtual Text::CString GetWriterName() = 0;
-		virtual Bool ToText(Text::StringBuilderUTF8 *sb, Math::Geometry::Vector2D *vec) = 0;
+		virtual Bool ToText(NotNullPtr<Text::StringBuilderUTF8> sb, Math::Geometry::Vector2D *vec) = 0;
 		virtual Text::String *GetLastError() = 0;
 	};
 }

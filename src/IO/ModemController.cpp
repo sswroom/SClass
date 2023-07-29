@@ -143,7 +143,7 @@ UTF8Char *IO::ModemController::SendStringCommandDirect(UTF8Char *buff, const UTF
 	return 0;
 }
 
-Bool IO::ModemController::SendStringListCommand(Text::StringBuilderUTF8 *sb, const UTF8Char *cmd, UOSInt cmdLen)
+Bool IO::ModemController::SendStringListCommand(NotNullPtr<Text::StringBuilderUTF8> sb, const UTF8Char *cmd, UOSInt cmdLen)
 {
 	Sync::MutexUsage mutUsage(this->cmdMut);
 	this->channel->SendATCommand(&this->cmdResults, cmd, cmdLen, 3000);

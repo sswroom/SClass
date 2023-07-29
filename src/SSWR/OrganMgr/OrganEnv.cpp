@@ -830,7 +830,7 @@ void SSWR::OrganMgr::OrganEnv::ExportGroup(OrganGroup *grp, Data::FastMap<Int32,
 
 	IO::FileStream *fs = 0;
 	Text::UTF8Writer *writer = 0;
-	Text::StringBuilderUTF8 *sb;
+	NotNullPtr<Text::StringBuilderUTF8> sb;
 	UTF8Char *sptr;
 	NotNullPtr<Text::String> s;
 	UTF8Char backBuff[64];
@@ -864,7 +864,7 @@ void SSWR::OrganMgr::OrganEnv::ExportGroup(OrganGroup *grp, Data::FastMap<Int32,
 					NEW_CLASSNN(nnfs, IO::FileStream({fullPath, (UOSInt)(sptr - fullPath)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 					fs = nnfs.Ptr();
 					NEW_CLASS(writer, Text::UTF8Writer(nnfs));
-					NEW_CLASS(sb, Text::StringBuilderUTF8());
+					NEW_CLASSNN(sb, Text::StringBuilderUTF8());
 					sb->AppendC(this->currCate->chiName->v, this->currCate->chiName->leng);
 					sb->AppendC(UTF8STRC(" - "));
 					sb->Append(grp->GetCName());
@@ -921,7 +921,7 @@ void SSWR::OrganMgr::OrganEnv::ExportGroup(OrganGroup *grp, Data::FastMap<Int32,
 					NEW_CLASSNN(nnfs, IO::FileStream({fullPath, (UOSInt)(sptr - fullPath)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 					fs = nnfs.Ptr();
 					NEW_CLASS(writer, Text::UTF8Writer(nnfs));
-					NEW_CLASS(sb, Text::StringBuilderUTF8());
+					NEW_CLASSNN(sb, Text::StringBuilderUTF8());
 					sb->AppendC(this->currCate->chiName->v, this->currCate->chiName->leng);
 					sb->AppendC(UTF8STRC(" - "));
 					sb->Append(grp->GetCName());
@@ -983,7 +983,7 @@ void SSWR::OrganMgr::OrganEnv::ExportGroup(OrganGroup *grp, Data::FastMap<Int32,
 		ExportEndPage(writer);
 		DEL_CLASS(writer);
 		DEL_CLASS(fs);
-		DEL_CLASS(sb);
+		sb.Delete();
 	}
 
 	*photoCnt = totalPhoto;

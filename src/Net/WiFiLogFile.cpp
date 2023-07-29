@@ -301,7 +301,7 @@ Bool Net::WiFiLogFile::StoreFile(Text::CString fileName)
 			sb.AppendC(UTF8STRC("\t"));
 			sb.AppendI32(log->phyType);
 			sb.AppendC(UTF8STRC("\t"));
-			Text::SBAppendF64(&sb, log->freq);
+			sb.AppendDouble(log->freq);
 			sb.AppendC(UTF8STRC("\t"));
 			if (log->manuf)
 			{

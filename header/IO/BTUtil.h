@@ -19,10 +19,10 @@ namespace IO
 		static const NumberMap uuids[];
 	public:
 		static Text::CString GetManufacturerName(UInt16 manuf);
-		static void GetAddrText(Text::StringBuilderUTF8 *sb, UInt8 *addr);
+		static void GetAddrText(NotNullPtr<Text::StringBuilderUTF8> sb, UInt8 *addr);
 		static UInt64 GetAddrMAC(UInt8 *addr);
 		static Text::CString GetUUIDName(UInt16 uuid);
-		static void GetServiceName(Text::StringBuilderUTF8 *sb, void *serviceUUID);
+		static void GetServiceName(NotNullPtr<Text::StringBuilderUTF8> sb, void *serviceUUID);
 	};
 }
 #endif

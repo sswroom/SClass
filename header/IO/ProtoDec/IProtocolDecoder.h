@@ -16,7 +16,7 @@ namespace IO
 
 			virtual Text::CString GetName() = 0;
 			virtual UOSInt ParseProtocol(ProtocolInfo hdlr, void *userObj, UInt64 fileOfst, UInt8 *buff, UOSInt buffSize) = 0;
-			virtual Bool GetProtocolDetail(UInt8 *buff, UOSInt buffSize, Text::StringBuilderUTF8 *sb) = 0;
+			virtual Bool GetProtocolDetail(UInt8 *buff, UOSInt buffSize, NotNullPtr<Text::StringBuilderUTF8> sb) = 0;
 			virtual Bool IsValid(UInt8 *buff, UOSInt buffSize) = 0;
 		};
 	}

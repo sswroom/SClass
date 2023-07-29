@@ -16,7 +16,7 @@ void __stdcall SSWR::AVIRead::AVIRCppEnumForm::OnConv2Clicked(void *userObj)
 	SSWR::AVIRead::AVIRCppEnumForm *me = (SSWR::AVIRead::AVIRCppEnumForm*)userObj;
 	Text::StringBuilderUTF8 sb;
 	UI::Clipboard clipboard(me->GetHandle());
-	if (clipboard.GetString(me->GetHandle(), &sb))
+	if (clipboard.GetString(me->GetHandle(), sb))
 	{
 		me->txtSource->SetText(sb.ToCString());
 	}
@@ -26,7 +26,7 @@ void __stdcall SSWR::AVIRead::AVIRCppEnumForm::OnConv2Clicked(void *userObj)
 	}
 	me->ConvEnum();
 	sb.ClearStr();
-	me->txtDest->GetText(&sb);
+	me->txtDest->GetText(sb);
 	clipboard.SetString(me->GetHandle(), sb.ToCString());
 }
 
@@ -38,9 +38,9 @@ void SSWR::AVIRead::AVIRCppEnumForm::ConvEnum()
 	Data::ArrayListNN<Text::String> enumList;
 
 	UOSInt type = this->cboType->GetSelectedIndex();
-	this->txtPrefix->GetText(&sbPrefix);
-	this->txtSource->GetText(&srcSb);
-	if (Text::CPPText::ParseEnum(&enumList, srcSb.ToCString(), &sbPrefix))
+	this->txtPrefix->GetText(sbPrefix);
+	this->txtSource->GetText(srcSb);
+	if (Text::CPPText::ParseEnum(&enumList, srcSb.ToCString(), sbPrefix))
 	{
 		UOSInt i = 0;
 		UOSInt j = enumList.GetCount();

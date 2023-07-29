@@ -113,7 +113,7 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::BTCurrentFunc(Net::WebServer:
 	sb.AppendC(UTF8STRC("<meta http-equiv=\"refresh\" content=\"10\">\r\n"));
 	sb.AppendC(UTF8STRC("</head><body>\r\n"));
 	sb.AppendC(UTF8STRC("Current Bluetooth:<br/>\r\n"));
-	AppendBTTable(&sb, req, entryList, true);
+	AppendBTTable(sb, req, entryList, true);
 	mutUsage.EndUse();
 	sb.AppendC(UTF8STRC("</body><html>"));
 
@@ -146,7 +146,7 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::BTDetailFunc(Net::WebServer::
 	sb.AppendC(UTF8STRC("All Bluetooth Count = "));
 	sb.AppendUOSInt(entryList.GetCount());
 	sb.AppendC(UTF8STRC("<br/>\r\n"));
-	AppendBTTable(&sb, req, entryList, false);
+	AppendBTTable(sb, req, entryList, false);
 	mutUsage.EndUse();
 	sb.AppendC(UTF8STRC("</body><html>"));
 
@@ -178,7 +178,7 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::BTDetailPubFunc(Net::WebServe
 	sb.AppendC(UTF8STRC("Public Bluetooth Count = "));
 	sb.AppendUOSInt(entryList->GetCount());
 	sb.AppendC(UTF8STRC("<br/>\r\n"));
-	AppendBTTable(&sb, req, entryList, false);
+	AppendBTTable(sb, req, entryList, false);
 	mutUsage.EndUse();
 	sb.AppendC(UTF8STRC("</body><html>"));
 
@@ -212,7 +212,7 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::WiFiCurrentFunc(Net::WebServe
 	sb.AppendC(UTF8STRC("Wifi Last Scan Time = "));
 	sb.AppendTS(lastScanTime);
 	sb.AppendC(UTF8STRC("<br/>\r\n"));
-	AppendWiFiTable(&sb, req, entryList, lastScanTime);
+	AppendWiFiTable(sb, req, entryList, lastScanTime);
 	mutUsage.EndUse();
 	sb.AppendC(UTF8STRC("</body><html>"));
 
@@ -244,7 +244,7 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::WiFiDetailFunc(Net::WebServer
 	sb.AppendC(UTF8STRC("All WiFi Count = "));
 	sb.AppendUOSInt(entryList->GetCount());
 	sb.AppendC(UTF8STRC("<br/>\r\n"));
-	AppendWiFiTable(&sb, req, entryList, 0);
+	AppendWiFiTable(sb, req, entryList, 0);
 	mutUsage.EndUse();
 	sb.AppendC(UTF8STRC("</body><html>"));
 
@@ -284,7 +284,7 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::WiFiDownloadFunc(Net::WebServ
 		sb.AppendUTF8Char('\t');
 		sb.AppendI32(entry->phyType);
 		sb.AppendUTF8Char('\t');
-		Text::SBAppendF64(&sb, entry->freq);
+		sb.AppendDouble(entry->freq);
 		sb.AppendUTF8Char('\t');
 		if (entry->manuf)
 			sb.Append(entry->manuf);
@@ -340,7 +340,7 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::WiFiDownloadFunc(Net::WebServ
 	return true;
 }
 
-void Net::WebServer::CapturerWebHandler::AppendWiFiTable(Text::StringBuilderUTF8 *sb, Net::WebServer::IWebRequest *req, NotNullPtr<Data::ArrayList<Net::WiFiLogFile::LogFileEntry*>> entryList, const Data::Timestamp &scanTime)
+void Net::WebServer::CapturerWebHandler::AppendWiFiTable(NotNullPtr<Text::StringBuilderUTF8> sb, Net::WebServer::IWebRequest *req, NotNullPtr<Data::ArrayList<Net::WiFiLogFile::LogFileEntry*>> entryList, const Data::Timestamp &scanTime)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -404,7 +404,7 @@ void Net::WebServer::CapturerWebHandler::AppendWiFiTable(Text::StringBuilderUTF8
 	sb->AppendC(UTF8STRC("</table>"));
 }
 
-void Net::WebServer::CapturerWebHandler::AppendBTTable(Text::StringBuilderUTF8 *sb, Net::WebServer::IWebRequest *req, NotNullPtr<const Data::ReadingList<IO::BTScanLog::ScanRecord3*>> entryList, Bool inRangeOnly)
+void Net::WebServer::CapturerWebHandler::AppendBTTable(NotNullPtr<Text::StringBuilderUTF8> sb, Net::WebServer::IWebRequest *req, NotNullPtr<const Data::ReadingList<IO::BTScanLog::ScanRecord3*>> entryList, Bool inRangeOnly)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;

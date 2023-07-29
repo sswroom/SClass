@@ -55,7 +55,7 @@ namespace Text
 				Int32 modeStatus;
 				Data::ArrayList<Int32> *ifValid;
 				Data::ArrayList<ParserMode> *pastModes;
-				Text::StringBuilderUTF8 *lineBuffSB;
+				NotNullPtr<Text::StringBuilderUTF8> lineBuffSB;
 				UTF8Char *lineBuffWS;
 			} FileParseStatus;
 		private:
@@ -79,7 +79,7 @@ namespace Text
 			Bool AddGlobalDef(Text::CString defName, Text::CString defVal);
 			Bool AddDef(Text::CString defName, Text::CString defParams, Text::CString defVal, Int32 lineNum);
 			Bool Undefine(Text::CString defName);
-			Bool GetDefineVal(Text::CString defName, Text::CString defParams, Text::StringBuilderUTF8 *sb);
+			Bool GetDefineVal(Text::CString defName, Text::CString defParams, NotNullPtr<Text::StringBuilderUTF8> sb);
 
 			UOSInt GetDefineCount();
 			Bool GetDefineInfo(UOSInt index, DefineInfo *defInfo);

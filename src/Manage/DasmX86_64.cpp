@@ -1119,7 +1119,7 @@ Int32 __stdcall DasmX86_64_GetFuncStack(Manage::DasmX86_64::DasmX86_64_Sess* ses
 			sb.AppendC(UTF8STRC("Func Buff 0x"));
 			sb.AppendHex64(funcAddr);
 			sb.AppendC(UTF8STRC(" "));
-			tmpSess.addrResol->ResolveNameSB(&sb, funcAddr);
+			tmpSess.addrResol->ResolveNameSB(sb, funcAddr);
 			console.WriteLineC(sb.ToString(), sb.GetLength());
 			buffSize = tmpSess.memReader->ReadMemory(funcAddr, buff, (UOSInt)(tmpSess.regs.rip - funcAddr));
 			if (buffSize > 0)
@@ -19447,9 +19447,8 @@ Bool Manage::DasmX86_64::Disasm64(IO::Writer *writer, Manage::AddressResolver *a
 {
 	UTF8Char sbuff[512];
 	DasmX86_64_Sess sess;
-	Text::StringBuilderUTF8 *outStr;
+	Text::StringBuilderUTF8 outStr;
 	UOSInt initJmpCnt = jmpAddrs->GetCount();
-	NEW_CLASS(outStr, Text::StringBuilderUTF8());
 	sess.callAddrs = callAddrs;
 	sess.jmpAddrs = jmpAddrs;
 	MemCopyNO(&sess.regs, regs, sizeof(Manage::DasmX86_64::DasmX86_64_Regs));
@@ -19473,43 +19472,43 @@ Bool Manage::DasmX86_64::Disasm64(IO::Writer *writer, Manage::AddressResolver *a
 		UInt8 buff[16];
 		Bool ret;
 
-		outStr->ClearStr();
-		outStr->AppendHex64(sess.regs.rsp);
-		outStr->AppendC(UTF8STRC(" "));
-		outStr->AppendHex64(sess.regs.rbp);
-		outStr->AppendC(UTF8STRC(" "));
-		outStr->AppendHex64(sess.regs.rip);
-		outStr->AppendC(UTF8STRC(" "));
+		outStr.ClearStr();
+		outStr.AppendHex64(sess.regs.rsp);
+		outStr.AppendC(UTF8STRC(" "));
+		outStr.AppendHex64(sess.regs.rbp);
+		outStr.AppendC(UTF8STRC(" "));
+		outStr.AppendHex64(sess.regs.rip);
+		outStr.AppendC(UTF8STRC(" "));
 		if (fullRegs)
 		{
-			outStr->AppendHex64(sess.regs.rax);
-			outStr->AppendC(UTF8STRC(" "));
-			outStr->AppendHex64(sess.regs.rdx);
-			outStr->AppendC(UTF8STRC(" "));
-			outStr->AppendHex64(sess.regs.rcx);
-			outStr->AppendC(UTF8STRC(" "));
-			outStr->AppendHex64(sess.regs.rbx);
-			outStr->AppendC(UTF8STRC(" "));
-			outStr->AppendHex64(sess.regs.rsi);
-			outStr->AppendC(UTF8STRC(" "));
-			outStr->AppendHex64(sess.regs.rdi);
-			outStr->AppendC(UTF8STRC(" "));
-			outStr->AppendHex64(sess.regs.r8);
-			outStr->AppendC(UTF8STRC(" "));
-			outStr->AppendHex64(sess.regs.r9);
-			outStr->AppendC(UTF8STRC(" "));
-			outStr->AppendHex64(sess.regs.r10);
-			outStr->AppendC(UTF8STRC(" "));
-			outStr->AppendHex64(sess.regs.r11);
-			outStr->AppendC(UTF8STRC(" "));
-			outStr->AppendHex64(sess.regs.r12);
-			outStr->AppendC(UTF8STRC(" "));
-			outStr->AppendHex64(sess.regs.r13);
-			outStr->AppendC(UTF8STRC(" "));
-			outStr->AppendHex64(sess.regs.r14);
-			outStr->AppendC(UTF8STRC(" "));
-			outStr->AppendHex64(sess.regs.r15);
-			outStr->AppendC(UTF8STRC(" "));
+			outStr.AppendHex64(sess.regs.rax);
+			outStr.AppendC(UTF8STRC(" "));
+			outStr.AppendHex64(sess.regs.rdx);
+			outStr.AppendC(UTF8STRC(" "));
+			outStr.AppendHex64(sess.regs.rcx);
+			outStr.AppendC(UTF8STRC(" "));
+			outStr.AppendHex64(sess.regs.rbx);
+			outStr.AppendC(UTF8STRC(" "));
+			outStr.AppendHex64(sess.regs.rsi);
+			outStr.AppendC(UTF8STRC(" "));
+			outStr.AppendHex64(sess.regs.rdi);
+			outStr.AppendC(UTF8STRC(" "));
+			outStr.AppendHex64(sess.regs.r8);
+			outStr.AppendC(UTF8STRC(" "));
+			outStr.AppendHex64(sess.regs.r9);
+			outStr.AppendC(UTF8STRC(" "));
+			outStr.AppendHex64(sess.regs.r10);
+			outStr.AppendC(UTF8STRC(" "));
+			outStr.AppendHex64(sess.regs.r11);
+			outStr.AppendC(UTF8STRC(" "));
+			outStr.AppendHex64(sess.regs.r12);
+			outStr.AppendC(UTF8STRC(" "));
+			outStr.AppendHex64(sess.regs.r13);
+			outStr.AppendC(UTF8STRC(" "));
+			outStr.AppendHex64(sess.regs.r14);
+			outStr.AppendC(UTF8STRC(" "));
+			outStr.AppendHex64(sess.regs.r15);
+			outStr.AppendC(UTF8STRC(" "));
 		}
 		sess.sbuff = sbuff;
 		if (sess.memReader->ReadMemory(sess.regs.rip, buff, 1) == 0)
@@ -19523,19 +19522,18 @@ Bool Manage::DasmX86_64::Disasm64(IO::Writer *writer, Manage::AddressResolver *a
 		if (!ret)
 		{
 			UOSInt buffSize;
-			outStr->AppendC(UTF8STRC("Unknown opcode "));
+			outStr.AppendC(UTF8STRC("Unknown opcode "));
 			buffSize = sess.memReader->ReadMemory(sess.regs.rip, buff, 16);
 			if (buffSize > 0)
 			{
-				outStr->AppendHexBuff(buff, buffSize, ' ', Text::LineBreakType::None);
+				outStr.AppendHexBuff(buff, buffSize, ' ', Text::LineBreakType::None);
 			}
-			outStr->AppendC(UTF8STRC("\r\n"));
-			writer->WriteStrC(outStr->ToString(), outStr->GetLength());
-			DEL_CLASS(outStr);
+			outStr.AppendC(UTF8STRC("\r\n"));
+			writer->WriteStrC(outStr.ToString(), outStr.GetLength());
 			return false;
 		}
-		outStr->AppendSlow(sbuff);
-		writer->WriteStrC(outStr->ToString(), outStr->GetLength());
+		outStr.AppendSlow(sbuff);
+		writer->WriteStrC(outStr.ToString(), outStr.GetLength());
 		if (sess.endType == Manage::DasmX86_64::ET_JMP && (UInt64)sess.retAddr >= *blockStart && (UInt64)sess.retAddr <= sess.regs.rip)
 		{
 			UOSInt i;
@@ -19556,7 +19554,6 @@ Bool Manage::DasmX86_64::Disasm64(IO::Writer *writer, Manage::AddressResolver *a
 				*currRsp = sess.regs.rsp;
 				*currRbp = sess.regs.rbp;
 				*blockEnd = sess.regs.rip;
-				DEL_CLASS(outStr);
 				MemCopyNO(regs, &sess.regs, sizeof(Manage::DasmX86_64::DasmX86_64_Regs));
 				return false;
 			}
@@ -19569,7 +19566,6 @@ Bool Manage::DasmX86_64::Disasm64(IO::Writer *writer, Manage::AddressResolver *a
 			*currRsp = sess.regs.rsp;
 			*currRbp = sess.regs.rbp;
 			*blockEnd = sess.regs.rip;
-			DEL_CLASS(outStr);
 			MemCopyNO(regs, &sess.regs, sizeof(Manage::DasmX86_64::DasmX86_64_Regs));
 			return sess.endType != Manage::DasmX86_64::ET_EXIT;
 		}
@@ -19578,7 +19574,7 @@ Bool Manage::DasmX86_64::Disasm64(IO::Writer *writer, Manage::AddressResolver *a
 	}
 }
 
-Bool Manage::DasmX86_64::Disasm64In(Text::StringBuilderUTF8 *outStr, Manage::AddressResolver *addrResol, UInt64 *currRip, Data::ArrayListUInt64 *callAddrs, Data::ArrayListUInt64 *jmpAddrs, UInt64 *blockStart, UInt64 *blockEnd, Manage::IMemoryReader *memReader)
+Bool Manage::DasmX86_64::Disasm64In(NotNullPtr<Text::StringBuilderUTF8> outStr, Manage::AddressResolver *addrResol, UInt64 *currRip, Data::ArrayListUInt64 *callAddrs, Data::ArrayListUInt64 *jmpAddrs, UInt64 *blockStart, UInt64 *blockEnd, Manage::IMemoryReader *memReader)
 {
 	UTF8Char sbuff[256];
 	UInt64 initIP = *currRip;

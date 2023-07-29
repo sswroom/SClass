@@ -511,7 +511,7 @@ UOSInt IO::FileAnalyse::ZIPFileAnalyse::GetFrameCount()
 	return this->tags.GetCount();
 }
 
-Bool IO::FileAnalyse::ZIPFileAnalyse::GetFrameName(UOSInt index, Text::StringBuilderUTF8 *sb)
+Bool IO::FileAnalyse::ZIPFileAnalyse::GetFrameName(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	IO::FileAnalyse::ZIPFileAnalyse::ZIPRecord *tag = this->tags.GetItem(index);
 	Text::CString name;

@@ -696,7 +696,7 @@ void __stdcall Net::MySQLServer::OnClientData(NotNullPtr<Net::TCPClient> cli, vo
 										else
 										{
 											sb.ClearStr();
-											r->GetStr(j, &sb);
+											r->GetStr(j, sb);
 											sptr = Net::MySQLUtil::AppendLenencStrC(sptr, sb.ToString(), sb.GetLength());
 										}
 										

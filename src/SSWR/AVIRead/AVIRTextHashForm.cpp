@@ -10,7 +10,7 @@ void __stdcall SSWR::AVIRead::AVIRTextHashForm::OnGenerateClicked(void *userObj)
 	SSWR::AVIRead::AVIRTextHashForm *me = (SSWR::AVIRead::AVIRTextHashForm*)userObj;
 	UInt8 buff[64];
 	Text::StringBuilderUTF8 sb;
-	me->txtText->GetText(&sb);
+	me->txtText->GetText(sb);
 	if (sb.GetLength() <= 0)
 	{
 		me->txtText->Focus();

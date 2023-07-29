@@ -6,7 +6,7 @@ void __stdcall UtilUI::TextInputDialog::OnOKClicked(void *userObj)
 {
 	UtilUI::TextInputDialog *me = (UtilUI::TextInputDialog*)userObj;
 	Text::StringBuilderUTF8 sb;
-	if (me->txtInput->GetText(&sb) && sb.GetLength() > 0)
+	if (me->txtInput->GetText(sb) && sb.GetLength() > 0)
 	{
 		me->retInput = Text::String::New(sb.ToCString()).Ptr();
 		me->SetDialogResult(UI::GUIForm::DR_OK);
@@ -62,7 +62,7 @@ void UtilUI::TextInputDialog::SetInputString(Text::CString s)
 	this->txtInput->SetText(s);
 }
 
-Bool UtilUI::TextInputDialog::GetInputString(Text::StringBuilderUTF8 *sb)
+Bool UtilUI::TextInputDialog::GetInputString(NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	if (this->retInput == 0)
 		return false;

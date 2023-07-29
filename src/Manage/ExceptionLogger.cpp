@@ -17,7 +17,7 @@ void Manage::ExceptionLogger::WriteContext(IO::Writer *writer, IO::Stream *stm, 
 	Text::StringBuilderUTF8 sb;
 	UOSInt i;
 
-	context->ToString(&sb);
+	context->ToString(sb);
 	writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 	Manage::Process proc;
@@ -346,7 +346,7 @@ void Manage::ExceptionLogger::WriteStackTrace(IO::Writer *writer, Manage::StackT
 			sb.ClearStr();
 			sb.AppendHex64(tracer->GetCurrentAddr());
 			sb.AppendC(UTF8STRC(" "));
-			addrResol->ResolveNameSB(&sb, tracer->GetCurrentAddr());
+			addrResol->ResolveNameSB(sb, tracer->GetCurrentAddr());
 			writer->WriteLineC(sb.ToString(), sb.GetLength());
 		}
 	}
@@ -428,7 +428,7 @@ Bool Manage::ExceptionLogger::LogToFile(NotNullPtr<Text::String> fileName, UInt3
 				sb.AppendC(UTF8STRC("Start address 0x"));
 				sb.AppendHex64(startAddr);
 				sb.AppendC(UTF8STRC(" "));
-				symResol->ResolveNameSB(&sb, startAddr);
+				symResol->ResolveNameSB(sb, startAddr);
 				writer.WriteLineC(sb.ToString(), sb.GetLength());
 			}
 
@@ -441,7 +441,7 @@ Bool Manage::ExceptionLogger::LogToFile(NotNullPtr<Text::String> fileName, UInt3
 					sb.AppendC(UTF8STRC("Curr address 0x"));
 					sb.AppendHexOS(tCont->GetInstAddr());
 					sb.AppendC(UTF8STRC(" "));
-					symResol->ResolveNameSB(&sb, tCont->GetInstAddr());
+					symResol->ResolveNameSB(sb, tCont->GetInstAddr());
 					writer.WriteLineC(sb.ToString(), sb.GetLength());
 
 					NEW_CLASS(tracer, Manage::StackTracer(tCont));

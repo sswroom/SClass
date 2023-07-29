@@ -112,7 +112,7 @@ UOSInt IO::USBInfo::GetUSBList(Data::ArrayList<USBInfo*> *usbList)
 			while (r->ReadNext())
 			{
 				sb.ClearStr();
-				r->GetStr(devIdCol, &sb);
+				r->GetStr(devIdCol, sb);
 				if (sb.StartsWith(UTF8STRC("USB\\VID_")))
 				{
 					sb.v[12] = 0;
@@ -125,7 +125,7 @@ UOSInt IO::USBInfo::GetUSBList(Data::ArrayList<USBInfo*> *usbList)
 					{
 						existList.SortedInsert(id);
 						sb.ClearStr();
-						r->GetStr(descCol, &sb);
+						r->GetStr(descCol, sb);
 						clsData.dispName = sb.ToCString();
 						NEW_CLASS(usb, IO::USBInfo(&clsData));
 						usbList->Add(usb);

@@ -11,7 +11,7 @@
 void __stdcall Net::LoRaGateway::OnUDPPacket(const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData)
 {
 	Text::StringBuilderUTF8 sb;
-	Net::LoRaGWUtil::ParseUDPMessage(&sb, false, buff, dataSize);
+	Net::LoRaGWUtil::ParseUDPMessage(sb, false, buff, dataSize);
 	printf("%s\r\n", sb.ToString());
 }
 
@@ -61,11 +61,11 @@ Bool Net::LoRaGateway::SendStatData()
 	Text::StringBuilderUTF8 sb;
 	if (this->hasPos)
 	{
-		Net::LoRaGWUtil::GenStatJSON(&sb, Data::Timestamp::UtcNow(), 0, 0, 0, 100.0, 0, 0, this->lat, this->lon, this->altitude);
+		Net::LoRaGWUtil::GenStatJSON(sb, Data::Timestamp::UtcNow(), 0, 0, 0, 100.0, 0, 0, this->lat, this->lon, this->altitude);
 	}
 	else
 	{
-		Net::LoRaGWUtil::GenStatJSON(&sb, Data::Timestamp::UtcNow(), 0, 0, 0, 100.0, 0, 0);
+		Net::LoRaGWUtil::GenStatJSON(sb, Data::Timestamp::UtcNow(), 0, 0, 0, 100.0, 0, 0);
 	}
 	return this->SendPushData(sb.ToString(), sb.GetLength());
 }

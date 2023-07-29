@@ -1085,7 +1085,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 				if (dlg.ShowDialog(this))
 				{
 					Text::StringBuilderUTF8 sb;
-					if (dlg.GetInputString(&sb))
+					if (dlg.GetInputString(sb))
 					{
 						Double v = sb.ToDouble();
 						if (v > 0)

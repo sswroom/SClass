@@ -50,7 +50,7 @@ Bool SSWR::ProcMonForm::SearchProcId(SSWR::ProcMonForm::ProgInfo *prog)
 		{
 			Manage::Process proc(info.processId, false);
 			sb.ClearStr();
-			if (proc.GetFilename(&sb))
+			if (proc.GetFilename(sb))
 			{
 				if (sb.Equals(prog->progPath))
 				{
@@ -77,7 +77,7 @@ void SSWR::ProcMonForm::SetByProcId(ProgInfo *prog, UOSInt procId)
 	if (proc.IsRunning())
 	{
 		Text::StringBuilderUTF8 sb;
-		if (proc.GetFilename(&sb))
+		if (proc.GetFilename(sb))
 		{
 			SDEL_STRING(prog->progPath);
 			prog->progPath = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
@@ -185,7 +185,7 @@ void __stdcall SSWR::ProcMonForm::OnProcIdClicked(void *userObj)
 	{
 		Text::StringBuilderUTF8 sb;
 		UInt32 procId;
-		me->txtProcId->GetText(&sb);
+		me->txtProcId->GetText(sb);
 		if (sb.ToUInt32(&procId))
 		{
 			me->SetByProcId(prog, procId);
@@ -198,18 +198,18 @@ void __stdcall SSWR::ProcMonForm::OnProgAddClicked(void *userObj)
 	SSWR::ProcMonForm *me = (SSWR::ProcMonForm *)userObj;
 	Text::StringBuilderUTF8 sb;
 	UInt32 procId;
-	me->txtProgAddId->GetText(&sb);
+	me->txtProgAddId->GetText(sb);
 	if (sb.ToUInt32(&procId))
 	{
 		sb.ClearStr();
-		me->txtProgAddName->GetText(&sb);
+		me->txtProgAddName->GetText(sb);
 		if (sb.GetLength() > 0)
 		{
 			Manage::Process proc(procId, false);
 			if (proc.IsRunning())
 			{
 				Text::StringBuilderUTF8 sb2;
-				if (proc.GetFilename(&sb2))
+				if (proc.GetFilename(sb2))
 				{
 					me->AddProg(sb.ToCString(), sb2.ToCString());
 					me->SaveProgList();

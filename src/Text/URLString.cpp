@@ -210,7 +210,7 @@ UTF8Char *Text::URLString::AppendURLPath(UTF8Char *sbuff, UTF8Char *sbuffEnd, Te
 	{
 		return path.ConcatTo(sbuff);
 	}
-	if (sbuff[0] != 0)
+	if (&sbuff[0] != 0)
 	{
 		if (sbuff[1] == ':' && sbuff[2] == '\\')
 		{

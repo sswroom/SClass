@@ -57,9 +57,9 @@ namespace IO
 		Data::ArrayListNN<Text::String> linkCmds;
 		Data::ArrayListNN<const ProgramItem> testProgs;
 
-		void AppendCfgItem(Text::StringBuilderUTF8 *sb, Text::CString val);
-		void AppendCfgPath(Text::StringBuilderUTF8 *sb, Text::CString path);
-		void AppendCfg(Text::StringBuilderUTF8 *sb, Text::CString compileCfg);
+		void AppendCfgItem(NotNullPtr<Text::StringBuilderUTF8> sb, Text::CString val);
+		void AppendCfgPath(NotNullPtr<Text::StringBuilderUTF8> sb, Text::CString path);
+		void AppendCfg(NotNullPtr<Text::StringBuilderUTF8> sb, Text::CString compileCfg);
 
 		Bool ExecuteCmd(Text::CString cmd);
 		Bool LoadConfigFile(Text::CString cfgFile);
@@ -86,7 +86,7 @@ namespace IO
 		void ClearStatus();
 		Bool IsLoadFailed() const;
 		Bool HasError() const;
-		Bool GetLastErrorMsg(Text::StringBuilderUTF8 *sb) const;
+		Bool GetLastErrorMsg(NotNullPtr<Text::StringBuilderUTF8> sb) const;
 		void SetMessageWriter(IO::Writer *messageWriter);
 		void SetCommandWriter(IO::Writer *cmdWriter);
 		void SetDebugObj(Text::CString debugObj);

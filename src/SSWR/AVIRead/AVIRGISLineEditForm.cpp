@@ -251,7 +251,7 @@ void __stdcall SSWR::AVIRead::AVIRGISLineEditForm::OKClicked(void *userObj)
 		i++;
 	}
 	sb.ClearStr();
-	me->txtName->GetText(&sb);
+	me->txtName->GetText(sb);
 	me->env->SetLineStyleName(me->lineStyle, sb.ToCString());
 	me->SetDialogResult(UI::GUIForm::DR_OK);
 }

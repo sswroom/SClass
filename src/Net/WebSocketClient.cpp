@@ -334,7 +334,7 @@ Net::WebSocketClient::WebSocketClient(NotNullPtr<Net::SocketFactory> sockf, Net:
 		Data::RandomBytesGenerator rand;
 		rand.NextBytes(this->nonce, 16);
 		Text::TextBinEnc::Base64Enc b64(Text::TextBinEnc::Base64Enc::Charset::Normal, false);
-		b64.EncodeBin(&sb, this->nonce, 16);
+		b64.EncodeBin(sb, this->nonce, 16);
 		sb.AppendC(UTF8STRC("\r\n"));
 		if (origin.leng > 0)
 		{

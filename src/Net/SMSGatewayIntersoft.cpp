@@ -122,12 +122,12 @@ Bool Net::SMSGatewayIntersoft::SendSMS(Text::CString userName, Text::CString pas
 			else
 			{
 				sbMsg.ClearStr();
-				node->GetInnerText(&sbMsg);
+				node->GetInnerText(sbMsg);
 				if (this->log)
 				{
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("SMSGatewayIntersoft: Response Accept = "));
-					sb.Append(&sbMsg);
+					sb.Append(sbMsg);
 					this->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Action);
 				}
 				if (sbMsg.Equals(UTF8STRC("true")))
@@ -148,7 +148,7 @@ Bool Net::SMSGatewayIntersoft::SendSMS(Text::CString userName, Text::CString pas
 						{
 							sbMsg.ClearStr();
 							sb.AppendC(UTF8STRC("SMSGatewayIntersoft: Response MessageID = "));
-							node->GetInnerText(&sbMsg);
+							node->GetInnerText(sbMsg);
 							this->log->LogMessage(sbMsg.ToCString(), IO::LogHandler::LogLevel::Command);
 						}
 					}
@@ -163,7 +163,7 @@ Bool Net::SMSGatewayIntersoft::SendSMS(Text::CString userName, Text::CString pas
 						{
 							sbMsg.ClearStr();
 							sb.AppendC(UTF8STRC("SMSGatewayIntersoft: Response FailReason = "));
-							node->GetInnerText(&sbMsg);
+							node->GetInnerText(sbMsg);
 							this->log->LogMessage(sbMsg.ToCString(), IO::LogHandler::LogLevel::Error);
 						}
 					}

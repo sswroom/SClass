@@ -79,7 +79,7 @@ void UI::GUIComboBox::EventTextChanged()
 	if (this->autoComplete || !this->nonUIEvent)
 	{
 		Text::StringBuilderUTF8 sb;
-		this->GetText(&sb);
+		this->GetText(sb);
 		if (sb.GetLength() > this->lastTextLeng)
 		{
 			this->nonUIEvent = true;
@@ -129,7 +129,7 @@ UTF8Char *UI::GUIComboBox::GetText(UTF8Char *buff)
 	return Text::StrConcat(buff, (const UTF8Char*)lbl);
 }
 
-Bool UI::GUIComboBox::GetText(Text::StringBuilderUTF8 *sb)
+Bool UI::GUIComboBox::GetText(NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	gchar *lbl = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT((GtkWidget*)this->hwnd));
 	sb->AppendSlow((const UTF8Char*)lbl);
@@ -320,7 +320,7 @@ void UI::GUIComboBox::SetAutoComplete(Bool autoComplete)
 	if (!this->autoComplete && autoComplete)
 	{
 		Text::StringBuilderUTF8 sb;
-		this->GetText(&sb);
+		this->GetText(sb);
 		this->lastTextLeng = sb.GetLength();
 	}
 	this->autoComplete = autoComplete;

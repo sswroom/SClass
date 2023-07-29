@@ -9,9 +9,9 @@ void __stdcall SSWR::AVIRead::AVIRServiceCreateForm::OnCreateClicked(void *userO
 	Text::StringBuilderUTF8 sbName;
 	Text::StringBuilderUTF8 sbDesc;
 	Text::StringBuilderUTF8 sbCmdLine;
-	me->txtName->GetText(&sbName);
-	me->txtDesc->GetText(&sbDesc);
-	me->txtCmdLine->GetText(&sbCmdLine);
+	me->txtName->GetText(sbName);
+	me->txtDesc->GetText(sbDesc);
+	me->txtCmdLine->GetText(sbCmdLine);
 	if (sbName.GetLength() == 0)
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Please enter name"), CSTR("Create Service"), me);

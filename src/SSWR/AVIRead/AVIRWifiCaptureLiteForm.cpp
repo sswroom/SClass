@@ -435,7 +435,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnLogWifiSaveClicked(void
 				sb.AppendC(UTF8STRC("\t"));
 				sb.AppendI32(wifiLog->phyType);
 				sb.AppendC(UTF8STRC("\t"));
-				Text::SBAppendF64(&sb, wifiLog->freq);
+				sb.AppendDouble(wifiLog->freq);
 				sb.AppendC(UTF8STRC("\t"));
 				if (wifiLog->manuf)
 				{
@@ -548,7 +548,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnLogWifiSaveFClicked(voi
 					sb.AppendC(UTF8STRC("\t"));
 					sb.AppendI32(wifiLog->phyType);
 					sb.AppendC(UTF8STRC("\t"));
-					Text::SBAppendF64(&sb, wifiLog->freq);
+					sb.AppendDouble(wifiLog->freq);
 					if (!writer.WriteLineC(sb.ToString(), sb.GetLength()))
 					{
 						succ = false;

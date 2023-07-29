@@ -38,7 +38,7 @@ void __stdcall SSWR::AVIRead::AVIRVoiceModemForm::OnDialClicked(void *userObj)
 		UTF8Char *cptr;
 		UTF8Char *sptr;
 		UTF8Char c;
-		me->txtDialNum->GetText(&sb);
+		me->txtDialNum->GetText(sb);
 		if (sb.GetLength() <= 0)
 		{
 			me->txtDialStatus->SetText(CSTR("Enter dial num"));

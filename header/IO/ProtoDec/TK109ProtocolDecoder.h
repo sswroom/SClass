@@ -14,10 +14,10 @@ namespace IO
 
 			virtual Text::CString GetName();
 			virtual UOSInt ParseProtocol(ProtocolInfo hdlr, void *userObj, UInt64 fileOfst, UInt8 *buff, UOSInt buffSize);
-			virtual Bool GetProtocolDetail(UInt8 *buff, UOSInt buffSize, Text::StringBuilderUTF8 *sb);
+			virtual Bool GetProtocolDetail(UInt8 *buff, UOSInt buffSize, NotNullPtr<Text::StringBuilderUTF8> sb);
 			virtual Bool IsValid(UInt8 *buff, UOSInt buffSize);
 
-			void AppendDevStatus(Text::StringBuilderUTF8 *sb, UInt16 status);
+			void AppendDevStatus(NotNullPtr<Text::StringBuilderUTF8> sb, UInt16 status);
 		};
 	}
 }

@@ -66,7 +66,7 @@ DB::ReadingDB *DB::DBManagerCtrl::GetDB()
 	return this->db;
 }
 
-void DB::DBManagerCtrl::GetConnName(Text::StringBuilderUTF8 *sb)
+void DB::DBManagerCtrl::GetConnName(NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	if (this->connStr)
 	{
@@ -110,7 +110,7 @@ DB::DBManagerCtrl *DB::DBManagerCtrl::Create(DB::DBTool *db, IO::LogTool *log, N
 	Text::StringBuilderUTF8 sb;
 	DB::DBManagerCtrl *ctrl;
 	NEW_CLASS(ctrl, DB::DBManagerCtrl(log, sockf, parsers));
-	if (DB::DBManager::GetConnStr(db, &sb))
+	if (DB::DBManager::GetConnStr(db, sb))
 	{
 		ctrl->connStr = Text::String::New(sb.ToCString()).Ptr();
 	}

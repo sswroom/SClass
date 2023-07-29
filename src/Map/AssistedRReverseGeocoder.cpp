@@ -249,7 +249,7 @@ Int32 Map::AssistedRReverseGeocoder::ToLang(const UTF8Char *name)
 	OSInt i = 4;
 	while (i-- > 0)
 	{
-		if ((sbuff[3 - i] = (Char)*name++) == 0)
+		if ((&sbuff[3 - i] = (Char)*name++) == 0)
 			break;
 	}
 	while (i-- > 0)

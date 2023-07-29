@@ -43,7 +43,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnStartClicked(void *userObj
 		Text::StringBuilderUTF8 sb;
 		Net::SocketUtil::AddressInfo addr;
 		UInt16 port;
-		me->txtPort->GetText(&sb);
+		me->txtPort->GetText(sb);
 		if (!sb.ToUInt16(&port))
 		{
 			UI::MessageDialog::ShowDialog(CSTR("Port is not valid"), CSTR("Error"), me);
@@ -55,7 +55,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnStartClicked(void *userObj
 			return;
 		}
 		sb.ClearStr();
-		me->txtHost->GetText(&sb);
+		me->txtHost->GetText(sb);
 		if (!me->core->GetSocketFactory()->DNSResolveIP(sb.ToCString(), &addr))
 		{
 			UI::MessageDialog::ShowDialog(CSTR("Error in parsing host"), CSTR("Error"), me);
@@ -99,14 +99,14 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnStartClicked(void *userObj
 		Data::DateTime dt;
 		dt.SetCurrTimeUTC();
 		sb.ClearStr();
-		me->txtUsername->GetText(&sb);
+		me->txtUsername->GetText(sb);
 		if (sb.GetLength() > 0)
 		{
 			username.v = Text::StrCopyNewC(sb.ToString(), sb.GetLength()).Ptr();
 			username.leng = sb.GetLength();
 		}
 		sb.ClearStr();
-		me->txtPassword->GetText(&sb);
+		me->txtPassword->GetText(sb);
 		if (sb.GetLength() > 0)
 		{
 			password.v = Text::StrCopyNewC(sb.ToString(), sb.GetLength()).Ptr();
@@ -248,8 +248,8 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnPublishClicked(void *userO
 
 	Text::StringBuilderUTF8 sbTopic;
 	Text::StringBuilderUTF8 sbContent;
-	me->txtPubTopic->GetText(&sbTopic);
-	me->txtPubContent->GetText(&sbContent);
+	me->txtPubTopic->GetText(sbTopic);
+	me->txtPubContent->GetText(sbContent);
 	if (sbTopic.GetLength() == 0)
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Please enter topic"), CSTR("MQTT Explorer"), me);

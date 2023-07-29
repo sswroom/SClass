@@ -50,7 +50,7 @@ Net::SNS::SNSRSS::SNSRSS(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *s
 		{
 			Data::ArrayListNN<Text::String> imgList;
 			sb.ClearStr();
-			Text::HTMLUtil::HTMLGetText(this->encFact, item->description->v, item->description->leng, false, &sb, &imgList);
+			Text::HTMLUtil::HTMLGetText(this->encFact, item->description->v, item->description->leng, false, sb, &imgList);
 			sb2.ClearStr();
 			if (item->imgURL)
 			{
@@ -186,7 +186,7 @@ Bool Net::SNS::SNSRSS::Reload()
 				{
 					Data::ArrayListNN<Text::String> imgList;
 					sb.ClearStr();
-					Text::HTMLUtil::HTMLGetText(this->encFact, item->description->v, item->description->leng, false, &sb, &imgList);
+					Text::HTMLUtil::HTMLGetText(this->encFact, item->description->v, item->description->leng, false, sb, &imgList);
 					sb2.ClearStr();
 					if (item->imgURL)
 					{

@@ -10,7 +10,7 @@
 
 #define API_LINK CSTR("https://monitoringapi.solaredge.com")
 
-void Net::SolarEdgeAPI::BuildURL(Text::StringBuilderUTF8 *sb, Text::CString path)
+void Net::SolarEdgeAPI::BuildURL(NotNullPtr<Text::StringBuilderUTF8> sb, Text::CString path)
 {
 	sb->Append(API_LINK);
 	sb->Append(path);
@@ -52,7 +52,7 @@ Net::SolarEdgeAPI::~SolarEdgeAPI()
 Text::String *Net::SolarEdgeAPI::GetCurrentVersion()
 {
 	Text::StringBuilderUTF8 sbURL;
-	this->BuildURL(&sbURL, CSTR("/version/current"));
+	this->BuildURL(sbURL, CSTR("/version/current"));
 	Text::JSONBase *json = this->GetJSON(sbURL.ToCString());
 	if (json == 0)
 		return 0;
@@ -72,7 +72,7 @@ Text::String *Net::SolarEdgeAPI::GetCurrentVersion()
 Bool Net::SolarEdgeAPI::GetSupportedVersions(Data::ArrayListNN<Text::String> *versions)
 {
 	Text::StringBuilderUTF8 sbURL;
-	this->BuildURL(&sbURL, CSTR("/version/supported"));
+	this->BuildURL(sbURL, CSTR("/version/supported"));
 	Text::JSONBase *json = this->GetJSON(sbURL.ToCString());
 	if (json == 0)
 		return false;
@@ -110,7 +110,7 @@ Bool Net::SolarEdgeAPI::GetSupportedVersions(Data::ArrayListNN<Text::String> *ve
 Bool Net::SolarEdgeAPI::GetSiteList(Data::ArrayList<Site*> *siteList, UOSInt maxCount, UOSInt startOfst, UOSInt *totalCount)
 {
 	Text::StringBuilderUTF8 sbURL;
-	this->BuildURL(&sbURL, CSTR("/sites/list"));
+	this->BuildURL(sbURL, CSTR("/sites/list"));
 	if (maxCount != 0)
 	{
 		sbURL.AppendC(UTF8STRC("&size="));
@@ -220,7 +220,7 @@ Bool Net::SolarEdgeAPI::GetSiteOverview(Int32 siteId, SiteOverview *overview)
 	sptr = Text::StrInt32(sptr, siteId);
 	sptr = Text::StrConcatC(sptr, UTF8STRC("/overview"));
 	Text::StringBuilderUTF8 sbURL;
-	this->BuildURL(&sbURL, CSTRP(sbuff, sptr));
+	this->BuildURL(sbURL, CSTRP(sbuff, sptr));
 	Text::JSONBase *json = this->GetJSON(sbURL.ToCString());
 	if (json == 0)
 		return false;
@@ -247,13 +247,13 @@ Bool Net::SolarEdgeAPI::GetSiteEnergy(Int32 siteId, Data::Timestamp startTime, D
 	sptr = Text::StrInt32(sptr, siteId);
 	sptr = Text::StrConcatC(sptr, UTF8STRC("/energy"));
 	Text::StringBuilderUTF8 sbURL;
-	this->BuildURL(&sbURL, CSTRP(sbuff, sptr));
+	this->BuildURL(sbURL, CSTRP(sbuff, sptr));
 	sbURL.AppendC(UTF8STRC("&timeUnit="));
 	sbURL.Append(TimeUnitGetName(timeUnit));
 	sbURL.AppendC(UTF8STRC("&startDate="));
-	AppendFormDate(&sbURL, startTime, false);
+	AppendFormDate(sbURL, startTime, false);
 	sbURL.AppendC(UTF8STRC("&endDate="));
-	AppendFormDate(&sbURL, endTime, false);
+	AppendFormDate(sbURL, endTime, false);
 	Text::JSONBase *json = this->GetJSON(sbURL.ToCString());
 	if (json == 0)
 		return false;
@@ -290,11 +290,11 @@ Bool Net::SolarEdgeAPI::GetSitePower(Int32 siteId, Data::Timestamp startTime, Da
 	sptr = Text::StrInt32(sptr, siteId);
 	sptr = Text::StrConcatC(sptr, UTF8STRC("/power"));
 	Text::StringBuilderUTF8 sbURL;
-	this->BuildURL(&sbURL, CSTRP(sbuff, sptr));
+	this->BuildURL(sbURL, CSTRP(sbuff, sptr));
 	sbURL.AppendC(UTF8STRC("&startTime="));
-	AppendFormDate(&sbURL, startTime, true);
+	AppendFormDate(sbURL, startTime, true);
 	sbURL.AppendC(UTF8STRC("&endTime="));
-	AppendFormDate(&sbURL, endTime, true);
+	AppendFormDate(sbURL, endTime, true);
 	Text::JSONBase *json = this->GetJSON(sbURL.ToCString());
 	if (json == 0)
 		return false;
@@ -323,7 +323,7 @@ Bool Net::SolarEdgeAPI::GetSitePower(Int32 siteId, Data::Timestamp startTime, Da
 	return succ;
 }
 
-void Net::SolarEdgeAPI::AppendFormDate(Text::StringBuilderUTF8 *sb, Data::Timestamp ts, Bool hasTime)
+void Net::SolarEdgeAPI::AppendFormDate(NotNullPtr<Text::StringBuilderUTF8> sb, Data::Timestamp ts, Bool hasTime)
 {
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;

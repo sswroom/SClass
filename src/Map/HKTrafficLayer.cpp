@@ -819,7 +819,7 @@ IO::Stream *Map::HKTrafficLayer::OpenURLStream()
 			if (status == 301 || status == 302)
 			{
 				Text::StringBuilderUTF8 sb;
-				cli->GetRespHeader(CSTR("Location"), &sb);
+				cli->GetRespHeader(CSTR("Location"), sb);
 				cli.Delete();
 				if (!this->url->Equals(sb.ToString(), sb.GetLength()))
 				{
@@ -1062,7 +1062,7 @@ void Map::HKTrafficLayer::ReloadData()
 								if (node3->GetNodeType() == Text::XMLNode::NodeType::Element && node3->name->EqualsICase(UTF8STRC("LINK_ID")))
 								{
 									sb.ClearStr();
-									node3->GetInnerText(&sb);
+									node3->GetInnerText(sb);
 									if (Text::StrSplit(sarr, 2, sb.v, '-') == 2)
 									{
 										fromId = Text::StrToInt32(sarr[0]);
@@ -1072,7 +1072,7 @@ void Map::HKTrafficLayer::ReloadData()
 								else if (node3->GetNodeType() == Text::XMLNode::NodeType::Element && node3->name->EqualsICase(UTF8STRC("ROAD_SATURATION_LEVEL")))
 								{
 									sb.ClearStr();
-									node3->GetInnerText(&sb);
+									node3->GetInnerText(sb);
 									if (sb.EqualsICase(UTF8STRC("TRAFFIC GOOD")))
 									{
 										lev = SL_GOOD;
@@ -1089,7 +1089,7 @@ void Map::HKTrafficLayer::ReloadData()
 								else if (node3->GetNodeType() == Text::XMLNode::NodeType::Element && node3->name->EqualsICase(UTF8STRC("TRAFFIC_SPEED")))
 								{
 									sb.ClearStr();
-									node3->GetInnerText(&sb);
+									node3->GetInnerText(sb);
 									sb.ToInt32(&spd);
 								}
 

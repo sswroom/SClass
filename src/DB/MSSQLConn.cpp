@@ -92,9 +92,10 @@ DB::DBConn *DB::MSSQLConn::OpenConnTCP(Text::CString serverHost, UInt16 port, Bo
 		}
 		else
 		{
-			if (errMsg)
+			NotNullPtr<Text::StringBuilderUTF8> sb;
+			if (sb.Set(errMsg))
 			{
-				conn->GetLastErrorMsg(errMsg);
+				conn->GetLastErrorMsg(sb);
 			}
 			DEL_CLASS(conn);
 			return 0;

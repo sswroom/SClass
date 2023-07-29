@@ -12,8 +12,8 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::StatusReq(SSWR::SDNSProxy::
 	Text::StringBuilderUTF8 sbOut;
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
-	AppendHeader(&sbOut);
-	AppendMenu(&sbOut);
+	AppendHeader(sbOut);
+	AppendMenu(sbOut);
 
 	sbOut.AppendC(UTF8STRC("<h2>Status</h2>\r\n"));
 
@@ -52,7 +52,7 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::StatusReq(SSWR::SDNSProxy::
 	}
 	sbOut.AppendC(UTF8STRC("</td></tr>\r\n"));
 	sbOut.AppendC(UTF8STRC("</table>"));
-	AppendFooter(&sbOut);
+	AppendFooter(sbOut);
 
 	resp->SetStatusCode(Net::WebStatus::SC_OK);
 	resp->AddDefHeaders(req);
@@ -65,8 +65,8 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::StatusReq(SSWR::SDNSProxy::
 Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::ReqV4Req(SSWR::SDNSProxy::SDNSProxyWebHandler *me, Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp)
 {
 	Text::StringBuilderUTF8 sbOut;
-	AppendHeader(&sbOut);
-	AppendMenu(&sbOut);
+	AppendHeader(sbOut);
+	AppendMenu(sbOut);
 
 	sbOut.AppendC(UTF8STRC("<h2>Req V4</h2>\r\n"));
 	sbOut.AppendC(UTF8STRC("<table border=\"0\"><tr><td>\r\n"));
@@ -154,7 +154,7 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::ReqV4Req(SSWR::SDNSProxy::S
 	}
 
 	sbOut.AppendC(UTF8STRC("</td></tr></table>\r\n"));
-	AppendFooter(&sbOut);
+	AppendFooter(sbOut);
 
 	resp->SetStatusCode(Net::WebStatus::SC_OK);
 	resp->AddDefHeaders(req);
@@ -167,8 +167,8 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::ReqV4Req(SSWR::SDNSProxy::S
 Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::ReqV6Req(SSWR::SDNSProxy::SDNSProxyWebHandler *me, Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp)
 {
 	Text::StringBuilderUTF8 sbOut;
-	AppendHeader(&sbOut);
-	AppendMenu(&sbOut);
+	AppendHeader(sbOut);
+	AppendMenu(sbOut);
 
 	sbOut.AppendC(UTF8STRC("<h2>Req V6</h2>\r\n"));
 	sbOut.AppendC(UTF8STRC("<table border=\"0\"><tr><td>\r\n"));
@@ -255,7 +255,7 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::ReqV6Req(SSWR::SDNSProxy::S
 	}
 
 	sbOut.AppendC(UTF8STRC("</td></tr></table>\r\n"));
-	AppendFooter(&sbOut);
+	AppendFooter(sbOut);
 
 	resp->SetStatusCode(Net::WebStatus::SC_OK);
 	resp->AddDefHeaders(req);
@@ -268,8 +268,8 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::ReqV6Req(SSWR::SDNSProxy::S
 Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::ReqOthReq(SSWR::SDNSProxy::SDNSProxyWebHandler *me, Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp)
 {
 	Text::StringBuilderUTF8 sbOut;
-	AppendHeader(&sbOut);
-	AppendMenu(&sbOut);
+	AppendHeader(sbOut);
+	AppendMenu(sbOut);
 
 	sbOut.AppendC(UTF8STRC("<h2>Req Oth</h2>\r\n"));
 	sbOut.AppendC(UTF8STRC("<table border=\"0\"><tr><td>\r\n"));
@@ -356,7 +356,7 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::ReqOthReq(SSWR::SDNSProxy::
 	}
 
 	sbOut.AppendC(UTF8STRC("</td></tr></table>\r\n"));
-	AppendFooter(&sbOut);
+	AppendFooter(sbOut);
 
 	resp->SetStatusCode(Net::WebStatus::SC_OK);
 	resp->AddDefHeaders(req);
@@ -369,8 +369,8 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::ReqOthReq(SSWR::SDNSProxy::
 Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::TargetReq(SSWR::SDNSProxy::SDNSProxyWebHandler *me, Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp)
 {
 	Text::StringBuilderUTF8 sbOut;
-	AppendHeader(&sbOut);
-	AppendMenu(&sbOut);
+	AppendHeader(sbOut);
+	AppendMenu(sbOut);
 
 	sbOut.AppendC(UTF8STRC("<h2>Target</h2>\r\n"));
 	sbOut.AppendC(UTF8STRC("<table border=\"0\"><tr><td>\r\n"));
@@ -435,7 +435,7 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::TargetReq(SSWR::SDNSProxy::
 	}
 
 	sbOut.AppendC(UTF8STRC("</td></tr></table>\r\n"));
-	AppendFooter(&sbOut);
+	AppendFooter(sbOut);
 
 	resp->SetStatusCode(Net::WebStatus::SC_OK);
 	resp->AddDefHeaders(req);
@@ -457,8 +457,8 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::BlacklistReq(SSWR::SDNSProx
 		}
 	}
 	Text::StringBuilderUTF8 sbOut;
-	AppendHeader(&sbOut);
-	AppendMenu(&sbOut);
+	AppendHeader(sbOut);
+	AppendMenu(sbOut);
 
 	sbOut.AppendC(UTF8STRC("<h2>Blacklist</h2>\r\n"));
 	sbOut.AppendC(UTF8STRC("<form method=\"POST\" action=\"/blacklist\"><input type=\"text\" name=\"blacklist\" />"));
@@ -477,7 +477,7 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::BlacklistReq(SSWR::SDNSProx
 		i++;
 	}
 
-	AppendFooter(&sbOut);
+	AppendFooter(sbOut);
 
 	resp->SetStatusCode(Net::WebStatus::SC_OK);
 	resp->AddDefHeaders(req);
@@ -490,12 +490,12 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::BlacklistReq(SSWR::SDNSProx
 Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::LogReq(SSWR::SDNSProxy::SDNSProxyWebHandler *me, Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp)
 {
 	Text::StringBuilderUTF8 sbOut;
-	AppendHeader(&sbOut);
-	AppendMenu(&sbOut);
+	AppendHeader(sbOut);
+	AppendMenu(sbOut);
 
 	sbOut.AppendC(UTF8STRC("<h2>Log</h2>\r\n"));
-	me->logBuff->GetLogs(&sbOut, CSTR("<br/>\r\n"));
-	AppendFooter(&sbOut);
+	me->logBuff->GetLogs(sbOut, CSTR("<br/>\r\n"));
+	AppendFooter(sbOut);
 
 	resp->SetStatusCode(Net::WebStatus::SC_OK);
 	resp->AddDefHeaders(req);
@@ -508,8 +508,8 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::LogReq(SSWR::SDNSProxy::SDN
 Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::ClientReq(SSWR::SDNSProxy::SDNSProxyWebHandler *me, Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp)
 {
 	Text::StringBuilderUTF8 sbOut;
-	AppendHeader(&sbOut);
-	AppendMenu(&sbOut);
+	AppendHeader(sbOut);
+	AppendMenu(sbOut);
 
 	sbOut.AppendC(UTF8STRC("<h2>Client</h2>\r\n"));
 	sbOut.AppendC(UTF8STRC("<table border=\"0\"><tr><td valign=\"top\">\r\n"));
@@ -584,7 +584,7 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::ClientReq(SSWR::SDNSProxy::
 	}
 
 	sbOut.AppendC(UTF8STRC("</td></tr></table>\r\n"));
-	AppendFooter(&sbOut);
+	AppendFooter(sbOut);
 
 	resp->SetStatusCode(Net::WebStatus::SC_OK);
 	resp->AddDefHeaders(req);
@@ -606,12 +606,12 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::ReqPerMinReq(SSWR::SDNSProx
 	return true;
 }
 
-void SSWR::SDNSProxy::SDNSProxyWebHandler::AppendHeader(Text::StringBuilderUTF8 *sbOut)
+void SSWR::SDNSProxy::SDNSProxyWebHandler::AppendHeader(NotNullPtr<Text::StringBuilderUTF8> sbOut)
 {
 	sbOut->AppendC(UTF8STRC("<html><head><title>SDNSProxy</title></head><body>\r\n"));
 }
 
-void SSWR::SDNSProxy::SDNSProxyWebHandler::AppendMenu(Text::StringBuilderUTF8 *sbOut)
+void SSWR::SDNSProxy::SDNSProxyWebHandler::AppendMenu(NotNullPtr<Text::StringBuilderUTF8> sbOut)
 {
 	sbOut->AppendC(UTF8STRC("<table border=\"1\"><tr>"));
 	sbOut->AppendC(UTF8STRC("<td><a href=\"/\">Status</a></td>"));
@@ -626,7 +626,7 @@ void SSWR::SDNSProxy::SDNSProxyWebHandler::AppendMenu(Text::StringBuilderUTF8 *s
 	sbOut->AppendC(UTF8STRC("</table>\r\n"));
 }
 
-void SSWR::SDNSProxy::SDNSProxyWebHandler::AppendFooter(Text::StringBuilderUTF8 *sbOut)
+void SSWR::SDNSProxy::SDNSProxyWebHandler::AppendFooter(NotNullPtr<Text::StringBuilderUTF8> sbOut)
 {
 	sbOut->AppendC(UTF8STRC("</body></html>"));
 }

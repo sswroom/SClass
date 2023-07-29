@@ -60,7 +60,7 @@ private:
 				}
 				else
 				{
-					Text::SBAppendF64(&sb, (Double)(currCount - lastDispCount)  / (currTime - lastDispTime));
+					sb.AppendDouble((Double)(currCount - lastDispCount)  / (currTime - lastDispTime));
 					lastDispCount = currCount;
 					lastDispTime = currTime;
 				}

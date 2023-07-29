@@ -1631,7 +1631,7 @@ UTF8Char *DB::DBUtil::SDBVector(UTF8Char *sqlstr, Math::Geometry::Vector2D *vec,
 			}
 		}
 		Text::StringBuilderUTF8 sb;
-		if (writer.ToText(&sb, vec))
+		if (writer.ToText(sb, vec))
 		{
 			sqlstr = Text::StrConcatC(sqlstr, UTF8STRC("ST_GeomFromText('"));
 			sqlstr = Text::StrConcatC(sqlstr, sb.ToString(), sb.GetLength());
@@ -1649,7 +1649,7 @@ UTF8Char *DB::DBUtil::SDBVector(UTF8Char *sqlstr, Math::Geometry::Vector2D *vec,
 	{
 		Math::WKTWriter writer;
 		Text::StringBuilderUTF8 sb;
-		if (writer.ToText(&sb, vec))
+		if (writer.ToText(sb, vec))
 		{
 			sqlstr = Text::StrConcatC(sqlstr, UTF8STRC("ST_GeomFromText('"));
 			sqlstr = Text::StrConcatC(sqlstr, sb.ToString(), sb.GetLength());
@@ -1690,7 +1690,7 @@ UOSInt DB::DBUtil::SDBVectorLeng(Math::Geometry::Vector2D *vec, DB::SQLType sqlT
 	{
 		Math::WKTWriter writer;
 		Text::StringBuilderUTF8 sb;
-		if (writer.ToText(&sb, vec))
+		if (writer.ToText(sb, vec))
 		{
 			UOSInt ret = 21 + sb.GetLength();
 			sb.ClearStr();
@@ -1707,7 +1707,7 @@ UOSInt DB::DBUtil::SDBVectorLeng(Math::Geometry::Vector2D *vec, DB::SQLType sqlT
 	{
 		Math::WKTWriter writer;
 		Text::StringBuilderUTF8 sb;
-		if (writer.ToText(&sb, vec))
+		if (writer.ToText(sb, vec))
 		{
 			UOSInt ret = 21 + sb.GetLength();
 			sb.ClearStr();

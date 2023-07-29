@@ -6,7 +6,7 @@ void __stdcall SSWR::AVIRead::AVIRWMTSForm::OnLoadClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRWMTSForm *me = (SSWR::AVIRead::AVIRWMTSForm *)userObj;
 	Text::StringBuilderUTF8 sb;
-	me->txtWMTSURL->GetText(&sb);
+	me->txtWMTSURL->GetText(sb);
 	SDEL_CLASS(me->wmts);
 	NEW_CLASS(me->wmts, Map::WebMapTileServiceSource(me->core->GetSocketFactory(), me->ssl, me->core->GetEncFactory(), sb.ToCString()));
 	if (me->wmts->IsError())

@@ -14,7 +14,7 @@ void __stdcall SSWR::AVIRead::AVIRTraceRouteForm::OnStartClicked(void *userObj)
 	UTF8Char *sptr;
 	UOSInt i;
 	UOSInt j;
-	me->txtTargetIP->GetText(&sb);
+	me->txtTargetIP->GetText(sb);
 	targetIP = me->sockf->DNSResolveIPv4(sb.ToCString());
 	if (targetIP == 0)
 	{

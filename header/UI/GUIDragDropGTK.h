@@ -23,7 +23,7 @@ namespace UI
 
 		virtual UOSInt GetCount();
 		virtual const UTF8Char *GetName(UOSInt index);
-		virtual Bool GetDataText(const UTF8Char *name, Text::StringBuilderUTF8 *sb);
+		virtual Bool GetDataText(const UTF8Char *name, NotNullPtr<Text::StringBuilderUTF8> sb);
 		virtual IO::Stream *GetDataStream(const UTF8Char *name);
 
 		void OnDataReceived(void *selData);

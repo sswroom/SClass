@@ -76,7 +76,7 @@ namespace Math
 		virtual CoordinateSystem *Clone() const = 0;
 		virtual CoordinateSystemType GetCoordSysType() const = 0;
 		virtual Bool IsProjected() const = 0;
-		virtual void ToString(Text::StringBuilderUTF8 *sb) const = 0;
+		virtual void ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const = 0;
 
 		virtual IO::ParserType GetParserType() const;
 
@@ -88,7 +88,7 @@ namespace Math
 		static void ConvertXYZ(Math::CoordinateSystem *srcCoord, Math::CoordinateSystem *destCoord, Double srcX, Double srcY, Double srcZ, Double *destX, Double *destY, Double *destZ);
 		static void ConvertXYArray(Math::CoordinateSystem *srcCoord, Math::CoordinateSystem *destCoord, const Math::Coord2DDbl *srcArr, Math::Coord2DDbl *destArr, UOSInt nPoints);
 		static void ConvertToCartesianCoord(Math::CoordinateSystem *srcCoord, Double srcX, Double srcY, Double srcZ, Double *destX, Double *destY, Double *destZ);
-		static void DatumData1ToString(const DatumData1 *datum, Text::StringBuilderUTF8 *sb);
+		static void DatumData1ToString(const DatumData1 *datum, NotNullPtr<Text::StringBuilderUTF8> sb);
 		static Text::CString CoordinateSystemTypeGetName(CoordinateSystemType csysType);
 	};
 }

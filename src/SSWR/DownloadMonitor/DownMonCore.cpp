@@ -599,7 +599,7 @@ Bool SSWR::DownloadMonitor::DownMonCore::FileAdd(Int32 id, Int32 webType, NotNul
 	file->id = id;
 	file->webType = webType;
 	file->dbName = dbName->Clone();
-	Net::WebSite::WebSite48IdolControl::Title2DisplayName(dbName, &sb);
+	Net::WebSite::WebSite48IdolControl::Title2DisplayName(dbName, sb);
 	sb.AppendC(UTF8STRC(".mp4"));
 	file->fileName = Text::String::New(sb.ToString(), sb.GetLength());
 	file->status = FS_NORMAL;

@@ -18,7 +18,7 @@ void __stdcall SSWR::AVIRead::AVIRProtoDecForm::OnLogSelChg(void *userObj)
 		me->currFile->Read(buff);
 		sb.AppendHexBuff(buff, ' ', Text::LineBreakType::CRLF);
 		sb.AppendC(UTF8STRC("\r\n\r\n"));
-		me->currDec->GetProtocolDetail(buff.Ptr(), item->size, &sb);
+		me->currDec->GetProtocolDetail(buff.Ptr(), item->size, sb);
 		me->txtLogs->SetText(sb.ToCString());
 	}
 	else
@@ -31,7 +31,7 @@ void __stdcall SSWR::AVIRead::AVIRProtoDecForm::OnFileClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRProtoDecForm *me = (SSWR::AVIRead::AVIRProtoDecForm *)userObj;
 	Text::StringBuilderUTF8 sb;
-	me->txtFile->GetText(&sb);
+	me->txtFile->GetText(sb);
 	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"ProtoDec", false);
 	dlg.AddFilter(CSTR("*.dat"), CSTR("RAW data file"));
 	if (sb.GetLength() > 0)
@@ -49,7 +49,7 @@ void __stdcall SSWR::AVIRead::AVIRProtoDecForm::OnLoadClicked(void *userObj)
 	SSWR::AVIRead::AVIRProtoDecForm *me = (SSWR::AVIRead::AVIRProtoDecForm *)userObj;
 	Text::StringBuilderUTF8 sb;
 	IO::ProtoDec::IProtocolDecoder *protoDec;
-	me->txtFile->GetText(&sb);
+	me->txtFile->GetText(sb);
 	protoDec = (IO::ProtoDec::IProtocolDecoder*)me->cboDecoder->GetSelectedItem();
 	if (sb.GetLength() > 0 && protoDec != 0)
 	{

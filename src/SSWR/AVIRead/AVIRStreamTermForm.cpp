@@ -46,7 +46,7 @@ void __stdcall SSWR::AVIRead::AVIRStreamTermForm::OnSendClicked(void *userObj)
 	{
 		Text::StringBuilderUTF8 sb;
 		UOSInt size;
-		me->txtSendValue->GetText(&sb);
+		me->txtSendValue->GetText(sb);
 		if (me->radSendText->IsSelected())
 		{
 			switch (me->cboSendLBreak->GetSelectedIndex())

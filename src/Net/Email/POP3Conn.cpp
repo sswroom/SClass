@@ -337,14 +337,14 @@ Net::Email::POP3Conn::ResultStatus Net::Email::POP3Conn::SendStat(UOSInt *msgCou
 	return status;
 }
 
-Net::Email::POP3Conn::ResultStatus Net::Email::POP3Conn::SendRetr(UOSInt msgIndex, Text::StringBuilderUTF8 *msgBuff)
+Net::Email::POP3Conn::ResultStatus Net::Email::POP3Conn::SendRetr(UOSInt msgIndex, NotNullPtr<Text::StringBuilderUTF8> msgBuff)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("RETR ")), msgIndex + 1);
 	this->statusChg = false;
 	this->msgToDataMode = true;
-	this->msgData = msgBuff;
+	this->msgData = msgBuff.Ptr();
 	if (this->logWriter)
 	{
 		this->logWriter->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));

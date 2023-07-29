@@ -132,63 +132,63 @@ namespace Crypto
 
 		public:
 			static Bool IsSigned(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path); // AuthenticationFramework
-			static void AppendSigned(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path, Text::StringBuilderUTF8 *sb, Text::CString varName); // AuthenticationFramework
+			static void AppendSigned(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path, NotNullPtr<Text::StringBuilderUTF8> sb, Text::CString varName); // AuthenticationFramework
 			static Bool IsTBSCertificate(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path); // AuthenticationFramework
-			static void AppendTBSCertificate(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path, Text::StringBuilderUTF8 *sb, Text::CString varName); // AuthenticationFramework
+			static void AppendTBSCertificate(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path, NotNullPtr<Text::StringBuilderUTF8> sb, Text::CString varName); // AuthenticationFramework
 			static Bool IsCertificate(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path); // AuthenticationFramework
-			static void AppendCertificate(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path, Text::StringBuilderUTF8 *sb, Text::CString varName); // AuthenticationFramework
+			static void AppendCertificate(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path, NotNullPtr<Text::StringBuilderUTF8> sb, Text::CString varName); // AuthenticationFramework
 			static Bool IsTBSCertList(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path); // RFC3280
-			static void AppendTBSCertList(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path, Text::StringBuilderUTF8 *sb, Text::CString varName); // RFC3280
+			static void AppendTBSCertList(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path, NotNullPtr<Text::StringBuilderUTF8> sb, Text::CString varName); // RFC3280
 			static Bool IsCertificateList(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path); // RFC3280
-			static void AppendCertificateList(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path, Text::StringBuilderUTF8 *sb, Text::CString varName); // RFC3280
+			static void AppendCertificateList(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path, NotNullPtr<Text::StringBuilderUTF8> sb, Text::CString varName); // RFC3280
 			static Bool IsPrivateKeyInfo(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path); // PKCS-8
-			static void AppendPrivateKeyInfo(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path, Text::StringBuilderUTF8 *sb); // PKCS-8
+			static void AppendPrivateKeyInfo(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path, NotNullPtr<Text::StringBuilderUTF8> sb); // PKCS-8
 			static Bool IsCertificateRequestInfo(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path); // PKCS-10
-			static void AppendCertificateRequestInfo(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path, Text::StringBuilderUTF8 *sb); // PKCS-10
+			static void AppendCertificateRequestInfo(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path, NotNullPtr<Text::StringBuilderUTF8> sb); // PKCS-10
 			static Bool IsCertificateRequest(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path); // PKCS-10
-			static void AppendCertificateRequest(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path, Text::StringBuilderUTF8 *sb); // PKCS-8
+			static void AppendCertificateRequest(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path, NotNullPtr<Text::StringBuilderUTF8> sb); // PKCS-8
 			static Bool IsPublicKeyInfo(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path); // AuthenticationFramework
-			static void AppendPublicKeyInfo(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path, Text::StringBuilderUTF8 *sb); // AuthenticationFramework
+			static void AppendPublicKeyInfo(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path, NotNullPtr<Text::StringBuilderUTF8> sb); // AuthenticationFramework
 			static Bool IsContentInfo(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path); // RFC2315 / PKCS7
-			static void AppendContentInfo(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path, Text::StringBuilderUTF8 *sb, Text::CString varName, ContentDataType dataType); // RFC2315 / PKCS7
+			static void AppendContentInfo(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path, NotNullPtr<Text::StringBuilderUTF8> sb, Text::CString varName, ContentDataType dataType); // RFC2315 / PKCS7
 			static Bool IsPFX(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path); // PKCS12
-			static void AppendPFX(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path, Text::StringBuilderUTF8 *sb, Text::CString varName); // PKCS12
+			static void AppendPFX(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path, NotNullPtr<Text::StringBuilderUTF8> sb, Text::CString varName); // PKCS12
 
 		protected:
-			static void AppendVersion(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path, Text::StringBuilderUTF8 *sb); // AuthenticationFramework
+			static void AppendVersion(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path, NotNullPtr<Text::StringBuilderUTF8> sb); // AuthenticationFramework
 
-			static void AppendAlgorithmIdentifier(const UInt8 *pdu, const UInt8 *pduEnd, Text::StringBuilderUTF8 *sb, Text::CString varName, Bool pubKey, KeyType *keyTypeOut); // PKCS-5
-			static void AppendValidity(const UInt8 *pdu, const UInt8 *pduEnd, Text::StringBuilderUTF8 *sb, Text::CString varName); // AuthenticationFramework
-			static void AppendSubjectPublicKeyInfo(const UInt8 *pdu, const UInt8 *pduEnd, Text::StringBuilderUTF8 *sb, Text::CString varName); // AuthenticationFramework
-			static void AppendName(const UInt8 *pdu, const UInt8 *pduEnd, Text::StringBuilderUTF8 *sb, Text::CString varName); // InformationFramework
-			static void AppendRelativeDistinguishedName(const UInt8 *pdu, const UInt8 *pduEnd, Text::StringBuilderUTF8 *sb, Text::CString varName); // InformationFramework
-			static void AppendAttributeTypeAndDistinguishedValue(const UInt8 *pdu, const UInt8 *pduEnd, Text::StringBuilderUTF8 *sb, Text::CString varName); // InformationFramework
-			static void AppendCRLExtensions(const UInt8 *pdu, const UInt8 *pduEnd, Text::StringBuilderUTF8 *sb, Text::CString varName);
-			static void AppendCRLExtension(const UInt8 *pdu, const UInt8 *pduEnd, Text::StringBuilderUTF8 *sb, Text::CString varName);
-			static void AppendMSOSVersion(const UInt8 *pdu, const UInt8 *pduEnd, Text::StringBuilderUTF8 *sb, Text::CString varName);
-			static void AppendMSRequestClientInfo(const UInt8 *pdu, const UInt8 *pduEnd, Text::StringBuilderUTF8 *sb, Text::CString varName);
-			static void AppendMSEnrollmentCSPProvider(const UInt8 *pdu, const UInt8 *pduEnd, Text::StringBuilderUTF8 *sb, Text::CString varName);
-			static void AppendGeneralNames(const UInt8 *pdu, const UInt8 *pduEnd, Text::StringBuilderUTF8 *sb, Text::CString varName);
-			static Bool AppendGeneralName(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path, Text::StringBuilderUTF8 *sb, Text::CString varName);
-			static Bool AppendDistributionPoint(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path, Text::StringBuilderUTF8 *sb, Text::CString varName);
-			static void AppendDistributionPointName(const UInt8 *pdu, const UInt8 *pduEnd, Text::StringBuilderUTF8 *sb, Text::CString varName);
-			static Bool AppendPolicyInformation(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path, Text::StringBuilderUTF8 *sb, Text::CString varName);
-			static void AppendPKCS7SignedData(const UInt8 *pdu, const UInt8 *pduEnd, Text::StringBuilderUTF8 *sb, Text::CString varName); // RFC2315
-			static void AppendPKCS7DigestAlgorithmIdentifiers(const UInt8 *pdu, const UInt8 *pduEnd, Text::StringBuilderUTF8 *sb, Text::CString varName); // RFC2315
-			static void AppendPKCS7SignerInfos(const UInt8 *pdu, const UInt8 *pduEnd, Text::StringBuilderUTF8 *sb, Text::CString varName); // RFC2315
-			static void AppendPKCS7SignerInfo(const UInt8 *pdu, const UInt8 *pduEnd, Text::StringBuilderUTF8 *sb, Text::CString varName); // RFC2315
-			static void AppendIssuerAndSerialNumber(const UInt8 *pdu, const UInt8 *pduEnd, Text::StringBuilderUTF8 *sb, Text::CString varName); // RFC2315
-			static void AppendPKCS7Attributes(const UInt8 *pdu, const UInt8 *pduEnd, Text::StringBuilderUTF8 *sb, Text::CString varName); // RFC2315
-			static Bool AppendMacData(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path, Text::StringBuilderUTF8 *sb, Text::CString varName); // PKCS12
-			static void AppendDigestInfo(const UInt8 *pdu, const UInt8 *pduEnd, Text::StringBuilderUTF8 *sb, Text::CString varName); // RFC2315 / PKCS7
-			static void AppendData(const UInt8 *pdu, const UInt8 *pduEnd, Text::StringBuilderUTF8 *sb, Text::CString varName, ContentDataType dataType);
-			static void AppendEncryptedData(const UInt8 *pdu, const UInt8 *pduEnd, Text::StringBuilderUTF8 *sb, Text::CString varName, ContentDataType dataType);
-			static void AppendAuthenticatedSafe(const UInt8 *pdu, const UInt8 *pduEnd, Text::StringBuilderUTF8 *sb, Text::CString varName); //PKCS12
-			static void AppendEncryptedContentInfo(const UInt8 *pdu, const UInt8 *pduEnd, Text::StringBuilderUTF8 *sb, Text::CString varName, ContentDataType dataType);
+			static void AppendAlgorithmIdentifier(const UInt8 *pdu, const UInt8 *pduEnd, NotNullPtr<Text::StringBuilderUTF8> sb, Text::CString varName, Bool pubKey, KeyType *keyTypeOut); // PKCS-5
+			static void AppendValidity(const UInt8 *pdu, const UInt8 *pduEnd, NotNullPtr<Text::StringBuilderUTF8> sb, Text::CString varName); // AuthenticationFramework
+			static void AppendSubjectPublicKeyInfo(const UInt8 *pdu, const UInt8 *pduEnd, NotNullPtr<Text::StringBuilderUTF8> sb, Text::CString varName); // AuthenticationFramework
+			static void AppendName(const UInt8 *pdu, const UInt8 *pduEnd, NotNullPtr<Text::StringBuilderUTF8> sb, Text::CString varName); // InformationFramework
+			static void AppendRelativeDistinguishedName(const UInt8 *pdu, const UInt8 *pduEnd, NotNullPtr<Text::StringBuilderUTF8> sb, Text::CString varName); // InformationFramework
+			static void AppendAttributeTypeAndDistinguishedValue(const UInt8 *pdu, const UInt8 *pduEnd, NotNullPtr<Text::StringBuilderUTF8> sb, Text::CString varName); // InformationFramework
+			static void AppendCRLExtensions(const UInt8 *pdu, const UInt8 *pduEnd, NotNullPtr<Text::StringBuilderUTF8> sb, Text::CString varName);
+			static void AppendCRLExtension(const UInt8 *pdu, const UInt8 *pduEnd, NotNullPtr<Text::StringBuilderUTF8> sb, Text::CString varName);
+			static void AppendMSOSVersion(const UInt8 *pdu, const UInt8 *pduEnd, NotNullPtr<Text::StringBuilderUTF8> sb, Text::CString varName);
+			static void AppendMSRequestClientInfo(const UInt8 *pdu, const UInt8 *pduEnd, NotNullPtr<Text::StringBuilderUTF8> sb, Text::CString varName);
+			static void AppendMSEnrollmentCSPProvider(const UInt8 *pdu, const UInt8 *pduEnd, NotNullPtr<Text::StringBuilderUTF8> sb, Text::CString varName);
+			static void AppendGeneralNames(const UInt8 *pdu, const UInt8 *pduEnd, NotNullPtr<Text::StringBuilderUTF8> sb, Text::CString varName);
+			static Bool AppendGeneralName(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path, NotNullPtr<Text::StringBuilderUTF8> sb, Text::CString varName);
+			static Bool AppendDistributionPoint(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path, NotNullPtr<Text::StringBuilderUTF8> sb, Text::CString varName);
+			static void AppendDistributionPointName(const UInt8 *pdu, const UInt8 *pduEnd, NotNullPtr<Text::StringBuilderUTF8> sb, Text::CString varName);
+			static Bool AppendPolicyInformation(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path, NotNullPtr<Text::StringBuilderUTF8> sb, Text::CString varName);
+			static void AppendPKCS7SignedData(const UInt8 *pdu, const UInt8 *pduEnd, NotNullPtr<Text::StringBuilderUTF8> sb, Text::CString varName); // RFC2315
+			static void AppendPKCS7DigestAlgorithmIdentifiers(const UInt8 *pdu, const UInt8 *pduEnd, NotNullPtr<Text::StringBuilderUTF8> sb, Text::CString varName); // RFC2315
+			static void AppendPKCS7SignerInfos(const UInt8 *pdu, const UInt8 *pduEnd, NotNullPtr<Text::StringBuilderUTF8> sb, Text::CString varName); // RFC2315
+			static void AppendPKCS7SignerInfo(const UInt8 *pdu, const UInt8 *pduEnd, NotNullPtr<Text::StringBuilderUTF8> sb, Text::CString varName); // RFC2315
+			static void AppendIssuerAndSerialNumber(const UInt8 *pdu, const UInt8 *pduEnd, NotNullPtr<Text::StringBuilderUTF8> sb, Text::CString varName); // RFC2315
+			static void AppendPKCS7Attributes(const UInt8 *pdu, const UInt8 *pduEnd, NotNullPtr<Text::StringBuilderUTF8> sb, Text::CString varName); // RFC2315
+			static Bool AppendMacData(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path, NotNullPtr<Text::StringBuilderUTF8> sb, Text::CString varName); // PKCS12
+			static void AppendDigestInfo(const UInt8 *pdu, const UInt8 *pduEnd, NotNullPtr<Text::StringBuilderUTF8> sb, Text::CString varName); // RFC2315 / PKCS7
+			static void AppendData(const UInt8 *pdu, const UInt8 *pduEnd, NotNullPtr<Text::StringBuilderUTF8> sb, Text::CString varName, ContentDataType dataType);
+			static void AppendEncryptedData(const UInt8 *pdu, const UInt8 *pduEnd, NotNullPtr<Text::StringBuilderUTF8> sb, Text::CString varName, ContentDataType dataType);
+			static void AppendAuthenticatedSafe(const UInt8 *pdu, const UInt8 *pduEnd, NotNullPtr<Text::StringBuilderUTF8> sb, Text::CString varName); //PKCS12
+			static void AppendEncryptedContentInfo(const UInt8 *pdu, const UInt8 *pduEnd, NotNullPtr<Text::StringBuilderUTF8> sb, Text::CString varName, ContentDataType dataType);
 
-			static Bool NameGetByOID(const UInt8 *pdu, const UInt8 *pduEnd, const UTF8Char *oidText, UOSInt oidTextLen, Text::StringBuilderUTF8 *sb);
+			static Bool NameGetByOID(const UInt8 *pdu, const UInt8 *pduEnd, const UTF8Char *oidText, UOSInt oidTextLen, NotNullPtr<Text::StringBuilderUTF8> sb);
 			static UTF8Char *NameGetByOID(const UInt8 *pdu, const UInt8 *pduEnd, const UTF8Char *oidText, UOSInt oidTextLen, UTF8Char *sbuff);
-			static Bool NameGetCN(const UInt8 *pdu, const UInt8 *pduEnd, Text::StringBuilderUTF8 *sb);
+			static Bool NameGetCN(const UInt8 *pdu, const UInt8 *pduEnd, NotNullPtr<Text::StringBuilderUTF8> sb);
 			static UTF8Char *NameGetCN(const UInt8 *pdu, const UInt8 *pduEnd, UTF8Char *sbuff);
 			static Bool NamesGet(const UInt8 *pdu, const UInt8 *pduEnd, CertNames *names);
 			static Bool ExtensionsGet(const UInt8 *pdu, const UInt8 *pduEnd, CertExtensions *ext);
@@ -208,14 +208,14 @@ namespace Crypto
 
 			virtual Net::ASN1Data::ASN1Type GetASN1Type() const;
 			virtual FileType GetFileType() const = 0;
-			virtual void ToShortName(Text::StringBuilderUTF8 *sb) const = 0;
+			virtual void ToShortName(NotNullPtr<Text::StringBuilderUTF8> sb) const = 0;
 
 			virtual UOSInt GetCertCount();
-			virtual Bool GetCertName(UOSInt index, Text::StringBuilderUTF8 *sb);
+			virtual Bool GetCertName(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb);
 			virtual X509Cert *GetNewCert(UOSInt index);
 			virtual ValidStatus IsValid(Net::SSLEngine *ssl, Crypto::Cert::CertStore *trustStore) const = 0;
 
-			void ToShortString(Text::StringBuilderUTF8 *sb) const;
+			void ToShortString(NotNullPtr<Text::StringBuilderUTF8> sb) const;
 			Bool IsSignatureKey(Net::SSLEngine *ssl, Crypto::Cert::X509Key *key) const;
 			Bool GetSignedInfo(SignedInfo *signedInfo) const;
 

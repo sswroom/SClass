@@ -52,7 +52,7 @@ void Map::TileMapServiceSource::LoadXML()
 					if (s->Equals(UTF8STRC("Title")))
 					{
 						sb.ClearStr();
-						if (reader.ReadNodeText(&sb))
+						if (reader.ReadNodeText(sb))
 						{
 							SDEL_STRING(this->title);
 							this->title = Text::String::New(sb.ToCString()).Ptr();
@@ -64,7 +64,7 @@ void Map::TileMapServiceSource::LoadXML()
 					else if (s->Equals(UTF8STRC("SRS")))
 					{
 						sb.ClearStr();
-						if (reader.ReadNodeText(&sb))
+						if (reader.ReadNodeText(sb))
 						{
 							SDEL_CLASS(this->csys);
 							this->csys = Math::CoordinateSystemManager::CreateFromName(sb.ToCString());

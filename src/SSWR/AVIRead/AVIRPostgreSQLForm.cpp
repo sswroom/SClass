@@ -12,11 +12,11 @@ void __stdcall SSWR::AVIRead::AVIRPostgreSQLForm::OnOKClicked(void *userObj)
 	Text::StringBuilderUTF8 sb4;
 	Text::StringBuilderUTF8 sbPort;
 	SSWR::AVIRead::AVIRPostgreSQLForm *me = (SSWR::AVIRead::AVIRPostgreSQLForm*)userObj;
-	me->txtServer->GetText(&sb);
-	me->txtUID->GetText(&sb2);
-	me->txtPWD->GetText(&sb3);
-	me->txtDatabase->GetText(&sb4);
-	me->txtPort->GetText(&sbPort);
+	me->txtServer->GetText(sb);
+	me->txtUID->GetText(sb2);
+	me->txtPWD->GetText(sb3);
+	me->txtDatabase->GetText(sb4);
+	me->txtPort->GetText(sbPort);
 	UInt16 port;
 
 	DB::PostgreSQLConn *conn;

@@ -122,7 +122,7 @@ Bool Math::ProjectedCoordinateSystem::IsProjected() const
 	return true;
 }
 
-void Math::ProjectedCoordinateSystem::ToString(Text::StringBuilderUTF8 *sb) const
+void Math::ProjectedCoordinateSystem::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
 {
 	sb->AppendC(UTF8STRC("Projected File Name: "));
 	sb->Append(this->sourceName);

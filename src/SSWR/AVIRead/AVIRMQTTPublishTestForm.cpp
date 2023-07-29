@@ -46,7 +46,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTPublishTestForm::OnStartClicked(void *user
 		Text::StringBuilderUTF8 sbContent;
 		Net::SocketUtil::AddressInfo addr;
 		UInt16 port;
-		me->txtPort->GetText(&sb);
+		me->txtPort->GetText(sb);
 		if (!sb.ToUInt16(&port))
 		{
 			UI::MessageDialog::ShowDialog(CSTR("Port is not valid"), CSTR("Error"), me);
@@ -58,19 +58,19 @@ void __stdcall SSWR::AVIRead::AVIRMQTTPublishTestForm::OnStartClicked(void *user
 			return;
 		}
 		sb.ClearStr();
-		me->txtHost->GetText(&sb);
+		me->txtHost->GetText(sb);
 		if (!me->core->GetSocketFactory()->DNSResolveIP(sb.ToCString(), &addr))
 		{
 			UI::MessageDialog::ShowDialog(CSTR("Error in parsing host"), CSTR("Error"), me);
 			return;
 		}
-		me->txtTopic->GetText(&sbTopic);
+		me->txtTopic->GetText(sbTopic);
 		if (sbTopic.leng == 0)
 		{
 			UI::MessageDialog::ShowDialog(CSTR("Please enter topic to publish"), CSTR("Error"), me);
 			return;
 		}
-		me->txtContent->GetText(&sbContent);
+		me->txtContent->GetText(sbContent);
 		if (sbContent.leng == 0)
 		{
 			UI::MessageDialog::ShowDialog(CSTR("Please enter content to publish"), CSTR("Error"), me);
@@ -114,14 +114,14 @@ void __stdcall SSWR::AVIRead::AVIRMQTTPublishTestForm::OnStartClicked(void *user
 		Data::DateTime dt;
 		dt.SetCurrTimeUTC();
 		sb.ClearStr();
-		me->txtUsername->GetText(&sb);
+		me->txtUsername->GetText(sb);
 		if (sb.GetLength() > 0)
 		{
 			username.v = Text::StrCopyNewC(sb.ToString(), sb.GetLength()).Ptr();
 			username.leng = sb.GetLength();
 		}
 		sb.ClearStr();
-		me->txtPassword->GetText(&sb);
+		me->txtPassword->GetText(sb);
 		if (sb.GetLength() > 0)
 		{
 			password.v = Text::StrCopyNewC(sb.ToString(), sb.GetLength()).Ptr();

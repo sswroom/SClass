@@ -33,7 +33,7 @@ Text::XMLAttrib::~XMLAttrib()
 	SDEL_STRING(this->valueOri);
 }
 
-Bool Text::XMLAttrib::ToString(Text::StringBuilderUTF8 *sb) const
+Bool Text::XMLAttrib::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
 {
 	sb->Append(this->name);
 	if (this->value)
@@ -165,7 +165,7 @@ Text::XMLNode *Text::XMLNode::GetChild(UOSInt index)
 	return this->childArr->GetItem(index);
 }
 
-void Text::XMLNode::GetInnerXML(Text::StringBuilderUTF8 *sb)
+void Text::XMLNode::GetInnerXML(NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	Text::XMLNode *n;
 	Text::XMLAttrib *attr;
@@ -239,7 +239,7 @@ void Text::XMLNode::GetInnerXML(Text::StringBuilderUTF8 *sb)
 	}
 }
 
-void Text::XMLNode::GetInnerText(Text::StringBuilderUTF8 *sb)
+void Text::XMLNode::GetInnerText(NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	Text::XMLNode *n;
 	UOSInt i;
@@ -562,13 +562,13 @@ Bool Text::XMLNode::SearchEqual(UOSInt level, Data::ArrayList<UTF8Char*> *reqArr
 				Text::StringBuilderUTF8 leftSB;
 				Text::StringBuilderUTF8 rightSB;
 				/////////////////////////////////////////
-				if (SearchEval(level, reqArr, currPathArr, n, condBuff, src, &leftSB) == false)
+				if (SearchEval(level, reqArr, currPathArr, n, condBuff, src, leftSB) == false)
 					return false;
 
 				dest = src;
 				while (*dest++);
 				dest--;
-				if (SearchEval(level, reqArr, currPathArr, n, src + 1, dest, &rightSB) == false)
+				if (SearchEval(level, reqArr, currPathArr, n, src + 1, dest, rightSB) == false)
 					return false;
 
 				return Text::StrEqualsC(leftSB.ToString(), leftSB.GetLength(), rightSB.ToString(), rightSB.GetLength());
@@ -600,7 +600,7 @@ Bool Text::XMLNode::SearchEqual(UOSInt level, Data::ArrayList<UTF8Char*> *reqArr
 	return true;
 }
 
-Bool Text::XMLNode::SearchEval(UOSInt level, Data::ArrayList<UTF8Char*> *reqArr, Data::ArrayList<XMLNode*> *currPathArr, Text::XMLNode *n, const UTF8Char *nameStart, const UTF8Char *nameEnd, Text::StringBuilderUTF8 *outSB)
+Bool Text::XMLNode::SearchEval(UOSInt level, Data::ArrayList<UTF8Char*> *reqArr, Data::ArrayList<XMLNode*> *currPathArr, Text::XMLNode *n, const UTF8Char *nameStart, const UTF8Char *nameEnd, NotNullPtr<Text::StringBuilderUTF8> outSB)
 {
 	const UTF8Char *src;
 	const UTF8Char *dest;
@@ -1390,7 +1390,7 @@ Bool Text::XMLDocument::ParseStream(Text::EncodingFactory *encFact, IO::Stream *
 	return parseRes;
 }
 
-void Text::XMLDocument::AppendXmlDeclaration(Text::StringBuilderUTF8 *sb)
+void Text::XMLDocument::AppendXmlDeclaration(NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	if (this->version || this->encoding)
 	{

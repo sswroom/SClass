@@ -31,14 +31,14 @@ void __stdcall SSWR::AVIRead::AVIRTCPSpdCliForm::OnConnClick(void *userObj)
 		me->btnConn->SetText(CSTR("Start"));
 		return;
 	}
-	me->txtHost->GetText(&sb);
+	me->txtHost->GetText(sb);
 	if (!me->core->GetSocketFactory()->DNSResolveIP(sb.ToCString(), &addr))
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Host is not valid"), CSTR("Error"), me);
 		return;
 	}
 	sb.ClearStr();
-	me->txtPort->GetText(&sb);
+	me->txtPort->GetText(sb);
 	if (!sb.ToUInt16(&port))
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Port is not a number"), CSTR("Error"), me);

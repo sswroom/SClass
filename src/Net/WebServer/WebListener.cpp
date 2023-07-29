@@ -199,7 +199,7 @@ void Net::WebServer::WebListener::LogAccess(Net::WebServer::IWebRequest *req, Ne
 		sb.AppendC(UTF8STRC(" \""));
 		if (req->GetBrowser() == Net::BrowserInfo::BT_UNKNOWN)
 		{
-			if (!req->GetHeaderC(&sb, CSTR("User-Agent")))
+			if (!req->GetHeaderC(sb, CSTR("User-Agent")))
 			{
 				sb.AppendC(UTF8STRC("Unk Browser"));
 			}
@@ -217,7 +217,7 @@ void Net::WebServer::WebListener::LogAccess(Net::WebServer::IWebRequest *req, Ne
 		sb.AppendC(UTF8STRC("\""));
 
 		sb.AppendC(UTF8STRC(" \""));
-		Manage::OSInfo::GetCommonName(&sb, req->GetOS(), req->GetOSVer());
+		Manage::OSInfo::GetCommonName(sb, req->GetOS(), req->GetOSVer());
 		sb.AppendC(UTF8STRC("\""));
 
 		sb.AppendC(UTF8STRC(" "));
@@ -225,7 +225,7 @@ void Net::WebServer::WebListener::LogAccess(Net::WebServer::IWebRequest *req, Ne
 		sb.AppendC(UTF8STRC(" "));
 		sb.AppendU64(resp->GetRespLength());
 		sb.AppendC(UTF8STRC(" "));
-		Text::SBAppendF64(&sb, time);
+		sb.AppendDouble(time);
 
 		this->accLog->LogMessage(sb.ToCString(), this->accLogLev);
 	}

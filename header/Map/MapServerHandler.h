@@ -25,7 +25,7 @@ namespace Map
 		static Bool __stdcall CesiumDataFunc(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq, WebServiceHandler *me);
 		static Bool __stdcall CesiumB3DMFunc(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq, WebServiceHandler *me);
 
-		void CheckObject(Text::JSONBase *obj, Double x1, Double y1, Double x2, Double y2, Double minErr, Text::String *fileName, Text::StringBuilderUTF8 *tmpSb);
+		void CheckObject(Text::JSONBase *obj, Double x1, Double y1, Double x2, Double y2, Double minErr, Text::String *fileName, NotNullPtr<Text::StringBuilderUTF8> tmpSb);
 		Bool InObjectRange(Text::JSONBase *obj, Double x1, Double y1, Double x2, Double y2);
 		Bool InSphereRange(Text::JSONBase *sphere, Double x1, Double y1, Double x2, Double y2);
 		void AddLayer(Map::MapDrawLayer *layer);

@@ -27,7 +27,7 @@ void DB::MySQLConn::Connect()
 	{
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("Error in connecting to database: "));
-		this->GetLastErrorMsg(&sb);
+		this->GetLastErrorMsg(sb);
 		log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Error);
 		mysql_close(mysql);
 		this->mysql = 0;
@@ -137,7 +137,7 @@ void DB::MySQLConn::ForceTz(Int8 tzQhr)
 {
 }
 
-void DB::MySQLConn::GetConnName(Text::StringBuilderUTF8 *sb)
+void DB::MySQLConn::GetConnName(NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	sb->AppendC(UTF8STRC("MySQL:"));
 	sb->Append(this->server);
@@ -261,7 +261,7 @@ void DB::MySQLConn::CloseReader(DB::DBReader *r)
 	DEL_CLASS(rdr);
 }
 
-void DB::MySQLConn::GetLastErrorMsg(Text::StringBuilderUTF8 *str)
+void DB::MySQLConn::GetLastErrorMsg(NotNullPtr<Text::StringBuilderUTF8> str)
 {
 	UTF8Char *errMsg = (UTF8Char *)mysql_error((MYSQL*)this->mysql);
 	str->AppendSlow(errMsg);
@@ -350,7 +350,7 @@ DB::DBReader *DB::MySQLConn::QueryTableData(Text::CString schemaName, Text::CStr
 	if (condition)
 	{
 		sb.AppendC(UTF8STRC(" where "));
-		condition->ToWhereClause(&sb, DB::SQLType::MySQL, 0, 100, 0);
+		condition->ToWhereClause(sb, DB::SQLType::MySQL, 0, 100, 0);
 	}
 	if (ordering.leng > 0)
 	{
@@ -555,7 +555,7 @@ WChar *DB::MySQLReader::GetStr(UOSInt colIndex, WChar *buff)
 	}
 }
 
-Bool DB::MySQLReader::GetStr(UOSInt colIndex, Text::StringBuilderUTF8 *sb)
+Bool DB::MySQLReader::GetStr(UOSInt colIndex, NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	if (this->row == 0)
 		return 0;

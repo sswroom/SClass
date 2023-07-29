@@ -123,7 +123,7 @@ UOSInt IO::FileAnalyse::JMVL01FileAnalyse::GetFrameCount()
 	return this->tags.GetCount();
 }
 
-Bool IO::FileAnalyse::JMVL01FileAnalyse::GetFrameName(UOSInt index, Text::StringBuilderUTF8 *sb)
+Bool IO::FileAnalyse::JMVL01FileAnalyse::GetFrameName(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	IO::FileAnalyse::JMVL01FileAnalyse::JMVL01Tag *tag = this->tags.GetItem(index);
 	Text::CString name;

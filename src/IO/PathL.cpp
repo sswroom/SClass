@@ -190,7 +190,7 @@ WChar *IO::Path::GetProcessFileNameW(WChar *buff)
 	return Text::StrUTF8_WCharC(buff, (UInt8*)sbuff, (UOSInt)size, 0);
 }
 
-Bool IO::Path::GetProcessFileName(Text::StringBuilderUTF8 *sb)
+Bool IO::Path::GetProcessFileName(NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	Char sbuff[512];
 	ssize_t size = readlink("/proc/self/exe", sbuff, 512);
@@ -355,7 +355,7 @@ WChar *IO::Path::AppendPathW(WChar *path, const WChar *toAppend)
 	return Text::StrConcat(&path[j + 1], toAppend);
 }
 
-Bool IO::Path::AppendPath(Text::StringBuilderUTF8 *sb, const UTF8Char *toAppend, UOSInt toAppendLen)
+Bool IO::Path::AppendPath(NotNullPtr<Text::StringBuilderUTF8> sb, const UTF8Char *toAppend, UOSInt toAppendLen)
 {
 	if (toAppend[0] == '/')
 	{

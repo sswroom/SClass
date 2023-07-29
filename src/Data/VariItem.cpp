@@ -423,7 +423,7 @@ Bool Data::VariItem::GetAsBool() const
 	return this->GetAsI64() != 0;
 }
 
-void Data::VariItem::GetAsString(Text::StringBuilderUTF8 *sb) const
+void Data::VariItem::GetAsString(NotNullPtr<Text::StringBuilderUTF8> sb) const
 {
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
@@ -585,7 +585,7 @@ UTF8Char *Data::VariItem::GetAsStringS(UTF8Char *sbuff, UOSInt buffSize) const
 		{
 			Text::StringBuilderUTF8 sb;
 			Math::WKTWriter writer;
-			writer.ToText(&sb, this->val.vector);
+			writer.ToText(sb, this->val.vector);
 			return sb.ConcatToS(sbuff, buffSize);
 		}
 	case ItemType::UUID:
@@ -672,7 +672,7 @@ Text::String *Data::VariItem::GetAsNewString() const
 		{
 			Text::StringBuilderUTF8 sb;
 			Math::WKTWriter writer;
-			writer.ToText(&sb, this->val.vector);
+			writer.ToText(sb, this->val.vector);
 			return Text::String::New(sb.ToCString()).Ptr();
 		}
 	case ItemType::UUID:
@@ -1177,7 +1177,7 @@ Data::VariItem *Data::VariItem::Clone() const
 	return NEW_CLASS_D(VariItem(this->itemType, ival));
 }
 
-void Data::VariItem::ToString(Text::StringBuilderUTF8 *sb) const
+void Data::VariItem::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
 {
 	NotNullPtr<Text::String> s;
 	UTF8Char sbuff[64];
@@ -1651,7 +1651,7 @@ void Data::VariItem::SetPtr(void *ptr, ItemType itemType, VariItem *item)
 			else
 			{
 				Text::StringBuilderUTF8 sb;
-				item->GetAsString(&sb);
+				item->GetAsString(sb);
 				*(Text::String**)ptr = Text::String::New(sb.ToCString()).Ptr();
 			}
 		}
@@ -1675,7 +1675,7 @@ void Data::VariItem::SetPtr(void *ptr, ItemType itemType, VariItem *item)
 			else
 			{
 				Text::StringBuilderUTF8 sb;
-				item->GetAsString(&sb);
+				item->GetAsString(sb);
 				*(Text::CString*)ptr = sb.ToCString();
 			}
 		}
@@ -1758,7 +1758,7 @@ void Data::VariItem::SetPtrAndNotKeep(void *ptr, ItemType itemType, VariItem *it
 			else
 			{
 				Text::StringBuilderUTF8 sb;
-				item->GetAsString(&sb);
+				item->GetAsString(sb);
 				*(Text::String**)ptr = Text::String::New(sb.ToCString()).Ptr();
 			}
 		}
@@ -1782,7 +1782,7 @@ void Data::VariItem::SetPtrAndNotKeep(void *ptr, ItemType itemType, VariItem *it
 			else
 			{
 				Text::StringBuilderUTF8 sb;
-				item->GetAsString(&sb);
+				item->GetAsString(sb);
 				*(Text::CString*)ptr = sb.ToCString();
 			}
 		}

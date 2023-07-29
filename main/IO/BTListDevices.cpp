@@ -41,7 +41,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		console.WriteLineC(sb.ToString(), sb.GetLength());
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("Address: "));
-		IO::BTUtil::GetAddrText(&sb, btCtrl->GetAddress());
+		IO::BTUtil::GetAddrText(sb, btCtrl->GetAddress());
 		console.WriteLineC(sb.ToString(), sb.GetLength());
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("Manufacturer: "));
@@ -84,7 +84,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			console.WriteLineC(sb.ToString(), sb.GetLength());
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Address: "));
-			IO::BTUtil::GetAddrText(&sb, btDev->GetAddress());
+			IO::BTUtil::GetAddrText(sb, btDev->GetAddress());
 			console.WriteLineC(sb.ToString(), sb.GetLength());
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Class of Device: 0x"));

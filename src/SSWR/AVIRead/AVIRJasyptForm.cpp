@@ -7,8 +7,8 @@ void __stdcall SSWR::AVIRead::AVIRJasyptForm::OnDecryptClicked(void *userObj)
 	SSWR::AVIRead::AVIRJasyptForm *me = (SSWR::AVIRead::AVIRJasyptForm*)userObj;
 	Text::StringBuilderUTF8 sb;
 	Text::StringBuilderUTF8 sb2;
-	me->txtPassword->GetText(&sb);
-	me->txtMessage->GetText(&sb2);
+	me->txtPassword->GetText(sb);
+	me->txtMessage->GetText(sb2);
 	if (sb.GetLength() > 0 && sb2.GetLength() > 0)
 	{
 		UInt8 *res = MemAlloc(UInt8, sb2.GetLength());
@@ -29,14 +29,14 @@ void __stdcall SSWR::AVIRead::AVIRJasyptForm::OnEncryptClicked(void *userObj)
 	SSWR::AVIRead::AVIRJasyptForm *me = (SSWR::AVIRead::AVIRJasyptForm*)userObj;
 	Text::StringBuilderUTF8 sb;
 	Text::StringBuilderUTF8 sb2;
-	me->txtPassword->GetText(&sb);
-	me->txtMessage->GetText(&sb2);
+	me->txtPassword->GetText(sb);
+	me->txtMessage->GetText(sb2);
 	if (sb.GetLength() > 0 && sb2.GetLength() > 0)
 	{
 		Crypto::Encrypt::JasyptEncryptor *enc;
 		NEW_CLASS(enc, Crypto::Encrypt::JasyptEncryptor((Crypto::Encrypt::JasyptEncryptor::KeyAlgorithm)(OSInt)me->cboKeyAlg->GetSelectedItem(), (Crypto::Encrypt::JasyptEncryptor::CipherAlgorithm)(OSInt)me->cboEncAlg->GetSelectedItem(), sb.ToString(), sb.GetLength()));
 		sb.ClearStr();
-		enc->EncryptAsB64(&sb, sb2.ToString(), sb2.GetLength());
+		enc->EncryptAsB64(sb, sb2.ToString(), sb2.GetLength());
 		me->txtResult->SetText(sb.ToCString());
 		DEL_CLASS(enc);
 	}

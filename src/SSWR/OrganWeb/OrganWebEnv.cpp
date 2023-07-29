@@ -81,10 +81,10 @@ void SSWR::OrganWeb::OrganWebEnv::LoadCategory()
 			{
 				NEW_CLASS(cate, CategoryInfo());
 				cate->cateId = cateId;
-				cate->chiName = r->GetNewStrB(1, &sb);
-				cate->dirName = r->GetNewStrB(2, &sb);
+				cate->chiName = r->GetNewStrB(1, sb);
+				cate->dirName = r->GetNewStrB(2, sb);
 				sb.ClearStr();
-				r->GetStr(3, &sb);
+				r->GetStr(3, sb);
 				sptr = this->imageDir->ConcatTo(sbuff);
 				sptr = IO::Path::AppendPath(sbuff, sptr, sb.ToCString());
 				if (sptr[-1] != IO::Path::PATH_SEPERATOR)
@@ -126,8 +126,8 @@ void SSWR::OrganWeb::OrganWebEnv::LoadCategory()
 			{
 				grpType = MemAlloc(GroupTypeInfo, 1);
 				grpType->id = r->GetInt32(0);
-				grpType->engName = r->GetNewStrB(1, &sb);
-				grpType->chiName = r->GetNewStrB(2, &sb);
+				grpType->engName = r->GetNewStrB(1, sb);
+				grpType->chiName = r->GetNewStrB(2, sb);
 				cate->groupTypes.Put(grpType->id, grpType);
 			}
 		}
@@ -150,19 +150,19 @@ void SSWR::OrganWeb::OrganWebEnv::LoadSpecies()
 		{
 			NEW_CLASS(sp, SpeciesInfo());
 			sp->speciesId = r->GetInt32(0);
-			sp->engName = r->GetNewStrBNN(1, &sb);
-			sp->chiName = r->GetNewStrBNN(2, &sb);
-			sp->sciName = r->GetNewStrBNN(3, &sb);
+			sp->engName = r->GetNewStrBNN(1, sb);
+			sp->chiName = r->GetNewStrBNN(2, sb);
+			sp->sciName = r->GetNewStrBNN(3, sb);
 			sp->groupId = r->GetInt32(4);
-			sp->descript = r->GetNewStrBNN(5, &sb);
-			sp->dirName = r->GetNewStrBNN(6, &sb);
-			sp->photo = r->GetNewStrB(7, &sb);
-			sp->idKey = r->GetNewStrBNN(8, &sb);
+			sp->descript = r->GetNewStrBNN(5, sb);
+			sp->dirName = r->GetNewStrBNN(6, sb);
+			sp->photo = r->GetNewStrB(7, sb);
+			sp->idKey = r->GetNewStrBNN(8, sb);
 			sp->cateId = r->GetInt32(9);
 			sp->flags = (SpeciesFlags)r->GetInt32(10);
 			sp->photoId = r->GetInt32(11);
 			sp->photoWId = r->GetInt32(12);
-			sp->poiImg = r->GetNewStrB(13, &sb);
+			sp->poiImg = r->GetNewStrB(13, sb);
 
 			this->spMap.Put(sp->speciesId, sp);
 			sp->sciNameHash = this->spNameMap.CalcHash(sp->sciName->v, sp->sciName->leng);
@@ -194,14 +194,14 @@ void SSWR::OrganWeb::OrganWebEnv::LoadSpecies()
 				wfile = MemAlloc(WebFileInfo, 1);
 				wfile->id = r->GetInt32(0);
 				wfile->crcVal = r->GetInt32(2);
-				wfile->imgUrl = r->GetNewStrBNN(3, &sb);
-				wfile->srcUrl = r->GetNewStrBNN(4, &sb);
+				wfile->imgUrl = r->GetNewStrBNN(3, sb);
+				wfile->srcUrl = r->GetNewStrBNN(4, sb);
 				wfile->prevUpdated = r->GetBool(5);
 				wfile->cropLeft = r->GetDbl(6);
 				wfile->cropTop = r->GetDbl(7);
 				wfile->cropRight = r->GetDbl(8);
 				wfile->cropBottom = r->GetDbl(9);
-				wfile->location = r->GetNewStrBNN(10, &sb);
+				wfile->location = r->GetNewStrBNN(10, sb);
 				sp->wfiles.Put(wfile->id, wfile);
 			}
 		}
@@ -230,13 +230,13 @@ void SSWR::OrganWeb::OrganWebEnv::LoadGroups()
 			NEW_CLASS(group, GroupInfo());
 			group->id = r->GetInt32(0);
 			group->groupType = r->GetInt32(1);
-			group->engName = r->GetNewStrBNN(2, &sb);
-			group->chiName = r->GetNewStrBNN(3, &sb);
-			group->descript = r->GetNewStrBNN(4, &sb);
+			group->engName = r->GetNewStrBNN(2, sb);
+			group->chiName = r->GetNewStrBNN(3, sb);
+			group->descript = r->GetNewStrBNN(4, sb);
 			group->parentId = r->GetInt32(5);
 			group->photoGroup = r->GetInt32(6);
 			group->photoSpecies = r->GetInt32(7);
-			group->idKey = r->GetNewStrB(8, &sb);
+			group->idKey = r->GetNewStrB(8, sb);
 			group->cateId = r->GetInt32(9);
 			group->flags = (GroupFlags)r->GetInt32(10);
 			group->photoCount = (UOSInt)-1;
@@ -301,11 +301,11 @@ void SSWR::OrganWeb::OrganWebEnv::LoadBooks()
 		{
 			NEW_CLASS(book, BookInfo());
 			book->id = r->GetInt32(0);
-			book->title = r->GetNewStrBNN(1, &sb);
-			book->author = r->GetNewStrBNN(2, &sb);
-			book->press = r->GetNewStrBNN(3, &sb);
+			book->title = r->GetNewStrBNN(1, sb);
+			book->author = r->GetNewStrBNN(2, sb);
+			book->press = r->GetNewStrBNN(3, sb);
 			book->publishDate = r->GetTimestamp(4).ToTicks();
-			book->url = r->GetNewStrB(5, &sb);
+			book->url = r->GetNewStrB(5, sb);
 			book->userfileId = r->GetInt32(6);
 
 			this->bookMap.Put(book->id, book);
@@ -325,7 +325,7 @@ void SSWR::OrganWeb::OrganWebEnv::LoadBooks()
 				bookSp = MemAlloc(BookSpInfo, 1);
 				bookSp->bookId = book->id;
 				bookSp->speciesId = sp->speciesId;
-				bookSp->dispName = r->GetNewStrBNN(2, &sb);
+				bookSp->dispName = r->GetNewStrBNN(2, sb);
 				book->species.Add(bookSp);
 				sp->books.Add(bookSp);
 			}
@@ -352,11 +352,11 @@ void SSWR::OrganWeb::OrganWebEnv::LoadUsers(NotNullPtr<Sync::RWMutexUsage> mutUs
 			{
 				this->userNameMap.RemoveNN(user->userName);
 				user->userName->Release();
-				user->userName = r->GetNewStrBNN(1, &sb);
+				user->userName = r->GetNewStrBNN(1, sb);
 				SDEL_STRING(user->pwd);
-				user->pwd = r->GetNewStrB(2, &sb);
+				user->pwd = r->GetNewStrB(2, sb);
 				user->watermark->Release();
-				user->watermark = r->GetNewStrBNN(3, &sb);
+				user->watermark = r->GetNewStrBNN(3, sb);
 				user->userType = r->GetInt32(4);
 				this->userNameMap.PutNN(user->userName, user);
 			}
@@ -364,9 +364,9 @@ void SSWR::OrganWeb::OrganWebEnv::LoadUsers(NotNullPtr<Sync::RWMutexUsage> mutUs
 			{
 				NEW_CLASS(user, WebUserInfo());
 				user->id = userId;
-				user->userName = r->GetNewStrBNN(1, &sb);
-				user->pwd = r->GetNewStrB(2, &sb);
-				user->watermark = r->GetNewStrBNN(3, &sb);
+				user->userName = r->GetNewStrBNN(1, sb);
+				user->pwd = r->GetNewStrB(2, sb);
+				user->watermark = r->GetNewStrBNN(3, sb);
 				user->userType = r->GetInt32(4);
 				user->unorganSpId = 0;
 				this->userMap.Put(user->id, user);
@@ -397,14 +397,14 @@ void SSWR::OrganWeb::OrganWebEnv::LoadUsers(NotNullPtr<Sync::RWMutexUsage> mutUs
 				userFile = MemAlloc(UserFileInfo, 1);
 				userFile->id = r->GetInt32(0);
 				userFile->fileType = r->GetInt32(1);
-				userFile->oriFileName = r->GetNewStrBNN(2, &sb);
+				userFile->oriFileName = r->GetNewStrBNN(2, sb);
 				userFile->fileTimeTicks = r->GetTimestamp(3).ToTicks();
 				userFile->lat = r->GetDbl(4);
 				userFile->lon = r->GetDbl(5);
 				userFile->webuserId = userId;
 				userFile->speciesId = r->GetInt32(7);
 				userFile->captureTimeTicks = r->GetTimestamp(8).ToTicks();
-				userFile->dataFileName = r->GetNewStrBNN(9, &sb);
+				userFile->dataFileName = r->GetNewStrBNN(9, sb);
 				userFile->crcVal = (UInt32)r->GetInt32(10);
 				userFile->rotType = r->GetInt32(11);
 				userFile->prevUpdated = r->GetInt32(12);
@@ -412,8 +412,8 @@ void SSWR::OrganWeb::OrganWebEnv::LoadUsers(NotNullPtr<Sync::RWMutexUsage> mutUs
 				userFile->cropTop = r->GetDbl(14);
 				userFile->cropRight = r->GetDbl(15);
 				userFile->cropBottom = r->GetDbl(16);
-				userFile->descript = r->GetNewStrB(17, &sb);
-				userFile->location = r->GetNewStrB(18, &sb);
+				userFile->descript = r->GetNewStrB(17, sb);
+				userFile->location = r->GetNewStrB(18, sb);
 				species = this->spMap.Get(userFile->speciesId);
 				if (species != 0)
 				{
@@ -581,8 +581,8 @@ void SSWR::OrganWeb::OrganWebEnv::LoadLocations()
 				loc = MemAlloc(LocationInfo, 1);
 				loc->id = id;
 				loc->parentId = r->GetInt32(1);
-				loc->cname = r->GetNewStrB(2, &sb);
-				loc->ename = r->GetNewStrB(3, &sb);
+				loc->cname = r->GetNewStrB(2, sb);
+				loc->ename = r->GetNewStrB(3, sb);
 				loc->lat = r->GetDbl(4);
 				loc->lon = r->GetDbl(5);
 				loc->cateId = r->GetInt32(6);
@@ -2791,7 +2791,7 @@ Bool SSWR::OrganWeb::OrganWebEnv::UserfileUpdateRotType(NotNullPtr<Sync::RWMutex
 	return false;
 }
 
-Bool SSWR::OrganWeb::OrganWebEnv::SpeciesBookIsExist(NotNullPtr<Sync::RWMutexUsage> mutUsage, Text::CString speciesName, Text::StringBuilderUTF8 *bookNameOut)
+Bool SSWR::OrganWeb::OrganWebEnv::SpeciesBookIsExist(NotNullPtr<Sync::RWMutexUsage> mutUsage, Text::CString speciesName, NotNullPtr<Text::StringBuilderUTF8> bookNameOut)
 {
 	mutUsage->ReplaceMutex(this->dataMut, false);
 	BookInfo *book;
@@ -3176,7 +3176,7 @@ IO::ConfigFile *SSWR::OrganWeb::OrganWebEnv::LangGet(Net::WebServer::IWebRequest
 	Text::PString sarr2[2];
 	UOSInt i;
 	Text::Locale::LocaleEntry *ent;
-	if (req->GetHeaderC(&sb, CSTR("Accept-Language")))
+	if (req->GetHeaderC(sb, CSTR("Accept-Language")))
 	{
 		sarr[1] = sb;
 		i = 2;

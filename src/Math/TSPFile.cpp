@@ -140,7 +140,7 @@ void Math::TSPFile::CloseReader(DB::DBReader *r)
 	DEL_CLASS(reader);
 }
 
-void Math::TSPFile::GetLastErrorMsg(Text::StringBuilderUTF8 *str)
+void Math::TSPFile::GetLastErrorMsg(NotNullPtr<Text::StringBuilderUTF8> str)
 {
 }
 
@@ -299,7 +299,7 @@ WChar *Math::TSPReader::GetStr(UOSInt colIndex, WChar *buff)
 	return 0;
 }
 
-Bool Math::TSPReader::GetStr(UOSInt colIndex, Text::StringBuilderUTF8 *sb)
+Bool Math::TSPReader::GetStr(UOSInt colIndex, NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
@@ -667,7 +667,7 @@ WChar *Math::TSPHReader::GetStr(UOSInt colIndex, WChar *buff)
 	return Text::StrDouble(buff, GetDbl(colIndex));
 }
 
-Bool Math::TSPHReader::GetStr(UOSInt colIndex, Text::StringBuilderUTF8 *sb)
+Bool Math::TSPHReader::GetStr(UOSInt colIndex, NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	if (this->currRow != 0)
 		return false;

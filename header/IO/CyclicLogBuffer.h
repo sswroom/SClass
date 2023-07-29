@@ -23,7 +23,7 @@ namespace IO
 		virtual void LogAdded(const Data::Timestamp &logTime, Text::CString logMsg, LogLevel logLev);
 		virtual void LogClosed();
 
-		void GetLogs(Text::StringBuilderUTF8 *sb, Text::CString seperator);
+		void GetLogs(NotNullPtr<Text::StringBuilderUTF8> sb, Text::CString seperator);
 	};
 }
 #endif

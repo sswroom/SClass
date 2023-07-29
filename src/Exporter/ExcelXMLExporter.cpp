@@ -159,7 +159,7 @@ Bool Exporter::ExcelXMLExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, 
 		{
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("  <Version>"));
-			Text::SBAppendF64(&sb, ver);
+			sb.AppendDouble(ver);
 			sb.AppendC(UTF8STRC("</Version>"));
 			writer->WriteLineC(sb.ToString(), sb.GetLength());
 		}
@@ -378,7 +378,7 @@ Bool Exporter::ExcelXMLExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, 
 					if (font->GetSize() > 0)
 					{
 						sb.AppendC(UTF8STRC(" ss:Size=\""));
-						Text::SBAppendF64(&sb, font->GetSize());
+						sb.AppendDouble(font->GetSize());
 						sb.AppendC(UTF8STRC("\""));
 					}
 					if ((font->GetColor() & 0xffffff) != 0)
@@ -456,7 +456,7 @@ Bool Exporter::ExcelXMLExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, 
 							sb.AppendC(UTF8STRC("\""));
 						}
 						sb.AppendC(UTF8STRC(" ss:AutoFitWidth=\"0\" ss:Width=\""));
-						Text::SBAppendF64(&sb, Double2Int32(lastColWidth * 4) * 0.25);
+						sb.AppendDouble(Double2Int32(lastColWidth * 4) * 0.25);
 						sb.AppendC(UTF8STRC("\""));
 						if (lastColIndex + 1 != k)
 						{
@@ -492,7 +492,7 @@ Bool Exporter::ExcelXMLExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, 
 					sb.AppendC(UTF8STRC("\""));
 				}
 				sb.AppendC(UTF8STRC(" ss:AutoFitWidth=\"0\" ss:Width=\""));
-				Text::SBAppendF64(&sb, Double2Int32(lastColWidth * 4) * 0.25);
+				sb.AppendDouble(Double2Int32(lastColWidth * 4) * 0.25);
 				sb.AppendC(UTF8STRC("\""));
 				if (lastColIndex + 1 != l)
 				{
@@ -538,11 +538,11 @@ Bool Exporter::ExcelXMLExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, 
 						sb.AppendC(UTF8STRC(" ss:AutoFitHeight=\"0\" ss:Height=\""));
 						if (row->height == 0)
 						{
-							Text::SBAppendF64(&sb, row->height);
+							sb.AppendDouble(row->height);
 						}
 						else
 						{
-							Text::SBAppendF64(&sb, row->height + 0.05);
+							sb.AppendDouble(row->height + 0.05);
 						}
 						sb.AppendC(UTF8STRC("\""));
 					}
@@ -675,7 +675,7 @@ Bool Exporter::ExcelXMLExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, 
 			{
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("    <Header x:Margin=\""));
-				Text::SBAppendF64(&sb, ws->GetMarginHeader());
+				sb.AppendDouble(ws->GetMarginHeader());
 				sb.AppendC(UTF8STRC("\"/>"));
 				writer->WriteLineC(sb.ToString(), sb.GetLength());
 			}
@@ -683,7 +683,7 @@ Bool Exporter::ExcelXMLExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, 
 			{
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("    <Footer x:Margin=\""));
-				Text::SBAppendF64(&sb, ws->GetMarginFooter());
+				sb.AppendDouble(ws->GetMarginFooter());
 				sb.AppendC(UTF8STRC("\"/>"));
 				writer->WriteLineC(sb.ToString(), sb.GetLength());
 			}
@@ -691,13 +691,13 @@ Bool Exporter::ExcelXMLExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, 
 			{
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("    <PageMargins x:Bottom=\""));
-				Text::SBAppendF64(&sb, ws->GetMarginBottom());
+				sb.AppendDouble(ws->GetMarginBottom());
 				sb.AppendC(UTF8STRC("\" x:Left=\""));
-				Text::SBAppendF64(&sb, ws->GetMarginLeft());
+				sb.AppendDouble(ws->GetMarginLeft());
 				sb.AppendC(UTF8STRC("\" x:Right=\""));
-				Text::SBAppendF64(&sb, ws->GetMarginRight());
+				sb.AppendDouble(ws->GetMarginRight());
 				sb.AppendC(UTF8STRC("\" x:Top=\""));
-				Text::SBAppendF64(&sb, ws->GetMarginTop());
+				sb.AppendDouble(ws->GetMarginTop());
 				sb.AppendC(UTF8STRC("\"/>"));
 				writer->WriteLineC(sb.ToString(), sb.GetLength());
 

@@ -9,7 +9,7 @@ void __stdcall SSWR::AVIRead::AVIRAccessConnForm::OnBrowseClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRAccessConnForm *me = (SSWR::AVIRead::AVIRAccessConnForm*)userObj;
 	Text::StringBuilderUTF8 sb;
-	me->txtFileName->GetText(&sb);
+	me->txtFileName->GetText(sb);
 	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"AccessConn", false);
 	dlg.AddFilter(CSTR("*.mdb"), CSTR("MDB File"));
 	dlg.AddFilter(CSTR("*.accdb"), CSTR("Access DB File"));
@@ -25,7 +25,7 @@ void __stdcall SSWR::AVIRead::AVIRAccessConnForm::OnOKClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRAccessConnForm *me = (SSWR::AVIRead::AVIRAccessConnForm*)userObj;
 	Text::StringBuilderUTF8 sbFileName;
-	me->txtFileName->GetText(&sbFileName);
+	me->txtFileName->GetText(sbFileName);
 	if (sbFileName.GetCharCnt() == 0)
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Please enter file name"), CSTR("Access Conn"), me);
@@ -40,7 +40,7 @@ void __stdcall SSWR::AVIRead::AVIRAccessConnForm::OnOKClicked(void *userObj)
 	{
 		sbFileName.ClearStr();
 		sbFileName.AppendC(UTF8STRC("Error in opening ODBC connection\r\n"));
-		me->conn->GetLastErrorMsg(&sbFileName);
+		me->conn->GetLastErrorMsg(sbFileName);
 		UI::MessageDialog::ShowDialog(sbFileName.ToCString(), CSTR("Access Conn"), me);
 		DEL_CLASS(me->conn);
 	}

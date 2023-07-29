@@ -53,9 +53,9 @@ void __stdcall SSWR::AVIRead::AVIRSSLCertKeyForm::OnGenerateClicked(void *userOb
 	Text::StringBuilderUTF8 sbCountry;
 	Text::StringBuilderUTF8 sbCompany;
 	Text::StringBuilderUTF8 sbCommonName;
-	me->txtGenCountry->GetText(&sbCountry);
-	me->txtGenCompany->GetText(&sbCompany);
-	me->txtGenCommonName->GetText(&sbCommonName);
+	me->txtGenCountry->GetText(sbCountry);
+	me->txtGenCompany->GetText(sbCompany);
+	me->txtGenCommonName->GetText(sbCommonName);
 	if (sbCountry.GetLength() != 2)
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Country must be 2 characters"), CSTR("SSL Cert/Key"), me);
@@ -123,7 +123,7 @@ void SSWR::AVIRead::AVIRSSLCertKeyForm::LoadFile(Text::CString fileName)
 		this->cert = (Crypto::Cert::X509Cert*)x509;
 
 		Text::StringBuilderUTF8 sb;
-		this->cert->ToShortString(&sb);
+		this->cert->ToShortString(sb);
 		this->lblFileCert->SetText(sb.ToCString());
 		this->tcMain->SetSelectedPage(this->tpFile);
 	}
@@ -133,7 +133,7 @@ void SSWR::AVIRead::AVIRSSLCertKeyForm::LoadFile(Text::CString fileName)
 		this->key = x509;
 
 		Text::StringBuilderUTF8 sb;
-		this->key->ToShortString(&sb);
+		this->key->ToShortString(sb);
 		this->lblFileKey->SetText(sb.ToCString());
 		this->tcMain->SetSelectedPage(this->tpFile);
 	}
@@ -209,13 +209,13 @@ SSWR::AVIRead::AVIRSSLCertKeyForm::AVIRSSLCertKeyForm(UI::GUIClientControl *pare
 	Text::StringBuilderUTF8 sb;
 	if (this->initCert)
 	{
-		this->initCert->ToShortName(&sb);
+		this->initCert->ToShortName(sb);
 		this->txtCurrCert->SetText(sb.ToCString());
 	}
 	if (this->initKey)
 	{
 		sb.ClearStr();
-		this->initKey->ToShortName(&sb);
+		this->initKey->ToShortName(sb);
 		this->txtCurrKey->SetText(sb.ToCString());
 	}
 	this->HandleDropFiles(OnFileDrop, this);

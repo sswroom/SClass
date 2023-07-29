@@ -317,13 +317,13 @@ Int64 DB::SortableDBReader::GetInt64(UOSInt colIndex)
 WChar *DB::SortableDBReader::GetStr(UOSInt colIndex, WChar *buff)
 {
 	Text::StringBuilderUTF8 sb;
-	if (this->GetStr(colIndex, &sb))
+	if (this->GetStr(colIndex, sb))
 	{
 		return Text::StrUTF8_WChar(buff, sb.ToString(), 0);
 	}
 	return 0;
 }
-Bool DB::SortableDBReader::GetStr(UOSInt colIndex, Text::StringBuilderUTF8 *sb)
+Bool DB::SortableDBReader::GetStr(UOSInt colIndex, NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	Data::VariItem *item = this->GetItem(colIndex);
 	if (item == 0)
@@ -337,7 +337,7 @@ Bool DB::SortableDBReader::GetStr(UOSInt colIndex, Text::StringBuilderUTF8 *sb)
 Text::String *DB::SortableDBReader::GetNewStr(UOSInt colIndex)
 {
 	Text::StringBuilderUTF8 sb;
-	if (this->GetStr(colIndex, &sb))
+	if (this->GetStr(colIndex, sb))
 	{
 		return Text::String::New(sb.ToCString()).Ptr();
 	}
@@ -347,7 +347,7 @@ Text::String *DB::SortableDBReader::GetNewStr(UOSInt colIndex)
 UTF8Char *DB::SortableDBReader::GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSize)
 {
 	Text::StringBuilderUTF8 sb;
-	if (this->GetStr(colIndex, &sb))
+	if (this->GetStr(colIndex, sb))
 	{
 		return Text::StrConcatS(buff, sb.ToString(), buffSize);
 	}

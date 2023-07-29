@@ -119,7 +119,7 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnTimerTick(void *userObj)
 					}
 					sb.Append(IO::SNBDongle::GetReadingName(dev->readingTypes[l]));
 					sb.AppendC(UTF8STRC(" = "));
-					Text::SBAppendF64(&sb, dev->readings[l]);
+					sb.AppendDouble(dev->readings[l]);
 					l++;
 				}
 				me->lvDevice->SetSubItem(k, 4, sb.ToCString());
@@ -172,7 +172,7 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnTimerTick(void *userObj)
 					}
 					sb.Append(IO::SNBDongle::GetReadingName(dev->readingTypes[l]));
 					sb.AppendC(UTF8STRC(" = "));
-					Text::SBAppendF64(&sb, dev->readings[l]);
+					sb.AppendDouble(dev->readings[l]);
 					l++;
 				}
 				me->lvDevice->SetSubItem(i, 4, sb.ToCString());
@@ -312,7 +312,7 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnUploadClicked(void *userObj)
 		return;
 	}
 	Text::StringBuilderUTF8 url;
-	me->txtURL->GetText(&url);
+	me->txtURL->GetText(url);
 	if (!url.StartsWith(UTF8STRC("http://")))
 	{
 		UI::MessageDialog::ShowDialog(CSTR("URL is not valid"), CSTR("Error"), me);
@@ -320,7 +320,7 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnUploadClicked(void *userObj)
 	}
 
 	Text::StringBuilderUTF8 remarks;
-	me->txtRemarks->GetText(&remarks);
+	me->txtRemarks->GetText(remarks);
 	if (remarks.IndexOf('\r') != INVALID_INDEX || remarks.IndexOf('\n') != INVALID_INDEX || remarks.IndexOf('\'') != INVALID_INDEX)
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Remarks contain invalid characters"), CSTR("Error"), me);

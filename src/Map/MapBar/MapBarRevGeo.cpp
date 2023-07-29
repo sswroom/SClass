@@ -57,9 +57,9 @@ UTF8Char *Map::MapBar::MapBarRevGeo::SearchNameAdjusted(UTF8Char *buff, UOSInt b
 
 
 	sb.AppendC(UTF8STRC("http://geocode.mapbar.com/inverse/getInverseGeocoding.jsp?customer=2&detail=1&road=1&zoom=11&latlon="));
-	Text::SBAppendF64(&sb, adjLon);
+	sb.AppendDouble(adjLon);
 	sb.AppendC(UTF8STRC(","));
-	Text::SBAppendF64(&sb, adjLat);
+	sb.AppendDouble(adjLat);
 	if (lcid == 0x0C04 || lcid == 0x1004 || lcid == 0x1404 || lcid == 0x0404)
 	{
 		sb.AppendC(UTF8STRC("&cn=2"));
@@ -90,7 +90,7 @@ UTF8Char *Map::MapBar::MapBarRevGeo::SearchNameAdjusted(UTF8Char *buff, UOSInt b
 		if (node)
 		{
 			sb.ClearStr();
-			node->GetInnerText(&sb);
+			node->GetInnerText(sb);
 			buff = Text::StrConcatC(buff, sb.ToString(), sb.GetLength());
 		}
 
@@ -98,7 +98,7 @@ UTF8Char *Map::MapBar::MapBarRevGeo::SearchNameAdjusted(UTF8Char *buff, UOSInt b
 		if (node)
 		{
 			sb.ClearStr();
-			node->GetInnerText(&sb);
+			node->GetInnerText(sb);
 			UTF8Char str1[32];
 			UTF8Char str2[32];
 			Text::StrWChar_UTF8(str1, L"特別行政區");
@@ -113,7 +113,7 @@ UTF8Char *Map::MapBar::MapBarRevGeo::SearchNameAdjusted(UTF8Char *buff, UOSInt b
 		if (node)
 		{
 			sb.ClearStr();
-			node->GetInnerText(&sb);
+			node->GetInnerText(sb);
 			buff = Text::StrConcatC(buff, sb.ToString(), sb.GetLength());
 		}
 
@@ -121,7 +121,7 @@ UTF8Char *Map::MapBar::MapBarRevGeo::SearchNameAdjusted(UTF8Char *buff, UOSInt b
 		if (node)
 		{
 			sb.ClearStr();
-			node->GetInnerText(&sb);
+			node->GetInnerText(sb);
 			buff = Text::StrConcatC(buff, sb.ToString(), sb.GetLength());
 		}
 
@@ -129,7 +129,7 @@ UTF8Char *Map::MapBar::MapBarRevGeo::SearchNameAdjusted(UTF8Char *buff, UOSInt b
 		if (node)
 		{
 			sb.ClearStr();
-			node->GetInnerText(&sb);
+			node->GetInnerText(sb);
 			buff = Text::StrConcatC(buff, sb.ToString(), sb.GetLength());
 		}
 
@@ -137,7 +137,7 @@ UTF8Char *Map::MapBar::MapBarRevGeo::SearchNameAdjusted(UTF8Char *buff, UOSInt b
 		if (node)
 		{
 			sb.ClearStr();
-			node->GetInnerText(&sb);
+			node->GetInnerText(sb);
 			buff = Text::StrConcatC(buff, sb.ToString(), sb.GetLength());
 		}
 
@@ -145,7 +145,7 @@ UTF8Char *Map::MapBar::MapBarRevGeo::SearchNameAdjusted(UTF8Char *buff, UOSInt b
 		if (node)
 		{
 			sb.ClearStr();
-			node->GetInnerText(&sb);
+			node->GetInnerText(sb);
 			buff = Text::StrConcatC(buff, sb.ToString(), sb.GetLength());
 		}
 
@@ -153,7 +153,7 @@ UTF8Char *Map::MapBar::MapBarRevGeo::SearchNameAdjusted(UTF8Char *buff, UOSInt b
 		if (node)
 		{
 			sb.ClearStr();
-			node->GetInnerText(&sb);
+			node->GetInnerText(sb);
 			buff = Text::StrConcatC(buff, sb.ToString(), sb.GetLength());
 		}
 
@@ -161,7 +161,7 @@ UTF8Char *Map::MapBar::MapBarRevGeo::SearchNameAdjusted(UTF8Char *buff, UOSInt b
 		if (node)
 		{
 			sb.ClearStr();
-			node->GetInnerText(&sb);
+			node->GetInnerText(sb);
 			if (sb.ToString()[0])
 			{
 				buff = Text::StrWChar_UTF8(buff, L", 近");

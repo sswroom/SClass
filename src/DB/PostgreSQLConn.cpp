@@ -106,11 +106,11 @@ public:
 			return Text::StrUTF8_WChar(buff, str->v, 0);
 		}
 		Text::StringBuilderUTF8 sb;
-		item.GetAsString(&sb);
+		item.GetAsString(sb);
 		return Text::StrUTF8_WChar(buff, sb.ToString(), 0);
 	}
 
-	virtual Bool GetStr(UOSInt colIndex, Text::StringBuilderUTF8 *sb)
+	virtual Bool GetStr(UOSInt colIndex, NotNullPtr<Text::StringBuilderUTF8> sb)
 	{
 		Data::VariItem item;
 		this->GetVariItem(colIndex, &item);
@@ -667,7 +667,7 @@ void DB::PostgreSQLConn::InitConnection()
 		while (r->ReadNext())
 		{
 			sb.ClearStr();
-			r->GetStr(1, &sb);
+			r->GetStr(1, sb);
 			if (sb.Equals(UTF8STRC("geometry")))
 			{
 				this->geometryOid = (UInt32)r->GetInt32(0);
@@ -743,7 +743,7 @@ void DB::PostgreSQLConn::ForceTz(Int8 tzQhr)
 	this->tzQhr = tzQhr;
 }
 
-void DB::PostgreSQLConn::GetConnName(Text::StringBuilderUTF8 *sb)
+void DB::PostgreSQLConn::GetConnName(NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	sb->AppendC(UTF8STRC("PostgreSQL"));
 	sb->AppendC(UTF8STRC(" - "));
@@ -826,7 +826,7 @@ void DB::PostgreSQLConn::CloseReader(DB::DBReader *r)
 	DEL_CLASS(reader);
 }
 
-void DB::PostgreSQLConn::GetLastErrorMsg(Text::StringBuilderUTF8 *str)
+void DB::PostgreSQLConn::GetLastErrorMsg(NotNullPtr<Text::StringBuilderUTF8> str)
 {
 	if (this->clsData->conn)
 	{
@@ -954,7 +954,7 @@ DB::DBReader *DB::PostgreSQLConn::QueryTableData(Text::CString schemaName, Text:
 	if (condition)
 	{
 		sb.AppendC(UTF8STRC(" where "));
-		condition->ToWhereClause(&sb, DB::SQLType::PostgreSQL, 0, 100, 0);
+		condition->ToWhereClause(sb, DB::SQLType::PostgreSQL, 0, 100, 0);
 	}
 	if (ordering.leng > 0)
 	{

@@ -42,7 +42,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	t1 = clk->GetTimeDiff();
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("Time = "));
-	Text::SBAppendF64(&sb, t1);
+	sb.AppendDouble(t1);
 	console.WriteLineC(sb.ToString(), sb.GetLength());
 	
 	i = 10000;

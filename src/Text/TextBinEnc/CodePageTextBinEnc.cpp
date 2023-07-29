@@ -13,7 +13,7 @@ Text::TextBinEnc::CodePageTextBinEnc::~CodePageTextBinEnc()
 	DEL_CLASS(this->enc);
 }
 
-UOSInt Text::TextBinEnc::CodePageTextBinEnc::EncodeBin(Text::StringBuilderUTF8 *sb, const UInt8 *dataBuff, UOSInt buffSize)
+UOSInt Text::TextBinEnc::CodePageTextBinEnc::EncodeBin(NotNullPtr<Text::StringBuilderUTF8> sb, const UInt8 *dataBuff, UOSInt buffSize)
 {
 	UOSInt size = this->enc->CountUTF8Chars(dataBuff, buffSize);
 	UTF8Char *sbuff = MemAlloc(UTF8Char, size + 1);

@@ -469,7 +469,7 @@ Int8 DB::ODBCConn::GetTzQhr() const
 	return this->tzQhr;
 }
 
-void DB::ODBCConn::GetConnName(Text::StringBuilderUTF8 *sb)
+void DB::ODBCConn::GetConnName(NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	sb->AppendC(UTF8STRC("ODBC:"));
 	if (this->connStr)
@@ -738,7 +738,7 @@ void DB::ODBCConn::CloseReader(DB::DBReader *r)
 	}
 }
 
-void DB::ODBCConn::GetLastErrorMsg(Text::StringBuilderUTF8 *str)
+void DB::ODBCConn::GetLastErrorMsg(NotNullPtr<Text::StringBuilderUTF8> str)
 {
 	Int32 recNumber = 1;
 	SQLWCHAR state[6];
@@ -1877,7 +1877,7 @@ WChar *DB::ODBCReader::GetStr(UOSInt colIndex, WChar *buff)
 	return 0;
 }
 
-Bool DB::ODBCReader::GetStr(UOSInt colIndex, Text::StringBuilderUTF8 *sb)
+Bool DB::ODBCReader::GetStr(UOSInt colIndex, NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	if (colIndex >= this->colCnt)
 		return false;
@@ -1996,7 +1996,7 @@ Text::String *DB::ODBCReader::GetNewStr(UOSInt colIndex)
 			{
 				Text::StringBuilderUTF8 sb;
 				Math::WKTWriter wkt;
-				wkt.ToText(&sb, vec);
+				wkt.ToText(sb, vec);
 				DEL_CLASS(vec);
 				return Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 			}
@@ -2054,7 +2054,7 @@ UTF8Char *DB::ODBCReader::GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSiz
 			{
 				Text::StringBuilderUTF8 sb;
 				Math::WKTWriter wkt;
-				wkt.ToText(&sb, vec);
+				wkt.ToText(sb, vec);
 				DEL_CLASS(vec);
 				return Text::StrConcatC(buff, sb.ToString(), sb.GetLength());
 			}

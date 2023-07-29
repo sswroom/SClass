@@ -240,7 +240,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnCopyClicked(void *userObj)
 				else if (destDBTool->ExecuteNonQuery(sql.ToCString()) <= -2)
 				{
 					sb.ClearStr();
-					destDBTool->GetLastErrorMsg(&sb);
+					destDBTool->GetLastErrorMsg(sb);
 					me->lvData->SetSubItem(i, 1, sb.ToCString());
 					succ = false;
 				}
@@ -283,7 +283,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnCopyClicked(void *userObj)
 							printf("DBCopyTables: Error SQL: %s\r\n", sql.ToString());
 #endif
 							sb.ClearStr();
-							destDBTool->GetLastErrorMsg(&sb);
+							destDBTool->GetLastErrorMsg(sb);
 							me->lvData->SetSubItem(i, 1, sb.ToCString());
 							succ = false;
 							break;
@@ -315,7 +315,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnCopyClicked(void *userObj)
 							else
 							{
 								sb.ClearStr();
-								destDBTool->GetLastErrorMsg(&sb);
+								destDBTool->GetLastErrorMsg(sb);
 								me->lvData->SetSubItem(i, 1, sb.ToCString());
 								succ = false;
 								break;
@@ -335,7 +335,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnCopyClicked(void *userObj)
 					else
 					{
 						sb.ClearStr();
-						destDBTool->GetLastErrorMsg(&sb);
+						destDBTool->GetLastErrorMsg(sb);
 						me->lvData->SetSubItem(i, 1, sb.ToCString());
 						succ = false;
 					}
@@ -351,7 +351,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnCopyClicked(void *userObj)
 			else
 			{
 				sb.ClearStr();
-				me->dataConn->GetLastErrorMsg(&sb);
+				me->dataConn->GetLastErrorMsg(sb);
 				me->lvData->SetSubItem(i, 1, sb.ToCString());
 			}
 		}
@@ -445,7 +445,7 @@ SSWR::AVIRead::AVIRDBCopyTablesForm::AVIRDBCopyTablesForm(UI::GUIClientControl *
 			firstActive = i;
 		}
 		sb.ClearStr();
-		ctrl->GetConnName(&sb);
+		ctrl->GetConnName(sb);
 		this->cboSourceConn->AddItem(sb.ToCString(), ctrl);
 		this->cboDestDB->AddItem(sb.ToCString(), ctrl);
 		i++;

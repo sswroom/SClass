@@ -144,14 +144,14 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		{
 			sb.AppendC(UTF8STRC(", "));
 		}
-		Text::SBAppendF64(&sb, outVal[i]);
+		sb.AppendDouble(outVal[i]);
 		i++;
 	}
 	sb.AppendC(UTF8STRC("}"));
 	console.WriteLineC(sb.ToString(), sb.GetLength());
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("t = "));
-	Text::SBAppendF64(&sb, t);
+	sb.AppendDouble(t);
 	console.WriteLineC(sb.ToString(), sb.GetLength());
 	return 0;
 }

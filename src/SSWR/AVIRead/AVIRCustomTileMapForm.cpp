@@ -13,14 +13,14 @@ void __stdcall SSWR::AVIRead::AVIRCustomTileMapForm::OnOKClicked(void *userObj)
 	Int32 minLevel;
 	Int32 maxLevel;
 	Text::StringBuilderUTF8 sb;
-	me->txtMinLevel->GetText(&sb);
+	me->txtMinLevel->GetText(sb);
 	if (!sb.ToInt32(&minLevel) || (minLevel < 0) || (minLevel > 18))
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Min Level must be between 0 to 18"), CSTR("Custom Tile Map"), me);
 		return;
 	}
 	sb.ClearStr();
-	me->txtMaxLevel->GetText(&sb);
+	me->txtMaxLevel->GetText(sb);
 	if (!sb.ToInt32(&maxLevel) || (maxLevel < 0) || (maxLevel > 22))
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Max Level must be between 0 to 22"), CSTR("Custom Tile Map"), me);
@@ -32,7 +32,7 @@ void __stdcall SSWR::AVIRead::AVIRCustomTileMapForm::OnOKClicked(void *userObj)
 		return;
 	}
 	sb.ClearStr();
-	me->txtURL->GetText(&sb);
+	me->txtURL->GetText(sb);
 	if (!sb.StartsWith(UTF8STRC("http://")) && !sb.StartsWith(UTF8STRC("https://")) && !sb.StartsWith(UTF8STRC("file://")))
 	{
 		UI::MessageDialog::ShowDialog(CSTR("URL is not valid"), CSTR("Custom Tile Map"), me);

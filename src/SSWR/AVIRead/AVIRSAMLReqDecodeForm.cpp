@@ -9,19 +9,19 @@ void __stdcall SSWR::AVIRead::AVIRSAMLReqDecodeForm::OnDecodeClicked(void *userO
 {
 	SSWR::AVIRead::AVIRSAMLReqDecodeForm *me = (SSWR::AVIRead::AVIRSAMLReqDecodeForm*)userObj;
 	Text::StringBuilderUTF8 sb;
-	me->txtRAWRequest->GetText(&sb);
+	me->txtRAWRequest->GetText(sb);
 	if (sb.GetLength() == 0)
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Please input raw response"), CSTR("SAML Response Decrypt"), me);
 		return;
 	}
 	Text::StringBuilderUTF8 sbResult;
-	if (Net::SAMLUtil::DecodeRequest(sb.ToCString(), &sbResult))
+	if (Net::SAMLUtil::DecodeRequest(sb.ToCString(), sbResult))
 	{
 		me->txtResult->SetText(sbResult.ToCString());
 		sb.ClearStr();
 		IO::MemoryReadingStream mstm(sbResult.v, sbResult.leng);
-		Text::XMLReader::XMLWellFormat(me->core->GetEncFactory(), mstm, 0, &sb);
+		Text::XMLReader::XMLWellFormat(me->core->GetEncFactory(), mstm, 0, sb);
 		me->txtWellFormat->SetText(sb.ToCString());
 	}
 	else

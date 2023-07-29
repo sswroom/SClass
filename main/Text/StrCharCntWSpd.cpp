@@ -29,7 +29,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	sb.AppendC(UTF8STRC("Leng = "));
 	sb.AppendUOSInt(res);
 	sb.AppendC(UTF8STRC(", t = "));
-	Text::SBAppendF64(&sb, t);
+	sb.AppendDouble(t);
 	console->WriteLineC(sb.ToString(), sb.GetLength());
 	DEL_CLASS(console);
 	return 0;

@@ -52,14 +52,14 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			{
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("Temp = "));
-				Text::SBAppendF64(&sb, temp);
+				sb.AppendDouble(temp);
 				console.WriteLineC(sb.ToString(), sb.GetLength());
 
 				if (am2315->ReadRH(&rh))
 				{
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("RH = "));
-					Text::SBAppendF64(&sb, rh);
+					sb.AppendDouble(rh);
 					sb.AppendC(UTF8STRC("%"));
 					console.WriteLineC(sb.ToString(), sb.GetLength());
 				}

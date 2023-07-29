@@ -15,13 +15,13 @@ void __stdcall SSWR::AVIRead::AVIRImageResizeForm::OnOKClicked(void *userObj)
 	Math::Size2D<UOSInt> outSize = Math::Size2D<UOSInt>(0, 0);
 	UOSInt nTap = 0;
 	sb.ClearStr();
-	me->txtOutW->GetText(&sb);
+	me->txtOutW->GetText(sb);
 	sb.ToUOSInt(&outSize.x);
 	sb.ClearStr();
-	me->txtOutH->GetText(&sb);
+	me->txtOutH->GetText(sb);
 	sb.ToUOSInt(&outSize.y);
 	sb.ClearStr();
-	me->txtNTap->GetText(&sb);
+	me->txtNTap->GetText(sb);
 	sb.ToUOSInt(&nTap);
 	if (outSize.x == 0 || outSize.y == 0 || nTap < 3 || nTap > 32)
 	{

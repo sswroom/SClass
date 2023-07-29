@@ -15,7 +15,7 @@ void __stdcall SSWR::AVIRead::AVIRWHOISClientForm::OnRequestClicked(void *userOb
 	Net::WhoisRecord *rec;
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
-	me->txtIP->GetText(&sb);
+	me->txtIP->GetText(sb);
 	ip = Net::SocketUtil::GetIPAddr(sb.ToCString());
 	if (ip == 0)
 	{

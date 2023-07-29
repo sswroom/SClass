@@ -41,8 +41,8 @@ void __stdcall SSWR::AVIRead::AVIRMACGenForm::OnAdapterSetClicked(void *userObj)
 	UInt8 buff[12];
 	Text::StringBuilderUTF8 sb1;
 	Text::StringBuilderUTF8 sb2;
-	me->txtPlainFormat->GetText(&sb1);
-	me->cboAdapter->GetText(&sb2);
+	me->txtPlainFormat->GetText(sb1);
+	me->cboAdapter->GetText(sb2);
 	if (sb1.GetLength() > 0 && sb2.GetLength() > 0)
 	{
 		Text::StrHex2Bytes(sb1.ToString(), buff);

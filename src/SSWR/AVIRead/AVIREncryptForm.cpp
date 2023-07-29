@@ -14,7 +14,7 @@ void __stdcall SSWR::AVIRead::AVIREncryptForm::OnConvertClicked(void *userObj)
 	UOSInt buffSize;
 	Text::TextBinEnc::ITextBinEnc *srcEnc = (Text::TextBinEnc::ITextBinEnc*)me->cboSrc->GetSelectedItem();
 	Text::TextBinEnc::ITextBinEnc *destEnc = (Text::TextBinEnc::ITextBinEnc*)me->cboDest->GetSelectedItem();
-	me->txtSrc->GetText(&sb);
+	me->txtSrc->GetText(sb);
 	if (srcEnc == 0)
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Please select source encryption"), CSTR("Encrypt"), me);
@@ -52,7 +52,7 @@ void __stdcall SSWR::AVIRead::AVIREncryptForm::OnConvertClicked(void *userObj)
 			else
 			{
 				sb.ClearStr();
-				destEnc->EncodeBin(&sb, decBuff, buffSize);
+				destEnc->EncodeBin(sb, decBuff, buffSize);
 				me->txtDest->SetText(sb.ToCString());
 			}
 			MemFree(decBuff);

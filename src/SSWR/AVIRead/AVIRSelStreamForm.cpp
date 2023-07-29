@@ -52,7 +52,7 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(void *userObj)
 		{
 			UInt32 baudRate;
 			Text::StringBuilderUTF8 sb;
-			me->txtSLBaudRate->GetText(&sb);
+			me->txtSLBaudRate->GetText(sb);
 			if (!sb.ToUInt32(&baudRate) || baudRate == 0)
 			{
 				UI::MessageDialog::ShowDialog(CSTR("Please input baud rate"), CSTR("Error"), me);
@@ -74,7 +74,7 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(void *userObj)
 		{
 			Text::StringBuilderUTF8 sb;
 			UInt16 port;
-			me->txtTCPSvrPort->GetText(&sb);
+			me->txtTCPSvrPort->GetText(sb);
 			if (!sb.ToUInt16(&port))
 			{
 				UI::MessageDialog::ShowDialog(CSTR("Port is not a number"), CSTR("Error"), me);
@@ -126,14 +126,14 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(void *userObj)
 			Text::StringBuilderUTF8 sb;
 			Net::SocketUtil::AddressInfo addr;
 			UInt16 port;
-			me->txtTCPCliHost->GetText(&sb);
+			me->txtTCPCliHost->GetText(sb);
 			if (!me->core->GetSocketFactory()->DNSResolveIP(sb.ToCString(), &addr))
 			{
 				UI::MessageDialog::ShowDialog(CSTR("Host is not valid"), CSTR("Error"), me);
 				return;
 			}
 			sb.ClearStr();
-			me->txtTCPCliPort->GetText(&sb);
+			me->txtTCPCliPort->GetText(sb);
 			if (!sb.ToUInt16(&port))
 			{
 				UI::MessageDialog::ShowDialog(CSTR("Port is not a number"), CSTR("Error"), me);
@@ -165,7 +165,7 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(void *userObj)
 			Text::StringBuilderUTF8 sb;
 			Net::SocketUtil::AddressInfo addr;
 			UInt16 port;
-			me->txtSSLCliPort->GetText(&sb);
+			me->txtSSLCliPort->GetText(sb);
 			if (!sb.ToUInt16(&port))
 			{
 				UI::MessageDialog::ShowDialog(CSTR("Port is not a number"), CSTR("Error"), me);
@@ -177,7 +177,7 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(void *userObj)
 				return;
 			}
 			sb.ClearStr();
-			me->txtSSLCliHost->GetText(&sb);
+			me->txtSSLCliHost->GetText(sb);
 			if (!me->core->GetSocketFactory()->DNSResolveIP(sb.ToCString(), &addr))
 			{
 				UI::MessageDialog::ShowDialog(CSTR("Host is not valid"), CSTR("Error"), me);
@@ -206,7 +206,7 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(void *userObj)
 		{
 			Text::StringBuilderUTF8 sb;
 			IO::FileStream *fs;
-			me->txtFileName->GetText(&sb);
+			me->txtFileName->GetText(sb);
 			if (sb.GetLength() > 0)
 			{
 				NEW_CLASS(fs, IO::FileStream(sb.ToCString(), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
@@ -242,7 +242,7 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(void *userObj)
 		{
 			Text::StringBuilderUTF8 sb;
 			UInt16 port;
-			me->txtUDPSvrPort->GetText(&sb);
+			me->txtUDPSvrPort->GetText(sb);
 			if (!sb.ToUInt16(&port))
 			{
 				UI::MessageDialog::ShowDialog(CSTR("Port is not a number"), CSTR("Error"), me);
@@ -275,14 +275,14 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(void *userObj)
 			Text::StringBuilderUTF8 sb;
 			Net::SocketUtil::AddressInfo addr;
 			UInt16 port;
-			me->txtUDPCliHost->GetText(&sb);
+			me->txtUDPCliHost->GetText(sb);
 			if (!me->core->GetSocketFactory()->DNSResolveIP(sb.ToCString(), &addr))
 			{
 				UI::MessageDialog::ShowDialog(CSTR("Error in resolving host"), CSTR("Error"), me);
 				return;
 			}
 			sb.ClearStr();
-			me->txtUDPCliPort->GetText(&sb);
+			me->txtUDPCliPort->GetText(sb);
 			if (!sb.ToUInt16(&port))
 			{
 				UI::MessageDialog::ShowDialog(CSTR("Port is not a number"), CSTR("Error"), me);
@@ -348,7 +348,7 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnFileBrowseClick(void *userObj
 {
 	SSWR::AVIRead::AVIRSelStreamForm *me = (SSWR::AVIRead::AVIRSelStreamForm*)userObj;
 	Text::StringBuilderUTF8 sb;
-	me->txtFileName->GetText(&sb);
+	me->txtFileName->GetText(sb);
 	UI::FileDialog ofd(L"SSWR", L"AVIRead", L"OpenStreamFile", false);
 	ofd.SetAllowMultiSel(false);
 	if (sb.GetLength() > 0)

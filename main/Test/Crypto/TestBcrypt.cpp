@@ -16,7 +16,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	UOSInt decSize;
 	Text::TextBinEnc::Radix64Enc radix64("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/");
 	Text::StringBuilderUTF8 sb;
-	radix64.EncodeBin(&sb, radixTest, sizeof(radixTest));
+	radix64.EncodeBin(sb, radixTest, sizeof(radixTest));
 	if (!sb.Equals(UTF8STRC("hSCvnwM9s4wIX9JeLapehKK5YdLxKcmk")))
 	{
 		return 1;
@@ -35,7 +35,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	if (!BCryptTest(&bcrypt, UTF8STRC("$2a$12$kQtGrSy5/39p96XsfTnpmuG1RiTw0KPKTSTsLuaooVr476.Ti9zcW"), UTF8STRC("admin"))) return 1;
 
 	sb.ClearStr();
-	bcrypt.GenHash(&sb, 10, UTF8STRC("admin"));
+	bcrypt.GenHash(sb, 10, UTF8STRC("admin"));
 	if (!bcrypt.Matches(sb.ToString(), sb.GetLength(), UTF8STRC("admin")))
 	{
 		return 1;

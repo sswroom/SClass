@@ -10,7 +10,7 @@ void __stdcall SSWR::AVIRead::AVIRMACManagerEntryForm::OnOKClicked(void *userObj
 {
 	SSWR::AVIRead::AVIRMACManagerEntryForm *me = (SSWR::AVIRead::AVIRMACManagerEntryForm*)userObj;
 	Text::StringBuilderUTF8 sb;
-	me->cboName->GetText(&sb);
+	me->cboName->GetText(sb);
 	sb.Trim();
 	UOSInt i = sb.GetCharCnt();
 	while (i-- > 0)

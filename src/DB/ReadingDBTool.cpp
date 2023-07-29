@@ -413,8 +413,8 @@ DB::DBReader *DB::ReadingDBTool::ExecuteReader(Text::CString sqlCmd)
 			logMsg.ClearStr();
 			logMsg.AppendC(UTF8STRC("Exception detail: "));
 			this->lastErrMsg.ClearStr();
-			this->db->GetLastErrorMsg(&this->lastErrMsg);
-			logMsg.AppendSB(&this->lastErrMsg);
+			this->db->GetLastErrorMsg(this->lastErrMsg);
+			logMsg.AppendSB(this->lastErrMsg);
 			AddLogMsgC(logMsg.ToString(), logMsg.GetLength(), IO::LogHandler::LogLevel::ErrorDetail);
 		}
 
@@ -474,7 +474,7 @@ Bool DB::ReadingDBTool::IsDataError(const UTF8Char *errCode)
 	return false;
 }
 
-void DB::ReadingDBTool::GetLastErrorMsg(Text::StringBuilderUTF8 *sb)
+void DB::ReadingDBTool::GetLastErrorMsg(NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	sb->Append(this->lastErrMsg);
 }
@@ -625,8 +625,8 @@ DB::DBReader *DB::ReadingDBTool::QueryTableData(Text::CString schemaName, Text::
 			Text::StringBuilderUTF8 logMsg;
 			logMsg.AppendC(UTF8STRC("Exception detail: "));
 			this->lastErrMsg.ClearStr();
-			this->db->GetLastErrorMsg(&this->lastErrMsg);
-			logMsg.AppendSB(&this->lastErrMsg);
+			this->db->GetLastErrorMsg(this->lastErrMsg);
+			logMsg.AppendSB(this->lastErrMsg);
 			AddLogMsgC(logMsg.ToString(), logMsg.GetLength(), IO::LogHandler::LogLevel::ErrorDetail);
 		}
 
@@ -672,7 +672,7 @@ UOSInt DB::ReadingDBTool::QueryTableNames(Text::CString schemaName, Data::ArrayL
 			while (r->ReadNext())
 			{
 				sb.ClearStr();
-				if (r->GetStr(1, &sb))
+				if (r->GetStr(1, sb))
 				{
 					arr->Add(Text::String::New(sb.ToCString()));
 					ret++;
@@ -694,7 +694,7 @@ UOSInt DB::ReadingDBTool::QueryTableNames(Text::CString schemaName, Data::ArrayL
 			while (r->ReadNext())
 			{
 				sb.ClearStr();
-				if (r->GetStr(0, &sb))
+				if (r->GetStr(0, sb))
 				{
 					arr->Add(Text::String::New(sb.ToCString()));
 					ret++;
@@ -720,7 +720,7 @@ UOSInt DB::ReadingDBTool::QueryTableNames(Text::CString schemaName, Data::ArrayL
 			while (r->ReadNext())
 			{
 				sb.ClearStr();
-				if (r->GetStr(0, &sb))
+				if (r->GetStr(0, sb))
 				{
 					arr->Add(Text::String::New(sb.ToCString()));
 					ret++;
@@ -747,7 +747,7 @@ UOSInt DB::ReadingDBTool::QueryTableNames(Text::CString schemaName, Data::ArrayL
 			{
 				sb.ClearStr();
 				//Int32 type = r->GetInt32(1);
-				if (r->GetStr(0, &sb))
+				if (r->GetStr(0, sb))
 				{
 					arr->Add(Text::String::New(sb.ToCString()));
 					ret++;
@@ -843,7 +843,7 @@ UOSInt DB::ReadingDBTool::GetDatabaseNames(Data::ArrayListNN<Text::String> *arr)
 			while (r->ReadNext())
 			{
 				sb.ClearStr();
-				if (r->GetStr(0, &sb))
+				if (r->GetStr(0, sb))
 				{
 					arr->Add(Text::String::New(sb.ToCString()));
 					ret++;
@@ -867,7 +867,7 @@ UOSInt DB::ReadingDBTool::GetDatabaseNames(Data::ArrayListNN<Text::String> *arr)
 			while (r->ReadNext())
 			{
 				sb.ClearStr();
-				if (r->GetStr(0, &sb))
+				if (r->GetStr(0, sb))
 				{
 					arr->Add(Text::String::New(sb.ToCString()));
 					ret++;
@@ -905,7 +905,7 @@ UOSInt DB::ReadingDBTool::GetDatabaseNames(Data::ArrayListNN<Text::String> *arr)
 			while (r->ReadNext())
 			{
 				sb.ClearStr();
-				if (r->GetStr(0, &sb))
+				if (r->GetStr(0, sb))
 				{
 					arr->Add(Text::String::New(sb.ToCString()));
 					ret++;

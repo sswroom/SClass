@@ -381,7 +381,7 @@ void Map::FileGDBLayer::CloseReader(DB::DBReader *r)
 	this->currDB = 0;
 }
 
-void Map::FileGDBLayer::GetLastErrorMsg(Text::StringBuilderUTF8 *str)
+void Map::FileGDBLayer::GetLastErrorMsg(NotNullPtr<Text::StringBuilderUTF8> str)
 {
 	if (this->lastDB)
 	{
@@ -442,7 +442,7 @@ WChar *Map::FileGDBLReader::GetStr(UOSInt colIndex, WChar *buff)
 	return this->r->GetStr((colIndex > 0)?(colIndex + 1):colIndex, buff);
 }
 
-Bool Map::FileGDBLReader::GetStr(UOSInt colIndex, Text::StringBuilderUTF8 *sb)
+Bool Map::FileGDBLReader::GetStr(UOSInt colIndex, NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	return this->r->GetStr((colIndex > 0)?(colIndex + 1):colIndex, sb);
 }

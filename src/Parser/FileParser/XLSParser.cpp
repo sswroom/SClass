@@ -295,7 +295,7 @@ Bool Parser::FileParser::XLSParser::ParseWorkbook(NotNullPtr<IO::StreamData> fd,
 					font->bFamily = readBuff[i + 15];
 					font->bCharSet = readBuff[i + 16];
 					sb.ClearStr();
-					ReadUStringB(&readBuff[i + 18], &sb);
+					ReadUStringB(&readBuff[i + 18], sb);
 					font->fontName = Text::String::New(sb.ToCString());
 					if (status.fontList.GetCount() == 4)
 					{
@@ -329,7 +329,7 @@ Bool Parser::FileParser::XLSParser::ParseWorkbook(NotNullPtr<IO::StreamData> fd,
 				break;
 			case 0x5c: //WRITEACCESS
 				sb.ClearStr();
-				ReadUString(&readBuff[i + 4], &sb);
+				ReadUString(&readBuff[i + 4], sb);
 				wb->SetAuthor(sb.ToString());
 				break;
 			case 0x85: //BOUNDSHEET
@@ -562,12 +562,12 @@ Bool Parser::FileParser::XLSParser::ParseWorkbook(NotNullPtr<IO::StreamData> fd,
 							j = i + 4;
 						}
 						sb.ClearStr();
-						k = ReadUString(&readBuff[j], &sb);
+						k = ReadUString(&readBuff[j], sb);
 						if (j + k > i + 4 + recLeng)
 						{
 							UInt32 charCnt = ReadUInt16(&readBuff[j]);
 							sb.ClearStr();
-							k = ReadUStringPartial(&readBuff[j + 2], i + 4 + recLeng - j - 2, &charCnt, &sb);
+							k = ReadUStringPartial(&readBuff[j + 2], i + 4 + recLeng - j - 2, &charCnt, sb);
 							while (true)
 							{
 								i += (UOSInt)(4 + recLeng);
@@ -587,7 +587,7 @@ Bool Parser::FileParser::XLSParser::ParseWorkbook(NotNullPtr<IO::StreamData> fd,
 								if (recNo != 0x3c)
 									break;
 								j = i + 4;
-								k = ReadUStringPartial(&readBuff[i + 4], i + 4 + recLeng - j, &charCnt, &sb);
+								k = ReadUStringPartial(&readBuff[i + 4], i + 4 + recLeng - j, &charCnt, sb);
 								if (charCnt <= 0)
 									break;
 							}
@@ -634,7 +634,7 @@ Bool Parser::FileParser::XLSParser::ParseWorkbook(NotNullPtr<IO::StreamData> fd,
 				{
 					UInt16 ifmt = ReadUInt16(&readBuff[i + 4]);
 					sb.ClearStr();
-					ReadUString(&readBuff[i + 6], &sb);
+					ReadUString(&readBuff[i + 6], sb);
 					fmt = status.formatMap.Put(ifmt, Text::String::New(sb.ToCString()).Ptr());
 					if (fmt)
 					{
@@ -1030,7 +1030,7 @@ Bool Parser::FileParser::XLSParser::ParseWorksheet(NotNullPtr<IO::StreamData> fd
 	return eofFound;
 }
 
-UOSInt Parser::FileParser::XLSParser::ReadUString(UInt8 *buff, Text::StringBuilderUTF8 *sb)
+UOSInt Parser::FileParser::XLSParser::ReadUString(UInt8 *buff, NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	UOSInt currOfst = 0;
 	UOSInt charCnt = ReadUInt16(&buff[0]);
@@ -1110,7 +1110,7 @@ UOSInt Parser::FileParser::XLSParser::ReadUString(UInt8 *buff, Text::StringBuild
 	return currOfst;
 }
 
-UOSInt Parser::FileParser::XLSParser::ReadUStringPartial(UInt8 *buff, UOSInt buffSize, UInt32 *charCnt, Text::StringBuilderUTF8 *sb)
+UOSInt Parser::FileParser::XLSParser::ReadUStringPartial(UInt8 *buff, UOSInt buffSize, UInt32 *charCnt, NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	UOSInt currOfst = 0;
 	UInt8 flags = buff[0];
@@ -1207,7 +1207,7 @@ UOSInt Parser::FileParser::XLSParser::ReadUStringPartial(UInt8 *buff, UOSInt buf
 	return currOfst;
 }
 
-UOSInt Parser::FileParser::XLSParser::ReadUStringB(UInt8 *buff, Text::StringBuilderUTF8 *sb)
+UOSInt Parser::FileParser::XLSParser::ReadUStringB(UInt8 *buff, NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	UOSInt currOfst = 0;
 	UOSInt charCnt = buff[0];

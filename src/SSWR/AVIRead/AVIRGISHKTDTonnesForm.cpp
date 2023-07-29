@@ -12,7 +12,7 @@ void __stdcall SSWR::AVIRead::AVIRGISHKTDTonnesForm::OnRoadRouteClicked(void *us
 {
 	SSWR::AVIRead::AVIRGISHKTDTonnesForm *me = (SSWR::AVIRead::AVIRGISHKTDTonnesForm*)userObj;
 	Text::StringBuilderUTF8 sb;
-	me->txtRoadRoute->GetText(&sb);
+	me->txtRoadRoute->GetText(sb);
 	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"HKTDTonnesRoadRoute", false);
 	if (sb.GetLength() > 0)
 	{
@@ -30,7 +30,7 @@ void __stdcall SSWR::AVIRead::AVIRGISHKTDTonnesForm::OnVehicleResClicked(void *u
 {
 	SSWR::AVIRead::AVIRGISHKTDTonnesForm *me = (SSWR::AVIRead::AVIRGISHKTDTonnesForm*)userObj;
 	Text::StringBuilderUTF8 sb;
-	me->txtVehicleRes->GetText(&sb);
+	me->txtVehicleRes->GetText(sb);
 	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"HKTDTonnesVehicleRes", false);
 	if (sb.GetLength() > 0)
 	{
@@ -49,8 +49,8 @@ void __stdcall SSWR::AVIRead::AVIRGISHKTDTonnesForm::OnOKClicked(void *userObj)
 	SSWR::AVIRead::AVIRGISHKTDTonnesForm *me = (SSWR::AVIRead::AVIRGISHKTDTonnesForm*)userObj;
 	Text::StringBuilderUTF8 sb;
 	Text::StringBuilderUTF8 sb2;
-	me->txtRoadRoute->GetText(&sb);
-	me->txtVehicleRes->GetText(&sb2);
+	me->txtRoadRoute->GetText(sb);
+	me->txtVehicleRes->GetText(sb2);
 	if (sb.GetLength() == 0)
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Please input Road Route"), CSTR("HK Tonnes Sign"), me);

@@ -19,7 +19,7 @@ Crypto::Cert::X509Cert::~X509Cert()
 
 }
 
-Bool Crypto::Cert::X509Cert::GetSubjectCN(Text::StringBuilderUTF8 *sb) const
+Bool Crypto::Cert::X509Cert::GetSubjectCN(NotNullPtr<Text::StringBuilderUTF8> sb) const
 {
 	UOSInt len = 0;
 	Net::ASN1Util::ItemType itemType = Net::ASN1Util::IT_UNKNOWN;
@@ -65,7 +65,7 @@ UTF8Char *Crypto::Cert::X509Cert::GetSubjectCN(UTF8Char *sbuff) const
 	}
 }
 
-Bool Crypto::Cert::X509Cert::GetIssuerCN(Text::StringBuilderUTF8 *sb) const
+Bool Crypto::Cert::X509Cert::GetIssuerCN(NotNullPtr<Text::StringBuilderUTF8> sb) const
 {
 	UOSInt len = 0;
 	Net::ASN1Util::ItemType itemType = Net::ASN1Util::IT_UNKNOWN;
@@ -93,7 +93,7 @@ Crypto::Cert::X509File::FileType Crypto::Cert::X509Cert::GetFileType() const
 	return FileType::Cert;
 }
 
-void Crypto::Cert::X509Cert::ToShortName(Text::StringBuilderUTF8 *sb) const
+void Crypto::Cert::X509Cert::ToShortName(NotNullPtr<Text::StringBuilderUTF8> sb) const
 {
 	this->GetSubjectCN(sb);
 }
@@ -103,7 +103,7 @@ UOSInt Crypto::Cert::X509Cert::GetCertCount()
 	return 1;
 }
 
-Bool Crypto::Cert::X509Cert::GetCertName(UOSInt index, Text::StringBuilderUTF8 *sb)
+Bool Crypto::Cert::X509Cert::GetCertName(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	if (index != 0)
 		return false;
@@ -125,7 +125,7 @@ Crypto::Cert::X509File::ValidStatus Crypto::Cert::X509Cert::IsValid(Net::SSLEngi
 		trustStore = ssl->GetTrustStore();
 	}
 	Text::StringBuilderUTF8 sb;
-	if (!this->GetIssuerCN(&sb))
+	if (!this->GetIssuerCN(sb))
 	{
 		return Crypto::Cert::X509File::ValidStatus::FileFormatInvalid;
 	}
@@ -215,7 +215,7 @@ Crypto::Cert::X509Cert *Crypto::Cert::X509Cert::CreateX509Cert() const
 	return asn1;
 }
 
-void Crypto::Cert::X509Cert::ToString(Text::StringBuilderUTF8 *sb) const
+void Crypto::Cert::X509Cert::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
 {
 	if (IsCertificate(this->buff.Ptr(), this->buff.PtrEnd(), "1"))
 	{

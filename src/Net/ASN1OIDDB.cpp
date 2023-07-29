@@ -20885,7 +20885,7 @@ Net::ASN1OIDDB::OIDInfo Net::ASN1OIDDB::oidList[] = {
 };
 #endif
 
-void Net::ASN1OIDDB::OIDToNameString(const UInt8 *pdu, UOSInt pduSize, Text::StringBuilderUTF8 *sb)
+void Net::ASN1OIDDB::OIDToNameString(const UInt8 *pdu, UOSInt pduSize, NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	const Net::ASN1OIDDB::OIDInfo *oid;
 	UInt32 v;

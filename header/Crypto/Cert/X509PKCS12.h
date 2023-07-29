@@ -14,15 +14,15 @@ namespace Crypto
 			virtual ~X509PKCS12();
 
 			virtual FileType GetFileType() const;
-			virtual void ToShortName(Text::StringBuilderUTF8 *sb) const;
+			virtual void ToShortName(NotNullPtr<Text::StringBuilderUTF8> sb) const;
 			
 			virtual UOSInt GetCertCount();
-			virtual Bool GetCertName(UOSInt index, Text::StringBuilderUTF8 *sb);
+			virtual Bool GetCertName(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb);
 			virtual X509Cert *GetNewCert(UOSInt index);
 			virtual ValidStatus IsValid(Net::SSLEngine *ssl, Crypto::Cert::CertStore *trustStore) const;
 
 			virtual ASN1Data *Clone() const;
-			virtual void ToString(Text::StringBuilderUTF8 *sb) const;
+			virtual void ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const;
 		};
 	}
 }

@@ -337,7 +337,7 @@ Bool Media::ProfiledResizer::LoadProfile(Text::CString fileName)
 				sptr = r->GetStr(0, sbuff, sizeof(sbuff));
 				sptr2 = r->GetStr(1, sbuff2, sizeof(sbuff2));
 				sb.ClearStr();
-				r->GetStr(6, &sb);
+				r->GetStr(6, sb);
 				this->AddProfile(CSTRP(sbuff, sptr), CSTRP(sbuff2, sptr2), targetSizeX, targetSizeY, (OutputType)outType, outParam, sb.ToCString(), ST_MAXSIZE);
 			}
 			else if (r->ColCount() == 8)
@@ -349,7 +349,7 @@ Bool Media::ProfiledResizer::LoadProfile(Text::CString fileName)
 				sptr = r->GetStr(0, sbuff, sizeof(sbuff));
 				sptr2 = r->GetStr(1, sbuff2, sizeof(sbuff2));
 				sb.ClearStr();
-				r->GetStr(6, &sb);
+				r->GetStr(6, sb);
 				sizeType = r->GetInt32(7);
 				this->AddProfile(CSTRP(sbuff, sptr), CSTRP(sbuff2, sptr2), targetSizeX, targetSizeY, (OutputType)outType, outParam, sb.ToCString(), (SizeType)sizeType);
 			}

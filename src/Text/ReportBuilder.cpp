@@ -552,11 +552,11 @@ Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 			}
 			if (iconList)
 			{
-				Text::StringBuilderUTF8 **sbList = MemAlloc(Text::StringBuilderUTF8*, this->colCount);
+				NotNullPtr<Text::StringBuilderUTF8> *sbList = MemAlloc(NotNullPtr<Text::StringBuilderUTF8>, this->colCount);
 				l = 0;
 				while (l < this->colCount)
 				{
-					NEW_CLASS(sbList[l], Text::StringBuilderUTF8());
+					NEW_CLASSNN(sbList[l], Text::StringBuilderUTF8());
 					if (cols[l].val)
 					{
 						sbList[l]->Append(cols[l].val);
@@ -583,7 +583,7 @@ Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 					{
 						ws->SetCellString(k, l, sbList[l]->ToCString());
 					}
-					DEL_CLASS(sbList[l]);
+					sbList[l].Delete();
 					l++;
 				}
 				MemFree(sbList);
@@ -653,13 +653,13 @@ Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 			url = this->urlList.GetItem(i);
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("https://www.google.com/maps/place/"));
-			Text::SBAppendF64(&sb, url->lat);
+			sb.AppendDouble(url->lat);
 			sb.AppendC(UTF8STRC(","));
-			Text::SBAppendF64(&sb, url->lon);
+			sb.AppendDouble(url->lon);
 			sb.AppendC(UTF8STRC("/@"));
-			Text::SBAppendF64(&sb, url->lat);
+			sb.AppendDouble(url->lat);
 			sb.AppendC(UTF8STRC(","));
-			Text::SBAppendF64(&sb, url->lon);
+			sb.AppendDouble(url->lon);
 			sb.AppendC(UTF8STRC(",19z"));
 			ws->SetCellURL(url->row + urlAdd, url->col, sb.ToCString());
 			i++;

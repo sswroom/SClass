@@ -49,16 +49,16 @@ void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnProcSelChg(void *userObj)
 		me->txtDetParentId->SetText(sb.ToCString());
 		me->txtDetName->SetText(procInfo->procName->ToCString());
 		sb.ClearStr();
-		proc.GetFilename(&sb);
+		proc.GetFilename(sb);
 		me->txtDetPath->SetText(sb.ToCString());
 		sb.ClearStr();
-		proc.GetCommandLine(&sb);
+		proc.GetCommandLine(sb);
 		me->txtDetCmdLine->SetText(sb.ToCString());
 		sb.ClearStr();
-		proc.GetWorkingDir(&sb);
+		proc.GetWorkingDir(sb);
 		me->txtDetWorkingDir->SetText(sb.ToCString());
 		sb.ClearStr();
-		proc.GetTrueProgramPath(&sb);
+		proc.GetTrueProgramPath(sb);
 		me->txtDetTrueProgPath->SetText(sb.ToCString());
 		me->txtDetPriority->SetText(Manage::Process::GetPriorityName(proc.GetPriority()));
 		me->txtDetArchitecture->SetText(Manage::ThreadContext::ContextTypeGetName(proc.GetContextType()));
@@ -271,7 +271,7 @@ void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnDetHeapItemSelChg(void *userOb
 	Text::StringBuilderUTF8 sb;
 	UOSInt addr = (UOSInt)me->lvDetHeap->GetItem((UOSInt)i);
 	UOSInt size;
-	me->lvDetHeap->GetSubItem((UOSInt)i, 1, &sb);
+	me->lvDetHeap->GetSubItem((UOSInt)i, 1, sb);
 	size = 0;
 	sb.ToUOSInt(&size);
 	Manage::Process proc(me->currProc, false);
@@ -516,7 +516,7 @@ void SSWR::AVIRead::AVIRProcInfoForm::UpdateProcHandles()
 				this->lvDetHandle->SetSubItem(i, 1, CSTRP(sbuff, sptr));
 			}
 			sb.ClearStr();
-			if (proc.GetHandleDetail(hinfo.id, &handleType, &sb))
+			if (proc.GetHandleDetail(hinfo.id, &handleType, sb))
 			{
 				this->lvDetHandle->SetSubItem(i, 2, Manage::HandleTypeGetName(handleType));
 				this->lvDetHandle->SetSubItem(i, 3, sb.ToCString());

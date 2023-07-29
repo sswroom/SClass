@@ -132,7 +132,7 @@ SSWR::AVIRead::AVIRRSSItemForm::AVIRRSSItemForm(UI::GUIClientControl *parent, No
 		if (rssItem->descHTML)
 		{
 			Text::StringBuilderUTF8 sb;
-			Text::HTMLUtil::HTMLGetText(this->core->GetEncFactory(), rssItem->description->v, rssItem->description->leng, false, &sb, &imgList);
+			Text::HTMLUtil::HTMLGetText(this->core->GetEncFactory(), rssItem->description->v, rssItem->description->leng, false, sb, &imgList);
 			this->txtText->SetText(sb.ToCString());
 		}
 		else

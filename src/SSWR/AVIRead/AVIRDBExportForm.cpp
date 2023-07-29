@@ -28,8 +28,8 @@ void __stdcall SSWR::AVIRead::AVIRDBExportForm::OnExportClicked(void *userObj)
 	UTF8Char *sptr;
 	Text::StringBuilderUTF8 sbSchema;
 	Text::StringBuilderUTF8 sbTable;
-	me->txtSchema->GetText(&sbSchema);
-	me->txtTable->GetText(&sbTable);
+	me->txtSchema->GetText(sbSchema);
+	me->txtTable->GetText(sbTable);
 	sptr = sbuff;
 	if (sbSchema.GetLength() > 0)
 	{

@@ -10,8 +10,8 @@ void __stdcall SSWR::AVIRead::AVIRRNCryptorForm::OnProcessClicked(void *userObj)
 	SSWR::AVIRead::AVIRRNCryptorForm *me = (SSWR::AVIRead::AVIRRNCryptorForm*)userObj;
 	Text::StringBuilderUTF8 sbSrcFile;
 	Text::StringBuilderUTF8 sbPassword;
-	me->txtSourceFile->GetText(&sbSrcFile);
-	me->txtPassword->GetText(&sbPassword);
+	me->txtSourceFile->GetText(sbSrcFile);
+	me->txtPassword->GetText(sbPassword);
 	if (sbSrcFile.GetLength() == 0)
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Please drag and drop source file first"), CSTR("RNCryptor"), me);

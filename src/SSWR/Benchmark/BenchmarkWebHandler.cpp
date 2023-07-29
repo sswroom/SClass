@@ -19,7 +19,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::UploadReq(SSWR::Benchmark::
 		valid = false;
 	}
 	Text::StringBuilderUTF8 sb;
-	if (req->GetHeaderC(&sb, CSTR("Content-Type")))
+	if (req->GetHeaderC(sb, CSTR("Content-Type")))
 	{
 		if (!sb.Equals(UTF8STRC("text/plain")))
 		{

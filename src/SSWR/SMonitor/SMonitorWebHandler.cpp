@@ -1214,7 +1214,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(SSWR::SMo
 			currVal = dev->readings[readingIndex].reading;
 		}
 		sb.AppendC(UTF8STRC(" ("));
-		Text::SBAppendF64(&sb, currVal);
+		sb.AppendDouble(currVal);
 		sb.AppendC(UTF8STRC(")"));
 		if (dateList.GetCount() >= 2)
 		{
@@ -1323,7 +1323,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(SSWR::SMo
 					{
 						sb.AppendC(UTF8STRC(" "));
 					}
-					Text::SBAppendF64(&sb, currVal - yesterdayVal);
+					sb.AppendDouble(currVal - yesterdayVal);
 				}
 			}
 			else
@@ -1388,7 +1388,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(SSWR::SMo
 					{
 						sb.AppendC(UTF8STRC(" "));
 					}
-					Text::SBAppendF64(&sb, dev->readings[readingIndex].reading - yesterdayVal);
+					sb.AppendDouble(dev->readings[readingIndex].reading - yesterdayVal);
 				}
 			}
 

@@ -102,7 +102,7 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnPasteTableClicked(void 
 {
 	SSWR::DownloadMonitor::DownMonMainForm *me = (SSWR::DownloadMonitor::DownMonMainForm*)userObj;
 	Text::StringBuilderUTF8 sb;
-	UI::Clipboard::GetString(me->GetHandle(), &sb);
+	UI::Clipboard::GetString(me->GetHandle(), sb);
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 	Text::PString sarr[2];
@@ -180,7 +180,7 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnPasteHTMLClicked(void *
 	{
 		const UTF8Char *desc;
 		Text::StringBuilderUTF8 sb;
-		if (clipboard.GetDataText(fmtId, &sb))
+		if (clipboard.GetDataText(fmtId, sb))
 		{
 			sarr[1] = sb;
 			while (true)
@@ -510,7 +510,7 @@ void SSWR::DownloadMonitor::DownMonMainForm::LoadList()
 							NEW_CLASS(ctrl, Net::WebSite::WebSite48IdolControl(this->core->GetSocketFactory(), this->core->GetSSLEngine(), encFact, ua.Ptr()));
 						}
 						sb2.ClearStr();
-						if (ctrl->GetVideoName(id, &sb2))
+						if (ctrl->GetVideoName(id, sb2))
 						{
 							printf("Name of id %d updated\r\n", id);
 							sarr[1] = sb2;

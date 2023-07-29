@@ -38,7 +38,7 @@ void IO::Device::OlympusCameraControl::GetCommandList()
 						if (reader->GetNodeText()->Equals(UTF8STRC("version")))
 						{
 							sb.ClearStr();
-							reader->ReadNodeText(&sb);
+							reader->ReadNodeText(sb);
 							sb.TrimWSCRLF();
 							SDEL_STRING(this->oiVersion);
 							this->oiVersion = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
@@ -46,7 +46,7 @@ void IO::Device::OlympusCameraControl::GetCommandList()
 						else if (reader->GetNodeText()->Equals(UTF8STRC("oitrackversion")))
 						{
 							sb.ClearStr();
-							reader->ReadNodeText(&sb);
+							reader->ReadNodeText(sb);
 							sb.TrimWSCRLF();
 							SDEL_STRING(this->oiTrackVersion);
 							this->oiTrackVersion = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
@@ -277,7 +277,7 @@ UOSInt IO::Device::OlympusCameraControl::GetInfoList(Data::ArrayListNN<Text::Str
 {
 	Text::StringBuilderUTF8 sb;
 	UOSInt initCnt = nameList->GetCount();
-	if (this->GetModel(&sb))
+	if (this->GetModel(sb))
 	{
 		nameList->Add(Text::String::New(UTF8STRC("Model")));
 		valueList->Add(Text::String::New(sb.ToString(), sb.GetLength()));
@@ -385,7 +385,7 @@ Text::String *IO::Device::OlympusCameraControl::GetOITrackVersion()
 	return this->oiTrackVersion;
 }
 
-Bool IO::Device::OlympusCameraControl::GetModel(Text::StringBuilderUTF8 *sb)
+Bool IO::Device::OlympusCameraControl::GetModel(NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;

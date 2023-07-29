@@ -17,7 +17,7 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchConvForm::OnBrowseClicked(void *user
 {
 	SSWR::AVIRead::AVIRImageBatchConvForm *me = (SSWR::AVIRead::AVIRImageBatchConvForm*)userObj;
 	Text::StringBuilderUTF8 sb;
-	me->txtDir->GetText(&sb);
+	me->txtDir->GetText(sb);
 	UI::FolderDialog dlg(L"SSWR", L"AVIRead", L"ImageBatchConv");
 	if (sb.GetLength() > 0)
 	{
@@ -83,7 +83,7 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchConvForm::OnConvertClicked(void *use
 		if (me->chkSubdir->IsChecked())
 		{
 			sb.ClearStr();
-			me->txtSubdir->GetText(&sb);
+			me->txtSubdir->GetText(sb);
 			if (sb.GetLength() > 0)
 			{
 				sptr2 = Text::StrConcatC(sptr2, sb.ToString(), sb.GetLength());

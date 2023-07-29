@@ -15,7 +15,7 @@ void __stdcall SSWR::AVIRead::AVIROSMCacheCfgForm::OnOKClick(void *userObj)
 	UTF8Char *sptr;
 	UInt16 port;
 	Text::StringBuilderUTF8 sb;
-	me->txtHTTPPort->GetText(&sb);
+	me->txtHTTPPort->GetText(sb);
 	if (!sb.ToUInt16(&port) || port <= 0)
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Please enter valid HTTP port number"), CSTR("Error"), me);

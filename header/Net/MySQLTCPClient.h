@@ -75,7 +75,7 @@ namespace Net
 		virtual DB::DBConn::ConnType GetConnType() const;
 		virtual Int8 GetTzQhr() const;
 		virtual void ForceTz(Int8 tzQhr);
-		virtual void GetConnName(Text::StringBuilderUTF8 *sb);
+		virtual void GetConnName(NotNullPtr<Text::StringBuilderUTF8> sb);
 		virtual void Close();
 		virtual void Dispose();
 		virtual OSInt ExecuteNonQuery(Text::CString sql);
@@ -83,7 +83,7 @@ namespace Net
 		DB::DBReader *ExecuteReaderText(Text::CString sql);
 		DB::DBReader *ExecuteReaderBinary(Text::CString sql);
 		virtual void CloseReader(DB::DBReader *r);
-		virtual void GetLastErrorMsg(Text::StringBuilderUTF8 *str);
+		virtual void GetLastErrorMsg(NotNullPtr<Text::StringBuilderUTF8> str);
 		virtual Bool IsLastDataError();
 		virtual void Reconnect();
 

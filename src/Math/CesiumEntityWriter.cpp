@@ -28,7 +28,7 @@ Text::CString Math::CesiumEntityWriter::GetWriterName()
 	return CSTR("Cesium Entity");
 }
 
-Bool Math::CesiumEntityWriter::ToText(Text::StringBuilderUTF8 *sb, Math::Geometry::Vector2D *vec)
+Bool Math::CesiumEntityWriter::ToText(NotNullPtr<Text::StringBuilderUTF8> sb, Math::Geometry::Vector2D *vec)
 {
 	if (vec == 0)
 	{

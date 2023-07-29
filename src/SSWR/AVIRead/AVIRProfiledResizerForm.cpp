@@ -162,7 +162,7 @@ void __stdcall SSWR::AVIRead::AVIRProfiledResizerForm::OnClickedAddProfile(void 
 		UI::MessageDialog::ShowDialog(CSTR("Please enter suffix"), CSTR("Error"), me);
 		return;
 	}
-	me->txtWatermark->GetText(&sb);
+	me->txtWatermark->GetText(sb);
 	if (me->resizer->AddProfile(CSTRP(sbuff, sptr), CSTRP(sbuff2, sptr2), targetSizeX, targetSizeY, outType, outParam, sb.ToCString(), sizeType))
 	{
 		me->lbProfile->AddItem(CSTRP(sbuff, sptr), 0);

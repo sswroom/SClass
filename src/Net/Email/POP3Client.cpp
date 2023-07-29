@@ -37,7 +37,7 @@ UOSInt Net::Email::POP3Client::GetMessageSize()
 	return this->msgSize;
 }
 
-Bool Net::Email::POP3Client::ReadMessageAsString(UOSInt index, Text::StringBuilderUTF8 *sb)
+Bool Net::Email::POP3Client::ReadMessageAsString(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	if (!this->loggedIn)
 		return false;

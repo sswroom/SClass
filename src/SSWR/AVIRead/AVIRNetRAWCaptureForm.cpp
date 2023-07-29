@@ -27,7 +27,7 @@ void __stdcall SSWR::AVIRead::AVIRNetRAWCaptureForm::OnBrowseClicked(void *userO
 {
 	SSWR::AVIRead::AVIRNetRAWCaptureForm *me = (SSWR::AVIRead::AVIRNetRAWCaptureForm*)userObj;
 	Text::StringBuilderUTF8 sb;
-	me->txtFileName->GetText(&sb);
+	me->txtFileName->GetText(sb);
 	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"NetRAWCapture", true);
 	Net::RAWCapture::AddFilters(&dlg);
 	if (sb.GetLength() > 0)
@@ -57,7 +57,7 @@ void __stdcall SSWR::AVIRead::AVIRNetRAWCaptureForm::OnStartClicked(void *userOb
 	UInt32 ip = (UInt32)(OSInt)me->cboIP->GetSelectedItem();
 	Net::RAWCapture::CaptureType type = (Net::RAWCapture::CaptureType)(OSInt)me->cboType->GetSelectedItem();
 	Net::RAWCapture::FileFormat format = (Net::RAWCapture::FileFormat)(OSInt)me->cboFormat->GetSelectedItem();
-	me->txtFileName->GetText(&sb);
+	me->txtFileName->GetText(sb);
 	if (ip && sb.GetLength() > 0)
 	{
 		NEW_CLASS(me->capture, Net::RAWCapture(me->sockf, ip, type, format, sb.ToCString(), CSTR("AVIRead")));

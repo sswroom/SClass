@@ -15,13 +15,13 @@ void __stdcall SSWR::AVIRead::AVIRFileSearchForm::OnSearchClicked(void *userObj)
 	Text::StringBuilderUTF8 sbDir;
 	UInt8 dataBuff[256];
 	UOSInt dataSize;
-	me->txtText->GetText(&sbText);
+	me->txtText->GetText(sbText);
 	if (sbText.GetLength() == 0)
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Please enter text to search"), CSTR("File Search"), me);
 		return;
 	}
-	me->txtDir->GetText(&sbDir);
+	me->txtDir->GetText(sbDir);
 	if (sbDir.GetLength() == 0)
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Please enter Directory to search"), CSTR("File Search"), me);
@@ -77,7 +77,7 @@ void __stdcall SSWR::AVIRead::AVIRFileSearchForm::OnFilesDblClk(void *userObj, U
 	if (frm->LoadFile(filePath))
 	{
 		Text::StringBuilderUTF8 sb;
-		me->txtText->GetText(&sb);
+		me->txtText->GetText(sb);
 		frm->OpenSearch(sb.ToCString());
 		frm->SearchText(sb.ToCString());
 	}

@@ -19,7 +19,7 @@ void __stdcall SSWR::AVIRead::AVIRTCPTestForm::OnStartClicked(void *userObj)
 	}
 	me->StopThreads();
 	Text::StringBuilderUTF8 sb;
-	me->txtIP->GetText(&sb);
+	me->txtIP->GetText(sb);
 	me->svrIP = Net::SocketUtil::GetIPAddr(sb.ToCString());
 	if (me->svrIP == 0)
 	{
@@ -27,14 +27,14 @@ void __stdcall SSWR::AVIRead::AVIRTCPTestForm::OnStartClicked(void *userObj)
 		return;
 	}
 	sb.ClearStr();
-	me->txtPort->GetText(&sb);
+	me->txtPort->GetText(sb);
 	if (!sb.ToUInt16(&me->svrPort) || me->svrPort <= 0)
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Please enter valid Port"), CSTR("Start"), me);
 		return;
 	}
 	sb.ClearStr();
-	me->txtConcurrCnt->GetText(&sb);
+	me->txtConcurrCnt->GetText(sb);
 	if (!sb.ToUInt32(&me->threadCnt) || me->threadCnt <= 0 || me->threadCnt >= 1000)
 	{
 		me->threadCnt = 0;
@@ -42,7 +42,7 @@ void __stdcall SSWR::AVIRead::AVIRTCPTestForm::OnStartClicked(void *userObj)
 		return;
 	}
 	sb.ClearStr();
-	me->txtTotalConnCnt->GetText(&sb);
+	me->txtTotalConnCnt->GetText(sb);
 	if (!sb.ToUInt32(&me->connLeftCnt) || me->connLeftCnt <= 10 || me->connLeftCnt >= 1000000000)
 	{
 		me->threadCnt = 0;

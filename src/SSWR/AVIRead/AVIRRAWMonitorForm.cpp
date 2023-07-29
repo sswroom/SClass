@@ -91,7 +91,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnInfoClicked(void *userObj)
 	}
 	UInt16 port;
 	Text::StringBuilderUTF8 sb;
-	me->txtInfo->GetText(&sb);
+	me->txtInfo->GetText(sb);
 	if (!sb.ToUInt16(&port))
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Info port is not valid"), CSTR("RAW Monitor"), me);
@@ -1072,7 +1072,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnDeviceSelChg(void *userObj)
 				sb.AppendC(UTF8STRC("\r\n"));
 				sb.AppendC(UTF8STRC("Dest MAC: "));
 				WriteMUInt64(sbuff, mac->packetDestMAC[i]);
-				Net::PacketAnalyzerEthernet::PacketEthernetDataGetDetail(mac->packetEtherType[i], mac->packetData[i], mac->packetSize[i], &sb);
+				Net::PacketAnalyzerEthernet::PacketEthernetDataGetDetail(mac->packetEtherType[i], mac->packetData[i], mac->packetSize[i], sb);
 				sb.AppendC(UTF8STRC("\r\n"));
 				sb.AppendC(UTF8STRC("\r\n"));
 				i++;
@@ -1091,7 +1091,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnDeviceSelChg(void *userObj)
 				sb.AppendC(UTF8STRC("Dest MAC: "));
 				WriteMUInt64(sbuff, mac->packetDestMAC[(cnt + i) & 15]);
 				sb.AppendHexBuff(&sbuff[2], 6, ':', Text::LineBreakType::None);
-				Net::PacketAnalyzerEthernet::PacketEthernetDataGetDetail(mac->packetEtherType[(cnt + i) & 15], mac->packetData[(cnt + i) & 15], mac->packetSize[(cnt + i) & 15], &sb);
+				Net::PacketAnalyzerEthernet::PacketEthernetDataGetDetail(mac->packetEtherType[(cnt + i) & 15], mac->packetData[(cnt + i) & 15], mac->packetSize[(cnt + i) & 15], sb);
 				sb.AppendC(UTF8STRC("\r\n"));
 				sb.AppendC(UTF8STRC("\r\n"));
 				i++;

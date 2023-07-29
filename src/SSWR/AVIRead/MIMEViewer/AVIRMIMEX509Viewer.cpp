@@ -24,10 +24,10 @@ SSWR::AVIRead::MIMEViewer::AVIRMIMEX509Viewer::AVIRMIMEX509Viewer(SSWR::AVIRead:
 	if (asn1)
 	{
 		Text::StringBuilderUTF8 sb;
-		asn1->ToString(&sb);
+		asn1->ToString(sb);
 		this->txtDesc->SetText(sb.ToCString());
 		sb.ClearStr();
-		asn1->ToASN1String(&sb);
+		asn1->ToASN1String(sb);
 		this->txtASN1->SetText(sb.ToCString());
 		DEL_CLASS(asn1);
 	}

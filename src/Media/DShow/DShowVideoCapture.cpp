@@ -478,7 +478,7 @@ UOSInt Media::DShow::DShowVideoCapture::GetSupportedFormats(VideoFormat *fmtArr,
 	return outCnt;
 }
 
-void Media::DShow::DShowVideoCapture::GetInfo(Text::StringBuilderUTF8 *sb)
+void Media::DShow::DShowVideoCapture::GetInfo(NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	if (this->baseFilter)
 	{

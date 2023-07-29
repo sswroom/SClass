@@ -115,11 +115,11 @@ namespace DB
 		static Bool StrLike(const UTF8Char *val, const UTF8Char *likeStr);
 
 		Bool SysVarExist(SessionInfo *sess, const UTF8Char *varName, AccessType atype);
-		const UTF8Char *SysVarGet(Text::StringBuilderUTF8 *sb, SessionInfo *sess, const UTF8Char *varName, UOSInt nameLen);
+		const UTF8Char *SysVarGet(NotNullPtr<Text::StringBuilderUTF8> sb, SessionInfo *sess, const UTF8Char *varName, UOSInt nameLen);
 		void SysVarColumn(DB::DBMSReader *reader, UOSInt colIndex, const UTF8Char *varName, Text::CString colName);
 		Bool SysVarSet(SessionInfo *sess, Bool isGlobal, const UTF8Char *varName, Text::String *val);
 
-		const UTF8Char *UserVarGet(Text::StringBuilderUTF8 *sb, SessionInfo *sess, const UTF8Char *varName);
+		const UTF8Char *UserVarGet(NotNullPtr<Text::StringBuilderUTF8> sb, SessionInfo *sess, const UTF8Char *varName);
 		void UserVarColumn(DB::DBMSReader *reader, UOSInt colIndex, const UTF8Char *varName, Text::CString colName);
 		Bool UserVarSet(SessionInfo *sess, const UTF8Char *varName, Text::String *val);
 

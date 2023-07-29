@@ -89,7 +89,7 @@ UOSInt IO::UDPFileLog::GetCount(IO::LogHandler::LogLevel logLevel) const
 	}
 }
 
-Bool IO::UDPFileLog::GetLogMessage(IO::LogHandler::LogLevel logLevel, UOSInt index, Data::Timestamp *ts, Text::StringBuilderUTF8 *sb, Text::LineBreakType lineBreak) const
+Bool IO::UDPFileLog::GetLogMessage(IO::LogHandler::LogLevel logLevel, UOSInt index, Data::Timestamp *ts, NotNullPtr<Text::StringBuilderUTF8> sb, Text::LineBreakType lineBreak) const
 {
 	if (logLevel == IO::LogHandler::LogLevel::Raw)
 	{
@@ -130,7 +130,7 @@ Bool IO::UDPFileLog::GetLogMessage(IO::LogHandler::LogLevel logLevel, UOSInt ind
 	return true;
 }
 
-Bool IO::UDPFileLog::GetLogDescription(IO::LogHandler::LogLevel logLevel, UOSInt index, Text::StringBuilderUTF8 *sb) const
+Bool IO::UDPFileLog::GetLogDescription(IO::LogHandler::LogLevel logLevel, UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb) const
 {
 	if (logLevel == IO::LogHandler::LogLevel::Raw)
 	{

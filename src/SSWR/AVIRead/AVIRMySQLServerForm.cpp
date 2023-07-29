@@ -18,7 +18,7 @@ void __stdcall SSWR::AVIRead::AVIRMySQLServerForm::OnStartClicked(void *userObj)
 	}
 	UInt16 port = 0;
 	Text::StringBuilderUTF8 sb;
-	me->txtPort->GetText(&sb);
+	me->txtPort->GetText(sb);
 	if (!Text::StrToUInt16(sb.ToString(), &port))
 	{
 		return;

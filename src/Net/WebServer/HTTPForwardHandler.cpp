@@ -57,7 +57,7 @@ Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(Net::WebServer::IWebRequ
 	}
 	Bool kaConn = true;
 	Text::StringBuilderUTF8 sbHeader;
-	if (req->GetHeaderC(&sbHeader, CSTR("Connection")))
+	if (req->GetHeaderC(sbHeader, CSTR("Connection")))
 	{
 		if (sbHeader.Equals(UTF8STRC("close")))
 		{
@@ -101,7 +101,7 @@ Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(Net::WebServer::IWebRequ
 		if (hdr->EqualsICase(UTF8STRC("Host")))
 		{
 			sbHeader.ClearStr();
-			if (req->GetHeaderC(&sbHeader, hdr->ToCString()))
+			if (req->GetHeaderC(sbHeader, hdr->ToCString()))
 			{
 				UOSInt k = sbHeader.IndexOf(':');
 				svrHost = Text::String::New(sbHeader.ToString(), sbHeader.GetLength()).Ptr();
@@ -114,7 +114,7 @@ Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(Net::WebServer::IWebRequ
 		else if (hdr->EqualsICase(UTF8STRC("X-Forwarded-For")))
 		{
 			sbHeader.ClearStr();
-			if (req->GetHeaderC(&sbHeader, hdr->ToCString()))
+			if (req->GetHeaderC(sbHeader, hdr->ToCString()))
 			{
 				fwdFor = Text::String::New(sbHeader.ToString(), sbHeader.GetLength()).Ptr();
 			}
@@ -122,7 +122,7 @@ Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(Net::WebServer::IWebRequ
 		else
 		{
 			sbHeader.ClearStr();
-			if (req->GetHeaderC(&sbHeader, hdr->ToCString()))
+			if (req->GetHeaderC(sbHeader, hdr->ToCString()))
 			{
 				cli->AddHeaderC(hdr->ToCString(), sbHeader.ToCString());
 			}
@@ -196,7 +196,7 @@ Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(Net::WebServer::IWebRequ
 		{
 			sbHeader.ClearStr();
 			sbHeader.AppendC(UTF8STRC("RequestContent = "));
-			Text::CPPText::ToCPPString(&sbHeader, reqData, i);
+			Text::CPPText::ToCPPString(sbHeader, reqData, i);
 			this->log->LogMessage(sbHeader.ToCString(), IO::LogHandler::LogLevel::Raw);
 		}
 		cli->Write(reqData, i);
@@ -233,7 +233,7 @@ Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(Net::WebServer::IWebRequ
 					{
 						sb.AppendC(UTF8STRC("http://"));
 					}
-					req->GetHeaderC(&sb, CSTR("Host"));
+					req->GetHeaderC(sb, CSTR("Host"));
 					UOSInt urlLen = fwdBaseUrl->leng;
 					if (fwdBaseUrl->v[urlLen - 1] == '/')
 					{
@@ -304,7 +304,7 @@ Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(Net::WebServer::IWebRequ
 		{
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("ResponseContent = "));
-			Text::CPPText::ToCPPString(&sb, sbHeader.v, sbHeader.leng);
+			Text::CPPText::ToCPPString(sb, sbHeader.v, sbHeader.leng);
 			this->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Raw);
 		}
 	}

@@ -59,9 +59,9 @@ Bool Map::MapBar::MapBarAdjuster::AdjustPoints(Double *srcLatLons, Double *destL
 			{
 				sb.AppendC(UTF8STRC(";"));
 			}
-			Text::SBAppendF64(&sb, destLatLons[((currPoint + i) << 1) + 1] = srcLatLons[((currPoint + i) << 1) + 1]);
+			sb.AppendDouble(destLatLons[((currPoint + i) << 1) + 1] = srcLatLons[((currPoint + i) << 1) + 1]);
 			sb.AppendC(UTF8STRC(","));
-			Text::SBAppendF64(&sb, destLatLons[((currPoint + i) << 1) + 0] = srcLatLons[((currPoint + i) << 1) + 0]);
+			sb.AppendDouble(destLatLons[((currPoint + i) << 1) + 0] = srcLatLons[((currPoint + i) << 1) + 0]);
 			i++;
 		}
 		if (imgWidth != 0 || imgHeight != 0)
@@ -112,7 +112,7 @@ Bool Map::MapBar::MapBarAdjuster::AdjustPoints(Double *srcLatLons, Double *destL
 								if (node)
 								{
 									sb2.ClearStr();
-									node->GetInnerText(&sb2);
+									node->GetInnerText(sb2);
 									destLatLons[((currPoint + j) << 1) + 0] = Text::StrToDouble(sb2.ToString());
 								}
 								else
@@ -123,7 +123,7 @@ Bool Map::MapBar::MapBarAdjuster::AdjustPoints(Double *srcLatLons, Double *destL
 								if (node)
 								{
 									sb2.ClearStr();
-									node->GetInnerText(&sb2);
+									node->GetInnerText(sb2);
 									destLatLons[((currPoint + j) << 1) + 1] = Text::StrToDouble(sb2.ToString());
 								}
 								else

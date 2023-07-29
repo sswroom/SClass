@@ -428,7 +428,7 @@ UOSInt Media::MMALVideoCapture::GetSupportedFormats(VideoFormat *fmtArr, UOSInt 
 	return ret;
 }
 
-void Media::MMALVideoCapture::GetInfo(Text::StringBuilderUTF8 *sb)
+void Media::MMALVideoCapture::GetInfo(NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	sb->AppendC(UTF8STRC("MMAL VideoCapture"));
 }

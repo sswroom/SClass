@@ -132,7 +132,7 @@ UOSInt IO::FileAnalyse::NFDumpFileAnalyse::GetFrameCount()
 	return this->packs.GetCount();
 }
 
-Bool IO::FileAnalyse::NFDumpFileAnalyse::GetFrameName(UOSInt index, Text::StringBuilderUTF8 *sb)
+Bool IO::FileAnalyse::NFDumpFileAnalyse::GetFrameName(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	IO::FileAnalyse::NFDumpFileAnalyse::PackInfo *pack;
 	pack = this->packs.GetItem(index);
@@ -161,7 +161,7 @@ Bool IO::FileAnalyse::NFDumpFileAnalyse::GetFrameName(UOSInt index, Text::String
 	return true;
 }
 
-Bool IO::FileAnalyse::NFDumpFileAnalyse::GetFrameDetail(UOSInt index, Text::StringBuilderUTF8 *sb)
+Bool IO::FileAnalyse::NFDumpFileAnalyse::GetFrameDetail(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;

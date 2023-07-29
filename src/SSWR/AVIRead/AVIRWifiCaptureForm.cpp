@@ -146,9 +146,9 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(void *userObj)
 						sb.AppendUTF8Char('|');
 						sb.Append(bss->GetSSID());
 						sb.AppendUTF8Char('|');
-						Text::SBAppendF64(&sb, bss->GetRSSI());
+						sb.AppendDouble(bss->GetRSSI());
 						sb.AppendUTF8Char('|');
-						Text::SBAppendF64(&sb, bss->GetFreq() / 1000000.0);
+						sb.AppendDouble(bss->GetFreq() / 1000000.0);
 						i++;
 					}
 					me->captureWriter->WriteLineC(sb.ToString(), sb.GetLength());
@@ -599,7 +599,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnLogWifiSaveClicked(void *us
 				sb.AppendC(UTF8STRC("\t"));
 				sb.AppendI32(wifiLog->phyType);
 				sb.AppendC(UTF8STRC("\t"));
-				Text::SBAppendF64(&sb, wifiLog->freq);
+				sb.AppendDouble(wifiLog->freq);
 				sb.AppendC(UTF8STRC("\t"));
 				if (wifiLog->manuf)
 				{
@@ -707,7 +707,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnLogWifiSaveFClicked(void *u
 					sb.AppendC(UTF8STRC("\t"));
 					sb.AppendI32(wifiLog->phyType);
 					sb.AppendC(UTF8STRC("\t"));
-					Text::SBAppendF64(&sb, wifiLog->freq);
+					sb.AppendDouble(wifiLog->freq);
 					if (!writer.WriteLineC(sb.ToString(), sb.GetLength()))
 					{
 						succ = false;
@@ -769,11 +769,11 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnGPSData(void *userObj, Map:
 			else
 			{
 				sb.AppendC(UTF8STRC("Active,"));
-				Text::SBAppendF64(&sb, record->pos.GetLat());
+				sb.AppendDouble(record->pos.GetLat());
 				sb.AppendC(UTF8STRC(","));
-				Text::SBAppendF64(&sb, record->pos.GetLon());
+				sb.AppendDouble(record->pos.GetLon());
 				sb.AppendC(UTF8STRC(","));
-				Text::SBAppendF64(&sb, record->altitude);
+				sb.AppendDouble(record->altitude);
 			}
 			me->captureWriter->WriteLineC(sb.ToString(), sb.GetLength());
 		}

@@ -8,9 +8,9 @@ namespace Text
 	class StringBuilderWriter : public IO::Writer
 	{
 	private:
-		Text::StringBuilderUTF8 *sb;
+		NotNullPtr<Text::StringBuilderUTF8> sb;
 	public:
-		StringBuilderWriter(Text::StringBuilderUTF8 *sb);
+		StringBuilderWriter(NotNullPtr<Text::StringBuilderUTF8> sb);
 		virtual ~StringBuilderWriter();
 
 		virtual Bool WriteStrC(const UTF8Char *str, UOSInt nChar);

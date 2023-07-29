@@ -25,7 +25,7 @@ Crypto::Token::JWTHandler::~JWTHandler()
 	MemFree(this->privateKey);
 }
 
-Bool Crypto::Token::JWTHandler::Generate(Text::StringBuilderUTF8 *sb, Data::StringMap<const UTF8Char*> *payload, JWTParam *param)
+Bool Crypto::Token::JWTHandler::Generate(NotNullPtr<Text::StringBuilderUTF8> sb, Data::StringMap<const UTF8Char*> *payload, JWTParam *param)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
@@ -143,7 +143,7 @@ Data::StringMap<Text::String*> *Crypto::Token::JWTHandler::Parse(const UTF8Char 
 		return 0;
 	}
 	Text::StringBuilderUTF8 sb;
-	sign.GetHashB64(&sb);
+	sign.GetHashB64(sb);
 	if (!sb.Equals(&token[i2 + 1], tokenLen - i2 - 1))
 	{
 		MemFree(headerBuff);
@@ -239,7 +239,7 @@ Data::StringMap<Text::String*> *Crypto::Token::JWTHandler::Parse(const UTF8Char 
 			else
 			{
 				sb.ClearStr();
-				json->ToJSONString(&sb);
+				json->ToJSONString(sb);
 				retMap->Put(name, Text::String::New(sb.ToString(), sb.GetLength()).Ptr());
 			}
 		}

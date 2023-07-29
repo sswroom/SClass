@@ -39,7 +39,7 @@ void __stdcall SSWR::AVIRead::AVIRFileAnalyseForm::OnTrimPaddingClicked(void *us
 	Text::StringBuilderUTF8 sb;
 	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"MPEGTrimPadding", true);
 	dlg.AddFilter(CSTR("*.mpg"), CSTR("MPEG System Stream"));
-	me->txtFile->GetText(&sb);
+	me->txtFile->GetText(sb);
 	dlg.SetFileName(sb.ToCString());
 	if (dlg.ShowDialog(me->GetHandle()))
 	{
@@ -132,7 +132,7 @@ void __stdcall SSWR::AVIRead::AVIRFileAnalyseForm::OnPackListChanged(void *userO
 	while (i < j)
 	{
 		sb.ClearStr();
-		me->file->GetFrameName(i, &sb);
+		me->file->GetFrameName(i, sb);
 		me->lbPackItems->AddItem(sb.ToCString(), (void*)i);
 		i++;
 	}
@@ -150,7 +150,7 @@ void __stdcall SSWR::AVIRead::AVIRFileAnalyseForm::OnPackItemChanged(void *userO
 	}
 	i = (UOSInt)me->lbPackItems->GetItem(i);
 	sb.ClearStr();
-	me->file->GetFrameDetail(i, &sb);
+	me->file->GetFrameDetail(i, sb);
 	me->txtPack->SetText(sb.ToCString());
 }
 

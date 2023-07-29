@@ -120,7 +120,7 @@ namespace Media
 		void DeinitFrameInfo();
 		void Clear();
 		void Set(const FrameInfo *info);
-		void ToString(Text::StringBuilderUTF8 *sb) const;
+		void ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const;
 	};
 
 	Text::CString FrameTypeGetName(FrameType frameType);

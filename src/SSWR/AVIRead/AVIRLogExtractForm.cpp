@@ -15,7 +15,7 @@ void __stdcall SSWR::AVIRead::AVIRLogExtractForm::OnSFileClicked(void *userObj)
 	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"LogExtractSFile", false);
 	dlg.AddFilter(CSTR("*.log"), CSTR("Log File"));
 	dlg.SetAllowMultiSel(false);
-	me->txtSFile->GetText(&sb);
+	me->txtSFile->GetText(sb);
 	if (sb.GetLength() > 0)
 	{
 		dlg.SetFileName(sb.ToCString());
@@ -33,7 +33,7 @@ void __stdcall SSWR::AVIRead::AVIRLogExtractForm::OnOFileClicked(void *userObj)
 	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"LogExtractOFile", true);
 	dlg.AddFilter(CSTR("*.log"), CSTR("Log File"));
 	dlg.AddFilter(CSTR("*.txt"), CSTR("Text File"));
-	me->txtOFile->GetText(&sb);
+	me->txtOFile->GetText(sb);
 	if (sb.GetLength() > 0)
 	{
 		dlg.SetFileName(sb.ToCString());
@@ -52,10 +52,10 @@ void __stdcall SSWR::AVIRead::AVIRLogExtractForm::OnExtractClicked(void *userObj
 	Text::StringBuilderUTF8 sb2;
 	Text::StringBuilderUTF8 sb3;
 	Text::StringBuilderUTF8 sbSuffix;
-	me->txtSFile->GetText(&sb1);
-	me->txtPrefix->GetText(&sb2);
-	me->txtOFile->GetText(&sb3);
-	me->txtSuffix->GetText(&sbSuffix);
+	me->txtSFile->GetText(sb1);
+	me->txtPrefix->GetText(sb2);
+	me->txtOFile->GetText(sb3);
+	me->txtSuffix->GetText(sbSuffix);
 	if (IO::Path::GetPathType(sb1.ToCString()) != IO::Path::PathType::File)
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Source File not found"), CSTR("Error"), me);

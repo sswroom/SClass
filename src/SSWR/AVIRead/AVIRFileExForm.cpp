@@ -13,7 +13,7 @@ void __stdcall SSWR::AVIRead::AVIRFileExForm::OnSrcChanged(void *userObj)
 	Text::StringBuilderUTF8 sb;
 	UInt64 fileSize;
 	IO::Path::PathType pt;
-	me->txtSrc->GetText(&sb);
+	me->txtSrc->GetText(sb);
 	pt = IO::Path::GetPathType(sb.ToCString());
 	if (pt == IO::Path::PathType::File)
 	{
@@ -34,7 +34,7 @@ void __stdcall SSWR::AVIRead::AVIRFileExForm::OnSrcClicked(void *userObj)
 	SSWR::AVIRead::AVIRFileExForm *me = (SSWR::AVIRead::AVIRFileExForm*)userObj;
 	Text::StringBuilderUTF8 sb;
 	UI::FileDialog ofd(L"SSWR", L"AVIRead", L"FileExSrc", false);
-	me->txtSrc->GetText(&sb);
+	me->txtSrc->GetText(sb);
 	ofd.SetFileName(sb.ToCString());
 	if (ofd.ShowDialog(me->GetHandle()))
 	{
@@ -47,7 +47,7 @@ void __stdcall SSWR::AVIRead::AVIRFileExForm::OnDestClicked(void *userObj)
 	SSWR::AVIRead::AVIRFileExForm *me = (SSWR::AVIRead::AVIRFileExForm*)userObj;
 	Text::StringBuilderUTF8 sb;
 	UI::FileDialog ofd(L"SSWR", L"AVIRead", L"FileExDest", true);
-	me->txtDest->GetText(&sb);
+	me->txtDest->GetText(sb);
 	ofd.SetFileName(sb.ToCString());
 	if (ofd.ShowDialog(me->GetHandle()))
 	{
@@ -67,14 +67,14 @@ void __stdcall SSWR::AVIRead::AVIRFileExForm::OnStartClicked(void *userObj)
 	UOSInt readSize;
 	IO::FileStream *srcFS;
 	IO::FileStream *destFS;
-	me->txtStartOfst->GetText(&sb);
+	me->txtStartOfst->GetText(sb);
 	if (!sb.ToUInt64(&startOfst))
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Start Offset is not valid"), CSTR("Error"), me);
 		return;
 	}
 	sb.ClearStr();
-	me->txtEndOfst->GetText(&sb);
+	me->txtEndOfst->GetText(sb);
 	if (!sb.ToUInt64(&endOfst))
 	{
 		UI::MessageDialog::ShowDialog(CSTR("End Offset is not valid"), CSTR("Error"), me);
@@ -86,7 +86,7 @@ void __stdcall SSWR::AVIRead::AVIRFileExForm::OnStartClicked(void *userObj)
 		return;
 	}
 	sb.ClearStr();
-	me->txtSrc->GetText(&sb);
+	me->txtSrc->GetText(sb);
 	NEW_CLASS(srcFS, IO::FileStream(sb.ToCString(), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
 	if (srcFS->IsError())
 	{
@@ -102,7 +102,7 @@ void __stdcall SSWR::AVIRead::AVIRFileExForm::OnStartClicked(void *userObj)
 		return;
 	}
 	sb.ClearStr();
-	me->txtDest->GetText(&sb);
+	me->txtDest->GetText(sb);
 	NEW_CLASS(destFS, IO::FileStream(sb.ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (destFS->IsError())
 	{

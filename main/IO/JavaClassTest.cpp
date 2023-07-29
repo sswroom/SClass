@@ -13,7 +13,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	if (cls)
 	{
 		Text::StringBuilderUTF8 sb;
-		cls->FileStructDetail(&sb);
+		cls->FileStructDetail(sb);
 		console.WriteLineC(sb.ToString(), sb.GetLength());
 	}
 	SDEL_CLASS(cls);

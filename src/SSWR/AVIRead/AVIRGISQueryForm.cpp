@@ -169,7 +169,7 @@ void __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnShapeFmtChanged(void *userObj)
 	{
 		Math::VectorTextWriter *writer = (Math::VectorTextWriter*)me->cboShapeFmt->GetSelectedItem();
 		Text::StringBuilderUTF8 sb;
-		writer->ToText(&sb, me->currVec);
+		writer->ToText(sb, me->currVec);
 		me->txtShape->SetText(sb.ToCString());
 	}
 }
@@ -270,7 +270,7 @@ void SSWR::AVIRead::AVIRGISQueryForm::SetQueryItem(UOSInt index)
 
 	Math::VectorTextWriter *writer = (Math::VectorTextWriter*)this->cboShapeFmt->GetSelectedItem();
 	Text::StringBuilderUTF8 sb;
-	writer->ToText(&sb, vec);
+	writer->ToText(sb, vec);
 	this->txtShape->SetText(sb.ToCString());
 
 	sptr = Text::StrDouble(sbuff, bounds.tl.x);

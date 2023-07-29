@@ -44,9 +44,9 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		{
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Temp = "));
-			Text::SBAppendF64(&sb, temp);
+			sb.AppendDouble(temp);
 			sb.AppendC(UTF8STRC(", RH = "));
-			Text::SBAppendF64(&sb, rh);
+			sb.AppendDouble(rh);
 			sb.AppendC(UTF8STRC("%"));
 			console.WriteLineC(sb.ToString(), sb.GetLength());
 		}
@@ -69,7 +69,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			while (i < j)
 			{
 				sb.ClearStr();
-				Text::SBAppendF64(&sb, times.GetItem(i));
+				sb.AppendDouble(times.GetItem(i));
 				sb.AppendC(UTF8STRC(", "));
 				sb.AppendI32(isHighs.GetItem(i));
 				writer.WriteLineC(sb.ToString(), sb.GetLength());

@@ -343,7 +343,7 @@ Int32 IO::SMBIOS::GetChassisType() const
 	return ret;
 }
 
-Bool IO::SMBIOS::ToString(Text::StringBuilderUTF8 *sb) const
+Bool IO::SMBIOS::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
 {
 	Text::CString carr[32];
 	const UInt8 *dataBuff;

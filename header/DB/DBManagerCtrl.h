@@ -33,7 +33,7 @@ namespace DB
 		ConnStatus GetStatus();
 		Text::String *GetConnStr();
 		DB::ReadingDB *GetDB();
-		void GetConnName(Text::StringBuilderUTF8 *sb);
+		void GetConnName(NotNullPtr<Text::StringBuilderUTF8> sb);
 
 		static DBManagerCtrl *Create(Text::String *connStr, IO::LogTool *log, NotNullPtr<Net::SocketFactory> sockf, Parser::ParserList *parsers);
 		static DBManagerCtrl *Create(Text::CString connStr, IO::LogTool *log, NotNullPtr<Net::SocketFactory> sockf, Parser::ParserList *parsers);

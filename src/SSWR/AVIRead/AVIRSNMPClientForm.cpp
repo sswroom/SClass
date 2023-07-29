@@ -12,15 +12,15 @@ void __stdcall SSWR::AVIRead::AVIRSNMPClientForm::OnRequestClicked(void *userObj
 	Text::StringBuilderUTF8 sbComm;
 	Text::StringBuilderUTF8 sbOID;
 	Net::SocketUtil::AddressInfo addr;
-	me->txtAgent->GetText(&sbComm);
+	me->txtAgent->GetText(sbComm);
 	if (!me->core->GetSocketFactory()->DNSResolveIP(sbComm.ToCString(), &addr))
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Error in resolving Agent Address"), CSTR("SNMP Client"), me);
 		return;
 	}
 	sbComm.ClearStr();
-	me->txtCommunity->GetText(&sbComm);
-	me->txtOID->GetText(&sbOID);
+	me->txtCommunity->GetText(sbComm);
+	me->txtOID->GetText(sbOID);
 	if (sbComm.GetLength() <= 0)
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Please enter community"), CSTR("SNMP Client"), me);
@@ -67,16 +67,16 @@ void __stdcall SSWR::AVIRead::AVIRSNMPClientForm::OnRequestClicked(void *userObj
 		{
 			item = itemList.GetItem(i);
 			sb.ClearStr();
-			Net::ASN1Util::OIDToString(item->oid, item->oidLen, &sb);
+			Net::ASN1Util::OIDToString(item->oid, item->oidLen, sb);
 			me->lvResults->AddItem(sb.ToCString(), 0);
 			sb.ClearStr();
-			Net::ASN1OIDDB::OIDToNameString(item->oid, item->oidLen, &sb);
+			Net::ASN1OIDDB::OIDToNameString(item->oid, item->oidLen, sb);
 			me->lvResults->SetSubItem(i, 1, sb.ToCString());
 			me->lvResults->SetSubItem(i, 2, Net::SNMPUtil::TypeGetName(item->valType));
 			if (item->valBuff)
 			{
 				sb.ClearStr();
-				Net::SNMPInfo::ValueToString(item->valType, item->valBuff, item->valLen, &sb);
+				Net::SNMPInfo::ValueToString(item->valType, item->valBuff, item->valLen, sb);
 				me->lvResults->SetSubItem(i, 3, sb.ToCString());
 			}
 			i++;

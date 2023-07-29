@@ -234,7 +234,7 @@ UOSInt IO::FileAnalyse::EDIDFileAnalyse::GetFrameCount()
 	return this->blockCnt;
 }
 
-Bool IO::FileAnalyse::EDIDFileAnalyse::GetFrameName(UOSInt index, Text::StringBuilderUTF8 *sb)
+Bool IO::FileAnalyse::EDIDFileAnalyse::GetFrameName(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	if (index >= this->blockCnt)
 	{

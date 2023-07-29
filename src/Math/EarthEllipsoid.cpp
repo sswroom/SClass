@@ -209,7 +209,7 @@ Text::CString Math::EarthEllipsoid::GetName() const
 	return info->name;
 }
 
-void Math::EarthEllipsoid::ToString(Text::StringBuilderUTF8 *sb) const
+void Math::EarthEllipsoid::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
 {
 	sb->AppendC(UTF8STRC("Semi-Major Axis: "));
 	Text::SBAppendF64(sb, this->GetSemiMajorAxis());

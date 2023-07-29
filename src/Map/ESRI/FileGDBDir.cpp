@@ -79,7 +79,7 @@ void Map::ESRI::FileGDBDir::CloseReader(DB::DBReader *r)
 	DEL_CLASS(reader);
 }
 
-void Map::ESRI::FileGDBDir::GetLastErrorMsg(Text::StringBuilderUTF8 *str)
+void Map::ESRI::FileGDBDir::GetLastErrorMsg(NotNullPtr<Text::StringBuilderUTF8> str)
 {
 }
 
@@ -127,7 +127,7 @@ Map::ESRI::FileGDBDir *Map::ESRI::FileGDBDir::OpenDir(IO::PackageFile *pkg, Math
 		Int32 id = reader->GetInt32(0);
 		Int32 fmt = reader->GetInt32(2);
 		sb.ClearStr();
-		reader->GetStr(1, &sb);
+		reader->GetStr(1, sb);
 		if (id > 1 && sb.GetLength() > 0 && fmt == 0)
 		{
 			FileGDBTable *innerTable;

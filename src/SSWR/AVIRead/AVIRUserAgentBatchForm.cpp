@@ -7,7 +7,7 @@
 #include "UI/Clipboard.h"
 #include "UI/MessageDialog.h"
 
-void SSWR::AVIRead::AVIRUserAgentBatchForm::UserAgent2Output(Text::CString userAgent, Text::StringBuilderUTF8 *outSb)
+void SSWR::AVIRead::AVIRUserAgentBatchForm::UserAgent2Output(Text::CString userAgent, NotNullPtr<Text::StringBuilderUTF8> outSb)
 {
 	Text::StringBuilderUTF8 sb;
 	Net::UserAgentDB::UAEntry ent;
@@ -86,7 +86,7 @@ void __stdcall SSWR::AVIRead::AVIRUserAgentBatchForm::OnParseClicked(void *userO
 	Text::StringBuilderUTF8 sb3;
 	Text::PString sarr[2];
 	UOSInt i;
-	me->txtSource->GetText(&sb);
+	me->txtSource->GetText(sb);
 	if (sb.GetLength() <= 0)
 	{
 		me->txtOutput->SetText(CSTR(""));
@@ -98,7 +98,7 @@ void __stdcall SSWR::AVIRead::AVIRUserAgentBatchForm::OnParseClicked(void *userO
 		i = Text::StrSplitLineP(sarr, 2, sarr[1]);
 		if (sarr[0].v[0] != 0)
 		{
-			UserAgent2Output(sarr[0].ToCString(), &sb3);
+			UserAgent2Output(sarr[0].ToCString(), sb3);
 		}
 
 		if (i != 2)
@@ -115,7 +115,7 @@ void __stdcall SSWR::AVIRead::AVIRUserAgentBatchForm::OnUpdateClicked(void *user
 {
 	SSWR::AVIRead::AVIRUserAgentBatchForm *me = (SSWR::AVIRead::AVIRUserAgentBatchForm*)userObj;
 	Text::StringBuilderUTF8 sb;
-	me->txtSource->GetText(&sb);
+	me->txtSource->GetText(sb);
 	me->UpdateByText(sb);
 }
 
@@ -123,7 +123,7 @@ void __stdcall SSWR::AVIRead::AVIRUserAgentBatchForm::OnUpdateCBClicked(void *us
 {
 	SSWR::AVIRead::AVIRUserAgentBatchForm *me = (SSWR::AVIRead::AVIRUserAgentBatchForm*)userObj;
 	Text::StringBuilderUTF8 sb;
-	UI::Clipboard::GetString(me->GetHandle(), &sb);
+	UI::Clipboard::GetString(me->GetHandle(), sb);
 	if (sb.GetLength() > 0)
 	{
 		me->UpdateByText(sb);
@@ -182,7 +182,7 @@ void SSWR::AVIRead::AVIRUserAgentBatchForm::UpdateByText(Text::PString txt)
 		j = uaList.GetCount();
 		while (i < j)
 		{
-			UserAgent2Output(uaList.GetItem(i)->ToCString(), &sb);
+			UserAgent2Output(uaList.GetItem(i)->ToCString(), sb);
 			i++;
 		}
 		this->txtOutput->SetText(sb.ToCString());

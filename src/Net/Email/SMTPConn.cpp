@@ -353,7 +353,7 @@ Bool Net::Email::SMTPConn::SendAuth(Text::CString userName, Text::CString passwo
 		Text::TextBinEnc::Base64Enc b64;
 		Text::StringBuilderUTF8 sbCmd;
 		sbCmd.AppendC(UTF8STRC("AUTH PLAIN "));
-		b64.EncodeBin(&sbCmd, pwdBuff, (UOSInt)(sptr2 - pwdBuff));
+		b64.EncodeBin(sbCmd, pwdBuff, (UOSInt)(sptr2 - pwdBuff));
 		
 		this->statusChg = false;
 		if (this->logWriter)
@@ -388,7 +388,7 @@ Bool Net::Email::SMTPConn::SendAuth(Text::CString userName, Text::CString passwo
 			return false;
 		}
 		sbCmd.ClearStr();
-		b64.EncodeBin(&sbCmd, userName.v, userName.leng);
+		b64.EncodeBin(sbCmd, userName.v, userName.leng);
 		this->statusChg = false;
 		this->msgRet = retBuff;
 		if (this->logWriter)
@@ -405,7 +405,7 @@ Bool Net::Email::SMTPConn::SendAuth(Text::CString userName, Text::CString passwo
 			return false;
 		}
 		sbCmd.ClearStr();
-		b64.EncodeBin(&sbCmd, password.v, password.leng);
+		b64.EncodeBin(sbCmd, password.v, password.leng);
 		this->statusChg = false;
 		this->msgRet = retBuff;
 		if (this->logWriter)

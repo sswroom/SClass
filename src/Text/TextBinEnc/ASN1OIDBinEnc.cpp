@@ -11,7 +11,7 @@ Text::TextBinEnc::ASN1OIDBinEnc::~ASN1OIDBinEnc()
 {
 }
 
-UOSInt Text::TextBinEnc::ASN1OIDBinEnc::EncodeBin(Text::StringBuilderUTF8 *sb, const UInt8 *dataBuff, UOSInt buffSize)
+UOSInt Text::TextBinEnc::ASN1OIDBinEnc::EncodeBin(NotNullPtr<Text::StringBuilderUTF8> sb, const UInt8 *dataBuff, UOSInt buffSize)
 {
 	UOSInt size = sb->GetCharCnt();
 	Net::ASN1Util::OIDToString(dataBuff, buffSize, sb);

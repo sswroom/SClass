@@ -21,7 +21,7 @@ void __stdcall SSWR::AVIRead::AVIRLogServerForm::OnStartClick(void *userObj)
 		UInt16 port;
 		UTF8Char sbuff[512];
 		UTF8Char *sptr;
-		me->txtPort->GetText(&sb);
+		me->txtPort->GetText(sb);
 		if (sb.ToUInt16(&port))
 		{
 			sptr = IO::Path::GetProcessFileName(sbuff);

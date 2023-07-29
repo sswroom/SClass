@@ -776,13 +776,13 @@ void SSWR::OrganWeb::OrganWebController::WritePickObjs(NotNullPtr<Sync::RWMutexU
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("<br/>"));
 					sb.AppendC(UTF8STRC("<a href=\"https://www.google.com/maps/place/"));
-					Text::SBAppendF64(&sb, userFile->lat);
+					sb.AppendDouble(userFile->lat);
 					sb.AppendC(UTF8STRC(","));
-					Text::SBAppendF64(&sb, userFile->lon);
+					sb.AppendDouble(userFile->lon);
 					sb.AppendC(UTF8STRC("/@"));
-					Text::SBAppendF64(&sb, userFile->lat);
+					sb.AppendDouble(userFile->lat);
 					sb.AppendC(UTF8STRC(","));
-					Text::SBAppendF64(&sb, userFile->lon);
+					sb.AppendDouble(userFile->lon);
 					sb.AppendC(UTF8STRC(",19z\">"));
 					sb.AppendC(UTF8STRC("Google Map</a>"));
 					writer->WriteStrC(sb.ToString(), sb.GetLength());

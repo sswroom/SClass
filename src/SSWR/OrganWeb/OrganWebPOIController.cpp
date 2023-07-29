@@ -13,7 +13,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcPublicPOI(Net::WebServe
 	GroupInfo *poiGroup = me->env->GroupGet(mutUsage, 21593);
 	Text::StringBuilderUTF8 sb;
 	sb.AppendUTF8Char('[');
-	me->AddGroupPOI(mutUsage, &sb, poiGroup, 0);
+	me->AddGroupPOI(mutUsage, sb, poiGroup, 0);
 	mutUsage.EndUse();
 	if (sb.GetLength() > 1)
 	{
@@ -42,9 +42,9 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcGroupPOI(Net::WebServer
 		if (poiGroup)
 		{
 			if (env.user != 0)
-				me->AddGroupPOI(mutUsage, &sb, poiGroup, env.user->id);
+				me->AddGroupPOI(mutUsage, sb, poiGroup, env.user->id);
 			else
-				me->AddGroupPOI(mutUsage, &sb, poiGroup, 0);
+				me->AddGroupPOI(mutUsage, sb, poiGroup, 0);
 			if (sb.GetLength() > 1)
 			{
 				sb.RemoveChars(3);
@@ -74,9 +74,9 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcSpeciesPOI(Net::WebServ
 		if (poiSpecies)
 		{
 			if (env.user != 0)
-				me->AddSpeciesPOI(mutUsage, &sb, poiSpecies, env.user->id, me->env->GroupIsPublic(mutUsage, poiSpecies->groupId));
+				me->AddSpeciesPOI(mutUsage, sb, poiSpecies, env.user->id, me->env->GroupIsPublic(mutUsage, poiSpecies->groupId));
 			else
-				me->AddSpeciesPOI(mutUsage, &sb, poiSpecies, 0, me->env->GroupIsPublic(mutUsage, poiSpecies->groupId));
+				me->AddSpeciesPOI(mutUsage, sb, poiSpecies, 0, me->env->GroupIsPublic(mutUsage, poiSpecies->groupId));
 			if (sb.GetLength() > 1)
 			{
 				sb.RemoveChars(3);
@@ -144,7 +144,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcDayPOI(Net::WebServer::
 		{
 			userFile = env.user->userFileObj.GetItem((UOSInt)startIndex);
 			sp = me->env->SpeciesGet(mutUsage, userFile->speciesId);
-			me->AddUserfilePOI(&sb, sp, userFile);
+			me->AddUserfilePOI(sb, sp, userFile);
 			startIndex++;
 		}
 		if (sb.GetLength() > 1)
@@ -161,7 +161,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcDayPOI(Net::WebServer::
 }
 
 
-void SSWR::OrganWeb::OrganWebPOIController::AddGroupPOI(NotNullPtr<Sync::RWMutexUsage> mutUsage, Text::StringBuilderUTF8 *sb, GroupInfo *group, Int32 userId)
+void SSWR::OrganWeb::OrganWebPOIController::AddGroupPOI(NotNullPtr<Sync::RWMutexUsage> mutUsage, NotNullPtr<Text::StringBuilderUTF8> sb, GroupInfo *group, Int32 userId)
 {
 	UOSInt i = 0;
 	UOSInt j = group->groups.GetCount();
@@ -179,7 +179,7 @@ void SSWR::OrganWeb::OrganWebPOIController::AddGroupPOI(NotNullPtr<Sync::RWMutex
 	}
 }
 
-void SSWR::OrganWeb::OrganWebPOIController::AddSpeciesPOI(NotNullPtr<Sync::RWMutexUsage> mutUsage, Text::StringBuilderUTF8 *sb, SpeciesInfo *species, Int32 userId, Bool publicGroup)
+void SSWR::OrganWeb::OrganWebPOIController::AddSpeciesPOI(NotNullPtr<Sync::RWMutexUsage> mutUsage, NotNullPtr<Text::StringBuilderUTF8> sb, SpeciesInfo *species, Int32 userId, Bool publicGroup)
 {
 	UserFileInfo *file;
 	UOSInt k;
@@ -207,7 +207,7 @@ void SSWR::OrganWeb::OrganWebPOIController::AddSpeciesPOI(NotNullPtr<Sync::RWMut
 	}
 }
 
-void SSWR::OrganWeb::OrganWebPOIController::AddUserfilePOI(Text::StringBuilderUTF8 *sb, SpeciesInfo *species, UserFileInfo *file)
+void SSWR::OrganWeb::OrganWebPOIController::AddUserfilePOI(NotNullPtr<Text::StringBuilderUTF8> sb, SpeciesInfo *species, UserFileInfo *file)
 {
 	sb->AppendUTF8Char('{');
 	sb->AppendC(UTF8STRC("\"id\":\""));

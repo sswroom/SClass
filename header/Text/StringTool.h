@@ -13,16 +13,16 @@ namespace Text
 	class StringTool
 	{
 	public:
-		static void BuildString(Text::StringBuilderUTF8 *sb, Text::String *s);
-		static void BuildString(Text::StringBuilderUTF8 *sb, const UTF8Char *s);
-		static void BuildString(Text::StringBuilderUTF8 *sb, Data::StringMap<Text::String*> *map);
-		static void BuildString(Text::StringBuilderUTF8 *sb, Data::StringUTF8Map<Text::String*> *map);
-		static void BuildString(Text::StringBuilderUTF8 *sb, Data::StringUTF8Map<const UTF8Char*> *map);
-		static void BuildString(Text::StringBuilderUTF8 *sb, Data::ReadingList<const UTF8Char*> *list);
-		static void BuildString(Text::StringBuilderUTF8 *sb, Data::ReadingList<Text::String*> *list);
-		template <class T> static void BuildString(Text::StringBuilderUTF8 *sb, T *obj, Data::NamedClass<T> *cls);
-		template <class T> static void BuildString(Text::StringBuilderUTF8 *sb, Data::List<T*> *list, Data::NamedClass<T> *cls, const UTF8Char *clsName, UOSInt nameLen);
-		static void Int32Join(Text::StringBuilderUTF8 *sb, Data::List<Int32> *list, Text::CString seperator);
+		static void BuildString(NotNullPtr<Text::StringBuilderUTF8> sb, Text::String *s);
+		static void BuildString(NotNullPtr<Text::StringBuilderUTF8> sb, const UTF8Char *s);
+		static void BuildString(NotNullPtr<Text::StringBuilderUTF8> sb, Data::StringMap<Text::String*> *map);
+		static void BuildString(NotNullPtr<Text::StringBuilderUTF8> sb, Data::StringUTF8Map<Text::String*> *map);
+		static void BuildString(NotNullPtr<Text::StringBuilderUTF8> sb, Data::StringUTF8Map<const UTF8Char*> *map);
+		static void BuildString(NotNullPtr<Text::StringBuilderUTF8> sb, Data::ReadingList<const UTF8Char*> *list);
+		static void BuildString(NotNullPtr<Text::StringBuilderUTF8> sb, Data::ReadingList<Text::String*> *list);
+		template <class T> static void BuildString(NotNullPtr<Text::StringBuilderUTF8> sb, T *obj, Data::NamedClass<T> *cls);
+		template <class T> static void BuildString(NotNullPtr<Text::StringBuilderUTF8> sb, Data::List<T*> *list, Data::NamedClass<T> *cls, const UTF8Char *clsName, UOSInt nameLen);
+		static void Int32Join(NotNullPtr<Text::StringBuilderUTF8> sb, Data::List<Int32> *list, Text::CString seperator);
 		static Bool IsNonASCII(const UTF8Char *s);
 		static Bool IsASCIIText(const UInt8 *buff, UOSInt buffLen);
 		static Bool IsEmailAddress(const UTF8Char *s);
@@ -32,7 +32,7 @@ namespace Text
 	};
 }
 
-template <class T> void Text::StringTool::BuildString(Text::StringBuilderUTF8 *sb, T *obj, Data::NamedClass<T> *cls)
+template <class T> void Text::StringTool::BuildString(NotNullPtr<Text::StringBuilderUTF8> sb, T *obj, Data::NamedClass<T> *cls)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -65,7 +65,7 @@ template <class T> void Text::StringTool::BuildString(Text::StringBuilderUTF8 *s
 	sb->AppendUTF8Char('}');
 }
 
-template <class T> void Text::StringTool::BuildString(Text::StringBuilderUTF8 *sb, Data::List<T*> *list, Data::NamedClass<T> *cls, const UTF8Char *clsName, UOSInt nameLen)
+template <class T> void Text::StringTool::BuildString(NotNullPtr<Text::StringBuilderUTF8> sb, Data::List<T*> *list, Data::NamedClass<T> *cls, const UTF8Char *clsName, UOSInt nameLen)
 {
 	if (list == 0)
 	{

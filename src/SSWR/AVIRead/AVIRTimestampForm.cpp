@@ -6,7 +6,7 @@ void __stdcall SSWR::AVIRead::AVIRTimestampForm::OnEpochSecClicked(void *userObj
 	SSWR::AVIRead::AVIRTimestampForm *me = (SSWR::AVIRead::AVIRTimestampForm *)userObj;
 	Text::StringBuilderUTF8 sb;
 	Int64 v;
-	me->txtValue->GetText(&sb);
+	me->txtValue->GetText(sb);
 	UInt32 ns = 0;
 	UOSInt i = sb.IndexOf('.');
 	if (i != INVALID_INDEX)
@@ -32,7 +32,7 @@ void __stdcall SSWR::AVIRead::AVIRTimestampForm::OnEpochMSClicked(void *userObj)
 	SSWR::AVIRead::AVIRTimestampForm *me = (SSWR::AVIRead::AVIRTimestampForm *)userObj;
 	Text::StringBuilderUTF8 sb;
 	Int64 v;
-	me->txtValue->GetText(&sb);
+	me->txtValue->GetText(sb);
 	if (sb.ToInt64(&v))
 	{
 		me->DisplayTime(Data::Timestamp::FromEpochMS(v, 0));
@@ -44,7 +44,7 @@ void __stdcall SSWR::AVIRead::AVIRTimestampForm::OnEpochUSClicked(void *userObj)
 	SSWR::AVIRead::AVIRTimestampForm *me = (SSWR::AVIRead::AVIRTimestampForm *)userObj;
 	Text::StringBuilderUTF8 sb;
 	Int64 v;
-	me->txtValue->GetText(&sb);
+	me->txtValue->GetText(sb);
 	if (sb.ToInt64(&v))
 	{
 		me->DisplayTime(Data::Timestamp::FromEpochUS(v, 0));
@@ -56,7 +56,7 @@ void __stdcall SSWR::AVIRead::AVIRTimestampForm::OnEpochNSClicked(void *userObj)
 	SSWR::AVIRead::AVIRTimestampForm *me = (SSWR::AVIRead::AVIRTimestampForm *)userObj;
 	Text::StringBuilderUTF8 sb;
 	Int64 v;
-	me->txtValue->GetText(&sb);
+	me->txtValue->GetText(sb);
 	if (sb.ToInt64(&v))
 	{
 		me->DisplayTime(Data::Timestamp::FromEpochNS(v, 0));
@@ -68,7 +68,7 @@ void __stdcall SSWR::AVIRead::AVIRTimestampForm::OnDotNetTicksClicked(void *user
 	SSWR::AVIRead::AVIRTimestampForm *me = (SSWR::AVIRead::AVIRTimestampForm *)userObj;
 	Text::StringBuilderUTF8 sb;
 	Int64 v;
-	me->txtValue->GetText(&sb);
+	me->txtValue->GetText(sb);
 	if (sb.ToInt64(&v))
 	{
 		me->DisplayTime(Data::Timestamp::FromDotNetTicks(v, 0));
@@ -79,7 +79,7 @@ void __stdcall SSWR::AVIRead::AVIRTimestampForm::OnStrConvClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRTimestampForm *me = (SSWR::AVIRead::AVIRTimestampForm *)userObj;
 	Text::StringBuilderUTF8 sb;
-	me->txtStr->GetText(&sb);
+	me->txtStr->GetText(sb);
 	Data::Timestamp ts = Data::Timestamp::FromStr(sb.ToCString(), 0);
 	sb.ClearStr();
 	sb.AppendI64(ts.ToUnixTimestamp());

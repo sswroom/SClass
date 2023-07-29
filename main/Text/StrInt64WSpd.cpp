@@ -53,13 +53,13 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	NEW_CLASS(console, IO::ConsoleWriter());
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("t1 = "));
-	Text::SBAppendF64(&sb, t1);
+	sb.AppendDouble(t1);
 	sb.AppendC(UTF8STRC(", t2 = "));
-	Text::SBAppendF64(&sb, t2);
+	sb.AppendDouble(t2);
 	sb.AppendC(UTF8STRC("\r\nt1b = "));
-	Text::SBAppendF64(&sb, t1b);
+	sb.AppendDouble(t1b);
 	sb.AppendC(UTF8STRC(", t2b = "));
-	Text::SBAppendF64(&sb, t2b);
+	sb.AppendDouble(t2b);
 	console->WriteLineC(sb.ToString(), sb.GetLength());
 	DEL_CLASS(console);
 	return 0;

@@ -127,7 +127,7 @@ SSWR::AVIRead::AVIRGISCSysForm::AVIRGISCSysForm(UI::GUIClientControl *parent, No
 	}
 	else
 	{
-		this->oriCSys->ToString(&sb);
+		this->oriCSys->ToString(sb);
 	}
 	this->txtCurrCSys->SetText(sb.ToCString());
 }

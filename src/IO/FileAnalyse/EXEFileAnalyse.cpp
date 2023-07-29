@@ -308,7 +308,7 @@ UOSInt IO::FileAnalyse::EXEFileAnalyse::GetFrameCount()
 	return this->packs.GetCount();
 }
 
-Bool IO::FileAnalyse::EXEFileAnalyse::GetFrameName(UOSInt index, Text::StringBuilderUTF8 *sb)
+Bool IO::FileAnalyse::EXEFileAnalyse::GetFrameName(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	IO::FileAnalyse::EXEFileAnalyse::PackInfo *pack;
 	pack = this->packs.GetItem(index);
@@ -322,7 +322,7 @@ Bool IO::FileAnalyse::EXEFileAnalyse::GetFrameName(UOSInt index, Text::StringBui
 	return true;
 }
 
-Bool IO::FileAnalyse::EXEFileAnalyse::GetFrameDetail(UOSInt index, Text::StringBuilderUTF8 *sb)
+Bool IO::FileAnalyse::EXEFileAnalyse::GetFrameDetail(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	IO::FileAnalyse::EXEFileAnalyse::PackInfo *pack;
 	pack = this->packs.GetItem(index);

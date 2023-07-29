@@ -9,7 +9,7 @@ void __stdcall SSWR::AVIRead::AVIRNTPClientForm::OnGetTimeClicked(void *userObj)
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
 	Text::StringBuilderUTF8 sb;
-	me->cboServer->GetText(&sb);
+	me->cboServer->GetText(sb);
 	if (sb.GetLength() > 0)
 	{
 		Data::Timestamp ts;
@@ -46,7 +46,7 @@ void __stdcall SSWR::AVIRead::AVIRNTPClientForm::OnSyncTimeClicked(void *userObj
 	Net::NTPClient *cli;
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
-	me->cboServer->GetText(&sb);
+	me->cboServer->GetText(sb);
 	if (sb.GetLength() > 0)
 	{
 		Data::Timestamp ts;

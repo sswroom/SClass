@@ -199,7 +199,7 @@ Bool Net::WebServiceClient::Request(RequestType rt)
 													if (node2->GetNodeType() == Text::XMLNode::NodeType::Element && node2->name->Equals(sbuff, (UOSInt)(sptr - sbuff)))
 													{
 														sb.ClearStr();
-														node2->GetInnerText(&sb);
+														node2->GetInnerText(sb);
 														this->responseVal = Text::StrCopyNew(sb.ToString());
 														succ = true;
 														break;
@@ -339,7 +339,7 @@ Bool Net::WebServiceClient::Request(RequestType rt)
 													if (node2->GetNodeType() == Text::XMLNode::NodeType::Element && node2->name->Equals(sbuff, (UOSInt)(sptr - sbuff)))
 													{
 														sb.ClearStr();
-														node2->GetInnerText(&sb);
+														node2->GetInnerText(sb);
 														this->responseVal = Text::StrCopyNew(sb.ToString());
 														succ = true;
 														break;

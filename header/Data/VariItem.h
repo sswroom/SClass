@@ -132,7 +132,7 @@ namespace Data
 		Int64 GetAsI64() const;
 		UInt64 GetAsU64() const;
 		Bool GetAsBool() const;
-		void GetAsString(Text::StringBuilderUTF8 *sb) const;
+		void GetAsString(NotNullPtr<Text::StringBuilderUTF8> sb) const;
 		UTF8Char *GetAsStringS(UTF8Char *buff, UOSInt buffSize) const;
 		Text::String *GetAsNewString() const;
 		Data::DateTime *GetAsNewDate() const;
@@ -173,7 +173,7 @@ namespace Data
 		void Set(VariItem *item);
 
 		VariItem *Clone() const;
-		void ToString(Text::StringBuilderUTF8 *sb) const;
+		void ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const;
 
 		static VariItem *NewNull();
 		static VariItem *NewStrSlow(const UTF8Char *str);

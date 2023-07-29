@@ -29,7 +29,7 @@ namespace IO
 			Bool threadToStop;
 			Bool threadStarted;
 
-			UOSInt ParseScriptDataVal(UInt8 *data, UOSInt ofst, UOSInt endOfst, Text::StringBuilderUTF8 *sb);
+			UOSInt ParseScriptDataVal(UInt8 *data, UOSInt ofst, UOSInt endOfst, NotNullPtr<Text::StringBuilderUTF8> sb);
 			void ParseScriptData(UInt8 *data, UOSInt ofst, UOSInt endOfst, UOSInt frameOfst, IO::FileAnalyse::FrameDetailHandler *frame);
 			static UInt32 __stdcall ParseThread(void *userObj);
 		public:
@@ -38,8 +38,8 @@ namespace IO
 
 			virtual Text::CString GetFormatName();
 			virtual UOSInt GetFrameCount();
-			virtual Bool GetFrameName(UOSInt index, Text::StringBuilderUTF8 *sb);
-			virtual Bool GetFrameDetail(UOSInt index, Text::StringBuilderUTF8 *sb);
+			virtual Bool GetFrameName(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb);
+			virtual Bool GetFrameDetail(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb);
 			virtual UOSInt GetFrameIndex(UInt64 ofst);
 			virtual FrameDetail *GetFrameDetail(UOSInt index);
 

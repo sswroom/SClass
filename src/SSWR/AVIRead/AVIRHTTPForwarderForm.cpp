@@ -19,10 +19,10 @@ void __stdcall SSWR::AVIRead::AVIRHTTPForwarderForm::OnStartClick(void *userObj)
 	UInt16 port = 0;
 	Bool valid = true;
 	Text::StringBuilderUTF8 sb;
-	me->txtPort->GetText(&sb);
+	me->txtPort->GetText(sb);
 	Text::StrToUInt16S(sb.ToString(), &port, 0);
 	sb.ClearStr();
-	me->txtFwdURL->GetText(&sb);
+	me->txtFwdURL->GetText(sb);
 	if (!sb.StartsWith(UTF8STRC("http://")) && !sb.StartsWith(UTF8STRC("https://")))
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Forward URL must be started with http:// or https://"), CSTR("HTTP Forwarder"), me);
@@ -130,9 +130,9 @@ void __stdcall SSWR::AVIRead::AVIRHTTPForwarderForm::OnSSLCertClicked(void *user
 		me->sslCert = frm.GetCert();
 		me->sslKey = frm.GetKey();
 		Text::StringBuilderUTF8 sb;
-		me->sslCert->ToShortString(&sb);
+		me->sslCert->ToShortString(sb);
 		sb.AppendC(UTF8STRC(", "));
-		me->sslKey->ToShortString(&sb);
+		me->sslKey->ToShortString(sb);
 		me->lblSSLCert->SetText(sb.ToCString());
 	}
 }

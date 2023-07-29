@@ -26,7 +26,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPTestForm::OnStartClicked(void *userObj)
 		UI::MessageDialog::ShowDialog(CSTR("Please enter at least 1 URL"), CSTR("Start"), me);
 		return;
 	}
-	me->txtConcurrCnt->GetText(&sb);
+	me->txtConcurrCnt->GetText(sb);
 	if (!sb.ToUInt32(&me->threadCnt) || me->threadCnt <= 0 || me->threadCnt >= 1000)
 	{
 		me->threadCnt = 0;
@@ -34,7 +34,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPTestForm::OnStartClicked(void *userObj)
 		return;
 	}
 	sb.ClearStr();
-	me->txtTotalConnCnt->GetText(&sb);
+	me->txtTotalConnCnt->GetText(sb);
 	if (!sb.ToUInt32(&me->connLeftCnt) || me->connLeftCnt < me->threadCnt || me->connLeftCnt >= 1000000000)
 	{
 		me->threadCnt = 0;
@@ -48,7 +48,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPTestForm::OnStartClicked(void *userObj)
 	{
 		me->method = Net::WebUtil::RequestMethod::HTTP_POST;
 		sb.ClearStr();
-		me->txtPostSize->GetText(&sb);
+		me->txtPostSize->GetText(sb);
 		if (!sb.ToUInt32(&me->postSize) || me->postSize <= 0)
 		{
 			me->threadCnt = 0;
@@ -90,7 +90,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPTestForm::OnURLAddClicked(void *userObj)
 		UI::MessageDialog::ShowDialog(CSTR("You cannot add URL while running"), CSTR("Add"), me);
 		return;
 	}
-	me->txtURL->GetText(&sb);
+	me->txtURL->GetText(sb);
 	if (sb.StartsWith(UTF8STRC("http://")) || sb.StartsWith(UTF8STRC("https://")))
 	{
 		me->connURLs.Add(Text::String::New(sb.ToCString()));

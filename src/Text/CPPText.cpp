@@ -5,7 +5,7 @@
 #include "Text/MyStringW.h"
 #include "Text/Cpp/CppReader.h"
 
-void Text::CPPText::ToCPPString(Text::StringBuilderUTF8 *sb, const UTF8Char *str)
+void Text::CPPText::ToCPPString(NotNullPtr<Text::StringBuilderUTF8> sb, const UTF8Char *str)
 {
 	UTF32Char c;
 	sb->AppendUTF8Char('\"');
@@ -97,7 +97,7 @@ void Text::CPPText::ToCPPString(Text::StringBuilderUTF8 *sb, const UTF8Char *str
 	sb->AppendUTF8Char('\"');
 }
 
-void Text::CPPText::ToCPPString(Text::StringBuilderUTF8 *sb, const UTF8Char *str, UOSInt leng)
+void Text::CPPText::ToCPPString(NotNullPtr<Text::StringBuilderUTF8> sb, const UTF8Char *str, UOSInt leng)
 {
 	const UTF8Char *strEnd = str + leng;
 	UTF32Char c;
@@ -199,7 +199,7 @@ void Text::CPPText::ToCPPString(Text::StringBuilderUTF8 *sb, const UTF8Char *str
 	sb->AppendUTF8Char('\"');
 }
 
-void Text::CPPText::FromCPPString(Text::StringBuilderUTF8 *sb, const UTF8Char *str)
+void Text::CPPText::FromCPPString(NotNullPtr<Text::StringBuilderUTF8> sb, const UTF8Char *str)
 {
 	Bool quoted = false;
 	UTF32Char c;
@@ -295,19 +295,19 @@ void Text::CPPText::FromCPPString(Text::StringBuilderUTF8 *sb, const UTF8Char *s
 	}
 }
 
-Bool Text::CPPText::ParseEnum(Data::ArrayListNN<Text::String> *enumEntries, Text::CString cppEnumStr, Text::StringBuilderUTF8 *sbPrefix)
+Bool Text::CPPText::ParseEnum(Data::ArrayListNN<Text::String> *enumEntries, Text::CString cppEnumStr, NotNullPtr<Text::StringBuilderUTF8> sbPrefix)
 {
 	IO::MemoryReadingStream mstm(cppEnumStr.v, cppEnumStr.leng);
 	Text::Cpp::CppReader reader(mstm);
 	Text::StringBuilderUTF8 sb;
-	if (!reader.NextWord(&sb))
+	if (!reader.NextWord(sb))
 	{
 		return false;
 	}
 	if (sb.Equals(UTF8STRC("typedef")))
 	{
 		sb.ClearStr();
-		if (!reader.NextWord(&sb))
+		if (!reader.NextWord(sb))
 		{
 			return false;
 		}
@@ -316,7 +316,7 @@ Bool Text::CPPText::ParseEnum(Data::ArrayListNN<Text::String> *enumEntries, Text
 			return false;
 		}
 		sb.ClearStr();
-		if (!reader.NextWord(&sb))
+		if (!reader.NextWord(sb))
 		{
 			return false;
 		}
@@ -324,7 +324,7 @@ Bool Text::CPPText::ParseEnum(Data::ArrayListNN<Text::String> *enumEntries, Text
 	else if (sb.Equals(UTF8STRC("enum")))
 	{
 		sb.ClearStr();
-		if (!reader.NextWord(&sb))
+		if (!reader.NextWord(sb))
 		{
 			return false;
 		}
@@ -337,7 +337,7 @@ Bool Text::CPPText::ParseEnum(Data::ArrayListNN<Text::String> *enumEntries, Text
 			sbPrefix->AppendC(UTF8STRC("::"));
 		}
 		sb.ClearStr();
-		if (!reader.NextWord(&sb))
+		if (!reader.NextWord(sb))
 		{
 			return false;
 		}
@@ -350,7 +350,7 @@ Bool Text::CPPText::ParseEnum(Data::ArrayListNN<Text::String> *enumEntries, Text
 	while (true)
 	{
 		sb.ClearStr();
-		if (!reader.NextWord(&sb))
+		if (!reader.NextWord(sb))
 		{
 			return false;
 		}
@@ -362,14 +362,14 @@ Bool Text::CPPText::ParseEnum(Data::ArrayListNN<Text::String> *enumEntries, Text
 		{
 			enumEntries->Add(Text::String::New(sb.ToCString()));
 			sb.ClearStr();
-			if (!reader.NextWord(&sb))
+			if (!reader.NextWord(sb))
 			{
 				return false;
 			}
 			if (sb.Equals(UTF8STRC("=")))
 			{
 				sb.ClearStr();
-				if (!reader.NextWord(&sb))
+				if (!reader.NextWord(sb))
 				{
 					return false;
 				}
@@ -378,7 +378,7 @@ Bool Text::CPPText::ParseEnum(Data::ArrayListNN<Text::String> *enumEntries, Text
 					return false;
 				}
 				sb.ClearStr();
-				if (!reader.NextWord(&sb))
+				if (!reader.NextWord(sb))
 				{
 					return false;
 				}

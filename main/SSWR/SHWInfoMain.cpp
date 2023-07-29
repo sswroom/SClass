@@ -269,7 +269,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 				sb.AppendC(UTF8STRC("CPU Temp "));
 				sb.AppendUOSInt(i);
 				sb.AppendC(UTF8STRC(": "));
-				Text::SBAppendF64(&sb, temp);
+				sb.AppendDouble(temp);
 				console->WriteLineC(sb.ToString(), sb.GetLength());
 				writer->WriteLineC(sb.ToString(), sb.GetLength());
 
@@ -380,7 +380,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("Monitor Size: "));
-					Text::SBAppendF64(&sb, Math::Unit::Distance::Convert(Math::Unit::Distance::DU_MILLIMETER, Math::Unit::Distance::DU_INCH, Math_Sqrt(edidInfo.dispPhysicalW_mm * edidInfo.dispPhysicalW_mm + edidInfo.dispPhysicalH_mm * edidInfo.dispPhysicalH_mm)));
+					sb.AppendDouble(Math::Unit::Distance::Convert(Math::Unit::Distance::DU_MILLIMETER, Math::Unit::Distance::DU_INCH, Math_Sqrt(edidInfo.dispPhysicalW_mm * edidInfo.dispPhysicalW_mm + edidInfo.dispPhysicalH_mm * edidInfo.dispPhysicalH_mm)));
 					sb.AppendC(UTF8STRC("\" ("));
 					sb.AppendU32(edidInfo.dispPhysicalW_mm);
 					sb.AppendC(UTF8STRC(" x "));
@@ -405,33 +405,33 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("Monitor White: x = "));
-					Text::SBAppendF64(&sb, edidInfo.wx);
+					sb.AppendDouble(edidInfo.wx);
 					sb.AppendC(UTF8STRC(", y = "));
-					Text::SBAppendF64(&sb, edidInfo.wy);
+					sb.AppendDouble(edidInfo.wy);
 					console->WriteLineC(sb.ToString(), sb.GetLength());
 					writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("Monitor Red x = "));
-					Text::SBAppendF64(&sb, edidInfo.rx);
+					sb.AppendDouble(edidInfo.rx);
 					sb.AppendC(UTF8STRC(", y = "));
-					Text::SBAppendF64(&sb, edidInfo.ry);
+					sb.AppendDouble(edidInfo.ry);
 					console->WriteLineC(sb.ToString(), sb.GetLength());
 					writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("Monitor Green: x = "));
-					Text::SBAppendF64(&sb, edidInfo.gx);
+					sb.AppendDouble(edidInfo.gx);
 					sb.AppendC(UTF8STRC(", y = "));
-					Text::SBAppendF64(&sb, edidInfo.gy);
+					sb.AppendDouble(edidInfo.gy);
 					console->WriteLineC(sb.ToString(), sb.GetLength());
 					writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("Monitor Blue: x = "));
-					Text::SBAppendF64(&sb, edidInfo.bx);
+					sb.AppendDouble(edidInfo.bx);
 					sb.AppendC(UTF8STRC(", y = "));
-					Text::SBAppendF64(&sb, edidInfo.by);
+					sb.AppendDouble(edidInfo.by);
 					console->WriteLineC(sb.ToString(), sb.GetLength());
 					writer->WriteLineC(sb.ToString(), sb.GetLength());
 				}
@@ -450,7 +450,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		console->WriteLineC(UTF8STRC("SMBIOS:"));
 		writer->WriteLineC(UTF8STRC("SMBIOS:"));
 		sb.ClearStr();
-		smbios->ToString(&sb);
+		smbios->ToString(sb);
 		console->WriteLineC(sb.ToString(), sb.GetLength());
 		writer->WriteLineC(sb.ToString(), sb.GetLength());
 
@@ -522,19 +522,19 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("Battery Voltage = "));
-		Text::SBAppendF64(&sb, pstatus.batteryVoltage);
+		sb.AppendDouble(pstatus.batteryVoltage);
 		console->WriteLineC(sb.ToString(), sb.GetLength());
 		writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("Battery Charge Current = "));
-		Text::SBAppendF64(&sb, pstatus.batteryChargeCurrent);
+		sb.AppendDouble(pstatus.batteryChargeCurrent);
 		console->WriteLineC(sb.ToString(), sb.GetLength());
 		writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("Battery Temperature = "));
-		Text::SBAppendF64(&sb, pstatus.batteryTemp);
+		sb.AppendDouble(pstatus.batteryTemp);
 		console->WriteLineC(sb.ToString(), sb.GetLength());
 		writer->WriteLineC(sb.ToString(), sb.GetLength());
 	}
@@ -651,7 +651,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 				if (capture)
 				{
 					sb.ClearStr();
-					capture->GetInfo(&sb);
+					capture->GetInfo(sb);
 					console->WriteLineC(sb.ToString(), sb.GetLength());
 					writer->WriteLineC(sb.ToString(), sb.GetLength());
 					console->WriteLineC(UTF8STRC("Format List:"));
@@ -678,7 +678,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 						sb.AppendC(UTF8STRC(" x "));
 						sb.AppendUOSInt(fmts[k].info.dispSize.y);
 						sb.AppendC(UTF8STRC(", rate = "));
-						Text::SBAppendF64(&sb, fmts[k].frameRateNorm / (Double)fmts[k].frameRateDenorm);
+						sb.AppendDouble(fmts[k].frameRateNorm / (Double)fmts[k].frameRateDenorm);
 						console->WriteLineC(sb.ToString(), sb.GetLength());
 						writer->WriteLineC(sb.ToString(), sb.GetLength());
 						k++;
@@ -1145,13 +1145,13 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 
 							sb.ClearStr();
 							sb.AppendC(UTF8STRC("Accelerometer x = "));
-							Text::SBAppendF64(&sb, x);
+							sb.AppendDouble(x);
 							sb.Append(Math::Unit::Acceleration::GetUnitShortName(aunit));
 							sb.AppendC(UTF8STRC(", y = "));
-							Text::SBAppendF64(&sb, y);
+							sb.AppendDouble(y);
 							sb.Append(Math::Unit::Acceleration::GetUnitShortName(aunit));
 							sb.AppendC(UTF8STRC(", z = "));
-							Text::SBAppendF64(&sb, z);
+							sb.AppendDouble(z);
 							sb.Append(Math::Unit::Acceleration::GetUnitShortName(aunit));
 							console->WriteLineC(sb.ToString(), sb.GetLength());
 							writer->WriteLineC(sb.ToString(), sb.GetLength());
@@ -1167,7 +1167,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 						{
 							sb.ClearStr();
 							sb.AppendC(UTF8STRC("Pressure = "));
-							Text::SBAppendF64(&sb, pressure);
+							sb.AppendDouble(pressure);
 							sb.Append(Math::Unit::Pressure::GetUnitShortName(sensor->GetSensorPressure()->GetPressureUnit()));
 							console->WriteLineC(sb.ToString(), sb.GetLength());
 							writer->WriteLineC(sb.ToString(), sb.GetLength());
@@ -1187,13 +1187,13 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 
 							sb.ClearStr();
 							sb.AppendC(UTF8STRC("Magnetometer x = "));
-							Text::SBAppendF64(&sb, x);
+							sb.AppendDouble(x);
 							sb.Append(Math::Unit::MagneticField::GetUnitShortName(mfunit));
 							sb.AppendC(UTF8STRC(", y = "));
-							Text::SBAppendF64(&sb, y);
+							sb.AppendDouble(y);
 							sb.Append(Math::Unit::MagneticField::GetUnitShortName(mfunit));
 							sb.AppendC(UTF8STRC(", z = "));
-							Text::SBAppendF64(&sb, z);
+							sb.AppendDouble(z);
 							sb.Append(Math::Unit::MagneticField::GetUnitShortName(mfunit));
 							console->WriteLineC(sb.ToString(), sb.GetLength());
 							writer->WriteLineC(sb.ToString(), sb.GetLength());

@@ -83,7 +83,7 @@ Bool Text::Cpp::CppReader::ReadLineInner(NotNullPtr<Text::StringBuilderUTF8> sb)
 	return true;
 }
 
-Bool Text::Cpp::CppReader::ReadWord(Text::StringBuilderUTF8 *sb, Bool move)
+Bool Text::Cpp::CppReader::ReadWord(NotNullPtr<Text::StringBuilderUTF8> sb, Bool move)
 {
 	while (this->currOfst >= this->sbLine.GetCharCnt())
 	{
@@ -212,12 +212,12 @@ Text::Cpp::CppReader::~CppReader()
 {
 }
 
-Bool Text::Cpp::CppReader::PeekWord(Text::StringBuilderUTF8 *sb)
+Bool Text::Cpp::CppReader::PeekWord(NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	return ReadWord(sb, false);
 }
 
-Bool Text::Cpp::CppReader::NextWord(Text::StringBuilderUTF8 *sb)
+Bool Text::Cpp::CppReader::NextWord(NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	return ReadWord(sb, true);
 }

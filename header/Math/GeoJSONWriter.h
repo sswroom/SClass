@@ -15,9 +15,9 @@ namespace Math
 		virtual ~GeoJSONWriter();
 
 		virtual Text::CString GetWriterName();
-		virtual Bool ToText(Text::StringBuilderUTF8 *sb, Math::Geometry::Vector2D *vec);
+		virtual Bool ToText(NotNullPtr<Text::StringBuilderUTF8> sb, Math::Geometry::Vector2D *vec);
 		virtual Text::String *GetLastError();
-		Bool ToGeometry(Text::StringBuilderUTF8 *sb, Math::Geometry::Vector2D *vec);
+		Bool ToGeometry(NotNullPtr<Text::StringBuilderUTF8> sb, Math::Geometry::Vector2D *vec);
 	};
 }
 #endif

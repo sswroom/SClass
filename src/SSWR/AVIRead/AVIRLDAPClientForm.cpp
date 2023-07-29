@@ -18,7 +18,7 @@ void __stdcall SSWR::AVIRead::AVIRLDAPClientForm::OnConnectClicked(void *userObj
 	Net::SocketUtil::AddressInfo addr;
 	UInt16 port;
 	NotNullPtr<Net::SocketFactory> sockf = me->core->GetSocketFactory();
-	me->txtHost->GetText(&sb);
+	me->txtHost->GetText(sb);
 	if (sb.GetLength() == 0)
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Please enter Host"), CSTR("LDAP Client"), me);
@@ -30,7 +30,7 @@ void __stdcall SSWR::AVIRead::AVIRLDAPClientForm::OnConnectClicked(void *userObj
 		return;
 	}
 	sb.ClearStr();
-	me->txtPort->GetText(&sb);
+	me->txtPort->GetText(sb);
 	if (!sb.ToUInt16(&port))
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Please enter valid Port number"), CSTR("LDAP Client"), me);
@@ -53,8 +53,8 @@ void __stdcall SSWR::AVIRead::AVIRLDAPClientForm::OnConnectClicked(void *userObj
 	{
 		Text::StringBuilderUTF8 sb2;
 		sb.ClearStr();
-		me->txtUserDN->GetText(&sb);
-		me->txtPassword->GetText(&sb2);
+		me->txtUserDN->GetText(sb);
+		me->txtPassword->GetText(sb2);
 		succ = me->cli->Bind(sb.ToCString(), sb2.ToCString());
 	}
 	if (succ)
@@ -80,8 +80,8 @@ void __stdcall SSWR::AVIRead::AVIRLDAPClientForm::OnSearchClicked(void *userObj)
 	Text::StringBuilderUTF8 sb;
 	Text::StringBuilderUTF8 sb2;
 	Data::ArrayList<Net::LDAPClient::SearchResObject*> results;
-	me->txtSearchBase->GetText(&sb);
-	me->txtSearchFilter->GetText(&sb2);
+	me->txtSearchBase->GetText(sb);
+	me->txtSearchFilter->GetText(sb2);
 	if (!me->cli->Search(sb.ToCString(), (Net::LDAPClient::ScopeType)(OSInt)me->cboSearchScope->GetSelectedItem(), (Net::LDAPClient::DerefType)(OSInt)me->cboSearchDerefAliases->GetSelectedItem(), 0, 0, false, sb2.ToString(), &results))
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Error in searching from server"), CSTR("LDAP Client"), me);
@@ -129,7 +129,7 @@ void __stdcall SSWR::AVIRead::AVIRLDAPClientForm::OnSearchResultSelChg(void *use
 			item = obj->items->GetItem(i);
 			k = me->lvSearch->AddItem(item->type, 0);
 			sb.ClearStr();
-			Net::LDAPClient::SearchResDisplay(item->type->ToCString(), item->value->ToCString(), &sb);
+			Net::LDAPClient::SearchResDisplay(item->type->ToCString(), item->value->ToCString(), sb);
 			me->lvSearch->SetSubItem(k, 1, sb.ToCString());
 			i++;
 		}

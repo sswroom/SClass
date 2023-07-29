@@ -9,7 +9,7 @@ void __stdcall SSWR::AVIRead::AVIRLoRaJSONForm::OnJSONParseClick(void *userObj)
 	UInt8 buff[256];
 	UOSInt buffSize;
 	Text::StringBuilderUTF8 sb;
-	me->txtJSON->GetText(&sb);
+	me->txtJSON->GetText(sb);
 	Text::JSONBase *json = Text::JSONBase::ParseJSONStr(sb.ToCString());
 	if (json)
 	{
@@ -31,7 +31,7 @@ void __stdcall SSWR::AVIRead::AVIRLoRaJSONForm::OnJSONParseClick(void *userObj)
 			else if (rxstat->GetAsInt32() == 1)
 			{
 				sb.AppendC(UTF8STRC("CRC valid\r\n"));
-				PHYPayloadDetail(&sb, buff, buffSize);
+				PHYPayloadDetail(sb, buff, buffSize);
 			}
 			else
 			{
@@ -47,7 +47,7 @@ void __stdcall SSWR::AVIRead::AVIRLoRaJSONForm::OnJSONParseClick(void *userObj)
 			sb.AppendC(UTF8STRC("Transmitted Packet:\r\n"));
 			sb.AppendHexBuff(buff, buffSize, ' ', Text::LineBreakType::CRLF);
 			sb.AppendC(UTF8STRC("\r\n\r\n"));
-			PHYPayloadDetail(&sb, buff, buffSize);
+			PHYPayloadDetail(sb, buff, buffSize);
 			me->txtInfo->SetText(sb.ToCString());
 		}
 		else
@@ -62,7 +62,7 @@ void __stdcall SSWR::AVIRead::AVIRLoRaJSONForm::OnJSONParseClick(void *userObj)
 	}
 }
 
-void SSWR::AVIRead::AVIRLoRaJSONForm::PHYPayloadDetail(Text::StringBuilderUTF8 *sb, const UInt8 *buff, UOSInt buffSize)
+void SSWR::AVIRead::AVIRLoRaJSONForm::PHYPayloadDetail(NotNullPtr<Text::StringBuilderUTF8> sb, const UInt8 *buff, UOSInt buffSize)
 {
 	switch (buff[0] >> 5)
 	{
@@ -100,7 +100,7 @@ void SSWR::AVIRead::AVIRLoRaJSONForm::PHYPayloadDetail(Text::StringBuilderUTF8 *
 	sb->AppendC(UTF8STRC("\r\n"));
 }
 
-void SSWR::AVIRead::AVIRLoRaJSONForm::MACPayloadDetail(Text::StringBuilderUTF8 *sb, Bool donwLink, const UInt8 *buff, UOSInt buffSize)
+void SSWR::AVIRead::AVIRLoRaJSONForm::MACPayloadDetail(NotNullPtr<Text::StringBuilderUTF8> sb, Bool donwLink, const UInt8 *buff, UOSInt buffSize)
 {
 	if (buffSize < 7)
 	{

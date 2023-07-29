@@ -38,7 +38,7 @@ Map::GeoPackage::GeoPackage(DB::DBConn *conn)
 	while (r->ReadNext())
 	{
 		sb.ClearStr();
-		r->GetStr(1, &sb);
+		r->GetStr(1, sb);
 		tableName = r->GetNewStr(0);
 		this->allTables.Add(tableName);
 		if (sb.Equals(UTF8STRC("features")))
@@ -66,7 +66,7 @@ Map::GeoPackage::GeoPackage(DB::DBConn *conn)
 		while (r->ReadNext())
 		{
 			sb.ClearStr();
-			r->GetStr(0, &sb);
+			r->GetStr(0, sb);
 			cont = this->tableList.GetC(sb.ToCString());
 			if (cont)
 			{
@@ -136,7 +136,7 @@ void Map::GeoPackage::CloseReader(DB::DBReader *r)
 	this->conn->CloseReader(r);
 }
 
-void Map::GeoPackage::GetLastErrorMsg(Text::StringBuilderUTF8 *str)
+void Map::GeoPackage::GetLastErrorMsg(NotNullPtr<Text::StringBuilderUTF8> str)
 {
 	this->conn->GetLastErrorMsg(str);
 }

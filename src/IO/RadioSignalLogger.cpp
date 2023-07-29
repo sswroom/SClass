@@ -20,7 +20,7 @@ void __stdcall IO::RadioSignalLogger::OnWiFiUpdate(Net::WirelessLAN::BSSInfo *bs
 		sb.AppendUTF8Char('\t');
 		sb.AppendHexBuff(bss->GetMAC(), 6, ':', Text::LineBreakType::None);
 		sb.AppendUTF8Char('\t');
-		Text::SBAppendF64(&sb, bss->GetRSSI());
+		sb.AppendDouble(bss->GetRSSI());
 		sb.AppendC(UTF8STRC("\r\n"));
 		me->fs->Write(sb.ToString(), sb.GetLength());
 		me->wifiCnt++;

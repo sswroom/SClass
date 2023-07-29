@@ -24,7 +24,7 @@ namespace Math
 		virtual CoordinateSystem *Clone() const;
 		virtual CoordinateSystemType GetCoordSysType() const;
 		virtual Bool IsProjected() const;
-		virtual void ToString(Text::StringBuilderUTF8 *sb) const;
+		virtual void ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const;
 
 		virtual Bool Equals(CoordinateSystem *csys) const;
 	};

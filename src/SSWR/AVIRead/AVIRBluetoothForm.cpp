@@ -12,7 +12,7 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothForm::OnCtrlChanged(void *userObj)
 		Text::StringBuilderUTF8 sb;
 
 		me->txtRadioName->SetText(btStatus->bt->GetName()->ToCString());
-		IO::BTUtil::GetAddrText(&sb, btStatus->bt->GetAddress());
+		IO::BTUtil::GetAddrText(sb, btStatus->bt->GetAddress());
 		me->txtAddr->SetText(sb.ToCString());
 		me->txtManu->SetText(IO::BTUtil::GetManufacturerName(btStatus->bt->GetManufacturer()));
 		sb.ClearStr();
@@ -100,7 +100,7 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothForm::OnDeviceSelChg(void *userObj)
 		{
 			guid = me->guidList.GetItem(i);
 			sb.ClearStr();
-			IO::BTUtil::GetServiceName(&sb, guid);
+			IO::BTUtil::GetServiceName(sb, guid);
 			me->lbDevServices->AddItem(sb.ToCString(), guid);
 			i++;
 		}
@@ -157,7 +157,7 @@ void SSWR::AVIRead::AVIRBluetoothForm::UpdateDevList(BTStatus *btStatus)
 		dev = btStatus->devList->GetItem(i);
 		k = this->lvDevice->AddItem(dev->GetName(), dev);
 		sb.ClearStr();
-		IO::BTUtil::GetAddrText(&sb, dev->GetAddress());
+		IO::BTUtil::GetAddrText(sb, dev->GetAddress());
 		this->lvDevice->SetSubItem(k, 1, sb.ToCString());
 		const Net::MACInfo::MACEntry *mac = Net::MACInfo::GetMACInfo(IO::BTUtil::GetAddrMAC(dev->GetAddress()));
 		this->lvDevice->SetSubItem(k, 2, {mac->name, mac->nameLen});

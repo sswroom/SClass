@@ -18,7 +18,7 @@ void __stdcall SSWR::AVIRead::AVIRACMEClientForm::OnStartClicked(void *userObj)
 	UOSInt i;
 	Text::StringBuilderUTF8 sb;
 	Text::StringBuilderUTF8 sbKey;
-	me->txtHost->GetText(&sb);
+	me->txtHost->GetText(sb);
 	if (sb.GetLength() == 0)
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Please enter host"), CSTR("ACME Client"), me);
@@ -34,7 +34,7 @@ void __stdcall SSWR::AVIRead::AVIRACMEClientForm::OnStartClicked(void *userObj)
 		}
 		sb.TrimToLength(i);
 	}
-	me->txtKeyFile->GetText(&sbKey);
+	me->txtKeyFile->GetText(sbKey);
 	if (sbKey.GetLength() == 0)
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Please enter key file"), CSTR("ACME Client"), me);

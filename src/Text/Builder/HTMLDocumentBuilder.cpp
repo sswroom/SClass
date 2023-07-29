@@ -12,7 +12,7 @@ Text::Builder::HTMLDocumentBuilder::HTMLDocumentBuilder(DocType docType, Text::C
 	}
 	sb.AppendC(UTF8STRC("<html>\r\n"));
 	sb.AppendC(UTF8STRC("<head>\r\n"));
-	NEW_CLASS(this->headerBuilder, HTMLHeaderBuilder(&this->sb, title));
+	NEW_CLASS(this->headerBuilder, HTMLHeaderBuilder(this->sb, title));
 	this->bodyBuilder = 0;
 }
 
@@ -38,7 +38,7 @@ Text::Builder::HTMLBodyBuilder *Text::Builder::HTMLDocumentBuilder::StartBody(Te
 			s->Release();
 		}
 		this->sb.AppendUTF8Char('>');
-		NEW_CLASS(this->bodyBuilder, HTMLBodyBuilder(&this->sb));
+		NEW_CLASS(this->bodyBuilder, HTMLBodyBuilder(this->sb));
 	}
 	return this->bodyBuilder;
 }

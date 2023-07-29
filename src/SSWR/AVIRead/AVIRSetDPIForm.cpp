@@ -10,7 +10,7 @@ void __stdcall SSWR::AVIRead::AVIRSetDPIForm::OnOKClicked(void *userObj)
 	Text::StringBuilderUTF8 sb;
 	Double hdpi;
 	Double ddpi;
-	me->txtDesktopDPI->GetText(&sb);
+	me->txtDesktopDPI->GetText(sb);
 	if (!Text::StrToDouble(sb.ToString(), &ddpi))
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Desktop DPI is not number"), CSTR("Error"), me);

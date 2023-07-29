@@ -147,7 +147,7 @@ Bool Exporter::SQLiteExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Te
 				if (destDB->ExecuteNonQuery(sql.ToCString()) <= 0)
 				{
 					sb.ClearStr();
-					destDB->GetLastErrorMsg(&sb);
+					destDB->GetLastErrorMsg(sb);
 
 					IO::FileStream debugFS(CSTR("Debug.txt"), IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 					Text::UTF8Writer debugWriter(debugFS);

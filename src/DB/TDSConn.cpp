@@ -273,7 +273,7 @@ public:
 		return 0;
 	}
 
-	virtual Bool GetStr(UOSInt colIndex, Text::StringBuilderUTF8 *sb)
+	virtual Bool GetStr(UOSInt colIndex, NotNullPtr<Text::StringBuilderUTF8> sb)
 	{
 		if (colIndex > this->nCols)
 			return false;
@@ -396,7 +396,7 @@ public:
 				{
 					Text::StringBuilderUTF8 sb;
 					Math::WKTWriter wkt;
-					wkt.ToText(&sb, vec);
+					wkt.ToText(sb, vec);
 					DEL_CLASS(vec);
 					return Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 				}
@@ -799,7 +799,6 @@ DB::TDSConn::TDSConn(Text::CString serverHost, UInt16 port, Bool encrypt, Text::
 	this->clsData->errMsg = errMsg;
 	this->clsData->log = log;
 	this->Reconnect();
-	this->clsData->errMsg = 0;
 	if (this->clsData->dbproc != 0)
 	{
 		DB::DBReader *r = this->ExecuteReader(CSTR("select SYSDATETIME(), GETUTCDATE()"));
@@ -871,7 +870,7 @@ void DB::TDSConn::ForceTz(Int8 tzQhr)
 	this->clsData->tzQhr = tzQhr;
 }
 
-void DB::TDSConn::GetConnName(Text::StringBuilderUTF8 *sb)
+void DB::TDSConn::GetConnName(NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	sb->AppendC(UTF8STRC("TDS:"));
 	sb->Append(this->clsData->host);
@@ -931,7 +930,7 @@ void DB::TDSConn::CloseReader(DBReader *r)
 	this->cmdMut.Unlock();
 }
 
-void DB::TDSConn::GetLastErrorMsg(Text::StringBuilderUTF8 *str)
+void DB::TDSConn::GetLastErrorMsg(NotNullPtr<Text::StringBuilderUTF8> str)
 {
 	///////////////////////////////////////
 }
@@ -1020,7 +1019,7 @@ UOSInt DB::TDSConn::QueryTableNames(Text::CString schemaName, Data::ArrayListNN<
 			while (r->ReadNext())
 			{
 				sb.ClearStr();
-				if (r->GetStr(1, &sb))
+				if (r->GetStr(1, sb))
 				{
 					names->Add(Text::String::New(sb.ToCString()));
 					ret++;

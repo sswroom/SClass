@@ -52,7 +52,7 @@ namespace Media
 		Bool GetColorPrimaries(Media::ColorProfile::ColorPrimaries *color) const;
 
 		Bool SetToColorProfile(Media::ColorProfile *colorProfile);
-		void ToString(Text::StringBuilderUTF8 *sb) const;
+		void ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const;
 
 		static ICCProfile *Parse(Data::ByteArrayR buff);
 		static Bool ParseFrame(IO::FileAnalyse::FrameDetailHandler *frame, UOSInt ofst, const UInt8 *buff, UOSInt buffSize);
@@ -73,8 +73,8 @@ namespace Media
 		static Text::CString GetNameStandardObserver(Int32 val);
 		static Text::CString GetNameStandardIlluminent(Int32 val);
 
-		static void GetDispCIEXYZ(Text::StringBuilderUTF8 *sb, CIEXYZ *xyz);
-		static void GetDispTagType(Text::StringBuilderUTF8 *sb, UInt8 *buff, UInt32 leng);
+		static void GetDispCIEXYZ(NotNullPtr<Text::StringBuilderUTF8> sb, CIEXYZ *xyz);
+		static void GetDispTagType(NotNullPtr<Text::StringBuilderUTF8> sb, UInt8 *buff, UInt32 leng);
 
 		static Media::CS::TransferType FindTransferType(UOSInt colorCount, UInt16 *curveColors, Double *gamma);
 		static UTF8Char *GetProfilePath(UTF8Char *sbuff);

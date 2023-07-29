@@ -68,7 +68,7 @@ void __stdcall SSWR::AVIRead::AVIRGPSSimulatorForm::OnSpeedClicked(void *userObj
 	SSWR::AVIRead::AVIRGPSSimulatorForm *me = (SSWR::AVIRead::AVIRGPSSimulatorForm*)userObj;
 	Text::StringBuilderUTF8 sb;
 	Double v;
-	me->txtSpeedInput->GetText(&sb);
+	me->txtSpeedInput->GetText(sb);
 	if (Text::StrToDouble(sb.ToString(), &v))
 	{
 		if (v > 0 && v < 300)

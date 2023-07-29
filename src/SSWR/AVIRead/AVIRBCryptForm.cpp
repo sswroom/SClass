@@ -9,8 +9,8 @@ void __stdcall SSWR::AVIRead::AVIRBCryptForm::OnGenHashClicked(void *userObj)
 	UInt32 cost;
 	Text::StringBuilderUTF8 sbCost;
 	Text::StringBuilderUTF8 sbPassword;
-	me->txtCost->GetText(&sbCost);
-	me->txtGenPassword->GetText(&sbPassword);
+	me->txtCost->GetText(sbCost);
+	me->txtGenPassword->GetText(sbPassword);
 	if (!sbCost.ToUInt32(&cost))
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Please enter valid cost (4-31)"), CSTR("BCrypt"), me);
@@ -25,7 +25,7 @@ void __stdcall SSWR::AVIRead::AVIRBCryptForm::OnGenHashClicked(void *userObj)
 	}
 	sbCost.ClearStr();
 	Crypto::Hash::Bcrypt bcrypt;
-	bcrypt.GenHash(&sbCost, cost, sbPassword.ToString(), sbPassword.GetLength());
+	bcrypt.GenHash(sbCost, cost, sbPassword.ToString(), sbPassword.GetLength());
 	me->txtGenHash->SetText(sbCost.ToCString());
 }
 
@@ -34,8 +34,8 @@ void __stdcall SSWR::AVIRead::AVIRBCryptForm::OnCheckClicked(void *userObj)
 	SSWR::AVIRead::AVIRBCryptForm *me = (SSWR::AVIRead::AVIRBCryptForm*)userObj;
 	Text::StringBuilderUTF8 sbHash;
 	Text::StringBuilderUTF8 sbPassword;
-	me->txtCheckHash->GetText(&sbHash);
-	me->txtCheckPassword->GetText(&sbPassword);
+	me->txtCheckHash->GetText(sbHash);
+	me->txtCheckPassword->GetText(sbPassword);
 	Crypto::Hash::Bcrypt bcrypt;
 	if (bcrypt.Matches(sbHash.ToString(), sbHash.GetLength(), sbPassword.ToString(), sbPassword.GetLength()))
 	{

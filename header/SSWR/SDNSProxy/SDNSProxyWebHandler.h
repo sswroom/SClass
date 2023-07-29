@@ -34,9 +34,9 @@ namespace SSWR
 			static Bool __stdcall ClientReq(SSWR::SDNSProxy::SDNSProxyWebHandler *me, Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp);
 			static Bool __stdcall ReqPerMinReq(SSWR::SDNSProxy::SDNSProxyWebHandler *me, Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp);
 
-			static void AppendHeader(Text::StringBuilderUTF8 *sbOut);
-			static void AppendMenu(Text::StringBuilderUTF8 *sbOut);
-			static void AppendFooter(Text::StringBuilderUTF8 *sbOut);
+			static void AppendHeader(NotNullPtr<Text::StringBuilderUTF8> sbOut);
+			static void AppendMenu(NotNullPtr<Text::StringBuilderUTF8> sbOut);
+			static void AppendFooter(NotNullPtr<Text::StringBuilderUTF8> sbOut);
 
 			virtual Bool ProcessRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq);
 

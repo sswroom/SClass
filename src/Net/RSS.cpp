@@ -49,7 +49,7 @@ Net::RSSItem::RSSItem(Text::XMLNode *itemNode)
 			if (node->name->EqualsICase(UTF8STRC("title")))
 			{
 				sb.ClearStr();
-				node->GetInnerText(&sb);
+				node->GetInnerText(sb);
 				SDEL_STRING(this->title);
 				this->title = Text::String::New(sb.ToCString()).Ptr();
 			}
@@ -72,7 +72,7 @@ Net::RSSItem::RSSItem(Text::XMLNode *itemNode)
 				else
 				{
 					sb.ClearStr();
-					node->GetInnerText(&sb);
+					node->GetInnerText(sb);
 					SDEL_STRING(this->link);
 					this->link = Text::String::New(sb.ToCString()).Ptr();
 				}
@@ -80,21 +80,21 @@ Net::RSSItem::RSSItem(Text::XMLNode *itemNode)
 			else if (node->name->EqualsICase(UTF8STRC("guid")))
 			{
 				sb.ClearStr();
-				node->GetInnerText(&sb);
+				node->GetInnerText(sb);
 				SDEL_STRING(this->guid);
 				this->guid = Text::String::New(sb.ToCString()).Ptr();
 			}
 			else if (node->name->EqualsICase(UTF8STRC("id")))
 			{
 				sb.ClearStr();
-				node->GetInnerText(&sb);
+				node->GetInnerText(sb);
 				SDEL_STRING(this->guid);
 				this->guid = Text::String::New(sb.ToCString()).Ptr();
 			}
 			else if (node->name->EqualsICase(UTF8STRC("description")))
 			{
 				sb.ClearStr();
-				node->GetInnerText(&sb);
+				node->GetInnerText(sb);
 				SDEL_STRING(this->description);
 				this->description = Text::String::New(sb.ToCString()).Ptr();
 				this->descHTML = itemNode->name->Equals(UTF8STRC("item"));
@@ -102,71 +102,71 @@ Net::RSSItem::RSSItem(Text::XMLNode *itemNode)
 			else if (node->name->EqualsICase(UTF8STRC("category")))
 			{
 				sb.ClearStr();
-				node->GetInnerText(&sb);
+				node->GetInnerText(sb);
 				SDEL_STRING(this->category);
 				this->category = Text::String::New(sb.ToCString()).Ptr();
 			}
 			else if (node->name->EqualsICase(UTF8STRC("author")))
 			{
 				sb.ClearStr();
-				node->GetInnerText(&sb);
+				node->GetInnerText(sb);
 				SDEL_STRING(this->author);
 				this->author = Text::String::New(sb.ToCString()).Ptr();
 			}
 			else if (node->name->EqualsICase(UTF8STRC("pubDate")))
 			{
 				sb.ClearStr();
-				node->GetInnerText(&sb);
+				node->GetInnerText(sb);
 				this->pubDate = Data::Timestamp::FromStr(sb.ToCString(), 0);
 			}
 			else if (node->name->EqualsICase(UTF8STRC("dc:date")))
 			{
 				sb.ClearStr();
-				node->GetInnerText(&sb);
+				node->GetInnerText(sb);
 				this->pubDate = Data::Timestamp::FromStr(sb.ToCString(), 0);
 			}
 			else if (node->name->EqualsICase(UTF8STRC("published")))
 			{
 				sb.ClearStr();
-				node->GetInnerText(&sb);
+				node->GetInnerText(sb);
 				this->pubDate = Data::Timestamp::FromStr(sb.ToCString(), 0);
 			}
 			else if (node->name->EqualsICase(UTF8STRC("updated")))
 			{
 				sb.ClearStr();
-				node->GetInnerText(&sb);
+				node->GetInnerText(sb);
 				this->pubDate = Data::Timestamp::FromStr(sb.ToCString(), 0);
 			}
 			else if (node->name->EqualsICase(UTF8STRC("objectId")))
 			{
 				sb.ClearStr();
-				node->GetInnerText(&sb);
+				node->GetInnerText(sb);
 				SDEL_STRING(this->objectId);
 				this->objectId = Text::String::New(sb.ToCString()).Ptr();
 			}
 			else if (node->name->EqualsICase(UTF8STRC("yt:videoId")))
 			{
 				sb.ClearStr();
-				node->GetInnerText(&sb);
+				node->GetInnerText(sb);
 				SDEL_STRING(this->objectId);
 				this->objectId = Text::String::New(sb.ToCString()).Ptr();
 			}
 			else if (node->name->EqualsICase(UTF8STRC("geo:lat")))
 			{
 				sb.ClearStr();
-				node->GetInnerText(&sb);
+				node->GetInnerText(sb);
 				this->lat = sb.ToDouble();
 			}
 			else if (node->name->EqualsICase(UTF8STRC("geo:long")))
 			{
 				sb.ClearStr();
-				node->GetInnerText(&sb);
+				node->GetInnerText(sb);
 				this->lon = sb.ToDouble();
 			}
 			else if (node->name->EqualsICase(UTF8STRC("content")))
 			{
 				sb.ClearStr();
-				node->GetInnerText(&sb);
+				node->GetInnerText(sb);
 				SDEL_STRING(this->description);
 				this->description = Text::String::New(sb.ToCString()).Ptr();
 			}
@@ -182,14 +182,14 @@ Net::RSSItem::RSSItem(Text::XMLNode *itemNode)
 						if (node2->name->Equals(UTF8STRC("media:description")))
 						{
 							sb.ClearStr();
-							node->GetInnerText(&sb);
+							node->GetInnerText(sb);
 							SDEL_STRING(this->description);
 							this->description = Text::String::New(sb.ToCString()).Ptr();
 						}
 						else if (node2->name->Equals(UTF8STRC("media:imgURL")))
 						{
 							sb.ClearStr();
-							node->GetInnerText(&sb);
+							node->GetInnerText(sb);
 							SDEL_STRING(this->description);
 							this->description = Text::String::New(sb.ToCString()).Ptr();
 						}
@@ -244,7 +244,7 @@ Net::RSSItem::RSSItem(Text::XMLReader *reader)
 		if (name->EqualsICase(UTF8STRC("title")))
 		{
 			sb.ClearStr();
-			reader->ReadNodeText(&sb);
+			reader->ReadNodeText(sb);
 			SDEL_STRING(this->title);
 			this->title = Text::String::New(sb.ToCString()).Ptr();
 		}
@@ -270,7 +270,7 @@ Net::RSSItem::RSSItem(Text::XMLReader *reader)
 			else
 			{
 				sb.ClearStr();
-				reader->ReadNodeText(&sb);
+				reader->ReadNodeText(sb);
 				SDEL_STRING(this->link);
 				this->link = Text::String::New(sb.ToCString()).Ptr();
 			}
@@ -278,21 +278,21 @@ Net::RSSItem::RSSItem(Text::XMLReader *reader)
 		else if (name->EqualsICase(UTF8STRC("guid")))
 		{
 			sb.ClearStr();
-			reader->ReadNodeText(&sb);
+			reader->ReadNodeText(sb);
 			SDEL_STRING(this->guid);
 			this->guid = Text::String::New(sb.ToCString()).Ptr();
 		}
 		else if (name->EqualsICase(UTF8STRC("id")))
 		{
 			sb.ClearStr();
-			reader->ReadNodeText(&sb);
+			reader->ReadNodeText(sb);
 			SDEL_STRING(this->guid);
 			this->guid = Text::String::New(sb.ToCString()).Ptr();
 		}
 		else if (name->EqualsICase(UTF8STRC("description")))
 		{
 			sb.ClearStr();
-			reader->ReadNodeText(&sb);
+			reader->ReadNodeText(sb);
 			SDEL_STRING(this->description);
 			this->description = Text::String::New(sb.ToCString()).Ptr();
 			this->descHTML = descHTML;
@@ -300,71 +300,71 @@ Net::RSSItem::RSSItem(Text::XMLReader *reader)
 		else if (name->EqualsICase(UTF8STRC("category")))
 		{
 			sb.ClearStr();
-			reader->ReadNodeText(&sb);
+			reader->ReadNodeText(sb);
 			SDEL_STRING(this->category);
 			this->category = Text::String::New(sb.ToCString()).Ptr();
 		}
 		else if (name->EqualsICase(UTF8STRC("author")))
 		{
 			sb.ClearStr();
-			reader->ReadNodeText(&sb);
+			reader->ReadNodeText(sb);
 			SDEL_STRING(this->author);
 			this->author = Text::String::New(sb.ToCString()).Ptr();
 		}
 		else if (name->EqualsICase(UTF8STRC("pubDate")))
 		{
 			sb.ClearStr();
-			reader->ReadNodeText(&sb);
+			reader->ReadNodeText(sb);
 			this->pubDate = Data::Timestamp::FromStr(sb.ToCString(), 0);
 		}
 		else if (name->EqualsICase(UTF8STRC("dc:date")))
 		{
 			sb.ClearStr();
-			reader->ReadNodeText(&sb);
+			reader->ReadNodeText(sb);
 			this->pubDate = Data::Timestamp::FromStr(sb.ToCString(), 0);
 		}
 		else if (name->EqualsICase(UTF8STRC("published")))
 		{
 			sb.ClearStr();
-			reader->ReadNodeText(&sb);
+			reader->ReadNodeText(sb);
 			this->pubDate = Data::Timestamp::FromStr(sb.ToCString(), 0);
 		}
 		else if (name->EqualsICase(UTF8STRC("updated")))
 		{
 			sb.ClearStr();
-			reader->ReadNodeText(&sb);
+			reader->ReadNodeText(sb);
 			this->pubDate = Data::Timestamp::FromStr(sb.ToCString(), 0);
 		}
 		else if (name->EqualsICase(UTF8STRC("objectId")))
 		{
 			sb.ClearStr();
-			reader->ReadNodeText(&sb);
+			reader->ReadNodeText(sb);
 			SDEL_STRING(this->objectId);
 			this->objectId = Text::String::New(sb.ToCString()).Ptr();
 		}
 		else if (name->EqualsICase(UTF8STRC("yt:videoId")))
 		{
 			sb.ClearStr();
-			reader->ReadNodeText(&sb);
+			reader->ReadNodeText(sb);
 			SDEL_STRING(this->objectId);
 			this->objectId = Text::String::New(sb.ToCString()).Ptr();
 		}
 		else if (name->EqualsICase(UTF8STRC("geo:lat")))
 		{
 			sb.ClearStr();
-			reader->ReadNodeText(&sb);
+			reader->ReadNodeText(sb);
 			this->lat = sb.ToDouble();
 		}
 		else if (name->EqualsICase(UTF8STRC("geo:long")))
 		{
 			sb.ClearStr();
-			reader->ReadNodeText(&sb);
+			reader->ReadNodeText(sb);
 			this->lon = sb.ToDouble();
 		}
 		else if (name->EqualsICase(UTF8STRC("content")))
 		{
 			sb.ClearStr();
-			reader->ReadNodeText(&sb);
+			reader->ReadNodeText(sb);
 			SDEL_STRING(this->description);
 			this->description = Text::String::New(sb.ToCString()).Ptr();
 		}
@@ -376,14 +376,14 @@ Net::RSSItem::RSSItem(Text::XMLReader *reader)
 				if (name->Equals(UTF8STRC("media:description")))
 				{
 					sb.ClearStr();
-					reader->ReadNodeText(&sb);
+					reader->ReadNodeText(sb);
 					SDEL_STRING(this->description);
 					this->description = Text::String::New(sb.ToCString()).Ptr();
 				}
 				else if (name->Equals(UTF8STRC("media:imgURL")))
 				{
 					sb.ClearStr();
-					reader->ReadNodeText(&sb);
+					reader->ReadNodeText(sb);
 					SDEL_STRING(this->description);
 					this->description = Text::String::New(sb.ToCString()).Ptr();
 				}
@@ -492,62 +492,62 @@ Net::RSS::RSS(Text::CString url, Text::String *userAgent, NotNullPtr<Net::Socket
 							if (node3->name->EqualsICase(UTF8STRC("title")))
 							{
 								sb.ClearStr();
-								node3->GetInnerText(&sb);
+								node3->GetInnerText(sb);
 								SDEL_STRING(this->title);
 								this->title = Text::String::New(sb.ToCString());
 							}
 							else if (node3->name->EqualsICase(UTF8STRC("description")))
 							{
 								sb.ClearStr();
-								node3->GetInnerText(&sb);
+								node3->GetInnerText(sb);
 								SDEL_STRING(this->description);
 								this->description = Text::String::New(sb.ToCString());
 							}
 							else if (node3->name->EqualsICase(UTF8STRC("link")))
 							{
 								sb.ClearStr();
-								node3->GetInnerText(&sb);
+								node3->GetInnerText(sb);
 								SDEL_STRING(this->link);
 								this->link = Text::String::New(sb.ToCString());
 							}
 							else if (node3->name->EqualsICase(UTF8STRC("ttl")))
 							{
 								sb.ClearStr();
-								node3->GetInnerText(&sb);
+								node3->GetInnerText(sb);
 								this->ttl = Text::StrToInt32(sb.ToString());
 							}
 							else if (node3->name->EqualsICase(UTF8STRC("language")))
 							{
 								sb.ClearStr();
-								node3->GetInnerText(&sb);
+								node3->GetInnerText(sb);
 								SDEL_STRING(this->language);
 								this->language = Text::String::New(sb.ToCString());
 							}
 							else if (node3->name->EqualsICase(UTF8STRC("webMaster")))
 							{
 								sb.ClearStr();
-								node3->GetInnerText(&sb);
+								node3->GetInnerText(sb);
 								SDEL_STRING(this->webMaster);
 								this->webMaster = Text::String::New(sb.ToCString());
 							}
 							else if (node3->name->EqualsICase(UTF8STRC("copyright")))
 							{
 								sb.ClearStr();
-								node3->GetInnerText(&sb);
+								node3->GetInnerText(sb);
 								SDEL_STRING(this->copyright);
 								this->copyright = Text::String::New(sb.ToCString());
 							}
 							else if (node3->name->EqualsICase(UTF8STRC("generator")))
 							{
 								sb.ClearStr();
-								node3->GetInnerText(&sb);
+								node3->GetInnerText(sb);
 								SDEL_STRING(this->generator);
 								this->generator = Text::String::New(sb.ToCString());
 							}
 							else if (node3->name->EqualsICase(UTF8STRC("pubDate")))
 							{
 								sb.ClearStr();
-								node3->GetInnerText(&sb);
+								node3->GetInnerText(sb);
 								SDEL_CLASS(this->pubDate);
 								NEW_CLASS(this->pubDate, Data::DateTime());
 								this->pubDate->SetValue(sb.ToCString());
@@ -555,7 +555,7 @@ Net::RSS::RSS(Text::CString url, Text::String *userAgent, NotNullPtr<Net::Socket
 							else if (node3->name->EqualsICase(UTF8STRC("lastBuildDate")))
 							{
 								sb.ClearStr();
-								node3->GetInnerText(&sb);
+								node3->GetInnerText(sb);
 								SDEL_CLASS(this->lastBuildDate);
 								NEW_CLASS(this->lastBuildDate, Data::DateTime());
 								this->lastBuildDate->SetValue(sb.ToCString());
@@ -598,62 +598,62 @@ Net::RSS::RSS(Text::CString url, Text::String *userAgent, NotNullPtr<Net::Socket
 							if (node3->name->EqualsICase(UTF8STRC("title")))
 							{
 								sb.ClearStr();
-								node3->GetInnerText(&sb);
+								node3->GetInnerText(sb);
 								SDEL_STRING(this->title);
 								this->title = Text::String::New(sb.ToCString());
 							}
 							else if (node3->name->EqualsICase(UTF8STRC("description")))
 							{
 								sb.ClearStr();
-								node3->GetInnerText(&sb);
+								node3->GetInnerText(sb);
 								SDEL_STRING(this->description);
 								this->description = Text::String::New(sb.ToCString());
 							}
 							else if (node3->name->EqualsICase(UTF8STRC("link")))
 							{
 								sb.ClearStr();
-								node3->GetInnerText(&sb);
+								node3->GetInnerText(sb);
 								SDEL_STRING(this->link);
 								this->link = Text::String::New(sb.ToCString());
 							}
 							else if (node3->name->EqualsICase(UTF8STRC("ttl")))
 							{
 								sb.ClearStr();
-								node3->GetInnerText(&sb);
+								node3->GetInnerText(sb);
 								this->ttl = Text::StrToInt32(sb.ToString());
 							}
 							else if (node3->name->EqualsICase(UTF8STRC("dc:language")))
 							{
 								sb.ClearStr();
-								node3->GetInnerText(&sb);
+								node3->GetInnerText(sb);
 								SDEL_STRING(this->language);
 								this->language = Text::String::New(sb.ToCString());
 							}
 							else if (node3->name->EqualsICase(UTF8STRC("webMaster")))
 							{
 								sb.ClearStr();
-								node3->GetInnerText(&sb);
+								node3->GetInnerText(sb);
 								SDEL_STRING(this->webMaster);
 								this->webMaster = Text::String::New(sb.ToCString());
 							}
 							else if (node3->name->EqualsICase(UTF8STRC("dc:rights")))
 							{
 								sb.ClearStr();
-								node3->GetInnerText(&sb);
+								node3->GetInnerText(sb);
 								SDEL_STRING(this->copyright);
 								this->copyright = Text::String::New(sb.ToCString());
 							}
 							else if (node3->name->EqualsICase(UTF8STRC("generator")))
 							{
 								sb.ClearStr();
-								node3->GetInnerText(&sb);
+								node3->GetInnerText(sb);
 								SDEL_STRING(this->generator);
 								this->generator = Text::String::New(sb.ToCString());
 							}
 							else if (node3->name->EqualsICase(UTF8STRC("dc:date")))
 							{
 								sb.ClearStr();
-								node3->GetInnerText(&sb);
+								node3->GetInnerText(sb);
 								SDEL_CLASS(this->pubDate);
 								NEW_CLASS(this->pubDate, Data::DateTime());
 								this->pubDate->SetValue(sb.ToCString());
@@ -661,7 +661,7 @@ Net::RSS::RSS(Text::CString url, Text::String *userAgent, NotNullPtr<Net::Socket
 							else if (node3->name->EqualsICase(UTF8STRC("lastBuildDate")))
 							{
 								sb.ClearStr();
-								node3->GetInnerText(&sb);
+								node3->GetInnerText(sb);
 								SDEL_CLASS(this->lastBuildDate);
 								NEW_CLASS(this->lastBuildDate, Data::DateTime());
 								this->lastBuildDate->SetValue(sb.ToCString());
@@ -699,14 +699,14 @@ Net::RSS::RSS(Text::CString url, Text::String *userAgent, NotNullPtr<Net::Socket
 					if (node2->name->EqualsICase(UTF8STRC("title")))
 					{
 						sb.ClearStr();
-						node2->GetInnerText(&sb);
+						node2->GetInnerText(sb);
 						SDEL_STRING(this->title);
 						this->title = Text::String::New(sb.ToCString());
 					}
 					else if (node2->name->EqualsICase(UTF8STRC("description")))
 					{
 						sb.ClearStr();
-						node2->GetInnerText(&sb);
+						node2->GetInnerText(sb);
 						SDEL_STRING(this->description);
 						this->description = Text::String::New(sb.ToCString());
 					}
@@ -743,13 +743,13 @@ Net::RSS::RSS(Text::CString url, Text::String *userAgent, NotNullPtr<Net::Socket
 					else if (node2->name->EqualsICase(UTF8STRC("ttl")))
 					{
 						sb.ClearStr();
-						node2->GetInnerText(&sb);
+						node2->GetInnerText(sb);
 						this->ttl = Text::StrToInt32(sb.ToString());
 					}
 					else if (node2->name->EqualsICase(UTF8STRC("dc:language")))
 					{
 						sb.ClearStr();
-						node2->GetInnerText(&sb);
+						node2->GetInnerText(sb);
 						SDEL_STRING(this->language);
 						this->language = Text::String::New(sb.ToCString());
 					}
@@ -766,7 +766,7 @@ Net::RSS::RSS(Text::CString url, Text::String *userAgent, NotNullPtr<Net::Socket
 							if (node3->GetNodeType() == Text::XMLNode::NodeType::Element && node3->name->Equals(UTF8STRC("name")))
 							{
 								sb.ClearStr();
-								node3->GetInnerText(&sb);
+								node3->GetInnerText(sb);
 								SDEL_STRING(this->webMaster);
 								this->webMaster = Text::String::New(sb.ToCString());
 							}
@@ -776,21 +776,21 @@ Net::RSS::RSS(Text::CString url, Text::String *userAgent, NotNullPtr<Net::Socket
 					else if (node2->name->EqualsICase(UTF8STRC("dc:rights")))
 					{
 						sb.ClearStr();
-						node2->GetInnerText(&sb);
+						node2->GetInnerText(sb);
 						SDEL_STRING(this->copyright);
 						this->copyright = Text::String::New(sb.ToCString());
 					}
 					else if (node2->name->EqualsICase(UTF8STRC("generator")))
 					{
 						sb.ClearStr();
-						node2->GetInnerText(&sb);
+						node2->GetInnerText(sb);
 						SDEL_STRING(this->generator);
 						this->generator = Text::String::New(sb.ToCString());
 					}
 					else if (node2->name->EqualsICase(UTF8STRC("published")))
 					{
 						sb.ClearStr();
-						node2->GetInnerText(&sb);
+						node2->GetInnerText(sb);
 						SDEL_CLASS(this->pubDate);
 						NEW_CLASS(this->pubDate, Data::DateTime());
 						this->pubDate->SetValue(sb.ToCString());
@@ -798,7 +798,7 @@ Net::RSS::RSS(Text::CString url, Text::String *userAgent, NotNullPtr<Net::Socket
 					else if (node2->name->EqualsICase(UTF8STRC("lastBuildDate")))
 					{
 						sb.ClearStr();
-						node2->GetInnerText(&sb);
+						node2->GetInnerText(sb);
 						SDEL_CLASS(this->lastBuildDate);
 						NEW_CLASS(this->lastBuildDate, Data::DateTime());
 						this->lastBuildDate->SetValue(sb.ToCString());
@@ -842,68 +842,68 @@ Net::RSS::RSS(Text::CString url, Text::String *userAgent, NotNullPtr<Net::Socket
 						if (name->EqualsICase(UTF8STRC("title")))
 						{
 							sb.ClearStr();
-							reader.ReadNodeText(&sb);
+							reader.ReadNodeText(sb);
 							SDEL_STRING(this->title);
 							this->title = Text::String::New(sb.ToCString()).Ptr();
 						}
 						else if (name->EqualsICase(UTF8STRC("description")))
 						{
 							sb.ClearStr();
-							reader.ReadNodeText(&sb);
+							reader.ReadNodeText(sb);
 							SDEL_STRING(this->description);
 							this->description = Text::String::New(sb.ToCString()).Ptr();
 						}
 						else if (name->EqualsICase(UTF8STRC("link")))
 						{
 							sb.ClearStr();
-							reader.ReadNodeText(&sb);
+							reader.ReadNodeText(sb);
 							SDEL_STRING(this->link);
 							this->link = Text::String::New(sb.ToCString()).Ptr();
 						}
 						else if (name->EqualsICase(UTF8STRC("ttl")))
 						{
 							sb.ClearStr();
-							reader.ReadNodeText(&sb);
+							reader.ReadNodeText(sb);
 							this->ttl = Text::StrToInt32(sb.ToString());
 						}
 						else if (name->EqualsICase(UTF8STRC("language")))
 						{
 							sb.ClearStr();
-							reader.ReadNodeText(&sb);
+							reader.ReadNodeText(sb);
 							SDEL_STRING(this->language);
 							this->language = Text::String::New(sb.ToCString()).Ptr();
 						}
 						else if (name->EqualsICase(UTF8STRC("webMaster")))
 						{
 							sb.ClearStr();
-							reader.ReadNodeText(&sb);
+							reader.ReadNodeText(sb);
 							SDEL_STRING(this->webMaster);
 							this->webMaster = Text::String::New(sb.ToCString()).Ptr();
 						}
 						else if (name->EqualsICase(UTF8STRC("copyright")))
 						{
 							sb.ClearStr();
-							reader.ReadNodeText(&sb);
+							reader.ReadNodeText(sb);
 							SDEL_STRING(this->copyright);
 							this->copyright = Text::String::New(sb.ToCString()).Ptr();
 						}
 						else if (name->EqualsICase(UTF8STRC("generator")))
 						{
 							sb.ClearStr();
-							reader.ReadNodeText(&sb);
+							reader.ReadNodeText(sb);
 							SDEL_STRING(this->generator);
 							this->generator = Text::String::New(sb.ToCString()).Ptr();
 						}
 						else if (name->EqualsICase(UTF8STRC("pubDate")))
 						{
 							sb.ClearStr();
-							reader.ReadNodeText(&sb);
+							reader.ReadNodeText(sb);
 							this->pubDate = Data::Timestamp::FromStr(sb.ToCString(), 0);
 						}
 						else if (name->EqualsICase(UTF8STRC("lastBuildDate")))
 						{
 							sb.ClearStr();
-							reader.ReadNodeText(&sb);
+							reader.ReadNodeText(sb);
 							this->lastBuildDate = Data::Timestamp::FromStr(sb.ToCString(), 0);
 						}
 						else if (name->EqualsICase(UTF8STRC("item")))
@@ -944,68 +944,68 @@ Net::RSS::RSS(Text::CString url, Text::String *userAgent, NotNullPtr<Net::Socket
 						if (name->EqualsICase(UTF8STRC("title")))
 						{
 							sb.ClearStr();
-							reader.ReadNodeText(&sb);
+							reader.ReadNodeText(sb);
 							SDEL_STRING(this->title);
 							this->title = Text::String::New(sb.ToCString()).Ptr();
 						}
 						else if (name->EqualsICase(UTF8STRC("description")))
 						{
 							sb.ClearStr();
-							reader.ReadNodeText(&sb);
+							reader.ReadNodeText(sb);
 							SDEL_STRING(this->description);
 							this->description = Text::String::New(sb.ToCString()).Ptr();
 						}
 						else if (name->EqualsICase(UTF8STRC("link")))
 						{
 							sb.ClearStr();
-							reader.ReadNodeText(&sb);
+							reader.ReadNodeText(sb);
 							SDEL_STRING(this->link);
 							this->link = Text::String::New(sb.ToCString()).Ptr();
 						}
 						else if (name->EqualsICase(UTF8STRC("ttl")))
 						{
 							sb.ClearStr();
-							reader.ReadNodeText(&sb);
+							reader.ReadNodeText(sb);
 							this->ttl = Text::StrToInt32(sb.ToString());
 						}
 						else if (name->EqualsICase(UTF8STRC("dc:language")))
 						{
 							sb.ClearStr();
-							reader.ReadNodeText(&sb);
+							reader.ReadNodeText(sb);
 							SDEL_STRING(this->language);
 							this->language = Text::String::New(sb.ToCString()).Ptr();
 						}
 						else if (name->EqualsICase(UTF8STRC("webMaster")))
 						{
 							sb.ClearStr();
-							reader.ReadNodeText(&sb);
+							reader.ReadNodeText(sb);
 							SDEL_STRING(this->webMaster);
 							this->webMaster = Text::String::New(sb.ToCString()).Ptr();
 						}
 						else if (name->EqualsICase(UTF8STRC("dc:rights")))
 						{
 							sb.ClearStr();
-							reader.ReadNodeText(&sb);
+							reader.ReadNodeText(sb);
 							SDEL_STRING(this->copyright);
 							this->copyright = Text::String::New(sb.ToCString()).Ptr();
 						}
 						else if (name->EqualsICase(UTF8STRC("generator")))
 						{
 							sb.ClearStr();
-							reader.ReadNodeText(&sb);
+							reader.ReadNodeText(sb);
 							SDEL_STRING(this->generator);
 							this->generator = Text::String::New(sb.ToCString()).Ptr();
 						}
 						else if (name->EqualsICase(UTF8STRC("dc:date")))
 						{
 							sb.ClearStr();
-							reader.ReadNodeText(&sb);
+							reader.ReadNodeText(sb);
 							this->pubDate = Data::Timestamp::FromStr(sb.ToCString(), 0);
 						}
 						else if (name->EqualsICase(UTF8STRC("lastBuildDate")))
 						{
 							sb.ClearStr();
-							reader.ReadNodeText(&sb);
+							reader.ReadNodeText(sb);
 							this->lastBuildDate = Data::Timestamp::FromStr(sb.ToCString(), 0);
 						}
 						else
@@ -1042,14 +1042,14 @@ Net::RSS::RSS(Text::CString url, Text::String *userAgent, NotNullPtr<Net::Socket
 				if (name->EqualsICase(UTF8STRC("title")))
 				{
 					sb.ClearStr();
-					reader.ReadNodeText(&sb);
+					reader.ReadNodeText(sb);
 					SDEL_STRING(this->title);
 					this->title = Text::String::New(sb.ToCString()).Ptr();
 				}
 				else if (name->EqualsICase(UTF8STRC("description")))
 				{
 					sb.ClearStr();
-					reader.ReadNodeText(&sb);
+					reader.ReadNodeText(sb);
 					SDEL_STRING(this->description);
 					this->description = Text::String::New(sb.ToCString()).Ptr();
 				}
@@ -1087,13 +1087,13 @@ Net::RSS::RSS(Text::CString url, Text::String *userAgent, NotNullPtr<Net::Socket
 				else if (name->EqualsICase(UTF8STRC("ttl")))
 				{
 					sb.ClearStr();
-					reader.ReadNodeText(&sb);
+					reader.ReadNodeText(sb);
 					this->ttl = Text::StrToInt32(sb.ToString());
 				}
 				else if (name->EqualsICase(UTF8STRC("dc:language")))
 				{
 					sb.ClearStr();
-					reader.ReadNodeText(&sb);
+					reader.ReadNodeText(sb);
 					SDEL_STRING(this->language);
 					this->language = Text::String::New(sb.ToCString()).Ptr();
 				}
@@ -1105,7 +1105,7 @@ Net::RSS::RSS(Text::CString url, Text::String *userAgent, NotNullPtr<Net::Socket
 						if (name->Equals(UTF8STRC("name")))
 						{
 							sb.ClearStr();
-							reader.ReadNodeText(&sb);
+							reader.ReadNodeText(sb);
 							SDEL_STRING(this->webMaster);
 							this->webMaster = Text::String::New(sb.ToCString()).Ptr();
 						}
@@ -1118,27 +1118,27 @@ Net::RSS::RSS(Text::CString url, Text::String *userAgent, NotNullPtr<Net::Socket
 				else if (name->EqualsICase(UTF8STRC("dc:rights")))
 				{
 					sb.ClearStr();
-					reader.ReadNodeText(&sb);
+					reader.ReadNodeText(sb);
 					SDEL_STRING(this->copyright);
 					this->copyright = Text::String::New(sb.ToCString()).Ptr();
 				}
 				else if (name->EqualsICase(UTF8STRC("generator")))
 				{
 					sb.ClearStr();
-					reader.ReadNodeText(&sb);
+					reader.ReadNodeText(sb);
 					SDEL_STRING(this->generator);
 					this->generator = Text::String::New(sb.ToCString()).Ptr();
 				}
 				else if (name->EqualsICase(UTF8STRC("published")))
 				{
 					sb.ClearStr();
-					reader.ReadNodeText(&sb);
+					reader.ReadNodeText(sb);
 					this->pubDate = Data::Timestamp::FromStr(sb.ToCString(), 0);
 				}
 				else if (name->EqualsICase(UTF8STRC("lastBuildDate")))
 				{
 					sb.ClearStr();
-					reader.ReadNodeText(&sb);
+					reader.ReadNodeText(sb);
 					this->lastBuildDate = Data::Timestamp::FromStr(sb.ToCString(), 0);
 				}
 				else if (name->EqualsICase(UTF8STRC("entry")))
@@ -1268,7 +1268,7 @@ Int32 Net::RSS::GetTTL() const
 	return this->ttl;
 }
 
-void Net::RSS::GetYoutubeURL(Text::CString channelId, Text::StringBuilderUTF8 *outURL)
+void Net::RSS::GetYoutubeURL(Text::CString channelId, NotNullPtr<Text::StringBuilderUTF8> outURL)
 {
 	outURL->AppendC(UTF8STRC("https://www.youtube.com/feeds/videos.xml?channel_id="));
 	outURL->Append(channelId);

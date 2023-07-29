@@ -57,7 +57,7 @@ namespace UI
 		Bool SetSubItem(UOSInt index, UOSInt subIndex, NotNullPtr<Text::String> text);
 		Bool SetSubItem(UOSInt index, UOSInt subIndex, Text::CString text);
 		Bool SetSubItem(UOSInt index, UOSInt subIndex, const WChar *text);
-		Bool GetSubItem(UOSInt index, UOSInt subIndex, Text::StringBuilderUTF8 *sb);
+		Bool GetSubItem(UOSInt index, UOSInt subIndex, NotNullPtr<Text::StringBuilderUTF8> sb);
 		UOSInt InsertItem(UOSInt index, Text::String *itemText, void *itemObj);
 		UOSInt InsertItem(UOSInt index, Text::CString itemText, void *itemObj);
 		UOSInt InsertItem(UOSInt index, const WChar *itemText, void *itemObj);

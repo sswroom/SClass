@@ -104,7 +104,7 @@ Bool Math::GeographicCoordinateSystem::IsProjected() const
 	return false;
 }
 
-void Math::GeographicCoordinateSystem::ToString(Text::StringBuilderUTF8 *sb) const
+void Math::GeographicCoordinateSystem::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
 {
 	sb->AppendC(UTF8STRC("Geographic File Name: "));
 	sb->Append(this->sourceName);

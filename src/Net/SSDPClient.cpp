@@ -167,7 +167,7 @@ const Data::ReadingList<Net::SSDPClient::SSDPDevice*> *Net::SSDPClient::GetDevic
 	return &this->devMap;
 }
 
-#define SET_VALUE(v) SDEL_STRING(v); sb.ClearStr(); reader.ReadNodeText(&sb); v = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
+#define SET_VALUE(v) SDEL_STRING(v); sb.ClearStr(); reader.ReadNodeText(sb); v = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 Net::SSDPClient::SSDPRoot *Net::SSDPClient::SSDPRootParse(Text::EncodingFactory *encFact, NotNullPtr<IO::Stream> stm)
 {
 	SSDPRoot *root = MemAlloc(SSDPRoot, 1);
@@ -179,7 +179,7 @@ Net::SSDPClient::SSDPRoot *Net::SSDPClient::SSDPRootParse(Text::EncodingFactory 
 		if (reader.GetNodeType() == Text::XMLNode::NodeType::Element)
 		{
 			sb.ClearStr();
-			reader.GetCurrPath(&sb);
+			reader.GetCurrPath(sb);
 			if (sb.EqualsICase(UTF8STRC("/root/device")))
 			{
 				if (reader.GetNodeText()->EqualsICase(UTF8STRC("udn")))

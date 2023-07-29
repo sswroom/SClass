@@ -23,7 +23,7 @@
 #define ENCKEY "sswr"
 #define ENCKEYLEN (sizeof(ENCKEY) - 1)
 
-Bool DB::DBManager::GetConnStr(DB::DBTool *db, Text::StringBuilderUTF8 *connStr)
+Bool DB::DBManager::GetConnStr(DB::DBTool *db, NotNullPtr<Text::StringBuilderUTF8> connStr)
 {
 	DB::DBConn *conn = db->GetDBConn();
 	Text::String *s;
@@ -576,7 +576,7 @@ DB::ReadingDB *DB::DBManager::OpenConn(Text::CString connStr, IO::LogTool *log, 
 	return 0;
 }
 
-void DB::DBManager::GetConnName(Text::CString connStr, Text::StringBuilderUTF8 *sbOut)
+void DB::DBManager::GetConnName(Text::CString connStr, NotNullPtr<Text::StringBuilderUTF8> sbOut)
 {
 	if (connStr.StartsWith(UTF8STRC("odbc:")))
 	{

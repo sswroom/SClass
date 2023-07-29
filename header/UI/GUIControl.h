@@ -19,7 +19,7 @@ namespace UI
 	public:
 		virtual UOSInt GetCount() = 0;
 		virtual const UTF8Char *GetName(UOSInt index) = 0;
-		virtual Bool GetDataText(const UTF8Char *name, Text::StringBuilderUTF8 *sb) = 0;
+		virtual Bool GetDataText(const UTF8Char *name, NotNullPtr<Text::StringBuilderUTF8> sb) = 0;
 		virtual IO::Stream *GetDataStream(const UTF8Char *name) = 0;
 	};
 
@@ -253,7 +253,7 @@ namespace UI
 		virtual void Close();
 		virtual void SetText(Text::CString text);
 		virtual UTF8Char *GetText(UTF8Char *buff);
-		virtual Bool GetText(Text::StringBuilderUTF8 *sb);
+		virtual Bool GetText(NotNullPtr<Text::StringBuilderUTF8> sb);
 		virtual void SetSize(Double width, Double height);
 		virtual void SetSizeP(Math::Size2D<UOSInt> size);
 		virtual Math::Size2DDbl GetSize();

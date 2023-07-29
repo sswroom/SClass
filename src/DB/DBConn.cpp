@@ -269,7 +269,7 @@ DB::TableDef *DB::DBConn::GetTableDef(Text::CString schemaName, Text::CString ta
 		Text::StringBuilderUTF8 sb;
 		if (r->ReadNext())
 		{
-			r->GetStr(0, &sb);
+			r->GetStr(0, sb);
 		}
 		this->CloseReader(r);
 
@@ -688,7 +688,7 @@ DB::TableDef *DB::DBConn::GetTableDef(Text::CString schemaName, Text::CString ta
 			else
 			{
 				Text::StringBuilderUTF8 sb;
-				this->GetLastErrorMsg(&sb);
+				this->GetLastErrorMsg(sb);
 				printf("DBConn Postgresql: %s\r\n", sb.ToString());
 			}
 		}

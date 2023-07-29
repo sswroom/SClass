@@ -21,7 +21,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			while (i < j)
 			{
 				sb.ClearStr();
-				client.ReadMessageAsString(i, &sb);
+				client.ReadMessageAsString(i, sb);
 				i++;
 			}
 		}

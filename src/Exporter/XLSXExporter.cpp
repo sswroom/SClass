@@ -117,9 +117,9 @@ Bool Exporter::XLSXExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text
 		sb.AppendC(UTF8STRC("</sheetView>"));
 		sb.AppendC(UTF8STRC("</sheetViews>"));
 		sb.AppendC(UTF8STRC("<sheetFormatPr defaultColWidth=\""));
-		Text::SBAppendF64(&sb, sheet->GetDefColWidthPt() / 5.25);
+		sb.AppendDouble(sheet->GetDefColWidthPt() / 5.25);
 		sb.AppendC(UTF8STRC("\" defaultRowHeight=\""));
-		Text::SBAppendF64(&sb, sheet->GetDefRowHeightPt());
+		sb.AppendDouble(sheet->GetDefRowHeightPt());
 		sb.AppendC(UTF8STRC("\" zeroHeight=\"false\" outlineLevelRow=\"0\" outlineLevelCol=\"0\"></sheetFormatPr>"));
 		sb.AppendC(UTF8STRC("<cols>"));
 
@@ -141,12 +141,12 @@ Bool Exporter::XLSXExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text
 					sb.AppendC(UTF8STRC("\" width=\""));
 					if (lastColWidth >= 0)
 					{
-						Text::SBAppendF64(&sb, lastColWidth / 5.25);
+						sb.AppendDouble(lastColWidth / 5.25);
 						sb.AppendC(UTF8STRC("\" customWidth=\"1\""));
 					}
 					else
 					{
-						Text::SBAppendF64(&sb, sheet->GetDefColWidthPt() / 5.25);
+						sb.AppendDouble(sheet->GetDefColWidthPt() / 5.25);
 						sb.AppendC(UTF8STRC("\" customWidth=\"false\""));
 					}
 					sb.AppendC(UTF8STRC("/>"));
@@ -165,12 +165,12 @@ Bool Exporter::XLSXExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text
 			sb.AppendC(UTF8STRC("\" width=\""));
 			if (lastColWidth >= 0)
 			{
-				Text::SBAppendF64(&sb, lastColWidth / 5.25);
+				sb.AppendDouble(lastColWidth / 5.25);
 				sb.AppendC(UTF8STRC("\" customWidth=\"1\""));
 			}
 			else
 			{
-				Text::SBAppendF64(&sb, sheet->GetDefColWidthPt() / 5.25);
+				sb.AppendDouble(sheet->GetDefColWidthPt() / 5.25);
 				sb.AppendC(UTF8STRC("\" customWidth=\"false\""));
 			}
 			sb.AppendC(UTF8STRC("/>"));
@@ -182,7 +182,7 @@ Bool Exporter::XLSXExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text
 			sb.AppendC(UTF8STRC("\" max=\""));
 			sb.AppendUOSInt(sheet->GetMaxCol());
 			sb.AppendC(UTF8STRC("\" width=\""));
-			Text::SBAppendF64(&sb, sheet->GetDefColWidthPt() / 5.25);
+			sb.AppendDouble(sheet->GetDefColWidthPt() / 5.25);
 			sb.AppendC(UTF8STRC("\" customWidth=\"false\" collapsed=\"false\" hidden=\"false\" outlineLevel=\"0\" style=\"0\"/>"));
 		}
 
@@ -254,7 +254,7 @@ Bool Exporter::XLSXExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text
 									Data::DateTime dt;
 									dt.ToLocalTime();
 									dt.SetValue(cell->cellValue->ToCString());
-									Text::SBAppendF64(&sb, Text::XLSUtil::Date2Number(&dt));
+									sb.AppendDouble(Text::XLSUtil::Date2Number(&dt));
 								}
 								break;
 							case Text::SpreadSheet::CellDataType::MergedLeft:
@@ -349,17 +349,17 @@ Bool Exporter::XLSXExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text
 		}
 		//<sheetProtection sheet="true" password="cc1a" objects="true" scenarios="true"/><printOptions headings="false" gridLines="false" gridLinesSet="true" horizontalCentered="false" verticalCentered="false"/>
 		sb.AppendC(UTF8STRC("<pageMargins left=\""));
-		Text::SBAppendF64(&sb, sheet->GetMarginLeft());
+		sb.AppendDouble(sheet->GetMarginLeft());
 		sb.AppendC(UTF8STRC("\" right=\""));
-		Text::SBAppendF64(&sb, sheet->GetMarginRight());
+		sb.AppendDouble(sheet->GetMarginRight());
 		sb.AppendC(UTF8STRC("\" top=\""));
-		Text::SBAppendF64(&sb, sheet->GetMarginTop());
+		sb.AppendDouble(sheet->GetMarginTop());
 		sb.AppendC(UTF8STRC("\" bottom=\""));
-		Text::SBAppendF64(&sb, sheet->GetMarginBottom());
+		sb.AppendDouble(sheet->GetMarginBottom());
 		sb.AppendC(UTF8STRC("\" header=\""));
-		Text::SBAppendF64(&sb, sheet->GetMarginHeader());
+		sb.AppendDouble(sheet->GetMarginHeader());
 		sb.AppendC(UTF8STRC("\" footer=\""));
-		Text::SBAppendF64(&sb, sheet->GetMarginFooter());
+		sb.AppendDouble(sheet->GetMarginFooter());
 		sb.AppendC(UTF8STRC("\"/>"));
 		sb.AppendC(UTF8STRC("<pageSetup paperSize=\"9\" scale=\"100\" firstPageNumber=\"1\" fitToWidth=\"1\" fitToHeight=\"1\" pageOrder=\"downThenOver\" orientation=\"portrait\" blackAndWhite=\"false\" draft=\"false\" cellComments=\"none\" useFirstPageNumber=\"true\" horizontalDpi=\"300\" verticalDpi=\"300\" copies=\"1\"/>"));
 		sb.AppendC(UTF8STRC("<headerFooter differentFirst=\"false\" differentOddEven=\"false\">"));
@@ -578,7 +578,7 @@ Bool Exporter::XLSXExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text
 					sb.AppendC(UTF8STRC("<c:chart>"));
 					if (drawing->chart->GetTitleText())
 					{
-						AppendTitle(&sb, drawing->chart->GetTitleText()->v);
+						AppendTitle(sb, drawing->chart->GetTitleText()->v);
 					}
 					sb.AppendC(UTF8STRC("<c:plotArea>"));
 					sb.AppendC(UTF8STRC("<c:layout/>"));
@@ -596,7 +596,7 @@ Bool Exporter::XLSXExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text
 						n = drawing->chart->GetSeriesCount();
 						while (m < n)
 						{
-							AppendSeries(&sb, drawing->chart->GetSeries(m), m);
+							AppendSeries(sb, drawing->chart->GetSeries(m), m);
 							m++;
 						}
 						if (drawing->chart->GetCategoryAxis())
@@ -624,10 +624,10 @@ Bool Exporter::XLSXExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text
 					n = drawing->chart->GetAxisCount();
 					while (m < n)
 					{
-						AppendAxis(&sb, drawing->chart->GetAxis(m), m);
+						AppendAxis(sb, drawing->chart->GetAxis(m), m);
 						m++;
 					}
-					AppendShapeProp(&sb, drawing->chart->GetShapeProp());
+					AppendShapeProp(sb, drawing->chart->GetShapeProp());
 					sb.AppendC(UTF8STRC("</c:plotArea>"));
 					if (drawing->chart->HasLegend())
 					{
@@ -823,7 +823,7 @@ Bool Exporter::XLSXExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text
 				if (font->GetSize() != 0)
 				{
 					sb.AppendC(UTF8STRC("<sz val=\""));
-					Text::SBAppendF64(&sb, font->GetSize());
+					sb.AppendDouble(font->GetSize());
 					sb.AppendC(UTF8STRC("\"/>"));
 				}
 				if (font->GetName())
@@ -879,10 +879,10 @@ Bool Exporter::XLSXExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text
 		{
 			border = borders.GetItem(i);
 			sb.AppendC(UTF8STRC("<border diagonalUp=\"false\" diagonalDown=\"false\">"));
-			AppendBorder(&sb, border->left, CSTR("left"));
-			AppendBorder(&sb, border->right, CSTR("right"));
-			AppendBorder(&sb, border->top, CSTR("top"));
-			AppendBorder(&sb, border->bottom, CSTR("bottom"));
+			AppendBorder(sb, border->left, CSTR("left"));
+			AppendBorder(sb, border->right, CSTR("right"));
+			AppendBorder(sb, border->top, CSTR("top"));
+			AppendBorder(sb, border->bottom, CSTR("bottom"));
 			sb.AppendC(UTF8STRC("<diagonal/>"));
 			sb.AppendC(UTF8STRC("</border>"));
 			i++;
@@ -1231,7 +1231,7 @@ Bool Exporter::XLSXExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text
 	return true;
 }
 
-void Exporter::XLSXExporter::AppendFill(Text::StringBuilderUTF8 *sb, OfficeFill *fill)
+void Exporter::XLSXExporter::AppendFill(NotNullPtr<Text::StringBuilderUTF8> sb, OfficeFill *fill)
 {
 	if (fill == 0)
 		return;
@@ -1259,7 +1259,7 @@ void Exporter::XLSXExporter::AppendFill(Text::StringBuilderUTF8 *sb, OfficeFill 
 	}
 }
 
-void Exporter::XLSXExporter::AppendLineStyle(Text::StringBuilderUTF8 *sb, Text::SpreadSheet::OfficeLineStyle *lineStyle)
+void Exporter::XLSXExporter::AppendLineStyle(NotNullPtr<Text::StringBuilderUTF8> sb, Text::SpreadSheet::OfficeLineStyle *lineStyle)
 {
 	if (lineStyle == 0)
 		return;
@@ -1268,7 +1268,7 @@ void Exporter::XLSXExporter::AppendLineStyle(Text::StringBuilderUTF8 *sb, Text::
 	sb->AppendC(UTF8STRC("</a:ln>"));
 }
 
-void Exporter::XLSXExporter::AppendTitle(Text::StringBuilderUTF8 *sb, const UTF8Char *title)
+void Exporter::XLSXExporter::AppendTitle(NotNullPtr<Text::StringBuilderUTF8> sb, const UTF8Char *title)
 {
 	sb->AppendC(UTF8STRC("<c:title>"));
 	sb->AppendC(UTF8STRC("<c:tx>"));
@@ -1295,7 +1295,7 @@ void Exporter::XLSXExporter::AppendTitle(Text::StringBuilderUTF8 *sb, const UTF8
 	sb->AppendC(UTF8STRC("</c:title>"));
 }
 
-void Exporter::XLSXExporter::AppendShapeProp(Text::StringBuilderUTF8 *sb, Text::SpreadSheet::OfficeShapeProp *shapeProp)
+void Exporter::XLSXExporter::AppendShapeProp(NotNullPtr<Text::StringBuilderUTF8> sb, Text::SpreadSheet::OfficeShapeProp *shapeProp)
 {
 	if (shapeProp == 0)
 		return;
@@ -1305,7 +1305,7 @@ void Exporter::XLSXExporter::AppendShapeProp(Text::StringBuilderUTF8 *sb, Text::
 	sb->AppendC(UTF8STRC("</c:spPr>"));
 }
 
-void Exporter::XLSXExporter::AppendAxis(Text::StringBuilderUTF8 *sb, Text::SpreadSheet::OfficeChartAxis *axis, UOSInt index)
+void Exporter::XLSXExporter::AppendAxis(NotNullPtr<Text::StringBuilderUTF8> sb, Text::SpreadSheet::OfficeChartAxis *axis, UOSInt index)
 {
 	if (axis == 0)
 		return;
@@ -1395,7 +1395,7 @@ void Exporter::XLSXExporter::AppendAxis(Text::StringBuilderUTF8 *sb, Text::Sprea
 	}
 }
 
-void Exporter::XLSXExporter::AppendSeries(Text::StringBuilderUTF8 *sb, Text::SpreadSheet::OfficeChartSeries *series, UOSInt index)
+void Exporter::XLSXExporter::AppendSeries(NotNullPtr<Text::StringBuilderUTF8> sb, Text::SpreadSheet::OfficeChartSeries *series, UOSInt index)
 {
 	NotNullPtr<Text::String> s;
 	sb->AppendC(UTF8STRC("<c:ser>"));
@@ -1564,7 +1564,7 @@ void Exporter::XLSXExporter::AppendSeries(Text::StringBuilderUTF8 *sb, Text::Spr
 	sb->AppendC(UTF8STRC("</c:ser>"));
 }
 
-void Exporter::XLSXExporter::AppendBorder(Text::StringBuilderUTF8 *sb, Text::SpreadSheet::CellStyle::BorderStyle border, Text::CString name)
+void Exporter::XLSXExporter::AppendBorder(NotNullPtr<Text::StringBuilderUTF8> sb, Text::SpreadSheet::CellStyle::BorderStyle border, Text::CString name)
 {
 	sb->AppendUTF8Char('<');
 	sb->Append(name);

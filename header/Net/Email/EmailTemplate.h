@@ -12,13 +12,13 @@ namespace Net
 		private:
 			const UTF8Char *itemTemplate;
 			UOSInt itemOfst;
-			Text::StringBuilderUTF8 *sbSubj;
-			Text::StringBuilderUTF8 *sbPre;
-			Text::StringBuilderUTF8 *sbItem;
-			Text::StringBuilderUTF8 *sbPost;
+			NotNullPtr<Text::StringBuilderUTF8> sbSubj;
+			NotNullPtr<Text::StringBuilderUTF8> sbPre;
+			NotNullPtr<Text::StringBuilderUTF8> sbItem;
+			NotNullPtr<Text::StringBuilderUTF8> sbPost;
 			Bool error;
 
-			Bool ParseTemplate(const UTF8Char *tpl, Text::StringBuilderUTF8 *sb, Data::StringUTF8Map<const UTF8Char *> *vars);
+			Bool ParseTemplate(const UTF8Char *tpl, NotNullPtr<Text::StringBuilderUTF8> sb, Data::StringUTF8Map<const UTF8Char *> *vars);
 		public:
 			EmailTemplate(const UTF8Char *tpl, Data::StringUTF8Map<const UTF8Char *> *vars);
 			~EmailTemplate();
@@ -27,7 +27,7 @@ namespace Net
 			
 			Bool AddItem(Data::StringUTF8Map<const UTF8Char *> *itemVars);
 			const UTF8Char *GetSubject();
-			void GetContent(Text::StringBuilderUTF8 *sb);
+			void GetContent(NotNullPtr<Text::StringBuilderUTF8> sb);
 		};
 	}
 }

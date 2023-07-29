@@ -262,7 +262,7 @@ SSWR::AVIReadCE::AVIRCEThreadInfoForm::AVIRCEThreadInfoForm(UI::GUIClientControl
 				this->stacksMem->Add(Text::String::New(sb.ToCString()));
 
 				sb.ClearStr();
-				Text::StringBuilderWriter writer(&sb);
+				Text::StringBuilderWriter writer(sb);
 				Manage::DasmX86_32::Dasm_Regs regs;
 				((Manage::ThreadContextX86_32*)context)->GetRegs(&regs);
 				ret = dasm->Disasm32(&writer, symbol, &eip, &esp, &ebp, callAddrs, jmpAddrs, &blockStart, &blockEnd, &regs, proc, true);

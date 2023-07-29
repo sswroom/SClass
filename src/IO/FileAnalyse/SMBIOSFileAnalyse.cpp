@@ -68,7 +68,7 @@ UOSInt IO::FileAnalyse::SMBIOSFileAnalyse::GetFrameCount()
 	return this->packs.GetCount();
 }
 
-Bool IO::FileAnalyse::SMBIOSFileAnalyse::GetFrameName(UOSInt index, Text::StringBuilderUTF8 *sb)
+Bool IO::FileAnalyse::SMBIOSFileAnalyse::GetFrameName(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	IO::FileAnalyse::SMBIOSFileAnalyse::PackInfo *pack;
 	pack = this->packs.GetItem(index);

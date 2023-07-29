@@ -58,7 +58,7 @@ private:
 	Sync::Mutex filesMut;
 	Data::ArrayList<FileEntry*> filesList;
 
-	static void ParseJSONObj(ThreadStatus *stat, Text::String *url, Text::JSONBase *obj, Text::StringBuilderUTF8 *tmpSb)
+	static void ParseJSONObj(ThreadStatus *stat, Text::String *url, Text::JSONBase *obj, NotNullPtr<Text::StringBuilderUTF8> tmpSb)
 	{
 		if (obj == 0 || obj->GetType() != Text::JSONType::Object)
 		{
@@ -94,7 +94,7 @@ private:
 		}
 	}
 
-	static void ParseJSON(ThreadStatus *stat, Text::String *url, IO::MemoryStream *mstm, Text::StringBuilderUTF8 *tmpSb)
+	static void ParseJSON(ThreadStatus *stat, Text::String *url, IO::MemoryStream *mstm, NotNullPtr<Text::StringBuilderUTF8> tmpSb)
 	{
 		mstm->Write((const UInt8*)"", 1);
 		UOSInt i;
@@ -107,7 +107,7 @@ private:
 		}
 	}
 
-	static void ProcURL(ThreadStatus *stat, Text::String *url, Text::StringBuilderUTF8 *tmpSb)
+	static void ProcURL(ThreadStatus *stat, Text::String *url, NotNullPtr<Text::StringBuilderUTF8> tmpSb)
 	{
 		UInt8 buff[4096];
 		stat->reqCnt++;
@@ -201,12 +201,12 @@ private:
 			{
 				if (stat->currURL)
 				{
-					ProcURL(stat, stat->currURL, &sb);
+					ProcURL(stat, stat->currURL, sb);
 					while ((nextURL = stat->me->urlList.RemoveLast()) != 0)
 					{
 						stat->currURL->Release();
 						stat->currURL = nextURL;
-						ProcURL(stat, nextURL, &sb);
+						ProcURL(stat, nextURL, sb);
 					}
 					SDEL_STRING(stat->currURL);
 

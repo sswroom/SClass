@@ -13,7 +13,7 @@ void __stdcall SSWR::AVIRead::AVIRImagePSNRForm::OnOriFileClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRImagePSNRForm *me = (SSWR::AVIRead::AVIRImagePSNRForm*)userObj;
 	Text::StringBuilderUTF8 sb;
-	me->txtOriFile->GetText(&sb);
+	me->txtOriFile->GetText(sb);
 	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"ImagePSNRO", false);
 	me->core->GetParserList()->PrepareSelector(&dlg, IO::ParserType::ImageList);
 	if (sb.GetLength() > 0)
@@ -30,7 +30,7 @@ void __stdcall SSWR::AVIRead::AVIRImagePSNRForm::OnLossyFileClicked(void *userOb
 {
 	SSWR::AVIRead::AVIRImagePSNRForm *me = (SSWR::AVIRead::AVIRImagePSNRForm*)userObj;
 	Text::StringBuilderUTF8 sb;
-	me->txtLossyFile->GetText(&sb);
+	me->txtLossyFile->GetText(sb);
 	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"ImagePSNRL", false);
 	me->core->GetParserList()->PrepareSelector(&dlg, IO::ParserType::ImageList);
 	if (sb.GetLength() > 0)
@@ -48,8 +48,8 @@ void __stdcall SSWR::AVIRead::AVIRImagePSNRForm::OnCompareClicked(void *userObj)
 	SSWR::AVIRead::AVIRImagePSNRForm *me = (SSWR::AVIRead::AVIRImagePSNRForm*)userObj;
 	Text::StringBuilderUTF8 sb;
 	Text::StringBuilderUTF8 sb2;
-	me->txtOriFile->GetText(&sb);
-	me->txtLossyFile->GetText(&sb2);
+	me->txtOriFile->GetText(sb);
+	me->txtLossyFile->GetText(sb2);
 	if (IO::Path::GetPathType(sb.ToCString()) != IO::Path::PathType::File)
 	{
 		return;
@@ -92,7 +92,7 @@ void __stdcall SSWR::AVIRead::AVIRImagePSNRForm::OnCompareClicked(void *userObj)
 				psnr = simg1->CalcPSNR(simg2);
 			}
 			sb.ClearStr();
-			Text::SBAppendF64(&sb, psnr);
+			sb.AppendDouble(psnr);
 			me->txtPSNR->SetText(sb.ToCString());
 		}
 	}

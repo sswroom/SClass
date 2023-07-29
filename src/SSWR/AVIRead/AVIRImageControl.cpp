@@ -407,7 +407,7 @@ void SSWR::AVIRead::AVIRImageControl::EndFolder()
 	mutUsage.EndUse();
 }
 
-Bool SSWR::AVIRead::AVIRImageControl::GetCameraName(Text::StringBuilderUTF8 *sb, Media::EXIFData *exif)
+Bool SSWR::AVIRead::AVIRImageControl::GetCameraName(NotNullPtr<Text::StringBuilderUTF8> sb, Media::EXIFData *exif)
 {
 	if (exif == 0)
 	{
@@ -927,11 +927,11 @@ Bool SSWR::AVIRead::AVIRImageControl::SaveSetting()
 		sb.AppendC(UTF8STRC("\t"));
 		sb.AppendI32(status->setting.flags);
 		sb.AppendC(UTF8STRC("\t"));
-		Text::SBAppendF64(&sb, status->setting.brightness);
+		sb.AppendDouble(status->setting.brightness);
 		sb.AppendC(UTF8STRC("\t"));
-		Text::SBAppendF64(&sb, status->setting.contrast);
+		sb.AppendDouble(status->setting.contrast);
 		sb.AppendC(UTF8STRC("\t"));
-		Text::SBAppendF64(&sb, status->setting.gamma);
+		sb.AppendDouble(status->setting.gamma);
 		writer.WriteLineC(sb.ToString(), sb.GetLength());
 		i++;
 	}
@@ -1011,7 +1011,7 @@ void SSWR::AVIRead::AVIRImageControl::ApplySetting(Media::StaticImage *srcImg, M
 	Double *gammaParam;
 	UInt32 gammaCnt;
 	Text::StringBuilderUTF8 sb;
-	if (this->GetCameraName(&sb, srcImg->exif))
+	if (this->GetCameraName(sb, srcImg->exif))
 	{
 		gammaParam = this->GetCameraGamma(sb.ToCString(), &gammaCnt);
 	}
@@ -1049,7 +1049,7 @@ void SSWR::AVIRead::AVIRImageControl::UpdateImgPreview(SSWR::AVIRead::AVIRImageC
 	UInt32 gammaCnt;
 	Text::StringBuilderUTF8 sb;
 	Media::EXIFData *exif = srcImg->GetEXIF();
-	if (exif && this->GetCameraName(&sb, exif))
+	if (exif && this->GetCameraName(sb, exif))
 	{
 		gammaParam = this->GetCameraGamma(sb.ToCString(), &gammaCnt);
 	}

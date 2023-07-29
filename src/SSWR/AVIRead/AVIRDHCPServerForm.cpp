@@ -39,7 +39,7 @@ void __stdcall SSWR::AVIRead::AVIRDHCPServerForm::OnStartClicked(void *userObj)
 		}
 
 		sb.ClearStr();
-		me->txtSubnet->GetText(&sb);
+		me->txtSubnet->GetText(sb);
 		subnet = Net::SocketUtil::GetIPAddr(sb.ToCString());
 		if (!Net::SocketUtil::IPv4SubnetValid(subnet))
 		{
@@ -48,7 +48,7 @@ void __stdcall SSWR::AVIRead::AVIRDHCPServerForm::OnStartClicked(void *userObj)
 		}
 
 		sb.ClearStr();
-		me->txtFirstIP->GetText(&sb);
+		me->txtFirstIP->GetText(sb);
 		if (!sb.ToUInt32(&firstIP))
 		{
 			UI::MessageDialog::ShowDialog(CSTR("First IP is not valid"), CSTR("Error"), me);
@@ -61,7 +61,7 @@ void __stdcall SSWR::AVIRead::AVIRDHCPServerForm::OnStartClicked(void *userObj)
 		}
 
 		sb.ClearStr();
-		me->txtDevCount->GetText(&sb);
+		me->txtDevCount->GetText(sb);
 		if (!sb.ToUInt32(&devCount))
 		{
 			UI::MessageDialog::ShowDialog(CSTR("Device Count is not valid"), CSTR("Error"), me);
@@ -74,7 +74,7 @@ void __stdcall SSWR::AVIRead::AVIRDHCPServerForm::OnStartClicked(void *userObj)
 		}
 
 		sb.ClearStr();
-		me->txtGateway->GetText(&sb);
+		me->txtGateway->GetText(sb);
 		if (sb.GetLength() == 0)
 		{
 			gateway = 0;
@@ -87,7 +87,7 @@ void __stdcall SSWR::AVIRead::AVIRDHCPServerForm::OnStartClicked(void *userObj)
 
 		UInt32 tmpIP;
 		sb.ClearStr();
-		me->txtDNS1->GetText(&sb);
+		me->txtDNS1->GetText(sb);
 		if (sb.GetLength() == 0)
 		{
 		}
@@ -102,7 +102,7 @@ void __stdcall SSWR::AVIRead::AVIRDHCPServerForm::OnStartClicked(void *userObj)
 		}
 		
 		sb.ClearStr();
-		me->txtDNS2->GetText(&sb);
+		me->txtDNS2->GetText(sb);
 		if (sb.GetLength() == 0)
 		{
 		}

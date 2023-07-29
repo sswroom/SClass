@@ -30,7 +30,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("Finest time in HiResClock = "));
-	Text::SBAppendF64(&sb, t);
+	sb.AppendDouble(t);
 	console.WriteLineC(sb.ToString(), sb.GetLength());
 
 	clk.Start();
@@ -41,7 +41,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	}
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("Time per request in HiResClock = "));
-	Text::SBAppendF64(&sb, t / 10000.0);
+	sb.AppendDouble(t / 10000.0);
 	console.WriteLineC(sb.ToString(), sb.GetLength());
 
 #if defined(__linux__)
@@ -56,7 +56,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	t = clk.GetTimeDiff();
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("Time per request in gettimeofday = "));
-	Text::SBAppendF64(&sb, t / 10000.0);
+	sb.AppendDouble(t / 10000.0);
 	console.WriteLineC(sb.ToString(), sb.GetLength());
 
 	struct timespec ts;
@@ -70,7 +70,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	t = clk.GetTimeDiff();
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("Time per request in timespec_get = "));
-	Text::SBAppendF64(&sb, t / 10000.0);
+	sb.AppendDouble(t / 10000.0);
 	console.WriteLineC(sb.ToString(), sb.GetLength());
 #endif
 
@@ -83,7 +83,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	t = clk.GetTimeDiff();
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("Time per request in clock = "));
-	Text::SBAppendF64(&sb, t / 10000.0);
+	sb.AppendDouble(t / 10000.0);
 	console.WriteLineC(sb.ToString(), sb.GetLength());
 
 	clk.Start();
@@ -95,7 +95,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	t = clk.GetTimeDiff();
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("Time per request in clock_gettime(CLOCK_REALTIME) = "));
-	Text::SBAppendF64(&sb, t / 10000.0);
+	sb.AppendDouble(t / 10000.0);
 	console.WriteLineC(sb.ToString(), sb.GetLength());
 
 	clk.Start();
@@ -107,7 +107,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	t = clk.GetTimeDiff();
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("Time per request in clock_gettime(CLOCK_MONOTONIC) = "));
-	Text::SBAppendF64(&sb, t / 10000.0);
+	sb.AppendDouble(t / 10000.0);
 	console.WriteLineC(sb.ToString(), sb.GetLength());
 #endif
 	return 0;

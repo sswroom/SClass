@@ -62,7 +62,7 @@ void DB::OLEDBConn::ForceTz(Int8 tzQhr)
 {
 }
 
-void DB::OLEDBConn::GetConnName(Text::StringBuilderUTF8 *sb)
+void DB::OLEDBConn::GetConnName(NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	sb->AppendC(UTF8STRC("OLEDB:"));
 	if (this->clsData->connStr)
@@ -160,7 +160,7 @@ OSInt DB::OLEDBConn::ExecuteNonQuery(Text::CString sql)
 	return ret;
 }*/
 
-void DB::OLEDBConn::GetLastErrorMsg(Text::StringBuilderUTF8 *str)
+void DB::OLEDBConn::GetLastErrorMsg(NotNullPtr<Text::StringBuilderUTF8> str)
 {
 }
 

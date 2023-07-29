@@ -157,7 +157,7 @@ Text::IMIMEObj *Text::MIMEObj::MailMessage::GetContentMajor() const
 	return 0;
 }
 
-Text::IMIMEObj *Text::MIMEObj::MailMessage::GetAttachment(OSInt index, Text::StringBuilderUTF8 *name) const
+Text::IMIMEObj *Text::MIMEObj::MailMessage::GetAttachment(OSInt index, NotNullPtr<Text::StringBuilderUTF8> name) const
 {
 	UOSInt i;
 	UOSInt j;

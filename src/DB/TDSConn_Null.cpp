@@ -55,7 +55,7 @@ void DB::TDSConn::ForceTz(Int8 tzQhr)
 {
 }
 
-void DB::TDSConn::GetConnName(Text::StringBuilderUTF8 *sb)
+void DB::TDSConn::GetConnName(NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	sb->AppendC(UTF8STRC("TDS:"));
 }
@@ -78,7 +78,7 @@ void DB::TDSConn::CloseReader(DBReader *r)
 {
 }
 
-void DB::TDSConn::GetLastErrorMsg(Text::StringBuilderUTF8 *str)
+void DB::TDSConn::GetLastErrorMsg(NotNullPtr<Text::StringBuilderUTF8> str)
 {
 }
 

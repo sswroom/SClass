@@ -21,7 +21,7 @@ namespace IO
 
 			virtual Text::CString GetFormatName();
 			virtual UOSInt GetFrameCount();
-			virtual Bool GetFrameName(UOSInt index, Text::StringBuilderUTF8 *sb);
+			virtual Bool GetFrameName(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb);
 			virtual UOSInt GetFrameIndex(UInt64 ofst);
 			virtual FrameDetail *GetFrameDetail(UOSInt index);
 

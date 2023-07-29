@@ -37,7 +37,7 @@ Map::BingMapsTile::BingMapsTile(ImagerySet is, Text::CString key, Text::CString 
 	sb.Append(ImagerySetGetName(is));
 	sb.AppendC(UTF8STRC("?output=json&include=ImageryProviders&key="));
 	sb.Append(key);
-	if (!Net::HTTPClient::LoadContent(sockf, ssl, sb.ToCString(), &sb2, 1048576))
+	if (!Net::HTTPClient::LoadContent(sockf, ssl, sb.ToCString(), sb2, 1048576))
 	{
 		return;
 	}
@@ -168,7 +168,7 @@ void Map::BingMapsTile::SetHideLogo(Bool hideLogo)
 	this->hideLogo = hideLogo;
 }
 
-void Map::BingMapsTile::GetDefaultCacheDir(ImagerySet is, Text::StringBuilderUTF8 *sb)
+void Map::BingMapsTile::GetDefaultCacheDir(ImagerySet is, NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	IO::Path::GetProcessFileName(sb);
 	IO::Path::AppendPath(sb, UTF8STRC("bingmaps"));

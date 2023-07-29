@@ -27,7 +27,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			console.WriteLineC(buff, (UOSInt)flen);
 			console.WriteLine();
 			console.WriteLineC(UTF8STRC("Parsed:"));
-			obj->ToJSONString(&sb);
+			obj->ToJSONString(sb);
 			console.WriteLineC(sb.ToString(), sb.GetLength());
 			obj->EndUse();
 		}

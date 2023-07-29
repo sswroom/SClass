@@ -17,7 +17,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::UploadReq(SSWR::Benchmark::
 		valid = false;
 	}
 	Text::StringBuilderUTF8 sb;
-	if (req->GetHeaderC(&sb, UTF8STRC("Content-Type")))
+	if (req->GetHeaderC(sb, UTF8STRC("Content-Type")))
 	{
 		if (!sb.Equals(UTF8STRC("text/plain")))
 		{
@@ -54,7 +54,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::UploadReq(SSWR::Benchmark::
 			NEW_CLASS(reader, Text::UTF8Reader(mstm));
 
 			sb.ClearStr();
-			if (reader->ReadLine(&sb, 512))
+			if (reader->ReadLine(sb, 512))
 			{
 				if (!sb.Equals(UTF8STRC("SBench Result:")))
 				{
@@ -71,7 +71,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::UploadReq(SSWR::Benchmark::
 			if (valid)
 			{
 				sb.ClearStr();
-				if (reader->ReadLine(&sb, 512))
+				if (reader->ReadLine(sb, 512))
 				{
 					if (!sb.Equals(UTF8STRC("Computer Info:")))
 					{
@@ -89,7 +89,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::UploadReq(SSWR::Benchmark::
 			if (valid)
 			{
 				sb.ClearStr();
-				if (reader->ReadLine(&sb, 512))
+				if (reader->ReadLine(sb, 512))
 				{
 					if (sb.StartsWith(UTF8STRC("Platform: ")))
 					{
@@ -111,7 +111,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::UploadReq(SSWR::Benchmark::
 			if (valid)
 			{
 				sb.ClearStr();
-				if (reader->ReadLine(&sb, 512))
+				if (reader->ReadLine(sb, 512))
 				{
 					if (sb.StartsWith(UTF8STRC("CPU: ")))
 					{

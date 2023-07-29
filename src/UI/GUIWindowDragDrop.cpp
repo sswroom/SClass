@@ -70,7 +70,7 @@ const UTF8Char *UI::GUIWindowDragData::GetName(UOSInt index)
 	return this->dataMap->GetKey(index);
 }
 
-Bool UI::GUIWindowDragData::GetDataText(const UTF8Char *name, Text::StringBuilderUTF8 *sb)
+Bool UI::GUIWindowDragData::GetDataText(const UTF8Char *name, NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	if (this->dataMap == 0)
 	{

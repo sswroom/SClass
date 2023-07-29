@@ -5,7 +5,7 @@ void __stdcall SSWR::AVIRead::AVIRWFSForm::OnLoadClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRWFSForm *me = (SSWR::AVIRead::AVIRWFSForm *)userObj;
 	Text::StringBuilderUTF8 sb;
-	me->txtWFSURL->GetText(&sb);
+	me->txtWFSURL->GetText(sb);
 	SDEL_CLASS(me->wfs);
 	NEW_CLASS(me->wfs, Map::WebFeatureService(me->core->GetSocketFactory(), 0, me->core->GetEncFactory(), sb.ToCString(), (Map::WebFeatureService::Version)(OSInt)me->cboWFSVersion->GetSelectedItem()));
 	if (me->wfs->IsError())

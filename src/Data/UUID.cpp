@@ -148,7 +148,7 @@ UInt64 Data::UUID::GetNode() const
 	return ReadMUInt64(&this->data[8]) & 0xffffffffffffLL;
 }
 
-void Data::UUID::ToString(Text::StringBuilderUTF8 *sb) const
+void Data::UUID::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
 {
 	sb->AppendHex32LC(ReadUInt32(&this->data[0]));
 	sb->AppendUTF8Char('-');

@@ -120,7 +120,7 @@ void __stdcall SSWR::AVIRead::AVIRTimedCaptureForm::OnDevChg(void *userObj)
 			}
 			devInfo.AppendC(UTF8STRC(")"));
 			devInfo.AppendC(UTF8STRC(" "));
-			Text::SBAppendF64(&devInfo, cfmt->frameRateNumer / (Double)cfmt->frameRateDenom);
+			devInfo.AppendDouble(cfmt->frameRateNumer / (Double)cfmt->frameRateDenom);
 			devInfo.AppendC(UTF8STRC(" fps\r\n"));
 
 			i++;
@@ -151,13 +151,13 @@ void __stdcall SSWR::AVIRead::AVIRTimedCaptureForm::OnStartClicked(void *userObj
 		if (cfmt && me->currCapture)
 		{
 			Text::StringBuilderUTF8 sb;
-			me->txtInterval->GetText(&sb);
+			me->txtInterval->GetText(sb);
 			if (!sb.ToUInt32(&me->interval))
 			{
 				return;
 			}
 			sb.ClearStr();
-			me->txtJPGQuality->GetText(&sb);
+			me->txtJPGQuality->GetText(sb);
 			if (!sb.ToInt32(&me->jpgQuality))
 			{
 				return;
@@ -171,7 +171,7 @@ void __stdcall SSWR::AVIRead::AVIRTimedCaptureForm::OnStartClicked(void *userObj
 			me->currCapture->SetPreferSize(cfmt->size, cfmt->fourcc, cfmt->bpp, cfmt->frameRateNumer, cfmt->frameRateDenom);
 
 			sb.ClearStr();
-			me->txtFileName->GetText(&sb);
+			me->txtFileName->GetText(sb);
 			NEW_CLASS(me->timedImageList, Media::TimedImageList(sb.ToCString()));
 			if (me->timedImageList->IsError())
 			{

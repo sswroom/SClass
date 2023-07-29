@@ -85,7 +85,7 @@ void SSWR::AVIRead::AVIRHTTPLog::LogRequest(Net::WebServer::IWebRequest *req)
 		this->entries[i].headerName->Add(names.GetItem(k)->Clone());
 		sb.ClearStr();
 		name = names.GetItem(k);
-		req->GetHeaderC(&sb, name->ToCString());
+		req->GetHeaderC(sb, name->ToCString());
 		this->entries[i].headerVal->Add(Text::String::New(sb.ToString(), sb.GetLength()));
 		k++;
 	}
@@ -149,10 +149,10 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnStartClick(void *userObj)
 	UInt16 port = 0;
 	Bool valid = true;
 	Text::StringBuilderUTF8 sb;
-	me->txtPort->GetText(&sb);
+	me->txtPort->GetText(sb);
 	Text::StrToUInt16S(sb.ToString(), &port, 0);
 	sb.ClearStr();
-	me->txtDocDir->GetText(&sb);
+	me->txtDocDir->GetText(sb);
 	Net::SSLEngine *ssl = 0;
 
 	if (me->chkSSL->IsChecked())
@@ -196,7 +196,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnStartClick(void *userObj)
 		else
 		{
 			sb.ClearStr();
-			me->txtLogDir->GetText(&sb);
+			me->txtLogDir->GetText(sb);
 			if (sb.GetEndPtr()[-1] != IO::Path::PATH_SEPERATOR)
 			{
 				sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
@@ -436,9 +436,9 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnSSLCertClicked(void *userObj)
 		me->sslCert = frm.GetCert();
 		me->sslKey = frm.GetKey();
 		Text::StringBuilderUTF8 sb;
-		me->sslCert->ToShortString(&sb);
+		me->sslCert->ToShortString(sb);
 		sb.AppendC(UTF8STRC(", "));
-		me->sslKey->ToShortString(&sb);
+		me->sslKey->ToShortString(sb);
 		me->lblSSLCert->SetText(sb.ToCString());
 	}
 }

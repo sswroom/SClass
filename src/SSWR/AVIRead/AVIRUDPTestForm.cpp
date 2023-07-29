@@ -42,7 +42,7 @@ void __stdcall SSWR::AVIRead::AVIRUDPTestForm::OnStartClicked(void *userObj)
 	{
 		Text::StringBuilderUTF8 sb;
 		UInt16 port;
-		me->txtServerPort->GetText(&sb);
+		me->txtServerPort->GetText(sb);
 		port = 0;
 		sb.ToUInt16(&port);
 		if (port > 0)
@@ -74,21 +74,21 @@ void __stdcall SSWR::AVIRead::AVIRUDPTestForm::OnSendClicked(void *userObj)
 		UI::MessageDialog::ShowDialog(CSTR("You should start server first"), CSTR("UDP Test"), me);
 		return;
 	}
-	me->txtDestHost->GetText(&sb);
+	me->txtDestHost->GetText(sb);
 	if (!me->sockf->DNSResolveIP(sb.ToCString(), &addr))
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Host is not valid"), CSTR("UDP Test"), me);
 		return;
 	}
 	sb.ClearStr();
-	me->txtDestPort->GetText(&sb);
+	me->txtDestPort->GetText(sb);
 	if (!sb.ToUInt16(&port) || port <= 0)
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Port is not valid"), CSTR("UDP Test"), me);
 		return;
 	}
 	sb.ClearStr();
-	me->txtDestCount->GetText(&sb);
+	me->txtDestCount->GetText(sb);
 	if (!sb.ToUInt32(&cnt) || cnt <= 0 || cnt > 10000000)
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Count is not valid"), CSTR("UDP Test"), me);

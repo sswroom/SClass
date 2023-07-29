@@ -7,14 +7,14 @@ void __stdcall SSWR::AVIRead::AVIRSSLInfoForm::OnCheckClicked(void *userObj)
 	SSWR::AVIRead::AVIRSSLInfoForm *me = (SSWR::AVIRead::AVIRSSLInfoForm *)userObj;
 	Text::StringBuilderUTF8 sb;
 	UInt16 port;
-	me->txtPort->GetText(&sb);
+	me->txtPort->GetText(sb);
 	if (!sb.ToUInt16(&port))
 	{
 		me->txtStatus->SetText(CSTR("Please enter valid port"));
 		return;
 	}
 	sb.ClearStr();
-	me->txtHost->GetText(&sb);
+	me->txtHost->GetText(sb);
 	Net::SocketUtil::AddressInfo addr;
 	if (sb.GetLength() == 0)
 	{
@@ -69,7 +69,7 @@ void __stdcall SSWR::AVIRead::AVIRSSLInfoForm::OnCheckClicked(void *userObj)
 	{
 		me->currCerts = Crypto::Cert::X509File::CreateFromCerts(certs);
 		Text::StringBuilderUTF8 sb;
-		me->currCerts->ToString(&sb);
+		me->currCerts->ToString(sb);
 		me->txtCert->SetText(sb.ToCString());
 	}
 	else

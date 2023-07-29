@@ -233,7 +233,7 @@ void Media::ImageList::SetValueStr(Media::ImageList::ValueType valType, Text::CS
 	this->valTypeStr.Add(valType);
 }
 
-Bool Media::ImageList::ToValueString(Text::StringBuilderUTF8 *sb) const
+Bool Media::ImageList::ToValueString(NotNullPtr<Text::StringBuilderUTF8> sb) const
 {
 	UOSInt i;
 	UOSInt j;
@@ -324,7 +324,7 @@ Bool Media::ImageList::ToValueString(Text::StringBuilderUTF8 *sb) const
 	return found;
 }
 
-void Media::ImageList::ToString(Text::StringBuilderUTF8 *sb) const
+void Media::ImageList::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
 {
 	Bool hasData = this->ToValueString(sb);
 	Media::Image *img;

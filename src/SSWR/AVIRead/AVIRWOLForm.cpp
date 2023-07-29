@@ -16,7 +16,7 @@ void __stdcall SSWR::AVIRead::AVIRWOLForm::OnSendClicked(void *userObj)
 		UI::MessageDialog::ShowDialog(CSTR("Please select an adapter"), CSTR("WOL"), me);
 		return;
 	}
-	me->txtDeviceMac->GetText(&sb);
+	me->txtDeviceMac->GetText(sb);
 	if ((sb.GetLength() == 12 || sb.GetLength() == 17) && Text::StrHex2Bytes(sb.ToString(), macBuff) == 6)
 	{
 		NEW_CLASS(cli, Net::WOLClient(me->core->GetSocketFactory(), ip));

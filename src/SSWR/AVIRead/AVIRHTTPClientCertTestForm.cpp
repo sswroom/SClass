@@ -22,12 +22,12 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientCertTestForm::OnStartClick(void *use
 	UInt16 port = 0;
 	Bool valid = true;
 	Text::StringBuilderUTF8 sb;
-	me->txtPort->GetText(&sb);
+	me->txtPort->GetText(sb);
 	Text::StrToUInt16S(sb.ToString(), &port, 0);
 	Net::SSLEngine *ssl = me->ssl;
 	ssl->ServerSetRequireClientCert(Net::SSLEngine::ClientCertType::Optional);
 	sb.ClearStr();
-	me->txtClientCA->GetText(&sb);
+	me->txtClientCA->GetText(sb);
 	if (sb.leng != 0)
 	{
 		ssl->ServerSetClientCA(sb.ToCString());
@@ -64,9 +64,9 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientCertTestForm::OnStartClick(void *use
 		LIST_FREE_STRING(&sanList);
 
 		Text::StringBuilderUTF8 sb;
-		me->sslCert->ToShortString(&sb);
+		me->sslCert->ToShortString(sb);
 		sb.AppendC(UTF8STRC(", "));
-		me->sslKey->ToShortString(&sb);
+		me->sslKey->ToShortString(sb);
 		me->lblSSLCert->SetText(sb.ToCString());
 
 		if (!ssl->ServerSetCertsASN1(me->sslCert, me->sslKey, 0))
@@ -149,9 +149,9 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientCertTestForm::OnSSLCertClicked(void 
 		me->sslCert = frm.GetCert();
 		me->sslKey = frm.GetKey();
 		Text::StringBuilderUTF8 sb;
-		me->sslCert->ToShortString(&sb);
+		me->sslCert->ToShortString(sb);
 		sb.AppendC(UTF8STRC(", "));
-		me->sslKey->ToShortString(&sb);
+		me->sslKey->ToShortString(sb);
 		me->lblSSLCert->SetText(sb.ToCString());
 	}
 }
@@ -214,7 +214,7 @@ void SSWR::AVIRead::AVIRHTTPClientCertTestForm::WebRequest(Net::WebServer::IWebR
 	Crypto::Cert::X509Cert *cert = req->GetClientCert();
 	if (cert)
 	{
-		cert->ToString(&sb);
+		cert->ToString(sb);
 	}
 	else
 	{

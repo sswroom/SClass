@@ -28,11 +28,11 @@ void __stdcall SSWR::AVIRead::AVIRBruteForceForm::OnStartClicked(void *userObj)
 		me->txtStatus->SetText(CSTR("Stopped"));
 		return;
 	}
-	me->txtMinLen->GetText(&sb);
+	me->txtMinLen->GetText(sb);
 	minLeng = 0;
 	sb.ToUInt32(&minLeng);
 	sb.ClearStr();
-	me->txtMaxLen->GetText(&sb);
+	me->txtMaxLen->GetText(sb);
 	maxLeng = 0;
 	sb.ToUInt32(&maxLeng);
 	if (minLeng <= 0 || maxLeng < minLeng)
@@ -41,7 +41,7 @@ void __stdcall SSWR::AVIRead::AVIRBruteForceForm::OnStartClicked(void *userObj)
 		return;
 	}
 	sb.ClearStr();
-	me->txtHashValue->GetText(&sb);
+	me->txtHashValue->GetText(sb);
 	Crypto::Hash::HashValidator *validator = 0;
 	OSInt hashType = (OSInt)me->cboHashType->GetSelectedItem();
 	if (hashType < 1000)

@@ -448,7 +448,7 @@ Bool Map::ESRI::ESRIMapServer::QueryInfos(Math::Coord2DDbl coord, Math::RectArea
 									{
 										name = attNames.GetItem(k);
 										sb.ClearStr();
-										attr->GetObjectValue(name->ToCString())->ToString(&sb);
+										attr->GetObjectValue(name->ToCString())->ToString(sb);
 										nameList->Add(name->Clone());
 										valueList->Add(Text::String::New(sb.ToCString()).Ptr());
 										k++;

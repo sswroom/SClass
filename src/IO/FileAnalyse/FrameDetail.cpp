@@ -95,7 +95,7 @@ void IO::FileAnalyse::FrameDetail::AddSubframe(UOSInt ofst, UOSInt size)
 	this->AddFieldInfo(ofst, size, CSTR("Subframe"), CSTR_NULL, FT_SUBFRAME);
 }
 
-void IO::FileAnalyse::FrameDetail::ToString(Text::StringBuilderUTF8 *sb) const
+void IO::FileAnalyse::FrameDetail::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
 {
 	sb->AppendC(UTF8STRC("Offset="));
 	sb->AppendU64(this->ofst);

@@ -8,7 +8,7 @@ void __stdcall SSWR::SHPConv::SHPConvValueFilterForm::OnOKClicked(void *userObj)
 	SSWR::SHPConv::SHPConvValueFilterForm *me = (SSWR::SHPConv::SHPConvValueFilterForm*)userObj;
 	Text::StringBuilderUTF8 sb;
 	Int32 typ;
-	me->txtValue->GetText(&sb);
+	me->txtValue->GetText(sb);
 	if (me->radEqual->IsSelected())
 	{
 		typ = 1;

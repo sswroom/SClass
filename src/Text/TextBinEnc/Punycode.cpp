@@ -531,7 +531,7 @@ UTF8Char *Text::TextBinEnc::Punycode::EncodeString(UTF8Char *buff, const WChar *
 	return Encode(buff, strToEnc);
 }
 
-UOSInt Text::TextBinEnc::Punycode::EncodeBin(Text::StringBuilderUTF8 *sb, const UInt8 *dataBuff, UOSInt buffSize)
+UOSInt Text::TextBinEnc::Punycode::EncodeBin(NotNullPtr<Text::StringBuilderUTF8> sb, const UInt8 *dataBuff, UOSInt buffSize)
 {
 	sb->AppendC(dataBuff, buffSize);
 	return buffSize;

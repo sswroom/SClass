@@ -202,7 +202,7 @@ namespace DB
 			return Text::StrUTF8_WCharC(buff, row[colIndex]->v, row[colIndex]->leng, 0);
 		}
 
-		virtual Bool GetStr(UOSInt colIndex, Text::StringBuilderUTF8 *sb)
+		virtual Bool GetStr(UOSInt colIndex, NotNullPtr<Text::StringBuilderUTF8> sb)
 		{
 			if (this->rows == 0 || colIndex >= this->colCount)
 				return false;
@@ -736,7 +736,7 @@ Bool DB::DBMS::SysVarExist(DB::DBMS::SessionInfo *sess, const UTF8Char *varName,
 	return false;
 }
 
-const UTF8Char *DB::DBMS::SysVarGet(Text::StringBuilderUTF8 *sb, DB::DBMS::SessionInfo *sess, const UTF8Char *varName, UOSInt nameLen)
+const UTF8Char *DB::DBMS::SysVarGet(NotNullPtr<Text::StringBuilderUTF8> sb, DB::DBMS::SessionInfo *sess, const UTF8Char *varName, UOSInt nameLen)
 {
 //	Bool isGlobal = false;
 	if (Text::StrStartsWithICaseC(varName, nameLen, UTF8STRC("GLOBAL.")))
@@ -1150,7 +1150,7 @@ Bool DB::DBMS::SysVarSet(DB::DBMS::SessionInfo *sess, Bool isGlobal, const UTF8C
 
 }
 
-const UTF8Char *DB::DBMS::UserVarGet(Text::StringBuilderUTF8 *sb, DB::DBMS::SessionInfo *sess, const UTF8Char *varName)
+const UTF8Char *DB::DBMS::UserVarGet(NotNullPtr<Text::StringBuilderUTF8> sb, DB::DBMS::SessionInfo *sess, const UTF8Char *varName)
 {
 	Text::String *val = sess->userVars->Get(varName);
 	UOSInt i = Text::StrCharCnt(varName);
@@ -1239,7 +1239,7 @@ Text::String *DB::DBMS::Evals(const UTF8Char **valPtr, DB::DBMS::SessionInfo *se
 		{
 			this->SysVarColumn(reader, colIndex, sb2.ToString(), colName);
 		}
-		if (this->SysVarGet(&sb, sess, sb2.ToString(), sb2.GetLength()) == 0)
+		if (this->SysVarGet(sb, sess, sb2.ToString(), sb2.GetLength()) == 0)
 		{
 			*valid = false;
 
@@ -1262,7 +1262,7 @@ Text::String *DB::DBMS::Evals(const UTF8Char **valPtr, DB::DBMS::SessionInfo *se
 			this->UserVarColumn(reader, colIndex, val + 1, colName);
 		}
 		Text::StringBuilderUTF8 sb;
-		if ((val = this->UserVarGet(&sb, sess, val + 1)) == 0)
+		if ((val = this->UserVarGet(sb, sess, val + 1)) == 0)
 		{
 			return 0;
 		}
@@ -1478,7 +1478,7 @@ Text::String *DB::DBMS::Evals(const UTF8Char **valPtr, DB::DBMS::SessionInfo *se
 			{
 				dVal += Text::StrToDouble(sb.ToString());
 				sb.ClearStr();
-				Text::SBAppendF64(&sb, dVal);
+				sb.AppendDouble(dVal);
 				if (reader)
 					reader->SetColumn(colIndex, (colName.leng > 0)?colName:Text::CString::FromPtr(val), DB::DBUtil::CT_Double);
 				*valPtr = sptr;
@@ -1523,7 +1523,7 @@ Text::String *DB::DBMS::Evals(const UTF8Char **valPtr, DB::DBMS::SessionInfo *se
 			{
 				dVal = Text::StrToDouble(sb.ToString()) - dVal;
 				sb.ClearStr();
-				Text::SBAppendF64(&sb, dVal);
+				sb.AppendDouble(dVal);
 				if (reader)
 					reader->SetColumn(colIndex, (colName.leng > 0)?colName:Text::CString::FromPtr(val), DB::DBUtil::CT_Double);
 				*valPtr = sptr;
@@ -1568,7 +1568,7 @@ Text::String *DB::DBMS::Evals(const UTF8Char **valPtr, DB::DBMS::SessionInfo *se
 			{
 				dVal = Text::StrToDouble(sb.ToString()) * dVal;
 				sb.ClearStr();
-				Text::SBAppendF64(&sb, dVal);
+				sb.AppendDouble(dVal);
 				if (reader)
 					reader->SetColumn(colIndex, (colName.leng > 0)?colName:Text::CString::FromPtr(val), DB::DBUtil::CT_Double);
 				*valPtr = sptr;
@@ -1613,7 +1613,7 @@ Text::String *DB::DBMS::Evals(const UTF8Char **valPtr, DB::DBMS::SessionInfo *se
 			{
 				dVal = Text::StrToDouble(sb.ToString()) / dVal;
 				sb.ClearStr();
-				Text::SBAppendF64(&sb, dVal);
+				sb.AppendDouble(dVal);
 				if (reader)
 					reader->SetColumn(colIndex, (colName.leng > 0)?colName:Text::CString::FromPtr(val), DB::DBUtil::CT_Double);
 				*valPtr = sptr;
@@ -2889,7 +2889,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt 
 				{
 					row[0] = Text::String::NewNotNullSlow((const UTF8Char*)sysVarList[i]).Ptr();
 					sb.ClearStr();
-					SysVarGet(&sb, sess, row[0]->v, row[0]->leng);
+					SysVarGet(sb, sess, row[0]->v, row[0]->leng);
 					row[1] = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 					reader->AddRow(row);
 					i++;
@@ -2930,7 +2930,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt 
 							{
 								sb.ClearStr();
 								row[0] = Text::String::NewNotNullSlow((const UTF8Char*)sysVarList[i]).Ptr();
-								SysVarGet(&sb, sess, row[0]->v, row[0]->leng);
+								SysVarGet(sb, sess, row[0]->v, row[0]->leng);
 								row[1] = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 								reader->AddRow(row);
 							}

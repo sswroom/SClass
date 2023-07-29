@@ -61,7 +61,7 @@ void __stdcall SSWR::AVIRead::AVIRWiFiLogManagerForm::OnContentDblClicked(void *
 	if (dblType == 1)
 	{
 		Text::StringBuilderUTF8 sb;
-		if (UI::Clipboard::GetString(me->GetHandle(), &sb))
+		if (UI::Clipboard::GetString(me->GetHandle(), sb))
 		{
 			UOSInt i = me->macList->SetEntry(log->macInt, sb.ToCString());
 			me->UpdateStatus();
@@ -106,7 +106,7 @@ void __stdcall SSWR::AVIRead::AVIRWiFiLogManagerForm::OnContentSelChg(void *user
 	UOSInt i = 0;
 	while (i < log->ieLen)
 	{
-		Net::WirelessLANIE::ToString(&log->ieBuff[i], &sb);
+		Net::WirelessLANIE::ToString(&log->ieBuff[i], sb);
 		sb.AppendC(UTF8STRC("\r\n"));
 		i += (UOSInt)log->ieBuff[i + 1] + 2;
 	}
@@ -123,7 +123,7 @@ void __stdcall SSWR::AVIRead::AVIRWiFiLogManagerForm::OnFilterClicked(void *user
 {
 	SSWR::AVIRead::AVIRWiFiLogManagerForm *me = (SSWR::AVIRead::AVIRWiFiLogManagerForm*)userObj;
 	Text::StringBuilderUTF8 sb;
-	me->txtFilter->GetText(&sb);
+	me->txtFilter->GetText(sb);
 	SDEL_STRING(me->filterText);
 	if (sb.GetLength() > 0)
 	{

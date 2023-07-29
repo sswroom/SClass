@@ -10,8 +10,8 @@ void __stdcall SSWR::AVIRead::AVIRFileRenameForm::OnRenameClicked(void *userObj)
 	Text::StringBuilderUTF8 sbName;
 	Text::StringBuilderUTF8 sbExt;
 	Text::StringBuilderUTF8 sbPath;
-	me->txtNewName->GetText(&sbName);
-	me->txtNewExt->GetText(&sbExt);
+	me->txtNewName->GetText(sbName);
+	me->txtNewExt->GetText(sbExt);
 	if (sbName.GetLength() == 0)
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Please enter file name"), CSTR("File Rename"), me);

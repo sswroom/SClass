@@ -45,7 +45,7 @@ Bool __stdcall Net::WebServer::GCISNotifyHandler::NotifyFunc(Net::WebServer::IWe
 			else
 			{
 				Text::MailCreator mail;
-				cert->GetSubjectCN(&sb2);
+				cert->GetSubjectCN(sb2);
 				mail.SetFrom(0, sb2.ToCString());
 				Text::JSONObject *msgObj = (Text::JSONObject*)json;
 				NotNullPtr<Text::String> s;
@@ -186,7 +186,7 @@ Bool __stdcall Net::WebServer::GCISNotifyHandler::NotifyFunc(Net::WebServer::IWe
 			if (!failed)
 			{
 				sb2.ClearStr();
-				cert->GetSubjectCN(&sb2);
+				cert->GetSubjectCN(sb2);
 				builder.ObjectAddStr(CSTR("Client"), sb2.ToCString());
 
 				builder.ObjectAddStr(CSTR("ResultMesg"), resultMsg);

@@ -53,7 +53,7 @@ void __stdcall SSWR::AVIRead::AVIRCodeProjectForm::OnItemSelected(void *userObj)
 					sb.AppendC(UTF8STRC("\r\n"));
 					sb.AppendC(UTF8STRC("\r\n"));
 				}
-				me->DisplayStatus(&sb, status);
+				me->DisplayStatus(sb, status);
 				me->txtMessage->SetText(sb.ToCString());
 				parser->FreeErrMsgs(&errMsgs);
 				DEL_CLASS(status);
@@ -74,7 +74,7 @@ void __stdcall SSWR::AVIRead::AVIRCodeProjectForm::OnItemSelected(void *userObj)
 				j = errMsgs.GetCount();
 				if (j == 0)
 				{
-					me->DisplayStatus(&sb, status);
+					me->DisplayStatus(sb, status);
 				}
 				else
 				{
@@ -103,7 +103,7 @@ void __stdcall SSWR::AVIRead::AVIRCodeProjectForm::OnItemSelected(void *userObj)
 	}
 }
 
-void SSWR::AVIRead::AVIRCodeProjectForm::DisplayStatus(Text::StringBuilderUTF8 *sb, Text::Cpp::CppParseStatus *status)
+void SSWR::AVIRead::AVIRCodeProjectForm::DisplayStatus(NotNullPtr<Text::StringBuilderUTF8> sb, Text::Cpp::CppParseStatus *status)
 {
 	UOSInt i;
 	UOSInt j;

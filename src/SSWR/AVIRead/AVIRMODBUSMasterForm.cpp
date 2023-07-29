@@ -57,13 +57,13 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnU8GetClicked(void *userObj
 		UInt8 devAddr;
 		UInt32 regAddr;
 		UInt8 val;
-		me->txtU8DevAddr->GetText(&sb);
+		me->txtU8DevAddr->GetText(sb);
 		if (!Text::StrToUInt8(sb.ToString(), &devAddr))
 		{
 			me->txtU8Value->SetText(CSTR("DevAddr"));
 		}
 		sb.ClearStr();
-		me->txtU8RegAddr->GetText(&sb);
+		me->txtU8RegAddr->GetText(sb);
 		if (!Text::StrToUInt32(sb.ToString(), &regAddr))
 		{
 			me->txtU8Value->SetText(CSTR("RegAddr"));
@@ -90,13 +90,13 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnU16GetClicked(void *userOb
 		UInt8 devAddr;
 		UInt32 regAddr;
 		UInt16 val;
-		me->txtU16DevAddr->GetText(&sb);
+		me->txtU16DevAddr->GetText(sb);
 		if (!Text::StrToUInt8(sb.ToString(), &devAddr))
 		{
 			me->txtU16Value->SetText(CSTR("DevAddr"));
 		}
 		sb.ClearStr();
-		me->txtU16RegAddr->GetText(&sb);
+		me->txtU16RegAddr->GetText(sb);
 		if (!Text::StrToUInt32(sb.ToString(), &regAddr))
 		{
 			me->txtU16Value->SetText(CSTR("RegAddr"));
@@ -123,13 +123,13 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnI32GetClicked(void *userOb
 		UInt8 devAddr;
 		UInt32 regAddr;
 		Int32 val;
-		me->txtI32DevAddr->GetText(&sb);
+		me->txtI32DevAddr->GetText(sb);
 		if (!Text::StrToUInt8(sb.ToString(), &devAddr))
 		{
 			me->txtI32Value->SetText(CSTR("DevAddr"));
 		}
 		sb.ClearStr();
-		me->txtI32RegAddr->GetText(&sb);
+		me->txtI32RegAddr->GetText(sb);
 		if (!Text::StrToUInt32(sb.ToString(), &regAddr))
 		{
 			me->txtI32Value->SetText(CSTR("RegAddr"));
@@ -156,13 +156,13 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnF32GetClicked(void *userOb
 		UInt8 devAddr;
 		UInt32 regAddr;
 		Single val;
-		me->txtF32DevAddr->GetText(&sb);
+		me->txtF32DevAddr->GetText(sb);
 		if (!Text::StrToUInt8(sb.ToString(), &devAddr))
 		{
 			me->txtF32Value->SetText(CSTR("DevAddr"));
 		}
 		sb.ClearStr();
-		me->txtF32RegAddr->GetText(&sb);
+		me->txtF32RegAddr->GetText(sb);
 		if (!Text::StrToUInt32(sb.ToString(), &regAddr))
 		{
 			me->txtF32Value->SetText(CSTR("RegAddr"));
@@ -170,7 +170,7 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnF32GetClicked(void *userOb
 		if (me->modbusCtrl->ReadRegisterF32(devAddr, regAddr, &val))
 		{
 			sb.ClearStr();
-			Text::SBAppendF32(&sb, val);
+			Text::SBAppendF32(sb, val);
 			me->txtF32Value->SetText(sb.ToCString());
 		}
 		else
@@ -188,13 +188,13 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnSetU8LowClicked(void *user
 		Text::StringBuilderUTF8 sb;
 		UInt8 devAddr;
 		UInt32 regAddr;
-		me->txtSetU8DevAddr->GetText(&sb);
+		me->txtSetU8DevAddr->GetText(sb);
 		if (!Text::StrToUInt8(sb.ToString(), &devAddr))
 		{
 			me->txtSetU8Value->SetText(CSTR("DevAddr"));
 		}
 		sb.ClearStr();
-		me->txtSetU8RegAddr->GetText(&sb);
+		me->txtSetU8RegAddr->GetText(sb);
 		if (!Text::StrToUInt32(sb.ToString(), &regAddr))
 		{
 			me->txtSetU8Value->SetText(CSTR("RegAddr"));
@@ -218,13 +218,13 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnSetU8HighClicked(void *use
 		Text::StringBuilderUTF8 sb;
 		UInt8 devAddr;
 		UInt32 regAddr;
-		me->txtSetU8DevAddr->GetText(&sb);
+		me->txtSetU8DevAddr->GetText(sb);
 		if (!Text::StrToUInt8(sb.ToString(), &devAddr))
 		{
 			me->txtSetU8Value->SetText(CSTR("DevAddr"));
 		}
 		sb.ClearStr();
-		me->txtSetU8RegAddr->GetText(&sb);
+		me->txtSetU8RegAddr->GetText(sb);
 		if (!Text::StrToUInt32(sb.ToString(), &regAddr))
 		{
 			me->txtSetU8Value->SetText(CSTR("RegAddr"));
@@ -247,7 +247,7 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnDeviceAddClicked(void *use
 	{
 		UInt8 devAddr;
 		Text::StringBuilderUTF8 sb;
-		me->txtDeviceAddr->GetText(&sb);
+		me->txtDeviceAddr->GetText(sb);
 		if (!Text::StrToUInt8(sb.ToString(), &devAddr))
 		{
 			return;
@@ -287,7 +287,7 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnTimeoutClicked(void *userO
 	else
 	{
 		Text::StringBuilderUTF8 sb;
-		me->txtTimeout->GetText(&sb);
+		me->txtTimeout->GetText(sb);
 		UInt32 timeout;
 		if (sb.ToUInt32(&timeout))
 		{
@@ -466,7 +466,7 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnTimerTick(void *userObj)
 	{
 		Text::StringBuilderUTF8 sb;
 		Sync::MutexUsage mutUsage(me->recvMut);
-		me->recvBuff.ToString(&sb);
+		me->recvBuff.ToString(sb);
 		me->recvUpdated = false;
 		mutUsage.EndUse();
 		me->txtRAWRecv->SetText(sb.ToCString());
@@ -475,7 +475,7 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnTimerTick(void *userObj)
 	{
 		Text::StringBuilderUTF8 sb;
 		Sync::MutexUsage mutUsage(me->sendMut);
-		me->sendBuff.ToString(&sb);
+		me->sendBuff.ToString(sb);
 		me->sendUpdated = false;
 		mutUsage.EndUse();
 		me->txtRAWSend->SetText(sb.ToCString());

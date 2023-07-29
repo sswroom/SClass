@@ -206,7 +206,7 @@ UTF8Char *UI::GUITextBox::GetText(UTF8Char *buff)
 	}
 }
 
-Bool UI::GUITextBox::GetText(Text::StringBuilderUTF8 *sb)
+Bool UI::GUITextBox::GetText(NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	const gchar *lbl;
 	if (this->clsData->multiLine)

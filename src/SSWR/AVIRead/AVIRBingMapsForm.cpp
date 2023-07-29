@@ -9,8 +9,8 @@ void __stdcall SSWR::AVIRead::AVIRBingMapsForm::OnOKClicked(void *userObj)
 	Text::StringBuilderUTF8 sbKey;
 	Text::StringBuilderUTF8 sb;
 	Map::BingMapsTile::ImagerySet is = (Map::BingMapsTile::ImagerySet)(OSInt)me->cboImagerySet->GetSelectedItem();
-	Map::BingMapsTile::GetDefaultCacheDir(is, &sb);
-	me->txtKey->GetText(&sbKey);
+	Map::BingMapsTile::GetDefaultCacheDir(is, sb);
+	me->txtKey->GetText(sbKey);
 	if (sbKey.GetLength() == 0)
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Please enter the key"), CSTR("Bing Maps"), me);

@@ -17,14 +17,14 @@ void __stdcall SSWR::AVIRead::AVIRDNSClientForm::OnRequestClicked(void *userObj)
 	UOSInt i;
 	UOSInt j;
 	UOSInt bestInd;
-	me->txtServer->GetText(&sb);
+	me->txtServer->GetText(sb);
 	if (!Net::SocketUtil::GetIPAddr(sb.ToCString(), &dnsAddr))
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Invalid server input"), CSTR("Error"), me);
 		return;
 	}
 	sb.ClearStr();
-	me->txtRequest->GetText(&sb);
+	me->txtRequest->GetText(sb);
 	if (sb.GetLength() == 0)
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Please enter request"), CSTR("Error"), me);
@@ -74,7 +74,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSClientForm::OnRequestClicked(void *userObj)
 		me->lbAnswer->SetSelectedIndex(bestInd);
 	}
 	sb.ClearStr();
-	Text::SBAppendF64(&sb, t);
+	sb.AppendDouble(t);
 	me->txtRequestTime->SetText(sb.ToCString());
 	DEL_CLASS(clk);
 	DEL_CLASS(dnsCli);

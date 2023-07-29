@@ -43,11 +43,11 @@ namespace Net
 
 			virtual Text::String *GetSHeader(Text::CString name) = 0;
 			virtual UTF8Char *GetHeader(UTF8Char *sbuff, Text::CString name, UOSInt buffLen) = 0;
-			virtual Bool GetHeaderC(Text::StringBuilderUTF8 *sb, Text::CString name) = 0;
+			virtual Bool GetHeaderC(NotNullPtr<Text::StringBuilderUTF8> sb, Text::CString name) = 0;
 			virtual UOSInt GetHeaderNames(Data::ArrayList<Text::String*> *names) = 0;
-			Bool GetRefererDomain(Text::StringBuilderUTF8 *sb);
+			Bool GetRefererDomain(NotNullPtr<Text::StringBuilderUTF8> sb);
 			Bool GetIfModifiedSince(Data::DateTime *dt);
-			Bool GetCookie(Text::CString name, Text::StringBuilderUTF8 *sb);
+			Bool GetCookie(Text::CString name, NotNullPtr<Text::StringBuilderUTF8> sb);
 			Text::String *GetCookieAsNew(Text::CString name);
 
 			virtual NotNullPtr<Text::String> GetRequestURI() const = 0;
@@ -74,7 +74,7 @@ namespace Net
 			Bool GetHTTPFormInt64(Text::CString name, Int64 *valOut);
 			Bool GetHTTPFormUInt64(Text::CString name, UInt64 *valOut);
 			Bool GetHTTPFormDouble(Text::CString name, Double *valOut);
-			virtual void GetRequestURLBase(Text::StringBuilderUTF8 *sb) = 0;
+			virtual void GetRequestURLBase(NotNullPtr<Text::StringBuilderUTF8> sb) = 0;
 
 			virtual const Net::SocketUtil::AddressInfo *GetClientAddr() const = 0;
 			virtual Net::NetConnection *GetNetConn() const = 0;

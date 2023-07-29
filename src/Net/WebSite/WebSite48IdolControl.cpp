@@ -145,7 +145,7 @@ OSInt Net::WebSite::WebSite48IdolControl::GetArcPageItems(OSInt pageNo, Data::Ar
 							{
 								id = Text::StrToInt32(&attr->value->v[sizeof(BASEURL) + 5]);
 								sb.ClearStr();
-								reader->ReadNodeText(&sb);
+								reader->ReadNodeText(sb);
 								SDEL_STRING(title);
 								title = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 							}
@@ -164,7 +164,7 @@ OSInt Net::WebSite::WebSite48IdolControl::GetArcPageItems(OSInt pageNo, Data::Ar
 							else if (pullLeftLev > 0 && reader->GetNodeText()->Equals(UTF8STRC("span")))
 							{
 								sb.ClearStr();
-								reader->ReadNodeText(&sb);
+								reader->ReadNodeText(sb);
 								sb.Trim();
 								dt.SetValue(sb.ToCString());
 								time = dt.ToTicks();
@@ -213,7 +213,7 @@ void Net::WebSite::WebSite48IdolControl::FreeItems(Data::ArrayList<Net::WebSite:
 	itemList->Clear();
 }
 
-Bool Net::WebSite::WebSite48IdolControl::GetDownloadLink(Int32 videoId, Int32 linkId, Text::StringBuilderUTF8 *link)
+Bool Net::WebSite::WebSite48IdolControl::GetDownloadLink(Int32 videoId, Int32 linkId, NotNullPtr<Text::StringBuilderUTF8> link)
 {
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC(BASEURL "video/"));
@@ -256,7 +256,7 @@ Bool Net::WebSite::WebSite48IdolControl::GetDownloadLink(Int32 videoId, Int32 li
 	return found;
 }
 
-Bool Net::WebSite::WebSite48IdolControl::GetVideoName(Int32 videoId, Text::StringBuilderUTF8 *name)
+Bool Net::WebSite::WebSite48IdolControl::GetVideoName(Int32 videoId, NotNullPtr<Text::StringBuilderUTF8> name)
 {
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC(BASEURL "video/"));
@@ -291,7 +291,7 @@ Bool Net::WebSite::WebSite48IdolControl::GetVideoName(Int32 videoId, Text::Strin
 	return found;
 }
 
-void Net::WebSite::WebSite48IdolControl::Title2DisplayName(NotNullPtr<Text::String> title, Text::StringBuilderUTF8 *dispName)
+void Net::WebSite::WebSite48IdolControl::Title2DisplayName(NotNullPtr<Text::String> title, NotNullPtr<Text::StringBuilderUTF8> dispName)
 {
 	UOSInt i;
 	Text::StringBuilderUTF8 sb;

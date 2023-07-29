@@ -506,13 +506,13 @@ Bool __stdcall SSWR::AVIRead::AVIRImageForm::OnImageMouseMove(void *userObj, Mat
 		else if (me->currImg->info.pf == Media::PF_LE_FB32G32R32A32)
 		{
 			sb.AppendC(UTF8STRC(", A"));
-			Text::SBAppendF32(&sb, ReadFloat(&pixel[12]));
+			Text::SBAppendF32(sb, ReadFloat(&pixel[12]));
 			sb.AppendC(UTF8STRC(" R"));
-			Text::SBAppendF32(&sb, ReadFloat(&pixel[8]));
+			Text::SBAppendF32(sb, ReadFloat(&pixel[8]));
 			sb.AppendC(UTF8STRC(" G"));
-			Text::SBAppendF32(&sb, ReadFloat(&pixel[4]));
+			Text::SBAppendF32(sb, ReadFloat(&pixel[4]));
 			sb.AppendC(UTF8STRC(" B"));
-			Text::SBAppendF32(&sb, ReadFloat(&pixel[0]));
+			Text::SBAppendF32(sb, ReadFloat(&pixel[0]));
 			dR = ReadFloat(&pixel[8]);
 			dG = ReadFloat(&pixel[4]);
 			dB = ReadFloat(&pixel[0]);
@@ -526,14 +526,14 @@ Bool __stdcall SSWR::AVIRead::AVIRImageForm::OnImageMouseMove(void *userObj, Mat
 		if (me->imgList && me->imgList->HasThermoImage())
 		{
 			sb.AppendC(UTF8STRC(", T = "));
-			Text::SBAppendF64(&sb, me->imgList->GetThermoValue(imgPos.x / UOSInt2Double(me->currImg->info.dispSize.x), imgPos.y / UOSInt2Double(me->currImg->info.dispSize.y)));
+			sb.AppendDouble(me->imgList->GetThermoValue(imgPos.x / UOSInt2Double(me->currImg->info.dispSize.x), imgPos.y / UOSInt2Double(me->currImg->info.dispSize.y)));
 		}
 		sb.AppendC(UTF8STRC(", RGB("));
-		Text::SBAppendF64(&sb, dR);
+		sb.AppendDouble(dR);
 		sb.AppendUTF8Char(',');
-		Text::SBAppendF64(&sb, dG);
+		sb.AppendDouble(dG);
 		sb.AppendUTF8Char(',');
-		Text::SBAppendF64(&sb, dB);
+		sb.AppendDouble(dB);
 		sb.AppendUTF8Char(')');
 		me->txtImageStatus->SetText(sb.ToCString());
 	}
@@ -569,13 +569,13 @@ void SSWR::AVIRead::AVIRImageForm::UpdateInfo()
 	if (this->currImg)
 	{
 		Text::StringBuilderUTF8 sb;
-		this->currImg->ToString(&sb);
+		this->currImg->ToString(sb);
 		sb.AppendC(UTF8STRC("\r\nDelay: "));
 		sb.AppendU32(this->currImgDelay);
 		if (this->imgList)
 		{
 			sb.AppendC(UTF8STRC("\r\n"));
-			this->imgList->ToValueString(&sb);
+			this->imgList->ToValueString(sb);
 		}
 		this->txtInfo->SetText(sb.ToCString());
 		if (this->currImg->info.color->GetRAWICC())

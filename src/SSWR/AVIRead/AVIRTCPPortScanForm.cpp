@@ -20,19 +20,19 @@ void __stdcall SSWR::AVIRead::AVIRTCPPortScanForm::OnStartClicked(void *userObj)
 		UInt16 maxPort = 0;
 		Net::SocketUtil::AddressInfo addr;
 		Text::StringBuilderUTF8 sb;
-		me->txtThreadCnt->GetText(&sb);
+		me->txtThreadCnt->GetText(sb);
 		if (!sb.ToUInt32(&threadCnt))
 		{
 			return;
 		}
 		sb.ClearStr();
-		me->txtMaxPort->GetText(&sb);
+		me->txtMaxPort->GetText(sb);
 		if (!sb.ToUInt16(&maxPort))
 		{
 			return;
 		}
 		sb.ClearStr();
-		me->txtIP->GetText(&sb);
+		me->txtIP->GetText(sb);
 		if (me->sockf->DNSResolveIP(sb.ToCString(), &addr))
 		{
 			NEW_CLASS(me->scanner, Net::TCPPortScanner(me->sockf, threadCnt, OnPortUpdated, me));

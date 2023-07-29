@@ -626,7 +626,7 @@ void SSWR::AVIRead::AVIRMediaForm::EventMenuClicked(UInt16 cmdId)
 			{
 				Text::StringBuilderUTF8 sb;
 				sb.AppendC(UTF8STRC("t="));
-				Text::SBAppendF64(&sb, t);
+				sb.AppendDouble(t);
 				UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("Test"), this);
 
 				UTF8Char sbuff[512];

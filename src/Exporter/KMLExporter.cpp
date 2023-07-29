@@ -551,22 +551,22 @@ Bool Exporter::KMLExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 
 						bounds = img->GetBounds();
 						sb.AppendC(UTF8STRC("<overlayXY x=\""));
-						Text::SBAppendF64(&sb, bounds.br.x);
+						sb.AppendDouble(bounds.br.x);
 						sb.AppendC(UTF8STRC("\" y=\""));
-						Text::SBAppendF64(&sb, bounds.br.y);
+						sb.AppendDouble(bounds.br.y);
 						sb.AppendC(UTF8STRC("\" xunits=\"fraction\" yunits=\"fraction\"/>"));
 
 						sb.AppendC(UTF8STRC("<screenXY x=\""));
-						Text::SBAppendF64(&sb, bounds.tl.x);
+						sb.AppendDouble(bounds.tl.x);
 						sb.AppendC(UTF8STRC("\" y=\""));
-						Text::SBAppendF64(&sb, bounds.tl.y);
+						sb.AppendDouble(bounds.tl.y);
 						sb.AppendC(UTF8STRC("\" xunits=\"fraction\" yunits=\"fraction\"/>"));
 
 						img->GetVectorSize(&bounds.tl.x, &bounds.tl.x);
 						sb.AppendC(UTF8STRC("<size x=\""));
-						Text::SBAppendF64(&sb, bounds.tl.x);
+						sb.AppendDouble(bounds.tl.x);
 						sb.AppendC(UTF8STRC("\" y=\""));
-						Text::SBAppendF64(&sb, bounds.tl.y);
+						sb.AppendDouble(bounds.tl.y);
 						sb.AppendC(UTF8STRC("\" xunits=\"fraction\" yunits=\"fraction\"/>"));
 
 						sb.AppendC(UTF8STRC("</ScreenOverlay>"));
@@ -637,20 +637,20 @@ Bool Exporter::KMLExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 							Math::CoordinateSystem::ConvertXYZ(srcCsys, destCsys, bounds.br.x, bounds.br.y, defHeight, &bounds.br.x, &bounds.br.y, &z);
 						}
 						sb.AppendC(UTF8STRC("<north>"));
-						Text::SBAppendF64(&sb, bounds.br.y);
+						sb.AppendDouble(bounds.br.y);
 						sb.AppendC(UTF8STRC("</north><south>"));
-						Text::SBAppendF64(&sb, bounds.tl.y);
+						sb.AppendDouble(bounds.tl.y);
 						sb.AppendC(UTF8STRC("</south>"));
 						sb.AppendC(UTF8STRC("<east>"));
-						Text::SBAppendF64(&sb, bounds.br.x);
+						sb.AppendDouble(bounds.br.x);
 						sb.AppendC(UTF8STRC("</east><west>"));
-						Text::SBAppendF64(&sb, bounds.tl.x);
+						sb.AppendDouble(bounds.tl.x);
 						sb.AppendC(UTF8STRC("</west>"));
 						sb.AppendC(UTF8STRC("</LatLonBox>"));
 						if (img->HasZ())
 						{
 							sb.AppendC(UTF8STRC("<altitude>"));
-							Text::SBAppendF64(&sb, img->GetHeight());
+							sb.AppendDouble(img->GetHeight());
 							sb.AppendC(UTF8STRC("</altitude>"));
 							sb.AppendC(UTF8STRC("<altitudeMode>clampToGround</altitudeMode>"));
 						}

@@ -41,11 +41,11 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 				{
 					Text::StringBuilderUTF8 sb;
 					sb.AppendC(UTF8STRC("Temp = "));
-					Text::SBAppendF64(&sb, temp);
+					sb.AppendDouble(temp);
 					sb.AppendC(UTF8STRC(", RH = "));
-					Text::SBAppendF64(&sb, rh);
+					sb.AppendDouble(rh);
 					sb.AppendC(UTF8STRC(", Pressure = "));
-					Text::SBAppendF64(&sb, pressure);
+					sb.AppendDouble(pressure);
 					console.WriteLineC(sb.ToString(), sb.GetLength());
 				}
 				Sync::SimpleThread::Sleep(2000);

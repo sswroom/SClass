@@ -832,10 +832,10 @@ void SSWR::SMonitor::SMonitorSvrCore::LoadData()
 			NEW_CLASS(user, WebUser());
 			user->userId = r->GetInt32(0);
 			sb.ClearStr();
-			r->GetStr(1, &sb);
+			r->GetStr(1, sb);
 			user->userName = Text::StrCopyNew(sb.ToString()).Ptr();
 			sb.ClearStr();
-			r->GetStr(2, &sb);
+			r->GetStr(2, sb);
 			sb.Hex2Bytes(user->md5Pwd);
 			user->userType = r->GetInt32(3);
 			Sync::RWMutexUsage mutUsage(this->userMut, true);
@@ -894,7 +894,7 @@ void SSWR::SMonitor::SMonitorSvrCore::LoadData()
 				dev->digitalNames[i] = 0;
 			}
 			sb.ClearStr();
-			if (r->GetStr(26, &sb))
+			if (r->GetStr(26, sb))
 			{
 				sarr[1] = sb.v;
 				i = 0;
@@ -908,7 +908,7 @@ void SSWR::SMonitor::SMonitorSvrCore::LoadData()
 				}
 			}
 			sb.ClearStr();
-			if (r->GetStr(27, &sb))
+			if (r->GetStr(27, sb))
 			{
 				sarr[1] = sb.v;
 				i = 0;
@@ -1217,8 +1217,8 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(IO::Writer *writer, NotNullPtr<
 					NEW_CLASS(benchhdlr, SSWR::Benchmark::BenchmarkWebHandler());
 
 					sb.ClearStr();
-					IO::Path::GetProcessFileName(&sb);
-					IO::Path::AppendPath(&sb, UTF8STRC("files"));
+					IO::Path::GetProcessFileName(sb);
+					IO::Path::AppendPath(sb, UTF8STRC("files"));
 					NEW_CLASS(fileshdlr, Net::WebServer::HTTPDirectoryHandler(sb.ToCString(), false, 0, false));
 					shdlr->HandlePath(CSTR("/files"), fileshdlr, true);
 					hdlr->HandlePath(CSTR("/monitor"), shdlr, true);

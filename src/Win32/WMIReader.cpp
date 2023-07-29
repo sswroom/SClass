@@ -353,7 +353,7 @@ WChar *Win32::WMIReader::GetStr(UOSInt colIndex, WChar *buff)
 	return ret;
 }
 
-Bool Win32::WMIReader::GetStr(UOSInt colIndex, Text::StringBuilderUTF8 *sb)
+Bool Win32::WMIReader::GetStr(UOSInt colIndex, NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	WMIColumn *col = this->columns->GetItem(colIndex);
 	if (col == 0 || this->pObject == 0)

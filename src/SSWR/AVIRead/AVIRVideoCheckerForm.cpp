@@ -60,7 +60,7 @@ void __stdcall SSWR::AVIRead::AVIRVideoCheckerForm::OnTimerTick(void *userObj)
 		{
 			Text::StringBuilderUTF8 sb;
 			sb.AppendC(UTF8STRC("Decode Ok, time used = "));
-			Text::SBAppendF64(&sb, update->t);
+			sb.AppendDouble(update->t);
 			me->lvFiles->SetSubItem(update->index, 1, sb.ToCString());
 		}
 		else if (update->status == 1)

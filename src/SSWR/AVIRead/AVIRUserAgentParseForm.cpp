@@ -7,7 +7,7 @@ void __stdcall SSWR::AVIRead::AVIRUserAgentParseForm::OnParseClicked(void *userO
 {
 	SSWR::AVIRead::AVIRUserAgentParseForm *me = (SSWR::AVIRead::AVIRUserAgentParseForm*)userObj;
 	Text::StringBuilderUTF8 sb;
-	me->txtUserAgent->GetText(&sb);
+	me->txtUserAgent->GetText(sb);
 	if (sb.GetLength() > 0)
 	{
 		Net::UserAgentDB::UAEntry ent;

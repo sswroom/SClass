@@ -29,7 +29,7 @@ void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnSMTPStartClicked(void *user
 	{
 		UInt16 port;
 		Text::StringBuilderUTF8 sb;
-		me->txtSMTPPort->GetText(&sb);
+		me->txtSMTPPort->GetText(sb);
 		if (!sb.ToUInt16(&port))
 		{
 			UI::MessageDialog::ShowDialog(CSTR("Please enter valid port number"), CSTR("Error"), me);
@@ -69,7 +69,7 @@ void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnPOP3StartClicked(void *user
 	{
 		UInt16 port;
 		Text::StringBuilderUTF8 sb;
-		me->txtPOP3Port->GetText(&sb);
+		me->txtPOP3Port->GetText(sb);
 		if (!sb.ToUInt16(&port))
 		{
 			UI::MessageDialog::ShowDialog(CSTR("Please enter valid port number"), CSTR("Error"), me);
@@ -121,7 +121,7 @@ void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnGCISStartClicked(void *user
 		UInt16 port;
 		Text::StringBuilderUTF8 sb;
 		Text::StringBuilderUTF8 sb2;
-		me->txtGCISPort->GetText(&sb);
+		me->txtGCISPort->GetText(sb);
 		if (!sb.ToUInt16(&port))
 		{
 			UI::MessageDialog::ShowDialog(CSTR("Please enter valid port number"), CSTR("Error"), me);
@@ -133,13 +133,13 @@ void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnGCISStartClicked(void *user
 			return;
 		}
 		sb.ClearStr();
-		me->txtGCISNotifPath->GetText(&sb);
+		me->txtGCISNotifPath->GetText(sb);
 		if (!sb.StartsWith('/'))
 		{
 			UI::MessageDialog::ShowDialog(CSTR("Please enter valid Notif path"), CSTR("Error"), me);
 			return;
 		}
-		me->txtGCISBatchUplPath->GetText(&sb2);
+		me->txtGCISBatchUplPath->GetText(sb2);
 		if (!sb2.StartsWith('/'))
 		{
 			UI::MessageDialog::ShowDialog(CSTR("Please enter valid Batch Upload path"), CSTR("Error"), me);
@@ -179,14 +179,14 @@ void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnLogFileClicked(void *userOb
 {
 	SSWR::AVIRead::AVIREmailServerForm *me = (SSWR::AVIRead::AVIREmailServerForm*)userObj;
 	Text::StringBuilderUTF8 sb;
-	IO::Path::GetProcessFileName(&sb);
+	IO::Path::GetProcessFileName(sb);
 	if (IO::Path::PATH_SEPERATOR == '\\')
 	{
-		IO::Path::AppendPath(&sb, UTF8STRC("log\\SMTP"));
+		IO::Path::AppendPath(sb, UTF8STRC("log\\SMTP"));
 	}
 	else
 	{
-		IO::Path::AppendPath(&sb, UTF8STRC("log/SMTP"));
+		IO::Path::AppendPath(sb, UTF8STRC("log/SMTP"));
 	}
 	me->log.AddFileLog(sb.ToCString(), IO::LogHandler::LogType::PerDay, IO::LogHandler::LogGroup::PerMonth, IO::LogHandler::LogLevel::Command, "yyyy-MM-dd HH:mm:ss.fff", false);
 	me->btnLogFile->SetEnabled(false);
@@ -352,9 +352,9 @@ void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnSMTPCertKeyClicked(void *us
 		me->smtpSSLCert = frm.GetCert();
 		me->smtpSSLKey = frm.GetKey();
 		Text::StringBuilderUTF8 sb;
-		me->smtpSSLCert->ToShortString(&sb);
+		me->smtpSSLCert->ToShortString(sb);
 		sb.AppendC(UTF8STRC(", "));
-		me->smtpSSLKey->ToShortString(&sb);
+		me->smtpSSLKey->ToShortString(sb);
 		me->lblSMTPCertKey->SetText(sb.ToCString());
 	}
 }
@@ -375,9 +375,9 @@ void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnPOP3CertKeyClicked(void *us
 		me->pop3SSLCert = frm.GetCert();
 		me->pop3SSLKey = frm.GetKey();
 		Text::StringBuilderUTF8 sb;
-		me->pop3SSLCert->ToShortString(&sb);
+		me->pop3SSLCert->ToShortString(sb);
 		sb.AppendC(UTF8STRC(", "));
-		me->pop3SSLKey->ToShortString(&sb);
+		me->pop3SSLKey->ToShortString(sb);
 		me->lblPOP3CertKey->SetText(sb.ToCString());
 	}
 }
@@ -398,9 +398,9 @@ void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnGCISCertKeyClicked(void *us
 		me->gcisSSLCert = frm.GetCert();
 		me->gcisSSLKey = frm.GetKey();
 		Text::StringBuilderUTF8 sb;
-		me->gcisSSLCert->ToShortString(&sb);
+		me->gcisSSLCert->ToShortString(sb);
 		sb.AppendC(UTF8STRC(", "));
-		me->gcisSSLKey->ToShortString(&sb);
+		me->gcisSSLKey->ToShortString(sb);
 		me->lblGCISCertKey->SetText(sb.ToCString());
 	}
 }
@@ -411,7 +411,7 @@ void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnSMTPTypeSelChg(void *userOb
 	UInt16 port;
 	Text::StringBuilderUTF8 sb;
 	Net::Email::SMTPConn::ConnType newType = (Net::Email::SMTPConn::ConnType)(OSInt)me->cboSMTPType->GetSelectedItem();
-	me->txtSMTPPort->GetText(&sb);
+	me->txtSMTPPort->GetText(sb);
 	if (sb.ToUInt16(&port))
 	{
 		if (port == Net::Email::SMTPServer::GetDefaultPort(me->smtpType))
@@ -429,7 +429,7 @@ void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnPOP3SSLChanged(void *userOb
 	SSWR::AVIRead::AVIREmailServerForm *me = (SSWR::AVIRead::AVIREmailServerForm*)userObj;
 	UInt16 port;
 	Text::StringBuilderUTF8 sb;
-	me->txtPOP3Port->GetText(&sb);
+	me->txtPOP3Port->GetText(sb);
 	if (sb.ToUInt16(&port))
 	{
 		if (port == Net::Email::POP3Server::GetDefaultPort(!isChecked))

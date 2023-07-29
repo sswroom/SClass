@@ -53,7 +53,7 @@ namespace Net
 			void AddHeader(Text::CString name, Text::CString value);
 			virtual Text::String *GetSHeader(Text::CString name);
 			virtual UTF8Char *GetHeader(UTF8Char *sbuff, Text::CString name, UOSInt buffLen);
-			virtual Bool GetHeaderC(Text::StringBuilderUTF8 *sb, Text::CString name);
+			virtual Bool GetHeaderC(NotNullPtr<Text::StringBuilderUTF8> sb, Text::CString name);
 			virtual UOSInt GetHeaderNames(Data::ArrayList<Text::String*> *names);
 			UOSInt GetHeaderCnt();
 			Text::String *GetHeaderName(UOSInt index);
@@ -67,7 +67,7 @@ namespace Net
 			virtual void ParseHTTPForm();
 			virtual Text::String *GetHTTPFormStr(Text::CString name);
 			virtual const UInt8 *GetHTTPFormFile(Text::CString formName, UOSInt index, UTF8Char *fileName, UOSInt fileNameBuffSize, UTF8Char **fileNameEnd, UOSInt *fileSize);
-			virtual void GetRequestURLBase(Text::StringBuilderUTF8 *sb);
+			virtual void GetRequestURLBase(NotNullPtr<Text::StringBuilderUTF8> sb);
 
 			virtual const Net::SocketUtil::AddressInfo *GetClientAddr() const;
 			virtual Net::NetConnection *GetNetConn() const;

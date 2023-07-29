@@ -51,7 +51,7 @@ void IO::CyclicLogBuffer::LogClosed()
 
 }
 
-void IO::CyclicLogBuffer::GetLogs(Text::StringBuilderUTF8 *sb, Text::CString seperator)
+void IO::CyclicLogBuffer::GetLogs(NotNullPtr<Text::StringBuilderUTF8> sb, Text::CString seperator)
 {
 	Sync::MutexUsage mutUsage(this->logMut);
 	UOSInt i = this->logInd;

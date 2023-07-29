@@ -55,7 +55,7 @@ void UI::GUIComboBox::EventTextChanged()
 	if (this->autoComplete)
 	{
 		Text::StringBuilderUTF8 sb;
-		this->GetText(&sb);
+		this->GetText(sb);
 		if (sb.GetLength() > this->lastTextLeng)
 		{
 			UOSInt i = 0;
@@ -110,7 +110,7 @@ UTF8Char *UI::GUIComboBox::GetText(UTF8Char *buff)
 	return Text::StrWChar_UTF8(buff, wbuff);
 }
 
-Bool UI::GUIComboBox::GetText(Text::StringBuilderUTF8 *sb)
+Bool UI::GUIComboBox::GetText(NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	UOSInt leng = (UOSInt)GetWindowTextLengthW((HWND)hwnd);
 	WChar *wptr = MemAlloc(WChar, leng + 1);
@@ -232,7 +232,7 @@ UOSInt UI::GUIComboBox::GetSelectedIndex()
 	if (this->autoComplete)
 	{
 		Text::StringBuilderUTF8 sb;
-		this->GetText(&sb);
+		this->GetText(sb);
 		UOSInt i = this->itemTexts.GetCount();
 		while (i-- > 0)
 		{
@@ -348,7 +348,7 @@ void UI::GUIComboBox::SetAutoComplete(Bool autoComplete)
 	if (!this->autoComplete && autoComplete)
 	{
 		Text::StringBuilderUTF8 sb;
-		this->GetText(&sb);
+		this->GetText(sb);
 		this->lastTextLeng = sb.GetLength();
 	}
 	this->autoComplete = autoComplete;

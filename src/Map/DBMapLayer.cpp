@@ -382,7 +382,7 @@ void Map::DBMapLayer::CloseReader(DB::DBReader *r)
 	}
 }
 
-void Map::DBMapLayer::GetLastErrorMsg(Text::StringBuilderUTF8 *str)
+void Map::DBMapLayer::GetLastErrorMsg(NotNullPtr<Text::StringBuilderUTF8> str)
 {
 	if (this->db)
 	{

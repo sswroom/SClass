@@ -48,7 +48,7 @@ void __stdcall SSWR::AVIRead::AVIRARPPingForm::OnPingClicked(void *userObj)
 	{
 		Net::SocketUtil::AddressInfo addr;
 		Text::StringBuilderUTF8 sb;
-		me->txtTarget->GetText(&sb);
+		me->txtTarget->GetText(sb);
 		if (!me->sockf->DNSResolveIP(sb.ToCString(), &addr))
 		{
 			UI::MessageDialog::ShowDialog(CSTR("Error, target name is not valid"), CSTR("Error"), me);

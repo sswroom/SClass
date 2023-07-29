@@ -28,7 +28,7 @@ namespace UI
 
 		virtual void SetText(Text::CString text);
 		virtual UTF8Char *GetText(UTF8Char *buff);
-		virtual Bool GetText(Text::StringBuilderUTF8 *sb);
+		virtual Bool GetText(NotNullPtr<Text::StringBuilderUTF8> sb);
 		virtual Text::CString GetObjectClass();
 		virtual OSInt OnNotify(UInt32 code, void *lParam);
 

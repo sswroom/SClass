@@ -78,27 +78,27 @@ void SSWR::DiscDB::DiscDBEnv::LoadDB()
 			discType->discTypeId = r->GetNewStr(0);
 			discType->brand = r->GetNewStr(1);
 			sb.ClearStr();
-			r->GetStr(2, &sb);
+			r->GetStr(2, sb);
 			discType->name = Text::StrCopyNew(sb.ToString()).Ptr();
 			discType->speed = r->GetDbl(3);
 			sb.ClearStr();
-			r->GetStr(4, &sb);
+			r->GetStr(4, sb);
 			discType->dvdType = Text::StrCopyNew(sb.ToString()).Ptr();
 			sb.ClearStr();
-			r->GetStr(5, &sb);
+			r->GetStr(5, sb);
 			discType->madeIn = Text::StrCopyNew(sb.ToString()).Ptr();
 			sb.ClearStr();
-			r->GetStr(6, &sb);
+			r->GetStr(6, sb);
 			discType->mid = Text::StrCopyNew(sb.ToString()).Ptr();
 			sb.ClearStr();
-			r->GetStr(7, &sb);
+			r->GetStr(7, sb);
 			discType->tid = Text::StrCopyNew(sb.ToString()).Ptr();
 			sb.ClearStr();
-			r->GetStr(8, &sb);
+			r->GetStr(8, sb);
 			discType->revision = Text::StrCopyNew(sb.ToString()).Ptr();
 			discType->qcTest = r->GetBool(9);
 			sb.ClearStr();
-			r->GetStr(10, &sb);
+			r->GetStr(10, sb);
 			discType->remark = Text::StrCopyNew(sb.ToString()).Ptr();
 			this->discTypeMap->Put(discType->discTypeId, discType);
 		}
@@ -353,7 +353,7 @@ UOSInt SSWR::DiscDB::DiscDBEnv::GetBurntFiles(Text::CString discId, Data::ArrayL
 			file->fileName = Text::String::OrEmpty(r->GetNewStr(1));
 			file->fileSize = (UInt64)r->GetInt64(2);
 			sb.ClearStr();
-			r->GetStr(3, &sb);
+			r->GetStr(3, sb);
 			Text::StrConcatC(file->category, sb.ToString(), sb.GetLength());
 			file->videoId = r->GetInt32(4);
 			fileList->Add(file);
@@ -603,7 +603,7 @@ Bool SSWR::DiscDB::DiscDBEnv::AddMD5(NotNullPtr<IO::StreamData> fd)
 		while (r->ReadNext())
 		{
 			sb.ClearStr();
-			r->GetStr(0, &sb);
+			r->GetStr(0, sb);
 			nameMap.Put(sb.ToString(), r->GetInt32(1));
 		}
 		db->CloseReader(r);

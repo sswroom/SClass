@@ -10,7 +10,7 @@ void __stdcall SSWR::AVIRead::AVIRProxyServerForm::OnStartClicked(void *userObj)
 	if (me->svr == 0)
 	{
 		Text::StringBuilderUTF8 sb;
-		me->txtPort->GetText(&sb);
+		me->txtPort->GetText(sb);
 		Int32 port = sb.ToInt32();
 		if (port <= 0 || port >= 65536)
 		{

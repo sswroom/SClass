@@ -17,7 +17,7 @@ void __stdcall SSWR::AVIRead::AVIRSNMPManagerForm::OnAgentAddClicked(void *userO
 	Net::SocketUtil::AddressInfo addr;
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
-	me->txtAgentAddr->GetText(&sb);
+	me->txtAgentAddr->GetText(sb);
 	if (!me->core->GetSocketFactory()->DNSResolveIP(sb.ToCString(), &addr))
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Error in parsing Agent Address"), CSTR("SNMP Manager"), me);
@@ -25,7 +25,7 @@ void __stdcall SSWR::AVIRead::AVIRSNMPManagerForm::OnAgentAddClicked(void *userO
 	}
 
 	sb.ClearStr();
-	me->txtCommunity->GetText(&sb);
+	me->txtCommunity->GetText(sb);
 	if (sb.GetLength() <= 0)
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Please enter community"), CSTR("SNMP Manager"), me);
@@ -124,10 +124,10 @@ void __stdcall SSWR::AVIRead::AVIRSNMPManagerForm::OnAgentSelChg(void *userObj)
 		if (agent->objIdLen > 0)
 		{
 			Text::StringBuilderUTF8 sb;
-			Net::ASN1Util::OIDToString(agent->objId, agent->objIdLen, &sb);
+			Net::ASN1Util::OIDToString(agent->objId, agent->objIdLen, sb);
 			me->txtAgentOID->SetText(sb.ToCString());
 			sb.ClearStr();
-			Net::ASN1OIDDB::OIDToNameString(agent->objId, agent->objIdLen, &sb);
+			Net::ASN1OIDDB::OIDToNameString(agent->objId, agent->objIdLen, sb);
 			me->txtAgentOIDName->SetText(sb.ToCString());
 		}
 		else

@@ -30,7 +30,7 @@ namespace Media
 		Bool HasInfo() const;
 		Bool GetPhotoDate(Data::DateTime *dt) const;
 
-		void ToString(Text::StringBuilderUTF8 *sb) const;
+		void ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const;
 	};
 }
 #endif

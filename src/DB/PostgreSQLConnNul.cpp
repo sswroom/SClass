@@ -67,7 +67,7 @@ void DB::PostgreSQLConn::ForceTz(Int8 tzQhr)
 	this->tzQhr = tzQhr;
 }
 
-void DB::PostgreSQLConn::GetConnName(Text::StringBuilderUTF8 *sb)
+void DB::PostgreSQLConn::GetConnName(NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	sb->AppendC(UTF8STRC("PostgreSQL"));
 }
@@ -96,7 +96,7 @@ void DB::PostgreSQLConn::CloseReader(DB::DBReader *r)
 
 }
 
-void DB::PostgreSQLConn::GetLastErrorMsg(Text::StringBuilderUTF8 *str)
+void DB::PostgreSQLConn::GetLastErrorMsg(NotNullPtr<Text::StringBuilderUTF8> str)
 {
 }
 
@@ -225,7 +225,7 @@ DB::DBReader *DB::PostgreSQLConn::QueryTableData(Text::CString schemaName, Text:
 	if (condition)
 	{
 		sb.AppendC(UTF8STRC(" where "));
-		condition->ToWhereClause(&sb, DB::SQLType::PostgreSQL, 0, 100, 0);
+		condition->ToWhereClause(sb, DB::SQLType::PostgreSQL, 0, 100, 0);
 	}
 	if (ordering.leng > 0)
 	{

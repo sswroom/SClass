@@ -278,7 +278,7 @@ WChar *Manage::Process::GetFilename(WChar *buff)
 	}
 }
 
-Bool Manage::Process::GetFilename(Text::StringBuilderUTF8 *sb)
+Bool Manage::Process::GetFilename(NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	if (this->handle)
 	{
@@ -309,7 +309,7 @@ typedef NTSTATUS (NTAPI* NtQueryInformationProcessFunc)(
 	OUT PULONG ReturnLength OPTIONAL
 );
 
-Bool Manage::Process::GetCommandLine(Text::StringBuilderUTF8* sb)
+Bool Manage::Process::GetCommandLine(NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	if (this->handle == 0)
 		return false;
@@ -350,7 +350,7 @@ Bool Manage::Process::GetCommandLine(Text::StringBuilderUTF8* sb)
 	return true;
 }
 
-Bool Manage::Process::GetWorkingDir(Text::StringBuilderUTF8* sb)
+Bool Manage::Process::GetWorkingDir(NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	if (this->handle)
 	{
@@ -383,7 +383,7 @@ Bool Manage::Process::GetWorkingDir(Text::StringBuilderUTF8* sb)
 
 }
 
-Bool Manage::Process::GetTrueProgramPath(Text::StringBuilderUTF8* sb)
+Bool Manage::Process::GetTrueProgramPath(NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	return this->GetFilename(sb);
 }
@@ -708,7 +708,7 @@ UOSInt Manage::Process::GetHandles(Data::ArrayList<HandleInfo>* handleList)
 	return ret;
 }
 
-Bool Manage::Process::GetHandleDetail(Int32 id, HandleType* handleType, Text::StringBuilderUTF8* sbDetail)
+Bool Manage::Process::GetHandleDetail(Int32 id, HandleType* handleType, NotNullPtr<Text::StringBuilderUTF8> sbDetail)
 {
 	HANDLE dupHandle;
 	HANDLE dupHandle2;
@@ -1439,7 +1439,7 @@ void Manage::Process::FindProcessClose(Manage::Process::FindProcSess *pfsess)
 	MemFree(pfsess);
 }
 
-Int32 Manage::Process::ExecuteProcess(Text::CString cmd, Text::StringBuilderUTF8 *result)
+Int32 Manage::Process::ExecuteProcess(Text::CString cmd, NotNullPtr<Text::StringBuilderUTF8> result)
 {
 	const WChar *wptr = Text::StrToWCharNew(cmd.v);
 	Int32 ret = ExecuteProcessW(wptr, result);
@@ -1447,7 +1447,7 @@ Int32 Manage::Process::ExecuteProcess(Text::CString cmd, Text::StringBuilderUTF8
 	return ret;
 }
 
-Int32 Manage::Process::ExecuteProcessW(const WChar *cmd, Text::StringBuilderUTF8 *result)
+Int32 Manage::Process::ExecuteProcessW(const WChar *cmd, NotNullPtr<Text::StringBuilderUTF8> result)
 {
 	WChar buff[MAX_PATH];
 	WChar progName[MAX_PATH];
@@ -1519,32 +1519,29 @@ Int32 Manage::Process::ExecuteProcessW(const WChar *cmd, Text::StringBuilderUTF8
 		CloseHandle(startInfo.hStdOutput);
 		//CloseHandle(startInfo.hStdError);
 
-		if (result)
+		NotNullPtr<IO::FileStream> fs;
+		UTF8Char lineBuff[128];
+		UTF8Char *linePtr;
+		UOSInt retryCnt = 20;
+		while (true)
 		{
-			NotNullPtr<IO::FileStream> fs;
-			UTF8Char lineBuff[128];
-			UTF8Char *linePtr;
-			UOSInt retryCnt = 20;
-			while (true)
+			NEW_CLASSNN(fs, IO::FileStream(CSTRP(tmpFile, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
+			if (!fs->IsError() || retryCnt-- <= 0)
 			{
-				NEW_CLASSNN(fs, IO::FileStream(CSTRP(tmpFile, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
-				if (!fs->IsError() || retryCnt-- <= 0)
-				{
-					break;
-				}
-				fs.Delete();
-				Sync::SimpleThread::Sleep(100);
-			}
-			{
-				IO::StreamReader reader(fs);
-				while ((linePtr = reader.ReadLine(lineBuff, 124)) != 0)
-				{
-					linePtr = reader.GetLastLineBreak(linePtr);
-					result->AppendP(lineBuff, linePtr);
-				}
+				break;
 			}
 			fs.Delete();
+			Sync::SimpleThread::Sleep(100);
 		}
+		{
+			IO::StreamReader reader(fs);
+			while ((linePtr = reader.ReadLine(lineBuff, 124)) != 0)
+			{
+				linePtr = reader.GetLastLineBreak(linePtr);
+				result->AppendP(lineBuff, linePtr);
+			}
+		}
+		fs.Delete();
 		IO::FileUtil::DeleteFile(CSTRP(tmpFile, sptr), false);
 		MemFree(cmdLine);
 		return (Int32)exitCode;

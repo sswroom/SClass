@@ -92,7 +92,7 @@ Bool Exporter::PDFExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, const
 		sb2.AppendOSInt(sb.GetLength());
 		sb2.AppendC(UTF8STRC(">>\r"));
 		sb2.AppendC(UTF8STRC("stream\r"));
-		sb2.AppendSB(&sb);
+		sb2.AppendSB(sb);
 		sb2.AppendC(UTF8STRC("endstream\r"));
 		sb2.AppendC(UTF8STRC("endobj\r"));
 

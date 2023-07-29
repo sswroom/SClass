@@ -24,7 +24,7 @@ Crypto::Cert::X509File::FileType Crypto::Cert::X509CertReq::GetFileType() const
 	return FileType::CertRequest;
 }
 
-void Crypto::Cert::X509CertReq::ToShortName(Text::StringBuilderUTF8 *sb) const
+void Crypto::Cert::X509CertReq::ToShortName(NotNullPtr<Text::StringBuilderUTF8> sb) const
 {
 	UOSInt len = 0;
 	Net::ASN1Util::ItemType itemType = Net::ASN1Util::IT_UNKNOWN;
@@ -71,7 +71,7 @@ Net::ASN1Data *Crypto::Cert::X509CertReq::Clone() const
 	return asn1;
 }
 
-void Crypto::Cert::X509CertReq::ToString(Text::StringBuilderUTF8 *sb) const
+void Crypto::Cert::X509CertReq::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
 {
 	if (IsCertificateRequest(this->buff.Ptr(), this->buff.PtrEnd(), "1"))
 	{

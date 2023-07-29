@@ -6,7 +6,7 @@ void __stdcall SSWR::DiscDB::DiscDBSearchDiscForm::OnSearchClicked(void *userObj
 {
 	SSWR::DiscDB::DiscDBSearchDiscForm *me = (SSWR::DiscDB::DiscDBSearchDiscForm*)userObj;
 	Text::StringBuilderUTF8 sb;
-	me->txtDiscId->GetText(&sb);
+	me->txtDiscId->GetText(sb);
 	if (sb.GetLength() <= 0)
 		return;
 

@@ -23,7 +23,7 @@ void Net::WebServer::RESTfulHandler::BuildJSON(Text::JSONBuilder *json, DB::DBRo
 		col = table->GetCol(i);
 		dtype = row->GetFieldDataType(col->GetColName()->v);
 		sb.ClearStr();
-		row->AppendVarNameForm(&sb, col->GetColName()->v);
+		row->AppendVarNameForm(sb, col->GetColName()->v);
 		switch (dtype)
 		{
 		case DB::DBRow::DT_STRING:
@@ -206,7 +206,7 @@ Bool Net::WebServer::RESTfulHandler::ProcessRequest(Net::WebServer::IWebRequest 
 				if (!this->noLinks)
 				{
 					sbURI.ClearStr();
-					req->GetRequestURLBase(&sbURI);
+					req->GetRequestURLBase(sbURI);
 					sptr = req->GetRequestPath(sbuff, sizeof(sbuff));
 					sbURI.AppendP(sbuff, sptr);
 					json.ObjectBeginObject(CSTR("_links"));
@@ -257,7 +257,7 @@ Bool Net::WebServer::RESTfulHandler::ProcessRequest(Net::WebServer::IWebRequest 
 					if (!this->noLinks && row->GetSinglePKI64(&ikey))
 					{
 						sbURI.ClearStr();
-						req->GetRequestURLBase(&sbURI);
+						req->GetRequestURLBase(sbURI);
 						sptr = req->GetRequestPath(sbuff, sizeof(sbuff));
 						sbURI.AppendP(sbuff, sptr);
 						if (!sbURI.EndsWith('/'))
@@ -294,7 +294,7 @@ Bool Net::WebServer::RESTfulHandler::ProcessRequest(Net::WebServer::IWebRequest 
 					sptr = req->GetRequestPath(sbuff, sizeof(sbuff));
 					json.ObjectBeginObject(CSTR("_links"));
 					sbURI.ClearStr();
-					req->GetRequestURLBase(&sbURI);
+					req->GetRequestURLBase(sbURI);
 					sbURI.AppendP(sbuff, sptr);
 					sbURI.AppendC(UTF8STRC("?page=0&size="));
 					sbURI.AppendUOSInt(page->GetPageSize());
@@ -302,7 +302,7 @@ Bool Net::WebServer::RESTfulHandler::ProcessRequest(Net::WebServer::IWebRequest 
 					json.ObjectAddStr(CSTR("href"), sbURI.ToCString());
 					json.ObjectEnd();
 					sbURI.ClearStr();
-					req->GetRequestURLBase(&sbURI);
+					req->GetRequestURLBase(sbURI);
 					sbURI.Append(req->GetRequestURI());
 					json.ObjectBeginObject(CSTR("self"));
 					json.ObjectAddStr(CSTR("href"), sbURI.ToCString());
@@ -310,7 +310,7 @@ Bool Net::WebServer::RESTfulHandler::ProcessRequest(Net::WebServer::IWebRequest 
 					if (page->GetPageNum() + 1 < pageCnt)
 					{
 						sbURI.ClearStr();
-						req->GetRequestURLBase(&sbURI);
+						req->GetRequestURLBase(sbURI);
 						sbURI.AppendP(sbuff, sptr);
 						sbURI.AppendC(UTF8STRC("?page="));
 						sbURI.AppendUOSInt(page->GetPageNum() + 1);
@@ -321,7 +321,7 @@ Bool Net::WebServer::RESTfulHandler::ProcessRequest(Net::WebServer::IWebRequest 
 						json.ObjectEnd();
 					}
 					sbURI.ClearStr();
-					req->GetRequestURLBase(&sbURI);
+					req->GetRequestURLBase(sbURI);
 					sbURI.AppendP(sbuff, sptr);
 					sbURI.AppendC(UTF8STRC("?page="));
 					sbURI.AppendUOSInt(pageCnt - 1);

@@ -121,7 +121,7 @@ UTF8Char *Net::HTTPClient::GetRespHeader(Text::CString name, UTF8Char *valueBuff
 	return 0;
 }
 
-Bool Net::HTTPClient::GetRespHeader(Text::CString name, Text::StringBuilderUTF8 *sb)
+Bool Net::HTTPClient::GetRespHeader(Text::CString name, NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	Text::CString v = GetRespHeader(name);
 	if (v.v)
@@ -457,7 +457,7 @@ Bool Net::HTTPClient::LoadContent(NotNullPtr<Net::SocketFactory> sockf, Net::SSL
 	return true;
 }
 
-Bool Net::HTTPClient::LoadContent(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::CString url, Text::StringBuilderUTF8 *sb, UInt64 maxSize)
+Bool Net::HTTPClient::LoadContent(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::CString url, NotNullPtr<Text::StringBuilderUTF8> sb, UInt64 maxSize)
 {
 	NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(sockf, ssl, url, Net::WebUtil::RequestMethod::HTTP_GET, true);
 	if (cli->GetRespStatus() != Net::WebStatus::SC_OK)

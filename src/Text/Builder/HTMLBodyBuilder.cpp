@@ -2,7 +2,7 @@
 #include "Text/XML.h"
 #include "Text/Builder/HTMLBodyBuilder.h"
 
-Text::Builder::HTMLBodyBuilder::HTMLBodyBuilder(Text::StringBuilderUTF8 *sb) : HTMLBuilder(sb, true)
+Text::Builder::HTMLBodyBuilder::HTMLBodyBuilder(NotNullPtr<Text::StringBuilderUTF8> sb) : HTMLBuilder(sb, true)
 {
 }
 

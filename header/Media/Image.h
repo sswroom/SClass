@@ -46,7 +46,7 @@ namespace Media
 		Media::StaticImage *CreateStaticImage() const;
 		Media::StaticImage *CreateSubImage(Math::RectArea<OSInt> area) const;
 		Media::EXIFData *SetEXIFData(Media::EXIFData *exif);
-		void ToString(Text::StringBuilderUTF8 *sb) const;
+		void ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const;
 
 		Bool IsDispSize(Math::Size2D<UOSInt> dispSize);
 		static Text::CString AlphaTypeGetName(AlphaType atype);

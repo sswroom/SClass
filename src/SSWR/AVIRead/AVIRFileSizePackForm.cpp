@@ -16,7 +16,7 @@ SSWR::AVIRead::AVIRFileSizePackForm::MyFile::~MyFile()
 	this->fileName->Release();
 }
 
-Bool SSWR::AVIRead::AVIRFileSizePackForm::MyFile::ToString(Text::StringBuilderUTF8 *sb) const
+Bool SSWR::AVIRead::AVIRFileSizePackForm::MyFile::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
 {
 	sb->Append(this->fileName);
 	sb->AppendC(UTF8STRC(" size="));
@@ -133,7 +133,7 @@ void SSWR::AVIRead::AVIRFileSizePackForm::GenList()
 	UOSInt j;
 	IO::Path::PathType pt;
 	Text::StringBuilderUTF8 sb;
-	this->cboMaxSize->GetText(&sb);
+	this->cboMaxSize->GetText(sb);
 	maxSize = sb.ToUInt64();
 	if (maxSize <= 0)
 	{
@@ -144,7 +144,7 @@ void SSWR::AVIRead::AVIRFileSizePackForm::GenList()
     minSize = maxSize * 999 / 1000;
 
 	sb.ClearStr();
-	this->txtDir->GetText(&sb);
+	this->txtDir->GetText(sb);
 	if (sb.GetLength() == 0)
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Please input directory"), CSTR("Error"), this);
@@ -193,7 +193,7 @@ void SSWR::AVIRead::AVIRFileSizePackForm::GenList()
 		{
 			file = this->fileList.GetItem(i);
 			sb.ClearStr();
-			file->ToString(&sb);
+			file->ToString(sb);
 			this->lbFileDir->AddItem(sb.ToCString(), file);
 			i++;
 		}
@@ -213,7 +213,7 @@ void SSWR::AVIRead::AVIRFileSizePackForm::GenList()
 		{
 			file = this->fileList.GetItem(i);
 			sb.ClearStr();
-			file->ToString(&sb);
+			file->ToString(sb);
 			this->lbFilePack->AddItem(sb.ToCString(), file);
 			i++;
 		}
@@ -236,7 +236,7 @@ void SSWR::AVIRead::AVIRFileSizePackForm::GenList()
 		{
 			file = this->packList.GetItem(i);
 			sb.ClearStr();
-			file->ToString(&sb);
+			file->ToString(sb);
 			this->lbFilePack->AddItem(sb.ToCString(), file);
 			i++;
 		}

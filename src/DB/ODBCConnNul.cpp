@@ -151,7 +151,7 @@ void DB::ODBCConn::ForceTz(Int8 tzQhr)
 	this->tzQhr = tzQhr;
 }
 
-void DB::ODBCConn::GetConnName(Text::StringBuilderUTF8 *sb)
+void DB::ODBCConn::GetConnName(NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	sb->AppendC(UTF8STRC("ODBC:"));
 	if (this->connStr)
@@ -206,7 +206,7 @@ void DB::ODBCConn::CloseReader(DB::DBReader *r)
 {
 }
 
-void DB::ODBCConn::GetLastErrorMsg(Text::StringBuilderUTF8 *str)
+void DB::ODBCConn::GetLastErrorMsg(NotNullPtr<Text::StringBuilderUTF8> str)
 {
 }
 

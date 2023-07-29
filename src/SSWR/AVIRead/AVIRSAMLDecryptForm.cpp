@@ -63,7 +63,7 @@ void __stdcall SSWR::AVIRead::AVIRSAMLDecryptForm::OnDecryptClicked(void *userOb
 	Net::SSLEngine *ssl;
 	Crypto::Cert::X509Key *key = 0;
 	IO::ParsedObject *pobj;
-	me->txtKey->GetText(&sb);
+	me->txtKey->GetText(sb);
 	if (sb.GetLength() == 0)
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Please input private key file"), CSTR("SAML Response Decrypt"), me);
@@ -122,7 +122,7 @@ void __stdcall SSWR::AVIRead::AVIRSAMLDecryptForm::OnDecryptClicked(void *userOb
 		return;
 	}
 	sb.ClearStr();
-	me->txtRAWResponse->GetText(&sb);
+	me->txtRAWResponse->GetText(sb);
 	if (sb.GetLength() == 0)
 	{
 		DEL_CLASS(key);
@@ -131,7 +131,7 @@ void __stdcall SSWR::AVIRead::AVIRSAMLDecryptForm::OnDecryptClicked(void *userOb
 	}
 	Text::StringBuilderUTF8 sbResult;
 	ssl = Net::SSLEngineFactory::Create(me->core->GetSocketFactory(), false);
-	Net::SAMLUtil::DecryptResponse(ssl, me->core->GetEncFactory(), key, sb.ToCString(), &sbResult);
+	Net::SAMLUtil::DecryptResponse(ssl, me->core->GetEncFactory(), key, sb.ToCString(), sbResult);
 	DEL_CLASS(ssl);
 	DEL_CLASS(key);
 	me->txtResult->SetText(sbResult.ToCString());

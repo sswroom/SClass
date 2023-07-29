@@ -180,7 +180,7 @@ template <class T> Bool DB::DBUtil::SaveCSV(IO::Stream *stm, Data::ArrayList<T*>
 			else
 			{
 				sb2.ClearStr();
-				itm.GetAsString(&sb2);
+				itm.GetAsString(sb2);
 				s = Text::String::NewCSVRec(sb2.ToString());
 				sb.AppendC(s->v, s->leng);
 				s->Release();

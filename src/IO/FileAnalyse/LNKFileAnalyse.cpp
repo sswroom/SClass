@@ -173,7 +173,7 @@ UOSInt IO::FileAnalyse::LNKFileAnalyse::GetFrameCount()
 	return this->tags.GetCount();
 }
 
-Bool IO::FileAnalyse::LNKFileAnalyse::GetFrameName(UOSInt index, Text::StringBuilderUTF8* sb)
+Bool IO::FileAnalyse::LNKFileAnalyse::GetFrameName(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	IO::FileAnalyse::LNKFileAnalyse::TagInfo* tag = this->tags.GetItem(index);
 	if (tag == 0)

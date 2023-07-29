@@ -145,7 +145,7 @@ IO::ParsedObject *Parser::FileParser::MDBParser::ParseFileHdr(NotNullPtr<IO::Str
 						if (rdr->ReadNext())
 						{
 							Text::StringBuilderUTF8 sb;
-							rdr->GetStr(1, &sb);
+							rdr->GetStr(1, sb);
 							csys = this->prjParser->ParsePRJBuff(fd->GetFullFileName()->ToCString(), sb.v, sb.GetLength(), 0);
 							if (csys)
 							{

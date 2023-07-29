@@ -12,7 +12,7 @@ void __stdcall SSWR::AVIRead::AVIRNetBIOSScannerForm::OnRequestClicked(void *use
 	SSWR::AVIRead::AVIRNetBIOSScannerForm *me = (SSWR::AVIRead::AVIRNetBIOSScannerForm*)userObj;
 	Text::StringBuilderUTF8 sb;
 	Net::SocketUtil::AddressInfo addr;
-	me->txtTargetAddr->GetText(&sb);
+	me->txtTargetAddr->GetText(sb);
 	Net::AddressRange range(sb.ToString(), sb.GetLength(), me->chkTargetScan->IsChecked());
 	if (range.GetCount() == 0)
 	{

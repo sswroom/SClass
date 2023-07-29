@@ -15,7 +15,7 @@ void __stdcall SSWR::AVIRead::AVIRLogMergeForm::OnFile1Clicked(void *userObj)
 	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"LogMergeFile1", false);
 	dlg.AddFilter(CSTR("*.log"), CSTR("Log File"));
 	dlg.SetAllowMultiSel(false);
-	me->txtFile1->GetText(&sb);
+	me->txtFile1->GetText(sb);
 	if (sb.GetLength() > 0)
 	{
 		dlg.SetFileName(sb.ToCString());
@@ -33,7 +33,7 @@ void __stdcall SSWR::AVIRead::AVIRLogMergeForm::OnFile2Clicked(void *userObj)
 	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"LogMergeFile2", false);
 	dlg.AddFilter(CSTR("*.log"), CSTR("Log File"));
 	dlg.SetAllowMultiSel(false);
-	me->txtFile2->GetText(&sb);
+	me->txtFile2->GetText(sb);
 	if (sb.GetLength() > 0)
 	{
 		dlg.SetFileName(sb.ToCString());
@@ -50,7 +50,7 @@ void __stdcall SSWR::AVIRead::AVIRLogMergeForm::OnOFileClicked(void *userObj)
 	Text::StringBuilderUTF8 sb;
 	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"LogMergeOFile", true);
 	dlg.AddFilter(CSTR("*.log"), CSTR("Log File"));
-	me->txtOFile->GetText(&sb);
+	me->txtOFile->GetText(sb);
 	if (sb.GetLength() > 0)
 	{
 		dlg.SetFileName(sb.ToCString());
@@ -68,9 +68,9 @@ void __stdcall SSWR::AVIRead::AVIRLogMergeForm::OnConvertClicked(void *userObj)
 	Text::StringBuilderUTF8 sb1;
 	Text::StringBuilderUTF8 sb2;
 	Text::StringBuilderUTF8 sb3;
-	me->txtFile1->GetText(&sb1);
-	me->txtFile2->GetText(&sb2);
-	me->txtOFile->GetText(&sb3);
+	me->txtFile1->GetText(sb1);
+	me->txtFile2->GetText(sb2);
+	me->txtOFile->GetText(sb3);
 	if (IO::Path::GetPathType(sb1.ToCString()) != IO::Path::PathType::File)
 	{
 		UI::MessageDialog::ShowDialog(CSTR("File1 not found"), CSTR("Error"), me);

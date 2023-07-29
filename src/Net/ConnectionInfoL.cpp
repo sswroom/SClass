@@ -222,9 +222,9 @@ Net::ConnectionInfo::ConnectionInfo(void *info)
 		WChar *sarr[4];
 		NEW_CLASS(reader, Text::UTF8Reader(fs));
 		sb.ClearStr();
-		reader->ReadLine(&sb, 512);
+		reader->ReadLine(sb, 512);
 		sb.ClearStr();
-		while (reader->ReadLine(&sb, 512))
+		while (reader->ReadLine(sb, 512))
 		{
 			if (Text::StrSplit(sarr, 4, sb.ToString(), '\t') == 4)
 			{

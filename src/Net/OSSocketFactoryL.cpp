@@ -798,7 +798,7 @@ Bool Net::OSSocketFactory::IcmpSendEcho2(const Net::SocketUtil::AddressInfo *add
 		sptr = Net::SocketUtil::GetAddrName(sptr, addr);
 		Text::StringBuilderUTF8 sb;
 		Int32 ret;
-		ret = Manage::Process::ExecuteProcess(CSTRP(sbuff, sptr), &sb);
+		ret = Manage::Process::ExecuteProcess(CSTRP(sbuff, sptr), sb);
 		if (ret == 0)
 		{
 			Text::PString sarr[4];

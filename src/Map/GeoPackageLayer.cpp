@@ -326,7 +326,7 @@ void Map::GeoPackageLayer::CloseReader(DB::DBReader *r)
 	this->gpkg->CloseReader(r);
 }
 
-void Map::GeoPackageLayer::GetLastErrorMsg(Text::StringBuilderUTF8 *str)
+void Map::GeoPackageLayer::GetLastErrorMsg(NotNullPtr<Text::StringBuilderUTF8> str)
 {
 	this->gpkg->GetLastErrorMsg(str);
 }

@@ -69,7 +69,7 @@ Text::IMIMEObj *Text::MIMEObj::TextMIMEObj::Clone() const
 	return txt;
 }
 
-void Text::MIMEObj::TextMIMEObj::GetText(Text::StringBuilderUTF8 *sb) const
+void Text::MIMEObj::TextMIMEObj::GetText(NotNullPtr<Text::StringBuilderUTF8> sb) const
 {
 	Text::Encoding enc(this->codePage);
 	UOSInt strLen;

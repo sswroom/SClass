@@ -10,7 +10,7 @@ Text::TextBinEnc::CPPTextBinEnc::~CPPTextBinEnc()
 {
 }
 
-UOSInt Text::TextBinEnc::CPPTextBinEnc::EncodeBin(Text::StringBuilderUTF8 *sb, const UInt8 *dataBuff, UOSInt buffSize)
+UOSInt Text::TextBinEnc::CPPTextBinEnc::EncodeBin(NotNullPtr<Text::StringBuilderUTF8> sb, const UInt8 *dataBuff, UOSInt buffSize)
 {
 	Bool lineStart = true;
 	UInt32 code;

@@ -18,7 +18,7 @@ void __stdcall SSWR::AVIRead::AVIRNetPingForm::OnPingClicked(void *userObj)
 	{
 		Net::SocketUtil::AddressInfo addr;
 		Text::StringBuilderUTF8 sb;
-		me->txtTarget->GetText(&sb);
+		me->txtTarget->GetText(sb);
 		if (!me->sockf->DNSResolveIP(sb.ToCString(), &addr))
 		{
 			UI::MessageDialog::ShowDialog(CSTR("Error, target name is not valid"), CSTR("Error"), me);
@@ -43,9 +43,9 @@ void __stdcall SSWR::AVIRead::AVIRNetPingForm::OnPingClicked(void *userObj)
 				t2 = clk.GetTimeDiff();
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("Ping time: round trip = "));
-				Text::SBAppendF64(&sb, t1 / 1000.0);
+				sb.AppendDouble(t1 / 1000.0);
 				sb.AppendC(UTF8STRC("ms, calc time = "));
-				Text::SBAppendF64(&sb, t2 * 1000);
+				sb.AppendDouble(t2 * 1000);
 				sb.AppendC(UTF8STRC("ms, ttl = "));
 				sb.AppendU32(ttl);
 				me->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Command);
@@ -76,9 +76,9 @@ void __stdcall SSWR::AVIRead::AVIRNetPingForm::OnTimerTick(void *userObj)
 			t[1] = t2 * 1000;
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Ping time: round trip = "));
-			Text::SBAppendF64(&sb, t1 / 1000.0);
+			sb.AppendDouble(t1 / 1000.0);
 			sb.AppendC(UTF8STRC("ms, calc time = "));
-			Text::SBAppendF64(&sb, t2 * 1000);
+			sb.AppendDouble(t2 * 1000);
 			sb.AppendC(UTF8STRC("ms, ttl = "));
 			sb.AppendU32(ttl);
 			me->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Command);

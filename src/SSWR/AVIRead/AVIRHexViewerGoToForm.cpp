@@ -6,7 +6,7 @@ void __stdcall SSWR::AVIRead::AVIRHexViewerGoToForm::OnOKClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRHexViewerGoToForm *me = (SSWR::AVIRead::AVIRHexViewerGoToForm*)userObj;
 	Text::StringBuilderUTF8 sb;
-	me->txtInput->GetText(&sb);
+	me->txtInput->GetText(sb);
 
 	UInt64 destOfst;
 	if (sb.GetLength() == 0)

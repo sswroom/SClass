@@ -256,7 +256,7 @@ WChar *Manage::Process::GetFilename(WChar *buff)
 	return buff;
 }
 
-Bool Manage::Process::GetFilename(Text::StringBuilderUTF8 *sb)
+Bool Manage::Process::GetFilename(NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	UTF8Char sbuff2[512];
 	UTF8Char sbuff[128];
@@ -286,7 +286,7 @@ Bool Manage::Process::GetFilename(Text::StringBuilderUTF8 *sb)
 	return true;
 }
 
-Bool Manage::Process::GetCommandLine(Text::StringBuilderUTF8 *sb)
+Bool Manage::Process::GetCommandLine(NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	UTF8Char sbuff[8192];
 	UTF8Char *sptr;
@@ -356,7 +356,7 @@ Bool Manage::Process::GetCommandLine(Text::StringBuilderUTF8 *sb)
 	return true;
 }
 
-Bool Manage::Process::GetWorkingDir(Text::StringBuilderUTF8 *sb)
+Bool Manage::Process::GetWorkingDir(NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	UTF8Char sbuff2[512];
 	UTF8Char sbuff[128];
@@ -374,7 +374,7 @@ Bool Manage::Process::GetWorkingDir(Text::StringBuilderUTF8 *sb)
 	return true;
 }
 
-Bool Manage::Process::GetTrueProgramPath(Text::StringBuilderUTF8 *sb)
+Bool Manage::Process::GetTrueProgramPath(NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	UTF8Char sbuff[8192];
 	UTF8Char sbuff2[512];
@@ -672,7 +672,7 @@ UOSInt Manage::Process::GetHandles(Data::ArrayList<HandleInfo> *handleList)
 	return ret;
 }
 
-Bool Manage::Process::GetHandleDetail(Int32 id, HandleType *handleType, Text::StringBuilderUTF8 *sbDetail)
+Bool Manage::Process::GetHandleDetail(Int32 id, HandleType *handleType, NotNullPtr<Text::StringBuilderUTF8> sbDetail)
 {
 	UTF8Char sbuff[512];
 	UTF8Char sbuff2[512];
@@ -1137,7 +1137,7 @@ void Manage::Process::FindProcessClose(Manage::Process::FindProcSess *fpsess)
 	MemFree(fpsess);
 }
 
-Int32 Manage::Process::ExecuteProcess(Text::CString cmd, Text::StringBuilderUTF8 *result)
+Int32 Manage::Process::ExecuteProcess(Text::CString cmd, NotNullPtr<Text::StringBuilderUTF8> result)
 {
 	UTF8Char progName[64];
 	UTF8Char *progBuff = 0;
@@ -1241,7 +1241,7 @@ Int32 Manage::Process::ExecuteProcess(Text::CString cmd, Text::StringBuilderUTF8
 	return ret;
 }
 
-Int32 Manage::Process::ExecuteProcessW(const WChar *cmd, Text::StringBuilderUTF8 *result)
+Int32 Manage::Process::ExecuteProcessW(const WChar *cmd, NotNullPtr<Text::StringBuilderUTF8> result)
 {
 	NotNullPtr<Text::String> s = Text::String::NewNotNull(cmd);
 	Int32 ret = ExecuteProcess(s->ToCString(), result);
@@ -1259,7 +1259,7 @@ Bool Manage::Process::OpenPath(Text::CString path)
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("xdg-open "));
 	sb.Append(path);
-	Int32 ret = ExecuteProcess(sb.ToCString(), &sb);
+	Int32 ret = ExecuteProcess(sb.ToCString(), sb);
 	return ret == 0;
 }
 
@@ -1268,7 +1268,7 @@ Bool Manage::Process::OpenPathW(const WChar *path)
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("xdg-open "));
 	sb.AppendW(path);
-	Int32 ret = ExecuteProcess(sb.ToCString(), &sb);
+	Int32 ret = ExecuteProcess(sb.ToCString(), sb);
 	return ret == 0;
 }
 

@@ -884,7 +884,7 @@ Int32 __stdcall DasmX86_32_GetFuncStack(Manage::DasmX86_32::DasmX86_32_Sess* ses
 			sb.AppendC(UTF8STRC("Func Buff 0x"));
 			sb.AppendHex32(funcAddr);
 			sb.AppendC(UTF8STRC(" "));
-			tmpSess.addrResol->ResolveNameSB(&sb, funcAddr);
+			tmpSess.addrResol->ResolveNameSB(sb, funcAddr);
 			console.WriteLineC(sb.ToString(), sb.GetLength());
 			buffSize = tmpSess.memReader->ReadMemory(funcAddr, buff, tmpSess.regs.EIP - funcAddr);
 			if (buffSize > 0)
@@ -19192,9 +19192,8 @@ Bool Manage::DasmX86_32::Disasm32(IO::Writer *writer, Manage::AddressResolver *a
 {
 	UTF8Char sbuff[512];
 	DasmX86_32_Sess sess;
-	Text::StringBuilderUTF8 *outStr;
+	Text::StringBuilderUTF8 outStr;
 	UOSInt initJmpCnt = jmpAddrs->GetCount();
-	NEW_CLASS(outStr, Text::StringBuilderUTF8());
 	sess.callAddrs = callAddrs;
 	sess.jmpAddrs = jmpAddrs;
 	MemCopyNO(&sess.regs, regs, sizeof(Manage::DasmX86_32::DasmX86_32_Regs));
@@ -19218,27 +19217,27 @@ Bool Manage::DasmX86_32::Disasm32(IO::Writer *writer, Manage::AddressResolver *a
 		UInt8 buff[16];
 		Bool ret;
 
-		outStr->ClearStr();
-		outStr->AppendHex32(sess.regs.ESP);
-		outStr->AppendC(UTF8STRC(" "));
-		outStr->AppendHex32(sess.regs.EBP);
-		outStr->AppendC(UTF8STRC(" "));
-		outStr->AppendHex32(sess.regs.EIP);
-		outStr->AppendC(UTF8STRC(" "));
+		outStr.ClearStr();
+		outStr.AppendHex32(sess.regs.ESP);
+		outStr.AppendC(UTF8STRC(" "));
+		outStr.AppendHex32(sess.regs.EBP);
+		outStr.AppendC(UTF8STRC(" "));
+		outStr.AppendHex32(sess.regs.EIP);
+		outStr.AppendC(UTF8STRC(" "));
 		if (fullRegs)
 		{
-			outStr->AppendHex32(sess.regs.EAX);
-			outStr->AppendC(UTF8STRC(" "));
-			outStr->AppendHex32(sess.regs.EDX);
-			outStr->AppendC(UTF8STRC(" "));
-			outStr->AppendHex32(sess.regs.ECX);
-			outStr->AppendC(UTF8STRC(" "));
-			outStr->AppendHex32(sess.regs.EBX);
-			outStr->AppendC(UTF8STRC(" "));
-			outStr->AppendHex32(sess.regs.ESI);
-			outStr->AppendC(UTF8STRC(" "));
-			outStr->AppendHex32(sess.regs.EDI);
-			outStr->AppendC(UTF8STRC(" "));
+			outStr.AppendHex32(sess.regs.EAX);
+			outStr.AppendC(UTF8STRC(" "));
+			outStr.AppendHex32(sess.regs.EDX);
+			outStr.AppendC(UTF8STRC(" "));
+			outStr.AppendHex32(sess.regs.ECX);
+			outStr.AppendC(UTF8STRC(" "));
+			outStr.AppendHex32(sess.regs.EBX);
+			outStr.AppendC(UTF8STRC(" "));
+			outStr.AppendHex32(sess.regs.ESI);
+			outStr.AppendC(UTF8STRC(" "));
+			outStr.AppendHex32(sess.regs.EDI);
+			outStr.AppendC(UTF8STRC(" "));
 		}
 		sess.sbuff = sbuff;
 		if (sess.memReader->ReadMemory(sess.regs.EIP, buff, 1) == 0)
@@ -19252,19 +19251,18 @@ Bool Manage::DasmX86_32::Disasm32(IO::Writer *writer, Manage::AddressResolver *a
 		if (!ret)
 		{
 			UOSInt buffSize;
-			outStr->AppendC(UTF8STRC("Unknown opcode "));
+			outStr.AppendC(UTF8STRC("Unknown opcode "));
 			buffSize = sess.memReader->ReadMemory(sess.regs.EIP, buff, 16);
 			if (buffSize > 0)
 			{
-				outStr->AppendHexBuff(buff, buffSize, ' ', Text::LineBreakType::None);
+				outStr.AppendHexBuff(buff, buffSize, ' ', Text::LineBreakType::None);
 			}
-			outStr->AppendC(UTF8STRC("\r\n"));
-			writer->WriteStrC(outStr->ToString(), outStr->GetLength());
-			DEL_CLASS(outStr);
+			outStr.AppendC(UTF8STRC("\r\n"));
+			writer->WriteStrC(outStr.ToString(), outStr.GetLength());
 			return false;
 		}
-		outStr->AppendSlow(sbuff);
-		writer->WriteStrC(outStr->ToString(), outStr->GetLength());
+		outStr.AppendSlow(sbuff);
+		writer->WriteStrC(outStr.ToString(), outStr.GetLength());
 		if (sess.endType == Manage::DasmX86_32::ET_JMP && (UInt32)sess.retAddr >= *blockStart && (UInt32)sess.retAddr <= sess.regs.EIP)
 		{
 			UOSInt i;
@@ -19285,7 +19283,6 @@ Bool Manage::DasmX86_32::Disasm32(IO::Writer *writer, Manage::AddressResolver *a
 				*currEsp = sess.regs.ESP;
 				*currEbp = sess.regs.EBP;
 				*blockEnd = sess.regs.EIP;
-				DEL_CLASS(outStr);
 				MemCopyNO(regs, &sess.regs, sizeof(Manage::DasmX86_32::DasmX86_32_Regs));
 				return false;
 			}
@@ -19298,7 +19295,6 @@ Bool Manage::DasmX86_32::Disasm32(IO::Writer *writer, Manage::AddressResolver *a
 			*currEsp = sess.regs.ESP;
 			*currEbp = sess.regs.EBP;
 			*blockEnd = sess.regs.EIP;
-			DEL_CLASS(outStr);
 			MemCopyNO(regs, &sess.regs, sizeof(Manage::DasmX86_32::DasmX86_32_Regs));
 			return sess.endType != Manage::DasmX86_32::ET_EXIT;
 		}
@@ -19307,7 +19303,7 @@ Bool Manage::DasmX86_32::Disasm32(IO::Writer *writer, Manage::AddressResolver *a
 	}
 }
 
-Bool Manage::DasmX86_32::Disasm32In(Text::StringBuilderUTF8 *outStr, Manage::AddressResolver *addrResol, UInt32 *currEip, Data::ArrayListUInt32 *callAddrs, Data::ArrayListUInt32 *jmpAddrs, UInt32 *blockStart, UInt32 *blockEnd, Manage::IMemoryReader *memReader)
+Bool Manage::DasmX86_32::Disasm32In(NotNullPtr<Text::StringBuilderUTF8> outStr, Manage::AddressResolver *addrResol, UInt32 *currEip, Data::ArrayListUInt32 *callAddrs, Data::ArrayListUInt32 *jmpAddrs, UInt32 *blockStart, UInt32 *blockEnd, Manage::IMemoryReader *memReader)
 {
 	UTF8Char sbuff[256];
 	UInt32 initIP = *currEip;

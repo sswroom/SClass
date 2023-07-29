@@ -24,7 +24,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnStartClicked(void *userObj)
 		Text::StringBuilderUTF8 sb;
 		Bool sslEnable = me->chkSSL->IsChecked();
 		UInt16 port;
-		me->txtPort->GetText(&sb);
+		me->txtPort->GetText(sb);
 		if (!sb.ToUInt16(&port))
 		{
 			UI::MessageDialog::ShowDialog(CSTR("Port is not valid"), CSTR("Error"), me);
@@ -96,9 +96,9 @@ void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnSSLCertClicked(void *userObj
 		me->sslCert = frm.GetCert();
 		me->sslKey = frm.GetKey();
 		Text::StringBuilderUTF8 sb;
-		me->sslCert->ToShortString(&sb);
+		me->sslCert->ToShortString(sb);
 		sb.AppendC(UTF8STRC(", "));
-		me->sslKey->ToShortString(&sb);
+		me->sslKey->ToShortString(sb);
 		me->lblSSLCert->SetText(sb.ToCString());
 	}
 }

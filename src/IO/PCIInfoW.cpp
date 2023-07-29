@@ -104,7 +104,7 @@ UOSInt IO::PCIInfo::GetPCIList(Data::ArrayList<PCIInfo*> *pciList)
 			while (r->ReadNext())
 			{
 				sb.ClearStr();
-				r->GetStr(devIdCol, &sb);
+				r->GetStr(devIdCol, sb);
 				if (sb.StartsWith(UTF8STRC("PCI\\VEN_")))
 				{
 					sb.v[12] = 0;
@@ -116,7 +116,7 @@ UOSInt IO::PCIInfo::GetPCIList(Data::ArrayList<PCIInfo*> *pciList)
 					{
 						existList.SortedInsert(id);
 						sb.ClearStr();
-						r->GetStr(descCol, &sb);
+						r->GetStr(descCol, sb);
 						clsData.dispName = sb.ToCString();
 						NEW_CLASS(pci, IO::PCIInfo(&clsData));
 						pciList->Add(pci);

@@ -21,10 +21,10 @@ void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnStartClick(void *userOb
 	UInt16 port = 0;
 	Bool valid = true;
 	Text::StringBuilderUTF8 sb;
-	me->txtPort->GetText(&sb);
+	me->txtPort->GetText(sb);
 	Text::StrToUInt16S(sb.ToString(), &port, 0);
 	sb.ClearStr();
-	me->txtFwdURL->GetText(&sb);
+	me->txtFwdURL->GetText(sb);
 	Net::SSLEngine *ssl = 0;
 	if (!sb.StartsWith(UTF8STRC("http://")) && !sb.StartsWith(UTF8STRC("https://")))
 	{
@@ -56,7 +56,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnStartClick(void *userOb
 		else
 		{
 			sb.ClearStr();
-			me->txtLogDir->GetText(&sb);
+			me->txtLogDir->GetText(sb);
 			if (sb.GetEndPtr()[-1] != IO::Path::PATH_SEPERATOR)
 			{
 				sb.AppendUTF8Char(IO::Path::PATH_SEPERATOR);
@@ -266,9 +266,9 @@ void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnSSLCertClicked(void *us
 		me->sslCert = frm.GetCert();
 		me->sslKey = frm.GetKey();
 		Text::StringBuilderUTF8 sb;
-		me->sslCert->ToShortString(&sb);
+		me->sslCert->ToShortString(sb);
 		sb.AppendC(UTF8STRC(", "));
-		me->sslKey->ToShortString(&sb);
+		me->sslKey->ToShortString(sb);
 		me->lblSSLCert->SetText(sb.ToCString());
 	}
 }

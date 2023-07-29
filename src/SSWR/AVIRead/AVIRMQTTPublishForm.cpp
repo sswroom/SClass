@@ -16,14 +16,14 @@ void __stdcall SSWR::AVIRead::AVIRMQTTPublishForm::OnPublishClicked(void *userOb
 	Text::CString username = CSTR_NULL;
 	Text::CString password = CSTR_NULL;
 	UInt16 port;
-	me->txtHost->GetText(&sbHost);
+	me->txtHost->GetText(sbHost);
 	if (!me->core->GetSocketFactory()->DNSResolveIP(sbHost.ToCString(), &addr))
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Error in parsing host"), CSTR("MQTT Publish"), me);
 		return;
 	}
 	sb.ClearStr();
-	me->txtPort->GetText(&sb);
+	me->txtPort->GetText(sb);
 	if (!sb.ToUInt16(&port))
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Port is not valid"), CSTR("MQTT Publish"), me);
@@ -31,7 +31,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTPublishForm::OnPublishClicked(void *userOb
 	}
 
 	sb.ClearStr();
-	me->txtTopic->GetText(&sb);
+	me->txtTopic->GetText(sb);
 	if (sb.GetLength() == 0)
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Please enter topic"), CSTR("MQTT Publish"), me);
@@ -39,7 +39,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTPublishForm::OnPublishClicked(void *userOb
 	}
 	topic = Text::String::New(sb.ToCString());
 	sb.ClearStr();
-	me->txtMessage->GetText(&sb);
+	me->txtMessage->GetText(sb);
 	if (sb.GetLength() == 0)
 	{
 		topic->Release();
@@ -49,14 +49,14 @@ void __stdcall SSWR::AVIRead::AVIRMQTTPublishForm::OnPublishClicked(void *userOb
 	message = Text::String::New(sb.ToCString());
 
 	sb.ClearStr();
-	me->txtUsername->GetText(&sb);
+	me->txtUsername->GetText(sb);
 	if (sb.GetLength() > 0)
 	{
 		username.v = Text::StrCopyNewC(sb.ToString(), sb.GetLength()).Ptr();
 		username.leng = sb.GetLength();
 	}
 	sb.ClearStr();
-	me->txtPassword->GetText(&sb);
+	me->txtPassword->GetText(sb);
 	if (sb.GetLength() > 0)
 	{
 		password.v = Text::StrCopyNewC(sb.ToString(), sb.GetLength()).Ptr();

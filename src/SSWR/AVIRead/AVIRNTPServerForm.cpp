@@ -18,7 +18,7 @@ void __stdcall SSWR::AVIRead::AVIRNTPServerForm::OnStartClick(void *userObj)
 	}
 	UInt16 port = 0;
 	Text::StringBuilderUTF8 sb;
-	me->txtPort->GetText(&sb);
+	me->txtPort->GetText(sb);
 	if (!Text::StrToUInt16(sb.ToString(), &port))
 	{
 		return;
@@ -28,7 +28,7 @@ void __stdcall SSWR::AVIRead::AVIRNTPServerForm::OnStartClick(void *userObj)
 		return;
 	}
 	sb.ClearStr();
-	me->txtTimeServer->GetText(&sb);
+	me->txtTimeServer->GetText(sb);
 	Net::SocketUtil::AddressInfo addr;
 	NotNullPtr<Net::SocketFactory> sockf = me->core->GetSocketFactory();
 	if (!sockf->DNSResolveIP(sb.ToCString(), &addr))

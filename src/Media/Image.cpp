@@ -328,7 +328,7 @@ Media::EXIFData *Media::Image::SetEXIFData(Media::EXIFData *exif)
 	return oldExif;
 }
 
-void Media::Image::ToString(Text::StringBuilderUTF8 *sb) const
+void Media::Image::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
 {
 	this->info.ToString(sb);
 	if (this->HasHotSpot())

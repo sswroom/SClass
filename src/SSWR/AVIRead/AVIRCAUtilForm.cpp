@@ -226,7 +226,7 @@ void __stdcall SSWR::AVIRead::AVIRCAUtilForm::OnIssueClicked(void *userObj)
 	}
 	UOSInt validDays;
 	Text::StringBuilderUTF8 sb;
-	me->txtValidDays->GetText(&sb);
+	me->txtValidDays->GetText(sb);
 	if (!sb.ToUOSInt(&validDays))
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Valid Days not valid"), CSTR("CA Util"), me);

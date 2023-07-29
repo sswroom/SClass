@@ -9,7 +9,7 @@ Text::TextBinEnc::ASCII85Enc::~ASCII85Enc()
 {
 }
 
-UOSInt Text::TextBinEnc::ASCII85Enc::EncodeBin(Text::StringBuilderUTF8 *sb, const UInt8 *dataBuff, UOSInt buffSize)
+UOSInt Text::TextBinEnc::ASCII85Enc::EncodeBin(NotNullPtr<Text::StringBuilderUTF8> sb, const UInt8 *dataBuff, UOSInt buffSize)
 {
 	UOSInt initLen = sb->GetCharCnt();
 	UInt32 v;

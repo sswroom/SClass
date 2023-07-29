@@ -65,7 +65,7 @@ Bool Net::WebServer::WebSocketHandler::ProcessRequest(Net::WebServer::IWebReques
 	sha1.GetValue(hash);
 	Text::TextBinEnc::Base64Enc b64;
 	sb.ClearStr();
-	b64.EncodeBin(&sb, hash, 20);
+	b64.EncodeBin(sb, hash, 20);
 	resp->AddHeader(CSTR("Sec-WebSocket-Accept"), sb.ToCString());
 
 	Net::WebServer::WebSocketServerStream *stm;

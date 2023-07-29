@@ -12,7 +12,7 @@ void Text::Cpp::CppParseStatus::FreeDefineInfo(Text::Cpp::CppParseStatus::Define
 
 void Text::Cpp::CppParseStatus::FreeFileStatus(FileParseStatus *fileStatus)
 {
-	DEL_CLASS(fileStatus->lineBuffSB);
+	fileStatus->lineBuffSB.Delete();
 	DEL_CLASS(fileStatus->pastModes);
 	DEL_CLASS(fileStatus->ifValid);
 	MemFree(fileStatus);
@@ -75,7 +75,7 @@ Bool Text::Cpp::CppParseStatus::BeginParseFile(Text::CString fileName)
 	status->lineNum = 0;
 	status->lineStart = true;
 	status->modeStatus = 0;
-	NEW_CLASS(status->lineBuffSB, Text::StringBuilderUTF8());
+	NEW_CLASSNN(status->lineBuffSB, Text::StringBuilderUTF8());
 	NEW_CLASS(status->pastModes, Data::ArrayList<ParserMode>());
 	NEW_CLASS(status->ifValid, Data::ArrayList<Int32>());
 	return true;
@@ -258,7 +258,7 @@ Bool Text::Cpp::CppParseStatus::Undefine(Text::CString defName)
 	return false;
 }
 
-Bool Text::Cpp::CppParseStatus::GetDefineVal(Text::CString defName, Text::CString defParam, Text::StringBuilderUTF8 *sbOut)
+Bool Text::Cpp::CppParseStatus::GetDefineVal(Text::CString defName, Text::CString defParam, NotNullPtr<Text::StringBuilderUTF8> sbOut)
 {
 	DefineInfo *defInfo = this->defines.GetC(defName);
 	if (defInfo)
@@ -279,7 +279,7 @@ Bool Text::Cpp::CppParseStatus::GetDefineVal(Text::CString defName, Text::CStrin
 				{
 					if (this->IsDefined(defParam))
 					{
-						this->GetDefineVal(defParam, CSTR_NULL, &sb3);
+						this->GetDefineVal(defParam, CSTR_NULL, sb3);
 					}
 					else
 					{

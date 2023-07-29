@@ -43,7 +43,7 @@ namespace DB
 		virtual ConnType GetConnType() const = 0;
 		virtual Int8 GetTzQhr() const = 0;
 		virtual void ForceTz(Int8 tzQhr) = 0;
-		virtual void GetConnName(Text::StringBuilderUTF8 *sb) = 0;
+		virtual void GetConnName(NotNullPtr<Text::StringBuilderUTF8> sb) = 0;
 		virtual void Close() = 0;
 		virtual OSInt ExecuteNonQuery(Text::CString sql) = 0;
 		virtual DBReader *ExecuteReader(Text::CString sql) = 0;

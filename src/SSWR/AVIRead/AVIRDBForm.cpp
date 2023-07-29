@@ -155,7 +155,7 @@ void __stdcall SSWR::AVIRead::AVIRDBForm::OnSQLClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRDBForm *me = (SSWR::AVIRead::AVIRDBForm*)userObj;
 	Text::StringBuilderUTF8 sb;
-	me->txtSQL->GetText(&sb);
+	me->txtSQL->GetText(sb);
 	if (sb.GetLength() > 0)
 	{
 		DB::DBReader *r = me->dbt->ExecuteReader(sb.ToCString());
@@ -167,7 +167,7 @@ void __stdcall SSWR::AVIRead::AVIRDBForm::OnSQLClicked(void *userObj)
 		else
 		{
 			sb.ClearStr();
-			me->dbt->GetLastErrorMsg(&sb);
+			me->dbt->GetLastErrorMsg(sb);
 			UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("Database"), me);
 		}
 	}
@@ -209,14 +209,14 @@ void SSWR::AVIRead::AVIRDBForm::UpdateResult(DB::DBReader *r)
 	{
 		i = 1;
 		sb.ClearStr();
-		r->GetStr(0, &sb);
+		r->GetStr(0, sb);
 		if (sb.GetLength() > colSize[0])
 			colSize[0] = sb.GetLength();
 		k = this->lvResult->AddItem(sb.ToCString(), 0);
 		while (i < j)
 		{
 			sb.ClearStr();
-			r->GetStr(i, &sb);
+			r->GetStr(i, sb);
 			this->lvResult->SetSubItem(k, i, sb.ToCString());
 
 			if (sb.GetLength() > colSize[i])
@@ -658,7 +658,7 @@ void SSWR::AVIRead::AVIRDBForm::EventMenuClicked(UInt16 cmdId)
 				hdr.leng = (UOSInt)(DB::DBUtil::DB2FieldName(sbuff2, &sbuff[i + 1]) - sbuff2);
 				sbuff2[0] = Text::CharUtil::ToUpper(sbuff2[0]);
 				Text::StringBuilderUTF8 sb;
-				cls->ToCppClassHeader(&hdr, 0, &sb);
+				cls->ToCppClassHeader(&hdr, 0, sb);
 				UI::Clipboard::SetString(this->GetHandle(), sb.ToCString());
 				DEL_CLASS(cls);
 			}
@@ -677,7 +677,7 @@ void SSWR::AVIRead::AVIRDBForm::EventMenuClicked(UInt16 cmdId)
 				hdr.leng = (UOSInt)(DB::DBUtil::DB2FieldName(sbuff2, &sbuff[i + 1]) - sbuff2);
 				sbuff2[0] = Text::CharUtil::ToUpper(sbuff2[0]);
 				Text::StringBuilderUTF8 sb;
-				cls->ToCppClassSource(0, &hdr, 0, &sb);
+				cls->ToCppClassSource(0, &hdr, 0, sb);
 				UI::Clipboard::SetString(this->GetHandle(), sb.ToCString());
 				DEL_CLASS(cls);
 			}
@@ -688,7 +688,7 @@ void SSWR::AVIRead::AVIRDBForm::EventMenuClicked(UInt16 cmdId)
 			Text::String *schemaName = this->lbSchema->GetSelectedItemTextNew();
 			Text::String *tableName = this->lbTable->GetSelectedItemTextNew();
 			Text::StringBuilderUTF8 sb;
-			DB::JavaDBUtil::ToJavaEntity(&sb, schemaName, tableName, 0, this->dbt);
+			DB::JavaDBUtil::ToJavaEntity(sb, schemaName, tableName, 0, this->dbt);
 			tableName->Release();
 			SDEL_STRING(schemaName);
 			UI::Clipboard::SetString(this->GetHandle(), sb.ToCString());

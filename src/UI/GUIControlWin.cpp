@@ -195,7 +195,7 @@ UTF8Char *UI::GUIControl::GetText(UTF8Char *buff)
 	return Text::StrWChar_UTF8(buff, wbuff);
 }
 
-Bool UI::GUIControl::GetText(Text::StringBuilderUTF8 *sb)
+Bool UI::GUIControl::GetText(NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	UOSInt leng = (UOSInt)GetWindowTextLengthW((HWND)hwnd);
 	WChar *wptr = MemAlloc(WChar, leng + 1);

@@ -98,8 +98,8 @@ void __stdcall SSWR::AVIRead::AVIREWDTU01Form::OnConnectClicked(void *userObj)
 	}
 	Text::StringBuilderUTF8 sbHost;
 	Text::StringBuilderUTF8 sbPort;
-	me->txtServer->GetText(&sbHost);
-	me->txtPort->GetText(&sbPort);
+	me->txtServer->GetText(sbHost);
+	me->txtPort->GetText(sbPort);
 	Net::SocketUtil::AddressInfo addr;
 	UInt16 port;
 	if (!me->core->GetSocketFactory()->DNSResolveIP(sbHost.ToCString(), &addr))

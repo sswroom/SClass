@@ -879,7 +879,7 @@ Bool Manage::DasmMIPS::Disasm32(IO::Writer *writer, Manage::AddressResolver *add
 	UTF8Char sbuff[512];
 	UInt8 buff[16];
 	DasmMIPS_Sess sess;
-	Text::StringBuilderUTF8 *outStr;
+	NotNullPtr<Text::StringBuilderUTF8> outStr;
 	OSInt initJmpCnt = jmpAddrs->GetCount();
 	NEW_CLASS(outStr, Text::StringBuilderUTF8());
 	sess.callAddrs = callAddrs;

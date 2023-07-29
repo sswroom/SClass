@@ -262,7 +262,7 @@ void __stdcall SSWR::AVIRead::AVIRExeForm::OnResourceSelChg(void *userObj)
 		sb.AppendC(UTF8STRC("\r\nType = "));
 		sb.Append(IO::EXEFile::GetResourceTypeName(res->rt));
 		sb.AppendC(UTF8STRC("\r\n"));
-		IO::EXEFile::GetResourceDesc(res, &sb);
+		IO::EXEFile::GetResourceDesc(res, sb);
 		me->txtResource->SetText(sb.ToCString());
 	}
 	else

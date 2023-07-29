@@ -189,7 +189,7 @@ void Math::CoordinateSystem::ConvertToCartesianCoord(Math::CoordinateSystem *src
 	((Math::GeographicCoordinateSystem*)srcCoord)->ToCartesianCoordDeg(srcY, srcX, srcZ, destX, destY, destZ);
 }
 
-void Math::CoordinateSystem::DatumData1ToString(const DatumData1 *datum, Text::StringBuilderUTF8 *sb)
+void Math::CoordinateSystem::DatumData1ToString(const DatumData1 *datum, NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	sb->AppendC(UTF8STRC("Datum Name: "));
 	sb->AppendC(datum->name, datum->nameLen);

@@ -56,7 +56,7 @@ namespace Crypto
 			UOSInt Decrypt(const UInt8 *srcBuff, UOSInt srcLen, UInt8 *outBuff);
 			UOSInt DecryptB64(const UTF8Char *b64Buff, UOSInt b64Len, UInt8 *outBuff);
 			UOSInt DecryptB64(const UTF8Char *b64Buff, UInt8 *outBuff);
-			UOSInt EncryptAsB64(Text::StringBuilderUTF8 *sb, const UInt8 *srcBuff, UOSInt srcLen);
+			UOSInt EncryptAsB64(NotNullPtr<Text::StringBuilderUTF8> sb, const UInt8 *srcBuff, UOSInt srcLen);
 
 			static Text::CString GetKeyAlgorithmName(KeyAlgorithm keyAlg);
 			static Text::CString GetCipherAlgorithmName(CipherAlgorithm cipherAlg);

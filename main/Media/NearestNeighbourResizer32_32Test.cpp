@@ -71,11 +71,11 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	DEL_CLASS(simg);
 	DEL_CLASS(resizer);
 	sb.AppendC(UTF8STRC("t0 = "));
-	Text::SBAppendF64(&sb, t0);
+	sb.AppendDouble(t0);
 	sb.AppendC(UTF8STRC(", t1 = "));
-	Text::SBAppendF64(&sb, t1);
+	sb.AppendDouble(t1);
 	sb.AppendC(UTF8STRC(", t2 = "));
-	Text::SBAppendF64(&sb, t2);
+	sb.AppendDouble(t2);
 	console.WriteLineC(sb.ToString(), sb.GetLength());
 	return 0;
 }

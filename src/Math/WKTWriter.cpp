@@ -15,7 +15,7 @@ void Math::WKTWriter::SetLastError(Text::CString lastError)
 	this->lastError = Text::String::New(lastError).Ptr();
 }
 
-void Math::WKTWriter::AppendLineString(Text::StringBuilderUTF8 *sb, Math::Geometry::LineString *pl, Bool reverseAxis)
+void Math::WKTWriter::AppendLineString(NotNullPtr<Text::StringBuilderUTF8> sb, Math::Geometry::LineString *pl, Bool reverseAxis)
 {
 	sb->AppendUTF8Char('(');
 	UOSInt nPoint;
@@ -127,7 +127,7 @@ void Math::WKTWriter::AppendLineString(Text::StringBuilderUTF8 *sb, Math::Geomet
 	sb->AppendUTF8Char(')');
 }
 
-void Math::WKTWriter::AppendPolygon(Text::StringBuilderUTF8 *sb, Math::Geometry::Polygon *pg, Bool reverseAxis)
+void Math::WKTWriter::AppendPolygon(NotNullPtr<Text::StringBuilderUTF8> sb, Math::Geometry::Polygon *pg, Bool reverseAxis)
 {
 	UOSInt nPtOfst;
 	UOSInt nPoint;
@@ -192,7 +192,7 @@ void Math::WKTWriter::AppendPolygon(Text::StringBuilderUTF8 *sb, Math::Geometry:
 	sb->AppendUTF8Char(')');
 }
 
-void Math::WKTWriter::AppendPolygonZ(Text::StringBuilderUTF8 *sb, Math::Geometry::Polygon *pg, Bool reverseAxis)
+void Math::WKTWriter::AppendPolygonZ(NotNullPtr<Text::StringBuilderUTF8> sb, Math::Geometry::Polygon *pg, Bool reverseAxis)
 {
 	UOSInt nPtOfst;
 	UOSInt nPoint;
@@ -262,7 +262,7 @@ void Math::WKTWriter::AppendPolygonZ(Text::StringBuilderUTF8 *sb, Math::Geometry
 	sb->AppendUTF8Char(')');
 }
 
-void Math::WKTWriter::AppendPolyline(Text::StringBuilderUTF8 *sb, Math::Geometry::Polyline *pl, Bool reverseAxis)
+void Math::WKTWriter::AppendPolyline(NotNullPtr<Text::StringBuilderUTF8> sb, Math::Geometry::Polyline *pl, Bool reverseAxis)
 {
 	sb->AppendUTF8Char('(');
 	UOSInt nPtOfst;
@@ -327,7 +327,7 @@ void Math::WKTWriter::AppendPolyline(Text::StringBuilderUTF8 *sb, Math::Geometry
 	sb->AppendUTF8Char(')');
 }
 
-void Math::WKTWriter::AppendPolylineZ(Text::StringBuilderUTF8 *sb, Math::Geometry::Polyline *pl, Bool reverseAxis)
+void Math::WKTWriter::AppendPolylineZ(NotNullPtr<Text::StringBuilderUTF8> sb, Math::Geometry::Polyline *pl, Bool reverseAxis)
 {
 	sb->AppendUTF8Char('(');
 	UOSInt nPtOfst;
@@ -397,7 +397,7 @@ void Math::WKTWriter::AppendPolylineZ(Text::StringBuilderUTF8 *sb, Math::Geometr
 	sb->AppendUTF8Char(')');
 }
 
-void Math::WKTWriter::AppendPolylineZM(Text::StringBuilderUTF8 *sb, Math::Geometry::Polyline *pl, Bool reverseAxis)
+void Math::WKTWriter::AppendPolylineZM(NotNullPtr<Text::StringBuilderUTF8> sb, Math::Geometry::Polyline *pl, Bool reverseAxis)
 {
 	sb->AppendUTF8Char('(');
 	UOSInt nPtOfst;
@@ -472,7 +472,7 @@ void Math::WKTWriter::AppendPolylineZM(Text::StringBuilderUTF8 *sb, Math::Geomet
 	sb->AppendUTF8Char(')');
 }
 
-void Math::WKTWriter::AppendCompoundCurve(Text::StringBuilderUTF8 *sb, Math::Geometry::CompoundCurve *cc, Bool reverseAxis)
+void Math::WKTWriter::AppendCompoundCurve(NotNullPtr<Text::StringBuilderUTF8> sb, Math::Geometry::CompoundCurve *cc, Bool reverseAxis)
 {
 	sb->AppendUTF8Char('(');
 	Math::Geometry::LineString *pl;
@@ -492,7 +492,7 @@ void Math::WKTWriter::AppendCompoundCurve(Text::StringBuilderUTF8 *sb, Math::Geo
 	sb->AppendUTF8Char(')');
 }
 
-void Math::WKTWriter::AppendCurvePolygon(Text::StringBuilderUTF8 *sb, Math::Geometry::CurvePolygon *cpg, Bool reverseAxis)
+void Math::WKTWriter::AppendCurvePolygon(NotNullPtr<Text::StringBuilderUTF8> sb, Math::Geometry::CurvePolygon *cpg, Bool reverseAxis)
 {
 	sb->AppendUTF8Char('(');
 	Math::Geometry::Vector2D *geometry;
@@ -522,7 +522,7 @@ void Math::WKTWriter::AppendCurvePolygon(Text::StringBuilderUTF8 *sb, Math::Geom
 	sb->AppendUTF8Char(')');
 }
 
-void Math::WKTWriter::AppendMultiSurface(Text::StringBuilderUTF8 *sb, Math::Geometry::MultiSurface *ms, Bool reverseAxis)
+void Math::WKTWriter::AppendMultiSurface(NotNullPtr<Text::StringBuilderUTF8> sb, Math::Geometry::MultiSurface *ms, Bool reverseAxis)
 {
 	sb->AppendUTF8Char('(');
 	Math::Geometry::Vector2D *geometry;
@@ -555,7 +555,7 @@ void Math::WKTWriter::AppendMultiSurface(Text::StringBuilderUTF8 *sb, Math::Geom
 	sb->AppendUTF8Char(')');
 }
 
-Bool Math::WKTWriter::AppendGeometryCollection(Text::StringBuilderUTF8 *sb, Math::Geometry::GeometryCollection *geoColl)
+Bool Math::WKTWriter::AppendGeometryCollection(NotNullPtr<Text::StringBuilderUTF8> sb, Math::Geometry::GeometryCollection *geoColl)
 {
 	sb->AppendUTF8Char('(');
 	Math::Geometry::Vector2D *geometry;
@@ -589,7 +589,7 @@ Text::CString Math::WKTWriter::GetWriterName()
 	return CSTR("Well Known Text (WKT)");
 }
 
-Bool Math::WKTWriter::ToText(Text::StringBuilderUTF8 *sb, Math::Geometry::Vector2D *vec)
+Bool Math::WKTWriter::ToText(NotNullPtr<Text::StringBuilderUTF8> sb, Math::Geometry::Vector2D *vec)
 {
 	if (vec == 0)
 	{

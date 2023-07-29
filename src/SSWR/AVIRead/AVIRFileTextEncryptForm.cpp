@@ -23,8 +23,8 @@ void __stdcall SSWR::AVIRead::AVIRFileTextEncryptForm::OnConvertClicked(void *us
 	Text::StringBuilderUTF8 sbSrc;
 	Text::StringBuilderUTF8 sbDest;
 	Text::TextBinEnc::ITextBinEnc *destEnc = (Text::TextBinEnc::ITextBinEnc*)me->cboEncrypt->GetSelectedItem();
-	me->txtSrcFile->GetText(&sbSrc);
-	me->txtDestFile->GetText(&sbDest);
+	me->txtSrcFile->GetText(sbSrc);
+	me->txtDestFile->GetText(sbDest);
 	if (destEnc == 0)
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Please select encryption"), CSTR("File Text Encrypt"), me);
@@ -64,7 +64,7 @@ void __stdcall SSWR::AVIRead::AVIRFileTextEncryptForm::OnConvertClicked(void *us
 			return;
 		}
 		sbSrc.ClearStr();
-		destEnc->EncodeBin(&sbSrc, decBuff.Ptr(), buffSize);
+		destEnc->EncodeBin(sbSrc, decBuff.Ptr(), buffSize);
 
 		IO::FileStream fs2(sbDest.ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 		fs2.Write(sbSrc.v, sbSrc.leng);

@@ -716,7 +716,7 @@ UTF8Char *Math::BigIntLSB::ToByteStr(UTF8Char *buff)
 	return currPtr;
 }
 
-void Math::BigIntLSB::ToString(Text::StringBuilderUTF8 *sb) const
+void Math::BigIntLSB::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
 {
 	UTF8Char *sbuff = MemAlloc(UTF8Char, this->valSize * 3 + 1);
 	UTF8Char *sptr = ToString(sbuff);

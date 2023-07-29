@@ -264,7 +264,7 @@ void DB::OLEDBConn::ForceTz(Int8 tzQhr)
 {
 }
 
-void DB::OLEDBConn::GetConnName(Text::StringBuilderUTF8 *sb)
+void DB::OLEDBConn::GetConnName(NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	ClassData *data = this->clsData;
 	sb->AppendC(UTF8STRC("OLEDB:"));
@@ -436,7 +436,7 @@ OSInt DB::OLEDBConn::ExecuteNonQuery(Text::CString sql)
 	return ret;
 }*/
 
-void DB::OLEDBConn::GetLastErrorMsg(Text::StringBuilderUTF8 *str)
+void DB::OLEDBConn::GetLastErrorMsg(NotNullPtr<Text::StringBuilderUTF8> str)
 {
 	IErrorInfo *pIErrorInfoAll = 0;
 	GetErrorInfo(0, &pIErrorInfoAll);
@@ -1180,7 +1180,7 @@ WChar *DB::OLEDBReader::GetStr(UOSInt colIndex, WChar *buff)
 	}
 }
 
-Bool DB::OLEDBReader::GetStr(UOSInt colIndex, Text::StringBuilderUTF8 *sb)
+Bool DB::OLEDBReader::GetStr(UOSInt colIndex, NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	ClassData *data = this->clsData;
 	if (!data->rowValid || colIndex >= data->nCols)

@@ -10,7 +10,7 @@ void __stdcall SSWR::AVIRead::AVIRASN1ParseForm::OnParseClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRASN1ParseForm *me = (SSWR::AVIRead::AVIRASN1ParseForm*)userObj;
 	Text::StringBuilderUTF8 sb;
-	me->txtData->GetText(&sb);
+	me->txtData->GetText(sb);
 	if (sb.GetLength() == 0)
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Please input data"), CSTR("ASN.1 Parse"), me);

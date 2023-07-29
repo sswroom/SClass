@@ -20,7 +20,7 @@ void __stdcall SSWR::AVIRead::AVIRChineseForm::OnCharChg(void *userObj)
 	SSWR::AVIRead::AVIRChineseForm *me = (SSWR::AVIRead::AVIRChineseForm *)userObj;
 	Text::StringBuilderUTF8 sb;
 	UTF32Char v;
-	me->txtChar->GetText(&sb);
+	me->txtChar->GetText(sb);
 	if (sb.GetLength() > 0)
 	{
 		me->txtChar->SetText(CSTR(""));
@@ -66,7 +66,7 @@ void __stdcall SSWR::AVIRead::AVIRChineseForm::OnRadicalChg(void *userObj)
 	UTF8Char sbuff[7];
 	UTF8Char *sptr;
 	UTF32Char v;
-	me->txtRadical->GetText(&sb);
+	me->txtRadical->GetText(sb);
 	if (sb.GetLength() > 0)
 	{
 		me->txtRadical->SetText(CSTR(""));
@@ -88,7 +88,7 @@ void __stdcall SSWR::AVIRead::AVIRChineseForm::OnRelatedAddChg(void *userObj)
 	UTF32Char v;
 	UOSInt i;
 	UOSInt j;
-	me->txtRelatedAdd->GetText(&sb);
+	me->txtRelatedAdd->GetText(sb);
 	if (sb.GetLength() > 0)
 	{
 		me->txtRelatedAdd->SetText(CSTR(""));
@@ -167,7 +167,7 @@ Bool SSWR::AVIRead::AVIRChineseForm::SaveChar()
 	Int32 strokeCnt;
 	Text::StringBuilderUTF8 sb;
 	Text::ChineseInfo::CharacterInfo chInfo;
-	this->txtStrokeCount->GetText(&sb);
+	this->txtStrokeCount->GetText(sb);
 	if (!sb.ToInt32(&strokeCnt))
 	{
 		wprintf(L"strokeCount error\r\n");
@@ -176,7 +176,7 @@ Bool SSWR::AVIRead::AVIRChineseForm::SaveChar()
 	chInfo.strokeCount = (UInt8)strokeCnt;
 	chInfo.radical = this->currRadical;
 	sb.ClearStr();
-	this->txtPronun1->GetText(&sb);
+	this->txtPronun1->GetText(sb);
 	if (sb.GetLength() == 0)
 	{
 		chInfo.cantonPronun[0] = 0;
@@ -191,7 +191,7 @@ Bool SSWR::AVIRead::AVIRChineseForm::SaveChar()
 		}
 	}
 	sb.ClearStr();
-	this->txtPronun2->GetText(&sb);
+	this->txtPronun2->GetText(sb);
 	if (sb.GetLength() == 0)
 	{
 		chInfo.cantonPronun[1] = 0;
@@ -206,7 +206,7 @@ Bool SSWR::AVIRead::AVIRChineseForm::SaveChar()
 		}
 	}
 	sb.ClearStr();
-	this->txtPronun3->GetText(&sb);
+	this->txtPronun3->GetText(sb);
 	if (sb.GetLength() == 0)
 	{
 		chInfo.cantonPronun[2] = 0;
@@ -221,7 +221,7 @@ Bool SSWR::AVIRead::AVIRChineseForm::SaveChar()
 		}
 	}
 	sb.ClearStr();
-	this->txtPronun4->GetText(&sb);
+	this->txtPronun4->GetText(sb);
 	if (sb.GetLength() == 0)
 	{
 		chInfo.cantonPronun[3] = 0;

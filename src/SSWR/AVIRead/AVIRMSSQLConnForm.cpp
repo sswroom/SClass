@@ -10,7 +10,7 @@ void __stdcall SSWR::AVIRead::AVIRMSSQLConnForm::OnPasteJDBCClicked(void *userOb
 {
 	SSWR::AVIRead::AVIRMSSQLConnForm *me = (SSWR::AVIRead::AVIRMSSQLConnForm*)userObj;
 	Text::StringBuilderUTF8 sb;
-	if (UI::Clipboard::GetString(me->GetHandle(), &sb))
+	if (UI::Clipboard::GetString(me->GetHandle(), sb))
 	{
 		if (sb.StartsWith(UTF8STRC("jdbc:sqlserver://")))
 		{
@@ -48,11 +48,11 @@ void __stdcall SSWR::AVIRead::AVIRMSSQLConnForm::OnOKClicked(void *userObj)
 	Text::StringBuilderUTF8 sbUser;
 	Text::StringBuilderUTF8 sbPassword;
 	UInt16 port;
-	me->txtServer->GetText(&sbServer);
-	me->txtPort->GetText(&sbPort);
-	me->txtDatabase->GetText(&sbDatabase);
-	me->txtUser->GetText(&sbUser);
-	me->txtPassword->GetText(&sbPassword);
+	me->txtServer->GetText(sbServer);
+	me->txtPort->GetText(sbPort);
+	me->txtDatabase->GetText(sbDatabase);
+	me->txtUser->GetText(sbUser);
+	me->txtPassword->GetText(sbPassword);
 
 	if (sbServer.GetCharCnt() == 0)
 	{

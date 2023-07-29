@@ -29,21 +29,21 @@ Bool SSWR::DiscDB::DiscDBDVDTypeForm::UpdateRow()
 	Text::StringBuilderUTF8 sbID;
 	Text::StringBuilderUTF8 sbName;
 	Text::StringBuilderUTF8 sbDesc;
-	this->txtID->GetText(&sbID);
+	this->txtID->GetText(sbID);
 	if (sbID.GetLength() <= 0)
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Please enter the id"), CSTR("DVDType"), this);
 		this->txtID->Focus();
 		return false;
 	}
-	this->txtName->GetText(&sbName);
+	this->txtName->GetText(sbName);
 	if (sbName.GetLength() <= 0)
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Please enter the name"), CSTR("DVDType"), this);
 		this->txtName->Focus();
 		return false;
 	}
-	this->txtDescription->GetText(&sbDesc);
+	this->txtDescription->GetText(sbDesc);
 	if (sbDesc.GetLength() <= 0)
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Please enter the description"), CSTR("DVDType"), this);

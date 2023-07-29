@@ -180,10 +180,10 @@ void Net::LDAPClient::ParseLDAPMessage(const UInt8 *msgBuff, UOSInt msgLen)
 			msgBuff = Net::ASN1Util::PDUParseChoice(msgBuff, seqEnd, &resultCode);
 			if (msgBuff == 0)
 				return;
-			msgBuff = Net::ASN1Util::PDUParseString(msgBuff, seqEnd, &sb);
+			msgBuff = Net::ASN1Util::PDUParseString(msgBuff, seqEnd, sb);
 			if (msgBuff == 0)
 				return;
-			msgBuff = Net::ASN1Util::PDUParseString(msgBuff, seqEnd, &sb2);
+			msgBuff = Net::ASN1Util::PDUParseString(msgBuff, seqEnd, sb2);
 			if (msgBuff == 0)
 				return;
 			#if defined(VERBOSE)
@@ -208,7 +208,7 @@ void Net::LDAPClient::ParseLDAPMessage(const UInt8 *msgBuff, UOSInt msgLen)
 			const UInt8 *itemEnd;
 			const UInt8 *valEnd;
 			UInt8 type;
-			msgBuff = Net::ASN1Util::PDUParseString(msgBuff, seqEnd, &sb);
+			msgBuff = Net::ASN1Util::PDUParseString(msgBuff, seqEnd, sb);
 			if (msgBuff == 0)
 				return;
 			#if defined(VERBOSE)
@@ -236,7 +236,7 @@ void Net::LDAPClient::ParseLDAPMessage(const UInt8 *msgBuff, UOSInt msgLen)
 					return;
 				}
 				sb.ClearStr();
-				msgBuff = Net::ASN1Util::PDUParseString(msgBuff, itemEnd, &sb);
+				msgBuff = Net::ASN1Util::PDUParseString(msgBuff, itemEnd, sb);
 				if (msgBuff == 0)
 				{
 					printf("LDAPMessage: searchResEntry, end 3\r\n");
@@ -253,7 +253,7 @@ void Net::LDAPClient::ParseLDAPMessage(const UInt8 *msgBuff, UOSInt msgLen)
 					while (msgBuff < valEnd)
 					{
 						sb2.ClearStr();
-						msgBuff = Net::ASN1Util::PDUParseString(msgBuff, valEnd, &sb2);
+						msgBuff = Net::ASN1Util::PDUParseString(msgBuff, valEnd, sb2);
 						if (msgBuff == 0)
 						{
 							SearchResObjectFree(obj);
@@ -261,7 +261,7 @@ void Net::LDAPClient::ParseLDAPMessage(const UInt8 *msgBuff, UOSInt msgLen)
 						}
 						#if defined(VERBOSE)
 						sb3.ClearStr();
-						SearchResDisplay(sb.ToCString(), sb2.ToCString(), &sb3);
+						SearchResDisplay(sb.ToCString(), sb2.ToCString(), sb3);
 						printf("LDAPMessage: searchResEntry: -%s = %s\r\n", sb.ToString(), sb3.ToString());
 						#endif
 						Net::LDAPClient::SearchResItem *item;
@@ -299,10 +299,10 @@ void Net::LDAPClient::ParseLDAPMessage(const UInt8 *msgBuff, UOSInt msgLen)
 			msgBuff = Net::ASN1Util::PDUParseChoice(msgBuff, seqEnd, &resultCode);
 			if (msgBuff == 0)
 				return;
-			msgBuff = Net::ASN1Util::PDUParseString(msgBuff, seqEnd, &sb);
+			msgBuff = Net::ASN1Util::PDUParseString(msgBuff, seqEnd, sb);
 			if (msgBuff == 0)
 				return;
-			msgBuff = Net::ASN1Util::PDUParseString(msgBuff, seqEnd, &sb2);
+			msgBuff = Net::ASN1Util::PDUParseString(msgBuff, seqEnd, sb2);
 			if (msgBuff == 0)
 				return;
 			#if defined(VERBOSE)
@@ -321,7 +321,7 @@ void Net::LDAPClient::ParseLDAPMessage(const UInt8 *msgBuff, UOSInt msgLen)
 	case 0x73: //searchResRef
 		{
 			Text::StringBuilderUTF8 sb;
-			msgBuff = Net::ASN1Util::PDUParseString(msgBuff, seqEnd, &sb);
+			msgBuff = Net::ASN1Util::PDUParseString(msgBuff, seqEnd, sb);
 			if (msgBuff)
 			{
 				#if defined(VERBOSE)
@@ -349,10 +349,10 @@ void Net::LDAPClient::ParseLDAPMessage(const UInt8 *msgBuff, UOSInt msgLen)
 			msgBuff = Net::ASN1Util::PDUParseChoice(msgBuff, seqEnd, &resultCode);
 			if (msgBuff == 0)
 				return;
-			msgBuff = Net::ASN1Util::PDUParseString(msgBuff, seqEnd, &sb);
+			msgBuff = Net::ASN1Util::PDUParseString(msgBuff, seqEnd, sb);
 			if (msgBuff == 0)
 				return;
-			msgBuff = Net::ASN1Util::PDUParseString(msgBuff, seqEnd, &sb2);
+			msgBuff = Net::ASN1Util::PDUParseString(msgBuff, seqEnd, sb2);
 			if (msgBuff == 0)
 				return;
 			#if defined(VERBOSE)
@@ -785,7 +785,7 @@ void Net::LDAPClient::SearchResObjectFree(Net::LDAPClient::SearchResObject *obj)
 	MemFree(obj);
 }
 
-void Net::LDAPClient::SearchResDisplay(Text::CString type, Text::CString value, Text::StringBuilderUTF8 *sb)
+void Net::LDAPClient::SearchResDisplay(Text::CString type, Text::CString value, NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	if (type.Equals(UTF8STRC("objectGUID")) || type.EndsWith(UTF8STRC("Guid")))
 	{

@@ -22,7 +22,7 @@ IO::ParserType Net::ASN1Data::GetParserType() const
 	return IO::ParserType::ASN1Data;
 }
 
-Bool Net::ASN1Data::ToASN1String(Text::StringBuilderUTF8 *sb) const
+Bool Net::ASN1Data::ToASN1String(NotNullPtr<Text::StringBuilderUTF8> sb) const
 {
 	return Net::ASN1Util::PDUToString(this->buff.GetPtr(), this->buff.PtrEnd(), sb, 0);
 }
@@ -42,7 +42,7 @@ Data::ByteArrayR Net::ASN1Data::GetASN1Array() const
 	return this->buff;
 }
 
-void Net::ASN1Data::AppendInteger(Text::StringBuilderUTF8 *sb, const UInt8 *pdu, UOSInt len)
+void Net::ASN1Data::AppendInteger(NotNullPtr<Text::StringBuilderUTF8> sb, const UInt8 *pdu, UOSInt len)
 {
 	if (len == 1)
 	{

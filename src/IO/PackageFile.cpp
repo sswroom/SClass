@@ -819,7 +819,7 @@ void IO::PackageFile::SetInfo(InfoType infoType, const UTF8Char *val)
 	}
 }
 
-void IO::PackageFile::GetInfoText(Text::StringBuilderUTF8 *sb) const
+void IO::PackageFile::GetInfoText(NotNullPtr<Text::StringBuilderUTF8> sb) const
 {
 	UOSInt i;
 	UOSInt j;

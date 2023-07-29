@@ -237,7 +237,7 @@ Media::Jasper::JasperReport *Media::Jasper::JasperXML::ParseJasperReport(Text::X
 					else
 					{
 						sb.ClearStr();
-						reader->ReadNodeText(&sb);
+						reader->ReadNodeText(sb);
 						report->AddParameter(name, className, sb.ToCString());
 					}
 				}

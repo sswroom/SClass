@@ -54,14 +54,14 @@ namespace Text
 		XMLNode *SearchFirstNode(Text::CString path);
 		void ReleaseSearch(XMLNode** searchResult);
 
-		void GetInnerXML(Text::StringBuilderUTF8 *sb);
-		void GetInnerText(Text::StringBuilderUTF8 *sb);
+		void GetInnerXML(NotNullPtr<Text::StringBuilderUTF8> sb);
+		void GetInnerText(NotNullPtr<Text::StringBuilderUTF8> sb);
 	private:
 		void SearchNodeBegin(Text::CString path, Data::ArrayList<XMLNode*> *outArr, Bool singleResult);
 		Bool SearchNodeSub(XMLNode *node, Data::ArrayList<UTF8Char*> *reqArr, Data::ArrayList<XMLNode*> *currPathArr, Data::ArrayList<XMLNode*> *outArr, Int32 searchType, Bool singleResult);
 		Bool SearchNodeSubElement(XMLNode *node, Data::ArrayList<UTF8Char*> *reqArr, Data::ArrayList<XMLNode*> *currPathArr, Data::ArrayList<XMLNode*> *outArr, Int32 searchType, Bool singleResult);
 		Bool SearchEqual(UOSInt level, Data::ArrayList<UTF8Char*> *reqArr, Data::ArrayList<XMLNode*> *currPathArr);
-		Bool SearchEval(UOSInt level, Data::ArrayList<UTF8Char*> *reqArr, Data::ArrayList<XMLNode*> *currPathArr, XMLNode *n, const UTF8Char *nameStart, const UTF8Char *nameEnd, Text::StringBuilderUTF8 *outSB);
+		Bool SearchEval(UOSInt level, Data::ArrayList<UTF8Char*> *reqArr, Data::ArrayList<XMLNode*> *currPathArr, XMLNode *n, const UTF8Char *nameStart, const UTF8Char *nameEnd, NotNullPtr<Text::StringBuilderUTF8> outSB);
 	public:
 		static Text::CString NodeTypeGetName(NodeType ntype);
 	};
@@ -72,7 +72,7 @@ namespace Text
 		XMLAttrib(const UTF8Char *name, UOSInt nameLen, const UTF8Char *value, UOSInt valueLen);
 		virtual ~XMLAttrib();
 
-		virtual Bool ToString(Text::StringBuilderUTF8 *sb) const;
+		virtual Bool ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const;
 	};
 
 
@@ -91,7 +91,7 @@ namespace Text
 		virtual ~XMLDocument();
 		Bool ParseBuff(Text::EncodingFactory *encFact, const UInt8 *buff, UOSInt size);
 		Bool ParseStream(Text::EncodingFactory *encFact, IO::Stream *stm);
-		void AppendXmlDeclaration(Text::StringBuilderUTF8 *sb);
+		void AppendXmlDeclaration(NotNullPtr<Text::StringBuilderUTF8> sb);
 	};
 }
 #endif

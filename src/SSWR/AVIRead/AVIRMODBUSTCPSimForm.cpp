@@ -23,7 +23,7 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSTCPSimForm::OnListenClicked(void *userOb
 	{
 		UInt16 port;
 		Text::StringBuilderUTF8 sb;
-		me->txtPort->GetText(&sb);
+		me->txtPort->GetText(sb);
 		if (!sb.ToUInt16(&port))
 		{
 			UI::MessageDialog::ShowDialog(CSTR("Error in parsing port number"), CSTR("MODBUS TCP Simulator"), me);
@@ -54,7 +54,7 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSTCPSimForm::OnDevAddClicked(void *userOb
 	UInt8 addr;
 	if (me->listener == 0)
 		return;
-	me->txtAddr->GetText(&sb);
+	me->txtAddr->GetText(sb);
 	if (sb.ToUInt8(&addr))
 	{
 		IO::MODBUSDevSim *dev;
@@ -100,7 +100,7 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSTCPSimForm::OnDelayClicked(void *userObj
 	{
 		Text::StringBuilderUTF8 sb;
 		UInt32 delay;
-		me->txtDelay->GetText(&sb);
+		me->txtDelay->GetText(sb);
 		if (sb.ToUInt32(&delay))
 		{
 			me->listener->SetDelay(delay);
@@ -122,7 +122,7 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSTCPSimForm::OnDeviceChanged(void *userOb
 		{
 			me->lvDeviceValues->AddItem(me->currDev->GetValueName(i), 0);
 			sb.ClearStr();
-			me->currDev->GetValue(i, &sb);
+			me->currDev->GetValue(i, sb);
 			me->lvDeviceValues->SetSubItem(i, 1, sb.ToCString());
 			i++;
 		}
@@ -179,7 +179,7 @@ void SSWR::AVIRead::AVIRMODBUSTCPSimForm::UpdateDevValues()
 		while (i < j)
 		{
 			sb.ClearStr();
-			this->currDev->GetValue(i, &sb);
+			this->currDev->GetValue(i, sb);
 			this->lvDeviceValues->SetSubItem(i, 1, sb.ToCString());
 			i++;
 		}

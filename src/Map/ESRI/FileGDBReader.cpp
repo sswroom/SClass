@@ -370,14 +370,14 @@ Int64 Map::ESRI::FileGDBReader::GetInt64(UOSInt colIndex)
 WChar *Map::ESRI::FileGDBReader::GetStr(UOSInt colIndex, WChar *buff)
 {
 	Text::StringBuilderUTF8 sb;
-	if (this->GetStr(colIndex, &sb))
+	if (this->GetStr(colIndex, sb))
 	{
 		return Text::StrUTF8_WChar(buff, sb.ToString(), 0);
 	}
 	return 0;
 }
 
-Bool Map::ESRI::FileGDBReader::GetStr(UOSInt colIndex, Text::StringBuilderUTF8 *sb)
+Bool Map::ESRI::FileGDBReader::GetStr(UOSInt colIndex, NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	UOSInt fieldIndex = this->GetFieldIndex(colIndex);
 	if (this->rowData.IsNull())
@@ -499,7 +499,7 @@ Text::String *Map::ESRI::FileGDBReader::GetNewStr(UOSInt colIndex)
 			{
 				Text::StringBuilderUTF8 sb;
 				Math::WKTWriter writer;
-				writer.ToText(&sb, vec);
+				writer.ToText(sb, vec);
 				DEL_CLASS(vec);
 				return Text::String::New(sb.ToCString()).Ptr();
 			}
@@ -520,7 +520,7 @@ Text::String *Map::ESRI::FileGDBReader::GetNewStr(UOSInt colIndex)
 		{
 			Text::StringBuilderUTF8 sb;
 			Data::UUID uuid(&this->rowData[this->fieldOfst[fieldIndex]]);
-			uuid.ToString(&sb);
+			uuid.ToString(sb);
 			return Text::String::New(sb.ToCString()).Ptr();
 		}
 	}
@@ -530,7 +530,7 @@ Text::String *Map::ESRI::FileGDBReader::GetNewStr(UOSInt colIndex)
 UTF8Char *Map::ESRI::FileGDBReader::GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSize)
 {
 	Text::StringBuilderUTF8 sb;
-	if (this->GetStr(colIndex, &sb))
+	if (this->GetStr(colIndex, sb))
 	{
 		return Text::StrConcatS(buff, sb.ToString(), buffSize);
 	}

@@ -146,7 +146,7 @@ void __stdcall SSWR::AVIRead::AVIRHexViewerForm::OnOffsetChg(void *userObj, UInt
 	}
 
 	Text::StringBuilderUTF8 sb;
-	if (me->hexView->GetFrameName(&sb))
+	if (me->hexView->GetFrameName(sb))
 	{
 		me->txtFrameName->SetText(sb.ToCString());
 		Data::ArrayList<const IO::FileAnalyse::FrameDetail::FieldInfo*> fieldList;

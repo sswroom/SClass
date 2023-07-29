@@ -75,7 +75,7 @@ Net::WebServer::IWebRequest::~IWebRequest()
 	SDEL_TEXT(this->reqDevModel.v);
 }
 
-Bool Net::WebServer::IWebRequest::GetRefererDomain(Text::StringBuilderUTF8 *sb)
+Bool Net::WebServer::IWebRequest::GetRefererDomain(NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	Text::String *hdr;
 	UTF8Char domain[256];
@@ -110,7 +110,7 @@ Bool Net::WebServer::IWebRequest::GetIfModifiedSince(Data::DateTime *dt)
 	return false;
 }
 
-Bool Net::WebServer::IWebRequest::GetCookie(Text::CString name, Text::StringBuilderUTF8 *sb)
+Bool Net::WebServer::IWebRequest::GetCookie(Text::CString name, NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	Text::String *cookie = this->GetSHeader(CSTR("Cookie"));
 	if (cookie == 0)

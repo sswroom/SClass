@@ -7,7 +7,7 @@ void __stdcall SSWR::AVIRead::AVIRCoordInfoForm::OnSRIDClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRCoordInfoForm *me = (SSWR::AVIRead::AVIRCoordInfoForm *)userObj;
 	Text::StringBuilderUTF8 sb;
-	me->txtSRID->GetText(&sb);
+	me->txtSRID->GetText(sb);
 	UInt32 srid;
 	const Math::CoordinateSystemManager::SpatialRefInfo *srinfo = 0;
 	if (sb.ToUInt32(&srid))
@@ -21,7 +21,7 @@ void __stdcall SSWR::AVIRead::AVIRCoordInfoForm::OnSRIDPrevClicked(void *userObj
 {
 	SSWR::AVIRead::AVIRCoordInfoForm *me = (SSWR::AVIRead::AVIRCoordInfoForm *)userObj;
 	Text::StringBuilderUTF8 sb;
-	me->txtSRID->GetText(&sb);
+	me->txtSRID->GetText(sb);
 	UInt32 srid;
 	const Math::CoordinateSystemManager::SpatialRefInfo *srinfo = 0;
 	if (sb.ToUInt32(&srid))
@@ -41,7 +41,7 @@ void __stdcall SSWR::AVIRead::AVIRCoordInfoForm::OnSRIDNextClicked(void *userObj
 {
 	SSWR::AVIRead::AVIRCoordInfoForm *me = (SSWR::AVIRead::AVIRCoordInfoForm *)userObj;
 	Text::StringBuilderUTF8 sb;
-	me->txtSRID->GetText(&sb);
+	me->txtSRID->GetText(sb);
 	UInt32 srid;
 	const Math::CoordinateSystemManager::SpatialRefInfo *srinfo = 0;
 	if (sb.ToUInt32(&srid))
@@ -74,7 +74,7 @@ void SSWR::AVIRead::AVIRCoordInfoForm::ShowInfo(const Math::CoordinateSystemMana
 			Math::SROGCWKTWriter wkt;
 			sptr = wkt.WriteCSys(csys, sbuff, 0, Text::LineBreakType::CRLF);
 			this->txtWKT->SetText(CSTRP(sbuff, sptr));
-			csys->ToString(&sb);
+			csys->ToString(sb);
 			this->txtDisp->SetText(sb.ToCString());
 			DEL_CLASS(csys);
 			return;
@@ -95,7 +95,7 @@ void SSWR::AVIRead::AVIRCoordInfoForm::ShowInfo(const Math::CoordinateSystemMana
 				Math::SROGCWKTWriter wkt;
 				sptr = wkt.WriteDatum(&datum, sbuff, 0, Text::LineBreakType::CRLF);
 				this->txtWKT->SetText(CSTRP(sbuff, sptr));
-				Math::CoordinateSystem::DatumData1ToString(&datum, &sb);
+				Math::CoordinateSystem::DatumData1ToString(&datum, sb);
 				this->txtDisp->SetText(sb.ToCString());
 				return;
 			}
@@ -116,7 +116,7 @@ void SSWR::AVIRead::AVIRCoordInfoForm::ShowInfo(const Math::CoordinateSystemMana
 			Math::SROGCWKTWriter wkt;
 			sptr = wkt.WriteSpheroid(&data, sbuff, 0, Text::LineBreakType::CRLF);
 			this->txtWKT->SetText(CSTRP(sbuff, sptr));
-			ee.ToString(&sb);
+			ee.ToString(sb);
 			this->txtDisp->SetText(sb.ToCString());
 			return;
 		}

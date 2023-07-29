@@ -28,7 +28,7 @@ Crypto::Cert::X509File::FileType Crypto::Cert::X509FileList::GetFileType() const
 	return Crypto::Cert::X509File::FileType::FileList;
 }
 
-void Crypto::Cert::X509FileList::ToShortName(Text::StringBuilderUTF8 *sb) const
+void Crypto::Cert::X509FileList::ToShortName(NotNullPtr<Text::StringBuilderUTF8> sb) const
 {
 	return this->fileList.GetItem(0)->ToShortName(sb);
 }
@@ -44,7 +44,7 @@ UOSInt Crypto::Cert::X509FileList::GetCertCount()
 	return ret;
 }
 
-Bool Crypto::Cert::X509FileList::GetCertName(UOSInt index, Text::StringBuilderUTF8 *sb)
+Bool Crypto::Cert::X509FileList::GetCertName(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	UOSInt i = 0;
 	UOSInt j = this->fileList.GetCount();
@@ -138,7 +138,7 @@ Crypto::Cert::X509Cert *Crypto::Cert::X509FileList::CreateX509Cert() const
 	return (Crypto::Cert::X509Cert*)this->fileList.GetItem(0)->Clone();
 }
 
-void Crypto::Cert::X509FileList::ToString(Text::StringBuilderUTF8 *sb) const
+void Crypto::Cert::X509FileList::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
 {
 	UOSInt i = 0;
 	UOSInt j = this->fileList.GetCount();

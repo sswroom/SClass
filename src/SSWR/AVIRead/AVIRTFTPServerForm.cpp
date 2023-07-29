@@ -17,7 +17,7 @@ void __stdcall SSWR::AVIRead::AVIRTFTPServerForm::OnStartClick(void *userObj)
 	}
 	UInt16 port = 0;
 	Text::StringBuilderUTF8 sb;
-	me->txtPort->GetText(&sb);
+	me->txtPort->GetText(sb);
 	if (!Text::StrToUInt16(sb.ToString(), &port))
 	{
 		return;
@@ -27,7 +27,7 @@ void __stdcall SSWR::AVIRead::AVIRTFTPServerForm::OnStartClick(void *userObj)
 		return;
 	}
 	sb.ClearStr();
-	me->txtFilePath->GetText(&sb);
+	me->txtFilePath->GetText(sb);
 	if (IO::Path::GetPathType(sb.ToCString()) != IO::Path::PathType::Directory)
 	{
 		return;

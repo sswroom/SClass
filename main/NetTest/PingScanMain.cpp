@@ -37,7 +37,7 @@ void PingScan(UInt32 ip)
 			sptr = Net::SocketUtil::GetIPv4Name(sbuff, result->ip);
 			sb.AppendP(sbuff, sptr);
 			sb.AppendUTF8Char('\t');
-			Text::SBAppendF64(&sb, result->respTime);
+			sb.AppendDouble(result->respTime);
 			sb.AppendUTF8Char('\t');
 			sb.AppendHexBuff(result->mac, 6, ':', Text::LineBreakType::None);
 			sb.AppendUTF8Char('\t');

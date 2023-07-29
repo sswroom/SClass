@@ -46,7 +46,7 @@ namespace Text
 
 			Text::MIMEObj::TextMIMEObj *GetContentText() const;
 			Text::IMIMEObj *GetContentMajor() const;
-			Text::IMIMEObj *GetAttachment(OSInt index, Text::StringBuilderUTF8 *name) const;
+			Text::IMIMEObj *GetAttachment(OSInt index, NotNullPtr<Text::StringBuilderUTF8> name) const;
 			
 			Text::IMIMEObj *GetRAWContent() const;
 

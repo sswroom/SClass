@@ -44,7 +44,7 @@ void __stdcall SSWR::AVIReadCE::AVIRCEProcInfoForm::OnProcSelChg(void *userObj)
 		me->txtDetParentId->SetText(sb.ToCString());
 		me->txtDetName->SetText(procInfo->procName->ToCString());
 		sb.ClearStr();
-		proc.GetFilename(&sb);
+		proc.GetFilename(sb);
 		me->txtDetPath->SetText(sb.ToCString());
 		me->txtDetPriority->SetText(Manage::Process::GetPriorityName(proc.GetPriority()));
 		me->UpdateProcHeaps();

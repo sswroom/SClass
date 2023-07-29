@@ -133,11 +133,11 @@ namespace Media
 		void SetWidth(UInt32 width);
 		void SetHeight(UInt32 height);
 
-		Bool ToString(Text::StringBuilderUTF8 *sb, Text::CString linePrefix) const;
-		Bool ToStringCanonCameraSettings(Text::StringBuilderUTF8 *sb, Text::CString linePrefix, UInt16 *valBuff, UOSInt valCnt) const;
-		Bool ToStringCanonFocalLength(Text::StringBuilderUTF8 *sb, Text::CString linePrefix, UInt16 *valBuff, UOSInt valCnt) const;
-		Bool ToStringCanonShotInfo(Text::StringBuilderUTF8 *sb, Text::CString linePrefix, UInt16 *valBuff, UOSInt valCnt) const;
-		Bool ToStringCanonLensType(Text::StringBuilderUTF8 *sb, UInt16 lensType) const;
+		Bool ToString(NotNullPtr<Text::StringBuilderUTF8> sb, Text::CString linePrefix) const;
+		Bool ToStringCanonCameraSettings(NotNullPtr<Text::StringBuilderUTF8> sb, Text::CString linePrefix, UInt16 *valBuff, UOSInt valCnt) const;
+		Bool ToStringCanonFocalLength(NotNullPtr<Text::StringBuilderUTF8> sb, Text::CString linePrefix, UInt16 *valBuff, UOSInt valCnt) const;
+		Bool ToStringCanonShotInfo(NotNullPtr<Text::StringBuilderUTF8> sb, Text::CString linePrefix, UInt16 *valBuff, UOSInt valCnt) const;
+		Bool ToStringCanonLensType(NotNullPtr<Text::StringBuilderUTF8> sb, UInt16 lensType) const;
 		void ToExifBuff(UInt8 *buff, UInt32 *startOfst, UInt32 *otherOfst) const;
 		void GetExifBuffSize(UInt64 *size, UInt64 *endOfst) const;
 

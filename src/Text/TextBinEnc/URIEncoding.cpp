@@ -126,7 +126,7 @@ Text::TextBinEnc::URIEncoding::~URIEncoding()
 {
 }
 
-UOSInt Text::TextBinEnc::URIEncoding::EncodeBin(Text::StringBuilderUTF8 *sb, const UInt8 *dataBuff, UOSInt buffSize)
+UOSInt Text::TextBinEnc::URIEncoding::EncodeBin(NotNullPtr<Text::StringBuilderUTF8> sb, const UInt8 *dataBuff, UOSInt buffSize)
 {
 	UInt8 b;
 	UOSInt initLen = sb->GetCharCnt();

@@ -31,7 +31,7 @@ void Media::PhotoInfo::ParseXMF(Text::XMLDocument *xmf)
 	if ((node = xmf->SearchFirstNode(CSTR("//exif:ISOSpeedRatings"))) != 0)
 	{
 		Text::StringBuilderUTF8 sb;
-		node->GetInnerText(&sb);
+		node->GetInnerText(sb);
 		sb.Trim();
 		this->isoRating = Text::StrToUInt32(sb.ToString());
 	}
@@ -194,7 +194,7 @@ Bool Media::PhotoInfo::GetPhotoDate(Data::DateTime *dt) const
 	return false;
 }
 
-void Media::PhotoInfo::ToString(Text::StringBuilderUTF8 *sb) const
+void Media::PhotoInfo::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
 {
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;

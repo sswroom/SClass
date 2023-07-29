@@ -55,7 +55,7 @@ Bool Net::Email::EmailMessage::SetHeader(const UTF8Char *name, UOSInt nameLen, c
 	return true;
 }
 
-Bool Net::Email::EmailMessage::AppendUTF8Header(Text::StringBuilderUTF8 *sb, const UTF8Char *val, UOSInt valLen)
+Bool Net::Email::EmailMessage::AppendUTF8Header(NotNullPtr<Text::StringBuilderUTF8> sb, const UTF8Char *val, UOSInt valLen)
 {
 	Text::TextBinEnc::Base64Enc b64;
 	sb->AppendC(UTF8STRC("=?UTF-8?B?"));
@@ -299,7 +299,7 @@ Bool Net::Email::EmailMessage::SetSubject(Text::CString subject)
 	if (Text::StringTool::IsNonASCII(subject.v))
 	{
 		Text::StringBuilderUTF8 sb;
-		this->AppendUTF8Header(&sb, subject.v, subject.leng);
+		this->AppendUTF8Header(sb, subject.v, subject.leng);
 		this->SetHeader(UTF8STRC("Subject"), sb.ToString(), sb.GetLength());
 	}
 	else
@@ -345,7 +345,7 @@ Bool Net::Email::EmailMessage::SetFrom(Text::CString name, Text::CString addr)
 	{
 		if (Text::StringTool::IsNonASCII(name.v))
 		{
-			this->AppendUTF8Header(&sb, name.v, name.leng);			
+			this->AppendUTF8Header(sb, name.v, name.leng);			
 		}
 		else
 		{
@@ -377,7 +377,7 @@ Bool Net::Email::EmailMessage::AddTo(Text::CString name, Text::CString addr)
 	{
 		if (Text::StringTool::IsNonASCII(name.v))
 		{
-			this->AppendUTF8Header(&sb, name.v, name.leng);			
+			this->AppendUTF8Header(sb, name.v, name.leng);			
 		}
 		else
 		{
@@ -435,7 +435,7 @@ Bool Net::Email::EmailMessage::AddCc(Text::CString name, Text::CString addr)
 	{
 		if (Text::StringTool::IsNonASCII(name.v))
 		{
-			this->AppendUTF8Header(&sb, name.v, name.leng);
+			this->AppendUTF8Header(sb, name.v, name.leng);
 		}
 		else
 		{
@@ -712,7 +712,7 @@ Bool Net::Email::EmailMessage::WriteToStream(IO::Stream *stm)
 	return true;
 }
 
-Bool Net::Email::EmailMessage::GenerateMessageID(Text::StringBuilderUTF8 *sb, Text::CString mailFrom)
+Bool Net::Email::EmailMessage::GenerateMessageID(NotNullPtr<Text::StringBuilderUTF8> sb, Text::CString mailFrom)
 {
 	sb->AppendHex64((UInt64)Data::DateTimeUtil::GetCurrTimeMillis());
 	sb->AppendUTF8Char('.');

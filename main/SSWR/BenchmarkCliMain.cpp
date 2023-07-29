@@ -192,7 +192,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 				sb.AppendC(UTF8STRC("Copy\t"));
 				sb.AppendUOSInt(currSize);
 				sb.AppendC(UTF8STRC("\t"));
-				Text::SBAppendF64(&sb, rate);
+				sb.AppendDouble(rate);
 				writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 				sb.ClearStr();
@@ -205,7 +205,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 				sb.AppendC(UTF8STRC("\t"));
 				sb.AppendUOSInt(loopCnt);
 				sb.AppendC(UTF8STRC("\t"));
-				Text::SBAppendF64(&sb, t);
+				sb.AppendDouble(t);
 				console->WriteLineC(sb.ToString(), sb.GetLength());
 				break;
 			}
@@ -238,7 +238,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 				sb.AppendC(UTF8STRC("Write\t"));
 				sb.AppendUOSInt(currSize);
 				sb.AppendC(UTF8STRC("\t"));
-				Text::SBAppendF64(&sb, rate);
+				sb.AppendDouble(rate);
 				writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 				sb.ClearStr();
@@ -251,7 +251,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 				sb.AppendC(UTF8STRC("\t"));
 				sb.AppendUOSInt(loopCnt);
 				sb.AppendC(UTF8STRC("\t"));
-				Text::SBAppendF64(&sb, t);
+				sb.AppendDouble(t);
 				console->WriteLineC(sb.ToString(), sb.GetLength());
 				break;
 			}
@@ -284,7 +284,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 				sb.AppendC(UTF8STRC("Read\t"));
 				sb.AppendUOSInt(currSize);
 				sb.AppendC(UTF8STRC("\t"));
-				Text::SBAppendF64(&sb, rate);
+				sb.AppendDouble(rate);
 				writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 				sb.ClearStr();
@@ -297,7 +297,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 				sb.AppendC(UTF8STRC("\t"));
 				sb.AppendUOSInt(loopCnt);
 				sb.AppendC(UTF8STRC("\t"));
-				Text::SBAppendF64(&sb, t);
+				sb.AppendDouble(t);
 				console->WriteLineC(sb.ToString(), sb.GetLength());
 				break;
 			}

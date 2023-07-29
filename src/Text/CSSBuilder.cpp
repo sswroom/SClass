@@ -184,22 +184,22 @@ void Text::CSSBuilder::AppendDistance(Double size, Math::Unit::Distance::Distanc
 {
 	if (du == Math::Unit::Distance::DU_PIXEL)
 	{
-		Text::SBAppendF64(&this->sb, size);
+		this->sb.AppendDouble(size);
 		this->sb.AppendC(UTF8STRC("px"));
 	}
 	else if (du == Math::Unit::Distance::DU_POINT)
 	{
-		Text::SBAppendF64(&this->sb, size);
+		this->sb.AppendDouble(size);
 		this->sb.AppendC(UTF8STRC("pt"));
 	}
 	else if (du == Math::Unit::Distance::DU_EMU)
 	{
-		Text::SBAppendF64(&this->sb, size);
+		this->sb.AppendDouble(size);
 		this->sb.AppendC(UTF8STRC("em"));
 	}
 	else
 	{
-		Text::SBAppendF64(&this->sb, Math::Unit::Distance::Convert(du, Math::Unit::Distance::DU_PIXEL, size));
+		this->sb.AppendDouble(Math::Unit::Distance::Convert(du, Math::Unit::Distance::DU_PIXEL, size));
 		this->sb.AppendC(UTF8STRC("px"));
 	}
 }
@@ -213,7 +213,7 @@ void Text::CSSBuilder::AppendRGBAColor(UInt32 argb)
 	this->sb.AppendUTF8Char(',');
 	this->sb.AppendU32(argb & 0xff);
 	this->sb.AppendUTF8Char(',');
-	Text::SBAppendF64(&this->sb, (argb >> 24) / 255.0);
+	this->sb.AppendDouble((argb >> 24) / 255.0);
 	this->sb.AppendC(UTF8STRC(")"));
 }
 

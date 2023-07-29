@@ -21,7 +21,7 @@ Text::JSONBase *Net::WebSite::WebSiteInstagramControl::ParsePageJSON(Text::CStri
 		if (reader->GetNodeType() == Text::XMLNode::NodeType::Element && reader->GetNodeText()->Equals(UTF8STRC("script")))
 		{
 			sb.ClearStr();
-			reader->ReadNodeText(&sb);
+			reader->ReadNodeText(sb);
 			if (sb.StartsWith(UTF8STRC("window._sharedData = ")))
 			{
 				if (sb.EndsWith(';'))

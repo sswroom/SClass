@@ -44,7 +44,7 @@ namespace SSWR
 			void SetURL(Text::StringBase<UTF8Char> *url);
 
 		//	WChar *GetString(WChar *sbuff);
-			void GetString(Text::StringBuilderUTF8 *sb);
+			void GetString(NotNullPtr<Text::StringBuilderUTF8> sb);
 		};
 	}
 }

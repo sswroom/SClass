@@ -14,8 +14,8 @@ namespace IO
 		virtual ~LogFile();
 
 		virtual UOSInt GetCount(IO::LogHandler::LogLevel logLevel) const = 0;
-		virtual Bool GetLogMessage(IO::LogHandler::LogLevel logLevel, UOSInt index, Data::Timestamp *ts, Text::StringBuilderUTF8 *sb, Text::LineBreakType lineBreak) const = 0;
-		virtual Bool GetLogDescription(IO::LogHandler::LogLevel logLevel, UOSInt index, Text::StringBuilderUTF8 *sb) const = 0;
+		virtual Bool GetLogMessage(IO::LogHandler::LogLevel logLevel, UOSInt index, Data::Timestamp *ts, NotNullPtr<Text::StringBuilderUTF8> sb, Text::LineBreakType lineBreak) const = 0;
+		virtual Bool GetLogDescription(IO::LogHandler::LogLevel logLevel, UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb) const = 0;
 
 		virtual IO::ParserType GetParserType() const;
 	};

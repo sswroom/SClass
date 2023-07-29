@@ -23,13 +23,13 @@ namespace Text
 			EscapeType escapeType;
 
 			Bool ReadLineInner(NotNullPtr<Text::StringBuilderUTF8> sb);
-			Bool ReadWord(Text::StringBuilderUTF8 *sb, Bool move);
+			Bool ReadWord(NotNullPtr<Text::StringBuilderUTF8> sb, Bool move);
 		public:
 			CppReader(NotNullPtr<IO::Stream> stm);
 			~CppReader();
 
-			Bool PeekWord(Text::StringBuilderUTF8 *sb);
-			Bool NextWord(Text::StringBuilderUTF8 *sb);
+			Bool PeekWord(NotNullPtr<Text::StringBuilderUTF8> sb);
+			Bool NextWord(NotNullPtr<Text::StringBuilderUTF8> sb);
 			Bool ReadLine(NotNullPtr<Text::StringBuilderUTF8> sb);
 			Bool GetLastLineBreak(NotNullPtr<Text::StringBuilderUTF8> sb);
 		};

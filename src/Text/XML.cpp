@@ -1457,7 +1457,7 @@ Bool Text::XML::HTMLAppendCharRef(const UTF8Char *chrRef, UOSInt refSize, IO::St
 	return false;
 }
 
-Bool Text::XML::HTMLAppendCharRef(const UTF8Char *chrRef, UOSInt refSize, Text::StringBuilderUTF8 *sb)
+Bool Text::XML::HTMLAppendCharRef(const UTF8Char *chrRef, UOSInt refSize, NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	UTF8Char sbuff[6];
 	UTF32Char wcs;

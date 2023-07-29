@@ -36,7 +36,7 @@ void Test::TestSIM7000::SIM7000Info(IO::Writer *writer, IO::Device::SIM7000 *mod
 
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("Flash Device Type:\r\n"));
-	if (modem->SIMCOMGetFlashDeviceType(&sb))
+	if (modem->SIMCOMGetFlashDeviceType(sb))
 	{
 		writer->WriteLineC(sb.ToString(), sb.GetLength());
 	}
@@ -47,7 +47,7 @@ void Test::TestSIM7000::SIM7000Info(IO::Writer *writer, IO::Device::SIM7000 *mod
 
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("Device Product ID:\r\n"));
-	if (modem->SIMCOMGetDeviceProductID(&sb))
+	if (modem->SIMCOMGetDeviceProductID(sb))
 	{
 		writer->WriteLineC(sb.ToString(), sb.GetLength());
 	}

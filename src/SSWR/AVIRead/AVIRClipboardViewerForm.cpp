@@ -9,7 +9,7 @@ void __stdcall SSWR::AVIRead::AVIRClipboardViewerForm::OnTypeSelChg(void *userOb
 	if (fmtId)
 	{
 		Text::StringBuilderUTF8 sb;
-		me->clipboard->GetDataText(fmtId, &sb);
+		me->clipboard->GetDataText(fmtId, sb);
 		me->txtMain->SetText(sb.ToCString());
 	}
 }

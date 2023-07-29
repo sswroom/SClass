@@ -10,13 +10,13 @@ namespace Text
 		class HTMLBuilder : public Text::StyledTextWriter
 		{
 		protected:
-			Text::StringBuilderUTF8 *sb;
+			NotNullPtr<Text::StringBuilderUTF8> sb;
 			Bool bodyContent;
 		private:
 			Bool fontStarted;
 
 		public:
-			HTMLBuilder(Text::StringBuilderUTF8 *sb, Bool bodyContent);
+			HTMLBuilder(NotNullPtr<Text::StringBuilderUTF8> sb, Bool bodyContent);
 			virtual ~HTMLBuilder();
 
 			virtual Bool WriteChar(UTF8Char c);

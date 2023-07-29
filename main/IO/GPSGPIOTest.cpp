@@ -18,15 +18,15 @@ void __stdcall OnGPSPos(void *userObj, Map::GPSTrack::GPSRecord3 *record, UOSInt
 {
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("Lat = "));
-	Text::SBAppendF64(&sb, record->pos.GetLat());
+	sb.AppendDouble(record->pos.GetLat());
 	sb.AppendC(UTF8STRC(", Lon = "));
-	Text::SBAppendF64(&sb, record->pos.GetLon());
+	sb.AppendDouble(record->pos.GetLon());
 	sb.AppendC(UTF8STRC(", Altitude = "));
-	Text::SBAppendF64(&sb, record->altitude);
+	sb.AppendDouble(record->altitude);
 	sb.AppendC(UTF8STRC(", Speed = "));
-	Text::SBAppendF64(&sb, record->speed);
+	sb.AppendDouble(record->speed);
 	sb.AppendC(UTF8STRC(", Heading = "));
-	Text::SBAppendF64(&sb, record->heading);
+	sb.AppendDouble(record->heading);
 	sb.AppendC(UTF8STRC(", nSateUsedGPS = "));
 	sb.AppendI32(record->nSateUsedGPS);
 	sb.AppendC(UTF8STRC(", nSateViewGPS = "));

@@ -177,8 +177,8 @@ Bool Net::Email::FileEmailStore::NewEmail(Int64 id, const Net::SocketUtil::Addre
 	UOSInt i;
 	UOSInt j;
 	Text::StringBuilderUTF8 sb;
-	IO::Path::GetProcessFileName(&sb);
-	IO::Path::AppendPath(&sb, UTF8STRC("SMTP"));
+	IO::Path::GetProcessFileName(sb);
+	IO::Path::AppendPath(sb, UTF8STRC("SMTP"));
 	sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
 	sb.AppendI64(id);
 	sb.AppendC(UTF8STRC(".eml"));
@@ -263,8 +263,8 @@ Bool Net::Email::FileEmailStore::NewEmail(Int64 id, const Net::SocketUtil::Addre
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
 	Text::StringBuilderUTF8 sb;
-	IO::Path::GetProcessFileName(&sb);
-	IO::Path::AppendPath(&sb, UTF8STRC("SMTP"));
+	IO::Path::GetProcessFileName(sb);
+	IO::Path::AppendPath(sb, UTF8STRC("SMTP"));
 	sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
 	sb.AppendI64(id);
 	sb.AppendC(UTF8STRC(".eml"));

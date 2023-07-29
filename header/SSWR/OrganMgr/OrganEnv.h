@@ -231,7 +231,7 @@ namespace SSWR
 			virtual UTF8Char *GetSpeciesDir(OrganSpecies *sp, UTF8Char *sbuff) = 0; /////////////////
 //			virtual Bool CreateSpeciesDir(OrganSpecies *sp) = 0; ////////////////////////
 			virtual Bool IsSpeciesExist(const UTF8Char *sName) = 0;
-			virtual Bool IsBookSpeciesExist(const UTF8Char *sName, Text::StringBuilderUTF8 *sb) = 0;
+			virtual Bool IsBookSpeciesExist(const UTF8Char *sName, NotNullPtr<Text::StringBuilderUTF8> sb) = 0;
 			virtual Bool AddSpecies(OrganSpecies *sp) = 0;
 			virtual Bool DelSpecies(OrganSpecies *sp) = 0;
 			virtual FileStatus AddSpeciesFile(OrganSpecies *sp, Text::CString fileName, Bool firstPhoto, Bool moveFile, Int32 *fileId) = 0;
@@ -279,7 +279,7 @@ namespace SSWR
 			virtual void UpdateUserFileRot(UserFileInfo *userFile, Int32 rotType) = 0;
 			virtual Bool UpdateUserFilePos(UserFileInfo *userFile, const Data::Timestamp &captureTime, Double lat, Double lon) = 0;
 			UOSInt GetUserFiles(Data::ArrayList<UserFileInfo*> *userFiles, const Data::Timestamp &fromTime, const Data::Timestamp &toTime);
-			virtual Bool GetUserFilePath(UserFileInfo *userFile, Text::StringBuilderUTF8 *sb) = 0;
+			virtual Bool GetUserFilePath(UserFileInfo *userFile, NotNullPtr<Text::StringBuilderUTF8> sb) = 0;
 			virtual Bool UpdateUserFileDesc(UserFileInfo *userFile, const UTF8Char *descript) = 0;
 			virtual Bool UpdateUserFileLoc(UserFileInfo *userFile, const UTF8Char *location) = 0;
 			virtual void UpdateWebFileCrop(WebFileInfo *userFile, Double cropLeft, Double cropTop, Double cropRight, Double cropBottom) = 0;

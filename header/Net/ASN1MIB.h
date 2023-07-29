@@ -41,15 +41,15 @@ namespace Net
 
 		static UOSInt CalcLineSpace(const UTF8Char *txt);
 		static void ModuleAppendOID(ModuleInfo *module, ObjectInfo *obj);
-		Bool ParseObjectOID(ModuleInfo *module, ObjectInfo *obj, Text::String *s, Text::StringBuilderUTF8 *errMessage);
-		Bool ParseObjectBegin(Net::MIBReader *reader, ObjectInfo *obj, Text::StringBuilderUTF8 *errMessage);
-		Bool ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text::StringBuilderUTF8 *errMessage);
-		Bool ApplyModuleOID(ModuleInfo *module, ObjectInfo *obj, Text::StringBuilderUTF8 *errMessage);
-		Bool ApplyModuleOIDs(ModuleInfo *module, Text::StringBuilderUTF8 *errMessage);
-		Bool ApplyOIDs(Text::StringBuilderUTF8 *errMessage);
-		Bool ApplyModuleImports(ModuleInfo *module, Text::StringBuilderUTF8 *errMessage);
-		Bool ApplyImports(Text::StringBuilderUTF8 *errMessage);
-		Bool LoadFileInner(Text::CString fileName, Text::StringBuilderUTF8 *errMessage, Bool postApply);
+		Bool ParseObjectOID(ModuleInfo *module, ObjectInfo *obj, Text::String *s, NotNullPtr<Text::StringBuilderUTF8> errMessage);
+		Bool ParseObjectBegin(Net::MIBReader *reader, ObjectInfo *obj, NotNullPtr<Text::StringBuilderUTF8> errMessage);
+		Bool ParseModule(Net::MIBReader *reader, ModuleInfo *module, NotNullPtr<Text::StringBuilderUTF8> errMessage);
+		Bool ApplyModuleOID(ModuleInfo *module, ObjectInfo *obj, NotNullPtr<Text::StringBuilderUTF8> errMessage);
+		Bool ApplyModuleOIDs(ModuleInfo *module, NotNullPtr<Text::StringBuilderUTF8> errMessage);
+		Bool ApplyOIDs(NotNullPtr<Text::StringBuilderUTF8> errMessage);
+		Bool ApplyModuleImports(ModuleInfo *module, NotNullPtr<Text::StringBuilderUTF8> errMessage);
+		Bool ApplyImports(NotNullPtr<Text::StringBuilderUTF8> errMessage);
+		Bool LoadFileInner(Text::CString fileName, NotNullPtr<Text::StringBuilderUTF8> errMessage, Bool postApply);
 
 		static void RemoveSpace(Text::PString *s);
 		static Bool IsType(const UTF8Char *s);
@@ -66,7 +66,7 @@ namespace Net
 		ModuleInfo *GetModuleByFileName(Text::CString fileName);
 
 		void UnloadAll();
-		Bool LoadFile(Text::CString fileName, Text::StringBuilderUTF8 *errMessage);
+		Bool LoadFile(Text::CString fileName, NotNullPtr<Text::StringBuilderUTF8> errMessage);
 	};
 }
 #endif

@@ -29,7 +29,7 @@ IO::FileAnalyse::IFileAnalyse::~IFileAnalyse()
 {
 }
 
-Bool IO::FileAnalyse::IFileAnalyse::GetFrameDetail(UOSInt index, Text::StringBuilderUTF8 *sb)
+Bool IO::FileAnalyse::IFileAnalyse::GetFrameDetail(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	IO::FileAnalyse::FrameDetail *frame = this->GetFrameDetail(index);
 	if (frame == 0)

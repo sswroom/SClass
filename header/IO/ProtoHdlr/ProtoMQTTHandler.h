@@ -21,7 +21,7 @@ namespace IO
 			virtual UOSInt ParseProtocol(NotNullPtr<IO::Stream> stm, void *stmObj, void *stmData, const Data::ByteArrayR &buff); // return unprocessed size
 			virtual UOSInt BuildPacket(UInt8 *buff, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize, void *stmData);
 
-			Bool ParseUTF8Str(const UTF8Char *buff, UOSInt *index, UOSInt buffSize, Text::StringBuilderUTF8 *sb);
+			Bool ParseUTF8Str(const UTF8Char *buff, UOSInt *index, UOSInt buffSize, NotNullPtr<Text::StringBuilderUTF8> sb);
 		};
 	}
 }

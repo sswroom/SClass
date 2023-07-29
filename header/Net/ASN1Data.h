@@ -24,14 +24,14 @@ namespace Net
 		virtual IO::ParserType GetParserType() const;
 		virtual ASN1Type GetASN1Type() const = 0;
 		virtual ASN1Data *Clone() const = 0;
-		virtual void ToString(Text::StringBuilderUTF8 *sb) const = 0;
+		virtual void ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const = 0;
 
-		Bool ToASN1String(Text::StringBuilderUTF8 *sb) const;
+		Bool ToASN1String(NotNullPtr<Text::StringBuilderUTF8> sb) const;
 		const UInt8 *GetASN1Buff() const;
 		UOSInt GetASN1BuffSize() const;
 		Data::ByteArrayR GetASN1Array() const;
 
-		static void AppendInteger(Text::StringBuilderUTF8 *sb, const UInt8 *pdu, UOSInt len);
+		static void AppendInteger(NotNullPtr<Text::StringBuilderUTF8> sb, const UInt8 *pdu, UOSInt len);
 	};
 }
 #endif

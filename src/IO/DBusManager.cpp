@@ -801,7 +801,7 @@ void IO::DBusManager::GenerateIntrospectionXml(GenericData *data, const Char *pa
 		s->Release();
 		sb.Append(">");
 
-		this->GenerateInterfaceXml(&sb, iface);
+		this->GenerateInterfaceXml(sb, iface);
 
 		sb.Append("</interface>");
 		i++;

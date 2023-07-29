@@ -8,7 +8,7 @@ void __stdcall UtilUI::TextSearchForm::OnSearchClicked(void *userObj)
 {
 	UtilUI::TextSearchForm *me = (UtilUI::TextSearchForm*)userObj;
 	Text::StringBuilderUTF8 sb;
-	me->txtSearch->GetText(&sb);
+	me->txtSearch->GetText(sb);
 	if (sb.GetLength() > 0)
 	{
 		me->mainFrm->SearchText(sb.ToCString());

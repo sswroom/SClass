@@ -119,7 +119,7 @@ Map::MapDrawLayer *Map::GMLXML::ParseFeatureCollection(Text::XMLReader *reader, 
 						{
 							nameList.Add(Text::StrCopyNew(reader->GetNodeText()->v + i + 1).Ptr());
 							sb.ClearStr();
-							reader->ReadNodeText(&sb);
+							reader->ReadNodeText(sb);
 							if (sb.GetLength() > 0)
 							{
 								valList.Add(Text::String::New(sb.ToString(), sb.GetLength()).Ptr());
@@ -237,7 +237,7 @@ Math::Geometry::Vector2D *Map::GMLXML::ParseGeometry(Text::XMLReader *reader, Pa
 				if (reader->GetNodeText()->Equals(UTF8STRC("gml:pos")))
 				{
 					sb.ClearStr();
-					reader->ReadNodeText(&sb);
+					reader->ReadNodeText(sb);
 					sarr[3] = sb.v;
 					while (true)
 					{
@@ -335,7 +335,7 @@ Math::Geometry::Vector2D *Map::GMLXML::ParseGeometry(Text::XMLReader *reader, Pa
 											else if (reader->GetNodeType() == Text::XMLNode::NodeType::Element && reader->GetNodeText()->Equals(UTF8STRC("gml:posList")))
 											{
 												sb.ClearStr();
-												reader->ReadNodeText(&sb);
+												reader->ReadNodeText(sb);
 												sarr[3] = sb.v;
 												while (true)
 												{
@@ -414,7 +414,7 @@ Math::Geometry::Vector2D *Map::GMLXML::ParseGeometry(Text::XMLReader *reader, Pa
 				if (reader->GetNodeText()->Equals(UTF8STRC("gml:posList")))
 				{
 					sb.ClearStr();
-					reader->ReadNodeText(&sb);
+					reader->ReadNodeText(sb);
 					sarr[3] = sb.v;
 					while (true)
 					{
@@ -574,7 +574,7 @@ Math::Geometry::Vector2D *Map::GMLXML::ParseGeometry(Text::XMLReader *reader, Pa
 									if (reader->GetNodeText()->Equals(UTF8STRC("gml:coordinates")))
 									{
 										sb.ClearStr();
-										reader->ReadNodeText(&sb);
+										reader->ReadNodeText(sb);
 										sarr[1] = sb.v;
 										while (true)
 										{
@@ -596,7 +596,7 @@ Math::Geometry::Vector2D *Map::GMLXML::ParseGeometry(Text::XMLReader *reader, Pa
 									{
 										Data::ArrayList<Double> posList;
 										sb.ClearStr();
-										reader->ReadNodeText(&sb);
+										reader->ReadNodeText(sb);
 										sarr[1] = sb.v;
 										while (true)
 										{

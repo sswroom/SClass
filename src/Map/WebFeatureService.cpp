@@ -166,7 +166,7 @@ void Map::WebFeatureService::LoadXMLFeatureType(Text::XMLReader *reader)
 			if (nodeName->Equals(UTF8STRC("Name")))
 			{
 				sb.ClearStr();
-				if (reader->ReadNodeText(&sb))
+				if (reader->ReadNodeText(sb))
 				{
 					SDEL_STRING(name);
 					name = Text::String::New(sb.ToCString()).Ptr();
@@ -175,7 +175,7 @@ void Map::WebFeatureService::LoadXMLFeatureType(Text::XMLReader *reader)
 			else if (nodeName->Equals(UTF8STRC("Title")))
 			{
 				sb.ClearStr();
-				if (reader->ReadNodeText(&sb))
+				if (reader->ReadNodeText(sb))
 				{
 					SDEL_STRING(title);
 					title = Text::String::New(sb.ToCString()).Ptr();
@@ -184,7 +184,7 @@ void Map::WebFeatureService::LoadXMLFeatureType(Text::XMLReader *reader)
 			else if (nodeName->Equals(UTF8STRC("DefaultCRS")))
 			{
 				sb.ClearStr();
-				if (reader->ReadNodeText(&sb))
+				if (reader->ReadNodeText(sb))
 				{
 					SDEL_STRING(crs);
 					crs = Text::String::New(sb.ToCString()).Ptr();
@@ -193,7 +193,7 @@ void Map::WebFeatureService::LoadXMLFeatureType(Text::XMLReader *reader)
 			else if (nodeName->Equals(UTF8STRC("DefaultSRS")))
 			{
 				sb.ClearStr();
-				if (reader->ReadNodeText(&sb))
+				if (reader->ReadNodeText(sb))
 				{
 					SDEL_STRING(crs);
 					crs = Text::String::New(sb.ToCString()).Ptr();
@@ -202,7 +202,7 @@ void Map::WebFeatureService::LoadXMLFeatureType(Text::XMLReader *reader)
 			else if (nodeName->Equals(UTF8STRC("SRS")))
 			{
 				sb.ClearStr();
-				if (reader->ReadNodeText(&sb))
+				if (reader->ReadNodeText(sb))
 				{
 					SDEL_STRING(crs);
 					crs = Text::String::New(sb.ToCString()).Ptr();
@@ -223,7 +223,7 @@ void Map::WebFeatureService::LoadXMLFeatureType(Text::XMLReader *reader)
 						if (nodeName->EndsWith(UTF8STRC(":LowerCorner")))
 						{
 							sb.ClearStr();
-							if (reader->ReadNodeText(&sb))
+							if (reader->ReadNodeText(sb))
 							{
 								if (Text::StrSplitP(sarr, 3, sb, ' ') >= 2)
 								{
@@ -236,7 +236,7 @@ void Map::WebFeatureService::LoadXMLFeatureType(Text::XMLReader *reader)
 						else if (nodeName->EndsWith(UTF8STRC(":UpperCorner")))
 						{
 							sb.ClearStr();
-							if (reader->ReadNodeText(&sb))
+							if (reader->ReadNodeText(sb))
 							{
 								if (Text::StrSplitP(sarr, 3, sb, ' ') >= 2)
 								{
@@ -357,20 +357,20 @@ Map::MapDrawLayer *Map::WebFeatureService::LoadAsLayer()
 		{
 			sb.Append(this->wfsURL);
 			sb.AppendC(UTF8STRC("?service=wfs&version=1.0.0&request=GetFeature&outputFormat=GML2&typeName="));
-			Text::TextBinEnc::FormEncoding::FormEncode(&sb, this->currFeature->name->v, this->currFeature->name->leng);
+			Text::TextBinEnc::FormEncoding::FormEncode(sb, this->currFeature->name->v, this->currFeature->name->leng);
 		}
 		else if (this->version->Equals(UTF8STRC("1.1.0")))
 		{
 			sb.Append(this->wfsURL);
 			sb.AppendC(UTF8STRC("?service=wfs&version=1.1.0&request=GetFeature&outputFormat=GML2&typeName="));
-			Text::TextBinEnc::FormEncoding::FormEncode(&sb, this->currFeature->name->v, this->currFeature->name->leng);
+			Text::TextBinEnc::FormEncoding::FormEncode(sb, this->currFeature->name->v, this->currFeature->name->leng);
 			needSwapXY = true;
 		}
 		else if (this->version->Equals(UTF8STRC("2.0.0")))
 		{
 			sb.Append(this->wfsURL);
 			sb.AppendC(UTF8STRC("?service=wfs&version=2.0.0&request=GetFeature&outputFormat=GML2&typeName="));
-			Text::TextBinEnc::FormEncoding::FormEncode(&sb, this->currFeature->name->v, this->currFeature->name->leng);
+			Text::TextBinEnc::FormEncoding::FormEncode(sb, this->currFeature->name->v, this->currFeature->name->leng);
 			needSwapXY = true;
 		}
 		else

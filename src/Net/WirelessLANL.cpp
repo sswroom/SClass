@@ -287,11 +287,11 @@ UOSInt Net::WirelessLAN::GetInterfaces(Data::ArrayList<Net::WirelessLAN::Interfa
 		UOSInt i;
 		NEW_CLASS(reader, Text::UTF8Reader(fs));
 		sb.ClearStr();
-		reader->ReadLine(&sb, 1024);
+		reader->ReadLine(sb, 1024);
 		sb.ClearStr();
-		reader->ReadLine(&sb, 1024);
+		reader->ReadLine(sb, 1024);
 		sb.ClearStr();
-		while (reader->ReadLine(&sb, 1024))
+		while (reader->ReadLine(sb, 1024))
 		{
 			sb.TrimC();
 			i = sb.IndexOf(':');

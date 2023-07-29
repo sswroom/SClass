@@ -5,7 +5,7 @@ void __stdcall SSWR::AVIRead::AVIRJavaClassForm::OnMethodsSelChg(void *userObj)
 {
 	SSWR::AVIRead::AVIRJavaClassForm *me = (SSWR::AVIRead::AVIRJavaClassForm*)userObj;
 	Text::StringBuilderUTF8 sb;
-	me->clsFile->MethodsGetDetail((UOSInt)me->lbMethods->GetSelectedIndex(), 0, true, &sb);
+	me->clsFile->MethodsGetDetail((UOSInt)me->lbMethods->GetSelectedIndex(), 0, true, sb);
 	me->txtMethods->SetText(sb.ToCString());
 }
 
@@ -28,7 +28,7 @@ SSWR::AVIRead::AVIRJavaClassForm::AVIRJavaClassForm(UI::GUIClientControl *parent
 	this->txtFileStruct->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->txtFileStruct->SetReadOnly(true);
 	sb.ClearStr();
-	this->clsFile->FileStructDetail(&sb);
+	this->clsFile->FileStructDetail(sb);
 	this->txtFileStruct->SetText(sb.ToCString());
 
 	this->tpFields = this->tcMain->AddTabPage(CSTR("Fields"));
@@ -55,7 +55,7 @@ SSWR::AVIRead::AVIRJavaClassForm::AVIRJavaClassForm(UI::GUIClientControl *parent
 	while (i < j)
 	{
 		sb.ClearStr();
-		this->clsFile->FieldsGetDecl(i, &sb);
+		this->clsFile->FieldsGetDecl(i, sb);
 		this->lbFields->AddItem(sb.ToCString(), (void*)i);
 		i++;
 	}
@@ -65,13 +65,13 @@ SSWR::AVIRead::AVIRJavaClassForm::AVIRJavaClassForm(UI::GUIClientControl *parent
 	while (i < j)
 	{
 		sb.ClearStr();
-		this->clsFile->MethodsGetDecl(i, &sb);
+		this->clsFile->MethodsGetDecl(i, sb);
 		this->lbMethods->AddItem(sb.ToCString(), (void*)i);
 		i++;
 	}
 
 	sb.ClearStr();
-	this->clsFile->DecompileFile(&sb);
+	this->clsFile->DecompileFile(sb);
 	this->txtDecompile->SetText(sb.ToCString());
 }
 

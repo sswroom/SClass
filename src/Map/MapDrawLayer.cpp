@@ -170,7 +170,7 @@ void Map::MapDrawLayer::CloseReader(DB::DBReader *r)
 	DEL_CLASS(rdr);
 }
 
-void Map::MapDrawLayer::GetLastErrorMsg(Text::StringBuilderUTF8 *str)
+void Map::MapDrawLayer::GetLastErrorMsg(NotNullPtr<Text::StringBuilderUTF8> str)
 {
 }
 
@@ -913,7 +913,7 @@ WChar *Map::MapLayerReader::GetStr(UOSInt colIndex, WChar *buff)
 			return 0;
 		Math::WKTWriter writer;
 		Text::StringBuilderUTF8 sb;
-		Bool succ = writer.ToText(&sb, vec);
+		Bool succ = writer.ToText(sb, vec);
 		DEL_CLASS(vec);
 		if (!succ)
 		{
@@ -928,7 +928,7 @@ WChar *Map::MapLayerReader::GetStr(UOSInt colIndex, WChar *buff)
 	return 0;
 }
 
-Bool Map::MapLayerReader::GetStr(UOSInt colIndex, Text::StringBuilderUTF8 *sb)
+Bool Map::MapLayerReader::GetStr(UOSInt colIndex, NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
@@ -962,7 +962,7 @@ Text::String *Map::MapLayerReader::GetNewStr(UOSInt colIndex)
 			return 0;
 		Math::WKTWriter writer;
 		Text::StringBuilderUTF8 sb;
-		Bool succ = writer.ToText(&sb, vec);
+		Bool succ = writer.ToText(sb, vec);
 		DEL_CLASS(vec);
 		if (!succ)
 		{
@@ -983,7 +983,7 @@ UTF8Char *Map::MapLayerReader::GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt bu
 			return 0;
 		Math::WKTWriter writer;
 		Text::StringBuilderUTF8 sb;
-		Bool succ = writer.ToText(&sb, vec);
+		Bool succ = writer.ToText(sb, vec);
 		DEL_CLASS(vec);
 		if (!succ)
 		{

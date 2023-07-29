@@ -7,7 +7,7 @@
 #include "Text/TextBinEnc/Base64Enc.h"
 #include "Data/Compress/Inflate.h"
 
-UOSInt Net::SAMLUtil::DecryptEncryptedKey(Net::SSLEngine *ssl, Crypto::Cert::X509Key *key, Text::XMLReader *reader, Text::StringBuilderUTF8 *sbResult, UInt8 *keyBuff)
+UOSInt Net::SAMLUtil::DecryptEncryptedKey(Net::SSLEngine *ssl, Crypto::Cert::X509Key *key, Text::XMLReader *reader, NotNullPtr<Text::StringBuilderUTF8> sbResult, UInt8 *keyBuff)
 {
 	Text::XMLNode::NodeType nodeType;
 	Text::String *nodeName;
@@ -51,7 +51,7 @@ UOSInt Net::SAMLUtil::DecryptEncryptedKey(Net::SSLEngine *ssl, Crypto::Cert::X50
 					return 0;
 				}
 				Text::StringBuilderUTF8 sb;
-				reader->ReadNodeText(&sb);
+				reader->ReadNodeText(sb);
 				Text::TextBinEnc::Base64Enc b64;
 				UOSInt dataSize = b64.CalcBinSize(sb.ToString(), sb.GetLength());
 				if (dataSize != 256)
@@ -88,7 +88,7 @@ UOSInt Net::SAMLUtil::DecryptEncryptedKey(Net::SSLEngine *ssl, Crypto::Cert::X50
 	return 0;
 }
 
-UOSInt Net::SAMLUtil::ParseKeyInfo(Net::SSLEngine *ssl, Crypto::Cert::X509Key *key, Text::XMLReader *reader, Text::StringBuilderUTF8 *sbResult, UInt8 *keyBuff)
+UOSInt Net::SAMLUtil::ParseKeyInfo(Net::SSLEngine *ssl, Crypto::Cert::X509Key *key, Text::XMLReader *reader, NotNullPtr<Text::StringBuilderUTF8> sbResult, UInt8 *keyBuff)
 {
 	Text::XMLNode::NodeType nodeType;
 	Text::String *nodeName;
@@ -126,7 +126,7 @@ UOSInt Net::SAMLUtil::ParseKeyInfo(Net::SSLEngine *ssl, Crypto::Cert::X509Key *k
 	return 0;
 }
 
-Bool Net::SAMLUtil::DecryptEncryptedData(Net::SSLEngine *ssl, Crypto::Cert::X509Key *key, Text::XMLReader *reader, Text::StringBuilderUTF8 *sbResult)
+Bool Net::SAMLUtil::DecryptEncryptedData(Net::SSLEngine *ssl, Crypto::Cert::X509Key *key, Text::XMLReader *reader, NotNullPtr<Text::StringBuilderUTF8> sbResult)
 {
 	UInt8 keyBuff[128];
 	UOSInt keySize = 0;
@@ -212,7 +212,7 @@ Bool Net::SAMLUtil::DecryptEncryptedData(Net::SSLEngine *ssl, Crypto::Cert::X509
 						{
 							
 							Text::StringBuilderUTF8 sb;
-							reader->ReadNodeText(&sb);
+							reader->ReadNodeText(sb);
 							Text::TextBinEnc::Base64Enc b64;
 							UOSInt dataSize = b64.CalcBinSize(sb.ToString(), sb.GetLength());
 							if (headingIV)
@@ -279,7 +279,7 @@ Bool Net::SAMLUtil::DecryptEncryptedData(Net::SSLEngine *ssl, Crypto::Cert::X509
 
 }
 
-Bool Net::SAMLUtil::DecryptAssertion(Net::SSLEngine *ssl, Crypto::Cert::X509Key *key, Text::XMLReader *reader, Text::StringBuilderUTF8 *sbResult)
+Bool Net::SAMLUtil::DecryptAssertion(Net::SSLEngine *ssl, Crypto::Cert::X509Key *key, Text::XMLReader *reader, NotNullPtr<Text::StringBuilderUTF8> sbResult)
 {
 	Text::XMLNode::NodeType nodeType;
 	Text::String *nodeName;
@@ -308,7 +308,7 @@ Bool Net::SAMLUtil::DecryptAssertion(Net::SSLEngine *ssl, Crypto::Cert::X509Key 
 	return false;
 }
 
-Bool Net::SAMLUtil::DecryptResponse(Net::SSLEngine *ssl, Crypto::Cert::X509Key *key, Text::XMLReader *reader, Text::StringBuilderUTF8 *sbResult)
+Bool Net::SAMLUtil::DecryptResponse(Net::SSLEngine *ssl, Crypto::Cert::X509Key *key, Text::XMLReader *reader, NotNullPtr<Text::StringBuilderUTF8> sbResult)
 {
 	Text::XMLNode::NodeType nodeType;
 	Text::String *nodeName;
@@ -337,7 +337,7 @@ Bool Net::SAMLUtil::DecryptResponse(Net::SSLEngine *ssl, Crypto::Cert::X509Key *
 	return false;
 }
 
-Bool Net::SAMLUtil::DecryptResponse(Net::SSLEngine *ssl, Text::EncodingFactory *encFact, Crypto::Cert::X509Key *key, Text::CString responseXML, Text::StringBuilderUTF8 *sbResult)
+Bool Net::SAMLUtil::DecryptResponse(Net::SSLEngine *ssl, Text::EncodingFactory *encFact, Crypto::Cert::X509Key *key, Text::CString responseXML, NotNullPtr<Text::StringBuilderUTF8> sbResult)
 {
 	IO::MemoryReadingStream mstm(responseXML.v, responseXML.leng);
 	Text::XMLReader reader(encFact, mstm, Text::XMLReader::PM_XML);
@@ -362,7 +362,7 @@ Bool Net::SAMLUtil::DecryptResponse(Net::SSLEngine *ssl, Text::EncodingFactory *
 	return false;
 }
 
-Bool Net::SAMLUtil::DecodeRequest(Text::CString requestB64, Text::StringBuilderUTF8 *sbResult)
+Bool Net::SAMLUtil::DecodeRequest(Text::CString requestB64, NotNullPtr<Text::StringBuilderUTF8> sbResult)
 {
 	Text::TextBinEnc::Base64Enc b64;
 	UOSInt decSize = b64.CalcBinSize(requestB64.v, requestB64.leng);

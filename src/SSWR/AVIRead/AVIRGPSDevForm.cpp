@@ -73,10 +73,10 @@ void __stdcall SSWR::AVIRead::AVIRGPSDevForm::OnConnClicked(void *userObj)
 		Text::StringBuilderUTF8 sb;
 		Net::SocketUtil::AddressInfo addr;
 		UInt16 port = 0;
-		me->txtPort->GetText(&sb);
+		me->txtPort->GetText(sb);
 		sb.ToUInt16(&port);
 		sb.ClearStr();
-		me->txtHost->GetText(&sb);
+		me->txtHost->GetText(sb);
 		if (!me->core->GetSocketFactory()->DNSResolveIP(sb.ToCString(), &addr) || port <= 0)
 		{
 

@@ -95,10 +95,10 @@ void __stdcall SSWR::OrganMgr::OrganBookForm::OnBookAddClicked(void *userObj)
 	Text::StringBuilderUTF8 sb2;
 	Text::StringBuilderUTF8 sb3;
 	Text::StringBuilderUTF8 sb4;
-	me->txtBookAuthor->GetText(&sb);
-	me->txtBookTitle->GetText(&sb2);
-	me->txtBookSource->GetText(&sb3);
-	me->txtBookURL->GetText(&sb4);
+	me->txtBookAuthor->GetText(sb);
+	me->txtBookTitle->GetText(sb2);
+	me->txtBookSource->GetText(sb3);
+	me->txtBookURL->GetText(sb4);
 	if (sb.GetLength() <= 0)
 	{
 		UI::MessageDialog::ShowDialog(me->env->GetLang(UTF8STRC("BookFormInputAuthor")), CSTR("Error"), me);
@@ -139,7 +139,7 @@ void __stdcall SSWR::OrganMgr::OrganBookForm::OnBookPasteClicked(void *userObj)
 	Text::StringBuilderUTF8 sb;
 	Text::StringBuilderUTF8 sb2;
 	Data::DateTime dt;
-	UI::Clipboard::GetString(me->GetHandle(), &sb);
+	UI::Clipboard::GetString(me->GetHandle(), sb);
 	if (sb.GetLength() > 0)
 	{
 		sb.Replace('\n', ' ');

@@ -54,7 +54,7 @@ namespace IO
 			virtual void AddText(UOSInt ofst, Text::CString name);
 			virtual void AddSubframe(UOSInt ofst, UOSInt size);
 
-			void ToString(Text::StringBuilderUTF8 *sb) const;
+			void ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const;
 		};
 	}
 }

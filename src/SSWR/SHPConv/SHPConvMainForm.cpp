@@ -104,7 +104,7 @@ void __stdcall SSWR::SHPConv::SHPConvMainForm::OnRecordsSelChg(void *userObj)
 	else
 	{
 		Text::StringBuilderUTF8 sb;
-		me->cboSeperator->GetText(&sb);
+		me->cboSeperator->GetText(sb);
 
 		sptr = Text::StrConcatC(sbuff, UTF8STRC("<%="));
 		sptr = me->lstRecords->GetItemText(sptr, indices.GetItem(0));
@@ -151,7 +151,7 @@ void __stdcall SSWR::SHPConv::SHPConvMainForm::OnFilterClicked(void *userObj)
 {
 	SSWR::SHPConv::SHPConvMainForm *me = (SSWR::SHPConv::SHPConvMainForm*)userObj;
 	Text::StringBuilderUTF8 sb;
-	me->txtSource->GetText(&sb);
+	me->txtSource->GetText(sb);
 	if (sb.GetLength() <= 0)
 	{
 		return;
@@ -169,7 +169,7 @@ void __stdcall SSWR::SHPConv::SHPConvMainForm::OnPreviewClicked(void *userObj)
 {
 	SSWR::SHPConv::SHPConvMainForm *me = (SSWR::SHPConv::SHPConvMainForm*)userObj;
 	Text::StringBuilderUTF8 sb;
-	me->txtSource->GetText(&sb);
+	me->txtSource->GetText(sb);
 	UOSInt i = sb.LastIndexOf('.');
 	sb.TrimToLength(i + 1);
 	sb.AppendC(UTF8STRC("dbf"));
@@ -180,7 +180,7 @@ void __stdcall SSWR::SHPConv::SHPConvMainForm::OnPreviewClicked(void *userObj)
 		if (!dbf.IsError())
 		{
 			sb.ClearStr();
-			me->txtLabel->GetText(&sb);
+			me->txtLabel->GetText(sb);
 			SSWR::SHPConv::SHPConvDBFViewForm frm(0, me->ui, &dbf, me, sb.ToCString());
 			frm.ShowDialog(me);
 		}
@@ -192,7 +192,7 @@ void __stdcall SSWR::SHPConv::SHPConvMainForm::OnConvertClicked(void *userObj)
 	SSWR::SHPConv::SHPConvMainForm *me = (SSWR::SHPConv::SHPConvMainForm*)userObj;
 	Text::StringBuilderUTF8 sb;
 	Int32 blkScale;
-	me->txtBlkScale->GetText(&sb);
+	me->txtBlkScale->GetText(sb);
 	if (!sb.ToInt32(&blkScale))
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Block scale is not integer"), CSTR("Error"), me);
@@ -209,10 +209,10 @@ void __stdcall SSWR::SHPConv::SHPConvMainForm::OnConvertClicked(void *userObj)
 	Data::ArrayList<const UTF8Char*> dbCols;
 	Data::ArrayList<UInt32> dbCols2;
 	sb.ClearStr();
-	me->txtLabel->GetText(&sb);
+	me->txtLabel->GetText(sb);
 	me->ParseLabelStr(sb.ToCString(), &dbCols, &dbCols2);
 	sb.ClearStr();
-	me->txtSource->GetText(&sb);
+	me->txtSource->GetText(sb);
 	NotNullPtr<Text::String> srcFile = Text::String::New(sb.ToString(), sb.GetLength());
 	sb.RemoveChars(4);
 	if (me->currGroup == (UOSInt)-1)
@@ -266,7 +266,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::GroupConvert(Text::CString sourceFile, Tex
 			while (r->ReadNext())
 			{
 				sb.ClearStr();
-				r->GetStr(groupCol, &sb);
+				r->GetStr(groupCol, sb);
 				si = names.SortedIndexOfC(sb.ToCString());
 				if (si < 0)
 				{

@@ -54,7 +54,7 @@ void __stdcall SSWR::AVIRead::AVIRRESTfulForm::OnStartClick(void *userObj)
 	UInt16 port = 0;
 	Bool valid = true;
 	Text::StringBuilderUTF8 sb;
-	me->txtPort->GetText(&sb);
+	me->txtPort->GetText(sb);
 	if (sb.ToUInt16(&port) && port > 0 && port <= 65535)
 	{
 		NEW_CLASS(me->restHdlr, Net::WebServer::RESTfulHandler(me->dbCache));
@@ -68,7 +68,7 @@ void __stdcall SSWR::AVIRead::AVIRRESTfulForm::OnStartClick(void *userObj)
 		else
 		{
 			sb.ClearStr();
-			me->txtLogDir->GetText(&sb);
+			me->txtLogDir->GetText(sb);
 			if (sb.GetEndPtr()[-1] != IO::Path::PATH_SEPERATOR)
 			{
 				sb.AppendUTF8Char(IO::Path::PATH_SEPERATOR);
@@ -174,7 +174,7 @@ void __stdcall SSWR::AVIRead::AVIRRESTfulForm::OnLogSel(void *userObj)
 void SSWR::AVIRead::AVIRRESTfulForm::InitDB()
 {
 	Text::StringBuilderUTF8 sb;
-	this->dbConn->GetConnName(&sb);
+	this->dbConn->GetConnName(sb);
 	NEW_CLASS(this->db, DB::DBTool(this->dbConn, false, this->log, CSTR("DB: ")));
 	NEW_CLASS(this->dbModel, DB::DBModel());
 	this->dbModel->LoadDatabase(this->db, CSTR_NULL, CSTR_NULL);

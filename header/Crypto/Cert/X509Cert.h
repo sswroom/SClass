@@ -14,21 +14,21 @@ namespace Crypto
 			X509Cert(Text::CString sourceName, Data::ByteArrayR buff);
 			virtual ~X509Cert();
 
-			Bool GetSubjectCN(Text::StringBuilderUTF8 *sb) const;
+			Bool GetSubjectCN(NotNullPtr<Text::StringBuilderUTF8> sb) const;
 			UTF8Char *GetSubjectCN(UTF8Char *sbuff) const;
-			Bool GetIssuerCN(Text::StringBuilderUTF8 *sb) const;
+			Bool GetIssuerCN(NotNullPtr<Text::StringBuilderUTF8> sb) const;
 			
 			virtual FileType GetFileType() const;
-			virtual void ToShortName(Text::StringBuilderUTF8 *sb) const;
+			virtual void ToShortName(NotNullPtr<Text::StringBuilderUTF8> sb) const;
 
 			virtual UOSInt GetCertCount();
-			virtual Bool GetCertName(UOSInt index, Text::StringBuilderUTF8 *sb);
+			virtual Bool GetCertName(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb);
 			virtual X509Cert *GetNewCert(UOSInt index);
 			virtual ValidStatus IsValid(Net::SSLEngine *ssl, Crypto::Cert::CertStore *trustStore) const;
 
 			virtual ASN1Data *Clone() const;
 			virtual X509Cert *CreateX509Cert() const;
-			virtual void ToString(Text::StringBuilderUTF8 *sb) const;
+			virtual void ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const;
 
 			Bool GetIssuerNames(CertNames *names) const;
 			Bool GetSubjNames(CertNames *names) const;

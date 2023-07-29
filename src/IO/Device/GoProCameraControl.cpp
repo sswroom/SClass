@@ -157,7 +157,7 @@ Bool IO::Device::GoProCameraControl::GetInfo(Data::ArrayListNN<Text::String> *na
 				{
 					nameList->Add(Text::String::New(UTF8STRC("Model Number")));
 					sb.ClearStr();
-					Text::SBAppendF64(&sb, modelNo);
+					sb.AppendDouble(modelNo);
 					valueList->Add(Text::String::New(sb.ToCString()));
 				}
 				jsBase2 = jsInfo->GetObjectValue(CSTR("firmware_version"));

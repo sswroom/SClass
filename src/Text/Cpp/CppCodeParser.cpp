@@ -376,7 +376,7 @@ Bool Text::Cpp::CppCodeParser::EvalSharpIfVal(Data::ArrayListNN<Text::String> *c
 		if (codePhases->GetCount() <= cpIndex || !codePhases->GetItem(cpIndex)->Equals(UTF8STRC("(")))
 		{
 			Text::StringBuilderUTF8 sb;
-			status->GetDefineVal(phase->ToCString(), CSTR_NULL, &sb);
+			status->GetDefineVal(phase->ToCString(), CSTR_NULL, sb);
 			phase->Release();
 			this->ParseSharpIfParam(sb.ToCString(), status, errMsgs, codePhases, cpIndex);
 			return this->EvalSharpIfVal(codePhases, status, errMsgs, cpIndex, outVal, priority);
@@ -423,7 +423,7 @@ Bool Text::Cpp::CppCodeParser::EvalSharpIfVal(Data::ArrayListNN<Text::String> *c
 			else
 			{
 				Text::StringBuilderUTF8 sb;
-				status->GetDefineVal(phase->ToCString(), params.ToCString(), &sb);
+				status->GetDefineVal(phase->ToCString(), params.ToCString(), sb);
 				phase->Release();
 				this->ParseSharpIfParam(sb.ToCString(), status, errMsgs, codePhases, cpIndex);
 				return this->EvalSharpIfVal(codePhases, status, errMsgs, cpIndex, outVal, priority);

@@ -9,7 +9,7 @@ void __stdcall SSWR::AVIRead::AVIRODBCStrForm::OnDriverSelChg(void *userObj)
 {
 	Text::StringBuilderUTF8 sb;
 	SSWR::AVIRead::AVIRODBCStrForm *me = (SSWR::AVIRead::AVIRODBCStrForm*)userObj;
-	me->cboDriver->GetText(&sb);
+	me->cboDriver->GetText(sb);
 	if (sb.GetCharCnt() > 0)
 	{
 		Text::StringBuilderUTF8 sb2;
@@ -24,7 +24,7 @@ void __stdcall SSWR::AVIRead::AVIRODBCStrForm::OnDriverInfoClicked(void *userObj
 {
 	Text::StringBuilderUTF8 sb;
 	SSWR::AVIRead::AVIRODBCStrForm *me = (SSWR::AVIRead::AVIRODBCStrForm*)userObj;
-	me->cboDriver->GetText(&sb);
+	me->cboDriver->GetText(sb);
 	if (sb.GetCharCnt() > 0)
 	{
 		IO::ConfigFile *driver = DB::ODBCConn::GetDriverInfo(sb.ToCString());
@@ -58,7 +58,7 @@ void __stdcall SSWR::AVIRead::AVIRODBCStrForm::OnOKClicked(void *userObj)
 {
 	Text::StringBuilderUTF8 sb;
 	SSWR::AVIRead::AVIRODBCStrForm *me = (SSWR::AVIRead::AVIRODBCStrForm*)userObj;
-	me->txtConnStr->GetText(&sb);
+	me->txtConnStr->GetText(sb);
 
 	DB::ODBCConn *conn;
 	NEW_CLASS(conn, DB::ODBCConn(sb.ToCString(), CSTR("ODBC"), me->core->GetLog()));
@@ -66,7 +66,7 @@ void __stdcall SSWR::AVIRead::AVIRODBCStrForm::OnOKClicked(void *userObj)
 	{
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("Error in opening ODBC connection\r\n"));
-		conn->GetLastErrorMsg(&sb);
+		conn->GetLastErrorMsg(sb);
 		UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("ODBC String Connection"), me);
 		DEL_CLASS(conn);
 		return;

@@ -85,7 +85,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	sb.AppendC(UTF8STRC(", seed = "));
 	sb.AppendU32(seed);
 	sb.AppendC(UTF8STRC(", time = "));
-	Text::SBAppendF64(&sb, t1);
+	sb.AppendDouble(t1);
 	sb.AppendC(UTF8STRC("s"));
 	console.WriteLineC(sb.ToString(), sb.GetLength());
 
@@ -151,7 +151,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		sb.AppendC(UTF8STRC(" Thread N = "));
 		sb.AppendUOSInt(NumberOfRec);
 		sb.AppendC(UTF8STRC(", Sort time = "));
-		Text::SBAppendF64(&sb, t1);
+		sb.AppendDouble(t1);
 		sb.AppendC(UTF8STRC("s"));
 		console.WriteStrC(sb.ToString(), sb.GetLength());
 		valid = true;
@@ -271,7 +271,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		sb.AppendC(UTF8STRC("BitonicSort 1 Thread N = "));
 		sb.AppendUOSInt(NumberOfRec);
 		sb.AppendC(UTF8STRC(", Sort time = "));
-		Text::SBAppendF64(&sb, t1);
+		sb.AppendDouble(t1);
 		sb.AppendC(UTF8STRC("s"));
 		console.WriteStrC(sb.ToString(), sb.GetLength());
 		valid = true;
@@ -313,7 +313,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		sb.AppendC(UTF8STRC(" Thread N = "));
 		sb.AppendUOSInt(NumberOfRec);
 		sb.AppendC(UTF8STRC(", Sort time = "));
-		Text::SBAppendF64(&sb, t1);
+		sb.AppendDouble(t1);
 		sb.AppendC(UTF8STRC("s"));
 		console.WriteStrC(sb.ToString(), sb.GetLength());
 		valid = true;
@@ -353,7 +353,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		sb.AppendC(UTF8STRC("BCountSort 1 Thread N = "));
 		sb.AppendUOSInt(NumberOfRec);
 		sb.AppendC(UTF8STRC(", Sort time = "));
-		Text::SBAppendF64(&sb, t1);
+		sb.AppendDouble(t1);
 		sb.AppendC(UTF8STRC("s"));
 		console.WriteStrC(sb.ToString(), sb.GetLength());
 		valid = true;

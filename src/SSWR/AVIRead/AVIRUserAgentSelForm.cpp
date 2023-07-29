@@ -54,7 +54,7 @@ void SSWR::AVIRead::AVIRUserAgentSelForm::UpdateUAList(Manage::OSInfo::OSType os
 				if (browser == Net::BrowserInfo::BT_UNKNOWN || browser == uaList[i].browser)
 				{
 					sb.ClearStr();
-					Manage::OSInfo::GetCommonName(&sb, uaList[i].os, {uaList[i].osVer, uaList[i].osVerLen});
+					Manage::OSInfo::GetCommonName(sb, uaList[i].os, {uaList[i].osVer, uaList[i].osVerLen});
 					k = this->lvUserAgent->AddItem(sb.ToCString(), &uaList[i]);
 					this->lvUserAgent->SetSubItem(k, 1, Net::BrowserInfo::GetName(uaList[i].browser));
 					if (uaList[i].browserVer)
@@ -155,7 +155,7 @@ SSWR::AVIRead::AVIRUserAgentSelForm::AVIRUserAgentSelForm(UI::GUIClientControl *
 	osItem->osVerLen = 0 ;
 	this->osList->Add(osItem);
 	sb.ClearStr();
-	Manage::OSInfo::GetCommonName(&sb, osItem->os, {osItem->osVer, osItem->osVerLen});
+	Manage::OSInfo::GetCommonName(sb, osItem->os, {osItem->osVer, osItem->osVerLen});
 	i = this->cboFilterOS->AddItem(sb.ToCString(), osItem);
 	this->cboFilterOS->SetSelectedIndex(i);
 	i = 0;
@@ -180,7 +180,7 @@ SSWR::AVIRead::AVIRUserAgentSelForm::AVIRUserAgentSelForm(UI::GUIClientControl *
 			osItem->osVerLen = 0;
 			this->osList->Add(osItem);
 			sb.ClearStr();
-			Manage::OSInfo::GetCommonName(&sb, osItem->os, {osItem->osVer, osItem->osVerLen});
+			Manage::OSInfo::GetCommonName(sb, osItem->os, {osItem->osVer, osItem->osVerLen});
 			this->cboFilterOS->AddItem(sb.ToCString(), osItem);
 		}
 
@@ -205,7 +205,7 @@ SSWR::AVIRead::AVIRUserAgentSelForm::AVIRUserAgentSelForm(UI::GUIClientControl *
 				osItem->osVerLen = uaList[i].osVerLen;
 				this->osList->Add(osItem);
 				sb.ClearStr();
-				Manage::OSInfo::GetCommonName(&sb, osItem->os, {osItem->osVer, osItem->osVerLen});
+				Manage::OSInfo::GetCommonName(sb, osItem->os, {osItem->osVer, osItem->osVerLen});
 				this->cboFilterOS->AddItem(sb.ToCString(), osItem);
 			}
 		}

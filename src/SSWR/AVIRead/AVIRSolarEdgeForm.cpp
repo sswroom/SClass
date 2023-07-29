@@ -23,7 +23,7 @@ void __stdcall SSWR::AVIRead::AVIRSolarEdgeForm::OnAPIKeyClicked(void *userObj)
 	else
 	{
 		Text::StringBuilderUTF8 sb;
-		me->txtAPIKey->GetText(&sb);
+		me->txtAPIKey->GetText(sb);
 		if (sb.GetLength() == 0)
 		{
 			UI::MessageDialog::ShowDialog(CSTR("Please enter API Key"), CSTR("SolarEdge API"), me);

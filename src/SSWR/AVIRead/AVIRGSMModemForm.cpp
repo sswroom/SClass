@@ -506,7 +506,7 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnATCommandClicked(void *userObj
 		return;
 	}
 	Text::StringBuilderUTF8 sb;
-	me->txtATCommand->GetText(&sb);
+	me->txtATCommand->GetText(sb);
 	if (sb.StartsWith(UTF8STRC("AT")))
 	{
 		Data::ArrayList<Text::String*> ret;
@@ -594,7 +594,7 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnPDPContextSetClicked(void *use
 	}
 	Text::StringBuilderUTF8 sb;
 	Text::StringBuilderUTF8 sb2;
-	me->txtPDPCID->GetText(&sb);
+	me->txtPDPCID->GetText(sb);
 	UInt32 cid;
 	if (!sb.ToUInt32(&cid))
 	{
@@ -602,13 +602,13 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnPDPContextSetClicked(void *use
 		return;
 	}
 	sb.ClearStr();
-	me->txtPDPType->GetText(&sb);
+	me->txtPDPType->GetText(sb);
 	if (!sb.Equals(UTF8STRC("IP")) && !sb.Equals(UTF8STRC("PPP")) && !sb.Equals(UTF8STRC("IPV6")) && !sb.Equals(UTF8STRC("IPV4V6")))
 	{
 		me->txtPDPContextStatus->SetText(CSTR("Type invalid"));
 		return;
 	}
-	me->txtPDPAPN->GetText(&sb2);
+	me->txtPDPAPN->GetText(sb2);
 	if (sb2.GetLength() > 99)
 	{
 		me->txtPDPContextStatus->SetText(CSTR("APN too long"));

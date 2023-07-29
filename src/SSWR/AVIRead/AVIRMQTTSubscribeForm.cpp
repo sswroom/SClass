@@ -28,7 +28,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnStartClicked(void *userOb
 		Text::StringBuilderUTF8 sb;
 		Net::SocketUtil::AddressInfo addr;
 		Int32 port;
-		me->txtPort->GetText(&sb);
+		me->txtPort->GetText(sb);
 		if (!sb.ToInt32(&port))
 		{
 			UI::MessageDialog::ShowDialog(CSTR("Port is not valid"), CSTR("Error"), me);
@@ -40,7 +40,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnStartClicked(void *userOb
 			return;
 		}
 		sb.ClearStr();
-		me->txtHost->GetText(&sb);
+		me->txtHost->GetText(sb);
 		if (!me->core->GetSocketFactory()->DNSResolveIP(sb.ToCString(), &addr))
 		{
 			UI::MessageDialog::ShowDialog(CSTR("Error in parsing host"), CSTR("Error"), me);
@@ -62,14 +62,14 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnStartClicked(void *userOb
 		Data::DateTime dt;
 		dt.SetCurrTimeUTC();
 		sb.ClearStr();
-		me->txtUsername->GetText(&sb);
+		me->txtUsername->GetText(sb);
 		if (sb.GetLength() > 0)
 		{
 			username.v = Text::StrCopyNewC(sb.ToString(), sb.GetLength()).Ptr();
 			username.leng = sb.GetLength();
 		}
 		sb.ClearStr();
-		me->txtPassword->GetText(&sb);
+		me->txtPassword->GetText(sb);
 		if (sb.GetLength() > 0)
 		{
 			password.v = Text::StrCopyNewC(sb.ToString(), sb.GetLength()).Ptr();
@@ -111,7 +111,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnSTopicClicked(void *userO
 	if (me->client)
 	{
 		Text::StringBuilderUTF8 sb;
-		me->txtSTopic->GetText(&sb);
+		me->txtSTopic->GetText(sb);
 		if (sb.GetLength() > 0)
 		{
 			if (me->client->SendSubscribe(1, sb.ToCString()))
@@ -151,8 +151,8 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnPublishClicked(void *user
 	{
 		Text::StringBuilderUTF8 sbTopic;
 		Text::StringBuilderUTF8 sbMsg;
-		me->txtPublishTopic->GetText(&sbTopic);
-		me->txtPublishMessage->GetText(&sbMsg);
+		me->txtPublishTopic->GetText(sbTopic);
+		me->txtPublishMessage->GetText(sbMsg);
 		if (sbTopic.GetLength() > 0 && sbMsg.GetLength() > 0)
 		{
 			if (me->client->SendPublish(sbTopic.ToCString(), sbMsg.ToCString()))

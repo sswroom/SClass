@@ -84,10 +84,10 @@ namespace Manage
 		Bool IsRunning() const;
 		Bool Kill();
 		WChar *GetFilename(WChar *buff);
-		Bool GetFilename(Text::StringBuilderUTF8 *sb);
-		Bool GetCommandLine(Text::StringBuilderUTF8 *sb);
-		Bool GetWorkingDir(Text::StringBuilderUTF8 *sb);
-		Bool GetTrueProgramPath(Text::StringBuilderUTF8 *sb);
+		Bool GetFilename(NotNullPtr<Text::StringBuilderUTF8> sb);
+		Bool GetCommandLine(NotNullPtr<Text::StringBuilderUTF8> sb);
+		Bool GetWorkingDir(NotNullPtr<Text::StringBuilderUTF8> sb);
+		Bool GetTrueProgramPath(NotNullPtr<Text::StringBuilderUTF8> sb);
 		UOSInt GetMemorySize();
 		Bool SetMemorySize(UOSInt minSize, UOSInt maxSize);
 		UOSInt GetThreadIds(Data::ArrayList<UInt32> *threadList);
@@ -99,7 +99,7 @@ namespace Manage
 		void FreeHeaps(Data::ArrayList<HeapInfo*> *heapList);
 		Data::Timestamp GetStartTime();
 		UOSInt GetHandles(Data::ArrayList<HandleInfo> *handleList);
-		Bool GetHandleDetail(Int32 id, HandleType *handleType, Text::StringBuilderUTF8 *sbDetail);
+		Bool GetHandleDetail(Int32 id, HandleType *handleType, NotNullPtr<Text::StringBuilderUTF8> sbDetail);
 
 		Bool GetWorkingSetSize(UOSInt *minSize, UOSInt *maxSize);
 		Bool GetMemoryInfo(UOSInt *pageFault, UOSInt *workingSetSize, UOSInt *pagedPoolUsage, UOSInt *nonPagedPoolUsage, UOSInt *pageFileUsage);
@@ -128,8 +128,8 @@ namespace Manage
 		static UTF8Char *FindProcessNext(UTF8Char *processNameBuff, FindProcSess *sess, ProcessInfo *info);
 		static WChar *FindProcessNextW(WChar *processNameBuff, FindProcSess *sess, ProcessInfo *info);
 		static void FindProcessClose(FindProcSess *sess);
-		static Int32 ExecuteProcess(Text::CString cmdLine, Text::StringBuilderUTF8 *result);
-		static Int32 ExecuteProcessW(const WChar *cmdLine, Text::StringBuilderUTF8 *result);
+		static Int32 ExecuteProcess(Text::CString cmdLine, NotNullPtr<Text::StringBuilderUTF8> result);
+		static Int32 ExecuteProcessW(const WChar *cmdLine, NotNullPtr<Text::StringBuilderUTF8> result);
 		static Bool IsAlreadyStarted();
 		static Bool OpenPath(Text::CString path);
 		static Bool OpenPathW(const WChar *path);

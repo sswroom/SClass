@@ -79,7 +79,7 @@ namespace Net
 
 		static void SearchResultsFree(Data::ArrayList<SearchResObject*> *results);
 		static void SearchResObjectFree(SearchResObject *obj);
-		static void SearchResDisplay(Text::CString type, Text::CString value, Text::StringBuilderUTF8 *sb);
+		static void SearchResDisplay(Text::CString type, Text::CString value, NotNullPtr<Text::StringBuilderUTF8> sb);
 	};
 }
 #endif

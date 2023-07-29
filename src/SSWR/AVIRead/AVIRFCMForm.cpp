@@ -9,9 +9,9 @@ void __stdcall SSWR::AVIRead::AVIRFCMForm::OnSendClicked(void *userObj)
 	Text::StringBuilderUTF8 sbAPIKey;
 	Text::StringBuilderUTF8 sbDeviceToken;
 	Text::StringBuilderUTF8 sbMessage;
-	me->txtAPIKey->GetText(&sbAPIKey);
-	me->txtDeviceToken->GetText(&sbDeviceToken);
-	me->txtMessage->GetText(&sbMessage);
+	me->txtAPIKey->GetText(sbAPIKey);
+	me->txtDeviceToken->GetText(sbDeviceToken);
+	me->txtMessage->GetText(sbMessage);
 	if (sbAPIKey.leng == 0)
 	{
 		me->txtStatus->SetText(CSTR("API Key is empty"));

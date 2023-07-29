@@ -23,12 +23,12 @@ Bool __stdcall Map::MapServerHandler::GetLayersFunc(Net::WebServer::IWebRequest 
 	j = me->layerMap.GetCount();
 	if (j > 0)
 	{
-		Text::JSText::ToJSTextDQuote(&sb, me->layerMap.GetKey(0)->v);
+		Text::JSText::ToJSTextDQuote(sb, me->layerMap.GetKey(0)->v);
 		i = 1;
 		while (i < j)
 		{
 			sb.AppendUTF8Char(',');
-			Text::JSText::ToJSTextDQuote(&sb, me->layerMap.GetKey(i)->v);
+			Text::JSText::ToJSTextDQuote(sb, me->layerMap.GetKey(i)->v);
 			i++;
 		}
 	}
@@ -202,12 +202,12 @@ Bool __stdcall Map::MapServerHandler::GetLayerDataFunc(Net::WebServer::IWebReque
 						if (k > 0)
 							sb.AppendUTF8Char(',');
 						sptr = layer->GetColumnName(sbuff, k);
-						Text::JSText::ToJSTextDQuote(&sb, sbuff);
+						Text::JSText::ToJSTextDQuote(sb, sbuff);
 						sb.AppendUTF8Char(':');
 						sptr = layer->GetString(sbuff, sizeof(sbuff), nameArr, objId, k);
 						if (sptr)
 						{
-							Text::JSText::ToJSTextDQuote(&sb, sbuff);
+							Text::JSText::ToJSTextDQuote(sb, sbuff);
 						}
 						else
 						{
@@ -221,7 +221,7 @@ Bool __stdcall Map::MapServerHandler::GetLayerDataFunc(Net::WebServer::IWebReque
 					{
 						vec->ConvCSys(csys, wgs84);
 					}
-					writer.ToGeometry(&sb, vec);
+					writer.ToGeometry(sb, vec);
 					SDEL_CLASS(vec);
 					sb.AppendUTF8Char('}');
 					i++;
@@ -331,12 +331,12 @@ Bool __stdcall Map::MapServerHandler::CesiumDataFunc(Net::WebServer::IWebRequest
 			}
 			else
 			{
-				me->CheckObject(obj, x1, y1, x2, y2, minErr, file, &sb);
+				me->CheckObject(obj, x1, y1, x2, y2, minErr, file, sb);
 			}
 		}
 	}
 	sb.ClearStr();
-	json->ToJSONString(&sb);
+	json->ToJSONString(sb);
 	json->EndUse();
 
 	Data::DateTime dt;
@@ -380,7 +380,7 @@ Bool __stdcall Map::MapServerHandler::CesiumB3DMFunc(Net::WebServer::IWebRequest
 	return Net::WebServer::HTTPServerUtil::ResponseFile(req, resp, sb.ToCString(), -2);
 }
 
-void Map::MapServerHandler::CheckObject(Text::JSONBase *obj, Double x1, Double y1, Double x2, Double y2, Double minErr, Text::String *fileName, Text::StringBuilderUTF8 *tmpSb)
+void Map::MapServerHandler::CheckObject(Text::JSONBase *obj, Double x1, Double y1, Double x2, Double y2, Double minErr, Text::String *fileName, NotNullPtr<Text::StringBuilderUTF8> tmpSb)
 {
 	if (obj->GetType() != Text::JSONType::Object)
 	{

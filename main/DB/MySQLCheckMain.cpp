@@ -133,7 +133,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			while (true)
 			{
 				i = Text::StrSplit(sarr, 2, sarr[1], ',');
-				mysql->RepairSchema(sarr[0], &sbMsg);
+				mysql->RepairSchema(sarr[0], sbMsg);
 				if (i != 2)
 				{
 					break;
@@ -142,7 +142,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			DEL_CLASS(mysql);
 
 			sb.ClearStr();
-			IO::Path::GetProcessFileName(&sb);
+			IO::Path::GetProcessFileName(sb);
 			sb.AppendC(UTF8STRC(".log"));
 			IO::LogTool *log;
 			NEW_CLASS(log, IO::LogTool());
@@ -162,7 +162,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			}
 			NEW_CLASS(msg, Net::Email::EmailMessage());
 			sb.ClearStr();
-			Net::Email::EmailMessage::GenerateMessageID(&sb, smtpFrom->ToCString());
+			Net::Email::EmailMessage::GenerateMessageID(sb, smtpFrom->ToCString());
 			msg->SetMessageId(sb.ToCString());
 			msg->SetFrom(CSTR_NULL, smtpFrom->ToCString());
 			msg->AddTo(CSTR_NULL, smtpTo->ToCString());

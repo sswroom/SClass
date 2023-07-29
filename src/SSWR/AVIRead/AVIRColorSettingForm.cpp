@@ -123,7 +123,7 @@ void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnOKClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRColorSettingForm *me = (SSWR::AVIRead::AVIRColorSettingForm*)userObj;
 	Text::StringBuilderUTF8 sb;
-	me->txtLuminance->GetText(&sb);
+	me->txtLuminance->GetText(sb);
 	Double val;
 	if (Text::StrToDouble(sb.ToString(), &val))
 	{

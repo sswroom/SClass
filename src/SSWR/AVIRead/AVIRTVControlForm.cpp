@@ -136,7 +136,7 @@ void __stdcall SSWR::AVIRead::AVIRTVControlForm::OnSendCommandClicked(void *user
 		{
 			Int32 val;
 			sb.ClearStr();
-			me->txtCommand->GetText(&sb);
+			me->txtCommand->GetText(sb);
 			if (sb.ToInt32(&val))
 			{
 				if (me->tvCtrl->SendSetCommand(cmdInfo->cmdType, val))

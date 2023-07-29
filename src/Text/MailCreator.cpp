@@ -12,7 +12,7 @@
 #include "Text/MIMEObj/TextMIMEObj.h"
 #include "Text/MIMEObj/UnknownMIMEObj.h"
 
-void Text::MailCreator::AppendStr(Text::StringBuilderUTF8 *sbc, Text::CString s)
+void Text::MailCreator::AppendStr(NotNullPtr<Text::StringBuilderUTF8> sbc, Text::CString s)
 {
 	const UTF8Char *sptr;
 	UTF8Char c;
@@ -46,7 +46,7 @@ void Text::MailCreator::AppendStr(Text::StringBuilderUTF8 *sbc, Text::CString s)
 	}
 }
 
-void Text::MailCreator::AppendStr(Text::StringBuilderUTF8 *sbc, const WChar *s)
+void Text::MailCreator::AppendStr(NotNullPtr<Text::StringBuilderUTF8> sbc, const WChar *s)
 {
 	const WChar *wptr;
 	WChar c;
@@ -216,8 +216,6 @@ Text::MailCreator::MailCreator()
 	this->replyTo = 0;
 	this->subject = 0;
 	this->content = 0;
-	NEW_CLASS(this->toVals, Text::StringBuilderUTF8());
-	NEW_CLASS(this->ccVals, Text::StringBuilderUTF8());
 }
 
 Text::MailCreator::~MailCreator()
@@ -229,8 +227,6 @@ Text::MailCreator::~MailCreator()
 	SDEL_STRING(this->replyTo);
 	SDEL_STRING(this->subject);
 	SDEL_CLASS(this->content);
-	DEL_CLASS(this->toVals);
-	DEL_CLASS(this->ccVals);
 	i = this->attachName.GetCount();
 	while (i-- > 0)
 	{
@@ -251,14 +247,14 @@ void Text::MailCreator::SetFrom(const WChar *name, const WChar *address)
 		Text::StringBuilderUTF8 sb;
 		if (name)
 		{
-			this->AppendStr(&sb, name);
+			this->AppendStr(sb, name);
 			sb.AppendC(UTF8STRC(" <"));
-			this->AppendStr(&sb, address);
+			this->AppendStr(sb, address);
 			sb.AppendC(UTF8STRC(">"));
 		}
 		else
 		{
-			this->AppendStr(&sb, address);
+			this->AppendStr(sb, address);
 		}
 		SDEL_STRING(this->from);
 		this->from = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
@@ -276,14 +272,14 @@ void Text::MailCreator::SetFrom(Text::CString name, Text::CString address)
 		Text::StringBuilderUTF8 sb;
 		if (name.leng != 0)
 		{
-			this->AppendStr(&sb, name);
+			this->AppendStr(sb, name);
 			sb.AppendC(UTF8STRC(" <"));
-			this->AppendStr(&sb, address);
+			this->AppendStr(sb, address);
 			sb.AppendC(UTF8STRC(">"));
 		}
 		else
 		{
-			this->AppendStr(&sb, address);
+			this->AppendStr(sb, address);
 		}
 		SDEL_STRING(this->from);
 		this->from = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
@@ -301,14 +297,14 @@ void Text::MailCreator::SetReplyTo(const WChar *name, const WChar *address)
 		Text::StringBuilderUTF8 sb;
 		if (name)
 		{
-			this->AppendStr(&sb, name);
+			this->AppendStr(sb, name);
 			sb.AppendC(UTF8STRC(" <"));
-			this->AppendStr(&sb, address);
+			this->AppendStr(sb, address);
 			sb.AppendC(UTF8STRC(">"));
 		}
 		else
 		{
-			this->AppendStr(&sb, address);
+			this->AppendStr(sb, address);
 		}
 		SDEL_STRING(this->replyTo);
 		this->replyTo = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
@@ -317,16 +313,16 @@ void Text::MailCreator::SetReplyTo(const WChar *name, const WChar *address)
 
 void Text::MailCreator::ToAdd(const WChar *name, const WChar *address)
 {
-	if (this->toVals->GetLength() > 0)
+	if (this->toVals.GetLength() > 0)
 	{
-		this->toVals->AppendC(UTF8STRC(", "));
+		this->toVals.AppendC(UTF8STRC(", "));
 	}
 	if (name)
 	{
 		this->AppendStr(this->toVals, name);
-		this->toVals->AppendC(UTF8STRC(" <"));
+		this->toVals.AppendC(UTF8STRC(" <"));
 		this->AppendStr(this->toVals, address);
-		this->toVals->AppendC(UTF8STRC(">"));
+		this->toVals.AppendC(UTF8STRC(">"));
 	}
 	else
 	{
@@ -336,16 +332,16 @@ void Text::MailCreator::ToAdd(const WChar *name, const WChar *address)
 
 void Text::MailCreator::ToAdd(Text::String *name, NotNullPtr<Text::String> address)
 {
-	if (this->toVals->GetLength() > 0)
+	if (this->toVals.GetLength() > 0)
 	{
-		this->toVals->AppendC(UTF8STRC(", "));
+		this->toVals.AppendC(UTF8STRC(", "));
 	}
 	if (name)
 	{
 		this->AppendStr(this->toVals, name->ToCString());
-		this->toVals->AppendC(UTF8STRC(" <"));
+		this->toVals.AppendC(UTF8STRC(" <"));
 		this->AppendStr(this->toVals, address->ToCString());
-		this->toVals->AppendC(UTF8STRC(">"));
+		this->toVals.AppendC(UTF8STRC(">"));
 	}
 	else
 	{
@@ -355,21 +351,21 @@ void Text::MailCreator::ToAdd(Text::String *name, NotNullPtr<Text::String> addre
 
 void Text::MailCreator::ToClear()
 {
-	this->toVals->ClearStr();
+	this->toVals.ClearStr();
 }
 
 void Text::MailCreator::CCAdd(const WChar *name, const WChar *address)
 {
-	if (this->ccVals->GetLength() > 0)
+	if (this->ccVals.GetLength() > 0)
 	{
-		this->ccVals->AppendC(UTF8STRC(", "));
+		this->ccVals.AppendC(UTF8STRC(", "));
 	}
 	if (name)
 	{
 		this->AppendStr(this->ccVals, name);
-		this->ccVals->AppendC(UTF8STRC(" <"));
+		this->ccVals.AppendC(UTF8STRC(" <"));
 		this->AppendStr(this->ccVals, address);
-		this->ccVals->AppendC(UTF8STRC(">"));
+		this->ccVals.AppendC(UTF8STRC(">"));
 	}
 	else
 	{
@@ -379,16 +375,16 @@ void Text::MailCreator::CCAdd(const WChar *name, const WChar *address)
 
 void Text::MailCreator::CCAdd(Text::String *name, NotNullPtr<Text::String> address)
 {
-	if (this->ccVals->GetLength() > 0)
+	if (this->ccVals.GetLength() > 0)
 	{
-		this->ccVals->AppendC(UTF8STRC(", "));
+		this->ccVals.AppendC(UTF8STRC(", "));
 	}
 	if (name)
 	{
 		this->AppendStr(this->ccVals, name->ToCString());
-		this->ccVals->AppendC(UTF8STRC(" <"));
+		this->ccVals.AppendC(UTF8STRC(" <"));
 		this->AppendStr(this->ccVals, address->ToCString());
-		this->ccVals->AppendC(UTF8STRC(">"));
+		this->ccVals.AppendC(UTF8STRC(">"));
 	}
 	else
 	{
@@ -398,13 +394,13 @@ void Text::MailCreator::CCAdd(Text::String *name, NotNullPtr<Text::String> addre
 
 void Text::MailCreator::CCClear()
 {
-	this->toVals->ClearStr();
+	this->toVals.ClearStr();
 }
 
 void Text::MailCreator::SetSubject(const WChar *subj)
 {
 	Text::StringBuilderUTF8 sb;
-	this->AppendStr(&sb, subj);
+	this->AppendStr(sb, subj);
 	SDEL_STRING(this->subject);
 	this->subject = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 }
@@ -412,7 +408,7 @@ void Text::MailCreator::SetSubject(const WChar *subj)
 void Text::MailCreator::SetSubject(NotNullPtr<Text::String> subj)
 {
 	Text::StringBuilderUTF8 sb;
-	this->AppendStr(&sb, subj->ToCString());
+	this->AppendStr(sb, subj->ToCString());
 	SDEL_STRING(this->subject);
 	this->subject = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 }
@@ -502,17 +498,17 @@ Text::MIMEObj::MailMessage *Text::MailCreator::CreateMail()
 	{
 		msg->AddHeader(UTF8STRC("From"), this->from->v, this->from->leng);
 	}
-	if (this->toVals->GetLength() > 0)
+	if (this->toVals.GetLength() > 0)
 	{
-		msg->AddHeader(UTF8STRC("To"), this->toVals->ToString(), this->toVals->GetLength());
+		msg->AddHeader(UTF8STRC("To"), this->toVals.ToString(), this->toVals.GetLength());
 	}
 	if (this->replyTo)
 	{
 		msg->AddHeader(UTF8STRC("Reply-To"), this->replyTo->v, this->replyTo->leng);
 	}
-	if (this->ccVals->GetLength() > 0)
+	if (this->ccVals.GetLength() > 0)
 	{
-		msg->AddHeader(UTF8STRC("CC"), this->ccVals->ToString(), this->ccVals->GetLength());
+		msg->AddHeader(UTF8STRC("CC"), this->ccVals.ToString(), this->ccVals.GetLength());
 	}
 	if (this->subject)
 	{
@@ -549,13 +545,13 @@ Text::MIMEObj::MailMessage *Text::MailCreator::CreateMail()
 			contType = obj->GetContentType();
 			sbc.AppendC(contType.v, contType.leng);
 			sbc.AppendC(UTF8STRC(";\r\n\tname=\""));
-			this->AppendStr(&sbc, fname->ToCString().Substring(l + 1));
+			this->AppendStr(sbc, fname->ToCString().Substring(l + 1));
 			sbc.AppendC(UTF8STRC("\""));
 			mpart->AddPartHeader(k, UTF8STRC("Content-Type"), sbc.ToString(), sbc.GetLength());
 			mpart->AddPartHeader(k, UTF8STRC("Content-Transfer-Encoding"), UTF8STRC("base64"));
 			sbc.ClearStr();
 			sbc.AppendC(UTF8STRC("attachment; \r\n\tfilename=\""));
-			this->AppendStr(&sbc, fname->ToCString().Substring(l + 1));
+			this->AppendStr(sbc, fname->ToCString().Substring(l + 1));
 			sbc.AppendC(UTF8STRC("\""));
 			mpart->AddPartHeader(k, UTF8STRC("Content-Disposition"), sbc.ToString(), sbc.GetLength());
 			i++;

@@ -89,7 +89,7 @@ void DB::SQLiteFile::ForceTz(Int8 tzQhr)
 	
 }
 
-void DB::SQLiteFile::GetConnName(Text::StringBuilderUTF8 *sb)
+void DB::SQLiteFile::GetConnName(NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	sb->AppendC(UTF8STRC("SQLite:"));
 	sb->Append(this->fileName);
@@ -173,7 +173,7 @@ void DB::SQLiteFile::CloseReader(DBReader *r)
 	DEL_CLASS(rdr);
 }
 
-void DB::SQLiteFile::GetLastErrorMsg(Text::StringBuilderUTF8 *str)
+void DB::SQLiteFile::GetLastErrorMsg(NotNullPtr<Text::StringBuilderUTF8> str)
 {
 	if (this->lastErrMsg)
 	{
@@ -231,7 +231,7 @@ UOSInt DB::SQLiteFile::QueryTableNames(Text::CString schemaName, Data::ArrayList
 		NotNullPtr<Text::String> name;
 		while (r->ReadNext())
 		{
-			name = r->GetNewStrBNN(0, &sb);
+			name = r->GetNewStrBNN(0, sb);
 			names->Add(name);
 		}
 		this->CloseReader(r);
@@ -480,12 +480,12 @@ Text::String *DB::SQLiteReader::GetNewStr(UOSInt colIndex)
 	if (colIndex >= this->colCnt)
 		return 0;
 	Text::StringBuilderUTF8 sb;
-	if (!this->GetStr(colIndex, &sb))
+	if (!this->GetStr(colIndex, sb))
 		return 0;
 	return Text::String::New(sb.ToCString()).Ptr();
 }
 
-Bool DB::SQLiteReader::GetStr(UOSInt colIndex, Text::StringBuilderUTF8 *sb)
+Bool DB::SQLiteReader::GetStr(UOSInt colIndex, NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	if (colIndex >= this->colCnt)
 		return false;
@@ -548,7 +548,7 @@ UTF8Char *DB::SQLiteReader::GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffS
 Data::Timestamp DB::SQLiteReader::GetTimestamp(UOSInt colIndex)
 {
 	Text::StringBuilderUTF8 sb;
-	if (!GetStr(colIndex, &sb))
+	if (!GetStr(colIndex, sb))
 		return Data::Timestamp(0);
 	return Data::Timestamp(sb.ToCString(), Data::DateTimeUtil::GetLocalTzQhr());
 }

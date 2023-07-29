@@ -188,7 +188,7 @@ void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnSANAddClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRCertUtilForm *me = (SSWR::AVIRead::AVIRCertUtilForm*)userObj;
 	Text::StringBuilderUTF8 sb;
-	me->txtSAN->GetText(&sb);
+	me->txtSAN->GetText(sb);
 	if (sb.GetLength() > 0)
 	{
 		me->sanList->Add(Text::String::New(sb.ToString(), sb.GetLength()));
@@ -246,7 +246,7 @@ void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnSelfSignedCertClicked(void *us
 	}
 	UOSInt validDays;
 	Text::StringBuilderUTF8 sb;
-	me->txtValidDays->GetText(&sb);
+	me->txtValidDays->GetText(sb);
 	if (!sb.ToUOSInt(&validDays))
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Valid days not valid"), CSTR("Cert Util"), me);
@@ -282,7 +282,7 @@ void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnSelfSignedCertClicked(void *us
 Bool SSWR::AVIRead::AVIRCertUtilForm::GetNames(Crypto::Cert::CertNames *names)
 {
 	Text::StringBuilderUTF8 sb;
-	this->txtCountryName->GetText(&sb);
+	this->txtCountryName->GetText(sb);
 	if (sb.GetLength() != 0)
 	{
 		if (sb.GetLength() != 2)
@@ -294,35 +294,35 @@ Bool SSWR::AVIRead::AVIRCertUtilForm::GetNames(Crypto::Cert::CertNames *names)
 		names->countryName = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 	}
 	sb.ClearStr();
-	this->txtStateOrProvinceName->GetText(&sb);
+	this->txtStateOrProvinceName->GetText(sb);
 	if (sb.GetLength() != 0)
 	{
 		SDEL_STRING(names->stateOrProvinceName);
 		names->stateOrProvinceName = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 	}
 	sb.ClearStr();
-	this->txtLocalityName->GetText(&sb);
+	this->txtLocalityName->GetText(sb);
 	if (sb.GetLength() != 0)
 	{
 		SDEL_STRING(names->localityName);
 		names->localityName = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 	}
 	sb.ClearStr();
-	this->txtOrganizationName->GetText(&sb);
+	this->txtOrganizationName->GetText(sb);
 	if (sb.GetLength() != 0)
 	{
 		SDEL_STRING(names->organizationName);
 		names->organizationName = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 	}
 	sb.ClearStr();
-	this->txtOrganizationUnitName->GetText(&sb);
+	this->txtOrganizationUnitName->GetText(sb);
 	if (sb.GetLength() != 0)
 	{
 		SDEL_STRING(names->organizationUnitName);
 		names->organizationUnitName = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 	}
 	sb.ClearStr();
-	this->txtCommonName->GetText(&sb);
+	this->txtCommonName->GetText(sb);
 	if (sb.GetLength() == 0)
 	{
 		UI::MessageDialog::ShowDialog(CSTR("CN cannot be null"), CSTR("Cert Util"), this);
@@ -332,7 +332,7 @@ Bool SSWR::AVIRead::AVIRCertUtilForm::GetNames(Crypto::Cert::CertNames *names)
 	names->commonName = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 
 	sb.ClearStr();
-	this->txtEmailAddress->GetText(&sb);
+	this->txtEmailAddress->GetText(sb);
 	if (sb.GetLength() != 0)
 	{
 		if (!Text::StringTool::IsEmailAddress(sb.ToString()))

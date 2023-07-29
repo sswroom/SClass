@@ -189,7 +189,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 					sb.AppendC(UTF8STRC(" / "));
 					sb.AppendU32(formats[i].frameRateDenorm);
 					sb.AppendC(UTF8STRC(" ("));
-					Text::SBAppendF64(&sb, formats[i].frameRateNorm / (Double)formats[i].frameRateDenorm);
+					sb.AppendDouble(formats[i].frameRateNorm / (Double)formats[i].frameRateDenorm);
 					sb.AppendC(UTF8STRC(")"));
 					console->WriteLineC(sb.ToString(), sb.GetLength());
 					thisSize = formats[i].info.dispSize.CalcArea();
@@ -281,7 +281,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 					sb.AppendC(UTF8STRC(" / "));
 					sb.AppendU32(frameRateDenorm);
 					sb.AppendC(UTF8STRC(" ("));
-					Text::SBAppendF64(&sb, frameRateNorm / (Double)frameRateDenorm);
+					sb.AppendDouble(frameRateNorm / (Double)frameRateDenorm);
 					sb.AppendC(UTF8STRC(")"));
 					console->WriteLineC(sb.ToString(), sb.GetLength());
 				}

@@ -29,8 +29,8 @@ void __stdcall SSWR::AVIRead::AVIRMySQLClientForm::OnStartClicked(void *userObj)
 	Text::StringBuilderUTF8 sbPwd;
 	Text::StringBuilderUTF8 sbDatabase;
 	Text::CString sDatabase;
-	me->txtHost->GetText(&sbUser);
-	me->txtPort->GetText(&sbPwd);
+	me->txtHost->GetText(sbUser);
+	me->txtPort->GetText(sbPwd);
 	if (sbUser.GetLength() == 0)
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Please enter the host"), CSTR("MySQL Client"), me);
@@ -57,9 +57,9 @@ void __stdcall SSWR::AVIRead::AVIRMySQLClientForm::OnStartClicked(void *userObj)
 	}
 	sbUser.ClearStr();
 	sbPwd.ClearStr();
-	me->txtUserName->GetText(&sbUser);
-	me->txtPassword->GetText(&sbPwd);
-	me->txtDatabase->GetText(&sbDatabase);
+	me->txtUserName->GetText(sbUser);
+	me->txtPassword->GetText(sbPwd);
+	me->txtDatabase->GetText(sbDatabase);
 	if (sbUser.GetLength() == 0)
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Please enter the user name"), CSTR("MySQL Client"), me);
@@ -87,7 +87,7 @@ void __stdcall SSWR::AVIRead::AVIRMySQLClientForm::OnStartClicked(void *userObj)
 	{
 		sbUser.ClearStr();
 		sbUser.AppendC(UTF8STRC("Error in connecting to server: "));
-		me->cli->GetLastErrorMsg(&sbUser);
+		me->cli->GetLastErrorMsg(sbUser);
 		DEL_CLASS(me->cli);
 		me->cli = 0;
 		UI::MessageDialog::ShowDialog(sbUser.ToCString(), CSTR("MySQL Client"), me);
@@ -110,7 +110,7 @@ void __stdcall SSWR::AVIRead::AVIRMySQLClientForm::OnQueryClicked(void *userObj)
 		return;
 	}
 	Text::StringBuilderUTF8 sb;
-	me->txtQuery->GetText(&sb);
+	me->txtQuery->GetText(sb);
 	if (sb.GetLength() == 0)
 	{
 		return;
@@ -124,7 +124,7 @@ void __stdcall SSWR::AVIRead::AVIRMySQLClientForm::OnQueryClicked(void *userObj)
 	else
 	{
 		sb.ClearStr();
-		me->cli->GetLastErrorMsg(&sb);
+		me->cli->GetLastErrorMsg(sb);
 		me->txtQueryStatus->SetText(sb.ToCString());
 	}
 }
@@ -159,7 +159,7 @@ void __stdcall SSWR::AVIRead::AVIRMySQLClientForm::OnTimerTick(void *userObj)
 		{
 			Text::StringBuilderUTF8 sb;
 			sb.AppendC(UTF8STRC("Disconnected: "));
-			me->cli->GetLastErrorMsg(&sb);
+			me->cli->GetLastErrorMsg(sb);
 			DEL_CLASS(me->cli);
 			me->cli = 0;
 			me->txtHost->SetReadOnly(false);
@@ -212,14 +212,14 @@ void SSWR::AVIRead::AVIRMySQLClientForm::UpdateResult(DB::DBReader *r)
 		{
 			i = 1;
 			sb.ClearStr();
-			r->GetStr(0, &sb);
+			r->GetStr(0, sb);
 			if (sb.GetLength() > colSize[0])
 				colSize[0] = sb.GetLength();
 			k = this->lvQueryResult->AddItem(sb.ToCString(), 0);
 			while (i < j)
 			{
 				sb.ClearStr();
-				r->GetStr(i, &sb);
+				r->GetStr(i, sb);
 				this->lvQueryResult->SetSubItem(k, i, sb.ToCString());
 
 				if (sb.GetLength() > colSize[i])

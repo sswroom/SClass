@@ -20,7 +20,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	NEW_CLASS(console, IO::ConsoleWriter());
 	NEW_CLASS(log, IO::LogTool());
 	sb.ClearStr();
-	DB::MongoDB::BuildURL(&sb, username, password, serverhost, serverport);
+	DB::MongoDB::BuildURL(sb, username, password, serverhost, serverport);
 	NEW_CLASS(mongoDB, DB::MongoDB(sb.ToCString(), database, log));
 	
 	Data::ArrayListNN<Text::String> tableList;
@@ -32,7 +32,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	{
 		console->WriteLineC(UTF8STRC("Error in getting Database List:"));
 		sb.ClearStr();
-		mongoDB->GetLastErrorMsg(&sb);
+		mongoDB->GetLastErrorMsg(sb);
 		console->WriteLineC(sb.ToString(), sb.GetLength());
 	}
 	else

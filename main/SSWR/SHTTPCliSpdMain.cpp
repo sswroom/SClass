@@ -81,32 +81,32 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("DNS Time = "));
-					Text::SBAppendF64(&sb, respTimeDNS);
+					sb.AppendDouble(respTimeDNS);
 					console->WriteLineC(sb.ToString(), sb.GetLength());
 
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("Conn Time = "));
-					Text::SBAppendF64(&sb, respTimeConn - respTimeDNS);
+					sb.AppendDouble(respTimeConn - respTimeDNS);
 					console->WriteLineC(sb.ToString(), sb.GetLength());
 
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("Request Time = "));
-					Text::SBAppendF64(&sb, respTimeReq - respTimeConn);
+					sb.AppendDouble(respTimeReq - respTimeConn);
 					console->WriteLineC(sb.ToString(), sb.GetLength());
 
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("Response Time = "));
-					Text::SBAppendF64(&sb, respTimeResp - respTimeReq);
+					sb.AppendDouble(respTimeResp - respTimeReq);
 					console->WriteLineC(sb.ToString(), sb.GetLength());
 
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("Download Time = "));
-					Text::SBAppendF64(&sb, respTimeTotal - respTimeResp);
+					sb.AppendDouble(respTimeTotal - respTimeResp);
 					console->WriteLineC(sb.ToString(), sb.GetLength());
 
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("Total Time = "));
-					Text::SBAppendF64(&sb, respTimeTotal);
+					sb.AppendDouble(respTimeTotal);
 					console->WriteLineC(sb.ToString(), sb.GetLength());
 				}
 			}

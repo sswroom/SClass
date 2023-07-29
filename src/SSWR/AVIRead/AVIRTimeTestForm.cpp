@@ -10,7 +10,7 @@ void __stdcall SSWR::AVIRead::AVIRTimeTestForm::OnSleepMSClicked(void *userObj)
 	Text::StringBuilderUTF8 sb;
 	UInt32 t;
 	Double tDiff;
-	me->txtSleepMS->GetText(&sb);
+	me->txtSleepMS->GetText(sb);
 	Manage::HiResClock clk;
 	if (sb.ToUInt32(&t))
 	{
@@ -18,7 +18,7 @@ void __stdcall SSWR::AVIRead::AVIRTimeTestForm::OnSleepMSClicked(void *userObj)
 		Sync::SimpleThread::Sleep(t);
 		tDiff = clk.GetTimeDiff();
 		sb.ClearStr();
-		Text::SBAppendF64(&sb, tDiff);
+		sb.AppendDouble(tDiff);
 		me->txtActualTime->SetText(sb.ToCString());
 	}
 	else
@@ -33,7 +33,7 @@ void __stdcall SSWR::AVIRead::AVIRTimeTestForm::OnSleepUSClicked(void *userObj)
 	Text::StringBuilderUTF8 sb;
 	UInt32 t;
 	Double tDiff;
-	me->txtSleepUS->GetText(&sb);
+	me->txtSleepUS->GetText(sb);
 	Manage::HiResClock clk;
 	if (sb.ToUInt32(&t))
 	{
@@ -41,7 +41,7 @@ void __stdcall SSWR::AVIRead::AVIRTimeTestForm::OnSleepUSClicked(void *userObj)
 		Sync::SimpleThread::Sleepus(t);
 		tDiff = clk.GetTimeDiff();
 		sb.ClearStr();
-		Text::SBAppendF64(&sb, tDiff);
+		sb.AppendDouble(tDiff);
 		me->txtActualTime->SetText(sb.ToCString());
 	}
 	else

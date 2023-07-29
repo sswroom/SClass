@@ -2,7 +2,7 @@
 #include "Net/Email/EmailTemplate.h"
 #include "Text/XML.h"
 
-Bool Net::Email::EmailTemplate::ParseTemplate(const UTF8Char *tpl, Text::StringBuilderUTF8 *sb, Data::StringUTF8Map<const UTF8Char *> *vars)
+Bool Net::Email::EmailTemplate::ParseTemplate(const UTF8Char *tpl, NotNullPtr<Text::StringBuilderUTF8> sb, Data::StringUTF8Map<const UTF8Char *> *vars)
 {
 	UOSInt i;
 	const UTF8Char *paramName;
@@ -156,7 +156,7 @@ const UTF8Char *Net::Email::EmailTemplate::GetSubject()
 	return this->sbSubj->ToString();
 }
 
-void Net::Email::EmailTemplate::GetContent(Text::StringBuilderUTF8 *sb)
+void Net::Email::EmailTemplate::GetContent(NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	if (this->itemTemplate == 0)
 	{

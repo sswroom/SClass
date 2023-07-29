@@ -78,7 +78,7 @@ namespace Net
 		Text::String *GetDocs() const;
 		Int32 GetTTL() const;
 
-		static void GetYoutubeURL(Text::CString channelId, Text::StringBuilderUTF8 *outURL);
+		static void GetYoutubeURL(Text::CString channelId, NotNullPtr<Text::StringBuilderUTF8> outURL);
 	};
 }
 #endif

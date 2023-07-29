@@ -243,7 +243,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 								else if (Text::StrEqualsICaseC(node1->name->v, node1->name->leng, UTF8STRC("NAME")))
 								{
 									Text::StringBuilderUTF8 sb;
-									node1->GetInnerText(&sb);
+									node1->GetInnerText(sb);
 									track->SetTrackName(sb.ToString());
 								}
 							}
@@ -452,7 +452,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 							if (lyr == 0)
 							{
 								Text::StringBuilderUTF8 sb;
-								reader.ReadNodeText(&sb);
+								reader.ReadNodeText(sb);
 								NEW_CLASS(lyr, Map::OruxDBLayer(fileName, sb.ToCString(), parsers));
 								if (lyr->IsError())
 								{
@@ -672,7 +672,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 											Text::String *txt = reader.GetNodeText();
 											nameList.Add(Text::StrCopyNewC(txt->v + 4, txt->leng - 4).Ptr());
 											sb.ClearStr();
-											reader.ReadNodeText(&sb);
+											reader.ReadNodeText(sb);
 											valList.Add(Text::StrCopyNewC(sb.ToString(), sb.GetLength()).Ptr());
 										}
 										else
@@ -742,7 +742,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 							if (reader.GetNodeText()->Equals(UTF8STRC("OSNAME")))
 							{
 								sb.ClearStr();
-								if (reader.ReadNodeText(&sb))
+								if (reader.ReadNodeText(sb))
 								{
 									sysInfo->SetOSName(sb.ToCString());
 								}
@@ -750,7 +750,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 							else if (reader.GetNodeText()->Equals(UTF8STRC("OSVER")))
 							{
 								sb.ClearStr();
-								if (reader.ReadNodeText(&sb))
+								if (reader.ReadNodeText(sb))
 								{
 									sysInfo->SetOSVer(sb.ToCString());
 								}
@@ -758,7 +758,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 							else if (reader.GetNodeText()->Equals(UTF8STRC("OSLANGUAGE")))
 							{
 								sb.ClearStr();
-								if (reader.ReadNodeText(&sb))
+								if (reader.ReadNodeText(sb))
 								{
 									sysInfo->SetOSLocale(Text::StrToUInt32(sb.ToString()));
 								}
@@ -766,7 +766,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 							else if (reader.GetNodeText()->Equals(UTF8STRC("ARCHITECTURE")))
 							{
 								sb.ClearStr();
-								if (reader.ReadNodeText(&sb))
+								if (reader.ReadNodeText(sb))
 								{
 									sysInfo->SetArchitecture(Text::StrToUInt32(sb.ToString()));
 								}
@@ -774,7 +774,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 							else if (reader.GetNodeText()->Equals(UTF8STRC("PRODUCTTYPE")))
 							{
 								sb.ClearStr();
-								if (reader.ReadNodeText(&sb))
+								if (reader.ReadNodeText(sb))
 								{
 									sysInfo->SetProductType(Text::StrToUInt32(sb.ToString()));
 								}
@@ -808,7 +808,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 										{
 											SDEL_TEXT(roleName);
 											sb.ClearStr();
-											if (reader.ReadNodeText(&sb))
+											if (reader.ReadNodeText(sb))
 											{
 												roleName = Text::StrCopyNewC(sb.ToString(), sb.GetLength()).Ptr();
 											}
@@ -817,7 +817,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 										{
 											SDEL_TEXT(roleData);
 											sb.ClearStr();
-											if (reader.ReadNodeText(&sb))
+											if (reader.ReadNodeText(sb))
 											{
 												roleData = Text::StrCopyNewC(sb.ToString(), sb.GetLength()).Ptr();
 											}
@@ -870,7 +870,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 										{
 											SDEL_TEXT(desc);
 											sb.ClearStr();
-											if (reader.ReadNodeText(&sb))
+											if (reader.ReadNodeText(sb))
 											{
 												desc = Text::StrCopyNewC(sb.ToString(), sb.GetLength()).Ptr();
 											}
@@ -879,7 +879,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 										{
 											SDEL_TEXT(hwId);
 											sb.ClearStr();
-											if (reader.ReadNodeText(&sb))
+											if (reader.ReadNodeText(sb))
 											{
 												hwId = Text::StrCopyNewC(sb.ToString(), sb.GetLength()).Ptr();
 											}
@@ -888,7 +888,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 										{
 											SDEL_TEXT(service);
 											sb.ClearStr();
-											if (reader.ReadNodeText(&sb))
+											if (reader.ReadNodeText(sb))
 											{
 												service = Text::StrCopyNewC(sb.ToString(), sb.GetLength()).Ptr();
 											}
@@ -897,7 +897,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 										{
 											SDEL_TEXT(driver);
 											sb.ClearStr();
-											if (reader.ReadNodeText(&sb))
+											if (reader.ReadNodeText(sb))
 											{
 												driver = Text::StrCopyNewC(sb.ToString(), sb.GetLength()).Ptr();
 											}
@@ -956,7 +956,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 										{
 											SDEL_TEXT(fileName);
 											sb.ClearStr();
-											if (reader.ReadNodeText(&sb))
+											if (reader.ReadNodeText(sb))
 											{
 												fileName = Text::StrCopyNewC(sb.ToString(), sb.GetLength()).Ptr();
 											}
@@ -964,7 +964,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 										else if (reader.GetNodeText()->Equals(UTF8STRC("FILESIZE")))
 										{
 											sb.ClearStr();
-											if (reader.ReadNodeText(&sb))
+											if (reader.ReadNodeText(sb))
 											{
 												fileSize = Text::StrToUInt64(sb.ToString());
 											}
@@ -973,7 +973,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 										{
 											SDEL_TEXT(createDate);
 											sb.ClearStr();
-											if (reader.ReadNodeText(&sb))
+											if (reader.ReadNodeText(sb))
 											{
 												createDate = Text::StrCopyNewC(sb.ToString(), sb.GetLength()).Ptr();
 											}
@@ -982,7 +982,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 										{
 											SDEL_TEXT(version);
 											sb.ClearStr();
-											if (reader.ReadNodeText(&sb))
+											if (reader.ReadNodeText(sb))
 											{
 												version = Text::StrCopyNewC(sb.ToString(), sb.GetLength()).Ptr();
 											}
@@ -991,7 +991,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 										{
 											SDEL_TEXT(manufacturer);
 											sb.ClearStr();
-											if (reader.ReadNodeText(&sb))
+											if (reader.ReadNodeText(sb))
 											{
 												manufacturer = Text::StrCopyNewC(sb.ToString(), sb.GetLength()).Ptr();
 											}
@@ -1000,7 +1000,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 										{
 											SDEL_TEXT(productName);
 											sb.ClearStr();
-											if (reader.ReadNodeText(&sb))
+											if (reader.ReadNodeText(sb))
 											{
 												productName = Text::StrCopyNewC(sb.ToString(), sb.GetLength()).Ptr();
 											}
@@ -1009,7 +1009,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 										{
 											SDEL_TEXT(group);
 											sb.ClearStr();
-											if (reader.ReadNodeText(&sb))
+											if (reader.ReadNodeText(sb))
 											{
 												group = Text::StrCopyNewC(sb.ToString(), sb.GetLength()).Ptr();
 											}
@@ -1017,7 +1017,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 										else if (reader.GetNodeText()->Equals(UTF8STRC("ALTITUDE")))
 										{
 											sb.ClearStr();
-											if (reader.ReadNodeText(&sb))
+											if (reader.ReadNodeText(sb))
 											{
 												altitude = Text::StrToUInt32(sb.ToString());
 											}
@@ -1101,13 +1101,13 @@ Bool Parser::FileParser::XMLParser::ParseGPXPoint(Text::XMLReader *reader, Map::
 		{
 			if (reader->GetNodeText()->EqualsICase(UTF8STRC("ELE")))
 			{
-				reader->ReadNodeText(&sb);
+				reader->ReadNodeText(sb);
 				rec->altitude = Text::StrToDouble(sb.ToString());
 				sb.ClearStr();
 			}
 			else if (reader->GetNodeText()->EqualsICase(UTF8STRC("TIME")))
 			{
-				reader->ReadNodeText(&sb);
+				reader->ReadNodeText(sb);
 				Data::DateTime dt;
 				dt.SetValue(sb.ToCString());
 				sb.ClearStr();
@@ -1115,7 +1115,7 @@ Bool Parser::FileParser::XMLParser::ParseGPXPoint(Text::XMLReader *reader, Map::
 			}
 			else if (reader->GetNodeText()->EqualsICase(UTF8STRC("SPEED")))
 			{
-				reader->ReadNodeText(&sb);
+				reader->ReadNodeText(sb);
 				rec->speed = Text::StrToDouble(sb.ToString()) * 3.6 / 1.852;
 				sb.ClearStr();
 			}

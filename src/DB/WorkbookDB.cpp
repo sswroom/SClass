@@ -79,7 +79,7 @@ public:
 		return Text::StrUTF8_WChar(buff, cell->cellValue->v, 0);
 	}
 
-	virtual Bool GetStr(UOSInt colIndex, Text::StringBuilderUTF8 *sb)
+	virtual Bool GetStr(UOSInt colIndex, NotNullPtr<Text::StringBuilderUTF8> sb)
 	{
 		const Text::SpreadSheet::Worksheet::CellData *cell = this->sheet->GetCellDataRead(this->currIndex, colIndex);
 		if (cell == 0 || cell->cellValue == 0)
@@ -305,7 +305,7 @@ void DB::WorkbookDB::CloseReader(DBReader *r)
 	DEL_CLASS(reader);
 }
 
-void DB::WorkbookDB::GetLastErrorMsg(Text::StringBuilderUTF8 *str)
+void DB::WorkbookDB::GetLastErrorMsg(NotNullPtr<Text::StringBuilderUTF8> str)
 {
 
 }

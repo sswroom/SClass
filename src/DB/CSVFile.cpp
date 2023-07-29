@@ -142,7 +142,7 @@ void DB::CSVFile::CloseReader(DBReader *r)
 	DEL_CLASS(rdr);
 }
 
-void DB::CSVFile::GetLastErrorMsg(Text::StringBuilderUTF8 *str)
+void DB::CSVFile::GetLastErrorMsg(NotNullPtr<Text::StringBuilderUTF8> str)
 {
 }
 
@@ -482,7 +482,7 @@ WChar *DB::CSVReader::GetStr(UOSInt colIndex, WChar *buff)
 	}
 }
 
-Bool DB::CSVReader::GetStr(UOSInt colIndex, Text::StringBuilderUTF8 *sb)
+Bool DB::CSVReader::GetStr(UOSInt colIndex, NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	if (colIndex >= nCol)
 		return false;

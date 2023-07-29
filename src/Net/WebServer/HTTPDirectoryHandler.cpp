@@ -1327,7 +1327,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(Net::WebServer::IWebReq
 		Bool partial = false;
 		sizeLeft = fs.GetLength();
 		sb2.ClearStr();
-		if (req->GetHeaderC(&sb2, CSTR("Range")))
+		if (req->GetHeaderC(sb2, CSTR("Range")))
 		{
 			UInt64 fileSize = sizeLeft;
 			if (!sb2.StartsWith(UTF8STRC("bytes=")))

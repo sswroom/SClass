@@ -1221,7 +1221,7 @@ void Net::PacketAnalyzerBluetooth::AddScanInterval(IO::FileAnalyse::FrameDetailH
 	Text::StringBuilderUTF8 sb;
 	sb.AppendU16(scanInt);
 	sb.AppendC(UTF8STRC(" ("));
-	Text::SBAppendF64(&sb, 0.625 * scanInt);
+	sb.AppendDouble(0.625 * scanInt);
 	sb.AppendC(UTF8STRC("ms)"));
 	frame->AddField(frameOfst, 2, CSTR("Scan Interval"), sb.ToCString());
 }
@@ -1231,7 +1231,7 @@ void Net::PacketAnalyzerBluetooth::AddScanWindow(IO::FileAnalyse::FrameDetailHan
 	Text::StringBuilderUTF8 sb;
 	sb.AppendU16(scanWind);
 	sb.AppendC(UTF8STRC(" ("));
-	Text::SBAppendF64(&sb, 0.625 * scanWind);
+	sb.AppendDouble(0.625 * scanWind);
 	sb.AppendC(UTF8STRC("ms)"));
 	frame->AddField(frameOfst, 2, CSTR("Scan Window"), sb.ToCString());
 }
@@ -1981,7 +1981,7 @@ void Net::PacketAnalyzerBluetooth::AddUnknown(IO::FileAnalyse::FrameDetailHandle
 	frame->AddHexBuff(frameOfst, (UInt32)packetSize, CSTR("Unknown"), packet, true);
 }
 
-Bool Net::PacketAnalyzerBluetooth::PacketGetName(const UInt8 *packet, UOSInt packetSize, Text::StringBuilderUTF8 *sb)
+Bool Net::PacketAnalyzerBluetooth::PacketGetName(const UInt8 *packet, UOSInt packetSize, NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	UInt8 mac[6];
 	Text::CString name;
@@ -2092,7 +2092,7 @@ Bool Net::PacketAnalyzerBluetooth::PacketGetName(const UInt8 *packet, UOSInt pac
 	}
 }
 
-void Net::PacketAnalyzerBluetooth::PacketGetDetail(const UInt8 *packet, UOSInt packetSize, Text::StringBuilderUTF8 *sb)
+void Net::PacketAnalyzerBluetooth::PacketGetDetail(const UInt8 *packet, UOSInt packetSize, NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	IO::FileAnalyse::SBFrameDetail frame(sb);
 	PacketGetDetail(packet, packetSize, 0, &frame);

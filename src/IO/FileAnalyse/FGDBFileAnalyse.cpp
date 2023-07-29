@@ -128,7 +128,7 @@ UOSInt IO::FileAnalyse::FGDBFileAnalyse::GetFrameCount()
 	return this->tags.GetCount();
 }
 
-Bool IO::FileAnalyse::FGDBFileAnalyse::GetFrameName(UOSInt index, Text::StringBuilderUTF8 *sb)
+Bool IO::FileAnalyse::FGDBFileAnalyse::GetFrameName(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	IO::FileAnalyse::FGDBFileAnalyse::TagInfo *tag = this->tags.GetItem(index);
 	if (tag == 0)
@@ -273,7 +273,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::FGDBFileAnalyse::GetFrameDetail(U
 					if (csys)
 					{
 						Text::StringBuilderUTF8 sb;
-						csys->ToString(&sb);
+						csys->ToString(sb);
 						frame->AddField(ofst + 2, srsLen, CSTR("Coordinate System"), sb.ToCString());
 						DEL_CLASS(csys);
 					}

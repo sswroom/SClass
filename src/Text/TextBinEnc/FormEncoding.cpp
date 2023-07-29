@@ -22,7 +22,7 @@ UInt8 Text::TextBinEnc::FormEncoding::URIAllow[] = {
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
-void Text::TextBinEnc::FormEncoding::FormEncode(Text::StringBuilderUTF8 *sb, const UTF8Char *uri, UOSInt uriLen)
+void Text::TextBinEnc::FormEncoding::FormEncode(NotNullPtr<Text::StringBuilderUTF8> sb, const UTF8Char *uri, UOSInt uriLen)
 {
 	UInt8 b;
 	while (uriLen-- > 0)
@@ -161,7 +161,7 @@ Text::TextBinEnc::FormEncoding::~FormEncoding()
 {
 }
 
-UOSInt Text::TextBinEnc::FormEncoding::EncodeBin(Text::StringBuilderUTF8 *sb, const UInt8 *dataBuff, UOSInt buffSize)
+UOSInt Text::TextBinEnc::FormEncoding::EncodeBin(NotNullPtr<Text::StringBuilderUTF8> sb, const UInt8 *dataBuff, UOSInt buffSize)
 {
 	UOSInt initLen = sb->GetCharCnt();
 	FormEncode(sb, dataBuff, buffSize);

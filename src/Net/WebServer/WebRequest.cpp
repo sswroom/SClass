@@ -386,7 +386,7 @@ UTF8Char *Net::WebServer::WebRequest::GetHeader(UTF8Char *sbuff, Text::CString n
 	}
 }
 
-Bool Net::WebServer::WebRequest::GetHeaderC(Text::StringBuilderUTF8 *sb, Text::CString name)
+Bool Net::WebServer::WebRequest::GetHeaderC(NotNullPtr<Text::StringBuilderUTF8> sb, Text::CString name)
 {
 	Text::String *hdr = this->headers.GetC(name);
 	if (hdr == 0)
@@ -469,7 +469,7 @@ void Net::WebServer::WebRequest::ParseHTTPForm()
 	}
 
 	Text::StringBuilderUTF8 sb;
-	if (this->GetHeaderC(&sb, CSTR("Content-Type")))
+	if (this->GetHeaderC(sb, CSTR("Content-Type")))
 	{
 		if (sb.Equals(UTF8STRC("application/x-www-form-urlencoded")))
 		{
@@ -575,7 +575,7 @@ const UInt8 *Net::WebServer::WebRequest::GetHTTPFormFile(Text::CString formName,
 	return 0;
 }
 
-void Net::WebServer::WebRequest::GetRequestURLBase(Text::StringBuilderUTF8 *sb)
+void Net::WebServer::WebRequest::GetRequestURLBase(NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	UInt16 defPort;
 	Text::String *s;

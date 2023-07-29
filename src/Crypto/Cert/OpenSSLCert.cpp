@@ -89,7 +89,7 @@ Crypto::Cert::X509Cert *Crypto::Cert::OpenSSLCert::CreateX509Cert() const
 	return (Crypto::Cert::X509Cert*)pobjCert;
 }
 
-void Crypto::Cert::OpenSSLCert::ToString(Text::StringBuilderUTF8 *sb) const
+void Crypto::Cert::OpenSSLCert::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
 {
 	/////////////////////////////
 	Crypto::Cert::X509Cert *cert = this->CreateX509Cert();

@@ -82,7 +82,7 @@ namespace Net
 		Net::SSLEngine *ssl;
 		NotNullPtr<Text::String> apikey;
 
-		void BuildURL(Text::StringBuilderUTF8 *sb, Text::CString path);
+		void BuildURL(NotNullPtr<Text::StringBuilderUTF8> sb, Text::CString path);
 		Text::JSONBase *GetJSON(Text::CString url);
 	public:
 		SolarEdgeAPI(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::CString apikey);
@@ -96,7 +96,7 @@ namespace Net
 		Bool GetSiteEnergy(Int32 siteId, Data::Timestamp startTime, Data::Timestamp endTime, TimeUnit timeUnit, Data::ArrayList<TimedValue> *values);
 		Bool GetSitePower(Int32 siteId, Data::Timestamp startTime, Data::Timestamp endTime, Data::ArrayList<TimedValue> *values);
 
-		static void AppendFormDate(Text::StringBuilderUTF8 *sb, Data::Timestamp ts, Bool hasTime);
+		static void AppendFormDate(NotNullPtr<Text::StringBuilderUTF8> sb, Data::Timestamp ts, Bool hasTime);
 		static Text::CString TimeUnitGetName(TimeUnit timeUnit);
 	};
 }

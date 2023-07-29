@@ -8,7 +8,7 @@ void __stdcall SSWR::AVIRead::AVIRJSTextForm::OnExtractClicked(void *userObj)
 	SSWR::AVIRead::AVIRJSTextForm *me = (SSWR::AVIRead::AVIRJSTextForm*)userObj;
 	Text::StringBuilderUTF8 sb;
 	Text::String *s;
-	me->txtJSText->GetText(&sb);
+	me->txtJSText->GetText(sb);
 	s = Text::JSText::FromNewJSText(sb.ToString());
 	if (s)
 	{

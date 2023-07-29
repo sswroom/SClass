@@ -52,7 +52,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		sb.AppendC(UTF8STRC("CPU Temp "));
 		sb.AppendUOSInt(i);
 		sb.AppendC(UTF8STRC(" = "));
-		Text::SBAppendF64(&sb, temp);
+		sb.AppendDouble(temp);
 		console.WriteLineC(sb.ToString(), sb.GetLength());
 		i++;
 	}

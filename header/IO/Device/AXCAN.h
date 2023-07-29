@@ -57,7 +57,7 @@ namespace IO
 			void CloseSerialPort(Bool force);
 
 			virtual void CANStop();
-			virtual void ToString(Text::StringBuilderUTF8 *sb) const;
+			virtual void ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const;
 
 			void ParseReader(IO::Reader *reader);
 		};

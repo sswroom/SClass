@@ -9,7 +9,7 @@
 
 UI::GUIDragDataGTK *GUIDragDataGTK_currData = 0;
 
-void GUIDragDataGTK_AppendWC(Text::StringBuilderUTF8 *sb, const UTF16Char *s, UOSInt slen)
+void GUIDragDataGTK_AppendWC(NotNullPtr<Text::StringBuilderUTF8> sb, const UTF16Char *s, UOSInt slen)
 {
 	NotNullPtr<Text::String> str = Text::String::New(s, slen);
 	sb->Append(str);
@@ -93,7 +93,7 @@ const UTF8Char *UI::GUIDragDataGTK::GetName(UOSInt index)
 	return this->targetMap->GetKey(index);
 }
 
-Bool UI::GUIDragDataGTK::GetDataText(const UTF8Char *name, Text::StringBuilderUTF8 *sb)
+Bool UI::GUIDragDataGTK::GetDataText(const UTF8Char *name, NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	OSInt fmt = this->targetMap->Get(name);
 	if (fmt == 0)
@@ -154,39 +154,39 @@ void UI::GUIDragDataGTK::OnDataReceived(void *selData)
 		}
 		else if (Text::StrEquals(csptr, "text/html"))
 		{
-			GUIDragDataGTK_AppendWC(&sb, (const UTF16Char*)data, dataSize / 2);
+			GUIDragDataGTK_AppendWC(sb, (const UTF16Char*)data, dataSize / 2);
 		}
 		else if (Text::StrEquals(csptr, "text/unicode"))
 		{
-			GUIDragDataGTK_AppendWC(&sb, (const UTF16Char*)data, dataSize / 2);
+			GUIDragDataGTK_AppendWC(sb, (const UTF16Char*)data, dataSize / 2);
 		}
 		else if (Text::StrEquals(csptr, "text/x-moz-url"))
 		{
-			GUIDragDataGTK_AppendWC(&sb, (const UTF16Char*)data, dataSize / 2);
+			GUIDragDataGTK_AppendWC(sb, (const UTF16Char*)data, dataSize / 2);
 		}
 		else if (Text::StrEquals(csptr, "text/x-moz-url-data"))
 		{
-			GUIDragDataGTK_AppendWC(&sb, (const UTF16Char*)data, dataSize / 2);
+			GUIDragDataGTK_AppendWC(sb, (const UTF16Char*)data, dataSize / 2);
 		}
 		else if (Text::StrEquals(csptr, "text/x-moz-url-desc"))
 		{
-			GUIDragDataGTK_AppendWC(&sb, (const UTF16Char*)data, dataSize / 2);
+			GUIDragDataGTK_AppendWC(sb, (const UTF16Char*)data, dataSize / 2);
 		}
 		else if (Text::StrEquals(csptr, "text/_moz_htmlcontext"))
 		{
-			GUIDragDataGTK_AppendWC(&sb, (const UTF16Char*)data, dataSize / 2);
+			GUIDragDataGTK_AppendWC(sb, (const UTF16Char*)data, dataSize / 2);
 		}
 		else if (Text::StrEquals(csptr, "text/_moz_htmlinfo"))
 		{
-			GUIDragDataGTK_AppendWC(&sb, (const UTF16Char*)data, dataSize / 2);
+			GUIDragDataGTK_AppendWC(sb, (const UTF16Char*)data, dataSize / 2);
 		}
 		else if (Text::StrEquals(csptr, "application/x-moz-file-promise-url"))
 		{
-			GUIDragDataGTK_AppendWC(&sb, (const UTF16Char*)data, dataSize / 2);
+			GUIDragDataGTK_AppendWC(sb, (const UTF16Char*)data, dataSize / 2);
 		}
 		else if (Text::StrEquals(csptr, "application/x-moz-file-promise-dest-filename"))
 		{
-			GUIDragDataGTK_AppendWC(&sb, (const UTF16Char*)data, dataSize / 2);
+			GUIDragDataGTK_AppendWC(sb, (const UTF16Char*)data, dataSize / 2);
 		}
 		else if (Text::StrEquals(csptr, "application/x-moz-custom-clipdata"))
 		{

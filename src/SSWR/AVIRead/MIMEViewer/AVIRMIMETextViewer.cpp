@@ -6,7 +6,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMIMETextViewer::AVIRMIMETextViewer(SSWR::AVIRead:
 	this->txt = txt;
 
 	Text::StringBuilderUTF8 sb;
-	txt->GetText(&sb);
+	txt->GetText(sb);
 	NEW_CLASS(this->txtContent, UI::GUITextBox(ui, ctrl, sb.ToCString(), true));
 	this->txtContent->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->txtContent->SetReadOnly(true);

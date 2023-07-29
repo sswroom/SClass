@@ -7,7 +7,7 @@ void __stdcall SSWR::OrganMgr::OrganImageDetailForm::OnOKClicked(void *userObj)
 {
 	OrganImageDetailForm *me = (OrganImageDetailForm *)userObj;
 	Text::StringBuilderUTF8 sb;
-	me->txtDescript->GetText(&sb);
+	me->txtDescript->GetText(sb);
 	SDEL_TEXT(me->descript);
 	me->descript = Text::StrCopyNew(sb.ToString()).Ptr();
 	me->SetDialogResult(UI::GUIForm::DR_OK);

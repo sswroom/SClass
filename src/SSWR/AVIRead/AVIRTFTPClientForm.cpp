@@ -14,7 +14,7 @@ void __stdcall SSWR::AVIRead::AVIRTFTPClientForm::OnRecvClick(void *userObj)
 	Net::SocketUtil::AddressInfo addr;
 	UInt16 port;
 	Text::StringBuilderUTF8 sb;
-	me->txtHost->GetText(&sb);
+	me->txtHost->GetText(sb);
 	if (!me->core->GetSocketFactory()->DNSResolveIP(sb.ToCString(), &addr))
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Unknown Host"), CSTR("TFTP Client"), me);
@@ -22,7 +22,7 @@ void __stdcall SSWR::AVIRead::AVIRTFTPClientForm::OnRecvClick(void *userObj)
 		return;
 	}
 	sb.ClearStr();
-	me->txtPort->GetText(&sb);
+	me->txtPort->GetText(sb);
 	if (!sb.ToUInt16(&port))
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Port is not valid"), CSTR("TFTP Client"), me);
@@ -30,7 +30,7 @@ void __stdcall SSWR::AVIRead::AVIRTFTPClientForm::OnRecvClick(void *userObj)
 		return;
 	}
 	sb.ClearStr();
-	me->txtFileName->GetText(&sb);
+	me->txtFileName->GetText(sb);
 	if (sb.GetLength() <= 0)
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Please enter file name"), CSTR("TFTP Client"), me);
@@ -95,7 +95,7 @@ void __stdcall SSWR::AVIRead::AVIRTFTPClientForm::OnSendClick(void *userObj)
 	Net::SocketUtil::AddressInfo addr;
 	UInt16 port;
 	Text::StringBuilderUTF8 sb;
-	me->txtHost->GetText(&sb);
+	me->txtHost->GetText(sb);
 	if (!me->core->GetSocketFactory()->DNSResolveIP(sb.ToCString(), &addr))
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Unknown Host"), CSTR("TFTP Client"), me);
@@ -103,7 +103,7 @@ void __stdcall SSWR::AVIRead::AVIRTFTPClientForm::OnSendClick(void *userObj)
 		return;
 	}
 	sb.ClearStr();
-	me->txtPort->GetText(&sb);
+	me->txtPort->GetText(sb);
 	if (!sb.ToUInt16(&port))
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Port is not valid"), CSTR("TFTP Client"), me);

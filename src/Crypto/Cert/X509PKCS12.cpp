@@ -22,7 +22,7 @@ Crypto::Cert::X509File::FileType Crypto::Cert::X509PKCS12::GetFileType() const
 	return FileType::PKCS12;
 }
 
-void Crypto::Cert::X509PKCS12::ToShortName(Text::StringBuilderUTF8 *sb) const
+void Crypto::Cert::X509PKCS12::ToShortName(NotNullPtr<Text::StringBuilderUTF8> sb) const
 {
 /*	UOSInt len = 0;
 	Net::ASN1Util::ItemType itemType = Net::ASN1Util::IT_UNKNOWN;
@@ -38,7 +38,7 @@ UOSInt Crypto::Cert::X509PKCS12::GetCertCount()
 	return 0;
 }
 
-Bool Crypto::Cert::X509PKCS12::GetCertName(UOSInt index, Text::StringBuilderUTF8 *sb)
+Bool Crypto::Cert::X509PKCS12::GetCertName(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	return false;
 }
@@ -60,7 +60,7 @@ Net::ASN1Data *Crypto::Cert::X509PKCS12::Clone() const
 	return asn1;
 }
 
-void Crypto::Cert::X509PKCS12::ToString(Text::StringBuilderUTF8 *sb) const
+void Crypto::Cert::X509PKCS12::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
 {
 	if (IsPFX(this->buff.Ptr(), this->buff.PtrEnd(), "1"))
 	{

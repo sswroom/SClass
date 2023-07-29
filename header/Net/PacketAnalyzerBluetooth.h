@@ -39,8 +39,8 @@ namespace Net
 		static void AddPeriodicAdv(IO::FileAnalyse::FrameDetailHandler *frame, UInt32 frameOfst, UInt16 interval);
 		static void AddUnknown(IO::FileAnalyse::FrameDetailHandler *frame, UInt32 frameOfst, const UInt8 *packet, UOSInt packetSize);
 
-		static Bool PacketGetName(const UInt8 *packet, UOSInt packetSize, Text::StringBuilderUTF8 *sb);
-		static void PacketGetDetail(const UInt8 *packet, UOSInt packetSize, Text::StringBuilderUTF8 *sb);
+		static Bool PacketGetName(const UInt8 *packet, UOSInt packetSize, NotNullPtr<Text::StringBuilderUTF8> sb);
+		static void PacketGetDetail(const UInt8 *packet, UOSInt packetSize, NotNullPtr<Text::StringBuilderUTF8> sb);
 		static void PacketGetDetail(const UInt8 *packet, UOSInt packetSize, UInt32 frameOfst, IO::FileAnalyse::FrameDetailHandler *frame);
 
 		static Text::CString CompanyGetName(UInt16 company);

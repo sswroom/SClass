@@ -75,7 +75,7 @@ IO::ParsedObject *Parser::FileParser::EVTXParser::ParseFileHdr(NotNullPtr<IO::St
 				sb.AppendC(UTF8STRC("RecordId = "));
 				sb.AppendU64(evtRecId);
 				sbDetail.ClearStr();
-				ParseBinXML(buff.Ptr(), dataOfst + 24, dataOfst + recSize - 28, &sbDetail, 0, 0);
+				ParseBinXML(buff.Ptr(), dataOfst + 24, dataOfst + recSize - 28, sbDetail, 0, 0);
 				logFile->AddLog(ts, sb.ToCString(), sbDetail.ToCString());
 
 				dataOfst += recSize;
@@ -86,7 +86,7 @@ IO::ParsedObject *Parser::FileParser::EVTXParser::ParseFileHdr(NotNullPtr<IO::St
 	return logFile;
 }
 
-UOSInt Parser::FileParser::EVTXParser::ParseBinXML(const UInt8 *chunk, UOSInt ofst, UOSInt endOfst, Text::StringBuilderUTF8 *sb, const UTF16Char *elementName, UOSInt nNameChar)
+UOSInt Parser::FileParser::EVTXParser::ParseBinXML(const UInt8 *chunk, UOSInt ofst, UOSInt endOfst, NotNullPtr<Text::StringBuilderUTF8> sb, const UTF16Char *elementName, UOSInt nNameChar)
 {
 	UOSInt dataOfst;
 	UInt32 dataSize;

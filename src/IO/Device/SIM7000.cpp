@@ -196,12 +196,12 @@ UTF8Char *IO::Device::SIM7000::SIMCOMGetICCID(UTF8Char *ccid)
 	return this->SendStringCommand(ccid, UTF8STRC("AT+CCID"), 3000);
 }
 
-Bool IO::Device::SIM7000::SIMCOMGetFlashDeviceType(Text::StringBuilderUTF8 *sb)
+Bool IO::Device::SIM7000::SIMCOMGetFlashDeviceType(NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	return this->SendStringListCommand(sb, UTF8STRC("AT+CDEVICE?"));
 }
 
-Bool IO::Device::SIM7000::SIMCOMGetDeviceProductID(Text::StringBuilderUTF8 *sb)
+Bool IO::Device::SIM7000::SIMCOMGetDeviceProductID(NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	return this->SendStringListCommand(sb, UTF8STRC("AT+GSV"));
 }

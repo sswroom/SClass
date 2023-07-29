@@ -49,7 +49,7 @@ Bool Net::WebServer::SAMLHandler::ProcessRequest(Net::WebServer::IWebRequest *re
 			sb.AppendC(UTF8STRC("<ds:KeyInfo xmlns:ds=\"http://www.w3.org/2000/09/xmldsig#\">"));
 			sb.AppendC(UTF8STRC("<ds:X509Data>"));
 			sb.AppendC(UTF8STRC("<ds:X509Certificate>"));
-			b64.EncodeBin(&sb, this->signCert->GetASN1Buff(), this->signCert->GetASN1BuffSize(), Text::LineBreakType::CRLF, 76);
+			b64.EncodeBin(sb, this->signCert->GetASN1Buff(), this->signCert->GetASN1BuffSize(), Text::LineBreakType::CRLF, 76);
 			sb.AppendC(UTF8STRC("</ds:X509Certificate>"));
 			sb.AppendC(UTF8STRC("</ds:X509Data>"));
 			sb.AppendC(UTF8STRC("</ds:KeyInfo>"));
@@ -58,7 +58,7 @@ Bool Net::WebServer::SAMLHandler::ProcessRequest(Net::WebServer::IWebRequest *re
 			sb.AppendC(UTF8STRC("<ds:KeyInfo xmlns:ds=\"http://www.w3.org/2000/09/xmldsig#\">"));
 			sb.AppendC(UTF8STRC("<ds:X509Data>"));
 			sb.AppendC(UTF8STRC("<ds:X509Certificate>"));
-			b64.EncodeBin(&sb, this->signCert->GetASN1Buff(), this->signCert->GetASN1BuffSize(), Text::LineBreakType::CRLF, 76);
+			b64.EncodeBin(sb, this->signCert->GetASN1Buff(), this->signCert->GetASN1BuffSize(), Text::LineBreakType::CRLF, 76);
 			sb.AppendC(UTF8STRC("</ds:X509Certificate>"));
 			sb.AppendC(UTF8STRC("</ds:X509Data>"));
 			sb.AppendC(UTF8STRC("</ds:KeyInfo>"));
@@ -232,7 +232,7 @@ Net::WebServer::SAMLError Net::WebServer::SAMLHandler::GetInitError()
 	return this->initErr;
 }
 
-Bool Net::WebServer::SAMLHandler::GetLogoutURL(Text::StringBuilderUTF8 *sb)
+Bool Net::WebServer::SAMLHandler::GetLogoutURL(NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	sb->AppendC(UTF8STRC("https://"));
 	sb->Append(this->serverHost);
@@ -240,7 +240,7 @@ Bool Net::WebServer::SAMLHandler::GetLogoutURL(Text::StringBuilderUTF8 *sb)
 	return true;
 }
 
-Bool Net::WebServer::SAMLHandler::GetMetadataURL(Text::StringBuilderUTF8 *sb)
+Bool Net::WebServer::SAMLHandler::GetMetadataURL(NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	sb->AppendC(UTF8STRC("https://"));
 	sb->Append(this->serverHost);
@@ -248,7 +248,7 @@ Bool Net::WebServer::SAMLHandler::GetMetadataURL(Text::StringBuilderUTF8 *sb)
 	return true;
 }
 
-Bool Net::WebServer::SAMLHandler::GetSSOURL(Text::StringBuilderUTF8 *sb)
+Bool Net::WebServer::SAMLHandler::GetSSOURL(NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	sb->AppendC(UTF8STRC("https://"));
 	sb->Append(this->serverHost);

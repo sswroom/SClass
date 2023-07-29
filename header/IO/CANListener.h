@@ -10,7 +10,7 @@ namespace IO
 		virtual ~CANListener(){};
 
 		virtual void CANStop() = 0;
-		virtual void ToString(Text::StringBuilderUTF8 *sb) const = 0;
+		virtual void ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const = 0;
 	};
 }
 #endif

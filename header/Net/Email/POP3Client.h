@@ -25,7 +25,7 @@ namespace Net
 			Bool IsError();
 			UOSInt GetMessageCount();
 			UOSInt GetMessageSize();
-			Bool ReadMessageAsString(UOSInt index, Text::StringBuilderUTF8 *sb);
+			Bool ReadMessageAsString(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb);
 			Bool DeleteMessage(UOSInt index);
 		};
 	}

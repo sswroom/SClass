@@ -31,7 +31,7 @@ void DB::MongoDB::CloseReader(DBReader *r)
 {
 }
 
-void DB::MongoDB::GetLastErrorMsg(Text::StringBuilderUTF8 *str)
+void DB::MongoDB::GetLastErrorMsg(NotNullPtr<Text::StringBuilderUTF8> str)
 {
 }
 
@@ -49,7 +49,7 @@ void DB::MongoDB::FreeDatabaseNames(Data::ArrayListNN<Text::String> *names)
 {
 }
 
-void DB::MongoDB::BuildURL(Text::StringBuilderUTF8 *out, Text::CString userName, Text::CString password, Text::CString host, UInt16 port)
+void DB::MongoDB::BuildURL(NotNullPtr<Text::StringBuilderUTF8> out, Text::CString userName, Text::CString password, Text::CString host, UInt16 port)
 {
 }
 

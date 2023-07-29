@@ -12,8 +12,8 @@ void __stdcall SSWR::AVIRead::AVIRSMTPClientForm::OnSendClicked(void *userObj)
 	Text::StringBuilderUTF8 sb2;
 	UInt16 port;
 	Net::SocketUtil::AddressInfo addr;
-	me->txtHost->GetText(&sb1);
-	me->txtPort->GetText(&sb2);
+	me->txtHost->GetText(sb1);
+	me->txtPort->GetText(sb2);
 	if (!me->core->GetSocketFactory()->DNSResolveIP(sb1.ToCString(), &addr))
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Error in resolve host name"), CSTR("SMTP Client"), me);
@@ -28,12 +28,12 @@ void __stdcall SSWR::AVIRead::AVIRSMTPClientForm::OnSendClicked(void *userObj)
 	}
 	Net::Email::SMTPClient *cli;
 	Text::StringBuilderUTF8 sbLog;
-	Text::StringBuilderWriter writer(&sbLog);
+	Text::StringBuilderWriter writer(sbLog);
 	NEW_CLASS(cli, Net::Email::SMTPClient(me->core->GetSocketFactory(), me->ssl, sb1.ToCString(), port, (Net::Email::SMTPConn::ConnType)(OSInt)me->cboSSLType->GetSelectedItem(), &writer, 60000));
 	sb1.ClearStr();
 	sb2.ClearStr();
-	me->txtUsername->GetText(&sb1);
-	me->txtPassword->GetText(&sb2);
+	me->txtUsername->GetText(sb1);
+	me->txtPassword->GetText(sb2);
 	if (sb1.GetCharCnt() != 0 && sb2.GetCharCnt() != 0)
 	{
 		//cli->SetPlainAuth(sb1.ToString(), sb2.ToString());
@@ -42,8 +42,8 @@ void __stdcall SSWR::AVIRead::AVIRSMTPClientForm::OnSendClicked(void *userObj)
 	NEW_CLASS(msg, Net::Email::EmailMessage());
 	sb1.ClearStr();
 	sb2.ClearStr();
-	me->txtFromAddr->GetText(&sb1);
-	me->txtToAddr->GetText(&sb2);
+	me->txtFromAddr->GetText(sb1);
+	me->txtToAddr->GetText(sb2);
 	if (sb1.GetCharCnt() == 0 || !msg->SetFrom(CSTR_NULL, sb1.ToCString()))
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Please enter valid From Address"), CSTR("SMTP Client"), me);
@@ -61,7 +61,7 @@ void __stdcall SSWR::AVIRead::AVIRSMTPClientForm::OnSendClicked(void *userObj)
 		return;
 	}
 	sb1.ClearStr();
-	me->txtCcAddr->GetText(&sb1);
+	me->txtCcAddr->GetText(sb1);
 	if (sb1.GetCharCnt() > 0 && !msg->AddCc(CSTR_NULL, sb1.ToCString()))
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Please enter valid Cc Address"), CSTR("SMTP Client"), me);
@@ -71,7 +71,7 @@ void __stdcall SSWR::AVIRead::AVIRSMTPClientForm::OnSendClicked(void *userObj)
 		return;
 	}
 	sb1.ClearStr();
-	me->txtBccAddr->GetText(&sb1);
+	me->txtBccAddr->GetText(sb1);
 	if (sb1.GetCharCnt() > 0 && !msg->AddBcc(sb1.ToCString()))
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Please enter valid Cc Address"), CSTR("SMTP Client"), me);
@@ -81,7 +81,7 @@ void __stdcall SSWR::AVIRead::AVIRSMTPClientForm::OnSendClicked(void *userObj)
 		return;
 	}
 	sb1.ClearStr();
-	me->txtSubject->GetText(&sb1);
+	me->txtSubject->GetText(sb1);
 	if (sb1.GetCharCnt() == 0 || !msg->SetSubject(sb1.ToCString()))
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Please enter valid Subject"), CSTR("SMTP Client"), me);
@@ -91,7 +91,7 @@ void __stdcall SSWR::AVIRead::AVIRSMTPClientForm::OnSendClicked(void *userObj)
 		return;
 	}
 	sb1.ClearStr();
-	me->txtContent->GetText(&sb1);
+	me->txtContent->GetText(sb1);
 	if (sb1.GetCharCnt() == 0)
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Please enter content"), CSTR("SMTP Client"), me);

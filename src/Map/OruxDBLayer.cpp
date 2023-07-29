@@ -356,7 +356,7 @@ void Map::OruxDBLayer::CloseReader(DB::DBReader *r)
 	return this->db->CloseReader(r);
 }
 
-void Map::OruxDBLayer::GetLastErrorMsg(Text::StringBuilderUTF8 *str)
+void Map::OruxDBLayer::GetLastErrorMsg(NotNullPtr<Text::StringBuilderUTF8> str)
 {
 	this->db->GetLastErrorMsg(str);
 }

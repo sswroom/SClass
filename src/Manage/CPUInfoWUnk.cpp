@@ -50,7 +50,7 @@ Bool Manage::CPUInfo::SupportIntelDTS()
 	return false;
 }
 
-Bool Manage::CPUInfo::GetInfoValue(UOSInt index, Text::StringBuilderUTF8 *sb)
+Bool Manage::CPUInfo::GetInfoValue(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	return false;
 }
@@ -77,7 +77,7 @@ UOSInt Manage::CPUInfo::GetInfoCnt()
 	return this->infoCnt;
 }
 
-Bool Manage::CPUInfo::GetInfoName(UOSInt index, Text::StringBuilderUTF8 *sb)
+Bool Manage::CPUInfo::GetInfoName(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	if (index >= this->infoCnt)
 		return false;
@@ -136,11 +136,11 @@ Text::CString Manage::CPUInfo::GetFeatureDesc(UOSInt index)
 	return CSTR("Unknown");
 }
 
-void Manage::CPUInfo::AppendNameInfo10(UInt32 ecxv, UInt32 edxv, Text::StringBuilderUTF8 *sb)
+void Manage::CPUInfo::AppendNameInfo10(UInt32 ecxv, UInt32 edxv, NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 }
 
-void Manage::CPUInfo::AppendNameInfo11(UInt32 ecxv, UInt32 edxv, Text::StringBuilderUTF8 *sb)
+void Manage::CPUInfo::AppendNameInfo11(UInt32 ecxv, UInt32 edxv, NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 }
 #endif

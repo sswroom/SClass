@@ -11,11 +11,11 @@ void __stdcall SSWR::AVIRead::AVIRProgramLinksCreateForm::OnCreateClicked(void *
 	Text::StringBuilderUTF8 sbComment;
 	Text::StringBuilderUTF8 sbCategories;
 	Text::StringBuilderUTF8 sbCmdLine;
-	me->txtShortName->GetText(&sbShortName);
-	me->txtName->GetText(&sbName);
-	me->txtComment->GetText(&sbComment);
-	me->txtCategories->GetText(&sbCategories);
-	me->txtCmdLine->GetText(&sbCmdLine);
+	me->txtShortName->GetText(sbShortName);
+	me->txtName->GetText(sbName);
+	me->txtComment->GetText(sbComment);
+	me->txtCategories->GetText(sbCategories);
+	me->txtCmdLine->GetText(sbCmdLine);
 	if (sbShortName.GetLength() == 0)
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Please enter Short Name"), CSTR("Program Links Create"), me);

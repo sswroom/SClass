@@ -105,9 +105,9 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 						sb.AppendChar(' ', maxSSIDLen - thisLen);
 					}
 					sb.AppendUTF8Char('\t');
-					Text::SBAppendF64(&sb, bss->GetRSSI());
+					sb.AppendDouble(bss->GetRSSI());
 					sb.AppendUTF8Char('\t');
-					Text::SBAppendF64(&sb, bss->GetFreq());
+					sb.AppendDouble(bss->GetFreq());
 					sb.AppendUTF8Char('\t');
 					if (s.Set(bss->GetManuf()))
 					{

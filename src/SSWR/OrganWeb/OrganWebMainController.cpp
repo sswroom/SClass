@@ -1375,13 +1375,13 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(Net::WebServer
 						sb.ClearStr();
 						sb.AppendC(UTF8STRC("<br/>"));
 						sb.AppendC(UTF8STRC("<a href=\"https://www.google.com/maps/place/"));
-						Text::SBAppendF64(&sb, userFile->lat);
+						sb.AppendDouble(userFile->lat);
 						sb.AppendC(UTF8STRC(","));
-						Text::SBAppendF64(&sb, userFile->lon);
+						sb.AppendDouble(userFile->lon);
 						sb.AppendC(UTF8STRC("/@"));
-						Text::SBAppendF64(&sb, userFile->lat);
+						sb.AppendDouble(userFile->lat);
 						sb.AppendC(UTF8STRC(","));
-						Text::SBAppendF64(&sb, userFile->lon);
+						sb.AppendDouble(userFile->lon);
 						sb.AppendC(UTF8STRC(",19z\">"));
 						sb.AppendC(UTF8STRC("Google Map</a>"));
 						writer.WriteStrC(sb.ToString(), sb.GetLength());
@@ -1707,7 +1707,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpeciesMod(Net::WebSer
 					{
 						msg.AppendC(UTF8STRC("Species already exist"));
 					}
-					else if ((bookIgn == 0 || bookIgn[0] != '1') && me->env->SpeciesBookIsExist(mutUsage, sname->ToCString(), &sb))
+					else if ((bookIgn == 0 || bookIgn[0] != '1') && me->env->SpeciesBookIsExist(mutUsage, sname->ToCString(), sb))
 					{
 						msg.AppendC(UTF8STRC("Species already exist in book: "));
 						msg.AppendC(sb.ToString(), sb.GetLength());
@@ -1748,7 +1748,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpeciesMod(Net::WebSer
 					{
 						msg.AppendC(UTF8STRC("Species already exist"));
 					}
-					else if (nameChg && (bookIgn == 0 || bookIgn[0] != '1') && me->env->SpeciesBookIsExist(mutUsage, STR_CSTR(sname), &sb))
+					else if (nameChg && (bookIgn == 0 || bookIgn[0] != '1') && me->env->SpeciesBookIsExist(mutUsage, STR_CSTR(sname), sb))
 					{
 						msg.AppendC(UTF8STRC("Species already exist in book: "));
 						msg.AppendC(sb.ToString(), sb.GetLength());
@@ -2421,7 +2421,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(Net::WebSe
 							{
 								sb.AppendC(UTF8STRC("0"));
 							}
-							Text::SBAppendF64(&sb, stmTime * 0.001);
+							sb.AppendDouble(stmTime * 0.001);
 
 							if (msrc->GetMediaType() == Media::MEDIA_TYPE_AUDIO)
 							{
@@ -2465,7 +2465,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(Net::WebSe
 						writer.WriteStrC(UTF8STRC("<b>"));
 						writer.WriteStr(LangGetValue(lang, UTF8STRC("PhotoSpec")));
 						writer.WriteStrC(UTF8STRC("</b> "));
-						info.ToString(&sb);
+						info.ToString(sb);
 						writer.WriteStrC(sb.ToString(), sb.GetLength());
 						writer.WriteStrC(UTF8STRC("<br/>"));
 
@@ -3104,7 +3104,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(Net::WebSe
 							writer.WriteStrC(UTF8STRC("<b>"));
 							writer.WriteStr(LangGetValue(lang, UTF8STRC("PhotoSpec")));
 							writer.WriteStrC(UTF8STRC("</b> "));
-							info.ToString(&sb);
+							info.ToString(sb);
 							writer.WriteStrC(sb.ToString(), sb.GetLength());
 							writer.WriteStrC(UTF8STRC("<br/>"));
 							if (info.GetPhotoDate(&dt))
@@ -3287,7 +3287,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetailD(Net::WebS
 						{
 							sb.AppendC(UTF8STRC("0"));
 						}
-						Text::SBAppendF64(&sb, stmTime * 0.001);
+						sb.AppendDouble(stmTime * 0.001);
 
 						if (msrc->GetMediaType() == Media::MEDIA_TYPE_AUDIO)
 						{
@@ -3333,7 +3333,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetailD(Net::WebS
 					writer.WriteStrC(UTF8STRC("<b>"));
 					writer.WriteStr(LangGetValue(lang, UTF8STRC("PhotoSpec")));
 					writer.WriteStrC(UTF8STRC("</b> "));
-					info.ToString(&sb);
+					info.ToString(sb);
 					writer.WriteStrC(sb.ToString(), sb.GetLength());
 					writer.WriteStrC(UTF8STRC("<br/>"));
 
@@ -3879,13 +3879,13 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDay(Net::WebServe
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("<br/>"));
 				sb.AppendC(UTF8STRC("<a href=\"https://www.google.com/maps/place/"));
-				Text::SBAppendF64(&sb, userFile->lat);
+				sb.AppendDouble(userFile->lat);
 				sb.AppendC(UTF8STRC(","));
-				Text::SBAppendF64(&sb, userFile->lon);
+				sb.AppendDouble(userFile->lon);
 				sb.AppendC(UTF8STRC("/@"));
-				Text::SBAppendF64(&sb, userFile->lat);
+				sb.AppendDouble(userFile->lat);
 				sb.AppendC(UTF8STRC(","));
-				Text::SBAppendF64(&sb, userFile->lon);
+				sb.AppendDouble(userFile->lon);
 				sb.AppendC(UTF8STRC(",19z\">"));
 				sb.AppendC(UTF8STRC("Google Map</a>"));
 				writer.WriteStrC(sb.ToString(), sb.GetLength());
@@ -4103,7 +4103,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoUploadD(Net::WebS
 	}
 
 	Text::StringBuilderUTF8 sb;
-	if (!req->GetHeaderC(&sb, CSTR("X-FileName")))
+	if (!req->GetHeaderC(sb, CSTR("X-FileName")))
 	{
 		resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
 		return true;

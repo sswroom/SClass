@@ -26,7 +26,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	t = clk.GetTimeDiff();
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("t1 = "));
-	Text::SBAppendF64(&sb, t);
+	sb.AppendDouble(t);
 	console.WriteLineC(sb.ToString(), sb.GetLength());
 
 	clk.Start();
@@ -36,7 +36,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	t = clk.GetTimeDiff();
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("t2 = "));
-	Text::SBAppendF64(&sb, t);
+	sb.AppendDouble(t);
 	console.WriteLineC(sb.ToString(), sb.GetLength());
 
 	clk.Start();
@@ -46,7 +46,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	t = clk.GetTimeDiff();
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("z1 = "));
-	Text::SBAppendF64(&sb, t);
+	sb.AppendDouble(t);
 	console.WriteLineC(sb.ToString(), sb.GetLength());
 
 	clk.Start();
@@ -56,7 +56,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	t = clk.GetTimeDiff();
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("z2 = "));
-	Text::SBAppendF64(&sb, t);
+	sb.AppendDouble(t);
 	console.WriteLineC(sb.ToString(), sb.GetLength());
 
 	clk.Start();
@@ -66,7 +66,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	t = clk.GetTimeDiff();
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("z3 = "));
-	Text::SBAppendF64(&sb, t);
+	sb.AppendDouble(t);
 	console.WriteLineC(sb.ToString(), sb.GetLength());
 
 	clk.Start();
@@ -76,7 +76,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	t = clk.GetTimeDiff();
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("z4 = "));
-	Text::SBAppendF64(&sb, t);
+	sb.AppendDouble(t);
 	console.WriteLineC(sb.ToString(), sb.GetLength());
 
 	MemFreeA(buff2);

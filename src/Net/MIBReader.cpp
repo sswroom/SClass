@@ -90,7 +90,7 @@ Bool Net::MIBReader::ReadLineInner(NotNullPtr<Text::StringBuilderUTF8> sb)
 	return true;
 }
 
-Bool Net::MIBReader::ReadWord(Text::StringBuilderUTF8 *sb, Bool move)
+Bool Net::MIBReader::ReadWord(NotNullPtr<Text::StringBuilderUTF8> sb, Bool move)
 {
 	while (this->currOfst >= this->sbLine.GetCharCnt())
 	{
@@ -267,12 +267,12 @@ Net::MIBReader::~MIBReader()
 {
 }
 
-Bool Net::MIBReader::PeekWord(Text::StringBuilderUTF8 *sb)
+Bool Net::MIBReader::PeekWord(NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	return ReadWord(sb, false);
 }
 
-Bool Net::MIBReader::NextWord(Text::StringBuilderUTF8 *sb)
+Bool Net::MIBReader::NextWord(NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	return ReadWord(sb, true);
 }

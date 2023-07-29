@@ -50,7 +50,7 @@ namespace SSWR
 			static void __stdcall OnStreamChg(void *userObj);
 			static void __stdcall OnDecodeClicked(void *userObj);
 			Bool OpenFile(Text::CString fileName);
-			void AppendTime(Text::StringBuilderUTF8 *sb, UInt32 t);
+			void AppendTime(NotNullPtr<Text::StringBuilderUTF8> sb, UInt32 t);
 			void ClearDecode();
 		public:
 			AVIRVideoInfoForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);

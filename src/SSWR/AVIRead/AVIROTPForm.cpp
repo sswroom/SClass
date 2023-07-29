@@ -14,7 +14,7 @@ void SSWR::AVIRead::AVIROTPForm::RandBytes(UOSInt len)
 	Text::StringBuilderUTF8 sb;
 	Text::TextBinEnc::Base32Enc b32;
 	random.NextBytes(buff, len);
-	b32.EncodeBin(&sb, buff, len);
+	b32.EncodeBin(sb, buff, len);
 	this->txtKey->SetText(sb.ToCString());
 }
 
@@ -35,8 +35,8 @@ void __stdcall SSWR::AVIRead::AVIROTPForm::OnNewClicked(void *userObj)
 	SSWR::AVIRead::AVIROTPForm *me = (SSWR::AVIRead::AVIROTPForm*)userObj;
 	Text::StringBuilderUTF8 sbName;
 	Text::StringBuilderUTF8 sbKey;
-	me->txtName->GetText(&sbName);
-	me->txtKey->GetText(&sbKey);
+	me->txtName->GetText(sbName);
+	me->txtKey->GetText(sbKey);
 	if (sbName.GetLength() == 0)
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Please enter name"), CSTR("One-Time Password (OTP)"), me);

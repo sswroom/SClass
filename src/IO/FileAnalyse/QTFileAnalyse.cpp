@@ -152,7 +152,7 @@ UOSInt IO::FileAnalyse::QTFileAnalyse::GetFrameCount()
 	return this->packs.GetCount();
 }
 
-Bool IO::FileAnalyse::QTFileAnalyse::GetFrameName(UOSInt index, Text::StringBuilderUTF8 *sb)
+Bool IO::FileAnalyse::QTFileAnalyse::GetFrameName(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	IO::FileAnalyse::QTFileAnalyse::PackInfo *pack;
 	UInt8 buff[5];
@@ -169,7 +169,7 @@ Bool IO::FileAnalyse::QTFileAnalyse::GetFrameName(UOSInt index, Text::StringBuil
 	return true;
 }
 
-Bool IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOSInt index, Text::StringBuilderUTF8 *sb)
+Bool IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	IO::FileAnalyse::QTFileAnalyse::PackInfo *pack;
 	UInt8 buff[5];
@@ -985,23 +985,23 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOS
 			frame->AddHexBuff(34, 10, CSTR("Reserved"), &packBuff[26], false);
 			Text::StringBuilderUTF8 sb;
 			sb.AppendC(UTF8STRC("a b u   "));
-			Text::SBAppendF64(&sb, ReadMInt32(&packBuff[36]) / 65536.0);
+			sb.AppendDouble(ReadMInt32(&packBuff[36]) / 65536.0);
 			sb.AppendC(UTF8STRC(" "));
-			Text::SBAppendF64(&sb, ReadMInt32(&packBuff[40]) / 65536.0);
+			sb.AppendDouble(ReadMInt32(&packBuff[40]) / 65536.0);
 			sb.AppendC(UTF8STRC(" "));
-			Text::SBAppendF64(&sb, ReadMInt32(&packBuff[44]) / 65536.0);
+			sb.AppendDouble(ReadMInt32(&packBuff[44]) / 65536.0);
 			sb.AppendC(UTF8STRC("\r\nc d v   "));
-			Text::SBAppendF64(&sb, ReadMInt32(&packBuff[48]) / 65536.0);
+			sb.AppendDouble(ReadMInt32(&packBuff[48]) / 65536.0);
 			sb.AppendC(UTF8STRC(" "));
-			Text::SBAppendF64(&sb, ReadMInt32(&packBuff[52]) / 65536.0);
+			sb.AppendDouble(ReadMInt32(&packBuff[52]) / 65536.0);
 			sb.AppendC(UTF8STRC(" "));
-			Text::SBAppendF64(&sb, ReadMInt32(&packBuff[56]) / 65536.0);
+			sb.AppendDouble(ReadMInt32(&packBuff[56]) / 65536.0);
 			sb.AppendC(UTF8STRC("\r\nx y w   "));
-			Text::SBAppendF64(&sb, ReadMInt32(&packBuff[60]) / 65536.0);
+			sb.AppendDouble(ReadMInt32(&packBuff[60]) / 65536.0);
 			sb.AppendC(UTF8STRC(" "));
-			Text::SBAppendF64(&sb, ReadMInt32(&packBuff[64]) / 65536.0);
+			sb.AppendDouble(ReadMInt32(&packBuff[64]) / 65536.0);
 			sb.AppendC(UTF8STRC(" "));
-			Text::SBAppendF64(&sb, ReadMInt32(&packBuff[68]) / 65536.0);
+			sb.AppendDouble(ReadMInt32(&packBuff[68]) / 65536.0);
 			frame->AddField(44, 36, CSTR("Matrix"), sb.ToCString());
 			frame->AddUInt(80, 4, CSTR("Preview time"), ReadMUInt32(&packBuff[72]));
 			frame->AddUInt(84, 4, CSTR("Preview duration"), ReadMUInt32(&packBuff[76]));
@@ -1037,23 +1037,23 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOS
 			frame->AddUInt(46, 2, CSTR("Reserved"), ReadMUInt16(&packBuff[38]));
 			Text::StringBuilderUTF8 sb;
 			sb.AppendC(UTF8STRC("a b u   "));
-			Text::SBAppendF64(&sb, ReadMInt32(&packBuff[40]) / 65536.0);
+			sb.AppendDouble(ReadMInt32(&packBuff[40]) / 65536.0);
 			sb.AppendC(UTF8STRC(" "));
-			Text::SBAppendF64(&sb, ReadMInt32(&packBuff[44]) / 65536.0);
+			sb.AppendDouble(ReadMInt32(&packBuff[44]) / 65536.0);
 			sb.AppendC(UTF8STRC(" "));
-			Text::SBAppendF64(&sb, ReadMInt32(&packBuff[48]) / 65536.0);
+			sb.AppendDouble(ReadMInt32(&packBuff[48]) / 65536.0);
 			sb.AppendC(UTF8STRC("\r\nc d v   "));
-			Text::SBAppendF64(&sb, ReadMInt32(&packBuff[52]) / 65536.0);
+			sb.AppendDouble(ReadMInt32(&packBuff[52]) / 65536.0);
 			sb.AppendC(UTF8STRC(" "));
-			Text::SBAppendF64(&sb, ReadMInt32(&packBuff[56]) / 65536.0);
+			sb.AppendDouble(ReadMInt32(&packBuff[56]) / 65536.0);
 			sb.AppendC(UTF8STRC(" "));
-			Text::SBAppendF64(&sb, ReadMInt32(&packBuff[60]) / 65536.0);
+			sb.AppendDouble(ReadMInt32(&packBuff[60]) / 65536.0);
 			sb.AppendC(UTF8STRC("\r\nx y w   "));
-			Text::SBAppendF64(&sb, ReadMInt32(&packBuff[64]) / 65536.0);
+			sb.AppendDouble(ReadMInt32(&packBuff[64]) / 65536.0);
 			sb.AppendC(UTF8STRC(" "));
-			Text::SBAppendF64(&sb, ReadMInt32(&packBuff[68]) / 65536.0);
+			sb.AppendDouble(ReadMInt32(&packBuff[68]) / 65536.0);
 			sb.AppendC(UTF8STRC(" "));
-			Text::SBAppendF64(&sb, ReadMInt32(&packBuff[72]) / 65536.0);
+			sb.AppendDouble(ReadMInt32(&packBuff[72]) / 65536.0);
 			frame->AddField(48, 36, CSTR("Matrix"), sb.ToCString());
 			frame->AddFloat(84, 4, CSTR("Track Width"), ReadMInt32(&packBuff[76]) / 65536.0);
 			frame->AddFloat(88, 4, CSTR("Track Height"), ReadMInt32(&packBuff[80]) / 65536.0);

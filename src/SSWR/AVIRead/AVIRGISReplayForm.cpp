@@ -109,10 +109,10 @@ void __stdcall SSWR::AVIRead::AVIRGISReplayForm::OnLbRecordChg(void *userObj)
 		while (j < k)
 		{
 			sb.ClearStr();
-			me->track->GetExtraName(me->currTrackId, (UOSInt)i, j, &sb);
+			me->track->GetExtraName(me->currTrackId, (UOSInt)i, j, sb);
 			l = me->lvExtra->AddItem(sb.ToCString(), 0);
 			sb.ClearStr();
-			me->track->GetExtraValueStr(me->currTrackId, (UOSInt)i, j, &sb);
+			me->track->GetExtraValueStr(me->currTrackId, (UOSInt)i, j, sb);
 			me->lvExtra->SetSubItem(l, 1, sb.ToCString());
 			j++;
 		}

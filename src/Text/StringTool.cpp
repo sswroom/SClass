@@ -4,7 +4,7 @@
 #include "Text/JSText.h"
 #include "Text/StringTool.h"
 
-void Text::StringTool::BuildString(Text::StringBuilderUTF8 *sb, Text::String *s)
+void Text::StringTool::BuildString(NotNullPtr<Text::StringBuilderUTF8> sb, Text::String *s)
 {
 	if (s == 0)
 	{
@@ -16,7 +16,7 @@ void Text::StringTool::BuildString(Text::StringBuilderUTF8 *sb, Text::String *s)
 	}
 }
 
-void Text::StringTool::BuildString(Text::StringBuilderUTF8 *sb, const UTF8Char *s)
+void Text::StringTool::BuildString(NotNullPtr<Text::StringBuilderUTF8> sb, const UTF8Char *s)
 {
 	if (s == 0)
 	{
@@ -28,7 +28,7 @@ void Text::StringTool::BuildString(Text::StringBuilderUTF8 *sb, const UTF8Char *
 	}
 }
 
-void Text::StringTool::BuildString(Text::StringBuilderUTF8 *sb, Data::StringMap<Text::String*> *map)
+void Text::StringTool::BuildString(NotNullPtr<Text::StringBuilderUTF8> sb, Data::StringMap<Text::String*> *map)
 {
 	if (map == 0)
 	{
@@ -55,7 +55,7 @@ void Text::StringTool::BuildString(Text::StringBuilderUTF8 *sb, Data::StringMap<
 	sb->AppendUTF8Char('}');
 }
 
-void Text::StringTool::BuildString(Text::StringBuilderUTF8 *sb, Data::StringUTF8Map<Text::String*> *map)
+void Text::StringTool::BuildString(NotNullPtr<Text::StringBuilderUTF8> sb, Data::StringUTF8Map<Text::String*> *map)
 {
 	if (map == 0)
 	{
@@ -82,7 +82,7 @@ void Text::StringTool::BuildString(Text::StringBuilderUTF8 *sb, Data::StringUTF8
 	sb->AppendUTF8Char('}');
 }
 
-void Text::StringTool::BuildString(Text::StringBuilderUTF8 *sb, Data::StringUTF8Map<const UTF8Char*> *map)
+void Text::StringTool::BuildString(NotNullPtr<Text::StringBuilderUTF8> sb, Data::StringUTF8Map<const UTF8Char*> *map)
 {
 	if (map == 0)
 	{
@@ -109,7 +109,7 @@ void Text::StringTool::BuildString(Text::StringBuilderUTF8 *sb, Data::StringUTF8
 	sb->AppendUTF8Char('}');
 }
 
-void Text::StringTool::BuildString(Text::StringBuilderUTF8 *sb, Data::ReadingList<const UTF8Char*> *list)
+void Text::StringTool::BuildString(NotNullPtr<Text::StringBuilderUTF8> sb, Data::ReadingList<const UTF8Char*> *list)
 {
 	if (list == 0)
 	{
@@ -132,7 +132,7 @@ void Text::StringTool::BuildString(Text::StringBuilderUTF8 *sb, Data::ReadingLis
 	sb->AppendUTF8Char(']');
 }
 
-void Text::StringTool::BuildString(Text::StringBuilderUTF8 *sb, Data::ReadingList<Text::String*> *list)
+void Text::StringTool::BuildString(NotNullPtr<Text::StringBuilderUTF8> sb, Data::ReadingList<Text::String*> *list)
 {
 	if (list == 0)
 	{
@@ -155,7 +155,7 @@ void Text::StringTool::BuildString(Text::StringBuilderUTF8 *sb, Data::ReadingLis
 	sb->AppendUTF8Char(']');
 }
 
-void Text::StringTool::Int32Join(Text::StringBuilderUTF8 *sb, Data::List<Int32> *list, Text::CString seperator)
+void Text::StringTool::Int32Join(NotNullPtr<Text::StringBuilderUTF8> sb, Data::List<Int32> *list, Text::CString seperator)
 {
 	UOSInt i = 0;
 	UOSInt j = list->GetCount();

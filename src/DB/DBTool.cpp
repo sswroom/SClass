@@ -78,8 +78,8 @@ OSInt DB::DBTool::ExecuteNonQuery(Text::CString sqlCmd)
 			Text::StringBuilderUTF8 logMsg;
 			logMsg.AppendC(UTF8STRC("Exception detail: "));
 			this->lastErrMsg.ClearStr();
-			this->db->GetLastErrorMsg(&this->lastErrMsg);
-			logMsg.AppendSB(&this->lastErrMsg);
+			this->db->GetLastErrorMsg(this->lastErrMsg);
+			logMsg.AppendSB(this->lastErrMsg);
 			AddLogMsgC(logMsg.ToString(), logMsg.GetLength(), IO::LogHandler::LogLevel::ErrorDetail);
 		}
 		Bool isData = this->db->IsLastDataError();

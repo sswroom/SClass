@@ -26,7 +26,7 @@ namespace Text
 			virtual UOSInt WriteStream(IO::Stream *stm) const;
 			virtual IMIMEObj *Clone() const;
 
-			void GetText(Text::StringBuilderUTF8 *sb) const;
+			void GetText(NotNullPtr<Text::StringBuilderUTF8> sb) const;
 			UInt32 GetCodePage() const;
 		};
 	}

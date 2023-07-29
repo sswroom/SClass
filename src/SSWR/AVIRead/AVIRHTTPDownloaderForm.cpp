@@ -17,7 +17,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPDownloaderForm::OnRequestClicked(void *use
 {
 	SSWR::AVIRead::AVIRHTTPDownloaderForm *me = (SSWR::AVIRead::AVIRHTTPDownloaderForm*)userObj;
 	Text::StringBuilderUTF8 sb;
-	me->txtDownloadDir->GetText(&sb);
+	me->txtDownloadDir->GetText(sb);
 	if (IO::Path::GetPathType(sb.ToCString()) != IO::Path::PathType::Directory)
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Please enter valid download path"), CSTR("Request"), me);
@@ -27,7 +27,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPDownloaderForm::OnRequestClicked(void *use
 	me->downPath = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 
 	sb.ClearStr();
-	me->txtHeaders->GetText(&sb);
+	me->txtHeaders->GetText(sb);
 	SDEL_STRING(me->reqHeader);
 	if (sb.GetLength() > 0)
 	{
@@ -35,7 +35,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPDownloaderForm::OnRequestClicked(void *use
 	}
 
 	sb.ClearStr();
-	me->txtURL->GetText(&sb);
+	me->txtURL->GetText(sb);
 	if (!sb.StartsWith(UTF8STRC("http://")) && !sb.StartsWith(UTF8STRC("https://")))
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Please enter valid http URL"), CSTR("Request"), me);

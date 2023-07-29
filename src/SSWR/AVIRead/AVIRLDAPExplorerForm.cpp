@@ -22,7 +22,7 @@ void __stdcall SSWR::AVIRead::AVIRLDAPExplorerForm::OnConnectClicked(void *userO
 	Net::SocketUtil::AddressInfo addr;
 	UInt16 port;
 	NotNullPtr<Net::SocketFactory> sockf = me->core->GetSocketFactory();
-	me->txtHost->GetText(&sb);
+	me->txtHost->GetText(sb);
 	if (sb.GetLength() == 0)
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Please enter Host"), CSTR("LDAP Explorer"), me);
@@ -34,7 +34,7 @@ void __stdcall SSWR::AVIRead::AVIRLDAPExplorerForm::OnConnectClicked(void *userO
 		return;
 	}
 	sb.ClearStr();
-	me->txtPort->GetText(&sb);
+	me->txtPort->GetText(sb);
 	if (!sb.ToUInt16(&port))
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Please enter valid Port number"), CSTR("LDAP Explorer"), me);
@@ -57,8 +57,8 @@ void __stdcall SSWR::AVIRead::AVIRLDAPExplorerForm::OnConnectClicked(void *userO
 	{
 		Text::StringBuilderUTF8 sb2;
 		sb.ClearStr();
-		me->txtUserDN->GetText(&sb);
-		me->txtPassword->GetText(&sb2);
+		me->txtUserDN->GetText(sb);
+		me->txtPassword->GetText(sb2);
 		succ = me->cli->Bind(sb.ToCString(), sb2.ToCString());
 	}
 	if (!succ)
@@ -251,7 +251,7 @@ void __stdcall SSWR::AVIRead::AVIRLDAPExplorerForm::OnObjectsSelChg(void *userOb
 			item = obj->items->GetItem(i);
 			k = me->lvValues->AddItem(item->type, 0);
 			sb.ClearStr();
-			Net::LDAPClient::SearchResDisplay(item->type->ToCString(), item->value->ToCString(), &sb);
+			Net::LDAPClient::SearchResDisplay(item->type->ToCString(), item->value->ToCString(), sb);
 			me->lvValues->SetSubItem(k, 1, sb.ToCString());
 			i++;
 		}

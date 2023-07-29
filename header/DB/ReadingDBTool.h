@@ -76,7 +76,7 @@ namespace DB
 		DB::SQLType GetSQLType();
 		Bool IsAxisAware();
 		Bool IsDataError(const UTF8Char *errCode);
-		virtual void GetLastErrorMsg(Text::StringBuilderUTF8 *sb);
+		virtual void GetLastErrorMsg(NotNullPtr<Text::StringBuilderUTF8> sb);
 		DB::DBConn *GetDBConn();
 		Int8 GetTzQhr();
 		virtual void Reconnect();

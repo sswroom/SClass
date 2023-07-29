@@ -12,7 +12,7 @@ void __stdcall OnMessage(void *userObj, Bool toServer, UInt8 ver, UInt16 token, 
 {
 	IO::LogTool *log = (IO::LogTool*)userObj;
 	Text::StringBuilderUTF8 sb;
-	Net::LoRaGWUtil::ParseGWMPMessage(&sb, toServer, ver, token, msgType, msg, msgSize);
+	Net::LoRaGWUtil::ParseGWMPMessage(sb, toServer, ver, token, msgType, msg, msgSize);
 	log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Raw);
 }
 

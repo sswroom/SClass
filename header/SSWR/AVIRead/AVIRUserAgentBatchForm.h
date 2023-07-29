@@ -26,7 +26,7 @@ namespace SSWR
 			UI::GUIVSplitter *vspControl;
 			UI::GUITextBox *txtOutput;
 
-			static void UserAgent2Output(Text::CString userAgent, Text::StringBuilderUTF8 *outSb);
+			static void UserAgent2Output(Text::CString userAgent, NotNullPtr<Text::StringBuilderUTF8> outSb);
 			static void __stdcall OnParseClicked(void *userObj);
 			static void __stdcall OnUpdateClicked(void *userObj);
 			static void __stdcall OnUpdateCBClicked(void *userObj);

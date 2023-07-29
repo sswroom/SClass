@@ -93,7 +93,7 @@ public:
 		return 0;
 	}
 
-	virtual Bool GetStr(UOSInt colIndex, Text::StringBuilderUTF8 *sb)
+	virtual Bool GetStr(UOSInt colIndex, NotNullPtr<Text::StringBuilderUTF8> sb)
 	{
 		if (this->obj == 0)
 			return false;
@@ -345,7 +345,7 @@ void DB::JSONDB::CloseReader(DBReader *r)
 	}
 }
 
-void DB::JSONDB::GetLastErrorMsg(Text::StringBuilderUTF8 *str)
+void DB::JSONDB::GetLastErrorMsg(NotNullPtr<Text::StringBuilderUTF8> str)
 {
 }
 

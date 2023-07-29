@@ -2569,9 +2569,8 @@ Bool Manage::DasmARM64::Disasm64(IO::Writer *writer, Manage::AddressResolver *ad
 	UInt8 buff[16];
 	UInt64 oriPC;
 	DasmARM64_Sess sess;
-	Text::StringBuilderUTF8 *outStr;
+	Text::StringBuilderUTF8 outStr;
 	UOSInt initJmpCnt = jmpAddrs->GetCount();
-	NEW_CLASS(outStr, Text::StringBuilderUTF8());
 	sess.callAddrs = callAddrs;
 	sess.jmpAddrs = jmpAddrs;
 	MemCopyNO(&sess.regs, regs, sizeof(Manage::DasmARM64::DasmARM64_Regs));
@@ -2592,75 +2591,75 @@ Bool Manage::DasmARM64::Disasm64(IO::Writer *writer, Manage::AddressResolver *ad
 	{
 		Bool ret;
 
-		outStr->ClearStr();
-		outStr->AppendHex64(sess.regs.SP);
-		outStr->AppendC(UTF8STRC(" "));
-		outStr->AppendHex64(sess.regs.LR);
-		outStr->AppendC(UTF8STRC(" "));
-		outStr->AppendHex64(sess.regs.PC);
-		outStr->AppendC(UTF8STRC(" "));
+		outStr.ClearStr();
+		outStr.AppendHex64(sess.regs.SP);
+		outStr.AppendC(UTF8STRC(" "));
+		outStr.AppendHex64(sess.regs.LR);
+		outStr.AppendC(UTF8STRC(" "));
+		outStr.AppendHex64(sess.regs.PC);
+		outStr.AppendC(UTF8STRC(" "));
 		if (fullRegs)
 		{
-			outStr->AppendHex64(sess.regs.X0);
-			outStr->AppendC(UTF8STRC(" "));
-			outStr->AppendHex64(sess.regs.X1);
-			outStr->AppendC(UTF8STRC(" "));
-			outStr->AppendHex64(sess.regs.X2);
-			outStr->AppendC(UTF8STRC(" "));
-			outStr->AppendHex64(sess.regs.X3);
-			outStr->AppendC(UTF8STRC(" "));
-			outStr->AppendHex64(sess.regs.X4);
-			outStr->AppendC(UTF8STRC(" "));
-			outStr->AppendHex64(sess.regs.X5);
-			outStr->AppendC(UTF8STRC(" "));
-			outStr->AppendHex64(sess.regs.X6);
-			outStr->AppendC(UTF8STRC(" "));
-			outStr->AppendHex64(sess.regs.X7);
-			outStr->AppendC(UTF8STRC(" "));
-			outStr->AppendHex64(sess.regs.X8);
-			outStr->AppendC(UTF8STRC(" "));
-			outStr->AppendHex64(sess.regs.X9);
-			outStr->AppendC(UTF8STRC(" "));
-			outStr->AppendHex64(sess.regs.X10);
-			outStr->AppendC(UTF8STRC(" "));
-			outStr->AppendHex64(sess.regs.X11);
-			outStr->AppendC(UTF8STRC(" "));
-			outStr->AppendHex64(sess.regs.X12);
-			outStr->AppendC(UTF8STRC(" "));
-			outStr->AppendHex64(sess.regs.X13);
-			outStr->AppendC(UTF8STRC(" "));
-			outStr->AppendHex64(sess.regs.X14);
-			outStr->AppendC(UTF8STRC(" "));
-			outStr->AppendHex64(sess.regs.X15);
-			outStr->AppendC(UTF8STRC(" "));
-			outStr->AppendHex64(sess.regs.X16);
-			outStr->AppendC(UTF8STRC(" "));
-			outStr->AppendHex64(sess.regs.X17);
-			outStr->AppendC(UTF8STRC(" "));
-			outStr->AppendHex64(sess.regs.X18);
-			outStr->AppendC(UTF8STRC(" "));
-			outStr->AppendHex64(sess.regs.X19);
-			outStr->AppendC(UTF8STRC(" "));
-			outStr->AppendHex64(sess.regs.X20);
-			outStr->AppendC(UTF8STRC(" "));
-			outStr->AppendHex64(sess.regs.X21);
-			outStr->AppendC(UTF8STRC(" "));
-			outStr->AppendHex64(sess.regs.X22);
-			outStr->AppendC(UTF8STRC(" "));
-			outStr->AppendHex64(sess.regs.X23);
-			outStr->AppendC(UTF8STRC(" "));
-			outStr->AppendHex64(sess.regs.X24);
-			outStr->AppendC(UTF8STRC(" "));
-			outStr->AppendHex64(sess.regs.X25);
-			outStr->AppendC(UTF8STRC(" "));
-			outStr->AppendHex64(sess.regs.X26);
-			outStr->AppendC(UTF8STRC(" "));
-			outStr->AppendHex64(sess.regs.X27);
-			outStr->AppendC(UTF8STRC(" "));
-			outStr->AppendHex64(sess.regs.X28);
-			outStr->AppendC(UTF8STRC(" "));
-			outStr->AppendHex64(sess.regs.X29);
-			outStr->AppendC(UTF8STRC(" "));
+			outStr.AppendHex64(sess.regs.X0);
+			outStr.AppendC(UTF8STRC(" "));
+			outStr.AppendHex64(sess.regs.X1);
+			outStr.AppendC(UTF8STRC(" "));
+			outStr.AppendHex64(sess.regs.X2);
+			outStr.AppendC(UTF8STRC(" "));
+			outStr.AppendHex64(sess.regs.X3);
+			outStr.AppendC(UTF8STRC(" "));
+			outStr.AppendHex64(sess.regs.X4);
+			outStr.AppendC(UTF8STRC(" "));
+			outStr.AppendHex64(sess.regs.X5);
+			outStr.AppendC(UTF8STRC(" "));
+			outStr.AppendHex64(sess.regs.X6);
+			outStr.AppendC(UTF8STRC(" "));
+			outStr.AppendHex64(sess.regs.X7);
+			outStr.AppendC(UTF8STRC(" "));
+			outStr.AppendHex64(sess.regs.X8);
+			outStr.AppendC(UTF8STRC(" "));
+			outStr.AppendHex64(sess.regs.X9);
+			outStr.AppendC(UTF8STRC(" "));
+			outStr.AppendHex64(sess.regs.X10);
+			outStr.AppendC(UTF8STRC(" "));
+			outStr.AppendHex64(sess.regs.X11);
+			outStr.AppendC(UTF8STRC(" "));
+			outStr.AppendHex64(sess.regs.X12);
+			outStr.AppendC(UTF8STRC(" "));
+			outStr.AppendHex64(sess.regs.X13);
+			outStr.AppendC(UTF8STRC(" "));
+			outStr.AppendHex64(sess.regs.X14);
+			outStr.AppendC(UTF8STRC(" "));
+			outStr.AppendHex64(sess.regs.X15);
+			outStr.AppendC(UTF8STRC(" "));
+			outStr.AppendHex64(sess.regs.X16);
+			outStr.AppendC(UTF8STRC(" "));
+			outStr.AppendHex64(sess.regs.X17);
+			outStr.AppendC(UTF8STRC(" "));
+			outStr.AppendHex64(sess.regs.X18);
+			outStr.AppendC(UTF8STRC(" "));
+			outStr.AppendHex64(sess.regs.X19);
+			outStr.AppendC(UTF8STRC(" "));
+			outStr.AppendHex64(sess.regs.X20);
+			outStr.AppendC(UTF8STRC(" "));
+			outStr.AppendHex64(sess.regs.X21);
+			outStr.AppendC(UTF8STRC(" "));
+			outStr.AppendHex64(sess.regs.X22);
+			outStr.AppendC(UTF8STRC(" "));
+			outStr.AppendHex64(sess.regs.X23);
+			outStr.AppendC(UTF8STRC(" "));
+			outStr.AppendHex64(sess.regs.X24);
+			outStr.AppendC(UTF8STRC(" "));
+			outStr.AppendHex64(sess.regs.X25);
+			outStr.AppendC(UTF8STRC(" "));
+			outStr.AppendHex64(sess.regs.X26);
+			outStr.AppendC(UTF8STRC(" "));
+			outStr.AppendHex64(sess.regs.X27);
+			outStr.AppendC(UTF8STRC(" "));
+			outStr.AppendHex64(sess.regs.X28);
+			outStr.AppendC(UTF8STRC(" "));
+			outStr.AppendHex64(sess.regs.X29);
+			outStr.AppendC(UTF8STRC(" "));
 		}
 		sess.sbuff = sbuff;
 		oriPC = sess.regs.PC;
@@ -2675,19 +2674,18 @@ Bool Manage::DasmARM64::Disasm64(IO::Writer *writer, Manage::AddressResolver *ad
 		if (!ret)
 		{
 			UOSInt buffSize;
-			outStr->AppendC(UTF8STRC("Unknown opcode "));
+			outStr.AppendC(UTF8STRC("Unknown opcode "));
 			buffSize = sess.memReader->ReadMemory(oriPC, buff, 16);
 			if (buffSize > 0)
 			{
-				outStr->AppendHexBuff(buff, buffSize, ' ', Text::LineBreakType::None);
+				outStr.AppendHexBuff(buff, buffSize, ' ', Text::LineBreakType::None);
 			}
-			outStr->AppendC(UTF8STRC("\r\n"));
-			writer->WriteStrC(outStr->ToString(), outStr->GetLength());
-			DEL_CLASS(outStr);
+			outStr.AppendC(UTF8STRC("\r\n"));
+			writer->WriteStrC(outStr.ToString(), outStr.GetLength());
 			return false;
 		}
-		outStr->AppendSlow(sbuff);
-		writer->WriteStrC(outStr->ToString(), outStr->GetLength());
+		outStr.AppendSlow(sbuff);
+		writer->WriteStrC(outStr.ToString(), outStr.GetLength());
 		if (sess.endType == Manage::DasmARM64::ET_JMP && (UInt32)sess.retAddr >= *blockStart && (UInt32)sess.retAddr <= sess.regs.PC)
 		{
 			UOSInt i;
@@ -2708,7 +2706,6 @@ Bool Manage::DasmARM64::Disasm64(IO::Writer *writer, Manage::AddressResolver *ad
 				*currStack = sess.regs.SP;
 				*currFrame = sess.regs.LR;
 				*blockEnd = sess.regs.PC;
-				DEL_CLASS(outStr);
 				MemCopyNO(regs, &sess.regs, sizeof(Manage::DasmARM64::DasmARM64_Regs));
 				return false;
 			}
@@ -2721,7 +2718,6 @@ Bool Manage::DasmARM64::Disasm64(IO::Writer *writer, Manage::AddressResolver *ad
 			*currStack = sess.regs.SP;
 			*currFrame = sess.regs.LR;
 			*blockEnd = sess.regs.PC;
-			DEL_CLASS(outStr);
 			MemCopyNO(regs, &sess.regs, sizeof(Manage::DasmARM64::DasmARM64_Regs));
 			return sess.endType != Manage::DasmARM64::ET_EXIT;
 		}

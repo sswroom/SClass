@@ -43,7 +43,7 @@ namespace Net
 
 			UOSInt GetHeaderIndex(const UTF8Char *name, UOSInt nameLen);
 			Bool SetHeader(const UTF8Char *name, UOSInt nameLen, const UTF8Char *val, UOSInt valLen);
-			Bool AppendUTF8Header(Text::StringBuilderUTF8 *sb, const UTF8Char *val, UOSInt valLen);
+			Bool AppendUTF8Header(NotNullPtr<Text::StringBuilderUTF8> sb, const UTF8Char *val, UOSInt valLen);
 			void GenMultipart(IO::Stream *stm, Text::CString boundary);
 
 			void WriteHeaders(IO::Stream *stm);
@@ -73,7 +73,7 @@ namespace Net
 			const Data::ArrayListNN<Text::String> *GetRecpList();
 			Bool WriteToStream(IO::Stream *stm);
 
-			static Bool GenerateMessageID(Text::StringBuilderUTF8 *sb, Text::CString fromAddr);
+			static Bool GenerateMessageID(NotNullPtr<Text::StringBuilderUTF8> sb, Text::CString fromAddr);
 		};
 	}
 }

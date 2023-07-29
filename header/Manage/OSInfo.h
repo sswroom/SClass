@@ -29,7 +29,7 @@ namespace Manage
 	public:
 		static Text::CString GetName(OSType osType);
 		static Text::CString GetDefName(OSType osType);
-		static void GetCommonName(Text::StringBuilderUTF8 *sb, OSType osType, Text::CString osVer);
+		static void GetCommonName(NotNullPtr<Text::StringBuilderUTF8> sb, OSType osType, Text::CString osVer);
 	};
 }
 #endif

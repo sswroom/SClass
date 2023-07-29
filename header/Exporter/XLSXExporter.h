@@ -38,13 +38,13 @@ namespace Exporter
 		virtual Bool GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8Char *fileNameBuff);
 		virtual Bool ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CString fileName, IO::ParsedObject *pobj, void *param);
 
-		static void AppendFill(Text::StringBuilderUTF8 *sb, Text::SpreadSheet::OfficeFill *fill);
-		static void AppendLineStyle(Text::StringBuilderUTF8 *sb, Text::SpreadSheet::OfficeLineStyle *lineStyle);
-		static void AppendTitle(Text::StringBuilderUTF8 *sb, const UTF8Char *title);
-		static void AppendShapeProp(Text::StringBuilderUTF8 *sb, Text::SpreadSheet::OfficeShapeProp *shapeProp);
-		static void AppendAxis(Text::StringBuilderUTF8 *sb, Text::SpreadSheet::OfficeChartAxis *axis, UOSInt index);
-		static void AppendSeries(Text::StringBuilderUTF8 *sb, Text::SpreadSheet::OfficeChartSeries *series, UOSInt index);
-		static void AppendBorder(Text::StringBuilderUTF8 *sb, Text::SpreadSheet::CellStyle::BorderStyle border, Text::CString name);
+		static void AppendFill(NotNullPtr<Text::StringBuilderUTF8> sb, Text::SpreadSheet::OfficeFill *fill);
+		static void AppendLineStyle(NotNullPtr<Text::StringBuilderUTF8> sb, Text::SpreadSheet::OfficeLineStyle *lineStyle);
+		static void AppendTitle(NotNullPtr<Text::StringBuilderUTF8> sb, const UTF8Char *title);
+		static void AppendShapeProp(NotNullPtr<Text::StringBuilderUTF8> sb, Text::SpreadSheet::OfficeShapeProp *shapeProp);
+		static void AppendAxis(NotNullPtr<Text::StringBuilderUTF8> sb, Text::SpreadSheet::OfficeChartAxis *axis, UOSInt index);
+		static void AppendSeries(NotNullPtr<Text::StringBuilderUTF8> sb, Text::SpreadSheet::OfficeChartSeries *series, UOSInt index);
+		static void AppendBorder(NotNullPtr<Text::StringBuilderUTF8> sb, Text::SpreadSheet::CellStyle::BorderStyle border, Text::CString name);
 
 		static Text::CString PresetColorCode(Text::SpreadSheet::PresetColor color);
 		static UTF8Char *ToFormatCode(UTF8Char *sbuff, const UTF8Char *dataFormat);

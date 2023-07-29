@@ -197,7 +197,7 @@ void IO::Device::AXCAN::CANStop()
 	this->CloseSerialPort(false);
 }
 
-void IO::Device::AXCAN::ToString(Text::StringBuilderUTF8 *sb) const
+void IO::Device::AXCAN::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
 {
 	if (this->stm)
 	{

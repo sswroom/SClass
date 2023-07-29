@@ -227,11 +227,11 @@ UOSInt IO::SDCardMgr::GetCardList(Data::ArrayList<IO::SDCardInfo*> *cardList)
 			while (r->ReadNext())
 			{
 				sb.ClearStr();
-				r->GetStr(31, &sb);
+				r->GetStr(31, sb);
 				if (sb.StartsWith(UTF8STRC("SD\\DISK")))
 				{
 					sb.ClearStr();
-					r->GetStr(11, &sb);
+					r->GetStr(11, sb);
 					const WChar *wptr = Text::StrToWCharNew(sb.ToString());
 					sdcard = SDCardMgr_ReadInfo(wptr);
 					Text::StrDelNew(wptr);

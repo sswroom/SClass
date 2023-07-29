@@ -4873,7 +4873,7 @@ Bool Manage::DasmARM::Disasm32(IO::Writer *writer, Manage::AddressResolver *addr
 	UInt8 buff[16];
 	UInt32 oriPC;
 	DasmARM_Sess sess;
-	Text::StringBuilderUTF8 *outStr;
+	NotNullPtr<Text::StringBuilderUTF8> outStr;
 	UOSInt initJmpCnt = jmpAddrs->GetCount();
 	NEW_CLASS(outStr, Text::StringBuilderUTF8());
 	sess.callAddrs = callAddrs;

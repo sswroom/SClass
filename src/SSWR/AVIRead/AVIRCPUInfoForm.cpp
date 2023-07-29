@@ -138,10 +138,10 @@ SSWR::AVIRead::AVIRCPUInfoForm::AVIRCPUInfoForm(UI::GUIClientControl *parent, No
 	while (i < j)
 	{
 		sb.ClearStr();
-		cpu.GetInfoName(i, &sb);
+		cpu.GetInfoName(i, sb);
 		k = this->lvMain->AddItem(sb.ToCString(), 0);
 		sb.ClearStr();
-		cpu.GetInfoValue(i, &sb);
+		cpu.GetInfoValue(i, sb);
 		this->lvMain->SetSubItem(k, 1, sb.ToCString());
 		i++;
 	}

@@ -450,7 +450,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnDNSSetClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRDNSProxyForm *me = (SSWR::AVIRead::AVIRDNSProxyForm*)userObj;
 	Text::StringBuilderUTF8 sb;
-	me->txtDNSServer2->GetText(&sb);
+	me->txtDNSServer2->GetText(sb);
 	UInt32 svrIP = Net::SocketUtil::GetIPAddr(sb.ToCString());
 	if (svrIP == 0)
 	{
@@ -468,7 +468,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnDNSAddClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRDNSProxyForm *me = (SSWR::AVIRead::AVIRDNSProxyForm*)userObj;
 	Text::StringBuilderUTF8 sb;
-	me->txtDNSServer2->GetText(&sb);
+	me->txtDNSServer2->GetText(sb);
 	UInt32 svrIP = Net::SocketUtil::GetIPAddr(sb.ToCString());
 	if (svrIP == 0)
 	{
@@ -491,7 +491,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnSearchClicked(void *userObj)
 	UInt32 mask;
 	UOSInt i;
 	UOSInt j;
-	me->txtSearchIPRange->GetText(&sb);
+	me->txtSearchIPRange->GetText(sb);
 	ip = Net::SocketUtil::GetIPAddr(sb.ToCString());
 	if (ip == 0)
 	{
@@ -499,7 +499,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnSearchClicked(void *userObj)
 		return;
 	}
 	sb.ClearStr();
-	me->txtSearchMask->GetText(&sb);
+	me->txtSearchMask->GetText(sb);
 	if (sb.ToUInt32(&mask))
 	{
 		if (mask >= 32)
@@ -660,7 +660,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnBlackListClicked(void *userObj
 {
 	SSWR::AVIRead::AVIRDNSProxyForm *me = (SSWR::AVIRead::AVIRDNSProxyForm*)userObj;
 	Text::StringBuilderUTF8 sb;
-	me->txtBlackList->GetText(&sb);
+	me->txtBlackList->GetText(sb);
 	if (sb.GetLength() > 0)
 	{
 		if (me->proxy->AddBlackList(sb.ToCString()))
@@ -675,7 +675,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnWPADClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRDNSProxyForm *me = (SSWR::AVIRead::AVIRDNSProxyForm*)userObj;
 	Text::StringBuilderUTF8 sb;
-	me->txtWPAD->GetText(&sb);
+	me->txtWPAD->GetText(sb);
 	if (sb.GetLength() > 0)
 	{
 		Net::SocketUtil::AddressInfo addr;

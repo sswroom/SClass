@@ -92,7 +92,7 @@ void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnContentSelChg(void *userObj)
 	UOSInt i = 0;
 	while (i < log->ieLen)
 	{
-		Net::WirelessLANIE::ToString(&log->ieBuff[i], &sb);
+		Net::WirelessLANIE::ToString(&log->ieBuff[i], sb);
 		sb.AppendC(UTF8STRC("\r\n"));
 		i += (UOSInt)log->ieBuff[i + 1] + 2;
 	}
@@ -106,7 +106,7 @@ void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnInputClicked(void *userObj)
 	UTF8Char sbuff[2];
 	UOSInt i;
 	Text::StringBuilderUTF8 sb;
-	me->txtInput->GetText(&sb);
+	me->txtInput->GetText(sb);
 	if (sb.GetLength() < 6 || sb.GetLength() > 28)
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Invalid input"), CSTR("MAC Manager"), me);

@@ -7,7 +7,7 @@ void __stdcall SSWR::AVIRead::AVIRGooglePolylineForm::OnOKClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRGooglePolylineForm *me = (SSWR::AVIRead::AVIRGooglePolylineForm*)userObj;
 	Text::StringBuilderUTF8 sb;
-	me->txtPolylineText->GetText(&sb);
+	me->txtPolylineText->GetText(sb);
 	me->polyline = Map::GoogleMap::GoogleMapsUtil::ParsePolylineText(sb.ToString());
 	if (me->polyline)
 	{

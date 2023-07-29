@@ -19,7 +19,7 @@ void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnStartClicked(void *userObj)
 	{
 		Text::StringBuilderUTF8 sb;
 		UInt16 port;
-		me->txtPort->GetText(&sb);
+		me->txtPort->GetText(sb);
 		if (!sb.ToUInt16(&port))
 		{
 			UI::MessageDialog::ShowDialog(CSTR("Please enter valid port"), CSTR("Error"), me);
@@ -167,7 +167,7 @@ void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnMulticastClicked(void *userO
 	if (me->svr)
 	{
 		Text::StringBuilderUTF8 sb;
-		me->txtMulticastCurr->GetText(&sb);
+		me->txtMulticastCurr->GetText(sb);
 		UInt32 ip = Net::SocketUtil::GetIPAddr(sb.ToCString());
 		if (ip != 0)
 		{

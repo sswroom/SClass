@@ -964,7 +964,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			{
 				Data::VariObject *obj = r->CreateVariObject();
 				sb.ClearStr();
-				obj->ToString(&sb);
+				obj->ToString(sb);
 				console.WriteLineC(sb.ToString(), sb.GetLength());
 				DEL_CLASS(obj);
 			}
@@ -1037,11 +1037,11 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 						console.WriteLineC(UTF8STRC("Not equals:");
 						console.WriteLineC(UTF8STRC("FileGDB:");
 						sb.ClearStr();
-						Text::StringTool::BuildString(&sb, lamppost, cls);
+						Text::StringTool::BuildString(sb, lamppost, cls);
 						console.WriteLineC(sb.ToString(), sb.GetLength());
 						console.WriteLineC(UTF8STRC("CSV:");
 						sb.ClearStr();
-						Text::StringTool::BuildString(&sb, lamppost2, cls);
+						Text::StringTool::BuildString(sb, lamppost2, cls);
 						console.WriteLineC(sb.ToString(), sb.GetLength());
 						break;
 					}
@@ -1050,7 +1050,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 				t4 = clk.GetTimeDiff();
 			}*/
 /*			sb.ClearStr();
-			Text::StringTool::BuildString(&sb, &lamppostList, cls, (const UTF8Char*)"Lamppost");
+			Text::StringTool::BuildString(sb, &lamppostList, cls, (const UTF8Char*)"Lamppost");
 			console.WriteLineC(sb.ToString(), sb.GetLength());*/
 
 			i = lamppostList.GetCount();
@@ -1069,13 +1069,13 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("t1 = "));
-			Text::SBAppendF64(&sb, t1);
+			sb.AppendDouble(t1);
 			sb.AppendC(UTF8STRC(", t2 = "));
-			Text::SBAppendF64(&sb, t2);
+			sb.AppendDouble(t2);
 			sb.AppendC(UTF8STRC(", t3 = "));
-			Text::SBAppendF64(&sb, t3);
+			sb.AppendDouble(t3);
 /*			sb.AppendC(UTF8STRC(", t4 = "));
-			Text::SBAppendF64(&sb, t4);*/
+			sb.AppendDouble(t4);*/
 			console.WriteLineC(sb.ToString(), sb.GetLength());
 		}
 		DEL_CLASS(cls);

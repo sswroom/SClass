@@ -108,7 +108,7 @@ void SSWR::AVIRead::AVIRDragDropViewerForm::DropData(UI::GUIDropData *data, OSIn
 	{
 		csptr = data->GetName(i);
 		sb.ClearStr();
-		if (data->GetDataText(csptr, &sb))
+		if (data->GetDataText(csptr, sb))
 		{
 			this->dropMap->Put(csptr, Text::StrCopyNewC(sb.ToString(), sb.GetLength()).Ptr());
 		}

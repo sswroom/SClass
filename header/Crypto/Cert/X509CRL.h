@@ -14,14 +14,14 @@ namespace Crypto
 			virtual ~X509CRL();
 
 			virtual FileType GetFileType() const;
-			virtual void ToShortName(Text::StringBuilderUTF8 *sb) const;
+			virtual void ToShortName(NotNullPtr<Text::StringBuilderUTF8> sb) const;
 			virtual ValidStatus IsValid(Net::SSLEngine *ssl, Crypto::Cert::CertStore *trustStore) const;
 			
 			virtual ASN1Data *Clone() const;
-			virtual void ToString(Text::StringBuilderUTF8 *sb) const;
+			virtual void ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const;
 
 			Bool HasVersion() const;
-			Bool GetIssuerCN(Text::StringBuilderUTF8 *sb) const;
+			Bool GetIssuerCN(NotNullPtr<Text::StringBuilderUTF8> sb) const;
 			Bool GetThisUpdate(Data::DateTime *dt) const;
 			Bool GetNextUpdate(Data::DateTime *dt) const;
 			Bool IsRevoked(Crypto::Cert::X509Cert *cert) const;

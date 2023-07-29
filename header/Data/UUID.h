@@ -28,7 +28,7 @@ namespace Data
 		UInt8 GetClkSeqLow() const;
 		UInt64 GetNode() const;
 
-		void ToString(Text::StringBuilderUTF8 *sb) const;
+		void ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const;
 		UTF8Char *ToString(UTF8Char *sbuff) const;
 		UUID *Clone() const;
 		Bool Equals(UUID *uuid) const;

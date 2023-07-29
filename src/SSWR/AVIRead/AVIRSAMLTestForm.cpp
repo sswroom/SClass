@@ -87,12 +87,12 @@ void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnSSLCertClicked(void *userObj)
 		me->sslCert = frm.GetCert();
 		me->sslKey = frm.GetKey();
 		Text::StringBuilderUTF8 sb;
-		me->sslCert->ToShortString(&sb);
+		me->sslCert->ToShortString(sb);
 		sb.AppendC(UTF8STRC(", "));
-		me->sslKey->ToShortString(&sb);
+		me->sslKey->ToShortString(sb);
 		me->lblSSLCert->SetText(sb.ToCString());
 		sb.ClearStr();
-		if (me->sslCert->GetSubjectCN(&sb))
+		if (me->sslCert->GetSubjectCN(sb))
 		{
 			me->txtHost->SetText(sb.ToCString());
 		}		
@@ -124,7 +124,7 @@ void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnStartClicked(void *userObj)
 	UInt16 port = 0;
 	Bool valid = true;
 	Text::StringBuilderUTF8 sb;
-	me->txtPort->GetText(&sb);
+	me->txtPort->GetText(sb);
 	Text::StrToUInt16S(sb.ToString(), &port, 0);
 	Net::SSLEngine *ssl = 0;
 
@@ -147,7 +147,7 @@ void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnStartClicked(void *userObj)
 	{
 		Net::WebServer::SAMLConfig cfg;
 		sb.ClearStr();
-		me->txtHost->GetText(&sb);
+		me->txtHost->GetText(sb);
 		if (sb.GetLength() == 0)
 		{
 			UI::MessageDialog::ShowDialog(CSTR("Please enter host"), CSTR("SAML Test"), me);
@@ -156,7 +156,7 @@ void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnStartClicked(void *userObj)
 		cfg.serverHost = sb.ToCString();
 
 		Text::StringBuilderUTF8 sbSignCert;
-		me->txtSignCert->GetText(&sbSignCert);
+		me->txtSignCert->GetText(sbSignCert);
 		if (sbSignCert.GetLength() == 0)
 		{
 			UI::MessageDialog::ShowDialog(CSTR("Please enter Signature Cert"), CSTR("SAML Test"), me);
@@ -170,7 +170,7 @@ void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnStartClicked(void *userObj)
 		cfg.signCertPath = sbSignCert.ToCString();
 
 		Text::StringBuilderUTF8 sbSignKey;
-		me->txtSignKey->GetText(&sbSignKey);
+		me->txtSignKey->GetText(sbSignKey);
 		if (sbSignKey.GetLength() == 0)
 		{
 			UI::MessageDialog::ShowDialog(CSTR("Please enter Signature Key"), CSTR("SAML Test"), me);
@@ -184,7 +184,7 @@ void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnStartClicked(void *userObj)
 		cfg.signKeyPath = sbSignKey.ToCString();
 
 		Text::StringBuilderUTF8 sbLogoutPath;
-		me->txtLogoutPath->GetText(&sbLogoutPath);
+		me->txtLogoutPath->GetText(sbLogoutPath);
 		if (sbLogoutPath.GetLength() == 0)
 		{
 			UI::MessageDialog::ShowDialog(CSTR("Please enter Logout Path"), CSTR("SAML Test"), me);
@@ -198,7 +198,7 @@ void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnStartClicked(void *userObj)
 		cfg.logoutPath = sbLogoutPath.ToCString();
 
 		Text::StringBuilderUTF8 sbMetadataPath;
-		me->txtMetadataPath->GetText(&sbMetadataPath);
+		me->txtMetadataPath->GetText(sbMetadataPath);
 		if (sbMetadataPath.GetLength() == 0)
 		{
 			UI::MessageDialog::ShowDialog(CSTR("Please enter Metadata Path"), CSTR("SAML Test"), me);
@@ -212,7 +212,7 @@ void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnStartClicked(void *userObj)
 		cfg.metadataPath = sbMetadataPath.ToCString();
 
 		Text::StringBuilderUTF8 sbSSOPath;
-		me->txtSSOPath->GetText(&sbSSOPath);
+		me->txtSSOPath->GetText(sbSSOPath);
 		if (sbSSOPath.GetLength() == 0)
 		{
 			UI::MessageDialog::ShowDialog(CSTR("Please enter SSO Path"), CSTR("SAML Test"), me);
@@ -269,13 +269,13 @@ void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnStartClicked(void *userObj)
 		me->btnStart->SetText(CSTR("Stop"));
 
 		sb.ClearStr();
-		me->samlHdlr->GetLogoutURL(&sb);
+		me->samlHdlr->GetLogoutURL(sb);
 		me->txtLogoutURL->SetText(sb.ToCString());
 		sb.ClearStr();
-		me->samlHdlr->GetMetadataURL(&sb);
+		me->samlHdlr->GetMetadataURL(sb);
 		me->txtMetadataURL->SetText(sb.ToCString());
 		sb.ClearStr();
-		me->samlHdlr->GetSSOURL(&sb);
+		me->samlHdlr->GetSSOURL(sb);
 		me->txtSSOURL->SetText(sb.ToCString());
 	}
 	else
@@ -299,17 +299,17 @@ void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnTimerTick(void *userObj)
 		Text::StringBuilderUTF8 sb;
 		{
 			IO::MemoryReadingStream mstm(me->respNew->v, me->respNew->leng);
-			Text::XMLReader::XMLWellFormat(me->core->GetEncFactory(), mstm, 0, &sb);
+			Text::XMLReader::XMLWellFormat(me->core->GetEncFactory(), mstm, 0, sb);
 		}
 		me->txtSAMLRespWF->SetText(sb.ToCString());
 
 		Crypto::Cert::X509Key *key = me->samlHdlr->GetKey()->CreateKey();
 		sb.ClearStr();
-		if (Net::SAMLUtil::DecryptResponse(me->ssl, me->core->GetEncFactory(), key, me->respNew->ToCString(), &sb))
+		if (Net::SAMLUtil::DecryptResponse(me->ssl, me->core->GetEncFactory(), key, me->respNew->ToCString(), sb))
 		{
 			IO::MemoryReadingStream mstm(sb.v, sb.GetLength());
 			Text::StringBuilderUTF8 sb2;
-			Text::XMLReader::XMLWellFormat(me->core->GetEncFactory(), mstm, 0, &sb2);
+			Text::XMLReader::XMLWellFormat(me->core->GetEncFactory(), mstm, 0, sb2);
 			me->txtSAMLDecrypt->SetText(sb2.ToCString());
 		}
 		else
@@ -337,18 +337,18 @@ Bool __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnLoginRequest(void *userObj, Ne
 	Text::StringBuilderUTF8 sb;
 	Text::String *decMsg = 0;
 	Crypto::Cert::X509Key *key = me->samlHdlr->GetKey()->CreateKey();
-	if (Net::SAMLUtil::DecryptResponse(me->ssl, me->core->GetEncFactory(), key, msg->rawMessage, &sb))
+	if (Net::SAMLUtil::DecryptResponse(me->ssl, me->core->GetEncFactory(), key, msg->rawMessage, sb))
 	{
 		IO::MemoryReadingStream mstm(sb.v, sb.GetLength());
 		Text::StringBuilderUTF8 sb2;
-		Text::XMLReader::XMLWellFormat(me->core->GetEncFactory(), mstm, 0, &sb2);
+		Text::XMLReader::XMLWellFormat(me->core->GetEncFactory(), mstm, 0, sb2);
 		decMsg = Text::XML::ToNewHTMLTextXMLColor(sb2.ToString()).Ptr();
 	}
 	DEL_CLASS(key);
 	{
 		IO::MemoryReadingStream mstm(msg->rawMessage.v, msg->rawMessage.leng);
 		sb.ClearStr();
-		Text::XMLReader::XMLWellFormat(me->core->GetEncFactory(), mstm, 0, &sb);
+		Text::XMLReader::XMLWellFormat(me->core->GetEncFactory(), mstm, 0, sb);
 	}
 	NotNullPtr<Text::String> msgContent = Text::XML::ToNewHTMLTextXMLColor(sb.ToString());
 	sb.ClearStr();

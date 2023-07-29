@@ -45,8 +45,8 @@ namespace IO
 			//AT+CNSMOD
 			//AT+CSCLK
 			UTF8Char *SIMCOMGetICCID(UTF8Char *ccid); //AT+CCID
-			Bool SIMCOMGetFlashDeviceType(Text::StringBuilderUTF8 *sb); //AT+CDEVICE
-			Bool SIMCOMGetDeviceProductID(Text::StringBuilderUTF8 *sb); //AT+GSV
+			Bool SIMCOMGetFlashDeviceType(NotNullPtr<Text::StringBuilderUTF8> sb); //AT+CDEVICE
+			Bool SIMCOMGetDeviceProductID(NotNullPtr<Text::StringBuilderUTF8> sb); //AT+GSV
 			//AT+SGPIO
 			//AT+SLEDS
 			//AT+CNETLIGHT

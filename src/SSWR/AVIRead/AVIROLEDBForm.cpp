@@ -9,7 +9,7 @@ void __stdcall SSWR::AVIRead::AVIROLEDBForm::OnOKClicked(void *userObj)
 {
 	Text::StringBuilderUTF8 sb;
 	SSWR::AVIRead::AVIROLEDBForm *me = (SSWR::AVIRead::AVIROLEDBForm*)userObj;
-	me->txtConnStr->GetText(&sb);
+	me->txtConnStr->GetText(sb);
 
 	DB::OLEDBConn *conn;
 	const WChar *wptr = Text::StrToWCharNew(sb.ToString());

@@ -73,7 +73,7 @@ UTF8Char *Map::GoogleMap::GoogleWSSearcherXML::SearchName(UTF8Char *buff, UOSInt
 				result = doc.SearchNode(CSTR("/GeocodeResponse/status"), &resultCnt);
 				if (resultCnt == 1)
 				{
-					result[0]->GetInnerXML(&sb);
+					result[0]->GetInnerXML(sb);
 					if (Text::StrEqualsICaseC(sb.ToString(), sb.GetLength(), UTF8STRC("OK")))
 					{
 						succ = true;
@@ -100,7 +100,7 @@ UTF8Char *Map::GoogleMap::GoogleWSSearcherXML::SearchName(UTF8Char *buff, UOSInt
 					if (resultCnt > 0)
 					{
 						sb.ClearStr();
-						result[0]->GetInnerXML(&sb);
+						result[0]->GetInnerXML(sb);
 						buff = Text::StrConcatS(buff, sb.ToString(), buffSize);
 					}
 					if (result)

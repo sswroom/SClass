@@ -15,7 +15,7 @@ void __stdcall SSWR::AVIRead::AVIRAsmConvForm::OnConv2Clicked(void *userObj)
 	SSWR::AVIRead::AVIRAsmConvForm *me = (SSWR::AVIRead::AVIRAsmConvForm*)userObj;
 	Text::StringBuilderUTF8 sb;
 	UI::Clipboard clipboard(me->GetHandle());
-	if (clipboard.GetString(me->GetHandle(), &sb))
+	if (clipboard.GetString(me->GetHandle(), sb))
 	{
 		me->txtIntelAsm->SetText(sb.ToCString());
 	}
@@ -25,7 +25,7 @@ void __stdcall SSWR::AVIRead::AVIRAsmConvForm::OnConv2Clicked(void *userObj)
 	}
 	me->ConvAsm();
 	sb.ClearStr();
-	me->txtGNUAsm->GetText(&sb);
+	me->txtGNUAsm->GetText(sb);
 	clipboard.SetString(me->GetHandle(), sb.ToCString());
 }
 
@@ -94,7 +94,7 @@ void SSWR::AVIRead::AVIRAsmConvForm::ConvAsm()
 	regSize.Insert(regKey.SortedInsert((const UTF8Char*)"xmm6"), 16);
 	regSize.Insert(regKey.SortedInsert((const UTF8Char*)"xmm7"), 16);
 
-	this->txtIntelAsm->GetText(&srcSb);
+	this->txtIntelAsm->GetText(srcSb);
 	lineStart = srcSb.v;
 	lineEnd = srcSb.GetEndPtr();
 

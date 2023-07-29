@@ -6,7 +6,7 @@ void __stdcall SSWR::AVIRead::AVIRTMSForm::OnLoadClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRTMSForm *me = (SSWR::AVIRead::AVIRTMSForm *)userObj;
 	Text::StringBuilderUTF8 sb;
-	me->txtTMSURL->GetText(&sb);
+	me->txtTMSURL->GetText(sb);
 	SDEL_CLASS(me->tms);
 	NEW_CLASS(me->tms, Map::TileMapServiceSource(me->core->GetSocketFactory(), me->ssl, me->core->GetEncFactory(), sb.ToCString()));
 	if (me->tms->IsError())

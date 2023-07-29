@@ -9,7 +9,7 @@ void __stdcall SSWR::AVIRead::AVIRCertTextForm::OnLoadClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRCertTextForm *me = (SSWR::AVIRead::AVIRCertTextForm*)userObj;
 	Text::StringBuilderUTF8 sb;
-	me->txtText->GetText(&sb);
+	me->txtText->GetText(sb);
 	if (sb.GetLength() == 0)
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Please enter text to load first"), CSTR("Certificate Load from Text"), me);

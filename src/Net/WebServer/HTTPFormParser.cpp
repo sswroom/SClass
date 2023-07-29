@@ -14,7 +14,7 @@ Net::WebServer::HTTPFormParser::HTTPFormParser(Net::WebServer::IWebRequest *req,
 	NEW_CLASS(this->strNames, Data::ArrayListStrUTF8());
 	NEW_CLASS(this->strValues, Data::ArrayListStrUTF8());
 
-	if (!req->GetHeaderC(&sb, CSTR("Content-Type")))
+	if (!req->GetHeaderC(sb, CSTR("Content-Type")))
 	{
 		return;
 	}

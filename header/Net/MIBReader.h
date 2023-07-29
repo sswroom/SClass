@@ -22,13 +22,13 @@ namespace Net
 		EscapeType escapeType;
 
 		Bool ReadLineInner(NotNullPtr<Text::StringBuilderUTF8> sb);
-		Bool ReadWord(Text::StringBuilderUTF8 *sb, Bool move);
+		Bool ReadWord(NotNullPtr<Text::StringBuilderUTF8> sb, Bool move);
 	public:
 		MIBReader(NotNullPtr<IO::Stream> stm);
 		~MIBReader();
 
-		Bool PeekWord(Text::StringBuilderUTF8 *sb);
-		Bool NextWord(Text::StringBuilderUTF8 *sb);
+		Bool PeekWord(NotNullPtr<Text::StringBuilderUTF8> sb);
+		Bool NextWord(NotNullPtr<Text::StringBuilderUTF8> sb);
 		Bool ReadLine(NotNullPtr<Text::StringBuilderUTF8> sb);
 		Bool GetLastLineBreak(NotNullPtr<Text::StringBuilderUTF8> sb);
 	};

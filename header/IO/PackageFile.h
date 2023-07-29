@@ -118,7 +118,7 @@ namespace IO
 		virtual IO::StreamData *OpenStreamData(Text::CString fileName) const;
 
 		void SetInfo(InfoType infoType, const UTF8Char *val);
-		void GetInfoText(Text::StringBuilderUTF8 *sb) const;
+		void GetInfoText(NotNullPtr<Text::StringBuilderUTF8> sb) const;
 		static Text::CString GetInfoTypeName(InfoType infoType);
 	};
 }

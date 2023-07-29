@@ -9,7 +9,7 @@ void __stdcall SSWR::AVIRead::AVIRWebSite7gogoForm::OnRequestPageClicked(void *u
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
-	me->txtChannelId->GetText(&sb);
+	me->txtChannelId->GetText(sb);
 	me->lvItems->ClearItems();
 	if (sb.GetLength() > 0)
 	{

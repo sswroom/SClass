@@ -24,7 +24,7 @@ namespace SSWR
 				UOSInt totalCnt;
 				Data::Timestamp startTime;
 				Data::Timestamp lastUpdateTime;
-				Text::StringBuilderUTF8 *sbInsert;
+				NotNullPtr<Text::StringBuilderUTF8> sbInsert;
 				UOSInt nInsert;
 				DB::DBConn *db;
 			};
