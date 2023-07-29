@@ -23,7 +23,7 @@ namespace Net
 			Net::SSLEngine *ssl;
 			NotNullPtr<Net::TCPClient> cli;
 			IO::BufferedOutputStream *cstm;
-			Net::WebServer::WebListener *svr;
+			NotNullPtr<Net::WebServer::WebListener> svr;
 			Net::WebServer::IWebHandler *hdlr;
 			ProtocolHandler *protoHdlr;
 			UInt8 *dataBuff;
@@ -50,7 +50,7 @@ namespace Net
 			SSEDisconnectHandler sseHdlr;
 			void *sseHdlrObj;
 		public:
-			WebConnection(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, NotNullPtr<Net::TCPClient> cli, WebListener *svr, IWebHandler *hdlr, Bool allowProxy, KeepAlive KeepAlive);
+			WebConnection(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, NotNullPtr<Net::TCPClient> cli, NotNullPtr<WebListener> svr, IWebHandler *hdlr, Bool allowProxy, KeepAlive KeepAlive);
 			virtual ~WebConnection();
 
 			void ReceivedData(const Data::ByteArrayR &buff);

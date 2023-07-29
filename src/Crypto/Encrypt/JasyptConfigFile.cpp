@@ -41,7 +41,7 @@ Text::String *Crypto::Encrypt::JasyptConfigFile::GetCateValue(Text::String *cate
 	if (s && s->StartsWith(UTF8STRC("ENC(")) && s->EndsWith(')') && s->leng < 512)
 	{
 		UOSInt leng = this->enc.DecryptB64(&s->v[4], s->leng - 5, sbuff);
-		if (Text::StringTool::IsASCIIText(sbuff, leng))
+		if (Text::StringTool::IsASCIIText(Data::ByteArrayR(sbuff, leng)))
 		{
 			cate = this->decVals.Get(category);
 			if (cate == 0)
@@ -79,7 +79,7 @@ Text::String *Crypto::Encrypt::JasyptConfigFile::GetCateValue(Text::CString cate
 	if (s && s->StartsWith(UTF8STRC("ENC(")) && s->EndsWith(')'))
 	{
 		UOSInt leng = this->enc.DecryptB64(&s->v[4], s->leng - 5, sbuff);
-		if (Text::StringTool::IsASCIIText(sbuff, leng))
+		if (Text::StringTool::IsASCIIText(Data::ByteArrayR(sbuff, leng)))
 		{
 			cate = this->decVals.GetC(category);
 			if (cate == 0)

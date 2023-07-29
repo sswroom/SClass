@@ -1,8 +1,8 @@
 #ifndef _SM_NET_TCPCLIENTMGR
 #define _SM_NET_TCPCLIENTMGR
 #include "Data/ArrayList.h"
-#include "Data/ArrayListUInt64.h"
 #include "Data/ByteArray.h"
+#include "Data/FastMap.h"
 #include "Data/SyncCircularBuff.h"
 #include "Data/Timestamp.h"
 #include "IO/FileStream.h"
@@ -76,8 +76,7 @@ namespace Net
 		Bool toStop;
 		Bool clientThreadRunning;
 
-		Data::ArrayListUInt64 cliIdArr;
-		Data::ArrayList<TCPClientStatus*> cliArr;
+		Data::UInt64FastMap<TCPClientStatus*> cliMap;
 		Sync::Mutex cliMut;
 
 		WorkerStatus *workers;

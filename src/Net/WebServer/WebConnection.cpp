@@ -24,7 +24,7 @@
 #define WRITE_BUFFER_SIZE MAX_CHUNK_SIZE
 #endif
 
-Net::WebServer::WebConnection::WebConnection(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, NotNullPtr<Net::TCPClient> cli, WebListener *svr, IWebHandler *hdlr, Bool allowProxy, KeepAlive keepAlive) : Net::WebServer::IWebResponse(CSTR("WebConnection"))
+Net::WebServer::WebConnection::WebConnection(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, NotNullPtr<Net::TCPClient> cli, NotNullPtr<WebListener> svr, IWebHandler *hdlr, Bool allowProxy, KeepAlive keepAlive) : Net::WebServer::IWebResponse(CSTR("WebConnection"))
 {
 	this->sockf = sockf;
 	this->ssl = ssl;

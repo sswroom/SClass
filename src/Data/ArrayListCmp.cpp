@@ -2,7 +2,6 @@
 #include "MyMemory.h"
 #include "Data/IComparable.h"
 #include "Data/ArrayListCmp.h"
-#include <stdlib.h>
 
 Data::ArrayListCmp::ArrayListCmp() : Data::SortableArrayList<Data::IComparable*>()
 {

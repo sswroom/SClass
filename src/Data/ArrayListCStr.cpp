@@ -11,15 +11,15 @@ Data::ArrayListCStr::ArrayListCStr(UOSInt capacity) : Data::SortableArrayList<Te
 {
 }
 
-Data::ArrayList<Text::CString> *Data::ArrayListCStr::Clone()
+NotNullPtr<Data::ArrayList<Text::CString>> Data::ArrayListCStr::Clone() const
 {
-	Data::ArrayListCStr *newArr;
-	NEW_CLASS(newArr, Data::ArrayListCStr(this->capacity));
-	newArr->AddAll(this);
+	NotNullPtr<Data::ArrayList<Text::CString>> newArr;
+	NEW_CLASSNN(newArr, Data::ArrayListCStr(this->capacity));
+	newArr->AddAll(*this);
 	return newArr;
 }
 
-OSInt Data::ArrayListCStr::CompareItem(Text::CString obj1, Text::CString obj2)
+OSInt Data::ArrayListCStr::Compare(Text::CString obj1, Text::CString obj2) const
 {
 	return obj1.CompareTo(obj2);
 }

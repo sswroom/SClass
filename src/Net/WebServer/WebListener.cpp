@@ -9,11 +9,14 @@
 
 void __stdcall Net::WebServer::WebListener::ClientReady(NotNullPtr<Net::TCPClient> cli, void *userObj)
 {
-	Net::WebServer::WebListener *me = (Net::WebServer::WebListener*)userObj;
-	Net::WebServer::WebConnection *conn;
-	NEW_CLASS(conn, Net::WebServer::WebConnection(me->sockf, me->ssl, cli, me, me->hdlr, me->allowProxy, me->keepAlive));
-	conn->SetSendLogger(OnDataSent, me);
-	me->cliMgr.AddClient(cli, conn);
+	NotNullPtr<Net::WebServer::WebListener> me;
+	if (me.Set((Net::WebServer::WebListener*)userObj))
+	{
+		Net::WebServer::WebConnection *conn;
+		NEW_CLASS(conn, Net::WebServer::WebConnection(me->sockf, me->ssl, cli, me, me->hdlr, me->allowProxy, me->keepAlive));
+		conn->SetSendLogger(OnDataSent, userObj);
+		me->cliMgr.AddClient(cli, conn);
+	}
 }
 
 void __stdcall Net::WebServer::WebListener::ConnHdlr(Socket *s, void *userObj)

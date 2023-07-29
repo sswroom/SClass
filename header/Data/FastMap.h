@@ -26,6 +26,7 @@ namespace Data
 		virtual UOSInt GetCount() const;
 		virtual T GetKey(UOSInt index) const;
 		virtual V GetItem(UOSInt index) const;
+		V RemoveAt(UOSInt index);
 		virtual Bool IsEmpty() const;
 		virtual V *ToArray(UOSInt *objCnt);
 		virtual void Clear();
@@ -151,6 +152,11 @@ namespace Data
 		return this->values.GetItem(index).value;
 	}
 
+	template <class T, class V> V FastMap<T, V>::RemoveAt(UOSInt index)
+	{
+		return this->values.RemoveAt(index).value;
+	}
+	
 	template <class T, class V> Bool FastMap<T, V>::IsEmpty() const
 	{
 		return this->values.GetCount() == 0;
