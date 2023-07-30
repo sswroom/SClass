@@ -2739,7 +2739,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(Net::WebSe
 				writer.WriteStrC(wfile->srcUrl->v, wfile->srcUrl->leng);
 				writer.WriteStrC(UTF8STRC("</a><br/>"));
 
-				if (env.user->userType == 0)
+				if (env.user && env.user->userType == 0)
 				{
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("<form name=\"photo\" method=\"POST\" action=\"photodetail.html?id="));
