@@ -1020,6 +1020,11 @@ void Net::UserAgentDB::ParseUserAgent(Net::UserAgentDB::UAEntry *ent, Text::CStr
 			sptr[0] = 0;
 			strs[nstrs - 1].leng = (UOSInt)(sptr - strs[nstrs - 1].v);
 			strs[nstrs++].v = sptr + 1;
+			if (nstrs >= 30)
+			{
+				sptr = sbuffEnd;
+				break;
+			}
 		}
 		else if (c == ')' && bst)
 		{
