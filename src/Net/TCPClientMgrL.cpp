@@ -331,7 +331,6 @@ void Net::TCPClientMgr::LogDisconnect(NotNullPtr<TCPClient> cli)
 		buff[20] = 1;
 		Sync::MutexUsage mutUsage(this->logMut);
 		this->logFS->Write(buff, 21);
-		this->logFS->Flush();
 	}
 }
 
@@ -349,7 +348,6 @@ void Net::TCPClientMgr::LogDataRecv(NotNullPtr<TCPClient> cli, const UInt8 *data
 		Sync::MutexUsage mutUsage(this->logMut);
 		this->logFS->Write(buff, 23);
 		this->logFS->Write(data, size);
-		this->logFS->Flush();
 	}
 }
 
@@ -498,7 +496,6 @@ void Net::TCPClientMgr::AddClient(NotNullPtr<TCPClient> cli, void *cliData)
 		buff[20] = 0;
 		Sync::MutexUsage mutUsage(this->logMut);
 		this->logFS->Write(buff, 21);
-		this->logFS->Flush();
 	}
 	if (cliId == 0)
 	{
@@ -559,7 +556,6 @@ Bool Net::TCPClientMgr::SendClientData(UInt64 cliId, const UInt8 *data, UOSInt b
 			Sync::MutexUsage mutUsage(this->logMut);
 			this->logFS->Write(buff, 23);
 			this->logFS->Write(data, buffSize);
-			this->logFS->Flush();
 		}
 		return cliStat->cli->Write(data, buffSize) == buffSize;
 	}
