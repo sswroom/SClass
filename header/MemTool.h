@@ -14,6 +14,7 @@ void MemCopyAC(destPtr, srcPtr, len);
 void MemCopyANC(destPtr, srcPtr, len);
 void MemCopyNAC(destPtr, srcPtr, len);
 void MemCopyNANC(destPtr, srcPtr, len);
+//void MemCopyOAC(destPtr, srcPtr, len);
 
 void MemXOR(const UInt8 *srcBuff1, const UInt8 *srcBuff2, UInt8 *destBuff, OSInt count);
 */
@@ -82,6 +83,152 @@ extern "C"
 {
 	void MemClearANC(void *buff, UOSInt buffSize); //buff 16-byte align, buffSize 16 bytes
 	void MemClearAC(void *buff, UOSInt buffSize); //buff 16-byte align, buffSize 16 bytes
+}
+
+FORCEINLINE void MemCopyOAC(void *destPtr, const void *srcPtr, UOSInt leng)
+{
+	_asm
+	{
+		mov ecx,leng
+		mov esi,srcPtr
+		mov edi,destPtr
+		cmp esi,edi
+		jz mcaexit
+		ja mcarlop0
+		cmp ecx,128
+		jb mcalop
+
+		mov edx,ecx
+		shr ecx,7
+		ALIGN 16
+mcalop5f:
+		movups xmm0,mmword ptr [esi]
+		movups xmm1,mmword ptr [esi+16]
+		movups xmm2,mmword ptr [esi+32]
+		movups xmm3,mmword ptr [esi+48]
+		movups xmm4,mmword ptr [esi+64]
+		movups xmm5,mmword ptr [esi+80]
+		movups xmm6,mmword ptr [esi+96]
+		movups xmm7,mmword ptr [esi+112]
+		movaps xmmword ptr [edi],xmm0
+		movaps xmmword ptr [edi+16],xmm1
+		movaps xmmword ptr [edi+32],xmm2
+		movaps xmmword ptr [edi+48],xmm3
+		movaps xmmword ptr [edi+64],xmm4
+		movaps xmmword ptr [edi+80],xmm5
+		movaps xmmword ptr [edi+96],xmm6
+		movaps xmmword ptr [edi+112],xmm7
+		lea esi,[esi+128]
+		lea edi,[edi+128]
+		dec ecx
+		jnz mcalop5f
+
+		and edx,0x7f
+		jz mcaexit
+		mov ecx,edx
+		shr ecx,4
+		jz mcalop2
+		align 16
+mcalop5g:
+		movups xmm0,mmword ptr [esi]
+		movaps mmword ptr [edi],xmm0
+		lea esi,[esi+16]
+		lea edi,[edi+16]
+		dec ecx
+		jnz mcalop5g
+		sfence
+		mov ecx,0xf
+		and ecx,edx
+		jz mcaexit
+		rep movsb
+		jmp mcaexit
+
+		align 16
+mcalop2:
+		mov ecx,edx
+		align 16
+mcalop:
+		mov edx,ecx
+		shr ecx,2
+		rep movsd
+		mov ecx,edx
+		and ecx,3
+		jz mcaexit
+		rep movsb
+		align 16
+		jmp mcaexit
+
+mcarlop0:
+		add esi,ecx
+		add edi,ecx
+		cmp ecx,128
+		jb mcarlop
+
+		mov edx,ecx
+		shr ecx,7
+		ALIGN 16
+mcarlop5f:
+		movups xmm0,mmword ptr [esi-128]
+		movups xmm1,mmword ptr [esi-112]
+		movups xmm2,mmword ptr [esi-96]
+		movups xmm3,mmword ptr [esi-80]
+		movups xmm4,mmword ptr [esi-64]
+		movups xmm5,mmword ptr [esi-48]
+		movups xmm6,mmword ptr [esi-32]
+		movups xmm7,mmword ptr [esi-16]
+		movaps xmmword ptr [edi-128],xmm0
+		movaps xmmword ptr [edi-112],xmm1
+		movaps xmmword ptr [edi-96],xmm2
+		movaps xmmword ptr [edi-80],xmm3
+		movaps xmmword ptr [edi-64],xmm4
+		movaps xmmword ptr [edi-48],xmm5
+		movaps xmmword ptr [edi-32],xmm6
+		movaps xmmword ptr [edi-16],xmm7
+		lea esi,[esi-128]
+		lea edi,[edi-128]
+		dec ecx
+		jnz mcarlop5f
+
+		and edx,0x7f
+		jz mcaexit
+		mov ecx,edx
+		shr ecx,4
+		jz mcarlop2
+		align 16
+mcarlop5g:
+		movups xmm0,mmword ptr [esi-16]
+		movaps mmword ptr [edi-16],xmm0
+		lea esi,[esi-16]
+		lea edi,[edi-16]
+		dec ecx
+		jnz mcarlop5g
+		sfence
+		mov ecx,0xf
+		and ecx,edx
+		jz mcaexit
+		std
+		rep movsb
+		cld
+		jmp mcaexit
+
+		align 16
+mcarlop2:
+		mov ecx,edx
+		align 16
+mcarlop:
+		mov edx,ecx
+		shr ecx,2
+		std
+		rep movsd
+		mov ecx,edx
+		and ecx,3
+		jz mcarexit
+		rep movsb
+		align 16
+mcarexit:
+		cld
+mcaexit:
+	}
 }
 
 FORCEINLINE void MemCopyAC(void *destPtr, const void *srcPtr, UOSInt leng)
@@ -406,6 +553,7 @@ extern MemCopyFunc MemCopyAC;
 extern MemCopyFunc MemCopyANC;
 extern MemCopyFunc MemCopyNAC;
 extern MemCopyFunc MemCopyNANC;
+//extern MemCopyFunc MemCopyOAC;
 
 #if !defined(_MSC_VER) && !defined(__MINGW32__)
 extern "C"
@@ -422,6 +570,7 @@ extern "C"
 #define MemCopyANC(destPtr, srcPtr, len) MemCopyNO(destPtr, srcPtr, len)
 #define MemCopyNAC(destPtr, srcPtr, len) MemCopyNO(destPtr, srcPtr, len)
 #define MemCopyNANC(destPtr, srcPtr, len) MemCopyNO(destPtr, srcPtr, len)
+//#define MemCopyOAC(destPtr, srcPtr, len) MemCopyO(destPtr, srcPtr, len)
 #endif
 
 

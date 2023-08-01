@@ -78,8 +78,9 @@ void IO::SMake::AppendCfgPath(NotNullPtr<Text::StringBuilderUTF8> sb, Text::CStr
 	}
 }
 
-void IO::SMake::AppendCfg(NotNullPtr<Text::StringBuilderUTF8> sb, Text::CString compileCfg)
+void IO::SMake::AppendCfg(NotNullPtr<Text::StringBuilderUTF8> sb, Text::CString compileCfgC)
 {
+	Text::CString compileCfg = compileCfgC;
 	UOSInt i = compileCfg.IndexOf('`');
 	if (i != INVALID_INDEX)
 	{
@@ -661,7 +662,7 @@ Bool IO::SMake::ParseHeader(Data::FastStringMap<Int32> *objList, Data::FastStrin
 		tmpSb->TrimToLength(i);
 		currHeader = currHeader + 3;
 	}
-	tmpSb->AppendChar(IO::Path::PATH_SEPERATOR, 1);
+	tmpSb->AppendUTF8Char(IO::Path::PATH_SEPERATOR);
 	tmpSb->AppendC(currHeader, (UOSInt)(currHeaderEnd - currHeader));
 	sptr = IO::Path::GetRealPath(sbuff, tmpSb->ToString(), tmpSb->GetLength());
 	if (IO::Path::GetPathType(CSTRP(sbuff, sptr)) == IO::Path::PathType::File)
@@ -801,8 +802,6 @@ Bool IO::SMake::CompileProgInternal(NotNullPtr<const ProgramItem> prog, Bool asm
 	Data::FastStringMap<Int32> libList;
 	Data::FastStringMap<Int32> objList;
 	Data::FastStringMap<Int32> procList;
-	UOSInt i;
-	UOSInt j;
 	Int64 latestTime = 0;
 	Int64 thisTime;
 	NotNullPtr<IO::SMake::ProgramItem> subProg;
@@ -832,15 +831,15 @@ Bool IO::SMake::CompileProgInternal(NotNullPtr<const ProgramItem> prog, Bool asm
 	}
 	if (progGroup)
 	{
-		i = 0;
-		j = objList.GetCount();
-		while (i < j)
+		Data::FastStringKeyIterator<Int32> iterator = objList.KeyIterator();
+		while (iterator.HasNext())
 		{
-			if (!subProg.Set(this->progMap.Get(objList.GetKey(i))))
+			NotNullPtr<Text::String> objName = iterator.Next();
+			if (!subProg.Set(this->progMap.GetNN(objName)))
 			{
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("Program "));
-				sb.Append(objList.GetKey(i));
+				sb.Append(objName);
 				sb.AppendC(UTF8STRC(" not found"));
 				this->SetErrorMsg(sb.ToCString());
 				return false;
@@ -849,7 +848,6 @@ Bool IO::SMake::CompileProgInternal(NotNullPtr<const ProgramItem> prog, Bool asm
 			{
 				return false;
 			}
-			i++;
 		}
 		return true;
 	}
@@ -861,8 +859,8 @@ Bool IO::SMake::CompileProgInternal(NotNullPtr<const ProgramItem> prog, Bool asm
 	IO::SMake::ConfigItem *cflagsCfg = this->cfgMap.Get(CSTR("CFLAGS"));
 	IO::SMake::ConfigItem *cppflagsCfg = this->cfgMap.Get(CSTR("CPPFLAGS"));
 	IO::SMake::ConfigItem *libsCfg = this->cfgMap.Get(CSTR("LIBS"));
-	Data::DateTime dt1;
-	Data::DateTime dt2;
+	Data::Timestamp dt1;
+	Data::Timestamp dt2;
 	if (cppCfg == 0)
 	{
 		this->SetErrorMsg(CSTR("CXX config not found"));
@@ -880,24 +878,25 @@ Bool IO::SMake::CompileProgInternal(NotNullPtr<const ProgramItem> prog, Bool asm
 	}
 	
 	IO::Path::CreateDirectory(CSTR(OBJECTPATH));
-	i = 0;
-	j = objList.GetCount();
-	while (i < j)
+	Data::FastStringKeyIterator<Int32> iterator = objList.KeyIterator();
+	while (iterator.HasNext())
 	{
-		if (!subProg.Set(this->progMap.Get(objList.GetKey(i))))
+		NotNullPtr<Text::String> objName = iterator.Next();
+		if (!subProg.Set(this->progMap.GetNN(objName)))
 		{
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Object "));
-			sb.Append(objList.GetKey(i));
+			sb.Append(objName);
 			sb.AppendC(UTF8STRC(" not found"));
 			this->SetErrorMsg(sb.ToCString());
 			return false;
 		}
-		if (subProg->srcFile == 0)
+		NotNullPtr<Text::String> srcFile;
+		if (!srcFile.Set(subProg->srcFile))
 		{
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Object "));
-			sb.Append(objList.GetKey(i));
+			sb.Append(objName);
 			sb.AppendC(UTF8STRC(" does not have source file"));
 			this->SetErrorMsg(sb.ToCString());
 			return false;
@@ -921,21 +920,21 @@ Bool IO::SMake::CompileProgInternal(NotNullPtr<const ProgramItem> prog, Bool asm
 		{
 			updateToDate = true;
 		}
-		else if (subProg->srcFile->v[0] != '@')
+		else if (srcFile->v[0] != '@')
 		{
 			sb.ClearStr();
 			sb.Append(this->basePath);
-			IO::Path::AppendPath(sb, subProg->srcFile->v, subProg->srcFile->leng);
-			if (!IO::Path::GetFileTime(sb.ToString(), &dt1, 0, 0))
+			IO::Path::AppendPath(sb, srcFile->v, srcFile->leng);
+			if ((dt1 = IO::Path::GetModifyTime(sb.ToString())).IsNull())
 			{
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("Source file time cannot get: "));
-				sb.Append(subProg->srcFile);
+				sb.Append(srcFile);
 				this->SetErrorMsg(sb.ToCString());
 				return false;
 			}
 			lastTime = dt1.ToTicks();
-			thisTime = this->fileTimeMap.Get(subProg->srcFile);
+			thisTime = this->fileTimeMap.GetNN(srcFile);
 			if (thisTime && thisTime > lastTime)
 			{
 				lastTime = thisTime;
@@ -943,9 +942,9 @@ Bool IO::SMake::CompileProgInternal(NotNullPtr<const ProgramItem> prog, Bool asm
 
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC(OBJECTPATH));
-			sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
+			sb.AppendUTF8Char(IO::Path::PATH_SEPERATOR);
 			sb.Append(subProg->name);
-			if (IO::Path::GetFileTime(sb.ToString(), &dt2, 0, 0))
+			if (!(dt2 = IO::Path::GetModifyTime(sb.ToString())).IsNull())
 			{
 				thisTime = dt2.ToTicks();
 				if (thisTime >= lastTime)
@@ -957,12 +956,12 @@ Bool IO::SMake::CompileProgInternal(NotNullPtr<const ProgramItem> prog, Bool asm
 						sb.AppendC(UTF8STRC("Obj "));
 						sb.Append(subProg->name);
 						sb.AppendC(UTF8STRC(" Src time: "));
-						sb.AppendDate(&dt2);
+						sb.AppendTS(dt2);
 						sb.AppendC(UTF8STRC(", Obj time: "));
-						sb.AppendDate(&dt1);
+						sb.AppendTS(dt1);
 						sb.AppendC(UTF8STRC(", Last time: "));
-						dt1.SetTicks(lastTime);
-						sb.AppendDate(&dt1);
+						dt1 = Data::Timestamp(lastTime, Data::DateTimeUtil::GetLocalTzQhr());
+						sb.AppendTS(dt1);
 						sb.AppendC(UTF8STRC(", Skip"));
 						this->messageWriter->WriteLineC(sb.ToString(), sb.GetLength());
 					}
@@ -976,7 +975,7 @@ Bool IO::SMake::CompileProgInternal(NotNullPtr<const ProgramItem> prog, Bool asm
 		
 		if (!updateToDate)
 		{
-			if (subProg->srcFile->EndsWith(UTF8STRC(".cpp")))
+			if (srcFile->EndsWith(UTF8STRC(".cpp")))
 			{
 				sb.ClearStr();
 				AppendCfgPath(sb, cppCfg->value->ToCString());
@@ -1000,29 +999,29 @@ Bool IO::SMake::CompileProgInternal(NotNullPtr<const ProgramItem> prog, Bool asm
 				{
 					sb.AppendC(UTF8STRC("-Wa,-adhln="));
 					sb.AppendC(UTF8STRC(OBJECTPATH));
-					sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
+					sb.AppendUTF8Char(IO::Path::PATH_SEPERATOR);
 					sb.Append(subProg->name);
 					sb.RemoveChars(1);
 					sb.AppendC(UTF8STRC("s "));
 				}
 				sb.AppendC(UTF8STRC("-c -o "));
 				sb.AppendC(UTF8STRC(OBJECTPATH));
-				sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
+				sb.AppendUTF8Char(IO::Path::PATH_SEPERATOR);
 				sb.Append(subProg->name);
 				sb.AppendUTF8Char(' ');
-				if (subProg->srcFile->v[0] == '@')
+				if (srcFile->v[0] == '@')
 				{
-					sb.AppendC(&subProg->srcFile->v[1], subProg->srcFile->leng - 1);
+					sb.AppendC(&srcFile->v[1], srcFile->leng - 1);
 				}
 				else
 				{
-					sb.Append(subProg->srcFile);
+					sb.Append(srcFile);
 				}
 
 				this->CompileObject(sb.ToCString());
 				subProg->compiled = true;
 			}
-			else if (subProg->srcFile->EndsWith(UTF8STRC(".c")))
+			else if (srcFile->EndsWith(UTF8STRC(".c")))
 			{
 				sb.ClearStr();
 				AppendCfgPath(sb, ccCfg->value->ToCString());
@@ -1041,28 +1040,28 @@ Bool IO::SMake::CompileProgInternal(NotNullPtr<const ProgramItem> prog, Bool asm
 				{
 					sb.AppendC(UTF8STRC("-Wa,-adhln="));
 					sb.AppendC(UTF8STRC(OBJECTPATH));
-					sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
+					sb.AppendUTF8Char(IO::Path::PATH_SEPERATOR);
 					sb.Append(subProg->name);
 					sb.RemoveChars(1);
 					sb.AppendC(UTF8STRC("s "));
 				}
 				sb.AppendC(UTF8STRC("-c -o "));
 				sb.AppendC(UTF8STRC(OBJECTPATH));
-				sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
+				sb.AppendUTF8Char(IO::Path::PATH_SEPERATOR);
 				sb.Append(subProg->name);
 				sb.AppendUTF8Char(' ');
-				if (subProg->srcFile->v[0] == '@')
+				if (srcFile->v[0] == '@')
 				{
-					sb.AppendC(&subProg->srcFile->v[1], subProg->srcFile->leng - 1);
+					sb.AppendC(&srcFile->v[1], srcFile->leng - 1);
 				}
 				else
 				{
-					sb.Append(subProg->srcFile);
+					sb.Append(srcFile);
 				}
 				this->CompileObject(sb.ToCString());
 				subProg->compiled = true;
 			}
-			else if (subProg->srcFile->EndsWith(UTF8STRC(".asm")))
+			else if (srcFile->EndsWith(UTF8STRC(".asm")))
 			{
 				sb.ClearStr();
 				AppendCfgPath(sb, asmCfg->value->ToCString());
@@ -1076,28 +1075,28 @@ Bool IO::SMake::CompileProgInternal(NotNullPtr<const ProgramItem> prog, Bool asm
 				{
 					sb.AppendC(UTF8STRC("-l "));
 					sb.AppendC(UTF8STRC(OBJECTPATH));
-					sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
+					sb.AppendUTF8Char(IO::Path::PATH_SEPERATOR);
 					sb.Append(subProg->name);
 					sb.RemoveChars(1);
 					sb.AppendC(UTF8STRC("lst "));
 				}
 				sb.AppendC(UTF8STRC("-o "));
 				sb.AppendC(UTF8STRC(OBJECTPATH));
-				sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
+				sb.AppendUTF8Char(IO::Path::PATH_SEPERATOR);
 				sb.Append(subProg->name);
 				sb.AppendUTF8Char(' ');
-				if (subProg->srcFile->v[0] == '@')
+				if (srcFile->v[0] == '@')
 				{
-					sb.AppendC(&subProg->srcFile->v[1], subProg->srcFile->leng - 1);
+					sb.AppendC(&srcFile->v[1], srcFile->leng - 1);
 				}
 				else
 				{
-					sb.Append(subProg->srcFile);
+					sb.Append(srcFile);
 				}
 				this->CompileObject(sb.ToCString());
 				subProg->compiled = true;
 			}
-			else if (subProg->srcFile->EndsWith(UTF8STRC(".s")))
+			else if (srcFile->EndsWith(UTF8STRC(".s")))
 			{
 
 			}
@@ -1106,13 +1105,11 @@ Bool IO::SMake::CompileProgInternal(NotNullPtr<const ProgramItem> prog, Bool asm
 				this->tasks->WaitForIdle();
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("Unknown source file format "));
-				sb.Append(subProg->srcFile);
+				sb.Append(srcFile);
 				this->SetErrorMsg(sb.ToCString());
 				return false;
 			}
 		}
-
-		i++;
 	}
 	if (!this->asyncMode)
 		this->tasks->WaitForIdle();
@@ -1126,14 +1123,14 @@ Bool IO::SMake::CompileProgInternal(NotNullPtr<const ProgramItem> prog, Bool asm
 	sb.Append(this->basePath);
 	sb.AppendC(UTF8STRC("bin"));
 	IO::Path::CreateDirectory(sb.ToCString());
-	sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
+	sb.AppendUTF8Char(IO::Path::PATH_SEPERATOR);
 	sb.Append(prog->name);
 	if (postfixItem)
 	{
 		sb.Append(postfixItem->value);
 	}
 	Bool skipLink = false;
-	if (IO::Path::GetFileTime(sb.ToString(), &dt2, 0, 0))
+	if (!(dt2 = IO::Path::GetModifyTime(sb.ToString())).IsNull())
 	{
 		thisTime = dt2.ToTicks();
 		if (thisTime >= latestTime)
@@ -1153,21 +1150,21 @@ Bool IO::SMake::CompileProgInternal(NotNullPtr<const ProgramItem> prog, Bool asm
 		{
 			sb.Append(postfixItem->value);
 		}
-		i = 0;
-		j = objList.GetCount();
-		while (i < j)
+		Data::FastStringKeyIterator<Int32> iterator = objList.KeyIterator();
+		while (iterator.HasNext())
 		{
 			sb.AppendUTF8Char(' ');
 			sb.AppendC(UTF8STRC(OBJECTPATH));
-			sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
-			sb.Append(objList.GetKey(i));
-			i++;
+			sb.AppendUTF8Char(IO::Path::PATH_SEPERATOR);
+			sb.Append(iterator.Next());
 		}
 		if (libsCfg)
 		{
 			sb.AppendUTF8Char(' ');
 			sb.Append(libsCfg->value);
 		}
+		UOSInt i;
+		UOSInt j;
 		i = 0;
 		j = libList.GetCount();
 		while (i < j)
@@ -1221,7 +1218,7 @@ Bool IO::SMake::TestProg(NotNullPtr<const ProgramItem> prog, NotNullPtr<Text::St
 	sb->ClearStr();
 	sb->Append(this->basePath);
 	sb->AppendC(UTF8STRC("bin"));
-	sb->AppendChar(IO::Path::PATH_SEPERATOR, 1);
+	sb->AppendUTF8Char(IO::Path::PATH_SEPERATOR);
 	sb->Append(prog->name);
 
 	Text::StringBuilderUTF8 sbRet;

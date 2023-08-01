@@ -13,6 +13,7 @@ extern "C"
 	void MemCopyANC_SSE(void *destPtr, const void *srcPtr, UOSInt leng);
 	void MemCopyNAC_SSE(void *destPtr, const void *srcPtr, UOSInt leng);
 	void MemCopyNANC_SSE(void *destPtr, const void *srcPtr, UOSInt leng);
+//	void MemCopyOAC_SSE(void *destPtr, const void *srcPtr, UOSInt leng);
 
 	void MemClearANC_AVX(void *buff, UOSInt buffSize); //buff 16-byte align, buffSize 16 bytes
 	void MemClearAC_AVX(void *buff, UOSInt buffSize); //buff 16-byte align, buffSize 16 bytes
@@ -20,6 +21,7 @@ extern "C"
 	void MemCopyANC_AVX(void *destPtr, const void *srcPtr, UOSInt leng);
 	void MemCopyNAC_AVX(void *destPtr, const void *srcPtr, UOSInt leng);
 	void MemCopyNANC_AVX(void *destPtr, const void *srcPtr, UOSInt leng);
+//	void MemCopyOAC_AVX(void *destPtr, const void *srcPtr, UOSInt leng);
 
 	void MemClearANC_AMDSSE(void *buff, UOSInt buffSize); //buff 16-byte align, buffSize 16 bytes
 	void MemClearAC_AMDSSE(void *buff, UOSInt buffSize); //buff 16-byte align, buffSize 16 bytes
@@ -27,6 +29,7 @@ extern "C"
 	void MemCopyANC_AMDSSE(void *destPtr, const void *srcPtr, UOSInt leng);
 	void MemCopyNAC_AMDSSE(void *destPtr, const void *srcPtr, UOSInt leng);
 	void MemCopyNANC_AMDSSE(void *destPtr, const void *srcPtr, UOSInt leng);
+//	void MemCopyOAC_AMDSSE(void *destPtr, const void *srcPtr, UOSInt leng);
 
 	void MemClearANC_AMDAVX(void *buff, UOSInt buffSize); //buff 16-byte align, buffSize 16 bytes
 	void MemClearAC_AMDAVX(void *buff, UOSInt buffSize); //buff 16-byte align, buffSize 16 bytes
@@ -34,6 +37,7 @@ extern "C"
 	void MemCopyANC_AMDAVX(void *destPtr, const void *srcPtr, UOSInt leng);
 	void MemCopyNAC_AMDAVX(void *destPtr, const void *srcPtr, UOSInt leng);
 	void MemCopyNANC_AMDAVX(void *destPtr, const void *srcPtr, UOSInt leng);
+//	void MemCopyOAC_AMDAVX(void *destPtr, const void *srcPtr, UOSInt leng);
 }
 
 MemClearFunc MemClearANC = MemClearANC_SSE;
@@ -42,6 +46,7 @@ MemCopyFunc MemCopyAC = MemCopyAC_SSE;
 MemCopyFunc MemCopyANC = MemCopyANC_SSE;
 MemCopyFunc MemCopyNAC = MemCopyNAC_SSE;
 MemCopyFunc MemCopyNANC = MemCopyNANC_SSE;
+//MemCopyFunc MemCopyOAC = MemCopyOAC_SSE;
 
 extern "C"
 {
@@ -75,6 +80,7 @@ void MemTool_Init()
 				MemCopyANC = MemCopyANC_AMDAVX;
 				MemCopyNAC = MemCopyNAC_AMDAVX;
 				MemCopyNANC = MemCopyNANC_AMDAVX;
+//				MemCopyOAC = MemCopyOAC_AMDAVX;
 			}
 			else
 			{
@@ -84,6 +90,7 @@ void MemTool_Init()
 				MemCopyANC = MemCopyANC_AMDSSE;
 				MemCopyNAC = MemCopyNAC_AMDSSE;
 				MemCopyNANC = MemCopyNANC_AMDSSE;
+//				MemCopyOAC = MemCopyOAC_AMDSSE;
 			}
 		}
 		else
@@ -97,6 +104,7 @@ void MemTool_Init()
 				MemCopyANC = MemCopyANC_AVX;
 				MemCopyNAC = MemCopyNAC_AVX;
 				MemCopyNANC = MemCopyNANC_AVX;
+//				MemCopyOAC = MemCopyOAC_AVX;
 			}
 		}
 		if (Manage::CPUInst::HasInstruction(Manage::CPUInst::IT_SSE42))

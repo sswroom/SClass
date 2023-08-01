@@ -9,19 +9,45 @@
 
 namespace Data
 {
+	template <class T> struct FastStringItem
+	{
+		UInt32 hash;
+		NotNullPtr<Text::String> s;
+		T val;
+	};
+
+	template <class T> class FastStringKeyIterator
+	{
+	private:
+		const FastStringItem<T> *arr;
+		UOSInt cnt;
+	public:
+		FastStringKeyIterator(const FastStringItem<T> *arr, UOSInt cnt)
+		{
+			this->arr = arr;
+			this->cnt = cnt;
+		}
+
+		Bool HasNext() const
+		{
+			return this->cnt > 0;
+		}
+
+		NotNullPtr<Text::String> Next()
+		{
+			this->cnt--;
+			NotNullPtr<Text::String> ret = arr->s;
+			this->arr++;
+			return ret;
+		}
+	};
+
 	template <class T> class FastStringMap : public ListMap<Text::String *, T>
 	{
 	private:
-		struct StringItem
-		{
-			UInt32 hash;
-			NotNullPtr<Text::String> s;
-			T val;
-		};
-
 		UOSInt capacity;
 		UOSInt cnt;
-		StringItem *items;
+		FastStringItem<T> *items;
 		Crypto::Hash::CRC32RC crc;
 
 		void Insert(UOSInt index, UInt32 hash, NotNullPtr<Text::String> s, T val);
@@ -49,6 +75,7 @@ namespace Data
 		T RemoveAt(UOSInt index);
 		virtual Bool IsEmpty() const;
 		virtual void Clear();
+		FastStringKeyIterator<T> KeyIterator() const;
 		
 		UInt32 CalcHash(const UTF8Char *s, UOSInt len) const;
 	};
@@ -62,17 +89,17 @@ namespace Data
 		if (this->cnt == this->capacity)
 		{
 			this->capacity = this->capacity << 1;
-			StringItem *newItems = MemAlloc(StringItem, this->capacity);
+			FastStringItem<T> *newItems = MemAlloc(FastStringItem<T>, this->capacity);
 			if (index > 0)
 			{
-				MemCopyNO(newItems, this->items, sizeof(StringItem) * index);
+				MemCopyNO(newItems, this->items, sizeof(FastStringItem<T>) * index);
 			}
 			newItems[index].hash = hash;
 			newItems[index].s = s;
 			newItems[index].val = val;
 			if (index < this->cnt)
 			{
-				MemCopyNO(&newItems[index + 1], &this->items[index], sizeof(StringItem) * (this->cnt - index));
+				MemCopyNO(&newItems[index + 1], &this->items[index], sizeof(FastStringItem<T>) * (this->cnt - index));
 			}
 			MemFree(this->items);
 			this->items = newItems;
@@ -82,7 +109,7 @@ namespace Data
 		{
 			if (index < this->cnt)
 			{
-				MemCopyO(&this->items[index + 1], &this->items[index], sizeof(StringItem) * (this->cnt - index));
+				MemCopyO(&this->items[index + 1], &this->items[index], sizeof(FastStringItem<T>) * (this->cnt - index));
 			}
 			this->items[index].hash = hash;
 			this->items[index].s = s;
@@ -95,14 +122,14 @@ namespace Data
 	{
 		this->capacity = 64;
 		this->cnt = 0;
-		this->items = MemAlloc(StringItem, this->capacity);
+		this->items = MemAlloc(FastStringItem<T>, this->capacity);
 	}
 
 	template <class T> FastStringMap<T>::FastStringMap(const FastStringMap<T> *map)
 	{
 		this->capacity = map->capacity;
 		this->cnt = map->cnt;
-		this->items = MemAlloc(StringItem, this->capacity);
+		this->items = MemAlloc(FastStringItem<T>, this->capacity);
 		UOSInt i = 0;
 		UOSInt j = this->cnt;
 		while (i < j)
@@ -316,7 +343,7 @@ namespace Data
 			this->cnt--;
 			if ((UOSInt)index < this->cnt)
 			{
-				MemCopyO(&this->items[index], &this->items[index + 1], sizeof(StringItem) * (this->cnt - (UOSInt)index));
+				MemCopyO(&this->items[index], &this->items[index + 1], sizeof(FastStringItem<T>) * (this->cnt - (UOSInt)index));
 			}
 			return oldVal;
 		}
@@ -334,7 +361,7 @@ namespace Data
 			this->cnt--;
 			if ((UOSInt)index < this->cnt)
 			{
-				MemCopyO(&this->items[index], &this->items[index + 1], sizeof(StringItem) * (this->cnt - (UOSInt)index));
+				MemCopyO(&this->items[index], &this->items[index + 1], sizeof(FastStringItem<T>) * (this->cnt - (UOSInt)index));
 			}
 			return oldVal;
 		}
@@ -350,7 +377,7 @@ namespace Data
 			this->cnt--;
 			if ((UOSInt)index < this->cnt)
 			{
-				MemCopyO(&this->items[index], &this->items[index + 1], sizeof(StringItem) * (this->cnt - (UOSInt)index));
+				MemCopyO(&this->items[index], &this->items[index + 1], sizeof(FastStringItem<T>) * (this->cnt - (UOSInt)index));
 			}
 			return oldVal;
 		}
@@ -370,6 +397,11 @@ namespace Data
 			this->items[i].s->Release();
 		}
 		this->cnt = 0;
+	}
+
+	template <class T> FastStringKeyIterator<T> FastStringMap<T>::KeyIterator() const
+	{
+		return FastStringKeyIterator<T>(this->items, this->cnt);
 	}
 
 	template <class T> UInt32 FastStringMap<T>::CalcHash(const UTF8Char *s, UOSInt len) const

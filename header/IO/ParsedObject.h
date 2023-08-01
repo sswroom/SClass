@@ -49,7 +49,7 @@ namespace IO
 		NotNullPtr<Text::String> sourceName;
 
 		ParsedObject(NotNullPtr<Text::String> sourceName);
-		ParsedObject(Text::CString sourceName);
+		ParsedObject(const Text::CString &sourceName);
 	public:
 		virtual ~ParsedObject();
 

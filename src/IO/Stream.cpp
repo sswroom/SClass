@@ -7,7 +7,7 @@ IO::Stream::Stream(NotNullPtr<Text::String> sourceName) : IO::ParsedObject(sourc
 {
 }
 
-IO::Stream::Stream(Text::CString sourceName) : IO::ParsedObject(sourceName)
+IO::Stream::Stream(const Text::CString &sourceName) : IO::ParsedObject(sourceName)
 {
 }
 

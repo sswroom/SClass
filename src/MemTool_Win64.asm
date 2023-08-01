@@ -8,24 +8,28 @@ global MemCopyAC_SSE
 global MemCopyANC_SSE
 global MemCopyNAC_SSE
 global MemCopyNANC_SSE
+global MemCopyOAC_SSE
 global MemClearAC_AVX
 global MemClearANC_AVX
 global MemCopyAC_AVX
 global MemCopyANC_AVX
 global MemCopyNAC_AVX
 global MemCopyNANC_AVX
+global MemCopyOAC_AVX
 global MemClearAC_AMDSSE
 global MemClearANC_AMDSSE
 global MemCopyAC_AMDSSE
 global MemCopyANC_AMDSSE
 global MemCopyNAC_AMDSSE
 global MemCopyNANC_AMDSSE
+global MemCopyOAC_AMDSSE
 global MemClearAC_AMDAVX
 global MemClearANC_AMDAVX
 global MemCopyAC_AMDAVX
 global MemCopyANC_AMDAVX
 global MemCopyNAC_AMDAVX
 global MemCopyNANC_AMDAVX
+global MemCopyOAC_AMDAVX
 
 ;void MemFillB(UInt8 *buff, OSInt byteCnt, UInt8 val)
 ;0 retAddr

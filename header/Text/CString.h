@@ -59,7 +59,7 @@ namespace Text
 		}
 #endif
 
-		CString Substring(UOSInt index)
+		CString Substring(UOSInt index) const
 		{
 			if (index >= this->leng)
 			{

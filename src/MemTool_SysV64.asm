@@ -26,6 +26,8 @@ global MemCopyNAC_SSE
 global _MemCopyNAC_SSE
 global MemCopyNANC_SSE
 global _MemCopyNANC_SSE
+global MemCopyOAC_SSE
+global _MemCopyOAC_SSE
 global MemClearAC_AVX
 global _MemClearAC_AVX
 global MemClearANC_AVX
@@ -38,6 +40,8 @@ global MemCopyNAC_AVX
 global _MemCopyNAC_AVX
 global MemCopyNANC_AVX
 global _MemCopyNANC_AVX
+global MemCopyOAC_AVX
+global _MemCopyOAC_AVX
 global MemClearAC_AMDSSE
 global _MemClearAC_AMDSSE
 global MemClearANC_AMDSSE
@@ -50,6 +54,8 @@ global MemCopyNAC_AMDSSE
 global _MemCopyNAC_AMDSSE
 global MemCopyNANC_AMDSSE
 global _MemCopyNANC_AMDSSE
+global MemCopyOAC_AMDSSE
+global _MemCopyOAC_AMDSSE
 global MemClearAC_AMDAVX
 global _MemClearAC_AMDAVX
 global MemClearANC_AMDAVX
@@ -62,6 +68,8 @@ global MemCopyNAC_AMDAVX
 global _MemCopyNAC_AMDAVX
 global MemCopyNANC_AMDAVX
 global _MemCopyNANC_AMDAVX
+global MemCopyOAC_AMDAVX
+global _MemCopyOAC_AMDAVX
 
 global MemCopyNACAddr
 
@@ -149,6 +157,7 @@ MemCopyAC_AMDSSE:
 _MemCopyAC_AMDSSE:
 	cmp rdi,rsi
 	jz memcopyacexit
+memcopyaclop0:
 	cmp rdx,128
 	jb memcopyaclop
 
@@ -231,6 +240,105 @@ memcopyaclop4a:
 	
 	align 16
 memcopyacexit:
+	ret
+
+;void MemCopyOAC_SSE(void *destPtr, const void *srcPtr, OSInt leng)
+;0 retAddr
+;rdi destPtr
+;rsi srcPtr
+;rdx leng
+	align 16
+MemCopyOAC_SSE:
+_MemCopyOAC_SSE:
+MemCopyOAC_AMDSSE:
+_MemCopyOAC_AMDSSE:
+	cmp rdi,rsi
+	jz memcopyoacexit
+	jb memcopyaclop0
+	add rdi,rdx
+	add rsi,rdx
+	cmp rdx,128
+	jb memcopyoaclop
+
+	mov r9,rdx
+	shr r9,7
+	ALIGN 16
+memcopyoaclop5f:
+	lea rsi,[rsi-128]
+	lea rdi,[rdi-128]
+	movups xmm0,[rsi]
+	movups xmm1,[rsi+16]
+	movups xmm2,[rsi+32]
+	movups xmm3,[rsi+48]
+	movups xmm4,[rsi+64]
+	movups xmm5,[rsi+80]
+	movups xmm6,[rsi+96]
+	movups xmm7,[rsi+112]
+	movaps [rdi],xmm0
+	movaps [rdi+16],xmm1
+	movaps [rdi+32],xmm2
+	movaps [rdi+48],xmm3
+	movaps [rdi+64],xmm4
+	movaps [rdi+80],xmm5
+	movaps [rdi+96],xmm6
+	movaps [rdi+112],xmm7
+	dec r9
+	jnz memcopyoaclop5f
+
+	and rdx,127
+	jz memcopyoacexit
+	mov r9,rdx
+	shr r9,4
+	jz memcopyoaclop2
+	align 16
+memcopyoaclop5g:
+	lea rsi,[rsi-16]
+	lea rdi,[rdi-16]
+	movups xmm0,[rsi]
+	movaps [rdi],xmm0
+	dec r9
+	jnz memcopyoaclop5g
+	and rdx,15
+	jz memcopyoacexit
+	align 16
+memcopyoaclop5h:
+	lea rsi,[rsi-1]
+	lea rdi,[rdi-1]
+	mov al,byte [rsi]
+	mov byte [rdi],al
+	dec rdx
+	jnz memcopyoaclop5h
+	jmp memcopyoacexit
+
+	align 16
+memcopyoaclop2:
+memcopyoaclop:
+	mov r9,rdx
+	shr r9,3
+	jz memcopyoaclop4
+	align 16
+memcopyoaclop3:
+	lea rsi,[rsi-8]
+	lea rdi,[rdi-8]
+	mov rax,[rsi]
+	mov [rdi],rax
+	dec r9
+	jnz memcopyoaclop3
+	align 16
+memcopyoaclop4:
+	and rdx,7
+	jz memcopyoacexit
+	align 16
+memcopyoaclop4a:
+	lea rsi,[rsi-1]
+	lea rdi,[rdi-1]
+	mov al,byte [rsi]
+	mov byte [rdi],al
+	dec rdx
+	jnz memcopyoaclop4a
+	
+	align 16
+memcopyoacexit:
 	ret
 
 ;void MemCopyANC_SSE(void *destPtr, const void *srcPtr, OSInt leng)
@@ -628,6 +736,102 @@ memcopyacavxlop4a:
 	
 	align 16
 memcopyacavxexit:
+	ret
+
+;void MemCopyOAC_AVX(void *destPtr, const void *srcPtr, OSInt leng)
+;0 retAddr
+;rdi destPtr
+;rsi srcPtr
+;rdx leng
+	align 16
+MemCopyOAC_AVX:
+_MemCopyOAC_AVX:
+MemCopyOAC_AMDAVX:
+_MemCopyOAC_AMDAVX:
+	cmp rsi,rdi
+	ja MemCopyAC_AVX
+	jz memcopyoacexit
+	add rsi,rdx
+	add rdi,rdx
+	cmp rdx,128
+	jb memcopyoacavxlop
+
+	mov r9,rdx
+	shr r9,7
+	ALIGN 16
+memcopyoacavxlop5f:
+	lea rsi,[rsi-128]
+	lea rdi,[rdi-128]
+	vmovups ymm0,[rsi]
+	vmovups ymm1,[rsi+32]
+	vmovups ymm2,[rsi+64]
+	vmovups ymm3,[rsi+96]
+	vmovaps [rdi],ymm0
+	vmovaps [rdi+32],ymm1
+	vmovaps [rdi+64],ymm2
+	vmovaps [rdi+96],ymm3
+	dec r9
+	jnz memcopyoacavxlop5f
+	vzeroupper
+
+	and rdx,127
+	jz memcopyoacavxexit
+	mov r9,rdx
+	shr r9,4
+	jz memcopyoacavxlop2
+	align 16
+memcopyoacavxlop5g:
+	lea rsi,[rsi-16]
+	lea rdi,[rdi-16]
+	movups xmm0,[rsi]
+	movaps [rdi],xmm0
+	dec r9
+	jnz memcopyoacavxlop5g
+	and rdx,15
+	jz memcopyoacavxexit
+	align 16
+	mov rcx,rdx
+	std
+	rep movsb
+	cld
+;memcopyoacavxlop5h
+;	mov al,byte [rsi]
+;	mov byte [rdi],al
+;	lea rsi,[rsi+1]
+;	lea rdi,[rdi+1]
+;	dec rdx
+;	jnz memcopyoacavxlop5h
+	jmp memcopyoacavxexit
+
+	align 16
+memcopyoacavxlop2:
+memcopyoacavxlop:
+	mov r9,rdx
+	shr r9,3
+	jz memcopyoacavxlop4
+	align 16
+memcopyoacavxlop3:
+	lea rsi,[rsi-8]
+	lea rdi,[rdi-8]
+	mov rax,[rsi]
+	mov [rdi],rax
+	dec r9
+	jnz memcopyoacavxlop3
+	align 16
+memcopyoacavxlop4:
+	and rdx,7
+	jz memcopyoacavxexit
+	align 16
+memcopyoacavxlop4a:
+	lea rsi,[rsi-1]
+	lea rdi,[rdi-1]
+	mov al,byte [rsi]
+	mov byte [rdi],al
+	dec rdx
+	jnz memcopyoacavxlop4a
+	
+	align 16
+memcopyoacavxexit:
 	ret
 
 ;void MemCopyANC_AVX(void *destPtr, const void *srcPtr, OSInt leng)

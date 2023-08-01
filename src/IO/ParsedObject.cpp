@@ -73,7 +73,7 @@ IO::ParsedObject::ParsedObject(NotNullPtr<Text::String> sourceName)
 	this->sourceName = sourceName->Clone();
 }
 
-IO::ParsedObject::ParsedObject(Text::CString sourceName)
+IO::ParsedObject::ParsedObject(const Text::CString &sourceName)
 {
 	this->sourceName = Text::String::New(sourceName);
 }

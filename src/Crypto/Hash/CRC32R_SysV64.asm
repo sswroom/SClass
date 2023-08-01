@@ -362,4 +362,4 @@ calcsse42_2:
 	lea rdi,[rdi+1]
 	dec rsi
 	jnz calcsse42_2
-	jmp calcexit
+	ret
