@@ -44,21 +44,21 @@ OSInt DB::DBTool::ExecuteNonQuery(Text::CString sqlCmd)
 		return -1;
 	}
 
-	Data::DateTime t1;
-	Data::DateTime t2;
+	Data::Timestamp t1 = Data::Timestamp::UtcNow();
+	Data::Timestamp t2 = Data::Timestamp::UtcNow();
 	OSInt i = ((DB::DBConn*)this->db)->ExecuteNonQuery(sqlCmd);
 	if (i >= -1)
 	{
-		Data::DateTime t3;
+		Data::Timestamp t3 = Data::Timestamp::UtcNow();
 		dataCnt += 1;
-		if (t3.DiffMS(&t2) >= 1000)
+		if (t3.DiffMS(t2) >= 1000)
 		{
 			UTF8Char buff[256];
 			UTF8Char *ptr;
 			ptr = Text::StrConcatC(buff, UTF8STRC("SQL R t1 = "));
-			ptr = Text::StrInt32(ptr, (Int32)t2.DiffMS(&t1));
+			ptr = Text::StrInt32(ptr, (Int32)t2.DiffMS(t1));
 			ptr = Text::StrConcatC(ptr, UTF8STRC(", t2 = "));
-			ptr = Text::StrInt32(ptr, (Int32)t3.DiffMS(&t2));
+			ptr = Text::StrInt32(ptr, (Int32)t3.DiffMS(t2));
 			AddLogMsgC(buff, (UOSInt)(ptr - buff), IO::LogHandler::LogLevel::Command);
 		}
 		nqFail = 0;

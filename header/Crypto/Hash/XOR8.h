@@ -12,12 +12,13 @@ namespace Crypto
 			UInt8 val;
 
 		private:
-			XOR8(const XOR8 *xor8);
+			XOR8(NotNullPtr<const XOR8> xor8);
 		public:
 			XOR8();
 			virtual ~XOR8();
 
-			virtual IHash *Clone() const;
+			virtual UTF8Char *GetName(UTF8Char *sbuff) const;
+			virtual NotNullPtr<IHash> Clone() const;
 			virtual void Clear();
 			virtual void Calc(const UInt8 *buff, UOSInt buffSize);
 			virtual void GetValue(UInt8 *buff) const;

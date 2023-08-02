@@ -194,7 +194,7 @@ UOSInt Map::GoogleMap::GoogleStaticMap::GetMap(UInt8 *buff, Double lat, Double l
 
 		UInt8 result[20];
 		Crypto::Hash::SHA1 sha;
-		Crypto::Hash::HMAC hmac(&sha, this->gooPrivKey, this->gooPrivKeyLeng);
+		Crypto::Hash::HMAC hmac(sha, this->gooPrivKey, this->gooPrivKeyLeng);
 		hmac.Calc(urlStart, (UOSInt)(sptr - urlStart));
 		hmac.GetValue(result);
 		Text::TextBinEnc::Base64Enc b64(Text::TextBinEnc::Base64Enc::Charset::URL, false);

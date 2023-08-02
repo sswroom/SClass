@@ -56,15 +56,15 @@ Bool Crypto::HOTP::IsValid(UInt32 code)
 UInt32 Crypto::HOTP::CalcCode(const UInt8 *key, UOSInt keySize, UInt64 counter, UInt32 nDigits)
 {
 	UInt8 buff[20];
-	Crypto::Hash::HMAC *hmac;
-	Crypto::Hash::SHA1 *hash;
-	NEW_CLASS(hash, Crypto::Hash::SHA1());
-	NEW_CLASS(hmac, Crypto::Hash::HMAC(hash, key, keySize));
-	WriteMUInt64(buff, counter);
-	hmac->Calc(buff, 8);
-	hmac->GetValue(buff);
-	DEL_CLASS(hmac);
-	DEL_CLASS(hash);
+	NotNullPtr<Crypto::Hash::SHA1> hash;
+	NEW_CLASSNN(hash, Crypto::Hash::SHA1());
+	{
+		Crypto::Hash::HMAC hmac(hash, key, keySize);
+		WriteMUInt64(buff, counter);
+		hmac.Calc(buff, 8);
+		hmac.GetValue(buff);
+	}
+	hash.Delete();
 	UInt32 v = ReadMUInt32(&buff[buff[19] & 15]) & 0x7fffffff;
 	if (nDigits == 6)
 	{

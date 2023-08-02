@@ -9,15 +9,15 @@ namespace Crypto
 		class SHA1_SHA1 : public Crypto::Hash::IHash
 		{
 		private:
-			Crypto::Hash::SHA1 *sha1;
+			NotNullPtr<Crypto::Hash::SHA1> sha1;
 
-			SHA1_SHA1(Crypto::Hash::SHA1 *sha1);
+			SHA1_SHA1(NotNullPtr<Crypto::Hash::SHA1> sha1);
 		public:
 			SHA1_SHA1();
 			virtual ~SHA1_SHA1();
 
 			virtual UTF8Char *GetName(UTF8Char *sbuff) const;
-			virtual IHash *Clone() const;
+			virtual NotNullPtr<IHash> Clone() const;
 			virtual void Clear();
 			virtual void Calc(const UInt8 *buff, UOSInt buffSize);
 			virtual void GetValue(UInt8 *buff) const;

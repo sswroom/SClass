@@ -11,8 +11,8 @@ UTF8Char *Test(UTF8Char *sbuff, const UTF8Char *pwd, UOSInt pwdLen, const UTF8Ch
 {
 	UInt8 *dk = MemAlloc(UInt8, dkLen);
 	Crypto::Hash::SHA1 sha1;
-	Crypto::Hash::HMAC hmac(&sha1, pwd, pwdLen);
-	Crypto::PBKDF2::Calc(salt, saltLen, cnt, dkLen, &hmac, dk);
+	Crypto::Hash::HMAC hmac(sha1, pwd, pwdLen);
+	Crypto::PBKDF2::Calc(salt, saltLen, cnt, dkLen, hmac, dk);
 	sbuff = Text::StrHexBytes(sbuff, dk, dkLen, 0);
 	MemFree(dk);
 	return sbuff;

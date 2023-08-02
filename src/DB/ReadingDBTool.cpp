@@ -378,21 +378,21 @@ DB::DBReader *DB::ReadingDBTool::ExecuteReader(Text::CString sqlCmd)
 		return lastReader;
 	}
 
-	Data::DateTime t1;
-	Data::DateTime t2;
+	Data::Timestamp t1 = Data::Timestamp::UtcNow();
+	Data::Timestamp t2 = Data::Timestamp::UtcNow();
 	DB::DBReader *r = this->db->ExecuteReader(sqlCmd);
 	if (r)
 	{
-		Data::DateTime t3;
+		Data::Timestamp t3 = Data::Timestamp::UtcNow();
 		dataCnt += 1;
-		if (t3.DiffMS(&t2) >= 1000)
+		if (t3.DiffMS(t2) >= 1000)
 		{
 			UTF8Char buff[256];
 			UTF8Char *ptr;
 			ptr = Text::StrConcatC(buff, UTF8STRC("SQL R t1 = "));
-			ptr = Text::StrInt32(ptr, (Int32)t2.DiffMS(&t1));
+			ptr = Text::StrInt32(ptr, (Int32)t2.DiffMS(t1));
 			ptr = Text::StrConcatC(ptr, UTF8STRC(", t2 = "));
-			ptr = Text::StrInt32(ptr, (Int32)t3.DiffMS(&t2));
+			ptr = Text::StrInt32(ptr, (Int32)t3.DiffMS(t2));
 			AddLogMsgC(buff, (UOSInt)(ptr - buff), IO::LogHandler::LogLevel::Command);
 		}
 		readerCnt += 1;
@@ -589,21 +589,21 @@ DB::DBReader *DB::ReadingDBTool::QueryTableData(Text::CString schemaName, Text::
 		return lastReader;
 	}
 
-	Data::DateTime t1;
-	Data::DateTime t2;
+	Data::Timestamp t1 = Data::Timestamp::UtcNow();
+	Data::Timestamp t2 = Data::Timestamp::UtcNow();
 	DB::DBReader *r = this->db->QueryTableData(schemaName, tableName, columnNames, ofst, maxCnt, ordering, condition);
 	if (r)
 	{
-		Data::DateTime t3;
+		Data::Timestamp t3 = Data::Timestamp::UtcNow();
 		dataCnt += 1;
-		if (t3.DiffMS(&t2) >= 1000)
+		if (t3.DiffMS(t2) >= 1000)
 		{
 			UTF8Char buff[256];
 			UTF8Char *ptr;
 			ptr = Text::StrConcatC(buff, UTF8STRC("SQL R t1 = "));
-			ptr = Text::StrInt32(ptr, (Int32)t2.DiffMS(&t1));
+			ptr = Text::StrInt32(ptr, (Int32)t2.DiffMS(t1));
 			ptr = Text::StrConcatC(ptr, UTF8STRC(", t2 = "));
-			ptr = Text::StrInt32(ptr, (Int32)t3.DiffMS(&t2));
+			ptr = Text::StrInt32(ptr, (Int32)t3.DiffMS(t2));
 			AddLogMsgC(buff, (UOSInt)(ptr - buff), IO::LogHandler::LogLevel::Command);
 		}
 		readerCnt += 1;

@@ -28,10 +28,10 @@ UTF8Char *Crypto::Hash::Adler32::GetName(UTF8Char *sbuff) const
 	return Text::StrConcatC(sbuff, UTF8STRC("Adler-32"));
 }
 
-Crypto::Hash::IHash *Crypto::Hash::Adler32::Clone() const
+NotNullPtr<Crypto::Hash::IHash> Crypto::Hash::Adler32::Clone() const
 {
-	Crypto::Hash::Adler32 *adler32;
-	NEW_CLASS(adler32, Crypto::Hash::Adler32(this));
+	NotNullPtr<Crypto::Hash::Adler32> adler32;
+	NEW_CLASSNN(adler32, Crypto::Hash::Adler32(this));
 	return adler32;
 }
 

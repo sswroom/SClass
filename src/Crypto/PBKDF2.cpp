@@ -3,12 +3,12 @@
 #include "Crypto/PBKDF2.h"
 #include "Data/ByteTool.h"
 
-UOSInt Crypto::PBKDF2::F(const UInt8 *salt, UOSInt saltLen, UOSInt iterationCount, UInt32 i, Crypto::Hash::IHash *hashFunc, UInt8 *outBuff)
+UOSInt Crypto::PBKDF2::F(const UInt8 *salt, UOSInt saltLen, UOSInt iterationCount, UInt32 i, NotNullPtr<Crypto::Hash::IHash> hashFunc, UInt8 *outBuff)
 {
+	UInt8 tmpBuff[64];
 	UOSInt resSize = hashFunc->GetResultSize();
 	UInt8 iBuff[4];
 	WriteMUInt32(iBuff, i);
-	UInt8 *tmpBuff = MemAlloc(UInt8, resSize);
 	hashFunc->Clear();
 	hashFunc->Calc(salt, saltLen);
 	hashFunc->Calc(iBuff, 4);
@@ -23,12 +23,12 @@ UOSInt Crypto::PBKDF2::F(const UInt8 *salt, UOSInt saltLen, UOSInt iterationCoun
 		hashFunc->GetValue(tmpBuff);
 		MemXOR(outBuff, tmpBuff, outBuff, resSize);
 	}
-	MemFree(tmpBuff);
 	return resSize;
 }
 
-UOSInt Crypto::PBKDF2::Calc(const UInt8 *salt, UOSInt saltLen, UOSInt iterationCount, UOSInt dkLen, Crypto::Hash::IHash *hashFunc, UInt8 *outBuff)
+UOSInt Crypto::PBKDF2::Calc(const UInt8 *salt, UOSInt saltLen, UOSInt iterationCount, UOSInt dkLen, NotNullPtr<Crypto::Hash::IHash> hashFunc, UInt8 *outBuff)
 {
+	UInt8 blockBuff[64];
 	UOSInt retLen = dkLen;
 	UOSInt resSize = hashFunc->GetResultSize();
 	UInt32 i = 1;
@@ -42,11 +42,9 @@ UOSInt Crypto::PBKDF2::Calc(const UInt8 *salt, UOSInt saltLen, UOSInt iterationC
 		}
 		else
 		{
-			UInt8 *blockBuff = MemAlloc(UInt8, resSize);
 			F(salt, saltLen, iterationCount, i, hashFunc, blockBuff);
 			MemCopyNO(outBuff, blockBuff, dkLen);
 			dkLen = 0;
-			MemFree(blockBuff);
 			break;
 		}
 		i++;

@@ -3,7 +3,6 @@
 #include "IO/EXEFile.h"
 #include "IO/Path.h"
 
-
 void IO::BuildTime::GetBuildTime(Data::DateTime *dt)
 {
 	UTF8Char sbuff[512];
@@ -11,4 +10,13 @@ void IO::BuildTime::GetBuildTime(Data::DateTime *dt)
 	sptr = IO::Path::GetProcessFileName(sbuff);
 	IO::EXEFile::GetFileTime(CSTRP(sbuff, sptr), dt);
 	dt->ToLocalTime();
+}
+
+Data::Timestamp IO::BuildTime::GetBuildTime()
+{
+	UTF8Char sbuff[512];
+	UTF8Char *sptr;
+	sptr = IO::Path::GetProcessFileName(sbuff);
+	return IO::EXEFile::GetFileTime(CSTRP(sbuff, sptr)).ToLocalTime();
+
 }

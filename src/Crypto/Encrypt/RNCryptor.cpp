@@ -39,9 +39,9 @@ Bool Crypto::Encrypt::RNCryptor::Decrypt(IO::SeekableStream *srcStream, IO::Stre
 		UInt8 hmacSrc[32];
 		UInt8 hmacCalc[32];
 		Crypto::Hash::SHA1 sha1;
-		Crypto::Hash::HMAC hmacSHA1(&sha1, password.v, password.leng);
-		Crypto::PBKDF2::Calc(&header[2], 8, 10000, 32, &hmacSHA1, encKey);
-		Crypto::PBKDF2::Calc(&header[10], 8, 10000, 32, &hmacSHA1, hmacKey);
+		Crypto::Hash::HMAC hmacSHA1(sha1, password.v, password.leng);
+		Crypto::PBKDF2::Calc(&header[2], 8, 10000, 32, hmacSHA1, encKey);
+		Crypto::PBKDF2::Calc(&header[10], 8, 10000, 32, hmacSHA1, hmacKey);
 		Crypto::Encrypt::AES256 aes(encKey);
 		aes.SetChainMode(Crypto::Encrypt::ChainMode::CBC);
 		aes.SetIV(&header[18]);
@@ -50,7 +50,7 @@ Bool Crypto::Encrypt::RNCryptor::Decrypt(IO::SeekableStream *srcStream, IO::Stre
 		UInt8 *destBuff;
 		Bool succ = true;
 		Crypto::Hash::SHA256 sha256;
-		Crypto::Hash::HMAC hmac(&sha256, hmacKey, 32);
+		Crypto::Hash::HMAC hmac(sha256, hmacKey, 32);
 		hmac.Calc(header, 34);
 		if (sizeLeft > 1048576)
 		{
@@ -167,14 +167,14 @@ Bool Crypto::Encrypt::RNCryptor::Encrypt(IO::SeekableStream *srcStream, IO::Stre
 	UInt8 *destBuff = MemAlloc(UInt8, (UOSInt)fileLength);
 
 	Crypto::Hash::SHA1 sha1;
-	Crypto::Hash::HMAC hmacSHA1(&sha1, password.v, password.leng);
-	Crypto::PBKDF2::Calc(&header[2], 8, 10000, 32, &hmacSHA1, encKey);
-	Crypto::PBKDF2::Calc(&header[10], 8, 10000, 32, &hmacSHA1, hmacKey);
+	Crypto::Hash::HMAC hmacSHA1(sha1, password.v, password.leng);
+	Crypto::PBKDF2::Calc(&header[2], 8, 10000, 32, hmacSHA1, encKey);
+	Crypto::PBKDF2::Calc(&header[10], 8, 10000, 32, hmacSHA1, hmacKey);
 	Crypto::Encrypt::AES256 aes(encKey);
 	aes.SetChainMode(Crypto::Encrypt::ChainMode::CBC);
 	aes.SetIV(&header[18]);
 	Crypto::Hash::SHA256 sha256;
-	Crypto::Hash::HMAC hmac(&sha256, hmacKey, 32);
+	Crypto::Hash::HMAC hmac(sha256, hmacKey, 32);
 	hmac.Calc(header, 34);
 	aes.Encrypt(srcBuff.Ptr(), (UOSInt)fileLength, destBuff, 0);
 	hmac.Calc(destBuff, (UOSInt)fileLength);

@@ -3,7 +3,7 @@
 #include "Crypto/Hash/HMAC.h"
 #include "Text/MyString.h"
 
-Crypto::Hash::HMAC::HMAC(Crypto::Hash::IHash *hash, const UInt8 *key, UOSInt keySize)
+Crypto::Hash::HMAC::HMAC(NotNullPtr<Crypto::Hash::IHash> hash, const UInt8 *key, UOSInt keySize)
 {
 	this->hashInner = hash->Clone();
 	this->hashOuter = hash->Clone();
@@ -36,23 +36,11 @@ Crypto::Hash::HMAC::HMAC(Crypto::Hash::IHash *hash, const UInt8 *key, UOSInt key
 
 Crypto::Hash::HMAC::~HMAC()
 {
-	DEL_CLASS(hashInner);
-	DEL_CLASS(hashOuter);
-	if (this->key)
-	{
-		MemFree(key);
-		this->key = 0;
-	}
-	if (this->iPad)
-	{
-		MemFree(iPad);
-		this->iPad = 0;
-	}
-	if (this->oPad)
-	{
-		MemFree(oPad);
-		this->oPad = 0;
-	}
+	this->hashInner.Delete();
+	this->hashOuter.Delete();
+	MemFree(this->key);
+	MemFree(this->iPad);
+	MemFree(this->oPad);
 }
 
 UTF8Char *Crypto::Hash::HMAC::GetName(UTF8Char *sbuff) const
@@ -60,10 +48,10 @@ UTF8Char *Crypto::Hash::HMAC::GetName(UTF8Char *sbuff) const
 	return this->hashInner->GetName(Text::StrConcatC(sbuff, UTF8STRC("HMAC-")));
 }
 
-Crypto::Hash::IHash *Crypto::Hash::HMAC::Clone() const
+NotNullPtr<Crypto::Hash::IHash> Crypto::Hash::HMAC::Clone() const
 {
-	Crypto::Hash::IHash *hmac;
-	NEW_CLASS(hmac, Crypto::Hash::HMAC(this->hashInner, key, keySize));
+	NotNullPtr<Crypto::Hash::IHash> hmac;
+	NEW_CLASSNN(hmac, Crypto::Hash::HMAC(this->hashInner, key, keySize));
 	return hmac;
 }
 

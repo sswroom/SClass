@@ -282,6 +282,39 @@ Bool IO::EXEFile::GetFileTime(Text::CString fileName, Data::DateTime *fileTimeOu
 	return true;
 }
 
+Data::Timestamp IO::EXEFile::GetFileTime(Text::CString fileName)
+{
+	UInt8 buff[64];
+	IO::FileStream fs(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+	if (fs.IsError())
+	{
+		return 0;
+	}
+	if (fs.Read(BYTEARR(buff)) != 64)
+	{
+		return 0;
+	}
+	if (buff[0] != 'M' || buff[1] != 'Z')
+	{
+		return 0;
+	}
+	UInt32 ofst = ReadUInt32(&buff[60]);
+	if ((ofst & 7) != 0 || ofst < 64)
+	{
+		return 0;
+	}
+	fs.SeekFromBeginning(ofst);
+	if (fs.Read(BYTEARR(buff)) != 64)
+	{
+		return 0;
+	}
+	if (buff[0] != 'P' || buff[1] != 'E' || buff[2] != 0 || buff[3] != 0)
+	{
+		return 0;
+	}
+	return Data::Timestamp(ReadUInt32(&buff[8]), Data::DateTimeUtil::GetLocalTzQhr());
+}
+
 Text::CString IO::EXEFile::GetResourceTypeName(ResourceType rt)
 {
 	switch (rt)

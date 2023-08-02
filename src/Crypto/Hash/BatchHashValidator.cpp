@@ -20,7 +20,7 @@ Crypto::Hash::BatchHashValidator::~BatchHashValidator()
 
 Crypto::Hash::HashValidatorSess *Crypto::Hash::BatchHashValidator::CreateSess()
 {
-	return (Crypto::Hash::HashValidatorSess*)this->hash->Clone();
+	return (Crypto::Hash::HashValidatorSess*)this->hash->Clone().Ptr();
 }
 
 void Crypto::Hash::BatchHashValidator::DeleteSess(HashValidatorSess *sess)

@@ -23,10 +23,10 @@ UTF8Char *Crypto::Hash::SHA224::GetName(UTF8Char *sbuff) const
 	return Text::StrConcatC(sbuff, UTF8STRC("SHA-224"));
 }
 
-Crypto::Hash::IHash *Crypto::Hash::SHA224::Clone() const
+NotNullPtr<Crypto::Hash::IHash> Crypto::Hash::SHA224::Clone() const
 {
-	Crypto::Hash::SHA224 *sha224;
-	NEW_CLASS(sha224, Crypto::Hash::SHA224());
+	NotNullPtr<Crypto::Hash::SHA224> sha224;
+	NEW_CLASSNN(sha224, Crypto::Hash::SHA224());
 	sha224->messageLength = this->messageLength;
 	sha224->messageBlockIndex = this->messageBlockIndex;
     

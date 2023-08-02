@@ -26,23 +26,25 @@ Crypto::Token::JWSignature::~JWSignature()
 Bool Crypto::Token::JWSignature::CalcHash(const UInt8 *buff, UOSInt buffSize)
 {
 	Crypto::Hash::IHash *hash;
-	Crypto::Hash::IHash *ihash;
 	switch (alg)
 	{
 	case Algorithm::HS256:
-		NEW_CLASS(ihash, Crypto::Hash::SHA256());
-		NEW_CLASS(hash, Crypto::Hash::HMAC(ihash, this->privateKey, this->privateKeyLeng));
-		DEL_CLASS(ihash);
+		{
+			Crypto::Hash::SHA256 ihash;
+			NEW_CLASS(hash, Crypto::Hash::HMAC(ihash, this->privateKey, this->privateKeyLeng));
+		}
 		break;
 	case Algorithm::HS384:
-		NEW_CLASS(ihash, Crypto::Hash::SHA384());
-		NEW_CLASS(hash, Crypto::Hash::HMAC(ihash, this->privateKey, this->privateKeyLeng));
-		DEL_CLASS(ihash);
+		{
+			Crypto::Hash::SHA384 ihash;
+			NEW_CLASS(hash, Crypto::Hash::HMAC(ihash, this->privateKey, this->privateKeyLeng));
+		}
 		break;
 	case Algorithm::HS512:
-		NEW_CLASS(ihash, Crypto::Hash::SHA512());
-		NEW_CLASS(hash, Crypto::Hash::HMAC(ihash, this->privateKey, this->privateKeyLeng));
-		DEL_CLASS(ihash);
+		{
+			Crypto::Hash::SHA512 ihash;
+			NEW_CLASS(hash, Crypto::Hash::HMAC(ihash, this->privateKey, this->privateKeyLeng));
+		}
 		break;
 	case Algorithm::RS256:
 	case Algorithm::RS384:

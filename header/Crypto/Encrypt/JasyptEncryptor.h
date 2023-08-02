@@ -41,12 +41,12 @@ namespace Crypto
 			UOSInt ivSize;
 			UOSInt iterCnt;
 			UOSInt dkLen;
-			Data::RandomBytesGenerator *random;
+			Data::RandomBytesGenerator random;
 
 			const UInt8 *DecGetSalt(const UInt8 *buff, UInt8 *salt);
 			const UInt8 *DecGetIV(const UInt8 *buff, UInt8 *iv);
 			UOSInt GetEncKey(const UInt8 *salt, UInt8 *key);
-			Crypto::Encrypt::ICrypto *CreateCrypto(const UInt8 *iv, const UInt8 *keyBuff);
+			NotNullPtr<Crypto::Encrypt::ICrypto> CreateCrypto(const UInt8 *iv, const UInt8 *keyBuff);
 
 		public:
 			JasyptEncryptor(KeyAlgorithm keyAlg, CipherAlgorithm cipherAlg, const UInt8 *key, UOSInt keyLen);
@@ -54,8 +54,7 @@ namespace Crypto
 
 			Bool Decrypt(IO::ConfigFile *cfg);
 			UOSInt Decrypt(const UInt8 *srcBuff, UOSInt srcLen, UInt8 *outBuff);
-			UOSInt DecryptB64(const UTF8Char *b64Buff, UOSInt b64Len, UInt8 *outBuff);
-			UOSInt DecryptB64(const UTF8Char *b64Buff, UInt8 *outBuff);
+			UOSInt DecryptB64(Text::CString b64Str, UInt8 *outBuff);
 			UOSInt EncryptAsB64(NotNullPtr<Text::StringBuilderUTF8> sb, const UInt8 *srcBuff, UOSInt srcLen);
 
 			static Text::CString GetKeyAlgorithmName(KeyAlgorithm keyAlg);

@@ -151,11 +151,9 @@ Net::MQTTStaticClient::MQTTStaticClient(NotNullPtr<Net::SocketFactory> sockf, Ne
 	this->errLog = errLog;
 	this->connTimeout = 30000;
 
-	Data::DateTime dt;
-	dt.SetCurrTimeUTC();
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("sswrMQTT/"));
-	sb.AppendI64(dt.ToTicks());
+	sb.AppendI64(Data::DateTimeUtil::GetCurrTimeMillis());
 	this->clientId = Text::String::New(sb.ToString(), sb.GetLength());
 	this->packetId = 1;
 	this->hdlrList.Add(hdlr);

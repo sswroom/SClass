@@ -83,5 +83,11 @@ public:
 	{
 		return NotNullPtr<T>(p);
 	}
+	template <typename V> static NotNullPtr<T> ConvertFrom(NotNullPtr<V> ptr)
+	{
+		NotNullPtr<T> ret;
+		ret.p = (T*)ptr.Ptr();
+		return ret;
+	}
 };
 #endif

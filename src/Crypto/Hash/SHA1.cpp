@@ -25,10 +25,10 @@ UTF8Char *Crypto::Hash::SHA1::GetName(UTF8Char *sbuff) const
 	return Text::StrConcatC(sbuff, UTF8STRC("SHA-1"));
 }
 
-Crypto::Hash::IHash *Crypto::Hash::SHA1::Clone() const
+NotNullPtr<Crypto::Hash::IHash> Crypto::Hash::SHA1::Clone() const
 {
-	Crypto::Hash::SHA1 *sha1;
-	NEW_CLASS(sha1, Crypto::Hash::SHA1());
+	NotNullPtr<Crypto::Hash::SHA1> sha1;
+	NEW_CLASSNN(sha1, Crypto::Hash::SHA1());
 	sha1->messageLength = this->messageLength;
 	sha1->messageBlockIndex = this->messageBlockIndex;
     

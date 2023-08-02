@@ -15,7 +15,7 @@ void __stdcall SSWR::AVIRead::AVIRJasyptForm::OnDecryptClicked(void *userObj)
 		UOSInt resSize;
 		Crypto::Encrypt::JasyptEncryptor *enc;
 		NEW_CLASS(enc, Crypto::Encrypt::JasyptEncryptor((Crypto::Encrypt::JasyptEncryptor::KeyAlgorithm)(OSInt)me->cboKeyAlg->GetSelectedItem(), (Crypto::Encrypt::JasyptEncryptor::CipherAlgorithm)(OSInt)me->cboEncAlg->GetSelectedItem(), sb.ToString(), sb.GetLength()));
-		resSize = enc->DecryptB64(sb2.ToString(), sb2.GetLength(), res);
+		resSize = enc->DecryptB64(sb2.ToCString(), res);
 		sb.ClearStr();
 		sb.AppendC(res, resSize);
 		me->txtResult->SetText(sb.ToCString());

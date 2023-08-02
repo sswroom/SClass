@@ -47,7 +47,7 @@ namespace Crypto
 			virtual ~IHash(){};
 
 			virtual UTF8Char *GetName(UTF8Char *sbuff) const = 0;
-			virtual IHash *Clone() const = 0;
+			virtual NotNullPtr<IHash> Clone() const = 0;
 			virtual void Clear() = 0;
 			virtual void Calc(const UInt8 *buff, UOSInt buffSize) = 0;
 			virtual void GetValue(UInt8 *buff) const = 0;

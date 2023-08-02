@@ -1,6 +1,7 @@
 #ifndef _SM_IO_BUILDTIME
 #define _SM_IO_BUILDTIME
 #include "Data/DateTime.h"
+#include "Data/Timestamp.h"
 
 namespace IO
 {
@@ -8,6 +9,7 @@ namespace IO
 	{
 	public:
 		static void GetBuildTime(Data::DateTime *dt);
+		static Data::Timestamp GetBuildTime();
 	};
 };
 #endif

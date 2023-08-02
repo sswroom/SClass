@@ -33,10 +33,10 @@ UTF8Char *Crypto::Hash::CRC32RC::GetName(UTF8Char *sbuff) const
 	return Text::StrConcatC(sbuff, UTF8STRC("CRC-32C"));
 }
 
-Crypto::Hash::IHash *Crypto::Hash::CRC32RC::Clone() const
+NotNullPtr<Crypto::Hash::IHash> Crypto::Hash::CRC32RC::Clone() const
 {
-	Crypto::Hash::CRC32RC *crc;
-	NEW_CLASS(crc, Crypto::Hash::CRC32RC());
+	NotNullPtr<Crypto::Hash::CRC32RC> crc;
+	NEW_CLASSNN(crc, Crypto::Hash::CRC32RC());
 	crc->currVal = this->currVal;
 	return crc;
 }

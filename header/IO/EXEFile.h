@@ -2,6 +2,7 @@
 #define _SM_IO_EXEFILE
 #include "Data/ArrayListNN.h"
 #include "Data/DateTime.h"
+#include "Data/Timestamp.h"
 #include "IO/ParsedObject.h"
 #include "Manage/DasmBase.h"
 #include "Text/CString.h"
@@ -155,6 +156,7 @@ namespace IO
 		const ResourceInfo *GetResource(UOSInt index) const;
 	public:
 		static Bool GetFileTime(Text::CString fileName, Data::DateTime *fileTimeOut);
+		static Data::Timestamp GetFileTime(Text::CString fileName);
 		static Text::CString GetResourceTypeName(ResourceType rt);
 		static void GetResourceDesc(const ResourceInfo *res, NotNullPtr<Text::StringBuilderUTF8> sb);
 	};

@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Crypto/Hash/XOR8.h"
 
-Crypto::Hash::XOR8::XOR8(const XOR8 *xor8)
+Crypto::Hash::XOR8::XOR8(NotNullPtr<const XOR8> xor8)
 {
 	this->val = xor8->val;
 }
@@ -16,10 +16,15 @@ Crypto::Hash::XOR8::~XOR8()
 {
 }
 
-Crypto::Hash::IHash *Crypto::Hash::XOR8::Clone()
+UTF8Char *Crypto::Hash::XOR8::GetName(UTF8Char *sbuff) const
 {
-	Crypto::Hash::XOR8 *xor8;
-	NEW_CLASS(xor8, Crypto::Hash::XOR8(this));
+	return Text::StrConcatC(sbuff, UTF8STRC("XOR8"));
+}
+
+NotNullPtr<Crypto::Hash::IHash> Crypto::Hash::XOR8::Clone() const
+{
+	NotNullPtr<Crypto::Hash::XOR8> xor8;
+	NEW_CLASSNN(xor8, Crypto::Hash::XOR8(*this));
 	return xor8;
 }
 
@@ -39,17 +44,17 @@ void Crypto::Hash::XOR8::Calc(const UInt8 *buff, UOSInt buffSize)
 	this->val = val;
 }
 
-void Crypto::Hash::XOR8::GetValue(UInt8 *buff)
+void Crypto::Hash::XOR8::GetValue(UInt8 *buff) const
 {
 	*buff = this->val;
 }
 
-UOSInt Crypto::Hash::XOR8::GetBlockSize()
+UOSInt Crypto::Hash::XOR8::GetBlockSize() const
 {
 	return 1;
 }
 
-UOSInt Crypto::Hash::XOR8::GetResultSize()
+UOSInt Crypto::Hash::XOR8::GetResultSize() const
 {
 	return 1;
 }

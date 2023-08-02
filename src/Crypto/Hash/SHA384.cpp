@@ -23,10 +23,10 @@ UTF8Char *Crypto::Hash::SHA384::GetName(UTF8Char *sbuff) const
 	return Text::StrConcatC(sbuff, UTF8STRC("SHA-384"));
 }
 
-Crypto::Hash::IHash *Crypto::Hash::SHA384::Clone() const
+NotNullPtr<Crypto::Hash::IHash> Crypto::Hash::SHA384::Clone() const
 {
-	Crypto::Hash::SHA384 *sha384;
-	NEW_CLASS(sha384, Crypto::Hash::SHA384());
+	NotNullPtr<Crypto::Hash::SHA384> sha384;
+	NEW_CLASSNN(sha384, Crypto::Hash::SHA384());
 	sha384->messageLength = this->messageLength;
 	sha384->messageBlockIndex = this->messageBlockIndex;
     

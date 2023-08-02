@@ -3,19 +3,19 @@
 #include "Crypto/Hash/SHA1_SHA1.h"
 #include "Text/MyString.h"
 
-Crypto::Hash::SHA1_SHA1::SHA1_SHA1(Crypto::Hash::SHA1 *sha1)
+Crypto::Hash::SHA1_SHA1::SHA1_SHA1(NotNullPtr<Crypto::Hash::SHA1> sha1)
 {
-	this->sha1 = (Crypto::Hash::SHA1*)sha1->Clone();
+	this->sha1 = NotNullPtr<Crypto::Hash::SHA1>::ConvertFrom(sha1->Clone());
 }
 
 Crypto::Hash::SHA1_SHA1::SHA1_SHA1()
 {
-	NEW_CLASS(this->sha1, Crypto::Hash::SHA1());
+	NEW_CLASSNN(this->sha1, Crypto::Hash::SHA1());
 }
 
 Crypto::Hash::SHA1_SHA1::~SHA1_SHA1()
 {
-	DEL_CLASS(this->sha1);
+	this->sha1.Delete();
 }
 
 UTF8Char *Crypto::Hash::SHA1_SHA1::GetName(UTF8Char *sbuff) const
@@ -23,10 +23,10 @@ UTF8Char *Crypto::Hash::SHA1_SHA1::GetName(UTF8Char *sbuff) const
 	return Text::StrConcatC(sbuff, UTF8STRC("SHA1_SHA1 (MySQL)"));
 }
 
-Crypto::Hash::IHash *Crypto::Hash::SHA1_SHA1::Clone() const
+NotNullPtr<Crypto::Hash::IHash> Crypto::Hash::SHA1_SHA1::Clone() const
 {
-	Crypto::Hash::IHash *hash;
-	NEW_CLASS(hash, Crypto::Hash::SHA1_SHA1(this->sha1));
+	NotNullPtr<Crypto::Hash::IHash> hash;
+	NEW_CLASSNN(hash, Crypto::Hash::SHA1_SHA1(this->sha1));
 	return hash;
 }
 
