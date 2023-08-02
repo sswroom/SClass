@@ -133,9 +133,11 @@ NotNullPtr<Net::ASN1Data> Crypto::Cert::X509FileList::Clone() const
 	return fileList;
 }
 
-NotNullPtr<Crypto::Cert::X509Cert> Crypto::Cert::X509FileList::CreateX509Cert() const
+Crypto::Cert::X509Cert *Crypto::Cert::X509FileList::CreateX509Cert() const
 {
-	return NotNullPtr<Crypto::Cert::X509Cert>::ConvertFrom(this->fileList.GetItem(0)->Clone());
+	if (this->fileList.GetCount() == 0)
+		return 0;
+	return (Crypto::Cert::X509Cert*)this->fileList.GetItem(0)->Clone().Ptr();
 }
 
 void Crypto::Cert::X509FileList::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const

@@ -16,7 +16,7 @@ namespace Text
 		static String *NewOrNullSlow(const UTF8Char *str);
 		static NotNullPtr<String> NewNotNullSlow(const UTF8Char *str);
 		static String *NewOrNull(Text::CString str);
-		static NotNullPtr<String> New(Text::CString str)
+		static NotNullPtr<String> New(const Text::CString &str)
 		{
 			if (str.leng == 0) return NewEmpty();
 			NotNullPtr<Text::String> s = NotNullPtr<Text::String>::FromPtr((Text::String*)MAlloc(str.leng + sizeof(String)));

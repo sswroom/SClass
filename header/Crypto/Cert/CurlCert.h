@@ -15,11 +15,11 @@ namespace Crypto
 			CurlCert(void *certinfo);
 			virtual ~CurlCert();
 
-			Bool GetNotBefore(Data::DateTime *dt) const;
-			Bool GetNotAfter(Data::DateTime *dt) const;
+			Data::Timestamp GetNotBefore() const;
+			Data::Timestamp GetNotAfter() const;
 			Bool IsSelfSigned() const;
 
-			virtual NotNullPtr<Crypto::Cert::X509Cert> CreateX509Cert() const;
+			virtual Crypto::Cert::X509Cert *CreateX509Cert() const;
 
 			virtual void ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const;
 		};

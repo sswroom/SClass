@@ -14,7 +14,7 @@ Crypto::Cert::CurlCert::~CurlCert()
 
 }
 
-Bool Crypto::Cert::CurlCert::GetNotBefore(Data::DateTime *dt) const
+Data::Timestamp Crypto::Cert::CurlCert::GetNotBefore() const
 {
 	curl_slist *slist = (curl_slist*)this->certinfo;
 	UOSInt slen;
@@ -23,15 +23,14 @@ Bool Crypto::Cert::CurlCert::GetNotBefore(Data::DateTime *dt) const
 		slen = Text::StrCharCnt(slist->data);
 		if (Text::StrStartsWithC((const UTF8Char*)slist->data, slen, UTF8STRC("Start date:")))
 		{
-			dt->SetValue(Text::CString((const UTF8Char*)slist->data + 11, slen - 11));
-			return true;
+			return Data::Timestamp::FromStr(Text::CString((const UTF8Char*)slist->data + 11, slen - 11), Data::DateTimeUtil::GetLocalTzQhr());
 		}
 	}
 
-	return false;
+	return 0;
 }
 
-Bool Crypto::Cert::CurlCert::GetNotAfter(Data::DateTime *dt) const
+Data::Timestamp Crypto::Cert::CurlCert::GetNotAfter() const
 {
 	curl_slist *slist = (curl_slist*)this->certinfo;
 	UOSInt slen;
@@ -40,12 +39,11 @@ Bool Crypto::Cert::CurlCert::GetNotAfter(Data::DateTime *dt) const
 		slen = Text::StrCharCnt(slist->data);
 		if (Text::StrStartsWithC((const UTF8Char*)slist->data, slen, UTF8STRC("Expire date:")))
 		{
-			dt->SetValue(Text::CString((const UTF8Char*)slist->data + 12, slen - 12));
-			return true;
+			return Data::Timestamp::FromStr(Text::CString((const UTF8Char*)slist->data + 12, slen - 12), Data::DateTimeUtil::GetLocalTzQhr());
 		}
 	}
 
-	return false;
+	return 0;
 }
 
 Bool Crypto::Cert::CurlCert::IsSelfSigned() const
@@ -72,9 +70,9 @@ Bool Crypto::Cert::CurlCert::IsSelfSigned() const
 	return false;
 }
 
-NotNullPtr<Crypto::Cert::X509Cert> Crypto::Cert::CurlCert::CreateX509Cert() const
+Crypto::Cert::X509Cert *Crypto::Cert::CurlCert::CreateX509Cert() const
 {
-	NotNullPtr<Crypto::Cert::X509Cert> pobjCert;
+	Crypto::Cert::X509Cert *pobjCert;
 	curl_slist *slist = (curl_slist*)this->certinfo;
 	while (slist)
 	{
@@ -82,7 +80,8 @@ NotNullPtr<Crypto::Cert::X509Cert> Crypto::Cert::CurlCert::CreateX509Cert() cons
 		{
 			UOSInt len = Text::StrCharCnt(slist->data);
 			NotNullPtr<Text::String> fileName = Text::String::New(UTF8STRC("Certificate.crt"));
-			if (pobjCert.Set((Crypto::Cert::X509Cert*)Parser::FileParser::X509Parser::ParseBuff(Data::ByteArrayR((const UInt8*)slist->data + 5, (UOSInt)len - 5), fileName)))
+			pobjCert = (Crypto::Cert::X509Cert*)Parser::FileParser::X509Parser::ParseBuff(Data::ByteArrayR((const UInt8*)slist->data + 5, (UOSInt)len - 5), fileName);
+			if (pobjCert)
 			{
 				fileName->Release();
 				return pobjCert;
@@ -91,8 +90,7 @@ NotNullPtr<Crypto::Cert::X509Cert> Crypto::Cert::CurlCert::CreateX509Cert() cons
 		}
 		slist = slist->next;
 	}
-	NEW_CLASSNN(pobjCert, Crypto::Cert::X509Cert(CSTR("Certificate.crt"), Data::ByteArrayR(0, 0)));
-	return pobjCert;
+	return 0;
 }
 
 void Crypto::Cert::CurlCert::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const

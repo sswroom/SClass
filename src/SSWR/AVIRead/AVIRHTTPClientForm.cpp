@@ -771,10 +771,13 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 				if (certs.Set(cli->GetServerCerts()))
 				{
 					Text::StringBuilderUTF8 sb;
-					NotNullPtr<Crypto::Cert::X509File> x509 = Crypto::Cert::X509File::CreateFromCerts(certs);
-					x509->ToString(sb);
-					me->respCert = x509.Ptr();
-					me->respCertText = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
+					Crypto::Cert::X509File *x509 = Crypto::Cert::X509File::CreateFromCerts(certs);
+					if (x509)
+					{
+						x509->ToString(sb);
+						me->respCert = x509;
+						me->respCertText = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
+					}
 				}
 				respMutUsage.EndUse();
 			}

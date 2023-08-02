@@ -67,10 +67,13 @@ void __stdcall SSWR::AVIRead::AVIRSSLInfoForm::OnCheckClicked(void *userObj)
 	NotNullPtr<const Data::ReadingList<Crypto::Cert::Certificate *>> certs;
 	if (certs.Set(cli->GetRemoteCerts()))
 	{
-		me->currCerts = Crypto::Cert::X509File::CreateFromCerts(certs).Ptr();
-		Text::StringBuilderUTF8 sb;
-		me->currCerts->ToString(sb);
-		me->txtCert->SetText(sb.ToCString());
+		me->currCerts = Crypto::Cert::X509File::CreateFromCerts(certs);
+		if (me->currCerts)
+		{
+			Text::StringBuilderUTF8 sb;
+			me->currCerts->ToString(sb);
+			me->txtCert->SetText(sb.ToCString());
+		}
 	}
 	else
 	{

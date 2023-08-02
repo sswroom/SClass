@@ -208,10 +208,10 @@ NotNullPtr<Net::ASN1Data> Crypto::Cert::X509Cert::Clone() const
 	return asn1;
 }
 
-NotNullPtr<Crypto::Cert::X509Cert> Crypto::Cert::X509Cert::CreateX509Cert() const
+Crypto::Cert::X509Cert *Crypto::Cert::X509Cert::CreateX509Cert() const
 {
-	NotNullPtr<Crypto::Cert::X509Cert> asn1;
-	NEW_CLASSNN(asn1, Crypto::Cert::X509Cert(this->GetSourceNameObj(), this->buff));
+	Crypto::Cert::X509Cert *asn1;
+	NEW_CLASS(asn1, Crypto::Cert::X509Cert(this->GetSourceNameObj(), this->buff));
 	return asn1;
 }
 

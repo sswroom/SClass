@@ -3334,7 +3334,7 @@ Crypto::Hash::HashType Crypto::Cert::X509File::HashTypeFromOID(const UInt8 *oid,
 	return Crypto::Hash::HashType::Unknown;
 }
 
-NotNullPtr<Crypto::Cert::X509File> Crypto::Cert::X509File::CreateFromCerts(NotNullPtr<const Data::ReadingList<Crypto::Cert::Certificate *>> certs)
+Crypto::Cert::X509File *Crypto::Cert::X509File::CreateFromCerts(NotNullPtr<const Data::ReadingList<Crypto::Cert::Certificate *>> certs)
 {
 	if (certs->GetCount() == 1)
 	{
@@ -3344,12 +3344,23 @@ NotNullPtr<Crypto::Cert::X509File> Crypto::Cert::X509File::CreateFromCerts(NotNu
 	{
 		UOSInt i = 1;
 		UOSInt j = certs->GetCount();
-		NotNullPtr<Crypto::Cert::X509FileList> certList;
-		NotNullPtr<Crypto::Cert::X509Cert> cert = certs->GetItem(0)->CreateX509Cert();
-		NEW_CLASSNN(certList, Crypto::Cert::X509FileList(cert->GetSourceNameObj(), cert));
+		Crypto::Cert::X509FileList *certList = 0;
+		NotNullPtr<Crypto::Cert::X509Cert> cert;
+		if (cert.Set(certs->GetItem(0)->CreateX509Cert()))
+		{
+			NEW_CLASS(certList, Crypto::Cert::X509FileList(cert->GetSourceNameObj(), cert));
+		}
 		while (i < j)
 		{
-			certList->AddFile(certs->GetItem(i)->CreateX509Cert());
+			if (cert.Set(certs->GetItem(i)->CreateX509Cert()))
+			{
+				if (certList)
+					certList->AddFile(cert);
+				else
+				{
+					NEW_CLASS(certList, Crypto::Cert::X509FileList(cert->GetSourceNameObj(), cert));
+				}
+			}
 			i++;
 		}
 		return certList;
