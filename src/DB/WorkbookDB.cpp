@@ -210,7 +210,7 @@ public:
 		return DB::DBUtil::ColType::CT_Unknown;
 	}
 
-	virtual Bool GetColDef(UOSInt colIndex, DB::ColDef *colDef)
+	virtual Bool GetColDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef)
 	{
 		if (colIndex < this->tabDef->GetColCnt())
 		{
@@ -281,7 +281,7 @@ DB::TableDef *DB::WorkbookDB::GetTableDef(Text::CString schemaName, Text::CStrin
 		return 0;
 	}
 	DB::TableDef *tabDef;
-	DB::ColDef *col;
+	NotNullPtr<DB::ColDef> col;
 	NEW_CLASS(tabDef, DB::TableDef(schemaName, sheet->GetName()->ToCString()));
 	Text::SpreadSheet::Worksheet::RowData *row = sheet->GetItem(0);
 	Text::SpreadSheet::Worksheet::CellData *cell;
@@ -290,7 +290,7 @@ DB::TableDef *DB::WorkbookDB::GetTableDef(Text::CString schemaName, Text::CStrin
 	while (i < j)
 	{
 		cell = row->cells->GetItem(i);
-		NEW_CLASS(col, DB::ColDef(Text::String::OrEmpty(cell->cellValue)));
+		NEW_CLASSNN(col, DB::ColDef(Text::String::OrEmpty(cell->cellValue)));
 		col->SetColType(DB::DBUtil::ColType::CT_VarUTF8Char);
 		col->SetColSize(256);
 		tabDef->AddCol(col);

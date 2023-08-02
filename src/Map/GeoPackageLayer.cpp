@@ -267,7 +267,7 @@ DB::DBUtil::ColType Map::GeoPackageLayer::GetColumnType(UOSInt colIndex, UOSInt 
 	return col->GetColType();
 }
 
-Bool Map::GeoPackageLayer::GetColumnDef(UOSInt colIndex, DB::ColDef *colDef)
+Bool Map::GeoPackageLayer::GetColumnDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef)
 {
 	if (this->tabDef == 0)
 		return false;

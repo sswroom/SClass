@@ -700,8 +700,8 @@ Bool Net::HTTPOSClient::SetClientCert(Crypto::Cert::X509Cert* cert, Crypto::Cert
 	{
 		SDEL_CLASS(this->clsData->cliCert);
 		SDEL_CLASS(this->clsData->cliKey);
-		this->clsData->cliCert = (Crypto::Cert::X509Cert*)cert->Clone();
-		this->clsData->cliKey = (Crypto::Cert::X509File*)key->Clone();
+		this->clsData->cliCert = (Crypto::Cert::X509Cert*)cert->Clone().Ptr();
+		this->clsData->cliKey = (Crypto::Cert::X509File*)key->Clone().Ptr();
 		return true;
 	}
 }

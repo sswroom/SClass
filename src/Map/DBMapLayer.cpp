@@ -302,7 +302,7 @@ DB::DBUtil::ColType Map::DBMapLayer::GetColumnType(UOSInt colIndex, UOSInt *colS
 	return DB::DBUtil::CT_Unknown;
 }
 
-Bool Map::DBMapLayer::GetColumnDef(UOSInt colIndex, DB::ColDef *colDef)
+Bool Map::DBMapLayer::GetColumnDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef)
 {
 	if (this->tabDef)
 	{

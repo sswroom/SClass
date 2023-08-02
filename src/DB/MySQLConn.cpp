@@ -726,7 +726,7 @@ DB::DBUtil::ColType DB::MySQLReader::GetColType(UOSInt colIndex, UOSInt *colSize
 	return ToColType(field->type, field->flags, field->length);
 }
 
-Bool DB::MySQLReader::GetColDef(UOSInt colIndex, DB::ColDef *colDef)
+Bool DB::MySQLReader::GetColDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef)
 {
 	if (this->row == 0)
 		return false;

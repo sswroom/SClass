@@ -109,7 +109,7 @@ namespace Map
 		virtual UOSInt GetColumnCnt() = 0;
 		virtual UTF8Char *GetColumnName(UTF8Char *buff, UOSInt colIndex) = 0;
 		virtual DB::DBUtil::ColType GetColumnType(UOSInt colIndex, UOSInt *colSize) = 0;
-		virtual Bool GetColumnDef(UOSInt colIndex, DB::ColDef *colDef) = 0;
+		virtual Bool GetColumnDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef) = 0;
 		virtual UInt32 GetCodePage() = 0;
 		virtual Bool GetBounds(Math::RectAreaDbl *rect) = 0;
 		virtual void SetDispSize(Math::Size2DDbl size, Double dpi);
@@ -176,14 +176,14 @@ namespace Map
 	class MapLayerReader : public DB::DBReader
 	{
 	protected:
-		MapDrawLayer *layer;
+		NotNullPtr<MapDrawLayer> layer;
 		Data::ArrayListInt64 *objIds; 
 		NameArray *nameArr;
 		OSInt currIndex;
 
 		Int64 GetCurrObjId();
 	public:
-		MapLayerReader(MapDrawLayer *layer);
+		MapLayerReader(NotNullPtr<MapDrawLayer> layer);
 		~MapLayerReader();
 
 		virtual Bool ReadNext();
@@ -207,9 +207,9 @@ namespace Map
 		virtual Bool IsNull(UOSInt colIndex);
 		virtual UTF8Char *GetName(UOSInt colIndex, UTF8Char *buff);
 		virtual DB::DBUtil::ColType GetColType(UOSInt colIndex, UOSInt *colSize);
-		virtual Bool GetColDef(UOSInt colIndex, DB::ColDef *colDef);
+		virtual Bool GetColDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef);
 
-		static Bool GetColDefV(UOSInt colIndex, DB::ColDef *colDef, Map::MapDrawLayer *layer);
+		static Bool GetColDefV(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef, NotNullPtr<Map::MapDrawLayer> layer);
 	};
 }
 #endif

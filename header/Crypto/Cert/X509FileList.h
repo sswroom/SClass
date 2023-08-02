@@ -11,11 +11,11 @@ namespace Crypto
 		class X509FileList : public Crypto::Cert::X509File, public Crypto::Cert::Certificate
 		{
 		private:
-			Data::ArrayList<Crypto::Cert::X509File *> fileList;
+			Data::ArrayListNN<Crypto::Cert::X509File> fileList;
 
 		public:
-			X509FileList(NotNullPtr<Text::String> sourceName, Crypto::Cert::X509Cert *cert);
-			X509FileList(Text::CString sourceName, Crypto::Cert::X509Cert *cert);
+			X509FileList(NotNullPtr<Text::String> sourceName, NotNullPtr<Crypto::Cert::X509Cert> cert);
+			X509FileList(Text::CString sourceName, NotNullPtr<Crypto::Cert::X509Cert> cert);
 			virtual ~X509FileList();
 
 			virtual FileType GetFileType() const;
@@ -26,11 +26,11 @@ namespace Crypto
 			virtual X509Cert *GetNewCert(UOSInt index);
 			virtual ValidStatus IsValid(Net::SSLEngine *ssl, Crypto::Cert::CertStore *trustStore) const;
 
-			virtual ASN1Data *Clone() const;
-			virtual X509Cert *CreateX509Cert() const;
+			virtual NotNullPtr<ASN1Data> Clone() const;
+			virtual NotNullPtr<X509Cert> CreateX509Cert() const;
 			virtual void ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const;
 
-			void AddFile(Crypto::Cert::X509File *file);
+			void AddFile(NotNullPtr<Crypto::Cert::X509File> file);
 			UOSInt GetFileCount() const;
 			Crypto::Cert::X509File *GetFile(UOSInt index) const;
 		};

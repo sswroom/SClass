@@ -13,7 +13,7 @@ namespace Crypto
 		public:
 			virtual ~Certificate() {};
 
-			virtual Crypto::Cert::X509Cert *CreateX509Cert() const = 0;
+			virtual NotNullPtr<Crypto::Cert::X509Cert> CreateX509Cert() const = 0;
 			virtual void ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const = 0;
 		};
 	}

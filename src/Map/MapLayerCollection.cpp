@@ -318,7 +318,7 @@ DB::DBUtil::ColType Map::MapLayerCollection::GetColumnType(UOSInt colIndex, UOSI
 	return DB::DBUtil::CT_Unknown;
 }
 
-Bool Map::MapLayerCollection::GetColumnDef(UOSInt colIndex, DB::ColDef *colDef)
+Bool Map::MapLayerCollection::GetColumnDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef)
 {
 	return false;
 }

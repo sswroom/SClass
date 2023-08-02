@@ -104,7 +104,7 @@ namespace DB
 		void Set(const ColDef *colDef);
 
 		UTF8Char *ToColTypeStr(UTF8Char *sbuff) const;
-		ColDef *Clone() const;
+		NotNullPtr<ColDef> Clone() const;
 
 		static GeometryType GeometryTypeAdjust(GeometryType geomType, Bool hasZ, Bool hasM);
 		static Text::CString GeometryTypeGetName(GeometryType geomType);

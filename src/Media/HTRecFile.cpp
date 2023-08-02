@@ -480,7 +480,7 @@ DB::DBUtil::ColType Media::HTRecFile::HTRecReader::GetColType(UOSInt colIndex, U
 	return DB::DBUtil::CT_Unknown;
 }
 
-Bool Media::HTRecFile::HTRecReader::GetColDef(UOSInt colIndex, DB::ColDef *colDef)
+Bool Media::HTRecFile::HTRecReader::GetColDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef)
 {
 	return GetColDefV(colIndex, colDef, this->setting);
 }
@@ -514,7 +514,7 @@ Text::CString Media::HTRecFile::HTRecReader::GetName(UOSInt colIndex, Bool setti
 	return CSTR_NULL;
 }
 
-Bool Media::HTRecFile::HTRecReader::GetColDefV(UOSInt colIndex, DB::ColDef *colDef, Bool setting)
+Bool Media::HTRecFile::HTRecReader::GetColDefV(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef, Bool setting)
 {
 	colDef->SetNotNull(true);
 	colDef->SetPK(colIndex == 0);
@@ -686,7 +686,7 @@ DB::TableDef *Media::HTRecFile::GetTableDef(Text::CString schemaName, Text::CStr
 {
 	UOSInt i = 0;
 	UOSInt j;
-	DB::ColDef *col;
+	NotNullPtr<DB::ColDef> col;
 	DB::TableDef *tab = 0;
 	if (tableName.Equals(UTF8STRC("Setting")))
 	{
@@ -694,7 +694,7 @@ DB::TableDef *Media::HTRecFile::GetTableDef(Text::CString schemaName, Text::CStr
 		j = 2;
 		while (i < j)
 		{
-			NEW_CLASS(col, DB::ColDef(Text::String::NewEmpty()));
+			NEW_CLASSNN(col, DB::ColDef(Text::String::NewEmpty()));
 			Media::HTRecFile::HTRecReader::GetColDefV(i, col, true);
 			tab->AddCol(col);
 			i++;
@@ -706,7 +706,7 @@ DB::TableDef *Media::HTRecFile::GetTableDef(Text::CString schemaName, Text::CStr
 		j = 4;
 		while (i < j)
 		{
-			NEW_CLASS(col, DB::ColDef(Text::String::NewEmpty()));
+			NEW_CLASSNN(col, DB::ColDef(Text::String::NewEmpty()));
 			Media::HTRecFile::HTRecReader::GetColDefV(i, col, false);
 			tab->AddCol(col);
 			i++;

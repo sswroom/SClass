@@ -13,8 +13,8 @@ void TrustStore_LoadStore(Crypto::Cert::CertStore *store, const WChar *storeName
 		PCCERT_CONTEXT cert = 0;
 		while ((cert = CertEnumCertificatesInStore(hSystemStore, cert)) != 0)
 		{
-			Crypto::Cert::X509Cert *x509Cert;
-			NEW_CLASS(x509Cert, Crypto::Cert::X509Cert(CSTR("temp.crt"), Data::ByteArray(cert->pbCertEncoded, cert->cbCertEncoded)));
+			NotNullPtr<Crypto::Cert::X509Cert> x509Cert;
+			NEW_CLASSNN(x509Cert, Crypto::Cert::X509Cert(CSTR("temp.crt"), Data::ByteArray(cert->pbCertEncoded, cert->cbCertEncoded)));
 			store->AddCert(x509Cert);
 		}
 		CertCloseStore(hSystemStore, 0);

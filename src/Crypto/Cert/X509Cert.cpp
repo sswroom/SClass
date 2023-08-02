@@ -115,7 +115,7 @@ Crypto::Cert::X509Cert *Crypto::Cert::X509Cert::GetNewCert(UOSInt index)
 {
 	if (index != 0)
 		return 0;
-	return (Crypto::Cert::X509Cert*)this->Clone();
+	return (Crypto::Cert::X509Cert*)this->Clone().Ptr();
 }
 
 Crypto::Cert::X509File::ValidStatus Crypto::Cert::X509Cert::IsValid(Net::SSLEngine *ssl, Crypto::Cert::CertStore *trustStore) const
@@ -201,17 +201,17 @@ Crypto::Cert::X509File::ValidStatus Crypto::Cert::X509Cert::IsValid(Net::SSLEngi
 	return Crypto::Cert::X509File::ValidStatus::Valid;
 }
 
-Net::ASN1Data *Crypto::Cert::X509Cert::Clone() const
+NotNullPtr<Net::ASN1Data> Crypto::Cert::X509Cert::Clone() const
 {
-	Crypto::Cert::X509Cert *asn1;
-	NEW_CLASS(asn1, Crypto::Cert::X509Cert(this->GetSourceNameObj(), this->buff));
+	NotNullPtr<Crypto::Cert::X509Cert> asn1;
+	NEW_CLASSNN(asn1, Crypto::Cert::X509Cert(this->GetSourceNameObj(), this->buff));
 	return asn1;
 }
 
-Crypto::Cert::X509Cert *Crypto::Cert::X509Cert::CreateX509Cert() const
+NotNullPtr<Crypto::Cert::X509Cert> Crypto::Cert::X509Cert::CreateX509Cert() const
 {
-	Crypto::Cert::X509Cert *asn1;
-	NEW_CLASS(asn1, Crypto::Cert::X509Cert(this->GetSourceNameObj(), this->buff));
+	NotNullPtr<Crypto::Cert::X509Cert> asn1;
+	NEW_CLASSNN(asn1, Crypto::Cert::X509Cert(this->GetSourceNameObj(), this->buff));
 	return asn1;
 }
 

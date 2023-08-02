@@ -3334,7 +3334,7 @@ Crypto::Hash::HashType Crypto::Cert::X509File::HashTypeFromOID(const UInt8 *oid,
 	return Crypto::Hash::HashType::Unknown;
 }
 
-Crypto::Cert::X509File *Crypto::Cert::X509File::CreateFromCerts(const Data::ReadingList<Crypto::Cert::Certificate *> *certs)
+NotNullPtr<Crypto::Cert::X509File> Crypto::Cert::X509File::CreateFromCerts(NotNullPtr<const Data::ReadingList<Crypto::Cert::Certificate *>> certs)
 {
 	if (certs->GetCount() == 1)
 	{
@@ -3344,9 +3344,9 @@ Crypto::Cert::X509File *Crypto::Cert::X509File::CreateFromCerts(const Data::Read
 	{
 		UOSInt i = 1;
 		UOSInt j = certs->GetCount();
-		Crypto::Cert::X509FileList *certList;
-		Crypto::Cert::X509Cert *cert = certs->GetItem(0)->CreateX509Cert();
-		NEW_CLASS(certList, Crypto::Cert::X509FileList(cert->GetSourceNameObj(), cert));
+		NotNullPtr<Crypto::Cert::X509FileList> certList;
+		NotNullPtr<Crypto::Cert::X509Cert> cert = certs->GetItem(0)->CreateX509Cert();
+		NEW_CLASSNN(certList, Crypto::Cert::X509FileList(cert->GetSourceNameObj(), cert));
 		while (i < j)
 		{
 			certList->AddFile(certs->GetItem(i)->CreateX509Cert());

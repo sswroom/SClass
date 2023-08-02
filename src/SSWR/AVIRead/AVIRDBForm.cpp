@@ -84,13 +84,13 @@ void __stdcall SSWR::AVIRead::AVIRDBForm::OnTableSelChg(void *userObj)
 		me->UpdateResult(r);
 
 		me->lvTable->ClearItems();
-		DB::ColDef *col;
 		NotNullPtr<Text::String> s;
 		UOSInt i;
 		UOSInt j;
 		UOSInt k;
 		if (tabDef)
 		{
+			DB::ColDef *col;
 			j = tabDef->GetColCnt();
 			i = 0;
 			while (i < j)
@@ -116,28 +116,27 @@ void __stdcall SSWR::AVIRead::AVIRDBForm::OnTableSelChg(void *userObj)
 		}
 		else
 		{
-			NEW_CLASS(col, DB::ColDef(CSTR("")));
+			DB::ColDef col(Text::String::NewEmpty());
 			j = r->ColCount();
 			i = 0;
 			while (i < j)
 			{
 				r->GetColDef(i, col);
-				k = me->lvTable->AddItem(col->GetColName(), 0);
-				sptr = col->ToColTypeStr(sbuff);
+				k = me->lvTable->AddItem(col.GetColName(), 0);
+				sptr = col.ToColTypeStr(sbuff);
 				me->lvTable->SetSubItem(k, 1, CSTRP(sbuff, sptr));
-				if (s.Set(col->GetNativeType()))
+				if (s.Set(col.GetNativeType()))
 					me->lvTable->SetSubItem(k, 2, s);
-				me->lvTable->SetSubItem(k, 3, col->IsNotNull()?CSTR("NOT NULL"):CSTR("NULL"));
-				me->lvTable->SetSubItem(k, 4, col->IsPK()?CSTR("PK"):CSTR(""));
-				me->lvTable->SetSubItem(k, 5, col->IsAutoInc()?CSTR("AUTO_INCREMENT"):CSTR(""));
-				if (s.Set(col->GetDefVal()))
+				me->lvTable->SetSubItem(k, 3, col.IsNotNull()?CSTR("NOT NULL"):CSTR("NULL"));
+				me->lvTable->SetSubItem(k, 4, col.IsPK()?CSTR("PK"):CSTR(""));
+				me->lvTable->SetSubItem(k, 5, col.IsAutoInc()?CSTR("AUTO_INCREMENT"):CSTR(""));
+				if (s.Set(col.GetDefVal()))
 					me->lvTable->SetSubItem(k, 6, s);
-				if (s.Set(col->GetAttr()))
+				if (s.Set(col.GetAttr()))
 					me->lvTable->SetSubItem(k, 7, s);
 
 				i++;
 			}
-			DEL_CLASS(col);
 		}
 
 		me->db->CloseReader(r);
@@ -191,7 +190,7 @@ void SSWR::AVIRead::AVIRDBForm::UpdateResult(DB::DBReader *r)
 		colSize = MemAlloc(UOSInt, j);
 		while (i < j)
 		{
-			if (r->GetColDef(i, &col))
+			if (r->GetColDef(i, col))
 			{
 				this->lvResult->AddColumn(col.GetColName(), 100);
 			}

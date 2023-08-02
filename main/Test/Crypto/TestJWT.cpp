@@ -92,7 +92,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 				}
 				else if (x509->GetFileType() == Crypto::Cert::X509File::FileType::Key)
 				{
-					key = (Crypto::Cert::X509Key*)x509->Clone();
+					key = (Crypto::Cert::X509Key*)x509->Clone().Ptr();
 				}
 				if (key == 0)
 				{

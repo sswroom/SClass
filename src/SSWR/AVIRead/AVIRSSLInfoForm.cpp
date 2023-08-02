@@ -63,11 +63,11 @@ void __stdcall SSWR::AVIRead::AVIRSSLInfoForm::OnCheckClicked(void *userObj)
 		me->txtStatus->SetText(sb.ToCString());
 		return;
 	}
-	const Data::ReadingList<Crypto::Cert::Certificate *> *certs = cli->GetRemoteCerts();
 	SDEL_CLASS(me->currCerts);
-	if (certs)
+	NotNullPtr<const Data::ReadingList<Crypto::Cert::Certificate *>> certs;
+	if (certs.Set(cli->GetRemoteCerts()))
 	{
-		me->currCerts = Crypto::Cert::X509File::CreateFromCerts(certs);
+		me->currCerts = Crypto::Cert::X509File::CreateFromCerts(certs).Ptr();
 		Text::StringBuilderUTF8 sb;
 		me->currCerts->ToString(sb);
 		me->txtCert->SetText(sb.ToCString());
@@ -85,7 +85,7 @@ void __stdcall SSWR::AVIRead::AVIRSSLInfoForm::OnCertClicked(void *userObj)
 	SSWR::AVIRead::AVIRSSLInfoForm *me = (SSWR::AVIRead::AVIRSSLInfoForm *)userObj;
 	if (me->currCerts)
 	{
-		me->core->OpenObject(me->currCerts->Clone());
+		me->core->OpenObject(me->currCerts->Clone().Ptr());
 	}
 }
 

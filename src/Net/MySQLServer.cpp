@@ -604,7 +604,7 @@ void __stdcall Net::MySQLServer::OnClientData(NotNullPtr<Net::TCPClient> cli, vo
 								k = r->ColCount();
 								while (j < k)
 								{
-									r->GetColDef(j, &col);
+									r->GetColDef(j, col);
 									sbuff[3] = seqId++;
 									sptr = Net::MySQLUtil::AppendLenencStrC(&sbuff[4], UTF8STRC("def")); //catalog
 									sptr = Net::MySQLUtil::AppendLenencStrC(sptr, 0, 0); //schema

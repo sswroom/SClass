@@ -44,10 +44,10 @@ namespace Media
 			virtual UTF8Char *GetName(UOSInt colIndex, UTF8Char *buff);
 			virtual Bool IsNull(UOSInt colIndex);
 			virtual DB::DBUtil::ColType GetColType(UOSInt colIndex, UOSInt *colSize);
-			virtual Bool GetColDef(UOSInt colIndex, DB::ColDef *colDef);
+			virtual Bool GetColDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef);
 
 			static Text::CString GetName(UOSInt colIndex, Bool setting);
-			static Bool GetColDefV(UOSInt colIndex, DB::ColDef *colDef, Bool setting);
+			static Bool GetColDefV(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef, Bool setting);
 		};
 	private:
 		Int64 time1TS;

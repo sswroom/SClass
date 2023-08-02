@@ -713,7 +713,7 @@ Bool Net::ACMEConn::SetKey(Crypto::Cert::X509Key *key)
 	if (key && key->GetKeyType() == Crypto::Cert::X509Key::KeyType::RSA)
 	{
 		SDEL_CLASS(this->key);
-		this->key = (Crypto::Cert::X509Key*)key->Clone();
+		this->key = (Crypto::Cert::X509Key*)key->Clone().Ptr();
 		return true;
 	}
 	return false;

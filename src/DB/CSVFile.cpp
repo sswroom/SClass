@@ -120,13 +120,13 @@ DB::TableDef *DB::CSVFile::GetTableDef(Text::CString schemaName, Text::CString t
 	if (r)
 	{
 		DB::TableDef *tab;
-		DB::ColDef *col;
+		NotNullPtr<DB::ColDef> col;
 		NEW_CLASS(tab, DB::TableDef(schemaName, tableName));
 		UOSInt i = 0;
 		UOSInt j = r->ColCount();
 		while (i < j)
 		{
-			NEW_CLASS(col, DB::ColDef(Text::String::NewEmpty()));
+			NEW_CLASSNN(col, DB::ColDef(Text::String::NewEmpty()));
 			r->GetColDef(i, col);
 			tab->AddCol(col);
 			i++;
@@ -937,7 +937,7 @@ DB::DBUtil::ColType DB::CSVReader::GetColType(UOSInt colIndex, UOSInt *colSize)
 	return DB::DBUtil::CT_VarUTF8Char;
 }
 
-Bool DB::CSVReader::GetColDef(UOSInt colIndex, DB::ColDef *colDef)
+Bool DB::CSVReader::GetColDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef)
 {
 	if (colIndex >= nHdr)
 		return false;

@@ -106,7 +106,7 @@ DB::ColDef *DB::TableDef::GetSinglePKCol() const
 	return retCol;
 }
 
-DB::TableDef *DB::TableDef::AddCol(DB::ColDef *col)
+DB::TableDef *DB::TableDef::AddCol(NotNullPtr<DB::ColDef> col)
 {
 	this->cols.Add(col);
 	return this;
@@ -171,10 +171,10 @@ void DB::TableDef::ColFromReader(DB::DBReader *r)
 {
 	UOSInt i = 0;
 	UOSInt j = r->ColCount();
-	DB::ColDef *col;
+	NotNullPtr<DB::ColDef> col;
 	while (i < j)
 	{
-		NEW_CLASS(col, DB::ColDef(Text::String::NewEmpty()));
+		NEW_CLASSNN(col, DB::ColDef(Text::String::NewEmpty()));
 		r->GetColDef(i, col);
 		this->AddCol(col);
 		i++;

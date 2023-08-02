@@ -537,7 +537,7 @@ DB::DBUtil::ColType Map::WebImageLayer::GetColumnType(UOSInt colIndex, UOSInt *c
 	return DB::DBUtil::CT_Unknown;
 }
 
-Bool Map::WebImageLayer::GetColumnDef(UOSInt colIndex, DB::ColDef *colDef)
+Bool Map::WebImageLayer::GetColumnDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef)
 {
 	if (colIndex == 0)
 	{

@@ -552,7 +552,7 @@ DB::DBUtil::ColType Map::CIPLayer2::GetColumnType(UOSInt colIndex, UOSInt *colSi
 	}
 }
 
-Bool Map::CIPLayer2::GetColumnDef(UOSInt colIndex, DB::ColDef *colDef)
+Bool Map::CIPLayer2::GetColumnDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef)
 {
 	if (colIndex != 0)
 		return false;

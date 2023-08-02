@@ -144,7 +144,7 @@ UOSInt Map::MapDrawLayer::QueryTableNames(Text::CString schemaName, Data::ArrayL
 DB::DBReader *Map::MapDrawLayer::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListNN<Text::String> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	DB::DBReader *r;
-	NEW_CLASS(r, Map::MapLayerReader(this));
+	NEW_CLASS(r, Map::MapLayerReader(*this));
 	return r;
 }
 
@@ -152,12 +152,12 @@ DB::TableDef *Map::MapDrawLayer::GetTableDef(Text::CString schemaName, Text::CSt
 {
 	DB::TableDef *tab;
 	NEW_CLASS(tab, DB::TableDef(schemaName, tableName));
-	DB::ColDef *col;
+	NotNullPtr<DB::ColDef> col;
 	UOSInt i = 0;
 	UOSInt j = this->GetColumnCnt();
 	while (i < j)
 	{
-		NEW_CLASS(col, DB::ColDef(CSTR("")));
+		NEW_CLASSNN(col, DB::ColDef(CSTR("")));
 		this->GetColumnDef(i, col);
 		tab->AddCol(col);
 	}
@@ -851,7 +851,7 @@ Int64 Map::MapLayerReader::GetCurrObjId()
 	return this->objIds->GetItem((UOSInt)this->currIndex);
 }
 
-Map::MapLayerReader::MapLayerReader(Map::MapDrawLayer *layer) : DB::DBReader()
+Map::MapLayerReader::MapLayerReader(NotNullPtr<Map::MapDrawLayer> layer) : DB::DBReader()
 {
 	this->layer = layer;
 
@@ -1072,12 +1072,12 @@ DB::DBUtil::ColType Map::MapLayerReader::GetColType(UOSInt colIndex, UOSInt *col
 	return this->layer->GetColumnType(colIndex - 1, colSize);
 }
 
-Bool Map::MapLayerReader::GetColDef(UOSInt colIndex, DB::ColDef *colDef)
+Bool Map::MapLayerReader::GetColDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef)
 {
 	return GetColDefV(colIndex, colDef, this->layer);
 }
 
-Bool Map::MapLayerReader::GetColDefV(UOSInt colIndex, DB::ColDef *colDef, Map::MapDrawLayer *layer)
+Bool Map::MapLayerReader::GetColDefV(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef, NotNullPtr<Map::MapDrawLayer> layer)
 {
 	if (colIndex == 0)
 	{

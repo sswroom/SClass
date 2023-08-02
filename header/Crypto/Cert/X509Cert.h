@@ -26,8 +26,8 @@ namespace Crypto
 			virtual X509Cert *GetNewCert(UOSInt index);
 			virtual ValidStatus IsValid(Net::SSLEngine *ssl, Crypto::Cert::CertStore *trustStore) const;
 
-			virtual ASN1Data *Clone() const;
-			virtual X509Cert *CreateX509Cert() const;
+			virtual NotNullPtr<ASN1Data> Clone() const;
+			virtual NotNullPtr<X509Cert> CreateX509Cert() const;
 			virtual void ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const;
 
 			Bool GetIssuerNames(CertNames *names) const;

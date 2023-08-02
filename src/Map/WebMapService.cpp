@@ -816,12 +816,12 @@ UOSInt Map::WebMapService::GetLayerNames(Data::ArrayListNN<Text::String> *nameLi
 
 UOSInt Map::WebMapService::GetMapImageTypeNames(Data::ArrayListNN<Text::String> *nameList) const
 {
-	return nameList->AddAll(&this->mapImageTypeNames);
+	return nameList->AddAll(this->mapImageTypeNames);
 }
 
 UOSInt Map::WebMapService::GetInfoTypeNames(Data::ArrayListNN<Text::String> *nameList) const
 {
-	return nameList->AddAll(&this->infoTypeNames);
+	return nameList->AddAll(this->infoTypeNames);
 }
 
 UOSInt Map::WebMapService::GetLayerCRSNames(Data::ArrayList<Text::String*> *nameList) const

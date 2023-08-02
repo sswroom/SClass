@@ -58,7 +58,7 @@ namespace Map
 			virtual Bool IsNull(UOSInt colIndex);
 			virtual UTF8Char *GetName(UOSInt colIndex, UTF8Char *buff);
 			virtual DB::DBUtil::ColType GetColType(UOSInt colIndex, UOSInt *colSize);
-			virtual Bool GetColDef(UOSInt colIndex, DB::ColDef *colDef);
+			virtual Bool GetColDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef);
 
 			void SetIndex(NotNullPtr<IO::StreamData> fd, UOSInt indexCnt);
 		};

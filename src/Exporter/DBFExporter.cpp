@@ -85,7 +85,6 @@ Bool Exporter::DBFExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 	UOSInt *colSize;
 	UOSInt *colDP;
 	DB::DBUtil::ColType *colTypes;
-	DB::ColDef *colDef;
 	UOSInt i;
 	DB::DBFFixWriter *writer;
 	Data::DateTime dt;
@@ -96,30 +95,31 @@ Bool Exporter::DBFExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 	colDP = MemAlloc(UOSInt, nCol);
 	colTypes = MemAlloc(DB::DBUtil::ColType, nCol);
 
-	NEW_CLASS(colDef, DB::ColDef(CSTR("")));
-	i = nCol;
-	while (i-- > 0)
 	{
-		r->GetColDef(i, colDef);
-		colNames[i] = colDef->GetColName()->Clone().Ptr();
-		if (colDef->GetColType() == DB::DBUtil::CT_DateTime)
+		DB::ColDef colDef(Text::String::NewEmpty());
+		i = nCol;
+		while (i-- > 0)
 		{
-			colSize[i] = 8;
-			colDP[i] = 0;
-			colTypes[i] = DB::DBUtil::CT_DateTime;
-		}
-		else
-		{
-			colSize[i] = colDef->GetColSize();
-			colDP[i] = colDef->GetColDP();
-			colTypes[i] = colDef->GetColType();
-			if (colSize[i] > 255)
+			r->GetColDef(i, colDef);
+			colNames[i] = colDef.GetColName()->Clone().Ptr();
+			if (colDef.GetColType() == DB::DBUtil::CT_DateTime)
 			{
-				colSize[i] = 255;
+				colSize[i] = 8;
+				colDP[i] = 0;
+				colTypes[i] = DB::DBUtil::CT_DateTime;
+			}
+			else
+			{
+				colSize[i] = colDef.GetColSize();
+				colDP[i] = colDef.GetColDP();
+				colTypes[i] = colDef.GetColType();
+				if (colSize[i] > 255)
+				{
+					colSize[i] = 255;
+				}
 			}
 		}
 	}
-	DEL_CLASS(colDef);
 
 	NEW_CLASS(writer, DB::DBFFixWriter(stm, nCol, colNames, colSize, colDP, colTypes, this->codePage));
 	

@@ -899,7 +899,7 @@ DB::DBUtil::ColType Win32::WMIReader::GetColType(UOSInt colIndex, UOSInt *colSiz
 	return DB::DBUtil::CT_Unknown;
 }
 
-Bool Win32::WMIReader::GetColDef(UOSInt colIndex, DB::ColDef *colDef)
+Bool Win32::WMIReader::GetColDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef)
 {
 	WMIColumn *col = this->columns->GetItem(colIndex);
 	if (col == 0)

@@ -49,10 +49,10 @@ Crypto::Cert::X509File::ValidStatus Crypto::Cert::X509PubKey::IsValid(Net::SSLEn
 	return Crypto::Cert::X509File::ValidStatus::SignatureInvalid;
 }
 
-Net::ASN1Data *Crypto::Cert::X509PubKey::Clone() const
+NotNullPtr<Net::ASN1Data> Crypto::Cert::X509PubKey::Clone() const
 {
-	Crypto::Cert::X509PubKey *asn1;
-	NEW_CLASS(asn1, Crypto::Cert::X509PubKey(this->GetSourceNameObj(), this->buff));
+	NotNullPtr<Crypto::Cert::X509PubKey> asn1;
+	NEW_CLASSNN(asn1, Crypto::Cert::X509PubKey(this->GetSourceNameObj(), this->buff));
 	return asn1;
 }
 

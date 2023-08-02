@@ -83,7 +83,7 @@ Map::FileGDBLayer::FileGDBLayer(DB::SharedReadingDB *conn, Text::CString sourceN
 		j = r->ColCount();
 		while (i < j)
 		{
-			r->GetColDef(i, &colDef);
+			r->GetColDef(i, colDef);
 			if (colDef.GetColType() == DB::DBUtil::CT_Vector)
 			{
 				this->shapeCol = i;
@@ -292,7 +292,7 @@ DB::DBUtil::ColType Map::FileGDBLayer::GetColumnType(UOSInt colIndex, UOSInt *co
 	return DB::DBUtil::CT_Unknown;
 }
 
-Bool Map::FileGDBLayer::GetColumnDef(UOSInt colIndex, DB::ColDef *colDef)
+Bool Map::FileGDBLayer::GetColumnDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef)
 {
 	return false;
 }
@@ -507,7 +507,7 @@ DB::DBUtil::ColType Map::FileGDBLReader::GetColType(UOSInt colIndex, UOSInt *col
 	return this->r->GetColType((colIndex > 0)?(colIndex + 1):colIndex, colSize);
 }
 
-Bool Map::FileGDBLReader::GetColDef(UOSInt colIndex, DB::ColDef *colDef)
+Bool Map::FileGDBLReader::GetColDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef)
 {
 	return this->r->GetColDef((colIndex > 0)?(colIndex + 1):colIndex, colDef);
 }

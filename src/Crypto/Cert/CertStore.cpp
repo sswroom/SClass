@@ -26,15 +26,15 @@ Crypto::Cert::CertStore::~CertStore()
 	this->storeName->Release();
 }
 
-Crypto::Cert::CertStore *Crypto::Cert::CertStore::Clone()
+NotNullPtr<Crypto::Cert::CertStore> Crypto::Cert::CertStore::Clone() const
 {
-	Crypto::Cert::CertStore *newStore;
-	NEW_CLASS(newStore, Crypto::Cert::CertStore(this->storeName));
+	NotNullPtr<Crypto::Cert::CertStore> newStore;
+	NEW_CLASSNN(newStore, Crypto::Cert::CertStore(this->storeName));
 	UOSInt i = 0;
 	UOSInt j = this->certMap.GetCount();
 	while (i < j)
 	{
-		newStore->certMap.Put(this->certMap.GetKey(i), (Crypto::Cert::X509Cert*)this->certMap.GetItem(i)->Clone());
+		newStore->certMap.Put(this->certMap.GetKey(i), (Crypto::Cert::X509Cert*)this->certMap.GetItem(i)->Clone().Ptr());
 		i++;
 	}
 	return newStore;
@@ -66,32 +66,32 @@ Bool Crypto::Cert::CertStore::LoadDir(Text::CString certsDir)
 		{
 			if (pt == IO::Path::PathType::File)
 			{
-				IO::ParsedObject *pobj = parser.ParseFilePath(CSTRP(sbuff, sptr2));
-				if (pobj)
+				NotNullPtr<IO::ParsedObject> pobj;
+				if (pobj.Set(parser.ParseFilePath(CSTRP(sbuff, sptr2))))
 				{
 					if (pobj->GetParserType() == IO::ParserType::ASN1Data)
 					{
-						Net::ASN1Data *asn = (Net::ASN1Data*)pobj;
+						Net::ASN1Data *asn = (Net::ASN1Data*)pobj.Ptr();
 						if (asn->GetASN1Type() == Net::ASN1Data::ASN1Type::X509)
 						{
 							Crypto::Cert::X509File *x509 = (Crypto::Cert::X509File*)asn;
 							if (x509->GetFileType() == Crypto::Cert::X509File::FileType::Cert)
 							{
-								this->AddCert((Crypto::Cert::X509Cert*)x509);
+								this->AddCert(NotNullPtr<Crypto::Cert::X509Cert>::ConvertFrom(pobj));
 							}
 							else
 							{
-								DEL_CLASS(pobj);
+								pobj.Delete();
 							}
 						}
 						else
 						{
-							DEL_CLASS(pobj);
+							pobj.Delete();
 						}
 					}
 					else
 					{
-						DEL_CLASS(pobj);
+						pobj.Delete();
 					}
 				}
 			}
@@ -121,15 +121,21 @@ Bool Crypto::Cert::CertStore::LoadJavaCACerts(Text::CString jksPath)
 	}
 }
 
-void Crypto::Cert::CertStore::AddCert(Crypto::Cert::X509Cert *cert)
+void Crypto::Cert::CertStore::AddCert(NotNullPtr<Crypto::Cert::X509Cert> cert)
 {
 	Text::StringBuilderUTF8 sb;
 	cert->GetSubjectCN(sb);
 	if (sb.GetLength() > 0)
 	{
-		cert = this->certMap.PutC(sb.ToCString(), cert);
+		if (cert.Set(this->certMap.PutC(sb.ToCString(), cert.Ptr())))
+		{
+			cert.Delete();
+		}
 	}
-	SDEL_CLASS(cert);
+	else
+	{
+		cert.Delete();
+	}
 }
 
 void Crypto::Cert::CertStore::FromPackageFile(IO::PackageFile *pkg)
@@ -148,7 +154,7 @@ void Crypto::Cert::CertStore::FromPackageFile(IO::PackageFile *pkg)
 				Crypto::Cert::X509File *x509 = (Crypto::Cert::X509File*)asn1;
 				if (x509->GetFileType() == Crypto::Cert::X509File::FileType::Cert)
 				{
-					this->AddCert((Crypto::Cert::X509Cert*)x509->Clone());
+					this->AddCert(NotNullPtr<Crypto::Cert::X509Cert>::ConvertFrom(x509->Clone()));
 				}
 			}
 		}

@@ -735,7 +735,7 @@ public:
 		}
 	}
 
-	virtual Bool GetColDef(UOSInt colIndex, DB::ColDef *colDef)
+	virtual Bool GetColDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef)
 	{
 		if (colIndex >= this->nCols)
 			return DB::DBUtil::ColType::CT_Unknown;

@@ -646,7 +646,7 @@ Crypto::Cert::X509Cert *Net::WebServer::WebRequest::GetClientCert()
 	Crypto::Cert::Certificate *cert = cli->GetRemoteCert();
 	if (cert)
 	{
-		this->remoteCert = cert->CreateX509Cert();
+		this->remoteCert = cert->CreateX509Cert().Ptr();
 		return this->remoteCert;
 	}
 	return 0;

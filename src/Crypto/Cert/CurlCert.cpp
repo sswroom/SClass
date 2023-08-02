@@ -72,23 +72,27 @@ Bool Crypto::Cert::CurlCert::IsSelfSigned() const
 	return false;
 }
 
-Crypto::Cert::X509Cert *Crypto::Cert::CurlCert::CreateX509Cert() const
+NotNullPtr<Crypto::Cert::X509Cert> Crypto::Cert::CurlCert::CreateX509Cert() const
 {
+	NotNullPtr<Crypto::Cert::X509Cert> pobjCert;
 	curl_slist *slist = (curl_slist*)this->certinfo;
 	while (slist)
 	{
 		if (Text::StrStartsWith(slist->data, "Cert:"))
 		{
-			Crypto::Cert::X509File *pobjCert;
 			UOSInt len = Text::StrCharCnt(slist->data);
 			NotNullPtr<Text::String> fileName = Text::String::New(UTF8STRC("Certificate.crt"));
-			pobjCert = (Crypto::Cert::X509File*)Parser::FileParser::X509Parser::ParseBuff(Data::ByteArrayR((const UInt8*)slist->data + 5, (UOSInt)len - 5), fileName);
+			if (pobjCert.Set((Crypto::Cert::X509Cert*)Parser::FileParser::X509Parser::ParseBuff(Data::ByteArrayR((const UInt8*)slist->data + 5, (UOSInt)len - 5), fileName)))
+			{
+				fileName->Release();
+				return pobjCert;
+			}
 			fileName->Release();
-			return (Crypto::Cert::X509Cert*)pobjCert;
 		}
 		slist = slist->next;
 	}
-	return 0;
+	NEW_CLASSNN(pobjCert, Crypto::Cert::X509Cert(CSTR("Certificate.crt"), Data::ByteArrayR(0, 0)));
+	return pobjCert;
 }
 
 void Crypto::Cert::CurlCert::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const

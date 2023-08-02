@@ -106,7 +106,7 @@ IO::ParsedObject *Parser::FileParser::MDBParser::ParseFileHdr(NotNullPtr<IO::Str
 				j = rdr->ColCount();
 				while (j-- > 0)
 				{
-					rdr->GetColDef(j, &colDef);
+					rdr->GetColDef(j, colDef);
 					if (colDef.GetColName()->EqualsICase(UTF8STRC("OBJECTID")) && colDef.GetColType() == DB::DBUtil::CT_Int32)
 					{
 						objCol = (OSInt)j;

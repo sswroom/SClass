@@ -55,7 +55,7 @@ namespace DB
 		UOSInt GetRowCnt();
 		UTF8Char *GetColumnName(UOSInt colIndex, UTF8Char *buff);
 		DB::DBUtil::ColType GetColumnType(UOSInt colIndex, UOSInt *colSize);
-		Bool GetColumnDef(UOSInt colIndex, DB::ColDef *colDef);
+		Bool GetColumnDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef);
 		Bool ReadRowData(UOSInt row, UInt8 *recordBuff);
 
 		static Int32 GetCodePage(UInt8 langDriver);
@@ -100,7 +100,7 @@ namespace DB
 //		virtual WChar *GetName(UOSInt colIndex);
 		virtual UTF8Char *GetName(UOSInt colIndex, UTF8Char *buff);
 		virtual DB::DBUtil::ColType GetColType(UOSInt colIndex, UOSInt *colSize);
-		virtual Bool GetColDef(UOSInt colIndex, DB::ColDef *colDef);
+		virtual Bool GetColDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef);
 	};
 }
 #endif

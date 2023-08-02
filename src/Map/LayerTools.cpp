@@ -53,7 +53,7 @@ Map::VectorLayer *Map::LayerTools::CombineLayers(Data::ArrayList<Map::MapDrawLay
 		while (j < k)
 		{
 			lyr->GetColumnName(sbuff, j);
-			r->GetColDef(j, &colDef);
+			r->GetColDef(j, colDef);
 			si = nameIndex.SortedIndexOf(sbuff);
 			if (si >= 0)
 			{

@@ -394,7 +394,7 @@ DB::DBUtil::ColType Map::HKTrafficLayer2::GetColumnType(UOSInt colIndex, UOSInt 
 	return DB::DBUtil::CT_Unknown;
 }
 
-Bool Map::HKTrafficLayer2::GetColumnDef(UOSInt colIndex, DB::ColDef *colDef)
+Bool Map::HKTrafficLayer2::GetColumnDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef)
 {
 	////////////////////////////
 	return false;

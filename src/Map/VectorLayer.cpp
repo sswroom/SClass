@@ -518,7 +518,7 @@ DB::DBUtil::ColType Map::VectorLayer::GetColumnType(UOSInt colIndex, UOSInt *col
 	
 }
 
-Bool Map::VectorLayer::GetColumnDef(UOSInt colIndex, DB::ColDef *colDef)
+Bool Map::VectorLayer::GetColumnDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef)
 {
 	if (colIndex >= this->strCnt)
 		return false;

@@ -68,7 +68,7 @@ Bool Crypto::Cert::OpenSSLCert::IsSelfSigned() const
 	return X509_NAME_cmp(name, issuer) == 0;
 }
 
-Crypto::Cert::X509Cert *Crypto::Cert::OpenSSLCert::CreateX509Cert() const
+NotNullPtr<Crypto::Cert::X509Cert> Crypto::Cert::OpenSSLCert::CreateX509Cert() const
 {
 	BIO *bio1;
 	BIO *bio2;
@@ -86,16 +86,19 @@ Crypto::Cert::X509Cert *Crypto::Cert::OpenSSLCert::CreateX509Cert() const
 	}
 	BIO_free(bio1);
 	BIO_free(bio2);
-	return (Crypto::Cert::X509Cert*)pobjCert;
+	NotNullPtr<Crypto::Cert::X509Cert> ret;
+	if (ret.Set((Crypto::Cert::X509Cert*)pobjCert))
+	{
+		return ret;
+	}
+	NEW_CLASSNN(ret, Crypto::Cert::X509Cert(CSTR("Certificate.crt"), Data::ByteArrayR(0, 0)));
+	return ret;
 }
 
 void Crypto::Cert::OpenSSLCert::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
 {
 	/////////////////////////////
-	Crypto::Cert::X509Cert *cert = this->CreateX509Cert();
-	if (cert)
-	{
-		cert->ToString(sb);
-		DEL_CLASS(cert);
-	}
+	NotNullPtr<Crypto::Cert::X509Cert> cert = this->CreateX509Cert();
+	cert->ToString(sb);
+	cert.Delete();
 }

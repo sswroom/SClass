@@ -98,7 +98,7 @@ DB::TableDef *Math::TSPFile::GetTableDef(Text::CString schemaName, Text::CString
 	UOSInt i;
 	UOSInt j;
 	DB::TableDef *tab;
-	DB::ColDef *col;
+	NotNullPtr<DB::ColDef> col;
 	NEW_CLASS(tab, DB::TableDef(schemaName, tableName));
 	if (tableName.v != 0 && tableName.Equals(UTF8STRC("StationSetup")))
 	{
@@ -106,7 +106,7 @@ DB::TableDef *Math::TSPFile::GetTableDef(Text::CString schemaName, Text::CString
 		j = 8;
 		while (i < j)
 		{
-			NEW_CLASS(col, DB::ColDef(Text::String::NewEmpty()));
+			NEW_CLASSNN(col, DB::ColDef(Text::String::NewEmpty()));
 			TSPHReader::GetColDefV(i, col);
 			tab->AddCol(col);
 			i++;
@@ -125,7 +125,7 @@ DB::TableDef *Math::TSPFile::GetTableDef(Text::CString schemaName, Text::CString
 		}
 		while (i < j)
 		{
-			NEW_CLASS(col, DB::ColDef(Text::String::NewEmpty()));
+			NEW_CLASSNN(col, DB::ColDef(Text::String::NewEmpty()));
 			TSPReader::GetColDefV(i, col, this->rowSize);
 			tab->AddCol(col);
 			i++;
@@ -530,7 +530,7 @@ DB::DBUtil::ColType Math::TSPReader::GetColType(UOSInt colIndex, UOSInt *colSize
 	}
 }
 
-Bool Math::TSPReader::GetColDef(UOSInt colIndex, DB::ColDef *colDef)
+Bool Math::TSPReader::GetColDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef)
 {
 	return GetColDefV(colIndex, colDef, this->rowSize);
 }
@@ -577,7 +577,7 @@ Text::CString Math::TSPReader::GetName(UOSInt colIndex, UOSInt rowSize)
 	}
 }
 
-Bool Math::TSPReader::GetColDefV(UOSInt colIndex, DB::ColDef *colDef, UOSInt rowSize)
+Bool Math::TSPReader::GetColDefV(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef, UOSInt rowSize)
 {
 	switch (colIndex)
 	{
@@ -771,7 +771,7 @@ DB::DBUtil::ColType Math::TSPHReader::GetColType(UOSInt colIndex, UOSInt *colSiz
 	}
 }
 
-Bool Math::TSPHReader::GetColDef(UOSInt colIndex, DB::ColDef *colDef)
+Bool Math::TSPHReader::GetColDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef)
 {
 	return GetColDefV(colIndex, colDef);
 }
@@ -801,7 +801,7 @@ Text::CString Math::TSPHReader::GetName(UOSInt colIndex)
 	}
 }
 
-Bool Math::TSPHReader::GetColDefV(UOSInt colIndex, DB::ColDef *colDef)
+Bool Math::TSPHReader::GetColDefV(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef)
 {
 	switch (colIndex)
 	{

@@ -33,7 +33,7 @@ DB::SortableDBReader::SortableDBReader(DB::ReadingDB *db, Text::CString schemaNa
 		j = r->ColCount();
 		while (i < j)
 		{
-			if (r->GetColDef(i, &colDef))
+			if (r->GetColDef(i, colDef))
 			{
 				this->cols.Add(colDef.Clone());
 			}
@@ -97,9 +97,9 @@ DB::SortableDBReader::SortableDBReader(DB::ReadingDB *db, Text::CString schemaNa
 		j = r->ColCount();
 		while (i < j)
 		{
-			if (r->GetColDef(i, &colDef))
+			if (r->GetColDef(i, colDef))
 			{
-				tmpCols.PutNN(colDef.GetColName(), colDef.Clone());
+				tmpCols.PutNN(colDef.GetColName(), colDef.Clone().Ptr());
 			}
 			i++;
 		}
@@ -502,7 +502,7 @@ DB::DBUtil::ColType DB::SortableDBReader::GetColType(UOSInt colIndex, UOSInt *co
 	return DB::DBUtil::CT_Unknown;
 }
 
-Bool DB::SortableDBReader::GetColDef(UOSInt colIndex, DB::ColDef *colDef)
+Bool DB::SortableDBReader::GetColDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef)
 {
 	DB::ColDef *c = this->cols.GetItem(colIndex);
 	if (c == 0)

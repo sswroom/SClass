@@ -21,7 +21,7 @@ namespace DB
 		const UTF8Char *comments;
 		SQLType sqlType;
 
-		Data::ArrayList<ColDef*> cols;
+		Data::ArrayListNN<ColDef> cols;
 
 	public:
 		TableDef(Text::CString schemaName, Text::CString tableName);
@@ -39,7 +39,7 @@ namespace DB
 		DB::ColDef *GetCol(UOSInt index) const;
 		DB::ColDef *GetSinglePKCol() const;
 
-		TableDef *AddCol(DB::ColDef *col);
+		TableDef *AddCol(NotNullPtr<DB::ColDef> col);
 		TableDef *SetDatabaseName(Text::CString databaseName);
 		TableDef *SetSchemaName(Text::CString schemaName);
 		TableDef *SetTableName(Text::CString tableName);

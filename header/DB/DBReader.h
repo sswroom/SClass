@@ -87,7 +87,7 @@ namespace DB
 		virtual Bool IsNull(UOSInt colIndex) = 0;
 		virtual UTF8Char *GetName(UOSInt colIndex, UTF8Char *buff) = 0;
 		virtual DB::DBUtil::ColType GetColType(UOSInt colIndex, UOSInt *colSize) = 0;
-		virtual Bool GetColDef(UOSInt colIndex, DB::ColDef *colDef) = 0;
+		virtual Bool GetColDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef) = 0;
 
 		TableDef *GenTableDef(Text::CString schemaName, Text::CString tableName);
 		Data::VariObject *CreateVariObject();

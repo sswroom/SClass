@@ -101,7 +101,6 @@ DB::SQL::SQLCommand *DB::SQL::SQLCommand::Parse(const UTF8Char *sql, DB::SQLType
 				sql = ParseNextWord(sql, sb, sqlType);
 				if (sb.Equals(UTF8STRC("(")))
 				{
-					DB::ColDef *col = 0;
 					while (true)
 					{
 						sql = ParseNextWord(sql, sb, sqlType);
@@ -143,6 +142,7 @@ DB::SQL::SQLCommand *DB::SQL::SQLCommand::Parse(const UTF8Char *sql, DB::SQLType
 								i = tab->GetColCnt();
 								while (i-- > 0)
 								{
+									DB::ColDef *col;
 									col = tab->GetCol(i);
 									if (sb.Equals(col->GetColName().Ptr()))
 									{
@@ -183,7 +183,6 @@ DB::SQL::SQLCommand *DB::SQL::SQLCommand::Parse(const UTF8Char *sql, DB::SQLType
 							else
 							{
 								printf("SQLCommand: Unknown word found: %s (After primary key)\r\n", sb.ToString());
-								DEL_CLASS(col);
 								break;
 							}
 						}
@@ -225,14 +224,15 @@ DB::SQL::SQLCommand *DB::SQL::SQLCommand::Parse(const UTF8Char *sql, DB::SQLType
 						{
 							UOSInt colSize;
 							UOSInt colDP;
+							NotNullPtr<DB::ColDef> col;
 							if (sqlType == DB::SQLType::SQLite && sb.StartsWith('\"') && sb.EndsWith('\"'))
 							{
 								sb.RemoveChars(1);
-								NEW_CLASS(col, DB::ColDef(sb.ToCString().Substring(1)));
+								NEW_CLASSNN(col, DB::ColDef(sb.ToCString().Substring(1)));
 							}
 							else
 							{
-								NEW_CLASS(col, DB::ColDef(sb.ToCString()));
+								NEW_CLASSNN(col, DB::ColDef(sb.ToCString()));
 							}
 							sql = ParseNextWord(sql, sb, sqlType);
 							if (sqlType == DB::SQLType::SQLite && (sb.Equals(UTF8STRC(",")) || sb.Equals(UTF8STRC(")"))))
@@ -242,7 +242,7 @@ DB::SQL::SQLCommand *DB::SQL::SQLCommand::Parse(const UTF8Char *sql, DB::SQLType
 							else if (sb.GetLength() == 0 || IsPunctuation(sb.ToString()))
 							{
 								printf("SQLCommand: Expected column type, now is %s\r\n", sb.ToString());
-								DEL_CLASS(col);
+								col.Delete();
 								break;
 							}
 							else
@@ -254,7 +254,7 @@ DB::SQL::SQLCommand *DB::SQL::SQLCommand::Parse(const UTF8Char *sql, DB::SQLType
 								if (colType == DB::DBUtil::CT_Unknown)
 								{
 									printf("SQLCommand: Unsupported column type: %s\r\n", sb.ToString());
-									DEL_CLASS(col);
+									col.Delete();
 									break;
 								}
 								col->SetColType(colType);
@@ -268,7 +268,7 @@ DB::SQL::SQLCommand *DB::SQL::SQLCommand::Parse(const UTF8Char *sql, DB::SQLType
 								if (!sb.ToUOSInt(&colSize))
 								{
 									printf("SQLCommand: Unexpected column size: %s\r\n", sb.ToString());
-									DEL_CLASS(col);
+									col.Delete();
 									break;
 								}
 								col->SetColSize(colSize);
@@ -279,7 +279,7 @@ DB::SQL::SQLCommand *DB::SQL::SQLCommand::Parse(const UTF8Char *sql, DB::SQLType
 									if (!sb.ToUOSInt(&colSize))
 									{
 										printf("SQLCommand: Unexpected column dp: %s\r\n", sb.ToString());
-										DEL_CLASS(col);
+										col.Delete();
 										break;
 									}
 									col->SetColDP(colSize);
@@ -288,7 +288,7 @@ DB::SQL::SQLCommand *DB::SQL::SQLCommand::Parse(const UTF8Char *sql, DB::SQLType
 								if (!sb.Equals(UTF8STRC(")")))
 								{
 									printf("SQLCommand: Unexpected word %s, expected ')'\r\n", sb.ToString());
-									DEL_CLASS(col);
+									col.Delete();
 									break;
 								}
 								sql = ParseNextWord(sql, sb, sqlType);
@@ -430,7 +430,7 @@ DB::SQL::SQLCommand *DB::SQL::SQLCommand::Parse(const UTF8Char *sql, DB::SQLType
 							}
 							if (err)
 							{
-								DEL_CLASS(col);
+								col.Delete();
 								break;
 							}
 							else if (tab == 0)

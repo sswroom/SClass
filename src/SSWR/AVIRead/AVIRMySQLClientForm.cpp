@@ -195,7 +195,7 @@ void SSWR::AVIRead::AVIRMySQLClientForm::UpdateResult(DB::DBReader *r)
 		colSize = MemAlloc(UOSInt, j);
 		while (i < j)
 		{
-			if (r->GetColDef(i, &col))
+			if (r->GetColDef(i, col))
 			{
 				this->lvQueryResult->AddColumn(col.GetColName(), 100);
 			}

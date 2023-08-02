@@ -280,7 +280,7 @@ DB::DBUtil::ColType Map::GPSTrack::GetColumnType(UOSInt colIndex, UOSInt *colSiz
 	}
 }
 
-Bool Map::GPSTrack::GetColumnDef(UOSInt colIndex, DB::ColDef *colDef)
+Bool Map::GPSTrack::GetColumnDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef)
 {
 	switch(colIndex)
 	{
@@ -519,11 +519,11 @@ DB::DBReader *Map::GPSTrack::QueryTableData(Text::CString schemaName, Text::CStr
 	DB::DBReader *r;
 	if (tableName.v != 0 && tableName.Equals(UTF8STRC("GPSData")))
 	{
-		NEW_CLASS(r, Map::GPSDataReader(this));
+		NEW_CLASS(r, Map::GPSDataReader(*this));
 	}
 	else
 	{
-		NEW_CLASS(r, Map::GPSTrackReader(this));
+		NEW_CLASS(r, Map::GPSTrackReader(*this));
 	}
 	return r;
 }
@@ -532,7 +532,7 @@ DB::TableDef *Map::GPSTrack::GetTableDef(Text::CString schemaName, Text::CString
 {
 	UOSInt i = 0;
 	UOSInt j;
-	DB::ColDef *col;
+	NotNullPtr<DB::ColDef> col;
 	DB::TableDef *tab = 0;
 	if (tableName.v != 0 && tableName.Equals(UTF8STRC("GPSData")))
 	{
@@ -547,7 +547,7 @@ DB::TableDef *Map::GPSTrack::GetTableDef(Text::CString schemaName, Text::CString
 		NEW_CLASS(tab, DB::TableDef(schemaName, tableName));
 		while (i < j)
 		{
-			NEW_CLASS(col, DB::ColDef(Text::String::NewEmpty()));
+			NEW_CLASSNN(col, DB::ColDef(Text::String::NewEmpty()));
 			GPSDataReader::GetColDefV(i, col, this->hasAltitude);
 			tab->AddCol(col);
 			i++;
@@ -559,8 +559,8 @@ DB::TableDef *Map::GPSTrack::GetTableDef(Text::CString schemaName, Text::CString
 		NEW_CLASS(tab, DB::TableDef(schemaName, tableName));
 		while (i < j)
 		{
-			NEW_CLASS(col, DB::ColDef(Text::String::NewEmpty()));
-			Map::MapLayerReader::GetColDefV(i, col, this);
+			NEW_CLASSNN(col, DB::ColDef(Text::String::NewEmpty()));
+			Map::MapLayerReader::GetColDefV(i, col, *this);
 			tab->AddCol(col);
 			i++;
 		}
@@ -1021,7 +1021,7 @@ Bool Map::GPSTrack::GetExtraValueStr(UOSInt trackIndex, UOSInt recIndex, UOSInt 
 	return this->extraParser->GetExtraValueStr(data, dataSize, extIndex, sb);
 }
 
-Map::GPSTrackReader::GPSTrackReader(Map::GPSTrack *gps) : Map::MapLayerReader(gps)
+Map::GPSTrackReader::GPSTrackReader(NotNullPtr<Map::GPSTrack> gps) : Map::MapLayerReader(gps)
 {
 	this->gps = gps;
 }
@@ -1048,7 +1048,7 @@ DB::DBReader::DateErrType Map::GPSTrackReader::GetDate(UOSInt colIndex, Data::Da
 	return DB::DBReader::DateErrType::Error;
 }
 
-Map::GPSDataReader::GPSDataReader(Map::GPSTrack *gps)
+Map::GPSDataReader::GPSDataReader(NotNullPtr<Map::GPSTrack> gps)
 {
 	this->gps = gps;
 	this->currRow = -1;
@@ -1424,7 +1424,7 @@ DB::DBUtil::ColType Map::GPSDataReader::GetColType(UOSInt colIndex, UOSInt *colS
 	}
 }
 
-Bool Map::GPSDataReader::GetColDef(UOSInt colIndex, DB::ColDef *colDef)
+Bool Map::GPSDataReader::GetColDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef)
 {
 	return GetColDefV(colIndex, colDef, this->gps->GetHasAltitude());
 }
@@ -1479,7 +1479,7 @@ Text::CString Map::GPSDataReader::GetName(UOSInt colIndex, Bool hasAltitude)
 	}
 }
 
-Bool Map::GPSDataReader::GetColDefV(UOSInt colIndex, DB::ColDef *colDef, Bool hasAltitude)
+Bool Map::GPSDataReader::GetColDefV(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef, Bool hasAltitude)
 {
 	colDef->SetNotNull(true);
 	colDef->SetPK(false);

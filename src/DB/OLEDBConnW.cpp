@@ -1657,7 +1657,7 @@ DB::DBUtil::ColType DB::OLEDBReader::GetColType(UOSInt colIndex, UOSInt *colSize
 	return DBType2ColType(data->dbColInfo[colIndex].wType);
 }
 
-Bool DB::OLEDBReader::GetColDef(UOSInt colIndex, DB::ColDef *colDef)
+Bool DB::OLEDBReader::GetColDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef)
 {
 	ClassData *data = this->clsData;
 	if (data->dbColInfo == 0 || colIndex >= data->nCols)

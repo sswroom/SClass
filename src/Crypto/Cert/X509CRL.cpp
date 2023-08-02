@@ -100,10 +100,10 @@ Crypto::Cert::X509File::ValidStatus Crypto::Cert::X509CRL::IsValid(Net::SSLEngin
 	return Crypto::Cert::X509File::ValidStatus::Valid;
 }
 
-Net::ASN1Data *Crypto::Cert::X509CRL::Clone() const
+NotNullPtr<Net::ASN1Data> Crypto::Cert::X509CRL::Clone() const
 {
-	Crypto::Cert::X509CRL *asn1;
-	NEW_CLASS(asn1, Crypto::Cert::X509CRL(this->GetSourceNameObj(), this->buff));
+	NotNullPtr<Crypto::Cert::X509CRL> asn1;
+	NEW_CLASSNN(asn1, Crypto::Cert::X509CRL(this->GetSourceNameObj(), this->buff));
 	return asn1;
 }
 

@@ -71,7 +71,7 @@ namespace IO
 
 	private:
 		NotNullPtr<Data::ArrayList<PackFileItem *>> items;
-		Data::StringMap<PackFileItem *> *namedItems;
+		NotNullPtr<Data::StringMap<PackFileItem *>> namedItems;
 		Data::FastStringMap<PackFileItem *> pkgFiles;
 		Data::FastMap<Int32, const UTF8Char *> infoMap;
 

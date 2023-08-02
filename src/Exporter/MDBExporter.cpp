@@ -66,7 +66,7 @@ Bool Exporter::MDBExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 	IO::LogTool log;
 	DB::ReadingDB *srcDB;
 	DB::DBReader *r;
-	DB::ColDef *colDef;
+	NotNullPtr<DB::ColDef> colDef;
 	Data::ArrayListNN<Text::String> tables;
 	UOSInt i;
 	UOSInt j;
@@ -92,7 +92,7 @@ Bool Exporter::MDBExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 			l = r->ColCount();
 			while (k < l)
 			{
-				NEW_CLASS(colDef, DB::ColDef(CSTR("")));
+				NEW_CLASSNN(colDef, DB::ColDef(Text::String::NewEmpty()));
 				r->GetColDef(k, colDef);
 				tabDef.AddCol(colDef);
 				k++;

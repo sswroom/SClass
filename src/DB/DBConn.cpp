@@ -84,7 +84,7 @@ DB::TableDef *DB::DBConn::GetTableDef(Text::CString schemaName, Text::CString ta
 			this->CloseReader(r);
 			return 0;
 		}
-		DB::ColDef *col;
+		NotNullPtr<DB::ColDef> col;
 		ptr = Text::StrConcatC(buff, UTF8STRC("desc "));
 		ptr = DB::DBUtil::SDBColUTF8(ptr, tableName.v, DB::SQLType::MySQL);
 		r = this->ExecuteReader(CSTRP(buff, ptr));
@@ -93,7 +93,7 @@ DB::TableDef *DB::DBConn::GetTableDef(Text::CString schemaName, Text::CString ta
 			while (r->ReadNext())
 			{
 				ptr = r->GetStr(0, buff, sizeof(buff));
-				NEW_CLASS(col, DB::ColDef(CSTRP(buff, ptr)));
+				NEW_CLASSNN(col, DB::ColDef(CSTRP(buff, ptr)));
 				ptr = r->GetStr(2, buff, sizeof(buff));
 				col->SetNotNull(Text::StrEqualsICaseC(buff, (UOSInt)(ptr - buff), UTF8STRC("NO")));
 				ptr = r->GetStr(3, buff, sizeof(buff));
@@ -177,11 +177,11 @@ DB::TableDef *DB::DBConn::GetTableDef(Text::CString schemaName, Text::CString ta
 		tab->SetCharset(CSTR_NULL);
 		tab->SetSQLType(DB::SQLType::MSSQL);
 
-		DB::ColDef *col;
+		NotNullPtr<DB::ColDef> col;
 		while (r->ReadNext())
 		{
 			ptr = r->GetStr(3, buff, sizeof(buff));
-			NEW_CLASS(col, DB::ColDef(CSTRP(buff, ptr)));
+			NEW_CLASSNN(col, DB::ColDef(CSTRP(buff, ptr)));
 			col->SetNotNull(!r->GetBool(10));
 			col->SetPK(false);
 			if ((ptr = r->GetStr(12, buff, sizeof(buff))) != 0)
@@ -239,7 +239,7 @@ DB::TableDef *DB::DBConn::GetTableDef(Text::CString schemaName, Text::CString ta
 			k = tab->GetColCnt();
 			while (j < k)
 			{
-				col = tab->GetCol(j);
+				DB::ColDef *col = tab->GetCol(j);
 				if (col->GetColName()->Equals(buff, (UOSInt)(ptr - buff)))
 				{
 					col->SetPK(true);
@@ -307,7 +307,7 @@ DB::TableDef *DB::DBConn::GetTableDef(Text::CString schemaName, Text::CString ta
 		}
 		Data::FastStringMap<DB::ColDef*> colMap;
 		DB::TableDef *tab;
-		DB::ColDef *col;
+		NotNullPtr<DB::ColDef> col;
 		Bool hasGeometry = false;
 		Text::String *geometrySchema = 0;
 		Text::String *s;
@@ -316,7 +316,7 @@ DB::TableDef *DB::DBConn::GetTableDef(Text::CString schemaName, Text::CString ta
 		while (r->ReadNext())
 		{
 			s = r->GetNewStr(0);
-			NEW_CLASS(col, DB::ColDef(Text::String::OrEmpty(s)));
+			NEW_CLASSNN(col, DB::ColDef(Text::String::OrEmpty(s)));
 			SDEL_STRING(s);
 			s = r->GetNewStr(1);
 			col->SetDefVal(s);
@@ -568,7 +568,7 @@ DB::TableDef *DB::DBConn::GetTableDef(Text::CString schemaName, Text::CString ta
 				col->SetColSize((UOSInt)r->GetInt32(sizeCol));
 			}
 			tab->AddCol(col);
-			colMap.PutNN(col->GetColName(), col);
+			colMap.PutNN(col->GetColName(), col.Ptr());
 		}
 		this->CloseReader(r);
 
@@ -595,7 +595,7 @@ DB::TableDef *DB::DBConn::GetTableDef(Text::CString schemaName, Text::CString ta
 				ptr = r->GetStr(0, buff, 256);
 				if (ptr)
 				{
-					col = colMap.GetC(CSTRP(buff, ptr));
+					DB::ColDef *col = colMap.GetC(CSTRP(buff, ptr));
 					if (col)
 					{
 						col->SetPK(true);
@@ -629,7 +629,7 @@ DB::TableDef *DB::DBConn::GetTableDef(Text::CString schemaName, Text::CString ta
 					Int32 dimension = r->GetInt32(1);
 					Int32 srid = r->GetInt32(2);
 					Text::String *t = r->GetNewStr(3);
-					col = colMap.Get(colName);
+					DB::ColDef *col = colMap.Get(colName);
 					if (col)
 					{
 						col->SetColDP((UInt32)srid);

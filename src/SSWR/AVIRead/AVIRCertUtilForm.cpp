@@ -171,7 +171,7 @@ void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnKeyViewClicked(void *userObj)
 	SSWR::AVIRead::AVIRCertUtilForm *me = (SSWR::AVIRead::AVIRCertUtilForm*)userObj;
 	if (me->key)
 	{
-		me->core->OpenObject(me->key->Clone());
+		me->core->OpenObject(me->key->Clone().Ptr());
 	}
 }
 

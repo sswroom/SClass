@@ -332,7 +332,7 @@ void Net::SNS::SNSManager::ChannelUpdate(Net::SNS::SNSManager::ChannelData *chan
 	Bool updated = false;
 	channel->ctrl->GetCurrItems(itemList);
 	Data::ArrayListStringNN oldItems;
-	oldItems.AddAll(&channel->currItems);
+	oldItems.AddAll(channel->currItems);
 	UOSInt i;
 	UOSInt j;
 	OSInt si;

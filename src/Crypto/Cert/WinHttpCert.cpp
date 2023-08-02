@@ -44,9 +44,11 @@ Bool Crypto::Cert::WinHttpCert::IsSelfSigned() const
 	return Text::StrEquals(this->clsData->certInfo->lpszSubjectInfo, this->clsData->certInfo->lpszIssuerInfo);
 }
 
-Crypto::Cert::X509Cert *Crypto::Cert::WinHttpCert::CreateX509Cert() const
+NotNullPtr<Crypto::Cert::X509Cert> Crypto::Cert::WinHttpCert::CreateX509Cert() const
 {
-	return 0;
+	NotNullPtr<Crypto::Cert::X509Cert> ret;
+	NEW_CLASSNN(ret, Crypto::Cert::X509Cert(CSTR("Certificate.crt"), Data::ByteArrayR(0, 0)));
+	return ret;
 }
 
 void Crypto::Cert::WinHttpCert::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const

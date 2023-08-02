@@ -94,7 +94,7 @@ namespace Map
 		virtual UOSInt GetColumnCnt();
 		virtual UTF8Char *GetColumnName(UTF8Char *buff, UOSInt colIndex);
 		virtual DB::DBUtil::ColType GetColumnType(UOSInt colIndex, UOSInt *colSize);
-		virtual Bool GetColumnDef(UOSInt colIndex, DB::ColDef *colDef);
+		virtual Bool GetColumnDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef);
 		virtual UInt32 GetCodePage();
 		virtual Bool GetBounds(Math::RectAreaDbl *rect);
 
@@ -136,9 +136,9 @@ namespace Map
 	class GPSTrackReader : public Map::MapLayerReader
 	{
 	private:
-		Map::GPSTrack *gps;
+		NotNullPtr<Map::GPSTrack> gps;
 	public:
-		GPSTrackReader(Map::GPSTrack *gps);
+		GPSTrackReader(NotNullPtr<Map::GPSTrack> gps);
 		virtual ~GPSTrackReader();
 
 		virtual DateErrType GetDate(UOSInt colIndex, Data::DateTime *outVal); //return 0 = ok, 2 = Error
@@ -147,11 +147,11 @@ namespace Map
 	class GPSDataReader : public DB::DBReader
 	{
 	private:
-		Map::GPSTrack *gps;
+		NotNullPtr<Map::GPSTrack> gps;
 		OSInt currRow;
 		GPSTrack::GPSRecord3 *currRec;
 	public:
-		GPSDataReader(Map::GPSTrack *gps);
+		GPSDataReader(NotNullPtr<Map::GPSTrack> gps);
 		virtual ~GPSDataReader();
 
 		virtual Bool ReadNext();
@@ -175,10 +175,10 @@ namespace Map
 		virtual UTF8Char *GetName(UOSInt colIndex, UTF8Char *buff);
 		virtual Bool IsNull(UOSInt colIndex);
 		virtual DB::DBUtil::ColType GetColType(UOSInt colIndex, UOSInt *colSize);
-		virtual Bool GetColDef(UOSInt colIndex, DB::ColDef *colDef);
+		virtual Bool GetColDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef);
 
 		static Text::CString GetName(UOSInt colIndex, Bool hasAltitude);
-		static Bool GetColDefV(UOSInt colIndex, DB::ColDef *colDef, Bool hasAltitude);
+		static Bool GetColDefV(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef, Bool hasAltitude);
 	};
 }
 #endif

@@ -46,7 +46,7 @@ void __stdcall SSWR::AVIRead::AVIRLineChartForm::OnPlotClicked(void *userObj)
 		{
 			colInfos[i].colIndex = me->yCols->GetItem(i - 1);
 		}
-		NEW_CLASS(colInfos[i].colDef, DB::ColDef(CSTR("")));
+		NEW_CLASSNN(colInfos[i].colDef, DB::ColDef(CSTR("")));
 
 		if (me->strTypes[colInfos[i].colIndex] == DB::DBUtil::CT_Unknown)
 		{
@@ -221,7 +221,7 @@ void __stdcall SSWR::AVIRead::AVIRLineChartForm::OnPlotClicked(void *userObj)
 			Data::ArrayList<Int64> *i64Vals = (Data::ArrayList<Int64>*)colInfos[i].datas;
 			DEL_CLASS(i64Vals);
 		}
-		DEL_CLASS(colInfos[i].colDef);
+		colInfos[i].colDef.Delete();
 	}
 	MemFree(colInfos);
 	if (me->chart)
@@ -358,7 +358,7 @@ SSWR::AVIRead::AVIRLineChartForm::AVIRLineChartForm(UI::GUIClientControl *parent
 		i = 0;
 		while (i < j)
 		{
-			reader->GetColDef(i, &colDef);
+			reader->GetColDef(i, colDef);
 			if (colDef.GetColType() == DB::DBUtil::CT_DateTime)
 			{
 				this->cboXAxis->AddItem(colDef.GetColName(), (void*)i);

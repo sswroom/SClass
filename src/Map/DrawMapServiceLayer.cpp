@@ -242,7 +242,7 @@ DB::DBUtil::ColType Map::DrawMapServiceLayer::GetColumnType(UOSInt colIndex, UOS
 	return DB::DBUtil::CT_Unknown;
 }
 
-Bool Map::DrawMapServiceLayer::GetColumnDef(UOSInt colIndex, DB::ColDef *colDef)
+Bool Map::DrawMapServiceLayer::GetColumnDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;

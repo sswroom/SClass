@@ -149,7 +149,7 @@ namespace DB
 		virtual UTF8Char *GetName(UOSInt colIndex, UTF8Char *buff);
 		virtual Bool IsNull(UOSInt colIndex);
 		virtual DB::DBUtil::ColType GetColType(UOSInt colIndex, UOSInt *colSize);
-		virtual Bool GetColDef(UOSInt colIndex, DB::ColDef *colDef);
+		virtual Bool GetColDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef);
 
 		DB::DBUtil::ColType ODBCType2DBType(Int16 odbcType, UOSInt colSize);
 	};

@@ -518,7 +518,7 @@ DB::DBUtil::ColType Map::SHPData::GetColumnType(UOSInt colIndex, UOSInt *colSize
 	return this->dbf->GetColumnType(colIndex, colSize);
 }
 
-Bool Map::SHPData::GetColumnDef(UOSInt colIndex, DB::ColDef *colDef)
+Bool Map::SHPData::GetColumnDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef)
 {
 	return this->dbf->GetColumnDef(colIndex, colDef);
 }

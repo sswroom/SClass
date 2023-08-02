@@ -25,7 +25,7 @@ namespace Data
 		T Remove(Text::CString key);
 		virtual Text::String *GetKey(UOSInt index) const;
 		virtual void Clear();
-		virtual StringMap<T> *Clone() const;
+		virtual NotNullPtr<StringMap<T>> Clone() const;
 	};
 
 
@@ -214,9 +214,11 @@ namespace Data
 		this->vals.Clear();
 	}
 
-	template <class T> StringMap<T> *StringMap<T>::Clone() const
+	template <class T> NotNullPtr<StringMap<T>> StringMap<T>::Clone() const
 	{
-		return NEW_CLASS_D(StringMap<T>(this));
+		NotNullPtr<StringMap<T>> ret;
+		NEW_CLASSNN(ret, StringMap<T>(this));
+		return ret;
 	}
 }
 

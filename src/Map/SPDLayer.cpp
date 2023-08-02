@@ -448,7 +448,7 @@ DB::DBUtil::ColType Map::SPDLayer::GetColumnType(UOSInt colIndex, UOSInt *colSiz
 	}
 }
 
-Bool Map::SPDLayer::GetColumnDef(UOSInt colIndex, DB::ColDef *colDef)
+Bool Map::SPDLayer::GetColumnDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef)
 {
 	if (colIndex != 0)
 		return false;

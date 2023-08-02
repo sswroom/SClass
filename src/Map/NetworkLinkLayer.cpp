@@ -522,7 +522,7 @@ DB::DBUtil::ColType Map::NetworkLinkLayer::GetColumnType(UOSInt colIndex, UOSInt
 	return DB::DBUtil::CT_Unknown;
 }
 
-Bool Map::NetworkLinkLayer::GetColumnDef(UOSInt colIndex, DB::ColDef *colDef)
+Bool Map::NetworkLinkLayer::GetColumnDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef)
 {
 	return false;
 }

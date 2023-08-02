@@ -18,7 +18,7 @@ namespace Crypto
 			virtual void ToShortName(NotNullPtr<Text::StringBuilderUTF8> sb) const;
 			virtual ValidStatus IsValid(Net::SSLEngine *ssl, Crypto::Cert::CertStore *trustStore) const;
 
-			virtual ASN1Data *Clone() const;
+			virtual NotNullPtr<ASN1Data> Clone() const;
 			virtual void ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const;
 			
 			Crypto::Cert::X509File::KeyType GetKeyType() const;

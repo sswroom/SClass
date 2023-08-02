@@ -664,7 +664,7 @@ DB::DBUtil::ColType DB::SQLiteReader::GetColType(UOSInt colIndex, UOSInt *colSiz
 	}
 }
 
-Bool DB::SQLiteReader::GetColDef(UOSInt colIndex, DB::ColDef *colDef)
+Bool DB::SQLiteReader::GetColDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef)
 {
 	const Char *name = sqlite3_column_name((sqlite3_stmt*)this->hStmt, (int)colIndex);
 	UOSInt colSize;

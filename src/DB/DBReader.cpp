@@ -99,7 +99,7 @@ Bool DB::DBReader::GetVariItem(UOSInt colIndex, Data::VariItem *item)
 DB::TableDef *DB::DBReader::GenTableDef(Text::CString schemaName, Text::CString tableName)
 {
 	DB::TableDef *table;
-	DB::ColDef *colDef;
+	NotNullPtr<DB::ColDef> colDef;
 	UOSInt i;
 	UOSInt j;
 	NEW_CLASS(table, DB::TableDef(schemaName, tableName));
@@ -107,7 +107,7 @@ DB::TableDef *DB::DBReader::GenTableDef(Text::CString schemaName, Text::CString 
 	j = this->ColCount();
 	while (i < j)
 	{
-		NEW_CLASS(colDef, DB::ColDef(CSTR("")));
+		NEW_CLASSNN(colDef, DB::ColDef(CSTR("")));
 		this->GetColDef(i, colDef);
 		table->AddCol(colDef);
 		i++;

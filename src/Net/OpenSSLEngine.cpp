@@ -463,11 +463,11 @@ Bool Net::OpenSSLEngine::ClientSetCertASN1(Crypto::Cert::X509Cert *certASN1, Cry
 	SDEL_CLASS(this->clsData->cliKey);
 	if (certASN1)
 	{
-		this->clsData->cliCert = (Crypto::Cert::X509File*)certASN1->Clone();
+		this->clsData->cliCert = (Crypto::Cert::X509File*)certASN1->Clone().Ptr();
 	}
 	if (keyASN1)
 	{
-		this->clsData->cliKey = (Crypto::Cert::X509File*)keyASN1->Clone();
+		this->clsData->cliKey = (Crypto::Cert::X509File*)keyASN1->Clone().Ptr();
 	}
 	return true;
 }

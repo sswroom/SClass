@@ -757,7 +757,7 @@ Data::ReadonlyArray<UInt8> *Data::VariItem::GetAsNewByteArr() const
 {
 	if (this->itemType != ItemType::ByteArr)
 		return 0;
-	return this->val.byteArr->Clone();
+	return this->val.byteArr->Clone().Ptr();
 }
 
 Math::Geometry::Vector2D *Data::VariItem::GetAsNewVector() const
@@ -1009,7 +1009,7 @@ void Data::VariItem::SetByteArr(const UInt8 *arr, UOSInt cnt)
 void Data::VariItem::SetByteArr(Data::ReadonlyArray<UInt8> *arr)
 {
 	this->FreeItem();
-	this->val.byteArr = arr->Clone();
+	this->val.byteArr = arr->Clone().Ptr();
 	this->itemType = ItemType::ByteArr;
 }
 
@@ -1098,7 +1098,7 @@ void Data::VariItem::Set(VariItem *item)
 		this->val.ts = item->val.ts;
 		break;
 	case ItemType::ByteArr:
-		this->val.byteArr = item->val.byteArr->Clone();
+		this->val.byteArr = item->val.byteArr->Clone().Ptr();
 		break;
 	case ItemType::Vector:
 		this->val.vector = item->val.vector->Clone();
@@ -1165,7 +1165,7 @@ Data::VariItem *Data::VariItem::Clone() const
 		ival.ts = this->val.ts;
 		break;
 	case ItemType::ByteArr:
-		ival.byteArr = this->val.byteArr->Clone();
+		ival.byteArr = this->val.byteArr->Clone().Ptr();
 		break;
 	case ItemType::Vector:
 		ival.vector = this->val.vector->Clone();
@@ -1434,7 +1434,7 @@ Data::VariItem *Data::VariItem::NewByteArr(Data::ReadonlyArray<UInt8> *arr)
 {
 	if (arr == 0) return NewNull();
 	ItemValue ival;
-	ival.byteArr = arr->Clone();
+	ival.byteArr = arr->Clone().Ptr();
 	Data::VariItem *item;
 	NEW_CLASS(item, Data::VariItem(ItemType::ByteArr, ival));
 	return item;

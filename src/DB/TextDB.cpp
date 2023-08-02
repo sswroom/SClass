@@ -218,7 +218,7 @@ public:
 		return DB::DBUtil::CT_VarUTF8Char;
 	}
 
-	virtual Bool GetColDef(UOSInt colIndex, DB::ColDef *colDef)
+	virtual Bool GetColDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef)
 	{
 		if (colIndex >= this->data->colList.GetCount())
 		{
@@ -345,12 +345,12 @@ DB::TableDef *DB::TextDB::GetTableDef(Text::CString schemaName, Text::CString ta
 		return 0;
 	}
 	DB::TableDef *tab;
-	DB::ColDef *colDef;
+	NotNullPtr<DB::ColDef> colDef;
 	NEW_CLASS(tab, DB::TableDef(schemaName, data->name->ToCString()));
 	Data::ArrayIterator<NotNullPtr<const UTF8Char>> it = data->colList.Iterator();
 	while (it.HasNext())
 	{
-		NEW_CLASS(colDef, DB::ColDef(Text::String::NewEmpty()));
+		NEW_CLASSNN(colDef, DB::ColDef(Text::String::NewEmpty()));
 		colDef->SetColName(it.Next());
 		colDef->SetColSize(256);
 		colDef->SetColType(DB::DBUtil::CT_VarUTF8Char);

@@ -336,7 +336,7 @@ public:
 		return DB::DBUtil::CT_Unknown;
 	}
 
-	virtual Bool GetColDef(UOSInt colIndex, DB::ColDef *colDef)
+	virtual Bool GetColDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef)
 	{
 		ColumnDef *col = this->cols.GetItem(colIndex);
 		if (col)
@@ -1072,7 +1072,7 @@ public:
 		return DB::DBUtil::CT_Unknown;
 	}
 
-	virtual Bool GetColDef(UOSInt colIndex, DB::ColDef *colDef)
+	virtual Bool GetColDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef)
 	{
 		ColumnDef *col = this->cols.GetItem(colIndex);
 		if (col)

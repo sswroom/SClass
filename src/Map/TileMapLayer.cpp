@@ -465,7 +465,7 @@ DB::DBUtil::ColType Map::TileMapLayer::GetColumnType(UOSInt colIndex, UOSInt *co
 	return DB::DBUtil::CT_Unknown;
 }
 
-Bool Map::TileMapLayer::GetColumnDef(UOSInt colIndex, DB::ColDef *colDef)
+Bool Map::TileMapLayer::GetColumnDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;

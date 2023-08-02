@@ -12,7 +12,7 @@ namespace Data
 		ICaseStringMap(const ICaseStringMap<T> *map);
 		virtual ~ICaseStringMap();
 
-		virtual StringMap<T> *Clone() const;
+		virtual NotNullPtr<StringMap<T>> Clone() const;
 	};
 
 
@@ -40,9 +40,11 @@ namespace Data
 	{
 	}
 
-	template <class T> StringMap<T> *ICaseStringMap<T>::Clone() const
+	template <class T> NotNullPtr<StringMap<T>> ICaseStringMap<T>::Clone() const
 	{
-		return NEW_CLASS_D(ICaseStringMap<T>(this));
+		NotNullPtr<ICaseStringMap<T>> ret;
+		NEW_CLASSNN(ret, ICaseStringMap<T>(this));
+		return ret;
 	}
 }
 

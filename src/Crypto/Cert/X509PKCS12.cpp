@@ -53,10 +53,10 @@ Crypto::Cert::X509File::ValidStatus Crypto::Cert::X509PKCS12::IsValid(Net::SSLEn
 	return Crypto::Cert::X509File::ValidStatus::SignatureInvalid;
 }
 
-Net::ASN1Data *Crypto::Cert::X509PKCS12::Clone() const
+NotNullPtr<Net::ASN1Data> Crypto::Cert::X509PKCS12::Clone() const
 {
-	Crypto::Cert::X509PKCS12 *asn1;
-	NEW_CLASS(asn1, Crypto::Cert::X509PKCS12(this->GetSourceNameObj(), this->buff));
+	NotNullPtr<Crypto::Cert::X509PKCS12> asn1;
+	NEW_CLASSNN(asn1, Crypto::Cert::X509PKCS12(this->GetSourceNameObj(), this->buff));
 	return asn1;
 }
 

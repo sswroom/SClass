@@ -23,7 +23,7 @@ namespace Net
 
 		virtual IO::ParserType GetParserType() const;
 		virtual ASN1Type GetASN1Type() const = 0;
-		virtual ASN1Data *Clone() const = 0;
+		virtual NotNullPtr<ASN1Data> Clone() const = 0;
 		virtual void ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const = 0;
 
 		Bool ToASN1String(NotNullPtr<Text::StringBuilderUTF8> sb) const;

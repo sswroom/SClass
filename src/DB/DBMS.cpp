@@ -333,7 +333,7 @@ namespace DB
 			return this->colTypes[colIndex];
 		}
 
-		virtual Bool GetColDef(UOSInt colIndex, DB::ColDef *colDef)
+		virtual Bool GetColDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef)
 		{
 			UTF8Char sbuff[256];
 			UTF8Char *sptr;

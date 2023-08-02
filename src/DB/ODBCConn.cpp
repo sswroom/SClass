@@ -2426,7 +2426,7 @@ DB::DBUtil::ColType DB::ODBCReader::GetColType(UOSInt colIndex, UOSInt *colSize)
 	return this->colDatas[colIndex].colType;
 }
 
-Bool DB::ODBCReader::GetColDef(UOSInt colIndex, DB::ColDef *colDef)
+Bool DB::ODBCReader::GetColDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef)
 {
 	SQLWCHAR sbuff[256];
 	Int16 nameLen = 0;

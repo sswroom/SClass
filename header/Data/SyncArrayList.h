@@ -25,7 +25,7 @@ namespace Data
 		virtual UOSInt IndexOf(T val) const;
 		virtual void Clear();
 		T RemoveLast();
-		SyncArrayList *Clone() const;
+		NotNullPtr<SyncArrayList> Clone() const;
 
 		virtual UOSInt GetCount() const;
 		virtual UOSInt GetCapacity() const;
@@ -101,11 +101,11 @@ namespace Data
 		return 0;
 	}
 
-	template <class T> Data::SyncArrayList<T> *Data::SyncArrayList<T>::Clone() const
+	template <class T> NotNullPtr<Data::SyncArrayList<T>> Data::SyncArrayList<T>::Clone() const
 	{
-		Data::SyncArrayList<T> *newArr;
+		NotNullPtr<Data::SyncArrayList<T>> newArr;
 		Sync::MutexUsage mutUsage(this->mut);
-		NEW_CLASS(newArr, Data::SyncArrayList<T>(this->arr.GetCapacity()));
+		NEW_CLASSNN(newArr, Data::SyncArrayList<T>(this->arr.GetCapacity()));
 		newArr->arr.AddRange(&this->arr);
 		return newArr;
 	}

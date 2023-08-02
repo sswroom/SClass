@@ -66,10 +66,10 @@ namespace Math
 		virtual UTF8Char *GetName(UOSInt colIndex, UTF8Char *buff);
 		virtual Bool IsNull(UOSInt colIndex);
 		virtual DB::DBUtil::ColType GetColType(UOSInt colIndex, UOSInt *colSize);
-		virtual Bool GetColDef(UOSInt colIndex, DB::ColDef *colDef);
+		virtual Bool GetColDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef);
 
 		static Text::CString GetName(UOSInt colIndex, UOSInt rowSize);
-		static Bool GetColDefV(UOSInt colIndex, DB::ColDef *colDef, UOSInt rowSize);
+		static Bool GetColDefV(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef, UOSInt rowSize);
 	};
 
 	class TSPHReader : public DB::DBReader
@@ -102,10 +102,10 @@ namespace Math
 		virtual UTF8Char *GetName(UOSInt colIndex, UTF8Char *buff);
 		virtual Bool IsNull(UOSInt colIndex);
 		virtual DB::DBUtil::ColType GetColType(UOSInt colIndex, UOSInt *colSize);
-		virtual Bool GetColDef(UOSInt colIndex, DB::ColDef *colDef);
+		virtual Bool GetColDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef);
 
 		static Text::CString GetName(UOSInt colIndex);
-		static Bool GetColDefV(UOSInt colIndex, DB::ColDef *colDef);
+		static Bool GetColDefV(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef);
 	};
 }
 #endif

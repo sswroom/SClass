@@ -230,7 +230,7 @@ public:
 		return col->GetColType();
 	}
 
-	virtual Bool GetColDef(UOSInt colIndex, DB::ColDef *colDef)
+	virtual Bool GetColDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef)
 	{
 		DB::ColDef *col = this->tab->GetCol(colIndex);
 		if (col == 0)
@@ -287,7 +287,7 @@ DB::TableDef *DB::JSONDB::GetTableDef(Text::CString schemaName, Text::CString ta
 		Data::ArrayList<Text::String*> names;
 		Text::JSONObject *obj = (Text::JSONObject*)json;
 		Text::JSONType type;
-		DB::ColDef *col;
+		NotNullPtr<DB::ColDef> col;
 		obj->GetObjectNames(&names);
 		UOSInt i = 0;
 		UOSInt j = names.GetCount();
@@ -301,31 +301,31 @@ DB::TableDef *DB::JSONDB::GetTableDef(Text::CString schemaName, Text::CString ta
 			}
 			else if (type == Text::JSONType::BOOL)
 			{
-				NEW_CLASS(col, DB::ColDef(Text::String::OrEmpty(names.GetItem(i))));
+				NEW_CLASSNN(col, DB::ColDef(Text::String::OrEmpty(names.GetItem(i))));
 				col->SetColType(DB::DBUtil::ColType::CT_Bool);
 				tab->AddCol(col);
 			}
 			else if (type == Text::JSONType::INT32)
 			{
-				NEW_CLASS(col, DB::ColDef(Text::String::OrEmpty(names.GetItem(i))));
+				NEW_CLASSNN(col, DB::ColDef(Text::String::OrEmpty(names.GetItem(i))));
 				col->SetColType(DB::DBUtil::ColType::CT_Int32);
 				tab->AddCol(col);
 			}
 			else if (type == Text::JSONType::INT64)
 			{
-				NEW_CLASS(col, DB::ColDef(Text::String::OrEmpty(names.GetItem(i))));
+				NEW_CLASSNN(col, DB::ColDef(Text::String::OrEmpty(names.GetItem(i))));
 				col->SetColType(DB::DBUtil::ColType::CT_Int64);
 				tab->AddCol(col);
 			}
 			else if (type == Text::JSONType::Number)
 			{
-				NEW_CLASS(col, DB::ColDef(Text::String::OrEmpty(names.GetItem(i))));
+				NEW_CLASSNN(col, DB::ColDef(Text::String::OrEmpty(names.GetItem(i))));
 				col->SetColType(DB::DBUtil::ColType::CT_Double);
 				tab->AddCol(col);
 			}
 			else if (type == Text::JSONType::String)
 			{
-				NEW_CLASS(col, DB::ColDef(Text::String::OrEmpty(names.GetItem(i))));
+				NEW_CLASSNN(col, DB::ColDef(Text::String::OrEmpty(names.GetItem(i))));
 				col->SetColType(DB::DBUtil::ColType::CT_VarUTF8Char);
 				col->SetColSize((UOSInt)-1);
 				tab->AddCol(col);

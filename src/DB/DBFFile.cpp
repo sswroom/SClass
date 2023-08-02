@@ -101,7 +101,7 @@ DB::DBReader *DB::DBFFile::QueryTableData(Text::CString schemaName, Text::CStrin
 
 DB::TableDef *DB::DBFFile::GetTableDef(Text::CString schemaName, Text::CString tableName)
 {
-	DB::ColDef *col;
+	NotNullPtr<DB::ColDef> col;
 	DB::TableDef *tab;
 	UOSInt i;
 	UOSInt j;
@@ -110,7 +110,7 @@ DB::TableDef *DB::DBFFile::GetTableDef(Text::CString schemaName, Text::CString t
 	j = this->GetColCount();
 	while (i < j)
 	{
-		NEW_CLASS(col, DB::ColDef(Text::String::NewEmpty()));
+		NEW_CLASSNN(col, DB::ColDef(Text::String::NewEmpty()));
 		this->GetColumnDef(i, col);
 		tab->AddCol(col);
 		i++;
@@ -286,7 +286,7 @@ DB::DBUtil::ColType DB::DBFFile::GetColumnType(UOSInt colIndex, UOSInt *colSize)
 	return DB::DBUtil::CT_VarUTF8Char;
 }
 
-Bool DB::DBFFile::GetColumnDef(UOSInt colIndex, DB::ColDef *colDef)
+Bool DB::DBFFile::GetColumnDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef)
 {
 	if (colIndex >= this->colCnt)
 	{
@@ -786,7 +786,7 @@ DB::DBUtil::ColType DB::DBFReader::GetColType(UOSInt colIndex, UOSInt *colSize)
 	return this->dbf->GetColumnType(colIndex, colSize);
 }
 
-Bool DB::DBFReader::GetColDef(UOSInt colIndex, DB::ColDef *colDef)
+Bool DB::DBFReader::GetColDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef)
 {
 	return this->dbf->GetColumnDef(colIndex, colDef);
 }

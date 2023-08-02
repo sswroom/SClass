@@ -38,11 +38,11 @@ IO::PackageFile::PackageFile(NotNullPtr<Text::String> fileName) : IO::ParsedObje
 	NEW_CLASSNN(this->items, Data::ArrayList<PackFileItem*>());
 	if (IO::Path::PATH_SEPERATOR == '\\')
 	{
-		NEW_CLASS(this->namedItems, Data::ICaseStringMap<PackFileItem*>());
+		NEW_CLASSNN(this->namedItems, Data::ICaseStringMap<PackFileItem*>());
 	}
 	else
 	{
-		NEW_CLASS(this->namedItems, Data::StringMap<PackFileItem*>());
+		NEW_CLASSNN(this->namedItems, Data::StringMap<PackFileItem*>());
 	}
 }
 
@@ -51,11 +51,11 @@ IO::PackageFile::PackageFile(Text::CString fileName) : IO::ParsedObject(fileName
 	NEW_CLASSNN(this->items, Data::ArrayList<PackFileItem*>());
 	if (IO::Path::PATH_SEPERATOR == '\\')
 	{
-		NEW_CLASS(this->namedItems, Data::ICaseStringMap<PackFileItem*>());
+		NEW_CLASSNN(this->namedItems, Data::ICaseStringMap<PackFileItem*>());
 	}
 	else
 	{
-		NEW_CLASS(this->namedItems, Data::StringMap<PackFileItem*>());
+		NEW_CLASSNN(this->namedItems, Data::StringMap<PackFileItem*>());
 	}
 }
 
@@ -83,7 +83,7 @@ IO::PackageFile::~PackageFile()
 		}
 	}
 	this->items.Delete();
-	DEL_CLASS(this->namedItems);
+	this->namedItems.Delete();
 	i = this->infoMap.GetCount();
 	while (i-- > 0)
 	{

@@ -242,7 +242,7 @@ DB::DBUtil::ColType Map::OruxDBLayer::GetColumnType(UOSInt colIndex, UOSInt *col
 	return DB::DBUtil::CT_Unknown;
 }
 
-Bool Map::OruxDBLayer::GetColumnDef(UOSInt colIndex, DB::ColDef *colDef)
+Bool Map::OruxDBLayer::GetColumnDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef)
 {
 	return false;
 }

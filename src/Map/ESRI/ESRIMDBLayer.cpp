@@ -325,7 +325,7 @@ DB::DBUtil::ColType Map::ESRI::ESRIMDBLayer::GetColumnType(UOSInt colIndex, UOSI
 	return DB::DBUtil::CT_Unknown;
 }
 
-Bool Map::ESRI::ESRIMDBLayer::GetColumnDef(UOSInt colIndex, DB::ColDef *colDef)
+Bool Map::ESRI::ESRIMDBLayer::GetColumnDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef)
 {
 	return false;
 }
@@ -535,7 +535,7 @@ DB::DBUtil::ColType Map::ESRI::ESRIMDBReader::GetColType(UOSInt colIndex, UOSInt
 	return this->r->GetColType((colIndex > 0)?(colIndex + 1):colIndex, colSize);
 }
 
-Bool Map::ESRI::ESRIMDBReader::GetColDef(UOSInt colIndex, DB::ColDef *colDef)
+Bool Map::ESRI::ESRIMDBReader::GetColDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef)
 {
 	return this->r->GetColDef((colIndex > 0)?(colIndex + 1):colIndex, colDef);
 }

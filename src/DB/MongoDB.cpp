@@ -102,10 +102,10 @@ DB::DBReader *DB::MongoDB::QueryTableData(Text::CString schemaName, Text::CStrin
 
 DB::TableDef *DB::MongoDB::GetTableDef(Text::CString schemaName, Text::CString tableName)
 {
-	DB::ColDef *colDef;
+	NotNullPtr<DB::ColDef> colDef;
 	DB::TableDef *tab;
 	NEW_CLASS(tab, DB::TableDef(schemaName, tableName));
-	NEW_CLASS(colDef, DB::ColDef(CSTR("Data")));
+	NEW_CLASSNN(colDef, DB::ColDef(CSTR("Data")));
 	colDef->SetColType(DB::DBUtil::CT_VarUTF8Char);
 	colDef->SetColSize(65536);
 	colDef->SetColDP(0);
@@ -379,7 +379,7 @@ DB::DBUtil::ColType DB::MongoDBReader::GetColType(UOSInt colIndex, UOSInt *colSi
 	return DB::DBUtil::CT_VarUTF8Char;
 }
 
-Bool DB::MongoDBReader::GetColDef(UOSInt colIndex, DB::ColDef *colDef)
+Bool DB::MongoDBReader::GetColDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef)
 {
 	if (colIndex != 0)
 		return false;

@@ -136,7 +136,7 @@ void __stdcall SSWR::AVIRead::AVIRCAUtilForm::OnFileDrop(void *userObj, NotNullP
 						if (cert->GetSubjNames(&names))
 						{
 							SDEL_CLASS(me->caCert);
-							me->caCert = (Crypto::Cert::X509Cert*)cert->Clone();
+							me->caCert = (Crypto::Cert::X509Cert*)cert->Clone().Ptr();
 							me->txtCACert->SetText(names.commonName->ToCString());
 							Crypto::Cert::CertNames::FreeNames(&names);
 							if (me->key)
@@ -184,7 +184,7 @@ void __stdcall SSWR::AVIRead::AVIRCAUtilForm::OnKeyViewClicked(void *userObj)
 	SSWR::AVIRead::AVIRCAUtilForm *me = (SSWR::AVIRead::AVIRCAUtilForm*)userObj;
 	if (me->key)
 	{
-		me->core->OpenObject(me->key->Clone());
+		me->core->OpenObject(me->key->Clone().Ptr());
 	}
 }
 
@@ -193,7 +193,7 @@ void __stdcall SSWR::AVIRead::AVIRCAUtilForm::OnCACertViewClicked(void *userObj)
 	SSWR::AVIRead::AVIRCAUtilForm *me = (SSWR::AVIRead::AVIRCAUtilForm*)userObj;
 	if (me->caCert)
 	{
-		me->core->OpenObject(me->caCert->Clone());
+		me->core->OpenObject(me->caCert->Clone().Ptr());
 	}
 }
 
@@ -202,7 +202,7 @@ void __stdcall SSWR::AVIRead::AVIRCAUtilForm::OnCSRViewClicked(void *userObj)
 	SSWR::AVIRead::AVIRCAUtilForm *me = (SSWR::AVIRead::AVIRCAUtilForm*)userObj;
 	if (me->csr)
 	{
-		me->core->OpenObject(me->csr->Clone());
+		me->core->OpenObject(me->csr->Clone().Ptr());
 	}
 }
 

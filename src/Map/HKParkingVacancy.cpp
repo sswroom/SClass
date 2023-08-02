@@ -476,7 +476,7 @@ DB::DBUtil::ColType Map::HKParkingVacancy::GetColumnType(UOSInt colIndex, UOSInt
 	}
 	return DB::DBUtil::CT_Unknown;
 }
-Bool Map::HKParkingVacancy::GetColumnDef(UOSInt colIndex, DB::ColDef *colDef)
+Bool Map::HKParkingVacancy::GetColumnDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;

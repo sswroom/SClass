@@ -456,7 +456,7 @@ Crypto::Cert::X509Key *SSWR::AVIRead::AVIRASN1DataForm::GetNewKey()
 	case Crypto::Cert::X509File::FileType::Cert:
 		return ((Crypto::Cert::X509Cert*)x509)->GetNewPublicKey();
 	case Crypto::Cert::X509File::FileType::Key:
-		return (Crypto::Cert::X509Key*)x509->Clone();
+		return (Crypto::Cert::X509Key*)x509->Clone().Ptr();
 	case Crypto::Cert::X509File::FileType::PrivateKey:
 		return ((Crypto::Cert::X509PrivKey*)x509)->CreateKey();
 	case Crypto::Cert::X509File::FileType::PublicKey:

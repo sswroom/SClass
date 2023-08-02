@@ -1461,7 +1461,7 @@ DB::DBUtil::ColType Map::ESRI::FileGDBReader::GetColType(UOSInt colIndex, UOSInt
 	return DB::DBUtil::CT_Unknown;
 }
 
-Bool Map::ESRI::FileGDBReader::GetColDef(UOSInt colIndex, DB::ColDef *colDef)
+Bool Map::ESRI::FileGDBReader::GetColDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef)
 {
 	UOSInt fieldIndex = this->GetFieldIndex(colIndex);
 	Map::ESRI::FileGDBFieldInfo *field = this->tableInfo->fields->GetItem(fieldIndex);

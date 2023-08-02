@@ -18,7 +18,7 @@ void __stdcall SSWR::AVIRead::AVIRTrustStoreForm::OnTrustCertDblClicked(void *us
 	Crypto::Cert::X509Cert *cert = (Crypto::Cert::X509Cert*)me->lvTrustCert->GetItem(index);
 	if (cert)
 	{
-		me->core->OpenObject(cert->Clone());
+		me->core->OpenObject(cert->Clone().Ptr());
 	}
 }
 

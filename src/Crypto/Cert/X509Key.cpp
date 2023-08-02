@@ -41,10 +41,10 @@ Crypto::Cert::X509File::ValidStatus Crypto::Cert::X509Key::IsValid(Net::SSLEngin
 	return Crypto::Cert::X509File::ValidStatus::Valid;
 }
 
-Net::ASN1Data *Crypto::Cert::X509Key::Clone() const
+NotNullPtr<Net::ASN1Data> Crypto::Cert::X509Key::Clone() const
 {
-	Crypto::Cert::X509Key *asn1;
-	NEW_CLASS(asn1, Crypto::Cert::X509Key(this->GetSourceNameObj(), this->buff, this->keyType));
+	NotNullPtr<Crypto::Cert::X509Key> asn1;
+	NEW_CLASSNN(asn1, Crypto::Cert::X509Key(this->GetSourceNameObj(), this->buff, this->keyType));
 	return asn1;
 }
 
@@ -261,7 +261,7 @@ Crypto::Cert::X509Key *Crypto::Cert::X509Key::CreatePublicKey() const
 {
 	if (this->keyType == KeyType::RSAPublic)
 	{
-		return (Crypto::Cert::X509Key*)this->Clone();
+		return (Crypto::Cert::X509Key*)this->Clone().Ptr();
 	}
 	else if (this->keyType == KeyType::RSA)
 	{
@@ -280,7 +280,7 @@ Crypto::Cert::X509Key *Crypto::Cert::X509Key::CreatePublicKey() const
 	}
 	else if (this->keyType == KeyType::ECPublic)
 	{
-		return (Crypto::Cert::X509Key*)this->Clone();
+		return (Crypto::Cert::X509Key*)this->Clone().Ptr();
 	}
 	else
 	{

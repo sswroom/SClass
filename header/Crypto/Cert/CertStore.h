@@ -19,10 +19,10 @@ namespace Crypto
 			CertStore(NotNullPtr<Text::String> name);
 			virtual ~CertStore();
 
-			CertStore *Clone();
+			NotNullPtr<CertStore> Clone() const;
 			Bool LoadDir(Text::CString certsDir);
 			Bool LoadJavaCACerts(Text::CString jksPath);
-			void AddCert(Crypto::Cert::X509Cert *cert);
+			void AddCert(NotNullPtr<Crypto::Cert::X509Cert> cert);
 			void FromPackageFile(IO::PackageFile *pkg);
 			NotNullPtr<Text::String> GetStoreName() const;
 

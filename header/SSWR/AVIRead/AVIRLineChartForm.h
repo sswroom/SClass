@@ -20,7 +20,7 @@ namespace SSWR
 			typedef struct
 			{
 				UOSInt colIndex;
-				DB::ColDef *colDef;
+				NotNullPtr<DB::ColDef> colDef;
 				void *datas;
 			} ColInfo;
 		private:

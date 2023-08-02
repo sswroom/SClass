@@ -499,7 +499,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnCertClicked(void *userObj)
 	SSWR::AVIRead::AVIRHTTPClientForm *me = (SSWR::AVIRead::AVIRHTTPClientForm*)userObj;
 	if (me->respCert)
 	{
-		me->core->OpenObject(me->respCert->Clone());
+		me->core->OpenObject(me->respCert->Clone().Ptr());
 	}
 }
 
@@ -767,26 +767,13 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 				me->respData = mstm;
 				SDEL_STRING(me->respCertText);
 				SDEL_CLASS(me->respCert);
-				const Data::ReadingList<Crypto::Cert::Certificate *> *certs = cli->GetServerCerts();
-				if (certs)
+				NotNullPtr<const Data::ReadingList<Crypto::Cert::Certificate *>> certs;
+				if (certs.Set(cli->GetServerCerts()))
 				{
 					Text::StringBuilderUTF8 sb;
-					Crypto::Cert::X509File *x509 = Crypto::Cert::X509File::CreateFromCerts(certs);
-					if (x509)
-					{
-						x509->ToString(sb);
-						me->respCert = x509;
-					}
-					else
-					{
-						UOSInt i = 0;
-						UOSInt j = certs->GetCount();
-						while (i < j)
-						{
-							certs->GetItem(i)->ToString(sb);
-							i++;
-						}
-					}
+					NotNullPtr<Crypto::Cert::X509File> x509 = Crypto::Cert::X509File::CreateFromCerts(certs);
+					x509->ToString(sb);
+					me->respCert = x509.Ptr();
 					me->respCertText = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 				}
 				respMutUsage.EndUse();

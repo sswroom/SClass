@@ -18,7 +18,7 @@ namespace Data
 		const T *GetArray() const;
 		T GetItem(UOSInt index) const;
 		T operator [](UOSInt index) const;
-		ReadonlyArray<T> *Clone() const;
+		NotNullPtr<ReadonlyArray<T>> Clone() const;
 		Bool Equals(ReadonlyArray<T> *arr2) const;
 	};
 
@@ -58,9 +58,11 @@ namespace Data
 		return this->arr[index];
 	}
 
-	template <class T> ReadonlyArray<T> *ReadonlyArray<T>::Clone() const
+	template <class T> NotNullPtr<ReadonlyArray<T>> ReadonlyArray<T>::Clone() const
 	{
-		return NEW_CLASS_D(ReadonlyArray<T>(this->arr, this->cnt));
+		NotNullPtr<ReadonlyArray<T>> ret;
+		NEW_CLASSNN(ret, ReadonlyArray<T>(this->arr, this->cnt));
+		return ret;
 	}
 
 	template <class T> Bool ReadonlyArray<T>::Equals(ReadonlyArray<T> *arr2) const

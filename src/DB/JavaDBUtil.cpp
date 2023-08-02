@@ -360,7 +360,7 @@ Bool DB::JavaDBUtil::ToJavaEntity(NotNullPtr<Text::StringBuilderUTF8> sb, Text::
 			UOSInt k = r->ColCount();
 			while (j < k)
 			{
-				if (r->GetColDef(j, &colDef))
+				if (r->GetColDef(j, colDef))
 				{
 					colName = AppendFieldAnno(sbCode, &colDef, &importMap);
 					AppendFieldDef(sbCode, &colDef, colName, &importMap);
