@@ -1270,12 +1270,16 @@ Bool Parser::FileParser::XMLParser::ParseVSConfFile(Text::XMLReader *reader, Tex
 								while (i-- > 0)
 								{
 									attr = reader->GetAttrib(i);
-									if (attr->name->Equals(UTF8STRC("Name")))
+									NotNullPtr<Text::String> name;
+									if (name.Set(attr->name))
 									{
-									}
-									else
-									{
-										cfg->SetValue(0, attr->name, attr->value);
+										if (name->Equals(UTF8STRC("Name")))
+										{
+										}
+										else
+										{
+											cfg->SetValue(0, name, attr->value);
+										}
 									}
 								}
 							}

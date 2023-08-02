@@ -33,75 +33,8 @@ struct Net::HTTPMyClient::ClassData
 
 #define BUFFSIZE 8192
 
-Net::HTTPMyClient::HTTPMyClient(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::CString userAgent, Bool kaConn) : Net::HTTPClient(sockf, kaConn), reqMstm(1024)
+UOSInt Net::HTTPMyClient::ReadRAWInternal(Data::ByteArray buff)
 {
-	if (userAgent.v == 0)
-	{
-		userAgent = CSTR("sswr/1.0");
-	}
-#if defined(LOGREPLY)
-	UTF8Char sbuff[512];
-	UTF8Char *sptr;
-	Data::DateTime dt;
-	this->clsData = MemAlloc(ClassData, 1);
-	sptr = IO::Path::GetProcessFileName(sbuff);
-	sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("HTTPClient_"));
-	dt.SetCurrTimeUTC();
-	sptr = Text::StrInt64(sptr, dt.ToTicks());
-	sptr = Text::StrConcatC(sptr, UTF8STRC(".dat"));
-	NEW_CLASS(this->clsData->fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-#endif
-	this->ssl = ssl;
-	this->cli = 0;
-	this->cliHost = 0;
-	this->writing = false;
-	this->dataBuff = 0;
-	this->buffSize = 0;
-	this->buffOfst = 0;
-	this->contEnc = 0;
-	this->timeout = 120000;
-	this->userAgent = Text::String::New(userAgent);
-	this->dataBuff = MemAlloc(UInt8, BUFFSIZE);
-}
-
-Net::HTTPMyClient::~HTTPMyClient()
-{
-	if (this->cli)
-	{
-		this->sockf->SetLinger(this->cli->GetSocket(), 0);
-		this->cli->ShutdownSend();
-		DEL_CLASS(this->cli);
-		this->cli = 0;
-	}
-	SDEL_STRING(this->cliHost);
-	if (this->dataBuff)
-	{
-		MemFree(this->dataBuff);
-		this->dataBuff = 0;
-	}
-	UOSInt i = this->reqHeaders.GetCount();
-	while (i-- > 0)
-	{
-		this->reqHeaders.GetItem(i)->Release();
-	}
-	this->userAgent->Release();
-#if defined(LOGREPLY)
-	DEL_CLASS(this->clsData->fs);
-	MemFree(this->clsData);
-#endif
-}
-
-Bool Net::HTTPMyClient::IsError() const
-{
-	return this->cli == 0;
-}
-
-UOSInt Net::HTTPMyClient::ReadRAW(Data::ByteArray buff)
-{
-	this->EndRequest(0, 0);
-	if (this->respStatus == 0)
-		return 0;
-
 	if (buff.GetSize() > BUFFSIZE)
 	{
 		buff = buff.SubArray(0, BUFFSIZE);
@@ -491,13 +424,84 @@ UOSInt Net::HTTPMyClient::ReadRAW(Data::ByteArray buff)
 	}
 }
 
+Net::HTTPMyClient::HTTPMyClient(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::CString userAgent, Bool kaConn) : Net::HTTPClient(sockf, kaConn), reqMstm(1024)
+{
+	if (userAgent.v == 0)
+	{
+		userAgent = CSTR("sswr/1.0");
+	}
+#if defined(LOGREPLY)
+	UTF8Char sbuff[512];
+	UTF8Char *sptr;
+	Data::DateTime dt;
+	this->clsData = MemAlloc(ClassData, 1);
+	sptr = IO::Path::GetProcessFileName(sbuff);
+	sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("HTTPClient_"));
+	dt.SetCurrTimeUTC();
+	sptr = Text::StrInt64(sptr, dt.ToTicks());
+	sptr = Text::StrConcatC(sptr, UTF8STRC(".dat"));
+	NEW_CLASS(this->clsData->fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+#endif
+	this->ssl = ssl;
+	this->cli = 0;
+	this->cliHost = 0;
+	this->writing = false;
+	this->dataBuff = 0;
+	this->buffSize = 0;
+	this->buffOfst = 0;
+	this->contEnc = 0;
+	this->timeout = 120000;
+	this->userAgent = Text::String::New(userAgent);
+	this->dataBuff = MemAlloc(UInt8, BUFFSIZE);
+}
+
+Net::HTTPMyClient::~HTTPMyClient()
+{
+	if (this->cli)
+	{
+		this->sockf->SetLinger(this->cli->GetSocket(), 0);
+		this->cli->ShutdownSend();
+		DEL_CLASS(this->cli);
+		this->cli = 0;
+	}
+	SDEL_STRING(this->cliHost);
+	if (this->dataBuff)
+	{
+		MemFree(this->dataBuff);
+		this->dataBuff = 0;
+	}
+	UOSInt i = this->reqHeaders.GetCount();
+	while (i-- > 0)
+	{
+		this->reqHeaders.GetItem(i)->Release();
+	}
+	this->userAgent->Release();
+#if defined(LOGREPLY)
+	DEL_CLASS(this->clsData->fs);
+	MemFree(this->clsData);
+#endif
+}
+
+Bool Net::HTTPMyClient::IsError() const
+{
+	return this->cli == 0;
+}
+
+UOSInt Net::HTTPMyClient::ReadRAW(const Data::ByteArray &buff)
+{
+	this->EndRequest(0, 0);
+	if (this->respStatus == 0)
+		return 0;
+	return this->ReadRAWInternal(buff);
+}
+
 UOSInt Net::HTTPMyClient::Read(const Data::ByteArray &buff)
 {
 	this->EndRequest(0, 0);
 	if (this->respStatus == 0)
 		return 0;
 
-	return this->ReadRAW(buff);
+	return this->ReadRAWInternal(buff);
 }
 
 UOSInt Net::HTTPMyClient::Write(const UInt8 *buff, UOSInt size)

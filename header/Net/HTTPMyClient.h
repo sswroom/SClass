@@ -37,13 +37,14 @@ namespace Net
 		UOSInt buffOfst;
 		Data::Duration timeout;
 
+		UOSInt ReadRAWInternal(Data::ByteArray buff);
 	public:
 		HTTPMyClient(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::CString userAgent, Bool kaConn);
 		virtual ~HTTPMyClient();
 
 		virtual Bool IsError() const;
 
-		UOSInt ReadRAW(Data::ByteArray buff);
+		UOSInt ReadRAW(const Data::ByteArray &buff);
 		virtual UOSInt Read(const Data::ByteArray &buff);
 		virtual UOSInt Write(const UInt8 *buff, UOSInt size);
 

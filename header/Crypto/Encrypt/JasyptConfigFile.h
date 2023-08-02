@@ -19,7 +19,8 @@ namespace Crypto
 			JasyptConfigFile(IO::ConfigFile *cfg, Crypto::Encrypt::JasyptEncryptor::KeyAlgorithm keyAlg, Crypto::Encrypt::JasyptEncryptor::CipherAlgorithm cipherAlg, const UInt8 *key, UOSInt keyLen);
 			virtual ~JasyptConfigFile();
 
-			virtual Text::String *GetCateValue(Text::String *category, Text::String *name);
+			virtual Text::String *GetCateValue(Text::String *category, NotNullPtr<Text::String> name);
+			virtual Text::String *GetCateValue(NotNullPtr<Text::String> category, NotNullPtr<Text::String> name);
 			virtual Text::String *GetCateValue(Text::CString category, Text::CString name);
 		};
 	}

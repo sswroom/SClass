@@ -1142,7 +1142,7 @@ UOSInt DB::ODBCConn::GetDriverList(Data::ArrayListNN<Text::String> *driverList)
 	IO::ConfigFile *cfg = IO::IniFile::Parse(CSTR("/etc/odbcinst.ini"), 65001);
 	if (cfg)
 	{
-		Data::ArrayList<Text::String*> cateList;
+		Data::ArrayListNN<Text::String> cateList;
 		UOSInt i = 0;
 		UOSInt j = cfg->GetCateList(&cateList, false);
 		while (i < j)

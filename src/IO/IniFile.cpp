@@ -115,25 +115,25 @@ Bool IO::IniFile::SaveConfig(NotNullPtr<IO::Stream> stm, UInt32 codePage, IO::Co
 
 Bool IO::IniFile::SaveConfig(IO::Writer *writer, IO::ConfigFile *cfg)
 {
-	Data::ArrayList<Text::String *> cateList;
-	Data::ArrayList<Text::String *> keyList;
-	Text::String *s;
+	Data::ArrayListNN<Text::String> cateList;
+	Data::ArrayListNN<Text::String> keyList;
+	NotNullPtr<Text::String> s;
 	Text::String *s2;
+	Text::String *s3;
 	UOSInt i;
 	UOSInt j;
-	UOSInt k;
-	UOSInt l;
 	cfg->GetKeys((Text::String*)0, &keyList);
-	i = 0;
-	j = keyList.GetCount();
-	while (i < j)
+	Data::ArrayIterator<NotNullPtr<Text::String>> it = keyList.Iterator();
+	while (it.HasNext())
 	{
-		s = keyList.GetItem(i);
+		s = it.Next();
 		writer->WriteStrC(s->v, s->leng);
 		writer->WriteStrC(UTF8STRC("="));
-		s = cfg->GetValue(s);
-		writer->WriteLineC(s->v, s->leng);
-		i++;
+		s2 = cfg->GetValue(s);
+		if (s2)
+			writer->WriteLineC(s2->v, s2->leng);
+		else
+			writer->WriteLine();
 	}
 	cfg->GetCateList(&cateList, false);
 	i = 0;
@@ -148,16 +148,17 @@ Bool IO::IniFile::SaveConfig(IO::Writer *writer, IO::ConfigFile *cfg)
 
 		keyList.Clear();
 		cfg->GetKeys(s2, &keyList);
-		k = 0;
-		l = keyList.GetCount();
-		while (k < l)
+		it = keyList.Iterator();
+		while (it.HasNext())
 		{
-			s = keyList.GetItem(k);
+			s = it.Next();
 			writer->WriteStrC(s->v, s->leng);
 			writer->WriteStrC(UTF8STRC("="));
-			s = cfg->GetCateValue(s2, s);
-			writer->WriteLineC(s->v, s->leng);
-			k++;
+			s3 = cfg->GetCateValue(s2, s);
+			if (s3)
+				writer->WriteLineC(s3->v, s3->leng);
+			else
+				writer->WriteLine();
 		}
 		i++;
 	}

@@ -106,10 +106,10 @@ Crypto::Encrypt::JasyptEncryptor::~JasyptEncryptor()
 
 Bool Crypto::Encrypt::JasyptEncryptor::Decrypt(IO::ConfigFile *cfg)
 {
-	Data::ArrayList<Text::String*> cateList;
-	Data::ArrayList<Text::String*> keyList;
+	Data::ArrayListNN<Text::String> cateList;
+	Data::ArrayListNN<Text::String> keyList;
 	Text::String *cate;
-	Text::String *key;
+	NotNullPtr<Text::String> key;
 	Text::String *val;
 	UInt8 buff[256];
 	UOSInt buffSize;
@@ -119,11 +119,11 @@ Bool Crypto::Encrypt::JasyptEncryptor::Decrypt(IO::ConfigFile *cfg)
 	{
 		cate = cateList.GetItem(i);
 		keyList.Clear();
-		UOSInt k = 0;
-		UOSInt l = cfg->GetKeys(cate, &keyList);
-		while (k < l)
+		cfg->GetKeys(cate, &keyList);
+		Data::ArrayIterator<NotNullPtr<Text::String>> it = keyList.Iterator();
+		while (it.HasNext())
 		{
-			key = keyList.GetItem(k);
+			key = it.Next();
 			val = cfg->GetCateValue(cate, key);
 			if (val && val->StartsWith(UTF8STRC("ENC(")) && val->EndsWith(')'))
 			{
@@ -135,7 +135,6 @@ Bool Crypto::Encrypt::JasyptEncryptor::Decrypt(IO::ConfigFile *cfg)
 					val->Release();
 				}
 			}
-			k++;
 		}
 		i++;
 	}

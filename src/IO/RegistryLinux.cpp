@@ -230,7 +230,7 @@ IO::Registry *IO::Registry::OpenSubReg(const WChar *name)
 WChar *IO::Registry::GetSubReg(WChar *buff, UOSInt index)
 {
 	Data::ArrayListStrUTF8 names;
-	Data::ArrayList<Text::String*> cateList;
+	Data::ArrayListNN<Text::String> cateList;
 	Sync::MutexUsage mutUsage(this->clsData->reg->mut);
 	if (this->clsData->reg->cfg == 0)
 	{
@@ -334,7 +334,7 @@ Int32 IO::Registry::GetValueI32(const WChar *name)
 		return 0;
 	}
 	NotNullPtr<Text::String> s = Text::String::NewNotNull(name);
-	Text::String *csval = this->clsData->reg->cfg->GetCateValue(this->clsData->cate, s.Ptr());
+	Text::String *csval = this->clsData->reg->cfg->GetCateValue(this->clsData->cate, s);
 	s->Release();
 	if (csval && csval->StartsWith(UTF8STRC("dword:")))
 	{
@@ -351,7 +351,7 @@ WChar *IO::Registry::GetValueStr(const WChar *name, WChar *buff)
 		return 0;
 	}
 	NotNullPtr<Text::String> s = Text::String::NewNotNull(name);
-	Text::String *csval = this->clsData->reg->cfg->GetCateValue(this->clsData->cate, s.Ptr());
+	Text::String *csval = this->clsData->reg->cfg->GetCateValue(this->clsData->cate, s);
 	s->Release();
 	if (csval && csval->StartsWith(UTF8STRC("sz:")))
 	{
@@ -368,7 +368,7 @@ Bool IO::Registry::GetValueI32(const WChar *name, Int32 *value)
 		return false;
 	}
 	NotNullPtr<Text::String> s = Text::String::NewNotNull(name);
-	Text::String *csval = this->clsData->reg->cfg->GetCateValue(this->clsData->cate, s.Ptr());
+	Text::String *csval = this->clsData->reg->cfg->GetCateValue(this->clsData->cate, s);
 	s->Release();
 	if (csval && csval->StartsWith(UTF8STRC("dword:")))
 	{
@@ -385,7 +385,7 @@ WChar *IO::Registry::GetName(WChar *nameBuff, UOSInt index)
 	{
 		return 0;
 	}
-	Data::ArrayList<Text::String*> keys;
+	Data::ArrayListNN<Text::String> keys;
 	this->clsData->reg->cfg->GetKeys(this->clsData->cate->ToCString(), &keys);
 	Text::String *key = keys.GetItem(index);
 	if (key)

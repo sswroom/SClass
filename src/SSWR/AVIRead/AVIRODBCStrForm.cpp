@@ -30,23 +30,19 @@ void __stdcall SSWR::AVIRead::AVIRODBCStrForm::OnDriverInfoClicked(void *userObj
 		IO::ConfigFile *driver = DB::ODBCConn::GetDriverInfo(sb.ToCString());
 		if (driver)
 		{
-			Data::ArrayList<Text::String*> keys;
-			UOSInt i;
-			UOSInt j;
+			Data::ArrayListNN<Text::String> keys;
 			const UTF8Char *sarr[2];
 			sarr[0] = (const UTF8Char*)"Name";
 			sarr[1] = (const UTF8Char*)"Value";
 			SSWR::AVIRead::AVIRTableMsgForm frm(0, me->ui, me->core, sb.ToCString(), 2, sarr);
 			driver->GetKeys((Text::String*)0, &keys);
-			i = 0;
-			j = keys.GetCount();
-			while (i < j)
+			Data::ArrayIterator<NotNullPtr<Text::String>> it = keys.Iterator();
+			while (it.HasNext())
 			{
-				Text::String *s = keys.GetItem(i);
+				NotNullPtr<Text::String> s = it.Next();
 				sarr[0] = s->v;
-				sarr[1] = driver->GetValue(s->ToCString())->v;
+				sarr[1] = driver->GetValue(s)->v;
 				frm.AddRow(sarr);
-				i++;
 			}
 			frm.ShowDialog(me);
 			DEL_CLASS(driver);
