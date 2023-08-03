@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "IO/FileStream.h"
 #include "Manage/Process.h"
 #include "Manage/ThreadInfo.h"
 #include <pthread.h>
@@ -25,7 +26,7 @@ Manage::ThreadInfo::ThreadInfo(UOSInt procId, UOSInt threadId)
 {
 	this->threadId = threadId;
 	this->procId = procId;
-	this->hand = (void*)this->threadId;
+	this->hand = 0;
 }
 
 Manage::ThreadInfo::~ThreadInfo()
@@ -50,13 +51,15 @@ UInt64 Manage::ThreadInfo::GetStartAddress()
 
 Bool Manage::ThreadInfo::WaitForThreadExit(UInt32 waitTimeout)
 {
-	return pthread_join((pthread_t)this->threadId, 0) == 0;
+	if (this->hand)
+		return pthread_join((pthread_t)this->hand, 0) == 0;
+	return false;
 }
 
 UInt32 Manage::ThreadInfo::GetExitCode()
 {
 	void *code;
-	if (pthread_join((pthread_t)this->threadId, &code) == 0)
+	if (this->hand && pthread_join((pthread_t)this->hand, &code) == 0)
 	{
 		return (UInt32)(OSInt)code;
 	}
@@ -71,8 +74,30 @@ UOSInt Manage::ThreadInfo::GetThreadId()
 
 UTF8Char *Manage::ThreadInfo::GetName(UTF8Char *buff)
 {
-	//////////////////////////////////
-	/// /proc/pid/task/tid/stat
+	if (this->hand)
+	{
+		if (pthread_getname_np((pthread_t)this->hand, (char*)buff, 32) == 0)
+			return &buff[Text::StrCharCnt(buff)];
+	}
+	UTF8Char sbuff[512];
+	UTF8Char *sptr;
+	Text::PString sarr[3];
+	sptr = Text::StrConcatC(sbuff, UTF8STRC("/proc/"));
+	sptr = Text::StrUOSInt(sptr, this->procId);
+	sptr = Text::StrConcatC(sptr, UTF8STRC("/task/"));
+	sptr = Text::StrUOSInt(sptr, this->threadId);
+	sptr = Text::StrConcatC(sptr, UTF8STRC("/stat"));
+	IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+	UOSInt readSize;
+	if ((readSize = fs.Read(BYTEARR(sbuff))) > 0)
+	{
+		readSize = Text::StrSplitP(sarr, 3, Text::PString(sbuff, readSize), ' ');
+		if (readSize == 3 && sarr[1].EndsWith(')') && sarr[1].StartsWith('('))
+		{
+			sarr[1].RemoveChars(1);
+			return sarr[1].Substring(1).ConcatTo(buff);
+		}
+	}
 	return 0;
 }
 

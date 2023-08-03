@@ -64,6 +64,7 @@
 #include "Parser/FileParser/MRGParser.h"
 #include "Parser/FileParser/MTKGPSParser.h"
 #include "Parser/FileParser/NFPParser.h"
+#include "Parser/FileParser/NMEAParser.h"
 #include "Parser/FileParser/NOAParser.h"
 #include "Parser/FileParser/NS2Parser.h"
 #include "Parser/FileParser/NWAParser.h"
@@ -260,6 +261,8 @@ Parser::FullParserList::FullParserList() : Parser::ParserList()
 	NEW_CLASS(parser, Parser::FileParser::RAR5Parser()); ///////////////////////////////
 	this->AddFileParser(parser);
 	NEW_CLASS(parser, Parser::FileParser::CABParser()); ///////////////////////////////
+	this->AddFileParser(parser);
+	NEW_CLASS(parser, Parser::FileParser::NMEAParser()); ///////////////////////////////
 	this->AddFileParser(parser);
 	
 	NEW_CLASS(parser, Parser::FileParser::CUEParser());

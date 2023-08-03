@@ -3431,6 +3431,8 @@ Parser/FileParser/MTKGPSParser.h: ../../src/Parser/FileParser/MTKGPSParser.cpp
 @MTKGPSParser.o
 Parser/FileParser/NFPParser.h: ../../src/Parser/FileParser/NFPParser.cpp
 @NFPParser.o
+Parser/FileParser/NMEAParser.h: ../../src/Parser/FileParser/NMEAParser.cpp
+@NMEAParser.o
 Parser/FileParser/NOAParser.h: ../../src/Parser/FileParser/NOAParser.cpp
 @NOAParser.o
 Parser/FileParser/NWAParser.h: ../../src/Parser/FileParser/NWAParser.cpp
@@ -5623,6 +5625,7 @@ MPGParser.o: ../../src/Parser/FileParser/MPGParser.cpp
 MRGParser.o: ../../src/Parser/FileParser/MRGParser.cpp
 MTKGPSParser.o: ../../src/Parser/FileParser/MTKGPSParser.cpp
 NFPParser.o: ../../src/Parser/FileParser/NFPParser.cpp
+NMEAParser.o: ../../src/Parser/FileParser/NMEAParser.cpp
 NOAParser.o: ../../src/Parser/FileParser/NOAParser.cpp
 NWAParser.o: ../../src/Parser/FileParser/NWAParser.cpp
 NS2Parser.o: ../../src/Parser/FileParser/NS2Parser.cpp

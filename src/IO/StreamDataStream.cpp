@@ -9,6 +9,13 @@ IO::StreamDataStream::StreamDataStream(NotNullPtr<IO::StreamData> data) : IO::Se
 	this->data = data->GetPartialData(0, this->stmDataLeng);
 }
 
+IO::StreamDataStream::StreamDataStream(NotNullPtr<IO::StreamData> data, UInt64 ofst, UInt64 length) : IO::SeekableStream(data->GetFullName())
+{
+	this->currOfst = 0;
+	this->data = data->GetPartialData(ofst, length);
+	this->stmDataLeng = this->data->GetDataSize();
+}
+
 IO::StreamDataStream::~StreamDataStream()
 {
 	this->data.Delete();

@@ -65,10 +65,13 @@ UTF8Char *Manage::SymbolResolver::ResolveName(UTF8Char *buff, UInt64 address)
 {
 	void *addr = (void*)(OSInt)address;
 	char **name = backtrace_symbols(&addr, 1);
-	char *cptr = name[0];
-	while ((*buff++ = (UTF8Char)*cptr++) != 0);
-	free(name);
-	return buff - 1;
+	if (name)
+	{
+		buff = Text::StrConcat(buff, (UTF8Char*)name[0]);
+		free(name);
+		return buff;
+	}
+	return 0;
 }
 
 UOSInt Manage::SymbolResolver::GetModuleCount()

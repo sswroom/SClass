@@ -14,6 +14,7 @@ namespace IO
 
 	public:
 		StreamDataStream(NotNullPtr<IO::StreamData> data);
+		StreamDataStream(NotNullPtr<IO::StreamData> data, UInt64 ofst, UInt64 length);
 		virtual ~StreamDataStream();
 
 		virtual Bool IsDown() const;

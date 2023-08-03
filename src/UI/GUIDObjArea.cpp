@@ -12,115 +12,119 @@ UInt32 __stdcall UI::GUIDObjArea::DisplayThread(void *userObj)
 	{
 		if (me->drawUpdated)
 		{
-			if (me->colorSess->Get10BitColor() && me->currScnMode == UI::GUIDDrawControl::SM_VFS)
+			Sync::MutexUsage dobjMutUsage(me->dobjMut);
+			if (me->currDrawImg)
 			{
-				UOSInt dbpl;
-				UInt8 *destBuff = me->LockSurfaceBegin(me->currDrawImg->GetWidth(), me->currDrawImg->GetHeight(), &dbpl);
-				if (destBuff)
+				if (me->colorSess->Get10BitColor() && me->currScnMode == UI::GUIDDrawControl::SM_VFS)
 				{
-					UInt8 *tmpBuff = MemAlloc(UInt8, me->surfaceSize.CalcArea() << 2);
-					me->currDrawImg->CopyBits(0, 0, tmpBuff, me->surfaceSize.x << 2, me->surfaceSize.x, me->surfaceSize.y, false);
-//					UOSInt w = me->surfaceW;
-//					UOSInt h = me->surfaceH;
-/*#if defined(HAS_ASM32)
-					_asm
+					UOSInt dbpl;
+					UInt8 *destBuff = me->LockSurfaceBegin(me->currDrawImg->GetWidth(), me->currDrawImg->GetHeight(), &dbpl);
+					if (destBuff)
 					{
-						mov esi,tmpBuff
-						mov edi,destBuff
-						mov ebx,h
-dtlop:
-						push edi
-						mov ecx,w
-dtlop2:
-						movzx eax,byte ptr [esi]
-						shl eax,22
-						movzx edx,byte ptr [esi+1]
-						shl edx,12
-						or eax,edx
-						movzx edx,byte ptr [esi+2]
-						shl edx,2
-						or eax,edx
-						movnti dword ptr [edi],eax
-						add esi,4
-						add edi,4
-						dec ecx
-						jnz dtlop2
-						pop edi
-						add edi,dbpl
-						dec ebx
-						jnz dtlop
-					}
-#elif defined(HAS_GCCASM32)
-					_asm
-					{
-						mov esi,tmpBuff
-						mov edi,destBuff
-						mov ebx,h
-dtlop:
-						push edi
-						mov ecx,w
-dtlop2:
-						movzx eax,byte ptr [esi]
-						shl eax,22
-						movzx edx,byte ptr [esi+1]
-						shl edx,12
-						or eax,edx
-						movzx edx,byte ptr [esi+2]
-						shl edx,2
-						or eax,edx
-						movnti dword ptr [edi],eax
-						add esi,4
-						add edi,4
-						dec ecx
-						jnz dtlop2
-						pop edi
-						add edi,dbpl
-						dec ebx
-						jnz dtlop
-					}
-#elif defined(HAS_GCCASM64)
-					asm (
-"								mov tmpBuff,%rsi\n"
-"								mov destBuff,%rdi\n"
-"								movzx h,%rbx\n"
-"	dtlop:\n"
-"								push %rdi\n"
-"								movzx w,%rcx\n"
-"	dtlop2:\n"
-"								movzxb (%rsi),%rax\n"
-"								shl $22,%rax\n"
-"								movzxb 0x1(%rsi),%rdx\n"
-"								shl $12,%rdx\n"
-"								or %rdx,%rax\n"
-"								movzxb 0x2(%rsi),%rdx\n"
-"								shl $2,%rdx\n"
-"								or %rdx,%rax\n"
-"								movnti %eax,(%rdi)\n"
-"								add $4,%rsi\n"
-"								add $4,%rdi\n"
-"								dec %rcx\n"
-"								jnz dtlop2\n"
-"								pop %rdi\n"
-"								movzx dbpl,%rax\n"
-"								add %rax,%rdi\n"
-"								dec %rbx\n"
-"								jnz dtlop\n"
-);
+						UInt8 *tmpBuff = MemAlloc(UInt8, me->surfaceSize.CalcArea() << 2);
+						me->currDrawImg->CopyBits(0, 0, tmpBuff, me->surfaceSize.x << 2, me->surfaceSize.x, me->surfaceSize.y, false);
+	//					UOSInt w = me->surfaceW;
+	//					UOSInt h = me->surfaceH;
+	/*#if defined(HAS_ASM32)
+						_asm
+						{
+							mov esi,tmpBuff
+							mov edi,destBuff
+							mov ebx,h
+	dtlop:
+							push edi
+							mov ecx,w
+	dtlop2:
+							movzx eax,byte ptr [esi]
+							shl eax,22
+							movzx edx,byte ptr [esi+1]
+							shl edx,12
+							or eax,edx
+							movzx edx,byte ptr [esi+2]
+							shl edx,2
+							or eax,edx
+							movnti dword ptr [edi],eax
+							add esi,4
+							add edi,4
+							dec ecx
+							jnz dtlop2
+							pop edi
+							add edi,dbpl
+							dec ebx
+							jnz dtlop
+						}
+	#elif defined(HAS_GCCASM32)
+						_asm
+						{
+							mov esi,tmpBuff
+							mov edi,destBuff
+							mov ebx,h
+	dtlop:
+							push edi
+							mov ecx,w
+	dtlop2:
+							movzx eax,byte ptr [esi]
+							shl eax,22
+							movzx edx,byte ptr [esi+1]
+							shl edx,12
+							or eax,edx
+							movzx edx,byte ptr [esi+2]
+							shl edx,2
+							or eax,edx
+							movnti dword ptr [edi],eax
+							add esi,4
+							add edi,4
+							dec ecx
+							jnz dtlop2
+							pop edi
+							add edi,dbpl
+							dec ebx
+							jnz dtlop
+						}
+	#elif defined(HAS_GCCASM64)
+						asm (
+	"								mov tmpBuff,%rsi\n"
+	"								mov destBuff,%rdi\n"
+	"								movzx h,%rbx\n"
+	"	dtlop:\n"
+	"								push %rdi\n"
+	"								movzx w,%rcx\n"
+	"	dtlop2:\n"
+	"								movzxb (%rsi),%rax\n"
+	"								shl $22,%rax\n"
+	"								movzxb 0x1(%rsi),%rdx\n"
+	"								shl $12,%rdx\n"
+	"								or %rdx,%rax\n"
+	"								movzxb 0x2(%rsi),%rdx\n"
+	"								shl $2,%rdx\n"
+	"								or %rdx,%rax\n"
+	"								movnti %eax,(%rdi)\n"
+	"								add $4,%rsi\n"
+	"								add $4,%rdi\n"
+	"								dec %rcx\n"
+	"								jnz dtlop2\n"
+	"								pop %rdi\n"
+	"								movzx dbpl,%rax\n"
+	"								add %rax,%rdi\n"
+	"								dec %rbx\n"
+	"								jnz dtlop\n"
+	);
 
-#endif*/
+	#endif*/
 
-					me->LockSurfaceEnd();
-					MemFree(tmpBuff);
+						me->LockSurfaceEnd();
+						MemFree(tmpBuff);
+					}
 				}
-			}
-			else
-			{
-				UOSInt dbpl;
-				UInt8 *destBuff = me->LockSurfaceBegin(me->currDrawImg->GetWidth(), me->currDrawImg->GetHeight(), &dbpl);
-				if (destBuff)
+				else
 				{
-					me->currDrawImg->CopyBits(0, 0, destBuff, dbpl, me->surfaceSize.x, me->surfaceSize.y, false);
-					me->LockSurfaceEnd();
+					UOSInt dbpl;
+					UInt8 *destBuff = me->LockSurfaceBegin(me->currDrawImg->GetWidth(), me->currDrawImg->GetHeight(), &dbpl);
+					if (destBuff)
+					{
+						me->currDrawImg->CopyBits(0, 0, destBuff, dbpl, me->surfaceSize.x, me->surfaceSize.y, false);
+						me->LockSurfaceEnd();
+					}
 				}
 			}
 			me->drawUpdated = false;
