@@ -362,6 +362,8 @@ Bool Manage::ExceptionLogger::LogToFile(NotNullPtr<Text::String> fileName, UInt3
 	Text::UTF8Writer writer(fs);
 	Text::StringBuilderUTF8 sb;
 	Data::DateTime d;
+	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	UOSInt i;
 	UOSInt j;
 
@@ -397,24 +399,29 @@ Bool Manage::ExceptionLogger::LogToFile(NotNullPtr<Text::String> fileName, UInt3
 	}
 
 	{
-		Data::ArrayList<Manage::ThreadInfo*> *threadList;
+		Data::ArrayList<Manage::ThreadInfo*> threadList;
 		Manage::ThreadInfo *thread;
 		Manage::ThreadContext *tCont;
 		Manage::StackTracer *tracer;
 		UInt64 startAddr;
-		NEW_CLASS(threadList, Data::ArrayList<Manage::ThreadInfo*>());
-		proc.GetThreads(threadList);
+		proc.GetThreads(&threadList);
 		i = 0;
-		j = threadList->GetCount();
+		j = threadList.GetCount();
 		while (i < j)
 		{
-			thread = threadList->GetItem(i);
+			thread = threadList.GetItem(i);
 
 			sb.ClearStr();
 			writer.WriteLine();
 			sb.AppendC(UTF8STRC("Running threads: (0x"));
 			sb.AppendHex32((UInt32)thread->GetThreadId());
 			sb.AppendC(UTF8STRC(")"));
+			sptr = thread->GetName(sbuff);
+			if (sptr)
+			{
+				sb.AppendUTF8Char(' ');
+				sb.AppendP(sbuff, sptr);
+			}
 			if (thread->IsCurrThread())
 			{
 				sb.AppendC(UTF8STRC(" current thread"));
@@ -458,7 +465,6 @@ Bool Manage::ExceptionLogger::LogToFile(NotNullPtr<Text::String> fileName, UInt3
 
 			i++;
 		}
-		DEL_CLASS(threadList);
 	}
 
 	{

@@ -6,6 +6,7 @@
 #include "Manage/ThreadContextX86_64.h"
 #include "Manage/ThreadContextARM.h"
 #include "Manage/ThreadContextARM64.h"
+#include "Text/MyStringW.h"
 #if defined(__MINGW32__)
 #if defined(_WIN32_WINNT)
 #undef _WIN32_WINNT
@@ -240,6 +241,23 @@ UInt32 Manage::ThreadInfo::GetExitCode()
 UOSInt Manage::ThreadInfo::GetThreadId()
 {
 	return this->threadId;
+}
+
+typedef HRESULT (*GetThreadDescriptionFunc)(HANDLE hThread, PWSTR  *ppszThreadDescription);
+
+UTF8Char *Manage::ThreadInfo::GetName(UTF8Char *buff)
+{
+	GetThreadDescriptionFunc GetThreadDescription = (GetThreadDescriptionFunc)GetProcAddress(GetModuleHandleA("Kernel32.dll"), "GetThreadDescription");
+	WChar *sbuff;
+	if (GetThreadDescription == 0) return 0; 
+	HRESULT hres = GetThreadDescription((HANDLE)this->hand, &sbuff);
+	if (SUCCEEDED(hres))
+	{
+		buff = Text::StrWChar_UTF8(buff, sbuff);
+		LocalFree(sbuff);
+		return buff;
+	}
+	return 0;
 }
 
 Bool Manage::ThreadInfo::Suspend()

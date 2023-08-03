@@ -69,6 +69,13 @@ UOSInt Manage::ThreadInfo::GetThreadId()
 	return this->threadId;
 }
 
+UTF8Char *Manage::ThreadInfo::GetName(UTF8Char *buff)
+{
+	//////////////////////////////////
+	/// /proc/pid/task/tid/stat
+	return 0;
+}
+
 Bool Manage::ThreadInfo::Suspend()
 {
 	return false;

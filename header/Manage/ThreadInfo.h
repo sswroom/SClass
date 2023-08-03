@@ -23,6 +23,7 @@ namespace Manage
 		Bool WaitForThreadExit(UInt32 waitTimeout); //true = exited
 		UInt32 GetExitCode();
 		UOSInt GetThreadId();
+		UTF8Char *GetName(UTF8Char *buff);
 		Bool Suspend();
 		Bool Resume();
 		Bool IsCurrThread();
