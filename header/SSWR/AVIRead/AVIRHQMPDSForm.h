@@ -44,7 +44,7 @@ namespace SSWR
 			UI::GUIForm *dbgFrm;
 			UI::GUITextBox *txtDebug;
 
-			static void __stdcall OnFileDrop(void *userObj, Text::String **files, UOSInt nFiles);
+			static void __stdcall OnFileDrop(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles);
 			static void __stdcall OnTimerTick(void *userObj);
 			static void __stdcall OnDebugClosed(void *userObj, UI::GUIForm *frm);
 		public:

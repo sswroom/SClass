@@ -92,7 +92,7 @@ UOSInt Manage::ProcessExecution::Read(const Data::ByteArray &buff)
 	if (this->clsData->in[0] == 0)
 		return 0;
 	DWORD readSize;
-	if (ReadFile(this->clsData->out[0], buff, (DWORD)size, &readSize, 0))
+	if (ReadFile(this->clsData->out[0], buff.Ptr(), (DWORD)buff.GetSize(), &readSize, 0))
 	{
 		return readSize;
 	}

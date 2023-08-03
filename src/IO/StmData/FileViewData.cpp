@@ -64,7 +64,7 @@ IO::StmData::FileViewData::~FileViewData()
 	Close();
 }
 
-UOSInt IO::StmData::FileViewData::GetRealData(UInt64 offset, UOSInt length, UInt8* buffer)
+UOSInt IO::StmData::FileViewData::GetRealData(UInt64 offset, UOSInt length, Data::ByteArray buffer)
 {
 	if (fdh == 0)
 		return 0;
@@ -81,7 +81,7 @@ UOSInt IO::StmData::FileViewData::GetRealData(UInt64 offset, UOSInt length, UInt
 	{
 		endOfst = dataOffset + dataLength;
 	}
-	MemCopyNO(buffer, &fdh->fptr[startOfst], (UOSInt)(endOfst - startOfst));
+	MemCopyNO(buffer.Ptr(), &fdh->fptr[startOfst], (UOSInt)(endOfst - startOfst));
 	
 	return (UOSInt)(endOfst - startOfst);
 }
@@ -98,10 +98,10 @@ Text::CString IO::StmData::FileViewData::GetShortName()
 	return fdh->fileName;
 }
 
-Text::String *IO::StmData::FileViewData::GetFullName()
+NotNullPtr<Text::String> IO::StmData::FileViewData::GetFullName()
 {
 	if (fdh == 0)
-		return 0;
+		return Text::String::NewEmpty();
 	return fdh->fullName;
 }
 
@@ -114,8 +114,8 @@ const UInt8 *IO::StmData::FileViewData::GetPointer()
 
 NotNullPtr<IO::StreamData> IO::StmData::FileViewData::GetPartialData(UInt64 offset, UInt64 length)
 {
-	IO::StmData::FileViewData *data;
-	NEW_CLASS(data, IO::StmData::FileViewData(this, offset, length));
+	NotNullPtr<IO::StmData::FileViewData> data;
+	NEW_CLASSNN(data, IO::StmData::FileViewData(this, offset, length));
 	return data;
 }
 
@@ -141,7 +141,7 @@ void IO::StmData::FileViewData::Close()
 		if (--(fdh->objectCnt) == 0)
 		{
 			DEL_CLASS(fdh->file);
-			MemFree(fdh->fullName);
+			fdh->fullName->Release();
 			DEL_CLASS(fdh);
 		}
 	}

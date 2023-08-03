@@ -17,6 +17,6 @@ namespace Win32
 	void ServiceControl_Destroy(NotNullPtr<Core::IProgControl> progCtrl);
 		
 	void ServiceControl_SignalExit(NotNullPtr<Core::IProgControl> progCtrl);
-	void ServiceControl_SignalRestart(Core::IProgControl* progCtrl);
+	void ServiceControl_SignalRestart(NotNullPtr<Core::IProgControl> progCtrl);
 };
 #endif

@@ -32,7 +32,7 @@ IO::LNKFile::LNKFile(Text::CString fileName)
 	{
 		return;
 	}
-	UOSInt buffSize = fs.Read(buff, 8192);
+	UOSInt buffSize = fs.Read(BYTEARR(buff));
 	this->InitBuff(buff, buffSize);
 }
 

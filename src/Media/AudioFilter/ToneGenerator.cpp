@@ -8,6 +8,7 @@
 Media::AudioFilter::ToneGenerator::ToneGenerator(IAudioSource *sourceAudio) : Media::IAudioFilter(sourceAudio)
 {
 	this->sourceAudio = sourceAudio;
+	this->instType = IT_SINCWAVE;
 	sourceAudio->GetFormat(&this->format);
 }
 
@@ -20,11 +21,11 @@ void Media::AudioFilter::ToneGenerator::GetFormat(AudioFormat *format)
 	format->FromAudioFormat(&this->format);
 }
 
-UOSInt Media::AudioFilter::ToneGenerator::ReadBlock(UInt8 *buff, UOSInt blkSize)
+UOSInt Media::AudioFilter::ToneGenerator::ReadBlock(Data::ByteArray buff)
 {
 	if (this->sourceAudio == 0)
 		return 0;
-	UOSInt readSize = this->sourceAudio->ReadBlock(buff, blkSize);
+	UOSInt readSize = this->sourceAudio->ReadBlock(buff);
 
 	if (this->format.bitpersample == 16)
 	{

@@ -130,7 +130,7 @@ typedef enum
 	MNU_PB_CHAPTERS = 1000
 } MenuItems;
 
-void __stdcall SSWR::AVIRead::AVIRHQMPDSForm::OnFileDrop(void *userObj, Text::String **files, UOSInt nFiles)
+void __stdcall SSWR::AVIRead::AVIRHQMPDSForm::OnFileDrop(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles)
 {
 	SSWR::AVIRead::AVIRHQMPDSForm *me = (SSWR::AVIRead::AVIRHQMPDSForm*)userObj;
 	UOSInt i;
@@ -265,11 +265,10 @@ Bool SSWR::AVIRead::AVIRHQMPDSForm::OpenFile(Text::CString fileName, IO::ParserT
 {
 	Parser::ParserList *parsers = this->core->GetParserList();
 	IO::ParsedObject *pobj;
-	IO::StmData::FileData *fd;
-
-	NEW_CLASS(fd, IO::StmData::FileData(fileName, false));
-	pobj = parsers->ParseFileType(fd, targetType);
-	DEL_CLASS(fd);
+	{
+		IO::StmData::FileData fd(fileName, false);
+		pobj = parsers->ParseFileType(fd, targetType);
+	}
 	if (pobj)
 	{
 		return OpenVideo((Media::MediaFile*)pobj);
@@ -580,7 +579,7 @@ void SSWR::AVIRead::AVIRHQMPDSForm::EventMenuClicked(UInt16 cmdId)
 			SSWR::AVIRead::AVIROpenFileForm dlg(0, this->ui, this->core, IO::ParserType::MediaFile);
 			if (dlg.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
-				Text::String *fname = dlg.GetFileName();
+				NotNullPtr<Text::String> fname = dlg.GetFileName();
 				UOSInt i = fname->IndexOf(':');
 				if (i == 1 || i == INVALID_INDEX)
 				{
