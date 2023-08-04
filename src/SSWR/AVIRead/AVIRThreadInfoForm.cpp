@@ -205,6 +205,11 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(UI::GUIClientControl *pare
 	NEW_CLASS(this->txtStartName, UI::GUITextBox(ui, this->tpInfo, CSTR(""), false));
 	this->txtStartName->SetRect(100, 48, 500, 23, false);
 	this->txtStartName->SetReadOnly(true);
+	NEW_CLASS(this->lblThreadName, UI::GUILabel(ui, this->tpInfo, CSTR("Thread Name")));
+	this->lblThreadName->SetRect(0, 72, 100, 23, false);
+	NEW_CLASS(this->txtThreadName, UI::GUITextBox(ui, this->tpInfo, CSTR(""), false));
+	this->txtThreadName->SetRect(100, 72, 500, 23, false);
+	this->txtThreadName->SetReadOnly(true);
 
 	NEW_CLASS(this->lvContext, UI::GUIListView(ui, this->tpContext, UI::GUIListView::LVSTYLE_TABLE, 2));
 	this->lvContext->SetDockType(UI::GUIControl::DOCK_FILL);
@@ -256,6 +261,11 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(UI::GUIClientControl *pare
 	{
 		i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), '\\');
 		this->txtStartName->SetText(CSTRP(&sbuff[i + 1], sptr));
+	}
+	sptr = thread.GetName(sbuff);
+	if (sptr)
+	{
+		this->txtThreadName->SetText(CSTRP(sbuff, sptr));
 	}
 
 	if (thread.IsCurrThread())

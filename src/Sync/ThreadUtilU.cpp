@@ -33,7 +33,17 @@ void Sync::ThreadUtil::SleepDur(Data::Duration dur)
 		gettimeofday (&tNow, 0) ;
 }
 
-UInt32 Sync::ThreadUtil::Create(Sync::ThreadProc tProc, void *userObj)
+void Sync::ThreadUtil::Create(Sync::ThreadProc tProc, void *userObj)
+{
+	CloseHandle(CreateWithHandle(tProc, userObj));
+}
+
+void Sync::ThreadUtil::Create(Sync::ThreadProc tProc, void *userObj, UInt32 threadSize)
+{
+	CloseHandle(CreateWithHandle(tProc, userObj, threadSize));
+}
+
+Sync::ThreadHandle *Sync::ThreadUtil::CreateWithHandle(Sync::ThreadProc tProc, void *userObj)
 {
 	pthread_t tid;
 	pthread_attr_t attr;
@@ -56,16 +66,10 @@ UInt32 Sync::ThreadUtil::Create(Sync::ThreadProc tProc, void *userObj)
 			break;
 		}
 	}
-#if defined(__APPLE_)
-	int id;
-	pthread_getunique_np(&tid, &id);
-	return id;
-#else
-	return (UInt32)(UOSInt)tid;
-#endif
+	return (ThreadHandle*)tid;
 }
 
-UInt32 Sync::ThreadUtil::Create(Sync::ThreadProc tProc, void *userObj, UInt32 threadSize)
+Sync::ThreadHandle *Sync::ThreadUtil::CreateWithHandle(Sync::ThreadProc tProc, void *userObj, UInt32 threadSize)
 {
 	pthread_t pthread;
 	pthread_attr_t attr;
@@ -100,6 +104,16 @@ UInt32 Sync::ThreadUtil::Create(Sync::ThreadProc tProc, void *userObj, UInt32 th
 			break;
 		}
 	}
+	return (ThreadHandle*)pthread;
+}
+
+void Sync::ThreadUtil::CloseHandle(ThreadHandle *handle)
+{
+}
+
+UInt32 Sync::ThreadUtil::GetThreadId(ThreadHandle *hand)
+{
+	pthread_t pthread = (pthread_t)hand;
 #if defined(__APPLE_)
 	int id;
 	pthread_getunique_np(&pthread, &id);
@@ -107,6 +121,7 @@ UInt32 Sync::ThreadUtil::Create(Sync::ThreadProc tProc, void *userObj, UInt32 th
 #else
 	return (UInt32)(UOSInt)pthread;
 #endif
+
 }
 
 UInt32 Sync::ThreadUtil::GetThreadId()
@@ -177,10 +192,9 @@ Bool Sync::ThreadUtil::EnableInterrupt()
 	return false;
 }
 
-Bool Sync::ThreadUtil::Interrupt(UInt32 threadId)
+Bool Sync::ThreadUtil::Interrupt(ThreadHandle *threadId)
 {
-//	return pthread_kill((pthread_t)threadId, SIGINT) == 0;
-	return false;
+	return pthread_kill((pthread_t)threadId, SIGINT) == 0;
 }
 
 void Sync::ThreadUtil::SetPriority(ThreadPriority priority)

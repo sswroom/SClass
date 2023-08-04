@@ -1,6 +1,7 @@
 #ifndef _SM_SYNC_THREAD
 #define _SM_SYNC_THREAD
 #include "Sync/Event.h"
+#include "Sync/ThreadUtil.h"
 #include "Text/CString.h"
 namespace Sync
 {
@@ -11,6 +12,7 @@ namespace Sync
 	private:
 		Bool running;
 		Bool stopping;
+		Sync::ThreadHandle *hand;
 		Sync::Event evt;
 		ThreadFunc func;
 		void *userObj;

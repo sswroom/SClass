@@ -35,6 +35,8 @@ namespace SSWR
 			UI::GUITextBox *txtStartAddr;
 			UI::GUILabel *lblStartName;
 			UI::GUITextBox *txtStartName;
+			UI::GUILabel *lblThreadName;
+			UI::GUITextBox *txtThreadName;
 
 			UI::GUIListView *lvContext;
 

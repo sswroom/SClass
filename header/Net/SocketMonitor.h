@@ -3,6 +3,7 @@
 #include "Data/DateTime.h"
 #include "Sync/Event.h"
 #include "Net/SocketFactory.h"
+#include "Sync/ThreadUtil.h"
 
 namespace Net
 {
@@ -17,7 +18,7 @@ namespace Net
 			Bool threadRunning;
 			Sync::Event *evt;
 			Bool toStop;
-			UInt32 threadId;
+			Sync::ThreadHandle *threadHand;
 		} ThreadStat;
 
 	private:

@@ -372,9 +372,14 @@ void SSWR::AVIRead::AVIRProcInfoForm::UpdateProcThreads()
 			t = threadList.GetItem(i);
 			sptr = Text::StrUOSInt(sbuff, t->GetThreadId());
 			k = this->lvDetThread->AddItem(CSTRP(sbuff, sptr), (void*)(OSInt)t->GetThreadId(), 0);
+			sptr = t->GetName(sbuff);
+			if (sptr)
+			{
+				this->lvDetThread->SetSubItem(k, 1, CSTRP(sbuff, sptr));
+			}
 			addr = t->GetStartAddress();
 			sptr = Text::StrHexVal64(sbuff, addr);
-			this->lvDetThread->SetSubItem(k, 1, CSTRP(sbuff, sptr));
+			this->lvDetThread->SetSubItem(k, 2, CSTRP(sbuff, sptr));
 
 			if (this->currProcRes)
 			{
@@ -382,7 +387,7 @@ void SSWR::AVIRead::AVIRProcInfoForm::UpdateProcThreads()
 				if (sptr)
 				{
 					l = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), '\\');
-					this->lvDetThread->SetSubItem(k, 2, CSTRP(&sbuff[l + 1], sptr));
+					this->lvDetThread->SetSubItem(k, 3, CSTRP(&sbuff[l + 1], sptr));
 				}
 			}
 			DEL_CLASS(t);
@@ -646,12 +651,13 @@ SSWR::AVIRead::AVIRProcInfoForm::AVIRProcInfoForm(UI::GUIClientControl *parent, 
 	NEW_CLASS(this->btnDetThread, UI::GUIButton(ui, this->pnlDetThread, CSTR("Refresh")));
 	this->btnDetThread->SetRect(4, 4, 75, 23, false);
 	this->btnDetThread->HandleButtonClick(OnDetThreadRefClicked, this);
-	NEW_CLASS(this->lvDetThread, UI::GUIListView(ui, this->tpDetThread, UI::GUIListView::LVSTYLE_TABLE, 3));
+	NEW_CLASS(this->lvDetThread, UI::GUIListView(ui, this->tpDetThread, UI::GUIListView::LVSTYLE_TABLE, 4));
 	this->lvDetThread->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvDetThread->HandleDblClk(OnDetThreadDblClicked, this);
 	this->lvDetThread->SetFullRowSelect(true);
 	this->lvDetThread->SetShowGrid(true);
 	this->lvDetThread->AddColumn(CSTR("Id"), 60);
+	this->lvDetThread->AddColumn(CSTR("Name"), 100);
 	this->lvDetThread->AddColumn(CSTR("Start Address"), 120);
 	this->lvDetThread->AddColumn(CSTR("Start Address(Name)"), 600);
 

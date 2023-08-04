@@ -5,6 +5,8 @@
 namespace Sync
 {
 	typedef UInt32 (__stdcall *ThreadProc)(void *userObj);
+	struct ThreadHandle;
+
 	class ThreadUtil
 	{
 	private:
@@ -22,12 +24,16 @@ namespace Sync
 		} ThreadPriority;
 	public:
 		static void SleepDur(Data::Duration dur);
-		static UInt32 Create(ThreadProc tProc, void *userObj);
-		static UInt32 Create(ThreadProc tProc, void *userObj, UInt32 threadSize);
+		static void Create(ThreadProc tProc, void *userObj);
+		static void Create(ThreadProc tProc, void *userObj, UInt32 threadSize);
+		static ThreadHandle *CreateWithHandle(ThreadProc tProc, void *userObj);
+		static ThreadHandle *CreateWithHandle(ThreadProc tProc, void *userObj, UInt32 threadSize);
+		static void CloseHandle(ThreadHandle *handle);
+		static UInt32 GetThreadId(ThreadHandle *handle);
 		static UInt32 GetThreadId();
 		static UOSInt GetThreadCnt();
 		static Bool EnableInterrupt();
-		static Bool Interrupt(UInt32 threadId);
+		static Bool Interrupt(ThreadHandle *handle);
 		static void SetPriority(ThreadPriority priority);
 		static Bool SetName(Text::CString name);
 	};

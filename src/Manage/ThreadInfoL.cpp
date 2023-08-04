@@ -9,13 +9,13 @@
 #include <sys/thr.h>
 #endif
 
-Manage::ThreadContext *Manage::ThreadInfo::GetThreadContextHand(UOSInt threadId, UOSInt procId, void *hand)
+Manage::ThreadContext *Manage::ThreadInfo::GetThreadContextHand(UOSInt threadId, UOSInt procId, Sync::ThreadHandle *hand)
 {
 //	Manage::ThreadContext *outContext = 0;
 	return 0;
 }
 
-Manage::ThreadInfo::ThreadInfo(UOSInt procId, UOSInt threadId, void *hand)
+Manage::ThreadInfo::ThreadInfo(UOSInt procId, UOSInt threadId, Sync::ThreadHandle *hand)
 {
 	this->threadId = threadId;
 	this->procId = procId;
@@ -127,9 +127,9 @@ Manage::ThreadInfo *Manage::ThreadInfo::GetCurrThread()
 #if defined(__FreeBSD__)
 	long tid;
 	if (thr_self(&tid) != 0) tid = 0;
-	NEW_CLASS(info, Manage::ThreadInfo((UOSInt)getpid(), tid, (void*)-1));
+	NEW_CLASS(info, Manage::ThreadInfo((UOSInt)getpid(), tid, (Sync::ThreadHandle*)tid));
 #else
-	NEW_CLASS(info, Manage::ThreadInfo((UOSInt)getpid(), (UOSInt)pthread_self(), (void*)-1));
+	NEW_CLASS(info, Manage::ThreadInfo((UOSInt)getpid(), (UOSInt)pthread_self(), (Sync::ThreadHandle*)pthread_self()));
 #endif
 	return info;
 }

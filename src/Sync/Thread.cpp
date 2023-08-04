@@ -1,7 +1,6 @@
 #include "Stdafx.h"
 #include "Sync/SimpleThread.h"
 #include "Sync/Thread.h"
-#include "Sync/ThreadUtil.h"
 
 UInt32 __stdcall Sync::Thread::InnerThread(void *userObj)
 {
@@ -15,6 +14,7 @@ Sync::Thread::Thread(ThreadFunc func, void *userObj)
 {
 	this->running = false;
 	this->stopping = false;
+	this->hand = 0;
 	this->func = func;
 	this->userObj = userObj;
 }
@@ -22,15 +22,28 @@ Sync::Thread::Thread(ThreadFunc func, void *userObj)
 Sync::Thread::~Thread()
 {
 	this->Stop();
+	if (this->hand)
+	{
+		Sync::ThreadUtil::CloseHandle(this->hand);
+		this->hand = 0;
+	}
 }
 
 void Sync::Thread::Start()
 {
 	if (this->running)
 		return;
+	if (this->hand)
+	{
+		Sync::ThreadUtil::CloseHandle(this->hand);
+	}
 	this->stopping = false;
 	this->running = true;
-	Sync::ThreadUtil::Create(InnerThread, this);
+	this->hand = Sync::ThreadUtil::CreateWithHandle(InnerThread, this);
+	if (this->hand == 0)
+	{
+		this->running = false;
+	}
 }
 
 void Sync::Thread::BeginStop()

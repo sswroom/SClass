@@ -1,6 +1,7 @@
 #ifndef _SM_MANAGE_THREADINFO
 #define _SM_MANAGE_THREADINFO
 #include "Manage/ThreadContext.h"
+#include "Sync/ThreadUtil.h"
 
 namespace Manage
 {
@@ -9,11 +10,11 @@ namespace Manage
 	private:
 		UOSInt threadId;
 		UOSInt procId;
-		void *hand;
+		Sync::ThreadHandle *hand;
 
 	private:
-		static Manage::ThreadContext *GetThreadContextHand(UOSInt threadId, UOSInt procId, void *hand);
-		ThreadInfo(UOSInt procId, UOSInt threadId, void *hand);
+		static Manage::ThreadContext *GetThreadContextHand(UOSInt threadId, UOSInt procId, Sync::ThreadHandle *hand);
+		ThreadInfo(UOSInt procId, UOSInt threadId, Sync::ThreadHandle *hand);
 	public:
 		ThreadInfo(UOSInt procId, UOSInt threadId);
 		~ThreadInfo();

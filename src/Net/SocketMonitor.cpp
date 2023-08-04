@@ -64,7 +64,7 @@ Net::SocketMonitor::SocketMonitor(NotNullPtr<Net::SocketFactory> sockf, Socket *
 			this->threadStats[i].toStop = false;
 			this->threadStats[i].threadRunning = false;
 			this->threadStats[i].me = this;
-			this->threadStats[i].threadId = Sync::ThreadUtil::Create(DataThread, &this->threadStats[i]);
+			this->threadStats[i].threadHand = Sync::ThreadUtil::CreateWithHandle(DataThread, &this->threadStats[i]);
 		}
 		Bool running;
 		while (true)
@@ -96,7 +96,7 @@ Net::SocketMonitor::~SocketMonitor()
 		{
 			this->threadStats[i].toStop = true;
 			this->threadStats[i].evt->Set();
-			Sync::ThreadUtil::Interrupt(this->threadStats[i].threadId);
+			Sync::ThreadUtil::Interrupt(this->threadStats[i].threadHand);
 		}
 	}
 	if (this->soc)

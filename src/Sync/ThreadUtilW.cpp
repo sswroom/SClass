@@ -19,18 +19,26 @@ void Sync::ThreadUtil::SleepDur(Data::Duration dur)
 		Sync::SimpleThread::Sleepus(us);
 }
 
-UInt32 Sync::ThreadUtil::Create(Sync::ThreadProc tProc, void *userObj)
+Sync::ThreadHandle *Sync::ThreadUtil::Create(Sync::ThreadProc tProc, void *userObj)
 {
 	DWORD threadId = 0;
-	CloseHandle(CreateThread(0, 0, (LPTHREAD_START_ROUTINE)tProc, userObj, 0, &threadId));
-	return threadId;
+	return (ThreadHandle*)CreateThread(0, 0, (LPTHREAD_START_ROUTINE)tProc, userObj, 0, &threadId);
 }
 
-UInt32 Sync::ThreadUtil::Create(Sync::ThreadProc tProc, void *userObj, UInt32 threadSize)
+Sync::ThreadHandle *Sync::ThreadUtil::Create(Sync::ThreadProc tProc, void *userObj, UInt32 threadSize)
 {
 	DWORD threadId = 0;
-	CloseHandle(CreateThread(0, threadSize, (LPTHREAD_START_ROUTINE)tProc, userObj, STACK_SIZE_PARAM_IS_A_RESERVATION, &threadId));
-	return threadId;
+	return (ThreadHandle*)CreateThread(0, threadSize, (LPTHREAD_START_ROUTINE)tProc, userObj, STACK_SIZE_PARAM_IS_A_RESERVATION, &threadId);
+}
+
+void Sync::ThreadUtil::CloseHandle(ThreadHandle *handle)
+{
+	::CloseHandle((HANDLE)handle);
+}
+
+UInt32 Sync::ThreadUtil::GetThreadId(ThreadHandle *handle)
+{
+	return ::GetThreadId((HANDLE)handle);
 }
 
 UInt32 Sync::ThreadUtil::GetThreadId()
@@ -54,7 +62,7 @@ Bool Sync::ThreadUtil::EnableInterrupt()
 	return false;
 }
 
-Bool Sync::ThreadUtil::Interrupt(UInt32 threadId)
+Bool Sync::ThreadUtil::Interrupt(ThreadHandle *threadId)
 {
 	return false;
 }

@@ -155,13 +155,15 @@ Bool IO::Device::AXCAN::OpenStream(NotNullPtr<IO::Stream> stm, CANBitRate bitRat
 {
 	this->stm = stm.Ptr();
 	this->threadRunning = true;
-	if (Sync::ThreadUtil::Create(SerialThread, this) == 0)
+	Sync::ThreadHandle *hand = Sync::ThreadUtil::CreateWithHandle(SerialThread, this);
+	if (hand == 0)
 	{
 		this->threadRunning = false;
 		DEL_CLASS(this->stm);
 		this->stm = 0;
 		return false;
 	}
+	Sync::ThreadUtil::CloseHandle(hand);
 	if (this->SendSetCANBitRate(bitRate) && this->SendOpenCANPort(1, false, false) && this->SendSetReportMode(true, true, false))
 	{
 		return true;
