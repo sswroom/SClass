@@ -19,13 +19,23 @@ void Sync::ThreadUtil::SleepDur(Data::Duration dur)
 		Sync::SimpleThread::Sleepus(us);
 }
 
-Sync::ThreadHandle *Sync::ThreadUtil::Create(Sync::ThreadProc tProc, void *userObj)
+void Sync::ThreadUtil::Create(Sync::ThreadProc tProc, void *userObj)
+{
+	CloseHandle(CreateWithHandle(tProc, userObj));
+}
+
+void Sync::ThreadUtil::Create(Sync::ThreadProc tProc, void *userObj, UInt32 threadSize)
+{
+	CloseHandle(CreateWithHandle(tProc, userObj, threadSize));
+}
+
+Sync::ThreadHandle *Sync::ThreadUtil::CreateWithHandle(Sync::ThreadProc tProc, void *userObj)
 {
 	DWORD threadId = 0;
 	return (ThreadHandle*)CreateThread(0, 0, (LPTHREAD_START_ROUTINE)tProc, userObj, 0, &threadId);
 }
 
-Sync::ThreadHandle *Sync::ThreadUtil::Create(Sync::ThreadProc tProc, void *userObj, UInt32 threadSize)
+Sync::ThreadHandle *Sync::ThreadUtil::CreateWithHandle(Sync::ThreadProc tProc, void *userObj, UInt32 threadSize)
 {
 	DWORD threadId = 0;
 	return (ThreadHandle*)CreateThread(0, threadSize, (LPTHREAD_START_ROUTINE)tProc, userObj, STACK_SIZE_PARAM_IS_A_RESERVATION, &threadId);

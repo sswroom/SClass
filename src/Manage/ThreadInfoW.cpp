@@ -15,7 +15,7 @@
 #endif
 #include <windows.h>
 
-Manage::ThreadContext *Manage::ThreadInfo::GetThreadContextHand(UOSInt threadId, UOSInt procId, void *hand)
+Manage::ThreadContext *Manage::ThreadInfo::GetThreadContextHand(UOSInt threadId, UOSInt procId, Sync::ThreadHandle *hand)
 {
 	Manage::ThreadContext *outContext = 0;
 #ifdef _WIN32_WCE
@@ -137,7 +137,7 @@ Manage::ThreadContext *Manage::ThreadInfo::GetThreadContextHand(UOSInt threadId,
 #endif
 }
 
-Manage::ThreadInfo::ThreadInfo(UOSInt procId, UOSInt threadId, void *hand)
+Manage::ThreadInfo::ThreadInfo(UOSInt procId, UOSInt threadId, Sync::ThreadHandle *hand)
 {
 	this->threadId = threadId;
 	this->procId = procId;
@@ -151,7 +151,7 @@ Manage::ThreadInfo::ThreadInfo(UOSInt procId, UOSInt threadId)
 #ifdef _WIN32_WCE
 	this->hand = (void*)this->threadId;
 #else
-	this->hand = OpenThread(THREAD_QUERY_INFORMATION | THREAD_GET_CONTEXT | SYNCHRONIZE, false, (DWORD)threadId);
+	this->hand = (Sync::ThreadHandle*)OpenThread(THREAD_QUERY_INFORMATION | THREAD_GET_CONTEXT | SYNCHRONIZE, false, (DWORD)threadId);
 #endif
 }
 
@@ -278,6 +278,6 @@ Bool Manage::ThreadInfo::IsCurrThread()
 Manage::ThreadInfo *Manage::ThreadInfo::GetCurrThread()
 {
 	Manage::ThreadInfo *info;
-	NEW_CLASS(info, Manage::ThreadInfo(GetCurrentProcessId(), GetCurrentThreadId(), GetCurrentThread()));
+	NEW_CLASS(info, Manage::ThreadInfo(GetCurrentProcessId(), GetCurrentThreadId(), (Sync::ThreadHandle*)GetCurrentThread()));
 	return info;
 }

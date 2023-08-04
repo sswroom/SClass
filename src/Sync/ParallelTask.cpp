@@ -82,7 +82,7 @@ Sync::ParallelTask::~ParallelTask()
 	UOSInt i;
 	if (this->threadCnt > 1)
 	{
-#if defined(WIN32)
+#if 1 || defined(WIN32)
 		Bool exited;
 		i = this->threadCnt;
 		while (i-- > 0)
