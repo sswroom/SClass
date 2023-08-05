@@ -58,6 +58,7 @@ namespace Net
 		Sync::Event cmdEvt;
 		UOSInt cmdSeqNum;
 		DB::DBReader *cmdReader;
+		Bool cmdReaderBin;
 		CmdResultType cmdResultType;
 
 		static UInt32 __stdcall RecvThread(void *userObj);
