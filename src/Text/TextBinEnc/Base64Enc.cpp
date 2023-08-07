@@ -154,7 +154,8 @@ UOSInt Text::TextBinEnc::Base64Enc::EncodeBin(NotNullPtr<Text::StringBuilderUTF8
 			else if (lineLeft == 4)
 			{
 				sb->AppendC(sptr, 4);
-				sb->AppendLB(lbt);
+				if (tmp2 > 0 || tmp1 != 0)
+					sb->AppendLB(lbt);
 				lineLeft = charsPerLine;
 			}
 			else
