@@ -158,6 +158,7 @@ nodeps:
 @PingScan
 @PingTest
 @POP3Test
+@PushServer
 @SMTPTest
 @TCPClientTest
 @WebSocketTest

@@ -253,16 +253,15 @@ Bool Net::PushManager::Unsubscribe(Text::CString token)
 	}
 }
 
-Bool Net::PushManager::Send(Data::ArrayList<Text::String*> *userNames, Text::String *message)
+Bool Net::PushManager::Send(Data::ArrayListNN<Text::String> *userNames, NotNullPtr<Text::String> message)
 {
 	Sync::MutexUsage mutUsage(this->dataMut);
 	UserInfo *user;
 	Data::ArrayListNN<Text::String> tokenList;
-	UOSInt i = 0;
-	UOSInt j = userNames->GetCount();
-	while (i < j)
+	Data::ArrayIterator<NotNullPtr<Text::String>> it = userNames->Iterator();
+	while (it.HasNext())
 	{
-		user = this->userMap.Get(userNames->GetItem(i));
+		user = this->userMap.GetNN(it.Next());
 		if (user)
 		{
 			UOSInt k = user->devMap.GetCount();
@@ -271,7 +270,6 @@ Bool Net::PushManager::Send(Data::ArrayList<Text::String*> *userNames, Text::Str
 				tokenList.Add(user->devMap.GetItem(k)->token->Clone());
 			}
 		}
-		i++;
 	}
 	if (tokenList.GetCount() == 0)
 	{
@@ -283,15 +281,13 @@ Bool Net::PushManager::Send(Data::ArrayList<Text::String*> *userNames, Text::Str
 	{
 		Bool ret = false;
 		Text::StringBuilderUTF8 sbResult;
-		i = 0;
-		j = tokenList.GetCount();
-		while (i < j)
+		it = tokenList.Iterator();
+		while (it.HasNext())
 		{
 			sbResult.AppendC(UTF8STRC("Send Message result: "));
-			ret |= Net::GoogleFCM::SendMessage(this->sockf, this->ssl, this->fcmKey->ToCString(), tokenList.GetItem(i)->ToCString(), message->ToCString(), &sbResult);
+			ret |= Net::GoogleFCM::SendMessage(this->sockf, this->ssl, this->fcmKey->ToCString(), it.Next()->ToCString(), message->ToCString(), &sbResult);
 			if (this->log)
 				this->log->LogMessage(sbResult.ToCString(), IO::LogHandler::LogLevel::Action);
-			i++;
 		}
 		LIST_FREE_STRING(&tokenList);
 		return ret;
@@ -318,10 +314,10 @@ UOSInt Net::PushManager::GetUsers(Data::ArrayListNN<Text::String> *users, NotNul
 	return ret;
 }
 
-const Data::ReadingList<Net::PushManager::DeviceInfo2*> *Net::PushManager::GetDevices(NotNullPtr<Sync::MutexUsage> mutUsage)
+NotNullPtr<const Data::ReadingList<Net::PushManager::DeviceInfo2*>> Net::PushManager::GetDevices(NotNullPtr<Sync::MutexUsage> mutUsage)
 {
 	mutUsage->ReplaceMutex(this->dataMut);
-	return &this->devMap;
+	return this->devMap;
 }
 
 void Net::PushManager::LogMessage(Text::CString msg, IO::LogHandler::LogLevel logLev)

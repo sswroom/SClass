@@ -180,7 +180,7 @@ Bool __stdcall Net::PushServerHandler::ListDevicesHandler(Net::WebServer::IWebRe
 		UTF8Char sbuff[128];
 		UTF8Char *sptr;
 		Sync::MutexUsage mutUsage;
-		const Data::ReadingList<Net::PushManager::DeviceInfo2*> *devList = me->mgr->GetDevices(mutUsage);
+		NotNullPtr<const Data::ReadingList<Net::PushManager::DeviceInfo2*>> devList = me->mgr->GetDevices(mutUsage);
 		Net::PushManager::DeviceInfo2 *dev;
 		UOSInt i = 0;
 		UOSInt j = devList->GetCount();
@@ -221,28 +221,27 @@ void Net::PushServerHandler::ParseJSONSend(Text::JSONBase *sendJson)
 	if (usersBase && androidBase && usersBase->GetType() == Text::JSONType::Array)
 	{
 		Text::String *message = androidBase->GetValueString(CSTR("data.message"));
-		Data::ArrayList<Text::String*> userList;
+		Data::ArrayListNN<Text::String> userList;
 		Text::JSONArray *usersArr = (Text::JSONArray*)usersBase;
 		succ = true;
 		UOSInt i = 0;
 		UOSInt j = usersArr->GetArrayLength();
-		Text::String *s;
+		NotNullPtr<Text::String> s;
 		while (i < j)
 		{
-			s = usersArr->GetArrayString(i);
-			if (s == 0)
-			{
-				succ = false;
-			}
-			else
+			if (s.Set(usersArr->GetArrayString(i)))
 			{
 				userList.Add(s);
 			}
+			else
+			{
+				succ = false;
+			}
 			i++;
 		}
-		if (succ && message && userList.GetCount() > 0)
+		if (succ && s.Set(message) && userList.GetCount() > 0)
 		{
-			this->mgr->Send(&userList, message);
+			this->mgr->Send(&userList, s);
 		}
 	}
 }

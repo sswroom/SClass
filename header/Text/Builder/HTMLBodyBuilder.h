@@ -23,14 +23,21 @@ namespace Text
 			void BeginHeading3();
 			void BeginHeading4();
 			void BeginTable();
+			void BeginTableHeader();
+			void BeginTableData();
 			void BeginTableRow();
 			void BeginTableRowPixelHeight(UOSInt pxHeight);
 			void EndElement();
 			void AddTableHeader(Text::CString content);
 			void AddTableData(Text::CString content);
 			void AddTableData(Text::CString content, UOSInt colSpan, UOSInt rowSpan, HAlignment halign, VAlignment valign);
+			void AddInputText(Text::CString id, Text::CString name, Text::CString value);
+			void AddInputButton(Text::CString id, Text::CString label, Text::CString onClick);
 
 			void WriteHeading1(Text::CString content);
+			void WriteHeading2(Text::CString content);
+			void WriteHeading3(Text::CString content);
+			void WriteHeading4(Text::CString content);
 		};
 	}
 }

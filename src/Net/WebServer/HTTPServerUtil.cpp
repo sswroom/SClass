@@ -222,8 +222,8 @@ Bool Net::WebServer::HTTPServerUtil::SendContent(Net::WebServer::IWebRequest *re
 					compBuff[5] = 0;
 					compBuff[6] = 0;
 					compBuff[7] = 0;
-					compBuff[8] = 0;
-					compBuff[9] = 0xff;
+					compBuff[8] = 4;
+					compBuff[9] = 11; //0xff;
 					succ = (resp->Write(compBuff, 10) == 10);
 
 					Crypto::Hash::CRC32RIEEE crc;
@@ -270,6 +270,11 @@ Bool Net::WebServer::HTTPServerUtil::SendContent(Net::WebServer::IWebRequest *re
 		succ = (resp->Write(buff, (UOSInt)contLeng) == contLeng);
 	}
 	return succ;
+}
+
+Bool Net::WebServer::HTTPServerUtil::SendContent(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString mime, Text::CString cont)
+{
+	return SendContent(req, resp, mime, cont.leng, cont.v);
 }
 
 Bool Net::WebServer::HTTPServerUtil::ResponseFile(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString fileName, OSInt cacheAge)

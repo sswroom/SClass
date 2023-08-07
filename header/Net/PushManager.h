@@ -55,9 +55,9 @@ namespace Net
 
 		Bool Subscribe(Text::CString token, Text::CString userName, DeviceType devType, const Net::SocketUtil::AddressInfo *remoteAddr, Text::CString devModel);
 		Bool Unsubscribe(Text::CString token);
-		Bool Send(Data::ArrayList<Text::String*> *userNames, Text::String *message);
+		Bool Send(Data::ArrayListNN<Text::String> *userNames, NotNullPtr<Text::String> message);
 		UOSInt GetUsers(Data::ArrayListNN<Text::String> *users, NotNullPtr<Sync::MutexUsage> mutUsage);
-		const Data::ReadingList<DeviceInfo2*> *GetDevices(NotNullPtr<Sync::MutexUsage> mutUsage);
+		NotNullPtr<const Data::ReadingList<DeviceInfo2*>> GetDevices(NotNullPtr<Sync::MutexUsage> mutUsage);
 		void LogMessage(Text::CString msg, IO::LogHandler::LogLevel logLev);
 
 		static Text::CString DeviceTypeGetName(DeviceType devType);

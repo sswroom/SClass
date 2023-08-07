@@ -57,6 +57,18 @@ void Text::Builder::HTMLBodyBuilder::BeginTable()
 	this->elements.Add(CSTR("table"));
 }
 
+void Text::Builder::HTMLBodyBuilder::BeginTableHeader()
+{
+	this->sb->AppendC(UTF8STRC("<th>"));
+	this->elements.Add(CSTR("th"));
+}
+
+void Text::Builder::HTMLBodyBuilder::BeginTableData()
+{
+	this->sb->AppendC(UTF8STRC("<td>"));
+	this->elements.Add(CSTR("td"));
+}
+
 void Text::Builder::HTMLBodyBuilder::BeginTableRow()
 {
 	this->sb->AppendC(UTF8STRC("<tr>"));
@@ -151,9 +163,86 @@ void Text::Builder::HTMLBodyBuilder::AddTableData(Text::CString content, UOSInt 
 	this->sb->AppendC(UTF8STRC("</td>"));
 }
 
+void Text::Builder::HTMLBodyBuilder::AddInputText(Text::CString id, Text::CString name, Text::CString value)
+{
+	NotNullPtr<Text::String> s;
+	this->sb->AppendC(UTF8STRC("<input type=\"text\""));
+	if (id.leng > 0)
+	{
+		this->sb->AppendC(UTF8STRC(" id="));
+		s = Text::XML::ToNewAttrText(id.v);
+		this->sb->Append(s);
+		s->Release();
+	}
+	if (name.leng > 0)
+	{
+		this->sb->AppendC(UTF8STRC(" name="));
+		s = Text::XML::ToNewAttrText(name.v);
+		this->sb->Append(s);
+		s->Release();
+	}
+	if (value.leng > 0)
+	{
+		this->sb->AppendC(UTF8STRC(" value="));
+		s = Text::XML::ToNewAttrText(value.v);
+		this->sb->Append(s);
+		s->Release();
+	}
+	this->sb->AppendC(UTF8STRC("/>"));
+}
+
+void Text::Builder::HTMLBodyBuilder::AddInputButton(Text::CString id, Text::CString label, Text::CString onClick)
+{
+	NotNullPtr<Text::String> s;
+	this->sb->AppendC(UTF8STRC("<input type=\"button\""));
+	if (id.leng > 0)
+	{
+		this->sb->AppendC(UTF8STRC(" id="));
+		s = Text::XML::ToNewAttrText(id.v);
+		this->sb->Append(s);
+		s->Release();
+	}
+	if (label.leng > 0)
+	{
+		this->sb->AppendC(UTF8STRC(" value="));
+		s = Text::XML::ToNewAttrText(label.v);
+		this->sb->Append(s);
+		s->Release();
+	}
+	if (onClick.leng > 0)
+	{
+		this->sb->AppendC(UTF8STRC(" onclick="));
+		s = Text::XML::ToNewAttrText(onClick.v);
+		this->sb->Append(s);
+		s->Release();
+	}
+	this->sb->AppendC(UTF8STRC("/>"));
+}
+
 void Text::Builder::HTMLBodyBuilder::WriteHeading1(Text::CString content)
 {
 	this->BeginHeading1();
+	this->WriteStr(content);
+	this->EndElement();
+}
+
+void Text::Builder::HTMLBodyBuilder::WriteHeading2(Text::CString content)
+{
+	this->BeginHeading2();
+	this->WriteStr(content);
+	this->EndElement();
+}
+
+void Text::Builder::HTMLBodyBuilder::WriteHeading3(Text::CString content)
+{
+	this->BeginHeading3();
+	this->WriteStr(content);
+	this->EndElement();
+}
+
+void Text::Builder::HTMLBodyBuilder::WriteHeading4(Text::CString content)
+{
+	this->BeginHeading4();
 	this->WriteStr(content);
 	this->EndElement();
 }
