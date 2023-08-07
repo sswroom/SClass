@@ -17,7 +17,7 @@ void __stdcall SSWR::AVIRead::AVIRWOLForm::OnSendClicked(void *userObj)
 		return;
 	}
 	me->txtDeviceMac->GetText(sb);
-	if ((sb.GetLength() == 12 || sb.GetLength() == 17) && Text::StrHex2Bytes(sb.ToString(), macBuff) == 6)
+	if ((sb.GetLength() == 12 && Text::StrHex2BytesS(sb.ToString(), macBuff, 0) == 6) || (sb.GetLength() == 17 && Text::StrHex2BytesS(sb.ToString(), macBuff, sb.v[2]) == 6))
 	{
 		NEW_CLASS(cli, Net::WOLClient(me->core->GetSocketFactory(), ip));
 		if (cli->IsError())
