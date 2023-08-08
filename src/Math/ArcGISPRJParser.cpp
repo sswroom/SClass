@@ -37,7 +37,7 @@ Math::ArcGISPRJParser::~ArcGISPRJParser()
 
 }
 
-Math::CoordinateSystem *Math::ArcGISPRJParser::ParsePRJFile(Text::CString fileName)
+Math::CoordinateSystem *Math::ArcGISPRJParser::ParsePRJFile(Text::CStringNN fileName)
 {
 	UInt8 buff[512];
 	UOSInt buffSize;

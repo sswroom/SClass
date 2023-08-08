@@ -289,7 +289,7 @@ UTF8Char *IO::SerialPort::GetPortName(UTF8Char *buff, UOSInt portNum)
 	}
 }
 
-Bool SerialPort_WriteInt32(Text::CString path, Int32 num)
+Bool SerialPort_WriteInt32(Text::CStringNN path, Int32 num)
 {
 	UTF8Char sbuff[32];
 	Bool ret = false;

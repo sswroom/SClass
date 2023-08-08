@@ -501,7 +501,7 @@ IO::FileAnalyse::ZIPFileAnalyse::~ZIPFileAnalyse()
 	LIST_FREE_FUNC(&this->tags, MemFree);
 }
 
-Text::CString IO::FileAnalyse::ZIPFileAnalyse::GetFormatName()
+Text::CStringNN IO::FileAnalyse::ZIPFileAnalyse::GetFormatName()
 {
 	return CSTR("ZIP");
 }
@@ -753,7 +753,7 @@ Bool IO::FileAnalyse::ZIPFileAnalyse::IsParsing()
 	return this->threadRunning;
 }
 
-Bool IO::FileAnalyse::ZIPFileAnalyse::TrimPadding(Text::CString outputFile)
+Bool IO::FileAnalyse::ZIPFileAnalyse::TrimPadding(Text::CStringNN outputFile)
 {
 	return false;
 }

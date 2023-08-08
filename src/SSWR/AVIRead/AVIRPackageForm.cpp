@@ -27,7 +27,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRPackageForm::ProcessThread(void *userObj)
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	Text::String *fname = 0;
-	Text::CString fileName = CSTR_NULL;
+	Text::CStringNN fileName;
 	ActionType atype = AT_COPY;
 	UOSInt i;
 	UOSInt j;

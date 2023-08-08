@@ -471,7 +471,7 @@ IO::FileAnalyse::EBMLFileAnalyse::~EBMLFileAnalyse()
 	LIST_FREE_FUNC(&this->packs, MemFree);
 }
 
-Text::CString IO::FileAnalyse::EBMLFileAnalyse::GetFormatName()
+Text::CStringNN IO::FileAnalyse::EBMLFileAnalyse::GetFormatName()
 {
 	return CSTR("EMBL");
 }
@@ -944,7 +944,7 @@ Bool IO::FileAnalyse::EBMLFileAnalyse::IsParsing()
 	return this->threadRunning;
 }
 
-Bool IO::FileAnalyse::EBMLFileAnalyse::TrimPadding(Text::CString outputFile)
+Bool IO::FileAnalyse::EBMLFileAnalyse::TrimPadding(Text::CStringNN outputFile)
 {
 /*	UInt8 *readBuff;
 	OSInt readSize;

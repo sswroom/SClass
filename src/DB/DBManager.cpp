@@ -753,7 +753,7 @@ void DB::DBManager::GetConnName(Text::CString connStr, NotNullPtr<Text::StringBu
 	}
 }
 
-Bool DB::DBManager::StoreConn(Text::CString fileName, Data::ArrayList<DB::DBManagerCtrl*> *ctrlList)
+Bool DB::DBManager::StoreConn(Text::CStringNN fileName, Data::ArrayList<DB::DBManagerCtrl*> *ctrlList)
 {
 	IO::FileStream *fs;
 	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
@@ -803,7 +803,7 @@ Bool DB::DBManager::StoreConn(Text::CString fileName, Data::ArrayList<DB::DBMana
 	return true;
 }
 
-Bool DB::DBManager::RestoreConn(Text::CString fileName, Data::ArrayList<DB::DBManagerCtrl*> *ctrlList, IO::LogTool *log, NotNullPtr<Net::SocketFactory> sockf, Parser::ParserList *parsers)
+Bool DB::DBManager::RestoreConn(Text::CStringNN fileName, Data::ArrayList<DB::DBManagerCtrl*> *ctrlList, IO::LogTool *log, NotNullPtr<Net::SocketFactory> sockf, Parser::ParserList *parsers)
 {
 	IO::FileStream *fs;
 	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));

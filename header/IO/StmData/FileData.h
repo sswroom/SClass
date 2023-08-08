@@ -44,7 +44,7 @@ namespace IO
 		public:
 			FileData(const FileData *fd, UInt64 offset, UInt64 length);
 			FileData(NotNullPtr<Text::String> fileName, Bool deleteOnClose);
-			FileData(Text::CString fileName, Bool deleteOnClose);
+			FileData(Text::CStringNN fileName, Bool deleteOnClose);
 			virtual ~FileData();
 
 			virtual UOSInt GetRealData(UInt64 offset, UOSInt length, Data::ByteArray buffer);

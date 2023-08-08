@@ -316,7 +316,7 @@ Bool Map::ESRI::ESRIMapServer::TileLoadToStream(IO::Stream *stm, UOSInt level, I
 	return succ;
 }
 
-Bool Map::ESRI::ESRIMapServer::TileLoadToFile(Text::CString fileName, UOSInt level, Int32 tileX, Int32 tileY) const
+Bool Map::ESRI::ESRIMapServer::TileLoadToFile(Text::CStringNN fileName, UOSInt level, Int32 tileX, Int32 tileY) const
 {
 	UInt8 dataBuff[2048];
 	UOSInt readSize;

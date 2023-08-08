@@ -33,7 +33,7 @@ namespace Map
 		MapServerHandler(Parser::ParserList *parsers);
 		virtual ~MapServerHandler();
 
-		Bool AddAsset(Text::CString filePath);
+		Bool AddAsset(Text::CStringNN filePath);
 		void SetCesiumScenePath(Text::CString cesiumScenePath);
 		void SetCesiumMinError(Double minError);
 	};

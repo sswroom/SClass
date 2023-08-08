@@ -137,7 +137,7 @@ IO::StreamData *Media::PDFObject::GetData() const
 	return this->fd;
 }
 
-Bool Media::PDFObject::SaveFile(Text::CString fileName)
+Bool Media::PDFObject::SaveFile(Text::CStringNN fileName)
 {
 	if (this->fd)
 	{

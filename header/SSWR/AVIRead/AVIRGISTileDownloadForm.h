@@ -69,7 +69,7 @@ namespace SSWR
 			static void __stdcall OnStopClicked(void *userObj);
 
 			void SaveTilesDir(const UTF8Char *folderName);
-			void SaveTilesFile(Text::CString fileName);
+			void SaveTilesFile(Text::CStringNN fileName);
 			static UInt32 __stdcall ProcThread(void *userObj);
 		public:
 			AVIRGISTileDownloadForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, Map::TileMapLayer *lyr, IMapNavigator *navi);

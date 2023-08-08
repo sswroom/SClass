@@ -18,14 +18,14 @@ namespace IO
 		UOSInt hashSize;
 
 	public:
-		static FileCheck *CreateCheck(Text::CString path, Crypto::Hash::HashType chkType, IO::ProgressHandler *progress, Bool skipError);
+		static FileCheck *CreateCheck(Text::CStringNN path, Crypto::Hash::HashType chkType, IO::ProgressHandler *progress, Bool skipError);
 	private:
 		static void __stdcall CheckData(const UInt8 *buff, UOSInt buffSize, void *userData);
 		static Bool CheckDir(UTF8Char *fullPath, UTF8Char *hashPath, Crypto::Hash::IHash *hash, IO::FileCheck *fchk, IO::ProgressHandler *progress, Bool skipError); //true = error
 
 	public:
 		FileCheck(NotNullPtr<Text::String> name, Crypto::Hash::HashType chkType);
-		FileCheck(Text::CString name, Crypto::Hash::HashType chkType);
+		FileCheck(Text::CStringNN name, Crypto::Hash::HashType chkType);
 		virtual ~FileCheck();
 
 		UOSInt GetHashSize() const;

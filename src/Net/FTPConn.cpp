@@ -86,7 +86,7 @@ Int32 Net::FTPConn::WaitForResult()
 		return 0;
 }
 
-Net::FTPConn::FTPConn(Text::CString host, UInt16 port, NotNullPtr<Net::SocketFactory> sockf, UInt32 codePage, Data::Duration timeout) : cli(sockf, host, port, timeout)
+Net::FTPConn::FTPConn(Text::CStringNN host, UInt16 port, NotNullPtr<Net::SocketFactory> sockf, UInt32 codePage, Data::Duration timeout) : cli(sockf, host, port, timeout)
 {
 	this->codePage = codePage;
 	this->threadRunning = false;

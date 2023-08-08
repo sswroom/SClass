@@ -1093,7 +1093,7 @@ Media::StaticImage *Map::MapEnv::GetImage(UOSInt index, UInt32 *imgDurMS) const
 	return 0;
 }
 
-OSInt Map::MapEnv::AddImage(Text::CString fileName, Parser::ParserList *parserList)
+OSInt Map::MapEnv::AddImage(Text::CStringNN fileName, Parser::ParserList *parserList)
 {
 	Sync::MutexUsage mutUsage(this->mut);
 	ImageInfo *imgInfo;
@@ -1145,7 +1145,7 @@ OSInt Map::MapEnv::AddImage(Text::CString fileName, Parser::ParserList *parserLi
 	return -1;
 }
 
-UOSInt Map::MapEnv::AddImage(Text::CString fileName, Media::ImageList *imgList)
+UOSInt Map::MapEnv::AddImage(Text::CStringNN fileName, Media::ImageList *imgList)
 {
 	Sync::MutexUsage mutUsage(this->mut);
 	ImageInfo *imgInfo;

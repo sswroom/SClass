@@ -6,7 +6,7 @@
 #include <windows.h>
 #endif
 
-IO::MemFileBuffer::MemFileBuffer(Text::CString fileName)
+IO::MemFileBuffer::MemFileBuffer(Text::CStringNN fileName)
 {
 	IO::FileStream *file;
 

@@ -10,10 +10,10 @@ IO::ConsoleWriter *console;
 
 Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
-//	Text::CString sslCert = CSTR("C:\\Progs\\VCClass\\keystore\\localhost.crt");
-//	Text::CString sslKey = CSTR("C:\\Progs\\VCClass\\keystore\\localhost.key");
-	Text::CString sslCert = CSTR("/home/sswroom/Progs/VCClass/keystore/localhost.crt");
-	Text::CString sslKey = CSTR("/home/sswroom/Progs/VCClass/keystore/localhost.key");
+//	Text::CStringNN sslCert = CSTR("C:\\Progs\\VCClass\\keystore\\localhost.crt");
+//	Text::CStringNN sslKey = CSTR("C:\\Progs\\VCClass\\keystore\\localhost.key");
+	Text::CStringNN sslCert = CSTR("/home/sswroom/Progs/VCClass/keystore/localhost.crt");
+	Text::CStringNN sslKey = CSTR("/home/sswroom/Progs/VCClass/keystore/localhost.key");
 	Text::CString fwdUrl = CSTR("https://192.168.0.196:8448/");
 	UInt16 port = 12345;
 	UTF8Char sbuff[512];

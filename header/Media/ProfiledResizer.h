@@ -65,9 +65,9 @@ namespace Media
 		Bool AddProfile(Text::CString profileName, Text::CString suffix, UInt32 targetWidth, UInt32 targetHeight, OutputType outType, UInt32 outParam, Text::CString watermark, SizeType sizeType);
 		Bool RemoveProfile(UOSInt index);
 
-		void ProcessFile(Text::CString fileName);
-		Bool SaveProfile(Text::CString fileName);
-		Bool LoadProfile(Text::CString fileName);
+		void ProcessFile(Text::CStringNN fileName);
+		Bool SaveProfile(Text::CStringNN fileName);
+		Bool LoadProfile(Text::CStringNN fileName);
 	};
 }
 #endif

@@ -46,7 +46,7 @@ namespace SSWR
 			static void __stdcall OnTimerTick(void *userObj);
 			static void __stdcall OnPackListChanged(void *userObj);
 			static void __stdcall OnPackItemChanged(void *userObj);
-			Bool OpenFile(Text::CString fileName);
+			Bool OpenFile(Text::CStringNN fileName);
 		public:
 			AVIRFileAnalyseForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRFileAnalyseForm();

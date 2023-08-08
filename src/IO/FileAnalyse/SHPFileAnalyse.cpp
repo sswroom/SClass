@@ -121,7 +121,7 @@ IO::FileAnalyse::SHPFileAnalyse::~SHPFileAnalyse()
 	LIST_FREE_FUNC(&this->packs, MemFree);
 }
 
-Text::CString IO::FileAnalyse::SHPFileAnalyse::GetFormatName()
+Text::CStringNN IO::FileAnalyse::SHPFileAnalyse::GetFormatName()
 {
 	return CSTR("ESRI Shapefile");
 }
@@ -134,7 +134,6 @@ UOSInt IO::FileAnalyse::SHPFileAnalyse::GetFrameCount()
 Bool IO::FileAnalyse::SHPFileAnalyse::GetFrameName(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	IO::FileAnalyse::SHPFileAnalyse::PackInfo *pack = this->packs.GetItem(index);
-	Text::CString name;
 	if (pack == 0)
 		return false;
 	sb->AppendU64(pack->fileOfst);
@@ -260,7 +259,7 @@ Bool IO::FileAnalyse::SHPFileAnalyse::IsParsing()
 	return this->threadRunning;
 }
 
-Bool IO::FileAnalyse::SHPFileAnalyse::TrimPadding(Text::CString outputFile)
+Bool IO::FileAnalyse::SHPFileAnalyse::TrimPadding(Text::CStringNN outputFile)
 {
 	return false;
 }

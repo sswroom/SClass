@@ -29,7 +29,7 @@ namespace Net
 		void Init(Text::EncodingFactory *encFact, const UInt8 *buff, UOSInt buffSize);
 	public:
 		HKTrafficImage(Text::EncodingFactory *encFact, const UInt8 *buff, UOSInt buffSize);
-		HKTrafficImage(Text::EncodingFactory *encFact, Text::CString fileName);
+		HKTrafficImage(Text::EncodingFactory *encFact, Text::CStringNN fileName);
 		~HKTrafficImage();
 
 		UOSInt GetGroups(Data::ArrayList<GroupInfo*> *groups);

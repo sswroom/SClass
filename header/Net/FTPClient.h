@@ -20,7 +20,7 @@ namespace Net
 		Net::TCPClient *cli2;
 
 	public:
-		FTPClient(Text::CString url, NotNullPtr<Net::SocketFactory> sockf, Bool passiveMode, UInt32 codePage, Data::Duration timeout);
+		FTPClient(Text::CStringNN url, NotNullPtr<Net::SocketFactory> sockf, Bool passiveMode, UInt32 codePage, Data::Duration timeout);
 		~FTPClient();
 
 		virtual Bool IsDown() const;

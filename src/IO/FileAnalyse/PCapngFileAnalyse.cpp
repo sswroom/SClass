@@ -188,7 +188,7 @@ IO::FileAnalyse::PCapngFileAnalyse::~PCapngFileAnalyse()
 	LIST_FREE_FUNC(&this->blockList, MemFree);
 }
 
-Text::CString IO::FileAnalyse::PCapngFileAnalyse::GetFormatName()
+Text::CStringNN IO::FileAnalyse::PCapngFileAnalyse::GetFormatName()
 {
 	return CSTR("pcapng");
 }
@@ -1426,7 +1426,7 @@ Bool IO::FileAnalyse::PCapngFileAnalyse::IsParsing()
 	return this->threadRunning;
 }
 
-Bool IO::FileAnalyse::PCapngFileAnalyse::TrimPadding(Text::CString outputFile)
+Bool IO::FileAnalyse::PCapngFileAnalyse::TrimPadding(Text::CStringNN outputFile)
 {
 	return false;
 }

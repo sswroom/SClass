@@ -52,7 +52,7 @@ IO::ParserType Media::Playlist::GetParserType() const
 	return IO::ParserType::Playlist;
 }
 
-Bool Media::Playlist::AddFile(Text::CString fileName)
+Bool Media::Playlist::AddFile(Text::CStringNN fileName)
 {
 	Media::MediaFile *file;
 	{

@@ -98,7 +98,7 @@ void __stdcall SSWR::AVIRead::AVIRSSLCertKeyForm::OnFileDrop(void *userObj, NotN
 	}
 }
 
-void SSWR::AVIRead::AVIRSSLCertKeyForm::LoadFile(Text::CString fileName)
+void SSWR::AVIRead::AVIRSSLCertKeyForm::LoadFile(Text::CStringNN fileName)
 {
 	Net::ASN1Data *asn1;
 	{

@@ -2,7 +2,7 @@
 #include "IO/Path.h"
 #include "Net/ACMEClient.h"
 
-Net::ACMEClient::ACMEClient(NotNullPtr<Net::SocketFactory> sockf, Text::CString serverHost, UInt16 port, Text::CString keyFile)
+Net::ACMEClient::ACMEClient(NotNullPtr<Net::SocketFactory> sockf, Text::CStringNN serverHost, UInt16 port, Text::CStringNN keyFile)
 {
 	NEW_CLASS(this->acme, Net::ACMEConn(sockf, serverHost, port));
 	this->keyReady = false;

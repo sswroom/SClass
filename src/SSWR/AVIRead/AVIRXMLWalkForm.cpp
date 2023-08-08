@@ -27,7 +27,7 @@ void __stdcall SSWR::AVIRead::AVIRXMLWalkForm::OnFileDrop(void *userObj, NotNull
 	}
 }
 
-void SSWR::AVIRead::AVIRXMLWalkForm::LoadFile(Text::CString fileName)
+void SSWR::AVIRead::AVIRXMLWalkForm::LoadFile(Text::CStringNN fileName)
 {
 	Text::StringBuilderUTF8 sb;
 	Text::XMLReader::ParseMode mode;

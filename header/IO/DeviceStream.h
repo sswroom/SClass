@@ -10,7 +10,7 @@ namespace IO
 		void *hand;
 
 	public:
-		DeviceStream(Text::CString devPath);
+		DeviceStream(Text::CStringNN devPath);
 		virtual ~DeviceStream();
 
 		virtual Bool IsDown() const;

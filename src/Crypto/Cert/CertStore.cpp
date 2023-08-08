@@ -105,7 +105,7 @@ Bool Crypto::Cert::CertStore::LoadDir(Text::CString certsDir)
 	}
 }
 
-Bool Crypto::Cert::CertStore::LoadJavaCACerts(Text::CString jksPath)
+Bool Crypto::Cert::CertStore::LoadJavaCACerts(Text::CStringNN jksPath)
 {
 	Parser::FileParser::JKSParser parser;
 	IO::PackageFile *pkg = (IO::PackageFile*)parser.ParseFilePath(jksPath);

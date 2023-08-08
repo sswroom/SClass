@@ -12,7 +12,7 @@ namespace IO
 
 		static void __stdcall DataHdlr(const UInt8 *buff, UOSInt buffSize, void *userData);
 	public:
-		StreamRecorder(Text::CString destFile);
+		StreamRecorder(Text::CStringNN destFile);
 		~StreamRecorder();
 
 		Bool AppendStream(IO::Stream *stm);

@@ -10,7 +10,7 @@ namespace IO
 	{
 	public:
 		static IO::ConfigFile *Parse(NotNullPtr<IO::Stream> stm, UInt32 codePage);
-		static IO::ConfigFile *Parse(Text::CString fileName, UInt32 codePage);
+		static IO::ConfigFile *Parse(Text::CStringNN fileName, UInt32 codePage);
 		static IO::ConfigFile *ParseProgConfig(UInt32 codePage);
 
 	private:

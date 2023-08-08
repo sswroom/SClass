@@ -27,7 +27,7 @@ namespace Net
 		HTTPQueue(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl);
 		~HTTPQueue();
 
-		NotNullPtr<Net::HTTPClient> MakeRequest(Text::CString url, Net::WebUtil::RequestMethod method, Bool noShutdown);
+		NotNullPtr<Net::HTTPClient> MakeRequest(Text::CStringNN url, Net::WebUtil::RequestMethod method, Bool noShutdown);
 		void EndRequest(Net::HTTPClient *cli);
 		void Clear();
 	};

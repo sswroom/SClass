@@ -144,7 +144,7 @@ Bool IO::SMake::ExecuteCmd(Text::CString cmd)
 	return true;
 }
 
-Bool IO::SMake::LoadConfigFile(Text::CString cfgFile)
+Bool IO::SMake::LoadConfigFile(Text::CStringNN cfgFile)
 {
 	Bool ret = false;
 	if (this->messageWriter)
@@ -450,9 +450,9 @@ Bool IO::SMake::LoadConfigFile(Text::CString cfgFile)
 				while (true)
 				{
 					cstr = srch.NextFile(0);
-					if (cstr.v == 0)
+					if (cstr.IsNull())
 						break;
-					if (!LoadConfigFile(cstr))
+					if (!LoadConfigFile(cstr.OrEmpty()))
 					{
 						ret = false;
 						break;
@@ -479,9 +479,9 @@ Bool IO::SMake::LoadConfigFile(Text::CString cfgFile)
 }
 
 
-Bool IO::SMake::ParseSource(Data::FastStringMap<Int32> *objList, Data::FastStringMap<Int32> *libList, Data::FastStringMap<Int32> *procList, Data::ArrayListStringNN *headerList, Int64 *latestTime, Text::CString sourceFile, NotNullPtr<Text::StringBuilderUTF8> tmpSb)
+Bool IO::SMake::ParseSource(Data::FastStringMap<Int32> *objList, Data::FastStringMap<Int32> *libList, Data::FastStringMap<Int32> *procList, Data::ArrayListStringNN *headerList, Int64 *latestTime, Text::CStringNN sourceFile, NotNullPtr<Text::StringBuilderUTF8> tmpSb)
 {
-	Text::CString fileName;
+	Text::CStringNN fileName;
 	if (IO::Path::PATH_SEPERATOR == '\\')
 	{
 		tmpSb->ClearStr();
@@ -1242,7 +1242,7 @@ void IO::SMake::SetErrorMsg(Text::CString msg)
 	this->errorMsg = Text::String::New(msg).Ptr();
 }
 
-IO::SMake::SMake(Text::CString cfgFile, UOSInt threadCnt, IO::Writer *messageWriter) : IO::ParsedObject(cfgFile)
+IO::SMake::SMake(Text::CStringNN cfgFile, UOSInt threadCnt, IO::Writer *messageWriter) : IO::ParsedObject(cfgFile)
 {
 	NEW_CLASS(this->tasks, Sync::ParallelTask(threadCnt, false));
 	this->errorMsg = 0;

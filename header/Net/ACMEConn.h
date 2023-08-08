@@ -77,7 +77,7 @@ namespace Net
 		Challenge *ChallengeJSON(Text::JSONBase *json);
 		Challenge *ChallengeParse(const UInt8 *buff, UOSInt buffSize);
 	public:
-		ACMEConn(NotNullPtr<Net::SocketFactory> sockf, Text::CString serverHost, UInt16 port);
+		ACMEConn(NotNullPtr<Net::SocketFactory> sockf, Text::CStringNN serverHost, UInt16 port);
 		~ACMEConn();
 
 		Bool IsError();
@@ -101,8 +101,8 @@ namespace Net
 
 		Bool NewKey();
 		Bool SetKey(Crypto::Cert::X509Key *key);
-		Bool LoadKey(Text::CString fileName);
-		Bool SaveKey(Text::CString fileName);
+		Bool LoadKey(Text::CStringNN fileName);
+		Bool SaveKey(Text::CStringNN fileName);
 
 		static ACMEStatus ACMEStatusFromString(Text::String* status);
 		static Text::CString AuthorizeTypeGetName(AuthorizeType authType);

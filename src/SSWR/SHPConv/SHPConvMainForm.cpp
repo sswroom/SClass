@@ -243,7 +243,7 @@ void __stdcall SSWR::SHPConv::SHPConvMainForm::OnFile(void *userObj, NotNullPtr<
 	me->txtBlkScale->SetText(CSTRP(sbuff, sptr));
 }
 
-Int32 SSWR::SHPConv::SHPConvMainForm::GroupConvert(Text::CString sourceFile, Text::CString outFilePrefix, Data::ArrayList<const UTF8Char*> *dbCols, Int32 blkScale, NotNullPtr<Data::ArrayList<MapFilter*>> filters, IO::ProgressHandler *progress, UOSInt groupCol, Data::ArrayList<const UTF8Char*> *outNames, NotNullPtr<Data::ArrayList<UInt32>> dbCols2)
+Int32 SSWR::SHPConv::SHPConvMainForm::GroupConvert(Text::CStringNN sourceFile, Text::CString outFilePrefix, Data::ArrayList<const UTF8Char*> *dbCols, Int32 blkScale, NotNullPtr<Data::ArrayList<MapFilter*>> filters, IO::ProgressHandler *progress, UOSInt groupCol, Data::ArrayList<const UTF8Char*> *outNames, NotNullPtr<Data::ArrayList<UInt32>> dbCols2)
 {
 	UOSInt i;
 	OSInt si;
@@ -312,7 +312,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::GroupConvert(Text::CString sourceFile, Tex
 	return shpType;
 }
 
-Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CString sourceFile, Text::CString outFilePrefix, Data::ArrayList<const UTF8Char*> *dbCols, Int32 blkScale, NotNullPtr<Data::ArrayList<MapFilter*>> filters, IO::ProgressHandler *progress, NotNullPtr<Data::ArrayList<UInt32>> dbCols2)
+Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CStringNN sourceFile, Text::CString outFilePrefix, Data::ArrayList<const UTF8Char*> *dbCols, Int32 blkScale, NotNullPtr<Data::ArrayList<MapFilter*>> filters, IO::ProgressHandler *progress, NotNullPtr<Data::ArrayList<UInt32>> dbCols2)
 {
 	Text::StringBuilderUTF8 sb;
 	UInt8 buff[259];
@@ -1111,7 +1111,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CString sourceFile, Text:
 	return shpType;
 }
 
-Int32 SSWR::SHPConv::SHPConvMainForm::LoadShape(Text::CString fileName, Bool updateTxt)
+Int32 SSWR::SHPConv::SHPConvMainForm::LoadShape(Text::CStringNN fileName, Bool updateTxt)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;

@@ -12,7 +12,7 @@
 
 Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
-	Text::CString fileName = CSTR("E:\\myworks\\0_req\\20120925 Macau Layer\\GeoDatabase\\Basemap.mdb");
+	Text::CStringNN fileName = CSTR("E:\\myworks\\0_req\\20120925 Macau Layer\\GeoDatabase\\Basemap.mdb");
 	const UTF8Char *destPath = (const UTF8Char*)"E:\\myworks\\0_req\\20120925 Macau Layer\\GeoDatabase\\";
 	IO::LogTool *log;
 	IO::ConsoleWriter *console;

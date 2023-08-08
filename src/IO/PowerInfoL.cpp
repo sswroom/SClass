@@ -3,7 +3,7 @@
 #include "IO/Path.h"
 #include "IO/PowerInfo.h"
 
-Bool Power_ReadIntFile(Text::CString filePath, Int32 *val)
+Bool Power_ReadIntFile(Text::CStringNN filePath, Int32 *val)
 {
 	UInt8 buff[128];
 	UOSInt readSize;
@@ -36,7 +36,7 @@ Bool Power_ReadIntFile(Text::CString filePath, Int32 *val)
 	return succ;
 }
 
-Bool Power_ReadStrFile(Text::CString filePath, UTF8Char *val, UOSInt maxCharCnt)
+Bool Power_ReadStrFile(Text::CStringNN filePath, UTF8Char *val, UOSInt maxCharCnt)
 {
 	UOSInt readSize;
 	Bool succ = false;

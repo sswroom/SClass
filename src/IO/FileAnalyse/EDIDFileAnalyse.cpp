@@ -224,7 +224,7 @@ IO::FileAnalyse::EDIDFileAnalyse::~EDIDFileAnalyse()
 	SDEL_CLASS(this->fd);
 }
 
-Text::CString IO::FileAnalyse::EDIDFileAnalyse::GetFormatName()
+Text::CStringNN IO::FileAnalyse::EDIDFileAnalyse::GetFormatName()
 {
 	return CSTR("EDID");
 }
@@ -743,7 +743,7 @@ Bool IO::FileAnalyse::EDIDFileAnalyse::IsParsing()
 	return false;
 }
 
-Bool IO::FileAnalyse::EDIDFileAnalyse::TrimPadding(Text::CString outputFile)
+Bool IO::FileAnalyse::EDIDFileAnalyse::TrimPadding(Text::CStringNN outputFile)
 {
 	return false;
 }

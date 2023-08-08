@@ -260,7 +260,7 @@ void __stdcall SSWR::AVIRead::AVIRVideoInfoForm::OnDecodeClicked(void *userObj)
 	me->lblDecode->SetText(CSTR("End Decoding"));
 }
 
-Bool SSWR::AVIRead::AVIRVideoInfoForm::OpenFile(Text::CString fileName)
+Bool SSWR::AVIRead::AVIRVideoInfoForm::OpenFile(Text::CStringNN fileName)
 {
 	Media::MediaFile *mediaFile;
 	{

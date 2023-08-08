@@ -41,7 +41,7 @@ namespace Net
 	
 		static void __stdcall DataHandler(void *userData, const UInt8 *packetData, UOSInt packetSize);
 	public:
-		RAWCapture(NotNullPtr<Net::SocketFactory> sockf, UInt32 adapterIP, CaptureType type, FileFormat format, Text::CString fileName, Text::CString appName);
+		RAWCapture(NotNullPtr<Net::SocketFactory> sockf, UInt32 adapterIP, CaptureType type, FileFormat format, Text::CStringNN fileName, Text::CString appName);
 		~RAWCapture();
 
 		Bool IsError();

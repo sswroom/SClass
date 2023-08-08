@@ -20,7 +20,7 @@ struct IO::SystemInfo::ClassData
 	Text::String *platformSN;
 };
 
-Bool SystemInfo_ReadFile(Text::CString fileName, NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool SystemInfo_ReadFile(Text::CStringNN fileName, NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	Bool succ = false;
 	IO::FileStream fs(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);

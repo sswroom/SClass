@@ -91,7 +91,7 @@ IO::FileAnalyse::SMTCFileAnalyse::~SMTCFileAnalyse()
 	SDEL_CLASS(this->fd);
 }
 
-Text::CString IO::FileAnalyse::SMTCFileAnalyse::GetFormatName()
+Text::CStringNN IO::FileAnalyse::SMTCFileAnalyse::GetFormatName()
 {
 	return CSTR("SMTC");
 }
@@ -255,7 +255,7 @@ Bool IO::FileAnalyse::SMTCFileAnalyse::IsParsing()
 	return this->threadRunning;
 }
 
-Bool IO::FileAnalyse::SMTCFileAnalyse::TrimPadding(Text::CString outputFile)
+Bool IO::FileAnalyse::SMTCFileAnalyse::TrimPadding(Text::CStringNN outputFile)
 {
 	return false;
 }

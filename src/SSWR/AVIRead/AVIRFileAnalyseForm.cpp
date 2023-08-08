@@ -154,7 +154,7 @@ void __stdcall SSWR::AVIRead::AVIRFileAnalyseForm::OnPackItemChanged(void *userO
 	me->txtPack->SetText(sb.ToCString());
 }
 
-Bool SSWR::AVIRead::AVIRFileAnalyseForm::OpenFile(Text::CString fileName)
+Bool SSWR::AVIRead::AVIRFileAnalyseForm::OpenFile(Text::CStringNN fileName)
 {
 	IO::FileAnalyse::IFileAnalyse *file;
 	{

@@ -8,7 +8,7 @@
 #include "Text/XMLReader.h"
 #include <stdio.h>
 
-Text::JSONBase *Net::WebSite::WebSiteInstagramControl::ParsePageJSON(Text::CString url)
+Text::JSONBase *Net::WebSite::WebSiteInstagramControl::ParsePageJSON(Text::CStringNN url)
 {
 	Text::StringBuilderUTF8 sb;
 	Text::JSONBase *baseData = 0;

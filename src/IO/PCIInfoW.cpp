@@ -45,7 +45,7 @@ Text::CString IO::PCIInfo::GetDispName()
 	return this->clsData->dispName;
 }
 
-UInt16 PCIInfo_ReadI16(Text::CString fileName)
+UInt16 PCIInfo_ReadI16(Text::CStringNN fileName)
 {
 	UInt8 buff[33];
 	UOSInt readSize;

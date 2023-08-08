@@ -142,7 +142,7 @@ IO::FileAnalyse::QTFileAnalyse::~QTFileAnalyse()
 	LIST_FREE_FUNC(&this->packs, MemFree);
 }
 
-Text::CString IO::FileAnalyse::QTFileAnalyse::GetFormatName()
+Text::CStringNN IO::FileAnalyse::QTFileAnalyse::GetFormatName()
 {
 	return CSTR("Quicktime");
 }
@@ -1448,7 +1448,7 @@ Bool IO::FileAnalyse::QTFileAnalyse::IsParsing()
 	return this->threadRunning;
 }
 
-Bool IO::FileAnalyse::QTFileAnalyse::TrimPadding(Text::CString outputFile)
+Bool IO::FileAnalyse::QTFileAnalyse::TrimPadding(Text::CStringNN outputFile)
 {
 /*	UInt8 *readBuff;
 	OSInt readSize;

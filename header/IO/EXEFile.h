@@ -155,8 +155,8 @@ namespace IO
 		UOSInt GetResourceCount() const;
 		const ResourceInfo *GetResource(UOSInt index) const;
 	public:
-		static Bool GetFileTime(Text::CString fileName, Data::DateTime *fileTimeOut);
-		static Data::Timestamp GetFileTime(Text::CString fileName);
+		static Bool GetFileTime(Text::CStringNN fileName, Data::DateTime *fileTimeOut);
+		static Data::Timestamp GetFileTime(Text::CStringNN fileName);
 		static Text::CString GetResourceTypeName(ResourceType rt);
 		static void GetResourceDesc(const ResourceInfo *res, NotNullPtr<Text::StringBuilderUTF8> sb);
 	};

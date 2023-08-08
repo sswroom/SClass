@@ -197,7 +197,7 @@ void Net::MQTTConn::InitStream(NotNullPtr<IO::Stream> stm)
 	}
 }
 
-Net::MQTTConn::MQTTConn(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::CString host, UInt16 port, DisconnectHdlr discHdlr, void *discHdlrObj, Data::Duration timeout) : protoHdlr(this)
+Net::MQTTConn::MQTTConn(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::CStringNN host, UInt16 port, DisconnectHdlr discHdlr, void *discHdlrObj, Data::Duration timeout) : protoHdlr(this)
 {
 	this->recvRunning = false;
 	this->recvStarted = false;
@@ -503,7 +503,7 @@ UInt64 Net::MQTTConn::GetTotalDownload()
 	return this->totalDownload;
 }
 
-Bool Net::MQTTConn::PublishMessage(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::CString host, UInt16 port, Text::CString username, Text::CString password, Text::CString topic, Text::CString message, Data::Duration timeout)
+Bool Net::MQTTConn::PublishMessage(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::CStringNN host, UInt16 port, Text::CString username, Text::CString password, Text::CString topic, Text::CString message, Data::Duration timeout)
 {
 	Net::MQTTConn *cli;
 	UTF8Char sbuff[64];

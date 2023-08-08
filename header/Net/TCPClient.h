@@ -22,7 +22,7 @@ namespace Net
 		Sync::Event *writeEvent;
 
 	public:
-		TCPClient(NotNullPtr<Net::SocketFactory> sockf, Text::CString name, UInt16 port, Data::Duration timeout);
+		TCPClient(NotNullPtr<Net::SocketFactory> sockf, Text::CStringNN name, UInt16 port, Data::Duration timeout);
 		TCPClient(NotNullPtr<Net::SocketFactory> sockf, UInt32 ip, UInt16 port, Data::Duration timeout);
 		TCPClient(NotNullPtr<Net::SocketFactory> sockf, const Net::SocketUtil::AddressInfo *addr, UInt16 port, Data::Duration timeout);
 		TCPClient(NotNullPtr<Net::SocketFactory> sockf, Socket *s);

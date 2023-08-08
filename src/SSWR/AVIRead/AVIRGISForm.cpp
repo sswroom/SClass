@@ -550,7 +550,7 @@ Bool SSWR::AVIRead::AVIRGISForm::ParseObject(IO::ParsedObject *pobj)
 	return false;
 }
 
-void SSWR::AVIRead::AVIRGISForm::OpenURL(Text::CString url, Text::CString customName)
+void SSWR::AVIRead::AVIRGISForm::OpenURL(Text::CStringNN url, Text::CString customName)
 {
 	Net::WebBrowser *browser = this->core->GetWebBrowser();
 	NotNullPtr<IO::StreamData> fd;
@@ -628,7 +628,7 @@ void SSWR::AVIRead::AVIRGISForm::HKOPortal(Text::CString listFile, Text::CString
 	}
 }
 
-void SSWR::AVIRead::AVIRGISForm::OpenCSV(Text::CString url, UInt32 codePage, Text::CString name, Text::CString nameCol, Text::CString latCol, Text::CString lonCol)
+void SSWR::AVIRead::AVIRGISForm::OpenCSV(Text::CStringNN url, UInt32 codePage, Text::CString name, Text::CString nameCol, Text::CString latCol, Text::CString lonCol)
 {
 	NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->core->GetSocketFactory(), this->ssl, url, Net::WebUtil::RequestMethod::HTTP_GET, true);
 	if (cli->GetRespStatus() == Net::WebStatus::SC_OK)

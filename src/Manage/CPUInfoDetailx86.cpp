@@ -118,7 +118,7 @@ Bool Manage::CPUInfoDetail::GetCPUTemp(UOSInt index, Double *temp)
 Bool Manage::CPUInfoDetail::GetCPUTemp(UOSInt index, Double *temp)
 {
 //	InfoData *info = (InfoData*)this->clsData;
-	Text::CString path = {0, 0};
+	Text::CStringNN path;
 	switch (index)
 	{
 	case 0:
@@ -126,6 +126,9 @@ Bool Manage::CPUInfoDetail::GetCPUTemp(UOSInt index, Double *temp)
 		break;
 	case 1:
 		path = CSTR("/sys/class/hwmon/hwmon1/temp2_input");
+		break;
+	default:
+		path = CSTR("");
 		break;
 	}
 	if (path.leng == 0)

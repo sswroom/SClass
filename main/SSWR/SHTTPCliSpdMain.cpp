@@ -32,7 +32,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		Double respTimeTotal = -1;
 		UInt64 totalReadSize;
 
-		Text::CString url = {argv[1], Text::StrCharCnt(argv[1])};
+		Text::CStringNN url = {argv[1], Text::StrCharCnt(argv[1])};
 		if (url.StartsWith(UTF8STRC("http://")))
 		{
 			Text::StringBuilderUTF8 sb;

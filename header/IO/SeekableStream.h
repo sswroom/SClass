@@ -10,7 +10,7 @@ namespace IO
 		SeekableStream(NotNullPtr<Text::String> sourceName) : IO::Stream(sourceName)
 		{};
 
-		SeekableStream(Text::CString sourceName) : IO::Stream(sourceName)
+		SeekableStream(Text::CStringNN sourceName) : IO::Stream(sourceName)
 		{};
 
 		virtual ~SeekableStream(){};

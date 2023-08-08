@@ -35,7 +35,7 @@ IO::FileAnalyse::TSFileAnalyse::~TSFileAnalyse()
 	SDEL_CLASS(this->fd);
 }
 
-Text::CString IO::FileAnalyse::TSFileAnalyse::GetFormatName()
+Text::CStringNN IO::FileAnalyse::TSFileAnalyse::GetFormatName()
 {
 	return CSTR("Transport Stream (TS)");
 }
@@ -422,7 +422,7 @@ Bool IO::FileAnalyse::TSFileAnalyse::IsParsing()
 	return false;
 }
 
-Bool IO::FileAnalyse::TSFileAnalyse::TrimPadding(Text::CString outputFile)
+Bool IO::FileAnalyse::TSFileAnalyse::TrimPadding(Text::CStringNN outputFile)
 {
 	return false;
 }

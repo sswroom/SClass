@@ -97,7 +97,7 @@ IO::FileAnalyse::PCapFileAnalyse::~PCapFileAnalyse()
 	SDEL_CLASS(this->fd);
 }
 
-Text::CString IO::FileAnalyse::PCapFileAnalyse::GetFormatName()
+Text::CStringNN IO::FileAnalyse::PCapFileAnalyse::GetFormatName()
 {
 	return CSTR("pcap");
 }
@@ -363,7 +363,7 @@ Bool IO::FileAnalyse::PCapFileAnalyse::IsParsing()
 	return this->threadRunning;
 }
 
-Bool IO::FileAnalyse::PCapFileAnalyse::TrimPadding(Text::CString outputFile)
+Bool IO::FileAnalyse::PCapFileAnalyse::TrimPadding(Text::CStringNN outputFile)
 {
 	return false;
 }

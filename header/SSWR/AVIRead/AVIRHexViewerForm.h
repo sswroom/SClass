@@ -83,7 +83,7 @@ namespace SSWR
 			static void __stdcall OnExtractBeginClicked(void *userObj);
 			static void __stdcall OnExtractEndClicked(void *userObj);
 			static void __stdcall OnExtractClicked(void *userObj);
-			Bool LoadFile(Text::CString fileName, Bool dynamicSize);
+			Bool LoadFile(Text::CStringNN fileName, Bool dynamicSize);
 		public:
 			AVIRHexViewerForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRHexViewerForm();

@@ -165,7 +165,7 @@ IO::FileAnalyse::DWGFileAnalyse::~DWGFileAnalyse()
 	LIST_FREE_FUNC(&this->packs, MemFree);
 }
 
-Text::CString IO::FileAnalyse::DWGFileAnalyse::GetFormatName()
+Text::CStringNN IO::FileAnalyse::DWGFileAnalyse::GetFormatName()
 {
 	return CSTR("DWG");
 }
@@ -218,7 +218,6 @@ UOSInt IO::FileAnalyse::DWGFileAnalyse::GetFrameIndex(UInt64 ofst)
 IO::FileAnalyse::FrameDetail *IO::FileAnalyse::DWGFileAnalyse::GetFrameDetail(UOSInt index)
 {
 	IO::FileAnalyse::DWGFileAnalyse::PackInfo *pack;
-	Text::CString vName;
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
 	pack = this->packs.GetItem(index);
@@ -327,7 +326,7 @@ Bool IO::FileAnalyse::DWGFileAnalyse::IsParsing()
 	return this->threadRunning;
 }
 
-Bool IO::FileAnalyse::DWGFileAnalyse::TrimPadding(Text::CString outputFile)
+Bool IO::FileAnalyse::DWGFileAnalyse::TrimPadding(Text::CStringNN outputFile)
 {
 	return false;
 }

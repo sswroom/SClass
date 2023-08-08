@@ -96,9 +96,9 @@ namespace SSWR
 			void CloseCtrlForm(Bool closing);
 			void SetCtrlForm(UI::GUIForm *frm, UI::GUITreeView::TreeItem *item);
 			Bool ParseObject(IO::ParsedObject *pobj);
-			void OpenURL(Text::CString url, Text::CString customName);
+			void OpenURL(Text::CStringNN url, Text::CString customName);
 			void HKOPortal(Text::CString listFile, Text::CString filePath);
-			void OpenCSV(Text::CString url, UInt32 codePage, Text::CString name, Text::CString nameCol, Text::CString latCol, Text::CString lonCol);
+			void OpenCSV(Text::CStringNN url, UInt32 codePage, Text::CString name, Text::CString nameCol, Text::CString latCol, Text::CString lonCol);
 		public:
 			AVIRGISForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, Map::MapEnv *env, Map::MapView *view);
 			virtual ~AVIRGISForm();

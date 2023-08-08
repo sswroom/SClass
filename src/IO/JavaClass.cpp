@@ -8854,7 +8854,7 @@ UTF8Char *IO::JavaClass::DecompileMethod(UInt16 methodIndex, UTF8Char *nameBuff,
 	return this->GetConstName(nameBuff, ReadMUInt16(&constPtr[1]));
 }
 
-IO::JavaClass *IO::JavaClass::ParseFile(Text::CString fileName)
+IO::JavaClass *IO::JavaClass::ParseFile(Text::CStringNN fileName)
 {
 	IO::JavaClass *cls = 0;
 	UInt64 fileLen;

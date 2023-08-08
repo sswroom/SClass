@@ -10,9 +10,9 @@
 #include "Text/MyStringW.h"
 
 //#define FILEBUFFER(name) IO::ViewFileBuffer(name)
-#define FILEBUFFER(name, nameLen) IO::MemFileBuffer(Text::CString(name, nameLen))
+#define FILEBUFFER(name, nameLen) IO::MemFileBuffer(Text::CStringNN(name, nameLen))
 
-Map::MapLayerData::MapLayerData(Text::CString filePath)
+Map::MapLayerData::MapLayerData(Text::CStringNN filePath)
 {
 	UTF8Char fileName[256];
 	UTF8Char *str;

@@ -83,7 +83,7 @@ namespace Net
 		NotNullPtr<Text::String> apikey;
 
 		void BuildURL(NotNullPtr<Text::StringBuilderUTF8> sb, Text::CString path);
-		Text::JSONBase *GetJSON(Text::CString url);
+		Text::JSONBase *GetJSON(Text::CStringNN url);
 	public:
 		SolarEdgeAPI(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::CString apikey);
 		~SolarEdgeAPI();

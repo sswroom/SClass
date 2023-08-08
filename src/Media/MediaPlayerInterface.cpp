@@ -33,7 +33,7 @@ Media::MediaPlayerInterface::~MediaPlayerInterface()
 	SDEL_CLASS(this->player);
 }
 
-Bool Media::MediaPlayerInterface::OpenFile(Text::CString fileName, IO::ParserType targetType)
+Bool Media::MediaPlayerInterface::OpenFile(Text::CStringNN fileName, IO::ParserType targetType)
 {
 	IO::ParsedObject *pobj;
 

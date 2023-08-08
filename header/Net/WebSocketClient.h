@@ -41,7 +41,7 @@ namespace Net
 		const UInt8 *NextPacket(UInt8 *opcode, UOSInt *packetSize);
 		const UInt8 *NextPacket(NotNullPtr<Sync::MutexUsage> mutUsage, UOSInt *packetSize);
 	public:
-		WebSocketClient(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::CString host, UInt16 port, Text::CString path, Text::CString origin, Protocol protocol, Data::Duration timeout);
+		WebSocketClient(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::CStringNN host, UInt16 port, Text::CString path, Text::CString origin, Protocol protocol, Data::Duration timeout);
 		virtual ~WebSocketClient();
 
 		virtual UTF8Char *GetRemoteName(UTF8Char *buff) const;

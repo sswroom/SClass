@@ -178,7 +178,7 @@ namespace IO
 		EndType DecompileCondBranch(const UInt8 *codePtr, const UInt8 *codeEnd, CondType ct, DecompileEnv *env, UOSInt lev, NotNullPtr<Text::StringBuilderUTF8> sb) const;
 		UTF8Char *DecompileMethod(UInt16 methodIndex, UTF8Char *nameBuff, UInt16 *classIndex, UTF8Char *retType, DecompileEnv *env, NotNullPtr<Text::StringBuilderUTF8> sb) const;
 	public:
-		static JavaClass *ParseFile(Text::CString fileName);
+		static JavaClass *ParseFile(Text::CStringNN fileName);
 		static JavaClass *ParseBuff(NotNullPtr<Text::String> sourceName, Data::ByteArrayR buff);
 		static JavaClass *ParseBuff(Text::CString sourceName, Data::ByteArrayR buff);
 		static Text::CString EndTypeGetName(EndType et);

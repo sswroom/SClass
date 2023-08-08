@@ -21,7 +21,7 @@ namespace Crypto
 
 			NotNullPtr<CertStore> Clone() const;
 			Bool LoadDir(Text::CString certsDir);
-			Bool LoadJavaCACerts(Text::CString jksPath);
+			Bool LoadJavaCACerts(Text::CStringNN jksPath);
 			void AddCert(NotNullPtr<Crypto::Cert::X509Cert> cert);
 			void FromPackageFile(IO::PackageFile *pkg);
 			NotNullPtr<Text::String> GetStoreName() const;

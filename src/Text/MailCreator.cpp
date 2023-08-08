@@ -455,7 +455,7 @@ void Text::MailCreator::SetContentText(Text::String *content)
 	this->content = obj;
 }
 
-Bool Text::MailCreator::SetContentFile(Text::CString filePath)
+Bool Text::MailCreator::SetContentFile(Text::CStringNN filePath)
 {
 	Text::IMIMEObj *obj;
 	UOSInt buffSize;
@@ -482,7 +482,7 @@ Bool Text::MailCreator::SetContentFile(Text::CString filePath)
 	return false;
 }
 
-void Text::MailCreator::AddAttachment(Text::CString fileName)
+void Text::MailCreator::AddAttachment(Text::CStringNN fileName)
 {
 	Text::IMIMEObj *obj = Text::IMIMEObj::ParseFromFile(fileName);
 

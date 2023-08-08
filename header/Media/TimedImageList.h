@@ -31,7 +31,7 @@ namespace Media
 
 		void ScanFile();
 	public:
-		TimedImageList(Text::CString fileName);
+		TimedImageList(Text::CStringNN fileName);
 		~TimedImageList();
 
 		Bool IsError();

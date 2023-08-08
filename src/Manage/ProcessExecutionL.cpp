@@ -10,7 +10,7 @@ struct Manage::ProcessExecution::ClassData
 	int in[2];
 };
 
-UOSInt Manage::ProcessExecution::NewProcess(Text::CString cmdLine)
+UOSInt Manage::ProcessExecution::NewProcess(Text::CStringNN cmdLine)
 {
 	ClassData *clsData = MemAlloc(ClassData, 1);
 	clsData->in[0] = 0;
@@ -89,7 +89,7 @@ UOSInt Manage::ProcessExecution::NewProcess(Text::CString cmdLine)
 	return (UOSInt)pid;
 }
 
-Manage::ProcessExecution::ProcessExecution(Text::CString cmdLine) : Process(NewProcess(cmdLine), false), IO::Stream(cmdLine)
+Manage::ProcessExecution::ProcessExecution(Text::CStringNN cmdLine) : Process(NewProcess(cmdLine), false), IO::Stream(cmdLine)
 {
 }
 

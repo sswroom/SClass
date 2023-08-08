@@ -13,7 +13,7 @@ UI::DObj::DynamicOverlayDObj::DynamicOverlayDObj(NotNullPtr<Media::DrawEngine> d
 	}
 	else
 	{
-		this->bmp1 = this->deng->LoadImage(fileName1);
+		this->bmp1 = this->deng->LoadImage(fileName1.OrEmpty());
 	}
 
 	if (fileName2.leng == 0)
@@ -22,7 +22,7 @@ UI::DObj::DynamicOverlayDObj::DynamicOverlayDObj(NotNullPtr<Media::DrawEngine> d
 	}
 	else
 	{
-		this->bmp2 = this->deng->LoadImage(fileName2);
+		this->bmp2 = this->deng->LoadImage(fileName2.OrEmpty());
 	}
 	NEW_CLASS(this->rnd, Data::RandomOS());
 	this->alpha = this->rnd->NextDouble();

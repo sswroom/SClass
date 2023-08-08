@@ -214,12 +214,12 @@ Bool Media::ProfiledResizer::RemoveProfile(UOSInt index)
 	return true;
 }
 
-void Media::ProfiledResizer::ProcessFile(Text::CString fileName)
+void Media::ProfiledResizer::ProcessFile(Text::CStringNN fileName)
 {
 	this->loader->AddFileName(fileName);
 }
 
-Bool Media::ProfiledResizer::SaveProfile(Text::CString fileName)
+Bool Media::ProfiledResizer::SaveProfile(Text::CStringNN fileName)
 {
 	UTF8Char sbuff[1024];
 	UTF8Char sbuff2[256];
@@ -275,7 +275,7 @@ Bool Media::ProfiledResizer::SaveProfile(Text::CString fileName)
 	return true;
 }
 
-Bool Media::ProfiledResizer::LoadProfile(Text::CString fileName)
+Bool Media::ProfiledResizer::LoadProfile(Text::CStringNN fileName)
 {
 	UTF8Char sbuff[512];
 	UTF8Char sbuff2[32];

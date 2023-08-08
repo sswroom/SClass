@@ -35,7 +35,7 @@ namespace UI
 			virtual void LockUpdateSize(NotNullPtr<Sync::MutexUsage> mutUsage);
 			virtual void DrawFromSurface(Media::MonitorSurface *surface, Math::Coord2D<OSInt> destTL, Math::Size2D<UOSInt> buffSize, Bool clearScn);
 		public:
-			VideoDObjHandler(UI::GUIForm *ownerFrm, NotNullPtr<Media::DrawEngine> deng, Media::ColorManagerSess *colorSess, Media::MonitorSurfaceMgr *surfaceMgr, Parser::ParserList *parsers, Text::CString imageFileName, Math::Coord2D<OSInt> videoTL, Math::Size2D<UOSInt> videoSize, Text::CString videoFileName);
+			VideoDObjHandler(UI::GUIForm *ownerFrm, NotNullPtr<Media::DrawEngine> deng, Media::ColorManagerSess *colorSess, Media::MonitorSurfaceMgr *surfaceMgr, Parser::ParserList *parsers, Text::CStringNN imageFileName, Math::Coord2D<OSInt> videoTL, Math::Size2D<UOSInt> videoSize, Text::CStringNN videoFileName);
 			virtual ~VideoDObjHandler();
 
 			void UpdateVideoArea(Math::Coord2D<OSInt> videoTL, Math::Size2D<UOSInt> videoSize);

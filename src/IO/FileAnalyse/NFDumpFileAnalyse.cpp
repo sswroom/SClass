@@ -122,7 +122,7 @@ IO::FileAnalyse::NFDumpFileAnalyse::~NFDumpFileAnalyse()
 	LIST_CALL_FUNC(&this->extMap, MemFree);
 }
 
-Text::CString IO::FileAnalyse::NFDumpFileAnalyse::GetFormatName()
+Text::CStringNN IO::FileAnalyse::NFDumpFileAnalyse::GetFormatName()
 {
 	return CSTR("NFDump");
 }
@@ -1307,7 +1307,7 @@ Bool IO::FileAnalyse::NFDumpFileAnalyse::IsParsing()
 	return this->threadRunning;
 }
 
-Bool IO::FileAnalyse::NFDumpFileAnalyse::TrimPadding(Text::CString outputFile)
+Bool IO::FileAnalyse::NFDumpFileAnalyse::TrimPadding(Text::CStringNN outputFile)
 {
 	return false;
 }

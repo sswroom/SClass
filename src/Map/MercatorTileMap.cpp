@@ -52,7 +52,7 @@ Bool Map::MercatorTileMap::ImportTiles(IO::PackageFile *pkg)
 	}
 }
 
-Bool Map::MercatorTileMap::OptimizeToFile(Text::CString fileName)
+Bool Map::MercatorTileMap::OptimizeToFile(Text::CStringNN fileName)
 {
 	if (this->spkg)
 	{

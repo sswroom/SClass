@@ -426,7 +426,7 @@ UOSInt Net::HTTPMyClient::ReadRAWInternal(Data::ByteArray buff)
 
 Net::HTTPMyClient::HTTPMyClient(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::CString userAgent, Bool kaConn) : Net::HTTPClient(sockf, kaConn), reqMstm(1024)
 {
-	if (userAgent.v == 0)
+	if (userAgent.IsNull())
 	{
 		userAgent = CSTR("sswr/1.0");
 	}
@@ -540,7 +540,7 @@ Bool Net::HTTPMyClient::Recover()
 	return false;
 }
 
-Bool Net::HTTPMyClient::Connect(Text::CString url, Net::WebUtil::RequestMethod method, Double *timeDNS, Double *timeConn, Bool defHeaders)
+Bool Net::HTTPMyClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMethod method, Double *timeDNS, Double *timeConn, Bool defHeaders)
 {
 	UTF8Char urltmp[256];
 	UOSInt urltmpLen;

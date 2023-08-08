@@ -49,7 +49,7 @@ Media::DrawImage *Media::GTKDrawEngine::CreateImageScn(void *cr, Math::Coord2D<O
 	return dimg;
 }
 
-Media::DrawImage *Media::GTKDrawEngine::LoadImage(Text::CString fileName)
+Media::DrawImage *Media::GTKDrawEngine::LoadImage(Text::CStringNN fileName)
 {
 	Media::ImageList *imgList = 0;
 	{

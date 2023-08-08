@@ -36,7 +36,7 @@ void __stdcall SSWR::AVIRead::AVIRProfiledResizerForm::OnClickedDelProfile(void 
 		{
 			me->resizer->RemoveProfile(i);
 		}
-		me->resizer->SaveProfile(CSTR_NULL);
+		me->resizer->SaveProfile(CSTR(""));
 	}
 }
 
@@ -167,7 +167,7 @@ void __stdcall SSWR::AVIRead::AVIRProfiledResizerForm::OnClickedAddProfile(void 
 	{
 		me->lbProfile->AddItem(CSTRP(sbuff, sptr), 0);
 		me->txtProfileName->SetText(CSTR(""));
-		me->resizer->SaveProfile(CSTR_NULL);
+		me->resizer->SaveProfile(CSTR(""));
 	}
 	else
 	{
@@ -228,7 +228,7 @@ SSWR::AVIRead::AVIRProfiledResizerForm::AVIRProfiledResizerForm(UI::GUIClientCon
 	NEW_CLASS(resizer, Media::ProfiledResizer(this->core->GetParserList(), this->colorSess, this->core->GetDrawEngine()));
 //	resizer->AddProfile(L"Facebook", L"fb", 960, 960, Media::ProfiledResizer::OT_JPEGQUALITY, 100);
 //	resizer->AddProfile(L"HKWildlife", L"m", 800, 800, Media::ProfiledResizer::OT_JPEGSIZE, 27);
-	resizer->LoadProfile(CSTR_NULL);
+	resizer->LoadProfile(CSTR(""));
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));

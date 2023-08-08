@@ -174,7 +174,7 @@ Bool Net::HKOWeather::GetCurrentTempRH(NotNullPtr<Net::SocketFactory> sockf, Net
 
 Bool Net::HKOWeather::GetWeatherForecast(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Language lang, WeatherForecast *weatherForecast)
 {
-	Text::CString url;
+	Text::CStringNN url;
 	switch (lang)
 	{
 	case Language::TC:
@@ -272,7 +272,7 @@ void Net::HKOWeather::FreeWeatherForecast(WeatherForecast *weatherForecast)
 
 Bool Net::HKOWeather::GetLocalForecast(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Language lang, LocalForecast *localForecast)
 {
-	Text::CString url;
+	Text::CStringNN url;
 	switch (lang)
 	{
 	case Language::TC:

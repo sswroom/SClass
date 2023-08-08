@@ -8,7 +8,7 @@
 #include "Math/Geometry/Point.h"
 #include "Math/Geometry/PointZ.h"
 
-Map::MapDrawLayer *Map::GMLXML::ParseFeatureCollection(Text::XMLReader *reader, Text::CString fileName)
+Map::MapDrawLayer *Map::GMLXML::ParseFeatureCollection(NotNullPtr<Text::XMLReader> reader, Text::CString fileName)
 {
 	if (reader->GetNodeType() != Text::XMLNode::NodeType::Element || !reader->GetNodeText()->EndsWith(UTF8STRC(":FeatureCollection")))
 		return 0;
@@ -51,7 +51,7 @@ Map::MapDrawLayer *Map::GMLXML::ParseFeatureCollection(Text::XMLReader *reader, 
 							layerType = Map::DRAW_LAYER_POINT3D;
 							while (reader->NextElement())
 							{
-								if ((newVec = ParseGeometry(reader, &env)) != 0)
+								if ((newVec = ParseGeometry(reader, env)) != 0)
 								{
 									SDEL_CLASS(vec);
 									vec = newVec;
@@ -70,7 +70,7 @@ Map::MapDrawLayer *Map::GMLXML::ParseFeatureCollection(Text::XMLReader *reader, 
 							layerType = Map::DRAW_LAYER_POLYGON;
 							while (reader->NextElement())
 							{
-								if ((newVec = ParseGeometry(reader, &env)) != 0)
+								if ((newVec = ParseGeometry(reader, env)) != 0)
 								{
 									SDEL_CLASS(vec);
 									vec = newVec;
@@ -85,7 +85,7 @@ Map::MapDrawLayer *Map::GMLXML::ParseFeatureCollection(Text::XMLReader *reader, 
 							layerType = Map::DRAW_LAYER_POLYLINE3D;
 							while (reader->NextElement())
 							{
-								if ((newVec = ParseGeometry(reader, &env)) != 0)
+								if ((newVec = ParseGeometry(reader, env)) != 0)
 								{
 									SDEL_CLASS(vec);
 									vec = newVec;
@@ -100,7 +100,7 @@ Map::MapDrawLayer *Map::GMLXML::ParseFeatureCollection(Text::XMLReader *reader, 
 							layerType = Map::DRAW_LAYER_MIXED;
 							while (reader->NextElement())
 							{
-								if ((newVec = ParseGeometry(reader, &env)) != 0)
+								if ((newVec = ParseGeometry(reader, env)) != 0)
 								{
 									SDEL_CLASS(vec);
 									vec = newVec;
@@ -187,7 +187,7 @@ Map::MapDrawLayer *Map::GMLXML::ParseFeatureCollection(Text::XMLReader *reader, 
 	return lyr;
 }
 
-Math::Geometry::Vector2D *Map::GMLXML::ParseGeometry(Text::XMLReader *reader, ParseEnv *env)
+Math::Geometry::Vector2D *Map::GMLXML::ParseGeometry(NotNullPtr<Text::XMLReader> reader, NotNullPtr<ParseEnv> env)
 {
 	UTF8Char *sarr[4];
 	UTF8Char *sarr2[4];

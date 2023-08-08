@@ -325,7 +325,7 @@ typedef struct
 	return writeSize == fileSize;
 }*/
 
-Bool IO::FileUtil::CopyFile(Text::CString file1, Text::CString file2, FileExistAction fea, IO::ProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt)
+Bool IO::FileUtil::CopyFile(Text::CStringNN file1, Text::CStringNN file2, FileExistAction fea, IO::ProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt)
 {
 	IO::FileStream *fs1;
 	IO::FileStream *fs2;
@@ -644,7 +644,7 @@ Bool IO::FileUtil::CopyDir(Text::CString srcDir, Text::CString destDir, FileExis
 	}
 }*/
 
-Bool IO::FileUtil::MoveFile(Text::CString srcFile, Text::CString destFile, FileExistAction fea, IO::ProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt)
+Bool IO::FileUtil::MoveFile(Text::CStringNN srcFile, Text::CStringNN destFile, FileExistAction fea, IO::ProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt)
 {
 	Bool samePart = IsSamePartition(srcFile.v, destFile.v);
 	if (samePart)

@@ -5,7 +5,7 @@
 #include "IO/SDCardMgr.h"
 #include "Text/MyString.h"
 
-Bool SDCardMgr_ReadId(Text::CString fileName, UInt8 *buff)
+Bool SDCardMgr_ReadId(Text::CStringNN fileName, UInt8 *buff)
 {
 	UOSInt i;
 	Bool ret = false;

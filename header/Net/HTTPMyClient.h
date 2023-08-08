@@ -52,7 +52,7 @@ namespace Net
 		virtual void Close();
 		virtual Bool Recover();
 
-		virtual Bool Connect(Text::CString url, Net::WebUtil::RequestMethod method, Double *timeDNS, Double *timeConn, Bool defHeaders);
+		virtual Bool Connect(Text::CStringNN url, Net::WebUtil::RequestMethod method, Double *timeDNS, Double *timeConn, Bool defHeaders);
 		virtual void AddHeaderC(Text::CString name, Text::CString value);
 		virtual void EndRequest(Double *timeReq, Double *timeResp);
 		virtual void SetTimeout(Data::Duration timeout);

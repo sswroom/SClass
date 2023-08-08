@@ -14,7 +14,7 @@ IO::ParsedObject *IO::FileParser::ParseFile(NotNullPtr<IO::StreamData> fd, IO::P
 	return ParseFileHdr(fd, pkgFile, targetType, hdr);
 }
 
-IO::ParsedObject *IO::FileParser::ParseFilePath(Text::CString filePath)
+IO::ParsedObject *IO::FileParser::ParseFilePath(Text::CStringNN filePath)
 {
 	IO::PackageFile *pkg = 0;
 	UOSInt i = filePath.LastIndexOf(IO::Path::PATH_SEPERATOR);

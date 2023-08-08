@@ -15,7 +15,7 @@
 #include "Text/StringBuilderUTF8.h"
 #endif
 
-Net::TCPClient::TCPClient(NotNullPtr<Net::SocketFactory> sockf, Text::CString name, UInt16 port, Data::Duration timeout) : IO::Stream(name)
+Net::TCPClient::TCPClient(NotNullPtr<Net::SocketFactory> sockf, Text::CStringNN name, UInt16 port, Data::Duration timeout) : IO::Stream(name)
 {
 	this->currCnt = 0;
 	this->flags = 0;

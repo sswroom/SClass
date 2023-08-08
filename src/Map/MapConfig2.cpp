@@ -3803,7 +3803,7 @@ void Map::MapConfig2::DrawLabels(Media::DrawImage *img, MapLabels2 *labels, UInt
 		lastLbl->Release();
 }
 
-Map::MapConfig2::MapConfig2(Text::CString fileName, NotNullPtr<Media::DrawEngine> eng, Data::ArrayList<Map::MapDrawLayer*> *layerList, Parser::ParserList *parserList, Text::CString forceBase, IO::Writer *errWriter, Int32 maxScale, Int32 minScale)
+Map::MapConfig2::MapConfig2(Text::CStringNN fileName, NotNullPtr<Media::DrawEngine> eng, Data::ArrayList<Map::MapDrawLayer*> *layerList, Parser::ParserList *parserList, Text::CString forceBase, IO::Writer *errWriter, Int32 maxScale, Int32 minScale)
 {
 	UTF8Char lineBuff[1024];
 	UTF8Char layerName[512];

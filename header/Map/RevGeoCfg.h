@@ -24,7 +24,7 @@ namespace Map
 		Data::ArrayList<SearchLayer*> layers[REVGEO_MAXID];
 
 	public:
-		RevGeoCfg(Text::CString fileName, Map::MapSearchManager *mapSrchMgr);
+		RevGeoCfg(Text::CStringNN fileName, Map::MapSearchManager *mapSrchMgr);
 		~RevGeoCfg();
 
 		UTF8Char *GetStreetName(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl pos);

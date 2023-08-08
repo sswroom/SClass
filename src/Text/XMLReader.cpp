@@ -739,7 +739,7 @@ Bool Text::XMLReader::ReadNext()
 								while (i-- > 0)
 								{
 									attr = this->attrList.GetItem(i);
-									if (attr->name->EqualsICase(UTF8STRC("ENCODING")))
+									if (attr->name->EqualsICase(UTF8STRC("ENCODING")) && attr->value)
 									{
 										UInt32 cp = this->encFact->GetCodePage(attr->value->ToCString());
 										if (cp && !this->stmEnc)

@@ -374,7 +374,7 @@ void UI::GUIHexFileView::UpdateCaretPos()
 	this->SetCaretPos(Double2OSInt(currX), Double2OSInt(currY));
 }
 
-Bool UI::GUIHexFileView::LoadFile(Text::CString fileName, Bool dynamicSize)
+Bool UI::GUIHexFileView::LoadFile(Text::CStringNN fileName, Bool dynamicSize)
 {
 	if (dynamicSize)
 	{

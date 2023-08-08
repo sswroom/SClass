@@ -9,7 +9,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	IO::ConsoleWriter console;
 	Parser::FileParser::X509Parser parser;
-	Text::CString fileName = CSTR("/home/sswroom/Progs/Temp/keys/server.crt");
+	Text::CStringNN fileName = CSTR("/home/sswroom/Progs/Temp/keys/server.crt");
 
 	IO::StmData::FileData fd(fileName, false);
 	parser.ParseFile(fd, 0, IO::ParserType::ASN1Data);

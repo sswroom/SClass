@@ -1231,7 +1231,7 @@ Bool Net::OSSocketFactory::GetUDPInfo(UDPInfo *info)
 	return true;
 }
 
-UOSInt OSSocketFactory_LoadPortInfo(Data::ArrayList<Net::SocketFactory::PortInfo*> *portInfoList, Text::CString path, Net::SocketFactory::ProtocolType protoType)
+UOSInt OSSocketFactory_LoadPortInfo(Data::ArrayList<Net::SocketFactory::PortInfo*> *portInfoList, Text::CStringNN path, Net::SocketFactory::ProtocolType protoType)
 {
 	UOSInt ret = 0;
 	Net::SocketFactory::PortInfo *port;
@@ -1329,7 +1329,7 @@ UOSInt OSSocketFactory_LoadPortInfo(Data::ArrayList<Net::SocketFactory::PortInfo
 	return ret;
 }
 
-UOSInt OSSocketFactory_LoadPortInfov4(Data::ArrayList<Net::SocketFactory::PortInfo3*> *portInfoList, Text::CString path, Net::SocketFactory::ProtocolType protoType)
+UOSInt OSSocketFactory_LoadPortInfov4(Data::ArrayList<Net::SocketFactory::PortInfo3*> *portInfoList, Text::CStringNN path, Net::SocketFactory::ProtocolType protoType)
 {
 	UOSInt ret = 0;
 	Net::SocketFactory::PortInfo3 *port;
@@ -1428,7 +1428,7 @@ UOSInt OSSocketFactory_LoadPortInfov4(Data::ArrayList<Net::SocketFactory::PortIn
 	return ret;
 }
 
-UOSInt OSSocketFactory_LoadPortInfov6(Data::ArrayList<Net::SocketFactory::PortInfo3*> *portInfoList, Text::CString path, Net::SocketFactory::ProtocolType protoType)
+UOSInt OSSocketFactory_LoadPortInfov6(Data::ArrayList<Net::SocketFactory::PortInfo3*> *portInfoList, Text::CStringNN path, Net::SocketFactory::ProtocolType protoType)
 {
 	UOSInt ret = 0;
 	Net::SocketFactory::PortInfo3 *port;

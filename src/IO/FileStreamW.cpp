@@ -204,7 +204,7 @@ IO::FileStream::FileStream(NotNullPtr<Text::String> fileName, FileMode mode, Fil
 	Text::StrDelNew(wptr);
 }
 
-IO::FileStream::FileStream(Text::CString fileName, IO::FileMode mode, FileShare share, BufferType buffType) : IO::SeekableStream(fileName)
+IO::FileStream::FileStream(Text::CStringNN fileName, IO::FileMode mode, FileShare share, BufferType buffType) : IO::SeekableStream(fileName)
 {
 	handle = (void*)-1;
 	if (fileName.leng == 0)
@@ -617,7 +617,7 @@ IO::FileStream *IO::FileStream::OpenNamedPipe(const UTF8Char *server, const UTF8
 #endif
 }
 
-UOSInt IO::FileStream::LoadFile(Text::CString fileName, UInt8 *buff, UOSInt maxBuffSize)
+UOSInt IO::FileStream::LoadFile(Text::CStringNN fileName, UInt8 *buff, UOSInt maxBuffSize)
 {
 	IO::FileStream fs(fileName, FileMode::ReadOnly, FileShare::DenyNone, BufferType::Normal);
 	if (fs.IsError())

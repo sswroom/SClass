@@ -181,7 +181,7 @@ IO::SDCardInfo *SDCardMgr_ReadInfo(const WChar *path)
 	return sdcard;
 }
 
-Bool SDCardMgr_ReadId(Text::CString fileName, UInt8 *buff)
+Bool SDCardMgr_ReadId(Text::CStringNN fileName, UInt8 *buff)
 {
 	UOSInt i;
 	Bool ret = false;

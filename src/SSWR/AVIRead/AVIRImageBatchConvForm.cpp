@@ -203,7 +203,7 @@ void SSWR::AVIRead::AVIRImageBatchConvForm::StopThreads()
 	this->threadStates = 0;
 }
 
-void SSWR::AVIRead::AVIRImageBatchConvForm::MTConvertFile(ConvertSess *sess, Text::CString srcFile, Text::CString destFile)
+void SSWR::AVIRead::AVIRImageBatchConvForm::MTConvertFile(ConvertSess *sess, Text::CStringNN srcFile, Text::CStringNN destFile)
 {
 	if (this->threadStates == 0)
 	{
@@ -232,7 +232,7 @@ void SSWR::AVIRead::AVIRImageBatchConvForm::MTConvertFile(ConvertSess *sess, Tex
 	}
 }
 
-void SSWR::AVIRead::AVIRImageBatchConvForm::ConvertFile(ConvertSess *sess, Text::CString srcFile, Text::CString destFile)
+void SSWR::AVIRead::AVIRImageBatchConvForm::ConvertFile(ConvertSess *sess, Text::CStringNN srcFile, Text::CStringNN destFile)
 {
 	Media::ImageList *imgList;
 	void *param;

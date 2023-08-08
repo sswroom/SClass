@@ -8,7 +8,7 @@ namespace IO
 	class JavaProperties
 	{
 	public:
-		static IO::ConfigFile *Parse(Text::CString fileName);
+		static IO::ConfigFile *Parse(Text::CStringNN fileName);
 		static IO::ConfigFile *ParseAppProp();
 	private:
 		static IO::ConfigFile *ParseReader(Text::UTF8Reader *reader);

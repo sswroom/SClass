@@ -28,7 +28,7 @@ namespace Net
 
 	public:
 		RSSItem(Text::XMLNode *itemNode);
-		RSSItem(Text::XMLReader *itemNode);
+		RSSItem(NotNullPtr<Text::XMLReader> itemNode);
 		~RSSItem();
 
 		Bool IsError();
@@ -57,7 +57,7 @@ namespace Net
 		Data::ArrayList<RSSItem*> items;
 
 	public:
-		RSS(Text::CString url, Text::String *userAgent, NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Data::Duration timeout);
+		RSS(Text::CStringNN url, Text::String *userAgent, NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Data::Duration timeout);
 		virtual ~RSS();
 
 		Bool IsError();

@@ -13,7 +13,7 @@
 #include "Media/StaticImage.h"
 #include "Text/URLString.h"
 
-Map::MapDrawLayer *Map::KMLXML::ParseKMLRoot(Text::XMLReader *reader, Text::CString fileName, Parser::ParserList *parsers, Net::WebBrowser *browser, IO::PackageFile *pkgFile)
+Map::MapDrawLayer *Map::KMLXML::ParseKMLRoot(NotNullPtr<Text::XMLReader> reader, Text::CString fileName, Parser::ParserList *parsers, Net::WebBrowser *browser, IO::PackageFile *pkgFile)
 {
 	if (reader->GetNodeType() != Text::XMLNode::NodeType::Element)
 		return 0;
@@ -86,7 +86,7 @@ Map::MapDrawLayer *Map::KMLXML::ParseKMLRoot(Text::XMLReader *reader, Text::CStr
 }
 
 
-Map::MapDrawLayer *Map::KMLXML::ParseKMLContainer(Text::XMLReader *reader, Data::ICaseStringMap<KMLStyle*> *styles, Text::CString sourceName, Parser::ParserList *parsers, Net::WebBrowser *browser, IO::PackageFile *basePF)
+Map::MapDrawLayer *Map::KMLXML::ParseKMLContainer(NotNullPtr<Text::XMLReader> reader, Data::ICaseStringMap<KMLStyle*> *styles, Text::CString sourceName, Parser::ParserList *parsers, Net::WebBrowser *browser, IO::PackageFile *basePF)
 {
 	KMLStyle *style;
 	UOSInt i;
@@ -895,7 +895,7 @@ Map::MapDrawLayer *Map::KMLXML::ParseKMLContainer(Text::XMLReader *reader, Data:
 	}
 }
 
-void Map::KMLXML::ParseKMLPlacemarkTrack(Text::XMLReader *reader, Map::GPSTrack *lyr, Data::StringMap<KMLStyle*> *styles)
+void Map::KMLXML::ParseKMLPlacemarkTrack(NotNullPtr<Text::XMLReader> reader, Map::GPSTrack *lyr, Data::StringMap<KMLStyle*> *styles)
 {
 	Data::ArrayListNN<Text::String> timeList;
 	Data::ArrayListNN<Text::String> coordList;
@@ -1270,7 +1270,7 @@ void Map::KMLXML::ParseKMLPlacemarkTrack(Text::XMLReader *reader, Map::GPSTrack 
 	}
 }
 
-Map::MapDrawLayer *Map::KMLXML::ParseKMLPlacemarkLyr(Text::XMLReader *reader, Data::StringMap<KMLStyle*> *styles, Text::CString sourceName, Parser::ParserList *parsers, Net::WebBrowser *browser, IO::PackageFile *basePF)
+Map::MapDrawLayer *Map::KMLXML::ParseKMLPlacemarkLyr(NotNullPtr<Text::XMLReader> reader, Data::StringMap<KMLStyle*> *styles, Text::CString sourceName, Parser::ParserList *parsers, Net::WebBrowser *browser, IO::PackageFile *basePF)
 {
 	Text::StringBuilderUTF8 lyrNameSb;
 	Text::StringBuilderUTF8 sb;
@@ -1600,7 +1600,7 @@ Map::MapDrawLayer *Map::KMLXML::ParseKMLPlacemarkLyr(Text::XMLReader *reader, Da
 	return 0;
 }
 
-void Map::KMLXML::ParseCoordinates(Text::XMLReader *reader, Data::ArrayList<Double> *coordList, Data::ArrayList<Double> *altList)
+void Map::KMLXML::ParseCoordinates(NotNullPtr<Text::XMLReader> reader, Data::ArrayList<Double> *coordList, Data::ArrayList<Double> *altList)
 {
 	UOSInt i;
 	UTF8Char *sptr;

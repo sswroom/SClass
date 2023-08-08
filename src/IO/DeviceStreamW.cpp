@@ -7,7 +7,7 @@
 
 #include <windows.h>
 
-IO::DeviceStream::DeviceStream(Text::CString devPath) : IO::Stream(devPath)
+IO::DeviceStream::DeviceStream(Text::CStringNN devPath) : IO::Stream(devPath)
 {
 	SECURITY_ATTRIBUTES attr;
 	attr.nLength = sizeof(attr);

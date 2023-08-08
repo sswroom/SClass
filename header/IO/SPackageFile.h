@@ -39,17 +39,17 @@ namespace IO
 	public:
 		SPackageFile(NotNullPtr<IO::SeekableStream> stm, Bool toRelease);
 		SPackageFile(NotNullPtr<IO::SeekableStream> stm, Bool toRelease, Int32 customType, UOSInt customSize, Data::ByteArrayR customBuff);
-		SPackageFile(Text::CString fileName);
+		SPackageFile(Text::CStringNN fileName);
 		~SPackageFile();
 
 		Bool AddFile(NotNullPtr<IO::StreamData> fd, Text::CString fileName, const Data::Timestamp &modTime);
 		Bool AddFile(const UInt8 *fileBuff, UOSInt fileSize, Text::CString fileName, const Data::Timestamp &modTime);
 		Bool AddPackage(IO::PackageFile *pkg, UTF8Char pathSeperator);
 		Bool Commit();
-		Bool OptimizeFile(Text::CString newFile);
+		Bool OptimizeFile(Text::CStringNN newFile);
 		void PauseCommit(Bool pauseCommit);
 
-		IO::StreamData *CreateStreamData(Text::CString fileName);
+		IO::StreamData *CreateStreamData(Text::CStringNN fileName);
 	};
 }
 #endif

@@ -143,7 +143,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 	nodeText = reader.GetNodeText();
 	if (nodeText->Equals(UTF8STRC("kml")))
 	{
-		return Map::KMLXML::ParseKMLRoot(&reader, fileName, parsers, browser, pkgFile);
+		return Map::KMLXML::ParseKMLRoot(reader, fileName, parsers, browser, pkgFile);
 	}
 	else if (nodeText->Equals(UTF8STRC("gpx")))
 	{
@@ -195,7 +195,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 										if (reader.GetNodeText()->EqualsICase(UTF8STRC("TRKPT")))
 										{
 											Map::GPSTrack::GPSRecord3 rec;
-											if (ParseGPXPoint(&reader, &rec))
+											if (ParseGPXPoint(reader, &rec))
 											{
 												track->AddRecord(rec);
 											}
@@ -287,7 +287,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 	}
 	else if (nodeText->Equals(UTF8STRC("osm")))
 	{
-		Map::MapDrawLayer *lyr = Map::OSM::OSMParser::ParseLayerNode(&reader, fileName);
+		Map::MapDrawLayer *lyr = Map::OSM::OSMParser::ParseLayerNode(reader, fileName);
 		if (lyr == 0)
 		{
 			return 0;
@@ -527,14 +527,14 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 				{
 					if (reader.GetNodeText()->Equals(UTF8STRC("Configurations")))
 					{
-						if (!ParseVSConfFile(&reader, proj))
+						if (!ParseVSConfFile(reader, proj))
 						{
 							break;
 						}
 					}
 					else if (reader.GetNodeText()->Equals(UTF8STRC("Files")))
 					{
-						if (!ParseVSProjFile(&reader, proj))
+						if (!ParseVSProjFile(reader, proj))
 						{
 							break;
 						}
@@ -553,7 +553,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 	}
 	else if (nodeText->EndsWith(UTF8STRC(":FeatureCollection")))
 	{
-		return Map::GMLXML::ParseFeatureCollection(&reader, fileName);
+		return Map::GMLXML::ParseFeatureCollection(reader, fileName);
 	}
 	else if (nodeText->Equals(UTF8STRC("fme:xml-tables")))
 	{
@@ -1056,12 +1056,12 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 	}
 	else if (nodeText->Equals(UTF8STRC("jasperReport")))
 	{
-		return Media::Jasper::JasperXML::ParseJasperReport(&reader, fileName);
+		return Media::Jasper::JasperXML::ParseJasperReport(reader, fileName);
 	}
 	return 0;
 }
 
-Bool Parser::FileParser::XMLParser::ParseGPXPoint(Text::XMLReader *reader, Map::GPSTrack::GPSRecord3 *rec)
+Bool Parser::FileParser::XMLParser::ParseGPXPoint(NotNullPtr<Text::XMLReader> reader, Map::GPSTrack::GPSRecord3 *rec)
 {
 	UOSInt i;
 	UOSInt j;
@@ -1140,7 +1140,7 @@ Bool Parser::FileParser::XMLParser::ParseGPXPoint(Text::XMLReader *reader, Map::
 	return succ;
 }
 
-Bool Parser::FileParser::XMLParser::ParseVSProjFile(Text::XMLReader *reader, Text::VSProjContainer *container)
+Bool Parser::FileParser::XMLParser::ParseVSProjFile(NotNullPtr<Text::XMLReader> reader, Text::VSProjContainer *container)
 {
 	UOSInt i;
 	Bool found;
@@ -1220,7 +1220,7 @@ Bool Parser::FileParser::XMLParser::ParseVSProjFile(Text::XMLReader *reader, Tex
 	return false;
 }
 
-Bool Parser::FileParser::XMLParser::ParseVSConfFile(Text::XMLReader *reader, Text::CodeProject *proj)
+Bool Parser::FileParser::XMLParser::ParseVSConfFile(NotNullPtr<Text::XMLReader> reader, Text::CodeProject *proj)
 {
 	UOSInt i;
 	Text::CodeProjectCfg *cfg;

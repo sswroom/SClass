@@ -1672,7 +1672,7 @@ Bool Net::ASN1MIB::ApplyImports(NotNullPtr<Text::StringBuilderUTF8> errMessage)
 	return true;
 }
 
-Bool Net::ASN1MIB::LoadFileInner(Text::CString fileName, NotNullPtr<Text::StringBuilderUTF8> errMessage, Bool postApply)
+Bool Net::ASN1MIB::LoadFileInner(Text::CStringNN fileName, NotNullPtr<Text::StringBuilderUTF8> errMessage, Bool postApply)
 {
 	Text::StringBuilderUTF8 sbFileName;
 	ModuleInfo *module;
@@ -2066,7 +2066,7 @@ void Net::ASN1MIB::UnloadAll()
 	this->globalModule.objValues.Clear();
 }
 
-Bool Net::ASN1MIB::LoadFile(Text::CString fileName, NotNullPtr<Text::StringBuilderUTF8> errMessage)
+Bool Net::ASN1MIB::LoadFile(Text::CStringNN fileName, NotNullPtr<Text::StringBuilderUTF8> errMessage)
 {
 	return LoadFileInner(fileName, errMessage, true);
 }

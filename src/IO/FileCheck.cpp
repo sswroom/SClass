@@ -15,7 +15,7 @@ typedef struct
 	IO::ProgressHandler *progress;
 } ReadSess;
 
-IO::FileCheck *IO::FileCheck::CreateCheck(Text::CString path, Crypto::Hash::HashType chkType, IO::ProgressHandler *progress, Bool skipError)
+IO::FileCheck *IO::FileCheck::CreateCheck(Text::CStringNN path, Crypto::Hash::HashType chkType, IO::ProgressHandler *progress, Bool skipError)
 {
 	UTF8Char sbuff[1024];
 	UInt8 hashBuff[32];
@@ -247,7 +247,7 @@ IO::FileCheck::FileCheck(NotNullPtr<Text::String> name, Crypto::Hash::HashType c
 	this->chkValues = MemAlloc(UInt8, this->hashSize * this->chkCapacity);
 }
 
-IO::FileCheck::FileCheck(Text::CString name, Crypto::Hash::HashType chkType) : IO::ParsedObject(name)
+IO::FileCheck::FileCheck(Text::CStringNN name, Crypto::Hash::HashType chkType) : IO::ParsedObject(name)
 {
 	this->chkType = chkType;
 	Crypto::Hash::IHash *hash = Crypto::Hash::HashCreator::CreateHash(chkType);

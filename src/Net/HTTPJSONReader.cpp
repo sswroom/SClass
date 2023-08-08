@@ -7,7 +7,7 @@
 #include <stdio.h>
 #endif
 
-Text::JSONBase *Net::HTTPJSONReader::Read(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::CString url)
+Text::JSONBase *Net::HTTPJSONReader::Read(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::CStringNN url)
 {
 	NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(sockf, ssl, url, Net::WebUtil::RequestMethod::HTTP_GET, false);
 	if (cli->IsError())
@@ -20,7 +20,7 @@ Text::JSONBase *Net::HTTPJSONReader::Read(NotNullPtr<Net::SocketFactory> sockf, 
 	}
 	if (cli->GetRespStatus() == Net::WebStatus::SC_MOVED_PERMANENTLY)
 	{
-		Text::CString newUrl = cli->GetRespHeader(CSTR("Location"));
+		Text::CStringNN newUrl = cli->GetRespHeader(CSTR("Location")).OrEmpty();
 		if (newUrl.leng > 0)
 		{
 #if defined(VERBOSE)

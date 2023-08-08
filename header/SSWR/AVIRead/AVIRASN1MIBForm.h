@@ -42,7 +42,7 @@ namespace SSWR
 			static void __stdcall OnFileDroped(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles);
 			static void __stdcall OnBrowseClicked(void *userObj);
 			static void __stdcall OnObjectsSelChg(void *userObj);
-			void LoadFile(Text::CString fileName);
+			void LoadFile(Text::CStringNN fileName);
 		public:
 			AVIRASN1MIBForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRASN1MIBForm();

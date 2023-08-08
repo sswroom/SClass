@@ -222,7 +222,7 @@ IO::FileAnalyse::JPGFileAnalyse::~JPGFileAnalyse()
 	LIST_FREE_FUNC(&this->tags, MemFree);
 }
 
-Text::CString IO::FileAnalyse::JPGFileAnalyse::GetFormatName()
+Text::CStringNN IO::FileAnalyse::JPGFileAnalyse::GetFormatName()
 {
 	return CSTR("JPEG");
 }
@@ -818,7 +818,7 @@ Bool IO::FileAnalyse::JPGFileAnalyse::IsParsing()
 	return this->threadRunning;
 }
 
-Bool IO::FileAnalyse::JPGFileAnalyse::TrimPadding(Text::CString outputFile)
+Bool IO::FileAnalyse::JPGFileAnalyse::TrimPadding(Text::CStringNN outputFile)
 {
 	return false;
 }

@@ -95,7 +95,7 @@ namespace Net
 		TCPClientMgr(Int32 timeOutSeconds, TCPClientEvent evtHdlr, TCPClientData dataHdlr, void *userObj, UOSInt workerCnt, TCPClientTimeout toHdlr);
 		~TCPClientMgr();
 
-		void SetLogFile(Text::CString logFile);
+		void SetLogFile(Text::CStringNN logFile);
 		void AddClient(NotNullPtr<TCPClient> cli, void *cliData);
 		Bool SendClientData(UInt64 cliId, const UInt8 *buff, UOSInt buffSize);
 		Bool IsError();

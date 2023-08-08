@@ -48,7 +48,7 @@ Net::WiFiLogFile::~WiFiLogFile()
 	this->Clear();
 }
 
-void Net::WiFiLogFile::LoadFile(Text::CString fileName)
+void Net::WiFiLogFile::LoadFile(Text::CStringNN fileName)
 {
 	IO::FileStream fs(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 	if (!fs.IsError())
@@ -276,7 +276,7 @@ void Net::WiFiLogFile::LoadFile(Text::CString fileName)
 	}
 }
 
-Bool Net::WiFiLogFile::StoreFile(Text::CString fileName)
+Bool Net::WiFiLogFile::StoreFile(Text::CStringNN fileName)
 {
 	Text::StringBuilderUTF8 sb;
 	UOSInt i;

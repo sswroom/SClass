@@ -9,7 +9,7 @@
 
 Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
-	Text::CString fileName = CSTR("export.jpg");
+	Text::CStringNN fileName = CSTR("export.jpg");
 	Exporter::GUIJPGExporter exporter;
 	Media::StaticImage *simg;
 

@@ -106,7 +106,7 @@ Net::SSLEngine::~SSLEngine()
 	}
 }
 
-Bool Net::SSLEngine::ServerSetCerts(Text::CString certFile, Text::CString keyFile)
+Bool Net::SSLEngine::ServerSetCerts(Text::CStringNN certFile, Text::CStringNN keyFile)
 {
 	Parser::FileParser::X509Parser parser;
 	Crypto::Cert::X509File *certASN1 = 0;

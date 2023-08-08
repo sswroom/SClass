@@ -278,7 +278,7 @@ void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnWiresharkClicked(void *userO
 	}
 }
 
-void SSWR::AVIRead::AVIRMACManagerForm::LogFileLoad(Text::CString fileName)
+void SSWR::AVIRead::AVIRMACManagerForm::LogFileLoad(Text::CStringNN fileName)
 {
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;

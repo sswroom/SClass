@@ -16,7 +16,7 @@ namespace Map
 		MapSearchManager();
 		~MapSearchManager();
 
-		Map::MapSearchLayer *LoadLayer(Text::CString fileName);
+		Map::MapSearchLayer *LoadLayer(Text::CStringNN fileName);
 	};
 }
 #endif

@@ -48,7 +48,7 @@ namespace IO
 	{
 	public:
 		Stream(NotNullPtr<Text::String> sourceName);
-		Stream(const Text::CString &sourceName);
+		Stream(const Text::CStringNN &sourceName);
 		virtual ~Stream(){};
 		virtual Bool IsDown() const = 0;
 		virtual UOSInt Read(const Data::ByteArray &buff) = 0;

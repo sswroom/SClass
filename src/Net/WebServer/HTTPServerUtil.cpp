@@ -277,7 +277,7 @@ Bool Net::WebServer::HTTPServerUtil::SendContent(Net::WebServer::IWebRequest *re
 	return SendContent(req, resp, mime, cont.leng, cont.v);
 }
 
-Bool Net::WebServer::HTTPServerUtil::ResponseFile(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString fileName, OSInt cacheAge)
+Bool Net::WebServer::HTTPServerUtil::ResponseFile(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CStringNN fileName, OSInt cacheAge)
 {
 	Text::StringBuilderUTF8 sb2;
 	Data::DateTime t;

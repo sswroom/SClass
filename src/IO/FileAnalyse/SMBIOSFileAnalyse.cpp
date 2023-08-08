@@ -58,7 +58,7 @@ IO::FileAnalyse::SMBIOSFileAnalyse::~SMBIOSFileAnalyse()
 	LIST_FREE_FUNC(&this->packs, MemFree);
 }
 
-Text::CString IO::FileAnalyse::SMBIOSFileAnalyse::GetFormatName()
+Text::CStringNN IO::FileAnalyse::SMBIOSFileAnalyse::GetFormatName()
 {
 	return CSTR("SMBIOS");
 }
@@ -1246,7 +1246,7 @@ Bool IO::FileAnalyse::SMBIOSFileAnalyse::IsParsing()
 	return false;
 }
 
-Bool IO::FileAnalyse::SMBIOSFileAnalyse::TrimPadding(Text::CString outputFile)
+Bool IO::FileAnalyse::SMBIOSFileAnalyse::TrimPadding(Text::CStringNN outputFile)
 {
 	return false;
 }

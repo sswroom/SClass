@@ -118,7 +118,7 @@ Net::HKTrafficImage::HKTrafficImage(Text::EncodingFactory *encFact, const UInt8 
 	this->Init(encFact, buff, buffSize);
 }
 
-Net::HKTrafficImage::HKTrafficImage(Text::EncodingFactory *encFact, Text::CString fileName)
+Net::HKTrafficImage::HKTrafficImage(Text::EncodingFactory *encFact, Text::CStringNN fileName)
 {
 	UInt64 fileSize;
 	IO::FileStream fs(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);

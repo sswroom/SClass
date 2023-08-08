@@ -104,7 +104,7 @@ UOSInt Media::AudioFilter::AudioCaptureFilter::ReadBlock(Data::ByteArray blk)
 	return readSize;
 }
 
-Bool Media::AudioFilter::AudioCaptureFilter::StartCapture(Text::CString fileName)
+Bool Media::AudioFilter::AudioCaptureFilter::StartCapture(Text::CStringNN fileName)
 {
 	if (this->sourceAudio == 0)
 		return false;

@@ -8,7 +8,7 @@ IO::StreamLogger::StreamLogger(IO::Stream *srcStream, Bool needRelease, Text::CS
 	this->needRelease = needRelease;
 	if (readLogPath.leng > 0)
 	{
-		NEW_CLASS(this->readLog, IO::FileStream(readLogPath, IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+		NEW_CLASS(this->readLog, IO::FileStream(readLogPath.OrEmpty(), IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	}
 	else
 	{
@@ -16,7 +16,7 @@ IO::StreamLogger::StreamLogger(IO::Stream *srcStream, Bool needRelease, Text::CS
 	}
 	if (writeLogPath.leng > 0)
 	{
-		NEW_CLASS(this->writeLog, IO::FileStream(writeLogPath, IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+		NEW_CLASS(this->writeLog, IO::FileStream(writeLogPath.OrEmpty(), IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	}
 	else
 	{

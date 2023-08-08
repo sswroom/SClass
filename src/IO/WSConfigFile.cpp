@@ -5,7 +5,7 @@
 #include "Text/StringBuilderUTF8.h"
 #include "Text/UTF8Reader.h"
 
-IO::ConfigFile *IO::WSConfigFile::Parse(Text::CString fileName)
+IO::ConfigFile *IO::WSConfigFile::Parse(Text::CStringNN fileName)
 {
 	IO::ConfigFile *cfg;
 	IO::FileStream fs(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);

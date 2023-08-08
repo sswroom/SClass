@@ -9,7 +9,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	Exporter::ExcelXMLExporter exporterXML;
 	Exporter::XLSXExporter exporterXLSX;
-	Text::CString fileName;
+	Text::CStringNN fileName;
 	Text::SpreadSheet::Workbook workbook;
 
 	fileName = CSTR("Workbook.xml");

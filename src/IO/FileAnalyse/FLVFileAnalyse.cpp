@@ -195,7 +195,7 @@ IO::FileAnalyse::FLVFileAnalyse::~FLVFileAnalyse()
 	LIST_FREE_FUNC(&this->tags, MemFree);
 }
 
-Text::CString IO::FileAnalyse::FLVFileAnalyse::GetFormatName()
+Text::CStringNN IO::FileAnalyse::FLVFileAnalyse::GetFormatName()
 {
 	return CSTR("FLV");
 }
@@ -450,7 +450,7 @@ Bool IO::FileAnalyse::FLVFileAnalyse::IsParsing()
 	return this->threadRunning;
 }
 
-Bool IO::FileAnalyse::FLVFileAnalyse::TrimPadding(Text::CString outputFile)
+Bool IO::FileAnalyse::FLVFileAnalyse::TrimPadding(Text::CStringNN outputFile)
 {
 	return false;
 }

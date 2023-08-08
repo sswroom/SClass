@@ -154,7 +154,7 @@ Bool Exporter::PEMExporter::ExportStream(NotNullPtr<IO::SeekableStream> stm, Cry
 	return false;
 }
 
-Bool Exporter::PEMExporter::ExportFile(Text::CString fileName, Crypto::Cert::X509File *x509)
+Bool Exporter::PEMExporter::ExportFile(Text::CStringNN fileName, Crypto::Cert::X509File *x509)
 {
 	IO::FileStream fs(fileName, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 	if (fs.IsError())

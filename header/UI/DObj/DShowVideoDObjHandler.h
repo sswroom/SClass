@@ -30,7 +30,7 @@ namespace UI
 			virtual void DrawBkg(Media::DrawImage *dimg);
 			void DrawVideo(Media::DrawImage *dimg);
 		public:
-			DShowVideoDObjHandler(UI::GUIForm *ownerFrm, NotNullPtr<Media::DrawEngine> deng, Text::CString imageFileName, Math::Coord2D<OSInt> videoPos, Math::Size2D<UOSInt> videoSize, Text::CString videoFileName);
+			DShowVideoDObjHandler(UI::GUIForm *ownerFrm, NotNullPtr<Media::DrawEngine> deng, Text::CStringNN imageFileName, Math::Coord2D<OSInt> videoPos, Math::Size2D<UOSInt> videoSize, Text::CString videoFileName);
 			virtual ~DShowVideoDObjHandler();
 		};
 	}

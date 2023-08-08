@@ -187,7 +187,7 @@ IO::FileAnalyse::RAR5FileAnalyse::~RAR5FileAnalyse()
 	LIST_FREE_FUNC(&this->packs, MemFree);
 }
 
-Text::CString IO::FileAnalyse::RAR5FileAnalyse::GetFormatName()
+Text::CStringNN IO::FileAnalyse::RAR5FileAnalyse::GetFormatName()
 {
 	return CSTR("RAR5");
 }
@@ -874,7 +874,7 @@ Bool IO::FileAnalyse::RAR5FileAnalyse::IsParsing()
 	return this->threadRunning;
 }
 
-Bool IO::FileAnalyse::RAR5FileAnalyse::TrimPadding(Text::CString outputFile)
+Bool IO::FileAnalyse::RAR5FileAnalyse::TrimPadding(Text::CStringNN outputFile)
 {
 /*	UInt8 *readBuff;
 	OSInt readSize;

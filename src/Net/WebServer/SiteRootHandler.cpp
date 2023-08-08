@@ -36,7 +36,7 @@ Bool Net::WebServer::SiteRootHandler::ProcessRequest(Net::WebServer::IWebRequest
 	return this->DoRequest(req, resp, subReq);
 }
 
-Net::WebServer::SiteRootHandler::SiteRootHandler(Text::CString faviconPath)
+Net::WebServer::SiteRootHandler::SiteRootHandler(Text::CStringNN faviconPath)
 {
 	this->faviconBuff = 0;
 	this->faviconSize = 0;

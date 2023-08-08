@@ -248,7 +248,7 @@ const IO::EXEFile::ResourceInfo *IO::EXEFile::GetResource(UOSInt index) const
 	return this->resList.GetItem(index);
 }
 
-Bool IO::EXEFile::GetFileTime(Text::CString fileName, Data::DateTime *fileTimeOut)
+Bool IO::EXEFile::GetFileTime(Text::CStringNN fileName, Data::DateTime *fileTimeOut)
 {
 	UInt8 buff[64];
 	IO::FileStream fs(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
@@ -282,7 +282,7 @@ Bool IO::EXEFile::GetFileTime(Text::CString fileName, Data::DateTime *fileTimeOu
 	return true;
 }
 
-Data::Timestamp IO::EXEFile::GetFileTime(Text::CString fileName)
+Data::Timestamp IO::EXEFile::GetFileTime(Text::CStringNN fileName)
 {
 	UInt8 buff[64];
 	IO::FileStream fs(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);

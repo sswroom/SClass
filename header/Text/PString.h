@@ -15,9 +15,7 @@ namespace Text
 		UOSInt Replace(UTF8Char fromChar, UTF8Char toChar);
 		void RemoveWS();
 
-		PString()
-		{
-		}
+		PString() = default;
 
 		PString(UTF8Char *v, UOSInt leng)
 		{
@@ -25,9 +23,9 @@ namespace Text
 			this->leng = leng;
 		}
 
-		Text::CString ToCString() const
+		Text::CStringNN ToCString() const
 		{
-			return {this->v, this->leng};
+			return Text::CStringNN(this->v, this->leng);
 		}
 
 		Text::PString Substring(UOSInt index) const

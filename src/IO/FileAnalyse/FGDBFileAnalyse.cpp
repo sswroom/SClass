@@ -118,7 +118,7 @@ IO::FileAnalyse::FGDBFileAnalyse::~FGDBFileAnalyse()
 	LIST_FREE_FUNC(&this->tags, MemFree);
 }
 
-Text::CString IO::FileAnalyse::FGDBFileAnalyse::GetFormatName()
+Text::CStringNN IO::FileAnalyse::FGDBFileAnalyse::GetFormatName()
 {
 	return CSTR("FGDB");
 }
@@ -733,7 +733,7 @@ Bool IO::FileAnalyse::FGDBFileAnalyse::IsParsing()
 	return this->threadRunning;
 }
 
-Bool IO::FileAnalyse::FGDBFileAnalyse::TrimPadding(Text::CString outputFile)
+Bool IO::FileAnalyse::FGDBFileAnalyse::TrimPadding(Text::CStringNN outputFile)
 {
 	return false;
 }

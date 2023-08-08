@@ -240,7 +240,7 @@ IO::SPackageFile::SPackageFile(NotNullPtr<IO::SeekableStream> stm, Bool toReleas
 	this->mstm.Write(hdr, 16);
 }
 
-IO::SPackageFile::SPackageFile(Text::CString fileName)
+IO::SPackageFile::SPackageFile(Text::CStringNN fileName)
 {
 	UInt8 hdr[24];
 	UInt64 flength;
@@ -617,7 +617,7 @@ Bool IO::SPackageFile::Commit()
 	return succ;
 }
 
-Bool IO::SPackageFile::OptimizeFile(Text::CString newFile)
+Bool IO::SPackageFile::OptimizeFile(Text::CStringNN newFile)
 {
 	UInt8 hdr[24];
 	if ((this->flags & 2) == 0)
@@ -662,7 +662,7 @@ void IO::SPackageFile::PauseCommit(Bool pauseCommit)
 	this->pauseCommit = pauseCommit;
 }
 
-IO::StreamData *IO::SPackageFile::CreateStreamData(Text::CString fileName)
+IO::StreamData *IO::SPackageFile::CreateStreamData(Text::CStringNN fileName)
 {
 	IO::StreamData *fd = 0;
 	Sync::MutexUsage mutUsage(this->mut);
@@ -675,6 +675,5 @@ IO::StreamData *IO::SPackageFile::CreateStreamData(Text::CString fileName)
 		this->stm->Read(fileBuff);
 		NEW_CLASS(fd, IO::StmData::MemoryDataCopy(fileBuff));
 	}
-	mutUsage.EndUse();
 	return fd;
 }

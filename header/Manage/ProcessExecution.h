@@ -11,9 +11,9 @@ namespace Manage
 		struct ClassData;
 		ClassData *clsData;
 
-		UOSInt NewProcess(Text::CString cmdLine);
+		UOSInt NewProcess(Text::CStringNN cmdLine);
 	public:
-		ProcessExecution(Text::CString cmdLine);
+		ProcessExecution(Text::CStringNN cmdLine);
 		virtual ~ProcessExecution();
 
 		virtual Bool IsDown() const;

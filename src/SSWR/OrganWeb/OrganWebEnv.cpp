@@ -1898,7 +1898,7 @@ Bool SSWR::OrganWeb::OrganWebEnv::SpeciesMerge(NotNullPtr<Sync::RWMutexUsage> mu
 	return this->SpeciesDelete(mutUsage, srcSpeciesId);
 }
 
-Bool SSWR::OrganWeb::OrganWebEnv::SpeciesAddWebfile(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 speciesId, Text::CString imgURL, Text::CString sourceURL, Text::CString location)
+Bool SSWR::OrganWeb::OrganWebEnv::SpeciesAddWebfile(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 speciesId, Text::CStringNN imgURL, Text::CStringNN sourceURL, Text::CString location)
 {
 	if (!imgURL.StartsWith(UTF8STRC("http://")) && !imgURL.StartsWith(UTF8STRC("https://")))
 		return false;
@@ -2086,7 +2086,7 @@ UTF8Char *SSWR::OrganWeb::OrganWebEnv::UserfileGetPath(UTF8Char *sbuff, const Us
 	return sbuff;
 }
 
-Int32 SSWR::OrganWeb::OrganWebEnv::UserfileAdd(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 userId, Int32 spId, Text::CString fileName, const UInt8 *fileCont, UOSInt fileSize, Bool mustHaveCamera, Text::String *location)
+Int32 SSWR::OrganWeb::OrganWebEnv::UserfileAdd(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 userId, Int32 spId, Text::CStringNN fileName, const UInt8 *fileCont, UOSInt fileSize, Bool mustHaveCamera, Text::String *location)
 {
 	mutUsage->ReplaceMutex(this->dataMut, true);
 	UOSInt j;

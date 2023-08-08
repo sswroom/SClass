@@ -37,7 +37,7 @@ Net::HTTPProxyClient::~HTTPProxyClient()
 	}
 }
 
-Bool Net::HTTPProxyClient::Connect(Text::CString url, Net::WebUtil::RequestMethod method, Double *timeDNS, Double *timeConn, Bool defHeaders)
+Bool Net::HTTPProxyClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMethod method, Double *timeDNS, Double *timeConn, Bool defHeaders)
 {
 	UTF8Char urltmp[256];
 	UTF8Char svrname[256];

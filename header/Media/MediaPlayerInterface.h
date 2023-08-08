@@ -25,7 +25,7 @@ namespace Media
 		MediaPlayerInterface(Parser::ParserList *parsers);
 		virtual ~MediaPlayerInterface();
 
-		Bool OpenFile(Text::CString fileName, IO::ParserType targetType);
+		Bool OpenFile(Text::CStringNN fileName, IO::ParserType targetType);
 		Bool OpenVideo(Media::MediaFile *mf);
 		void CloseFile();
 

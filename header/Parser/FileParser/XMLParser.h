@@ -34,9 +34,9 @@ namespace Parser
 
 			static IO::ParsedObject *ParseStream(Text::EncodingFactory *encFact, NotNullPtr<IO::Stream> stm, Text::CString fileName, Parser::ParserList *parsers, Net::WebBrowser *browser, IO::PackageFile *pkgFile);
 		private:
-			static Bool ParseGPXPoint(Text::XMLReader *reader, Map::GPSTrack::GPSRecord3 *rec);
-			static Bool ParseVSProjFile(Text::XMLReader *reader, Text::VSProjContainer *container);
-			static Bool ParseVSConfFile(Text::XMLReader *reader, Text::CodeProject *proj);
+			static Bool ParseGPXPoint(NotNullPtr<Text::XMLReader> reader, Map::GPSTrack::GPSRecord3 *rec);
+			static Bool ParseVSProjFile(NotNullPtr<Text::XMLReader> reader, Text::VSProjContainer *container);
+			static Bool ParseVSConfFile(NotNullPtr<Text::XMLReader> reader, Text::CodeProject *proj);
 		};
 	}
 }

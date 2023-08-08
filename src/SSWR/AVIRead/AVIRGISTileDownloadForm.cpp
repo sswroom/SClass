@@ -248,7 +248,7 @@ void SSWR::AVIRead::AVIRGISTileDownloadForm::SaveTilesDir(const UTF8Char *folder
 	}
 }
 
-void SSWR::AVIRead::AVIRGISTileDownloadForm::SaveTilesFile(Text::CString fileName)
+void SSWR::AVIRead::AVIRGISTileDownloadForm::SaveTilesFile(Text::CStringNN fileName)
 {
 	Map::TileMap *tileMap = this->lyr->GetTileMap();
 	UTF8Char sbuff[32];

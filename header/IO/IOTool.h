@@ -6,7 +6,7 @@ namespace IO
 	class IOTool
 	{
 	public:
-		static Bool EchoFile(Text::CString fileName, Text::CString msg);
+		static Bool EchoFile(Text::CStringNN fileName, Text::CString msg);
 	};
 }
 #endif

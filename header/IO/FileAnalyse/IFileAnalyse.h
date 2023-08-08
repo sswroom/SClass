@@ -17,7 +17,7 @@ namespace IO
 		public:
 			virtual ~IFileAnalyse();
 
-			virtual Text::CString GetFormatName() = 0;
+			virtual Text::CStringNN GetFormatName() = 0;
 			virtual UOSInt GetFrameCount() = 0;
 			virtual Bool GetFrameName(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb) = 0;
 			virtual Bool GetFrameDetail(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb);
@@ -26,7 +26,7 @@ namespace IO
 
 			virtual Bool IsError() = 0;
 			virtual Bool IsParsing() = 0;
-			virtual Bool TrimPadding(Text::CString outputFile) = 0;
+			virtual Bool TrimPadding(Text::CStringNN outputFile) = 0;
 
 			static IFileAnalyse *AnalyseFile(NotNullPtr<IO::StreamData> fd);
 			static void AddFilters(IO::FileSelector *selector);

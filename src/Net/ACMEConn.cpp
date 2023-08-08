@@ -241,7 +241,7 @@ Net::ACMEConn::Challenge *Net::ACMEConn::ChallengeParse(const UInt8 *buff, UOSIn
 	return chall;
 }
 
-Net::ACMEConn::ACMEConn(NotNullPtr<Net::SocketFactory> sockf, Text::CString serverHost, UInt16 port)
+Net::ACMEConn::ACMEConn(NotNullPtr<Net::SocketFactory> sockf, Text::CStringNN serverHost, UInt16 port)
 {
 	UInt8 buff[2048];
 	UOSInt recvSize;
@@ -719,7 +719,7 @@ Bool Net::ACMEConn::SetKey(Crypto::Cert::X509Key *key)
 	return false;
 }
 
-Bool Net::ACMEConn::LoadKey(Text::CString fileName)
+Bool Net::ACMEConn::LoadKey(Text::CStringNN fileName)
 {
 	UInt8 keyPEM[4096];
 	UOSInt keyPEMSize = IO::FileStream::LoadFile(fileName, keyPEM, 4096);
@@ -744,7 +744,7 @@ Bool Net::ACMEConn::LoadKey(Text::CString fileName)
 	return false;
 }
 
-Bool Net::ACMEConn::SaveKey(Text::CString fileName)
+Bool Net::ACMEConn::SaveKey(Text::CStringNN fileName)
 {
 	if (this->key == 0)
 	{

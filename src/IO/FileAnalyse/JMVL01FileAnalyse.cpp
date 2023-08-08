@@ -113,7 +113,7 @@ IO::FileAnalyse::JMVL01FileAnalyse::~JMVL01FileAnalyse()
 	LIST_FREE_FUNC(&this->tags, MemFree);
 }
 
-Text::CString IO::FileAnalyse::JMVL01FileAnalyse::GetFormatName()
+Text::CStringNN IO::FileAnalyse::JMVL01FileAnalyse::GetFormatName()
 {
 	return CSTR("JM-VL01");
 }
@@ -333,7 +333,7 @@ Bool IO::FileAnalyse::JMVL01FileAnalyse::IsParsing()
 	return this->threadRunning;
 }
 
-Bool IO::FileAnalyse::JMVL01FileAnalyse::TrimPadding(Text::CString outputFile)
+Bool IO::FileAnalyse::JMVL01FileAnalyse::TrimPadding(Text::CStringNN outputFile)
 {
 	return false;
 }

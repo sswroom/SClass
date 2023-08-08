@@ -24,7 +24,7 @@ void SSWR::AVIRead::AVIRWellFormatForm::AddFilters(IO::FileSelector *selector)
 	selector->AddFilter(CSTR("*.kml"), CSTR("KML File"));
 }
 
-Bool SSWR::AVIRead::AVIRWellFormatForm::ParseFile(Text::CString fileName, NotNullPtr<Text::StringBuilderUTF8> output)
+Bool SSWR::AVIRead::AVIRWellFormatForm::ParseFile(Text::CStringNN fileName, NotNullPtr<Text::StringBuilderUTF8> output)
 {
 	Bool succ = false;
 	UInt64 fileLen;

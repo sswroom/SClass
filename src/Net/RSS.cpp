@@ -201,7 +201,7 @@ Net::RSSItem::RSSItem(Text::XMLNode *itemNode)
 	}
 }
 
-Net::RSSItem::RSSItem(Text::XMLReader *reader)
+Net::RSSItem::RSSItem(NotNullPtr<Text::XMLReader> reader)
 {
 	this->objectId = 0;
 	this->title = 0;
@@ -431,7 +431,7 @@ Text::String *Net::RSSItem::GetId()
 	}
 }
 
-Net::RSS::RSS(Text::CString url, Text::String *userAgent, NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Data::Duration timeout)
+Net::RSS::RSS(Text::CStringNN url, Text::String *userAgent, NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Data::Duration timeout)
 {
 	this->isError = true;
 	this->title = 0;
@@ -909,7 +909,7 @@ Net::RSS::RSS(Text::CString url, Text::String *userAgent, NotNullPtr<Net::Socket
 						else if (name->EqualsICase(UTF8STRC("item")))
 						{
 							RSSItem *itm;
-							NEW_CLASS(itm, Net::RSSItem(&reader));
+							NEW_CLASS(itm, Net::RSSItem(reader));
 							if (itm->IsError())
 							{
 								DEL_CLASS(itm);
@@ -1017,7 +1017,7 @@ Net::RSS::RSS(Text::CString url, Text::String *userAgent, NotNullPtr<Net::Socket
 				else if (name->EqualsICase(UTF8STRC("item")))
 				{
 					RSSItem *itm;
-					NEW_CLASS(itm, Net::RSSItem(&reader));
+					NEW_CLASS(itm, Net::RSSItem(reader));
 					if (itm->IsError())
 					{
 						DEL_CLASS(itm);
@@ -1144,7 +1144,7 @@ Net::RSS::RSS(Text::CString url, Text::String *userAgent, NotNullPtr<Net::Socket
 				else if (name->EqualsICase(UTF8STRC("entry")))
 				{
 					RSSItem *itm;
-					NEW_CLASS(itm, Net::RSSItem(&reader));
+					NEW_CLASS(itm, Net::RSSItem(reader));
 					if (itm->IsError())
 					{
 						DEL_CLASS(itm);

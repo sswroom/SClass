@@ -243,7 +243,7 @@ Bool IO::DirectoryPackage::AllowWrite() const
 	return true;
 }
 
-Bool IO::DirectoryPackage::CopyFrom(Text::CString fileName, IO::ProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt)
+Bool IO::DirectoryPackage::CopyFrom(Text::CStringNN fileName, IO::ProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt)
 {
 	IO::Path::PathType pt;
 	Bool ret;
@@ -287,7 +287,7 @@ Bool IO::DirectoryPackage::CopyFrom(Text::CString fileName, IO::ProgressHandler 
 	return false;
 }
 
-Bool IO::DirectoryPackage::MoveFrom(Text::CString fileName, IO::ProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt)
+Bool IO::DirectoryPackage::MoveFrom(Text::CStringNN fileName, IO::ProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt)
 {
 	IO::Path::PathType pt;
 	Bool ret;
@@ -331,7 +331,7 @@ Bool IO::DirectoryPackage::MoveFrom(Text::CString fileName, IO::ProgressHandler 
 	return false;
 }
 
-Bool IO::DirectoryPackage::RetryCopyFrom(Text::CString fileName, IO::ProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt)
+Bool IO::DirectoryPackage::RetryCopyFrom(Text::CStringNN fileName, IO::ProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt)
 {
 	IO::Path::PathType pt;
 	Bool ret;
@@ -375,7 +375,7 @@ Bool IO::DirectoryPackage::RetryCopyFrom(Text::CString fileName, IO::ProgressHan
 	return false;
 }
 
-Bool IO::DirectoryPackage::RetryMoveFrom(Text::CString fileName, IO::ProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt)
+Bool IO::DirectoryPackage::RetryMoveFrom(Text::CStringNN fileName, IO::ProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt)
 {
 	IO::Path::PathType pt;
 	Bool ret;

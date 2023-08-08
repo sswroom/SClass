@@ -49,7 +49,7 @@ namespace SSWR
 			virtual Bool IsBookSpeciesExist(const UTF8Char *sName, NotNullPtr<Text::StringBuilderUTF8> sb);
 			virtual Bool AddSpecies(OrganSpecies *sp);
 			virtual Bool DelSpecies(OrganSpecies *sp);
-			virtual FileStatus AddSpeciesFile(OrganSpecies *sp, Text::CString fileName, Bool firstPhoto, Bool moveFile, Int32 *fileId);
+			virtual FileStatus AddSpeciesFile(OrganSpecies *sp, Text::CStringNN fileName, Bool firstPhoto, Bool moveFile, Int32 *fileId);
 			virtual FileStatus AddSpeciesWebFile(OrganSpecies *sp, NotNullPtr<Text::String> srcURL, NotNullPtr<Text::String> imgURL, IO::Stream *stm, UTF8Char *webFileName);
 			FileStatus AddSpeciesWebFileOld(OrganSpecies *sp, Text::String *srcURL, Text::String *imgURL, IO::Stream *stm, UTF8Char *webFileName);
 			virtual Bool UpdateSpeciesWebFile(OrganSpecies *sp, WebFileInfo *wfile, Text::String *srcURL, Text::String *location);
@@ -78,7 +78,7 @@ namespace SSWR
 			virtual void ReleaseSpeciesBooks(Data::ArrayList<SpeciesBook*> *items);
 			virtual Int32 NewBook(Text::CString title, Text::CString author, Text::CString press, const Data::Timestamp &publishDate, Text::CString url);
 
-			virtual Bool AddDataFile(Text::CString fileName);
+			virtual Bool AddDataFile(Text::CStringNN fileName);
 			virtual Bool DelDataFile(DataFileInfo *dataFile);
 			virtual Bool GetGPSPos(Int32 userId, const Data::Timestamp &ts, Math::Coord2DDbl *pos);
 			virtual Map::GPSTrack *OpenGPSTrack(DataFileInfo *dataFile);

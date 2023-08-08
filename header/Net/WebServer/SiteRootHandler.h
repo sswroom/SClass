@@ -16,7 +16,7 @@ namespace Net
 			virtual ~SiteRootHandler();
 			virtual Bool ProcessRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq);
 		public:
-			SiteRootHandler(Text::CString faviconPath);
+			SiteRootHandler(Text::CStringNN faviconPath);
 		};
 	}
 }

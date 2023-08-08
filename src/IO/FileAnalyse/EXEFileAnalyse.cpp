@@ -298,7 +298,7 @@ IO::FileAnalyse::EXEFileAnalyse::~EXEFileAnalyse()
 	LIST_FREE_FUNC(&this->packs, MemFree);
 }
 
-Text::CString IO::FileAnalyse::EXEFileAnalyse::GetFormatName()
+Text::CStringNN IO::FileAnalyse::EXEFileAnalyse::GetFormatName()
 {
 	return CSTR("EXE");
 }
@@ -1223,7 +1223,7 @@ Bool IO::FileAnalyse::EXEFileAnalyse::IsParsing()
 	return this->threadRunning;
 }
 
-Bool IO::FileAnalyse::EXEFileAnalyse::TrimPadding(Text::CString outputFile)
+Bool IO::FileAnalyse::EXEFileAnalyse::TrimPadding(Text::CStringNN outputFile)
 {
 	return false;
 }

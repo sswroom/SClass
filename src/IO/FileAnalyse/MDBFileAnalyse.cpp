@@ -93,7 +93,7 @@ IO::FileAnalyse::MDBFileAnalyse::~MDBFileAnalyse()
 	LIST_FREE_FUNC(&this->packs, MemFree);
 }
 
-Text::CString IO::FileAnalyse::MDBFileAnalyse::GetFormatName()
+Text::CStringNN IO::FileAnalyse::MDBFileAnalyse::GetFormatName()
 {
 	return CSTR("MDB");
 }
@@ -427,7 +427,7 @@ Bool IO::FileAnalyse::MDBFileAnalyse::IsParsing()
 	return this->threadRunning;
 }
 
-Bool IO::FileAnalyse::MDBFileAnalyse::TrimPadding(Text::CString outputFile)
+Bool IO::FileAnalyse::MDBFileAnalyse::TrimPadding(Text::CStringNN outputFile)
 {
 	return false;
 }

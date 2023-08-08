@@ -9,8 +9,8 @@
 
 Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
-	Text::CString path = CSTR("/home/sswroom/Progs/Temp/Lantau Island.kml");
-//	Text::CString path = CSTR("/mnt/raid2_3/GPS/KML/HKPath/Lantau Island.kml");
+	Text::CStringNN path = CSTR("/home/sswroom/Progs/Temp/Lantau Island.kml");
+//	Text::CStringNN path = CSTR("/mnt/raid2_3/GPS/KML/HKPath/Lantau Island.kml");
 	IO::ParsedObject *pobj;
 	Manage::HiResClock clk;
 	IO::ParserType pt;

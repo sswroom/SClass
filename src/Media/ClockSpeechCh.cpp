@@ -5,7 +5,7 @@
 #include "IO/StmData/FileData.h"
 #include "Text/MyString.h"
 
-void Media::ClockSpeechCh::AppendWAV(Media::AudioConcatSource *source, Parser::FileParser::WAVParser *parser, Text::CString fileName)
+void Media::ClockSpeechCh::AppendWAV(Media::AudioConcatSource *source, Parser::FileParser::WAVParser *parser, Text::CStringNN fileName)
 {
 	IO::ParsedObject *pobj;
 	{

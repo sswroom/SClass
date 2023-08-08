@@ -188,8 +188,8 @@ namespace Map
 
 		UOSInt GetImageCnt() const;
 		Media::StaticImage *GetImage(UOSInt index, UInt32 *imgDurMS) const;
-		OSInt AddImage(Text::CString fileName, Parser::ParserList *parserList); // -1 = fail
-		UOSInt AddImage(Text::CString fileName, Media::ImageList *imgList);
+		OSInt AddImage(Text::CStringNN fileName, Parser::ParserList *parserList); // -1 = fail
+		UOSInt AddImage(Text::CStringNN fileName, Media::ImageList *imgList);
 		UOSInt AddImageSquare(UInt32 color, UOSInt size);
 		
 		UOSInt GetImageFileCnt() const;

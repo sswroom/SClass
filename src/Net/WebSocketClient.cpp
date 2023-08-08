@@ -279,7 +279,7 @@ const UInt8 *Net::WebSocketClient::NextPacket(NotNullPtr<Sync::MutexUsage> mutUs
 	}
 }
 
-Net::WebSocketClient::WebSocketClient(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::CString host, UInt16 port, Text::CString path, Text::CString origin, Protocol protocol, Data::Duration timeout) : Stream(CSTR("WebSocket"))
+Net::WebSocketClient::WebSocketClient(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::CStringNN host, UInt16 port, Text::CString path, Text::CString origin, Protocol protocol, Data::Duration timeout) : Stream(CSTR("WebSocket"))
 {
 	this->recvCapacity = 4096;
 	this->recvBuff = MemAlloc(UInt8, this->recvCapacity);

@@ -94,14 +94,8 @@ IO::FileStream::FileStream(NotNullPtr<Text::String> fileName, FileMode mode, Fil
 	this->InitStream(0, mode, share, buffType);
 }
 
-IO::FileStream::FileStream(Text::CString fileName, FileMode mode, FileShare share, IO::FileStream::BufferType buffType) : IO::SeekableStream(fileName)
+IO::FileStream::FileStream(Text::CStringNN fileName, FileMode mode, FileShare share, IO::FileStream::BufferType buffType) : IO::SeekableStream(fileName)
 {
-	if (fileName.leng == 0)
-	{
-		this->currPos = 0;
-		this->handle = 0;
-		return;
-	}
 	this->handle = 0;
 	this->InitStream(0, mode, share, buffType);
 }
@@ -506,7 +500,7 @@ void IO::FileStream::SetFileTimes(const Data::Timestamp &creationTime, const Dat
 	utime((const Char*)this->sourceName->v, &t);
 }
 
-UOSInt IO::FileStream::LoadFile(Text::CString fileName, UInt8 *buff, UOSInt maxBuffSize)
+UOSInt IO::FileStream::LoadFile(Text::CStringNN fileName, UInt8 *buff, UOSInt maxBuffSize)
 {
 	IO::FileStream fs(fileName, FileMode::ReadOnly, FileShare::DenyNone, BufferType::Normal);
 	if (fs.IsError())

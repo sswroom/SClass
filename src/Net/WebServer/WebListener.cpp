@@ -162,7 +162,7 @@ NotNullPtr<Text::String> Net::WebServer::WebListener::GetServerName() const
 	return this->svrName;
 }
 
-void Net::WebServer::WebListener::SetClientLog(Text::CString logFile)
+void Net::WebServer::WebListener::SetClientLog(Text::CStringNN logFile)
 {
 	this->cliMgr.SetLogFile(logFile);
 }

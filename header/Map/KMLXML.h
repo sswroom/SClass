@@ -27,12 +27,12 @@ namespace Map
 			Media::SharedImage *img;
 		};
 	public:
-		static Map::MapDrawLayer *ParseKMLRoot(Text::XMLReader *reader, Text::CString fileName, Parser::ParserList *parsers, Net::WebBrowser *browser, IO::PackageFile *pkgFile);
+		static Map::MapDrawLayer *ParseKMLRoot(NotNullPtr<Text::XMLReader> reader, Text::CString fileName, Parser::ParserList *parsers, Net::WebBrowser *browser, IO::PackageFile *pkgFile);
 	private:
-		static Map::MapDrawLayer *ParseKMLContainer(Text::XMLReader *reader, Data::ICaseStringMap<KMLStyle*> *styles, Text::CString sourceName, Parser::ParserList *parsers, Net::WebBrowser *browser, IO::PackageFile *basePF);
-		static void ParseKMLPlacemarkTrack(Text::XMLReader *reader, Map::GPSTrack *lyr, Data::StringMap<KMLStyle*> *styles);
-		static Map::MapDrawLayer *ParseKMLPlacemarkLyr(Text::XMLReader *reader, Data::StringMap<KMLStyle*> *styles, Text::CString sourceName, Parser::ParserList *parsers, Net::WebBrowser *browser, IO::PackageFile *basePF);
-		static void ParseCoordinates(Text::XMLReader *reader, Data::ArrayList<Double> *coordList, Data::ArrayList<Double> *altList);
+		static Map::MapDrawLayer *ParseKMLContainer(NotNullPtr<Text::XMLReader> reader, Data::ICaseStringMap<KMLStyle*> *styles, Text::CString sourceName, Parser::ParserList *parsers, Net::WebBrowser *browser, IO::PackageFile *basePF);
+		static void ParseKMLPlacemarkTrack(NotNullPtr<Text::XMLReader> reader, Map::GPSTrack *lyr, Data::StringMap<KMLStyle*> *styles);
+		static Map::MapDrawLayer *ParseKMLPlacemarkLyr(NotNullPtr<Text::XMLReader> reader, Data::StringMap<KMLStyle*> *styles, Text::CString sourceName, Parser::ParserList *parsers, Net::WebBrowser *browser, IO::PackageFile *basePF);
+		static void ParseCoordinates(NotNullPtr<Text::XMLReader> reader, Data::ArrayList<Double> *coordList, Data::ArrayList<Double> *altList);
 	};
 }
 #endif

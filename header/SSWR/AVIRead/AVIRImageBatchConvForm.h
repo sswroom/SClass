@@ -69,8 +69,8 @@ namespace SSWR
 
 			void StartThreads();
 			void StopThreads();
-			void MTConvertFile(ConvertSess *sess, Text::CString srcFile, Text::CString destFile);
-			void ConvertFile(ConvertSess *sess, Text::CString srcFile, Text::CString destFile);
+			void MTConvertFile(ConvertSess *sess, Text::CStringNN srcFile, Text::CStringNN destFile);
+			void ConvertFile(ConvertSess *sess, Text::CStringNN srcFile, Text::CStringNN destFile);
 		public:
 			AVIRImageBatchConvForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRImageBatchConvForm();

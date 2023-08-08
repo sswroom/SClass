@@ -12,7 +12,7 @@ namespace IO
 		UInt64 fileSize;
 
 	public:
-		MemFileBuffer(Text::CString fileName);
+		MemFileBuffer(Text::CStringNN fileName);
 		virtual ~MemFileBuffer();
 
 		virtual UInt8 *GetPointer();

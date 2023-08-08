@@ -34,8 +34,8 @@ namespace IO
 		DevEntry *AddEntry(UInt64 macInt, Text::String *name, Int8 txPower, Int8 measurePower, IO::BTScanLog::RadioType radioType, IO::BTScanLog::AddressType addrType, UInt16 company, IO::BTScanLog::AdvType advType);
 		void AppendList(NotNullPtr<Data::FastMap<UInt64, IO::BTScanLog::ScanRecord3*>> devMap);
 		void ClearList();
-		Bool LoadFile(Text::CString fileName);
-		Bool StoreFile(Text::CString fileName);
+		Bool LoadFile(Text::CStringNN fileName);
+		Bool StoreFile(Text::CStringNN fileName);
 
 		NotNullPtr<const Data::ReadingList<IO::BTDevLog::DevEntry*>> GetPublicList() const;
 		NotNullPtr<const Data::ReadingList<IO::BTDevLog::DevEntry*>> GetRandomList() const;

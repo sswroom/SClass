@@ -18,7 +18,7 @@ namespace Map
 		IO::IFileBuffer *ciuFileObj;
 		IO::IFileBuffer *blkFileObj;
 	public:
-		MapLayerData(Text::CString filePath);
+		MapLayerData(Text::CStringNN filePath);
 		virtual ~MapLayerData();
 
 		virtual Bool IsError();

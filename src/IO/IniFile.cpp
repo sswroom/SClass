@@ -17,7 +17,7 @@ IO::ConfigFile *IO::IniFile::Parse(NotNullPtr<IO::Stream> stm, UInt32 codePage)
 	return cfg;
 }
 
-IO::ConfigFile *IO::IniFile::Parse(Text::CString fileName, UInt32 codePage)
+IO::ConfigFile *IO::IniFile::Parse(Text::CStringNN fileName, UInt32 codePage)
 {
 	IO::ConfigFile *cfg;
 	IO::FileStream fstm(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential);

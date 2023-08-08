@@ -12,7 +12,7 @@ UI::DObj::DownButtonDObj::DownButtonDObj(NotNullPtr<Media::DrawEngine> deng, Tex
 	}
 	else
 	{
-		this->bmpUnclick = this->deng->LoadImage(fileNameUnclick);
+		this->bmpUnclick = this->deng->LoadImage(fileNameUnclick.OrEmpty());
 	}
 
 	if (fileNameClicked.leng == 0)
@@ -21,7 +21,7 @@ UI::DObj::DownButtonDObj::DownButtonDObj(NotNullPtr<Media::DrawEngine> deng, Tex
 	}
 	else
 	{
-		this->bmpClicked = this->deng->LoadImage(fileNameClicked);
+		this->bmpClicked = this->deng->LoadImage(fileNameClicked.OrEmpty());
 	}
 	this->clkHdlr = clkHdlr;
 	this->clkUserObj = clkUserObj;

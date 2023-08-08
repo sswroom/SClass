@@ -90,9 +90,9 @@ namespace Map
 		Data::FastStringMap<TileMatrixDefSet*> matrixDef;
 
 		void LoadXML();
-		void ReadLayer(Text::XMLReader *reader);
-		TileMatrixSet *ReadTileMatrixSetLink(Text::XMLReader *reader);
-		TileMatrixDefSet *ReadTileMatrixSet(Text::XMLReader *reader);
+		void ReadLayer(NotNullPtr<Text::XMLReader> reader);
+		TileMatrixSet *ReadTileMatrixSetLink(NotNullPtr<Text::XMLReader> reader);
+		TileMatrixDefSet *ReadTileMatrixSet(NotNullPtr<Text::XMLReader> reader);
 		TileMatrix *GetTileMatrix(UOSInt level) const;
 		void ReleaseLayer(TileLayer *layer);
 		void ReleaseTileMatrix(TileMatrix *tileMatrix);

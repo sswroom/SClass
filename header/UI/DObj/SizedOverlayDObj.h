@@ -44,7 +44,7 @@ namespace UI
 
 			void SetFrameDelay(OSInt frameDelay);
 			void SetSize(Math::Size2D<UOSInt> size);
-			void SetImage(Text::CString fileName, Parser::ParserList *parsers);
+			void SetImage(Text::CStringNN fileName, Parser::ParserList *parsers);
 		};
 	}
 }

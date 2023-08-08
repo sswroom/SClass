@@ -29,7 +29,7 @@ namespace IO
 		void InitStream(const WChar *fileName, FileMode mode, FileShare share, BufferType buffType);
 	public:
 		FileStream(NotNullPtr<Text::String> fileName, FileMode mode, FileShare share, BufferType buffType);
-		FileStream(Text::CString fileName, FileMode mode, FileShare share, BufferType buffType);
+		FileStream(Text::CStringNN fileName, FileMode mode, FileShare share, BufferType buffType);
 		virtual ~FileStream();
 
 		virtual Bool IsDown() const;
@@ -58,7 +58,7 @@ namespace IO
 
 		static IO::FileStream *CreateNamedPipe(const UTF8Char *pipeName, UInt32 buffSize);
 		static IO::FileStream *OpenNamedPipe(const UTF8Char *server, const UTF8Char *pipeName);
-		static UOSInt LoadFile(Text::CString fileName, UInt8 *buff, UOSInt maxBuffSize);
+		static UOSInt LoadFile(Text::CStringNN fileName, UInt8 *buff, UOSInt maxBuffSize);
 	};
 }
 #endif

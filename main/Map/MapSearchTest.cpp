@@ -6,7 +6,7 @@
 
 Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
-	Text::CString mapSrchFile = CSTR("/home/sswroom/Progs/Temp/20220208 MapSearch/MapSearch.txt");
+	Text::CStringNN mapSrchFile = CSTR("/home/sswroom/Progs/Temp/20220208 MapSearch/MapSearch.txt");
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	Map::MapSearchManager srchMgr;

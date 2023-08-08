@@ -121,17 +121,16 @@ OSInt Net::WebSite::WebSite7gogoControl::GetChannelItems(NotNullPtr<Text::String
 	sb.Append(channelId);
 	Net::WebSite::WebSite7gogoControl::ItemData *item;
 	Data::ArrayListInt64 idList;
-	Text::XMLReader *reader;
 //	printf("Requesting to URL %s\r\n", sb.ToString());
 	NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, {STR_PTRC(this->userAgent)}, true, true);
 	cli->Connect(sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, true);
-	NEW_CLASS(reader, Text::XMLReader(this->encFact, cli, Text::XMLReader::PM_HTML));
-	while (reader->ReadNext())
+	Text::XMLReader reader(this->encFact, cli, Text::XMLReader::PM_HTML);
+	while (reader.ReadNext())
 	{
-		if (reader->GetNodeType() == Text::XMLNode::NodeType::Element && reader->GetNodeText()->Equals(UTF8STRC("script")))
+		if (reader.GetNodeType() == Text::XMLNode::NodeType::Element && reader.GetNodeText()->Equals(UTF8STRC("script")))
 		{
 			sb.ClearStr();
-			reader->ReadNodeText(sb);
+			reader.ReadNodeText(sb);
 			if (sb.StartsWith(UTF8STRC("window.__DEHYDRATED_STATES__ = ")))
 			{
 				Text::JSONBase *baseData = Text::JSONBase::ParseJSONStr(sb.ToCString().Substring(31));
@@ -276,11 +275,10 @@ OSInt Net::WebSite::WebSite7gogoControl::GetChannelItems(NotNullPtr<Text::String
 			}
 		}
 	}
-	if (!reader->IsComplete())
+	if (!reader.IsComplete())
 	{
-		printf("Error found, errNo = %d\r\n", (Int32)reader->GetErrorCode());
+		printf("Error found, errNo = %d\r\n", (Int32)reader.GetErrorCode());
 	}
-	DEL_CLASS(reader);
 	cli.Delete();
 	return retCnt;
 }

@@ -163,7 +163,7 @@ IO::FileAnalyse::LNKFileAnalyse::~LNKFileAnalyse()
 	LIST_FREE_FUNC(&this->tags, MemFree);
 }
 
-Text::CString IO::FileAnalyse::LNKFileAnalyse::GetFormatName()
+Text::CStringNN IO::FileAnalyse::LNKFileAnalyse::GetFormatName()
 {
 	return CSTR("SLNK");
 }
@@ -601,7 +601,7 @@ Bool IO::FileAnalyse::LNKFileAnalyse::IsParsing()
 	return this->threadRunning;
 }
 
-Bool IO::FileAnalyse::LNKFileAnalyse::TrimPadding(Text::CString outputFile)
+Bool IO::FileAnalyse::LNKFileAnalyse::TrimPadding(Text::CStringNN outputFile)
 {
 	return false;
 }

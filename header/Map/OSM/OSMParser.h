@@ -11,7 +11,7 @@ namespace Map
 		class OSMParser
 		{
 		public:
-			static Map::MapDrawLayer *ParseLayerNode(Text::XMLReader *reader, Text::CString fileName);
+			static Map::MapDrawLayer *ParseLayerNode(NotNullPtr<Text::XMLReader> reader, Text::CString fileName);
 		};
 	}
 }

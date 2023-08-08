@@ -16,7 +16,7 @@
 #define METHOD Net::WebUtil::RequestMethod::HTTP_GET
 #define POSTSIZE 1048576
 
-Text::CString paramUrl;
+Text::CStringNN paramUrl;
 UOSInt threadCnt;
 UOSInt paramConnCnt;
 Bool kaConn;
@@ -48,7 +48,7 @@ UInt32 __stdcall ProcessThread(void *userObj)
 	ThreadStatus *status = (ThreadStatus*)userObj;
 	NotNullPtr<Net::HTTPClient> cli;
 //	UInt8 buff[2048];
-	Text::CString url;
+	Text::CStringNN url;
 	Double timeDNS;
 	Double timeConn;
 	Double timeReq;

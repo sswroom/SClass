@@ -18,7 +18,7 @@ void Net::SolarEdgeAPI::BuildURL(NotNullPtr<Text::StringBuilderUTF8> sb, Text::C
 	sb->Append(this->apikey);
 }
 
-Text::JSONBase *Net::SolarEdgeAPI::GetJSON(Text::CString url)
+Text::JSONBase *Net::SolarEdgeAPI::GetJSON(Text::CStringNN url)
 {
 #if defined(VERBOSE)
 	printf("SolarEdgeAPI requesting: %s\r\n", url.v);

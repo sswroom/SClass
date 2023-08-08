@@ -579,7 +579,7 @@ Map::MapServerHandler::~MapServerHandler()
 	DEL_CLASS(this->wgs84);
 }
 
-Bool Map::MapServerHandler::AddAsset(Text::CString filePath)
+Bool Map::MapServerHandler::AddAsset(Text::CStringNN filePath)
 {
 	IO::Path::PathType pt = IO::Path::GetPathType(filePath);
 	IO::ParsedObject *pobj;

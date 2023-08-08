@@ -88,7 +88,7 @@ void Map::WebMapService::LoadXML(Version version)
 									nodeName = reader.GetNodeText();
 									if (nodeName->Equals(UTF8STRC("Request")))
 									{
-										this->LoadXMLRequest(&reader);
+										this->LoadXMLRequest(reader);
 									}
 									else if (nodeName->Equals(UTF8STRC("Exception")))
 									{
@@ -96,7 +96,7 @@ void Map::WebMapService::LoadXML(Version version)
 									}
 									else if (nodeName->Equals(UTF8STRC("Layer")))
 									{
-										this->LoadXMLLayers(&reader);
+										this->LoadXMLLayers(reader);
 									}
 									else if (nodeName->Equals(UTF8STRC("UserDefinedSymbolization")))
 									{
@@ -129,7 +129,7 @@ void Map::WebMapService::LoadXML(Version version)
 	this->SetLayer(0);
 }
 
-void Map::WebMapService::LoadXMLRequest(Text::XMLReader *reader)
+void Map::WebMapService::LoadXMLRequest(NotNullPtr<Text::XMLReader> reader)
 {
 	Text::StringBuilderUTF8 sb;
 	while (reader->ReadNext())
@@ -231,7 +231,7 @@ void Map::WebMapService::LoadXMLRequest(Text::XMLReader *reader)
 	}
 }
 
-void Map::WebMapService::LoadXMLLayers(Text::XMLReader *reader)
+void Map::WebMapService::LoadXMLLayers(NotNullPtr<Text::XMLReader> reader)
 {
 	Text::StringBuilderUTF8 sb;
 	while (reader->ReadNext())

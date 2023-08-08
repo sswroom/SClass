@@ -45,7 +45,7 @@ namespace Net
 		virtual Bool IsError() const = 0;
 
 		virtual Bool IsDown() const;
-		virtual Bool Connect(Text::CString url, Net::WebUtil::RequestMethod method, Double *timeDNS, Double *timeConn, Bool defHeaders) = 0;
+		virtual Bool Connect(Text::CStringNN url, Net::WebUtil::RequestMethod method, Double *timeDNS, Double *timeConn, Bool defHeaders) = 0;
 		virtual void AddHeaderC(Text::CString name, Text::CString value) = 0;
 		virtual void EndRequest(Double *timeReq, Double *timeResp) = 0;
 		virtual void SetTimeout(Data::Duration timeout) = 0;
@@ -86,11 +86,11 @@ namespace Net
 
 		static void ParseDateStr(Data::DateTime *dt, Text::CString dateStr);
 		static NotNullPtr<Net::HTTPClient> CreateClient(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::CString userAgent, Bool kaConn, Bool isSecure);
-		static NotNullPtr<Net::HTTPClient> CreateConnect(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::CString url, Net::WebUtil::RequestMethod method, Bool kaConn);
-		static Bool IsHTTPURL(Text::CString url);
+		static NotNullPtr<Net::HTTPClient> CreateConnect(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::CStringNN url, Net::WebUtil::RequestMethod method, Bool kaConn);
+		static Bool IsHTTPURL(Text::CStringNN url);
 		static void PrepareSSL(Net::SSLEngine *ssl);
-		static Bool LoadContent(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::CString url, IO::Stream *stm, UInt64 maxSize);
-		static Bool LoadContent(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::CString url, NotNullPtr<Text::StringBuilderUTF8> sb, UInt64 maxSize);
+		static Bool LoadContent(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::CStringNN url, IO::Stream *stm, UInt64 maxSize);
+		static Bool LoadContent(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::CStringNN url, NotNullPtr<Text::StringBuilderUTF8> sb, UInt64 maxSize);
 	};
 }
 #endif

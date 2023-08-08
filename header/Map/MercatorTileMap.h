@@ -30,7 +30,7 @@ namespace Map
 		void SetSPackageFile(IO::SPackageFile *spkg);
 		Bool HasSPackageFile();
 		Bool ImportTiles(IO::PackageFile *pkg);
-		Bool OptimizeToFile(Text::CString fileName);
+		Bool OptimizeToFile(Text::CStringNN fileName);
 
 		virtual Bool IsError();
 		virtual UOSInt GetLevelCount();

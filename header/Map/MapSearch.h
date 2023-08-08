@@ -28,7 +28,7 @@ namespace Map
 		Data::ArrayList<Map::MapSearchLayerInfo*> **layersArr;
 
 	public:
-		MapSearch(Text::CString fileName, Map::MapSearchManager *manager);
+		MapSearch(Text::CStringNN fileName, Map::MapSearchManager *manager);
 		~MapSearch();
 
 		UTF8Char *SearchName(UTF8Char *buff, Math::Coord2DDbl pos);

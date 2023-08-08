@@ -32,7 +32,7 @@ namespace Net
 			typedef void (__stdcall *SSEDisconnectHandler)(Net::WebServer::IWebResponse *resp, void *userObj);
 		public:
 			IWebResponse(NotNullPtr<Text::String> sourceName);
-			IWebResponse(Text::CString sourceName);
+			IWebResponse(Text::CStringNN sourceName);
 			virtual ~IWebResponse();
 
 			virtual void EnableWriteBuffer() = 0;

@@ -124,7 +124,7 @@ void IO::BTDevLog::ClearList()
 	this->pubDevs.Clear();
 }
 
-Bool IO::BTDevLog::LoadFile(Text::CString fileName)
+Bool IO::BTDevLog::LoadFile(Text::CStringNN fileName)
 {
 	Text::StringBuilderUTF8 sb;
 	Text::PString sarr[9];
@@ -209,7 +209,7 @@ Bool IO::BTDevLog::LoadFile(Text::CString fileName)
 	return true;
 }
 
-Bool IO::BTDevLog::StoreFile(Text::CString fileName)
+Bool IO::BTDevLog::StoreFile(Text::CStringNN fileName)
 {
 	Text::StringBuilderUTF8 sb;
 	IO::FileStream fs(fileName, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);

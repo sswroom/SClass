@@ -303,7 +303,7 @@ void __stdcall SSWR::AVIRead::AVIRHexViewerForm::OnExtractClicked(void *userObj)
 	}
 }
 
-Bool SSWR::AVIRead::AVIRHexViewerForm::LoadFile(Text::CString fileName, Bool dynamicSize)
+Bool SSWR::AVIRead::AVIRHexViewerForm::LoadFile(Text::CStringNN fileName, Bool dynamicSize)
 {
 	Bool succ = this->hexView->LoadFile(fileName, dynamicSize);
 	if (succ)

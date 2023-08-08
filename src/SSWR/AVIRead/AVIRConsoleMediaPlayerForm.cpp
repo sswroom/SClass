@@ -139,7 +139,7 @@ void SSWR::AVIRead::AVIRConsoleMediaPlayerForm::UpdateColorDisp()
 	this->videoOpening = false;
 }
 
-Bool SSWR::AVIRead::AVIRConsoleMediaPlayerForm::OpenICC(Text::CString iccFile)
+Bool SSWR::AVIRead::AVIRConsoleMediaPlayerForm::OpenICC(Text::CStringNN iccFile)
 {
 	IO::FileStream fs(iccFile, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 	Bool succ = false;

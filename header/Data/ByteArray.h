@@ -2,85 +2,23 @@
 #define _SM_DATA_BYTEARRAY
 #include "MyMemory.h"
 #include "Data/ByteTool.h"
+#include "Data/DataArray.h"
 
-//#define CHECK_RANGE
-#if defined(CHECK_RANGE)
-#include <stdio.h>
-#endif
 namespace Data
 {
 	class ByteArrayR;
-	template <typename T> class ByteArrayBase
+	template <typename T> class ByteArrayBase : public DataArray<T>
 	{
 	protected:
-		T *buff;
-		UOSInt buffSize;
-#if defined(CHECK_RANGE)
-		UOSInt prevSize;
-#endif
-
-		void CheckError(UOSInt ofst) const
+		ByteArrayBase(T *buff, UOSInt buffSize) : DataArray<T>(buff, buffSize)
 		{
-#if defined(CHECK_RANGE)
-			if (ofst > buffSize)
-				printf("ByteArray out of bound: ofst = %d, size = %d\r\n", (UInt32)ofst, (UInt32)this->buffSize);
-#endif			
-		}
-
-		void CheckErrorPrev(UOSInt ofst) const
-		{
-#if defined(CHECK_RANGE)
-			if (ofst > prevSize)
-				printf("ByteArray out of bound: prevOfst = %d, prevSize = %d\r\n", (UInt32)ofst, (UInt32)this->prevSize);
-#endif			
-		}
-
-		ByteArrayBase(T *buff, UOSInt buffSize)
-		{
-			this->buff = buff;
-			this->buffSize = buffSize;
 		}
 
 	public:
-		T &operator[](UOSInt index) const
-		{
-			CheckError(index + 1);
-			return buff[index];
-		}
-
-		T &operator[](OSInt index) const
-		{
-#if defined(CHECK_RANGE)
-			if (index < 0)
-				CheckErrorPrev((UOSInt)-index);
-			else
-				CheckError((UOSInt)index + 1);
-#endif
-			return buff[index];
-		}
-
-#if _OSINT_SIZE == 64
-		T &operator[](UInt32 index) const
-		{
-			CheckError(index + 1);
-			return buff[index];
-		}
-
-		T &operator[](Int32 index) const
-		{
-#if defined(CHECK_RANGE)
-			if (index < 0)
-				CheckErrorPrev((UOSInt)-index);
-			else
-				CheckError((UOSInt)index + 1);
-#endif
-			return buff[index];
-		}
-#endif
 		T &operator *()
 		{
-			CheckError(1);
-			return buff[0];
+			this->CheckError(1);
+			return this->buff[0];
 		}
 
 		Bool operator<=(const ByteArrayBase<T> &buff) const
@@ -103,145 +41,113 @@ namespace Data
 			return this->buff > buff.buff;
 		}
 
-		T *GetPtr() const
-		{
-			return this->buff;
-		}
-
-		T *Ptr() const
-		{
-			return this->buff;
-		}
-
-		T *PtrEnd() const
-		{
-			return &this->buff[this->buffSize];
-		}
-
-		Bool IsNull() const
-		{
-			return this->buff == 0;
-		}
-
-		UOSInt GetSize() const
-		{
-			return this->buffSize;
-		}
-
-#if defined(CHECK_RANGE)
-		UOSInt GetPrevSize() const
-		{
-			return this->prevSize;
-		}
-#endif
-
 		Int16 ReadI16(UOSInt index) const
 		{
-			CheckError(index + 2);
-			return ReadInt16(&buff[index]);
+			this->CheckError(index + 2);
+			return ReadInt16(&this->buff[index]);
 		}
 
 		UInt16 ReadU16(UOSInt index) const
 		{
-			CheckError(index + 2);
-			return ReadUInt16(&buff[index]);
+			this->CheckError(index + 2);
+			return ReadUInt16(&this->buff[index]);
 		}
 
 		Int16 ReadMI16(UOSInt index) const
 		{
-			CheckError(index + 2);
-			return ReadMInt16(&buff[index]);
+			this->CheckError(index + 2);
+			return ReadMInt16(&this->buff[index]);
 		}
 
 		UInt16 ReadMU16(UOSInt index) const
 		{
-			CheckError(index + 2);
-			return ReadMUInt16(&buff[index]);
+			this->CheckError(index + 2);
+			return ReadMUInt16(&this->buff[index]);
 		}
 
 		Int16 ReadNI16(UOSInt index) const
 		{
-			CheckError(index + 2);
-			return ReadNInt16(&buff[index]);
+			this->CheckError(index + 2);
+			return ReadNInt16(&this->buff[index]);
 		}
 
 		UInt16 ReadNU16(UOSInt index) const
 		{
-			CheckError(index + 2);
-			return ReadNUInt16(&buff[index]);
+			this->CheckError(index + 2);
+			return ReadNUInt16(&this->buff[index]);
 		}
 
 		Int32 ReadI32(UOSInt index) const
 		{
-			CheckError(index + 4);
-			return ReadInt32(&buff[index]);
+			this->CheckError(index + 4);
+			return ReadInt32(&this->buff[index]);
 		}
 
 		UInt32 ReadU32(UOSInt index) const
 		{
-			CheckError(index + 4);
-			return ReadUInt32(&buff[index]);
+			this->CheckError(index + 4);
+			return ReadUInt32(&this->buff[index]);
 		}
 
 		Int32 ReadMI32(UOSInt index) const
 		{
-			CheckError(index + 4);
-			return ReadMInt32(&buff[index]);
+			this->CheckError(index + 4);
+			return ReadMInt32(&this->buff[index]);
 		}
 
 		UInt32 ReadMU32(UOSInt index) const
 		{
-			CheckError(index + 4);
-			return ReadMUInt32(&buff[index]);
+			this->CheckError(index + 4);
+			return ReadMUInt32(&this->buff[index]);
 		}
 
 		Int32 ReadNI32(UOSInt index) const
 		{
-			CheckError(index + 4);
-			return ReadNInt32(&buff[index]);
+			this->CheckError(index + 4);
+			return ReadNInt32(&this->buff[index]);
 		}
 
 		UInt32 ReadNU32(UOSInt index) const
 		{
-			CheckError(index + 4);
-			return ReadNUInt32(&buff[index]);
+			this->CheckError(index + 4);
+			return ReadNUInt32(&this->buff[index]);
 		}
 
 #ifdef HAS_INT64
 		Int64 ReadI64(UOSInt index) const
 		{
-			CheckError(index + 8);
-			return ReadInt64(&buff[index]);
+			this->CheckError(index + 8);
+			return ReadInt64(&this->buff[index]);
 		}
 
 		UInt64 ReadU64(UOSInt index) const
 		{
-			CheckError(index + 8);
-			return ReadUInt64(&buff[index]);
+			this->CheckError(index + 8);
+			return ReadUInt64(&this->buff[index]);
 		}
 
 		Int64 ReadMI64(UOSInt index) const
 		{
-			CheckError(index + 8);
-			return ReadMInt64(&buff[index]);
+			this->CheckError(index + 8);
+			return ReadMInt64(&this->buff[index]);
 		}
 
 		UInt64 ReadMU64(UOSInt index) const
 		{
-			CheckError(index + 8);
-			return ReadMUInt64(&buff[index]);
+			this->CheckError(index + 8);
+			return ReadMUInt64(&this->buff[index]);
 		}
 
 		Int64 ReadNI64(UOSInt index) const
 		{
-			CheckError(index + 8);
-			return ReadNInt64(&buff[index]);
+			this->CheckError(index + 8);
+			return ReadNInt64(&this->buff[index]);
 		}
 
 		UInt64 ReadNU64(UOSInt index) const
 		{
-			CheckError(index + 8);
-			return ReadNUInt64(&buff[index]);
+			this->CheckError(index + 8);
+			return ReadNUInt64(&this->buff[index]);
 		}
 #endif
 	};

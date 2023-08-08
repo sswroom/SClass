@@ -28,7 +28,7 @@ void Media::TimedImageList::ScanFile()
 	this->currFileOfst = currOfst;
 }
 
-Media::TimedImageList::TimedImageList(Text::CString fileName)
+Media::TimedImageList::TimedImageList(Text::CStringNN fileName)
 {
 	UInt8 hdr[16];
 	NEW_CLASS(this->fs, IO::FileStream(fileName, IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));

@@ -68,7 +68,7 @@ namespace Media
 		virtual ~DrawEngine(){};
 
 		virtual DrawImage *CreateImage32(Math::Size2D<UOSInt> size, Media::AlphaType atype) = 0;
-		virtual DrawImage *LoadImage(Text::CString fileName) = 0;
+		virtual DrawImage *LoadImage(Text::CStringNN fileName) = 0;
 		virtual DrawImage *LoadImageStream(NotNullPtr<IO::SeekableStream> stm) = 0;
 		virtual DrawImage *ConvImage(Media::Image *img) = 0;
 		virtual DrawImage *CloneImage(DrawImage *img) = 0;

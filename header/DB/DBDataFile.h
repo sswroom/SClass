@@ -22,15 +22,15 @@ namespace DB
 		static UOSInt ReadInt(const UInt8 *buff, UOSInt ofst, UOSInt *outVal);
 		static UOSInt WriteInt(UInt8 *buff, UOSInt ofst, UOSInt val);
 
-		DBDataFile(Text::CString fileName, Data::NamedClass<T> *cls, Bool append);
+		DBDataFile(Text::CStringNN fileName, Data::NamedClass<T> *cls, Bool append);
 		~DBDataFile();
 
 		Bool IsError();
 		void AddRecord(T *obj);
 
 	public:
-		static Bool LoadFile(Text::CString fileName, Data::NamedClass<T> *cls, Data::ArrayList<T*> *dataListOut);
-		static Bool SaveFile(Text::CString fileName, Data::ArrayList<T*> *dataList, Data::NamedClass<T> *cls);
+		static Bool LoadFile(Text::CStringNN fileName, Data::NamedClass<T> *cls, Data::ArrayList<T*> *dataListOut);
+		static Bool SaveFile(Text::CStringNN fileName, Data::ArrayList<T*> *dataList, Data::NamedClass<T> *cls);
 	};
 }
 
@@ -115,7 +115,7 @@ template <class T> UOSInt DB::DBDataFile<T>::WriteInt(UInt8 *buff, UOSInt ofst, 
 #endif
 }
 
-template <class T> DB::DBDataFile<T>::DBDataFile(Text::CString fileName, Data::NamedClass<T> *cls, Bool append)
+template <class T> DB::DBDataFile<T>::DBDataFile(Text::CStringNN fileName, Data::NamedClass<T> *cls, Bool append)
 {
 	this->cls = cls;
 	this->recordBuff = 0;
@@ -342,7 +342,7 @@ template <class T> void DB::DBDataFile<T>::AddRecord(T *obj)
 	}
 }
 
-template <class T> Bool DB::DBDataFile<T>::LoadFile(Text::CString fileName, Data::NamedClass<T> *cls, Data::ArrayList<T*> *dataListOut)
+template <class T> Bool DB::DBDataFile<T>::LoadFile(Text::CStringNN fileName, Data::NamedClass<T> *cls, Data::ArrayList<T*> *dataListOut)
 {
 	UOSInt maxBuffSize = 65536;
 	IO::FileStream fs(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
@@ -572,7 +572,7 @@ template <class T> Bool DB::DBDataFile<T>::LoadFile(Text::CString fileName, Data
 	return succ;
 }
 
-template <class T> Bool DB::DBDataFile<T>::SaveFile(Text::CString fileName, Data::ArrayList<T*> *dataList, Data::NamedClass<T> *cls)
+template <class T> Bool DB::DBDataFile<T>::SaveFile(Text::CStringNN fileName, Data::ArrayList<T*> *dataList, Data::NamedClass<T> *cls)
 {
 	DB::DBDataFile<T> *file;
 	NEW_CLASS(file, DB::DBDataFile<T>(fileName, cls, false));

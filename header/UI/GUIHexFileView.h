@@ -44,7 +44,7 @@ namespace UI
 		virtual void DrawImage(Media::DrawImage *dimg);
 		virtual void UpdateCaretPos();
 
-		Bool LoadFile(Text::CString fileName, Bool dynamicSize);
+		Bool LoadFile(Text::CStringNN fileName, Bool dynamicSize);
 		Bool LoadData(NotNullPtr<IO::StreamData> data, IO::FileAnalyse::IFileAnalyse *fileAnalyse);
 		void GetTextPos(Double scnPosX, Double scnPosY, UInt64 *byteOfst);
 		void GoToOffset(UInt64 ofst);

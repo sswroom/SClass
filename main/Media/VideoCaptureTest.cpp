@@ -31,7 +31,7 @@ void __stdcall CaptureTest(UInt32 frameTime, UInt32 frameNum, UInt8 **imgData, U
 		Exporter::TIFFExporter exporter;
 		Media::StaticImage *simg;
 		Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
-		Text::CString fileName = CSTR("Capture.tif");
+		Text::CStringNN fileName = CSTR("Capture.tif");
 		NEW_CLASS(simg, Media::StaticImage(info.dispSize, 0, 32, Media::PF_B8G8R8A8, 0, &color, Media::ColorProfile::YUVT_BT601, info.atype, info.ycOfst));
 		Media::ImageList imgList(fileName);
 		imgList.AddImage(simg, 0);

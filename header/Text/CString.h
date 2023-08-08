@@ -9,22 +9,21 @@ namespace
 }
 #endif
 
-#define CSTR(str) Text::CString(UTF8STRC(str))
+#define CSTR(str) Text::CStringNN(UTF8STRC(str))
 #define CSTR_NULL Text::CString(0, 0)
 #if defined(DEBUGNULL)
 #define CSTRP(str, strEnd) Text::CString::FromPtrD(str, strEnd, __FILE__, __LINE__)
 #else
-#define CSTRP(str, strEnd) Text::CString(str, (UOSInt)(strEnd - str))
+#define CSTRP(str, strEnd) Text::CStringNN(str, (UOSInt)(strEnd - str))
 #endif
-#define CSTRPZ(str, strEnd) ((strEnd == 0)?CSTR(""):Text::CString(str, (UOSInt)(strEnd - str)))
+#define CSTRPZ(str, strEnd) ((strEnd == 0)?CSTR(""):Text::CStringNN(str, (UOSInt)(strEnd - str)))
 
 namespace Text
 {
+	struct CStringNN;
 	struct CString : public StringBase<const UTF8Char>
 	{
-		CString()
-		{
-		}
+		CString() = default;
 
 		CString(const Int32 *nul)
 		{
@@ -59,19 +58,9 @@ namespace Text
 		}
 #endif
 
-		CString Substring(UOSInt index) const
-		{
-			if (index >= this->leng)
-			{
-				return {this->v, 0};
-			}
-			else
-			{
-				return {this->v + index, this->leng - index};
-			}
-		}
+		FORCEINLINE CStringNN Substring(UOSInt index) const;
 
-		CString LTrim()
+		CString LTrim() const
 		{
 			UOSInt i = 0;
 			while (i < this->leng)
@@ -80,9 +69,44 @@ namespace Text
 					break;
 				i++;
 			}
-			return {this->v + i, this->leng - i};
+			return CString(this->v + i, this->leng - i);
+		}
+
+		Bool IsNull() const
+		{
+			return this->v == 0;
+		}
+
+		FORCEINLINE CStringNN OrEmpty() const;
+	};
+
+	struct CStringNN : public CString
+	{
+		CStringNN() = default;
+		CStringNN(const UTF8Char *v, UOSInt leng) : CString(v, leng)
+		{
 		}
 	};
+
+	FORCEINLINE CStringNN CString::Substring(UOSInt index) const
+	{
+		if (index >= this->leng)
+		{
+			return CStringNN(this->v, 0);
+		}
+		else
+		{
+			return CStringNN(this->v + index, this->leng - index);
+		}
+	}
+
+	FORCEINLINE CStringNN CString::OrEmpty() const
+	{
+		if (this->v)
+			return CStringNN(this->v, this->leng);
+		else
+			return CSTR("");
+	}
 
 	FORCEINLINE UTF8Char *StrCSVJoinC(UTF8Char *oriStr, Text::CString *strs, UOSInt nStrs)
 	{

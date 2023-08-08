@@ -2,7 +2,7 @@
 #include "IO/FileExporter.h"
 #include "IO/FileStream.h"
 
-Bool IO::FileExporter::ExportNewFile(Text::CString fileName, IO::ParsedObject *pobj, void *param)
+Bool IO::FileExporter::ExportNewFile(Text::CStringNN fileName, IO::ParsedObject *pobj, void *param)
 {
 	IO::FileStream fs(fileName, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 	if (fs.IsError())

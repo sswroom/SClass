@@ -3,7 +3,7 @@
 
 #include <stdio.h>
 
-Media::Jasper::JasperReport *Media::Jasper::JasperXML::ParseJasperReport(Text::XMLReader *reader, Text::CString fileName)
+Media::Jasper::JasperReport *Media::Jasper::JasperXML::ParseJasperReport(NotNullPtr<Text::XMLReader> reader, Text::CString fileName)
 {
 	if (reader->GetNodeType() != Text::XMLNode::NodeType::Element || !reader->GetNodeText()->Equals(UTF8STRC("jasperReport")))
 	{
@@ -331,7 +331,7 @@ Media::Jasper::JasperReport *Media::Jasper::JasperXML::ParseJasperReport(Text::X
 	return report;
 }
 
-Media::Jasper::JasperBand *Media::Jasper::JasperXML::ParseBand(Text::XMLReader *reader)
+Media::Jasper::JasperBand *Media::Jasper::JasperXML::ParseBand(NotNullPtr<Text::XMLReader> reader)
 {
 	if (reader->GetNodeType() != Text::XMLNode::NodeType::Element)
 	{
@@ -388,7 +388,7 @@ Media::Jasper::JasperBand *Media::Jasper::JasperXML::ParseBand(Text::XMLReader *
 	return band;
 }
 
-Media::Jasper::JasperElement *Media::Jasper::JasperXML::ParseElement(Text::XMLReader *reader)
+Media::Jasper::JasperElement *Media::Jasper::JasperXML::ParseElement(NotNullPtr<Text::XMLReader> reader)
 {
 	if (reader->GetNodeType() != Text::XMLNode::NodeType::Element)
 	{

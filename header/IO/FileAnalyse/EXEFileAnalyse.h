@@ -37,7 +37,7 @@ namespace IO
 			EXEFileAnalyse(NotNullPtr<IO::StreamData> fd);
 			virtual ~EXEFileAnalyse();
 
-			virtual Text::CString GetFormatName();
+			virtual Text::CStringNN GetFormatName();
 			virtual UOSInt GetFrameCount();
 			virtual Bool GetFrameName(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb);
 			virtual Bool GetFrameDetail(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb);
@@ -46,7 +46,7 @@ namespace IO
 
 			virtual Bool IsError();
 			virtual Bool IsParsing();
-			virtual Bool TrimPadding(Text::CString outputFile);
+			virtual Bool TrimPadding(Text::CStringNN outputFile);
 
 			static Text::CString PackTypeGetName(Int32 packType);
 		};

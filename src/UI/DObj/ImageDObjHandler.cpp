@@ -39,7 +39,7 @@ void UI::DObj::ImageDObjHandler::DrawBkg(Media::DrawImage *dimg)
 	}
 }
 
-UI::DObj::ImageDObjHandler::ImageDObjHandler(NotNullPtr<Media::DrawEngine> deng, Text::CString fileName) : UI::DObj::DObjHandler(deng)
+UI::DObj::ImageDObjHandler::ImageDObjHandler(NotNullPtr<Media::DrawEngine> deng, Text::CStringNN fileName) : UI::DObj::DObjHandler(deng)
 {
 	this->bmpBkg = this->deng->LoadImage(fileName);
 	this->bmpBuff = 0;

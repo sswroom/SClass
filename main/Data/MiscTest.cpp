@@ -64,8 +64,8 @@ Int32 Test0()
 
 Int32 Test1()
 {
-	Text::CString srcFile = CSTR("/home/sswroom/Progs/Temp/20230302 ArcGIS CSys/pcs.html");
-	Text::CString destFile = CSTR("/home/sswroom/Progs/Temp/20230302 ArcGIS CSys//pcs.txt");
+	Text::CStringNN srcFile = CSTR("/home/sswroom/Progs/Temp/20230302 ArcGIS CSys/pcs.html");
+	Text::CStringNN destFile = CSTR("/home/sswroom/Progs/Temp/20230302 ArcGIS CSys//pcs.txt");
 	Text::EncodingFactory encFact;
 
 	IO::ConsoleWriter console;
@@ -316,7 +316,7 @@ public:
 
 Int32 AXCAN_BYDC9RTest()
 {
-	Text::CString filePath = CSTR("/home/sswroom/Progs/Temp/20230511 ITT CANBUS/Sampledata.txt");
+	Text::CStringNN filePath = CSTR("/home/sswroom/Progs/Temp/20230511 ITT CANBUS/Sampledata.txt");
 	IO::FileStream fs(filePath, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 	Text::UTF8Reader reader(fs);
 	TestCANHandler hdlr;

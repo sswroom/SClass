@@ -85,7 +85,7 @@ Text::IMIMEObj *Text::IMIMEObj::ParseFromData(NotNullPtr<IO::StreamData> data, T
 	return obj;
 }
 
-Text::IMIMEObj *Text::IMIMEObj::ParseFromFile(Text::CString fileName)
+Text::IMIMEObj *Text::IMIMEObj::ParseFromFile(Text::CStringNN fileName)
 {
 	Text::CString contentType;
 	Text::IMIMEObj *obj;

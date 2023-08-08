@@ -91,7 +91,7 @@ IO::FileAnalyse::PNGFileAnalyse::~PNGFileAnalyse()
 	LIST_FREE_FUNC(&this->tags, MemFree);
 }
 
-Text::CString IO::FileAnalyse::PNGFileAnalyse::GetFormatName()
+Text::CStringNN IO::FileAnalyse::PNGFileAnalyse::GetFormatName()
 {
 	return CSTR("PNG");
 }
@@ -494,7 +494,7 @@ Bool IO::FileAnalyse::PNGFileAnalyse::IsParsing()
 	return this->threadRunning;
 }
 
-Bool IO::FileAnalyse::PNGFileAnalyse::TrimPadding(Text::CString outputFile)
+Bool IO::FileAnalyse::PNGFileAnalyse::TrimPadding(Text::CStringNN outputFile)
 {
 	return false;
 }

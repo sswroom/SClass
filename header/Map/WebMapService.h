@@ -53,8 +53,8 @@ namespace Map
 		Math::CoordinateSystem *csys;
 
 		void LoadXML(Version version);
-		void LoadXMLRequest(Text::XMLReader *reader);
-		void LoadXMLLayers(Text::XMLReader *reader);
+		void LoadXMLRequest(NotNullPtr<Text::XMLReader> reader);
+		void LoadXMLLayers(NotNullPtr<Text::XMLReader> reader);
 
 	public:
 		WebMapService(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, Text::CString wmsURL, Version version, Math::CoordinateSystem *envCsys);

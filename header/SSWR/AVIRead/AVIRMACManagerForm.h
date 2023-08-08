@@ -69,7 +69,7 @@ namespace SSWR
 			static void __stdcall OnContentSelChg(void *userObj);
 			static void __stdcall OnInputClicked(void *userObj);
 			static void __stdcall OnWiresharkClicked(void *userObj);
-			void LogFileLoad(Text::CString fileName);
+			void LogFileLoad(Text::CStringNN fileName);
 			void LogFileClear();
 
 			void UpdateStatus();

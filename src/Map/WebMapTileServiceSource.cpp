@@ -64,11 +64,11 @@ void Map::WebMapTileServiceSource::LoadXML()
 								s = reader.GetNodeText();
 								if (s->Equals(UTF8STRC("Layer")))
 								{
-									ReadLayer(&reader);
+									ReadLayer(reader);
 								}
 								else if (s->Equals(UTF8STRC("TileMatrixSet")))
 								{
-									TileMatrixDefSet *set = ReadTileMatrixSet(&reader);
+									TileMatrixDefSet *set = ReadTileMatrixSet(reader);
 									if (set)
 									{
 										this->matrixDef.Put(set->id, set);
@@ -101,7 +101,7 @@ void Map::WebMapTileServiceSource::LoadXML()
 	this->SetLayer(0);
 }
 
-void Map::WebMapTileServiceSource::ReadLayer(Text::XMLReader *reader)
+void Map::WebMapTileServiceSource::ReadLayer(NotNullPtr<Text::XMLReader> reader)
 {
 	Text::StringBuilderUTF8 sb;
 	Text::String *name;
@@ -284,7 +284,7 @@ void Map::WebMapTileServiceSource::ReadLayer(Text::XMLReader *reader)
 	}
 }
 
-Map::WebMapTileServiceSource::TileMatrixSet *Map::WebMapTileServiceSource::ReadTileMatrixSetLink(Text::XMLReader *reader)
+Map::WebMapTileServiceSource::TileMatrixSet *Map::WebMapTileServiceSource::ReadTileMatrixSetLink(NotNullPtr<Text::XMLReader> reader)
 {
 	Text::XMLNode::NodeType nt;
 	Text::String *name;
@@ -431,7 +431,7 @@ Map::WebMapTileServiceSource::TileMatrixSet *Map::WebMapTileServiceSource::ReadT
 	}
 }
 
-Map::WebMapTileServiceSource::TileMatrixDefSet *Map::WebMapTileServiceSource::ReadTileMatrixSet(Text::XMLReader *reader)
+Map::WebMapTileServiceSource::TileMatrixDefSet *Map::WebMapTileServiceSource::ReadTileMatrixSet(NotNullPtr<Text::XMLReader> reader)
 {
 	Text::XMLNode::NodeType nt;
 	Text::String *name;

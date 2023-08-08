@@ -7,7 +7,7 @@
 #include "Text/MyString.h"
 #include "Text/URLString.h"
 
-IO::ParsedObject *Net::URL::OpenObject(Text::CString url, Text::CString userAgent, NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Data::Duration timeout)
+IO::ParsedObject *Net::URL::OpenObject(Text::CStringNN url, Text::CString userAgent, NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Data::Duration timeout)
 {
 	IO::ParsedObject *pobj;
 	UTF8Char sbuff[512];
@@ -19,7 +19,7 @@ IO::ParsedObject *Net::URL::OpenObject(Text::CString url, Text::CString userAgen
 		cli->Connect(url, Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, true);
 		if (cli->GetRespStatus() == Net::WebStatus::SC_MOVED_TEMPORARILY || cli->GetRespStatus() == Net::WebStatus::SC_MOVED_PERMANENTLY)
 		{
-			Text::CString newUrl = cli->GetRespHeader(CSTR("Location"));
+			Text::CStringNN newUrl = cli->GetRespHeader(CSTR("Location")).OrEmpty();
 			if (newUrl.leng > 0 && !newUrl.Equals(url.v, url.leng) && (newUrl.StartsWith(UTF8STRC("http://")) || newUrl.StartsWith(UTF8STRC("https://"))))
 			{
 				pobj = OpenObject(newUrl, userAgent, sockf, ssl, timeout);
@@ -36,7 +36,7 @@ IO::ParsedObject *Net::URL::OpenObject(Text::CString url, Text::CString userAgen
 		cli->Connect(url, Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, true);
 		if (cli->GetRespStatus() == Net::WebStatus::SC_MOVED_TEMPORARILY || cli->GetRespStatus() == Net::WebStatus::SC_MOVED_PERMANENTLY)
 		{
-			Text::CString newUrl = cli->GetRespHeader(CSTR("Location"));
+			Text::CStringNN newUrl = cli->GetRespHeader(CSTR("Location")).OrEmpty();
 			if (newUrl.leng > 0 && !newUrl.Equals(url.v, url.leng) && (newUrl.StartsWith(UTF8STRC("http://")) || newUrl.StartsWith(UTF8STRC("https://"))))
 			{
 				pobj = OpenObject(newUrl, userAgent, sockf, ssl, timeout);

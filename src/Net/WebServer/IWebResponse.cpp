@@ -12,7 +12,7 @@ Net::WebServer::IWebResponse::IWebResponse(NotNullPtr<Text::String> sourceName) 
 {
 }
 
-Net::WebServer::IWebResponse::IWebResponse(Text::CString sourceName) : IO::Stream(sourceName)
+Net::WebServer::IWebResponse::IWebResponse(Text::CStringNN sourceName) : IO::Stream(sourceName)
 {
 }
 

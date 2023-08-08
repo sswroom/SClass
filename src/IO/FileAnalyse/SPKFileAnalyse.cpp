@@ -163,7 +163,7 @@ IO::FileAnalyse::SPKFileAnalyse::~SPKFileAnalyse()
 	LIST_FREE_FUNC(&this->packs, FreePackInfo);
 }
 
-Text::CString IO::FileAnalyse::SPKFileAnalyse::GetFormatName()
+Text::CStringNN IO::FileAnalyse::SPKFileAnalyse::GetFormatName()
 {
 	return CSTR("SPK");
 }
@@ -364,7 +364,7 @@ Bool IO::FileAnalyse::SPKFileAnalyse::IsParsing()
 	return this->threadRunning;
 }
 
-Bool IO::FileAnalyse::SPKFileAnalyse::TrimPadding(Text::CString outputFile)
+Bool IO::FileAnalyse::SPKFileAnalyse::TrimPadding(Text::CStringNN outputFile)
 {
 	return false;
 }

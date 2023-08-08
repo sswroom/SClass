@@ -49,7 +49,7 @@ namespace Net
 		Bool ApplyOIDs(NotNullPtr<Text::StringBuilderUTF8> errMessage);
 		Bool ApplyModuleImports(ModuleInfo *module, NotNullPtr<Text::StringBuilderUTF8> errMessage);
 		Bool ApplyImports(NotNullPtr<Text::StringBuilderUTF8> errMessage);
-		Bool LoadFileInner(Text::CString fileName, NotNullPtr<Text::StringBuilderUTF8> errMessage, Bool postApply);
+		Bool LoadFileInner(Text::CStringNN fileName, NotNullPtr<Text::StringBuilderUTF8> errMessage, Bool postApply);
 
 		static void RemoveSpace(Text::PString *s);
 		static Bool IsType(const UTF8Char *s);
@@ -66,7 +66,7 @@ namespace Net
 		ModuleInfo *GetModuleByFileName(Text::CString fileName);
 
 		void UnloadAll();
-		Bool LoadFile(Text::CString fileName, NotNullPtr<Text::StringBuilderUTF8> errMessage);
+		Bool LoadFile(Text::CStringNN fileName, NotNullPtr<Text::StringBuilderUTF8> errMessage);
 	};
 }
 #endif

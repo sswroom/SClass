@@ -41,8 +41,8 @@ namespace Text
 		void SetContentHTML(Text::String *content, Text::CString htmlPath);
 		void SetContentText(const WChar *content, UInt32 codePage);
 		void SetContentText(Text::String *content);
-		Bool SetContentFile(Text::CString filePath);
-		void AddAttachment(Text::CString fileName);
+		Bool SetContentFile(Text::CStringNN filePath);
+		void AddAttachment(Text::CStringNN fileName);
 
 		Text::MIMEObj::MailMessage *CreateMail();
 	};

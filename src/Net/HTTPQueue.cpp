@@ -15,7 +15,7 @@ Net::HTTPQueue::~HTTPQueue()
 	this->Clear();
 }
 
-NotNullPtr<Net::HTTPClient> Net::HTTPQueue::MakeRequest(Text::CString url, Net::WebUtil::RequestMethod method, Bool noShutdown)
+NotNullPtr<Net::HTTPClient> Net::HTTPQueue::MakeRequest(Text::CStringNN url, Net::WebUtil::RequestMethod method, Bool noShutdown)
 {
 	UTF8Char sbuff[512];
 	Text::URLString::GetURLDomain(sbuff, url, 0);

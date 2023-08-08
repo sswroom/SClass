@@ -78,7 +78,7 @@ IO::StmData::FileData::FileData(NotNullPtr<Text::String> fname, Bool deleteOnClo
 	}
 }
 
-IO::StmData::FileData::FileData(Text::CString fname, Bool deleteOnClose)
+IO::StmData::FileData::FileData(Text::CStringNN fname, Bool deleteOnClose)
 {
 	fdh = 0;
 	IO::FileStream *fs;

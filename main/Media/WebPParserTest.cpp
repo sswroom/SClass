@@ -5,8 +5,8 @@
 
 Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
-	Text::CString fileName = CSTR("/home/sswroom/Progs/Temp/FileTest/1.webp");
-	Text::CString outName = CSTR("/home/sswroom/Progs/Temp/FileTest/1.enc.webp");
+	Text::CStringNN fileName = CSTR("/home/sswroom/Progs/Temp/FileTest/1.webp");
+	Text::CStringNN outName = CSTR("/home/sswroom/Progs/Temp/FileTest/1.enc.webp");
 	Parser::FileParser::WebPParser parser;
 	IO::ParsedObject *pobj = parser.ParseFilePath(fileName);
 	if (pobj)

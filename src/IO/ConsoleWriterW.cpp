@@ -38,11 +38,11 @@ IO::ConsoleWriter::ConsoleWriter()
 	this->bgColor = Text::StandardColor::Black;
 	UInt32 mode;
 #ifndef _WIN32_WCE
-	BOOL ret = GetConsoleMode(this->hand, (LPDWORD)&mode);
+	BOOL ret = GetConsoleMode(this->clsData->hand, (LPDWORD)&mode);
 	if (ret == 0)
 	{
-		fileOutput = true;
-		NEW_CLASS(this->enc, Text::Encoding());
+		this->clsData->fileOutput = true;
+		NEW_CLASS(this->clsData->enc, Text::Encoding());
 	}
 #endif
 }
@@ -102,18 +102,18 @@ Bool IO::ConsoleWriter::WriteStrC(const UTF8Char *s, UOSInt nUTF8Char)
 {
 	UInt32 outChars = 0;
 	UInt32 nChar;
-	if (this->enc == 0)
+	if (this->clsData->enc == 0)
 	{
 		UOSInt strLen = Text::StrUTF8_WCharCntC(s, nUTF8Char);
 		WChar *str = MemAlloc(WChar, strLen + 1);
 		Text::StrUTF8_WCharC(str, s, nUTF8Char, 0);
-		WriteConsoleW((HANDLE)this->hand, str, nChar = (UInt32)strLen, (LPDWORD)&outChars, 0);
+		WriteConsoleW(this->clsData->hand, str, nChar = (UInt32)strLen, (LPDWORD)&outChars, 0);
 		MemFree(str);
 		if (outChars == nChar)
 		{
-			if (this->autoFlush)
+			if (this->clsData->autoFlush)
 			{
-				FlushFileBuffers((HANDLE)this->hand);
+				FlushFileBuffers(this->clsData->hand);
 			}
 			return true;
 		}
@@ -124,10 +124,10 @@ Bool IO::ConsoleWriter::WriteStrC(const UTF8Char *s, UOSInt nUTF8Char)
 		UOSInt nBytes;
 		UInt8 *tmpBuff;
 		nChar = (UInt32)Text::StrCharCnt(s);
-		nBytes = this->enc->UTF8CountBytesC(s, nChar);
+		nBytes = this->clsData->enc->UTF8CountBytesC(s, nChar);
 		tmpBuff = MemAlloc(UInt8, nBytes + 1);
-		this->enc->UTF8ToBytesC(tmpBuff, s, nChar);
-		if (fileOutput)
+		this->clsData->enc->UTF8ToBytesC(tmpBuff, s, nChar);
+		if (this->clsData->fileOutput)
 		{
 			WriteFile(this->clsData->hand, tmpBuff, (UInt32)nBytes, (LPDWORD)&outChars, 0);
 		}
@@ -138,7 +138,7 @@ Bool IO::ConsoleWriter::WriteStrC(const UTF8Char *s, UOSInt nUTF8Char)
 		MemFree(tmpBuff);
 		if (outChars == (UInt32)nBytes)
 		{
-			if (this->autoFlush)
+			if (this->clsData->autoFlush)
 			{
 				FlushFileBuffers(this->clsData->hand);
 			}
@@ -152,19 +152,19 @@ Bool IO::ConsoleWriter::WriteLineC(const UTF8Char *s, UOSInt nUTF8Char)
 {
 	UInt32 outChars = 0;
 	UInt32 nChar;
-	if (this->enc == 0)
+	if (this->clsData->enc == 0)
 	{
 		UOSInt strLen = Text::StrUTF8_WCharCntC(s, nUTF8Char);
 		WChar *str = MemAlloc(WChar, strLen + 2);
 		Text::StrUTF8_WCharC(str, s, nUTF8Char, 0);
 		str[strLen] = '\n';
-		WriteConsoleW((HANDLE)this->hand, str, nChar = (UInt32)(strLen + 1), (LPDWORD)&outChars, 0);
+		WriteConsoleW(this->clsData->hand, str, nChar = (UInt32)(strLen + 1), (LPDWORD)&outChars, 0);
 		MemFree(str);
 		if (outChars == nChar)
 		{
-			if (this->autoFlush)
+			if (this->clsData->autoFlush)
 			{
-				FlushFileBuffers((HANDLE)this->hand);
+				FlushFileBuffers(this->clsData->hand);
 			}
 			return true;
 		}
@@ -175,11 +175,11 @@ Bool IO::ConsoleWriter::WriteLineC(const UTF8Char *s, UOSInt nUTF8Char)
 		UOSInt nBytes;
 		UInt8 *tmpBuff;
 		nChar = (UInt32)Text::StrCharCnt(s);
-		nBytes = this->clsData->enc.UTF8CountBytesC(s, nChar) + 1;
+		nBytes = this->clsData->enc->UTF8CountBytesC(s, nChar) + 1;
 		tmpBuff = MemAlloc(UInt8, nBytes + 1);
-		this->clsData->enc.UTF8ToBytesC(tmpBuff, s, nChar);
+		this->clsData->enc->UTF8ToBytesC(tmpBuff, s, nChar);
 		tmpBuff[nBytes - 1] = '\n';
-		if (fileOutput)
+		if (this->clsData->fileOutput)
 		{
 			WriteFile(this->clsData->hand, tmpBuff, (UInt32)nBytes, (LPDWORD)&outChars, 0);
 		}
@@ -190,7 +190,7 @@ Bool IO::ConsoleWriter::WriteLineC(const UTF8Char *s, UOSInt nUTF8Char)
 		MemFree(tmpBuff);
 		if (outChars == (UInt32)nBytes)
 		{
-			if (this->autoFlush)
+			if (this->clsData->autoFlush)
 			{
 				FlushFileBuffers(this->clsData->hand);
 			}
@@ -203,19 +203,19 @@ Bool IO::ConsoleWriter::WriteLineC(const UTF8Char *s, UOSInt nUTF8Char)
 Bool IO::ConsoleWriter::WriteLine()
 {
 	UInt32 outChars = 0;
-	if (fileOutput)
+	if (this->clsData->fileOutput)
 	{
-		WriteFile((HANDLE)this->hand, "\n", 1, (LPDWORD)&outChars, 0);
+		WriteFile(this->clsData->hand, "\n", 1, (LPDWORD)&outChars, 0);
 	}
 	else
 	{
-		WriteConsoleW((HANDLE)this->hand, L"\n", 1, (LPDWORD)&outChars, 0);
+		WriteConsoleW(this->clsData->hand, L"\n", 1, (LPDWORD)&outChars, 0);
 	}
 	if (outChars == 1)
 	{
-		if (this->autoFlush)
+		if (this->clsData->autoFlush)
 		{
-			FlushFileBuffers((HANDLE)this->hand);
+			FlushFileBuffers(this->clsData->hand);
 		}
 		return true;
 	}
@@ -227,7 +227,7 @@ Bool IO::ConsoleWriter::WriteChar(UTF8Char c)
 	UInt32 outChars = 0;
 	WChar buff[2];
 	buff[0] = c;
-	if (fileOutput)
+	if (this->clsData->fileOutput)
 	{
 		WriteFile(this->clsData->hand, buff, 1, (LPDWORD)&outChars, 0);
 	}
@@ -237,7 +237,7 @@ Bool IO::ConsoleWriter::WriteChar(UTF8Char c)
 	}
 	if (outChars == 1)
 	{
-		if (this->autoFlush)
+		if (this->clsData->autoFlush)
 		{
 			FlushFileBuffers(this->clsData->hand);
 		}
@@ -254,7 +254,7 @@ void IO::ConsoleWriter::SetBGColor(Text::StandardColor bgColor)
 void IO::ConsoleWriter::SetTextColor(Text::StandardColor fgColor)
 {
 #ifndef _WIN32_WCE
-	SetConsoleTextAttribute((HANDLE)this->hand, (UInt16)(((UInt8)fgColor & 0xf) | (((UInt8)this->bgColor & 0xf) << 4)));
+	SetConsoleTextAttribute(this->clsData->hand, (UInt16)(((UInt8)fgColor & 0xf) | (((UInt8)this->bgColor & 0xf) << 4)));
 #endif
 }
 
@@ -318,19 +318,19 @@ WChar *IO::ConsoleWriter::ReadLine(WChar *sbuff, UOSInt nChar)
 void IO::ConsoleWriter::EnableCPFix(Bool isEnable)
 {
 #ifndef _WIN32_WCE
-	if (isEnable || fileOutput)
+	if (isEnable || this->clsData->fileOutput)
 	{
-		if (this->enc == 0)
+		if (this->clsData->enc == 0)
 		{
-			NEW_CLASS(this->enc, Text::Encoding(GetConsoleOutputCP()));
+			NEW_CLASS(this->clsData->enc, Text::Encoding(GetConsoleOutputCP()));
 		}
 	}
 	else
 	{
-		if (this->enc)
+		if (this->clsData->enc)
 		{
-			DEL_CLASS(this->enc);
-			this->enc = 0;
+			DEL_CLASS(this->clsData->enc);
+			this->clsData->enc = 0;
 		}
 	}
 #endif
@@ -338,7 +338,7 @@ void IO::ConsoleWriter::EnableCPFix(Bool isEnable)
 
 void IO::ConsoleWriter::SetAutoFlush(Bool autoFlush)
 {
-	this->autoFlush = autoFlush;
+	this->clsData->autoFlush = autoFlush;
 }
 
 Bool IO::ConsoleWriter::GetConsoleState(IO::ConsoleWriter::ConsoleState *state)
@@ -347,7 +347,7 @@ Bool IO::ConsoleWriter::GetConsoleState(IO::ConsoleWriter::ConsoleState *state)
 	return false;
 #else
 	CONSOLE_SCREEN_BUFFER_INFO info;
-	if (GetConsoleScreenBufferInfo((HANDLE)this->hand, &info) == FALSE)
+	if (GetConsoleScreenBufferInfo(this->clsData->hand, &info) == FALSE)
 		return false;
 	state->fgColor = (Text::StandardColor)(info.wAttributes & 0xf);
 	state->bgColor = (Text::StandardColor)((info.wAttributes >> 4) & 0xf);
@@ -367,7 +367,7 @@ Bool IO::ConsoleWriter::SetCursorPos(UInt32 x, Int32 y)
 	COORD tmp;
 	tmp.X = (SHORT)x;
 	tmp.Y = (SHORT)y;
-	return SetConsoleCursorPosition((HANDLE)this->hand, tmp) != 0;
+	return SetConsoleCursorPosition(this->clsData->hand, tmp) != 0;
 #endif
 }
 
@@ -378,7 +378,7 @@ Bool IO::ConsoleWriter::IsFileOutput()
 
 void IO::ConsoleWriter::FixWrite(const WChar *str, UOSInt displayWidth)
 {
-	if (this->fileOutput || this->enc == 0)
+	if (this->clsData->fileOutput || this->clsData->enc == 0)
 	{
 		return;
 	}
@@ -442,7 +442,7 @@ void IO::ConsoleWriter::FixWrite(const WChar *str, UOSInt displayWidth)
 
 UOSInt IO::ConsoleWriter::GetDisplayWidth(const WChar *str)
 {
-	if (this->fileOutput || this->enc == 0)
+	if (this->clsData->fileOutput || this->clsData->enc == 0)
 	{
 		return Text::StrCharCnt(str);
 	}
@@ -459,7 +459,7 @@ UOSInt IO::ConsoleWriter::GetDisplayWidth(const WChar *str)
 UOSInt IO::ConsoleWriter::GetDisplayCharWidth(WChar c)
 {
 	UInt8 buff[4];
-	UOSInt size = this->enc->WToBytesC(buff, &c, 1);
+	UOSInt size = this->clsData->enc->WToBytesC(buff, &c, 1);
 	if (size == 1 && buff[0] < 128)
 		return 1;
 
@@ -467,14 +467,14 @@ UOSInt IO::ConsoleWriter::GetDisplayCharWidth(WChar c)
 	return 2;
 #else
 	CONSOLE_SCREEN_BUFFER_INFO info;
-	if (GetConsoleScreenBufferInfo((HANDLE)this->hand, &info) == FALSE)
+	if (GetConsoleScreenBufferInfo(this->clsData->hand, &info) == FALSE)
 		return 1;
 	CONSOLE_SCREEN_BUFFER_INFO info2;
 	COORD tmp = {0, 0};
-	SetConsoleCursorPosition((HANDLE)this->hand, tmp);
+	SetConsoleCursorPosition(this->clsData->hand, tmp);
 	DWORD nChar;
-	WriteConsoleA((HANDLE)this->hand, buff, (DWORD)size, &nChar, 0);
-	if (GetConsoleScreenBufferInfo((HANDLE)this->hand, &info2) == FALSE)
+	WriteConsoleA(this->clsData->hand, buff, (DWORD)size, &nChar, 0);
+	if (GetConsoleScreenBufferInfo(this->clsData->hand, &info2) == FALSE)
 	{
 		size = 1;
 	}
@@ -482,7 +482,7 @@ UOSInt IO::ConsoleWriter::GetDisplayCharWidth(WChar c)
 	{
 		size = (UOSInt)info2.dwCursorPosition.X;
 	}
-	SetConsoleCursorPosition((HANDLE)this->hand, info.dwCursorPosition);
+	SetConsoleCursorPosition(this->clsData->hand, info.dwCursorPosition);
 	return size;
 #endif
 }

@@ -127,11 +127,11 @@ namespace SSWR
 			Bool SpeciesModify(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 speciesId, Text::CString engName, Text::CString chiName, Text::CString sciName, Text::CString description, Text::CString dirName);
 			Bool SpeciesDelete(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 speciesId);
 			Bool SpeciesMerge(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 srcSpeciesId, Int32 destSpeciesId, Int32 cateId);
-			Bool SpeciesAddWebfile(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 speciesId, Text::CString imgURL, Text::CString sourceURL, Text::CString location);
+			Bool SpeciesAddWebfile(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 speciesId, Text::CStringNN imgURL, Text::CStringNN sourceURL, Text::CString location);
 			UserFileInfo *UserfileGetCheck(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 userfileId, Int32 speciesId, Int32 cateId, WebUserInfo *currUser, UTF8Char **filePathOut);
 			UserFileInfo *UserfileGet(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 id);
 			UTF8Char *UserfileGetPath(UTF8Char *sbuff, const UserFileInfo *userfile);
-			Int32 UserfileAdd(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 userId, Int32 spId, Text::CString fileName, const UInt8 *fileCont, UOSInt fileSize, Bool mustHaveCamera, Text::String *location);
+			Int32 UserfileAdd(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 userId, Int32 spId, Text::CStringNN fileName, const UInt8 *fileCont, UOSInt fileSize, Bool mustHaveCamera, Text::String *location);
 			Bool UserfileMove(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 userfileId, Int32 speciesId, Int32 cateId);
 			Bool UserfileUpdateDesc(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 userfileId, Text::CString descr);
 			Bool UserfileUpdateRotType(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 userfileId, Int32 rotType);

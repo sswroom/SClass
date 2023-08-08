@@ -20,7 +20,7 @@ Map::MapSearchManager::~MapSearchManager()
 	}
 }
 
-Map::MapSearchLayer *Map::MapSearchManager::LoadLayer(Text::CString fileName)
+Map::MapSearchLayer *Map::MapSearchManager::LoadLayer(Text::CStringNN fileName)
 {
 	OSInt i = this->nameArr.SortedIndexOfPtr(fileName.v, fileName.leng);
 	if (i >= 0)

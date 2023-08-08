@@ -342,7 +342,7 @@ Net::TCPClientMgr::~TCPClientMgr()
 	SDEL_CLASS(this->logFS);
 }
 
-void Net::TCPClientMgr::SetLogFile(Text::CString logFile)
+void Net::TCPClientMgr::SetLogFile(Text::CStringNN logFile)
 {
 	Sync::MutexUsage mutUsage(this->logMut);
 	SDEL_CLASS(this->logFS);

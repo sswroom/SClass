@@ -104,9 +104,9 @@ namespace SSWR
 			static void __stdcall OnConvertClicked(void *userObj);
 			static void __stdcall OnFile(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles);
 
-			Int32 GroupConvert(Text::CString sourceFile, Text::CString outFilePrefix, Data::ArrayList<const UTF8Char*> *dbCols, Int32 blkScale, NotNullPtr<Data::ArrayList<MapFilter*>> filters, IO::ProgressHandler *progress, UOSInt groupCol, Data::ArrayList<const UTF8Char*> *outNames, NotNullPtr<Data::ArrayList<UInt32>> dbCols2);
-			Int32 ConvertShp(Text::CString sourceFile, Text::CString outFilePrefix, Data::ArrayList<const UTF8Char*> *dbCols, Int32 blkScale, NotNullPtr<Data::ArrayList<MapFilter*>> filters, IO::ProgressHandler *progress, NotNullPtr<Data::ArrayList<UInt32>> dbCols2);
-			Int32 LoadShape(Text::CString fileName, Bool updateTxt);
+			Int32 GroupConvert(Text::CStringNN sourceFile, Text::CString outFilePrefix, Data::ArrayList<const UTF8Char*> *dbCols, Int32 blkScale, NotNullPtr<Data::ArrayList<MapFilter*>> filters, IO::ProgressHandler *progress, UOSInt groupCol, Data::ArrayList<const UTF8Char*> *outNames, NotNullPtr<Data::ArrayList<UInt32>> dbCols2);
+			Int32 ConvertShp(Text::CStringNN sourceFile, Text::CString outFilePrefix, Data::ArrayList<const UTF8Char*> *dbCols, Int32 blkScale, NotNullPtr<Data::ArrayList<MapFilter*>> filters, IO::ProgressHandler *progress, NotNullPtr<Data::ArrayList<UInt32>> dbCols2);
+			Int32 LoadShape(Text::CStringNN fileName, Bool updateTxt);
 			void ClearFilter();
 
 			virtual void ParseLabelStr(Text::CString labelStr, Data::ArrayList<const UTF8Char*> *dbCols, Data::ArrayList<UInt32> *dbCols2);

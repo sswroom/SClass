@@ -459,7 +459,7 @@ Bool Net::Email::EmailMessage::AddBcc(Text::CString addr)
 	return true;
 }
 
-Net::Email::EmailMessage::Attachment *Net::Email::EmailMessage::AddAttachment(Text::CString fileName)
+Net::Email::EmailMessage::Attachment *Net::Email::EmailMessage::AddAttachment(Text::CStringNN fileName)
 {
 	IO::FileStream fs(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 	if (fs.IsError())

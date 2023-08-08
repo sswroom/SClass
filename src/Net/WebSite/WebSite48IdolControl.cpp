@@ -38,7 +38,6 @@ OSInt Net::WebSite::WebSite48IdolControl::GetTVPageItems(OSInt pageNo, Data::Arr
 		sb.AppendOSInt(pageNo);
 	}
 	ItemData *item;
-	Text::XMLReader *reader;
 	Text::XMLAttrib *attr;
 	Text::XMLAttrib *attr1;
 	Text::XMLAttrib *attr2;
@@ -46,23 +45,23 @@ OSInt Net::WebSite::WebSite48IdolControl::GetTVPageItems(OSInt pageNo, Data::Arr
 	Data::DateTime dt;
 	NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, {STR_PTRC(this->userAgent)}, true, true);
 	cli->Connect(sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, true);
-	NEW_CLASS(reader, Text::XMLReader(this->encFact, cli, Text::XMLReader::PM_HTML));
-	while (reader->ReadNext())
+	Text::XMLReader reader(this->encFact, cli, Text::XMLReader::PM_HTML);
+	while (reader.ReadNext())
 	{
-		if (reader->GetNodeType() == Text::XMLNode::NodeType::Element && reader->GetNodeText()->Equals(UTF8STRC("main")) && reader->GetAttribCount() == 2)
+		if (reader.GetNodeType() == Text::XMLNode::NodeType::Element && reader.GetNodeText()->Equals(UTF8STRC("main")) && reader.GetAttribCount() == 2)
 		{
-			attr = reader->GetAttrib((UOSInt)0);
+			attr = reader.GetAttrib((UOSInt)0);
 			if (attr && attr->name->Equals(UTF8STRC("id")) && attr->value && attr->value->Equals(UTF8STRC("main-content")))
 			{
-				UOSInt pathLev = reader->GetPathLev();
-				while (reader->ReadNext() && reader->GetPathLev() > pathLev)
+				UOSInt pathLev = reader.GetPathLev();
+				while (reader.ReadNext() && reader.GetPathLev() > pathLev)
 				{
-					if (reader->GetNodeType() == Text::XMLNode::NodeType::Element && reader->GetNodeText()->Equals(UTF8STRC("a")) && reader->GetAttribCount() == 4)
+					if (reader.GetNodeType() == Text::XMLNode::NodeType::Element && reader.GetNodeText()->Equals(UTF8STRC("a")) && reader.GetAttribCount() == 4)
 					{
-						attr = reader->GetAttrib((UOSInt)0);
-						attr1 = reader->GetAttrib(1);
-						attr2 = reader->GetAttrib(2);
-						attr3 = reader->GetAttrib(3);
+						attr = reader.GetAttrib((UOSInt)0);
+						attr1 = reader.GetAttrib(1);
+						attr2 = reader.GetAttrib(2);
+						attr3 = reader.GetAttrib(3);
 						if (attr &&
 							attr1 &&
 							attr2 &&
@@ -89,7 +88,6 @@ OSInt Net::WebSite::WebSite48IdolControl::GetTVPageItems(OSInt pageNo, Data::Arr
 			}
 		}
 	}
-	DEL_CLASS(reader);
 	cli.Delete();
 	return retCnt;
 }
@@ -111,41 +109,40 @@ OSInt Net::WebSite::WebSite48IdolControl::GetArcPageItems(OSInt pageNo, Data::Ar
 		sb.AppendOSInt(pageNo);
 	}
 	ItemData *item;
-	Text::XMLReader *reader;
 	Text::XMLAttrib *attr;
 	Data::DateTime dt;
 	NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, {STR_PTRC(this->userAgent)}, true, true);
 	cli->Connect(sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, true);
-	NEW_CLASS(reader, Text::XMLReader(this->encFact, cli, Text::XMLReader::PM_HTML));
-	while (reader->ReadNext())
+	Text::XMLReader reader(this->encFact, cli, Text::XMLReader::PM_HTML);
+	while (reader.ReadNext())
 	{
-		if (reader->GetNodeType() == Text::XMLNode::NodeType::Element && reader->GetNodeText()->Equals(UTF8STRC("div")))
+		if (reader.GetNodeType() == Text::XMLNode::NodeType::Element && reader.GetNodeText()->Equals(UTF8STRC("div")))
 		{
-			attr = reader->GetAttrib((UOSInt)0);
+			attr = reader.GetAttrib((UOSInt)0);
 			if (attr && attr->name->Equals(UTF8STRC("class")) && attr->value && attr->value->Equals(UTF8STRC("post-des")))
 			{
-				UOSInt pathLev = reader->GetPathLev();
+				UOSInt pathLev = reader.GetPathLev();
 				Bool lastIsH6 = false;
 				Int32 id = 0;
 				Int64 time = 0;
 				Text::String *title = 0;
 				UOSInt pullLeftLev = 0;
-				while (reader->ReadNext() && reader->GetPathLev() > pathLev)
+				while (reader.ReadNext() && reader.GetPathLev() > pathLev)
 				{
-					if (reader->GetNodeType() == Text::XMLNode::NodeType::Element)
+					if (reader.GetNodeType() == Text::XMLNode::NodeType::Element)
 					{
-						if (reader->GetNodeText()->Equals(UTF8STRC("h6")))
+						if (reader.GetNodeText()->Equals(UTF8STRC("h6")))
 						{
 							lastIsH6 = true;
 						}
-						else if (lastIsH6 && reader->GetNodeText()->Equals(UTF8STRC("a")))
+						else if (lastIsH6 && reader.GetNodeText()->Equals(UTF8STRC("a")))
 						{
-							attr = reader->GetAttrib((UOSInt)0);
-							if (reader->GetAttribCount() == 1 && attr && attr->name->Equals(UTF8STRC("href")) && attr->value && attr->value->StartsWith(UTF8STRC(BASEURL)))
+							attr = reader.GetAttrib((UOSInt)0);
+							if (reader.GetAttribCount() == 1 && attr && attr->name->Equals(UTF8STRC("href")) && attr->value && attr->value->StartsWith(UTF8STRC(BASEURL)))
 							{
 								id = Text::StrToInt32(&attr->value->v[sizeof(BASEURL) + 5]);
 								sb.ClearStr();
-								reader->ReadNodeText(sb);
+								reader.ReadNodeText(sb);
 								SDEL_STRING(title);
 								title = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 							}
@@ -153,18 +150,18 @@ OSInt Net::WebSite::WebSite48IdolControl::GetArcPageItems(OSInt pageNo, Data::Ar
 						else
 						{
 							lastIsH6 = false;
-							if (reader->GetNodeText()->Equals(UTF8STRC("p")))
+							if (reader.GetNodeText()->Equals(UTF8STRC("p")))
 							{
-								attr = reader->GetAttrib((UOSInt)0);
+								attr = reader.GetAttrib((UOSInt)0);
 								if (attr && attr->name->Equals(UTF8STRC("class")) && attr->value && attr->value->Equals(UTF8STRC("pull-left")))
 								{
-									pullLeftLev = reader->GetPathLev();
+									pullLeftLev = reader.GetPathLev();
 								}
 							}
-							else if (pullLeftLev > 0 && reader->GetNodeText()->Equals(UTF8STRC("span")))
+							else if (pullLeftLev > 0 && reader.GetNodeText()->Equals(UTF8STRC("span")))
 							{
 								sb.ClearStr();
-								reader->ReadNodeText(sb);
+								reader.ReadNodeText(sb);
 								sb.Trim();
 								dt.SetValue(sb.ToCString());
 								time = dt.ToTicks();
@@ -174,7 +171,7 @@ OSInt Net::WebSite::WebSite48IdolControl::GetArcPageItems(OSInt pageNo, Data::Ar
 					else
 					{
 						lastIsH6 = false;
-						if (reader->GetPathLev() <= pullLeftLev)
+						if (reader.GetPathLev() <= pullLeftLev)
 						{
 							pullLeftLev = 0;
 						}
@@ -195,7 +192,6 @@ OSInt Net::WebSite::WebSite48IdolControl::GetArcPageItems(OSInt pageNo, Data::Ar
 			}
 		}
 	}
-	DEL_CLASS(reader);
 	cli.Delete();
 	return retCnt;
 }
@@ -218,20 +214,19 @@ Bool Net::WebSite::WebSite48IdolControl::GetDownloadLink(Int32 videoId, Int32 li
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC(BASEURL "video/"));
 	sb.AppendI32(videoId);
-	Text::XMLReader *reader;
 	Text::XMLAttrib *attr;
 	Bool found = false;
 	NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, {STR_PTRC(this->userAgent)}, true, true);
 	cli->Connect(sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, true);
-	NEW_CLASS(reader, Text::XMLReader(this->encFact, cli, Text::XMLReader::PM_HTML));
-	while (!found && reader->ReadNext())
+	Text::XMLReader reader(this->encFact, cli, Text::XMLReader::PM_HTML);
+	while (!found && reader.ReadNext())
 	{
-		if (reader->GetNodeType() == Text::XMLNode::NodeType::Element && reader->GetNodeText()->Equals(UTF8STRC("button")) && reader->GetAttribCount() > 0)
+		if (reader.GetNodeType() == Text::XMLNode::NodeType::Element && reader.GetNodeText()->Equals(UTF8STRC("button")) && reader.GetAttribCount() > 0)
 		{
-			attr = reader->GetAttrib((UOSInt)0);
+			attr = reader.GetAttrib((UOSInt)0);
 			if (attr->name->Equals(UTF8STRC("id")) && attr->value && attr->value->Equals(UTF8STRC("ddb")))
 			{
-				attr = reader->GetAttrib(1);
+				attr = reader.GetAttrib(1);
 				if (attr && attr->name->Equals(UTF8STRC("onclick")) && attr->value && attr->value->StartsWith(UTF8STRC("window.open('")))
 				{
 					if (linkId == 0)
@@ -251,7 +246,6 @@ Bool Net::WebSite::WebSite48IdolControl::GetDownloadLink(Int32 videoId, Int32 li
 			}
 		}
 	}
-	DEL_CLASS(reader);
 	cli.Delete();
 	return found;
 }
@@ -261,32 +255,30 @@ Bool Net::WebSite::WebSite48IdolControl::GetVideoName(Int32 videoId, NotNullPtr<
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC(BASEURL "video/"));
 	sb.AppendI32(videoId);
-	Text::XMLReader *reader;
 	Text::XMLAttrib *attr;
 	Bool found = false;
 	NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, {STR_PTRC(this->userAgent)}, true, true);
 	cli->Connect(sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, true);
-	NEW_CLASS(reader, Text::XMLReader(this->encFact, cli, Text::XMLReader::PM_HTML));
-	while (!found && reader->ReadNext())
+	Text::XMLReader reader(this->encFact, cli, Text::XMLReader::PM_HTML);
+	while (!found && reader.ReadNext())
 	{
-		if (reader->GetNodeType() == Text::XMLNode::NodeType::Element && reader->GetNodeText()->Equals(UTF8STRC("div")) && reader->GetAttribCount() > 0)
+		if (reader.GetNodeType() == Text::XMLNode::NodeType::Element && reader.GetNodeText()->Equals(UTF8STRC("div")) && reader.GetAttribCount() > 0)
 		{
-			attr = reader->GetAttrib((UOSInt)0);
+			attr = reader.GetAttrib((UOSInt)0);
 			if (attr->name->Equals(UTF8STRC("class")) && attr->value && attr->value->Equals(UTF8STRC("post-title")))
 			{
-				UOSInt initLev = reader->GetPathLev();
-				while (reader->ReadNext() && reader->GetPathLev() > initLev)
+				UOSInt initLev = reader.GetPathLev();
+				while (reader.ReadNext() && reader.GetPathLev() > initLev)
 				{
-					if (reader->GetNodeType() == Text::XMLNode::NodeType::Element && reader->GetNodeText()->Equals(UTF8STRC("h2")))
+					if (reader.GetNodeType() == Text::XMLNode::NodeType::Element && reader.GetNodeText()->Equals(UTF8STRC("h2")))
 					{
-						found = reader->ReadNodeText(name);
+						found = reader.ReadNodeText(name);
 						break;
 					}
 				}
 			}
 		}
 	}
-	DEL_CLASS(reader);
 	cli.Delete();
 	return found;
 }

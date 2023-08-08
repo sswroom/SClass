@@ -89,7 +89,7 @@ void Map::WebFeatureService::LoadXML(Version version)
 									nodeName = reader.GetNodeText();
 									if (nodeName->Equals(UTF8STRC("FeatureType")))
 									{
-										this->LoadXMLFeatureType(&reader);
+										this->LoadXMLFeatureType(reader);
 									}
 									else if (nodeName->Equals(UTF8STRC("Operations")))
 									{
@@ -142,7 +142,7 @@ void Map::WebFeatureService::LoadXML(Version version)
 	this->SetFeature(0);
 }
 
-void Map::WebFeatureService::LoadXMLFeatureType(Text::XMLReader *reader)
+void Map::WebFeatureService::LoadXMLFeatureType(NotNullPtr<Text::XMLReader> reader)
 {
 	Text::StringBuilderUTF8 sb;
 	Text::String *name = 0;

@@ -143,7 +143,7 @@ IO::FileAnalyse::TIFFFileAnalyse::~TIFFFileAnalyse()
 	LIST_FREE_FUNC(&this->packs, FreePackInfo);
 }
 
-Text::CString IO::FileAnalyse::TIFFFileAnalyse::GetFormatName()
+Text::CStringNN IO::FileAnalyse::TIFFFileAnalyse::GetFormatName()
 {
 	return CSTR("TIFF");
 }
@@ -288,7 +288,7 @@ Bool IO::FileAnalyse::TIFFFileAnalyse::IsParsing()
 	return this->threadRunning;
 }
 
-Bool IO::FileAnalyse::TIFFFileAnalyse::TrimPadding(Text::CString outputFile)
+Bool IO::FileAnalyse::TIFFFileAnalyse::TrimPadding(Text::CStringNN outputFile)
 {
 	return false;
 }

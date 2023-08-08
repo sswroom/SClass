@@ -87,7 +87,7 @@ Bool SSWR::DownloadMonitor::DownMonCore::FFMPEGMuxAAC(const UTF8Char *videoFile,
 	}
 }
 
-Bool SSWR::DownloadMonitor::DownMonCore::ExtractZIP(Text::CString zipFile, Text::CString mp4File)
+Bool SSWR::DownloadMonitor::DownMonCore::ExtractZIP(Text::CStringNN zipFile, Text::CString mp4File)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -113,7 +113,7 @@ Bool SSWR::DownloadMonitor::DownMonCore::ExtractZIP(Text::CString zipFile, Text:
 	return valid;
 }
 
-Bool SSWR::DownloadMonitor::DownMonCore::VideoValid(Text::CString fileName)
+Bool SSWR::DownloadMonitor::DownMonCore::VideoValid(Text::CStringNN fileName)
 {
 	Media::MediaFile *mediaFile;
 	Bool valid = false;

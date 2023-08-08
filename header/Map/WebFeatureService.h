@@ -39,7 +39,7 @@ namespace Map
 		FeatureType *currFeature;
 
 		void LoadXML(Version version);
-		void LoadXMLFeatureType(Text::XMLReader *reader);
+		void LoadXMLFeatureType(NotNullPtr<Text::XMLReader> reader);
 	public:
 		WebFeatureService(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, Text::CString wfsURL, Version version);
 		virtual ~WebFeatureService();

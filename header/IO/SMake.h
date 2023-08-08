@@ -62,9 +62,9 @@ namespace IO
 		void AppendCfg(NotNullPtr<Text::StringBuilderUTF8> sb, Text::CString compileCfg);
 
 		Bool ExecuteCmd(Text::CString cmd);
-		Bool LoadConfigFile(Text::CString cfgFile);
+		Bool LoadConfigFile(Text::CStringNN cfgFile);
 
-		Bool ParseSource(Data::FastStringMap<Int32> *objList, Data::FastStringMap<Int32> *libList, Data::FastStringMap<Int32> *procList, Data::ArrayListStringNN *headerList, Int64 *latestTime, Text::CString sourceFile, NotNullPtr<Text::StringBuilderUTF8> tmpSb);
+		Bool ParseSource(Data::FastStringMap<Int32> *objList, Data::FastStringMap<Int32> *libList, Data::FastStringMap<Int32> *procList, Data::ArrayListStringNN *headerList, Int64 *latestTime, Text::CStringNN sourceFile, NotNullPtr<Text::StringBuilderUTF8> tmpSb);
 		Bool ParseHeader(Data::FastStringMap<Int32> *objList, Data::FastStringMap<Int32> *libList, Data::FastStringMap<Int32> *procList, Data::ArrayListStringNN *headerList, Int64 *latestTime, NotNullPtr<Text::String> headerFile, Text::CString sourceFile, NotNullPtr<Text::StringBuilderUTF8> tmpSb);
 		Bool ParseProgInternal(Data::FastStringMap<Int32> *objList, Data::FastStringMap<Int32> *libList, Data::FastStringMap<Int32> *procList, Data::ArrayListStringNN *headerList, Int64 *latestTime, Bool *progGroup, NotNullPtr<const ProgramItem> prog, NotNullPtr<Text::StringBuilderUTF8> tmpSb);
 
@@ -77,7 +77,7 @@ namespace IO
 
 		void SetErrorMsg(Text::CString msg);
 	public:
-		SMake(Text::CString cfgFile, UOSInt threadCnt, IO::Writer *messageWriter);
+		SMake(Text::CStringNN cfgFile, UOSInt threadCnt, IO::Writer *messageWriter);
 		virtual ~SMake();
 
 		virtual IO::ParserType GetParserType() const;

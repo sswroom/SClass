@@ -20,7 +20,7 @@ UI::DObj::ButtonDObj::ButtonDObj(NotNullPtr<Media::DrawEngine> deng, Text::CStri
 	}
 	else
 	{
-		this->bmpUnclick = this->deng->LoadImage(fileNameUnclick);
+		this->bmpUnclick = this->deng->LoadImage(fileNameUnclick.OrEmpty());
 	}
 
 	if (fileNameClicked.leng == 0)
@@ -29,7 +29,7 @@ UI::DObj::ButtonDObj::ButtonDObj(NotNullPtr<Media::DrawEngine> deng, Text::CStri
 	}
 	else
 	{
-		this->bmpClicked = this->deng->LoadImage(fileNameClicked);
+		this->bmpClicked = this->deng->LoadImage(fileNameClicked.OrEmpty());
 	}
 	this->isVisible = true;
 	NEW_CLASS(this->rnd, Data::RandomOS());

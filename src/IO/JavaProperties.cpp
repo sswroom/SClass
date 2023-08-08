@@ -15,7 +15,7 @@ IO::ConfigFile *IO::JavaProperties::ParseAppProp()
 	return Parse(CSTRP(sbuff, sptr));
 }
 
-IO::ConfigFile *IO::JavaProperties::Parse(Text::CString fileName)
+IO::ConfigFile *IO::JavaProperties::Parse(Text::CStringNN fileName)
 {
 	IO::ConfigFile *cfg;
 	IO::FileStream fstm(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential);

@@ -21,7 +21,7 @@ UI::DObj::SizedOverlayDObj::SizedOverlayDObj(NotNullPtr<Media::DrawEngine> deng,
 	else
 	{
 		{
-			IO::StmData::FileData fd(fileName, false);
+			IO::StmData::FileData fd(fileName.OrEmpty(), false);
 			this->imgList = (Media::ImageList*)parsers->ParseFileType(fd, IO::ParserType::ImageList);
 		}
 		this->frameDelay = 500;
@@ -155,7 +155,7 @@ void UI::DObj::SizedOverlayDObj::SetSize(Math::Size2D<UOSInt> size)
 	SDEL_CLASS(this->dispImg);	
 }
 
-void UI::DObj::SizedOverlayDObj::SetImage(Text::CString fileName, Parser::ParserList *parsers)
+void UI::DObj::SizedOverlayDObj::SetImage(Text::CStringNN fileName, Parser::ParserList *parsers)
 {
 	Media::ImageList *imgList;
 	{

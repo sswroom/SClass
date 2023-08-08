@@ -44,7 +44,7 @@ void __stdcall SSWR::AVIRead::AVIRASN1MIBForm::OnObjectsSelChg(void *userObj)
 	}
 }
 
-void SSWR::AVIRead::AVIRASN1MIBForm::LoadFile(Text::CString fileName)
+void SSWR::AVIRead::AVIRASN1MIBForm::LoadFile(Text::CStringNN fileName)
 {
 	Text::StringBuilderUTF8 sb;
 	this->txtFile->SetText(fileName);

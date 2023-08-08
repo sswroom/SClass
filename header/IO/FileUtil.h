@@ -24,11 +24,11 @@ namespace IO
 //		static WChar *GetMountPoint(WChar *buff, const WChar *fileName);
 		static Bool IsSamePartition(const UTF8Char *file1, const UTF8Char *file2);
 //		static Bool IsSamePartition(const WChar *file1, const WChar *file2);
-		static Bool CopyFile(Text::CString file1, Text::CString file2, FileExistAction fea, IO::ProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt);
+		static Bool CopyFile(Text::CStringNN file1, Text::CStringNN file2, FileExistAction fea, IO::ProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt);
 //		static Bool CopyFile(const WChar *file1, const WChar *file2, FileExistAction fea, IO::ProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt);
 		static Bool CopyDir(Text::CString srcDir, Text::CString destDir, FileExistAction fea, IO::ProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt);
 //		static Bool CopyDir(const WChar *srcDir, const WChar *destDir, FileExistAction fea, IO::ProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt);
-		static Bool MoveFile(Text::CString srcFile, Text::CString destFile, FileExistAction fea, IO::ProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt);
+		static Bool MoveFile(Text::CStringNN srcFile, Text::CStringNN destFile, FileExistAction fea, IO::ProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt);
 //		static Bool MoveFile(const WChar *srcFile, const WChar *destFile, FileExistAction fea, IO::ProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt);
 		static Bool MoveDir(Text::CString srcDir, Text::CString destDir, FileExistAction fea, IO::ProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt);
 //		static Bool MoveDir(const WChar *srcDir, const WChar *destDir, FileExistAction fea, IO::ProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt);

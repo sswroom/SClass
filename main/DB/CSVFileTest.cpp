@@ -8,7 +8,7 @@
 
 Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
-	Text::CString fileName = CSTR("/home/sswroom/Progs/Temp/20221116 CAD/dataProcessed/adsb_movement_statistic/ADSB_Movement_Statistic_201904.csv");
+	Text::CStringNN fileName = CSTR("/home/sswroom/Progs/Temp/20221116 CAD/dataProcessed/adsb_movement_statistic/ADSB_Movement_Statistic_201904.csv");
 	Manage::HiResClock clk;
 	{
 		IO::FileStream stm(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);

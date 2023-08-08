@@ -160,7 +160,7 @@ IO::FileAnalyse::MPEGFileAnalyse::~MPEGFileAnalyse()
 	LIST_FREE_FUNC(&this->packs, MemFree);
 }
 
-Text::CString IO::FileAnalyse::MPEGFileAnalyse::GetFormatName()
+Text::CStringNN IO::FileAnalyse::MPEGFileAnalyse::GetFormatName()
 {
 	return CSTR("MPEG");
 }
@@ -1223,7 +1223,7 @@ Bool IO::FileAnalyse::MPEGFileAnalyse::IsParsing()
 	return this->threadRunning;
 }
 
-Bool IO::FileAnalyse::MPEGFileAnalyse::TrimPadding(Text::CString outputFile)
+Bool IO::FileAnalyse::MPEGFileAnalyse::TrimPadding(Text::CStringNN outputFile)
 {
 	UOSInt readSize;
 	UOSInt buffSize;

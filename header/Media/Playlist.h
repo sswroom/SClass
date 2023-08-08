@@ -32,7 +32,7 @@ namespace Media
 		virtual ~Playlist();
 
 		virtual IO::ParserType GetParserType() const;
-		Bool AddFile(Text::CString fileName);
+		Bool AddFile(Text::CStringNN fileName);
 		Bool RemoveEntry(UOSInt index);
 		Bool AppendPlaylist(Media::Playlist *playlist);
 		void ClearFiles();

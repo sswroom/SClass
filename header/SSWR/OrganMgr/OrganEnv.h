@@ -234,7 +234,7 @@ namespace SSWR
 			virtual Bool IsBookSpeciesExist(const UTF8Char *sName, NotNullPtr<Text::StringBuilderUTF8> sb) = 0;
 			virtual Bool AddSpecies(OrganSpecies *sp) = 0;
 			virtual Bool DelSpecies(OrganSpecies *sp) = 0;
-			virtual FileStatus AddSpeciesFile(OrganSpecies *sp, Text::CString fileName, Bool firstPhoto, Bool moveFile, Int32 *fileId) = 0;
+			virtual FileStatus AddSpeciesFile(OrganSpecies *sp, Text::CStringNN fileName, Bool firstPhoto, Bool moveFile, Int32 *fileId) = 0;
 			virtual FileStatus AddSpeciesWebFile(OrganSpecies *sp, NotNullPtr<Text::String> srcURL, NotNullPtr<Text::String> imgURL, IO::Stream *stm, UTF8Char *webFileName) = 0;
 			virtual Bool UpdateSpeciesWebFile(OrganSpecies *sp, WebFileInfo *wfile, Text::String *srcURL, Text::String *location) = 0;
 			Bool SetSpeciesImg(OrganSpecies *sp, OrganImageItem *img);
@@ -266,7 +266,7 @@ namespace SSWR
 			virtual Int32 NewBook(Text::CString title, Text::CString author, Text::CString press, const Data::Timestamp &publishDate, Text::CString url) = 0;
 
 			WebUserInfo *GetWebUser(Int32 userId);
-			virtual Bool AddDataFile(Text::CString fileName) = 0;
+			virtual Bool AddDataFile(Text::CStringNN fileName) = 0;
 			Data::ArrayList<DataFileInfo*> *GetDataFiles();
 			virtual Bool DelDataFile(DataFileInfo *dataFile) = 0;
 			void ReleaseDataFile(DataFileInfo *dataFile);
@@ -318,8 +318,8 @@ namespace SSWR
 		protected:
 			virtual void LoadGroupTypes() = 0;
 			void FreeCategory(Category *cate);
-			Media::EXIFData *ParseJPGExif(Text::CString fileName);
-			Media::EXIFData *ParseTIFExif(Text::CString fileName);
+			Media::EXIFData *ParseJPGExif(Text::CStringNN fileName);
+			Media::EXIFData *ParseTIFExif(Text::CStringNN fileName);
 
 		public:
 			void ExportWeb(const UTF8Char *exportDir, Bool includeWebPhoto, Bool includeNoPhoto, Int32 locId, UOSInt *photoCnt, UOSInt     *speciesCnt);

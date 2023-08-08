@@ -5,7 +5,7 @@
 
 Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
-	Text::CString fileName = CSTR("/home/sswroom/Progs/Temp/FileTest/grid_960x640.heic");
+	Text::CStringNN fileName = CSTR("/home/sswroom/Progs/Temp/FileTest/grid_960x640.heic");
 //	Text::CString outName = CSTR("/home/sswroom/Progs/Temp/FileTest/1.enc.webp");
 	Parser::FileParser::HEIFParser parser;
 	IO::ParsedObject *pobj = parser.ParseFilePath(fileName);

@@ -141,7 +141,7 @@ IO::FileAnalyse::RIFFFileAnalyse::~RIFFFileAnalyse()
 	LIST_FREE_FUNC(&this->packs, MemFree);
 }
 
-Text::CString IO::FileAnalyse::RIFFFileAnalyse::GetFormatName()
+Text::CStringNN IO::FileAnalyse::RIFFFileAnalyse::GetFormatName()
 {
 	return CSTR("RIFF");
 }
@@ -669,7 +669,7 @@ Bool IO::FileAnalyse::RIFFFileAnalyse::IsParsing()
 	return this->threadRunning;
 }
 
-Bool IO::FileAnalyse::RIFFFileAnalyse::TrimPadding(Text::CString outputFile)
+Bool IO::FileAnalyse::RIFFFileAnalyse::TrimPadding(Text::CStringNN outputFile)
 {
 /*	UInt8 *readBuff;
 	OSInt readSize;

@@ -15,8 +15,8 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	IO::ConsoleWriter console;
 	UInt32 pxSize;
-	Text::CString srcFile;
-	Text::CString destFile;
+	Text::CStringNN srcFile;
+	Text::CStringNN destFile;
 	//UOSInt cmdCnt;
 	Int32 ret = 1;
 	//UTF8Char **argv = progCtrl->GetCommandLines(progCtrl, &cmdCnt);

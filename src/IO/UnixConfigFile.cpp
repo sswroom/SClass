@@ -3,7 +3,7 @@
 #include "IO/FileStream.h"
 #include "IO/UnixConfigFile.h"
 
-IO::ConfigFile *IO::UnixConfigFile::Parse(Text::CString fileName)
+IO::ConfigFile *IO::UnixConfigFile::Parse(Text::CStringNN fileName)
 {
 	IO::ConfigFile *cfg;
 	IO::FileStream fstm(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential);
@@ -14,12 +14,12 @@ IO::ConfigFile *IO::UnixConfigFile::Parse(Text::CString fileName)
 	else
 	{
 		Text::UTF8Reader reader(fstm);
-		cfg = ParseReader(&reader);
+		cfg = ParseReader(reader);
 	}
 	return cfg;
 }
 
-IO::ConfigFile *IO::UnixConfigFile::ParseReader(Text::UTF8Reader *reader)
+IO::ConfigFile *IO::UnixConfigFile::ParseReader(NotNullPtr<Text::UTF8Reader> reader)
 {
 	UTF8Char buff[1024];
 	UTF8Char *name;

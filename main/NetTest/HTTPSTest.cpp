@@ -7,7 +7,7 @@
 
 Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
-	Text::CString url = CSTR("https://resource.data.one.gov.hk/td/speedmap.xml");
+	Text::CStringNN url = CSTR("https://resource.data.one.gov.hk/td/speedmap.xml");
 	UInt8 buff[2048];
 	UOSInt readSize;
 	Net::SSLEngine *ssl;

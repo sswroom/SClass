@@ -1440,7 +1440,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::DelSpecies(OrganSpecies *sp)
 	return succ;
 }
 
-SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFile(OrganSpecies *sp, Text::CString fileName, Bool firstPhoto, Bool moveFile, Int32 *fileId)
+SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFile(OrganSpecies *sp, Text::CStringNN fileName, Bool firstPhoto, Bool moveFile, Int32 *fileId)
 {
 	UOSInt i = fileName.LastIndexOf(IO::Path::PATH_SEPERATOR);
 	UOSInt j;
@@ -3090,7 +3090,7 @@ Int32 SSWR::OrganMgr::OrganEnvDB::NewBook(Text::CString title, Text::CString aut
 	return id;
 }
 
-Bool SSWR::OrganMgr::OrganEnvDB::AddDataFile(Text::CString fileName)
+Bool SSWR::OrganMgr::OrganEnvDB::AddDataFile(Text::CStringNN fileName)
 {
 	IO::ParserType t;
 	IO::ParsedObject *pobj;

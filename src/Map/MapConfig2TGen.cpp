@@ -54,7 +54,7 @@ public:
 		if (fileName.leng > 0)
 		{
 			NotNullPtr<IO::FileStream> fs;
-			NEW_CLASSNN(fs, IO::FileStream(fileName, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+			NEW_CLASSNN(fs, IO::FileStream(fileName.OrEmpty(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 			this->fs = fs.Ptr();
 			NEW_CLASS(writer, Text::UTF8Writer(fs));
 			writer->WriteSignature();
@@ -4268,7 +4268,7 @@ void Map::MapConfig2TGen::LoadLabels(Media::DrawImage *img, Map::MapConfig2TGen:
 	}
 }
 
-Map::MapConfig2TGen::MapConfig2TGen(Text::CString fileName, NotNullPtr<Media::DrawEngine> eng, Data::ArrayList<Map::MapDrawLayer*> *layerList, Parser::ParserList *parserList, const UTF8Char *forceBase, IO::Writer *errWriter, Int32 maxScale, Int32 minScale)
+Map::MapConfig2TGen::MapConfig2TGen(Text::CStringNN fileName, NotNullPtr<Media::DrawEngine> eng, Data::ArrayList<Map::MapDrawLayer*> *layerList, Parser::ParserList *parserList, const UTF8Char *forceBase, IO::Writer *errWriter, Int32 maxScale, Int32 minScale)
 {
 	UTF8Char lineBuff[1024];
 	UTF8Char layerName[512];

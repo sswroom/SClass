@@ -292,7 +292,7 @@ Map::MapDrawLayer *Map::RegionalMapSource::OpenMap(const MapInfo *map, NotNullPt
 	case MapType::File:
 	{
 		NotNullPtr<IO::StreamData> fd;
-		if (fd.Set(browser->GetData(Text::CString(map->url, map->urlLen), false, 0)))
+		if (fd.Set(browser->GetData(Text::CStringNN(map->url, map->urlLen), false, 0)))
 		{
 			IO::ParserType pt;
 			IO::ParsedObject *pobj = parsers->ParseFile(fd, &pt);

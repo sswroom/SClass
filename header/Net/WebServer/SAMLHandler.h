@@ -16,8 +16,8 @@ namespace Net
 			Text::CString metadataPath;
 			Text::CString logoutPath;
 			Text::CString ssoPath;
-			Text::CString signCertPath;
-			Text::CString signKeyPath;
+			Text::CStringNN signCertPath;
+			Text::CStringNN signKeyPath;
 		};
 
 		struct SAMLMessage

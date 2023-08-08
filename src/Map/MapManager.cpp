@@ -22,7 +22,7 @@ Map::MapManager::~MapManager()
 	}
 }
 
-Map::MapDrawLayer *Map::MapManager::LoadLayer(Text::CString fileName, Parser::ParserList *parsers, Map::MapEnv *env)
+Map::MapDrawLayer *Map::MapManager::LoadLayer(Text::CStringNN fileName, Parser::ParserList *parsers, Map::MapEnv *env)
 {
 	Map::MapManager::MapLayerInfo *info = this->layerArr.Get(fileName.v);
 	if (info)
