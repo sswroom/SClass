@@ -58,12 +58,12 @@ DB::DBQueue::SQLGroup::~SQLGroup()
 	LIST_FREE_STRING(&this->strs);
 }
 
-DB::DBQueue::CmdType DB::DBQueue::SQLGroup::GetCmdType()
+DB::DBQueue::CmdType DB::DBQueue::SQLGroup::GetCmdType() const
 {
 	return CmdType::SQLGroup;
 }
 
-Int32 DB::DBQueue::SQLGroup::GetProgId()
+Int32 DB::DBQueue::SQLGroup::GetProgId() const
 {
 	return this->progId;
 }

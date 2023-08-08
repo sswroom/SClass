@@ -77,8 +77,8 @@ namespace DB
 
 			SQLGroup(Data::ArrayList<Text::String*> *strs, Int32 progId, DBReadHdlr hdlr, void *userData, void *userData2);
 			virtual ~SQLGroup();
-			virtual CmdType GetCmdType();
-			virtual Int32 GetProgId();
+			virtual CmdType GetCmdType() const;
+			virtual Int32 GetProgId() const;
 		};
 
 		class SQLTrans : public IDBCmd
