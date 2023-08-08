@@ -549,11 +549,9 @@ Bool Math::GeometryTool::InPolygon(Int32 *points, UOSInt nPoints, Int32 ptX, Int
 	Int32 firstY;
 	Int32 lastX;
 	Int32 lastY;
-	UOSInt i;
 	UOSInt j;
 	UOSInt k;
 	Int32 leftCnt = 0;
-	i = 0;
 	k = 1;
 	firstX = points[0];
 	firstY = points[1];
@@ -574,7 +572,6 @@ Bool Math::GeometryTool::InPolygon(Int32 *points, UOSInt nPoints, Int32 ptX, Int
 			{
 				leftCnt++;
 			}
-			i += 1;
 		}
 		lastX = points[(k << 1)];
 		lastY = points[(k << 1) + 1];
@@ -593,7 +590,6 @@ Bool Math::GeometryTool::InPolygon(Int32 *points, UOSInt nPoints, Int32 ptX, Int
 		{
 			leftCnt++;
 		}
-		i += 1;
 	}
 
 	return (leftCnt & 1) != 0;

@@ -25,12 +25,10 @@ namespace IO
 			UInt32 consoleWidth;
 			UInt32 consoleHeight;
 		} ConsoleState;
+
+		struct ClassData;
 	private:
-		void *hand;
-		Text::Encoding *enc;
-		Sync::Mutex *mut;
-		Bool autoFlush;
-		Bool fileOutput;
+		ClassData *clsData;
 		Text::StandardColor bgColor;
 
 	public:

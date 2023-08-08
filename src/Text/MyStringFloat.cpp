@@ -2099,7 +2099,6 @@ Bool Text::StrToDouble(const UTF16Char *str1, Double *outVal)
 	Double r = 0.0;
 	Bool neg = false;
 	UTF16Char c;
-	OSInt n = 0;
 	if (*str1 == '-')
 	{
 		neg = true;
@@ -2122,7 +2121,6 @@ Bool Text::StrToDouble(const UTF16Char *str1, Double *outVal)
 				break;
 			fmul *= 0.1;
 			r += (c - '0') * fmul;
-            n++;
         }
     }
 	else if (c == 0)
@@ -2194,7 +2192,6 @@ Bool Text::StrToDouble(const UTF32Char *str1, Double *outVal)
 	Double r = 0.0;
 	Bool neg = false;
 	UTF32Char c;
-	OSInt n = 0;
 	if (*str1 == '-')
 	{
 		neg = true;
@@ -2217,7 +2214,6 @@ Bool Text::StrToDouble(const UTF32Char *str1, Double *outVal)
 				break;
 			fmul *= 0.1;
 			r += (c - '0') * fmul;
-            n++;
         }
     }
 	else if (c == 0)

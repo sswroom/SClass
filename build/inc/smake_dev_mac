@@ -10,7 +10,7 @@ IO/SystemInfo.h: ../../src/IO/SystemInfoFreeBSD.cpp
 
 Media/CameraManager.h: ../../src/Media/CameraManagerNul.cpp
 @CameraManager.o
-Media/DDCReader.h: ../../src/Media/DDCReaderL.cpp
+Media/DDCReader.h: ../../src/Media/DDCReaderMac.cpp
 @DDCReader.o
 Media/VideoCaptureMgr.h: ../../src/Media/VideoCaptureMgrNull.cpp
 @VideoCaptureMgr.o
@@ -23,5 +23,7 @@ SMBIOSUtil.o: ../../src/IO/SMBIOSUtilMac.cpp
 !-framework Cocoa
 SystemInfo.o: ../../src/IO/SystemInfoFreeBSD.cpp
 CameraManager.o: ../../src/Media/CameraManagerNul.cpp
-DDCReader.o: ../../src/Media/DDCReaderL.cpp
+DDCReader.o: ../../src/Media/DDCReaderMac.cpp
+!-framework IOKit
+!-framework Cocoa
 VideoCaptureMgr.o: ../../src/Media/VideoCaptureMgrNull.cpp

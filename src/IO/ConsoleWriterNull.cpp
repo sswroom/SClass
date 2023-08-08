@@ -5,6 +5,7 @@
 
 IO::ConsoleWriter::ConsoleWriter()
 {
+	this->clsData = 0;
 }
 
 IO::ConsoleWriter::~ConsoleWriter()
@@ -26,7 +27,11 @@ Bool IO::ConsoleWriter::WriteLine()
 	return false;
 }
 
-void IO::ConsoleWriter::SetTextColor(IO::ConsoleWriter::ConsoleColor fgColor, IO::ConsoleWriter::ConsoleColor bgColor)
+void IO::ConsoleWriter::SetBGColor(Text::StandardColor bgColor)
+{
+}
+
+void IO::ConsoleWriter::SetTextColor(Text::StandardColor fgColor)
 {
 }
 
