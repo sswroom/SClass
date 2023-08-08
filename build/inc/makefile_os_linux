@@ -105,7 +105,7 @@ PhysicalMem.o: $(CLASSDIR)src/IO/PhysicalMemL.cpp
 PowerInfo.o: $(CLASSDIR)src/IO/PowerInfoL.cpp
 	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
 
-Registry.o: $(CLASSDIR)src/IO/RegistryNul.cpp
+Registry.o: $(CLASSDIR)src/IO/RegistryLinux.cpp
 	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
 
 SDCardMgr.o: $(CLASSDIR)src/IO/SDCardMgrL.cpp

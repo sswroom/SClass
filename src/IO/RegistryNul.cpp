@@ -31,7 +31,7 @@ void IO::Registry::CloseRegistry(IO::Registry *reg)
 
 IO::Registry::Registry(void *hand)
 {
-	this->hand = hand;
+	this->clsData = (ClassData*)hand;
 }
 
 IO::Registry::~Registry()
