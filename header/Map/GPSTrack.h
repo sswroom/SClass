@@ -110,7 +110,7 @@ namespace Map
 		virtual ObjectClass GetObjectClass();
 
 		void NewTrack();
-		UOSInt AddRecord(GPSRecord3 *rec);
+		UOSInt AddRecord(NotNullPtr<GPSRecord3> rec);
 		Bool RemoveRecordRange(UOSInt index, UOSInt recStart, UOSInt recEnd);
 		Bool GetHasAltitude();
 		void SetTrackName(Text::CString name);

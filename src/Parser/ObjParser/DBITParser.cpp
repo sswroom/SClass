@@ -185,7 +185,7 @@ IO::ParsedObject *Parser::ObjParser::DBITParser::ParseObject(IO::ParsedObject *p
 						gpsRec.nSateViewGA = 0;
 						gpsRec.nSateViewQZSS = 0;
 						gpsRec.nSateViewBD = 0;
-						trk->AddRecord(&gpsRec);
+						trk->AddRecord(gpsRec);
 					}
 					i++;
 				}

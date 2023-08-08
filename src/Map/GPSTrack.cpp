@@ -618,7 +618,7 @@ void Map::GPSTrack::NewTrack()
 	}
 }
 
-UOSInt Map::GPSTrack::AddRecord(Map::GPSTrack::GPSRecord3 *rec)
+UOSInt Map::GPSTrack::AddRecord(NotNullPtr<Map::GPSTrack::GPSRecord3> rec)
 {
 	Sync::MutexUsage mutUsage(this->recMut);
 	if (this->currTimes.GetCount() == 0)
@@ -670,7 +670,7 @@ UOSInt Map::GPSTrack::AddRecord(Map::GPSTrack::GPSRecord3 *rec)
 
 	Map::GPSTrack::GPSRecord3 *newRec;
 	newRec = MemAllocA(Map::GPSTrack::GPSRecord3, 1);
-	MemCopyNO(newRec, rec, sizeof(Map::GPSTrack::GPSRecord3));
+	MemCopyNO(newRec, rec.Ptr(), sizeof(Map::GPSTrack::GPSRecord3));
 	UOSInt i = this->currTimes.SortedInsert(rec->recTime.ToTicks());
 	this->currRecs.Insert(i, newRec);
 	this->currExtraData.Insert(i, 0);

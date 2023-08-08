@@ -362,7 +362,7 @@ void SSWR::AVIRead::AVIRGISReplayForm::EventMenuClicked(UInt16 cmdId)
 			i = this->startMark;
 			while (i <= this->endMark)
 			{
-				newTrack->AddRecord(&recs[i]);
+				newTrack->AddRecord(recs[i]);
 				i++;
 			}
 			this->navi->AddLayer(newTrack);

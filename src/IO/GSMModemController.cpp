@@ -221,7 +221,7 @@ Bool IO::GSMModemController::GSMGetAllowedOperators(Data::ArrayList<Operator*> *
 	Bool operStarted;
 	Bool quoteStarted;
 	Bool operExist;
-	Bool operError;
+	Bool operError = false;
 	Text::String *val;
 	if (j > 1)
 	{
@@ -229,7 +229,7 @@ Bool IO::GSMModemController::GSMGetAllowedOperators(Data::ArrayList<Operator*> *
 		if (val->Equals(UTF8STRC("OK")))
 		{
 			Int32 status;
-			Int32 plmn;
+			Int32 plmn = 0;
 			Operator *newOper;
 			j -= 1;
 			i = 1;

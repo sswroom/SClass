@@ -295,7 +295,7 @@ IO::ParsedObject *Parser::FileParser::SLOCParser::ParseFileHdr(NotNullPtr<IO::St
 		extInfo.cliIP = ReadNUInt32(&buff[72]);
 		extInfo.cliPort = ReadUInt16(&buff[76]);
 		extInfo.recvTimeTS = ReadUInt32(&buff[78]);
-		i = track->AddRecord(&rec);
+		i = track->AddRecord(rec);
 		track->SetExtraDataIndex(i, (UInt8*)&extInfo, sizeof(extInfo));
 		currPos += 84;
 		

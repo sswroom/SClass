@@ -768,7 +768,7 @@ Bool IO::Device::MTKGPSNMEA::ParseBlock(UInt8 *block, Map::GPSTrack *gps)
 			}
 			if (block[currOfst + 1] == chk)
 			{
-				gps->AddRecord(&rec);
+				gps->AddRecord(rec);
 			}
 			currOfst += 2;
 		}

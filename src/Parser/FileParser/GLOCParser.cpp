@@ -351,7 +351,7 @@ IO::ParsedObject *Parser::FileParser::GLOCParser::ParseFileHdr(NotNullPtr<IO::St
 		extInfo.adc7 = ReadInt32(&buff[100]) * 0.001;
 		extInfo.adc8 = ReadInt32(&buff[104]) * 0.001;
 		extInfo.fileOfst = currPos;
-		i = track->AddRecord(&rec);
+		i = track->AddRecord(rec);
 		track->SetExtraDataIndex(i, (UInt8*)&extInfo, sizeof(extInfo));
 		currPos += 128;
 	}

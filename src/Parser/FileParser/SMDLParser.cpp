@@ -304,7 +304,7 @@ IO::ParsedObject *Parser::FileParser::SMDLParser::ParseFileHdr(NotNullPtr<IO::St
 		procTime = ReadInt32(&buff[88]);
 		extraSize = ReadUInt32(&buff[92]);
 		rec.valid = (status1 & 2) != 0;
-		ui = track->AddRecord(&rec);
+		ui = track->AddRecord(rec);
 		currPos += 96;
 		WriteInt64(&buff[0], recvTimeTick);
 		WriteInt32(&buff[8], status1);

@@ -111,7 +111,7 @@ IO::ParsedObject *Parser::FileParser::PLTParser::ParseFileHdr(NotNullPtr<IO::Str
 				dt.AddDay((Int32)dval);
 				dt.AddMS(Double2Int32(tval * 86400000));
 				rec.recTime = dt.ToInstant();
-				track->AddRecord(&rec);
+				track->AddRecord(rec);
 			}
 		}
 	}

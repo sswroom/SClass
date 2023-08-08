@@ -961,7 +961,7 @@ void Map::KMLXML::ParseKMLPlacemarkTrack(Text::XMLReader *reader, Map::GPSTrack 
 									{
 										rec.pos = Math::Coord2DDbl(Text::StrToDouble(strs[1]), Text::StrToDouble(strs[0]));
 										rec.altitude = Text::StrToDouble(strs[2]);
-										lyr->AddRecord(&rec);
+										lyr->AddRecord(rec);
 									}
 									timeList.GetItem(i)->Release();
 									coordList.GetItem(i)->Release();
@@ -1130,7 +1130,7 @@ void Map::KMLXML::ParseKMLPlacemarkTrack(Text::XMLReader *reader, Map::GPSTrack 
 							{
 								rec.pos = Math::Coord2DDbl(Text::StrToDouble(strs[1]), Text::StrToDouble(strs[0]));
 								rec.altitude = Text::StrToDouble(strs[2]);
-								lyr->AddRecord(&rec);
+								lyr->AddRecord(rec);
 							}
 							timeList.GetItem(i)->Release();
 							coordList.GetItem(i)->Release();
@@ -1222,7 +1222,7 @@ void Map::KMLXML::ParseKMLPlacemarkTrack(Text::XMLReader *reader, Map::GPSTrack 
 						rec.pos.x = Text::StrToDouble(strs[0]);
 						rec.pos.y = Text::StrToDouble(strs[1]);
 						rec.altitude = Text::StrToDouble(strs[2]);
-						lyr->AddRecord(&rec);
+						lyr->AddRecord(rec);
 					}
 					timeList.GetItem(i)->Release();
 					coordList.GetItem(i)->Release();

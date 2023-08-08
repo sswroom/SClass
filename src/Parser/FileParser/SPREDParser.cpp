@@ -35,17 +35,16 @@ IO::ParserType Parser::FileParser::SPREDParser::GetParserType()
 
 IO::ParsedObject *Parser::FileParser::SPREDParser::ParseFileHdr(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
-	Data::ArrayList<Map::GPSTrack::GPSRecord3*> *currDev = 0;
+	Data::ArrayListNN<Map::GPSTrack::GPSRecord3> *currDev = 0;
 	Int32 currDevId = -1;
 	Int32 devId;
-	Map::GPSTrack::GPSRecord3 *rec;
+	NotNullPtr<Map::GPSTrack::GPSRecord3> rec;
 	UInt8 buff[384];
 	Bool error = false;
 	UTF8Char sbuff[256];
 	const UTF8Char *sptr;
 	UOSInt i;
 	UOSInt j;
-	UOSInt k;
 	UOSInt currPos;
 	UOSInt readSize;
 	UOSInt buffSize;
@@ -97,7 +96,7 @@ IO::ParsedObject *Parser::FileParser::SPREDParser::ParseFileHdr(NotNullPtr<IO::S
 	fileSize = fd->GetDataSize();
 	currPos = 0;
 
-	Data::FastMap<Int32, Data::ArrayList<Map::GPSTrack::GPSRecord3*>*> devRecs;
+	Data::FastMap<Int32, Data::ArrayListNN<Map::GPSTrack::GPSRecord3>*> devRecs;
 	buffSize = 0;
 	while (true)
 	{
@@ -139,12 +138,12 @@ IO::ParsedObject *Parser::FileParser::SPREDParser::ParseFileHdr(NotNullPtr<IO::S
 					currDev = devRecs.Get(devId);
 					if (currDev == 0)
 					{
-						NEW_CLASS(currDev, Data::ArrayList<Map::GPSTrack::GPSRecord3*>());
+						NEW_CLASS(currDev, Data::ArrayListNN<Map::GPSTrack::GPSRecord3>());
 						devRecs.Put(devId, currDev);
 					}
 					currDevId = devId;
 				}
-				rec = MemAllocA(Map::GPSTrack::GPSRecord3, 1);
+				rec = MemAllocANN(Map::GPSTrack::GPSRecord3, 1);
 				rec->pos.SetLat((*(Int32*)&buff[i + 8]) / 200000.0);
 				rec->pos.SetLon((*(Int32*)&buff[i + 12]) / 200000.0);
 				rec->speed = *(Int32*)&buff[i + 16] * 0.0001;
@@ -205,8 +204,7 @@ IO::ParsedObject *Parser::FileParser::SPREDParser::ParseFileHdr(NotNullPtr<IO::S
 			j = currDev->GetCount();
 			while (j-- > 0)
 			{
-				rec = currDev->GetItem(j);
-				MemFreeA(rec);
+				MemFreeA(currDev->GetItem(j));
 			}
 			DEL_CLASS(currDev);
 		}
@@ -223,12 +221,11 @@ IO::ParsedObject *Parser::FileParser::SPREDParser::ParseFileHdr(NotNullPtr<IO::S
 		track->SetTrackName(CSTRP(sbuff, sptr));
 
 		currDev = devRecs.Get(devId);
-		j = 0;
-		k = currDev->GetCount();
-		while (j < k)
+		Data::ArrayIterator<NotNullPtr<Map::GPSTrack::GPSRecord3>> it = currDev->Iterator();
+		while (it.HasNext())
 		{
-			track->AddRecord(rec = currDev->GetItem(j));
-			MemFreeA(rec);
+			track->AddRecord(rec = it.Next());
+			MemFreeA(rec.Ptr());
 			j++;
 		}
 		DEL_CLASS(currDev);

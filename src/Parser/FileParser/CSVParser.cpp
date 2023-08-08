@@ -225,7 +225,7 @@ IO::ParsedObject *Parser::FileParser::CSVParser::ParseFileHdr(NotNullPtr<IO::Str
 				rec.nSateViewGA = 0;
 				rec.nSateViewQZSS = 0;
 				rec.nSateViewBD = 0;
-				track->AddRecord(&rec);
+				track->AddRecord(rec);
 				if (reader.ReadLine(sbuff, 1024) == 0)
 				{
 					break;
@@ -359,7 +359,7 @@ IO::ParsedObject *Parser::FileParser::CSVParser::ParseFileHdr(NotNullPtr<IO::Str
 				rec.nSateViewGA = 0;
 				rec.nSateViewQZSS = 0;
 				rec.nSateViewBD = 0;
-				track->AddRecord(&rec);
+				track->AddRecord(rec);
 			}
 		}		
 

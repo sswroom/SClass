@@ -291,7 +291,7 @@ IO::ParsedObject *Parser::FileParser::RLOCParser::ParseFileHdr(NotNullPtr<IO::St
 		{
 			rec.altitude = 0;
 		}
-		i = track->AddRecord(&rec);
+		i = track->AddRecord(rec);
 		track->SetExtraDataIndex(i, (const UInt8*)&extInfo, sizeof(extInfo));
 
 		currPos += 128;

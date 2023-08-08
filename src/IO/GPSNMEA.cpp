@@ -14,7 +14,7 @@ void IO::GPSNMEA::ParseUnknownCmd(const UTF8Char *cmd, UOSInt cmdLenå)
 {
 }
 
-IO::GPSNMEA::ParseStatus IO::GPSNMEA::ParseNMEALine(UTF8Char *line, UOSInt lineLen, Map::GPSTrack::GPSRecord3 *record, SateRecord *sateRec)
+IO::GPSNMEA::ParseStatus IO::GPSNMEA::ParseNMEALine(UTF8Char *line, UOSInt lineLen, NotNullPtr<Map::GPSTrack::GPSRecord3> record, SateRecord *sateRec)
 {
 	UTF8Char *sarr[32];
 	UOSInt scnt;
@@ -276,7 +276,7 @@ UInt32 __stdcall IO::GPSNMEA::NMEAThread(void *userObj)
 				{
 					me->cmdHdlr(me->cmdHdlrObj, sbuff, (UOSInt)(sptr - sbuff));
 				}
-				ParseStatus ps = ParseNMEALine(sbuff, (UOSInt)(sptr - sbuff), &record, &sateRec);
+				ParseStatus ps = ParseNMEALine(sbuff, (UOSInt)(sptr - sbuff), record, &sateRec);
 				switch (ps)
 				{
 				case ParseStatus::NotNMEA:
@@ -290,7 +290,7 @@ UInt32 __stdcall IO::GPSNMEA::NMEAThread(void *userObj)
 						UOSInt i = me->hdlrList.GetCount();
 						while (i-- > 0)
 						{
-							me->hdlrList.GetItem(i)(me->hdlrObjs.GetItem(i), &record, sateRec.sateCnt, sateRec.sates);
+							me->hdlrList.GetItem(i)(me->hdlrObjs.GetItem(i), record, sateRec.sateCnt, sateRec.sates);
 						}
 						mutUsage.EndUse();
 						MemClear(&record, sizeof(record));
@@ -425,10 +425,10 @@ Map::GPSTrack *IO::GPSNMEA::NMEA2Track(NotNullPtr<IO::Stream> stm, Text::CString
 		{
 			break;
 		}
-		ps = ParseNMEALine(sb.v, sb.GetLength(), &record, &sateRec);
+		ps = ParseNMEALine(sb.v, sb.GetLength(), record, &sateRec);
 		if (ps == ParseStatus::NewRecord)
 		{
-			trk->AddRecord(&record);
+			trk->AddRecord(record);
 			MemClear(&record, sizeof(record));
 		}
 	}

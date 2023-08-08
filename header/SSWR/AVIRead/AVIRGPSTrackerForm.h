@@ -134,7 +134,7 @@ namespace SSWR
 			UI::GUITabPage *tpNMEA;
 			UI::GUIListBox *lbNMEA;
 
-			static void __stdcall OnGPSUpdate(void *userObj, Map::GPSTrack::GPSRecord3 *record, UOSInt sateCnt, Map::ILocationService::SateStatus *sates);
+			static void __stdcall OnGPSUpdate(void *userObj, NotNullPtr<Map::GPSTrack::GPSRecord3> record, UOSInt sateCnt, Map::ILocationService::SateStatus *sates);
 			static void __stdcall OnTimerTick(void *userObj);
 			static void __stdcall OnMTKFirmwareClicked(void *userObj);
 			static void __stdcall OnMTKLogDownloadClicked(void *userObj);

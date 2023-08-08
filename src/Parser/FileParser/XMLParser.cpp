@@ -197,7 +197,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 											Map::GPSTrack::GPSRecord3 rec;
 											if (ParseGPXPoint(&reader, &rec))
 											{
-												track->AddRecord(&rec);
+												track->AddRecord(rec);
 											}
 										}
 										else
