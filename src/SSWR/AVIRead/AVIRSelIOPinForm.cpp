@@ -17,8 +17,14 @@ void __stdcall SSWR::AVIRead::AVIRSelIOPinForm::OnOKClick(void *userObj)
 			UI::MessageDialog::ShowDialog(CSTR("Please select a GPIO"), CSTR("Select GPIO"), me);
 			return;
 		}
+		NotNullPtr<IO::GPIOControl> gpioPin;
+		if (!gpioPin.Set(me->gpioPin))
+		{
+			UI::MessageDialog::ShowDialog(CSTR("System does not have GPIO"), CSTR("Select GPIO"), me);
+			return;
+		}
 		IO::GPIOPin *pin;
-		NEW_CLASS(pin, IO::GPIOPin(me->gpioPin, pinNum));
+		NEW_CLASS(pin, IO::GPIOPin(gpioPin, pinNum));
 		if (pin->IsError())
 		{
 			DEL_CLASS(pin);

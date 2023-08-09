@@ -3,15 +3,13 @@
 #include "IO/OneWireGPIO.h"
 #include "Sync/SimpleThread.h"
 
-IO::OneWireGPIO::OneWireGPIO(IO::IOPin *pin)
+IO::OneWireGPIO::OneWireGPIO(NotNullPtr<IO::IOPin> pin)
 {
-	NEW_CLASS(this->clk, Manage::HiResClock());
 	this->pin = pin;
 }
 
 IO::OneWireGPIO::~OneWireGPIO()
 {
-	DEL_CLASS(this->clk);
 }
 
 Bool IO::OneWireGPIO::Init()
@@ -49,8 +47,8 @@ void IO::OneWireGPIO::SendBits(const UInt8 *buff, OSInt nBits)
 			this->pin->SetPinState(false);
 			Sync::SimpleThread::Sleepus(6);
 			this->pin->SetPinOutput(false);
-			this->clk->Start();
-			while (this->clk->GetTimeDiff() < 0.000064)
+			this->clk.Start();
+			while (this->clk.GetTimeDiff() < 0.000064)
 			{
 				this->pin->IsPinHigh();
 			}
@@ -62,8 +60,8 @@ void IO::OneWireGPIO::SendBits(const UInt8 *buff, OSInt nBits)
 			this->pin->SetPinState(false);
 			Sync::SimpleThread::Sleepus(60);
 			this->pin->SetPinOutput(false);
-			this->clk->Start();
-			while (this->clk->GetTimeDiff() < 0.000010)
+			this->clk.Start();
+			while (this->clk.GetTimeDiff() < 0.000010)
 			{
 				this->pin->IsPinHigh();
 			}
@@ -89,8 +87,8 @@ OSInt IO::OneWireGPIO::ReadBits(UInt8 *buff, OSInt nBits)
 		this->pin->SetPinState(false);
 		Sync::SimpleThread::Sleepus(6);
 		this->pin->SetPinOutput(false);
-		this->clk->Start();
-		while (this->clk->GetTimeDiff() < 0.000004)
+		this->clk.Start();
+		while (this->clk.GetTimeDiff() < 0.000004)
 		{
 			this->pin->IsPinHigh();
 		}
@@ -100,7 +98,7 @@ OSInt IO::OneWireGPIO::ReadBits(UInt8 *buff, OSInt nBits)
 			v |= mask;
 		}
 		mask = (UInt8)((mask << 1) & 255);
-		while (this->clk->GetTimeDiff() < 0.000059)
+		while (this->clk.GetTimeDiff() < 0.000059)
 		{
 			this->pin->IsPinHigh();
 		}

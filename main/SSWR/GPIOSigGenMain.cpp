@@ -33,7 +33,6 @@ UInt32 __stdcall ThreadFunc(void *userObj)
 
 Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
-	IO::GPIOControl *gpioCtrl;
 	IO::ConsoleWriter console;
 	IO::ConfigFile *cfg = IO::IniFile::ParseProgConfig(0);
 	Text::String *s;
@@ -46,9 +45,9 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		{
 			if (pinNum > 0)
 			{
-				NEW_CLASS(gpioCtrl, IO::GPIOControl());
+				IO::GPIOControl gpioCtrl;
 				NEW_CLASS(pin, IO::GPIOPin(gpioCtrl, pinNum));
-				if (gpioCtrl->IsError() || pin->IsError())
+				if (gpioCtrl.IsError() || pin->IsError())
 				{
 					DEL_CLASS(pin);
 					console.WriteLineC(UTF8STRC("Error in opening GPIO pin"));
@@ -73,7 +72,6 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 					DEL_CLASS(evt);
 					DEL_CLASS(pin);
 				}
-				DEL_CLASS(gpioCtrl);
 			}
 			else
 			{

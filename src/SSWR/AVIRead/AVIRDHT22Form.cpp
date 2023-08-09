@@ -26,7 +26,7 @@ void SSWR::AVIRead::AVIRDHT22Form::ReadData()
 	Double humidity;
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
-	if (this->dht22->ReadData(&temp, &rh))
+	if (this->dht22->ReadData(temp, rh))
 	{
 		humidity = Math::Unit::Pressure::WaterVapourPressure(Math::Unit::Pressure::PU_KPASCAL, Math::Unit::Temperature::TU_CELSIUS, temp, rh);
 		sptr = Text::StrDouble(sbuff, temp);
@@ -43,7 +43,7 @@ void SSWR::AVIRead::AVIRDHT22Form::ReadData()
 	}
 }
 
-SSWR::AVIRead::AVIRDHT22Form::AVIRDHT22Form(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, IO::IOPin *pin) : UI::GUIForm(parent, 480, 160, ui)
+SSWR::AVIRead::AVIRDHT22Form::AVIRDHT22Form(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<IO::IOPin> pin) : UI::GUIForm(parent, 480, 160, ui)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
@@ -88,7 +88,7 @@ SSWR::AVIRead::AVIRDHT22Form::AVIRDHT22Form(UI::GUIClientControl *parent, NotNul
 SSWR::AVIRead::AVIRDHT22Form::~AVIRDHT22Form()
 {
 	DEL_CLASS(this->dht22);
-	DEL_CLASS(this->pin);
+	this->pin.Delete();
 }
 
 void SSWR::AVIRead::AVIRDHT22Form::OnMonitorChanged()

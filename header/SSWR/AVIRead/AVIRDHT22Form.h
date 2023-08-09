@@ -28,18 +28,18 @@ namespace SSWR
 			UI::GUITextBox *txtStatus;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
-			IO::IOPin *pin;
+			NotNullPtr<IO::IOPin> pin;
 			IO::Device::DHT22 *dht22;
 
 			static void __stdcall OnReadClicked(void *userObj);
 			static void __stdcall OnTimerTick(void *userObj);
 			void ReadData();
 		public:
-			AVIRDHT22Form(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, IO::IOPin *pin);
+			AVIRDHT22Form(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<IO::IOPin> pin);
 			virtual ~AVIRDHT22Form();
 
 			virtual void OnMonitorChanged();
 		};
-	};
-};
+	}
+}
 #endif

@@ -16,7 +16,6 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	IO::GPIOPin *sclPin;
 	IO::Device::AM2315GPIO *am2315;
 	IO::ConsoleWriter console;
-	IO::GPIOControl *gpioCtrl;
 	Double temp;
 	Double rh;
 	Text::StringBuilderUTF8 sb;
@@ -36,11 +35,11 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	sb.AppendI32(pinNum2);
 	sb.AppendC(UTF8STRC(" (SCL)"));
 	console.WriteLineC(sb.ToString(), sb.GetLength());
-	NEW_CLASS(gpioCtrl, IO::GPIOControl())
+	IO::GPIOControl gpioCtrl;
 	NEW_CLASS(sdaPin, IO::GPIOPin(gpioCtrl, pinNum1));
 	NEW_CLASS(sclPin, IO::GPIOPin(gpioCtrl, pinNum2));
 	NEW_CLASS(am2315, IO::Device::AM2315GPIO(sdaPin, sclPin));
-	if (gpioCtrl->IsError() || sdaPin->IsError() || sclPin->IsError())
+	if (gpioCtrl.IsError() || sdaPin->IsError() || sclPin->IsError())
 	{
 		console.WriteLineC(UTF8STRC("Error in opening GPIO, root permission?"));
 	}
@@ -78,6 +77,5 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	DEL_CLASS(am2315);
 	DEL_CLASS(sdaPin);
 	DEL_CLASS(sclPin);
-	DEL_CLASS(gpioCtrl);
 	return 0;
 }

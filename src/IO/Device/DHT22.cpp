@@ -6,7 +6,7 @@
 //#include <wchar.h>
 //#include <stdio.h>
 
-IO::Device::DHT22::DHT22(IO::IOPin *pin)
+IO::Device::DHT22::DHT22(NotNullPtr<IO::IOPin> pin)
 {
 	this->pin = pin;
 }
@@ -15,7 +15,7 @@ IO::Device::DHT22::~DHT22()
 {
 }
 
-Bool IO::Device::DHT22::ReadData(Double *temp, Double *rh)
+Bool IO::Device::DHT22::ReadData(OutParam<Double> temp, OutParam<Double> rh)
 {
 	Bool laststate = true;
 	UInt32 counter = 0;
@@ -93,8 +93,8 @@ Bool IO::Device::DHT22::ReadData(Double *temp, Double *rh)
 		Double tempV = ReadMInt16(&dhtBuff[2]) * 0.1;
 		if (rhV >= 0 && rhV <= 100 && tempV >= -40.0 && tempV <= 80)
 		{
-			*rh = rhV;
-			*temp = tempV;
+			rh.Set(rhV);
+			temp.Set(tempV);
 			return true;
 		}
 		return false;

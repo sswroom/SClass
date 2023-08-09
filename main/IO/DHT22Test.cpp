@@ -12,8 +12,7 @@
 
 Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
-	IO::GPIOControl *gpioCtrl;
-	IO::GPIOPin *pin;
+	NotNullPtr<IO::GPIOPin> pin;
 	IO::Device::DHT22 *dht22;
 	IO::ConsoleWriter console;
 	Double temp;
@@ -30,10 +29,10 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	sb.AppendC(UTF8STRC("Run using GPIO pin "));
 	sb.AppendI32(pinNum);
 	console.WriteLineC(sb.ToString(), sb.GetLength());
-	NEW_CLASS(gpioCtrl, IO::GPIOControl())
-	NEW_CLASS(pin, IO::GPIOPin(gpioCtrl, pinNum));
+	IO::GPIOControl gpioCtrl;
+	NEW_CLASSNN(pin, IO::GPIOPin(gpioCtrl, pinNum));
 	NEW_CLASS(dht22, IO::Device::DHT22(pin));
-	if (gpioCtrl->IsError() || pin->IsError())
+	if (gpioCtrl.IsError() || pin->IsError())
 	{
 		console.WriteLineC(UTF8STRC("Error in opening GPIO, root permission?"));
 	}
@@ -41,7 +40,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	{
 		while (true)
 		{
-			if (dht22->ReadData(&temp, &rh))
+			if (dht22->ReadData(temp, rh))
 			{
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("Temp = "));
@@ -59,7 +58,6 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		}
 	}
 	DEL_CLASS(dht22);
-	DEL_CLASS(pin);
-	DEL_CLASS(gpioCtrl);
+	pin.Delete();
 	return 0;
 }

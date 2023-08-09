@@ -31,16 +31,16 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	sb.AppendI32(pinNum);
 	console.WriteLineC(sb.ToString(), sb.GetLength());
 	IO::GPIOControl gpioCtrl;
-	IO::GPIOPin pin(&gpioCtrl, pinNum);
+	IO::GPIOPin pin(gpioCtrl, pinNum);
 	if (gpioCtrl.IsError() || pin.IsError())
 	{
 		console.WriteLineC(UTF8STRC("Error in opening pin."));
 	}
 	else
 	{
-		IO::IOPinCapture pinCapture(&pin);
-		IO::Device::DHT22 dht22(&pinCapture);
-		if (dht22.ReadData(&temp, &rh))
+		IO::IOPinCapture pinCapture(pin);
+		IO::Device::DHT22 dht22(pinCapture);
+		if (dht22.ReadData(temp, rh))
 		{
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Temp = "));

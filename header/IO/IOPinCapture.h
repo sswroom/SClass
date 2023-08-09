@@ -18,8 +18,8 @@ namespace IO
 			Int32 *isHigh;
 		};
 	private:
-		IO::IOPin *pin;
-		Manage::HiResClock *clk;
+		NotNullPtr<IO::IOPin> pin;
+		Manage::HiResClock clk;
 		CaptureBuff *capBuff;
 		Double lastTime;
 		Bool lastVal;
@@ -28,7 +28,7 @@ namespace IO
 		void FreeCaptureData(CaptureBuff *buff);
 		UOSInt AddCaptureData(Data::ArrayList<Double> *times, Data::ArrayList<Int32> *isHigh, CaptureBuff *buff);
 	public:
-		IOPinCapture(IO::IOPin *pin);
+		IOPinCapture(NotNullPtr<IO::IOPin> pin);
 		virtual ~IOPinCapture();
 
 		virtual Bool IsPinHigh();

@@ -1709,10 +1709,11 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		{
 			SSWR::AVIRead::AVIRSelIOPinForm dlg(0, this->ui, this->core);
 			dlg.SetText(CSTR("Select DHT22 IO Pin"));
-			if (dlg.ShowDialog(this) == UI::GUIForm::DR_OK)
+			NotNullPtr<IO::IOPin> ioPin;
+			if (dlg.ShowDialog(this) == UI::GUIForm::DR_OK && ioPin.Set(dlg.ioPin))
 			{
 				SSWR::AVIRead::AVIRDHT22Form *testFrm;
-				NEW_CLASS(testFrm, SSWR::AVIRead::AVIRDHT22Form(0, this->ui, this->core, dlg.ioPin));
+				NEW_CLASS(testFrm, SSWR::AVIRead::AVIRDHT22Form(0, this->ui, this->core, ioPin));
 				this->core->ShowForm(testFrm);
 			}
 		}
@@ -1721,10 +1722,11 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		{
 			SSWR::AVIRead::AVIRSelIOPinForm dlg(0, this->ui, this->core);
 			dlg.SetText(CSTR("Select DS18B20 IO Pin"));
-			if (dlg.ShowDialog(this) == UI::GUIForm::DR_OK)
+			NotNullPtr<IO::IOPin> ioPin;
+			if (dlg.ShowDialog(this) == UI::GUIForm::DR_OK && ioPin.Set(dlg.ioPin))
 			{
 				SSWR::AVIRead::AVIRDS18B20Form *testFrm;
-				NEW_CLASS(testFrm, SSWR::AVIRead::AVIRDS18B20Form(0, this->ui, this->core, dlg.ioPin));
+				NEW_CLASS(testFrm, SSWR::AVIRead::AVIRDS18B20Form(0, this->ui, this->core, ioPin));
 				this->core->ShowForm(testFrm);
 			}
 		}

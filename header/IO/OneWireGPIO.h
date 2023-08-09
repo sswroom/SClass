@@ -8,10 +8,10 @@ namespace IO
 	class OneWireGPIO
 	{
 	private:
-		Manage::HiResClock *clk;
-		IO::IOPin *pin;
+		Manage::HiResClock clk;
+		NotNullPtr<IO::IOPin> pin;
 	public:
-		OneWireGPIO(IO::IOPin *pin);
+		OneWireGPIO(NotNullPtr<IO::IOPin> pin);
 		~OneWireGPIO();
 
 		Bool Init();
