@@ -19,7 +19,7 @@ namespace SSWR
 		class AVIRGISLineStyleForm : public UI::GUIForm
 		{
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Media::ColorManagerSess *colorSess;
 			Map::MapEnv *env;
 			NotNullPtr<Media::DrawEngine> eng;
@@ -48,7 +48,7 @@ namespace SSWR
 			static void __stdcall OKClicked(void *userObj);
 			static void __stdcall CancelClicked(void *userObj);
 		public:
-			AVIRGISLineStyleForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, Map::MapEnv *env, NotNullPtr<Media::DrawEngine> eng, UOSInt lineStyle);
+			AVIRGISLineStyleForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Map::MapEnv *env, NotNullPtr<Media::DrawEngine> eng, UOSInt lineStyle);
 			virtual ~AVIRGISLineStyleForm();
 
 			virtual void EventMenuClicked(UInt16 cmdId);

@@ -17,14 +17,14 @@ namespace SSWR
 				NotNullPtr<Text::String> subjectCN;
 			};
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Net::SSLEngine *ssl;
 			Crypto::Cert::CertStore *store;
 
 			UI::GUIListView *lvTrustCert;
 			static void __stdcall OnTrustCertDblClicked(void *userObj, UOSInt index);
 		public:
-			AVIRTrustStoreForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, Crypto::Cert::CertStore *store);
+			AVIRTrustStoreForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Crypto::Cert::CertStore *store);
 			virtual ~AVIRTrustStoreForm();
 
 			virtual void OnMonitorChanged();

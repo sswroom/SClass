@@ -42,7 +42,7 @@ void __stdcall SSWR::AVIRead::AVIRPostgreSQLForm::OnCancelClicked(void *userObj)
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 
-SSWR::AVIRead::AVIRPostgreSQLForm::AVIRPostgreSQLForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 340, 188, ui)
+SSWR::AVIRead::AVIRPostgreSQLForm::AVIRPostgreSQLForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 340, 188, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("PostgreSQL Connection"));

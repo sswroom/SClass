@@ -23,12 +23,12 @@ namespace SSWR
 			UI::GUIComboBox *cboEncrypt;
 			UI::GUIButton *btnConvert;
 
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Text::TextBinEnc::TextBinEncList encList;
 			static void __stdcall OnFileDrop(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles);
 			static void __stdcall OnConvertClicked(void *userObj);
 		public:
-			AVIRFileTextEncryptForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRFileTextEncryptForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRFileTextEncryptForm();
 
 			virtual void OnMonitorChanged();

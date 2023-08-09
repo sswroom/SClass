@@ -17,11 +17,11 @@ namespace SSWR
 			UI::GUIButton *btnOK;
 			UI::GUITextBox *txtMessage;
 
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
 			static void __stdcall OnOKClicked(void *userObj);
 		public:
-			AVIRStringMsgForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, Text::CString title, Text::CString msg);
+			AVIRStringMsgForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Text::CString title, Text::CString msg);
 			virtual ~AVIRStringMsgForm();
 
 			virtual void OnMonitorChanged();

@@ -69,7 +69,7 @@ void SSWR::AVIRead::AVIRHKOForecastForm::Reload(Net::HKOWeather::Language lang)
 	}
 }
 
-SSWR::AVIRead::AVIRHKOForecastForm::AVIRHKOForecastForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 800, 600, ui)
+SSWR::AVIRead::AVIRHKOForecastForm::AVIRHKOForecastForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 800, 600, ui)
 {
 	this->SetText(CSTR("HK Observatory 9-day Weather Forecast"));
 	this->SetFont(0, 0, 8.25, false);

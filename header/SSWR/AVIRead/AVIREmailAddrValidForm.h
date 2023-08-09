@@ -20,12 +20,12 @@ namespace SSWR
 			UI::GUILabel *lblStatus;
 			UI::GUITextBox *txtStatus;
 
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Net::Email::EmailValidator *validator;
 
 			static void __stdcall OnValidateClicked(void *userObj);
 		public:
-			AVIREmailAddrValidForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIREmailAddrValidForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIREmailAddrValidForm();
 
 			virtual void OnMonitorChanged();

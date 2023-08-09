@@ -26,7 +26,7 @@ namespace SSWR
 		class AVIRHTTPLoadBalanceForm : public UI::GUIForm
 		{
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Net::SSLEngine *ssl;
 			Net::WebServer::WebListener *svr;
 			IO::LogTool *log;
@@ -98,7 +98,7 @@ namespace SSWR
 			static void __stdcall OnAccessSelChg(void *userObj);
 			static void __stdcall OnSSLCertClicked(void *userObj);
 		public:
-			AVIRHTTPLoadBalanceForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRHTTPLoadBalanceForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRHTTPLoadBalanceForm();
 
 			virtual void OnMonitorChanged();

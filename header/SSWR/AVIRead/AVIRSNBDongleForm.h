@@ -39,7 +39,7 @@ namespace SSWR
 				IO::SNBDongle::ReadingType readingTypes[16];
 			};
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Net::SSLEngine *ssl;
 			NotNullPtr<IO::Stream> stm;
 			IO::SNBDongle *snb;
@@ -102,7 +102,7 @@ namespace SSWR
 			void LoadFile();
 			void SaveFile();
 		public:
-			AVIRSNBDongleForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, NotNullPtr<IO::Stream> stm);
+			AVIRSNBDongleForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<IO::Stream> stm);
 			virtual ~AVIRSNBDongleForm();
 
 			virtual void OnMonitorChanged();

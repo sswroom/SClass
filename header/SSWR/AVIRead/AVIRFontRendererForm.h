@@ -25,14 +25,14 @@ namespace SSWR
 			UI::GUIHSplitter *hspChar;
 			UI::GUIPictureBoxDD *pbChar;
 
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Media::ColorManagerSess *colorSess;
 			Media::FontRenderer *font;
 			Media::StaticImage *currImg;
 
 			static void __stdcall OnCharSelChg(void *userObj);
 		public:
-			AVIRFontRendererForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, Media::FontRenderer *font);
+			AVIRFontRendererForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Media::FontRenderer *font);
 			virtual ~AVIRFontRendererForm();
 
 			virtual void OnMonitorChanged();

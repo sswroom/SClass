@@ -111,7 +111,7 @@ void __stdcall SSWR::AVIRead::AVIRESRIMapForm::OnNoResourceChg(void *userObj, Bo
 	me->txtSRID->SetReadOnly(!newValue);
 }
 
-SSWR::AVIRead::AVIRESRIMapForm::AVIRESRIMapForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, Net::SSLEngine *ssl) : UI::GUIForm(parent, 640, 144, ui)
+SSWR::AVIRead::AVIRESRIMapForm::AVIRESRIMapForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Net::SSLEngine *ssl) : UI::GUIForm(parent, 640, 144, ui)
 {
 	this->SetText(CSTR("Add ESRI Map"));
 	this->SetFont(0, 0, 8.25, false);

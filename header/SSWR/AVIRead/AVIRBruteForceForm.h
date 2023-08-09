@@ -16,7 +16,7 @@ namespace SSWR
 		class AVIRBruteForceForm : public UI::GUIForm
 		{
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Crypto::Hash::BruteForceAttack *bforce;
 			UInt64 lastCnt;
 			Int64 lastTime;
@@ -40,7 +40,7 @@ namespace SSWR
 			static void __stdcall OnStartClicked(void *userObj);
 			static void __stdcall OnTimerTick(void *userObj);
 		public:
-			AVIRBruteForceForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRBruteForceForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRBruteForceForm();
 
 			virtual void OnMonitorChanged();

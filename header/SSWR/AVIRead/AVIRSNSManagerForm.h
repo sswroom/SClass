@@ -33,13 +33,13 @@ namespace SSWR
 			UI::GUIListView *lvCurrItems;
 
 			Net::SNS::SNSManager *mgr;
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Net::SSLEngine *ssl;
 
 			static void __stdcall OnChannelAddClicked(void *userObj);
 			static void __stdcall OnChannelsSelChg(void *userObj);
 		public:
-			AVIRSNSManagerForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRSNSManagerForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRSNSManagerForm();
 
 			virtual void OnMonitorChanged();

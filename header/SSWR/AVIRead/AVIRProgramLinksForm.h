@@ -51,7 +51,7 @@ namespace SSWR
 			UI::GUILabel *lblIcon;
 			UI::GUITextBox *txtIcon;
 
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			IO::ProgramLinkManager progMgr;
 
 			static void __stdcall OnItemsSelChg(void *userObj);
@@ -60,7 +60,7 @@ namespace SSWR
 
 			void UpdateLinkList();
 		public:
-			AVIRProgramLinksForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRProgramLinksForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRProgramLinksForm();
 
 			virtual void OnMonitorChanged();

@@ -26,7 +26,7 @@ namespace SSWR
 			} EntryInfo;
 			
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Data::ArrayList<EntryInfo*> *entryList;
 
 			UI::GUIGroupBox *grpNew;
@@ -48,7 +48,7 @@ namespace SSWR
 			static void __stdcall OnEntryDblClicked(void *userObj, UOSInt index);
 			static void __stdcall OnTimerTick(void *userObj);
 		public:
-			AVIROTPForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIROTPForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIROTPForm();
 
 			virtual void OnMonitorChanged();

@@ -57,7 +57,7 @@ namespace SSWR
 			typedef void (__stdcall *ProgressUpdated)(void *userObj, UOSInt finCnt);
 			typedef void (__stdcall *KeyDownHandler)(void *userObj, UI::GUIControl::GUIKey key);
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Media::ColorManagerSess *colorSess;
 			Media::Resizer::LanczosResizer8_C8 *dispResizer;
 
@@ -105,7 +105,7 @@ namespace SSWR
 			Bool GetCameraName(NotNullPtr<Text::StringBuilderUTF8> sb, Media::EXIFData *exif);
 			Double *GetCameraGamma(Text::CString cameraName, UInt32 *gammaCnt);
 		public:
-			AVIRImageControl(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, SSWR::AVIRead::AVIRCore *core, UI::GUIForm *frm, Media::ColorManagerSess *colorSess);
+			AVIRImageControl(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, NotNullPtr<SSWR::AVIRead::AVIRCore> core, UI::GUIForm *frm, Media::ColorManagerSess *colorSess);
 			virtual ~AVIRImageControl();
 
 			virtual Text::CString GetObjectClass();

@@ -45,7 +45,7 @@ namespace SSWR
 			UI::GUIListView *lvCoord;
 			UI::GUITextBox *txtStatus;
 
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Data::ArrayListNN<Text::String> nameList;
 			Data::ArrayList<Double> xList;
 			Data::ArrayList<Double> yList;
@@ -68,7 +68,7 @@ namespace SSWR
 			void FillCoordGeo(UI::GUIComboBox *cbo);
 			void FillCoordProj(UI::GUIComboBox *cbo);
 		public:
-			AVIRCoordConvForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRCoordConvForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRCoordConvForm();
 
 			virtual void OnMonitorChanged();

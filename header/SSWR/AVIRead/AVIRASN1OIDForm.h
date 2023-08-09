@@ -16,7 +16,7 @@ namespace SSWR
 		class AVIRASN1OIDForm : public UI::GUIForm
 		{
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
 			UI::GUITabControl *tcMain;
 			
@@ -30,7 +30,7 @@ namespace SSWR
 
 			static void __stdcall OnConvertClicked(void *userObj);
 		public:
-			AVIRASN1OIDForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRASN1OIDForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRASN1OIDForm();
 
 			virtual void OnMonitorChanged();

@@ -101,7 +101,7 @@ Bool SSWR::AVIRead::AVIRGLBViewerForm::LoadData(NotNullPtr<IO::StreamData> jsonF
 	return true;
 }
 
-SSWR::AVIRead::AVIRGLBViewerForm::AVIRGLBViewerForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRGLBViewerForm::AVIRGLBViewerForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetText(CSTR("GLB Viewer"));
 	this->SetFont(0, 0, 8.25, false);

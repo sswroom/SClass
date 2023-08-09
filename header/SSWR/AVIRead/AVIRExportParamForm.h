@@ -16,7 +16,7 @@ namespace SSWR
 		class AVIRExportParamForm : public UI::GUIForm
 		{
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			void *param;
 			IO::FileExporter *exporter;
 			UI::GUIControl **ctrls;
@@ -26,7 +26,7 @@ namespace SSWR
 			static void __stdcall OnOKClicked(void *userObj);
 			static void __stdcall OnCancelClicked(void *userObj);
 		public:
-			AVIRExportParamForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, IO::FileExporter *exporter, void *param);
+			AVIRExportParamForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, IO::FileExporter *exporter, void *param);
 			virtual ~AVIRExportParamForm();
 
 			virtual void OnMonitorChanged();

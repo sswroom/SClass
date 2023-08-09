@@ -17,7 +17,7 @@ namespace SSWR
 		class AVIRGLBViewerForm : public UI::GUIForm
 		{
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
 			UI::GUIPanel *pnlBinBuff;
 			UI::GUIVSplitter *vspMain;
@@ -31,7 +31,7 @@ namespace SSWR
 			Bool LoadFile(NotNullPtr<Text::String> fileName);
 			Bool LoadData(NotNullPtr<IO::StreamData> jsonFD, NotNullPtr<IO::StreamData> binBuffFD);
 		public:
-			AVIRGLBViewerForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRGLBViewerForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRGLBViewerForm();
 
 			virtual void OnMonitorChanged();

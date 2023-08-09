@@ -103,7 +103,7 @@ namespace SSWR
 			UI::GUIGroupBox *grpDetChartWS;
 			UI::GUIRealtimeLineChart *rlcDetChartWS;
 
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
 			Data::ArrayListUInt32 procIds;
 			Data::ArrayList<ProcessInfo*> procList;
@@ -135,7 +135,7 @@ namespace SSWR
 			void UpdateProcHeapDetail(UInt32 heapId);
 			void UpdateProcHandles();
 		public:
-			AVIRProcInfoForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRProcInfoForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRProcInfoForm();
 
 			virtual void OnMonitorChanged();

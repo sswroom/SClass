@@ -15,7 +15,7 @@ namespace SSWR
 		class AVIRSDCardForm : public UI::GUIForm
 		{
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Data::ArrayList<IO::SDCardInfo*> *sdCardList;
 
 			UI::GUIListBox *lbDevices;
@@ -51,7 +51,7 @@ namespace SSWR
 			static void __stdcall OnDevicesSelChg(void *userObj);
 			static OSInt __stdcall ItemCompare(void *item1, void *item2);
 		public:
-			AVIRSDCardForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRSDCardForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRSDCardForm();
 
 			virtual void OnMonitorChanged();

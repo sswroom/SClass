@@ -49,7 +49,7 @@ namespace SSWR
 			UI::GUIVSplitter *vspMyStack;
 			UI::GUIListView *lvMyStack;
 
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
 			Data::ArrayListNN<const UTF8Char> stacks;
 			Data::ArrayListNN<const UTF8Char> stacksMem;
@@ -60,7 +60,7 @@ namespace SSWR
 			static void __stdcall OnMyStackChg(void *userObj);
 			static void __stdcall OnMyStackDblClk(void *userObj, UOSInt index);
 		public:
-			AVIRThreadInfoForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, Manage::Process *proc, Manage::SymbolResolver *symbol, UInt32 threadId);
+			AVIRThreadInfoForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Manage::Process *proc, Manage::SymbolResolver *symbol, UInt32 threadId);
 			virtual ~AVIRThreadInfoForm();
 
 			virtual void OnMonitorChanged();

@@ -395,7 +395,7 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnStmTypeChg(void *userObj)
 	}
 }
 
-SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, Bool allowReadOnly, Net::SSLEngine *ssl) : UI::GUIForm(parent, 640, 300, ui)
+SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Bool allowReadOnly, Net::SSLEngine *ssl) : UI::GUIForm(parent, 640, 300, ui)
 {
 	UTF8Char sbuff[32];
 	UOSInt i;

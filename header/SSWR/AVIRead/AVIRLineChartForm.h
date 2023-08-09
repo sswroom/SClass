@@ -42,7 +42,7 @@ namespace SSWR
 			UI::GUIButton *btnPlot;
 			UI::GUIButton *btnCancel;
 
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			DB::ReadingDB *db;
 			Data::Chart *chart;
 			Data::ArrayList<UInt32> *yCols;
@@ -56,7 +56,7 @@ namespace SSWR
 			static void __stdcall OnStrColsDblClicked(void *userObj);
 			static void __stdcall OnStrColsInt32Clicked(void *userObj);
 		public:
-			AVIRLineChartForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, DB::ReadingDB *db, Text::CString schemaName, Text::CString tableName);
+			AVIRLineChartForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, DB::ReadingDB *db, Text::CString schemaName, Text::CString tableName);
 			virtual ~AVIRLineChartForm();
 
 			virtual void OnMonitorChanged();

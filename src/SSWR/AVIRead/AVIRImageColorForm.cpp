@@ -90,7 +90,7 @@ void __stdcall SSWR::AVIRead::AVIRImageColorForm::OnLastValueClick(void *userObj
 	}
 }
 
-SSWR::AVIRead::AVIRImageColorForm::AVIRImageColorForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, Media::StaticImage *srcImg, Media::StaticImage *destImg, UI::GUIPictureBoxDD *previewCtrl) : UI::GUIForm(parent, 640, 140, ui)
+SSWR::AVIRead::AVIRImageColorForm::AVIRImageColorForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Media::StaticImage *srcImg, Media::StaticImage *destImg, UI::GUIPictureBoxDD *previewCtrl) : UI::GUIForm(parent, 640, 140, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("Image Color"));

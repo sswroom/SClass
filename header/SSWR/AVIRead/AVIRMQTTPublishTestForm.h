@@ -16,7 +16,7 @@ namespace SSWR
 		class AVIRMQTTPublishTestForm : public UI::GUIForm
 		{
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Net::SSLEngine *ssl;
 			Net::MQTTConn *client;
 			IO::LogTool log;
@@ -65,7 +65,7 @@ namespace SSWR
 
 			void ServerStop();
 		public:
-			AVIRMQTTPublishTestForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRMQTTPublishTestForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRMQTTPublishTestForm();
 
 			virtual void OnMonitorChanged();

@@ -19,11 +19,11 @@ namespace SSWR
 			UI::GUILabel *lblOriText;
 			UI::GUITextBox *txtOriText;
 
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
 			static void __stdcall OnExtractClicked(void *userObj);
 		public:
-			AVIRJSTextForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRJSTextForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRJSTextForm();
 
 			virtual void OnMonitorChanged();

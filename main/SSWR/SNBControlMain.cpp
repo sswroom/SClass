@@ -28,11 +28,11 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		SSWR::AVIRead::AVIRCoreWin core(ui);
 		SSWR::AVIRead::AVIRSNBDongleForm *snbFrm = 0;
 		{
-			SSWR::AVIRead::AVIRSelStreamForm frm(0, ui, &core, false, 0);
+			SSWR::AVIRead::AVIRSelStreamForm frm(0, ui, core, false, 0);
 			frm.SetText(CSTR("Select SNB Dongle"));
 			if (frm.ShowDialog(0) == UI::GUIForm::DR_OK)
 			{
-				NEW_CLASS(snbFrm, SSWR::AVIRead::AVIRSNBDongleForm(0, ui, &core, frm.GetStream()));
+				NEW_CLASS(snbFrm, SSWR::AVIRead::AVIRSNBDongleForm(0, ui, core, frm.GetStream()));
 				snbFrm->SetExitOnClose(true);
 				snbFrm->Show();
 			}

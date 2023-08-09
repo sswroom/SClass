@@ -41,7 +41,7 @@ void __stdcall SSWR::AVIRead::AVIRWOLForm::OnSendClicked(void *userObj)
 	}
 }
 
-SSWR::AVIRead::AVIRWOLForm::AVIRWOLForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 400, 120, ui)
+SSWR::AVIRead::AVIRWOLForm::AVIRWOLForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 400, 120, ui)
 {
 	this->SetText(CSTR("Wake-On-LAN"));
 	this->SetFont(0, 0, 8.25, false);

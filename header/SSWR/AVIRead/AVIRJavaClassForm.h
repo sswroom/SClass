@@ -32,12 +32,12 @@ namespace SSWR
 			UI::GUITabPage *tpDecompile;
 			UI::GUITextBox *txtDecompile;
 
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			IO::JavaClass *clsFile;
 
 			static void __stdcall OnMethodsSelChg(void *userObj);
 		public:
-			AVIRJavaClassForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, IO::JavaClass *clsFile);
+			AVIRJavaClassForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, IO::JavaClass *clsFile);
 			virtual ~AVIRJavaClassForm();
 
 			virtual void OnMonitorChanged();

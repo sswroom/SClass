@@ -56,7 +56,7 @@ namespace SSWR
 				Double val;
 			} MODBUSEntry;
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			IO::DataCaptureStream *stm;
 			IO::Stream *devStm;
 			IO::MODBUSMaster *modbus;
@@ -154,7 +154,7 @@ namespace SSWR
 			void StopStream(Bool clearUI);
 
 		public:
-			AVIRMODBUSMasterForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRMODBUSMasterForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRMODBUSMasterForm();
 
 			virtual void OnMonitorChanged();

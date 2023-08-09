@@ -39,7 +39,7 @@ namespace SSWR
 
 			UI::GUIListView *lvResult;
 
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Data::ArrayListNN<Text::String> extList;
 			Data::ArrayList<FileInfo *> resList;
 
@@ -53,7 +53,7 @@ namespace SSWR
 			void ClearExts();
 			void ClearResult();
 		public:
-			AVIRLineCounterForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRLineCounterForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRLineCounterForm();
 
 			virtual void OnMonitorChanged();

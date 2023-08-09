@@ -18,7 +18,7 @@ namespace SSWR
 		class AVIRCodeImageGenForm : public UI::GUIForm
 		{
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Media::ColorManagerSess *colorSess;
 			Media::CodeImageGen::CodeImageGen *codeImgGen;
 			Media::StaticImage *simg;
@@ -37,7 +37,7 @@ namespace SSWR
 			static void __stdcall OnCodeTypeChanged(void *userObj);
 			static void __stdcall OnCodeGenClicked(void *userObj);
 		public:
-			AVIRCodeImageGenForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRCodeImageGenForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRCodeImageGenForm();
 
 			virtual void OnMonitorChanged();

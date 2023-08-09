@@ -20,11 +20,11 @@ namespace SSWR
 			UI::GUITextBox *txtDeviceMac;
 			UI::GUIButton *btnSend;
 
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
 			static void __stdcall OnSendClicked(void *userObj);
 		public:
-			AVIRWOLForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRWOLForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRWOLForm();
 
 			virtual void OnMonitorChanged();

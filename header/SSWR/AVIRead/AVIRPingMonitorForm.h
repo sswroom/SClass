@@ -36,7 +36,7 @@ namespace SSWR
 			} IPInfo;
 
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			NotNullPtr<Net::SocketFactory> sockf;
 			IO::LogTool log;
 			UI::ListBoxLogger *logger;
@@ -87,7 +87,7 @@ namespace SSWR
 			static void __stdcall OnTimerTick(void *userObj);
 
 		public:
-			AVIRPingMonitorForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRPingMonitorForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRPingMonitorForm();
 
 			virtual void OnMonitorChanged();

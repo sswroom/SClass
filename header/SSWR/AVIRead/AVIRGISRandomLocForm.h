@@ -18,7 +18,7 @@ namespace SSWR
 			UI::GUIButton *btnArea;
 			UI::GUIButton *btnRandom;
 
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Math::Coord2DDbl selPt1;
 			Math::Coord2DDbl selPt2;
 			Bool selecting;
@@ -35,7 +35,7 @@ namespace SSWR
 			static void __stdcall OnRandomClicked(void *userObj);
 
 		public:
-			AVIRGISRandomLocForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, IMapNavigator *navi);
+			AVIRGISRandomLocForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, IMapNavigator *navi);
 			virtual ~AVIRGISRandomLocForm();
 
 			virtual void OnMonitorChanged();

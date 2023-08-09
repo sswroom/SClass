@@ -14,7 +14,7 @@ namespace SSWR
 		class AVIRSetAudioForm : public UI::GUIForm
 		{
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
 			UI::GUILabel *lblDevice;
 			UI::GUIListBox *lbDevice;
@@ -25,7 +25,7 @@ namespace SSWR
 			static void __stdcall OnOKClick(void *userObj);
 			static void __stdcall OnCancelClick(void *userObj);
 		public:
-			AVIRSetAudioForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRSetAudioForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRSetAudioForm();
 
 			virtual void OnMonitorChanged();

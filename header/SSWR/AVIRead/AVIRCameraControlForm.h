@@ -26,7 +26,7 @@ namespace SSWR
 			UI::GUIPictureBoxSimple *pbPreview;
 			UI::GUIButton *btnDownload;
 
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			IO::CameraControl *camera;
 			Data::StringUTF8Map<Media::ImageList *> previewMap;
 
@@ -34,7 +34,7 @@ namespace SSWR
 			static void __stdcall OnFilesDblClick(void *userObj, UOSInt index);
 			static void __stdcall OnFilesSelChg(void *userObj);
 		public:
-			AVIRCameraControlForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, IO::CameraControl *camera);
+			AVIRCameraControlForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, IO::CameraControl *camera);
 			virtual ~AVIRCameraControlForm();
 
 			virtual void OnMonitorChanged();

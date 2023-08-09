@@ -14,7 +14,7 @@ namespace SSWR
 		class AVIRHKOWarningSummaryForm : public UI::GUIForm
 		{
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Net::SSLEngine *ssl;
 
 			UI::GUIPanel *pnlReqTime;
@@ -24,7 +24,7 @@ namespace SSWR
 
 			void Reload();
 		public:
-			AVIRHKOWarningSummaryForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRHKOWarningSummaryForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRHKOWarningSummaryForm();
 
 			virtual void OnMonitorChanged();

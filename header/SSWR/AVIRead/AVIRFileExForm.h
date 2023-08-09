@@ -28,7 +28,7 @@ namespace SSWR
 			UI::GUITextBox *txtEndOfst;
 			UI::GUIButton *btnStart;
 
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
 			static void __stdcall OnSrcChanged(void *userObj);
 			static void __stdcall OnSrcClicked(void *userObj);
@@ -36,7 +36,7 @@ namespace SSWR
 			static void __stdcall OnStartClicked(void *userObj);
 			static void __stdcall OnFileDrop(void *userObj, NotNullPtr<Text::String> *files, UOSInt fileCnt);
 		public:
-			AVIRFileExForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRFileExForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRFileExForm();
 
 			virtual void OnMonitorChanged();

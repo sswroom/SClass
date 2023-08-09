@@ -82,7 +82,7 @@ void __stdcall SSWR::AVIRead::AVIRWebSite48IdolForm::OnVideoNameClicked(void *us
 	}
 }
 
-SSWR::AVIRead::AVIRWebSite48IdolForm::AVIRWebSite48IdolForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRWebSite48IdolForm::AVIRWebSite48IdolForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetText(CSTR("48idol"));
 	this->SetFont(UTF8STRC("MingLiu"), 8.25, false);

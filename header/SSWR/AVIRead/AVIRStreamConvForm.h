@@ -21,7 +21,7 @@ namespace SSWR
 		class AVIRStreamConvForm : public UI::GUIForm
 		{
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			IO::SiLabDriver *siLabDriver;
 
 			UI::GUIGroupBox *grpStream1;
@@ -68,7 +68,7 @@ namespace SSWR
 			void StopStream1();
 			void StopStream2();
 		public:
-			AVIRStreamConvForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRStreamConvForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRStreamConvForm();
 
 			virtual void OnMonitorChanged();

@@ -40,7 +40,7 @@ namespace SSWR
 			UI::GUILabel *lblMemory;
 			UI::GUITextBox *txtMemory;
 
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			IO::ServiceManager svcMgr;
 
 			static void __stdcall OnServiceSelChg(void *userObj);
@@ -53,7 +53,7 @@ namespace SSWR
 
 			void UpdateSvcList();
 		public:
-			AVIRServiceForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRServiceForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRServiceForm();
 
 			virtual void OnMonitorChanged();

@@ -22,7 +22,7 @@ void __stdcall SSWR::AVIRead::AVIRTrustStoreForm::OnTrustCertDblClicked(void *us
 	}
 }
 
-SSWR::AVIRead::AVIRTrustStoreForm::AVIRTrustStoreForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, Crypto::Cert::CertStore *store) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRTrustStoreForm::AVIRTrustStoreForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Crypto::Cert::CertStore *store) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	Text::StringBuilderUTF8 sb;
 	this->SetFont(0, 0, 8.25, false);

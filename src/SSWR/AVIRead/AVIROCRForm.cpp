@@ -77,7 +77,7 @@ void SSWR::AVIRead::AVIROCRForm::ClearResults()
 	this->results.Clear();
 }
 
-SSWR::AVIRead::AVIROCRForm::AVIROCRForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui), ocr(Media::OCREngine::Language::English)
+SSWR::AVIRead::AVIROCRForm::AVIROCRForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui), ocr(Media::OCREngine::Language::English)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("OCR"));

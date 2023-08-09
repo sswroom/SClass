@@ -14,7 +14,7 @@ namespace SSWR
 		class AVIRAsmConvForm : public UI::GUIForm
 		{
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
 			UI::GUIPanel *pnlCtrl;
 			UI::GUIButton *btnConv;
@@ -27,7 +27,7 @@ namespace SSWR
 			static void __stdcall OnConv2Clicked(void *userObj);
 			void ConvAsm();
 		public:
-			AVIRAsmConvForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRAsmConvForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRAsmConvForm();
 
 			virtual void OnMonitorChanged();

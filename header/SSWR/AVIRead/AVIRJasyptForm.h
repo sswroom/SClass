@@ -27,12 +27,12 @@ namespace SSWR
 			UI::GUILabel *lblResult;
 			UI::GUITextBox *txtResult;
 
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
 			static void __stdcall OnDecryptClicked(void *userObj);
 			static void __stdcall OnEncryptClicked(void *userObj);
 		public:
-			AVIRJasyptForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRJasyptForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRJasyptForm();
 
 			virtual void OnMonitorChanged();

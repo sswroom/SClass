@@ -167,7 +167,7 @@ void SSWR::AVIRead::AVIRGISReplayForm::FreeNames()
 	}
 }
 
-SSWR::AVIRead::AVIRGISReplayForm::AVIRGISReplayForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, Map::GPSTrack *track, IMapNavigator *navi) : UI::GUIForm(parent, 416, 560, ui)
+SSWR::AVIRead::AVIRGISReplayForm::AVIRGISReplayForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Map::GPSTrack *track, IMapNavigator *navi) : UI::GUIForm(parent, 416, 560, ui)
 {
 	UTF8Char sbuff[16];
 	UTF8Char *sptr;

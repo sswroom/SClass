@@ -36,13 +36,13 @@ namespace SSWR
 			UI::GUIListBox *lbImageURL;
 
 			Net::WebSite::WebSiteInstagramControl *ctrl;
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Net::SSLEngine *ssl;
 
 			static void __stdcall OnRequestUserClicked(void *userObj);
 			static void __stdcall OnPageClicked(void *userObj);
 		public:
-			AVIRWebSiteInstagramForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRWebSiteInstagramForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRWebSiteInstagramForm();
 
 			virtual void OnMonitorChanged();

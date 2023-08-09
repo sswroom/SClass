@@ -26,14 +26,14 @@ namespace SSWR
 			UI::GUIComboBox *cboFeature;
 			UI::GUIButton *btnOK;
 
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Map::WebFeatureService *wfs;
 
 			static void __stdcall OnLoadClicked(void *userObj);
 			static void __stdcall OnOKClicked(void *userObj);
 			static void __stdcall OnFeatureSelChg(void *userObj);
 		public:
-			AVIRWFSForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRWFSForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRWFSForm();
 
 			virtual void OnMonitorChanged();

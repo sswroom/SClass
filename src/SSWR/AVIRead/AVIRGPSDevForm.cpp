@@ -458,7 +458,7 @@ void SSWR::AVIRead::AVIRGPSDevForm::SendGetUser(Int32 userId)
 	}
 }
 
-SSWR::AVIRead::AVIRGPSDevForm::AVIRGPSDevForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui), protoHdlr(this)
+SSWR::AVIRead::AVIRGPSDevForm::AVIRGPSDevForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui), protoHdlr(this)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("GPSDev Viewer"));

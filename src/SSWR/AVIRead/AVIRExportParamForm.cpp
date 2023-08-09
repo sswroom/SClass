@@ -55,7 +55,7 @@ void __stdcall SSWR::AVIRead::AVIRExportParamForm::OnCancelClicked(void *userObj
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 
-SSWR::AVIRead::AVIRExportParamForm::AVIRExportParamForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, IO::FileExporter *exporter, void *param) : UI::GUIForm(parent, 298, 88, ui)
+SSWR::AVIRead::AVIRExportParamForm::AVIRExportParamForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, IO::FileExporter *exporter, void *param) : UI::GUIForm(parent, 298, 88, ui)
 {
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));

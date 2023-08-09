@@ -14,7 +14,7 @@ namespace SSWR
 		class AVIRACMEClientForm : public UI::GUIForm
 		{
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			NotNullPtr<Net::SocketFactory> sockf;
 			Net::ACMEClient *client;
 
@@ -33,7 +33,7 @@ namespace SSWR
 
 			static void __stdcall OnStartClicked(void *userObj);
 		public:
-			AVIRACMEClientForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRACMEClientForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRACMEClientForm();
 
 			virtual void OnMonitorChanged();

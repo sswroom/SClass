@@ -14,7 +14,7 @@ namespace SSWR
 		class AVIRSetLocationSvcForm : public UI::GUIForm
 		{
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
 			UI::GUILabel *lblGPS;
 			UI::GUICheckBox *chkGPS;
@@ -31,7 +31,7 @@ namespace SSWR
 			static void __stdcall OnCancelClick(void *userObj);
 			static void __stdcall OnGPSClick(void *userObj);
 		public:
-			AVIRSetLocationSvcForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRSetLocationSvcForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRSetLocationSvcForm();
 
 			virtual void OnMonitorChanged();

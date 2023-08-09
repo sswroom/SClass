@@ -30,7 +30,7 @@ namespace SSWR
 				Sync::Event *evt;
 			} DecodeStatus;
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Media::MediaFile *currFile;
 			Data::ArrayList<DecodeStatus*> *decStatus;
 
@@ -53,7 +53,7 @@ namespace SSWR
 			void AppendTime(NotNullPtr<Text::StringBuilderUTF8> sb, UInt32 t);
 			void ClearDecode();
 		public:
-			AVIRVideoInfoForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRVideoInfoForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRVideoInfoForm();
 
 			virtual void OnMonitorChanged();

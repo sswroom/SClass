@@ -13,14 +13,14 @@ namespace SSWR
 			class AVIRMIMEViewer
 			{
 			protected:
-				SSWR::AVIRead::AVIRCore *core;
+				NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 				UI::GUIClientControl *ctrl;
 
 			public:
-				AVIRMIMEViewer(SSWR::AVIRead::AVIRCore *core, UI::GUIClientControl *ctrl, Text::IMIMEObj *obj);
+				AVIRMIMEViewer(NotNullPtr<SSWR::AVIRead::AVIRCore> core, UI::GUIClientControl *ctrl, Text::IMIMEObj *obj);
 				virtual ~AVIRMIMEViewer();
 
-				static AVIRMIMEViewer *CreateViewer(SSWR::AVIRead::AVIRCore *core, NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *ctrl, Media::ColorManagerSess *sess, Text::IMIMEObj *obj);
+				static AVIRMIMEViewer *CreateViewer(NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *ctrl, Media::ColorManagerSess *sess, Text::IMIMEObj *obj);
 			};
 		}
 	}

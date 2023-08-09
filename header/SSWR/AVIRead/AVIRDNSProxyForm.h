@@ -41,7 +41,7 @@ namespace SSWR
 				Data::ArrayList<HourInfo*> hourInfos;
 			};
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			UI::GUITabControl *tcMain;
 
 			UI::GUITabPage *tpV4Main;
@@ -222,7 +222,7 @@ namespace SSWR
 			void UpdateDNSList();
 			void UpdateBlackList();
 		public:
-			AVIRDNSProxyForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRDNSProxyForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRDNSProxyForm();
 
 			virtual void OnMonitorChanged();

@@ -24,7 +24,7 @@ namespace SSWR
 		class AVIRRESTfulForm : public UI::GUIForm
 		{
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Net::WebServer::WebListener *svr;
 			Net::WebServer::RESTfulHandler *restHdlr;
 			IO::LogTool *log;
@@ -71,7 +71,7 @@ namespace SSWR
 			
 			void InitDB();
 		public:
-			AVIRRESTfulForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRRESTfulForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRRESTfulForm();
 
 			virtual void OnMonitorChanged();

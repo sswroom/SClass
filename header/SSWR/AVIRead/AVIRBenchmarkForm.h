@@ -33,7 +33,7 @@ namespace SSWR
 				Double resultRate;
 			} TestResult;
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Data::ArrayList<TestResult*> *resultList;
 			Bool processing;
 
@@ -68,7 +68,7 @@ namespace SSWR
 			static void __stdcall OnQuickClicked(void *userObj);
 			static void __stdcall OnSaveClicked(void *userObj);
 		public:
-			AVIRBenchmarkForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRBenchmarkForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRBenchmarkForm();
 
 			virtual void OnMonitorChanged();

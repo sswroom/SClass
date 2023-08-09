@@ -16,7 +16,7 @@ namespace SSWR
 		class AVIRSMTPClientForm : public UI::GUIForm
 		{
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Net::SSLEngine *ssl;
 
 			UI::GUIPanel *pnlControl;
@@ -47,7 +47,7 @@ namespace SSWR
 
 			static void __stdcall OnSendClicked(void *userObj);
 		public:
-			AVIRSMTPClientForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRSMTPClientForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRSMTPClientForm();
 
 			virtual void OnMonitorChanged();

@@ -24,7 +24,7 @@ namespace SSWR
 		class AVIRGISForm : public UI::GUIForm, public SSWR::AVIRead::IMapNavigator, public Media::IPrintHandler
 		{
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Net::SSLEngine *ssl;
 			UI::GUIForm *ctrlForm;
 			UI::GUITreeView::TreeItem *ctrlItem;
@@ -100,7 +100,7 @@ namespace SSWR
 			void HKOPortal(Text::CString listFile, Text::CString filePath);
 			void OpenCSV(Text::CStringNN url, UInt32 codePage, Text::CString name, Text::CString nameCol, Text::CString latCol, Text::CString lonCol);
 		public:
-			AVIRGISForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, Map::MapEnv *env, Map::MapView *view);
+			AVIRGISForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Map::MapEnv *env, Map::MapView *view);
 			virtual ~AVIRGISForm();
 
 			virtual void EventMenuClicked(UInt16 cmdId);

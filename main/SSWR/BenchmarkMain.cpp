@@ -10,20 +10,20 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	NotNullPtr<UI::GUICore> ui;
 	SSWR::AVIRead::AVIRBenchmarkForm *frm;
-	SSWR::AVIRead::AVIRCore *core;
+	NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 	Manage::ExceptionRecorder *exHdlr;
 
 	MemSetLogFile(UTF8STRC("Memory.log"));
 	NEW_CLASS(exHdlr, Manage::ExceptionRecorder(CSTR("SBenchmark.log"), Manage::ExceptionRecorder::EA_CLOSE));
 	if (ui.Set(Core::IProgControl::CreateGUICore(progCtrl)))
 	{
-		NEW_CLASS(core, SSWR::AVIRead::AVIRCoreWin(ui));
+		NEW_CLASSNN(core, SSWR::AVIRead::AVIRCoreWin(ui));
 		NEW_CLASS(frm, SSWR::AVIRead::AVIRBenchmarkForm(0, ui, core));
 		frm->SetExitOnClose(true);
 		frm->Show();
 		ui->Run();
 
-		DEL_CLASS(core);
+		core.Delete();
 		ui.Delete();
 	}
 	DEL_CLASS(exHdlr);

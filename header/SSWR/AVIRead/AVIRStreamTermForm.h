@@ -21,7 +21,7 @@ namespace SSWR
 		class AVIRStreamTermForm : public UI::GUIForm
 		{
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			IO::SiLabDriver *siLabDriver;
 
 			UI::GUIGroupBox *grpStream;
@@ -68,7 +68,7 @@ namespace SSWR
 			void UpdateSendDisp();
 
 		public:
-			AVIRStreamTermForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRStreamTermForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRStreamTermForm();
 
 			virtual void OnMonitorChanged();

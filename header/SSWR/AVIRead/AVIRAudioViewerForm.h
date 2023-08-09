@@ -29,7 +29,7 @@ namespace SSWR
 			UI::GUITabPage *tpFreq;
 			UI::GUIPictureBoxSimple *pbsFreq;
 
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Media::IAudioSource *audSrc;
 			NotNullPtr<Media::DrawEngine> eng;
 			Media::DrawImage *sampleImg;
@@ -42,7 +42,7 @@ namespace SSWR
 			void UpdateImages();
 			void UpdateFreqImage();
 		public:
-			AVIRAudioViewerForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, Media::IAudioSource *audSrc);
+			AVIRAudioViewerForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Media::IAudioSource *audSrc);
 			virtual ~AVIRAudioViewerForm();
 
 			virtual void EventMenuClicked(UInt16 cmdId);

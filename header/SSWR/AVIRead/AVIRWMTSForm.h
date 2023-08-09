@@ -30,7 +30,7 @@ namespace SSWR
 			UI::GUIComboBox *cboResourceInfoType;
 			UI::GUIButton *btnOK;
 
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Net::SSLEngine *ssl;
 			Map::WebMapTileServiceSource *wmts;
 
@@ -41,7 +41,7 @@ namespace SSWR
 			static void __stdcall OnResourceTileTypeSelChg(void *userObj);
 			static void __stdcall OnResourceInfoTypeSelChg(void *userObj);
 		public:
-			AVIRWMTSForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, Net::SSLEngine *ssl);
+			AVIRWMTSForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Net::SSLEngine *ssl);
 			virtual ~AVIRWMTSForm();
 
 			virtual void OnMonitorChanged();

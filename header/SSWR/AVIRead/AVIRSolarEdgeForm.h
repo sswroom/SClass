@@ -19,7 +19,7 @@ namespace SSWR
 		class AVIRSolarEdgeForm : public UI::GUIForm
 		{
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Net::SSLEngine *ssl;
 			Net::SolarEdgeAPI *seAPI;
 			Data::ArrayList<Net::SolarEdgeAPI::Site*> siteList;
@@ -110,7 +110,7 @@ namespace SSWR
 			void UpdateSiteEnergyGraph();
 			void UpdateSitePowerGraph();
 		public:
-			AVIRSolarEdgeForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRSolarEdgeForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRSolarEdgeForm();
 
 			virtual void OnMonitorChanged();

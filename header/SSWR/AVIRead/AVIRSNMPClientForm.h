@@ -22,7 +22,7 @@ namespace SSWR
 		class AVIRSNMPClientForm : public UI::GUIForm
 		{
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Net::SNMPClient *cli;
 
 			UI::GUIPanel *pnlRequest;
@@ -41,7 +41,7 @@ namespace SSWR
 			static void __stdcall OnTimerTick(void *userObj);
 
 		public:
-			AVIRSNMPClientForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRSNMPClientForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRSNMPClientForm();
 
 			virtual void OnMonitorChanged();

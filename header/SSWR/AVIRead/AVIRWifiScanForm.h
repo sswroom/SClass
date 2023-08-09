@@ -17,7 +17,7 @@ namespace SSWR
 		class AVIRWifiScanForm : public UI::GUIForm
 		{
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Net::WirelessLAN *wlan;
 			Net::WirelessLAN::Interface *wlanInterf;
 
@@ -36,7 +36,7 @@ namespace SSWR
 			void WifiScan();
 			void WifiClear();
 		public:
-			AVIRWifiScanForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRWifiScanForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRWifiScanForm();
 
 			virtual void OnMonitorChanged();

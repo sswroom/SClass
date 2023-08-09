@@ -170,7 +170,7 @@ namespace SSWR
 			UI::GUICheckBox *chkPortAuto;
 			UI::GUIListView *lvPortInfo;
 
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
 			Data::ArrayList<Net::ConnectionInfo *> *conns;
 			Data::ArrayList<Net::WirelessLAN::Interface *> *wlanIfs;
@@ -194,7 +194,7 @@ namespace SSWR
 			void UpdateConns();
 			void UpdatePortStats();
 		public:
-			AVIRNetInfoForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRNetInfoForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRNetInfoForm();
 
 			virtual void OnMonitorChanged();

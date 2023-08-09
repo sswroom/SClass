@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "SSWR/AVIRead/AVIRMIMEViewerForm.h"
 
-SSWR::AVIRead::AVIRMIMEViewerForm::AVIRMIMEViewerForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, Text::IMIMEObj *obj) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRMIMEViewerForm::AVIRMIMEViewerForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Text::IMIMEObj *obj) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetText(CSTR("MIME Viewer"));
 	this->SetFont(0, 0, 8.25, false);

@@ -15,13 +15,13 @@ namespace SSWR
 			UI::GUITimer *tmrMain;
 			UI::GUILabel *lblCnt;
 			UI::GUITextBox *txtCnt;
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Int64 paintCnt;
 			Int64 dispCnt;
 
 			static void __stdcall OnTimerTick(void *userObj);
 		public:
-			AVIRPaintCntForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRPaintCntForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRPaintCntForm();
 
 			virtual Bool OnPaint();

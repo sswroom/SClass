@@ -20,7 +20,7 @@ namespace SSWR
 		class AVIRElectronicScaleForm : public UI::GUIForm
 		{
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			NotNullPtr<Media::DrawEngine> eng;
 			Media::DrawImage *dimg;
 
@@ -55,7 +55,7 @@ namespace SSWR
 
 			void StopStream();
 		public:
-			AVIRElectronicScaleForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRElectronicScaleForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRElectronicScaleForm();
 
 			virtual void OnMonitorChanged();

@@ -15,7 +15,7 @@ namespace SSWR
 		class AVIRBingMapsForm : public UI::GUIForm
 		{
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Net::SSLEngine *ssl;
 
 			UI::GUILabel *lblKey;
@@ -27,7 +27,7 @@ namespace SSWR
 
 			static void __stdcall OnOKClicked(void *userObj);
 		public:
-			AVIRBingMapsForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, Net::SSLEngine *ssl);
+			AVIRBingMapsForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Net::SSLEngine *ssl);
 			virtual ~AVIRBingMapsForm();
 
 			virtual void OnMonitorChanged();

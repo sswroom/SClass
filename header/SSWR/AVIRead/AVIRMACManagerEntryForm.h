@@ -14,7 +14,7 @@ namespace SSWR
 		class AVIRMACManagerEntryForm : public UI::GUIForm
 		{
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
 			UI::GUILabel *lblMAC;
 			UI::GUITextBox *txtMAC;
@@ -28,7 +28,7 @@ namespace SSWR
 			static void __stdcall OnCancelClicked(void *userObj);
 			static OSInt __stdcall MACCompare(void *obj1, void *obj2);
 		public:
-			AVIRMACManagerEntryForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, const UInt8 *mac, Text::CString name);
+			AVIRMACManagerEntryForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, const UInt8 *mac, Text::CString name);
 			virtual ~AVIRMACManagerEntryForm();
 
 			virtual void OnMonitorChanged();

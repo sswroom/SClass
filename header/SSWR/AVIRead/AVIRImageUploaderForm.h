@@ -31,7 +31,7 @@ namespace SSWR
 			FileStatus status;
 			};
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Data::ArrayList<FileItem *> *items;
 
 			UI::GUIPanel *pnlCtrl;
@@ -47,7 +47,7 @@ namespace SSWR
 			static void __stdcall OnUploadClicked(void *userObj);
 			static void FreeItem(FileItem *item);
 		public:
-			AVIRImageUploaderForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRImageUploaderForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRImageUploaderForm();
 
 			virtual void OnMonitorChanged();

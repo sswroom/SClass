@@ -47,13 +47,13 @@ namespace SSWR
 			UI::GUITabPage *tpConfig;
 			UI::GUIListView *lvConfig;
 
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			IO::SMake *smake;
 
 			static void __stdcall OnProgSelChg(void *userObj);
 			static void __stdcall OnProgGroupSelChg(void *userObj);
 		public:
-			AVIRSMakeForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, IO::SMake *smake);
+			AVIRSMakeForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, IO::SMake *smake);
 			virtual ~AVIRSMakeForm();
 
 			virtual void OnMonitorChanged();

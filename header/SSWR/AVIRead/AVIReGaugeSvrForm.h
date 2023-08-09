@@ -22,7 +22,7 @@ namespace SSWR
 		class AVIReGaugeSvrForm : public UI::GUIForm
 		{
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Net::WebServer::WebListener *svr;
 			IO::LogTool *log;
 			Net::WebServer::EGaugeHandler *dirHdlr;
@@ -51,7 +51,7 @@ namespace SSWR
 			static void __stdcall OnTimerTick(void *userObj);
 			static void __stdcall OnEGaugeData(void *userObj, const UInt8 *data, UOSInt dataSize);
 		public:
-			AVIReGaugeSvrForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIReGaugeSvrForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIReGaugeSvrForm();
 
 			virtual void OnMonitorChanged();

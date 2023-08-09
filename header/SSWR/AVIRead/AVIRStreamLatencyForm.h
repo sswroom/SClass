@@ -22,7 +22,7 @@ namespace SSWR
 		class AVIRStreamLatencyForm : public UI::GUIForm
 		{
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			IO::SiLabDriver *siLabDriver;
 
 			UI::GUIGroupBox *grpStream;
@@ -69,7 +69,7 @@ namespace SSWR
 			void StopStream();
 
 		public:
-			AVIRStreamLatencyForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRStreamLatencyForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRStreamLatencyForm();
 
 			virtual void OnMonitorChanged();

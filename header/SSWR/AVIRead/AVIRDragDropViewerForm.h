@@ -13,7 +13,7 @@ namespace SSWR
 		class AVIRDragDropViewerForm : public UI::GUIForm, public UI::GUIDropHandler
 		{
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Data::StringUTF8Map<const UTF8Char *> *dropMap;
 
 			UI::GUIListBox *lbType;
@@ -23,7 +23,7 @@ namespace SSWR
 			static void __stdcall OnTypeSelChg(void *userObj);
 			void ClearDrops();
 		public:
-			AVIRDragDropViewerForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRDragDropViewerForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRDragDropViewerForm();
 
 			virtual void OnMonitorChanged();

@@ -21,7 +21,7 @@ namespace SSWR
 		class AVIRMQTTPublishForm : public UI::GUIForm
 		{
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			UI::GUILabel *lblHost;
 			UI::GUITextBox *txtHost;
 			UI::GUILabel *lblPort;
@@ -41,7 +41,7 @@ namespace SSWR
 			static void __stdcall OnPublishClicked(void *userObj);
 
 		public:
-			AVIRMQTTPublishForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRMQTTPublishForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRMQTTPublishForm();
 
 			virtual void OnMonitorChanged();

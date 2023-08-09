@@ -33,7 +33,7 @@ namespace SSWR
 				UInt32 frameRateDenom;
 			} CaptureFormat;
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Media::VideoCaptureMgr *captureMgr;
 			Media::IVideoCapture *currCapture;
 			Data::ArrayList<Media::VideoCaptureMgr::DeviceInfo*> *devInfoList;
@@ -80,7 +80,7 @@ namespace SSWR
 			void StopCapture();
 			void ReleaseFormats();
 		public:
-			AVIRTimedCaptureForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRTimedCaptureForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRTimedCaptureForm();
 
 			virtual void OnMonitorChanged();

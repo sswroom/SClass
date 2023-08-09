@@ -24,14 +24,14 @@ namespace SSWR
 			UI::GUIButton *btnCancel;
 			Text::String *fileName;
 			IO::ParserType parserType;
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			IO::ParserType t;
 
 			static void __stdcall OnBrowseClicked(void *userObj);
 			static void __stdcall OnOKClicked(void *userObj);
 			static void __stdcall OnCancelClicked(void *userObj);
 		public:
-			AVIROpenFileForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, IO::ParserType t);
+			AVIROpenFileForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, IO::ParserType t);
 			virtual ~AVIROpenFileForm();
 
 			virtual void OnMonitorChanged();

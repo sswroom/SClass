@@ -14,7 +14,7 @@ namespace SSWR
 		class AVIRUserAgentParseForm : public UI::GUIForm
 		{
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
 			UI::GUILabel *lblUserAgent;
 			UI::GUITextBox *txtUserAgent;
@@ -32,7 +32,7 @@ namespace SSWR
 
 			static void __stdcall OnParseClicked(void *userObj);
 		public:
-			AVIRUserAgentParseForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRUserAgentParseForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRUserAgentParseForm();
 
 			virtual void OnMonitorChanged();

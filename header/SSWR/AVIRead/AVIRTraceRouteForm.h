@@ -22,7 +22,7 @@ namespace SSWR
 		class AVIRTraceRouteForm : public UI::GUIForm
 		{
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			NotNullPtr<Net::SocketFactory> sockf;
 			Net::WhoisHandler whois;
 
@@ -41,7 +41,7 @@ namespace SSWR
 			static void __stdcall OnIPSelChg(void *userObj);
 
 		public:
-			AVIRTraceRouteForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRTraceRouteForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRTraceRouteForm();
 
 			virtual void OnMonitorChanged();

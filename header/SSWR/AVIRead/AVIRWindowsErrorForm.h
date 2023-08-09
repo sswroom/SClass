@@ -12,7 +12,7 @@ namespace SSWR
 		class AVIRWindowsErrorForm : public UI::GUIForm
 		{
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
 			UI::GUILabel *lblErrorCode;
 			UI::GUITextBox *txtErrorCode;
@@ -23,7 +23,7 @@ namespace SSWR
 			static void __stdcall OnErrorCodeChanged(void *userObj);
 
 		public:
-			AVIRWindowsErrorForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRWindowsErrorForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRWindowsErrorForm();
 
 			virtual void OnMonitorChanged();

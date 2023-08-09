@@ -17,7 +17,7 @@ namespace SSWR
 		class AVIRBYDC9RForm : public UI::GUIForm
 		{
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			IO::Device::BYDC9R c9r;
 			IO::CANListener *listener;
 			Net::SSLEngine *ssl;
@@ -61,7 +61,7 @@ namespace SSWR
 			static void __stdcall OnCANBusClicked(void *userObj);
 			static void __stdcall OnTimerTick(void *userObj);
 		public:
-			AVIRBYDC9RForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRBYDC9RForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRBYDC9RForm();
 
 			virtual void OnMonitorChanged();

@@ -143,7 +143,7 @@ namespace SSWR
 			UI::GUITrackBar *tbAmplifierVol;
 			UI::GUILabel *lblAmplifierVolV;
 
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Math::FFTCalc fft;
 			Media::IAudioSource *audSrc;
 			Int32 audRenderType;
@@ -207,7 +207,7 @@ namespace SSWR
 			static void __stdcall OnAmplifierVolChg(void *userObj, UOSInt scrollPos);
 			void StopAudio();
 		public:
-			AVIRAudioFilterForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, Bool showMenu);
+			AVIRAudioFilterForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Bool showMenu);
 			virtual ~AVIRAudioFilterForm();
 
 			virtual void EventMenuClicked(UInt16 cmdId);

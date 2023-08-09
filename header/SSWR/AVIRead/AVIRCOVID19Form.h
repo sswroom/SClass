@@ -33,7 +33,7 @@ namespace SSWR
 				Data::FastMap<Int64, DailyRecord*> *records;
 			} CountryInfo;
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			NotNullPtr<Net::SocketFactory> sockf;
 			Net::SSLEngine *ssl;
 			Data::StringMap<CountryInfo*> countries;
@@ -53,7 +53,7 @@ namespace SSWR
 			void ClearRecords();
 			Bool LoadCSV(NotNullPtr<IO::SeekableStream> stm);
 		public:
-			AVIRCOVID19Form(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRCOVID19Form(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRCOVID19Form();
 
 			virtual void OnMonitorChanged();

@@ -23,12 +23,12 @@ namespace SSWR
 			UI::GUIListView *lvItems;
 
 			Net::WebSite::WebSite7gogoControl *ctrl;
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Net::SSLEngine *ssl;
 
 			static void __stdcall OnRequestPageClicked(void *userObj);
 		public:
-			AVIRWebSite7gogoForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRWebSite7gogoForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRWebSite7gogoForm();
 
 			virtual void OnMonitorChanged();

@@ -14,12 +14,12 @@ namespace SSWR
 		private:
 			UI::GUIPictureBoxSimple *pbMain;
 
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Data::Chart *chart;
 
 			static void __stdcall OnSizeChanged(void *userObj);
 		public:
-			AVIRChartForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, Data::Chart *chart);
+			AVIRChartForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Data::Chart *chart);
 			virtual ~AVIRChartForm();
 
 			virtual void EventMenuClicked(UInt16 cmdId);

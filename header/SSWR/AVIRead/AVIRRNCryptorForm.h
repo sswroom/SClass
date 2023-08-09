@@ -16,7 +16,7 @@ namespace SSWR
 		class AVIRRNCryptorForm : public UI::GUIForm
 		{
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
 			UI::GUILabel *lblSourceFile;
 			UI::GUITextBox *txtSourceFile;
@@ -29,7 +29,7 @@ namespace SSWR
 			static void __stdcall OnProcessClicked(void *userObj);
 			static void __stdcall OnFiles(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles);
 		public:
-			AVIRRNCryptorForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRRNCryptorForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRRNCryptorForm();
 
 			virtual void OnMonitorChanged();

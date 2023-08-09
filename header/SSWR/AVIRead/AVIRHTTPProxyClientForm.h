@@ -18,7 +18,7 @@ namespace SSWR
 		class AVIRHTTPProxyClientForm : public UI::GUIForm
 		{
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
 			UI::GUIPanel *pnlRequest;
 			UI::GUILabel *lblURL;
@@ -66,7 +66,7 @@ namespace SSWR
 			static void __stdcall OnTimerTick(void *userObj);
 			void ClearHeaders();
 		public:
-			AVIRHTTPProxyClientForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRHTTPProxyClientForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRHTTPProxyClientForm();
 
 			virtual void OnMonitorChanged();

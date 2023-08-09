@@ -18,7 +18,7 @@ namespace SSWR
 		class AVIRLDAPClientForm : public UI::GUIForm
 		{
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Net::LDAPClient *cli;
 			Data::ArrayList<Net::LDAPClient::SearchResObject*> *dispResults;
 
@@ -53,7 +53,7 @@ namespace SSWR
 			static void __stdcall OnSearchResultSelChg(void *userObj);
 
 		public:
-			AVIRLDAPClientForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRLDAPClientForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRLDAPClientForm();
 
 			virtual void OnMonitorChanged();

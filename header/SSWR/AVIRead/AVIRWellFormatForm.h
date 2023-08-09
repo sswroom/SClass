@@ -22,7 +22,7 @@ namespace SSWR
 			UI::GUIButton *btnParseToFile;
 			UI::GUITextBox *txtOutput;
 
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
 			static void AddFilters(IO::FileSelector *selector);
 			Bool ParseFile(Text::CStringNN fileName, NotNullPtr<Text::StringBuilderUTF8> output);
@@ -33,7 +33,7 @@ namespace SSWR
 			static void __stdcall OnParseToFileClicked(void *userObj);
 
 		public:
-			AVIRWellFormatForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRWellFormatForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRWellFormatForm();
 
 			virtual void OnMonitorChanged();

@@ -14,7 +14,7 @@ namespace SSWR
 		class AVIRImagePSNRForm : public UI::GUIForm
 		{
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			UI::GUILabel *lblOriFile;
 			UI::GUITextBox *txtOriFile;
 			UI::GUIButton *btnOriFile;
@@ -33,7 +33,7 @@ namespace SSWR
 			static void __stdcall OnLossyFileClicked(void *userObj);
 			static void __stdcall OnCompareClicked(void *userObj);
 		public:
-			AVIRImagePSNRForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRImagePSNRForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRImagePSNRForm();
 
 			virtual void OnMonitorChanged();

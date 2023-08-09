@@ -23,7 +23,7 @@ namespace SSWR
 		class AVIRJTT808ServerForm : public UI::GUIForm, public IO::IProtocolHandler::DataListener
 		{
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			IO::LogTool *log;
 			Net::TCPServer *svr;
 			Net::TCPClientMgr *cliMgr;
@@ -50,7 +50,7 @@ namespace SSWR
 
 			void ServerStop();
 		public:
-			AVIRJTT808ServerForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRJTT808ServerForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRJTT808ServerForm();
 
 			virtual void OnMonitorChanged();

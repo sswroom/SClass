@@ -16,7 +16,7 @@ namespace SSWR
 		class AVIRTextHashForm : public UI::GUIForm
 		{
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Text::TextBinEnc::TextBinEncList encList;
 
 			UI::GUILabel *lblText;
@@ -32,7 +32,7 @@ namespace SSWR
 
 			static void __stdcall OnGenerateClicked(void *userObj);
 		public:
-			AVIRTextHashForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRTextHashForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRTextHashForm();
 
 			virtual void OnMonitorChanged();

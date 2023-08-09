@@ -180,7 +180,7 @@ void SSWR::AVIRead::AVIRCodeProjectForm::AddTreeObj(UI::GUITreeView::TreeItem *p
 	}
 }
 
-SSWR::AVIRead::AVIRCodeProjectForm::AVIRCodeProjectForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, Text::CodeProject *proj) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRCodeProjectForm::AVIRCodeProjectForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Text::CodeProject *proj) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetText(CSTR("Code Project"));
 	this->SetFont(0, 0, 8.25, false);

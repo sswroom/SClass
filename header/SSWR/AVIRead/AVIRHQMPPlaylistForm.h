@@ -22,7 +22,7 @@ namespace SSWR
 			UI::GUIButton *btnOK;
 			UI::GUIButton *btnCancel;
 
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Media::Playlist *playlist;
 		private:
 			static void __stdcall OnFileDrop(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles);
@@ -34,7 +34,7 @@ namespace SSWR
 			Bool AddFolder(UTF8Char *folderBuff, UTF8Char *folderBuffEnd);
 			void UpdatePlaylist();
 		public:
-			AVIRHQMPPlaylistForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, Media::Playlist *playlist);
+			AVIRHQMPPlaylistForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Media::Playlist *playlist);
 			virtual ~AVIRHQMPPlaylistForm();
 
 			virtual void OnMonitorChanged();

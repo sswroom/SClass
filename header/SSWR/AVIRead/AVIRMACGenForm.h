@@ -16,7 +16,7 @@ namespace SSWR
 		class AVIRMACGenForm : public UI::GUIForm
 		{
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
 			UI::GUILabel *lblVendor;
 			UI::GUIComboBox *cboVendor;
@@ -35,7 +35,7 @@ namespace SSWR
 			static void __stdcall OnAdapterSetClicked(void *userObj);
 			static OSInt __stdcall ListCompare(void *list1, void *list2);
 		public:
-			AVIRMACGenForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRMACGenForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRMACGenForm();
 
 			virtual void OnMonitorChanged();

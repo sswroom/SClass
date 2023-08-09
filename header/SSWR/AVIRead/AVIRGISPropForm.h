@@ -49,7 +49,7 @@ namespace SSWR
 			Media::StaticImage *imgLine;
 			Media::StaticImage *imgFont;
 			Map::MapEnv *env;
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Media::ColorManagerSess *colorSess;
 			Media::ColorConv *colorConv;
 			Map::MapEnv::GroupItem *group;
@@ -84,7 +84,7 @@ namespace SSWR
 */
 
 		public:
-			AVIRGISPropForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, Map::MapEnv *env, Map::MapEnv::GroupItem *group, UOSInt index);
+			AVIRGISPropForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Map::MapEnv *env, Map::MapEnv::GroupItem *group, UOSInt index);
 			virtual ~AVIRGISPropForm();
 
 			virtual void OnMonitorChanged();

@@ -21,7 +21,7 @@ namespace SSWR
 			UI::GUIListBox *lbLog;
 			UI::GUITextBox *txtLog;
 
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			IO::LogTool *log;
 			UI::ListBoxLogger *logger;
 
@@ -29,7 +29,7 @@ namespace SSWR
 			static void __stdcall OnDisplayOffClicked(void *userObj);
 			static void __stdcall OnKeyDown(void *userObj, UOSInt keyCode, Bool extendedKey);
 		public:
-			AVIRGUIEventForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRGUIEventForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRGUIEventForm();
 
 			virtual Bool OnPaint();

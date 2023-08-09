@@ -17,7 +17,7 @@ namespace SSWR
 		class AVIRSSLCertKeyForm : public UI::GUIForm
 		{
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Net::SSLEngine *ssl;
 			Crypto::Cert::X509Cert *initCert;
 			Crypto::Cert::X509File *initKey;
@@ -57,7 +57,7 @@ namespace SSWR
 			void LoadFile(Text::CStringNN fileName);
 
 		public:
-			AVIRSSLCertKeyForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, Net::SSLEngine *ssl, Crypto::Cert::X509Cert *cert, Crypto::Cert::X509File *key);
+			AVIRSSLCertKeyForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Net::SSLEngine *ssl, Crypto::Cert::X509Cert *cert, Crypto::Cert::X509File *key);
 			virtual ~AVIRSSLCertKeyForm();
 
 			virtual void OnMonitorChanged();

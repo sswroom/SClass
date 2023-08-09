@@ -21,7 +21,7 @@ namespace SSWR
 		class AVIRNetPingForm : public UI::GUIForm
 		{
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			NotNullPtr<Net::SocketFactory> sockf;
 			Net::SocketUtil::AddressInfo targetAddr;
 			IO::LogTool *log;
@@ -41,7 +41,7 @@ namespace SSWR
 			static void __stdcall OnPingClicked(void *userObj);
 			static void __stdcall OnTimerTick(void *userObj);
 		public:
-			AVIRNetPingForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRNetPingForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRNetPingForm();
 
 			virtual void OnMonitorChanged();

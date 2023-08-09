@@ -20,7 +20,7 @@ namespace SSWR
 		class AVIRLDAPExplorerForm : public UI::GUIForm
 		{
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Net::LDAPClient *cli;
 			Data::ArrayList<Net::LDAPClient::SearchResObject*> *dispResults;
 			UOSInt rootLev;
@@ -49,7 +49,7 @@ namespace SSWR
 			static void __stdcall OnObjectsDblClk(void *userObj);
 
 		public:
-			AVIRLDAPExplorerForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRLDAPExplorerForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRLDAPExplorerForm();
 
 			virtual void OnMonitorChanged();

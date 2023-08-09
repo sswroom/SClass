@@ -29,7 +29,7 @@ namespace SSWR
 			} BTDevice;
 			
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			IO::BTManager btMgr;
 			Data::ArrayList<IO::BTController *> btList;
 			IO::BTController *btCtrl;
@@ -50,7 +50,7 @@ namespace SSWR
 			static void __stdcall OnLEScanItem(void *userObj, UInt64 mac, Int32 rssi, Text::CString name);
 			void ClearDevices();
 		public:
-			AVIRBluetoothLEForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRBluetoothLEForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRBluetoothLEForm();
 
 			virtual void OnMonitorChanged();

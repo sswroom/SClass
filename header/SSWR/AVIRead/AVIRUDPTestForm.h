@@ -31,7 +31,7 @@ namespace SSWR
 				Sync::Event *evt;
 			} ThreadStatus;
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			NotNullPtr<Net::SocketFactory> sockf;
 			Net::UDPServer *udp;
 			Bool autoReply;
@@ -83,7 +83,7 @@ namespace SSWR
 
 			static UInt32 __stdcall ProcThread(void *userObj);
 		public:
-			AVIRUDPTestForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRUDPTestForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRUDPTestForm();
 
 			virtual void OnMonitorChanged();

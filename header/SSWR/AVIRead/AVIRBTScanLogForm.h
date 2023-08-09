@@ -18,7 +18,7 @@ namespace SSWR
 		class AVIRBTScanLogForm : public UI::GUIForm
 		{
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
 			UI::GUIPanel *pnlControl;
 			UI::GUIButton *btnFile;
@@ -38,7 +38,7 @@ namespace SSWR
 
 			void UpdateStatus();
 		public:
-			AVIRBTScanLogForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, IO::BTScanLog *btLog);
+			AVIRBTScanLogForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, IO::BTScanLog *btLog);
 			virtual ~AVIRBTScanLogForm();
 
 			virtual void OnMonitorChanged();

@@ -15,7 +15,7 @@ namespace SSWR
 		class AVIRXMLWalkForm : public UI::GUIForm
 		{
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
 			UI::GUIPanel *pnlFile;
 			UI::GUILabel *lblFile;
@@ -28,7 +28,7 @@ namespace SSWR
 
 			void LoadFile(Text::CStringNN fileName);
 		public:
-			AVIRXMLWalkForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRXMLWalkForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRXMLWalkForm();
 
 			virtual void OnMonitorChanged();

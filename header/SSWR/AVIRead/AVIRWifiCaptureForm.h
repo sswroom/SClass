@@ -48,7 +48,7 @@ namespace SSWR
 				UInt64 neighbour[20];
 			} WifiLog;
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			IO::SensorManager sensorMgr;
 			IO::MotionDetectorAccelerometer *motion;
 			Net::WirelessLAN *wlan;
@@ -113,7 +113,7 @@ namespace SSWR
 			static Bool __stdcall OnFormClosing(void *userObj, CloseReason reason);
 			static void __stdcall OnGPSData(void *userObj, NotNullPtr<Map::GPSTrack::GPSRecord3> record, UOSInt sateCnt, Map::ILocationService::SateStatus *sates);
 		public:
-			AVIRWifiCaptureForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRWifiCaptureForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRWifiCaptureForm();
 
 			virtual void OnMonitorChanged();

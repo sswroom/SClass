@@ -15,7 +15,7 @@ namespace SSWR
 		class AVIRHKOLocalForecastForm : public UI::GUIForm
 		{
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Net::SSLEngine *ssl;
 
 			UI::GUILabel *lblLang;
@@ -41,7 +41,7 @@ namespace SSWR
 			static void __stdcall OnReloadClicked(void *userObj);
 			void Reload(Net::HKOWeather::Language lang);
 		public:
-			AVIRHKOLocalForecastForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRHKOLocalForecastForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRHKOLocalForecastForm();
 
 			virtual void OnMonitorChanged();

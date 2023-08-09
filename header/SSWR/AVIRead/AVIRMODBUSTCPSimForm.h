@@ -31,7 +31,7 @@ namespace SSWR
 				Last = ED527
 			};
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Net::MODBUSTCPListener *listener;
 			IO::LogTool log;
 			IO::MODBUSDevSim *currDev;
@@ -60,7 +60,7 @@ namespace SSWR
 			void UpdateDevList();
 			void UpdateDevValues();
 		public:
-			AVIRMODBUSTCPSimForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRMODBUSTCPSimForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRMODBUSTCPSimForm();
 
 			virtual void OnMonitorChanged();

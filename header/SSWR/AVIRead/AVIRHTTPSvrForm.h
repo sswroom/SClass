@@ -54,7 +54,7 @@ namespace SSWR
 		class AVIRHTTPSvrForm : public UI::GUIForm
 		{
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Net::SSLEngine *ssl;
 			Net::WebServer::WebListener *svr;
 			IO::LogTool *log;
@@ -136,7 +136,7 @@ namespace SSWR
 			static void __stdcall OnAccessSelChg(void *userObj);
 			static void __stdcall OnSSLCertClicked(void *userObj);
 		public:
-			AVIRHTTPSvrForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRHTTPSvrForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRHTTPSvrForm();
 
 			virtual void OnMonitorChanged();

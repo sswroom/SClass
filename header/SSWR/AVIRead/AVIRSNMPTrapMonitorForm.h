@@ -26,7 +26,7 @@ namespace SSWR
 			} SNMPPacket;
 			
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Net::SNMPTrapMonitor *mon;
 			Sync::Mutex packetMut;
 			Data::ArrayList<SNMPPacket*> packetList;
@@ -62,7 +62,7 @@ namespace SSWR
 			static Bool __stdcall OnSNMPTrapPacket(void *userObj, const Net::SocketUtil::AddressInfo *addr, UInt16 port, NotNullPtr<const Net::SNMPUtil::TrapInfo> trap, NotNullPtr<Data::ArrayList<Net::SNMPUtil::BindingItem*>> itemList);
 
 		public:
-			AVIRSNMPTrapMonitorForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRSNMPTrapMonitorForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRSNMPTrapMonitorForm();
 
 			virtual void OnMonitorChanged();

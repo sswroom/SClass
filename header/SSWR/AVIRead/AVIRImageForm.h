@@ -30,7 +30,7 @@ namespace SSWR
 			UI::GUIButton *btnInfoICC;
 			UI::GUITextBox *txtInfo;
 
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Media::ColorManagerSess *colorSess;
 			Media::ImageList *imgList;
 			Bool allowEnlarge;
@@ -42,7 +42,7 @@ namespace SSWR
 			static void __stdcall OnInfoICCClicked(void *userObj);
 			void UpdateInfo();
 		public:
-			AVIRImageForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, Media::ImageList *imgList);
+			AVIRImageForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Media::ImageList *imgList);
 			virtual ~AVIRImageForm();
 
 			virtual void EventMenuClicked(UInt16 cmdId);

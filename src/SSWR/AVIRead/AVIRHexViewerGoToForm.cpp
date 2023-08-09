@@ -58,7 +58,7 @@ void __stdcall SSWR::AVIRead::AVIRHexViewerGoToForm::OnCancelClicked(void *userO
 	me->SetDialogResult(DR_CANCEL);
 }
 
-SSWR::AVIRead::AVIRHexViewerGoToForm::AVIRHexViewerGoToForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, UInt64 currOfst, UInt64 fileSize) : UI::GUIForm(parent, 320, 160, ui)
+SSWR::AVIRead::AVIRHexViewerGoToForm::AVIRHexViewerGoToForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, UInt64 currOfst, UInt64 fileSize) : UI::GUIForm(parent, 320, 160, ui)
 {
 	this->core = core;
 	this->currOfst = currOfst;

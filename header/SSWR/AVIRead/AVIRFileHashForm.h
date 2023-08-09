@@ -54,7 +54,7 @@ namespace SSWR
 
 			UI::GUIListView *lvFiles;
 
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Sync::Event fileEvt;
 			Int32 threadStatus;
 			Bool threadToStop;
@@ -79,7 +79,7 @@ namespace SSWR
 			void AddFile(Text::CString fileName);
 			void UpdateUI();
 		public:
-			AVIRFileHashForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRFileHashForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRFileHashForm();
 
 			virtual void OnMonitorChanged();

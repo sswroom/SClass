@@ -16,7 +16,7 @@ namespace SSWR
 		class AVIRBTScanLogDevForm : public UI::GUIForm
 		{
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
 			UI::GUIPanel *pnlDevInfo;
 			UI::GUILabel *lblMAC;
@@ -30,7 +30,7 @@ namespace SSWR
 
 			static void __stdcall OnCSVClicked(void *userObj);
 		public:
-			AVIRBTScanLogDevForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, const IO::BTScanLog::DevEntry *entry);
+			AVIRBTScanLogDevForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, const IO::BTScanLog::DevEntry *entry);
 			virtual ~AVIRBTScanLogDevForm();
 
 			virtual void OnMonitorChanged();

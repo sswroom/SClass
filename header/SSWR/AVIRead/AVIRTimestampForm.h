@@ -44,7 +44,7 @@ namespace SSWR
 			UI::GUILabel *lblStrDotNetTicks;
 			UI::GUITextBox *txtStrDotNetTicks;
 
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
 			static void __stdcall OnEpochSecClicked(void *userObj);
 			static void __stdcall OnEpochMSClicked(void *userObj);
@@ -54,7 +54,7 @@ namespace SSWR
 			static void __stdcall OnStrConvClicked(void *userObj);
 			void DisplayTime(const Data::Timestamp &ts);
 		public:
-			AVIRTimestampForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRTimestampForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRTimestampForm();
 
 			virtual void OnMonitorChanged();

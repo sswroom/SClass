@@ -19,7 +19,7 @@ namespace SSWR
 		class AVIRADAMForm : public UI::GUIForm
 		{
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			IO::Stream *stm;
 			IO::AdvantechASCIIChannel *channel;
 			UInt8 channelAddr;
@@ -60,7 +60,7 @@ namespace SSWR
 			void StopStream(Bool clearUI);
 
 		public:
-			AVIRADAMForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRADAMForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRADAMForm();
 
 			virtual void OnMonitorChanged();

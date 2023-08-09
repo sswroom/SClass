@@ -17,7 +17,7 @@ void __stdcall SSWR::AVIRead::AVIRJSTextForm::OnExtractClicked(void *userObj)
 	}
 }
 
-SSWR::AVIRead::AVIRJSTextForm::AVIRJSTextForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 160, ui)
+SSWR::AVIRead::AVIRJSTextForm::AVIRJSTextForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 160, ui)
 {
 	this->SetText(CSTR("JS Text"));
 	this->SetFont(0, 0, 8.25, false);

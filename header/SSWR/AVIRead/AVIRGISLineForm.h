@@ -19,7 +19,7 @@ namespace SSWR
 		class AVIRGISLineForm : public UI::GUIForm, public Media::IColorHandler
 		{
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Media::ColorManagerSess *colorSess;
 			Media::ColorConv *colorConv;
 			NotNullPtr<Media::DrawEngine> eng;
@@ -44,7 +44,7 @@ namespace SSWR
 			static void __stdcall OnCancelClicked(void *userObj);
 			void UpdatePreview();
 		public:
-			AVIRGISLineForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, NotNullPtr<Media::DrawEngine> eng, UOSInt lineThick, UInt32 lineColor);
+			AVIRGISLineForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<Media::DrawEngine> eng, UOSInt lineThick, UInt32 lineColor);
 			virtual ~AVIRGISLineForm();
 
 			virtual void OnMonitorChanged();

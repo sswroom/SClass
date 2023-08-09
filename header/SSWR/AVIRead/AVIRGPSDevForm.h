@@ -89,7 +89,7 @@ namespace SSWR
 			UI::GUIListBox *lbAlertDev;
 			UI::GUIListView *lvAlert;
 
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Sync::Mutex cliMut;
 			Net::TCPClient *cli;
 			IO::ProtoHdlr::ProtoGPSDevInfoHandler protoHdlr;
@@ -150,7 +150,7 @@ namespace SSWR
 			void SendGetAlert(Int32 alertId);
 			void SendGetUser(Int32 userId);
 		public:
-			AVIRGPSDevForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRGPSDevForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRGPSDevForm();
 
 			virtual void OnMonitorChanged();

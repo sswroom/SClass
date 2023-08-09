@@ -20,7 +20,7 @@ namespace SSWR
 		class AVIRHTTPForwarderForm : public UI::GUIForm
 		{
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Net::SSLEngine *ssl;
 			Net::WebServer::WebListener *svr;
 			Net::WebServer::HTTPForwardHandler *fwdHdlr;
@@ -49,7 +49,7 @@ namespace SSWR
 			static void __stdcall OnStopClick(void *userObj);
 			static void __stdcall OnSSLCertClicked(void *userObj);
 		public:
-			AVIRHTTPForwarderForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRHTTPForwarderForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRHTTPForwarderForm();
 
 			virtual void OnMonitorChanged();

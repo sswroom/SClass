@@ -18,7 +18,7 @@ namespace SSWR
 		class AVIRCodeProjectForm : public UI::GUIForm
 		{
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Text::CodeProject *proj;
 
 			UI::GUIPanel *pnlCtrl;
@@ -32,7 +32,7 @@ namespace SSWR
 			void DisplayStatus(NotNullPtr<Text::StringBuilderUTF8> sb, Text::Cpp::CppParseStatus *status);
 			void AddTreeObj(UI::GUITreeView::TreeItem *parent, Text::CodeContainer *container);
 		public:
-			AVIRCodeProjectForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, Text::CodeProject *proj);
+			AVIRCodeProjectForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Text::CodeProject *proj);
 			virtual ~AVIRCodeProjectForm();
 
 			virtual void OnMonitorChanged();

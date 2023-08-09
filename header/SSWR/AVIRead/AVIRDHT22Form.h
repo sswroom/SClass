@@ -27,7 +27,7 @@ namespace SSWR
 			UI::GUILabel *lblStatus;
 			UI::GUITextBox *txtStatus;
 
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			IO::IOPin *pin;
 			IO::Device::DHT22 *dht22;
 
@@ -35,7 +35,7 @@ namespace SSWR
 			static void __stdcall OnTimerTick(void *userObj);
 			void ReadData();
 		public:
-			AVIRDHT22Form(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, IO::IOPin *pin);
+			AVIRDHT22Form(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, IO::IOPin *pin);
 			virtual ~AVIRDHT22Form();
 
 			virtual void OnMonitorChanged();

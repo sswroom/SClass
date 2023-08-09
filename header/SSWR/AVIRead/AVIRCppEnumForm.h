@@ -16,7 +16,7 @@ namespace SSWR
 		class AVIRCppEnumForm : public UI::GUIForm
 		{
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
 			UI::GUIPanel *pnlCtrl;
 			UI::GUILabel *lblType;
@@ -33,7 +33,7 @@ namespace SSWR
 			static void __stdcall OnConv2Clicked(void *userObj);
 			void ConvEnum();
 		public:
-			AVIRCppEnumForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRCppEnumForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRCppEnumForm();
 
 			virtual void OnMonitorChanged();

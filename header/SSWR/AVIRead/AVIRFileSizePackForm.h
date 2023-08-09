@@ -36,7 +36,7 @@ namespace SSWR
 			Data::ArrayList<MyFile *> fileList;
 			Data::ArrayList<MyFile *> packList;
 			const UTF8Char *filePath;
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
 			UI::GUIPanel *pnlFile;
 			UI::GUILabel *lblDir;
@@ -60,7 +60,7 @@ namespace SSWR
 			void GenList();
 			UInt64 NewCalc(Data::ArrayList<MyFile *> *fileList, Data::ArrayList<MyFile *> *packList, UInt64 maxSize, UInt64 minSize);
 		public:
-			AVIRFileSizePackForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRFileSizePackForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRFileSizePackForm();
 
 			virtual void OnMonitorChanged();

@@ -22,7 +22,7 @@ namespace SSWR
 		class AVIRSAMLTestForm : public UI::GUIForm
 		{
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Net::SSLEngine *ssl;
 			Net::WebServer::SAMLHandler *samlHdlr;
 			Net::WebServer::WebListener *svr;
@@ -83,7 +83,7 @@ namespace SSWR
 			static void __stdcall OnSAMLResponse(void *userObj, Text::CString msg);
 			static Bool __stdcall OnLoginRequest(void *userObj, Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const Net::WebServer::SAMLMessage *msg);
 		public:
-			AVIRSAMLTestForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRSAMLTestForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRSAMLTestForm();
 
 			virtual void OnMonitorChanged();

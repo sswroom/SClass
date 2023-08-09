@@ -16,7 +16,7 @@ namespace SSWR
 		class AVIRCAUtilForm : public UI::GUIForm
 		{
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Net::SSLEngine *ssl;
 			Data::ArrayList<const UTF8Char*> *sanList;
 			Crypto::Cert::X509Cert *caCert;
@@ -61,7 +61,7 @@ namespace SSWR
 			void UpdateKeyDetail();
 			void UpdateNames(Crypto::Cert::CertNames *names);
 		public:
-			AVIRCAUtilForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRCAUtilForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRCAUtilForm();
 
 			virtual void OnMonitorChanged();

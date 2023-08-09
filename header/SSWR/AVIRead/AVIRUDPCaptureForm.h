@@ -64,7 +64,7 @@ namespace SSWR
 			UI::GUIButton *btnMulticastAdd;
 			UI::GUIListBox *lbMulticastCurr;
 
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			IO::LogTool log;
 			UI::ListBoxLogger *logger;
 			Net::UDPServer *svr;
@@ -83,7 +83,7 @@ namespace SSWR
 			static void __stdcall OnMulticastClicked(void *userObj);
 			static void __stdcall OnMulticastDoubleClk(void *userObj);
 		public:
-			AVIRUDPCaptureForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRUDPCaptureForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRUDPCaptureForm();
 
 			virtual void OnMonitorChanged();

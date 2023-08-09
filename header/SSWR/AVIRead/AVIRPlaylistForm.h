@@ -28,7 +28,7 @@ namespace SSWR
 			UI::GUIButton *btnEnd;
 			UI::GUIButton *btnFS;
 
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Media::ColorManagerSess *colorSess;
 			Media::Playlist *playlist;
 			Media::MediaPlayer *player;
@@ -41,7 +41,7 @@ namespace SSWR
 			static void __stdcall OnFSClicked(void *userObj);
 			void UpdatePlaylist();
 		public:
-			AVIRPlaylistForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, Media::Playlist *playlist);
+			AVIRPlaylistForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Media::Playlist *playlist);
 			virtual ~AVIRPlaylistForm();
 		
 			virtual void EventMenuClicked(UInt16 cmdId);

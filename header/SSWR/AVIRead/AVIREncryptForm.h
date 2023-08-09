@@ -31,11 +31,11 @@ namespace SSWR
 			UI::GUIButton *btnConvert;
 			UOSInt fileIndex;
 
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Text::TextBinEnc::TextBinEncList encList;
 			static void __stdcall OnConvertClicked(void *userObj);
 		public:
-			AVIREncryptForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIREncryptForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIREncryptForm();
 
 			virtual void OnMonitorChanged();

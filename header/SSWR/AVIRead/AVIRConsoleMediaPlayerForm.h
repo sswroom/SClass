@@ -32,7 +32,7 @@ namespace SSWR
 			UI::GUILabel *lblColorPrimaries;
 			UI::GUIComboBox *cboColorPrimaries;
 
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Media::ConsoleMediaPlayer *player;
 			Media::MediaPlayerWebInterface *webIface;
 			Net::WebServer::WebListener *listener;
@@ -53,7 +53,7 @@ namespace SSWR
 			void UpdateColorDisp();
 			Bool OpenICC(Text::CStringNN iccFile);
 		public:
-			AVIRConsoleMediaPlayerForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRConsoleMediaPlayerForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRConsoleMediaPlayerForm();
 
 			virtual void OnMonitorChanged();

@@ -19,7 +19,7 @@ namespace SSWR
 		class AVIRWiFiLogManagerForm : public UI::GUIForm
 		{
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
 			UI::GUIPanel *pnlControl;
 			UI::GUIButton *btnFile;
@@ -50,7 +50,7 @@ namespace SSWR
 
 			void UpdateStatus();
 		public:
-			AVIRWiFiLogManagerForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRWiFiLogManagerForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRWiFiLogManagerForm();
 
 			virtual void OnMonitorChanged();

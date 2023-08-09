@@ -19,7 +19,7 @@ namespace SSWR
 		class AVIRChineseForm : public UI::GUIForm
 		{
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Text::ChineseInfo *chinese;
 			NotNullPtr<Media::DrawEngine> deng;
 			UInt32 currChar;
@@ -75,7 +75,7 @@ namespace SSWR
 			void UpdateImg();
 			void UpdateRelation();
 		public:
-			AVIRChineseForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRChineseForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRChineseForm();
 
 			virtual void OnMonitorChanged();

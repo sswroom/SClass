@@ -18,7 +18,7 @@ namespace SSWR
 		class AVIRSAMLDecryptForm : public UI::GUIForm
 		{
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
 			UI::GUILabel *lblKey;
 			UI::GUITextBox *txtKey;
@@ -32,7 +32,7 @@ namespace SSWR
 			static void __stdcall OnFormFiles(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles);
 			static void __stdcall OnDecryptClicked(void *userObj);
 		public:
-			AVIRSAMLDecryptForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRSAMLDecryptForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRSAMLDecryptForm();
 
 			virtual void OnMonitorChanged();

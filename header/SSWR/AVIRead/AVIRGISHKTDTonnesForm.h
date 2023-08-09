@@ -13,7 +13,7 @@ namespace SSWR
 		class AVIRGISHKTDTonnesForm : public UI::GUIForm
 		{
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
 			UI::GUILabel *lblRoadRoute;
 			UI::GUITextBox *txtRoadRoute;
@@ -31,7 +31,7 @@ namespace SSWR
 			static void __stdcall OnOKClicked(void *userObj);
 			static void __stdcall OnCancelClicked(void *userObj);
 		public:
-			AVIRGISHKTDTonnesForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRGISHKTDTonnesForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRGISHKTDTonnesForm();
 
 			virtual void OnMonitorChanged();

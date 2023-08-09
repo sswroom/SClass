@@ -36,7 +36,7 @@ namespace SSWR
 				UInt8 *ieBuff;
 			} LogFileEntry;
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
 			UI::GUIPanel *pnlControl;
 			UI::GUIButton *btnStore;
@@ -74,7 +74,7 @@ namespace SSWR
 
 			void UpdateStatus();
 		public:
-			AVIRMACManagerForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRMACManagerForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRMACManagerForm();
 
 			virtual void OnMonitorChanged();

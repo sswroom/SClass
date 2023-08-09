@@ -20,7 +20,7 @@ namespace SSWR
 		class AVIRImageBatchForm : public UI::GUIForm
 		{
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
 			UI::GUIPanel *pnlCtrl;
 			UI::GUIButton *btnFolder;
@@ -67,7 +67,7 @@ namespace SSWR
 			void OpenFolder(NotNullPtr<Text::String> folder);
 			void UpdatePreview();
 		public:
-			AVIRImageBatchForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRImageBatchForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRImageBatchForm();
 
 			virtual void EventMenuClicked(UInt16 cmdId);

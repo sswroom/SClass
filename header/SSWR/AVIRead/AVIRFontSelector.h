@@ -11,7 +11,7 @@ namespace SSWR
 		class AVIRFontSelector : public UI::GUICustomDrawVScroll, public Media::IColorHandler
 		{
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Media::ColorManagerSess *colorSess;
 			Media::ColorConv *colorConv;
 			Map::MapEnv *env;
@@ -26,7 +26,7 @@ namespace SSWR
 			virtual void OnKeyDown(UInt32 keyCode);
 
 		public:
-			AVIRFontSelector(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, SSWR::AVIRead::AVIRCore *core, Map::MapEnv *env, UOSInt initFontStyle, Media::ColorManagerSess *colorSess);
+			AVIRFontSelector(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Map::MapEnv *env, UOSInt initFontStyle, Media::ColorManagerSess *colorSess);
 			virtual ~AVIRFontSelector();
 
 			virtual void YUVParamChanged(const Media::IColorHandler::YUVPARAM *yuvParam);

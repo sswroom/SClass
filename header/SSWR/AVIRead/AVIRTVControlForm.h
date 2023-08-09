@@ -27,7 +27,7 @@ namespace SSWR
 				IO::TVControl::CommandFormat cmdFmt;
 			} CommandInfo;
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			IO::Stream *port;
 			IO::TVControl *tvCtrl;
 			IO::LogTool *log;
@@ -57,7 +57,7 @@ namespace SSWR
 			static void __stdcall OnSendCommandClicked(void *userObj);
 			static void __stdcall OnCmdChanged(void *userObj);
 		public:
-			AVIRTVControlForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRTVControlForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRTVControlForm();
 
 			virtual void OnMonitorChanged();

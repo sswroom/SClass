@@ -33,7 +33,7 @@ namespace SSWR
 			} AdapterInfo;
 			
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			NotNullPtr<Net::SocketFactory> sockf;
 			Net::ARPHandler *arpHdlr;
 			Net::SocketUtil::AddressInfo targetAddr;
@@ -61,7 +61,7 @@ namespace SSWR
 			static void __stdcall OnPingClicked(void *userObj);
 			static void __stdcall OnTimerTick(void *userObj);
 		public:
-			AVIRARPPingForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRARPPingForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRARPPingForm();
 
 			virtual void OnMonitorChanged();

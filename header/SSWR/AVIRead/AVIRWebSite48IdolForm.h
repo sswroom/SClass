@@ -42,14 +42,14 @@ namespace SSWR
 			UI::GUITextBox *txtVideoName;
 
 			Net::WebSite::WebSite48IdolControl *ctrl;
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Net::SSLEngine *ssl;
 
 			static void __stdcall OnRequestPageClicked(void *userObj);
 			static void __stdcall OnDownloadLinkClicked(void *userObj);
 			static void __stdcall OnVideoNameClicked(void *userObj);
 		public:
-			AVIRWebSite48IdolForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRWebSite48IdolForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRWebSite48IdolForm();
 
 			virtual void OnMonitorChanged();

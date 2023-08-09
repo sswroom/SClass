@@ -32,7 +32,7 @@ namespace SSWR
 		private:
 			static PredefData pdata[];
 
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			NotNullPtr<Net::SocketFactory> sockf;
 
 			Net::LoRaGateway *lora;
@@ -82,7 +82,7 @@ namespace SSWR
 			static void __stdcall OnSendULDataClick(void *userObj);
 			static void __stdcall OnLogSelChg(void *userObj);
 		public:
-			AVIRLoraGWSimForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRLoraGWSimForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRLoraGWSimForm();
 
 			virtual void OnMonitorChanged();

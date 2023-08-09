@@ -36,7 +36,7 @@ namespace SSWR
 
 			UI::GUIButton *btnTrimPadding;
 
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			IO::FileAnalyse::IFileAnalyse *file;
 			UOSInt lastPackCount;
 
@@ -48,7 +48,7 @@ namespace SSWR
 			static void __stdcall OnPackItemChanged(void *userObj);
 			Bool OpenFile(Text::CStringNN fileName);
 		public:
-			AVIRFileAnalyseForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRFileAnalyseForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRFileAnalyseForm();
 
 			virtual void OnMonitorChanged();

@@ -46,7 +46,7 @@ namespace SSWR
 			UI::GUICheckBox *chkDestCreateDDB;
 			UI::GUIButton *btnCopy;
 
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Data::ArrayList<DB::DBManagerCtrl*> *dbList;
 
 			DB::ReadingDB *dataConn;
@@ -58,7 +58,7 @@ namespace SSWR
 			static void __stdcall OnDestDBChg(void *userObj);
 			static void __stdcall OnCopyClicked(void *userObj);
 		public:
-			AVIRDBCopyTablesForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, Data::ArrayList<DB::DBManagerCtrl*> *dbList);
+			AVIRDBCopyTablesForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Data::ArrayList<DB::DBManagerCtrl*> *dbList);
 			virtual ~AVIRDBCopyTablesForm();
 
 			virtual void OnMonitorChanged();

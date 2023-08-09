@@ -19,7 +19,7 @@ namespace SSWR
 		class AVIRASN1MIBForm : public UI::GUIForm
 		{
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Net::ASN1MIB mib;
 
 			UI::GUIPanel *pnlRequest;
@@ -44,7 +44,7 @@ namespace SSWR
 			static void __stdcall OnObjectsSelChg(void *userObj);
 			void LoadFile(Text::CStringNN fileName);
 		public:
-			AVIRASN1MIBForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRASN1MIBForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRASN1MIBForm();
 
 			virtual void OnMonitorChanged();

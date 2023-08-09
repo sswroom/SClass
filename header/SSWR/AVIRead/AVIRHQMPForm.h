@@ -31,7 +31,7 @@ namespace SSWR
 			} QualityMode;
 
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Net::SSLEngine *ssl;
 			Media::ColorManagerSess *colorSess;
 			Media::Playlist *playlist;
@@ -64,7 +64,7 @@ namespace SSWR
 			void SwitchAudio(OSInt audIndex);
 
 		public:
-			AVIRHQMPForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, QualityMode qMode);
+			AVIRHQMPForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, QualityMode qMode);
 			virtual ~AVIRHQMPForm();
 
 			virtual void EventMenuClicked(UInt16 cmdId);

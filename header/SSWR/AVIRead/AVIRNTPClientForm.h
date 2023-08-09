@@ -23,12 +23,12 @@ namespace SSWR
 			UI::GUIButton *btnGetTime;
 			UI::GUIButton *btnSyncTime;
 
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
 			static void __stdcall OnGetTimeClicked(void *userObj);
 			static void __stdcall OnSyncTimeClicked(void *userObj);
 		public:
-			AVIRNTPClientForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRNTPClientForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRNTPClientForm();
 
 			virtual void OnMonitorChanged();

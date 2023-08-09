@@ -15,7 +15,7 @@ namespace SSWR
 			UI::GUIPictureBoxDD *pbImage;
 			UI::GUIMainMenu *mnuMain;
 
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Media::ColorManagerSess *colorSess;
 			Bool allowEnlarge;
 			Int64 imgTimeoutTick;
@@ -34,7 +34,7 @@ namespace SSWR
 			static Bool __stdcall OnMouseMove(void *userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn);
 			static Bool IsImageFileName(Text::CString fileName);
 		public:
-			AVIRImageViewerForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRImageViewerForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRImageViewerForm();
 
 			virtual void EventMenuClicked(UInt16 cmdId);

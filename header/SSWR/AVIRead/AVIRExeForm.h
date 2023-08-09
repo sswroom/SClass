@@ -52,7 +52,7 @@ namespace SSWR
 			UI::GUIHSplitter *hsp16Bit;
 			UI::GUIListBox *lb16BitCont;
 
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			IO::EXEFile *exeFile;
 			Data::ArrayList<ExeB16Addr*> *parts;
 			Data::ArrayList<Data::ArrayListStringNN*> *codesList;
@@ -65,7 +65,7 @@ namespace SSWR
 			static void __stdcall OnResourceSelChg(void *userObj);
 			static void __stdcall OnResourceDblClk(void *userObj);
 		public:
-			AVIRExeForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, IO::EXEFile *exeFile);
+			AVIRExeForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, IO::EXEFile *exeFile);
 			virtual ~AVIRExeForm();
 
 			virtual void OnMonitorChanged();

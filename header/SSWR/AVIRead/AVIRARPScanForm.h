@@ -37,7 +37,7 @@ namespace SSWR
 			UI::GUIButton *btnScan;
 			UI::GUIListView *lvARP;
 
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
 			Data::ArrayList<AdapterInfo*> adapters;
 			Sync::Mutex arpMut;
@@ -50,7 +50,7 @@ namespace SSWR
 
 			void UpdateARPList();
 		public:
-			AVIRARPScanForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRARPScanForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRARPScanForm();
 
 			virtual void OnMonitorChanged();

@@ -22,13 +22,13 @@ namespace SSWR
 			UI::GUITextBox *txtZ;
 			UI::GUIPanel *pnlMoving;
 
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			IO::MotionDetectorAccelerometer *motion;
 			Bool currMoving;
 
 			static void __stdcall OnTimerTick(void *userObj);
 		public:
-			AVIRAccelerometerForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, IO::SensorAccelerometer *acc);
+			AVIRAccelerometerForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, IO::SensorAccelerometer *acc);
 			virtual ~AVIRAccelerometerForm();
 
 			virtual void OnMonitorChanged();

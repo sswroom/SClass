@@ -15,7 +15,7 @@ namespace SSWR
 		class AVIRUSBDeviceForm : public UI::GUIForm
 		{
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Data::ArrayList<IO::USBInfo*> *usbList;
 
 			UI::GUIListBox *lbDevices;
@@ -37,7 +37,7 @@ namespace SSWR
 			static void __stdcall OnDevicesSelChg(void *userObj);
 			static OSInt __stdcall ItemCompare(void *item1, void *item2);
 		public:
-			AVIRUSBDeviceForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRUSBDeviceForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRUSBDeviceForm();
 
 			virtual void OnMonitorChanged();

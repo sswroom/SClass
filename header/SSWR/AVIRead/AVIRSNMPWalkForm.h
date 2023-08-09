@@ -15,7 +15,7 @@ namespace SSWR
 		class AVIRSNMPWalkForm : public UI::GUIForm
 		{
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
 			UI::GUIPanel *pnlRequest;
 			UI::GUILabel *lblAgent;
@@ -23,7 +23,7 @@ namespace SSWR
 			UI::GUIListView *lvResults;
 
 		public:
-			AVIRSNMPWalkForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, const Net::SocketUtil::AddressInfo *addr, NotNullPtr<Text::String> community);
+			AVIRSNMPWalkForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, const Net::SocketUtil::AddressInfo *addr, NotNullPtr<Text::String> community);
 			virtual ~AVIRSNMPWalkForm();
 
 			virtual void OnMonitorChanged();

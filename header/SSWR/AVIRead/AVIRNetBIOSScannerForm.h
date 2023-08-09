@@ -17,7 +17,7 @@ namespace SSWR
 		class AVIRNetBIOSScannerForm : public UI::GUIForm
 		{
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Net::NetBIOSScanner *netbios;
 			Bool tableUpdated;
 
@@ -36,7 +36,7 @@ namespace SSWR
 			static void __stdcall OnAnswerUpdated(void *userObj, UInt32 sortableIP);
 
 		public:
-			AVIRNetBIOSScannerForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRNetBIOSScannerForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRNetBIOSScannerForm();
 
 			virtual void OnMonitorChanged();

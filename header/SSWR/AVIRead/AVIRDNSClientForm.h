@@ -20,7 +20,7 @@ namespace SSWR
 		class AVIRDNSClientForm : public UI::GUIForm
 		{
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
 			UI::GUIPanel *pnlRequest;
 			UI::GUILabel *lblServer;
@@ -53,7 +53,7 @@ namespace SSWR
 			static void __stdcall OnRequestClicked(void *userObj);
 			static void __stdcall OnAnswerSelChg(void *userObj);
 		public:
-			AVIRDNSClientForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRDNSClientForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRDNSClientForm();
 
 			virtual void OnMonitorChanged();

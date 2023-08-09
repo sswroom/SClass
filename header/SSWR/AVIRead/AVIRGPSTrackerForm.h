@@ -33,7 +33,7 @@ namespace SSWR
 				virtual void OnFocusLost();
 			};
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Map::ILocationService *locSvc;
 			Bool relLocSvc;
 
@@ -156,7 +156,7 @@ namespace SSWR
 				MemFreeA(p);
 			}
 #endif
-			AVIRGPSTrackerForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, Map::ILocationService *locSvc, Bool toRelease);
+			AVIRGPSTrackerForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Map::ILocationService *locSvc, Bool toRelease);
 			virtual ~AVIRGPSTrackerForm();
 
 			virtual void OnMonitorChanged();

@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "SSWR/AVIRead/AVIRTableMsgForm.h"
 
-SSWR::AVIRead::AVIRTableMsgForm::AVIRTableMsgForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, Text::CString title, UOSInt colCnt, const UTF8Char **colNames) : UI::GUIForm(parent, 800, 600, ui)
+SSWR::AVIRead::AVIRTableMsgForm::AVIRTableMsgForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Text::CString title, UOSInt colCnt, const UTF8Char **colNames) : UI::GUIForm(parent, 800, 600, ui)
 {
 	this->SetText(title);
 	this->SetFont(0, 0, 8.25, false);

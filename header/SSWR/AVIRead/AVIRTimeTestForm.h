@@ -22,12 +22,12 @@ namespace SSWR
 			UI::GUILabel *lblActualTime;
 			UI::GUITextBox *txtActualTime;
 
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
 			static void __stdcall OnSleepMSClicked(void *userObj);
 			static void __stdcall OnSleepUSClicked(void *userObj);
 		public:
-			AVIRTimeTestForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRTimeTestForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRTimeTestForm();
 
 			virtual void OnMonitorChanged();

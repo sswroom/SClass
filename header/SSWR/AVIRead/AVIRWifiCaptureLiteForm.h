@@ -46,7 +46,7 @@ namespace SSWR
 				UInt8 *ieBuff;
 			} WifiLog;
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Net::WirelessLAN *wlan;
 			Net::WirelessLAN::Interface *wlanInterf;
 			OSInt wlanScan;
@@ -71,7 +71,7 @@ namespace SSWR
 			static void __stdcall OnLogWifiSaveFClicked(void *userObj);
 			static Bool __stdcall OnFormClosing(void *userObj, CloseReason reason);
 		public:
-			AVIRWifiCaptureLiteForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRWifiCaptureLiteForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRWifiCaptureLiteForm();
 
 			virtual void OnMonitorChanged();

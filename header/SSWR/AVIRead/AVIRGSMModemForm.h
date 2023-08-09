@@ -24,7 +24,7 @@ namespace SSWR
 		class AVIRGSMModemForm : public UI::GUIForm
 		{
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			IO::GSMModemController *modem;
 			IO::HuaweiGSMModemController *huawei;
 			IO::ATCommandChannel *channel;
@@ -232,7 +232,7 @@ namespace SSWR
 			void InitStream(NotNullPtr<IO::Stream> stm, Bool updateSerial);
 			void CloseStream(Bool updateUI);
 		public:
-			AVIRGSMModemForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, IO::Stream *port);
+			AVIRGSMModemForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, IO::Stream *port);
 			virtual ~AVIRGSMModemForm();
 
 			virtual void OnMonitorChanged();

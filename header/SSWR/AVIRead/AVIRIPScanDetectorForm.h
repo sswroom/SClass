@@ -17,7 +17,7 @@ namespace SSWR
 			UI::GUITextBox *txtLog;
 			UI::GUIListBox *lbLog;
 
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			UI::ListBoxLogger *logger;
 			IO::LogTool *log;
 			Net::IPScanDetector *ipScanDetect;
@@ -26,7 +26,7 @@ namespace SSWR
 			static void __stdcall OnLogSelChg(void *userObj);
 
 		public:
-			AVIRIPScanDetectorForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRIPScanDetectorForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRIPScanDetectorForm();
 
 			virtual void OnMonitorChanged();

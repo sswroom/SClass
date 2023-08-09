@@ -14,7 +14,7 @@ namespace SSWR
 		class AVIRWMIForm : public UI::GUIForm
 		{
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
 			UI::GUILabel *lblNS;
 			UI::GUIListBox *lbNS;
@@ -27,7 +27,7 @@ namespace SSWR
 			static void __stdcall OnDblClicked(void *userObj);
 
 		public:
-			AVIRWMIForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRWMIForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRWMIForm();
 
 			virtual void OnMonitorChanged();

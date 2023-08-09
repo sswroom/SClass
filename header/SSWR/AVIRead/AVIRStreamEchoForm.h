@@ -16,7 +16,7 @@ namespace SSWR
 		class AVIRStreamEchoForm : public UI::GUIForm
 		{
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			IO::SiLabDriver *siLabDriver;
 
 			UI::GUIGroupBox *grpStream;
@@ -43,7 +43,7 @@ namespace SSWR
 			void StopStream();
 
 		public:
-			AVIRStreamEchoForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRStreamEchoForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRStreamEchoForm();
 
 			virtual void OnMonitorChanged();

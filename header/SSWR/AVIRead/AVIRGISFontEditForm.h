@@ -18,7 +18,7 @@ namespace SSWR
 		class AVIRGISFontEditForm : public UI::GUIForm, public Media::IColorHandler
 		{
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Media::ColorManagerSess *colorSess;
 			Media::ColorConv *colorConv;
 			Map::MapEnv *env;
@@ -60,7 +60,7 @@ namespace SSWR
 			void UpdateFontPreview();
 			void UpdateDisplay();
 		public:
-			AVIRGISFontEditForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, Map::MapEnv *env, NotNullPtr<Media::DrawEngine> eng, UOSInt fontStyle);
+			AVIRGISFontEditForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Map::MapEnv *env, NotNullPtr<Media::DrawEngine> eng, UOSInt fontStyle);
 			virtual ~AVIRGISFontEditForm();
 
 			virtual void OnMonitorChanged();

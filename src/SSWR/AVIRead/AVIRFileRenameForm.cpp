@@ -49,7 +49,7 @@ void __stdcall SSWR::AVIRead::AVIRFileRenameForm::OnCancelClicked(void *userObj)
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 
-SSWR::AVIRead::AVIRFileRenameForm::AVIRFileRenameForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, NotNullPtr<Text::String> fileName) : UI::GUIForm(parent, 532, 120, ui)
+SSWR::AVIRead::AVIRFileRenameForm::AVIRFileRenameForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<Text::String> fileName) : UI::GUIForm(parent, 532, 120, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->fileName = fileName->Clone();

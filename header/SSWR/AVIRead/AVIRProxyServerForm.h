@@ -18,7 +18,7 @@ namespace SSWR
 		class AVIRProxyServerForm : public UI::GUIForm
 		{
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			NotNullPtr<Net::SocketFactory> sockf;
 			IO::LogTool *log;
 			UI::ListBoxLogger *logger;
@@ -34,7 +34,7 @@ namespace SSWR
 			static void __stdcall OnStartClicked(void *userObj);
 			static void __stdcall OnLogSelChg(void *userObj);
 		public:
-			AVIRProxyServerForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRProxyServerForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRProxyServerForm();
 
 			virtual void OnMonitorChanged();

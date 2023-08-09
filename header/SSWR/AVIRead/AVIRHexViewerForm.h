@@ -19,7 +19,7 @@ namespace SSWR
 		class AVIRHexViewerForm : public UI::GUIForm
 		{
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
 			UI::GUIMainMenu *mnuMain;
 
@@ -85,7 +85,7 @@ namespace SSWR
 			static void __stdcall OnExtractClicked(void *userObj);
 			Bool LoadFile(Text::CStringNN fileName, Bool dynamicSize);
 		public:
-			AVIRHexViewerForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRHexViewerForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRHexViewerForm();
 
 			virtual void EventMenuClicked(UInt16 cmdId);

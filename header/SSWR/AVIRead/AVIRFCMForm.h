@@ -23,12 +23,12 @@ namespace SSWR
 			UI::GUILabel *lblStatus;
 			UI::GUITextBox *txtStatus;
 
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Net::SSLEngine *ssl;
 
 			static void __stdcall OnSendClicked(void *userObj);
 		public:
-			AVIRFCMForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRFCMForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRFCMForm();
 
 			virtual void OnMonitorChanged();

@@ -16,7 +16,7 @@ namespace SSWR
 		class AVIRIBuddyForm : public UI::GUIForm
 		{
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Data::ArrayList<IO::Device::IBuddy*> *buddyList;
 			IO::Device::IBuddy *currBuddy;
 			IO::Device::IBuddy::IBuddyBodyEffect currTurn;
@@ -45,7 +45,7 @@ namespace SSWR
 			static void __stdcall OnWingDownDown(void *userObj, Bool isDown);
 			static void __stdcall OnDevChanged(void *userObj);
 		public:
-			AVIRIBuddyForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRIBuddyForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRIBuddyForm();
 
 			virtual void OnMonitorChanged();

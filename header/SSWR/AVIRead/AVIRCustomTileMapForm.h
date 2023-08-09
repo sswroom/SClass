@@ -15,7 +15,7 @@ namespace SSWR
 		class AVIRCustomTileMapForm : public UI::GUIForm
 		{
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Net::SSLEngine *ssl;
 
 			UI::GUILabel *lblURL;
@@ -29,7 +29,7 @@ namespace SSWR
 
 			static void __stdcall OnOKClicked(void *userObj);
 		public:
-			AVIRCustomTileMapForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, Net::SSLEngine *ssl);
+			AVIRCustomTileMapForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Net::SSLEngine *ssl);
 			virtual ~AVIRCustomTileMapForm();
 
 			virtual void OnMonitorChanged();

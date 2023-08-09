@@ -54,7 +54,7 @@ namespace SSWR
 			Int32 cmdMin;
 			Int32 cmdMax;
 
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			IO::CodeScanner *scanner;
 			Sync::Mutex codeMut;
 			Text::String *newCode;
@@ -71,7 +71,7 @@ namespace SSWR
 			static void __stdcall OnCodeScanned(void *userObj, Text::CString code);
 			static void __stdcall OnTimerTick(void *userObj);
 		public:
-			AVIRDWQB30Form(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRDWQB30Form(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRDWQB30Form();
 
 			virtual void OnMonitorChanged();

@@ -29,7 +29,7 @@ namespace SSWR
 		class AVIREmailServerForm : public UI::GUIForm, public Net::Email::MailController
 		{
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
 			UI::GUITabControl *tcMain;
 
@@ -113,7 +113,7 @@ namespace SSWR
 
 			Text::String *GetUserName(Int32 userId);
 		public:
-			AVIREmailServerForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIREmailServerForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIREmailServerForm();
 
 			virtual void OnMonitorChanged();

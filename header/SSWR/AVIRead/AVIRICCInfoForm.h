@@ -22,7 +22,7 @@ namespace SSWR
 			UI::GUIButton *btnGLUT;
 			UI::GUIButton *btnBLUT;
 
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Media::ICCProfile *icc;
 
 			static void __stdcall OnFileDrop(void *userObj, NotNullPtr<Text::String> *files, UOSInt fileCnt);
@@ -30,7 +30,7 @@ namespace SSWR
 			static void __stdcall OnGLUTClicked(void *userObj);
 			static void __stdcall OnBLUTClicked(void *userObj);
 		public:
-			AVIRICCInfoForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRICCInfoForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRICCInfoForm();
 
 			virtual void OnMonitorChanged();

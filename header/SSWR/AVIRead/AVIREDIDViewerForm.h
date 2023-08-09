@@ -12,7 +12,7 @@ namespace SSWR
 		class AVIREDIDViewerForm : public UI::GUIForm
 		{
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			UI::GUIPanel *pnlCtrl;
 			UI::GUIButton *btnSave;
 			UI::GUIButton *btnHex;
@@ -25,7 +25,7 @@ namespace SSWR
 			static void __stdcall OnHexClicked(void *userObj);
 			static void __stdcall OnFileDrop(void *userObj, NotNullPtr<Text::String> *fileNames, UOSInt fileCnt);
 		public:
-			AVIREDIDViewerForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIREDIDViewerForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIREDIDViewerForm();
 
 			virtual void OnMonitorChanged();

@@ -33,13 +33,13 @@ namespace SSWR
 			UI::GUIButton *btnCompare;
 			UI::GUIListView *lvCompare;
 
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
 			static Double __stdcall HashTestSpeed(Crypto::Hash::IHash *hash);
 			static void __stdcall OnCompareClicked(void *userObj);
 			static void __stdcall OnSpeedClicked(void *userObj);
 		public:
-			AVIRHashTestForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRHashTestForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRHashTestForm();
 
 			virtual void OnMonitorChanged();

@@ -15,7 +15,7 @@ namespace SSWR
 		class AVIRUserAgentBatchForm : public UI::GUIForm
 		{
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
 			UI::GUIPanel *pnlSource;
 			UI::GUIPanel *pnlControl;
@@ -32,7 +32,7 @@ namespace SSWR
 			static void __stdcall OnUpdateCBClicked(void *userObj);
 			void UpdateByText(Text::PString txt);
 		public:
-			AVIRUserAgentBatchForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRUserAgentBatchForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRUserAgentBatchForm();
 
 			virtual void OnMonitorChanged();

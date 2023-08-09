@@ -37,7 +37,7 @@ namespace SSWR
 			} TopicStatus;
 			
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Net::MQTTConn *client;
 			IO::LogTool log;
 			UI::ListBoxLogger *logger;
@@ -94,7 +94,7 @@ namespace SSWR
 			void UpdateTopicChart();
 			void ServerStop();
 		public:
-			AVIRMQTTSubscribeForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRMQTTSubscribeForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRMQTTSubscribeForm();
 
 			virtual void OnMonitorChanged();

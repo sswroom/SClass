@@ -20,7 +20,7 @@ namespace SSWR
 				Data::ArrayListNN<Text::String> *fileNames;
 			} LogGroup;
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
 			UI::GUILabel *lblLogDir;
 			UI::GUITextBox *txtLogDir;
@@ -30,7 +30,7 @@ namespace SSWR
 
 			static void __stdcall OnStartClicked(void *userObj);
 		public:
-			AVIRLogBackupForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRLogBackupForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRLogBackupForm();
 
 			virtual void OnMonitorChanged();

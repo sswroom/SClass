@@ -28,7 +28,7 @@ namespace SSWR
 			UI::GUITextBox *txtDistance;
 			UI::GUIComboBox *cboDistanceUnit;
 
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			IMapNavigator *navi;
 			Math::CoordinateSystem *csys;
 
@@ -46,7 +46,7 @@ namespace SSWR
 			void UpdateDistDisp();
 
 		public:
-			AVIRGISDistanceForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, IMapNavigator *navi);
+			AVIRGISDistanceForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, IMapNavigator *navi);
 			virtual ~AVIRGISDistanceForm();
 
 			virtual void OnMonitorChanged();

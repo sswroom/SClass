@@ -447,7 +447,7 @@ Text::String *SSWR::AVIRead::AVIREmailServerForm::GetUserName(Int32 userId)
 	return this->userList.GetItem((UInt32)userId - 1);
 }
 
-SSWR::AVIRead::AVIREmailServerForm::AVIREmailServerForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIREmailServerForm::AVIREmailServerForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("Email Server"));

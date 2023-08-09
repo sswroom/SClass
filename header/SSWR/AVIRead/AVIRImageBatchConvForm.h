@@ -46,7 +46,7 @@ namespace SSWR
 			};
 			
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			UI::GUILabel *lblDir;
 			UI::GUITextBox *txtDir;
 			UI::GUIButton *btnBrowse;
@@ -72,7 +72,7 @@ namespace SSWR
 			void MTConvertFile(ConvertSess *sess, Text::CStringNN srcFile, Text::CStringNN destFile);
 			void ConvertFile(ConvertSess *sess, Text::CStringNN srcFile, Text::CStringNN destFile);
 		public:
-			AVIRImageBatchConvForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRImageBatchConvForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRImageBatchConvForm();
 
 			virtual void OnMonitorChanged();

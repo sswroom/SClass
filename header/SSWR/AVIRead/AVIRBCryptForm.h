@@ -14,7 +14,7 @@ namespace SSWR
 		class AVIRBCryptForm : public UI::GUIForm
 		{
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
 			UI::GUIGroupBox *grpGenerate;
 			UI::GUILabel *lblCost;
@@ -37,7 +37,7 @@ namespace SSWR
 			static void __stdcall OnGenHashClicked(void *userObj);
 			static void __stdcall OnCheckClicked(void *userObj);
 		public:
-			AVIRBCryptForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRBCryptForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRBCryptForm();
 
 			virtual void OnMonitorChanged();

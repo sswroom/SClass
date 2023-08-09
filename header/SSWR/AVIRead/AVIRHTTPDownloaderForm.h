@@ -20,7 +20,7 @@ namespace SSWR
 		class AVIRHTTPDownloaderForm : public UI::GUIForm
 		{
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
 			UI::GUIPanel *pnlRequest;
 			UI::GUILabel *lblURL;
@@ -79,7 +79,7 @@ namespace SSWR
 			static void __stdcall OnTimerTick(void *userObj);
 			void ClearHeaders();
 		public:
-			AVIRHTTPDownloaderForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRHTTPDownloaderForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRHTTPDownloaderForm();
 
 			virtual void OnMonitorChanged();

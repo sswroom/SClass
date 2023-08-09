@@ -9,7 +9,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	Manage::ExceptionRecorder exHdlr(CSTR("Error.txt"), Manage::ExceptionRecorder::EA_CLOSE);
 	SSWR::AVIRead::AVIRImageViewerForm *frm;
-	SSWR::AVIRead::AVIRCore *core;
+	NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 	NotNullPtr<UI::GUICore> ui;
 	UTF8Char **argv;
 	Bool succ;
@@ -17,7 +17,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	UInt32 i;
 	if (ui.Set(progCtrl->CreateGUICore(progCtrl)))
 	{
-		NEW_CLASS(core, SSWR::AVIRead::AVIRCoreWin(ui));
+		NEW_CLASSNN(core, SSWR::AVIRead::AVIRCoreWin(ui));
 		NEW_CLASS(frm, SSWR::AVIRead::AVIRImageViewerForm(0, ui, core));
 		frm->SetExitOnClose(true);
 		frm->Show();
@@ -37,7 +37,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			}
 		}
 		ui->Run();
-		DEL_CLASS(core);
+		core.Delete();
 		ui.Delete();
 	}
 	return 0;

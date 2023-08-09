@@ -15,7 +15,7 @@ namespace SSWR
 		class AVIRNetRAWCaptureForm : public UI::GUIForm
 		{
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			NotNullPtr<Net::SocketFactory> sockf;
 			Net::RAWCapture *capture;
 			UInt64 currCnt;
@@ -43,7 +43,7 @@ namespace SSWR
 			static void __stdcall OnTimerTick(void *userObj);
 
 		public:
-			AVIRNetRAWCaptureForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRNetRAWCaptureForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRNetRAWCaptureForm();
 
 			virtual void OnMonitorChanged();

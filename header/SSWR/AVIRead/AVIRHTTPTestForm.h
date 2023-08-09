@@ -30,7 +30,7 @@ namespace SSWR
 				Sync::Event *evt;
 			} ThreadStatus;
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Manage::HiResClock clk;
 			NotNullPtr<Net::SocketFactory> sockf;
 			Net::SSLEngine *ssl;
@@ -89,7 +89,7 @@ namespace SSWR
 			void ClearURLs();
 			Text::String *GetNextURL();
 		public:
-			AVIRHTTPTestForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRHTTPTestForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRHTTPTestForm();
 
 			virtual void OnMonitorChanged();

@@ -35,7 +35,7 @@ namespace SSWR
 			UI::GUILabel *lblPoints;
 			UI::GUIListBox *lbPoints;
 
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			IMapNavigator *navi;
 			Math::GeographicCoordinateSystem *wgs84;
 			IO::Stream *stm;
@@ -52,7 +52,7 @@ namespace SSWR
 			Char *GenLon(Char *ptr, Double lon);
 			Char *GenCheck(Char *ptr, Char *start);
 		public:
-			AVIRGPSSimulatorForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, IMapNavigator *navi);
+			AVIRGPSSimulatorForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, IMapNavigator *navi);
 			virtual ~AVIRGPSSimulatorForm();
 
 			virtual void OnMonitorChanged();

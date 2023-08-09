@@ -21,7 +21,7 @@ namespace SSWR
 		class AVIRColorCustomForm : public UI::GUIForm
 		{
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Media::MonitorColorManager *monColor;
 
 			UI::GUILabel *lblRX;
@@ -76,7 +76,7 @@ namespace SSWR
 			static void __stdcall OnWYUpClicked(void *userObj);
 			static void __stdcall OnCloseClicked(void *userObj);
 		public:
-			AVIRColorCustomForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, Media::MonitorColorManager *monColor);
+			AVIRColorCustomForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Media::MonitorColorManager *monColor);
 			virtual ~AVIRColorCustomForm();
 
 			virtual void OnMonitorChanged();

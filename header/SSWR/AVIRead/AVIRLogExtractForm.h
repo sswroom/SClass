@@ -14,7 +14,7 @@ namespace SSWR
 		class AVIRLogExtractForm : public UI::GUIForm
 		{
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			UI::GUILabel *lblSFile;
 			UI::GUITextBox *txtSFile;
 			UI::GUIButton *btnSFile;
@@ -33,7 +33,7 @@ namespace SSWR
 			static void __stdcall OnOFileClicked(void *userObj);
 			static void __stdcall OnExtractClicked(void *userObj);
 		public:
-			AVIRLogExtractForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRLogExtractForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRLogExtractForm();
 
 			virtual void OnMonitorChanged();

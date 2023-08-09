@@ -30,7 +30,7 @@ namespace SSWR
 				Double t;
 			} UpdateQueue;
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			UI::GUIPanel *pnlCtrl;
 			UI::GUIButton *btnCancel;
 			UI::GUICheckBox *chkAllowTimeSkip;
@@ -52,7 +52,7 @@ namespace SSWR
 			static UInt32 __stdcall ProcessThread(void *userObj);
 			void CancelQueues();
 		public:
-			AVIRVideoCheckerForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRVideoCheckerForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRVideoCheckerForm();
 
 			virtual void OnMonitorChanged();

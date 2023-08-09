@@ -12,11 +12,11 @@ namespace SSWR
 		{
 		private:
 			UI::GUIListView *lvTable;
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			UOSInt colCnt;
 
 		public:
-			AVIRTableMsgForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, Text::CString title, UOSInt colCnt, const UTF8Char **colName);
+			AVIRTableMsgForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Text::CString title, UOSInt colCnt, const UTF8Char **colName);
 			virtual ~AVIRTableMsgForm();
 
 			virtual void OnMonitorChanged();

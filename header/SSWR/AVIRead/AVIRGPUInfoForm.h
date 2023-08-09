@@ -18,12 +18,12 @@ namespace SSWR
 			UI::GUIHSplitter *hspGPU;
 			UI::GUIListView *lvMain;
 
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			IO::GPUManager *gpuMgr;
 
 			static void __stdcall OnGPUSelChange(void *userObj);
 		public:
-			AVIRGPUInfoForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRGPUInfoForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRGPUInfoForm();
 
 			virtual void OnMonitorChanged();

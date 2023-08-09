@@ -17,7 +17,7 @@ namespace SSWR
 		class AVIRWHOISClientForm : public UI::GUIForm
 		{
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
 			UI::GUIPanel *pnlRequest;
 			UI::GUILabel *lblIP;
@@ -31,7 +31,7 @@ namespace SSWR
 
 			static void __stdcall OnRequestClicked(void *userObj);
 		public:
-			AVIRWHOISClientForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRWHOISClientForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRWHOISClientForm();
 
 			virtual void OnMonitorChanged();

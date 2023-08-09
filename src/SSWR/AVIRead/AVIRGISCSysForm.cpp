@@ -49,7 +49,7 @@ void __stdcall SSWR::AVIRead::AVIRGISCSysForm::OnProjSelChg(void *userObj)
 	me->radProj->Select();
 }
 
-SSWR::AVIRead::AVIRGISCSysForm::AVIRGISCSysForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, Math::CoordinateSystem *csys) : UI::GUIForm(parent, 640, 480, ui)
+SSWR::AVIRead::AVIRGISCSysForm::AVIRGISCSysForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Math::CoordinateSystem *csys) : UI::GUIForm(parent, 640, 480, ui)
 {
 	this->SetText(CSTR("Coordinate System"));
 	this->SetFont(0, 0, 8.25, false);

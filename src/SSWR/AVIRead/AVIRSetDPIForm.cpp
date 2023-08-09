@@ -140,7 +140,7 @@ void SSWR::AVIRead::AVIRSetDPIForm::UpdatePreview()
 	}	
 }
 
-SSWR::AVIRead::AVIRSetDPIForm::AVIRSetDPIForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 174, ui)
+SSWR::AVIRead::AVIRSetDPIForm::AVIRSetDPIForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 174, ui)
 {
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;

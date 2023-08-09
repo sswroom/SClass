@@ -435,7 +435,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::ProcThread(void *userOb
 	return 0;
 }
 
-SSWR::AVIRead::AVIRGISTileDownloadForm::AVIRGISTileDownloadForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, Map::TileMapLayer *lyr, IMapNavigator *navi) : UI::GUIForm(parent, 360, 168, ui)
+SSWR::AVIRead::AVIRGISTileDownloadForm::AVIRGISTileDownloadForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Map::TileMapLayer *lyr, IMapNavigator *navi) : UI::GUIForm(parent, 360, 168, ui)
 {
 	Text::StringBuilderUTF8 sb;
 	this->core = core;

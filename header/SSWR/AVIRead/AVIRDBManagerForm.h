@@ -84,7 +84,7 @@ namespace SSWR
 			UI::GUIListBox *lbLog;
 			UI::GUITextBox *txtLog;
 
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			UI::ListBoxLogger *logger;
 			Data::ArrayList<DB::DBManagerCtrl*> dbList;
 			Net::SSLEngine *ssl;
@@ -131,7 +131,7 @@ namespace SSWR
 			void ExportTableData(DB::SQLType sqlType, Bool axisAware);
 			void ExportTableCSV();
 		public:
-			AVIRDBManagerForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRDBManagerForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRDBManagerForm();
 
 			virtual void EventMenuClicked(UInt16 cmdId);

@@ -13,7 +13,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	NotNullPtr<UI::GUICore> ui;
 	SSWR::AVIRead::AVIRDNSProxyForm *frm;
-	SSWR::AVIRead::AVIRCore *core;
+	NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 	Manage::ExceptionRecorder *exHdlr;
 	IO::ConfigFile *cfg;
 
@@ -22,7 +22,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	NEW_CLASS(exHdlr, Manage::ExceptionRecorder(CSTR("SDNSProxy.log"), Manage::ExceptionRecorder::EA_RESTART));
 	if (ui.Set(Core::IProgControl::CreateGUICore(progCtrl)))
 	{
-		NEW_CLASS(core, SSWR::AVIRead::AVIRCoreWin(ui));
+		NEW_CLASSNN(core, SSWR::AVIRead::AVIRCoreWin(ui));
 		NEW_CLASS(frm, SSWR::AVIRead::AVIRDNSProxyForm(0, ui, core));
 		frm->SetExitOnClose(true);
 		frm->Show();
@@ -80,7 +80,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		}
 		ui->Run();
 
-		DEL_CLASS(core);
+		core.Delete();
 		ui.Delete();
 	}
 	DEL_CLASS(exHdlr);

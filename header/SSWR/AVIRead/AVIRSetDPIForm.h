@@ -33,7 +33,7 @@ namespace SSWR
 			UI::GUIButton *btnOK;
 			UI::GUIButton *btnCancel;
 
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Media::StaticImage *pimg;
 
 			static void __stdcall OnOKClicked(void *userObj);
@@ -45,7 +45,7 @@ namespace SSWR
 			static void __stdcall OnLaptopClicked(void *userObj);
 			void UpdatePreview();
 		public:
-			AVIRSetDPIForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRSetDPIForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRSetDPIForm();
 
 			virtual void OnMonitorChanged();

@@ -20,14 +20,14 @@ namespace SSWR
 			UI::GUITextBox *txtAPIKey;
 			UI::GUIButton *btnStart;
 
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Net::SSLEngine *ssl;
 			Net::PushServer *svr;
 			IO::LogTool *log;
 
 			static void __stdcall OnStartClicked(void *userObj);
 		public:
-			AVIRPushServerForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRPushServerForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRPushServerForm();
 
 			virtual void OnMonitorChanged();

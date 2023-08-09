@@ -35,7 +35,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	NotNullPtr<UI::GUICore> ui;
 	SSWR::AVIRead::AVIRBaseForm *frm;
-	SSWR::AVIRead::AVIRCore *core;
+	NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 	Manage::ExceptionRecorder *exHdlr;
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -60,7 +60,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	NEW_CLASS(exHdlr, Manage::ExceptionRecorder(CSTRP(sbuff, sptr), Manage::ExceptionRecorder::EA_CLOSE));
 	if (ui.Set(Core::IProgControl::CreateGUICore(progCtrl)))
 	{
-		NEW_CLASS(core, SSWR::AVIRead::AVIRCoreWin(ui));
+		NEW_CLASSNN(core, SSWR::AVIRead::AVIRCoreWin(ui));
 		NEW_CLASS(frm, SSWR::AVIRead::AVIRBaseForm(0, ui, core));
 		frm->SetExitOnClose(true);
 		frm->Show();
@@ -80,7 +80,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		}
 		ui->Run();
 
-		DEL_CLASS(core);
+		core.Delete();
 		ui.Delete();
 	}
 	DEL_CLASS(exHdlr);

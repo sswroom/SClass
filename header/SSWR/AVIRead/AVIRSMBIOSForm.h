@@ -14,7 +14,7 @@ namespace SSWR
 		class AVIRSMBIOSForm : public UI::GUIForm
 		{
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			IO::SMBIOS *smbios;
 
 			UI::GUIPanel *pnlControl;
@@ -23,7 +23,7 @@ namespace SSWR
 
 			static void __stdcall OnHexClicked(void *userObj);
 		public:
-			AVIRSMBIOSForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRSMBIOSForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRSMBIOSForm();
 
 			virtual void OnMonitorChanged();

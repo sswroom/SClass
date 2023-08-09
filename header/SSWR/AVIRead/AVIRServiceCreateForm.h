@@ -26,13 +26,13 @@ namespace SSWR
 			UI::GUIButton *btnCreate;
 			UI::GUIButton *btnCancel;
 
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			IO::ServiceManager svcMgr;
 
 			static void __stdcall OnCreateClicked(void *userObj);
 			static void __stdcall OnCancelClicked(void *userObj);
 		public:
-			AVIRServiceCreateForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRServiceCreateForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRServiceCreateForm();
 
 			virtual void OnMonitorChanged();

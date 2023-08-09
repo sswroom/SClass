@@ -17,7 +17,7 @@ namespace SSWR
 			Media::Printer *printer;
 		private:
 			Media::Printer *currPrinter;
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			UI::GUILabel *lblPrinter;
 			UI::GUIComboBox *cboPrinter;
 			UI::GUIButton *btnSetting;
@@ -30,7 +30,7 @@ namespace SSWR
 			static void __stdcall OnOKClick(void *userObj);
 			static void __stdcall OnCancelClick(void *userObj);
 		public:
-			AVIRSelPrinterForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRSelPrinterForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRSelPrinterForm();
 
 			virtual void OnMonitorChanged();

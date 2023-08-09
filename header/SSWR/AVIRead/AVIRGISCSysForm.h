@@ -17,7 +17,7 @@ namespace SSWR
 		class AVIRGISCSysForm : public UI::GUIForm
 		{
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Math::CoordinateSystem *oriCSys;
 			Math::CoordinateSystem *outCSys;
 
@@ -36,7 +36,7 @@ namespace SSWR
 			static void __stdcall OnGeoSelChg(void *userObj);
 			static void __stdcall OnProjSelChg(void *userObj);
 		public:
-			AVIRGISCSysForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, Math::CoordinateSystem *csys);
+			AVIRGISCSysForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Math::CoordinateSystem *csys);
 			virtual ~AVIRGISCSysForm();
 
 			virtual void OnMonitorChanged();

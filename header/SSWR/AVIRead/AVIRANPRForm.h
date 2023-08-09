@@ -37,7 +37,7 @@ namespace SSWR
 			} ResultInfo;
 			
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Media::ANPR anpr;
 			Media::ColorManagerSess *colorSess;
 			Data::ArrayList<ResultInfo*> results;
@@ -63,7 +63,7 @@ namespace SSWR
 			static void __stdcall OnANPRResult(void *userObj, Media::StaticImage *simg, Math::RectArea<UOSInt> *area, NotNullPtr<Text::String> result, Double maxTileAngle, Double pxArea, UOSInt confidence, Media::StaticImage *plateImg);
 			void ClearResults();
 		public:
-			AVIRANPRForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRANPRForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRANPRForm();
 
 			virtual void OnMonitorChanged();

@@ -26,7 +26,7 @@ namespace SSWR
 			UI::GUILabel *lblStatus;
 			UI::GUITextBox *txtStatus;
 
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			IO::IOPin *pin;
 			IO::OneWireGPIO *oneWire;
 			IO::Device::DS18B20 *ds18b20;
@@ -36,7 +36,7 @@ namespace SSWR
 			static void __stdcall OnTimerTick(void *userObj);
 			void ReadData();
 		public:
-			AVIRDS18B20Form(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, IO::IOPin *pin);
+			AVIRDS18B20Form(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, IO::IOPin *pin);
 			virtual ~AVIRDS18B20Form();
 
 			virtual void OnMonitorChanged();

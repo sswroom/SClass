@@ -19,7 +19,7 @@ namespace SSWR
 		{
 		private:
 			IO::VBoxManager vbox;
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			UI::GUIPanel *pnlVersion;
 			UI::GUILabel *lblVersion;
 			UI::GUITextBox *txtVersion;
@@ -35,7 +35,7 @@ namespace SSWR
 			static void __stdcall OnVMSSelChg(void *userObj);
 			void UpdateVMInfo();
 		public:
-			AVIRVBoxManagerForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRVBoxManagerForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRVBoxManagerForm();
 
 			virtual void OnMonitorChanged();

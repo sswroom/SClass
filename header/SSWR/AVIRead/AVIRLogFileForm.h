@@ -15,14 +15,14 @@ namespace SSWR
 			UI::GUIListView *lvLogs;
 			UI::GUIMainMenu *mnuMain;
 
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			IO::LogFile *logFile;
 			IO::LogHandler::LogLevel logLevel;
 
 			void UpdateLogMessages();
 			static void __stdcall OnLogsDblClk(void *userObj, UOSInt itemIndex);
 		public:
-			AVIRLogFileForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, IO::LogFile *logFile);
+			AVIRLogFileForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, IO::LogFile *logFile);
 			virtual ~AVIRLogFileForm();
 
 			virtual void EventMenuClicked(UInt16 cmdId);

@@ -45,7 +45,7 @@ namespace SSWR
 			} PingIPInfo;
 
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			NotNullPtr<Net::SocketFactory> sockf;
 			IO::LogTool log;
 			UI::ListBoxLogger *logger;
@@ -203,7 +203,7 @@ namespace SSWR
 			static void __stdcall OnDeviceSelChg(void *userObj);
 
 		public:
-			AVIRRAWMonitorForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, Net::EthernetAnalyzer *analyzer);
+			AVIRRAWMonitorForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Net::EthernetAnalyzer *analyzer);
 			virtual ~AVIRRAWMonitorForm();
 
 			virtual void OnMonitorChanged();

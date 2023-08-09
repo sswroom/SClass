@@ -20,7 +20,7 @@ namespace SSWR
 			IO::IOPin *ioPin;
 			SSWR::AVIRead::AVIRCore::IOPinType ioPinType;
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			IO::VirtualIOPinMgr *vioPinMgr;
 			IO::GPIOControl *gpioPin;
 
@@ -45,7 +45,7 @@ namespace SSWR
 			static void __stdcall OnCancelClick(void *userObj);
 			static void __stdcall OnPinTypeChg(void *userObj);
 		public:
-			AVIRSelIOPinForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRSelIOPinForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRSelIOPinForm();
 
 			virtual void OnMonitorChanged();

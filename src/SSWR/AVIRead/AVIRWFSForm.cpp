@@ -49,7 +49,7 @@ void __stdcall SSWR::AVIRead::AVIRWFSForm::OnFeatureSelChg(void *userObj)
 	}
 }
 
-SSWR::AVIRead::AVIRWFSForm::AVIRWFSForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 640, 240, ui)
+SSWR::AVIRead::AVIRWFSForm::AVIRWFSForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 640, 240, ui)
 {
 	this->core = core;
 	this->wfs = 0;

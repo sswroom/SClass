@@ -36,7 +36,7 @@ namespace SSWR
 
 			Net::RSS *rss;
 			Data::ArrayListStringNN rssList;
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Net::SSLEngine *ssl;
 
 			static void __stdcall OnRequestClicked(void *userObj);
@@ -46,7 +46,7 @@ namespace SSWR
 			void RSSListLoad();
 			void RSSListStore();
 		public:
-			AVIRRSSReaderForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRRSSReaderForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRRSSReaderForm();
 
 			virtual void OnMonitorChanged();

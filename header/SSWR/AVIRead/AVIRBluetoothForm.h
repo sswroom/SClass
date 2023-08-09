@@ -59,7 +59,7 @@ namespace SSWR
 			IO::BTController::BTDevice *currDev;
 			Data::ArrayList<void *> guidList;
 
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
 			static void __stdcall OnCtrlChanged(void *userObj);
 			static void __stdcall OnDeviceSrchClicked(void *userObj);
@@ -71,7 +71,7 @@ namespace SSWR
 			void ClearGUIDs();
 			void UpdateDevList(BTStatus *btStatus);
 		public:
-			AVIRBluetoothForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRBluetoothForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRBluetoothForm();
 
 			virtual void OnMonitorChanged();

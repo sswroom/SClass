@@ -24,7 +24,7 @@ namespace SSWR
 				QM_UQ
 			} QualityMode;
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Net::SSLEngine *ssl;
 			Media::ColorManagerSess *colorSess;
 			Media::MediaPlayer *player;
@@ -55,7 +55,7 @@ namespace SSWR
 			void CloseFile();
 
 		public:
-			AVIRHQMPDSForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, QualityMode qMode);
+			AVIRHQMPDSForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, QualityMode qMode);
 			virtual ~AVIRHQMPDSForm();
 
 			virtual void EventMenuClicked(UInt16 cmdId);

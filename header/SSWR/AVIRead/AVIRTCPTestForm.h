@@ -28,7 +28,7 @@ namespace SSWR
 				Sync::Event *evt;
 			} ThreadStatus;
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			NotNullPtr<Net::SocketFactory> sockf;
 			ThreadStatus *threadStatus;
 			UInt32 svrIP;
@@ -65,7 +65,7 @@ namespace SSWR
 			static void __stdcall OnTimerTick(void *userObj);
 			void StopThreads();
 		public:
-			AVIRTCPTestForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRTCPTestForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRTCPTestForm();
 
 			virtual void OnMonitorChanged();

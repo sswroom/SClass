@@ -21,7 +21,7 @@ namespace SSWR
 		private:
 			UI::GUIListBox *lbObjects;
 
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Map::VectorLayer *lyr;
 			IMapNavigator *navi;
 
@@ -30,7 +30,7 @@ namespace SSWR
 			static Bool __stdcall OnMouseMove(void *userObj, Math::Coord2D<OSInt> scnPos);
 			static void __stdcall OnObjectsDblClk(void *userObj);
 		public:
-			AVIRGISEditVectorForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, Map::VectorLayer *lyr, IMapNavigator *navi);
+			AVIRGISEditVectorForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Map::VectorLayer *lyr, IMapNavigator *navi);
 			virtual ~AVIRGISEditVectorForm();
 
 			virtual void OnMonitorChanged();

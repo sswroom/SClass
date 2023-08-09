@@ -15,7 +15,7 @@ namespace SSWR
 		class AVIRCertUtilForm : public UI::GUIForm
 		{
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Net::SSLEngine *ssl;
 			Data::ArrayListNN<Text::String> *sanList;
 			Crypto::Cert::X509Key *key;
@@ -72,7 +72,7 @@ namespace SSWR
 			void UpdateExtensions(Crypto::Cert::CertExtensions *exts);
 			void ClearExtensions();
 		public:
-			AVIRCertUtilForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRCertUtilForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRCertUtilForm();
 
 			virtual void OnMonitorChanged();

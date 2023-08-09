@@ -12,7 +12,7 @@ namespace SSWR
 		class AVIRLineSelector : public UI::GUICustomDrawVScroll, public Media::IColorHandler
 		{
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Media::ColorManagerSess *colorSess;
 			Media::ColorConv *colorConv;
 			Map::MapEnv *env;
@@ -27,7 +27,7 @@ namespace SSWR
 			virtual void OnKeyDown(UInt32 keyCode);
 
 		public:
-			AVIRLineSelector(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, SSWR::AVIRead::AVIRCore *core, Map::MapEnv *env, UOSInt initLineStyle, Media::ColorManagerSess *colorSess);
+			AVIRLineSelector(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Map::MapEnv *env, UOSInt initLineStyle, Media::ColorManagerSess *colorSess);
 			virtual ~AVIRLineSelector();
 
 			virtual void YUVParamChanged(const Media::IColorHandler::YUVPARAM *yuvParam);

@@ -15,7 +15,7 @@ namespace SSWR
 		class AVIRWIADevForm : public UI::GUIForm
 		{
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Media::WIAManager *wiaMgr;
 
 			UI::GUILabel *lblDevice;
@@ -28,7 +28,7 @@ namespace SSWR
 			static void __stdcall OnCancelClick(void *userObj);
 
 		public:
-			AVIRWIADevForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRWIADevForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRWIADevForm();
 
 			virtual void OnMonitorChanged();

@@ -121,7 +121,7 @@ SSWR::AVIRead::AVIRCore::~AVIRCore()
 void SSWR::AVIRead::AVIRCore::OpenGSMModem(IO::Stream *modemPort)
 {
 	SSWR::AVIRead::AVIRGSMModemForm *frm;
-	NEW_CLASS(frm, SSWR::AVIRead::AVIRGSMModemForm(0, ui, this, modemPort));
+	NEW_CLASS(frm, SSWR::AVIRead::AVIRGSMModemForm(0, ui, *this, modemPort));
 	InitForm(frm);
 	frm->Show();
 }
@@ -129,7 +129,7 @@ void SSWR::AVIRead::AVIRCore::OpenGSMModem(IO::Stream *modemPort)
 IO::Stream *SSWR::AVIRead::AVIRCore::OpenStream(IO::StreamType *st, UI::GUIForm *ownerFrm, Int32 defBaudRate, Bool allowReadOnly)
 {
 	IO::Stream *retStm = 0;
-	SSWR::AVIRead::AVIRSelStreamForm frm(0, this->ui, this, allowReadOnly, this->ssl);
+	SSWR::AVIRead::AVIRSelStreamForm frm(0, this->ui, *this, allowReadOnly, this->ssl);
 	if (defBaudRate != 0)
 	{
 		frm.SetInitBaudRate(defBaudRate);
@@ -148,7 +148,7 @@ IO::Stream *SSWR::AVIRead::AVIRCore::OpenStream(IO::StreamType *st, UI::GUIForm 
 void SSWR::AVIRead::AVIRCore::OpenHex(NotNullPtr<IO::StreamData> fd, IO::FileAnalyse::IFileAnalyse *fileAnalyse)
 {
 	SSWR::AVIRead::AVIRHexViewerForm *frm;
-	NEW_CLASS(frm, SSWR::AVIRead::AVIRHexViewerForm(0, ui, this));
+	NEW_CLASS(frm, SSWR::AVIRead::AVIRHexViewerForm(0, ui, *this));
 	InitForm(frm);
 	frm->SetData(fd, fileAnalyse);
 	frm->Show();
@@ -177,7 +177,7 @@ void SSWR::AVIRead::AVIRCore::EndLoad()
 		{
 			view = env->CreateMapView(Math::Size2DDbl(320, 240));
 		}
-		NEW_CLASS(gisForm, AVIRead::AVIRGISForm(0, this->ui, this, env, view));
+		NEW_CLASS(gisForm, AVIRead::AVIRGISForm(0, this->ui, *this, env, view));
 		gisForm->AddLayers(this->batchLyrs);
 		DEL_CLASS(this->batchLyrs);
 		this->batchLyrs = 0;

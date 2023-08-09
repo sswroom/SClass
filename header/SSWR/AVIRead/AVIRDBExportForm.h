@@ -29,7 +29,7 @@ namespace SSWR
 			UI::GUITextBox *txtTable;
 			UI::GUIButton *btnExport;
 
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			DB::ReadingDB *db;
 			Text::CString schema;
 			Text::CString table;
@@ -37,7 +37,7 @@ namespace SSWR
 			static void __stdcall OnTablesDblClk(void *userObj, UOSInt itemIndex);
 			static void __stdcall OnExportClicked(void *userObj);
 		public:
-			AVIRDBExportForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, DB::ReadingDB *db, Text::CString schema, Text::CString table);
+			AVIRDBExportForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, DB::ReadingDB *db, Text::CString schema, Text::CString table);
 			virtual ~AVIRDBExportForm();
 
 			virtual void OnMonitorChanged();

@@ -25,7 +25,7 @@ namespace SSWR
 				Data::ArrayListNN<Text::String> logMessage;
 			};
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Net::LogServer *svr;
 
 			UI::GUIPanel *pnlControl;
@@ -50,7 +50,7 @@ namespace SSWR
 			static void __stdcall OnClientLog(void *userObj, UInt32 ip, Text::CString message);
 			static void __stdcall OnTimerTick(void *userObj);
 		public:
-			AVIRLogServerForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRLogServerForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRLogServerForm();
 
 			virtual void OnMonitorChanged();

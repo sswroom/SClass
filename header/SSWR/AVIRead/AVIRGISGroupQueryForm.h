@@ -17,7 +17,7 @@ namespace SSWR
 			UI::GUITextBox *txtLayer;
 			UI::GUIListView *lvInfo;
 
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			IMapNavigator *navi;
 			Map::MapEnv *env;
 			Map::MapEnv::GroupItem *group;
@@ -26,7 +26,7 @@ namespace SSWR
 			static Bool __stdcall OnMouseDown(void *userObj, Math::Coord2D<OSInt> scnPos);
 			static Bool __stdcall OnMouseUp(void *userObj, Math::Coord2D<OSInt> scnPos);
 		public:
-			AVIRGISGroupQueryForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, IMapNavigator *navi, Map::MapEnv *env, Map::MapEnv::GroupItem *group);
+			AVIRGISGroupQueryForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, IMapNavigator *navi, Map::MapEnv *env, Map::MapEnv::GroupItem *group);
 			virtual ~AVIRGISGroupQueryForm();
 
 			virtual void OnMonitorChanged();

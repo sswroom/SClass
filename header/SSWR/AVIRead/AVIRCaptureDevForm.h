@@ -28,7 +28,7 @@ namespace SSWR
 		public:
 			Media::IVideoCapture *capture;
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Media::VideoCaptureMgr captureMgr;
 			Media::IVideoCapture *currCapture;
 			Data::ArrayList<Media::VideoCaptureMgr::DeviceInfo*> devInfoList;
@@ -48,7 +48,7 @@ namespace SSWR
 
 			void ReleaseFormats();
 		public:
-			AVIRCaptureDevForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRCaptureDevForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRCaptureDevForm();
 
 			virtual void OnMonitorChanged();

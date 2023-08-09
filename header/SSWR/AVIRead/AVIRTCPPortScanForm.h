@@ -17,7 +17,7 @@ namespace SSWR
 		class AVIRTCPPortScanForm : public UI::GUIForm
 		{
 		private:
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			NotNullPtr<Net::SocketFactory> sockf;
 			Net::TCPPortScanner *scanner;
 			Bool listUpdated;
@@ -36,7 +36,7 @@ namespace SSWR
 			static void __stdcall OnTimerTick(void *userObj);
 			static void __stdcall OnPortUpdated(void *userObj, UInt16 port);
 		public:
-			AVIRTCPPortScanForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRTCPPortScanForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRTCPPortScanForm();
 
 			virtual void OnMonitorChanged();

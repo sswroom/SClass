@@ -14,11 +14,11 @@ namespace SSWR
 		private:
 			UI::GUITextBox *txtDesc;
 
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Math::CoordinateSystem *csys;
 
 		public:
-			AVIRCoordSysForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, Math::CoordinateSystem *csys);
+			AVIRCoordSysForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Math::CoordinateSystem *csys);
 			virtual ~AVIRCoordSysForm();
 
 			virtual void OnMonitorChanged();

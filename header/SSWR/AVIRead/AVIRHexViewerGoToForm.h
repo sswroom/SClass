@@ -18,7 +18,7 @@ namespace SSWR
 			UI::GUIButton *btnCancel;
 			UI::GUIButton *btnOK;
 
-			SSWR::AVIRead::AVIRCore *core;
+			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			UInt64 currOfst;
 			UInt64 fileLen;
 
@@ -27,7 +27,7 @@ namespace SSWR
 			static void __stdcall OnCancelClicked(void *userObj);
 
 		public:
-			AVIRHexViewerGoToForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::AVIRead::AVIRCore *core, UInt64 currOfst, UInt64 fileLen);
+			AVIRHexViewerGoToForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, UInt64 currOfst, UInt64 fileLen);
 			virtual ~AVIRHexViewerGoToForm();
 
 			virtual void OnMonitorChanged();
