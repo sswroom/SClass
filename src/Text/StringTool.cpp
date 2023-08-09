@@ -260,7 +260,7 @@ Bool Text::StringTool::SplitAsDouble(Text::CString str, UTF8Char splitChar, Data
 		j = str.IndexOf(splitChar, i);
 		if (j == INVALID_INDEX)
 		{
-			if (!Text::StrToDouble(&str.v[i], &v))
+			if (!Text::StrToDouble(&str.v[i], v))
 				return false;
 			outArr->Add(v);
 			return true;
@@ -270,7 +270,7 @@ Bool Text::StringTool::SplitAsDouble(Text::CString str, UTF8Char splitChar, Data
 			return false;
 		}
 		Text::StrConcatC(sbuff, &str.v[i], j - i);
-		if (!Text::StrToDouble(sbuff, &v))
+		if (!Text::StrToDouble(sbuff, v))
 			return false;
 		outArr->Add(v);
 		i = j + 1;

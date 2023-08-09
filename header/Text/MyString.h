@@ -157,20 +157,20 @@ namespace Text
 	UTF8Char *StrHexByteLC(UTF8Char *oriStr, UInt8 val);
 	UTF8Char *StrHexBytesLC(UTF8Char *oriStr, const UInt8 *buff, UOSInt buffSize, UTF8Char seperator);
 	Int64 StrHex2Int64C(const UTF8Char *str);
-	Bool StrHex2Int64V(const UTF8Char *str, Int64 *outVal);
-	Bool StrHex2Int64S(const UTF8Char *str, Int64 *outVal, Int64 failVal);
+	Bool StrHex2Int64V(const UTF8Char *str, OutParam<Int64> outVal);
+	Bool StrHex2Int64S(const UTF8Char *str, OutParam<Int64> outVal, Int64 failVal);
 	Int32 StrHex2Int32C(const UTF8Char *str);
-	Bool StrHex2Int32V(const UTF8Char *str, Int32 *outVal);
+	Bool StrHex2Int32V(const UTF8Char *str, OutParam<Int32> outVal);
 	Int16 StrHex2Int16C(const UTF8Char *str);
-	Bool StrHex2Int16V(const UTF8Char *str, Int16 *outVal);
+	Bool StrHex2Int16V(const UTF8Char *str, OutParam<Int16> outVal);
 	UInt8 StrHex2UInt8C(const UTF8Char *str);
 	FORCEINLINE UInt64 StrHex2UInt64C(const UTF8Char *str) { return (UInt64)StrHex2Int64C(str); }
-	FORCEINLINE Bool StrHex2UInt64V(const UTF8Char *str, UInt64 *outVal) { return StrHex2Int64V(str, (Int64*)outVal); }
-	FORCEINLINE Bool StrHex2UInt64S(const UTF8Char *str, UInt64 *outVal, UInt64 failVal) { return StrHex2Int64S(str, (Int64*)outVal, (Int64)failVal); }
+	FORCEINLINE Bool StrHex2UInt64V(const UTF8Char *str, OutParam<UInt64> outVal) { return StrHex2Int64V(str, OutParam<Int64>::ConvertFrom(outVal)); }
+	FORCEINLINE Bool StrHex2UInt64S(const UTF8Char *str, OutParam<UInt64> outVal, UInt64 failVal) { return StrHex2Int64S(str, OutParam<Int64>::ConvertFrom(outVal), (Int64)failVal); }
 	FORCEINLINE UInt32 StrHex2UInt32C(const UTF8Char *str) { return (UInt32)StrHex2Int32C(str); }
-	FORCEINLINE Bool StrHex2UInt32V(const UTF8Char *str, UInt32 *outVal) { return StrHex2Int32V(str, (Int32*)outVal); }
+	FORCEINLINE Bool StrHex2UInt32V(const UTF8Char *str, OutParam<UInt32> outVal) { return StrHex2Int32V(str, OutParam<Int32>::ConvertFrom(outVal)); }
 	FORCEINLINE UInt16 StrHex2UInt16C(const UTF8Char *str) { return (UInt16)StrHex2Int16C(str); }
-	FORCEINLINE Bool StrHex2UInt16V(const UTF8Char *str, UInt16 *outVal) { return StrHex2Int16V(str, (Int16*)outVal); }
+	FORCEINLINE Bool StrHex2UInt16V(const UTF8Char *str, OutParam<UInt16> outVal) { return StrHex2Int16V(str, OutParam<Int16>::ConvertFrom(outVal)); }
 	UOSInt StrHex2Bytes(const UTF8Char *str, UInt8 *buff);
 	UOSInt StrHex2BytesS(const UTF8Char *str, UInt8 *buff, UTF8Char seperator);
 #ifdef HAS_INT64
@@ -201,29 +201,29 @@ namespace Text
 	UOSInt StrSplitTrim(UTF8Char **strs, UOSInt maxStrs, UTF8Char *str, UTF8Char splitChar); //Optimized
 	UOSInt StrSplitLine(UTF8Char **strs, UOSInt maxStrs, UTF8Char *str); //Optimized
 	UOSInt StrSplitWS(UTF8Char **strs, UOSInt maxStrs, UTF8Char *str); //Optimized
-	Bool StrToUInt8(const UTF8Char *intStr, UInt8 *outVal);
+	Bool StrToUInt8(const UTF8Char *intStr, OutParam<UInt8> outVal);
 	UInt8 StrToUInt8(const UTF8Char *intStr);
-	Bool StrToUInt16(const UTF8Char *intStr, UInt16 *outVal);
-	Bool StrToUInt16S(const UTF8Char *intStr, UInt16 *outVal, UInt16 failVal);
-	Bool StrToInt16(const UTF8Char *str, Int16 *outVal);
+	Bool StrToUInt16(const UTF8Char *intStr, OutParam<UInt16> outVal);
+	Bool StrToUInt16S(const UTF8Char *intStr, OutParam<UInt16> outVal, UInt16 failVal);
+	Bool StrToInt16(const UTF8Char *str, OutParam<Int16> outVal);
 	Int16 StrToInt16(const UTF8Char *str);
-	Bool StrToUInt32(const UTF8Char *intStr, UInt32 *outVal);
-	Bool StrToUInt32S(const UTF8Char *intStr, UInt32 *outVal, UInt32 failVal);
+	Bool StrToUInt32(const UTF8Char *intStr, OutParam<UInt32> outVal);
+	Bool StrToUInt32S(const UTF8Char *intStr, OutParam<UInt32> outVal, UInt32 failVal);
 	UInt32 StrToUInt32(const UTF8Char *intStr);
-	Bool StrToInt32(const UTF8Char *str, Int32 *outVal);
+	Bool StrToInt32(const UTF8Char *str, OutParam<Int32> outVal);
 	Int32 StrToInt32(const UTF8Char *str);
 #ifdef HAS_INT64
-	Bool StrToInt64(const UTF8Char *intStr, Int64 *outVal);
+	Bool StrToInt64(const UTF8Char *intStr, OutParam<Int64> outVal);
 	FORCEINLINE Int64 StrToInt64(const UTF8Char *str) { return MyString_StrToInt64UTF8(str); }
-	Bool StrToUInt64(const UTF8Char *intStr, UInt64 *outVal);
-	Bool StrToUInt64S(const UTF8Char *intStr, UInt64 *outVal, UInt64 failVal);
-	FORCEINLINE UInt64 StrToUInt64(const UTF8Char *str) { UInt64 v; StrToUInt64S(str, &v, 0); return v; }
+	Bool StrToUInt64(const UTF8Char *intStr, OutParam<UInt64> outVal);
+	Bool StrToUInt64S(const UTF8Char *intStr, OutParam<UInt64> outVal, UInt64 failVal);
+	FORCEINLINE UInt64 StrToUInt64(const UTF8Char *str) { UInt64 v; StrToUInt64S(str, v, 0); return v; }
 #endif
 
 	OSInt StrToOSInt(const UTF8Char *str);
-	Bool StrToOSInt(const UTF8Char *intStr, OSInt *outVal);
+	Bool StrToOSInt(const UTF8Char *intStr, OutParam<OSInt> outVal);
 	UOSInt StrToUOSInt(const UTF8Char *str);
-	Bool StrToUOSInt(const UTF8Char *intStr, UOSInt *outVal);
+	Bool StrToUOSInt(const UTF8Char *intStr, OutParam<UOSInt> outVal);
 	Bool StrToBool(const UTF8Char *str);
 	UOSInt StrIndexOf(const UTF8Char *str1, const UTF8Char *str2);
 	UOSInt StrIndexOfChar(const UTF8Char *str1, UTF8Char c);
@@ -340,27 +340,27 @@ namespace Text
 	FORCEINLINE UOSInt StrSplitTrim(Char **strs, UOSInt maxStrs, Char *str, Char splitChar) { return StrSplitTrim((UTF8Char **)strs, maxStrs, (UTF8Char*)str, (UTF8Char)splitChar); }
 	FORCEINLINE UOSInt StrSplitLine(Char **strs, UOSInt maxStrs, Char *str) { return StrSplitLine((UTF8Char**)strs, maxStrs, (UTF8Char*)str); };
 	FORCEINLINE UOSInt StrSplitWS(Char **strs, UOSInt maxStrs, Char *str) { return StrSplitWS((UTF8Char**)strs, maxStrs, (UTF8Char*)str); };
-	FORCEINLINE Bool StrToUInt8(const Char *intStr, UInt8 *outVal) { return StrToUInt8((const UTF8Char*)intStr, outVal); };
+	FORCEINLINE Bool StrToUInt8(const Char *intStr, OutParam<UInt8> outVal) { return StrToUInt8((const UTF8Char*)intStr, outVal); };
 	FORCEINLINE UInt8 StrToUInt8(const Char *intStr) { return StrToUInt8((const UTF8Char*)intStr); };
-	FORCEINLINE Bool StrToUInt16(const Char *intStr, UInt16 *outVal) { return StrToUInt16((const UTF8Char*)intStr, outVal); };
-	FORCEINLINE Bool StrToUInt16S(const Char *intStr, UInt16 *outVal, UInt16 failVal) { return StrToUInt16S((const UTF8Char*)intStr, outVal, failVal); };
-	FORCEINLINE Bool StrToInt16(const Char *str, Int16 *outVal) { return StrToInt16((const UTF8Char*)str, outVal); }
+	FORCEINLINE Bool StrToUInt16(const Char *intStr, OutParam<UInt16> outVal) { return StrToUInt16((const UTF8Char*)intStr, outVal); };
+	FORCEINLINE Bool StrToUInt16S(const Char *intStr, OutParam<UInt16> outVal, UInt16 failVal) { return StrToUInt16S((const UTF8Char*)intStr, outVal, failVal); };
+	FORCEINLINE Bool StrToInt16(const Char *str, OutParam<Int16> outVal) { return StrToInt16((const UTF8Char*)str, outVal); }
 	FORCEINLINE Int16 StrToInt16(const Char *str) { return StrToInt16((const UTF8Char*)str); }
-	FORCEINLINE Bool StrToUInt32(const Char *intStr, UInt32 *outVal) { return StrToUInt32((const UTF8Char*)intStr, outVal); };
-	FORCEINLINE Bool StrToUInt32S(const Char *intStr, UInt32 *outVal, UInt32 failVal) { return StrToUInt32S((const UTF8Char*)intStr, outVal, failVal); };
+	FORCEINLINE Bool StrToUInt32(const Char *intStr, OutParam<UInt32> outVal) { return StrToUInt32((const UTF8Char*)intStr, outVal); };
+	FORCEINLINE Bool StrToUInt32S(const Char *intStr, OutParam<UInt32> outVal, UInt32 failVal) { return StrToUInt32S((const UTF8Char*)intStr, outVal, failVal); };
 	FORCEINLINE UInt32 StrToUInt32(const Char *intStr) { return StrToUInt32((const UTF8Char*)intStr); };
-	FORCEINLINE Bool StrToInt32(const Char *str, Int32 *outVal) { return StrToInt32((const UTF8Char*)str, outVal); }
+	FORCEINLINE Bool StrToInt32(const Char *str, OutParam<Int32> outVal) { return StrToInt32((const UTF8Char*)str, outVal); }
 	FORCEINLINE Int32 StrToInt32(const Char *str) { return StrToInt32((const UTF8Char*)str); }
 #ifdef HAS_INT64
-	FORCEINLINE Bool StrToInt64(const Char *intStr, Int64 *outVal) { return StrToInt64((const UTF8Char*)intStr, outVal); }
+	FORCEINLINE Bool StrToInt64(const Char *intStr, OutParam<Int64> outVal) { return StrToInt64((const UTF8Char*)intStr, outVal); }
 	FORCEINLINE Int64 StrToInt64(const Char *str) { return MyString_StrToInt64UTF8((const UTF8Char*)str); }
-	FORCEINLINE Bool StrToUInt64(const Char *intStr, UInt64 *outVal) { return StrToUInt64((const UTF8Char*)intStr, outVal); }
+	FORCEINLINE Bool StrToUInt64(const Char *intStr, OutParam<UInt64> outVal) { return StrToUInt64((const UTF8Char*)intStr, outVal); }
 	FORCEINLINE UInt64 StrToUInt64(const Char *str) { return StrToUInt64((const UTF8Char*)str); }
 #endif
 	FORCEINLINE OSInt StrToOSInt(const Char *str) { return StrToOSInt((const UTF8Char*)str); };
-	FORCEINLINE Bool StrToOSInt(const Char *intStr, OSInt *outVal) { return StrToOSInt((const UTF8Char*)intStr, outVal); };
+	FORCEINLINE Bool StrToOSInt(const Char *intStr, OutParam<OSInt> outVal) { return StrToOSInt((const UTF8Char*)intStr, outVal); };
 	FORCEINLINE UOSInt StrToUOSInt(const Char *str) { return StrToUOSInt((const UTF8Char*)str); };
-	FORCEINLINE Bool StrToUOSInt(const Char *intStr, UOSInt *outVal) { return StrToUOSInt((const UTF8Char*)intStr, outVal); };
+	FORCEINLINE Bool StrToUOSInt(const Char *intStr, OutParam<UOSInt> outVal) { return StrToUOSInt((const UTF8Char*)intStr, outVal); };
 	FORCEINLINE Bool StrToBool(const Char *str) { return StrToBool((const UTF8Char*)str); };
 
 	FORCEINLINE UOSInt StrIndexOf(const Char *str1, const Char *str2) { return StrIndexOf((const UTF8Char*)str1, (const UTF8Char*)str2); }

@@ -83,7 +83,7 @@ void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnInfoClicked(void *userObj)
 	UInt16 port;
 	Text::StringBuilderUTF8 sb;
 	me->txtInfo->GetText(sb);
-	if (!sb.ToUInt16(&port))
+	if (!sb.ToUInt16(port))
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Info port is not valid"), CSTR("Ping Monitor"), me);
 		return;

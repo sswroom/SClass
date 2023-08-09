@@ -177,7 +177,7 @@ Map::OSM::OSMLocalTileMap::OSMLocalTileMap(IO::PackageFile *pkgFile)
 			pkgFile->GetItemName(sbuff, i);
 			if (sbuff[0] != '.')
 			{
-				if (Text::StrToUInt32(sbuff, &currVal) && currVal > this->maxLevel)
+				if (Text::StrToUInt32(sbuff, currVal) && currVal > this->maxLevel)
 				{
 					this->maxLevel = currVal;
 				}
@@ -204,7 +204,7 @@ Map::OSM::OSMLocalTileMap::OSMLocalTileMap(IO::PackageFile *pkgFile)
 					xPkg->GetItemName(sbuff, i);
 					if (sbuff[0] != '.')
 					{
-						if (Text::StrToUInt32(sbuff, &currVal))
+						if (Text::StrToUInt32(sbuff, currVal))
 						{
 							if (minXBlk == (UInt32)-1 || minXBlk > currVal)
 							{
@@ -239,7 +239,7 @@ Map::OSM::OSMLocalTileMap::OSMLocalTileMap(IO::PackageFile *pkgFile)
 							if (j != INVALID_INDEX)
 							{
 								sbuff[j] = 0;
-								if (Text::StrToUInt32(sbuff, &currVal))
+								if (Text::StrToUInt32(sbuff, currVal))
 								{
 									if (minYBlk == (UInt32)-1 || minYBlk > currVal)
 									{
@@ -547,7 +547,7 @@ Bool Map::OSM::OSMLocalTileMap::GetTileBounds(UOSInt level, Int32 *minX, Int32 *
 			pkgFile->GetItemName(sbuff, i);
 			if (sbuff[0] != '.')
 			{
-				if (Text::StrToInt32(sbuff, &x) && x == (OSInt)level)
+				if (Text::StrToInt32(sbuff, x) && x == (OSInt)level)
 				{
 					found = true;
 					break;
@@ -576,7 +576,7 @@ Bool Map::OSM::OSMLocalTileMap::GetTileBounds(UOSInt level, Int32 *minX, Int32 *
 			if (levPkg->GetItemType(i) == IO::PackageFile::PackObjectType::PackageFileType)
 			{
 				levPkg->GetItemName(sbuff, i);
-				if (Text::StrToInt32(sbuff, &x))
+				if (Text::StrToInt32(sbuff, x))
 				{
 					if (foundX)
 					{
@@ -604,7 +604,7 @@ Bool Map::OSM::OSMLocalTileMap::GetTileBounds(UOSInt level, Int32 *minX, Int32 *
 								if (k != INVALID_INDEX)
 								{
 									sbuff[k] = 0;
-									if (Text::StrToInt32(sbuff, &y))
+									if (Text::StrToInt32(sbuff, y))
 									{
 										if (found)
 										{

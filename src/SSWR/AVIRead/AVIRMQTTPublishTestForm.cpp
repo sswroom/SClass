@@ -47,7 +47,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTPublishTestForm::OnStartClicked(void *user
 		Net::SocketUtil::AddressInfo addr;
 		UInt16 port;
 		me->txtPort->GetText(sb);
-		if (!sb.ToUInt16(&port))
+		if (!sb.ToUInt16(port))
 		{
 			UI::MessageDialog::ShowDialog(CSTR("Port is not valid"), CSTR("Error"), me);
 			return;

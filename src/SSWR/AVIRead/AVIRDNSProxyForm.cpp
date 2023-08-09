@@ -500,7 +500,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnSearchClicked(void *userObj)
 	}
 	sb.ClearStr();
 	me->txtSearchMask->GetText(sb);
-	if (sb.ToUInt32(&mask))
+	if (sb.ToUInt32(mask))
 	{
 		if (mask >= 32)
 		{

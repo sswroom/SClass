@@ -42,11 +42,12 @@ UTF8Char *Text::URLString::GetURLDomain(UTF8Char *sbuff, Text::CString url, UInt
 	j = url.IndexOf(':');
 	if (i != INVALID_INDEX && j != INVALID_INDEX && j < i)
 	{
-		if (port)
+		NotNullPtr<UInt16> nnPort;
+		if (nnPort.Set(port))
 		{
 			MemCopyNO(sbuff, &url.v[j + 1], (i - j - 1) * sizeof(UTF8Char));
 			sbuff[i - j - 1] = 0;
-			Text::StrToUInt16S(sbuff, port, 0);
+			Text::StrToUInt16S(sbuff, nnPort, 0);
 		}
 		if (i < j)
 		{
@@ -73,9 +74,10 @@ UTF8Char *Text::URLString::GetURLDomain(UTF8Char *sbuff, Text::CString url, UInt
 	}
 	else if (j != INVALID_INDEX)
 	{
-		if (port)
+		NotNullPtr<UInt16> nnPort;
+		if (nnPort.Set(port))
 		{
-			Text::StrToUInt16S(&url.v[j + 1], port, 0);
+			Text::StrToUInt16S(&url.v[j + 1], nnPort, 0);
 		}
 		MemCopyNO(sbuff, url.v, sizeof(UTF8Char) * j);
 		sbuff[j] = 0;

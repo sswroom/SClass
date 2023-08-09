@@ -58,7 +58,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	else
 	{
 		UInt32 portNo = 0;
-		Text::StrToUInt32(argv[1], &portNo);
+		Text::StrToUInt32(argv[1], portNo);
 		if (portNo == 0)
 		{
 			console->WriteLineC(UTF8STRC("PortNo is not correct"));
@@ -68,7 +68,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			Text::StringBuilderUTF8 sb;
 			if (argc >= 3)
 			{
-				Text::StrToUInt32(argv[2], &baudRate);
+				Text::StrToUInt32(argv[2], baudRate);
 			}
 			running = false;
 			readError = false;

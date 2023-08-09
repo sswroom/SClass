@@ -258,19 +258,19 @@ void Map::WebFeatureService::LoadXMLFeatureType(NotNullPtr<Text::XMLReader> read
 					attr = reader->GetAttrib(i);
 					if (attr->name->Equals(UTF8STRC("minx")) && attr->value != 0)
 					{
-						hasTL = attr->value->ToDouble(&wgs84Bounds.tl.x);
+						hasTL = attr->value->ToDouble(wgs84Bounds.tl.x);
 					}
 					else if (attr->name->Equals(UTF8STRC("miny")) && attr->value != 0)
 					{
-						hasTL = attr->value->ToDouble(&wgs84Bounds.tl.y);
+						hasTL = attr->value->ToDouble(wgs84Bounds.tl.y);
 					}
 					else if (attr->name->Equals(UTF8STRC("maxx")) && attr->value != 0)
 					{
-						hasBR = attr->value->ToDouble(&wgs84Bounds.br.x);
+						hasBR = attr->value->ToDouble(wgs84Bounds.br.x);
 					}
 					else if (attr->name->Equals(UTF8STRC("maxy")) && attr->value != 0)
 					{
-						hasBR = attr->value->ToDouble(&wgs84Bounds.br.y);
+						hasBR = attr->value->ToDouble(wgs84Bounds.br.y);
 					}
 				}
 				reader->SkipElement();

@@ -590,7 +590,7 @@ Bool IO::GSMModemController::GSMSetModemTime(Data::DateTime *date)
 	return SendBoolCommandC(sbuff, (UOSInt)(sptr - sbuff));
 }
 
-Bool IO::GSMModemController::GSMGetRegisterNetwork(NetworkResult *n, RegisterStatus *stat, UInt16 *lac, UInt32 *ci, AccessTech *act)
+Bool IO::GSMModemController::GSMGetRegisterNetwork(NetworkResult *n, RegisterStatus *stat, OutParam<UInt16> lac, OutParam<UInt32> ci, AccessTech *act)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr = this->SendStringCommand(sbuff, UTF8STRC("AT+CREG?"), 3000);
@@ -636,8 +636,8 @@ Bool IO::GSMModemController::GSMGetRegisterNetwork(NetworkResult *n, RegisterSta
 		}
 		else
 		{
-			*lac = 0;
-			*ci = 0;
+			lac.Set(0);
+			ci.Set(0);
 			*act = AccessTech::GSM;
 		}
 

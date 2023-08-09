@@ -100,9 +100,9 @@ IO::ParsedObject *Parser::FileParser::GUIImgParser::ParseFileHdr(NotNullPtr<IO::
 			Double ydpi = 72.0;
 			const gchar *cptr;
 			cptr = gdk_pixbuf_get_option(pixBuf, "x-dpi");
-			if (cptr) Text::StrToDouble(cptr, &xdpi);
+			if (cptr) Text::StrToDouble(cptr, xdpi);
 			cptr = gdk_pixbuf_get_option(pixBuf, "y-dpi");
-			if (cptr) Text::StrToDouble(cptr, &ydpi);
+			if (cptr) Text::StrToDouble(cptr, ydpi);
 
 			Media::StaticImage *img = 0;
 			Media::AlphaType aType = (isImage == 2||!hasAlpha)?Media::AT_NO_ALPHA:Media::AT_ALPHA;
@@ -221,32 +221,32 @@ IO::ParsedObject *Parser::FileParser::GUIImgParser::ParseFileHdr(NotNullPtr<IO::
 					IO::FileStream fs(sb.ToCString(), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential);
 					IO::StreamReader reader(fs, 0);
 					sb.ClearStr();
-					if (!reader.ReadLine(sb, 1024) || !Text::StrToDouble(sb.ToString(), &xPxSize))
+					if (!reader.ReadLine(sb, 1024) || !Text::StrToDouble(sb.ToString(), xPxSize))
 					{
 						valid = false;
 					}
 					sb.ClearStr();
-					if (!reader.ReadLine(sb, 1024) || !Text::StrToDouble(sb.ToString(), &rotY))
+					if (!reader.ReadLine(sb, 1024) || !Text::StrToDouble(sb.ToString(), rotY))
 					{
 						valid = false;
 					}
 					sb.ClearStr();
-					if (!reader.ReadLine(sb, 1024) || !Text::StrToDouble(sb.ToString(), &rotX))
+					if (!reader.ReadLine(sb, 1024) || !Text::StrToDouble(sb.ToString(), rotX))
 					{
 						valid = false;
 					}
 					sb.ClearStr();
-					if (!reader.ReadLine(sb, 1024) || !Text::StrToDouble(sb.ToString(), &yPxSize))
+					if (!reader.ReadLine(sb, 1024) || !Text::StrToDouble(sb.ToString(), yPxSize))
 					{
 						valid = false;
 					}
 					sb.ClearStr();
-					if (!reader.ReadLine(sb, 1024) || !Text::StrToDouble(sb.ToString(), &xCoord))
+					if (!reader.ReadLine(sb, 1024) || !Text::StrToDouble(sb.ToString(), xCoord))
 					{
 						valid = false;
 					}
 					sb.ClearStr();
-					if (!reader.ReadLine(sb, 1024) || !Text::StrToDouble(sb.ToString(), &yCoord))
+					if (!reader.ReadLine(sb, 1024) || !Text::StrToDouble(sb.ToString(), yCoord))
 					{
 						valid = false;
 					}

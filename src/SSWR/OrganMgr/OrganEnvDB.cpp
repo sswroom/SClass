@@ -74,7 +74,7 @@ SSWR::OrganMgr::OrganEnvDB::OrganEnvDB() : OrganEnv()
 		this->errType = ERR_CONFIG;
 		return;
 	}
-	if (!userId->ToInt32(&this->userId))
+	if (!userId->ToInt32(this->userId))
 	{
 		this->errType = ERR_CONFIG;
 		return;

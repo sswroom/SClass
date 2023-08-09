@@ -68,14 +68,14 @@ void __stdcall SSWR::AVIRead::AVIRFileExForm::OnStartClicked(void *userObj)
 	IO::FileStream *srcFS;
 	IO::FileStream *destFS;
 	me->txtStartOfst->GetText(sb);
-	if (!sb.ToUInt64(&startOfst))
+	if (!sb.ToUInt64(startOfst))
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Start Offset is not valid"), CSTR("Error"), me);
 		return;
 	}
 	sb.ClearStr();
 	me->txtEndOfst->GetText(sb);
-	if (!sb.ToUInt64(&endOfst))
+	if (!sb.ToUInt64(endOfst))
 	{
 		UI::MessageDialog::ShowDialog(CSTR("End Offset is not valid"), CSTR("Error"), me);
 		return;

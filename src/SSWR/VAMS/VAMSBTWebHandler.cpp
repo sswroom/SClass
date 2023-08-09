@@ -11,7 +11,7 @@ Bool __stdcall SSWR::VAMS::VAMSBTWebHandler::DevData(Net::WebServer::IWebRequest
 	Int64 ts;
 	Int32 progId;
 	Int16 rssi;
-	if (avlNo == 0 || !req->GetHTTPFormInt64(CSTR("ts"), &ts) || !req->GetHTTPFormInt32(CSTR("progId"), &progId) || !req->GetHTTPFormInt16(CSTR("rssi"), &rssi))
+	if (avlNo == 0 || !req->GetHTTPFormInt64(CSTR("ts"), ts) || !req->GetHTTPFormInt32(CSTR("progId"), progId) || !req->GetHTTPFormInt16(CSTR("rssi"), rssi))
 	{
 		resp->ResponseError(req, Net::WebStatus::SC_NOT_FOUND);
 		return true;
@@ -26,7 +26,7 @@ Bool __stdcall SSWR::VAMS::VAMSBTWebHandler::KAData(Net::WebServer::IWebRequest 
 	SSWR::VAMS::VAMSBTWebHandler *me = (SSWR::VAMS::VAMSBTWebHandler*)hdlr;
 	req->ParseHTTPForm();
 	Int32 progId;
-	if (!req->GetHTTPFormInt32(CSTR("progId"), &progId))
+	if (!req->GetHTTPFormInt32(CSTR("progId"), progId))
 	{
 		resp->ResponseError(req, Net::WebStatus::SC_NOT_FOUND);
 		return true;
@@ -40,7 +40,7 @@ Bool __stdcall SSWR::VAMS::VAMSBTWebHandler::LogData(Net::WebServer::IWebRequest
 	SSWR::VAMS::VAMSBTWebHandler *me = (SSWR::VAMS::VAMSBTWebHandler*)hdlr;
 	Int32 progId;
 	Int32 logDate;
-	if (!req->GetQueryValueI32(CSTR("progId"), &progId) || !req->GetQueryValueI32(CSTR("logDate"), &logDate))
+	if (!req->GetQueryValueI32(CSTR("progId"), progId) || !req->GetQueryValueI32(CSTR("logDate"), logDate))
 	{
 		resp->ResponseError(req, Net::WebStatus::SC_NOT_FOUND);
 		return true;
@@ -140,7 +140,7 @@ Bool __stdcall SSWR::VAMS::VAMSBTWebHandler::ListItem(Net::WebServer::IWebReques
 {
 	SSWR::VAMS::VAMSBTWebHandler *me = (SSWR::VAMS::VAMSBTWebHandler*)hdlr;
 	Int32 progId;
-	if (!req->GetQueryValueI32(CSTR("progId"), &progId))
+	if (!req->GetQueryValueI32(CSTR("progId"), progId))
 	{
 		resp->ResponseError(req, Net::WebStatus::SC_NOT_FOUND);
 		return true;

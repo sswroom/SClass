@@ -50,7 +50,7 @@ namespace DB
 		void Clear();
 		const UTF8Char *ToString() const;
 		UOSInt GetLength() const;
-		Text::CString ToCString() const;
+		Text::CStringNN ToCString() const;
 		NotNullPtr<Text::String> ToNewString() const;
 		DB::SQLType GetSQLType() const;
 	};

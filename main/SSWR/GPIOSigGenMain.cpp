@@ -42,7 +42,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	{
 		pinNum = 0;
 		s = cfg->GetValue(CSTR("GPIOPin"));
-		if (s && s->ToUInt16(&pinNum))
+		if (s && s->ToUInt16(pinNum))
 		{
 			if (pinNum > 0)
 			{

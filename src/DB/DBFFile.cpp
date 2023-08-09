@@ -664,7 +664,7 @@ Data::Timestamp DB::DBFReader::GetTimestamp(UOSInt colIndex)
 	buff[2] = currPtr[2];
 	buff[3] = currPtr[3];
 	buff[4] = 0;
-	Text::StrToUInt16S(buff, &tval.year, 0);
+	Text::StrToUInt16S(buff, tval.year, 0);
 	buff[0] = currPtr[4];
 	buff[1] = currPtr[5];
 	buff[2] = 0;

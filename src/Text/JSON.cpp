@@ -59,7 +59,7 @@ Text::JSONBase *Text::JSONBase::GetValue(Text::CString path)
 			}
 			else if (json->GetType() == JSONType::Array)
 			{
-				if (Text::StrToUOSInt(sptr, &dotIndex))
+				if (Text::StrToUOSInt(sptr, dotIndex))
 				{
 					return ((Text::JSONArray*)json)->GetArrayValue(dotIndex);
 				}
@@ -94,7 +94,7 @@ Text::JSONBase *Text::JSONBase::GetValue(Text::CString path)
 			}
 			else if (json->GetType() == JSONType::Array)
 			{
-				if (Text::StrToUOSInt(sptr, &brkIndex))
+				if (Text::StrToUOSInt(sptr, brkIndex))
 				{
 					json = ((Text::JSONArray*)json)->GetArrayValue(brkIndex);
 				}
@@ -124,7 +124,7 @@ Text::JSONBase *Text::JSONBase::GetValue(Text::CString path)
 					return 0;
 				}
 				sptr[dotIndex] = 0;
-				if (!Text::StrToUOSInt(sptr, &brkIndex))
+				if (!Text::StrToUOSInt(sptr, brkIndex))
 				{
 					return 0;
 				}
@@ -202,7 +202,7 @@ Double Text::JSONBase::GetValueAsDouble(Text::CString path)
 	return 0;
 }
 
-Bool Text::JSONBase::GetValueAsDouble(Text::CString path, Double *val)
+Bool Text::JSONBase::GetValueAsDouble(Text::CString path, OutParam<Double> val)
 {
 	Text::JSONBase *json = this->GetValue(path);
 	if (json)
@@ -311,21 +311,21 @@ Double Text::JSONBase::GetAsDouble()
 	return 0;
 }
 
-Bool Text::JSONBase::GetAsDouble(Double *val)
+Bool Text::JSONBase::GetAsDouble(OutParam<Double> val)
 {
 	switch (this->GetType())
 	{
 	case Text::JSONType::BOOL:
-		*val = ((Text::JSONBool*)this)->GetValue()?1:0;
+		val.Set(((Text::JSONBool*)this)->GetValue()?1:0);
 		return true;
 	case Text::JSONType::INT32:
-		*val = ((Text::JSONInt32*)this)->GetValue();
+		val.Set(((Text::JSONInt32*)this)->GetValue());
 		return true;
 	case Text::JSONType::INT64:
-		*val = (Double)(((Text::JSONInt64*)this)->GetValue());
+		val.Set((Double)(((Text::JSONInt64*)this)->GetValue()));
 		return true;
 	case Text::JSONType::Number:
-		*val = ((Text::JSONNumber*)this)->GetValue();
+		val.Set(((Text::JSONNumber*)this)->GetValue());
 		return true;
 	case Text::JSONType::String:
 		return ((Text::JSONString*)this)->GetValue()->ToDouble(val);

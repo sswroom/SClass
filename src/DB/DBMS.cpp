@@ -1461,7 +1461,7 @@ Text::String *DB::DBMS::Evals(const UTF8Char **valPtr, DB::DBMS::SessionInfo *se
 			if (!isDbl)
 			{
 				Int32 iVal;
-				if (val2->ToInt32(&iVal))
+				if (val2->ToInt32(iVal))
 				{
 					iVal += Text::StrToInt32(sb.ToString());
 					sb.ClearStr();
@@ -1474,7 +1474,7 @@ Text::String *DB::DBMS::Evals(const UTF8Char **valPtr, DB::DBMS::SessionInfo *se
 				}
 			}
 			Double dVal;
-			if (val2->ToDouble(&dVal))
+			if (val2->ToDouble(dVal))
 			{
 				dVal += Text::StrToDouble(sb.ToString());
 				sb.ClearStr();
@@ -1506,7 +1506,7 @@ Text::String *DB::DBMS::Evals(const UTF8Char **valPtr, DB::DBMS::SessionInfo *se
 			if (!isDbl)
 			{
 				Int32 iVal;
-				if (val2->ToInt32(&iVal))
+				if (val2->ToInt32(iVal))
 				{
 					iVal = Text::StrToInt32(sb.ToString()) - iVal;
 					sb.ClearStr();
@@ -1519,7 +1519,7 @@ Text::String *DB::DBMS::Evals(const UTF8Char **valPtr, DB::DBMS::SessionInfo *se
 				}
 			}
 			Double dVal;
-			if (val2->ToDouble(&dVal))
+			if (val2->ToDouble(dVal))
 			{
 				dVal = Text::StrToDouble(sb.ToString()) - dVal;
 				sb.ClearStr();
@@ -1551,7 +1551,7 @@ Text::String *DB::DBMS::Evals(const UTF8Char **valPtr, DB::DBMS::SessionInfo *se
 			if (!isDbl)
 			{
 				Int32 iVal;
-				if (val2->ToInt32(&iVal))
+				if (val2->ToInt32(iVal))
 				{
 					iVal = Text::StrToInt32(sb.ToString()) * iVal;
 					sb.ClearStr();
@@ -1564,7 +1564,7 @@ Text::String *DB::DBMS::Evals(const UTF8Char **valPtr, DB::DBMS::SessionInfo *se
 				}
 			}
 			Double dVal;
-			if (val2->ToDouble(&dVal))
+			if (val2->ToDouble(dVal))
 			{
 				dVal = Text::StrToDouble(sb.ToString()) * dVal;
 				sb.ClearStr();
@@ -1596,7 +1596,7 @@ Text::String *DB::DBMS::Evals(const UTF8Char **valPtr, DB::DBMS::SessionInfo *se
 			if (!isDbl)
 			{
 				Int32 iVal;
-				if (val2->ToInt32(&iVal))
+				if (val2->ToInt32(iVal))
 				{
 					iVal = Text::StrToInt32(sb.ToString()) / iVal;
 					sb.ClearStr();
@@ -1609,7 +1609,7 @@ Text::String *DB::DBMS::Evals(const UTF8Char **valPtr, DB::DBMS::SessionInfo *se
 				}
 			}
 			Double dVal;
-			if (val2->ToDouble(&dVal))
+			if (val2->ToDouble(dVal))
 			{
 				dVal = Text::StrToDouble(sb.ToString()) / dVal;
 				sb.ClearStr();

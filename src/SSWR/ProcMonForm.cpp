@@ -186,7 +186,7 @@ void __stdcall SSWR::ProcMonForm::OnProcIdClicked(void *userObj)
 		Text::StringBuilderUTF8 sb;
 		UInt32 procId;
 		me->txtProcId->GetText(sb);
-		if (sb.ToUInt32(&procId))
+		if (sb.ToUInt32(procId))
 		{
 			me->SetByProcId(prog, procId);
 		}
@@ -199,7 +199,7 @@ void __stdcall SSWR::ProcMonForm::OnProgAddClicked(void *userObj)
 	Text::StringBuilderUTF8 sb;
 	UInt32 procId;
 	me->txtProgAddId->GetText(sb);
-	if (sb.ToUInt32(&procId))
+	if (sb.ToUInt32(procId))
 	{
 		sb.ClearStr();
 		me->txtProgAddName->GetText(sb);

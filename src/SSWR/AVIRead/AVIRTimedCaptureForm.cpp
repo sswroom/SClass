@@ -152,13 +152,13 @@ void __stdcall SSWR::AVIRead::AVIRTimedCaptureForm::OnStartClicked(void *userObj
 		{
 			Text::StringBuilderUTF8 sb;
 			me->txtInterval->GetText(sb);
-			if (!sb.ToUInt32(&me->interval))
+			if (!sb.ToUInt32(me->interval))
 			{
 				return;
 			}
 			sb.ClearStr();
 			me->txtJPGQuality->GetText(sb);
-			if (!sb.ToInt32(&me->jpgQuality))
+			if (!sb.ToInt32(me->jpgQuality))
 			{
 				return;
 			}

@@ -8,7 +8,7 @@ void __stdcall SSWR::AVIRead::AVIRSSLInfoForm::OnCheckClicked(void *userObj)
 	Text::StringBuilderUTF8 sb;
 	UInt16 port;
 	me->txtPort->GetText(sb);
-	if (!sb.ToUInt16(&port))
+	if (!sb.ToUInt16(port))
 	{
 		me->txtStatus->SetText(CSTR("Please enter valid port"));
 		return;

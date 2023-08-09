@@ -125,7 +125,7 @@ void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnOKClicked(void *userObj)
 	Text::StringBuilderUTF8 sb;
 	me->txtLuminance->GetText(sb);
 	Double val;
-	if (Text::StrToDouble(sb.ToString(), &val))
+	if (Text::StrToDouble(sb.ToString(), val))
 	{
 		me->monColor->SetMonLuminance(val);
 	}

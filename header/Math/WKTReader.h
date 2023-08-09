@@ -10,7 +10,7 @@ namespace Math
 		const UTF8Char *lastError;
 		UInt32 srid;
 
-		static const UTF8Char *NextDouble(const UTF8Char *wkt, Double *val);
+		static const UTF8Char *NextDouble(const UTF8Char *wkt, OutParam<Double> val);
 
 		void SetLastError(const UTF8Char* lastError);
 	public:

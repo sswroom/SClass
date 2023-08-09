@@ -34,9 +34,9 @@ public:
 
 		UInt32 pin;
 		UInt32 outVal;
-		if (req->GetQueryValueU32(CSTR("pin"), &pin))
+		if (req->GetQueryValueU32(CSTR("pin"), pin))
 		{
-			if (req->GetQueryValueU32(CSTR("output"), &outVal))
+			if (req->GetQueryValueU32(CSTR("output"), outVal))
 			{
 				this->gpio->SetPinState(pin, outVal != 0);
 			}

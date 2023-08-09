@@ -183,7 +183,7 @@ namespace Net
 		static WeatherSignal String2Signal(Text::String *textMessage);
 	public:
 		static WeatherSignal GetSignalSummary(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact);
-		static Bool GetCurrentTempRH(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Int32 *temperature, Int32 *rh);
+		static Bool GetCurrentTempRH(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, OutParam<Int32> temperature, OutParam<Int32> rh);
 		static Bool GetWeatherForecast(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Language lang, WeatherForecast *weatherForecast);
 		static void FreeWeatherForecast(WeatherForecast *weatherForecast);
 		static Bool GetLocalForecast(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Language lang, LocalForecast *localForecast);

@@ -27,7 +27,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		return 2;
 	}
 	UInt16 port;
-	if (!sPort->ToUInt16(&port))
+	if (!sPort->ToUInt16(port))
 	{
 		DEL_CLASS(cfg);
 		console.WriteLineC(UTF8STRC("Error in parsing port number"));

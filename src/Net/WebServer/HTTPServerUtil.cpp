@@ -345,7 +345,7 @@ Bool Net::WebServer::HTTPServerUtil::ResponseFile(Net::WebServer::IWebRequest *r
 		}
 		sptr = sb2.v;
 		sptr[i] = 0;
-		if (!Text::StrToUInt64(&sptr[6], &start))
+		if (!Text::StrToUInt64(&sptr[6], start))
 		{
 			resp->SetStatusCode(Net::WebStatus::SC_REQUESTED_RANGE_NOT_SATISFIABLE);
 			resp->AddDefHeaders(req);
@@ -356,7 +356,7 @@ Bool Net::WebServer::HTTPServerUtil::ResponseFile(Net::WebServer::IWebRequest *r
 		}
 		if (i + 1 < sb2.GetLength())
 		{
-			if (!Text::StrToInt64(&sptr[i + 1], &end))
+			if (!Text::StrToInt64(&sptr[i + 1], end))
 			{
 				resp->SetStatusCode(Net::WebStatus::SC_REQUESTED_RANGE_NOT_SATISFIABLE);
 				resp->AddDefHeaders(req);

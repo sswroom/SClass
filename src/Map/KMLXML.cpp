@@ -327,7 +327,7 @@ Map::MapDrawLayer *Map::KMLXML::ParseKMLContainer(NotNullPtr<Text::XMLReader> re
 						{
 							sb.ClearStr();
 							reader->ReadNodeText(sb);
-							sb.ToUInt32S(&style->lineWidth, 0);
+							sb.ToUInt32S(style->lineWidth, 0);
 							style->flags |= 2;
 						}
 						else
@@ -384,7 +384,7 @@ Map::MapDrawLayer *Map::KMLXML::ParseKMLContainer(NotNullPtr<Text::XMLReader> re
 							}
 							sb.ClearStr();
 							reader->ReadNodeText(sb);
-							sb.ToUInt32S(&style->lineWidth, 0);
+							sb.ToUInt32S(style->lineWidth, 0);
 						}
 						else
 						{

@@ -1090,7 +1090,7 @@ void Map::HKTrafficLayer::ReloadData()
 								{
 									sb.ClearStr();
 									node3->GetInnerText(sb);
-									sb.ToInt32(&spd);
+									sb.ToInt32(spd);
 								}
 
 							}

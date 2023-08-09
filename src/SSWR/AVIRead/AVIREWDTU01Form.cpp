@@ -107,7 +107,7 @@ void __stdcall SSWR::AVIRead::AVIREWDTU01Form::OnConnectClicked(void *userObj)
 		UI::MessageDialog::ShowDialog(CSTR("Error in resolving host name"), CSTR("EqasyWay EW-DTU01"), me);
 		return;
 	}
-	if (!sbPort.ToUInt16(&port))
+	if (!sbPort.ToUInt16(port))
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Invalid port number"), CSTR("EqasyWay EW-DTU01"), me);
 		return;

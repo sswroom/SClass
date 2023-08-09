@@ -236,7 +236,7 @@ void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnWiresharkClicked(void *userO
 						endAddr = startAddr | 0xffffff;
 						succ = true;
 					}
-					else if (j > 18 && sarr[0].v[17] == '/' && Text::StrToUOSInt(&sarr[0].v[18], &bitCnt))
+					else if (j > 18 && sarr[0].v[17] == '/' && Text::StrToUOSInt(&sarr[0].v[18], bitCnt))
 					{
 						buff[0] = 0;
 						buff[1] = 0;

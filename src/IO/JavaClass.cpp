@@ -8827,7 +8827,7 @@ UTF8Char *IO::JavaClass::DecompileMethod(UInt16 methodIndex, UTF8Char *nameBuff,
 			UTF8Char sbuff2[32];
 			UTF8Char *sptr;
 			UInt32 c;
-			if (paramStr->ToUInt32(&c))
+			if (paramStr->ToUInt32(c))
 			{
 				Text::StrWriteChar(sbuff, (UTF32Char)c)[0] = 0;
 				sptr = Text::JSText::ToJSText(sbuff2, sbuff);

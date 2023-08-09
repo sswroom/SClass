@@ -143,7 +143,7 @@ SSWR::SDNSProxy::SDNSProxyCore::SDNSProxyCore(IO::ConfigFile *cfg, IO::Writer *c
 		}
 
 		s = cfg->GetValue(CSTR("DisableV6"));
-		if (s && s->ToInt32(&v))
+		if (s && s->ToInt32(v))
 		{
 			this->proxy->SetDisableV6(v != 0);
 		}
@@ -168,7 +168,7 @@ SSWR::SDNSProxy::SDNSProxyCore::SDNSProxyCore(IO::ConfigFile *cfg, IO::Writer *c
 
 		UInt16 managePort;
 		s = cfg->GetValue(CSTR("ManagePort"));
-		if (s && s->v[0] != 0 && s->ToUInt16(&managePort))
+		if (s && s->v[0] != 0 && s->ToUInt16(managePort))
 		{
 			NEW_CLASS(this->hdlr, SSWR::SDNSProxy::SDNSProxyWebHandler(this->proxy, &this->log, this));
 			NEW_CLASS(this->listener, Net::WebServer::WebListener(this->sockf, 0, this->hdlr, managePort, 60, 4, CSTR("SDNSProxy/1.0"), false, Net::WebServer::KeepAlive::Default, true));

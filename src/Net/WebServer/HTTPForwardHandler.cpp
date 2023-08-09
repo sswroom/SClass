@@ -107,7 +107,7 @@ Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(Net::WebServer::IWebRequ
 				svrHost = Text::String::New(sbHeader.ToString(), sbHeader.GetLength()).Ptr();
 				if (k >= 0)
 				{
-					Text::StrToUInt16(sbHeader.ToString() + k + 1, &svrPort);
+					Text::StrToUInt16(sbHeader.ToString() + k + 1, svrPort);
 				}
 			}
 		}

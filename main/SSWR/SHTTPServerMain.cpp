@@ -42,7 +42,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	if (argc >= 2)
 	{
 		port = 0;
-		Text::StrToUInt16(argv[1], &port);
+		Text::StrToUInt16(argv[1], port);
 	}
 
 	sb.ClearStr();

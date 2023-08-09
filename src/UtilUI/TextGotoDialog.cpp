@@ -9,7 +9,7 @@ void __stdcall UtilUI::TextGotoDialog::OnOKClicked(void *userObj)
 
 	UOSInt lineNum;
 	me->txtLine->GetText(sbuff);
-	if (Text::StrToUOSInt(sbuff, &lineNum))
+	if (Text::StrToUOSInt(sbuff, lineNum))
 	{
 		if (lineNum > 0)
 		{

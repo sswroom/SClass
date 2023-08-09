@@ -36,9 +36,9 @@ void Data::DateTimeUtil::TimeValueSetDate(Data::DateTimeUtil::TimeValue *t, Text
 	vals[0] = 0;
 	vals[1] = 0;
 	vals[2] = 0;
-	Text::StrToUInt32(dateStrs[0].v, &vals[0]);
-	Text::StrToUInt32(dateStrs[1].v, &vals[1]);
-	Text::StrToUInt32(dateStrs[2].v, &vals[2]);
+	Text::StrToUInt32(dateStrs[0].v, vals[0]);
+	Text::StrToUInt32(dateStrs[1].v, vals[1]);
+	Text::StrToUInt32(dateStrs[2].v, vals[2]);
 	if (vals[0] > 100)
 	{
 		t->year = (UInt16)vals[0];
@@ -1541,19 +1541,19 @@ Bool Data::DateTimeUtil::String2TimeValue(Text::CString dateStr, TimeValue *tval
 		UOSInt timeStrLen = strs2[3].leng;
 		if (len1 == 3 && len2 <= 2 && len3 == 4)
 		{
-			Text::StrToUInt16(strs2[2].v, &tval->year);
+			Text::StrToUInt16(strs2[2].v, tval->year);
 			tval->month = Data::DateTimeUtil::ParseMonthStr(strs2[0].v, strs2[0].leng);
 			tval->day = Text::StrToUInt8(strs2[1].v);
 		}
 		else if (len1 <= 2 && len2 == 3 && len3 == 4)
 		{
-			Text::StrToUInt16(strs2[2].v, &tval->year);
+			Text::StrToUInt16(strs2[2].v, tval->year);
 			tval->month = Data::DateTimeUtil::ParseMonthStr(strs2[1].v, strs2[1].leng);
 			tval->day = Text::StrToUInt8(strs2[0].v);
 		}
 		else if (len1 == 3 && len2 <= 2 && len4 == 4)
 		{
-			Text::StrToUInt16(strs2[3].v, &tval->year);
+			Text::StrToUInt16(strs2[3].v, tval->year);
 			tval->month = Data::DateTimeUtil::ParseMonthStr(strs2[0].v, strs2[0].leng);
 			tval->day = Text::StrToUInt8(strs2[1].v);
 			timeStr = strs2[2].v;

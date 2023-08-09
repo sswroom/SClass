@@ -361,7 +361,7 @@ Bool Text::Cpp::CppCodeParser::EvalSharpIfVal(Data::ArrayListNN<Text::String> *c
 		{
 			phase->RemoveChars(1);
 		}
-		if (!phase->ToInt32(&val))
+		if (!phase->ToInt32(val))
 		{
 			debugSB.AppendC(UTF8STRC(": unknown syntex "));
 			debugSB.Append(phase);

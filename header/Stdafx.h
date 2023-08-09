@@ -15,5 +15,6 @@
 
 #include "sdefs.h"
 #include "NotNullPtr.h"
+#include "OutParam.h"
 
 // TODO: reference additional headers your program requires here

@@ -71,7 +71,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	UTF8Char **argv = progCtrl->GetCommandLines(progCtrl, &argc);
 	if (argc >= 2)
 	{
-		if (!Text::StrToUInt16(argv[1], &port))
+		if (!Text::StrToUInt16(argv[1], port))
 		{
 			console->WriteLineC(UTF8STRC("Error in parsing port number, use default port"));
 			port = 0;

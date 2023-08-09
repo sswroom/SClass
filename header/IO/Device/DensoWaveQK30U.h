@@ -33,7 +33,7 @@ namespace IO
 			Bool SettingModeEnd();
 			void ToIdleMode();
 			Bool WaitForReply(UInt32 timeToWait);
-			Bool WaitForReplyVal(UInt32 timeToWait, Int32 *retVal);
+			Bool WaitForReplyVal(UInt32 timeToWait, OutParam<Int32> retVal);
 			Int32 ReadCommand(const Char *cmdStr, UOSInt cmdLen);
 			Bool WriteCommand(const Char *cmdStr, UOSInt cmdLen);
 		public:

@@ -22,7 +22,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnStartClick(void *userOb
 	Bool valid = true;
 	Text::StringBuilderUTF8 sb;
 	me->txtPort->GetText(sb);
-	Text::StrToUInt16S(sb.ToString(), &port, 0);
+	Text::StrToUInt16S(sb.ToString(), port, 0);
 	sb.ClearStr();
 	me->txtFwdURL->GetText(sb);
 	Net::SSLEngine *ssl = 0;

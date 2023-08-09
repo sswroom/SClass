@@ -48,7 +48,7 @@ Net::FTPClient::FTPClient(Text::CStringNN url, NotNullPtr<Net::SocketFactory> so
 			this->host = Text::String::New(host, (UOSInt)(sptr - host - 1)).Ptr();
 			if (port)
 			{
-				if (!Text::StrToUInt16(port, &this->port))
+				if (!Text::StrToUInt16(port, this->port))
 				{
 					this->port = 21;
 				}

@@ -57,7 +57,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	{
 		UInt32 portNum;
 		UInt32 baudRate;
-		if (Text::StrToUInt32(argv[1], &portNum) && Text::StrToUInt32(argv[2], &baudRate))
+		if (Text::StrToUInt32(argv[1], portNum) && Text::StrToUInt32(argv[2], baudRate))
 		{
 			NEW_CLASS(port, IO::SerialPort(portNum, baudRate, IO::SerialPort::PARITY_NONE, false));
 			if (port->IsError())

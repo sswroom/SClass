@@ -23,7 +23,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientCertTestForm::OnStartClick(void *use
 	Bool valid = true;
 	Text::StringBuilderUTF8 sb;
 	me->txtPort->GetText(sb);
-	Text::StrToUInt16S(sb.ToString(), &port, 0);
+	Text::StrToUInt16S(sb.ToString(), port, 0);
 	Net::SSLEngine *ssl = me->ssl;
 	ssl->ServerSetRequireClientCert(Net::SSLEngine::ClientCertType::Optional);
 	sb.ClearStr();

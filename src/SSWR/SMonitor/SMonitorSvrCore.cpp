@@ -1204,7 +1204,7 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(IO::Writer *writer, NotNullPtr<
 		{
 			if (s2 && IO::Path::GetPathType(s2->ToCString()) == IO::Path::PathType::Directory)
 			{
-				if (s->ToUInt16(&port) && port > 0)
+				if (s->ToUInt16(port) && port > 0)
 				{
 					Net::WebServer::HTTPDirectoryHandler *hdlr;
 					SSWR::SMonitor::SMonitorWebHandler *shdlr;
@@ -1264,7 +1264,7 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(IO::Writer *writer, NotNullPtr<
 		s = cfg->GetValue(CSTR("ClientPort"));
 		if (s)
 		{
-			if (s->ToUInt16(&port) && port > 0)
+			if (s->ToUInt16(port) && port > 0)
 			{
 				NEW_CLASS(this->cliMgr, Net::TCPClientMgr(300, OnClientEvent, OnClientData, this, 4, OnClientTimeout));
 				NEW_CLASS(this->cliSvr, Net::TCPServer(this->sockf, port, &this->log, OnServerConn, this, CSTR("CLI: "), false));
@@ -1289,7 +1289,7 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(IO::Writer *writer, NotNullPtr<
 		s = cfg->GetValue(CSTR("DataUDPPort"));
 		if (s)
 		{
-			if (s->ToUInt16(&port) && port > 0)
+			if (s->ToUInt16(port) && port > 0)
 			{
 				Crypto::Hash::CRC16 *crc;
 				NEW_CLASS(crc, Crypto::Hash::CRC16(Crypto::Hash::CRC16::GetPolynomialCCITT()));

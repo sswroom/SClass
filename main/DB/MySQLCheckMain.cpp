@@ -100,12 +100,12 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		console.WriteLineC(UTF8STRC("MySQLServer cannot be resolved"));
 		return 4;
 	}
-	else if (!mysqlPort->ToUInt16(&port))
+	else if (!mysqlPort->ToUInt16(port))
 	{
 		console.WriteLineC(UTF8STRC("MySQLPort is not valid"));
 		return 5;
 	}
-	else if (!smtpPort->ToUInt16(&smtpIPort))
+	else if (!smtpPort->ToUInt16(smtpIPort))
 	{
 		console.WriteLineC(UTF8STRC("SMTPPort is not valid"));
 		return 6;
@@ -144,9 +144,8 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			sb.ClearStr();
 			IO::Path::GetProcessFileName(sb);
 			sb.AppendC(UTF8STRC(".log"));
-			IO::LogTool *log;
-			NEW_CLASS(log, IO::LogTool());
-			log->AddFileLog(sb.ToCString(), IO::LogHandler::LogType::SingleFile, IO::LogHandler::LogGroup::NoGroup, IO::LogHandler::LogLevel::Raw, "yyyy-MM-dd HH:mm:ss.fff", true);
+			IO::LogTool log;
+			log.AddFileLog(sb.ToCString(), IO::LogHandler::LogType::SingleFile, IO::LogHandler::LogGroup::NoGroup, IO::LogHandler::LogLevel::Raw, "yyyy-MM-dd HH:mm:ss.fff", true);
 			IO::LogWriter *writer;
 			NEW_CLASS(writer, IO::LogWriter(log, IO::LogHandler::LogLevel::Command));
 
@@ -177,7 +176,6 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			DEL_CLASS(smtp);
 			SDEL_CLASS(ssl);
 			DEL_CLASS(writer);
-			DEL_CLASS(log);
 		}
 	}
 	DEL_CLASS(cfg);

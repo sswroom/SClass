@@ -21,7 +21,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	UTF8Char **argv = progCtrl->GetCommandLines(progCtrl, &argc);
 	if (argc >= 2)
 	{
-		Text::StrToUInt16(argv[1], &webPort);
+		Text::StrToUInt16(argv[1], webPort);
 	}
 	sptr = IO::Path::GetProcessFileName(sbuff);
 	sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("Error.txt"));

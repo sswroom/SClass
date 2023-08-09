@@ -230,7 +230,7 @@ void IO::Device::AXCAN::ParseReader(IO::Reader *reader)
 			}
 			else if (sb.StartsWith(UTF8STRC("#ERROR")))
 			{
-				if (Text::StrToUOSInt(&sb.v[6], &this->cmdResultCode))
+				if (Text::StrToUOSInt(&sb.v[6], this->cmdResultCode))
 				{
 					this->cmdEvent.Set();
 				}

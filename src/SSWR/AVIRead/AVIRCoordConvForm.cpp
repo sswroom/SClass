@@ -68,15 +68,15 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnAddClicked(void *userObj)
 	Double y;
 	Double z;
 	me->txtEasting->GetText(sb);
-	if (!Text::StrToDouble(sb.ToString(), &x))
+	if (!Text::StrToDouble(sb.ToString(), x))
 		return;
 	sb.ClearStr();
 	me->txtNorthing->GetText(sb);
-	if (!Text::StrToDouble(sb.ToString(), &y))
+	if (!Text::StrToDouble(sb.ToString(), y))
 		return;
 	sb.ClearStr();
 	me->txtHeight->GetText(sb);
-	if (!Text::StrToDouble(sb.ToString(), &z))
+	if (!Text::StrToDouble(sb.ToString(), z))
 		return;
 	sb.ClearStr();
 	me->txtName->GetText(sb);
@@ -318,7 +318,7 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnConvFileClicked(void *userObj
 			i++;
 		}
 
-		if (Text::StrToDouble(sarr[xCol], &inX) && Text::StrToDouble(sarr[yCol], &inY))
+		if (Text::StrToDouble(sarr[xCol], inX) && Text::StrToDouble(sarr[yCol], inY))
 		{
 			Math::CoordinateSystem::ConvertXYZ(srcCoord, destCoord, inX, inY, 0, &outX, &outY, &outZ);
 			sarr[colCnt] = sptr;

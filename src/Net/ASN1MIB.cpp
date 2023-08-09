@@ -294,7 +294,7 @@ Bool Net::ASN1MIB::ParseObjectOID(ModuleInfo *module, ObjectInfo *obj, Text::Str
 		{
 			sb.SetSubstr(i + 1);
 			sb.TrimToLength(j - i - 1);
-			if (!sb.ToUInt32(&v))
+			if (!sb.ToUInt32(v))
 			{
 				errMessage->Append(obj->objectName);
 				errMessage->AppendC(UTF8STRC(": OID Format error 5: \""));
@@ -309,7 +309,7 @@ Bool Net::ASN1MIB::ParseObjectOID(ModuleInfo *module, ObjectInfo *obj, Text::Str
 		}
 		else
 		{
-			if (!sb.ToUInt32(&v))
+			if (!sb.ToUInt32(v))
 			{
 				errMessage->Append(obj->objectName);
 				errMessage->AppendC(UTF8STRC(": OID Format error 6: \""));

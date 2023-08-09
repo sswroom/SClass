@@ -58,7 +58,7 @@ void __stdcall SSWR::AVIRead::AVIRESRIMapForm::OKClicked(void *userObj)
 		if (noResource)
 		{
 			sptr = me->txtSRID->GetText(sbuff);
-			if (!Text::StrToUInt32(sbuff, &srid))
+			if (!Text::StrToUInt32(sbuff, srid))
 			{
 				UI::MessageDialog::ShowDialog(CSTR("Please enter valid SRID"), CSTR("ESRI Map"), me);
 				return;

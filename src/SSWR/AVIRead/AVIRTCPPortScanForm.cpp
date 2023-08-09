@@ -21,13 +21,13 @@ void __stdcall SSWR::AVIRead::AVIRTCPPortScanForm::OnStartClicked(void *userObj)
 		Net::SocketUtil::AddressInfo addr;
 		Text::StringBuilderUTF8 sb;
 		me->txtThreadCnt->GetText(sb);
-		if (!sb.ToUInt32(&threadCnt))
+		if (!sb.ToUInt32(threadCnt))
 		{
 			return;
 		}
 		sb.ClearStr();
 		me->txtMaxPort->GetText(sb);
-		if (!sb.ToUInt16(&maxPort))
+		if (!sb.ToUInt16(maxPort))
 		{
 			return;
 		}

@@ -265,7 +265,7 @@ DB::SQL::SQLCommand *DB::SQL::SQLCommand::Parse(const UTF8Char *sql, DB::SQLType
 							if (sb.Equals(UTF8STRC("(")))
 							{
 								sql = ParseNextWord(sql, sb, sqlType);
-								if (!sb.ToUOSInt(&colSize))
+								if (!sb.ToUOSInt(colSize))
 								{
 									printf("SQLCommand: Unexpected column size: %s\r\n", sb.ToString());
 									col.Delete();
@@ -276,7 +276,7 @@ DB::SQL::SQLCommand *DB::SQL::SQLCommand::Parse(const UTF8Char *sql, DB::SQLType
 								if (sb.Equals(UTF8STRC(",")))
 								{
 									sql = ParseNextWord(sql, sb, sqlType);
-									if (!sb.ToUOSInt(&colSize))
+									if (!sb.ToUOSInt(colSize))
 									{
 										printf("SQLCommand: Unexpected column dp: %s\r\n", sb.ToString());
 										col.Delete();

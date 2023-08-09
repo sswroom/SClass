@@ -35,7 +35,7 @@ void __stdcall SSWR::AVIRead::AVIRLDAPExplorerForm::OnConnectClicked(void *userO
 	}
 	sb.ClearStr();
 	me->txtPort->GetText(sb);
-	if (!sb.ToUInt16(&port))
+	if (!sb.ToUInt16(port))
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Please enter valid Port number"), CSTR("LDAP Explorer"), me);
 		return;

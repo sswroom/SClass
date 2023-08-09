@@ -25,7 +25,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnStartClicked(void *userObj)
 		Bool sslEnable = me->chkSSL->IsChecked();
 		UInt16 port;
 		me->txtPort->GetText(sb);
-		if (!sb.ToUInt16(&port))
+		if (!sb.ToUInt16(port))
 		{
 			UI::MessageDialog::ShowDialog(CSTR("Port is not valid"), CSTR("Error"), me);
 		}

@@ -22,19 +22,19 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPhotoController::SvcPhoto(Net::WebServer:
 	UInt32 height;
 	Int32 spId;
 	Int32 id;
-	if (req->GetQueryValueI32(CSTR("id"), &spId) &&
-		req->GetQueryValueI32(CSTR("cateId"), &cateId) &&
-		req->GetQueryValueU32(CSTR("width"), &width) &&
-		req->GetQueryValueU32(CSTR("height"), &height) &&
+	if (req->GetQueryValueI32(CSTR("id"), spId) &&
+		req->GetQueryValueI32(CSTR("cateId"), cateId) &&
+		req->GetQueryValueU32(CSTR("width"), width) &&
+		req->GetQueryValueU32(CSTR("height"), height) &&
 		spId > 0 && width > 0 && height > 0 && cateId > 0 && width <= 10000 && height <= 10000
 		)
 	{
-		if (req->GetQueryValueI32(CSTR("fileId"), &id))
+		if (req->GetQueryValueI32(CSTR("fileId"), id))
 		{
 			me->ResponsePhotoId(req, resp, env.user, env.isMobile, spId, cateId, width, height, id);
 			return true;
 		}
-		else if (req->GetQueryValueI32(CSTR("fileWId"), &id))
+		else if (req->GetQueryValueI32(CSTR("fileWId"), id))
 		{
 			me->ResponsePhotoWId(req, resp, env.user, env.isMobile, spId, cateId, width, height, id);
 			return true;

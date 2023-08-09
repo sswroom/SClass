@@ -2116,7 +2116,7 @@ Int64 Text::StrHex2Int64C(const UTF8Char *str)
 	return outVal;
 }
 
-Bool Text::StrHex2Int64V(const UTF8Char *str, Int64 *outVal)
+Bool Text::StrHex2Int64V(const UTF8Char *str, OutParam<Int64> outVal)
 {
 	UOSInt i = 0;
 	Int64 currVal = 0;
@@ -2126,7 +2126,7 @@ Bool Text::StrHex2Int64V(const UTF8Char *str, Int64 *outVal)
 		c = *str++;
 		if (c == 0)
 		{
-			*outVal = currVal;
+			outVal.Set(currVal);
 			return true;
 		}
 		i++;
@@ -2153,7 +2153,7 @@ Bool Text::StrHex2Int64V(const UTF8Char *str, Int64 *outVal)
 	}
 }
 
-Bool Text::StrHex2Int64S(const UTF8Char *str, Int64 *outVal, Int64 failVal)
+Bool Text::StrHex2Int64S(const UTF8Char *str, OutParam<Int64> outVal, Int64 failVal)
 {
 	UOSInt i = 0;
 	Int64 currVal = 0;
@@ -2163,13 +2163,13 @@ Bool Text::StrHex2Int64S(const UTF8Char *str, Int64 *outVal, Int64 failVal)
 		c = *str++;
 		if (c == 0)
 		{
-			*outVal = currVal;
+			outVal.Set(currVal);
 			return true;
 		}
 		i++;
 		if (i >= 17)
 		{
-			*outVal = failVal;
+			outVal.Set(failVal);
 			return false;
 		}
 		if (c >= '0' && c <= '9')
@@ -2186,7 +2186,7 @@ Bool Text::StrHex2Int64S(const UTF8Char *str, Int64 *outVal, Int64 failVal)
 		}
 		else
 		{
-			*outVal = failVal;
+			outVal.Set(failVal);
 			return false;
 		}
 	}
@@ -2222,7 +2222,7 @@ Int32 Text::StrHex2Int32C(const UTF8Char *str)
 	return outVal;
 }
 
-Bool Text::StrHex2Int32V(const UTF8Char *str, Int32 *outVal)
+Bool Text::StrHex2Int32V(const UTF8Char *str, OutParam<Int32> outVal)
 {
 	UOSInt i = 0;
 	Int32 currVal = 0;
@@ -2232,7 +2232,7 @@ Bool Text::StrHex2Int32V(const UTF8Char *str, Int32 *outVal)
 		c = *str++;
 		if (c == 0)
 		{
-			*outVal = currVal;
+			outVal.Set(currVal);
 			return true;
 		}
 		i++;
@@ -2289,7 +2289,7 @@ Int16 Text::StrHex2Int16C(const UTF8Char *str)
 	return (Int16)outVal;
 }
 
-Bool Text::StrHex2Int16V(const UTF8Char *str, Int16 *outVal)
+Bool Text::StrHex2Int16V(const UTF8Char *str, OutParam<Int16> outVal)
 {
 	UOSInt i = 0;
 	Int16 currVal = 0;
@@ -2299,7 +2299,7 @@ Bool Text::StrHex2Int16V(const UTF8Char *str, Int16 *outVal)
 		c = *str++;
 		if (c == 0)
 		{
-			*outVal = currVal;
+			outVal.Set(currVal);
 			return true;
 		}
 		i++;
@@ -2600,7 +2600,7 @@ UOSInt Text::StrSplitWS(UTF8Char **strs, UOSInt maxStrs, UTF8Char *strToSplit)
 	return i;
 }
 
-Bool Text::StrToUInt8(const UTF8Char *intStr, UInt8 *outVal)
+Bool Text::StrToUInt8(const UTF8Char *intStr, OutParam<UInt8> outVal)
 {
 	UInt32 retVal = 0;
 	UInt32 c;
@@ -2613,7 +2613,7 @@ Bool Text::StrToUInt8(const UTF8Char *intStr, UInt8 *outVal)
 			return false;
 		intStr++;
 	}
-	*outVal = (UInt8)retVal;
+	outVal.Set((UInt8)retVal);
 	return true;
 }
 
@@ -2633,7 +2633,7 @@ UInt8 Text::StrToUInt8(const UTF8Char *intStr)
 	return (UInt8)retVal;
 }
 
-Bool Text::StrToUInt16(const UTF8Char *intStr, UInt16 *outVal)
+Bool Text::StrToUInt16(const UTF8Char *intStr, OutParam<UInt16> outVal)
 {
 	UInt32 retVal = 0;
 	if (intStr[0] == '0' && intStr[1] == 'x')
@@ -2653,11 +2653,11 @@ Bool Text::StrToUInt16(const UTF8Char *intStr, UInt16 *outVal)
 			intStr++;
 		}
 	}
-	*outVal = (UInt16)retVal;
+	outVal.Set((UInt16)retVal);
 	return true;
 }
 
-Bool Text::StrToUInt16S(const UTF8Char *intStr, UInt16 *outVal, UInt16 failVal)
+Bool Text::StrToUInt16S(const UTF8Char *intStr, OutParam<UInt16> outVal, UInt16 failVal)
 {
 	UInt32 retVal = 0;
 	if (intStr[0] == '0' && intStr[1] == 'x')
@@ -2671,23 +2671,23 @@ Bool Text::StrToUInt16S(const UTF8Char *intStr, UInt16 *outVal, UInt16 failVal)
 		{
 			if (c < '0' || c > '9')
 			{
-				*outVal = failVal;
+				outVal.Set(failVal);
 				return false;
 			}
 			retVal = retVal * 10 + c - 48;
 			if (retVal & 0xffff0000)
 			{
-				*outVal = failVal;
+				outVal.Set(failVal);
 				return false;
 			}
 			intStr++;
 		}
 	}
-	*outVal = (UInt16)retVal;
+	outVal.Set((UInt16)retVal);
 	return true;
 }
 
-Bool Text::StrToInt16(const UTF8Char *intStr, Int16 *outVal)
+Bool Text::StrToInt16(const UTF8Char *intStr, OutParam<Int16> outVal)
 {
 	Bool sign;
 	Int32 retVal = 0;
@@ -2716,9 +2716,9 @@ Bool Text::StrToInt16(const UTF8Char *intStr, Int16 *outVal)
 		}
 	}
 	if (sign)
-		*outVal = (Int16)-retVal;
+		outVal.Set((Int16)-retVal);
 	else
-		*outVal = (Int16)retVal;
+		outVal.Set((Int16)retVal);
 	return true;
 }
 
@@ -2755,7 +2755,7 @@ Int16 Text::StrToInt16(const UTF8Char *intStr)
 		return (Int16)retVal;
 }
 
-Bool Text::StrToUInt32(const UTF8Char *intStr, UInt32 *outVal)
+Bool Text::StrToUInt32(const UTF8Char *intStr, OutParam<UInt32> outVal)
 {
 	UInt32 retVal = 0;
 	if (intStr[0] == '0' && intStr[1] == 'x')
@@ -2772,24 +2772,24 @@ Bool Text::StrToUInt32(const UTF8Char *intStr, UInt32 *outVal)
 			intStr++;
 		}
 	}
-	*outVal = retVal;
+	outVal.Set(retVal);
 	return true;
 }
 
-Bool Text::StrToUInt32S(const UTF8Char *intStr, UInt32 *outVal, UInt32 failVal)
+Bool Text::StrToUInt32S(const UTF8Char *intStr, OutParam<UInt32> outVal, UInt32 failVal)
 {
 	UInt32 retVal = 0;
 	while (*intStr)
 	{
 		if (*intStr < '0' || *intStr > '9')
 		{
-			*outVal = failVal;
+			outVal.Set(failVal);
 			return false;
 		}
 		retVal = retVal * 10 + (UInt32)*intStr - 48;
 		intStr++;
 	}
-	*outVal = retVal;
+	outVal.Set(retVal);
 	return true;
 }
 
@@ -2811,7 +2811,7 @@ UInt32 Text::StrToUInt32(const UTF8Char *intStr)
 	return retVal;
 }
 
-Bool Text::StrToInt32(const UTF8Char *intStr, Int32 *outVal)
+Bool Text::StrToInt32(const UTF8Char *intStr, OutParam<Int32> outVal)
 {
 	Bool sign;
 	Int32 retVal = 0;
@@ -2840,9 +2840,9 @@ Bool Text::StrToInt32(const UTF8Char *intStr, Int32 *outVal)
 		}
 	}
 	if (sign)
-		*outVal = -retVal;
+		outVal.Set(-retVal);
 	else
-		*outVal = retVal;
+		outVal.Set(retVal);
 	return true;
 }
 
@@ -2880,7 +2880,7 @@ Int32 Text::StrToInt32(const UTF8Char *intStr)
 		return retVal;
 }
 
-Bool Text::StrToInt64(const UTF8Char *intStr, Int64 *outVal)
+Bool Text::StrToInt64(const UTF8Char *intStr, OutParam<Int64> outVal)
 {
 	Int64 ret = Text::StrToInt64(intStr);
 	if (ret == 0)
@@ -2888,11 +2888,11 @@ Bool Text::StrToInt64(const UTF8Char *intStr, Int64 *outVal)
 		if (intStr[0] != '0' || intStr[1] != 0)
 			return false;
 	}
-	*outVal = ret;
+	outVal.Set(ret);
 	return true;
 }
 
-Bool Text::StrToUInt64(const UTF8Char *intStr, UInt64 *outVal)
+Bool Text::StrToUInt64(const UTF8Char *intStr, OutParam<UInt64> outVal)
 {
 	if (intStr[0] == 0)
 		return false;
@@ -2908,15 +2908,15 @@ Bool Text::StrToUInt64(const UTF8Char *intStr, UInt64 *outVal)
 			return false;
 		v = v * 10 + c - '0';
 	}
-	*outVal = v;
+	outVal.Set(v);
 	return true;
 }
 
-Bool Text::StrToUInt64S(const UTF8Char *intStr, UInt64 *outVal, UInt64 failVal)
+Bool Text::StrToUInt64S(const UTF8Char *intStr, OutParam<UInt64> outVal, UInt64 failVal)
 {
 	if (intStr[0] == 0)
 	{
-		*outVal = failVal;
+		outVal.Set(failVal);
 		return false;
 	}
 	if (intStr[0] == '0' && intStr[1] == 'x')
@@ -2929,12 +2929,12 @@ Bool Text::StrToUInt64S(const UTF8Char *intStr, UInt64 *outVal, UInt64 failVal)
 	{
 		if (c < '0' || c > '9')
 		{
-			*outVal = failVal;
+			outVal.Set(failVal);
 			return false;
 		}
 		v = v * 10 + c - '0';
 	}
-	*outVal = v;
+	outVal.Set(v);
 	return true;
 }
 
@@ -2949,7 +2949,7 @@ OSInt Text::StrToOSInt(const UTF8Char *str)
 #endif
 }
 
-Bool Text::StrToOSInt(const UTF8Char *intStr, OSInt *outVal)
+Bool Text::StrToOSInt(const UTF8Char *intStr, OutParam<OSInt> outVal)
 {
 #if _OSINT_SIZE == 64
 	return Text::StrToInt64(intStr, outVal);
@@ -2972,7 +2972,7 @@ UOSInt Text::StrToUOSInt(const UTF8Char *str)
 #endif
 }
 
-Bool Text::StrToUOSInt(const UTF8Char *intStr, UOSInt *outVal)
+Bool Text::StrToUOSInt(const UTF8Char *intStr, OutParam<UOSInt> outVal)
 {
 #if _OSINT_SIZE == 64
 	return Text::StrToUInt64(intStr, outVal);

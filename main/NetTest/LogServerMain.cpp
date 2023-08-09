@@ -44,7 +44,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	UTF8Char **argv = progCtrl->GetCommandLines(progCtrl, &argc);
 	if (argc >= 2)
 	{
-		Text::StrToUInt16S(argv[1], &port, 0);
+		Text::StrToUInt16S(argv[1], port, 0);
 	}
 
 	sb.ClearStr();

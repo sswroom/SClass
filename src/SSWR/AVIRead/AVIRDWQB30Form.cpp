@@ -225,7 +225,7 @@ void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnSetCmdClicked(void *userObj)
 			Text::StringBuilderUTF8 sb;
 			Int32 val;
 			me->cboSetParam->GetText(sb);
-			if (sb.ToInt32(&val))
+			if (sb.ToInt32(val))
 			{
 				if (val >= me->cmdMin && val <= me->cmdMax)
 				{

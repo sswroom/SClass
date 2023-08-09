@@ -42,7 +42,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			UInt16 sslPort = 0;
 			if ((s = cfg->GetValue(CSTR("SSLPort"))) != 0)
 			{
-				if (s->ToUInt16(&sslPort) && sslPort != 0)
+				if (s->ToUInt16(sslPort) && sslPort != 0)
 				{
 					ssl =  Net::SSLEngineFactory::Create(sockf, false);
 					if (ssl == 0)
@@ -81,7 +81,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			}
 			if ((s = cfg->GetValue(CSTR("Unorganized"))) != 0)
 			{
-				s->ToInt32(&unorganizedGroupId);
+				s->ToInt32(unorganizedGroupId);
 			}
 			if (cfg->GetValue(CSTR("MDBFile")))
 			{
@@ -96,7 +96,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 				db = DB::ODBCConn::CreateDBTool(Text::String::OrEmpty(cfg->GetValue(CSTR("DBDSN"))), cfg->GetValue(CSTR("DBUID")), cfg->GetValue(CSTR("DBPwd")), cfg->GetValue(CSTR("DBSchema")), &log, CSTR("DB: "));
 			}
 			UInt16 port;
-			cfg->GetValue(CSTR("SvrPort"))->ToUInt16S(&port, 0);
+			cfg->GetValue(CSTR("SvrPort"))->ToUInt16S(port, 0);
 			s = cfg->GetValue(CSTR("OSMCacheDir"));
 			if (s)
 			{

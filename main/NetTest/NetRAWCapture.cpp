@@ -18,7 +18,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	UTF8Char **argv = progCtrl->GetCommandLines(progCtrl, &argc);
 	if (argc >= 2)
 	{
-		Text::StrToUInt16(argv[1], &portNum);
+		Text::StrToUInt16(argv[1], portNum);
 	}
 
 #if defined(DEBUGCON)

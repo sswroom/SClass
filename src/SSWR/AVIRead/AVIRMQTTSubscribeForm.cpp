@@ -29,7 +29,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnStartClicked(void *userOb
 		Net::SocketUtil::AddressInfo addr;
 		Int32 port;
 		me->txtPort->GetText(sb);
-		if (!sb.ToInt32(&port))
+		if (!sb.ToInt32(port))
 		{
 			UI::MessageDialog::ShowDialog(CSTR("Port is not valid"), CSTR("Error"), me);
 			return;
@@ -292,7 +292,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnPublishMessage(void *user
 	Double dVal;
 	UOSInt i;
 	topicSt->dateList[(topicSt->recvCnt - 1) & 255] = topicSt->lastRecvTime;
-	if (Text::StrToDouble(topicSt->currValue, &dVal))
+	if (Text::StrToDouble(topicSt->currValue, dVal))
 	{
 		topicSt->valueList[(topicSt->recvCnt - 1) & 255] = dVal;
 	}
@@ -304,7 +304,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnPublishMessage(void *user
 		{
 			sb.ClearStr();
 			sb.AppendC(topicSt->currValue, (UOSInt)i);
-			Text::StrToDouble(sb.ToString(), &dVal);
+			Text::StrToDouble(sb.ToString(), dVal);
 		}
 		topicSt->valueList[(topicSt->recvCnt - 1) & 255] = dVal;
 	}

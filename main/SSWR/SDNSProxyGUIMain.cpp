@@ -56,7 +56,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			}
 
 			s = cfg->GetValue(CSTR("DisableV6"));
-			if (s && s->ToInt32(&v))
+			if (s && s->ToInt32(v))
 			{
 				frm->SetDisableV6(v != 0);
 			}

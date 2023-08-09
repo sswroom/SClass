@@ -184,7 +184,7 @@ UOSInt DB::SQLBuilder::GetLength() const
 	return this->sb.GetLength();
 }
 
-Text::CString DB::SQLBuilder::ToCString() const
+Text::CStringNN DB::SQLBuilder::ToCString() const
 {
 	return this->sb.ToCString();
 }

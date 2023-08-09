@@ -1073,7 +1073,7 @@ UOSInt Net::ASN1Util::OIDCalcPDUSize(const UTF8Char *oidText, UOSInt oidTextLen)
 	while (true)
 	{
 		i = Text::StrSplit(sarr, 2, sarr[1], '.');
-		if (!Text::StrToUInt32(sarr[0], &v))
+		if (!Text::StrToUInt32(sarr[0], v))
 		{
 			MemFree(buff);
 			return retSize;
@@ -1102,7 +1102,7 @@ UOSInt Net::ASN1Util::OIDText2PDU(const UTF8Char *oidText, UOSInt oidTextLen, UI
 	i = Text::StrSplit(sarr, 3, buff, '.');
 	if (i == 1)
 	{
-		if (!Text::StrToUInt8(sarr[0], &pduBuff[0]))
+		if (!Text::StrToUInt8(sarr[0], pduBuff[0]))
 		{
 			MemFree(buff);
 			return 0;
@@ -1111,7 +1111,7 @@ UOSInt Net::ASN1Util::OIDText2PDU(const UTF8Char *oidText, UOSInt oidTextLen, UI
 		MemFree(buff);
 		return 1;
 	}
-	if (!Text::StrToUInt8(sarr[0], &pduBuff[0]) || !Text::StrToUInt8(sarr[1], &pduBuff[1]))
+	if (!Text::StrToUInt8(sarr[0], pduBuff[0]) || !Text::StrToUInt8(sarr[1], pduBuff[1]))
 	{
 		MemFree(buff);
 		return 0;
@@ -1126,7 +1126,7 @@ UOSInt Net::ASN1Util::OIDText2PDU(const UTF8Char *oidText, UOSInt oidTextLen, UI
 	while (true)
 	{
 		i = Text::StrSplit(sarr, 2, sarr[1], '.');
-		if (!Text::StrToUInt32(sarr[0], &v))
+		if (!Text::StrToUInt32(sarr[0], v))
 		{
 			MemFree(buff);
 			return 0;

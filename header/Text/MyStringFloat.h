@@ -30,10 +30,10 @@ namespace Text
 	UTF16Char *StrDoubleFmt(UTF16Char *oriStr, Double val, const Char *format);
 	UTF32Char *StrDoubleFmt(UTF32Char *oriStr, Double val, const Char *format);
 
-	Bool StrToDouble(const UTF8Char *str, Double *outVal);
-	FORCEINLINE Bool StrToDouble(const Char *str, Double *outVal) { return StrToDouble((const UTF8Char*)str, outVal); }
-	Bool StrToDouble(const UTF16Char *str, Double *outVal);
-	Bool StrToDouble(const UTF32Char *str, Double *outVal);
+	Bool StrToDouble(const UTF8Char *str, OutParam<Double> outVal);
+	FORCEINLINE Bool StrToDouble(const Char *str, OutParam<Double> outVal) { return StrToDouble((const UTF8Char*)str, outVal); }
+	Bool StrToDouble(const UTF16Char *str, OutParam<Double> outVal);
+	Bool StrToDouble(const UTF32Char *str, OutParam<Double> outVal);
 	Double StrToDouble(const UTF8Char *str);
 	FORCEINLINE Double StrToDouble(const Char *str) { return StrToDouble((const UTF8Char*)str); }
 	Double StrToDouble(const UTF16Char *str);

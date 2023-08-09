@@ -200,7 +200,7 @@ void Parser::FileParser::PDFParser::ParseStartxref(PDFParseEnv *env, NotNullPtr<
 		return;
 	}
 	UInt64 ofst;
-	if (sb->ToUInt64(&ofst))
+	if (sb->ToUInt64(ofst))
 	{
 #if defined(VERBOSE)
 		printf("PDFParser: startxref value = %lld\r\n", ofst);
@@ -254,7 +254,7 @@ Bool Parser::FileParser::PDFParser::ParseObject(PDFParseEnv *env, NotNullPtr<Tex
 {
 	UInt32 id;
 	sb->RemoveChars(6);
-	if (!sb->ToUInt32(&id))
+	if (!sb->ToUInt32(id))
 	{
 #if defined(VERBOSE)
 		printf("PDFParser: Error in parsing object id: %s\r\n", sb->ToString());
@@ -410,7 +410,7 @@ Bool Parser::FileParser::PDFParser::ParseObjectStream(PDFParseEnv *env, NotNullP
 		}
 		UInt32 id;
 		Text::StrConcatC(buff, leng->v, leng->leng - 4);
-		if (!Text::StrToUInt32(buff, &id))
+		if (!Text::StrToUInt32(buff, id))
 		{
 #if defined(VERBOSE)
 			printf("PDFParser: Stream Length Filter cannot parse id: %s\r\n", leng->v);
@@ -485,7 +485,7 @@ Bool Parser::FileParser::PDFParser::ParseObjectStream(PDFParseEnv *env, NotNullP
 			env->normalEnd = true;
 			return false;
 		}
-		if (!sb->ToUOSInt(&iLeng))
+		if (!sb->ToUOSInt(iLeng))
 		{
 #if defined(VERBOSE)
 			printf("PDFParser: Stream Length reference object content not valid: %s\r\n", sb->ToString());
@@ -513,7 +513,7 @@ Bool Parser::FileParser::PDFParser::ParseObjectStream(PDFParseEnv *env, NotNullP
 	}
 	else
 	{
-		if (!leng->ToUOSInt(&iLeng))
+		if (!leng->ToUOSInt(iLeng))
 		{
 #if defined(VERBOSE)
 			printf("PDFParser: Stream Length Filter is not valid: %s\r\n", leng->v);
@@ -670,7 +670,7 @@ Parser::FileParser::PDFParser::PDFXRef *Parser::FileParser::PDFParser::ParseXRef
 				break;
 			}
 			UInt64 ofst;
-			if (sb->ToUInt64(&ofst))
+			if (sb->ToUInt64(ofst))
 			{
 #if defined(VERBOSE)
 				printf("PDFParser: startxref value = %lld\r\n", ofst);
@@ -711,7 +711,7 @@ Parser::FileParser::PDFParser::PDFXRef *Parser::FileParser::PDFParser::ParseXRef
 			}
 			env->currOfst = 0;
 			env->dataSize = 0;
-			if (prevOfst->ToUInt64(&env->dataOfst))
+			if (prevOfst->ToUInt64(env->dataOfst))
 			{
 				sb->ClearStr();
 				thisRef->nextRef = ParseXRef(env, sb);
@@ -745,7 +745,7 @@ Parser::FileParser::PDFParser::PDFXRef *Parser::FileParser::PDFParser::ParseXRef
 				break;
 			}
 			sb->v[i] = 0;
-			if (!Text::StrToUOSInt(&sb->v[i + 1], &j) || !Text::StrToUOSInt(sb->v, &i))
+			if (!Text::StrToUOSInt(&sb->v[i + 1], j) || !Text::StrToUOSInt(sb->v, i))
 			{
 				sb->v[i] = ' ';
 #if defined(VERBOSE)
@@ -787,7 +787,7 @@ Parser::FileParser::PDFParser::PDFXRef *Parser::FileParser::PDFParser::ParseXRef
 				}
 				sb->v[10] = 0;
 				sb->v[16] = 0;
-				if (!Text::StrToUInt64(&sb->v[0], &thisRef->items[i].ofst) || !Text::StrToUOSInt(&sb->v[11], &thisRef->items[i].generation))
+				if (!Text::StrToUInt64(&sb->v[0], thisRef->items[i].ofst) || !Text::StrToUOSInt(&sb->v[11], thisRef->items[i].generation))
 				{
 #if defined(VERBOSE)
 					printf("PDFParser: xref value format invalid2: %d, %d, %d, %s\r\n", (UInt32)sb->leng, sb->v[10], sb->v[16], sb->ToString());
@@ -884,7 +884,7 @@ IO::ParsedObject *Parser::FileParser::PDFParser::ParseFileHdr(NotNullPtr<IO::Str
 				if (tmpBuff[j] == 13 || tmpBuff[j] == 10)
 				{
 					tmpBuff[j] = 0;
-					if (Text::StrToUInt64(&tmpBuff[i], &env.dataOfst))
+					if (Text::StrToUInt64(&tmpBuff[i], env.dataOfst))
 						xref = ParseXRef(&env, sb);
 					break;
 				}
@@ -1003,7 +1003,7 @@ IO::ParsedObject *Parser::FileParser::PDFParser::ParseFileHdr(NotNullPtr<IO::Str
 						break;
 					}
 					sb.v[i] = 0;
-					if (!Text::StrToUOSInt(&sb.v[i + 1], &j) || !Text::StrToUOSInt(sb.v, &i))
+					if (!Text::StrToUOSInt(&sb.v[i + 1], j) || !Text::StrToUOSInt(sb.v, i))
 					{
 						sb.v[i] = ' ';
 #if defined(VERBOSE)

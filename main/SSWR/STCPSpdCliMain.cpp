@@ -191,7 +191,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			console->WriteLineC(UTF8STRC("Host is not valid"));
 			valid = false;
 		}
-		if (!Text::StrToUInt16(argv[2], &port))
+		if (!Text::StrToUInt16(argv[2], port))
 		{
 			console->WriteLineC(UTF8STRC("Port is not a number"));
 			valid = false;

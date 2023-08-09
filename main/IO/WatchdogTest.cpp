@@ -38,7 +38,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	NEW_CLASS(evt, Sync::Event(true));
 
 	argv = progCtrl->GetCommandLines(progCtrl, &argc);
-	if (argc >= 2 && Text::StrToInt32(argv[1], &wdId))
+	if (argc >= 2 && Text::StrToInt32(argv[1], wdId))
 	{
 		wd = IO::Watchdog::Create(wdId);
 		if (wd && wd->IsError())

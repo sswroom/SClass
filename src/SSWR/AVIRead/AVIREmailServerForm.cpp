@@ -30,7 +30,7 @@ void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnSMTPStartClicked(void *user
 		UInt16 port;
 		Text::StringBuilderUTF8 sb;
 		me->txtSMTPPort->GetText(sb);
-		if (!sb.ToUInt16(&port))
+		if (!sb.ToUInt16(port))
 		{
 			UI::MessageDialog::ShowDialog(CSTR("Please enter valid port number"), CSTR("Error"), me);
 			return;
@@ -70,7 +70,7 @@ void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnPOP3StartClicked(void *user
 		UInt16 port;
 		Text::StringBuilderUTF8 sb;
 		me->txtPOP3Port->GetText(sb);
-		if (!sb.ToUInt16(&port))
+		if (!sb.ToUInt16(port))
 		{
 			UI::MessageDialog::ShowDialog(CSTR("Please enter valid port number"), CSTR("Error"), me);
 			return;
@@ -122,7 +122,7 @@ void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnGCISStartClicked(void *user
 		Text::StringBuilderUTF8 sb;
 		Text::StringBuilderUTF8 sb2;
 		me->txtGCISPort->GetText(sb);
-		if (!sb.ToUInt16(&port))
+		if (!sb.ToUInt16(port))
 		{
 			UI::MessageDialog::ShowDialog(CSTR("Please enter valid port number"), CSTR("Error"), me);
 			return;
@@ -412,7 +412,7 @@ void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnSMTPTypeSelChg(void *userOb
 	Text::StringBuilderUTF8 sb;
 	Net::Email::SMTPConn::ConnType newType = (Net::Email::SMTPConn::ConnType)(OSInt)me->cboSMTPType->GetSelectedItem();
 	me->txtSMTPPort->GetText(sb);
-	if (sb.ToUInt16(&port))
+	if (sb.ToUInt16(port))
 	{
 		if (port == Net::Email::SMTPServer::GetDefaultPort(me->smtpType))
 		{
@@ -430,7 +430,7 @@ void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnPOP3SSLChanged(void *userOb
 	UInt16 port;
 	Text::StringBuilderUTF8 sb;
 	me->txtPOP3Port->GetText(sb);
-	if (sb.ToUInt16(&port))
+	if (sb.ToUInt16(port))
 	{
 		if (port == Net::Email::POP3Server::GetDefaultPort(!isChecked))
 		{

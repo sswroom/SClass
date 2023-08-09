@@ -193,7 +193,7 @@ Map::HKSpeedLimit::HKSpeedLimit(Map::HKRoadNetwork2 *roadNetwork)
 							if (sptr && (sptr - sbuff) > 5)
 							{
 								sptr[-5] = 0;
-								Text::StrToInt32(sbuff, &route->speedLimit);
+								Text::StrToInt32(sbuff, route->speedLimit);
 							}
 						}
 					}

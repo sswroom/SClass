@@ -240,13 +240,13 @@ void __stdcall SSWR::AVIRead::AVIRHexViewerForm::OnExtractClicked(void *userObj)
 	UInt64 beginOfst;
 	UInt64 endOfst;
 	me->txtExtractBegin->GetText(sbuff);
-	if (!Text::StrHex2UInt64V(sbuff, &beginOfst))
+	if (!Text::StrHex2UInt64V(sbuff, beginOfst))
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Error in parsing begin offset"), CSTR("Hex Viewer"), me);
 		return;
 	}
 	me->txtExtractEnd->GetText(sbuff);
-	if (!Text::StrHex2UInt64V(sbuff, &endOfst))
+	if (!Text::StrHex2UInt64V(sbuff, endOfst))
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Error in parsing end offset"), CSTR("Hex Viewer"), me);
 		return;

@@ -55,7 +55,7 @@ void __stdcall SSWR::AVIRead::AVIRRESTfulForm::OnStartClick(void *userObj)
 	Bool valid = true;
 	Text::StringBuilderUTF8 sb;
 	me->txtPort->GetText(sb);
-	if (sb.ToUInt16(&port) && port > 0 && port <= 65535)
+	if (sb.ToUInt16(port) && port > 0 && port <= 65535)
 	{
 		NEW_CLASS(me->restHdlr, Net::WebServer::RESTfulHandler(me->dbCache));
 		NEW_CLASS(me->svr, Net::WebServer::WebListener(me->core->GetSocketFactory(), 0, me->restHdlr, port, 120, Sync::ThreadUtil::GetThreadCnt(), CSTR("sswr"), me->chkAllowProxy->IsChecked(), me->chkAllowKA->IsChecked()?Net::WebServer::KeepAlive::Always:Net::WebServer::KeepAlive::Default, false));

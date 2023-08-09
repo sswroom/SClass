@@ -20,7 +20,7 @@ void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnStartClicked(void *userObj)
 		Text::StringBuilderUTF8 sb;
 		UInt16 port;
 		me->txtPort->GetText(sb);
-		if (!sb.ToUInt16(&port))
+		if (!sb.ToUInt16(port))
 		{
 			UI::MessageDialog::ShowDialog(CSTR("Please enter valid port"), CSTR("Error"), me);
 			return;

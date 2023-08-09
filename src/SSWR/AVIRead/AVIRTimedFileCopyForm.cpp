@@ -108,12 +108,12 @@ Bool SSWR::AVIRead::AVIRTimedFileCopyForm::CopyToZip(IO::ZIPMTBuilder *zip, cons
 				if (i != INVALID_INDEX && i >= 8)
 				{
 					pathEnd[i] = 0;
-					succ = Text::StrToInt32(&pathEnd[i - 8], &iVal);
+					succ = Text::StrToInt32(&pathEnd[i - 8], iVal);
 					pathEnd[i] = '.';
 				}
 				else if (i == INVALID_INDEX && (sptr - pathEnd) >= 8)
 				{
-					succ = Text::StrToInt32(sptr - 8, &iVal);
+					succ = Text::StrToInt32(sptr - 8, iVal);
 				}
 				if (succ)
 				{
@@ -178,7 +178,7 @@ Bool SSWR::AVIRead::AVIRTimedFileCopyForm::CopyToZip(IO::ZIPMTBuilder *zip, cons
 				{
 					if (monthDir)
 					{
-						if ((sptr - pathEnd) >= 6 && Text::StrToInt32(sptr - 6, &iVal))
+						if ((sptr - pathEnd) >= 6 && Text::StrToInt32(sptr - 6, iVal))
 						{
 							dt.SetDate((UInt16)(iVal / 100), iVal % 100, 1);
 							if ((dt.GetYear() == startTime->GetYear() && dt.GetMonth() == startTime->GetMonth()) || (startTime->CompareTo(&dt) <= 0 && endTime->CompareTo(&dt) >= 0))

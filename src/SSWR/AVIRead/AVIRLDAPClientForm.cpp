@@ -31,7 +31,7 @@ void __stdcall SSWR::AVIRead::AVIRLDAPClientForm::OnConnectClicked(void *userObj
 	}
 	sb.ClearStr();
 	me->txtPort->GetText(sb);
-	if (!sb.ToUInt16(&port))
+	if (!sb.ToUInt16(port))
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Please enter valid Port number"), CSTR("LDAP Client"), me);
 		return;

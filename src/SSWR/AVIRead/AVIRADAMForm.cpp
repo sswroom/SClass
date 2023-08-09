@@ -14,7 +14,7 @@ void __stdcall SSWR::AVIRead::AVIRADAMForm::OnStreamClicked(void *userObj)
 	{
 		Text::StringBuilderUTF8 sb;
 		me->txtAddress->GetText(sb);
-		if (!sb.ToUInt8(&me->channelAddr))
+		if (!sb.ToUInt8(me->channelAddr))
 		{
 			UI::MessageDialog::ShowDialog(CSTR("Address out of range (0-255)"), CSTR("ADAM"), me);
 			return;

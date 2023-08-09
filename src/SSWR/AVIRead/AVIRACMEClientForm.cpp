@@ -27,7 +27,7 @@ void __stdcall SSWR::AVIRead::AVIRACMEClientForm::OnStartClicked(void *userObj)
 	i = sb.IndexOf(':');
 	if (i != INVALID_INDEX)
 	{
-		if (!Text::StrToUInt16(sb.ToString() + i + 1, &port))
+		if (!Text::StrToUInt16(sb.ToString() + i + 1, port))
 		{
 			UI::MessageDialog::ShowDialog(CSTR("Port number in host name is not valid"), CSTR("ACME Client"), me);
 			return;

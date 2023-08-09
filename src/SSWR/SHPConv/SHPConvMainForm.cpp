@@ -193,7 +193,7 @@ void __stdcall SSWR::SHPConv::SHPConvMainForm::OnConvertClicked(void *userObj)
 	Text::StringBuilderUTF8 sb;
 	Int32 blkScale;
 	me->txtBlkScale->GetText(sb);
-	if (!sb.ToInt32(&blkScale))
+	if (!sb.ToInt32(blkScale))
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Block scale is not integer"), CSTR("Error"), me);
 		return;

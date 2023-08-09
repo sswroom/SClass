@@ -16,13 +16,13 @@ void __stdcall SSWR::AVIRead::AVIRImageResizeForm::OnOKClicked(void *userObj)
 	UOSInt nTap = 0;
 	sb.ClearStr();
 	me->txtOutW->GetText(sb);
-	sb.ToUOSInt(&outSize.x);
+	sb.ToUOSInt(outSize.x);
 	sb.ClearStr();
 	me->txtOutH->GetText(sb);
-	sb.ToUOSInt(&outSize.y);
+	sb.ToUOSInt(outSize.y);
 	sb.ClearStr();
 	me->txtNTap->GetText(sb);
-	sb.ToUOSInt(&nTap);
+	sb.ToUOSInt(nTap);
 	if (outSize.x == 0 || outSize.y == 0 || nTap < 3 || nTap > 32)
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Invalid input"), CSTR("Error"), me);

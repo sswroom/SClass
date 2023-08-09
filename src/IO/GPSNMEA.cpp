@@ -109,7 +109,7 @@ IO::GPSNMEA::ParseStatus IO::GPSNMEA::ParseNMEALine(UTF8Char *line, UOSInt lineL
 					sateRec->sates[j].sateType = SateType::GPS;
 					sateRec->sates[j].prn = (UInt8)Text::StrToUInt32(sarr[i]);
 					sateRec->sates[j].elev = (UInt8)Text::StrToUInt32(sarr[i + 1]);
-					Text::StrToUInt16S(sarr[i + 2], &sateRec->sates[j].azimuth, 0);
+					Text::StrToUInt16S(sarr[i + 2], sateRec->sates[j].azimuth, 0);
 					if (sarr[i + 3][0])
 					{
 						sateRec->sates[j].snr = (Int8)Text::StrToInt32(sarr[i + 3]);

@@ -24,7 +24,7 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSTCPSimForm::OnListenClicked(void *userOb
 		UInt16 port;
 		Text::StringBuilderUTF8 sb;
 		me->txtPort->GetText(sb);
-		if (!sb.ToUInt16(&port))
+		if (!sb.ToUInt16(port))
 		{
 			UI::MessageDialog::ShowDialog(CSTR("Error in parsing port number"), CSTR("MODBUS TCP Simulator"), me);
 			return;
@@ -55,7 +55,7 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSTCPSimForm::OnDevAddClicked(void *userOb
 	if (me->listener == 0)
 		return;
 	me->txtAddr->GetText(sb);
-	if (sb.ToUInt8(&addr))
+	if (sb.ToUInt8(addr))
 	{
 		IO::MODBUSDevSim *dev;
 		switch (devType)
@@ -101,7 +101,7 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSTCPSimForm::OnDelayClicked(void *userObj
 		Text::StringBuilderUTF8 sb;
 		UInt32 delay;
 		me->txtDelay->GetText(sb);
-		if (sb.ToUInt32(&delay))
+		if (sb.ToUInt32(delay))
 		{
 			me->listener->SetDelay(delay);
 		}

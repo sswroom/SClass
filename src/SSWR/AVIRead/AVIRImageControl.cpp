@@ -477,7 +477,7 @@ Double *SSWR::AVIRead::AVIRImageControl::GetCameraGamma(Text::CString cameraName
 			{
 				break;
 			}
-			if (Text::StrToDouble(sb.ToString(), &val))
+			if (Text::StrToDouble(sb.ToString(), val))
 			{
 				gammaVals.Add(val);
 			}

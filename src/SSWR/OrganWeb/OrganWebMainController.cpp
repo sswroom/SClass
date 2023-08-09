@@ -30,9 +30,9 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDown(Net::WebServ
 	Int32 spId;
 	Int32 cateId;
 	Int32 fileId;
-	if (req->GetQueryValueI32(CSTR("id"), &spId) &&
-		req->GetQueryValueI32(CSTR("cateId"), &cateId) &&
-		req->GetQueryValueI32(CSTR("fileId"), &fileId))
+	if (req->GetQueryValueI32(CSTR("id"), spId) &&
+		req->GetQueryValueI32(CSTR("cateId"), cateId) &&
+		req->GetQueryValueI32(CSTR("fileId"), fileId))
 	{
 		UTF8Char sbuff[512];
 		UTF8Char *sptr;
@@ -85,8 +85,8 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroup(Net::WebServer::
 
 	Int32 id;
 	Int32 cateId;
-	if (req->GetQueryValueI32(CSTR("id"), &id) &&
-		req->GetQueryValueI32(CSTR("cateId"), &cateId))
+	if (req->GetQueryValueI32(CSTR("id"), id) &&
+		req->GetQueryValueI32(CSTR("cateId"), cateId))
 	{
 		NotNullPtr<Text::String> s;
 		UOSInt i;
@@ -540,8 +540,8 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroupMod(Net::WebServe
 	Int32 id;
 	Int32 cateId;
 	Int32 groupId = 0;
-	if (req->GetQueryValueI32(CSTR("id"), &id) &&
-		req->GetQueryValueI32(CSTR("cateId"), &cateId))
+	if (req->GetQueryValueI32(CSTR("id"), id) &&
+		req->GetQueryValueI32(CSTR("cateId"), cateId))
 	{
 		GroupInfo *group;
 		CategoryInfo *cate;
@@ -573,7 +573,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroupMod(Net::WebServe
 		GroupFlags groupFlags = GF_NONE;
 		Int32 groupTypeId = 0;
 		GroupInfo *modGroup = 0;
-		if (req->GetQueryValueI32(CSTR("groupId"), &groupId))
+		if (req->GetQueryValueI32(CSTR("groupId"), groupId))
 		{
 			modGroup = me->env->GroupGet(mutUsage, groupId);
 			if (modGroup)
@@ -596,7 +596,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroupMod(Net::WebServe
 			{
 				groupFlags = (GroupFlags)(groupFlags | GF_ADMIN_ONLY);
 			}
-			if (task != 0 && cname != 0 && req->GetHTTPFormInt32(CSTR("groupType"), &groupTypeId) && ename != 0 && descr != 0 && ename->v[0] != 0 && cname->v[0] != 0)
+			if (task != 0 && cname != 0 && req->GetHTTPFormInt32(CSTR("groupType"), groupTypeId) && ename != 0 && descr != 0 && ename->v[0] != 0 && cname->v[0] != 0)
 			{
 				if (task->Equals(UTF8STRC("new")))
 				{
@@ -840,8 +840,8 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(Net::WebServer
 
 	Int32 id;
 	Int32 cateId;
-	if (req->GetQueryValueI32(CSTR("id"), &id) &&
-		req->GetQueryValueI32(CSTR("cateId"), &cateId))
+	if (req->GetQueryValueI32(CSTR("id"), id) &&
+		req->GetQueryValueI32(CSTR("cateId"), cateId))
 	{
 		NotNullPtr<Text::String> s;
 		UOSInt i;
@@ -1019,7 +1019,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(Net::WebServer
 			{
 				Text::String *dispName = req->GetHTTPFormStr(CSTR("speciesname"));
 				UInt32 bookAllowDup = 0;
-				req->GetHTTPFormUInt32(CSTR("bookAllowDup"), &bookAllowDup);
+				req->GetHTTPFormUInt32(CSTR("bookAllowDup"), bookAllowDup);
 				if (dispName && dispName->leng > 0)
 				{
 					me->env->BookAddSpecies(mutUsage, species->speciesId, dispName, bookAllowDup != 0);
@@ -1652,8 +1652,8 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpeciesMod(Net::WebSer
 	Int32 id;
 	Int32 cateId;
 	Int32 spId = 0;
-	if (req->GetQueryValueI32(CSTR("id"), &id) &&
-		req->GetQueryValueI32(CSTR("cateId"), &cateId))
+	if (req->GetQueryValueI32(CSTR("id"), id) &&
+		req->GetQueryValueI32(CSTR("cateId"), cateId))
 	{
 		GroupInfo *group;
 		Text::StringBuilderUTF8 sb;
@@ -1677,7 +1677,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpeciesMod(Net::WebSer
 		Bool canDelete = false;
 		const UTF8Char *bookIgn = 0;
 		SpeciesInfo *species = 0;
-		if (req->GetQueryValueI32(CSTR("spId"), &spId))
+		if (req->GetQueryValueI32(CSTR("spId"), spId))
 		{
 			species = me->env->SpeciesGet(mutUsage, spId);
 			if (species)
@@ -1939,9 +1939,9 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcList(Net::WebServer::I
 	Int32 id;
 	UInt32 page = 0;
 	Int32 cateId;
-	req->GetQueryValueU32(CSTR("page"), &page);
-	if (req->GetQueryValueI32(CSTR("id"), &id) &&
-		req->GetQueryValueI32(CSTR("cateId"), &cateId))
+	req->GetQueryValueU32(CSTR("page"), page);
+	if (req->GetQueryValueI32(CSTR("id"), id) &&
+		req->GetQueryValueI32(CSTR("cateId"), cateId))
 	{
 		Bool imageOnly = subReq.Equals(UTF8STRC("/listimage.html"));
 		NotNullPtr<Text::String> s;
@@ -2137,8 +2137,8 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(Net::WebSe
 
 	Int32 id;
 	Int32 cateId;
-	if (req->GetQueryValueI32(CSTR("id"), &id) &&
-		req->GetQueryValueI32(CSTR("cateId"), &cateId))
+	if (req->GetQueryValueI32(CSTR("id"), id) &&
+		req->GetQueryValueI32(CSTR("cateId"), cateId))
 	{
 		UTF8Char fileName[512];
 		UTF8Char *fileNameEnd;
@@ -2193,7 +2193,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(Net::WebSe
 		sptr = species->dirName->ConcatTo(sptr);
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 
-		if (req->GetQueryValueI32(CSTR("fileId"), &fileId))
+		if (req->GetQueryValueI32(CSTR("fileId"), fileId))
 		{
 			Bool found = false;
 			UserFileInfo *userFile;
@@ -2560,7 +2560,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(Net::WebSe
 				return true;
 			}
 		}
-		else if (req->GetQueryValueI32(CSTR("fileWId"), &fileId))
+		else if (req->GetQueryValueI32(CSTR("fileWId"), fileId))
 		{
 			wfile = species->wfiles.Get(fileId);
 			if (wfile)
@@ -3166,8 +3166,8 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetailD(Net::WebS
 	Int32 fileId;
 	UInt32 index;
 	if (env.user != 0 &&
-		req->GetQueryValueI32(CSTR("fileId"), &fileId) &&
-		req->GetQueryValueU32(CSTR("index"), &index))
+		req->GetQueryValueI32(CSTR("fileId"), fileId) &&
+		req->GetQueryValueU32(CSTR("index"), index))
 	{
 		NotNullPtr<Text::String> s;
 
@@ -3406,7 +3406,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoYear(Net::WebServ
 
 	UInt16 y;
 	if (env.user != 0 &&
-		req->GetQueryValueU16(CSTR("y"), &y))
+		req->GetQueryValueU16(CSTR("y"), y))
 	{
 		Data::DateTime dt;
 		Data::DateTime dt2;
@@ -3707,7 +3707,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDay(Net::WebServe
 
 	Int32 d;
 	if (env.user != 0 &&
-		req->GetQueryValueI32(CSTR("d"), &d))
+		req->GetQueryValueI32(CSTR("d"), d))
 	{
 		Data::DateTime dt;
 		UTF8Char sbuff[32];
@@ -4148,8 +4148,8 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSearchInside(Net::WebS
 	Int32 cateId;
 	Text::String *searchStr;
 	req->ParseHTTPForm();
-	if (req->GetQueryValueI32(CSTR("id"), &id) &&
-		req->GetQueryValueI32(CSTR("cateId"), &cateId) &&
+	if (req->GetQueryValueI32(CSTR("id"), id) &&
+		req->GetQueryValueI32(CSTR("cateId"), cateId) &&
 		(searchStr = req->GetHTTPFormStr(CSTR("searchStr"))) != 0)
 	{
 		NotNullPtr<Text::String> s;
@@ -4342,9 +4342,9 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSearchInsideMoreS(Net:
 	UInt32 pageNo;
 	Int32 cateId;
 	Text::String *searchStr;
-	if (req->GetQueryValueI32(CSTR("id"), &id) &&
-		req->GetQueryValueI32(CSTR("cateId"), &cateId) &&
-		req->GetQueryValueU32(CSTR("pageNo"), &pageNo) &&
+	if (req->GetQueryValueI32(CSTR("id"), id) &&
+		req->GetQueryValueI32(CSTR("cateId"), cateId) &&
+		req->GetQueryValueU32(CSTR("pageNo"), pageNo) &&
 		(searchStr = req->GetQueryValue(CSTR("searchStr"))) != 0)
 	{
 		NotNullPtr<Text::String> s;
@@ -4517,9 +4517,9 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSearchInsideMoreG(Net:
 	UInt32 pageNo;
 	Int32 cateId;
 	Text::String *searchStr;
-	if (req->GetQueryValueI32(CSTR("id"), &id) &&
-		req->GetQueryValueI32(CSTR("cateId"), &cateId) &&
-		req->GetQueryValueU32(CSTR("pageNo"), &pageNo) &&
+	if (req->GetQueryValueI32(CSTR("id"), id) &&
+		req->GetQueryValueI32(CSTR("cateId"), cateId) &&
+		req->GetQueryValueU32(CSTR("pageNo"), pageNo) &&
 		(searchStr = req->GetQueryValue(CSTR("searchStr"))) != 0)
 	{
 		NotNullPtr<Text::String> s;

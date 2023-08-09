@@ -197,7 +197,7 @@ Bool SSWR::DiscDB::DiscDBBurntDiscForm::UpdateFileInfo()
 	{
 		volume = 0;
 	}
-	else if (!sbVolume.ToInt32(&volume))
+	else if (!sbVolume.ToInt32(volume))
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Error found in volume number"), CSTR("Burnt Disc"), this);
 		return false;

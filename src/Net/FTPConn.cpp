@@ -222,7 +222,7 @@ Bool Net::FTPConn::GetFileModTime(const UTF8Char *fileName, Data::DateTime *modT
 		sbuff[6] = 0;
 		month = Text::StrToInt32(&sbuff[4]);
 		sbuff[4] = 0;
-		Text::StrToUInt16S(&sbuff[0], &year, 0);
+		Text::StrToUInt16S(&sbuff[0], year, 0);
 		modTime->ToUTCTime();
 		modTime->SetValue(year, month, day, hour, minute, second, 0);
 		return true;

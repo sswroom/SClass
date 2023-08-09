@@ -355,7 +355,7 @@ public:
 			while (true)
 			{
 				scnt = Text::StrSplitP(sarr, 2, sarr[1], ',');
-				if (sarr[0].ToInt16(&v))
+				if (sarr[0].ToInt16(v))
 				{
 					arr.Add(v);
 				}
@@ -385,7 +385,7 @@ public:
 			while (true)
 			{
 				scnt = Text::StrSplitP(sarr, 2, sarr[1], ',');
-				if (sarr[0].ToInt32(&v))
+				if (sarr[0].ToInt32(v))
 				{
 					arr.Add(v);
 				}
@@ -415,7 +415,7 @@ public:
 			while (true)
 			{
 				scnt = Text::StrSplitP(sarr, 2, sarr[1], ',');
-				if (sarr[0].ToInt64(&v))
+				if (sarr[0].ToInt64(v))
 				{
 					arr.Add(v);
 				}
@@ -445,7 +445,7 @@ public:
 			while (true)
 			{
 				scnt = Text::StrSplitP(sarr, 2, sarr[1], ',');
-				if (sarr[0].ToDouble(&dv))
+				if (sarr[0].ToDouble(dv))
 				{
 					arr.Add((Single)dv);
 				}
@@ -489,7 +489,7 @@ public:
 			while (true)
 			{
 				scnt = Text::StrSplitP(sarr, 2, sarr[1], ' ');
-				if (sarr[0].ToInt16(&v))
+				if (sarr[0].ToInt16(v))
 				{
 					arr.Add(v);
 				}
@@ -514,7 +514,7 @@ public:
 			while (true)
 			{
 				scnt = Text::StrSplitP(sarr, 2, sarr[1], ' ');
-				if (sarr[0].ToInt32(&v))
+				if (sarr[0].ToInt32(v))
 				{
 					arr.Add(v);
 				}
@@ -791,7 +791,7 @@ OSInt DB::PostgreSQLConn::ExecuteNonQuery(Text::CString sql)
 #endif
 	if (val)
 	{
-		Text::StrToOSInt(val, &ret);
+		Text::StrToOSInt(val, ret);
 	}
 	PQclear(res);
 	return ret;

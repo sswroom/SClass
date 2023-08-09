@@ -27,7 +27,7 @@ void __stdcall SSWR::AVIRead::AVIReGaugeSvrForm::OnStartClick(void *userObj)
 		Bool valid = true;
 		Text::StringBuilderUTF8 sb;
 		me->txtPort->GetText(sb);
-		Text::StrToUInt16S(sb.ToString(), &port, 0);
+		Text::StrToUInt16S(sb.ToString(), port, 0);
 
 		if (port > 0 && port <= 65535)
 		{

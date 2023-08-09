@@ -168,7 +168,7 @@ Bool SSWR::AVIRead::AVIRChineseForm::SaveChar()
 	Text::StringBuilderUTF8 sb;
 	Text::ChineseInfo::CharacterInfo chInfo;
 	this->txtStrokeCount->GetText(sb);
-	if (!sb.ToInt32(&strokeCnt))
+	if (!sb.ToInt32(strokeCnt))
 	{
 		wprintf(L"strokeCount error\r\n");
 		return false;

@@ -49,14 +49,14 @@ namespace Text
 		Int32 GetValueAsInt32(Text::CString path);
 		Int64 GetValueAsInt64(Text::CString path);
 		Double GetValueAsDouble(Text::CString path);
-		Bool GetValueAsDouble(Text::CString path, Double *val);
+		Bool GetValueAsDouble(Text::CString path, OutParam<Double> val);
 		Bool GetValueAsBool(Text::CString path);
 		Text::JSONArray *GetValueArray(Text::CString path);
 		Text::JSONObject *GetValueObject(Text::CString path);
 		Int32 GetAsInt32();
 		Int64 GetAsInt64();
 		Double GetAsDouble();
-		Bool GetAsDouble(Double *val);
+		Bool GetAsDouble(OutParam<Double> val);
 		Bool GetAsBool();
 
 		static JSONBase *ParseJSONStr(Text::CString jsonStr);

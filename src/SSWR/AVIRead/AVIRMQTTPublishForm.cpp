@@ -24,7 +24,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTPublishForm::OnPublishClicked(void *userOb
 	}
 	sb.ClearStr();
 	me->txtPort->GetText(sb);
-	if (!sb.ToUInt16(&port))
+	if (!sb.ToUInt16(port))
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Port is not valid"), CSTR("MQTT Publish"), me);
 		return;

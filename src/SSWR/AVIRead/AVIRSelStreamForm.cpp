@@ -53,7 +53,7 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(void *userObj)
 			UInt32 baudRate;
 			Text::StringBuilderUTF8 sb;
 			me->txtSLBaudRate->GetText(sb);
-			if (!sb.ToUInt32(&baudRate) || baudRate == 0)
+			if (!sb.ToUInt32(baudRate) || baudRate == 0)
 			{
 				UI::MessageDialog::ShowDialog(CSTR("Please input baud rate"), CSTR("Error"), me);
 				return;
@@ -75,7 +75,7 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(void *userObj)
 			Text::StringBuilderUTF8 sb;
 			UInt16 port;
 			me->txtTCPSvrPort->GetText(sb);
-			if (!sb.ToUInt16(&port))
+			if (!sb.ToUInt16(port))
 			{
 				UI::MessageDialog::ShowDialog(CSTR("Port is not a number"), CSTR("Error"), me);
 				return;
@@ -134,7 +134,7 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(void *userObj)
 			}
 			sb.ClearStr();
 			me->txtTCPCliPort->GetText(sb);
-			if (!sb.ToUInt16(&port))
+			if (!sb.ToUInt16(port))
 			{
 				UI::MessageDialog::ShowDialog(CSTR("Port is not a number"), CSTR("Error"), me);
 				return;
@@ -166,7 +166,7 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(void *userObj)
 			Net::SocketUtil::AddressInfo addr;
 			UInt16 port;
 			me->txtSSLCliPort->GetText(sb);
-			if (!sb.ToUInt16(&port))
+			if (!sb.ToUInt16(port))
 			{
 				UI::MessageDialog::ShowDialog(CSTR("Port is not a number"), CSTR("Error"), me);
 				return;
@@ -243,7 +243,7 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(void *userObj)
 			Text::StringBuilderUTF8 sb;
 			UInt16 port;
 			me->txtUDPSvrPort->GetText(sb);
-			if (!sb.ToUInt16(&port))
+			if (!sb.ToUInt16(port))
 			{
 				UI::MessageDialog::ShowDialog(CSTR("Port is not a number"), CSTR("Error"), me);
 				return;
@@ -283,7 +283,7 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(void *userObj)
 			}
 			sb.ClearStr();
 			me->txtUDPCliPort->GetText(sb);
-			if (!sb.ToUInt16(&port))
+			if (!sb.ToUInt16(port))
 			{
 				UI::MessageDialog::ShowDialog(CSTR("Port is not a number"), CSTR("Error"), me);
 				return;

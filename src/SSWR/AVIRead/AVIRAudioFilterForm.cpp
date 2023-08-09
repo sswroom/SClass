@@ -35,35 +35,35 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnStartClicked(void *userObj)
 		UInt32 dtmfMS;
 		sb.ClearStr();
 		me->txtBuffSize->GetText(sb);
-		if (!sb.ToUInt32(&buffSize))
+		if (!sb.ToUInt32(buffSize))
 		{
 			UI::MessageDialog::ShowDialog(CSTR("Error found in buffer size"), CSTR("Error"), me);
 			return;
 		}
 		sb.ClearStr();
 		me->txtFrequency->GetText(sb);
-		if (!sb.ToUInt32(&frequency))
+		if (!sb.ToUInt32(frequency))
 		{
 			UI::MessageDialog::ShowDialog(CSTR("Error found in sampling rate"), CSTR("Error"), me);
 			return;
 		}
 		sb.ClearStr();
 		me->txtChannel->GetText(sb);
-		if (!sb.ToUInt16(&nChannel))
+		if (!sb.ToUInt16(nChannel))
 		{
 			UI::MessageDialog::ShowDialog(CSTR("Error found in no. of channels"), CSTR("Error"), me);
 			return;
 		}
 		sb.ClearStr();
 		me->txtBitCount->GetText(sb);
-		if (!sb.ToUInt16(&bitCount))
+		if (!sb.ToUInt16(bitCount))
 		{
 			UI::MessageDialog::ShowDialog(CSTR("Error found in bit per sample"), CSTR("Error"), me);
 			return;
 		}
 		sb.ClearStr();
 		me->txtDTMFInterval->GetText(sb);
-		if (!sb.ToUInt32(&dtmfMS))
+		if (!sb.ToUInt32(dtmfMS))
 		{
 			UI::MessageDialog::ShowDialog(CSTR("Error found in DTMF decode interval"), CSTR("Error"), me);
 			return;
@@ -519,7 +519,7 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnDTMFTonesClicked(void *user
 	Double vol;
 	vol = Math_Pow(10, OSInt2Double((OSInt)me->tbDTMFTonesVol->GetPos() - 960) / 200.0);
 	me->txtDTMFSignalTime->GetText(sb);
-	if (!sb.ToUInt32(&signalTime))
+	if (!sb.ToUInt32(signalTime))
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Signal Time is not valid"), CSTR("Generate Tones"), me);
 		return;
@@ -531,7 +531,7 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnDTMFTonesClicked(void *user
 	}
 	sb.ClearStr();
 	me->txtDTMFBreakTime->GetText(sb);
-	if (!sb.ToUInt32(&breakTime))
+	if (!sb.ToUInt32(breakTime))
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Break Time is not valid"), CSTR("Generate Tones"), me);
 		return;
@@ -890,21 +890,21 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnSweepStartClicked(void *use
 	UInt32 timeSeconds;
 	sb.ClearStr();
 	me->txtSweepStartFreq->GetText(sb);
-	if (!Text::StrToDouble(sb.ToString(), &startFreq))
+	if (!Text::StrToDouble(sb.ToString(), startFreq))
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Error in start frequency"), CSTR("Error"), me);
 		return;
 	}
 	sb.ClearStr();
 	me->txtSweepEndFreq->GetText(sb);
-	if (!Text::StrToDouble(sb.ToString(), &endFreq))
+	if (!Text::StrToDouble(sb.ToString(), endFreq))
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Error in end frequency"), CSTR("Error"), me);
 		return;
 	}
 	sb.ClearStr();
 	me->txtSweepDur->GetText(sb);
-	if (!sb.ToUInt32(&timeSeconds))
+	if (!sb.ToUInt32(timeSeconds))
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Error in duration"), CSTR("Error"), me);
 		return;

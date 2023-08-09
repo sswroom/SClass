@@ -21,7 +21,7 @@ void __stdcall SSWR::AVIRead::AVIRTimestampForm::OnEpochSecClicked(void *userObj
 			i++;
 		}
 	}
-	if (sb.ToInt64(&v))
+	if (sb.ToInt64(v))
 	{
 		me->DisplayTime(Data::Timestamp(Data::TimeInstant(v, ns), 0));
 	}
@@ -33,7 +33,7 @@ void __stdcall SSWR::AVIRead::AVIRTimestampForm::OnEpochMSClicked(void *userObj)
 	Text::StringBuilderUTF8 sb;
 	Int64 v;
 	me->txtValue->GetText(sb);
-	if (sb.ToInt64(&v))
+	if (sb.ToInt64(v))
 	{
 		me->DisplayTime(Data::Timestamp::FromEpochMS(v, 0));
 	}
@@ -45,7 +45,7 @@ void __stdcall SSWR::AVIRead::AVIRTimestampForm::OnEpochUSClicked(void *userObj)
 	Text::StringBuilderUTF8 sb;
 	Int64 v;
 	me->txtValue->GetText(sb);
-	if (sb.ToInt64(&v))
+	if (sb.ToInt64(v))
 	{
 		me->DisplayTime(Data::Timestamp::FromEpochUS(v, 0));
 	}
@@ -57,7 +57,7 @@ void __stdcall SSWR::AVIRead::AVIRTimestampForm::OnEpochNSClicked(void *userObj)
 	Text::StringBuilderUTF8 sb;
 	Int64 v;
 	me->txtValue->GetText(sb);
-	if (sb.ToInt64(&v))
+	if (sb.ToInt64(v))
 	{
 		me->DisplayTime(Data::Timestamp::FromEpochNS(v, 0));
 	}
@@ -69,7 +69,7 @@ void __stdcall SSWR::AVIRead::AVIRTimestampForm::OnDotNetTicksClicked(void *user
 	Text::StringBuilderUTF8 sb;
 	Int64 v;
 	me->txtValue->GetText(sb);
-	if (sb.ToInt64(&v))
+	if (sb.ToInt64(v))
 	{
 		me->DisplayTime(Data::Timestamp::FromDotNetTicks(v, 0));
 	}

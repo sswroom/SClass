@@ -89,7 +89,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRGSMModemForm::ModemThread(void *userObj)
 				me->operName = Text::String::New(sbuff, (UOSInt)(sptr - sbuff)).Ptr();
 				me->operUpdated = true;
 			}
-			if (me->modem->GSMGetRegisterNetwork(&me->regNetN, &me->regNetStat, &me->regNetLAC, &me->regNetCI, &me->regNetACT))
+			if (me->modem->GSMGetRegisterNetwork(&me->regNetN, &me->regNetStat, me->regNetLAC, me->regNetCI, &me->regNetACT))
 			{
 				me->regNetUpdated = true;
 			}
@@ -596,7 +596,7 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnPDPContextSetClicked(void *use
 	Text::StringBuilderUTF8 sb2;
 	me->txtPDPCID->GetText(sb);
 	UInt32 cid;
-	if (!sb.ToUInt32(&cid))
+	if (!sb.ToUInt32(cid))
 	{
 		me->txtPDPContextStatus->SetText(CSTR("CID invalid"));
 		return;
@@ -719,7 +719,7 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnHuaweiDHCPClicked(void *userOb
 		UInt32 secDNS;
 		UInt64 maxRXbps;
 		UInt64 maxTXbps;
-		if (me->huawei->HuaweiGetDHCP(&clientIP, &netmask, &gateway, &dhcp, &priDNS, &secDNS, &maxRXbps, &maxTXbps))
+		if (me->huawei->HuaweiGetDHCP(clientIP, netmask, gateway, dhcp, priDNS, secDNS, maxRXbps, maxTXbps))
 		{
 			sptr = Net::SocketUtil::GetIPv4Name(sbuff, clientIP);
 			me->txtHuaweiDHCPClientIP->SetText(CSTRP(sbuff, sptr));

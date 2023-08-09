@@ -26,7 +26,7 @@ void __stdcall SSWR::AVIRead::AVIRTCPSpdSvrForm::OnStartClick(void *userObj)
 		return;
 	}
 	me->txtPort->GetText(sb);
-	if (!sb.ToUInt16(&port))
+	if (!sb.ToUInt16(port))
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Port is not a number"), CSTR("Error"), me);
 		return;

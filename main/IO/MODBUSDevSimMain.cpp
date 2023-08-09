@@ -24,19 +24,19 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	UInt16 ctrlPort = 0;
 	UInt8 devAddr = 0;
 	Text::String *s;
-	if ((s = cfg->GetValue(CSTR("MODBUSPort"))) == 0 || !s->ToUInt16(&modbusPort))
+	if ((s = cfg->GetValue(CSTR("MODBUSPort"))) == 0 || !s->ToUInt16(modbusPort))
 	{
 		console.WriteLineC(UTF8STRC("Config MODBUSPort not valid"));
 		DEL_CLASS(cfg);
 		return 1;
 	}
-	if ((s = cfg->GetValue(CSTR("CtrlPort"))) == 0 || !s->ToUInt16(&ctrlPort))
+	if ((s = cfg->GetValue(CSTR("CtrlPort"))) == 0 || !s->ToUInt16(ctrlPort))
 	{
 		console.WriteLineC(UTF8STRC("Config CtrlPort not valid"));
 		DEL_CLASS(cfg);
 		return 1;
 	}
-	if ((s = cfg->GetValue(CSTR("DevAddr"))) == 0 || !s->ToUInt8(&devAddr))
+	if ((s = cfg->GetValue(CSTR("DevAddr"))) == 0 || !s->ToUInt8(devAddr))
 	{
 		console.WriteLineC(UTF8STRC("Config DevAddr not valid"));
 		DEL_CLASS(cfg);

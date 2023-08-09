@@ -28,14 +28,14 @@ void __stdcall SSWR::AVIRead::AVIRTCPTestForm::OnStartClicked(void *userObj)
 	}
 	sb.ClearStr();
 	me->txtPort->GetText(sb);
-	if (!sb.ToUInt16(&me->svrPort) || me->svrPort <= 0)
+	if (!sb.ToUInt16(me->svrPort) || me->svrPort <= 0)
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Please enter valid Port"), CSTR("Start"), me);
 		return;
 	}
 	sb.ClearStr();
 	me->txtConcurrCnt->GetText(sb);
-	if (!sb.ToUInt32(&me->threadCnt) || me->threadCnt <= 0 || me->threadCnt >= 1000)
+	if (!sb.ToUInt32(me->threadCnt) || me->threadCnt <= 0 || me->threadCnt >= 1000)
 	{
 		me->threadCnt = 0;
 		UI::MessageDialog::ShowDialog(CSTR("Please enter valid Concurrent Count"), CSTR("Start"), me);
@@ -43,7 +43,7 @@ void __stdcall SSWR::AVIRead::AVIRTCPTestForm::OnStartClicked(void *userObj)
 	}
 	sb.ClearStr();
 	me->txtTotalConnCnt->GetText(sb);
-	if (!sb.ToUInt32(&me->connLeftCnt) || me->connLeftCnt <= 10 || me->connLeftCnt >= 1000000000)
+	if (!sb.ToUInt32(me->connLeftCnt) || me->connLeftCnt <= 10 || me->connLeftCnt >= 1000000000)
 	{
 		me->threadCnt = 0;
 		me->connLeftCnt = 0;

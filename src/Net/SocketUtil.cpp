@@ -423,7 +423,7 @@ Bool Net::SocketUtil::GetIPAddr(Text::CString ipName, AddressInfo *addr)
 		{
 			return false;
 		}
-		if (!Text::StrToUInt8(sarr[0], &addr->addr[0]) || !Text::StrToUInt8(sarr[1], &addr->addr[1]) || !Text::StrToUInt8(sarr[2], &addr->addr[2]) || !Text::StrToUInt8(sarr[3], &addr->addr[3]))
+		if (!Text::StrToUInt8(sarr[0], addr->addr[0]) || !Text::StrToUInt8(sarr[1], addr->addr[1]) || !Text::StrToUInt8(sarr[2], addr->addr[2]) || !Text::StrToUInt8(sarr[3], addr->addr[3]))
 			return false;
 		addr->addrType = AddrType::IPv4;
 		return true;
@@ -431,7 +431,7 @@ Bool Net::SocketUtil::GetIPAddr(Text::CString ipName, AddressInfo *addr)
 	j = Text::StrIndexOfChar(sarr[i - 1], '%');
 	if (j != INVALID_INDEX)
 	{
-		if (Text::StrToInt32(&sarr[i - 1][j + 1], &v))
+		if (Text::StrToInt32(&sarr[i - 1][j + 1], v))
 		{
 			*(Int32*)&addr->addr[16] = v;
 			sarr[i - 1][j] = 0;

@@ -26,8 +26,8 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	UTF8Char **argv = progCtrl->GetCommandLines(progCtrl, &argc);
 	if (argc >= 3)
 	{
-		Text::StrToUInt16(argv[1], &pinNum1);
-		Text::StrToUInt16(argv[1], &pinNum2);
+		Text::StrToUInt16(argv[1], pinNum1);
+		Text::StrToUInt16(argv[1], pinNum2);
 	}
 	Sync::ThreadUtil::SetPriority(Sync::ThreadUtil::TP_REALTIME);
 	sb.AppendC(UTF8STRC("Run using GPIO pin "));

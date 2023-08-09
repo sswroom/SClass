@@ -142,7 +142,7 @@ Bool Manage::CPUInfoDetail::GetCPUTemp(UOSInt index, Double *temp)
 		Text::UTF8Reader reader(fs);
 		if (reader.ReadLine(sb, 512))
 		{
-			if (sb.ToInt32(&val))
+			if (sb.ToInt32(val))
 			{
 				succ = true;
 				*temp = val * 0.001;

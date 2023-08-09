@@ -35,7 +35,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcGroupPOI(Net::WebServer
 	Text::StringBuilderUTF8 sb;
 	sb.AppendUTF8Char('[');
 	Int32 groupId;
-	if (req->GetQueryValueI32(CSTR("id"), &groupId))
+	if (req->GetQueryValueI32(CSTR("id"), groupId))
 	{
 		Sync::RWMutexUsage mutUsage;
 		GroupInfo *poiGroup = me->env->GroupGet(mutUsage, groupId);
@@ -67,7 +67,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcSpeciesPOI(Net::WebServ
 	Text::StringBuilderUTF8 sb;
 	sb.AppendUTF8Char('[');
 	Int32 speciesId;
-	if (req->GetQueryValueI32(CSTR("id"), &speciesId))
+	if (req->GetQueryValueI32(CSTR("id"), speciesId))
 	{
 		Sync::RWMutexUsage mutUsage;
 		SpeciesInfo *poiSpecies = me->env->SpeciesGet(mutUsage, speciesId);
@@ -103,7 +103,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcDayPOI(Net::WebServer::
 	{
 		printf("SvcDayPOI: user == null\r\n");
 	}
-	else if (req->GetQueryValueI32(CSTR("id"), &dayId))
+	else if (req->GetQueryValueI32(CSTR("id"), dayId))
 	{
 		Sync::RWMutexUsage mutUsage;
 		Int64 startTime;

@@ -380,7 +380,7 @@ DB::ReadingDB *DB::DBManager::OpenConn(Text::CString connStr, IO::LogTool *log, 
 			}
 			else if (sarr[0].StartsWithICase(UTF8STRC("PORT=")))
 			{
-				Text::StrToUInt16(sarr[0].v + 5, &port);
+				Text::StrToUInt16(sarr[0].v + 5, port);
 			}
 			else if (sarr[0].StartsWithICase(UTF8STRC("UID=")))
 			{
@@ -448,7 +448,7 @@ DB::ReadingDB *DB::DBManager::OpenConn(Text::CString connStr, IO::LogTool *log, 
 			}
 			else if (sarr[0].StartsWithICase(UTF8STRC("PORT=")))
 			{
-				Text::StrToUInt16(sarr[0].v + 5, &port);
+				Text::StrToUInt16(sarr[0].v + 5, port);
 			}
 			else if (sarr[0].StartsWithICase(UTF8STRC("UID=")))
 			{
@@ -554,7 +554,7 @@ DB::ReadingDB *DB::DBManager::OpenConn(Text::CString connStr, IO::LogTool *log, 
 			UOSInt i = server->IndexOf(':');
 			if (i >= 0)
 			{
-				Text::StrToUInt16(&server->v[i + 1], &port);
+				Text::StrToUInt16(&server->v[i + 1], port);
 				server->TrimToLength(i);
 			}
 		}

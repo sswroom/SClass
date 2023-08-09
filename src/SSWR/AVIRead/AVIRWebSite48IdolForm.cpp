@@ -11,7 +11,7 @@ void __stdcall SSWR::AVIRead::AVIRWebSite48IdolForm::OnRequestPageClicked(void *
 	UTF8Char *sptr;
 	Int32 pageNo = 0;
 	me->txtPageNo->GetText(sb);
-	sb.ToInt32(&pageNo);
+	sb.ToInt32(pageNo);
 	me->lvItems->ClearItems();
 	if (pageNo > 0)
 	{
@@ -46,7 +46,7 @@ void __stdcall SSWR::AVIRead::AVIRWebSite48IdolForm::OnDownloadLinkClicked(void 
 	Text::StringBuilderUTF8 sb;
 	Int32 videoId = 0;
 	me->txtVideoId->GetText(sb);
-	sb.ToInt32(&videoId);
+	sb.ToInt32(videoId);
 	if (videoId != 0)
 	{
 		sb.ClearStr();
@@ -67,7 +67,7 @@ void __stdcall SSWR::AVIRead::AVIRWebSite48IdolForm::OnVideoNameClicked(void *us
 	Text::StringBuilderUTF8 sb;
 	Int32 videoId = 0;
 	me->txtNameVideoId->GetText(sb);
-	sb.ToInt32(&videoId);
+	sb.ToInt32(videoId);
 	if (videoId != 0)
 	{
 		sb.ClearStr();

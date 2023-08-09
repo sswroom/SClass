@@ -49,7 +49,7 @@ void __stdcall SSWR::AVIRead::AVIRMySQLClientForm::OnStartClicked(void *userObj)
 		me->txtHost->Focus();
 		return;
 	}
-	if (!Text::StrToUInt16(sbPwd.ToString(), &port))
+	if (!Text::StrToUInt16(sbPwd.ToString(), port))
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Port invalid"), CSTR("MySQL Client"), me);
 		me->txtHost->Focus();

@@ -10,7 +10,7 @@
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 
-const UTF8Char *Math::WKTReader::NextDouble(const UTF8Char *wkt, Double *val)
+const UTF8Char *Math::WKTReader::NextDouble(const UTF8Char *wkt, OutParam<Double> val)
 {
 	UTF8Char sbuff[256];
 	const UTF8Char *sptr = wkt;
@@ -19,14 +19,14 @@ const UTF8Char *Math::WKTReader::NextDouble(const UTF8Char *wkt, Double *val)
 		(wkt[1] == 'n' || wkt[1] == 'N') &&
 		(wkt[2] == 'f' || wkt[2] == 'F'))
 	{
-		*val = Math::GetInfinity();
+		val.Set(Math::GetInfinity());
 		return wkt + 3;
 	}
 	if ((wkt[0] == 'n' || wkt[0] == 'N') &&
 		(wkt[1] == 'a' || wkt[1] == 'A') &&
 		(wkt[2] == 'n' || wkt[2] == 'N'))
 	{
-		*val = Math::GetQNAN();
+		val.Set(Math::GetQNAN());
 		return wkt + 3;
 	}
 	while (true)
@@ -97,13 +97,13 @@ Math::Geometry::Vector2D *Math::WKTReader::ParseWKT(const UTF8Char *wkt)
 			return 0;
 		}
 		wkt++;
-		wkt = NextDouble(wkt, &x);
+		wkt = NextDouble(wkt, x);
 		if (wkt == 0 || *wkt != ' ')
 		{
 			return 0;
 		}
 		while (*++wkt == ' ');
-		wkt = NextDouble(wkt, &y);
+		wkt = NextDouble(wkt, y);
 		if (wkt == 0)
 		{
 			return 0;
@@ -119,7 +119,7 @@ Math::Geometry::Vector2D *Math::WKTReader::ParseWKT(const UTF8Char *wkt)
 			return 0;
 		}
 		while (*++wkt == ' ');
-		wkt = NextDouble(wkt, &z);
+		wkt = NextDouble(wkt, z);
 		if (wkt == 0)
 		{
 			return 0;
@@ -151,13 +151,13 @@ Math::Geometry::Vector2D *Math::WKTReader::ParseWKT(const UTF8Char *wkt)
 		while (true)
 		{
 			while (*++wkt == ' ');
-			wkt = NextDouble(wkt, &x);
+			wkt = NextDouble(wkt, x);
 			if (wkt == 0 || *wkt != ' ')
 			{
 				return 0;
 			}
 			while (*++wkt == ' ');
-			wkt = NextDouble(wkt, &y);
+			wkt = NextDouble(wkt, y);
 			if (wkt == 0)
 			{
 				return 0;
@@ -165,7 +165,7 @@ Math::Geometry::Vector2D *Math::WKTReader::ParseWKT(const UTF8Char *wkt)
 			while (*wkt == ' ')
 			{
 				while (*++wkt == ' ');
-				wkt = NextDouble(wkt, &z);
+				wkt = NextDouble(wkt, z);
 				if (wkt == 0)
 				{
 					return 0;
@@ -252,13 +252,13 @@ Math::Geometry::Vector2D *Math::WKTReader::ParseWKT(const UTF8Char *wkt)
 			while (true)
 			{
 				while (*++wkt == ' ');
-				wkt = NextDouble(wkt, &x);
+				wkt = NextDouble(wkt, x);
 				if (wkt == 0 || *wkt != ' ')
 				{
 					return 0;
 				}
 				while (*++wkt == ' ');
-				wkt = NextDouble(wkt, &y);
+				wkt = NextDouble(wkt, y);
 				if (wkt == 0)
 				{
 					return 0;
@@ -266,7 +266,7 @@ Math::Geometry::Vector2D *Math::WKTReader::ParseWKT(const UTF8Char *wkt)
 				while (*wkt == ' ')
 				{
 					while (*++wkt == ' ');
-					wkt = NextDouble(wkt, &z);
+					wkt = NextDouble(wkt, z);
 					if (wkt == 0)
 					{
 						return 0;
@@ -352,13 +352,13 @@ Math::Geometry::Vector2D *Math::WKTReader::ParseWKT(const UTF8Char *wkt)
 			while (true)
 			{
 				while (*++wkt == ' ');
-				wkt = NextDouble(wkt, &x);
+				wkt = NextDouble(wkt, x);
 				if (wkt == 0 || *wkt != ' ')
 				{
 					return 0;
 				}
 				while (*++wkt == ' ');
-				wkt = NextDouble(wkt, &y);
+				wkt = NextDouble(wkt, y);
 				if (wkt == 0)
 				{
 					return 0;
@@ -366,7 +366,7 @@ Math::Geometry::Vector2D *Math::WKTReader::ParseWKT(const UTF8Char *wkt)
 				while (*wkt == ' ')
 				{
 					while (*++wkt == ' ');
-					wkt = NextDouble(wkt, &z);
+					wkt = NextDouble(wkt, z);
 					if (wkt == 0)
 					{
 						return 0;
@@ -486,14 +486,14 @@ Math::Geometry::Vector2D *Math::WKTReader::ParseWKT(const UTF8Char *wkt)
 				while (true)
 				{
 					while (*++wkt == ' ');
-					wkt = NextDouble(wkt, &x);
+					wkt = NextDouble(wkt, x);
 					if (wkt == 0 || *wkt != ' ')
 					{
 						SDEL_CLASS(mpg);
 						return 0;
 					}
 					while (*++wkt == ' ');
-					wkt = NextDouble(wkt, &y);
+					wkt = NextDouble(wkt, y);
 					if (wkt == 0)
 					{
 						SDEL_CLASS(mpg);
@@ -502,7 +502,7 @@ Math::Geometry::Vector2D *Math::WKTReader::ParseWKT(const UTF8Char *wkt)
 					while (*wkt == ' ')
 					{
 						while (*++wkt == ' ');
-						wkt = NextDouble(wkt, &z);
+						wkt = NextDouble(wkt, z);
 						if (wkt == 0)
 						{
 							SDEL_CLASS(mpg);

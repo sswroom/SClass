@@ -30,11 +30,11 @@ void __stdcall SSWR::AVIRead::AVIRBruteForceForm::OnStartClicked(void *userObj)
 	}
 	me->txtMinLen->GetText(sb);
 	minLeng = 0;
-	sb.ToUInt32(&minLeng);
+	sb.ToUInt32(minLeng);
 	sb.ClearStr();
 	me->txtMaxLen->GetText(sb);
 	maxLeng = 0;
-	sb.ToUInt32(&maxLeng);
+	sb.ToUInt32(maxLeng);
 	if (minLeng <= 0 || maxLeng < minLeng)
 	{
 		UI::MessageDialog::ShowDialog(CSTR("MinLeng or MaxLeng is not valid"), CSTR("Brute Force"), me);

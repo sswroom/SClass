@@ -247,7 +247,7 @@ Bool __stdcall Map::MapServerHandler::CesiumDataFunc(Net::WebServer::IWebRequest
 	Text::String *file = req->GetQueryValue(CSTR("file"));
 	Text::String *range = req->GetQueryValue(CSTR("range"));
 	Double minErr;
-	if (!req->GetQueryValueF64(CSTR("minErr"), &minErr))
+	if (!req->GetQueryValueF64(CSTR("minErr"), minErr))
 	{
 		minErr = me->cesiumMinError;
 	}
@@ -279,7 +279,7 @@ Bool __stdcall Map::MapServerHandler::CesiumDataFunc(Net::WebServer::IWebRequest
 			resp->ResponseError(req, Net::WebStatus::SC_FORBIDDEN);
 			return true;
 		}
-		if (!sarr[0].ToDouble(&x1) || !sarr[1].ToDouble(&y1) || !sarr[2].ToDouble(&x2) || !sarr[3].ToDouble(&y2))
+		if (!sarr[0].ToDouble(x1) || !sarr[1].ToDouble(y1) || !sarr[2].ToDouble(x2) || !sarr[3].ToDouble(y2))
 		{
 			resp->ResponseError(req, Net::WebStatus::SC_FORBIDDEN);
 			return true;

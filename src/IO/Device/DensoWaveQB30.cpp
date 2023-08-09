@@ -174,7 +174,7 @@ Bool IO::Device::DensoWaveQB30::WaitForReply(UInt32 timeToWait)
 	}
 }
 
-Bool IO::Device::DensoWaveQB30::WaitForReplyVal(UInt32 timeToWait, Int32 *retVal)
+Bool IO::Device::DensoWaveQB30::WaitForReplyVal(UInt32 timeToWait, OutParam<Int32> retVal)
 {
 	Data::DateTime startTime;
 	Data::DateTime currTime;
@@ -219,7 +219,7 @@ Int32 IO::Device::DensoWaveQB30::ReadCommand(const Char *cmdStr, UOSInt cmdLen)
 	recvMutUsage.EndUse();
 	if (this->stm->Write((const UInt8*)cmdStr, cmdLen) == cmdLen)
 	{
-		if (!this->WaitForReplyVal(1000, &result))
+		if (!this->WaitForReplyVal(1000, result))
 		{
 			result = -1;
 		}

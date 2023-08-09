@@ -126,7 +126,7 @@ SSWR::DataSync::SyncServer::SyncServer(NotNullPtr<Net::SocketFactory> sockf, IO:
 			j = Text::StrSplitP(sarr2, 2, sarr[0], ':');
 			if (j == 2)
 			{
-				if (Text::StrToUInt16(sarr2[1].v, &port))
+				if (Text::StrToUInt16(sarr2[1].v, port))
 				{
 					if (port > 0 && port < 65536)
 					{

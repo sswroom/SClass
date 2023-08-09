@@ -125,7 +125,7 @@ void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnStartClicked(void *userObj)
 	Bool valid = true;
 	Text::StringBuilderUTF8 sb;
 	me->txtPort->GetText(sb);
-	Text::StrToUInt16S(sb.ToString(), &port, 0);
+	Text::StrToUInt16S(sb.ToString(), port, 0);
 	Net::SSLEngine *ssl = 0;
 
 	if (me->sslCert == 0 || me->sslKey == 0)

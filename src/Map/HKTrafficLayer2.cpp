@@ -250,13 +250,13 @@ void Map::HKTrafficLayer2::ReloadData()
 													{
 														sb.ClearStr();
 														reader.ReadNodeText(sb);
-														sb.ToInt32(&segmentId);
+														sb.ToInt32(segmentId);
 													}
 													else if (nodeName->Equals(UTF8STRC("speed")))
 													{
 														sb.ClearStr();
 														reader.ReadNodeText(sb);
-														sb.ToDouble(&speed);
+														sb.ToDouble(speed);
 													}
 													else if (nodeName->Equals(UTF8STRC("valid")))
 													{

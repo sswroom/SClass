@@ -44,7 +44,7 @@ void __stdcall SSWR::AVIRead::AVIRUDPTestForm::OnStartClicked(void *userObj)
 		UInt16 port;
 		me->txtServerPort->GetText(sb);
 		port = 0;
-		sb.ToUInt16(&port);
+		sb.ToUInt16(port);
 		if (port > 0)
 		{
 			NEW_CLASS(me->udp, Net::UDPServer(me->sockf, 0, port, CSTR_NULL, OnUDPPacket, me, 0, CSTR_NULL, 5, false));
@@ -82,14 +82,14 @@ void __stdcall SSWR::AVIRead::AVIRUDPTestForm::OnSendClicked(void *userObj)
 	}
 	sb.ClearStr();
 	me->txtDestPort->GetText(sb);
-	if (!sb.ToUInt16(&port) || port <= 0)
+	if (!sb.ToUInt16(port) || port <= 0)
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Port is not valid"), CSTR("UDP Test"), me);
 		return;
 	}
 	sb.ClearStr();
 	me->txtDestCount->GetText(sb);
-	if (!sb.ToUInt32(&cnt) || cnt <= 0 || cnt > 10000000)
+	if (!sb.ToUInt32(cnt) || cnt <= 0 || cnt > 10000000)
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Count is not valid"), CSTR("UDP Test"), me);
 		return;

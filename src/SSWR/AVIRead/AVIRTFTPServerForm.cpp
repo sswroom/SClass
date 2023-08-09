@@ -18,7 +18,7 @@ void __stdcall SSWR::AVIRead::AVIRTFTPServerForm::OnStartClick(void *userObj)
 	UInt16 port = 0;
 	Text::StringBuilderUTF8 sb;
 	me->txtPort->GetText(sb);
-	if (!Text::StrToUInt16(sb.ToString(), &port))
+	if (!Text::StrToUInt16(sb.ToString(), port))
 	{
 		return;
 	}

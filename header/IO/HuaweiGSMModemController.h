@@ -134,7 +134,7 @@ namespace IO
 		Bool HuaweiGetCardMode(SIMCardType *simType); //AT^CARDMODE
 		Bool HuaweiGetSysInfoEx(ServiceStatus *srvStatus, ServiceDomain *srvDomain, Bool *roamStatus, SIMState *simState, Bool *lockState, SysMode *sysMode, SubMode *subMode); //AT^SYSINFOEX
 		Bool HuaweiGetSignalStrength(SignalStrengthInfo *csq); //AT^HCSQ
-		Bool HuaweiGetDHCP(UInt32 *clientIP, UInt32 *netmask, UInt32 *gateway, UInt32 *dhcp, UInt32 *priDNS, UInt32 *secDNS, UInt64 *maxRXbps, UInt64 *maxTXbps); //AT^DHCP
+		Bool HuaweiGetDHCP(OutParam<UInt32> clientIP, OutParam<UInt32> netmask, OutParam<UInt32> gateway, OutParam<UInt32> dhcp, OutParam<UInt32> priDNS, OutParam<UInt32> secDNS, OutParam<UInt64> maxRXbps, OutParam<UInt64> maxTXbps); //AT^DHCP
 
 		static UTF8Char *RSSIGetName(UTF8Char *sbuff, UInt32 rssi);
 		static Double RSSIGetdBm(UInt32 rssi);

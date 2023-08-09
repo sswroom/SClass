@@ -43,7 +43,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	UTF8Char **argv = progCtrl->GetCommandLines(progCtrl, &argc);
 	if (argc >= 2)
 	{
-		Text::StrToUInt32(argv[1], &seed);
+		Text::StrToUInt32(argv[1], seed);
 	}
 
 	NEW_CLASS(rand, Data::RandomMT19937(seed));

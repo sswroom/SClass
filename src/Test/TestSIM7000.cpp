@@ -22,7 +22,7 @@ void Test::TestSIM7000::SIM7000Info(IO::Writer *writer, IO::Device::SIM7000 *mod
 		writer->WriteLineC(UTF8STRC("CCID: Error in getting the value"));
 	}
 
-	if (modem->SIMCOMReadADC(&adc))
+	if (modem->SIMCOMReadADC(adc))
 	{
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("ADC: "));

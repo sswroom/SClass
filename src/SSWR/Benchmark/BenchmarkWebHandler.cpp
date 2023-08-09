@@ -216,9 +216,9 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(SSWR::Benchmark:
 		Int32 cpuFamily = 0;
 		Int32 cpuModel = 0;
 		Int32 cpuStepping = 0;
-		req->GetQueryValueI32(CSTR("family"), &cpuFamily);
-		req->GetQueryValueI32(CSTR("modelId"), &cpuModel);
-		req->GetQueryValueI32(CSTR("stepping"), &cpuStepping);
+		req->GetQueryValueI32(CSTR("family"), cpuFamily);
+		req->GetQueryValueI32(CSTR("modelId"), cpuModel);
+		req->GetQueryValueI32(CSTR("stepping"), cpuStepping);
 		if (cpuFamily != 0 && cpuModel != 0 && cpuStepping != 0)
 		{
 			req->GetHeader(fileName, CSTR("Content-Length"), 512);

@@ -11,7 +11,7 @@ void __stdcall SSWR::AVIRead::AVIRBCryptForm::OnGenHashClicked(void *userObj)
 	Text::StringBuilderUTF8 sbPassword;
 	me->txtCost->GetText(sbCost);
 	me->txtGenPassword->GetText(sbPassword);
-	if (!sbCost.ToUInt32(&cost))
+	if (!sbCost.ToUInt32(cost))
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Please enter valid cost (4-31)"), CSTR("BCrypt"), me);
 		me->txtCost->Focus();

@@ -31,7 +31,7 @@ void __stdcall SSWR::AVIRead::AVIRLoraGWSimForm::OnStartClick(void *userObj)
 		UInt8 gatewayEUI[8];
 		Text::StringBuilderUTF8 sb;
 		me->txtServerPort->GetText(sb);
-		if (!sb.ToUInt16(&svrPort))
+		if (!sb.ToUInt16(svrPort))
 		{
 			UI::MessageDialog::ShowDialog(CSTR("Error in parsing Server Port"), CSTR("LoRa Gateway Simulator"), me);
 			return;
@@ -121,14 +121,14 @@ void __stdcall SSWR::AVIRead::AVIRLoraGWSimForm::OnSendULDataClick(void *userObj
 	}
 	sb.ClearStr();
 	me->txtFCnt->GetText(sb);
-	if (!sb.ToUInt32(&fCnt))
+	if (!sb.ToUInt32(fCnt))
 	{
 		UI::MessageDialog::ShowDialog(CSTR("FCnt invalid"), CSTR("LoRa Gateway Simulator"), me);
 		return;
 	}
 	sb.ClearStr();
 	me->txtRSSI->GetText(sb);
-	if (!sb.ToInt32(&rssi))
+	if (!sb.ToInt32(rssi))
 	{
 		UI::MessageDialog::ShowDialog(CSTR("RSSI invalid"), CSTR("LoRa Gateway Simulator"), me);
 		return;
@@ -136,7 +136,7 @@ void __stdcall SSWR::AVIRead::AVIRLoraGWSimForm::OnSendULDataClick(void *userObj
 	Double dlsnr;
 	sb.ClearStr();
 	me->txtLSNR->GetText(sb);
-	if (!sb.ToDouble(&dlsnr))
+	if (!sb.ToDouble(dlsnr))
 	{
 		UI::MessageDialog::ShowDialog(CSTR("LSNR invalid"), CSTR("LoRa Gateway Simulator"), me);
 		return;
@@ -144,7 +144,7 @@ void __stdcall SSWR::AVIRead::AVIRLoraGWSimForm::OnSendULDataClick(void *userObj
 	lsnr = Double2Int32(dlsnr * 10);
 	sb.ClearStr();
 	me->txtFPort->GetText(sb);
-	if (!sb.ToUInt8(&fPort))
+	if (!sb.ToUInt8(fPort))
 	{
 		UI::MessageDialog::ShowDialog(CSTR("FPort invalid"), CSTR("LoRa Gateway Simulator"), me);
 		return;

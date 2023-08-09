@@ -293,7 +293,7 @@ Bool Net::HTTPOSClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMethod
 		if (urltmp[i + 1] == ':')
 		{
 			port = 0;
-			Text::StrToUInt16(&urltmp[i + 2], &port);
+			Text::StrToUInt16(&urltmp[i + 2], port);
 			urltmp[i + 1] = 0;
 		}
 		else
@@ -307,7 +307,7 @@ Bool Net::HTTPOSClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMethod
 		if (i == 2)
 		{
 			port = 0;
-			Text::StrToUInt16(ptrs[1], &port);
+			Text::StrToUInt16(ptrs[1], port);
 			svrnameEnd = Text::StrConcat(svrname, ptrs[0]);
 		}
 		else

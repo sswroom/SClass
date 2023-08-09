@@ -235,7 +235,7 @@ namespace IO
 		Bool GSMSetFunctionalityReset(); //AT+CFUN
 		Bool GSMGetModemTime(Data::DateTime *date); //AT+CCLK
 		Bool GSMSetModemTime(Data::DateTime *date); //AT+CCLK
-		Bool GSMGetRegisterNetwork(NetworkResult *n, RegisterStatus *stat, UInt16 *lac, UInt32 *ci, AccessTech *act); //AT+CREG
+		Bool GSMGetRegisterNetwork(NetworkResult *n, RegisterStatus *stat, OutParam<UInt16> lac, OutParam<UInt32> ci, AccessTech *act); //AT+CREG
 
 		Int32 GSMGetSIMPLMN();
 		

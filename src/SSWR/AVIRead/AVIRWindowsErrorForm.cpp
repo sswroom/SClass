@@ -8,7 +8,7 @@ void __stdcall SSWR::AVIRead::AVIRWindowsErrorForm::OnErrorCodeChanged(void *use
 	UInt32 errCode;
 	Text::StringBuilderUTF8 sb;
 	me->txtErrorCode->GetText(sb);
-	if (sb.ToUInt32(&errCode))
+	if (sb.ToUInt32(errCode))
 	{
 		me->txtErrorName->SetText(IO::WindowsError::GetString(errCode));
 	}

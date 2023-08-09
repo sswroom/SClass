@@ -160,7 +160,7 @@ Bool IO::HuaweiGSMModemController::HuaweiGetSignalStrength(SignalStrengthInfo *c
 	return false;
 }
 
-Bool IO::HuaweiGSMModemController::HuaweiGetDHCP(UInt32 *clientIP, UInt32 *netmask, UInt32 *gateway, UInt32 *dhcp, UInt32 *priDNS, UInt32 *secDNS, UInt64 *maxRXbps, UInt64 *maxTXbps)
+Bool IO::HuaweiGSMModemController::HuaweiGetDHCP(OutParam<UInt32> clientIP, OutParam<UInt32> netmask, OutParam<UInt32> gateway, OutParam<UInt32> dhcp, OutParam<UInt32> priDNS, OutParam<UInt32> secDNS, OutParam<UInt64> maxRXbps, OutParam<UInt64> maxTXbps)
 {
 	Text::PString sarr[9];
 	UTF8Char sbuff[256];
@@ -173,22 +173,34 @@ Bool IO::HuaweiGSMModemController::HuaweiGetDHCP(UInt32 *clientIP, UInt32 *netma
 	{
 		if (Text::StrSplitTrimP(sarr, 9, Text::PString(&sbuff[6], (UOSInt)(sptr - &sbuff[6])), ',') == 8)
 		{
-			if (!sarr[0].Hex2UInt32(clientIP)) return false;
-			if (!sarr[1].Hex2UInt32(netmask)) return false;
-			if (!sarr[2].Hex2UInt32(gateway)) return false;
-			if (!sarr[3].Hex2UInt32(dhcp)) return false;
-			if (!sarr[4].Hex2UInt32(priDNS)) return false;
-			if (!sarr[5].Hex2UInt32(secDNS)) return false;
+			UInt32 lclientIP;
+			UInt32 lnetmask;
+			UInt32 lgateway;
+			UInt32 ldhcp;
+			UInt32 lpriDNS;
+			UInt32 lsecDNS;
+			if (!sarr[0].Hex2UInt32(lclientIP)) return false;
+			if (!sarr[1].Hex2UInt32(lnetmask)) return false;
+			if (!sarr[2].Hex2UInt32(lgateway)) return false;
+			if (!sarr[3].Hex2UInt32(ldhcp)) return false;
+			if (!sarr[4].Hex2UInt32(lpriDNS)) return false;
+			if (!sarr[5].Hex2UInt32(lsecDNS)) return false;
 			if (!sarr[6].ToUInt64(maxRXbps)) return false;
 			if (!sarr[7].ToUInt64(maxTXbps)) return false;
 #if IS_BYTEORDER_LE == 0
-			*clientIP = BSWAPU32(*clientIP);
-			*netmask = BSWAPU32(*netmask);
-			*gateway = BSWAPU32(*gateway);
-			*dhcp = BSWAPU32(*dhcp);
-			*priDNS = BSWAPU32(*priDNS);
-			*secDNS = BSWAPU32(*secDNS);
+			lclientIP = BSWAPU32(lclientIP);
+			lnetmask = BSWAPU32(lnetmask);
+			lgateway = BSWAPU32(lgateway);
+			ldhcp = BSWAPU32(ldhcp);
+			lpriDNS = BSWAPU32(lpriDNS);
+			lsecDNS = BSWAPU32(lsecDNS);
 #endif
+			clientIP.Set(lclientIP);
+			netmask.Set(lnetmask);
+			gateway.Set(lgateway);
+			dhcp.Set(ldhcp);
+			priDNS.Set(lpriDNS);
+			secDNS.Set(lsecDNS);
 			return true;
 		}
 		else

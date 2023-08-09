@@ -18,11 +18,11 @@ Bool Net::WebServer::MODBUSDevSimHandler::ProcessRequest(Net::WebServer::IWebReq
 				req->ParseHTTPForm();
 				if (s.Set(req->GetHTTPFormStr(CSTR("action"))))
 				{
-					if (s->Equals(UTF8STRC("toggle")) && req->GetHTTPFormUInt16(CSTR("index"), &toggleIndex))
+					if (s->Equals(UTF8STRC("toggle")) && req->GetHTTPFormUInt16(CSTR("index"), toggleIndex))
 					{
 						this->dev->ToggleValue(toggleIndex);
 					}
-					else if (s->Equals(UTF8STRC("delay")) && req->GetHTTPFormUInt32(CSTR("delay"), &delay))
+					else if (s->Equals(UTF8STRC("delay")) && req->GetHTTPFormUInt32(CSTR("delay"), delay))
 					{
 						this->listener->SetDelay(delay);
 					}

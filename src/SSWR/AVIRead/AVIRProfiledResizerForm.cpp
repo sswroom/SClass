@@ -63,13 +63,13 @@ void __stdcall SSWR::AVIRead::AVIRProfiledResizerForm::OnClickedAddProfile(void 
 	{
 		sizeType = Media::ProfiledResizer::ST_MAXSIZE;
 		me->txtWidth->GetText(sbuff2);
-		if (!Text::StrToUInt32(sbuff2, &targetSizeX))
+		if (!Text::StrToUInt32(sbuff2, targetSizeX))
 		{
 			UI::MessageDialog::ShowDialog(CSTR("Please enter max width"), CSTR("Error"), me);
 			return;
 		}
 		me->txtHeight->GetText(sbuff2);
-		if (!Text::StrToUInt32(sbuff2, &targetSizeY))
+		if (!Text::StrToUInt32(sbuff2, targetSizeY))
 		{
 			UI::MessageDialog::ShowDialog(CSTR("Please enter max height"), CSTR("Error"), me);
 			return;

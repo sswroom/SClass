@@ -59,7 +59,7 @@ void __stdcall SSWR::AVIRead::AVIRMSSQLConnForm::OnOKClicked(void *userObj)
 		UI::MessageDialog::ShowDialog(CSTR("Please enter server"), CSTR("MSSQL Conn"), me);
 		return;
 	}	
-	if (!sbPort.ToUInt16(&port))
+	if (!sbPort.ToUInt16(port))
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Please enter valid port number"), CSTR("MSSQL Conn"), me);
 		return;

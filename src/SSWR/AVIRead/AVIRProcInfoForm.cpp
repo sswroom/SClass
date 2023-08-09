@@ -273,7 +273,7 @@ void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnDetHeapItemSelChg(void *userOb
 	UOSInt size;
 	me->lvDetHeap->GetSubItem((UOSInt)i, 1, sb);
 	size = 0;
-	sb.ToUOSInt(&size);
+	sb.ToUOSInt(size);
 	Manage::Process proc(me->currProc, false);
 	UInt8 buff[512];
 	if (size <= 512)

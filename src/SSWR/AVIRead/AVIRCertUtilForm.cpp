@@ -247,7 +247,7 @@ void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnSelfSignedCertClicked(void *us
 	UOSInt validDays;
 	Text::StringBuilderUTF8 sb;
 	me->txtValidDays->GetText(sb);
-	if (!sb.ToUOSInt(&validDays))
+	if (!sb.ToUOSInt(validDays))
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Valid days not valid"), CSTR("Cert Util"), me);
 		return;

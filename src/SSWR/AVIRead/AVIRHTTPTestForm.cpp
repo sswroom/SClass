@@ -27,7 +27,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPTestForm::OnStartClicked(void *userObj)
 		return;
 	}
 	me->txtConcurrCnt->GetText(sb);
-	if (!sb.ToUInt32(&me->threadCnt) || me->threadCnt <= 0 || me->threadCnt >= 1000)
+	if (!sb.ToUInt32(me->threadCnt) || me->threadCnt <= 0 || me->threadCnt >= 1000)
 	{
 		me->threadCnt = 0;
 		UI::MessageDialog::ShowDialog(CSTR("Please enter valid Concurrent Count"), CSTR("Start"), me);
@@ -35,7 +35,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPTestForm::OnStartClicked(void *userObj)
 	}
 	sb.ClearStr();
 	me->txtTotalConnCnt->GetText(sb);
-	if (!sb.ToUInt32(&me->connLeftCnt) || me->connLeftCnt < me->threadCnt || me->connLeftCnt >= 1000000000)
+	if (!sb.ToUInt32(me->connLeftCnt) || me->connLeftCnt < me->threadCnt || me->connLeftCnt >= 1000000000)
 	{
 		me->threadCnt = 0;
 		me->connLeftCnt = 0;
@@ -49,7 +49,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPTestForm::OnStartClicked(void *userObj)
 		me->method = Net::WebUtil::RequestMethod::HTTP_POST;
 		sb.ClearStr();
 		me->txtPostSize->GetText(sb);
-		if (!sb.ToUInt32(&me->postSize) || me->postSize <= 0)
+		if (!sb.ToUInt32(me->postSize) || me->postSize <= 0)
 		{
 			me->threadCnt = 0;
 			me->connLeftCnt = 0;

@@ -43,7 +43,7 @@ Media::Jasper::JasperReport *Media::Jasper::JasperXML::ParseJasperReport(NotNull
 		}
 		else if (attr->name->Equals(UTF8STRC("pageWidth")))
 		{
-			if (attr->value == 0 || !attr->value->ToUInt32(&uval))
+			if (attr->value == 0 || !attr->value->ToUInt32(uval))
 			{
 				printf("JasperXML: Unknown attr value in jasperReport (%s)\r\n", attr->name->v);
 			}
@@ -54,7 +54,7 @@ Media::Jasper::JasperReport *Media::Jasper::JasperXML::ParseJasperReport(NotNull
 		}
 		else if (attr->name->Equals(UTF8STRC("pageHeight")))
 		{
-			if (attr->value == 0 || !attr->value->ToUInt32(&uval))
+			if (attr->value == 0 || !attr->value->ToUInt32(uval))
 			{
 				printf("JasperXML: Unknown attr value in jasperReport (%s)\r\n", attr->name->v);
 			}
@@ -65,7 +65,7 @@ Media::Jasper::JasperReport *Media::Jasper::JasperXML::ParseJasperReport(NotNull
 		}
 		else if (attr->name->Equals(UTF8STRC("columnWidth")))
 		{
-			if (attr->value == 0 || !attr->value->ToUInt32(&uval))
+			if (attr->value == 0 || !attr->value->ToUInt32(uval))
 			{
 				printf("JasperXML: Unknown attr value in jasperReport (%s)\r\n", attr->name->v);
 			}
@@ -75,7 +75,7 @@ Media::Jasper::JasperReport *Media::Jasper::JasperXML::ParseJasperReport(NotNull
 		}
 		else if (attr->name->Equals(UTF8STRC("leftMargin")))
 		{
-			if (attr->value == 0 || !attr->value->ToUInt32(&uval))
+			if (attr->value == 0 || !attr->value->ToUInt32(uval))
 			{
 				printf("JasperXML: Unknown attr value in jasperReport (%s)\r\n", attr->name->v);
 			}
@@ -86,7 +86,7 @@ Media::Jasper::JasperReport *Media::Jasper::JasperXML::ParseJasperReport(NotNull
 		}
 		else if (attr->name->Equals(UTF8STRC("rightMargin")))
 		{
-			if (attr->value == 0 || !attr->value->ToUInt32(&uval))
+			if (attr->value == 0 || !attr->value->ToUInt32(uval))
 			{
 				printf("JasperXML: Unknown attr value in jasperReport (%s)\r\n", attr->name->v);
 			}
@@ -97,7 +97,7 @@ Media::Jasper::JasperReport *Media::Jasper::JasperXML::ParseJasperReport(NotNull
 		}
 		else if (attr->name->Equals(UTF8STRC("topMargin")))
 		{
-			if (attr->value == 0 || !attr->value->ToUInt32(&uval))
+			if (attr->value == 0 || !attr->value->ToUInt32(uval))
 			{
 				printf("JasperXML: Unknown attr value in jasperReport (%s)\r\n", attr->name->v);
 			}
@@ -108,7 +108,7 @@ Media::Jasper::JasperReport *Media::Jasper::JasperXML::ParseJasperReport(NotNull
 		}
 		else if (attr->name->Equals(UTF8STRC("bottomMargin")))
 		{
-			if (attr->value == 0 || !attr->value->ToUInt32(&uval))
+			if (attr->value == 0 || !attr->value->ToUInt32(uval))
 			{
 				printf("JasperXML: Unknown attr value in jasperReport (%s)\r\n", attr->name->v);
 			}

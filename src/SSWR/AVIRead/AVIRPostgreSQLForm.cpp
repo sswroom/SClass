@@ -20,7 +20,7 @@ void __stdcall SSWR::AVIRead::AVIRPostgreSQLForm::OnOKClicked(void *userObj)
 	UInt16 port;
 
 	DB::PostgreSQLConn *conn;
-	if (!sbPort.ToUInt16(&port))
+	if (!sbPort.ToUInt16(port))
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Port is not valid"), CSTR("PostgreSQL Connection"), me);
 		return;

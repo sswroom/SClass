@@ -979,7 +979,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(Net::WebServer::IWebReq
 								   UTF8STRC("</form>"));
 				}
 
-				req->GetQueryValueI32(CSTR("sort"), &sort);
+				req->GetQueryValueI32(CSTR("sort"), sort);
 				Text::StringBuilderUTF8 sb3;
 				sb3.AppendNE(sb2.ToString(), sb2.GetLength());
 				sb3.AppendC(UTF8STRC("?sort=1"));
@@ -1362,7 +1362,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(Net::WebServer::IWebReq
 			}
 			sptr = sb2.v;
 			sptr[i] = 0;
-			if (!Text::StrToInt64(&sptr[6], &start))
+			if (!Text::StrToInt64(&sptr[6], start))
 			{
 				resp->SetStatusCode(Net::WebStatus::SC_REQUESTED_RANGE_NOT_SATISFIABLE);
 				resp->AddDefHeaders(req);
@@ -1373,7 +1373,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(Net::WebServer::IWebReq
 			}
 			if (i + 1 < sb2.GetLength())
 			{
-				if (!Text::StrToInt64(&sptr[i + 1], &end))
+				if (!Text::StrToInt64(&sptr[i + 1], end))
 				{
 					resp->SetStatusCode(Net::WebStatus::SC_REQUESTED_RANGE_NOT_SATISFIABLE);
 					resp->AddDefHeaders(req);

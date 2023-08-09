@@ -632,7 +632,7 @@ Bool Net::HTTPMyClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMethod
 		svrnameEnd = Text::StrConcatC(svrname, &urltmp[1], i - 1);
 		if (urltmp[i + 1] == ':')
 		{
-			Text::StrToUInt16S(&urltmp[i + 2], &port, 0);
+			Text::StrToUInt16S(&urltmp[i + 2], port, 0);
 			urltmp[i + 1] = 0;
 			urltmpLen = i + 1;
 		}
@@ -653,7 +653,7 @@ Bool Net::HTTPMyClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMethod
 		i = Text::StrSplitP(ptrs, 2, {urltmp, urltmpLen}, ':');
 		if (i == 2)
 		{
-			Text::StrToUInt16S(ptrs[1].v, &port, 0);
+			Text::StrToUInt16S(ptrs[1].v, port, 0);
 			svrnameEnd = Text::StrConcatC(svrname, ptrs[0].v, ptrs[0].leng);
 			urltmpLen = ptrs[0].leng;
 		}
@@ -1112,7 +1112,7 @@ void Net::HTTPMyClient::EndRequest(Double *timeReq, Double *timeResp)
 						if (s->StartsWithICase(8, UTF8STRC("Length: ")))
 						{
 							s->leng = (UOSInt)(Text::StrTrimC(&s->v[16], s->leng - 16) - s->v);
-							Text::StrToUInt64S(&s->v[16], &this->contLeng, 0);
+							Text::StrToUInt64S(&s->v[16], this->contLeng, 0);
 						}
 						else if (s->StartsWithICase(8, UTF8STRC("Type: text/event-stream")))
 						{

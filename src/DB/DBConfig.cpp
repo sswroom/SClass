@@ -37,7 +37,7 @@ DB::DBTool *DB::DBConfig::LoadFromConfig(NotNullPtr<Net::SocketFactory> sockf, I
 			log->LogMessage(CSTR("MSSQLPort is missing"), IO::LogHandler::LogLevel::Error);
 			return 0;
 		}
-		else if (!sPort->ToUInt16(&port) || port == 0)
+		else if (!sPort->ToUInt16(port) || port == 0)
 		{
 			log->LogMessage(CSTR("MSSQLPort is not valid"), IO::LogHandler::LogLevel::Error);
 			return 0;

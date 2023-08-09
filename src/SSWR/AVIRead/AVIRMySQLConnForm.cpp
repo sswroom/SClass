@@ -22,7 +22,7 @@ void __stdcall SSWR::AVIRead::AVIRMySQLConnForm::OnOKClicked(void *userObj)
 	Net::MySQLTCPClient *conn;
 	NotNullPtr<Net::SocketFactory> sockf = me->core->GetSocketFactory();
 	Net::SocketUtil::AddressInfo addr;
-	if (!sbPort.ToUInt16(&port))
+	if (!sbPort.ToUInt16(port))
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Port is not valid"), CSTR("MySQL Connection"), me);
 		return;

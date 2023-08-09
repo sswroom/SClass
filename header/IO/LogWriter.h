@@ -10,14 +10,14 @@ namespace IO
 	class LogWriter : public IO::Writer
 	{
 	private:
-		IO::LogTool *log;
+		NotNullPtr<IO::LogTool> log;
 		Text::StringBuilderUTF8 sb;
 		Sync::Mutex mut;
 		IO::LogHandler::LogLevel logLev;
 
 		void CheckLines();
 	public:
-		LogWriter(IO::LogTool *log, IO::LogHandler::LogLevel logLev);
+		LogWriter(NotNullPtr<IO::LogTool> log, IO::LogHandler::LogLevel logLev);
 		virtual ~LogWriter();
 
 		virtual Bool WriteStrC(const UTF8Char *str, UOSInt nChar);

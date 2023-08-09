@@ -37,7 +37,7 @@ namespace IO
 			void SetReceiveHandler(ReceiveHandler recvHdlr, void *userObj);
 
 			Bool SIMCOMPowerDown(); //AT+CPOWD
-			Bool SIMCOMReadADC(Int32 *adc); //AT+CADC
+			Bool SIMCOMReadADC(OutParam<Int32> adc); //AT+CADC
 			//AT+CFGRI
 			//AT+CLTS
 			//AT+CBAND

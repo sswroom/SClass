@@ -115,7 +115,7 @@ void __stdcall SSWR::OrganMgr::OrganTimeAdjForm::OnPasteClicked(void *userObj)
 		sb.Trim();
 
 		Int32 timeAdj;
-		if (sb.ToInt32(&timeAdj))
+		if (sb.ToInt32(timeAdj))
 		{
 			sptr = Text::StrInt32(sbuff, timeAdj);
 			me->txtTimeAdj->SetText(CSTRP(sbuff, sptr));

@@ -123,7 +123,7 @@ Net::HKOWeather::WeatherSignal Net::HKOWeather::GetSignalSummary(NotNullPtr<Net:
 	return signal;
 }
 
-Bool Net::HKOWeather::GetCurrentTempRH(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Int32 *temperature, Int32 *rh)
+Bool Net::HKOWeather::GetCurrentTempRH(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, OutParam<Int32> temperature, OutParam<Int32> rh)
 {
 	Bool succ = false;
 	Net::RSS *rss;
@@ -135,8 +135,8 @@ Bool Net::HKOWeather::GetCurrentTempRH(NotNullPtr<Net::SocketFactory> sockf, Net
 	{
 		if (rss->GetCount() > 0)
 		{
-			*temperature = INVALID_READING;
-			*rh = INVALID_READING;
+			temperature.Set(INVALID_READING);
+			rh.Set(INVALID_READING);
 			UOSInt i;
 			Net::RSSItem *item = rss->GetItem(0);
 			IO::MemoryReadingStream mstm(item->description->v, item->description->leng);

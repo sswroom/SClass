@@ -23,7 +23,7 @@ void __stdcall SSWR::AVIRead::AVIRTFTPClientForm::OnRecvClick(void *userObj)
 	}
 	sb.ClearStr();
 	me->txtPort->GetText(sb);
-	if (!sb.ToUInt16(&port))
+	if (!sb.ToUInt16(port))
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Port is not valid"), CSTR("TFTP Client"), me);
 		me->txtPort->Focus();
@@ -104,7 +104,7 @@ void __stdcall SSWR::AVIRead::AVIRTFTPClientForm::OnSendClick(void *userObj)
 	}
 	sb.ClearStr();
 	me->txtPort->GetText(sb);
-	if (!sb.ToUInt16(&port))
+	if (!sb.ToUInt16(port))
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Port is not valid"), CSTR("TFTP Client"), me);
 		me->txtPort->Focus();

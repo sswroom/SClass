@@ -22,7 +22,7 @@ void __stdcall SSWR::AVIRead::AVIRSyslogServerForm::OnStartClick(void *userObj)
 		UTF8Char sbuff[512];
 		UTF8Char *sptr;
 		me->txtPort->GetText(sb);
-		if (sb.ToUInt16(&port))
+		if (sb.ToUInt16(port))
 		{
 			sptr = IO::Path::GetProcessFileName(sbuff);
 			sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("LogSvr"));

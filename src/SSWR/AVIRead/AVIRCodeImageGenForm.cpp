@@ -29,7 +29,7 @@ void __stdcall SSWR::AVIRead::AVIRCodeImageGenForm::OnCodeGenClicked(void *userO
 		Text::StringBuilderUTF8 sb;
 		UInt32 codeWidth;
 		me->txtCodeSize->GetText(sb);
-		if (sb.ToUInt32(&codeWidth) && codeWidth > 0)
+		if (sb.ToUInt32(codeWidth) && codeWidth > 0)
 		{
 			sb.ClearStr();
 			me->txtCode->GetText(sb);

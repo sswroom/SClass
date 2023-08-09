@@ -1009,7 +1009,7 @@ UTF8Char *Manage::Process::FindProcessNext(UTF8Char *processNameBuff, Manage::Pr
 	sptr = Text::StrConcatC(sbuff, UTF8STRC("/proc/"));
 	while ((sptr2 = IO::Path::FindNextFile(sptr, fpsess->findFileSess, 0, &pt, 0)) != 0)
 	{
-		if (pt == IO::Path::PathType::Directory && Text::StrToUInt32(sptr, &pid))
+		if (pt == IO::Path::PathType::Directory && Text::StrToUInt32(sptr, pid))
 		{
 			info->processId = pid;
 			info->threadCnt = 0;
@@ -1076,7 +1076,7 @@ WChar *Manage::Process::FindProcessNextW(WChar *processNameBuff, Manage::Process
 	sptr = Text::StrConcatC(sbuff, UTF8STRC("/proc/"));
 	while ((sptr2 = IO::Path::FindNextFile(sptr, fpsess->findFileSess, 0, &pt, 0)) != 0)
 	{
-		if (pt == IO::Path::PathType::Directory && Text::StrToUInt32(sptr, &pid))
+		if (pt == IO::Path::PathType::Directory && Text::StrToUInt32(sptr, pid))
 		{
 			info->processId = pid;
 			info->threadCnt = 0;

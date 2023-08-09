@@ -306,7 +306,7 @@ Bool IO::ServiceManager::ServiceGetDetail(Text::CString svcName, ServiceDetail *
 					{
 						val.TrimToLength(i);
 					}
-					if (!val.ToUInt32(&svcDetail->procId))
+					if (!val.ToUInt32(svcDetail->procId))
 					{
 						printf("Main PID = %s\r\n", val.v);
 					}
@@ -336,7 +336,7 @@ Bool IO::ServiceManager::ServiceGetDetail(Text::CString svcName, ServiceDetail *
 						vmul = 1;
 					}
 					Double dval;
-					if (val.ToDouble(&dval))
+					if (val.ToDouble(dval))
 					{
 						svcDetail->memoryUsage = (UInt64)(vmul * dval);
 					}

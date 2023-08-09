@@ -55,25 +55,25 @@ namespace Text
 		OSInt ToOSInt() const;
 		UOSInt ToUOSInt() const;
 		Double ToDouble() const;
-		Bool ToUInt8(UInt8 *outVal) const;
-		Bool ToInt16(Int16 *outVal) const;
-		Bool ToUInt16(UInt16 *outVal) const;
-		Bool ToInt32(Int32 *outVal) const;
-		Bool ToUInt32(UInt32 *outVal) const;
-		Bool ToInt64(Int64 *outVal) const;
-		Bool ToUInt64(UInt64 *outVal) const;
-		Bool ToOSInt(OSInt *outVal) const;
-		Bool ToUOSInt(UOSInt *outVal) const;
-		Bool ToDouble(Double *outVal) const;
-		Bool ToUInt16S(UInt16 *outVal, UInt16 failVal) const;
-		Bool ToUInt32S(UInt32 *outVal, UInt32 failVal) const;
+		Bool ToUInt8(OutParam<UInt8> outVal) const;
+		Bool ToInt16(OutParam<Int16> outVal) const;
+		Bool ToUInt16(OutParam<UInt16> outVal) const;
+		Bool ToInt32(OutParam<Int32> outVal) const;
+		Bool ToUInt32(OutParam<UInt32> outVal) const;
+		Bool ToInt64(OutParam<Int64> outVal) const;
+		Bool ToUInt64(OutParam<UInt64> outVal) const;
+		Bool ToOSInt(OutParam<OSInt> outVal) const;
+		Bool ToUOSInt(OutParam<UOSInt> outVal) const;
+		Bool ToDouble(OutParam<Double> outVal) const;
+		Bool ToUInt16S(OutParam<UInt16> outVal, UInt16 failVal) const;
+		Bool ToUInt32S(OutParam<UInt32> outVal, UInt32 failVal) const;
 		UOSInt Hex2Bytes(UInt8 *buff) const;
 		UOSInt CountChar(UTF8Char c) const;
 		UOSInt CountStr(const UTF8Char *s, UOSInt len) const;
 		UOSInt CountStr(StringBase<UTF8Char> *s) const;
 		UOSInt CountStr(const StringBase<const UTF8Char> &s) const;
-		Bool Hex2UInt16(UInt16 *outVal) const;
-		Bool Hex2UInt32(UInt32 *outVal) const;
+		Bool Hex2UInt16(OutParam<UInt16> outVal) const;
+		Bool Hex2UInt32(OutParam<UInt32> outVal) const;
 
 		Double MatchRating(StringBase<UTF8Char> *s) const;
 		Double MatchRating(const UTF8Char *targetStr, UOSInt strLen) const;
@@ -396,62 +396,62 @@ template <typename T> Double Text::StringBase<T>::ToDouble() const
 	return Text::StrToDouble(this->v);
 }
 
-template <typename T> Bool Text::StringBase<T>::ToUInt8(UInt8 *outVal) const
+template <typename T> Bool Text::StringBase<T>::ToUInt8(OutParam<UInt8> outVal) const
 {
 	return Text::StrToUInt8(this->v, outVal);
 }
 
-template <typename T> Bool Text::StringBase<T>::ToInt16(Int16 *outVal) const
+template <typename T> Bool Text::StringBase<T>::ToInt16(OutParam<Int16> outVal) const
 {
 	return Text::StrToInt16(this->v, outVal);
 }
 
-template <typename T> Bool Text::StringBase<T>::ToUInt16(UInt16 *outVal) const
+template <typename T> Bool Text::StringBase<T>::ToUInt16(OutParam<UInt16> outVal) const
 {
 	return Text::StrToUInt16(this->v, outVal);
 }
 
-template <typename T> Bool Text::StringBase<T>::ToInt32(Int32 *outVal) const
+template <typename T> Bool Text::StringBase<T>::ToInt32(OutParam<Int32> outVal) const
 {
 	return Text::StrToInt32(this->v, outVal);
 }
 
-template <typename T> Bool Text::StringBase<T>::ToUInt32(UInt32 *outVal) const
+template <typename T> Bool Text::StringBase<T>::ToUInt32(OutParam<UInt32> outVal) const
 {
 	return Text::StrToUInt32(this->v, outVal);
 }
 
-template <typename T> Bool Text::StringBase<T>::ToInt64(Int64 *outVal) const
+template <typename T> Bool Text::StringBase<T>::ToInt64(OutParam<Int64> outVal) const
 {
 	return Text::StrToInt64(this->v, outVal);
 }
 
-template <typename T> Bool Text::StringBase<T>::ToUInt64(UInt64 *outVal) const
+template <typename T> Bool Text::StringBase<T>::ToUInt64(OutParam<UInt64> outVal) const
 {
 	return Text::StrToUInt64(this->v, outVal);
 }
 
-template <typename T> Bool Text::StringBase<T>::ToOSInt(OSInt *outVal) const
+template <typename T> Bool Text::StringBase<T>::ToOSInt(OutParam<OSInt> outVal) const
 {
 	return Text::StrToOSInt(this->v, outVal);
 }
 
-template <typename T> Bool Text::StringBase<T>::ToUOSInt(UOSInt *outVal) const
+template <typename T> Bool Text::StringBase<T>::ToUOSInt(OutParam<UOSInt> outVal) const
 {
 	return Text::StrToUOSInt(this->v, outVal);
 }
 
-template <typename T> Bool Text::StringBase<T>::ToDouble(Double *outVal) const
+template <typename T> Bool Text::StringBase<T>::ToDouble(OutParam<Double> outVal) const
 {
 	return Text::StrToDouble(this->v, outVal);
 }
 
-template <typename T> Bool Text::StringBase<T>::ToUInt16S(UInt16 *outVal, UInt16 failVal) const
+template <typename T> Bool Text::StringBase<T>::ToUInt16S(OutParam<UInt16> outVal, UInt16 failVal) const
 {
 	return Text::StrToUInt16S(this->v, outVal, failVal);
 }
 
-template <typename T> Bool Text::StringBase<T>::ToUInt32S(UInt32 *outVal, UInt32 failVal) const
+template <typename T> Bool Text::StringBase<T>::ToUInt32S(OutParam<UInt32> outVal, UInt32 failVal) const
 {
 	return Text::StrToUInt32S(this->v, outVal, failVal);
 }
@@ -481,7 +481,7 @@ template<typename T> UOSInt Text::StringBase<T>::CountStr(const StringBase<const
 	return Text::StrCountStr(this->v, this->leng, s.v, s.leng);
 }
 
-template<typename T> Bool Text::StringBase<T>::Hex2UInt16(UInt16 *outVal) const
+template<typename T> Bool Text::StringBase<T>::Hex2UInt16(OutParam<UInt16> outVal) const
 {
 	if (this->leng > 4)
 	{
@@ -493,7 +493,7 @@ template<typename T> Bool Text::StringBase<T>::Hex2UInt16(UInt16 *outVal) const
 	}
 }
 
-template<typename T> Bool Text::StringBase<T>::Hex2UInt32(UInt32 *outVal) const
+template<typename T> Bool Text::StringBase<T>::Hex2UInt32(OutParam<UInt32> outVal) const
 {
 	if (this->leng > 8)
 	{

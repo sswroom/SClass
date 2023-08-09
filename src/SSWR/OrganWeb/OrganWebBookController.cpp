@@ -13,8 +13,8 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookList(Net::WebServe
 
 	Int32 id;
 	UInt32 unselect = 0;
-	req->GetQueryValueU32(CSTR("unselect"), &unselect);
-	if (req->GetQueryValueI32(CSTR("id"), &id))
+	req->GetQueryValueU32(CSTR("unselect"), unselect);
+	if (req->GetQueryValueI32(CSTR("id"), id))
 	{
 		NotNullPtr<Text::String> s;
 		Data::ArrayList<BookInfo*> sortBookList;
@@ -178,10 +178,10 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBook(Net::WebServer::I
 	UInt32 pageNo = 0;
 	Int32 cateId;
 	UInt32 selectBook = 0;
-	req->GetQueryValueU32(CSTR("page"), &pageNo);
-	req->GetQueryValueU32(CSTR("select"), &selectBook);
-	if (req->GetQueryValueI32(CSTR("id"), &id) &&
-		req->GetQueryValueI32(CSTR("cateId"), &cateId))
+	req->GetQueryValueU32(CSTR("page"), pageNo);
+	req->GetQueryValueU32(CSTR("select"), selectBook);
+	if (req->GetQueryValueI32(CSTR("id"), id) &&
+		req->GetQueryValueI32(CSTR("cateId"), cateId))
 	{
 		NotNullPtr<Text::String> s;
 		Data::FastMap<Int64, BookInfo*> sortBookMap;
@@ -417,7 +417,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookView(Net::WebServe
 	me->ParseRequestEnv(req, resp, &env, false);
 
 	Int32 id;
-	if (req->GetQueryValueI32(CSTR("id"), &id))
+	if (req->GetQueryValueI32(CSTR("id"), id))
 	{
 		UTF8Char sbuff[512];
 		UTF8Char *sptr;
@@ -482,8 +482,8 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookPhoto(Net::WebServ
 
 	Int32 id;
 	Int32 cateId;
-	if (req->GetQueryValueI32(CSTR("id"), &id) &&
-		req->GetQueryValueI32(CSTR("cateId"), &cateId))
+	if (req->GetQueryValueI32(CSTR("id"), id) &&
+		req->GetQueryValueI32(CSTR("cateId"), cateId))
 	{
 		UTF8Char sbuff[512];
 		UTF8Char *sptr;
@@ -506,7 +506,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookPhoto(Net::WebServ
 		}
 		Text::StringBuilderUTF8 sb;
 		Int32 fileId;
-		if (req->GetQueryValueI32(CSTR("fileId"), &fileId))
+		if (req->GetQueryValueI32(CSTR("fileId"), fileId))
 		{
 			if (me->env->BookSetPhoto(mutUsage, id, fileId))
 			{
@@ -710,7 +710,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookAdd(Net::WebServer
 	me->ParseRequestEnv(req, resp, &env, false);
 
 	Int32 cateId;
-	if (req->GetQueryValueI32(CSTR("id"), &cateId))
+	if (req->GetQueryValueI32(CSTR("id"), cateId))
 	{
 		UTF8Char sbuff[512];
 		UTF8Char *sptr;

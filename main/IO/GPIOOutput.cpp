@@ -15,7 +15,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	UTF8Char **argv = progCtrl->GetCommandLines(progCtrl, &argc);
 	if (argc >= 3)
 	{
-		if (Text::StrToInt32(argv[1], &pinNum) && Text::StrToInt32(argv[2], &val))
+		if (Text::StrToInt32(argv[1], pinNum) && Text::StrToInt32(argv[2], val))
 		{
 			IO::GPIOControl gpio;
 			if (gpio.SetPinState((UInt8)pinNum, val != 0))

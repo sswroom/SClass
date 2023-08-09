@@ -49,7 +49,7 @@ Map::MapSearch::MapSearch(Text::CStringNN fileName, Map::MapSearchManager *manag
 
 		if (i == 2)
 		{
-			if (strs[0].ToInt32(&layerType))
+			if (strs[0].ToInt32(layerType))
 			{
 				if (layerType == 0)
 				{

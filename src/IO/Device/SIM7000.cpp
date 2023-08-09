@@ -73,7 +73,7 @@ Bool __stdcall IO::Device::SIM7000::CheckATCommand(void *userObj, const UTF8Char
 				sarr[2].leng = i;
 				me->recvIP = Net::SocketUtil::GetIPAddr(sarr[2].ToCString());
 				me->recvPort = 0;
-				Text::StrToUInt16(&sarr[2].v[i + 1], &me->recvPort);
+				Text::StrToUInt16(&sarr[2].v[i + 1], me->recvPort);
 			}
 			else
 			{
@@ -177,7 +177,7 @@ Bool IO::Device::SIM7000::SIMCOMPowerDown()
 	}
 }
 
-Bool IO::Device::SIM7000::SIMCOMReadADC(Int32 *adc)
+Bool IO::Device::SIM7000::SIMCOMReadADC(OutParam<Int32> adc)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr = this->SendStringCommand(sbuff, UTF8STRC("AT+CADC?"), 3000);

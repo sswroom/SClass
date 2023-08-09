@@ -20,7 +20,7 @@ void __stdcall SSWR::AVIRead::AVIRSMTPClientForm::OnSendClicked(void *userObj)
 		me->txtHost->Focus();
 		return;
 	}
-	if (!sb2.ToUInt16(&port))
+	if (!sb2.ToUInt16(port))
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Error in port number"), CSTR("SMTP Client"), me);
 		me->txtPort->Focus();

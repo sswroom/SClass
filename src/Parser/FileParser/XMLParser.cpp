@@ -355,7 +355,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 											attr = reader.GetAttrib(i);
 											if (attr->name->Equals(UTF8STRC("layerLevel")))
 											{
-												if (attr->value->ToUInt32(&layerId))
+												if (attr->value->ToUInt32(layerId))
 												{
 													flags |= 1;
 													break;
@@ -379,17 +379,17 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 														attr = reader.GetAttrib(i);
 														if (attr->name->Equals(UTF8STRC("xMax")))
 														{
-															if (attr->value->ToUInt32(&maxX))
+															if (attr->value->ToUInt32(maxX))
 																flags |= 2;
 														}
 														else if (attr->name->Equals(UTF8STRC("yMax")))
 														{
-															if (attr->value->ToUInt32(&maxY))
+															if (attr->value->ToUInt32(maxY))
 																flags |= 4;
 														}
 														else if (attr->name->Equals(UTF8STRC("img_width")))
 														{
-															if (attr->value->ToUInt32(&tileSize))
+															if (attr->value->ToUInt32(tileSize))
 																flags |= 8;
 														}
 													}
@@ -403,22 +403,22 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 														attr = reader.GetAttrib(i);
 														if (attr->name->Equals(UTF8STRC("minLat")))
 														{
-															if (attr->value->ToDouble(&mapYMin))
+															if (attr->value->ToDouble(mapYMin))
 																flags |= 16;
 														}
 														else if (attr->name->Equals(UTF8STRC("maxLat")))
 														{
-															if (attr->value->ToDouble(&mapYMax))
+															if (attr->value->ToDouble(mapYMax))
 																flags |= 32;
 														}
 														else if (attr->name->Equals(UTF8STRC("minLon")))
 														{
-															if (attr->value->ToDouble(&mapXMin))
+															if (attr->value->ToDouble(mapXMin))
 																flags |= 64;
 														}
 														else if (attr->name->Equals(UTF8STRC("maxLon")))
 														{
-															if (attr->value->ToDouble(&mapXMax))
+															if (attr->value->ToDouble(mapXMax))
 																flags |= 128;
 														}
 													}

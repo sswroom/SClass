@@ -1967,7 +1967,7 @@ UTF32Char *Text::StrDoubleFmt(UTF32Char *oriStr, Double val, const Char *format)
 	}
 }
 
-Bool Text::StrToDouble(const UTF8Char *str1, Double *outVal)
+Bool Text::StrToDouble(const UTF8Char *str1, OutParam<Double> outVal)
 {
 	Bool neg = false;
 	UTF8Char c;
@@ -2003,12 +2003,12 @@ Bool Text::StrToDouble(const UTF8Char *str1, Double *outVal)
 	{
 		if (neg)
 		{
-			*outVal = -(Double)ir;
+			outVal.Set(-(Double)ir);
 			return true;
 		}
 		else
 		{
-			*outVal = (Double)ir;
+			outVal.Set((Double)ir);
 			return true;
 		}
 	}
@@ -2039,7 +2039,7 @@ Bool Text::StrToDouble(const UTF8Char *str1, Double *outVal)
 		{
 			r = -r;
 		}
-		*outVal = r;
+		outVal.Set(r);
 		return true;
 	}
 #endif
@@ -2090,11 +2090,11 @@ Bool Text::StrToDouble(const UTF8Char *str1, Double *outVal)
 	{
         r = -r;
     }
-	*outVal = r;
+	outVal.Set(r);
 	return true;
 }
 
-Bool Text::StrToDouble(const UTF16Char *str1, Double *outVal)
+Bool Text::StrToDouble(const UTF16Char *str1, OutParam<Double> outVal)
 {
 	Double r = 0.0;
 	Bool neg = false;
@@ -2127,12 +2127,12 @@ Bool Text::StrToDouble(const UTF16Char *str1, Double *outVal)
 	{
 		if (neg)
 		{
-			*outVal = -r;
+			outVal.Set(-r);
 			return true;
 		}
 		else
 		{
-			*outVal = r;
+			outVal.Set(r);
 			return true;
 		}
 	}
@@ -2183,11 +2183,11 @@ Bool Text::StrToDouble(const UTF16Char *str1, Double *outVal)
 	{
         r = -r;
     }
-	*outVal = r;
+	outVal.Set(r);
 	return true;
 }
 
-Bool Text::StrToDouble(const UTF32Char *str1, Double *outVal)
+Bool Text::StrToDouble(const UTF32Char *str1, OutParam<Double> outVal)
 {
 	Double r = 0.0;
 	Bool neg = false;
@@ -2220,12 +2220,12 @@ Bool Text::StrToDouble(const UTF32Char *str1, Double *outVal)
 	{
 		if (neg)
 		{
-			*outVal = -r;
+			outVal.Set(-r);
 			return true;
 		}
 		else
 		{
-			*outVal = r;
+			outVal.Set(r);
 			return true;
 		}
 	}
@@ -2274,11 +2274,11 @@ Bool Text::StrToDouble(const UTF32Char *str1, Double *outVal)
 	}
     if (neg)
 	{
-        *outVal = -r;
+        outVal.Set(-r);
     }
 	else
 	{
-		*outVal = r;
+		outVal.Set(r);
 	}
 	return true;
 }
@@ -2286,7 +2286,7 @@ Bool Text::StrToDouble(const UTF32Char *str1, Double *outVal)
 Double Text::StrToDouble(const UTF8Char *str1)
 {
 	Double r;
-	if (Text::StrToDouble(str1, &r))
+	if (Text::StrToDouble(str1, r))
 		return r;
 	return 0;
 }
@@ -2294,7 +2294,7 @@ Double Text::StrToDouble(const UTF8Char *str1)
 Double Text::StrToDouble(const UTF16Char *str1)
 {
 	Double r;
-	if (Text::StrToDouble(str1, &r))
+	if (Text::StrToDouble(str1, r))
 		return r;
 	return 0;
 }
@@ -2302,7 +2302,7 @@ Double Text::StrToDouble(const UTF16Char *str1)
 Double Text::StrToDouble(const UTF32Char *str1)
 {
 	Double r;
-	if (Text::StrToDouble(str1, &r))
+	if (Text::StrToDouble(str1, r))
 		return r;
 	return 0;
 }

@@ -379,7 +379,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReq(SSWR::SMonitor::SMo
 	{
 		return resp->RedirectURL(req, CSTR("/monitor/index"), 0);
 	}
-	if (req->GetQueryValueI64(CSTR("photo"), &devId))
+	if (req->GetQueryValueI64(CSTR("photo"), devId))
 	{
 		if (me->core->UserHasDevice(sess->GetValueInt32(UTF8STRC("UserId")), sess->GetValueInt32(UTF8STRC("UserType")), devId))
 		{
@@ -935,7 +935,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(SSWR::SMo
 	{
 		valid = false;
 	}
-	else if (!s->ToInt64(&cliId))
+	else if (!s->ToInt64(cliId))
 	{
 		valid = false;
 	}
@@ -945,7 +945,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(SSWR::SMo
 	{
 		valid = false;
 	}
-	else if (!s->ToInt32(&sensorId))
+	else if (!s->ToInt32(sensorId))
 	{
 		valid = false;
 	}
@@ -955,7 +955,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(SSWR::SMo
 	{
 		valid = false;
 	}
-	else if (!s->ToInt32(&readingId))
+	else if (!s->ToInt32(readingId))
 	{
 		valid = false;
 	}
@@ -965,7 +965,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(SSWR::SMo
 	{
 		valid = false;
 	}
-	else if (!s->ToInt32(&readingType))
+	else if (!s->ToInt32(readingType))
 	{
 		valid = false;
 	}
@@ -1585,7 +1585,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataImgReq(SSWR::SM
 	{
 		valid = false;
 	}
-	else if (!s->ToInt64(&cliId))
+	else if (!s->ToInt64(cliId))
 	{
 		valid = false;
 	}
@@ -1595,7 +1595,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataImgReq(SSWR::SM
 	{
 		valid = false;
 	}
-	else if (!s->ToInt32(&sensorId))
+	else if (!s->ToInt32(sensorId))
 	{
 		valid = false;
 	}
@@ -1605,7 +1605,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataImgReq(SSWR::SM
 	{
 		valid = false;
 	}
-	else if (!s->ToInt32(&readingId))
+	else if (!s->ToInt32(readingId))
 	{
 		valid = false;
 	}
@@ -1615,7 +1615,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataImgReq(SSWR::SM
 	{
 		valid = false;
 	}
-	else if (!s->ToInt64(&startTime))
+	else if (!s->ToInt64(startTime))
 	{
 		valid = false;
 	}
@@ -2021,7 +2021,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserAssignReq(SSWR::SMonitor:
 	UOSInt i;
 	UOSInt j;
 
-	if (!req->GetQueryValueI32(CSTR("id"), &userId))
+	if (!req->GetQueryValueI32(CSTR("id"), userId))
 	{
 		return resp->RedirectURL(req, CSTR("/monitor/users"), 0);
 	}
@@ -2059,7 +2059,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserAssignReq(SSWR::SMonitor:
 			while (true)
 			{
 				i = Text::StrSplit(sarr, 2, sarr[1], ',');
-				if (!Text::StrToInt64(sarr[0], &cliId))
+				if (!Text::StrToInt64(sarr[0], cliId))
 				{
 					valid = false;
 					break;

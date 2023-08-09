@@ -20,7 +20,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPForwarderForm::OnStartClick(void *userObj)
 	Bool valid = true;
 	Text::StringBuilderUTF8 sb;
 	me->txtPort->GetText(sb);
-	Text::StrToUInt16S(sb.ToString(), &port, 0);
+	Text::StrToUInt16S(sb.ToString(), port, 0);
 	sb.ClearStr();
 	me->txtFwdURL->GetText(sb);
 	if (!sb.StartsWith(UTF8STRC("http://")) && !sb.StartsWith(UTF8STRC("https://")))

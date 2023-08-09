@@ -9,7 +9,7 @@ void __stdcall SSWR::SHPConv::SHPConvElevationFilterForm::OnOKClicked(void *user
 	Text::StringBuilderUTF8 sb;
 	Int32 height;
 	me->txtHeight->GetText(sb);
-	if (sb.ToInt32(&height))
+	if (sb.ToInt32(height))
 	{
 		if (height > 0)
 		{

@@ -14,14 +14,14 @@ void __stdcall SSWR::AVIRead::AVIRCustomTileMapForm::OnOKClicked(void *userObj)
 	Int32 maxLevel;
 	Text::StringBuilderUTF8 sb;
 	me->txtMinLevel->GetText(sb);
-	if (!sb.ToInt32(&minLevel) || (minLevel < 0) || (minLevel > 18))
+	if (!sb.ToInt32(minLevel) || (minLevel < 0) || (minLevel > 18))
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Min Level must be between 0 to 18"), CSTR("Custom Tile Map"), me);
 		return;
 	}
 	sb.ClearStr();
 	me->txtMaxLevel->GetText(sb);
-	if (!sb.ToInt32(&maxLevel) || (maxLevel < 0) || (maxLevel > 22))
+	if (!sb.ToInt32(maxLevel) || (maxLevel < 0) || (maxLevel > 22))
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Max Level must be between 0 to 22"), CSTR("Custom Tile Map"), me);
 		return;

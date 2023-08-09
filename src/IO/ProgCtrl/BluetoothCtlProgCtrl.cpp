@@ -182,7 +182,7 @@ UInt32 __stdcall IO::ProgCtrl::BluetoothCtlProgCtrl::ReadThread(void *obj)
 							else if (Text::StrStartsWithC(&sarr[0].v[31], sarr[0].leng - 31, UTF8STRC("ManufacturerData Key: ")))
 							{
 								UInt16 key;
-								if (Text::StrToUInt16(&sarr[0].v[53], &key))
+								if (Text::StrToUInt16(&sarr[0].v[53], key))
 								{
 									dev->company = key;
 									if (me->recHdlr) me->recHdlr(dev, UT_COMPANY, me->recHdlrObj);

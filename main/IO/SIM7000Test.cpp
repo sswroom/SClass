@@ -39,11 +39,11 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	UTF8Char **argv = progCtrl->GetCommandLines(progCtrl, &argc);
 	if (argc >= 2)
 	{
-		Text::StrToUOSInt(argv[1], &portNum);
+		Text::StrToUOSInt(argv[1], portNum);
 	}
 	if (argc >= 3)
 	{
-		Text::StrToUInt32(argv[2], &baudRate);
+		Text::StrToUInt32(argv[2], baudRate);
 	}
 	console->WriteLine();
 	sb.ClearStr();

@@ -16,7 +16,7 @@ void __stdcall SSWR::AVIRead::AVIRHexViewerGoToForm::OnOKClicked(void *userObj)
 	}
 	if (sb.v[0] == '+' || sb.v[0] == '-')
 	{
-		if (!Text::StrToUInt64(&sb.v[1], &destOfst))
+		if (!Text::StrToUInt64(&sb.v[1], destOfst))
 		{
 			UI::MessageDialog::ShowDialog(CSTR("The offset is not in valid format"), CSTR("Hex Viewer"), me);
 			return;
@@ -37,7 +37,7 @@ void __stdcall SSWR::AVIRead::AVIRHexViewerGoToForm::OnOKClicked(void *userObj)
 	}
 	else
 	{
-		if (!sb.ToUInt64(&destOfst))
+		if (!sb.ToUInt64(destOfst))
 		{
 			UI::MessageDialog::ShowDialog(CSTR("The offset is not in valid format"), CSTR("Hex Viewer"), me);
 			return;

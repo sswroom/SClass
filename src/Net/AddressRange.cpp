@@ -11,7 +11,7 @@ Net::AddressRange::AddressRange(const UTF8Char *addr, UOSInt addrLen, Bool scanB
 	UOSInt i = Text::StrIndexOfChar(addr, '/');
 	if (i != INVALID_INDEX)
 	{
-		if (!Text::StrToUInt8(&addr[i + 1], &this->param))
+		if (!Text::StrToUInt8(&addr[i + 1], this->param))
 		{
 			this->aType = AT_ERROR;
 		}
@@ -49,7 +49,7 @@ Net::AddressRange::AddressRange(const UTF8Char *addr, UOSInt addrLen, Bool scanB
 	i = Text::StrIndexOfChar(addr, '-');
 	if (i != INVALID_INDEX)
 	{
-		if (!Text::StrToUInt8(&addr[i + 1], &this->param))
+		if (!Text::StrToUInt8(&addr[i + 1], this->param))
 		{
 			this->aType = AT_ERROR;
 		}

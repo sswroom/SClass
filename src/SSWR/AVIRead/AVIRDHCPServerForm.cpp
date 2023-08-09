@@ -49,7 +49,7 @@ void __stdcall SSWR::AVIRead::AVIRDHCPServerForm::OnStartClicked(void *userObj)
 
 		sb.ClearStr();
 		me->txtFirstIP->GetText(sb);
-		if (!sb.ToUInt32(&firstIP))
+		if (!sb.ToUInt32(firstIP))
 		{
 			UI::MessageDialog::ShowDialog(CSTR("First IP is not valid"), CSTR("Error"), me);
 			return;
@@ -62,7 +62,7 @@ void __stdcall SSWR::AVIRead::AVIRDHCPServerForm::OnStartClicked(void *userObj)
 
 		sb.ClearStr();
 		me->txtDevCount->GetText(sb);
-		if (!sb.ToUInt32(&devCount))
+		if (!sb.ToUInt32(devCount))
 		{
 			UI::MessageDialog::ShowDialog(CSTR("Device Count is not valid"), CSTR("Error"), me);
 			return;

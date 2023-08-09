@@ -383,7 +383,7 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::TargetReq(SSWR::SDNSProxy::
 	UOSInt j;
 	UInt32 targetIP = 0;
 	OSInt targetIndex = -1;
-	req->GetQueryValueU32(CSTR("qry"), &targetIP);
+	req->GetQueryValueU32(CSTR("qry"), targetIP);
 	me->proxy->GetTargetList(&targetList);
 
 	i = 0;
@@ -524,7 +524,7 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::ClientReq(SSWR::SDNSProxy::
 	SSWR::SDNSProxy::SDNSProxyCore::ClientInfo *selCli = 0;
 	me->core->GetClientList(&cliList);
 
-	req->GetQueryValueU32(CSTR("cliId"), &selCliId);
+	req->GetQueryValueU32(CSTR("cliId"), selCliId);
 
 	i = 0;
 	j = cliList.GetCount();

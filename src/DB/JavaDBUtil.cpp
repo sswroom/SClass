@@ -219,7 +219,7 @@ DB::DBTool *DB::JavaDBUtil::OpenJDBC(Text::String *url, Text::String *username, 
 		scnt2 = Text::StrSplitP(sarr2, 2, sarr[0], ':');
 		if (scnt2 == 2)
 		{
-			if (!Text::StrToUInt16(sarr2[1].v, &port))
+			if (!Text::StrToUInt16(sarr2[1].v, port))
 			{
 				return 0;
 			}
