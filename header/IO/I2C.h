@@ -7,10 +7,10 @@ namespace IO
 	class I2C
 	{
 	protected:
-		IO::I2CChannel *channel;
+		NotNullPtr<IO::I2CChannel> channel;
 		UOSInt delayMS;
 	public:
-		I2C(IO::I2CChannel *channel, UOSInt delayMS);
+		I2C(NotNullPtr<IO::I2CChannel> channel, UOSInt delayMS);
 		virtual ~I2C();
 
 		void Wait();

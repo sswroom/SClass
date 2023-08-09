@@ -10,7 +10,6 @@
 
 Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
-	IO::MODBUSMaster *modbus;
 	IO::SerialPort *port;
 	IO::Device::SDM120M *sdm120m;
 	Double dval;
@@ -37,79 +36,79 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	}
 	else
 	{
-		NEW_CLASS(modbus, IO::MODBUSRTUMaster(port));
+		IO::MODBUSRTUMaster modbus(port);
 		NEW_CLASS(sdm120m, IO::Device::SDM120M(modbus, addr));
 
-		if (sdm120m->ReadVoltage(&dval))
+		if (sdm120m->ReadVoltage(dval))
 		{
 			printf("Voltage = %lfV\r\n", dval);
 		}
-		if (sdm120m->ReadCurrent(&dval))
+		if (sdm120m->ReadCurrent(dval))
 		{
 			printf("Current = %lfA\r\n", dval);
 		}
-		if (sdm120m->ReadActivePower(&dval))
+		if (sdm120m->ReadActivePower(dval))
 		{
 			printf("Active Power = %lfW\r\n", dval);
 		}
-		if (sdm120m->ReadApparentPower(&dval))
+		if (sdm120m->ReadApparentPower(dval))
 		{
 			printf("Apparent Power = %lfVA\r\n", dval);
 		}
-		if (sdm120m->ReadReactivePower(&dval))
+		if (sdm120m->ReadReactivePower(dval))
 		{
 			printf("Reactive Power = %lfVAr\r\n", dval);
 		}
-		if (sdm120m->ReadPowerFactor(&dval))
+		if (sdm120m->ReadPowerFactor(dval))
 		{
 			printf("Power Factor = %lf\r\n", dval);
 		}
-		if (sdm120m->ReadPhaseAngle(&dval))
+		if (sdm120m->ReadPhaseAngle(dval))
 		{
 			printf("Phase Angle = %lfdegree\r\n", dval);
 		}
-		if (sdm120m->ReadFrequency(&dval))
+		if (sdm120m->ReadFrequency(dval))
 		{
 			printf("Frequency = %lfHz\r\n", dval);
 		}
-		if (sdm120m->ReadImportActiveEnergy(&dval))
+		if (sdm120m->ReadImportActiveEnergy(dval))
 		{
 			printf("Import Active Energy = %lfkWh\r\n", dval);
 		}
-		if (sdm120m->ReadExportActiveEnergy(&dval))
+		if (sdm120m->ReadExportActiveEnergy(dval))
 		{
 			printf("Export Active Energy = %lfkWh\r\n", dval);
 		}
-		if (sdm120m->ReadImportReactiveEnergy(&dval))
+		if (sdm120m->ReadImportReactiveEnergy(dval))
 		{
 			printf("Import Reactive Energy = %lfkVArh\r\n", dval);
 		}
-		if (sdm120m->ReadExportReactiveEnergy(&dval))
+		if (sdm120m->ReadExportReactiveEnergy(dval))
 		{
 			printf("Export Reactive Energy = %lfkVArh\r\n", dval);
 		}
-		if (sdm120m->ReadTotalActiveEnergy(&dval))
+		if (sdm120m->ReadTotalActiveEnergy(dval))
 		{
 			printf("Total Active Energy = %lfkWh\r\n", dval);
 		}
-		if (sdm120m->ReadTotalReactiveEnergy(&dval))
+		if (sdm120m->ReadTotalReactiveEnergy(dval))
 		{
 			printf("Total Reactive Energy = %lfkVArh\r\n", dval);
 		}
 
-		if (sdm120m->ReadRelayPulseWidth(&ival))
+		if (sdm120m->ReadRelayPulseWidth(ival))
 		{
 			printf("Relay Pulse Width = %dms\r\n", ival);
 		}
-		if (sdm120m->ReadParityStop(&ival))
+		if (sdm120m->ReadParityStop(ival))
 		{
 			printf("Parity Stop = %d\r\n", ival);
 		}
-		if (sdm120m->ReadNetworkNode(&ival))
+		if (sdm120m->ReadNetworkNode(ival))
 		{
 			printf("Network Node = %d\r\n", ival);
 		}
-		if (sdm120m->ReadBaudRate(&ival))
+		if (sdm120m->ReadBaudRate(ival))
 		{
 			printf("Baud Rate = %d\r\n", ival);
 		}
@@ -128,7 +127,6 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		}*/
 
 		DEL_CLASS(sdm120m);
-		DEL_CLASS(modbus);
 	}
 	DEL_CLASS(port);
 	return 0;

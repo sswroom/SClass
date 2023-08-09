@@ -12,7 +12,7 @@
 #include "Math/Unit/ReactiveEnergy.h"
 #include "Math/Unit/ReactivePower.h"
 
-IO::Device::SDM120M::SDM120M(IO::MODBUSMaster *modbus, UInt8 addr) : IO::MODBUSDevice(modbus, addr)
+IO::Device::SDM120M::SDM120M(NotNullPtr<IO::MODBUSMaster> modbus, UInt8 addr) : IO::MODBUSDevice(modbus, addr)
 {
 }
 
@@ -20,133 +20,133 @@ IO::Device::SDM120M::~SDM120M()
 {
 }
 
-Bool IO::Device::SDM120M::ReadVoltage(Double *volt)
+Bool IO::Device::SDM120M::ReadVoltage(OutParam<Double> volt)
 {
 	return this->ReadInputFloat(0x0000, volt);
 }
 
-Bool IO::Device::SDM120M::ReadCurrent(Double *amps)
+Bool IO::Device::SDM120M::ReadCurrent(OutParam<Double> amps)
 {
 	return this->ReadInputFloat(0x0006, amps);
 }
 
-Bool IO::Device::SDM120M::ReadActivePower(Double *watt)
+Bool IO::Device::SDM120M::ReadActivePower(OutParam<Double> watt)
 {
 	return this->ReadInputFloat(0x000C, watt);
 }
 
-Bool IO::Device::SDM120M::ReadApparentPower(Double *voltAmps)
+Bool IO::Device::SDM120M::ReadApparentPower(OutParam<Double> voltAmps)
 {
 	return this->ReadInputFloat(0x0012, voltAmps);
 }
 
-Bool IO::Device::SDM120M::ReadReactivePower(Double *var)
+Bool IO::Device::SDM120M::ReadReactivePower(OutParam<Double> var)
 {
 	return this->ReadInputFloat(0x0018, var);
 }
 
-Bool IO::Device::SDM120M::ReadPowerFactor(Double *ratio)
+Bool IO::Device::SDM120M::ReadPowerFactor(OutParam<Double> ratio)
 {
 	return this->ReadInputFloat(0x001E, ratio);
 }
 
-Bool IO::Device::SDM120M::ReadPhaseAngle(Double *degree)
+Bool IO::Device::SDM120M::ReadPhaseAngle(OutParam<Double> degree)
 {
 	return this->ReadInputFloat(0x0024, degree);
 }
 
-Bool IO::Device::SDM120M::ReadFrequency(Double *hz)
+Bool IO::Device::SDM120M::ReadFrequency(OutParam<Double> hz)
 {
 	return this->ReadInputFloat(0x0046, hz);
 }
 
-Bool IO::Device::SDM120M::ReadImportActiveEnergy(Double *kwh)
+Bool IO::Device::SDM120M::ReadImportActiveEnergy(OutParam<Double> kwh)
 {
 	return this->ReadInputFloat(0x0048, kwh);
 }
 
-Bool IO::Device::SDM120M::ReadExportActiveEnergy(Double *kwh)
+Bool IO::Device::SDM120M::ReadExportActiveEnergy(OutParam<Double> kwh)
 {
 	return this->ReadInputFloat(0x004A, kwh);
 }
 
-Bool IO::Device::SDM120M::ReadImportReactiveEnergy(Double *kvarh)
+Bool IO::Device::SDM120M::ReadImportReactiveEnergy(OutParam<Double> kvarh)
 {
 	return this->ReadInputFloat(0x004C, kvarh);
 }
 
-Bool IO::Device::SDM120M::ReadExportReactiveEnergy(Double *kvarh)
+Bool IO::Device::SDM120M::ReadExportReactiveEnergy(OutParam<Double> kvarh)
 {
 	return this->ReadInputFloat(0x004E, kvarh);
 }
 
-Bool IO::Device::SDM120M::ReadTotalActiveEnergy(Double *kwh)
+Bool IO::Device::SDM120M::ReadTotalActiveEnergy(OutParam<Double> kwh)
 {
 	return this->ReadInputFloat(0x0156, kwh);
 }
 
-Bool IO::Device::SDM120M::ReadTotalReactiveEnergy(Double *kvarh)
+Bool IO::Device::SDM120M::ReadTotalReactiveEnergy(OutParam<Double> kvarh)
 {
 	return this->ReadInputFloat(0x0158, kvarh);
 }
 
-Bool IO::Device::SDM120M::ReadRelayPulseWidth(Int32 *ms)
+Bool IO::Device::SDM120M::ReadRelayPulseWidth(OutParam<Int32> ms)
 {
 	Double dval;
-	if (this->ReadHoldingFloat(0x000A, &dval))
+	if (this->ReadHoldingFloat(0x000A, dval))
 	{
-		*ms = Double2Int32(dval);
+		ms.Set(Double2Int32(dval));
 		return true;
 	}
 	return false;
 }
 
-Bool IO::Device::SDM120M::ReadParityStop(Int32 *parity)
+Bool IO::Device::SDM120M::ReadParityStop(OutParam<Int32> parity)
 {
 	Double dval;
-	if (this->ReadHoldingFloat(0x0012, &dval))
+	if (this->ReadHoldingFloat(0x0012, dval))
 	{
-		*parity = Double2Int32(dval);
+		parity.Set(Double2Int32(dval));
 		return true;
 	}
 	return false;
 }
 
-Bool IO::Device::SDM120M::ReadNetworkNode(Int32 *addr)
+Bool IO::Device::SDM120M::ReadNetworkNode(OutParam<Int32> addr)
 {
 	Double dval;
-	if (this->ReadHoldingFloat(0x0014, &dval))
+	if (this->ReadHoldingFloat(0x0014, dval))
 	{
-		*addr = Double2Int32(dval);
+		addr.Set(Double2Int32(dval));
 		return true;
 	}
 	return false;
 }
 
-Bool IO::Device::SDM120M::ReadBaudRate(Int32 *baudRate)
+Bool IO::Device::SDM120M::ReadBaudRate(OutParam<Int32> baudRate)
 {
 	Double brId = 0;
-	if (this->ReadHoldingFloat(0x001C, &brId))
+	if (this->ReadHoldingFloat(0x001C, brId))
 	{
 		switch (Double2Int32(brId))
 		{
 		case 0:
-			*baudRate = 2400;
+			baudRate.Set(2400);
 			break;
 		case 1:
-			*baudRate = 4800;
+			baudRate.Set(4800);
 			break;
 		case 2:
-			*baudRate = 9600;
+			baudRate.Set(9600);
 			break;
 		case 3:
-			*baudRate = 19200;
+			baudRate.Set(19200);
 			break;
 		case 4:
-			*baudRate = 38400;
+			baudRate.Set(38400);
 			break;
 		default:
-			*baudRate = 0;
+			baudRate.Set(0);
 			break;
 		}
 		return true;

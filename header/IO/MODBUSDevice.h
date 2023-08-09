@@ -12,7 +12,7 @@ namespace IO
 	public:
 		typedef void (__stdcall *MODBUSDataEntry)(void *userObj, Text::CString name, UInt8 devAddr, UInt32 regAddr, IO::MODBUSController::DataType dt, Math::Unit::UnitBase::ValueType vt, Int32 unit, Int32 denorm);
 	private:
-		IO::MODBUSMaster *modbus;
+		NotNullPtr<IO::MODBUSMaster> modbus;
 		Data::Duration timeout;
 		UInt8 addr;
 		Sync::Event cbEvt;
@@ -29,12 +29,12 @@ namespace IO
 	protected:
 		void SetTimeout(Data::Duration timeout);
 
-		Bool ReadInputI16(UInt16 addr, Int32 *outVal);
-		Bool ReadInputFloat(UInt16 addr, Double *outVal);
+		Bool ReadInputI16(UInt16 addr, OutParam<Int32> outVal);
+		Bool ReadInputFloat(UInt16 addr, OutParam<Double> outVal);
 		Bool ReadInputBuff(UInt16 addr, UInt16 regCnt, UInt8 *buff);
-		Bool ReadHoldingI16(UInt16 addr, Int32 *outVal);
-		Bool ReadHoldingI32(UInt16 addr, Int32 *outVal);
-		Bool ReadHoldingFloat(UInt16 addr, Double *outVal);
+		Bool ReadHoldingI16(UInt16 addr, OutParam<Int32> outVal);
+		Bool ReadHoldingI32(UInt16 addr, OutParam<Int32> outVal);
+		Bool ReadHoldingFloat(UInt16 addr, OutParam<Double> outVal);
 		Bool WriteHoldingU16(UInt16 addr, UInt16 val);
 		Bool WriteHoldingsU16(UInt16 addr, UInt16 cnt, UInt16 *vals);
 		Bool WriteHoldingI32(UInt16 addr, Int32 val);
@@ -44,7 +44,7 @@ namespace IO
 		Bool ReadCoil(UInt16 addr);
 		Bool WriteDOutput(UInt16 addr, Bool isHigh);
 	public:
-		MODBUSDevice(IO::MODBUSMaster *modbus, UInt8 addr);
+		MODBUSDevice(NotNullPtr<IO::MODBUSMaster> modbus, UInt8 addr);
 		virtual ~MODBUSDevice();
 	};
 }

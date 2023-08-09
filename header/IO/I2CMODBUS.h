@@ -8,9 +8,9 @@ namespace IO
 	class I2CMODBUS : public I2C
 	{
 	private:
-		Crypto::Hash::CRC16R *crc;
+		Crypto::Hash::CRC16R crc;
 	public:
-		I2CMODBUS(IO::I2CChannel *channel, UOSInt delayMS);
+		I2CMODBUS(NotNullPtr<IO::I2CChannel> channel, UOSInt delayMS);
 		virtual ~I2CMODBUS();
 
 		virtual Bool ReadBuff(UInt8 regAddr, UInt8 len, UInt8 *data);

@@ -61,14 +61,13 @@ Double IO::Device::BME280::CalcPressureRAW(Int32 tRAW, Int32 pressureRAW)
 	return (Double)rslt / 256.0;
 }
 
-IO::Device::BME280::BME280(IO::I2CChannel *channel, Bool toRelease)
+IO::Device::BME280::BME280(NotNullPtr<IO::I2CChannel> channel, Bool toRelease) : i2c(channel, 0)
 {
 	this->channel = channel;
 	this->toRelease = toRelease;
-	NEW_CLASS(this->i2c, IO::I2C(this->channel, 0));
 	this->valid = false;
 	UInt8 id;
-	if (this->i2c->ReadBuff(0xd0, 1, &id))
+	if (this->i2c.ReadBuff(0xd0, 1, &id))
 	{
 		this->valid = (id == 0x60); //BME280
 	}
@@ -80,28 +79,27 @@ IO::Device::BME280::BME280(IO::I2CChannel *channel, Bool toRelease)
 
 IO::Device::BME280::~BME280()
 {
-	SDEL_CLASS(this->i2c);
 	if (this->toRelease)
 	{
-		DEL_CLASS(this->channel);
+		this->channel.Delete();
 	}
 }
 
 Bool IO::Device::BME280::IsError()
 {
-	return this->i2c == 0 || !this->valid;
+	return !this->valid;
 }
 
 Bool IO::Device::BME280::Reset()
 {
 	UInt8 buff[26];
 	buff[0] = 0xB6;
-	if (!this->i2c->WriteBuff(0xE0, 1, buff)) //Reset
+	if (!this->i2c.WriteBuff(0xE0, 1, buff)) //Reset
 	{
 		return false;
 	}
 	Sync::SimpleThread::Sleep(300);
-	if (!this->i2c->ReadBuff(0x88, 0xa2 - 0x88, buff))
+	if (!this->i2c.ReadBuff(0x88, 0xa2 - 0x88, buff))
 	{
 		return false;
 	}
@@ -122,7 +120,7 @@ Bool IO::Device::BME280::Reset()
 		this->h1 = buff[25];
 	}
 
-	if (!this->i2c->ReadBuff(0xE1, 7, buff))
+	if (!this->i2c.ReadBuff(0xE1, 7, buff))
 	{
 		return false;
 	}
@@ -136,22 +134,22 @@ Bool IO::Device::BME280::Reset()
 	}
 	
 	buff[0] = 0x40;
-	this->i2c->WriteBuff(0xF5, 1, buff); //config: t_sb = 125ms, filter = off
+	this->i2c.WriteBuff(0xF5, 1, buff); //config: t_sb = 125ms, filter = off
 	buff[0] = 0x93;
-	this->i2c->WriteBuff(0xF4, 1, buff); //ctrl_meas = tx8, px8, normal mode
+	this->i2c.WriteBuff(0xF4, 1, buff); //ctrl_meas = tx8, px8, normal mode
 	buff[0] = 0x4;
-	this->i2c->WriteBuff(0xF2, 1, buff); //ctrl_humi = hx8
+	this->i2c.WriteBuff(0xF2, 1, buff); //ctrl_humi = hx8
 	return true;
 }
 
-Bool IO::Device::BME280::ReadTemperature(Double *temp)
+Bool IO::Device::BME280::ReadTemperature(OutParam<Double> temp)
 {
 	UInt8 buff[3];
-	if (this->i2c == 0 || !this->valid)
+	if (!this->valid)
 		return false;
-	if (this->i2c->ReadBuff(0xFA, 3, buff))
+	if (this->i2c.ReadBuff(0xFA, 3, buff))
 	{
-		*temp = this->CalcTempRAW((buff[0] << 12) | (buff[1] << 4) | (buff[2] >> 4));
+		temp.Set(this->CalcTempRAW((buff[0] << 12) | (buff[1] << 4) | (buff[2] >> 4)));
 		return true;
 	}
 	else
@@ -160,14 +158,14 @@ Bool IO::Device::BME280::ReadTemperature(Double *temp)
 	}
 }
 
-Bool IO::Device::BME280::ReadRH(Double *rh)
+Bool IO::Device::BME280::ReadRH(OutParam<Double> rh)
 {
 	UInt8 buff[5];
-	if (this->i2c == 0 || !this->valid)
+	if (!this->valid)
 		return false;
-	if (this->i2c->ReadBuff(0xFA, 5, buff))
+	if (this->i2c.ReadBuff(0xFA, 5, buff))
 	{
-		*rh = this->CalcRHRAW((buff[0] << 12) | (buff[1] << 4) | (buff[2] >> 4), ReadMUInt16(&buff[3]));
+		rh.Set(this->CalcRHRAW((buff[0] << 12) | (buff[1] << 4) | (buff[2] >> 4), ReadMUInt16(&buff[3])));
 		return true;
 	}
 	else
@@ -176,14 +174,14 @@ Bool IO::Device::BME280::ReadRH(Double *rh)
 	}
 }
 
-Bool IO::Device::BME280::ReadPressure(Double *pressure)
+Bool IO::Device::BME280::ReadPressure(OutParam<Double> pressure)
 {
 	UInt8 buff[6];
-	if (this->i2c == 0 || !this->valid)
+	if (!this->valid)
 		return false;
-	if (this->i2c->ReadBuff(0xF7, 6, buff))
+	if (this->i2c.ReadBuff(0xF7, 6, buff))
 	{
-		*pressure = this->CalcPressureRAW((buff[3] << 12) | (buff[4] << 4) | (buff[5] >> 4), (buff[0] << 12) | (buff[1] << 4) | (buff[2] >> 4));
+		pressure.Set(this->CalcPressureRAW((buff[3] << 12) | (buff[4] << 4) | (buff[5] >> 4), (buff[0] << 12) | (buff[1] << 4) | (buff[2] >> 4)));
 		return true;
 	}
 	else
@@ -192,17 +190,17 @@ Bool IO::Device::BME280::ReadPressure(Double *pressure)
 	}
 }
 
-Bool IO::Device::BME280::ReadAll(Double *temp, Double *rh, Double *pressure)
+Bool IO::Device::BME280::ReadAll(OutParam<Double> temp, OutParam<Double> rh, OutParam<Double> pressure)
 {
 	UInt8 buff[8];
-	if (this->i2c == 0 || !this->valid)
+	if (!this->valid)
 		return false;
-	if (this->i2c->ReadBuff(0xF7, 8, buff))
+	if (this->i2c.ReadBuff(0xF7, 8, buff))
 	{
 		Int32 tVal = (buff[3] << 12) | (buff[4] << 4) | (buff[5] >> 4);
-		*rh = this->CalcRHRAW(tVal, ReadMUInt16(&buff[6]));
-		*temp = this->CalcTempRAW(tVal);
-		*pressure = this->CalcPressureRAW(tVal, (buff[0] << 12) | (buff[1] << 4) | (buff[2] >> 4));
+		rh.Set(this->CalcRHRAW(tVal, ReadMUInt16(&buff[6])));
+		temp.Set(this->CalcTempRAW(tVal));
+		pressure.Set(this->CalcPressureRAW(tVal, (buff[0] << 12) | (buff[1] << 4) | (buff[2] >> 4)));
 		return true;
 	}
 	else

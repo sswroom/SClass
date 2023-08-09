@@ -154,12 +154,12 @@ void IO::MODBUSDevice::SetTimeout(Data::Duration timeout)
 	this->timeout = timeout;
 }
 
-Bool IO::MODBUSDevice::ReadInputI16(UInt16 addr, Int32 *outVal)
+Bool IO::MODBUSDevice::ReadInputI16(UInt16 addr, OutParam<Int32> outVal)
 {
 	Bool succ;
 	Sync::MutexUsage mutUsage(this->reqMut);
 	this->reqHasResult = false;
-	this->reqIResult = outVal;
+	this->reqIResult = outVal.Ptr();
 	this->cbEvt.Clear();
 	this->modbus->ReadInputRegisters(this->addr, addr, 1);
 	this->cbEvt.Wait(this->timeout);
@@ -169,11 +169,11 @@ Bool IO::MODBUSDevice::ReadInputI16(UInt16 addr, Int32 *outVal)
 	return succ;
 }
 
-Bool IO::MODBUSDevice::ReadInputFloat(UInt16 addr, Double *outVal)
+Bool IO::MODBUSDevice::ReadInputFloat(UInt16 addr, OutParam<Double> outVal)
 {
 	Sync::MutexUsage mutUsage(this->reqMut);
 	this->reqHasResult = false;
-	this->reqDResult = outVal;
+	this->reqDResult = outVal.Ptr();
 	this->cbEvt.Clear();
 	this->modbus->ReadInputRegisters(this->addr, addr, 2);
 	this->cbEvt.Wait(this->timeout);
@@ -194,11 +194,11 @@ Bool IO::MODBUSDevice::ReadInputBuff(UInt16 addr, UInt16 regCnt, UInt8 *buff)
 }
 
 
-Bool IO::MODBUSDevice::ReadHoldingI16(UInt16 addr, Int32 *outVal)
+Bool IO::MODBUSDevice::ReadHoldingI16(UInt16 addr, OutParam<Int32> outVal)
 {
 	Sync::MutexUsage mutUsage(this->reqMut);
 	this->reqHasResult = false;
-	this->reqIResult = outVal;
+	this->reqIResult = outVal.Ptr();
 	this->cbEvt.Clear();
 	this->modbus->ReadHoldingRegisters(this->addr, addr, 1);
 	this->cbEvt.Wait(this->timeout);
@@ -206,11 +206,11 @@ Bool IO::MODBUSDevice::ReadHoldingI16(UInt16 addr, Int32 *outVal)
 	return this->reqHasResult;
 }
 
-Bool IO::MODBUSDevice::ReadHoldingI32(UInt16 addr, Int32 *outVal)
+Bool IO::MODBUSDevice::ReadHoldingI32(UInt16 addr, OutParam<Int32> outVal)
 {
 	Sync::MutexUsage mutUsage(this->reqMut);
 	this->reqHasResult = false;
-	this->reqIResult = outVal;
+	this->reqIResult = outVal.Ptr();
 	this->cbEvt.Clear();
 	this->modbus->ReadHoldingRegisters(this->addr, addr, 2);
 	this->cbEvt.Wait(this->timeout);
@@ -218,11 +218,11 @@ Bool IO::MODBUSDevice::ReadHoldingI32(UInt16 addr, Int32 *outVal)
 	return this->reqHasResult;
 }
 
-Bool IO::MODBUSDevice::ReadHoldingFloat(UInt16 addr, Double *outVal)
+Bool IO::MODBUSDevice::ReadHoldingFloat(UInt16 addr, OutParam<Double> outVal)
 {
 	Sync::MutexUsage mutUsage(this->reqMut);
 	this->reqHasResult = false;
-	this->reqDResult = outVal;
+	this->reqDResult = outVal.Ptr();
 	this->cbEvt.Clear();
 	this->modbus->ReadHoldingRegisters(this->addr, addr, 2);
 	this->cbEvt.Wait(this->timeout);
@@ -352,7 +352,7 @@ Bool IO::MODBUSDevice::WriteDOutput(UInt16 addr, Bool isHigh)
 	return this->reqHasResult;
 }
 
-IO::MODBUSDevice::MODBUSDevice(IO::MODBUSMaster *modbus, UInt8 addr)
+IO::MODBUSDevice::MODBUSDevice(NotNullPtr<IO::MODBUSMaster> modbus, UInt8 addr)
 {
 	this->modbus = modbus;
 	this->addr = addr;

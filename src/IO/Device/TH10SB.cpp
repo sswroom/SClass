@@ -2,7 +2,7 @@
 #include "Data/ByteTool.h"
 #include "IO/Device/TH10SB.h"
 
-IO::Device::TH10SB::TH10SB(IO::MODBUSMaster *modbus, UInt8 addr) : IO::MODBUSDevice(modbus, addr)
+IO::Device::TH10SB::TH10SB(NotNullPtr<IO::MODBUSMaster> modbus, UInt8 addr) : IO::MODBUSDevice(modbus, addr)
 {
 }
 
@@ -10,13 +10,13 @@ IO::Device::TH10SB::~TH10SB()
 {
 }
 
-Bool IO::Device::TH10SB::ReadTempRH(Double *temp, Double *rh)
+Bool IO::Device::TH10SB::ReadTempRH(OutParam<Double> temp, OutParam<Double> rh)
 {
 	UInt8 buff[4];
 	if (this->ReadInputBuff(0, 2, buff))
 	{
-		*temp = ReadMInt16(buff) * 0.1;
-		*rh = ReadMInt16(&buff[2]) * 0.1;
+		temp.Set(ReadMInt16(buff) * 0.1);
+		rh.Set(ReadMInt16(&buff[2]) * 0.1);
 		return true;
 	}
 	else
@@ -25,12 +25,12 @@ Bool IO::Device::TH10SB::ReadTempRH(Double *temp, Double *rh)
 	}
 }
 
-Bool IO::Device::TH10SB::ReadTemp(Double *temp)
+Bool IO::Device::TH10SB::ReadTemp(OutParam<Double> temp)
 {
 	Int32 tmpV;
-	if (this->ReadInputI16(0, &tmpV))
+	if (this->ReadInputI16(0, tmpV))
 	{
-		*temp = tmpV * 0.1;
+		temp.Set(tmpV * 0.1);
 		return true;
 	}
 	else
@@ -39,12 +39,12 @@ Bool IO::Device::TH10SB::ReadTemp(Double *temp)
 	}
 }
 
-Bool IO::Device::TH10SB::ReadRH(Double *rh)
+Bool IO::Device::TH10SB::ReadRH(OutParam<Double> rh)
 {
 	Int32 tmpV;
-	if (this->ReadInputI16(1, &tmpV))
+	if (this->ReadInputI16(1, tmpV))
 	{
-		*rh = tmpV * 0.1;
+		rh.Set(tmpV * 0.1);
 		return true;
 	}
 	else
@@ -53,36 +53,36 @@ Bool IO::Device::TH10SB::ReadRH(Double *rh)
 	}
 }
 
-Bool IO::Device::TH10SB::ReadId(Int32 *id)
+Bool IO::Device::TH10SB::ReadId(OutParam<Int32> id)
 {
 	return this->ReadHoldingI16(100, id);
 }
 
-Bool IO::Device::TH10SB::ReadBaudRate(Int32 *baudRate)
+Bool IO::Device::TH10SB::ReadBaudRate(OutParam<Int32> baudRate)
 {
 	Int32 br;
-	Bool ret = this->ReadHoldingI16(101, &br);
+	Bool ret = this->ReadHoldingI16(101, br);
 	if (ret)
 	{
 		switch (br)
 		{
 		case 0:
-			*baudRate = 1200;
+			baudRate.Set(1200);
 			break;
 		case 1:
-			*baudRate = 2400;
+			baudRate.Set(2400);
 			break;
 		case 2:
-			*baudRate = 4800;
+			baudRate.Set(4800);
 			break;
 		case 3:
-			*baudRate = 9600;
+			baudRate.Set(9600);
 			break;
 		case 4:
-			*baudRate = 19200;
+			baudRate.Set(19200);
 			break;
 		default:
-			*baudRate = 0;
+			baudRate.Set(0);
 			break;
 		}
 	}

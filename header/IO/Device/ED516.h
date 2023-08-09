@@ -9,14 +9,14 @@ namespace IO
 		class ED516 : public IO::MODBUSDevice
 		{
 		public:
-			ED516(IO::MODBUSMaster *modbus, UInt8 addr);
+			ED516(NotNullPtr<IO::MODBUSMaster> modbus, UInt8 addr);
 			virtual ~ED516();
 
 			Bool IsDIHighByCoil(UInt16 diNum);
 			Bool IsDIHighByInput(UInt16 diNum);
 			Bool IsDIHighByReg(UInt16 diNum);
 			UInt16 GetDICountByReg(UInt16 diNum);
-			Bool GetDICountByReg(UInt16 diNum, Int32 *val);
+			Bool GetDICountByReg(UInt16 diNum, OutParam<Int32> val);
 			UInt16 GetDICountByHolding(UInt16 diNum);
 			Bool ClearDICount(UInt16 diNum);
 

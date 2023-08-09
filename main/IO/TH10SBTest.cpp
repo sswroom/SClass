@@ -10,7 +10,6 @@
 
 Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
-	IO::MODBUSMaster *modbus;
 	IO::SerialPort *port;
 	IO::Device::TH10SB *th10sb;
 	UInt32 portNum = 33;
@@ -38,10 +37,10 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		Double temp;
 		Double rh;
 		Int32 iVal;
-		NEW_CLASS(modbus, IO::MODBUSRTUMaster(port));
+		IO::MODBUSRTUMaster modbus(port);
 		NEW_CLASS(th10sb, IO::Device::TH10SB(modbus, addr));
 
-		if (th10sb->ReadTempRH(&temp, &rh))
+		if (th10sb->ReadTempRH(temp, rh))
 		{
 			printf("Temp = %lf, RH = %lf\r\n", temp, rh);
 		}
@@ -50,12 +49,12 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			printf("Error in reading temp/rh\r\n");
 		}
 
-		if (th10sb->ReadBaudRate(&iVal))
+		if (th10sb->ReadBaudRate(iVal))
 		{
 			printf("BaudRate = %d\r\n", iVal);
 		}
 
-		if (th10sb->ReadId(&iVal))
+		if (th10sb->ReadId(iVal))
 		{
 			printf("Id = %d\r\n", iVal);
 		}
@@ -70,7 +69,6 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		}*/
 
 		DEL_CLASS(th10sb);
-		DEL_CLASS(modbus);
 	}
 	DEL_CLASS(port);
 	return 0;

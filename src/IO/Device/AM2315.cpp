@@ -9,7 +9,7 @@
 #include <stdio.h>
 #endif
 
-IO::Device::AM2315::AM2315(IO::I2CChannel *channel, Bool toRelease)
+IO::Device::AM2315::AM2315(NotNullPtr<IO::I2CChannel> channel, Bool toRelease)
 {
 	this->channel = channel;
 	this->toRelease = toRelease;
@@ -52,7 +52,7 @@ IO::Device::AM2315::~AM2315()
 	SDEL_CLASS(this->i2c);
 	if (this->toRelease)
 	{
-		DEL_CLASS(this->channel);
+		this->channel.Delete();
 	}
 }
 
@@ -74,7 +74,7 @@ void IO::Device::AM2315::Wakeup()
 	}
 }
 
-Bool IO::Device::AM2315::ReadTemperature(Single *temp)
+Bool IO::Device::AM2315::ReadTemperature(OutParam<Single> temp)
 {
 	UInt8 buff[2];
 	if (this->i2c == 0)
@@ -82,7 +82,7 @@ Bool IO::Device::AM2315::ReadTemperature(Single *temp)
 	this->Wakeup();
 	if (this->i2c->ReadBuff(2, 2, buff))
 	{
-		*temp = (Single)(ReadMInt16(buff) * 0.1);
+		temp.Set((Single)(ReadMInt16(buff) * 0.1));
 		return true;
 	}
 	else
@@ -91,7 +91,7 @@ Bool IO::Device::AM2315::ReadTemperature(Single *temp)
 	}
 }
 
-Bool IO::Device::AM2315::ReadRH(Single *rh)
+Bool IO::Device::AM2315::ReadRH(OutParam<Single> rh)
 {
 	UInt8 buff[2];
 	if (this->i2c == 0)
@@ -99,7 +99,7 @@ Bool IO::Device::AM2315::ReadRH(Single *rh)
 	this->Wakeup();
 	if (this->i2c->ReadBuff(0, 2, buff))
 	{
-		*rh = (Single)(ReadMUInt16(buff) * 0.1);
+		rh.Set((Single)(ReadMUInt16(buff) * 0.1));
 		return true;
 	}
 	else

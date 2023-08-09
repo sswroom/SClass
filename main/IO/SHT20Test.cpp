@@ -10,7 +10,6 @@
 
 Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
-	IO::MODBUSMaster *modbus;
 	IO::SerialPort *port;
 	IO::Device::SHT20 *sht20;
 	UInt32 portNum = 33;
@@ -37,10 +36,10 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	{
 		Double temp;
 		Double rh;
-		NEW_CLASS(modbus, IO::MODBUSRTUMaster(port));
+		IO::MODBUSRTUMaster modbus(port);
 		NEW_CLASS(sht20, IO::Device::SHT20(modbus, addr));
 
-		if (sht20->ReadTempRH(&temp, &rh))
+		if (sht20->ReadTempRH(temp, rh))
 		{
 			printf("Temp = %lf, RH = %lf\r\n", temp, rh);
 		}
@@ -49,22 +48,22 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			printf("Error in reading temp/rh\r\n");
 		}
 
-/*		if (sht20->ReadBaudRate(&iVal))
+/*		if (sht20->ReadBaudRate(iVal))
 		{
 			printf("BaudRate = %d\r\n", iVal);
 		}
 
-		if (sht20->ReadParity(&iVal))
+		if (sht20->ReadParity(iVal))
 		{
 			printf("Parity = %d\r\n", iVal);
 		}
 
-		if (sht20->ReadId(&iVal))
+		if (sht20->ReadId(iVal))
 		{
 			printf("Id = %d\r\n", iVal);
 		}
 
-		if (sht20->ReadIdValid(&iVal))
+		if (sht20->ReadIdValid(iVal))
 		{
 			printf("IdValid = %d\r\n", iVal);
 		}
@@ -79,7 +78,6 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		}*/
 
 		DEL_CLASS(sht20);
-		DEL_CLASS(modbus);
 	}
 	DEL_CLASS(port);
 	return 0;

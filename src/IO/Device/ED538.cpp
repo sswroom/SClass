@@ -3,7 +3,7 @@
 #include "Math/Math.h"
 #include "Math/Unit/Count.h"
 
-IO::Device::ED538::ED538(IO::MODBUSMaster *modbus, UInt8 addr) : IO::MODBUSDevice(modbus, addr)
+IO::Device::ED538::ED538(NotNullPtr<IO::MODBUSMaster> modbus, UInt8 addr) : IO::MODBUSDevice(modbus, addr)
 {
 }
 
@@ -30,7 +30,7 @@ Bool IO::Device::ED538::IsDIHighByReg(UInt16 diNum)
 	if (diNum >= 8)
 		return false;
 	Int32 val;
-	if (!this->ReadInputI16((UInt16)(diNum + 0x20), &val))
+	if (!this->ReadInputI16((UInt16)(diNum + 0x20), val))
 		return false;
 	return val != 0;
 }
@@ -40,12 +40,12 @@ UInt16 IO::Device::ED538::GetDICountByReg(UInt16 diNum)
 	if (diNum >= 8)
 		return 0;
 	Int32 val;
-	if (!this->ReadInputI16(diNum, &val))
+	if (!this->ReadInputI16(diNum, val))
 		return 0;
 	return (UInt16)val;
 }
 
-Bool IO::Device::ED538::GetDICountByReg(UInt16 diNum, Int32 *val)
+Bool IO::Device::ED538::GetDICountByReg(UInt16 diNum, OutParam<Int32> val)
 {
 	if (diNum >= 8)
 		return false;
@@ -57,7 +57,7 @@ UInt16 IO::Device::ED538::GetDICountByHolding(UInt16 diNum)
 	if (diNum >= 8)
 		return 0;
 	Int32 val;
-	if (!this->ReadHoldingI16(diNum, &val))
+	if (!this->ReadHoldingI16(diNum, val))
 		return 0;
 	return (UInt16)val;
 }

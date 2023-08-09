@@ -4,7 +4,7 @@
 #include "Math/Unit/Count.h"
 #include "Math/Unit/Temperature.h"
 
-IO::Device::AMGU4241::AMGU4241(IO::MODBUSMaster *modbus, UInt8 addr) : IO::MODBUSDevice(modbus, addr)
+IO::Device::AMGU4241::AMGU4241(NotNullPtr<IO::MODBUSMaster> modbus, UInt8 addr) : IO::MODBUSDevice(modbus, addr)
 {
 }
 
@@ -12,23 +12,23 @@ IO::Device::AMGU4241::~AMGU4241()
 {
 }
 
-Bool IO::Device::AMGU4241::ReadPeopleCount(Int32 *count)
+Bool IO::Device::AMGU4241::ReadPeopleCount(OutParam<Int32> count)
 {
 	return this->ReadHoldingI16(0, count);
 }
 
-Bool IO::Device::AMGU4241::ReadTemperature(Double *temp)
+Bool IO::Device::AMGU4241::ReadTemperature(OutParam<Double> temp)
 {
 	Int32 iVal;
-	if (this->ReadHoldingI16(6, &iVal))
+	if (this->ReadHoldingI16(6, iVal))
 	{
 		if (iVal & 0x8000)
 		{
-			*temp = -(iVal & 0x7fff) / 256.0;
+			temp.Set(-(iVal & 0x7fff) / 256.0);
 		}
 		else
 		{
-			*temp = (iVal & 0x7fff) / 256.0;
+			temp.Set((iVal & 0x7fff) / 256.0);
 		}
 		return true;
 	}

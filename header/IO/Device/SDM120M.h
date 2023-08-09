@@ -9,28 +9,28 @@ namespace IO
 		class SDM120M : public IO::MODBUSDevice
 		{
 		public:
-			SDM120M(IO::MODBUSMaster *modbus, UInt8 addr);
+			SDM120M(NotNullPtr<IO::MODBUSMaster> modbus, UInt8 addr);
 			virtual ~SDM120M();
 
-			Bool ReadVoltage(Double *volt);
-			Bool ReadCurrent(Double *amps);
-			Bool ReadActivePower(Double *watt);
-			Bool ReadApparentPower(Double *voltAmps);
-			Bool ReadReactivePower(Double *var);
-			Bool ReadPowerFactor(Double *ratio);
-			Bool ReadPhaseAngle(Double *degree); //CT: no this field
-			Bool ReadFrequency(Double *hz);
-			Bool ReadImportActiveEnergy(Double *kwh);
-			Bool ReadExportActiveEnergy(Double *kwh);
-			Bool ReadImportReactiveEnergy(Double *kvarh); //CT: no this field
-			Bool ReadExportReactiveEnergy(Double *kvarh); //CT: no this field
-			Bool ReadTotalActiveEnergy(Double *kwh);
-			Bool ReadTotalReactiveEnergy(Double *kvarh); //CT: no this field
+			Bool ReadVoltage(OutParam<Double> volt);
+			Bool ReadCurrent(OutParam<Double> amps);
+			Bool ReadActivePower(OutParam<Double> watt);
+			Bool ReadApparentPower(OutParam<Double> voltAmps);
+			Bool ReadReactivePower(OutParam<Double> var);
+			Bool ReadPowerFactor(OutParam<Double> ratio);
+			Bool ReadPhaseAngle(OutParam<Double> degree); //CT: no this field
+			Bool ReadFrequency(OutParam<Double> hz);
+			Bool ReadImportActiveEnergy(OutParam<Double> kwh);
+			Bool ReadExportActiveEnergy(OutParam<Double> kwh);
+			Bool ReadImportReactiveEnergy(OutParam<Double> kvarh); //CT: no this field
+			Bool ReadExportReactiveEnergy(OutParam<Double> kvarh); //CT: no this field
+			Bool ReadTotalActiveEnergy(OutParam<Double> kwh);
+			Bool ReadTotalReactiveEnergy(OutParam<Double> kvarh); //CT: no this field
 
-			Bool ReadRelayPulseWidth(Int32 *ms); //CT: no this field
-			Bool ReadParityStop(Int32 *parity); //CT: no this field
-			Bool ReadNetworkNode(Int32 *addr);
-			Bool ReadBaudRate(Int32 *baudRate);
+			Bool ReadRelayPulseWidth(OutParam<Int32> ms); //CT: no this field
+			Bool ReadParityStop(OutParam<Int32> parity); //CT: no this field
+			Bool ReadNetworkNode(OutParam<Int32> addr);
+			Bool ReadBaudRate(OutParam<Int32> baudRate);
 
 			Bool SetRelayPulseWidth(Single ms); //CT: no this field
 			Bool SetNetworkNode(UInt8 id);

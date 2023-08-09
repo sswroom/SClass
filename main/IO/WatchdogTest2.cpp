@@ -45,9 +45,9 @@ UInt32 __stdcall WatchdogThread(void *userObj)
 				consoleWriter->WriteLineC(UTF8STRC("Keep Alive"));
 				wd->Keepalive();
 			}
-			if (am2315->ReadTemperature(&tempVal))
+			if (am2315->ReadTemperature(tempVal))
 			{
-				if (am2315->ReadRH(&rhVal))
+				if (am2315->ReadRH(rhVal))
 				{
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("AM2315: Temp = "));
@@ -127,8 +127,8 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	running = false;
 	httpRunning = false;
 	toStop = false;
-	IO::I2CChannel *channel = IO::Device::AM2315::CreateDefChannel(1);
-	if (channel == 0)
+	NotNullPtr<IO::I2CChannel> channel;
+	if (!channel.Set(IO::Device::AM2315::CreateDefChannel(1)))
 	{
 		console.WriteLineC(UTF8STRC("I2C Bus not found"));
 		return 0;

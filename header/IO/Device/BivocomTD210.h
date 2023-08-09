@@ -9,15 +9,15 @@ namespace IO
 		class BivocomTD210 : public IO::MODBUSDevice
 		{
 		public:
-			BivocomTD210(IO::MODBUSMaster *modbus, UInt8 addr);
+			BivocomTD210(NotNullPtr<IO::MODBUSMaster> modbus, UInt8 addr);
 			virtual ~BivocomTD210();
 
 			Bool ReadIOs(Int32 *io); //Bit0 = IO1, Bit1 = IO@, Bit2 = IO3
 			Bool SetOutput1(Bool isHigh);
 			Bool SetOutput2(Bool isHigh);
 			Bool SetOutput3(Bool isHigh);
-			Bool ReadADC1(Int32 *adc);
-			Bool ReadADC2(Int32 *adc);
+			Bool ReadADC1(OutParam<Int32> adc);
+			Bool ReadADC2(OutParam<Int32> adc);
 		};
 	}
 }

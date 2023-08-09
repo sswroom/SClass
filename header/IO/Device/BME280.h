@@ -9,9 +9,9 @@ namespace IO
 		class BME280
 		{
 		private:
-			IO::I2CChannel *channel;
+			NotNullPtr<IO::I2CChannel> channel;
 			Bool toRelease;
-			IO::I2C *i2c;
+			IO::I2C i2c;
 			Bool valid;
 			UInt16 t1;
 			Int16 t2;
@@ -36,16 +36,16 @@ namespace IO
 			Double CalcRHRAW(Int32 tRAW, Int32 rhRAW);
 			Double CalcPressureRAW(Int32 tRAW, Int32 pressureRAW);
 		public:
-			BME280(IO::I2CChannel *channel, Bool toRelease);
+			BME280(NotNullPtr<IO::I2CChannel> channel, Bool toRelease);
 			~BME280();
 
 			Bool IsError();
 			Bool Reset();
 
-			Bool ReadTemperature(Double *temp);
-			Bool ReadRH(Double *rh);
-			Bool ReadPressure(Double *pressure);
-			Bool ReadAll(Double *temp, Double *rh, Double *pressure);
+			Bool ReadTemperature(OutParam<Double> temp);
+			Bool ReadRH(OutParam<Double> rh);
+			Bool ReadPressure(OutParam<Double> pressure);
+			Bool ReadAll(OutParam<Double> temp, OutParam<Double> rh, OutParam<Double> pressure);
 
 			static IO::I2CChannel *CreateDefChannel(Int32 i2cBusNo);
 		};

@@ -9,17 +9,17 @@ namespace IO
 		class SHT20 : public IO::MODBUSDevice
 		{
 		public:
-			SHT20(IO::MODBUSMaster *modbus, UInt8 addr);
+			SHT20(NotNullPtr<IO::MODBUSMaster> modbus, UInt8 addr);
 			virtual ~SHT20();
 
-			Bool ReadTempRH(Double *temp, Double *rh);
-			Bool ReadTemp(Double *temp);
-			Bool ReadRH(Double *rh);
+			Bool ReadTempRH(OutParam<Double> temp, OutParam<Double> rh);
+			Bool ReadTemp(OutParam<Double> temp);
+			Bool ReadRH(OutParam<Double> rh);
 
-			Bool ReadBaudRate(Int32 *baudRate);
-			Bool ReadParity(Int32 *parity);
-			Bool ReadId(Int32 *id);
-			Bool ReadIdValid(Int32 *idValid);
+			Bool ReadBaudRate(OutParam<Int32> baudRate);
+			Bool ReadParity(OutParam<Int32> parity);
+			Bool ReadId(OutParam<Int32> id);
+			Bool ReadIdValid(OutParam<Int32> idValid);
 
 			Bool SetId(UInt8 id);
 		};

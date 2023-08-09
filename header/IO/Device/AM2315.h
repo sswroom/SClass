@@ -9,18 +9,18 @@ namespace IO
 		class AM2315
 		{
 		private:
-			IO::I2CChannel *channel;
+			NotNullPtr<IO::I2CChannel> channel;
 			Bool toRelease;
 			IO::I2C *i2c;
 		public:
-			AM2315(IO::I2CChannel *channel, Bool toRelease);
+			AM2315(NotNullPtr<IO::I2CChannel> channel, Bool toRelease);
 			~AM2315();
 
 			Bool IsError();
 			void Wakeup();
 
-			Bool ReadTemperature(Single *temp);
-			Bool ReadRH(Single *rh);
+			Bool ReadTemperature(OutParam<Single> temp);
+			Bool ReadRH(OutParam<Single> rh);
 
 			static IO::I2CChannel *CreateDefChannel(Int32 i2CBusNum);
 		};

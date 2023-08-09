@@ -12,8 +12,8 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	IO::Device::BME280 *bme280;
 	IO::ConsoleWriter console;
-	IO::I2CChannel *channel = IO::Device::BME280::CreateDefChannel(1);
-	if (channel == 0)
+	NotNullPtr<IO::I2CChannel> channel;
+	if (!channel.Set(IO::Device::BME280::CreateDefChannel(1)))
 	{
 		console.WriteLineC(UTF8STRC("I2C bus not found"));
 	}
@@ -33,7 +33,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 				Double temp;
 				Double rh;
 				Double pressure;
-				if (!bme280->ReadAll(&temp, &rh, &pressure))
+				if (!bme280->ReadAll(temp, rh, pressure))
 				{
 					console.WriteLineC(UTF8STRC("Error in reading all"));
 				}

@@ -9,15 +9,15 @@ namespace IO
 		class TH10SB : public IO::MODBUSDevice
 		{
 		public:
-			TH10SB(IO::MODBUSMaster *modbus, UInt8 addr);
+			TH10SB(NotNullPtr<IO::MODBUSMaster> modbus, UInt8 addr);
 			virtual ~TH10SB();
 
-			Bool ReadTempRH(Double *temp, Double *rh);
-			Bool ReadTemp(Double *temp);
-			Bool ReadRH(Double *rh);
+			Bool ReadTempRH(OutParam<Double> temp, OutParam<Double> rh);
+			Bool ReadTemp(OutParam<Double> temp);
+			Bool ReadRH(OutParam<Double> rh);
 
-			Bool ReadId(Int32 *id);
-			Bool ReadBaudRate(Int32 *baudRate);
+			Bool ReadId(OutParam<Int32> id);
+			Bool ReadBaudRate(OutParam<Int32> baudRate);
 
 			Bool SetId(UInt8 id);
 			Bool SetBaudRate(Int32 baudRate);

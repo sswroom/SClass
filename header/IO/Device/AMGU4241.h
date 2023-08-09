@@ -9,11 +9,11 @@ namespace IO
 		class AMGU4241 : public IO::MODBUSDevice
 		{
 		public:
-			AMGU4241(IO::MODBUSMaster *modbus, UInt8 addr);
+			AMGU4241(NotNullPtr<IO::MODBUSMaster> modbus, UInt8 addr);
 			virtual ~AMGU4241();
 
-			Bool ReadPeopleCount(Int32 *count);
-			Bool ReadTemperature(Double *temp);
+			Bool ReadPeopleCount(OutParam<Int32> count);
+			Bool ReadTemperature(OutParam<Double> temp);
 			
 			static void GetDataEntries(UInt8 addr, MODBUSDataEntry dataHdlr, void *userObj);
 		};
