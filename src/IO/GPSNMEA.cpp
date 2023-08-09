@@ -290,7 +290,7 @@ UInt32 __stdcall IO::GPSNMEA::NMEAThread(void *userObj)
 						UOSInt i = me->hdlrList.GetCount();
 						while (i-- > 0)
 						{
-							me->hdlrList.GetItem(i)(me->hdlrObjs.GetItem(i), record, sateRec.sateCnt, sateRec.sates);
+							me->hdlrList.GetItem(i)(me->hdlrObjs.GetItem(i), record, Data::DataArray<SateStatus>(sateRec.sates, sateRec.sateCnt));
 						}
 						mutUsage.EndUse();
 						MemClear(&record, sizeof(record));

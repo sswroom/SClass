@@ -23,14 +23,14 @@ void SSWR::AVIRead::AVIRGPSTrackerForm::DisplayOffButton::OnFocusLost()
 	this->frm->DispOffFocusLost();
 }
 
-void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnGPSUpdate(void *userObj, NotNullPtr<Map::GPSTrack::GPSRecord3> record, UOSInt sateCnt, Map::ILocationService::SateStatus *sates)
+void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnGPSUpdate(void *userObj, NotNullPtr<Map::GPSTrack::GPSRecord3> record, Data::DataArray<Map::ILocationService::SateStatus> sates)
 {
 	SSWR::AVIRead::AVIRGPSTrackerForm *me = (SSWR::AVIRead::AVIRGPSTrackerForm*)userObj;
 	Double dist;
 	Sync::MutexUsage mutUsage(me->recMut);
 	MemCopyNO(&me->recCurr, record.Ptr(), sizeof(Map::GPSTrack::GPSRecord3));
-	me->recSateCnt = sateCnt;
-	MemCopyNO(me->recSates, sates, sateCnt * sizeof(Map::ILocationService::SateStatus));
+	me->recSateCnt = sates.GetCount();
+	MemCopyNO(me->recSates, sates.Ptr(), sates.GetCount() * sizeof(Map::ILocationService::SateStatus));
 	me->recUpdated = true;
 	if (me->gpsTrk && record->valid)
 	{

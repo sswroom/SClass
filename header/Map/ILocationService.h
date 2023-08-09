@@ -1,5 +1,6 @@
 #ifndef _SM_MAP_ILOCATIONSERVICE
 #define _SM_MAP_ILOCATIONSERVICE
+#include "Data/DataArray.h"
 #include "Map/GPSTrack.h"
 
 namespace Map
@@ -31,7 +32,7 @@ namespace Map
 			Int8 snr;
 		};
 
-		typedef void (__stdcall *LocationHandler)(void *userObj, NotNullPtr<Map::GPSTrack::GPSRecord3> record, UOSInt sateCnt, SateStatus *sates);
+		typedef void (__stdcall *LocationHandler)(void *userObj, NotNullPtr<Map::GPSTrack::GPSRecord3> record, Data::DataArray<SateStatus> sates);
 
 		virtual ~ILocationService() {};
 

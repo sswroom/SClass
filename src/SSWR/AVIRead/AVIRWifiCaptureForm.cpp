@@ -748,7 +748,7 @@ Bool __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnFormClosing(void *userObj, 
 	return true;
 }
 
-void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnGPSData(void *userObj, NotNullPtr<Map::GPSTrack::GPSRecord3> record, UOSInt sateCnt, Map::ILocationService::SateStatus *sates)
+void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnGPSData(void *userObj, NotNullPtr<Map::GPSTrack::GPSRecord3> record, Data::DataArray<Map::ILocationService::SateStatus> sates)
 {
 	SSWR::AVIRead::AVIRWifiCaptureForm *me = (SSWR::AVIRead::AVIRWifiCaptureForm*)userObj;
 	if (me->currActive || record->valid != 0)
