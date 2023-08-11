@@ -78,11 +78,11 @@ namespace Data
 	template <class T> UOSInt ArrayListNN<T>::Add(NotNullPtr<T> val)
 	{
 		UOSInt ret;
-		if (objCnt == this->capacity)
+		if (objCnt >= this->capacity)
 		{
-			NotNullPtr<T> *newArr = MemAlloc(NotNullPtr<T>, this->capacity * 2);
-			MemCopyNO(newArr, arr, this->objCnt * sizeof(NotNullPtr<T>));
 			this->capacity = this->capacity << 1;
+			NotNullPtr<T> *newArr = MemAlloc(NotNullPtr<T>, this->capacity);
+			MemCopyNO(newArr, arr, this->objCnt * sizeof(NotNullPtr<T>));
 			MemFree(arr);
 			arr = newArr;
 		}
@@ -175,7 +175,7 @@ namespace Data
 		NotNullPtr<T> o = arr[index];
 		if (i > 0)
 		{
-			MemCopyO(&arr[index], &arr[index + 1], i * sizeof(T));
+			MemCopyO(&arr[index], &arr[index + 1], i * sizeof(NotNullPtr<T>));
 		}
 		this->objCnt--;
 		//arr[objCnt] = (T)0;
