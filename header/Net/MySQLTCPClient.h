@@ -11,6 +11,8 @@
 
 namespace Net
 {
+	class MySQLTCPReader;
+	class MySQLTCPBinaryReader;
 	class MySQLTCPClient : public DB::DBConn
 	{
 	private:
@@ -57,8 +59,8 @@ namespace Net
 		Sync::Mutex cmdMut;
 		Sync::Event cmdEvt;
 		UOSInt cmdSeqNum;
-		DB::DBReader *cmdReader;
-		Bool cmdReaderBin;
+		MySQLTCPReader *cmdTCPReader;
+		MySQLTCPBinaryReader *cmdBinReader;
 		CmdResultType cmdResultType;
 
 		static UInt32 __stdcall RecvThread(void *userObj);
