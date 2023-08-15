@@ -10,7 +10,7 @@
 #include "Text/StringBuilderUTF8.h"
 #include "Text/UTF8Reader.h"
 
-void IO::GPSNMEA::ParseUnknownCmd(const UTF8Char *cmd, UOSInt cmdLenå)
+void IO::GPSNMEA::ParseUnknownCmd(const UTF8Char *cmd, UOSInt cmdLen)
 {
 }
 
