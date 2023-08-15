@@ -248,7 +248,7 @@ void IO::Device::AXCAN::ParseReader(IO::Reader *reader)
 				len = (UInt8)(Text::StrHex2UInt8C(&sb.v[15]) & 15);
 				if (sb.leng == (UOSInt)len * 2 + 17 && Text::StrHex2Bytes(&sb.v[17], buff) == len)
 				{
-					this->hdlr->CANMessage(id, rtr, buff, len);
+					this->hdlr->CANMessage(id, rtr, Data::ByteArrayR(buff, len));
 				}
 			}
 			else if (sb.v[6] == '0' && sb.leng >= 12)
@@ -258,7 +258,7 @@ void IO::Device::AXCAN::ParseReader(IO::Reader *reader)
 				len = (UInt8)(Text::StrHex2UInt8C(&sb.v[10]) & 15);
 				if (sb.leng == (UOSInt)len * 2 + 12 && Text::StrHex2Bytes(&sb.v[12], buff) == len)
 				{
-					this->hdlr->CANMessage(id, rtr, buff, len);
+					this->hdlr->CANMessage(id, rtr, Data::ByteArrayR(buff, len));
 				}
 			}
 		}

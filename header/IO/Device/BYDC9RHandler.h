@@ -41,7 +41,7 @@ namespace IO
 			BYDC9RHandler();
 			virtual ~BYDC9RHandler();
 
-			virtual void CANMessage(UInt32 id, Bool rtr, const UInt8 *message, UOSInt msgLen);
+			virtual void CANMessage(UInt32 id, Bool rtr, Data::ByteArrayR message);
 
 			virtual void VehicleSpeed(Double speedkmHr);
 			virtual void VehicleDoor(DoorStatus door1, DoorStatus door2);

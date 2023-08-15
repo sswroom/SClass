@@ -1,5 +1,6 @@
 #ifndef _SM_IO_CANHANDLER
 #define _SM_IO_CANHANDLER
+#include "Data/ByteArray.h"
 
 namespace IO
 {
@@ -8,7 +9,7 @@ namespace IO
 	public:
 		virtual ~CANHandler(){};
 
-		virtual void CANMessage(UInt32 id, Bool rtr, const UInt8 *message, UOSInt msgLen) = 0;
+		virtual void CANMessage(UInt32 id, Bool rtr, Data::ByteArrayR message) = 0;
 	};
 }
 #endif

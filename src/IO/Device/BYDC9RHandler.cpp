@@ -1,6 +1,5 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/ByteTool.h"
 #include "IO/Device/BYDC9RHandler.h"
 
 IO::Device::BYDC9RHandler::BYDC9RHandler()
@@ -11,15 +10,15 @@ IO::Device::BYDC9RHandler::~BYDC9RHandler()
 {
 }
 
-void IO::Device::BYDC9RHandler::CANMessage(UInt32 id, Bool rtr, const UInt8 *message, UOSInt msgLen)
+void IO::Device::BYDC9RHandler::CANMessage(UInt32 id, Bool rtr, Data::ByteArrayR message)
 {
 	UInt16 v;
-	if (msgLen == 8)
+	if (message.GetSize() == 8)
 	{
 		switch (id)
 		{
 		case 0x18FEF100:
-			v = ReadUInt16(&message[1]);
+			v = message.ReadU16(1);
 			if (v <= 0xFAFF)
 			{
 				this->VehicleSpeed(v / 256.0);
@@ -29,14 +28,14 @@ void IO::Device::BYDC9RHandler::CANMessage(UInt32 id, Bool rtr, const UInt8 *mes
 			this->VehicleDoor((DoorStatus)((message[5] >> 4) & 3), (DoorStatus)((message[5] >> 6) & 3));
 			break;
 		case 0x18FC07F4:
-			v = ReadUInt16(&message[4]);
+			v = message.ReadU16(4);
 			if (v <= 0x3E8)
 			{
 				this->BatteryLevel(v * 0.1);
 			}
 			break;
 		case 0x18FC1721:
-			v = ReadUInt16(&message[0]);
+			v = message.ReadU16(0);
 			if (v <= 0x55F0)
 			{
 				this->MotorRPM((Int32)v - 11000);
@@ -47,14 +46,14 @@ void IO::Device::BYDC9RHandler::CANMessage(UInt32 id, Bool rtr, const UInt8 *mes
 			this->RightMotorMode((MotorMode)(message[6] & 3));
 			break;
 		case 0x181D00F4:
-			v = ReadUInt16(&message[0]);
+			v = message.ReadU16(0);
 			if (v <= 0x258)
 			{
 				this->BatteryChargedTime(v);
 			}
 			break;
 		case 0x18FAF321:
-			this->CarbinDoor(message[6] & 1, message[6] & 4, message[6] & 8);
+			this->CarbinDoor(message[6] & 2, message[6] & 4, message[6] & 8);
 			break;
 		case 0x0CFAE621:
 			this->PowerMode((PowerStatus)((message[4] >> 2) & 3));
