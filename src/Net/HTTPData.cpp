@@ -321,7 +321,7 @@ UInt64 Net::HTTPData::GetDataSize()
 		{
 			if (fdh->fileLength != 0 || !fdh->isLoading)
 			{
-				dataLength = fdh->fileLength;
+				this->dataLength = fdh->fileLength;
 				break;
 			}
 			Sync::SimpleThread::Sleep(10);

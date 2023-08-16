@@ -66,7 +66,7 @@ namespace Data
 	template <class T> ArrayList<T>::ArrayList(const ArrayList<T> &list)
 	{
 		Init(list.capacity);
-		this->AddAll(&list);
+		this->AddAll(list);
 	}
 
 	template <class T> ArrayList<T>::~ArrayList()

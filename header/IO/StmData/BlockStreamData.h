@@ -19,6 +19,7 @@ namespace IO
 			UInt64 totalSize;
 
 		public:
+			BlockStreamData(BlockStreamData &sd);
 			BlockStreamData(NotNullPtr<IO::StreamData> sd);
 			virtual ~BlockStreamData();
 

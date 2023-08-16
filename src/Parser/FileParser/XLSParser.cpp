@@ -48,10 +48,15 @@ IO::ParsedObject *Parser::FileParser::XLSParser::ParseFileHdr(NotNullPtr<IO::Str
 	UOSInt i;
 	UOSInt j;
 	UOSInt sectorSize = ((UOSInt)1 << (ReadUInt16(&hdr[30])));
+	UOSInt miniStmSectSize = ((UOSInt)1 << (ReadUInt16(&hdr[32])));
+//	UInt16 majorVer = ReadUInt16(&hdr[26]);
 //	Int32 dirCnt = ReadInt32(&hdr[40]);
 	UInt32 fatCnt = ReadUInt32(&hdr[44]);
 	UInt32 dirSect = ReadUInt32(&hdr[48]);
-	if (fatCnt <= 0)
+	UInt32 miniFatSect = ReadUInt32(&hdr[60]);
+	UInt32 miniFatCnt = ReadUInt32(&hdr[64]);
+	UInt32 sectorNum;
+	if (fatCnt <= 0 || miniFatCnt <= 0)
 		return 0;
 
 	UInt32 currSect;
@@ -62,16 +67,43 @@ IO::ParsedObject *Parser::FileParser::XLSParser::ParseFileHdr(NotNullPtr<IO::Str
 	modifyDt.ToUTCTime();
 
 	Data::ByteBuffer fat(sectorSize * fatCnt);
+	UOSInt fatSize = 0;
 	i = 0;
 	j = fatCnt;
 	if (j > 109)
 		j = 109;
 	while (i < j)
 	{
-		fd->GetRealData(sectorSize * (ReadUInt32(&hdr[76 + i * 4]) + 1), sectorSize, fat.SubArray(sectorSize * i));
+		sectorNum = ReadUInt32(&hdr[76 + i * 4]);
+		if (sectorNum != 0xffffffff)
+		{
+			fd->GetRealData(sectorSize * (sectorNum + 1), sectorSize, fat.SubArray(fatSize));
+			fatSize += sectorSize;
+		}
 		i++;
 	}
+	Data::ByteBuffer miniFat(sectorSize * miniFatCnt);
+	i = 0;
+	while (true)
+	{
+		sectorNum = fat.ReadU32(miniFatSect * 4);
+		if (sectorNum >= 0xfffffffc && sectorNum != 0xfffffffe)
+		{
+			return 0;
+		}
+		fd->GetRealData(sectorSize * (miniFatSect + 1), sectorSize, miniFat.SubArray(i * sectorSize));
+		i++;
 
+		if (sectorNum == 0xfffffffe)
+		{
+			if (i == miniFatCnt)
+				break;
+			return 0;
+		}
+		miniFatSect = sectorNum;
+	}
+
+	IO::StmData::BlockStreamData miniStmFd(fd);
 	while (true)
 	{
 		if (fd->GetRealData(512 + sectorSize * dirSect, sectorSize, BYTEARR(buff)) != sectorSize)
@@ -91,7 +123,29 @@ IO::ParsedObject *Parser::FileParser::XLSParser::ParseFileHdr(NotNullPtr<IO::Str
 				modifyDt.SetValueSYSTEMTIME(&buff[i + 108]);
 			}
 
-			if (Text::StrEqualsICase((const UTF16Char *)&buff[i], U16STR("WORKBOOK")))
+			if (Text::StrEqualsICase((const UTF16Char *)&buff[i], U16STR("Root Entry")))
+			{
+				currSect = ReadUInt32(&buff[i + 116]);
+				sizeLeft = ReadUInt64(&buff[i + 120]);
+				while (sizeLeft > 0)
+				{
+					if ((UInt32)currSect == 0xfffffffd)
+						break;
+					if (sizeLeft < sectorSize)
+					{
+						miniStmFd.Append(512 + sectorSize * currSect, (UInt32)sizeLeft);
+						sizeLeft = 0;
+						break;
+					}
+					else
+					{
+						miniStmFd.Append(512 + sectorSize * currSect, (UInt32)sectorSize);
+						sizeLeft -= sectorSize;
+					}
+					currSect = ReadUInt32(&fat[currSect * 4]);
+				}
+			}
+			else if (Text::StrEqualsICase((const UTF16Char *)&buff[i], U16STR("WORKBOOK")))
 			{
 				Text::SpreadSheet::Workbook *wb;
 				NEW_CLASS(wb, Text::SpreadSheet::Workbook());
@@ -107,23 +161,23 @@ IO::ParsedObject *Parser::FileParser::XLSParser::ParseFileHdr(NotNullPtr<IO::Str
 
 				currSect = ReadUInt32(&buff[i + 116]);
 				sizeLeft = ReadUInt64(&buff[i + 120]);
-				IO::StmData::BlockStreamData itemFd(fd);
+				IO::StmData::BlockStreamData itemFd(miniStmFd);
 				while (sizeLeft > 0)
 				{
 					if ((UInt32)currSect == 0xfffffffd)
 						break;
-					if (sizeLeft < sectorSize)
+					if (sizeLeft < miniStmSectSize)
 					{
-						itemFd.Append(512 + sectorSize * currSect, (UInt32)sizeLeft);
+						itemFd.Append(miniStmSectSize * currSect, (UInt32)sizeLeft);
 						sizeLeft = 0;
 						break;
 					}
 					else
 					{
-						itemFd.Append(512 + sectorSize * currSect, (UInt32)sectorSize);
-						sizeLeft -= sectorSize;
+						itemFd.Append(miniStmSectSize * currSect, (UInt32)miniStmSectSize);
+						sizeLeft -= miniStmSectSize;
 					}
-					currSect = ReadUInt32(&fat[currSect * 4]);
+					currSect = ReadUInt32(&miniFat[currSect * 4]);
 				}
 				ParseWorkbook(itemFd, 0, 0, wb);
 				pobj = wb;

@@ -2,6 +2,12 @@
 #include "MyMemory.h"
 #include "IO/StmData/BlockStreamData.h"
 
+IO::StmData::BlockStreamData::BlockStreamData(BlockStreamData &sd)
+{
+	this->sd = sd.GetPartialData(0, sd.GetDataSize());
+	this->totalSize = 0;
+}
+
 IO::StmData::BlockStreamData::BlockStreamData(NotNullPtr<IO::StreamData> sd)
 {
 	this->sd = sd->GetPartialData(0, sd->GetDataSize());
