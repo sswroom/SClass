@@ -417,7 +417,7 @@ namespace Data
 		Data::DateTimeUtil::TimeValue GetTimeValue() const
 		{
 			Data::DateTimeUtil::TimeValue tv;
-			Data::DateTimeUtil::Ticks2TimeValue(this->inst.ToTicks(), &tv, this->tzQhr);
+			Data::DateTimeUtil::Secs2TimeValue(this->inst.sec, &tv, this->tzQhr);
 			return tv;
 		}
 
@@ -426,9 +426,14 @@ namespace Data
 			return Data::DateTimeUtil::Instant2Weekday(this->inst, this->tzQhr);
 		}
 
+		Int64 GetLocalSecs() const
+		{
+			return this->inst.sec + tzQhr * 900;
+		}
+
 		Bool SameDate(const Data::Timestamp &ts) const
 		{
-			return this->inst.SameDate(ts.inst);
+			return (this->GetLocalSecs() / 86400) == (ts.GetLocalSecs() / 86400);
 		}
 
 		Bool IsNull() const
