@@ -24,12 +24,12 @@ IO::SystemInfo::SystemInfo()
 	IO::FileStream fs(CSTR("/sys/firmware/devicetree/base/model"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 	if (!fs.IsError())
 	{
-		Text::UTF8Reader reader(&fs);
+		Text::UTF8Reader reader(fs);
 		sb.ClearStr();
 		while (reader.ReadLine(sb, 512))
 		{
 		}
-		data->platformName = Text::String::New(sb.ToString(), sb.GetLength());
+		data->platformName = Text::String::New(sb.ToCString()).Ptr();
 	}
 }
 
