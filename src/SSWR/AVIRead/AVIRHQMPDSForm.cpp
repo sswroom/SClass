@@ -261,7 +261,7 @@ void __stdcall SSWR::AVIRead::AVIRHQMPDSForm::OnDebugClosed(void *userObj, UI::G
 	me->dbgFrm = 0;
 }
 
-Bool SSWR::AVIRead::AVIRHQMPDSForm::OpenFile(Text::CString fileName, IO::ParserType targetType)
+Bool SSWR::AVIRead::AVIRHQMPDSForm::OpenFile(Text::CStringNN fileName, IO::ParserType targetType)
 {
 	Parser::ParserList *parsers = this->core->GetParserList();
 	IO::ParsedObject *pobj;

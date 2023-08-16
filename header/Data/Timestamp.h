@@ -428,7 +428,7 @@ namespace Data
 
 		Int64 GetLocalSecs() const
 		{
-			return this->inst.sec + tzQhr * 900;
+			return this->inst.sec + (Int64)this->tzQhr * 900;
 		}
 
 		Bool SameDate(const Data::Timestamp &ts) const

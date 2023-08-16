@@ -13,7 +13,7 @@ namespace IO
 
 		void InitBuff(const UInt8 *buff, UOSInt buffSize);
 	public:
-		LNKFile(Text::CString fileName);
+		LNKFile(Text::CStringNN fileName);
 		LNKFile(const UInt8 *buff, UOSInt buffSize);
 		~LNKFile();
 

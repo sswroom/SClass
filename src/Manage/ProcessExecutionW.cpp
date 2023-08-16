@@ -15,7 +15,7 @@ struct Manage::ProcessExecution::ClassData
 	HANDLE in[2];
 };
 
-UOSInt Manage::ProcessExecution::NewProcess(Text::CString cmd)
+UOSInt Manage::ProcessExecution::NewProcess(Text::CStringNN cmd)
 {
 	ClassData *clsData = MemAlloc(ClassData, 1);
 	clsData->in[0] = INVALID_HANDLE_VALUE;
@@ -66,6 +66,8 @@ UOSInt Manage::ProcessExecution::NewProcess(Text::CString cmd)
 	startInfo.hStdError = startInfo.hStdOutput;
 	startInfo.hStdInput = clsData->in[0];
 	createRet = CreateProcessW(0, cmdLine, 0, 0, true, NORMAL_PRIORITY_CLASS, 0, buff, &startInfo, &procInfo);
+	CloseHandle(procInfo.hThread);
+	CloseHandle(procInfo.hProcess);
 
 	if(createRet)
 	{
@@ -77,7 +79,7 @@ UOSInt Manage::ProcessExecution::NewProcess(Text::CString cmd)
 	}
 }
 
-Manage::ProcessExecution::ProcessExecution(Text::CString cmdLine) : Process(NewProcess(cmdLine), false), IO::Stream(cmdLine)
+Manage::ProcessExecution::ProcessExecution(Text::CStringNN cmdLine) : Process(NewProcess(cmdLine), false), IO::Stream(cmdLine)
 {
 }
 

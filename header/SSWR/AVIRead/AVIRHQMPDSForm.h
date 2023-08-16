@@ -48,10 +48,10 @@ namespace SSWR
 			static void __stdcall OnTimerTick(void *userObj);
 			static void __stdcall OnDebugClosed(void *userObj, UI::GUIForm *frm);
 		public:
-			Bool OpenFile(Text::CString fileName, IO::ParserType targetType);
+			Bool OpenFile(Text::CStringNN fileName, IO::ParserType targetType);
 			Bool OpenVideo(Media::MediaFile *mf);
 		private:
-			void SwitchAudio(OSInt audIndex);
+			void SwitchAudio(UOSInt audIndex);
 			void CloseFile();
 
 		public:

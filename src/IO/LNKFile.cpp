@@ -18,7 +18,7 @@ void IO::LNKFile::InitBuff(const UInt8 *buff, UOSInt buffSize)
 	MemCopyNO(this->buff, buff, buffSize);
 }
 
-IO::LNKFile::LNKFile(Text::CString fileName)
+IO::LNKFile::LNKFile(Text::CStringNN fileName)
 {
 	this->buff = 0;
 	this->buffSize = 0;
