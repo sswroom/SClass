@@ -31,16 +31,16 @@ IO::SystemInfo::SystemInfo()
 		flen = fs.GetLength();
 		if (flen >= 256 && (flen & 255) == 0)
 		{
-			fs.Read(buff, 256);
+			fs.Read(BYTEARR(buff));
 			if (buff[32])
 			{
 				SDEL_STRING(data->platformName);
-				data->platformName = Text::String::NewNotNullSlow(&buff[32]);
+				data->platformName = Text::String::NewNotNullSlow(&buff[32]).Ptr();
 			}
 			if (buff[64])
 			{
 				SDEL_STRING(data->platformSN);
-				data->platformSN = Text::String::NewNotNullSlow(&buff[64]);
+				data->platformSN = Text::String::NewNotNullSlow(&buff[64]).Ptr();
 			}
 		}
 	}

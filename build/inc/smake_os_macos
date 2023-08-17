@@ -3,6 +3,8 @@ Crypto/Cert/CurlCert.h: ../../src/Crypto/Cert/CurlCert.cpp
 @CurlCert.o
 Crypto/Cert/TrustStore.h: ../../src/Crypto/Cert/TrustStore_Linux.cpp
 @TrustStore.o
+Crypto/Encrypt/RSAEnc.h: ../../src/Crypto/Encrypt/RSAEnc.cpp
+@RSAEnc.o
 
 DB/MDBFileConn.h: ../../src/DB/MDBFileConn.cpp
 @MDBFileConn.o
@@ -106,6 +108,8 @@ ConsoleStartup.o: ../../startup/LinuxConStartup.cpp
 CurlCert.o: ../../src/Crypto/Cert/CurlCert.cpp
 !-lcurl
 TrustStore.o: ../../src/Crypto/Cert/TrustStore_Linux.cpp
+RSAEnc.o: ../../src/Crypto/Encrypt/RSAEnc.cpp
+!-lcrypto
 MDBFileConn.o: ../../src/DB/MDBFileConn.cpp
 !-lodbc
 !-lodbcinst

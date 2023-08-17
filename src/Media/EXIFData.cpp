@@ -5442,7 +5442,7 @@ Media::EXIFData *Media::EXIFData::ParseIFD64(NotNullPtr<IO::StreamData> fd, UInt
 		return 0;
 	}
 
-	UInt64 j;
+	UOSInt j;
 	NEW_CLASS(exif, Media::EXIFData(Media::EXIFData::EM_STANDARD));
 
 	ifdOfst = 0;
@@ -5726,7 +5726,7 @@ Media::EXIFData *Media::EXIFData::ParseIFD64(NotNullPtr<IO::StreamData> fd, UInt
 
 	if (nextOfst)
 	{
-		*nextOfst = bo->GetUInt32(&ifdEntries[ifdCnt * 12]);
+		*nextOfst = bo->GetUInt32(&ifdEntries[(UOSInt)(ifdCnt * 12)]);
 	}
 	return exif;
 }

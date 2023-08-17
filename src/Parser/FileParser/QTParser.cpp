@@ -1466,16 +1466,16 @@ Media::IMediaSource *Parser::FileParser::QTParser::ParseStblAtom(NotNullPtr<IO::
 					stszOfst = 14;
 					while (nsps-- > 0)
 					{
-						nSample = ReadMUInt16(&stszBuff[stszOfst]);
-						fsrc->SetProp(*(Int32*)"sps", &stszBuff[stszOfst + 2], nSample);
+						nSample = ReadMUInt16(&stszBuff[(UOSInt)stszOfst]);
+						fsrc->SetProp(*(Int32*)"sps", &stszBuff[(UOSInt)stszOfst + 2], nSample);
 						stszOfst += 2 + (UInt64)nSample;
 					}
-					nsps = stszBuff[stszOfst];
+					nsps = stszBuff[(UOSInt)stszOfst];
 					stszOfst += 1;
 					while (nsps-- > 0)
 					{
-						nSample = ReadMUInt16(&stszBuff[stszOfst]);
-						fsrc->SetProp(*(Int32*)"pps", &stszBuff[stszOfst + 2], nSample);
+						nSample = ReadMUInt16(&stszBuff[(UOSInt)stszOfst]);
+						fsrc->SetProp(*(Int32*)"pps", &stszBuff[(UOSInt)stszOfst + 2], nSample);
 						stszOfst += 2 + (UInt64)nSample;
 					}
 
@@ -1483,9 +1483,9 @@ Media::IMediaSource *Parser::FileParser::QTParser::ParseStblAtom(NotNullPtr<IO::
 					stszOfst = 14;
 					if(nsps > 0)
 					{
-						nSample = ReadMUInt16(&stszBuff[stszOfst]);
+						nSample = ReadMUInt16(&stszBuff[(UOSInt)stszOfst]);
 						UInt8 *tmpBuff = MemAlloc(UInt8, (UOSInt)nSample + 4);
-						MemCopyNO(&tmpBuff[4], &stszBuff[stszOfst + 2], nSample);
+						MemCopyNO(&tmpBuff[4], &stszBuff[(UOSInt)stszOfst + 2], nSample);
 						WriteMInt32(tmpBuff, 1);
 						Media::H264Parser::H264Flags flags;
 						flags.frameRateNorm = 0;
@@ -1537,7 +1537,7 @@ array_item:
 					{
 						OSInt arrCnt;
 						Int32 propType = 0;
-						switch (stszBuff[stszOfst] & 0x3f)
+						switch (stszBuff[(UOSInt)stszOfst] & 0x3f)
 						{
 						case 0x20:
 							propType = *(Int32*)"vps";
@@ -1556,14 +1556,14 @@ array_item:
 							break;
 						}
 
-						arrCnt = ReadMUInt16(&stszBuff[stszOfst + 1]);
+						arrCnt = ReadMUInt16(&stszBuff[(UOSInt)stszOfst + 1]);
 						stszOfst += 3;
 						while (arrCnt-- > 0)
 						{
-							nSample = ReadMUInt16(&stszBuff[stszOfst]);
+							nSample = ReadMUInt16(&stszBuff[(UOSInt)stszOfst]);
 							if (propType != 0)
 							{
-								fsrc->SetProp(propType, &stszBuff[stszOfst + 2], nSample);
+								fsrc->SetProp(propType, &stszBuff[(UOSInt)stszOfst + 2], nSample);
 							}
 							stszOfst += 2 + (UInt64)nSample;
 						}

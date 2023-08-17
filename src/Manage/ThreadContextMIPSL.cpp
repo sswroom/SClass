@@ -18,13 +18,13 @@ Manage::ThreadContextMIPS::~ThreadContextMIPS()
 	MemFree(this->context);
 }
 
-UOSInt Manage::ThreadContextMIPS::GetRegisterCnt()
+UOSInt Manage::ThreadContextMIPS::GetRegisterCnt() const
 {
 	OSInt cnt = 17;
 	return cnt;
 }
 
-UTF8Char *Manage::ThreadContextMIPS::GetRegister(UOSInt index, UTF8Char *buff, UInt8 *regVal, UInt32 *regBitCount)
+UTF8Char *Manage::ThreadContextMIPS::GetRegister(UOSInt index, UTF8Char *buff, UInt8 *regVal, UInt32 *regBitCount) const
 {
 	switch (index)
 	{
@@ -165,7 +165,7 @@ UTF8Char *Manage::ThreadContextMIPS::GetRegister(UOSInt index, UTF8Char *buff, U
 	}
 }
 
-void Manage::ThreadContextMIPS::ToString(NotNullPtr<Text::StringBuilderUTF8> sb)
+void Manage::ThreadContextMIPS::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
 {
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
@@ -193,32 +193,32 @@ void Manage::ThreadContextMIPS::ToString(NotNullPtr<Text::StringBuilderUTF8> sb)
 	}
 }
 
-Manage::ThreadContext::ContextType Manage::ThreadContextMIPS::GetType()
+Manage::ThreadContext::ContextType Manage::ThreadContextMIPS::GetType() const
 {
 	return Manage::ThreadContext::ContextType::MIPS;
 }
 
-UOSInt Manage::ThreadContextMIPS::GetThreadId()
+UOSInt Manage::ThreadContextMIPS::GetThreadId() const
 {
 	return this->threadId;
 }
 
-UOSInt Manage::ThreadContextMIPS::GetProcessId()
+UOSInt Manage::ThreadContextMIPS::GetProcessId() const
 {
 	return this->procId;
 }
 
-UOSInt Manage::ThreadContextMIPS::GetInstAddr()
+UOSInt Manage::ThreadContextMIPS::GetInstAddr() const
 {
 	return (OSInt)((ucontext_t*)this->context)->uc_mcontext.pc;
 }
 
-UOSInt Manage::ThreadContextMIPS::GetStackAddr()
+UOSInt Manage::ThreadContextMIPS::GetStackAddr() const
 {
 	return (OSInt)((ucontext_t*)this->context)->uc_mcontext.gregs[29];
 }
 
-UOSInt Manage::ThreadContextMIPS::GetFrameAddr()
+UOSInt Manage::ThreadContextMIPS::GetFrameAddr() const
 {
 	return (OSInt)((ucontext_t*)this->context)->uc_mcontext.gregs[30];
 }
@@ -238,14 +238,14 @@ void Manage::ThreadContextMIPS::SetFrameAddr(UOSInt frameAddr)
 	((ucontext_t*)this->context)->uc_mcontext.gregs[30] = frameAddr;
 }
 
-Manage::ThreadContext *Manage::ThreadContextMIPS::Clone()
+Manage::ThreadContext *Manage::ThreadContextMIPS::Clone() const
 {
 	Manage::ThreadContextMIPS *cont;
 	NEW_CLASS(cont, Manage::ThreadContextMIPS(this->procId, this->threadId, this->context));
 	return cont;
 }
 
-Bool Manage::ThreadContextMIPS::GetRegs(Manage::Dasm::Dasm_Regs *regs)
+Bool Manage::ThreadContextMIPS::GetRegs(Manage::Dasm::Dasm_Regs *regs) const
 {
 	Manage::DasmMIPS::DasmMIPS_Regs *r = (Manage::DasmMIPS::DasmMIPS_Regs *)regs;
 	r->zero = ((ucontext_t*)this->context)->uc_mcontext.gregs[0];
@@ -287,14 +287,14 @@ Bool Manage::ThreadContextMIPS::GetRegs(Manage::Dasm::Dasm_Regs *regs)
 	return true;
 }
 
-Manage::Dasm *Manage::ThreadContextMIPS::CreateDasm()
+Manage::Dasm *Manage::ThreadContextMIPS::CreateDasm() const
 {
 	Manage::DasmMIPS *dasm;
 	NEW_CLASS(dasm, Manage::DasmMIPS());
 	return dasm;
 }
 
-void *Manage::ThreadContextMIPS::GetContext()
+void *Manage::ThreadContextMIPS::GetContext() const
 {
 	return this->context;
 }

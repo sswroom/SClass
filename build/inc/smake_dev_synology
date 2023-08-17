@@ -20,5 +20,5 @@ RobustelInfo.o: ../../src/IO/RobustelInfo_Null.cpp
 SMBIOSUtil.o: ../../src/IO/SMBIOSUtilNull.cpp
 SystemInfo.o: ../../src/IO/SystemInfoSynology.cpp
 CameraManager.o: ../../src/Media/CameraManagerNul.cpp
-DDCReader.o: ../../src/Media/DDCReaderL.cpp
+DDCReader.o: ../../src/Media/DDCReaderNul.cpp
 VideoCaptureMgr.o: ../../src/Media/VideoCaptureMgrL.cpp

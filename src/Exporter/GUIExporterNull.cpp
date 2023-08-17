@@ -24,7 +24,7 @@ IO::FileExporter::SupportType Exporter::GUIExporter::IsObjectSupported(IO::Parse
 	if (imgList->GetCount() != 1)
 		return IO::FileExporter::SupportType::NotSupported;
 	Media::Image *img = imgList->GetImage(0, 0);
-	if (img->info->fourcc != 0)
+	if (img->info.fourcc != 0)
 		return IO::FileExporter::SupportType::NotSupported;
 	return IO::FileExporter::SupportType::NormalStream;
 }

@@ -672,7 +672,7 @@ IO::ParsedObject *Parser::FileParser::EXEParser::ParseFileHdr(NotNullPtr<IO::Str
 										}
 										else
 										{
-											sptr = Text::StrConcatC(sbuff, &exeImage[(funcRVA + 2) & 0x7fffffff], 64);
+											sptr = Text::StrConcatC(sbuff, &exeImage[(UOSInt)(funcRVA + 2) & 0x7fffffff], 64);
 											exef->AddImportFunc(j, CSTRP(sbuff, sptr));
 										}
 										ilut += 8;

@@ -23,7 +23,7 @@ IO::SystemInfo::SystemInfo()
 
 	if ((sptr = IO::OS::GetDistro(sbuff)) != 0)
 	{
-		data->platformName = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
+		data->platformName = Text::String::New(sbuff, (UOSInt)(sptr - sbuff)).Ptr();
 	}
 }
 

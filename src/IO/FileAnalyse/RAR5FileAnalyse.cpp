@@ -309,13 +309,13 @@ Bool IO::FileAnalyse::RAR5FileAnalyse::GetFrameDetail(UOSInt index, NotNullPtr<T
 			sb->AppendC(UTF8STRC("\r\nVolume number = "));
 			sb->AppendU64(iVal);
 		}
-		extraEnd = packPtr + extraSize;
+		extraEnd = packPtr + (UOSInt)extraSize;
 		if (extraEnd <= packEnd)
 		{
 			while (packPtr < extraEnd)
 			{
 				packPtr = ReadVInt(packPtr, &extraSize);
-				nextPtr = packPtr + extraSize;
+				nextPtr = packPtr + (UOSInt)extraSize;
 				if (nextPtr > extraEnd)
 				{
 					break;
@@ -405,15 +405,15 @@ Bool IO::FileAnalyse::RAR5FileAnalyse::GetFrameDetail(UOSInt index, NotNullPtr<T
 		sb->AppendU64(iVal);
 		sb->AppendC(UTF8STRC("\r\nName = "));
 		sb->AppendC(packPtr.Ptr(), (UOSInt)iVal);
-		packPtr += iVal;
+		packPtr += (UOSInt)iVal;
 
-		extraEnd = packPtr + extraSize;
+		extraEnd = packPtr + (UOSInt)extraSize;
 		if (extraEnd <= packEnd)
 		{
 			while (packPtr < extraEnd)
 			{
 				packPtr = ReadVInt(packPtr, &extraSize);
-				nextPtr = packPtr + extraSize;
+				nextPtr = packPtr + (UOSInt)extraSize;
 				if (nextPtr > extraEnd)
 				{
 					break;
@@ -652,13 +652,13 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::RAR5FileAnalyse::GetFrameDetail(U
 		{
 			packPtr = AddVInt(frame, (UOSInt)(packPtr - packBuff), CSTR("Volume number"), packPtr);
 		}
-		extraEnd = packPtr + extraSize;
+		extraEnd = packPtr + (UOSInt)extraSize;
 		if (extraEnd <= packEnd)
 		{
 			while (packPtr < extraEnd)
 			{
 				nextPtr2 = ReadVInt(packPtr, &extraSize);
-				nextPtr = nextPtr2 + extraSize;
+				nextPtr = nextPtr2 + (UOSInt)extraSize;
 				if (nextPtr > extraEnd)
 				{
 					break;
@@ -735,13 +735,13 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::RAR5FileAnalyse::GetFrameDetail(U
 		frame->AddStrC((UOSInt)(packPtr - packBuff), (UOSInt)iVal, CSTR("Name"), packPtr.Ptr());
 		packPtr += (UOSInt)iVal;
 
-		extraEnd = packPtr + extraSize;
+		extraEnd = packPtr + (UOSInt)extraSize;
 		if (extraEnd <= packEnd)
 		{
 			while (packPtr < extraEnd)
 			{
 				nextPtr2 = ReadVInt(packPtr, &extraSize);
-				nextPtr = nextPtr2 + extraSize;
+				nextPtr = nextPtr2 + (UOSInt)extraSize;
 				if (nextPtr > extraEnd)
 				{
 					break;

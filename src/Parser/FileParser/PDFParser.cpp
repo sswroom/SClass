@@ -846,7 +846,7 @@ IO::ParserType Parser::FileParser::PDFParser::GetParserType()
 
 IO::ParsedObject *Parser::FileParser::PDFParser::ParseFileHdr(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
-	if (ReadNInt32(hdr) != ReadNInt32("%PDF") || hdr[4] != '-' || hdr[6] != '.')
+	if (ReadNInt32(hdr) != ReadNInt32((const UInt8*)"%PDF") || hdr[4] != '-' || hdr[6] != '.')
 	{
 		return 0;
 	}

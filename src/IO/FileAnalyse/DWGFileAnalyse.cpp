@@ -300,7 +300,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::DWGFileAnalyse::GetFrameDetail(UO
 			break;
 		}
 
-		uuid.SetValue(&packBuff[pack->packSize - 16]);
+		uuid.SetValue(&packBuff[(UOSInt)pack->packSize - 16]);
 		sptr = uuid.ToString(sbuff);
 		frame->AddField((UOSInt)pack->packSize - 16, 16, CSTR("Section Type"), CSTRP(sbuff, sptr));
 		break;

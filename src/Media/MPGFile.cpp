@@ -456,10 +456,10 @@ Media::MPGFile::MPGFile(NotNullPtr<IO::StreamData> stmData) : Media::MediaFile(s
 		i = (this->readBuff[13] & 7);
 		currOfst = 14 + i;
 	}
-	if (*(Int32*)&this->readBuff[currOfst] != (Int32)0xbb010000)
+	if (*(Int32*)&this->readBuff[(UOSInt)currOfst] != (Int32)0xbb010000)
 		return;
 
-	i = ReadMUInt16(&this->readBuff[currOfst + 4]);
+	i = ReadMUInt16(&this->readBuff[(UOSInt)currOfst + 4]);
 	currOfst += 6 + i;
 	while (true)
 	{

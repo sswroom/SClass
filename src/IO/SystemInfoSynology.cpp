@@ -28,10 +28,10 @@ IO::SystemInfo::SystemInfo()
 	IO::ConfigFile *cfg = IO::UnixConfigFile::Parse(CSTR("/etc/synoinfo.conf"));
 	if (cfg)
 	{
-		Text::String *s = cfg->GetValue(UTF8STRC("unique"));
+		Text::String *s = cfg->GetValue(CSTR("unique"));
 		if (s)
 		{
-			data->platformName = s->Clone();
+			data->platformName = s->Clone().Ptr();
 		}
 		DEL_CLASS(cfg);
 	}

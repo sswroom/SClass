@@ -879,9 +879,8 @@ Bool Manage::DasmMIPS::Disasm32(IO::Writer *writer, Manage::AddressResolver *add
 	UTF8Char sbuff[512];
 	UInt8 buff[16];
 	DasmMIPS_Sess sess;
-	NotNullPtr<Text::StringBuilderUTF8> outStr;
+	Text::StringBuilderUTF8 outStr;
 	OSInt initJmpCnt = jmpAddrs->GetCount();
-	NEW_CLASS(outStr, Text::StringBuilderUTF8());
 	sess.callAddrs = callAddrs;
 	sess.jmpAddrs = jmpAddrs;
 	MemCopyNO(&sess.regs, regs, sizeof(DasmMIPS_Regs));
@@ -902,25 +901,25 @@ Bool Manage::DasmMIPS::Disasm32(IO::Writer *writer, Manage::AddressResolver *add
 	{
 		Bool ret;
 
-		outStr->ClearStr();
-		outStr->AppendHex32((UInt32)sess.regs.sp);
-		outStr->AppendC(UTF8STRC(" "));
-		outStr->AppendHex32((UInt32)sess.regs.fp);
-		outStr->AppendC(UTF8STRC(" "));
-		outStr->AppendHex32((UInt32)sess.regs.pc);
-		outStr->AppendC(UTF8STRC(" "));
+		outStr.ClearStr();
+		outStr.AppendHex32((UInt32)sess.regs.sp);
+		outStr.AppendC(UTF8STRC(" "));
+		outStr.AppendHex32((UInt32)sess.regs.fp);
+		outStr.AppendC(UTF8STRC(" "));
+		outStr.AppendHex32((UInt32)sess.regs.pc);
+		outStr.AppendC(UTF8STRC(" "));
 		if (fullRegs)
 		{
 			OSInt i;
 			i = 0;
 			while (i < 29)
 			{
-				outStr->AppendHex32((UInt32)sess.regs.regs[i]);
-				outStr->AppendC(UTF8STRC(" "));
+				outStr.AppendHex32((UInt32)sess.regs.regs[i]);
+				outStr.AppendC(UTF8STRC(" "));
 				i++;
 			}
-			outStr->AppendHex32((UInt32)sess.regs.ra);
-			outStr->AppendC(UTF8STRC(" "));
+			outStr.AppendHex32((UInt32)sess.regs.ra);
+			outStr.AppendC(UTF8STRC(" "));
 		}
 		sess.sbuff = sbuff;
 		if (sess.memReader->ReadMemory(sess.regs.pc, buff, 4) != 4)
@@ -934,19 +933,18 @@ Bool Manage::DasmMIPS::Disasm32(IO::Writer *writer, Manage::AddressResolver *add
 		if (!ret)
 		{
 			OSInt buffSize;
-			outStr->AppendC(UTF8STRC("Unknown opcode "));
+			outStr.AppendC(UTF8STRC("Unknown opcode "));
 			buffSize = sess.memReader->ReadMemory(sess.regs.pc, buff, 16);
 			if (buffSize > 0)
 			{
-				outStr->AppendHexBuff(buff, buffSize, ' ', Text::LineBreakType::None);
+				outStr.AppendHexBuff(buff, buffSize, ' ', Text::LineBreakType::None);
 			}
-			outStr->AppendC(UTF8STRC("\r\n"));
-			writer->WriteStrC(outStr->ToString(), outStr->GetLength());
-			DEL_CLASS(outStr);
+			outStr.AppendC(UTF8STRC("\r\n"));
+			writer->WriteStrC(outStr.ToString(), outStr.GetLength());
 			return false;
 		}
-		outStr->AppendSlow(sbuff);
-		writer->WriteStrC(outStr->ToString(), outStr->GetLength());
+		outStr.AppendSlow(sbuff);
+		writer->WriteStrC(outStr.ToString(), outStr.GetLength());
 		if (sess.endType == Manage::DasmMIPS::ET_JMP && (UInt32)sess.retAddr >= *blockStart && (UInt32)sess.retAddr <= sess.regs.pc)
 		{
 			OSInt i;
@@ -967,7 +965,6 @@ Bool Manage::DasmMIPS::Disasm32(IO::Writer *writer, Manage::AddressResolver *add
 				*currStack = (Int32)sess.regs.sp;
 				*currFrame = (Int32)sess.regs.fp;
 				*blockEnd = (Int32)sess.regs.pc;
-				DEL_CLASS(outStr);
 				return false;
 			}
 			sess.regs.pc = minAddr;
@@ -979,7 +976,6 @@ Bool Manage::DasmMIPS::Disasm32(IO::Writer *writer, Manage::AddressResolver *add
 			*currStack = (Int32)sess.regs.sp;
 			*currFrame = (Int32)sess.regs.fp;
 			*blockEnd = (Int32)sess.regs.pc;
-			DEL_CLASS(outStr);
 			return sess.endType != Manage::DasmMIPS::ET_EXIT;
 		}
 //		sess.lastStatus = sess.thisStatus;

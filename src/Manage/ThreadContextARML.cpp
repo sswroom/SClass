@@ -18,13 +18,13 @@ Manage::ThreadContextARM::~ThreadContextARM()
 	MemFree(this->context);
 }
 
-UOSInt Manage::ThreadContextARM::GetRegisterCnt()
+UOSInt Manage::ThreadContextARM::GetRegisterCnt() const
 {
 	UOSInt cnt = 17;
 	return cnt;
 }
 
-UTF8Char *Manage::ThreadContextARM::GetRegister(UOSInt index, UTF8Char *buff, UInt8 *regVal, UInt32 *regBitCount)
+UTF8Char *Manage::ThreadContextARM::GetRegister(UOSInt index, UTF8Char *buff, UInt8 *regVal, UInt32 *regBitCount) const
 {
 	switch (index)
 	{
@@ -101,7 +101,7 @@ UTF8Char *Manage::ThreadContextARM::GetRegister(UOSInt index, UTF8Char *buff, UI
 	}
 }
 
-void Manage::ThreadContextARM::ToString(Text::StringBuilderUTF *sb)
+void Manage::ThreadContextARM::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
 {
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
@@ -129,32 +129,32 @@ void Manage::ThreadContextARM::ToString(Text::StringBuilderUTF *sb)
 	}
 }
 
-Manage::ThreadContext::ContextType Manage::ThreadContextARM::GetType()
+Manage::ThreadContext::ContextType Manage::ThreadContextARM::GetType() const
 {
 	return Manage::ThreadContext::ContextType::ARM;
 }
 
-UOSInt Manage::ThreadContextARM::GetThreadId()
+UOSInt Manage::ThreadContextARM::GetThreadId() const
 {
 	return this->threadId;
 }
 
-UOSInt Manage::ThreadContextARM::GetProcessId()
+UOSInt Manage::ThreadContextARM::GetProcessId() const
 {
 	return this->procId;
 }
 
-UOSInt Manage::ThreadContextARM::GetInstAddr()
+UOSInt Manage::ThreadContextARM::GetInstAddr() const
 {
 	return (UOSInt)((ucontext_t*)this->context)->uc_mcontext.arm_pc;
 }
 
-UOSInt Manage::ThreadContextARM::GetStackAddr()
+UOSInt Manage::ThreadContextARM::GetStackAddr() const
 {
 	return (UOSInt)((ucontext_t*)this->context)->uc_mcontext.arm_sp;
 }
 
-UOSInt Manage::ThreadContextARM::GetFrameAddr()
+UOSInt Manage::ThreadContextARM::GetFrameAddr() const
 {
 	return (UOSInt)((ucontext_t*)this->context)->uc_mcontext.arm_lr;
 }
@@ -174,14 +174,14 @@ void Manage::ThreadContextARM::SetFrameAddr(UOSInt frameAddr)
 	((ucontext_t*)this->context)->uc_mcontext.arm_lr = frameAddr;
 }
 
-Manage::ThreadContext *Manage::ThreadContextARM::Clone()
+Manage::ThreadContext *Manage::ThreadContextARM::Clone() const
 {
 	Manage::ThreadContextARM *cont;
 	NEW_CLASS(cont, Manage::ThreadContextARM(this->procId, this->threadId, this->context));
 	return cont;
 }
 
-Bool Manage::ThreadContextARM::GetRegs(Manage::Dasm::Dasm_Regs *regs)
+Bool Manage::ThreadContextARM::GetRegs(Manage::Dasm::Dasm_Regs *regs) const
 {
 	Manage::DasmARM::DasmARM_Regs *r = (Manage::DasmARM::DasmARM_Regs *)regs;
 	r->R0 = ((ucontext_t*)this->context)->uc_mcontext.arm_r0;
@@ -204,99 +204,99 @@ Bool Manage::ThreadContextARM::GetRegs(Manage::Dasm::Dasm_Regs *regs)
 	return true;	
 }
 
-Manage::Dasm *Manage::ThreadContextARM::CreateDasm()
+Manage::Dasm *Manage::ThreadContextARM::CreateDasm() const
 {
 	Manage::DasmARM *dasm;
 	NEW_CLASS(dasm, Manage::DasmARM());
 	return dasm;
 }
 
-UInt32 Manage::ThreadContextARM::GetR0()
+UInt32 Manage::ThreadContextARM::GetR0() const
 {
 	return ((ucontext_t*)this->context)->uc_mcontext.arm_r0;
 }
 
-UInt32 Manage::ThreadContextARM::GetR1()
+UInt32 Manage::ThreadContextARM::GetR1() const
 {
 	return ((ucontext_t*)this->context)->uc_mcontext.arm_r1;
 }
 
-UInt32 Manage::ThreadContextARM::GetR2()
+UInt32 Manage::ThreadContextARM::GetR2() const
 {
 	return ((ucontext_t*)this->context)->uc_mcontext.arm_r2;
 }
 
-UInt32 Manage::ThreadContextARM::GetR3()
+UInt32 Manage::ThreadContextARM::GetR3() const
 {
 	return ((ucontext_t*)this->context)->uc_mcontext.arm_r3;
 }
 
-UInt32 Manage::ThreadContextARM::GetR4()
+UInt32 Manage::ThreadContextARM::GetR4() const
 {
 	return ((ucontext_t*)this->context)->uc_mcontext.arm_r4;
 }
 
-UInt32 Manage::ThreadContextARM::GetR5()
+UInt32 Manage::ThreadContextARM::GetR5() const
 {
 	return ((ucontext_t*)this->context)->uc_mcontext.arm_r5;
 }
 
-UInt32 Manage::ThreadContextARM::GetR6()
+UInt32 Manage::ThreadContextARM::GetR6() const
 {
 	return ((ucontext_t*)this->context)->uc_mcontext.arm_r6;
 }
 
-UInt32 Manage::ThreadContextARM::GetR7()
+UInt32 Manage::ThreadContextARM::GetR7() const
 {
 	return ((ucontext_t*)this->context)->uc_mcontext.arm_r7;
 }
 
-UInt32 Manage::ThreadContextARM::GetR8()
+UInt32 Manage::ThreadContextARM::GetR8() const
 {
 	return ((ucontext_t*)this->context)->uc_mcontext.arm_r8;
 }
 
-UInt32 Manage::ThreadContextARM::GetR9()
+UInt32 Manage::ThreadContextARM::GetR9() const
 {
 	return ((ucontext_t*)this->context)->uc_mcontext.arm_r9;
 }
 
-UInt32 Manage::ThreadContextARM::GetR10()
+UInt32 Manage::ThreadContextARM::GetR10() const
 {
 	return ((ucontext_t*)this->context)->uc_mcontext.arm_r10;
 }
 
-UInt32 Manage::ThreadContextARM::GetFP()
+UInt32 Manage::ThreadContextARM::GetFP() const
 {
 	return ((ucontext_t*)this->context)->uc_mcontext.arm_fp;
 }
 
-UInt32 Manage::ThreadContextARM::GetIP()
+UInt32 Manage::ThreadContextARM::GetIP() const
 {
 	return ((ucontext_t*)this->context)->uc_mcontext.arm_ip;
 }
 
-UInt32 Manage::ThreadContextARM::GetSP()
+UInt32 Manage::ThreadContextARM::GetSP() const
 {
 	return ((ucontext_t*)this->context)->uc_mcontext.arm_sp;
 }
 
-UInt32 Manage::ThreadContextARM::GetPC()
+UInt32 Manage::ThreadContextARM::GetPC() const
 {
 	return ((ucontext_t*)this->context)->uc_mcontext.arm_pc;
 }
 
-UInt32 Manage::ThreadContextARM::GetLR()
+UInt32 Manage::ThreadContextARM::GetLR() const
 {
 	return ((ucontext_t*)this->context)->uc_mcontext.arm_lr;
 }
 
-UInt32 Manage::ThreadContextARM::GetCPSR()
+UInt32 Manage::ThreadContextARM::GetCPSR() const
 {
 	return ((ucontext_t*)this->context)->uc_mcontext.arm_cpsr;
 }
 
-void *Manage::ThreadContextARM::GetContext()
+void *Manage::ThreadContextARM::GetContext() const
 {
 	return this->context;
 }

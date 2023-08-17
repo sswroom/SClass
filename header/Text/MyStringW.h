@@ -44,6 +44,7 @@ namespace Text
 	Bool StrEquals(const UTF16Char *str1, const UTF16Char *str2);
 	Bool StrEquals(const UTF32Char *str1, const UTF32Char *str2);
 	Bool StrEqualsICase(const UTF16Char *str1, const UTF16Char *str2);
+	Bool StrEqualsICaseASCII(const UTF16Char *str1, const Char *str2);
 	Bool StrEqualsICase(const UTF16Char *str1, const UTF16Char *str2, OSInt str2Len);
 	Bool StrEqualsICase(const UTF32Char *str1, const UTF32Char *str2);
 	Bool StrEqualsICase(const UTF32Char *str1, const UTF32Char *str2, OSInt str2Len);

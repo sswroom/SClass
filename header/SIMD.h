@@ -1360,6 +1360,20 @@ Int16x8 FORCEINLINE PMergeW4(Int16x4 val1, Int16x4 val2)
 	return ret;
 }
 
+UInt16x8 FORCEINLINE PMergeW4(UInt16x4 val1, UInt16x4 val2)
+{
+	UInt16x8 ret;
+	ret.vals[0] = val1.vals[0];
+	ret.vals[1] = val1.vals[1];
+	ret.vals[2] = val1.vals[2];
+	ret.vals[3] = val1.vals[3];
+	ret.vals[4] = val2.vals[0];
+	ret.vals[5] = val2.vals[1];
+	ret.vals[6] = val2.vals[2];
+	ret.vals[7] = val2.vals[3];
+	return ret;
+}
+
 Int16x8 FORCEINLINE PMergeLW4(Int16x8 val1, Int16x8 val2)
 {
 	val1.vals[4] = val2.vals[0];

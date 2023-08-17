@@ -7,6 +7,8 @@ Crypto/Cert/TrustStore.h: ../../src/Crypto/Cert/TrustStore_Win.cpp
 @TrustStore.o
 Crypto/Cert/WinHttpCert.h: ../../src/Crypto/Cert/WinHttpCert.cpp
 @WinHttpCert.o
+Crypto/Encrypt/RSAEnc.h: ../../src/Crypto/Encrypt/RSAEncNull.cpp
+@RSAEnc.o
 
 DB/MDBFileConn.h: ../../src/DB/MDBFileConn.cpp
 @MDBFileConn.o
@@ -179,6 +181,7 @@ Win32/WinRTCore.h: ../../src/Win32/WinRTCore.cpp
 
 TrustStore.o: ../../src/Crypto/Cert/TrustStore_Win.cpp
 !-lcrypt32
+RSAEnc.o: ../../src/Crypto/Encrypt/RSAEncNull.cpp
 WinHttpCert.o: ../../src/Crypto/Cert/WinHttpCert.cpp
 !-lwinhttp
 MDBFileConn.o: ../../src/DB/MDBFileConn.cpp

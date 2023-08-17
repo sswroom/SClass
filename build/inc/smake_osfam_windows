@@ -2,9 +2,6 @@
 MyMemory.h: ../../src/MyMemoryW.cpp
 @MyMemory.o
 
-Crypto/Encrypt/RSAEnc.h: ../../src/Crypto/Encrypt/RSAEncNull.cpp
-@RSAEnc.o
-
 DB/OLEDBConn.h: ../../src/DB/OLEDBConnW.cpp
 @OLEDBConn.o
 @OLEDBGuid.o
@@ -131,7 +128,6 @@ sqlite3.h:
 
 MyMemory.o: ../../src/MyMemoryW.cpp
 !-ldbghelp
-RSAEnc.o: ../../src/Crypto/Encrypt/RSAEncNull.cpp
 OLEDBConn.o: ../../src/DB/OLEDBConnW.cpp
 !-lole32
 !-loleaut32

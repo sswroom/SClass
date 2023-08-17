@@ -49,6 +49,8 @@ DB::ODBCConn::ODBCConn(Text::CString sourceName, IO::LogTool *log) : DB::DBConn(
 	this->schema = 0;
 	this->enableDebug = false;
 	this->tzQhr = 0;
+	this->forceTz = false;
+	this->axisAware = false;
 }
 
 DB::ODBCConn::ODBCConn(Text::CString connStr, Text::CString sourceName, IO::LogTool *log) : DB::DBConn(sourceName)
@@ -63,6 +65,8 @@ DB::ODBCConn::ODBCConn(Text::CString connStr, Text::CString sourceName, IO::LogT
 	this->pwd = 0;
 	this->schema = 0;
 	this->tzQhr = 0;
+	this->forceTz = false;
+	this->axisAware = false;
 	this->Connect(connStr);
 }
 
@@ -77,10 +81,12 @@ DB::ODBCConn::ODBCConn(Text::CString dsn, Text::CString uid, Text::CString pwd, 
 	this->uid = Text::String::NewOrNull(uid);
 	this->pwd = Text::String::NewOrNull(pwd);
 	this->schema = Text::String::NewOrNull(schema);
+	this->forceTz = false;
+	this->axisAware = false;
 	this->Connect(this->dsn, this->uid, this->pwd, this->schema);
 }
 
-DB::ODBCConn::ODBCConn(Text::String *dsn, Text::String *uid, Text::String *pwd, Text::String *schema, IO::LogTool *log) : DB::DBConn(dsn)
+DB::ODBCConn::ODBCConn(NotNullPtr<Text::String> dsn, Text::String *uid, Text::String *pwd, Text::String *schema, IO::LogTool *log) : DB::DBConn(dsn)
 {
 	this->log = log;
 	this->connStr = 0;
@@ -91,6 +97,8 @@ DB::ODBCConn::ODBCConn(Text::String *dsn, Text::String *uid, Text::String *pwd, 
 	this->uid = uid->Clone().Ptr();
 	this->pwd = pwd->Clone().Ptr();
 	this->schema = schema->Clone().Ptr();
+	this->forceTz = false;
+	this->axisAware = false;
 	this->Connect(this->dsn, this->uid, this->pwd, this->schema);
 }
 
@@ -133,6 +141,11 @@ DB::ODBCConn::~ODBCConn()
 DB::SQLType DB::ODBCConn::GetSQLType() const
 {
 	return this->sqlType;
+}
+
+Bool DB::ODBCConn::IsAxisAware() const
+{
+	return this->axisAware;
 }
 
 DB::DBConn::ConnType DB::ODBCConn::GetConnType() const
@@ -320,7 +333,7 @@ IO::ConfigFile *DB::ODBCConn::GetDriverInfo(Text::CString driverName)
 	return 0;
 }
 
-DB::DBTool *DB::ODBCConn::CreateDBTool(Text::String *dsn, Text::String *uid, Text::String *pwd, Text::String *schema, IO::LogTool *log, Text::CString logPrefix)
+DB::DBTool *DB::ODBCConn::CreateDBTool(NotNullPtr<Text::String> dsn, Text::String *uid, Text::String *pwd, Text::String *schema, IO::LogTool *log, Text::CString logPrefix)
 {
 	return 0;
 }

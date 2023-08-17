@@ -55,7 +55,7 @@ Bool Net::HTTPOSClient::Recover()
 	return false;
 }
 
-Bool Net::HTTPOSClient::Connect(Text::CString url, Net::WebUtil::RequestMethod method, Double *timeDNS, Double *timeConn, Bool defHeaders)
+Bool Net::HTTPOSClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMethod method, Double *timeDNS, Double *timeConn, Bool defHeaders)
 {
 	if (timeDNS)
 	{
@@ -85,7 +85,7 @@ void Net::HTTPOSClient::EndRequest(Double *timeReq, Double *timeResp)
 	return;
 }
 
-void Net::HTTPOSClient::SetTimeout(Int32 ms)
+void Net::HTTPOSClient::SetTimeout(Data::Duration ms)
 {
 }
 

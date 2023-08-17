@@ -95,7 +95,7 @@ UOSInt IO::StmData::ConcatStreamData::GetRealData(UInt64 offset, UOSInt length, 
 				thisSize = length;
 			thisSize = data->GetRealData(offset, (UOSInt)thisSize, buffer);
 			length -= (UOSInt)thisSize;
-			buffer += thisSize;
+			buffer += (UOSInt)thisSize;
 			readTotal += (UOSInt)thisSize;
 			if (length <= 0)
 				break;

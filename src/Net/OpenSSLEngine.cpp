@@ -229,6 +229,7 @@ Net::OpenSSLEngine::OpenSSLEngine(NotNullPtr<Net::SocketFactory> sockf, Method m
 		m = TLSv1_2_method();
 #endif
 		break;
+#if OPENSSL_VERSION_NUMBER >= 0x10002000
 	case Method::DTLS:
 		m = DTLS_method();
 		break;
@@ -246,6 +247,13 @@ Net::OpenSSLEngine::OpenSSLEngine(NotNullPtr<Net::SocketFactory> sockf, Method m
 		m = DTLSv1_2_method();
 #endif
 		break;
+#else
+	case Method::DTLSV1_2:
+	case Method::DTLSV1:
+	case Method::DTLS:
+		m = TLS_method();
+		break;
+#endif
 	}
 	this->clsData = MemAlloc(ClassData, 1);
 	this->clsData->ctx = SSL_CTX_new(m);
@@ -286,7 +294,9 @@ Bool Net::OpenSSLEngine::ServerSetCertsASN1(Crypto::Cert::X509Cert *certASN1, Cr
 	
 	if (certASN1 != 0 && keyASN1 != 0)
 	{
+#if OPENSSL_VERSION_NUMBER >= 0x10002000
 		SSL_CTX_set_ecdh_auto(this->clsData->ctx, 1);
+#endif
 		if (SSL_CTX_use_certificate_ASN1(this->clsData->ctx, (int)certASN1->GetASN1BuffSize(), certASN1->GetASN1Buff()) <= 0)
 		{
 			return false;
@@ -335,7 +345,9 @@ Bool Net::OpenSSLEngine::ServerSetCertsASN1(Crypto::Cert::X509Cert *certASN1, Cr
 	}
 	else if (certASN1 != 0 && certASN1->GetFileType() == Crypto::Cert::X509File::FileType::Cert && keyASN1 != 0 && keyASN1->GetFileType() == Crypto::Cert::X509File::FileType::Key)
 	{
+#if OPENSSL_VERSION_NUMBER >= 0x10002000
 		SSL_CTX_set_ecdh_auto(this->clsData->ctx, 1);
+#endif
 		if (SSL_CTX_use_certificate_ASN1(this->clsData->ctx, (int)certASN1->GetASN1BuffSize(), certASN1->GetASN1Buff()) <= 0)
 		{
 			return false;
@@ -688,7 +700,7 @@ Crypto::Cert::X509Key *Net::OpenSSLEngine::GenerateRSAKey()
 		int readSize = BIO_read(bio2, buff, 4096);
 		if (readSize > 0)
 		{
-			Text::String *fileName = Text::String::New(UTF8STRC("RSAKey.key"));
+			NotNullPtr<Text::String> fileName = Text::String::New(UTF8STRC("RSAKey.key"));
 			pobjKey = Parser::FileParser::X509Parser::ParseBuff(BYTEARR(buff).SubArray(0, (UOSInt)readSize), fileName);
 			fileName->Release();
 		}

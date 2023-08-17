@@ -122,6 +122,20 @@ FORCEINLINE Int64 ReadNInt64(const UInt8 *dptr)
 	return *(Int64*)tmpBuff;
 }
 
+FORCEINLINE Int64 ReadNUInt64(const UInt8 *dptr)
+{
+	UInt8 tmpBuff[8];
+	tmpBuff[0] = dptr[0];
+	tmpBuff[1] = dptr[1];
+	tmpBuff[2] = dptr[2];
+	tmpBuff[3] = dptr[3];
+	tmpBuff[4] = dptr[4];
+	tmpBuff[5] = dptr[5];
+	tmpBuff[6] = dptr[6];
+	tmpBuff[7] = dptr[7];
+	return *(UInt64*)tmpBuff;
+}
+
 FORCEINLINE void WriteNInt16(UInt8 *dptr, Int16 val)
 {
 	UInt8 *vPtr = (UInt8*)&val;
@@ -155,6 +169,19 @@ FORCEINLINE void WriteNUInt32(UInt8 *dptr, UInt32 val)
 }
 
 FORCEINLINE void WriteNInt64(UInt8 *dptr, Int64 val)
+{
+	UInt8 *vPtr = (UInt8*)&val;
+	dptr[0] = vPtr[0];
+	dptr[1] = vPtr[1];
+	dptr[2] = vPtr[2];
+	dptr[3] = vPtr[3];
+	dptr[4] = vPtr[4];
+	dptr[5] = vPtr[5];
+	dptr[6] = vPtr[6];
+	dptr[7] = vPtr[7];
+}
+
+FORCEINLINE void WriteNUInt64(UInt8 *dptr, UInt64 val)
 {
 	UInt8 *vPtr = (UInt8*)&val;
 	dptr[0] = vPtr[0];

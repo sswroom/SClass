@@ -33,6 +33,10 @@
 
 #include <wchar.h>
 
+#if defined(__DEFINED_pid_t)
+#define __pid_t pid_t
+#endif
+
 #if __GLIBC__ < 2 || (__GLIBC__ == 2 && __GLIBC_MINOR__ < 15)
 ssize_t process_vm_readv(pid_t pid, const struct iovec *local_iov, unsigned long liovcnt,
 	const struct iovec *remote_iov, unsigned long riovcnt, unsigned long flags)

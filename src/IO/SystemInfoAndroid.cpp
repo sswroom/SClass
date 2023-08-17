@@ -28,7 +28,7 @@ IO::SystemInfo::SystemInfo()
 		Text::PString u8arr[2];
 		Text::PString u8arr2[2];
 		sb.ClearStr();
-		Manage::Process::ExecuteProcess(CSTR("getprop"), &sb);
+		Manage::Process::ExecuteProcess(CSTR("getprop"), sb);
 		u8arr[1] = sb;
 		NEW_CLASS(cfg, IO::ConfigFile());
 		while (1)
@@ -79,7 +79,7 @@ IO::SystemInfo::SystemInfo()
 		{
 			sb.Append(model);
 		}
-		data->platformName = Text::String::New(sb.ToString(), sb.GetLength());
+		data->platformName = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 		DEL_CLASS(cfg);
 	}
 	else

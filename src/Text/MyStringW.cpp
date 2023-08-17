@@ -1217,6 +1217,27 @@ Bool Text::StrEqualsICase(const UTF16Char *str1, const UTF16Char *str2)
 	return *str2 == 0;
 }
 
+Bool Text::StrEqualsICaseASCII(const UTF16Char *str1, const Char *str2)
+{
+	UTF16Char c1;
+	Char c2;
+	while ((c1 = *str1++) != 0)
+	{
+		c2 = *str2++;
+		if (c1 >= 'a' && c1 <= 'z')
+		{
+			c1 = (UTF16Char)(c1 - 0x20);
+		}
+		if (c2 >= 'a' && c2 <= 'z')
+		{
+			c2 = (Char)(c2 - 0x20);
+		}
+		if (c1 != (UTF16Char)c2)
+			return false;
+	}
+	return *str2 == 0;
+}
+
 Bool Text::StrEqualsICase(const UTF16Char *str1, const UTF16Char*str2, OSInt str2Len)
 {
 	UTF16Char c1;

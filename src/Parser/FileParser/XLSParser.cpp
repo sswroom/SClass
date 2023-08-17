@@ -123,7 +123,7 @@ IO::ParsedObject *Parser::FileParser::XLSParser::ParseFileHdr(NotNullPtr<IO::Str
 				modifyDt.SetValueSYSTEMTIME(&buff[i + 108]);
 			}
 
-			if (Text::StrEqualsICase((const UTF16Char *)&buff[i], U16STR("Root Entry")))
+			if (Text::StrEqualsICaseASCII((const UTF16Char *)&buff[i], "Root Entry"))
 			{
 				currSect = ReadUInt32(&buff[i + 116]);
 				sizeLeft = ReadUInt64(&buff[i + 120]);
@@ -145,7 +145,7 @@ IO::ParsedObject *Parser::FileParser::XLSParser::ParseFileHdr(NotNullPtr<IO::Str
 					currSect = ReadUInt32(&fat[currSect * 4]);
 				}
 			}
-			else if (Text::StrEqualsICase((const UTF16Char *)&buff[i], U16STR("WORKBOOK")))
+			else if (Text::StrEqualsICaseASCII((const UTF16Char *)&buff[i], "WORKBOOK"))
 			{
 				Text::SpreadSheet::Workbook *wb;
 				NEW_CLASS(wb, Text::SpreadSheet::Workbook());

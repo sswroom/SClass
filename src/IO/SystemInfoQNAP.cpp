@@ -26,18 +26,18 @@ IO::SystemInfo::SystemInfo()
 	data->platformName = 0;
 	data->platformSN = 0;
 	this->clsData = data;
-	IO::ConfigFile *cfg = IO::IniFile::Parse((const UTF8Char*)"/etc/model.conf", 65001);
+	IO::ConfigFile *cfg = IO::IniFile::Parse(CSTR("/etc/model.conf"), 65001);
 	if (cfg)
 	{
-		Text::String *s = cfg->GetValue(UTF8STRC("System Enclosure"), UTF8STRC("VENDOR"));
-		Text::String *s2 = cfg->GetValue(UTF8STRC("System Enclosure"), UTF8STRC("MODEL"));
+		Text::String *s = cfg->GetCateValue(CSTR("System Enclosure"), CSTR("VENDOR"));
+		Text::String *s2 = cfg->GetCateValue(CSTR("System Enclosure"), CSTR("MODEL"));
 		if (s && s2)
 		{
 			Text::StringBuilderUTF8 sb;
 			sb.Append(s);
 			sb.AppendUTF8Char(' ');
 			sb.Append(s2);
-			data->platformName = Text::String::New(sb.ToString(), sb.GetLength());
+			data->platformName = Text::String::New(sb.ToCString()).Ptr();
 		}
 		DEL_CLASS(cfg);
 	}

@@ -396,7 +396,7 @@ void Net::OSSocketFactory::SetNoDelay(Socket *socket, Bool val)
 void Net::OSSocketFactory::SetSendTimeout(Socket *socket, Data::Duration timeout)
 {
 	struct timeval tv;
-#if defined(__APPLE__)
+#if defined(__APPLE__) || defined(__DEFINED_time_t)
 	tv.tv_sec = (time_t)timeout.GetSeconds();
 	tv.tv_usec = (suseconds_t)timeout.GetNS() / 1000;
 #else
@@ -412,7 +412,7 @@ void Net::OSSocketFactory::SetSendTimeout(Socket *socket, Data::Duration timeout
 void Net::OSSocketFactory::SetRecvTimeout(Socket *socket, Data::Duration timeout)
 {
 	struct timeval tv;
-#if defined(__APPLE__)
+#if defined(__APPLE__) || defined(__DEFINED_time_t)
 	tv.tv_sec = (time_t)timeout.GetSeconds();
 	tv.tv_usec = (suseconds_t)timeout.GetNS() / 1000;
 #else

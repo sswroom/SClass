@@ -23,7 +23,7 @@ Media::StaticEngine::~StaticEngine()
 	DEL_CLASS(this->iab32);
 }
 
-Media::DrawImage *Media::StaticEngine::CreateImage32(UOSInt width, UOSInt height, Media::AlphaType atype)
+Media::DrawImage *Media::StaticEngine::CreateImage32(Math::Size2D<UOSInt> size, Media::AlphaType atype)
 {
 //	Media::StaticDrawImage *simg;
 //	Media::ColorProfile color(Media::ColorProfile::CPT_PUNKNOWN);
@@ -32,16 +32,16 @@ Media::DrawImage *Media::StaticEngine::CreateImage32(UOSInt width, UOSInt height
 	return 0;
 }
 
-Media::DrawImage *Media::StaticEngine::LoadImage(Text::CString fileName)
+Media::DrawImage *Media::StaticEngine::LoadImage(Text::CStringNN fileName)
 {
-	IO::StmData::FileData *fd;
 	Media::ImageList *imgList = 0;
-	NEW_CLASS(fd, IO::StmData::FileData(fileName, false));
-	if (this->parsers)
 	{
-		imgList = (Media::ImageList*)this->parsers->ParseFileType(fd, IO::ParserType::ImageList);
+		IO::StmData::FileData fd(fileName, false);
+		if (this->parsers)
+		{
+			imgList = (Media::ImageList*)this->parsers->ParseFileType(fd, IO::ParserType::ImageList);
+		}
 	}
-	DEL_CLASS(fd);
 
 	Media::StaticDrawImage *simg = 0;
 	if (imgList)
@@ -54,16 +54,16 @@ Media::DrawImage *Media::StaticEngine::LoadImage(Text::CString fileName)
 
 Media::DrawImage *Media::StaticEngine::LoadImageW(const WChar *fileName)
 {
-	IO::StmData::FileData *fd;
 	Media::ImageList *imgList = 0;
-	Text::String *s = Text::String::NewNotNull(fileName);
-	NEW_CLASS(fd, IO::StmData::FileData(s, false));
-	s->Release();
-	if (this->parsers)
+	NotNullPtr<Text::String> s = Text::String::NewNotNull(fileName);
 	{
-		imgList = (Media::ImageList*)this->parsers->ParseFileType(fd, IO::ParserType::ImageList);
+		IO::StmData::FileData fd(s, false);
+		s->Release();
+		if (this->parsers)
+		{
+			imgList = (Media::ImageList*)this->parsers->ParseFileType(fd, IO::ParserType::ImageList);
+		}
 	}
-	DEL_CLASS(fd);
 
 	Media::StaticDrawImage *simg = 0;
 	if (imgList)
@@ -74,7 +74,7 @@ Media::DrawImage *Media::StaticEngine::LoadImageW(const WChar *fileName)
 	return simg;
 }
 
-Media::DrawImage *Media::StaticEngine::LoadImageStream(IO::SeekableStream *stm)
+Media::DrawImage *Media::StaticEngine::LoadImageStream(NotNullPtr<IO::SeekableStream> stm)
 {
 	return 0;
 }
@@ -420,7 +420,7 @@ Media::StaticImage *Media::StaticDrawImage::ToStaticImage()
 	return (Media::StaticImage*)this->Clone();
 }
 
-UOSInt Media::StaticDrawImage::SaveGIF(IO::SeekableStream *stm)
+UOSInt Media::StaticDrawImage::SaveGIF(NotNullPtr<IO::SeekableStream> stm)
 {
 	Media::StaticImage *simg = (Media::StaticImage*)this->Clone();
 	if (!simg->ToPal8())

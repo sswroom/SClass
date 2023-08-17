@@ -1,5 +1,7 @@
 Crypto/Cert/TrustStore.h: ../../src/Crypto/Cert/TrustStore_Linux.cpp
 @TrustStore.o
+Crypto/Encrypt/RSAEnc.h: ../../src/Crypto/Encrypt/RSAEnc.cpp
+@RSAEnc.o
 
 DB/MDBFileConn.h: ../../src/DB/MDBFileConnNul.cpp
 @MDBFileConn.o
@@ -11,7 +13,7 @@ DB/ODBCConn.h: ../../src/DB/ODBCConnNul.cpp
 @ODBCConn.o
 DB/PostgreSQLConn.h: ../../src/DB/PostgreSQLConnNul.cpp
 @PostgreSQLConn.o
-DB/TDSConn.h: ../../src/DB/TDSConn.cpp
+DB/TDSConn.h: ../../src/DB/TDSConn_Null.cpp
 @TDSConn.o
 
 Exporter/HEIFExporter.h: ../../src/Exporter/HEIFExporter_Null.cpp
@@ -41,6 +43,8 @@ IO/SDCardMgr.h: ../../src/IO/SDCardMgrL.cpp
 @SDCardMgr.o
 IO/SensorManager.h: ../../src/IO/SensorManagerNull.cpp
 @SensorManager.o
+IO/ServiceManager.h: ../../src/IO/ServiceManagerNull.cpp
+@ServiceManager.o
 IO/Watchdog.h: ../../src/IO/WatchdogL.cpp
 @Watchdog.o
 
@@ -107,13 +111,14 @@ Sync/ThreadUtil.h: ../../src/Sync/ThreadUtilU.cpp
 
 ConsoleStartup.o: ../../startup/LinuxConStartup.cpp
 TrustStore.o: ../../src/Crypto/Cert/TrustStore_Linux.cpp
+RSAEnc.o: ../../src/Crypto/Encrypt/RSAEnc.cpp
+!-lcrypto
 MDBFileConn.o: ../../src/DB/MDBFileConnNul.cpp
 MongoDB.o: ../../src/DB/MongoDBNull.cpp
 MySQLConn.o: ../../src/DB/MySQLConnNull.cpp
 ODBCConn.o: ../../src/DB/ODBCConnNul.cpp
 PostgreSQLConn.o: ../../src/DB/PostgreSQLConnNul.cpp
-TDSConn.o: ../../src/DB/TDSConn.cpp
-!-lsybdb
+TDSConn.o: ../../src/DB/TDSConn_Null.cpp
 HEIFExporter.o: ../../src/Exporter/HEIFExporter_Null.cpp
 WebPExporter.o: ../../src/Exporter/WebPExporter_Null.cpp
 BTController.o: ../../src/IO/BTControllerNull.cpp
@@ -127,6 +132,7 @@ RAWBTMonitor.o: ../../src/IO/RAWBTMonitorLite.cpp
 RAWBTScanner.o: ../../src/IO/RAWBTScanner.cpp
 SDCardMgr.o: ../../src/IO/SDCardMgrL.cpp
 SensorManager.o: ../../src/IO/SensorManagerNull.cpp
+ServiceManager.o: ../../src/IO/ServiceManagerNull.cpp
 Watchdog.o: ../../src/IO/WatchdogL.cpp
 Computer.o: ../../src/Manage/ComputerL.cpp
 ComputerUser.o: ../../src/Manage/ComputerUserL.cpp

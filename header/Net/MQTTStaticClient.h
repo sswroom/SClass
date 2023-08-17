@@ -43,6 +43,8 @@ namespace Net
 		static void __stdcall OnDisconnect(void *user);
 		void Connect();
 		UInt16 GetNextPacketId();
+
+		void Init(NotNullPtr<Net::SocketFactory> sockf, Net::MQTTConn::PublishMessageHdlr hdlr, void *hdlrObj, IO::Writer *errLog);
 	public:
 		MQTTStaticClient(NotNullPtr<Net::SocketFactory> sockf, Net::MQTTConn::PublishMessageHdlr hdlr, void *hdlrObj, IO::Writer *errLog);
 		MQTTStaticClient(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::CString host, UInt16 port, Text::CString username, Text::CString password, Bool webSocket, Net::MQTTConn::PublishMessageHdlr hdlr, void *userObj, UInt16 kaSeconds, IO::Writer *errLog);

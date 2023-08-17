@@ -29,19 +29,19 @@ IO::SystemInfo::SystemInfo()
 		IO::FileStream fs(CSTR("/proc/cpuinfo"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 		if (!fs.IsError())
 		{
-			Text::UTF8Reader reader(&fs);
+			Text::UTF8Reader reader(fs);
 			sb.ClearStr();
 			while (reader.ReadLine(sb, 512))
 			{
 				if (sb.StartsWith(UTF8STRC("machine")))
 				{
 					i = sb.IndexOf(UTF8STRC(": "));
-					data->platformName = Text::String::New(sb.ToString() + i + 2, sb.GetLength() - i - 2);
+					data->platformName = Text::String::New(sb.ToString() + i + 2, sb.GetLength() - i - 2).Ptr();
 				}
 				else if (sb.StartsWith(UTF8STRC("Serial")))
 				{
 					i = sb.IndexOf(UTF8STRC(": "));
-					data->platformSN = Text::String::New(sb.ToString() + i + 2, sb.GetLength() - i - 2);
+					data->platformSN = Text::String::New(sb.ToString() + i + 2, sb.GetLength() - i - 2).Ptr();
 				}
 				sb.ClearStr();
 			}
@@ -51,14 +51,14 @@ IO::SystemInfo::SystemInfo()
 	if (data->platformName == 0) //Asus Routers
 	{
 		sb.ClearStr();
-		Manage::Process::ExecuteProcess(CSTR("nvram get productid"), &sb);
+		Manage::Process::ExecuteProcess(CSTR("nvram get productid"), sb);
 		if (sb.GetLength() > 0)
 		{
 			while (sb.EndsWith('\r') || sb.EndsWith('\n'))
 			{
 				sb.RemoveChars(1);
 			}
-			data->platformName = Text::String::New(sb.ToString(), sb.GetLength());
+			data->platformName = Text::String::New(sb.ToCString()).Ptr();
 		}
 	}
 
@@ -67,11 +67,11 @@ IO::SystemInfo::SystemInfo()
 		IO::FileStream fs(CSTR("/etc/fw_model"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 		if (!fs.IsError())
 		{
-			Text::UTF8Reader reader(&fs);
+			Text::UTF8Reader reader(fs);
 			sb.ClearStr();
 			if (reader.ReadLine(sb, 512))
 			{
-				data->platformName = Text::String::New(sb.ToString(), sb.GetLength());
+				data->platformName = Text::String::New(sb.ToCString()).Ptr();
 			}
 		}
 	}

@@ -1,7 +1,6 @@
-
 Crypto/Cert/TrustStore.h: ../../src/Crypto/Cert/TrustStore_Linux.cpp
 @TrustStore.o
-Crypto/Encrypt/RSAEnc.h: ../../src/Crypto/Encrypt/RSAEnc.cpp
+Crypto/Encrypt/RSAEnc.h: ../../src/Crypto/Encrypt/RSAEncNull.cpp
 @RSAEnc.o
 
 DB/MDBFileConn.h: ../../src/DB/MDBFileConnNul.cpp
@@ -26,30 +25,26 @@ IO/BTController.h: ../../src/IO/BTControllerNull.cpp
 @BTController.o
 IO/BTManager.h: ../../src/IO/BTManagerNull.cpp
 @BTManager.o
-IO/BTScanner.h: ../../src/IO/BTScannerNull.cpp
+IO/BTScanner.h: ../../src/IO/BTScannerL.cpp
 @BTScanner.o
-IO/DebugWriter.h: ../../src/IO/DebugWriter_Null.cpp
+IO/DebugWriter.h: ../../src/IO/DebugWriterL.cpp
 @DebugWriter.o
 IO/HIDInfo.h: ../../src/IO/HIDInfoL.cpp
 @HIDInfo.o
 IO/I2CChannelOS.h: ../../src/IO/I2CChannelOSL.cpp
 @I2CChannelOS.o
-IO/OS.h: ../../src/IO/OSAndroid.cpp
+IO/OS.h: ../../src/IO/OSL.cpp
 @OS.o
+IO/RAWBTMonitor.h: ../../src/IO/RAWBTMonitorLite.cpp
+@RAWBTMonitor.o
+IO/RAWBTScanner.h: ../../src/IO/RAWBTScanner.cpp
+@RAWBTScanner.o
 IO/SDCardMgr.h: ../../src/IO/SDCardMgrL.cpp
 @SDCardMgr.o
-IO/SensorAccelerometerAndroid.h: ../../src/IO/SensorAccelerometerAndroid.cpp
-@SensorAccelerometerAndroid.o
-IO/SensorAndroid.h: ../../src/IO/SensorAndroid.cpp
-@SensorAndroid.o
-IO/SensorMagnetometerAndroid.h: ../../src/IO/SensorMagnetometerAndroid.cpp
-@SensorMagnetometerAndroid.o
-IO/SensorManager.h: ../../src/IO/SensorManagerAndroid.cpp
+IO/SensorManager.h: ../../src/IO/SensorManagerNull.cpp
 @SensorManager.o
-IO/SensorPressureAndroid.h: ../../src/IO/SensorPressureAndroid.cpp
-@SensorPressureAndroid.o
-IO/SensorUnknownAndroid.h: ../../src/IO/SensorUnknownAndroid.cpp
-@SensorUnknownAndroid.o
+IO/ServiceManager.h: ../../src/IO/ServiceManagerNull.cpp
+@ServiceManager.o
 IO/Watchdog.h: ../../src/IO/WatchdogL.cpp
 @Watchdog.o
 
@@ -62,27 +57,23 @@ Manage/SymbolResolver.h: ../../src/Manage/SymbolResolverL.cpp
 Manage/ThreadInfo.h: ../../src/Manage/ThreadInfoL.cpp
 @ThreadInfo.o
 
-Media/AAudioRenderer.h: ../../src/Media/AAudioRenderer.cpp
-@AAudioRenderer.o
-Media/AndroidVideoCapture.h: ../../src/Media/AndroidVideoCapture.cpp
-@AndroidVideoCapture.o
-Media/AudioDevice.h: ../../src/Media/AudioDeviceAndroid.cpp
+Media/AudioDevice.h: ../../src/Media/AudioDeviceNull.cpp
 @AudioDevice.o
-Media/FBMonitorSurfaceMgr.h: ../../src/Media/FBMonitorSurfaceMgr_Null.cpp
-@FBMonitorSurfaceMgr.o
-Media/MonitorSurfaceMgrFactory.h: ../../src/Media/MonitorSurfaceMgrFactoryNull.cpp
+Media/MonitorSurfaceMgrFactory.h: ../../src/Media/MonitorSurfaceMgrFactoryLinux.cpp
 @MonitorSurfaceMgrFactory.o
+Media/FBMonitorSurfaceMgr.h: ../../src/Media/FBMonitorSurfaceMgr.cpp
+@FBMonitorSurfaceMgr.o
+Media/FBSurface.h: ../../src/Media/FBSurface.cpp
+@FBSurface.o
 Media/OCREngine.h: ../../src/Media/OCREngine_Null.cpp
 @OCREngine.o
-Media/OpenSLESRenderer.h: ../../src/Media/OpenSLESRenderer.cpp
-@OpenSLESRenderer.o
 Media/Printer.h: ../../src/Media/PrinterNull.cpp
 @Printer.o
 Media/ZXingWriter.h: ../../src/Media/ZXingWriter_Null.cpp
 @ZXingWriter.o
 Media/Decoder/FFMPEGDecoder.h: ../../src/Media/Decoder/FFMPEGDecoderNull.cpp
 @FFMPEGDecoder.o
-Media/OpenCV/OCVFrame.h: ../../src/Media/OpenCV/OCVFrameNull.cpp
+Media/OpenCV/OCVFrame.h: ../../src/Media/OpenCV/OCVFrame.cpp
 @OCVFrame.o
 Media/OpenCV/OCVFrameFeeder.h: ../../src/Media/OpenCV/OCVFrameFeeder.cpp
 @OCVFrameFeeder.o
@@ -96,7 +87,7 @@ Media/OpenCV/OCVUtil.h: ../../src/Media/OpenCV/OCVUtil.cpp
 
 Net/HTTPOSClient.h: ../../src/Net/HTTPOSClientNull.cpp
 @HTTPOSClient.o
-Net/SSLEngineFactory.h: ../../src/Net/SSLEngineFactoryOpenSSL.cpp
+Net/SSLEngineFactory.h: ../../src/Net/SSLEngineFactoryNull.cpp
 @SSLEngineFactory.o
 Net/WirelessLAN.h: ../../src/Net/WirelessLANL.cpp
 @WirelessLAN.o
@@ -120,46 +111,38 @@ Sync/ThreadUtil.h: ../../src/Sync/ThreadUtilU.cpp
 
 ConsoleStartup.o: ../../startup/LinuxConStartup.cpp
 TrustStore.o: ../../src/Crypto/Cert/TrustStore_Linux.cpp
-RSAEnc.o: ../../src/Crypto/Encrypt/RSAEnc.cpp
-!-lcrypto
+RSAEnc.o: ../../src/Crypto/Encrypt/RSAEncNull.cpp
 MDBFileConn.o: ../../src/DB/MDBFileConnNul.cpp
 MongoDB.o: ../../src/DB/MongoDBNull.cpp
 MySQLConn.o: ../../src/DB/MySQLConnNull.cpp
 ODBCConn.o: ../../src/DB/ODBCConnNul.cpp
 PostgreSQLConn.o: ../../src/DB/PostgreSQLConnNul.cpp
-TDSConn.o: ../../src/DB/TDSConn.cpp
-!-lsybdb
+TDSConn.o: ../../src/DB/TDSConn_Null.cpp
 HEIFExporter.o: ../../src/Exporter/HEIFExporter_Null.cpp
 WebPExporter.o: ../../src/Exporter/WebPExporter_Null.cpp
 BTController.o: ../../src/IO/BTControllerNull.cpp
 BTManager.o: ../../src/IO/BTManagerNull.cpp
-BTScanner.o: ../../src/IO/BTScannerNull.cpp
-DebugWriter.o: ../../src/IO/DebugWriter_Null.cpp
+BTScanner.o: ../../src/IO/BTScannerL.cpp
+DebugWriter.o: ../../src/IO/DebugWriterL.cpp
 HIDInfo.o: ../../src/IO/HIDInfoL.cpp
 I2CChannelOS.o: ../../src/IO/I2CChannelOSL.cpp
-OS.o: ../../src/IO/OSAndroid.cpp
+OS.o: ../../src/IO/OSL.cpp
+RAWBTMonitor.o: ../../src/IO/RAWBTMonitorLite.cpp
+RAWBTScanner.o: ../../src/IO/RAWBTScanner.cpp
 SDCardMgr.o: ../../src/IO/SDCardMgrL.cpp
-SensorAccelerometerAndroid.o: ../../src/IO/SensorAccelerometerAndroid.cpp
-SensorAndroid.o: ../../src/IO/SensorAndroid.cpp
-!-landroid
-SensorMagnetometerAndroid.o: ../../src/IO/SensorMagnetometerAndroid.cpp
-SensorManager.o: ../../src/IO/SensorManagerAndroid.cpp
-SensorPressureAndroid.o: ../../src/IO/SensorPressureAndroid.cpp
-SensorUnknownAndroid.o: ../../src/IO/SensorUnknownAndroid.cpp
+SensorManager.o: ../../src/IO/SensorManagerNull.cpp
+ServiceManager.o: ../../src/IO/ServiceManagerNull.cpp
 Watchdog.o: ../../src/IO/WatchdogL.cpp
 Computer.o: ../../src/Manage/ComputerL.cpp
 ComputerUser.o: ../../src/Manage/ComputerUserL.cpp
 SymbolResolver.o: ../../src/Manage/SymbolResolverL.cpp
 ThreadInfo.o: ../../src/Manage/ThreadInfoL.cpp
-AAudioRenderer.o: ../../src/Media/AAudioRenderer.cpp
-!-laaudio
-AndroidVideoCapture.o: ../../src/Media/AndroidVideoCapture.cpp
-!?(ANDROID_API >= 24) -lcamera2ndk -lmediandk
-AudioDevice.o: ../../src/Media/AudioDeviceAndroid.cpp
-FBMonitorSurfaceMgr.o: ../../src/Media/FBMonitorSurfaceMgr_Null.cpp
-MonitorSurfaceMgrFactory.o: ../../src/Media/MonitorSurfaceMgrFactoryNull.cpp
+!-lpthread
+AudioDevice.o: ../../src/Media/AudioDeviceNull.cpp
+MonitorSurfaceMgrFactory.o: ../../src/Media/MonitorSurfaceMgrFactoryLinux.cpp
+FBMonitorSurfaceMgr.o: ../../src/Media/FBMonitorSurfaceMgr.cpp
+FBSurface.o: ../../src/Media/FBSurface.cpp
 OCREngine.o: ../../src/Media/OCREngine_Null.cpp
-OpenSLESRenderer.o: ../../src/Media/OpenSLESRenderer.cpp
 Printer.o: ../../src/Media/PrinterNull.cpp
 ZXingWriter.o: ../../src/Media/ZXingWriter_Null.cpp
 FFMPEGDecoder.o: ../../src/Media/Decoder/FFMPEGDecoderNull.cpp
@@ -169,7 +152,7 @@ OCVNumPlateFinder.o: ../../src/Media/OpenCV/OCVNumPlateFinder_Null.cpp
 OCVObjectDetector.o: ../../src/Media/OpenCV/OCVObjectDetectorNull.cpp
 OCVUtil.o: ../../src/Media/OpenCV/OCVUtil.cpp
 HTTPOSClient.o: ../../src/Net/HTTPOSClientNull.cpp
-SSLEngineFactory.o: ../../src/Net/SSLEngineFactoryOpenSSL.cpp
+SSLEngineFactory.o: ../../src/Net/SSLEngineFactoryNull.cpp
 WirelessLAN.o: ../../src/Net/WirelessLANL.cpp
 WLANLinuxInterface.o: ../../src/Net/WLANLinuxInterface.cpp
 WLANLinuxMTKInterface.o: ../../src/Net/WLANLinuxMTKInterface.cpp
@@ -178,3 +161,4 @@ JP2Parser.o: ../../src/Parser/FileParser/JP2Parser_Null.cpp
 WebPParser.o: ../../src/Parser/FileParser/WebPParser_Null.cpp
 SimpleThread.o: ../../src/Sync/SimpleThreadU.cpp
 ThreadUtil.o: ../../src/Sync/ThreadUtilU.cpp
+!-lpthread

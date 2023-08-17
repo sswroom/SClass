@@ -25,7 +25,7 @@ IO::SystemInfo::SystemInfo()
 	this->clsData = data;
 
 	sb.ClearStr();
-	Manage::Process::ExecuteProcess(UTF8STRC("rdb_get -L"), &sb);
+	Manage::Process::ExecuteProcess(CSTR("rdb_get -L"), sb);
 	u8arr[1] = sb;
 
 	while (true)
@@ -34,12 +34,12 @@ IO::SystemInfo::SystemInfo()
 		if (u8arr[0].StartsWith(UTF8STRC("system.product.model ")))
 		{
 			SDEL_STRING(data->platformName);
-			data->platformName = Text::String::New(&u8arr[0].v[21], u8arr[0].leng - 21);
+			data->platformName = Text::String::New(&u8arr[0].v[21], u8arr[0].leng - 21).Ptr();
 		}
 		else if (u8arr[0].StartsWith(UTF8STRC("systeminfo.serialnumber ")))
 		{
 			SDEL_STRING(data->platformSN);
-			data->platformSN = Text::String::New(&u8arr[0].v[24], u8arr[0].leng - 24);
+			data->platformSN = Text::String::New(&u8arr[0].v[24], u8arr[0].leng - 24).Ptr();
 		}
 
 		if (i != 2)

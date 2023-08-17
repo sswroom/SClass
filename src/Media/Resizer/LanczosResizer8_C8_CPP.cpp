@@ -10,7 +10,6 @@ extern "C" void LanczosResizer8_C8_horizontal_filter_pa(UInt8 *inPt, UInt8 *outP
 	UInt8 *tmpPtr;
 	OSInt *currIndex;
 	Int16 *currWeight;
-	Int32x4 cvals2;
 	Int16x8 tmpVal1;
 	Int16x8 tmpVal2;
 
@@ -18,6 +17,7 @@ extern "C" void LanczosResizer8_C8_horizontal_filter_pa(UInt8 *inPt, UInt8 *outP
 	{
 		Int16x4 cvals;
 		Int16x8 cvals2;
+		Int32x4 cvals2b;
 		dstep -= width << 3;
 		tap >>= 1;
 
@@ -60,15 +60,15 @@ extern "C" void LanczosResizer8_C8_horizontal_filter_pa(UInt8 *inPt, UInt8 *outP
 			i = width;
 			while (i-- != 0)
 			{
-				cvals2 = PInt32x4Clear();
+				cvals2b = PInt32x4Clear();
 				j = tap;
 				while (j-- != 0)
 				{
-					cvals2 = PADDD4(cvals2, PMADDWD(PUNPCKWW4(PLoadInt16x4(&tmpbuff[currIndex[0]]), PLoadInt16x4(&tmpbuff[currIndex[1]])), PLoadInt16x8A(currWeight)));
+					cvals2b = PADDD4(cvals2b, PMADDWD(PUNPCKWW4(PLoadInt16x4(&tmpbuff[currIndex[0]]), PLoadInt16x4(&tmpbuff[currIndex[1]])), PLoadInt16x8A(currWeight)));
 					currWeight += 8;
 					currIndex += 2;
 				}
-				PStoreInt16x4(outPt, PSARSDW4(cvals2, 14));
+				PStoreInt16x4(outPt, PSARSDW4(cvals2b, 14));
 				outPt += 8;
 			}
 
@@ -80,6 +80,7 @@ extern "C" void LanczosResizer8_C8_horizontal_filter_pa(UInt8 *inPt, UInt8 *outP
 	{
 		Int16x4 cvals;
 		Int16x8 cvals2;
+		Int32x4 cvals2b;
 		dstep -= width << 3;
 
 		while (height-- != 0)
@@ -121,15 +122,15 @@ extern "C" void LanczosResizer8_C8_horizontal_filter_pa(UInt8 *inPt, UInt8 *outP
 			i = width;
 			while (i-- != 0)
 			{
-				cvals2 = PInt32x4Clear();
+				cvals2b = PInt32x4Clear();
 				tmpVal1 = PLoadInt16x8(&tmpbuff[currIndex[0]]);
 				tmpVal2 = PLoadInt16x8(&tmpbuff[currIndex[1]]);
-				cvals2 = PADDD4(cvals2, PMADDWD(PUNPCKLWW8(tmpVal1, tmpVal2), PLoadInt16x8A(&currWeight[0])));
-				cvals2 = PADDD4(cvals2, PMADDWD(PUNPCKHWW8(tmpVal1, tmpVal2), PLoadInt16x8A(&currWeight[8])));
-				cvals2 = PADDD4(cvals2, PMADDWD(PUNPCKWW4(PLoadInt16x4(&tmpbuff[currIndex[2]]), PLoadInt16x4(&tmpbuff[currIndex[2] + 8])), PLoadInt16x8A(&currWeight[16])));
+				cvals2b = PADDD4(cvals2b, PMADDWD(PUNPCKLWW8(tmpVal1, tmpVal2), PLoadInt16x8A(&currWeight[0])));
+				cvals2b = PADDD4(cvals2b, PMADDWD(PUNPCKHWW8(tmpVal1, tmpVal2), PLoadInt16x8A(&currWeight[8])));
+				cvals2b = PADDD4(cvals2b, PMADDWD(PUNPCKWW4(PLoadInt16x4(&tmpbuff[currIndex[2]]), PLoadInt16x4(&tmpbuff[currIndex[2] + 8])), PLoadInt16x8A(&currWeight[16])));
 				currWeight += 24;
 				currIndex += 3;
-				PStoreInt16x4(outPt, PSARSDW4(cvals2, 14));
+				PStoreInt16x4(outPt, PSARSDW4(cvals2b, 14));
 				outPt += 8;
 			}
 			outPt += dstep;
@@ -139,6 +140,7 @@ extern "C" void LanczosResizer8_C8_horizontal_filter_pa(UInt8 *inPt, UInt8 *outP
 	else if (swidth & 1)
 	{
 		Int16x4 cvals;
+		Int32x4 cvals2;
 		dstep -= width << 3;
 		tap >>= 1;
 
@@ -184,6 +186,7 @@ extern "C" void LanczosResizer8_C8_horizontal_filter_pa(UInt8 *inPt, UInt8 *outP
 	else
 	{
 		Int16x8 cvals;
+		Int32x4 cvals2;
 		Int32x4 cvals2b;
 		dstep -= width << 3;
 		swidth >>= 1;
@@ -427,14 +430,14 @@ extern "C" void LanczosResizer8_C8_vertical_filter(UInt8 *inPt, UInt8 *outPt, OS
 				cvals1 = PADDD4(cvals1, PMADDWD(PUNPCKLWW8(v1, v2), w2));
 				cvals2 = PADDD4(cvals2, PMADDWD(PUNPCKHWW8(v1, v2), w2));
 				cvals3 = PMergeSARDW4(cvals1, cvals2, 15);
-				outPt[0] = rgbTable[PEXTUW8(cvals3, 0) + 0];
-				outPt[1] = rgbTable[PEXTUW8(cvals3, 1) + 65536];
-				outPt[2] = rgbTable[PEXTUW8(cvals3, 2) + 131072];
-				outPt[3] = rgbTable[PEXTUW8(cvals3, 3) + 196608];
-				outPt[4] = rgbTable[PEXTUW8(cvals3, 4) + 0];
-				outPt[5] = rgbTable[PEXTUW8(cvals3, 5) + 65536];
-				outPt[6] = rgbTable[PEXTUW8(cvals3, 6) + 131072];
-				outPt[7] = rgbTable[PEXTUW8(cvals3, 7) + 196608];
+				outPt[0] = rgbTable[PEXTUW8(PCONVI16x8_U(cvals3), 0) + 0];
+				outPt[1] = rgbTable[PEXTUW8(PCONVI16x8_U(cvals3), 1) + 65536];
+				outPt[2] = rgbTable[PEXTUW8(PCONVI16x8_U(cvals3), 2) + 131072];
+				outPt[3] = rgbTable[PEXTUW8(PCONVI16x8_U(cvals3), 3) + 196608];
+				outPt[4] = rgbTable[PEXTUW8(PCONVI16x8_U(cvals3), 4) + 0];
+				outPt[5] = rgbTable[PEXTUW8(PCONVI16x8_U(cvals3), 5) + 65536];
+				outPt[6] = rgbTable[PEXTUW8(PCONVI16x8_U(cvals3), 6) + 131072];
+				outPt[7] = rgbTable[PEXTUW8(PCONVI16x8_U(cvals3), 7) + 196608];
 
 				currIn += 16;
 				outPt += 8;
@@ -479,14 +482,14 @@ extern "C" void LanczosResizer8_C8_vertical_filter(UInt8 *inPt, UInt8 *outPt, OS
 					currIndex += 2;
 				}
 				cvals3 = PMergeSARDW4(cvals1, cvals2, 15);
-				outPt[0] = rgbTable[PEXTUW8(cvals3, 0) + 0];
-				outPt[1] = rgbTable[PEXTUW8(cvals3, 1) + 65536];
-				outPt[2] = rgbTable[PEXTUW8(cvals3, 2) + 131072];
-				outPt[3] = rgbTable[PEXTUW8(cvals3, 3) + 196608];
-				outPt[4] = rgbTable[PEXTUW8(cvals3, 4) + 0];
-				outPt[5] = rgbTable[PEXTUW8(cvals3, 5) + 65536];
-				outPt[6] = rgbTable[PEXTUW8(cvals3, 6) + 131072];
-				outPt[7] = rgbTable[PEXTUW8(cvals3, 7) + 196608];
+				outPt[0] = rgbTable[PEXTUW8(PCONVI16x8_U(cvals3), 0) + 0];
+				outPt[1] = rgbTable[PEXTUW8(PCONVI16x8_U(cvals3), 1) + 65536];
+				outPt[2] = rgbTable[PEXTUW8(PCONVI16x8_U(cvals3), 2) + 131072];
+				outPt[3] = rgbTable[PEXTUW8(PCONVI16x8_U(cvals3), 3) + 196608];
+				outPt[4] = rgbTable[PEXTUW8(PCONVI16x8_U(cvals3), 4) + 0];
+				outPt[5] = rgbTable[PEXTUW8(PCONVI16x8_U(cvals3), 5) + 65536];
+				outPt[6] = rgbTable[PEXTUW8(PCONVI16x8_U(cvals3), 6) + 131072];
+				outPt[7] = rgbTable[PEXTUW8(PCONVI16x8_U(cvals3), 7) + 196608];
 				currIn += 16;
 				outPt += 8;
 			}

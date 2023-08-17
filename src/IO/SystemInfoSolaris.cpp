@@ -84,7 +84,7 @@ UOSInt IO::SystemInfo::GetRAMInfo(Data::ArrayList<RAMInfo*> *ramList)
 				{
 					sb.ClearStr();
 					sb.Append((const UTF8Char*)mem->deviceLocator);
-					ram->deviceLocator = Text::String::New(sb.ToCString());
+					ram->deviceLocator = Text::String::New(sb.ToCString()).Ptr();
 				}
 				else
 				{
@@ -94,7 +94,7 @@ UOSInt IO::SystemInfo::GetRAMInfo(Data::ArrayList<RAMInfo*> *ramList)
 				{
 					sb.ClearStr();
 					sb.Append((const UTF8Char*)mem->manufacturer);
-					ram->manufacturer = Text::String::New(sb.ToCString());
+					ram->manufacturer = Text::String::New(sb.ToCString()).Ptr();
 				}
 				else
 				{
@@ -104,7 +104,7 @@ UOSInt IO::SystemInfo::GetRAMInfo(Data::ArrayList<RAMInfo*> *ramList)
 				{
 					sb.ClearStr();
 					sb.Append((const UTF8Char*)mem->partNo);
-					ram->partNo = Text::String::New(sb.ToCString());
+					ram->partNo = Text::String::New(sb.ToCString()).Ptr();
 				}
 				else
 				{
@@ -114,7 +114,7 @@ UOSInt IO::SystemInfo::GetRAMInfo(Data::ArrayList<RAMInfo*> *ramList)
 				{
 					sb.ClearStr();
 					sb.Append((const UTF8Char*)mem->sn);
-					ram->sn = Text::String::New(sb.ToCString());
+					ram->sn = Text::String::New(sb.ToCString()).Ptr();
 				}
 				else
 				{
