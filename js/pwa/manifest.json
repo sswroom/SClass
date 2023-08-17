@@ -1,0 +1,35 @@
+{
+	"name": "PWA Test",
+	"short_name": "PWATest",
+	"description": "Testing for PWA",
+	"lang": "zh-HK",
+	"start_url": "./index.html",
+	"scope": "./index.html",
+	"theme_color": "#181c25",
+	"background_color": "#181c25",
+	"display": "standalone",
+	"display_override": [
+	  "window-controls-overlay"
+	],
+	"edge_side_panel": {
+	  "preferred_width": 496
+	},
+	"icons": [
+	  {
+		"src": "./favicon-72.png",
+		"sizes": "72x72"
+	  },
+	  {
+		"src": "./favicon-144.png",
+		"sizes": "144x144"
+	  }
+	],
+	"screenshots": [
+	],
+	"file_handlers": [
+	],
+	"protocol_handlers": [
+	],
+	"widgets": [
+	]
+  }
