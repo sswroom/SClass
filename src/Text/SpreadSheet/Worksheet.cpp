@@ -901,6 +901,49 @@ const Text::SpreadSheet::Worksheet::CellData *Text::SpreadSheet::Worksheet::GetC
 	return cell;
 }
 
+Bool Text::SpreadSheet::Worksheet::GetCellString(const CellData *cell, NotNullPtr<Text::StringBuilderUTF8> sb)
+{
+	if (cell == 0 || cell->cellValue == 0)
+	{
+		return false;
+	}
+	if (cell->cdt == Text::SpreadSheet::CellDataType::Number)
+	{
+		Double v;
+		Int32 iv;
+		if (!cell->cellValue->ToDouble(v))
+		{
+			sb->Append(cell->cellValue);
+		}
+		else
+		{
+			iv = Double2Int32(v);
+			if (iv == v)
+			{
+				sb->AppendI32(iv);
+			}
+			else
+			{
+				sb->AppendDouble(v);
+			}
+/*			Text::String *fmt;
+			if (cell->style && (fmt = cell->style->GetDataFormat()) != 0)
+			{
+				printf("Style: %s\r\n", fmt->v);
+			}
+			else
+			{
+				printf("Style: null\r\n");
+			}*/
+		}
+	}
+	else
+	{
+		sb->Append(cell->cellValue);
+	}
+	return true;
+}
+
 UOSInt Text::SpreadSheet::Worksheet::GetDrawingCount()
 {
 	return this->drawings->GetCount();
@@ -941,4 +984,23 @@ Text::SpreadSheet::OfficeChart *Text::SpreadSheet::Worksheet::CreateChart(Math::
 		OfficeFill::NewSolidFill(OfficeColor::NewPreset(PresetColor::White)),
 		NEW_CLASS_D(OfficeLineStyle(OfficeFill::NewSolidFill())))));
 	return drawing->chart;
+}
+
+Text::CString Text::SpreadSheet::CellDataTypeGetName(Text::SpreadSheet::CellDataType val)
+{
+	switch (val)
+	{
+	case Text::SpreadSheet::CellDataType::String:
+		return CSTR("String");
+	case Text::SpreadSheet::CellDataType::Number:
+		return CSTR("Number");
+	case Text::SpreadSheet::CellDataType::DateTime:
+		return CSTR("DateTime");
+	case Text::SpreadSheet::CellDataType::MergedLeft:
+		return CSTR("MergedLeft");
+	case Text::SpreadSheet::CellDataType::MergedUp:
+		return CSTR("MergedUp");
+	default:
+		return CSTR_NULL;
+	}
 }

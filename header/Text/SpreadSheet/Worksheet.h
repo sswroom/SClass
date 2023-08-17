@@ -5,6 +5,7 @@
 #include "Data/DateTime.h"
 #include "Math/Unit/Distance.h"
 #include "Text/String.h"
+#include "Text/StringBuilderUTF8.h"
 #include "Text/SpreadSheet/CellStyle.h"
 #include "Text/SpreadSheet/IStyleCtrl.h"
 #include "Text/SpreadSheet/OfficeChart.h"
@@ -159,12 +160,15 @@ namespace Text
 			Double GetColWidth(UOSInt col, Math::Unit::Distance::DistanceUnit unit);
 
 			const CellData *GetCellDataRead(UOSInt row, UOSInt col) const;
+			Bool GetCellString(const CellData *cell, NotNullPtr<Text::StringBuilderUTF8> sb);
 
 			UOSInt GetDrawingCount();
 			WorksheetDrawing *GetDrawing(UOSInt index);
 			WorksheetDrawing *CreateDrawing(Math::Unit::Distance::DistanceUnit unit, Double x, Double y, Double w, Double h);
 			OfficeChart *CreateChart(Math::Unit::Distance::DistanceUnit unit, Double x, Double y, Double w, Double h, Text::CString title);
 		};
+
+		Text::CString CellDataTypeGetName(CellDataType cdt);
 	}
 }
 

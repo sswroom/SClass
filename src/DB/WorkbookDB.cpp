@@ -82,12 +82,7 @@ public:
 	virtual Bool GetStr(UOSInt colIndex, NotNullPtr<Text::StringBuilderUTF8> sb)
 	{
 		const Text::SpreadSheet::Worksheet::CellData *cell = this->sheet->GetCellDataRead(this->currIndex, colIndex);
-		if (cell == 0 || cell->cellValue == 0)
-		{
-			return false;
-		}
-		sb->Append(cell->cellValue);
-		return true;
+		return this->sheet->GetCellString(cell, sb);
 	}
 
 	virtual Text::String *GetNewStr(UOSInt colIndex)
