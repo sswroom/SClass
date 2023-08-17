@@ -13,6 +13,7 @@
 struct IO::SystemInfo::ClassData
 {
 	Text::String *platformName;
+	Text::String *platformSN;
 };
 
 IO::SystemInfo::SystemInfo()
@@ -20,22 +21,39 @@ IO::SystemInfo::SystemInfo()
 	Text::StringBuilderUTF8 sb;
 	ClassData *data = MemAlloc(ClassData, 1);
 	data->platformName = 0;
+	data->platformSN = 0;
 	this->clsData = data;
-	IO::FileStream fs(CSTR("/sys/firmware/devicetree/base/model"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-	if (!fs.IsError())
+
 	{
-		Text::UTF8Reader reader(fs);
-		sb.ClearStr();
-		while (reader.ReadLine(sb, 512))
+		IO::FileStream fs(CSTR("/sys/firmware/devicetree/base/model"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+		if (!fs.IsError())
 		{
+			Text::UTF8Reader reader(fs);
+			sb.ClearStr();
+			while (reader.ReadLine(sb, 512))
+			{
+			}
+			data->platformName = Text::String::New(sb.ToCString()).Ptr();
 		}
-		data->platformName = Text::String::New(sb.ToCString()).Ptr();
+	}
+	{
+		IO::FileStream fs(CSTR("/sys/firmware/devicetree/base/serial-number"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+		if (!fs.IsError())
+		{
+			Text::UTF8Reader reader(fs);
+			sb.ClearStr();
+			while (reader.ReadLine(sb, 512))
+			{
+			}
+			data->platformSN = Text::String::New(sb.ToCString()).Ptr();
+		}
 	}
 }
 
 IO::SystemInfo::~SystemInfo()
 {
 	SDEL_STRING(this->clsData->platformName);
+	SDEL_STRING(this->clsData->platformSN);
 	MemFree(this->clsData);
 }
 
@@ -50,6 +68,10 @@ UTF8Char *IO::SystemInfo::GetPlatformName(UTF8Char *sbuff)
 
 UTF8Char *IO::SystemInfo::GetPlatformSN(UTF8Char *sbuff)
 {
+	if (this->clsData->platformSN)
+	{
+		return this->clsData->platformSN->ConcatTo(sbuff);
+	}
 	return 0;
 }
 
