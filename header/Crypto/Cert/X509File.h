@@ -216,8 +216,8 @@ namespace Crypto
 			virtual ValidStatus IsValid(Net::SSLEngine *ssl, Crypto::Cert::CertStore *trustStore) const = 0;
 
 			void ToShortString(NotNullPtr<Text::StringBuilderUTF8> sb) const;
-			Bool IsSignatureKey(Net::SSLEngine *ssl, Crypto::Cert::X509Key *key) const;
-			Bool GetSignedInfo(SignedInfo *signedInfo) const;
+			Bool IsSignatureKey(Net::SSLEngine *ssl, NotNullPtr<Crypto::Cert::X509Key> key) const;
+			Bool GetSignedInfo(NotNullPtr<SignedInfo> signedInfo) const;
 
 			static Bool ParseDigestType(DigestInfo *digestInfo, const UInt8 *pdu, const UInt8 *pduEnd);
 			static Crypto::Hash::HashType GetAlgHash(AlgType algType);

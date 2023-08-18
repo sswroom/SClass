@@ -89,12 +89,12 @@ SSWR::AVIRead::AVIRTrustStoreForm::AVIRTrustStoreForm(UI::GUIClientControl *pare
 		sb.ClearStr();
 		entry->cert->GetIssuerCN(sb);
 		this->lvTrustCert->SetSubItem(k, 1, sb.ToCString());
-		if (entry->cert->GetNotBefore(&dt))
+		if (entry->cert->GetNotBefore(dt))
 		{
 			sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
 			this->lvTrustCert->SetSubItem(k, 2, CSTRP(sbuff, sptr));
 		}
-		if (entry->cert->GetNotAfter(&dt))
+		if (entry->cert->GetNotAfter(dt))
 		{
 			sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
 			this->lvTrustCert->SetSubItem(k, 3, CSTRP(sbuff, sptr));

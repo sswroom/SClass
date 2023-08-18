@@ -518,7 +518,7 @@ Bool IO::GSMModemController::GSMSetFunctionalityReset()
 	return this->SendBoolCommandC(UTF8STRC("AT+CFUN=6"));
 }
 
-Bool IO::GSMModemController::GSMGetModemTime(Data::DateTime *date)
+Bool IO::GSMModemController::GSMGetModemTime(NotNullPtr<Data::DateTime> date)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr = this->SendStringCommand(sbuff, UTF8STRC("AT+CCLK?"), 3000);
@@ -565,7 +565,7 @@ Bool IO::GSMModemController::GSMGetModemTime(Data::DateTime *date)
 	}
 }
 
-Bool IO::GSMModemController::GSMSetModemTime(Data::DateTime *date)
+Bool IO::GSMModemController::GSMSetModemTime(NotNullPtr<Data::DateTime> date)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr = Text::StrConcatC(sbuff, UTF8STRC("AT+CCLK=\""));

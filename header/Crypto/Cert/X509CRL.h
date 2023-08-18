@@ -22,9 +22,9 @@ namespace Crypto
 
 			Bool HasVersion() const;
 			Bool GetIssuerCN(NotNullPtr<Text::StringBuilderUTF8> sb) const;
-			Bool GetThisUpdate(Data::DateTime *dt) const;
-			Bool GetNextUpdate(Data::DateTime *dt) const;
-			Bool IsRevoked(Crypto::Cert::X509Cert *cert) const;
+			Bool GetThisUpdate(NotNullPtr<Data::DateTime> dt) const;
+			Bool GetNextUpdate(NotNullPtr<Data::DateTime> dt) const;
+			Bool IsRevoked(NotNullPtr<Crypto::Cert::X509Cert> cert) const;
 		};
 	}
 }

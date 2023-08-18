@@ -11,10 +11,10 @@ namespace Manage
 	class ExceptionLogger
 	{
 	private:
-		static void WriteContext(IO::Writer *writer, IO::Stream *stm, Manage::ThreadContext *context, Manage::AddressResolver *addrResol);
-		static void WriteStackTrace(IO::Writer *writer, Manage::StackTracer *tracer, Manage::AddressResolver *addrResol);
+		static void WriteContext(NotNullPtr<IO::Writer> writer, NotNullPtr<IO::Stream> stm, NotNullPtr<Manage::ThreadContext> context, NotNullPtr<Manage::AddressResolver> addrResol);
+		static void WriteStackTrace(NotNullPtr<IO::Writer> writer, NotNullPtr<Manage::StackTracer> tracer, NotNullPtr<Manage::AddressResolver> addrResol);
 	public:
-		static Bool LogToFile(NotNullPtr<Text::String> fileName, UInt32 exCode, Text::CString exName, UOSInt exAddr, Manage::ThreadContext *context);
+		static Bool LogToFile(NotNullPtr<Text::String> fileName, UInt32 exCode, Text::CString exName, UOSInt exAddr, NotNullPtr<Manage::ThreadContext> context);
 	};
 }
 

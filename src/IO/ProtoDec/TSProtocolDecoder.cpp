@@ -386,7 +386,7 @@ Bool IO::ProtoDec::TSProtocolDecoder::GetProtocolDetail(UInt8 *buff, UOSInt buff
 			sb->AppendC(UTF8STRC("KA (Svr->Cli)"));
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Server Time="));
-			sb->AppendDate(&dt);
+			sb->AppendDate(dt);
 			sb->AppendC(UTF8STRC("\r\n"));
 		}
 		break;
@@ -403,7 +403,7 @@ Bool IO::ProtoDec::TSProtocolDecoder::GetProtocolDetail(UInt8 *buff, UOSInt buff
 				Data::DateTime dt;
 				sb->AppendC(UTF8STRC("Server Time="));
 				dt.SetTicks(ReadInt64(&buff[ofst]));
-				sb->AppendDate(&dt);
+				sb->AppendDate(dt);
 				sb->AppendC(UTF8STRC("\r\n"));
 				ofst += 8;
 			}
@@ -561,15 +561,15 @@ Bool IO::ProtoDec::TSProtocolDecoder::GetProtocolDetail(UInt8 *buff, UOSInt buff
 				Data::DateTime dt;
 				sb->AppendC(UTF8STRC("Start Time="));
 				dt.SetTicks(ReadInt64(&buff[12]));
-				sb->AppendDate(&dt);
+				sb->AppendDate(dt);
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("End Time="));
 				dt.SetTicks(ReadInt64(&buff[20]));
-				sb->AppendDate(&dt);
+				sb->AppendDate(dt);
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Grid Size="));
 				dt.SetTicks(ReadInt64(&buff[28]));
-				sb->AppendDate(&dt);
+				sb->AppendDate(dt);
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Area Cnt="));
 				sb->AppendI32((Int32)(j = ReadInt32(&buff[36])));
@@ -652,7 +652,7 @@ Bool IO::ProtoDec::TSProtocolDecoder::GetProtocolDetail(UInt8 *buff, UOSInt buff
 				Data::DateTime dt;
 				dt.SetTicks(ReadInt64(&buff[20]));
 				sb->AppendC(UTF8STRC("Complete Time="));
-				sb->AppendDate(&dt);
+				sb->AppendDate(dt);
 				sb->AppendC(UTF8STRC("\r\n"));
 			}
 		}

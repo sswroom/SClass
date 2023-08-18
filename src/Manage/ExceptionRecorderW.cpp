@@ -121,22 +121,22 @@ Text::CString Manage::ExceptionRecorder::GetExceptionCodeName(UInt32 exCode)
 
 Int32 __stdcall Manage::ExceptionRecorder::ExceptionHandler(void *exInfo)
 {
-	Manage::ThreadContext *tCont = 0;
+	NotNullPtr<Manage::ThreadContext> tCont;
 	EXCEPTION_POINTERS *info = (EXCEPTION_POINTERS*)exInfo;
 	printf("exception occured: %s\r\n", GetExceptionCodeName(info->ExceptionRecord->ExceptionCode).v);
 #if defined(CPU_X86_64) || defined(_M_ARM64EC)
-	NEW_CLASS(tCont, Manage::ThreadContextX86_64(GetCurrentProcessId(), 0, info->ContextRecord));
+	NEW_CLASSNN(tCont, Manage::ThreadContextX86_64(GetCurrentProcessId(), 0, info->ContextRecord));
 #elif defined(CPU_X86_32)
-	NEW_CLASS(tCont, Manage::ThreadContextX86_32(GetCurrentProcessId(), 0, info->ContextRecord));
+	NEW_CLASSNN(tCont, Manage::ThreadContextX86_32(GetCurrentProcessId(), 0, info->ContextRecord));
 #elif defined(CPU_ARM64)
-	NEW_CLASS(tCont, Manage::ThreadContextARM64(GetCurrentProcessId(), 0, info->ContextRecord));
+	NEW_CLASSNN(tCont, Manage::ThreadContextARM64(GetCurrentProcessId(), 0, info->ContextRecord));
 #elif defined(CPU_ARM)
-	NEW_CLASS(tCont, Manage::ThreadContextARM(GetCurrentProcessId(), 0, info->ContextRecord));
+	NEW_CLASSNN(tCont, Manage::ThreadContextARM(GetCurrentProcessId(), 0, info->ContextRecord));
 #else
 #error "Unsupported CPU"
 #endif
 	Manage::ExceptionLogger::LogToFile(fileName, info->ExceptionRecord->ExceptionCode, GetExceptionCodeName(info->ExceptionRecord->ExceptionCode), (UOSInt)info->ExceptionRecord->ExceptionAddress, tCont);
-	DEL_CLASS(tCont);
+	tCont.Delete();
 
 	if (exAction == EA_CLOSE)
 	{

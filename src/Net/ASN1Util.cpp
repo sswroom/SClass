@@ -113,7 +113,7 @@ const UInt8 *Net::ASN1Util::PDUParseSeq(const UInt8 *pdu, const UInt8 *pduEnd, U
 	return pdu;
 }
 
-const UInt8 *Net::ASN1Util::PDUParseUInt32(const UInt8 *pdu, const UInt8 *pduEnd, UInt32 *val)
+const UInt8 *Net::ASN1Util::PDUParseUInt32(const UInt8 *pdu, const UInt8 *pduEnd, OutParam<UInt32> val)
 {
 	if (pduEnd - pdu < 3)
 		return 0;
@@ -121,22 +121,22 @@ const UInt8 *Net::ASN1Util::PDUParseUInt32(const UInt8 *pdu, const UInt8 *pduEnd
 		return 0;
 	if (pdu[1] == 1)
 	{
-		*val = pdu[2];
+		val.Set(pdu[2]);
 		return pdu + 3;
 	}
 	else if (pdu[1] == 2 && pduEnd - pdu >= 4)
 	{
-		*val = ReadMUInt16(&pdu[2]);
+		val.Set(ReadMUInt16(&pdu[2]));
 		return pdu + 4;
 	}
 	else if (pdu[1] == 3 && pduEnd - pdu >= 5)
 	{
-		*val = ReadMUInt24(&pdu[2]);
+		val.Set(ReadMUInt24(&pdu[2]));
 		return pdu + 5;
 	}
 	else if (pdu[1] == 4 && pduEnd - pdu >= 6)
 	{
-		*val = ReadMUInt32(&pdu[2]);
+		val.Set(ReadMUInt32(&pdu[2]));
 		return pdu + 6;
 	}
 	else
@@ -189,7 +189,7 @@ const UInt8 *Net::ASN1Util::PDUParseString(const UInt8 *pdu, const UInt8 *pduEnd
 	return pdu + len;
 }
 
-const UInt8 *Net::ASN1Util::PDUParseChoice(const UInt8 *pdu, const UInt8 *pduEnd, UInt32 *val)
+const UInt8 *Net::ASN1Util::PDUParseChoice(const UInt8 *pdu, const UInt8 *pduEnd, OutParam<UInt32> val)
 {
 	if (pduEnd - pdu < 3)
 		return 0;
@@ -197,22 +197,22 @@ const UInt8 *Net::ASN1Util::PDUParseChoice(const UInt8 *pdu, const UInt8 *pduEnd
 		return 0;
 	if (pdu[1] == 1)
 	{
-		*val = pdu[2];
+		val.Set(pdu[2]);
 		return pdu + 3;
 	}
 	else if (pdu[1] == 2 && pduEnd - pdu >= 4)
 	{
-		*val = ReadMUInt16(&pdu[2]);
+		val.Set(ReadMUInt16(&pdu[2]));
 		return pdu + 4;
 	}
 	else if (pdu[1] == 3 && pduEnd - pdu >= 5)
 	{
-		*val = ReadMUInt24(&pdu[2]);
+		val.Set(ReadMUInt24(&pdu[2]));
 		return pdu + 5;
 	}
 	else if (pdu[1] == 4 && pduEnd - pdu >= 6)
 	{
-		*val = ReadMUInt32(&pdu[2]);
+		val.Set(ReadMUInt32(&pdu[2]));
 		return pdu + 6;
 	}
 	else
@@ -221,7 +221,7 @@ const UInt8 *Net::ASN1Util::PDUParseChoice(const UInt8 *pdu, const UInt8 *pduEnd
 	}
 }
 
-Bool Net::ASN1Util::PDUParseUTCTimeCont(const UInt8 *pdu, UOSInt len, Data::DateTime *dt)
+Bool Net::ASN1Util::PDUParseUTCTimeCont(const UInt8 *pdu, UOSInt len, NotNullPtr<Data::DateTime> dt)
 {
 	if (len == 13 && pdu[12] == 'Z')
 	{
@@ -286,7 +286,7 @@ Bool Net::ASN1Util::PDUToString(const UInt8 *pdu, const UInt8 *pduEnd, NotNullPt
 		case 0x2:
 			if (len <= 4)
 			{
-				pdu = PDUParseUInt32(pdu, pduEnd, &iVal);
+				pdu = PDUParseUInt32(pdu, pduEnd, iVal);
 				if (pdu == 0)
 				{
 					return false;
@@ -438,7 +438,7 @@ Bool Net::ASN1Util::PDUToString(const UInt8 *pdu, const UInt8 *pduEnd, NotNullPt
 				Data::DateTime dt;
 				dt.SetCurrTimeUTC();
 				dt.SetValue((UInt16)((UInt32)(dt.GetYear() / 100) * 100 + Str2Digit(&pdu[ofst])), (OSInt)Str2Digit(&pdu[ofst + 2]), (OSInt)Str2Digit(&pdu[ofst + 4]), (OSInt)Str2Digit(&pdu[ofst + 6]), (OSInt)Str2Digit(&pdu[ofst + 8]), (OSInt)Str2Digit(&pdu[ofst + 10]), 0);
-				sb->AppendDate(&dt);
+				sb->AppendDate(dt);
 			}
 			else
 			{
@@ -455,7 +455,7 @@ Bool Net::ASN1Util::PDUToString(const UInt8 *pdu, const UInt8 *pduEnd, NotNullPt
 				Data::DateTime dt;
 				dt.SetCurrTimeUTC();
 				dt.SetValue((UInt16)(Str2Digit(&pdu[ofst]) * 100 + Str2Digit(&pdu[ofst + 2])), (OSInt)Str2Digit(&pdu[ofst + 4]), (OSInt)Str2Digit(&pdu[ofst + 6]), (OSInt)Str2Digit(&pdu[ofst + 8]), (OSInt)Str2Digit(&pdu[ofst + 10]), (OSInt)Str2Digit(&pdu[ofst + 12]), 0);
-				sb->AppendDate(&dt);
+				sb->AppendDate(dt);
 			}
 			else
 			{
@@ -1261,7 +1261,7 @@ void Net::ASN1Util::IntegerToString(const UInt8 *data, UOSInt dataLen, NotNullPt
 void Net::ASN1Util::UTCTimeToString(const UInt8 *data, UOSInt dataLen, NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	Data::DateTime dt;
-	if (PDUParseUTCTimeCont(data, dataLen, &dt))
+	if (PDUParseUTCTimeCont(data, dataLen, dt))
 	{
 		UTF8Char sbuff[64];
 		UTF8Char *sptr;

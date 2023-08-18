@@ -314,10 +314,10 @@ void Manage::ThreadContextX86_64::SetFrameAddr(UOSInt frameAddr)
 	((CONTEXT_TYPE*)this->context)->Rbp = frameAddr;
 }
 
-Manage::ThreadContext *Manage::ThreadContextX86_64::Clone() const
+NotNullPtr<Manage::ThreadContext> Manage::ThreadContextX86_64::Clone() const
 {
-	Manage::ThreadContextX86_64 *ret;
-	NEW_CLASS(ret, Manage::ThreadContextX86_64(this->procId, this->threadId, this->context));
+	NotNullPtr<Manage::ThreadContextX86_64> ret;
+	NEW_CLASSNN(ret, Manage::ThreadContextX86_64(this->procId, this->threadId, this->context));
 	return ret;
 }
 

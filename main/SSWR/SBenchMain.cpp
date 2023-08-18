@@ -265,14 +265,14 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		sb.AppendC(UTF8STRC("Build Time: "));
 		IO::BuildTime::GetBuildTime(&dt);
 		dt.ToUTCTime();
-		sb.AppendDate(&dt);
+		sb.AppendDate(dt);
 		console->WriteLineC(sb.ToString(), sb.GetLength());
 		writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 		dt.SetCurrTimeUTC();
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("Benchmark Time: "));
-		sb.AppendDate(&dt);
+		sb.AppendDate(dt);
 		console->WriteLineC(sb.ToString(), sb.GetLength());
 		writer->WriteLineC(sb.ToString(), sb.GetLength());
 	}

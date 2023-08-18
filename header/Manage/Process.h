@@ -93,7 +93,7 @@ namespace Manage
 		UOSInt GetThreadIds(Data::ArrayList<UInt32> *threadList);
 		void *GetHandle();
 		UOSInt GetModules(Data::ArrayList<Manage::ModuleInfo *> *modList);
-		UOSInt GetThreads(Data::ArrayList<Manage::ThreadInfo *> *threadList);
+		UOSInt GetThreads(NotNullPtr<Data::ArrayList<Manage::ThreadInfo *>> threadList);
 		UOSInt GetHeapLists(Data::ArrayList<UInt32> *heapList);
 		UOSInt GetHeaps(Data::ArrayList<HeapInfo*> *heapList, UInt32 heapListId, UOSInt maxCount);
 		void FreeHeaps(Data::ArrayList<HeapInfo*> *heapList);

@@ -303,20 +303,23 @@ void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnTimerTick(void *userObj)
 		}
 		me->txtSAMLRespWF->SetText(sb.ToCString());
 
-		Crypto::Cert::X509Key *key = me->samlHdlr->GetKey()->CreateKey();
-		sb.ClearStr();
-		if (Net::SAMLUtil::DecryptResponse(me->ssl, me->core->GetEncFactory(), key, me->respNew->ToCString(), sb))
+		NotNullPtr<Crypto::Cert::X509Key> key;
+		if (key.Set(me->samlHdlr->GetKey()->CreateKey()))
 		{
-			IO::MemoryReadingStream mstm(sb.v, sb.GetLength());
-			Text::StringBuilderUTF8 sb2;
-			Text::XMLReader::XMLWellFormat(me->core->GetEncFactory(), mstm, 0, sb2);
-			me->txtSAMLDecrypt->SetText(sb2.ToCString());
+			sb.ClearStr();
+			if (Net::SAMLUtil::DecryptResponse(me->ssl, me->core->GetEncFactory(), key, me->respNew->ToCString(), sb))
+			{
+				IO::MemoryReadingStream mstm(sb.v, sb.GetLength());
+				Text::StringBuilderUTF8 sb2;
+				Text::XMLReader::XMLWellFormat(me->core->GetEncFactory(), mstm, 0, sb2);
+				me->txtSAMLDecrypt->SetText(sb2.ToCString());
+			}
+			else
+			{
+				me->txtSAMLDecrypt->SetText(sb.ToCString());
+			}
+			key.Delete();
 		}
-		else
-		{
-			me->txtSAMLDecrypt->SetText(sb.ToCString());
-		}
-		DEL_CLASS(key);
 
 		me->respNew->Release();
 		me->respNew = 0;
@@ -336,15 +339,18 @@ Bool __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnLoginRequest(void *userObj, Ne
 	SSWR::AVIRead::AVIRSAMLTestForm *me = (SSWR::AVIRead::AVIRSAMLTestForm*)userObj;
 	Text::StringBuilderUTF8 sb;
 	Text::String *decMsg = 0;
-	Crypto::Cert::X509Key *key = me->samlHdlr->GetKey()->CreateKey();
-	if (Net::SAMLUtil::DecryptResponse(me->ssl, me->core->GetEncFactory(), key, msg->rawMessage, sb))
+	NotNullPtr<Crypto::Cert::X509Key> key;
+	if (key.Set(me->samlHdlr->GetKey()->CreateKey()))
 	{
-		IO::MemoryReadingStream mstm(sb.v, sb.GetLength());
-		Text::StringBuilderUTF8 sb2;
-		Text::XMLReader::XMLWellFormat(me->core->GetEncFactory(), mstm, 0, sb2);
-		decMsg = Text::XML::ToNewHTMLTextXMLColor(sb2.ToString()).Ptr();
+		if (Net::SAMLUtil::DecryptResponse(me->ssl, me->core->GetEncFactory(), key, msg->rawMessage, sb))
+		{
+			IO::MemoryReadingStream mstm(sb.v, sb.GetLength());
+			Text::StringBuilderUTF8 sb2;
+			Text::XMLReader::XMLWellFormat(me->core->GetEncFactory(), mstm, 0, sb2);
+			decMsg = Text::XML::ToNewHTMLTextXMLColor(sb2.ToString()).Ptr();
+		}
+		key.Delete();
 	}
-	DEL_CLASS(key);
 	{
 		IO::MemoryReadingStream mstm(msg->rawMessage.v, msg->rawMessage.leng);
 		sb.ClearStr();

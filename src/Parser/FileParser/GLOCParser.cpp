@@ -151,7 +151,7 @@ public:
 				Data::DateTime dt;
 				dt.SetUnixTimestamp(extInfo->recvTimeTS);
 				dt.ToLocalTime();
-				sb->AppendDate(&dt);
+				sb->AppendDate(dt);
 			}
 			return true;
 		case 3:

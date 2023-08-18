@@ -41,7 +41,7 @@ namespace Net
 		void AppendPrintableString(Text::String *s);
 		void AppendUTF8String(Text::String *s);
 		void AppendIA5String(Text::String *s);
-		void AppendUTCTime(Data::DateTime *t);
+		void AppendUTCTime(NotNullPtr<Data::DateTime> t);
 		void AppendOther(UInt8 type, const UInt8 *buff, UOSInt buffSize);
 		void AppendContentSpecific(UInt8 n, const UInt8 *buff, UOSInt buffSize);
 		void AppendSequence(const UInt8 *buff, UOSInt buffSize);

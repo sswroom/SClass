@@ -103,16 +103,14 @@ void IO::LogTool::AddLogHandler(LogHandler *hdlr, IO::LogHandler::LogLevel logLe
 	UTF8Char *sptr2;
 	Data::Timestamp ts = Data::Timestamp::Now();
 
-	Data::DateTime dt2;
 	sptr2 = IO::Path::GetProcessFileName(buff);
 	sptr = &buff[Text::StrLastIndexOfCharC(buff, (UOSInt)(sptr2 - buff), IO::Path::PATH_SEPERATOR) + 1];
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("Program "));
 	sb.AppendC(sptr, (UOSInt)(sptr2 - sptr));
 	sb.AppendC(UTF8STRC(" started"));
-	IO::BuildTime::GetBuildTime(&dt2);
 	sb.AppendC(UTF8STRC(", version: "));
-	sb.AppendDate(&dt2);
+	sb.AppendTS(IO::BuildTime::GetBuildTime());
 	hdlr->LogAdded(ts, sb.ToCString(), (LogHandler::LogLevel)0);
 }
 

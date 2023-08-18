@@ -125,11 +125,11 @@ namespace Manage
 		DasmX86_64();
 		virtual ~DasmX86_64();
 
-		virtual Text::CString GetHeader(Bool fullRegs);
-		virtual Bool Disasm64(IO::Writer *writer, Manage::AddressResolver *addrResol, UInt64 *currRip, UInt64 *currRsp, UInt64 *currRbp, Data::ArrayListUInt64 *callAddrs, Data::ArrayListUInt64 *jmpAddrs, UInt64 *blockStart, UInt64 *blockEnd, Manage::Dasm::Dasm_Regs *regs, Manage::IMemoryReader *memReader, Bool fullRegs); // true = succ
+		virtual Text::CString GetHeader(Bool fullRegs) const;
+		virtual Bool Disasm64(NotNullPtr<IO::Writer> writer, Manage::AddressResolver *addrResol, UInt64 *currRip, UInt64 *currRsp, UInt64 *currRbp, Data::ArrayListUInt64 *callAddrs, Data::ArrayListUInt64 *jmpAddrs, UInt64 *blockStart, UInt64 *blockEnd, Manage::Dasm::Dasm_Regs *regs, Manage::IMemoryReader *memReader, Bool fullRegs); // true = succ
 		Bool Disasm64In(NotNullPtr<Text::StringBuilderUTF8> outStr, Manage::AddressResolver *addrResol, UInt64 *currRip, Data::ArrayListUInt64 *callAddrs, Data::ArrayListUInt64 *jmpAddrs, UInt64 *blockStart, UInt64 *blockEnd, Manage::IMemoryReader *memReader); // true = succ
-		virtual Dasm_Regs *CreateRegs();
-		virtual void FreeRegs(Dasm_Regs *regs);
+		virtual Dasm_Regs *CreateRegs() const;
+		virtual void FreeRegs(Dasm_Regs *regs) const;
 
 		void *StartDasm(Manage::AddressResolver *addrResol, void *addr, Manage::IMemoryReader *memReader);
 		void EndDasm(void *sess);

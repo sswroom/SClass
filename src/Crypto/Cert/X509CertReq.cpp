@@ -38,7 +38,7 @@ void Crypto::Cert::X509CertReq::ToShortName(NotNullPtr<Text::StringBuilderUTF8> 
 Crypto::Cert::X509File::ValidStatus Crypto::Cert::X509CertReq::IsValid(Net::SSLEngine *ssl, Crypto::Cert::CertStore *trustStore) const
 {
 	SignedInfo signedInfo;
-	if (!this->GetSignedInfo(&signedInfo))
+	if (!this->GetSignedInfo(signedInfo))
 	{
 		return Crypto::Cert::X509File::ValidStatus::FileFormatInvalid;		
 	}
@@ -47,13 +47,13 @@ Crypto::Cert::X509File::ValidStatus Crypto::Cert::X509CertReq::IsValid(Net::SSLE
 	{
 		return Crypto::Cert::X509File::ValidStatus::UnsupportedAlgorithm;
 	}
-	Crypto::Cert::X509Key *key = this->GetNewPublicKey();
-	if (key == 0)
+	NotNullPtr<Crypto::Cert::X509Key> key;;
+	if (!key.Set(this->GetNewPublicKey()))
 	{
 		return Crypto::Cert::X509File::ValidStatus::FileFormatInvalid;
 	}
 	Bool valid = ssl->SignatureVerify(key, hashType, signedInfo.payload, signedInfo.payloadSize, signedInfo.signature, signedInfo.signSize);
-	DEL_CLASS(key);
+	key.Delete();
 	if (valid)
 	{
 		return Crypto::Cert::X509File::ValidStatus::Valid;

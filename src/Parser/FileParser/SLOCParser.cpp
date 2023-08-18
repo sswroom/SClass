@@ -176,12 +176,7 @@ public:
 			sb->AppendU16(extInfo->cliPort);
 			return true;
 		case 17:
-			{
-				Data::DateTime dt;
-				dt.SetUnixTimestamp(extInfo->recvTimeTS);
-				dt.ToLocalTime();
-				sb->AppendDate(&dt);
-			}
+			sb->AppendTS(Data::Timestamp(Data::TimeInstant(extInfo->recvTimeTS, 0), Data::DateTimeUtil::GetLocalTzQhr()));
 			return true;
 		}
 		return false;

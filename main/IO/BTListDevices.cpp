@@ -127,13 +127,13 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			sb.AppendC(UTF8STRC("Last Seen: "));
 			btDev->GetLastSeen(&dt);
 			dt.ToLocalTime();
-			sb.AppendDate(&dt);
+			sb.AppendDate(dt);
 			console.WriteLineC(sb.ToString(), sb.GetLength());
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Last Used: "));
 			btDev->GetLastUsed(&dt);
 			dt.ToLocalTime();
-			sb.AppendDate(&dt);
+			sb.AppendDate(dt);
 			console.WriteLineC(sb.ToString(), sb.GetLength());
 
 			DEL_CLASS(btDev);

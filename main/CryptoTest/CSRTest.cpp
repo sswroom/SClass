@@ -42,7 +42,8 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	Net::SSLEngine *ssl;
 	Net::OSSocketFactory sockf(false);
 	ssl = Net::SSLEngineFactory::Create(sockf, true);
-	Crypto::Cert::X509Key *key = (Crypto::Cert::X509Key*)x509;
+	NotNullPtr<Crypto::Cert::X509Key> key;
+	key.Set((Crypto::Cert::X509Key*)x509);
 	Crypto::Cert::CertNames names;
 	Crypto::Cert::CertExtensions ext;
 	MemClear(&names, sizeof(names));
@@ -72,7 +73,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	LIST_FREE_STRING(ext.subjectAltName);
 	DEL_CLASS(ext.subjectAltName);
 	Crypto::Cert::CertNames::FreeNames(&names);
-	DEL_CLASS(key);
+	key.Delete();
 	SDEL_CLASS(ssl);
 	return 0;
 }

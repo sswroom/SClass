@@ -475,7 +475,7 @@ Bool IO::FileAnalyse::EXEFileAnalyse::GetFrameDetail(UOSInt index, NotNullPtr<Te
 		Data::DateTime dt;
 		dt.SetUnixTimestamp(ReadUInt32(&packBuff[8]));
 		sb->AppendC(UTF8STRC(" ("));
-		sb->AppendDate(&dt);
+		sb->AppendDate(dt);
 		sb->AppendC(UTF8STRC(")"));
 		sb->AppendC(UTF8STRC("\r\nPointerToSymbolTable = 0x"));
 		sb->AppendHex32(ReadUInt32(&packBuff[12]));
@@ -750,7 +750,7 @@ Bool IO::FileAnalyse::EXEFileAnalyse::GetFrameDetail(UOSInt index, NotNullPtr<Te
 		Data::DateTime dt;
 		dt.SetUnixTimestamp(ReadUInt32(&this->imageBuff[(UOSInt)pack->fileOfst + 4]));
 		sb->AppendC(UTF8STRC(" ("));
-		sb->AppendDate(&dt);
+		sb->AppendDate(dt);
 		sb->AppendUTF8Char(')');
 		sb->AppendC(UTF8STRC("\r\nVersion = "));
 		sb->AppendU16(ReadUInt16(&this->imageBuff[(UOSInt)pack->fileOfst + 8]));
@@ -796,7 +796,7 @@ Bool IO::FileAnalyse::EXEFileAnalyse::GetFrameDetail(UOSInt index, NotNullPtr<Te
 		Data::DateTime dt;
 		dt.SetUnixTimestamp(ReadUInt32(&this->imageBuff[(UOSInt)pack->fileOfst + 4]));
 		sb->AppendC(UTF8STRC(" ("));
-		sb->AppendDate(&dt);
+		sb->AppendDate(dt);
 		sb->AppendUTF8Char(')');
 		sb->AppendC(UTF8STRC("\r\nForwarder Chain = "));
 		sb->AppendU32(ReadUInt32(&this->imageBuff[(UOSInt)pack->fileOfst + 8]));

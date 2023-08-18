@@ -118,7 +118,7 @@ public:
 					Data::DateTime dt;
 					dt.SetTicks(ReadInt64(&buff[0]));
 					dt.ToLocalTime();
-					sb->AppendDate(&dt);
+					sb->AppendDate(dt);
 				}
 				return true;
 			case 1:

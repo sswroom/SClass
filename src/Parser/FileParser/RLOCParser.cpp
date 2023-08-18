@@ -138,7 +138,7 @@ public:
 				Data::DateTime dt;
 				dt.SetUnixTimestamp(extInfo->locTimeTS);
 				dt.ToLocalTime();
-				sb->AppendDate(&dt);
+				sb->AppendDate(dt);
 			}
 			return true;
 		case 10:
@@ -146,7 +146,7 @@ public:
 				Data::DateTime dt;
 				dt.SetUnixTimestamp(extInfo->recvTimeTS);
 				dt.ToLocalTime();
-				sb->AppendDate(&dt);
+				sb->AppendDate(dt);
 			}
 			return true;
 		case 11:

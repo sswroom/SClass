@@ -12,7 +12,7 @@
 
 #define STACKDUMPSIZE 4096
 
-void Manage::ExceptionLogger::WriteContext(IO::Writer *writer, IO::Stream *stm, Manage::ThreadContext *context, Manage::AddressResolver *addrResol)
+void Manage::ExceptionLogger::WriteContext(NotNullPtr<IO::Writer> writer, NotNullPtr<IO::Stream> stm, NotNullPtr<Manage::ThreadContext> context, NotNullPtr<Manage::AddressResolver> addrResol)
 {
 	Text::StringBuilderUTF8 sb;
 	UOSInt i;
@@ -155,7 +155,7 @@ void Manage::ExceptionLogger::WriteContext(IO::Writer *writer, IO::Stream *stm, 
 				}
 
 				writer->WriteLineCStr(dasm32->GetHeader(true));
-				retVal = dasm32->Disasm32(writer, addrResol, &currInst, &currStack, &currFrame, callAddrs, jmpAddrs, &blockStart, &blockEnd, regs, &proc, true);
+				retVal = dasm32->Disasm32(writer, addrResol.Ptr(), &currInst, &currStack, &currFrame, callAddrs, jmpAddrs, &blockStart, &blockEnd, regs, &proc, true);
 				if (!retVal)
 				{
 					break;
@@ -277,7 +277,7 @@ void Manage::ExceptionLogger::WriteContext(IO::Writer *writer, IO::Stream *stm, 
 				}
 
 				writer->WriteLineCStr(dasm64->GetHeader(true));
-				retVal = dasm64->Disasm64(writer, addrResol, &currInst, &currStack, &currFrame, callAddrs, jmpAddrs, &blockStart, &blockEnd, regs, &proc, true);
+				retVal = dasm64->Disasm64(writer, addrResol.Ptr(), &currInst, &currStack, &currFrame, callAddrs, jmpAddrs, &blockStart, &blockEnd, regs, &proc, true);
 				if (!retVal)
 				{
 					break;
@@ -333,7 +333,7 @@ void Manage::ExceptionLogger::WriteContext(IO::Writer *writer, IO::Stream *stm, 
 	}
 }
 
-void Manage::ExceptionLogger::WriteStackTrace(IO::Writer *writer, Manage::StackTracer *tracer, Manage::AddressResolver *addrResol)
+void Manage::ExceptionLogger::WriteStackTrace(NotNullPtr<IO::Writer> writer, NotNullPtr<Manage::StackTracer> tracer, NotNullPtr<Manage::AddressResolver> addrResol)
 {
 #ifndef _WIN32_WCE
 	if (tracer->IsSupported())
@@ -353,46 +353,42 @@ void Manage::ExceptionLogger::WriteStackTrace(IO::Writer *writer, Manage::StackT
 #endif
 }
 
-Bool Manage::ExceptionLogger::LogToFile(NotNullPtr<Text::String> fileName, UInt32 exCode, Text::CString exName, UOSInt exAddr, Manage::ThreadContext *context)
+Bool Manage::ExceptionLogger::LogToFile(NotNullPtr<Text::String> fileName, UInt32 exCode, Text::CString exName, UOSInt exAddr, NotNullPtr<Manage::ThreadContext> context)
 {
 #ifndef _WIN32_WCE
-	Manage::SymbolResolver *symResol;
 	Manage::Process proc;
 	IO::FileStream fs(fileName, IO::FileMode::Append, IO::FileShare::DenyAll, IO::FileStream::BufferType::Normal);
 	Text::UTF8Writer writer(fs);
 	Text::StringBuilderUTF8 sb;
-	Data::DateTime d;
+	Data::Timestamp d = Data::Timestamp::Now();
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 	UOSInt i;
 	UOSInt j;
-
-
-	d.SetCurrTime();
-	NEW_CLASS(symResol, Manage::SymbolResolver(&proc));
+	Manage::SymbolResolver symResol(&proc);
 	writer.WriteLineC(UTF8STRC("----------------------------------"));
 	sb.AppendC(UTF8STRC("Exception occurs: Code = 0x"));
 	sb.AppendHex32(exCode);
 	sb.AppendC(UTF8STRC(" at "));
 	sb.AppendHexOS(exAddr);
 	sb.AppendC(UTF8STRC(", time = "));
-	sb.AppendDate(&d);
+	sb.AppendTS(d);
 	sb.AppendC(UTF8STRC(", Type = "));
 	sb.Append(exName);
 	writer.WriteLineC(sb.ToString(), sb.GetLength());
 
 
-	j = symResol->GetModuleCount();
+	j = symResol.GetModuleCount();
 	writer.WriteLineC(UTF8STRC("\r\nLoaded modules:"));
 	i = 0;
 	while (i < j)
 	{
 		sb.ClearStr();
-		sb.Append(symResol->GetModuleName(i));
+		sb.Append(symResol.GetModuleName(i));
 		sb.AppendC(UTF8STRC(", Addr="));
-		sb.AppendHexOS((UOSInt)symResol->GetModuleAddr(i));
+		sb.AppendHexOS((UOSInt)symResol.GetModuleAddr(i));
 		sb.AppendC(UTF8STRC(",size="));
-		sb.AppendHexOS((UOSInt)symResol->GetModuleSize(i));
+		sb.AppendHexOS((UOSInt)symResol.GetModuleSize(i));
 		writer.WriteLineC(sb.ToString(), sb.GetLength());
 
 		i++;
@@ -401,10 +397,9 @@ Bool Manage::ExceptionLogger::LogToFile(NotNullPtr<Text::String> fileName, UInt3
 	{
 		Data::ArrayList<Manage::ThreadInfo*> threadList;
 		Manage::ThreadInfo *thread;
-		Manage::ThreadContext *tCont;
-		Manage::StackTracer *tracer;
+		NotNullPtr<Manage::ThreadContext> tCont;
 		UInt64 startAddr;
-		proc.GetThreads(&threadList);
+		proc.GetThreads(threadList);
 		i = 0;
 		j = threadList.GetCount();
 		while (i < j)
@@ -435,26 +430,27 @@ Bool Manage::ExceptionLogger::LogToFile(NotNullPtr<Text::String> fileName, UInt3
 				sb.AppendC(UTF8STRC("Start address 0x"));
 				sb.AppendHex64(startAddr);
 				sb.AppendC(UTF8STRC(" "));
-				symResol->ResolveNameSB(sb, startAddr);
+				symResol.ResolveNameSB(sb, startAddr);
 				writer.WriteLineC(sb.ToString(), sb.GetLength());
 			}
 
 			if (!thread->IsCurrThread())
 			{
 				thread->Suspend();
-				if ((tCont = thread->GetThreadContext()) != 0)
+				if (tCont.Set(thread->GetThreadContext()))
 				{
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("Curr address 0x"));
 					sb.AppendHexOS(tCont->GetInstAddr());
 					sb.AppendC(UTF8STRC(" "));
-					symResol->ResolveNameSB(sb, tCont->GetInstAddr());
+					symResol.ResolveNameSB(sb, tCont->GetInstAddr());
 					writer.WriteLineC(sb.ToString(), sb.GetLength());
 
-					NEW_CLASS(tracer, Manage::StackTracer(tCont));
-					WriteStackTrace(&writer, tracer, symResol);
-					DEL_CLASS(tracer);
-					DEL_CLASS(tCont);
+					{
+						Manage::StackTracer tracer(tCont);
+						WriteStackTrace(writer, tracer, symResol);
+					}
+					tCont.Delete();
 				}
 				thread->Resume();
 			}
@@ -468,12 +464,12 @@ Bool Manage::ExceptionLogger::LogToFile(NotNullPtr<Text::String> fileName, UInt3
 	}
 
 	{
-		Manage::StackTracer *tracer;
 		writer.WriteLine();
 		writer.WriteLineC(UTF8STRC("Exception Thread:"));
-		NEW_CLASS(tracer, Manage::StackTracer(context));
-		WriteStackTrace(&writer, tracer, symResol);
-		DEL_CLASS(tracer);
+		{
+			Manage::StackTracer tracer(context);
+			WriteStackTrace(writer, tracer, symResol);
+		}
 		writer.WriteLine();
 
 /*		if (exAction == EA_RESTART)
@@ -483,21 +479,19 @@ Bool Manage::ExceptionLogger::LogToFile(NotNullPtr<Text::String> fileName, UInt3
 			exAction = EA_CLOSE;
 		}*/
 
-		WriteContext(&writer, &fs, context, symResol);
+		WriteContext(writer, fs, context, symResol);
 	}
 
 	{
-		Data::ArrayList<Manage::ThreadInfo*> *threadList;
+		Data::ArrayList<Manage::ThreadInfo*> threadList;
 		Manage::ThreadInfo *thread;
-		Manage::ThreadContext *tCont;
-
-		NEW_CLASS(threadList, Data::ArrayList<Manage::ThreadInfo*>());
+		NotNullPtr<Manage::ThreadContext> tCont;
 		proc.GetThreads(threadList);
 		i = 0;
-		j = threadList->GetCount();
+		j = threadList.GetCount();
 		while (i < j)
 		{
-			thread = threadList->GetItem(i);
+			thread = threadList.GetItem(i);
 
 			if (!thread->IsCurrThread())
 			{
@@ -508,20 +502,17 @@ Bool Manage::ExceptionLogger::LogToFile(NotNullPtr<Text::String> fileName, UInt3
 				sb.AppendC(UTF8STRC(")"));
 				writer.WriteLineC(sb.ToString(), sb.GetLength());
 
-				tCont = thread->GetThreadContext();
-				if (tCont)
+				if (tCont.Set(thread->GetThreadContext()))
 				{
-					WriteContext(&writer, &fs, tCont, symResol);
-					DEL_CLASS(tCont);
+					WriteContext(writer, fs, tCont, symResol);
+					tCont.Delete();
 				}
 			}
 			DEL_CLASS(thread);
 			i++;
 		}
-		DEL_CLASS(threadList);
 	}
 
-	DEL_CLASS(symResol);
 	return true;
 #else
 	return false;

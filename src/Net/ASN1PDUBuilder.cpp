@@ -347,7 +347,7 @@ void Net::ASN1PDUBuilder::AppendIA5String(Text::String *s)
 	this->AppendOther(0x16, s->v, s->leng);
 }
 
-void Net::ASN1PDUBuilder::AppendUTCTime(Data::DateTime *t)
+void Net::ASN1PDUBuilder::AppendUTCTime(NotNullPtr<Data::DateTime> t)
 {
 	UTF8Char sbuff[13];
 	UTF8Char *sptr;

@@ -547,7 +547,8 @@ Bool Net::Email::EmailMessage::WriteToStream(IO::Stream *stm)
 		return false;
 	}
 	this->WriteHeaders(stm);
-	if (this->signCert && this->signKey)
+	NotNullPtr<Crypto::Cert::X509Key> signKey;
+	if (this->signCert && signKey.Set(this->signKey))
 	{
 		IO::MemoryStream mstm;
 		this->WriteContents(&mstm);
@@ -599,9 +600,9 @@ Bool Net::Email::EmailMessage::WriteToStream(IO::Stream *stm)
 						builder.BeginSequence();
 							builder.AppendInt32(1);
 							builder.BeginSequence();
-								data = this->signCert->GetIssuerNamesSeq(&dataSize);
+								data = this->signCert->GetIssuerNamesSeq(dataSize);
 								builder.AppendSequence(data, dataSize);
-								data = this->signCert->GetSerialNumber(&dataSize);
+								data = this->signCert->GetSerialNumber(dataSize);
 								builder.AppendInteger(data, dataSize);
 							builder.EndLevel();
 							builder.BeginSequence();
@@ -618,7 +619,7 @@ Bool Net::Email::EmailMessage::WriteToStream(IO::Stream *stm)
 								builder.BeginSequence();
 									builder.AppendOIDString(UTF8STRC("1.2.840.113549.1.9.5")); //signing-time
 									builder.BeginSet();
-										builder.AppendUTCTime(&dt);
+										builder.AppendUTCTime(dt);
 									builder.EndLevel();
 								builder.EndLevel();
 								{
@@ -668,9 +669,9 @@ Bool Net::Email::EmailMessage::WriteToStream(IO::Stream *stm)
 									builder.AppendOIDString(UTF8STRC("1.3.6.1.4.1.311.16.4")); //outlookExpress
 									builder.BeginSet();
 										builder.BeginSequence();
-											data = this->signCert->GetIssuerNamesSeq(&dataSize);
+											data = this->signCert->GetIssuerNamesSeq(dataSize);
 											builder.AppendSequence(data, dataSize);
-											data = this->signCert->GetSerialNumber(&dataSize);
+											data = this->signCert->GetSerialNumber(dataSize);
 											builder.AppendInteger(data, dataSize);
 										builder.EndLevel();
 									builder.EndLevel();
@@ -679,9 +680,9 @@ Bool Net::Email::EmailMessage::WriteToStream(IO::Stream *stm)
 									builder.AppendOIDString(UTF8STRC("1.2.840.113549.1.9.16.2.11")); //id-aa-encrypKeyPref
 									builder.BeginSet();
 										builder.BeginContentSpecific(0);
-											data = this->signCert->GetIssuerNamesSeq(&dataSize);
+											data = this->signCert->GetIssuerNamesSeq(dataSize);
 											builder.AppendSequence(data, dataSize);
-											data = this->signCert->GetSerialNumber(&dataSize);
+											data = this->signCert->GetSerialNumber(dataSize);
 											builder.AppendInteger(data, dataSize);
 										builder.EndLevel();
 									builder.EndLevel();
@@ -692,7 +693,7 @@ Bool Net::Email::EmailMessage::WriteToStream(IO::Stream *stm)
 								builder.AppendNull();
 							builder.EndLevel();
 							///////////////////////////////////////
-							this->ssl->Signature(this->signKey, Crypto::Hash::HashType::SHA256, mstm.GetBuff(&len), (UOSInt)mstm.GetLength(), signData, &signLen);
+							this->ssl->Signature(signKey, Crypto::Hash::HashType::SHA256, mstm.GetBuff(&len), (UOSInt)mstm.GetLength(), signData, &signLen);
 							builder.AppendOctetStringC(signData, signLen);
 						builder.EndLevel();
 					builder.EndLevel();

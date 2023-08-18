@@ -239,7 +239,7 @@ Int32 Media::ICCProfile::GetPCS() const
 	return ReadMInt32(&this->iccBuff[20]);
 }
 
-void Media::ICCProfile::GetCreateTime(Data::DateTime *createTime) const
+void Media::ICCProfile::GetCreateTime(NotNullPtr<Data::DateTime> createTime) const
 {
 	ReadDateTimeNumber(&this->iccBuff[24], createTime);
 }
@@ -874,9 +874,9 @@ void Media::ICCProfile::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
 	sb->AppendC(UTF8STRC("\r\nPCS (profile connection space) = "));
 	sb->Append(GetNameDataColorspace(this->GetPCS()));
 
-	this->GetCreateTime(&dt);
+	this->GetCreateTime(dt);
 	sb->AppendC(UTF8STRC("\r\nCreate Time = "));
-	sb->AppendDate(&dt);
+	sb->AppendDate(dt);
 
 	sb->AppendC(UTF8STRC("\r\nPrimary Platform = "));
 	sb->Append(GetNamePrimaryPlatform(this->GetPrimaryPlatform()));
@@ -964,7 +964,7 @@ Bool Media::ICCProfile::ParseFrame(IO::FileAnalyse::FrameDetailHandler *frame, U
 	frame->AddHex32Name(ofst + 12, CSTR("Profile/Device class"), ReadMUInt32(&buff[12]), GetNameProfileClass(ReadMInt32(&buff[12])));
 	frame->AddHex32Name(ofst + 16, CSTR("Data colour space"), ReadMUInt32(&buff[16]), GetNameDataColorspace(ReadMInt32(&buff[16])));
 	frame->AddHex32Name(ofst + 20, CSTR("PCS (profile connection space)"), ReadMUInt32(&buff[20]), GetNameDataColorspace(ReadMInt32(&buff[20])));
-	ReadDateTimeNumber(&buff[24], &dt);
+	ReadDateTimeNumber(&buff[24], dt);
 	sptr = dt.ToString(sbuff);
 	frame->AddField(ofst + 24, 12, CSTR("Create Time"), CSTRP(sbuff, sptr));
 	frame->AddStrC(ofst + 36, 4, CSTR("Profile file signature"), &buff[36]);
@@ -1022,7 +1022,7 @@ Bool Media::ICCProfile::ParseFrame(IO::FileAnalyse::FrameDetailHandler *frame, U
 	return true;
 }
 
-void Media::ICCProfile::ReadDateTimeNumber(const UInt8 *buff, Data::DateTime *dt)
+void Media::ICCProfile::ReadDateTimeNumber(const UInt8 *buff, NotNullPtr<Data::DateTime> dt)
 {
 	dt->SetValue(ReadMUInt16(&buff[0]), (UInt8)ReadMUInt16(&buff[2]), (UInt8)ReadMUInt16(&buff[4]), (UInt8)ReadMUInt16(&buff[6]), (UInt8)ReadMUInt16(&buff[8]), (UInt8)ReadMUInt16(&buff[10]), 0);
 }

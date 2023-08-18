@@ -90,10 +90,10 @@ namespace Manage
 		DasmARM64();
 		virtual ~DasmARM64();
 
-		virtual Text::CString GetHeader(Bool fullRegs);
-		virtual Bool Disasm64(IO::Writer *writer, Manage::AddressResolver *addrResol, UInt64 *currInst, UInt64 *currStack, UInt64 *currFrame, Data::ArrayListUInt64 *callAddrs, Data::ArrayListUInt64 *jmpAddrs, UInt64 *blockStart, UInt64 *blockEnd, Manage::Dasm::Dasm_Regs *regs, Manage::IMemoryReader *memReader, Bool fullRegs); // true = succ
-		virtual Dasm_Regs *CreateRegs();
-		virtual void FreeRegs(Dasm_Regs *regs);
+		virtual Text::CString GetHeader(Bool fullRegs) const;
+		virtual Bool Disasm64(NotNullPtr<IO::Writer> writer, Manage::AddressResolver *addrResol, UInt64 *currInst, UInt64 *currStack, UInt64 *currFrame, Data::ArrayListUInt64 *callAddrs, Data::ArrayListUInt64 *jmpAddrs, UInt64 *blockStart, UInt64 *blockEnd, Manage::Dasm::Dasm_Regs *regs, Manage::IMemoryReader *memReader, Bool fullRegs); // true = succ
+		virtual Dasm_Regs *CreateRegs() const;
+		virtual void FreeRegs(Dasm_Regs *regs) const;
 
 		DasmARM64_Sess *CreateSess(DasmARM64_Regs *regs, UInt8 *code, UInt16 codeSegm);
 		void DeleteSess(DasmARM64_Sess *sess);

@@ -117,7 +117,7 @@ Crypto::Cert::X509PrivKey *Crypto::Cert::X509PrivKey::CreateFromKeyBuff(KeyType 
 	return key;
 }
 
-Crypto::Cert::X509PrivKey *Crypto::Cert::X509PrivKey::CreateFromKey(Crypto::Cert::X509Key *key)
+Crypto::Cert::X509PrivKey *Crypto::Cert::X509PrivKey::CreateFromKey(NotNullPtr<Crypto::Cert::X509Key> key)
 {
 	KeyType keyType = key->GetKeyType();
 	if (keyType == KeyType::ECDSA)

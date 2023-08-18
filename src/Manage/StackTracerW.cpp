@@ -67,7 +67,7 @@ Bool Manage::StackTracer::GoToNextLevel()
 #else
 #include <dbghelp.h>
 
-Manage::StackTracer::StackTracer(Manage::ThreadContext *context)
+Manage::StackTracer::StackTracer(NotNullPtr<Manage::ThreadContext> context)
 {
 	hProc = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, false, (DWORD)context->GetProcessId());
 	hThread = OpenThread(THREAD_GET_CONTEXT | THREAD_QUERY_INFORMATION, false, (DWORD)context->GetThreadId());
@@ -80,7 +80,7 @@ Manage::StackTracer::StackTracer(Manage::ThreadContext *context)
 	sf->AddrPC.Mode = AddrModeFlat;
 	sf->AddrStack.Mode = AddrModeFlat;
 	sf->AddrFrame.Mode = AddrModeFlat;
-	this->winContext = this->context->Clone();
+	this->winContext = this->context->Clone().Ptr();
 	sf->AddrPC.Offset = this->winContext->GetInstAddr();
 	sf->AddrStack.Offset = this->winContext->GetStackAddr();
 	sf->AddrFrame.Offset = this->winContext->GetFrameAddr();

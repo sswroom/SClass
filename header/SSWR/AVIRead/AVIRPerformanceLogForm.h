@@ -26,7 +26,7 @@ namespace SSWR
 			IO::Writer *writer;
 			IO::FileStream *logStream;
 			UInt8 *testBuff;
-			Data::DateTime *testTime;
+			Data::DateTime testTime;
 
 			UI::GUIPanel *pnlCtrl;
 			UI::GUIButton *btnStart;

@@ -12,12 +12,12 @@ namespace Manage
 		void *hProc;
 		void *hThread;
 		Manage::ThreadContext *winContext;
-		Manage::ThreadContext *context;
+		NotNullPtr<Manage::ThreadContext> context;
 		Data::ArrayListUInt64 *addrArr;
 		void *stackFrame;
 
 	public:
-		StackTracer(Manage::ThreadContext *context);
+		StackTracer(NotNullPtr<Manage::ThreadContext> context);
 		~StackTracer();
 
 		Bool IsSupported();

@@ -379,7 +379,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnTimerTick(void *userObj)
 			sb.ClearStr();
 			dt.SetTicks(log->reqTime);
 			dt.ToLocalTime();
-			sb.AppendDate(&dt);
+			sb.AppendDate(dt);
 			sb.AppendC(UTF8STRC(" "));
 			sptr = Net::SocketUtil::GetAddrName(sbuff, &log->cliAddr, log->cliPort);
 			sb.AppendP(sbuff, sptr);
@@ -405,7 +405,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnAccessSelChg(void *userObj)
 	Data::DateTime dt;
 	dt.SetTicks(log->reqTime);
 	dt.ToLocalTime();
-	sb.AppendDate(&dt);
+	sb.AppendDate(dt);
 	sb.AppendC(UTF8STRC(" "));
 	sptr = Net::SocketUtil::GetAddrName(sbuff, &log->cliAddr, log->cliPort);
 	sb.AppendP(sbuff, sptr);

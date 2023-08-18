@@ -12,7 +12,7 @@ int backtrace(void **addrArr, int cnt)
 #include <execinfo.h>
 #endif
 
-Manage::StackTracer::StackTracer(Manage::ThreadContext *context)
+Manage::StackTracer::StackTracer(NotNullPtr<Manage::ThreadContext> context)
 {
 	this->context = context;
 	this->addrArr = 0;

@@ -443,7 +443,7 @@ Bool Win32::WMIReader::GetStr(UOSInt colIndex, NotNullPtr<Text::StringBuilderUTF
 				{
 					Data::DateTime dt;
 					dt.SetValueVariTime(V_DATE(&v));
-					sb->AppendDate(&dt);
+					sb->AppendDate(dt);
 					ret = true;
 				}
 				break;

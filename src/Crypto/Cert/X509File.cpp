@@ -429,7 +429,7 @@ void Crypto::Cert::X509File::AppendTBSCertList(const UInt8 *pdu, const UInt8 *pd
 	Text::StrUOSInt(cptr, i++);
 	if ((itemPDU = Net::ASN1Util::PDUGetItem(pdu, pduEnd, cbuff, &itemLen, &itemType)) != 0)
 	{
-		if (itemType == Net::ASN1Util::IT_UTCTIME && Net::ASN1Util::PDUParseUTCTimeCont(itemPDU, itemLen, &dt))
+		if (itemType == Net::ASN1Util::IT_UTCTIME && Net::ASN1Util::PDUParseUTCTimeCont(itemPDU, itemLen, dt))
 		{
 			if (varName.v)
 			{
@@ -437,14 +437,14 @@ void Crypto::Cert::X509File::AppendTBSCertList(const UInt8 *pdu, const UInt8 *pd
 				sb->AppendUTF8Char('.');
 			}
 			sb->AppendC(UTF8STRC("thisUpdate = "));
-			sb->AppendDate(&dt);
+			sb->AppendDate(dt);
 			sb->AppendC(UTF8STRC("\r\n"));
 		}
 	}
 	Text::StrUOSInt(cptr, i++);
 	if ((itemPDU = Net::ASN1Util::PDUGetItem(pdu, pduEnd, cbuff, &itemLen, &itemType)) != 0 && itemType == Net::ASN1Util::IT_UTCTIME)
 	{
-		if (Net::ASN1Util::PDUParseUTCTimeCont(itemPDU, itemLen, &dt))
+		if (Net::ASN1Util::PDUParseUTCTimeCont(itemPDU, itemLen, dt))
 		{
 			if (varName.v)
 			{
@@ -452,7 +452,7 @@ void Crypto::Cert::X509File::AppendTBSCertList(const UInt8 *pdu, const UInt8 *pd
 				sb->AppendUTF8Char('.');
 			}
 			sb->AppendC(UTF8STRC("nextUpdate = "));
-			sb->AppendDate(&dt);
+			sb->AppendDate(dt);
 			sb->AppendC(UTF8STRC("\r\n"));
 		}
 		Text::StrUOSInt(cptr, i++);
@@ -481,7 +481,7 @@ void Crypto::Cert::X509File::AppendTBSCertList(const UInt8 *pdu, const UInt8 *pd
 				sb->AppendHexBuff(subsubitemPDU, subsubitemLen, ':', Text::LineBreakType::None);
 				sb->AppendC(UTF8STRC("\r\n"));
 			}
-			if ((subsubitemPDU = Net::ASN1Util::PDUGetItem(subitemPDU, subitemPDU + subitemLen, "2", &subsubitemLen, &itemType)) != 0 && itemType == Net::ASN1Util::IT_UTCTIME && Net::ASN1Util::PDUParseUTCTimeCont(subsubitemPDU, subsubitemLen, &dt))
+			if ((subsubitemPDU = Net::ASN1Util::PDUGetItem(subitemPDU, subitemPDU + subitemLen, "2", &subsubitemLen, &itemType)) != 0 && itemType == Net::ASN1Util::IT_UTCTIME && Net::ASN1Util::PDUParseUTCTimeCont(subsubitemPDU, subsubitemLen, dt))
 			{
 				if (varName.v)
 				{
@@ -491,7 +491,7 @@ void Crypto::Cert::X509File::AppendTBSCertList(const UInt8 *pdu, const UInt8 *pd
 				sb->AppendC(UTF8STRC("revokedCertificates["));
 				sb->AppendUOSInt(j);
 				sb->AppendC(UTF8STRC("].revocationDate = "));
-				sb->AppendDate(&dt);
+				sb->AppendDate(dt);
 				sb->AppendC(UTF8STRC("\r\n"));
 			}
 			UOSInt itemOfst;
@@ -1133,23 +1133,23 @@ void Crypto::Cert::X509File::AppendValidity(const UInt8 *pdu, const UInt8 *pduEn
 	Net::ASN1Util::ItemType itemType;
 	if ((itemPDU = Net::ASN1Util::PDUGetItem(pdu, pduEnd, "1", &itemLen, &itemType)) != 0)
 	{
-		if ((itemType == Net::ASN1Util::IT_UTCTIME || itemType == Net::ASN1Util::IT_GENERALIZEDTIME) && Net::ASN1Util::PDUParseUTCTimeCont(itemPDU, itemLen, &dt))
+		if ((itemType == Net::ASN1Util::IT_UTCTIME || itemType == Net::ASN1Util::IT_GENERALIZEDTIME) && Net::ASN1Util::PDUParseUTCTimeCont(itemPDU, itemLen, dt))
 		{
 			sb->Append(varName);
 			sb->AppendUTF8Char('.');
 			sb->AppendC(UTF8STRC("notBefore = "));
-			sb->AppendDate(&dt);
+			sb->AppendDate(dt);
 			sb->AppendC(UTF8STRC("\r\n"));
 		}
 	}
 	if ((itemPDU = Net::ASN1Util::PDUGetItem(pdu, pduEnd, "2", &itemLen, &itemType)) != 0)
 	{
-		if ((itemType == Net::ASN1Util::IT_UTCTIME || itemType == Net::ASN1Util::IT_GENERALIZEDTIME) && Net::ASN1Util::PDUParseUTCTimeCont(itemPDU, itemLen, &dt))
+		if ((itemType == Net::ASN1Util::IT_UTCTIME || itemType == Net::ASN1Util::IT_GENERALIZEDTIME) && Net::ASN1Util::PDUParseUTCTimeCont(itemPDU, itemLen, dt))
 		{
 			sb->Append(varName);
 			sb->AppendUTF8Char('.');
 			sb->AppendC(UTF8STRC("notAfter = "));
-			sb->AppendDate(&dt);
+			sb->AppendDate(dt);
 			sb->AppendC(UTF8STRC("\r\n"));
 		}
 	}
@@ -3045,7 +3045,7 @@ void Crypto::Cert::X509File::ToShortString(NotNullPtr<Text::StringBuilderUTF8> s
 	this->ToShortName(sb);
 }
 
-Bool Crypto::Cert::X509File::IsSignatureKey(Net::SSLEngine *ssl, Crypto::Cert::X509Key *key) const
+Bool Crypto::Cert::X509File::IsSignatureKey(Net::SSLEngine *ssl, NotNullPtr<Crypto::Cert::X509Key> key) const
 {
 	UOSInt itemOfst;
 	UOSInt dataSize;
@@ -3082,7 +3082,7 @@ Bool Crypto::Cert::X509File::IsSignatureKey(Net::SSLEngine *ssl, Crypto::Cert::X
 	return true;
 }
 
-Bool Crypto::Cert::X509File::GetSignedInfo(SignedInfo *signedInfo) const
+Bool Crypto::Cert::X509File::GetSignedInfo(NotNullPtr<SignedInfo> signedInfo) const
 {
 	UOSInt itemLen;
 	UOSInt itemOfst;

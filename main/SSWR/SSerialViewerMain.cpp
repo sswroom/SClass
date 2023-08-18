@@ -21,7 +21,6 @@ static UInt32 __stdcall SerialViewer(void *userObj)
 	{
 		running = true;
 		Text::StringBuilderUTF8 sb;
-		Data::DateTime dt;
 		while (!toStop)
 		{
 			readSize = port->Read(BYTEARR(readBuff));
@@ -30,9 +29,8 @@ static UInt32 __stdcall SerialViewer(void *userObj)
 				readError = true;
 				break;
 			}
-			dt.SetCurrTime();
 			sb.ClearStr();
-			sb.AppendDate(&dt);
+			sb.AppendTS(Data::Timestamp::Now());
 			console->WriteLineC(sb.ToString(), sb.GetLength());
 			sb.ClearStr();
 			sb.AppendHexBuff(readBuff, readSize, ' ', Text::LineBreakType::CRLF);

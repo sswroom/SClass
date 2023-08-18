@@ -108,7 +108,7 @@ Crypto::Cert::X509PubKey *Crypto::Cert::X509PubKey::CreateFromKeyBuff(KeyType ke
 	return key;
 }
 
-Crypto::Cert::X509PubKey *Crypto::Cert::X509PubKey::CreateFromKey(Crypto::Cert::X509Key *key)
+Crypto::Cert::X509PubKey *Crypto::Cert::X509PubKey::CreateFromKey(NotNullPtr<Crypto::Cert::X509Key> key)
 {
 	return CreateFromKeyBuff(key->GetKeyType(), key->GetASN1Buff(), key->GetASN1BuffSize(), key->GetSourceNameObj());
 }

@@ -123,7 +123,8 @@ void __stdcall SSWR::AVIRead::AVIRSAMLDecryptForm::OnDecryptClicked(void *userOb
 	}
 	sb.ClearStr();
 	me->txtRAWResponse->GetText(sb);
-	if (sb.GetLength() == 0)
+	NotNullPtr<Crypto::Cert::X509Key> keyNN;
+	if (sb.GetLength() == 0 || !keyNN.Set(key))
 	{
 		DEL_CLASS(key);
 		UI::MessageDialog::ShowDialog(CSTR("Please input raw response"), CSTR("SAML Response Decrypt"), me);
@@ -131,9 +132,9 @@ void __stdcall SSWR::AVIRead::AVIRSAMLDecryptForm::OnDecryptClicked(void *userOb
 	}
 	Text::StringBuilderUTF8 sbResult;
 	ssl = Net::SSLEngineFactory::Create(me->core->GetSocketFactory(), false);
-	Net::SAMLUtil::DecryptResponse(ssl, me->core->GetEncFactory(), key, sb.ToCString(), sbResult);
+	Net::SAMLUtil::DecryptResponse(ssl, me->core->GetEncFactory(), keyNN, sb.ToCString(), sbResult);
 	DEL_CLASS(ssl);
-	DEL_CLASS(key);
+	keyNN.Delete();
 	me->txtResult->SetText(sbResult.ToCString());
 }
 

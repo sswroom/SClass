@@ -187,7 +187,7 @@ UInt32 Net::HTTPClient::GetContentCodePage()
 	return 0;
 }
 
-Bool Net::HTTPClient::GetLastModified(Data::DateTime *dt)
+Bool Net::HTTPClient::GetLastModified(NotNullPtr<Data::DateTime> dt)
 {
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
@@ -200,7 +200,7 @@ Bool Net::HTTPClient::GetLastModified(Data::DateTime *dt)
 	return false;
 }
 
-Bool Net::HTTPClient::GetServerDate(Data::DateTime *dt)
+Bool Net::HTTPClient::GetServerDate(NotNullPtr<Data::DateTime> dt)
 {
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
@@ -347,7 +347,7 @@ const Net::SocketUtil::AddressInfo *Net::HTTPClient::GetSvrAddr()
 	return &this->svrAddr;
 }
 
-void Net::HTTPClient::ParseDateStr(Data::DateTime *dt, Text::CString dateStr)
+void Net::HTTPClient::ParseDateStr(NotNullPtr<Data::DateTime> dt, Text::CString dateStr)
 {
 	UTF8Char *tmps;
 	Text::PString ptrs[6];

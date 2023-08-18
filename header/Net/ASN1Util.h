@@ -46,11 +46,11 @@ namespace Net
 		static UOSInt PDUParseLen(const UInt8 *pdu, UOSInt ofst, UOSInt pduSize, UInt32 *len); //return pduSize + 1 on error
 
 		static const UInt8 *PDUParseSeq(const UInt8 *pdu, const UInt8 *pduEnd, UInt8 *type, const UInt8 **seqEnd);
-		static const UInt8 *PDUParseUInt32(const UInt8 *pdu, const UInt8 *pduEnd, UInt32 *val);
+		static const UInt8 *PDUParseUInt32(const UInt8 *pdu, const UInt8 *pduEnd, OutParam<UInt32> val);
 		static const UInt8 *PDUParseString(const UInt8 *pdu, const UInt8 *pduEnd, NotNullPtr<Text::StringBuilderUTF8> sb);
-		static const UInt8 *PDUParseChoice(const UInt8 *pdu, const UInt8 *pduEnd, UInt32 *val);
+		static const UInt8 *PDUParseChoice(const UInt8 *pdu, const UInt8 *pduEnd, OutParam<UInt32> val);
 
-		static Bool PDUParseUTCTimeCont(const UInt8 *pdu, UOSInt len, Data::DateTime *dt);
+		static Bool PDUParseUTCTimeCont(const UInt8 *pdu, UOSInt len, NotNullPtr<Data::DateTime> dt);
 
 		static Bool PDUToString(const UInt8 *pdu, const UInt8 *pduEnd, NotNullPtr<Text::StringBuilderUTF8> sb, UOSInt level);
 		static Bool PDUToString(const UInt8 *pdu, const UInt8 *pduEnd, NotNullPtr<Text::StringBuilderUTF8> sb, UOSInt level, const UInt8 **pduNext);

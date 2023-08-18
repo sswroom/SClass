@@ -208,7 +208,8 @@ void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnSANClearClicked(void *userObj)
 void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnCSRGenerateClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRCertUtilForm *me = (SSWR::AVIRead::AVIRCertUtilForm*)userObj;
-	if (me->key == 0)
+	NotNullPtr<Crypto::Cert::X509Key> key;
+	if (!key.Set(me->key))
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Key not exist"), CSTR("Cert Util"), me);
 		return;
@@ -224,7 +225,7 @@ void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnCSRGenerateClicked(void *userO
 	ext.subjectAltName = me->sanList;
 	ext.caCert = me->chkCACert->IsChecked();
 	ext.digitalSign = me->chkDigitalSign->IsChecked();
-	Crypto::Cert::X509CertReq *csr = Crypto::Cert::CertUtil::CertReqCreate(me->ssl, &names, me->key, &ext);
+	Crypto::Cert::X509CertReq *csr = Crypto::Cert::CertUtil::CertReqCreate(me->ssl, &names, key, &ext);
 	if (csr)
 	{
 		me->core->OpenObject(csr);
@@ -239,7 +240,8 @@ void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnCSRGenerateClicked(void *userO
 void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnSelfSignedCertClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRCertUtilForm *me = (SSWR::AVIRead::AVIRCertUtilForm*)userObj;
-	if (me->key == 0)
+	NotNullPtr<Crypto::Cert::X509Key> key;
+	if (!key.Set(me->key))
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Key not exist"), CSTR("Cert Util"), me);
 		return;
@@ -267,7 +269,7 @@ void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnSelfSignedCertClicked(void *us
 	me->key->GetKeyId(BYTEARR(ext.authKeyId));
 	ext.caCert = me->chkCACert->IsChecked();
 	ext.digitalSign = me->chkDigitalSign->IsChecked();
-	Crypto::Cert::X509Cert *cert = Crypto::Cert::CertUtil::SelfSignedCertCreate(me->ssl, &names, me->key, validDays, &ext);
+	Crypto::Cert::X509Cert *cert = Crypto::Cert::CertUtil::SelfSignedCertCreate(me->ssl, &names, key, validDays, &ext);
 	if (cert)
 	{
 		me->core->OpenObject(cert);

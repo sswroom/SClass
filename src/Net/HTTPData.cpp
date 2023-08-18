@@ -97,7 +97,7 @@ UInt32 __stdcall Net::HTTPData::LoadThread(void *userObj)
 				mutUsage.EndUse();
 			}
 			Data::DateTime dt;
-			if (fdh->file && fdh->cli->GetLastModified(&dt))
+			if (fdh->file && fdh->cli->GetLastModified(dt))
 			{
 				fdh->file->SetFileTimes(0, 0, &dt);
 			}
@@ -143,7 +143,7 @@ UInt32 __stdcall Net::HTTPData::LoadThread(void *userObj)
 					mutUsage.EndUse();
 				}
 				Data::DateTime dt;
-				if (fdh->file && fdh->cli->GetLastModified(&dt))
+				if (fdh->file && fdh->cli->GetLastModified(dt))
 				{
 					fdh->file->SetFileTimes(0, 0, &dt);
 				}

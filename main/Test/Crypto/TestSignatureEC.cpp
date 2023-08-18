@@ -29,9 +29,9 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		x509 = Parser::FileParser::X509Parser::ParseBuff(Data::ByteArrayR((const UInt8*)key, sizeof(key) - 1), fileName);
 		fileName->Release();
 	}
-	if (x509 && x509->GetFileType() == Crypto::Cert::X509File::FileType::Key)
+	NotNullPtr<Crypto::Cert::X509Key> key;
+	if (x509 && x509->GetFileType() == Crypto::Cert::X509File::FileType::Key && key.Set((Crypto::Cert::X509Key*)x509))
 	{
-		Crypto::Cert::X509Key *key = (Crypto::Cert::X509Key*)x509;
 		if (!ssl->Signature(key, Crypto::Hash::HashType::SHA256, UTF8STRC("123456"), signData, &signLen))
 		{
 			printf("Error in generating signature\r\n");

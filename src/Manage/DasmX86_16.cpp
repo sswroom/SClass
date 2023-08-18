@@ -7955,23 +7955,23 @@ void Manage::DasmX86_16::DeleteSess(Manage::DasmX86_16::DasmX86_16_Sess *sess)
 	}
 }
 
-Text::CString Manage::DasmX86_16::GetHeader(Bool fullRegs)
+Text::CString Manage::DasmX86_16::GetHeader(Bool fullRegs) const
 {
 	return CSTR("EAX\tEDX\tECX\tEBX");
 }
 
-Bool Manage::DasmX86_16::Disasm16(IO::Writer *writer, Manage::AddressResolver *addrResol, UInt16 *currInst, UInt16 *currStack, UInt16 *currFrame, Data::ArrayListUInt32 *callAddrs, Data::ArrayListUInt32 *jmpAddrs, UInt16 *blockStart, UInt16 *blockEnd, Manage::Dasm::Dasm_Regs *regs, Manage::IMemoryReader *memReader, Bool fullRegs)
+Bool Manage::DasmX86_16::Disasm16(NotNullPtr<IO::Writer> writer, Manage::AddressResolver *addrResol, UInt16 *currInst, UInt16 *currStack, UInt16 *currFrame, Data::ArrayListUInt32 *callAddrs, Data::ArrayListUInt32 *jmpAddrs, UInt16 *blockStart, UInt16 *blockEnd, Manage::Dasm::Dasm_Regs *regs, Manage::IMemoryReader *memReader, Bool fullRegs)
 {
 	return false;
 }
 
-Manage::Dasm::Dasm_Regs *Manage::DasmX86_16::CreateRegs()
+Manage::Dasm::Dasm_Regs *Manage::DasmX86_16::CreateRegs() const
 {
 	DasmX86_16_Regs *regs = MemAlloc(DasmX86_16_Regs, 1);
 	return regs;
 }
 
-void Manage::DasmX86_16::FreeRegs(Dasm_Regs *regs)
+void Manage::DasmX86_16::FreeRegs(Dasm_Regs *regs) const
 {
 	MemFree(regs);
 }

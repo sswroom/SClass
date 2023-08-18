@@ -24,7 +24,7 @@ namespace Crypto
 			Crypto::Cert::X509Key *CreateKey() const;
 
 			static X509PubKey *CreateFromKeyBuff(KeyType keyType, const UInt8 *buff, UOSInt buffSize, NotNullPtr<Text::String> sourceName);
-			static X509PubKey *CreateFromKey(Crypto::Cert::X509Key *key);
+			static X509PubKey *CreateFromKey(NotNullPtr<Crypto::Cert::X509Key> key);
 		};
 	}
 }

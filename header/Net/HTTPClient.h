@@ -69,8 +69,8 @@ namespace Net
 		Text::String *GetRespHeader(UOSInt index);
 		UInt64 GetContentLength();
 		UInt32 GetContentCodePage();
-		Bool GetLastModified(Data::DateTime *dt);
-		Bool GetServerDate(Data::DateTime *dt);
+		Bool GetLastModified(NotNullPtr<Data::DateTime> dt);
+		Bool GetServerDate(NotNullPtr<Data::DateTime> dt);
 		Text::CString GetTransferEncoding();
 		Text::CString GetContentType();
 
@@ -84,7 +84,7 @@ namespace Net
 		Bool ReadAllContent(NotNullPtr<IO::Stream> outStm, UOSInt buffSize, UInt64 maxSize);
 		Bool ReadAllContent(NotNullPtr<Text::StringBuilderUTF8> sb, UOSInt buffSize, UInt64 maxSize);
 
-		static void ParseDateStr(Data::DateTime *dt, Text::CString dateStr);
+		static void ParseDateStr(NotNullPtr<Data::DateTime> dt, Text::CString dateStr);
 		static NotNullPtr<Net::HTTPClient> CreateClient(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::CString userAgent, Bool kaConn, Bool isSecure);
 		static NotNullPtr<Net::HTTPClient> CreateConnect(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::CStringNN url, Net::WebUtil::RequestMethod method, Bool kaConn);
 		static Bool IsHTTPURL(Text::CStringNN url);

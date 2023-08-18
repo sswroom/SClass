@@ -54,16 +54,16 @@ Bool Crypto::Token::JWSignature::CalcHash(const UInt8 *buff, UOSInt buffSize)
 			{
 				return false;
 			}
-			Crypto::Cert::X509Key *key;
+			NotNullPtr<Crypto::Cert::X509Key> key;
 			Bool succ = false;
-			NEW_CLASS(key, Crypto::Cert::X509Key(CSTR("rsakey"), Data::ByteArray(this->privateKey, this->privateKeyLeng), Crypto::Cert::X509Key::KeyType::RSA));
+			NEW_CLASSNN(key, Crypto::Cert::X509Key(CSTR("rsakey"), Data::ByteArray(this->privateKey, this->privateKeyLeng), Crypto::Cert::X509Key::KeyType::RSA));
 			if (alg == Algorithm::RS256)
 				succ = this->ssl->Signature(key, Crypto::Hash::HashType::SHA256, buff, buffSize, this->hashVal, &this->hashValSize);
 			else if (alg == Algorithm::RS384)
 				succ = this->ssl->Signature(key, Crypto::Hash::HashType::SHA384, buff, buffSize, this->hashVal, &this->hashValSize);
 			if (alg == Algorithm::RS512)
 				succ = this->ssl->Signature(key, Crypto::Hash::HashType::SHA512, buff, buffSize, this->hashVal, &this->hashValSize);
-			DEL_CLASS(key);
+			key.Delete();
 			return succ;
 		}
 		break;

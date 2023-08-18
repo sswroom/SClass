@@ -193,7 +193,6 @@ void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnTimerTick(void *userObj
 		Data::ArrayList<UOSInt> logIndex;
 		SSWR::AVIRead::AVIRHTTPLog::LogEntry *log;
 		Text::StringBuilderUTF8 sb;
-		Data::DateTime dt;
 		Sync::MutexUsage mutUsage;
 
 		me->lastAccessIndex = i;
@@ -207,9 +206,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnTimerTick(void *userObj
 		{
 			log = logs.GetItem(i);
 			sb.ClearStr();
-			dt.SetTicks(log->reqTime);
-			dt.ToLocalTime();
-			sb.AppendDate(&dt);
+			sb.AppendTS(Data::Timestamp(log->reqTime, Data::DateTimeUtil::GetLocalTzQhr()));
 			sb.AppendC(UTF8STRC(" "));
 			sptr = Net::SocketUtil::GetAddrName(sbuff, &log->cliAddr, log->cliPort);
 			sb.AppendP(sbuff, sptr);
@@ -232,10 +229,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnAccessSelChg(void *user
 	UOSInt j;
 	SSWR::AVIRead::AVIRHTTPLog::LogEntry *log;
 	log = me->reqLog->GetEntry(i);
-	Data::DateTime dt;
-	dt.SetTicks(log->reqTime);
-	dt.ToLocalTime();
-	sb.AppendDate(&dt);
+	sb.AppendTS(Data::Timestamp(log->reqTime, Data::DateTimeUtil::GetLocalTzQhr()));
 	sb.AppendC(UTF8STRC(" "));
 	sptr = Net::SocketUtil::GetAddrName(sbuff, &log->cliAddr, log->cliPort);
 	sb.AppendP(sbuff, sptr);

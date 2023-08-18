@@ -544,10 +544,10 @@ void Manage::ThreadContextX86_32::SetFrameAddr(UOSInt frameAddr)
 #endif
 }
 
-Manage::ThreadContext *Manage::ThreadContextX86_32::Clone() const
+NotNullPtr<Manage::ThreadContext> Manage::ThreadContextX86_32::Clone() const
 {
-	Manage::ThreadContextX86_32 *ret;
-	NEW_CLASS(ret, Manage::ThreadContextX86_32(this->procId, this->threadId, this->context));
+	NotNullPtr<Manage::ThreadContextX86_32> ret;
+	NEW_CLASSNN(ret, Manage::ThreadContextX86_32(this->procId, this->threadId, this->context));
 	return ret;
 }
 

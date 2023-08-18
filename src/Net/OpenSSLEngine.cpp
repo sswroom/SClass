@@ -110,7 +110,7 @@ Net::SSLClient *Net::OpenSSLEngine::CreateClientConn(void *sslObj, Socket *s, Te
 		Int64 currTime;
 		dt.SetCurrTimeUTC();
 		currTime = dt.ToTicks();
-		if (!svrCert->GetNotBefore(&dt) || currTime < dt.ToTicks())
+		if (!svrCert->GetNotBefore(dt) || currTime < dt.ToTicks())
 		{
 			DEL_CLASS(svrCert);
 			this->sockf->DestroySocket(s);
@@ -119,7 +119,7 @@ Net::SSLClient *Net::OpenSSLEngine::CreateClientConn(void *sslObj, Socket *s, Te
 				*err = ErrorType::InvalidPeriod;
 			return 0;
 		}
-		if (!svrCert->GetNotAfter(&dt) || currTime > dt.ToTicks())
+		if (!svrCert->GetNotAfter(dt) || currTime > dt.ToTicks())
 		{
 			DEL_CLASS(svrCert);
 			this->sockf->DestroySocket(s);
@@ -763,7 +763,7 @@ int OpenSSLEngine_GetCurveName(Crypto::Cert::X509File::ECName ecName)
 		return 0;
 	}
 }
-EVP_PKEY *OpenSSLEngine_LoadKey(Crypto::Cert::X509Key *key, Bool privateKeyOnly)
+EVP_PKEY *OpenSSLEngine_LoadKey(NotNullPtr<Crypto::Cert::X509Key> key, Bool privateKeyOnly)
 {
 	EVP_PKEY *pkey = 0;
 	if (key->GetKeyType() == Crypto::Cert::X509File::KeyType::RSA)
@@ -900,7 +900,7 @@ const EVP_MD *OpenSSLEngine_GetHash(Crypto::Hash::HashType hashType)
 		return 0;
 	}
 }
-Bool Net::OpenSSLEngine::Signature(Crypto::Cert::X509Key *key, Crypto::Hash::HashType hashType, const UInt8 *payload, UOSInt payloadLen, UInt8 *signData, UOSInt *signLen)
+Bool Net::OpenSSLEngine::Signature(NotNullPtr<Crypto::Cert::X509Key> key, Crypto::Hash::HashType hashType, const UInt8 *payload, UOSInt payloadLen, UInt8 *signData, UOSInt *signLen)
 {
 	const EVP_MD *htype = OpenSSLEngine_GetHash(hashType);
 	if (htype == 0)
@@ -942,7 +942,7 @@ Bool Net::OpenSSLEngine::Signature(Crypto::Cert::X509Key *key, Crypto::Hash::Has
 	return true;
 }
 
-Bool Net::OpenSSLEngine::SignatureVerify(Crypto::Cert::X509Key *key, Crypto::Hash::HashType hashType, const UInt8 *payload, UOSInt payloadLen, const UInt8 *signData, UOSInt signLen)
+Bool Net::OpenSSLEngine::SignatureVerify(NotNullPtr<Crypto::Cert::X509Key> key, Crypto::Hash::HashType hashType, const UInt8 *payload, UOSInt payloadLen, const UInt8 *signData, UOSInt signLen)
 {
 	const EVP_MD *htype = OpenSSLEngine_GetHash(hashType);
 	if (htype == 0)
@@ -986,7 +986,7 @@ Bool Net::OpenSSLEngine::SignatureVerify(Crypto::Cert::X509Key *key, Crypto::Has
 	return succ;
 }
 
-UOSInt Net::OpenSSLEngine::Encrypt(Crypto::Cert::X509Key *key, UInt8 *encData, const UInt8 *payload, UOSInt payloadLen, Crypto::Encrypt::RSACipher::Padding rsaPadding)
+UOSInt Net::OpenSSLEngine::Encrypt(NotNullPtr<Crypto::Cert::X509Key> key, UInt8 *encData, const UInt8 *payload, UOSInt payloadLen, Crypto::Encrypt::RSACipher::Padding rsaPadding)
 {
 	EVP_PKEY *pkey = OpenSSLEngine_LoadKey(key, false);
 	if (pkey == 0)
@@ -1030,7 +1030,7 @@ UOSInt Net::OpenSSLEngine::Encrypt(Crypto::Cert::X509Key *key, UInt8 *encData, c
 	return (UOSInt)outlen;
 }
 
-UOSInt Net::OpenSSLEngine::Decrypt(Crypto::Cert::X509Key *key, UInt8 *decData, const UInt8 *payload, UOSInt payloadLen, Crypto::Encrypt::RSACipher::Padding rsaPadding)
+UOSInt Net::OpenSSLEngine::Decrypt(NotNullPtr<Crypto::Cert::X509Key> key, UInt8 *decData, const UInt8 *payload, UOSInt payloadLen, Crypto::Encrypt::RSACipher::Padding rsaPadding)
 {
 	if (key->GetKeyType() == Crypto::Cert::X509File::KeyType::RSAPublic)
 	{
@@ -1079,7 +1079,7 @@ UOSInt Net::OpenSSLEngine::Decrypt(Crypto::Cert::X509Key *key, UInt8 *decData, c
 	return (UOSInt)outlen;
 }
 
-UOSInt Net::OpenSSLEngine::RSAPublicDecrypt(Crypto::Cert::X509Key *key, UInt8 *decData, const UInt8 *payload, UOSInt payloadLen, Crypto::Encrypt::RSACipher::Padding rsaPadding)
+UOSInt Net::OpenSSLEngine::RSAPublicDecrypt(NotNullPtr<Crypto::Cert::X509Key> key, UInt8 *decData, const UInt8 *payload, UOSInt payloadLen, Crypto::Encrypt::RSACipher::Padding rsaPadding)
 {
 	EVP_PKEY *pkey = OpenSSLEngine_LoadKey(key, false);
 	if (pkey == 0)

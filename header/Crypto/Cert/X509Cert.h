@@ -35,14 +35,14 @@ namespace Crypto
 			Bool GetExtensions(CertExtensions *ext) const;
 			Crypto::Cert::X509Key *GetNewPublicKey() const;
 			Bool GetKeyId(const Data::ByteArray &keyId) const; //20 bytes
-			Bool GetNotBefore(Data::DateTime *dt) const;
-			Bool GetNotAfter(Data::DateTime *dt) const;
+			Bool GetNotBefore(NotNullPtr<Data::DateTime> dt) const;
+			Bool GetNotAfter(NotNullPtr<Data::DateTime> dt) const;
 			Bool DomainValid(Text::CString domain) const;
 			Bool IsSelfSigned() const;
 			UOSInt GetCRLDistributionPoints(Data::ArrayList<Text::CString> *crlDistributionPoints) const;
 
-			const UInt8 *GetIssuerNamesSeq(UOSInt *dataLen) const;
-			const UInt8 *GetSerialNumber(UOSInt *dataLen) const;
+			const UInt8 *GetIssuerNamesSeq(OutParam<UOSInt> dataLen) const;
+			const UInt8 *GetSerialNumber(OutParam<UOSInt> dataLen) const;
 		};
 	}
 }

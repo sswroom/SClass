@@ -535,13 +535,13 @@ Crypto::Cert::X509File *Parser::FileParser::X509Parser::ToType(IO::ParsedObject 
 	}
 	if (x509->GetFileType() == Crypto::Cert::X509File::FileType::Key)
 	{
-		Crypto::Cert::X509Key *key = (Crypto::Cert::X509Key*)x509;
-		if (ftype == Crypto::Cert::X509File::FileType::PrivateKey)
+		NotNullPtr<Crypto::Cert::X509Key> key;
+		if (key.Set((Crypto::Cert::X509Key*)x509) && ftype == Crypto::Cert::X509File::FileType::PrivateKey)
 		{
 			if (key->IsPrivateKey())
 			{
 				Crypto::Cert::X509PrivKey *pkey = Crypto::Cert::X509PrivKey::CreateFromKey(key);
-				DEL_CLASS(key);
+				key.Delete();
 				return pkey;
 			}
 		}

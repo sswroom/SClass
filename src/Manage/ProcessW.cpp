@@ -502,7 +502,7 @@ UOSInt Manage::Process::GetModules(Data::ArrayList<Manage::ModuleInfo *> *modLis
 #endif
 }
 
-UOSInt Manage::Process::GetThreads(Data::ArrayList<Manage::ThreadInfo *> *threadList)
+UOSInt Manage::Process::GetThreads(NotNullPtr<Data::ArrayList<Manage::ThreadInfo *>> threadList)
 {
 	Manage::ThreadInfo *tInfo;
 	UOSInt threadCnt = 0;

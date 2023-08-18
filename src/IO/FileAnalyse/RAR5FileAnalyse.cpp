@@ -451,7 +451,7 @@ Bool IO::FileAnalyse::RAR5FileAnalyse::GetFrameDetail(UOSInt index, NotNullPtr<T
 							packPtr += 8;
 						}
 						sb->AppendC(UTF8STRC(", mtime = "));
-						sb->AppendDate(&dt);
+						sb->AppendDate(dt);
 					}
 					if (headerFlags & 4)
 					{
@@ -466,7 +466,7 @@ Bool IO::FileAnalyse::RAR5FileAnalyse::GetFrameDetail(UOSInt index, NotNullPtr<T
 							packPtr += 8;
 						}
 						sb->AppendC(UTF8STRC(", ctime = "));
-						sb->AppendDate(&dt);
+						sb->AppendDate(dt);
 					}
 					if (headerFlags & 8)
 					{
@@ -481,7 +481,7 @@ Bool IO::FileAnalyse::RAR5FileAnalyse::GetFrameDetail(UOSInt index, NotNullPtr<T
 							packPtr += 8;
 						}
 						sb->AppendC(UTF8STRC(", atime = "));
-						sb->AppendDate(&dt);
+						sb->AppendDate(dt);
 					}
 				}
 				else if (iVal == 4)

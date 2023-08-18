@@ -19176,7 +19176,7 @@ Manage::DasmX86_32::~DasmX86_32()
 	MemFree(this->codes0f3a);
 }
 
-Text::CString Manage::DasmX86_32::GetHeader(Bool fullRegs)
+Text::CString Manage::DasmX86_32::GetHeader(Bool fullRegs) const
 {
 	if (fullRegs)
 	{
@@ -19188,7 +19188,7 @@ Text::CString Manage::DasmX86_32::GetHeader(Bool fullRegs)
 	}
 }
 
-Bool Manage::DasmX86_32::Disasm32(IO::Writer *writer, Manage::AddressResolver *addrResol, UInt32 *currEip, UInt32 *currEsp, UInt32 *currEbp, Data::ArrayListUInt32 *callAddrs, Data::ArrayListUInt32 *jmpAddrs, UInt32 *blockStart, UInt32 *blockEnd, Manage::Dasm::Dasm_Regs *regs, Manage::IMemoryReader *memReader, Bool fullRegs)
+Bool Manage::DasmX86_32::Disasm32(NotNullPtr<IO::Writer> writer, Manage::AddressResolver *addrResol, UInt32 *currEip, UInt32 *currEsp, UInt32 *currEbp, Data::ArrayListUInt32 *callAddrs, Data::ArrayListUInt32 *jmpAddrs, UInt32 *blockStart, UInt32 *blockEnd, Manage::Dasm::Dasm_Regs *regs, Manage::IMemoryReader *memReader, Bool fullRegs)
 {
 	UTF8Char sbuff[512];
 	DasmX86_32_Sess sess;
@@ -19384,13 +19384,13 @@ Bool Manage::DasmX86_32::Disasm32In(NotNullPtr<Text::StringBuilderUTF8> outStr, 
 	}
 }
 
-Manage::Dasm::Dasm_Regs *Manage::DasmX86_32::CreateRegs()
+Manage::Dasm::Dasm_Regs *Manage::DasmX86_32::CreateRegs() const
 {
 	DasmX86_32_Regs *regs = MemAlloc(DasmX86_32_Regs, 1);
 	return regs;
 }
 
-void Manage::DasmX86_32::FreeRegs(Dasm_Regs *regs)
+void Manage::DasmX86_32::FreeRegs(Dasm_Regs *regs) const
 {
 	MemFree(regs);
 }

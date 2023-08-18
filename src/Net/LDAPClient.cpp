@@ -161,7 +161,7 @@ void Net::LDAPClient::ParseLDAPMessage(const UInt8 *msgBuff, UOSInt msgLen)
 	const UInt8 *seqEnd;
 	Net::LDAPClient::ReqStatus *req;
 
-	msgBuff = Net::ASN1Util::PDUParseUInt32(msgBuff, msgEnd, &msgId);
+	msgBuff = Net::ASN1Util::PDUParseUInt32(msgBuff, msgEnd, msgId);
 	if (msgBuff == 0)
 		return;
 	msgBuff = Net::ASN1Util::PDUParseSeq(msgBuff, msgEnd, &seqType, &seqEnd);
@@ -177,7 +177,7 @@ void Net::LDAPClient::ParseLDAPMessage(const UInt8 *msgBuff, UOSInt msgLen)
 			Text::StringBuilderUTF8 sb;
 			Text::StringBuilderUTF8 sb2;
 			UInt32 resultCode;
-			msgBuff = Net::ASN1Util::PDUParseChoice(msgBuff, seqEnd, &resultCode);
+			msgBuff = Net::ASN1Util::PDUParseChoice(msgBuff, seqEnd, resultCode);
 			if (msgBuff == 0)
 				return;
 			msgBuff = Net::ASN1Util::PDUParseString(msgBuff, seqEnd, sb);
@@ -296,7 +296,7 @@ void Net::LDAPClient::ParseLDAPMessage(const UInt8 *msgBuff, UOSInt msgLen)
 			UInt32 resultCode;
 			Text::StringBuilderUTF8 sb;
 			Text::StringBuilderUTF8 sb2;
-			msgBuff = Net::ASN1Util::PDUParseChoice(msgBuff, seqEnd, &resultCode);
+			msgBuff = Net::ASN1Util::PDUParseChoice(msgBuff, seqEnd, resultCode);
 			if (msgBuff == 0)
 				return;
 			msgBuff = Net::ASN1Util::PDUParseString(msgBuff, seqEnd, sb);
@@ -346,7 +346,7 @@ void Net::LDAPClient::ParseLDAPMessage(const UInt8 *msgBuff, UOSInt msgLen)
 			UInt32 resultCode;
 			Text::StringBuilderUTF8 sb;
 			Text::StringBuilderUTF8 sb2;
-			msgBuff = Net::ASN1Util::PDUParseChoice(msgBuff, seqEnd, &resultCode);
+			msgBuff = Net::ASN1Util::PDUParseChoice(msgBuff, seqEnd, resultCode);
 			if (msgBuff == 0)
 				return;
 			msgBuff = Net::ASN1Util::PDUParseString(msgBuff, seqEnd, sb);

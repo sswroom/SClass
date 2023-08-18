@@ -39,7 +39,7 @@ void __stdcall SSWR::AVIRead::AVIRPerformanceLogForm::OnTimerTick(void *userObj)
 	{
 		Data::DateTime dt;
 		dt.SetCurrTimeUTC();
-		if (dt.DiffMS(me->testTime) >= 600000)
+		if (dt.DiffMS(&me->testTime) >= 600000)
 		{
 			me->TestSpeed();
 		}
@@ -62,7 +62,6 @@ Bool SSWR::AVIRead::AVIRPerformanceLogForm::Start()
 	}
 	NEW_CLASS(this->writer, Text::UTF8Writer(fs));
 	this->testBuff = MemAllocA(UInt8, TEST_SIZE);
-	NEW_CLASS(this->testTime, Data::DateTime());
 	this->TestSpeed();
 	return true;
 }
@@ -71,8 +70,6 @@ void SSWR::AVIRead::AVIRPerformanceLogForm::Stop()
 {
 	if (this->testBuff)
 	{
-		DEL_CLASS(this->testTime);
-		this->testTime = 0;
 		DEL_CLASS(this->writer);
 		this->writer = 0;
 		DEL_CLASS(this->logStream);
@@ -91,7 +88,7 @@ void SSWR::AVIRead::AVIRPerformanceLogForm::TestSpeed()
 	Manage::HiResClock clk;
 	Benchmark_MemWriteTest(this->testBuff, this->testBuff, TEST_SIZE, LOOP_CNT);
 	t = clk.GetTimeDiff();
-	this->testTime->SetCurrTimeUTC();
+	this->testTime.SetCurrTimeUTC();
 	Text::StringBuilderUTF8 sb;
 	spd = TEST_SIZE / t * LOOP_CNT;
 	sb.AppendDate(this->testTime);
@@ -113,7 +110,6 @@ SSWR::AVIRead::AVIRPerformanceLogForm::AVIRPerformanceLogForm(UI::GUIClientContr
 	this->logStream = 0;
 	this->writer = 0;
 	this->testBuff = 0;
-	this->testTime = 0;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	
 	NEW_CLASS(this->pnlCtrl, UI::GUIPanel(ui, this));

@@ -410,10 +410,7 @@ void Net::WebServer::CapturerWebHandler::AppendBTTable(NotNullPtr<Text::StringBu
 	UTF8Char *sptr;
 	UInt32 sort = 0;
 	NotNullPtr<Text::String> s;
-	Data::DateTime dt;
-	Int64 currTime;
-	dt.SetCurrTimeUTC();
-	currTime = dt.ToTicks();
+	Int64 currTime = Data::DateTimeUtil::GetCurrTimeMillis();
 	UOSInt i;
 	UOSInt j;
 	IO::BTScanLog::ScanRecord3 *entry;
@@ -492,9 +489,7 @@ void Net::WebServer::CapturerWebHandler::AppendBTTable(NotNullPtr<Text::StringBu
 			sb->AppendC(UTF8STRC("</td><td>"));
 			sb->AppendC((const UTF8Char*)(entry->connected?"Y":"N"), 1);
 			sb->AppendC(UTF8STRC("</td><td>"));
-			dt.SetTicks(entry->lastSeenTime);
-			dt.ToLocalTime();
-			sb->AppendDate(&dt);
+			sb->AppendTS(Data::Timestamp(entry->lastSeenTime, Data::DateTimeUtil::GetLocalTzQhr()));
 			sb->AppendC(UTF8STRC("</td><td>"));
 			if (entry->company == 0)
 			{

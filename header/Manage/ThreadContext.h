@@ -35,7 +35,7 @@ namespace Manage
 		virtual void SetInstAddr(UOSInt instAddr) = 0;
 		virtual void SetStackAddr(UOSInt stackAddr) = 0;
 		virtual void SetFrameAddr(UOSInt frameAddr) = 0;
-		virtual ThreadContext *Clone() const = 0;
+		virtual NotNullPtr<ThreadContext> Clone() const = 0;
 		virtual Bool GetRegs(Manage::Dasm::Dasm_Regs *regs) const = 0;
 
 		virtual Manage::Dasm *CreateDasm() const = 0;

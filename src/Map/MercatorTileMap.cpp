@@ -301,7 +301,7 @@ Media::ImageList *Map::MercatorTileMap::LoadTileImage(UOSInt level, Math::Coord2
 				IO::FileStream fs({filePathU, (UOSInt)(sptru - filePathU)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer);
 				fs.Write(mstm.GetBuff(), (UOSInt)mstm.GetLength());
 				Data::DateTime dt;
-				if (cli->GetLastModified(&dt))
+				if (cli->GetLastModified(dt))
 				{
 					Data::DateTime currTime;
 					currTime.SetCurrTimeUTC();
@@ -471,7 +471,7 @@ IO::StreamData *Map::MercatorTileMap::LoadTileImageData(UOSInt level, Math::Coor
 				{
 					IO::FileStream fs({filePathU, (UOSInt)(sptru - filePathU)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer);
 					fs.Write(imgBuff, (UOSInt)contLeng);
-					if (cli->GetLastModified(&dt))
+					if (cli->GetLastModified(dt))
 					{
 						currTime.SetCurrTimeUTC();
 						fs.SetFileTimes(&currTime, 0, &dt);

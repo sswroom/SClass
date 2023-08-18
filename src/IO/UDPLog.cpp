@@ -50,7 +50,7 @@ Bool IO::UDPLog::ParseLog(UInt8 *dataBuff, UOSInt buffSize, NotNullPtr<Text::Str
 						Data::DateTime t;
 						sb->AppendC(UTF8STRC("\r\nGPS Time = "));
 						t.SetValue((UInt16)(Data::ByteTool::GetBCD8(dataBuff[14]) + 2000), Data::ByteTool::GetBCD8(dataBuff[13]), Data::ByteTool::GetBCD8(dataBuff[12]), Data::ByteTool::GetBCD8(dataBuff[9]), Data::ByteTool::GetBCD8(dataBuff[10]), Data::ByteTool::GetBCD8(dataBuff[11]), 0, 0);
-						sb->AppendDate(&t);
+						sb->AppendDate(t);
 
 						Double lat;
 						Double lon;
@@ -210,7 +210,7 @@ Bool IO::UDPLog::ParseLog(UInt8 *dataBuff, UOSInt buffSize, NotNullPtr<Text::Str
 						Data::DateTime t;
 						sb->AppendC(UTF8STRC("\r\nGPS Time = "));
 						t.SetValue((UInt16)(Data::ByteTool::GetBCD8(dataBuff[14]) + 2000), Data::ByteTool::GetBCD8(dataBuff[13]), Data::ByteTool::GetBCD8(dataBuff[12]), Data::ByteTool::GetBCD8(dataBuff[9]), Data::ByteTool::GetBCD8(dataBuff[10]), Data::ByteTool::GetBCD8(dataBuff[11]), 0, 0);
-						sb->AppendDate(&t);
+						sb->AppendDate(t);
 
 						Double lat;
 						Double lon;
@@ -282,7 +282,7 @@ Bool IO::UDPLog::ParseLog(UInt8 *dataBuff, UOSInt buffSize, NotNullPtr<Text::Str
 						Data::DateTime t;
 						sb->AppendC(UTF8STRC("\r\nGPS Time = "));
 						t.SetValue((UInt16)(Data::ByteTool::GetBCD8(dataBuff[14]) + 2000), Data::ByteTool::GetBCD8(dataBuff[13]), Data::ByteTool::GetBCD8(dataBuff[12]), Data::ByteTool::GetBCD8(dataBuff[9]), Data::ByteTool::GetBCD8(dataBuff[10]), Data::ByteTool::GetBCD8(dataBuff[11]), 0, 0);
-						sb->AppendDate(&t);
+						sb->AppendDate(t);
 
 						Double lat;
 						Double lon;
@@ -385,7 +385,7 @@ Bool IO::UDPLog::ParseLog(UInt8 *dataBuff, UOSInt buffSize, NotNullPtr<Text::Str
 						Data::DateTime t;
 						sb->AppendC(UTF8STRC("\r\nGPS Time = "));
 						t.SetValue((UInt16)(Data::ByteTool::GetBCD8(dataBuff[14]) + 2000), Data::ByteTool::GetBCD8(dataBuff[13]), Data::ByteTool::GetBCD8(dataBuff[12]), Data::ByteTool::GetBCD8(dataBuff[9]), Data::ByteTool::GetBCD8(dataBuff[10]), Data::ByteTool::GetBCD8(dataBuff[11]), 0, 0);
-						sb->AppendDate(&t);
+						sb->AppendDate(t);
 
 						Double lat;
 						Double lon;
@@ -475,7 +475,7 @@ Bool IO::UDPLog::ParseLog(UInt8 *dataBuff, UOSInt buffSize, NotNullPtr<Text::Str
 						Data::DateTime t;
 						sb->AppendC(UTF8STRC("\r\nGPS Time = "));
 						t.SetValue((UInt16)(Data::ByteTool::GetBCD8(dataBuff[14]) + 2000), Data::ByteTool::GetBCD8(dataBuff[13]), Data::ByteTool::GetBCD8(dataBuff[12]), Data::ByteTool::GetBCD8(dataBuff[9]), Data::ByteTool::GetBCD8(dataBuff[10]), Data::ByteTool::GetBCD8(dataBuff[11]), 0, 0);
-						sb->AppendDate(&t);
+						sb->AppendDate(t);
 
 						Double lat;
 						Double lon;
@@ -605,7 +605,7 @@ Bool IO::UDPLog::ParseLog(UInt8 *dataBuff, UOSInt buffSize, NotNullPtr<Text::Str
 						Data::DateTime dt;
 						dt.SetValue((UInt16)(Data::ByteTool::GetBCD8(dataBuff[14]) + 2000), Data::ByteTool::GetBCD8(dataBuff[13]), Data::ByteTool::GetBCD8(dataBuff[12]), Data::ByteTool::GetBCD8(dataBuff[9]), Data::ByteTool::GetBCD8(dataBuff[10]), Data::ByteTool::GetBCD8(dataBuff[11]), 0, (Int8)((Int8)dataBuff[15] * 4));
 						sb->AppendC(UTF8STRC("\r\nDevice Time = "));
-						sb->AppendDate(&dt);
+						sb->AppendDate(dt);
 						sb->AppendC(UTF8STRC("\r\nBattery Status = 0x"));
 						sb->AppendHex8(dataBuff[16]);
 						sb->AppendC(UTF8STRC("\r\nBattery Level = "));
@@ -645,7 +645,7 @@ Bool IO::UDPLog::ParseLog(UInt8 *dataBuff, UOSInt buffSize, NotNullPtr<Text::Str
 						Data::DateTime t;
 						sb->AppendC(UTF8STRC("\r\nGPS Time = "));
 						t.SetValue((UInt16)(Data::ByteTool::GetBCD8(dataBuff[27]) + 2000), Data::ByteTool::GetBCD8(dataBuff[26]), Data::ByteTool::GetBCD8(dataBuff[25]), Data::ByteTool::GetBCD8(dataBuff[22]), Data::ByteTool::GetBCD8(dataBuff[23]), Data::ByteTool::GetBCD8(dataBuff[24]), 0, 0);
-						sb->AppendDate(&t);
+						sb->AppendDate(t);
 						sb->AppendC(UTF8STRC("\r\nStatus1 = 0x"));
 						sb->AppendHex8(dataBuff[28]);
 						sb->AppendC(UTF8STRC("\r\nTemperature = "));
@@ -697,7 +697,7 @@ Bool IO::UDPLog::ParseLog(UInt8 *dataBuff, UOSInt buffSize, NotNullPtr<Text::Str
 						Data::DateTime t;
 						sb->AppendC(UTF8STRC("\r\nGPS Time = "));
 						t.SetValue((UInt16)(Data::ByteTool::GetBCD8(dataBuff[27]) + 2000), Data::ByteTool::GetBCD8(dataBuff[26]), Data::ByteTool::GetBCD8(dataBuff[25]), Data::ByteTool::GetBCD8(dataBuff[22]), Data::ByteTool::GetBCD8(dataBuff[23]), Data::ByteTool::GetBCD8(dataBuff[24]), 0, 0);
-						sb->AppendDate(&t);
+						sb->AppendDate(t);
 						sb->AppendC(UTF8STRC("\r\nStatus1 = 0x"));
 						sb->AppendHex8(dataBuff[28]);
 						sb->AppendC(UTF8STRC("\r\nTemperature = "));
@@ -789,7 +789,7 @@ Bool IO::UDPLog::ParseLog(UInt8 *dataBuff, UOSInt buffSize, NotNullPtr<Text::Str
 						Data::DateTime t;
 						sb->AppendC(UTF8STRC("\r\nGPS Time = "));
 						t.SetValue((UInt16)(Data::ByteTool::GetBCD8(dataBuff[27]) + 2000), Data::ByteTool::GetBCD8(dataBuff[26]), Data::ByteTool::GetBCD8(dataBuff[25]), Data::ByteTool::GetBCD8(dataBuff[22]), Data::ByteTool::GetBCD8(dataBuff[23]), Data::ByteTool::GetBCD8(dataBuff[24]), 0, 0);
-						sb->AppendDate(&t);
+						sb->AppendDate(t);
 						sb->AppendC(UTF8STRC("\r\nStatus1 = 0x"));
 						sb->AppendHex8(dataBuff[28]);
 						sb->AppendC(UTF8STRC("\r\nTemperature = "));

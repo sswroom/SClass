@@ -120,7 +120,6 @@ void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnTimerTick(void *userObj)
 	NotNullPtr<const Data::ArrayList<SSWR::AVIRead::AVIRMQTTBrokerForm::TopicStatus*>> topicList;
 	SSWR::AVIRead::AVIRMQTTBrokerForm::TopicStatus *topicSt;
 	Text::StringBuilderUTF8 sb;
-	Data::DateTime dt;
 	UOSInt i;
 	UOSInt j;
 	UInt64 thisCount = me->totalCount;
@@ -160,10 +159,8 @@ void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnTimerTick(void *userObj)
 			sb.ClearStr();
 			sb.AppendC(topicSt->message, topicSt->msgSize);
 			me->lvTopic->SetSubItem(i, 1, sb.ToCString());
-			dt.SetTicks(topicSt->updateTime);
-			dt.ToLocalTime();
 			sb.ClearStr();
-			sb.AppendDate(&dt);
+			sb.AppendTS(Data::Timestamp(topicSt->updateTime, Data::DateTimeUtil::GetLocalTzQhr()));
 			me->lvTopic->SetSubItem(i, 2, sb.ToCString());
 			i++;
 		}
@@ -179,10 +176,8 @@ void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnTimerTick(void *userObj)
 				sb.ClearStr();
 				sb.AppendC(topicSt->message, topicSt->msgSize);
 				me->lvTopic->SetSubItem(i, 1, sb.ToCString());
-				dt.SetTicks(topicSt->updateTime);
-				dt.ToLocalTime();
 				sb.ClearStr();
-				sb.AppendDate(&dt);
+				sb.AppendTS(Data::Timestamp(topicSt->updateTime, Data::DateTimeUtil::GetLocalTzQhr()));
 				me->lvTopic->SetSubItem(i, 2, sb.ToCString());
 			}
 			i++;

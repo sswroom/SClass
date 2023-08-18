@@ -587,7 +587,7 @@ IO::StreamData *Map::TileMapServiceSource::LoadTileImageData(UOSInt level, Math:
 		{
 			IO::FileStream fs({filePathU, (UOSInt)(sptru - filePathU)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer);
 			fs.Write(mstm.GetBuff(), (UOSInt)mstm.GetLength());
-			if (cli->GetLastModified(&dt))
+			if (cli->GetLastModified(dt))
 			{
 				currTime.SetCurrTimeUTC();
 				fs.SetFileTimes(&currTime, 0, &dt);

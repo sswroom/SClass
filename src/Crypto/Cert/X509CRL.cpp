@@ -55,7 +55,7 @@ Crypto::Cert::X509File::ValidStatus Crypto::Cert::X509CRL::IsValid(Net::SSLEngin
 	}
 	Data::DateTime dt;
 	Int64 currTime = Data::DateTimeUtil::GetCurrTimeMillis();
-	if (!this->GetThisUpdate(&dt))
+	if (!this->GetThisUpdate(dt))
 	{
 		return Crypto::Cert::X509File::ValidStatus::FileFormatInvalid;
 	}
@@ -63,7 +63,7 @@ Crypto::Cert::X509File::ValidStatus Crypto::Cert::X509CRL::IsValid(Net::SSLEngin
 	{
 		return Crypto::Cert::X509File::ValidStatus::Expired;
 	}
-	if (this->GetNextUpdate(&dt))
+	if (this->GetNextUpdate(dt))
 	{
 		if (dt.ToTicks() < currTime)
 		{
@@ -71,7 +71,7 @@ Crypto::Cert::X509File::ValidStatus Crypto::Cert::X509CRL::IsValid(Net::SSLEngin
 		}
 	}
 	SignedInfo signedInfo;
-	if (!this->GetSignedInfo(&signedInfo))
+	if (!this->GetSignedInfo(signedInfo))
 	{
 		return Crypto::Cert::X509File::ValidStatus::FileFormatInvalid;
 	}
@@ -86,13 +86,13 @@ Crypto::Cert::X509File::ValidStatus Crypto::Cert::X509CRL::IsValid(Net::SSLEngin
 	{
 		return Crypto::Cert::X509File::ValidStatus::UnknownIssuer;
 	}
-	Crypto::Cert::X509Key *key = issuer->GetNewPublicKey();
-	if (key == 0)
+	NotNullPtr<Crypto::Cert::X509Key> key;
+	if (!key.Set(issuer->GetNewPublicKey()))
 	{
 		return Crypto::Cert::X509File::ValidStatus::FileFormatInvalid;
 	}
 	Bool signValid = ssl->SignatureVerify(key, hashType, signedInfo.payload, signedInfo.payloadSize, signedInfo.signature, signedInfo.signSize);
-	DEL_CLASS(key);
+	key.Delete();
 	if (!signValid)
 	{
 		return Crypto::Cert::X509File::ValidStatus::SignatureInvalid;
@@ -149,7 +149,7 @@ Bool Crypto::Cert::X509CRL::GetIssuerCN(NotNullPtr<Text::StringBuilderUTF8> sb) 
 	}
 }
 
-Bool Crypto::Cert::X509CRL::GetThisUpdate(Data::DateTime *dt) const
+Bool Crypto::Cert::X509CRL::GetThisUpdate(NotNullPtr<Data::DateTime> dt) const
 {
 	Net::ASN1Util::ItemType itemType;
 	UOSInt itemLen;
@@ -172,7 +172,7 @@ Bool Crypto::Cert::X509CRL::GetThisUpdate(Data::DateTime *dt) const
 	}
 }
 
-Bool Crypto::Cert::X509CRL::GetNextUpdate(Data::DateTime *dt) const
+Bool Crypto::Cert::X509CRL::GetNextUpdate(NotNullPtr<Data::DateTime> dt) const
 {
 	Net::ASN1Util::ItemType itemType;
 	UOSInt itemLen;
@@ -195,10 +195,10 @@ Bool Crypto::Cert::X509CRL::GetNextUpdate(Data::DateTime *dt) const
 	}
 }
 
-Bool Crypto::Cert::X509CRL::IsRevoked(Crypto::Cert::X509Cert *cert) const
+Bool Crypto::Cert::X509CRL::IsRevoked(NotNullPtr<Crypto::Cert::X509Cert> cert) const
 {
 	UOSInt snLen;
-	const UInt8 *sn = cert->GetSerialNumber(&snLen);
+	const UInt8 *sn = cert->GetSerialNumber(snLen);
 	if (sn == 0)
 		return true;
 	UTF8Char sbuff[32];

@@ -35,10 +35,13 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientCertTestForm::OnStartClick(void *use
 
 	if (me->sslCert == 0 || me->sslKey == 0)
 	{
-		SDEL_CLASS(me->sslKey);
-		SDEL_CLASS(me->sslCert);
-		Crypto::Cert::X509Key *key = ssl->GenerateRSAKey();
-		me->sslKey = key;
+		NotNullPtr<Crypto::Cert::X509Key> key;
+		if (!key.Set(ssl->GenerateRSAKey()))
+		{
+			UI::MessageDialog::ShowDialog(CSTR("Error in initializing Cert/Key"), CSTR("HTTP Client Cert Test"), me);
+			return;
+		}
+		me->sslKey = key.Ptr();
 		Crypto::Cert::CertNames names;
 		Crypto::Cert::CertExtensions ext;
 		Data::ArrayListNN<Text::String> sanList;

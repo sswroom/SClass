@@ -191,11 +191,11 @@ void Test::TestModem::GSMModemTest(IO::Writer *writer, IO::GSMModemController *m
 	}
 
 	Data::DateTime dt;
-	if (modem->GSMGetModemTime(&dt))
+	if (modem->GSMGetModemTime(dt))
 	{
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("Clock: "));
-		sb.AppendDate(&dt);
+		sb.AppendDate(dt);
 		writer->WriteLineC(sb.ToString(), sb.GetLength());
 	}
 	else

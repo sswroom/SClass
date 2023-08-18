@@ -193,7 +193,7 @@ Bool IO::ProtoDec::TK109ProtocolDecoder::GetProtocolDetail(UInt8 *buff, UOSInt b
 			dt.SetUnixTimestamp(ReadMUInt32(&buff[7]));
 			dt.ToLocalTime();
 			sb->AppendC(UTF8STRC("GPS Time="));
-			sb->AppendDate(&dt);
+			sb->AppendDate(dt);
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Latitude="));
 			Text::SBAppendF64(sb, ReadMInt32(&buff[11]) / 1800000.0);
@@ -281,7 +281,7 @@ Bool IO::ProtoDec::TK109ProtocolDecoder::GetProtocolDetail(UInt8 *buff, UOSInt b
 			dt.SetUnixTimestamp(ReadMUInt32(&buff[7]));
 			dt.ToLocalTime();
 			sb->AppendC(UTF8STRC("GPS Time="));
-			sb->AppendDate(&dt);
+			sb->AppendDate(dt);
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Latitude="));
 			Text::SBAppendF64(sb, ReadMInt32(&buff[11]) / 1800000.0);
@@ -332,7 +332,7 @@ Bool IO::ProtoDec::TK109ProtocolDecoder::GetProtocolDetail(UInt8 *buff, UOSInt b
 					dt.SetUnixTimestamp(ReadMUInt32(&buff[33]));
 					dt.ToLocalTime();
 					sb->AppendC(UTF8STRC("Status Time="));
-					sb->AppendDate(&dt);
+					sb->AppendDate(dt);
 					sb->AppendC(UTF8STRC("\r\n"));
 				}
 				if (protoSize >= 34)
@@ -347,7 +347,7 @@ Bool IO::ProtoDec::TK109ProtocolDecoder::GetProtocolDetail(UInt8 *buff, UOSInt b
 					dt.SetUnixTimestamp(ReadMUInt32(&buff[33]));
 					dt.ToLocalTime();
 					sb->AppendC(UTF8STRC("Status Time="));
-					sb->AppendDate(&dt);
+					sb->AppendDate(dt);
 					sb->AppendC(UTF8STRC("\r\n"));
 				}
 				if (protoSize >= 34)
@@ -362,7 +362,7 @@ Bool IO::ProtoDec::TK109ProtocolDecoder::GetProtocolDetail(UInt8 *buff, UOSInt b
 					dt.SetUnixTimestamp(ReadMUInt32(&buff[33]));
 					dt.ToLocalTime();
 					sb->AppendC(UTF8STRC("Status Time="));
-					sb->AppendDate(&dt);
+					sb->AppendDate(dt);
 					sb->AppendC(UTF8STRC("\r\n"));
 				}
 				if (protoSize >= 34)
@@ -395,7 +395,7 @@ Bool IO::ProtoDec::TK109ProtocolDecoder::GetProtocolDetail(UInt8 *buff, UOSInt b
 			dt.SetUnixTimestamp(ReadMUInt32(&buff[7]));
 			dt.ToLocalTime();
 			sb->AppendC(UTF8STRC("GPS Time="));
-			sb->AppendDate(&dt);
+			sb->AppendDate(dt);
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Latitude="));
 			Text::SBAppendF64(sb, ReadMInt32(&buff[11]) / 1800000.0);

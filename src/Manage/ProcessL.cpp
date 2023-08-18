@@ -602,7 +602,7 @@ UOSInt Manage::Process::GetModules(Data::ArrayList<Manage::ModuleInfo *> *modLis
 	}
 }
 
-UOSInt Manage::Process::GetThreads(Data::ArrayList<Manage::ThreadInfo *> *threadList)
+UOSInt Manage::Process::GetThreads(NotNullPtr<Data::ArrayList<Manage::ThreadInfo *>> threadList)
 {
 	UTF8Char sbuff[128];
 	DIR *dir;

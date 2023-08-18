@@ -2551,7 +2551,7 @@ Manage::DasmARM64::~DasmARM64()
 	MemFree(this->codes);
 }
 
-Text::CString Manage::DasmARM64::GetHeader(Bool fullRegs)
+Text::CString Manage::DasmARM64::GetHeader(Bool fullRegs) const
 {
 	if (fullRegs)
 	{
@@ -2563,7 +2563,7 @@ Text::CString Manage::DasmARM64::GetHeader(Bool fullRegs)
 	}
 }
 
-Bool Manage::DasmARM64::Disasm64(IO::Writer *writer, Manage::AddressResolver *addrResol, UInt64 *currInst, UInt64 *currStack, UInt64 *currFrame, Data::ArrayListUInt64 *callAddrs, Data::ArrayListUInt64 *jmpAddrs, UInt64 *blockStart, UInt64 *blockEnd, Manage::Dasm::Dasm_Regs *regs, Manage::IMemoryReader *memReader, Bool fullRegs)
+Bool Manage::DasmARM64::Disasm64(NotNullPtr<IO::Writer> writer, Manage::AddressResolver *addrResol, UInt64 *currInst, UInt64 *currStack, UInt64 *currFrame, Data::ArrayListUInt64 *callAddrs, Data::ArrayListUInt64 *jmpAddrs, UInt64 *blockStart, UInt64 *blockEnd, Manage::Dasm::Dasm_Regs *regs, Manage::IMemoryReader *memReader, Bool fullRegs)
 {
 	UTF8Char sbuff[512];
 	UInt8 buff[16];
@@ -2726,13 +2726,13 @@ Bool Manage::DasmARM64::Disasm64(IO::Writer *writer, Manage::AddressResolver *ad
 	}
 }
 
-Manage::Dasm::Dasm_Regs *Manage::DasmARM64::CreateRegs()
+Manage::Dasm::Dasm_Regs *Manage::DasmARM64::CreateRegs() const
 {
 	Manage::DasmARM64::DasmARM64_Regs *regs = MemAlloc(Manage::DasmARM64::DasmARM64_Regs, 1);
 	return regs;
 }
 
-void Manage::DasmARM64::FreeRegs(Dasm_Regs *regs)
+void Manage::DasmARM64::FreeRegs(Dasm_Regs *regs) const
 {
 	MemFree(regs);
 }

@@ -94,8 +94,8 @@ void __stdcall SSWR::AVIRead::AVIRASN1DataForm::OnVerifyClicked(void *userObj)
 	}
 	IO::MemoryStream mstm;
 	fs.ReadToEnd(&mstm, 65536);
-	Crypto::Cert::X509Key *key = me->GetNewKey();
-	if (key == 0)
+	NotNullPtr<Crypto::Cert::X509Key> key;
+	if (!key.Set(me->GetNewKey()))
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Error in extracting key"), CSTR("Verify Signature"), me);
 		return;
@@ -111,7 +111,7 @@ void __stdcall SSWR::AVIRead::AVIRASN1DataForm::OnVerifyClicked(void *userObj)
 		me->txtVerifyStatus->SetText(CSTR("Invalid"));
 	}
 	DEL_CLASS(ssl);
-	DEL_CLASS(key);
+	key.Delete();
 }
 
 void __stdcall SSWR::AVIRead::AVIRASN1DataForm::OnVerifySignInfoClicked(void *userObj)
@@ -128,8 +128,8 @@ void __stdcall SSWR::AVIRead::AVIRASN1DataForm::OnVerifySignInfoClicked(void *us
 	{
 		return;
 	}
-	Crypto::Cert::X509Key *key = me->GetNewKey();
-	if (key == 0)
+	NotNullPtr<Crypto::Cert::X509Key> key;
+	if (!key.Set(me->GetNewKey()))
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Error in extracting key"), CSTR("Verify Signature"), me);
 		return;
@@ -161,7 +161,7 @@ void __stdcall SSWR::AVIRead::AVIRASN1DataForm::OnVerifySignInfoClicked(void *us
 		me->txtVerifyStatus->SetText(sb.ToCString());
 	}
 	DEL_CLASS(ssl);
-	DEL_CLASS(key);
+	key.Delete();
 }
 
 void __stdcall SSWR::AVIRead::AVIRASN1DataForm::OnEncryptEncryptClicked(void *userObj)
@@ -202,8 +202,8 @@ void __stdcall SSWR::AVIRead::AVIRASN1DataForm::OnEncryptEncryptClicked(void *us
 		UI::MessageDialog::ShowDialog(CSTR("Binary value is empty"), CSTR("Encrypt"), me);
 		return;
 	}
-	Crypto::Cert::X509Key *key = me->GetNewKey();
-	if (key == 0)
+	NotNullPtr<Crypto::Cert::X509Key> key;
+	if (!key.Set(me->GetNewKey()))
 	{
 		MemFree(buff);
 		UI::MessageDialog::ShowDialog(CSTR("Error in getting key from file"), CSTR("Encrypt"), me);
@@ -213,7 +213,7 @@ void __stdcall SSWR::AVIRead::AVIRASN1DataForm::OnEncryptEncryptClicked(void *us
 	UInt8 *outData = MemAlloc(UInt8, 512);
 	UOSInt outSize = ssl->Encrypt(key, outData, buff, buffSize, (Crypto::Encrypt::RSACipher::Padding)(OSInt)me->cboEncryptRSAPadding->GetSelectedItem());
 	MemFree(buff);
-	DEL_CLASS(key);
+	key.Delete();
 	DEL_CLASS(ssl);
 	if (outSize == 0)
 	{
@@ -280,8 +280,8 @@ void __stdcall SSWR::AVIRead::AVIRASN1DataForm::OnEncryptDecryptClicked(void *us
 		UI::MessageDialog::ShowDialog(CSTR("Binary value is empty"), CSTR("Decrypt"), me);
 		return;
 	}
-	Crypto::Cert::X509Key *key = me->GetNewKey();
-	if (key == 0)
+	NotNullPtr<Crypto::Cert::X509Key> key;
+	if (!key.Set(me->GetNewKey()))
 	{
 		MemFree(buff);
 		UI::MessageDialog::ShowDialog(CSTR("Error in getting key from file"), CSTR("Decrypt"), me);
@@ -291,7 +291,7 @@ void __stdcall SSWR::AVIRead::AVIRASN1DataForm::OnEncryptDecryptClicked(void *us
 	UInt8 *outData = MemAlloc(UInt8, 512);
 	UOSInt outSize = ssl->Decrypt(key, outData, buff, buffSize, (Crypto::Encrypt::RSACipher::Padding)(OSInt)me->cboEncryptRSAPadding->GetSelectedItem());
 	MemFree(buff);
-	DEL_CLASS(key);
+	key.Delete();
 	DEL_CLASS(ssl);
 	if (outSize == 0)
 	{
@@ -580,7 +580,7 @@ SSWR::AVIRead::AVIRASN1DataForm::AVIRASN1DataForm(UI::GUIClientControl *parent, 
 				this->tcMain->SetTabPageName(1, sb.ToCString());
 			}
 			Crypto::Cert::X509File::SignedInfo signedInfo;
-			if (cert->GetSignedInfo(&signedInfo))
+			if (cert->GetSignedInfo(signedInfo))
 			{
 				hashType = Crypto::Cert::X509File::GetAlgHash(signedInfo.algType);
 			}
@@ -610,7 +610,7 @@ SSWR::AVIRead::AVIRASN1DataForm::AVIRASN1DataForm(UI::GUIClientControl *parent, 
 			canVerify = true;
 			hasPubKey = true;
 			Crypto::Cert::X509File::SignedInfo signedInfo;
-			if (cert->GetSignedInfo(&signedInfo))
+			if (cert->GetSignedInfo(signedInfo))
 			{
 				hashType = Crypto::Cert::X509File::GetAlgHash(signedInfo.algType);
 			}

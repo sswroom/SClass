@@ -1274,7 +1274,7 @@ Bool DB::OLEDBReader::GetStr(UOSInt colIndex, NotNullPtr<Text::StringBuilderUTF8
 		{
 			Data::DateTime dt;
 			dt.SetValue(ReadUInt16(val), ReadUInt16(&val[2]), ReadUInt16(&val[4]), 0, 0, 0, 0, 0);
-			sb->AppendDate(&dt);
+			sb->AppendDate(dt);
 			return true;
 		}
 		return 0;
@@ -1283,7 +1283,7 @@ Bool DB::OLEDBReader::GetStr(UOSInt colIndex, NotNullPtr<Text::StringBuilderUTF8
 		{
 			Data::DateTime dt;
 			dt.SetValue(1970, 1, 1, ReadUInt16(val), ReadUInt16(&val[2]), ReadUInt16(&val[4]), 0, 0);
-			sb->AppendDate(&dt);
+			sb->AppendDate(dt);
 			return true;
 		}
 		return 0;
@@ -1292,7 +1292,7 @@ Bool DB::OLEDBReader::GetStr(UOSInt colIndex, NotNullPtr<Text::StringBuilderUTF8
 		{
 			Data::DateTime dt;
 			dt.SetValue(ReadUInt16(val), ReadUInt16(&val[2]), ReadUInt16(&val[4]), ReadInt16(&val[6]), ReadInt16(&val[8]), ReadInt16(&val[10]), ReadInt32(&val[12]), 0);
-			sb->AppendDate(&dt);
+			sb->AppendDate(dt);
 			return true;
 		}
 		return false;

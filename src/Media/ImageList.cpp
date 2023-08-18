@@ -305,13 +305,13 @@ Bool Media::ImageList::ToValueString(NotNullPtr<Text::StringBuilderUTF8> sb) con
 			{
 				dt.SetTicks(v);
 				dt.ToLocalTime();
-				sb->AppendDate(&dt);
+				sb->AppendDate(dt);
 			}
 			else if (vt == VT_FIRMWARE_DATE)
 			{
 				dt.SetTicks(v);
 				dt.ToUTCTime();
-				sb->AppendDate(&dt);
+				sb->AppendDate(dt);
 			}
 			else
 			{

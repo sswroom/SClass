@@ -148,7 +148,7 @@ void __stdcall Net::RTPCliChannel::PacketCtrlHdlr(const Net::SocketUtil::Address
 						Data::DateTime dt;
 						sb.AppendC(UTF8STRC(",NTP ts="));
 						dt.SetNTPTime(ReadMInt32(&buff[ofst + 8]), ReadMInt32(&buff[ofst + 12]));
-						sb.AppendDate(&dt);
+						sb.AppendDate(dt);
 						sb.AppendC(UTF8STRC(",RTP ts="));
 						sb.AppendI32(ReadMInt32(&buff[ofst + 16]));
 						sb.AppendC(UTF8STRC(",nPacket="));

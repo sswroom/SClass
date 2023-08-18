@@ -540,7 +540,7 @@ HCRYPTPROV WinSSLEngine_CreateProv(Crypto::Cert::X509File::KeyType keyType, cons
 	return 0;
 }
 
-HCRYPTKEY WinSSLEngine_ImportKey(HCRYPTPROV hProv, Crypto::Cert::X509Key *key, Bool privateKeyOnly, Bool signature)
+HCRYPTKEY WinSSLEngine_ImportKey(HCRYPTPROV hProv, NotNullPtr<Crypto::Cert::X509Key> key, Bool privateKeyOnly, Bool signature)
 {
 	HCRYPTKEY hKey;
 	Crypto::Cert::X509File::KeyType keyType = key->GetKeyType();
@@ -601,7 +601,11 @@ Bool WinSSLEngine_InitKey(HCRYPTPROV *hProvOut, HCRYPTKEY *hKeyOut, Crypto::Cert
 	HCRYPTKEY hKey;
 	if (keyASN1->GetFileType() == Crypto::Cert::X509File::FileType::Key)
 	{
-		Crypto::Cert::X509Key *key = (Crypto::Cert::X509Key*)keyASN1;
+		NotNullPtr<Crypto::Cert::X509Key> key;
+		if (!key.Set((Crypto::Cert::X509Key*)keyASN1))
+		{
+			return false;
+		}
 		hProv = WinSSLEngine_CreateProv(key->GetKeyType(), containerName, keyProvInfo);
 		if (hProv == 0)
 		{
@@ -718,7 +722,7 @@ BCRYPT_ALG_HANDLE WinSSLEngine_BCryptOpenECDSA(Crypto::Cert::X509File::ECName ec
 	return 0;
 }
 
-Bool WinSSLEngine_NCryptInitKey(NCRYPT_PROV_HANDLE *hProvOut, NCRYPT_KEY_HANDLE *hKeyOut, Crypto::Cert::X509Key *key, Bool privateKeyOnly)
+Bool WinSSLEngine_NCryptInitKey(NCRYPT_PROV_HANDLE *hProvOut, NCRYPT_KEY_HANDLE *hKeyOut, NotNullPtr<Crypto::Cert::X509Key> key, Bool privateKeyOnly)
 {
 	const WChar *algName = WinSSLEngine_BCryptGetECDSAAlg(key->GetECName());
 	if (algName == 0)
@@ -1662,15 +1666,8 @@ Crypto::Cert::X509Key *Net::WinSSLEngine::GenerateRSAKey()
 	return key;
 }
 
-Bool Net::WinSSLEngine::Signature(Crypto::Cert::X509Key *key, Crypto::Hash::HashType hashType, const UInt8 *payload, UOSInt payloadLen, UInt8 *signData, UOSInt *signLen)
+Bool Net::WinSSLEngine::Signature(NotNullPtr<Crypto::Cert::X509Key> key, Crypto::Hash::HashType hashType, const UInt8 *payload, UOSInt payloadLen, UInt8 *signData, UOSInt *signLen)
 {
-	if (key == 0)
-	{
-#if defined(VERBOSE_SVR) || defined(VERBOSE_CLI)
-		printf("SSL: key is null\r\n");
-#endif
-		return false;
-	}
 	Crypto::Cert::X509File::KeyType keyType = key->GetKeyType();
 	if (keyType == Crypto::Cert::X509File::KeyType::RSA)
 	{
@@ -1787,15 +1784,8 @@ Bool Net::WinSSLEngine::Signature(Crypto::Cert::X509Key *key, Crypto::Hash::Hash
 	return false;
 }
 
-Bool Net::WinSSLEngine::SignatureVerify(Crypto::Cert::X509Key *key, Crypto::Hash::HashType hashType, const UInt8 *payload, UOSInt payloadLen, const UInt8 *signData, UOSInt signLen)
+Bool Net::WinSSLEngine::SignatureVerify(NotNullPtr<Crypto::Cert::X509Key> key, Crypto::Hash::HashType hashType, const UInt8 *payload, UOSInt payloadLen, const UInt8 *signData, UOSInt signLen)
 {
-	if (key == 0)
-	{
-#if defined(VERBOSE_SVR) || defined(VERBOSE_CLI)
-		printf("SSL: key is null\r\n");
-#endif
-		return false;
-	}
 	ALG_ID alg = WinSSLEngine_CryptGetHashAlg(hashType);
 	if (alg == 0)
 	{
@@ -1872,15 +1862,8 @@ Bool Net::WinSSLEngine::SignatureVerify(Crypto::Cert::X509Key *key, Crypto::Hash
 	return true;
 }
 
-UOSInt Net::WinSSLEngine::Encrypt(Crypto::Cert::X509Key *key, UInt8 *encData, const UInt8 *payload, UOSInt payloadLen, Crypto::Encrypt::RSACipher::Padding rsaPadding)
+UOSInt Net::WinSSLEngine::Encrypt(NotNullPtr<Crypto::Cert::X509Key> key, UInt8 *encData, const UInt8 *payload, UOSInt payloadLen, Crypto::Encrypt::RSACipher::Padding rsaPadding)
 {
-	if (key == 0)
-	{
-#if defined(VERBOSE_SVR) || defined(VERBOSE_CLI)
-		printf("SSL: key is null\r\n");
-#endif
-		return 0;
-	}
 	HCRYPTPROV hProv = WinSSLEngine_CreateProv(key->GetKeyType(), 0, 0);
 	if (hProv == 0)
 	{
@@ -1923,15 +1906,8 @@ UOSInt Net::WinSSLEngine::Encrypt(Crypto::Cert::X509Key *key, UInt8 *encData, co
 	return dataSize;
 }
 
-UOSInt Net::WinSSLEngine::Decrypt(Crypto::Cert::X509Key *key, UInt8 *decData, const UInt8 *payload, UOSInt payloadLen, Crypto::Encrypt::RSACipher::Padding rsaPadding)
+UOSInt Net::WinSSLEngine::Decrypt(NotNullPtr<Crypto::Cert::X509Key> key, UInt8 *decData, const UInt8 *payload, UOSInt payloadLen, Crypto::Encrypt::RSACipher::Padding rsaPadding)
 {
-	if (key == 0)
-	{
-#if defined(VERBOSE_SVR) || defined(VERBOSE_CLI)
-		printf("SSL: key is null\r\n");
-#endif
-		return 0;
-	}
 	if (payloadLen > 512)
 	{
 #if defined(VERBOSE_SVR) || defined(VERBOSE_CLI)

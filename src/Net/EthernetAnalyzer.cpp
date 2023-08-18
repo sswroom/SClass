@@ -830,7 +830,7 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, UOSInt packetSize, U
 				if (ipLog)
 				{
 					sb.ClearStr();
-					sb.AppendDate(&dt);
+					sb.AppendDate(dt);
 					sb.AppendC(UTF8STRC(" ICMP "));
 					switch (ipData[0])
 					{
@@ -937,7 +937,7 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, UOSInt packetSize, U
 				if (ipLog)
 				{
 					sb.ClearStr();
-					sb.AppendDate(&dt);
+					sb.AppendDate(dt);
 					sb.AppendC(UTF8STRC(" ICMP "));
 					switch (ipData[0])
 					{
@@ -1424,7 +1424,7 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, UOSInt packetSize, U
 									ipLogMutUsage.EndUse();
 									Data::DateTime dt;
 									dt.SetCurrTime();
-									sb.AppendDate(&dt);
+									sb.AppendDate(dt);
 									sb.AppendC(UTF8STRC(" UDP Port "));
 									sb.AppendU16(srcPort);
 									sb.AppendC(UTF8STRC(" NTP request to "));
@@ -1457,7 +1457,7 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, UOSInt packetSize, U
 									ipLogMutUsage.EndUse();
 									Data::DateTime dt;
 									dt.SetCurrTime();
-									sb.AppendDate(&dt);
+									sb.AppendDate(dt);
 									sb.AppendC(UTF8STRC(" UDP Port "));
 									sb.AppendU16(destPort);
 									sb.AppendC(UTF8STRC(" NTP reply from "));
@@ -1638,7 +1638,7 @@ FF FF FF FF FF FF 00 11 32 0A AB 9C 08 00 45 00
 							ipLogMutUsage.EndUse();
 							Data::DateTime dt;
 							dt.SetCurrTime();
-							sb.AppendDate(&dt);
+							sb.AppendDate(dt);
 							sb.AppendC(UTF8STRC(" UDP Port "));
 							sb.AppendU16(srcPort);
 							sb.AppendC(UTF8STRC(" SSDP to "));

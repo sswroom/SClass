@@ -33,7 +33,7 @@ void __stdcall SSWR::AVIRead::AVIRCAUtilForm::OnFileDrop(void *userObj, NotNullP
 				if (asn1->GetASN1Type() == Net::ASN1Data::ASN1Type::X509)
 				{
 					Crypto::Cert::X509File *x509 = (Crypto::Cert::X509File*)asn1;
-					Crypto::Cert::X509Key *key;
+					NotNullPtr<Crypto::Cert::X509Key> key;
 					Crypto::Cert::X509PrivKey *privKey;
 					Crypto::Cert::X509CertReq *csr;
 					Crypto::Cert::X509Cert *cert;
@@ -50,9 +50,9 @@ void __stdcall SSWR::AVIRead::AVIRCAUtilForm::OnFileDrop(void *userObj, NotNullP
 							me->caCert = cert;
 							me->txtCACert->SetText(names.commonName->ToCString());
 							Crypto::Cert::CertNames::FreeNames(&names);
-							if (me->key)
+							if (key.Set(me->key))
 							{
-								if (!me->caCert->IsSignatureKey(me->ssl, me->key))
+								if (!me->caCert->IsSignatureKey(me->ssl, key))
 								{
 									DEL_CLASS(me->key);
 									me->key = 0;
@@ -99,33 +99,34 @@ void __stdcall SSWR::AVIRead::AVIRCAUtilForm::OnFileDrop(void *userObj, NotNullP
 						}
 						break;
 					case Crypto::Cert::X509File::FileType::Key:
-						key = (Crypto::Cert::X509Key*)x509;
-						if (key->IsPrivateKey())
+						if (key.Set((Crypto::Cert::X509Key*)x509))
 						{
-							if (me->caCert && !me->caCert->IsSignatureKey(me->ssl, key))
+							if (key->IsPrivateKey())
 							{
-								UI::MessageDialog::ShowDialog(CSTR("Key is not match with CA cert"), CSTR("CA Util"), me);
-								DEL_CLASS(key);
+								if (me->caCert && !me->caCert->IsSignatureKey(me->ssl, key))
+								{
+									UI::MessageDialog::ShowDialog(CSTR("Key is not match with CA cert"), CSTR("CA Util"), me);
+									key.Delete();
+								}
+								else
+								{
+									SDEL_CLASS(me->key);
+									me->key = key.Ptr();
+									me->UpdateKeyDetail();
+								}
 							}
 							else
 							{
-								SDEL_CLASS(me->key);
-								me->key = key;
-								me->UpdateKeyDetail();
+								key.Delete();
 							}
-						}
-						else
-						{
-							DEL_CLASS(key);
 						}
 						break;
 					case Crypto::Cert::X509File::FileType::PrivateKey:
 						privKey = (Crypto::Cert::X509PrivKey*)x509;
-						key = privKey->CreateKey();
-						if (key)
+						if (key.Set(privKey->CreateKey()))
 						{
 							SDEL_CLASS(me->key);
-							me->key = key;
+							me->key = key.Ptr();
 							me->UpdateKeyDetail();
 						}
 						DEL_CLASS(x509);
@@ -139,9 +140,9 @@ void __stdcall SSWR::AVIRead::AVIRCAUtilForm::OnFileDrop(void *userObj, NotNullP
 							me->caCert = (Crypto::Cert::X509Cert*)cert->Clone().Ptr();
 							me->txtCACert->SetText(names.commonName->ToCString());
 							Crypto::Cert::CertNames::FreeNames(&names);
-							if (me->key)
+							if (key.Set(me->key))
 							{
-								if (!me->caCert->IsSignatureKey(me->ssl, me->key))
+								if (!me->caCert->IsSignatureKey(me->ssl, key))
 								{
 									DEL_CLASS(me->key);
 									me->key = 0;
@@ -209,7 +210,8 @@ void __stdcall SSWR::AVIRead::AVIRCAUtilForm::OnCSRViewClicked(void *userObj)
 void __stdcall SSWR::AVIRead::AVIRCAUtilForm::OnIssueClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRCAUtilForm *me = (SSWR::AVIRead::AVIRCAUtilForm*)userObj;
-	if (me->key == 0)
+	NotNullPtr<Crypto::Cert::X509Key> key;
+	if (!key.Set(me->key))
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Key not exist"), CSTR("CA Util"), me);
 		return;
@@ -232,7 +234,7 @@ void __stdcall SSWR::AVIRead::AVIRCAUtilForm::OnIssueClicked(void *userObj)
 		UI::MessageDialog::ShowDialog(CSTR("Valid Days not valid"), CSTR("CA Util"), me);
 		return;
 	}
-	Crypto::Cert::X509Cert *cert = Crypto::Cert::CertUtil::IssueCert(me->ssl, me->caCert, me->key, validDays, me->csr);
+	Crypto::Cert::X509Cert *cert = Crypto::Cert::CertUtil::IssueCert(me->ssl, me->caCert, key, validDays, me->csr);
 	if (cert)
 	{
 		me->core->OpenObject(cert);

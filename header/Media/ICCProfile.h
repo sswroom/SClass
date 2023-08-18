@@ -31,7 +31,7 @@ namespace Media
 		Int32 GetProfileClass() const;
 		Int32 GetDataColorspace() const;
 		Int32 GetPCS() const;
-		void GetCreateTime(Data::DateTime *createTime) const;
+		void GetCreateTime(NotNullPtr<Data::DateTime> createTime) const;
 		Int32 GetPrimaryPlatform() const;
 		Int32 GetProfileFlag() const;
 		Int32 GetDeviceManufacturer() const;
@@ -57,7 +57,7 @@ namespace Media
 		static ICCProfile *Parse(Data::ByteArrayR buff);
 		static Bool ParseFrame(IO::FileAnalyse::FrameDetailHandler *frame, UOSInt ofst, const UInt8 *buff, UOSInt buffSize);
 
-		static void ReadDateTimeNumber(const UInt8 *buff, Data::DateTime *dt);
+		static void ReadDateTimeNumber(const UInt8 *buff, NotNullPtr<Data::DateTime> dt);
 		static void ReadXYZNumber(const UInt8 *buff, CIEXYZ *xyz);
 		static Double ReadS15Fixed16Number(const UInt8 *buff);
 		static Double ReadU16Fixed16Number(const UInt8 *buff);

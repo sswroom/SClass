@@ -131,7 +131,7 @@ Crypto::Cert::X509File::ValidStatus Crypto::Cert::X509Cert::IsValid(Net::SSLEngi
 	}
 	Data::DateTime dt;
 	Int64 currTime = Data::DateTimeUtil::GetCurrTimeMillis();
-	if (!this->GetNotBefore(&dt))
+	if (!this->GetNotBefore(dt))
 	{
 		return Crypto::Cert::X509File::ValidStatus::FileFormatInvalid;
 	}
@@ -139,7 +139,7 @@ Crypto::Cert::X509File::ValidStatus Crypto::Cert::X509Cert::IsValid(Net::SSLEngi
 	{
 		return Crypto::Cert::X509File::ValidStatus::Expired;
 	}
-	if (!this->GetNotAfter(&dt))
+	if (!this->GetNotAfter(dt))
 	{
 		return Crypto::Cert::X509File::ValidStatus::FileFormatInvalid;
 	}
@@ -148,7 +148,7 @@ Crypto::Cert::X509File::ValidStatus Crypto::Cert::X509Cert::IsValid(Net::SSLEngi
 		return Crypto::Cert::X509File::ValidStatus::Expired;
 	}
 	SignedInfo signedInfo;
-	if (!this->GetSignedInfo(&signedInfo))
+	if (!this->GetSignedInfo(signedInfo))
 	{
 		return Crypto::Cert::X509File::ValidStatus::FileFormatInvalid;
 	}
@@ -165,13 +165,13 @@ Crypto::Cert::X509File::ValidStatus Crypto::Cert::X509Cert::IsValid(Net::SSLEngi
 		{
 			return Crypto::Cert::X509File::ValidStatus::UnknownIssuer;
 		}
-		Crypto::Cert::X509Key *key = this->GetNewPublicKey();
-		if (key == 0)
+		NotNullPtr<Crypto::Cert::X509Key> key;
+		if (!key.Set(this->GetNewPublicKey()))
 		{
 			return Crypto::Cert::X509File::ValidStatus::FileFormatInvalid;
 		}
 		Bool signValid = ssl->SignatureVerify(key, hashType, signedInfo.payload, signedInfo.payloadSize, signedInfo.signature, signedInfo.signSize);
-		DEL_CLASS(key);
+		key.Delete();
 		if (signValid)
 		{
 			return Crypto::Cert::X509File::ValidStatus::SelfSigned;
@@ -182,13 +182,13 @@ Crypto::Cert::X509File::ValidStatus Crypto::Cert::X509Cert::IsValid(Net::SSLEngi
 		}
 	}
 
-	Crypto::Cert::X509Key *key = issuer->GetNewPublicKey();
-	if (key == 0)
+	NotNullPtr<Crypto::Cert::X509Key> key;
+	if (!key.Set(issuer->GetNewPublicKey()))
 	{
 		return Crypto::Cert::X509File::ValidStatus::FileFormatInvalid;
 	}
 	Bool signValid = ssl->SignatureVerify(key, hashType, signedInfo.payload, signedInfo.payloadSize, signedInfo.signature, signedInfo.signSize);
-	DEL_CLASS(key);
+	key.Delete();
 	if (!signValid)
 	{
 		return Crypto::Cert::X509File::ValidStatus::SignatureInvalid;
@@ -352,7 +352,7 @@ Bool Crypto::Cert::X509Cert::GetKeyId(const Data::ByteArray &keyId) const
 	return false;
 }
 
-Bool Crypto::Cert::X509Cert::GetNotBefore(Data::DateTime *dt) const
+Bool Crypto::Cert::X509Cert::GetNotBefore(NotNullPtr<Data::DateTime> dt) const
 {
 	UOSInt len = 0;
 	Net::ASN1Util::ItemType itemType = Net::ASN1Util::IT_UNKNOWN;
@@ -372,7 +372,7 @@ Bool Crypto::Cert::X509Cert::GetNotBefore(Data::DateTime *dt) const
 	return false;
 }
 
-Bool Crypto::Cert::X509Cert::GetNotAfter(Data::DateTime *dt) const
+Bool Crypto::Cert::X509Cert::GetNotAfter(NotNullPtr<Data::DateTime> dt) const
 {
 	UOSInt len = 0;
 	Net::ASN1Util::ItemType itemType = Net::ASN1Util::IT_UNKNOWN;
@@ -495,7 +495,7 @@ UOSInt Crypto::Cert::X509Cert::GetCRLDistributionPoints(Data::ArrayList<Text::CS
 
 }
 
-const UInt8 *Crypto::Cert::X509Cert::GetIssuerNamesSeq(UOSInt *dataLen) const
+const UInt8 *Crypto::Cert::X509Cert::GetIssuerNamesSeq(OutParam<UOSInt> dataLen) const
 {
 	Net::ASN1Util::ItemType itemType;
 	UOSInt len;
@@ -509,7 +509,7 @@ const UInt8 *Crypto::Cert::X509Cert::GetIssuerNamesSeq(UOSInt *dataLen) const
 		pdu = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.1.4", &len, &itemType);
 		if (pdu && itemType == Net::ASN1Util::IT_SEQUENCE)
 		{
-			*dataLen = len;
+			dataLen.Set(len);
 			return pdu;
 		}
 	}
@@ -518,14 +518,14 @@ const UInt8 *Crypto::Cert::X509Cert::GetIssuerNamesSeq(UOSInt *dataLen) const
 		pdu = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.1.3", &len, &itemType);
 		if (pdu && itemType == Net::ASN1Util::IT_SEQUENCE)
 		{
-			*dataLen = len;
+			dataLen.Set(len);
 			return pdu;
 		}
 	}
 	return 0;
 }
 
-const UInt8 *Crypto::Cert::X509Cert::GetSerialNumber(UOSInt *dataLen) const
+const UInt8 *Crypto::Cert::X509Cert::GetSerialNumber(OutParam<UOSInt> dataLen) const
 {
 	Net::ASN1Util::ItemType itemType;
 	UOSInt len;
@@ -539,7 +539,7 @@ const UInt8 *Crypto::Cert::X509Cert::GetSerialNumber(UOSInt *dataLen) const
 		pdu = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.1.2", &len, &itemType);
 		if (pdu && itemType == Net::ASN1Util::IT_INTEGER)
 		{
-			*dataLen = len;
+			dataLen.Set(len);
 			return pdu;
 		}
 	}
@@ -548,7 +548,7 @@ const UInt8 *Crypto::Cert::X509Cert::GetSerialNumber(UOSInt *dataLen) const
 		pdu = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.1.1", &len, &itemType);
 		if (pdu && itemType == Net::ASN1Util::IT_INTEGER)
 		{
-			*dataLen = len;
+			dataLen.Set(len);
 			return pdu;
 		}
 	}

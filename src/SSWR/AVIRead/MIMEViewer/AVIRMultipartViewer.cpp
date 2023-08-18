@@ -96,8 +96,8 @@ SSWR::AVIRead::MIMEViewer::AVIRMultipartViewer::AVIRMultipartViewer(NotNullPtr<S
 										}
 										else
 										{
-											Crypto::Cert::X509Key *key = crt->GetNewPublicKey();
-											if (key == 0)
+											NotNullPtr<Crypto::Cert::X509Key> key;
+											if (!key.Set(crt->GetNewPublicKey()))
 											{
 												this->txtSignState->SetText(CSTR("Public key not found"));
 											}
@@ -141,7 +141,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMultipartViewer::AVIRMultipartViewer(NotNullPtr<S
 													DEL_CLASS(ssl);
 												}
 
-												DEL_CLASS(key);
+												key.Delete();
 											}
 											DEL_CLASS(crt);
 										}

@@ -363,7 +363,7 @@ void SSWR::AVIRead::AVIRProcInfoForm::UpdateProcThreads()
 		UOSInt l;
 		UInt64 addr;
 
-		proc.GetThreads(&threadList);
+		proc.GetThreads(threadList);
 		this->lvDetThread->ClearItems();
 		i = 0;
 		j = threadList.GetCount();
