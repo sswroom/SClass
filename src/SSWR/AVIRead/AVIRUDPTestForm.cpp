@@ -10,7 +10,7 @@
 #include "Text/StringBuilderUTF8.h"
 #include "UI/MessageDialog.h"
 
-void __stdcall SSWR::AVIRead::AVIRUDPTestForm::OnUDPPacket(const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData)
+void __stdcall SSWR::AVIRead::AVIRUDPTestForm::OnUDPPacket(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData)
 {
 	SSWR::AVIRead::AVIRUDPTestForm *me = (SSWR::AVIRead::AVIRUDPTestForm*)userData;
 	if (me->autoReply)
@@ -75,7 +75,7 @@ void __stdcall SSWR::AVIRead::AVIRUDPTestForm::OnSendClicked(void *userObj)
 		return;
 	}
 	me->txtDestHost->GetText(sb);
-	if (!me->sockf->DNSResolveIP(sb.ToCString(), &addr))
+	if (!me->sockf->DNSResolveIP(sb.ToCString(), addr))
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Host is not valid"), CSTR("UDP Test"), me);
 		return;
@@ -185,7 +185,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRUDPTestForm::ProcThread(void *userObj)
 			t->taskType = 0;
 			while (i-- > 0)
 			{
-				if (t->me->udp->SendTo(&destAddr, destPort, buff, 32))
+				if (t->me->udp->SendTo(destAddr, destPort, buff, 32))
 				{
 					t->sentSuccCnt++;
 				}

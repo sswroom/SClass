@@ -9,7 +9,7 @@
 //RFC 1034, RFC 1035, RFC 3596
 extern Char MyString_STRhexarr[];
 
-void __stdcall Net::DNSClient::PacketHdlr(const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData)
+void __stdcall Net::DNSClient::PacketHdlr(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData)
 {
 	Net::DNSClient *me = (Net::DNSClient*)userData;
 	RequestStatus *req;
@@ -55,11 +55,11 @@ UInt32 Net::DNSClient::NextId()
 	return this->lastID;
 }
 
-Net::DNSClient::DNSClient(NotNullPtr<Net::SocketFactory> sockf, const Net::SocketUtil::AddressInfo *serverAddr)
+Net::DNSClient::DNSClient(NotNullPtr<Net::SocketFactory> sockf, NotNullPtr<const Net::SocketUtil::AddressInfo> serverAddr)
 {
 	Data::RandomOS random;
 	this->sockf = sockf;
-	this->serverAddr = *serverAddr;
+	this->serverAddr = serverAddr.Ptr()[0];
 	this->lastID = random.NextInt15();
 	NEW_CLASS(this->svr, Net::UDPServer(sockf, 0, 0, CSTR_NULL, PacketHdlr, this, 0, CSTR_NULL, 1, false));
 }
@@ -101,7 +101,7 @@ UOSInt Net::DNSClient::GetByType(Data::ArrayList<RequestAnswer*> *answers, Text:
 	if (reqType == 12)
 	{
 		Net::SocketUtil::AddressInfo addr;
-		if (Net::SocketUtil::GetIPAddr(domain, &addr))
+		if (Net::SocketUtil::GetIPAddr(domain, addr))
 		{
 			if (addr.addrType == Net::AddrType::IPv4)
 			{
@@ -174,7 +174,7 @@ UOSInt Net::DNSClient::GetByType(Data::ArrayList<RequestAnswer*> *answers, Text:
 	ptr2 = (Char*)buff;
 	
 	RequestStatus *req = this->NewReq(currId);
-	this->svr->SendTo(&this->serverAddr, 53, buff, (UOSInt)(ptr1 - ptr2));
+	this->svr->SendTo(this->serverAddr, 53, buff, (UOSInt)(ptr1 - ptr2));
 	req->finEvt.Wait(2000);
 	if (req->respSize > 12)
 	{
@@ -223,7 +223,7 @@ UOSInt Net::DNSClient::GetByIPv4Name(Data::ArrayList<RequestAnswer*> *answers, U
 	ptr2 = (Char*)buff;
 	
 	RequestStatus *req = this->NewReq(currId);
-	this->svr->SendTo(&this->serverAddr, 53, buff, (UOSInt)(ptr1 - ptr2));
+	this->svr->SendTo(this->serverAddr, 53, buff, (UOSInt)(ptr1 - ptr2));
 	req->finEvt.Wait(2000);
 	if (req->respSize > 12)
 	{
@@ -359,7 +359,7 @@ UOSInt Net::DNSClient::GetByAddrName(Data::ArrayList<RequestAnswer*> *answers, c
 	}
 	
 	RequestStatus *req = this->NewReq(currId);
-	this->svr->SendTo(&this->serverAddr, 53, buff, (UOSInt)(ptr1 - ptr2));
+	this->svr->SendTo(this->serverAddr, 53, buff, (UOSInt)(ptr1 - ptr2));
 	req->finEvt.Wait(2000);
 	if (req->respSize > 12)
 	{
@@ -379,9 +379,9 @@ UOSInt Net::DNSClient::GetCAARecord(Data::ArrayList<RequestAnswer*> *answers, Te
 	return GetByType(answers, domain, 257);
 }
 
-void Net::DNSClient::UpdateDNSAddr(const Net::SocketUtil::AddressInfo *serverAddr)
+void Net::DNSClient::UpdateDNSAddr(NotNullPtr<const Net::SocketUtil::AddressInfo> serverAddr)
 {
-	this->serverAddr = *serverAddr;
+	this->serverAddr = serverAddr.Ptr()[0];
 }
 
 UOSInt Net::DNSClient::ParseString(UTF8Char *sbuff, const UInt8 *buff, UOSInt stringOfst, UOSInt endOfst, UTF8Char **sbuffEndOut)
@@ -489,8 +489,8 @@ Net::DNSClient::RequestAnswer *Net::DNSClient::ParseAnswer(const UInt8 *buff, UO
 	switch (ans->recType)
 	{
 	case 1: // A - a host address
-		Net::SocketUtil::SetAddrInfoV4(&ans->addr, ReadNUInt32(&buff[i + 10]));
-		sptr = Net::SocketUtil::GetAddrName(sbuff, &ans->addr);
+		Net::SocketUtil::SetAddrInfoV4(ans->addr, ReadNUInt32(&buff[i + 10]));
+		sptr = Net::SocketUtil::GetAddrName(sbuff, ans->addr);
 		ans->rd = Text::String::New(sbuff, (UOSInt)(sptr - sbuff)).Ptr();
 		break;
 	case 2: // NS - an authoritative name server
@@ -549,8 +549,8 @@ Net::DNSClient::RequestAnswer *Net::DNSClient::ParseAnswer(const UInt8 *buff, UO
 		break;
 	case 28: // AAAA
 		{
-			Net::SocketUtil::SetAddrInfoV6(&ans->addr, &buff[i + 10], 0);
-			sptr = Net::SocketUtil::GetAddrName(sbuff, &ans->addr);
+			Net::SocketUtil::SetAddrInfoV6(ans->addr, &buff[i + 10], 0);
+			sptr = Net::SocketUtil::GetAddrName(sbuff, ans->addr);
 			ans->rd = Text::String::New(sbuff, (UOSInt)(sptr - sbuff)).Ptr();
 		}
 		break;

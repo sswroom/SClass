@@ -21,7 +21,7 @@ void __stdcall SSWR::AVIRead::AVIRSSDPClientForm::OnTimerTick(void *userObj)
 		while (i < j)
 		{
 			dev = devList->GetItem(i);
-			sptr = Net::SocketUtil::GetAddrName(sbuff, &dev->addr);
+			sptr = Net::SocketUtil::GetAddrName(sbuff, dev->addr);
 			me->lbDevice->AddItem(CSTRP(sbuff, sptr), dev);
 			i++;
 		}

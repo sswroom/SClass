@@ -116,7 +116,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnTimerTick(void *userObj)
 		while (i < j)
 		{
 			cli = me->cliInfos.GetItem(i);
-			Net::SocketUtil::GetAddrName(wbuff, &cli->addr);
+			Net::SocketUtil::GetAddrName(wbuff, cli->addr);
 			me->lbClientIP->AddItem(wbuff, cli);
 			i++;
 		}
@@ -679,7 +679,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnWPADClicked(void *userObj)
 	if (sb.GetLength() > 0)
 	{
 		Net::SocketUtil::AddressInfo addr;
-		if (Net::SocketUtil::GetIPAddr(sb.ToCString(), &addr))
+		if (Net::SocketUtil::GetIPAddr(sb.ToCString(), addr))
 		{
 			me->proxy->SetWebProxyAutoDiscovery(&addr);
 		}
@@ -690,7 +690,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnWPADClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnDNSRequest(void *userObj, Text::CString reqName, Int32 reqType, Int32 reqClass, const Net::SocketUtil::AddressInfo *reqAddr, UInt16 reqPort, UInt32 reqId, Double timeUsed)
+void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnDNSRequest(void *userObj, Text::CString reqName, Int32 reqType, Int32 reqClass, NotNullPtr<const Net::SocketUtil::AddressInfo> reqAddr, UInt16 reqPort, UInt32 reqId, Double timeUsed)
 {
 	SSWR::AVIRead::AVIRDNSProxyForm *me = (SSWR::AVIRead::AVIRDNSProxyForm*)userObj;
 	UTF8Char sbuff[32];
@@ -716,7 +716,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnDNSRequest(void *userObj, Text
 	{
 		NEW_CLASS(cli, ClientInfo());
 		cli->cliId = cliId;
-		cli->addr = *reqAddr;
+		cli->addr = reqAddr.Ptr()[0];
 		me->cliInfos.Put(cliId, cli);
 		me->cliChg = true;
 	}

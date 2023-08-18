@@ -38,7 +38,7 @@ void __stdcall SSWR::AVIRead::AVIRSNMPTrapMonitorForm::OnResultSelChg(void *user
 	sb.ClearStr();
 	Net::ASN1OIDDB::OIDToNameString(packet->trap.entOID, packet->trap.entOIDLen, sb);
 	me->txtEnterpriseName->SetText(sb.ToCString());
-	sptr = Net::SocketUtil::GetAddrName(sbuff, &packet->addr);
+	sptr = Net::SocketUtil::GetAddrName(sbuff, packet->addr);
 	me->txtRemoteIP->SetText(CSTRP(sbuff, sptr));
 	sptr = Text::StrUInt16(sbuff, packet->port);
 	me->txtRemotePort->SetText(CSTRP(sbuff, sptr));
@@ -103,7 +103,7 @@ void __stdcall SSWR::AVIRead::AVIRSNMPTrapMonitorForm::OnTimerTick(void *userObj
 	}
 }
 
-Bool __stdcall SSWR::AVIRead::AVIRSNMPTrapMonitorForm::OnSNMPTrapPacket(void *userObj, const Net::SocketUtil::AddressInfo *addr, UInt16 port, NotNullPtr<const Net::SNMPUtil::TrapInfo> trap, NotNullPtr<Data::ArrayList<Net::SNMPUtil::BindingItem*>> itemList)
+Bool __stdcall SSWR::AVIRead::AVIRSNMPTrapMonitorForm::OnSNMPTrapPacket(void *userObj, NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, NotNullPtr<const Net::SNMPUtil::TrapInfo> trap, NotNullPtr<Data::ArrayList<Net::SNMPUtil::BindingItem*>> itemList)
 {
 	SSWR::AVIRead::AVIRSNMPTrapMonitorForm *me = (SSWR::AVIRead::AVIRSNMPTrapMonitorForm*)userObj;
 	SNMPPacket *packet;
@@ -111,7 +111,7 @@ Bool __stdcall SSWR::AVIRead::AVIRSNMPTrapMonitorForm::OnSNMPTrapPacket(void *us
 	dt.SetCurrTimeUTC();
 	packet = MemAlloc(SNMPPacket, 1);
 	packet->t = dt.ToTicks();
-	packet->addr = *addr;
+	packet->addr = addr.Ptr()[0];
 	packet->port = port;
 	MemCopyNO(&packet->trap, trap.Ptr(), sizeof(Net::SNMPUtil::TrapInfo));
 	NEW_CLASS(packet->itemList, Data::ArrayList<Net::SNMPUtil::BindingItem*>());

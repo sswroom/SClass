@@ -16,7 +16,7 @@ UInt32 __stdcall Net::RAWAnalyzer::RecvThread(void *userObj)
 	Sync::Interlocked::Increment(&me->threadCnt);
 	while (!me->threadToStop)
 	{
-		packetSize = me->sockf->UDPReceive(me->rawSock, packetBuff, 10240, &addr, &port, 0);
+		packetSize = me->sockf->UDPReceive(me->rawSock, packetBuff, 10240, addr, port, 0);
 		if (packetSize >= 14)
 		{
 			me->analyzer->PacketEthernet(packetBuff, packetSize);

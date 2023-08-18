@@ -190,7 +190,7 @@ Bool __stdcall Net::PushServerHandler::ListDevicesHandler(Net::WebServer::IWebRe
 			body->BeginTableRow();
 			body->AddTableData(dev->userName->ToCString());
 			body->AddTableData(STR_CSTR(dev->devModel));
-			sptr = Net::SocketUtil::GetAddrName(sbuff, &dev->subscribeAddr);
+			sptr = Net::SocketUtil::GetAddrName(sbuff, dev->subscribeAddr);
 			body->AddTableData(CSTRP(sbuff, sptr));
 			sptr = dev->lastSubscribeTime.ToString(sbuff);
 			body->AddTableData(CSTRP(sbuff, sptr));

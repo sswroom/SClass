@@ -127,7 +127,7 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(void *userObj)
 			Net::SocketUtil::AddressInfo addr;
 			UInt16 port;
 			me->txtTCPCliHost->GetText(sb);
-			if (!me->core->GetSocketFactory()->DNSResolveIP(sb.ToCString(), &addr))
+			if (!me->core->GetSocketFactory()->DNSResolveIP(sb.ToCString(), addr))
 			{
 				UI::MessageDialog::ShowDialog(CSTR("Host is not valid"), CSTR("Error"), me);
 				return;
@@ -145,7 +145,7 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(void *userObj)
 				return;
 			}
 			Net::TCPClient *cli;
-			NEW_CLASS(cli, Net::TCPClient(me->core->GetSocketFactory(), &addr, port, NETTIMEOUT));
+			NEW_CLASS(cli, Net::TCPClient(me->core->GetSocketFactory(), addr, port, NETTIMEOUT));
 			if (cli->IsConnectError())
 			{
 				DEL_CLASS(cli);
@@ -178,7 +178,7 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(void *userObj)
 			}
 			sb.ClearStr();
 			me->txtSSLCliHost->GetText(sb);
-			if (!me->core->GetSocketFactory()->DNSResolveIP(sb.ToCString(), &addr))
+			if (!me->core->GetSocketFactory()->DNSResolveIP(sb.ToCString(), addr))
 			{
 				UI::MessageDialog::ShowDialog(CSTR("Host is not valid"), CSTR("Error"), me);
 				return;
@@ -276,7 +276,7 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(void *userObj)
 			Net::SocketUtil::AddressInfo addr;
 			UInt16 port;
 			me->txtUDPCliHost->GetText(sb);
-			if (!me->core->GetSocketFactory()->DNSResolveIP(sb.ToCString(), &addr))
+			if (!me->core->GetSocketFactory()->DNSResolveIP(sb.ToCString(), addr))
 			{
 				UI::MessageDialog::ShowDialog(CSTR("Error in resolving host"), CSTR("Error"), me);
 				return;

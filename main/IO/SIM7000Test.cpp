@@ -15,7 +15,7 @@
 
 IO::ConsoleWriter *console;
 
-void __stdcall OnUDPData(const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData)
+void __stdcall OnUDPData(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
@@ -137,9 +137,9 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 				if (valid)
 				{
 					console->WriteStrC(UTF8STRC("Resolving (def) www.google.com: "));
-					if (sockf->DNSResolveIPDef("www.google.com", &addr))
+					if (sockf->DNSResolveIPDef("www.google.com", addr))
 					{
-						sptr = Net::SocketUtil::GetAddrName(sbuff, &addr);
+						sptr = Net::SocketUtil::GetAddrName(sbuff, addr);
 						console->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
 					}
 					else
@@ -180,14 +180,14 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 
 				if (valid)
 				{
-					Net::SocketUtil::SetAddrInfoV4(&addr, 0x08080808);
+					Net::SocketUtil::SetAddrInfoV4(addr, 0x08080808);
 					console->WriteLineC(UTF8STRC("Ping to 8.8.8.8..."));
 					OSInt i = 4;
 					UInt32 respTime;
 					UInt32 ttl;
 					while (i-- > 0)
 					{
-						if (sockf->IcmpSendEcho2(&addr, &respTime, &ttl))
+						if (sockf->IcmpSendEcho2(addr, &respTime, &ttl))
 						{
 							sb.ClearStr();
 							sb.AppendC(UTF8STRC("Resp time = "));
@@ -209,9 +209,9 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 				if (valid)
 				{
 					console->WriteStrC(UTF8STRC("Resolving www.google.com: "));
-					if (sockf->DNSResolveIP(CSTR("www.google.com"), &addr))
+					if (sockf->DNSResolveIP(CSTR("www.google.com"), addr))
 					{
-						sptr = Net::SocketUtil::GetAddrName(sbuff, &addr);
+						sptr = Net::SocketUtil::GetAddrName(sbuff, addr);
 						console->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
 					}
 					else
@@ -233,16 +233,16 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 						console->WriteLineC(UTF8STRC("UDP Server started"));
 
 						console->WriteStrC(UTF8STRC("Resolving (def) my server: "));
-						if (sockf->DNSResolveIPDef("sswroom.no-ip.org", &addr))
+						if (sockf->DNSResolveIPDef("sswroom.no-ip.org", addr))
 						{
-							sptr = Net::SocketUtil::GetAddrName(sbuff, &addr);
+							sptr = Net::SocketUtil::GetAddrName(sbuff, addr);
 							console->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
 						}
 						else
 						{
 							console->WriteLineC(UTF8STRC("Error in getting value"));
 						}
-						udp->SendTo(&addr, 10107, (const UInt8*)"Testing", 7);
+						udp->SendTo(addr, 10107, (const UInt8*)"Testing", 7);
 						Sync::SimpleThread::Sleep(3000);
 					}				
 					DEL_CLASS(udp);

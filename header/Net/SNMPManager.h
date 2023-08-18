@@ -55,8 +55,8 @@ namespace Net
 		void UpdateValues();
 		UOSInt GetAgentList(Data::ArrayList<AgentInfo*> *agentList);
 
-		AgentInfo *AddAgent(const Net::SocketUtil::AddressInfo *addr, NotNullPtr<Text::String> community);
-		UOSInt AddAgents(const Net::SocketUtil::AddressInfo *addr, NotNullPtr<Text::String> community, Data::ArrayList<AgentInfo*> *agentList, Bool scanIP);
+		AgentInfo *AddAgent(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, NotNullPtr<Text::String> community);
+		UOSInt AddAgents(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, NotNullPtr<Text::String> community, Data::ArrayList<AgentInfo*> *agentList, Bool scanIP);
 
 		static void Agent2Record(const AgentInfo *agent, SSWR::SMonitor::ISMonitorCore::DevRecord2 *rec, Int64 *cliId);
 		static Int64 Agent2CliId(const AgentInfo *agent);

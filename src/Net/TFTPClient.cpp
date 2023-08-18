@@ -4,7 +4,7 @@
 #include "Net/TFTPClient.h"
 #include "Text/MyString.h"
 
-void __stdcall Net::TFTPClient::OnDataPacket(const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData)
+void __stdcall Net::TFTPClient::OnDataPacket(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData)
 {
 	Net::TFTPClient *me = (Net::TFTPClient*)userData;
 	UInt16 opcode = ReadMUInt16(buff);
@@ -42,9 +42,9 @@ void __stdcall Net::TFTPClient::OnDataPacket(const Net::SocketUtil::AddressInfo 
 	}
 }
 
-Net::TFTPClient::TFTPClient(NotNullPtr<Net::SocketFactory> sockf, const Net::SocketUtil::AddressInfo *addr, UInt16 port)
+Net::TFTPClient::TFTPClient(NotNullPtr<Net::SocketFactory> sockf, NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port)
 {
-	this->addr = *addr;
+	this->addr = addr.Ptr()[0];
 	this->port = port;
 	this->recvPort = port;
 	this->recvStm = 0;
@@ -86,7 +86,7 @@ Bool Net::TFTPClient::SendFile(const UTF8Char *fileName, IO::Stream *stm)
 	this->replyError = false;
 	this->nextId = 0;
 	this->evt->Clear();
-	this->svr->SendTo(&this->addr, this->port, packet, readSize);
+	this->svr->SendTo(this->addr, this->port, packet, readSize);
 	this->evt->Wait(10000);
 	if (this->replyRecv && !this->replyError)
 	{
@@ -98,7 +98,7 @@ Bool Net::TFTPClient::SendFile(const UTF8Char *fileName, IO::Stream *stm)
 			WriteMInt16(&packet[2], this->nextId);
 			readSize = stm->Read(Data::ByteArray(&packet[4], blockSize));
 			this->evt->Clear();
-			this->svr->SendTo(&this->addr, this->recvPort, packet, readSize + 4);
+			this->svr->SendTo(this->addr, this->recvPort, packet, readSize + 4);
 			this->evt->Wait(10000);
 			if (!this->replyRecv || this->replyError)
 			{
@@ -132,7 +132,7 @@ Bool Net::TFTPClient::RecvFile(const UTF8Char *fileName, IO::Stream *stm)
 	this->recvStm = stm;
 	this->nextId = 1;
 	this->evt->Clear();
-	this->svr->SendTo(&this->addr, this->port, packet, readSize);
+	this->svr->SendTo(this->addr, this->port, packet, readSize);
 	this->evt->Wait(10000);
 	if (this->replyRecv && !this->replyError)
 	{
@@ -143,7 +143,7 @@ Bool Net::TFTPClient::RecvFile(const UTF8Char *fileName, IO::Stream *stm)
 			WriteMInt16(&packet[2], this->nextId);
 			this->nextId++;
 			this->evt->Clear();
-			this->svr->SendTo(&this->addr, this->recvPort, packet, 4);
+			this->svr->SendTo(this->addr, this->recvPort, packet, 4);
 			if (this->recvSize != blockSize)
 			{
 				succ = true;

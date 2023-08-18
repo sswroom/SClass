@@ -12,7 +12,7 @@ namespace IO
 		RAWBTMonitor(UOSInt devNum);
 		virtual ~RAWBTMonitor();
 
-		virtual LinkType GetLinkType();
+		virtual LinkType GetLinkType() const;
 		virtual Bool IsError();
 		virtual void Close();
 		virtual UOSInt GetMTU();

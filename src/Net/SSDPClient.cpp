@@ -4,7 +4,7 @@
 #include "Text/StringBuilderUTF8.h"
 #include "Text/XMLReader.h"
 
-void __stdcall Net::SSDPClient::OnPacketRecv(const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData)
+void __stdcall Net::SSDPClient::OnPacketRecv(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData)
 {
 	Net::SSDPClient *me = (Net::SSDPClient*)userData;
 	if (Text::StrStartsWith(buff, (const UTF8Char*)"HTTP/1.1 200 OK"))
@@ -66,7 +66,7 @@ void __stdcall Net::SSDPClient::OnPacketRecv(const Net::SocketUtil::AddressInfo 
 				if (dev == 0)
 				{
 					NEW_CLASS(dev, SSDPDevice());
-					dev->addr = *addr;
+					dev->addr = addr.Ptr()[0];
 					me->devMap.Put(ip, dev);
 				}
 				Bool found = false;
@@ -157,8 +157,8 @@ Bool Net::SSDPClient::Scan()
 	}
 	sb.AppendC(UTF8STRC("\r\n\r\n"));
 	Net::SocketUtil::AddressInfo addr;
-	Net::SocketUtil::GetIPAddr(CSTR("239.255.255.250"), &addr);
-	return this->udp->SendTo(&addr, 1900, sb.ToString(), sb.GetLength());
+	Net::SocketUtil::GetIPAddr(CSTR("239.255.255.250"), addr);
+	return this->udp->SendTo(addr, 1900, sb.ToString(), sb.GetLength());
 }
 
 const Data::ReadingList<Net::SSDPClient::SSDPDevice*> *Net::SSDPClient::GetDevices(NotNullPtr<Sync::MutexUsage> mutUsage) const

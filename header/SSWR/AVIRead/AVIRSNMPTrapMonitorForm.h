@@ -59,7 +59,7 @@ namespace SSWR
 
 			static void __stdcall OnResultSelChg(void *userObj);
 			static void __stdcall OnTimerTick(void *userObj);
-			static Bool __stdcall OnSNMPTrapPacket(void *userObj, const Net::SocketUtil::AddressInfo *addr, UInt16 port, NotNullPtr<const Net::SNMPUtil::TrapInfo> trap, NotNullPtr<Data::ArrayList<Net::SNMPUtil::BindingItem*>> itemList);
+			static Bool __stdcall OnSNMPTrapPacket(void *userObj, NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, NotNullPtr<const Net::SNMPUtil::TrapInfo> trap, NotNullPtr<Data::ArrayList<Net::SNMPUtil::BindingItem*>> itemList);
 
 		public:
 			AVIRSNMPTrapMonitorForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);

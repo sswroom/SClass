@@ -75,7 +75,7 @@ void Net::SNMPManager::UpdateValues()
 		while (j-- > 0)
 		{
 			reading = agent->readingList->GetItem(j);
-			err = this->cli->V1GetRequestPDU(&agent->addr, agent->community, reading->objId, reading->objIdLen, &itemList);
+			err = this->cli->V1GetRequestPDU(agent->addr, agent->community, reading->objId, reading->objIdLen, &itemList);
 			if (err == Net::SNMPUtil::ES_NOERROR && itemList.GetCount() == 1)
 			{
 				item = itemList.GetItem(0);
@@ -103,7 +103,7 @@ UOSInt Net::SNMPManager::GetAgentList(Data::ArrayList<AgentInfo*> *agentList)
 	return ret;
 }
 
-Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(const Net::SocketUtil::AddressInfo *addr, NotNullPtr<Text::String> community)
+Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, NotNullPtr<Text::String> community)
 {
 	Data::ArrayList<Net::SNMPUtil::BindingItem *> itemList;
 	Net::SNMPUtil::ErrorStatus err;
@@ -128,7 +128,7 @@ Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(const Net::SocketUtil::A
 		if (item->valType == 4 && item->valLen > 0)
 		{
 			agent = MemAlloc(AgentInfo, 1);
-			agent->addr = *addr;
+			agent->addr = addr.Ptr()[0];
 			agent->community = community->Clone();
 			agent->descr = Text::String::New(item->valBuff, item->valLen);
 			agent->objIdLen = 0;
@@ -874,7 +874,7 @@ Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(const Net::SocketUtil::A
 	return agent;
 }
 
-UOSInt Net::SNMPManager::AddAgents(const Net::SocketUtil::AddressInfo *addr, NotNullPtr<Text::String> community, Data::ArrayList<AgentInfo*> *agentList, Bool scanIP)
+UOSInt Net::SNMPManager::AddAgents(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, NotNullPtr<Text::String> community, Data::ArrayList<AgentInfo*> *agentList, Bool scanIP)
 {
 	AgentInfo *agent;
 	UOSInt ret = 0;
@@ -883,7 +883,7 @@ UOSInt Net::SNMPManager::AddAgents(const Net::SocketUtil::AddressInfo *addr, Not
 		Net::IPType ipType = Net::SocketUtil::GetIPv4Type(ReadNUInt32(addr->addr));
 		if (ipType == Net::IPType::Broadcast)
 		{
-			Net::SocketUtil::AddressInfo *agentAddr;
+			NotNullPtr<Net::SocketUtil::AddressInfo> agentAddr;
 			Data::ArrayList<Net::SocketUtil::AddressInfo *> addrList;
 			UOSInt i;
 			UOSInt j;
@@ -892,14 +892,16 @@ UOSInt Net::SNMPManager::AddAgents(const Net::SocketUtil::AddressInfo *addr, Not
 			j = addrList.GetCount();
 			while (i < j)
 			{
-				agentAddr = addrList.GetItem(i);
-				agent = this->AddAgent(agentAddr, community);
-				if (agent)
+				if (agentAddr.Set(addrList.GetItem(i)))
 				{
-					agentList->Add(agent);
-					ret++;
+					agent = this->AddAgent(agentAddr, community);
+					if (agent)
+					{
+						agentList->Add(agent);
+						ret++;
+					}
+					MemFree(agentAddr.Ptr());
 				}
-				MemFree(agentAddr);
 				i++;
 			}
 			return ret;

@@ -8,14 +8,14 @@ namespace Net
 	class DNSServer
 	{
 	public:
-		typedef void (__stdcall *DNSRequest)(void *userObj, Text::CString reqName, Int32 reqType, Int32 reqClass, const Net::SocketUtil::AddressInfo *reqAddr, UInt16 reqPort, UInt32 reqId);
+		typedef void (__stdcall *DNSRequest)(void *userObj, Text::CString reqName, Int32 reqType, Int32 reqClass, NotNullPtr<const Net::SocketUtil::AddressInfo> reqAddr, UInt16 reqPort, UInt32 reqId);
 	private:
 		Net::UDPServer *svr;
 		NotNullPtr<Net::SocketFactory> sockf;
 		DNSRequest reqHdlr;
 		void *reqObj;
 
-		static void __stdcall PacketHdlr(const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData);
+		static void __stdcall PacketHdlr(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData);
 		void InitServer(NotNullPtr<Net::SocketFactory> sockf, UInt16 port);
 	public:
 		DNSServer(NotNullPtr<Net::SocketFactory> sockf, UInt16 port);
@@ -25,7 +25,7 @@ namespace Net
 		Bool IsError();
 		void HandleRequest(DNSRequest hdlr, void *userObj);
 
-		void ReplyRequest(const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UInt8 *buff, UOSInt dataSize);
+		void ReplyRequest(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize);
 	};
 }
 #endif

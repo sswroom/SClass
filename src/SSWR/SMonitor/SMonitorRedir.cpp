@@ -3,7 +3,7 @@
 #include "SSWR/SMonitor/SMonitorRedir.h"
 #include "Sync/MutexUsage.h"
 
-void __stdcall SSWR::SMonitor::SMonitorRedir::OnDataUDPPacket(const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData)
+void __stdcall SSWR::SMonitor::SMonitorRedir::OnDataUDPPacket(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData)
 {
 	SSWR::SMonitor::SMonitorRedir *me = (SSWR::SMonitor::SMonitorRedir*)userData;
 	if (dataSize >= 6 && buff[0] == 'S' && buff[1] == 'm')
@@ -121,9 +121,9 @@ Bool SSWR::SMonitor::SMonitorRedir::SendDevReading(Int64 cliId, const SSWR::SMon
 	buff[i + 1] = calcVal[1] ^ 0x34;
 
 	Net::SocketUtil::AddressInfo addr;
-	if (this->sockf->DNSResolveIP(this->hostName->ToCString(), &addr))
+	if (this->sockf->DNSResolveIP(this->hostName->ToCString(), addr))
 	{
-		this->svr->SendTo(&addr, this->port, buff, i + 2);
+		this->svr->SendTo(addr, this->port, buff, i + 2);
 	}
 	return true;
 }
@@ -143,9 +143,9 @@ Bool SSWR::SMonitor::SMonitorRedir::SendDevName(Int64 cliId, const UTF8Char *nam
 	buff[size + 1] = calcVal[1] ^ 0x34;
 
 	Net::SocketUtil::AddressInfo addr;
-	if (this->sockf->DNSResolveIP(this->hostName->ToCString(), &addr))
+	if (this->sockf->DNSResolveIP(this->hostName->ToCString(), addr))
 	{
-		this->svr->SendTo(&addr, this->port, buff, size + 2);
+		this->svr->SendTo(addr, this->port, buff, size + 2);
 	}
 	return true;
 }
@@ -169,9 +169,9 @@ Bool SSWR::SMonitor::SMonitorRedir::SendDevPlatform(Int64 cliId, const UTF8Char 
 	buff[size + 1] = calcVal[1] ^ 0x34;
 
 	Net::SocketUtil::AddressInfo addr;
-	if (this->sockf->DNSResolveIP(this->hostName->ToCString(), &addr))
+	if (this->sockf->DNSResolveIP(this->hostName->ToCString(), addr))
 	{
-		this->svr->SendTo(&addr, this->port, buff, size + 2);
+		this->svr->SendTo(addr, this->port, buff, size + 2);
 	}
 	return true;
 }
@@ -191,9 +191,9 @@ Bool SSWR::SMonitor::SMonitorRedir::SendDevCPUName(Int64 cliId, const UTF8Char *
 	buff[size + 1] = calcVal[1] ^ 0x34;
 
 	Net::SocketUtil::AddressInfo addr;
-	if (this->sockf->DNSResolveIP(this->hostName->ToCString(), &addr))
+	if (this->sockf->DNSResolveIP(this->hostName->ToCString(), addr))
 	{
-		this->svr->SendTo(&addr, this->port, buff, size + 2);
+		this->svr->SendTo(addr, this->port, buff, size + 2);
 	}
 	return true;
 }
@@ -216,9 +216,9 @@ Bool SSWR::SMonitor::SMonitorRedir::SendDevReadingName(Int64 cliId, UOSInt index
 	buff[size + 1] = calcVal[1] ^ 0x34;
 
 	Net::SocketUtil::AddressInfo addr;
-	if (this->sockf->DNSResolveIP(this->hostName->ToCString(), &addr))
+	if (this->sockf->DNSResolveIP(this->hostName->ToCString(), addr))
 	{
-		this->svr->SendTo(&addr, this->port, buff, size + 2);
+		this->svr->SendTo(addr, this->port, buff, size + 2);
 	}
 	return true;
 }
@@ -239,9 +239,9 @@ Bool SSWR::SMonitor::SMonitorRedir::SendDevVersion(Int64 cliId, Int64 progVersio
 	buff[size + 1] = calcVal[1] ^ 0x34;
 
 	Net::SocketUtil::AddressInfo addr;
-	if (this->sockf->DNSResolveIP(this->hostName->ToCString(), &addr))
+	if (this->sockf->DNSResolveIP(this->hostName->ToCString(), addr))
 	{
-		this->svr->SendTo(&addr, this->port, buff, size + 2);
+		this->svr->SendTo(addr, this->port, buff, size + 2);
 	}
 	return true;
 }

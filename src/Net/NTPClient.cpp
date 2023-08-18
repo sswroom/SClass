@@ -8,7 +8,7 @@
 #include "Sync/MutexUsage.h"
 #include "Text/MyString.h"
 
-void __stdcall Net::NTPClient::PacketHdlr(const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData)
+void __stdcall Net::NTPClient::PacketHdlr(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData)
 {
 	Net::NTPClient *me = (Net::NTPClient*)userData;
 //	UInt8 li = buff[0] >> 6;
@@ -41,23 +41,23 @@ Net::NTPClient::~NTPClient()
 	DEL_CLASS(this->svr);
 }
 
-Bool Net::NTPClient::GetServerTime(Text::CString host, UInt16 port, Data::DateTime *svrTime)
+Bool Net::NTPClient::GetServerTime(Text::CString host, UInt16 port, NotNullPtr<Data::DateTime> svrTime)
 {
 	Net::SocketUtil::AddressInfo addr;
-	if (!sockf->DNSResolveIP(host, &addr))
+	if (!sockf->DNSResolveIP(host, addr))
 		return false;
-	return GetServerTime(&addr, port, svrTime);
+	return GetServerTime(addr, port, svrTime);
 }
 
-Bool Net::NTPClient::GetServerTime(Text::CString host, UInt16 port, Data::Timestamp *svrTime)
+Bool Net::NTPClient::GetServerTime(Text::CString host, UInt16 port, OutParam<Data::Timestamp> svrTime)
 {
 	Net::SocketUtil::AddressInfo addr;
-	if (!sockf->DNSResolveIP(host, &addr))
+	if (!sockf->DNSResolveIP(host, addr))
 		return false;
-	return GetServerTime(&addr, port, svrTime);
+	return GetServerTime(addr, port, svrTime);
 }
 
-Bool Net::NTPClient::GetServerTime(const Net::SocketUtil::AddressInfo *addr, UInt16 port, Data::DateTime *svrTime)
+Bool Net::NTPClient::GetServerTime(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, NotNullPtr<Data::DateTime> svrTime)
 {
 	UInt8 buff[48];
 	Bool hasResult;
@@ -95,7 +95,7 @@ Bool Net::NTPClient::GetServerTime(const Net::SocketUtil::AddressInfo *addr, UIn
 	return hasResult;
 }
 
-Bool Net::NTPClient::GetServerTime(const Net::SocketUtil::AddressInfo *addr, UInt16 port, Data::Timestamp *svrTime)
+Bool Net::NTPClient::GetServerTime(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, OutParam<Data::Timestamp> svrTime)
 {
 	UInt8 buff[48];
 	Bool hasResult;
@@ -127,7 +127,7 @@ Bool Net::NTPClient::GetServerTime(const Net::SocketUtil::AddressInfo *addr, UIn
 	hasResult = this->hasResult;
 	if (hasResult)
 	{
-		*svrTime = this->resultTime.AddNS(Double2Int64(clk.GetTimeDiff() * 500000000));
+		svrTime.Set(this->resultTime.AddNS(Double2Int64(clk.GetTimeDiff() * 500000000)));
 	}
 	return hasResult;
 }

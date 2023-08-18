@@ -41,7 +41,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnStartClicked(void *userOb
 		}
 		sb.ClearStr();
 		me->txtHost->GetText(sb);
-		if (!me->core->GetSocketFactory()->DNSResolveIP(sb.ToCString(), &addr))
+		if (!me->core->GetSocketFactory()->DNSResolveIP(sb.ToCString(), addr))
 		{
 			UI::MessageDialog::ShowDialog(CSTR("Error in parsing host"), CSTR("Error"), me);
 			return;

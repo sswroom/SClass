@@ -209,7 +209,7 @@ Int64 Net::WebServer::MemoryWebSessionManager::GenSessId(Net::WebServer::IWebReq
 	buff[0] = 0;
 	buff[1] = 0;
 	*(UInt16*)&buff[2] = req->GetClientPort();
-	const Net::SocketUtil::AddressInfo *addr = req->GetClientAddr();
+	NotNullPtr<const Net::SocketUtil::AddressInfo> addr = req->GetClientAddr();
 	if (addr->addrType == Net::AddrType::IPv4)
 	{
 		*(UInt32*)&buff[4] = *(UInt32*)addr->addr;

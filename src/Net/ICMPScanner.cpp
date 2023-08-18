@@ -55,8 +55,8 @@ UInt32 __stdcall Net::ICMPScanner::Ping1Thread(void *userObj)
 	{
 		if (buff1[3] != 0 && buff1[3] != 255)
 		{
-			Net::SocketUtil::SetAddrInfoV4(&addr, ReadNUInt32(buff1));
-			if (status->me->sockf->IcmpSendEcho2(&addr, &respTime, &ttl))
+			Net::SocketUtil::SetAddrInfoV4(addr, ReadNUInt32(buff1));
+			if (status->me->sockf->IcmpSendEcho2(addr, &respTime, &ttl))
 			{
 				result = MemAlloc(ScanResult, 1);
 				result->ip = ReadNUInt32(buff1);
@@ -97,7 +97,7 @@ UInt32 __stdcall Net::ICMPScanner::Ping2Thread(void *userObj)
 	UOSInt ipDataSize;
 	while (!me->threadToStop)
 	{
-		readSize = me->sockf->UDPReceive(me->soc, readBuff, 4096, &addr, &port, &et);
+		readSize = me->sockf->UDPReceive(me->soc, readBuff, 4096, addr, port, &et);
 		if (readSize >= 36)
 		{
 			if ((readBuff[0] & 0xf0) == 0x40 && readBuff[9] == 1)
@@ -256,8 +256,8 @@ Bool Net::ICMPScanner::Scan(UInt32 ip)
 		buff[3] = 1;
 		while (buff[3] < 255)
 		{
-			Net::SocketUtil::SetAddrInfoV4(&addr, ReadNUInt32(buff));
-			this->sockf->SendTo(s, packetBuff, 64, &addr, 0);
+			Net::SocketUtil::SetAddrInfoV4(addr, ReadNUInt32(buff));
+			this->sockf->SendTo(s, packetBuff, 64, addr, 0);
 			buff[3]++;
 		}
 

@@ -23,7 +23,7 @@ namespace IO
 	public:
 		virtual ~RAWMonitor() {};
 
-		virtual LinkType GetLinkType() = 0;
+		virtual LinkType GetLinkType() const = 0;
 		virtual Bool IsError() = 0;
 		virtual void Close() = 0;
 		virtual UOSInt GetMTU() = 0;

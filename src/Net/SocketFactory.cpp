@@ -40,7 +40,7 @@ Bool Net::SocketFactory::ReloadDNS()
 	return true;
 }
 
-Bool Net::SocketFactory::DNSResolveIP(Text::CString host, Net::SocketUtil::AddressInfo *addr)
+Bool Net::SocketFactory::DNSResolveIP(Text::CString host, NotNullPtr<Net::SocketUtil::AddressInfo> addr)
 {
 	UTF8Char sbuff[256];
 
@@ -52,8 +52,8 @@ Bool Net::SocketFactory::DNSResolveIP(Text::CString host, Net::SocketUtil::Addre
 	if (this->dnsHdlr == 0)
 	{
 		Net::SocketUtil::AddressInfo dnsAddr;
-		this->GetDefDNS(&dnsAddr);
-		NEW_CLASS(this->dnsHdlr, Net::DNSHandler(*this, &dnsAddr));
+		this->GetDefDNS(dnsAddr);
+		NEW_CLASS(this->dnsHdlr, Net::DNSHandler(*this, dnsAddr));
 		this->LoadHosts(this->dnsHdlr);
 	}
 	mutUsage.EndUse();
@@ -66,17 +66,17 @@ Bool Net::SocketFactory::DNSResolveIP(Text::CString host, Net::SocketUtil::Addre
 	if (!succ)
 	{
 		Net::SocketUtil::AddressInfo dnsAddr;
-		this->GetDefDNS(&dnsAddr);
-		this->dnsHdlr->UpdateDNSAddr(&dnsAddr);
+		this->GetDefDNS(dnsAddr);
+		this->dnsHdlr->UpdateDNSAddr(dnsAddr);
 	}
 	return succ;
 }
 
-UOSInt Net::SocketFactory::DNSResolveIPs(Text::CString host, Net::SocketUtil::AddressInfo *addrs, UOSInt maxCnt)
+UOSInt Net::SocketFactory::DNSResolveIPs(Text::CString host, Data::DataArray<Net::SocketUtil::AddressInfo> addrs)
 {
 	UTF8Char sbuff[256];
 
-	if (Net::SocketUtil::GetIPAddr(host, addrs))
+	if (Net::SocketUtil::GetIPAddr(host, addrs[0]))
 		return 1;
 
 	UTF8Char *sptr = Text::TextBinEnc::Punycode::Encode(sbuff, host);
@@ -84,22 +84,22 @@ UOSInt Net::SocketFactory::DNSResolveIPs(Text::CString host, Net::SocketUtil::Ad
 	if (this->dnsHdlr == 0)
 	{
 		Net::SocketUtil::AddressInfo dnsAddr;
-		this->GetDefDNS(&dnsAddr);
-		NEW_CLASS(this->dnsHdlr, Net::DNSHandler(*this, &dnsAddr));
+		this->GetDefDNS(dnsAddr);
+		NEW_CLASS(this->dnsHdlr, Net::DNSHandler(*this, dnsAddr));
 		this->LoadHosts(this->dnsHdlr);
 	}
 	mutUsage.EndUse();
 	UOSInt ret = 0;
 	if (!this->noV6DNS)
 	{
-		ret = this->dnsHdlr->GetByDomainNamesv6(addrs, CSTRP(sbuff, sptr), maxCnt);
+		ret = this->dnsHdlr->GetByDomainNamesv6(addrs, CSTRP(sbuff, sptr));
 	}
-	ret += this->dnsHdlr->GetByDomainNamesv4(&addrs[ret], CSTRP(sbuff, sptr), maxCnt - ret);
+	ret += this->dnsHdlr->GetByDomainNamesv4(addrs.SubArray(ret), CSTRP(sbuff, sptr));
 	if (ret == 0)
 	{
 		Net::SocketUtil::AddressInfo dnsAddr;
-		this->GetDefDNS(&dnsAddr);
-		this->dnsHdlr->UpdateDNSAddr(&dnsAddr);
+		this->GetDefDNS(dnsAddr);
+		this->dnsHdlr->UpdateDNSAddr(dnsAddr);
 	}
 	return ret;
 }
@@ -109,7 +109,7 @@ UInt32 Net::SocketFactory::DNSResolveIPv4(Text::CString host)
 	Net::SocketUtil::AddressInfo addr;
 	UTF8Char sbuff[256];
 
-	if (Net::SocketUtil::GetIPAddr(host, &addr))
+	if (Net::SocketUtil::GetIPAddr(host, addr))
 	{
 		return *(UInt32*)addr.addr;
 	}
@@ -119,20 +119,20 @@ UInt32 Net::SocketFactory::DNSResolveIPv4(Text::CString host)
 	if (this->dnsHdlr == 0)
 	{
 		Net::SocketUtil::AddressInfo dnsAddr;
-		this->GetDefDNS(&dnsAddr);
-		NEW_CLASS(this->dnsHdlr, Net::DNSHandler(*this, &dnsAddr));
+		this->GetDefDNS(dnsAddr);
+		NEW_CLASS(this->dnsHdlr, Net::DNSHandler(*this, dnsAddr));
 		this->LoadHosts(this->dnsHdlr);
 	}
 	mutUsage.EndUse();
-	if (this->dnsHdlr->GetByDomainNamev4(&addr, CSTRP(sbuff, sptr)))
+	if (this->dnsHdlr->GetByDomainNamev4(addr, CSTRP(sbuff, sptr)))
 	{
 		return *(UInt32*)addr.addr;
 	}
 	else
 	{
 		Net::SocketUtil::AddressInfo dnsAddr;
-		this->GetDefDNS(&dnsAddr);
-		this->dnsHdlr->UpdateDNSAddr(&dnsAddr);
+		this->GetDefDNS(dnsAddr);
+		this->dnsHdlr->UpdateDNSAddr(dnsAddr);
 		return 0;
 	}
 }
@@ -141,9 +141,9 @@ UTF8Char *Net::SocketFactory::GetRemoteName(UTF8Char *buff, Socket *socket)
 {
 	Net::SocketUtil::AddressInfo addr;
 	UInt16 port;
-	if (GetRemoteAddr(socket, &addr, &port))
+	if (GetRemoteAddr(socket, addr, &port))
 	{
-		return Net::SocketUtil::GetAddrName(buff, &addr, port);
+		return Net::SocketUtil::GetAddrName(buff, addr, port);
 	}
 	else
 	{
@@ -156,9 +156,9 @@ UTF8Char *Net::SocketFactory::GetLocalName(UTF8Char *buff, Socket *socket)
 {
 	Net::SocketUtil::AddressInfo addr;
 	UInt16 port;
-	if (GetLocalAddr(socket, &addr, &port))
+	if (GetLocalAddr(socket, addr, &port))
 	{
-		return Net::SocketUtil::GetAddrName(buff, &addr, port);
+		return Net::SocketUtil::GetAddrName(buff, addr, port);
 	}
 	else
 	{
@@ -173,8 +173,8 @@ UInt64 Net::SocketFactory::GenSocketId(Socket *socket)
 	UInt16 rPort;
 	Net::SocketUtil::AddressInfo lAddr;
 	UInt16 lPort;
-	if (this->GetLocalAddr(socket, &lAddr, &lPort) && this->GetRemoteAddr(socket, &rAddr, &rPort))
-		return Net::SocketUtil::CalcCliId(&rAddr) | (((UInt64)rPort) << 32) | (((UInt64)lPort) << 48);
+	if (this->GetLocalAddr(socket, lAddr, &lPort) && this->GetRemoteAddr(socket, rAddr, &rPort))
+		return Net::SocketUtil::CalcCliId(rAddr) | (((UInt64)rPort) << 32) | (((UInt64)lPort) << 48);
 	else
 		return 0;
 }

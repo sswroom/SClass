@@ -107,7 +107,7 @@ namespace Net
 		UInt32 GetServerCap() const;
 		UInt16 GetServerCS() const;
 
-		const Net::SocketUtil::AddressInfo *GetConnAddr() const;
+		NotNullPtr<const Net::SocketUtil::AddressInfo> GetConnAddr() const;
 		UInt16 GetConnPort() const;
 		Text::String *GetConnDB() const;
 		NotNullPtr<Text::String> GetConnUID() const;

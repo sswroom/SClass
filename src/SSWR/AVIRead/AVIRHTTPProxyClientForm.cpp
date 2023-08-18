@@ -111,7 +111,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPProxyClientForm::OnTimerTick(void *userObj
 	UOSInt j;
 	if (me->respChanged)
 	{
-		sptr = Net::SocketUtil::GetAddrName(sbuff, &me->respSvrAddr);
+		sptr = Net::SocketUtil::GetAddrName(sbuff, me->respSvrAddr);
 		me->txtSvrIP->SetText(CSTRP(sbuff, sptr));
 		if (me->respTimeDNS == -1)
 		{

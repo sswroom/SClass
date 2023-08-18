@@ -683,7 +683,7 @@ Bool Net::HTTPMyClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMethod
 			addr.addrType = Net::AddrType::IPv4;
 			WriteNUInt32(addr.addr, Net::SocketUtil::GetIPAddr(CSTR("127.0.0.1")));
 		}
-		else if (!sockf->DNSResolveIP(CSTRP(svrname, svrnameEnd), &addr))
+		else if (!sockf->DNSResolveIP(CSTRP(svrname, svrnameEnd), addr))
 		{
 			this->cli = 0;
 
@@ -715,7 +715,7 @@ Bool Net::HTTPMyClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMethod
 			}
 			else
 			{
-				NEW_CLASS(this->cli, Net::TCPClient(sockf, &this->svrAddr, port, this->timeout));
+				NEW_CLASS(this->cli, Net::TCPClient(sockf, this->svrAddr, port, this->timeout));
 			}
 		}
 		else
@@ -1216,7 +1216,7 @@ Bool Net::HTTPMyClient::IsSecureConn()
 	return this->cli->IsSSL();
 }
 
-Bool Net::HTTPMyClient::SetClientCert(Crypto::Cert::X509Cert *cert, Crypto::Cert::X509File *key)
+Bool Net::HTTPMyClient::SetClientCert(NotNullPtr<Crypto::Cert::X509Cert> cert, NotNullPtr<Crypto::Cert::X509File> key)
 {
 	if (this->ssl == 0)
 		return false;

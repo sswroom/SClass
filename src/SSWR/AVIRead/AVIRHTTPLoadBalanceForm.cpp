@@ -34,14 +34,16 @@ void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnStartClick(void *userOb
 
 	if (me->chkSSL->IsChecked())
 	{
-		if (me->sslCert == 0 || me->sslKey == 0)
+		NotNullPtr<Crypto::Cert::X509Cert> sslCert;
+		NotNullPtr<Crypto::Cert::X509File> sslKey;
+		if (!sslCert.Set(me->sslCert) || !sslKey.Set(me->sslKey))
 		{
 			UI::MessageDialog::ShowDialog(CSTR("Please select SSL Cert/Key First"), CSTR("HTTP Load Balance"), me);
 			return;
 		}
 		ssl = me->ssl;
-		Crypto::Cert::X509Cert *issuerCert = Crypto::Cert::CertUtil::FindIssuer(me->sslCert);
-		ssl->ServerSetCertsASN1(me->sslCert, me->sslKey, issuerCert);
+		Crypto::Cert::X509Cert *issuerCert = Crypto::Cert::CertUtil::FindIssuer(sslCert);
+		ssl->ServerSetCertsASN1(sslCert, sslKey, issuerCert);
 		SDEL_CLASS(issuerCert);
 	}
 	if (port > 0 && port < 65535)
@@ -208,7 +210,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnTimerTick(void *userObj
 			sb.ClearStr();
 			sb.AppendTS(Data::Timestamp(log->reqTime, Data::DateTimeUtil::GetLocalTzQhr()));
 			sb.AppendC(UTF8STRC(" "));
-			sptr = Net::SocketUtil::GetAddrName(sbuff, &log->cliAddr, log->cliPort);
+			sptr = Net::SocketUtil::GetAddrName(sbuff, log->cliAddr, log->cliPort);
 			sb.AppendP(sbuff, sptr);
 
 			me->lbAccess->AddItem(sb.ToCString(), (void*)(OSInt)logIndex.GetItem(i));
@@ -231,7 +233,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnAccessSelChg(void *user
 	log = me->reqLog->GetEntry(i);
 	sb.AppendTS(Data::Timestamp(log->reqTime, Data::DateTimeUtil::GetLocalTzQhr()));
 	sb.AppendC(UTF8STRC(" "));
-	sptr = Net::SocketUtil::GetAddrName(sbuff, &log->cliAddr, log->cliPort);
+	sptr = Net::SocketUtil::GetAddrName(sbuff, log->cliAddr, log->cliPort);
 	sb.AppendP(sbuff, sptr);
 	sb.AppendC(UTF8STRC("\r\n"));
 	sb.Append(log->reqURI);

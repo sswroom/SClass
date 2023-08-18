@@ -56,7 +56,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnStartClicked(void *userObj
 		}
 		sb.ClearStr();
 		me->txtHost->GetText(sb);
-		if (!me->core->GetSocketFactory()->DNSResolveIP(sb.ToCString(), &addr))
+		if (!me->core->GetSocketFactory()->DNSResolveIP(sb.ToCString(), addr))
 		{
 			UI::MessageDialog::ShowDialog(CSTR("Error in parsing host"), CSTR("Error"), me);
 			return;
@@ -64,9 +64,11 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnStartClicked(void *userObj
 		Net::SSLEngine *ssl = me->ssl;
 		if (useSSL)
 		{
-			if (me->cliCert && me->cliKey)
+			NotNullPtr<Crypto::Cert::X509Cert> cliCert;
+			NotNullPtr<Crypto::Cert::X509File> cliKey;
+			if (cliCert.Set(me->cliCert) && cliKey.Set(me->cliKey))
 			{
-				ssl->ClientSetCertASN1(me->cliCert, me->cliKey);
+				ssl->ClientSetCertASN1(cliCert, cliKey);
 			}
 		}
 		if (useWS)

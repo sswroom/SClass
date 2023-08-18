@@ -531,7 +531,7 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::ClientReq(SSWR::SDNSProxy::
 	while (i < j)
 	{
 		cli = cliList.GetItem(i);
-		sptr = Net::SocketUtil::GetAddrName(sbuff, &cli->addr);
+		sptr = Net::SocketUtil::GetAddrName(sbuff, cli->addr);
 		if (i > 0)
 		{
 			sbOut.AppendC(UTF8STRC("<br/>\r\n"));
@@ -553,7 +553,7 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::ClientReq(SSWR::SDNSProxy::
 
 	if (selCli)
 	{
-		sptr = Net::SocketUtil::GetAddrName(sbuff, &selCli->addr);
+		sptr = Net::SocketUtil::GetAddrName(sbuff, selCli->addr);
 		sbOut.AppendC(UTF8STRC("<h3>"));
 		sbOut.AppendP(sbuff, sptr);
 		sbOut.AppendC(UTF8STRC("</h3>"));

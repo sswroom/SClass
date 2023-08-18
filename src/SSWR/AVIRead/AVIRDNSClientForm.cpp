@@ -18,7 +18,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSClientForm::OnRequestClicked(void *userObj)
 	UOSInt j;
 	UOSInt bestInd;
 	me->txtServer->GetText(sb);
-	if (!Net::SocketUtil::GetIPAddr(sb.ToCString(), &dnsAddr))
+	if (!Net::SocketUtil::GetIPAddr(sb.ToCString(), dnsAddr))
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Invalid server input"), CSTR("Error"), me);
 		return;
@@ -32,7 +32,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSClientForm::OnRequestClicked(void *userObj)
 	}
 	reqIP = Net::SocketUtil::GetIPAddr(sb.ToCString());
 
-	NEW_CLASS(dnsCli, Net::DNSClient(me->sockf, &dnsAddr));
+	NEW_CLASS(dnsCli, Net::DNSClient(me->sockf, dnsAddr));
 	NEW_CLASS(clk, Manage::HiResClock());
 	me->lbAnswer->ClearItems();
 	Net::DNSClient::FreeAnswers(me->ansList);
@@ -204,10 +204,10 @@ SSWR::AVIRead::AVIRDNSClientForm::AVIRDNSClientForm(UI::GUIClientControl *parent
 
 	this->SetDefaultButton(this->btnRequest);
 	Net::SocketUtil::AddressInfo addr;
-	this->sockf->GetDefDNS(&addr);
+	this->sockf->GetDefDNS(addr);
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
-	sptr = Net::SocketUtil::GetAddrName(sbuff, &addr);
+	sptr = Net::SocketUtil::GetAddrName(sbuff, addr);
 	this->txtServer->SetText(CSTRP(sbuff, sptr));
 }
 

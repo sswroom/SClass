@@ -11,7 +11,7 @@ namespace Net
 		NotNullPtr<Net::SocketFactory> sockf;
 		UInt32 adapterIP;
 
-		static void __stdcall PacketHdlr(const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData);
+		static void __stdcall PacketHdlr(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData);
 	public:
 		WOLClient(NotNullPtr<Net::SocketFactory> sockf, UInt32 adapterIP);
 		~WOLClient();

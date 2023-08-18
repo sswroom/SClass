@@ -24,7 +24,7 @@ void __stdcall SSWR::AVIRead::AVIRLDAPClientForm::OnConnectClicked(void *userObj
 		UI::MessageDialog::ShowDialog(CSTR("Please enter Host"), CSTR("LDAP Client"), me);
 		return;
 	}
-	if (!sockf->DNSResolveIP(sb.ToCString(), &addr))
+	if (!sockf->DNSResolveIP(sb.ToCString(), addr))
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Error in resolving host"), CSTR("LDAP Client"), me);
 		return;
@@ -36,7 +36,7 @@ void __stdcall SSWR::AVIRead::AVIRLDAPClientForm::OnConnectClicked(void *userObj
 		UI::MessageDialog::ShowDialog(CSTR("Please enter valid Port number"), CSTR("LDAP Client"), me);
 		return;
 	}
-	NEW_CLASS(me->cli, Net::LDAPClient(sockf, &addr, port, 15000));
+	NEW_CLASS(me->cli, Net::LDAPClient(sockf, addr, port, 15000));
 	if (me->cli->IsError())
 	{
 		DEL_CLASS(me->cli);

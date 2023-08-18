@@ -24,7 +24,7 @@ namespace Net
 	public:
 		TCPClient(NotNullPtr<Net::SocketFactory> sockf, Text::CStringNN name, UInt16 port, Data::Duration timeout);
 		TCPClient(NotNullPtr<Net::SocketFactory> sockf, UInt32 ip, UInt16 port, Data::Duration timeout);
-		TCPClient(NotNullPtr<Net::SocketFactory> sockf, const Net::SocketUtil::AddressInfo *addr, UInt16 port, Data::Duration timeout);
+		TCPClient(NotNullPtr<Net::SocketFactory> sockf, NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Data::Duration timeout);
 		TCPClient(NotNullPtr<Net::SocketFactory> sockf, Socket *s);
 		virtual ~TCPClient();
 
@@ -54,7 +54,7 @@ namespace Net
 		UInt64 GetCliId();
 		virtual UTF8Char *GetRemoteName(UTF8Char *buff) const;
 		virtual UTF8Char *GetLocalName(UTF8Char *buff) const;
-		virtual Bool GetRemoteAddr(Net::SocketUtil::AddressInfo *addr) const;
+		virtual Bool GetRemoteAddr(NotNullPtr<Net::SocketUtil::AddressInfo> addr) const;
 		virtual UInt16 GetRemotePort() const;
 		virtual UInt16 GetLocalPort() const;
 

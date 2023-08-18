@@ -25,6 +25,8 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientCertTestForm::OnStartClick(void *use
 	me->txtPort->GetText(sb);
 	Text::StrToUInt16S(sb.ToString(), port, 0);
 	Net::SSLEngine *ssl = me->ssl;
+	NotNullPtr<Crypto::Cert::X509Cert> sslCert;
+	NotNullPtr<Crypto::Cert::X509File> sslKey;
 	ssl->ServerSetRequireClientCert(Net::SSLEngine::ClientCertType::Optional);
 	sb.ClearStr();
 	me->txtClientCA->GetText(sb);
@@ -33,12 +35,12 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientCertTestForm::OnStartClick(void *use
 		ssl->ServerSetClientCA(sb.ToCString());
 	}
 
-	if (me->sslCert == 0 || me->sslKey == 0)
+	if (!sslCert.Set(me->sslCert) || !sslKey.Set(me->sslKey))
 	{
 		NotNullPtr<Crypto::Cert::X509Key> key;
 		if (!key.Set(ssl->GenerateRSAKey()))
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Error in initializing Cert/Key"), CSTR("HTTP Client Cert Test"), me);
+			UI::MessageDialog::ShowDialog(CSTR("Error in initializing Key"), CSTR("HTTP Client Cert Test"), me);
 			return;
 		}
 		me->sslKey = key.Ptr();
@@ -65,6 +67,11 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientCertTestForm::OnStartClick(void *use
 		me->sslCert = Crypto::Cert::CertUtil::SelfSignedCertCreate(ssl, &names, key, 30, &ext);
 		Crypto::Cert::CertNames::FreeNames(&names);
 		LIST_FREE_STRING(&sanList);
+		if (!sslCert.Set(me->sslCert))
+		{
+			UI::MessageDialog::ShowDialog(CSTR("Error in initializing Certificate"), CSTR("HTTP Client Cert Test"), me);
+			return;
+		}
 
 		Text::StringBuilderUTF8 sb;
 		me->sslCert->ToShortString(sb);
@@ -72,7 +79,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientCertTestForm::OnStartClick(void *use
 		me->sslKey->ToShortString(sb);
 		me->lblSSLCert->SetText(sb.ToCString());
 
-		if (!ssl->ServerSetCertsASN1(me->sslCert, me->sslKey, 0))
+		if (!ssl->ServerSetCertsASN1(sslCert, key, 0))
 		{
 			UI::MessageDialog::ShowDialog(CSTR("Error in initializing Cert/Key"), CSTR("HTTP Client Cert Test"), me);
 			return;
@@ -80,8 +87,8 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientCertTestForm::OnStartClick(void *use
 	}
 	else
 	{
-		Crypto::Cert::X509Cert *issuerCert = Crypto::Cert::CertUtil::FindIssuer(me->sslCert);
-		if (!ssl->ServerSetCertsASN1(me->sslCert, me->sslKey, issuerCert))
+		Crypto::Cert::X509Cert *issuerCert = Crypto::Cert::CertUtil::FindIssuer(sslCert);
+		if (!ssl->ServerSetCertsASN1(sslCert, sslKey, issuerCert))
 		{
 			SDEL_CLASS(issuerCert);
 			UI::MessageDialog::ShowDialog(CSTR("Error in initializing Cert/Key"), CSTR("HTTP Client Cert Test"), me);

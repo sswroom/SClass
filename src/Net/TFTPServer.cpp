@@ -9,7 +9,7 @@
 #include "Sync/ThreadUtil.h"
 #include "Text/StringBuilderUTF8.h"
 
-void __stdcall Net::TFTPServer::OnCommandPacket(const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData)
+void __stdcall Net::TFTPServer::OnCommandPacket(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData)
 {
 	Net::TFTPServer *me = (Net::TFTPServer*)userData;
 	const UTF8Char *fileName;
@@ -206,7 +206,7 @@ void __stdcall Net::TFTPServer::OnCommandPacket(const Net::SocketUtil::AddressIn
 	
 }
 
-void __stdcall Net::TFTPServer::OnDataPacket(const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData)
+void __stdcall Net::TFTPServer::OnDataPacket(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData)
 {
 	Net::TFTPServer *me = (Net::TFTPServer*)userData;
 	UInt64 sessId = (((UInt64)ReadMUInt32(addr->addr)) << 16) | port;

@@ -110,12 +110,12 @@ Bool Net::PacketAnalyzerEthernet::PacketIPv6GetName(const UInt8 *packet, UOSInt 
 
 	Net::SocketUtil::AddressInfo srcAddr;
 	Net::SocketUtil::AddressInfo destAddr;
-	Net::SocketUtil::SetAddrInfoV6(&srcAddr, &packet[8], 0);
-	Net::SocketUtil::SetAddrInfoV6(&destAddr, &packet[24], 0);
-	sptr = Net::SocketUtil::GetAddrName(sbuff, &srcAddr);
+	Net::SocketUtil::SetAddrInfoV6(srcAddr, &packet[8], 0);
+	Net::SocketUtil::SetAddrInfoV6(destAddr, &packet[24], 0);
+	sptr = Net::SocketUtil::GetAddrName(sbuff, srcAddr);
 	sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
 	sb->AppendC(UTF8STRC(" -> "));
-	sptr = Net::SocketUtil::GetAddrName(sbuff, &destAddr);
+	sptr = Net::SocketUtil::GetAddrName(sbuff, destAddr);
 	sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
 	sb->AppendUTF8Char(' ');
 	return PacketIPDataGetName(packet[6], &packet[40], packetSize - 40, sb);

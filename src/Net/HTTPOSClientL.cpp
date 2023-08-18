@@ -326,7 +326,7 @@ Bool Net::HTTPOSClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMethod
 			this->svrAddr.addrType = Net::AddrType::IPv4;
 			WriteNUInt32(this->svrAddr.addr, Net::SocketUtil::GetIPAddr(CSTR("127.0.0.1")));
 		}
-		else if (!sockf->DNSResolveIP(CSTRP(svrname, svrnameEnd), &this->svrAddr))
+		else if (!sockf->DNSResolveIP(CSTRP(svrname, svrnameEnd), this->svrAddr))
 		{
 			this->writing = true;
 			this->canWrite = false;
@@ -559,7 +559,7 @@ Bool Net::HTTPOSClient::IsSecureConn()
 	return false;
 }
 
-Bool Net::HTTPOSClient::SetClientCert(Crypto::Cert::X509Cert *cert, Crypto::Cert::X509File *key)
+Bool Net::HTTPOSClient::SetClientCert(NotNullPtr<Crypto::Cert::X509Cert> cert, NotNullPtr<Crypto::Cert::X509File> key)
 {
 #if defined(CURLOPTTYPE_BLOB)
 	if (this->clsData->curl)

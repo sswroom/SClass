@@ -1,6 +1,7 @@
 #ifndef _SM_NET_SOCKETFACTORY
 #define _SM_NET_SOCKETFACTORY
 #include "Data/ArrayList.h"
+#include "Data/DataArray.h"
 #include "Data/Duration.h"
 #include "Net/SocketUtil.h"
 #include "Sync/Event.h"
@@ -168,8 +169,8 @@ namespace Net
 		virtual Bool SocketListen(Socket *socket) = 0;
 		virtual Socket *SocketAccept(Socket *socket) = 0;
 		virtual Int32 SocketGetLastError() = 0;
-		virtual Bool GetRemoteAddr(Socket *socket, Net::SocketUtil::AddressInfo *addr, UInt16 *port) = 0;
-		virtual Bool GetLocalAddr(Socket *socket, Net::SocketUtil::AddressInfo *addr, UInt16 *port) = 0;
+		virtual Bool GetRemoteAddr(Socket *socket, NotNullPtr<Net::SocketUtil::AddressInfo> addr, UInt16 *port) = 0;
+		virtual Bool GetLocalAddr(Socket *socket, NotNullPtr<Net::SocketUtil::AddressInfo> addr, UInt16 *port) = 0;
 		virtual Int32 SocketGetFD(Socket *socket) = 0;
 
 		virtual void SetDontLinger(Socket *socket, Bool val) = 0;
@@ -188,29 +189,29 @@ namespace Net
 		virtual UOSInt EndReceiveData(void *reqData, Bool toWait, Bool *incomplete) = 0;
 		virtual void CancelReceiveData(void *reqData) = 0;
 
-		virtual UOSInt UDPReceive(Socket *socket, UInt8 *buff, UOSInt buffSize, Net::SocketUtil::AddressInfo *addr, UInt16 *port, ErrorType *et) = 0;
-		virtual UOSInt SendTo(Socket *socket, const UInt8 *buff, UOSInt buffSize, const Net::SocketUtil::AddressInfo *addr, UInt16 port) = 0;
+		virtual UOSInt UDPReceive(Socket *socket, UInt8 *buff, UOSInt buffSize, NotNullPtr<Net::SocketUtil::AddressInfo> addr, OutParam<UInt16> port, ErrorType *et) = 0;
+		virtual UOSInt SendTo(Socket *socket, const UInt8 *buff, UOSInt buffSize, NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port) = 0;
 		virtual UOSInt SendToIF(Socket *socket, const UInt8 *buff, UOSInt buffSize, const UTF8Char *ifName) = 0;
 
-		virtual Bool IcmpSendEcho2(const Net::SocketUtil::AddressInfo *addr, UInt32 *respTime_us, UInt32 *ttl) = 0;
+		virtual Bool IcmpSendEcho2(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt32 *respTime_us, UInt32 *ttl) = 0;
 
 		virtual Bool Connect(Socket *socket, UInt32 ip, UInt16 port, Data::Duration timeout) = 0;
-		virtual Bool Connect(Socket *socket, const Net::SocketUtil::AddressInfo *addr, UInt16 port, Data::Duration timeout) = 0;
+		virtual Bool Connect(Socket *socket, NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Data::Duration timeout) = 0;
 		virtual void ShutdownSend(Socket *socket) = 0;
 
 		virtual Bool SocketGetReadBuff(Socket *socket, UInt32 *size) = 0;
 
-		virtual Bool DNSResolveIPDef(const Char *host, Net::SocketUtil::AddressInfo *addr) = 0;
-		virtual Bool GetDefDNS(Net::SocketUtil::AddressInfo *addr) = 0;
+		virtual Bool DNSResolveIPDef(const Char *host, NotNullPtr<Net::SocketUtil::AddressInfo> addr) = 0;
+		virtual Bool GetDefDNS(NotNullPtr<Net::SocketUtil::AddressInfo> addr) = 0;
 		virtual UOSInt GetDNSList(Data::ArrayList<UInt32> *dnsList) = 0;
 		virtual Bool LoadHosts(Net::DNSHandler *dnsHdlr) = 0;
 
 		virtual Bool ARPAddRecord(UOSInt ifIndex, const UInt8 *hwAddr, UInt32 ipv4) = 0;
 
 		virtual UOSInt GetConnInfoList(Data::ArrayList<Net::ConnectionInfo*> *connInfoList) = 0;
-		virtual Bool GetIPInfo(IPInfo *info) = 0; //////////////////////////////////
-		virtual Bool GetTCPInfo(TCPInfo *info) = 0; //////////////////////////////////
-		virtual Bool GetUDPInfo(UDPInfo *info) = 0; //////////////////////////////////
+		virtual Bool GetIPInfo(NotNullPtr<IPInfo> info) = 0; //////////////////////////////////
+		virtual Bool GetTCPInfo(NotNullPtr<TCPInfo> info) = 0; //////////////////////////////////
+		virtual Bool GetUDPInfo(NotNullPtr<UDPInfo> info) = 0; //////////////////////////////////
 		virtual UOSInt QueryPortInfos(Data::ArrayList<PortInfo*> *portInfoList, ProtocolType protoType, UInt16 procId) = 0;
 		virtual void FreePortInfos(Data::ArrayList<PortInfo*> *portInfoList) = 0;
 		virtual UOSInt QueryPortInfos2(Data::ArrayList<PortInfo3*> *portInfoList, ProtocolType protoType, UInt16 procId) = 0;
@@ -220,8 +221,8 @@ namespace Net
 		virtual Bool AdapterEnable(Text::CString adapterName, Bool enable);
 
 		Bool ReloadDNS();
-		Bool DNSResolveIP(Text::CString host, Net::SocketUtil::AddressInfo *addr);
-		UOSInt DNSResolveIPs(Text::CString host, Net::SocketUtil::AddressInfo *addrs, UOSInt maxCount);
+		Bool DNSResolveIP(Text::CString host, NotNullPtr<Net::SocketUtil::AddressInfo> addr);
+		UOSInt DNSResolveIPs(Text::CString host, Data::DataArray<Net::SocketUtil::AddressInfo> addrs);
 		UInt32 DNSResolveIPv4(Text::CString host);
 //		Bool GetIPByHost(const WChar *host, Net::SocketUtil::AddressInfo *addr);
 //		UInt32 GetIPv4ByHost(const WChar *host);		UInt32 DNSResolveIPv4(const UTF8Char *host);

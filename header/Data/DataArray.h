@@ -122,6 +122,12 @@ namespace Data
 			CheckError(index + 1);
 			return buff[index];
 		}
+
+		Data::DataArray<T> SubArray(UOSInt index) const
+		{
+			CheckError(index);
+			return DataArray<T>(&buff[index], this->buffSize - index);
+		}
 	};
 }
 #endif

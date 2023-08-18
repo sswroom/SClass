@@ -2133,7 +2133,7 @@ void Net::MySQLTCPClient::GetConnName(NotNullPtr<Text::StringBuilderUTF8> sb)
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
 	sb->AppendC(UTF8STRC("MySQLTCP:"));
-	sptr = Net::SocketUtil::GetAddrName(sbuff, &this->addr, this->port);
+	sptr = Net::SocketUtil::GetAddrName(sbuff, this->addr, this->port);
 	sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
 	if (this->database)
 	{
@@ -2357,7 +2357,7 @@ void Net::MySQLTCPClient::Reconnect()
 	this->mode = ClientMode::Handshake;
 	SDEL_STRING(this->svrVer);
 	this->axisAware = false;
-	NEW_CLASS(this->cli, Net::TCPClient(this->sockf, &this->addr, this->port, 15000));
+	NEW_CLASS(this->cli, Net::TCPClient(this->sockf, this->addr, this->port, 15000));
 	if (this->cli->IsConnectError())
 	{
 		DEL_CLASS(this->cli);
@@ -2534,9 +2534,9 @@ UInt16 Net::MySQLTCPClient::GetServerCS() const
 	return this->svrCS;
 }
 
-const Net::SocketUtil::AddressInfo *Net::MySQLTCPClient::GetConnAddr() const
+NotNullPtr<const Net::SocketUtil::AddressInfo> Net::MySQLTCPClient::GetConnAddr() const
 {
-	return &this->addr;
+	return this->addr;
 }
 
 UInt16 Net::MySQLTCPClient::GetConnPort() const
@@ -2569,7 +2569,7 @@ DB::DBTool *Net::MySQLTCPClient::CreateDBTool(NotNullPtr<Net::SocketFactory> soc
 	Net::MySQLTCPClient *conn;
 	DB::DBTool *db;
 	Net::SocketUtil::AddressInfo addr;
-	if (sockf->DNSResolveIP(serverName->ToCString(), &addr))
+	if (sockf->DNSResolveIP(serverName->ToCString(), addr))
 	{
 		NEW_CLASS(conn, Net::MySQLTCPClient(sockf, &addr, 3306, uid, pwd, dbName));
 		if (conn->IsError() == 0)
@@ -2594,7 +2594,7 @@ DB::DBTool *Net::MySQLTCPClient::CreateDBTool(NotNullPtr<Net::SocketFactory> soc
 	Net::MySQLTCPClient *conn;
 	DB::DBTool *db;
 	Net::SocketUtil::AddressInfo addr;
-	if (sockf->DNSResolveIP(serverName, &addr))
+	if (sockf->DNSResolveIP(serverName, addr))
 	{
 		NEW_CLASS(conn, Net::MySQLTCPClient(sockf, &addr, 3306, uid, pwd, dbName));
 		if (conn->IsError() == 0)

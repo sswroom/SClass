@@ -63,7 +63,7 @@ void SSWR::AVIRead::AVIRHTTPLog::LogRequest(Net::WebServer::IWebRequest *req)
 	}
 	SDEL_STRING(this->entries[i].reqURI);
 	this->entries[i].reqURI = req->GetRequestURI()->Clone().Ptr();
-	this->entries[i].cliAddr = *req->GetClientAddr();
+	this->entries[i].cliAddr = req->GetClientAddr().Ptr()[0];
 	this->entries[i].cliPort = req->GetClientPort();
 	this->entries[i].reqTime = dt.ToTicks();
 	j = this->entries[i].headerName->GetCount();
@@ -157,14 +157,16 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnStartClick(void *userObj)
 
 	if (me->chkSSL->IsChecked())
 	{
-		if (me->sslCert == 0 || me->sslKey == 0)
+		NotNullPtr<Crypto::Cert::X509Cert> sslCert;
+		NotNullPtr<Crypto::Cert::X509File> sslKey;
+		if (!sslCert.Set(me->sslCert) || !sslKey.Set(me->sslKey))
 		{
 			UI::MessageDialog::ShowDialog(CSTR("Please select SSL Cert/Key First"), CSTR("HTTP Server"), me);
 			return;
 		}
 		ssl = me->ssl;
-		Crypto::Cert::X509Cert *issuerCert = Crypto::Cert::CertUtil::FindIssuer(me->sslCert);
-		if (!ssl->ServerSetCertsASN1(me->sslCert, me->sslKey, issuerCert))
+		Crypto::Cert::X509Cert *issuerCert = Crypto::Cert::CertUtil::FindIssuer(sslCert);
+		if (!ssl->ServerSetCertsASN1(sslCert, sslKey, issuerCert))
 		{
 			SDEL_CLASS(issuerCert);
 			UI::MessageDialog::ShowDialog(CSTR("Error in initializing Cert/Key"), CSTR("HTTP Server"), me);
@@ -381,7 +383,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnTimerTick(void *userObj)
 			dt.ToLocalTime();
 			sb.AppendDate(dt);
 			sb.AppendC(UTF8STRC(" "));
-			sptr = Net::SocketUtil::GetAddrName(sbuff, &log->cliAddr, log->cliPort);
+			sptr = Net::SocketUtil::GetAddrName(sbuff, log->cliAddr, log->cliPort);
 			sb.AppendP(sbuff, sptr);
 
 			me->lbAccess->AddItem(sb.ToCString(), (void*)(OSInt)logIndex.GetItem(i));
@@ -407,7 +409,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnAccessSelChg(void *userObj)
 	dt.ToLocalTime();
 	sb.AppendDate(dt);
 	sb.AppendC(UTF8STRC(" "));
-	sptr = Net::SocketUtil::GetAddrName(sbuff, &log->cliAddr, log->cliPort);
+	sptr = Net::SocketUtil::GetAddrName(sbuff, log->cliAddr, log->cliPort);
 	sb.AppendP(sbuff, sptr);
 	sb.AppendC(UTF8STRC("\r\n"));
 	sb.Append(log->reqURI);

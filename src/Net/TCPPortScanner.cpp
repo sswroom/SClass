@@ -37,7 +37,7 @@ UInt32 __stdcall Net::TCPPortScanner::ScanThread(void *userObj)
 					}
 					if (s)
 					{
-						Bool succ = me->sockf->Connect(s, &addr, (UInt16)i, 10000);
+						Bool succ = me->sockf->Connect(s, addr, (UInt16)i, 10000);
 						me->sockf->DestroySocket(s);
 
 						mutUsage.BeginUse();

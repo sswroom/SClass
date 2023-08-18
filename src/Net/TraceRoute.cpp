@@ -19,7 +19,7 @@ UInt32 __stdcall Net::TraceRoute::RecvThread(void *userObj)
 	me->resEvt->Set();
 	while (!me->threadToStop)
 	{
-		readSize = me->sockf->UDPReceive(me->socV4, readBuff, 4096, &addr, &port, &et);
+		readSize = me->sockf->UDPReceive(me->socV4, readBuff, 4096, addr, port, &et);
 		if (readSize >= 36)
 		{
 			if ((readBuff[0] & 0xf0) == 0x40 && readBuff[9] == 1)
@@ -137,9 +137,9 @@ Bool Net::TraceRoute::Tracev4(UInt32 ip, Data::ArrayList<UInt32> *ipList)
 	this->resSeq = 0xd7;
 	this->resFound = false;
 
-	Net::SocketUtil::SetAddrInfoV4(&addr, ip);
+	Net::SocketUtil::SetAddrInfoV4(addr, ip);
 	this->sockf->SetIPv4TTL(this->socV4, 64);
-	this->sockf->SendTo(this->socV4, packetBuff, 72, &addr, 0);
+	this->sockf->SendTo(this->socV4, packetBuff, 72, addr, 0);
 
 	this->resEvt->Wait(2000);
 	if (!this->resFound)
@@ -166,7 +166,7 @@ Bool Net::TraceRoute::Tracev4(UInt32 ip, Data::ArrayList<UInt32> *ipList)
 		this->resFound = false;
 
 		this->resEvt->Clear();
-		this->sockf->SendTo(this->socV4, packetBuff, 72, &addr, 0);
+		this->sockf->SendTo(this->socV4, packetBuff, 72, addr, 0);
 		this->resEvt->Wait(2000);
 		if (!this->resFound)
 		{

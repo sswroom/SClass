@@ -29,13 +29,13 @@ namespace Net
 		Double lon;
 		Int32 altitude;
 
-		static void __stdcall OnUDPPacket(const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData);
+		static void __stdcall OnUDPPacket(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData);
 		static UInt32 __stdcall PullThread(void *userObj);
 
 		Bool SendPullData();
 		Bool SendStatData();
 	public:
-		LoRaGateway(NotNullPtr<Net::SocketFactory> sockf, const Net::SocketUtil::AddressInfo *svrAddr, UInt16 svrPort, const UInt8 *gatewayEUI, IO::LogTool *log);
+		LoRaGateway(NotNullPtr<Net::SocketFactory> sockf, NotNullPtr<const Net::SocketUtil::AddressInfo> svrAddr, UInt16 svrPort, const UInt8 *gatewayEUI, IO::LogTool *log);
 		~LoRaGateway();
 
 		void UpdatePos(Double lat, Double lon, Int32 altitude);

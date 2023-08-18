@@ -58,7 +58,7 @@ IO::RAWBTMonitor::~RAWBTMonitor()
 	this->Close();
 }
 
-IO::RAWMonitor::LinkType IO::RAWBTMonitor::GetLinkType()
+IO::RAWMonitor::LinkType IO::RAWBTMonitor::GetLinkType() const
 {
 	return LinkType::Bluetooth;
 }

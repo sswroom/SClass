@@ -7,11 +7,11 @@
 
 #define BUFFSIZE 2048
 
-void __stdcall Net::UDPServerStream::OnUDPPacket(const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData)
+void __stdcall Net::UDPServerStream::OnUDPPacket(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData)
 {
 	Net::UDPServerStream *me = (Net::UDPServerStream*)userData;
 	Sync::MutexUsage mutUsage(me->dataMut);
-	me->lastAddr = *addr;
+	me->lastAddr = addr.Ptr()[0];
 	me->lastPort = port;
 	if (dataSize >= BUFFSIZE)
 	{
@@ -93,7 +93,7 @@ UOSInt Net::UDPServerStream::Write(const UInt8 *buff, UOSInt size)
 	{
 		return 0;
 	}
-	this->svr->SendTo(&this->lastAddr, this->lastPort, buff, size);
+	this->svr->SendTo(this->lastAddr, this->lastPort, buff, size);
 	return size;
 }
 

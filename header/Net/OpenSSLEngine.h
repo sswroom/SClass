@@ -22,12 +22,12 @@ namespace Net
 		
 		virtual Bool IsError();
 
-		virtual Bool ServerSetCertsASN1(Crypto::Cert::X509Cert *certASN1, Crypto::Cert::X509File *keyASN1, Crypto::Cert::X509Cert *caCert);
+		virtual Bool ServerSetCertsASN1(NotNullPtr<Crypto::Cert::X509Cert> certASN1, NotNullPtr<Crypto::Cert::X509File> keyASN1, Crypto::Cert::X509Cert *caCert);
 		virtual Bool ServerSetRequireClientCert(ClientCertType cliCert);
 		virtual Bool ServerSetClientCA(Text::CString clientCA);
 		virtual Bool ServerAddALPNSupport(Text::CString proto);
 
-		virtual Bool ClientSetCertASN1(Crypto::Cert::X509Cert *certASN1, Crypto::Cert::X509File *keyASN1);
+		virtual Bool ClientSetCertASN1(NotNullPtr<Crypto::Cert::X509Cert> certASN1, NotNullPtr<Crypto::Cert::X509File> keyASN1);
 		virtual void ClientSetSkipCertCheck(Bool skipCertCheck);
 		virtual Net::SSLClient *ClientConnect(Text::CString hostName, UInt16 port, ErrorType *err, Data::Duration timeout);
 		virtual Net::SSLClient *ClientInit(Socket *s, Text::CString hostName, ErrorType *err);

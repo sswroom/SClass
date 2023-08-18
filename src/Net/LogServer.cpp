@@ -21,8 +21,8 @@ void __stdcall Net::LogServer::ConnHdlr(Socket *s, void *userObj)
 	cliStatus = MemAlloc(ClientStatus, 1);
 	cliStatus->buff = MemAlloc(UInt8, BUFFSIZE);
 	cliStatus->buffSize = 0;
-	cli->GetRemoteAddr(&addr);
-	cliStatus->status = me->GetIPStatus(&addr);
+	cli->GetRemoteAddr(addr);
+	cliStatus->status = me->GetIPStatus(addr);
 	me->cliMgr->AddClient(cli, cliStatus);
 }
 
@@ -84,7 +84,7 @@ void __stdcall Net::LogServer::ClientTimeout(NotNullPtr<Net::TCPClient> cli, voi
 {
 }
 
-Net::LogServer::IPStatus *Net::LogServer::GetIPStatus(const Net::SocketUtil::AddressInfo *addr)
+Net::LogServer::IPStatus *Net::LogServer::GetIPStatus(NotNullPtr<const Net::SocketUtil::AddressInfo> addr)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;

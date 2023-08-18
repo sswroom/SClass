@@ -4,7 +4,7 @@
 #include "Net/NetBIOSUtil.h"
 #include "Sync/MutexUsage.h"
 
-void __stdcall Net::NetBIOSScanner::OnUDPPacket(const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData)
+void __stdcall Net::NetBIOSScanner::OnUDPPacket(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData)
 {
 	Net::NetBIOSScanner *me = (Net::NetBIOSScanner*)userData;
 	UInt32 sortableIP = ReadMUInt32(addr->addr);
@@ -105,8 +105,8 @@ void Net::NetBIOSScanner::SendRequest(UInt32 ip)
 	WriteMUInt16(&buff[46], 0x21); //Question Type = NBSTAT
 	WriteMUInt16(&buff[48], 0x01); //Question Class = IN
 	Net::SocketUtil::AddressInfo addr;
-	Net::SocketUtil::SetAddrInfoV4(&addr, ip);
-	this->svr->SendTo(&addr, 137, buff, 50);
+	Net::SocketUtil::SetAddrInfoV4(addr, ip);
+	this->svr->SendTo(addr, 137, buff, 50);
 }
 
 void Net::NetBIOSScanner::SetAnswerHandler(AnswerUpdated hdlr, void *userObj)

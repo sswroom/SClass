@@ -187,7 +187,7 @@ UInt32 __stdcall SSWR::SMonitor::SMonitorSvrCore::CheckThread(void *userObj)
 	return 0;
 }
 
-void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnDataUDPPacket(const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData)
+void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnDataUDPPacket(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData)
 {
 	SSWR::SMonitor::SMonitorSvrCore *me = (SSWR::SMonitor::SMonitorSvrCore*)userData;
 	SSWR::SMonitor::ISMonitorCore::DeviceInfo *devInfo;
@@ -215,7 +215,7 @@ void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnDataUDPPacket(const Net::Socke
 					{
 						me->UDPSendReadingRecv(addr, port, recTime);
 						devInfo = me->DevGet(clientId, true);
-						devInfo->udpAddr = *addr;
+						devInfo->udpAddr = addr.Ptr()[0];
 						devInfo->udpPort = port;
 
 						me->DeviceRecvReading(devInfo, recTime, nDigital, nReading, nOutput, digitalVals, (ReadingInfo*)&buff[40], profileId, *(UInt32*)addr->addr, port);
@@ -611,7 +611,7 @@ void SSWR::SMonitor::SMonitorSvrCore::TCPSendSetOutput(NotNullPtr<IO::Stream> st
 	stm->Write(packetBuff, packetSize);
 }
 
-void SSWR::SMonitor::SMonitorSvrCore::UDPSendReadingRecv(const Net::SocketUtil::AddressInfo *addr, UInt16 port, Int64 recTime)
+void SSWR::SMonitor::SMonitorSvrCore::UDPSendReadingRecv(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Int64 recTime)
 {
 	UInt8 reply[14];
 	UInt8 calcVal[2];
@@ -625,7 +625,7 @@ void SSWR::SMonitor::SMonitorSvrCore::UDPSendReadingRecv(const Net::SocketUtil::
 	this->dataUDP->SendTo(addr, port, reply, 14);
 }
 
-void SSWR::SMonitor::SMonitorSvrCore::UDPSendCapturePhoto(const Net::SocketUtil::AddressInfo *addr, UInt16 port)
+void SSWR::SMonitor::SMonitorSvrCore::UDPSendCapturePhoto(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port)
 {
 	UInt8 reply[6];
 	UInt8 calcVal[2];
@@ -638,7 +638,7 @@ void SSWR::SMonitor::SMonitorSvrCore::UDPSendCapturePhoto(const Net::SocketUtil:
 	this->dataUDP->SendTo(addr, port, reply, 6);
 }
 
-void SSWR::SMonitor::SMonitorSvrCore::UDPSendPhotoPacket(const Net::SocketUtil::AddressInfo *addr, UInt16 port, Int64 photoTime, UInt32 seq)
+void SSWR::SMonitor::SMonitorSvrCore::UDPSendPhotoPacket(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Int64 photoTime, UInt32 seq)
 {
 	UInt8 reply[18];
 	UInt8 calcVal[2];
@@ -653,7 +653,7 @@ void SSWR::SMonitor::SMonitorSvrCore::UDPSendPhotoPacket(const Net::SocketUtil::
 	this->dataUDP->SendTo(addr, port, reply, 18);
 }
 
-void SSWR::SMonitor::SMonitorSvrCore::UDPSendPhotoEnd(const Net::SocketUtil::AddressInfo *addr, UInt16 port, Int64 photoTime)
+void SSWR::SMonitor::SMonitorSvrCore::UDPSendPhotoEnd(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Int64 photoTime)
 {
 	UInt8 reply[14];
 	UInt8 calcVal[2];
@@ -667,7 +667,7 @@ void SSWR::SMonitor::SMonitorSvrCore::UDPSendPhotoEnd(const Net::SocketUtil::Add
 	this->dataUDP->SendTo(addr, port, reply, 14);
 }
 
-void SSWR::SMonitor::SMonitorSvrCore::UDPSendSetOutput(const Net::SocketUtil::AddressInfo *addr, UInt16 port, UInt8 outputNum, Bool isHigh)
+void SSWR::SMonitor::SMonitorSvrCore::UDPSendSetOutput(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, UInt8 outputNum, Bool isHigh)
 {
 	UInt8 reply[8];
 	UInt8 calcVal[2];

@@ -46,7 +46,7 @@ namespace Net
 		static void __stdcall ClientData(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, const Data::ByteArrayR &buff);
 		static void __stdcall ClientTimeout(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData);
 
-		IPStatus *GetIPStatus(const Net::SocketUtil::AddressInfo *addr);
+		IPStatus *GetIPStatus(NotNullPtr<const Net::SocketUtil::AddressInfo> addr);
 	public:
 		LogServer(NotNullPtr<Net::SocketFactory> sockf, UInt16 port, Text::CString logPath, IO::LogTool *svrLog, Bool redirLog, Bool autoStart);
 		virtual ~LogServer();

@@ -25,7 +25,7 @@ void __stdcall SSWR::AVIRead::AVIRNTPClientForm::OnGetTimeClicked(void *userObj)
 			}
 			sb.TrimToLength((UOSInt)i);
 		}
-		if (cli->GetServerTime(sb.ToCString(), destPort, &ts))
+		if (cli->GetServerTime(sb.ToCString(), destPort, ts))
 		{
 			sptr = ts.ToLocalTime().ToString(sbuff);
 			me->txtServerTime->SetText(CSTRP(sbuff, sptr));
@@ -62,7 +62,7 @@ void __stdcall SSWR::AVIRead::AVIRNTPClientForm::OnSyncTimeClicked(void *userObj
 			}
 			sb.TrimToLength((UOSInt)i);
 		}
-		if (cli->GetServerTime(sb.ToCString(), destPort, &ts))
+		if (cli->GetServerTime(sb.ToCString(), destPort, ts))
 		{
 			if (ts.SetAsComputerTime())
 			{

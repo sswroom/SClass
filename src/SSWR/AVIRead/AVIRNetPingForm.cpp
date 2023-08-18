@@ -19,7 +19,7 @@ void __stdcall SSWR::AVIRead::AVIRNetPingForm::OnPingClicked(void *userObj)
 		Net::SocketUtil::AddressInfo addr;
 		Text::StringBuilderUTF8 sb;
 		me->txtTarget->GetText(sb);
-		if (!me->sockf->DNSResolveIP(sb.ToCString(), &addr))
+		if (!me->sockf->DNSResolveIP(sb.ToCString(), addr))
 		{
 			UI::MessageDialog::ShowDialog(CSTR("Error, target name is not valid"), CSTR("Error"), me);
 			return;
@@ -38,7 +38,7 @@ void __stdcall SSWR::AVIRead::AVIRNetPingForm::OnPingClicked(void *userObj)
 			Double t2;
 			sb.ClearStr();
 			Manage::HiResClock clk;
-			if (me->sockf->IcmpSendEcho2(&addr, &t1, &ttl))
+			if (me->sockf->IcmpSendEcho2(addr, &t1, &ttl))
 			{
 				t2 = clk.GetTimeDiff();
 				sb.ClearStr();
@@ -68,7 +68,7 @@ void __stdcall SSWR::AVIRead::AVIRNetPingForm::OnTimerTick(void *userObj)
 		Double t2;
 		Double t[2];
 		Manage::HiResClock clk;
-		if (me->sockf->IcmpSendEcho2(&me->targetAddr, &t1, &ttl))
+		if (me->sockf->IcmpSendEcho2(me->targetAddr, &t1, &ttl))
 		{
 			t2 = clk.GetTimeDiff();
 			Text::StringBuilderUTF8 sb;

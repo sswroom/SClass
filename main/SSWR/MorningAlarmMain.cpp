@@ -48,7 +48,7 @@ NotNullPtr<Net::SocketFactory> sockf;
 Net::SSLEngine *ssl;
 Text::EncodingFactory *encFact;
 Net::NTPClient *timeCli;
-Data::DateTime *tmpDt;
+NotNullPtr<Data::DateTime> tmpDt;
 
 
 UInt32 __stdcall PlayThread(void *obj)
@@ -273,7 +273,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	ssl = Net::SSLEngineFactory::Create(sockf, true);
 	NEW_CLASS(encFact, Text::EncodingFactory());
 	NEW_CLASS(timeCli, Net::NTPClient(sockf, 14562));
-	NEW_CLASS(tmpDt, Data::DateTime());
+	NEW_CLASSNN(tmpDt, Data::DateTime());
 	devCnt = i = Media::AudioDevice::GetDeviceCount();
 	sel = MemAlloc(Text::String*, devCnt);
 	while (i-- > 0)
@@ -360,7 +360,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 
 	}
 
-	DEL_CLASS(tmpDt);
+	tmpDt.Delete();
 	DEL_CLASS(timeCli);
 	DEL_CLASS(encFact);
 	SDEL_CLASS(ssl);

@@ -612,9 +612,9 @@ void Net::WebServer::WebRequest::GetRequestURLBase(NotNullPtr<Text::StringBuilde
 	}
 }
 
-const Net::SocketUtil::AddressInfo *Net::WebServer::WebRequest::GetClientAddr() const
+NotNullPtr<const Net::SocketUtil::AddressInfo> Net::WebServer::WebRequest::GetClientAddr() const
 {
-	return &this->cliAddr;
+	return this->cliAddr;
 }
 
 Net::NetConnection *Net::WebServer::WebRequest::GetNetConn() const

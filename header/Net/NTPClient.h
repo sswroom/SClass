@@ -16,15 +16,15 @@ namespace Net
 		Data::Timestamp resultTime;
 		Bool hasResult;
 
-		static void __stdcall PacketHdlr(const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData);
+		static void __stdcall PacketHdlr(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData);
 	public:
 		NTPClient(NotNullPtr<Net::SocketFactory> sockf, UInt16 port);
 		~NTPClient();
 
-		Bool GetServerTime(Text::CString host, UInt16 port, Data::DateTime *svrTime); //def = 123
-		Bool GetServerTime(Text::CString host, UInt16 port, Data::Timestamp *svrTime); //def = 123
-		Bool GetServerTime(const Net::SocketUtil::AddressInfo *addr, UInt16 port, Data::DateTime *svrTime); //def = 123
-		Bool GetServerTime(const Net::SocketUtil::AddressInfo *addr, UInt16 port, Data::Timestamp *svrTime); //def = 123
+		Bool GetServerTime(Text::CString host, UInt16 port, NotNullPtr<Data::DateTime> svrTime); //def = 123
+		Bool GetServerTime(Text::CString host, UInt16 port, OutParam<Data::Timestamp> svrTime); //def = 123
+		Bool GetServerTime(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, NotNullPtr<Data::DateTime> svrTime); //def = 123
+		Bool GetServerTime(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, OutParam<Data::Timestamp> svrTime); //def = 123
 
 		static UInt16 GetDefaultPort();
 	};

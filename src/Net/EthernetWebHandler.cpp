@@ -135,7 +135,7 @@ Bool __stdcall Net::EthernetWebHandler::DeviceReq(EthernetWebHandler *me, Net::W
 				if (mac->ipv6Addr.addrType == Net::AddrType::IPv6)
 				{
 					sb.AppendC(UTF8STRC("<br/>"));
-					sptr = Net::SocketUtil::GetAddrName(sbuff, &mac->ipv6Addr);
+					sptr = Net::SocketUtil::GetAddrName(sbuff, mac->ipv6Addr);
 					sb.AppendP(sbuff, sptr);
 				}
 			}
@@ -143,7 +143,7 @@ Bool __stdcall Net::EthernetWebHandler::DeviceReq(EthernetWebHandler *me, Net::W
 			{
 				if (mac->ipv6Addr.addrType == Net::AddrType::IPv6)
 				{
-					sptr = Net::SocketUtil::GetAddrName(sbuff, &mac->ipv6Addr);
+					sptr = Net::SocketUtil::GetAddrName(sbuff, mac->ipv6Addr);
 					sb.AppendP(sbuff, sptr);
 				}
 			}
@@ -699,7 +699,7 @@ Bool __stdcall Net::EthernetWebHandler::DNSClientReq(EthernetWebHandler *me, Net
 			sb.AppendC(UTF8STRC("<a href=\"dnsclient?qry="));
 			sb.AppendU32(dnsCli->cliId);
 			sb.AppendC(UTF8STRC("\">"));
-			sptr = Net::SocketUtil::GetAddrName(sbuff, &dnsCli->addr);
+			sptr = Net::SocketUtil::GetAddrName(sbuff, dnsCli->addr);
 			sb.AppendP(sbuff, sptr);
 			sb.AppendC(UTF8STRC("</a>"));
 			if ((UInt32)dnsCli->cliId == qryVal)
@@ -713,7 +713,7 @@ Bool __stdcall Net::EthernetWebHandler::DNSClientReq(EthernetWebHandler *me, Net
 		{
 			Net::EthernetAnalyzer::DNSCliHourInfo *hourInfo;
 			dnsCli = dnsCliList->GetItem((UOSInt)dnsCliInd);
-			sptr = Net::SocketUtil::GetAddrName(sbuff, &dnsCli->addr);
+			sptr = Net::SocketUtil::GetAddrName(sbuff, dnsCli->addr);
 			sb.AppendP(sbuff, sptr);
 			sb.AppendC(UTF8STRC("<br/><table border=\"1\"><tr><td>Time</td><td>Count</td></tr>"));
 			Sync::MutexUsage mutUsage(dnsCli->mut);

@@ -19,7 +19,7 @@ void IO::Device::GoProCameraControl::GetMediaList()
 		Text::StringBuilderUTF8 sb;
 		IO::CameraControl::FileInfo *file;
 		sptr = Text::StrConcatC(sbuff, UTF8STRC("http://"));
-		sptr = Net::SocketUtil::GetAddrName(sptr, &this->addr);
+		sptr = Net::SocketUtil::GetAddrName(sptr, this->addr);
 		sptr = Text::StrConcatC(sptr, UTF8STRC(":8080/gp/gpMediaList"));
 		NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->sockf, 0, CSTRP(sbuff, sptr), Net::WebUtil::RequestMethod::HTTP_GET, true);
 		{
@@ -125,7 +125,7 @@ Bool IO::Device::GoProCameraControl::GetInfo(Data::ArrayListNN<Text::String> *na
 	UTF8Char *sptr;
 	Text::StringBuilderUTF8 sb;
 	sptr = Text::StrConcatC(sbuff, UTF8STRC("http://"));
-	sptr = Net::SocketUtil::GetAddrName(sptr, &this->addr);
+	sptr = Net::SocketUtil::GetAddrName(sptr, this->addr);
 	sptr = Text::StrConcatC(sptr, UTF8STRC("/gp/gpControl/info"));
 	NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->sockf, 0, CSTRP(sbuff, sptr), Net::WebUtil::RequestMethod::HTTP_GET, true);
 	{
@@ -251,7 +251,7 @@ Bool IO::Device::GoProCameraControl::GetFile(IO::CameraControl::FileInfo *file, 
 	UInt64 totalWriteSize = 0;
 	UTF8Char *sptr;
 	sptr = Text::StrConcatC(sbuff, UTF8STRC("http://"));
-	sptr = Net::SocketUtil::GetAddrName(sptr, &this->addr);
+	sptr = Net::SocketUtil::GetAddrName(sptr, this->addr);
 	sptr = Text::StrConcatC(sptr, UTF8STRC(":8080/videos/DCIM/"));
 	sptr = Text::StrConcat(sptr, file->filePath);
 	sptr = Text::StrConcatC(sptr, UTF8STRC("/"));
@@ -278,7 +278,7 @@ Bool IO::Device::GoProCameraControl::GetThumbnailFile(IO::CameraControl::FileInf
 		return false;
 	}
 	sptr = Text::StrConcatC(sbuff, UTF8STRC("http://"));
-	sptr = Net::SocketUtil::GetAddrName(sptr, &this->addr);
+	sptr = Net::SocketUtil::GetAddrName(sptr, this->addr);
 	sptr = Text::StrConcatC(sptr, UTF8STRC(":8080/gp/gpMediaMetadata?p="));
 	sptr = Text::StrConcat(sptr, file->filePath);
 	sptr = Text::StrConcatC(sptr, UTF8STRC("/"));
@@ -314,7 +314,7 @@ IO::Device::GoProCameraControl *IO::Device::GoProCameraControl::CreateControl(No
 	if (found)
 	{
 		Net::SocketUtil::AddressInfo addr;
-		Net::SocketUtil::SetAddrInfoV4(&addr, ip);
+		Net::SocketUtil::SetAddrInfoV4(addr, ip);
 		IO::Device::GoProCameraControl *ctrl;
 		NEW_CLASS(ctrl, IO::Device::GoProCameraControl(sockf, &addr));
 		return ctrl;

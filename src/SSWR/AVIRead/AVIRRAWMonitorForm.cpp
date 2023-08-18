@@ -673,7 +673,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(void *userObj)
 		while (i < j)
 		{
 			cli = cliList.GetItem(i);
-			sptr = Net::SocketUtil::GetAddrName(sbuff, &cli->addr);
+			sptr = Net::SocketUtil::GetAddrName(sbuff, cli->addr);
 			me->lbDNSClient->AddItem(CSTRP(sbuff, sptr), cli);
 			if (cli == currSel)
 			{
@@ -930,7 +930,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(void *userObj)
 			{
 				if (mac->ipv6Addr.addrType == Net::AddrType::IPv6)
 				{
-					sptr = Net::SocketUtil::GetAddrName(Text::StrConcatC(Net::SocketUtil::GetIPv4Name(sbuff, mac->ipv4Addr[0]), UTF8STRC(", ")), &mac->ipv6Addr);
+					sptr = Net::SocketUtil::GetAddrName(Text::StrConcatC(Net::SocketUtil::GetIPv4Name(sbuff, mac->ipv4Addr[0]), UTF8STRC(", ")), mac->ipv6Addr);
 					me->lvDevice->SetSubItem(i, 9, CSTRP(sbuff, sptr));
 				}
 				else
@@ -943,7 +943,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(void *userObj)
 			{
 				if (mac->ipv6Addr.addrType == Net::AddrType::IPv6)
 				{
-					sptr = Net::SocketUtil::GetAddrName(sbuff, &mac->ipv6Addr);
+					sptr = Net::SocketUtil::GetAddrName(sbuff, mac->ipv6Addr);
 					me->lvDevice->SetSubItem(i, 9, CSTRP(sbuff, sptr));
 				}
 				else

@@ -192,7 +192,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPDownloaderForm::OnTimerTick(void *userObj)
 
 	if (me->respChanged)
 	{
-		sptr = Net::SocketUtil::GetAddrName(sbuff, &me->respSvrAddr);
+		sptr = Net::SocketUtil::GetAddrName(sbuff, me->respSvrAddr);
 		me->txtSvrIP->SetText(CSTRP(sbuff, sptr));
 		if (me->respTimeDNS == -1)
 		{

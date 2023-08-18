@@ -14,7 +14,11 @@ UInt32 Net::SSLEngine::trustStoreCnt = 0;
 
 UInt32 __stdcall Net::SSLEngine::ServerThread(void *userObj)
 {
+	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	ThreadState *state = (ThreadState*)userObj;
+	sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("SSLEngine")), state->index);
+	Sync::ThreadUtil::SetName(CSTRP(sbuff, sptr));
 	state->status = ThreadStatus::NewClient;
 	while (!state->me->threadToStop)
 	{
@@ -109,33 +113,41 @@ Net::SSLEngine::~SSLEngine()
 Bool Net::SSLEngine::ServerSetCerts(Text::CStringNN certFile, Text::CStringNN keyFile)
 {
 	Parser::FileParser::X509Parser parser;
-	Crypto::Cert::X509File *certASN1 = 0;
-	Crypto::Cert::X509File *keyASN1 = 0;
+	NotNullPtr<Crypto::Cert::X509File> certASN1;
+	NotNullPtr<Crypto::Cert::X509File> keyASN1;
 	if (certFile.leng > 0)
 	{
-		if ((certASN1 = (Crypto::Cert::X509File*)parser.ParseFilePath(certFile)) == 0)
+		if (!certASN1.Set((Crypto::Cert::X509File*)parser.ParseFilePath(certFile)))
 		{
 			return false;
 		}
 		if (certASN1->GetFileType() != Crypto::Cert::X509File::FileType::Cert)
 		{
-			DEL_CLASS(certASN1);
+			certASN1.Delete();
 			return false;
 		}
+	}
+	else
+	{
+		return false;
 	}
 	if (keyFile.leng > 0)
 	{
-		if ((keyASN1 = (Crypto::Cert::X509File*)parser.ParseFilePath(keyFile)) == 0)
+		if (!keyASN1.Set((Crypto::Cert::X509File*)parser.ParseFilePath(keyFile)))
 		{
-			SDEL_CLASS(certASN1);
+			certASN1.Delete();
 			return false;
 		}
 	}
-	Crypto::Cert::X509Cert *issuerCert = Crypto::Cert::CertUtil::FindIssuer((Crypto::Cert::X509Cert*)certASN1);
-	Bool ret = this->ServerSetCertsASN1((Crypto::Cert::X509Cert*)certASN1, keyASN1, issuerCert);
+	else
+	{
+		return false;
+	}
+	Crypto::Cert::X509Cert *issuerCert = Crypto::Cert::CertUtil::FindIssuer(NotNullPtr<Crypto::Cert::X509Cert>::ConvertFrom(certASN1));
+	Bool ret = this->ServerSetCertsASN1(NotNullPtr<Crypto::Cert::X509Cert>::ConvertFrom(certASN1), keyASN1, issuerCert);
 	SDEL_CLASS(issuerCert);
-	SDEL_CLASS(certASN1);
-	SDEL_CLASS(keyASN1);
+	certASN1.Delete();
+	keyASN1.Delete();
 	return ret;
 }
 
@@ -186,6 +198,7 @@ void Net::SSLEngine::ServerInit(Socket *s, ClientReadyHandler readyHdlr, void *u
 			this->threadSt[i].s = s;
 			this->threadSt[i].status = ThreadStatus::Starting;
 			this->threadSt[i].me = this;
+			this->threadSt[i].index = i;
 			Sync::ThreadUtil::Create(ServerThread, &this->threadSt[i]);
 			break;
 		}

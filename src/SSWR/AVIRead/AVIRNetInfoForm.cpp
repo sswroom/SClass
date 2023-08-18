@@ -209,7 +209,7 @@ void SSWR::AVIRead::AVIRNetInfoForm::UpdateIPStats()
 	UTF8Char sbuff[12];
 	UTF8Char *sptr;
 	Net::SocketFactory::IPInfo info;
-	if (this->core->GetSocketFactory()->GetIPInfo(&info))
+	if (this->core->GetSocketFactory()->GetIPInfo(info))
 	{
 		sptr = Text::StrUInt32(sbuff, info.dwForwarding);
 		this->txtIPStatForwarding->SetText(CSTRP(sbuff, sptr));
@@ -291,7 +291,7 @@ void SSWR::AVIRead::AVIRNetInfoForm::UpdateTCPStats()
 	UTF8Char sbuff[12];
 	UTF8Char *sptr;
 	Net::SocketFactory::TCPInfo info;
-	if (this->core->GetSocketFactory()->GetTCPInfo(&info))
+	if (this->core->GetSocketFactory()->GetTCPInfo(info))
 	{
 		switch (info.dwRtoAlgorithm)
 		{
@@ -363,7 +363,7 @@ void SSWR::AVIRead::AVIRNetInfoForm::UpdateUDPStats()
 	UTF8Char sbuff[12];
 	UTF8Char *sptr;
 	Net::SocketFactory::UDPInfo info;
-	if (this->core->GetSocketFactory()->GetUDPInfo(&info))
+	if (this->core->GetSocketFactory()->GetUDPInfo(info))
 	{
 		sptr = Text::StrUInt32(sbuff, info.dwInDatagrams);
 		this->txtUDPStatInDatagrams->SetText(CSTRP(sbuff, sptr));
@@ -612,9 +612,9 @@ void SSWR::AVIRead::AVIRNetInfoForm::UpdatePortStats()
 			{
 				k = this->lvPortInfo->AddItem(CSTR("TCP6"), 0);
 			}			
-			sptr = Net::SocketUtil::GetAddrName(sbuff, &portInfo->localAddr, (UInt16)portInfo->localPort);
+			sptr = Net::SocketUtil::GetAddrName(sbuff, portInfo->localAddr, (UInt16)portInfo->localPort);
 			this->lvPortInfo->SetSubItem(k, 1, CSTRP(sbuff, sptr));
-			sptr = Net::SocketUtil::GetAddrName(sbuff, &portInfo->foreignAddr, (UInt16)portInfo->foreignPort);
+			sptr = Net::SocketUtil::GetAddrName(sbuff, portInfo->foreignAddr, (UInt16)portInfo->foreignPort);
 			this->lvPortInfo->SetSubItem(k, 2, CSTRP(sbuff, sptr));
 			switch (portInfo->portState)
 			{
@@ -686,9 +686,9 @@ void SSWR::AVIRead::AVIRNetInfoForm::UpdatePortStats()
 			{
 				k = this->lvPortInfo->AddItem(CSTR("?"), 0);
 			}
-			sptr = Net::SocketUtil::GetAddrName(sbuff, &portInfo->localAddr, (UInt16)portInfo->localPort);
+			sptr = Net::SocketUtil::GetAddrName(sbuff, portInfo->localAddr, (UInt16)portInfo->localPort);
 			this->lvPortInfo->SetSubItem(k, 1, CSTRP(sbuff, sptr));
-			sptr = Net::SocketUtil::GetAddrName(sbuff, &portInfo->foreignAddr, (UInt16)portInfo->foreignPort);
+			sptr = Net::SocketUtil::GetAddrName(sbuff, portInfo->foreignAddr, (UInt16)portInfo->foreignPort);
 			this->lvPortInfo->SetSubItem(k, 2, CSTRP(sbuff, sptr));
 			this->lvPortInfo->SetSubItem(k, 3, CSTR(""));
 			sptr = Text::StrInt32(sbuff, portInfo->processId);

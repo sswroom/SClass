@@ -71,7 +71,7 @@ namespace SSWR
 			static void __stdcall OnClientTimeout(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData);
 			static void __stdcall OnServerConn(Socket *s, void *userObj);
 			static UInt32 __stdcall CheckThread(void *userObj);
-			static void __stdcall OnDataUDPPacket(const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData);
+			static void __stdcall OnDataUDPPacket(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData);
 
 			virtual void DataParsed(NotNullPtr<IO::Stream> stm, void *stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize);
 			virtual void DataSkipped(NotNullPtr<IO::Stream> stm, void *stmObj, const UInt8 *buff, UOSInt buffSize);
@@ -82,11 +82,11 @@ namespace SSWR
 			void TCPSendPhotoEnd(NotNullPtr<IO::Stream> stm, Int64 photoTime);
 			void TCPSendSetOutput(NotNullPtr<IO::Stream> stm, UInt32 outputNum, Bool toHigh);
 
-			void UDPSendReadingRecv(const Net::SocketUtil::AddressInfo *addr, UInt16 port, Int64 recTime);
-			void UDPSendCapturePhoto(const Net::SocketUtil::AddressInfo *addr, UInt16 port);
-			void UDPSendPhotoPacket(const Net::SocketUtil::AddressInfo *addr, UInt16 port, Int64 photoTime, UInt32 seq);
-			void UDPSendPhotoEnd(const Net::SocketUtil::AddressInfo *addr, UInt16 port, Int64 photoTime);
-			void UDPSendSetOutput(const Net::SocketUtil::AddressInfo *addr, UInt16 port, UInt8 outputNum, Bool isHigh);
+			void UDPSendReadingRecv(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Int64 recTime);
+			void UDPSendCapturePhoto(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port);
+			void UDPSendPhotoPacket(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Int64 photoTime, UInt32 seq);
+			void UDPSendPhotoEnd(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Int64 photoTime);
+			void UDPSendSetOutput(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, UInt8 outputNum, Bool isHigh);
 
 			void SaveDatas();
 			void SavePhoto(Int64 cliId, Int64 photoTime, Int32 photoFmt, UInt8 *photoBuff, UOSInt photoSize);

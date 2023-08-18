@@ -76,7 +76,7 @@ namespace Net
 			Bool GetHTTPFormDouble(Text::CString name, OutParam<Double> valOut);
 			virtual void GetRequestURLBase(NotNullPtr<Text::StringBuilderUTF8> sb) = 0;
 
-			virtual const Net::SocketUtil::AddressInfo *GetClientAddr() const = 0;
+			virtual NotNullPtr<const Net::SocketUtil::AddressInfo> GetClientAddr() const = 0;
 			virtual Net::NetConnection *GetNetConn() const = 0;
 			virtual UInt16 GetClientPort() const = 0;
 			virtual Bool IsSecure() const = 0;

@@ -18,7 +18,7 @@
 
 #include <stdio.h>
 
-void __stdcall Net::RTPCliChannel::PacketHdlr(const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData)
+void __stdcall Net::RTPCliChannel::PacketHdlr(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData)
 {
 	ChannelData *chData = (ChannelData*)userData;
 //	WChar wbuff[32];
@@ -114,7 +114,7 @@ void __stdcall Net::RTPCliChannel::PacketHdlr(const Net::SocketUtil::AddressInfo
 	mutUsage.EndUse();
 }
 
-void __stdcall Net::RTPCliChannel::PacketCtrlHdlr(const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData)
+void __stdcall Net::RTPCliChannel::PacketCtrlHdlr(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData)
 {
 	ChannelData *chData = (ChannelData*)userData;
 	UInt8 tmpBuff[100];

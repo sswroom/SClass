@@ -140,7 +140,7 @@ Bool Crypto::Cert::CertUtil::AppendExtensions(NotNullPtr<Net::ASN1PDUBuilder> bu
 		while (i < j)
 		{
 			s = ext->subjectAltName->GetItem(i);
-			if (Net::SocketUtil::GetIPAddr(s->ToCString(), &addr))
+			if (Net::SocketUtil::GetIPAddr(s->ToCString(), addr))
 			{
 				if (addr.addrType == Net::AddrType::IPv4)
 				{
@@ -179,7 +179,7 @@ Bool Crypto::Cert::CertUtil::AppendExtensions(NotNullPtr<Net::ASN1PDUBuilder> bu
 		while (i < j)
 		{
 			s = ext->issuerAltName->GetItem(i);
-			if (Net::SocketUtil::GetIPAddr(s->ToCString(), &addr))
+			if (Net::SocketUtil::GetIPAddr(s->ToCString(), addr))
 			{
 				if (addr.addrType == Net::AddrType::IPv4)
 				{
@@ -501,7 +501,7 @@ Crypto::Cert::X509Cert *Crypto::Cert::CertUtil::IssueCert(Net::SSLEngine *ssl, C
 	return cert;
 }
 
-Crypto::Cert::X509Cert *Crypto::Cert::CertUtil::FindIssuer(Crypto::Cert::X509Cert *cert)
+Crypto::Cert::X509Cert *Crypto::Cert::CertUtil::FindIssuer(NotNullPtr<Crypto::Cert::X509Cert> cert)
 {
 	UInt8 dataBuff[8192];
 	UTF8Char sbuff[512];

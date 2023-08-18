@@ -55,6 +55,11 @@ public:
 		return false;
 	}
 
+	void Set(const T &v)
+	{
+		*this->p = v;
+	}
+
 	void SetPtr(T *p)
 	{
 		if (p == 0)

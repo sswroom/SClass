@@ -9,7 +9,7 @@
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 
-void __stdcall Net::NTPServer::PacketHdlr(const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData)
+void __stdcall Net::NTPServer::PacketHdlr(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData)
 {
 	Net::NTPServer *me = (Net::NTPServer*)userData;
 	UInt8 repBuff[48];
@@ -67,9 +67,9 @@ UInt32 __stdcall Net::NTPServer::CheckThread(void *userObj)
 		Text::StringBuilderUTF8 sb;
 		while (!me->threadToStop)
 		{
-			if (me->sockf->DNSResolveIP(me->timeServer->ToCString(), &addr))
+			if (me->sockf->DNSResolveIP(me->timeServer->ToCString(), addr))
 			{
-				if (me->cli->GetServerTime(&addr, Net::NTPClient::GetDefaultPort(), &dt))
+				if (me->cli->GetServerTime(addr, Net::NTPClient::GetDefaultPort(), dt))
 				{
 					if (dt.SetAsComputerTime())
 					{

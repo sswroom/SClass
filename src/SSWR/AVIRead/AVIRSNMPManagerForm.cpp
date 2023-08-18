@@ -18,7 +18,7 @@ void __stdcall SSWR::AVIRead::AVIRSNMPManagerForm::OnAgentAddClicked(void *userO
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
 	me->txtAgentAddr->GetText(sb);
-	if (!me->core->GetSocketFactory()->DNSResolveIP(sb.ToCString(), &addr))
+	if (!me->core->GetSocketFactory()->DNSResolveIP(sb.ToCString(), addr))
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Error in parsing Agent Address"), CSTR("SNMP Manager"), me);
 		return;
@@ -36,7 +36,7 @@ void __stdcall SSWR::AVIRead::AVIRSNMPManagerForm::OnAgentAddClicked(void *userO
 	UOSInt k;
 	Data::ArrayList<Net::SNMPManager::AgentInfo *> agentList;
 	NotNullPtr<Text::String> community = Text::String::New(sb.ToString(), sb.GetLength());
-	j = me->mgr->AddAgents(&addr, community, &agentList, me->chkAgentScan->IsChecked());
+	j = me->mgr->AddAgents(addr, community, &agentList, me->chkAgentScan->IsChecked());
 	community->Release();
 	if (j <= 0)
 	{
@@ -99,7 +99,7 @@ void __stdcall SSWR::AVIRead::AVIRSNMPManagerForm::OnAgentAddClicked(void *userO
 		while (i < j)
 		{
 			agent = agentList.GetItem(i);
-			sptr = Net::SocketUtil::GetAddrName(sbuff, &agent->addr);
+			sptr = Net::SocketUtil::GetAddrName(sbuff, agent->addr);
 			k = me->lbAgent->AddItem(CSTRP(sbuff, sptr), agent);
 			if (i == 0)
 			{
@@ -118,7 +118,7 @@ void __stdcall SSWR::AVIRead::AVIRSNMPManagerForm::OnAgentSelChg(void *userObj)
 	Net::SNMPManager::AgentInfo *agent = (Net::SNMPManager::AgentInfo*)me->lbAgent->GetSelectedItem();
 	if (agent)
 	{
-		sptr = Net::SocketUtil::GetAddrName(sbuff, &agent->addr);
+		sptr = Net::SocketUtil::GetAddrName(sbuff, agent->addr);
 		me->txtAgentDAddr->SetText(CSTRP(sbuff, sptr));
 		me->txtAgentDescr->SetText(agent->descr->ToCString());
 		if (agent->objIdLen > 0)
@@ -256,7 +256,7 @@ void __stdcall SSWR::AVIRead::AVIRSNMPManagerForm::OnAgentWalkClicked(void *user
 	Net::SNMPManager::AgentInfo *agent = (Net::SNMPManager::AgentInfo*)me->lbAgent->GetSelectedItem();
 	if (agent)
 	{
-		SSWR::AVIRead::AVIRSNMPWalkForm frm(0, me->ui, me->core, &agent->addr, agent->community);
+		SSWR::AVIRead::AVIRSNMPWalkForm frm(0, me->ui, me->core, agent->addr, agent->community);
 		frm.ShowDialog(me);
 	}
 }

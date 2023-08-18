@@ -3,7 +3,7 @@
 #include "Data/ByteTool.h"
 #include "Net/WOLClient.h"
 
-void __stdcall Net::WOLClient::PacketHdlr(const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData)
+void __stdcall Net::WOLClient::PacketHdlr(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData)
 {
 }
 
@@ -37,6 +37,6 @@ Bool Net::WOLClient::WakeDevice(const UInt8 *macAddr)
 		i++;
 	}
 	Net::SocketUtil::AddressInfo addr;
-	Net::SocketUtil::SetAddrInfoV4(&addr, this->adapterIP);
-	return this->svr->SendTo(&addr, 9, packet, 102);
+	Net::SocketUtil::SetAddrInfoV4(addr, this->adapterIP);
+	return this->svr->SendTo(addr, 9, packet, 102);
 }

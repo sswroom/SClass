@@ -8,7 +8,7 @@
 
 #include <stdio.h>
 
-void __stdcall Net::LoRaGateway::OnUDPPacket(const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData)
+void __stdcall Net::LoRaGateway::OnUDPPacket(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData)
 {
 	Text::StringBuilderUTF8 sb;
 	Net::LoRaGWUtil::ParseUDPMessage(sb, false, buff, dataSize);
@@ -53,7 +53,7 @@ Bool Net::LoRaGateway::SendPullData()
 	WriteMUInt16(&buff[1], token);
 	buff[3] = 2; //PULL_DATA
 	MemCopyNO(&buff[4], this->gatewayEUI, 8);
-	return this->udp.SendTo(&this->svrAddr, this->svrPort, buff, 12);
+	return this->udp.SendTo(this->svrAddr, this->svrPort, buff, 12);
 }
 
 Bool Net::LoRaGateway::SendStatData()
@@ -70,9 +70,9 @@ Bool Net::LoRaGateway::SendStatData()
 	return this->SendPushData(sb.ToString(), sb.GetLength());
 }
 
-Net::LoRaGateway::LoRaGateway(NotNullPtr<Net::SocketFactory> sockf, const Net::SocketUtil::AddressInfo *svrAddr, UInt16 svrPort, const UInt8 *gatewayEUI, IO::LogTool *log) : udp(sockf, 0, 0, CSTR_NULL, OnUDPPacket, this, log, CSTR("LoRa: "), 4, false)
+Net::LoRaGateway::LoRaGateway(NotNullPtr<Net::SocketFactory> sockf, NotNullPtr<const Net::SocketUtil::AddressInfo> svrAddr, UInt16 svrPort, const UInt8 *gatewayEUI, IO::LogTool *log) : udp(sockf, 0, 0, CSTR_NULL, OnUDPPacket, this, log, CSTR("LoRa: "), 4, false)
 {
-	this->svrAddr = *svrAddr;
+	this->svrAddr = svrAddr.Ptr()[0];
 	this->svrPort = svrPort;
 	MemCopyNO(this->gatewayEUI, gatewayEUI, 8);
 	this->tokenNext = (UInt16)(Data::DateTimeUtil::GetCurrTimeMillis() & 0xffff);
@@ -127,7 +127,7 @@ Bool Net::LoRaGateway::SendPushData(const UInt8 *data, UOSInt dataLeng)
 	buff[3] = 0; //PUSH_DATA
 	MemCopyNO(&buff[4], this->gatewayEUI, 8);
 	MemCopyNO(&buff[12], data, dataLeng);
-	Bool ret = this->udp.SendTo(&this->svrAddr, this->svrPort, buff, 12 + dataLeng);
+	Bool ret = this->udp.SendTo(this->svrAddr, this->svrPort, buff, 12 + dataLeng);
 	MemFree(buff);
 	return ret;
 }

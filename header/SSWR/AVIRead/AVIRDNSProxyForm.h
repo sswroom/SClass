@@ -217,7 +217,7 @@ namespace SSWR
 			static void __stdcall OnDisableV6Chg(void *userObj, Bool isChecked);
 			static void __stdcall OnBlackListClicked(void *userObj);
 			static void __stdcall OnWPADClicked(void *userObj);
-			static void __stdcall OnDNSRequest(void *userObj, Text::CString reqName, Int32 reqType, Int32 reqClass, const Net::SocketUtil::AddressInfo *reqAddr, UInt16 reqPort, UInt32 reqId, Double timeUsed);
+			static void __stdcall OnDNSRequest(void *userObj, Text::CString reqName, Int32 reqType, Int32 reqClass, NotNullPtr<const Net::SocketUtil::AddressInfo> reqAddr, UInt16 reqPort, UInt32 reqId, Double timeUsed);
 
 			void UpdateDNSList();
 			void UpdateBlackList();

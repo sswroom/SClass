@@ -32,14 +32,16 @@ void __stdcall SSWR::AVIRead::AVIRHTTPForwarderForm::OnStartClick(void *userObj)
 
 	if (me->chkSSL->IsChecked())
 	{
-		if (me->sslCert == 0 || me->sslKey == 0)
+		NotNullPtr<Crypto::Cert::X509Cert> sslCert;
+		NotNullPtr<Crypto::Cert::X509File> sslKey;
+		if (!sslCert.Set(me->sslCert) || !sslKey.Set(me->sslKey))
 		{
 			UI::MessageDialog::ShowDialog(CSTR("Please select SSL Cert/Key First"), CSTR("HTTP Forwarder"), me);
 			return;
 		}
 		ssl = me->ssl;
-		Crypto::Cert::X509Cert *issuerCert = Crypto::Cert::CertUtil::FindIssuer(me->sslCert);
-		if (!ssl->ServerSetCertsASN1(me->sslCert, me->sslKey, issuerCert))
+		Crypto::Cert::X509Cert *issuerCert = Crypto::Cert::CertUtil::FindIssuer(sslCert);
+		if (!ssl->ServerSetCertsASN1(sslCert, sslKey, issuerCert))
 		{
 			SDEL_CLASS(issuerCert);
 			UI::MessageDialog::ShowDialog(CSTR("Error in initializing Cert/Key"), CSTR("HTTP Forwarder"), me);

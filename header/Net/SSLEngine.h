@@ -64,6 +64,7 @@ namespace Net
 		{
 			ThreadStatus status;
 			Socket *s;
+			UOSInt index;
 			ClientReadyHandler clientReady;
 			void *clientReadyObj;
 			Sync::Event *evt;
@@ -89,14 +90,14 @@ namespace Net
 		
 		virtual Bool IsError() = 0;
 
-		virtual Bool ServerSetCertsASN1(Crypto::Cert::X509Cert *certASN1, Crypto::Cert::X509File *keyASN1, Crypto::Cert::X509Cert *caCert) = 0;
+		virtual Bool ServerSetCertsASN1(NotNullPtr<Crypto::Cert::X509Cert> certASN1, NotNullPtr<Crypto::Cert::X509File> keyASN1, Crypto::Cert::X509Cert *caCert) = 0;
 		virtual Bool ServerSetRequireClientCert(ClientCertType cliCert) = 0;
 		virtual Bool ServerSetClientCA(Text::CString clientCA) = 0;
 		virtual Bool ServerAddALPNSupport(Text::CString proto) = 0;
 		Bool ServerSetCerts(Text::CStringNN certFile, Text::CStringNN keyFile);
 		void ServerInit(Socket *s, ClientReadyHandler readyHdlr, void *userObj);
 
-		virtual Bool ClientSetCertASN1(Crypto::Cert::X509Cert *certASN1, Crypto::Cert::X509File *keyASN1) = 0;
+		virtual Bool ClientSetCertASN1(NotNullPtr<Crypto::Cert::X509Cert> certASN1, NotNullPtr<Crypto::Cert::X509File> keyASN1) = 0;
 		virtual Net::SSLClient *ClientConnect(Text::CString hostName, UInt16 port, ErrorType *err, Data::Duration timeout) = 0;
 		virtual Net::SSLClient *ClientInit(Socket *s, Text::CString hostName, ErrorType *err) = 0;
 		virtual void ClientSetSkipCertCheck(Bool skipCertCheck) = 0;

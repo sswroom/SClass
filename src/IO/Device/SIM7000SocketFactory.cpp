@@ -321,12 +321,12 @@ Int32 IO::Device::SIM7000SocketFactory::SocketGetLastError()
 	return 0;
 }
 
-Bool IO::Device::SIM7000SocketFactory::GetRemoteAddr(Socket *socket, Net::SocketUtil::AddressInfo *addr, UInt16 *port)
+Bool IO::Device::SIM7000SocketFactory::GetRemoteAddr(Socket *socket, NotNullPtr<Net::SocketUtil::AddressInfo> addr, UInt16 *port)
 {
 	return false;
 }
 
-Bool IO::Device::SIM7000SocketFactory::GetLocalAddr(Socket *socket, Net::SocketUtil::AddressInfo *addr, UInt16 *port)
+Bool IO::Device::SIM7000SocketFactory::GetLocalAddr(Socket *socket, NotNullPtr<Net::SocketUtil::AddressInfo> addr, UInt16 *port)
 {
 	return false;
 }
@@ -405,7 +405,7 @@ void IO::Device::SIM7000SocketFactory::CancelReceiveData(void *reqData)
 
 }
 
-UOSInt IO::Device::SIM7000SocketFactory::UDPReceive(Socket *socket, UInt8 *buff, UOSInt buffSize, Net::SocketUtil::AddressInfo *addr, UInt16 *port, ErrorType *et)
+UOSInt IO::Device::SIM7000SocketFactory::UDPReceive(Socket *socket, UInt8 *buff, UOSInt buffSize, NotNullPtr<Net::SocketUtil::AddressInfo> addr, OutParam<UInt16> port, ErrorType *et)
 {
 	OSInt i = -1 + (OSInt)socket;
 	if (i < 0 || i >= 8)
@@ -423,7 +423,7 @@ UOSInt IO::Device::SIM7000SocketFactory::UDPReceive(Socket *socket, UInt8 *buff,
 			if (packet)
 			{
 				Net::SocketUtil::SetAddrInfoV4(addr, packet->remoteIP);
-				*port = packet->remotePort;
+				port.Set(packet->remotePort);
 				if (buffSize >= packet->dataSize)
 				{
 					MemCopyNO(buff, packet->data, packet->dataSize);
@@ -446,7 +446,7 @@ UOSInt IO::Device::SIM7000SocketFactory::UDPReceive(Socket *socket, UInt8 *buff,
 	return 0;
 }
 
-UOSInt IO::Device::SIM7000SocketFactory::SendTo(Socket *socket, const UInt8 *buff, UOSInt buffSize, const Net::SocketUtil::AddressInfo *addr, UInt16 port)
+UOSInt IO::Device::SIM7000SocketFactory::SendTo(Socket *socket, const UInt8 *buff, UOSInt buffSize, NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port)
 {
 	UOSInt i = (UOSInt)socket - 1;
 	if (socket == 0 || i >= 8)
@@ -499,7 +499,7 @@ UOSInt IO::Device::SIM7000SocketFactory::SendToIF(Socket *socket, const UInt8 *b
 	return 0;
 }
 
-Bool IO::Device::SIM7000SocketFactory::IcmpSendEcho2(const Net::SocketUtil::AddressInfo *addr, UInt32 *respTime_us, UInt32 *ttl)
+Bool IO::Device::SIM7000SocketFactory::IcmpSendEcho2(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt32 *respTime_us, UInt32 *ttl)
 {
 	UTF8Char sbuff[32];
 	if (addr->addrType != Net::AddrType::IPv4)
@@ -521,7 +521,7 @@ Bool IO::Device::SIM7000SocketFactory::Connect(Socket *socket, UInt32 ip, UInt16
 	return false;
 }
 
-Bool IO::Device::SIM7000SocketFactory::Connect(Socket *socket, const Net::SocketUtil::AddressInfo *addr, UInt16 port, Data::Duration timeout)
+Bool IO::Device::SIM7000SocketFactory::Connect(Socket *socket, NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Data::Duration timeout)
 {
 	return false;
 }
@@ -535,12 +535,12 @@ Bool IO::Device::SIM7000SocketFactory::SocketGetReadBuff(Socket *socket, UInt32 
 	return false;
 }
 
-Bool IO::Device::SIM7000SocketFactory::DNSResolveIPDef(const Char *host, Net::SocketUtil::AddressInfo *addr)
+Bool IO::Device::SIM7000SocketFactory::DNSResolveIPDef(const Char *host, NotNullPtr<Net::SocketUtil::AddressInfo> addr)
 {
 	return this->modem->NetDNSResolveIP(Text::CString::FromPtr((const UTF8Char*)host), addr);
 }
 
-Bool IO::Device::SIM7000SocketFactory::GetDefDNS(Net::SocketUtil::AddressInfo *addr)
+Bool IO::Device::SIM7000SocketFactory::GetDefDNS(NotNullPtr<Net::SocketUtil::AddressInfo> addr)
 {
 	Data::ArrayList<UInt32> dnsList;
 	if (this->modem->NetGetDNSList(&dnsList))
@@ -601,17 +601,17 @@ UOSInt IO::Device::SIM7000SocketFactory::GetConnInfoList(Data::ArrayList<Net::Co
 	return 0;
 }
 
-Bool IO::Device::SIM7000SocketFactory::GetIPInfo(IPInfo *info)
+Bool IO::Device::SIM7000SocketFactory::GetIPInfo(NotNullPtr<IPInfo> info)
 {
 	return false;
 }
 
-Bool IO::Device::SIM7000SocketFactory::GetTCPInfo(TCPInfo *info)
+Bool IO::Device::SIM7000SocketFactory::GetTCPInfo(NotNullPtr<TCPInfo> info)
 {
 	return false;
 }
 
-Bool IO::Device::SIM7000SocketFactory::GetUDPInfo(UDPInfo *info)
+Bool IO::Device::SIM7000SocketFactory::GetUDPInfo(NotNullPtr<UDPInfo> info)
 {
 	return false;
 }

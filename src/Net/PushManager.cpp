@@ -53,7 +53,7 @@ void Net::PushManager::LoadData()
 						{
 							devType = DeviceType::Android;
 						}
-						this->Subscribe(sarr[2].ToCString(), sarr[4].ToCString(), devType, &addr, sarr[1].ToCString());
+						this->Subscribe(sarr[2].ToCString(), sarr[4].ToCString(), devType, addr, sarr[1].ToCString());
 						{
 							Sync::MutexUsage mutUsage(this->dataMut);
 							DeviceInfo2 *dev = this->devMap.GetC(sarr[2].ToCString());
@@ -75,7 +75,7 @@ void Net::PushManager::LoadData()
 						devType = DeviceType::Android;
 					}
 					sarr[2].Trim();
-					this->Subscribe(sarr[0].ToCString(), sarr[2].ToCString(), devType, &addr, 0);
+					this->Subscribe(sarr[0].ToCString(), sarr[2].ToCString(), devType, addr, 0);
 				}
 			}
 
@@ -163,7 +163,7 @@ Net::PushManager::~PushManager()
 	this->fcmKey->Release();
 }
 
-Bool Net::PushManager::Subscribe(Text::CString token, Text::CString userName, DeviceType devType, const Net::SocketUtil::AddressInfo *remoteAddr, Text::CString devModel)
+Bool Net::PushManager::Subscribe(Text::CString token, Text::CString userName, DeviceType devType, NotNullPtr<const Net::SocketUtil::AddressInfo> remoteAddr, Text::CString devModel)
 {
 	Sync::MutexUsage mutUsage(this->dataMut);
 	DeviceInfo2 *dev = this->devMap.GetC(token);
@@ -173,7 +173,7 @@ Bool Net::PushManager::Subscribe(Text::CString token, Text::CString userName, De
 		if (dev->userName->Equals(userName.v, userName.leng))
 		{
 			dev->lastSubscribeTime = Data::Timestamp::Now();
-			dev->subscribeAddr = *remoteAddr;
+			dev->subscribeAddr = remoteAddr.Ptr()[0];
 			if (devModel.leng > 0)
 			{
 				if (dev->devModel == 0)
@@ -209,7 +209,7 @@ Bool Net::PushManager::Subscribe(Text::CString token, Text::CString userName, De
 	user = this->GetUser(userName);
 	dev->userName = user->userName->Clone().Ptr();
 	dev->lastSubscribeTime = Data::Timestamp::Now();
-	dev->subscribeAddr = *remoteAddr;
+	dev->subscribeAddr = remoteAddr.Ptr()[0];
 	if (devModel.leng > 0)
 	{
 		if (dev->devModel == 0)

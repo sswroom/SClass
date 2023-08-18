@@ -173,7 +173,7 @@ void Net::WebServer::WebConnection::ReceivedData(const Data::ByteArrayR &buff)
 							this->respHeaderSent = false;
 							this->respTranEnc = 0;
 							Net::SocketUtil::AddressInfo cliAddr;
-							this->cli->GetRemoteAddr(&cliAddr);
+							this->cli->GetRemoteAddr(cliAddr);
 							UInt16 cliPort = this->cli->GetRemotePort();
 							UInt16 svrPort = this->cli->GetLocalPort();
 
@@ -232,7 +232,7 @@ void Net::WebServer::WebConnection::ReceivedData(const Data::ByteArrayR &buff)
 							this->respHeaderSent = false;
 							this->respTranEnc = 0;
 							Net::SocketUtil::AddressInfo cliAddr;
-							this->cli->GetRemoteAddr(&cliAddr);
+							this->cli->GetRemoteAddr(cliAddr);
 							UInt16 cliPort = this->cli->GetRemotePort();
 							UInt16 svrPort = this->cli->GetLocalPort();
 

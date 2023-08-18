@@ -8,7 +8,7 @@
 
 #define REQTIMEOUT 10000
 
-void __stdcall Net::DNSProxy::ClientPacket(const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData)
+void __stdcall Net::DNSProxy::ClientPacket(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData)
 {
 	Net::DNSProxy *me = (Net::DNSProxy*)userData;
 	CliRequestStatus *req;
@@ -23,7 +23,7 @@ void __stdcall Net::DNSProxy::ClientPacket(const Net::SocketUtil::AddressInfo *a
 	mutUsage.EndUse();
 }
 
-void __stdcall Net::DNSProxy::OnDNSRequest(void *userObj, Text::CString reqName, Int32 reqType, Int32 reqClass, const Net::SocketUtil::AddressInfo *reqAddr, UInt16 reqPort, UInt32 reqId)
+void __stdcall Net::DNSProxy::OnDNSRequest(void *userObj, Text::CString reqName, Int32 reqType, Int32 reqClass, NotNullPtr<const Net::SocketUtil::AddressInfo> reqAddr, UInt16 reqPort, UInt32 reqId)
 {
 	Net::DNSProxy *me = (Net::DNSProxy*)userObj;
 	RequestResult *req;
@@ -374,9 +374,9 @@ void Net::DNSProxy::RequestDNS(const UTF8Char *reqName, Int32 reqType, Int32 req
 	
 	CliRequestStatus *cliReq = this->NewCliReq(currId);
 	Net::SocketUtil::AddressInfo addr;
-	Net::SocketUtil::SetAddrInfoV4(&addr, this->currServerIP);
+	Net::SocketUtil::SetAddrInfoV4(addr, this->currServerIP);
 	cliReq->finEvt.Clear();
-	this->cli->SendTo(&addr, 53, buff, (UOSInt)(ptr1 - ptr2));
+	this->cli->SendTo(addr, 53, buff, (UOSInt)(ptr1 - ptr2));
 	cliReq->finEvt.Wait(2000);
 	if (cliReq->respSize > 12)
 	{

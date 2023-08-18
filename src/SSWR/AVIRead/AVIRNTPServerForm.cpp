@@ -31,7 +31,7 @@ void __stdcall SSWR::AVIRead::AVIRNTPServerForm::OnStartClick(void *userObj)
 	me->txtTimeServer->GetText(sb);
 	Net::SocketUtil::AddressInfo addr;
 	NotNullPtr<Net::SocketFactory> sockf = me->core->GetSocketFactory();
-	if (!sockf->DNSResolveIP(sb.ToCString(), &addr))
+	if (!sockf->DNSResolveIP(sb.ToCString(), addr))
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Cannot resolve the time server"), CSTR("Resolve"), me);
 		return;

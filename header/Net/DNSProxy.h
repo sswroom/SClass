@@ -44,7 +44,7 @@ namespace Net
 			Sync::Event finEvt;
 		} CliRequestStatus;
 	public:
-		typedef void (__stdcall *DNSProxyRequest)(void *userObj, Text::CString reqName, Int32 reqType, Int32 reqClass, const Net::SocketUtil::AddressInfo *addr, UInt16 reqPort, UInt32 reqId, Double timeUsed);
+		typedef void (__stdcall *DNSProxyRequest)(void *userObj, Text::CString reqName, Int32 reqType, Int32 reqClass, NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 reqPort, UInt32 reqId, Double timeUsed);
 	private:
 		NotNullPtr<Net::SocketFactory> sockf;
 		Net::UDPServer *cli;
@@ -89,8 +89,8 @@ namespace Net
 //		Sync::Mutex *whiteListMut;
 //		Data::ArrayList<const UTF8Char *> *whiteList;
 
-		static void __stdcall ClientPacket(const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData);
-		static void __stdcall OnDNSRequest(void *userObj, Text::CString reqName, Int32 reqType, Int32 reqClass, const Net::SocketUtil::AddressInfo *reqAddr, UInt16 reqPort, UInt32 reqId);
+		static void __stdcall ClientPacket(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData);
+		static void __stdcall OnDNSRequest(void *userObj, Text::CString reqName, Int32 reqType, Int32 reqClass, NotNullPtr<const Net::SocketUtil::AddressInfo> reqAddr, UInt16 reqPort, UInt32 reqId);
 		void RequestDNS(const UTF8Char *reqName, Int32 reqType, Int32 reqClass, RequestResult *req);
 		UInt32 NextId();
 		CliRequestStatus *NewCliReq(UInt32 id);

@@ -53,7 +53,7 @@ namespace Net
 		PushManager(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::CString fcmKey, IO::LogTool *log);
 		~PushManager();
 
-		Bool Subscribe(Text::CString token, Text::CString userName, DeviceType devType, const Net::SocketUtil::AddressInfo *remoteAddr, Text::CString devModel);
+		Bool Subscribe(Text::CString token, Text::CString userName, DeviceType devType, NotNullPtr<const Net::SocketUtil::AddressInfo> remoteAddr, Text::CString devModel);
 		Bool Unsubscribe(Text::CString token);
 		Bool Send(Data::ArrayListNN<Text::String> *userNames, NotNullPtr<Text::String> message);
 		UOSInt GetUsers(Data::ArrayListNN<Text::String> *users, NotNullPtr<Sync::MutexUsage> mutUsage);

@@ -31,9 +31,9 @@ namespace Net
 		ClientLogHandler logHdlr;
 		void *logHdlrObj;
 
-		static void __stdcall OnUDPPacket(const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData);
+		static void __stdcall OnUDPPacket(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData);
 
-		IPStatus *GetIPStatus(const Net::SocketUtil::AddressInfo *addr);
+		IPStatus *GetIPStatus(NotNullPtr<const Net::SocketUtil::AddressInfo> addr);
 	public:
 		SyslogServer(NotNullPtr<Net::SocketFactory> sockf, UInt16 port, Text::CString logPath, IO::LogTool *svrLog, Bool redirLog);
 		~SyslogServer();

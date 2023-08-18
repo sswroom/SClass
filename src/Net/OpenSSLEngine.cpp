@@ -285,83 +285,61 @@ Bool Net::OpenSSLEngine::IsError()
 	return this->clsData->ctx == 0;
 }
 
-Bool Net::OpenSSLEngine::ServerSetCertsASN1(Crypto::Cert::X509Cert *certASN1, Crypto::Cert::X509File *keyASN1, Crypto::Cert::X509Cert *caCert)
+Bool Net::OpenSSLEngine::ServerSetCertsASN1(NotNullPtr<Crypto::Cert::X509Cert> certASN1, NotNullPtr<Crypto::Cert::X509File> keyASN1, Crypto::Cert::X509Cert *caCert)
 {
 	if (this->clsData->ctx == 0)
 	{
 		return false;
 	}
 	
-	if (certASN1 != 0 && keyASN1 != 0)
-	{
 #if OPENSSL_VERSION_NUMBER >= 0x10002000
-		SSL_CTX_set_ecdh_auto(this->clsData->ctx, 1);
+	SSL_CTX_set_ecdh_auto(this->clsData->ctx, 1);
 #endif
-		if (SSL_CTX_use_certificate_ASN1(this->clsData->ctx, (int)certASN1->GetASN1BuffSize(), certASN1->GetASN1Buff()) <= 0)
+	if (SSL_CTX_use_certificate_ASN1(this->clsData->ctx, (int)certASN1->GetASN1BuffSize(), certASN1->GetASN1Buff()) <= 0)
+	{
+		return false;
+	}
+	if (caCert)
+	{
+		const UInt8 *asn1 = caCert->GetASN1Buff();
+		X509 *x509 = d2i_X509(0, &asn1, (long)caCert->GetASN1BuffSize());
+		if (x509 == 0)
 		{
 			return false;
 		}
-		if (caCert)
-		{
-			const UInt8 *asn1 = caCert->GetASN1Buff();
-			X509 *x509 = d2i_X509(0, &asn1, (long)caCert->GetASN1BuffSize());
-			if (x509 == 0)
-			{
-				return false;
-			}
-			SSL_CTX_add_extra_chain_cert(this->clsData->ctx, x509);
-		}
+		SSL_CTX_add_extra_chain_cert(this->clsData->ctx, x509);
+	}
 
-		if (keyASN1->GetFileType() == Crypto::Cert::X509File::FileType::PrivateKey)
+	if (keyASN1->GetFileType() == Crypto::Cert::X509File::FileType::PrivateKey)
+	{
+		if (SSL_CTX_use_PrivateKey_ASN1(EVP_PKEY_RSA, this->clsData->ctx, keyASN1->GetASN1Buff(), (long)keyASN1->GetASN1BuffSize()) <= 0)
 		{
-			if (SSL_CTX_use_PrivateKey_ASN1(EVP_PKEY_RSA, this->clsData->ctx, keyASN1->GetASN1Buff(), (long)keyASN1->GetASN1BuffSize()) <= 0)
-			{
-				return false;
-			}
-			return true;
+			return false;
 		}
-		else if (keyASN1->GetFileType() == Crypto::Cert::X509File::FileType::Key && ((Crypto::Cert::X509Key*)keyASN1)->IsPrivateKey())
+		return true;
+	}
+	else if (keyASN1->GetFileType() == Crypto::Cert::X509File::FileType::Key && NotNullPtr<Crypto::Cert::X509Key>::ConvertFrom(keyASN1)->IsPrivateKey())
+	{
+		Crypto::Cert::X509PrivKey *privKey = Crypto::Cert::X509PrivKey::CreateFromKey(NotNullPtr<Crypto::Cert::X509Key>::ConvertFrom(keyASN1));
+		if (privKey)
 		{
-			Crypto::Cert::X509PrivKey *privKey = Crypto::Cert::X509PrivKey::CreateFromKey((Crypto::Cert::X509Key*)keyASN1);
-			if (privKey)
+			if (SSL_CTX_use_PrivateKey_ASN1(EVP_PKEY_RSA, this->clsData->ctx, privKey->GetASN1Buff(), (long)privKey->GetASN1BuffSize()) <= 0)
 			{
-				if (SSL_CTX_use_PrivateKey_ASN1(EVP_PKEY_RSA, this->clsData->ctx, privKey->GetASN1Buff(), (long)privKey->GetASN1BuffSize()) <= 0)
-				{
-					DEL_CLASS(privKey);
-					return false;
-				}
 				DEL_CLASS(privKey);
-				return true;
-			}
-			else
-			{
 				return false;
 			}
+			DEL_CLASS(privKey);
+			return true;
 		}
 		else
 		{
 			return false;
 		}
 	}
-	else if (certASN1 != 0 && certASN1->GetFileType() == Crypto::Cert::X509File::FileType::Cert && keyASN1 != 0 && keyASN1->GetFileType() == Crypto::Cert::X509File::FileType::Key)
+	else
 	{
-#if OPENSSL_VERSION_NUMBER >= 0x10002000
-		SSL_CTX_set_ecdh_auto(this->clsData->ctx, 1);
-#endif
-		if (SSL_CTX_use_certificate_ASN1(this->clsData->ctx, (int)certASN1->GetASN1BuffSize(), certASN1->GetASN1Buff()) <= 0)
-		{
-			return false;
-		}
-		Crypto::Cert::X509PrivKey *privKey = Crypto::Cert::X509PrivKey::CreateFromKey((Crypto::Cert::X509Key*)keyASN1);
-		if (SSL_CTX_use_PrivateKey_ASN1(EVP_PKEY_RSA, this->clsData->ctx, privKey->GetASN1Buff(), (long)privKey->GetASN1BuffSize()) <= 0)
-		{
-			DEL_CLASS(privKey);
-			return false;
-		}
-		DEL_CLASS(privKey);
-		return true;
+		return false;
 	}
-	return false;
 }
 
 static int OpenSSLEngine_verify_cb(int preverify_ok, X509_STORE_CTX *x509_ctx)
@@ -417,7 +395,7 @@ int OpenSSLEngine_alpn_select_cb(SSL *ssl, const unsigned char **out, unsigned c
 	Net::OpenSSLEngine::ClassData *clsData = (Net::OpenSSLEngine::ClassData *)arg;
 	while (true)
 	{
-		if ((UOSInt)in[0] + 1 > inlen)
+		if (inlen == 0 || (UOSInt)in[0] + 1 > inlen)
 			return SSL_TLSEXT_ERR_NOACK;
 		if (clsData->alpnSupports->GetC(Text::CString(in + 1, in[0])))
 		{
@@ -469,18 +447,12 @@ Bool Net::OpenSSLEngine::ServerAddALPNSupport(Text::CString proto)
 }
 
 
-Bool Net::OpenSSLEngine::ClientSetCertASN1(Crypto::Cert::X509Cert *certASN1, Crypto::Cert::X509File *keyASN1)
+Bool Net::OpenSSLEngine::ClientSetCertASN1(NotNullPtr<Crypto::Cert::X509Cert> certASN1, NotNullPtr<Crypto::Cert::X509File> keyASN1)
 {
 	SDEL_CLASS(this->clsData->cliCert);
 	SDEL_CLASS(this->clsData->cliKey);
-	if (certASN1)
-	{
-		this->clsData->cliCert = (Crypto::Cert::X509File*)certASN1->Clone().Ptr();
-	}
-	if (keyASN1)
-	{
-		this->clsData->cliKey = (Crypto::Cert::X509File*)keyASN1->Clone().Ptr();
-	}
+	this->clsData->cliCert = (Crypto::Cert::X509File*)certASN1->Clone().Ptr();
+	this->clsData->cliKey = (Crypto::Cert::X509File*)keyASN1->Clone().Ptr();
 	return true;
 }
 
@@ -493,7 +465,7 @@ void Net::OpenSSLEngine::ClientSetSkipCertCheck(Bool skipCertCheck)
 Net::SSLClient *Net::OpenSSLEngine::ClientConnect(Text::CString hostName, UInt16 port, ErrorType *err, Data::Duration timeout)
 {
 	Net::SocketUtil::AddressInfo addr[1];
-	UOSInt addrCnt = this->sockf->DNSResolveIPs(hostName, addr, 1);
+	UOSInt addrCnt = this->sockf->DNSResolveIPs(hostName, Data::DataArray<SocketUtil::AddressInfo>(addr, 1));
 	if (addrCnt == 0)
 	{
 		if (err)
@@ -529,7 +501,7 @@ Net::SSLClient *Net::OpenSSLEngine::ClientConnect(Text::CString hostName, UInt16
 					*err = ErrorType::OutOfMemory;
 				return 0;
 			}
-			if (this->sockf->Connect(s, &addr[addrInd], port, timeout))
+			if (this->sockf->Connect(s, addr[addrInd], port, timeout))
 			{
 				return CreateClientConn(ssl, s, hostName, err);
 			}
@@ -545,7 +517,7 @@ Net::SSLClient *Net::OpenSSLEngine::ClientConnect(Text::CString hostName, UInt16
 					*err = ErrorType::OutOfMemory;
 				return 0;
 			}
-			if (this->sockf->Connect(s, &addr[addrInd], port, timeout))
+			if (this->sockf->Connect(s, addr[addrInd], port, timeout))
 			{
 				return CreateClientConn(ssl, s, hostName, err);
 			}

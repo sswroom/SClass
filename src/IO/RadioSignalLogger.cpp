@@ -148,12 +148,12 @@ void IO::RadioSignalLogger::Stop()
 	}
 }
 
-UInt64 IO::RadioSignalLogger::GetWiFiCount()
+UInt64 IO::RadioSignalLogger::GetWiFiCount() const
 {
 	return this->wifiCnt;
 }
 
-UInt64 IO::RadioSignalLogger::GetBTCount()
+UInt64 IO::RadioSignalLogger::GetBTCount() const
 {
 	return this->btCnt;
 }

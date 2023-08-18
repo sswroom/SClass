@@ -127,15 +127,17 @@ void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnStartClicked(void *userObj)
 	me->txtPort->GetText(sb);
 	Text::StrToUInt16S(sb.ToString(), port, 0);
 	Net::SSLEngine *ssl = 0;
+	NotNullPtr<Crypto::Cert::X509Cert> sslCert;
+	NotNullPtr<Crypto::Cert::X509File> sslKey;
 
-	if (me->sslCert == 0 || me->sslKey == 0)
+	if (!sslCert.Set(me->sslCert) || !sslKey.Set(me->sslKey))
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Please select SSL Cert/Key First"), CSTR("SAML Test"), me);
 		return;
 	}
 	ssl = me->ssl;
-	Crypto::Cert::X509Cert *issuerCert = Crypto::Cert::CertUtil::FindIssuer(me->sslCert);
-	if (!ssl->ServerSetCertsASN1(me->sslCert, me->sslKey, issuerCert))
+	Crypto::Cert::X509Cert *issuerCert = Crypto::Cert::CertUtil::FindIssuer(sslCert);
+	if (!ssl->ServerSetCertsASN1(sslCert, sslKey, issuerCert))
 	{
 		SDEL_CLASS(issuerCert);
 		UI::MessageDialog::ShowDialog(CSTR("Error in initializing Cert/Key"), CSTR("SAML Test"), me);

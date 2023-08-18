@@ -40,10 +40,12 @@ void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnSMTPStartClicked(void *user
 			UI::MessageDialog::ShowDialog(CSTR("Please enter valid port number"), CSTR("Error"), me);
 			return;
 		}
-		if (me->smtpSSLCert && me->smtpSSLKey)
+		NotNullPtr<Crypto::Cert::X509Cert> smtpSSLCert;
+		NotNullPtr<Crypto::Cert::X509File> smtpSSLKey;
+		if (smtpSSLCert.Set(me->smtpSSLCert) && smtpSSLKey.Set(me->smtpSSLKey))
 		{
-			Crypto::Cert::X509Cert *issuerCert = Crypto::Cert::CertUtil::FindIssuer(me->smtpSSLCert);
-			me->smtpSSL->ServerSetCertsASN1(me->smtpSSLCert, me->smtpSSLKey, issuerCert);
+			Crypto::Cert::X509Cert *issuerCert = Crypto::Cert::CertUtil::FindIssuer(smtpSSLCert);
+			me->smtpSSL->ServerSetCertsASN1(smtpSSLCert, smtpSSLKey, issuerCert);
 			SDEL_CLASS(issuerCert);
 		}
 		Net::Email::SMTPConn::ConnType connType = (Net::Email::SMTPConn::ConnType)(OSInt)me->cboSMTPType->GetSelectedItem();
@@ -83,14 +85,16 @@ void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnPOP3StartClicked(void *user
 		Net::SSLEngine *ssl = 0;
 		if (me->chkPOP3SSL->IsChecked())
 		{
-			if (me->pop3SSLCert == 0 || me->pop3SSLKey == 0)
+			NotNullPtr<Crypto::Cert::X509Cert> pop3SSLCert;
+			NotNullPtr<Crypto::Cert::X509File> pop3SSLKey;
+			if (!pop3SSLCert.Set(me->pop3SSLCert) || !pop3SSLKey.Set(me->pop3SSLKey))
 			{
 				UI::MessageDialog::ShowDialog(CSTR("Please select SSL Cert/Key"), CSTR("SMTP Server"), me);
 				return;
 			}
 			ssl = me->pop3SSL;
-			Crypto::Cert::X509Cert *issuerCert = Crypto::Cert::CertUtil::FindIssuer(me->pop3SSLCert);
-			ssl->ServerSetCertsASN1(me->pop3SSLCert, me->pop3SSLKey, issuerCert);
+			Crypto::Cert::X509Cert *issuerCert = Crypto::Cert::CertUtil::FindIssuer(pop3SSLCert);
+			ssl->ServerSetCertsASN1(pop3SSLCert, pop3SSLKey, issuerCert);
 			SDEL_CLASS(issuerCert);
 		}
 		NEW_CLASS(me->pop3Svr, Net::Email::POP3Server(me->core->GetSocketFactory(), ssl, port, &me->log, CSTR("Welcome to SSWR POP3 Server"), me, true));
@@ -146,15 +150,17 @@ void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnGCISStartClicked(void *user
 			return;
 		}
 		Net::SSLEngine *ssl = 0;
-		if (me->gcisSSLCert == 0 || me->gcisSSLKey == 0)
+		NotNullPtr<Crypto::Cert::X509Cert> gcisSSLCert;
+		NotNullPtr<Crypto::Cert::X509File> gcisSSLKey;
+		if (!gcisSSLCert.Set(me->gcisSSLCert) || !gcisSSLKey.Set(me->gcisSSLKey))
 		{
 			UI::MessageDialog::ShowDialog(CSTR("Please select SSL Cert/Key"), CSTR("SMTP Server"), me);
 			return;
 		}
 		ssl = me->gcisSSL;
 		ssl->ServerSetRequireClientCert(Net::SSLEngine::ClientCertType::Optional);
-		Crypto::Cert::X509Cert *issuerCert = Crypto::Cert::CertUtil::FindIssuer(me->gcisSSLCert);
-		ssl->ServerSetCertsASN1(me->gcisSSLCert, me->gcisSSLKey, issuerCert);
+		Crypto::Cert::X509Cert *issuerCert = Crypto::Cert::CertUtil::FindIssuer(gcisSSLCert);
+		ssl->ServerSetCertsASN1(gcisSSLCert, gcisSSLKey, issuerCert);
 		SDEL_CLASS(issuerCert);
 		NEW_CLASS(me->gcisHdlr, Net::WebServer::GCISNotifyHandler(sb.ToCString(), sb2.ToCString(), OnGCISMailReceived, me, &me->log));
 		NEW_CLASS(me->gcisListener, Net::WebServer::WebListener(me->core->GetSocketFactory(), ssl, me->gcisHdlr, port, 60, 2, CSTR("SSWRGCIS/1.0"), false, Net::WebServer::KeepAlive::Default, true));
@@ -237,8 +243,8 @@ UTF8Char *__stdcall SSWR::AVIRead::AVIREmailServerForm::OnMailReceived(UTF8Char 
 	me->log.LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Command);
 
 	Net::SocketUtil::AddressInfo remoteAddr;
-	cli->GetRemoteAddr(&remoteAddr);
-	me->store->NewEmail(id, &remoteAddr, SERVER_DOMAIN, mail);
+	cli->GetRemoteAddr(remoteAddr);
+	me->store->NewEmail(id, remoteAddr, SERVER_DOMAIN, mail);
 	me->mailChanged = true;
 	me->totalSize += (UOSInt)mail->dataStm->GetLength();
 	return Text::StrInt64(queryId, id);
@@ -259,8 +265,8 @@ void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnGCISMailReceived(void *user
 	me->log.LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Command);
 
 	Net::SocketUtil::AddressInfo remoteAddr;
-	cli->GetRemoteAddr(&remoteAddr);
-	me->store->NewEmail(id, &remoteAddr, SERVER_DOMAIN, mail);
+	cli->GetRemoteAddr(remoteAddr);
+	me->store->NewEmail(id, remoteAddr, SERVER_DOMAIN, mail);
 	me->mailChanged = true;
 	{
 		IO::MemoryStream mstm;
@@ -314,7 +320,7 @@ void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnTimerTick(void *userObj)
 			sptr = dt.ToString(sbuff);
 			me->lvEmail->SetSubItem(k, 1, CSTRP(sbuff, sptr));
 			me->lvEmail->SetSubItem(k, 2, email->fromAddr);
-			sptr = Net::SocketUtil::GetAddrName(sbuff, &email->remoteAddr);
+			sptr = Net::SocketUtil::GetAddrName(sbuff, email->remoteAddr);
 			me->lvEmail->SetSubItem(k, 3, CSTRP(sbuff, sptr));
 			rcptList.Clear();
 			me->store->GetRcptList(email->id, &rcptList);

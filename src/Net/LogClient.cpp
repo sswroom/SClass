@@ -87,7 +87,7 @@ UInt32 __stdcall Net::LogClient::SendThread(void *userObj)
 	{
 		if (me->cli == 0)
 		{
-			NEW_CLASS(cli, Net::TCPClient(me->sockf, &me->addr, me->port, me->timeout));
+			NEW_CLASS(cli, Net::TCPClient(me->sockf, me->addr, me->port, me->timeout));
 			if (cli->IsConnectError())
 			{
 				DEL_CLASS(cli);

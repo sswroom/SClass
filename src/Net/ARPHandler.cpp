@@ -18,7 +18,7 @@ UInt32 __stdcall Net::ARPHandler::DataThread(void *obj)
 		Net::SocketUtil::AddressInfo recvAddr;
 		UInt16 recvPort;
 
-		recvSize = stat->me->sockf->UDPReceive(stat->me->soc, buff, 2048, &recvAddr, &recvPort, 0);
+		recvSize = stat->me->sockf->UDPReceive(stat->me->soc, buff, 2048, recvAddr, recvPort, 0);
 		if (recvSize >= 42)
 		{
 			UInt16 opcode = ReadMUInt16(&buff[20]);

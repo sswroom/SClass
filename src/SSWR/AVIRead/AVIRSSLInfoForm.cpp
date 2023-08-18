@@ -21,7 +21,7 @@ void __stdcall SSWR::AVIRead::AVIRSSLInfoForm::OnCheckClicked(void *userObj)
 		me->txtStatus->SetText(CSTR("Please enter Host name"));
 		return;
 	}
-	else if (!me->sockf->DNSResolveIP(sb.ToCString(), &addr))
+	else if (!me->sockf->DNSResolveIP(sb.ToCString(), addr))
 	{
 		me->txtStatus->SetText(CSTR("Error in resolving host name"));
 		return;
@@ -46,7 +46,7 @@ void __stdcall SSWR::AVIRead::AVIRSSLInfoForm::OnCheckClicked(void *userObj)
 		me->txtStatus->SetText(CSTR("Error in creating socket"));
 		return;
 	}
-	if (!me->sockf->Connect(s, &addr, port, 30000))
+	if (!me->sockf->Connect(s, addr, port, 30000))
 	{
 		me->sockf->DestroySocket(s);
 		me->txtStatus->SetText(CSTR("Error in connecting to remote host"));

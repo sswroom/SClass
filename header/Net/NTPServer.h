@@ -22,7 +22,7 @@ namespace Net
 		Sync::Event *evt;
 		Net::NTPClient *cli;
 
-		static void __stdcall PacketHdlr(const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData);
+		static void __stdcall PacketHdlr(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData);
 		static UInt32 __stdcall CheckThread(void *userObj);
 		void InitServer(NotNullPtr<Net::SocketFactory> sockf, UInt16 port);
 	public:

@@ -25,7 +25,7 @@ UInt32 __stdcall Net::UDPServer::DataV4Thread(void *obj)
 			Net::SocketUtil::AddressInfo recvAddr;
 			UInt16 recvPort;
 
-			recvSize = stat->me->sockf->UDPReceive(stat->me->socV4, buff, 2048, &recvAddr, &recvPort, 0);
+			recvSize = stat->me->sockf->UDPReceive(stat->me->socV4, buff, 2048, recvAddr, recvPort, 0);
 			Data::Timestamp logTime = Data::Timestamp::UtcNow();
 			if (recvSize > 0)
 			{
@@ -39,7 +39,7 @@ UInt32 __stdcall Net::UDPServer::DataV4Thread(void *obj)
 					sptr = Text::StrConcatC(sptr, UTF8STRC("Received "));
 					sptr = Text::StrUOSInt(sptr, recvSize);
 					sptr = Text::StrConcatC(sptr, UTF8STRC(" bytes from "));
-					sptr = Net::SocketUtil::GetAddrName(sptr, &recvAddr, recvPort);
+					sptr = Net::SocketUtil::GetAddrName(sptr, recvAddr, recvPort);
 					stat->me->msgLog->LogMessage(CSTRP(sbuff, sptr), IO::LogHandler::LogLevel::Raw);
 				}
 
@@ -72,7 +72,7 @@ UInt32 __stdcall Net::UDPServer::DataV4Thread(void *obj)
 					}
 					mutUsage.EndUse();
 				}
-				stat->me->hdlr(&recvAddr, recvPort, buff, recvSize, stat->me->userData);
+				stat->me->hdlr(recvAddr, recvPort, buff, recvSize, stat->me->userData);
 			}
 		}
 		MemFree(buff);
@@ -100,7 +100,7 @@ UInt32 __stdcall Net::UDPServer::DataV6Thread(void *obj)
 			Net::SocketUtil::AddressInfo recvAddr;
 			UInt16 recvPort;
 
-			recvSize = stat->me->sockf->UDPReceive(stat->me->socV6, buff, 2048, &recvAddr, &recvPort, 0);
+			recvSize = stat->me->sockf->UDPReceive(stat->me->socV6, buff, 2048, recvAddr, recvPort, 0);
 			Data::Timestamp logTime = Data::Timestamp::UtcNow();
 			if (recvSize > 0)
 			{
@@ -114,7 +114,7 @@ UInt32 __stdcall Net::UDPServer::DataV6Thread(void *obj)
 					sptr = Text::StrConcatC(sptr, UTF8STRC("Received "));
 					sptr = Text::StrUOSInt(sptr, recvSize);
 					sptr = Text::StrConcatC(sptr, UTF8STRC(" bytes from "));
-					sptr = Net::SocketUtil::GetAddrName(sptr, &recvAddr, recvPort);
+					sptr = Net::SocketUtil::GetAddrName(sptr, recvAddr, recvPort);
 					stat->me->msgLog->LogMessage(CSTRP(sbuff, sptr), IO::LogHandler::LogLevel::Raw);
 				}
 
@@ -147,7 +147,7 @@ UInt32 __stdcall Net::UDPServer::DataV6Thread(void *obj)
 					}
 					mutUsage.EndUse();
 				}
-				stat->me->hdlr(&recvAddr, recvPort, buff, recvSize, stat->me->userData);
+				stat->me->hdlr(recvAddr, recvPort, buff, recvSize, stat->me->userData);
 			}
 		}
 		MemFree(buff);
@@ -188,7 +188,7 @@ Net::UDPServer::UDPServer(NotNullPtr<Net::SocketFactory> sockf, Net::SocketUtil:
 		if (this->sockf->SocketBindv4(this->socV4, 0, port))
 		{
 			Net::SocketUtil::AddressInfo addrAny;
-			Net::SocketUtil::SetAddrAnyV6(&addrAny);
+			Net::SocketUtil::SetAddrAnyV6(addrAny);
 			if (!this->sockf->SocketBind(this->socV6, &addrAny, port))
 			{
 				this->sockf->DestroySocket(this->socV6);
@@ -247,7 +247,8 @@ Net::UDPServer::UDPServer(NotNullPtr<Net::SocketFactory> sockf, Net::SocketUtil:
 	{
 		if (port == 0)
 		{
-			this->sockf->GetLocalAddr(this->socV4, 0, &this->port);
+			Net::SocketUtil::AddressInfo addr;
+			this->sockf->GetLocalAddr(this->socV4, addr, &this->port);
 		}
 		if (this->logPrefix)
 		{
@@ -409,7 +410,7 @@ Bool Net::UDPServer::SupportV6()
 	return this->socV6 != 0;
 }
 
-Bool Net::UDPServer::SendTo(const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UInt8 *buff, UOSInt dataSize)
+Bool Net::UDPServer::SendTo(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;

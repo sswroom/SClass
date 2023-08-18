@@ -1815,8 +1815,8 @@ Bool Crypto::Cert::X509File::AppendGeneralName(const UInt8 *pdu, const UInt8 *pd
 			else if (subItemLen == 16)
 			{
 				Net::SocketUtil::AddressInfo addr;
-				Net::SocketUtil::SetAddrInfoV6(&addr, subItemPDU, 0);
-				sptr = Net::SocketUtil::GetAddrName(sbuff, &addr);
+				Net::SocketUtil::SetAddrInfoV6(addr, subItemPDU, 0);
+				sptr = Net::SocketUtil::GetAddrName(sbuff, addr);
 				sb->AppendP(sbuff, sptr);
 			}
 			sb->AppendC(UTF8STRC("\r\n"));

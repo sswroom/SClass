@@ -434,7 +434,7 @@ UTF8Char *Net::WebSocketClient::GetLocalName(UTF8Char *buff) const
 	return 0;
 }
 
-Bool Net::WebSocketClient::GetRemoteAddr(Net::SocketUtil::AddressInfo *addr) const
+Bool Net::WebSocketClient::GetRemoteAddr(NotNullPtr<Net::SocketUtil::AddressInfo> addr) const
 {
 	if (this->cli)
 	{

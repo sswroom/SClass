@@ -52,7 +52,7 @@ namespace Net
 		virtual IO::StreamType GetStreamType() const;
 
 		virtual Bool IsSecureConn() = 0;
-		virtual Bool SetClientCert(Crypto::Cert::X509Cert *cert, Crypto::Cert::X509File *key) = 0;
+		virtual Bool SetClientCert(NotNullPtr<Crypto::Cert::X509Cert> cert, NotNullPtr<Crypto::Cert::X509File> key) = 0;
 		virtual const Data::ReadingList<Crypto::Cert::Certificate *> *GetServerCerts() = 0;
 
 		Bool FormBegin();

@@ -6,8 +6,8 @@ Net::Email::EmailValidator::EmailValidator(NotNullPtr<Net::SocketFactory> sockf)
 {
 	Net::SocketUtil::AddressInfo dnsAddr;
 	this->sockf = sockf;
-	this->sockf->GetDefDNS(&dnsAddr);
-	NEW_CLASS(this->dnsClient, Net::DNSClient(this->sockf, &dnsAddr));
+	this->sockf->GetDefDNS(dnsAddr);
+	NEW_CLASS(this->dnsClient, Net::DNSClient(this->sockf, dnsAddr));
 }
 
 Net::Email::EmailValidator::~EmailValidator()
@@ -55,7 +55,7 @@ Net::Email::EmailValidator::Status Net::Email::EmailValidator::Validate(Text::CS
 		return S_DOMAIN_NOT_RESOLVED;
 	}
 
-	if (!this->sockf->DNSResolveIP(emailSvr->ToCString(), &addr))
+	if (!this->sockf->DNSResolveIP(emailSvr->ToCString(), addr))
 	{
 		emailSvr->Release();
 		return S_DOMAIN_NOT_RESOLVED;

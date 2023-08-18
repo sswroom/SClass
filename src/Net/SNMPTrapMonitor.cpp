@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Net/SNMPTrapMonitor.h"
 
-void __stdcall Net::SNMPTrapMonitor::OnSNMPPacket(const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData)
+void __stdcall Net::SNMPTrapMonitor::OnSNMPPacket(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData)
 {
 	Net::SNMPTrapMonitor *me = (Net::SNMPTrapMonitor*)userData;
 	Net::SNMPUtil::TrapInfo trap;

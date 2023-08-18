@@ -38,7 +38,7 @@ void __stdcall SSWR::AVIRead::AVIRLoraGWSimForm::OnStartClick(void *userObj)
 		}
 		sb.ClearStr();
 		me->txtServerIP->GetText(sb);
-		if (!me->sockf->DNSResolveIP(sb.ToCString(), &svrAddr))
+		if (!me->sockf->DNSResolveIP(sb.ToCString(), svrAddr))
 		{
 			UI::MessageDialog::ShowDialog(CSTR("Error in parsing Server IP"), CSTR("LoRa Gateway Simulator"), me);
 			return;
@@ -50,7 +50,7 @@ void __stdcall SSWR::AVIRead::AVIRLoraGWSimForm::OnStartClick(void *userObj)
 			UI::MessageDialog::ShowDialog(CSTR("Error in parsing Gateway EUI"), CSTR("LoRa Gateway Simulator"), me);
 			return;
 		}
-		NEW_CLASS(me->lora, Net::LoRaGateway(me->sockf, &svrAddr, svrPort, gatewayEUI, &me->log));
+		NEW_CLASS(me->lora, Net::LoRaGateway(me->sockf, svrAddr, svrPort, gatewayEUI, &me->log));
 		if (me->lora->IsError())
 		{
 			DEL_CLASS(me->lora);

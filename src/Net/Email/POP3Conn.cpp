@@ -145,21 +145,21 @@ Net::Email::POP3Conn::POP3Conn(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEng
 	this->authPlain = false;
 	Net::SocketUtil::AddressInfo addr;
 	addr.addrType = Net::AddrType::Unknown;
-	sockf->DNSResolveIP(host, &addr);
+	sockf->DNSResolveIP(host, addr);
 	this->logWriter = logWriter;
 	if (connType == CT_SSL)
 	{
 		Net::SSLEngine::ErrorType err;
 		if (!this->cli.Set(ssl->ClientConnect(host, port, &err, timeout)))
 		{
-			NEW_CLASSNN(this->cli, Net::TCPClient(sockf, &addr, port, timeout));
+			NEW_CLASSNN(this->cli, Net::TCPClient(sockf, addr, port, timeout));
 		}
 	}
 	else if (connType == CT_STARTTLS)
 	{
 		UInt8 buff[1024];
 		UOSInt buffSize;
-		NEW_CLASSNN(this->cli, Net::TCPClient(sockf, &addr, port, timeout));
+		NEW_CLASSNN(this->cli, Net::TCPClient(sockf, addr, port, timeout));
 		this->cli->SetTimeout(timeout);
 		buffSize = this->cli->Read(BYTEARR(buff));
 		if (this->logWriter)
@@ -216,7 +216,7 @@ Net::Email::POP3Conn::POP3Conn(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEng
 	}
 	else
 	{
-		NEW_CLASSNN(this->cli, Net::TCPClient(sockf, &addr, port, timeout));
+		NEW_CLASSNN(this->cli, Net::TCPClient(sockf, addr, port, timeout));
 	}
 	this->cli->SetNoDelay(false);
 	NEW_CLASS(this->writer, Text::UTF8Writer(this->cli));
@@ -228,7 +228,7 @@ Net::Email::POP3Conn::POP3Conn(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEng
 		sb.AppendC(UTF8STRC("Connect to "));
 		sb.Append(host);
 		sb.AppendC(UTF8STRC("("));
-		sptr = Net::SocketUtil::GetAddrName(sbuff, &addr);
+		sptr = Net::SocketUtil::GetAddrName(sbuff, addr);
 		sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 		sb.AppendC(UTF8STRC("):"));
 		sb.AppendU16(port);

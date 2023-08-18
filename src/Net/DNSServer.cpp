@@ -3,7 +3,7 @@
 #include "Net/DNSServer.h"
 #include "Text/StringBuilder.h"
 
-void __stdcall Net::DNSServer::PacketHdlr(const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData)
+void __stdcall Net::DNSServer::PacketHdlr(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData)
 {
 	Net::DNSServer *me = (Net::DNSServer*)userData;
 	UTF8Char sbuff[256];
@@ -75,7 +75,7 @@ void Net::DNSServer::HandleRequest(DNSRequest hdlr, void *userObj)
 	this->reqObj = userObj;
 }
 
-void Net::DNSServer::ReplyRequest(const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UInt8 *buff, UOSInt dataSize)
+void Net::DNSServer::ReplyRequest(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize)
 {
 	this->svr->SendTo(addr, port, buff, dataSize);
 }

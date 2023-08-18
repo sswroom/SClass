@@ -46,7 +46,7 @@ namespace Net
 
 		virtual UTF8Char *GetRemoteName(UTF8Char *buff) const;
 		virtual UTF8Char *GetLocalName(UTF8Char *buff) const;
-		virtual Bool GetRemoteAddr(Net::SocketUtil::AddressInfo *addr) const;
+		virtual Bool GetRemoteAddr(NotNullPtr<Net::SocketUtil::AddressInfo> addr) const;
 		virtual UInt16 GetRemotePort() const;
 		virtual UInt16 GetLocalPort() const;
 

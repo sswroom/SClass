@@ -286,8 +286,8 @@ void IO::FileAnalyse::FrameDetailHandler::AddIPv6(UOSInt frameOfst, Text::CStrin
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
 	Net::SocketUtil::AddressInfo addr;
-	Net::SocketUtil::SetAddrInfoV6(&addr, vBuff, 0);
-	sptr = Net::SocketUtil::GetAddrName(sbuff, &addr);
+	Net::SocketUtil::SetAddrInfoV6(addr, vBuff, 0);
+	sptr = Net::SocketUtil::GetAddrName(sbuff, addr);
 	this->AddField(frameOfst, 16, name, CSTRP(sbuff, sptr));
 }
 

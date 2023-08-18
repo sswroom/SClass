@@ -14,7 +14,7 @@ void __stdcall SSWR::AVIRead::AVIRSMTPClientForm::OnSendClicked(void *userObj)
 	Net::SocketUtil::AddressInfo addr;
 	me->txtHost->GetText(sb1);
 	me->txtPort->GetText(sb2);
-	if (!me->core->GetSocketFactory()->DNSResolveIP(sb1.ToCString(), &addr))
+	if (!me->core->GetSocketFactory()->DNSResolveIP(sb1.ToCString(), addr))
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Error in resolve host name"), CSTR("SMTP Client"), me);
 		me->txtHost->Focus();

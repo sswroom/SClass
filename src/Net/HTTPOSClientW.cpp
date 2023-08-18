@@ -470,9 +470,11 @@ Bool Net::HTTPOSClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMethod
 	{
 		if (https)
 		{
-			if (this->clsData->cliCert && this->clsData->cliKey)
+			NotNullPtr<Crypto::Cert::X509Cert> cliCert;
+			NotNullPtr<Crypto::Cert::X509File> cliKey;
+			if (cliCert.Set(this->clsData->cliCert) && cliKey.Set(this->clsData->cliKey))
 			{
-				this->SetClientCert(this->clsData->cliCert, this->clsData->cliKey);
+				this->SetClientCert(cliCert, cliKey);
 			}
 		}
 		WinHttpSetStatusCallback(data->hRequest, HTTPOSClient_StatusCb, WINHTTP_CALLBACK_FLAG_SECURE_FAILURE, 0);
@@ -653,14 +655,10 @@ Bool Net::HTTPOSClient::IsSecureConn()
 	return this->clsData->https;
 }
 
-Bool WinSSLEngine_InitKey(HCRYPTPROV* hProvOut, HCRYPTKEY* hKeyOut, Crypto::Cert::X509File* keyASN1, const WChar* containerName, Bool signature, CRYPT_KEY_PROV_INFO *keyProvInfo);
+Bool WinSSLEngine_InitKey(HCRYPTPROV* hProvOut, HCRYPTKEY* hKeyOut, NotNullPtr<Crypto::Cert::X509File> keyASN1, const WChar* containerName, Bool signature, CRYPT_KEY_PROV_INFO *keyProvInfo);
 
-Bool Net::HTTPOSClient::SetClientCert(Crypto::Cert::X509Cert* cert, Crypto::Cert::X509File* key)
+Bool Net::HTTPOSClient::SetClientCert(NotNullPtr<Crypto::Cert::X509Cert> cert, NotNullPtr<Crypto::Cert::X509File> key)
 {
-	if (cert == 0 || key == 0)
-	{
-		return false;
-	}
 	if (this->clsData->hRequest)
 	{
 		const WChar* containerName = L"ServerCert";

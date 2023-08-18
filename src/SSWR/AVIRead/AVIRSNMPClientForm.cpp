@@ -13,7 +13,7 @@ void __stdcall SSWR::AVIRead::AVIRSNMPClientForm::OnRequestClicked(void *userObj
 	Text::StringBuilderUTF8 sbOID;
 	Net::SocketUtil::AddressInfo addr;
 	me->txtAgent->GetText(sbComm);
-	if (!me->core->GetSocketFactory()->DNSResolveIP(sbComm.ToCString(), &addr))
+	if (!me->core->GetSocketFactory()->DNSResolveIP(sbComm.ToCString(), addr))
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Error in resolving Agent Address"), CSTR("SNMP Client"), me);
 		return;
@@ -37,15 +37,15 @@ void __stdcall SSWR::AVIRead::AVIRSNMPClientForm::OnRequestClicked(void *userObj
 	NotNullPtr<Text::String> community = Text::String::New(sbComm.ToString(), sbComm.GetLength());
 	if (i == 0)
 	{
-		err = me->cli->V1GetRequest(&addr, community, sbOID.ToString(), sbOID.GetLength(), &itemList);
+		err = me->cli->V1GetRequest(addr, community, sbOID.ToString(), sbOID.GetLength(), &itemList);
 	}
 	else if (i == 1)
 	{
-		err = me->cli->V1GetNextRequest(&addr, community, sbOID.ToString(), sbOID.GetLength(), &itemList);
+		err = me->cli->V1GetNextRequest(addr, community, sbOID.ToString(), sbOID.GetLength(), &itemList);
 	}
 	else
 	{
-		err = me->cli->V1Walk(&addr, community, sbOID.ToString(), sbOID.GetLength(), &itemList);
+		err = me->cli->V1Walk(addr, community, sbOID.ToString(), sbOID.GetLength(), &itemList);
 	}
 	community->Release();
 	UOSInt j;

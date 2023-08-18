@@ -7,7 +7,7 @@
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 
-void __stdcall Net::SyslogServer::OnUDPPacket(const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData)
+void __stdcall Net::SyslogServer::OnUDPPacket(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData)
 {
 	Net::SyslogServer *me = (Net::SyslogServer*)userData;
 	UTF8Char sbuff[64];
@@ -40,7 +40,7 @@ void __stdcall Net::SyslogServer::OnUDPPacket(const Net::SocketUtil::AddressInfo
 	}
 }
 
-Net::SyslogServer::IPStatus *Net::SyslogServer::GetIPStatus(const Net::SocketUtil::AddressInfo *addr)
+Net::SyslogServer::IPStatus *Net::SyslogServer::GetIPStatus(NotNullPtr<const Net::SocketUtil::AddressInfo> addr)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;

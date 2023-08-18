@@ -77,14 +77,14 @@ void __stdcall SSWR::AVIRead::AVIRGPSDevForm::OnConnClicked(void *userObj)
 		sb.ToUInt16(port);
 		sb.ClearStr();
 		me->txtHost->GetText(sb);
-		if (!me->core->GetSocketFactory()->DNSResolveIP(sb.ToCString(), &addr) || port <= 0)
+		if (!me->core->GetSocketFactory()->DNSResolveIP(sb.ToCString(), addr) || port <= 0)
 		{
 
 		}
 		else
 		{
 			Net::TCPClient *cli;
-			NEW_CLASS(cli, Net::TCPClient(me->core->GetSocketFactory(), &addr, port, 30000));
+			NEW_CLASS(cli, Net::TCPClient(me->core->GetSocketFactory(), addr, port, 30000));
 			if (cli->IsClosed())
 			{
 				DEL_CLASS(cli);

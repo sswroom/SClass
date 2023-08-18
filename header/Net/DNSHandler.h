@@ -26,16 +26,16 @@ namespace Net
 		Data::ICaseBTreeUTF8Map<DomainStatus*> reqv6Map;
 
 	public:
-		DNSHandler(NotNullPtr<Net::SocketFactory> sockf, const Net::SocketUtil::AddressInfo *serverAddr);
+		DNSHandler(NotNullPtr<Net::SocketFactory> sockf, NotNullPtr<const Net::SocketUtil::AddressInfo> serverAddr);
 		~DNSHandler();
 	
-		Bool GetByDomainNamev4(Net::SocketUtil::AddressInfo *addr, Text::CString domain);
-		Bool GetByDomainNamev6(Net::SocketUtil::AddressInfo *addr, Text::CString domain);
-		UOSInt GetByDomainNamesv4(Net::SocketUtil::AddressInfo *addrs, Text::CString domain, UOSInt maxCnt);
-		UOSInt GetByDomainNamesv6(Net::SocketUtil::AddressInfo *addrs, Text::CString domain, UOSInt maxCnt);
+		Bool GetByDomainNamev4(NotNullPtr<Net::SocketUtil::AddressInfo> addr, Text::CString domain);
+		Bool GetByDomainNamev6(NotNullPtr<Net::SocketUtil::AddressInfo> addr, Text::CString domain);
+		UOSInt GetByDomainNamesv4(Data::DataArray<Net::SocketUtil::AddressInfo> addrs, Text::CString domain);
+		UOSInt GetByDomainNamesv6(Data::DataArray<Net::SocketUtil::AddressInfo> addrs, Text::CString domain);
 
-		Bool AddHost(const Net::SocketUtil::AddressInfo *addr, const UTF8Char *domain, UOSInt domainLen);
-		void UpdateDNSAddr(const Net::SocketUtil::AddressInfo *serverAddr);
+		Bool AddHost(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, const UTF8Char *domain, UOSInt domainLen);
+		void UpdateDNSAddr(NotNullPtr<const Net::SocketUtil::AddressInfo> serverAddr);
 	};
 }
 #endif

@@ -11,7 +11,7 @@ Net::HTTPProxyTCPClient::HTTPProxyTCPClient(NotNullPtr<Net::SocketFactory> sockf
 	this->SetSourceName(destHost);
 
 	Net::SocketUtil::AddressInfo addr;
-	if (!sockf->DNSResolveIP(proxyHost, &addr))
+	if (!sockf->DNSResolveIP(proxyHost, addr))
 	{
 		this->flags |= 12;
 		return;
@@ -39,7 +39,7 @@ Net::HTTPProxyTCPClient::HTTPProxyTCPClient(NotNullPtr<Net::SocketFactory> sockf
 		this->flags |= 12;
 		return;
 	}
-	if (!sockf->Connect(s, &addr, proxyPort, 15000))
+	if (!sockf->Connect(s, addr, proxyPort, 15000))
 	{
 		sockf->DestroySocket(s);
 		this->s = 0;

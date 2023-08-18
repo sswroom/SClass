@@ -27,8 +27,8 @@ namespace IO
 		void CaptureBT(IO::BTCapturer *btCapture);
 		void Stop();
 
-		UInt64 GetWiFiCount();
-		UInt64 GetBTCount();
+		UInt64 GetWiFiCount() const;
+		UInt64 GetBTCount() const;
 	};
 }
 

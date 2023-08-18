@@ -46,9 +46,10 @@ Bool __stdcall IO::Device::SIM7000::CheckATCommand(void *userObj, const UTF8Char
 				sarr[2].leng = i;
 			}
 			Sync::MutexUsage mutUsage(me->dnsMut);
-			if (me->dnsReq.v && me->dnsResp)
+			NotNullPtr<Net::SocketUtil::AddressInfo> dnsResp;
+			if (me->dnsReq.v && dnsResp.Set(me->dnsResp))
 			{
-				if (sarr[1].Equals(me->dnsReq.v, me->dnsReq.leng) && Net::SocketUtil::GetIPAddr(sarr[2].ToCString(), me->dnsResp))
+				if (sarr[1].Equals(me->dnsReq.v, me->dnsReq.leng) && Net::SocketUtil::GetIPAddr(sarr[2].ToCString(), dnsResp))
 				{
 					me->dnsResult = true;
 					me->respEvt.Set();
@@ -413,7 +414,7 @@ Bool IO::Device::SIM7000::NetGetDNSList(Data::ArrayList<UInt32> *dnsList)
 	return false;
 }
 
-Bool IO::Device::SIM7000::NetDNSResolveIP(Text::CString domain, Net::SocketUtil::AddressInfo *addr)
+Bool IO::Device::SIM7000::NetDNSResolveIP(Text::CString domain, NotNullPtr<Net::SocketUtil::AddressInfo> addr)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr = Text::StrConcatC(sbuff, UTF8STRC("AT+CDNSGIP=\""));
@@ -429,7 +430,7 @@ Bool IO::Device::SIM7000::NetDNSResolveIP(Text::CString domain, Net::SocketUtil:
 	}
 	this->dnsResult = false;
 	this->dnsReq = domain;
-	this->dnsResp = addr;
+	this->dnsResp = addr.Ptr();
 	this->respEvt.Clear();
 	mutUsage.EndUse();
 	if (!this->SendBoolCommandC(sbuff, (UOSInt)(sptr - sbuff), 3000))

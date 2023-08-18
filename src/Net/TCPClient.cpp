@@ -26,7 +26,7 @@ Net::TCPClient::TCPClient(NotNullPtr<Net::SocketFactory> sockf, Text::CStringNN 
 	this->timeout = 0;
 
 	Net::SocketUtil::AddressInfo addr;
-	if (!sockf->DNSResolveIP(name, &addr))
+	if (!sockf->DNSResolveIP(name, addr))
 	{
 		this->flags = 12;
 		return;
@@ -54,7 +54,7 @@ Net::TCPClient::TCPClient(NotNullPtr<Net::SocketFactory> sockf, Text::CStringNN 
 		this->flags = 12;
 		return;
 	}
-	if (!sockf->Connect(s, &addr, port, timeout))
+	if (!sockf->Connect(s, addr, port, timeout))
 	{
 		sockf->DestroySocket(s);
 		s = 0;
@@ -99,7 +99,7 @@ Net::TCPClient::TCPClient(NotNullPtr<Net::SocketFactory> sockf, UInt32 ip, UInt1
 	this->cliId = sockf->GenSocketId(s);
 }
 
-Net::TCPClient::TCPClient(NotNullPtr<Net::SocketFactory> sockf, const Net::SocketUtil::AddressInfo *addr, UInt16 port, Data::Duration timeout) : IO::Stream(CSTR(""))
+Net::TCPClient::TCPClient(NotNullPtr<Net::SocketFactory> sockf, NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Data::Duration timeout) : IO::Stream(CSTR(""))
 {
 	this->currCnt = 0;
 	this->s = 0;
@@ -442,7 +442,7 @@ UTF8Char *Net::TCPClient::GetLocalName(UTF8Char *buff) const
 	return this->sockf->GetLocalName(buff, this->s);
 }
 
-Bool Net::TCPClient::GetRemoteAddr(Net::SocketUtil::AddressInfo *addr) const
+Bool Net::TCPClient::GetRemoteAddr(NotNullPtr<Net::SocketUtil::AddressInfo> addr) const
 {
 	return this->sockf->GetRemoteAddr(this->s, addr, 0);
 }

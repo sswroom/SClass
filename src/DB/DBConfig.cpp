@@ -27,7 +27,7 @@ DB::DBTool *DB::DBConfig::LoadFromConfig(NotNullPtr<Net::SocketFactory> sockf, I
 			log->LogMessage(CSTR("MSSQLHost is missing"), IO::LogHandler::LogLevel::Error);
 			return 0;
 		}
-		else if (!sockf->DNSResolveIP(serverHost->ToCString(), &addr))
+		else if (!sockf->DNSResolveIP(serverHost->ToCString(), addr))
 		{
 			log->LogMessage(CSTR("MSSQLHost is not valid"), IO::LogHandler::LogLevel::Error);
 			return 0;

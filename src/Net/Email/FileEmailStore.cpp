@@ -81,7 +81,7 @@ void Net::Email::FileEmailStore::AddMail(const Text::MIMEObj::MailMessage *mail,
 		EmailInfo *email;
 		email = MemAlloc(EmailInfo, 1);
 		email->id = id;
-		Net::SocketUtil::GetIPAddr(remoteIP->ToCString(), &email->remoteAddr);
+		Net::SocketUtil::GetIPAddr(remoteIP->ToCString(), email->remoteAddr);
 		email->fromAddr = fromAddr->Clone();
 		email->recvTime = recvTime.ToTicks();
 		email->isDeleted = false;
@@ -170,7 +170,7 @@ Int64 Net::Email::FileEmailStore::NextEmailId()
 	return id;
 }
 
-Bool Net::Email::FileEmailStore::NewEmail(Int64 id, const Net::SocketUtil::AddressInfo *remoteAddr, Text::CString serverName, const Net::Email::SMTPServer::MailStatus *mail)
+Bool Net::Email::FileEmailStore::NewEmail(Int64 id, NotNullPtr<const Net::SocketUtil::AddressInfo> remoteAddr, Text::CString serverName, const Net::Email::SMTPServer::MailStatus *mail)
 {
 	Data::DateTime currTime;
 	EmailInfo *email;
@@ -184,7 +184,7 @@ Bool Net::Email::FileEmailStore::NewEmail(Int64 id, const Net::SocketUtil::Addre
 	sb.AppendC(UTF8STRC(".eml"));
 	email = MemAlloc(EmailInfo, 1);
 	email->id = id;
-	email->remoteAddr = *remoteAddr;
+	email->remoteAddr = remoteAddr.Ptr()[0];
 	email->fromAddr = mail->mailFrom->Clone();
 	email->recvTime = Data::DateTimeUtil::GetCurrTimeMillis();
 	email->isDeleted = false;
@@ -255,7 +255,7 @@ Bool Net::Email::FileEmailStore::NewEmail(Int64 id, const Net::SocketUtil::Addre
 	return true;
 }
 
-Bool Net::Email::FileEmailStore::NewEmail(Int64 id, const Net::SocketUtil::AddressInfo *remoteAddr, Text::CString serverName, const Text::MIMEObj::MailMessage *mail)
+Bool Net::Email::FileEmailStore::NewEmail(Int64 id, NotNullPtr<const Net::SocketUtil::AddressInfo> remoteAddr, Text::CString serverName, const Text::MIMEObj::MailMessage *mail)
 {
 	Data::DateTime currTime;
 	UOSInt i;
@@ -328,7 +328,7 @@ Bool Net::Email::FileEmailStore::NewEmail(Int64 id, const Net::SocketUtil::Addre
 	EmailInfo *email;
 	email = MemAlloc(EmailInfo, 1);
 	email->id = id;
-	email->remoteAddr = *remoteAddr;
+	email->remoteAddr = remoteAddr.Ptr()[0];
 	sptr = mail->GetFromAddr(sbuff);
 	email->fromAddr = Text::String::NewP(sbuff, sptr);
 	email->recvTime = currTime.ToTicks();

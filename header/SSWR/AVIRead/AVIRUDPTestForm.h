@@ -75,7 +75,7 @@ namespace SSWR
 			UI::GUITextBox *txtSentFailCnt;
 			UI::GUITextBox *txtSentFailCntRate;
 
-			static void __stdcall OnUDPPacket(const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData);
+			static void __stdcall OnUDPPacket(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData);
 			static void __stdcall OnAutoReplyChanged(void *userObj, Bool newVal);
 			static void __stdcall OnStartClicked(void *userObj);
 			static void __stdcall OnSendClicked(void *userObj);

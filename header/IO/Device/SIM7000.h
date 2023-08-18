@@ -88,7 +88,7 @@ namespace IO
 			//AT+CIFSREX
 			//AT+CIPSTATUS
 			Bool NetGetDNSList(Data::ArrayList<UInt32> *dnsList); //AT+CDNSCFG
-			Bool NetDNSResolveIP(Text::CString domain, Net::SocketUtil::AddressInfo *addr); //AT+CDNSGIP //////////////////////////////
+			Bool NetDNSResolveIP(Text::CString domain, NotNullPtr<Net::SocketUtil::AddressInfo> addr); //AT+CDNSGIP //////////////////////////////
 			//AT+CIPHEAD
 			//AT+CIPATS
 			//AT+CIPSPRT

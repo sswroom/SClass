@@ -348,7 +348,7 @@ Net::TCPServer::TCPServer(NotNullPtr<SocketFactory> socf, UInt16 port, IO::LogTo
 
 	this->svrSocv6 = this->socf->CreateTCPSocketv6();
 	Net::SocketUtil::AddressInfo addrAny;
-	Net::SocketUtil::SetAddrAnyV6(&addrAny);
+	Net::SocketUtil::SetAddrAnyV6(addrAny);
 	if (!this->socf->SocketBind(this->svrSocv6, &addrAny, this->port))
 	{
 		str = Text::StrConcatC(buff, UTF8STRC("Cannot bind to the v6 port: "));

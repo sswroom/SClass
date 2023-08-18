@@ -5,7 +5,7 @@
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
 
-void __stdcall SSWR::SDNSProxy::SDNSProxyCore::OnDNSRequest(void *userObj, Text::CString reqName, Int32 reqType, Int32 reqClass, const Net::SocketUtil::AddressInfo *reqAddr, UInt16 reqPort, UInt32 reqId, Double timeUsed)
+void __stdcall SSWR::SDNSProxy::SDNSProxyCore::OnDNSRequest(void *userObj, Text::CString reqName, Int32 reqType, Int32 reqClass, NotNullPtr<const Net::SocketUtil::AddressInfo> reqAddr, UInt16 reqPort, UInt32 reqId, Double timeUsed)
 {
 	SSWR::SDNSProxy::SDNSProxyCore *me = (SSWR::SDNSProxy::SDNSProxyCore*)userObj;
 	UTF8Char sbuff[32];
@@ -33,7 +33,7 @@ void __stdcall SSWR::SDNSProxy::SDNSProxyCore::OnDNSRequest(void *userObj, Text:
 	{
 		NEW_CLASS(cli, ClientInfo());
 		cli->cliId = cliId;
-		cli->addr = *reqAddr;
+		cli->addr = reqAddr.Ptr()[0];
 		me->cliInfos.Put(cliId, cli);
 	}
 

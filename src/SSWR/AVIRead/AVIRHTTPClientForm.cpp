@@ -566,9 +566,11 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 			
 			NotNullPtr<Net::HTTPClient> cli;
 			cli = Net::HTTPClient::CreateClient(me->core->GetSocketFactory(), currOSClient?0:me->ssl, me->userAgent->ToCString(), me->noShutdown, currURL->StartsWith(UTF8STRC("https://")));
-			if (me->cliCert != 0 && me->cliKey != 0)
+			NotNullPtr<Crypto::Cert::X509Cert> cliCert;
+			NotNullPtr<Crypto::Cert::X509File> cliKey;
+			if (cliCert.Set(me->cliCert) && cliKey.Set(me->cliKey))
 			{
-				cli->SetClientCert(me->cliCert, me->cliKey);
+				cli->SetClientCert(cliCert, cliKey);
 			}
 			if (cli->Connect(currURL->ToCString(), currMeth, &me->respTimeDNS, &me->respTimeConn, false))
 			{
@@ -841,7 +843,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnTimerTick(void *userObj)
 	if (me->respChanged)
 	{
 		me->txtReqURL->SetText(me->respReqURL->ToCString());
-		sptr = Net::SocketUtil::GetAddrName(sbuff, &me->respSvrAddr);
+		sptr = Net::SocketUtil::GetAddrName(sbuff, me->respSvrAddr);
 		if (sptr == 0)
 		{
 			me->txtSvrIP->SetText(CSTR(""));

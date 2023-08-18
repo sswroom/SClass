@@ -472,9 +472,9 @@ Bool IO::FileAnalyse::PCapngFileAnalyse::GetFrameDetail(UOSInt index, NotNullPtr
 			else if (optCode == 5)
 			{
 				Net::SocketUtil::AddressInfo addr;
-				Net::SocketUtil::SetAddrInfoV6(&addr, &this->packetBuff[i + 4], 0);
+				Net::SocketUtil::SetAddrInfoV6(addr, &this->packetBuff[i + 4], 0);
 				sb->AppendC(UTF8STRC("\r\nIPv6 Address="));
-				sptr = Net::SocketUtil::GetAddrName(sbuff, &addr);
+				sptr = Net::SocketUtil::GetAddrName(sbuff, addr);
 				sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
 				sb->AppendC(UTF8STRC("/"));
 				sb->AppendU16(this->packetBuff[i + 20]);
@@ -1042,8 +1042,8 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::PCapngFileAnalyse::GetFrameDetail
 			else if (optCode == 5)
 			{
 				Net::SocketUtil::AddressInfo addr;
-				Net::SocketUtil::SetAddrInfoV6(&addr, &this->packetBuff[i + 4], 0);
-				sptr = Text::StrUInt16(Text::StrConcatC(Net::SocketUtil::GetAddrName(sbuff, &addr), UTF8STRC("/")), this->packetBuff[i + 20]);
+				Net::SocketUtil::SetAddrInfoV6(addr, &this->packetBuff[i + 4], 0);
+				sptr = Text::StrUInt16(Text::StrConcatC(Net::SocketUtil::GetAddrName(sbuff, addr), UTF8STRC("/")), this->packetBuff[i + 20]);
 				frame->AddField(i + 4, 17, CSTR("IPv6 Address"), CSTRP(sbuff, sptr));
 			}
 			else if (optCode == 6)

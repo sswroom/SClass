@@ -12,7 +12,7 @@ namespace Net
 	class UDPServer
 	{
 	public:
-		typedef void (__stdcall *UDPPacketHdlr)(const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData);
+		typedef void (__stdcall *UDPPacketHdlr)(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData);
 
 		typedef struct
 		{
@@ -58,7 +58,7 @@ namespace Net
 		UInt16 GetPort();
 		Bool IsError();
 		Bool SupportV6();
-		virtual Bool SendTo(const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UInt8 *buff, UOSInt dataSize);
+		virtual Bool SendTo(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize);
 		Int32 GetRecvCnt();
 		void AddMulticastIP(UInt32 ip);
 		void SetBuffSize(Int32 buffSize);

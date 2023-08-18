@@ -484,10 +484,10 @@ void __stdcall Net::MySQLServer::OnClientData(NotNullPtr<Net::TCPClient> cli, vo
 
 				Net::SocketUtil::AddressInfo addr;
 				Bool valid = false;
-				cli->GetRemoteAddr(&addr);
+				cli->GetRemoteAddr(addr);
 				if (authLen == 20)
 				{
-					valid = me->dbms->UserLoginMySQL(data->connId, {data->userName, data->userNameLen}, data->authPluginData, authResp, &addr, &data->param, data->database);
+					valid = me->dbms->UserLoginMySQL(data->connId, {data->userName, data->userNameLen}, data->authPluginData, authResp, addr, &data->param, data->database);
 				}
 
 				if (valid)
@@ -515,7 +515,7 @@ void __stdcall Net::MySQLServer::OnClientData(NotNullPtr<Net::TCPClient> cli, vo
 					sptr = Text::StrConcatC(&sbuff[7], UTF8STRC("#28000Access denied for user '"));
 					sptr = Text::StrConcatC(sptr, data->userName, data->userNameLen);
 					sptr = Text::StrConcatC(sptr, UTF8STRC("'@'"));
-					sptr = Net::SocketUtil::GetAddrName(sptr, &addr);
+					sptr = Net::SocketUtil::GetAddrName(sptr, addr);
 					*sptr++ = '\'';
 					WriteInt24(sbuff, (sptr - sbuff - 4));
 					sbuff[3] = 2;

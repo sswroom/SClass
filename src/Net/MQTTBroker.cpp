@@ -352,7 +352,7 @@ void Net::MQTTBroker::DataParsed(NotNullPtr<IO::Stream> stm, void *stmObj, Int32
 			if (this->connHdlr)
 			{
 				Net::SocketUtil::AddressInfo addr;
-				((Net::TCPClient*)stm.Ptr())->GetRemoteAddr(&addr);
+				((Net::TCPClient*)stm.Ptr())->GetRemoteAddr(addr);
 				cs = this->connHdlr(this->connObj, clientId, userName, password, &addr);
 			}
 			else

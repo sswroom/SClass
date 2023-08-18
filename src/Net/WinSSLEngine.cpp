@@ -580,7 +580,7 @@ HCRYPTKEY WinSSLEngine_ImportKey(HCRYPTPROV hProv, NotNullPtr<Crypto::Cert::X509
 }
 
 
-HCRYPTKEY WinSSLEngine_ImportPrivKey(HCRYPTPROV hProv, Crypto::Cert::X509PrivKey *key, Bool signature)
+HCRYPTKEY WinSSLEngine_ImportPrivKey(HCRYPTPROV hProv, NotNullPtr<Crypto::Cert::X509PrivKey> key, Bool signature)
 {
 	HCRYPTKEY hKey;
 	Crypto::Cert::X509File::KeyType keyType = key->GetKeyType();
@@ -595,17 +595,13 @@ HCRYPTKEY WinSSLEngine_ImportPrivKey(HCRYPTPROV hProv, Crypto::Cert::X509PrivKey
 	return 0;
 }
 
-Bool WinSSLEngine_InitKey(HCRYPTPROV *hProvOut, HCRYPTKEY *hKeyOut, Crypto::Cert::X509File *keyASN1, const WChar *containerName, Bool signature, CRYPT_KEY_PROV_INFO *keyProvInfo)
+Bool WinSSLEngine_InitKey(HCRYPTPROV *hProvOut, HCRYPTKEY *hKeyOut, NotNullPtr<Crypto::Cert::X509File> keyASN1, const WChar *containerName, Bool signature, CRYPT_KEY_PROV_INFO *keyProvInfo)
 {
 	HCRYPTPROV hProv;
 	HCRYPTKEY hKey;
 	if (keyASN1->GetFileType() == Crypto::Cert::X509File::FileType::Key)
 	{
-		NotNullPtr<Crypto::Cert::X509Key> key;
-		if (!key.Set((Crypto::Cert::X509Key*)keyASN1))
-		{
-			return false;
-		}
+		NotNullPtr<Crypto::Cert::X509Key> key = NotNullPtr<Crypto::Cert::X509Key>::ConvertFrom(keyASN1);
 		hProv = WinSSLEngine_CreateProv(key->GetKeyType(), containerName, keyProvInfo);
 		if (hProv == 0)
 		{
@@ -620,7 +616,7 @@ Bool WinSSLEngine_InitKey(HCRYPTPROV *hProvOut, HCRYPTKEY *hKeyOut, Crypto::Cert
 	}
 	else if (keyASN1->GetFileType() == Crypto::Cert::X509File::FileType::PrivateKey)
 	{
-		Crypto::Cert::X509PrivKey *key = (Crypto::Cert::X509PrivKey*)keyASN1;
+		NotNullPtr<Crypto::Cert::X509PrivKey> key = NotNullPtr<Crypto::Cert::X509PrivKey>::ConvertFrom(keyASN1);
 		hProv = WinSSLEngine_CreateProv(key->GetKeyType(), containerName, keyProvInfo);
 		if (hProv == 0)
 		{
@@ -1287,13 +1283,9 @@ Bool Net::WinSSLEngine::IsError()
 	return false;
 }
 
-Bool Net::WinSSLEngine::ServerSetCertsASN1(Crypto::Cert::X509Cert *certASN1, Crypto::Cert::X509File *keyASN1, Crypto::Cert::X509Cert *caCert)
+Bool Net::WinSSLEngine::ServerSetCertsASN1(NotNullPtr<Crypto::Cert::X509Cert> certASN1, NotNullPtr<Crypto::Cert::X509File> keyASN1, Crypto::Cert::X509Cert *caCert)
 {
 	if (this->clsData->svrInit)
-	{
-		return false;
-	}
-	if (certASN1 == 0 || keyASN1 == 0)
 	{
 		return false;
 	}
@@ -1378,12 +1370,8 @@ void Net::WinSSLEngine::ClientSetSkipCertCheck(Bool skipCertCheck)
 	this->skipCertCheck = skipCertCheck;
 }
 
-Bool Net::WinSSLEngine::ClientSetCertASN1(Crypto::Cert::X509Cert *certASN1, Crypto::Cert::X509File *keyASN1)
+Bool Net::WinSSLEngine::ClientSetCertASN1(NotNullPtr<Crypto::Cert::X509Cert> certASN1, NotNullPtr<Crypto::Cert::X509File> keyASN1)
 {
-	if (certASN1 == 0 || keyASN1 == 0)
-	{
-		return false;
-	}
 	const WChar *containerName = L"ClientCert";
 	HCRYPTKEY hKey;
 	HCRYPTPROV hProv;

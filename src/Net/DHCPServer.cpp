@@ -9,7 +9,7 @@
 
 #include <stdio.h>
 
-void __stdcall Net::DHCPServer::PacketHdlr(const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData)
+void __stdcall Net::DHCPServer::PacketHdlr(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData)
 {
 	Net::DHCPServer *me = (Net::DHCPServer*)userData;
 	UInt8 repBuff[512];
@@ -186,8 +186,8 @@ void __stdcall Net::DHCPServer::PacketHdlr(const Net::SocketUtil::AddressInfo *a
 			i++;
 
 //			me->sockf->ARPAddRecord(me->infIndex, &buff[28], reqIP);
-			Net::SocketUtil::SetAddrInfoV4(&destAddr, reqIP | (~me->subnet));
-			me->svr->SendTo(&destAddr, 68, repBuff, i);
+			Net::SocketUtil::SetAddrInfoV4(destAddr, reqIP | (~me->subnet));
+			me->svr->SendTo(destAddr, 68, repBuff, i);
 		}
 		else if (dhcpType == 3)
 		{
@@ -257,8 +257,8 @@ void __stdcall Net::DHCPServer::PacketHdlr(const Net::SocketUtil::AddressInfo *a
 			i++;
 
 //			me->sockf->ARPAddRecord(me->infIndex, &buff[28], reqIP);
-			Net::SocketUtil::SetAddrInfoV4(&destAddr, reqIP | (~me->subnet));
-			me->svr->SendTo(&destAddr, 68, repBuff, i);
+			Net::SocketUtil::SetAddrInfoV4(destAddr, reqIP | (~me->subnet));
+			me->svr->SendTo(destAddr, 68, repBuff, i);
 		}
 	}
 }
@@ -324,7 +324,7 @@ Net::DHCPServer::DHCPServer(NotNullPtr<Net::SocketFactory> sockf, UInt32 infIP, 
 	this->devUsed = MemAlloc(UInt8, this->devCount);
 	MemClear(this->devUsed, this->devCount);
 	Net::SocketUtil::AddressInfo addr;
-	Net::SocketUtil::SetAddrInfoV4(&addr, infIP);
+	Net::SocketUtil::SetAddrInfoV4(addr, infIP);
 	NEW_CLASS(this->svr, Net::UDPServer(this->sockf, &addr, 67, CSTR_NULL, PacketHdlr, this, 0, CSTR_NULL, 2, false));
 }
 
