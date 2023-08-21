@@ -1433,7 +1433,7 @@ Net::SSLClient *Net::WinSSLEngine::ClientConnect(Text::CString hostName, UInt16 
 	}
 
 	Net::SocketUtil::AddressInfo addr[1];
-	UOSInt addrCnt = this->sockf->DNSResolveIPs(hostName, addr, 1);
+	UOSInt addrCnt = this->sockf->DNSResolveIPs(hostName, Data::DataArray<Net::SocketUtil::AddressInfo>(addr, 1));
 	Socket *s;
 	if (addrCnt == 0)
 	{
@@ -1453,7 +1453,7 @@ Net::SSLClient *Net::WinSSLEngine::ClientConnect(Text::CString hostName, UInt16 
 					*err = ErrorType::OutOfMemory;
 				return 0;
 			}
-			if (this->sockf->Connect(s, &addr[addrInd], port, timeout))
+			if (this->sockf->Connect(s, addr[addrInd], port, timeout))
 			{
 				return CreateClientConn(0, s, hostName, err);
 			}
@@ -1468,7 +1468,7 @@ Net::SSLClient *Net::WinSSLEngine::ClientConnect(Text::CString hostName, UInt16 
 					*err = ErrorType::OutOfMemory;
 				return 0;
 			}
-			if (this->sockf->Connect(s, &addr[addrInd], port, timeout))
+			if (this->sockf->Connect(s, addr[addrInd], port, timeout))
 			{
 				return CreateClientConn(0, s, hostName, err);
 			}

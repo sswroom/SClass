@@ -273,7 +273,7 @@ void Net::WebServer::WebConnection::ReceivedData(const Data::ByteArrayR &buff)
 				}
 				else
 				{
-					strIndex = Text::StrIndexOfCharC(&this->dataBuff[lineStart], this->buffSize - lineStart, ':');
+					strIndex = Text::StrIndexOfCharC(&this->dataBuff[lineStart], i - lineStart, ':');
 					if (strIndex != INVALID_INDEX)
 					{
 						UOSInt nameLen = strIndex;

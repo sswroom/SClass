@@ -36,7 +36,7 @@ DB::DBTool *DB::MySQLConn::CreateDBTool(NotNullPtr<Net::SocketFactory> sockf, Te
 	Net::MySQLTCPClient *conn;
 	DB::DBTool *db;
 	Net::SocketUtil::AddressInfo addr;
-	if (!sockf->DNSResolveIP(serverName->ToCString(), &addr))
+	if (!sockf->DNSResolveIP(serverName->ToCString(), addr))
 	{
 		if (log)
 		{
@@ -79,7 +79,7 @@ DB::DBTool *DB::MySQLConn::CreateDBTool(NotNullPtr<Net::SocketFactory> sockf, Te
 	Net::MySQLTCPClient *conn;
 	DB::DBTool *db;
 	Net::SocketUtil::AddressInfo addr;
-	if (!sockf->DNSResolveIP(serverName, &addr))
+	if (!sockf->DNSResolveIP(serverName, addr))
 	{
 		if (log)
 		{

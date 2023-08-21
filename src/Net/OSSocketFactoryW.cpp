@@ -299,7 +299,7 @@ Int32 Net::OSSocketFactory::SocketGetLastError()
 	return WSAGetLastError();
 }
 
-Bool Net::OSSocketFactory::GetRemoteAddr(Socket *socket, Net::SocketUtil::AddressInfo *addr, UInt16 *port)
+Bool Net::OSSocketFactory::GetRemoteAddr(Socket *socket, NotNullPtr<Net::SocketUtil::AddressInfo> addr, UInt16 *port)
 {
 	UInt8 addrBuff[28];
 	int size = 28;
@@ -307,11 +307,8 @@ Bool Net::OSSocketFactory::GetRemoteAddr(Socket *socket, Net::SocketUtil::Addres
 	{
 		if (*(Int16*)&addrBuff[0] == AF_INET)
 		{
-			if (addr)
-			{
-				addr->addrType = Net::AddrType::IPv4;
-				*(UInt32*)addr->addr = ((sockaddr_in*)addrBuff)->sin_addr.S_un.S_addr;
-			}
+			addr->addrType = Net::AddrType::IPv4;
+			*(UInt32*)addr->addr = ((sockaddr_in*)addrBuff)->sin_addr.S_un.S_addr;
 			if (port)
 			{
 				*port = ReadMUInt16(&addrBuff[2]);
@@ -320,11 +317,8 @@ Bool Net::OSSocketFactory::GetRemoteAddr(Socket *socket, Net::SocketUtil::Addres
 		}
 		else if (*(Int16*)&addrBuff[0] == AF_INET6)
 		{
-			if (addr)
-			{
-				addr->addrType = Net::AddrType::IPv6;
-				MemCopyNO(addr->addr, &addrBuff[8], 20);
-			}
+			addr->addrType = Net::AddrType::IPv6;
+			MemCopyNO(addr->addr, &addrBuff[8], 20);
 			if (port)
 			{
 				*port = ReadMUInt16(&addrBuff[2]);
@@ -335,7 +329,7 @@ Bool Net::OSSocketFactory::GetRemoteAddr(Socket *socket, Net::SocketUtil::Addres
 	return false;
 }
 
-Bool Net::OSSocketFactory::GetLocalAddr(Socket *socket, Net::SocketUtil::AddressInfo *addr, UInt16 *port)
+Bool Net::OSSocketFactory::GetLocalAddr(Socket *socket, NotNullPtr<Net::SocketUtil::AddressInfo> addr, UInt16 *port)
 {
 	UInt8 addrBuff[28];
 	int size = 28;
@@ -343,11 +337,8 @@ Bool Net::OSSocketFactory::GetLocalAddr(Socket *socket, Net::SocketUtil::Address
 	{
 		if (*(Int16*)&addrBuff[0] == AF_INET)
 		{
-			if (addr)
-			{
-				addr->addrType = Net::AddrType::IPv4;
-				*(UInt32*)addr->addr = ((sockaddr_in*)addrBuff)->sin_addr.S_un.S_addr;
-			}
+			addr->addrType = Net::AddrType::IPv4;
+			*(UInt32*)addr->addr = ((sockaddr_in*)addrBuff)->sin_addr.S_un.S_addr;
 			if (port)
 			{
 				*port = ReadMUInt16(&addrBuff[2]);
@@ -356,11 +347,8 @@ Bool Net::OSSocketFactory::GetLocalAddr(Socket *socket, Net::SocketUtil::Address
 		}
 		else if (*(Int16*)&addrBuff[0] == AF_INET6)
 		{
-			if (addr)
-			{
-				addr->addrType = Net::AddrType::IPv6;
-				MemCopyNO(addr->addr, &addrBuff[8], 20);
-			}
+			addr->addrType = Net::AddrType::IPv6;
+			MemCopyNO(addr->addr, &addrBuff[8], 20);
 			if (port)
 			{
 				*port = ReadMUInt16(&addrBuff[2]);
@@ -574,7 +562,7 @@ void Net::OSSocketFactory::CancelReceiveData(void *reqData)
 	MemFree(overlapped);
 }
 
-UOSInt Net::OSSocketFactory::UDPReceive(Socket *socket, UInt8 *buff, UOSInt buffSize, Net::SocketUtil::AddressInfo *addr, UInt16 *port, ErrorType *et)
+UOSInt Net::OSSocketFactory::UDPReceive(Socket *socket, UInt8 *buff, UOSInt buffSize, NotNullPtr<Net::SocketUtil::AddressInfo> addr, OutParam<UInt16> port, ErrorType *et)
 {
 	Int32 recvSize;
 	UInt8 addrBuff[28];
@@ -594,13 +582,13 @@ UOSInt Net::OSSocketFactory::UDPReceive(Socket *socket, UInt8 *buff, UOSInt buff
 		{
 			addr->addrType = Net::AddrType::IPv4;
 			*(Int32*)addr->addr = *(Int32*)&addrBuff[4];
-			*port = ReadMUInt16(&addrBuff[2]);
+			port.Set(ReadMUInt16(&addrBuff[2]));
 		}
 		else if (*(Int16*)&addrBuff[0] == AF_INET6)
 		{
 			addr->addrType = Net::AddrType::IPv6;
 			MemCopyNO(addr->addr, &addrBuff[8], 20);
-			*port = ReadMUInt16(&addrBuff[2]);
+			port.Set(ReadMUInt16(&addrBuff[2]));
 		}
 		return (UOSInt)recvSize;
 	}
@@ -648,7 +636,7 @@ UOSInt Net::OSSocketFactory::SendToIF(Socket *socket, const UInt8 *buff, UOSInt 
 	return 0;
 }
 
-Bool Net::OSSocketFactory::IcmpSendEcho2(const Net::SocketUtil::AddressInfo *addr, UInt32 *respTime_us, UInt32 *ttl)
+Bool Net::OSSocketFactory::IcmpSendEcho2(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt32 *respTime_us, UInt32 *ttl)
 {
 	UInt8 sendData[32];
 	UInt8 replyBuff[sizeof(ICMP_ECHO_REPLY) + sizeof(sendData)];
@@ -685,7 +673,7 @@ Bool Net::OSSocketFactory::Connect(Socket *socket, UInt32 ip, UInt16 port, Data:
 	return MyConnect(socket, (const UInt8*)&addr, sizeof(addr), timeout);
 }
 
-Bool Net::OSSocketFactory::Connect(Socket *socket, const Net::SocketUtil::AddressInfo *addr, UInt16 port, Data::Duration timeout)
+Bool Net::OSSocketFactory::Connect(Socket *socket, NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Data::Duration timeout)
 {
 	UInt8 addrBuff[28];
 	if (addr->addrType == Net::AddrType::IPv4)
@@ -728,7 +716,7 @@ Bool Net::OSSocketFactory::SocketGetReadBuff(Socket *socket, UInt32 *size)
 }
 
 
-Bool Net::OSSocketFactory::DNSResolveIPDef(const Char *host, Net::SocketUtil::AddressInfo *addr)
+Bool Net::OSSocketFactory::DNSResolveIPDef(const Char *host, NotNullPtr<Net::SocketUtil::AddressInfo> addr)
 {
 	Bool succ = false;
 	addrinfo *result = 0;
@@ -756,7 +744,7 @@ Bool Net::OSSocketFactory::DNSResolveIPDef(const Char *host, Net::SocketUtil::Ad
 	}
 }
 
-Bool Net::OSSocketFactory::GetDefDNS(Net::SocketUtil::AddressInfo *addr)
+Bool Net::OSSocketFactory::GetDefDNS(NotNullPtr<Net::SocketUtil::AddressInfo> addr)
 {
 #ifdef _WIN32_WCE
 	/////////////////////////////////
@@ -900,12 +888,12 @@ Bool Net::OSSocketFactory::LoadHosts(Net::DNSHandler *dnsHdlr)
 			i = Text::StrSplitWSP(sarr, 2, sb);
 			if (i == 2)
 			{
-				if (Net::SocketUtil::GetIPAddr(sarr[0].ToCString(), &addr))
+				if (Net::SocketUtil::GetIPAddr(sarr[0].ToCString(), addr))
 				{
 					while (true)
 					{
 						i = Text::StrSplitWSP(sarr, 2, sarr[1]);
-						dnsHdlr->AddHost(&addr, sarr[0].v, sarr[0].leng);
+						dnsHdlr->AddHost(addr, sarr[0].v, sarr[0].leng);
 						if (i != 2)
 							break;
 					}
@@ -999,19 +987,19 @@ UOSInt Net::OSSocketFactory::GetConnInfoList(Data::ArrayList<Net::ConnectionInfo
 	return nAdapters;
 }
 
-Bool Net::OSSocketFactory::GetIPInfo(IPInfo *info)
+Bool Net::OSSocketFactory::GetIPInfo(NotNullPtr<IPInfo> info)
 {
-	return GetIpStatisticsEx((MIB_IPSTATS*)info, AF_INET) == NO_ERROR;
+	return GetIpStatisticsEx((MIB_IPSTATS*)info.Ptr(), AF_INET) == NO_ERROR;
 }
 
-Bool Net::OSSocketFactory::GetTCPInfo(TCPInfo *info)
+Bool Net::OSSocketFactory::GetTCPInfo(NotNullPtr<TCPInfo> info)
 {
-	return GetTcpStatisticsEx((MIB_TCPSTATS*)info, AF_INET) == NO_ERROR;
+	return GetTcpStatisticsEx((MIB_TCPSTATS*)info.Ptr(), AF_INET) == NO_ERROR;
 }
 
-Bool Net::OSSocketFactory::GetUDPInfo(UDPInfo *info)
+Bool Net::OSSocketFactory::GetUDPInfo(NotNullPtr<UDPInfo> info)
 {
-	return GetUdpStatisticsEx((MIB_UDPSTATS*)info, AF_INET) == NO_ERROR;
+	return GetUdpStatisticsEx((MIB_UDPSTATS*)info.Ptr(), AF_INET) == NO_ERROR;
 }
 
 UOSInt Net::OSSocketFactory::QueryPortInfos(Data::ArrayList<PortInfo*> *portInfoList, ProtocolType protoType, UInt16 procId)
@@ -1157,9 +1145,9 @@ UOSInt Net::OSSocketFactory::QueryPortInfos2(Data::ArrayList<Net::SocketFactory:
 				{
 					port = MemAlloc(Net::SocketFactory::PortInfo3, 1);
 					port->protoType = Net::SocketFactory::PT_TCP;
-					Net::SocketUtil::SetAddrInfoV4(&port->localAddr,  tcpTable->table[dwSize].dwLocalAddr);
+					Net::SocketUtil::SetAddrInfoV4(port->localAddr,  tcpTable->table[dwSize].dwLocalAddr);
 					port->localPort = tcpTable->table[dwSize].dwLocalPort;
-					Net::SocketUtil::SetAddrInfoV4(&port->foreignAddr, tcpTable->table[dwSize].dwRemoteAddr);
+					Net::SocketUtil::SetAddrInfoV4(port->foreignAddr, tcpTable->table[dwSize].dwRemoteAddr);
 					port->foreignPort = tcpTable->table[dwSize].dwRemotePort;
 					switch (tcpTable->table[dwSize].dwState)
 					{
@@ -1231,9 +1219,9 @@ UOSInt Net::OSSocketFactory::QueryPortInfos2(Data::ArrayList<Net::SocketFactory:
 				{
 					port = MemAlloc(Net::SocketFactory::PortInfo3, 1);
 					port->protoType = Net::SocketFactory::PT_UDP;
-					Net::SocketUtil::SetAddrInfoV4(&port->localAddr, udpTable->table[dwSize].dwLocalAddr);
+					Net::SocketUtil::SetAddrInfoV4(port->localAddr, udpTable->table[dwSize].dwLocalAddr);
 					port->localPort = udpTable->table[dwSize].dwLocalPort;
-					Net::SocketUtil::SetAddrInfoV4(&port->foreignAddr, 0);
+					Net::SocketUtil::SetAddrInfoV4(port->foreignAddr, 0);
 					port->foreignPort = 0;
 					port->portState = Net::SocketFactory::PS_UNKNOWN;
 					port->processId = 0;
