@@ -225,7 +225,15 @@ void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnCSRGenerateClicked(void *userO
 	ext.subjectAltName = me->sanList;
 	ext.caCert = me->chkCACert->IsChecked();
 	ext.digitalSign = me->chkDigitalSign->IsChecked();
-	Crypto::Cert::X509CertReq *csr = Crypto::Cert::CertUtil::CertReqCreate(me->ssl, &names, key, &ext);
+	Crypto::Cert::X509CertReq *csr;
+	if (me->sanList->GetCount() > 0 || ext.caCert || ext.digitalSign)
+	{
+		csr = Crypto::Cert::CertUtil::CertReqCreate(me->ssl, &names, key, &ext);
+	}
+	else
+	{
+		csr = Crypto::Cert::CertUtil::CertReqCreate(me->ssl, &names, key, 0);
+	}
 	if (csr)
 	{
 		me->core->OpenObject(csr);
