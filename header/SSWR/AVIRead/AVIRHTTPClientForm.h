@@ -3,6 +3,7 @@
 #include "Data/ArrayList.h"
 #include "IO/MemoryStream.h"
 #include "SSWR/AVIRead/AVIRCore.h"
+#include "Sync/Thread.h"
 #include "UI/GUIButton.h"
 #include "UI/GUICheckBox.h"
 #include "UI/GUIComboBox.h"
@@ -83,6 +84,8 @@ namespace SSWR
 			UI::GUITextBox *txtReqURL;
 			UI::GUILabel *lblSvrIP;
 			UI::GUITextBox *txtSvrIP;
+			UI::GUILabel *lblStartTime;
+			UI::GUITextBox *txtStartTime;
 			UI::GUILabel *lblTimeDNS;
 			UI::GUITextBox *txtTimeDNS;
 			UI::GUILabel *lblTimeConn;
@@ -118,9 +121,6 @@ namespace SSWR
 
 			NotNullPtr<Net::SocketFactory> sockf;
 			Net::SSLEngine *ssl;
-			Bool threadRunning;
-			Bool threadToStop;
-			Sync::Event threadEvt;
 			Text::String *reqURL;
 			const UTF8Char *reqBody;
 			UOSInt reqBodyLen;
@@ -138,6 +138,7 @@ namespace SSWR
 
 			Bool respChanged;
 			Net::SocketUtil::AddressInfo respSvrAddr;
+			Data::Timestamp respTimeStart;
 			Double respTimeDNS;
 			Double respTimeConn;
 			Double respTimeReq;
@@ -158,6 +159,7 @@ namespace SSWR
 			Data::ArrayList<HTTPCookie *> cookieList;
 			Sync::Mutex cookieMut;
 			Data::ArrayListNN<Text::String> fileList;
+			Sync::Thread procThread;
 
 			static void __stdcall OnUserAgentClicked(void *userObj);
 			static void __stdcall OnRequestClicked(void *userObj);
@@ -168,7 +170,7 @@ namespace SSWR
 			static void __stdcall OnFileClearClicked(void *userObj);
 			static void __stdcall OnCertClicked(void *userObj);
 			static void __stdcall OnClientCertClicked(void *userObj);
-			static UInt32 __stdcall ProcessThread(void *userObj);
+			static void __stdcall ProcessThread(NotNullPtr<Sync::Thread> thread);
 			static void __stdcall OnTimerTick(void *userObj);
 			void ClearHeaders();
 			void ClearParams();

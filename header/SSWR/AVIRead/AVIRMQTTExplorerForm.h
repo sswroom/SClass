@@ -32,8 +32,8 @@ namespace SSWR
 				UOSInt currValueLen;
 				Bool updated;
 				UOSInt recvCnt;
-				Int64 lastRecvTime;
-				Int64 dateList[256];
+				Data::TimeInstant lastRecvTime;
+				Data::Timestamp dateList[256];
 				Double valueList[256];
 			} TopicStatus;
 			

@@ -305,7 +305,6 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnTimerTick(void *userObj)
 {
 	SSWR::AVIRead::AVIRMQTTExplorerForm *me = (SSWR::AVIRead::AVIRMQTTExplorerForm*)userObj;
 	NotNullPtr<const Data::ArrayList<SSWR::AVIRead::AVIRMQTTExplorerForm::TopicStatus*>> topicList;
-	Data::DateTime dt;
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
 	SSWR::AVIRead::AVIRMQTTExplorerForm::TopicStatus *topicSt;
@@ -334,9 +333,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnTimerTick(void *userObj)
 			me->lvRecvTopic->SetSubItem(i, 1, {topicSt->currValue, topicSt->currValueLen});
 			sptr = Text::StrUOSInt(sbuff, topicSt->recvCnt);
 			me->lvRecvTopic->SetSubItem(i, 2, CSTRP(sbuff, sptr));
-			dt.SetTicks(topicSt->lastRecvTime);
-			dt.ToLocalTime();
-			sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
+			sptr = Data::Timestamp(topicSt->lastRecvTime, Data::DateTimeUtil::GetLocalTzQhr()).ToStringNoZone(sbuff);
 			me->lvRecvTopic->SetSubItem(i, 3, CSTRP(sbuff, sptr));
 			i++;
 		}
@@ -352,9 +349,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnTimerTick(void *userObj)
 				me->lvRecvTopic->SetSubItem(i, 1, {topicSt->currValue, topicSt->currValueLen});
 				sptr = Text::StrUOSInt(sbuff, topicSt->recvCnt);
 				me->lvRecvTopic->SetSubItem(i, 2, CSTRP(sbuff, sptr));
-				dt.SetTicks(topicSt->lastRecvTime);
-				dt.ToLocalTime();
-				sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
+				sptr = Data::Timestamp(topicSt->lastRecvTime, Data::DateTimeUtil::GetLocalTzQhr()).ToStringNoZone(sbuff);
 				me->lvRecvTopic->SetSubItem(i, 3, CSTRP(sbuff, sptr));
 
 				if (topicSt == me->currTopic)
@@ -400,8 +395,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnPublishMessage(void *userO
 	sb.AppendC((const UTF8Char*)message.Ptr(), message.GetSize());
 	me->log.LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Command);
 
-	Data::DateTime dt;
-	dt.SetCurrTimeUTC();
+	Data::Timestamp ts = Data::Timestamp::UtcNow();
 	SSWR::AVIRead::AVIRMQTTExplorerForm::TopicStatus *topicSt;
 	Sync::MutexUsage mutUsage(me->topicMut);
 	topicSt = me->topicMap.Get(topic);
@@ -419,7 +413,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnPublishMessage(void *userO
 		topicSt->currValueLen = message.GetSize();
 		topicSt->updated = true;
 		topicSt->recvCnt = 1;
-		topicSt->lastRecvTime = dt.ToTicks();
+		topicSt->lastRecvTime = ts.inst;
 		me->topicMap.PutNN(topicSt->topic, topicSt);
 		me->topicListChanged = true;
 	}
@@ -431,11 +425,11 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnPublishMessage(void *userO
 		topicSt->currValueLen = message.GetSize();
 		topicSt->updated = true;
 		topicSt->recvCnt++;
-		topicSt->lastRecvTime = dt.ToTicks();
+		topicSt->lastRecvTime = ts.inst;
 	}
 	Double dVal;
 	UOSInt i;
-	topicSt->dateList[(topicSt->recvCnt - 1) & 255] = topicSt->lastRecvTime;
+	topicSt->dateList[(topicSt->recvCnt - 1) & 255] = Data::Timestamp(topicSt->lastRecvTime, Data::DateTimeUtil::GetLocalTzQhr());
 	if (Text::StrToDouble(topicSt->currValue, dVal))
 	{
 		topicSt->valueList[(topicSt->recvCnt - 1) & 255] = dVal;
@@ -484,7 +478,7 @@ void SSWR::AVIRead::AVIRMQTTExplorerForm::UpdateTopicChart()
 				UOSInt recvCnt = this->currTopic->recvCnt;
 				Data::LineChart *chart;
 				NEW_CLASS(chart, Data::LineChart(CSTR_NULL));
-				chart->AddXDataDate(this->currTopic->dateList, recvCnt);
+				chart->AddXData(this->currTopic->dateList, recvCnt);
 				chart->AddYData(this->currTopic->topic.Ptr(), this->currTopic->valueList, recvCnt, 0xFFFF0000, Data::LineChart::LS_LINE);
 				chart->Plot(this->dispImg, 0, 0, UOSInt2Double(sz.x), UOSInt2Double(sz.y));
 				DEL_CLASS(chart);
@@ -509,7 +503,7 @@ void SSWR::AVIRead::AVIRMQTTExplorerForm::UpdateTopicChart()
 				
 				Data::LineChart *chart;
 				NEW_CLASS(chart, Data::LineChart(CSTR_NULL));
-				chart->AddXDataDate(this->currTopic->dateList, 256);
+				chart->AddXData(this->currTopic->dateList, 256);
 				chart->AddYData(this->currTopic->topic.Ptr(), this->currTopic->valueList, 256, 0xFFFF0000, Data::LineChart::LS_LINE);
 				chart->Plot(this->dispImg, 0, 0, UOSInt2Double(sz.x), UOSInt2Double(sz.y));
 				DEL_CLASS(chart);

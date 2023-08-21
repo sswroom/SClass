@@ -283,9 +283,9 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnRequestClicked(void *userObj
 		me->reqBodyType = Text::String::New(UTF8STRC("application/x-www-form-urlencoded")).Ptr();
 	}
 	me->reqURL = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
-	me->threadEvt.Set();
+	me->procThread.Notify();
 	if (sbuffPtr) MemFree(sbuffPtr);
-	while (me->threadRunning && me->reqURL && !me->respChanged)
+	while (me->procThread.IsRunning() && me->reqURL && !me->respChanged)
 	{
 		Sync::SimpleThread::Sleep(1);
 	}
@@ -521,9 +521,10 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnClientCertClicked(void *user
 	}
 }
 
-UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(NotNullPtr<Sync::Thread> thread)
 {
-	SSWR::AVIRead::AVIRHTTPClientForm *me = (SSWR::AVIRead::AVIRHTTPClientForm*)userObj;
+	SSWR::AVIRead::AVIRHTTPClientForm *me = (SSWR::AVIRead::AVIRHTTPClientForm*)thread->GetUserObj();
+	Sync::ThreadUtil::SetName(CSTR("HTTPClient"));
 	Text::String *currURL;
 	const UTF8Char *currBody;
 	UOSInt currBodyLen;
@@ -539,9 +540,8 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 	UTF8Char *sptr;
 	UOSInt i;
 	UOSInt j;
-	me->threadRunning = true;
 	sbuff = MemAlloc(UTF8Char, 65536);
-	while (!me->threadToStop)
+	while (!thread->IsStopping())
 	{
 		if (me->reqURL && !me->respChanged)
 		{
@@ -565,6 +565,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 			me->reqAllowComp = false;
 			
 			NotNullPtr<Net::HTTPClient> cli;
+			me->respTimeStart = Data::Timestamp::Now();
 			cli = Net::HTTPClient::CreateClient(me->core->GetSocketFactory(), currOSClient?0:me->ssl, me->userAgent->ToCString(), me->noShutdown, currURL->StartsWith(UTF8STRC("https://")));
 			NotNullPtr<Crypto::Cert::X509Cert> cliCert;
 			NotNullPtr<Crypto::Cert::X509File> cliKey;
@@ -819,16 +820,13 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 		}
 		else
 		{
-			me->threadEvt.Wait(1000);
+			thread->Wait(1000);
 		}
 	}
 	MemFree(sbuff);
 	SDEL_STRING(me->reqURL);
 	SDEL_TEXT(me->reqBody);
 	SDEL_STRING(me->reqBodyType);
-	me->threadToStop = false;
-	me->threadRunning = false;
-	return 0;
 }
 
 void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnTimerTick(void *userObj)
@@ -852,6 +850,8 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnTimerTick(void *userObj)
 		{
 			me->txtSvrIP->SetText(CSTRP(sbuff, sptr));
 		}
+		sptr = me->respTimeStart.ToStringNoZone(sbuff);
+		me->txtStartTime->SetText(CSTRP(sbuff, sptr));
 		if (me->respTimeDNS == -1)
 		{
 			me->txtTimeDNS->SetText(CSTR("-1"));
@@ -1195,7 +1195,7 @@ UTF8Char *SSWR::AVIRead::AVIRHTTPClientForm::AppendCookie(UTF8Char *sbuff, Text:
 	return cookiePtr;
 }
 
-SSWR::AVIRead::AVIRHTTPClientForm::AVIRHTTPClientForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRHTTPClientForm::AVIRHTTPClientForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui), procThread(ProcessThread, this)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("HTTP Client"));
@@ -1206,8 +1206,6 @@ SSWR::AVIRead::AVIRHTTPClientForm::AVIRHTTPClientForm(UI::GUIClientControl *pare
 	this->ssl = Net::SSLEngineFactory::Create(this->sockf, true);
 	Net::HTTPClient::PrepareSSL(this->ssl);
 	this->respChanged = false;
-	this->threadRunning = false;
-	this->threadToStop = false;
 	this->cliCert = 0;
 	this->cliKey = 0;
 	this->reqURL = 0;
@@ -1312,7 +1310,7 @@ SSWR::AVIRead::AVIRHTTPClientForm::AVIRHTTPClientForm(UI::GUIClientControl *pare
 
 	this->tpResponse = this->tcMain->AddTabPage(CSTR("Response"));
 	NEW_CLASS(this->pnlResponse, UI::GUIPanel(ui, this->tpResponse));
-	this->pnlResponse->SetRect(0, 0, 100, 295, false);
+	this->pnlResponse->SetRect(0, 0, 100, 319, false);
 	this->pnlResponse->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblReqURL, UI::GUILabel(ui, this->pnlResponse, CSTR("Req URL")));
 	this->lblReqURL->SetRect(4, 4, 100, 23, false);
@@ -1324,55 +1322,60 @@ SSWR::AVIRead::AVIRHTTPClientForm::AVIRHTTPClientForm(UI::GUIClientControl *pare
 	NEW_CLASS(this->txtSvrIP, UI::GUITextBox(ui, this->pnlResponse, CSTR("")));
 	this->txtSvrIP->SetRect(104, 28, 150, 23, false);
 	this->txtSvrIP->SetReadOnly(true);
+	NEW_CLASS(this->lblStartTime, UI::GUILabel(ui, this->pnlResponse, CSTR("Start Time")));
+	this->lblStartTime->SetRect(4, 52, 100, 23, false);
+	NEW_CLASS(this->txtStartTime, UI::GUITextBox(ui, this->pnlResponse, CSTR("")));
+	this->txtStartTime->SetRect(104, 52, 200, 23, false);
+	this->txtStartTime->SetReadOnly(true);
 	NEW_CLASS(this->lblTimeDNS, UI::GUILabel(ui, this->pnlResponse, CSTR("DNS Time")));
-	this->lblTimeDNS->SetRect(4, 52, 100, 23, false);
+	this->lblTimeDNS->SetRect(4, 76, 100, 23, false);
 	NEW_CLASS(this->txtTimeDNS, UI::GUITextBox(ui, this->pnlResponse, CSTR("")));
-	this->txtTimeDNS->SetRect(104, 52, 150, 23, false);
+	this->txtTimeDNS->SetRect(104, 76, 150, 23, false);
 	this->txtTimeDNS->SetReadOnly(true);
 	NEW_CLASS(this->lblTimeConn, UI::GUILabel(ui, this->pnlResponse, CSTR("Conn Time")));
-	this->lblTimeConn->SetRect(4, 76, 100, 23, false);
+	this->lblTimeConn->SetRect(4, 100, 100, 23, false);
 	NEW_CLASS(this->txtTimeConn, UI::GUITextBox(ui, this->pnlResponse, CSTR("")));
-	this->txtTimeConn->SetRect(104, 76, 150, 23, false);
+	this->txtTimeConn->SetRect(104, 100, 150, 23, false);
 	this->txtTimeConn->SetReadOnly(true);
 	NEW_CLASS(this->lblTimeSendHdr, UI::GUILabel(ui, this->pnlResponse, CSTR("Request Time")));
-	this->lblTimeSendHdr->SetRect(4, 100, 100, 23, false);
+	this->lblTimeSendHdr->SetRect(4, 124, 100, 23, false);
 	NEW_CLASS(this->txtTimeSendHdr, UI::GUITextBox(ui, this->pnlResponse, CSTR("")));
-	this->txtTimeSendHdr->SetRect(104, 100, 150, 23, false);
+	this->txtTimeSendHdr->SetRect(104, 124, 150, 23, false);
 	this->txtTimeSendHdr->SetReadOnly(true);
 	NEW_CLASS(this->lblTimeResp, UI::GUILabel(ui, this->pnlResponse, CSTR("Response Time")));
-	this->lblTimeResp->SetRect(4, 124, 100, 23, false);
+	this->lblTimeResp->SetRect(4, 148, 100, 23, false);
 	NEW_CLASS(this->txtTimeResp, UI::GUITextBox(ui, this->pnlResponse, CSTR("")));
-	this->txtTimeResp->SetRect(104, 124, 150, 23, false);
+	this->txtTimeResp->SetRect(104, 148, 150, 23, false);
 	this->txtTimeResp->SetReadOnly(true);
 	NEW_CLASS(this->lblTimeTotal, UI::GUILabel(ui, this->pnlResponse, CSTR("Download Time")));
-	this->lblTimeTotal->SetRect(4, 148, 100, 23, false);
+	this->lblTimeTotal->SetRect(4, 172, 100, 23, false);
 	NEW_CLASS(this->txtTimeTotal, UI::GUITextBox(ui, this->pnlResponse, CSTR("")));
-	this->txtTimeTotal->SetRect(104, 148, 150, 23, false);
+	this->txtTimeTotal->SetRect(104, 172, 150, 23, false);
 	this->txtTimeTotal->SetReadOnly(true);
 	NEW_CLASS(this->lblRespStatus, UI::GUILabel(ui, this->pnlResponse, CSTR("Status Code")));
-	this->lblRespStatus->SetRect(4, 172, 100, 23, false);
+	this->lblRespStatus->SetRect(4, 196, 100, 23, false);
 	NEW_CLASS(this->txtRespStatus, UI::GUITextBox(ui, this->pnlResponse, CSTR("")));
-	this->txtRespStatus->SetRect(104, 172, 150, 23, false);
+	this->txtRespStatus->SetRect(104, 196, 150, 23, false);
 	this->txtRespStatus->SetReadOnly(true);
 	NEW_CLASS(this->lblRespDLSize, UI::GUILabel(ui, this->pnlResponse, CSTR("Download Size")));
-	this->lblRespDLSize->SetRect(4, 196, 100, 23, false);
+	this->lblRespDLSize->SetRect(4, 220, 100, 23, false);
 	NEW_CLASS(this->txtRespDLSize, UI::GUITextBox(ui, this->pnlResponse, CSTR("")));
-	this->txtRespDLSize->SetRect(104, 196, 150, 23, false);
+	this->txtRespDLSize->SetRect(104, 220, 150, 23, false);
 	this->txtRespDLSize->SetReadOnly(true);
 	NEW_CLASS(this->lblRespULSize, UI::GUILabel(ui, this->pnlResponse, CSTR("Upload Size")));
-	this->lblRespULSize->SetRect(4, 220, 100, 23, false);
+	this->lblRespULSize->SetRect(4, 244, 100, 23, false);
 	NEW_CLASS(this->txtRespULSize, UI::GUITextBox(ui, this->pnlResponse, CSTR("")));
-	this->txtRespULSize->SetRect(104, 220, 150, 23, false);
+	this->txtRespULSize->SetRect(104, 244, 150, 23, false);
 	this->txtRespULSize->SetReadOnly(true);
 	NEW_CLASS(this->lblRespTransfSize, UI::GUILabel(ui, this->pnlResponse, CSTR("Transfer Size")));
-	this->lblRespTransfSize->SetRect(4, 244, 100, 23, false);
+	this->lblRespTransfSize->SetRect(4, 268, 100, 23, false);
 	NEW_CLASS(this->txtRespTransfSize, UI::GUITextBox(ui, this->pnlResponse, CSTR("")));
-	this->txtRespTransfSize->SetRect(104, 244, 150, 23, false);
+	this->txtRespTransfSize->SetRect(104, 268, 150, 23, false);
 	this->txtRespTransfSize->SetReadOnly(true);
 	NEW_CLASS(this->lblRespContSize, UI::GUILabel(ui, this->pnlResponse, CSTR("Content Size")));
-	this->lblRespContSize->SetRect(4, 268, 100, 23, false);
+	this->lblRespContSize->SetRect(4, 292, 100, 23, false);
 	NEW_CLASS(this->txtRespContSize, UI::GUITextBox(ui, this->pnlResponse, CSTR("")));
-	this->txtRespContSize->SetRect(104, 268, 150, 23, false);
+	this->txtRespContSize->SetRect(104, 292, 150, 23, false);
 	this->txtRespContSize->SetReadOnly(true);
 	NEW_CLASS(this->pnlControl, UI::GUIPanel(ui, this->tpResponse));
 	this->pnlControl->SetRect(0, 0, 100, 31, false);
@@ -1413,18 +1416,13 @@ SSWR::AVIRead::AVIRHTTPClientForm::AVIRHTTPClientForm(UI::GUIClientControl *pare
 
 	this->SetDefaultButton(this->btnRequest);
 	this->txtURL->Focus();
-	Sync::ThreadUtil::Create(ProcessThread, this, 0);
+	this->procThread.Start();
 	this->AddTimer(100, OnTimerTick, this);
 }
 
 SSWR::AVIRead::AVIRHTTPClientForm::~AVIRHTTPClientForm()
 {
-	this->threadToStop = true;
-	this->threadEvt.Set();
-	while (this->threadRunning)
-	{
-		Sync::SimpleThread::Sleep(1);
-	}
+	this->procThread.Stop();
 	this->ClearHeaders();
 	this->ClearParams();
 	this->ClearCookie();
