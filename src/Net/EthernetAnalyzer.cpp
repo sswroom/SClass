@@ -1818,14 +1818,34 @@ Bool Net::EthernetAnalyzer::PacketARP(const UInt8 *packet, UOSInt packetSize, UI
 				{
 					if (mac->ipv4Addr[i] == ipAddr)
 					{
+						mac->ipv4ByARP = true;
+						if (i != 0)
+						{
+							mac->ipv4Addr[i] = mac->ipv4Addr[0];
+							mac->ipv4Addr[0] = ipAddr;
+						}
 						break;
 					}
 					else if (mac->ipv4Addr[i] == 0)
 					{
-						mac->ipv4Addr[i] = ipAddr;
+						mac->ipv4ByARP = true;
+						if (i == 0)
+						{
+							mac->ipv4Addr[i] = ipAddr;
+						}
+						else
+						{
+							mac->ipv4Addr[i] = mac->ipv4Addr[0];
+							mac->ipv4Addr[0] = ipAddr;
+						}
 						break;
 					}
 					i++;
+				}
+				if (!mac->ipv4ByARP)
+				{
+					mac->ipv4Addr[0] = ipAddr;
+					mac->ipv4ByARP = true;
 				}
 
 				mac = this->MACGet(destMAC);

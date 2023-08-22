@@ -49,6 +49,7 @@ namespace Net
 		{
 			UInt64 macAddr;
 			UInt32 ipv4Addr[4];
+			Bool ipv4ByARP;
 			Net::SocketUtil::AddressInfo ipv6Addr;
 			UInt64 ipv4SrcCnt;
 			UInt64 ipv4DestCnt;

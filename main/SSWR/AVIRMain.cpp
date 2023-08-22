@@ -36,7 +36,6 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	NotNullPtr<UI::GUICore> ui;
 	SSWR::AVIRead::AVIRBaseForm *frm;
 	NotNullPtr<SSWR::AVIRead::AVIRCore> core;
-	Manage::ExceptionRecorder *exHdlr;
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	UOSInt argc;
@@ -57,7 +56,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 
 	IO::Path::GetProcessFileName(sbuff);
 	sptr = IO::Path::ReplaceExt(sbuff, UTF8STRC("log"));
-	NEW_CLASS(exHdlr, Manage::ExceptionRecorder(CSTRP(sbuff, sptr), Manage::ExceptionRecorder::EA_CLOSE));
+	Manage::ExceptionRecorder exHdlr(CSTRP(sbuff, sptr), Manage::ExceptionRecorder::EA_CLOSE);
 	if (ui.Set(Core::IProgControl::CreateGUICore(progCtrl)))
 	{
 		NEW_CLASSNN(core, SSWR::AVIRead::AVIRCoreWin(ui));
@@ -83,6 +82,5 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		core.Delete();
 		ui.Delete();
 	}
-	DEL_CLASS(exHdlr);
 	return 0;
 }

@@ -50,12 +50,14 @@ Net::WLANLinuxInterface::~WLANLinuxInterface()
 Bool Net::WLANLinuxInterface::Scan()
 {
 	struct iwreq wrq;
+//	struct iw_scan_req sreq;
 	int ret;
 	MemClear(&wrq, sizeof(wrq));
+//	MemClear(&sreq, sizeof(sreq));
 	this->name->ConcatTo((UTF8Char*)wrq.ifr_ifrn.ifrn_name);
-	wrq.u.data.pointer = NULL;
-	wrq.u.data.flags = 0;
-	wrq.u.data.length = 0;
+	wrq.u.data.pointer = 0;//&sreq;
+	wrq.u.data.length = 0;//sizeof(sreq);
+	wrq.u.data.flags = IW_SCAN_DEFAULT;
 	ret = ioctl(-1 + (int)(OSInt)this->id, SIOCSIWSCAN, &wrq);
 	if (ret < 0)
 	{
