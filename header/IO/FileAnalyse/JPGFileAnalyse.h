@@ -3,6 +3,7 @@
 #include "Data/SyncArrayList.h"
 #include "IO/StreamData.h"
 #include "IO/FileAnalyse/IFileAnalyse.h"
+#include "Sync/Thread.h"
 #include "Text/CString.h"
 #include "Text/StringBuilder.h"
 
@@ -24,12 +25,10 @@ namespace IO
 			Data::SyncArrayList<JPGTag*> tags;
 
 			Bool pauseParsing;
-			Bool threadRunning;
-			Bool threadToStop;
-			Bool threadStarted;
+			Sync::Thread thread;
 
 			static Text::CString GetTagName(UInt8 tagType);
-			static UInt32 __stdcall ParseThread(void *userObj);
+			static void __stdcall ParseThread(NotNullPtr<Sync::Thread> userObj);
 		public:
 			JPGFileAnalyse(NotNullPtr<IO::StreamData> fd);
 			virtual ~JPGFileAnalyse();

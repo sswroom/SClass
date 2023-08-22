@@ -3,6 +3,7 @@
 #include "Data/SyncArrayList.h"
 #include "IO/StreamData.h"
 #include "IO/FileAnalyse/IFileAnalyse.h"
+#include "Sync/Thread.h"
 #include "Text/CString.h"
 #include "Text/StringBuilder.h"
 
@@ -24,15 +25,13 @@ namespace IO
 			Data::SyncArrayList<ZIPRecord*> tags;
 
 			Bool pauseParsing;
-			Bool threadRunning;
-			Bool threadToStop;
-			Bool threadStarted;
+			Sync::Thread thread;
 
 			static Text::CString GetTagName(UInt32 tagType);
 			static Text::CString GetCompName(UInt16 comp);
 			UOSInt ParseCentDir(const UInt8 *buff, UOSInt buffSize, UInt64 ofst);
 			UOSInt AddCentDir(const UInt8 *buff, UOSInt buffSize, UInt64 ofst);
-			static UInt32 __stdcall ParseThread(void *userObj);
+			static void __stdcall ParseThread(NotNullPtr<Sync::Thread> thread);
 		public:
 			ZIPFileAnalyse(NotNullPtr<IO::StreamData> fd);
 			virtual ~ZIPFileAnalyse();

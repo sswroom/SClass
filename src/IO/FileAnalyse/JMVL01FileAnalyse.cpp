@@ -2,8 +2,6 @@
 #include "Data/ByteBuffer.h"
 #include "Data/ByteTool.h"
 #include "IO/FileAnalyse/JMVL01FileAnalyse.h"
-#include "Sync/SimpleThread.h"
-#include "Sync/ThreadUtil.h"
 #include "Text/Encoding.h"
 #include "Text/StringBuilderUTF8.h"
 
@@ -31,19 +29,17 @@ Text::CString IO::FileAnalyse::JMVL01FileAnalyse::GetTagName(UInt8 tagType)
 	return CSTR_NULL;
 }
 
-UInt32 __stdcall IO::FileAnalyse::JMVL01FileAnalyse::ParseThread(void *userObj)
+void __stdcall IO::FileAnalyse::JMVL01FileAnalyse::ParseThread(NotNullPtr<Sync::Thread> thread)
 {
-	IO::FileAnalyse::JMVL01FileAnalyse *me = (IO::FileAnalyse::JMVL01FileAnalyse*)userObj;
+	IO::FileAnalyse::JMVL01FileAnalyse *me = (IO::FileAnalyse::JMVL01FileAnalyse*)thread->GetUserObj();
 	UInt64 dataSize;
 	UInt64 ofst;
 	UInt8 tagHdr[5];
 	IO::FileAnalyse::JMVL01FileAnalyse::JMVL01Tag *tag;
-	me->threadRunning = true;
-	me->threadStarted = true;
 	ofst = 0;
 	dataSize = me->fd->GetDataSize();
 	
-	while (ofst < dataSize - 10 && !me->threadToStop)
+	while (ofst < dataSize - 10 && !thread->IsStopping())
 	{
 		if (me->fd->GetRealData(ofst, 5, BYTEARR(tagHdr)) != 5)
 			break;
@@ -71,44 +67,25 @@ UInt32 __stdcall IO::FileAnalyse::JMVL01FileAnalyse::ParseThread(void *userObj)
 			break;
 		}
 	}
-	
-	me->threadRunning = false;
-	return 0;
 }
 
-IO::FileAnalyse::JMVL01FileAnalyse::JMVL01FileAnalyse(NotNullPtr<IO::StreamData> fd)
+IO::FileAnalyse::JMVL01FileAnalyse::JMVL01FileAnalyse(NotNullPtr<IO::StreamData> fd) : thread(ParseThread, this, CSTR("JMVL01FileAnaly"))
 {
 	UInt8 buff[256];
 	this->fd = 0;
-	this->threadRunning = false;
 	this->pauseParsing = false;
-	this->threadToStop = false;
-	this->threadStarted = false;
 	fd->GetRealData(0, 256, BYTEARR(buff));
 	if (buff[0] != 0x78 || buff[1] != 0x78 || buff[2] != 0x11 || buff[3] != 0x01 || buff[20] != 13 || buff[21] != 10)
 	{
 		return;
 	}
 	this->fd = fd->GetPartialData(0, fd->GetDataSize()).Ptr();
-
-	Sync::ThreadUtil::Create(ParseThread, this);
-	while (!this->threadStarted)
-	{
-		Sync::SimpleThread::Sleep(10);
-	}
+	this->thread.Start();
 }
 
 IO::FileAnalyse::JMVL01FileAnalyse::~JMVL01FileAnalyse()
 {
-	if (this->threadRunning)
-	{
-		this->threadToStop = true;
-		while (this->threadRunning)
-		{
-			Sync::SimpleThread::Sleep(10);
-		}
-	}
-
+	this->thread.Stop();
 	SDEL_CLASS(this->fd);
 	LIST_FREE_FUNC(&this->tags, MemFree);
 }
@@ -330,7 +307,7 @@ Bool IO::FileAnalyse::JMVL01FileAnalyse::IsError()
 
 Bool IO::FileAnalyse::JMVL01FileAnalyse::IsParsing()
 {
-	return this->threadRunning;
+	return this->thread.IsRunning();
 }
 
 Bool IO::FileAnalyse::JMVL01FileAnalyse::TrimPadding(Text::CStringNN outputFile)

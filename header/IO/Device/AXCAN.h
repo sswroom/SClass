@@ -6,6 +6,7 @@
 #include "IO/Stream.h"
 #include "Sync/Event.h"
 #include "Sync/Mutex.h"
+#include "Sync/Thread.h"
 
 namespace IO
 {
@@ -38,7 +39,7 @@ namespace IO
 			Sync::Event cmdEvent;
 			UOSInt cmdResultCode;
 			IO::Stream *stm;
-			Bool threadRunning;
+			Sync::Thread serialThread;
 
 			Bool SendSetCANBitRate(CANBitRate bitRate);
 			Bool SendOpenCANPort(UInt8 port, Bool silentMode, Bool loopback);
@@ -47,7 +48,7 @@ namespace IO
 			Bool SendCommandMode();
 			Bool SendCommand(Text::CString cmd, UOSInt timeout);
 			
-			static UInt32 __stdcall SerialThread(void *userObj);
+			static void __stdcall SerialThread(NotNullPtr<Sync::Thread> userObj);
 		public:
 			AXCAN(CANHandler *hdlr);
 			virtual ~AXCAN();

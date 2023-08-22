@@ -4,27 +4,21 @@
 #include "IO/FileAnalyse/PCapngFileAnalyse.h"
 #include "Net/PacketAnalyzer.h"
 #include "Net/SocketUtil.h"
-#include "Sync/SimpleThread.h"
-#include "Sync/ThreadUtil.h"
 #include "Text/StringBuilderUTF8.h"
 
-UInt32 __stdcall IO::FileAnalyse::PCapngFileAnalyse::ParseThread(void *userObj)
+void __stdcall IO::FileAnalyse::PCapngFileAnalyse::ParseThread(NotNullPtr<Sync::Thread> thread)
 {
-	IO::FileAnalyse::PCapngFileAnalyse *me = (IO::FileAnalyse::PCapngFileAnalyse*)userObj;
+	IO::FileAnalyse::PCapngFileAnalyse *me = (IO::FileAnalyse::PCapngFileAnalyse*)thread->GetUserObj();
 	UInt64 ofst;
 	UInt64 dataSize;
 	UInt32 thisSize;
 	IO::FileAnalyse::PCapngFileAnalyse::BlockInfo *block;
 	UInt8 packetHdr[16];
-	Data::ArrayList<UInt16> *linkTypeList;
-	Data::ArrayList<Int8> *resList;
-	me->threadRunning = true;
-	me->threadStarted = true;
-	NEW_CLASS(resList, Data::ArrayList<Int8>());
-	NEW_CLASS(linkTypeList, Data::ArrayList<UInt16>());
+	Data::ArrayList<UInt16> linkTypeList;
+	Data::ArrayList<Int8> resList;
 	ofst = 0;
 	dataSize = me->fd->GetDataSize();
-	while (ofst < dataSize - 16 && !me->threadToStop)
+	while (ofst < dataSize - 16 && !thread->IsStopping())
 	{
 		if (me->fd->GetRealData(ofst, 12, BYTEARR(packetHdr)) != 12)
 			break;
@@ -55,8 +49,8 @@ UInt32 __stdcall IO::FileAnalyse::PCapngFileAnalyse::ParseThread(void *userObj)
 		block->timeResol = 0;
 		if (block->blockType == 0x0a0d0d0a)
 		{
-			resList->Clear();
-			linkTypeList->Clear();
+			resList.Clear();
+			linkTypeList.Clear();
 		}
 		else if (block->blockType == 1)
 		{
@@ -107,8 +101,8 @@ UInt32 __stdcall IO::FileAnalyse::PCapngFileAnalyse::ParseThread(void *userObj)
 					i += 4 - (i & 3);
 				}
 			}
-			resList->Add(timeResol);
-			linkTypeList->Add(linkType);
+			resList.Add(timeResol);
+			linkTypeList.Add(linkType);
 		}
 		else if (block->blockType == 6 || block->blockType == 5)
 		{
@@ -121,27 +115,20 @@ UInt32 __stdcall IO::FileAnalyse::PCapngFileAnalyse::ParseThread(void *userObj)
 			{
 				ifId = ReadUInt32(&packetHdr[8]);
 			}
-			block->timeResol = resList->GetItem(ifId);
-			block->linkType = linkTypeList->GetItem(ifId);
+			block->timeResol = resList.GetItem(ifId);
+			block->linkType = linkTypeList.GetItem(ifId);
 		}
 
 		me->blockList.Add(block);
 		ofst += thisSize;
 	}
-	DEL_CLASS(linkTypeList);
-	DEL_CLASS(resList);
-	me->threadRunning = false;
-	return 0;
 }
 
-IO::FileAnalyse::PCapngFileAnalyse::PCapngFileAnalyse(NotNullPtr<IO::StreamData> fd) : packetBuff(65536)
+IO::FileAnalyse::PCapngFileAnalyse::PCapngFileAnalyse(NotNullPtr<IO::StreamData> fd) : packetBuff(65536), thread(ParseThread, this, CSTR("PCapngFileAnaly"))
 {
 	UInt8 buff[16];
 	this->fd = 0;
-	this->threadRunning = false;
 	this->pauseParsing = false;
-	this->threadToStop = false;
-	this->threadStarted = false;
 	this->isBE = false;
 	if (fd->GetRealData(0, 16, BYTEARR(buff)) != 16)
 	{
@@ -165,25 +152,12 @@ IO::FileAnalyse::PCapngFileAnalyse::PCapngFileAnalyse(NotNullPtr<IO::StreamData>
 	{
 		return;
 	}
-	
-	Sync::ThreadUtil::Create(ParseThread, this);
-	while (!this->threadStarted)
-	{
-		Sync::SimpleThread::Sleep(10);
-	}
+	this->thread.Start();
 }
 
 IO::FileAnalyse::PCapngFileAnalyse::~PCapngFileAnalyse()
 {
-	if (this->threadRunning)
-	{
-		this->threadToStop = true;
-		while (this->threadRunning)
-		{
-			Sync::SimpleThread::Sleep(10);
-		}
-	}
-
+	this->thread.Stop();
 	SDEL_CLASS(this->fd);
 	LIST_FREE_FUNC(&this->blockList, MemFree);
 }
@@ -1423,7 +1397,7 @@ Bool IO::FileAnalyse::PCapngFileAnalyse::IsError()
 
 Bool IO::FileAnalyse::PCapngFileAnalyse::IsParsing()
 {
-	return this->threadRunning;
+	return this->thread.IsRunning();
 }
 
 Bool IO::FileAnalyse::PCapngFileAnalyse::TrimPadding(Text::CStringNN outputFile)

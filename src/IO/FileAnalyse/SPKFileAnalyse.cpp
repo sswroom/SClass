@@ -7,7 +7,6 @@
 #include "Manage/Process.h"
 #include "Net/SocketFactory.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/ThreadUtil.h"
 
 void IO::FileAnalyse::SPKFileAnalyse::ParseV1Directory(UInt64 dirOfst, UInt64 dirSize)
 {
@@ -42,11 +41,11 @@ void IO::FileAnalyse::SPKFileAnalyse::ParseV2Directory(UInt64 dirOfst, UInt64 di
 	{
 		return;
 	}
-	while (this->pauseParsing && !this->threadToStop)
+	while (this->pauseParsing && !this->thread.IsStopping())
 	{
 		Sync::SimpleThread::Sleep(100);
 	}
-	if (this->threadToStop)
+	if (this->thread.IsStopping())
 	{
 		return;
 	}
@@ -63,14 +62,11 @@ void IO::FileAnalyse::SPKFileAnalyse::ParseV2Directory(UInt64 dirOfst, UInt64 di
 	this->packs.Add(pack);
 }
 
-UInt32 __stdcall IO::FileAnalyse::SPKFileAnalyse::ParseThread(void *userObj)
+void __stdcall IO::FileAnalyse::SPKFileAnalyse::ParseThread(NotNullPtr<Sync::Thread> thread)
 {
-	IO::FileAnalyse::SPKFileAnalyse *me = (IO::FileAnalyse::SPKFileAnalyse *)userObj;
+	IO::FileAnalyse::SPKFileAnalyse *me = (IO::FileAnalyse::SPKFileAnalyse *)thread->GetUserObj();
 	UInt8 buff[256];
 	IO::FileAnalyse::SPKFileAnalyse::PackInfo *pack;
-	me->threadRunning = true;
-	me->threadStarted = true;
-
 	me->fd->GetRealData(0, 256, BYTEARR(buff));
 	Int32 flags = ReadInt32(&buff[4]);
 	UOSInt endOfst;
@@ -116,9 +112,6 @@ UInt32 __stdcall IO::FileAnalyse::SPKFileAnalyse::ParseThread(void *userObj)
 	{
 		me->ParseV2Directory(lastOfst, lastSize);
 	}
-
-	me->threadRunning = false;
-	return 0;
 }
 
 void IO::FileAnalyse::SPKFileAnalyse::FreePackInfo(IO::FileAnalyse::SPKFileAnalyse::PackInfo *pack)
@@ -127,14 +120,11 @@ void IO::FileAnalyse::SPKFileAnalyse::FreePackInfo(IO::FileAnalyse::SPKFileAnaly
 	MemFree(pack);
 }
 
-IO::FileAnalyse::SPKFileAnalyse::SPKFileAnalyse(NotNullPtr<IO::StreamData> fd)
+IO::FileAnalyse::SPKFileAnalyse::SPKFileAnalyse(NotNullPtr<IO::StreamData> fd) : thread(ParseThread, this, CSTR("SPKFileAnalyse"))
 {
 	UInt8 buff[256];
 	this->fd = 0;
-	this->threadRunning = false;
 	this->pauseParsing = false;
-	this->threadToStop = false;
-	this->threadStarted = false;
 
 	fd->GetRealData(0, 256, BYTEARR(buff));
 	if (buff[0] != 'S' || buff[1] != 'm' || buff[2] != 'p' || buff[3] != 'f')
@@ -142,23 +132,12 @@ IO::FileAnalyse::SPKFileAnalyse::SPKFileAnalyse(NotNullPtr<IO::StreamData> fd)
 		return;
 	}
 	this->fd = fd->GetPartialData(0, fd->GetDataSize()).Ptr();
-	Sync::ThreadUtil::Create(ParseThread, this);
-	while (!this->threadStarted)
-	{
-		Sync::SimpleThread::Sleep(10);
-	}
+	this->thread.Start();
 }
 
 IO::FileAnalyse::SPKFileAnalyse::~SPKFileAnalyse()
 {
-	if (this->threadRunning)
-	{
-		this->threadToStop = true;
-		while (this->threadRunning)
-		{
-			Sync::SimpleThread::Sleep(10);
-		}
-	}
+	this->thread.Stop();
 	SDEL_CLASS(this->fd);
 	LIST_FREE_FUNC(&this->packs, FreePackInfo);
 }
@@ -361,7 +340,7 @@ Bool IO::FileAnalyse::SPKFileAnalyse::IsError()
 
 Bool IO::FileAnalyse::SPKFileAnalyse::IsParsing()
 {
-	return this->threadRunning;
+	return this->thread.IsRunning();
 }
 
 Bool IO::FileAnalyse::SPKFileAnalyse::TrimPadding(Text::CStringNN outputFile)

@@ -2,8 +2,6 @@
 #include "Data/ByteBuffer.h"
 #include "Data/ByteTool.h"
 #include "IO/FileAnalyse/ZIPFileAnalyse.h"
-#include "Sync/SimpleThread.h"
-#include "Sync/ThreadUtil.h"
 #include "Text/Encoding.h"
 #include "Text/StringBuilderUTF8.h"
 
@@ -219,9 +217,9 @@ UOSInt IO::FileAnalyse::ZIPFileAnalyse::AddCentDir(const UInt8 *buff, UOSInt buf
 	return i;
 }
 
-UInt32 __stdcall IO::FileAnalyse::ZIPFileAnalyse::ParseThread(void *userObj)
+void __stdcall IO::FileAnalyse::ZIPFileAnalyse::ParseThread(NotNullPtr<Sync::Thread> thread)
 {
-	IO::FileAnalyse::ZIPFileAnalyse *me = (IO::FileAnalyse::ZIPFileAnalyse*)userObj;
+	IO::FileAnalyse::ZIPFileAnalyse *me = (IO::FileAnalyse::ZIPFileAnalyse*)thread->GetUserObj();
 	UInt64 dataSize;
 	UInt64 ofst;
 	UInt8 recHdr[64];
@@ -236,8 +234,6 @@ UInt32 __stdcall IO::FileAnalyse::ZIPFileAnalyse::ParseThread(void *userObj)
 
 	UOSInt i;
 	IO::FileAnalyse::ZIPFileAnalyse::ZIPRecord *rec;
-	me->threadRunning = true;
-	me->threadStarted = true;
 	ofst = 0;
 	dataSize = me->fd->GetDataSize();
 	if (me->fd->GetRealData(dataSize - 22, 22, BYTEARR(recHdr)) == 22)
@@ -360,9 +356,7 @@ UInt32 __stdcall IO::FileAnalyse::ZIPFileAnalyse::ParseThread(void *userObj)
 						rec->ofst = dataSize - 22;
 						rec->size = 22 + (UOSInt)commentLen;
 						me->tags.Add(rec);
-
-						me->threadRunning = false;
-						return 0;
+						return;
 					}
 				}
 			}
@@ -380,9 +374,7 @@ UInt32 __stdcall IO::FileAnalyse::ZIPFileAnalyse::ParseThread(void *userObj)
 					rec->ofst = dataSize - 22;
 					rec->size = 22 + (UOSInt)commentLen;
 					me->tags.Add(rec);
-
-					me->threadRunning = false;
-					return 0;
+					return;
 				}
 			}
 		}
@@ -390,7 +382,7 @@ UInt32 __stdcall IO::FileAnalyse::ZIPFileAnalyse::ParseThread(void *userObj)
 	
 	printf("ZIPFileAnalyse: Scanning\r\n");
 	ofst = 0;
-	while (ofst < dataSize - 12 && !me->threadToStop)
+	while (ofst < dataSize - 12 && !thread->IsStopping())
 	{
 		if (me->fd->GetRealData(ofst, 64, BYTEARR(recHdr)) < 12)
 			break;
@@ -458,19 +450,13 @@ UInt32 __stdcall IO::FileAnalyse::ZIPFileAnalyse::ParseThread(void *userObj)
 			break;
 		}
 	}
-	
-	me->threadRunning = false;
-	return 0;
 }
 
-IO::FileAnalyse::ZIPFileAnalyse::ZIPFileAnalyse(NotNullPtr<IO::StreamData> fd)
+IO::FileAnalyse::ZIPFileAnalyse::ZIPFileAnalyse(NotNullPtr<IO::StreamData> fd) : thread(ParseThread, this, CSTR("ZIPFileAnalyse"))
 {
 	UInt8 buff[256];
 	this->fd = 0;
-	this->threadRunning = false;
 	this->pauseParsing = false;
-	this->threadToStop = false;
-	this->threadStarted = false;
 	UInt64 fileLength = fd->GetDataSize();
 	fd->GetRealData(fileLength - 22, 22, BYTEARR(buff));
 	if (ReadMInt32(buff) != 0x504B0506)
@@ -478,25 +464,12 @@ IO::FileAnalyse::ZIPFileAnalyse::ZIPFileAnalyse(NotNullPtr<IO::StreamData> fd)
 		return;
 	}
 	this->fd = fd->GetPartialData(0, fd->GetDataSize()).Ptr();
-
-	Sync::ThreadUtil::Create(ParseThread, this);
-	while (!this->threadStarted)
-	{
-		Sync::SimpleThread::Sleep(10);
-	}
+	this->thread.Start();
 }
 
 IO::FileAnalyse::ZIPFileAnalyse::~ZIPFileAnalyse()
 {
-	if (this->threadRunning)
-	{
-		this->threadToStop = true;
-		while (this->threadRunning)
-		{
-			Sync::SimpleThread::Sleep(10);
-		}
-	}
-
+	this->thread.Stop();
 	SDEL_CLASS(this->fd);
 	LIST_FREE_FUNC(&this->tags, MemFree);
 }
@@ -750,7 +723,7 @@ Bool IO::FileAnalyse::ZIPFileAnalyse::IsError()
 
 Bool IO::FileAnalyse::ZIPFileAnalyse::IsParsing()
 {
-	return this->threadRunning;
+	return this->thread.IsRunning();
 }
 
 Bool IO::FileAnalyse::ZIPFileAnalyse::TrimPadding(Text::CStringNN outputFile)

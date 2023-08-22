@@ -3,6 +3,7 @@
 #include "Data/SyncArrayList.h"
 #include "IO/StreamData.h"
 #include "IO/FileAnalyse/IFileAnalyse.h"
+#include "Sync/Thread.h"
 #include "Text/StringBuilderUTF8.h"
 
 namespace IO
@@ -31,13 +32,11 @@ namespace IO
 			Data::SyncArrayList<PackInfo*> packs;
 
 			Bool pauseParsing;
-			Bool threadRunning;
-			Bool threadToStop;
-			Bool threadStarted;
+			Sync::Thread thread;
 
 			void ParseV1Directory(UInt64 dirOfst, UInt64 dirSize);
 			void ParseV2Directory(UInt64 dirOfst, UInt64 dirSize);
-			static UInt32 __stdcall ParseThread(void *userObj);
+			static void __stdcall ParseThread(NotNullPtr<Sync::Thread> thread);
 			static void FreePackInfo(PackInfo *pack);
 		public:
 			SPKFileAnalyse(NotNullPtr<IO::StreamData> fd);

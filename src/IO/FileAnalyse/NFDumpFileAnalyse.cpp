@@ -8,20 +8,15 @@
 #include "Manage/Process.h"
 #include "Net/SocketFactory.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/ThreadUtil.h"
 
-#define LZOPROGRAM L"LZOBlockDecomp.exe"
-
-UInt32 __stdcall IO::FileAnalyse::NFDumpFileAnalyse::ParseThread(void *userObj)
+void __stdcall IO::FileAnalyse::NFDumpFileAnalyse::ParseThread(NotNullPtr<Sync::Thread> thread)
 {
-	IO::FileAnalyse::NFDumpFileAnalyse *me = (IO::FileAnalyse::NFDumpFileAnalyse*)userObj;
+	IO::FileAnalyse::NFDumpFileAnalyse *me = (IO::FileAnalyse::NFDumpFileAnalyse*)thread->GetUserObj();
 	UInt64 endOfst;
 	UInt64 ofst;
 	UInt8 buff[12];
 	UInt32 sz;
 	IO::FileAnalyse::NFDumpFileAnalyse::PackInfo *pack;
-	me->threadRunning = true;
-	me->threadStarted = true;
 
 	pack = MemAlloc(IO::FileAnalyse::NFDumpFileAnalyse::PackInfo, 1);
 	pack->fileOfst = 0;
@@ -36,7 +31,7 @@ UInt32 __stdcall IO::FileAnalyse::NFDumpFileAnalyse::ParseThread(void *userObj)
 
 	endOfst = me->fd->GetDataSize();
 	ofst = 276;
-	while (ofst <= (endOfst - 12) && !me->threadToStop)
+	while (ofst <= (endOfst - 12) && !thread->IsStopping())
 	{
 		if (me->pauseParsing)
 		{
@@ -66,8 +61,6 @@ UInt32 __stdcall IO::FileAnalyse::NFDumpFileAnalyse::ParseThread(void *userObj)
 			ofst += sz + 12;
 		}
 	}
-	me->threadRunning = false;
-	return 0;
 }
 
 UOSInt IO::FileAnalyse::NFDumpFileAnalyse::LZODecompBlock(UInt8 *srcBlock, UOSInt srcSize, UInt8 *outBlock, UOSInt maxOutSize)
@@ -84,14 +77,11 @@ UOSInt IO::FileAnalyse::NFDumpFileAnalyse::LZODecompBlock(UInt8 *srcBlock, UOSIn
 	}
 }
 
-IO::FileAnalyse::NFDumpFileAnalyse::NFDumpFileAnalyse(NotNullPtr<IO::StreamData> fd)
+IO::FileAnalyse::NFDumpFileAnalyse::NFDumpFileAnalyse(NotNullPtr<IO::StreamData> fd) : thread(ParseThread, this, CSTR("NFDumpFileAnaly"))
 {
 	UInt8 buff[256];
 	this->fd = 0;
-	this->threadRunning = false;
 	this->pauseParsing = false;
-	this->threadToStop = false;
-	this->threadStarted = false;
 	this->hasLZODecomp = true;
 
 	fd->GetRealData(0, 256, BYTEARR(buff));
@@ -100,23 +90,12 @@ IO::FileAnalyse::NFDumpFileAnalyse::NFDumpFileAnalyse(NotNullPtr<IO::StreamData>
 		return;
 	}
 	this->fd = fd->GetPartialData(0, fd->GetDataSize()).Ptr();
-	Sync::ThreadUtil::Create(ParseThread, this);
-	while (!this->threadStarted)
-	{
-		Sync::SimpleThread::Sleep(10);
-	}
+	this->thread.Start();
 }
 
 IO::FileAnalyse::NFDumpFileAnalyse::~NFDumpFileAnalyse()
 {
-	if (this->threadRunning)
-	{
-		this->threadToStop = true;
-		while (this->threadRunning)
-		{
-			Sync::SimpleThread::Sleep(10);
-		}
-	}
+	this->thread.Stop();
 	SDEL_CLASS(this->fd);
 	LIST_FREE_FUNC(&this->packs, MemFree);
 	LIST_CALL_FUNC(&this->extMap, MemFree);
@@ -1304,7 +1283,7 @@ Bool IO::FileAnalyse::NFDumpFileAnalyse::IsError()
 
 Bool IO::FileAnalyse::NFDumpFileAnalyse::IsParsing()
 {
-	return this->threadRunning;
+	return this->thread.IsRunning();
 }
 
 Bool IO::FileAnalyse::NFDumpFileAnalyse::TrimPadding(Text::CStringNN outputFile)

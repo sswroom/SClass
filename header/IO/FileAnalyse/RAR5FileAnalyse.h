@@ -3,6 +3,7 @@
 #include "Data/SyncArrayList.h"
 #include "IO/StreamData.h"
 #include "IO/FileAnalyse/IFileAnalyse.h"
+#include "Sync/Thread.h"
 #include "Text/StringBuilderUTF8.h"
 
 namespace IO
@@ -24,9 +25,7 @@ namespace IO
 			Data::SyncArrayList<BlockInfo*> packs;
 
 			Bool pauseParsing;
-			Bool threadRunning;
-			Bool threadToStop;
-			Bool threadStarted;
+			Sync::Thread thread;
 
 			static const UInt8 *ReadVInt(const UInt8 *buffPtr, UInt64 *val);
 			static Data::ByteArray ReadVInt(Data::ByteArray buffPtr, UInt64 *val);
@@ -36,7 +35,7 @@ namespace IO
 			static Data::ByteArray AddVInt(IO::FileAnalyse::FrameDetail *frame, UOSInt ofst, Text::CString name, Data::ByteArray buffPtr, UInt64 *val);
 			static const UInt8 *AddVHex(IO::FileAnalyse::FrameDetail *frame, UOSInt ofst, Text::CString name, const UInt8 *buffPtr, UInt64 *val);
 			static Data::ByteArray AddVHex(IO::FileAnalyse::FrameDetail *frame, UOSInt ofst, Text::CString name, Data::ByteArray buffPtr, UInt64 *val);
-			static UInt32 __stdcall ParseThread(void *userObj);
+			static void __stdcall ParseThread(NotNullPtr<Sync::Thread> thread);
 		public:
 			RAR5FileAnalyse(NotNullPtr<IO::StreamData> fd);
 			virtual ~RAR5FileAnalyse();

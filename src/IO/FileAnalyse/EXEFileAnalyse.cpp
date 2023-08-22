@@ -3,18 +3,14 @@
 #include "Data/ByteTool.h"
 #include "IO/FileAnalyse/EXEFileAnalyse.h"
 #include "Sync/MutexUsage.h"
-#include "Sync/SimpleThread.h"
-#include "Sync/ThreadUtil.h"
 #include "Text/StringBuilderUTF8.h"
 
-UInt32 __stdcall IO::FileAnalyse::EXEFileAnalyse::ParseThread(void *userObj)
+void __stdcall IO::FileAnalyse::EXEFileAnalyse::ParseThread(NotNullPtr<Sync::Thread> thread)
 {
-	IO::FileAnalyse::EXEFileAnalyse *me = (IO::FileAnalyse::EXEFileAnalyse*)userObj;
+	IO::FileAnalyse::EXEFileAnalyse *me = (IO::FileAnalyse::EXEFileAnalyse*)thread->GetUserObj();
 	UInt8 buff[256];
 	IO::FileAnalyse::EXEFileAnalyse::PackInfo *pack;
 	UInt32 val;
-	me->threadRunning = true;
-	me->threadStarted = true;
 	pack = MemAlloc(IO::FileAnalyse::EXEFileAnalyse::PackInfo, 1);
 	pack->fileOfst = 0;
 	pack->packSize = 64;
@@ -258,18 +254,13 @@ UInt32 __stdcall IO::FileAnalyse::EXEFileAnalyse::ParseThread(void *userObj)
 			}
 		}
 	}
-	me->threadRunning = false;
-	return 0;
 }
 
-IO::FileAnalyse::EXEFileAnalyse::EXEFileAnalyse(NotNullPtr<IO::StreamData> fd)
+IO::FileAnalyse::EXEFileAnalyse::EXEFileAnalyse(NotNullPtr<IO::StreamData> fd) : thread(ParseThread, this, CSTR("EXEFileAnalyse"))
 {
 	UInt8 buff[8];
 	this->fd = 0;
-	this->threadRunning = false;
 	this->pauseParsing = false;
-	this->threadToStop = false;
-	this->threadStarted = false;
 	this->imageSize = 0;
 	fd->GetRealData(0, 8, BYTEARR(buff));
 	if (ReadInt16(buff) != 0x5A4D)
@@ -277,23 +268,12 @@ IO::FileAnalyse::EXEFileAnalyse::EXEFileAnalyse(NotNullPtr<IO::StreamData> fd)
 		return;
 	}
 	this->fd = fd->GetPartialData(0, fd->GetDataSize()).Ptr();
-	Sync::ThreadUtil::Create(ParseThread, this);
-	while (!this->threadStarted)
-	{
-		Sync::SimpleThread::Sleep(10);
-	}
+	this->thread.Start();
 }
 
 IO::FileAnalyse::EXEFileAnalyse::~EXEFileAnalyse()
 {
-	if (this->threadRunning)
-	{
-		this->threadToStop = true;
-		while (this->threadRunning)
-		{
-			Sync::SimpleThread::Sleep(10);
-		}
-	}
+	this->thread.Stop();
 	SDEL_CLASS(this->fd);
 	LIST_FREE_FUNC(&this->packs, MemFree);
 }
@@ -1220,7 +1200,7 @@ Bool IO::FileAnalyse::EXEFileAnalyse::IsError()
 
 Bool IO::FileAnalyse::EXEFileAnalyse::IsParsing()
 {
-	return this->threadRunning;
+	return this->thread.IsRunning();
 }
 
 Bool IO::FileAnalyse::EXEFileAnalyse::TrimPadding(Text::CStringNN outputFile)

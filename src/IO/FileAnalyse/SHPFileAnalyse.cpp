@@ -2,8 +2,6 @@
 #include "Data/ByteBuffer.h"
 #include "Data/ByteTool.h"
 #include "IO/FileAnalyse/SHPFileAnalyse.h"
-#include "Sync/SimpleThread.h"
-#include "Sync/ThreadUtil.h"
 #include "Text/Encoding.h"
 #include "Text/StringBuilderUTF8.h"
 
@@ -44,22 +42,20 @@ Text::CString IO::FileAnalyse::SHPFileAnalyse::ShapeTypeGetName(UInt32 shapeType
 	}
 }
 
-UInt32 __stdcall IO::FileAnalyse::SHPFileAnalyse::ParseThread(void *userObj)
+void __stdcall IO::FileAnalyse::SHPFileAnalyse::ParseThread(NotNullPtr<Sync::Thread> thread)
 {
-	IO::FileAnalyse::SHPFileAnalyse *me = (IO::FileAnalyse::SHPFileAnalyse*)userObj;
+	IO::FileAnalyse::SHPFileAnalyse *me = (IO::FileAnalyse::SHPFileAnalyse*)thread->GetUserObj();
 	UInt64 dataSize;
 	UInt64 ofst;
 	UInt8 recHdr[12];
 	IO::FileAnalyse::SHPFileAnalyse::PackInfo *pack;
-	me->threadRunning = true;
-	me->threadStarted = true;
 	dataSize = me->fd->GetDataSize();
 	pack = MemAlloc(PackInfo, 1);
 	pack->fileOfst = 0;
 	pack->packSize = 100;
 	me->packs.Add(pack);
 	ofst = 100;
-	while (ofst < dataSize && !me->threadToStop)
+	while (ofst < dataSize && !thread->IsStopping())
 	{
 		if (me->fd->GetRealData(ofst, 12, BYTEARR(recHdr)) != 12)
 			break;
@@ -79,44 +75,25 @@ UInt32 __stdcall IO::FileAnalyse::SHPFileAnalyse::ParseThread(void *userObj)
 		me->packs.Add(pack);
 		ofst += pack->packSize;
 	}
-	
-	me->threadRunning = false;
-	return 0;
 }
 
-IO::FileAnalyse::SHPFileAnalyse::SHPFileAnalyse(NotNullPtr<IO::StreamData> fd)
+IO::FileAnalyse::SHPFileAnalyse::SHPFileAnalyse(NotNullPtr<IO::StreamData> fd) : thread(ParseThread, this, CSTR("SHPFileAnalyse"))
 {
 	UInt8 buff[256];
 	this->fd = 0;
-	this->threadRunning = false;
 	this->pauseParsing = false;
-	this->threadToStop = false;
-	this->threadStarted = false;
 	fd->GetRealData(0, 256, BYTEARR(buff));
 	if (ReadMInt32(buff) != 9994 || ReadInt32(&buff[28]) != 1000 || (ReadMUInt32(&buff[24]) << 1) != fd->GetDataSize())
 	{
 		return;
 	}
 	this->fd = fd->GetPartialData(0, fd->GetDataSize()).Ptr();
-
-	Sync::ThreadUtil::Create(ParseThread, this);
-	while (!this->threadStarted)
-	{
-		Sync::SimpleThread::Sleep(10);
-	}
+	this->thread.Start();
 }
 
 IO::FileAnalyse::SHPFileAnalyse::~SHPFileAnalyse()
 {
-	if (this->threadRunning)
-	{
-		this->threadToStop = true;
-		while (this->threadRunning)
-		{
-			Sync::SimpleThread::Sleep(10);
-		}
-	}
-
+	this->thread.Stop();
 	SDEL_CLASS(this->fd);
 	LIST_FREE_FUNC(&this->packs, MemFree);
 }
@@ -256,7 +233,7 @@ Bool IO::FileAnalyse::SHPFileAnalyse::IsError()
 
 Bool IO::FileAnalyse::SHPFileAnalyse::IsParsing()
 {
-	return this->threadRunning;
+	return this->thread.IsRunning();
 }
 
 Bool IO::FileAnalyse::SHPFileAnalyse::TrimPadding(Text::CStringNN outputFile)

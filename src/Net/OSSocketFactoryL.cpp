@@ -903,6 +903,11 @@ void Net::OSSocketFactory::ShutdownSend(Socket *socket)
 	shutdown(this->SocketGetFD(socket), SHUT_WR);
 }
 
+void Net::OSSocketFactory::ShutdownSocket(Socket *socket)
+{
+	shutdown(this->SocketGetFD(socket), SHUT_RDWR);
+}
+
 Bool Net::OSSocketFactory::SocketGetReadBuff(Socket *socket, UInt32 *size)
 {
 /*	struct timeval tv;

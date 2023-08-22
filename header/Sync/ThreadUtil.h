@@ -32,8 +32,6 @@ namespace Sync
 		static UInt32 GetThreadId(ThreadHandle *handle);
 		static UInt32 GetThreadId();
 		static UOSInt GetThreadCnt();
-		static Bool EnableInterrupt();
-		static Bool Interrupt(ThreadHandle *handle);
 		static void SetPriority(ThreadPriority priority);
 		static Bool SetName(Text::CString name);
 	};

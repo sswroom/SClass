@@ -3,23 +3,19 @@
 #include "IO/FileAnalyse/SMTCFileAnalyse.h"
 #include "Net/SocketFactory.h"
 #include "Sync/MutexUsage.h"
-#include "Sync/SimpleThread.h"
-#include "Sync/ThreadUtil.h"
 #include "Text/StringBuilderUTF8.h"
 #include "Text/StringTool.h"
 
-UInt32 __stdcall IO::FileAnalyse::SMTCFileAnalyse::ParseThread(void *userObj)
+void __stdcall IO::FileAnalyse::SMTCFileAnalyse::ParseThread(NotNullPtr<Sync::Thread> thread)
 {
-	IO::FileAnalyse::SMTCFileAnalyse *me = (IO::FileAnalyse::SMTCFileAnalyse*)userObj;
+	IO::FileAnalyse::SMTCFileAnalyse *me = (IO::FileAnalyse::SMTCFileAnalyse*)thread->GetUserObj();
 	DataInfo *data;
 	UInt64 dataSize;
 	UInt64 ofst;
 	UInt8 packetHdr[23];
-	me->threadRunning = true;
-	me->threadStarted = true;
 	ofst = 4;
 	dataSize = me->fd->GetDataSize();
-	while (ofst <= dataSize - 21 && !me->threadToStop)
+	while (ofst <= dataSize - 21 && !thread->IsStopping())
 	{
 		if (me->fd->GetRealData(ofst, 23, BYTEARR(packetHdr)) < 21)
 			break;
@@ -45,18 +41,13 @@ UInt32 __stdcall IO::FileAnalyse::SMTCFileAnalyse::ParseThread(void *userObj)
 		mutUsage.EndUse();
 		ofst += data->size;
 	}
-	me->threadRunning = false;
-	return 0;
 }
 
-IO::FileAnalyse::SMTCFileAnalyse::SMTCFileAnalyse(NotNullPtr<IO::StreamData> fd) : packetBuff(65535 + 23)
+IO::FileAnalyse::SMTCFileAnalyse::SMTCFileAnalyse(NotNullPtr<IO::StreamData> fd) : packetBuff(65535 + 23), thread(ParseThread, this, CSTR("SMTCFileAnalyse"))
 {
 	UInt8 buff[25];
 	this->fd = 0;
-	this->threadRunning = false;
 	this->pauseParsing = false;
-	this->threadToStop = false;
-	this->threadStarted = false;
 	if (fd->GetRealData(0, 25, BYTEARR(buff)) != 25)
 	{
 		return;
@@ -69,25 +60,12 @@ IO::FileAnalyse::SMTCFileAnalyse::SMTCFileAnalyse(NotNullPtr<IO::StreamData> fd)
 	{
 		return;
 	}
-	
-	Sync::ThreadUtil::Create(ParseThread, this);
-	while (!this->threadStarted)
-	{
-		Sync::SimpleThread::Sleep(10);
-	}
+	this->thread.Start();
 }
 
 IO::FileAnalyse::SMTCFileAnalyse::~SMTCFileAnalyse()
 {
-	if (this->threadRunning)
-	{
-		this->threadToStop = true;
-		while (this->threadRunning)
-		{
-			Sync::SimpleThread::Sleep(10);
-		}
-	}
-
+	this->thread.Stop();
 	SDEL_CLASS(this->fd);
 }
 
@@ -252,7 +230,7 @@ Bool IO::FileAnalyse::SMTCFileAnalyse::IsError()
 
 Bool IO::FileAnalyse::SMTCFileAnalyse::IsParsing()
 {
-	return this->threadRunning;
+	return this->thread.IsRunning();
 }
 
 Bool IO::FileAnalyse::SMTCFileAnalyse::TrimPadding(Text::CStringNN outputFile)

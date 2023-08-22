@@ -5,7 +5,6 @@
 #include "Media/EXIFData.h"
 #include "Media/ICCProfile.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/ThreadUtil.h"
 
 void IO::FileAnalyse::RIFFFileAnalyse::ParseRange(UOSInt lev, UInt64 ofst, UInt64 size)
 {
@@ -14,7 +13,7 @@ void IO::FileAnalyse::RIFFFileAnalyse::ParseRange(UOSInt lev, UInt64 ofst, UInt6
 	UInt32 sz;
 	PackInfo *pack;
 
-	while (ofst <= (endOfst - 12) && !this->threadToStop)
+	while (ofst <= (endOfst - 12) && !this->thread.IsStopping())
 	{
 		if (this->pauseParsing)
 		{
@@ -60,14 +59,10 @@ void IO::FileAnalyse::RIFFFileAnalyse::ParseRange(UOSInt lev, UInt64 ofst, UInt6
 	}
 }
 
-UInt32 __stdcall IO::FileAnalyse::RIFFFileAnalyse::ParseThread(void *userObj)
+void __stdcall IO::FileAnalyse::RIFFFileAnalyse::ParseThread(NotNullPtr<Sync::Thread> thread)
 {
-	IO::FileAnalyse::RIFFFileAnalyse *me = (IO::FileAnalyse::RIFFFileAnalyse*)userObj;
-	me->threadRunning = true;
-	me->threadStarted = true;
+	IO::FileAnalyse::RIFFFileAnalyse *me = (IO::FileAnalyse::RIFFFileAnalyse*)thread->GetUserObj();
 	me->ParseRange(0, 0, me->fd->GetDataSize());
-	me->threadRunning = false;
-	return 0;
 }
 
 UOSInt IO::FileAnalyse::RIFFFileAnalyse::GetFrameIndex(UOSInt lev, UInt64 ofst)
@@ -100,14 +95,11 @@ UOSInt IO::FileAnalyse::RIFFFileAnalyse::GetFrameIndex(UOSInt lev, UInt64 ofst)
 	return INVALID_INDEX;
 }
 
-IO::FileAnalyse::RIFFFileAnalyse::RIFFFileAnalyse(NotNullPtr<IO::StreamData> fd)
+IO::FileAnalyse::RIFFFileAnalyse::RIFFFileAnalyse(NotNullPtr<IO::StreamData> fd) : thread(ParseThread, this, CSTR("RIFFFileAnalyse"))
 {
 	UInt8 buff[256];
 	this->fd = 0;
-	this->threadRunning = false;
 	this->pauseParsing = false;
-	this->threadToStop = false;
-	this->threadStarted = false;
 	this->maxLev = 0;
 	fd->GetRealData(0, 256, BYTEARR(buff));
 	if (ReadNInt32(buff) != *(Int32*)"RIFF")
@@ -120,23 +112,12 @@ IO::FileAnalyse::RIFFFileAnalyse::RIFFFileAnalyse(NotNullPtr<IO::StreamData> fd)
 		return;
 	}
 	this->fd = fd->GetPartialData(0, fd->GetDataSize()).Ptr();
-	Sync::ThreadUtil::Create(ParseThread, this);
-	while (!this->threadStarted)
-	{
-		Sync::SimpleThread::Sleep(10);
-	}
+	this->thread.Start();
 }
 
 IO::FileAnalyse::RIFFFileAnalyse::~RIFFFileAnalyse()
 {
-	if (this->threadRunning)
-	{
-		this->threadToStop = true;
-		while (this->threadRunning)
-		{
-			Sync::SimpleThread::Sleep(10);
-		}
-	}
+	this->thread.Stop();
 	SDEL_CLASS(this->fd);
 	LIST_FREE_FUNC(&this->packs, MemFree);
 }
@@ -666,7 +647,7 @@ Bool IO::FileAnalyse::RIFFFileAnalyse::IsError()
 
 Bool IO::FileAnalyse::RIFFFileAnalyse::IsParsing()
 {
-	return this->threadRunning;
+	return this->thread.IsRunning();
 }
 
 Bool IO::FileAnalyse::RIFFFileAnalyse::TrimPadding(Text::CStringNN outputFile)

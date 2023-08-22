@@ -325,3 +325,15 @@ void Net::LoggedSocketFactory::ShutdownSend(Socket *socket)
 	sb.AppendC(UTF8STRC("Shutdown Send"));
 	this->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Action);
 }
+
+void Net::LoggedSocketFactory::ShutdownSocket(Socket *socket)
+{
+	this->sockf->ShutdownSocket(socket);
+	Text::StringBuilderUTF8 sb;
+	if (this->logPrefix)
+	{
+		sb.Append(this->logPrefix);
+	}
+	sb.AppendC(UTF8STRC("Shutdown Socket"));
+	this->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Action);
+}

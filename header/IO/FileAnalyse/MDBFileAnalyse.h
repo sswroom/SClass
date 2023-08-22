@@ -3,6 +3,7 @@
 #include "Data/SyncArrayList.h"
 #include "IO/StreamData.h"
 #include "IO/FileAnalyse/IFileAnalyse.h"
+#include "Sync/Thread.h"
 #include "Text/CString.h"
 #include "Text/StringBuilder.h"
 
@@ -26,10 +27,8 @@ namespace IO
 			UInt32 fileVer;
 
 			Bool pauseParsing;
-			Bool threadRunning;
-			Bool threadToStop;
-			Bool threadStarted;
-			static UInt32 __stdcall ParseThread(void *userObj);
+			Sync::Thread thread;
+			static void __stdcall ParseThread(NotNullPtr<Sync::Thread> thread);
 		public:
 			MDBFileAnalyse(NotNullPtr<IO::StreamData> fd);
 			virtual ~MDBFileAnalyse();

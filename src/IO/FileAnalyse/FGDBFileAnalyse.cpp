@@ -5,8 +5,6 @@
 #include "IO/FileAnalyse/FGDBFileAnalyse.h"
 #include "Math/CoordinateSystemManager.h"
 #include "Math/Math.h"
-#include "Sync/SimpleThread.h"
-#include "Sync/ThreadUtil.h"
 #include "Text/MyStringW.h"
 #include "Text/StringBuilderUTF8.h"
 #include "Text/XLSUtil.h"
@@ -14,17 +12,15 @@
 #define HAS_M_FLAG 4
 #define HAS_Z_FLAG 2
 
-UInt32 __stdcall IO::FileAnalyse::FGDBFileAnalyse::ParseThread(void *userObj)
+void __stdcall IO::FileAnalyse::FGDBFileAnalyse::ParseThread(NotNullPtr<Sync::Thread> thread)
 {
-	IO::FileAnalyse::FGDBFileAnalyse *me = (IO::FileAnalyse::FGDBFileAnalyse*)userObj;
+	IO::FileAnalyse::FGDBFileAnalyse *me = (IO::FileAnalyse::FGDBFileAnalyse*)thread->GetUserObj();
 	UInt64 dataSize;
 	UInt64 ofst;
 	UInt32 lastSize;
 	Int32 rowSize;
 	UInt8 tagHdr[15];
 	IO::FileAnalyse::FGDBFileAnalyse::TagInfo *tag;
-	me->threadRunning = true;
-	me->threadStarted = true;
 
 	tag = MemAlloc(IO::FileAnalyse::FGDBFileAnalyse::TagInfo, 1);
 	tag->ofst = 0;
@@ -48,7 +44,7 @@ UInt32 __stdcall IO::FileAnalyse::FGDBFileAnalyse::ParseThread(void *userObj)
 
 	ofst = 40 + tag->size;
 	dataSize = me->fd->GetDataSize();
-	while (ofst < dataSize - 4 && !me->threadToStop)
+	while (ofst < dataSize - 4 && !me->thread.IsStopping())
 	{
 		if (me->fd->GetRealData(ofst, 4, BYTEARR(tagHdr)) != 4)
 			break;
@@ -71,19 +67,13 @@ UInt32 __stdcall IO::FileAnalyse::FGDBFileAnalyse::ParseThread(void *userObj)
 		me->tags.Add(tag);
 		ofst += (UInt32)rowSize + 4;
 	}
-	
-	me->threadRunning = false;
-	return 0;
 }
 
-IO::FileAnalyse::FGDBFileAnalyse::FGDBFileAnalyse(NotNullPtr<IO::StreamData> fd)
+IO::FileAnalyse::FGDBFileAnalyse::FGDBFileAnalyse(NotNullPtr<IO::StreamData> fd) : thread(ParseThread, this, CSTR("FGDBFileAnalyse"))
 {
 	UInt8 buff[40];
 	this->fd = 0;
-	this->threadRunning = false;
 	this->pauseParsing = false;
-	this->threadToStop = false;
-	this->threadStarted = false;
 	this->tableInfo = 0;
 	fd->GetRealData(0, 40, BYTEARR(buff));
 	if (ReadUInt64(&buff[24]) != fd->GetDataSize())
@@ -91,24 +81,12 @@ IO::FileAnalyse::FGDBFileAnalyse::FGDBFileAnalyse(NotNullPtr<IO::StreamData> fd)
 		return;
 	}
 	this->fd = fd->GetPartialData(0, fd->GetDataSize()).Ptr();
-
-	Sync::ThreadUtil::Create(ParseThread, this);
-	while (!this->threadStarted)
-	{
-		Sync::SimpleThread::Sleep(10);
-	}
+	this->thread.Start();
 }
 
 IO::FileAnalyse::FGDBFileAnalyse::~FGDBFileAnalyse()
 {
-	if (this->threadRunning)
-	{
-		this->threadToStop = true;
-		while (this->threadRunning)
-		{
-			Sync::SimpleThread::Sleep(10);
-		}
-	}
+	this->thread.Stop();
 	if (this->tableInfo)
 	{
 		Map::ESRI::FileGDBUtil::FreeTableInfo(this->tableInfo);
@@ -730,7 +708,7 @@ Bool IO::FileAnalyse::FGDBFileAnalyse::IsError()
 
 Bool IO::FileAnalyse::FGDBFileAnalyse::IsParsing()
 {
-	return this->threadRunning;
+	return this->thread.IsRunning();
 }
 
 Bool IO::FileAnalyse::FGDBFileAnalyse::TrimPadding(Text::CStringNN outputFile)

@@ -524,7 +524,6 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnClientCertClicked(void *user
 void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(NotNullPtr<Sync::Thread> thread)
 {
 	SSWR::AVIRead::AVIRHTTPClientForm *me = (SSWR::AVIRead::AVIRHTTPClientForm*)thread->GetUserObj();
-	Sync::ThreadUtil::SetName(CSTR("HTTPClient"));
 	Text::String *currURL;
 	const UTF8Char *currBody;
 	UOSInt currBodyLen;
@@ -1195,7 +1194,7 @@ UTF8Char *SSWR::AVIRead::AVIRHTTPClientForm::AppendCookie(UTF8Char *sbuff, Text:
 	return cookiePtr;
 }
 
-SSWR::AVIRead::AVIRHTTPClientForm::AVIRHTTPClientForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui), procThread(ProcessThread, this)
+SSWR::AVIRead::AVIRHTTPClientForm::AVIRHTTPClientForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui), procThread(ProcessThread, this, CSTR("HTTPClient"))
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("HTTP Client"));

@@ -3,7 +3,7 @@
 #include "Data/DateTime.h"
 #include "Sync/Event.h"
 #include "Net/SocketFactory.h"
-#include "Sync/ThreadUtil.h"
+#include "Sync/Thread.h"
 
 namespace Net
 {
@@ -12,27 +12,17 @@ namespace Net
 	public:
 		typedef void (__stdcall *RAWDataHdlr)(void *userData, const UInt8 *packetData, UOSInt packetSize);
 
-		typedef struct
-		{
-			SocketMonitor *me;
-			Bool threadRunning;
-			Sync::Event *evt;
-			Bool toStop;
-			Sync::ThreadHandle *threadHand;
-		} ThreadStat;
-
 	private:
 		NotNullPtr<Net::SocketFactory> sockf;
 		Socket *soc;
 		RAWDataHdlr hdlr;
 		void *userData;
 
-		ThreadStat *threadStats;
+		Sync::Thread **threads;
 		UOSInt threadCnt;
-		Sync::Event *ctrlEvt;
 
 	private:
-		static UInt32 __stdcall DataThread(void *obj);
+		static void __stdcall DataThread(NotNullPtr<Sync::Thread> thread);
 
 	public:
 		SocketMonitor(NotNullPtr<Net::SocketFactory> sockf, Socket *soc, RAWDataHdlr hdlr, void *userData, UOSInt workerCnt);

@@ -3,8 +3,6 @@
 #include "Data/ByteTool.h"
 #include "IO/FileAnalyse/FLVFileAnalyse.h"
 #include "IO/FileAnalyse/SBFrameDetail.h"
-#include "Sync/SimpleThread.h"
-#include "Sync/ThreadUtil.h"
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
 
@@ -115,20 +113,18 @@ void IO::FileAnalyse::FLVFileAnalyse::ParseScriptData(UInt8 *data, UOSInt ofst, 
 	frame->AddField(frameOfst + ofst, ofstVal - ofst, sbName.ToCString(), sbVal.ToCString());
 }
 
-UInt32 __stdcall IO::FileAnalyse::FLVFileAnalyse::ParseThread(void *userObj)
+void __stdcall IO::FileAnalyse::FLVFileAnalyse::ParseThread(NotNullPtr<Sync::Thread> thread)
 {
-	IO::FileAnalyse::FLVFileAnalyse *me = (IO::FileAnalyse::FLVFileAnalyse*)userObj;
+	IO::FileAnalyse::FLVFileAnalyse *me = (IO::FileAnalyse::FLVFileAnalyse*)thread->GetUserObj();
 	UInt64 dataSize;
 	UInt64 ofst;
 	UInt32 lastSize;
 	UInt8 tagHdr[15];
 	IO::FileAnalyse::FLVFileAnalyse::FLVTag *tag;
-	me->threadRunning = true;
-	me->threadStarted = true;
 	ofst = me->hdrSize + 4;
 	dataSize = me->fd->GetDataSize();
 	lastSize = 0;
-	while (ofst < dataSize - 11 && !me->threadToStop)
+	while (ofst < dataSize - 11 && !thread->IsStopping())
 	{
 		if (me->fd->GetRealData(ofst - 4, 15, BYTEARR(tagHdr)) != 15)
 			break;
@@ -148,19 +144,13 @@ UInt32 __stdcall IO::FileAnalyse::FLVFileAnalyse::ParseThread(void *userObj)
 		me->tags.Add(tag);
 		ofst += lastSize + 4;
 	}
-	
-	me->threadRunning = false;
-	return 0;
 }
 
-IO::FileAnalyse::FLVFileAnalyse::FLVFileAnalyse(NotNullPtr<IO::StreamData> fd)
+IO::FileAnalyse::FLVFileAnalyse::FLVFileAnalyse(NotNullPtr<IO::StreamData> fd) : thread(ParseThread, this, CSTR("FLVFileAnalyse"))
 {
 	UInt8 buff[256];
 	this->fd = 0;
-	this->threadRunning = false;
 	this->pauseParsing = false;
-	this->threadToStop = false;
-	this->threadStarted = false;
 	fd->GetRealData(0, 256, BYTEARR(buff));
 	if (buff[0] != 'F' || buff[1] != 'L' || buff[2] != 'V' || buff[3] != 1)
 	{
@@ -172,25 +162,12 @@ IO::FileAnalyse::FLVFileAnalyse::FLVFileAnalyse(NotNullPtr<IO::StreamData> fd)
 		return;
 	}
 	this->fd = fd->GetPartialData(0, fd->GetDataSize()).Ptr();
-
-	Sync::ThreadUtil::Create(ParseThread, this);
-	while (!this->threadStarted)
-	{
-		Sync::SimpleThread::Sleep(10);
-	}
+	this->thread.Start();
 }
 
 IO::FileAnalyse::FLVFileAnalyse::~FLVFileAnalyse()
 {
-	if (this->threadRunning)
-	{
-		this->threadToStop = true;
-		while (this->threadRunning)
-		{
-			Sync::SimpleThread::Sleep(10);
-		}
-	}
-
+	this->thread.Stop();
 	SDEL_CLASS(this->fd);
 	LIST_FREE_FUNC(&this->tags, MemFree);
 }
@@ -447,7 +424,7 @@ Bool IO::FileAnalyse::FLVFileAnalyse::IsError()
 
 Bool IO::FileAnalyse::FLVFileAnalyse::IsParsing()
 {
-	return this->threadRunning;
+	return this->thread.IsRunning();
 }
 
 Bool IO::FileAnalyse::FLVFileAnalyse::TrimPadding(Text::CStringNN outputFile)

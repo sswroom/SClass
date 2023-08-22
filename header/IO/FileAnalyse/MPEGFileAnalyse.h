@@ -3,6 +3,7 @@
 #include "Data/SyncArrayList.h"
 #include "IO/StreamData.h"
 #include "IO/FileAnalyse/IFileAnalyse.h"
+#include "Sync/Thread.h"
 #include "Text/StringBuilder.h"
 
 namespace IO
@@ -24,10 +25,8 @@ namespace IO
 			Int32 mpgVer;
 
 			Bool pauseParsing;
-			Bool threadRunning;
-			Bool threadToStop;
-			Bool threadStarted;
-			static UInt32 __stdcall ParseThread(void *userObj);
+			Sync::Thread thread;
+			static void __stdcall ParseThread(NotNullPtr<Sync::Thread> thread);
 		public:
 			MPEGFileAnalyse(NotNullPtr<IO::StreamData> fd);
 			virtual ~MPEGFileAnalyse();

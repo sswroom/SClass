@@ -2,7 +2,7 @@
 #define _SM_SYNC_THREAD
 #include "Sync/Event.h"
 #include "Sync/ThreadUtil.h"
-#include "Text/CString.h"
+#include "Text/String.h"
 namespace Sync
 {
 	class Thread
@@ -12,6 +12,7 @@ namespace Sync
 	private:
 		Bool running;
 		Bool stopping;
+		NotNullPtr<Text::String> name;
 		Sync::ThreadHandle *hand;
 		Sync::Event evt;
 		ThreadFunc func;
@@ -19,10 +20,10 @@ namespace Sync
 
 		static UInt32 __stdcall InnerThread(void *userObj);
 	public:
-		Thread(ThreadFunc func, void *userObj);
+		Thread(ThreadFunc func, void *userObj, Text::CStringNN name);
 		~Thread();
 
-		void Start();
+		Bool Start();
 		void BeginStop();
 		void WaitForEnd();
 		void Stop();

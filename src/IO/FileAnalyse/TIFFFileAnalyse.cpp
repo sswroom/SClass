@@ -9,16 +9,12 @@
 #include "Manage/Process.h"
 #include "Media/EXIFData.h"
 #include "Net/SocketFactory.h"
-#include "Sync/SimpleThread.h"
-#include "Sync/ThreadUtil.h"
 
-UInt32 __stdcall IO::FileAnalyse::TIFFFileAnalyse::ParseThread(void *userObj)
+void __stdcall IO::FileAnalyse::TIFFFileAnalyse::ParseThread(NotNullPtr<Sync::Thread> thread)
 {
-	IO::FileAnalyse::TIFFFileAnalyse *me = (IO::FileAnalyse::TIFFFileAnalyse *)userObj;
+	IO::FileAnalyse::TIFFFileAnalyse *me = (IO::FileAnalyse::TIFFFileAnalyse *)thread->GetUserObj();
 	UInt8 buff[256];
 	PackInfo *pack;
-	me->threadRunning = true;
-	me->threadStarted = true;
 
 	me->fd->GetRealData(0, 256, BYTEARR(buff));
 	UInt16 fmt = me->bo->GetUInt16(&buff[2]);
@@ -76,9 +72,6 @@ UInt32 __stdcall IO::FileAnalyse::TIFFFileAnalyse::ParseThread(void *userObj)
 	else
 	{
 	}
-
-	me->threadRunning = false;
-	return 0;
 }
 
 void IO::FileAnalyse::TIFFFileAnalyse::FreePackInfo(PackInfo *pack)
@@ -86,15 +79,12 @@ void IO::FileAnalyse::TIFFFileAnalyse::FreePackInfo(PackInfo *pack)
 	MemFree(pack);
 }
 
-IO::FileAnalyse::TIFFFileAnalyse::TIFFFileAnalyse(NotNullPtr<IO::StreamData> fd)
+IO::FileAnalyse::TIFFFileAnalyse::TIFFFileAnalyse(NotNullPtr<IO::StreamData> fd) : thread(ParseThread, this, CSTR("TIFFFileAnalyse"))
 {
 	UInt8 buff[256];
 	this->fd = 0;
 	this->bo = 0;
-	this->threadRunning = false;
 	this->pauseParsing = false;
-	this->threadToStop = false;
-	this->threadStarted = false;
 
 	fd->GetRealData(0, 256, BYTEARR(buff));
 	if (*(Int16*)&buff[0] == *(Int16*)"MM")
@@ -121,23 +111,12 @@ IO::FileAnalyse::TIFFFileAnalyse::TIFFFileAnalyse(NotNullPtr<IO::StreamData> fd)
 		return;
 	}
 	this->fd = fd->GetPartialData(0, fd->GetDataSize()).Ptr();
-	Sync::ThreadUtil::Create(ParseThread, this);
-	while (!this->threadStarted)
-	{
-		Sync::SimpleThread::Sleep(10);
-	}
+	this->thread.Start();
 }
 
 IO::FileAnalyse::TIFFFileAnalyse::~TIFFFileAnalyse()
 {
-	if (this->threadRunning)
-	{
-		this->threadToStop = true;
-		while (this->threadRunning)
-		{
-			Sync::SimpleThread::Sleep(10);
-		}
-	}
+	this->thread.Stop();
 	SDEL_CLASS(this->fd);
 	SDEL_CLASS(this->bo);
 	LIST_FREE_FUNC(&this->packs, FreePackInfo);
@@ -285,7 +264,7 @@ Bool IO::FileAnalyse::TIFFFileAnalyse::IsError()
 
 Bool IO::FileAnalyse::TIFFFileAnalyse::IsParsing()
 {
-	return this->threadRunning;
+	return this->thread.IsRunning();
 }
 
 Bool IO::FileAnalyse::TIFFFileAnalyse::TrimPadding(Text::CStringNN outputFile)

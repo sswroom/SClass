@@ -4,6 +4,7 @@
 #include "IO/StreamData.h"
 #include "IO/FileAnalyse/IFileAnalyse.h"
 #include "Sync/Mutex.h"
+#include "Sync/Thread.h"
 #include "Text/StringBuilderUTF8.h"
 
 namespace IO
@@ -25,13 +26,11 @@ namespace IO
 			UOSInt hdrSize;
 
 			Bool pauseParsing;
-			Bool threadRunning;
-			Bool threadToStop;
-			Bool threadStarted;
+			Sync::Thread thread;
 
 			UOSInt ParseScriptDataVal(UInt8 *data, UOSInt ofst, UOSInt endOfst, NotNullPtr<Text::StringBuilderUTF8> sb);
 			void ParseScriptData(UInt8 *data, UOSInt ofst, UOSInt endOfst, UOSInt frameOfst, IO::FileAnalyse::FrameDetailHandler *frame);
-			static UInt32 __stdcall ParseThread(void *userObj);
+			static void __stdcall ParseThread(NotNullPtr<Sync::Thread> thread);
 		public:
 			FLVFileAnalyse(NotNullPtr<IO::StreamData> fd);
 			virtual ~FLVFileAnalyse();

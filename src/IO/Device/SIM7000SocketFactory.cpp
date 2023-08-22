@@ -530,6 +530,10 @@ void IO::Device::SIM7000SocketFactory::ShutdownSend(Socket *socket)
 {
 }
 
+void IO::Device::SIM7000SocketFactory::ShutdownSocket(Socket *socket)
+{
+}
+
 Bool IO::Device::SIM7000SocketFactory::SocketGetReadBuff(Socket *socket, UInt32 *size)
 {
 	return false;

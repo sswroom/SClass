@@ -4,6 +4,7 @@
 #include "IO/StreamData.h"
 #include "IO/FileAnalyse/IFileAnalyse.h"
 #include "Sync/Mutex.h"
+#include "Sync/Thread.h"
 #include "Text/StringBuilderUTF8.h"
 
 namespace IO
@@ -46,9 +47,7 @@ namespace IO
 			Data::SyncArrayList<PackInfo*> packs;
 
 			Bool pauseParsing;
-			Bool threadRunning;
-			Bool threadToStop;
-			Bool threadStarted;
+			Sync::Thread thread;
 			UOSInt maxLev;
 
 			static ElementInfo elements[];
@@ -56,7 +55,7 @@ namespace IO
 			static const UInt8 *ReadInt(const UInt8 *buffPtr, UInt64 *val, UInt32 *intSize);
 			static const ElementInfo *GetElementInfo(UInt32 elementId);
 			void ParseRange(UOSInt lev, UInt64 ofst, UInt64 size);
-			static UInt32 __stdcall ParseThread(void *userObj);
+			static void __stdcall ParseThread(NotNullPtr<Sync::Thread> thread);
 			UOSInt GetFrameIndex(UOSInt lev, UInt64 ofst);
 		public:
 			EBMLFileAnalyse(NotNullPtr<IO::StreamData> fd);

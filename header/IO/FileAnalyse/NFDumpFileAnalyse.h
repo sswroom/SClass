@@ -4,6 +4,7 @@
 #include "Data/SyncArrayList.h"
 #include "IO/StreamData.h"
 #include "IO/FileAnalyse/IFileAnalyse.h"
+#include "Sync/Thread.h"
 #include "Text/StringBuilderUTF8.h"
 
 namespace IO
@@ -26,10 +27,8 @@ namespace IO
 			Bool hasLZODecomp;
 
 			Bool pauseParsing;
-			Bool threadRunning;
-			Bool threadToStop;
-			Bool threadStarted;
-			static UInt32 __stdcall ParseThread(void *userObj);
+			Sync::Thread thread;
+			static void __stdcall ParseThread(NotNullPtr<Sync::Thread> thread);
 			UOSInt LZODecompBlock(UInt8 *srcBlock, UOSInt srcSize, UInt8 *outBlock, UOSInt maxOutSize);
 		public:
 			NFDumpFileAnalyse(NotNullPtr<IO::StreamData> fd);

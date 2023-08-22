@@ -4,7 +4,6 @@
 #include "Data/ByteTool.h"
 #include "IO/FileAnalyse/QTFileAnalyse.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/ThreadUtil.h"
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
 
@@ -22,7 +21,7 @@ void IO::FileAnalyse::QTFileAnalyse::ParseRange(UOSInt lev, UInt64 ofst, UInt64 
 	contList.SortedInsert(*(Int32*)"stbl");
 	contList.SortedInsert(*(Int32*)"trak");
 
-	while (ofst <= (endOfst - 8) && !this->threadToStop)
+	while (ofst <= (endOfst - 8) && !this->thread.IsStopping())
 	{
 		if (this->pauseParsing)
 		{
@@ -61,14 +60,10 @@ void IO::FileAnalyse::QTFileAnalyse::ParseRange(UOSInt lev, UInt64 ofst, UInt64 
 	}
 }
 
-UInt32 __stdcall IO::FileAnalyse::QTFileAnalyse::ParseThread(void *userObj)
+void __stdcall IO::FileAnalyse::QTFileAnalyse::ParseThread(NotNullPtr<Sync::Thread> thread)
 {
-	IO::FileAnalyse::QTFileAnalyse *me = (IO::FileAnalyse::QTFileAnalyse*)userObj;
-	me->threadRunning = true;
-	me->threadStarted = true;
+	IO::FileAnalyse::QTFileAnalyse *me = (IO::FileAnalyse::QTFileAnalyse*)thread->GetUserObj();
 	me->ParseRange(0, 0, me->fd->GetDataSize());
-	me->threadRunning = false;
-	return 0;
 }
 
 UOSInt IO::FileAnalyse::QTFileAnalyse::GetFrameIndex(UOSInt lev, UInt64 ofst)
@@ -101,14 +96,11 @@ UOSInt IO::FileAnalyse::QTFileAnalyse::GetFrameIndex(UOSInt lev, UInt64 ofst)
 	return INVALID_INDEX;
 }
 
-IO::FileAnalyse::QTFileAnalyse::QTFileAnalyse(NotNullPtr<IO::StreamData> fd)
+IO::FileAnalyse::QTFileAnalyse::QTFileAnalyse(NotNullPtr<IO::StreamData> fd) : thread(ParseThread, this, CSTR("QTFileAnalyse"))
 {
 	UInt8 buff[8];
 	this->fd = 0;
-	this->threadRunning = false;
 	this->pauseParsing = false;
-	this->threadToStop = false;
-	this->threadStarted = false;
 	this->maxLev = 0;
 	fd->GetRealData(0, 8, BYTEARR(buff));
 	if (ReadInt32(&buff[4]) != *(Int32*)"ftyp" && ReadInt32(&buff[4]) != *(Int32*)"moov")
@@ -121,23 +113,12 @@ IO::FileAnalyse::QTFileAnalyse::QTFileAnalyse(NotNullPtr<IO::StreamData> fd)
 		return;
 	}
 	this->fd = fd->GetPartialData(0, fd->GetDataSize()).Ptr();
-	Sync::ThreadUtil::Create(ParseThread, this);
-	while (!this->threadStarted)
-	{
-		Sync::SimpleThread::Sleep(10);
-	}
+	this->thread.Start();
 }
 
 IO::FileAnalyse::QTFileAnalyse::~QTFileAnalyse()
 {
-	if (this->threadRunning)
-	{
-		this->threadToStop = true;
-		while (this->threadRunning)
-		{
-			Sync::SimpleThread::Sleep(10);
-		}
-	}
+	this->thread.Stop();
 	SDEL_CLASS(this->fd);
 	LIST_FREE_FUNC(&this->packs, MemFree);
 }
@@ -1445,7 +1426,7 @@ Bool IO::FileAnalyse::QTFileAnalyse::IsError()
 
 Bool IO::FileAnalyse::QTFileAnalyse::IsParsing()
 {
-	return this->threadRunning;
+	return this->thread.IsRunning();
 }
 
 Bool IO::FileAnalyse::QTFileAnalyse::TrimPadding(Text::CStringNN outputFile)

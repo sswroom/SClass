@@ -4,11 +4,10 @@
 #include "IO/FileStream.h"
 #include "IO/FileAnalyse/MPEGFileAnalyse.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/ThreadUtil.h"
 
-UInt32 __stdcall IO::FileAnalyse::MPEGFileAnalyse::ParseThread(void *userObj)
+void __stdcall IO::FileAnalyse::MPEGFileAnalyse::ParseThread(NotNullPtr<Sync::Thread> thread)
 {
-	IO::FileAnalyse::MPEGFileAnalyse *me = (IO::FileAnalyse::MPEGFileAnalyse*)userObj;
+	IO::FileAnalyse::MPEGFileAnalyse *me = (IO::FileAnalyse::MPEGFileAnalyse*)thread->GetUserObj();
 	UInt8 readBuff[256];
 	UInt64 currOfst;
 	UInt64 readOfst;
@@ -18,12 +17,10 @@ UInt32 __stdcall IO::FileAnalyse::MPEGFileAnalyse::ParseThread(void *userObj)
 	UOSInt j;
 	IO::FileAnalyse::MPEGFileAnalyse::PackInfo *pack;
 
-	me->threadRunning = true;
-	me->threadStarted = true;
 	currOfst = 0;
 	readOfst = 0;
 	buffSize = 0;
-	while (!me->threadToStop)
+	while (!thread->IsStopping())
 	{
 		if (me->pauseParsing)
 		{
@@ -109,18 +106,13 @@ UInt32 __stdcall IO::FileAnalyse::MPEGFileAnalyse::ParseThread(void *userObj)
 			}
 		}
 	}
-	me->threadRunning = false;
-	return 0;
 }
 
-IO::FileAnalyse::MPEGFileAnalyse::MPEGFileAnalyse(NotNullPtr<IO::StreamData> fd)
+IO::FileAnalyse::MPEGFileAnalyse::MPEGFileAnalyse(NotNullPtr<IO::StreamData> fd) : thread(ParseThread, this, CSTR("MPEGFileAnalyse"))
 {
 	UInt8 buff[256];
 	this->fd = 0;
-	this->threadRunning = false;
 	this->pauseParsing = false;
-	this->threadToStop = false;
-	this->threadStarted = false;
 	fd->GetRealData(0, 256, BYTEARR(buff));
 	if (ReadMInt32(buff) != 0x000001ba)
 	{
@@ -139,23 +131,12 @@ IO::FileAnalyse::MPEGFileAnalyse::MPEGFileAnalyse(NotNullPtr<IO::StreamData> fd)
 		return;
 	}
 	this->fd = fd->GetPartialData(0, fd->GetDataSize()).Ptr();
-	Sync::ThreadUtil::Create(ParseThread, this);
-	while (!this->threadStarted)
-	{
-		Sync::SimpleThread::Sleep(10);
-	}
+	this->thread.Start();
 }
 
 IO::FileAnalyse::MPEGFileAnalyse::~MPEGFileAnalyse()
 {
-	if (this->threadRunning)
-	{
-		this->threadToStop = true;
-		while (this->threadRunning)
-		{
-			Sync::SimpleThread::Sleep(10);
-		}
-	}
+	this->thread.Stop();
 	SDEL_CLASS(this->fd);
 	LIST_FREE_FUNC(&this->packs, MemFree);
 }
@@ -1220,7 +1201,7 @@ Bool IO::FileAnalyse::MPEGFileAnalyse::IsError()
 
 Bool IO::FileAnalyse::MPEGFileAnalyse::IsParsing()
 {
-	return this->threadRunning;
+	return this->thread.IsRunning();
 }
 
 Bool IO::FileAnalyse::MPEGFileAnalyse::TrimPadding(Text::CStringNN outputFile)

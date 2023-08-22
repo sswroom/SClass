@@ -703,6 +703,11 @@ void Net::OSSocketFactory::ShutdownSend(Socket *socket)
 	shutdown((SOCKET)socket, SD_SEND);
 }
 
+void Net::OSSocketFactory::ShutdownSocket(Socket *socket)
+{
+	shutdown((SOCKET)socket, SD_BOTH);
+}
+
 Bool Net::OSSocketFactory::SocketGetReadBuff(Socket *socket, UInt32 *size)
 {
 #if defined(__CYGWIN__)

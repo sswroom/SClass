@@ -2,8 +2,6 @@
 #include "Data/ByteBuffer.h"
 #include "Data/ByteTool.h"
 #include "IO/FileAnalyse/RAR5FileAnalyse.h"
-#include "Sync/SimpleThread.h"
-#include "Sync/ThreadUtil.h"
 #include "Text/StringBuilderUTF8.h"
 
 // https://www.rarlab.com/technote.htm
@@ -98,9 +96,9 @@ Data::ByteArray IO::FileAnalyse::RAR5FileAnalyse::AddVHex(IO::FileAnalyse::Frame
 	return nextPtr;
 }
 
-UInt32 __stdcall IO::FileAnalyse::RAR5FileAnalyse::ParseThread(void *userObj)
+void __stdcall IO::FileAnalyse::RAR5FileAnalyse::ParseThread(NotNullPtr<Sync::Thread> thread)
 {
-	IO::FileAnalyse::RAR5FileAnalyse *me = (IO::FileAnalyse::RAR5FileAnalyse*)userObj;
+	IO::FileAnalyse::RAR5FileAnalyse *me = (IO::FileAnalyse::RAR5FileAnalyse*)thread->GetUserObj();
 	UInt8 buff[128];
 	const UInt8 *buffPtr;
 	UInt64 iVal;
@@ -108,9 +106,7 @@ UInt32 __stdcall IO::FileAnalyse::RAR5FileAnalyse::ParseThread(void *userObj)
 	UInt64 currOfst = 8;
 	UInt64 endOfst = me->fd->GetDataSize();
 	IO::FileAnalyse::RAR5FileAnalyse::BlockInfo *block;
-	me->threadRunning = true;
-	me->threadStarted = true;
-	while (!me->threadToStop && currOfst + 8 <= endOfst)
+	while (!thread->IsStopping() && currOfst + 8 <= endOfst)
 	{
 		me->fd->GetRealData(currOfst, 128, BYTEARR(buff));
 		buffPtr = buff + 4;
@@ -148,41 +144,25 @@ UInt32 __stdcall IO::FileAnalyse::RAR5FileAnalyse::ParseThread(void *userObj)
 		me->packs.Add(block);
 		currOfst += block->headerSize + block->dataSize;
 	}
-	me->threadRunning = false;
-	return 0;
 }
 
-IO::FileAnalyse::RAR5FileAnalyse::RAR5FileAnalyse(NotNullPtr<IO::StreamData> fd)
+IO::FileAnalyse::RAR5FileAnalyse::RAR5FileAnalyse(NotNullPtr<IO::StreamData> fd) : thread(ParseThread, this, CSTR("RAR5FileAnalyse"))
 {
 	UInt8 buff[256];
 	this->fd = 0;
-	this->threadRunning = false;
 	this->pauseParsing = false;
-	this->threadToStop = false;
-	this->threadStarted = false;
 	fd->GetRealData(0, 256, BYTEARR(buff));
 	if (ReadInt32(&buff[0]) != 0x21726152 || ReadInt32(&buff[4]) != 0x0001071A)
 	{
 		return;
 	}
 	this->fd = fd->GetPartialData(0, fd->GetDataSize()).Ptr();
-	Sync::ThreadUtil::Create(ParseThread, this);
-	while (!this->threadStarted)
-	{
-		Sync::SimpleThread::Sleep(10);
-	}
+	this->thread.Start();
 }
 
 IO::FileAnalyse::RAR5FileAnalyse::~RAR5FileAnalyse()
 {
-	if (this->threadRunning)
-	{
-		this->threadToStop = true;
-		while (this->threadRunning)
-		{
-			Sync::SimpleThread::Sleep(10);
-		}
-	}
+	this->thread.Stop();
 	SDEL_CLASS(this->fd);
 	LIST_FREE_FUNC(&this->packs, MemFree);
 }
@@ -871,7 +851,7 @@ Bool IO::FileAnalyse::RAR5FileAnalyse::IsError()
 
 Bool IO::FileAnalyse::RAR5FileAnalyse::IsParsing()
 {
-	return this->threadRunning;
+	return this->thread.IsRunning();
 }
 
 Bool IO::FileAnalyse::RAR5FileAnalyse::TrimPadding(Text::CStringNN outputFile)

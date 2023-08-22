@@ -3,21 +3,17 @@
 #include "Data/ByteTool.h"
 #include "Data/UUID.h"
 #include "IO/FileAnalyse/LNKFileAnalyse.h"
-#include "Sync/SimpleThread.h"
-#include "Sync/ThreadUtil.h"
 #include "Text/MyStringW.h"
 #include "Text/StringBuilderUTF8.h"
 
-UInt32 __stdcall IO::FileAnalyse::LNKFileAnalyse::ParseThread(void* userObj)
+void __stdcall IO::FileAnalyse::LNKFileAnalyse::ParseThread(NotNullPtr<Sync::Thread> thread)
 {
-	IO::FileAnalyse::LNKFileAnalyse* me = (IO::FileAnalyse::LNKFileAnalyse*)userObj;
+	IO::FileAnalyse::LNKFileAnalyse* me = (IO::FileAnalyse::LNKFileAnalyse*)thread->GetUserObj();
 	UInt64 ofst;
 	UInt8 tagHdr[24];
 	UInt32 linkFlags;
 	UInt64 fileSize = me->fd->GetDataSize();
 	IO::FileAnalyse::LNKFileAnalyse::TagInfo* tag;
-	me->threadRunning = true;
-	me->threadStarted = true;
 
 	tag = MemAlloc(IO::FileAnalyse::LNKFileAnalyse::TagInfo, 1);
 	tag->ofst = 0;
@@ -122,43 +118,25 @@ UInt32 __stdcall IO::FileAnalyse::LNKFileAnalyse::ParseThread(void* userObj)
 			ofst += size;
 		}
 	}
-
-	me->threadRunning = false;
-	return 0;
 }
 
-IO::FileAnalyse::LNKFileAnalyse::LNKFileAnalyse(NotNullPtr<IO::StreamData> fd)
+IO::FileAnalyse::LNKFileAnalyse::LNKFileAnalyse(NotNullPtr<IO::StreamData> fd) : thread(ParseThread, this, CSTR("LNKFileAnalyse"))
 {
 	UInt8 buff[40];
 	this->fd = 0;
-	this->threadRunning = false;
 	this->pauseParsing = false;
-	this->threadToStop = false;
-	this->threadStarted = false;
 	fd->GetRealData(0, 40, BYTEARR(buff));
 	if (ReadUInt32(&buff[0]) != 0x4C || ReadUInt32(&buff[4]) != 0x00021401 || ReadUInt32(&buff[8]) != 0 || ReadUInt32(&buff[12]) != 0xC0 || ReadUInt32(&buff[16]) != 0x46000000)
 	{
 		return;
 	}
 	this->fd = fd->GetPartialData(0, fd->GetDataSize()).Ptr();
-
-	Sync::ThreadUtil::Create(ParseThread, this);
-	while (!this->threadStarted)
-	{
-		Sync::SimpleThread::Sleep(10);
-	}
+	this->thread.Start();
 }
 
 IO::FileAnalyse::LNKFileAnalyse::~LNKFileAnalyse()
 {
-	if (this->threadRunning)
-	{
-		this->threadToStop = true;
-		while (this->threadRunning)
-		{
-			Sync::SimpleThread::Sleep(10);
-		}
-	}
+	this->thread.Stop();
 	SDEL_CLASS(this->fd);
 	LIST_FREE_FUNC(&this->tags, MemFree);
 }
@@ -598,7 +576,7 @@ Bool IO::FileAnalyse::LNKFileAnalyse::IsError()
 
 Bool IO::FileAnalyse::LNKFileAnalyse::IsParsing()
 {
-	return this->threadRunning;
+	return this->thread.IsRunning();
 }
 
 Bool IO::FileAnalyse::LNKFileAnalyse::TrimPadding(Text::CStringNN outputFile)

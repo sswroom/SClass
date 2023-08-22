@@ -4,22 +4,18 @@
 #include "IO/FileAnalyse/PCapFileAnalyse.h"
 #include "Net/PacketAnalyzer.h"
 #include "Sync/MutexUsage.h"
-#include "Sync/SimpleThread.h"
-#include "Sync/ThreadUtil.h"
 #include "Text/StringBuilderUTF8.h"
 
-UInt32 __stdcall IO::FileAnalyse::PCapFileAnalyse::ParseThread(void *userObj)
+void __stdcall IO::FileAnalyse::PCapFileAnalyse::ParseThread(NotNullPtr<Sync::Thread> thread)
 {
-	IO::FileAnalyse::PCapFileAnalyse *me = (IO::FileAnalyse::PCapFileAnalyse*)userObj;
+	IO::FileAnalyse::PCapFileAnalyse *me = (IO::FileAnalyse::PCapFileAnalyse*)thread->GetUserObj();
 	UInt64 dataSize;
 	UInt64 ofst;
 	UInt32 thisSize;
 	UInt8 packetHdr[16];
-	me->threadRunning = true;
-	me->threadStarted = true;
 	ofst = 24;
 	dataSize = me->fd->GetDataSize();
-	while (ofst < dataSize - 16 && !me->threadToStop)
+	while (ofst < dataSize - 16 && !thread->IsStopping())
 	{
 		if (me->fd->GetRealData(ofst, 16, BYTEARR(packetHdr)) != 16)
 			break;
@@ -42,18 +38,13 @@ UInt32 __stdcall IO::FileAnalyse::PCapFileAnalyse::ParseThread(void *userObj)
 		mutUsage.EndUse();
 		ofst += thisSize + 16;
 	}
-	me->threadRunning = false;
-	return 0;
 }
 
-IO::FileAnalyse::PCapFileAnalyse::PCapFileAnalyse(NotNullPtr<IO::StreamData> fd) : packetBuff(65536)
+IO::FileAnalyse::PCapFileAnalyse::PCapFileAnalyse(NotNullPtr<IO::StreamData> fd) : packetBuff(65536), thread(ParseThread, this, CSTR("PCapFileAnalyse"))
 {
 	UInt8 buff[24];
 	this->fd = 0;
-	this->threadRunning = false;
 	this->pauseParsing = false;
-	this->threadToStop = false;
-	this->threadStarted = false;
 	this->isBE = false;
 	if (fd->GetRealData(0, 24, BYTEARR(buff)) != 24)
 	{
@@ -75,25 +66,12 @@ IO::FileAnalyse::PCapFileAnalyse::PCapFileAnalyse(NotNullPtr<IO::StreamData> fd)
 	{
 		return;
 	}
-	
-	Sync::ThreadUtil::Create(ParseThread, this);
-	while (!this->threadStarted)
-	{
-		Sync::SimpleThread::Sleep(10);
-	}
+	this->thread.Start();
 }
 
 IO::FileAnalyse::PCapFileAnalyse::~PCapFileAnalyse()
 {
-	if (this->threadRunning)
-	{
-		this->threadToStop = true;
-		while (this->threadRunning)
-		{
-			Sync::SimpleThread::Sleep(10);
-		}
-	}
-
+	this->thread.Stop();
 	SDEL_CLASS(this->fd);
 }
 
@@ -360,7 +338,7 @@ Bool IO::FileAnalyse::PCapFileAnalyse::IsError()
 
 Bool IO::FileAnalyse::PCapFileAnalyse::IsParsing()
 {
-	return this->threadRunning;
+	return this->thread.IsRunning();
 }
 
 Bool IO::FileAnalyse::PCapFileAnalyse::TrimPadding(Text::CStringNN outputFile)

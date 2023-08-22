@@ -3,6 +3,7 @@
 #include "Data/SyncArrayList.h"
 #include "IO/StreamData.h"
 #include "IO/FileAnalyse/IFileAnalyse.h"
+#include "Sync/Thread.h"
 #include "Text/StringBuilderUTF8.h"
 
 namespace IO
@@ -22,12 +23,10 @@ namespace IO
 			Data::SyncArrayList<PackInfo*> packs;
 
 			Bool pauseParsing;
-			Bool threadRunning;
-			Bool threadToStop;
-			Bool threadStarted;
+			Sync::Thread thread;
 
 			static Text::CString ShapeTypeGetName(UInt32 shapeType);
-			static UInt32 __stdcall ParseThread(void *userObj);
+			static void __stdcall ParseThread(NotNullPtr<Sync::Thread> thread);
 		public:
 			SHPFileAnalyse(NotNullPtr<IO::StreamData> fd);
 			virtual ~SHPFileAnalyse();

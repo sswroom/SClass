@@ -4,23 +4,19 @@
 #include "IO/FileStream.h"
 #include "IO/FileAnalyse/MDBFileAnalyse.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/ThreadUtil.h"
 #include "Text/MyStringFloat.h"
 #include "Text/MyStringW.h"
 #include "Text/XLSUtil.h"
 
-UInt32 __stdcall IO::FileAnalyse::MDBFileAnalyse::ParseThread(void *userObj)
+void __stdcall IO::FileAnalyse::MDBFileAnalyse::ParseThread(NotNullPtr<Sync::Thread> thread)
 {
-	IO::FileAnalyse::MDBFileAnalyse *me = (IO::FileAnalyse::MDBFileAnalyse*)userObj;
+	IO::FileAnalyse::MDBFileAnalyse *me = (IO::FileAnalyse::MDBFileAnalyse*)thread->GetUserObj();
 	UInt8 readBuff[4096];
 	UInt64 readOfst;
 	UOSInt readSize;
 	IO::FileAnalyse::MDBFileAnalyse::PackInfo *pack;
-
-	me->threadRunning = true;
-	me->threadStarted = true;
 	readOfst = 0;
-	while (!me->threadToStop)
+	while (!thread->IsStopping())
 	{
 		if (me->pauseParsing)
 		{
@@ -41,18 +37,13 @@ UInt32 __stdcall IO::FileAnalyse::MDBFileAnalyse::ParseThread(void *userObj)
 			readOfst += 4096;
 		}
 	}
-	me->threadRunning = false;
-	return 0;
 }
 
-IO::FileAnalyse::MDBFileAnalyse::MDBFileAnalyse(NotNullPtr<IO::StreamData> fd)
+IO::FileAnalyse::MDBFileAnalyse::MDBFileAnalyse(NotNullPtr<IO::StreamData> fd) : thread(ParseThread, this, CSTR("MDBFileAnalyse"))
 {
 	UInt8 buff[256];
 	this->fd = 0;
-	this->threadRunning = false;
 	this->pauseParsing = false;
-	this->threadToStop = false;
-	this->threadStarted = false;
 	fd->GetRealData(0, 256, BYTEARR(buff));
 	if (ReadInt32(buff) != 0x00000100)
 	{
@@ -72,23 +63,12 @@ IO::FileAnalyse::MDBFileAnalyse::MDBFileAnalyse(NotNullPtr<IO::StreamData> fd)
 	}
 	this->fileVer = ReadUInt32(&buff[20]);
 	this->fd = fd->GetPartialData(0, fd->GetDataSize()).Ptr();
-	Sync::ThreadUtil::Create(ParseThread, this);
-	while (!this->threadStarted)
-	{
-		Sync::SimpleThread::Sleep(10);
-	}
+	this->thread.Start();
 }
 
 IO::FileAnalyse::MDBFileAnalyse::~MDBFileAnalyse()
 {
-	if (this->threadRunning)
-	{
-		this->threadToStop = true;
-		while (this->threadRunning)
-		{
-			Sync::SimpleThread::Sleep(10);
-		}
-	}
+	this->thread.Stop();
 	SDEL_CLASS(this->fd);
 	LIST_FREE_FUNC(&this->packs, MemFree);
 }
@@ -424,7 +404,7 @@ Bool IO::FileAnalyse::MDBFileAnalyse::IsError()
 
 Bool IO::FileAnalyse::MDBFileAnalyse::IsParsing()
 {
-	return this->threadRunning;
+	return this->thread.IsRunning();
 }
 
 Bool IO::FileAnalyse::MDBFileAnalyse::TrimPadding(Text::CStringNN outputFile)

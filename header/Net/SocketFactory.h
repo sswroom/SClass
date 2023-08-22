@@ -198,6 +198,7 @@ namespace Net
 		virtual Bool Connect(Socket *socket, UInt32 ip, UInt16 port, Data::Duration timeout) = 0;
 		virtual Bool Connect(Socket *socket, NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Data::Duration timeout) = 0;
 		virtual void ShutdownSend(Socket *socket) = 0;
+		virtual void ShutdownSocket(Socket *socket) = 0;
 
 		virtual Bool SocketGetReadBuff(Socket *socket, UInt32 *size) = 0;
 

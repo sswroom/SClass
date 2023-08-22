@@ -5,8 +5,6 @@
 #include "Data/Sort/ArtificialQuickSort.h"
 #include "IO/FileAnalyse/DWGFileAnalyse.h"
 #include "Sync/MutexUsage.h"
-#include "Sync/SimpleThread.h"
-#include "Sync/ThreadUtil.h"
 #include "Text/StringBuilderUTF8.h"
 
 class DWGFileAnalyseComparator : public Data::Comparator<IO::FileAnalyse::DWGFileAnalyse::PackInfo*>
@@ -31,13 +29,11 @@ public:
 	}
 };
 
-UInt32 __stdcall IO::FileAnalyse::DWGFileAnalyse::ParseThread(void *userObj)
+void __stdcall IO::FileAnalyse::DWGFileAnalyse::ParseThread(NotNullPtr<Sync::Thread> thread)
 {
-	IO::FileAnalyse::DWGFileAnalyse *me = (IO::FileAnalyse::DWGFileAnalyse*)userObj;
+	IO::FileAnalyse::DWGFileAnalyse *me = (IO::FileAnalyse::DWGFileAnalyse*)thread->GetUserObj();
 	UInt8 buff[256];
 	IO::FileAnalyse::DWGFileAnalyse::PackInfo *pack;
-	me->threadRunning = true;
-	me->threadStarted = true;
 	if (me->fileVer == 12 || me->fileVer == 14 || me->fileVer == 15)
 	{
 		me->fd->GetRealData(0, 256, BYTEARR(buff));
@@ -106,18 +102,13 @@ UInt32 __stdcall IO::FileAnalyse::DWGFileAnalyse::ParseThread(void *userObj)
 		Data::Sort::ArtificialQuickSort::Sort(me->packs.GetArrayList(mutUsage).Ptr(), &comparator);
 		mutUsage.EndUse();
 	}
-	me->threadRunning = false;
-	return 0;
 }
 
-IO::FileAnalyse::DWGFileAnalyse::DWGFileAnalyse(NotNullPtr<IO::StreamData> fd)
+IO::FileAnalyse::DWGFileAnalyse::DWGFileAnalyse(NotNullPtr<IO::StreamData> fd) : thread(ParseThread, this, CSTR("DWGFileAnalyse"))
 {
 	UInt8 buff[8];
 	this->fd = 0;
-	this->threadRunning = false;
 	this->pauseParsing = false;
-	this->threadToStop = false;
-	this->threadStarted = false;
 	this->fileVer = 0;
 	fd->GetRealData(0, 6, BYTEARR(buff));
 	if (ReadNInt32(buff) != *(Int32*)"AC10")
@@ -144,23 +135,12 @@ IO::FileAnalyse::DWGFileAnalyse::DWGFileAnalyse(NotNullPtr<IO::StreamData> fd)
 		return;
 	}
 	this->fd = fd->GetPartialData(0, fd->GetDataSize()).Ptr();
-	Sync::ThreadUtil::Create(ParseThread, this);
-	while (!this->threadStarted)
-	{
-		Sync::SimpleThread::Sleep(10);
-	}
+	this->thread.Start();
 }
 
 IO::FileAnalyse::DWGFileAnalyse::~DWGFileAnalyse()
 {
-	if (this->threadRunning)
-	{
-		this->threadToStop = true;
-		while (this->threadRunning)
-		{
-			Sync::SimpleThread::Sleep(10);
-		}
-	}
+	this->thread.Stop();
 	SDEL_CLASS(this->fd);
 	LIST_FREE_FUNC(&this->packs, MemFree);
 }
@@ -323,7 +303,7 @@ Bool IO::FileAnalyse::DWGFileAnalyse::IsError()
 
 Bool IO::FileAnalyse::DWGFileAnalyse::IsParsing()
 {
-	return this->threadRunning;
+	return this->thread.IsRunning();
 }
 
 Bool IO::FileAnalyse::DWGFileAnalyse::TrimPadding(Text::CStringNN outputFile)

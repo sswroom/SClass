@@ -112,24 +112,21 @@ Bool IO::Device::AXCAN::SendCommand(Text::CString cmd, UOSInt timeout)
 	return this->cmdResultCode == 0;
 }
 
-UInt32 __stdcall IO::Device::AXCAN::SerialThread(void *userObj)
+void __stdcall IO::Device::AXCAN::SerialThread(NotNullPtr<Sync::Thread> thread)
 {
-	IO::Device::AXCAN *me = (IO::Device::AXCAN*)userObj;
+	IO::Device::AXCAN *me = (IO::Device::AXCAN*)thread->GetUserObj();
 	NotNullPtr<IO::Stream> stm;
 	if (stm.Set(me->stm)) 
 	{
 		Text::UTF8Reader reader(stm);
 		me->ParseReader(&reader);
 	}
-	me->threadRunning = false;
-	return 0;
 }
 
-IO::Device::AXCAN::AXCAN(CANHandler *hdlr) : cmdEvent(false)
+IO::Device::AXCAN::AXCAN(CANHandler *hdlr) : cmdEvent(false), serialThread(SerialThread, this, CSTR("AXCAN"))
 {
 	this->hdlr = hdlr;
 	this->stm = 0;
-	this->threadRunning = false;
 	this->cmdResultCode = 0;
 }
 
@@ -153,17 +150,15 @@ Bool IO::Device::AXCAN::OpenSerialPort(UOSInt portNum, UInt32 serialBaudRate, CA
 
 Bool IO::Device::AXCAN::OpenStream(NotNullPtr<IO::Stream> stm, CANBitRate bitRate)
 {
+	if (this->stm != 0)
+		return false;
 	this->stm = stm.Ptr();
-	this->threadRunning = true;
-	Sync::ThreadHandle *hand = Sync::ThreadUtil::CreateWithHandle(SerialThread, this);
-	if (hand == 0)
+	if (!this->serialThread.Start())
 	{
-		this->threadRunning = false;
 		DEL_CLASS(this->stm);
 		this->stm = 0;
 		return false;
 	}
-	Sync::ThreadUtil::CloseHandle(hand);
 	if (this->SendSetCANBitRate(bitRate) && this->SendOpenCANPort(1, false, false) && this->SendSetReportMode(true, true, false))
 	{
 		return true;
@@ -186,10 +181,7 @@ void IO::Device::AXCAN::CloseSerialPort(Bool force)
 			this->SendCloseCANPort(1);
 		}
 		DEL_CLASS(this->stm);
-		while (this->threadRunning)
-		{
-			Sync::SimpleThread::Sleep(1);
-		}
+		this->serialThread.Stop();
 		this->stm = 0;
 	}
 }

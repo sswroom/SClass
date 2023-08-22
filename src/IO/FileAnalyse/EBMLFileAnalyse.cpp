@@ -4,7 +4,6 @@
 #include "IO/FileAnalyse/EBMLFileAnalyse.h"
 #include "Sync/MutexUsage.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/ThreadUtil.h"
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
 
@@ -358,7 +357,7 @@ void IO::FileAnalyse::EBMLFileAnalyse::ParseRange(UOSInt lev, UInt64 ofst, UInt6
 	UInt64 sz;
 	IO::FileAnalyse::EBMLFileAnalyse::PackInfo *pack;
 
-	while (ofst <= (endOfst - 3) && !this->threadToStop)
+	while (ofst <= (endOfst - 3) && !this->thread.IsStopping())
 	{
 		if (this->pauseParsing)
 		{
@@ -395,14 +394,10 @@ void IO::FileAnalyse::EBMLFileAnalyse::ParseRange(UOSInt lev, UInt64 ofst, UInt6
 	}
 }
 
-UInt32 __stdcall IO::FileAnalyse::EBMLFileAnalyse::ParseThread(void *userObj)
+void __stdcall IO::FileAnalyse::EBMLFileAnalyse::ParseThread(NotNullPtr<Sync::Thread> thread)
 {
-	IO::FileAnalyse::EBMLFileAnalyse *me = (IO::FileAnalyse::EBMLFileAnalyse*)userObj;
-	me->threadRunning = true;
-	me->threadStarted = true;
+	IO::FileAnalyse::EBMLFileAnalyse *me = (IO::FileAnalyse::EBMLFileAnalyse*)thread->GetUserObj();
 	me->ParseRange(0, 0, me->fd->GetDataSize());
-	me->threadRunning = false;
-	return 0;
 }
 
 UOSInt IO::FileAnalyse::EBMLFileAnalyse::GetFrameIndex(UOSInt lev, UInt64 ofst)
@@ -435,14 +430,11 @@ UOSInt IO::FileAnalyse::EBMLFileAnalyse::GetFrameIndex(UOSInt lev, UInt64 ofst)
 	return INVALID_INDEX;
 }
 
-IO::FileAnalyse::EBMLFileAnalyse::EBMLFileAnalyse(NotNullPtr<IO::StreamData> fd)
+IO::FileAnalyse::EBMLFileAnalyse::EBMLFileAnalyse(NotNullPtr<IO::StreamData> fd) : thread(ParseThread, this, CSTR("EBMLFileAnalyse"))
 {
 	UInt8 buff[256];
 	this->fd = 0;
-	this->threadRunning = false;
 	this->pauseParsing = false;
-	this->threadToStop = false;
-	this->threadStarted = false;
 	this->maxLev = 0;
 	fd->GetRealData(0, 256, BYTEARR(buff));
 	if (ReadMInt32(buff) != 0x1A45DFA3)
@@ -450,23 +442,12 @@ IO::FileAnalyse::EBMLFileAnalyse::EBMLFileAnalyse(NotNullPtr<IO::StreamData> fd)
 		return;
 	}
 	this->fd = fd->GetPartialData(0, fd->GetDataSize()).Ptr();
-	Sync::ThreadUtil::Create(ParseThread, this);
-	while (!this->threadStarted)
-	{
-		Sync::SimpleThread::Sleep(10);
-	}
+	this->thread.Start();
 }
 
 IO::FileAnalyse::EBMLFileAnalyse::~EBMLFileAnalyse()
 {
-	if (this->threadRunning)
-	{
-		this->threadToStop = true;
-		while (this->threadRunning)
-		{
-			Sync::SimpleThread::Sleep(10);
-		}
-	}
+	this->thread.Stop();
 	SDEL_CLASS(this->fd);
 	LIST_FREE_FUNC(&this->packs, MemFree);
 }
@@ -941,7 +922,7 @@ Bool IO::FileAnalyse::EBMLFileAnalyse::IsError()
 
 Bool IO::FileAnalyse::EBMLFileAnalyse::IsParsing()
 {
-	return this->threadRunning;
+	return this->thread.IsRunning();
 }
 
 Bool IO::FileAnalyse::EBMLFileAnalyse::TrimPadding(Text::CStringNN outputFile)

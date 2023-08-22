@@ -5,8 +5,6 @@
 #include "Media/EXIFData.h"
 #include "Media/ICCProfile.h"
 #include "Parser/FileParser/TIFFParser.h"
-#include "Sync/SimpleThread.h"
-#include "Sync/ThreadUtil.h"
 #include "Text/Encoding.h"
 #include "Text/StringBuilderUTF8.h"
 
@@ -104,16 +102,14 @@ Text::CString IO::FileAnalyse::JPGFileAnalyse::GetTagName(UInt8 tagType)
 	return CSTR_NULL;
 }
 
-UInt32 __stdcall IO::FileAnalyse::JPGFileAnalyse::ParseThread(void *userObj)
+void __stdcall IO::FileAnalyse::JPGFileAnalyse::ParseThread(NotNullPtr<Sync::Thread> thread)
 {
-	IO::FileAnalyse::JPGFileAnalyse *me = (IO::FileAnalyse::JPGFileAnalyse*)userObj;
+	IO::FileAnalyse::JPGFileAnalyse *me = (IO::FileAnalyse::JPGFileAnalyse*)thread->GetUserObj();
 	UInt64 dataSize;
 	UInt64 ofst;
 	UInt32 lastSize;
 	UInt8 tagHdr[4];
 	IO::FileAnalyse::JPGFileAnalyse::JPGTag *tag;
-	me->threadRunning = true;
-	me->threadStarted = true;
 	ofst = 2;
 	dataSize = me->fd->GetDataSize();
 	lastSize = 0;
@@ -124,7 +120,7 @@ UInt32 __stdcall IO::FileAnalyse::JPGFileAnalyse::ParseThread(void *userObj)
 	tag->tagType = 0xd8; //SOI
 	me->tags.Add(tag);
 
-	while (ofst < dataSize - 11 && !me->threadToStop)
+	while (ofst < dataSize - 11 && !thread->IsStopping())
 	{
 		if (me->fd->GetRealData(ofst, 4, BYTEARR(tagHdr)) != 4)
 			break;
@@ -180,44 +176,25 @@ UInt32 __stdcall IO::FileAnalyse::JPGFileAnalyse::ParseThread(void *userObj)
 			ofst += lastSize + 2;
 		}
 	}
-	
-	me->threadRunning = false;
-	return 0;
 }
 
-IO::FileAnalyse::JPGFileAnalyse::JPGFileAnalyse(NotNullPtr<IO::StreamData> fd)
+IO::FileAnalyse::JPGFileAnalyse::JPGFileAnalyse(NotNullPtr<IO::StreamData> fd) : thread(ParseThread, this, CSTR("JPGFileAnalyse"))
 {
 	UInt8 buff[256];
 	this->fd = 0;
-	this->threadRunning = false;
 	this->pauseParsing = false;
-	this->threadToStop = false;
-	this->threadStarted = false;
 	fd->GetRealData(0, 256, BYTEARR(buff));
 	if (buff[0] != 0xff || buff[1] != 0xd8)
 	{
 		return;
 	}
 	this->fd = fd->GetPartialData(0, fd->GetDataSize()).Ptr();
-
-	Sync::ThreadUtil::Create(ParseThread, this);
-	while (!this->threadStarted)
-	{
-		Sync::SimpleThread::Sleep(10);
-	}
+	this->thread.Start();
 }
 
 IO::FileAnalyse::JPGFileAnalyse::~JPGFileAnalyse()
 {
-	if (this->threadRunning)
-	{
-		this->threadToStop = true;
-		while (this->threadRunning)
-		{
-			Sync::SimpleThread::Sleep(10);
-		}
-	}
-
+	this->thread.Stop();
 	SDEL_CLASS(this->fd);
 	LIST_FREE_FUNC(&this->tags, MemFree);
 }
@@ -815,7 +792,7 @@ Bool IO::FileAnalyse::JPGFileAnalyse::IsError()
 
 Bool IO::FileAnalyse::JPGFileAnalyse::IsParsing()
 {
-	return this->threadRunning;
+	return this->thread.IsRunning();
 }
 
 Bool IO::FileAnalyse::JPGFileAnalyse::TrimPadding(Text::CStringNN outputFile)

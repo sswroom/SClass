@@ -36,6 +36,7 @@ namespace Net
 		virtual Bool Connect(Socket *socket, UInt32 ip, UInt16 port);
 		virtual Bool BindSocketIPv4(Socket *socket, const Char *ip, UInt16 port);
 		virtual void ShutdownSend(Socket *socket);
+		virtual void ShutdownSocket(Socket *socket);
 	};
 }
 #endif

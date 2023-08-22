@@ -5,6 +5,7 @@
 #include "IO/StreamData.h"
 #include "IO/FileAnalyse/IFileAnalyse.h"
 #include "Sync/Mutex.h"
+#include "Sync/Thread.h"
 #include "Text/StringBuilderUTF8.h"
 
 namespace IO
@@ -28,11 +29,9 @@ namespace IO
 			Data::ByteBuffer packetBuff;
 
 			Bool pauseParsing;
-			Bool threadRunning;
-			Bool threadToStop;
-			Bool threadStarted;
+			Sync::Thread thread;
 
-			static UInt32 __stdcall ParseThread(void *userObj);
+			static void __stdcall ParseThread(NotNullPtr<Sync::Thread> thread);
 		public:
 			SMTCFileAnalyse(NotNullPtr<IO::StreamData> fd);
 			virtual ~SMTCFileAnalyse();

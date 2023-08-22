@@ -181,22 +181,6 @@ UOSInt Sync::ThreadUtil::GetThreadCnt()
 #endif
 }
 
-Bool Sync::ThreadUtil::EnableInterrupt()
-{
-/*	struct sigaction act;
-	MemClear(&act, sizeof(act));
-	act.sa_handler = SIG_IGN;
-	sigfillset(&act.sa_mask);
-	act.sa_flags = 0;
-	return sigaction(SIGINT, &act, 0) == 0;*/
-	return false;
-}
-
-Bool Sync::ThreadUtil::Interrupt(ThreadHandle *threadId)
-{
-	return pthread_kill((pthread_t)threadId, SIGINT) == 0;
-}
-
 void Sync::ThreadUtil::SetPriority(ThreadPriority priority)
 {
 /*	Int32 threadPriority;

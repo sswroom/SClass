@@ -5,6 +5,7 @@
 #include "IO/StreamData.h"
 #include "IO/FileAnalyse/IFileAnalyse.h"
 #include "Sync/Mutex.h"
+#include "Sync/Thread.h"
 #include "Text/CString.h"
 #include "Text/StringBuilderUTF8.h"
 
@@ -28,11 +29,9 @@ namespace IO
 			UOSInt imageSize;
 
 			Bool pauseParsing;
-			Bool threadRunning;
-			Bool threadToStop;
-			Bool threadStarted;
-
-			static UInt32 __stdcall ParseThread(void *userObj);
+			Sync::Thread thread;
+\
+			static void __stdcall ParseThread(NotNullPtr<Sync::Thread> thread);
 		public:
 			EXEFileAnalyse(NotNullPtr<IO::StreamData> fd);
 			virtual ~EXEFileAnalyse();
