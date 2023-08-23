@@ -66,9 +66,9 @@ snd_pcm_state_t ALSARenderer_GetState(void *hand)
 	return state;
 }
 
-UInt32 __stdcall Media::ALSARenderer::PlayThread(void *obj)
+void __stdcall Media::ALSARenderer::PlayThread(NotNullPtr<Sync::Thread> thread)
 {
-	Media::ALSARenderer *me = (Media::ALSARenderer *)obj;
+	Media::ALSARenderer *me = (Media::ALSARenderer *)thread->GetUserObj();
 	Media::AudioFormat af;
 	Int32 i;
 	UInt32 refStart;
@@ -83,8 +83,6 @@ UInt32 __stdcall Media::ALSARenderer::PlayThread(void *obj)
 
 	{
 		Sync::Event evt;
-
-		me->threadInit = true;
 		me->audsrc->GetFormat(&af);
 		if (me->buffTime)
 		{
@@ -97,7 +95,6 @@ UInt32 __stdcall Media::ALSARenderer::PlayThread(void *obj)
 			readBuffLeng = minLeng;
 
 		me->clk->Start(audStartTime);
-		me->playing = true;
 		me->audsrc->Start(&evt, readBuffLeng);
 
 		if (me->dataConv)
@@ -183,7 +180,7 @@ UInt32 __stdcall Media::ALSARenderer::PlayThread(void *obj)
 
 		if (me->nonBlock)
 		{
-			while (!me->stopPlay)
+			while (!thread->IsStopping())
 			{
 				if (isFirst)
 				{
@@ -220,7 +217,7 @@ UInt32 __stdcall Media::ALSARenderer::PlayThread(void *obj)
 				{
 					if (buffSize[nextBlock] == 0)
 					{
-						me->stopPlay = true;
+						thread->BeginStop();
 						me->audsrc->Stop();
 						break;
 					}
@@ -289,16 +286,16 @@ UInt32 __stdcall Media::ALSARenderer::PlayThread(void *obj)
 					lastT = thisT;
 				}
 				
-				me->playEvt->Wait(1000);
+				thread->Wait(1000);
 			}
 		}
 		else
 		{
-			while (!me->stopPlay)
+			while (!thread->IsStopping())
 			{
 				if (buffSize[nextBlock] == 0)
 				{
-					me->stopPlay = true;
+					thread->BeginStop();
 					me->audsrc->Stop();
 					break;
 				}
@@ -347,8 +344,6 @@ UInt32 __stdcall Media::ALSARenderer::PlayThread(void *obj)
 			readBuff = 0;
 		}
 	}
-	me->playing = false;
-	return 0;
 }
 
 UInt32 Media::ALSARenderer::GetCurrTime(void *hand)
@@ -587,10 +582,10 @@ UTF8Char *Media::ALSARenderer::GetDeviceName(UTF8Char *buff, UOSInt devNo)
 
 void Media::ALSARenderer::OnEvent()
 {
-	this->playEvt->Set();
+	this->thread.Notify();
 }
 
-Media::ALSARenderer::ALSARenderer(const UTF8Char *devName)
+Media::ALSARenderer::ALSARenderer(const UTF8Char *devName) : thread(PlayThread, this, CSTR("ALSARenderer"))
 {
 	if (devName == 0)
 	{
@@ -619,7 +614,6 @@ Media::ALSARenderer::ALSARenderer(const UTF8Char *devName)
 	}
 	this->audsrc = 0;
 	this->resampler = 0;
-	this->playing = false;
 	this->endHdlr = 0;
 	this->buffTime = 500;
 	this->hand = 0;
@@ -646,7 +640,7 @@ Bool Media::ALSARenderer::IsError()
 Bool Media::ALSARenderer::BindAudio(Media::IAudioSource *audsrc)
 {
 	Media::AudioFormat fmt;
-	if (playing)
+	if (this->thread.IsRunning())
 	{
 		Stop();
 	}
@@ -656,7 +650,6 @@ Bool Media::ALSARenderer::BindAudio(Media::IAudioSource *audsrc)
 		this->audsrc = 0;
 		SDEL_CLASS(this->resampler);
 		this->hand = 0;
-		DEL_CLASS(playEvt);
 	}
 	if (audsrc == 0)
 		return false;
@@ -790,13 +783,12 @@ Bool Media::ALSARenderer::BindAudio(Media::IAudioSource *audsrc)
 	{
 		this->audsrc = audsrc;
 	}
-	NEW_CLASS(this->playEvt, Sync::Event());
 	return true;
 }
 
 void Media::ALSARenderer::AudioInit(Media::RefClock *clk)
 {
-	if (playing)
+	if (this->thread.IsRunning())
 		return;
 	if (this->audsrc == 0)
 		return;
@@ -805,38 +797,28 @@ void Media::ALSARenderer::AudioInit(Media::RefClock *clk)
 
 void Media::ALSARenderer::Start()
 {
-	if (playing)
+	if (this->thread.IsRunning())
 		return;
 	if (this->audsrc == 0)
 		return;
-	threadInit = false;
-	stopPlay = false;
-	Sync::ThreadUtil::Create(PlayThread, this);
-	while (!threadInit)
-	{
-		Sync::SimpleThread::Sleep(10);
-	}
+	this->thread.Start();
 }
 
 void Media::ALSARenderer::Stop()
 {
-	stopPlay = true;
-	if (!playing)
+	if (!this->thread.IsRunning())
 		return;
-	playEvt->Set();
+	this->thread.BeginStop();
 	if (this->audsrc)
 	{
 		this->audsrc->Stop();
 	}
-	while (playing)
-	{
-		Sync::SimpleThread::Sleep(10);
-	}
+	this->thread.WaitForEnd();
 }
 
 Bool Media::ALSARenderer::IsPlaying()
 {
-	return this->playing;
+	return this->thread.IsRunning();
 }
 
 void Media::ALSARenderer::SetEndNotify(EndNotifier endHdlr, void *endHdlrObj)
@@ -935,7 +917,7 @@ void Media::ALSARenderer::SetDeviceVolume(Int32 volume)
 void Media::ALSARenderer::SetBufferTime(UInt32 ms)
 {
 	this->buffTime = ms;
-	if (!this->playing && this->hand && this->audsrc)
+	if (!this->thread.IsRunning() && this->hand && this->audsrc)
 	{
 		this->SetHWParams(this->audsrc, this->hand);
 	}

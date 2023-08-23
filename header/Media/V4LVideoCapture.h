@@ -2,6 +2,7 @@
 #define _SM_MEDIA_V4LVIDEOCAPTURE
 #include "Data/ArrayList.h"
 #include "Media/IVideoCapture.h"
+#include "Sync/Thread.h"
 #include "Text/StringBuilderUTF8.h"
 
 namespace Media
@@ -18,11 +19,9 @@ namespace Media
 		FrameCallback cb;
 		FrameChangeCallback fcCb;
 		void *userData;
-		Bool threadStarted;
-		Bool threadRunning;
-		Bool threadToStop;
+		Sync::Thread thread;
 
-		static UInt32 __stdcall PlayThread(void *userObj);
+		static void __stdcall PlayThread(NotNullPtr<Sync::Thread> thread);
 	public:
 		V4LVideoCapture(UOSInt devId);
 		virtual ~V4LVideoCapture();

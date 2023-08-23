@@ -8,8 +8,6 @@
 #include "Math/Math.h"
 #include "Media/AudioFilter/DTMFDecoder.h"
 #include "Sync/MutexUsage.h"
-#include "Sync/SimpleThread.h"
-#include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 #include "Text/UTF8Writer.h"
@@ -17,9 +15,9 @@
 #define FFTAVG 1
 //#define SHOWLOG
 
-UInt32 __stdcall Media::AudioFilter::DTMFDecoder::CalcThread(void *userObj)
+void __stdcall Media::AudioFilter::DTMFDecoder::CalcThread(NotNullPtr<Sync::Thread> thread)
 {
-	Media::AudioFilter::DTMFDecoder *me = (Media::AudioFilter::DTMFDecoder *)userObj;
+	Media::AudioFilter::DTMFDecoder *me = (Media::AudioFilter::DTMFDecoder *)thread->GetUserObj();
 
 	Double *avgData = MemAlloc(Double, me->sampleCnt);
 	UInt8 *tmpBuff = MemAlloc(UInt8, me->sampleBuffSize);
@@ -69,7 +67,6 @@ UInt32 __stdcall Media::AudioFilter::DTMFDecoder::CalcThread(void *userObj)
 	minAbsVol = 0;
 
 	{
-		me->threadRunning = true;
 #ifdef SHOWLOG
 		Manage::HiResClock clk;
 		IO::FileStream debugFS(CSTR("DTMFDecoder.log"), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
@@ -77,7 +74,7 @@ UInt32 __stdcall Media::AudioFilter::DTMFDecoder::CalcThread(void *userObj)
 		Text::StringBuilderUTF8 sb;
 #endif
 		Math::FFTCalc fft(me->sampleCnt, Math::FFTCalc::WT_BLACKMANN_HARRIS);
-		while (!me->threadToStop)
+		while (!thread->IsStopping())
 		{
 			if (me->calcReady)
 			{
@@ -420,13 +417,11 @@ UInt32 __stdcall Media::AudioFilter::DTMFDecoder::CalcThread(void *userObj)
 					}
 				}
 			}
-			me->threadEvt.Wait(1000);
+			thread->Wait(1000);
 		}
 		MemFree(avgData);
 		MemFree(tmpBuff);
 	}
-	me->threadRunning = false;
-	return 0;
 }
 
 void Media::AudioFilter::DTMFDecoder::ResetStatus()
@@ -438,7 +433,7 @@ void Media::AudioFilter::DTMFDecoder::ResetStatus()
 	this->currTone = 0;
 }
 
-Media::AudioFilter::DTMFDecoder::DTMFDecoder(Media::IAudioSource *audSrc, UOSInt calcInt) : Media::IAudioFilter(audSrc)
+Media::AudioFilter::DTMFDecoder::DTMFDecoder(Media::IAudioSource *audSrc, UOSInt calcInt) : Media::IAudioFilter(audSrc), thread(CalcThread, this, CSTR("DTMFDecoder"))
 {
 	UOSInt i;
 	Media::AudioFormat fmt;
@@ -461,20 +456,13 @@ Media::AudioFilter::DTMFDecoder::DTMFDecoder(Media::IAudioSource *audSrc, UOSInt
 	this->frequency = fmt.frequency;
 	this->toneChgHdlr = 0;
 	this->toneChgObj = 0;
-	this->threadToStop = false;
-	this->threadRunning = false;
-	Sync::ThreadUtil::Create(CalcThread, this);
+	this->thread.Start();
 	this->ResetStatus();
 }
 
 Media::AudioFilter::DTMFDecoder::~DTMFDecoder()
 {
-	this->threadToStop = true;
-	this->threadEvt.Set();
-	while (this->threadRunning)
-	{
-		Sync::SimpleThread::Sleep(10);
-	}
+	this->thread.Stop();
 	MemFree(this->sampleBuff);
 	MemFree(this->calcBuff);
 }
@@ -524,7 +512,7 @@ UOSInt Media::AudioFilter::DTMFDecoder::ReadBlock(Data::ByteArray blk)
 		}
 		this->calcReady = true;
 		mutUsage.EndUse();
-		this->threadEvt.Set();
+		this->thread.Notify();
 		this->calcLeft = this->calcInt;
 		samples = sizeLeft / this->align;
 	}

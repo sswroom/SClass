@@ -74,6 +74,8 @@ Media/AudioDevice.h: ../../src/Media/AudioDeviceL.cpp
 @AudioDevice.o
 Media/MonitorSurfaceMgrFactory.h: ../../src/Media/MonitorSurfaceMgrFactoryLinux.cpp
 @MonitorSurfaceMgrFactory.o
+Media/PulseAudioRenderer.h: ../../src/Media/PulseAudioRenderer.cpp
+@PulseAudioRenderer.o
 Media/DRMMonitorSurfaceMgr.h: ../../src/Media/DRMMonitorSurfaceMgr.cpp
 @DRMMonitorSurfaceMgr.o
 Media/DRMSurface.h: ../../src/Media/DRMSurface.cpp
@@ -193,6 +195,9 @@ ALSARenderer.o: ../../src/Media/ALSARenderer.cpp
 !-lasound
 AudioDevice.o: ../../src/Media/AudioDeviceL.cpp
 MonitorSurfaceMgrFactory.o: ../../src/Media/MonitorSurfaceMgrFactoryLinux.cpp
+PulseAudioRenderer.o: ../../src/Media/PulseAudioRenderer.cpp
+$`pkg-config --cflags libpulse`
+!`pkg-config --libs libpulse`
 DRMMonitorSurfaceMgr.o: ../../src/Media/DRMMonitorSurfaceMgr.cpp
 $`pkg-config --cflags libdrm`
 !`pkg-config --libs libdrm`

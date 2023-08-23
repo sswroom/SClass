@@ -2,7 +2,7 @@
 #define _SM_NET_NTPSERVER
 #include "Data/Timestamp.h"
 #include "Net/UDPServer.h"
-#include "Sync/Event.h"
+#include "Sync/Thread.h"
 #include "Text/String.h"
 
 namespace Net
@@ -17,13 +17,11 @@ namespace Net
 		NotNullPtr<Text::String> timeServer;
 		Int64 refTime;
 		Int64 timeDiff;
-		Bool threadRunning;
-		Bool threadToStop;
-		Sync::Event *evt;
+		Sync::Thread thread;
 		Net::NTPClient *cli;
 
 		static void __stdcall PacketHdlr(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData);
-		static UInt32 __stdcall CheckThread(void *userObj);
+		static void __stdcall CheckThread(NotNullPtr<Sync::Thread> thread);
 		void InitServer(NotNullPtr<Net::SocketFactory> sockf, UInt16 port);
 	public:
 		NTPServer(NotNullPtr<Net::SocketFactory> sockf, UInt16 port, IO::LogTool *log, Text::CString timeServer);

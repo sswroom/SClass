@@ -55,67 +55,62 @@ void __stdcall Net::NTPServer::PacketHdlr(NotNullPtr<const Net::SocketUtil::Addr
 	}
 }
 
-UInt32 __stdcall Net::NTPServer::CheckThread(void *userObj)
+void __stdcall Net::NTPServer::CheckThread(NotNullPtr<Sync::Thread> thread)
 {
-	Net::NTPServer *me = (Net::NTPServer*)userObj;
+	Net::NTPServer *me = (Net::NTPServer*)thread->GetUserObj();
 	Net::SocketUtil::AddressInfo addr;
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
+	Data::DateTime dt;
+	Text::StringBuilderUTF8 sb;
+	while (!thread->IsStopping())
 	{
-		me->threadRunning = true;
-		Data::DateTime dt;
-		Text::StringBuilderUTF8 sb;
-		while (!me->threadToStop)
+		if (me->sockf->DNSResolveIP(me->timeServer->ToCString(), addr))
 		{
-			if (me->sockf->DNSResolveIP(me->timeServer->ToCString(), addr))
+			if (me->cli->GetServerTime(addr, Net::NTPClient::GetDefaultPort(), dt))
 			{
-				if (me->cli->GetServerTime(addr, Net::NTPClient::GetDefaultPort(), dt))
+				if (dt.SetAsComputerTime())
 				{
-					if (dt.SetAsComputerTime())
-					{
-						me->refTime = dt.ToTicks();
-						me->timeDiff = 0;
-						sb.ClearStr();
-						sb.AppendC(UTF8STRC("NTP: Time updated from Time Server as "));
-						dt.ToLocalTime();
-						sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
-						sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
-						me->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Action);
-					}
-					else
-					{
-						me->refTime = dt.ToTicks();
-						sb.ClearStr();
-						sb.AppendC(UTF8STRC("NTP: Time update to "));
-						dt.ToLocalTime();
-						sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
-						sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
-						sb.AppendC(UTF8STRC(" failed"));
-						me->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Error);
-						dt.SetCurrTimeUTC();
-						me->timeDiff = me->refTime - dt.ToTicks();
-					}
+					me->refTime = dt.ToTicks();
+					me->timeDiff = 0;
+					sb.ClearStr();
+					sb.AppendC(UTF8STRC("NTP: Time updated from Time Server as "));
+					dt.ToLocalTime();
+					sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
+					sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
+					me->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Action);
 				}
 				else
 				{
-					if (me->log)
-					{
-						me->log->LogMessage(CSTR("NTP: Requesting to Time Server"), IO::LogHandler::LogLevel::Error);
-					}
+					me->refTime = dt.ToTicks();
+					sb.ClearStr();
+					sb.AppendC(UTF8STRC("NTP: Time update to "));
+					dt.ToLocalTime();
+					sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
+					sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
+					sb.AppendC(UTF8STRC(" failed"));
+					me->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Error);
+					dt.SetCurrTimeUTC();
+					me->timeDiff = me->refTime - dt.ToTicks();
 				}
 			}
 			else
 			{
 				if (me->log)
 				{
-					me->log->LogMessage(CSTR("NTP: Error in resolving time server"), IO::LogHandler::LogLevel::Error);
+					me->log->LogMessage(CSTR("NTP: Requesting to Time Server"), IO::LogHandler::LogLevel::Error);
 				}
 			}
-			me->evt->Wait(60000);
 		}
+		else
+		{
+			if (me->log)
+			{
+				me->log->LogMessage(CSTR("NTP: Error in resolving time server"), IO::LogHandler::LogLevel::Error);
+			}
+		}
+		thread->Wait(60000);
 	}
-	me->threadRunning = false;
-	return 0;
 }
 
 void Net::NTPServer::InitServer(NotNullPtr<Net::SocketFactory> sockf, UInt16 port)
@@ -132,42 +127,26 @@ void Net::NTPServer::InitServer(NotNullPtr<Net::SocketFactory> sockf, UInt16 por
 	}
 }
 
-Net::NTPServer::NTPServer(NotNullPtr<Net::SocketFactory> sockf, UInt16 port, IO::LogTool *log, Text::CString timeServer)
+Net::NTPServer::NTPServer(NotNullPtr<Net::SocketFactory> sockf, UInt16 port, IO::LogTool *log, Text::CString timeServer) : thread(CheckThread, this, CSTR("NTPServer"))
 {
 	this->sockf = sockf;
 	this->svr = 0;
 	this->log = log;
 	this->timeServer = Text::String::New(timeServer);
 	this->refTime = 0;
-	this->threadRunning = false;
-	this->threadToStop = false;
-	NEW_CLASS(this->evt, Sync::Event(true));
 	this->cli = 0;
 	InitServer(sockf, port);
 	if (this->svr)
 	{
 		NEW_CLASS(this->cli, Net::NTPClient(this->sockf, 0));
-		Sync::ThreadUtil::Create(CheckThread, this);
-		while (!this->threadRunning)
-		{
-			Sync::SimpleThread::Sleep(1);
-		}
+		this->thread.Start();
 	}
 }
 
 Net::NTPServer::~NTPServer()
 {
 	SDEL_CLASS(this->svr);
-	if (this->threadRunning)
-	{
-		this->threadToStop = true;
-		this->evt->Set();
-		while (this->threadRunning)
-		{
-			Sync::SimpleThread::Sleep(1);
-		}
-	}
-	DEL_CLASS(this->evt);
+	this->thread.Stop();
 	SDEL_CLASS(this->cli);
 	this->timeServer->Release();
 }

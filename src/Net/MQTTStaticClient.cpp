@@ -7,12 +7,10 @@
 #include "Sync/ThreadUtil.h"
 #include "Text/StringBuilderUTF8.h"
 
-UInt32 __stdcall Net::MQTTStaticClient::KAThread(void *userObj)
+void __stdcall Net::MQTTStaticClient::KAThread(NotNullPtr<Sync::Thread> thread)
 {
-	Net::MQTTStaticClient *me = (Net::MQTTStaticClient*)userObj;
-	Sync::ThreadUtil::SetName(CSTR("MQTTStaticCliKA"));
-	me->kaRunning = true;
-	while (!me->kaToStop)
+	Net::MQTTStaticClient *me = (Net::MQTTStaticClient*)thread->GetUserObj();
+	while (!thread->IsStopping())
 	{
 		Sync::MutexUsage mutUsage(me->connMut);
 		if (me->conn)
@@ -27,16 +25,14 @@ UInt32 __stdcall Net::MQTTStaticClient::KAThread(void *userObj)
 			if (me->errLog) me->errLog->WriteLineC(UTF8STRC("MQTT: Reconnecting to server"));
 			me->Connect();
 		}
-		me->kaEvt.Wait((UOSInt)me->kaSeconds * 500);
+		thread->Wait((UOSInt)me->kaSeconds * 500);
 	}
-	me->kaRunning = false;
-	return 0;
 }
 
 void __stdcall Net::MQTTStaticClient::OnDisconnect(void *userObj)
 {
 	Net::MQTTStaticClient *me = (Net::MQTTStaticClient*)userObj;
-	if (!me->kaRunning)
+	if (!me->kaThread.IsRunning())
 	{
 		return;
 	}
@@ -144,8 +140,6 @@ UInt16 Net::MQTTStaticClient::GetNextPacketId()
 
 void Net::MQTTStaticClient::Init(NotNullPtr<Net::SocketFactory> sockf, Net::MQTTConn::PublishMessageHdlr hdlr, void *userObj, IO::Writer *errLog)
 {
-	this->kaRunning = false;
-	this->kaToStop = false;
 	this->kaSeconds = 30;
 	this->conn = 0;
 	this->errLog = errLog;
@@ -168,12 +162,12 @@ void Net::MQTTStaticClient::Init(NotNullPtr<Net::SocketFactory> sockf, Net::MQTT
 	this->webSocket = false;
 }
 
-Net::MQTTStaticClient::MQTTStaticClient(NotNullPtr<Net::SocketFactory> sockf, Net::MQTTConn::PublishMessageHdlr hdlr, void *userObj, IO::Writer *errLog)
+Net::MQTTStaticClient::MQTTStaticClient(NotNullPtr<Net::SocketFactory> sockf, Net::MQTTConn::PublishMessageHdlr hdlr, void *userObj, IO::Writer *errLog) : kaThread(KAThread, this, CSTR("MQTTStaticCliKA"))
 {
 	this->Init(sockf, hdlr, userObj, errLog);
 }
 
-Net::MQTTStaticClient::MQTTStaticClient(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::CString host, UInt16 port, Text::CString username, Text::CString password, Bool webSocket, Net::MQTTConn::PublishMessageHdlr hdlr, void *userObj, UInt16 kaSeconds, IO::Writer *errLog)
+Net::MQTTStaticClient::MQTTStaticClient(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::CString host, UInt16 port, Text::CString username, Text::CString password, Bool webSocket, Net::MQTTConn::PublishMessageHdlr hdlr, void *userObj, UInt16 kaSeconds, IO::Writer *errLog) : kaThread(KAThread, this, CSTR("MQTTStaticCliKA"))
 {
 	this->Init(sockf, hdlr, userObj, errLog);
 	this->ssl = ssl;
@@ -185,25 +179,12 @@ Net::MQTTStaticClient::MQTTStaticClient(NotNullPtr<Net::SocketFactory> sockf, Ne
 	this->webSocket = webSocket;
 
 	this->Connect();
-
-	Sync::ThreadUtil::Create(KAThread, this);
-	while (!this->kaRunning)
-	{
-		Sync::SimpleThread::Sleep(10);
-	}
+	this->kaThread.Start();
 }
 
 Net::MQTTStaticClient::~MQTTStaticClient()
 {
-	if (this->kaRunning)
-	{
-		this->kaToStop = true;
-		this->kaEvt.Set();
-		while (this->kaRunning)
-		{
-			Sync::SimpleThread::Sleep(10);
-		}
-	}
+	this->kaThread.Stop();
 	Sync::MutexUsage mutUsage(this->connMut);
 	SDEL_CLASS(this->conn);
 	mutUsage.EndUse();
@@ -216,7 +197,7 @@ Net::MQTTStaticClient::~MQTTStaticClient()
 
 Bool Net::MQTTStaticClient::IsStarted()
 {
-	return this->kaRunning;
+	return this->kaThread.IsRunning();
 }
 
 Bool Net::MQTTStaticClient::ChannelFailure()

@@ -1,6 +1,7 @@
 #ifndef _SM_IO_RAWBTSCANNER
 #define _SM_IO_RAWBTSCANNER
 #include "IO/BTScanner.h"
+#include "Sync/Thread.h"
 
 namespace IO
 {
@@ -10,11 +11,12 @@ namespace IO
 		struct ClassData;
 		
 		struct ClassData *clsData;
+		Sync::Thread thread;
 		Data::FastMap<UInt64, IO::BTScanLog::ScanRecord3*> pubRecMap;
 		Data::FastMap<UInt64, IO::BTScanLog::ScanRecord3*> randRecMap;
 		Sync::Mutex recMut;
 
-		static __stdcall UInt32 RecvThread(void *userObj);
+		static void __stdcall RecvThread(NotNullPtr<Sync::Thread> thread);
 		void FreeRec(IO::BTScanLog::ScanRecord3* rec);
 	public:
 		RAWBTScanner(Bool noCtrl);

@@ -68,16 +68,16 @@ void __stdcall SSWR::AVIRead::AVIRHTTPTestForm::OnStartClicked(void *userObj)
 	me->connCnt = 0;
 	me->failCnt = 0;
 	me->threadCurrCnt = 0;
-	me->threadStatus = MemAlloc(ThreadStatus, me->threadCnt);
+	me->threads = MemAlloc(Sync::Thread*, me->threadCnt);
 	me->clk.Start();
 	i = me->threadCnt;
 	while (i-- > 0)
 	{
-		me->threadStatus[i].me = me;
-		me->threadStatus[i].threadRunning = false;
-		me->threadStatus[i].threadToStop = false;
-		NEW_CLASS(me->threadStatus[i].evt, Sync::Event(true));
-		Sync::ThreadUtil::Create(ProcessThread, &me->threadStatus[i]);
+		sb.ClearStr();
+		sb.AppendC(UTF8STRC("HTTPTest"));
+		sb.AppendUOSInt(i);
+		NEW_CLASS(me->threads[i], Sync::Thread(ProcessThread, me, sb.ToCString()));
+		me->threads[i]->Start();
 	}
 }
 
@@ -115,9 +115,9 @@ void __stdcall SSWR::AVIRead::AVIRHTTPTestForm::OnURLClearClicked(void *userObj)
 	me->ClearURLs();
 }
 
-UInt32 __stdcall SSWR::AVIRead::AVIRHTTPTestForm::ProcessThread(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRHTTPTestForm::ProcessThread(NotNullPtr<Sync::Thread> thread)
 {
-	ThreadStatus *status = (ThreadStatus*)userObj;
+	SSWR::AVIRead::AVIRHTTPTestForm *me = (SSWR::AVIRead::AVIRHTTPTestForm*)thread->GetUserObj();
 //	UInt8 buff[2048];
 	Text::String *url;
 	Double timeDNS;
@@ -129,26 +129,25 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPTestForm::ProcessThread(void *userObj)
 	UOSInt i;
 	UOSInt j;
 	UInt32 cnt;
-	Sync::Interlocked::Increment(&status->me->threadCurrCnt);
-	status->threadRunning = true;
-	if (status->me->kaConn)
+	Sync::Interlocked::Increment(&me->threadCurrCnt);
+	if (me->kaConn)
 	{
-		NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(status->me->sockf, status->me->ssl, CSTR_NULL, true, false);
-		while (!status->threadToStop)
+		NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(me->sockf, me->ssl, CSTR_NULL, true, false);
+		while (!thread->IsStopping())
 		{
-			url = status->me->GetNextURL();
+			url = me->GetNextURL();
 			if (url == 0)
 				break;
-			if (cli->Connect(url->ToCString(), status->me->method, &timeDNS, &timeConn, false))
+			if (cli->Connect(url->ToCString(), me->method, &timeDNS, &timeConn, false))
 			{
-				if (status->me->enableGZip)
+				if (me->enableGZip)
 				{
 					cli->AddHeaderC(CSTR("Accept-Encoding"), CSTR("gzip, deflate"));
 				}
 				cli->AddHeaderC(CSTR("Connection"), CSTR("keep-alive"));
-				if (status->me->method == Net::WebUtil::RequestMethod::HTTP_POST)
+				if (me->method == Net::WebUtil::RequestMethod::HTTP_POST)
 				{
-					i = status->me->postSize;
+					i = me->postSize;
 					sptr = Text::StrUOSInt(buff, i);
 					cli->AddHeaderC(CSTR("Content-Length"), {buff, (UOSInt)(sptr - buff)});
 					while (i >= 2048)
@@ -168,7 +167,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPTestForm::ProcessThread(void *userObj)
 				cli->EndRequest(&timeReq, &timeResp);
 				if (timeResp >= 0)
 				{
-					Sync::Interlocked::Increment(&status->me->connCnt);
+					Sync::Interlocked::Increment(&me->connCnt);
 					if (timeResp > 0.5)
 					{
 						if (timeConn > 0.5)
@@ -184,34 +183,34 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPTestForm::ProcessThread(void *userObj)
 				}
 				else
 				{
-					Sync::Interlocked::Increment(&status->me->failCnt);
+					Sync::Interlocked::Increment(&me->failCnt);
 				}
 				if (cli->IsError())
 				{
 					cli.Delete();
-					cli = Net::HTTPClient::CreateClient(status->me->sockf, status->me->ssl, CSTR_NULL, true, url->StartsWith(UTF8STRC("https://")));
+					cli = Net::HTTPClient::CreateClient(me->sockf, me->ssl, CSTR_NULL, true, url->StartsWith(UTF8STRC("https://")));
 				}
 			}
 			else
 			{
 				cli.Delete();
-				cli = Net::HTTPClient::CreateClient(status->me->sockf, status->me->ssl, CSTR_NULL, true, url->StartsWith(UTF8STRC("https://")));
-				Sync::Interlocked::Increment(&status->me->failCnt);
+				cli = Net::HTTPClient::CreateClient(me->sockf, me->ssl, CSTR_NULL, true, url->StartsWith(UTF8STRC("https://")));
+				Sync::Interlocked::Increment(&me->failCnt);
 			}
 		}
 		cli.Delete();
 	}
 	else
 	{
-		while (!status->threadToStop)
+		while (!thread->IsStopping())
 		{
-			url = status->me->GetNextURL();
+			url = me->GetNextURL();
 			if (url == 0)
 				break;
-			NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(status->me->sockf, status->me->ssl, CSTR_NULL, true, url->StartsWith(UTF8STRC("https://")));
+			NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(me->sockf, me->ssl, CSTR_NULL, true, url->StartsWith(UTF8STRC("https://")));
 			if (cli->Connect(url->ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, &timeDNS, &timeConn, false))
 			{
-				if (status->me->enableGZip)
+				if (me->enableGZip)
 				{
 					cli->AddHeaderC(CSTR("Accept-Encoding"), CSTR("gzip, deflate"));
 				}
@@ -219,28 +218,25 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPTestForm::ProcessThread(void *userObj)
 				cli->EndRequest(&timeReq, &timeResp);
 				if (timeResp >= 0)
 				{
-					Sync::Interlocked::Increment(&status->me->connCnt);
+					Sync::Interlocked::Increment(&me->connCnt);
 				}
 				else
 				{
-					Sync::Interlocked::Increment(&status->me->failCnt);
+					Sync::Interlocked::Increment(&me->failCnt);
 				}
 			}
 			else
 			{
-				Sync::Interlocked::Increment(&status->me->failCnt);
+				Sync::Interlocked::Increment(&me->failCnt);
 			}
 			cli.Delete();
 		}
 	}
-	status->threadToStop = false;
-	status->threadRunning = false;
-	cnt = Sync::Interlocked::Decrement(&status->me->threadCurrCnt);
+	cnt = Sync::Interlocked::Decrement(&me->threadCurrCnt);
 	if (cnt == 0)
 	{
-		status->me->t = status->me->clk.GetTimeDiff();
+		me->t = me->clk.GetTimeDiff();
 	}
-	return 0;
 }
 
 void __stdcall SSWR::AVIRead::AVIRHTTPTestForm::OnTimerTick(void *userObj)
@@ -267,23 +263,22 @@ void SSWR::AVIRead::AVIRHTTPTestForm::StopThreads()
 		UOSInt i = this->threadCnt;
 		while (i-- > 0)
 		{
-			this->threadStatus[i].threadToStop = true;
-			this->threadStatus[i].evt->Set();
+			this->threads[i]->BeginStop();
 		}
-		while (this->threadCurrCnt > 0)
+		while (i-- > 0)
 		{
-			Sync::SimpleThread::Sleep(10);
+			this->threads[i]->WaitForEnd();
 		}
 	}
-	if (this->threadStatus)
+	if (this->threads)
 	{
 		UOSInt i = this->threadCnt;
 		while (i-- > 0)
 		{
-			DEL_CLASS(this->threadStatus[i].evt);
+			DEL_CLASS(this->threads[i]);
 		}
-		MemFree(this->threadStatus);
-		this->threadStatus = 0;
+		MemFree(this->threads);
+		this->threads = 0;
 		this->threadCnt = 0;
 	}
 }
@@ -328,7 +323,7 @@ SSWR::AVIRead::AVIRHTTPTestForm::AVIRHTTPTestForm(UI::GUIClientControl *parent, 
 	this->core = core;
 	this->sockf = core->GetSocketFactory();
 	this->ssl = Net::SSLEngineFactory::Create(this->sockf, true);
-	this->threadStatus = 0;
+	this->threads = 0;
 	this->connCurrIndex = 0;
 	this->connLeftCnt = 0;
 	this->threadCnt = 0;

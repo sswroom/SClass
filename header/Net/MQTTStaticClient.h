@@ -6,6 +6,7 @@
 #include "Net/MQTTConn.h"
 #include "Sync/Event.h"
 #include "Sync/Mutex.h"
+#include "Sync/Thread.h"
 
 namespace Net
 {
@@ -15,9 +16,7 @@ namespace Net
 		Sync::Mutex connMut;
 		Net::MQTTConn *conn;
 		UInt16 kaSeconds;
-		Bool kaRunning;
-		Bool kaToStop;
-		Sync::Event kaEvt;
+		Sync::Thread kaThread;
 		UInt16 packetId;
 		Sync::Mutex packetIdMut;
 		IO::Writer *errLog;
@@ -39,7 +38,7 @@ namespace Net
 		Bool webSocket;
 		Bool autoReconn;
 
-		static UInt32 __stdcall KAThread(void *userObj);
+		static void __stdcall KAThread(NotNullPtr<Sync::Thread> thread);
 		static void __stdcall OnDisconnect(void *user);
 		void Connect();
 		UInt16 GetNextPacketId();

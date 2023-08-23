@@ -2,16 +2,25 @@
 #include "MyMemory.h"
 #include "Media/ALSARenderer.h"
 #include "Media/AudioDevice.h"
+#include "Media/PulseAudioRenderer.h"
 #include "Text/MyString.h"
 
 UOSInt Media::AudioDevice::GetDeviceCount()
 {
-	return Media::ALSARenderer::GetDeviceCount();
+	return Media::PulseAudioRenderer::GetDeviceCount() + Media::ALSARenderer::GetDeviceCount();
 }
 
 UTF8Char *Media::AudioDevice::GetDeviceName(UTF8Char *buff, UOSInt devNo)
 {
-	return Media::ALSARenderer::GetDeviceName(Text::StrConcatC(buff, UTF8STRC("ALSA: ")), devNo);
+	UOSInt paCount = Media::PulseAudioRenderer::GetDeviceCount();
+	if (devNo >= paCount)
+	{
+		return Media::ALSARenderer::GetDeviceName(Text::StrConcatC(buff, UTF8STRC("ALSA: ")), devNo - paCount);
+	}
+	else
+	{
+		return Media::ALSARenderer::GetDeviceName(Text::StrConcatC(buff, UTF8STRC("PA: ")), devNo);
+	}
 }
 
 Media::IAudioRenderer *Media::AudioDevice::CreateRenderer(Text::CString devName)
@@ -20,6 +29,10 @@ Media::IAudioRenderer *Media::AudioDevice::CreateRenderer(Text::CString devName)
 	if (devName.StartsWith(UTF8STRC("ALSA: ")))
 	{
 		NEW_CLASS(renderer, Media::ALSARenderer(devName.v + 6));
+	}
+	else if (devName.StartsWith(UTF8STRC("PA: ")))
+	{
+//		NEW_CLASS(renderer, Media::ALSARenderer(devName.v + 6));
 	}
 	return renderer;
 }
@@ -50,6 +63,19 @@ Bool Media::AudioDevice::AddDevice(Text::CString devName)
 			this->rendererList.Add(renderer);
 			ret = true;
 		}
+	}
+	else if (devName.StartsWith(UTF8STRC("PA: ")))
+	{
+/*		NEW_CLASS(renderer, Media::ALSARenderer(devName.v + 6));
+		if (renderer->IsError())
+		{
+			DEL_CLASS(renderer);
+		}
+		else
+		{
+			this->rendererList.Add(renderer);
+			ret = true;
+		}*/
 	}
 	return ret;
 }

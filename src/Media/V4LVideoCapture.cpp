@@ -4,8 +4,6 @@
 #include "Manage/HiResClock.h"
 #include "Math/Math.h"
 #include "Media/V4LVideoCapture.h"
-#include "Sync/SimpleThread.h"
-#include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 #include <errno.h>
 #include <fcntl.h>
@@ -15,9 +13,9 @@
 
 #include <stdio.h>
 
-UInt32 __stdcall Media::V4LVideoCapture::PlayThread(void *userObj)
+void __stdcall Media::V4LVideoCapture::PlayThread(NotNullPtr<Sync::Thread> thread)
 {
-	Media::V4LVideoCapture *me = (Media::V4LVideoCapture*)userObj;
+	Media::V4LVideoCapture *me = (Media::V4LVideoCapture*)thread->GetUserObj();
 	Sync::ThreadUtil::SetName(CSTR("V4LVideoCap"));
 	struct timeval tv;
 	fd_set fds;
@@ -25,13 +23,11 @@ UInt32 __stdcall Media::V4LVideoCapture::PlayThread(void *userObj)
 	Double t;
 	enum v4l2_buf_type type;
 	struct v4l2_buffer buf;
-	me->threadStarted = true;
-	me->threadRunning = true;
 	{
 		Manage::HiResClock clk;
 		Text::StringBuilderUTF8 debugSb;
 		frameNum = 0;
-		while (!me->threadToStop)
+		while (!thread->IsStopping())
 		{
 			tv.tv_sec = 10;
 			tv.tv_usec = 0;
@@ -84,11 +80,9 @@ UInt32 __stdcall Media::V4LVideoCapture::PlayThread(void *userObj)
 	}
 	type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
 	ioctl(me->fd, VIDIOC_STREAMOFF, &type);
-	me->threadRunning = false;
-	return 0;
 }
 
-Media::V4LVideoCapture::V4LVideoCapture(UOSInt devId)
+Media::V4LVideoCapture::V4LVideoCapture(UOSInt devId) : thread(PlayThread, this, CSTR("V4LVideoCap"))
 {
 	Char cbuff[64];
 	Text::StrUOSInt(Text::StrConcat(cbuff, "/dev/video"), devId);
@@ -103,8 +97,6 @@ Media::V4LVideoCapture::V4LVideoCapture(UOSInt devId)
 	this->cb = 0;
 	this->fcCb = 0;
 	this->userData = 0;
-	this->threadRunning = false;
-	this->threadToStop = false;
 }
 
 Media::V4LVideoCapture::~V4LVideoCapture()
@@ -245,20 +237,14 @@ Bool Media::V4LVideoCapture::Init(FrameCallback cb, FrameChangeCallback fcCb, vo
 
 Bool Media::V4LVideoCapture::Start()
 {
-	if (this->threadRunning)
+	if (this->thread.IsRunning())
 		return true;
 	if (this->cb == 0)
 		return false;
 
 	if (this->ReadFrameBegin())
 	{
-		this->threadToStop = false;
-		this->threadStarted = false;
-		Sync::ThreadUtil::Create(PlayThread, this);
-		while (!this->threadStarted)
-		{
-			Sync::SimpleThread::Sleep(10);
-		}
+		this->thread.Start();
 		return true;
 	}
 	else
@@ -270,19 +256,12 @@ Bool Media::V4LVideoCapture::Start()
 
 void Media::V4LVideoCapture::Stop()
 {
-	if (this->threadRunning)
-	{
-		this->threadToStop = true;
-		while (this->threadRunning)
-		{
-			Sync::SimpleThread::Sleep(10);
-		}
-	}
+	this->thread.Stop();
 }
 
 Bool Media::V4LVideoCapture::IsRunning()
 {
-	return this->threadRunning;
+	return this->thread.IsRunning();
 }
 
 void Media::V4LVideoCapture::SetPreferSize(Math::Size2D<UOSInt> size, UInt32 fourcc, UInt32 bpp, UInt32 frameRateNumer, UInt32 frameRateDenom)

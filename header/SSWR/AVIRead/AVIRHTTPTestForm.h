@@ -4,6 +4,7 @@
 #include "Manage/HiResClock.h"
 #include "Net/HTTPClient.h"
 #include "SSWR/AVIRead/AVIRCore.h"
+#include "Sync/Thread.h"
 #include "UI/GUIButton.h"
 #include "UI/GUICheckBox.h"
 #include "UI/GUIComboBox.h"
@@ -22,19 +23,11 @@ namespace SSWR
 		class AVIRHTTPTestForm : public UI::GUIForm
 		{
 		private:
-			typedef struct
-			{
-				AVIRHTTPTestForm *me;
-				Bool threadRunning;
-				Bool threadToStop;
-				Sync::Event *evt;
-			} ThreadStatus;
-		private:
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Manage::HiResClock clk;
 			NotNullPtr<Net::SocketFactory> sockf;
 			Net::SSLEngine *ssl;
-			ThreadStatus *threadStatus;
+			Sync::Thread **threads;
 			Sync::Mutex connMut;
 			Data::ArrayListNN<Text::String> connURLs;
 			Net::WebUtil::RequestMethod method;
@@ -83,7 +76,7 @@ namespace SSWR
 			static void __stdcall OnStartClicked(void *userObj);
 			static void __stdcall OnURLAddClicked(void *userObj);
 			static void __stdcall OnURLClearClicked(void *userObj);
-			static UInt32 __stdcall ProcessThread(void *userObj);
+			static void __stdcall ProcessThread(NotNullPtr<Sync::Thread> thread);
 			static void __stdcall OnTimerTick(void *userObj);
 			void StopThreads();
 			void ClearURLs();

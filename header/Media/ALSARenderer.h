@@ -1,6 +1,7 @@
 #ifndef _SM_MEDIA_ALSARENDERER
 #define _SM_MEDIA_ALSARENDERER
 #include "Media/IAudioRenderer.h"
+#include "Sync/Thread.h"
 
 namespace Media
 {
@@ -11,11 +12,7 @@ namespace Media
 		Media::IAudioSource *resampler;
 		UInt32 resampleFreq;
 		const UTF8Char *devName;
-		Bool playing;
-		Bool threadInit;
-		Bool stopPlay;
 		void *hand;
-		Sync::Event *playEvt;
 		Media::RefClock *clk;
 		EndNotifier endHdlr;
 		void *endHdlrObj;
@@ -23,11 +20,12 @@ namespace Media
 		UInt16 dataBits;
 		UInt16 dataNChannel;
 		Bool nonBlock;
+		Sync::Thread thread;
 
 		UInt32 buffTime;
 
 		static void __stdcall WaveEvents(void *hwo, UInt32 uMsg, UInt32 *dwInstance, UInt32 *dwParam1, UInt32 *dwParam2);
-		static UInt32 __stdcall PlayThread(void *obj);
+		static void __stdcall PlayThread(NotNullPtr<Sync::Thread> thread);
 		static UInt32 GetCurrTime(void *hand);
 
 		Bool SetHWParams(Media::IAudioSource *audsrc, void *h);

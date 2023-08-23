@@ -3,6 +3,7 @@
 #include "Media/IAudioFilter.h"
 #include "Sync/Event.h"
 #include "Sync/Mutex.h"
+#include "Sync/Thread.h"
 
 namespace Media
 {
@@ -31,13 +32,10 @@ namespace Media
 			UInt32 bitCount;
 			UInt32 align;
 			UInt32 frequency;
-
-			Bool threadToStop;
-			Bool threadRunning;
-			Sync::Event threadEvt;
+			Sync::Thread thread;
 
 		private:
-			static UInt32 __stdcall CalcThread(void *userObj);
+			static void __stdcall CalcThread(NotNullPtr<Sync::Thread> thread);
 			void ResetStatus();
 		public:
 			DTMFDecoder(Media::IAudioSource *audSrc, UOSInt calcInt);
