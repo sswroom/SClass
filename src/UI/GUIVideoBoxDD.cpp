@@ -3,7 +3,6 @@
 #include "Exporter/PNGExporter.h"
 #include "IO/FileStream.h"
 #include "IO/Path.h"
-#include "IO/StreamWriter.h"
 #include "Manage/HiResClock.h"
 #include "Math/Math.h"
 #include "Media/DeinterlaceLR.h"
@@ -16,6 +15,7 @@
 #include "Sync/Interlocked.h"
 #include "Sync/MutexUsage.h"
 #include "Sync/ThreadUtil.h"
+#include "Text/UTF8Writer.h"
 #include "UI/GUIClientControl.h"
 #include "UI/GUIVideoBoxDD.h"
 #include "UI/MessageDialog.h"
@@ -102,10 +102,13 @@ UI::GUIVideoBoxDD::GUIVideoBoxDD(NotNullPtr<UI::GUICore> ui, UI::GUIClientContro
 	this->maDownTime = 0;
 
 #ifdef _DEBUG
-	NEW_CLASS(this->debugFS, IO::FileStream(CSTR("videoProc.log"), IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	NEW_CLASS(this->debugLog, IO::StreamWriter(this->debugFS, 65001));
-	NEW_CLASS(this->debugFS2, IO::FileStream(CSTR("videoDisp.log"), IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	NEW_CLASS(this->debugLog2, IO::StreamWriter(this->debugFS2, 65001));
+	NotNullPtr<IO::FileStream> fs;
+	NEW_CLASSNN(fs, IO::FileStream(CSTR("videoProc.log"), IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	this->debugFS = fs.Ptr();
+	NEW_CLASS(this->debugLog, Text::UTF8Writer(fs));
+	NEW_CLASSNN(fs, IO::FileStream(CSTR("videoDisp.log"), IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	this->debugFS2 = fs.Ptr();
+	NEW_CLASS(this->debugLog2, Text::UTF8Writer(fs));
 #endif
 	this->OnMonitorChanged();
 }

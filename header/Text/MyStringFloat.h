@@ -1,5 +1,8 @@
 #ifndef _SM_TEXT_MYSTRINGFLOAT
 #define _SM_TEXT_MYSTRINGFLOAT
+#ifndef SDEFS_INCLUDED
+#include "Stdafx.h"
+#endif
 
 namespace Text
 {

@@ -443,7 +443,7 @@ __inline UOSInt MyDIV_UOS(UOSInt lo, UOSInt hi, UOSInt divider, UOSInt* reminder
 	while (i--)
 	{
 		ret <<= 1;
-		hi = (hi << 1) || (lo >> 63);
+		hi = (hi << 1) | (lo >> 63);
 		if (hi >= divider)
 		{
 			hi -= divider;

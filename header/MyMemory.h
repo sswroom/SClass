@@ -1,5 +1,6 @@
 #ifndef _SM_MYMEMORY
 #define _SM_MYMEMORY
+#include "Stdafx.h"
 #include "MemTool.h"
 
 /*

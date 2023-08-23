@@ -1961,8 +1961,10 @@ Media::VideoFilter::IVTCFilter::IVTCFilter(Media::IVideoSource *srcVideo) : Medi
 	this->ivtcLastExist = false;
 	this->ivtcLastFieldUsed = false;
 #ifdef _DEBUG
-	NEW_CLASS(this->debugFS, IO::FileStream(CSTR("IVTC.log"), IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	NEW_CLASS(this->debugLog, Text::UTF8Writer(this->debugFS));
+	NotNullPtr<IO::FileStream> debugFS;
+	NEW_CLASSNN(debugFS, IO::FileStream(CSTR("IVTC.log"), IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	this->debugFS = debugFS.Ptr();
+	NEW_CLASS(this->debugLog, Text::UTF8Writer(debugFS));
 #endif
 	this->threadCnt = Sync::ThreadUtil::GetThreadCnt();
 	if (this->threadCnt > 8)

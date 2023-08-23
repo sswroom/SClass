@@ -1,5 +1,6 @@
 #ifndef _SM_DATA_DATETIME
 #define _SM_DATA_DATETIME
+#include "Stdafx.h"
 #include "Data/DateTimeUtil.h"
 #include "Data/Duration.h"
 #include "Data/IComparable.h"

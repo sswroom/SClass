@@ -24,7 +24,7 @@
 #include "Text/StringBuilderUTF8.h"
 #ifdef _DEBUG
 #include "IO/FileStream.h"
-#include "IO/StreamWriter.h"
+#include "Text/UTF8Writer.h"
 #endif
 #define FRAMEBUFFSIZE 64
 #define FOURCC(c1, c2, c3, c4) (((UInt32)c1) | (((UInt32)c2) << 8) | (((UInt32)c3) << 16) | (((UInt32)c4) << 24))
@@ -553,8 +553,10 @@ Media::Decoder::FFMPEGDecoder::FFMPEGDecoder(IVideoSource *sourceVideo) : Media:
 	data->colorTrc = AVCOL_TRC_UNSPECIFIED;
 	data->yuvColor = AVCOL_SPC_UNSPECIFIED;
 #ifdef _DEBUG
-	NEW_CLASS(data->dbgStm, IO::FileStream(CSTR("FFMPEGDebug.txt"), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	NEW_CLASS(data->dbgWriter, IO::StreamWriter(data->dbgStm, 65001));
+	NotNullPtr<IO::FileStream> dbgStm;
+	NEW_CLASSNN(dbgStm, IO::FileStream(CSTR("FFMPEGDebug.txt"), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	data->dbgStm = dbgStm.Ptr();
+	NEW_CLASS(data->dbgWriter, Text::UTF8Writer(dbgStm));
 #endif
 
 	Media::FrameInfo frameInfo;

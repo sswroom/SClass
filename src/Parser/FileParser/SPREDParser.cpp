@@ -226,7 +226,6 @@ IO::ParsedObject *Parser::FileParser::SPREDParser::ParseFileHdr(NotNullPtr<IO::S
 		{
 			track->AddRecord(rec = it.Next());
 			MemFreeA(rec.Ptr());
-			j++;
 		}
 		DEL_CLASS(currDev);
 		track->NewTrack();

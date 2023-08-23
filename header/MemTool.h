@@ -1,5 +1,8 @@
 #ifndef _SM_MEMTOOL
 #define _SM_MEMTOOL
+#ifndef SDEFS_INCLUDED
+#include "Stdafx.h"
+#endif
 
 /*
 void MemFillB(UInt8 *buff, OSInt byteCnt, UInt8 val);

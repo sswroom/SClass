@@ -1,5 +1,6 @@
 #ifndef _SM_TEXT_MYSTRING
 #define _SM_TEXT_MYSTRING
+#include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/ByteTool.h"
 

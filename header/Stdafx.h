@@ -13,8 +13,9 @@
 //#define USE_DSHOW
 //#define USE_OPENCL
 
+#ifndef SDEFS_INCLUDED
 #include "sdefs.h"
 #include "NotNullPtr.h"
 #include "OutParam.h"
-
+#endif
 // TODO: reference additional headers your program requires here

@@ -1,5 +1,6 @@
 #ifndef _SM_SIMD
 #define _SM_SIMD
+#include "Stdafx.h"
 #define ENABLE_SSE
 #define ENABLE_NEON
 

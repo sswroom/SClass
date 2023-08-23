@@ -468,9 +468,9 @@ UI::GUIDDrawControl::GUIDDrawControl(NotNullPtr<GUICore> ui, UI::GUIClientContro
 	NEW_CLASS(this->lib, IO::Library((const UTF8Char*)"User32.dll"));
 #if defined(_DEBUG)
 	{
-		IO::FileStream *fs;
-		NEW_CLASS(fs, IO::FileStream(CSTR("Ddraw.log"), IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-		this->debugFS = fs;
+		NotNullPtr<IO::FileStream> fs;
+		NEW_CLASSNN(fs, IO::FileStream(CSTR("Ddraw.log"), IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+		this->debugFS = fs.Ptr();
 		NEW_CLASS(this->debugWriter, Text::UTF8Writer(fs));
 	}
 #endif

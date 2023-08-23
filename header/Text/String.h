@@ -1,5 +1,6 @@
 #ifndef _SM_TEXT_STRING
 #define _SM_TEXT_STRING
+#include "Stdafx.h"
 #include "Text/CString.h"
 #include "Text/PString.h"
 
