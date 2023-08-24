@@ -3,6 +3,7 @@
 #include "Media/ColorManager.h"
 #include "Media/DrawEngine.h"
 #include "Sync/Mutex.h"
+#include "Sync/Thread.h"
 #include "UI/GUIDDrawControl.h"
 #include "UI/DObj/DObjHandler.h"
 
@@ -17,16 +18,12 @@ namespace UI
 		Bool drawUpdated;
 		Sync::Mutex dobjMut;
 		UI::DObj::DObjHandler *dobjHdlr;
-		Bool displayToStop;
-		Bool displayRunning;
-		Sync::Event displayEvt;
-		Bool processToStop;
-		Bool processRunning;
-		Sync::Event processEvt;
+		Sync::Thread displayThread;
+		Sync::Thread processThread;
 		Sync::Event mainEvt;
 
-		static UInt32 __stdcall DisplayThread(void *userObj);
-		static UInt32 __stdcall ProcessThread(void *userObj);
+		static void __stdcall DisplayThread(NotNullPtr<Sync::Thread> thread);
+		static void __stdcall ProcessThread(NotNullPtr<Sync::Thread> thread);
 		static void __stdcall OnUpdateSize(void *userObj);
 	public:
 		GUIDObjArea(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent, NotNullPtr<Media::DrawEngine> deng, Media::ColorManagerSess *colorSess);

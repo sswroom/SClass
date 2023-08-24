@@ -3,12 +3,11 @@
 #include "Sync/MutexUsage.h"
 #include "UI/GUIDObjArea.h"
 
-UInt32 __stdcall UI::GUIDObjArea::DisplayThread(void *userObj)
+void __stdcall UI::GUIDObjArea::DisplayThread(NotNullPtr<Sync::Thread> thread)
 {
-	UI::GUIDObjArea *me = (UI::GUIDObjArea*)userObj;
-	me->displayRunning = true;
+	UI::GUIDObjArea *me = (UI::GUIDObjArea*)thread->GetUserObj();
 	me->mainEvt.Set();
-	while (!me->displayToStop)
+	while (!thread->IsStopping())
 	{
 		if (me->drawUpdated)
 		{
@@ -128,26 +127,23 @@ UInt32 __stdcall UI::GUIDObjArea::DisplayThread(void *userObj)
 				}
 			}
 			me->drawUpdated = false;
-			me->processEvt.Set();
+			me->processThread.Notify();
 
 			me->DrawToScreen();
 		}
 		else
 		{
-			me->displayEvt.Wait(100);
+			thread->Wait(100);
 		}
 	}
-	me->displayRunning = false;
 	me->mainEvt.Set();
-	return 0;
 }
 
-UInt32 __stdcall UI::GUIDObjArea::ProcessThread(void *userObj)
+void __stdcall UI::GUIDObjArea::ProcessThread(NotNullPtr<Sync::Thread> thread)
 {
-	UI::GUIDObjArea *me = (UI::GUIDObjArea*)userObj;
-	me->processRunning = true;
+	UI::GUIDObjArea *me = (UI::GUIDObjArea*)thread->GetUserObj();
 	me->mainEvt.Set();
-	while (!me->processToStop)
+	while (!thread->IsStopping())
 	{
 		Sync::MutexUsage mutUsage(me->dobjMut);
 		if (!me->drawUpdated && me->dobjHdlr && me->currDrawImg)
@@ -157,22 +153,20 @@ UInt32 __stdcall UI::GUIDObjArea::ProcessThread(void *userObj)
 			if (changed)
 			{
 				me->drawUpdated = true;
-				me->displayEvt.Set();
+				me->displayThread.Notify();
 			}
 			else
 			{
-				me->processEvt.Wait(10);
+				thread->Wait(10);
 			}
 		}
 		else
 		{
 			mutUsage.EndUse();
-			me->processEvt.Wait(100);
+			thread->Wait(100);
 		}
 	}
-	me->processRunning = false;
 	me->mainEvt.Set();
-	return 0;
 }
 
 void __stdcall UI::GUIDObjArea::OnUpdateSize(void *userObj)
@@ -185,41 +179,25 @@ void __stdcall UI::GUIDObjArea::OnUpdateSize(void *userObj)
 	}
 }
 
-UI::GUIDObjArea::GUIDObjArea(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent, NotNullPtr<Media::DrawEngine> deng, Media::ColorManagerSess *colorSess) : UI::GUIDDrawControl(ui, parent, false, colorSess)
+UI::GUIDObjArea::GUIDObjArea(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent, NotNullPtr<Media::DrawEngine> deng, Media::ColorManagerSess *colorSess) : UI::GUIDDrawControl(ui, parent, false, colorSess), displayThread(DisplayThread, this, CSTR("GUIDObjAreaDisp")), processThread(ProcessThread, this, CSTR("GUIDObjAreaProc"))
 {
 	this->deng = deng;
 	this->colorSess = colorSess;
 	this->dobjHdlr = 0;
 	this->drawUpdated = false;
-	this->displayToStop = false;
-	this->displayRunning = false;
-	this->processToStop = false;
-	this->processRunning = false;
 	this->currDrawImg = 0;
 	this->HandleSizeChanged(OnUpdateSize, this);
-	Sync::ThreadUtil::Create(DisplayThread, this);
-	Sync::ThreadUtil::Create(ProcessThread, this);
-	while (!this->displayRunning)
-	{
-		this->displayRunning = true;
-	}
+	this->displayThread.Start();
+	this->processThread.Start();
 	
 }
 
 UI::GUIDObjArea::~GUIDObjArea()
 {
-	this->processToStop = true;
-	this->processEvt.Set();
-	this->displayToStop = true;
-	this->displayEvt.Set();
-	while (this->displayRunning)
-	{
-		this->mainEvt.Wait(100);
-	}
-	while (this->processRunning)
-	{
-		this->mainEvt.Wait(100);
-	}
+	this->processThread.BeginStop();
+	this->displayThread.BeginStop();
+	this->processThread.WaitForEnd();
+	this->displayThread.WaitForEnd();
 	if (this->dobjHdlr)
 	{
 		DEL_CLASS(this->dobjHdlr);

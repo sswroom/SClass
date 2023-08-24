@@ -8,6 +8,7 @@
 #include "Sync/Event.h"
 #include "Sync/Mutex.h"
 #include "Sync/MutexUsage.h"
+#include "Sync/Thread.h"
 
 namespace SSWR
 {
@@ -48,9 +49,7 @@ namespace SSWR
 		private:
 			NotNullPtr<Net::SocketFactory> sockf;
 			Net::SSLEngine *ssl;
-			Bool chkRunning;
-			Bool chkToStop;
-			Sync::Event chkEvt;
+			Sync::Thread thread;
 			CheckStatus chkStatus;
 			FileEndHandler fileEndHdlr;
 			void *fileEndObj;
@@ -74,7 +73,7 @@ namespace SSWR
 			Bool ExtractZIP(Text::CStringNN zipFile, Text::CString mp4File);
 			Bool VideoValid(Text::CStringNN fileName);
 			void ProcessDir(Text::String *downPath, Text::String *succPath, Text::String *errPath);
-			static UInt32 __stdcall CheckThread(void *userObj);
+			static void __stdcall CheckThread(NotNullPtr<Sync::Thread> thread);
 
 		public:
 			DownMonCore();

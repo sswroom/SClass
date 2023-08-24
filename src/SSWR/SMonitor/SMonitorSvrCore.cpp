@@ -19,8 +19,6 @@
 #include "SSWR/SMonitor/SMonitorWebHandler.h"
 #include "SSWR/VAMS/VAMSBTWebHandler.h"
 #include "Sync/RWMutexUsage.h"
-#include "Sync/SimpleThread.h"
-#include "Sync/ThreadUtil.h"
 #include "Text/StringBuilderUTF8.h"
 #include "Text/UTF8Reader.h"
 #include "Text/UTF8Writer.h"
@@ -113,78 +111,72 @@ void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnServerConn(Socket *s, void *us
 	me->cliMgr->AddClient(cli, status);
 }
 
-UInt32 __stdcall SSWR::SMonitor::SMonitorSvrCore::CheckThread(void *userObj)
+void __stdcall SSWR::SMonitor::SMonitorSvrCore::CheckThread(NotNullPtr<Sync::Thread> thread)
 {
-	SSWR::SMonitor::SMonitorSvrCore *me = (SSWR::SMonitor::SMonitorSvrCore*)userObj;
+	SSWR::SMonitor::SMonitorSvrCore *me = (SSWR::SMonitor::SMonitorSvrCore*)thread->GetUserObj();
 	DeviceInfo *dev;
 	Int64 t;
 	UOSInt i;
 	UOSInt j;
-
-	me->checkRunning = true;
+	Data::DateTime currTime;
+	Data::DateTime lastStoreTime;
+	Data::ArrayList<DeviceInfo *> devList;
+	Data::ArrayList<DevRecord2*> recList;
+	lastStoreTime.SetCurrTimeUTC();
+	while (!thread->IsStopping())
 	{
-		Data::DateTime currTime;
-		Data::DateTime lastStoreTime;
-		Data::ArrayList<DeviceInfo *> devList;
-		Data::ArrayList<DevRecord2*> recList;
-		lastStoreTime.SetCurrTimeUTC();
-		while (!me->checkToStop)
+		currTime.SetCurrTimeUTC();
+		if (currTime.DiffMS(lastStoreTime) >= 300000)
 		{
-			currTime.SetCurrTimeUTC();
-			if (currTime.DiffMS(lastStoreTime) >= 300000)
+			lastStoreTime.SetValue(currTime);
+			me->SaveDatas();
+			
+			if (me->uaLog.IsModified())
 			{
-				lastStoreTime.SetValue(currTime);
-				me->SaveDatas();
-				
-				if (me->uaLog.IsModified())
-				{
-					me->UserAgentStore();
-				}
-
-				if (me->refererLog.IsModified())
-				{
-					me->RefererStore();
-				}
+				me->UserAgentStore();
 			}
-			t = currTime.ToTicks();
-			if (t >= me->currDate + 86400000)
+
+			if (me->refererLog.IsModified())
 			{
-				Sync::RWMutexUsage mutUsage(me->devMut, false);
-				devList.AddAll(me->devMap);
-				mutUsage.EndUse();
-
-				mutUsage.ReplaceMutex(me->dateMut, true);
-				me->currDate += 86400000;
-				i = devList.GetCount();
-				while (i-- > 0)
-				{
-					dev = devList.GetItem(i);
-					Sync::RWMutexUsage mutUsage(dev->mut, true);
-					recList.AddAll(dev->yesterdayRecs);
-					dev->yesterdayRecs.Clear();
-					dev->yesterdayRecs.PutAll(&dev->todayRecs);
-					dev->todayRecs.Clear();
-					j = recList.GetCount();
-					if (j > 0)
-					{
-						dev->valUpdated = true;
-					}
-					mutUsage.EndUse();
-
-					while (j-- > 0)
-					{
-						MemFree(recList.GetItem(j));
-					}
-					recList.Clear();
-				}
-				mutUsage.EndUse();
-				devList.Clear();
+				me->RefererStore();
 			}
-			me->checkEvt.Wait(1000);
 		}
+		t = currTime.ToTicks();
+		if (t >= me->currDate + 86400000)
+		{
+			Sync::RWMutexUsage mutUsage(me->devMut, false);
+			devList.AddAll(me->devMap);
+			mutUsage.EndUse();
+
+			mutUsage.ReplaceMutex(me->dateMut, true);
+			me->currDate += 86400000;
+			i = devList.GetCount();
+			while (i-- > 0)
+			{
+				dev = devList.GetItem(i);
+				Sync::RWMutexUsage mutUsage(dev->mut, true);
+				recList.AddAll(dev->yesterdayRecs);
+				dev->yesterdayRecs.Clear();
+				dev->yesterdayRecs.PutAll(&dev->todayRecs);
+				dev->todayRecs.Clear();
+				j = recList.GetCount();
+				if (j > 0)
+				{
+					dev->valUpdated = true;
+				}
+				mutUsage.EndUse();
+
+				while (j-- > 0)
+				{
+					MemFree(recList.GetItem(j));
+				}
+				recList.Clear();
+			}
+			mutUsage.EndUse();
+			devList.Clear();
+		}
+		thread->Wait(1000);
 	}
-	me->checkRunning = false;
-	return 0;
 }
 
 void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnDataUDPPacket(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData)
@@ -1074,7 +1066,7 @@ void SSWR::SMonitor::SMonitorSvrCore::UserPwdCalc(const UTF8Char *userName, cons
 	md5.GetValue(buff);
 }
 
-SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(IO::Writer *writer, NotNullPtr<Media::DrawEngine> deng) : protoHdlr(this)
+SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(IO::Writer *writer, NotNullPtr<Media::DrawEngine> deng) : protoHdlr(this), thread(CheckThread, this, CSTR("SMonitorSvrCore"))
 {
 	NEW_CLASSNN(this->sockf, Net::OSSocketFactory(true));
 	NEW_CLASS(this->parsers, Parser::FullParserList());
@@ -1092,8 +1084,6 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(IO::Writer *writer, NotNullPtr<
 	dt.SetCurrTime();
 	dt.ClearTime();
 	this->currDate = dt.ToTicks();
-	this->checkRunning = false;
-	this->checkToStop = false;
 	this->initErr = false;
 
 	IO::ConfigFile *cfg = IO::IniFile::ParseProgConfig(0);
@@ -1316,11 +1306,7 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(IO::Writer *writer, NotNullPtr<
 
 		if (!this->IsError() && this->cliSvr->Start() && this->listener->Start())
 		{
-			Sync::ThreadUtil::Create(CheckThread, this);
-			while (!this->checkRunning)
-			{
-				Sync::SimpleThread::Sleep(10);
-			}
+			this->thread.Start();
 		}
 	}
 }
@@ -1338,12 +1324,7 @@ SSWR::SMonitor::SMonitorSvrCore::~SMonitorSvrCore()
 	}
 	SDEL_CLASS(this->db);
 	SDEL_CLASS(this->dbMut);
-	this->checkToStop = true;
-	this->checkEvt.Set();
-	while (this->checkRunning)
-	{
-		Sync::SimpleThread::Sleep(10);
-	}
+	this->thread.Stop();
 	this->SaveDatas();
 
 	UOSInt i;

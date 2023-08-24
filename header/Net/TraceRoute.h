@@ -2,6 +2,7 @@
 #define _SM_NET_TRACEROUTE
 #include "Net/SocketFactory.h"
 #include "Sync/Event.h"
+#include "Sync/Thread.h"
 
 namespace Net
 {
@@ -10,8 +11,7 @@ namespace Net
 	private:
 		NotNullPtr<Net::SocketFactory> sockf;
 		Socket *socV4;
-		Bool threadRunning;
-		Bool threadToStop;
+		Sync::Thread thread;
 
 		UInt16 resId;
 		UInt16 resSeq;
@@ -19,7 +19,7 @@ namespace Net
 		UInt32 resIP;
 		Sync::Event *resEvt;
 
-		static UInt32 __stdcall RecvThread(void *userObj);
+		static void __stdcall RecvThread(NotNullPtr<Sync::Thread> thread);
 		void ICMPChecksum(UInt8 *buff, UOSInt buffSize);
 	public:
 		TraceRoute(NotNullPtr<Net::SocketFactory> sockf, UInt32 ip);

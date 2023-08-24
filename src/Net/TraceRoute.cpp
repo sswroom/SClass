@@ -2,11 +2,10 @@
 #include "MyMemory.h"
 #include "Data/ByteTool.h"
 #include "Net/TraceRoute.h"
-#include "Sync/ThreadUtil.h"
 
-UInt32 __stdcall Net::TraceRoute::RecvThread(void *userObj)
+void __stdcall Net::TraceRoute::RecvThread(NotNullPtr<Sync::Thread> thread)
 {
-	Net::TraceRoute *me = (Net::TraceRoute*)userObj;
+	Net::TraceRoute *me = (Net::TraceRoute*)thread->GetUserObj();
 	UInt8 *readBuff;
 	Net::SocketUtil::AddressInfo addr;
 	UInt16 port;
@@ -15,9 +14,8 @@ UInt32 __stdcall Net::TraceRoute::RecvThread(void *userObj)
 	readBuff = MemAlloc(UInt8, 4096);
 	UInt8 *ipData;
 	UOSInt ipDataSize;
-	me->threadRunning = true;
 	me->resEvt->Set();
-	while (!me->threadToStop)
+	while (!thread->IsStopping())
 	{
 		readSize = me->sockf->UDPReceive(me->socV4, readBuff, 4096, addr, port, &et);
 		if (readSize >= 36)
@@ -59,8 +57,6 @@ UInt32 __stdcall Net::TraceRoute::RecvThread(void *userObj)
 		}
 	}
 	MemFree(readBuff);
-	me->threadRunning = false;
-	return 0;
 }
 
 void Net::TraceRoute::ICMPChecksum(UInt8 *buff, UOSInt buffSize)
@@ -84,34 +80,25 @@ void Net::TraceRoute::ICMPChecksum(UInt8 *buff, UOSInt buffSize)
 }
 
 
-Net::TraceRoute::TraceRoute(NotNullPtr<Net::SocketFactory> sockf, UInt32 ip)
+Net::TraceRoute::TraceRoute(NotNullPtr<Net::SocketFactory> sockf, UInt32 ip) : thread(RecvThread, this, CSTR("TraceRoute"))
 {
 	this->sockf = sockf;
 	this->socV4 = this->sockf->CreateICMPIPv4Socket(ip);
-	this->threadToStop = false;
-	this->threadRunning = false;
 	NEW_CLASS(this->resEvt, Sync::Event(true));
 	if (this->socV4)
 	{
-		Sync::ThreadUtil::Create(RecvThread, this);
-		while (!this->threadRunning)
-		{
-			this->resEvt->Wait(100);
-		}
+		this->thread.Start();
 	}
 }
 
 Net::TraceRoute::~TraceRoute()
 {
-	this->threadToStop = true;
+	this->thread.BeginStop();
 	if (this->socV4)
 	{
 		this->sockf->DestroySocket(this->socV4);
 	}
-	while (this->threadRunning)
-	{
-		this->resEvt->Wait(10);
-	}
+	this->thread.WaitForEnd();
 	DEL_CLASS(this->resEvt);
 	this->socV4 = 0;
 }

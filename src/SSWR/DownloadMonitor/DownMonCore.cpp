@@ -13,7 +13,6 @@
 #include "SSWR/DownloadMonitor/DownMonCore.h"
 #include "Sync/MutexUsage.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/ThreadUtil.h"
 #include "Text/StringBuilderUTF8.h"
 #include "UI/Clipboard.h"
 
@@ -460,24 +459,19 @@ void SSWR::DownloadMonitor::DownMonCore::ProcessDir(Text::String *downPath, Text
 	}
 }
 
-UInt32 __stdcall SSWR::DownloadMonitor::DownMonCore::CheckThread(void *userObj)
+void __stdcall SSWR::DownloadMonitor::DownMonCore::CheckThread(NotNullPtr<Sync::Thread> thread)
 {
-	SSWR::DownloadMonitor::DownMonCore *me = (SSWR::DownloadMonitor::DownMonCore *)userObj;
-	me->chkRunning = true;
-	while (!me->chkToStop)
+	SSWR::DownloadMonitor::DownMonCore *me = (SSWR::DownloadMonitor::DownMonCore *)thread->GetUserObj();
+	while (!thread->IsStopping())
 	{
 		me->ProcessDir(me->downPath, me->succPath, me->errPath);
 
-		me->chkEvt.Wait(10000);
+		thread->Wait(10000);
 	}
-	me->chkRunning = false;
-	return 0;
 }
 
-SSWR::DownloadMonitor::DownMonCore::DownMonCore() : checker(false)
+SSWR::DownloadMonitor::DownMonCore::DownMonCore() : thread(CheckThread, this, CSTR("DownMonCore")), checker(false)
 {
-	this->chkRunning = false;
-	this->chkToStop = false;
 	NEW_CLASSNN(this->sockf, Net::OSSocketFactory(true));
 	this->ssl = Net::SSLEngineFactory::Create(this->sockf, true);
 	this->chkStatus = CS_IDLE;
@@ -517,22 +511,12 @@ SSWR::DownloadMonitor::DownMonCore::DownMonCore() : checker(false)
 	if (this->ffmpegPath == 0) this->ffmpegPath = Text::String::New(UTF8STRC("C:\\BDTools\\ffmpeg.exe")).Ptr();
 	if (this->firefoxPath == 0) this->firefoxPath = Text::String::New(UTF8STRC("C:\\Program Files\\Firefox Developer Edition\\firefox.exe")).Ptr();
 	if (this->listFile == 0) this->listFile = Text::String::New(UTF8STRC("I:\\PROGS\\DownList2.txt")).Ptr();
-
-	Sync::ThreadUtil::Create(CheckThread, this);
-	while (!this->chkRunning)
-	{
-		Sync::SimpleThread::Sleep(10);
-	}
+	this->thread.Start();
 }
 
 SSWR::DownloadMonitor::DownMonCore::~DownMonCore()
 {
-	this->chkToStop = true;
-	this->chkEvt.Set();
-	while (this->chkRunning)
-	{
-		Sync::SimpleThread::Sleep(10);
-	}
+	this->thread.Stop();
 	DEL_CLASS(this->parsers);
 
 	UOSInt i;
@@ -548,7 +532,7 @@ SSWR::DownloadMonitor::DownMonCore::~DownMonCore()
 
 Bool SSWR::DownloadMonitor::DownMonCore::IsError()
 {
-	return !this->chkRunning;
+	return !this->thread.IsRunning();
 }
 
 NotNullPtr<Net::SocketFactory> SSWR::DownloadMonitor::DownMonCore::GetSocketFactory()

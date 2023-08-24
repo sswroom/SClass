@@ -16,6 +16,7 @@
 #include "SSWR/SMonitor/ISMonitorCore.h"
 #include "Sync/Mutex.h"
 #include "Sync/RWMutex.h"
+#include "Sync/Thread.h"
 
 namespace SSWR
 {
@@ -51,9 +52,7 @@ namespace SSWR
 
 			DB::DBTool *db;
 			Sync::Mutex *dbMut;
-			Bool checkRunning;
-			Bool checkToStop;
-			Sync::Event checkEvt;
+			Sync::Thread thread;
 			Int64 currDate;
 			Sync::RWMutex dateMut;
 
@@ -70,7 +69,7 @@ namespace SSWR
 			static void __stdcall OnClientData(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, const Data::ByteArrayR &buff);
 			static void __stdcall OnClientTimeout(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData);
 			static void __stdcall OnServerConn(Socket *s, void *userObj);
-			static UInt32 __stdcall CheckThread(void *userObj);
+			static void __stdcall CheckThread(NotNullPtr<Sync::Thread> thread);
 			static void __stdcall OnDataUDPPacket(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData);
 
 			virtual void DataParsed(NotNullPtr<IO::Stream> stm, void *stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize);
