@@ -101,7 +101,7 @@ UTF8Char *Map::GoogleMap::GoogleWSSearcherJSON::SearchName(UTF8Char *buff, UOSIn
 	this->srchCnt++;
 	currDt.SetCurrTimeUTC();
 	this->lastIsError = 0;
-	if ((i = (Int32)currDt.DiffMS(&this->lastSrchDate)) < 200)
+	if ((i = (Int32)currDt.DiffMS(this->lastSrchDate)) < 200)
 	{
 		if (i >= 0)
 		{
@@ -272,7 +272,7 @@ UTF8Char *Map::GoogleMap::GoogleWSSearcherJSON::SearchName(UTF8Char *buff, UOSIn
 	{
 		Data::DateTime dt;
 		dt.SetCurrTimeUTC();
-		if (dt.DiffMS(&this->lastSrchDate) < 60000)
+		if (dt.DiffMS(this->lastSrchDate) < 60000)
 			return 0;
 	}
 	Text::Locale::LocaleEntry *ent = Text::Locale::GetLocaleEntry(lcid);
@@ -287,7 +287,7 @@ UTF8Char *Map::GoogleMap::GoogleWSSearcherJSON::CacheName(UTF8Char *buff, UOSInt
 	{
 		Data::DateTime dt;
 		dt.SetCurrTimeUTC();
-		if (dt.DiffMS(&this->lastSrchDate) < 60000)
+		if (dt.DiffMS(this->lastSrchDate) < 60000)
 			return 0;
 	}
 	Text::Locale::LocaleEntry *ent = Text::Locale::GetLocaleEntry(lcid);

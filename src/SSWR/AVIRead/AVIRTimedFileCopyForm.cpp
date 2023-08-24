@@ -24,12 +24,12 @@ void __stdcall SSWR::AVIRead::AVIRTimedFileCopyForm::OnStartClicked(void *userOb
 	}
 	dt1.ClearTime();
 	dt2.ClearTime();
-	if (dt1.CompareTo(&dt2) > 0)
+	if (dt1.CompareTo(dt2) > 0)
 	{
 		UI::MessageDialog::ShowDialog(CSTR("The start time is after end time"), me->GetFormName(), me);
 		return;
 	}
-	Double days = Data::DateTimeUtil::MS2Days(dt2.DiffMS(&dt1));
+	Double days = Data::DateTimeUtil::MS2Days(dt2.DiffMS(dt1));
 	if (days > 90)
 	{
 		UI::MessageDialog::ShowDialog(CSTR("The time range is longer than 90 days"), me->GetFormName(), me);
@@ -80,12 +80,12 @@ void __stdcall SSWR::AVIRead::AVIRTimedFileCopyForm::OnStartClicked(void *userOb
 			{
 				*sptr++ = IO::Path::PATH_SEPERATOR;
 			}
-			me->CopyToZip(&zip, sbuff, sptr, sptr, &dt1, &dt2, true);
+			me->CopyToZip(&zip, sbuff, sptr, sptr, dt1, dt2, true);
 		}
 	}
 }
 
-Bool SSWR::AVIRead::AVIRTimedFileCopyForm::CopyToZip(IO::ZIPMTBuilder *zip, const UTF8Char *buffStart, const UTF8Char *pathBase, UTF8Char *pathEnd, Data::DateTime *startTime, Data::DateTime *endTime, Bool monthDir)
+Bool SSWR::AVIRead::AVIRTimedFileCopyForm::CopyToZip(IO::ZIPMTBuilder *zip, const UTF8Char *buffStart, const UTF8Char *pathBase, UTF8Char *pathEnd, NotNullPtr<Data::DateTime> startTime, NotNullPtr<Data::DateTime> endTime, Bool monthDir)
 {
 	UTF8Char *sptr;
 	IO::Path::FindFileSession *sess;
@@ -121,7 +121,7 @@ Bool SSWR::AVIRead::AVIRTimedFileCopyForm::CopyToZip(IO::ZIPMTBuilder *zip, cons
 					iVal = iVal % 10000;
 					dt.SetMonth(iVal / 100);
 					dt.SetDay(iVal % 100);
-					if (startTime->CompareTo(&dt) <= 0 && endTime->CompareTo(&dt) >= 0)
+					if (startTime->CompareTo(dt) <= 0 && endTime->CompareTo(dt) >= 0)
 					{
 						{
 							IO::FileStream fs({buffStart, (UOSInt)(sptr - buffStart)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
@@ -181,7 +181,7 @@ Bool SSWR::AVIRead::AVIRTimedFileCopyForm::CopyToZip(IO::ZIPMTBuilder *zip, cons
 						if ((sptr - pathEnd) >= 6 && Text::StrToInt32(sptr - 6, iVal))
 						{
 							dt.SetDate((UInt16)(iVal / 100), iVal % 100, 1);
-							if ((dt.GetYear() == startTime->GetYear() && dt.GetMonth() == startTime->GetMonth()) || (startTime->CompareTo(&dt) <= 0 && endTime->CompareTo(&dt) >= 0))
+							if ((dt.GetYear() == startTime->GetYear() && dt.GetMonth() == startTime->GetMonth()) || (startTime->CompareTo(dt) <= 0 && endTime->CompareTo(dt) >= 0))
 							{
 								*sptr++ = IO::Path::PATH_SEPERATOR;
 								if (!this->CopyToZip(zip, buffStart, pathBase, sptr, startTime, endTime, false))

@@ -32,7 +32,7 @@ UInt32 __stdcall Net::HTTPData::LoadThread(void *userObj)
 		{
 			Data::DateTime dt;
 			fs.GetFileTimes(0, 0, &dt);
-			fdh->cli->AddTimeHeader(CSTR("If-Modified-Since"), &dt);
+			fdh->cli->AddTimeHeader(CSTR("If-Modified-Since"), dt);
 		}
 	}
 	while (fdh->cli->GetRespStatus() == 301)

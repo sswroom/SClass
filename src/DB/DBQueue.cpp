@@ -782,5 +782,5 @@ Bool DB::DBHandler::IsTimeout(Data::DateTime *currTime)
 {
 	if (!this->processing)
 		return false;
-	return currTime->DiffMS(&this->procTime) > 60000;
+	return currTime->DiffMS(this->procTime) > 60000;
 }

@@ -165,7 +165,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			msg->SetMessageId(sb.ToCString());
 			msg->SetFrom(CSTR_NULL, smtpFrom->ToCString());
 			msg->AddTo(CSTR_NULL, smtpTo->ToCString());
-			msg->SetSentDate(&currTime);
+			msg->SetSentDate(currTime);
 			msg->SetSubject(CSTR("MySQL Check Report"));
 			msg->SetContent(sbMsg.ToCString(), CSTR("text/plain"));
 			if (!smtp->Send(msg))

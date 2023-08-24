@@ -66,7 +66,7 @@ namespace Data
 
 		static UOSInt CalScaleMarkDbl(Data::ArrayListDbl *locations, Data::ArrayListNN<Text::String> *labels, Double min, Double max, Double leng, Double minLeng, const Char *dblFormat, Double minDblVal, const UTF8Char *unit);
 		static UOSInt CalScaleMarkInt(Data::ArrayListDbl *locations, Data::ArrayListNN<Text::String> *labels, Int32 min, Int32 max, Double leng, Double minLeng, const UTF8Char *unit);
-		static UOSInt CalScaleMarkDate(Data::ArrayListDbl *locations, Data::ArrayListNN<Text::String> *labels, Data::DateTime *min, Data::DateTime *max, Double leng, Double minLeng, const Char *dateFormat, const Char *timeFormat);
+		static UOSInt CalScaleMarkDate(Data::ArrayListDbl *locations, Data::ArrayListNN<Text::String> *labels, NotNullPtr<Data::DateTime> min, NotNullPtr<Data::DateTime> max, Double leng, Double minLeng, const Char *dateFormat, const Char *timeFormat);
 	};
 }
 #endif

@@ -5,7 +5,7 @@
 #include "IO/StmData/FileData.h"
 #include "Text/MyString.h"
 
-void Media::ClockSpeechCh::AppendWAV(Media::AudioConcatSource *source, Parser::FileParser::WAVParser *parser, Text::CStringNN fileName)
+void Media::ClockSpeechCh::AppendWAV(NotNullPtr<Media::AudioConcatSource> source, NotNullPtr<Parser::FileParser::WAVParser> parser, Text::CStringNN fileName)
 {
 	IO::ParsedObject *pobj;
 	{
@@ -41,18 +41,17 @@ void Media::ClockSpeechCh::AppendWAV(Media::AudioConcatSource *source, Parser::F
 	}
 }
 
-Media::IAudioSource *Media::ClockSpeechCh::GetSpeech(Data::DateTime *time)
+Media::IAudioSource *Media::ClockSpeechCh::GetSpeech(NotNullPtr<Data::DateTime> time)
 {
 	Int32 hour = time->GetHour();
 	Int32 minute = time->GetMinute();
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
 
-	Parser::FileParser::WAVParser *parser;
-	Media::AudioConcatSource *source;
+	Parser::FileParser::WAVParser parser;
+	NotNullPtr<Media::AudioConcatSource> source;
 
-	NEW_CLASS(parser, Parser::FileParser::WAVParser());
-	NEW_CLASS(source, Media::AudioConcatSource());
+	NEW_CLASSNN(source, Media::AudioConcatSource());
 	
 	if (hour >= 10)
 	{
@@ -117,6 +116,5 @@ Media::IAudioSource *Media::ClockSpeechCh::GetSpeech(Data::DateTime *time)
 	{
 		AppendWAV(source, parser, CSTR("FullHour.wav"));
 	}
-	DEL_CLASS(parser);
-	return source;
+	return source.Ptr();
 }

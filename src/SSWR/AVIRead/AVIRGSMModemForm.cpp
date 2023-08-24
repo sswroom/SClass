@@ -337,7 +337,7 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnSMSSaveClick(void *userObj)
 	{
 		Data::DateTime dt;
 		smsMsg = Text::SMSMessage::CreateFromPDU(sms->pduMessage);
-		smsMsg->GetMessageTime(&dt);
+		smsMsg->GetMessageTime(dt);
 
 		UI::FileDialog dlg(L"SSWR", L"AVIRead", L"SMSSave", true);
 		dlg.AddFilter(CSTR("*.sms"), CSTR("SMS File"));
@@ -414,7 +414,7 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnSMSSaveAllClick(void *userObj)
 			{
 				sms = (IO::GSMModemController::SMSMessage *)me->lvSMS->GetItem(i);
 				smsMsg = Text::SMSMessage::CreateFromPDU(sms->pduMessage);
-				smsMsg->GetMessageTime(&dt);
+				smsMsg->GetMessageTime(dt);
 				sb.ClearStr();
 				sb.Append(dlg.GetFolder());
 				sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
@@ -827,7 +827,7 @@ void SSWR::AVIRead::AVIRGSMModemForm::LoadSMS()
 		Text::StrUTF16_UTF32(wbuff, smsMsg->GetAddress());
 		k = this->lvSMS->AddItem(wbuff, sms);
 #endif
-		smsMsg->GetMessageTime(&dt);
+		smsMsg->GetMessageTime(dt);
 		sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss zzzz");
 		this->lvSMS->SetSubItem(k, 1, CSTRP(sbuff, sptr));
 		sptr = Text::StrInt32(sbuff, sms->index);

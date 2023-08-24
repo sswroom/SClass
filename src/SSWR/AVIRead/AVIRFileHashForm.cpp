@@ -49,7 +49,7 @@ void __stdcall SSWR::AVIRead::AVIRFileHashForm::OnTimerTick(void *userObj)
 	me->prgFile->ProgressUpdate(me->progCurr, me->progCount);
 	mutUsage.EndUse();
 
-	Int64 timeDiff = currTime.DiffMS(&me->lastTimerTime);
+	Int64 timeDiff = currTime.DiffMS(me->lastTimerTime);
 	Double spd;
 	if (timeDiff > 0)
 	{
@@ -65,7 +65,7 @@ void __stdcall SSWR::AVIRead::AVIRFileHashForm::OnTimerTick(void *userObj)
 	me->rlcSpeed->AddSample(&spd);
 	sptr = Text::StrUInt64(sbuff, currTotal);
 	me->txtTotalSize->SetText(CSTRP(sbuff, sptr));
-	me->lastTimerTime.SetValue(&currTime);
+	me->lastTimerTime.SetValue(currTime);
 }
 
 void __stdcall SSWR::AVIRead::AVIRFileHashForm::OnCheckTypeChg(void *userObj)

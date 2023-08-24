@@ -209,7 +209,7 @@ Bool Net::Email::FileEmailStore::NewEmail(Int64 id, NotNullPtr<const Net::Socket
 	sb.AppendC(UTF8STRC("ESMTPS"));
 	sb.AppendC(UTF8STRC("; "));
 	currTime.SetTicks(email->recvTime);
-	sptr = Net::WebUtil::Date2Str(sbuff, &currTime);
+	sptr = Net::WebUtil::Date2Str(sbuff, currTime);
 	sb.AppendP(sbuff, sptr);
 	sb.AppendC(UTF8STRC("\r\n"));
 
@@ -286,7 +286,7 @@ Bool Net::Email::FileEmailStore::NewEmail(Int64 id, NotNullPtr<const Net::Socket
 	sb.AppendC(UTF8STRC(" with "));
 	sb.AppendC(UTF8STRC("ESMTPS"));
 	sb.AppendC(UTF8STRC("; "));
-	sptr = Net::WebUtil::Date2Str(sbuff, &currTime);
+	sptr = Net::WebUtil::Date2Str(sbuff, currTime);
 	sb.AppendP(sbuff, sptr);
 	sb.AppendC(UTF8STRC("\r\n"));
 

@@ -130,7 +130,7 @@ void __stdcall SSWR::AVIRead::AVIRUDPTestForm::OnTimerTick(void *userObj)
 		sendFailCnt += me->threads[i].sentFailCnt;
 	}
 	dt.SetCurrTimeUTC();
-	diffMS = dt.DiffMS(&me->lastTime);
+	diffMS = dt.DiffMS(me->lastTime);
 	sptr = Text::StrUInt64(sbuff, thisRecvCnt);
 	me->txtRecvCnt->SetText(CSTRP(sbuff, sptr));
 	sptr = Text::StrUInt64(sbuff, thisRecvSize);
@@ -161,7 +161,7 @@ void __stdcall SSWR::AVIRead::AVIRUDPTestForm::OnTimerTick(void *userObj)
 	me->lastRecvSize = thisRecvSize;
 	me->lastSentSuccCnt = sendSuccCnt;
 	me->lastSentFailCnt = sendFailCnt;
-	me->lastTime.SetValue(&dt);
+	me->lastTime.SetValue(dt);
 }
 
 UInt32 __stdcall SSWR::AVIRead::AVIRUDPTestForm::ProcThread(void *userObj)

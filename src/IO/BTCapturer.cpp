@@ -2,19 +2,16 @@
 #include "IO/BTCapturer.h"
 #include "IO/BTDevLog.h"
 #include "IO/Path.h"
-#include "Sync/SimpleThread.h"
-#include "Sync/ThreadUtil.h"
 
 //#include <stdio.h>
 
-UInt32 __stdcall IO::BTCapturer::CheckThread(void *userObj)
+void __stdcall IO::BTCapturer::CheckThread(NotNullPtr<Sync::Thread> thread)
 {
-	IO::BTCapturer *me = (IO::BTCapturer*)userObj;
+	IO::BTCapturer *me = (IO::BTCapturer*)thread->GetUserObj();
 	Int64 currTime;
 	Int64 lastTime;
-	me->threadRunning = true;
 	lastTime = Data::DateTimeUtil::GetCurrTimeMillis();
-	while (!me->threadToStop)
+	while (!thread->IsStopping())
 	{
 		currTime = Data::DateTimeUtil::GetCurrTimeMillis();
 		if ((currTime - lastTime) >= 300000)
@@ -25,13 +22,11 @@ UInt32 __stdcall IO::BTCapturer::CheckThread(void *userObj)
 				me->StoreStatus();
 			}
 		}
-		me->threadEvt.Wait(10000);
+		thread->Wait(10000);
 	}
-	me->threadRunning = false;
-	return 0;
 }
 
-IO::BTCapturer::BTCapturer(Bool autoStore)
+IO::BTCapturer::BTCapturer(Bool autoStore) : thread(CheckThread, this, CSTR("BTCapturer"))
 {
 	this->lastFileName = 0;
 	this->autoStore = autoStore;
@@ -40,8 +35,6 @@ IO::BTCapturer::BTCapturer(Bool autoStore)
 	{
 		//this->bt->SetScanMode(IO::BTScanner::SM_ACTIVE);
 	}
-	this->threadRunning = false;
-	this->threadToStop = false;
 }
 
 IO::BTCapturer::~BTCapturer()
@@ -62,7 +55,7 @@ Bool IO::BTCapturer::IsError()
 
 Bool IO::BTCapturer::IsStarted()
 {
-	return this->threadRunning;
+	return this->thread.IsRunning();
 }
 
 Bool IO::BTCapturer::Start()
@@ -71,8 +64,7 @@ Bool IO::BTCapturer::Start()
 	{
 		return false;
 	}
-	this->threadToStop = false;
-	Sync::ThreadUtil::Create(CheckThread, this);
+	this->thread.Start();
 	this->bt->ScanOn();
 	return true;
 }
@@ -80,14 +72,9 @@ Bool IO::BTCapturer::Start()
 void IO::BTCapturer::Stop()
 {
 	//printf("BTCapturer: Stopping\r\n");
-	if (this->threadRunning)
+	if (this->thread.IsRunning())
 	{
-		this->threadToStop = true;
-		this->threadEvt.Set();
-		while (this->threadRunning)
-		{
-			Sync::SimpleThread::Sleep(10);
-		}
+		this->thread.Stop();
 		//printf("BTCapturer: Stopping 2\r\n");
 		this->bt->ScanOff();
 	}

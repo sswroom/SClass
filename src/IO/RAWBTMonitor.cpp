@@ -72,6 +72,7 @@ void IO::RAWBTMonitor::Close()
 {
 	if (this->fd >= 0)
 	{
+		shutdown(this->fd, SHUT_RDWR);
 		close(this->fd);
 		this->fd = -1;
 	}

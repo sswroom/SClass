@@ -394,11 +394,11 @@ void Net::DNSProxy::RequestDNS(const UTF8Char *reqName, Int32 reqType, Int32 req
 		Data::DateTime currTime;
 		currTime.SetCurrTimeUTC();
 		Sync::MutexUsage mutUsage(this->dnsMut);
-		if (currTime.DiffMS(&this->currIPTime) > REQTIMEOUT)
+		if (currTime.DiffMS(this->currIPTime) > REQTIMEOUT)
 		{
 			this->currServerIndex = (this->currServerIndex + 1) % this->dnsList.GetCount();
 			this->currServerIP = this->dnsList.GetItem(this->currServerIndex);
-			this->currIPTime.SetValue(&currTime);
+			this->currIPTime.SetValue(currTime);
 			req->ttl = 1;
 		}
 		mutUsage.EndUse();

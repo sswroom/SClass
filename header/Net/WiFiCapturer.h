@@ -2,6 +2,7 @@
 #define _SM_NET_WIFICAPTURER
 #include "Net/WiFiLogFile.h"
 #include "Sync/MutexUsage.h"
+#include "Sync/Thread.h"
 
 namespace Net
 {
@@ -11,8 +12,7 @@ namespace Net
 		typedef void (__stdcall *UpdateHandler)(Net::WirelessLAN::BSSInfo *bss, const Data::Timestamp &scanTime, void *userObj);
 	private:
 		Net::WirelessLAN wlan;
-		Bool threadRunning;
-		Bool threadToStop;
+		Sync::Thread thread;
 		Net::WiFiLogFile wifiLog;
 		Sync::Mutex logMut;
 		const UTF8Char *lastFileName;
@@ -21,7 +21,7 @@ namespace Net
 		UpdateHandler hdlr;
 		void *hdlrObj;
 
-		static UInt32 __stdcall ScanThread(void *userObj);
+		static void __stdcall ScanThread(NotNullPtr<Sync::Thread> thread);
 	public:
 		WiFiCapturer();
 		~WiFiCapturer();

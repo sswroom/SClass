@@ -80,7 +80,7 @@ namespace Net
 				return true;
 			}
 
-			Bool AddTimeHeader(Text::CString name, Data::DateTime *dt)
+			Bool AddTimeHeader(Text::CString name, NotNullPtr<Data::DateTime> dt)
 			{
 				UTF8Char sbuff[256];
 				UTF8Char *sptr = Net::WebUtil::Date2Str(sbuff, dt);
@@ -134,24 +134,25 @@ namespace Net
 				return this->AddHeader(CSTR("Content-Type"), contentType);
 			}
 
-			Bool AddDate(Data::DateTime *dt)
+			Bool AddDate(NotNullPtr<Data::DateTime> dt)
 			{
 				return this->AddTimeHeader(CSTR("Date"), dt);
 			}
 
 			Bool AddExpireTime(Data::DateTime *dt)
 			{
-				if (dt == 0)
+				NotNullPtr<Data::DateTime> nnDt;
+				if (!nnDt.Set(dt))
 				{
 					return this->AddHeader(CSTR("Expires"), CSTR("0"));
 				}
 				else
 				{
-					return this->AddTimeHeader(CSTR("Expires"), dt);
+					return this->AddTimeHeader(CSTR("Expires"), nnDt);
 				}
 			}
 
-			Bool AddLastModified(Data::DateTime *dt)
+			Bool AddLastModified(NotNullPtr<Data::DateTime> dt)
 			{
 				return this->AddTimeHeader(CSTR("Last-Modified"), dt);
 			}

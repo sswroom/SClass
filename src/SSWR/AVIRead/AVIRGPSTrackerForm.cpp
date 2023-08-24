@@ -148,7 +148,7 @@ void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnTimerTick(void *userObj)
 	else
 	{
 		dt.SetCurrTimeUTC();
-		if (dt.DiffMS(&me->lastUpdateTime) >= 20000)
+		if (dt.DiffMS(me->lastUpdateTime) >= 20000)
 		{
 			me->lastUpdateTime.SetCurrTimeUTC();
 			me->locSvc->ErrorRecover();

@@ -25,7 +25,7 @@ UInt32 __stdcall Net::WebServer::MemoryWebSessionManager::CheckThread(void *user
 		while (!me->chkToStop)
 		{
 			currTime.SetCurrTimeUTC();
-			if (currTime.DiffMS(&lastChkTime) >= me->chkInterval)
+			if (currTime.DiffMS(lastChkTime) >= me->chkInterval)
 			{
 				lastChkTime.SetCurrTimeUTC();
 

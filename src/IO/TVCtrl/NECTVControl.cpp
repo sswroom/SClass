@@ -55,9 +55,9 @@ Bool IO::TVCtrl::NECTVControl::SendCommand(Text::CString cmd, UTF8Char *cmdReply
 	UOSInt i;
 	UInt8 bcc;
 	dt.SetCurrTimeUTC();
-	if (dt.CompareTo(&this->nextTime) < 0)
+	if (dt.CompareTo(this->nextTime) < 0)
 	{
-		Int64 timeDiff = this->nextTime.DiffMS(&dt);
+		Int64 timeDiff = this->nextTime.DiffMS(dt);
 		Sync::SimpleThread::Sleep((UInt32)timeDiff);
 	}
 	
@@ -102,7 +102,7 @@ Bool IO::TVCtrl::NECTVControl::SendCommand(Text::CString cmd, UTF8Char *cmdReply
 	{
 		Int64 timeDiff;
 		dt.SetCurrTimeUTC();
-		timeDiff = dt.DiffMS(&this->nextTime);
+		timeDiff = dt.DiffMS(this->nextTime);
 		if (timeDiff >= cmdTimeout)
 			break;
 		if (this->recvSize > 0)
@@ -148,9 +148,9 @@ Bool IO::TVCtrl::NECTVControl::GetParameter(UInt8 opCodePage, UInt8 opCode, UInt
 	OSInt i;
 	UInt8 bcc;
 	dt.SetCurrTimeUTC();
-	if (dt.CompareTo(&this->nextTime) < 0)
+	if (dt.CompareTo(this->nextTime) < 0)
 	{
-		Int64 timeDiff = this->nextTime.DiffMS(&dt);
+		Int64 timeDiff = this->nextTime.DiffMS(dt);
 		Sync::SimpleThread::Sleep((UInt32)timeDiff);
 	}
 	
@@ -193,7 +193,7 @@ Bool IO::TVCtrl::NECTVControl::GetParameter(UInt8 opCodePage, UInt8 opCode, UInt
 	{
 		Int64 timeDiff;
 		dt.SetCurrTimeUTC();
-		timeDiff = dt.DiffMS(&this->nextTime);
+		timeDiff = dt.DiffMS(this->nextTime);
 		if (timeDiff >= cmdTimeout)
 			break;
 		if (this->recvSize > 0)
@@ -243,9 +243,9 @@ Bool IO::TVCtrl::NECTVControl::SetParameter(UInt8 opCodePage, UInt8 opCode, UInt
 	OSInt i;
 	UInt8 bcc;
 	dt.SetCurrTimeUTC();
-	if (dt.CompareTo(&this->nextTime) < 0)
+	if (dt.CompareTo(this->nextTime) < 0)
 	{
-		Int64 timeDiff = this->nextTime.DiffMS(&dt);
+		Int64 timeDiff = this->nextTime.DiffMS(dt);
 		Sync::SimpleThread::Sleep((UInt32)timeDiff);
 	}
 	
@@ -290,7 +290,7 @@ Bool IO::TVCtrl::NECTVControl::SetParameter(UInt8 opCodePage, UInt8 opCode, UInt
 	{
 		Int64 timeDiff;
 		dt.SetCurrTimeUTC();
-		timeDiff = dt.DiffMS(&this->nextTime);
+		timeDiff = dt.DiffMS(this->nextTime);
 		if (timeDiff >= cmdTimeout)
 			break;
 		if (this->recvSize > 0)

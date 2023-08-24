@@ -22,7 +22,7 @@ namespace UI
 			Bool isMouseClick;
 			Math::Coord2D<OSInt> dispTL;
 			Double downAlpha;
-			Data::DateTime *downTime;
+			Data::DateTime downTime;
 			UI::UIEvent clkHdlr;
 			void *clkUserObj;
 			Bool rectMode;

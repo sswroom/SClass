@@ -241,7 +241,7 @@ Bool UI::DObj::RollingTextDObj::IsChanged()
 		return false;
 	Data::DateTime currTime;
 	currTime.SetCurrTimeUTC();
-	Int64 t = currTime.DiffMS(&this->startTime);
+	Int64 t = currTime.DiffMS(this->startTime);
 	UOSInt h = this->dimg->GetHeight();
 	OSInt currPos = Double2Int32(Int64_Double(t) * this->rollSpeed * 0.001);
 	while (currPos >= (OSInt)h)
@@ -277,7 +277,7 @@ void UI::DObj::RollingTextDObj::DrawObject(Media::DrawImage *dimg)
 	{
 		Data::DateTime currTime;
 		currTime.SetCurrTimeUTC();
-		Int64 t = currTime.DiffMS(&this->startTime);
+		Int64 t = currTime.DiffMS(this->startTime);
 		OSInt currPos = Double2Int32(Int64_Double(t) * this->rollSpeed * 0.001);
 		while (currPos >= (OSInt)h)
 		{

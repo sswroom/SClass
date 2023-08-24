@@ -41,7 +41,7 @@ IO::SeekableStream *Map::OSM::OSMCacheHandler::GetTileData(Int32 lev, Int32 xTil
 		Sync::Interlocked::Increment(&this->status.localCnt);
 		fs->GetFileTimes(&dt, 0, 0);
 		currTime.SetCurrTimeUTC();
-		if (currTime.DiffMS(&dt) >= 3600000)
+		if (currTime.DiffMS(dt) >= 3600000)
 		{
 			fs->SetFileTimes(&currTime, 0, 0);
 			//////////////////////////

@@ -294,7 +294,7 @@ Bool Net::WebServer::HTTPServerUtil::ResponseFile(Net::WebServer::IWebRequest *r
 		Data::DateTime t2;
 		t2.SetValue(sb2.ToCString());
 		t2.AddMS(t.GetMS());
-		if (t2.DiffMS(&t) == 0)
+		if (t2.DiffMS(t) == 0)
 		{
 			resp->SetStatusCode(Net::WebStatus::SC_NOT_MODIFIED);
 			resp->AddDefHeaders(req);
@@ -394,7 +394,7 @@ Bool Net::WebServer::HTTPServerUtil::ResponseFile(Net::WebServer::IWebRequest *r
 	}
 	resp->AddDefHeaders(req);
 	resp->AddCacheControl(cacheAge);
-	resp->AddLastModified(&t);
+	resp->AddLastModified(t);
 	resp->AddContentType(mime);
 	resp->AddHeader(CSTR("Accept-Ranges"), CSTR("bytes"));
 	if (sizeLeft <= 0)

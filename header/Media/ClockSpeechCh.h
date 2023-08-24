@@ -10,9 +10,9 @@ namespace Media
 	class ClockSpeechCh
 	{
 	private:
-		static void AppendWAV(Media::AudioConcatSource *source, Parser::FileParser::WAVParser *parser, Text::CStringNN fileName);
+		static void AppendWAV(NotNullPtr<Media::AudioConcatSource> source, NotNullPtr<Parser::FileParser::WAVParser> parser, Text::CStringNN fileName);
 	public:
-		static Media::IAudioSource *GetSpeech(Data::DateTime *time);
+		static Media::IAudioSource *GetSpeech(NotNullPtr<Data::DateTime> time);
 	};
 };
 #endif

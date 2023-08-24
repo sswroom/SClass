@@ -290,7 +290,7 @@ UInt32 __stdcall Net::RTPCliChannel::PlayThread(void *userObj)
 				while (!me->chData->playToStop)
 				{
 					dt.SetCurrTimeUTC();
-					if (dt.DiffMS(&lastDt) > 5000)
+					if (dt.DiffMS(lastDt) > 5000)
 					{
 						lastDt.SetCurrTimeUTC();
 						me->chData->playCtrl->KeepAlive(me);

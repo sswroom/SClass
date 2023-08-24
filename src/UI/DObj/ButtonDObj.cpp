@@ -33,7 +33,6 @@ UI::DObj::ButtonDObj::ButtonDObj(NotNullPtr<Media::DrawEngine> deng, Text::CStri
 	}
 	this->isVisible = true;
 	NEW_CLASS(this->rnd, Data::RandomOS());
-	NEW_CLASS(this->downTime, Data::DateTime());
 	this->alpha = this->rnd->NextDouble() * 0.5 + 0.5;
 	this->a = 0;
 	this->clkHdlr = clkHdlr;
@@ -55,7 +54,6 @@ UI::DObj::ButtonDObj::~ButtonDObj()
 		this->deng->DeleteImage(this->bmpClicked);
 		this->bmpClicked = 0;
 	}
-	DEL_CLASS(this->downTime);
 	DEL_CLASS(this->rnd);
 }
 
@@ -307,7 +305,7 @@ void UI::DObj::ButtonDObj::OnMouseDown()
 {
 	this->downAlpha = this->alpha;
 	this->isMouseDown = true;
-	this->downTime->SetCurrTime();
+	this->downTime.SetCurrTime();
 }
 
 void UI::DObj::ButtonDObj::OnMouseUp()

@@ -6,6 +6,7 @@
 #include "Manage/ProcessExecution.h"
 #include "Sync/Mutex.h"
 #include "Sync/MutexUsage.h"
+#include "Sync/Thread.h"
 #include "Text/String.h"
 
 namespace IO
@@ -23,13 +24,12 @@ namespace IO
 			Text::String *lastCmd;
 			IO::BTScanner::RecordHandler recHdlr;
 			void *recHdlrObj;
-			Bool threadRunning;
-			Bool threadToStop;
+			Sync::Thread thread;
 			Bool agentOn;
 			Bool scanOn;
 			Bool cmdReady;
 
-			static UInt32 __stdcall ReadThread(void *obj);
+			static void __stdcall ReadThread(NotNullPtr<Sync::Thread> thread);
 			void SendCmd(const UTF8Char *cmd, UOSInt cmdLen);
 
 			IO::BTScanLog::ScanRecord3 *DeviceGetByStr(const UTF8Char *s, UOSInt len);

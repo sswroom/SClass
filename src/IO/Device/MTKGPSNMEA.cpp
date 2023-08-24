@@ -235,7 +235,7 @@ Bool IO::Device::MTKGPSNMEA::ReadLogPart(UOSInt addr, UInt8 *buff)
 		if (resp)
 			break;
 		dt2.SetCurrTimeUTC();
-		if (dt2.DiffMS(&dt) >= 2000)
+		if (dt2.DiffMS(dt) >= 2000)
 			break;
 	}
 
@@ -550,7 +550,7 @@ Text::String *IO::Device::MTKGPSNMEA::SendMTKCommand(const UInt8 *cmdBuff, UOSIn
 		if (resultStr)
 			break;
 		dt2.SetCurrTimeUTC();
-		if (dt2.Diff(&dt) >= timeout)
+		if (dt2.Diff(dt) >= timeout)
 			break;
 	}
 	mutUsage.EndUse();

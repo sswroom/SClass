@@ -8,20 +8,19 @@
 
 #include <stdio.h>
 
-UInt32 __stdcall IO::ProgCtrl::BluetoothCtlProgCtrl::ReadThread(void *obj)
+void __stdcall IO::ProgCtrl::BluetoothCtlProgCtrl::ReadThread(NotNullPtr<Sync::Thread> thread)
 {
-	IO::ProgCtrl::BluetoothCtlProgCtrl *me = (IO::ProgCtrl::BluetoothCtlProgCtrl*)obj;
+	IO::ProgCtrl::BluetoothCtlProgCtrl *me = (IO::ProgCtrl::BluetoothCtlProgCtrl*)thread->GetUserObj();
 	UInt8 buff[512];
 	UOSInt readSize;
 	Text::PString sarr[2];
 	UOSInt i;
 	IO::BTScanLog::ScanRecord3 *dev;
 
-	me->threadRunning = true;
 	{
 		Text::StringBuilderUTF8 sb;
 		Text::StringBuilderUTF8 sbBuff;
-		while (!me->threadToStop)
+		while (!thread->IsStopping())
 		{
 			readSize = me->prog->Read(BYTEARR(buff));
 /*			sb.ClearStr();
@@ -43,6 +42,10 @@ UInt32 __stdcall IO::ProgCtrl::BluetoothCtlProgCtrl::ReadThread(void *obj)
 				{
 					mutUsage.EndUse();
 					if (sarr[0].v[0] == 0 || sarr[0].v[0] == ' ' || sarr[0].v[0] == '\t')
+					{
+
+					}
+					else if (sarr[0].Equals(UTF8STRC("Waiting to connect to bluetoothd...")))
 					{
 
 					}
@@ -300,12 +303,11 @@ UInt32 __stdcall IO::ProgCtrl::BluetoothCtlProgCtrl::ReadThread(void *obj)
 			sbBuff.SetSubstr((UOSInt)(sarr[0].v - sb.ToString()));
 		}
 	}
-	me->threadRunning = false;
-	return 0;
 }
+
 void IO::ProgCtrl::BluetoothCtlProgCtrl::SendCmd(const UTF8Char *cmd, UOSInt cmdLen)
 {
-	if (!this->threadRunning)
+	if (!this->thread.IsRunning())
 	{
 		return;
 	}
@@ -389,24 +391,18 @@ void IO::ProgCtrl::BluetoothCtlProgCtrl::DeviceFree(IO::BTScanLog::ScanRecord3 *
 	MemFree(dev);
 }
 
-IO::ProgCtrl::BluetoothCtlProgCtrl::BluetoothCtlProgCtrl()
+IO::ProgCtrl::BluetoothCtlProgCtrl::BluetoothCtlProgCtrl() : thread(ReadThread, this, CSTR("BTCtrlProgCtrl"))
 {
 	this->lastCmd = 0;
 	this->recHdlr = 0;
 	this->recHdlrObj = 0;
-	this->threadRunning = false;
-	this->threadToStop = false;
 	this->agentOn = false;
 	this->scanOn = false;
 	this->cmdReady = false;
 	NEW_CLASS(this->prog, Manage::ProcessExecution(CSTR("bluetoothctl")));
 	if (this->prog->IsRunning())
 	{
-		Sync::ThreadUtil::Create(ReadThread, this);
-	}
-	else
-	{
-		this->threadToStop = true;
+		this->thread.Start();
 	}
 }
 
@@ -441,7 +437,7 @@ void IO::ProgCtrl::BluetoothCtlProgCtrl::ScanOff()
 
 void IO::ProgCtrl::BluetoothCtlProgCtrl::Close()
 {
-	this->threadToStop = true;
+	this->thread.BeginStop();
 	if (this->prog->IsRunning())
 	{
 		if (this->agentOn)
@@ -463,10 +459,7 @@ void IO::ProgCtrl::BluetoothCtlProgCtrl::Close()
 		}
 		this->prog->Close();
 	}
-	while (this->threadRunning)
-	{
-		Sync::SimpleThread::Sleep(1);
-	}
+	this->thread.WaitForEnd();
 }
 
 Bool IO::ProgCtrl::BluetoothCtlProgCtrl::SetScanMode(ScanMode scanMode)
@@ -476,16 +469,13 @@ Bool IO::ProgCtrl::BluetoothCtlProgCtrl::SetScanMode(ScanMode scanMode)
 
 Bool IO::ProgCtrl::BluetoothCtlProgCtrl::WaitForCmdReady()
 {
-	if ((this->threadRunning || !this->threadToStop) && !this->cmdReady)
+	if ((this->thread.IsRunning() || !this->thread.IsStopping()) && !this->cmdReady)
 	{
 		Int64 stTime;
-		Data::DateTime dt;
-		dt.SetCurrTimeUTC();
-		stTime = dt.ToTicks();
+		stTime = Data::DateTimeUtil::GetCurrTimeMillis();
 		while (!this->cmdReady)
 		{
-			dt.SetCurrTimeUTC();
-			if (dt.ToTicks() - stTime >= 2000)
+			if (Data::DateTimeUtil::GetCurrTimeMillis() - stTime >= 2000)
 			{
 				break;
 			}

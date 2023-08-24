@@ -18,7 +18,7 @@ UInt32 __stdcall Net::RSSReader::RSSThread(void *userObj)
 	while (!me->threadToStop)
 	{
 		dt->SetCurrTimeUTC();
-		if (dt->CompareTo(&me->nextDT) > 0)
+		if (dt->CompareTo(me->nextDT) > 0)
 		{
 			NEW_CLASS(rss, Net::RSS(me->url->ToCString(), 0, me->sockf, me->ssl, me->timeout));
 			if (rss->IsError())

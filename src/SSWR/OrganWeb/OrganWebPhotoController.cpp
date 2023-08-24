@@ -419,7 +419,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoId(Net::WebServer::IW
 				resp->AddDefHeaders(req);
 				resp->AddContentLength(buffSize);
 				resp->AddContentType(CSTR("image/jpeg"));
-				resp->AddLastModified(&dt2);
+				resp->AddLastModified(dt2);
 				resp->Write(buff.Ptr(), buffSize);
 				mutUsage.EndUse();
 				return;

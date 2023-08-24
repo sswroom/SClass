@@ -4,12 +4,10 @@
 #include "Math/Math.h"
 #include "Net/WiFiCapturer.h"
 #include "Sync/Interlocked.h"
-#include "Sync/SimpleThread.h"
-#include "Sync/ThreadUtil.h"
 
-UInt32 __stdcall Net::WiFiCapturer::ScanThread(void *userObj)
+void __stdcall Net::WiFiCapturer::ScanThread(NotNullPtr<Sync::Thread> thread)
 {
-	Net::WiFiCapturer *me = (Net::WiFiCapturer*)userObj;
+	Net::WiFiCapturer *me = (Net::WiFiCapturer*)thread->GetUserObj();
 	Net::WirelessLAN::Interface *interf = me->interf;
 	Net::WirelessLAN::BSSInfo *bss;
 	UOSInt i;
@@ -25,17 +23,17 @@ UInt32 __stdcall Net::WiFiCapturer::ScanThread(void *userObj)
 	Data::Timestamp lastStoreTime;
 	Data::Timestamp currTime;
 
-	me->threadRunning = true;
 	{
 		Data::ArrayList<Net::WirelessLAN::BSSInfo *> bssList;
 		mac[0] = 0;
 		mac[1] = 0;
 		lastStoreTime = Data::Timestamp::Now();
-		while (!me->threadToStop)
+		while (!thread->IsStopping())
 		{
 			if (interf->Scan())
 			{
-				Sync::SimpleThread::Sleep(10000);
+				thread->Wait(10000);
+				if (thread->IsStopping()) break;
 				interf->GetBSSList(&bssList);
 				currTime = Data::Timestamp::Now();
 				me->lastScanTime = currTime;
@@ -141,7 +139,7 @@ UInt32 __stdcall Net::WiFiCapturer::ScanThread(void *userObj)
 			}
 			else
 			{
-				Sync::SimpleThread::Sleep(5000);
+				thread->Wait(5000);
 			}
 			currTime = Data::Timestamp::Now();
 			if (currTime.DiffMS(lastStoreTime) >= 600000)
@@ -151,15 +149,11 @@ UInt32 __stdcall Net::WiFiCapturer::ScanThread(void *userObj)
 			}
 		}
 	}
-	me->threadRunning = false;
-	return 0;
 }
 
-Net::WiFiCapturer::WiFiCapturer()
+Net::WiFiCapturer::WiFiCapturer() : thread(ScanThread, this, CSTR("WiFiCapturer"))
 {
 	this->lastFileName = 0;
-	this->threadRunning = false;
-	this->threadToStop = false;
 	this->interf = 0;
 	this->hdlr = 0;
 	this->hdlrObj = 0;
@@ -180,7 +174,7 @@ Bool Net::WiFiCapturer::IsError()
 
 Bool Net::WiFiCapturer::IsStarted()
 {
-	return this->threadRunning;
+	return this->thread.IsRunning();
 }
 
 Data::Timestamp Net::WiFiCapturer::GetLastScanTime()
@@ -194,7 +188,6 @@ Bool Net::WiFiCapturer::Start()
 	{
 		return false;
 	}
-	this->threadToStop = false;
 	SDEL_CLASS(this->interf);
 	UOSInt i;
 	NotNullPtr<Text::String> namePtr;
@@ -214,7 +207,7 @@ Bool Net::WiFiCapturer::Start()
 		else
 		{
 			this->interf = ifObj;
-			Sync::ThreadUtil::Create(ScanThread, this);
+			this->thread.Start();
 			found = true;
 			break;
 		}
@@ -234,13 +227,9 @@ Bool Net::WiFiCapturer::Start()
 
 void Net::WiFiCapturer::Stop()
 {
-	if (this->threadRunning)
+	if (this->thread.IsRunning())
 	{
-		threadToStop = true;
-		while (this->threadRunning)
-		{
-			Sync::SimpleThread::Sleep(10);
-		}
+		this->thread.Stop();
 		SDEL_CLASS(this->interf);
 	}
 }

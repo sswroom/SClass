@@ -135,7 +135,7 @@ Text::CString Net::WebUtil::RequestMethodGetName(RequestMethod reqMeth)
 	}
 }
 
-UTF8Char *Net::WebUtil::Date2Str(UTF8Char *sbuff, Data::DateTime *dt)
+UTF8Char *Net::WebUtil::Date2Str(UTF8Char *sbuff, NotNullPtr<Data::DateTime> dt)
 {
 	const Char *wds[] = {"Sun, ", "Mon, ", "Tue, ", "Wed, ", "Thu, ", "Fri, ", "Sat, "};
 	Data::DateTime t(dt);

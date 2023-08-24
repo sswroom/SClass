@@ -19,7 +19,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		message.SetSubject(CSTR("Email Testing"));
 		message.SetContent(CSTR("This is a test email"), CSTR("text/html; charset=utf-8"));
 		dt.SetCurrTime();
-		message.SetSentDate(&dt);
+		message.SetSentDate(dt);
 		message.SetFrom(CSTR("Test"), CSTR("sswroom@simontest.local"));
 		message.AddTo(CSTR("Simon"), CSTR("sswroom@yahoo.com"));
 //		message.AddAttachment(CSTR("/home/sswroom/Progs/Temp/OCR2.jpg"));

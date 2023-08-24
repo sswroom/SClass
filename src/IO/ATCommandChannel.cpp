@@ -196,7 +196,7 @@ UOSInt IO::ATCommandChannel::SendATCommand(Data::ArrayList<Text::String *> *retA
 		if (cmdEnd || !this->threadRunning)
 			break;
 		dt2.SetCurrTimeUTC();
-		if (dt2.Diff(&dt) >= timeout)
+		if (dt2.Diff(dt) >= timeout)
 			break;
 	}
 
@@ -247,7 +247,7 @@ UOSInt IO::ATCommandChannel::SendATCommands(Data::ArrayList<Text::String *> *ret
 		if (cmdEnd || !this->threadRunning)
 			break;
 		dt2.SetCurrTimeUTC();
-		if (dt2.Diff(&dt) >= timeout)
+		if (dt2.Diff(dt) >= timeout)
 			break;
 	}
 	return retSize;
@@ -314,7 +314,7 @@ UOSInt IO::ATCommandChannel::SendDialCommand(Data::ArrayList<Text::String *> *re
 		if (cmdEnd || !this->threadRunning)
 			break;
 		dt2.SetCurrTimeUTC();
-		if (dt2.Diff(&dt) >= timeout)
+		if (dt2.Diff(dt) >= timeout)
 			break;
 	}
 	return retSize;

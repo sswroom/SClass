@@ -18,12 +18,14 @@ Bool __stdcall SSWR::OrganWeb::OrganWebHandler::OnSessionDel(Net::WebServer::IWe
 
 Bool __stdcall SSWR::OrganWeb::OrganWebHandler::OnSessionCheck(Net::WebServer::IWebSession* sess, void *userObj)
 {
-	Data::DateTime *t;
+	NotNullPtr<Data::DateTime> t;
 	Data::DateTime currTime;
-	t = (Data::DateTime*)sess->GetValuePtr(UTF8STRC("LastUseTime"));
-	currTime.SetCurrTimeUTC();
-	if (currTime.DiffMS(t) >= 1800000)
-		return true;
+	if (t.Set((Data::DateTime*)sess->GetValuePtr(UTF8STRC("LastUseTime"))))
+	{
+		currTime.SetCurrTimeUTC();
+		if (currTime.DiffMS(t) >= 1800000)
+			return true;
+	}
 	return false;
 }
 

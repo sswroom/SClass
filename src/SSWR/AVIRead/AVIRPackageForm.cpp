@@ -255,8 +255,8 @@ void __stdcall SSWR::AVIRead::AVIRPackageForm::OnTimerTick(void *userObj)
 	readPos = me->readLast;
 	readCurr = me->readCurr;
 	me->readCurr = 0;
-	timeDiff = me->readReadTime.DiffMS(&me->readLastTimer);
-	me->readLastTimer.SetValue(&me->readReadTime);
+	timeDiff = me->readReadTime.DiffMS(me->readLastTimer);
+	me->readLastTimer.SetValue(me->readReadTime);
 	readMutUsage.EndUse();
 	if (timeDiff > 0)
 	{
@@ -489,7 +489,7 @@ SSWR::AVIRead::AVIRPackageForm::AVIRPackageForm(UI::GUIClientControl *parent, No
 	this->threadRunning = false;
 	this->threadToStop = false;
 	this->readLastTimer.SetCurrTimeUTC();
-	this->readReadTime.SetValue(&this->readLastTimer);
+	this->readReadTime.SetValue(this->readLastTimer);
 	this->readTotal = 0;
 	this->readCurr = 0;
 	this->readLast = 0;

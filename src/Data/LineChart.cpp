@@ -1064,7 +1064,7 @@ void Data::LineChart::Plot(Media::DrawImage *img, Double x, Double y, Double wid
 		dt1.ConvertTimeZoneQHR(this->timeZoneQHR);
 		dt2.SetTicks(xMinDate);
 		dt2.ConvertTimeZoneQHR(this->timeZoneQHR);
-		if (dt1.IsSameDay(&dt2))
+		if (dt1.IsSameDay(dt2))
 		{
 			sptr = dt1.ToString(sbuff, (const Char*)this->timeFormat->v);
 			rcSize = img->GetTextSize(fnt, CSTRP(sbuff, sptr));
@@ -1242,7 +1242,7 @@ void Data::LineChart::Plot(Media::DrawImage *img, Double x, Double y, Double wid
 		dt1.ConvertTimeZoneQHR(this->timeZoneQHR);
 		dt2.SetTicks(xMaxDate);
 		dt2.ConvertTimeZoneQHR(this->timeZoneQHR);
-		Data::Chart::CalScaleMarkDate(&locations, &labels, &dt1, &dt2, width - y1Leng - y2Leng - this->pointSize * 2, fntH, (const Char*)this->dateFormat->v, (const Char*)this->timeFormat->v);
+		Data::Chart::CalScaleMarkDate(&locations, &labels, dt1, dt2, width - y1Leng - y2Leng - this->pointSize * 2, fntH, (const Char*)this->dateFormat->v, (const Char*)this->timeFormat->v);
 	}
 	else
 	{
@@ -1286,7 +1286,7 @@ void Data::LineChart::Plot(Media::DrawImage *img, Double x, Double y, Double wid
 		dt1.ConvertTimeZoneQHR(this->timeZoneQHR);
 		dt2.SetTicks(y2MaxDate);
 		dt2.ConvertTimeZoneQHR(this->timeZoneQHR);
-		Data::Chart::CalScaleMarkDate(&locations, &labels, &dt1, &dt2, height - xLeng - fntH / 2 - this->pointSize * 2, fntH, (const Char*)this->dateFormat->v, (const Char*)this->timeFormat->v);
+		Data::Chart::CalScaleMarkDate(&locations, &labels, dt1, dt2, height - xLeng - fntH / 2 - this->pointSize * 2, fntH, (const Char*)this->dateFormat->v, (const Char*)this->timeFormat->v);
 	}
 	else
 	{

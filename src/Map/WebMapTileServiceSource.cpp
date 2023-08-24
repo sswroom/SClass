@@ -1055,7 +1055,7 @@ IO::StreamData *Map::WebMapTileServiceSource::LoadTileImageData(UOSInt level, Ma
 			currTime.SetCurrTimeUTC();
 			currTime.AddDay(-7);
 			((IO::StmData::FileData*)fd.Ptr())->GetFileStream()->GetFileTimes(&dt, 0, 0);
-			if (dt.CompareTo(&currTime) > 0)
+			if (dt.CompareTo(currTime) > 0)
 			{
 				if (it)
 					*it = this->currResource->imgType;
@@ -1093,7 +1093,7 @@ IO::StreamData *Map::WebMapTileServiceSource::LoadTileImageData(UOSInt level, Ma
 	cli->Connect(urlSb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, true);
 	if (hasTime)
 	{
-		sptr = Net::WebUtil::Date2Str(sbuff, &dt);
+		sptr = Net::WebUtil::Date2Str(sbuff, dt);
 		cli->AddHeaderC(CSTR("If-Modified-Since"), CSTRP(sbuff, sptr));
 	}
 	Net::WebStatus::StatusCode status = cli->GetRespStatus();

@@ -52,7 +52,7 @@ Bool UI::DObj::RollingMessageDObj::IsChanged()
 		return true;
 	Data::DateTime currTime;
 	currTime.SetCurrTimeUTC();
-	Double t = currTime.Diff(&this->startTime).GetTotalSec();
+	Double t = currTime.Diff(this->startTime).GetTotalSec();
 	OSInt currPos = Double2OSInt(UOSInt2Double(this->size.x) * t / this->rollSpeed);
 	if (currPos != this->lastRollPos)
 	{
@@ -74,7 +74,7 @@ void UI::DObj::RollingMessageDObj::DrawObject(Media::DrawImage *dimg)
 	{
 		Data::DateTime currTime;
 		currTime.SetCurrTimeUTC();
-		Double t = currTime.Diff(&this->startTime).GetTotalSec();
+		Double t = currTime.Diff(this->startTime).GetTotalSec();
 		OSInt currPos = Double2OSInt(UOSInt2Double(this->size.x) * t / this->rollSpeed);
 		OSInt lastPos = currPos + this->lastMsgOfst;
 		if (this->lastMessage)

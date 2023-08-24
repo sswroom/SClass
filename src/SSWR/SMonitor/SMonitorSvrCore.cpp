@@ -131,9 +131,9 @@ UInt32 __stdcall SSWR::SMonitor::SMonitorSvrCore::CheckThread(void *userObj)
 		while (!me->checkToStop)
 		{
 			currTime.SetCurrTimeUTC();
-			if (currTime.DiffMS(&lastStoreTime) >= 300000)
+			if (currTime.DiffMS(lastStoreTime) >= 300000)
 			{
-				lastStoreTime.SetValue(&currTime);
+				lastStoreTime.SetValue(currTime);
 				me->SaveDatas();
 				
 				if (me->uaLog.IsModified())

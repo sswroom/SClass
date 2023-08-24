@@ -102,7 +102,7 @@ Media::PhotoInfo::PhotoInfo(NotNullPtr<IO::StreamData> fd)
 
 			if (exif->GetPhotoDate(&dt))
 			{
-				NEW_CLASS(this->photoDate, Data::DateTime(&dt));
+				NEW_CLASS(this->photoDate, Data::DateTime(dt));
 			}
 
 			Media::EXIFData::EXIFItem *item;
@@ -186,9 +186,10 @@ Bool Media::PhotoInfo::HasInfo() const
 
 Bool Media::PhotoInfo::GetPhotoDate(Data::DateTime *dt) const
 {
-	if (this->photoDate)
+	NotNullPtr<Data::DateTime> photoDate;
+	if (photoDate.Set(this->photoDate))
 	{
-		dt->SetValue(this->photoDate);
+		dt->SetValue(photoDate);
 		return true;
 	}
 	return false;

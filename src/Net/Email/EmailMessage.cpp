@@ -135,7 +135,7 @@ void Net::Email::EmailMessage::GenMultipart(IO::Stream *stm, Text::CString bound
 		if (k + 47 > LINECHARCNT)
 		{
 			stm->Write(UTF8STRC("\r\n\tcreation-date=\""));
-			sptr = Net::WebUtil::Date2Str(sbuff, &att->createTime);
+			sptr = Net::WebUtil::Date2Str(sbuff, att->createTime);
 			stm->Write(sbuff, (UOSInt)(sptr - sbuff));
 			stm->Write(UTF8STRC("\";"));
 			k = 21 + (UOSInt)(sptr - sbuff);
@@ -143,7 +143,7 @@ void Net::Email::EmailMessage::GenMultipart(IO::Stream *stm, Text::CString bound
 		else
 		{
 			stm->Write(UTF8STRC(" creation-date=\""));
-			sptr = Net::WebUtil::Date2Str(sbuff, &att->createTime);
+			sptr = Net::WebUtil::Date2Str(sbuff, att->createTime);
 			stm->Write(sbuff, (UOSInt)(sptr - sbuff));
 			stm->Write(UTF8STRC("\";"));
 			k += 18 + (UOSInt)(sptr - sbuff);
@@ -151,14 +151,14 @@ void Net::Email::EmailMessage::GenMultipart(IO::Stream *stm, Text::CString bound
 		if (k + 50 > LINECHARCNT)
 		{
 			stm->Write(UTF8STRC("\r\n\tmodification-date=\""));
-			sptr = Net::WebUtil::Date2Str(sbuff, &att->modifyTime);
+			sptr = Net::WebUtil::Date2Str(sbuff, att->modifyTime);
 			stm->Write(sbuff, (UOSInt)(sptr - sbuff));
 			stm->Write(UTF8STRC("\"\r\n"));
 		}
 		else
 		{
 			stm->Write(UTF8STRC(" modification-date=\""));
-			sptr = Net::WebUtil::Date2Str(sbuff, &att->modifyTime);
+			sptr = Net::WebUtil::Date2Str(sbuff, att->modifyTime);
 			stm->Write(sbuff, (UOSInt)(sptr - sbuff));
 			stm->Write(UTF8STRC("\"\r\n"));
 			k = 21 + (UOSInt)(sptr - sbuff);
@@ -321,7 +321,7 @@ Bool Net::Email::EmailMessage::SetContent(Text::CString content, Text::CString c
 	return true;
 }
 
-Bool Net::Email::EmailMessage::SetSentDate(Data::DateTime *dt)
+Bool Net::Email::EmailMessage::SetSentDate(NotNullPtr<Data::DateTime> dt)
 {
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
@@ -502,7 +502,7 @@ Net::Email::EmailMessage::Attachment *Net::Email::EmailMessage::AddAttachment(co
 	attachment->content = MemAlloc(UInt8, attachment->contentLen);
 	MemCopyNO(attachment->content, content, contentLen);
 	attachment->createTime.SetCurrTimeUTC();
-	attachment->modifyTime.SetValue(&attachment->createTime);
+	attachment->modifyTime.SetValue(attachment->createTime);
 	attachment->fileName = Text::String::New(fileName.Substring(fileName.LastIndexOf(IO::Path::PATH_SEPERATOR) + 1));
 	sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("attach")), this->attachments.GetCount() + 1);
 	attachment->contentId = Text::String::NewP(sbuff, sptr);

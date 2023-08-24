@@ -39,7 +39,7 @@ void __stdcall SSWR::AVIRead::AVIRPerformanceLogForm::OnTimerTick(void *userObj)
 	{
 		Data::DateTime dt;
 		dt.SetCurrTimeUTC();
-		if (dt.DiffMS(&me->testTime) >= 600000)
+		if (dt.DiffMS(me->testTime) >= 600000)
 		{
 			me->TestSpeed();
 		}

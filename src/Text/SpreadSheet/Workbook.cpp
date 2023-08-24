@@ -80,13 +80,14 @@ Text::SpreadSheet::Workbook *Text::SpreadSheet::Workbook::Clone() const
 	newWB->author = SCOPY_TEXT(this->author);
 	newWB->lastAuthor = SCOPY_TEXT(this->lastAuthor);
 	newWB->company = SCOPY_TEXT(this->company);
-	if (this->createTime)
+	NotNullPtr<Data::DateTime> dt;
+	if (dt.Set(this->createTime))
 	{
-		NEW_CLASS(newWB->createTime, Data::DateTime(this->createTime));
+		NEW_CLASS(newWB->createTime, Data::DateTime(dt));
 	}
-	if (this->modifyTime)
+	if (dt.Set(this->modifyTime))
 	{
-		NEW_CLASS(newWB->modifyTime, Data::DateTime(this->modifyTime));
+		NEW_CLASS(newWB->modifyTime, Data::DateTime(dt));
 	}
 	newWB->version = this->version;
 	newWB->windowTopX = this->windowTopX;
@@ -181,18 +182,20 @@ void Text::SpreadSheet::Workbook::SetCompany(const UTF8Char *company)
 void Text::SpreadSheet::Workbook::SetCreateTime(Data::DateTime *createTime)
 {
 	SDEL_CLASS(this->createTime);
-	if (createTime)
+	NotNullPtr<Data::DateTime> dt;
+	if (dt.Set(createTime))
 	{
-		NEW_CLASS(this->createTime, Data::DateTime(createTime));
+		NEW_CLASS(this->createTime, Data::DateTime(dt));
 	}
 }
 
 void Text::SpreadSheet::Workbook::SetModifyTime(Data::DateTime *modifyTime)
 {
 	SDEL_CLASS(this->modifyTime);
-	if (modifyTime)
+	NotNullPtr<Data::DateTime> dt;
+	if (dt.Set(modifyTime))
 	{
-		NEW_CLASS(this->modifyTime, Data::DateTime(modifyTime));
+		NEW_CLASS(this->modifyTime, Data::DateTime(dt));
 	}
 }
 

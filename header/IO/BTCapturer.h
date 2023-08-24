@@ -3,6 +3,7 @@
 #include "IO/BTScanner.h"
 #include "Sync/Event.h"
 #include "Sync/MutexUsage.h"
+#include "Sync/Thread.h"
 
 namespace IO
 {
@@ -11,12 +12,10 @@ namespace IO
 	private:
 		IO::BTScanner *bt;
 		const UTF8Char *lastFileName;
-		Bool threadRunning;
-		Bool threadToStop;
-		Sync::Event threadEvt;
+		Sync::Thread thread;
 		Bool autoStore;
 
-		static UInt32 __stdcall CheckThread(void *userObj);
+		static void __stdcall CheckThread(NotNullPtr<Sync::Thread> thread);
 	public:
 		BTCapturer(Bool autoStore);
 		~BTCapturer();

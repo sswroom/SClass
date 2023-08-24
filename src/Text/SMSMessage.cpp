@@ -116,7 +116,7 @@ UInt8 Text::SMSMessage::ParseIBCD(UInt8 byte)
 	return (UInt8)((byte & 0xf) * 10 + (byte >> 4));
 }
 
-void Text::SMSMessage::ParseTimestamp(const UInt8 *buff, Data::DateTime *time)
+void Text::SMSMessage::ParseTimestamp(const UInt8 *buff, NotNullPtr<Data::DateTime> time)
 {
 	if ((buff[6] & 0x8) != 0)
 	{
@@ -186,7 +186,6 @@ Text::SMSMessage::SMSMessage(const UTF16Char *address, const UTF16Char *smsc, SM
 		this->smsc = 0;
 	}
 	this->ud = ud;
-	NEW_CLASS(this->msgTime, Data::DateTime());
 	this->mms = false;
 	this->replyPath = false;
 	this->statusReport = false;
@@ -208,15 +207,11 @@ Text::SMSMessage::~SMSMessage()
 	{
 		Text::StrDelNew(this->smsc);
 	}
-	if (this->msgTime)
-	{
-		DEL_CLASS(this->msgTime);
-	}
 }
 
-void Text::SMSMessage::SetMessageTime(Data::DateTime *msgTime)
+void Text::SMSMessage::SetMessageTime(NotNullPtr<Data::DateTime> msgTime)
 {
-	this->msgTime->SetValue(msgTime);
+	this->msgTime.SetValue(msgTime);
 }
 
 void Text::SMSMessage::SetMoreMsgToSend(Bool mms)
@@ -244,7 +239,7 @@ void Text::SMSMessage::SetMessageRef(UInt8 msgRef)
 	this->msgRef = msgRef;
 }
 
-void Text::SMSMessage::GetMessageTime(Data::DateTime *msgTime)
+void Text::SMSMessage::GetMessageTime(NotNullPtr<Data::DateTime> msgTime)
 {
 	msgTime->SetValue(this->msgTime);
 }
@@ -327,11 +322,11 @@ Text::SMSMessage *Text::SMSMessage::CreateFromPDU(const UInt8 *pduBytes)
 		pduBytes += addrByteLen;
 		/*pid = **/pduBytes++;	//protocol (TP-PID)
 		dcs = *pduBytes++;
-		ParseTimestamp(pduBytes, &msgTime);
+		ParseTimestamp(pduBytes, msgTime);
 		pduBytes += 7;
 		ud = Text::SMSUserData::CreateSMSFromBytes(pduBytes, udhi, (Text::SMSUtil::DCS)(dcs & 0xc));
 		NEW_CLASS(msg, Text::SMSMessage(address, smsc, ud));
-		msg->SetMessageTime(&msgTime);
+		msg->SetMessageTime(msgTime);
 		msg->SetMoreMsgToSend(mms);
 		msg->SetReplyPath(rp);
 		msg->SetStatusReport(sri);

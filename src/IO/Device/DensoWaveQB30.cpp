@@ -148,7 +148,7 @@ Bool IO::Device::DensoWaveQB30::WaitForReply(UInt32 timeToWait)
 	while (true)
 	{
 		currTime.SetCurrTimeUTC();
-		t = (Int32)currTime.DiffMS(&startTime);
+		t = (Int32)currTime.DiffMS(startTime);
 		if (currBuffSize != this->recvSize)
 		{
 			currBuffSize = this->recvSize;
@@ -187,7 +187,7 @@ Bool IO::Device::DensoWaveQB30::WaitForReplyVal(UInt32 timeToWait, OutParam<Int3
 	while (true)
 	{
 		currTime.SetCurrTimeUTC();
-		t = (Int32)currTime.DiffMS(&startTime);
+		t = (Int32)currTime.DiffMS(startTime);
 		if (currBuffSize != this->recvSize)
 		{
 			currBuffSize = this->recvSize;

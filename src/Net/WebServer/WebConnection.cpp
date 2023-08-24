@@ -763,7 +763,7 @@ Bool Net::WebServer::WebConnection::AddDefHeaders(Net::WebServer::IWebRequest *r
 {
 	Data::DateTime dt;
 	dt.SetCurrTimeUTC();
-	AddTimeHeader(CSTR("Date"), &dt);
+	AddTimeHeader(CSTR("Date"), dt);
 	AddHeaderS(CSTR("Server"), this->svr->GetServerName());
 	Text::String *connHdr = req->GetSHeader(CSTR("Connection"));
 	if (connHdr && connHdr->Equals(UTF8STRC("keep-alive")) && (this->keepAlive == KeepAlive::Always || (this->keepAlive == KeepAlive::Default && Net::WebServer::HTTPServerUtil::AllowKA(req->GetBrowser()))))

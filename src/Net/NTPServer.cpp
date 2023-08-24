@@ -181,7 +181,7 @@ void Net::NTPServer::WriteTime(UInt8 *buff, Data::DateTime *time)
 	dt.ToUTCTime();
 	dt.SetValue(1900, 1, 1, 0, 0, 0, 0);
 
-	timeDiff = time->DiffMS(&dt);
+	timeDiff = time->DiffMS(dt);
 	WriteMInt32(&buff[0], (Int32)(timeDiff / 1000));
 	timeDiff = timeDiff % 1000;
 	WriteMInt32(&buff[4], (MulDiv32(0x40000000, (Int32)timeDiff, 500) << 1) + 1);

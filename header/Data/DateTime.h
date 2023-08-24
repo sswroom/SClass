@@ -44,13 +44,13 @@ namespace Data
 		DateTime(UInt16 year, UInt8 month, UInt8 day, UInt8 hour, UInt8 minute, UInt8 second);
 		DateTime(UInt16 year, UInt8 month, UInt8 day, UInt8 hour, UInt8 minute, UInt8 second, UInt16 ms);
 		DateTime(Text::CString dateStr);
-		DateTime(Data::DateTime *dt);
+		DateTime(NotNullPtr<Data::DateTime> dt);
 		~DateTime();
 
 		Bool SetAsComputerTime();
 		Data::DateTime *SetCurrTime();
 		Data::DateTime *SetCurrTimeUTC();
-		void SetValue(const DateTime *time);
+		void SetValue(NotNullPtr<const DateTime> time);
 		void SetValue(UInt16 year, OSInt month, OSInt day, OSInt hour, OSInt minute, OSInt second, OSInt ms, Int8 tzQhr);
 		void SetValue(UInt16 year, OSInt month, OSInt day, OSInt hour, OSInt minute, OSInt second, OSInt ms);
 		void SetValue(Int64 ticks, Int8 tzQhr);
@@ -88,8 +88,8 @@ namespace Data
 		void ClearTime();
 		Int64 GetMSPassedDate();
 
-		Int64 DiffMS(DateTime *dt);
-		Data::Duration Diff(DateTime *dt);
+		Int64 DiffMS(NotNullPtr<DateTime> dt);
+		Data::Duration Diff(NotNullPtr<DateTime> dt);
 
 		Bool IsYearLeap();
 		Int64 ToTicks();
@@ -119,9 +119,9 @@ namespace Data
 		Bool operator<(DateTime dt);
 		
 		UTF8Char *ToLocalStr(UTF8Char *buff);
-		OSInt CompareTo(Data::DateTime *obj);
-		Int32 DateCompare(Data::DateTime *dt);
-		Bool IsSameDay(Data::DateTime *dt);
+		OSInt CompareTo(NotNullPtr<Data::DateTime> obj);
+		Int32 DateCompare(NotNullPtr<Data::DateTime> dt);
+		Bool IsSameDay(NotNullPtr<Data::DateTime> dt);
 
 		void ToUTCTime();
 		void ToLocalTime();

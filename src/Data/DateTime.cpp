@@ -153,7 +153,7 @@ Data::DateTime::DateTime(Text::CString dateStr)
 	this->SetValue(dateStr);
 }
 
-Data::DateTime::DateTime(Data::DateTime *dt)
+Data::DateTime::DateTime(NotNullPtr<Data::DateTime> dt)
 {
 	this->SetValue(dt);
 }
@@ -240,7 +240,7 @@ Data::DateTime *Data::DateTime::SetCurrTimeUTC()
 #endif
 }
 
-void Data::DateTime::SetValue(const DateTime *time)
+void Data::DateTime::SetValue(NotNullPtr<const DateTime> time)
 {
 	this->timeType = time->timeType;
 	this->tzQhr = time->tzQhr;
@@ -774,12 +774,12 @@ Int64 Data::DateTime::GetMSPassedDate()
 	return (Int64)(this->ns / 1000000) + tval->second * 1000 + tval->minute * 60000 + tval->hour * 3600000;
 }
 
-Int64 Data::DateTime::DiffMS(DateTime *dt)
+Int64 Data::DateTime::DiffMS(NotNullPtr<DateTime> dt)
 {
 	return this->ToTicks() - dt->ToTicks();
 }
 
-Data::Duration Data::DateTime::Diff(DateTime *dt)
+Data::Duration Data::DateTime::Diff(NotNullPtr<DateTime> dt)
 {
 	Int64 secs = this->ToUnixTimestamp() - dt->ToUnixTimestamp();
 	UInt32 ns1 = this->ns;
@@ -959,7 +959,7 @@ void Data::DateTime::SetNTPTime(Int32 hiDword, Int32 loDword)
 Int64 Data::DateTime::ToNTPTime()
 {
 	Data::DateTime dt(1900, 1, 1, 0, 0, 0, 0);
-	Int64 diff = this->DiffMS(&dt);
+	Int64 diff = this->DiffMS(dt);
 	Int32 vals[2];
 	vals[1] = (Int32)((diff / 1000LL) & 0xffffffffLL);
 	vals[0] = (Int32)((0x100000000LL * (diff % 1000LL)) / 1000LL);
@@ -1024,7 +1024,7 @@ UTF8Char *Data::DateTime::ToString(UTF8Char *buff, const Char *pattern)
 
 Data::DateTime Data::DateTime::operator=(Data::DateTime dt)
 {
-	this->SetValue(&dt);
+	this->SetValue(dt);
 	return *this;
 }
 
@@ -1067,7 +1067,7 @@ UTF8Char *Data::DateTime::ToLocalStr(UTF8Char *buff)
 #endif
 }
 
-OSInt Data::DateTime::CompareTo(Data::DateTime *dt)
+OSInt Data::DateTime::CompareTo(NotNullPtr<Data::DateTime> dt)
 {
 	Int64 ticks = this->ToTicks();
 	Int64 ticks2 = dt->ToTicks();
@@ -1080,7 +1080,7 @@ OSInt Data::DateTime::CompareTo(Data::DateTime *dt)
 		return 0;
 }
 
-Int32 Data::DateTime::DateCompare(Data::DateTime *dt)
+Int32 Data::DateTime::DateCompare(NotNullPtr<Data::DateTime> dt)
 {
 	Data::DateTimeUtil::TimeValue *tval1 = this->GetTimeValue();
 	Data::DateTimeUtil::TimeValue *tval2 = dt->GetTimeValue();
@@ -1100,7 +1100,7 @@ Int32 Data::DateTime::DateCompare(Data::DateTime *dt)
 		return 0;
 }
 
-Bool Data::DateTime::IsSameDay(Data::DateTime *dt)
+Bool Data::DateTime::IsSameDay(NotNullPtr<Data::DateTime> dt)
 {
 	Data::DateTimeUtil::TimeValue *tval1 = this->GetTimeValue();
 	Data::DateTimeUtil::TimeValue *tval2 = dt->GetTimeValue();

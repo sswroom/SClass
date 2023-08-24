@@ -1280,9 +1280,10 @@ UOSInt DB::DBUtil::SDBUInt64Leng(UInt64 val, DB::SQLType sqlType)
 UTF8Char *DB::DBUtil::SDBDate(UTF8Char *sqlstr, Data::DateTime *dat, DB::SQLType sqlType, Int8 tzQhr)
 {
 	UTF8Char *sptr;
-	if (dat == 0)
+	NotNullPtr<Data::DateTime> nnDat;
+	if (!nnDat.Set(dat))
 		return Text::StrConcatC(sqlstr, UTF8STRC("NULL"));
-	Data::DateTime dt(dat);
+	Data::DateTime dt(nnDat);
 	if (sqlType == DB::SQLType::Access)
 	{
 		dt.ToUTCTime();

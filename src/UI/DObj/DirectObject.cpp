@@ -23,7 +23,7 @@ Math::Coord2D<OSInt> UI::DObj::DirectObject::GetCurrPos()
 	{
 		Data::DateTime currTime;
 		currTime.SetCurrTimeUTC();
-		Double dur = Int64_Double(currTime.DiffMS(&this->moveTime)) * 0.001;
+		Double dur = Int64_Double(currTime.DiffMS(this->moveTime)) * 0.001;
 		if (dur >= this->moveDur)
 		{
 			this->currMoveType = MT_NONE;

@@ -101,7 +101,7 @@ Bool Exporter::PLTExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 			sptr = FixDouble(sptr, recs[k].altitude * 3.2808333333333333333333333333333, "0", 7);
 			sptr = Text::StrConcatC(sptr, UTF8STRC(","));
 			dt.SetInstant(recs[k].recTime);
-			sptr = Text::StrDoubleFmt(sptr, (Double)dt.DiffMS(&refTime) / 86400000.0, "0.0000000");
+			sptr = Text::StrDoubleFmt(sptr, (Double)dt.DiffMS(refTime) / 86400000.0, "0.0000000");
 			sptr = Text::StrConcatC(sptr, UTF8STRC(", "));
 			sptr = dt.ToString(sptr, "dd-MMM-yy");
 			sptr = Text::StrConcatC(sptr, UTF8STRC(", "));

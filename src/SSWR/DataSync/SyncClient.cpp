@@ -92,7 +92,7 @@ UInt32 __stdcall SSWR::DataSync::SyncClient::KAThread(void *userObj)
 			{
 				currTime.SetCurrTimeUTC();
 				Sync::MutexUsage mutUsage(me->cliMut);
-				if (me->cli && currTime.DiffMS(&me->cliKATime) >= 120000)
+				if (me->cli && currTime.DiffMS(me->cliKATime) >= 120000)
 				{
 					me->cliKATime.SetCurrTimeUTC();
 					mutUsage.EndUse();

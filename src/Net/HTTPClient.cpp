@@ -80,7 +80,7 @@ Bool Net::HTTPClient::FormAdd(Text::CString name, Text::CString value)
 	return true;
 }
 
-void Net::HTTPClient::AddTimeHeader(Text::CString name, Data::DateTime *dt)
+void Net::HTTPClient::AddTimeHeader(Text::CString name, NotNullPtr<Data::DateTime> dt)
 {
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;

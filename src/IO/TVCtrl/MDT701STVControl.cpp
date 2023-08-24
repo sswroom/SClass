@@ -47,9 +47,9 @@ Bool IO::TVCtrl::MDT701STVControl::SendBasicCommand(const Char *buff, UOSInt buf
 {
 	Data::DateTime dt;
 	dt.SetCurrTimeUTC();
-	if (dt.CompareTo(&this->nextTime) < 0)
+	if (dt.CompareTo(this->nextTime) < 0)
 	{
-		Int64 timeDiff = this->nextTime.DiffMS(&dt);
+		Int64 timeDiff = this->nextTime.DiffMS(dt);
 		Sync::SimpleThread::Sleep((UInt32)timeDiff);
 	}
 	
@@ -63,7 +63,7 @@ Bool IO::TVCtrl::MDT701STVControl::SendBasicCommand(const Char *buff, UOSInt buf
 	{
 		Int64 timeDiff;
 		dt.SetCurrTimeUTC();
-		timeDiff = dt.DiffMS(&this->nextTime);
+		timeDiff = dt.DiffMS(this->nextTime);
 		if (timeDiff >= (Int32)cmdTimeout || replySize <= this->recvSize)
 			break;
 		this->recvEvt.Wait(cmdTimeout);

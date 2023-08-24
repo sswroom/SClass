@@ -31,16 +31,13 @@
 
 #include "Sync/Mutex.h"
 #include "Sync/Event.h"
-#include "Sync/SimpleThread.h"
-#include "Sync/ThreadUtil.h"
+#include "Sync/Thread.h"
 
 #include "Text/MyString.h"
 
 #define NTPHOST CSTR("stdtime.gov.hk")
 
 Media::IAudioRenderer *audOut;
-Bool ToStop;
-Bool threadRunning;
 Data::DateTime *startDt;
 Text::String *audioDevice; //L"Realtek HD Audio output"
 IO::ConsoleWriter *console;
@@ -51,33 +48,25 @@ Net::NTPClient *timeCli;
 NotNullPtr<Data::DateTime> tmpDt;
 
 
-UInt32 __stdcall PlayThread(void *obj)
+void __stdcall PlayThread(NotNullPtr<Sync::Thread> thread)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
-	Parser::FileParser::WAVParser *parser;
+	Parser::FileParser::WAVParser parser;
 	Media::RefClock *clk;
-	Data::DateTime *currDt;
-	Data::DateTime *updateDt;
-	Data::ArrayList<Media::MediaFile*> *stmList;
+	Data::DateTime currDt;
+	Data::DateTime updateDt;
+	Data::ArrayList<Media::MediaFile*> stmList;
 	Media::MediaFile *file;
-	Data::Random *random;
+	Data::RandomOS random;
 	UOSInt i;
 	UOSInt currStm;
 	Net::HKOWeather::WeatherSignal currSignal;
 	Net::HKOWeather::WeatherSignal nextSignal;
 	Bool typhoonStop = false;
 
-	threadRunning = true;
-
-	NEW_CLASS(parser, Parser::FileParser::WAVParser());
-	NEW_CLASS(currDt, Data::DateTime());
-	NEW_CLASS(updateDt, Data::DateTime());
-	NEW_CLASS(random, Data::RandomOS());
-	NEW_CLASS(stmList, Data::ArrayList<Media::MediaFile*>());
-
-	updateDt->SetCurrTimeUTC();
-	updateDt->AddMinute(-15);
+	updateDt.SetCurrTimeUTC();
+	updateDt.AddMinute(-15);
 	currSignal = Net::HKOWeather::WS_NONE;
 
 	i = 1;
@@ -89,11 +78,11 @@ UInt32 __stdcall PlayThread(void *obj)
 
 		{
 			IO::StmData::FileData fd(CSTRP(sbuff, sptr), false);
-			file = (Media::MediaFile*)parser->ParseFile(fd, 0, IO::ParserType::MediaFile);
+			file = (Media::MediaFile*)parser.ParseFile(fd, 0, IO::ParserType::MediaFile);
 		}
 		if (file)
 		{
-			stmList->Add(file);
+			stmList.Add(file);
 			i++;
 		}
 		else
@@ -104,12 +93,12 @@ UInt32 __stdcall PlayThread(void *obj)
 
 	NEW_CLASS(clk, Media::RefClock());
 
-	while (!ToStop)
+	while (!thread->IsStopping())
 	{
-		currDt->SetCurrTime();
-		if (currDt->DiffMS(updateDt) >= 900000)
+		currDt.SetCurrTime();
+		if (currDt.DiffMS(updateDt) >= 900000)
 		{
-			updateDt->SetCurrTime();
+			updateDt.SetCurrTime();
 			if (timeCli->GetServerTime(NTPHOST, 123, tmpDt))
 			{
 				tmpDt->SetAsComputerTime();
@@ -118,7 +107,7 @@ UInt32 __stdcall PlayThread(void *obj)
 			nextSignal = Net::HKOWeather::GetSignalSummary(sockf, ssl, encFact);
 			if ((nextSignal & Net::HKOWeather::WS_TYPHOON_MASK) != 0 || (currSignal & Net::HKOWeather::WS_TYPHOON_MASK) != 0)
 			{
-				sptr = currDt->ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
+				sptr = currDt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
 				sptr = Text::StrConcatC(sptr, UTF8STRC(" Typhoon now is "));
 				if ((nextSignal & Net::HKOWeather::WS_TYPHOON_MASK) == Net::HKOWeather::WS_TYPHOON_1)
 				{
@@ -169,25 +158,25 @@ UInt32 __stdcall PlayThread(void *obj)
 			}
 			currSignal = nextSignal;
 		}
-		if (*currDt > *startDt && !typhoonStop)
+		if (currDt > *startDt && !typhoonStop)
 		{
 			break;
 		}
 		else
 		{
-			Sync::SimpleThread::Sleep(1000);
+			thread->Wait(1000);
 		}
 	}
-	if (!ToStop)
+	if (!thread->IsStopping())
 	{
 		console->WriteLineC(UTF8STRC("Alerting!"));
 	}
 	currStm = (UInt32)-1;
-	while (!ToStop)
+	while (!thread->IsStopping())
 	{
-		if (stmList->GetCount() > 0)
+		if (stmList.GetCount() > 0)
 		{
-			if (stmList->GetCount() <= 1)
+			if (stmList.GetCount() <= 1)
 			{
 				currStm = 0;
 			}
@@ -196,11 +185,11 @@ UInt32 __stdcall PlayThread(void *obj)
 				i = currStm;
 				while (i == currStm)
 				{
-					i = (UInt32)random->NextInt32() % stmList->GetCount();
+					i = (UInt32)random.NextInt32() % stmList.GetCount();
 				}
 				currStm = i;
 			}
-			file = (Media::MediaFile*)stmList->GetItem(currStm);
+			file = (Media::MediaFile*)stmList.GetItem(currStm);
 
 			if (audOut->BindAudio((Media::IAudioSource*)file->GetStream(0, 0)))
 			{
@@ -208,30 +197,30 @@ UInt32 __stdcall PlayThread(void *obj)
 				audOut->Start();
 			}
 
-			while (!ToStop)
+			while (!thread->IsStopping())
 			{
 				if (!audOut->IsPlaying())
 				{
 					break;
 				}
-				Sync::SimpleThread::Sleep(10);
+				thread->Wait(10);
 			}
 		}
-		if (!ToStop)
+		if (!thread->IsStopping())
 		{
-			currDt->SetCurrTime();
+			currDt.SetCurrTime();
 			Media::IAudioSource *astm = Media::ClockSpeechCh::GetSpeech(currDt);
 			if (audOut->BindAudio(astm))
 			{
 				audOut->AudioInit(clk);
 				audOut->Start();
-				while (!ToStop)
+				while (!thread->IsStopping())
 				{
 					if (!audOut->IsPlaying())
 					{
 						break;
 					}
-					Sync::SimpleThread::Sleep(10);
+					thread->Wait(10);
 				}
 			}
 			DEL_CLASS(astm);
@@ -241,20 +230,12 @@ UInt32 __stdcall PlayThread(void *obj)
 
 	DEL_CLASS(clk);
 
-	i = stmList->GetCount();
+	i = stmList.GetCount();
 	while (i-- > 0)
 	{
-		file = (Media::MediaFile *)stmList->RemoveAt(i);
+		file = (Media::MediaFile *)stmList.RemoveAt(i);
 		DEL_CLASS(file);
 	}
-	DEL_CLASS(currDt);
-	DEL_CLASS(updateDt);
-	DEL_CLASS(random);
-	DEL_CLASS(parser);
-	DEL_CLASS(stmList);
-
-	threadRunning = false;
-	return 0;
 }
 
 Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
@@ -262,8 +243,6 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	UTF8Char buff[256];
 	UTF8Char *sptr;
 	Text::String **sel;
-	ToStop = false;
-	threadRunning = false;
 	UOSInt i;
 	UOSInt devCnt;
 	IO::ConsoleInput::InputReturnType irt;
@@ -328,15 +307,12 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 					console->WriteLineC(UTF8STRC("Press Ctrl+C to exit"));
 					console->SetBGColor(Text::StandardColor::Black);
 					console->SetTextColor(Text::StandardColor::Gray);
-					Sync::ThreadUtil::Create(PlayThread, 0);
+					Sync::Thread thread(PlayThread, 0, CSTR("PlayThread"));
+					thread.Start();
 
 					progCtrl->WaitForExit(progCtrl);
 
-					ToStop = true;
-					while (threadRunning)
-					{
-						Sync::SimpleThread::Sleep(10);
-					}
+					thread.Stop();
 				}
 				DEL_CLASS(startDt);
 			}

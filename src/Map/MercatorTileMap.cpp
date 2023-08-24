@@ -399,7 +399,7 @@ IO::StreamData *Map::MercatorTileMap::LoadTileImageData(UOSInt level, Math::Coor
 			currTime.SetCurrTimeUTC();
 			currTime.AddDay(-7);
 			((IO::StmData::FileData*)fd)->GetFileStream()->GetFileTimes(&dt, 0, 0);
-			if (dt.CompareTo(&currTime) > 0)
+			if (dt.CompareTo(currTime) > 0)
 			{
 				if (it)
 					*it = IT_PNG;
@@ -439,7 +439,7 @@ IO::StreamData *Map::MercatorTileMap::LoadTileImageData(UOSInt level, Math::Coor
 	cli->Connect(CSTRP(url, urlPtr), Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, true);
 	if (hasTime)
 	{
-		sptr = Net::WebUtil::Date2Str(sbuff, &dt);
+		sptr = Net::WebUtil::Date2Str(sbuff, dt);
 		cli->AddHeaderC(CSTR("If-Modified-Since"), CSTRP(sbuff, sptr));
 	}
 	Net::WebStatus::StatusCode status = cli->GetRespStatus();

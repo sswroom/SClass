@@ -239,14 +239,14 @@ UInt32 __stdcall Manage::MonConn::ConnTThread(void *conn)
 			currTime.SetCurrTimeUTC();
 			if (me->requesting)
 			{
-				if (currTime.DiffMS(&me->lastReqTime) > 60000)//3000
+				if (currTime.DiffMS(me->lastReqTime) > 60000)//3000
 				{
 					me->requesting = false;
 				}
 			}
 			else
 			{
-				if (currTime.DiffMS(&me->lastKATime) > 60000)
+				if (currTime.DiffMS(me->lastKATime) > 60000)
 				{
 					UOSInt procId = Manage::Process::GetCurrProcId();
 					me->AddCommand((UInt8*)&procId, 4, 5);
