@@ -10,10 +10,10 @@ namespace Sync
 	public:
 		typedef void (__stdcall *ThreadFunc)(NotNullPtr<Thread> thread);
 	private:
-		Bool running;
-		Bool stopping;
+		UInt32 running;
+		UInt8 stopping;
+		UInt8 waiting;
 		NotNullPtr<Text::String> name;
-		Sync::ThreadHandle *hand;
 		Sync::Event evt;
 		ThreadFunc func;
 		void *userObj;
@@ -24,6 +24,7 @@ namespace Sync
 		~Thread();
 
 		Bool Start();
+		UOSInt StartMulti(UOSInt cnt);
 		void BeginStop();
 		void WaitForEnd();
 		void Stop();
@@ -32,6 +33,7 @@ namespace Sync
 
 		Bool IsRunning() const;
 		Bool IsStopping() const;
+		Bool IsWaiting() const;
 		void *GetUserObj() const;
 	};
 }

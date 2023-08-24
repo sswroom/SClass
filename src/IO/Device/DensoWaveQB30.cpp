@@ -5,27 +5,25 @@
 #include "IO/Device/DensoWaveQB30.h"
 #include "Sync/MutexUsage.h"
 #include "Sync/SimpleThread.h"
-#include "Sync/ThreadUtil.h"
 #include "Text/Encoding.h"
 #include "Text/MyString.h"
 #define RECVBUFFSIZE 256
 
-UInt32 __stdcall IO::Device::DensoWaveQB30::RecvThread(void *userObj)
+void __stdcall IO::Device::DensoWaveQB30::RecvThread(NotNullPtr<Sync::Thread> thread)
 {
-	IO::Device::DensoWaveQB30 *me = (IO::Device::DensoWaveQB30*)userObj;
+	IO::Device::DensoWaveQB30 *me = (IO::Device::DensoWaveQB30*)thread->GetUserObj();
 	UInt8 buff[256];
 	UTF8Char *sbuff;
 	UOSInt recvSize;
 	UOSInt i;
 	Bool found;
-	me->recvRunning = true;
 	sbuff = MemAlloc(UTF8Char, RECVBUFFSIZE + 1);
-	while (!me->recvToStop)
+	while (!thread->IsStopping())
 	{
 		recvSize = me->stm->Read(BYTEARR(buff));
 		if (recvSize <= 0)
 		{
-			Sync::SimpleThread::Sleep(10);
+			thread->Wait(10);
 		}
 		else
 		{
@@ -85,8 +83,6 @@ UInt32 __stdcall IO::Device::DensoWaveQB30::RecvThread(void *userObj)
 		}
 	}
 	MemFree(sbuff);
-	me->recvRunning = false;
-	return 0;
 }
 
 Bool IO::Device::DensoWaveQB30::ScanModeStart()
@@ -250,7 +246,7 @@ Bool IO::Device::DensoWaveQB30::WriteCommand(const Char *cmdStr, UOSInt cmdLen)
 	return succ;
 }
 
-IO::Device::DensoWaveQB30::DensoWaveQB30(NotNullPtr<IO::Stream> stm) : IO::CodeScanner(CSTR("Denso Wave QB30"))
+IO::Device::DensoWaveQB30::DensoWaveQB30(NotNullPtr<IO::Stream> stm) : IO::CodeScanner(CSTR("Denso Wave QB30")), thread(RecvThread, this, CSTR("DensoWaveQB30"))
 {
 	this->stm = stm;
 	this->scanDelay = 1000;
@@ -259,25 +255,18 @@ IO::Device::DensoWaveQB30::DensoWaveQB30(NotNullPtr<IO::Stream> stm) : IO::CodeS
 
 	this->recvBuff = MemAlloc(UInt8, RECVBUFFSIZE);
 	this->recvSize = 0;
-	this->recvRunning = true;
-	this->recvToStop = false;
 	this->currMode = IO::Device::DensoWaveQB30::MT_IDLE;
 	this->scanHdlr = 0;
 	this->scanHdlrObj = 0;
-
-	Sync::ThreadUtil::Create(RecvThread, this);
+	this->thread.Start();
 }
 
 IO::Device::DensoWaveQB30::~DensoWaveQB30()
 {
 	this->ToIdleMode();
-
-	this->recvToStop = true;
+	this->thread.BeginStop();
 	this->stm->Close();
-	while (this->recvRunning)
-	{
-		Sync::SimpleThread::Sleep(10);
-	}
+	this->thread.WaitForEnd();
 //	DEL_CLASS(this->nextTime);
 	MemFree(this->recvBuff);
 	this->stm.Delete();

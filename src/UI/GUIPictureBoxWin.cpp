@@ -172,7 +172,7 @@ UI::GUIPictureBox::GUIPictureBox(NotNullPtr<UI::GUICore> ui, UI::GUIClientContro
 	this->prevImageD = 0;
 	this->noBGColor = false;
 
-	if (Sync::Interlocked::Increment(&useCnt) == 1)
+	if (Sync::Interlocked::IncrementI32(useCnt) == 1)
 	{
 		Init(((UI::GUICoreWin*)this->ui.Ptr())->GetHInst());
 	}
@@ -197,7 +197,7 @@ UI::GUIPictureBox::~GUIPictureBox()
 		this->eng->DeleteImage(this->prevImageD);
 		this->prevImageD = 0;
 	}
-	if (Sync::Interlocked::Decrement(&useCnt) == 0)
+	if (Sync::Interlocked::DecrementI32(useCnt) == 0)
 	{
 		Deinit(((UI::GUICoreWin*)this->ui.Ptr())->GetHInst());
 	}

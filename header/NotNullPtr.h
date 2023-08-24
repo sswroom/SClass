@@ -13,7 +13,6 @@ private:
 	}
 public:
 	NotNullPtr() = default;
-	NotNullPtr(Int32) = delete;
 
 	NotNullPtr(T &p)
 	{

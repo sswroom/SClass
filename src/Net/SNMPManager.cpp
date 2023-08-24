@@ -94,7 +94,7 @@ void Net::SNMPManager::UpdateValues()
 	}
 }
 
-UOSInt Net::SNMPManager::GetAgentList(Data::ArrayList<AgentInfo*> *agentList)
+UOSInt Net::SNMPManager::GetAgentList(NotNullPtr<Data::ArrayList<AgentInfo*>> agentList)
 {
 	UOSInt ret;
 	Sync::MutexUsage mutUsage(this->agentMut);

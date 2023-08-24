@@ -102,7 +102,7 @@ UOSInt Media::VFPManager::LoadFile(const UTF8Char *fileName, Data::ArrayList<Med
 					mfile->file = fhand;
 					mfile->fileName = Text::StrCopyNew(wbuff);
 					mfile->useCnt = 0;
-					Sync::Interlocked::Increment(&this->useCnt);
+					Sync::Interlocked::IncrementI32(this->useCnt);
 
 					if (finfo.dwHasStreams & VF_STREAM_VIDEO)
 					{
@@ -123,7 +123,7 @@ UOSInt Media::VFPManager::LoadFile(const UTF8Char *fileName, Data::ArrayList<Med
 						funcs->CloseFile(fhand);
 						Text::StrDelNew(mfile->fileName);
 						DEL_CLASS(mfile);
-						Sync::Interlocked::Decrement(&this->useCnt);
+						Sync::Interlocked::DecrementI32(this->useCnt);
 						MemFree(cFile);
 						return 0;
 					}
@@ -161,7 +161,7 @@ Media::VFPManager::~VFPManager()
 
 void Media::VFPManager::Release()
 {
-	if (Sync::Interlocked::Decrement(&this->useCnt) == 0)
+	if (Sync::Interlocked::DecrementI32(this->useCnt) == 0)
 	{
 		DEL_CLASS(this);
 	}

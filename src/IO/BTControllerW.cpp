@@ -40,7 +40,7 @@ typedef DWORD (__stdcall *BluetoothEnumerateInstalledServicesFunc)(HANDLE hRadio
 IO::BTController::BTDevice::BTDevice(void *internalData, void *hRadio, void *devInfo)
 {
 	InternalData *me = (InternalData*)internalData;
-	Sync::Interlocked::Increment(&me->useCnt);
+	Sync::Interlocked::IncrementI32(me->useCnt);
 	this->internalData = internalData;
 	this->hRadio = hRadio;
 	this->devInfo = MemAlloc(UInt8, sizeof(BLUETOOTH_DEVICE_INFO));
@@ -51,7 +51,7 @@ IO::BTController::BTDevice::BTDevice(void *internalData, void *hRadio, void *dev
 IO::BTController::BTDevice::~BTDevice()
 {
 	InternalData *me = (InternalData*)this->internalData;
-	if (Sync::Interlocked::Decrement(&me->useCnt) <= 0)
+	if (Sync::Interlocked::DecrementI32(me->useCnt) <= 0)
 	{
 		DEL_CLASS(me->lib);
 		MemFree(me);
@@ -195,7 +195,7 @@ Bool IO::BTController::BTDevice::EnableService(void *guid, Bool toEnable)
 IO::BTController::BTController(void *internalData, void *hand)
 {
 	InternalData *me = (InternalData*)internalData;
-	Sync::Interlocked::Increment(&me->useCnt);
+	Sync::Interlocked::IncrementI32(me->useCnt);
 	this->internalData = internalData;
 	this->hand = hand;
 	this->leScanning = false;
@@ -239,7 +239,7 @@ IO::BTController::~BTController()
 	InternalData *me = (InternalData*)this->internalData;
 	CloseHandle((HANDLE)this->hand);
 	this->name->Release();
-	if (Sync::Interlocked::Decrement(&me->useCnt) <= 0)
+	if (Sync::Interlocked::DecrementI32(me->useCnt) <= 0)
 	{
 		DEL_CLASS(me->lib);
 		MemFree(me);

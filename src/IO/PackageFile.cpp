@@ -28,7 +28,7 @@ IO::PackageFile::PackageFile(const PackageFile *pkg) : IO::ParsedObject(pkg->Get
 	while (i < j)
 	{
 		item = this->items->GetItem(i);
-		Sync::Interlocked::Increment(&item->useCnt);
+		Sync::Interlocked::IncrementI32(item->useCnt);
 		i++;
 	}
 }
@@ -66,7 +66,7 @@ IO::PackageFile::~PackageFile()
 	while (i-- > 0)
 	{
 		item = this->items->GetItem(i);
-		if (Sync::Interlocked::Decrement(&item->useCnt) == 0)
+		if (Sync::Interlocked::DecrementI32(item->useCnt) == 0)
 		{
 			item->name->Release();
 			SDEL_CLASS(item->fd);

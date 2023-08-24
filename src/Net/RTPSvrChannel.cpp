@@ -7,10 +7,7 @@
 #include "Text/MyString.h"
 #include "Text/URLString.h"
 
-#include "IO/Console.h"
-#include "Text/StringBuilder.h"
-
-void __stdcall Net::RTPSvrChannel::PacketHdlr(const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData)
+void __stdcall Net::RTPSvrChannel::PacketHdlr(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData)
 {
 	Net::RTPSvrChannel *me = (Net::RTPSvrChannel*)userData;
 
@@ -95,7 +92,7 @@ void __stdcall Net::RTPSvrChannel::PacketHdlr(const Net::SocketUtil::AddressInfo
 	me->packMut->Unlock();*/
 }
 
-void __stdcall Net::RTPSvrChannel::PacketCtrlHdlr(const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData)
+void __stdcall Net::RTPSvrChannel::PacketCtrlHdlr(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData)
 {
 	Net::RTPSvrChannel *me = (Net::RTPSvrChannel*)userData;
 	Data::DateTime *dt;
@@ -170,13 +167,13 @@ void __stdcall Net::RTPSvrChannel::PacketCtrlHdlr(const Net::SocketUtil::Address
 	}
 }
 
-Net::RTPSvrChannel::RTPSvrChannel(NotNullPtr<Net::SocketFactory> sockf, UInt16 port, Int32 ssrc, const Net::SocketUtil::AddressInfo *targetAddr, UInt16 targetPort, Net::RTPSessionController *sessCtrl)
+Net::RTPSvrChannel::RTPSvrChannel(NotNullPtr<Net::SocketFactory> sockf, UInt16 port, Int32 ssrc, NotNullPtr<const Net::SocketUtil::AddressInfo> targetAddr, UInt16 targetPort, Net::RTPSessionController *sessCtrl)
 {
 	this->rtpUDP = 0;
 	this->rtcpUDP = 0;
 	this->threadCnt = 5;
 	this->ssrc = ssrc;
-	this->targetAddr = *targetAddr;
+	this->targetAddr = targetAddr.Ptr()[0];
 	this->targetPort = targetPort;
 	this->sessCtrl = sessCtrl;
 	this->seqNum = 12442;
@@ -206,9 +203,9 @@ Net::RTPSvrChannel::~RTPSvrChannel()
 	SDEL_CLASS(this->rtcpUDP);
 }
 
-const Net::SocketUtil::AddressInfo *Net::RTPSvrChannel::GetTargetAddr()
+NotNullPtr<const Net::SocketUtil::AddressInfo> Net::RTPSvrChannel::GetTargetAddr()
 {
-	return &this->targetAddr;
+	return this->targetAddr;
 }
 
 UInt16 Net::RTPSvrChannel::GetPort()
@@ -240,12 +237,12 @@ Bool Net::RTPSvrChannel::SendPacket(Int32 payloadType, Int32 ts, UInt8 *buff, UI
 	WriteMInt32(&sendBuff[4], ts);
 	WriteMInt32(&sendBuff[8], this->ssrc);
 	MemCopyNO(&sendBuff[12], buff, dataSize);
-	this->rtpUDP->SendTo(&this->targetAddr, this->targetPort, sendBuff, sendSize);
+	this->rtpUDP->SendTo(this->targetAddr, this->targetPort, sendBuff, sendSize);
 	return true;
 }
 
 Bool Net::RTPSvrChannel::SendControl(UInt8 *buff, UInt32 dataSize)
 {
-	this->rtcpUDP->SendTo(&this->targetAddr, this->targetPort + 1, buff, dataSize);
+	this->rtcpUDP->SendTo(this->targetAddr, this->targetPort + 1, buff, dataSize);
 	return true;
 }

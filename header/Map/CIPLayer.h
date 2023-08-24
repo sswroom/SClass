@@ -1,5 +1,6 @@
 #ifndef _SM_MAP_CIPLAYER
 #define _SM_MAP_CIPLAYER
+#include "Data/FastMap.h"
 #include "Map/MapDrawLayer.h"
 #include "Sync/Mutex.h"
 
@@ -38,8 +39,8 @@ namespace Map
 		Text::String *layerName;
 		Int64 maxId;
 
-		Data::Int32Map<CIPFileObject*> *lastObjs;
-		Data::Int32Map<CIPFileObject*> *currObjs;
+		Data::Int32FastMap<CIPFileObject*> *lastObjs;
+		Data::Int32FastMap<CIPFileObject*> *currObjs;
 
 		Sync::Mutex mut;
 	public:
@@ -66,11 +67,11 @@ namespace Map
 
 	private:
 		CIPFileObject *GetFileObject(void *session, Int32 id);
-		void ReleaseFileObjs(Data::Int32Map<CIPFileObject*> *objs);
+		void ReleaseFileObjs(Data::Int32FastMap<CIPFileObject*> *objs);
 
 	public:
-		virtual void *BeginGetObject();
-		virtual void EndGetObject(void *session);
+		virtual GetObjectSess *BeginGetObject();
+		virtual void EndGetObject(GetObjectSess *session);
 		virtual Math::Geometry::Vector2D *GetNewVectorById(void *session, Int64 id);
 
 		virtual ObjectClass GetObjectClass();

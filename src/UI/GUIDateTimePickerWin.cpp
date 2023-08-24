@@ -12,7 +12,7 @@ Int32 UI::GUIDateTimePicker::useCnt = 0;
 
 UI::GUIDateTimePicker::GUIDateTimePicker(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent, SelectType st) : UI::GUIControl(ui, parent)
 {
-	if (Sync::Interlocked::Increment(&useCnt) == 1)
+	if (Sync::Interlocked::IncrementI32(useCnt) == 1)
 	{
 		INITCOMMONCONTROLSEX icex;
 		icex.dwSize = sizeof(icex);
@@ -36,7 +36,7 @@ UI::GUIDateTimePicker::GUIDateTimePicker(NotNullPtr<GUICore> ui, UI::GUIClientCo
 
 UI::GUIDateTimePicker::~GUIDateTimePicker()
 {
-	if (Sync::Interlocked::Decrement(&useCnt) == 0)
+	if (Sync::Interlocked::DecrementI32(useCnt) == 0)
 	{
 	}
 }

@@ -1203,7 +1203,7 @@ Int32 Manage::Process::ExecuteProcess(Text::CString cmd, NotNullPtr<Text::String
 	}
 	sptr = Text::StrUInt32(sptr, (UInt32)GetCurrProcId());
 	sptr = Text::StrConcatC(sptr, UTF8STRC("_"));
-	sptr = Text::StrInt32(sptr, Sync::Interlocked::Increment(&Process_Id));
+	sptr = Text::StrInt32(sptr, Sync::Interlocked::IncrementI32(Process_Id));
 	sptr = Text::StrConcatC(sptr, UTF8STRC(".tmp"));
 	int fd = open((Char*)tmpFile, O_RDWR | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR);
 	pid_t pid = fork();

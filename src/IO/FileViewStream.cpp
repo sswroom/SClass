@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "IO/FileViewStream.h"
 
-IO::FileViewStream::FileViewStream(Text::CString fileName) : IO::SeekableStream(fileName)
+IO::FileViewStream::FileViewStream(Text::CStringNN fileName) : IO::SeekableStream(fileName)
 {
 	NEW_CLASS(this->vfb, IO::ViewFileBuffer(fileName.v));
 	this->length = this->vfb->GetLength();
@@ -15,7 +15,7 @@ IO::FileViewStream::~FileViewStream()
 	Close();
 }
 
-Bool IO::FileViewStream::IsDown()
+Bool IO::FileViewStream::IsDown() const
 {
 	return this->vfb == 0 || this->fptr == 0;
 }
@@ -24,12 +24,12 @@ UOSInt IO::FileViewStream::Read(const Data::ByteArray &buff)
 {
 	if (this->fptr == 0)
 		return 0;
-	UInt64 endPtr = this->currPos + size;
+	UInt64 endPtr = this->currPos + buff.GetSize();
 	if (endPtr > this->length)
 		endPtr = this->length;
 	if (endPtr > this->currPos)
 	{
-		MemCopyNO(buff, &this->fptr[this->currPos], (UOSInt)(endPtr - this->currPos));
+		MemCopyNO(buff.Ptr(), &this->fptr[this->currPos], (UOSInt)(endPtr - this->currPos));
 		UOSInt size = (UOSInt)(endPtr - this->currPos);
 		this->currPos = endPtr;
 		return size;
@@ -64,6 +64,11 @@ Bool IO::FileViewStream::Recover()
 {
 	////////////////////////////////////
 	return false;
+}
+
+IO::StreamType IO::FileViewStream::GetStreamType() const
+{
+	return IO::StreamType::FileView;
 }
 
 UInt64 IO::FileViewStream::SeekFromBeginning(UInt64 position)

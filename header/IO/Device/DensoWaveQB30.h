@@ -4,6 +4,7 @@
 #include "IO/CodeScanner.h"
 #include "IO/Stream.h"
 #include "Sync/Mutex.h"
+#include "Sync/Thread.h"
 
 namespace IO
 {
@@ -22,11 +23,10 @@ namespace IO
 			Sync::Mutex recvMut;
 			UInt8 *recvBuff;
 			UOSInt recvSize;
-			Bool recvRunning;
-			Bool recvToStop;
+			Sync::Thread thread;
 			Sync::Event recvEvt;
 
-			static UInt32 __stdcall RecvThread(void *userObj);
+			static void __stdcall RecvThread(NotNullPtr<Sync::Thread> userObj);
 			Bool ScanModeStart();
 			Bool ScanModeEnd();
 			Bool SettingModeStart();

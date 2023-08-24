@@ -423,7 +423,7 @@ UI::GUIForm::GUIForm(UI::GUIClientControl *parent, Double initW, Double initH, N
 	this->virtualMode = false;
 	this->hAcc = 0;
 	this->currDialog = 0;
-	if (Sync::Interlocked::Increment(&useCnt) == 1)
+	if (Sync::Interlocked::IncrementI32(useCnt) == 1)
 	{
 		Init(((UI::GUICoreWin*)ui.Ptr())->GetHInst());
 	}
@@ -549,7 +549,7 @@ UI::GUIForm::~GUIForm()
 			DEL_CLASS(this->menu);
 			this->menu = 0;
 		}
-		if (Sync::Interlocked::Decrement(&useCnt) == 0)
+		if (Sync::Interlocked::DecrementI32(useCnt) == 0)
 		{
 			Deinit(((UI::GUICoreWin*)this->ui.Ptr())->GetHInst());
 		}

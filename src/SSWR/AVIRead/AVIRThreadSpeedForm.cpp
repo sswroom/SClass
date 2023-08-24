@@ -66,7 +66,7 @@ void __stdcall SSWR::AVIRead::AVIRThreadSpeedForm::OnTestClicked(void *userObj)
 	i = 1000;
 	while (i-- > 0)
 	{
-		Sync::Interlocked::Increment(&me->tmpVal);
+		Sync::Interlocked::IncrementI32(me->tmpVal);
 	}
 	t = me->clk.GetTimeDiff();
 	i = me->lvResult->AddItem(CSTR("Interlocked Increment"), 0);

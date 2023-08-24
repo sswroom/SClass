@@ -55,46 +55,44 @@ void __stdcall SSWR::AVIRead::AVIRTCPTestForm::OnStartClicked(void *userObj)
 	me->connCnt = 0;
 	me->failCnt = 0;
 	me->threadCurrCnt = 0;
-	me->threadStatus = MemAlloc(ThreadStatus, me->threadCnt);
+	me->threads = MemAlloc(Sync::Thread*, me->threadCnt);
 	i = me->threadCnt;
 	while (i-- > 0)
 	{
-		me->threadStatus[i].me = me;
-		me->threadStatus[i].threadRunning = false;
-		me->threadStatus[i].threadToStop = false;
-		NEW_CLASS(me->threadStatus[i].evt, Sync::Event(true));
-		Sync::ThreadUtil::Create(ProcessThread, &me->threadStatus[i]);
+		sb.ClearStr();
+		sb.AppendC(UTF8STRC("AVIRTCPTest"));
+		sb.AppendUOSInt(i);
+		NEW_CLASS(me->threads[i], Sync::Thread(ProcessThread, me, sb.ToCString()));
+		me->threads[i]->Start();
 	}
 }
 
-UInt32 __stdcall SSWR::AVIRead::AVIRTCPTestForm::ProcessThread(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRTCPTestForm::ProcessThread(NotNullPtr<Sync::Thread> thread)
 {
-	ThreadStatus *status = (ThreadStatus*)userObj;
+	SSWR::AVIRead::AVIRTCPTestForm *me = (SSWR::AVIRead::AVIRTCPTestForm*)thread->GetUserObj();
 	Net::TCPClient *cli = 0;
 //	UInt8 buff[2048];
 //	void *reqData;
-	Sync::Interlocked::Increment(&status->me->threadCurrCnt);
-	status->threadRunning = true;
-	while (!status->threadToStop)
+	Sync::Interlocked::IncrementU32(me->threadCurrCnt);
+	while (!thread->IsStopping())
 	{
-		Sync::MutexUsage mutUsage(status->me->connMut);
-		if (status->me->connLeftCnt <= 0)
+		Sync::MutexUsage mutUsage(me->connMut);
+		if (me->connLeftCnt <= 0)
 		{
-			mutUsage.EndUse();
 			break;
 		}
-		status->me->connLeftCnt -= 1;
+		me->connLeftCnt -= 1;
 		mutUsage.EndUse();
 		
-		NEW_CLASS(cli, Net::TCPClient(status->me->sockf, status->me->svrIP, status->me->svrPort, 10000));
+		NEW_CLASS(cli, Net::TCPClient(me->sockf, me->svrIP, me->svrPort, 10000));
 		if (cli->IsConnectError())
 		{
-			Sync::Interlocked::Increment(&status->me->failCnt);
+			Sync::Interlocked::IncrementU32(me->failCnt);
 			DEL_CLASS(cli);
 		}
 		else
 		{
-			Sync::Interlocked::Increment(&status->me->connCnt);
+			Sync::Interlocked::IncrementU32(me->connCnt);
 			cli->ShutdownSend();
 /*			reqData = cli->BeginRead(buff, 2048, status->evt);
 			while (true)
@@ -115,10 +113,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRTCPTestForm::ProcessThread(void *userObj)
 		}
 		
 	}
-	status->threadToStop = false;
-	status->threadRunning = false;
-	Sync::Interlocked::Decrement(&status->me->threadCurrCnt);
-	return 0;
+	Sync::Interlocked::DecrementU32(me->threadCurrCnt);
 }
 
 void __stdcall SSWR::AVIRead::AVIRTCPTestForm::OnTimerTick(void *userObj)
@@ -143,23 +138,22 @@ void SSWR::AVIRead::AVIRTCPTestForm::StopThreads()
 		UOSInt i = this->threadCnt;
 		while (i-- > 0)
 		{
-			this->threadStatus[i].threadToStop = true;
-			this->threadStatus[i].evt->Set();
+			this->threads[i]->BeginStop();
 		}
 		while (this->threadCurrCnt > 0)
 		{
 			Sync::SimpleThread::Sleep(10);
 		}
 	}
-	if (this->threadStatus)
+	if (this->threads)
 	{
 		UOSInt i = this->threadCnt;
 		while (i-- > 0)
 		{
-			DEL_CLASS(this->threadStatus[i].evt);
+			DEL_CLASS(this->threads[i]);
 		}
-		MemFree(this->threadStatus);
-		this->threadStatus = 0;
+		MemFree(this->threads);
+		this->threads = 0;
 		this->threadCnt = 0;
 	}
 }
@@ -171,7 +165,7 @@ SSWR::AVIRead::AVIRTCPTestForm::AVIRTCPTestForm(UI::GUIClientControl *parent, No
 
 	this->core = core;
 	this->sockf = core->GetSocketFactory();
-	this->threadStatus = 0;
+	this->threads = 0;
 	this->svrIP = 0;
 	this->svrPort = 0;
 	this->connLeftCnt = 0;

@@ -1,6 +1,6 @@
 #ifndef _SM_SSWR_AVIREADCE_AVIRCEBASEFORM
 #define _SM_SSWR_AVIREADCE_AVIRCEBASEFORM
-#include "Data/Int32Map.h"
+#include "Data/FastMap.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "UI/GUIForm.h"
 #include "UI/GUIHSplitter.h"
@@ -23,7 +23,7 @@ namespace SSWR
 			UI::GUIListBox *lbCategory;
 			UI::GUIHSplitter *hspMain;
 			UI::GUIListBox *lbContent;
-			Data::Int32Map<Data::ArrayList<MenuInfo*>*> *menuItems;
+			Data::Int32FastMap<Data::ArrayList<MenuInfo*>*> *menuItems;
 
 		private:
 			static void __stdcall FileHandler(void *userObj, const UTF8Char **files, OSInt nFiles);

@@ -335,7 +335,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRMQTTPublishTestForm::SendThread(void *userOb
 	{
 		if (me->client->SendPublish(me->connTopic->ToCString(), me->connContent->ToCString()))
 		{
-			Sync::Interlocked::Increment(&me->totalCount);
+			Sync::Interlocked::IncrementU64(me->totalCount);
 		}
 	}
 	me->threadRunning = false;

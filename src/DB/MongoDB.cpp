@@ -27,7 +27,7 @@ DB::MongoDB::MongoDB(Text::CString url, Text::CString database, IO::LogTool *log
 	mongoc_client_t *client;
 	this->log = log;
 	this->errorMsg = 0;
-	if (Sync::Interlocked::Increment(&initCnt) == 1)
+	if (Sync::Interlocked::IncrementI32(initCnt) == 1)
 	{
 		mongoc_init();
 	}
@@ -50,7 +50,7 @@ DB::MongoDB::~MongoDB()
 		mongoc_client_destroy((mongoc_client_t*)this->client);
 	}
 	SDEL_STRING(this->database);
-	if (Sync::Interlocked::Decrement(&initCnt) == 0)
+	if (Sync::Interlocked::DecrementI32(initCnt) == 0)
 	{
 		mongoc_cleanup();
 	}

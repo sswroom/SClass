@@ -13,7 +13,7 @@ UInt32 __stdcall Net::RAWAnalyzer::RecvThread(void *userObj)
 	UOSInt packetSize;
 	Net::SocketUtil::AddressInfo addr;
 	UInt16 port;
-	Sync::Interlocked::Increment(&me->threadCnt);
+	Sync::Interlocked::IncrementI32(me->threadCnt);
 	while (!me->threadToStop)
 	{
 		packetSize = me->sockf->UDPReceive(me->rawSock, packetBuff, 10240, addr, port, 0);
@@ -22,7 +22,7 @@ UInt32 __stdcall Net::RAWAnalyzer::RecvThread(void *userObj)
 			me->analyzer->PacketEthernet(packetBuff, packetSize);
 		}
 	}
-	Sync::Interlocked::Decrement(&me->threadCnt);
+	Sync::Interlocked::DecrementI32(me->threadCnt);
 	return 0;
 }
 

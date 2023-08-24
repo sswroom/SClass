@@ -47,7 +47,7 @@ void *IO::Registry::OpenUserType(RegistryUser usr)
 	case IO::Registry::REG_USER_ALL:
 		if (allRegistryFile)
 		{
-			Sync::Interlocked::Increment(&((Registry_File*)allRegistryFile)->useCnt);
+			Sync::Interlocked::IncrementU32(((Registry_File*)allRegistryFile)->useCnt);
 			return allRegistryFile;
 		}
 		sptr = IO::Path::GetUserHome(sbuff);
@@ -69,7 +69,7 @@ void *IO::Registry::OpenUserType(RegistryUser usr)
 	case IO::Registry::REG_USER_THIS:
 		if (thisRegistryFile)
 		{
-			Sync::Interlocked::Increment(&((Registry_File*)thisRegistryFile)->useCnt);
+			Sync::Interlocked::IncrementU32(((Registry_File*)thisRegistryFile)->useCnt);
 			return thisRegistryFile;
 		}
 		sptr = IO::Path::GetUserHome(sbuff);
@@ -97,7 +97,7 @@ void *IO::Registry::OpenUserType(RegistryUser usr)
 void IO::Registry::CloseInternal(void *data)
 {
 	Registry_File *reg = (Registry_File*)data;
-	if (Sync::Interlocked::Decrement(&reg->useCnt) == 0)
+	if (Sync::Interlocked::DecrementU32(reg->useCnt) == 0)
 	{
 		if (reg->modified)
 		{
@@ -221,7 +221,7 @@ IO::Registry *IO::Registry::OpenSubReg(const WChar *name)
 	sb.Append(s);
 	s->Release();
 	param.currCate = {sb.ToString(), sb.GetLength()};
-	Sync::Interlocked::Increment(&param.reg->useCnt);
+	Sync::Interlocked::IncrementU32(param.reg->useCnt);
 	IO::Registry *reg;
 	NEW_CLASS(reg, IO::Registry(&param));
 	return reg;

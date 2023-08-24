@@ -816,7 +816,7 @@ void __stdcall Media::VideoRenderer::OnVideoFrame(UInt32 frameTime, UInt32 frame
 
 	UOSInt i;
 	UOSInt j;
-	Int32 picCnt = Sync::Interlocked::Increment(&me->picCnt);
+	Int32 picCnt = Sync::Interlocked::IncrementI32(me->picCnt);
 	Bool found = false;
 	UOSInt frameIndex;
 	if ((picCnt % 30) == 0)
@@ -1304,7 +1304,7 @@ UInt32 __stdcall Media::VideoRenderer::ProcessThread(void *userObj)
 				}
 				mutUsage.EndUse();
 				tstat->me->buffEvt.Set();
-				Sync::Interlocked::Increment(&tstat->me->frameSkipBeforeProc);
+				Sync::Interlocked::IncrementU32(tstat->me->frameSkipBeforeProc);
 			}
 			else
 			{
@@ -1602,12 +1602,12 @@ void Media::VideoRenderer::VideoBeginProc()
 	{
 		Sync::SimpleThread::Sleep(10);
 	}
-	Sync::Interlocked::Increment(&this->videoProcCnt);
+	Sync::Interlocked::IncrementI32(this->videoProcCnt);
 }
 
 void Media::VideoRenderer::VideoEndProc()
 {
-	Sync::Interlocked::Decrement(&this->videoProcCnt);
+	Sync::Interlocked::DecrementI32(this->videoProcCnt);
 }
 
 Int32 Media::VideoRenderer::CalProcDelay()

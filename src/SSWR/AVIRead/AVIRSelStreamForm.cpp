@@ -334,6 +334,7 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(void *userObj)
 	case IO::StreamType::MemoryReading:
 	case IO::StreamType::DataCapture:
 	case IO::StreamType::Null:
+	case IO::StreamType::FileView:
 		break;
 	}
 }

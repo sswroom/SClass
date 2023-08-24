@@ -161,7 +161,7 @@ void Net::MQTTBroker::DataParsed(NotNullPtr<IO::Stream> stm, void *stmObj, Int32
 	UOSInt i;
 	UOSInt j;
 	UOSInt sent;
-	Sync::Interlocked::Increment(&this->infoMsgRecv);
+	Sync::Interlocked::IncrementI64(this->infoMsgRecv);
 	switch (cmdType >> 4)
 	{
 	case 1: //CONNECT
@@ -402,7 +402,7 @@ void Net::MQTTBroker::DataParsed(NotNullPtr<IO::Stream> stm, void *stmObj, Int32
 			SDEL_STRING(clientId);
 			SDEL_STRING(userName);
 			SDEL_STRING(password);
-			Sync::Interlocked::Add(&this->infoTotalSent, sent);
+			Sync::Interlocked::AddU64(this->infoTotalSent, sent);
 		}
 		break;
 	case 2: //CONNACK
@@ -422,7 +422,7 @@ void Net::MQTTBroker::DataParsed(NotNullPtr<IO::Stream> stm, void *stmObj, Int32
 			UInt16 packetId = 0;
 			const UInt8 *message;
 			UOSInt messageSize;
-			Sync::Interlocked::Increment(&this->infoPubRecv);
+			Sync::Interlocked::IncrementI64(this->infoPubRecv);
 			if (this->log)
 			{
 				Text::StringBuilderUTF8 sb;
@@ -651,7 +651,7 @@ void Net::MQTTBroker::DataParsed(NotNullPtr<IO::Stream> stm, void *stmObj, Int32
 			}
 			i = this->protoHdlr.BuildPacket(packet2, 0x90, 0, packet, 3, data->cliData);
 			sent = stm->Write(packet2, i);
-			Sync::Interlocked::Add(&this->infoTotalSent, sent);
+			Sync::Interlocked::AddU64(this->infoTotalSent, sent);
 
 			if (cs == CS_ACCEPTED)
 			{
@@ -724,7 +724,7 @@ void Net::MQTTBroker::DataParsed(NotNullPtr<IO::Stream> stm, void *stmObj, Int32
 		}
 		i = this->protoHdlr.BuildPacket(packet2, 0xD0, 0, packet, 0, data->cliData);
 		sent = stm->Write(packet2, i);
-		Sync::Interlocked::Add(&this->infoTotalSent, sent);
+		Sync::Interlocked::AddU64(this->infoTotalSent, sent);
 		break;
 	case 13: //PINGRESP
 		if (this->log)
@@ -848,8 +848,8 @@ Bool Net::MQTTBroker::TopicSend(NotNullPtr<IO::Stream> stm, void *stmData, const
 	UOSInt i;
 	UOSInt sent;
 	UOSInt topicLen = topic->topic->leng;
-	Sync::Interlocked::Increment(&this->infoPubSent);
-	Sync::Interlocked::Increment(&this->infoMsgSent);
+	Sync::Interlocked::IncrementI64(this->infoPubSent);
+	Sync::Interlocked::IncrementI64(this->infoMsgSent);
 	if (topicLen + topic->msgSize + 4 <= 128)
 	{
 		WriteMInt16(&packet1[0], topicLen);
@@ -857,7 +857,7 @@ Bool Net::MQTTBroker::TopicSend(NotNullPtr<IO::Stream> stm, void *stmData, const
 		MemCopyNO(&packet1[2 + topicLen], topic->message, topic->msgSize);
 		i = this->protoHdlr.BuildPacket(packet2, 0x30, 0, packet1, 2 + topicLen + topic->msgSize, stmData);
 		sent = stm->Write(packet2, i);
-		Sync::Interlocked::Add(&this->infoTotalSent, sent);
+		Sync::Interlocked::AddU64(this->infoTotalSent, sent);
 		return sent == i;
 	}
 	else
@@ -871,7 +871,7 @@ Bool Net::MQTTBroker::TopicSend(NotNullPtr<IO::Stream> stm, void *stmData, const
 		sent = stm->Write(packetBuff2, i);
 		MemFree(packetBuff1);
 		MemFree(packetBuff2);
-		Sync::Interlocked::Add(&this->infoTotalSent, sent);
+		Sync::Interlocked::AddU64(this->infoTotalSent, sent);
 		return sent == i;
 	}
 }
@@ -891,7 +891,7 @@ void *Net::MQTTBroker::StreamCreated(NotNullPtr<IO::Stream> stm)
 void Net::MQTTBroker::StreamData(NotNullPtr<IO::Stream> stm, void *stmData, const Data::ByteArrayR &buff)
 {
 	ClientData *data = (ClientData*)stmData;
-	Sync::Interlocked::Add(&this->infoTotalRecv, (OSInt)buff.GetSize());
+	Sync::Interlocked::AddI64(this->infoTotalRecv, (OSInt)buff.GetSize());
 
 	if (this->log)
 	{

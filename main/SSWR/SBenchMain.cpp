@@ -487,7 +487,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	i = 1000;
 	while (i-- > 0)
 	{
-		Sync::Interlocked::Increment(&tmpVal);
+		Sync::Interlocked::IncrementI32(tmpVal);
 	}
 	t = clk->GetTimeDiff();
 	sb.ClearStr();

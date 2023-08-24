@@ -17,7 +17,7 @@ OSInt UI::GUIListView::useCnt = 0;
 
 UI::GUIListView::GUIListView(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, ListViewStyle lvstyle, UOSInt colCount) : UI::GUIControl(ui, parent)
 {
-	if (Sync::Interlocked::Increment(&useCnt) == 1)
+	if (Sync::Interlocked::IncrementOS(useCnt) == 1)
 	{
 		INITCOMMONCONTROLSEX icex;
 		icex.dwICC = ICC_LISTVIEW_CLASSES;

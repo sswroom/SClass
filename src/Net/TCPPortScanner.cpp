@@ -11,7 +11,7 @@ UInt32 __stdcall Net::TCPPortScanner::ScanThread(void *userObj)
 	Net::SocketUtil::AddressInfo addr;
 	OSInt i;
 	Socket *s;
-	Sync::Interlocked::Increment(&me->threadCnt);
+	Sync::Interlocked::IncrementUOS(me->threadCnt);
 	while (!me->threadToStop)
 	{
 		me->threadEvt.Wait(10000);
@@ -69,7 +69,7 @@ UInt32 __stdcall Net::TCPPortScanner::ScanThread(void *userObj)
 		}
 		mutUsage.EndUse();
 	}
-	Sync::Interlocked::Decrement((OSInt*)&me->threadCnt);
+	Sync::Interlocked::DecrementUOS(me->threadCnt);
 	return 0;
 }
 

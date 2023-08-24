@@ -80,7 +80,7 @@ Map::GeoPackage::GeoPackage(DB::DBConn *conn)
 
 void Map::GeoPackage::Release()
 {
-	if (Sync::Interlocked::Decrement(&this->useCnt) == 0)
+	if (Sync::Interlocked::DecrementU32(this->useCnt) == 0)
 	{
 		DEL_CLASS(this);
 	}
@@ -159,7 +159,7 @@ Map::MapLayerCollection *Map::GeoPackage::CreateLayerCollection()
 	while (i < j)
 	{
 		NEW_CLASS(layer, Map::GeoPackageLayer(this, this->tableList.GetItem(i)));
-		Sync::Interlocked::Increment(&this->useCnt);
+		Sync::Interlocked::IncrementU32(this->useCnt);
 		layerColl->Add(layer);
 		i++;
 	}

@@ -323,7 +323,7 @@ UI::GUIPanel::GUIPanel(NotNullPtr<UI::GUICore> ui, void *parentHWnd) : UI::GUICl
 	this->scrollV = false;
 	this->currScrX = 0;
 	this->currScrY = 0;
-	if (Sync::Interlocked::Increment(&useCnt) == 1)
+	if (Sync::Interlocked::IncrementI32(useCnt) == 1)
 	{
 		Init(((UI::GUICoreWin*)this->ui.Ptr())->GetHInst());
 	}
@@ -344,7 +344,7 @@ UI::GUIPanel::GUIPanel(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent)
 	this->scrollV = false;
 	this->currScrX = 0;
 	this->currScrY = 0;
-	if (Sync::Interlocked::Increment(&useCnt) == 1)
+	if (Sync::Interlocked::IncrementI32(useCnt) == 1)
 	{
 		Init(((UI::GUICoreWin*)this->ui.Ptr())->GetHInst());
 	}
@@ -363,7 +363,7 @@ UI::GUIPanel::GUIPanel(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent)
 
 UI::GUIPanel::~GUIPanel()
 {
-	if (Sync::Interlocked::Decrement(&useCnt) == 0)
+	if (Sync::Interlocked::DecrementI32(useCnt) == 0)
 	{
 		Deinit(((UI::GUICoreWin*)this->ui.Ptr())->GetHInst());
 	}

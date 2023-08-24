@@ -4,6 +4,7 @@
 #include "IO/StreamData.h"
 #include "IO/ZIPBuilder.h"
 #include "Sync/Event.h"
+#include "Sync/Thread.h"
 
 namespace IO
 {
@@ -36,12 +37,12 @@ namespace IO
 	private:
 		ZIPBuilder zip;
 		UOSInt threadCnt;
-		ThreadStat *threads;
+		Sync::Thread **threads;
 		Bool toStop;
 		Sync::Event mainEvt;
 		Data::SyncLinkedList taskList;
 
-		static UInt32 __stdcall ThreadProc(void *userObj);
+		static void __stdcall ThreadProc(NotNullPtr<Sync::Thread> thread);
 		static void FreeTask(FileTask *task);
 		void AddTask(FileTask *task);
 	public:

@@ -62,7 +62,7 @@ namespace SSWR
 			static void __stdcall OnAgentSelChg(void *userObj);
 			static void __stdcall OnTimerTick(void *userObj);
 			static void __stdcall OnAgentWalkClicked(void *userObj);
-			void SendAgentValues(Data::ArrayList<Net::SNMPManager::AgentInfo *> *agentList);
+			void SendAgentValues(NotNullPtr<Data::ArrayList<Net::SNMPManager::AgentInfo *>> agentList);
 
 		public:
 			AVIRSNMPManagerForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);

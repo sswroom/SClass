@@ -533,7 +533,7 @@ UI::GUITextView::GUITextView(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *p
 	this->pageLineCnt = 0;
 	this->pageLineHeight = 12;
 
-	if (Sync::Interlocked::Increment(&useCnt) == 1)
+	if (Sync::Interlocked::IncrementOS(useCnt) == 1)
 	{
 		Init(((UI::GUICoreWin*)this->ui.Ptr())->GetHInst());
 	}
@@ -562,7 +562,7 @@ UI::GUITextView::~GUITextView()
 		this->deng->DeleteImage(this->drawBuff);
 		this->drawBuff = 0;
 	}
-	if (Sync::Interlocked::Decrement(&useCnt) == 0)
+	if (Sync::Interlocked::DecrementOS(useCnt) == 0)
 	{
 		Deinit(((UI::GUICoreWin*)this->ui.Ptr())->GetHInst());
 	}

@@ -70,7 +70,7 @@ UInt32 __stdcall ProcThread(void *userObj)
 	UInt8 *sendBuff;
 	UOSInt sendSize;
 	UOSInt sendBuffSize = 9000;
-	Sync::Interlocked::Increment(&procRunning);
+	Sync::Interlocked::IncrementU32(procRunning);
 	mainEvt->Set();
 	sendBuff = MemAlloc(UInt8, sendBuffSize);
 	while (!toStop)
@@ -82,7 +82,7 @@ UInt32 __stdcall ProcThread(void *userObj)
 			mutUsage.EndUse();
 			if (sendSize > 0)
 			{
-				Sync::Interlocked::Add(&totalSendSize, sendSize);
+				Sync::Interlocked::AddU64(totalSendSize, sendSize);
 			}
 			else
 			{
@@ -96,7 +96,7 @@ UInt32 __stdcall ProcThread(void *userObj)
 		}
 	}
 	MemFree(sendBuff);
-	Sync::Interlocked::Decrement(&procRunning);
+	Sync::Interlocked::DecrementU32(procRunning);
 	mainEvt->Set();
 	return 0;
 }
@@ -115,7 +115,7 @@ UInt32 __stdcall RecvThread(void *userObj)
 				recvSize = cli->Read(recvBuff);
 				if (recvSize > 0)
 				{
-					Sync::Interlocked::Add(&totalRecvSize, recvSize);
+					Sync::Interlocked::AddU64(totalRecvSize, recvSize);
 				}
 				else
 				{

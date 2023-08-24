@@ -100,12 +100,12 @@ Media::AVIUtl::AUIPlugin::AUIPlugin()
 Media::AVIUtl::AUIPlugin::AUIPlugin(const Media::AVIUtl::AUIPlugin *plugin)
 {
 	this->plugin = plugin->plugin;
-	Sync::Interlocked::Increment(&this->plugin->useCnt);
+	Sync::Interlocked::IncrementU32(this->plugin->useCnt);
 }
 
 Media::AVIUtl::AUIPlugin::~AUIPlugin()
 {
-	if (Sync::Interlocked::Decrement(&this->plugin->useCnt) == 0)
+	if (Sync::Interlocked::DecrementU32(this->plugin->useCnt) == 0)
 	{
 		FreeLibrary((HMODULE)this->plugin->hMod);
 		MemFree(this->plugin);

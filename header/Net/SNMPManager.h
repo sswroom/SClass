@@ -53,7 +53,7 @@ namespace Net
 
 		Bool IsError();
 		void UpdateValues();
-		UOSInt GetAgentList(Data::ArrayList<AgentInfo*> *agentList);
+		UOSInt GetAgentList(NotNullPtr<Data::ArrayList<AgentInfo*>> agentList);
 
 		AgentInfo *AddAgent(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, NotNullPtr<Text::String> community);
 		UOSInt AddAgents(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, NotNullPtr<Text::String> community, Data::ArrayList<AgentInfo*> *agentList, Bool scanIP);

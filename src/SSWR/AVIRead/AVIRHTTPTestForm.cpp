@@ -129,7 +129,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPTestForm::ProcessThread(NotNullPtr<Sync::T
 	UOSInt i;
 	UOSInt j;
 	UInt32 cnt;
-	Sync::Interlocked::Increment(&me->threadCurrCnt);
+	Sync::Interlocked::IncrementU32(me->threadCurrCnt);
 	if (me->kaConn)
 	{
 		NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(me->sockf, me->ssl, CSTR_NULL, true, false);
@@ -167,7 +167,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPTestForm::ProcessThread(NotNullPtr<Sync::T
 				cli->EndRequest(&timeReq, &timeResp);
 				if (timeResp >= 0)
 				{
-					Sync::Interlocked::Increment(&me->connCnt);
+					Sync::Interlocked::IncrementU32(me->connCnt);
 					if (timeResp > 0.5)
 					{
 						if (timeConn > 0.5)
@@ -183,7 +183,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPTestForm::ProcessThread(NotNullPtr<Sync::T
 				}
 				else
 				{
-					Sync::Interlocked::Increment(&me->failCnt);
+					Sync::Interlocked::IncrementU32(me->failCnt);
 				}
 				if (cli->IsError())
 				{
@@ -195,7 +195,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPTestForm::ProcessThread(NotNullPtr<Sync::T
 			{
 				cli.Delete();
 				cli = Net::HTTPClient::CreateClient(me->sockf, me->ssl, CSTR_NULL, true, url->StartsWith(UTF8STRC("https://")));
-				Sync::Interlocked::Increment(&me->failCnt);
+				Sync::Interlocked::IncrementU32(me->failCnt);
 			}
 		}
 		cli.Delete();
@@ -218,21 +218,21 @@ void __stdcall SSWR::AVIRead::AVIRHTTPTestForm::ProcessThread(NotNullPtr<Sync::T
 				cli->EndRequest(&timeReq, &timeResp);
 				if (timeResp >= 0)
 				{
-					Sync::Interlocked::Increment(&me->connCnt);
+					Sync::Interlocked::IncrementU32(me->connCnt);
 				}
 				else
 				{
-					Sync::Interlocked::Increment(&me->failCnt);
+					Sync::Interlocked::IncrementU32(me->failCnt);
 				}
 			}
 			else
 			{
-				Sync::Interlocked::Increment(&me->failCnt);
+				Sync::Interlocked::IncrementU32(me->failCnt);
 			}
 			cli.Delete();
 		}
 	}
-	cnt = Sync::Interlocked::Decrement(&me->threadCurrCnt);
+	cnt = Sync::Interlocked::DecrementU32(me->threadCurrCnt);
 	if (cnt == 0)
 	{
 		me->t = me->clk.GetTimeDiff();

@@ -19,3 +19,4 @@ libwebp-dev
 libheif-dev
 libzxing-dev
 freetds-dev
+libpulse-dev

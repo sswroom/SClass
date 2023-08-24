@@ -103,7 +103,7 @@ Net::SSLEngine::~SSLEngine()
 	MemFree(this->threadSt);
 	if (this->trustStoreUsed)
 	{
-		if (Sync::Interlocked::Decrement(&trustStoreCnt) == 0)
+		if (Sync::Interlocked::DecrementU32(trustStoreCnt) == 0)
 		{
 			SDEL_CLASS(trustStore);
 		}
@@ -216,7 +216,7 @@ Crypto::Cert::CertStore *Net::SSLEngine::GetTrustStore()
 	if (!this->trustStoreUsed)
 	{
 		this->trustStoreUsed = true;
-		if (Sync::Interlocked::Increment(&trustStoreCnt) == 1)
+		if (Sync::Interlocked::IncrementU32(trustStoreCnt) == 1)
 		{
 			trustStore = Crypto::Cert::TrustStore::Load();
 		}

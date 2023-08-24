@@ -2,42 +2,33 @@
 #include "IO/ZIPMTBuilder.h"
 #include "Sync/ThreadUtil.h"
 
-UInt32 __stdcall IO::ZIPMTBuilder::ThreadProc(void *userObj)
+void __stdcall IO::ZIPMTBuilder::ThreadProc(NotNullPtr<Sync::Thread> thread)
 {
-	ThreadStat *stat = (ThreadStat*)userObj;
+	IO::ZIPMTBuilder *me = (IO::ZIPMTBuilder*)thread->GetUserObj();
 	FileTask *task;
+	while (!thread->IsStopping())
 	{
-		Sync::Event evt;
-		stat->evt = &evt;
-		stat->status = ThreadState::Idle;
-		while (!stat->me->toStop)
+		task = (FileTask*)me->taskList.Get();
+		if (task)
 		{
-			task = (FileTask*)stat->me->taskList.Get();
-			if (task)
-			{
-				stat->status = ThreadState::Processing;
-				stat->me->zip.AddFile(task->fileName->ToCString(), task->fileBuff, task->fileSize, task->fileTimeTicks, task->compLevel);
-				FreeTask(task);			
-				stat->status = ThreadState::Idle;
-				stat->me->mainEvt.Set();
-			}
-			else
-			{
-				evt.Wait(1000);
-			}
-		}
-		while (true)
-		{
-			task = (FileTask*)stat->me->taskList.Get();
-			if (task == 0)
-				break;
-			stat->me->zip.AddFile(task->fileName->ToCString(), task->fileBuff, task->fileSize, task->fileTimeTicks, task->compLevel);
+			me->zip.AddFile(task->fileName->ToCString(), task->fileBuff, task->fileSize, task->fileTimeTicks, task->compLevel);
 			FreeTask(task);			
+			me->mainEvt.Set();
+		}
+		else
+		{
+			thread->Wait(1000);
 		}
 	}
-	stat->status = ThreadState::Stopped;
-	stat->me->mainEvt.Set();
-	return 0;
+	while (true)
+	{
+		task = (FileTask*)me->taskList.Get();
+		if (task == 0)
+			break;
+		me->zip.AddFile(task->fileName->ToCString(), task->fileBuff, task->fileSize, task->fileTimeTicks, task->compLevel);
+		FreeTask(task);			
+	}
+	me->mainEvt.Set();
 }
 
 void IO::ZIPMTBuilder::FreeTask(FileTask *task)
@@ -57,9 +48,9 @@ void IO::ZIPMTBuilder::AddTask(FileTask *task)
 	UOSInt i = this->threadCnt;
 	while (i-- > 0)
 	{
-		if (this->threads[i].status == ThreadState::Idle)
+		if (this->threads[i]->IsWaiting())
 		{
-			this->threads[i].evt->Set();
+			this->threads[i]->Notify();
 			return;
 		}
 	}
@@ -67,16 +58,17 @@ void IO::ZIPMTBuilder::AddTask(FileTask *task)
 
 IO::ZIPMTBuilder::ZIPMTBuilder(NotNullPtr<IO::SeekableStream> stm) : zip(stm)
 {
+	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	this->toStop = false;
 	this->threadCnt = Sync::ThreadUtil::GetThreadCnt();
-	this->threads = MemAlloc(ThreadStat, this->threadCnt);
+	this->threads = MemAlloc(Sync::Thread*, this->threadCnt);
 	UOSInt i = this->threadCnt;
 	while (i-- > 0)
 	{
-		this->threads[i].me = this;
-		this->threads[i].evt = 0;
-		this->threads[i].status = ThreadState::NotRunning;
-		Sync::ThreadUtil::Create(ThreadProc, &this->threads[i]);
+		sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("ZIPMTBuilder")), i);
+		NEW_CLASS(this->threads[i], Sync::Thread(ThreadProc, this, CSTRP(sbuff, sptr)));
+		this->threads[i]->Start();
 	}
 }
 
@@ -86,24 +78,13 @@ IO::ZIPMTBuilder::~ZIPMTBuilder()
 	UOSInt i = this->threadCnt;
 	while (i-- > 0)
 	{
-		this->threads[i].evt->Set();
+		this->threads[i]->BeginStop();
 	}
-	Bool running;
-	while (true)
+	i = this->threadCnt;
+	while (i-- > 0)
 	{
-		running = false;
-		i = this->threadCnt;
-		while (i-- > 0)
-		{
-			if (this->threads[i].status != ThreadState::Stopped)
-			{
-				running = true;
-				break;
-			}
-		}
-		if (!running)
-			break;
-		this->mainEvt.Wait(1000);
+		this->threads[i]->WaitForEnd();
+		DEL_CLASS(this->threads[i]);
 	}
 	MemFree(this->threads);
 }

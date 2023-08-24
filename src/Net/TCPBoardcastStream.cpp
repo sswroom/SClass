@@ -160,12 +160,12 @@ UOSInt Net::TCPBoardcastStream::Read(const Data::ByteArray &buff)
 {
 	UOSInt readBuffSize;
 
-	Sync::Interlocked::Increment(&this->readCnt);
+	Sync::Interlocked::IncrementU32(this->readCnt);
 	while (true)
 	{
 		if (this->svr == 0)
 		{
-			Sync::Interlocked::Decrement(&this->readCnt);
+			Sync::Interlocked::DecrementU32(this->readCnt);
 			return 0;
 		}
 		readBuffSize = this->readBuffPtr2 - this->readBuffPtr1;
@@ -177,7 +177,7 @@ UOSInt Net::TCPBoardcastStream::Read(const Data::ByteArray &buff)
 			break;
 		Sync::SimpleThread::Sleep(10);
 	}
-	Sync::Interlocked::Decrement(&this->readCnt);
+	Sync::Interlocked::DecrementU32(this->readCnt);
 	Sync::MutexUsage mutUsage(this->readMut);
 	Data::ByteArray myBuff = buff;
 	if ((UOSInt)readBuffSize >= myBuff.GetSize())

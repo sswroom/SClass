@@ -45,7 +45,7 @@ IO::StmData::FileData::FileData(const IO::StmData::FileData *fd, UInt64 offset, 
 	this->fdn = fd->fdn;
 	if (this->fdn)
 	{
-		Sync::Interlocked::Increment((Int32*)&this->fdn->objectCnt);
+		Sync::Interlocked::IncrementU32(this->fdn->objectCnt);
 	}
 }
 
@@ -173,7 +173,7 @@ void IO::StmData::FileData::SetFullName(Text::CString fullName)
 {
 	if (this->fdn)
 	{
-		if (Sync::Interlocked::Decrement((Int32*)&this->fdn->objectCnt) == 0)
+		if (Sync::Interlocked::DecrementU32(this->fdn->objectCnt) == 0)
 		{
 			this->fdn->fullName->Release();
 			MemFree(this->fdn);

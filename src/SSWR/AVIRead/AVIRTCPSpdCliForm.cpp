@@ -129,7 +129,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRTCPSpdCliForm::ProcThread(void *userObj)
 			mutUsage.EndUse();
 			if (sendSize > 0)
 			{
-				Sync::Interlocked::Add(&me->sendSize, sendSize);
+				Sync::Interlocked::AddU64(me->sendSize, sendSize);
 			}
 			else
 			{
@@ -163,7 +163,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRTCPSpdCliForm::RecvThread(void *userObj)
 				recvSize = me->cli->Read(recvBuff);
 				if (recvSize > 0)
 				{
-					Sync::Interlocked::Add(&me->recvSize, recvSize);
+					Sync::Interlocked::AddU64(me->recvSize, recvSize);
 				}
 				else
 				{

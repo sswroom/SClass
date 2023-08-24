@@ -6,7 +6,7 @@
 IO::StmData::MemoryDataCopy::MemoryDataCopy(MemoryStats *stat, const UInt8 *data, UOSInt dataLength)
 {
 	this->stat = stat;
-	Sync::Interlocked::Increment(&stat->useCnt);
+	Sync::Interlocked::IncrementI32(stat->useCnt);
 	this->data = data;
 	this->dataLength = dataLength;
 }
@@ -38,7 +38,7 @@ IO::StmData::MemoryDataCopy::MemoryDataCopy(const Data::ByteArrayR &data)
 
 IO::StmData::MemoryDataCopy::~MemoryDataCopy()
 {
-	if (Sync::Interlocked::Decrement(&this->stat->useCnt) == 0)
+	if (Sync::Interlocked::DecrementI32(this->stat->useCnt) == 0)
 	{
 		MemFree(this->stat->data);
 		SDEL_STRING(this->stat->fullName);

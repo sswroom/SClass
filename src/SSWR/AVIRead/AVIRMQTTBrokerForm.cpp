@@ -193,7 +193,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnTopicUpdate(void *userObj, T
 	SSWR::AVIRead::AVIRMQTTBrokerForm::TopicStatus *topicSt;
 	Data::DateTime dt;
 	dt.SetCurrTimeUTC();
-	Sync::Interlocked::Increment(&me->totalCount);
+	Sync::Interlocked::IncrementU64(me->totalCount);
 	Sync::MutexUsage mutUsage(me->topicMut);
 	topicSt = me->topicMap.Get(topic);
 	if (topicSt)

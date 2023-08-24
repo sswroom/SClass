@@ -37,7 +37,7 @@ UInt32 __stdcall RecvThread(void *userObj)
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 	Net::SocketFactory::ErrorType et;
-	Sync::Interlocked::Increment(&threadCnt);
+	Sync::Interlocked::IncrementI32(threadCnt);
 	{
 		Text::StringBuilderUTF8 sb;
 		while (!threadToStop)
@@ -113,7 +113,7 @@ UInt32 __stdcall RecvThread(void *userObj)
 			}
 		}
 	}
-	Sync::Interlocked::Decrement(&threadCnt);
+	Sync::Interlocked::DecrementI32(threadCnt);
 	return 0;
 }
 

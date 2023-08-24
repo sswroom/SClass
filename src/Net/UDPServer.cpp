@@ -29,7 +29,7 @@ UInt32 __stdcall Net::UDPServer::DataV4Thread(void *obj)
 			Data::Timestamp logTime = Data::Timestamp::UtcNow();
 			if (recvSize > 0)
 			{
-				Sync::Interlocked::Increment(&stat->me->recvCnt);
+				Sync::Interlocked::IncrementI32(stat->me->recvCnt);
 				if (stat->me->msgLog)
 				{
 					if (stat->me->msgPrefix)
@@ -104,7 +104,7 @@ UInt32 __stdcall Net::UDPServer::DataV6Thread(void *obj)
 			Data::Timestamp logTime = Data::Timestamp::UtcNow();
 			if (recvSize > 0)
 			{
-				Sync::Interlocked::Increment(&stat->me->recvCnt);
+				Sync::Interlocked::IncrementI32(stat->me->recvCnt);
 				if (stat->me->msgLog)
 				{
 					if (stat->me->msgPrefix)

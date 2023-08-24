@@ -147,7 +147,7 @@ UInt32 __stdcall ProcessThread(void *userObj)
 			while (!status->threadToStop)
 			{
 				url = CSTR(URL);
-				if (Sync::Interlocked::Decrement(&connLeft) < 0)
+				if (Sync::Interlocked::DecrementI32(connLeft) < 0)
 					break;
 				respClk.Start();
 				cli = Net::HTTPClient::CreateClient(sockf, ssl, CSTR_NULL, true, url.StartsWith(UTF8STRC("https://")));

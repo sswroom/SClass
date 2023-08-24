@@ -52,7 +52,7 @@ void __stdcall SSWR::AVIRead::AVIRSNMPManagerForm::OnAgentAddClicked(void *userO
 			Net::SNMPManager::ReadingInfo *reading;
 			Data::FastMap<UInt32, UInt16> readingMap;
 			UInt16 currId;
-			me->SendAgentValues(&agentList);
+			me->SendAgentValues(agentList);
 			Sync::SimpleThread::Sleep(100);
 			i = 0;
 			while (i < j)
@@ -239,10 +239,10 @@ void __stdcall SSWR::AVIRead::AVIRSNMPManagerForm::OnTimerTick(void *userObj)
 		if (me->chkSendToSvr->IsChecked())
 		{
 			Data::ArrayList<Net::SNMPManager::AgentInfo*> agentList;
-			me->mgr->GetAgentList(&agentList);
+			me->mgr->GetAgentList(agentList);
 			if (agentList.GetCount() > 0)
 			{
-				me->SendAgentValues(&agentList);
+				me->SendAgentValues(agentList);
 			}
 		}
 		dt.SetCurrTimeUTC();
@@ -261,7 +261,7 @@ void __stdcall SSWR::AVIRead::AVIRSNMPManagerForm::OnAgentWalkClicked(void *user
 	}
 }
 
-void SSWR::AVIRead::AVIRSNMPManagerForm::SendAgentValues(Data::ArrayList<Net::SNMPManager::AgentInfo *> *agentList)
+void SSWR::AVIRead::AVIRSNMPManagerForm::SendAgentValues(NotNullPtr<Data::ArrayList<Net::SNMPManager::AgentInfo *>> agentList)
 {
 	Net::SNMPManager::AgentInfo *agent;
 	SSWR::SMonitor::ISMonitorCore::DevRecord2 devRec;

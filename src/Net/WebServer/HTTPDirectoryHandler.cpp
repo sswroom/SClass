@@ -684,7 +684,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(Net::WebServer::IWebReq
 	cache = this->fileCache.Get(subReq);
 	if (cache != 0)
 	{
-		Sync::Interlocked::Increment(&this->fileCacheUsing);
+		Sync::Interlocked::IncrementI32(this->fileCacheUsing);
 		mutUsage.EndUse();
 		NotNullPtr<Sync::Mutex> statMut;
 		if (this->statMap && statMut.Set(this->statMut))
@@ -748,7 +748,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(Net::WebServer::IWebReq
 		}
 		resp->AddContentType(mime);
 		Net::WebServer::HTTPServerUtil::SendContent(req, resp, mime, cache->buffSize, cache->buff);
-		Sync::Interlocked::Decrement(&this->fileCacheUsing);
+		Sync::Interlocked::DecrementI32(this->fileCacheUsing);
 		return true;
 	}
 	sb.ClearStr();

@@ -419,7 +419,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::ProcThread(void *userOb
 				}
 				else
 				{
-					Sync::Interlocked::Increment(&stat->me->errCnt);
+					Sync::Interlocked::IncrementI32(stat->me->errCnt);
 				}
 				stat->threadStat = 1;
 				stat->me->mainEvt.Set();

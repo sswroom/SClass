@@ -467,8 +467,8 @@ Bool Net::EthernetAnalyzer::PacketNull(const UInt8 *packet, UOSInt packetSize)
 			this->errWriter->WriteLineC(sb.ToString(), sb.GetLength());
 		}
 	}
-	Sync::Interlocked::Increment(&this->packetCnt);
-	Sync::Interlocked::Add(&this->packetTotalSize, packetSize);
+	Sync::Interlocked::IncrementU64(this->packetCnt);
+	Sync::Interlocked::AddU64(this->packetTotalSize, packetSize);
 	return valid;
 }
 
@@ -503,8 +503,8 @@ Bool Net::EthernetAnalyzer::PacketEthernet(const UInt8 *packet, UOSInt packetSiz
 			this->errWriter->WriteLineC(sb.ToString(), sb.GetLength());
 		}
 	}
-	Sync::Interlocked::Increment(&this->packetCnt);
-	Sync::Interlocked::Add(&this->packetTotalSize, packetSize);
+	Sync::Interlocked::IncrementU64(this->packetCnt);
+	Sync::Interlocked::AddU64(this->packetTotalSize, packetSize);
 	return valid;
 }
 
@@ -555,8 +555,8 @@ Bool Net::EthernetAnalyzer::PacketLinux(const UInt8 *packet, UOSInt packetSize)
 			this->errWriter->WriteLineC(sb.ToString(), sb.GetLength());
 		}
 	}
-	Sync::Interlocked::Increment(&this->packetCnt);
-	Sync::Interlocked::Add(&this->packetTotalSize, packetSize);
+	Sync::Interlocked::IncrementU64(this->packetCnt);
+	Sync::Interlocked::AddU64(this->packetTotalSize, packetSize);
 	return valid;
 }
 

@@ -95,7 +95,7 @@ Media::AVIUtl::AUIVideo::~AUIVideo()
 		Sync::SimpleThread::Sleep(10);
 	}
 
-	if (Sync::Interlocked::Decrement(&this->input->useCnt) == 0)
+	if (Sync::Interlocked::DecrementU32(this->input->useCnt) == 0)
 	{
 		this->plugin->CloseInput(this->input->hand);
 		MemFree(this->input);

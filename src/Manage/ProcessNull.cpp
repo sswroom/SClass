@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/ByteTool.h"
-#include "Data/Int32Map.h"
+#include "Data/FastMap.h"
 #include "IO/FileStream.h"
 #include "IO/FileUtil.h"
 #include "IO/Path.h"
@@ -42,7 +42,7 @@ UOSInt Manage::Process::GetProcId()
 	return this->procId;
 }
 
-Bool Manage::Process::IsRunning()
+Bool Manage::Process::IsRunning() const
 {
 	return true;
 }
@@ -88,7 +88,7 @@ UOSInt Manage::Process::GetModules(Data::ArrayList<Manage::ModuleInfo *> *modLis
 	return 0;
 }
 
-UOSInt Manage::Process::GetThreads(Data::ArrayList<Manage::ThreadInfo *> *threadList)
+UOSInt Manage::Process::GetThreads(NotNullPtr<Data::ArrayList<Manage::ThreadInfo *>> threadList)
 {
 	return 0;
 }
@@ -123,7 +123,7 @@ Bool Manage::Process::GetMemoryInfo(UOSInt *pageFault, UOSInt *workingSetSize, U
 	return false;
 }
 
-Bool Manage::Process::GetTimeInfo(Data::DateTime *createTime, Data::DateTime *kernelTime, Data::DateTime *userTime)
+Bool Manage::Process::GetTimeInfo(Data::Timestamp *createTime, Data::Timestamp *kernelTime, Data::Timestamp *userTime)
 {
 	return false;
 }

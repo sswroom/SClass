@@ -238,7 +238,7 @@ UInt32 UI::DObj::RollingMessageDObj::AddMessage(Text::CString message)
 {
 	MessageInfo *msg;
 	msg = MemAlloc(MessageInfo, 1);
-	msg->id = Sync::Interlocked::Increment(&this->nextMsgId);
+	msg->id = Sync::Interlocked::IncrementU32(this->nextMsgId);
 	msg->message = Text::String::New(message);
 	msg->img = 0;
 	msg->deleted = false;
@@ -251,7 +251,7 @@ UInt32 UI::DObj::RollingMessageDObj::AddMessage(NotNullPtr<Text::String> message
 {
 	MessageInfo *msg;
 	msg = MemAlloc(MessageInfo, 1);
-	msg->id = Sync::Interlocked::Increment(&this->nextMsgId);
+	msg->id = Sync::Interlocked::IncrementU32(this->nextMsgId);
 	msg->message = message->Clone();
 	msg->img = 0;
 	msg->deleted = false;

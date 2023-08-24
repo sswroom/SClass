@@ -6,20 +6,24 @@ namespace Sync
 	class Interlocked
 	{
 	public:
-		static Int32 Increment(Int32 *val);
-		static Int64 Increment(Int64 *val);
-		static UInt32 Increment(UInt32 *val);
-		static UInt64 Increment(UInt64 *val);
-		static Int32 Decrement(Int32 *val);
-		static Int64 Decrement(Int64 *val);
-		static UInt32 Decrement(UInt32 *val);
-		static UInt64 Decrement(UInt64 *val);
-		static Int32 Add(Int32 *val, Int32 aval);
-		static Int64 Add(Int64 *val, Int64 aval);
-		static UInt32 Add(UInt32 *val, UInt32 aval);
-		static UInt64 Add(UInt64 *val, UInt64 aval);
-		static Int32 Subtract(Int32 *val, Int32 sval);
-		static Int64 Subtract(Int64 *val, Int64 sval);
+		static Int32 IncrementI32(NotNullPtr<Int32> val);
+		static Int64 IncrementI64(NotNullPtr<Int64> val);
+		static UInt32 IncrementU32(NotNullPtr<UInt32> val);
+		static UInt64 IncrementU64(NotNullPtr<UInt64> val);
+		static OSInt IncrementOS(NotNullPtr<OSInt> val);
+		static UOSInt IncrementUOS(NotNullPtr<UOSInt> val);
+		static Int32 DecrementI32(NotNullPtr<Int32> val);
+		static Int64 DecrementI64(NotNullPtr<Int64> val);
+		static UInt32 DecrementU32(NotNullPtr<UInt32> val);
+		static UInt64 DecrementU64(NotNullPtr<UInt64> val);
+		static OSInt DecrementOS(NotNullPtr<OSInt> val);
+		static UOSInt DecrementUOS(NotNullPtr<UOSInt> val);
+		static Int32 AddI32(NotNullPtr<Int32> val, Int32 aval);
+		static Int64 AddI64(NotNullPtr<Int64> val, Int64 aval);
+		static UInt32 AddU32(NotNullPtr<UInt32> val, UInt32 aval);
+		static UInt64 AddU64(NotNullPtr<UInt64> val, UInt64 aval);
+		static Int32 SubtractI32(NotNullPtr<Int32> val, Int32 sval);
+		static Int64 SubtractI64(NotNullPtr<Int64> val, Int64 sval);
 	};
 }
 

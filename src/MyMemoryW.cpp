@@ -45,7 +45,7 @@ void MemPtrChk(void *ptr)
 
 void MemInit()
 {
-	if (Sync::Interlocked::Increment(&mcInitCnt) == 1)
+	if (Sync::Interlocked::IncrementI32(mcInitCnt) == 1)
 	{
 		mcHandle = HeapCreate(0, 0, 0);//GetProcessHeap();
 		mcIntHandle = HeapCreate(0, 0, 0);
@@ -385,7 +385,7 @@ void MemFreeA(void *ptr)
 #endif
 void MemDeinit()
 {
-	if (Sync::Interlocked::Decrement(&mcInitCnt) == 0)
+	if (Sync::Interlocked::DecrementI32(mcInitCnt) == 0)
 	{
 		MemCheckError();
 		Sync::Mutex_Destroy(&mcMut);

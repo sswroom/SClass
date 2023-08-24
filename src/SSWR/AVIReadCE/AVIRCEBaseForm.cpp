@@ -73,7 +73,6 @@ void __stdcall SSWR::AVIReadCE::AVIRCEBaseForm::FileHandler(void *userObj, const
 {
 	SSWR::AVIReadCE::AVIRCEBaseForm *me = (AVIReadCE::AVIRCEBaseForm*)userObj;
 	IO::Path::PathType pt;
-	IO::StmData::FileData *fd;
 	IO::DirectoryPackage *pkg;
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("Cannot parse:"));
@@ -83,7 +82,7 @@ void __stdcall SSWR::AVIReadCE::AVIRCEBaseForm::FileHandler(void *userObj, const
 	while (i < nFiles)
 	{
 		UOSInt fileNameLen = Text::StrCharCnt(files[i]);
-		pt = IO::Path::GetPathType(files[i], fileNameLen);
+		pt = IO::Path::GetPathType(Text::CString(files[i], fileNameLen));
 		if (pt == IO::Path::PathType::Directory)
 		{
 			NEW_CLASS(pkg, IO::DirectoryPackage({files[i], fileNameLen}));
@@ -91,14 +90,13 @@ void __stdcall SSWR::AVIReadCE::AVIRCEBaseForm::FileHandler(void *userObj, const
 		}
 		else if (pt == IO::Path::PathType::File)
 		{
-			NEW_CLASS(fd, IO::StmData::FileData({files[i], fileNameLen}, false));
+			IO::StmData::FileData fd({files[i], fileNameLen}, false);
 			if (!me->core->LoadData(fd, 0))
 			{
 				sb.AppendC(UTF8STRC("\n"));
 				sb.AppendSlow(files[i]);
 				found = true;
 			}
-			DEL_CLASS(fd);
 		}
 		i++;
 	}
@@ -158,7 +156,7 @@ SSWR::AVIReadCE::AVIRCEBaseForm::AVIRCEBaseForm(UI::GUIClientControl *parent, No
 	this->SetFormState(UI::GUIForm::FS_MAXIMIZED);
 
 	Data::ArrayList<MenuInfo*> *menu;
-	NEW_CLASS(this->menuItems, Data::Int32Map<Data::ArrayList<MenuInfo*>*>());
+	NEW_CLASS(this->menuItems, Data::Int32FastMap<Data::ArrayList<MenuInfo*>*>());
 
 	UOSInt w;
 	UOSInt h;
@@ -257,16 +255,14 @@ SSWR::AVIReadCE::AVIRCEBaseForm::AVIRCEBaseForm(UI::GUIClientControl *parent, No
 
 SSWR::AVIReadCE::AVIRCEBaseForm::~AVIRCEBaseForm()
 {
-	Data::ArrayList<Data::ArrayList<MenuInfo*>*> *menuList;
 	Data::ArrayList<MenuInfo*> *menu;
 	MenuInfo *info;
 	OSInt i;
 	OSInt j;
-	menuList = this->menuItems->GetValues();
-	i = menuList->GetCount();
+	i = this->menuItems->GetCount();
 	while (i-- > 0)
 	{
-		menu = menuList->GetItem(i);
+		menu = this->menuItems->GetItem(i);
 		j = menu->GetCount();
 		while (j-- > 0)
 		{

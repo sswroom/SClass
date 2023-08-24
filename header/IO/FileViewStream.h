@@ -14,16 +14,17 @@ namespace IO
 		UInt8 *fptr;
 
 	public:
-		FileViewStream(Text::CString fileName);
+		FileViewStream(Text::CStringNN fileName);
 		virtual ~FileViewStream();
 
-		virtual Bool IsDown();
+		virtual Bool IsDown() const;
 		virtual UOSInt Read(const Data::ByteArray &buff);
 		virtual UOSInt Write(const UInt8 *buff, UOSInt size);
 
 		virtual Int32 Flush();
 		virtual void Close();
 		virtual Bool Recover();
+		virtual StreamType GetStreamType() const;
 		virtual UInt64 SeekFromBeginning(UInt64 position);
 		virtual UInt64 SeekFromCurrent(Int64 position);
 		virtual UInt64 SeekFromEnd(Int64 position);

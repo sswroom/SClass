@@ -54,7 +54,7 @@ void DB::MySQLConn::Connect()
 
 DB::MySQLConn::MySQLConn(Text::String *server, Text::String *uid, Text::String *pwd, Text::String *database, IO::LogTool *log) : DB::DBConn(CSTR("MySQLConn"))
 {
-	if (Sync::Interlocked::Increment(&useCnt) == 1)
+	if (Sync::Interlocked::IncrementI32(useCnt) == 1)
 	{
 	}
 
@@ -70,7 +70,7 @@ DB::MySQLConn::MySQLConn(Text::String *server, Text::String *uid, Text::String *
 
 DB::MySQLConn::MySQLConn(Text::CString server, Text::CString uid, Text::CString pwd, Text::CString database, IO::LogTool *log) : DB::DBConn(CSTR("MySQLConn"))
 {
-	if (Sync::Interlocked::Increment(&useCnt) == 1)
+	if (Sync::Interlocked::IncrementI32(useCnt) == 1)
 	{
 	}
 
@@ -86,7 +86,7 @@ DB::MySQLConn::MySQLConn(Text::CString server, Text::CString uid, Text::CString 
 
 DB::MySQLConn::MySQLConn(const WChar *server, const WChar *uid, const WChar *pwd, const WChar *database, IO::LogTool *log) : DB::DBConn(CSTR("MySQLConn"))
 {
-	if (Sync::Interlocked::Increment(&useCnt) == 1)
+	if (Sync::Interlocked::IncrementI32(useCnt) == 1)
 	{
 	}
 
@@ -107,7 +107,7 @@ DB::MySQLConn::~MySQLConn()
 	SDEL_STRING(this->database);
 	SDEL_STRING(this->uid);
 	SDEL_STRING(this->pwd);
-	if (Sync::Interlocked::Decrement(&useCnt) == 0)
+	if (Sync::Interlocked::DecrementI32(useCnt) == 0)
 	{
 		mysql_library_end();
 	}

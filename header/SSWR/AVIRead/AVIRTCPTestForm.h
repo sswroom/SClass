@@ -4,6 +4,7 @@
 #include "Net/HTTPClient.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "Sync/Mutex.h"
+#include "Sync/Thread.h"
 #include "UI/GUIButton.h"
 #include "UI/GUIForm.h"
 #include "UI/GUIGroupBox.h"
@@ -20,17 +21,9 @@ namespace SSWR
 		class AVIRTCPTestForm : public UI::GUIForm
 		{
 		private:
-			typedef struct
-			{
-				AVIRTCPTestForm *me;
-				Bool threadRunning;
-				Bool threadToStop;
-				Sync::Event *evt;
-			} ThreadStatus;
-		private:
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			NotNullPtr<Net::SocketFactory> sockf;
-			ThreadStatus *threadStatus;
+			Sync::Thread **threads;
 			UInt32 svrIP;
 			UInt16 svrPort;
 			Sync::Mutex connMut;
@@ -61,7 +54,7 @@ namespace SSWR
 			UI::GUITextBox *txtFailCnt;
 
 			static void __stdcall OnStartClicked(void *userObj);
-			static UInt32 __stdcall ProcessThread(void *userObj);
+			static void __stdcall ProcessThread(NotNullPtr<Sync::Thread> thread);
 			static void __stdcall OnTimerTick(void *userObj);
 			void StopThreads();
 		public:

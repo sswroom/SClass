@@ -33,7 +33,7 @@ IO::BTManager::BTManager()
 IO::BTManager::~BTManager()
 {
 	InternalData *me = (InternalData*)this->internalData;
-	if (Sync::Interlocked::Decrement(&me->useCnt) <= 0)
+	if (Sync::Interlocked::DecrementI32(me->useCnt) <= 0)
 	{
 		DEL_CLASS(me->lib);
 		MemFree(me);

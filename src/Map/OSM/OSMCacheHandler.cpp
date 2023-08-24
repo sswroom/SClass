@@ -38,14 +38,14 @@ IO::SeekableStream *Map::OSM::OSMCacheHandler::GetTileData(Int32 lev, Int32 xTil
 	NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (!fs->IsError())
 	{
-		Sync::Interlocked::Increment(&this->status.localCnt);
+		Sync::Interlocked::IncrementI32(this->status.localCnt);
 		fs->GetFileTimes(&dt, 0, 0);
 		currTime.SetCurrTimeUTC();
 		if (currTime.DiffMS(dt) >= 3600000)
 		{
 			fs->SetFileTimes(&currTime, 0, 0);
 			//////////////////////////
-			Sync::Interlocked::Increment(&this->status.cacheCnt);
+			Sync::Interlocked::IncrementI32(this->status.cacheCnt);
 		}
 
 		return fs;
@@ -118,16 +118,16 @@ IO::SeekableStream *Map::OSM::OSMCacheHandler::GetTileData(Int32 lev, Int32 xTil
 					fs->SetFileTimes(&currTime, 0, 0);
 				}
 				fs->SeekFromBeginning(0);
-				Sync::Interlocked::Increment(&this->status.remoteSuccCnt);
+				Sync::Interlocked::IncrementI32(this->status.remoteSuccCnt);
 			}
 			else
 			{
-				Sync::Interlocked::Increment(&this->status.remoteErrCnt);
+				Sync::Interlocked::IncrementI32(this->status.remoteErrCnt);
 			}
 		}
 		else
 		{
-			Sync::Interlocked::Increment(&this->status.remoteErrCnt);
+			Sync::Interlocked::IncrementI32(this->status.remoteErrCnt);
 		}
 	}
 	cli.Delete();
@@ -188,7 +188,7 @@ Bool Map::OSM::OSMCacheHandler::ProcessRequest(Net::WebServer::IWebRequest *req,
 		return true;
 	}
 
-	Sync::Interlocked::Increment(&this->status.reqCnt);
+	Sync::Interlocked::IncrementI32(this->status.reqCnt);
 
 	Int32 lev = Text::StrToInt32(sarr[1]);
 	Int32 xTile = Text::StrToInt32(sarr[2]);

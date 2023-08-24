@@ -783,7 +783,7 @@ void __stdcall Net::MySQLServer::OnClientConn(Socket *s, void *userObj)
 	data->buff = MemAlloc(UInt8, DEFAULT_BUFF_SIZE + 2048);
 	data->buffSize = 0;
 	data->mode = 0;
-	data->connId = Sync::Interlocked::Increment(&me->connId);
+	data->connId = Sync::Interlocked::IncrementI32(me->connId);
 	data->capability = 0xa03ff7ff;
 	data->clientCap = 0;
 	data->clientCS = 0;

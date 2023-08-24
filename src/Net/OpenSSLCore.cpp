@@ -7,7 +7,7 @@ Int32 Net::OpenSSLCore::useCnt = 0;
 
 void Net::OpenSSLCore::Init()
 {
-	if (Sync::Interlocked::Increment(&useCnt) <= 1)
+	if (Sync::Interlocked::IncrementI32(useCnt) <= 1)
 	{
 		SSL_load_error_strings();	
     	OpenSSL_add_ssl_algorithms();
@@ -16,7 +16,7 @@ void Net::OpenSSLCore::Init()
 
 void Net::OpenSSLCore::Deinit()
 {
-	if (Sync::Interlocked::Decrement(&useCnt) <= 0)
+	if (Sync::Interlocked::DecrementI32(useCnt) <= 0)
 	{
 		EVP_cleanup();
 	}

@@ -40,7 +40,8 @@ namespace IO
 		MemoryReading,
 		DataCapture,
 		WebSocket,
-		Null
+		Null,
+		FileView
 	};
 
 

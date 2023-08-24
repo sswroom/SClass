@@ -38,7 +38,7 @@ void Sync::RWMutex::LockRead()
 		EnterCriticalSection(&this->clsData->mutHand);
 		if (this->writeTId == 0)
 		{
-			Sync::Interlocked::Increment(&this->readCnt);
+			Sync::Interlocked::IncrementI32(this->readCnt);
 			locked = true;
 		}
 		LeaveCriticalSection(&this->clsData->mutHand);
@@ -50,7 +50,7 @@ void Sync::RWMutex::LockRead()
 
 void Sync::RWMutex::UnlockRead()
 {
-	if (Sync::Interlocked::Decrement(&this->readCnt) == 0)
+	if (Sync::Interlocked::DecrementI32(this->readCnt) == 0)
 	{
 		SetEvent(this->clsData->hand);
 	}

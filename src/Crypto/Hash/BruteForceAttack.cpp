@@ -49,7 +49,7 @@ UInt32 __stdcall Crypto::Hash::BruteForceAttack::ProcessThread(void *userObj)
 	UTF8Char result[64];
 	UOSInt keySize;
 	Crypto::Hash::HashValidatorSess *sess;
-	Sync::Interlocked::Increment(&me->threadCnt);
+	Sync::Interlocked::IncrementUOS(me->threadCnt);
 	sess = me->validator->CreateSess();;
 	while (!me->threadToStop)
 	{
@@ -64,7 +64,7 @@ UInt32 __stdcall Crypto::Hash::BruteForceAttack::ProcessThread(void *userObj)
 		}
 	}
 	me->validator->DeleteSess(sess);
-	Sync::Interlocked::Decrement((OSInt*)&me->threadCnt);
+	Sync::Interlocked::DecrementUOS(me->threadCnt);
 	return 0;
 }
 
