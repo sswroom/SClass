@@ -32,6 +32,7 @@ Net::MIME::MIMEEntry Net::MIME::mimeList[] = {
 	{UTF8STRC("html"), UTF8STRC("text/html")},
 	{UTF8STRC("ico"),  UTF8STRC("image/vnd.microsoft.icon")},
 	{UTF8STRC("igs"),  UTF8STRC("model/iges")},
+	{UTF8STRC("ipa"),  UTF8STRC("application/x-ios-app")},
 	{UTF8STRC("iso"),  UTF8STRC("application/x-iso9660-image")},
 	{UTF8STRC("jp2"),  UTF8STRC("image/jpeg2000")},
 	{UTF8STRC("jpeg"), UTF8STRC("image/jpeg")},

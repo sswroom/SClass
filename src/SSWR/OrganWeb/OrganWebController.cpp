@@ -726,6 +726,11 @@ void SSWR::OrganWeb::OrganWebController::WritePickObjs(NotNullPtr<Sync::RWMutexU
 				sb.AppendI32(PREVIEW_SIZE);
 				sb.AppendC(UTF8STRC("&fileId="));
 				sb.AppendI32(userFile->id);
+				if (userFile->rotType != 0)
+				{
+					sb.AppendC(UTF8STRC("&r="));
+					sb.AppendI32(userFile->rotType);
+				}
 				s = Text::XML::ToNewAttrText(sb.ToString());
 				writer->WriteStrC(s->v, s->leng);
 				s->Release();

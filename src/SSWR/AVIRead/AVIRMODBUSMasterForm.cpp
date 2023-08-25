@@ -557,6 +557,7 @@ SSWR::AVIRead::AVIRMODBUSMasterForm::AVIRMODBUSMasterForm(UI::GUIClientControl *
 	this->SetFont(0, 0, 8.25, false);
 	
 	this->core = core;
+	this->devStm = 0;
 	this->stm = 0;
 	this->recvUpdated = false;
 	this->sendUpdated = false;

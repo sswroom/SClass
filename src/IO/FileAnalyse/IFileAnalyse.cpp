@@ -158,6 +158,10 @@ IO::FileAnalyse::IFileAnalyse *IO::FileAnalyse::IFileAnalyse::AnalyseFile(NotNul
 	{
 		NEW_CLASS(analyse, IO::FileAnalyse::TXTFileAnalyse(fd));
 	}
+	else if (fileName->EndsWith(UTF8STRC(".vcs")) && buffSize >= 15 && Text::StrStartsWithC(buff, buffSize, UTF8STRC("BEGIN:VCALENDAR")))
+	{
+		NEW_CLASS(analyse, IO::FileAnalyse::TXTFileAnalyse(fd));
+	}
 
 	if (analyse && analyse->IsError())
 	{
