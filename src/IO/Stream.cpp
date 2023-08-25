@@ -168,6 +168,8 @@ Text::CString IO::StreamTypeGetName(StreamType st)
 		return CSTR("WebSocket");
 	case StreamType::Null:
 		return CSTR("Null");
+	case StreamType::FileView:
+		return CSTR("FileView");
 	case StreamType::Unknown:
 	default:
 		return CSTR("Unknown");

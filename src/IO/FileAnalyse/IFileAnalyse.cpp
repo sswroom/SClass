@@ -24,6 +24,7 @@
 #include "IO/FileAnalyse/SMTCFileAnalyse.h"
 #include "IO/FileAnalyse/TIFFFileAnalyse.h"
 #include "IO/FileAnalyse/TSFileAnalyse.h"
+#include "IO/FileAnalyse/TXTFileAnalyse.h"
 #include "IO/FileAnalyse/ZIPFileAnalyse.h"
 
 IO::FileAnalyse::IFileAnalyse::~IFileAnalyse()
@@ -47,6 +48,7 @@ IO::FileAnalyse::IFileAnalyse *IO::FileAnalyse::IFileAnalyse::AnalyseFile(NotNul
 	UInt8 buff[256];
 	UOSInt buffSize;
 	IO::FileAnalyse::IFileAnalyse *analyse = 0;
+	NotNullPtr<Text::String> fileName = fd->GetFullFileName();
 	buffSize = fd->GetRealData(0, 256, BYTEARR(buff));
 	if (buffSize >= 4 && ReadMInt32(&buff[0]) == 0x000001ba)
 	{
@@ -151,6 +153,10 @@ IO::FileAnalyse::IFileAnalyse *IO::FileAnalyse::IFileAnalyse::AnalyseFile(NotNul
 	else if (buffSize >= 25 && *(Int32*)&buff[0] == *(Int32*)"SmTC" && buff[24] == 0)
 	{
 		NEW_CLASS(analyse, IO::FileAnalyse::SMTCFileAnalyse(fd));
+	}
+	else if (fileName->Equals(UTF8STRC("README")) || fileName->Equals(UTF8STRC("LICENSE")) || fileName->EndsWith(UTF8STRC(".txt")))
+	{
+		NEW_CLASS(analyse, IO::FileAnalyse::TXTFileAnalyse(fd));
 	}
 
 	if (analyse && analyse->IsError())

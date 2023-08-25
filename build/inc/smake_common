@@ -2037,6 +2037,8 @@ IO/FileAnalyse/TIFFFileAnalyse.h: ../../src/IO/FileAnalyse/TIFFFileAnalyse.cpp
 @TIFFFileAnalyse.o
 IO/FileAnalyse/TSFileAnalyse.h: ../../src/IO/FileAnalyse/TSFileAnalyse.cpp
 @TSFileAnalyse.o
+IO/FileAnalyse/TXTFileAnalyse.h: ../../src/IO/FileAnalyse/TXTFileAnalyse.cpp
+@TXTFileAnalyse.o
 IO/FileAnalyse/ZIPFileAnalyse.h: ../../src/IO/FileAnalyse/ZIPFileAnalyse.cpp
 @ZIPFileAnalyse.o
 IO/ProgCtrl/BluetoothCtlProgCtrl.h: ../../src/IO/ProgCtrl/BluetoothCtlProgCtrl.cpp
@@ -4986,6 +4988,7 @@ SMTCFileAnalyse.o: ../../src/IO/FileAnalyse/SMTCFileAnalyse.cpp
 SPKFileAnalyse.o: ../../src/IO/FileAnalyse/SPKFileAnalyse.cpp
 TIFFFileAnalyse.o: ../../src/IO/FileAnalyse/TIFFFileAnalyse.cpp
 TSFileAnalyse.o: ../../src/IO/FileAnalyse/TSFileAnalyse.cpp
+TXTFileAnalyse.o: ../../src/IO/FileAnalyse/TXTFileAnalyse.cpp
 ZIPFileAnalyse.o: ../../src/IO/FileAnalyse/ZIPFileAnalyse.cpp
 BluetoothCtlProgCtrl.o: ../../src/IO/ProgCtrl/BluetoothCtlProgCtrl.cpp
 JTT808ProtocolDecoder.o: ../../src/IO/ProtoDec/JTT808ProtocolDecoder.cpp
