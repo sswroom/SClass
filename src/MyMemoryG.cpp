@@ -35,7 +35,7 @@ void MemPtrChk(void *ptr)
 
 void MemStart()
 {
-	if (Sync::Interlocked::Increment(&mcInitCnt) == 1)
+	if (Sync::Interlocked::IncrementI32(mcInitCnt) == 1)
 	{
 		mcBusy = 0;
 		mcBreakPt = 0;
@@ -91,7 +91,7 @@ void MemFree(void *ptr)
 
 void MemEnd()
 {
-	if (Sync::Interlocked::Decrement(&mcInitCnt) == 0)
+	if (Sync::Interlocked::DecrementI32(mcInitCnt) == 0)
 	{
 		MemCheckError();
 		delete mcMut;
@@ -109,7 +109,7 @@ Int32 MemCheckError()
 		IO::ConsoleWriter writer;
 		writer.WriteStrC(UTF8STRC("Memory leaks occurs for "));
 		writer.WriteStrC(buff, (UOSInt)(sptr - buff));
-		writer.WriteLineC(UTF8STRC())" times"));
+		writer.WriteLineC(UTF8STRC(" times"));
 		found = true;
 	}
 #if defined(MSC_VER) && !defined(_WIN32_WCE)

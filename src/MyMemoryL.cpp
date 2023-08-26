@@ -208,6 +208,7 @@ void *MAllocA(UOSInt size)
 #endif
 		return 0;
 	}
+	*(Int32*)mptr = Interlocked_IncrementI32(&mcBlockId);
 	mptr += 16;
 	mptr += 16 - (15 & (OSInt)mptr);
 	*(UInt8**)&mptr[-8] = sptr;
@@ -229,6 +230,7 @@ void *MAllocA64(UOSInt size)
 #endif
 		return 0;
 	}
+	*(Int32*)mptr = Interlocked_IncrementI32(&mcBlockId);
 	mptr += 16;
 	mptr += 64 - (63 & (OSInt)mptr);
 	*(UInt8**)&mptr[-8] = sptr;

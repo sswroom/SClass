@@ -73,6 +73,14 @@ extern "C"
 	void ImageUtil_Rotate64_CW90(const UInt8 *srcPtr, UInt8 *destPtr, UOSInt srcWidth, UOSInt srcHeight, UOSInt sbpl, UOSInt dbpl);
 	void ImageUtil_Rotate64_CW180(const UInt8 *srcPtr, UInt8 *destPtr, UOSInt srcWidth, UOSInt srcHeight, UOSInt sbpl, UOSInt dbpl);
 	void ImageUtil_Rotate64_CW270(const UInt8 *srcPtr, UInt8 *destPtr, UOSInt srcWidth, UOSInt srcHeight, UOSInt sbpl, UOSInt dbpl);
+	void ImageUtil_HFlip32(const UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, UOSInt sbpl, UOSInt dbpl, Bool upsideDown);
+	void ImageUtil_HFRotate32_CW90(const UInt8 *srcPtr, UInt8 *destPtr, UOSInt srcWidth, UOSInt srcHeight, UOSInt sbpl, UOSInt dbpl);
+	void ImageUtil_HFRotate32_CW180(const UInt8 *srcPtr, UInt8 *destPtr, UOSInt srcWidth, UOSInt srcHeight, UOSInt sbpl, UOSInt dbpl);
+	void ImageUtil_HFRotate32_CW270(const UInt8 *srcPtr, UInt8 *destPtr, UOSInt srcWidth, UOSInt srcHeight, UOSInt sbpl, UOSInt dbpl);
+	void ImageUtil_HFlip64(const UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, UOSInt sbpl, UOSInt dbpl, Bool upsideDown);
+	void ImageUtil_HFRotate64_CW90(const UInt8 *srcPtr, UInt8 *destPtr, UOSInt srcWidth, UOSInt srcHeight, UOSInt sbpl, UOSInt dbpl);
+	void ImageUtil_HFRotate64_CW180(const UInt8 *srcPtr, UInt8 *destPtr, UOSInt srcWidth, UOSInt srcHeight, UOSInt sbpl, UOSInt dbpl);
+	void ImageUtil_HFRotate64_CW270(const UInt8 *srcPtr, UInt8 *destPtr, UOSInt srcWidth, UOSInt srcHeight, UOSInt sbpl, UOSInt dbpl);
 
 	void ImageUtil_CopyShiftW(const UInt8 *srcPtr, UInt8 *destPtr, UOSInt byteSize, UOSInt shiftCnt); //Assume aligned
 	void ImageUtil_UVInterleaveShiftW(UInt8 *destPtr, const UInt8 *uptr, const UInt8 *vptr, UOSInt pixelCnt, UOSInt shiftCnt); //Assume aligned

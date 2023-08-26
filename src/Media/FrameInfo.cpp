@@ -292,6 +292,14 @@ Media::RotateType Media::RotateTypeCalc(RotateType srcType, RotateType destType)
 			return RotateType::CW_90;
 		case RotateType::CW_270:
 			return RotateType::CW_180;
+		case RotateType::HFLIP:
+			return RotateType::HFLIP_CW_270;
+		case RotateType::HFLIP_CW_90:
+			return RotateType::HFLIP;
+		case RotateType::HFLIP_CW_180:
+			return RotateType::HFLIP_CW_90;
+		case RotateType::HFLIP_CW_270:
+			return RotateType::HFLIP_CW_180;
 		default:
 			return RotateType::None;
 		}
@@ -306,6 +314,14 @@ Media::RotateType Media::RotateTypeCalc(RotateType srcType, RotateType destType)
 			return RotateType::None;
 		case RotateType::CW_270:
 			return RotateType::CW_90;
+		case RotateType::HFLIP:
+			return RotateType::HFLIP_CW_180;
+		case RotateType::HFLIP_CW_90:
+			return RotateType::HFLIP_CW_270;
+		case RotateType::HFLIP_CW_180:
+			return RotateType::HFLIP;
+		case RotateType::HFLIP_CW_270:
+			return RotateType::HFLIP_CW_90;
 		default:
 			return RotateType::None;
 		}
@@ -319,6 +335,102 @@ Media::RotateType Media::RotateTypeCalc(RotateType srcType, RotateType destType)
 		case RotateType::CW_180:
 			return RotateType::CW_270;
 		case RotateType::CW_270:
+			return RotateType::None;
+		case RotateType::HFLIP:
+			return RotateType::HFLIP_CW_90;
+		case RotateType::HFLIP_CW_90:
+			return RotateType::HFLIP_CW_180;
+		case RotateType::HFLIP_CW_180:
+			return RotateType::HFLIP_CW_270;
+		case RotateType::HFLIP_CW_270:
+			return RotateType::HFLIP;
+		default:
+			return RotateType::None;
+		}
+	case RotateType::HFLIP:
+		switch (destType)
+		{
+		case RotateType::None:
+			return RotateType::HFLIP;
+		case RotateType::CW_90:
+			return RotateType::HFLIP_CW_90;
+		case RotateType::CW_180:
+			return RotateType::HFLIP_CW_180;
+		case RotateType::CW_270:
+			return RotateType::HFLIP_CW_270;
+		case RotateType::HFLIP:
+			return RotateType::None;
+		case RotateType::HFLIP_CW_90:
+			return RotateType::CW_90;
+		case RotateType::HFLIP_CW_180:
+			return RotateType::CW_180;
+		case RotateType::HFLIP_CW_270:
+			return RotateType::CW_270;
+		default:
+			return RotateType::None;
+		}
+	case RotateType::HFLIP_CW_90:
+		switch (destType)
+		{
+		case RotateType::None:
+			return RotateType::HFLIP_CW_270;
+		case RotateType::CW_90:
+			return RotateType::HFLIP;
+		case RotateType::CW_180:
+			return RotateType::HFLIP_CW_90;
+		case RotateType::CW_270:
+			return RotateType::HFLIP_CW_180;
+		case RotateType::HFLIP:
+			return RotateType::CW_270;
+		case RotateType::HFLIP_CW_90:
+			return RotateType::None;
+		case RotateType::HFLIP_CW_180:
+			return RotateType::CW_90;
+		case RotateType::HFLIP_CW_270:
+			return RotateType::CW_180;
+		default:
+			return RotateType::None;
+		}
+	case RotateType::HFLIP_CW_180:
+		switch (destType)
+		{
+		case RotateType::None:
+			return RotateType::HFLIP_CW_180;
+		case RotateType::CW_90:
+			return RotateType::HFLIP_CW_270;
+		case RotateType::CW_180:
+			return RotateType::HFLIP;
+		case RotateType::CW_270:
+			return RotateType::HFLIP_CW_90;
+		case RotateType::HFLIP:
+			return RotateType::CW_180;
+		case RotateType::HFLIP_CW_90:
+			return RotateType::CW_270;
+		case RotateType::HFLIP_CW_180:
+			return RotateType::None;
+		case RotateType::HFLIP_CW_270:
+			return RotateType::CW_90;
+		default:
+			return RotateType::None;
+		}
+	case RotateType::HFLIP_CW_270:
+		switch (destType)
+		{
+		case RotateType::None:
+			return RotateType::HFLIP_CW_90;
+		case RotateType::CW_90:
+			return RotateType::HFLIP_CW_180;
+		case RotateType::CW_180:
+			return RotateType::HFLIP_CW_270;
+		case RotateType::CW_270:
+			return RotateType::HFLIP;
+		case RotateType::HFLIP:
+			return RotateType::CW_90;
+		case RotateType::HFLIP_CW_90:
+			return RotateType::CW_180;
+		case RotateType::HFLIP_CW_180:
+			return RotateType::CW_270;
+		case RotateType::HFLIP_CW_270:
 			return RotateType::None;
 		default:
 			return RotateType::None;
@@ -345,6 +457,14 @@ Media::RotateType Media::RotateTypeCombine(RotateType rtype1, RotateType rtype2)
 			return RotateType::CW_270;
 		case RotateType::CW_270:
 			return RotateType::None;
+		case RotateType::HFLIP:
+			return RotateType::HFLIP_CW_90;
+		case RotateType::HFLIP_CW_90:
+			return RotateType::HFLIP_CW_180;
+		case RotateType::HFLIP_CW_180:
+			return RotateType::HFLIP_CW_270;
+		case RotateType::HFLIP_CW_270:
+			return RotateType::HFLIP;
 		default:
 			return RotateType::None;
 		}
@@ -359,6 +479,14 @@ Media::RotateType Media::RotateTypeCombine(RotateType rtype1, RotateType rtype2)
 			return RotateType::None;
 		case RotateType::CW_270:
 			return RotateType::CW_90;
+		case RotateType::HFLIP:
+			return RotateType::HFLIP_CW_180;
+		case RotateType::HFLIP_CW_90:
+			return RotateType::HFLIP_CW_270;
+		case RotateType::HFLIP_CW_180:
+			return RotateType::HFLIP;
+		case RotateType::HFLIP_CW_270:
+			return RotateType::HFLIP_CW_90;
 		default:
 			return RotateType::None;
 		}
@@ -372,6 +500,102 @@ Media::RotateType Media::RotateTypeCombine(RotateType rtype1, RotateType rtype2)
 		case RotateType::CW_180:
 			return RotateType::CW_90;
 		case RotateType::CW_270:
+			return RotateType::CW_180;
+		case RotateType::HFLIP:
+			return RotateType::HFLIP_CW_270;
+		case RotateType::HFLIP_CW_90:
+			return RotateType::HFLIP;
+		case RotateType::HFLIP_CW_180:
+			return RotateType::HFLIP_CW_90;
+		case RotateType::HFLIP_CW_270:
+			return RotateType::HFLIP_CW_180;
+		default:
+			return RotateType::None;
+		}
+	case RotateType::HFLIP:
+		switch (rtype2)
+		{
+		case RotateType::None:
+			return RotateType::HFLIP;
+		case RotateType::CW_90:
+			return RotateType::HFLIP_CW_90;
+		case RotateType::CW_180:
+			return RotateType::HFLIP_CW_180;
+		case RotateType::CW_270:
+			return RotateType::HFLIP_CW_270;
+		case RotateType::HFLIP:
+			return RotateType::None;
+		case RotateType::HFLIP_CW_90:
+			return RotateType::CW_90;
+		case RotateType::HFLIP_CW_180:
+			return RotateType::CW_180;
+		case RotateType::HFLIP_CW_270:
+			return RotateType::CW_270;
+		default:
+			return RotateType::None;
+		}
+	case RotateType::HFLIP_CW_90:
+		switch (rtype2)
+		{
+		case RotateType::None:
+			return RotateType::HFLIP_CW_90;
+		case RotateType::CW_90:
+			return RotateType::HFLIP_CW_180;
+		case RotateType::CW_180:
+			return RotateType::HFLIP_CW_270;
+		case RotateType::CW_270:
+			return RotateType::HFLIP;
+		case RotateType::HFLIP:
+			return RotateType::CW_90;
+		case RotateType::HFLIP_CW_90:
+			return RotateType::CW_180;
+		case RotateType::HFLIP_CW_180:
+			return RotateType::CW_270;
+		case RotateType::HFLIP_CW_270:
+			return RotateType::None;
+		default:
+			return RotateType::None;
+		}
+	case RotateType::HFLIP_CW_180:
+		switch (rtype2)
+		{
+		case RotateType::None:
+			return RotateType::HFLIP_CW_180;
+		case RotateType::CW_90:
+			return RotateType::HFLIP_CW_270;
+		case RotateType::CW_180:
+			return RotateType::HFLIP;
+		case RotateType::CW_270:
+			return RotateType::HFLIP_CW_90;
+		case RotateType::HFLIP:
+			return RotateType::CW_180;
+		case RotateType::HFLIP_CW_90:
+			return RotateType::CW_270;
+		case RotateType::HFLIP_CW_180:
+			return RotateType::None;
+		case RotateType::HFLIP_CW_270:
+			return RotateType::CW_90;
+		default:
+			return RotateType::None;
+		}
+	case RotateType::HFLIP_CW_270:
+		switch (rtype2)
+		{
+		case RotateType::None:
+			return RotateType::HFLIP_CW_270;
+		case RotateType::CW_90:
+			return RotateType::HFLIP;
+		case RotateType::CW_180:
+			return RotateType::HFLIP_CW_90;
+		case RotateType::CW_270:
+			return RotateType::HFLIP_CW_180;
+		case RotateType::HFLIP:
+			return RotateType::CW_270;
+		case RotateType::HFLIP_CW_90:
+			return RotateType::None;
+		case RotateType::HFLIP_CW_180:
+			return RotateType::CW_90;
+		case RotateType::HFLIP_CW_270:
 			return RotateType::CW_180;
 		default:
 			return RotateType::None;

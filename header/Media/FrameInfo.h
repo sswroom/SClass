@@ -48,7 +48,11 @@ namespace Media
 		None,
 		CW_90,
 		CW_180,
-		CW_270
+		CW_270,
+		HFLIP,
+		HFLIP_CW_90,
+		HFLIP_CW_180,
+		HFLIP_CW_270
 	};
 
 	typedef enum

@@ -84,7 +84,7 @@ Media::FBSurface::FBSurface(MonitorHandle *hMon, const Media::ColorProfile *colo
 	this->info.rotateType = rotateType;
 	this->info.color->Set(color);
 
-	if (this->info.rotateType == Media::RotateType::CW_90 || this->info.rotateType == Media::RotateType::CW_270)
+	if (this->info.rotateType == Media::RotateType::CW_90 || this->info.rotateType == Media::RotateType::CW_270 || this->info.rotateType == Media::RotateType::HFLIP_CW_90 || this->info.rotateType == Media::RotateType::HFLIP_CW_270)
 	{
 		UOSInt tmpV = this->info.dispSize.x;
 		this->info.dispSize.x = this->info.dispSize.y;
@@ -192,32 +192,62 @@ Bool Media::FBSurface::DrawFromBuff()
 			}
 			if (this->info.storeBPP == 32)
 			{
-				if (rt == Media::RotateType::CW_90)
+				switch (rt)
 				{
+				case Media::RotateType::None:
+					ImageCopy_ImgCopyR(buff, this->clsData->dataPtr, this->info.dispSize.x * 4, this->info.dispSize.y, (UOSInt)lineAdd, this->clsData->finfo.line_length, false);
+					break;
+				case Media::RotateType::CW_90:
 					ImageUtil_Rotate32_CW90(buff, this->clsData->dataPtr, this->info.dispSize.x, this->info.dispSize.y, (UOSInt)lineAdd, this->clsData->finfo.line_length);
-				}
-				else if (rt == Media::RotateType::CW_180)
-				{
+					break;
+				case Media::RotateType::CW_180:
 					ImageUtil_Rotate32_CW180(buff, this->clsData->dataPtr, this->info.dispSize.x, this->info.dispSize.y, (UOSInt)lineAdd, this->clsData->finfo.line_length);
-				}
-				else if (rt == Media::RotateType::CW_270)
-				{
+					break;
+				case Media::RotateType::CW_270:
 					ImageUtil_Rotate32_CW270(buff, this->clsData->dataPtr, this->info.dispSize.x, this->info.dispSize.y, (UOSInt)lineAdd, this->clsData->finfo.line_length);
+					break;
+				case Media::RotateType::HFLIP:
+					ImageUtil_HFlip32(buff, this->clsData->dataPtr, this->info.dispSize.x, this->info.dispSize.y, (UOSInt)lineAdd, this->clsData->finfo.line_length, false);
+					break;
+				case Media::RotateType::HFLIP_CW_90:
+					ImageUtil_HFRotate32_CW90(buff, this->clsData->dataPtr, this->info.dispSize.x, this->info.dispSize.y, (UOSInt)lineAdd, this->clsData->finfo.line_length);
+					break;
+				case Media::RotateType::HFLIP_CW_180:
+					ImageUtil_HFRotate32_CW180(buff, this->clsData->dataPtr, this->info.dispSize.x, this->info.dispSize.y, (UOSInt)lineAdd, this->clsData->finfo.line_length);
+					break;
+				case Media::RotateType::HFLIP_CW_270:
+					ImageUtil_HFRotate32_CW270(buff, this->clsData->dataPtr, this->info.dispSize.x, this->info.dispSize.y, (UOSInt)lineAdd, this->clsData->finfo.line_length);
+					break;
 				}
 			}
 			else if (this->info.storeBPP == 64)
 			{
-				if (rt == Media::RotateType::CW_90)
+				switch (rt)
 				{
+				case Media::RotateType::None:
+					ImageCopy_ImgCopyR(buff, this->clsData->dataPtr, this->info.dispSize.x * 8, this->info.dispSize.y, (UOSInt)lineAdd, this->clsData->finfo.line_length, false);
+					break;
+				case Media::RotateType::CW_90:
 					ImageUtil_Rotate64_CW90(buff, this->clsData->dataPtr, this->info.dispSize.x, this->info.dispSize.y, (UOSInt)lineAdd, this->clsData->finfo.line_length);
-				}
-				else if (rt == Media::RotateType::CW_180)
-				{
+					break;
+				case Media::RotateType::CW_180:
 					ImageUtil_Rotate64_CW180(buff, this->clsData->dataPtr, this->info.dispSize.x, this->info.dispSize.y, (UOSInt)lineAdd, this->clsData->finfo.line_length);
-				}
-				else if (rt == Media::RotateType::CW_270)
-				{
+					break;
+				case Media::RotateType::CW_270:
 					ImageUtil_Rotate64_CW270(buff, this->clsData->dataPtr, this->info.dispSize.x, this->info.dispSize.y, (UOSInt)lineAdd, this->clsData->finfo.line_length);
+					break;
+				case Media::RotateType::HFLIP:
+					ImageUtil_HFlip64(buff, this->clsData->dataPtr, this->info.dispSize.x, this->info.dispSize.y, (UOSInt)lineAdd, this->clsData->finfo.line_length, false);
+					break;
+				case Media::RotateType::HFLIP_CW_90:
+					ImageUtil_HFRotate64_CW90(buff, this->clsData->dataPtr, this->info.dispSize.x, this->info.dispSize.y, (UOSInt)lineAdd, this->clsData->finfo.line_length);
+					break;
+				case Media::RotateType::HFLIP_CW_180:
+					ImageUtil_HFRotate64_CW180(buff, this->clsData->dataPtr, this->info.dispSize.x, this->info.dispSize.y, (UOSInt)lineAdd, this->clsData->finfo.line_length);
+					break;
+				case Media::RotateType::HFLIP_CW_270:
+					ImageUtil_HFRotate64_CW270(buff, this->clsData->dataPtr, this->info.dispSize.x, this->info.dispSize.y, (UOSInt)lineAdd, this->clsData->finfo.line_length);
+					break;
 				}
 			}
 		}
@@ -258,7 +288,7 @@ Bool Media::FBSurface::DrawFromSurface(Media::MonitorSurface *surface, Math::Coo
 		if (waitForVBlank && !this->clsData->bugHandleMode) this->WaitForVBlank();
 		if ((OSInt)buffSize.x > 0 && (OSInt)buffSize.y > 0)
 		{
-			if (this->info.rotateType == Media::RotateType::None)
+			if (this->info.rotateType == Media::RotateType::None || this->info.rotateType == Media::RotateType::HFLIP)
 			{
 				surface->GetImageData(this->clsData->dataPtr + destTL.y * (Int32)this->clsData->finfo.line_length + destTL.x * ((OSInt)this->info.storeBPP >> 3),
 					drawX, drawY, buffSize.x, buffSize.y, this->clsData->finfo.line_length, false, this->info.rotateType);
@@ -269,7 +299,7 @@ Bool Media::FBSurface::DrawFromSurface(Media::MonitorSurface *surface, Math::Coo
 				OSInt oldY = destTL.y;
 				UOSInt oldW = buffSize.x;
 				UOSInt oldH = buffSize.y;
-				if (this->info.rotateType == Media::RotateType::CW_90)
+				if (this->info.rotateType == Media::RotateType::CW_90 || this->info.rotateType == Media::RotateType::HFLIP_CW_90)
 				{
 					surface->GetImageData(this->clsData->dataPtr + destTL.x * (Int32)this->clsData->finfo.line_length + destTL.y * ((OSInt)this->info.storeBPP >> 3),
 						drawX, drawY, buffSize.x, buffSize.y, this->clsData->finfo.line_length, false, this->info.rotateType);
@@ -281,14 +311,14 @@ Bool Media::FBSurface::DrawFromSurface(Media::MonitorSurface *surface, Math::Coo
 					buffSize.x = oldH;
 					buffSize.y = oldW;
 				}
-				else if (this->info.rotateType == Media::RotateType::CW_180)
+				else if (this->info.rotateType == Media::RotateType::CW_180 || this->info.rotateType == Media::RotateType::HFLIP_CW_180)
 				{
 					surface->GetImageData(this->clsData->dataPtr + destTL.y * (Int32)this->clsData->finfo.line_length + destTL.x * ((OSInt)this->info.storeBPP >> 3),
 						drawX, drawY, buffSize.x, buffSize.y, this->clsData->finfo.line_length, false, this->info.rotateType);
 					destTL.x = destWidth - oldX - (OSInt)oldW;
 					destTL.y = destHeight - oldY - (OSInt)oldH;
 				}
-				else if (this->info.rotateType == Media::RotateType::CW_270)
+				else if (this->info.rotateType == Media::RotateType::CW_270 || this->info.rotateType == Media::RotateType::HFLIP_CW_270)
 				{
 					surface->GetImageData(this->clsData->dataPtr + destTL.x * (Int32)this->clsData->finfo.line_length + destTL.y * ((OSInt)this->info.storeBPP >> 3),
 						drawX, drawY, buffSize.x, buffSize.y, this->clsData->finfo.line_length, false, this->info.rotateType);
@@ -324,7 +354,7 @@ Bool Media::FBSurface::DrawFromSurface(Media::MonitorSurface *surface, Math::Coo
 		}
 		else if (clearScn)
 		{
-			if (this->info.rotateType == Media::RotateType::CW_90 || this->info.rotateType == Media::RotateType::CW_270)
+			if (this->info.rotateType == Media::RotateType::CW_90 || this->info.rotateType == Media::RotateType::CW_270 || this->info.rotateType == Media::RotateType::HFLIP_CW_90 || this->info.rotateType == Media::RotateType::HFLIP_CW_270)
 			{
 				ImageUtil_ImageColorFill32((UInt8*)this->clsData->dataPtr, (UOSInt)destHeight, (UOSInt)destWidth, (UInt32)this->clsData->finfo.line_length, 0xff000000);
 			}

@@ -268,6 +268,7 @@ void Media::V4LVideoCapture::SetPreferSize(Math::Size2D<UOSInt> size, UInt32 fou
 {
 	struct v4l2_format fmt;
 	struct v4l2_streamparm parm;
+	MemClear(&fmt, sizeof(fmt));
 	fmt.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
 	fmt.fmt.pix.width = (UInt32)size.x;
 	fmt.fmt.pix.height = (UInt32)size.y;

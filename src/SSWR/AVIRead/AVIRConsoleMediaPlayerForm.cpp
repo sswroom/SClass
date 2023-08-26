@@ -208,6 +208,10 @@ SSWR::AVIRead::AVIRConsoleMediaPlayerForm::AVIRConsoleMediaPlayerForm(UI::GUICli
 	this->cboRotate->AddItem(CSTR("CW 90"), (void*)Media::RotateType::CW_90);
 	this->cboRotate->AddItem(CSTR("CW 180"), (void*)Media::RotateType::CW_180);
 	this->cboRotate->AddItem(CSTR("CW 270"), (void*)Media::RotateType::CW_270);
+	this->cboRotate->AddItem(CSTR("HFlip"), (void*)Media::RotateType::HFLIP);
+	this->cboRotate->AddItem(CSTR("HF CW 90"), (void*)Media::RotateType::HFLIP_CW_90);
+	this->cboRotate->AddItem(CSTR("HF CW 180"), (void*)Media::RotateType::HFLIP_CW_180);
+	this->cboRotate->AddItem(CSTR("HF CW 270"), (void*)Media::RotateType::HFLIP_CW_270);
 	this->cboRotate->SetSelectedIndex(0);
 	this->cboRotate->HandleSelectionChange(OnRotateChg, this);
 	NEW_CLASS(this->chkSurfaceBug, UI::GUICheckBox(ui, this, CSTR("Surface Bug"), true));

@@ -2889,6 +2889,160 @@ extern "C" void ImageUtil_Rotate64_CW270(const UInt8 *srcPtr, UInt8 *destPtr, OS
 	}
 }
 
+extern "C" void ImageUtil_HFlip32(UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, UOSInt sbpl, UOSInt dbpl, Bool upsideDown)
+{
+	OSInt dstep;
+	UOSInt i;
+	if (upsideDown)
+	{
+		dstep = -(OSInt)dbpl;
+		outPt += dbpl * (height - 1);
+	}
+	else
+	{
+		dstep = (OSInt)dbpl;
+	}
+	dstep -= (OSInt)width * 4;
+	while (height-- > 0)
+	{
+		i = width;
+		while (i-- > 0)
+		{
+			WriteNUInt32(outPt, ReadNUInt32(&inPt[i * 4]));
+			outPt += 4;
+		}
+		inPt += sbpl;
+		outPt += dstep;
+	}
+}
+
+extern "C" void ImageUtil_HFRotate32_CW90(const UInt8 *srcPtr, UInt8 *destPtr, OSInt srcWidth, OSInt srcHeight, OSInt sbpl, OSInt dbpl)
+{
+	const UInt8 *sptr;
+	srcPtr += sbpl * srcHeight + srcWidth * 4;
+	dbpl -= srcHeight << 2;
+	while (srcWidth-- > 0)
+	{
+		OSInt wLeft = srcHeight;
+		srcPtr -= 4;
+		sptr = srcPtr;
+		while (wLeft-- > 0)
+		{
+			sptr -= sbpl;
+			*(Int32*)destPtr = *(Int32*)sptr;
+			destPtr += 4;
+		}
+		destPtr += dbpl;
+	}
+}
+
+extern "C" void ImageUtil_HFRotate32_CW180(const UInt8 *srcPtr, UInt8 *destPtr, OSInt srcWidth, OSInt srcHeight, OSInt sbpl, OSInt dbpl)
+{
+	srcPtr += sbpl * srcHeight;
+	while (srcHeight-- > 0)
+	{
+		srcPtr -= sbpl;
+		MemCopyNO(destPtr, srcPtr, (UOSInt)srcWidth * 4);
+		destPtr += dbpl;
+	}
+}
+
+extern "C" void ImageUtil_HFRotate32_CW270(const UInt8 *srcPtr, UInt8 *destPtr, OSInt srcWidth, OSInt srcHeight, OSInt sbpl, OSInt dbpl)
+{
+	dbpl -= srcHeight << 2;
+	const UInt8 *sptr;
+	while (srcWidth-- > 0)
+	{
+		sptr = srcPtr;
+		OSInt wLeft = srcHeight;
+		while (wLeft-- > 0)
+		{
+			*(Int32*)destPtr = *(Int32*)sptr;
+			sptr += sbpl;
+			destPtr += 4;
+		}
+		srcPtr += 4;
+		destPtr += dbpl;
+	}
+}
+
+extern "C" void ImageUtil_HFlip64(UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, UOSInt sbpl, UOSInt dbpl, Bool upsideDown)
+{
+	OSInt dstep;
+	UOSInt i;
+	if (upsideDown)
+	{
+		dstep = -(OSInt)dbpl;
+		outPt += dbpl * (height - 1);
+	}
+	else
+	{
+		dstep = (OSInt)dbpl;
+	}
+	dstep -= (OSInt)width * 8;
+	while (height-- > 0)
+	{
+		i = width;
+		while (i-- > 0)
+		{
+			WriteNUInt64(outPt, ReadNUInt64(&inPt[i * 8]));
+			outPt += 8;
+		}
+		inPt += sbpl;
+		outPt += dstep;
+	}
+}
+
+extern "C" void ImageUtil_HFRotate64_CW90(const UInt8 *srcPtr, UInt8 *destPtr, OSInt srcWidth, OSInt srcHeight, OSInt sbpl, OSInt dbpl)
+{
+	const UInt8 *sptr;
+	srcPtr += sbpl * srcHeight + srcWidth * 8;
+	dbpl -= srcHeight << 3;
+	while (srcWidth-- > 0)
+	{
+		OSInt wLeft = srcHeight;
+		srcPtr -= 8;
+		sptr = srcPtr;
+		while (wLeft-- > 0)
+		{
+			sptr -= sbpl;
+			*(Int64*)destPtr = *(Int64*)sptr;
+			destPtr += 8;
+		}
+		destPtr += dbpl;
+	}
+}
+
+extern "C" void ImageUtil_HFRotate64_CW180(const UInt8 *srcPtr, UInt8 *destPtr, OSInt srcWidth, OSInt srcHeight, OSInt sbpl, OSInt dbpl)
+{
+	srcPtr += sbpl * srcHeight;
+	while (srcHeight-- > 0)
+	{
+		MemCopyNO(destPtr, srcPtr, (UOSInt)srcWidth * 8);
+		srcPtr -= sbpl;
+		destPtr += dbpl;
+	}
+}
+
+extern "C" void ImageUtil_HFRotate64_CW270(const UInt8 *srcPtr, UInt8 *destPtr, OSInt srcWidth, OSInt srcHeight, OSInt sbpl, OSInt dbpl)
+{
+	dbpl -= srcHeight << 3;
+	const UInt8 *sptr;
+	while (srcWidth-- > 0)
+	{
+		sptr = srcPtr;
+		OSInt wLeft = srcHeight;
+		while (wLeft-- > 0)
+		{
+			*(Int64*)destPtr = *(Int64*)sptr;
+			sptr += sbpl;
+			destPtr += 8;
+		}
+		srcPtr += 8;
+		destPtr += dbpl;
+	}
+}
+
 extern "C" void ImageUtil_CopyShiftW(const UInt8 *srcPtr, UInt8 *destPtr, OSInt byteSize, OSInt shiftCnt)
 {
 	byteSize = byteSize >> 1;

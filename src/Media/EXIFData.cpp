@@ -2488,19 +2488,28 @@ Media::RotateType Media::EXIFData::GetRotateType() const
 	{
 		v = (UInt32)item->value;
 	}
-	if (v == 6)
+	switch (v)
 	{
-		return Media::RotateType::CW_90;
-	}
-	else if (v == 3)
-	{
+	case 0:
+	case 1:
+		return Media::RotateType::None;
+	case 2:
+		return Media::RotateType::HFLIP;
+	case 3:
 		return Media::RotateType::CW_180;
-	}
-	else if (v == 8)
-	{
+	case 4:
+		return Media::RotateType::HFLIP_CW_180;
+	case 5:
+		return Media::RotateType::HFLIP_CW_90;
+	case 6:
+		return Media::RotateType::CW_90;
+	case 7:
+		return Media::RotateType::HFLIP_CW_270;
+	case 8:
 		return Media::RotateType::CW_270;
+	default:
+		return Media::RotateType::None;
 	}
-	return Media::RotateType::None;
 }
 
 void Media::EXIFData::SetRotateType(RotateType rotType)
@@ -2508,6 +2517,9 @@ void Media::EXIFData::SetRotateType(RotateType rotType)
 	UInt32 v;
 	switch (rotType)
 	{
+	case RotateType::None:
+		v = 1;
+		break;
 	case RotateType::CW_90:
 		v = 6;
 		break;
@@ -2517,7 +2529,18 @@ void Media::EXIFData::SetRotateType(RotateType rotType)
 	case RotateType::CW_270:
 		v = 8;
 		break;
-	case RotateType::None:
+	case RotateType::HFLIP:
+		v = 2;
+		break;
+	case RotateType::HFLIP_CW_90:
+		v = 5;
+		break;
+	case RotateType::HFLIP_CW_180:
+		v = 4;
+		break;
+	case RotateType::HFLIP_CW_270:
+		v = 7;
+		break;
 	default:
 		v = 0;
 		break;
