@@ -102,7 +102,7 @@ void SSWR::AVIRead::AVIRConsoleMediaPlayerForm::AddColorPrimaries(Media::ColorPr
 
 void SSWR::AVIRead::AVIRConsoleMediaPlayerForm::UpdateColorDisp()
 {
-	Media::VideoRenderer::RendererStatus status;
+	Media::VideoRenderer::RendererStatus2 status;
 	this->videoOpening = true;
 	this->player->GetVideoRenderer()->GetStatus(&status);
 	UOSInt i;

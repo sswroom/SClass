@@ -44,6 +44,13 @@ void Media::ConsoleVideoRenderer::SetRotateType(Media::RotateType rotateType)
 	}	
 }
 
+Media::RotateType Media::ConsoleVideoRenderer::GetRotateType() const
+{
+	if (this->primarySurface)
+		return this->primarySurface->info.rotateType;
+	return Media::RotateType::None;
+}
+
 void Media::ConsoleVideoRenderer::SetSurfaceBugMode(Bool surfaceBugMode)
 {
 	Sync::MutexUsage mutUsage(this->mut);

@@ -131,6 +131,7 @@ namespace Media
 	Text::CString AlphaTypeGetName(AlphaType atype);
 	Text::CString YCOffsetGetName(YCOffset ycOfst);
 	Text::CString PixelFormatGetName(PixelFormat pf);
+	Text::CString RotateTypeGetName(RotateType rotateType);
 	PixelFormat PixelFormatGetDef(UInt32 fourcc, UInt32 storeBPP);
 	RotateType RotateTypeCalc(RotateType srcType, RotateType destType);
 	RotateType RotateTypeCombine(RotateType rtype1, RotateType rtype2);

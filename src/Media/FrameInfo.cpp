@@ -243,6 +243,31 @@ Text::CString Media::PixelFormatGetName(PixelFormat pf)
 	}
 }
 
+Text::CString Media::RotateTypeGetName(RotateType val)
+{
+	switch (val)
+	{
+	case RotateType::None:
+		return CSTR("None");
+	case RotateType::CW_90:
+		return CSTR("CW_90");
+	case RotateType::CW_180:
+		return CSTR("CW_180");
+	case RotateType::CW_270:
+		return CSTR("CW_270");
+	case RotateType::HFLIP:
+		return CSTR("HFLIP");
+	case RotateType::HFLIP_CW_90:
+		return CSTR("HFLIP_CW_90");
+	case RotateType::HFLIP_CW_180:
+		return CSTR("HFLIP_CW_180");
+	case RotateType::HFLIP_CW_270:
+		return CSTR("HFLIP_CW_270");
+	default:
+		return CSTR_NULL;
+	}
+}
+
 Media::PixelFormat Media::PixelFormatGetDef(UInt32 fourcc, UInt32 storeBPP)
 {
 	if (fourcc == 0 || fourcc == *(UInt32*)"DIBS")

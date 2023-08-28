@@ -60,6 +60,7 @@ namespace UI
 
 		virtual void DestroyObject();
 		virtual void SetRotateType(Media::RotateType rotateType);
+		virtual Media::RotateType GetRotateType() const;
 	};
 }
 #endif

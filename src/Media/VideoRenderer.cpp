@@ -2267,7 +2267,7 @@ void Media::VideoRenderer::Snapshot()
 	}
 }
 
-void Media::VideoRenderer::GetStatus(RendererStatus *status)
+void Media::VideoRenderer::GetStatus(RendererStatus2 *status)
 {
 	this->dispMut.LockRead();
 	if (this->dispClk && this->dispClk->Running())
@@ -2293,6 +2293,7 @@ void Media::VideoRenderer::GetStatus(RendererStatus *status)
 	status->srcYUVType = this->srcYUVType;
 	status->color.Set(this->videoInfo.color);
 	status->dispBitDepth = this->outputBpp;
+	status->rotateType = this->GetRotateType();
 	status->srcSize = this->videoInfo.dispSize;
 	status->dispSize = this->outputSize;
 	if (this->video)

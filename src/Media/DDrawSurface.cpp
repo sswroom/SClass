@@ -53,7 +53,7 @@ Media::DDrawSurface::DDrawSurface(DDrawManager *mgr, void *lpDD, void *surface, 
 	this->info.hdpi = mgr->GetMonitorDPI(hMon);;
 	this->info.vdpi = this->info.hdpi;
 	this->info.color->Set(mgr->GetMonProfile(hMon));
-	this->info.rotateType = Media::RotateType::None; //rotateType;
+	this->info.rotateType = rotateType;
 }
 
 Media::DDrawSurface::~DDrawSurface()
@@ -100,7 +100,9 @@ void Media::DDrawSurface::GetImageData(UInt8 *destBuff, OSInt left, OSInt top, U
 		}
 		else
 		{
-			ImageCopy_ImgCopyR((UInt8*)ddsd.lpSurface + top * ddsd.lPitch + left * (Int32)(ddsd.ddpfPixelFormat.dwRGBBitCount >> 3), destBuff, width * (ddsd.ddpfPixelFormat.dwRGBBitCount >> 3), height, (UOSInt)(OSInt)ddsd.lPitch, destBpl, upsideDown);
+			Media::ImageUtil::ImageCopyR(destBuff, destBpl, (UInt8*)ddsd.lpSurface, ddsd.lPitch, left, top, width, height,
+				ddsd.ddpfPixelFormat.dwRGBBitCount, upsideDown, this->info.rotateType, destRotate);
+			//ImageCopy_ImgCopyR((UInt8*)ddsd.lpSurface + top * ddsd.lPitch + left * (Int32)(ddsd.ddpfPixelFormat.dwRGBBitCount >> 3), destBuff, width * (ddsd.ddpfPixelFormat.dwRGBBitCount >> 3), height, (UOSInt)(OSInt)ddsd.lPitch, destBpl, upsideDown);
 		}
 		this->clsData->surface->Unlock(0);
 	}
@@ -138,6 +140,8 @@ Bool Media::DDrawSurface::DrawFromSurface(Media::MonitorSurface *surface, Math::
 {
 	OSInt drawWidth = (OSInt)this->info.dispSize.x;
 	OSInt drawHeight = (OSInt)this->info.dispSize.y;
+	Math::Size2D<UOSInt> dispSize = buffSize;
+	Media::RotateType rt = Media::RotateTypeCalc(this->info.rotateType, surface->info.rotateType);
 	RECT rc;
 	HWND hWnd;
 	if (this->clsData->clipper)
@@ -201,33 +205,72 @@ Bool Media::DDrawSurface::DrawFromSurface(Media::MonitorSurface *surface, Math::
 				buffSize.y += (UOSInt)destTL.y;
 				destTL.y = 0;
 			}
-			if (rc.right > (OSInt)this->info.dispSize.x)
+			if (rt == Media::RotateType::CW_90 || rt == Media::RotateType::CW_270 || rt == Media::RotateType::HFLIP_CW_90 || rt == Media::RotateType::HFLIP_CW_270)
 			{
-				rc.right = (LONG)(OSInt)this->info.dispSize.x;
+				if (rc.right > (OSInt)this->info.dispSize.y)
+				{
+					rc.right = (LONG)(OSInt)this->info.dispSize.y;
+				}
+				if (rc.bottom > (OSInt)this->info.dispSize.x)
+				{
+					rc.bottom = (LONG)(OSInt)this->info.dispSize.x;
+				}
+				if (rc.left < 0)
+				{
+					drawX += -rc.left;
+					rc.left = 0;
+				}
+				if (rc.top < 0)
+				{
+					drawY += -rc.top;
+					rc.top = 0;
+				}
+				drawWidth = (OSInt)rc.right - rc.left;
+				drawHeight = (OSInt)rc.bottom - rc.top;
+				if (destTL.x + (OSInt)buffSize.x > (OSInt)this->info.dispSize.y)
+				{
+					buffSize.x = (UOSInt)((OSInt)this->info.dispSize.y - destTL.x);
+				}
+				if (destTL.y + (OSInt)buffSize.y > (OSInt)this->info.dispSize.x)
+				{
+					buffSize.y = (UOSInt)((OSInt)this->info.dispSize.x - destTL.y);
+				}
+				dispSize = buffSize.SwapXY();
+				destTL = destTL.SwapXY();
+				OSInt tmp = drawX;
+				drawX = drawY;
+				drawY = tmp;
 			}
-			if (rc.bottom > (OSInt)this->info.dispSize.y)
+			else
 			{
-				rc.bottom = (LONG)(OSInt)this->info.dispSize.y;
-			}
-			if (rc.left < 0)
-			{
-				drawX += -rc.left;
-				rc.left = 0;
-			}
-			if (rc.top < 0)
-			{
-				drawY += -rc.top;
-				rc.top = 0;
-			}
-			drawWidth = (OSInt)rc.right - rc.left;
-			drawHeight = (OSInt)rc.bottom - rc.top;
-			if (destTL.x + (OSInt)buffSize.x > (OSInt)drawWidth)
-			{
-				buffSize.x = (UOSInt)(drawWidth - destTL.x);
-			}
-			if (destTL.y + (OSInt)buffSize.y > (OSInt)drawHeight)
-			{
-				buffSize.y = (UOSInt)(drawHeight - destTL.y);
+				if (rc.right > (OSInt)this->info.dispSize.x)
+				{
+					rc.right = (LONG)(OSInt)this->info.dispSize.x;
+				}
+				if (rc.bottom > (OSInt)this->info.dispSize.y)
+				{
+					rc.bottom = (LONG)(OSInt)this->info.dispSize.y;
+				}
+				if (rc.left < 0)
+				{
+					drawX += -rc.left;
+					rc.left = 0;
+				}
+				if (rc.top < 0)
+				{
+					drawY += -rc.top;
+					rc.top = 0;
+				}
+				drawWidth = (OSInt)rc.right - rc.left;
+				drawHeight = (OSInt)rc.bottom - rc.top;
+				if (destTL.x + (OSInt)buffSize.x > (OSInt)drawWidth)
+				{
+					buffSize.x = (UOSInt)(drawWidth - destTL.x);
+				}
+				if (destTL.y + (OSInt)buffSize.y > (OSInt)drawHeight)
+				{
+					buffSize.y = (UOSInt)(drawHeight - destTL.y);
+				}
 			}
 			if ((OSInt)buffSize.x > 0 && (OSInt)buffSize.y > 0)
 			{

@@ -194,7 +194,7 @@ void __stdcall SSWR::AVIRead::AVIRHQMPForm::OnTimerTick(void *userObj)
 	if (me->dbgFrm)
 	{
 		Text::StringBuilderUTF8 sb;
-		Media::VideoRenderer::RendererStatus dbg;
+		Media::VideoRenderer::RendererStatus2 dbg;
 		UInt32 currTime;
 		UInt32 v;
 		me->vbox->GetStatus(&dbg);
@@ -299,6 +299,9 @@ void __stdcall SSWR::AVIRead::AVIRHQMPForm::OnTimerTick(void *userObj)
 		sb.AppendC(UTF8STRC("\r\n"));
 		sb.AppendC(UTF8STRC("PAR: "));
 		sb.AppendDouble(dbg.par);
+		sb.AppendC(UTF8STRC("\r\n"));
+		sb.AppendC(UTF8STRC("Rotate: "));
+		sb.Append(Media::RotateTypeGetName(dbg.rotateType));
 		sb.AppendC(UTF8STRC("\r\n"));
 		sb.AppendC(UTF8STRC("Decoder: "));
 		if (dbg.decoderName.v)

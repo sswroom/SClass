@@ -151,7 +151,7 @@ void __stdcall SSWR::AVIRead::AVIRHQMPDSForm::OnTimerTick(void *userObj)
 	if (me->dbgFrm)
 	{
 		Text::StringBuilderUTF8 sb;
-		Media::VideoRenderer::RendererStatus dbg;
+		Media::VideoRenderer::RendererStatus2 dbg;
 		me->vbox->GetStatus(&dbg);
 		sb.AppendC(UTF8STRC("Curr Time: "));
 		sb.AppendI32(dbg.currTime);
@@ -205,6 +205,9 @@ void __stdcall SSWR::AVIRead::AVIRHQMPDSForm::OnTimerTick(void *userObj)
 		sb.AppendC(UTF8STRC("\r\n"));
 		sb.AppendC(UTF8STRC("PAR: "));
 		sb.AppendDouble(dbg.par);
+		sb.AppendC(UTF8STRC("\r\n"));
+		sb.AppendC(UTF8STRC("Rotate: "));
+		sb.Append(Media::RotateTypeGetName(dbg.rotateType));
 		sb.AppendC(UTF8STRC("\r\n"));
 		sb.AppendC(UTF8STRC("Format: "));
 		sb.Append(Media::CS::CSConverter::GetFormatName(dbg.format));

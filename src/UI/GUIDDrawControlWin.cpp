@@ -306,6 +306,7 @@ Bool UI::GUIDDrawControl::CreateSurface()
 			this->bitDepth = this->primarySurface->info.storeBPP;
 			this->scnW = this->primarySurface->info.dispSize.x;
 			this->scnH = this->primarySurface->info.dispSize.y;
+			this->primarySurface->info.rotateType = this->rotType;
 		}
 		return succ;
 	}
@@ -330,6 +331,7 @@ Bool UI::GUIDDrawControl::CreateSurface()
 		this->primarySurface = this->surfaceMgr->CreatePrimarySurface(this->surfaceMon, hWnd, Media::RotateType::None);
 		if (this->primarySurface)
 		{
+			this->primarySurface->info.rotateType = this->rotType;
 			if (this->debugWriter)
 			{
 				Text::StringBuilderUTF8 sb;
@@ -837,8 +839,17 @@ void UI::GUIDDrawControl::SetRotateType(Media::RotateType rotType)
 	if (this->rotType != rotType)
 	{
 		this->rotType = rotType;
+		if (this->primarySurface)
+		{
+			this->primarySurface->info.rotateType = rotType;
+		}
 		OnResized(this);
 	}
+}
+
+Media::RotateType UI::GUIDDrawControl::GetRotateType() const
+{
+	return this->rotType;
 }
 
 void UI::GUIDDrawControl::OnMouseWheel(Math::Coord2D<OSInt> scnPos, Int32 amount)

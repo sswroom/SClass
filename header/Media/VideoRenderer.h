@@ -36,7 +36,7 @@ namespace Media
 			Math::Size2D<UOSInt> size;
 		};
 
-		class RendererStatus
+		class RendererStatus2
 		{
 		public:
 			UInt32 currTime;
@@ -51,6 +51,7 @@ namespace Media
 			UInt32 frameSkipAfter;
 			Int32 srcDelay;
 			Int32 avOfst;
+			Media::RotateType rotateType;
 			UInt32 format;
 			Math::Size2D<UOSInt> srcSize;
 			Math::Size2D<UOSInt> dispSize;
@@ -256,10 +257,11 @@ namespace Media
 		void SetAVOfst(Int32 avOfst);
 		void SetIgnoreFrameTime(Bool ignoreFrameTime);
 		virtual void SetRotateType(Media::RotateType rotateType) = 0;
+		virtual Media::RotateType GetRotateType() const = 0;
 
 		void AddImgFilter(Media::IImgFilter *imgFilter);
 		void Snapshot();
-		void GetStatus(RendererStatus *status);
+		void GetStatus(RendererStatus2 *status);
 		Media::MonitorSurfaceMgr* GetSurfaceMgr();
 	};
 }

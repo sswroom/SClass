@@ -244,7 +244,7 @@ void Media::MediaPlayerWebInterface::WebRequest(Net::WebServer::IWebRequest *req
 		writer.WriteLineC(UTF8STRC("<a href=\"/avofstinc\">A/V Offset Increase</a>"));
 		{
 			Text::StringBuilderUTF8 sb;
-			Media::VideoRenderer::RendererStatus status;
+			Media::VideoRenderer::RendererStatus2 status;
 			UInt32 currTime;
 			UInt32 v;
 
@@ -351,6 +351,9 @@ void Media::MediaPlayerWebInterface::WebRequest(Net::WebServer::IWebRequest *req
 			sb.AppendC(UTF8STRC("<br/>\r\n"));
 			sb.AppendC(UTF8STRC("PAR: "));
 			sb.AppendDouble(status.par);
+			sb.AppendC(UTF8STRC("<br/>\r\n"));
+			sb.AppendC(UTF8STRC("Rotate Type: "));
+			sb.Append(Media::RotateTypeGetName(status.rotateType));
 			sb.AppendC(UTF8STRC("<br/>\r\n"));
 			sb.AppendC(UTF8STRC("Decoder: "));
 			if (status.decoderName.v)

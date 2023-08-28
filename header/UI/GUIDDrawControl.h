@@ -94,6 +94,7 @@ namespace UI
 		UInt32 GetRefreshRate();
 		Bool IsSurfaceReady();
 		void SetRotateType(Media::RotateType rotType);
+		Media::RotateType GetRotateType() const;
 	public:
 		virtual void OnSurfaceCreated() = 0;
 		virtual void OnMouseWheel(Math::Coord2D<OSInt> pos, Int32 amount);

@@ -288,3 +288,8 @@ void UI::GUIVideoBoxDD::SetRotateType(Media::RotateType rotType)
 {
 	this->GUIDDrawControl::SetRotateType(rotType);
 }
+
+Media::RotateType UI::GUIVideoBoxDD::GetRotateType() const
+{
+	return this->GUIDDrawControl::GetRotateType();
+}
