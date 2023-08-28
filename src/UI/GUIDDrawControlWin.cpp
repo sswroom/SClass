@@ -832,6 +832,15 @@ Bool UI::GUIDDrawControl::IsSurfaceReady()
 	return this->buffSurface != 0;
 }
 
+void UI::GUIDDrawControl::SetRotateType(Media::RotateType rotType)
+{
+	if (this->rotType != rotType)
+	{
+		this->rotType = rotType;
+		OnResized(this);
+	}
+}
+
 void UI::GUIDDrawControl::OnMouseWheel(Math::Coord2D<OSInt> scnPos, Int32 amount)
 {
 }

@@ -20,8 +20,8 @@ void __stdcall UI::GUIDObjArea::DisplayThread(NotNullPtr<Sync::Thread> thread)
 					UInt8 *destBuff = me->LockSurfaceBegin(me->currDrawImg->GetWidth(), me->currDrawImg->GetHeight(), &dbpl);
 					if (destBuff)
 					{
-						UInt8 *tmpBuff = MemAlloc(UInt8, me->surfaceSize.CalcArea() << 2);
-						me->currDrawImg->CopyBits(0, 0, tmpBuff, me->surfaceSize.x << 2, me->surfaceSize.x, me->surfaceSize.y, false);
+						UInt8 *tmpBuff = MemAlloc(UInt8, me->dispSize.CalcArea() << 2);
+						me->currDrawImg->CopyBits(0, 0, tmpBuff, me->dispSize.x << 2, me->dispSize.x, me->dispSize.y, false);
 	//					UOSInt w = me->surfaceW;
 	//					UOSInt h = me->surfaceH;
 	/*#if defined(HAS_ASM32)
@@ -121,7 +121,7 @@ void __stdcall UI::GUIDObjArea::DisplayThread(NotNullPtr<Sync::Thread> thread)
 					UInt8 *destBuff = me->LockSurfaceBegin(me->currDrawImg->GetWidth(), me->currDrawImg->GetHeight(), &dbpl);
 					if (destBuff)
 					{
-						me->currDrawImg->CopyBits(0, 0, destBuff, dbpl, me->surfaceSize.x, me->surfaceSize.y, false);
+						me->currDrawImg->CopyBits(0, 0, destBuff, dbpl, me->dispSize.x, me->dispSize.y, false);
 						me->LockSurfaceEnd();
 					}
 				}
@@ -241,7 +241,7 @@ void UI::GUIDObjArea::OnSurfaceCreated()
 		this->deng->DeleteImage(this->currDrawImg);
 		this->currDrawImg = 0;
 	}
-	this->currDrawImg = this->deng->CreateImage32(this->surfaceSize, Media::AT_NO_ALPHA);
+	this->currDrawImg = this->deng->CreateImage32(this->dispSize, Media::AT_NO_ALPHA);
 	this->drawUpdated = false;
 }
 
