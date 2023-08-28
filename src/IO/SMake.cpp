@@ -852,6 +852,7 @@ Bool IO::SMake::CompileProgInternal(NotNullPtr<const ProgramItem> prog, Bool asm
 		return true;
 	}
 
+	IO::SMake::ConfigItem *arCfg = this->cfgMap.Get(CSTR("AR"));
 	IO::SMake::ConfigItem *cppCfg = this->cfgMap.Get(CSTR("CXX"));
 	IO::SMake::ConfigItem *ccCfg = this->cfgMap.Get(CSTR("CC"));
 	IO::SMake::ConfigItem *asmCfg = this->cfgMap.Get(CSTR("ASM"));
@@ -1175,6 +1176,115 @@ Bool IO::SMake::CompileProgInternal(NotNullPtr<const ProgramItem> prog, Bool asm
 			AppendCfg(sb, lib->ToCString());
 			i++;
 		}
+#if defined(_WIN32)
+		if (sb.leng > 32767)
+		{
+			if (arCfg == 0)
+			{
+				this->SetErrorMsg(CSTR("AR config not found"));
+				return false;
+			}
+			this->tasks->WaitForIdle();
+			if (this->HasError())
+			{
+				return false;
+			}
+			sb.ClearStr();
+			sb.AppendC(UTF8STRC(OBJECTPATH));
+			sb.AppendUTF8Char(IO::Path::PATH_SEPERATOR);
+			sb.Append(prog->name);
+			sb.AppendC(UTF8STRC(".a"));
+			IO::Path::DeleteFile(sb.v);
+
+			Data::FastStringKeyIterator<Int32> iterator = objList.KeyIterator();
+			NotNullPtr<Text::String> objName;
+			sb.ClearStr();
+			AppendCfgPath(sb, arCfg->value->ToCString());
+			sb.AppendC(UTF8STRC(" -r "));
+			sb.AppendC(UTF8STRC(OBJECTPATH));
+			sb.AppendUTF8Char(IO::Path::PATH_SEPERATOR);
+			sb.Append(prog->name);
+			sb.AppendC(UTF8STRC(".a"));
+			while (iterator.HasNext())
+			{
+				objName = iterator.Next();
+				if (sb.leng + sizeof(OBJECTPATH) + 1 + objName->leng < 4096)
+				{
+					sb.AppendUTF8Char(' ');
+					sb.AppendC(UTF8STRC(OBJECTPATH));
+					sb.AppendUTF8Char(IO::Path::PATH_SEPERATOR);
+					sb.Append(objName);
+				}
+				else
+				{
+					if (!this->ExecuteCmd(sb.ToCString()))
+					{
+						return false;
+					}
+					sb.ClearStr();
+					AppendCfgPath(sb, arCfg->value->ToCString());
+					sb.AppendC(UTF8STRC(" -r "));
+					sb.AppendC(UTF8STRC(OBJECTPATH));
+					sb.AppendUTF8Char(IO::Path::PATH_SEPERATOR);
+					sb.Append(prog->name);
+					sb.AppendC(UTF8STRC(".a"));
+
+					sb.AppendUTF8Char(' ');
+					sb.AppendC(UTF8STRC(OBJECTPATH));
+					sb.AppendUTF8Char(IO::Path::PATH_SEPERATOR);
+					sb.Append(objName);
+				}
+			}
+			if (!this->ExecuteCmd(sb.ToCString()))
+			{
+				return false;
+			}
+			sb.ClearStr();
+			AppendCfgPath(sb, cppCfg->value->ToCString());
+			sb.AppendUTF8Char(' ');
+			sb.AppendC(UTF8STRC("-o bin/"));
+			sb.Append(prog->name);
+			if (postfixItem)
+			{
+				sb.Append(postfixItem->value);
+			}
+			sb.AppendUTF8Char(' ');
+			sb.AppendC(UTF8STRC(OBJECTPATH));
+			sb.AppendUTF8Char(IO::Path::PATH_SEPERATOR);
+			sb.Append(prog->name);
+			sb.AppendC(UTF8STRC(".a"));
+
+			if (libsCfg)
+			{
+				sb.AppendUTF8Char(' ');
+				sb.Append(libsCfg->value);
+			}
+			UOSInt i;
+			UOSInt j;
+			i = 0;
+			j = libList.GetCount();
+			while (i < j)
+			{
+		//		printf("Libs: %s\r\n", libList.GetItem(i));
+				sb.AppendUTF8Char(' ');
+				Text::String *lib = libList.GetKey(i);
+				AppendCfg(sb, lib->ToCString());
+				i++;
+			}
+			if (!this->ExecuteCmd(sb.ToCString()))
+			{
+				return false;
+			}
+		}
+		else if (this->asyncMode)
+		{
+			this->linkCmds.Add(Text::String::New(sb.ToCString()));
+		}
+		else if (!this->ExecuteCmd(sb.ToCString()))
+		{
+			return false;
+		}
+#else
 		if (this->asyncMode)
 		{
 			this->linkCmds.Add(Text::String::New(sb.ToCString()));
@@ -1186,6 +1296,7 @@ Bool IO::SMake::CompileProgInternal(NotNullPtr<const ProgramItem> prog, Bool asm
 				return false;
 			}
 		}
+#endif
 	}
 
 	if (enableTest)

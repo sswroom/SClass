@@ -228,7 +228,7 @@ void __stdcall UI::GUIDDrawControl::OnResized(void *userObj)
 	{
 		Sync::MutexUsage mutUsage(me->surfaceMut);
 		Math::Size2D<UOSInt> sz = me->GetSizeP();
-		me->surfaceSize = sz;
+		me->dispSize = sz;
 		me->ReleaseSubSurface();
 		me->CreateSubSurface();
 		mutUsage.EndUse();
@@ -237,9 +237,9 @@ void __stdcall UI::GUIDDrawControl::OnResized(void *userObj)
 		{
 			Text::StringBuilderUTF8 sb;
 			sb.AppendC(UTF8STRC("Surface size changed to "));
-			sb.AppendUOSInt(me->surfaceSize.x);
+			sb.AppendUOSInt(me->dispSize.x);
 			sb.AppendC(UTF8STRC(" x "));
-			sb.AppendUOSInt(me->surfaceSize.y);
+			sb.AppendUOSInt(me->dispSize.y);
 			sb.AppendC(UTF8STRC(", hMon="));
 			sb.AppendOSInt((OSInt)me->GetHMonitor());
 			me->debugWriter->WriteLineC(sb.ToString(), sb.GetLength());
@@ -380,7 +380,7 @@ void UI::GUIDDrawControl::CreateSubSurface()
 	{
 		UInt32 w = (UInt32)(rc.right - rc.left);
 		UInt32 h = (UInt32)(rc.bottom - rc.top);
-		if (this->surfaceSize.x != w || this->surfaceSize.y != h)
+		if (this->dispSize.x != w || this->dispSize.y != h)
 		{
 			if (this->debugWriter)
 			{
@@ -391,9 +391,14 @@ void UI::GUIDDrawControl::CreateSubSurface()
 				sb.AppendU32(h);
 				this->debugWriter->WriteLineC(sb.ToString(), sb.GetLength());
 			}
-			this->surfaceSize = Math::Size2D<UOSInt>(w, h);
+			this->dispSize = Math::Size2D<UOSInt>(w, h);
 		}
-		this->buffSurface = this->surfaceMgr->CreateSurface(Math::Size2D<UOSInt>(w, h), this->primarySurface->info.storeBPP);
+		this->bkBuffSize = this->dispSize;
+		if (this->rotType == Media::RotateType::CW_90 || this->rotType == Media::RotateType::CW_270 || this->rotType == Media::RotateType::HFLIP_CW_90 || this->rotType == Media::RotateType::HFLIP_CW_270)
+		{
+			this->bkBuffSize = this->dispSize.SwapXY();
+		}
+		this->buffSurface = this->surfaceMgr->CreateSurface(this->bkBuffSize, this->primarySurface->info.storeBPP);
 	}
 }
 
@@ -410,7 +415,7 @@ UInt8 *UI::GUIDDrawControl::LockSurfaceBegin(UOSInt targetWidth, UOSInt targetHe
 		this->surfaceMut.Unlock();
 		return 0;
 	}
-	if (targetWidth == this->surfaceSize.x && targetHeight == this->surfaceSize.y)
+	if (targetWidth == this->bkBuffSize.x && targetHeight == this->bkBuffSize.y)
 	{
 		UInt8 *dptr = this->buffSurface->LockSurface((OSInt*)bpl);
 		if (dptr)
@@ -689,8 +694,8 @@ void UI::GUIDDrawControl::SwitchFullScreen(Bool fullScn, Bool vfs)
 			SwitchFullScreen(false);
 			return;
 		}*/
-		this->surfaceSize.x = ddsd.dwWidth;
-		this->surfaceSize.y = ddsd.dwHeight;
+		this->dispSize.x = ddsd.dwWidth;
+		this->dispSize.y = ddsd.dwHeight;
 
 		CreateSurface();
 		if (this->primarySurface == 0)

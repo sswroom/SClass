@@ -1441,6 +1441,10 @@ void Manage::Process::FindProcessClose(Manage::Process::FindProcSess *pfsess)
 
 Int32 Manage::Process::ExecuteProcess(Text::CString cmd, NotNullPtr<Text::StringBuilderUTF8> result)
 {
+	if (cmd.leng > 32767)
+	{
+		return -1;
+	}
 	const WChar *wptr = Text::StrToWCharNew(cmd.v);
 	Int32 ret = ExecuteProcessW(wptr, result);
 	Text::StrDelNew(wptr);
