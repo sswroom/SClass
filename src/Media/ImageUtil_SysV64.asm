@@ -4612,18 +4612,16 @@ r32cw90lop2:
 	align 16
 ImageUtil_Rotate32_CW180:
 _ImageUtil_Rotate32_CW180:
-	mov r11,rdx ;srcWidth
-	mov r10,rcx ;srcHeight
 	mov rax,r8 ;sbpl
-	mul rcx ;srcHeight
+	imul rax,rcx ;srcHeight
 	add rdi,rax ;srcPtr
-;	lea rax,[r11*4]
-;	sub r8,rax ;sbpl
-;	sub r9,rax ;dbpl
+	lea rax,[rdx*4]
+	sub r8,rax ;sbpl
+	sub r9,rax ;dbpl
 
 	align 16
 r32cw180lop:
-	mov rcx,r11 ;srcWidth
+	mov r10,rdx ;srcWidth
 	
 	align 16
 r32cw180lop2:
@@ -4631,12 +4629,12 @@ r32cw180lop2:
 	mov eax,dword [rdi]
 	mov dword [rsi],eax
 	lea rsi,[rsi+4]
-	dec rcx
+	dec r10
 	jnz r32cw180lop2
 	
 	sub rdi,r8 ;sbpl
 	add rsi,r9 ;dbpl
-	dec r10
+	dec rcx
 	jnz r32cw180lop
 	
 	ret
@@ -4730,18 +4728,16 @@ r64cw90lop2:
 	align 16
 ImageUtil_Rotate64_CW180:
 _ImageUtil_Rotate64_CW180:
-	mov r11,rdx ;srcWidth
-	mov r10,rcx ;srcHeight
 	mov rax,r8 ;sbpl
-	mul rcx ;srcHeight
+	imul rax,rcx ;srcHeight
 	add rdi,rax ;srcPtr
-	lea rax,[r11*8]
+	lea rax,[rdx*8]
 	sub r8,rax ;sbpl
 	sub r9,rax ;dbpl
 
 	align 16
 r64cw180lop:
-	mov rcx,r11 ;srcWidth
+	mov r10,rdx ;srcWidth
 	
 	align 16
 r64cw180lop2:
@@ -4749,12 +4745,12 @@ r64cw180lop2:
 	mov rax,qword [rdi]
 	mov qword [rsi],rax
 	lea rsi,[rsi+8]
-	dec rcx
+	dec r10
 	jnz r64cw180lop2
 	
 	sub rdi,r8 ;sbpl
 	add rsi,r9 ;dbpl
-	dec r10
+	dec rcx
 	jnz r64cw180lop
 	
 	ret
@@ -4898,8 +4894,9 @@ _ImageUtil_HFRotate32_CW180:
 	add rsi,rax ;srcPtr
 	mov r10,rcx ;srcHeight
 	lea rax,[rdx*4]
-	add r8,rax ;sbpl
 	sub r9,rax ;dbpl
+	add r8,rax ;sbpl
+	add rsi,rax
 
 	align 16
 hfr32cw180lop:

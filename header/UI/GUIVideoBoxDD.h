@@ -59,6 +59,7 @@ namespace UI
 		void HandleMouseActon(MouseActionHandler hdlr, void *userObj);
 
 		virtual void DestroyObject();
+		virtual void SetRotateType(Media::RotateType rotateType);
 	};
 }
 #endif

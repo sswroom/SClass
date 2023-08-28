@@ -207,7 +207,7 @@ void Media::CS::CSYUV_LRGBC::SetupYUV_RGB13()
 				y = 0x7fff;
 			else
 				y = y & 0xffff;
-			yuv2rgb[i] = (((Int64)y) << 32) | (((Int64)y) << 16) | y;
+			this->yuv2rgb[i] = (((Int64)y) << 32) | (((Int64)y) << 16) | y;
 		}
 	}
 	else
@@ -222,7 +222,7 @@ void Media::CS::CSYUV_LRGBC::SetupYUV_RGB13()
 				y = 0x7fff;
 			else
 				y = y & 0xffff;
-			yuv2rgb[i] = (((Int64)y) << 32) | (((Int64)y) << 16) | y;
+			this->yuv2rgb[i] = (((Int64)y) << 32) | (((Int64)y) << 16) | y;
 		}
 	}
 
@@ -283,8 +283,8 @@ void Media::CS::CSYUV_LRGBC::SetupYUV_RGB13()
 			u2b8 = 0x7fff;
 		else
 			u2b8 = u2b8 & 0xffff;
-		yuv2rgb[i + 256] = (((Int64)u2g8) << 16) | u2b8;
-		yuv2rgb[i + 512] = (((Int64)v2g8) << 16) | (((Int64)v2r8) << 32);
+		this->yuv2rgb[i + 256] = (((Int64)u2g8) << 16) | u2b8;
+		this->yuv2rgb[i + 512] = (((Int64)v2g8) << 16) | (((Int64)v2r8) << 32);
 	}
 }
 

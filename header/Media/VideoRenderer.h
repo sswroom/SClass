@@ -255,6 +255,7 @@ namespace Media
 		Int32 GetAVOfst();
 		void SetAVOfst(Int32 avOfst);
 		void SetIgnoreFrameTime(Bool ignoreFrameTime);
+		virtual void SetRotateType(Media::RotateType rotateType) = 0;
 
 		void AddImgFilter(Media::IImgFilter *imgFilter);
 		void Snapshot();

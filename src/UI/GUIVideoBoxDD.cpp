@@ -185,12 +185,12 @@ void UI::GUIVideoBoxDD::OnMonitorChanged()
 {
 	this->UpdateRefreshRate(this->GetRefreshRate());
 	this->manualDeint = false;
-	this->UpdateDispInfo(this->surfaceSize, this->bitDepth, this->GetPixelFormat());
+	this->UpdateDispInfo(this->bkBuffSize, this->bitDepth, this->GetPixelFormat());
 }
 
 void UI::GUIVideoBoxDD::OnSurfaceCreated()
 {
-	this->UpdateOutputSize(this->surfaceSize);
+	this->UpdateOutputSize(this->bkBuffSize);
 	if (!playing)
 	{
 		this->dispForceUpdate = true;
@@ -282,4 +282,9 @@ void UI::GUIVideoBoxDD::DestroyObject()
 	this->StopPlay();
 	this->SetVideo(0);
 	this->StopThreads();
+}
+
+void UI::GUIVideoBoxDD::SetRotateType(Media::RotateType rotType)
+{
+	this->GUIDDrawControl::SetRotateType(rotType);
 }

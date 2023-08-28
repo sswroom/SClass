@@ -11,11 +11,15 @@ extern "C"
 UInt32 Media::CS::CSYUY2_LRGBC::WorkerThread(void *obj)
 {
 	CSYUY2_LRGBC *converter = (CSYUY2_LRGBC*)obj;
+	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	UOSInt threadId = converter->currId;
+	sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("CSYUY2_LRGBC")), threadId);
+	Sync::ThreadUtil::SetName(CSTRP(sbuff, sptr));
 	THREADSTAT *ts = &converter->stats[threadId];
 
 	ts->status = 1;
-	converter->evtMain->Set();
+	converter->evtMain.Set();
 	while (true)
 	{
 		ts->evt->Wait();
@@ -27,11 +31,11 @@ UInt32 Media::CS::CSYUY2_LRGBC::WorkerThread(void *obj)
 		{
 			CSYUY2_LRGBC_do_yuy2rgb(ts->yPtr, ts->dest, ts->width, ts->height, ts->dbpl, converter->yuv2rgb, converter->rgbGammaCorr);
 			ts->status = 4;
-			converter->evtMain->Set();
+			converter->evtMain.Set();
 		}
 	}
 	converter->stats[threadId].status = 0;
-	converter->evtMain->Set();
+	converter->evtMain.Set();
 	return 0;
 }
 
@@ -41,7 +45,6 @@ Media::CS::CSYUY2_LRGBC::CSYUY2_LRGBC(const Media::ColorProfile *srcProfile, con
 	this->nThread = Sync::ThreadUtil::GetThreadCnt();
 	if (this->nThread > 8) this->nThread = 8;
 
-	NEW_CLASS(evtMain, Sync::Event());
 	stats = MemAlloc(THREADSTAT, nThread);
 	i = nThread;
 	while(i-- > 0)
@@ -53,7 +56,7 @@ Media::CS::CSYUY2_LRGBC::CSYUY2_LRGBC(const Media::ColorProfile *srcProfile, con
 		Sync::ThreadUtil::Create(WorkerThread, this);
 		while (stats[i].status == 0)
 		{
-			evtMain->Wait();
+			this->evtMain.Wait();
 		}
 	}
 }
@@ -102,14 +105,13 @@ Media::CS::CSYUY2_LRGBC::~CSYUY2_LRGBC()
 		if (exited)
 			break;
 
-		evtMain->Wait(100);
+		this->evtMain.Wait(100);
 	}
 	i = nThread;
 	while (i-- > 0)
 	{
 		DEL_CLASS(stats[i].evt);
 	}
-	DEL_CLASS(evtMain);
 	MemFree(stats);
 }
 
@@ -150,7 +152,7 @@ void Media::CS::CSYUY2_LRGBC::ConvertV2(UInt8 **srcPtr, UInt8 *destPtr, UOSInt d
 		}
 		if (exited)
 			break;
-		evtMain->Wait();
+		this->evtMain.Wait();
 	}
 }
 

@@ -161,6 +161,14 @@ typedef enum
 	MNU_VIDEO_FTIME_ENABLE,
 	MNU_VIDEO_FTIME_DISABLE,
 	MNU_VIDEO_SNAPSHOT,
+	MNU_VIDEO_ROTATE_NONE,
+	MNU_VIDEO_ROTATE_CW90,
+	MNU_VIDEO_ROTATE_CW180,
+	MNU_VIDEO_ROTATE_CW270,
+	MNU_VIDEO_ROTATE_HFLIP,
+	MNU_VIDEO_ROTATE_HFLIP_CW90,
+	MNU_VIDEO_ROTATE_HFLIP_CW180,
+	MNU_VIDEO_ROTATE_HFLIP_CW270,
 
 	MNU_PB_CHAPTERS = 1000
 } MenuItems;
@@ -713,6 +721,16 @@ SSWR::AVIRead::AVIRHQMPForm::AVIRHQMPForm(UI::GUIClientControl *parent, NotNullP
 	mnu3->AddItem(CSTR("17000K"), MNU_VIDEO_WP_17000K, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu3->AddItem(CSTR("18000K"), MNU_VIDEO_WP_18000K, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu3->AddItem(CSTR("19000K"), MNU_VIDEO_WP_19000K, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2 = mnu->AddSubMenu(CSTR("Rotate"));
+	mnu2->AddItem(CSTR("No Rotate"), MNU_VIDEO_ROTATE_NONE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("CW 90"), MNU_VIDEO_ROTATE_CW90, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("CW 180"), MNU_VIDEO_ROTATE_CW180, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("CW 270"), MNU_VIDEO_ROTATE_CW270, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("H-Flip"), MNU_VIDEO_ROTATE_HFLIP, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("H-Flip CW 90"), MNU_VIDEO_ROTATE_HFLIP_CW90, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("H-Flip CW 180"), MNU_VIDEO_ROTATE_HFLIP_CW180, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("H-Flip CW 270"), MNU_VIDEO_ROTATE_HFLIP_CW270, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+
 	mnu->AddSeperator();
 //	mnu->AddItem(CSTR("&Crop Detect"), MNU_VIDEO_CROP, 0, UI::GUIControl::GK_R);
 	mnu2 = mnu->AddSubMenu(CSTR("&Deinterlace"));
@@ -1369,6 +1387,30 @@ void SSWR::AVIRead::AVIRHQMPForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_VIDEO_SNAPSHOT:
 		this->vbox->Snapshot();
+		break;
+	case MNU_VIDEO_ROTATE_NONE:
+		this->vbox->SetRotateType(Media::RotateType::None);
+		break;
+	case MNU_VIDEO_ROTATE_CW90:
+		this->vbox->SetRotateType(Media::RotateType::CW_90);
+		break;
+	case MNU_VIDEO_ROTATE_CW180:
+		this->vbox->SetRotateType(Media::RotateType::CW_180);
+		break;
+	case MNU_VIDEO_ROTATE_CW270:
+		this->vbox->SetRotateType(Media::RotateType::CW_270);
+		break;
+	case MNU_VIDEO_ROTATE_HFLIP:
+		this->vbox->SetRotateType(Media::RotateType::HFLIP);
+		break;
+	case MNU_VIDEO_ROTATE_HFLIP_CW90:
+		this->vbox->SetRotateType(Media::RotateType::HFLIP_CW_90);
+		break;
+	case MNU_VIDEO_ROTATE_HFLIP_CW180:
+		this->vbox->SetRotateType(Media::RotateType::HFLIP_CW_180);
+		break;
+	case MNU_VIDEO_ROTATE_HFLIP_CW270:
+		this->vbox->SetRotateType(Media::RotateType::HFLIP_CW_270);
 		break;
 	}
 }

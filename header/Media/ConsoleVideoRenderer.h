@@ -21,7 +21,7 @@ namespace Media
 		virtual ~ConsoleVideoRenderer();
 
 		Bool IsError();
-		void SetRotateType(Media::RotateType rotateType);
+		virtual void SetRotateType(Media::RotateType rotateType);
 		void SetSurfaceBugMode(Bool surfaceBugMode);
 
 		virtual Bool IsUpdatingSize();

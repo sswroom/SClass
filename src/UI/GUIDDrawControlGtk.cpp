@@ -219,7 +219,7 @@ void __stdcall UI::GUIDDrawControl::OnResized(void *userObj)
 	else
 	{
 		Sync::MutexUsage mutUsage(data->me->surfaceMut);
-		data->me->surfaceSize = Math::Size2D<UOSInt>((UOSInt)data->allocation->width, (UOSInt)data->allocation->height);
+		data->me->dispSize = Math::Size2D<UOSInt>((UOSInt)data->allocation->width, (UOSInt)data->allocation->height);
 		data->me->ReleaseSubSurface();
 		data->me->CreateSubSurface();
 		mutUsage.EndUse();
@@ -227,10 +227,10 @@ void __stdcall UI::GUIDDrawControl::OnResized(void *userObj)
 		if (data->me->debugWriter)
 		{
 			Text::StringBuilderUTF8 sb;
-			sb.AppendC(UTF8STRC("Surface size changed to "));
-			sb.AppendUOSInt(data->me->surfaceSize.x);
+			sb.AppendC(UTF8STRC("Display size changed to "));
+			sb.AppendUOSInt(data->me->dispSize.x);
 			sb.AppendC(UTF8STRC(" x "));
-			sb.AppendUOSInt(data->me->surfaceSize.y);
+			sb.AppendUOSInt(data->me->dispSize.y);
 			sb.AppendC(UTF8STRC(", hMon="));
 			sb.AppendOSInt((OSInt)data->me->GetHMonitor());
 			data->me->debugWriter->WriteLineC(sb.ToString(), sb.GetLength());
@@ -343,14 +343,23 @@ void UI::GUIDDrawControl::CreateSubSurface()
 	{
 		return;
 	}
-	if (this->surfaceSize.x <= 0 || this->surfaceSize.y <= 0)
+	if (this->dispSize.x <= 0 || this->dispSize.y <= 0)
 	{
 		return;
 	}
-	this->primarySurface = this->surfaceMgr->CreateSurface(this->surfaceSize, 32);
+	this->primarySurface = this->surfaceMgr->CreateSurface(this->dispSize, 32);
+	if (this->primarySurface)
+	{
+		this->primarySurface->info.rotateType = this->rotType;
+	}
+	this->bkBuffSize = this->dispSize;
+	if (this->rotType == Media::RotateType::CW_90 || this->rotType == Media::RotateType::CW_270 || this->rotType == Media::RotateType::HFLIP_CW_90 || this->rotType == Media::RotateType::HFLIP_CW_270)
+	{
+		this->bkBuffSize = this->dispSize.SwapXY();
+	}
 //	this->primarySurface = this->surfaceMgr->CreatePrimarySurface(this->GetHMonitor(), 0);
-	this->buffSurface = this->surfaceMgr->CreateSurface(this->surfaceSize, 32);
-	GdkPixbuf *buf = gdk_pixbuf_new_from_data((const guchar*)this->primarySurface->GetHandle(), GDK_COLORSPACE_RGB, true, 8, (int)(OSInt)this->surfaceSize.x, (int)(OSInt)this->surfaceSize.y, (int)(OSInt)this->surfaceSize.x * 4, 0, 0);
+	this->buffSurface = this->surfaceMgr->CreateSurface(this->bkBuffSize, 32);
+	GdkPixbuf *buf = gdk_pixbuf_new_from_data((const guchar*)this->primarySurface->GetHandle(), GDK_COLORSPACE_RGB, true, 8, (int)(OSInt)this->dispSize.x, (int)(OSInt)this->dispSize.y, (int)(OSInt)this->dispSize.x * 4, 0, 0);
 //	GdkPixbuf *buf = gdk_pixbuf_new_from_data((const guchar*)this->buffSurface->GetHandle(), GDK_COLORSPACE_RGB, true, 8, (int)(OSInt)this->surfaceW, (int)(OSInt)this->surfaceH, (int)(OSInt)this->surfaceW * 4, 0, 0);
 	if (buf == 0)
 	{
@@ -363,7 +372,7 @@ void UI::GUIDDrawControl::CreateSubSurface()
 	{
 		this->primarySurface->info.atype = Media::AT_ALPHA;
 		OSInt lineAdd;
-		ImageUtil_ColorFill32((UInt8*)this->primarySurface->LockSurface(&lineAdd), this->surfaceSize.CalcArea(), 0xff000000);
+		ImageUtil_ColorFill32((UInt8*)this->primarySurface->LockSurface(&lineAdd), this->dispSize.CalcArea(), 0xff000000);
 		this->clsData->pixBuf = buf;
 		this->clsData->pSurfaceUpdated = true;
 	}
@@ -395,7 +404,7 @@ UInt8 *UI::GUIDDrawControl::LockSurfaceBegin(UOSInt targetWidth, UOSInt targetHe
 		this->surfaceMut.Unlock();
 		return 0;
 	}
-	if (targetWidth == this->surfaceSize.x && targetHeight == this->surfaceSize.y)
+	if (targetWidth == this->buffSurface->info.dispSize.x && targetHeight == this->buffSurface->info.dispSize.y)
 	{
 		UInt8 *dptr = this->buffSurface->LockSurface((OSInt*)bpl);
 		if (dptr)
@@ -438,7 +447,8 @@ UI::GUIDDrawControl::GUIDDrawControl(NotNullPtr<GUICore> ui, UI::GUIClientContro
 	this->inited = false;
 	this->primarySurface = 0;
 	this->buffSurface = 0;
-	this->surfaceSize = Math::Size2D<UOSInt>(0, 0);
+	this->dispSize = Math::Size2D<UOSInt>(0, 0);
+	this->bkBuffSize = Math::Size2D<UOSInt>(0, 0);
 	this->imgCopy = 0;
 	this->joystickId = 0;
 	this->jsLastButtons = 0;
@@ -449,6 +459,7 @@ UI::GUIDDrawControl::GUIDDrawControl(NotNullPtr<GUICore> ui, UI::GUIClientContro
 	this->debugFS = 0;
 	this->debugWriter = 0;
 	this->bitDepth = 32;
+	this->rotType = Media::RotateType::None;
 	this->currScnMode = SM_WINDOWED;
 	this->clsData->imgCtrl = gtk_image_new();
 	this->hwnd = (ControlHandle*)gtk_event_box_new();
@@ -589,6 +600,23 @@ UInt32 UI::GUIDDrawControl::GetRefreshRate()
 Bool UI::GUIDDrawControl::IsSurfaceReady()
 {
 	return this->buffSurface != 0;
+}
+
+void UI::GUIDDrawControl::SetRotateType(Media::RotateType rotType)
+{
+	if (this->rotType != rotType)
+	{
+		this->rotType = rotType;
+		GdkRectangle rect;
+		rect.x = 0;
+		rect.y = 0;
+		rect.width = (int)this->dispSize.x;
+		rect.height = (int)this->dispSize.y;
+		ResizedData rdata;
+		rdata.me = this;
+		rdata.allocation = &rect;
+		OnResized(&rdata);
+	}
 }
 
 void UI::GUIDDrawControl::OnMouseWheel(Math::Coord2D<OSInt> scnPos, Int32 amount)

@@ -1129,6 +1129,7 @@ extern "C" void ImageUtil_ConvR8G8B8A8_ARGB32(const UInt8 *srcPtr, UInt8 *destPt
 
 extern "C" void ImageUtil_ConvR8G8B8N8_ARGB32(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
 {
+	UInt8 r;
 	OSInt i;
 	sbpl -= w * 4;
 	dbpl -= w << 2;
@@ -1137,9 +1138,10 @@ extern "C" void ImageUtil_ConvR8G8B8N8_ARGB32(const UInt8 *srcPtr, UInt8 *destPt
 		i = w;
 		while (i-- > 0)
 		{
+			r = srcPtr[0];
 			destPtr[0] = srcPtr[2];
 			destPtr[1] = srcPtr[1];
-			destPtr[2] = srcPtr[0];
+			destPtr[2] = r;
 			destPtr[3] = 0xff;
 			srcPtr += 4;
 			destPtr += 4;

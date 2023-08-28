@@ -23,7 +23,7 @@ namespace Media
 
 			UOSInt currId;
 			UOSInt nThread;
-			Sync::Event *evtMain;
+			Sync::Event evtMain;
 			THREADSTAT *stats;
 
 			static UInt32 __stdcall WorkerThread(void *obj);

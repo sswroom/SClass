@@ -14,9 +14,6 @@ extern "C" void CSYUY2_LRGBC_do_yuy2rgb(UInt8 *src, UInt8 *dest, OSInt width, OS
 	dbpl = dbpl - width * 8;
 	width = (width >> 1) - 2;
 
-/*	mov rbx,qword [rsp+72] ;yuv2rgb
-	mov rdx,qword [rsp+80] ;rgbGammaCorr*/
-
 	while (height-- > 0)
 	{
 		i = width;

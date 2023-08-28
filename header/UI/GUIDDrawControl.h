@@ -41,9 +41,10 @@ namespace UI
 		Bool directMode;
 		Bool inited;
 	protected:
+		Math::Size2D<UOSInt> bkBuffSize;
+		Math::Size2D<UOSInt> dispSize;
 		Media::MonitorSurfaceMgr* surfaceMgr;
 		Sync::Mutex surfaceMut;
-		Math::Size2D<UOSInt> surfaceSize;
 		UInt32 bitDepth;
 		OSInt scnX;
 		OSInt scnY;
@@ -54,6 +55,7 @@ namespace UI
 		ScreenMode currScnMode;
 		ScreenMode fullScnMode;
 		IO::Library *lib;
+		Media::RotateType rotType;
 
 	private:
 		static Int32 useCnt;
@@ -91,6 +93,7 @@ namespace UI
 		virtual void ChangeMonitor(MonitorHandle *hMon);
 		UInt32 GetRefreshRate();
 		Bool IsSurfaceReady();
+		void SetRotateType(Media::RotateType rotType);
 	public:
 		virtual void OnSurfaceCreated() = 0;
 		virtual void OnMouseWheel(Math::Coord2D<OSInt> pos, Int32 amount);
