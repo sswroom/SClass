@@ -1179,65 +1179,28 @@ Bool IO::SMake::CompileProgInternal(NotNullPtr<const ProgramItem> prog, Bool asm
 #if defined(_WIN32)
 		if (sb.leng > 32767)
 		{
-			if (arCfg == 0)
-			{
-				this->SetErrorMsg(CSTR("AR config not found"));
-				return false;
-			}
 			this->tasks->WaitForIdle();
 			if (this->HasError())
 			{
 				return false;
 			}
-			sb.ClearStr();
-			sb.AppendC(UTF8STRC(OBJECTPATH));
-			sb.AppendUTF8Char(IO::Path::PATH_SEPERATOR);
-			sb.Append(prog->name);
-			sb.AppendC(UTF8STRC(".a"));
-			IO::Path::DeleteFile(sb.v);
-
 			Data::FastStringKeyIterator<Int32> iterator = objList.KeyIterator();
 			NotNullPtr<Text::String> objName;
 			sb.ClearStr();
-			AppendCfgPath(sb, arCfg->value->ToCString());
-			sb.AppendC(UTF8STRC(" -r "));
-			sb.AppendC(UTF8STRC(OBJECTPATH));
-			sb.AppendUTF8Char(IO::Path::PATH_SEPERATOR);
-			sb.Append(prog->name);
-			sb.AppendC(UTF8STRC(".a"));
 			while (iterator.HasNext())
 			{
 				objName = iterator.Next();
-				if (sb.leng + sizeof(OBJECTPATH) + 1 + objName->leng < 4096)
-				{
-					sb.AppendUTF8Char(' ');
-					sb.AppendC(UTF8STRC(OBJECTPATH));
-					sb.AppendUTF8Char(IO::Path::PATH_SEPERATOR);
-					sb.Append(objName);
-				}
-				else
-				{
-					if (!this->ExecuteCmd(sb.ToCString()))
-					{
-						return false;
-					}
-					sb.ClearStr();
-					AppendCfgPath(sb, arCfg->value->ToCString());
-					sb.AppendC(UTF8STRC(" -r "));
-					sb.AppendC(UTF8STRC(OBJECTPATH));
-					sb.AppendUTF8Char(IO::Path::PATH_SEPERATOR);
-					sb.Append(prog->name);
-					sb.AppendC(UTF8STRC(".a"));
-
-					sb.AppendUTF8Char(' ');
-					sb.AppendC(UTF8STRC(OBJECTPATH));
-					sb.AppendUTF8Char(IO::Path::PATH_SEPERATOR);
-					sb.Append(objName);
-				}
+				sb.AppendUTF8Char(' ');
+				sb.AppendC(UTF8STRC(OBJECTPATH));
+				sb.AppendUTF8Char('/');
+				sb.Append(objName);
 			}
-			if (!this->ExecuteCmd(sb.ToCString()))
-			{
+			if (sb.leng == 0)
 				return false;
+			else
+			{
+				IO::FileStream fs(CSTR("filelist.txt"), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+				fs.Write(sb.v + 1, sb.leng - 1);
 			}
 			sb.ClearStr();
 			AppendCfgPath(sb, cppCfg->value->ToCString());
@@ -1248,12 +1211,7 @@ Bool IO::SMake::CompileProgInternal(NotNullPtr<const ProgramItem> prog, Bool asm
 			{
 				sb.Append(postfixItem->value);
 			}
-			sb.AppendUTF8Char(' ');
-			sb.AppendC(UTF8STRC(OBJECTPATH));
-			sb.AppendUTF8Char(IO::Path::PATH_SEPERATOR);
-			sb.Append(prog->name);
-			sb.AppendC(UTF8STRC(".a"));
-
+			sb.AppendC(UTF8STRC(" @filelist.txt"));
 			if (libsCfg)
 			{
 				sb.AppendUTF8Char(' ');
@@ -1273,8 +1231,10 @@ Bool IO::SMake::CompileProgInternal(NotNullPtr<const ProgramItem> prog, Bool asm
 			}
 			if (!this->ExecuteCmd(sb.ToCString()))
 			{
+				IO::Path::DeleteFile((const UTF8Char*)"filelist.txt");
 				return false;
 			}
+			IO::Path::DeleteFile((const UTF8Char*)"filelist.txt");
 		}
 		else if (this->asyncMode)
 		{
