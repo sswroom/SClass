@@ -121,3 +121,12 @@ void UI::DObj::VideoDObjHandler::UpdateVideoArea(Math::Coord2D<OSInt> videoTL, M
 	this->frameImg = this->deng->CreateImage32(videoSize, Media::AT_NO_ALPHA);
 	this->UpdateDispInfo(videoSize, 32, Media::PF_B8G8R8A8);
 }
+
+void UI::DObj::VideoDObjHandler::SetRotateType(Media::RotateType rotType)
+{
+}
+
+Media::RotateType UI::DObj::VideoDObjHandler::GetRotateType() const
+{
+	return Media::RotateType::None;
+}

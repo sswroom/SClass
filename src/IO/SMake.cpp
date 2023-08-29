@@ -852,7 +852,6 @@ Bool IO::SMake::CompileProgInternal(NotNullPtr<const ProgramItem> prog, Bool asm
 		return true;
 	}
 
-	IO::SMake::ConfigItem *arCfg = this->cfgMap.Get(CSTR("AR"));
 	IO::SMake::ConfigItem *cppCfg = this->cfgMap.Get(CSTR("CXX"));
 	IO::SMake::ConfigItem *ccCfg = this->cfgMap.Get(CSTR("CC"));
 	IO::SMake::ConfigItem *asmCfg = this->cfgMap.Get(CSTR("ASM"));

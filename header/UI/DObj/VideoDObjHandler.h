@@ -39,6 +39,9 @@ namespace UI
 			virtual ~VideoDObjHandler();
 
 			void UpdateVideoArea(Math::Coord2D<OSInt> videoTL, Math::Size2D<UOSInt> videoSize);
+
+			virtual void SetRotateType(Media::RotateType rotateType);
+			virtual Media::RotateType GetRotateType() const;
 		};
 	}
 }

@@ -619,6 +619,11 @@ void UI::GUIDDrawControl::SetRotateType(Media::RotateType rotType)
 	}
 }
 
+Media::RotateType UI::GUIDDrawControl::GetRotateType() const
+{
+	return this->rotType;
+}
+
 void UI::GUIDDrawControl::OnMouseWheel(Math::Coord2D<OSInt> scnPos, Int32 amount)
 {
 }
