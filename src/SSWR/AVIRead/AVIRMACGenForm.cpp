@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "Data/RandomMT19937.h"
-#include "Data/Sort/ArtificialQuickSortC.h"
+#include "Data/Sort/ArtificialQuickSortFunc.h"
 #include "Net/ConnectionInfo.h"
 #include "SSWR/AVIRead/AVIRMACGenForm.h"
 #include "Text/MyString.h"
@@ -57,9 +57,9 @@ void __stdcall SSWR::AVIRead::AVIRMACGenForm::OnAdapterSetClicked(void *userObj)
 	}	
 }
 
-OSInt __stdcall SSWR::AVIRead::AVIRMACGenForm::ListCompare(void *list1, void *list2)
+OSInt __stdcall SSWR::AVIRead::AVIRMACGenForm::ListCompare(Data::ArrayList<Net::MACInfo::MACEntry*> *list1, Data::ArrayList<Net::MACInfo::MACEntry*> *list2)
 {
-	return Text::StrCompare(((Data::ArrayList<Net::MACInfo::MACEntry*>*)list1)->GetItem(0)->name, ((Data::ArrayList<Net::MACInfo::MACEntry*>*)list2)->GetItem(0)->name);
+	return Text::StrCompare(list1->GetItem(0)->name, list2->GetItem(0)->name);
 }
 
 SSWR::AVIRead::AVIRMACGenForm::AVIRMACGenForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 480, 136, ui)
@@ -121,8 +121,8 @@ SSWR::AVIRead::AVIRMACGenForm::AVIRMACGenForm(UI::GUIClientControl *parent, NotN
 		i++;
 	}
 
-	macList = this->macMap->ToArray(&macCnt);
-	ArtificialQuickSort_SortCmp((void**)macList, ListCompare, 0, (OSInt)macCnt - 1);
+	macList = this->macMap->ToArray(macCnt);
+	Data::Sort::ArtificialQuickSortFunc<Data::ArrayList<Net::MACInfo::MACEntry*>*>::Sort(macList, ListCompare, 0, (OSInt)macCnt - 1);
 	i = 0;
 	while (i < macCnt)
 	{
@@ -167,7 +167,7 @@ SSWR::AVIRead::AVIRMACGenForm::~AVIRMACGenForm()
 	Data::ArrayList<Net::MACInfo::MACEntry*> **macList;
 	UOSInt macCnt;
 	UOSInt i;
-	macList = this->macMap->ToArray(&macCnt);
+	macList = this->macMap->ToArray(macCnt);
 	i = 0;
 	while (i < macCnt)
 	{

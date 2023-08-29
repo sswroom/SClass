@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "Data/ByteTool.h"
-#include "Data/Sort/ArtificialQuickSort.h"
+#include "Data/Sort/ArtificialQuickSortFunc.h"
 #include "IO/DeviceDB.h"
 #include "IO/FileStream.h"
 #include "Math/Math.h"
@@ -79,11 +79,9 @@ void __stdcall SSWR::AVIRead::AVIRSDCardForm::OnDevicesSelChg(void *userObj)
 	}
 }
 
-OSInt __stdcall SSWR::AVIRead::AVIRSDCardForm::ItemCompare(void *item1, void *item2)
+OSInt __stdcall SSWR::AVIRead::AVIRSDCardForm::ItemCompare(IO::SDCardInfo *item1, IO::SDCardInfo *item2)
 {
-	IO::SDCardInfo *sdCard1 = (IO::SDCardInfo*)item1;
-	IO::SDCardInfo *sdCard2 = (IO::SDCardInfo*)item2;
-	return sdCard1->GetName()->CompareTo(sdCard2->GetName().Ptr());
+	return item1->GetName()->CompareTo(item1->GetName().Ptr());
 }
 
 SSWR::AVIRead::AVIRSDCardForm::AVIRSDCardForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
@@ -173,17 +171,15 @@ SSWR::AVIRead::AVIRSDCardForm::AVIRSDCardForm(UI::GUIClientControl *parent, NotN
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 
-	NEW_CLASS(this->sdCardList, Data::ArrayList<IO::SDCardInfo*>());
 
 	IO::SDCardMgr::GetCardList(this->sdCardList);
-	void **arr = (void**)this->sdCardList->GetArray(&j);
-	ArtificialQuickSort_SortCmp(arr, ItemCompare, 0, (OSInt)j - 1);
+	Data::Sort::ArtificialQuickSortFunc<IO::SDCardInfo*>::Sort(this->sdCardList, ItemCompare);
 	
 	i = 0;
-	j = this->sdCardList->GetCount();
+	j = this->sdCardList.GetCount();
 	while (i < j)
 	{
-		sdCard = this->sdCardList->GetItem(i);
+		sdCard = this->sdCardList.GetItem(i);
 		sptr = Text::StrUOSInt(sbuff, i);
 		sptr = Text::StrConcatC(sptr, UTF8STRC(" - "));
 		sptr = sdCard->GetName()->ConcatTo(sptr);
@@ -195,13 +191,12 @@ SSWR::AVIRead::AVIRSDCardForm::AVIRSDCardForm(UI::GUIClientControl *parent, NotN
 SSWR::AVIRead::AVIRSDCardForm::~AVIRSDCardForm()
 {
 	IO::SDCardInfo *sdCard;
-	UOSInt i = this->sdCardList->GetCount();
+	UOSInt i = this->sdCardList.GetCount();
 	while (i-- > 0)
 	{
-		sdCard = this->sdCardList->GetItem(i);
+		sdCard = this->sdCardList.GetItem(i);
 		DEL_CLASS(sdCard);
 	}
-	DEL_CLASS(this->sdCardList);
 }
 
 void SSWR::AVIRead::AVIRSDCardForm::OnMonitorChanged()

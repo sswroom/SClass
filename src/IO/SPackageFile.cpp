@@ -416,7 +416,7 @@ IO::SPackageFile::~SPackageFile()
 	if (!this->fileMap.IsEmpty())
 	{
 		UOSInt i;
-		IO::SPackageFile::FileInfo **fileArr = this->fileMap.ToArray(&i);
+		IO::SPackageFile::FileInfo **fileArr = this->fileMap.ToArray(i);
 		while (i-- > 0)
 		{
 			MemFree(fileArr[i]);

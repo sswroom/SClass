@@ -74,7 +74,7 @@ UInt16 USBInfo_ReadI16(Text::CStringNN fileName)
 	return (UInt16)(Text::StrHex2Int32C((const UTF8Char*)buff) & 0xffff);
 }
 
-UOSInt IO::USBInfo::GetUSBList(Data::ArrayList<USBInfo*> *usbList)
+UOSInt IO::USBInfo::GetUSBList(NotNullPtr<Data::ArrayList<USBInfo*>> usbList)
 {
 	ClassData clsData;
 	IO::USBInfo *usb;

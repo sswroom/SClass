@@ -10,7 +10,7 @@ Net::DNSHandler::~DNSHandler()
 {
 	UOSInt i;
 	UOSInt j;
-	DomainStatus **arr = this->reqv4Map.ToArray(&j);
+	DomainStatus **arr = this->reqv4Map.ToArray(j);
 	i = 0;
 	while (i < j)
 	{
@@ -30,7 +30,7 @@ Net::DNSHandler::~DNSHandler()
 	}
 	MemFree(arr);
 
-	arr = this->reqv6Map.ToArray(&j);
+	arr = this->reqv6Map.ToArray(j);
 	i = 0;
 	while (i < j)
 	{

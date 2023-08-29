@@ -583,8 +583,8 @@ Math::Geometry::Vector2D *Map::SHPData::GetNewVectorById(GetObjectSess *session,
 			return 0;
 		if (rec->vec) return rec->vec->Clone();
 		NEW_CLASS(pg, Math::Geometry::Polygon(srid, rec->nPtOfst, rec->nPoint, false, false));
-		shpData->GetRealData(rec->ofst, rec->nPtOfst << 2, Data::ByteArray((UInt8*)pg->GetPtOfstList(&nPoint), rec->nPtOfst << 2));
-		shpData->GetRealData(rec->ofst + (rec->nPtOfst << 2), rec->nPoint << 4, Data::ByteArray((UInt8*)pg->GetPointList(&nPoint), rec->nPoint << 4));
+		shpData->GetRealData(rec->ofst, rec->nPtOfst << 2, Data::ByteArray((UInt8*)pg->GetPtOfstList(nPoint), rec->nPtOfst << 2));
+		shpData->GetRealData(rec->ofst + (rec->nPtOfst << 2), rec->nPoint << 4, Data::ByteArray((UInt8*)pg->GetPointList(nPoint), rec->nPoint << 4));
 		rec->vec = pg->Clone();
 		return pg;
 	}
@@ -597,8 +597,8 @@ Math::Geometry::Vector2D *Map::SHPData::GetNewVectorById(GetObjectSess *session,
 			return 0;
 		if (rec->vec) return rec->vec->Clone();
 		NEW_CLASS(pl, Math::Geometry::Polyline(srid, rec->nPtOfst, rec->nPoint, false, false));
-		shpData->GetRealData(rec->ofst, rec->nPtOfst << 2, Data::ByteArray((UInt8*)pl->GetPtOfstList(&nPoint), rec->nPtOfst << 2));
-		shpData->GetRealData(rec->ofst + (rec->nPtOfst << 2), rec->nPoint << 4, Data::ByteArray((UInt8*)pl->GetPointList(&nPoint), rec->nPoint << 4));
+		shpData->GetRealData(rec->ofst, rec->nPtOfst << 2, Data::ByteArray((UInt8*)pl->GetPtOfstList(nPoint), rec->nPtOfst << 2));
+		shpData->GetRealData(rec->ofst + (rec->nPtOfst << 2), rec->nPoint << 4, Data::ByteArray((UInt8*)pl->GetPointList(nPoint), rec->nPoint << 4));
 		rec->vec = pl->Clone();
 		return pl;
 	}
@@ -611,8 +611,8 @@ Math::Geometry::Vector2D *Map::SHPData::GetNewVectorById(GetObjectSess *session,
 			return 0;
 		if (rec->vec) return rec->vec->Clone();
 		NEW_CLASS(pl, Math::Geometry::Polyline(srid, rec->nPtOfst, rec->nPoint, true, false));
-		shpData->GetRealData(rec->ofst, rec->nPtOfst << 2, Data::ByteArray((UInt8*)pl->GetPtOfstList(&nPoint), rec->nPtOfst << 2));
-		shpData->GetRealData(rec->ofst + (rec->nPtOfst << 2), rec->nPoint << 4, Data::ByteArray((UInt8*)pl->GetPointList(&nPoint), rec->nPoint << 4));
+		shpData->GetRealData(rec->ofst, rec->nPtOfst << 2, Data::ByteArray((UInt8*)pl->GetPtOfstList(nPoint), rec->nPtOfst << 2));
+		shpData->GetRealData(rec->ofst + (rec->nPtOfst << 2), rec->nPoint << 4, Data::ByteArray((UInt8*)pl->GetPointList(nPoint), rec->nPoint << 4));
 		shpData->GetRealData(rec->ofst + (rec->nPtOfst << 2) + (rec->nPoint << 4) + 16, rec->nPoint << 3, Data::ByteArray((UInt8*)pl->GetZList(&nPoint), rec->nPoint << 3));
 		rec->vec = pl->Clone();
 		return pl;

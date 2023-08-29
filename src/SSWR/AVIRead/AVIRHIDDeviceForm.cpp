@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "Data/Sort/ArtificialQuickSort.h"
+#include "Data/Sort/ArtificialQuickSortFunc.h"
 #include "IO/DeviceDB.h"
 #include "IO/FileStream.h"
 #include "Math/Math.h"
@@ -31,23 +31,21 @@ void __stdcall SSWR::AVIRead::AVIRHIDDeviceForm::OnDevicesSelChg(void *userObj)
 	}
 }
 
-OSInt __stdcall SSWR::AVIRead::AVIRHIDDeviceForm::ItemCompare(void *item1, void *item2)
+OSInt __stdcall SSWR::AVIRead::AVIRHIDDeviceForm::ItemCompare(IO::HIDInfo *item1, IO::HIDInfo *item2)
 {
-	IO::HIDInfo *hid1 = (IO::HIDInfo*)item1;
-	IO::HIDInfo *hid2 = (IO::HIDInfo*)item2;
-	if (hid1->GetVendorId() > hid2->GetVendorId())
+	if (item1->GetVendorId() > item2->GetVendorId())
 	{
 		return 1;
 	}
-	else if (hid1->GetVendorId() < hid2->GetVendorId())
+	else if (item1->GetVendorId() < item2->GetVendorId())
 	{
 		return -1;
 	}
-	if (hid1->GetProductId() > hid2->GetProductId())
+	if (item1->GetProductId() > item2->GetProductId())
 	{
 		return 1;
 	}
-	else if (hid1->GetProductId() < hid2->GetProductId())
+	else if (item1->GetProductId() < item2->GetProductId())
 	{
 		return -1;
 	}
@@ -94,17 +92,14 @@ SSWR::AVIRead::AVIRHIDDeviceForm::AVIRHIDDeviceForm(UI::GUIClientControl *parent
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 
-	NEW_CLASS(this->hidList, Data::ArrayList<IO::HIDInfo*>());
-
 	IO::HIDInfo::GetHIDList(this->hidList);
-	void **arr = (void**)this->hidList->GetArray(&j);
-	ArtificialQuickSort_SortCmp(arr, ItemCompare, 0, (OSInt)j - 1);
+	Data::Sort::ArtificialQuickSortFunc<IO::HIDInfo*>::Sort(this->hidList, ItemCompare);
 	
 	i = 0;
-	j = this->hidList->GetCount();
+	j = this->hidList.GetCount();
 	while (i < j)
 	{
-		hid = this->hidList->GetItem(i);
+		hid = this->hidList.GetItem(i);
 		sptr = Text::StrHexVal16(sbuff, hid->GetVendorId());
 		*sptr++ = ':';
 		sptr = Text::StrHexVal16(sptr, hid->GetProductId());
@@ -116,13 +111,12 @@ SSWR::AVIRead::AVIRHIDDeviceForm::AVIRHIDDeviceForm(UI::GUIClientControl *parent
 SSWR::AVIRead::AVIRHIDDeviceForm::~AVIRHIDDeviceForm()
 {
 	IO::HIDInfo *hid;
-	UOSInt i = this->hidList->GetCount();
+	UOSInt i = this->hidList.GetCount();
 	while (i-- > 0)
 	{
-		hid = this->hidList->GetItem(i);
+		hid = this->hidList.GetItem(i);
 		DEL_CLASS(hid);
 	}
-	DEL_CLASS(this->hidList);
 }
 
 void SSWR::AVIRead::AVIRHIDDeviceForm::OnMonitorChanged()

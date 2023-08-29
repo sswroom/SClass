@@ -295,14 +295,14 @@ Math::Geometry::Polyline *Math::Geometry::Polyline::SplitByPoint(Math::Coord2DDb
 		this->zArr = newZ;
 		this->mArr = newM;
 		NEW_CLASS(newPL, Math::Geometry::Polyline(this->srid, this->nPtOfst - k, this->nPoint - minId, this->zArr != 0, this->mArr != 0));
-		newPtOfsts = newPL->GetPtOfstList(&l);
+		newPtOfsts = newPL->GetPtOfstList(l);
 		l = this->nPtOfst;
 		while (--l > k)
 		{
 			newPtOfsts[l - k] = ptOfsts[l] - (UInt32)minId;
 		}
 		newPtOfsts[0] = 0;
-		newPoints = newPL->GetPointList(&l);
+		newPoints = newPL->GetPointList(l);
 		l = this->nPoint;
 		while (l-- > minId)
 		{
@@ -391,7 +391,7 @@ Math::Geometry::Polyline *Math::Geometry::Polyline::SplitByPoint(Math::Coord2DDb
 		this->mArr = newM;
 		NEW_CLASS(newPL, Math::Geometry::Polyline(this->srid, this->nPtOfst - k, this->nPoint - minId, oldZ != 0, oldM != 0));
 
-		newPtOfsts = newPL->GetPtOfstList(&l);
+		newPtOfsts = newPL->GetPtOfstList(l);
 		l = this->nPtOfst;
 		while (--l > k)
 		{
@@ -400,7 +400,7 @@ Math::Geometry::Polyline *Math::Geometry::Polyline::SplitByPoint(Math::Coord2DDb
 		newPtOfsts[0] = 0;
 		MemFree(oldPtOfsts);
 
-		newPoints = newPL->GetPointList(&l);
+		newPoints = newPL->GetPointList(l);
 		l = this->nPoint;
 		while (--l > minId)
 		{
@@ -940,7 +940,7 @@ Math::Geometry::Polygon *Math::Geometry::Polyline::CreatePolygonByDist(Double di
 	UOSInt nPoints;
 	Math::Coord2DDbl *pts;
 	NEW_CLASS(pg, Math::Geometry::Polygon(this->srid, 1, outPoints->GetCount() >> 1, false, false));
-	pts = pg->GetPointList(&nPoints);
+	pts = pg->GetPointList(nPoints);
 	i = 0;
 	while (i < nPoints)
 	{

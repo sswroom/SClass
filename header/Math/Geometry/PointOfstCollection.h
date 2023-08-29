@@ -17,7 +17,7 @@ namespace Math
 			PointOfstCollection(UInt32 srid, UOSInt nPtOfst, UOSInt nPoint, const Math::Coord2DDbl *pointArr, Bool hasZ, Bool hasM);
 			virtual ~PointOfstCollection();
 
-			UInt32 *GetPtOfstList(UOSInt *nPtOfst) { *nPtOfst = this->nPtOfst; return this->ptOfstArr; }
+			UInt32 *GetPtOfstList(OutParam<UOSInt> nPtOfst) { nPtOfst.Set(this->nPtOfst); return this->ptOfstArr; }
 			virtual Math::Coord2DDbl GetCenter() const;
 			virtual void ConvCSys(Math::CoordinateSystem *srcCSys, Math::CoordinateSystem *destCSys);
 			virtual Bool Equals(Vector2D *vec) const;

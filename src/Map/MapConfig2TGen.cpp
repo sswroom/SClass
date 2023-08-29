@@ -2551,9 +2551,9 @@ void Map::MapConfig2TGen::DrawString(Media::DrawImage *img, MapLayerStyle *lyrs,
 					UInt32 maxSize;
 					UInt32 maxPos;
 					UOSInt nPtOfst;
-					UInt32 *ptOfstArr = ptOfst->GetPtOfstList(&nPtOfst);
+					UInt32 *ptOfstArr = ptOfst->GetPtOfstList(nPtOfst);
 					UOSInt nPoint;
-					Math::Coord2DDbl *pointArr = ptOfst->GetPointList(&nPoint);
+					Math::Coord2DDbl *pointArr = ptOfst->GetPointList(nPoint);
 					maxSize = (UInt32)nPoint - (maxPos = ptOfstArr[nPtOfst - 1]);
 					k = nPtOfst;
 					while (k-- > 1)
@@ -2598,7 +2598,7 @@ void Map::MapConfig2TGen::DrawString(Media::DrawImage *img, MapLayerStyle *lyrs,
 				{
 					Math::Geometry::Polyline *pl = (Math::Geometry::Polyline*)vec;
 					UOSInt nPoint;
-					Math::Coord2DDbl *pointArr = pl->GetPointList(&nPoint);
+					Math::Coord2DDbl *pointArr = pl->GetPointList(nPoint);
 					if (nPoint & 1)
 					{
 						UOSInt l = nPoint >> 1;
@@ -2633,9 +2633,9 @@ void Map::MapConfig2TGen::DrawString(Media::DrawImage *img, MapLayerStyle *lyrs,
 				{
 					Math::Geometry::Polygon *pg = (Math::Geometry::Polygon*)vec;
 					UOSInt nPoint;
-					Math::Coord2DDbl *pointArr = pg->GetPointList(&nPoint);
+					Math::Coord2DDbl *pointArr = pg->GetPointList(nPoint);
 					UOSInt nPtOfst;
-					UInt32 *ptOfstArr = pg->GetPtOfstList(&nPtOfst);
+					UInt32 *ptOfstArr = pg->GetPtOfstList(nPtOfst);
 					pts = Math::GeometryTool::GetPolygonCenter(nPtOfst, nPoint, ptOfstArr, pointArr);
 					Math::Coord2DDbl szThis;
 					GetCharsSize(img, &szThis, CSTRP(sptr, sptrEnd), fonts[lyrs->style], 0, 0);

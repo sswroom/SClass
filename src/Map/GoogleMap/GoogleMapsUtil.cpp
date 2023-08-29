@@ -62,7 +62,7 @@ Math::Geometry::LineString *Map::GoogleMap::GoogleMapsUtil::ParsePolylineText(co
 		return 0;
 	j = pointList.GetCount() >> 1;
 	NEW_CLASS(pl, Math::Geometry::LineString(4326, j, false, false));
-	ptList = pl->GetPointList(&i);
+	ptList = pl->GetPointList(i);
 	i = 0;
 	while (i < j)
 	{

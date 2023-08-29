@@ -12,7 +12,7 @@ Text::SearchIndexer::SearchIndexer(Text::TextAnalyzer* ta)
 Text::SearchIndexer::~SearchIndexer()
 {
 	UOSInt cnt;
-	Data::ArrayListInt64**vals = this->strIndex.ToArray(&cnt);
+	Data::ArrayListInt64**vals = this->strIndex.ToArray(cnt);
 	while (cnt-- > 0)
 	{
 		DEL_CLASS(vals[cnt]);

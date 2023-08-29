@@ -61,7 +61,7 @@ IO::Stream *IO::HIDInfo::OpenHID()
 	}
 }
 
-OSInt IO::HIDInfo::GetHIDList(Data::ArrayList<HIDInfo*> *hidList)
+OSInt IO::HIDInfo::GetHIDList(NotNullPtr<Data::ArrayList<HIDInfo*>> hidList)
 {
 	UTF8Char sbuff[512];
 	UTF8Char sbuff2[512];

@@ -65,7 +65,7 @@ UInt16 PCIInfo_ReadI16(Text::CStringNN fileName)
 	return (UInt16)(Text::StrToInt32((const UTF8Char*)buff) & 0xffff);
 }
 
-UOSInt IO::PCIInfo::GetPCIList(Data::ArrayList<PCIInfo*> *pciList)
+UOSInt IO::PCIInfo::GetPCIList(NotNullPtr<Data::ArrayList<PCIInfo*>> pciList)
 {
 	ClassData clsData;
 	IO::PCIInfo *pci;

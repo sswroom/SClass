@@ -211,7 +211,7 @@ Bool Exporter::KMLExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 					sb.AppendP(sbuff2, sptr);
 					sb.AppendC(UTF8STRC("</name><styleUrl>#lineLabel</styleUrl><LineString><coordinates>"));
 
-					Math::Coord2DDbl *points = pl->GetPointList(&nPoints);
+					Math::Coord2DDbl *points = pl->GetPointList(nPoints);
 					if (needConv)
 					{
 						Double x;
@@ -317,7 +317,7 @@ Bool Exporter::KMLExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 					sb.AppendP(sbuff2, sptr);
 					sb.AppendC(UTF8STRC("</name><styleUrl>#lineLabel</styleUrl><LineString><coordinates>"));
 
-					Math::Coord2DDbl *points = pl->GetPointList(&nPoints);
+					Math::Coord2DDbl *points = pl->GetPointList(nPoints);
 					if (needConv)
 					{
 						Double x;
@@ -428,8 +428,8 @@ Bool Exporter::KMLExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 					sb.AppendC(UTF8STRC("<tessellate>1</tessellate>"));
 					sb.AppendC(UTF8STRC("<altitudeMode>relativeToGround</altitudeMode>"));
 
-					Math::Coord2DDbl *points = pg->GetPointList(&nPoints);
-					UInt32 *ptOfsts = pg->GetPtOfstList(&nParts);
+					Math::Coord2DDbl *points = pg->GetPointList(nPoints);
+					UInt32 *ptOfsts = pg->GetPtOfstList(nParts);
 
 					if (needConv)
 					{

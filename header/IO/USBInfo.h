@@ -20,7 +20,7 @@ namespace IO
 		UInt16 GetRevision();
 		Text::CString GetDispName();
 
-		static UOSInt GetUSBList(Data::ArrayList<USBInfo*> *usbList);
+		static UOSInt GetUSBList(NotNullPtr<Data::ArrayList<USBInfo*>> usbList);
 	};
 }
 

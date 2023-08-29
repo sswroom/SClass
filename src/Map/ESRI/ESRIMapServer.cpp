@@ -579,12 +579,12 @@ Math::Geometry::Vector2D *Map::ESRI::ESRIMapServer::ParseGeometry(UInt32 srid, T
 			{
 				Math::Geometry::Polygon *pg;
 				NEW_CLASS(pg, Math::Geometry::Polygon(srid, ptOfstArr.GetCount(), ptArr.GetCount(), false, false));
-				UInt32 *ptOfstList = pg->GetPtOfstList(&i);
+				UInt32 *ptOfstList = pg->GetPtOfstList(i);
 				while (i-- > 0)
 				{
 					ptOfstList[i] = ptOfstArr.GetItem(i);
 				}
-				Math::Coord2DDbl *ptList = pg->GetPointList(&i);
+				Math::Coord2DDbl *ptList = pg->GetPointList(i);
 				while (i-- > 0)
 				{
 					ptList[i] = ptArr.GetItem(i);
@@ -629,12 +629,12 @@ Math::Geometry::Vector2D *Map::ESRI::ESRIMapServer::ParseGeometry(UInt32 srid, T
 			{
 				Math::Geometry::Polyline *pl;
 				NEW_CLASS(pl, Math::Geometry::Polyline(srid, ptOfstArr.GetCount(), ptArr.GetCount(), false, false));
-				UInt32 *ptOfstList = pl->GetPtOfstList(&i);
+				UInt32 *ptOfstList = pl->GetPtOfstList(i);
 				while (i-- > 0)
 				{
 					ptOfstList[i] = ptOfstArr.GetItem(i);
 				}
-				Math::Coord2DDbl *ptList = pl->GetPointList(&i);
+				Math::Coord2DDbl *ptList = pl->GetPointList(i);
 				while (i-- > 0)
 				{
 					ptList[i] = ptArr.GetItem(i);

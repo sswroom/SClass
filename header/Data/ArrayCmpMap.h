@@ -28,7 +28,7 @@ namespace Data
 		virtual UOSInt GetCount() const;
 		virtual V GetItem(UOSInt index) const;
 		virtual Bool IsEmpty() const;
-		virtual V *ToArray(UOSInt *objCnt);
+		virtual V *ToArray(OutParam<UOSInt> objCnt);
 		virtual void Clear();
 	};
 
@@ -136,13 +136,13 @@ namespace Data
 		return this->vals.GetCount() == 0;
 	}
 
-	template <class T, class V> V *ArrayCmpMap<T, V>::ToArray(UOSInt *objCnt)
+	template <class T, class V> V *ArrayCmpMap<T, V>::ToArray(OutParam<UOSInt> objCnt)
 	{
 		UOSInt cnt;
-		V *arr = this->vals.GetArray(&cnt);
+		V *arr = this->vals.GetArray(cnt);
 		V *outArr = MemAlloc(V, cnt);
 		MemCopyNO(outArr, arr, sizeof(V) * cnt);
-		*objCnt = cnt;
+		objCnt.Set(cnt);
 		return outArr;
 	}
 

@@ -27,8 +27,8 @@ namespace Net
 
 			static void AppendWiFiTable(NotNullPtr<Text::StringBuilderUTF8> sb, NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Data::ArrayList<Net::WiFiLogFile::LogFileEntry*>> entryList, const Data::Timestamp &scanTime);
 			static void AppendBTTable(NotNullPtr<Text::StringBuilderUTF8> sb, NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<const Data::ReadingList<IO::BTScanLog::ScanRecord3*>> entryList, Bool inRangeOnly);
-			static OSInt __stdcall WiFiLogRSSICompare(void *obj1, void *obj2);
-			static OSInt __stdcall BTLogRSSICompare(void *obj1, void *obj2);
+			static OSInt __stdcall WiFiLogRSSICompare(Net::WiFiLogFile::LogFileEntry *obj1, Net::WiFiLogFile::LogFileEntry *obj2);
+			static OSInt __stdcall BTLogRSSICompare(IO::BTScanLog::ScanRecord3 *obj1, IO::BTScanLog::ScanRecord3 *obj2);
 		public:
 			CapturerWebHandler(Net::WiFiCapturer *wifiCapture, IO::BTCapturer *btCapture, IO::RadioSignalLogger *radioLogger);
 			virtual ~CapturerWebHandler();

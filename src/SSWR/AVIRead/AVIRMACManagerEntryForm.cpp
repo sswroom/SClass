@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "Data/Sort/ArtificialQuickSortC.h"
+#include "Data/Sort/ArtificialQuickSortFunc.h"
 #include "Net/MACInfo.h"
 #include "SSWR/AVIRead/AVIRMACManagerEntryForm.h"
 #include "Text/MyString.h"
@@ -32,11 +32,9 @@ void __stdcall SSWR::AVIRead::AVIRMACManagerEntryForm::OnCancelClicked(void *use
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 
-OSInt __stdcall SSWR::AVIRead::AVIRMACManagerEntryForm::MACCompare(void *obj1, void *obj2)
+OSInt __stdcall SSWR::AVIRead::AVIRMACManagerEntryForm::MACCompare(Net::MACInfo::MACEntry *obj1, Net::MACInfo::MACEntry *obj2)
 {
-	Net::MACInfo::MACEntry *mac1 = (Net::MACInfo::MACEntry *)obj1;
-	Net::MACInfo::MACEntry *mac2 = (Net::MACInfo::MACEntry *)obj2;
-	return Text::StrCompareFastC(mac1->name, mac1->nameLen, mac2->name, mac2->nameLen);
+	return Text::StrCompareFastC(obj1->name, obj1->nameLen, obj2->name, obj2->nameLen);
 }
 
 SSWR::AVIRead::AVIRMACManagerEntryForm::AVIRMACManagerEntryForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, const UInt8 *mac, Text::CString name) : UI::GUIForm(parent, 480, 104, ui)
@@ -80,7 +78,7 @@ SSWR::AVIRead::AVIRMACManagerEntryForm::AVIRMACManagerEntryForm(UI::GUIClientCon
 			macListSort[j++] = &macList[i];;
 		}
 	}
-	ArtificialQuickSort_SortCmp((void**)macListSort, MACCompare, 0, (OSInt)j - 1);
+	Data::Sort::ArtificialQuickSortFunc<Net::MACInfo::MACEntry*>::Sort(macListSort, MACCompare, 0, (OSInt)j - 1);
 	this->cboName->BeginUpdate();
 	lastMAC = 0;
 	i = 0;

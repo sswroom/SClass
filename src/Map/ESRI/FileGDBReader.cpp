@@ -838,8 +838,8 @@ Math::Geometry::Vector2D *Map::ESRI::FileGDBReader::GetVector(UOSInt colIndex)
 			Double *zArr;
 			Double *mArr;
 			NEW_CLASS(pl, Math::Geometry::Polyline(srid, (UOSInt)nParts, (UOSInt)nPoints, (this->tableInfo->geometryFlags & 0x80) != 0, (this->tableInfo->geometryFlags & 0x40) != 0));
-			parts = pl->GetPtOfstList(&i);
-			points = pl->GetPointList(&i);
+			parts = pl->GetPtOfstList(i);
+			points = pl->GetPointList(i);
 			zArr = pl->GetZList(&i);
 			mArr = pl->GetMList(&i);
 			parts[0] = 0;
@@ -923,8 +923,8 @@ Math::Geometry::Vector2D *Map::ESRI::FileGDBReader::GetVector(UOSInt colIndex)
 			}
 			NEW_CLASS(pg, Math::Geometry::Polygon(srid, (UOSInt)nParts, (UOSInt)nPoints, (this->tableInfo->geometryFlags & 0x80) != 0, (this->tableInfo->geometryFlags & 0x40) != 0));
 			UOSInt i;
-			UInt32 *parts = pg->GetPtOfstList(&i);
-			Math::Coord2DDbl *points = pg->GetPointList(&i);
+			UInt32 *parts = pg->GetPtOfstList(i);
+			Math::Coord2DDbl *points = pg->GetPointList(i);
 			Double *zArr = pg->GetZList(&i);
 			Double *mArr = pg->GetMList(&i);
 			parts[0] = 0;
@@ -1014,8 +1014,8 @@ Math::Geometry::Vector2D *Map::ESRI::FileGDBReader::GetVector(UOSInt colIndex)
 			Double *zArr;
 			Double *mArr;
 			NEW_CLASS(pl, Math::Geometry::Polyline(srid, (UOSInt)nParts, (UOSInt)nPoints, (geometryType & 0x80000000) != 0, (geometryType & 0x40000000) != 0));
-			parts = pl->GetPtOfstList(&i);
-			points = pl->GetPointList(&i);
+			parts = pl->GetPtOfstList(i);
+			points = pl->GetPointList(i);
 			zArr = pl->GetZList(&i);
 			mArr = pl->GetMList(&i);
 			parts[0] = 0;
@@ -1120,8 +1120,8 @@ Math::Geometry::Vector2D *Map::ESRI::FileGDBReader::GetVector(UOSInt colIndex)
 			Double *zArr;
 			Double *mArr;
 			NEW_CLASS(pg, Math::Geometry::Polygon(srid, (UOSInt)nParts, (UOSInt)nPoints, (geometryType & 0x80000000) != 0, (geometryType & 0x40000000) != 0));
-			parts = pg->GetPtOfstList(&i);
-			points = pg->GetPointList(&i);
+			parts = pg->GetPtOfstList(i);
+			points = pg->GetPointList(i);
 			zArr = pg->GetZList(&i);
 			mArr = pg->GetMList(&i);
 			parts[0] = 0;

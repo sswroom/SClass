@@ -172,7 +172,7 @@ Map::MapDrawLayer *Map::HKTDVehRestrict::CreateTonnesSignLayer()
 				route = this->routeMap.Get(roadRouteId);
 				if (route)
 				{
-					Math::Coord2DDbl *points = route->pl->GetPointList(&j);
+					Math::Coord2DDbl *points = route->pl->GetPointList(j);
 					if (location <= 0)
 					{
 						ptX = points[0].x;

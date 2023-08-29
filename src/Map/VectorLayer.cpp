@@ -848,7 +848,7 @@ void Map::VectorLayer::OptimizePolylinePath()
 			tmpStr = this->strList.RemoveAt(i);
 			tmpPL = (Math::Geometry::Polyline*)this->vectorList.RemoveAt(i);
 
-			points = tmpPL->GetPointList(&nPoints);
+			points = tmpPL->GetPointList(nPoints);
 			pt = *points;
 			objId = this->GetNearestObjectId(0, pt, &nearPt);
 			if (objId >= 0)

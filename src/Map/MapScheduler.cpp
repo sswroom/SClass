@@ -162,7 +162,7 @@ void Map::MapScheduler::DrawPoint(Math::Geometry::Point *pt)
 void Map::MapScheduler::DrawLineString(Math::Geometry::LineString *pl)
 {
 	UOSInt nPoint;
-	Math::Coord2DDbl *pointArr = pl->GetPointList(&nPoint);
+	Math::Coord2DDbl *pointArr = pl->GetPointList(nPoint);
 	if (this->isFirst)
 	{
 		if (this->map->MapXYToScnXY(pointArr, pointArr, nPoint, Math::Coord2DDbl(0, 0)))
@@ -175,9 +175,9 @@ void Map::MapScheduler::DrawLineString(Math::Geometry::LineString *pl)
 void Map::MapScheduler::DrawPolyline(Math::Geometry::Polyline *pl)
 {
 	UOSInt nPoint;
-	Math::Coord2DDbl *pointArr = pl->GetPointList(&nPoint);
+	Math::Coord2DDbl *pointArr = pl->GetPointList(nPoint);
 	UOSInt nPtOfst;
-	UInt32 *ptOfstArr = pl->GetPtOfstList(&nPtOfst);
+	UInt32 *ptOfstArr = pl->GetPtOfstList(nPtOfst);
 	UOSInt k;
 	UOSInt l;
 	if (this->isFirst)
@@ -215,9 +215,9 @@ void Map::MapScheduler::DrawPolyline(Math::Geometry::Polyline *pl)
 void Map::MapScheduler::DrawPolygon(Math::Geometry::Polygon *pg)
 {
 	UOSInt nPoint;
-	Math::Coord2DDbl *pointArr = pg->GetPointList(&nPoint);
+	Math::Coord2DDbl *pointArr = pg->GetPointList(nPoint);
 	UOSInt nPtOfst;
-	UInt32 *ptOfstArr = pg->GetPtOfstList(&nPtOfst);
+	UInt32 *ptOfstArr = pg->GetPtOfstList(nPtOfst);
 	if (this->isFirst)
 	{
 		UOSInt k;
@@ -245,9 +245,9 @@ void Map::MapScheduler::DrawMultiPolygon(Math::Geometry::MultiPolygon *mpg)
 	{
 		Math::Geometry::Polygon *pg = mpg->GetItem(pgInd);
 		UOSInt nPoint;
-		Math::Coord2DDbl *pointArr = pg->GetPointList(&nPoint);
+		Math::Coord2DDbl *pointArr = pg->GetPointList(nPoint);
 		UOSInt nPtOfst;
-		UInt32 *ptOfstArr = pg->GetPtOfstList(&nPtOfst);
+		UInt32 *ptOfstArr = pg->GetPtOfstList(nPtOfst);
 		if (this->isFirst)
 		{
 			UOSInt k;

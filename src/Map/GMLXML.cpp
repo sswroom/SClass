@@ -140,14 +140,14 @@ Map::MapDrawLayer *Map::GMLXML::ParseFeatureCollection(NotNullPtr<Text::XMLReade
 					if (lyr == 0)
 					{
 						colCnt = nameList.GetCount();
-						ccols = nameList.GetArray(&i);
+						ccols = nameList.GetArray(i);
 						NEW_CLASS(lyr, Map::VectorLayer(layerType, fileName, colCnt, ccols, env.csys, 0, CSTR_NULL));
 					}
 
 					if (colCnt == valList.GetCount())
 					{
 						Text::String **scols;
-						scols = valList.GetArray(&i);
+						scols = valList.GetArray(i);
 						lyr->AddVector(vec, scols);
 					}
 					else
@@ -354,7 +354,7 @@ Math::Geometry::Vector2D *Map::GMLXML::ParseGeometry(NotNullPtr<Text::XMLReader>
 												if (xPts.GetCount() > 0)
 												{
 													NEW_CLASS(pg, Math::Geometry::Polygon(env->srid, 1, xPts.GetCount(), false, false));
-													ptList = pg->GetPointList(&i);
+													ptList = pg->GetPointList(i);
 													while (i-- > 0)
 													{
 														ptList[i].x = xPts.GetItem(i);
@@ -433,7 +433,7 @@ Math::Geometry::Vector2D *Map::GMLXML::ParseGeometry(NotNullPtr<Text::XMLReader>
 					if (xPts.GetCount() > 0)
 					{
 						NEW_CLASS(pl, Math::Geometry::LineString(env->srid, xPts.GetCount(), true, false));
-						ptList = pl->GetPointList(&i);
+						ptList = pl->GetPointList(i);
 						hList = pl->GetZList(&i);
 						while (i-- > 0)
 						{
@@ -522,12 +522,12 @@ Math::Geometry::Vector2D *Map::GMLXML::ParseGeometry(NotNullPtr<Text::XMLReader>
 				if (xPts.GetCount() > 0)
 				{
 					NEW_CLASS(pg, Math::Geometry::Polygon(env->srid, ptOfsts.GetCount(), xPts.GetCount(), zPts.GetCount() == xPts.GetCount(), false));
-					UInt32 *ptOfstList = pg->GetPtOfstList(&i);
+					UInt32 *ptOfstList = pg->GetPtOfstList(i);
 					while (i-- > 0)
 					{
 						ptOfstList[i] = (UInt32)ptOfsts.GetItem(i);
 					}
-					ptList = pg->GetPointList(&i);
+					ptList = pg->GetPointList(i);
 					while (i-- > 0)
 					{
 						ptList[i].x = xPts.GetItem(i);

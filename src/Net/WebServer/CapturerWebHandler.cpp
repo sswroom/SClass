@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/Sort/ArtificialQuickSortC.h"
+#include "Data/Sort/ArtificialQuickSortFunc.h"
 #include "Net/MACInfo.h"
 #include "Net/PacketAnalyzerBluetooth.h"
 #include "Net/WebServer/CapturerWebHandler.h"
@@ -368,7 +368,7 @@ void Net::WebServer::CapturerWebHandler::AppendWiFiTable(NotNullPtr<Text::String
 	{
 		sortList.AddAll(entryList);
 		entryList = sortList;
-		ArtificialQuickSort_SortCmp((void**)sortList.GetArray(&j), WiFiLogRSSICompare, 0, (OSInt)sortList.GetCount() - 1);
+		Data::Sort::ArtificialQuickSortFunc<Net::WiFiLogFile::LogFileEntry*>::Sort(sortList, WiFiLogRSSICompare);
 	}
 
 	i = 0;
@@ -433,7 +433,7 @@ void Net::WebServer::CapturerWebHandler::AppendBTTable(NotNullPtr<Text::StringBu
 	{
 		sortList.AddAll(entryList);
 		entryList = sortList;
-		ArtificialQuickSort_SortCmp((void**)sortList.GetArray(&j), BTLogRSSICompare, 0, (OSInt)sortList.GetCount() - 1);
+		Data::Sort::ArtificialQuickSortFunc<IO::BTScanLog::ScanRecord3*>::Sort(sortList, BTLogRSSICompare);
 	}
 
 	i = 0;
@@ -517,34 +517,32 @@ void Net::WebServer::CapturerWebHandler::AppendBTTable(NotNullPtr<Text::StringBu
 	sb->AppendC(UTF8STRC("</table>"));
 }
 
-OSInt __stdcall Net::WebServer::CapturerWebHandler::WiFiLogRSSICompare(void *obj1, void *obj2)
+OSInt __stdcall Net::WebServer::CapturerWebHandler::WiFiLogRSSICompare(Net::WiFiLogFile::LogFileEntry *obj1, Net::WiFiLogFile::LogFileEntry *obj2)
 {
-	Net::WiFiLogFile::LogFileEntry *log1 = (Net::WiFiLogFile::LogFileEntry*)obj1;
-	Net::WiFiLogFile::LogFileEntry *log2 = (Net::WiFiLogFile::LogFileEntry*)obj2;
-	if (log1->lastRSSI == log2->lastRSSI)
+	if (obj1->lastRSSI == obj2->lastRSSI)
 	{
-		if (log1->ssid == log2->ssid)
+		if (obj1->ssid == obj2->ssid)
 		{
 			return 0;
 		}
 		else
 		{
-			return log1->ssid->CompareTo(log2->ssid.Ptr());
+			return obj1->ssid->CompareTo(obj2->ssid.Ptr());
 		}
 	}
-	else if (log1->lastRSSI == 0)
+	else if (obj1->lastRSSI == 0)
 	{
 		return 1;
 	}
-	else if (log2->lastRSSI == 0)
+	else if (obj2->lastRSSI == 0)
 	{
 		return -1;
 	}
-	else if (log1->lastRSSI > log2->lastRSSI)
+	else if (obj1->lastRSSI > obj2->lastRSSI)
 	{
 		return -1;
 	}
-	else if (log1->lastRSSI < log2->lastRSSI)
+	else if (obj1->lastRSSI < obj2->lastRSSI)
 	{
 		return 1;
 	}
@@ -554,42 +552,40 @@ OSInt __stdcall Net::WebServer::CapturerWebHandler::WiFiLogRSSICompare(void *obj
 	}
 }
 
-OSInt __stdcall Net::WebServer::CapturerWebHandler::BTLogRSSICompare(void *obj1, void *obj2)
+OSInt __stdcall Net::WebServer::CapturerWebHandler::BTLogRSSICompare(IO::BTScanLog::ScanRecord3 *obj1, IO::BTScanLog::ScanRecord3 *obj2)
 {
-	IO::BTScanLog::ScanRecord3 *log1 = (IO::BTScanLog::ScanRecord3*)obj1;
-	IO::BTScanLog::ScanRecord3 *log2 = (IO::BTScanLog::ScanRecord3*)obj2;
-	if (log1->rssi == log2->rssi)
+	if (obj1->rssi == obj2->rssi)
 	{
-		if (log1->name == log2->name)
+		if (obj1->name == obj2->name)
 		{
 			return 0;
 		}
-		else if (log1->name == 0)
+		else if (obj1->name == 0)
 		{
 			return -1;
 		}
-		else if (log2->name == 0)
+		else if (obj2->name == 0)
 		{
 			return 1;
 		}
 		else
 		{
-			return Text::StrCompare(log1->name->v, log2->name->v);
+			return Text::StrCompare(obj1->name->v, obj2->name->v);
 		}
 	}
-	else if (log1->rssi == 0)
+	else if (obj1->rssi == 0)
 	{
 		return 1;
 	}
-	else if (log2->rssi == 0)
+	else if (obj2->rssi == 0)
 	{
 		return -1;
 	}
-	else if (log1->rssi > log2->rssi)
+	else if (obj1->rssi > obj2->rssi)
 	{
 		return -1;
 	}
-	else if (log1->rssi < log2->rssi)
+	else if (obj1->rssi < obj2->rssi)
 	{
 		return 1;
 	}

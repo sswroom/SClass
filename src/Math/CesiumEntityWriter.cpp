@@ -72,7 +72,7 @@ Bool Math::CesiumEntityWriter::ToText(NotNullPtr<Text::StringBuilderUTF8> sb, Ma
 		{
 			Math::Geometry::Polygon *pg = (Math::Geometry::Polygon*)vec;
 			UOSInt nPoint;
-			Math::Coord2DDbl *pointList = pg->GetPointList(&nPoint);
+			Math::Coord2DDbl *pointList = pg->GetPointList(nPoint);
 			UOSInt k;
 			sb->AppendC(UTF8STRC("\tpolygon : {\r\n"));
 			sb->AppendC(UTF8STRC("\t\thierarchy : Cesium.Cartesian3.fromDegreesArray([\r\n"));
@@ -96,7 +96,7 @@ Bool Math::CesiumEntityWriter::ToText(NotNullPtr<Text::StringBuilderUTF8> sb, Ma
 		{
 			Math::Geometry::Polyline *pl = (Math::Geometry::Polyline*)vec;
 			UOSInt nPoint;
-			Math::Coord2DDbl *pointList = pl->GetPointList(&nPoint);
+			Math::Coord2DDbl *pointList = pl->GetPointList(nPoint);
 			UOSInt k;
 			sb->AppendC(UTF8STRC("\tpolyline : {\r\n"));
 			sb->AppendC(UTF8STRC("\t\tpositions : Cesium.Cartesian3.fromDegreesArray([\r\n"));

@@ -1188,7 +1188,7 @@ Int32 Manage::Process::ExecuteProcess(Text::CString cmd, NotNullPtr<Text::String
 	*pptr = 0;
 	args.Add(0);
 	UOSInt argc;
-	UTF8Char **arr = args.GetArray(&argc);
+	UTF8Char **arr = args.GetArray(argc);
 
 	static Int32 Process_Id = 0;
 	UTF8Char tmpFile[512];

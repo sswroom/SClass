@@ -391,7 +391,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFileHdr(NotNullPtr<IO::Str
 						{
 							hasPG = true;
 							NEW_CLASS(pg, Math::Geometry::Polygon(srid, 1, j - 1, false, false));
-							ptList = pg->GetPointList(&k);
+							ptList = pg->GetPointList(k);
 							k = 0;
 							while (k < j - 1)
 							{
@@ -405,7 +405,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFileHdr(NotNullPtr<IO::Str
 						{
 							hasPL = true;
 							NEW_CLASS(pl, Math::Geometry::LineString(srid, j, true, false));
-							ptList = pl->GetPointList(&k);
+							ptList = pl->GetPointList(k);
 							hList = pl->GetZList(&k);
 							k = 0;
 							while (k < j)
@@ -448,7 +448,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFileHdr(NotNullPtr<IO::Str
 			{
 				hasPG = true;
 				NEW_CLASS(pg, Math::Geometry::Polygon(srid, 1, j - 1, false, false));
-				ptList = pg->GetPointList(&k);
+				ptList = pg->GetPointList(k);
 				k = 0;
 				while (k < j - 1)
 				{
@@ -462,7 +462,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFileHdr(NotNullPtr<IO::Str
 			{
 				hasPL = true;
 				NEW_CLASS(pl, Math::Geometry::LineString(srid, j, true, false));
-				ptList = pl->GetPointList(&k);
+				ptList = pl->GetPointList(k);
 				hList = pl->GetZList(&k);
 				k = 0;
 				while (k < j)

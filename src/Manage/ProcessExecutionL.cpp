@@ -63,7 +63,7 @@ UOSInt Manage::ProcessExecution::NewProcess(Text::CStringNN cmdLine)
 	*pptr = 0;
 	args.Add(0);
 	UOSInt argc;
-	UTF8Char **arr = args.GetArray(&argc);
+	UTF8Char **arr = args.GetArray(argc);
 
 	if (pipe(clsData->in) != 0)
 	{

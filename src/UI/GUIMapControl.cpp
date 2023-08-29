@@ -441,7 +441,7 @@ void UI::GUIMapControl::DrawScnObjects(Media::DrawImage *img, Math::Coord2DDbl o
 			Math::Geometry::LineString *pl = (Math::Geometry::LineString*)vec;
 			Media::DrawPen *p = img->NewPenARGB(0xffff0000, 3, 0, 0);
 			UOSInt nPoint;
-			Math::Coord2DDbl *points = pl->GetPointList(&nPoint);
+			Math::Coord2DDbl *points = pl->GetPointList(nPoint);
 			Math::Coord2DDbl *dpoints = MemAllocA(Math::Coord2DDbl, nPoint);
 			view->MapXYToScnXY(points, dpoints, nPoint, ofst);
 			img->DrawPolyline(dpoints, nPoint, p);
@@ -454,8 +454,8 @@ void UI::GUIMapControl::DrawScnObjects(Media::DrawImage *img, Math::Coord2DDbl o
 			Media::DrawPen *p = img->NewPenARGB(0xffff0000, 3, 0, 0);
 			UOSInt nPoint;
 			UOSInt nPtOfst;
-			Math::Coord2DDbl *points = pl->GetPointList(&nPoint);
-			UInt32 *ptOfsts = pl->GetPtOfstList(&nPtOfst);
+			Math::Coord2DDbl *points = pl->GetPointList(nPoint);
+			UInt32 *ptOfsts = pl->GetPtOfstList(nPtOfst);
 			UOSInt i;
 			Math::Coord2DDbl *dpoints = MemAllocA(Math::Coord2DDbl, nPoint);
 			UOSInt lastCnt;
@@ -481,8 +481,8 @@ void UI::GUIMapControl::DrawScnObjects(Media::DrawImage *img, Math::Coord2DDbl o
 			Media::DrawBrush *b = img->NewBrushARGB(0x403f0000);
 			UOSInt nPoint;
 			UOSInt nPtOfst;
-			Math::Coord2DDbl *points = pg->GetPointList(&nPoint);
-			UInt32 *ptOfsts = pg->GetPtOfstList(&nPtOfst);
+			Math::Coord2DDbl *points = pg->GetPointList(nPoint);
+			UInt32 *ptOfsts = pg->GetPtOfstList(nPtOfst);
 			Math::Coord2DDbl *dpoints = MemAllocA(Math::Coord2DDbl, nPoint);
 			UInt32 *myPtCnts = MemAlloc(UInt32, nPtOfst);
 			view->MapXYToScnXY(points, dpoints, nPoint, ofst);
@@ -511,8 +511,8 @@ void UI::GUIMapControl::DrawScnObjects(Media::DrawImage *img, Math::Coord2DDbl o
 			while (npg-- > 0)
 			{
 				Math::Geometry::Polygon *pg = mpg->GetItem(npg);
-				Math::Coord2DDbl *points = pg->GetPointList(&nPoint);
-				UInt32 *ptOfsts = pg->GetPtOfstList(&nPtOfst);
+				Math::Coord2DDbl *points = pg->GetPointList(nPoint);
+				UInt32 *ptOfsts = pg->GetPtOfstList(nPtOfst);
 				Math::Coord2DDbl *dpoints = MemAllocA(Math::Coord2DDbl, nPoint);
 				UInt32 *myPtCnts = MemAlloc(UInt32, nPtOfst);
 				view->MapXYToScnXY(points, dpoints, nPoint, ofst);

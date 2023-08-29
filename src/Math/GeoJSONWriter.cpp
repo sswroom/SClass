@@ -77,8 +77,8 @@ Bool Math::GeoJSONWriter::ToText(NotNullPtr<Text::StringBuilderUTF8> sb, Math::G
 			Math::Geometry::Polygon *pg = (Math::Geometry::Polygon*)vec;
 			UOSInt nPtOfst;
 			UOSInt nPoint;
-			UInt32 *ptOfstList = pg->GetPtOfstList(&nPtOfst);
-			Math::Coord2DDbl *pointList = pg->GetPointList(&nPoint);
+			UInt32 *ptOfstList = pg->GetPtOfstList(nPtOfst);
+			Math::Coord2DDbl *pointList = pg->GetPointList(nPoint);
 			Math::Coord2DDbl initPt;
 			UOSInt i = 0;
 			UOSInt j = 0;
@@ -137,8 +137,8 @@ Bool Math::GeoJSONWriter::ToText(NotNullPtr<Text::StringBuilderUTF8> sb, Math::G
 			Math::Geometry::Polyline *pg = (Math::Geometry::Polyline*)vec;
 			UOSInt nPtOfst;
 			UOSInt nPoint;
-			UInt32 *ptOfstList = pg->GetPtOfstList(&nPtOfst);
-			Math::Coord2DDbl *pointList = pg->GetPointList(&nPoint);
+			UInt32 *ptOfstList = pg->GetPtOfstList(nPtOfst);
+			Math::Coord2DDbl *pointList = pg->GetPointList(nPoint);
 			if (nPtOfst == 1)
 			{
 				sb->AppendC(UTF8STRC("\t\"geometry\": {\r\n"));
@@ -243,8 +243,8 @@ Bool Math::GeoJSONWriter::ToText(NotNullPtr<Text::StringBuilderUTF8> sb, Math::G
 				Math::Geometry::Polygon *pg = mpg->GetItem(pgIndex);
 				UOSInt nPtOfst;
 				UOSInt nPoint;
-				UInt32 *ptOfstList = pg->GetPtOfstList(&nPtOfst);
-				Math::Coord2DDbl *pointList = pg->GetPointList(&nPoint);
+				UInt32 *ptOfstList = pg->GetPtOfstList(nPtOfst);
+				Math::Coord2DDbl *pointList = pg->GetPointList(nPoint);
 				Math::Coord2DDbl initPt;
 				UOSInt i = 0;
 				UOSInt j = 0;
@@ -379,8 +379,8 @@ Bool Math::GeoJSONWriter::ToGeometry(NotNullPtr<Text::StringBuilderUTF8> sb, Mat
 			Math::Geometry::Polygon *pg = (Math::Geometry::Polygon*)vec;
 			UOSInt nPtOfst;
 			UOSInt nPoint;
-			UInt32 *ptOfstList = pg->GetPtOfstList(&nPtOfst);
-			Math::Coord2DDbl *pointList = pg->GetPointList(&nPoint);
+			UInt32 *ptOfstList = pg->GetPtOfstList(nPtOfst);
+			Math::Coord2DDbl *pointList = pg->GetPointList(nPoint);
 			Math::Coord2DDbl initPt;
 			UOSInt i = 0;
 			UOSInt j = 0;
@@ -439,8 +439,8 @@ Bool Math::GeoJSONWriter::ToGeometry(NotNullPtr<Text::StringBuilderUTF8> sb, Mat
 			Math::Geometry::Polyline *pg = (Math::Geometry::Polyline*)vec;
 			UOSInt nPtOfst;
 			UOSInt nPoint;
-			UInt32 *ptOfstList = pg->GetPtOfstList(&nPtOfst);
-			Math::Coord2DDbl *pointList = pg->GetPointList(&nPoint);
+			UInt32 *ptOfstList = pg->GetPtOfstList(nPtOfst);
+			Math::Coord2DDbl *pointList = pg->GetPointList(nPoint);
 			if (nPtOfst == 1)
 			{
 				sb->AppendUTF8Char('{');

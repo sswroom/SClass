@@ -86,7 +86,7 @@ Bool __stdcall SSWR::AVIRead::AVIRANPRForm::OnImgDown(void *userObj, Math::Coord
 			UOSInt i;
 			me->selectMode = ActionType::None;
 			me->lblSelStatus->SetText(CSTR(""));
-			me->anpr.ParseImageQuad(me->currImg, Math::Quadrilateral::FromPolygon(me->points.GetArray(&i)));
+			me->anpr.ParseImageQuad(me->currImg, Math::Quadrilateral::FromPolygon(me->points.GetArray(i)));
 		}
 		else
 		{

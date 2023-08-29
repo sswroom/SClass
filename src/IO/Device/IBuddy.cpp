@@ -9,7 +9,7 @@
 UOSInt IO::Device::IBuddy::GetNumDevice()
 {
 	Data::ArrayList<IO::HIDInfo *> hidList;
-	IO::HIDInfo::GetHIDList(&hidList);
+	IO::HIDInfo::GetHIDList(hidList);
 	IO::HIDInfo *hid;
 	UOSInt ret = 0;
 	UOSInt i = 0;
@@ -31,7 +31,7 @@ IO::Device::IBuddy::IBuddy(UOSInt devNo)
 {
 	this->stm = 0;
 	Data::ArrayList<IO::HIDInfo *> hidList;
-	IO::HIDInfo::GetHIDList(&hidList);
+	IO::HIDInfo::GetHIDList(hidList);
 	IO::HIDInfo *hid;
 	UOSInt ret = 0;
 	UOSInt i = 0;

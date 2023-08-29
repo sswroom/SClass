@@ -44,7 +44,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISRandomLocForm::OnMouseUp(void *userObj, Mat
 		Math::Geometry::Polygon *pg;
 		NEW_CLASS(pg, Math::Geometry::Polygon(me->navi->GetSRID(), 1, 5, false, false));
 		UOSInt nPoints;
-		Math::Coord2DDbl *ptList = pg->GetPointList(&nPoints);
+		Math::Coord2DDbl *ptList = pg->GetPointList(nPoints);
 		ptList[0] = me->selPt1;
 		ptList[1].x = me->selPt2.x;
 		ptList[1].y = me->selPt1.y;
@@ -84,7 +84,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISRandomLocForm::OnMouseMove(void *userObj, M
 		Math::Geometry::Polygon *pg;
 		NEW_CLASS(pg, Math::Geometry::Polygon(me->navi->GetSRID(), 1, 5, false, false));
 		UOSInt nPoints;
-		Math::Coord2DDbl *ptList = pg->GetPointList(&nPoints);
+		Math::Coord2DDbl *ptList = pg->GetPointList(nPoints);
 		ptList[0] = mapPt1;
 		ptList[1].x = mapPt2.x;
 		ptList[1].y = mapPt1.y;

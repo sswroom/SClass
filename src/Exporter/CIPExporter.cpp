@@ -166,14 +166,14 @@ Bool Exporter::CIPExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 		{
 			Math::Geometry::PointOfstCollection *ptOfst = (Math::Geometry::PointOfstCollection*)vec;
 			UOSInt nPtOfst;
-			UInt32 *ptOfstArr = ptOfst->GetPtOfstList(&nPtOfst);
+			UInt32 *ptOfstArr = ptOfst->GetPtOfstList(nPtOfst);
 			WriteUInt32(&buff[4], (UInt32)nPtOfst);
 			stm->Write(buff, 8);
 			stm->Write((UInt8*)ptOfstArr, nPtOfst * 4);
 			stmPos += 8 + nPtOfst * 4;
 
 			UOSInt nPoint;
-			Math::Coord2DDbl *pointArr = ptOfst->GetPointList(&nPoint);
+			Math::Coord2DDbl *pointArr = ptOfst->GetPointList(nPoint);
 			Int32 *ptArr = MemAlloc(Int32, nPoint << 1);
 			j = nPoint;
 			while (j-- > 0)

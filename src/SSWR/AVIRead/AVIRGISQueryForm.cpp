@@ -72,7 +72,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseUp(void *userObj, Math::C
 		}
 		sess = me->lyr->BeginGetObject();
 		Data::ArrayList<Map::MapDrawLayer::ObjectInfo*> objList;
-		me->lyr->GetNearObjects(sess, &objList, mapPt, mapPt2.x - mapPt.x);
+		me->lyr->GetNearObjects(sess, objList, mapPt, mapPt2.x - mapPt.x);
 		if (!me->layerNames)
 		{
 			me->layerNames = true;
@@ -127,7 +127,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseUp(void *userObj, Math::C
 			me->cboObj->SetSelectedIndex(0);
 			me->SetQueryItem(0);
 			me->lyr->ReleaseNameArr(nameArr);
-			me->lyr->FreeObjects(&objList);
+			me->lyr->FreeObjects(objList);
 			me->navi->SetSelectedVectors(me->queryVecList);
 		}
 		me->lyr->EndGetObject(sess);

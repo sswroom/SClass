@@ -19,7 +19,7 @@ namespace Media
 		Media::MediaPlayerInterface *iface;
 		Bool autoRelease;
 
-		static OSInt __stdcall VideoFileCompare(void *file1, void *file2);
+		static OSInt __stdcall VideoFileCompare(VideoFileInfo *file1, VideoFileInfo *file2);
 	public:
 		MediaPlayerWebInterface(Media::MediaPlayerInterface *iface, Bool autoRelease);
 		virtual ~MediaPlayerWebInterface();

@@ -206,8 +206,8 @@ Bool Exporter::SHPExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 			if (pl)
 			{
 				box = pl->GetBounds();
-				ptOfsts = pl->GetPtOfstList(&nPtOfst);
-				points = pl->GetPointList(&nPoint);
+				ptOfsts = pl->GetPtOfstList(nPtOfst);
+				points = pl->GetPointList(nPoint);
 				WriteUInt32(&nvals[0], (UInt32)nPtOfst);
 				WriteUInt32(&nvals[4], (UInt32)nPoint);
 
@@ -265,8 +265,8 @@ Bool Exporter::SHPExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 		{
 			pl = (Math::Geometry::Polyline*)layer->GetNewVectorById(sess, objIds->GetItem(i));
 			box = pl->GetBounds();
-			ptOfsts = pl->GetPtOfstList(&nPtOfst);
-			points = pl->GetPointList(&nPoint);
+			ptOfsts = pl->GetPtOfstList(nPtOfst);
+			points = pl->GetPointList(nPoint);
 			alts = pl->GetZList(&nPoint);
 			WriteUInt32(&nvals[0], (UInt32)nPtOfst);
 			WriteUInt32(&nvals[4], (UInt32)nPoint);
@@ -340,8 +340,8 @@ Bool Exporter::SHPExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 		{
 			pg = (Math::Geometry::Polygon*)layer->GetNewVectorById(sess, objIds->GetItem(i));
 			box = pg->GetBounds();
-			ptOfsts = pg->GetPtOfstList(&nPtOfst);
-			points = pg->GetPointList(&nPoint);
+			ptOfsts = pg->GetPtOfstList(nPtOfst);
+			points = pg->GetPointList(nPoint);
 			WriteUInt32(&nvals[0], (UInt32)nPtOfst);
 			WriteUInt32(&nvals[4], (UInt32)nPoint);
 

@@ -45,8 +45,8 @@ namespace Data
 		virtual T Get(Text::CString key) const;
 		virtual T Remove(Text::CString key);
 		virtual Bool IsEmpty() const;
-		virtual T *ToArray(UOSInt *objCnt);
-		virtual Text::CString *ToNameArray(UOSInt *objCnt);
+		virtual T *ToArray(OutParam<UOSInt> objCnt);
+		virtual Text::CString *ToNameArray(OutParam<UOSInt> objCnt);
 		virtual void Clear();
 	};
 
@@ -499,7 +499,7 @@ namespace Data
 		return this->rootNode == 0;
 	}
 
-	template <class T> T *BTreeUTF8Map<T>::ToArray(UOSInt *objCnt)
+	template <class T> T *BTreeUTF8Map<T>::ToArray(OutParam<UOSInt> objCnt)
 	{
 		UOSInt cnt = 0;
 		if (this->rootNode)
@@ -509,11 +509,11 @@ namespace Data
 		T *outArr = MemAlloc(T, cnt);
 		T *tmpArr = outArr;
 		FillArr(&tmpArr, this->rootNode);
-		*objCnt = cnt;
+		objCnt.Set(cnt);
 		return outArr;
 	}
 
-	template <class T> Text::CString *BTreeUTF8Map<T>::ToNameArray(UOSInt *objCnt)
+	template <class T> Text::CString *BTreeUTF8Map<T>::ToNameArray(OutParam<UOSInt> objCnt)
 	{
 		UOSInt cnt = 0;
 		if (this->rootNode)
@@ -523,7 +523,7 @@ namespace Data
 		Text::CString *outArr = MemAlloc(Text::CString, cnt);
 		Text::CString *tmpArr = outArr;
 		FillNameArr(&tmpArr, this->rootNode);
-		*objCnt = cnt;
+		objCnt.Set(cnt);
 		return outArr;
 	}
 

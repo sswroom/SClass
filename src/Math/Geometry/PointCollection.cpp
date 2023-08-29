@@ -32,7 +32,7 @@ Math::Coord2DDbl Math::Geometry::PointCollection::GetCenter() const
 	Double minX;
 	Double minY;
 	Double v;
-	points = this->GetPointListRead(&nPoints);
+	points = this->GetPointListRead(nPoints);
 	if (nPoints <= 0)
 	{
 		return Math::Coord2DDbl(0, 0);

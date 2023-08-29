@@ -84,8 +84,8 @@ void Net::WebServer::RESTfulHandler::AppendVector(Text::JSONBuilder *json, Text:
 				json->ObjectAddStr(CSTR("type"), CSTR("Polyline"));
 			}
 			json->ObjectBeginArray(CSTR("coordinates"));
-			ptOfsts = pg->GetPtOfstList(&nPtOfst);
-			points = pg->GetPointList(&nPoint);
+			ptOfsts = pg->GetPtOfstList(nPtOfst);
+			points = pg->GetPointList(nPoint);
 			j = ptOfsts[0];
 			i = 0;
 			while (i < nPtOfst)

@@ -370,7 +370,7 @@ Math::Geometry::Vector2D *Map::GPSTrack::GetNewVectorById(Map::GetObjectSess *se
 				Math::Geometry::LineString *pl;
 
 				NEW_CLASS(pl, Math::Geometry::LineString(4326, j = this->currRecs.GetCount(), true, false));
-				ptPtr = pl->GetPointList(&j);
+				ptPtr = pl->GetPointList(j);
 				altList = pl->GetZList(&j);
 				i = 0;
 				while (i < j)
@@ -396,7 +396,7 @@ Math::Geometry::Vector2D *Map::GPSTrack::GetNewVectorById(Map::GetObjectSess *se
 			{
 				Math::Geometry::LineString *pl;
 				NEW_CLASS(pl, Math::Geometry::LineString(4326, j = this->currRecs.GetCount(), false, false));
-				ptPtr = pl->GetPointList(&j);
+				ptPtr = pl->GetPointList(j);
 				i = 0;
 				while (i < j)
 				{
@@ -434,7 +434,7 @@ Math::Geometry::Vector2D *Map::GPSTrack::GetNewVectorById(Map::GetObjectSess *se
 			Math::Geometry::LineString *pl;
 
 			NEW_CLASS(pl, Math::Geometry::LineString(4326, track->nRecords, true, false));
-			ptPtr = pl->GetPointList(&j);
+			ptPtr = pl->GetPointList(j);
 			altList = pl->GetZList(&j);
 			i = 0;
 			while (i < j)
@@ -460,7 +460,7 @@ Math::Geometry::Vector2D *Map::GPSTrack::GetNewVectorById(Map::GetObjectSess *se
 			Math::Geometry::LineString *pl;
 
 			NEW_CLASS(pl, Math::Geometry::LineString(4326, track->nRecords, false, false));
-			ptPtr = pl->GetPointList(&j);
+			ptPtr = pl->GetPointList(j);
 			i = 0;
 			while (i < j)
 			{
@@ -600,9 +600,9 @@ void Map::GPSTrack::NewTrack()
 			i++;
 		}
 		rec->extraData = MemAlloc(const UInt8 *, rec->nRecords);
-		MemCopyNO(rec->extraData, this->currExtraData.GetArray(&i), sizeof(const UInt8*) * rec->nRecords);
+		MemCopyNO(rec->extraData, this->currExtraData.GetArray(i), sizeof(const UInt8*) * rec->nRecords);
 		rec->extraDataSize = MemAlloc(UOSInt, rec->nRecords);
-		MemCopyNO(rec->extraDataSize, this->currExtraSize.GetArray(&i), sizeof(UOSInt) * rec->nRecords);
+		MemCopyNO(rec->extraDataSize, this->currExtraSize.GetArray(i), sizeof(UOSInt) * rec->nRecords);
 		this->currRecs.Clear();
 		this->currTimes.Clear();
 		this->currExtraData.Clear();

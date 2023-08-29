@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "Data/Sort/ArtificialQuickSort.h"
+#include "Data/Sort/ArtificialQuickSortFunc.h"
 #include "IO/DeviceDB.h"
 #include "IO/FileStream.h"
 #include "Math/Math.h"
@@ -57,32 +57,30 @@ void __stdcall SSWR::AVIRead::AVIRUSBDeviceForm::OnDevicesSelChg(void *userObj)
 	}
 }
 
-OSInt __stdcall SSWR::AVIRead::AVIRUSBDeviceForm::ItemCompare(void *item1, void *item2)
+OSInt __stdcall SSWR::AVIRead::AVIRUSBDeviceForm::ItemCompare(IO::USBInfo *item1, IO::USBInfo *item2)
 {
-	IO::USBInfo *usb1 = (IO::USBInfo*)item1;
-	IO::USBInfo *usb2 = (IO::USBInfo*)item2;
-	if (usb1->GetVendorId() > usb2->GetVendorId())
+	if (item1->GetVendorId() > item2->GetVendorId())
 	{
 		return 1;
 	}
-	else if (usb1->GetVendorId() < usb2->GetVendorId())
+	else if (item1->GetVendorId() < item2->GetVendorId())
 	{
 		return -1;
 	}
-	if (usb1->GetProductId() > usb2->GetProductId())
+	if (item1->GetProductId() > item2->GetProductId())
 	{
 		return 1;
 	}
-	else if (usb1->GetProductId() < usb2->GetProductId())
+	else if (item1->GetProductId() < item2->GetProductId())
 	{
 		return -1;
 	}
 
-	if (usb1->GetRevision() > usb2->GetRevision())
+	if (item1->GetRevision() > item2->GetRevision())
 	{
 		return 1;
 	}
-	else if (usb1->GetRevision() < usb2->GetRevision())
+	else if (item1->GetRevision() < item2->GetRevision())
 	{
 		return -1;
 	}
@@ -144,17 +142,14 @@ SSWR::AVIRead::AVIRUSBDeviceForm::AVIRUSBDeviceForm(UI::GUIClientControl *parent
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 
-	NEW_CLASS(this->usbList, Data::ArrayList<IO::USBInfo*>());
-
 	IO::USBInfo::GetUSBList(this->usbList);
-	void **arr = (void**)this->usbList->GetArray(&j);
-	ArtificialQuickSort_SortCmp(arr, ItemCompare, 0, (OSInt)j - 1);
+	Data::Sort::ArtificialQuickSortFunc<IO::USBInfo*>::Sort(this->usbList, ItemCompare);
 	
 	i = 0;
-	j = this->usbList->GetCount();
+	j = this->usbList.GetCount();
 	while (i < j)
 	{
-		usb = this->usbList->GetItem(i);
+		usb = this->usbList.GetItem(i);
 		sptr = Text::StrHexVal16(sbuff, usb->GetVendorId());
 		*sptr++ = ':';
 		sptr = Text::StrHexVal16(sptr, usb->GetProductId());
@@ -166,13 +161,12 @@ SSWR::AVIRead::AVIRUSBDeviceForm::AVIRUSBDeviceForm(UI::GUIClientControl *parent
 SSWR::AVIRead::AVIRUSBDeviceForm::~AVIRUSBDeviceForm()
 {
 	IO::USBInfo *usb;
-	UOSInt i = this->usbList->GetCount();
+	UOSInt i = this->usbList.GetCount();
 	while (i-- > 0)
 	{
-		usb = this->usbList->GetItem(i);
+		usb = this->usbList.GetItem(i);
 		DEL_CLASS(usb);
 	}
-	DEL_CLASS(this->usbList);
 }
 
 void SSWR::AVIRead::AVIRUSBDeviceForm::OnMonitorChanged()

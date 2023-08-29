@@ -39,7 +39,7 @@ namespace Data
 		void CopyItems(UOSInt destIndex, UOSInt srcIndex, UOSInt count);
 		UOSInt GetRange(T *outArr, UOSInt index, UOSInt cnt) const;
 		UOSInt RemoveRange(UOSInt index, UOSInt cnt);
-		virtual T *GetArray(UOSInt *arraySize) const;
+		virtual T *GetArray(OutParam<UOSInt> arraySize) const;
 		T Pop();
 	};
 
@@ -332,9 +332,9 @@ namespace Data
 		return endIndex - startIndex;
 	}
 
-	template <class T> T* ArrayListA<T>::GetArray(UOSInt *arraySize) const
+	template <class T> T* ArrayListA<T>::GetArray(OutParam<UOSInt> arraySize) const
 	{
-		*arraySize = this->objCnt;
+		arraySize.Set(this->objCnt);
 		return this->arr;
 	}
 	

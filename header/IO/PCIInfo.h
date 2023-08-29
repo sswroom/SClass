@@ -18,7 +18,7 @@ namespace IO
 		UInt16 GetProductId();
 		Text::CString GetDispName();
 
-		static UOSInt GetPCIList(Data::ArrayList<PCIInfo*> *pciList);
+		static UOSInt GetPCIList(NotNullPtr<Data::ArrayList<PCIInfo*>> pciList);
 	};
 }
 

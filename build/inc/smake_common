@@ -1515,6 +1515,7 @@ Data/Sort/ArtificialQuickSort.h: ../../src/Data/Sort/ArtificialQuickSort.cpp
 Data/Sort/ArtificialQuickSortC.h: ../../src/Data/Sort/ArtificialQuickSort_CPP.cpp
 @ArtificialQuickSort_CPP.o
 Data/Sort/ArtificialQuickSortCmp.h:
+Data/Sort/ArtificialQuickSortFunc.h:
 Data/Sort/BitonicSort.h: ../../src/Data/Sort/BitonicSort.cpp
 @BitonicSort.o
 Data/Sort/BitonicSortC.h:

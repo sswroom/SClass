@@ -16,7 +16,7 @@ namespace SSWR
 		{
 		private:
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
-			Data::ArrayList<IO::SDCardInfo*> *sdCardList;
+			Data::ArrayList<IO::SDCardInfo*> sdCardList;
 
 			UI::GUIListBox *lbDevices;
 			UI::GUIHSplitter *hspDevices;
@@ -49,7 +49,7 @@ namespace SSWR
 			UI::GUITextBox *txtCapacity;
 			
 			static void __stdcall OnDevicesSelChg(void *userObj);
-			static OSInt __stdcall ItemCompare(void *item1, void *item2);
+			static OSInt __stdcall ItemCompare(IO::SDCardInfo *item1, IO::SDCardInfo *item2);
 		public:
 			AVIRSDCardForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRSDCardForm();

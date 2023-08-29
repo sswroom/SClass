@@ -56,7 +56,7 @@ namespace Map
 		OSInt iconSpotY;
 		Int32 flags;
 
-		static OSInt __stdcall ObjectCompare(void *obj1, void *obj2);
+		static OSInt __stdcall ObjectCompare(ObjectInfo *obj1, ObjectInfo *obj2);
 	public:
 		enum class MixedData
 		{
@@ -146,8 +146,8 @@ namespace Map
 		virtual Bool QueryInfos(Math::Coord2DDbl coord, Data::ArrayList<Math::Geometry::Vector2D*> *vecList, Data::ArrayList<UOSInt> *valueOfstList, Data::ArrayListNN<Text::String> *nameList, Data::ArrayList<Text::String*> *valueList);
 
 		Int64 GetNearestObjectId(GetObjectSess *session, Math::Coord2DDbl pt, Math::Coord2DDbl *nearPt);
-		OSInt GetNearObjects(GetObjectSess *session, Data::ArrayList<ObjectInfo*> *objList, Math::Coord2DDbl pt, Double maxDist); //return nearest object if no object within distance
-		void FreeObjects(Data::ArrayList<ObjectInfo*> *objList);
+		OSInt GetNearObjects(GetObjectSess *session, NotNullPtr<Data::ArrayList<ObjectInfo*>> objList, Math::Coord2DDbl pt, Double maxDist); //return nearest object if no object within distance
+		void FreeObjects(NotNullPtr<Data::ArrayList<ObjectInfo*>> objList);
 		Map::VectorLayer *CreateEditableLayer();
 
 		Text::SearchIndexer *CreateSearchIndexer(Text::TextAnalyzer *ta, UOSInt strIndex);

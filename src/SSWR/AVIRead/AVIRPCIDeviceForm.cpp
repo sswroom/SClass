@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "Data/Sort/ArtificialQuickSort.h"
+#include "Data/Sort/ArtificialQuickSortFunc.h"
 #include "IO/DeviceDB.h"
 #include "IO/FileStream.h"
 #include "Math/Math.h"
@@ -54,23 +54,21 @@ void __stdcall SSWR::AVIRead::AVIRPCIDeviceForm::OnDevicesSelChg(void *userObj)
 	}
 }
 
-OSInt __stdcall SSWR::AVIRead::AVIRPCIDeviceForm::ItemCompare(void *item1, void *item2)
+OSInt __stdcall SSWR::AVIRead::AVIRPCIDeviceForm::ItemCompare(IO::PCIInfo *item1, IO::PCIInfo *item2)
 {
-	IO::PCIInfo *pci1 = (IO::PCIInfo*)item1;
-	IO::PCIInfo *pci2 = (IO::PCIInfo*)item2;
-	if (pci1->GetVendorId() > pci2->GetVendorId())
+	if (item1->GetVendorId() > item2->GetVendorId())
 	{
 		return 1;
 	}
-	else if (pci1->GetVendorId() < pci2->GetVendorId())
+	else if (item1->GetVendorId() < item2->GetVendorId())
 	{
 		return -1;
 	}
-	if (pci1->GetProductId() > pci2->GetProductId())
+	if (item1->GetProductId() > item2->GetProductId())
 	{
 		return 1;
 	}
-	else if (pci1->GetProductId() < pci2->GetProductId())
+	else if (item1->GetProductId() < item2->GetProductId())
 	{
 		return -1;
 	}
@@ -127,17 +125,14 @@ SSWR::AVIRead::AVIRPCIDeviceForm::AVIRPCIDeviceForm(UI::GUIClientControl *parent
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 
-	NEW_CLASS(this->pciList, Data::ArrayList<IO::PCIInfo*>());
-
 	IO::PCIInfo::GetPCIList(this->pciList);
-	void **arr = (void**)this->pciList->GetArray(&j);
-	ArtificialQuickSort_SortCmp(arr, ItemCompare, 0, (OSInt)j - 1);
+	Data::Sort::ArtificialQuickSortFunc<IO::PCIInfo*>::Sort(this->pciList, ItemCompare);
 	
 	i = 0;
-	j = this->pciList->GetCount();
+	j = this->pciList.GetCount();
 	while (i < j)
 	{
-		pci = this->pciList->GetItem(i);
+		pci = this->pciList.GetItem(i);
 		sptr = Text::StrHexVal16(sbuff, pci->GetVendorId());
 		*sptr++ = ':';
 		sptr = Text::StrHexVal16(sptr, pci->GetProductId());
@@ -149,13 +144,12 @@ SSWR::AVIRead::AVIRPCIDeviceForm::AVIRPCIDeviceForm(UI::GUIClientControl *parent
 SSWR::AVIRead::AVIRPCIDeviceForm::~AVIRPCIDeviceForm()
 {
 	IO::PCIInfo *pci;
-	UOSInt i = this->pciList->GetCount();
+	UOSInt i = this->pciList.GetCount();
 	while (i-- > 0)
 	{
-		pci = this->pciList->GetItem(i);
+		pci = this->pciList.GetItem(i);
 		DEL_CLASS(pci);
 	}
-	DEL_CLASS(this->pciList);
 }
 
 void SSWR::AVIRead::AVIRPCIDeviceForm::OnMonitorChanged()

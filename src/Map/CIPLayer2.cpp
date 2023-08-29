@@ -280,7 +280,7 @@ UOSInt Map::CIPLayer2::GetAllObjectIds(Data::ArrayListInt64 *outArr, NameArray *
 		}
 		UOSInt arrSize;
 		Int64 lastId;
-		Int64 *arr = outArr->GetArray(&arrSize);
+		Int64 *arr = outArr->GetArray(arrSize);
 		ArtificialQuickSort_SortInt64(arr, 0, (OSInt)arrSize - 1);
 		if (outArr->GetCount() > 0)
 		{
@@ -445,7 +445,7 @@ UOSInt Map::CIPLayer2::GetObjectIds(Data::ArrayListInt64 *outArr, NameArray **na
 		UOSInt arrSize;
 		UOSInt k;
 		Int64 lastId;
-		Int32 *arr = tmpArr->GetArray(&arrSize);
+		Int32 *arr = tmpArr->GetArray(arrSize);
 		ArtificialQuickSort_SortInt32(arr, 0, (OSInt)arrSize - 1);
 		if (tmpArr->GetCount() > 0)
 		{
@@ -747,10 +747,10 @@ Math::Geometry::Vector2D *Map::CIPLayer2::GetNewVectorById(GetObjectSess *sessio
 		{
 			NEW_CLASS(ptColl, Math::Geometry::Polygon(4326, fobj->nPtOfst, fobj->nPoint, false, false));
 		}
-		tmpPtOfsts = ptColl->GetPtOfstList(&i);
+		tmpPtOfsts = ptColl->GetPtOfstList(i);
 		MemCopyNO(tmpPtOfsts, fobj->ptOfstArr, fobj->nPtOfst * sizeof(UInt32));
 		
-		tmpPoints = ptColl->GetPointList(&i);
+		tmpPoints = ptColl->GetPointList(i);
 		while (i--)
 		{
 			tmpPoints[i].x = fobj->pointArr[(i << 1)] / 200000.0;

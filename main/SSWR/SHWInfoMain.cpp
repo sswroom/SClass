@@ -865,7 +865,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		Data::ArrayList<IO::USBInfo*> usbList;
 		IO::USBInfo *usb;
 		const IO::DeviceDB::USBDeviceInfo *dev;
-		IO::USBInfo::GetUSBList(&usbList);
+		IO::USBInfo::GetUSBList(usbList);
 		console->WriteLine();
 		writer->WriteLine();
 		console->WriteLineC(UTF8STRC("USB Info:"));
@@ -932,7 +932,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		Data::ArrayList<IO::PCIInfo*> pciList;
 		IO::PCIInfo *pci;
 		const IO::DeviceDB::PCIDeviceInfo *dev;
-		IO::PCIInfo::GetPCIList(&pciList);
+		IO::PCIInfo::GetPCIList(pciList);
 		console->WriteLine();
 		writer->WriteLine();
 		console->WriteLineC(UTF8STRC("PCI Info:"));
@@ -994,7 +994,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	{
 		Data::ArrayList<IO::SDCardInfo*> sdList;
 		IO::SDCardInfo *sdcard;
-		IO::SDCardMgr::GetCardList(&sdList);
+		IO::SDCardMgr::GetCardList(sdList);
 		console->WriteLine();
 		writer->WriteLine();
 		console->WriteLineC(UTF8STRC("SD Card Info:"));

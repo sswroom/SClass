@@ -110,23 +110,6 @@ extern "C" void ArtificialQuickSort_PreSortStr(UTF8Char **arr, OSInt left, OSInt
 	}
 }
 
-extern "C" void ArtificialQuickSort_PreSortCmp(void **arr, Data::IComparable::CompareFunc func, OSInt left, OSInt right)
-{
-	void *temp = 0;
-
-	while (left < right)
-	{
-		if (func(arr[left], arr[right]) > 0)
-		{
-			temp = arr[left];
-			arr[left] = arr[right];
-			arr[right] = temp;
-		}
-		left++;
-		right--;
-	}
-}
-
 extern "C" void ArtificialQuickSort_PreSortCmpO(Data::IComparable **arr, OSInt left, OSInt right)
 {
 	Data::IComparable *temp = 0;
@@ -219,23 +202,6 @@ extern "C" void ArtificialQuickSort_PreSortDoubleInv(Double *arr, OSInt left, OS
 	while (left < right)
 	{
 		if (arr[left] < arr[right])
-		{
-			temp = arr[left];
-			arr[left] = arr[right];
-			arr[right] = temp;
-		}
-		left++;
-		right--;
-	}
-}
-
-extern "C" void ArtificialQuickSort_PreSortCmpInv(void **arr, Data::IComparable::CompareFunc func, OSInt left, OSInt right)
-{
-	void *temp = 0;
-
-	while (left < right)
-	{
-		if (func(arr[left], arr[right]) < 0)
 		{
 			temp = arr[left];
 			arr[left] = arr[right];
@@ -733,90 +699,6 @@ extern "C" void ArtificialQuickSort_SortStr(UTF8Char **arr, OSInt firstIndex, OS
 #endif
 }
 
-extern "C" void ArtificialQuickSort_SortCmp(void **arr, Data::IComparable::CompareFunc func, OSInt firstIndex, OSInt lastIndex)
-{
-#if _OSINT_SIZE == 16
-	OSInt levi[256];
-	OSInt desni[256];
-#else
-	OSInt *levi = MemAlloc(OSInt, 65536);
-	OSInt *desni = &levi[32768];
-#endif
-	OSInt index;
-	OSInt i;
-	OSInt left;
-	OSInt right;
-	void *meja;
-	OSInt left1;
-	OSInt right1;
-	void *temp;
-
-	ArtificialQuickSort_PreSortCmp(arr, func, firstIndex, lastIndex);
-
-	index = 0;
-	levi[index] = firstIndex;
-	desni[index] = lastIndex;
-
-	while ( index >= 0 )
-	{
-		left = levi[index];
-		right = desni[index];
-		i = right - left;
-		if (i <= 0)
-		{
-			index--;
-		}
-		else if (i <= 64)
-		{
-			InsertionSort_SortBCmp(arr, func, left, right);
-			index--;
-		}
-		else
-		{
-			meja = arr[ (left + right) >> 1 ];
-			left1 = left;
-			right1 = right;
-			while (true)
-			{
-				while ( func(arr[right1], meja) >= 0 )
-				{
-					if (--right1 < left1)
-						break;
-				}
-				while ( func(arr[left1], meja) < 0 )
-				{
-					if (++left1 > right1)
-						break;
-				}
-				if (left1 > right1)
-					break;
-
-				temp = arr[right1];
-				arr[right1--] = arr[left1];
-				arr[left1++] = temp;
-			}
-			if (left1 == left)
-			{
-				arr[(left + right) >> 1] = arr[left];
-				arr[left] = meja;
-				levi[index] = left + 1;
-				desni[index] = right;
-			}
-			else
-			{
-				desni[index] = --left1;
-				right1++;
-				index++;
-				levi[index] = right1;
-				desni[index] = right;
-			}
-		}
-	}
-#if _OSINT_SIZE != 16
-	MemFree(levi);
-#endif
-}
-
 extern "C" void ArtificialQuickSort_SortCmpO(Data::IComparable **arr, OSInt firstIndex, OSInt lastIndex)
 {
 #if _OSINT_SIZE == 16
@@ -1262,82 +1144,6 @@ extern "C" void ArtificialQuickSort_SortDoubleInv(Double *arr, OSInt firstIndex,
 					{
 						while ( arr[right1] <= meja ) right1--;
 						while ( arr[left1] > meja ) left1++;
-						if (left1 > right1)
-							break;
-
-						temp = arr[right1];
-						arr[right1--] = arr[left1];
-						arr[left1++] = temp;
-					}
-					desni[index] = --left1;
-					levi[++index] = ++right1;
-					desni[index] = right;
-					goto labelcritticall5;
-				}
-				temp1 = temp2;
-				j++;
-			}
-		}
-		index--;
-labelcritticall5:;
-	}
-}
-
-extern "C" void ArtificialQuickSort_SortCmpInv(void **arr, Data::IComparable::CompareFunc func, OSInt firstIndex, OSInt lastIndex)
-{
-	OSInt levi[256];
-	OSInt desni[256];
-
-	OSInt index;
-	OSInt i;
-	OSInt j;
-	OSInt left;
-	OSInt right;
-	void *meja;
-	OSInt left1;
-	OSInt right1;
-	void *temp1;
-	void *temp2;
-	void *temp;
-
-	ArtificialQuickSort_PreSortCmpInv(arr, func, firstIndex, lastIndex);
-
-	index = 0;
-	levi[index] = firstIndex;
-	desni[index] = lastIndex;
-
-	while ( index >= 0 )
-	{
-		left = levi[index];
-		right = desni[index];
-		i = right - left;
-		if (i <= 0)
-		{
-		}
-		else if (i <= 15)
-		{
-			InsertionSort_SortCmpInv(arr, func, left, right);
-		}
-		else
-		{
-			temp1 = arr[left];
-			j = left + 1;
-			while (j <= right)
-			{
-				temp2 = arr[j];
-				if ( func(temp2, temp1) > 0)
-				{
-					meja = temp1;
-					if ( func(arr[ (left + right) >> 1 ], meja) < 0 )
-					{
-						meja = arr[ (left + right) >> 1 ];
-					}
-					left1 = left;
-					right1 = right;
-					while (true)
-					{
-						while ( func(arr[right1], meja) <= 0 ) right1--;
-						while ( func(arr[left1], meja) > 0 ) left1++;
 						if (left1 > right1)
 							break;
 

@@ -170,7 +170,7 @@ Bool Exporter::MapCSVExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Te
 		while (i < j)
 		{
 			Math::Geometry::Polyline *pl = (Math::Geometry::Polyline*)layer->GetNewVectorById(sess, objIds->GetItem(i));
-			points = pl->GetPointList(&l);
+			points = pl->GetPointList(l);
 			k = 0;
 			while (k < l)
 			{

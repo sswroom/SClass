@@ -1032,7 +1032,7 @@ Math::Geometry::Polygon *Math::GeometryTool::CreateCircularPolygonWGS84(Math::Co
 	Math::Geometry::Polygon *pg;
 	NEW_CLASS(pg, Math::Geometry::Polygon(3857, 1, nPoints + 1, false, false));
 	UOSInt pgNPt;
-	Math::Coord2DDbl *ptArr = pg->GetPointList(&pgNPt);
+	Math::Coord2DDbl *ptArr = pg->GetPointList(pgNPt);
 	Double pi2 = Math::PI * 2;
 	Double angle;
 	UOSInt i = 0;

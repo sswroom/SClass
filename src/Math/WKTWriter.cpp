@@ -19,7 +19,7 @@ void Math::WKTWriter::AppendLineString(NotNullPtr<Text::StringBuilderUTF8> sb, M
 {
 	sb->AppendUTF8Char('(');
 	UOSInt nPoint;
-	Math::Coord2DDbl *pointList = pl->GetPointList(&nPoint);
+	Math::Coord2DDbl *pointList = pl->GetPointList(nPoint);
 	Double *zArr = pl->GetZList(&nPoint);
 	Double *mArr = pl->GetMList(&nPoint);
 	UOSInt i;
@@ -131,8 +131,8 @@ void Math::WKTWriter::AppendPolygon(NotNullPtr<Text::StringBuilderUTF8> sb, Math
 {
 	UOSInt nPtOfst;
 	UOSInt nPoint;
-	UInt32 *ptOfstList = pg->GetPtOfstList(&nPtOfst);
-	Math::Coord2DDbl *pointList = pg->GetPointList(&nPoint);
+	UInt32 *ptOfstList = pg->GetPtOfstList(nPtOfst);
+	Math::Coord2DDbl *pointList = pg->GetPointList(nPoint);
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
@@ -196,8 +196,8 @@ void Math::WKTWriter::AppendPolygonZ(NotNullPtr<Text::StringBuilderUTF8> sb, Mat
 {
 	UOSInt nPtOfst;
 	UOSInt nPoint;
-	UInt32 *ptOfstList = pg->GetPtOfstList(&nPtOfst);
-	Math::Coord2DDbl *pointList = pg->GetPointList(&nPoint);
+	UInt32 *ptOfstList = pg->GetPtOfstList(nPtOfst);
+	Math::Coord2DDbl *pointList = pg->GetPointList(nPoint);
 	Double *zList = pg->GetZList(&nPoint);
 	UOSInt i;
 	UOSInt j;
@@ -267,8 +267,8 @@ void Math::WKTWriter::AppendPolyline(NotNullPtr<Text::StringBuilderUTF8> sb, Mat
 	sb->AppendUTF8Char('(');
 	UOSInt nPtOfst;
 	UOSInt nPoint;
-	UInt32 *ptOfstList = pl->GetPtOfstList(&nPtOfst);
-	Math::Coord2DDbl *pointList = pl->GetPointList(&nPoint);
+	UInt32 *ptOfstList = pl->GetPtOfstList(nPtOfst);
+	Math::Coord2DDbl *pointList = pl->GetPointList(nPoint);
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
@@ -332,8 +332,8 @@ void Math::WKTWriter::AppendPolylineZ(NotNullPtr<Text::StringBuilderUTF8> sb, Ma
 	sb->AppendUTF8Char('(');
 	UOSInt nPtOfst;
 	UOSInt nPoint;
-	UInt32 *ptOfstList = pl->GetPtOfstList(&nPtOfst);
-	Math::Coord2DDbl *pointList = pl->GetPointList(&nPoint);
+	UInt32 *ptOfstList = pl->GetPtOfstList(nPtOfst);
+	Math::Coord2DDbl *pointList = pl->GetPointList(nPoint);
 	Double *zList = pl->GetZList(&nPoint);
 	UOSInt i;
 	UOSInt j;
@@ -402,8 +402,8 @@ void Math::WKTWriter::AppendPolylineZM(NotNullPtr<Text::StringBuilderUTF8> sb, M
 	sb->AppendUTF8Char('(');
 	UOSInt nPtOfst;
 	UOSInt nPoint;
-	UInt32 *ptOfstList = pl->GetPtOfstList(&nPtOfst);
-	Math::Coord2DDbl *pointList = pl->GetPointList(&nPoint);
+	UInt32 *ptOfstList = pl->GetPtOfstList(nPtOfst);
+	Math::Coord2DDbl *pointList = pl->GetPointList(nPoint);
 	Double *zList = pl->GetZList(&nPoint);
 	Double *mList = pl->GetMList(&nPoint);
 	UOSInt i;

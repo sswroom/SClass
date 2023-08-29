@@ -125,7 +125,7 @@ Bool __stdcall Map::MapServerHandler::GetLayerDataFunc(NotNullPtr<Net::WebServer
 							Math::Geometry::Polygon *pg = (Math::Geometry::Polygon*)vec;
 							sb.AppendC(UTF8STRC("\"polygon\":{\"carr\":["));
 							k = 0;
-							Math::Coord2DDbl *pointList = pg->GetPointList(&l);
+							Math::Coord2DDbl *pointList = pg->GetPointList(l);
 							while (k < l)
 							{
 								Math::CoordinateSystem::ConvertToCartesianCoord(csys, pointList[k].x, pointList[k].y, 0, &x, &y, &z);

@@ -11,7 +11,6 @@ extern "C"
 	void BubbleSort_SortSingle(Single *arr, OSInt firstIndex, OSInt lastIndex);
 	void BubbleSort_SortStrW(WChar **arr, OSInt firstIndex, OSInt lastIndex);
 	void BubbleSort_SortStrC(UTF8Char **arr, OSInt firstIndex, OSInt lastIndex);
-	void BubbleSort_SortCmp(void **arr, Data::IComparable::CompareFunc func, OSInt firstIndex, OSInt lastIndex);
 	void BubbleSort_SortCmpO(Data::IComparable **arr, OSInt firstIndex, OSInt lastIndex);
 
 	void BubbleSort_SortInt32Inv(Int32 *arr, OSInt firstIndex, OSInt lastIndex);
@@ -21,7 +20,6 @@ extern "C"
 	void BubbleSort_SortSingleInv(Single *arr, OSInt firstIndex, OSInt lastIndex);
 	void BubbleSort_SortStrWInv(WChar **arr, OSInt firstIndex, OSInt lastIndex);
 	void BubbleSort_SortStrInv(UTF8Char **arr, OSInt firstIndex, OSInt lastIndex);
-	void BubbleSort_SortCmpInv(void **arr, Data::IComparable::CompareFunc func, OSInt firstIndex, OSInt lastIndex);
 	void BubbleSort_SortCmpOInv(Data::IComparable **arr, OSInt firstIndex, OSInt lastIndex);
 }
 #endif

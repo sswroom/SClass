@@ -4,6 +4,7 @@
 #include "Map/MapRenderer.h"
 #include "Map/MapScheduler.h"
 #include "Map/MapEnv.h"
+#include "Math/Geometry/VectorImage.h"
 #include "Media/ColorConv.h"
 #include "Media/ColorManager.h"
 #include "Media/Resizer/LanczosResizer8_C8.h"
@@ -85,7 +86,7 @@ namespace Map
 		static Bool LabelOverlapped(Math::RectAreaDbl *points, UOSInt nPoints, Math::RectAreaDbl rect);
 		static Bool AddLabel(MapLabels *labels, UOSInt maxLabel, UOSInt *labelCnt, Text::CString label, UOSInt nPoints, Math::Coord2DDbl *points, Int32 priority, Map::DrawLayerType recType, UOSInt fntStyle, Int32 flag, Map::MapView *view, OSInt xOfst, OSInt yOfst, Map::MapEnv::FontType fontType);
 		static void DrawLabels(DrawEnv *denv);
-		static OSInt __stdcall VImgCompare(void *obj1, void *obj2);
+		static OSInt __stdcall VImgCompare(Math::Geometry::VectorImage *obj1, Math::Geometry::VectorImage *obj2);
 	private:
 		void DrawLayers(DrawEnv *denv, Map::MapEnv::GroupItem *group);
 		void DrawShapes(DrawEnv *denv, Map::MapDrawLayer *layer, UOSInt lineStyle, UInt32 fillStyle, UOSInt lineThick, UInt32 lineColor);

@@ -316,7 +316,7 @@ Math::Geometry::Vector2D *Parser::FileParser::JSONParser::ParseGeomJSON(Text::JS
 						Math::Coord2DDbl *ptArr;
 						Double *altArr;
 						NEW_CLASS(pl, Math::Geometry::LineString(srid, zList.GetCount(), true, false));
-						ptArr = pl->GetPointList(&i);
+						ptArr = pl->GetPointList(i);
 						i = 0;
 						j = ptList.GetCount() >> 1;
 						while (i < j)
@@ -338,7 +338,7 @@ Math::Geometry::Vector2D *Parser::FileParser::JSONParser::ParseGeomJSON(Text::JS
 					else
 					{
 						Double *ptArr;
-						ptArr = ptList.GetArray(&i);
+						ptArr = ptList.GetArray(i);
 						Math::Geometry::LineString *pl;
 						NEW_CLASS(pl, Math::Geometry::LineString(srid, (Math::Coord2DDbl*)ptArr, i >> 1, false, false));
 						return pl;
@@ -427,14 +427,14 @@ Math::Geometry::Vector2D *Parser::FileParser::JSONParser::ParseGeomJSON(Text::JS
 					Math::Coord2DDbl *ptArr;
 					Math::Geometry::Polygon *pg;
 					NEW_CLASS(pg, Math::Geometry::Polygon(srid, partList.GetCount(), ptList.GetCount() >> 1, hasAlt, false));
-					UInt32 *ptOfsts = pg->GetPtOfstList(&j);
+					UInt32 *ptOfsts = pg->GetPtOfstList(j);
 					i = 0;
 					while (i < j)
 					{
 						ptOfsts[i] = partList.GetItem(i);
 						i++;
 					}
-					ptArr = pg->GetPointList(&j);
+					ptArr = pg->GetPointList(j);
 					i = 0;
 					while (i < j)
 					{
@@ -524,14 +524,14 @@ Math::Geometry::Vector2D *Parser::FileParser::JSONParser::ParseGeomJSON(Text::JS
 							Math::Geometry::Polygon *pg;
 							Bool hasZ = ptList.GetCount() == altList.GetCount() * 2;
 							NEW_CLASS(pg, Math::Geometry::Polygon(srid, partList.GetCount(), ptList.GetCount() >> 1, hasZ, false));
-							UInt32 *ptOfsts = pg->GetPtOfstList(&j);
+							UInt32 *ptOfsts = pg->GetPtOfstList(j);
 							i = 0;
 							while (i < j)
 							{
 								ptOfsts[i] = partList.GetItem(i);
 								i++;
 							}
-							ptArr = pg->GetPointList(&j);
+							ptArr = pg->GetPointList(j);
 							i = 0;
 							while (i < j)
 							{

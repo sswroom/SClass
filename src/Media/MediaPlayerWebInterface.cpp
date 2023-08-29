@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "Data/Sort/ArtificialQuickSortC.h"
+#include "Data/Sort/ArtificialQuickSortFunc.h"
 #include "IO/MemoryStream.h"
 #include "IO/Path.h"
 #include "Media/MediaPlayerWebInterface.h"
@@ -10,11 +10,9 @@
 #include "Text/XML.h"
 #include "Text/TextBinEnc/URIEncoding.h"
 
-OSInt __stdcall Media::MediaPlayerWebInterface::VideoFileCompare(void *file1, void *file2)
+OSInt __stdcall Media::MediaPlayerWebInterface::VideoFileCompare(VideoFileInfo *file1, VideoFileInfo *file2)
 {
-	VideoFileInfo *vfile1 = (VideoFileInfo*)file1;
-	VideoFileInfo *vfile2 = (VideoFileInfo*)file2;
-	return Text::StrCompare(vfile1->fileName->v, vfile2->fileName->v);
+	return Text::StrCompare(file1->fileName->v, file2->fileName->v);
 }
 
 Media::MediaPlayerWebInterface::MediaPlayerWebInterface(Media::MediaPlayerInterface *iface, Bool autoRelease)
@@ -100,8 +98,7 @@ void Media::MediaPlayerWebInterface::BrowseRequest(NotNullPtr<Net::WebServer::IW
 			}
 			IO::Path::FindFileClose(sess);
 
-			void **arr = (void**)fileList.GetArray(&j);
-			ArtificialQuickSort_SortCmp(arr, VideoFileCompare, 0, (OSInt)j - 1);
+			Data::Sort::ArtificialQuickSortFunc<VideoFileInfo*>::Sort(fileList, VideoFileCompare);
 
 			i = 0;
 			j = fileList.GetCount();

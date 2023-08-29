@@ -364,7 +364,7 @@ public:
 					break;
 				}
 			}
-			Int16 *bytes = arr.GetArray(&scnt);
+			Int16 *bytes = arr.GetArray(scnt);
 			item->SetByteArr((const UInt8*)bytes, scnt * sizeof(v));
 			return true;
 		}
@@ -394,7 +394,7 @@ public:
 					break;
 				}
 			}
-			Int32 *bytes = arr.GetArray(&scnt);
+			Int32 *bytes = arr.GetArray(scnt);
 			item->SetByteArr((const UInt8*)bytes, scnt * sizeof(v));
 			return true;
 		}
@@ -424,7 +424,7 @@ public:
 					break;
 				}
 			}
-			Int64 *bytes = arr.GetArray(&scnt);
+			Int64 *bytes = arr.GetArray(scnt);
 			item->SetByteArr((const UInt8*)bytes, scnt * sizeof(v));
 			return true;
 		}
@@ -454,7 +454,7 @@ public:
 					break;
 				}
 			}
-			Single *bytes = arr.GetArray(&scnt);
+			Single *bytes = arr.GetArray(scnt);
 			item->SetByteArr((const UInt8*)bytes, scnt * sizeof(Single));
 			return true;
 		}
@@ -498,7 +498,7 @@ public:
 					break;
 				}
 			}
-			Int16 *bytes = arr.GetArray(&scnt);
+			Int16 *bytes = arr.GetArray(scnt);
 			item->SetByteArr((const UInt8*)bytes, scnt * sizeof(v));
 			return true;
 		}
@@ -523,7 +523,7 @@ public:
 					break;
 				}
 			}
-			Int32 *bytes = arr.GetArray(&scnt);
+			Int32 *bytes = arr.GetArray(scnt);
 			item->SetByteArr((const UInt8*)bytes, scnt * sizeof(v));
 			return true;
 		}

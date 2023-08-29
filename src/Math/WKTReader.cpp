@@ -202,8 +202,8 @@ Math::Geometry::Vector2D *Math::WKTReader::ParseWKT(const UTF8Char *wkt)
 		}
 		NEW_CLASS(pl, Math::Geometry::LineString(this->srid, ptList.GetCount() >> 1, hasZ, hasM));
 		UOSInt i;
-		Math::Coord2DDbl *ptArr = pl->GetPointList(&i);
-		MemCopyNO(ptArr, ptList.GetArray(&i), ptList.GetCount() * sizeof(Double));
+		Math::Coord2DDbl *ptArr = pl->GetPointList(i);
+		MemCopyNO(ptArr, ptList.GetArray(i), ptList.GetCount() * sizeof(Double));
 		if (hasM)
 		{
 			Double *zArr = pl->GetZList(&i);
@@ -310,10 +310,10 @@ Math::Geometry::Vector2D *Math::WKTReader::ParseWKT(const UTF8Char *wkt)
 		Math::Geometry::Polygon *pg;
 		NEW_CLASS(pg, Math::Geometry::Polygon(this->srid, ptOfstList.GetCount(), ptList.GetCount() >> 1, zList.GetCount() == (ptList.GetCount() >> 1), false));
 		UOSInt i;
-		UInt32 *ptOfstArr = pg->GetPtOfstList(&i);
-		MemCopyNO(ptOfstArr, ptOfstList.GetArray(&i), ptOfstList.GetCount() * sizeof(UInt32));
-		Math::Coord2DDbl *ptArr = pg->GetPointList(&i);
-		MemCopyNO(ptArr, ptList.GetArray(&i), ptList.GetCount() * sizeof(Double));
+		UInt32 *ptOfstArr = pg->GetPtOfstList(i);
+		MemCopyNO(ptOfstArr, ptOfstList.GetArray(i), ptOfstList.GetCount() * sizeof(UInt32));
+		Math::Coord2DDbl *ptArr = pg->GetPointList(i);
+		MemCopyNO(ptArr, ptList.GetArray(i), ptList.GetCount() * sizeof(Double));
 		if (pg->HasZ())
 		{
 			Double *zArr = pg->GetZList(&i);
@@ -421,10 +421,10 @@ Math::Geometry::Vector2D *Math::WKTReader::ParseWKT(const UTF8Char *wkt)
 		}
 		NEW_CLASS(pl, Math::Geometry::Polyline(this->srid, ptOfstList.GetCount(), ptList.GetCount() >> 1, hasZ, hasM));
 		UOSInt i;
-		UInt32 *ptOfstArr = pl->GetPtOfstList(&i);
-		MemCopyNO(ptOfstArr, ptOfstList.GetArray(&i), ptOfstList.GetCount() * sizeof(UInt32));
-		Math::Coord2DDbl *ptArr = pl->GetPointList(&i);
-		MemCopyNO(ptArr, ptList.GetArray(&i), ptList.GetCount() * sizeof(Double));
+		UInt32 *ptOfstArr = pl->GetPtOfstList(i);
+		MemCopyNO(ptOfstArr, ptOfstList.GetArray(i), ptOfstList.GetCount() * sizeof(UInt32));
+		Math::Coord2DDbl *ptArr = pl->GetPointList(i);
+		MemCopyNO(ptArr, ptList.GetArray(i), ptList.GetCount() * sizeof(Double));
 		if (hasM)
 		{
 			Double *zArr = pl->GetZList(&i);
@@ -545,10 +545,10 @@ Math::Geometry::Vector2D *Math::WKTReader::ParseWKT(const UTF8Char *wkt)
 			Math::Geometry::Polygon *pg;
 			NEW_CLASS(pg, Math::Geometry::Polygon(this->srid, ptOfstList.GetCount(), ptList.GetCount() >> 1, zList.GetCount() == (ptList.GetCount() >> 1), false));
 			UOSInt i;
-			UInt32 *ptOfstArr = pg->GetPtOfstList(&i);
-			MemCopyNO(ptOfstArr, ptOfstList.GetArray(&i), ptOfstList.GetCount() * sizeof(UInt32));
-			Math::Coord2DDbl *ptArr = pg->GetPointList(&i);
-			MemCopyNO(ptArr, ptList.GetArray(&i), ptList.GetCount() * sizeof(Double));
+			UInt32 *ptOfstArr = pg->GetPtOfstList(i);
+			MemCopyNO(ptOfstArr, ptOfstList.GetArray(i), ptOfstList.GetCount() * sizeof(UInt32));
+			Math::Coord2DDbl *ptArr = pg->GetPointList(i);
+			MemCopyNO(ptArr, ptList.GetArray(i), ptList.GetCount() * sizeof(Double));
 			if (pg->HasZ())
 			{
 				Double *zArr = pg->GetZList(&i);

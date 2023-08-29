@@ -226,7 +226,7 @@ Bool Math::Geometry::LineString::Equals(Vector2D *vec) const
 	{
 		Math::Geometry::LineString *pl = (Math::Geometry::LineString*)vec;
 		UOSInt nPoint;
-		Math::Coord2DDbl *ptList = pl->GetPointList(&nPoint);
+		Math::Coord2DDbl *ptList = pl->GetPointList(nPoint);
 		Double *valArr;
 		if (nPoint != this->nPoint)
 		{
@@ -284,7 +284,7 @@ Bool Math::Geometry::LineString::EqualsNearly(Vector2D *vec) const
 	{
 		Math::Geometry::LineString *pl = (Math::Geometry::LineString*)vec;
 		UOSInt nPoint;
-		Math::Coord2DDbl *ptList = pl->GetPointList(&nPoint);
+		Math::Coord2DDbl *ptList = pl->GetPointList(nPoint);
 		Double *valArr;
 		if (nPoint != this->nPoint)
 		{
@@ -402,7 +402,7 @@ Math::Geometry::LineString *Math::Geometry::LineString::SplitByPoint(Math::Coord
 		this->zArr = newZ;
 		this->mArr = newM;
 		NEW_CLASS(newPL, Math::Geometry::LineString(this->srid, this->nPoint - minId, this->zArr != 0, this->mArr != 0));
-		newPoints = newPL->GetPointList(&l);
+		newPoints = newPL->GetPointList(l);
 		l = this->nPoint;
 		while (l-- > minId)
 		{
@@ -472,7 +472,7 @@ Math::Geometry::LineString *Math::Geometry::LineString::SplitByPoint(Math::Coord
 		this->mArr = newM;
 		NEW_CLASS(newPL, Math::Geometry::LineString(this->srid, this->nPoint - minId, oldZ != 0, oldM != 0));
 
-		newPoints = newPL->GetPointList(&l);
+		newPoints = newPL->GetPointList(l);
 		l = this->nPoint;
 		while (--l > minId)
 		{
@@ -818,7 +818,7 @@ Math::Geometry::Polygon *Math::Geometry::LineString::CreatePolygonByDist(Double 
 	UOSInt nPoints;
 	Math::Coord2DDbl *pts;
 	NEW_CLASS(pg, Math::Geometry::Polygon(this->srid, 1, outPoints.GetCount() >> 1, false, false));
-	pts = pg->GetPointList(&nPoints);
+	pts = pg->GetPointList(nPoints);
 	i = 0;
 	while (i < nPoints)
 	{

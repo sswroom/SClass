@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/Sort/ArtificialQuickSort.h"
+#include "Data/Sort/ArtificialQuickSortFunc.h"
 #include "Map/DrawMapRenderer.h"
 #include "Math/Math.h"
 #include "Math/GeometryTool.h"
@@ -1257,12 +1257,10 @@ void Map::DrawMapRenderer::DrawLabels(Map::DrawMapRenderer::DrawEnv *denv)
 		lastLbl->Release();
 }
 
-OSInt Map::DrawMapRenderer::VImgCompare(void *obj1, void *obj2)
+OSInt Map::DrawMapRenderer::VImgCompare(Math::Geometry::VectorImage *obj1, Math::Geometry::VectorImage *obj2)
 {
-	Math::Geometry::VectorImage *vimg1 = (Math::Geometry::VectorImage*)obj1;
-	Math::Geometry::VectorImage *vimg2 = (Math::Geometry::VectorImage*)obj2;
-	Bool type1 = vimg1->IsScnCoord();
-	Bool type2 = vimg2->IsScnCoord();
+	Bool type1 = obj1->IsScnCoord();
+	Bool type2 = obj2->IsScnCoord();
 	if (type1 != type2)
 	{
 		if (type1)
@@ -1270,8 +1268,8 @@ OSInt Map::DrawMapRenderer::VImgCompare(void *obj1, void *obj2)
 		else
 			return -1;
 	}
-	Int32 zIndex1 = vimg1->GetZIndex();
-	Int32 zIndex2 = vimg2->GetZIndex();
+	Int32 zIndex1 = obj1->GetZIndex();
+	Int32 zIndex2 = obj2->GetZIndex();
 	if (zIndex1 > zIndex2)
 	{
 		return 1;
@@ -1282,8 +1280,8 @@ OSInt Map::DrawMapRenderer::VImgCompare(void *obj1, void *obj2)
 	}
 	Math::Coord2DDbl coord1;
 	Math::Coord2DDbl coord2;
-	coord1 = vimg1->GetCenter();
-	coord2 = vimg2->GetCenter();
+	coord1 = obj1->GetCenter();
+	coord2 = obj2->GetCenter();
 	if (coord2.y > coord1.y)
 	{
 		return 1;
@@ -1886,9 +1884,9 @@ void Map::DrawMapRenderer::DrawLabel(DrawEnv *denv, Map::MapDrawLayer *layer, UO
 						UInt32 maxSize;
 						UInt32 maxPos;
 						UOSInt nPtOfst;
-						UInt32 *ptOfstArr = ptOfst->GetPtOfstList(&nPtOfst);
+						UInt32 *ptOfstArr = ptOfst->GetPtOfstList(nPtOfst);
 						UOSInt nPoint;
-						Math::Coord2DDbl *pointArr = ptOfst->GetPointList(&nPoint);
+						Math::Coord2DDbl *pointArr = ptOfst->GetPointList(nPoint);
 						maxSize = (UInt32)nPoint - (maxPos = ptOfstArr[nPtOfst - 1]);
 						k = nPtOfst;
 						while (k-- > 1)
@@ -1939,7 +1937,7 @@ void Map::DrawMapRenderer::DrawLabel(DrawEnv *denv, Map::MapDrawLayer *layer, UO
 					{
 						Math::Geometry::Polyline *pl = (Math::Geometry::Polyline*)vec;
 						UOSInt nPoint;
-						Math::Coord2DDbl *pointArr = pl->GetPointList(&nPoint);
+						Math::Coord2DDbl *pointArr = pl->GetPointList(nPoint);
 						if (nPoint & 1)
 						{
 							UOSInt l = nPoint >> 1;
@@ -1972,9 +1970,9 @@ void Map::DrawMapRenderer::DrawLabel(DrawEnv *denv, Map::MapDrawLayer *layer, UO
 					{
 						Math::Geometry::Polygon *pg = (Math::Geometry::Polygon*)vec;
 						UOSInt nPoint;
-						Math::Coord2DDbl *pointArr = pg->GetPointList(&nPoint);
+						Math::Coord2DDbl *pointArr = pg->GetPointList(nPoint);
 						UOSInt nPtOfst;
-						UInt32 *ptOfstArr = pg->GetPtOfstList(&nPtOfst);
+						UInt32 *ptOfstArr = pg->GetPtOfstList(nPtOfst);
 						pts = Math::GeometryTool::GetPolygonCenter(nPtOfst, nPoint, ptOfstArr, pointArr);
 						if (denv->view->InViewXY(pts))
 						{
@@ -2082,8 +2080,7 @@ void Map::DrawMapRenderer::DrawImageLayer(DrawEnv *denv, Map::MapDrawLayer *laye
 	}
 	layer->EndGetObject(sess);
 	
-	void **arr = (void**)imgList.GetArray(&j);
-	ArtificialQuickSort_SortCmp(arr, VImgCompare, 0, (OSInt)j - 1);
+	Data::Sort::ArtificialQuickSortFunc<Math::Geometry::VectorImage*>::Sort(imgList, VImgCompare);
 	i = 0;
 	j = imgList.GetCount();
 	while (i < j)

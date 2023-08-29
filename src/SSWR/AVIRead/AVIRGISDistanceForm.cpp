@@ -87,7 +87,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISDistanceForm::OnMapMouseMove(void *userObj,
 			UOSInt i;
 			UOSInt j;
 			NEW_CLASS(pl, Math::Geometry::LineString(me->csys->GetSRID(), (me->ptList->GetCount() >> 1) + 1, false, false));
-			pts = pl->GetPointList(&j);
+			pts = pl->GetPointList(j);
 			i = 0;
 			j = me->ptList->GetCount() >> 1;
 			while (i < j)

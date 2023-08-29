@@ -116,7 +116,7 @@ Double Math::PointMappingCoordinateSystem::CalPLDistance(Math::Geometry::Polylin
 	Math::Geometry::Polyline *tmpPl = (Math::Geometry::Polyline*)pl->Clone();
 	Double ret;
 	UOSInt i;
-	Math::Coord2DDbl *ptList = tmpPl->GetPointList(&i);
+	Math::Coord2DDbl *ptList = tmpPl->GetPointList(i);
 	while (i-- > 0)
 	{
 		ptList[i] = CalcBaseXY(ptList[i]);
@@ -131,7 +131,7 @@ Double Math::PointMappingCoordinateSystem::CalPLDistance3D(Math::Geometry::Polyl
 	Math::Geometry::Polyline *tmpPl = (Math::Geometry::Polyline *)pl->Clone();
 	Double ret;
 	UOSInt i;
-	Math::Coord2DDbl *ptList = tmpPl->GetPointList(&i);
+	Math::Coord2DDbl *ptList = tmpPl->GetPointList(i);
 	while (i-- > 0)
 	{
 		ptList[i] = CalcBaseXY(ptList[i]);

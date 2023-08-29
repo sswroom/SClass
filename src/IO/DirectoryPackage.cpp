@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/Sort/ArtificialQuickSort.h"
+#include "Data/Sort/ArtificialQuickSortFunc.h"
 #include "IO/DirectoryPackage.h"
 #include "IO/FileUtil.h"
 #include "IO/Path.h"
@@ -426,11 +426,9 @@ typedef struct
 	Data::Timestamp fileTime;
 } DirFile;
 
-OSInt __stdcall DirectoryPackage_Compare(void *obj1, void *obj2)
+OSInt __stdcall DirectoryPackage_Compare(DirFile *obj1, DirFile *obj2)
 {
-	DirFile *df1 = (DirFile*)obj1;
-	DirFile *df2 = (DirFile*)obj2;
-	return df1->name->CompareTo(df2->name.Ptr());
+	return obj1->name->CompareTo(obj2->name.Ptr());
 }
 
 Bool IO::DirectoryPackage::Sort()
@@ -438,12 +436,12 @@ Bool IO::DirectoryPackage::Sort()
 	UOSInt i;
 	UOSInt j;
 	DirFile *df;
-	void **arr;
+	DirFile **arr;
 	i = 0;
 	j = this->files.GetCount();
 	if (j <= 0)
 		return true;
-	arr = MemAlloc(void*, j);
+	arr = MemAlloc(DirFile*, j);
 	while (i < j)
 	{
 		df = MemAlloc(DirFile, 1);
@@ -453,11 +451,11 @@ Bool IO::DirectoryPackage::Sort()
 		arr[i] = df;
 		i++;
 	}
-	ArtificialQuickSort_SortCmp(arr, DirectoryPackage_Compare, 0, (OSInt)j - 1);
+	Data::Sort::ArtificialQuickSortFunc<DirFile*>::Sort(arr, DirectoryPackage_Compare, 0, (OSInt)j - 1);
 	i = 0;
 	while (i < j)
 	{
-		df = (DirFile*)arr[i];
+		df = arr[i];
 		this->files.SetItem(i, df->name);
 		this->fileSizes.SetItem(i, df->fileSize);
 		this->fileTimes.SetItem(i, df->fileTime);

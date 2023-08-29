@@ -576,10 +576,10 @@ Math::Geometry::Vector2D *Map::SPDLayer::GetNewVectorById(Map::GetObjectSess *se
 	else if (this->lyrType == Map::DRAW_LAYER_POLYLINE)
 	{
 		NEW_CLASS(ptColl, Math::Geometry::Polyline(4326, (UInt32)buff[1], (UInt32)buff[2], false, false));
-		tmpPtOfsts = ptColl->GetPtOfstList(&i);
+		tmpPtOfsts = ptColl->GetPtOfstList(i);
 		MemCopyNO(tmpPtOfsts, ptOfsts, (UInt32)buff[1] << 2);
 		
-		tmpPoints = ptColl->GetPointList(&i);
+		tmpPoints = ptColl->GetPointList(i);
 		while (i--)
 		{
 			tmpPoints[i].x = points[(i << 1)] / 200000.0;
@@ -589,10 +589,10 @@ Math::Geometry::Vector2D *Map::SPDLayer::GetNewVectorById(Map::GetObjectSess *se
 	else if (this->lyrType == Map::DRAW_LAYER_POLYGON)
 	{
 		NEW_CLASS(ptColl, Math::Geometry::Polygon(4326, (UInt32)buff[1], (UInt32)buff[2], false, false));
-		tmpPtOfsts = ptColl->GetPtOfstList(&i);
+		tmpPtOfsts = ptColl->GetPtOfstList(i);
 		MemCopyNO(tmpPtOfsts, ptOfsts, (UInt32)buff[1] << 2);
 		
-		tmpPoints = ptColl->GetPointList(&i);
+		tmpPoints = ptColl->GetPointList(i);
 		while (i--)
 		{
 			tmpPoints[i].x = points[(i << 1)] / 200000.0;

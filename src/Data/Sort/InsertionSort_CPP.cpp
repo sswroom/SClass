@@ -87,48 +87,6 @@ extern "C" void InsertionSort_SortBStr(UTF8Char **arr, OSInt left, OSInt right)
 	}
 }
 
-extern "C" void InsertionSort_SortBCmp(void **arr, Data::IComparable::CompareFunc func, OSInt left, OSInt right)
-{
-	OSInt i;
-	OSInt j;
-	OSInt k;
-	OSInt l;
-	void *temp;
-	void *temp1;
-	void *temp2;
-	temp1 = arr[left];
-	i = left + 1;
-	while (i <= right)
-	{
-		temp2 = arr[i];
-		if ( func(temp1, temp2) > 0)
-		{
-			j = left;
-			k = i - 1;
-			while (j <= k)
-			{
-				l = (j + k) >> 1;
-				temp = arr[l];
-				if (func(temp, temp2) > 0)
-				{
-					k = l - 1;
-				}
-				else
-				{
-					j = l + 1;
-				}
-			}
-			MemCopyO(&arr[j + 1], &arr[j], (UOSInt)(i - j) * sizeof(arr[0]));
-			arr[j] = temp2;
-		}
-		else
-		{
-			temp1 = temp2;
-		}
-		i++;
-	}
-}
-
 extern "C" void InsertionSort_SortBCmpO(Data::IComparable **arr, OSInt left, OSInt right)
 {
 	OSInt i;
@@ -375,40 +333,6 @@ extern "C" void InsertionSort_SortStr(UTF8Char **arr, OSInt left, OSInt right)
 	}
 }
 
-extern "C" void InsertionSort_SortCmp(void **arr, Data::IComparable::CompareFunc func, OSInt left, OSInt right)
-{
-	OSInt i;
-	OSInt j;
-	void *temp;
-	void *temp1;
-	void *temp2;
-	temp1 = arr[left];
-	i = left + 1;
-	while (i <= right)
-	{
-		temp2 = arr[i];
-		if (func(temp1, temp2) > 0)
-		{
-			arr[i] = temp1;
-			j = i - 1;
-			while (j > left)
-			{
-				temp = arr[j-1];
-				if (func(temp, temp2) > 0)
-					arr[j--] = temp;
-				else
-					break;
-			}
-			arr[j] = temp2;
-		}
-		else
-		{
-			temp1 = temp2;
-		}
-		i++;
-	}
-}
-
 extern "C" void InsertionSort_SortInt32Inv(Int32 *arr, OSInt left, OSInt right)
 {
 	OSInt i;
@@ -565,40 +489,6 @@ extern "C" void InsertionSort_SortDoubleInv(Double *arr, OSInt left, OSInt right
 			{
 				temp = arr[j-1];
 				if ( temp < temp2 )
-					arr[j--] = temp;
-				else
-					break;
-			}
-			arr[j] = temp2;
-		}
-		else
-		{
-			temp1 = temp2;
-		}
-		i++;
-	}
-}
-
-extern "C" void InsertionSort_SortCmpInv(void **arr, Data::IComparable::CompareFunc func, OSInt left, OSInt right)
-{
-	OSInt i;
-	OSInt j;
-	void *temp;
-	void *temp1;
-	void *temp2;
-	temp1 = arr[left];
-	i = left + 1;
-	while (i <= right)
-	{
-		temp2 = arr[i];
-		if (func(temp1, temp2) < 0)
-		{
-			arr[i] = temp1;
-			j = i - 1;
-			while (j > left)
-			{
-				temp = arr[j-1];
-				if (func(temp, temp2) < 0)
 					arr[j--] = temp;
 				else
 					break;

@@ -138,8 +138,8 @@ Bool Math::Geometry::PointOfstCollection::Equals(Math::Geometry::Vector2D *vec) 
 		Math::Geometry::PointOfstCollection *pl = (Math::Geometry::PointOfstCollection*)vec;
 		UOSInt nPtOfst;
 		UOSInt nPoint;
-		UInt32 *ptOfst = pl->GetPtOfstList(&nPtOfst);
-		Math::Coord2DDbl *ptList = pl->GetPointList(&nPoint);
+		UInt32 *ptOfst = pl->GetPtOfstList(nPtOfst);
+		Math::Coord2DDbl *ptList = pl->GetPointList(nPoint);
 		Double *valArr;
 		if (nPtOfst != this->nPtOfst || nPoint != this->nPoint)
 		{
@@ -206,8 +206,8 @@ Bool Math::Geometry::PointOfstCollection::EqualsNearly(Math::Geometry::Vector2D 
 		Math::Geometry::PointOfstCollection *pl = (Math::Geometry::PointOfstCollection*)vec;
 		UOSInt nPtOfst;
 		UOSInt nPoint;
-		UInt32 *ptOfst = pl->GetPtOfstList(&nPtOfst);
-		Math::Coord2DDbl *ptList = pl->GetPointList(&nPoint);
+		UInt32 *ptOfst = pl->GetPtOfstList(nPtOfst);
+		Math::Coord2DDbl *ptList = pl->GetPointList(nPoint);
 		Double *valArr;
 		if (nPtOfst != this->nPtOfst || nPoint != this->nPoint)
 		{

@@ -168,7 +168,7 @@ template <class T> void Data::Sort::ArtificialQuickSort::Sort(T *arr, Data::Comp
 template <class T> void Data::Sort::ArtificialQuickSort::Sort(Data::ArrayCollection<T> *list, Data::Comparator<T> *comparator)
 {
 	UOSInt len;
-	T *arr = list->GetArray(&len);
+	T *arr = list->GetArray(len);
 	Sort(arr, comparator, 0, (OSInt)len - 1);
 }
 #endif

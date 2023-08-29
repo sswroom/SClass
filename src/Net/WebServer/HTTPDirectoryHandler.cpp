@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Data/ByteBuffer.h"
 #include "Data/ByteTool.h"
-#include "Data/Sort/ArtificialQuickSortC.h"
+#include "Data/Sort/ArtificialQuickSortFunc.h"
 #include "IO/DirectoryPackage.h"
 #include "IO/FileStream.h"
 #include "IO/MemoryStream.h"
@@ -32,29 +32,27 @@ typedef struct
 	UInt32 cnt;
 } DirectoryEntry;
 
-OSInt __stdcall HTTPDirectoryHandler_CompareFuncName(void *obj1, void *obj2)
+OSInt __stdcall HTTPDirectoryHandler_CompareFuncName(DirectoryEntry *obj1, DirectoryEntry *obj2)
 {
-	DirectoryEntry *ent1 = (DirectoryEntry *)obj1;
-	DirectoryEntry *ent2 = (DirectoryEntry *)obj2;
-	if (ent1->pt != ent2->pt)
+	if (obj1->pt != obj2->pt)
 	{
-		if (ent1->pt == IO::Path::PathType::Directory)
+		if (obj1->pt == IO::Path::PathType::Directory)
 		{
 			return -1;
 		}
-		else if (ent2->pt == IO::Path::PathType::Directory)
+		else if (obj2->pt == IO::Path::PathType::Directory)
 		{
 			return 1;
 		}
 	}
-	OSInt ret = Text::StrCompareICase(ent1->fileName->v, ent2->fileName->v);
+	OSInt ret = Text::StrCompareICase(obj1->fileName->v, obj2->fileName->v);
 	if (ret != 0)
 		return ret;
-	if (ent1->fileSize > ent2->fileSize)
+	if (obj1->fileSize > obj2->fileSize)
 	{
 		return 1;
 	}
-	else if (ent1->fileSize < ent2->fileSize)
+	else if (obj1->fileSize < obj2->fileSize)
 	{
 		return -1;
 	}
@@ -64,41 +62,35 @@ OSInt __stdcall HTTPDirectoryHandler_CompareFuncName(void *obj1, void *obj2)
 	}
 }
 
-OSInt __stdcall HTTPDirectoryHandler_CompareFuncSize(void *obj1, void *obj2)
+OSInt __stdcall HTTPDirectoryHandler_CompareFuncSize(DirectoryEntry *obj1, DirectoryEntry *obj2)
 {
-	DirectoryEntry *ent1 = (DirectoryEntry *)obj1;
-	DirectoryEntry *ent2 = (DirectoryEntry *)obj2;
-
-	if (ent1->fileSize > ent2->fileSize)
+	if (obj1->fileSize > obj2->fileSize)
 	{
 		return 1;
 	}
-	else if (ent1->fileSize < ent2->fileSize)
+	else if (obj1->fileSize < obj2->fileSize)
 	{
 		return -1;
 	}
 	else
 	{
-		return Text::StrCompareICase(ent1->fileName->v, ent2->fileName->v);
+		return Text::StrCompareICase(obj1->fileName->v, obj2->fileName->v);
 	}
 }
 
-OSInt __stdcall HTTPDirectoryHandler_CompareFuncCount(void *obj1, void *obj2)
+OSInt __stdcall HTTPDirectoryHandler_CompareFuncCount(DirectoryEntry *obj1, DirectoryEntry *obj2)
 {
-	DirectoryEntry *ent1 = (DirectoryEntry *)obj1;
-	DirectoryEntry *ent2 = (DirectoryEntry *)obj2;
-
-	if (ent1->cnt > ent2->cnt)
+	if (obj1->cnt > obj2->cnt)
 	{
 		return 1;
 	}
-	else if (ent1->cnt < ent2->cnt)
+	else if (obj1->cnt < obj2->cnt)
 	{
 		return -1;
 	}
 	else
 	{
-		return HTTPDirectoryHandler_CompareFuncName(ent1, ent2);
+		return HTTPDirectoryHandler_CompareFuncName(obj1, obj2);
 	}
 }
 
@@ -486,7 +478,7 @@ Net::WebServer::HTTPDirectoryHandler::~HTTPDirectoryHandler()
 {
 	this->rootDir->Release();
 	UOSInt cacheCnt;
-	CacheInfo **cacheList = this->fileCache.ToArray(&cacheCnt);
+	CacheInfo **cacheList = this->fileCache.ToArray(cacheCnt);
 	while (cacheCnt-- > 0)
 	{
 		MemFree(cacheList[cacheCnt]->buff);
@@ -1174,18 +1166,18 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NotNullPtr<Net::WebServ
 
 						UOSInt i;
 						UOSInt j;
-						DirectoryEntry **entArr = entList.GetArray(&j);
+						DirectoryEntry **entArr = entList.GetArray(j);
 						if (sort == 1)
 						{
-							ArtificialQuickSort_SortCmp((void**)entArr, HTTPDirectoryHandler_CompareFuncName, 0, (OSInt)j - 1);
+							Data::Sort::ArtificialQuickSortFunc<DirectoryEntry*>::Sort(entArr, HTTPDirectoryHandler_CompareFuncName, 0, (OSInt)j - 1);
 						}
 						else if (sort == 2)
 						{
-							ArtificialQuickSort_SortCmp((void**)entArr, HTTPDirectoryHandler_CompareFuncSize, 0, (OSInt)j - 1);
+							Data::Sort::ArtificialQuickSortFunc<DirectoryEntry*>::Sort(entArr, HTTPDirectoryHandler_CompareFuncSize, 0, (OSInt)j - 1);
 						}
 						else if (sort == 3)
 						{
-							ArtificialQuickSort_SortCmp((void**)entArr, HTTPDirectoryHandler_CompareFuncCount, 0, (OSInt)j - 1);
+							Data::Sort::ArtificialQuickSortFunc<DirectoryEntry*>::Sort(entArr, HTTPDirectoryHandler_CompareFuncCount, 0, (OSInt)j - 1);
 						}
 
 						i = 0;
@@ -1576,7 +1568,7 @@ void Net::WebServer::HTTPDirectoryHandler::ClearFileCache()
 	{
 		Sync::SimpleThread::Sleep(1);
 	}
-	CacheInfo **cacheList = this->fileCache.ToArray(&cacheCnt);
+	CacheInfo **cacheList = this->fileCache.ToArray(cacheCnt);
 	while (cacheCnt-- > 0)
 	{
 		MemFree(cacheList[cacheCnt]->buff);

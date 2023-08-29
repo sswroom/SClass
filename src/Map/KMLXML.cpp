@@ -1367,10 +1367,10 @@ Map::MapDrawLayer *Map::KMLXML::ParseKMLPlacemarkLyr(NotNullPtr<Text::XMLReader>
 
 						NEW_CLASS(pl, Math::Geometry::LineString(4326, altList.GetCount(), true, false));
 						altArr = pl->GetZList(&nPoints);
-						ptArr = pl->GetPointList(&nPoints);
+						ptArr = pl->GetPointList(nPoints);
 						i = altList.GetCount();
-						MemCopyAC(ptArr, coord.GetArray(&j), sizeof(Math::Coord2DDbl) * i);
-						MemCopyAC(altArr, altList.GetArray(&j), sizeof(Double) * i);
+						MemCopyAC(ptArr, coord.GetArray(j), sizeof(Math::Coord2DDbl) * i);
+						MemCopyAC(altArr, altList.GetArray(j), sizeof(Double) * i);
 						lyr->AddVector(pl, &lyrNameSb);
 					}
 				}
@@ -1528,21 +1528,21 @@ Map::MapDrawLayer *Map::KMLXML::ParseKMLPlacemarkLyr(NotNullPtr<Text::XMLReader>
 				if (altList.GetCount() > 0)
 				{
 					NEW_CLASS(pg, Math::Geometry::Polygon(4326, 2, (coord.GetCount() + altList.GetCount()) >> 1, false, false));
-					ptList = pg->GetPtOfstList(&nPoints);
+					ptList = pg->GetPtOfstList(nPoints);
 					ptList[0] = 0;
 					ptList[1] = (UInt32)(coord.GetCount() >> 1);
-					ptArr = pg->GetPointList(&nPoints);
-					MemCopyNO(ptArr, coord.GetArray(&i), sizeof(Double) * coord.GetCount());
-					MemCopyNO(&ptArr[coord.GetCount()], altList.GetArray(&i), sizeof(Double) * altList.GetCount());
+					ptArr = pg->GetPointList(nPoints);
+					MemCopyNO(ptArr, coord.GetArray(i), sizeof(Double) * coord.GetCount());
+					MemCopyNO(&ptArr[coord.GetCount()], altList.GetArray(i), sizeof(Double) * altList.GetCount());
 					lyr->AddVector(pg, &lyrNameSb);
 				}
 				else
 				{
 					NEW_CLASS(pg, Math::Geometry::Polygon(4326, 1, coord.GetCount() >> 1, false, false));
-					ptList = pg->GetPtOfstList(&nPoints);
+					ptList = pg->GetPtOfstList(nPoints);
 					ptList[0] = 0;
-					ptArr = pg->GetPointList(&nPoints);
-					MemCopyNO(ptArr, coord.GetArray(&i), sizeof(Double) * coord.GetCount());
+					ptArr = pg->GetPointList(nPoints);
+					MemCopyNO(ptArr, coord.GetArray(i), sizeof(Double) * coord.GetCount());
 					lyr->AddVector(pg, &lyrNameSb);
 				}
 			}

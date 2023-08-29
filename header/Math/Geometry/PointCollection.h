@@ -16,8 +16,8 @@ namespace Math
 			PointCollection(UInt32 srid, UOSInt nPoint, const Math::Coord2DDbl *pointArr);
 			virtual ~PointCollection();
 
-			Math::Coord2DDbl *GetPointList(UOSInt *nPoint) { *nPoint = this->nPoint; return this->pointArr; }
-			const Math::Coord2DDbl *GetPointListRead(UOSInt *nPoint) const { *nPoint = this->nPoint; return this->pointArr; }
+			Math::Coord2DDbl *GetPointList(OutParam<UOSInt> nPoint) { nPoint.Set(this->nPoint); return this->pointArr; }
+			const Math::Coord2DDbl *GetPointListRead(OutParam<UOSInt> nPoint) const { nPoint.Set(this->nPoint); return this->pointArr; }
 
 			virtual Math::Coord2DDbl GetCenter() const;
 			virtual Math::RectAreaDbl GetBounds() const;

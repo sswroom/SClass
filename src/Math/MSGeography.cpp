@@ -110,7 +110,7 @@ Math::Geometry::Vector2D *Math::MSGeography::ParseBinary(const UInt8 *buffPtr, U
 				UOSInt i;
 				UOSInt j;
 				NEW_CLASS(pl, Math::Geometry::Polyline(srid, nFigures, nPoints, false, false));
-				Math::Coord2DDbl *points = pl->GetPointList(&j);
+				Math::Coord2DDbl *points = pl->GetPointList(j);
 				i = 0;
 				while (i < j)
 				{
@@ -119,7 +119,7 @@ Math::Geometry::Vector2D *Math::MSGeography::ParseBinary(const UInt8 *buffPtr, U
 				}
 				if (nFigures > 1)
 				{
-					UInt32 *ofstList = pl->GetPtOfstList(&j);
+					UInt32 *ofstList = pl->GetPtOfstList(j);
 					i = 0;
 					while (i < j)
 					{
@@ -140,7 +140,7 @@ Math::Geometry::Vector2D *Math::MSGeography::ParseBinary(const UInt8 *buffPtr, U
 				UOSInt i;
 				UOSInt j;
 				NEW_CLASS(pg, Math::Geometry::Polygon(srid, nFigures, nPoints, false, false));
-				Math::Coord2DDbl *points = pg->GetPointList(&j);
+				Math::Coord2DDbl *points = pg->GetPointList(j);
 				i = 0;
 				while (i < j)
 				{
@@ -149,7 +149,7 @@ Math::Geometry::Vector2D *Math::MSGeography::ParseBinary(const UInt8 *buffPtr, U
 				}
 				if (nFigures > 1)
 				{
-					UInt32 *ofstList = pg->GetPtOfstList(&j);
+					UInt32 *ofstList = pg->GetPtOfstList(j);
 					i = 0;
 					while (i < j)
 					{
@@ -165,7 +165,7 @@ Math::Geometry::Vector2D *Math::MSGeography::ParseBinary(const UInt8 *buffPtr, U
 				UOSInt i;
 				UOSInt j;
 				NEW_CLASS(pl, Math::Geometry::Polyline(srid, nFigures, nPoints, false, false));
-				Math::Coord2DDbl *points = pl->GetPointList(&j);
+				Math::Coord2DDbl *points = pl->GetPointList(j);
 				i = 0;
 				while (i < j)
 				{
@@ -174,7 +174,7 @@ Math::Geometry::Vector2D *Math::MSGeography::ParseBinary(const UInt8 *buffPtr, U
 				}
 				if (nFigures > 1)
 				{
-					UInt32 *ofstList = pl->GetPtOfstList(&j);
+					UInt32 *ofstList = pl->GetPtOfstList(j);
 					i = 0;
 					while (i < j)
 					{
@@ -209,7 +209,7 @@ Math::Geometry::Vector2D *Math::MSGeography::ParseBinary(const UInt8 *buffPtr, U
 							k = ReadUInt32(&figurePtr[i * 5 + 1]);
 						}
 						NEW_CLASS(pg, Math::Geometry::Polygon(srid, 1, k - j, false, false));
-						Math::Coord2DDbl *points = pg->GetPointList(&l);
+						Math::Coord2DDbl *points = pg->GetPointList(l);
 						l = 0;
 						while (j < k)
 						{
@@ -223,7 +223,7 @@ Math::Geometry::Vector2D *Math::MSGeography::ParseBinary(const UInt8 *buffPtr, U
 				else
 				{
 					NEW_CLASS(pg, Math::Geometry::Polygon(srid, 1, nPoints, false, false));
-					Math::Coord2DDbl *points = pg->GetPointList(&j);
+					Math::Coord2DDbl *points = pg->GetPointList(j);
 					i = 0;
 					while (i < j)
 					{
@@ -297,7 +297,7 @@ Math::Geometry::Vector2D *Math::MSGeography::ParseBinary(const UInt8 *buffPtr, U
 				UOSInt i;
 				UOSInt j;
 				NEW_CLASS(pl, Math::Geometry::LineString(srid, nPoints, true, false));
-				Math::Coord2DDbl *points = pl->GetPointList(&j);
+				Math::Coord2DDbl *points = pl->GetPointList(j);
 				Double *zList = pl->GetZList(&j);
 				i = 0;
 				while (i < j)
@@ -329,7 +329,7 @@ Math::Geometry::Vector2D *Math::MSGeography::ParseBinary(const UInt8 *buffPtr, U
 				UOSInt i;
 				UOSInt j;
 				NEW_CLASS(pg, Math::Geometry::Polygon(srid, nFigures, nPoints, true, false));
-				Math::Coord2DDbl *points = pg->GetPointList(&j);
+				Math::Coord2DDbl *points = pg->GetPointList(j);
 				Double *zList = pg->GetZList(&j);
 				i = 0;
 				while (i < j)
@@ -346,7 +346,7 @@ Math::Geometry::Vector2D *Math::MSGeography::ParseBinary(const UInt8 *buffPtr, U
 				}
 				if (nFigures > 1)
 				{
-					UInt32 *ofstList = pg->GetPtOfstList(&j);
+					UInt32 *ofstList = pg->GetPtOfstList(j);
 					i = 0;
 					while (i < j)
 					{
@@ -362,7 +362,7 @@ Math::Geometry::Vector2D *Math::MSGeography::ParseBinary(const UInt8 *buffPtr, U
 				UOSInt i;
 				UOSInt j;
 				NEW_CLASS(pl, Math::Geometry::Polyline(srid, nFigures, nPoints, true, false));
-				Math::Coord2DDbl *points = pl->GetPointList(&j);
+				Math::Coord2DDbl *points = pl->GetPointList(j);
 				Double *zList = pl->GetZList(&j);
 				i = 0;
 				while (i < j)
@@ -379,7 +379,7 @@ Math::Geometry::Vector2D *Math::MSGeography::ParseBinary(const UInt8 *buffPtr, U
 				}
 				if (nFigures > 1)
 				{
-					UInt32 *ofstList = pl->GetPtOfstList(&j);
+					UInt32 *ofstList = pl->GetPtOfstList(j);
 					i = 0;
 					while (i < j)
 					{
@@ -421,7 +421,7 @@ Math::Geometry::Vector2D *Math::MSGeography::ParseBinary(const UInt8 *buffPtr, U
 					UOSInt k;
 					UOSInt l;
 					NEW_CLASS(pg, Math::Geometry::Polygon(srid, nextFigure - thisFigure, nextPtOfst - thisPtOfst, true, false));
-					Math::Coord2DDbl *points = pg->GetPointList(&l);
+					Math::Coord2DDbl *points = pg->GetPointList(l);
 					Double *zList = pg->GetZList(&l);
 					k = 0;
 					while (k < l)
@@ -438,7 +438,7 @@ Math::Geometry::Vector2D *Math::MSGeography::ParseBinary(const UInt8 *buffPtr, U
 					}
 					if ((nextFigure - thisFigure) > 1)
 					{
-						UInt32 *ofstList = pg->GetPtOfstList(&l);
+						UInt32 *ofstList = pg->GetPtOfstList(l);
 						k = 0;
 						while (k < l)
 						{
@@ -502,7 +502,7 @@ Math::Geometry::Vector2D *Math::MSGeography::ParseBinary(const UInt8 *buffPtr, U
 				UOSInt i;
 				UOSInt j;
 				NEW_CLASS(pl, Math::Geometry::LineString(srid, nPoints, true, true));
-				Math::Coord2DDbl *points = pl->GetPointList(&j);
+				Math::Coord2DDbl *points = pl->GetPointList(j);
 				Double *zList = pl->GetZList(&j);
 				Double *mList = pl->GetMList(&j);
 				i = 0;
@@ -578,7 +578,7 @@ Math::Geometry::Vector2D *Math::MSGeography::ParseBinary(const UInt8 *buffPtr, U
 				UOSInt i;
 				UOSInt j;
 				NEW_CLASS(pl, Math::Geometry::Polyline(srid, nFigures, nPoints, true, true));
-				Math::Coord2DDbl *points = pl->GetPointList(&j);
+				Math::Coord2DDbl *points = pl->GetPointList(j);
 				Double *zList = pl->GetZList(&j);
 				Double *mList = pl->GetMList(&j);
 				i = 0;
@@ -603,7 +603,7 @@ Math::Geometry::Vector2D *Math::MSGeography::ParseBinary(const UInt8 *buffPtr, U
 				}
 				if (nFigures > 1)
 				{
-					UInt32 *ofstList = pl->GetPtOfstList(&j);
+					UInt32 *ofstList = pl->GetPtOfstList(j);
 					i = 0;
 					while (i < j)
 					{
@@ -628,7 +628,7 @@ Math::Geometry::Vector2D *Math::MSGeography::ParseBinary(const UInt8 *buffPtr, U
 			Math::Geometry::LineString *pl;
 			NEW_CLASS(pl, Math::Geometry::LineString(srid, 2, false, false));
 			UOSInt j;
-			Math::Coord2DDbl *points = pl->GetPointList(&j);
+			Math::Coord2DDbl *points = pl->GetPointList(j);
 			points[0] = Math::Coord2DDbl(ReadDouble(&buffPtr[6]), ReadDouble(&buffPtr[14]));
 			points[1] = Math::Coord2DDbl(ReadDouble(&buffPtr[22]), ReadDouble(&buffPtr[30]));
 			return pl;
@@ -642,7 +642,7 @@ Math::Geometry::Vector2D *Math::MSGeography::ParseBinary(const UInt8 *buffPtr, U
 			Math::Geometry::LineString *pl;
 			NEW_CLASS(pl, Math::Geometry::LineString(srid, 2, true, false));
 			UOSInt j;
-			Math::Coord2DDbl *points = pl->GetPointList(&j);
+			Math::Coord2DDbl *points = pl->GetPointList(j);
 			Double *zList = pl->GetZList(&j);
 			points[0] = Math::Coord2DDbl(ReadDouble(&buffPtr[6]), ReadDouble(&buffPtr[14]));
 			points[1] = Math::Coord2DDbl(ReadDouble(&buffPtr[22]), ReadDouble(&buffPtr[30]));
@@ -659,7 +659,7 @@ Math::Geometry::Vector2D *Math::MSGeography::ParseBinary(const UInt8 *buffPtr, U
 			Math::Geometry::LineString *pl;
 			NEW_CLASS(pl, Math::Geometry::LineString(srid, 2, true, true));
 			UOSInt j;
-			Math::Coord2DDbl *points = pl->GetPointList(&j);
+			Math::Coord2DDbl *points = pl->GetPointList(j);
 			Double *zList = pl->GetZList(&j);
 			Double *mList = pl->GetMList(&j);
 			points[0] = Math::Coord2DDbl(ReadDouble(&buffPtr[6]), ReadDouble(&buffPtr[14]));

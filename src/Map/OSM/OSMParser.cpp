@@ -1325,7 +1325,7 @@ Map::MapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(NotNullPtr<Text::XMLReade
 						}
 						Math::Geometry::Polygon *pg;
 						NEW_CLASS(pg, Math::Geometry::Polygon(4326, 1, latList.GetCount(), false, false));
-						Math::Coord2DDbl *points = pg->GetPointList(&i);
+						Math::Coord2DDbl *points = pg->GetPointList(i);
 						while (i-- > 0)
 						{
 							points[i].x = lonList.GetItem(i);
@@ -1346,7 +1346,7 @@ Map::MapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(NotNullPtr<Text::XMLReade
 						}
 						Math::Geometry::LineString *pl;
 						NEW_CLASS(pl, Math::Geometry::LineString(4326, latList.GetCount(), false, false));
-						Math::Coord2DDbl *points = pl->GetPointList(&i);
+						Math::Coord2DDbl *points = pl->GetPointList(i);
 						while (i-- > 0)
 						{
 							points[i].x = lonList.GetItem(i);

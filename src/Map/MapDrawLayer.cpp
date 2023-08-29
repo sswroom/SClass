@@ -3,7 +3,7 @@
 #include "Data/ArrayList.h"
 #include "Data/ArrayListInt32.h"
 #include "Data/ArrayListICaseString.h"
-#include "Data/Sort/ArtificialQuickSortC.h"
+#include "Data/Sort/ArtificialQuickSortFunc.h"
 #include "DB/ColDef.h"
 #include "DB/TableDef.h"
 #include "Math/Math.h"
@@ -19,23 +19,21 @@
 #include "Text/MyStringFloat.h"
 #include "Text/MyStringW.h"
 
-OSInt __stdcall Map::MapDrawLayer::ObjectCompare(void *obj1, void *obj2)
+OSInt __stdcall Map::MapDrawLayer::ObjectCompare(ObjectInfo *obj1, ObjectInfo *obj2)
 {
-	ObjectInfo *objInfo1 = (ObjectInfo*)obj1;
-	ObjectInfo *objInfo2 = (ObjectInfo*)obj2;
-	if (objInfo1->objDist > objInfo2->objDist)
+	if (obj1->objDist > obj2->objDist)
 	{
 		return 1;
 	}
-	else if (objInfo1->objDist < objInfo2->objDist)
+	else if (obj1->objDist < obj2->objDist)
 	{
 		return -1;
 	}
-	else if (objInfo1->objId > objInfo2->objId)
+	else if (obj1->objId > obj2->objId)
 	{
 		return 1;
 	}
-	else if (objInfo1->objId < objInfo2->objId)
+	else if (obj1->objId < obj2->objId)
 	{
 		return -1;
 	}
@@ -450,7 +448,7 @@ Int64 Map::MapDrawLayer::GetNearestObjectId(GetObjectSess *session, Math::Coord2
 	return nearObjId;
 }
 
-OSInt Map::MapDrawLayer::GetNearObjects(GetObjectSess *session, Data::ArrayList<ObjectInfo*> *objList, Math::Coord2DDbl pt, Double maxDist)
+OSInt Map::MapDrawLayer::GetNearObjects(GetObjectSess *session, NotNullPtr<Data::ArrayList<ObjectInfo*>> objList, Math::Coord2DDbl pt, Double maxDist)
 {
 	Data::ArrayListInt64 *objIds;
 	NEW_CLASS(objIds, Data::ArrayListInt64());
@@ -500,8 +498,7 @@ OSInt Map::MapDrawLayer::GetNearObjects(GetObjectSess *session, Data::ArrayList<
 
 	if (ret > 0)
 	{
-		void **arr = (void**)objList->GetArray(&i);
-		ArtificialQuickSort_SortCmp(arr, ObjectCompare, 0, (OSInt)i - 1);
+		Data::Sort::ArtificialQuickSortFunc<ObjectInfo*>::Sort(objList, ObjectCompare);
 	}
 	else if (nearObjId != -1)
 	{
@@ -515,7 +512,7 @@ OSInt Map::MapDrawLayer::GetNearObjects(GetObjectSess *session, Data::ArrayList<
 	return ret;
 }
 
-void Map::MapDrawLayer::FreeObjects(Data::ArrayList<ObjectInfo*> *objList)
+void Map::MapDrawLayer::FreeObjects(NotNullPtr<Data::ArrayList<ObjectInfo*>> objList)
 {
 	ObjectInfo *objInfo;
 	UOSInt i;
