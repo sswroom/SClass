@@ -11,7 +11,7 @@
 IO::ConsoleWriter *console;
 IO::LogTool *logger;
 
-void __stdcall OnForwardRequest(void *userObj, Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp)
+void __stdcall OnForwardRequest(void *userObj, NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp)
 {
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;

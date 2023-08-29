@@ -7,13 +7,13 @@ Net::WebServer::PrintLogWebHandler::~PrintLogWebHandler()
 {
 }
 
-Net::WebServer::PrintLogWebHandler::PrintLogWebHandler(Net::WebServer::IWebHandler *hdlr, IO::Writer *writer)
+Net::WebServer::PrintLogWebHandler::PrintLogWebHandler(Net::WebServer::IWebHandler *hdlr, NotNullPtr<IO::Writer> writer)
 {
 	this->hdlr = hdlr;
 	this->writer = writer;
 }
 
-void Net::WebServer::PrintLogWebHandler::WebRequest(IWebRequest *req, IWebResponse *resp)
+void Net::WebServer::PrintLogWebHandler::WebRequest(NotNullPtr<IWebRequest> req, NotNullPtr<IWebResponse> resp)
 {
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
@@ -45,7 +45,7 @@ void Net::WebServer::PrintLogWebHandler::WebRequest(IWebRequest *req, IWebRespon
 	}
 	this->writer->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
 	Net::WebServer::PrintLogWebResponse plResp(resp, this->writer, CSTRP(sbuff, sptr));
-	this->hdlr->WebRequest(req, &plResp);
+	this->hdlr->WebRequest(req, plResp);
 }
 
 void Net::WebServer::PrintLogWebHandler::Release()

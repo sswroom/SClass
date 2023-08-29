@@ -24,8 +24,8 @@ namespace Media
 		MediaPlayerWebInterface(Media::MediaPlayerInterface *iface, Bool autoRelease);
 		virtual ~MediaPlayerWebInterface();
 
-		void BrowseRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp);
-		virtual void WebRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp);
+		void BrowseRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp);
+		virtual void WebRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp);
 		virtual void Release();
 	};
 }

@@ -25,7 +25,7 @@ UOSInt SSWR::OrganWeb::OrganWebController::GetPerPage(Bool isMobile)
 	}
 }
 
-Net::WebServer::IWebSession *SSWR::OrganWeb::OrganWebController::ParseRequestEnv(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, RequestEnv *env, Bool keepSess)
+Net::WebServer::IWebSession *SSWR::OrganWeb::OrganWebController::ParseRequestEnv(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, RequestEnv *env, Bool keepSess)
 {
 	env->scnWidth = this->scnSize;
 	env->isMobile = false;
@@ -54,7 +54,7 @@ Net::WebServer::IWebSession *SSWR::OrganWeb::OrganWebController::ParseRequestEnv
 	return 0;
 }
 
-void SSWR::OrganWeb::OrganWebController::ResponseMstm(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, IO::MemoryStream *mstm, Text::CString contType)
+void SSWR::OrganWeb::OrganWebController::ResponseMstm(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, IO::MemoryStream *mstm, Text::CString contType)
 {
 	resp->AddDefHeaders(req);
 	resp->AddContentType(contType);

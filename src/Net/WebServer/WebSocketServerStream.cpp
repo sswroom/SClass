@@ -4,8 +4,6 @@
 
 Bool Net::WebServer::WebSocketServerStream::SendPacket(UInt8 opcode, const UInt8 *buff, UOSInt buffSize)
 {
-	if (this->resp == 0)
-		return false;
 	UInt8 packetBuff[130];
 	Sync::MutexUsage mutUsage(this->sendMut);
 	if (buffSize < 126)
@@ -48,10 +46,7 @@ void Net::WebServer::WebSocketServerStream::NextPacket(UInt8 opcode, const UInt8
 	case 2: //binary frame
 		return this->stmHdlr->StreamData(*this, this->stmData, Data::ByteArrayR(buff, buffSize));
 	case 8: //connection close
-		if (this->resp)
-		{
-			this->resp->ShutdownSend();
-		}
+		this->resp->ShutdownSend();
 		break;
 	case 9: //Ping
 		this->NextPacket(10, buff, buffSize);
@@ -63,7 +58,7 @@ void Net::WebServer::WebSocketServerStream::NextPacket(UInt8 opcode, const UInt8
 	}
 }
 
-Net::WebServer::WebSocketServerStream::WebSocketServerStream(IO::StreamHandler *stmHdlr, Net::WebServer::IWebResponse *resp) : IO::Stream(CSTR("WebSocket"))
+Net::WebServer::WebSocketServerStream::WebSocketServerStream(IO::StreamHandler *stmHdlr, NotNullPtr<Net::WebServer::IWebResponse> resp) : IO::Stream(CSTR("WebSocket"))
 {
 	this->stmHdlr = stmHdlr;
 	this->resp = resp;

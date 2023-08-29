@@ -5,7 +5,7 @@
 
 #include <stdio.h>
 
-Bool __stdcall Net::WebServer::GCISNotifyHandler::NotifyFunc(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq, WebServiceHandler *hdlr)
+Bool __stdcall Net::WebServer::GCISNotifyHandler::NotifyFunc(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CString subReq, WebServiceHandler *hdlr)
 {
 	GCISNotifyHandler *me = (GCISNotifyHandler*)hdlr;
 	Crypto::Cert::X509Cert *cert = req->GetClientCert();
@@ -202,7 +202,7 @@ Bool __stdcall Net::WebServer::GCISNotifyHandler::NotifyFunc(Net::WebServer::IWe
 	return true;
 }
 
-Bool __stdcall Net::WebServer::GCISNotifyHandler::BatchUplFunc(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq, WebServiceHandler *me)
+Bool __stdcall Net::WebServer::GCISNotifyHandler::BatchUplFunc(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CString subReq, WebServiceHandler *me)
 {
 	UOSInt size;
 	const UInt8 *data = req->GetReqData(&size);

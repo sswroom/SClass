@@ -19,7 +19,7 @@ namespace Net
 				Transparent
 			};
 
-			typedef void (__stdcall *ReqHandler)(void *userObj, Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp);
+			typedef void (__stdcall *ReqHandler)(void *userObj, NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp);
 		private:
 			Data::ArrayListNN<Text::String> forwardAddrs;
 			Data::ArrayListNN<Text::String> injHeaders;
@@ -33,16 +33,16 @@ namespace Net
 			IO::LogTool *log;
 			Bool logContent;
 
-			virtual Text::String *GetNextURL(Net::WebServer::IWebRequest *req);
+			virtual Text::String *GetNextURL(NotNullPtr<Net::WebServer::IWebRequest> req);
 		public:
 			HTTPForwardHandler(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::CString forwardURL, ForwardType fwdType);
 		protected:
 			virtual ~HTTPForwardHandler();
 		public:
-			virtual Bool ProcessRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq);
+			virtual Bool ProcessRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CString subReq);
 
 			void AddForwardURL(Text::CString url);
-			void AddInjectHeader(Text::String *header);
+			void AddInjectHeader(NotNullPtr<Text::String> header);
 			void AddInjectHeader(Text::CString header);
 			void SetLog(IO::LogTool *log, Bool logContent);
 

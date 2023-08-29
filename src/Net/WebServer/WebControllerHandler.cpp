@@ -13,7 +13,7 @@ Net::WebServer::WebControllerHandler::~WebControllerHandler()
 	}
 }
 
-Bool Net::WebServer::WebControllerHandler::ProcessRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq)
+Bool Net::WebServer::WebControllerHandler::ProcessRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CString subReq)
 {
 	UOSInt i = 0;
 	UOSInt j = this->ctrlList.GetCount();

@@ -19,7 +19,7 @@ Net::WebServer::WebStandardHandler::~WebStandardHandler()
 	}
 }
 
-Bool Net::WebServer::WebStandardHandler::DoRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq)
+Bool Net::WebServer::WebStandardHandler::DoRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CString subReq)
 {
 	if (subReq.v[0] != '/')
 		return false;
@@ -78,7 +78,7 @@ Net::WebServer::WebStandardHandler::WebStandardHandler()
 {
 }
 
-void Net::WebServer::WebStandardHandler::WebRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp)
+void Net::WebServer::WebStandardHandler::WebRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp)
 {
 	NotNullPtr<Text::String> reqURL = req->GetRequestURI();
 	Net::WebUtil::RequestMethod reqMeth = req->GetReqMethod();
@@ -130,7 +130,7 @@ void Net::WebServer::WebStandardHandler::Release()
 	DEL_CLASS(this);
 }
 
-Bool Net::WebServer::WebStandardHandler::ProcessRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq)
+Bool Net::WebServer::WebStandardHandler::ProcessRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CString subReq)
 {
 	return DoRequest(req, resp, subReq);
 }

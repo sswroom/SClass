@@ -21,9 +21,9 @@ namespace Net
 		public:
 			virtual ~IWebSessionManager();
 
-			virtual IWebSession *GetSession(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp) = 0;
-			virtual IWebSession *CreateSession(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp) = 0;
-			virtual void DeleteSession(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp) = 0;
+			virtual IWebSession *GetSession(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp) = 0;
+			virtual IWebSession *CreateSession(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp) = 0;
+			virtual void DeleteSession(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp) = 0;
 		};
 	};
 };

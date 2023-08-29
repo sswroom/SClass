@@ -12,7 +12,7 @@ namespace Net
 		{
 		private:
 			Sync::Mutex sendMut;
-			Net::WebServer::IWebResponse *resp;
+			NotNullPtr<Net::WebServer::IWebResponse> resp;
 			IO::StreamHandler *stmHdlr;
 			void *stmData;
 
@@ -23,7 +23,7 @@ namespace Net
 			Bool SendPacket(UInt8 opcode, const UInt8 *buff, UOSInt buffSize);
 			void NextPacket(UInt8 opcode, const UInt8 *buff, UOSInt buffSize);
 		public:
-			WebSocketServerStream(IO::StreamHandler *stmHdlr, Net::WebServer::IWebResponse *resp);
+			WebSocketServerStream(IO::StreamHandler *stmHdlr, NotNullPtr<Net::WebServer::IWebResponse> resp);
 			virtual ~WebSocketServerStream();
 
 			virtual Bool IsDown() const;

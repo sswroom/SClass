@@ -11,7 +11,7 @@ namespace Net
 		class WebServiceHandler : public Net::WebServer::HTTPDirectoryHandler
 		{
 		public:
-			typedef Bool (__stdcall *ServiceFunc)(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq, WebServiceHandler *me);
+			typedef Bool (__stdcall *ServiceFunc)(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CString subReq, WebServiceHandler *me);
 		private:
 			typedef struct
 			{
@@ -23,7 +23,7 @@ namespace Net
 
 		protected:
 			virtual ~WebServiceHandler();
-			virtual Bool ProcessRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq);
+			virtual Bool ProcessRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CString subReq);
 		public:
 			WebServiceHandler();
 			WebServiceHandler(Text::CString rootDir);

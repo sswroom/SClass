@@ -23,9 +23,9 @@ namespace Net
 		protected:
 			virtual ~RESTfulHandler();
 		public:
-			virtual Bool ProcessRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq);
+			virtual Bool ProcessRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CString subReq);
 
-			static DB::PageRequest *ParsePageReq(Net::WebServer::IWebRequest *req);
+			static DB::PageRequest *ParsePageReq(NotNullPtr<Net::WebServer::IWebRequest> req);
 		};
 	}
 }

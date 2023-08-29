@@ -15,14 +15,14 @@ namespace Net
 
 		protected:
 			virtual ~WebStandardHandler();
-			Bool DoRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq);
+			Bool DoRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CString subReq);
 		public:
 			WebStandardHandler();
 
-			virtual void WebRequest(IWebRequest *req, IWebResponse *resp);
+			virtual void WebRequest(NotNullPtr<IWebRequest> req, NotNullPtr<IWebResponse> resp);
 			virtual void Release();
 
-			virtual Bool ProcessRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq);
+			virtual Bool ProcessRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CString subReq);
 
 			void HandlePath(Text::CString relativePath, Net::WebServer::WebStandardHandler *hdlr, Bool needRelease);
 		};

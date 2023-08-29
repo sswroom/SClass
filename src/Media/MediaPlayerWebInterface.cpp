@@ -28,7 +28,7 @@ Media::MediaPlayerWebInterface::~MediaPlayerWebInterface()
 
 }
 
-void Media::MediaPlayerWebInterface::BrowseRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp)
+void Media::MediaPlayerWebInterface::BrowseRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp)
 {
 	Text::String *fname = req->GetQueryValue(CSTR("fname"));
 	if (this->iface->GetOpenedFile() == 0)
@@ -149,7 +149,7 @@ void Media::MediaPlayerWebInterface::BrowseRequest(Net::WebServer::IWebRequest *
 	resp->Write(buff, size);
 }
 
-void Media::MediaPlayerWebInterface::WebRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp)
+void Media::MediaPlayerWebInterface::WebRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp)
 {
 	NotNullPtr<Text::String> reqURI = req->GetRequestURI();
 	if (reqURI->Equals(UTF8STRC("/browse")) || reqURI->StartsWith(UTF8STRC("/browse?")))

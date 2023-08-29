@@ -10,7 +10,7 @@
 
 #define BTTIMEOUT 30000
 
-Bool __stdcall Net::WebServer::CapturerWebHandler::IndexFunc(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq, WebServiceHandler *svc)
+Bool __stdcall Net::WebServer::CapturerWebHandler::IndexFunc(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CString subReq, WebServiceHandler *svc)
 {
 	Net::WebServer::CapturerWebHandler *me = (Net::WebServer::CapturerWebHandler*)svc;
 	Text::StringBuilderUTF8 sb;
@@ -94,7 +94,7 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::IndexFunc(Net::WebServer::IWe
 	return true;
 }
 
-Bool __stdcall Net::WebServer::CapturerWebHandler::BTCurrentFunc(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq, WebServiceHandler *svc)
+Bool __stdcall Net::WebServer::CapturerWebHandler::BTCurrentFunc(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CString subReq, WebServiceHandler *svc)
 {
 	Net::WebServer::CapturerWebHandler *me = (Net::WebServer::CapturerWebHandler*)svc;
 	if (me->btCapture == 0)
@@ -126,7 +126,7 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::BTCurrentFunc(Net::WebServer:
 
 }
 
-Bool __stdcall Net::WebServer::CapturerWebHandler::BTDetailFunc(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq, WebServiceHandler *svc)
+Bool __stdcall Net::WebServer::CapturerWebHandler::BTDetailFunc(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CString subReq, WebServiceHandler *svc)
 {
 	Net::WebServer::CapturerWebHandler *me = (Net::WebServer::CapturerWebHandler*)svc;
 	if (me->btCapture == 0)
@@ -159,7 +159,7 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::BTDetailFunc(Net::WebServer::
 }
 
 
-Bool __stdcall Net::WebServer::CapturerWebHandler::BTDetailPubFunc(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq, WebServiceHandler *svc)
+Bool __stdcall Net::WebServer::CapturerWebHandler::BTDetailPubFunc(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CString subReq, WebServiceHandler *svc)
 {
 	Net::WebServer::CapturerWebHandler *me = (Net::WebServer::CapturerWebHandler*)svc;
 	if (me->btCapture == 0)
@@ -190,7 +190,7 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::BTDetailPubFunc(Net::WebServe
 	return true;
 }
 
-Bool __stdcall Net::WebServer::CapturerWebHandler::WiFiCurrentFunc(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq, WebServiceHandler *svc)
+Bool __stdcall Net::WebServer::CapturerWebHandler::WiFiCurrentFunc(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CString subReq, WebServiceHandler *svc)
 {
 	Net::WebServer::CapturerWebHandler *me = (Net::WebServer::CapturerWebHandler*)svc;
 	if (me->wifiCapture == 0)
@@ -224,7 +224,7 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::WiFiCurrentFunc(Net::WebServe
 	return true;
 }
 
-Bool __stdcall Net::WebServer::CapturerWebHandler::WiFiDetailFunc(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq, WebServiceHandler *svc)
+Bool __stdcall Net::WebServer::CapturerWebHandler::WiFiDetailFunc(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CString subReq, WebServiceHandler *svc)
 {
 	Net::WebServer::CapturerWebHandler *me = (Net::WebServer::CapturerWebHandler*)svc;
 	if (me->wifiCapture == 0)
@@ -256,7 +256,7 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::WiFiDetailFunc(Net::WebServer
 	return true;
 }
 
-Bool __stdcall Net::WebServer::CapturerWebHandler::WiFiDownloadFunc(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq, WebServiceHandler *svc)
+Bool __stdcall Net::WebServer::CapturerWebHandler::WiFiDownloadFunc(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CString subReq, WebServiceHandler *svc)
 {
 	Net::WebServer::CapturerWebHandler *me = (Net::WebServer::CapturerWebHandler*)svc;
 	if (me->wifiCapture == 0)
@@ -340,7 +340,7 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::WiFiDownloadFunc(Net::WebServ
 	return true;
 }
 
-void Net::WebServer::CapturerWebHandler::AppendWiFiTable(NotNullPtr<Text::StringBuilderUTF8> sb, Net::WebServer::IWebRequest *req, NotNullPtr<Data::ArrayList<Net::WiFiLogFile::LogFileEntry*>> entryList, const Data::Timestamp &scanTime)
+void Net::WebServer::CapturerWebHandler::AppendWiFiTable(NotNullPtr<Text::StringBuilderUTF8> sb, NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Data::ArrayList<Net::WiFiLogFile::LogFileEntry*>> entryList, const Data::Timestamp &scanTime)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -404,7 +404,7 @@ void Net::WebServer::CapturerWebHandler::AppendWiFiTable(NotNullPtr<Text::String
 	sb->AppendC(UTF8STRC("</table>"));
 }
 
-void Net::WebServer::CapturerWebHandler::AppendBTTable(NotNullPtr<Text::StringBuilderUTF8> sb, Net::WebServer::IWebRequest *req, NotNullPtr<const Data::ReadingList<IO::BTScanLog::ScanRecord3*>> entryList, Bool inRangeOnly)
+void Net::WebServer::CapturerWebHandler::AppendBTTable(NotNullPtr<Text::StringBuilderUTF8> sb, NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<const Data::ReadingList<IO::BTScanLog::ScanRecord3*>> entryList, Bool inRangeOnly)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;

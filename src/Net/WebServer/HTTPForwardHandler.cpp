@@ -5,7 +5,7 @@
 #include "Text/CPPText.h"
 #include "Text/StringBuilderUTF8.h"
 
-Text::String *Net::WebServer::HTTPForwardHandler::GetNextURL(Net::WebServer::IWebRequest *req)
+Text::String *Net::WebServer::HTTPForwardHandler::GetNextURL(NotNullPtr<Net::WebServer::IWebRequest> req)
 {
 	Sync::MutexUsage mutUsage(this->mut);
 	UOSInt i = this->nextURL;
@@ -32,7 +32,7 @@ Net::WebServer::HTTPForwardHandler::~HTTPForwardHandler()
 	LIST_FREE_FUNC(&this->injHeaders, STR_REL);
 }
 
-Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq)
+Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CString subReq)
 {
 	UInt8 buff[2048];
 	UTF8Char *sptr;
@@ -319,7 +319,7 @@ void Net::WebServer::HTTPForwardHandler::AddForwardURL(Text::CString url)
 	this->forwardAddrs.Add(Text::String::New(url));
 }
 
-void Net::WebServer::HTTPForwardHandler::AddInjectHeader(Text::String *header)
+void Net::WebServer::HTTPForwardHandler::AddInjectHeader(NotNullPtr<Text::String> header)
 {
 	this->injHeaders.Add(header->Clone());
 }

@@ -153,7 +153,7 @@ namespace SSWR
 			CategoryInfo *CateGetByName(NotNullPtr<Sync::RWMutexUsage> mutUsage, Text::String *name);
 			Data::ReadingList<CategoryInfo*> *CateGetList(NotNullPtr<Sync::RWMutexUsage> mutUsage);
 
-			IO::ConfigFile *LangGet(Net::WebServer::IWebRequest *req);
+			IO::ConfigFile *LangGet(NotNullPtr<Net::WebServer::IWebRequest> req);
 		};
 	}
 }

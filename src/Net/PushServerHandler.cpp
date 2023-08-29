@@ -3,7 +3,7 @@
 #include "Text/Builder/HTMLDocumentBuilder.h"
 #include "Text/JSONBuilder.h"
 
-Bool __stdcall Net::PushServerHandler::SendHandler(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq, WebServiceHandler *svc)
+Bool __stdcall Net::PushServerHandler::SendHandler(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CString subReq, WebServiceHandler *svc)
 {
 	Net::PushServerHandler *me = (Net::PushServerHandler*)svc;
 	UOSInt dataLen;
@@ -21,7 +21,7 @@ Bool __stdcall Net::PushServerHandler::SendHandler(Net::WebServer::IWebRequest *
 	return true;
 }
 
-Bool __stdcall Net::PushServerHandler::SendBatchHandler(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq, WebServiceHandler *svc)
+Bool __stdcall Net::PushServerHandler::SendBatchHandler(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CString subReq, WebServiceHandler *svc)
 {
 	Net::PushServerHandler *me = (Net::PushServerHandler*)svc;
 	UOSInt dataLen;
@@ -50,7 +50,7 @@ Bool __stdcall Net::PushServerHandler::SendBatchHandler(Net::WebServer::IWebRequ
 	return true;
 }
 
-Bool __stdcall Net::PushServerHandler::SubscribeHandler(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq, WebServiceHandler *svc)
+Bool __stdcall Net::PushServerHandler::SubscribeHandler(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CString subReq, WebServiceHandler *svc)
 {
 	Net::PushServerHandler *me = (Net::PushServerHandler*)svc;
 	UOSInt dataLen;
@@ -112,7 +112,7 @@ Bool __stdcall Net::PushServerHandler::SubscribeHandler(Net::WebServer::IWebRequ
 	return true;
 }
 
-Bool __stdcall Net::PushServerHandler::UnsubscribeHandler(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq, WebServiceHandler *svc)
+Bool __stdcall Net::PushServerHandler::UnsubscribeHandler(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CString subReq, WebServiceHandler *svc)
 {
 	Net::PushServerHandler *me = (Net::PushServerHandler*)svc;
 	UOSInt dataLen;
@@ -135,7 +135,7 @@ Bool __stdcall Net::PushServerHandler::UnsubscribeHandler(Net::WebServer::IWebRe
 	return true;
 }
 
-Bool __stdcall Net::PushServerHandler::UsersHandler(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq, WebServiceHandler *svc)
+Bool __stdcall Net::PushServerHandler::UsersHandler(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CString subReq, WebServiceHandler *svc)
 {
 	Net::PushServerHandler *me = (Net::PushServerHandler*)svc;
 	Text::StringBuilderUTF8 sb;
@@ -163,7 +163,7 @@ Bool __stdcall Net::PushServerHandler::UsersHandler(Net::WebServer::IWebRequest 
 	return true;
 }
 
-Bool __stdcall Net::PushServerHandler::ListDevicesHandler(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq, WebServiceHandler *svc)
+Bool __stdcall Net::PushServerHandler::ListDevicesHandler(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CString subReq, WebServiceHandler *svc)
 {
 	Net::PushServerHandler *me = (Net::PushServerHandler*)svc;
 	Text::Builder::HTMLDocumentBuilder builder(Text::Builder::HTMLDocumentBuilder::DocType::HTML5, CSTR("Devices"));

@@ -47,7 +47,7 @@ SSWR::AVIRead::AVIRHTTPLog::~AVIRHTTPLog()
 	MemFree(this->entries);
 }
 
-void SSWR::AVIRead::AVIRHTTPLog::LogRequest(Net::WebServer::IWebRequest *req)
+void SSWR::AVIRead::AVIRHTTPLog::LogRequest(NotNullPtr<Net::WebServer::IWebRequest> req)
 {
 	Data::DateTime dt;
 	dt.SetCurrTimeUTC();

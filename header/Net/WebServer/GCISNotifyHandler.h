@@ -18,8 +18,8 @@ namespace Net
 			void *hdlrObj;
 			IO::LogTool *log;
 
-			static Bool __stdcall NotifyFunc(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq, WebServiceHandler *me);
-			static Bool __stdcall BatchUplFunc(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq, WebServiceHandler *me);
+			static Bool __stdcall NotifyFunc(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CString subReq, WebServiceHandler *me);
+			static Bool __stdcall BatchUplFunc(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CString subReq, WebServiceHandler *me);
 
 		public:
 			GCISNotifyHandler(Text::CString notifyPath, Text::CString batchUplPath, MailHandler hdlr, void *userObj, IO::LogTool *log);

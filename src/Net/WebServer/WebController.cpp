@@ -21,7 +21,7 @@ Net::WebServer::WebController::~WebController()
 	this->svcPath->Release();
 }
 
-Bool Net::WebServer::WebController::ProcessRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq)
+Bool Net::WebServer::WebController::ProcessRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CString subReq)
 {
 	ServiceInfo *service;
 	service = this->services.GetC(subReq);

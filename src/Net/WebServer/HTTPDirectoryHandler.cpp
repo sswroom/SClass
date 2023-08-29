@@ -102,7 +102,7 @@ OSInt __stdcall HTTPDirectoryHandler_CompareFuncCount(void *obj1, void *obj2)
 	}
 }
 
-void Net::WebServer::HTTPDirectoryHandler::AddCacheHeader(Net::WebServer::IWebResponse *resp)
+void Net::WebServer::HTTPDirectoryHandler::AddCacheHeader(NotNullPtr<Net::WebServer::IWebResponse> resp)
 {
 	switch (this->ctype)
 	{
@@ -133,7 +133,7 @@ void Net::WebServer::HTTPDirectoryHandler::AddCacheHeader(Net::WebServer::IWebRe
 	}
 }
 
-void Net::WebServer::HTTPDirectoryHandler::ResponsePackageFile(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq, IO::PackageFile *packageFile)
+void Net::WebServer::HTTPDirectoryHandler::ResponsePackageFile(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CString subReq, IO::PackageFile *packageFile)
 {
 	if (!this->allowBrowsing)
 	{
@@ -263,7 +263,7 @@ void Net::WebServer::HTTPDirectoryHandler::ResponsePackageFile(Net::WebServer::I
 	return ;
 }
 
-Bool Net::WebServer::HTTPDirectoryHandler::ResponsePackageFileItem(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, IO::PackageFile *packageFile, const IO::PackFileItem *pitem)
+Bool Net::WebServer::HTTPDirectoryHandler::ResponsePackageFileItem(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, IO::PackageFile *packageFile, const IO::PackFileItem *pitem)
 {
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
@@ -528,7 +528,7 @@ Net::WebServer::HTTPDirectoryHandler::~HTTPDirectoryHandler()
 	}
 }
 
-Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq)
+Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CString subReq)
 {
 	if (this->DoRequest(req, resp, subReq))
 	{
@@ -537,7 +537,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 	return this->DoFileRequest(req, resp, subReq);
 }
 
-Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq)
+Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CString subReq)
 {
 	UInt8 buff[2048];
 	Text::StringBuilderUTF8 sb;

@@ -129,7 +129,7 @@ namespace SSWR
 
 			virtual Bool SendCapturePhoto(Int64 cliId);
 
-			virtual void LogRequest(Net::WebServer::IWebRequest *req);
+			virtual void LogRequest(NotNullPtr<Net::WebServer::IWebRequest> req);
 
 			void UserAgentLog(const UTF8Char *userAgent, UOSInt len);
 			void UserAgentStore();

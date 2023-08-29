@@ -163,7 +163,7 @@ Net::WebServer::RESTfulHandler::~RESTfulHandler()
 {
 }
 
-Bool Net::WebServer::RESTfulHandler::ProcessRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq)
+Bool Net::WebServer::RESTfulHandler::ProcessRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CString subReq)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
@@ -374,7 +374,7 @@ Bool Net::WebServer::RESTfulHandler::ProcessRequest(Net::WebServer::IWebRequest 
 	return false;
 }
 
-DB::PageRequest *Net::WebServer::RESTfulHandler::ParsePageReq(Net::WebServer::IWebRequest *req)
+DB::PageRequest *Net::WebServer::RESTfulHandler::ParsePageReq(NotNullPtr<Net::WebServer::IWebRequest> req)
 {
 	UInt32 pageNum = 0;
 	UInt32 pageSize = 20;

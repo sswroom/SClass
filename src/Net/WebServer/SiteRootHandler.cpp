@@ -13,7 +13,7 @@ Net::WebServer::SiteRootHandler::~SiteRootHandler()
 	}
 }
 
-Bool Net::WebServer::SiteRootHandler::ProcessRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq)
+Bool Net::WebServer::SiteRootHandler::ProcessRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CString subReq)
 {
 	if (subReq.Equals(UTF8STRC("/favicon.ico")))
 	{

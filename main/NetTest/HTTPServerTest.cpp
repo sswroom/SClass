@@ -18,10 +18,10 @@ IO::ConsoleWriter *console;
 class MyHandler : public Net::WebServer::WebServiceHandler
 {
 private:
-	Data::ArrayList<Net::WebServer::IWebResponse*> sseConns;
+	Data::ArrayListNN<Net::WebServer::IWebResponse> sseConns;
 	Sync::Mutex sseMut;
 
-	static void __stdcall SSEDisconnect(Net::WebServer::IWebResponse *resp, void *userObj)
+	static void __stdcall SSEDisconnect(NotNullPtr<Net::WebServer::IWebResponse> resp, void *userObj)
 	{
 		MyHandler *me = (MyHandler*)userObj;
 		Sync::MutexUsage mutUsage(me->sseMut);
@@ -29,7 +29,7 @@ private:
 		console->WriteLineC(UTF8STRC("Disconnected"));
 	}
 
-	static Bool __stdcall SSEHandler(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq, WebServiceHandler *me)
+	static Bool __stdcall SSEHandler(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CString subReq, WebServiceHandler *me)
 	{
 		MyHandler *myHdlr = (MyHandler*)me;
 		resp->AddDefHeaders(req);

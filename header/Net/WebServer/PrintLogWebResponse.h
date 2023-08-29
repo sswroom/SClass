@@ -10,19 +10,19 @@ namespace Net
 		class PrintLogWebResponse : public Net::WebServer::IWebResponse
 		{
 		private:
-			Net::WebServer::IWebResponse *resp;
-			IO::Writer *writer;
+			NotNullPtr<Net::WebServer::IWebResponse> resp;
+			NotNullPtr<IO::Writer> writer;
 			Text::String *prefix;
 
 		public:
-			PrintLogWebResponse(Net::WebServer::IWebResponse *resp, IO::Writer *writer, Text::CString prefix);
+			PrintLogWebResponse(NotNullPtr<Net::WebServer::IWebResponse> resp, NotNullPtr<IO::Writer> writer, Text::CString prefix);
 			virtual ~PrintLogWebResponse();
 
 			virtual void EnableWriteBuffer();
 			virtual Bool SetStatusCode(Net::WebStatus::StatusCode code);
 			virtual Int32 GetStatusCode();
 			virtual Bool AddHeader(Text::CString name, Text::CString value);
-			virtual Bool AddDefHeaders(Net::WebServer::IWebRequest *req);
+			virtual Bool AddDefHeaders(NotNullPtr<Net::WebServer::IWebRequest> req);
 			virtual UInt64 GetRespLength();
 			virtual void ShutdownSend();
 			virtual Bool ResponseSSE(Data::Duration timeout, SSEDisconnectHandler hdlr, void *userObj);

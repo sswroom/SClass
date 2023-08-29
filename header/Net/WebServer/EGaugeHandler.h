@@ -21,7 +21,7 @@ namespace Net
 		protected:
 			virtual ~EGaugeHandler();
 		public:
-			virtual Bool ProcessRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq);
+			virtual Bool ProcessRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CString subReq);
 
 			void HandleEGaugeData(DataHandler dataHdlr, void *userObj);
 		};

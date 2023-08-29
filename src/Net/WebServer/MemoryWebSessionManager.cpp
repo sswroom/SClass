@@ -65,7 +65,7 @@ UInt32 __stdcall Net::WebServer::MemoryWebSessionManager::CheckThread(void *user
 	return 0;
 }
 
-Int64 Net::WebServer::MemoryWebSessionManager::GetSessId(Net::WebServer::IWebRequest *req)
+Int64 Net::WebServer::MemoryWebSessionManager::GetSessId(NotNullPtr<Net::WebServer::IWebRequest> req)
 {
 	UTF8Char *sbuff;
 	Text::PString strs[2];
@@ -137,7 +137,7 @@ Net::WebServer::MemoryWebSessionManager::~MemoryWebSessionManager()
 	this->cookieName->Release();
 }
 
-Net::WebServer::IWebSession *Net::WebServer::MemoryWebSessionManager::GetSession(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp)
+Net::WebServer::IWebSession *Net::WebServer::MemoryWebSessionManager::GetSession(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp)
 {
 	Int64 sessId = this->GetSessId(req);
 	if (sessId == 0)
@@ -154,7 +154,7 @@ Net::WebServer::IWebSession *Net::WebServer::MemoryWebSessionManager::GetSession
 	return sess;
 }
 
-Net::WebServer::IWebSession *Net::WebServer::MemoryWebSessionManager::CreateSession(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp)
+Net::WebServer::IWebSession *Net::WebServer::MemoryWebSessionManager::CreateSession(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -175,7 +175,7 @@ Net::WebServer::IWebSession *Net::WebServer::MemoryWebSessionManager::CreateSess
 	return sess;
 }
 
-void Net::WebServer::MemoryWebSessionManager::DeleteSession(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp)
+void Net::WebServer::MemoryWebSessionManager::DeleteSession(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp)
 {
 	Int64 sessId = GetSessId(req);
 	OSInt i;
@@ -202,7 +202,7 @@ void Net::WebServer::MemoryWebSessionManager::DeleteSession(Net::WebServer::IWeb
 	}
 }
 
-Int64 Net::WebServer::MemoryWebSessionManager::GenSessId(Net::WebServer::IWebRequest *req)
+Int64 Net::WebServer::MemoryWebSessionManager::GenSessId(NotNullPtr<Net::WebServer::IWebRequest> req)
 {
 	Data::DateTime dt;
 	UInt8 buff[8];

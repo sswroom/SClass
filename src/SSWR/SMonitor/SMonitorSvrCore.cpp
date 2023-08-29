@@ -2420,7 +2420,7 @@ Bool SSWR::SMonitor::SMonitorSvrCore::SendCapturePhoto(Int64 cliId)
 	return succ;
 }
 
-void SSWR::SMonitor::SMonitorSvrCore::LogRequest(Net::WebServer::IWebRequest *req)
+void SSWR::SMonitor::SMonitorSvrCore::LogRequest(NotNullPtr<Net::WebServer::IWebRequest> req)
 {
 	Text::String *s;
 	if ((s = req->GetSHeader(CSTR("User-Agent"))) != 0)

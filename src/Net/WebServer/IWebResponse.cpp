@@ -20,7 +20,7 @@ Net::WebServer::IWebResponse::~IWebResponse()
 {
 }
 
-Bool Net::WebServer::IWebResponse::ResponseError(Net::WebServer::IWebRequest *req, Net::WebStatus::StatusCode code)
+Bool Net::WebServer::IWebResponse::ResponseError(NotNullPtr<Net::WebServer::IWebRequest> req, Net::WebStatus::StatusCode code)
 {
 	Text::StringBuilderUTF8 sb;
 	if (!this->SetStatusCode(code))
@@ -45,7 +45,7 @@ Bool Net::WebServer::IWebResponse::ResponseError(Net::WebServer::IWebRequest *re
 	return true;
 }
 
-Bool Net::WebServer::IWebResponse::RedirectURL(Net::WebServer::IWebRequest *req, Text::CString url, OSInt cacheAge)
+Bool Net::WebServer::IWebResponse::RedirectURL(NotNullPtr<Net::WebServer::IWebRequest> req, Text::CString url, OSInt cacheAge)
 {
 	this->AddDefHeaders(req);
 	this->SetStatusCode(Net::WebStatus::SC_MOVED_TEMPORARILY);
@@ -55,7 +55,7 @@ Bool Net::WebServer::IWebResponse::RedirectURL(Net::WebServer::IWebRequest *req,
 	return true;
 }
 
-Bool Net::WebServer::IWebResponse::VirtualRedirectURL(Net::WebServer::IWebRequest *req, Text::CString url, OSInt cacheAge)
+Bool Net::WebServer::IWebResponse::VirtualRedirectURL(NotNullPtr<Net::WebServer::IWebRequest> req, Text::CString url, OSInt cacheAge)
 {
 	this->AddDefHeaders(req);
 	this->AddCacheControl(cacheAge);
@@ -76,7 +76,7 @@ Bool Net::WebServer::IWebResponse::VirtualRedirectURL(Net::WebServer::IWebReques
 	return true;
 }
 
-Bool Net::WebServer::IWebResponse::ResponseNotModified(Net::WebServer::IWebRequest *req, OSInt cacheAge)
+Bool Net::WebServer::IWebResponse::ResponseNotModified(NotNullPtr<Net::WebServer::IWebRequest> req, OSInt cacheAge)
 {
 	this->SetStatusCode(Net::WebStatus::SC_NOT_MODIFIED);
 	this->AddDefHeaders(req);
@@ -105,7 +105,7 @@ Bool Net::WebServer::IWebResponse::ResponseText(Text::CString txt, Text::CString
 	return true;
 }
 
-Bool Net::WebServer::IWebResponse::ResponseJSONStr(Net::WebServer::IWebRequest *req, OSInt cacheAge, Text::CString json)
+Bool Net::WebServer::IWebResponse::ResponseJSONStr(NotNullPtr<Net::WebServer::IWebRequest> req, OSInt cacheAge, Text::CString json)
 {
 	this->AddDefHeaders(req);
 	this->AddCacheControl(cacheAge);

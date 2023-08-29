@@ -3168,7 +3168,7 @@ Data::ReadingList<SSWR::OrganWeb::CategoryInfo*> *SSWR::OrganWeb::OrganWebEnv::C
 	return &this->cateMap;
 }
 
-IO::ConfigFile *SSWR::OrganWeb::OrganWebEnv::LangGet(Net::WebServer::IWebRequest *req)
+IO::ConfigFile *SSWR::OrganWeb::OrganWebEnv::LangGet(NotNullPtr<Net::WebServer::IWebRequest> req)
 {
 	Text::StringBuilderUTF8 sb;
 	IO::ConfigFile *lang;

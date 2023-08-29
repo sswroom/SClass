@@ -170,7 +170,7 @@ void Map::OSM::OSMCacheHandler::SetIOMut(Sync::Mutex *ioMut)
 	this->ioMut = ioMut;
 }
 
-Bool Map::OSM::OSMCacheHandler::ProcessRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq)
+Bool Map::OSM::OSMCacheHandler::ProcessRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CString subReq)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sarr[5];

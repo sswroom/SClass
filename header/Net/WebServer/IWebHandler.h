@@ -10,7 +10,7 @@ namespace Net
 		class IWebHandler
 		{
 		public:
-			virtual void WebRequest(IWebRequest *req, IWebResponse *resp) = 0;
+			virtual void WebRequest(NotNullPtr<IWebRequest> req, NotNullPtr<IWebResponse> resp) = 0;
 			virtual void Release() = 0;
 		};
 	}

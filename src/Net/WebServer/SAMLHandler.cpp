@@ -20,7 +20,7 @@ Net::WebServer::SAMLHandler::~SAMLHandler()
 	SDEL_CLASS(this->signKey);
 }
 
-Bool Net::WebServer::SAMLHandler::ProcessRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq)
+Bool Net::WebServer::SAMLHandler::ProcessRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CString subReq)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;

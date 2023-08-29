@@ -44,7 +44,7 @@ namespace SSWR
 			AVIRHTTPLog(UOSInt logCnt);
 			virtual ~AVIRHTTPLog();
 
-			virtual void LogRequest(Net::WebServer::IWebRequest *req);
+			virtual void LogRequest(NotNullPtr<Net::WebServer::IWebRequest> req);
 			UOSInt GetNextIndex();
 			void Use(NotNullPtr<Sync::MutexUsage> mutUsage);
 			void GetEntries(Data::ArrayList<LogEntry*> *logs, Data::ArrayList<UOSInt> *logIndex);

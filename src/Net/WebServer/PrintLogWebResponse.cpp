@@ -2,7 +2,7 @@
 #include "Net/WebServer/PrintLogWebResponse.h"
 #include "Text/StringBuilderUTF8.h"
 
-Net::WebServer::PrintLogWebResponse::PrintLogWebResponse(Net::WebServer::IWebResponse *resp, IO::Writer *writer, Text::CString prefix) : Net::WebServer::IWebResponse(resp->GetSourceNameObj())
+Net::WebServer::PrintLogWebResponse::PrintLogWebResponse(NotNullPtr<Net::WebServer::IWebResponse> resp, NotNullPtr<IO::Writer> writer, Text::CString prefix) : Net::WebServer::IWebResponse(resp->GetSourceNameObj())
 {
 	this->resp = resp;
 	this->writer = writer;
@@ -59,7 +59,7 @@ Bool Net::WebServer::PrintLogWebResponse::AddHeader(Text::CString name, Text::CS
 	return false;
 }
 
-Bool Net::WebServer::PrintLogWebResponse::AddDefHeaders(Net::WebServer::IWebRequest *req)
+Bool Net::WebServer::PrintLogWebResponse::AddDefHeaders(NotNullPtr<Net::WebServer::IWebRequest> req)
 {
 	return this->resp->AddDefHeaders(req);
 }

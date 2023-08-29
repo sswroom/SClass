@@ -41,7 +41,7 @@ namespace Net
 		{
 		public:
 			typedef void (__stdcall *SAMLStrFunc)(void *userObj, Text::CString msg);
-			typedef Bool (__stdcall *SAMLLoginFunc)(void *userObj, Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const SAMLMessage *msg);
+			typedef Bool (__stdcall *SAMLLoginFunc)(void *userObj, NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, const SAMLMessage *msg);
 		private:
 			WebStandardHandler *defHdlr;
 			Net::SSLEngine *ssl;
@@ -59,7 +59,7 @@ namespace Net
 
 		protected:
 			virtual ~SAMLHandler();
-			virtual Bool ProcessRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq);
+			virtual Bool ProcessRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CString subReq);
 		public:
 			SAMLHandler(SAMLConfig *cfg, Net::SSLEngine *ssl, WebStandardHandler *defHdlr);
 

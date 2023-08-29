@@ -29,7 +29,7 @@ namespace Net
 		class IWebResponse : public IO::Stream
 		{
 		public:
-			typedef void (__stdcall *SSEDisconnectHandler)(Net::WebServer::IWebResponse *resp, void *userObj);
+			typedef void (__stdcall *SSEDisconnectHandler)(NotNullPtr<Net::WebServer::IWebResponse> resp, void *userObj);
 		public:
 			IWebResponse(NotNullPtr<Text::String> sourceName);
 			IWebResponse(Text::CStringNN sourceName);
@@ -39,7 +39,7 @@ namespace Net
 			virtual Bool SetStatusCode(Net::WebStatus::StatusCode code) = 0;
 			virtual Int32 GetStatusCode() = 0;
 			virtual Bool AddHeader(Text::CString name, Text::CString value) = 0;
-			virtual Bool AddDefHeaders(Net::WebServer::IWebRequest *req) = 0;
+			virtual Bool AddDefHeaders(NotNullPtr<Net::WebServer::IWebRequest> req) = 0;
 			virtual UInt64 GetRespLength() = 0;
 			virtual void ShutdownSend() = 0;
 			virtual Bool ResponseSSE(Data::Duration timeout, SSEDisconnectHandler hdlr, void *userObj) = 0;
@@ -47,13 +47,13 @@ namespace Net
 			virtual Bool SwitchProtocol(ProtocolHandler *protoHdlr) = 0;
 			virtual Text::CString GetRespHeaders() = 0;
 
-			Bool ResponseError(Net::WebServer::IWebRequest *req, Net::WebStatus::StatusCode code);
-			Bool RedirectURL(Net::WebServer::IWebRequest *req, Text::CString url, OSInt cacheAge);
-			Bool VirtualRedirectURL(Net::WebServer::IWebRequest *req, Text::CString url, OSInt cacheAge);
-			Bool ResponseNotModified(Net::WebServer::IWebRequest *req, OSInt cacheAge);
+			Bool ResponseError(NotNullPtr<Net::WebServer::IWebRequest> req, Net::WebStatus::StatusCode code);
+			Bool RedirectURL(NotNullPtr<Net::WebServer::IWebRequest> req, Text::CString url, OSInt cacheAge);
+			Bool VirtualRedirectURL(NotNullPtr<Net::WebServer::IWebRequest> req, Text::CString url, OSInt cacheAge);
+			Bool ResponseNotModified(NotNullPtr<Net::WebServer::IWebRequest> req, OSInt cacheAge);
 			Bool ResponseText(Text::CString txt);
 			Bool ResponseText(Text::CString txt, Text::CString contentType);
-			Bool ResponseJSONStr(Net::WebServer::IWebRequest *req, OSInt cacheAge, Text::CString json);
+			Bool ResponseJSONStr(NotNullPtr<Net::WebServer::IWebRequest> req, OSInt cacheAge, Text::CString json);
 
 			Bool AddHeaderS(Text::CString name, NotNullPtr<Text::String> value)
 			{

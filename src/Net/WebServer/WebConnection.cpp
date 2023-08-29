@@ -57,7 +57,7 @@ Net::WebServer::WebConnection::~WebConnection()
 	}
 	if (this->sseHdlr)
 	{
-		this->sseHdlr(this, this->sseHdlrObj);
+		this->sseHdlr(*this, this->sseHdlrObj);
 		this->sseHdlr = 0;
 	}
 	if (this->proxyMode)
@@ -433,282 +433,286 @@ void Net::WebServer::WebConnection::ProcessResponse()
 	this->respStatus = Net::WebStatus::SC_OK;
 	this->respDataEnd = false;
 	this->respHeaders.ClearStr();
-
-	NotNullPtr<Text::String> reqURI = this->currReq->GetRequestURI();
-	Net::WebUtil::RequestMethod reqMeth = this->currReq->GetReqMethod();
-	if (reqMeth == Net::WebUtil::RequestMethod::HTTP_CONNECT && this->allowProxy)
+	NotNullPtr<Net::WebServer::WebRequest> currReq;
+	if (currReq.Set(this->currReq))
 	{
-		NotNullPtr<Net::TCPClient> proxyCli;
-		UTF8Char sbuff[512];
-		UTF8Char *sptr;
-		UOSInt i;
-		sptr = reqURI->ConcatTo(sbuff);
-		i = Text::StrIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), ':');
-		if (i == INVALID_INDEX || i == 0)
-		{
-			this->respStatus = Net::WebStatus::SC_BAD_REQUEST;
-			this->AddDefHeaders(this->currReq);
-			if (!this->respHeaderSent)
-			{
-				this->SendHeaders(this->currReq->GetProtocol());
-			}
-			this->svr->LogAccess(this->currReq, this, 0);
-			return;
-		}
-	
-		sbuff[i] = 0;
-		NEW_CLASSNN(proxyCli, Net::TCPClient(this->sockf, {sbuff, i}, (UInt16)Text::StrToInt32(&sbuff[i + 1]), 30000));
-		if (proxyCli->IsConnectError())
-		{
-			proxyCli.Delete();
-			this->respStatus = Net::WebStatus::SC_NOT_FOUND;
-			this->AddDefHeaders(this->currReq);
-			if (!this->respHeaderSent)
-			{
-				this->SendHeaders(this->currReq->GetProtocol());
-			}
-			this->svr->LogAccess(this->currReq, this, 0);
-			return;
-		}
-		
-		this->proxyCli = proxyCli.Ptr();
-		this->AddDefHeaders(this->currReq);
-		if (!this->respHeaderSent)
-		{
-			this->SendHeaders(this->currReq->GetProtocol());
-		}
-		this->svr->LogAccess(this->currReq, this, 0);
-		this->proxyMode = true;
-		this->svr->AddProxyConn(this, proxyCli);
-	}
-	else if ((reqMeth == Net::WebUtil::RequestMethod::HTTP_GET || reqMeth == Net::WebUtil::RequestMethod::HTTP_POST) && reqURI->StartsWith(UTF8STRC("http://")))
-	{
-		Manage::HiResClock clk;
-		Double t;
-		NotNullPtr<Net::HTTPClient> httpCli;
-		Text::StringBuilderUTF8 sb;
 
-		clk.Start();
-		if (this->allowProxy)
+		NotNullPtr<Text::String> reqURI = currReq->GetRequestURI();
+		Net::WebUtil::RequestMethod reqMeth = currReq->GetReqMethod();
+		if (reqMeth == Net::WebUtil::RequestMethod::HTTP_CONNECT && this->allowProxy)
 		{
-			httpCli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, CSTR_NULL, true, reqURI->StartsWith(UTF8STRC("https://")));
-			httpCli->SetTimeout(5000);
-			httpCli->Connect(reqURI->ToCString(), reqMeth, 0, 0, false);
-
-			if (httpCli->IsError())
+			NotNullPtr<Net::TCPClient> proxyCli;
+			UTF8Char sbuff[512];
+			UTF8Char *sptr;
+			UOSInt i;
+			sptr = reqURI->ConcatTo(sbuff);
+			i = Text::StrIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), ':');
+			if (i == INVALID_INDEX || i == 0)
 			{
-				sb.ClearStr();
-				sb.AppendC(UTF8STRC("Conn Err: "));
-				sb.Append(reqURI);
-				this->svr->LogMessageC(this->currReq, sb.ToString(), sb.GetLength());
-
-				this->respStatus = Net::WebStatus::SC_NOT_FOUND;
-				this->AddDefHeaders(this->currReq);
+				this->respStatus = Net::WebStatus::SC_BAD_REQUEST;
+				this->AddDefHeaders(currReq);
 				if (!this->respHeaderSent)
 				{
-					this->SendHeaders(this->currReq->GetProtocol());
+					this->SendHeaders(currReq->GetProtocol());
 				}
+				this->svr->LogAccess(currReq, *this, 0);
+				return;
 			}
-			else
+		
+			sbuff[i] = 0;
+			NEW_CLASSNN(proxyCli, Net::TCPClient(this->sockf, {sbuff, i}, (UInt16)Text::StrToInt32(&sbuff[i + 1]), 30000));
+			if (proxyCli->IsConnectError())
 			{
-				UInt8 buff[2048];
-				UTF8Char *sbuffHdr = MemAlloc(UTF8Char, 65536);
-				UOSInt i;
-				UOSInt j;
-				UOSInt k;
-				Text::String *s;
-				Bool lengFound = false;
-				
-				i = 0;
-				j = this->currReq->GetHeaderCnt();
-				while (i < j)
+				proxyCli.Delete();
+				this->respStatus = Net::WebStatus::SC_NOT_FOUND;
+				this->AddDefHeaders(currReq);
+				if (!this->respHeaderSent)
 				{
-					s = this->currReq->GetHeaderName(i);
-					if (s->EqualsICase(UTF8STRC("Host")))
-					{
-					}
-					else if (s->EqualsICase(UTF8STRC("Proxy-Connection")))
-					{
-					}
-					else if (s->EqualsICase(UTF8STRC("Accept-Encoding")))
-					{
-					}
-					else
-					{
-						Text::String *s2 = this->currReq->GetHeaderValue(i);
-						httpCli->AddHeaderC(s->ToCString(), s2->ToCString());
-					}
-					i++;
+					this->SendHeaders(currReq->GetProtocol());
 				}
-				if (reqMeth == Net::WebUtil::RequestMethod::HTTP_POST)
-				{
-					const UInt8 *reqBuff;
-					UOSInt reqSize;
-					reqBuff = this->currReq->GetReqData(&reqSize);
-					if (reqBuff && reqSize > 0)
-					{
-						httpCli->Write(reqBuff, reqSize);
-					}
-				}
+				this->svr->LogAccess(currReq, *this, 0);
+				return;
+			}
+			
+			this->proxyCli = proxyCli.Ptr();
+			this->AddDefHeaders(currReq);
+			if (!this->respHeaderSent)
+			{
+				this->SendHeaders(currReq->GetProtocol());
+			}
+			this->svr->LogAccess(currReq, *this, 0);
+			this->proxyMode = true;
+			this->svr->AddProxyConn(this, proxyCli);
+		}
+		else if ((reqMeth == Net::WebUtil::RequestMethod::HTTP_GET || reqMeth == Net::WebUtil::RequestMethod::HTTP_POST) && reqURI->StartsWith(UTF8STRC("http://")))
+		{
+			Manage::HiResClock clk;
+			Double t;
+			NotNullPtr<Net::HTTPClient> httpCli;
+			Text::StringBuilderUTF8 sb;
 
-				this->SetStatusCode(httpCli->GetRespStatus());
-				i = 0;
-				j = httpCli->GetRespHeaderCnt();
-				while (i < j)
+			clk.Start();
+			if (this->allowProxy)
+			{
+				httpCli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, CSTR_NULL, true, reqURI->StartsWith(UTF8STRC("https://")));
+				httpCli->SetTimeout(5000);
+				httpCli->Connect(reqURI->ToCString(), reqMeth, 0, 0, false);
+
+				if (httpCli->IsError())
 				{
-					UTF8Char *hdrPtr = httpCli->GetRespHeader(i, sbuffHdr);
-					k = Text::StrIndexOfC(sbuffHdr, (UOSInt)(hdrPtr - sbuffHdr), UTF8STRC(": "));
-					if (k != INVALID_INDEX)
+					sb.ClearStr();
+					sb.AppendC(UTF8STRC("Conn Err: "));
+					sb.Append(reqURI);
+					this->svr->LogMessageC(this->currReq, sb.ToString(), sb.GetLength());
+
+					this->respStatus = Net::WebStatus::SC_NOT_FOUND;
+					this->AddDefHeaders(currReq);
+					if (!this->respHeaderSent)
 					{
-						sbuffHdr[k] = 0;
-						if (Text::StrEqualsICaseC(sbuffHdr, (UOSInt)(hdrPtr - sbuffHdr), UTF8STRC("Content-Length")))
+						this->SendHeaders(currReq->GetProtocol());
+					}
+				}
+				else
+				{
+					UInt8 buff[2048];
+					UTF8Char *sbuffHdr = MemAlloc(UTF8Char, 65536);
+					UOSInt i;
+					UOSInt j;
+					UOSInt k;
+					Text::String *s;
+					Bool lengFound = false;
+					
+					i = 0;
+					j = currReq->GetHeaderCnt();
+					while (i < j)
+					{
+						s = currReq->GetHeaderName(i);
+						if (s->EqualsICase(UTF8STRC("Host")))
 						{
-							lengFound = true;
 						}
-						if (Text::StrEqualsICaseC(sbuffHdr, (UOSInt)(hdrPtr - sbuffHdr), UTF8STRC("Server")))
+						else if (s->EqualsICase(UTF8STRC("Proxy-Connection")))
 						{
 						}
-						else if (Text::StrEqualsICaseC(sbuffHdr, (UOSInt)(hdrPtr - sbuffHdr), UTF8STRC("Connection")))
-						{
-						}
-						else if (Text::StrEqualsICaseC(sbuffHdr, (UOSInt)(hdrPtr - sbuffHdr), UTF8STRC("Transfer-Encoding")))
+						else if (s->EqualsICase(UTF8STRC("Accept-Encoding")))
 						{
 						}
 						else
 						{
-							this->AddHeader(Text::CString(sbuffHdr, k), CSTRP(&sbuffHdr[k + 2], hdrPtr));
+							Text::String *s2 = currReq->GetHeaderValue(i);
+							httpCli->AddHeaderC(s->ToCString(), s2->ToCString());
+						}
+						i++;
+					}
+					if (reqMeth == Net::WebUtil::RequestMethod::HTTP_POST)
+					{
+						const UInt8 *reqBuff;
+						UOSInt reqSize;
+						reqBuff = currReq->GetReqData(&reqSize);
+						if (reqBuff && reqSize > 0)
+						{
+							httpCli->Write(reqBuff, reqSize);
+						}
+					}
+
+					this->SetStatusCode(httpCli->GetRespStatus());
+					i = 0;
+					j = httpCli->GetRespHeaderCnt();
+					while (i < j)
+					{
+						UTF8Char *hdrPtr = httpCli->GetRespHeader(i, sbuffHdr);
+						k = Text::StrIndexOfC(sbuffHdr, (UOSInt)(hdrPtr - sbuffHdr), UTF8STRC(": "));
+						if (k != INVALID_INDEX)
+						{
+							sbuffHdr[k] = 0;
+							if (Text::StrEqualsICaseC(sbuffHdr, (UOSInt)(hdrPtr - sbuffHdr), UTF8STRC("Content-Length")))
+							{
+								lengFound = true;
+							}
+							if (Text::StrEqualsICaseC(sbuffHdr, (UOSInt)(hdrPtr - sbuffHdr), UTF8STRC("Server")))
+							{
+							}
+							else if (Text::StrEqualsICaseC(sbuffHdr, (UOSInt)(hdrPtr - sbuffHdr), UTF8STRC("Connection")))
+							{
+							}
+							else if (Text::StrEqualsICaseC(sbuffHdr, (UOSInt)(hdrPtr - sbuffHdr), UTF8STRC("Transfer-Encoding")))
+							{
+							}
+							else
+							{
+								this->AddHeader(Text::CString(sbuffHdr, k), CSTRP(&sbuffHdr[k + 2], hdrPtr));
+							}
+						}
+						else
+						{
+						}
+						i++;
+					}
+					this->AddHeaderS(CSTR("Server"), this->svr->GetServerName());
+					this->AddHeader(CSTR("Proxy-Connection"), CSTR("closed"));
+
+					if (lengFound)
+					{
+						while (true)
+						{
+							k = httpCli->Read(BYTEARR(buff));
+							if (k <= 0)
+								break;
+							if (this->Write(buff, k) == 0)
+								break;
 						}
 					}
 					else
 					{
-					}
-					i++;
-				}
-				this->AddHeaderS(CSTR("Server"), this->svr->GetServerName());
-				this->AddHeader(CSTR("Proxy-Connection"), CSTR("closed"));
-
-				if (lengFound)
-				{
-					while (true)
-					{
-						k = httpCli->Read(BYTEARR(buff));
-						if (k <= 0)
-							break;
-						if (this->Write(buff, k) == 0)
-							break;
-					}
-				}
-				else
-				{
-					while (true)
-					{
-						k = httpCli->Read(BYTEARR(buff));
-						if (k <= 0)
-							break;
-						if (this->Write(buff, k) == 0)
+						while (true)
 						{
-							break;
+							k = httpCli->Read(BYTEARR(buff));
+							if (k <= 0)
+								break;
+							if (this->Write(buff, k) == 0)
+							{
+								break;
+							}
 						}
+		/*				IO::MemoryStream mstm(L"Net.WebConnection.mstm");
+						UInt8 *memBuff;
+						OSInt memSize;
+						while (true)
+						{
+							k = httpCli->Read(buff, 2048);
+							if (k <= 0)
+								break;
+							mstm.Write(buff, k);
+						}
+						sb.ClearStr();
+						memBuff = mstm.GetBuff(&memSize);
+						sb.Append((Int32)memSize);
+						this->AddHeader(L"Content-Length", sb.ToString());
+						this->Write(memBuff, memSize);*/
 					}
-	/*				IO::MemoryStream mstm(L"Net.WebConnection.mstm");
-					UInt8 *memBuff;
-					OSInt memSize;
-					while (true)
-					{
-						k = httpCli->Read(buff, 2048);
-						if (k <= 0)
-							break;
-						mstm.Write(buff, k);
-					}
-					sb.ClearStr();
-					memBuff = mstm.GetBuff(&memSize);
-					sb.Append((Int32)memSize);
-					this->AddHeader(L"Content-Length", sb.ToString());
-					this->Write(memBuff, memSize);*/
-				}
 
+					if (!this->respHeaderSent)
+					{
+						this->SendHeaders(currReq->GetProtocol());
+					}
+					MemFree(sbuffHdr);
+				}
+				httpCli.Delete();
+				this->cli->ShutdownSend();
+			}
+			else
+			{
 				if (!this->respHeaderSent)
 				{
-					this->SendHeaders(this->currReq->GetProtocol());
+					this->SendHeaders(currReq->GetProtocol());
 				}
-				MemFree(sbuffHdr);
 			}
-			httpCli.Delete();
-			this->cli->ShutdownSend();
+
+			t = clk.GetTimeDiff();
+			this->svr->LogAccess(currReq, *this, t);
+
+			DEL_CLASS(this->currReq);
+			this->currReq = 0;
 		}
 		else
 		{
+			Manage::HiResClock clk;
+			Double t;
+			clk.Start();
+
+			this->hdlr->WebRequest(currReq, *this);
 			if (!this->respHeaderSent)
 			{
-				this->SendHeaders(this->currReq->GetProtocol());
+				this->SendHeaders(currReq->GetProtocol());
 			}
-		}
-
-		t = clk.GetTimeDiff();
-		this->svr->LogAccess(this->currReq, this, t);
-
-		DEL_CLASS(this->currReq);
-		this->currReq = 0;
-	}
-	else
-	{
-		Manage::HiResClock clk;
-		Double t;
-		clk.Start();
-
-		this->hdlr->WebRequest(this->currReq, this);
-		if (!this->respHeaderSent)
-		{
-			this->SendHeaders(this->currReq->GetProtocol());
-		}
-		if (!this->respDataEnd && this->respTranEnc == 1)
-		{
-#if defined(VERBOSE)
-			printf("WebConn: chunked %d\r\n", 0);
-#endif
-			if (this->cstm)
+			if (!this->respDataEnd && this->respTranEnc == 1)
 			{
-				this->respLeng += this->cstm->Write((const UInt8*)"0\r\n\r\n", 5);
-			}
-			else
-			{
-				this->respLeng += this->cli->Write((const UInt8*)"0\r\n\r\n", 5);
-			}
-			this->respDataEnd = true;
-		}
-		t = clk.GetTimeDiff();
-		this->svr->LogAccess(this->currReq, this, t);
-		SDEL_CLASS(this->cstm);
-		if (this->protoHdlr)
-		{
-		}
-		else if (this->sseHdlr == 0)
-		{
-			if (this->keepAlive == KeepAlive::No)
-			{
-				this->cli->ShutdownSend();
-			}
-			else if (this->currReq->GetProtocol() == Net::WebServer::IWebRequest::RequestProtocol::HTTP1_0)
-			{
-				Text::String *connHdr = this->currReq->GetSHeader(CSTR("Connection"));
-				if (connHdr && connHdr->EqualsICase(UTF8STRC("keep-alive")))
+	#if defined(VERBOSE)
+				printf("WebConn: chunked %d\r\n", 0);
+	#endif
+				if (this->cstm)
 				{
+					this->respLeng += this->cstm->Write((const UInt8*)"0\r\n\r\n", 5);
 				}
 				else
 				{
-					this->cli->ShutdownSend();
+					this->respLeng += this->cli->Write((const UInt8*)"0\r\n\r\n", 5);
 				}
+				this->respDataEnd = true;
 			}
-			else
+			t = clk.GetTimeDiff();
+			this->svr->LogAccess(currReq, *this, t);
+			SDEL_CLASS(this->cstm);
+			if (this->protoHdlr)
 			{
-				Text::String *connHdr = this->currReq->GetSHeader(CSTR("Connection"));
-				if (connHdr && connHdr->EqualsICase(UTF8STRC("close")))
+			}
+			else if (this->sseHdlr == 0)
+			{
+				if (this->keepAlive == KeepAlive::No)
 				{
 					this->cli->ShutdownSend();
 				}
+				else if (currReq->GetProtocol() == Net::WebServer::IWebRequest::RequestProtocol::HTTP1_0)
+				{
+					Text::String *connHdr = currReq->GetSHeader(CSTR("Connection"));
+					if (connHdr && connHdr->EqualsICase(UTF8STRC("keep-alive")))
+					{
+					}
+					else
+					{
+						this->cli->ShutdownSend();
+					}
+				}
+				else
+				{
+					Text::String *connHdr = currReq->GetSHeader(CSTR("Connection"));
+					if (connHdr && connHdr->EqualsICase(UTF8STRC("close")))
+					{
+						this->cli->ShutdownSend();
+					}
+				}
+				DEL_CLASS(this->currReq);
+				this->currReq = 0;
 			}
-			DEL_CLASS(this->currReq);
-			this->currReq = 0;
 		}
 	}
 }
@@ -759,7 +763,7 @@ Bool Net::WebServer::WebConnection::AddHeader(Text::CString name, Text::CString 
 	return true;
 }
 
-Bool Net::WebServer::WebConnection::AddDefHeaders(Net::WebServer::IWebRequest *req)
+Bool Net::WebServer::WebConnection::AddDefHeaders(NotNullPtr<Net::WebServer::IWebRequest> req)
 {
 	Data::DateTime dt;
 	dt.SetCurrTimeUTC();

@@ -60,7 +60,7 @@ namespace Map
 			void GetStatus(CacheStatus *status);
 			void SetIOMut(Sync::Mutex *ioMut);
 
-			virtual Bool ProcessRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq);
+			virtual Bool ProcessRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CString subReq);
 		};
 	}
 }

@@ -10,7 +10,7 @@
 #include "SSWR/OrganWeb/OrganWebPhotoController.h"
 #include "Text/UTF8Reader.h"
 
-Bool __stdcall SSWR::OrganWeb::OrganWebPhotoController::SvcPhoto(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq, Net::WebServer::WebController *parent)
+Bool __stdcall SSWR::OrganWeb::OrganWebPhotoController::SvcPhoto(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CString subReq, Net::WebServer::WebController *parent)
 {
 	SSWR::OrganWeb::OrganWebPhotoController *me = (SSWR::OrganWeb::OrganWebPhotoController*)parent;
 	RequestEnv env;
@@ -49,7 +49,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPhotoController::SvcPhoto(Net::WebServer:
 	return true;
 }
 
-void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhoto(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, WebUserInfo *user, Bool isMobile, Int32 speciesId, Int32 cateId, UInt32 imgWidth, UInt32 imgHeight, const UTF8Char *fileName)
+void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhoto(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, WebUserInfo *user, Bool isMobile, Int32 speciesId, Int32 cateId, UInt32 imgWidth, UInt32 imgHeight, const UTF8Char *fileName)
 {
 	CategoryInfo *cate;
 	SpeciesInfo *sp;
@@ -355,7 +355,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhoto(Net::WebServer::IWeb
 	}
 }
 
-void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoId(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, WebUserInfo *reqUser, Bool isMobile, Int32 speciesId, Int32 cateId, UInt32 imgWidth, UInt32 imgHeight, Int32 fileId)
+void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoId(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, WebUserInfo *reqUser, Bool isMobile, Int32 speciesId, Int32 cateId, UInt32 imgWidth, UInt32 imgHeight, Int32 fileId)
 {
 	SpeciesInfo *sp;
 	UTF8Char sbuff2[512];
@@ -652,7 +652,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoId(Net::WebServer::IW
 	}
 }
 
-void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoWId(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, WebUserInfo *reqUser, Bool isMobile, Int32 speciesId, Int32 cateId, UInt32 imgWidth, UInt32 imgHeight, Int32 fileWId)
+void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoWId(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, WebUserInfo *reqUser, Bool isMobile, Int32 speciesId, Int32 cateId, UInt32 imgWidth, UInt32 imgHeight, Int32 fileWId)
 {
 	SpeciesInfo *sp;
 	UTF8Char sbuff2[512];

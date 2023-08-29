@@ -63,9 +63,9 @@ namespace Net
 			Sync::RWMutex *packageMut;
 			Data::FastStringMap<PackageInfo*> *packageMap;
 
-			void AddCacheHeader(Net::WebServer::IWebResponse *resp);
-			void ResponsePackageFile(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq, IO::PackageFile *packageFile);
-			Bool ResponsePackageFileItem(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, IO::PackageFile *packageFile, const IO::PackFileItem *pitem);
+			void AddCacheHeader(NotNullPtr<Net::WebServer::IWebResponse> resp);
+			void ResponsePackageFile(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CString subReq, IO::PackageFile *packageFile);
+			Bool ResponsePackageFileItem(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, IO::PackageFile *packageFile, const IO::PackFileItem *pitem);
 
 			void StatLoad(StatInfo *stat);
 			void StatSave(StatInfo *stat);
@@ -76,9 +76,9 @@ namespace Net
 		protected:
 			virtual ~HTTPDirectoryHandler();
 		public:
-			virtual Bool ProcessRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq);
+			virtual Bool ProcessRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CString subReq);
 
-			Bool DoFileRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq);
+			Bool DoFileRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CString subReq);
 			IO::PackageFile *GetPackageFile(Text::CString path, Bool *needRelease);
 
 			void SetRootDir(Text::String *rootDir);

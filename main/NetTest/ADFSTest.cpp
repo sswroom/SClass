@@ -124,7 +124,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		cfg.signKeyPath = CSTRP(sbuff4, sptr4);
 		NEW_CLASS(svcHdlr, MyADFSService());
 		NEW_CLASS(samlHdlr, Net::WebServer::SAMLHandler(&cfg, ssl, svcHdlr));
-		NEW_CLASS(logHdlr, Net::WebServer::PrintLogWebHandler(samlHdlr, &console));
+		NEW_CLASS(logHdlr, Net::WebServer::PrintLogWebHandler(samlHdlr, console));
 		Net::WebServer::WebListener listener(sockf, ssl, logHdlr, PORTNUM, 120, 4, CSTR("ADFSTest/1.0"), false, Net::WebServer::KeepAlive::Default, true);
 		if (listener.IsError())
 		{

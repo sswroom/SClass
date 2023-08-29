@@ -180,7 +180,7 @@ void Net::WebServer::WebListener::SetRequestLog(Net::WebServer::IReqLogger *reqL
 	this->reqLog = reqLog;
 }
 
-void Net::WebServer::WebListener::LogAccess(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Double time)
+void Net::WebServer::WebListener::LogAccess(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Double time)
 {
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;

@@ -43,7 +43,7 @@ namespace SSWR
 
 			virtual void OnMonitorChanged();
 
-			virtual void WebRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp);
+			virtual void WebRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp);
 			virtual void Release();
 		};
 	}

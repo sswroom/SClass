@@ -26,16 +26,16 @@ namespace Net
 			Sync::Event chkEvt;
 
 			static UInt32 __stdcall CheckThread(void *userObj);
-			Int64 GetSessId(Net::WebServer::IWebRequest *req);
+			Int64 GetSessId(NotNullPtr<Net::WebServer::IWebRequest> req);
 		public:
 			MemoryWebSessionManager(Text::CString path, SessionHandler delHdlr, void *delHdlrObj, Int32 chkInterval, SessionHandler chkHdlr, void *chkHdlrObj, Text::CString cookieName);
 			virtual ~MemoryWebSessionManager();
 
-			virtual IWebSession *GetSession(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp);
-			virtual IWebSession *CreateSession(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp);
-			virtual void DeleteSession(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp);
+			virtual IWebSession *GetSession(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp);
+			virtual IWebSession *CreateSession(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp);
+			virtual void DeleteSession(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp);
 
-			Int64 GenSessId(Net::WebServer::IWebRequest *req);
+			Int64 GenSessId(NotNullPtr<Net::WebServer::IWebRequest> req);
 			IWebSession *CreateSession(Int64 sessId);
 			IWebSession *GetSession(Int64 sessId);
 			void DeleteSession(Int64 sessId);
