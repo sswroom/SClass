@@ -58,7 +58,7 @@ void GUIForm_OnFileDrop(GtkWidget *widget, GdkDragContext *context, gint x, gint
 	i = files.GetCount();
 	if (i > 0)
 	{
-		me->OnFileDrop(files.GetArray(j), i);
+		me->OnFileDrop(files.Ptr(), i);
 		while (i-- > 0)
 		{
 			files.GetItem(i)->Release();

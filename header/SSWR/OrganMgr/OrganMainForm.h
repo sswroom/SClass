@@ -204,7 +204,7 @@ namespace SSWR
 			static void __stdcall OnMapMouseMove(void *userObj, Math::Coord2D<OSInt> scnPos);
 			static void __stdcall OnMapDraw(void *userObj, Media::DrawImage *dimg, OSInt xOfst, OSInt yOfst);
 
-			static OSInt __stdcall GroupCompare(void *obj1, void *obj2);
+			static OSInt __stdcall GroupCompare(OrganGroupItem *group1, OrganGroupItem *group2);
 
 			Bool CalcCropRect(Math::Coord2D<OSInt> *rect);
 

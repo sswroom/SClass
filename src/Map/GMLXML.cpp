@@ -140,14 +140,14 @@ Map::MapDrawLayer *Map::GMLXML::ParseFeatureCollection(NotNullPtr<Text::XMLReade
 					if (lyr == 0)
 					{
 						colCnt = nameList.GetCount();
-						ccols = nameList.GetArray(i);
+						ccols = nameList.Ptr();
 						NEW_CLASS(lyr, Map::VectorLayer(layerType, fileName, colCnt, ccols, env.csys, 0, CSTR_NULL));
 					}
 
 					if (colCnt == valList.GetCount())
 					{
 						Text::String **scols;
-						scols = valList.GetArray(i);
+						scols = valList.Ptr();
 						lyr->AddVector(vec, scols);
 					}
 					else

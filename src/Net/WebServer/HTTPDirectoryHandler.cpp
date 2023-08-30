@@ -1166,7 +1166,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NotNullPtr<Net::WebServ
 
 						UOSInt i;
 						UOSInt j;
-						DirectoryEntry **entArr = entList.GetArray(j);
+						DirectoryEntry **entArr = entList.GetPtr(j);
 						if (sort == 1)
 						{
 							Data::Sort::ArtificialQuickSortFunc<DirectoryEntry*>::Sort(entArr, HTTPDirectoryHandler_CompareFuncName, 0, (OSInt)j - 1);

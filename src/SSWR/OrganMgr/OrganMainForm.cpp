@@ -1,6 +1,6 @@
 ﻿#include "Stdafx.h"
 #include "Data/ByteTool.h"
-#include "Data/Sort/ArtificialQuickSort.h"
+#include "Data/Sort/ArtificialQuickSortFunc.h"
 #include "IO/FileStream.h"
 #include "IO/FileUtil.h"
 #include "IO/MemoryReadingStream.h"
@@ -1660,10 +1660,8 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnMapDraw(void *userObj, Media::Dr
 	}
 }
 
-OSInt __stdcall SSWR::OrganMgr::OrganMainForm::GroupCompare(void *obj1, void *obj2)
+OSInt __stdcall SSWR::OrganMgr::OrganMainForm::GroupCompare(OrganGroupItem *group1, OrganGroupItem *group2)
 {
-	SSWR::OrganMgr::OrganGroupItem *group1 = (SSWR::OrganMgr::OrganGroupItem*)obj1;
-	SSWR::OrganMgr::OrganGroupItem *group2 = (SSWR::OrganMgr::OrganGroupItem*)obj2;
 	if (group1->GetItemType() == SSWR::OrganMgr::OrganGroupItem::IT_PARENT)
 	{
 		return -1;
@@ -1839,9 +1837,9 @@ void SSWR::OrganMgr::OrganMainForm::UpdateDir()
 				this->tpSpecies->SetEnabled(true);
 			}
 
-			j = this->groupItems.GetCount();
-			ArtificialQuickSort_SortCmp((void**)this->groupItems.GetArray(&j), GroupCompare, 0, (OSInt)j - 1);
+			Data::Sort::ArtificialQuickSortFunc<OrganGroupItem*>::Sort(this->groupItems, GroupCompare);
 			i = 0;
+			j = this->groupItems.GetCount();
 			while (i < j)
 			{
 				item = this->groupItems.GetItem(i);

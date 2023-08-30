@@ -123,8 +123,6 @@ template <class T> void ArtificialQuickSort_Sort(Data::ArrayList<T> *arr, OSInt 
 
 template <class T> void ArtificialQuickSort_Sort(Data::ArrayListNN<T> *arr, OSInt firstIndex, OSInt lastIndex)
 {
-	UOSInt size;
-	NotNullPtr<T> *a = arr->GetArray(size);
-	ArtificialQuickSort_Sort(a, firstIndex, lastIndex);
+	ArtificialQuickSort_Sort(arr->Ptr(), firstIndex, lastIndex);
 }
 #endif

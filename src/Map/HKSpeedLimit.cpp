@@ -262,7 +262,7 @@ const Map::HKSpeedLimit::RouteInfo *Map::HKSpeedLimit::GetNearestRoute(Math::Coo
 	AppendRouteIds(&routeList, xInd - 1, yInd + 1);
 	AppendRouteIds(&routeList, xInd + 0, yInd + 1);
 	AppendRouteIds(&routeList, xInd + 1, yInd + 1);
-	ArtificialQuickSort_SortInt32(routeList.GetArray(i), 0, (OSInt)routeList.GetCount() - 1);
+	ArtificialQuickSort_SortInt32(routeList.Ptr(), 0, (OSInt)routeList.GetCount() - 1);
 	i = routeList.GetCount();
 	while (i-- > 0)
 	{
@@ -322,7 +322,7 @@ Int32 Map::HKSpeedLimit::GetSpeedLimit(Math::Coord2DDbl pt, Double maxDistM)
 	AppendRouteIds(&routeList, xInd - 1, yInd + 1);
 	AppendRouteIds(&routeList, xInd + 0, yInd + 1);
 	AppendRouteIds(&routeList, xInd + 1, yInd + 1);
-	ArtificialQuickSort_SortInt32(routeList.GetArray(i), 0, (OSInt)routeList.GetCount() - 1);
+	ArtificialQuickSort_SortInt32(routeList.Ptr(), 0, (OSInt)routeList.GetCount() - 1);
 	i = routeList.GetCount();
 	while (i-- > 0)
 	{

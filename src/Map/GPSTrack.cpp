@@ -600,9 +600,9 @@ void Map::GPSTrack::NewTrack()
 			i++;
 		}
 		rec->extraData = MemAlloc(const UInt8 *, rec->nRecords);
-		MemCopyNO(rec->extraData, this->currExtraData.GetArray(i), sizeof(const UInt8*) * rec->nRecords);
+		MemCopyNO(rec->extraData, this->currExtraData.Ptr(), sizeof(const UInt8*) * rec->nRecords);
 		rec->extraDataSize = MemAlloc(UOSInt, rec->nRecords);
-		MemCopyNO(rec->extraDataSize, this->currExtraSize.GetArray(i), sizeof(UOSInt) * rec->nRecords);
+		MemCopyNO(rec->extraDataSize, this->currExtraSize.Ptr(), sizeof(UOSInt) * rec->nRecords);
 		this->currRecs.Clear();
 		this->currTimes.Clear();
 		this->currExtraData.Clear();

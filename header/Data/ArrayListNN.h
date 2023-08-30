@@ -40,7 +40,8 @@ namespace Data
 		void CopyItems(UOSInt destIndex, UOSInt srcIndex, UOSInt count);
 		UOSInt GetRange(NotNullPtr<T> *outArr, UOSInt index, UOSInt cnt) const;
 		UOSInt RemoveRange(UOSInt index, UOSInt cnt);
-		virtual NotNullPtr<T> *GetArray(OutParam<UOSInt> arraySize) const;
+		virtual NotNullPtr<T> *GetPtr(OutParam<UOSInt> arraySize) const;
+		virtual NotNullPtr<T> *Ptr() const;
 		T *Pop();
 		ArrayListNN<T> &operator =(const ArrayListNN<T> &v);
 	};
@@ -335,12 +336,17 @@ namespace Data
 		return endIndex - startIndex;
 	}
 
-	template <class T> NotNullPtr<T>* ArrayListNN<T>::GetArray(OutParam<UOSInt> arraySize) const
+	template <class T> NotNullPtr<T>* ArrayListNN<T>::GetPtr(OutParam<UOSInt> arraySize) const
 	{
 		arraySize.Set(this->objCnt);
 		return this->arr;
 	}
 	
+	template <class T> NotNullPtr<T>* ArrayListNN<T>::Ptr() const
+	{
+		return this->arr;
+	}
+
 	template <class T> T *ArrayListNN<T>::Pop()
 	{
 		if (this->objCnt == 0) return 0;

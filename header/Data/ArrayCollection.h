@@ -6,13 +6,13 @@ namespace Data
 	template <class T> class ArrayCollection
 	{
 	public:
-		virtual T* GetArray(OutParam<UOSInt> arraySize) const = 0;
+		virtual T* GetPtr(OutParam<UOSInt> arraySize) const = 0;
+		virtual T* Ptr() const = 0;
+		virtual UOSInt GetCount() const = 0;
 
 		ArrayIterator<T> Iterator() const
 		{
-			UOSInt cnt;
-			T *arr = this->GetArray(cnt);
-			return ArrayIterator<T>(arr, cnt);
+			return ArrayIterator<T>(this->Ptr(), this->GetCount());
 		}
 	};
 }

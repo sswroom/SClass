@@ -1,5 +1,5 @@
 ﻿#include "Stdafx.h"
-#include "Data/Sort/ArtificialQuickSort.h"
+#include "Data/Sort/ArtificialQuickSortFunc.h"
 #include "SSWR/OrganMgr/OrganBookForm.h"
 #include "UI/Clipboard.h"
 #include "UI/MessageDialog.h"
@@ -14,7 +14,7 @@ SSWR::OrganMgr::BookArrayList::~BookArrayList()
 
 void SSWR::OrganMgr::BookArrayList::Sort()
 {
-	ArtificialQuickSort_SortCmp((void**)arr, (Data::IComparable::CompareFunc)CompareBook, 0, (OSInt)this->objCnt - 1);
+	Data::Sort::ArtificialQuickSortFunc<OrganBook*>::Sort(*this, CompareBook);
 }
 
 OSInt __stdcall SSWR::OrganMgr::BookArrayList::CompareBook(OrganBook *book1, OrganBook *book2)

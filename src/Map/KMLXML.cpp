@@ -1363,14 +1363,13 @@ Map::MapDrawLayer *Map::KMLXML::ParseKMLPlacemarkLyr(NotNullPtr<Text::XMLReader>
 						UOSInt nPoints;
 						Math::Coord2DDbl *ptArr;
 						Double *altArr;
-						UOSInt j;
 
 						NEW_CLASS(pl, Math::Geometry::LineString(4326, altList.GetCount(), true, false));
 						altArr = pl->GetZList(&nPoints);
 						ptArr = pl->GetPointList(nPoints);
 						i = altList.GetCount();
-						MemCopyAC(ptArr, coord.GetArray(j), sizeof(Math::Coord2DDbl) * i);
-						MemCopyAC(altArr, altList.GetArray(j), sizeof(Double) * i);
+						MemCopyAC(ptArr, coord.Ptr(), sizeof(Math::Coord2DDbl) * i);
+						MemCopyAC(altArr, altList.Ptr(), sizeof(Double) * i);
 						lyr->AddVector(pl, &lyrNameSb);
 					}
 				}
@@ -1523,7 +1522,6 @@ Map::MapDrawLayer *Map::KMLXML::ParseKMLPlacemarkLyr(NotNullPtr<Text::XMLReader>
 				UOSInt nPoints;
 				Math::Coord2DDbl *ptArr;
 				UInt32 *ptList;
-				UOSInt i;
 
 				if (altList.GetCount() > 0)
 				{
@@ -1532,8 +1530,8 @@ Map::MapDrawLayer *Map::KMLXML::ParseKMLPlacemarkLyr(NotNullPtr<Text::XMLReader>
 					ptList[0] = 0;
 					ptList[1] = (UInt32)(coord.GetCount() >> 1);
 					ptArr = pg->GetPointList(nPoints);
-					MemCopyNO(ptArr, coord.GetArray(i), sizeof(Double) * coord.GetCount());
-					MemCopyNO(&ptArr[coord.GetCount()], altList.GetArray(i), sizeof(Double) * altList.GetCount());
+					MemCopyNO(ptArr, coord.Ptr(), sizeof(Double) * coord.GetCount());
+					MemCopyNO(&ptArr[coord.GetCount()], altList.Ptr(), sizeof(Double) * altList.GetCount());
 					lyr->AddVector(pg, &lyrNameSb);
 				}
 				else
@@ -1542,7 +1540,7 @@ Map::MapDrawLayer *Map::KMLXML::ParseKMLPlacemarkLyr(NotNullPtr<Text::XMLReader>
 					ptList = pg->GetPtOfstList(nPoints);
 					ptList[0] = 0;
 					ptArr = pg->GetPointList(nPoints);
-					MemCopyNO(ptArr, coord.GetArray(i), sizeof(Double) * coord.GetCount());
+					MemCopyNO(ptArr, coord.Ptr(), sizeof(Double) * coord.GetCount());
 					lyr->AddVector(pg, &lyrNameSb);
 				}
 			}

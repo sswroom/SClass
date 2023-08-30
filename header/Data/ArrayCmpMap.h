@@ -139,7 +139,7 @@ namespace Data
 	template <class T, class V> V *ArrayCmpMap<T, V>::ToArray(OutParam<UOSInt> objCnt)
 	{
 		UOSInt cnt;
-		V *arr = this->vals.GetArray(cnt);
+		V *arr = this->vals.GetPtr(cnt);
 		V *outArr = MemAlloc(V, cnt);
 		MemCopyNO(outArr, arr, sizeof(V) * cnt);
 		objCnt.Set(cnt);

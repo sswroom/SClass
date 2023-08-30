@@ -338,7 +338,7 @@ Math::Geometry::Vector2D *Parser::FileParser::JSONParser::ParseGeomJSON(Text::JS
 					else
 					{
 						Double *ptArr;
-						ptArr = ptList.GetArray(i);
+						ptArr = ptList.GetPtr(i);
 						Math::Geometry::LineString *pl;
 						NEW_CLASS(pl, Math::Geometry::LineString(srid, (Math::Coord2DDbl*)ptArr, i >> 1, false, false));
 						return pl;

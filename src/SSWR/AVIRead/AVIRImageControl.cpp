@@ -484,10 +484,9 @@ Double *SSWR::AVIRead::AVIRImageControl::GetCameraGamma(Text::CString cameraName
 		}
 		if (gammaVals.GetCount() > 0)
 		{
-			UOSInt i;
 			camera->gammaCnt = (UInt32)gammaVals.GetCount();
 			camera->gammaParam = MemAlloc(Double, camera->gammaCnt);
-			MemCopyNO(camera->gammaParam, gammaVals.GetArray(i), sizeof(Double) * camera->gammaCnt);
+			MemCopyNO(camera->gammaParam, gammaVals.Ptr(), sizeof(Double) * camera->gammaCnt);
 		}
 	}
 

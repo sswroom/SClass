@@ -313,7 +313,7 @@ Math::Geometry::Vector2D *Math::WKBReader::ParseWKB(const UInt8 *wkb, UOSInt wkb
 			UInt32 *ptOfsts = pg->GetPtOfstList(j);
 			Math::Coord2DDbl *pointArr = pg->GetPointList(i);
 			MemCopyNO(ptOfsts, parts, sizeof(UInt32) * numParts);
-			MemCopyAC(pointArr, points.GetArray(j), sizeof(Math::Coord2DDbl) * points.GetCount());
+			MemCopyAC(pointArr, points.Ptr(), sizeof(Math::Coord2DDbl) * points.GetCount());
 			MemFree(parts);
 			if (sizeUsed)
 			{
@@ -370,8 +370,8 @@ Math::Geometry::Vector2D *Math::WKBReader::ParseWKB(const UInt8 *wkb, UOSInt wkb
 			Math::Coord2DDbl *pointArr = pg->GetPointList(i);
 			Double *zArr = pg->GetZList(&i);
 			MemCopyNO(ptOfsts, parts, sizeof(UInt32) * numParts);
-			MemCopyAC(pointArr, points.GetArray(j), sizeof(Math::Coord2DDbl) * points.GetCount());
-			MemCopyAC(zArr, zList.GetArray(j), sizeof(Double) * points.GetCount());
+			MemCopyAC(pointArr, points.Ptr(), sizeof(Math::Coord2DDbl) * points.GetCount());
+			MemCopyAC(zArr, zList.Ptr(), sizeof(Double) * points.GetCount());
 			MemFree(parts);
 			if (sizeUsed)
 			{
@@ -428,8 +428,8 @@ Math::Geometry::Vector2D *Math::WKBReader::ParseWKB(const UInt8 *wkb, UOSInt wkb
 			Math::Coord2DDbl *pointArr = pg->GetPointList(i);
 			Double *mArr = pg->GetMList(&i);
 			MemCopyNO(ptOfsts, parts, sizeof(UInt32) * numParts);
-			MemCopyAC(pointArr, points.GetArray(j), sizeof(Math::Coord2DDbl) * points.GetCount());
-			MemCopyAC(mArr, mList.GetArray(j), sizeof(Double) * points.GetCount());
+			MemCopyAC(pointArr, points.Ptr(), sizeof(Math::Coord2DDbl) * points.GetCount());
+			MemCopyAC(mArr, mList.Ptr(), sizeof(Double) * points.GetCount());
 			MemFree(parts);
 			if (sizeUsed)
 			{
@@ -489,9 +489,9 @@ Math::Geometry::Vector2D *Math::WKBReader::ParseWKB(const UInt8 *wkb, UOSInt wkb
 			Double *zArr = pg->GetZList(&i);
 			Double *mArr = pg->GetMList(&i);
 			MemCopyNO(ptOfsts, parts, sizeof(UInt32) * numParts);
-			MemCopyAC(pointArr, points.GetArray(j), sizeof(Math::Coord2DDbl) * points.GetCount());
-			MemCopyAC(zArr, zList.GetArray(j), sizeof(Double) * points.GetCount());
-			MemCopyAC(mArr, mList.GetArray(j), sizeof(Double) * points.GetCount());
+			MemCopyAC(pointArr, points.Ptr(), sizeof(Math::Coord2DDbl) * points.GetCount());
+			MemCopyAC(zArr, zList.Ptr(), sizeof(Double) * points.GetCount());
+			MemCopyAC(mArr, mList.Ptr(), sizeof(Double) * points.GetCount());
 			MemFree(parts);
 			if (sizeUsed)
 			{

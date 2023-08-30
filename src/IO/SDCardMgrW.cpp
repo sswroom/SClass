@@ -199,7 +199,7 @@ Bool SDCardMgr_ReadId(Text::CStringNN fileName, UInt8 *buff)
 	return ret;
 }
 
-UOSInt IO::SDCardMgr::GetCardList(Data::ArrayList<IO::SDCardInfo*> *cardList)
+UOSInt IO::SDCardMgr::GetCardList(NotNullPtr<Data::ArrayList<IO::SDCardInfo*>> cardList)
 {
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[512];

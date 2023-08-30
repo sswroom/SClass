@@ -840,7 +840,7 @@ void Media::VectorGraph::DrawTo(Media::DrawImage *dimg, UInt32 *imgDurMS)
 			Math::Coord2DDbl *points;
 			Math::Coord2DDbl *dpoints;
 //			parts = pl->GetPartList(&nParts);
-			dpoints = pl->GetPointList(&nPoints);
+			dpoints = pl->GetPointList(nPoints);
 			points = MemAllocA(Math::Coord2DDbl, nPoints);
 			Math::Coord2DDbl dScale = Math::Coord2DDbl(scale, scale);
 			k = nPoints;

@@ -321,7 +321,7 @@ namespace Data
 			static void Sort(NotNullPtr<Data::ArrayList<T>> arr, CompareFunc func)
 			{
 				UOSInt j;
-				T *a = arr->GetArray(j);
+				T *a = arr->GetPtr(j);
 				Sort(a, func, 0, (OSInt)j - 1);
 			}
 		};
