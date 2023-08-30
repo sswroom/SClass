@@ -48,7 +48,7 @@ void SSWR::DataSync::SyncClientDataMgr::RemoveData(UOSInt cnt)
 	{
 		cnt = j;
 	}
-	tmp.AddRange(this->dataList.GetArray(&j), cnt);
+	tmp.AddRange(this->dataList.GetArray(j), cnt);
 	this->dataList.RemoveRange(0, cnt);
 	mutUsage.EndUse();
 	while (cnt-- > 0)
