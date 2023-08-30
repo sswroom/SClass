@@ -112,6 +112,12 @@ Text::String *Crypto::Token::JWTParam::GetJWTId() const
 	return this->jti;
 }
 
+Bool Crypto::Token::JWTParam::IsExpired(Data::Timestamp ts) const
+{
+	Int64 t = ts.ToUnixTimestamp();
+	return t < this->nbf || t >= this->exp;
+}
+
 void Crypto::Token::JWTParam::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
 {
 	Bool found = false;

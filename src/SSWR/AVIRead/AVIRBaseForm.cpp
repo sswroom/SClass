@@ -129,6 +129,7 @@
 #include "SSWR/AVIRead/AVIRJasyptForm.h"
 #include "SSWR/AVIRead/AVIRJSTextForm.h"
 #include "SSWR/AVIRead/AVIRJTT808ServerForm.h"
+#include "SSWR/AVIRead/AVIRJWTParserForm.h"
 #include "SSWR/AVIRead/AVIRLDAPClientForm.h"
 #include "SSWR/AVIRead/AVIRLDAPExplorerForm.h"
 #include "SSWR/AVIRead/AVIRLineCounterForm.h"
@@ -499,7 +500,8 @@ typedef enum
 	MNU_MQTT_SUBSCRIBE_TEST,
 	MNU_MQTT_PUBLISH_TEST,
 	MNU_FILE_SEARCH,
-	MNU_VBOX_MANAGER
+	MNU_VBOX_MANAGER,
+	MNU_JWT_PARSER
 } MenuItems;
 
 void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles)
@@ -643,6 +645,7 @@ SSWR::AVIRead::AVIRBaseForm::AVIRBaseForm(UI::GUIClientControl *parent, NotNullP
 	mnu2->AddItem(CSTR("BCrypt"), MNU_BCRYPT, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("Encrypt Message"), MNU_ENCRYPT_MSG, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("RNCryptor"), MNU_RNCRYPTOR, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("JWT Parser"), MNU_JWT_PARSER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2 = mnu->AddSubMenu(CSTR("Certificates"));
 	mnu2->AddItem(CSTR("Cert Util"), MNU_CERT_UTIL, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("CA Util"), MNU_CA_UTIL, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -2859,6 +2862,13 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		{
 			SSWR::AVIRead::AVIRVBoxManagerForm *frm;
 			NEW_CLASS(frm, SSWR::AVIRead::AVIRVBoxManagerForm(0, this->ui, this->core));
+			this->core->ShowForm(frm);
+		}
+		break;
+	case MNU_JWT_PARSER:
+		{
+			SSWR::AVIRead::AVIRJWTParserForm *frm;
+			NEW_CLASS(frm, SSWR::AVIRead::AVIRJWTParserForm(0, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;

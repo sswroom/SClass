@@ -3860,6 +3860,8 @@ SSWR/AVIRead/AVIRJSTextForm.h: ../../src/SSWR/AVIRead/AVIRJSTextForm.cpp
 @AVIRJSTextForm.o
 SSWR/AVIRead/AVIRJTT808ServerForm.h: ../../src/SSWR/AVIRead/AVIRJTT808ServerForm.cpp
 @AVIRJTT808ServerForm.o
+SSWR/AVIRead/AVIRJWTParserForm.h: ../../src/SSWR/AVIRead/AVIRJWTParserForm.cpp
+@AVIRJWTParserForm.o
 SSWR/AVIRead/AVIRLDAPClientForm.h: ../../src/SSWR/AVIRead/AVIRLDAPClientForm.cpp
 @AVIRLDAPClientForm.o
 SSWR/AVIRead/AVIRLDAPExplorerForm.h: ../../src/SSWR/AVIRead/AVIRLDAPExplorerForm.cpp
@@ -5843,6 +5845,7 @@ AVIRJasyptForm.o: ../../src/SSWR/AVIRead/AVIRJasyptForm.cpp
 AVIRJavaClassForm.o: ../../src/SSWR/AVIRead/AVIRJavaClassForm.cpp
 AVIRJSTextForm.o: ../../src/SSWR/AVIRead/AVIRJSTextForm.cpp
 AVIRJTT808ServerForm.o: ../../src/SSWR/AVIRead/AVIRJTT808ServerForm.cpp
+AVIRJWTParserForm.o: ../../src/SSWR/AVIRead/AVIRJWTParserForm.cpp
 AVIRLDAPClientForm.o: ../../src/SSWR/AVIRead/AVIRLDAPClientForm.cpp
 AVIRLDAPExplorerForm.o: ../../src/SSWR/AVIRead/AVIRLDAPExplorerForm.cpp
 AVIRLineChartForm.o: ../../src/SSWR/AVIRead/AVIRLineChartForm.cpp

@@ -38,6 +38,7 @@ namespace Crypto
 			Int64 GetIssuedAt() const;
 			void SetJWTId(Text::String *id);
 			Text::String *GetJWTId() const;
+			Bool IsExpired(Data::Timestamp ts) const;
 			void ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const;
 		};
 	}

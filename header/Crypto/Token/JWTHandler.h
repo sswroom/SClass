@@ -15,21 +15,34 @@ namespace Crypto
 		class JWTHandler
 		{
 		private:
+			struct PayloadMapping
+			{
+				const UTF8Char *key;
+				UOSInt keyLen;
+				const UTF8Char *name;
+				UOSInt nameLen;
+			};
+			
+		private:
 			Net::SSLEngine *ssl;
 			JWSignature::Algorithm alg;
-			UInt8 *privateKey;
-			UOSInt privateKeyLeng;
+			UInt8 *key;
+			UOSInt keyLeng;
+
+			static PayloadMapping payloadNames[];
 
 		public:
-			JWTHandler(Net::SSLEngine *ssl, JWSignature::Algorithm alg, const UInt8 *privateKey, UOSInt privateKeyLeng);
+			JWTHandler(Net::SSLEngine *ssl, JWSignature::Algorithm alg, const UInt8 *key, UOSInt keyLeng);
+			JWTHandler(Net::SSLEngine *ssl);
 			~JWTHandler();
 
 			Bool Generate(NotNullPtr<Text::StringBuilderUTF8> sb, Data::StringMap<const UTF8Char*> *payload, JWTParam *param);
-			Data::StringMap<Text::String*> *Parse(const UTF8Char *token, JWTParam *param);
+			Data::StringMap<Text::String*> *Parse(Text::CString token, NotNullPtr<JWTParam> param, Bool ignoreSignValid, Text::StringBuilderUTF8 *sbErr);
 
 			void FreeResult(Data::StringMap<Text::String*> *result);
 
 			static JWTHandler *CreateHMAC(Net::SSLEngine *ssl, JWSignature::Algorithm alg, const UInt8 *key, UOSInt keyLeng);
+			static Text::CString PayloadName(Text::CString key);
 		};
 	}
 }
