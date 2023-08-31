@@ -693,7 +693,7 @@ Bool Net::Email::EmailMessage::WriteToStream(IO::Stream *stm)
 								builder.AppendNull();
 							builder.EndLevel();
 							///////////////////////////////////////
-							this->ssl->Signature(signKey, Crypto::Hash::HashType::SHA256, mstm.GetBuff(&len), (UOSInt)mstm.GetLength(), signData, &signLen);
+							this->ssl->Signature(signKey, Crypto::Hash::HashType::SHA256, mstm.GetBuff(), (UOSInt)mstm.GetLength(), signData, signLen);
 							builder.AppendOctetStringC(signData, signLen);
 						builder.EndLevel();
 					builder.EndLevel();

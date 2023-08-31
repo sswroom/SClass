@@ -3064,7 +3064,7 @@ Bool Crypto::Cert::X509File::IsSignatureKey(Net::SSLEngine *ssl, NotNullPtr<Cryp
 	}
 	UOSInt mySignSize;
 	UInt8 mySignature[256];
-	if (!ssl->Signature(key, Crypto::Hash::HashType::SHA256, data, dataSize + itemOfst, mySignature, &mySignSize))
+	if (!ssl->Signature(key, Crypto::Hash::HashType::SHA256, data, dataSize + itemOfst, mySignature, mySignSize))
 	{
 		return false;
 	}

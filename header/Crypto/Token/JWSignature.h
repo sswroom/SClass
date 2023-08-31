@@ -43,7 +43,10 @@ namespace Crypto
 			~JWSignature();
 
 			Bool CalcHash(const UInt8 *buff, UOSInt buffSize);
-			Bool GetHashB64(NotNullPtr<Text::StringBuilderUTF8> sb);
+			Bool VerifyHash(const UInt8 *buff, UOSInt buffSize, const UInt8 *signature, UOSInt signatureSize);
+			Bool GetHashB64(NotNullPtr<Text::StringBuilderUTF8> sb) const;
+			const UInt8 *GetSignature() const;
+			UOSInt GetSignatureLen() const;
 
 			static Text::CString AlgorithmGetName(Algorithm alg);
 			static Algorithm AlgorithmGetByName(const UTF8Char *name);

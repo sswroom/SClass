@@ -6,6 +6,7 @@
 #include "Crypto/Hash/SHA384.h"
 #include "Crypto/Hash/SHA512.h"
 #include "Crypto/Token/JWTHandler.h"
+#include "Crypto/Token/JWToken.h"
 #include "Text/JSON.h"
 #include "Text/JSONBuilder.h"
 #include "Text/MyString.h"
@@ -18,6 +19,7 @@ Crypto::Token::JWTHandler::PayloadMapping Crypto::Token::JWTHandler::payloadName
 
 //https://learn.microsoft.com/en-us/azure/active-directory/develop/id-token-claims-reference
 //https://learn.microsoft.com/en-us/azure/active-directory/develop/access-token-claims-reference
+//https://login.microsoftonline.com/common/discovery/v2.0/keys
 	{UTF8STRC("address"), UTF8STRC("Preferred postal address")},
 	{UTF8STRC("acr"), UTF8STRC("Authentication Context Class Reference")},
 	{UTF8STRC("act"), UTF8STRC("Actor")},
@@ -113,69 +115,60 @@ Crypto::Token::JWTHandler::~JWTHandler()
 
 Bool Crypto::Token::JWTHandler::Generate(NotNullPtr<Text::StringBuilderUTF8> sb, Data::StringMap<const UTF8Char*> *payload, JWTParam *param)
 {
-	UTF8Char sbuff[256];
-	UTF8Char *sptr;
-	sptr = Text::StrConcatC(sbuff, UTF8STRC("{\"alg\":\""));
-	sptr = JWSignature::AlgorithmGetName(alg).ConcatTo(sptr);
-	sptr = Text::StrConcatC(sptr, UTF8STRC("\",\"typ\":\"JWT\"}"));
-	Text::TextBinEnc::Base64Enc b64(Text::TextBinEnc::Base64Enc::Charset::URL, true);
-	b64.EncodeBin(sb, sbuff, (UOSInt)(sptr - sbuff));
-	sb->AppendUTF8Char('.');
 	Text::StringBuilderUTF8 sbJson;
-	Text::JSONBuilder *json;
 	NotNullPtr<Data::ArrayList<Text::String*>> keys = payload->GetKeys();
 	Text::String *key;
 	UOSInt i;
 	UOSInt j;
-	NEW_CLASS(json, Text::JSONBuilder(sbJson, Text::JSONBuilder::OT_OBJECT));
-	i = 0;
-	j = keys->GetCount();
-	while (i < j)
 	{
-		key = keys->GetItem(i);
-		json->ObjectAddStrUTF8(key->ToCString(), payload->Get(key));
-		i++;
+		Text::JSONBuilder json(sbJson, Text::JSONBuilder::OT_OBJECT);
+		i = 0;
+		j = keys->GetCount();
+		while (i < j)
+		{
+			key = keys->GetItem(i);
+			json.ObjectAddStrUTF8(key->ToCString(), payload->Get(key));
+			i++;
+		}
+		if (param != 0)
+		{
+			if (param->GetIssuer() != 0)
+			{
+				json.ObjectAddStr(CSTR("iss"), param->GetIssuer());
+			}
+			if (param->GetSubject() != 0)
+			{
+				json.ObjectAddStr(CSTR("sub"), param->GetSubject());
+			}
+			if (param->GetAudience() != 0)
+			{
+				json.ObjectAddStr(CSTR("aud"), param->GetAudience());
+			}
+			if (param->GetExpirationTime() != 0)
+			{
+				json.ObjectAddInt64(CSTR("exp"), param->GetExpirationTime());
+			}
+			if (param->GetNotBefore() != 0)
+			{
+				json.ObjectAddInt64(CSTR("nbf"), param->GetNotBefore());
+			}
+			if (param->GetIssuedAt() != 0)
+			{
+				json.ObjectAddInt64(CSTR("iat"), param->GetIssuedAt());
+			}
+			if (param->GetJWTId() != 0)
+			{
+				json.ObjectAddStr(CSTR("jti"), param->GetJWTId());
+			}
+		}
 	}
-	if (param != 0)
-	{
-		if (param->GetIssuer() != 0)
-		{
-			json->ObjectAddStr(CSTR("iss"), param->GetIssuer());
-		}
-		if (param->GetSubject() != 0)
-		{
-			json->ObjectAddStr(CSTR("sub"), param->GetSubject());
-		}
-		if (param->GetAudience() != 0)
-		{
-			json->ObjectAddStr(CSTR("aud"), param->GetAudience());
-		}
-		if (param->GetExpirationTime() != 0)
-		{
-			json->ObjectAddInt64(CSTR("exp"), param->GetExpirationTime());
-		}
-		if (param->GetNotBefore() != 0)
-		{
-			json->ObjectAddInt64(CSTR("nbf"), param->GetNotBefore());
-		}
-		if (param->GetIssuedAt() != 0)
-		{
-			json->ObjectAddInt64(CSTR("iat"), param->GetIssuedAt());
-		}
-		if (param->GetJWTId() != 0)
-		{
-			json->ObjectAddStr(CSTR("jti"), param->GetJWTId());
-		}
-	}
-	DEL_CLASS(json);
-	b64.EncodeBin(sb, sbJson.ToString(), sbJson.GetLength());
-	Crypto::Token::JWSignature sign(this->ssl, this->alg, this->key, this->keyLeng);
-	if (!sign.CalcHash(sb->ToString(), sb->GetLength()))
+	Crypto::Token::JWToken *token = Crypto::Token::JWToken::Generate(alg, sbJson.ToCString(), this->ssl, this->key, this->keyLeng);
+	if (token == 0)
 	{
 		return false;
 	}
-	sb->AppendUTF8Char('.');
-	sign.GetHashB64(sb);
+	token->ToString(sb);
+	DEL_CLASS(token);
 	return true;
 }
 

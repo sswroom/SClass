@@ -202,7 +202,7 @@ extern "C" void BubbleSort_SortStrC(Char **arr, OSInt firstIndex, OSInt lastInde
 	}
 }
 
-extern "C" void BubbleSort_SortCmp(void **arr, Data::IComparable::CompareFunc func, OSInt firstIndex, OSInt lastIndex)
+/*extern "C" void BubbleSort_SortCmp(void **arr, Data::IComparable::CompareFunc func, OSInt firstIndex, OSInt lastIndex)
 {
 	OSInt j = lastIndex - firstIndex;
 	OSInt i;
@@ -234,7 +234,7 @@ extern "C" void BubbleSort_SortCmp(void **arr, Data::IComparable::CompareFunc fu
 		if (finished)
 			break;
 	}
-}
+}*/
 
 extern "C" void BubbleSort_SortCmpO(Data::IComparable **arr, OSInt firstIndex, OSInt lastIndex)
 {
@@ -406,7 +406,7 @@ extern "C" void BubbleSort_SortStrCInv(Char **arr, OSInt firstIndex, OSInt lastI
 	}
 }
 
-extern "C" void BubbleSort_SortCmpInv(void **arr, Data::IComparable::CompareFunc func, OSInt firstIndex, OSInt lastIndex)
+/*extern "C" void BubbleSort_SortCmpInv(void **arr, Data::IComparable::CompareFunc func, OSInt firstIndex, OSInt lastIndex)
 {
 	OSInt j = lastIndex - firstIndex;
 	OSInt i;
@@ -438,7 +438,7 @@ extern "C" void BubbleSort_SortCmpInv(void **arr, Data::IComparable::CompareFunc
 		if (finished)
 			break;
 	}
-}
+}*/
 
 extern "C" void BubbleSort_SortCmpOInv(Data::IComparable **arr, OSInt firstIndex, OSInt lastIndex)
 {

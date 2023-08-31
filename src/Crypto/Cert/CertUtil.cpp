@@ -298,7 +298,7 @@ Bool Crypto::Cert::CertUtil::AppendSign(NotNullPtr<Net::ASN1PDUBuilder> builder,
 	{
 		UInt8 signData[256];
 		UOSInt signLen;
-		if (!ssl->Signature(key, hashType, item, itemOfst + itemLen, signData, &signLen))
+		if (!ssl->Signature(key, hashType, item, itemOfst + itemLen, signData, signLen))
 		{
 			return false;
 		}

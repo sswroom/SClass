@@ -872,7 +872,7 @@ const EVP_MD *OpenSSLEngine_GetHash(Crypto::Hash::HashType hashType)
 		return 0;
 	}
 }
-Bool Net::OpenSSLEngine::Signature(NotNullPtr<Crypto::Cert::X509Key> key, Crypto::Hash::HashType hashType, const UInt8 *payload, UOSInt payloadLen, UInt8 *signData, UOSInt *signLen)
+Bool Net::OpenSSLEngine::Signature(NotNullPtr<Crypto::Cert::X509Key> key, Crypto::Hash::HashType hashType, const UInt8 *payload, UOSInt payloadLen, UInt8 *signData, OutParam<UOSInt> signLen)
 {
 	const EVP_MD *htype = OpenSSLEngine_GetHash(hashType);
 	if (htype == 0)
@@ -908,7 +908,7 @@ Bool Net::OpenSSLEngine::Signature(NotNullPtr<Crypto::Cert::X509Key> key, Crypto
 		EVP_PKEY_free(pkey);
 		return false;
     }
-    *signLen = len;
+    signLen.Set(len);
 	EVP_MD_CTX_destroy(emc);
 	EVP_PKEY_free(pkey);
 	return true;

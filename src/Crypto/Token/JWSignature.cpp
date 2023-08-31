@@ -58,11 +58,11 @@ Bool Crypto::Token::JWSignature::CalcHash(const UInt8 *buff, UOSInt buffSize)
 			Bool succ = false;
 			NEW_CLASSNN(key, Crypto::Cert::X509Key(CSTR("rsakey"), Data::ByteArray(this->privateKey, this->privateKeyLeng), Crypto::Cert::X509Key::KeyType::RSA));
 			if (alg == Algorithm::RS256)
-				succ = this->ssl->Signature(key, Crypto::Hash::HashType::SHA256, buff, buffSize, this->hashVal, &this->hashValSize);
+				succ = this->ssl->Signature(key, Crypto::Hash::HashType::SHA256, buff, buffSize, this->hashVal, this->hashValSize);
 			else if (alg == Algorithm::RS384)
-				succ = this->ssl->Signature(key, Crypto::Hash::HashType::SHA384, buff, buffSize, this->hashVal, &this->hashValSize);
+				succ = this->ssl->Signature(key, Crypto::Hash::HashType::SHA384, buff, buffSize, this->hashVal, this->hashValSize);
 			if (alg == Algorithm::RS512)
-				succ = this->ssl->Signature(key, Crypto::Hash::HashType::SHA512, buff, buffSize, this->hashVal, &this->hashValSize);
+				succ = this->ssl->Signature(key, Crypto::Hash::HashType::SHA512, buff, buffSize, this->hashVal, this->hashValSize);
 			key.Delete();
 			return succ;
 		}
@@ -87,7 +87,7 @@ Bool Crypto::Token::JWSignature::CalcHash(const UInt8 *buff, UOSInt buffSize)
 	return true;
 }
 
-Bool Crypto::Token::JWSignature::GetHashB64(NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool Crypto::Token::JWSignature::GetHashB64(NotNullPtr<Text::StringBuilderUTF8> sb) const
 {
 	if (this->hashValSize == 0)
 	{
@@ -96,6 +96,16 @@ Bool Crypto::Token::JWSignature::GetHashB64(NotNullPtr<Text::StringBuilderUTF8> 
 	Text::TextBinEnc::Base64Enc b64(Text::TextBinEnc::Base64Enc::Charset::URL, true);
 	b64.EncodeBin(sb, this->hashVal, this->hashValSize);
 	return true;
+}
+
+const UInt8 *Crypto::Token::JWSignature::GetSignature() const
+{
+	return this->hashVal;
+}
+
+UOSInt Crypto::Token::JWSignature::GetSignatureLen() const
+{
+	return this->hashValSize;
 }
 
 Text::CString Crypto::Token::JWSignature::AlgorithmGetName(Algorithm alg)
