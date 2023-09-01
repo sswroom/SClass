@@ -93,7 +93,7 @@ namespace Net
 		virtual Bool ServerSetCertsASN1(NotNullPtr<Crypto::Cert::X509Cert> certASN1, NotNullPtr<Crypto::Cert::X509File> keyASN1, Crypto::Cert::X509Cert *caCert) = 0;
 		virtual Bool ServerSetRequireClientCert(ClientCertType cliCert) = 0;
 		virtual Bool ServerSetClientCA(Text::CString clientCA) = 0;
-		virtual Bool ServerAddALPNSupport(Text::CString proto) = 0;
+		virtual Bool ServerAddALPNSupport(Text::CStringNN proto) = 0;
 		Bool ServerSetCerts(Text::CStringNN certFile, Text::CStringNN keyFile);
 		void ServerInit(Socket *s, ClientReadyHandler readyHdlr, void *userObj);
 

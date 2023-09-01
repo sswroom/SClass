@@ -137,6 +137,14 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		if (asyncMode && !showHelp)
 		{
 			smake.AsyncPostCompile();
+			if (smake.HasError())
+			{
+				Text::StringBuilderUTF8 sb;
+				smake.GetLastErrorMsg(sb);
+				console.SetTextColor(Text::StandardColor::Red);
+				console.WriteLineC(sb.ToString(), sb.GetLength());
+				console.ResetTextColor();
+			}
 		}
 	}
 	if (showHelp)

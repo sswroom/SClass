@@ -51,7 +51,7 @@ namespace SSWR
 			static void __stdcall WriteJSText(IO::Writer *writer, Text::String *txt);
 			static void __stdcall WriteJSText(IO::Writer *writer, NotNullPtr<Text::String> txt);
 
-			virtual Bool ProcessRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CString subReq);
+			virtual Bool ProcessRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq);
 
 		public:
 			SMonitorWebHandler(SSWR::SMonitor::ISMonitorCore *core);

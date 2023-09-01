@@ -75,11 +75,11 @@ namespace Text
 			Bool BeginParseFile(Text::CString fileName);
 			Bool EndParseFile(const UTF8Char *fileName, UOSInt fileNameLen);
 
-			Bool IsDefined(Text::CString defName);
-			Bool AddGlobalDef(Text::CString defName, Text::CString defVal);
-			Bool AddDef(Text::CString defName, Text::CString defParams, Text::CString defVal, Int32 lineNum);
-			Bool Undefine(Text::CString defName);
-			Bool GetDefineVal(Text::CString defName, Text::CString defParams, NotNullPtr<Text::StringBuilderUTF8> sb);
+			Bool IsDefined(Text::CStringNN defName);
+			Bool AddGlobalDef(Text::CStringNN defName, Text::CString defVal);
+			Bool AddDef(Text::CStringNN defName, Text::CString defParams, Text::CString defVal, Int32 lineNum);
+			Bool Undefine(Text::CStringNN defName);
+			Bool GetDefineVal(Text::CStringNN defName, Text::CString defParams, NotNullPtr<Text::StringBuilderUTF8> sb);
 
 			UOSInt GetDefineCount();
 			Bool GetDefineInfo(UOSInt index, DefineInfo *defInfo);

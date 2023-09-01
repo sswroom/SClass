@@ -304,12 +304,12 @@ UOSInt SSWR::DiscDB::DiscDBEnv::GetBurntDiscs(Data::ArrayList<BurntDiscInfo*> *d
 	return this->discMap->GetCount();
 }
 
-const SSWR::DiscDB::DiscDBEnv::BurntDiscInfo *SSWR::DiscDB::DiscDBEnv::GetBurntDisc(Text::CString discId)
+const SSWR::DiscDB::DiscDBEnv::BurntDiscInfo *SSWR::DiscDB::DiscDBEnv::GetBurntDisc(Text::CStringNN discId)
 {
 	return this->discMap->GetC(discId);
 }
 
-OSInt SSWR::DiscDB::DiscDBEnv::GetBurntDiscIndex(Text::CString discId)
+OSInt SSWR::DiscDB::DiscDBEnv::GetBurntDiscIndex(Text::CStringNN discId)
 {
 	return this->discMap->IndexOfC(discId);
 }
@@ -388,12 +388,12 @@ const SSWR::DiscDB::DiscDBEnv::DVDTypeInfo *SSWR::DiscDB::DiscDBEnv::GetDVDType(
 	return this->dvdTypeMap->GetItem(index);
 }
 
-OSInt SSWR::DiscDB::DiscDBEnv::GetDVDTypeIndex(Text::CString discTypeID)
+OSInt SSWR::DiscDB::DiscDBEnv::GetDVDTypeIndex(Text::CStringNN discTypeID)
 {
 	return this->dvdTypeMap->IndexOfC(discTypeID);
 }
 
-Bool SSWR::DiscDB::DiscDBEnv::ModifyDVDType(Text::CString discTypeID, Text::CString name, Text::CString desc)
+Bool SSWR::DiscDB::DiscDBEnv::ModifyDVDType(Text::CStringNN discTypeID, Text::CString name, Text::CString desc)
 {
 	DVDTypeInfo *dvdType = this->dvdTypeMap->GetC(discTypeID);
 	if (dvdType == 0)
@@ -420,7 +420,7 @@ Bool SSWR::DiscDB::DiscDBEnv::ModifyDVDType(Text::CString discTypeID, Text::CStr
 	return false;
 }
 
-const SSWR::DiscDB::DiscDBEnv::DVDTypeInfo *SSWR::DiscDB::DiscDBEnv::NewDVDType(Text::CString discTypeID, Text::CString name, Text::CString desc)
+const SSWR::DiscDB::DiscDBEnv::DVDTypeInfo *SSWR::DiscDB::DiscDBEnv::NewDVDType(Text::CStringNN discTypeID, Text::CString name, Text::CString desc)
 {
 	DVDTypeInfo *dvdType = this->dvdTypeMap->GetC(discTypeID);
 	if (dvdType != 0)
@@ -451,7 +451,7 @@ UOSInt SSWR::DiscDB::DiscDBEnv::GetCategories(Data::ArrayList<CategoryInfo*> *ca
 	return this->cateMap->GetCount();
 }
 
-const SSWR::DiscDB::DiscDBEnv::DiscTypeInfo *SSWR::DiscDB::DiscDBEnv::GetDiscType(Text::CString discTypeId)
+const SSWR::DiscDB::DiscDBEnv::DiscTypeInfo *SSWR::DiscDB::DiscDBEnv::GetDiscType(Text::CStringNN discTypeId)
 {
 	return this->discTypeMap->GetC(discTypeId);
 }

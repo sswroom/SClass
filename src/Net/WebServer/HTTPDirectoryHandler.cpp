@@ -125,7 +125,7 @@ void Net::WebServer::HTTPDirectoryHandler::AddCacheHeader(NotNullPtr<Net::WebSer
 	}
 }
 
-void Net::WebServer::HTTPDirectoryHandler::ResponsePackageFile(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CString subReq, IO::PackageFile *packageFile)
+void Net::WebServer::HTTPDirectoryHandler::ResponsePackageFile(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, IO::PackageFile *packageFile)
 {
 	if (!this->allowBrowsing)
 	{
@@ -520,7 +520,7 @@ Net::WebServer::HTTPDirectoryHandler::~HTTPDirectoryHandler()
 	}
 }
 
-Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CString subReq)
+Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq)
 {
 	if (this->DoRequest(req, resp, subReq))
 	{
@@ -529,7 +529,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(NotNullPtr<Net::WebSer
 	return this->DoFileRequest(req, resp, subReq);
 }
 
-Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CString subReq)
+Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq)
 {
 	UInt8 buff[2048];
 	Text::StringBuilderUTF8 sb;
@@ -1467,7 +1467,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NotNullPtr<Net::WebServ
 	return false;
 }
 
-IO::PackageFile *Net::WebServer::HTTPDirectoryHandler::GetPackageFile(Text::CString path, Bool *needRelease)
+IO::PackageFile *Net::WebServer::HTTPDirectoryHandler::GetPackageFile(Text::CStringNN path, Bool *needRelease)
 {
 	if (path.StartsWith('/'))
 	{
@@ -1479,7 +1479,7 @@ IO::PackageFile *Net::WebServer::HTTPDirectoryHandler::GetPackageFile(Text::CStr
 	{
 		UOSInt i = path.IndexOf('/');
 		PackageInfo *pkgInfo;
-		Text::CString pkgName;
+		Text::CStringNN pkgName;
 		if (i == INVALID_INDEX)
 		{
 			pkgName = path;

@@ -2984,6 +2984,8 @@ Net/ASN1PDUBuilder.h: ../../src/Net/ASN1PDUBuilder.cpp
 @ASN1PDUBuilder.o
 Net/ASN1Util.h: ../../src/Net/ASN1Util.cpp
 @ASN1Util.o
+Net/AzureManager.h: ../../src/Net/AzureManager.cpp
+@AzureManager.o
 Net/BrowserInfo.h: ../../src/Net/BrowserInfo.cpp
 @BrowserInfo.o
 Net/ConnectionInfo.h: ../../src/Net/ConnectionInfo.cpp
@@ -5418,6 +5420,7 @@ ASN1MIB.o: ../../src/Net/ASN1MIB.cpp
 ASN1OIDDB.o: ../../src/Net/ASN1OIDDB.cpp
 ASN1PDUBuilder.o: ../../src/Net/ASN1PDUBuilder.cpp
 ASN1Util.o: ../../src/Net/ASN1Util.cpp
+AzureManager.o: ../../src/Net/AzureManager.cpp
 BrowserInfo.o: ../../src/Net/BrowserInfo.cpp
 ConnectionInfo.o: ../../src/Net/ConnectionInfo.cpp
 DHCPServer.o: ../../src/Net/DHCPServer.cpp

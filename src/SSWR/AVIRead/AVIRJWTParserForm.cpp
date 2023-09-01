@@ -1,73 +1,123 @@
 #include "Stdafx.h"
-#include "Crypto/Token/JWTHandler.h"
+#include "Crypto/Token/JWToken.h"
 #include "Net/SSLEngineFactory.h"
 #include "SSWR/AVIRead/AVIRJWTParserForm.h"
+#include "Text/JSON.h"
 
 void __stdcall SSWR::AVIRead::AVIRJWTParserForm::OnParseClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRJWTParserForm *me = (SSWR::AVIRead::AVIRJWTParserForm*)userObj;
 	Text::StringBuilderUTF8 sbJWT;
 	Text::StringBuilderUTF8 sbErr;
+	Bool succ = false;
 	Int64 t;
 	me->txtJWT->GetText(sbJWT);
-	Crypto::Token::JWTHandler jwt(me->ssl);
-	Crypto::Token::JWTParam param;
-	Data::StringMap<Text::String*> *result = jwt.Parse(sbJWT.ToCString(), param, me->chkIgnoreSignValid->IsChecked(), &sbErr);
-	if (result)
+	SDEL_CLASS(me->token);
+	me->token = Crypto::Token::JWToken::Parse(sbJWT.ToCString(), &sbErr);
+	me->verifyType = Crypto::Token::JWToken::VerifyType::Unknown;
+	if (me->token)
 	{
-		me->txtStatus->SetText(CSTR("Success"));
-		me->txtIssuer->SetText(Text::String::OrEmpty(param.GetIssuer())->ToCString());
-		me->txtSubject->SetText(Text::String::OrEmpty(param.GetSubject())->ToCString());
-		me->txtAudience->SetText(Text::String::OrEmpty(param.GetAudience())->ToCString());
-		if ((t = param.GetExpirationTime()) != 0)
+		Crypto::Token::JWTParam param;
+		Data::StringMap<Text::String*> *result = me->token->ParsePayload(param, true, &sbErr);
+		if (result)
 		{
-			sbErr.ClearStr();
-			sbErr.AppendTS(Data::Timestamp(Data::TimeInstant(t, 0), Data::DateTimeUtil::GetLocalTzQhr()));
-			me->txtExpTime->SetText(sbErr.ToCString());
-		}
-		else
-		{
-			me->txtExpTime->SetText(CSTR("-"));
-		}
-		if ((t = param.GetNotBefore()) != 0)
-		{
-			sbErr.ClearStr();
-			sbErr.AppendTS(Data::Timestamp(Data::TimeInstant(t, 0), Data::DateTimeUtil::GetLocalTzQhr()));
-			me->txtNotBefore->SetText(sbErr.ToCString());
-		}
-		else
-		{
-			me->txtNotBefore->SetText(CSTR("-"));
-		}
-		if ((t = param.GetIssuedAt()) != 0)
-		{
-			sbErr.ClearStr();
-			sbErr.AppendTS(Data::Timestamp(Data::TimeInstant(t, 0), Data::DateTimeUtil::GetLocalTzQhr()));
-			me->txtIssueAt->SetText(sbErr.ToCString());
-		}
-		else
-		{
-			me->txtIssueAt->SetText(CSTR("-"));
-		}
-		me->txtJWTId->SetText(Text::String::OrEmpty(param.GetJWTId())->ToCString());
+			me->verifyType = me->token->GetVerifyType(param);
+			succ = true;
+			me->txtParseStatus->SetText(CSTR("Success"));
+			me->txtVerifyStatus->SetText(CSTR("Not Verified"));
+			me->txtIssuer->SetText(Text::String::OrEmpty(param.GetIssuer())->ToCString());
+			me->txtSubject->SetText(Text::String::OrEmpty(param.GetSubject())->ToCString());
+			me->txtAudience->SetText(Text::String::OrEmpty(param.GetAudience())->ToCString());
+			if ((t = param.GetExpirationTime()) != 0)
+			{
+				sbErr.ClearStr();
+				sbErr.AppendTS(Data::Timestamp(Data::TimeInstant(t, 0), Data::DateTimeUtil::GetLocalTzQhr()));
+				me->txtExpTime->SetText(sbErr.ToCString());
+			}
+			else
+			{
+				me->txtExpTime->SetText(CSTR("-"));
+			}
+			if ((t = param.GetNotBefore()) != 0)
+			{
+				sbErr.ClearStr();
+				sbErr.AppendTS(Data::Timestamp(Data::TimeInstant(t, 0), Data::DateTimeUtil::GetLocalTzQhr()));
+				me->txtNotBefore->SetText(sbErr.ToCString());
+			}
+			else
+			{
+				me->txtNotBefore->SetText(CSTR("-"));
+			}
+			if ((t = param.GetIssuedAt()) != 0)
+			{
+				sbErr.ClearStr();
+				sbErr.AppendTS(Data::Timestamp(Data::TimeInstant(t, 0), Data::DateTimeUtil::GetLocalTzQhr()));
+				me->txtIssueAt->SetText(sbErr.ToCString());
+			}
+			else
+			{
+				me->txtIssueAt->SetText(CSTR("-"));
+			}
+			me->txtJWTId->SetText(Text::String::OrEmpty(param.GetJWTId())->ToCString());
 
-		me->lvPayload->ClearItems();
-		NotNullPtr<Text::String> name;
-		UOSInt i = 0;
-		UOSInt j = result->GetCount();
-		while (i < j)
-		{
-			name = Text::String::OrEmpty(result->GetKey(i));
-			me->lvPayload->AddItem(name, 0);
-			me->lvPayload->SetSubItem(i, 1, Crypto::Token::JWTHandler::PayloadName(name->ToCString()));
-			me->lvPayload->SetSubItem(i, 2, Text::String::OrEmpty(result->GetItem(i)));
-			i++;
+			me->lvPayload->ClearItems();
+			NotNullPtr<Text::String> name;
+			UOSInt i = 0;
+			UOSInt j = result->GetCount();
+			while (i < j)
+			{
+				name = Text::String::OrEmpty(result->GetKey(i));
+				me->lvPayload->AddItem(name, 0);
+				me->lvPayload->SetSubItem(i, 1, Crypto::Token::JWToken::PayloadName(name->ToCString()));
+				me->lvPayload->SetSubItem(i, 2, Text::String::OrEmpty(result->GetItem(i)));
+				i++;
+			}
+			me->token->FreeResult(result);
+
+			if (me->verifyType == Crypto::Token::JWToken::VerifyType::Azure)
+			{
+				Text::JSONBase *json = Text::JSONBase::ParseJSONStr(me->token->GetHeader()->ToCString());
+				if (json == 0)
+				{
+					me->txtVerifyStatus->SetText(CSTR("Cannot parse JWT header"));
+				}
+				else
+				{
+					Text::String *kid = json->GetValueString(CSTR("kid"));
+					if (kid == 0)
+					{
+						me->txtVerifyStatus->SetText(CSTR("kid not found"));
+					}
+					else
+					{
+						Crypto::Cert::X509Key *key = me->azure->CreateKey(kid->ToCString());
+						if (key)
+						{
+							if (me->token->SignatureValid(me->ssl, key->GetASN1Buff(), key->GetASN1BuffSize(), key->GetKeyType()))
+							{
+								me->txtVerifyStatus->SetText(CSTR("Signature Valid"));
+							}
+							else
+							{
+								me->txtVerifyStatus->SetText(CSTR("Signature not valid"));
+							}
+							DEL_CLASS(key);
+						}
+						else
+						{
+							me->txtVerifyStatus->SetText(CSTR("Cannot found key from Azure"));
+						}
+						kid->Release();
+					}
+					json->EndUse();
+				}
+			}
 		}
-		jwt.FreeResult(result);
 	}
-	else
+	if (!succ)
 	{
-		me->txtStatus->SetText(sbErr.ToCString());
+		me->txtParseStatus->SetText(sbErr.ToCString());
+		me->txtVerifyStatus->SetText(CSTR(""));
 		me->txtIssuer->SetText(CSTR(""));
 		me->txtSubject->SetText(CSTR(""));
 		me->txtAudience->SetText(CSTR(""));
@@ -77,6 +127,7 @@ void __stdcall SSWR::AVIRead::AVIRJWTParserForm::OnParseClicked(void *userObj)
 		me->txtJWTId->SetText(CSTR(""));
 		me->lvPayload->ClearItems();
 	}
+	me->txtVerifyType->SetText(Crypto::Token::JWToken::VerifyTypeGetName(me->verifyType));
 }
 
 SSWR::AVIRead::AVIRJWTParserForm::AVIRJWTParserForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
@@ -86,6 +137,8 @@ SSWR::AVIRead::AVIRJWTParserForm::AVIRJWTParserForm(UI::GUIClientControl *parent
 
 	this->core = core;
 	this->ssl = Net::SSLEngineFactory::Create(this->core->GetSocketFactory(), false);
+	this->token = 0;
+	this->verifyType = Crypto::Token::JWToken::VerifyType::Unknown;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	NEW_CLASS(this->txtJWT, UI::GUITextBox(ui, this, CSTR(""), true));
@@ -99,15 +152,23 @@ SSWR::AVIRead::AVIRJWTParserForm::AVIRJWTParserForm(UI::GUIClientControl *parent
 	NEW_CLASS(this->btnParse, UI::GUIButton(ui, this->pnlResult, CSTR("Parse")));
 	this->btnParse->SetRect(4, 4, 75, 23, false);
 	this->btnParse->HandleButtonClick(OnParseClicked, this);
-	NEW_CLASS(this->chkIgnoreSignValid, UI::GUICheckBox(ui, this->pnlResult, CSTR("Ignore Signature Validation"), false));
-	this->chkIgnoreSignValid->SetRect(84, 4, 200, 23, false);
-	NEW_CLASS(this->lblStatus, UI::GUILabel(ui, this->pnlResult, CSTR("Status")));
-	this->lblStatus->SetRect(4, 28, 100, 23, false);
-	NEW_CLASS(this->txtStatus, UI::GUITextBox(ui, this->pnlResult, CSTR("")));
-	this->txtStatus->SetRect(104, 28, 300, 23, false);
-	this->txtStatus->SetReadOnly(true);
+	NEW_CLASS(this->lblParseStatus, UI::GUILabel(ui, this->pnlResult, CSTR("Parse Status")));
+	this->lblParseStatus->SetRect(4, 28, 100, 23, false);
+	NEW_CLASS(this->txtParseStatus, UI::GUITextBox(ui, this->pnlResult, CSTR("")));
+	this->txtParseStatus->SetRect(104, 28, 300, 23, false);
+	this->txtParseStatus->SetReadOnly(true);
+	NEW_CLASS(this->lblVerifyType, UI::GUILabel(ui, this->pnlResult, CSTR("Verify Type")));
+	this->lblVerifyType->SetRect(4, 52, 100, 23, false);
+	NEW_CLASS(this->txtVerifyType, UI::GUITextBox(ui, this->pnlResult, CSTR("")));
+	this->txtVerifyType->SetRect(104, 52, 300, 23, false);
+	this->txtVerifyType->SetReadOnly(true);
+	NEW_CLASS(this->lblVerifyStatus, UI::GUILabel(ui, this->pnlResult, CSTR("Verify Status")));
+	this->lblVerifyStatus->SetRect(4, 76, 100, 23, false);
+	NEW_CLASS(this->txtVerifyStatus, UI::GUITextBox(ui, this->pnlResult, CSTR("")));
+	this->txtVerifyStatus->SetRect(104, 76, 300, 23, false);
+	this->txtVerifyStatus->SetReadOnly(true);
 
-	Double y = 76;
+	Double y = 100;
 	NEW_CLASS(this->lblIssuer, UI::GUILabel(ui, this->pnlResult, CSTR("Issuer")));
 	this->lblIssuer->SetRect(4, y, 100, 23, false);
 	NEW_CLASS(this->txtIssuer, UI::GUITextBox(ui, this->pnlResult, CSTR("")));
@@ -164,6 +225,7 @@ SSWR::AVIRead::AVIRJWTParserForm::AVIRJWTParserForm(UI::GUIClientControl *parent
 SSWR::AVIRead::AVIRJWTParserForm::~AVIRJWTParserForm()
 {
 	SDEL_CLASS(this->ssl);
+	SDEL_CLASS(this->token);
 }
 
 void SSWR::AVIRead::AVIRJWTParserForm::OnMonitorChanged()

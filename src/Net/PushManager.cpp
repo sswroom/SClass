@@ -8,7 +8,7 @@
 
 #define FILENAME CSTR("PushServer.dat")
 
-Net::PushManager::UserInfo *Net::PushManager::GetUser(Text::CString userName)
+Net::PushManager::UserInfo *Net::PushManager::GetUser(Text::CStringNN userName)
 {
 	UserInfo *user = this->userMap.GetC(userName);
 	if (user == 0)
@@ -163,7 +163,7 @@ Net::PushManager::~PushManager()
 	this->fcmKey->Release();
 }
 
-Bool Net::PushManager::Subscribe(Text::CString token, Text::CString userName, DeviceType devType, NotNullPtr<const Net::SocketUtil::AddressInfo> remoteAddr, Text::CString devModel)
+Bool Net::PushManager::Subscribe(Text::CStringNN token, Text::CStringNN userName, DeviceType devType, NotNullPtr<const Net::SocketUtil::AddressInfo> remoteAddr, Text::CString devModel)
 {
 	Sync::MutexUsage mutUsage(this->dataMut);
 	DeviceInfo2 *dev = this->devMap.GetC(token);
@@ -228,7 +228,7 @@ Bool Net::PushManager::Subscribe(Text::CString token, Text::CString userName, De
 	return true;
 }
 
-Bool Net::PushManager::Unsubscribe(Text::CString token)
+Bool Net::PushManager::Unsubscribe(Text::CStringNN token)
 {
 	Sync::MutexUsage mutUsage(this->dataMut);
 	DeviceInfo2 *dev = this->devMap.RemoveC(token);

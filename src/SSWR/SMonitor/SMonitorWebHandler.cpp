@@ -2257,7 +2257,7 @@ void __stdcall SSWR::SMonitor::SMonitorWebHandler::WriteJSText(IO::Writer *write
 	jsTxt->Release();
 }
 
-Bool SSWR::SMonitor::SMonitorWebHandler::ProcessRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CString subReq)
+Bool SSWR::SMonitor::SMonitorWebHandler::ProcessRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq)
 {
 	if (this->DoRequest(req, resp, subReq))
 	{

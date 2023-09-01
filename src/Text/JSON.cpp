@@ -90,7 +90,7 @@ Text::JSONBase *Text::JSONBase::GetValue(Text::CString path)
 			sptr[dotIndex] = 0;
 			if (json->GetType() == JSONType::Object)
 			{
-				json = ((Text::JSONObject*)json)->GetObjectValue(Text::CString(sptr, dotIndex));
+				json = ((Text::JSONObject*)json)->GetObjectValue(Text::CStringNN(sptr, dotIndex));
 			}
 			else if (json->GetType() == JSONType::Array)
 			{
@@ -1283,7 +1283,7 @@ void Text::JSONObject::ToString(NotNullPtr<Text::StringBuilderUTF8> sb)
 	this->ToJSONString(sb);
 }
 
-void Text::JSONObject::SetObjectValue(Text::CString name, Text::JSONBase *val)
+void Text::JSONObject::SetObjectValue(Text::CStringNN name, Text::JSONBase *val)
 {
 	if (val)
 	{
@@ -1297,7 +1297,7 @@ void Text::JSONObject::SetObjectValue(Text::CString name, Text::JSONBase *val)
 	this->objVals.PutC(name, val);
 }
 
-void Text::JSONObject::SetObjectInt32(Text::CString name, Int32 val)
+void Text::JSONObject::SetObjectInt32(Text::CStringNN name, Int32 val)
 {
 	Text::JSONBase *obj = this->objVals.GetC(name);
 	if (obj)
@@ -1309,7 +1309,7 @@ void Text::JSONObject::SetObjectInt32(Text::CString name, Int32 val)
 	this->objVals.PutC(name, ival);
 }
 
-void Text::JSONObject::SetObjectInt64(Text::CString name, Int64 val)
+void Text::JSONObject::SetObjectInt64(Text::CStringNN name, Int64 val)
 {
 	Text::JSONBase *obj = this->objVals.GetC(name);
 	if (obj)
@@ -1321,7 +1321,7 @@ void Text::JSONObject::SetObjectInt64(Text::CString name, Int64 val)
 	this->objVals.PutC(name, ival);
 }
 
-void Text::JSONObject::SetObjectDouble(Text::CString name, Double val)
+void Text::JSONObject::SetObjectDouble(Text::CStringNN name, Double val)
 {
 	Text::JSONBase *obj = this->objVals.GetC(name);
 	if (obj)
@@ -1333,7 +1333,7 @@ void Text::JSONObject::SetObjectDouble(Text::CString name, Double val)
 	this->objVals.PutC(name, ival);
 }
 
-void Text::JSONObject::SetObjectString(Text::CString name, Text::CString val)
+void Text::JSONObject::SetObjectString(Text::CStringNN name, Text::CString val)
 {
 	Text::JSONBase *obj = this->objVals.GetC(name);
 	if (obj)
@@ -1345,7 +1345,7 @@ void Text::JSONObject::SetObjectString(Text::CString name, Text::CString val)
 	this->objVals.PutC(name, ival);
 }
 
-void Text::JSONObject::SetObjectString(Text::CString name, Text::String *val)
+void Text::JSONObject::SetObjectString(Text::CStringNN name, Text::String *val)
 {
 	Text::JSONBase *obj = this->objVals.GetC(name);
 	if (obj)
@@ -1357,7 +1357,7 @@ void Text::JSONObject::SetObjectString(Text::CString name, Text::String *val)
 	this->objVals.PutC(name, ival);
 }
 
-void Text::JSONObject::SetObjectString(Text::CString name, NotNullPtr<Text::String> val)
+void Text::JSONObject::SetObjectString(Text::CStringNN name, NotNullPtr<Text::String> val)
 {
 	Text::JSONBase *obj = this->objVals.GetC(name);
 	if (obj)
@@ -1369,7 +1369,7 @@ void Text::JSONObject::SetObjectString(Text::CString name, NotNullPtr<Text::Stri
 	this->objVals.PutC(name, ival);
 }
 
-void Text::JSONObject::SetObjectBool(Text::CString name, Bool val)
+void Text::JSONObject::SetObjectBool(Text::CStringNN name, Bool val)
 {
 	Text::JSONBase *obj = this->objVals.GetC(name);
 	if (obj)
@@ -1381,12 +1381,12 @@ void Text::JSONObject::SetObjectBool(Text::CString name, Bool val)
 	this->objVals.PutC(name, ival);
 }
 
-Text::JSONBase *Text::JSONObject::GetObjectValue(Text::CString name)
+Text::JSONBase *Text::JSONObject::GetObjectValue(Text::CStringNN name)
 {
 	return this->objVals.GetC(name);
 }
 
-Text::JSONArray *Text::JSONObject::GetObjectArray(Text::CString name)
+Text::JSONArray *Text::JSONObject::GetObjectArray(Text::CStringNN name)
 {
 	Text::JSONBase *o = this->GetObjectValue(name);
 	if (o && o->GetType() == Text::JSONType::Array)
@@ -1394,7 +1394,7 @@ Text::JSONArray *Text::JSONObject::GetObjectArray(Text::CString name)
 	return 0;
 }
 
-Text::JSONObject *Text::JSONObject::GetObjectObject(Text::CString name)
+Text::JSONObject *Text::JSONObject::GetObjectObject(Text::CStringNN name)
 {
 	Text::JSONBase *o = this->GetObjectValue(name);
 	if (o && o->GetType() == Text::JSONType::Object)
@@ -1413,7 +1413,7 @@ void Text::JSONObject::GetObjectNames(Data::ArrayList<Text::String *> *names)
 	}
 }
 
-Text::String *Text::JSONObject::GetObjectString(Text::CString name)
+Text::String *Text::JSONObject::GetObjectString(Text::CStringNN name)
 {
 	Text::JSONBase *baseObj = this->objVals.GetC(name);
 	if (baseObj == 0 || baseObj->GetType() != Text::JSONType::String)
@@ -1423,7 +1423,7 @@ Text::String *Text::JSONObject::GetObjectString(Text::CString name)
 	return ((Text::JSONString*)baseObj)->GetValue();
 }
 
-Text::String *Text::JSONObject::GetObjectNewString(Text::CString name)
+Text::String *Text::JSONObject::GetObjectNewString(Text::CStringNN name)
 {
 	Text::JSONBase *baseObj = this->objVals.GetC(name);
 	if (baseObj == 0 || baseObj->GetType() != Text::JSONType::String)
@@ -1433,7 +1433,7 @@ Text::String *Text::JSONObject::GetObjectNewString(Text::CString name)
 	return ((Text::JSONString*)baseObj)->GetValue()->Clone().Ptr();
 }
 
-Double Text::JSONObject::GetObjectDouble(Text::CString name)
+Double Text::JSONObject::GetObjectDouble(Text::CStringNN name)
 {
 	Text::JSONBase *baseObj = this->objVals.GetC(name);
 	if (baseObj == 0)
@@ -1443,7 +1443,7 @@ Double Text::JSONObject::GetObjectDouble(Text::CString name)
 	return baseObj->GetAsDouble();
 }
 
-Int32 Text::JSONObject::GetObjectInt32(Text::CString name)
+Int32 Text::JSONObject::GetObjectInt32(Text::CStringNN name)
 {
 	Text::JSONBase *baseObj = this->objVals.GetC(name);
 	if (baseObj == 0)
@@ -1453,7 +1453,7 @@ Int32 Text::JSONObject::GetObjectInt32(Text::CString name)
 	return baseObj->GetAsInt32();
 }
 
-Int64 Text::JSONObject::GetObjectInt64(Text::CString name)
+Int64 Text::JSONObject::GetObjectInt64(Text::CStringNN name)
 {
 	Text::JSONBase *baseObj = this->objVals.GetC(name);
 	if (baseObj == 0)
@@ -1463,7 +1463,7 @@ Int64 Text::JSONObject::GetObjectInt64(Text::CString name)
 	return baseObj->GetAsInt64();
 }
 
-Bool Text::JSONObject::GetObjectBool(Text::CString name)
+Bool Text::JSONObject::GetObjectBool(Text::CStringNN name)
 {
 	Text::JSONBase *baseObj = this->objVals.GetC(name);
 	if (baseObj == 0)
@@ -1473,7 +1473,7 @@ Bool Text::JSONObject::GetObjectBool(Text::CString name)
 	return baseObj->GetAsBool();
 }
 
-void Text::JSONObject::RemoveObject(Text::CString name)
+void Text::JSONObject::RemoveObject(Text::CStringNN name)
 {
 	Text::JSONBase *baseObj = this->objVals.RemoveC(name);
 	if (baseObj)

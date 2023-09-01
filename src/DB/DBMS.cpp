@@ -1806,7 +1806,7 @@ IO::LogTool *DB::DBMS::GetLogTool()
 	return this->log;
 }
 
-Bool DB::DBMS::UserAdd(Int32 userId, Text::CString userName, Text::CString password, Text::CString host)
+Bool DB::DBMS::UserAdd(Int32 userId, Text::CStringNN userName, Text::CString password, Text::CString host)
 {
 	DB::DBMS::LoginInfo *login;
 	DB::DBMS::UserInfo *user;
@@ -1861,7 +1861,7 @@ Bool DB::DBMS::UserAdd(Int32 userId, Text::CString userName, Text::CString passw
 	return succ;
 }
 
-Int32 DB::DBMS::UserLoginMySQL(Int32 sessId, Text::CString userName, const UInt8 *randomData, const UInt8 *passHash, NotNullPtr<const Net::SocketUtil::AddressInfo> addr, const DB::DBMS::SessionParam *param, const UTF8Char *database)
+Int32 DB::DBMS::UserLoginMySQL(Int32 sessId, Text::CStringNN userName, const UInt8 *randomData, const UInt8 *passHash, NotNullPtr<const Net::SocketUtil::AddressInfo> addr, const DB::DBMS::SessionParam *param, const UTF8Char *database)
 {
 	DB::DBMS::LoginInfo *login;
 	DB::DBMS::UserInfo *user;

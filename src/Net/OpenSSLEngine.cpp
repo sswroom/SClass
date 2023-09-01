@@ -397,7 +397,7 @@ int OpenSSLEngine_alpn_select_cb(SSL *ssl, const unsigned char **out, unsigned c
 	{
 		if (inlen == 0 || (UOSInt)in[0] + 1 > inlen)
 			return SSL_TLSEXT_ERR_NOACK;
-		if (clsData->alpnSupports->GetC(Text::CString(in + 1, in[0])))
+		if (clsData->alpnSupports->GetC(Text::CStringNN(in + 1, in[0])))
 		{
 			*out = in + 1;
 			*outlen = in[0];
@@ -415,7 +415,7 @@ int OpenSSLEngine_next_proto_select_cb(SSL *s, unsigned char **out, unsigned cha
 	{
 		if ((UOSInt)in[0] + 1 > inlen)
 			return SSL_TLSEXT_ERR_NOACK;
-		if (clsData->alpnSupports->GetC(Text::CString(in + 1, in[0])))
+		if (clsData->alpnSupports->GetC(Text::CStringNN(in + 1, in[0])))
 		{
 			*out = (unsigned char*)in + 1;
 			*outlen = in[0];
@@ -426,7 +426,7 @@ int OpenSSLEngine_next_proto_select_cb(SSL *s, unsigned char **out, unsigned cha
 	}
 }
 
-Bool Net::OpenSSLEngine::ServerAddALPNSupport(Text::CString proto)
+Bool Net::OpenSSLEngine::ServerAddALPNSupport(Text::CStringNN proto)
 {
 #if OPENSSL_VERSION_NUMBER >= 0x10002000L
 	if (this->clsData->ctx == 0)

@@ -29,7 +29,7 @@ private:
 		console->WriteLineC(UTF8STRC("Disconnected"));
 	}
 
-	static Bool __stdcall SSEHandler(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CString subReq, WebServiceHandler *me)
+	static Bool __stdcall SSEHandler(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, WebServiceHandler *me)
 	{
 		MyHandler *myHdlr = (MyHandler*)me;
 		resp->AddDefHeaders(req);

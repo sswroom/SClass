@@ -170,7 +170,7 @@ void IO::PackageFile::AddPack(IO::PackageFile *pkg, Text::CString name, const Da
 	this->namedItems->PutNN(item->name, item);
 }
 
-IO::PackageFile *IO::PackageFile::GetPackFile(Text::CString name) const
+IO::PackageFile *IO::PackageFile::GetPackFile(Text::CStringNN name) const
 {
 	IO::PackFileItem *item = this->pkgFiles.GetC(name);
 	if (item)

@@ -28,8 +28,8 @@ namespace Math
 		ArcGISCSys();
 		~ArcGISCSys();
 
-		UInt32 GuessSRIDGeog(Text::CString name);
-		UInt32 GuessSRIDProj(Text::CString name);
+		UInt32 GuessSRIDGeog(Text::CStringNN name);
+		UInt32 GuessSRIDProj(Text::CStringNN name);
 	};
 }
 #endif

@@ -1480,6 +1480,7 @@ void IO::SMake::AsyncPostCompile()
 			CompileObject(cmd);
 		}
 	}
+	this->tasks->WaitForIdle();
 
 	if (!this->error)
 	{
@@ -1507,12 +1508,12 @@ NotNullPtr<const Data::ArrayList<IO::SMake::ConfigItem*>> IO::SMake::GetConfigLi
 	return this->cfgMap.GetValues();
 }
 
-Bool IO::SMake::HasProg(Text::CString progName) const
+Bool IO::SMake::HasProg(Text::CStringNN progName) const
 {
 	return this->progMap.GetC(progName) != 0;
 }
 
-Bool IO::SMake::CompileProg(Text::CString progName, Bool asmListing)
+Bool IO::SMake::CompileProg(Text::CStringNN progName, Bool asmListing)
 {
 	NotNullPtr<const IO::SMake::ProgramItem> prog;
 	if (!prog.Set(this->progMap.GetC(progName)))
@@ -1599,7 +1600,7 @@ UOSInt IO::SMake::GetProgList(Data::ArrayList<Text::String*> *progList)
 	return ret;
 }
 
-Bool IO::SMake::IsProgGroup(Text::CString progName) const
+Bool IO::SMake::IsProgGroup(Text::CStringNN progName) const
 {
 	IO::SMake::ProgramItem *prog = this->progMap.GetC(progName);
 	if (prog == 0)
@@ -1620,7 +1621,7 @@ Bool IO::SMake::IsProgGroup(Text::CString progName) const
 	return true;
 }
 
-const IO::SMake::ProgramItem *IO::SMake::GetProgItem(Text::CString progName) const
+const IO::SMake::ProgramItem *IO::SMake::GetProgItem(Text::CStringNN progName) const
 {
 	return this->progMap.GetC(progName);
 }

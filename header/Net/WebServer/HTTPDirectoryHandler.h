@@ -64,7 +64,7 @@ namespace Net
 			Data::FastStringMap<PackageInfo*> *packageMap;
 
 			void AddCacheHeader(NotNullPtr<Net::WebServer::IWebResponse> resp);
-			void ResponsePackageFile(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CString subReq, IO::PackageFile *packageFile);
+			void ResponsePackageFile(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, IO::PackageFile *packageFile);
 			Bool ResponsePackageFileItem(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, IO::PackageFile *packageFile, const IO::PackFileItem *pitem);
 
 			void StatLoad(StatInfo *stat);
@@ -76,10 +76,10 @@ namespace Net
 		protected:
 			virtual ~HTTPDirectoryHandler();
 		public:
-			virtual Bool ProcessRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CString subReq);
+			virtual Bool ProcessRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq);
 
-			Bool DoFileRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CString subReq);
-			IO::PackageFile *GetPackageFile(Text::CString path, Bool *needRelease);
+			Bool DoFileRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq);
+			IO::PackageFile *GetPackageFile(Text::CStringNN path, Bool *needRelease);
 
 			void SetRootDir(Text::String *rootDir);
 			void SetCacheType(CacheType ctype);

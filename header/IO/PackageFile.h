@@ -87,7 +87,7 @@ namespace IO
 		void AddObject(IO::ParsedObject *pobj, Text::CString name, const Data::Timestamp &modTime);
 		void AddCompData(NotNullPtr<StreamData> fd, UInt64 ofst, UInt64 length, PackFileItem::CompressInfo *compInfo, Text::CString name, const Data::Timestamp &modTime);
 		void AddPack(IO::PackageFile *pkg, Text::CString name, const Data::Timestamp &modTime);
-		IO::PackageFile *GetPackFile(Text::CString name) const;
+		IO::PackageFile *GetPackFile(Text::CStringNN name) const;
 		Bool UpdateCompInfo(const UTF8Char *name, NotNullPtr<IO::StreamData> fd, UInt64 ofst, Int32 crc, UOSInt compSize, UInt32 decSize);
 
 		virtual const PackFileItem *GetPackFileItem(const UTF8Char *name) const;

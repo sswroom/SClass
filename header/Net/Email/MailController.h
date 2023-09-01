@@ -26,7 +26,7 @@ namespace Net
 		public:
 			virtual ~MailController() {};
 
-			virtual Bool Login(Text::CString user, Text::CString pwd, Int32 *userId) = 0;
+			virtual Bool Login(Text::CStringNN user, Text::CStringNN pwd, OutParam<Int32> userId) = 0;
 			virtual UOSInt GetMessageStat(Int32 userId, UOSInt *size) = 0;
 			virtual Bool GetUnreadList(Int32 userId, Data::ArrayList<UInt32> *unreadList) = 0;
 			virtual Bool GetMessageInfo(Int32 userId, UInt32 msgId, MessageInfo *info) = 0;

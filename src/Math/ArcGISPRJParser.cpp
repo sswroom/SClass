@@ -250,7 +250,7 @@ Math::CoordinateSystem *Math::ArcGISPRJParser::ParsePRJBuff(Text::CString source
 		{
 			eet = Math::EarthEllipsoid::EET_INTL1924;
 		}
-		srid = this->csys.GuessSRIDGeog(Text::CString(&prjBuff[nameOfst], nameLen - 2));
+		srid = this->csys.GuessSRIDGeog(Text::CStringNN(&prjBuff[nameOfst], nameLen - 2));
 		if (eet != Math::EarthEllipsoid::EET_OTHER)
 		{
 			Math::EarthEllipsoid ellipsoid(eet);
@@ -460,7 +460,7 @@ Math::CoordinateSystem *Math::ArcGISPRJParser::ParsePRJBuff(Text::CString source
 		{
 			*parsedSize = i;
 		}
-		srid = this->csys.GuessSRIDProj(Text::CString(&prjBuff[nameOfst], nameLen - 2));
+		srid = this->csys.GuessSRIDProj(Text::CStringNN(&prjBuff[nameOfst], nameLen - 2));
 		if (cst == Math::CoordinateSystem::CoordinateSystemType::MercatorProjected || cst == Math::CoordinateSystem::CoordinateSystemType::GausskrugerProjected)
 		{
 			NEW_CLASS(csys, Math::MercatorProjectedCoordinateSystem(sourceName, srid, {&prjBuff[nameOfst], nameLen - 2}, falseEasting, falseNorthing, centralMeridian, latitudeOfOrigin, scaleFactor, gcs, unit));

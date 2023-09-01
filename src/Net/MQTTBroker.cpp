@@ -766,7 +766,7 @@ void Net::MQTTBroker::DataSkipped(NotNullPtr<IO::Stream> stm, void *stmObj, cons
 {
 }
 
-void Net::MQTTBroker::UpdateTopic(Text::CString topic, const UInt8 *message, UOSInt msgSize, Bool suppressUnchg)
+void Net::MQTTBroker::UpdateTopic(Text::CStringNN topic, const UInt8 *message, UOSInt msgSize, Bool suppressUnchg)
 {
 	TopicInfo *topicInfo;
 	Bool unchanged = false;

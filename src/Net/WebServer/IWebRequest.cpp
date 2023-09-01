@@ -110,7 +110,7 @@ Bool Net::WebServer::IWebRequest::GetIfModifiedSince(Data::DateTime *dt)
 	return false;
 }
 
-Bool Net::WebServer::IWebRequest::GetCookie(Text::CString name, NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool Net::WebServer::IWebRequest::GetCookie(Text::CStringNN name, NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	Text::String *cookie = this->GetSHeader(CSTR("Cookie"));
 	if (cookie == 0)
@@ -142,7 +142,7 @@ Bool Net::WebServer::IWebRequest::GetCookie(Text::CString name, NotNullPtr<Text:
 	return found;
 }
 
-Text::String *Net::WebServer::IWebRequest::GetCookieAsNew(Text::CString name)
+Text::String *Net::WebServer::IWebRequest::GetCookieAsNew(Text::CStringNN name)
 {
 	Text::String *cookie = this->GetSHeader(CSTR("Cookie"));
 	if (cookie == 0)
@@ -215,7 +215,7 @@ UTF8Char *Net::WebServer::IWebRequest::GetQueryString(UTF8Char *sbuff, UOSInt ma
 	
 }
 
-UTF8Char *Net::WebServer::IWebRequest::GetQueryValueStr(Text::CString name, UTF8Char *buff, UOSInt buffSize)
+UTF8Char *Net::WebServer::IWebRequest::GetQueryValueStr(Text::CStringNN name, UTF8Char *buff, UOSInt buffSize)
 {
 	Text::String *s = this->GetQueryValue(name);
 	if (s == 0)
@@ -223,7 +223,7 @@ UTF8Char *Net::WebServer::IWebRequest::GetQueryValueStr(Text::CString name, UTF8
 	return Text::StrConcatCS(buff, s->v, s->leng, buffSize);
 }
 
-Bool Net::WebServer::IWebRequest::GetQueryValueI16(Text::CString name, OutParam<Int16> val)
+Bool Net::WebServer::IWebRequest::GetQueryValueI16(Text::CStringNN name, OutParam<Int16> val)
 {
 	Text::String *s = this->GetQueryValue(name);
 	if (s == 0)
@@ -231,7 +231,7 @@ Bool Net::WebServer::IWebRequest::GetQueryValueI16(Text::CString name, OutParam<
 	return s->ToInt16(val);
 }
 
-Bool Net::WebServer::IWebRequest::GetQueryValueU16(Text::CString name, OutParam<UInt16> val)
+Bool Net::WebServer::IWebRequest::GetQueryValueU16(Text::CStringNN name, OutParam<UInt16> val)
 {
 	Text::String *s = this->GetQueryValue(name);
 	if (s == 0)
@@ -239,7 +239,7 @@ Bool Net::WebServer::IWebRequest::GetQueryValueU16(Text::CString name, OutParam<
 	return s->ToUInt16(val);
 }
 
-Bool Net::WebServer::IWebRequest::GetQueryValueI32(Text::CString name, OutParam<Int32> val)
+Bool Net::WebServer::IWebRequest::GetQueryValueI32(Text::CStringNN name, OutParam<Int32> val)
 {
 	Text::String *s = this->GetQueryValue(name);
 	if (s == 0)
@@ -247,7 +247,7 @@ Bool Net::WebServer::IWebRequest::GetQueryValueI32(Text::CString name, OutParam<
 	return s->ToInt32(val);
 }
 
-Bool Net::WebServer::IWebRequest::GetQueryValueU32(Text::CString name, OutParam<UInt32> val)
+Bool Net::WebServer::IWebRequest::GetQueryValueU32(Text::CStringNN name, OutParam<UInt32> val)
 {
 	Text::String *s = this->GetQueryValue(name);
 	if (s == 0)
@@ -255,7 +255,7 @@ Bool Net::WebServer::IWebRequest::GetQueryValueU32(Text::CString name, OutParam<
 	return s->ToUInt32(val);
 }
 
-Bool Net::WebServer::IWebRequest::GetQueryValueI64(Text::CString name, OutParam<Int64> val)
+Bool Net::WebServer::IWebRequest::GetQueryValueI64(Text::CStringNN name, OutParam<Int64> val)
 {
 	Text::String *s = this->GetQueryValue(name);
 	if (s == 0)
@@ -263,7 +263,7 @@ Bool Net::WebServer::IWebRequest::GetQueryValueI64(Text::CString name, OutParam<
 	return s->ToInt64(val);
 }
 
-Bool Net::WebServer::IWebRequest::GetQueryValueF64(Text::CString name, OutParam<Double> val)
+Bool Net::WebServer::IWebRequest::GetQueryValueF64(Text::CStringNN name, OutParam<Double> val)
 {
 	Text::String *s = this->GetQueryValue(name);
 	if (s == 0)
@@ -271,7 +271,7 @@ Bool Net::WebServer::IWebRequest::GetQueryValueF64(Text::CString name, OutParam<
 	return s->ToDouble(val);
 }
 
-Bool Net::WebServer::IWebRequest::GetHTTPFormInt16(Text::CString name, OutParam<Int16> valOut)
+Bool Net::WebServer::IWebRequest::GetHTTPFormInt16(Text::CStringNN name, OutParam<Int16> valOut)
 {
 	Text::String *s = this->GetHTTPFormStr(name);
 	if (s == 0)
@@ -281,7 +281,7 @@ Bool Net::WebServer::IWebRequest::GetHTTPFormInt16(Text::CString name, OutParam<
 	return s->ToInt16(valOut);
 }
 
-Bool Net::WebServer::IWebRequest::GetHTTPFormUInt16(Text::CString name, OutParam<UInt16> valOut)
+Bool Net::WebServer::IWebRequest::GetHTTPFormUInt16(Text::CStringNN name, OutParam<UInt16> valOut)
 {
 	Text::String *s = this->GetHTTPFormStr(name);
 	if (s == 0)
@@ -291,7 +291,7 @@ Bool Net::WebServer::IWebRequest::GetHTTPFormUInt16(Text::CString name, OutParam
 	return s->ToUInt16(valOut);
 }
 
-Bool Net::WebServer::IWebRequest::GetHTTPFormInt32(Text::CString name, OutParam<Int32> valOut)
+Bool Net::WebServer::IWebRequest::GetHTTPFormInt32(Text::CStringNN name, OutParam<Int32> valOut)
 {
 	Text::String *s = this->GetHTTPFormStr(name);
 	if (s == 0)
@@ -301,7 +301,7 @@ Bool Net::WebServer::IWebRequest::GetHTTPFormInt32(Text::CString name, OutParam<
 	return s->ToInt32(valOut);
 }
 
-Bool Net::WebServer::IWebRequest::GetHTTPFormUInt32(Text::CString name, OutParam<UInt32> valOut)
+Bool Net::WebServer::IWebRequest::GetHTTPFormUInt32(Text::CStringNN name, OutParam<UInt32> valOut)
 {
 	Text::String *s = this->GetHTTPFormStr(name);
 	if (s == 0)
@@ -311,7 +311,7 @@ Bool Net::WebServer::IWebRequest::GetHTTPFormUInt32(Text::CString name, OutParam
 	return s->ToUInt32(valOut);
 }
 
-Bool Net::WebServer::IWebRequest::GetHTTPFormInt64(Text::CString name, OutParam<Int64> valOut)
+Bool Net::WebServer::IWebRequest::GetHTTPFormInt64(Text::CStringNN name, OutParam<Int64> valOut)
 {
 	Text::String *s = this->GetHTTPFormStr(name);
 	if (s == 0)
@@ -321,7 +321,7 @@ Bool Net::WebServer::IWebRequest::GetHTTPFormInt64(Text::CString name, OutParam<
 	return s->ToInt64(valOut);
 }
 
-Bool Net::WebServer::IWebRequest::GetHTTPFormUInt64(Text::CString name, OutParam<UInt64> valOut)
+Bool Net::WebServer::IWebRequest::GetHTTPFormUInt64(Text::CStringNN name, OutParam<UInt64> valOut)
 {
 	Text::String *s = this->GetHTTPFormStr(name);
 	if (s == 0)
@@ -331,7 +331,7 @@ Bool Net::WebServer::IWebRequest::GetHTTPFormUInt64(Text::CString name, OutParam
 	return s->ToUInt64(valOut);
 }
 
-Bool Net::WebServer::IWebRequest::GetHTTPFormDouble(Text::CString name, OutParam<Double> valOut)
+Bool Net::WebServer::IWebRequest::GetHTTPFormDouble(Text::CStringNN name, OutParam<Double> valOut)
 {
 	Text::String *s = this->GetHTTPFormStr(name);
 	if (s == 0)

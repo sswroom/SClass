@@ -1,5 +1,6 @@
 #ifndef _SM_CRYPTO_TOKEN_JWSIGNATURE
 #define _SM_CRYPTO_TOKEN_JWSIGNATURE
+#include "Crypto/Cert/X509Key.h"
 #include "Crypto/Token/JWTParam.h"
 #include "Net/SSLEngine.h"
 #include "Text/StringBuilderUTF8.h"
@@ -33,13 +34,14 @@ namespace Crypto
 		private:
 			Net::SSLEngine *ssl;
 			Algorithm alg;
+			Crypto::Cert::X509Key::KeyType keyType;
 			UInt8 *privateKey;
 			UOSInt privateKeyLeng;
 			UInt8 hashVal[256];
 			UOSInt hashValSize;
 
 		public:
-			JWSignature(Net::SSLEngine *ssl, Algorithm alg, const UInt8 *privateKey, UOSInt privateKeyLeng);
+			JWSignature(Net::SSLEngine *ssl, Algorithm alg, const UInt8 *privateKey, UOSInt privateKeyLeng, Crypto::Cert::X509Key::KeyType keyType);
 			~JWSignature();
 
 			Bool CalcHash(const UInt8 *buff, UOSInt buffSize);

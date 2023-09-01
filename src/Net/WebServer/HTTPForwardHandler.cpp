@@ -32,7 +32,7 @@ Net::WebServer::HTTPForwardHandler::~HTTPForwardHandler()
 	LIST_FREE_FUNC(&this->injHeaders, STR_REL);
 }
 
-Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CString subReq)
+Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq)
 {
 	UInt8 buff[2048];
 	UTF8Char *sptr;

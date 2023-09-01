@@ -603,7 +603,7 @@ void SSWR::AVIRead::AVIREmailServerForm::OnMonitorChanged()
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 }
 
-Bool SSWR::AVIRead::AVIREmailServerForm::Login(Text::CString user, Text::CString pwd, Int32 *userId)
+Bool SSWR::AVIRead::AVIREmailServerForm::Login(Text::CStringNN user, Text::CStringNN pwd, OutParam<Int32> userId)
 {
 	Sync::MutexUsage mutUsage(this->userMut);
 	UOSInt index = this->userMap.GetC(user);
@@ -613,7 +613,7 @@ Bool SSWR::AVIRead::AVIREmailServerForm::Login(Text::CString user, Text::CString
 		index = this->userList.Add(str) + 1;
 		this->userMap.PutNN(str, index);
 	}
-	*userId = (Int32)index;
+	userId.Set((Int32)index);
 	return true;
 }
 

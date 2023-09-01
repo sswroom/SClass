@@ -12,7 +12,7 @@ Net::WebServer::EGaugeHandler::~EGaugeHandler()
 {
 }
 
-Bool Net::WebServer::EGaugeHandler::ProcessRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CString subReq)
+Bool Net::WebServer::EGaugeHandler::ProcessRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq)
 {
 	if (this->DoRequest(req, resp, subReq))
 	{

@@ -131,8 +131,8 @@ namespace DB
 		NotNullPtr<Text::String> GetVersion() const;
 		IO::LogTool *GetLogTool();
 
-		Bool UserAdd(Int32 userId, Text::CString userName, Text::CString password, Text::CString host);
-		Int32 UserLoginMySQL(Int32 sessId, Text::CString userName, const UInt8 *randomData, const UInt8 *passHash, NotNullPtr<const Net::SocketUtil::AddressInfo> addr, const SessionParam *param, const UTF8Char *database);
+		Bool UserAdd(Int32 userId, Text::CStringNN userName, Text::CString password, Text::CString host);
+		Int32 UserLoginMySQL(Int32 sessId, Text::CStringNN userName, const UInt8 *randomData, const UInt8 *passHash, NotNullPtr<const Net::SocketUtil::AddressInfo> addr, const SessionParam *param, const UTF8Char *database);
 
 		DB::DBReader *ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt sqlLen);
 		void CloseReader(DB::DBReader *r);

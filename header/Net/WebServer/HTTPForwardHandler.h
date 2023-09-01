@@ -39,7 +39,7 @@ namespace Net
 		protected:
 			virtual ~HTTPForwardHandler();
 		public:
-			virtual Bool ProcessRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CString subReq);
+			virtual Bool ProcessRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq);
 
 			void AddForwardURL(Text::CString url);
 			void AddInjectHeader(NotNullPtr<Text::String> header);

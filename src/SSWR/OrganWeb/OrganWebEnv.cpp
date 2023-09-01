@@ -1711,7 +1711,7 @@ Bool SSWR::OrganWeb::OrganWebEnv::SpeciesMove(NotNullPtr<Sync::RWMutexUsage> mut
 	}
 }
 
-Bool SSWR::OrganWeb::OrganWebEnv::SpeciesModify(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 speciesId, Text::CString engName, Text::CString chiName, Text::CString sciName, Text::CString description, Text::CString dirName)
+Bool SSWR::OrganWeb::OrganWebEnv::SpeciesModify(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 speciesId, Text::CString engName, Text::CString chiName, Text::CStringNN sciName, Text::CString description, Text::CString dirName)
 {
 	mutUsage->ReplaceMutex(this->dataMut, true);
 	SpeciesInfo *species = this->spMap.Get(speciesId);

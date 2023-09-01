@@ -286,7 +286,7 @@ void Net::WebServer::WebConnection::ReceivedData(const Data::ByteArrayR &buff)
 						this->dataBuff[i] = 0;
 						if (this->currReq)
 						{
-							this->currReq->AddHeader(Text::CString(&this->dataBuff[lineStart], nameLen), Text::CString(&this->dataBuff[lineStart + (UOSInt)strIndex], i - lineStart - strIndex));
+							this->currReq->AddHeader(Text::CStringNN(&this->dataBuff[lineStart], nameLen), Text::CStringNN(&this->dataBuff[lineStart + (UOSInt)strIndex], i - lineStart - strIndex));
 						}
 					}
 				}

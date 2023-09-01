@@ -14,7 +14,7 @@ Net::WebServer::WebSocketHandler::~WebSocketHandler()
 
 }
 
-Bool Net::WebServer::WebSocketHandler::ProcessRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CString subReq)
+Bool Net::WebServer::WebSocketHandler::ProcessRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq)
 {
 	Text::String *upgrade = req->GetSHeader(CSTR("Upgrade"));
 	Text::String *conn = req->GetSHeader(CSTR("Connection"));

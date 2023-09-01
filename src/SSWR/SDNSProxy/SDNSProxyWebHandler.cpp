@@ -631,7 +631,7 @@ void SSWR::SDNSProxy::SDNSProxyWebHandler::AppendFooter(NotNullPtr<Text::StringB
 	sbOut->AppendC(UTF8STRC("</body></html>"));
 }
 
-Bool SSWR::SDNSProxy::SDNSProxyWebHandler::ProcessRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CString subReq)
+Bool SSWR::SDNSProxy::SDNSProxyWebHandler::ProcessRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq)
 {
 	if (this->DoRequest(req, resp, subReq))
 	{

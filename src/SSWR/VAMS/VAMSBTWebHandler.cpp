@@ -3,7 +3,7 @@
 #include "IO/Path.h"
 #include "SSWR/VAMS/VAMSBTWebHandler.h"
 
-Bool __stdcall SSWR::VAMS::VAMSBTWebHandler::DevData(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CString subReq, Net::WebServer::WebServiceHandler *hdlr)
+Bool __stdcall SSWR::VAMS::VAMSBTWebHandler::DevData(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, Net::WebServer::WebServiceHandler *hdlr)
 {
 	SSWR::VAMS::VAMSBTWebHandler *me = (SSWR::VAMS::VAMSBTWebHandler*)hdlr;
 	req->ParseHTTPForm();
@@ -21,7 +21,7 @@ Bool __stdcall SSWR::VAMS::VAMSBTWebHandler::DevData(NotNullPtr<Net::WebServer::
 	return resp->ResponseJSONStr(req, 0, CSTR("{\"status\":\"ok\"}"));
 }
 
-Bool __stdcall SSWR::VAMS::VAMSBTWebHandler::KAData(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CString subReq, WebServiceHandler *hdlr)
+Bool __stdcall SSWR::VAMS::VAMSBTWebHandler::KAData(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, WebServiceHandler *hdlr)
 {
 	SSWR::VAMS::VAMSBTWebHandler *me = (SSWR::VAMS::VAMSBTWebHandler*)hdlr;
 	req->ParseHTTPForm();
@@ -35,7 +35,7 @@ Bool __stdcall SSWR::VAMS::VAMSBTWebHandler::KAData(NotNullPtr<Net::WebServer::I
 	return resp->ResponseJSONStr(req, 0, CSTR("{\"status\":\"ok\"}"));
 }
 
-Bool __stdcall SSWR::VAMS::VAMSBTWebHandler::LogData(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CString subReq, WebServiceHandler *hdlr)
+Bool __stdcall SSWR::VAMS::VAMSBTWebHandler::LogData(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, WebServiceHandler *hdlr)
 {
 	SSWR::VAMS::VAMSBTWebHandler *me = (SSWR::VAMS::VAMSBTWebHandler*)hdlr;
 	Int32 progId;
@@ -88,7 +88,7 @@ Bool __stdcall SSWR::VAMS::VAMSBTWebHandler::LogData(NotNullPtr<Net::WebServer::
 	}
 }
 
-Bool __stdcall SSWR::VAMS::VAMSBTWebHandler::ListData(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CString subReq, WebServiceHandler *hdlr)
+Bool __stdcall SSWR::VAMS::VAMSBTWebHandler::ListData(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, WebServiceHandler *hdlr)
 {
 	SSWR::VAMS::VAMSBTWebHandler *me = (SSWR::VAMS::VAMSBTWebHandler*)hdlr;
 	Data::ArrayList<Int32> progList;
@@ -136,7 +136,7 @@ Bool __stdcall SSWR::VAMS::VAMSBTWebHandler::ListData(NotNullPtr<Net::WebServer:
 	return true;
 }
 
-Bool __stdcall SSWR::VAMS::VAMSBTWebHandler::ListItem(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CString subReq, WebServiceHandler *hdlr)
+Bool __stdcall SSWR::VAMS::VAMSBTWebHandler::ListItem(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, WebServiceHandler *hdlr)
 {
 	SSWR::VAMS::VAMSBTWebHandler *me = (SSWR::VAMS::VAMSBTWebHandler*)hdlr;
 	Int32 progId;

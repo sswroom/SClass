@@ -106,7 +106,7 @@ Bool Text::Cpp::CppParseStatus::EndParseFile(const UTF8Char *fileName, UOSInt fi
 	return valid;
 }
 
-Bool Text::Cpp::CppParseStatus::IsDefined(Text::CString defName)
+Bool Text::Cpp::CppParseStatus::IsDefined(Text::CStringNN defName)
 {
 	DefineInfo *defInfo = this->defines.GetC(defName);
 	if (defInfo == 0)
@@ -116,7 +116,7 @@ Bool Text::Cpp::CppParseStatus::IsDefined(Text::CString defName)
 	return true;
 }
 
-Bool Text::Cpp::CppParseStatus::AddGlobalDef(Text::CString defName, Text::CString defVal)
+Bool Text::Cpp::CppParseStatus::AddGlobalDef(Text::CStringNN defName, Text::CString defVal)
 {
 	DefineInfo *defInfo;
 	defInfo = this->defines.GetC(defName);
@@ -165,7 +165,7 @@ Bool Text::Cpp::CppParseStatus::AddGlobalDef(Text::CString defName, Text::CStrin
 	}
 }
 
-Bool Text::Cpp::CppParseStatus::AddDef(Text::CString defName, Text::CString defParam, Text::CString defVal, Int32 lineNum)
+Bool Text::Cpp::CppParseStatus::AddDef(Text::CStringNN defName, Text::CString defParam, Text::CString defVal, Int32 lineNum)
 {
 	FileParseStatus *fStatus = GetFileStatus();
 	DefineInfo *defInfo;
@@ -243,7 +243,7 @@ Bool Text::Cpp::CppParseStatus::AddDef(Text::CString defName, Text::CString defP
 	}
 }
 
-Bool Text::Cpp::CppParseStatus::Undefine(Text::CString defName)
+Bool Text::Cpp::CppParseStatus::Undefine(Text::CStringNN defName)
 {
 	DefineInfo *defInfo = this->defines.GetC(defName);
 	if (defInfo)
@@ -258,7 +258,7 @@ Bool Text::Cpp::CppParseStatus::Undefine(Text::CString defName)
 	return false;
 }
 
-Bool Text::Cpp::CppParseStatus::GetDefineVal(Text::CString defName, Text::CString defParam, NotNullPtr<Text::StringBuilderUTF8> sbOut)
+Bool Text::Cpp::CppParseStatus::GetDefineVal(Text::CStringNN defName, Text::CString defParam, NotNullPtr<Text::StringBuilderUTF8> sbOut)
 {
 	DefineInfo *defInfo = this->defines.GetC(defName);
 	if (defInfo)
@@ -277,9 +277,10 @@ Bool Text::Cpp::CppParseStatus::GetDefineVal(Text::CString defName, Text::CStrin
 				Text::StringBuilderUTF8 sb3;
 				if (defParam.leng > 0)
 				{
-					if (this->IsDefined(defParam))
+					Text::CStringNN defParamNN = defParam.OrEmpty();
+					if (this->IsDefined(defParamNN))
 					{
-						this->GetDefineVal(defParam, CSTR_NULL, sb3);
+						this->GetDefineVal(defParamNN, CSTR_NULL, sb3);
 					}
 					else
 					{

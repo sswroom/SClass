@@ -26,7 +26,7 @@ namespace Crypto
 			void FromPackageFile(IO::PackageFile *pkg);
 			NotNullPtr<Text::String> GetStoreName() const;
 
-			Crypto::Cert::X509Cert *GetCertByCN(Text::CString commonName);
+			Crypto::Cert::X509Cert *GetCertByCN(Text::CStringNN commonName);
 			virtual UOSInt GetCount() const;
 			virtual Crypto::Cert::X509Cert *GetItem(UOSInt index) const;
 		};

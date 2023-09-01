@@ -96,15 +96,15 @@ namespace IO
 		void AsyncPostCompile();
 
 		NotNullPtr<const Data::ArrayList<ConfigItem*>> GetConfigList() const;
-		Bool HasProg(Text::CString progName) const;
-		Bool CompileProg(Text::CString progName, Bool asmListing);
+		Bool HasProg(Text::CStringNN progName) const;
+		Bool CompileProg(Text::CStringNN progName, Bool asmListing);
 		Bool ParseProg(Data::FastStringMap<Int32> *objList, Data::FastStringMap<Int32> *libList, Data::FastStringMap<Int32> *procList, Data::ArrayListStringNN *headerList, Int64 *latestTime, Bool *progGroup, Text::String *progName);
 
 		void CleanFiles();
 
 		UOSInt GetProgList(Data::ArrayList<Text::String*> *progList); //No release
-		Bool IsProgGroup(Text::CString progName) const;
-		const ProgramItem *GetProgItem(Text::CString progName) const;
+		Bool IsProgGroup(Text::CStringNN progName) const;
+		const ProgramItem *GetProgItem(Text::CStringNN progName) const;
 	};
 }
 

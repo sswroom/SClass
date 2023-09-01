@@ -15,7 +15,7 @@ Net::WebServer::WebServiceHandler::~WebServiceHandler()
 	}
 }
 
-Bool Net::WebServer::WebServiceHandler::ProcessRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CString subReq)
+Bool Net::WebServer::WebServiceHandler::ProcessRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq)
 {
 	Net::WebServer::WebServiceHandler::ServiceInfo *service;
 	service = this->services.GetC(subReq);
@@ -75,7 +75,7 @@ Net::WebServer::WebServiceHandler::WebServiceHandler(Text::CString rootDir) : HT
 {
 }
 
-void Net::WebServer::WebServiceHandler::AddService(Text::CString svcPath, Net::WebUtil::RequestMethod reqMeth, ServiceFunc func)
+void Net::WebServer::WebServiceHandler::AddService(Text::CStringNN svcPath, Net::WebUtil::RequestMethod reqMeth, ServiceFunc func)
 {
 	Net::WebServer::WebServiceHandler::ServiceInfo *service;
 	if (svcPath.leng == 0 || svcPath.v[0] != '/')

@@ -171,7 +171,7 @@ NotNullPtr<Text::String> Crypto::Cert::CertStore::GetStoreName() const
 	return this->storeName;
 }
 
-Crypto::Cert::X509Cert *Crypto::Cert::CertStore::GetCertByCN(Text::CString commonName)
+Crypto::Cert::X509Cert *Crypto::Cert::CertStore::GetCertByCN(Text::CStringNN commonName)
 {
 	return this->certMap.GetC(commonName);
 }

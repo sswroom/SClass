@@ -15,7 +15,7 @@ namespace Net
 			Net::MODBUSTCPListener *listener;
 
 		protected:
-			virtual Bool ProcessRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CString subReq);
+			virtual Bool ProcessRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq);
 		public:
 			MODBUSDevSimHandler(Net::MODBUSTCPListener *listener, IO::MODBUSDevSim *dev);
 			virtual ~MODBUSDevSimHandler();

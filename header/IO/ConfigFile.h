@@ -21,7 +21,7 @@ namespace IO
 		Text::String *GetValue(Text::CString name);
 		virtual Text::String *GetCateValue(Text::String *category, NotNullPtr<Text::String> name);
 		virtual Text::String *GetCateValue(NotNullPtr<Text::String> category, NotNullPtr<Text::String> name);
-		virtual Text::String *GetCateValue(Text::CString category, Text::CString name);
+		virtual Text::String *GetCateValue(Text::CStringNN category, Text::CString name);
 		Bool SetValue(Text::String *category, NotNullPtr<Text::String> name, Text::String *value);
 		Bool SetValue(Text::CString category, Text::CString name, Text::CString value);
 		Bool RemoveValue(Text::CString category, Text::CString name);

@@ -1,5 +1,7 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRJWTPARSERFORM
 #define _SM_SSWR_AVIREAD_AVIRJWTPARSERFORM
+#include "Crypto/Token/JWToken.h"
+#include "Net/AzureManager.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "UI/GUIButton.h"
 #include "UI/GUICheckBox.h"
@@ -19,16 +21,21 @@ namespace SSWR
 		private:
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Net::SSLEngine *ssl;
+			Net::AzureManager *azure;
+			Crypto::Token::JWToken *token;
+			Crypto::Token::JWToken::VerifyType verifyType;
 
 			UI::GUITextBox *txtJWT;
 			UI::GUIHSplitter *hspJWT;
 			UI::GUIPanel *pnlMain;
 			UI::GUIPanel *pnlResult;
 			UI::GUIButton *btnParse;
-			UI::GUICheckBox *chkIgnoreSignValid;
-			UI::GUILabel *lblStatus;
-			UI::GUITextBox *txtStatus;
-
+			UI::GUILabel *lblParseStatus;
+			UI::GUITextBox *txtParseStatus;
+			UI::GUILabel *lblVerifyType;
+			UI::GUITextBox *txtVerifyType;
+			UI::GUILabel *lblVerifyStatus;
+			UI::GUITextBox *txtVerifyStatus;
 			UI::GUILabel *lblIssuer;
 			UI::GUITextBox *txtIssuer;
 			UI::GUILabel *lblSubject;

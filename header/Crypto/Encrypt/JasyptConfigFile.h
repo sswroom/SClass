@@ -21,7 +21,7 @@ namespace Crypto
 
 			virtual Text::String *GetCateValue(Text::String *category, NotNullPtr<Text::String> name);
 			virtual Text::String *GetCateValue(NotNullPtr<Text::String> category, NotNullPtr<Text::String> name);
-			virtual Text::String *GetCateValue(Text::CString category, Text::CString name);
+			virtual Text::String *GetCateValue(Text::CStringNN category, Text::CString name);
 		};
 	}
 }

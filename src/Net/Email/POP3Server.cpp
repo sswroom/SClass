@@ -440,7 +440,7 @@ void Net::Email::POP3Server::ParseCmd(NotNullPtr<Net::TCPClient> cli, MailStatus
 		if (cliStatus->userName)
 		{
 			Int32 userId;
-			if (this->mailCtrl->Login(cliStatus->userName->ToCString(), Text::CString(&cmd[5], cmdLen - 5), &userId))
+			if (this->mailCtrl->Login(cliStatus->userName->ToCString(), Text::CStringNN(&cmd[5], cmdLen - 5), userId))
 			{
 				succ = true;
 				cliStatus->userId = userId;

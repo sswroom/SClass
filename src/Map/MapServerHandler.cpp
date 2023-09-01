@@ -13,7 +13,7 @@
 #include "Text/JSText.h"
 #include "Text/XML.h"
 
-Bool __stdcall Map::MapServerHandler::GetLayersFunc(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CString subReq, WebServiceHandler *myObj)
+Bool __stdcall Map::MapServerHandler::GetLayersFunc(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, WebServiceHandler *myObj)
 {
 	Map::MapServerHandler *me = (Map::MapServerHandler*)myObj;
 	Text::StringBuilderUTF8 sb;
@@ -40,7 +40,7 @@ Bool __stdcall Map::MapServerHandler::GetLayersFunc(NotNullPtr<Net::WebServer::I
 	return true;
 }
 
-Bool __stdcall Map::MapServerHandler::GetLayerDataFunc(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CString subReq, WebServiceHandler *myObj)
+Bool __stdcall Map::MapServerHandler::GetLayerDataFunc(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, WebServiceHandler *myObj)
 {
 	Map::MapServerHandler *me = (Map::MapServerHandler*)myObj;
 	Text::String *name = req->GetQueryValue(CSTR("name"));
@@ -241,7 +241,7 @@ Bool __stdcall Map::MapServerHandler::GetLayerDataFunc(NotNullPtr<Net::WebServer
 	return true;
 }
 
-Bool __stdcall Map::MapServerHandler::CesiumDataFunc(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CString subReq, WebServiceHandler *myObj)
+Bool __stdcall Map::MapServerHandler::CesiumDataFunc(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, WebServiceHandler *myObj)
 {
 	Map::MapServerHandler *me = (Map::MapServerHandler*)myObj;
 	Text::String *file = req->GetQueryValue(CSTR("file"));
@@ -351,7 +351,7 @@ Bool __stdcall Map::MapServerHandler::CesiumDataFunc(NotNullPtr<Net::WebServer::
 	return true;
 }
 
-Bool __stdcall Map::MapServerHandler::CesiumB3DMFunc(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CString subReq, WebServiceHandler *myObj)
+Bool __stdcall Map::MapServerHandler::CesiumB3DMFunc(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, WebServiceHandler *myObj)
 {
 	Map::MapServerHandler *me = (Map::MapServerHandler*)myObj;
 	Text::String *file = req->GetQueryValue(CSTR("file"));

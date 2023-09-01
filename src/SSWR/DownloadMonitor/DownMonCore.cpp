@@ -605,7 +605,7 @@ SSWR::DownloadMonitor::DownMonCore::FileInfo *SSWR::DownloadMonitor::DownMonCore
 	return file;
 }
 
-Int32 SSWR::DownloadMonitor::DownMonCore::FileGetByName(Text::CString fileName, Int32 *webType)
+Int32 SSWR::DownloadMonitor::DownMonCore::FileGetByName(Text::CStringNN fileName, Int32 *webType)
 {
 	Int32 id = 0;
 	SSWR::DownloadMonitor::DownMonCore::FileInfo *file;

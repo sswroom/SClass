@@ -9,11 +9,11 @@ namespace Net
 		class OAuth2Handler : public Net::WebServer::WebServiceHandler
 		{
 		private:
-			static Bool __stdcall AuthHandler(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CString subReq, WebServiceHandler *me);
-			static Bool __stdcall TokenHandler(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CString subReq, WebServiceHandler *me);
-			static Bool __stdcall UserInfoHandler(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CString subReq, WebServiceHandler *me);
+			static Bool __stdcall AuthHandler(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, WebServiceHandler *me);
+			static Bool __stdcall TokenHandler(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, WebServiceHandler *me);
+			static Bool __stdcall UserInfoHandler(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, WebServiceHandler *me);
 		public:
-			OAuth2Handler(Text::CString authPath, Text::CString tokenPath, Text::CString userinfoPath);
+			OAuth2Handler(Text::CStringNN authPath, Text::CStringNN tokenPath, Text::CStringNN userinfoPath);
 			virtual ~OAuth2Handler();
 		};
 	}

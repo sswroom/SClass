@@ -5664,16 +5664,16 @@ Math::ArcGISCSys::ArcGISCSys()
 	UOSInt j = sizeof(projList) / sizeof(projList[0]);
 	while (i < j)
 	{
-		if (this->projMap.GetC(Text::CString(projList[i].name, projList[i].nameLen)) == 0)
-			this->projMap.PutC(Text::CString(projList[i].name, projList[i].nameLen), &projList[i]);
+		if (this->projMap.GetC(Text::CStringNN(projList[i].name, projList[i].nameLen)) == 0)
+			this->projMap.PutC(Text::CStringNN(projList[i].name, projList[i].nameLen), &projList[i]);
 		i++;
 	}
 	i = 0;
 	j = sizeof(geogList) / sizeof(geogList[0]);
 	while (i < j)
 	{
-		if (this->geogMap.GetC(Text::CString(geogList[i].name, geogList[i].nameLen)) == 0)
-			this->geogMap.PutC(Text::CString(geogList[i].name, geogList[i].nameLen), &geogList[i]);
+		if (this->geogMap.GetC(Text::CStringNN(geogList[i].name, geogList[i].nameLen)) == 0)
+			this->geogMap.PutC(Text::CStringNN(geogList[i].name, geogList[i].nameLen), &geogList[i]);
 		i++;
 	}
 }
@@ -5682,7 +5682,7 @@ Math::ArcGISCSys::~ArcGISCSys()
 {
 }
 	
-UInt32 Math::ArcGISCSys::GuessSRIDGeog(Text::CString name)
+UInt32 Math::ArcGISCSys::GuessSRIDGeog(Text::CStringNN name)
 {
 	CSysInfo *csys = this->geogMap.GetC(name);
 	if (csys)
@@ -5690,7 +5690,7 @@ UInt32 Math::ArcGISCSys::GuessSRIDGeog(Text::CString name)
 	return 0;
 }
 
-UInt32 Math::ArcGISCSys::GuessSRIDProj(Text::CString name)
+UInt32 Math::ArcGISCSys::GuessSRIDProj(Text::CStringNN name)
 {
 	CSysInfo *csys = this->projMap.GetC(name);
 	if (csys)

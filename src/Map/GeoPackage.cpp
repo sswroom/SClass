@@ -113,7 +113,7 @@ DB::TableDef *Map::GeoPackage::GetTableDef(Text::CString schemaName, Text::CStri
 	DB::TableDef *tabDef = this->conn->GetTableDef(schemaName, tableName);
 	if (tabDef)
 	{
-		ContentInfo *cont = this->tableList.GetC(tableName);
+		ContentInfo *cont = this->tableList.GetC(tableName.OrEmpty());
 		if (cont)
 		{
 			UOSInt i = tabDef->GetColCnt();

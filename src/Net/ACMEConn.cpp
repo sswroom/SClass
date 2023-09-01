@@ -96,7 +96,7 @@ NotNullPtr<Text::String> Net::ACMEConn::EncodeJWS(Net::SSLEngine *ssl, Text::CSt
 	sb.AppendUTF8Char('.');
 	b64.EncodeBin(sb, data.v, data.leng);
 	Crypto::Token::JWSignature *sign;
-	NEW_CLASS(sign, Crypto::Token::JWSignature(ssl, alg, key->GetASN1Buff(), key->GetASN1BuffSize()));
+	NEW_CLASS(sign, Crypto::Token::JWSignature(ssl, alg, key->GetASN1Buff(), key->GetASN1BuffSize(), key->GetKeyType()));
 	sign->CalcHash(sb.ToString(), sb.GetLength());
 
 	sb.ClearStr();

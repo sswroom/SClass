@@ -61,17 +61,17 @@ namespace Data
 		virtual Text::String *GetKey(UOSInt index) const;
 		virtual OSInt IndexOf(UInt32 hash, const UTF8Char *s, UOSInt len) const;
 		OSInt IndexOf(NotNullPtr<Text::String> s) const;
-		OSInt IndexOfC(Text::CString s) const;
+		OSInt IndexOfC(Text::CStringNN s) const;
 
 		virtual T Put(Text::String *key, T val);
 		T PutNN(NotNullPtr<Text::String> key, T val);
-		T PutC(Text::CString key, T val);
+		T PutC(Text::CStringNN key, T val);
 		virtual T Get(Text::String *key) const;
 		T GetNN(NotNullPtr<Text::String> key) const;
-		T GetC(Text::CString key) const;
+		T GetC(Text::CStringNN key) const;
 		virtual T Remove(Text::String *key);
 		T RemoveNN(NotNullPtr<Text::String> key);
-		T RemoveC(Text::CString key);
+		T RemoveC(Text::CStringNN key);
 		T RemoveAt(UOSInt index);
 		virtual Bool IsEmpty() const;
 		virtual void Clear();
@@ -255,7 +255,7 @@ namespace Data
 		return IndexOf(hash, s->v, s->leng);
 	}
 
-	template <class T> OSInt FastStringMap<T>::IndexOfC(Text::CString s) const
+	template <class T> OSInt FastStringMap<T>::IndexOfC(Text::CStringNN s) const
 	{
 		UInt32 hash = this->crc.CalcDirect(s.v, s.leng);
 		return IndexOf(hash, s.v, s.leng);
@@ -283,7 +283,7 @@ namespace Data
 		}
 	}
 
-	template <class T> T FastStringMap<T>::PutC(Text::CString key, T val)
+	template <class T> T FastStringMap<T>::PutC(Text::CStringNN key, T val)
 	{
 		UInt32 hash = this->crc.CalcDirect(key.v, key.leng);
 		OSInt index = this->IndexOf(hash, key.v, key.leng);
@@ -316,7 +316,7 @@ namespace Data
 		return 0;
 	}
 
-	template <class T> T FastStringMap<T>::GetC(Text::CString key) const
+	template <class T> T FastStringMap<T>::GetC(Text::CStringNN key) const
 	{
 		UInt32 hash = this->crc.CalcDirect(key.v, key.leng);
 		OSInt index = this->IndexOf(hash, key.v, key.leng);
@@ -350,7 +350,7 @@ namespace Data
 		return 0;
 	}
 
-	template <class T> T FastStringMap<T>::RemoveC(Text::CString key)
+	template <class T> T FastStringMap<T>::RemoveC(Text::CStringNN key)
 	{
 		UInt32 hash = this->crc.CalcDirect(key.v, key.leng);
 		OSInt index = this->IndexOf(hash, key.v, key.leng);

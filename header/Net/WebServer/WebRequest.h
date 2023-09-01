@@ -50,10 +50,10 @@ namespace Net
 			WebRequest(Text::CString requestURI, Net::WebUtil::RequestMethod reqMeth, RequestProtocol reqProto, NotNullPtr<Net::TCPClient> cli, const Net::SocketUtil::AddressInfo *cliAddr, UInt16 cliPort, UInt16 svrPort);
 			virtual ~WebRequest();
 
-			void AddHeader(Text::CString name, Text::CString value);
-			virtual Text::String *GetSHeader(Text::CString name);
-			virtual UTF8Char *GetHeader(UTF8Char *sbuff, Text::CString name, UOSInt buffLen);
-			virtual Bool GetHeaderC(NotNullPtr<Text::StringBuilderUTF8> sb, Text::CString name);
+			void AddHeader(Text::CStringNN name, Text::CStringNN value);
+			virtual Text::String *GetSHeader(Text::CStringNN name);
+			virtual UTF8Char *GetHeader(UTF8Char *sbuff, Text::CStringNN name, UOSInt buffLen);
+			virtual Bool GetHeaderC(NotNullPtr<Text::StringBuilderUTF8> sb, Text::CStringNN name);
 			virtual UOSInt GetHeaderNames(Data::ArrayList<Text::String*> *names);
 			UOSInt GetHeaderCnt();
 			Text::String *GetHeaderName(UOSInt index);
@@ -61,12 +61,12 @@ namespace Net
 
 			virtual NotNullPtr<Text::String> GetRequestURI() const;
 			virtual RequestProtocol GetProtocol() const;
-			virtual Text::String *GetQueryValue(Text::CString name);
-			virtual Bool HasQuery(Text::CString name);
+			virtual Text::String *GetQueryValue(Text::CStringNN name);
+			virtual Bool HasQuery(Text::CStringNN name);
 			virtual Net::WebUtil::RequestMethod GetReqMethod() const;
 			virtual void ParseHTTPForm();
-			virtual Text::String *GetHTTPFormStr(Text::CString name);
-			virtual const UInt8 *GetHTTPFormFile(Text::CString formName, UOSInt index, UTF8Char *fileName, UOSInt fileNameBuffSize, UTF8Char **fileNameEnd, UOSInt *fileSize);
+			virtual Text::String *GetHTTPFormStr(Text::CStringNN name);
+			virtual const UInt8 *GetHTTPFormFile(Text::CStringNN formName, UOSInt index, UTF8Char *fileName, UOSInt fileNameBuffSize, UTF8Char **fileNameEnd, UOSInt *fileSize);
 			virtual void GetRequestURLBase(NotNullPtr<Text::StringBuilderUTF8> sb);
 
 			virtual NotNullPtr<const Net::SocketUtil::AddressInfo> GetClientAddr() const;

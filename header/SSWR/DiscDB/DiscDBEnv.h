@@ -98,18 +98,18 @@ namespace SSWR
 
 			const BurntDiscInfo *NewBurntDisc(Text::CString discId, Text::CString discTypeId, const Data::Timestamp &ts);
 			UOSInt GetBurntDiscs(Data::ArrayList<BurntDiscInfo*> *discList);
-			const BurntDiscInfo *GetBurntDisc(Text::CString discId);
-			OSInt GetBurntDiscIndex(Text::CString discId);
+			const BurntDiscInfo *GetBurntDisc(Text::CStringNN discId);
+			OSInt GetBurntDiscIndex(Text::CStringNN discId);
 			Bool NewBurntFile(const UTF8Char *discId, UOSInt fileId, const UTF8Char *name, UInt64 fileSize, Text::CString category, Int32 videoId);
 			UOSInt GetBurntFiles(Text::CString discId, Data::ArrayList<DiscFileInfo*> *fileList);
 			void FreeBurntFiles(Data::ArrayList<DiscFileInfo*> *fileList);
 			UOSInt GetDVDTypeCount();
 			const DVDTypeInfo *GetDVDType(UOSInt index);
-			OSInt GetDVDTypeIndex(Text::CString discTypeID);
-			Bool ModifyDVDType(Text::CString discTypeID, Text::CString name, Text::CString desc);
-			const DVDTypeInfo *NewDVDType(Text::CString discTypeID, Text::CString name, Text::CString desc);
+			OSInt GetDVDTypeIndex(Text::CStringNN discTypeID);
+			Bool ModifyDVDType(Text::CStringNN discTypeID, Text::CString name, Text::CString desc);
+			const DVDTypeInfo *NewDVDType(Text::CStringNN discTypeID, Text::CString name, Text::CString desc);
 			UOSInt GetCategories(Data::ArrayList<CategoryInfo*> *cateList);
-			const DiscTypeInfo *GetDiscType(Text::CString discTypeId);
+			const DiscTypeInfo *GetDiscType(Text::CStringNN discTypeId);
 			UOSInt GetDiscTypes(Data::ArrayList<DiscTypeInfo*> *discTypeList);
 			UOSInt GetDiscTypesByBrand(Data::ArrayList<const DiscTypeInfo*> *discTypeList, const UTF8Char *brand, UOSInt brandLen);
 			Int32 NewDVDVideo(const UTF8Char *anime, const UTF8Char *series, const UTF8Char *volume, const UTF8Char *dvdType);

@@ -118,7 +118,7 @@ namespace SSWR
 
 			virtual void OnMonitorChanged();
 
-			virtual Bool Login(Text::CString user, Text::CString pwd, Int32 *userId);
+			virtual Bool Login(Text::CStringNN user, Text::CStringNN pwd, OutParam<Int32> userId);
 			virtual UOSInt GetMessageStat(Int32 userId, UOSInt *size);
 			virtual Bool GetUnreadList(Int32 userId, Data::ArrayList<UInt32> *unreadList);
 			virtual Bool GetMessageInfo(Int32 userId, UInt32 msgId, MessageInfo *info);
