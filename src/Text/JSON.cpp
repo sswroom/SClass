@@ -1120,7 +1120,7 @@ void Text::JSONString::ToJSONString(NotNullPtr<Text::StringBuilderUTF8> sb)
 
 Bool Text::JSONString::Equals(Text::CString s)
 {
-	if (this->val->v == 0)
+	if (this->val == 0)
 	{
 		return s.v == 0;
 	}

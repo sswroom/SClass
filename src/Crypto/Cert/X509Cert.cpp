@@ -333,7 +333,6 @@ Crypto::Cert::X509Key *Crypto::Cert::X509Cert::GetNewPublicKey() const
 		}
 	}
 	return 0;
-
 }
 
 Bool Crypto::Cert::X509Cert::GetKeyId(const Data::ByteArray &keyId) const
