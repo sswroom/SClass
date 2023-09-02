@@ -81,7 +81,7 @@ Map::ESRI::ESRIMapServer::ESRIMapServer(Text::CString url, NotNullPtr<Net::Socke
 			jsonStr = MemAlloc(UTF8Char, charsCnt + 1);
 			enc.UTF8FromBytes(jsonStr, jsonBuff, readSize, 0);
 			
-			Text::JSONBase *json = Text::JSONBase::ParseJSONStr(Text::CString(jsonStr, charsCnt));
+			Text::JSONBase *json = Text::JSONBase::ParseJSONStr(Text::CStringNN(jsonStr, charsCnt));
 			if (json)
 			{
 				if (json->GetType() == Text::JSONType::Object)
@@ -410,7 +410,7 @@ Bool Map::ESRI::ESRIMapServer::QueryInfos(Math::Coord2DDbl coord, Math::RectArea
 
 		mstm.Write((const UInt8*)"", 1);
 		UInt8 *buff = mstm.GetBuff(&readSize);
-		Text::JSONBase *json = Text::JSONBase::ParseJSONStr(Text::CString(buff, readSize - 1));
+		Text::JSONBase *json = Text::JSONBase::ParseJSONStr(Text::CStringNN(buff, readSize - 1));
 		if (json)
 		{
 			Text::JSONBase *o = json->GetValue(CSTR("results"));

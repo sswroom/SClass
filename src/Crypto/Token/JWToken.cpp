@@ -10,7 +10,6 @@ Crypto::Token::JWToken::PayloadMapping Crypto::Token::JWToken::payloadNames[] =
 
 //https://learn.microsoft.com/en-us/azure/active-directory/develop/id-token-claims-reference
 //https://learn.microsoft.com/en-us/azure/active-directory/develop/access-token-claims-reference
-//https://login.microsoftonline.com/common/discovery/v2.0/keys
 	{UTF8STRC("address"), UTF8STRC("Preferred postal address")},
 	{UTF8STRC("acr"), UTF8STRC("Authentication Context Class Reference")},
 	{UTF8STRC("act"), UTF8STRC("Actor")},
@@ -368,7 +367,7 @@ Crypto::Token::JWToken *Crypto::Token::JWToken::Parse(Text::CStringNN token, Tex
 	headerBuff[headerSize] = 0;
 	payloadBuff[payloadSize] = 0;
 	Crypto::Token::JWSignature::Algorithm alg;
-	Text::JSONBase *json = Text::JSONBase::ParseJSONStr(Text::CString(headerBuff, headerSize));
+	Text::JSONBase *json = Text::JSONBase::ParseJSONStr(Text::CStringNN(headerBuff, headerSize));
 	if (json == 0)
 	{
 		if (sbErr) sbErr->AppendC(UTF8STRC("Token format error: header is not JSON"));
@@ -407,7 +406,7 @@ Crypto::Token::JWToken *Crypto::Token::JWToken::Parse(Text::CStringNN token, Tex
 		return 0;
 	}
 	json->EndUse();
-	json = Text::JSONBase::ParseJSONStr(Text::CString(payloadBuff, payloadSize));
+	json = Text::JSONBase::ParseJSONStr(Text::CStringNN(payloadBuff, payloadSize));
 	if (json == 0)
 	{
 		if (sbErr) sbErr->AppendC(UTF8STRC("Token format error: payload is not JSON"));

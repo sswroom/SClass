@@ -41,7 +41,7 @@ Bool Map::OWSFeatureParser::ParseText(Text::PString txt, UInt32 srid, Math::Coor
 	return nameList->GetCount() > 0;
 }
 
-Bool Map::OWSFeatureParser::ParseJSON(Text::CString txt, UInt32 srid, Data::ArrayList<Math::Geometry::Vector2D*> *vecList, Data::ArrayList<UOSInt> *valueOfstList, Data::ArrayListNN<Text::String> *nameList, Data::ArrayList<Text::String*> *valueList)
+Bool Map::OWSFeatureParser::ParseJSON(Text::CStringNN txt, UInt32 srid, Data::ArrayList<Math::Geometry::Vector2D*> *vecList, Data::ArrayList<UOSInt> *valueOfstList, Data::ArrayListNN<Text::String> *nameList, Data::ArrayList<Text::String*> *valueList)
 {
 	Text::JSONBase *json = Text::JSONBase::ParseJSONStr(txt);
 	if (json)
@@ -108,7 +108,7 @@ Bool Map::OWSFeatureParser::ParseJSON(Text::CString txt, UInt32 srid, Data::Arra
 	return false;
 }
 
-Bool Map::OWSFeatureParser::ParseGML(Text::CString txt, UInt32 srid, Bool swapXY, Text::EncodingFactory *encFact, Data::ArrayList<Math::Geometry::Vector2D*> *vecList, Data::ArrayList<UOSInt> *valueOfstList, Data::ArrayListNN<Text::String> *nameList, Data::ArrayList<Text::String*> *valueList)
+Bool Map::OWSFeatureParser::ParseGML(Text::CStringNN txt, UInt32 srid, Bool swapXY, Text::EncodingFactory *encFact, Data::ArrayList<Math::Geometry::Vector2D*> *vecList, Data::ArrayList<UOSInt> *valueOfstList, Data::ArrayListNN<Text::String> *nameList, Data::ArrayList<Text::String*> *valueList)
 {
 	UTF8Char tmpBuff[1024];
 	UTF8Char *tmpPtr;

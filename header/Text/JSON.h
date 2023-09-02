@@ -59,7 +59,7 @@ namespace Text
 		Bool GetAsDouble(OutParam<Double> val);
 		Bool GetAsBool();
 
-		static JSONBase *ParseJSONStr(Text::CString jsonStr);
+		static JSONBase *ParseJSONStr(Text::CStringNN jsonStr);
 		static JSONBase *ParseJSONBytes(const UInt8 *jsonBytes, UOSInt len);
 		static JSONBase *ParseJSONBytes(const Data::ByteArrayR &jsonBytes);
 
@@ -67,7 +67,7 @@ namespace Text
 		static const UTF8Char *ClearWS(const UTF8Char *jsonStr);
 		static const UTF8Char *ParseJSString(const UTF8Char *jsonStr, NotNullPtr<Text::StringBuilderUTF8> sb);
 		static const UTF8Char *ParseJSNumber(const UTF8Char *jsonStr, Double *val);
-		static JSONBase *ParseJSONStr2(const UTF8Char *jsonStr, const UTF8Char *jsonStrEnd, const UTF8Char **jsonStrEndOut, NotNullPtr<Text::StringBuilderUTF8> sbEnv);
+		static JSONBase *ParseJSONStr2(const UTF8Char *jsonStr, const UTF8Char *jsonStrEnd, OutParam<const UTF8Char *> jsonStrEndOut, NotNullPtr<Text::StringBuilderUTF8> sbEnv);
 	};
 
 	class JSONNumber : public JSONBase
