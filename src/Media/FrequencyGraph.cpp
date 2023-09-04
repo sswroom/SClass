@@ -137,13 +137,13 @@ Media::DrawImage *Media::FrequencyGraph::CreateGraph(NotNullPtr<Media::DrawEngin
 		Double maxVal;
 		Double thisMin;
 		Media::CS::TransferParam tranParam(Media::CS::TRANT_sRGB, 2.2);
-		Media::CS::TransferFunc *trans = Media::CS::TransferFunc::CreateFunc(&tranParam);
+		Media::CS::TransferFunc *trans = Media::CS::TransferFunc::CreateFunc(tranParam);
 		UOSInt sbpl;
 		UInt8 *imgPtr;
 		UInt8 v;
 		Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
 		retImg = eng->CreateImage32(Math::Size2D<UOSInt>((timeRes + 4) + yAxis + ihFontSize, (fftSize >> 1) + 4 + ihFontSize + xAxis), Media::AT_NO_ALPHA);
-		retImg->SetColorProfile(&color);
+		retImg->SetColorProfile(color);
 		sbpl = retImg->GetImgBpl();
 		b = retImg->NewBrushARGB(0xffffffff);
 		retImg->DrawRect(Math::Coord2DDbl(0, 0), retImg->GetSize().ToDouble(), 0, b);

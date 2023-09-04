@@ -99,7 +99,7 @@ Bool Media::Resizer::NearestNeighbourResizer32_32::Resize(const Media::StaticIma
 		return false;
 	if (srcImg->info.pf != Media::PF_B8G8R8A8 || destImg->info.pf != Media::PF_B8G8R8A8)
 		return false;
-	destImg->info.color->Set(srcImg->info.color);
+	destImg->info.color.Set(srcImg->info.color);
 	if (srcImg->info.fourcc == destImg->info.fourcc)
 	{
 		Resize(srcImg->data, (OSInt)srcImg->GetDataBpl(), UOSInt2Double(srcImg->info.dispSize.x), UOSInt2Double(srcImg->info.dispSize.y), 0, 0, destImg->data, (OSInt)destImg->GetDataBpl(), destImg->info.dispSize.x, destImg->info.dispSize.y);
@@ -140,9 +140,9 @@ Media::StaticImage *Media::Resizer::NearestNeighbourResizer32_32::ProcessToNewPa
 		targetSize.y = (UOSInt)Double2OSInt(srcBR.y - srcTL.y);
 	}
 	CalOutputSize(&srcImage->info, targetSize, &destInfo, this->rar);
-	destInfo.color->Set(srcImage->info.color);;
+	destInfo.color.Set(srcImage->info.color);;
 	destInfo.atype = srcImage->info.atype;
-	NEW_CLASS(newImage, Media::StaticImage(&destInfo));
+	NEW_CLASS(newImage, Media::StaticImage(destInfo));
 	Int32 tlx = (Int32)srcTL.x;
 	Int32 tly = (Int32)srcTL.y;
 	Resize(((Media::StaticImage*)srcImage)->data + (tlx << 2) + tly * (OSInt)srcImage->GetDataBpl(), (OSInt)srcImage->GetDataBpl(), srcBR.x - srcTL.x, srcBR.y - srcTL.y, srcTL.x - tlx, srcTL.y - tly, newImage->data, (OSInt)newImage->GetDataBpl(), newImage->info.dispSize.x, newImage->info.dispSize.y);

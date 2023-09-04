@@ -9,10 +9,10 @@ void Media::CS::CSYUV_LRGBC::SetupRGB13_LR()
 	Double thisV;
 	UInt16 v[4];
 
-	Media::ColorProfile *srcProfile;
+	NotNullPtr<Media::ColorProfile> srcProfile;
 	if (this->colorSess == 0)
 	{
-		srcProfile = &this->srcProfile;		
+		srcProfile = this->srcProfile;		
 		if (this->srcProfile.GetRTranParam()->GetTranType() == Media::CS::TRANT_PUNKNOWN || this->srcProfile.GetRTranParam()->GetTranType() == Media::CS::TRANT_PDISPLAY)
 		{
 			this->srcProfile.SetCommonProfile(Media::ColorProfile::CPT_SRGB);
@@ -40,7 +40,7 @@ void Media::CS::CSYUV_LRGBC::SetupRGB13_LR()
 	}
 	else
 	{
-		srcProfile = &this->srcProfile;
+		srcProfile = this->srcProfile;
 	}
 
 	Media::CS::TransferFunc *rtFunc = Media::CS::TransferFunc::CreateFunc(srcProfile->GetRTranParam());
@@ -415,7 +415,7 @@ void Media::CS::CSYUV_LRGBC::SetupYUV14_RGB13()
 	}
 }
 
-Media::CS::CSYUV_LRGBC::CSYUV_LRGBC(const Media::ColorProfile *srcProfile, const Media::ColorProfile *destProfile, Media::ColorProfile::YUVType yuvType, Media::ColorManagerSess *colorSess) : Media::CS::CSConverter(colorSess), srcProfile(srcProfile), destProfile(destProfile)
+Media::CS::CSYUV_LRGBC::CSYUV_LRGBC(NotNullPtr<const Media::ColorProfile> srcProfile, NotNullPtr<const Media::ColorProfile> destProfile, Media::ColorProfile::YUVType yuvType, Media::ColorManagerSess *colorSess) : Media::CS::CSConverter(colorSess), srcProfile(srcProfile), destProfile(destProfile)
 {
 	this->yuvType = yuvType;
 	this->rgbGammaCorr = MemAlloc(Int64, 65536 * 3);

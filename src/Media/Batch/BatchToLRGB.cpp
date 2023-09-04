@@ -4,7 +4,7 @@
 #include "Media/Batch/BatchToLRGB.h"
 #include "Sync/MutexUsage.h"
 
-Media::Batch::BatchToLRGB::BatchToLRGB(Media::ColorProfile *srcProfile, Media::ColorProfile *destProfile, Media::Batch::BatchHandler *hdlr) : srcProfile(srcProfile), destProfile(destProfile)
+Media::Batch::BatchToLRGB::BatchToLRGB(NotNullPtr<const Media::ColorProfile> srcProfile, NotNullPtr<const Media::ColorProfile> destProfile, Media::Batch::BatchHandler *hdlr) : srcProfile(srcProfile), destProfile(destProfile)
 {
 	this->hdlr = hdlr;
 	this->csconv = 0;
@@ -36,18 +36,18 @@ void Media::Batch::BatchToLRGB::ImageOutput(Media::ImageList *imgList, const UTF
 		if (simg->info.fourcc != *(UInt32*)"LRGB")
 		{
 			Sync::MutexUsage mutUsage(this->mut);
-			if (this->csconv == 0 || this->srcFCC != simg->info.fourcc || this->srcBpp != simg->info.storeBPP || this->srcPF != simg->info.pf || !simg->info.color->Equals(&this->srcProfile))
+			if (this->csconv == 0 || this->srcFCC != simg->info.fourcc || this->srcBpp != simg->info.storeBPP || this->srcPF != simg->info.pf || !simg->info.color.Equals(this->srcProfile))
 			{
 				SDEL_CLASS(this->csconv);
 				this->srcFCC = simg->info.fourcc;
 				this->srcBpp = simg->info.storeBPP;
 				this->srcPF = simg->info.pf;
 				this->srcProfile.Set(simg->info.color);
-				this->csconv = Media::CS::CSConverter::NewConverter(this->srcFCC, this->srcBpp, this->srcPF, &this->srcProfile, *(UInt32*)"LRGB", 64, Media::PF_UNKNOWN, &this->destProfile, simg->info.yuvType, 0);
+				this->csconv = Media::CS::CSConverter::NewConverter(this->srcFCC, this->srcBpp, this->srcPF, this->srcProfile, *(UInt32*)"LRGB", 64, Media::PF_UNKNOWN, this->destProfile, simg->info.yuvType, 0);
 			}
 			if (this->csconv)
 			{
-				NEW_CLASS(dimg, Media::StaticImage(simg->info.dispSize, *(UInt32*)"LRGB", 64, Media::PF_UNKNOWN, 0, &this->destProfile, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+				NEW_CLASS(dimg, Media::StaticImage(simg->info.dispSize, *(UInt32*)"LRGB", 64, Media::PF_UNKNOWN, 0, this->destProfile, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 				dimg->info.hdpi = simg->info.hdpi;
 				dimg->info.vdpi = simg->info.vdpi;
 				this->csconv->ConvertV2(&simg->data, dimg->data, simg->info.dispSize.x, simg->info.dispSize.y, simg->info.storeSize.x, simg->info.storeSize.y, (OSInt)dimg->GetDataBpl(), Media::FT_NON_INTERLACE, Media::YCOFST_C_CENTER_LEFT);

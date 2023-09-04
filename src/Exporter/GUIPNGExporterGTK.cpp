@@ -68,7 +68,7 @@ Bool Exporter::GUIPNGExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Te
 		if (srcImg != 0 && pngBuff[0] == 0x89 && pngBuff[1] == 0x50 && pngBuff[2] == 0x4e && pngBuff[3] == 0x47)
 		{
 			UInt8 tmpBuff[64];
-			const UInt8 *iccBuff = srcImg->info.color->GetRAWICC();
+			const UInt8 *iccBuff = srcImg->info.color.GetRAWICC();
 			UInt32 chunkSize;
 			Int32 chunkType;
 			UOSInt i;
@@ -120,7 +120,7 @@ Bool Exporter::GUIPNGExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Te
 					}
 					else
 					{
-						if (srcImg->info.color->GetRTranParamRead()->GetTranType() == Media::CS::TRANT_sRGB)
+						if (srcImg->info.color.GetRTranParamRead()->GetTranType() == Media::CS::TRANT_sRGB)
 						{
 							WriteMUInt32(&tmpBuff[0], 1);
 							WriteInt32(&tmpBuff[4], ReadInt32("sRGB"));
@@ -129,7 +129,7 @@ Bool Exporter::GUIPNGExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Te
 							stm->Write(tmpBuff, 13);
 						}
 
-						const Media::ColorProfile::ColorPrimaries *prim = srcImg->info.color->GetPrimariesRead();
+						NotNullPtr<const Media::ColorProfile::ColorPrimaries> prim = srcImg->info.color.GetPrimariesRead();
 						WriteMUInt32(&tmpBuff[0], 32);
 						WriteInt32(&tmpBuff[4], ReadInt32("cHRM"));
 						WriteMInt32(&tmpBuff[8], Double2Int32(prim->wx * 100000));

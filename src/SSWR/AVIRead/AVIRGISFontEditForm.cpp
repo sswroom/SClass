@@ -34,7 +34,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISFontEditForm::FontColorClicked(void *userOb
 	if (mouseBtn == UI::GUIControl::MBTN_LEFT)
 	{
 		Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
-		UtilUI::ColorDialog dlg(0, me->ui, me->core->GetColorMgr(), me->core->GetDrawEngine(), UtilUI::ColorDialog::CCT_PHOTO, &color, me->core->GetMonitorMgr());
+		UtilUI::ColorDialog dlg(0, me->ui, me->core->GetColorMgr(), me->core->GetDrawEngine(), UtilUI::ColorDialog::CCT_PHOTO, color, me->core->GetMonitorMgr());
 		dlg.SetColor32(me->currColor);
 		if (dlg.ShowDialog(me) == UI::GUIForm::DR_OK)
 		{
@@ -60,7 +60,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISFontEditForm::BufferColorClicked(void *user
 	if (mouseBtn == UI::GUIControl::MBTN_LEFT)
 	{
 		Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
-		UtilUI::ColorDialog dlg(0, me->ui, me->core->GetColorMgr(), me->core->GetDrawEngine(), UtilUI::ColorDialog::CCT_PHOTO, &color, me->core->GetMonitorMgr());
+		UtilUI::ColorDialog dlg(0, me->ui, me->core->GetColorMgr(), me->core->GetDrawEngine(), UtilUI::ColorDialog::CCT_PHOTO, color, me->core->GetMonitorMgr());
 		dlg.SetColor32(me->currBuffColor);
 		if (dlg.ShowDialog(me) == UI::GUIForm::DR_OK)
 		{
@@ -195,7 +195,7 @@ SSWR::AVIRead::AVIRGISFontEditForm::AVIRGISFontEditForm(UI::GUIClientControl *pa
 	this->colorSess->AddHandler(this);
 	Media::ColorProfile srcProfile(Media::ColorProfile::CPT_SRGB);
 	Media::ColorProfile destProfile(Media::ColorProfile::CPT_PDISPLAY);
-	NEW_CLASS(this->colorConv, Media::ColorConv(&srcProfile, &destProfile, this->colorSess));
+	NEW_CLASS(this->colorConv, Media::ColorConv(srcProfile, destProfile, this->colorSess));
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->SetText(CSTR("Edit Font Style"));

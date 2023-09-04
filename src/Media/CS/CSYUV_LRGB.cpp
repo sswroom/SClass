@@ -128,7 +128,7 @@ void Media::CS::CSYUV_LRGB::SetupYUV_RGB13()
 	}
 }
 
-Media::CS::CSYUV_LRGB::CSYUV_LRGB(const Media::ColorProfile *srcColor, Media::ColorProfile::YUVType yuvType, Media::ColorManagerSess *colorSess) : Media::CS::CSConverter(colorSess), srcColor(srcColor)
+Media::CS::CSYUV_LRGB::CSYUV_LRGB(NotNullPtr<const Media::ColorProfile> srcColor, Media::ColorProfile::YUVType yuvType, Media::ColorManagerSess *colorSess) : Media::CS::CSConverter(colorSess), srcColor(srcColor)
 {
 	this->yuvType = yuvType;
 	this->rgbGammaCorr = MemAlloc(UInt8, 65536 * 2);
@@ -140,7 +140,7 @@ Media::CS::CSYUV_LRGB::CSYUV_LRGB(const Media::ColorProfile *srcColor, Media::Co
 	MemCopyNO(&this->yuvParam, colorSess->GetYUVParam(), sizeof(YUVPARAM));
 	this->rgbParam.Set(colorSess->GetRGBParam());
 
-	Media::ColorProfile *tranColor;
+	NotNullPtr<Media::ColorProfile> tranColor;
 	if (this->srcColor.GetRTranParam()->GetTranType() == Media::CS::TRANT_VUNKNOWN)
 	{
 		tranColor = this->colorSess->GetDefVProfile();
@@ -151,11 +151,11 @@ Media::CS::CSYUV_LRGB::CSYUV_LRGB(const Media::ColorProfile *srcColor, Media::Co
 	}
 	else if (this->srcColor.GetRTranParam()->GetTranType() == Media::CS::TRANT_VDISPLAY || this->srcColor.GetRTranParam()->GetTranType() == Media::CS::TRANT_PDISPLAY)
 	{
-		tranColor = &this->rgbParam.monProfile;
+		tranColor = this->rgbParam.monProfile;
 	}
 	else
 	{
-		tranColor = &this->srcColor;
+		tranColor = this->srcColor;
 	}
 	this->irFunc = Media::CS::TransferFunc::CreateFunc(tranColor->GetRTranParam());
 	this->igFunc = Media::CS::TransferFunc::CreateFunc(tranColor->GetGTranParam());
@@ -193,7 +193,7 @@ void Media::CS::CSYUV_LRGB::YUVParamChanged(const Media::IColorHandler::YUVPARAM
 
 void Media::CS::CSYUV_LRGB::RGBParamChanged(const Media::IColorHandler::RGBPARAM2 *rgb)
 {
-	Media::ColorProfile *srcColor;
+	NotNullPtr<Media::ColorProfile> srcColor;
 	if (this->srcColor.GetRTranParam()->GetTranType() == Media::CS::TRANT_VUNKNOWN)
 	{
 		srcColor = this->colorSess->GetDefVProfile();
@@ -212,7 +212,7 @@ void Media::CS::CSYUV_LRGB::RGBParamChanged(const Media::IColorHandler::RGBPARAM
  	}
 	else
 	{
-		srcColor = &this->srcColor;
+		srcColor = this->srcColor;
 	}
 
 	DEL_CLASS(this->irFunc);

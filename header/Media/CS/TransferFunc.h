@@ -13,7 +13,7 @@ namespace Media
 			TransferParam param;
 		public:
 			TransferFunc(TransferType tranType, Double gamma);
-			TransferFunc(const Media::LUT *lut);
+			TransferFunc(NotNullPtr<const Media::LUT> lut);
 			virtual ~TransferFunc();
 
 			virtual Double ForwardTransfer(Double linearVal) = 0;
@@ -22,8 +22,8 @@ namespace Media
 			Double GetTransferGamma();
 			const TransferParam *GetTransferParam();
 
-			static TransferFunc *CreateFunc(const TransferParam *param);
-			static Double GetRefLuminance(TransferParam *param);
+			static TransferFunc *CreateFunc(NotNullPtr<const TransferParam> param);
+			static Double GetRefLuminance(NotNullPtr<const TransferParam> param);
 		};
 	}
 }

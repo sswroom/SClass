@@ -445,9 +445,9 @@ IO::ParsedObject *Parser::FileParser::AVIParser::ParseFileHdr(NotNullPtr<IO::Str
 					ttype = Media::CS::TRANT_VUNKNOWN;
 					break;
 				}
-				info.color->GetRTranParam()->Set(ttype, 2.2);
-				info.color->GetGTranParam()->Set(ttype, 2.2);
-				info.color->GetBTranParam()->Set(ttype, 2.2);
+				info.color.GetRTranParam()->Set(ttype, 2.2);
+				info.color.GetGTranParam()->Set(ttype, 2.2);
+				info.color.GetBTranParam()->Set(ttype, 2.2);
 				switch (ccYUV)
 				{
 				case 1:

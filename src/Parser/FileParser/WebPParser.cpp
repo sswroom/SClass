@@ -69,8 +69,7 @@ IO::ParsedObject *Parser::FileParser::WebPParser::ParseFileHdr(NotNullPtr<IO::St
 	UInt32 flags = WebPDemuxGetI(demux, WEBP_FF_FORMAT_FLAGS);
 
 	Media::StaticImage *simg;
-	Media::ColorProfile color(Media::ColorProfile::CPT_PUNKNOWN);
-	NEW_CLASS(simg, Media::StaticImage(Math::Size2D<UOSInt>(width, height), 0, 32, Media::PF_B8G8R8A8, width * height * 4, &color, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_ALPHA, Media::YCOFST_C_CENTER_LEFT))
+	NEW_CLASS(simg, Media::StaticImage(Math::Size2D<UOSInt>(width, height), 0, 32, Media::PF_B8G8R8A8, width * height * 4, Media::ColorProfile(Media::ColorProfile::CPT_PUNKNOWN), Media::ColorProfile::YUVT_UNKNOWN, Media::AT_ALPHA, Media::YCOFST_C_CENTER_LEFT))
 	WebPIterator iter;
 	if (WebPDemuxGetFrame(demux, 1, &iter))
 	{

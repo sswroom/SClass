@@ -1218,7 +1218,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnSpeciesColorClicked(void *userOb
 	if (me->inputMode == IM_SPECIES)
 	{
 		Media::ColorProfile profile(Media::ColorProfile::CPT_SRGB);
-		UtilUI::ColorDialog dlg(0, me->GetUI(), me->env->GetColorMgr(), me->env->GetDrawEngine(), UtilUI::ColorDialog::CCT_PHOTO, &profile, me->env->GetMonitorMgr());
+		UtilUI::ColorDialog dlg(0, me->GetUI(), me->env->GetColorMgr(), me->env->GetDrawEngine(), UtilUI::ColorDialog::CCT_PHOTO, profile, me->env->GetMonitorMgr());
 		dlg.SetColor32(me->lastSpeciesObj->GetMapColor());
 		if (dlg.ShowDialog(me) == UI::GUIForm::DR_OK)
 		{
@@ -1649,13 +1649,14 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnMapMouseMove(void *userObj, Math
 	}
 }
 
-void __stdcall SSWR::OrganMgr::OrganMainForm::OnMapDraw(void *userObj, Media::DrawImage *dimg, OSInt xOfst, OSInt yOfst)
+void __stdcall SSWR::OrganMgr::OrganMainForm::OnMapDraw(void *userObj, NotNullPtr<Media::DrawImage> dimg, OSInt xOfst, OSInt yOfst)
 {
 	OrganMainForm *me = (OrganMainForm*)userObj;
-	if (me->mapCurrImage)
+	NotNullPtr<Media::DrawImage> img;
+	if (img.Set(me->mapCurrImage))
 	{
 		Math::Size2D<UOSInt> scnSize = me->mcMap->GetSizeP();
-		dimg->DrawImagePt(me->mapCurrImage, Math::Coord2DDbl(OSInt2Double(xOfst), OSInt2Double(yOfst + (OSInt)(scnSize.y - me->mapCurrImage->GetHeight()))));
+		dimg->DrawImagePt(img, Math::Coord2DDbl(OSInt2Double(xOfst), OSInt2Double(yOfst + (OSInt)(scnSize.y - img->GetHeight()))));
 		//BitBlt((HDC)hdc, 0, scnH - me->mapCurrImage->info.dispSize.y, me->mapCurrImage->info.dispSize.x, me->mapCurrImage->info.dispSize.y, (HDC)me->mapCurrImage->GetHDC(), 0, 0, SRCCOPY);
 	}
 }
@@ -2468,7 +2469,7 @@ SSWR::OrganMgr::OrganSpImgLayer *SSWR::OrganMgr::OrganMainForm::GetImgLayer(UInt
 	UOSInt lyrInd;
 	Media::ColorProfile srcColor(Media::ColorProfile::CPT_SRGB);
 	NEW_CLASS(lyr, OrganSpImgLayer());
-	NEW_CLASS(stimg, Media::StaticImage(Math::Size2D<UOSInt>(7, 7), 0, 32, Media::PF_B8G8R8A8, 0, &srcColor, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+	NEW_CLASS(stimg, Media::StaticImage(Math::Size2D<UOSInt>(7, 7), 0, 32, Media::PF_B8G8R8A8, 0, srcColor, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 	lyr->SetCoordinateSystem(this->mapEnv->GetCoordinateSystem()->Clone());
 	stimg->FillColor(mapColor);
 	NEW_CLASS(imgList, Media::ImageList(CSTR("PointImage")));
@@ -2516,7 +2517,7 @@ SSWR::OrganMgr::OrganMainForm::OrganMainForm(NotNullPtr<UI::GUICore> ui, UI::GUI
 	this->restoreObj = false;
 	Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
 	Media::ColorProfile color2(Media::ColorProfile::CPT_PDISPLAY);
-	NEW_CLASS(this->mapResizer, Media::Resizer::LanczosResizer8_C8(4, 3, &color, &color2, this->colorSess, Media::AT_NO_ALPHA));
+	NEW_CLASS(this->mapResizer, Media::Resizer::LanczosResizer8_C8(4, 3, color, color2, this->colorSess, Media::AT_NO_ALPHA));
 	this->mapCurrFile = 0;
 	this->mapCurrImage = 0;
 
@@ -2764,7 +2765,7 @@ SSWR::OrganMgr::OrganMainForm::OrganMainForm(NotNullPtr<UI::GUICore> ui, UI::GUI
 	this->imgFontStyle = this->mapEnv->AddFontStyle(CSTR("Temp"), this->env->GetMapFont(), 12, false, 0xff000000, 2, 0x80ffffff);
 
 	Media::ColorProfile dispColor(Media::ColorProfile::CPT_PDISPLAY);
-	NEW_CLASS(this->mapRenderer, Map::DrawMapRenderer(this->env->GetDrawEngine(), this->mapEnv, &dispColor, this->colorSess, Map::DrawMapRenderer::DT_PIXELDRAW));
+	NEW_CLASS(this->mapRenderer, Map::DrawMapRenderer(this->env->GetDrawEngine(), this->mapEnv, dispColor, this->colorSess, Map::DrawMapRenderer::DT_PIXELDRAW));
 	this->mapView = this->mapEnv->CreateMapView(Math::Size2DDbl(1024, 768));
 	NEW_CLASS(this->mcMap, UI::GUIMapControl(ui, this->tpMap, this->env->GetDrawEngine(), 0xff000000, this->mapRenderer, this->mapView, this->colorSess));
 	this->mcMap->SetDockType(UI::GUIControl::DOCK_FILL);

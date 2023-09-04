@@ -46,7 +46,7 @@ void Media::IImgResizer::SetSrcRefLuminance(Double srcRefLuminance)
 
 Media::StaticImage *Media::IImgResizer::ProcessToNew(const Media::Image *srcImage)
 {
-	this->SetSrcRefLuminance(Media::CS::TransferFunc::GetRefLuminance(&srcImage->info.color->rtransfer));
+	this->SetSrcRefLuminance(Media::CS::TransferFunc::GetRefLuminance(srcImage->info.color.rtransfer));
 	return ProcessToNewPartial(srcImage, Math::Size2DDbl(0, 0), srcImage->info.dispSize.ToDouble());
 }
 

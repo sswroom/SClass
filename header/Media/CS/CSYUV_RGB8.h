@@ -32,7 +32,7 @@ namespace Media
 			void SetupYUV_RGB13();
 
 		protected:
-			CSYUV_RGB8(const Media::ColorProfile *srcColor, const Media::ColorProfile *destColor, Media::ColorProfile::YUVType yuvType, Media::ColorManagerSess *colorSess);
+			CSYUV_RGB8(NotNullPtr<const Media::ColorProfile> srcColor, NotNullPtr<const Media::ColorProfile> destColor, Media::ColorProfile::YUVType yuvType, Media::ColorManagerSess *colorSess);
 			virtual ~CSYUV_RGB8();
 			virtual void UpdateTable();
 

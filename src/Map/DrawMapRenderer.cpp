@@ -2229,13 +2229,13 @@ void Map::DrawMapRenderer::DrawImageObject(DrawEnv *denv, Media::StaticImage *im
 					{
 						newImg->MultiplyAlpha(srcAlpha);
 					}
-					Media::DrawImage *dimg = this->eng->ConvImage(newImg);
-					if (dimg)
+					NotNullPtr<Media::DrawImage> dimg;
+					if (dimg.Set(this->eng->ConvImage(newImg)))
 					{
 						dimg->SetHDPI(denv->img->GetHDPI());
 						dimg->SetVDPI(denv->img->GetVDPI());
 						denv->img->DrawImagePt(dimg, scnTL);
-						this->eng->DeleteImage(dimg);
+						this->eng->DeleteImage(dimg.Ptr());
 					}
 					DEL_CLASS(newImg);
 				}
@@ -3618,7 +3618,7 @@ void Map::DrawMapRenderer::DrawCharsLA(DrawEnv *denv, Text::CString str1, Math::
 	realBounds->br = max;
 }
 
-Map::DrawMapRenderer::DrawMapRenderer(NotNullPtr<Media::DrawEngine> eng, Map::MapEnv *env, const Media::ColorProfile *color, Media::ColorManagerSess *colorSess, DrawType drawType)
+Map::DrawMapRenderer::DrawMapRenderer(NotNullPtr<Media::DrawEngine> eng, Map::MapEnv *env, NotNullPtr<const Media::ColorProfile> color, Media::ColorManagerSess *colorSess, DrawType drawType)
 {
 	this->eng = eng;
 	this->env = env;
@@ -3627,8 +3627,8 @@ Map::DrawMapRenderer::DrawMapRenderer(NotNullPtr<Media::DrawEngine> eng, Map::Ma
 	this->lastLayerEmpty = true;
 	this->drawType = drawType;
 	Media::ColorProfile srcColor(Media::ColorProfile::CPT_SRGB);
-	NEW_CLASS(this->resizer, Media::Resizer::LanczosResizer8_C8(3, 3, &srcColor, &this->color, colorSess, Media::AT_NO_ALPHA));
-	NEW_CLASS(this->colorConv, Media::ColorConv(&srcColor, &this->color, colorSess));
+	NEW_CLASS(this->resizer, Media::Resizer::LanczosResizer8_C8(3, 3, srcColor, this->color, colorSess, Media::AT_NO_ALPHA));
+	NEW_CLASS(this->colorConv, Media::ColorConv(srcColor, this->color, colorSess));
 }
 
 Map::DrawMapRenderer::~DrawMapRenderer()
@@ -3637,7 +3637,7 @@ Map::DrawMapRenderer::~DrawMapRenderer()
 	DEL_CLASS(this->colorConv);
 }
 
-void Map::DrawMapRenderer::DrawMap(Media::DrawImage *img, Map::MapView *view, UInt32 *imgDurMS)
+void Map::DrawMapRenderer::DrawMap(NotNullPtr<Media::DrawImage> img, Map::MapView *view, UInt32 *imgDurMS)
 {
 	Map::DrawMapRenderer::DrawEnv denv;
 	UOSInt i;

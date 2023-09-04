@@ -1138,7 +1138,7 @@ void UI::GUITextFileView::EventTimerTick()
 	}
 }
 
-void UI::GUITextFileView::DrawImage(Media::DrawImage *dimg)
+void UI::GUITextFileView::DrawImage(NotNullPtr<Media::DrawImage> dimg)
 {
 //	WChar wbuff[21];
 	UTF8Char sbuff[21];

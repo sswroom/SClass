@@ -334,7 +334,7 @@ void __stdcall SSWR::AVIRead::AVIRHQMPForm::OnTimerTick(void *userObj)
 		sb.AppendC(UTF8STRC("Src Gamma: "));
 		sb.AppendDouble(dbg.color.GetRTranParam()->GetGamma());
 		sb.AppendC(UTF8STRC("\r\n"));
-		Media::ColorProfile::ColorPrimaries *primaries = dbg.color.GetPrimaries(); 
+		NotNullPtr<Media::ColorProfile::ColorPrimaries> primaries = dbg.color.GetPrimaries(); 
 		sb.AppendC(UTF8STRC("Src RGB Primary: "));
 		sb.Append(Media::ColorProfile::ColorTypeGetName(primaries->colorType));
 		sb.AppendC(UTF8STRC("\r\n"));

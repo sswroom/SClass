@@ -27,7 +27,7 @@ namespace Media
 			void SetupYUV_RGB13();
 
 		protected:
-			CSYUV_LRGB(const Media::ColorProfile *srcColor, Media::ColorProfile::YUVType yuvType, Media::ColorManagerSess *colorSess);
+			CSYUV_LRGB(NotNullPtr<const Media::ColorProfile> srcColor, Media::ColorProfile::YUVType yuvType, Media::ColorManagerSess *colorSess);
 			virtual ~CSYUV_LRGB();
 			virtual void UpdateTable();
 

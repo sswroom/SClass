@@ -21,7 +21,7 @@ void Media::CS::CSRGB16_LRGBC::UpdateRGBTable()
 	Double thisV;
 	Double dV;
 	UInt16 v[4];
-	Media::ColorProfile *srcProfile;
+	NotNullPtr<Media::ColorProfile> srcProfile;
 	if (this->srcProfile.GetRTranParam()->GetTranType() == Media::CS::TRANT_VUNKNOWN)
 	{
 		srcProfile = this->colorSess->GetDefVProfile();
@@ -32,11 +32,11 @@ void Media::CS::CSRGB16_LRGBC::UpdateRGBTable()
 	}
 	else if (this->srcProfile.GetRTranParam()->GetTranType() == Media::CS::TRANT_VDISPLAY || this->srcProfile.GetRTranParam()->GetTranType() == Media::CS::TRANT_PDISPLAY)
 	{
-		srcProfile = &this->rgbParam.monProfile;
+		srcProfile = this->rgbParam.monProfile;
 	}
 	else
 	{
-		srcProfile = &this->srcProfile;
+		srcProfile = this->srcProfile;
 	}
 	Media::CS::TransferFunc *rtFunc = Media::CS::TransferFunc::CreateFunc(srcProfile->GetRTranParam());
 	Media::CS::TransferFunc *gtFunc = Media::CS::TransferFunc::CreateFunc(srcProfile->GetGTranParam());
@@ -111,7 +111,7 @@ void Media::CS::CSRGB16_LRGBC::UpdateRGBTable()
 	DEL_CLASS(btFunc);
 }
 
-Media::CS::CSRGB16_LRGBC::CSRGB16_LRGBC(UOSInt srcNBits, Media::PixelFormat srcPF, Bool invert, const Media::ColorProfile *srcProfile, const Media::ColorProfile *destProfile, Media::ColorManagerSess *colorSess) : Media::CS::CSConverter(colorSess), srcProfile(srcProfile), destProfile(destProfile)
+Media::CS::CSRGB16_LRGBC::CSRGB16_LRGBC(UOSInt srcNBits, Media::PixelFormat srcPF, Bool invert, NotNullPtr<const Media::ColorProfile> srcProfile, NotNullPtr<const Media::ColorProfile> destProfile, Media::ColorManagerSess *colorSess) : Media::CS::CSConverter(colorSess), srcProfile(srcProfile), destProfile(destProfile)
 {
 	this->srcNBits = srcNBits;
 	this->srcPF = srcPF;

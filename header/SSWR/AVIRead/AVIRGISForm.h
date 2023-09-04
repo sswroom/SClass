@@ -141,7 +141,7 @@ namespace SSWR
 			void UpdateTimeRange();
 
 			virtual Bool BeginPrint(Media::IPrintDocument *doc);
-			virtual Bool PrintPage(Media::DrawImage *printPage);
+			virtual Bool PrintPage(NotNullPtr<Media::DrawImage> printPage);
 			virtual Bool EndPrint(Media::IPrintDocument *doc);
 		};
 	}

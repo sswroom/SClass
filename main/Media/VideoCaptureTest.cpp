@@ -32,7 +32,7 @@ void __stdcall CaptureTest(UInt32 frameTime, UInt32 frameNum, UInt8 **imgData, U
 		Media::StaticImage *simg;
 		Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
 		Text::CStringNN fileName = CSTR("Capture.tif");
-		NEW_CLASS(simg, Media::StaticImage(info.dispSize, 0, 32, Media::PF_B8G8R8A8, 0, &color, Media::ColorProfile::YUVT_BT601, info.atype, info.ycOfst));
+		NEW_CLASS(simg, Media::StaticImage(info.dispSize, 0, 32, Media::PF_B8G8R8A8, 0, color, Media::ColorProfile::YUVT_BT601, info.atype, info.ycOfst));
 		Media::ImageList imgList(fileName);
 		imgList.AddImage(simg, 0);
 
@@ -297,7 +297,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 				{
 					console->WriteLineC(UTF8STRC("ColorSess is null"));
 				}
-				converter = Media::CS::CSConverter::NewConverter(info.fourcc, info.storeBPP, info.pf, info.color, 0, 32, Media::PF_B8G8R8A8, &color, info.yuvType, colorSess);
+				converter = Media::CS::CSConverter::NewConverter(info.fourcc, info.storeBPP, info.pf, info.color, 0, 32, Media::PF_B8G8R8A8, color, info.yuvType, colorSess);
 				if (converter == 0)
 				{
 					console->WriteLineC(UTF8STRC("Converter is null"));

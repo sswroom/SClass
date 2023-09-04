@@ -383,7 +383,7 @@ void Media::MediaPlayerWebInterface::WebRequest(NotNullPtr<Net::WebServer::IWebR
 			sb.AppendC(UTF8STRC("Src Gamma: "));
 			sb.AppendDouble(status.color.GetRTranParam()->GetGamma());
 			sb.AppendC(UTF8STRC("<br/>\r\n"));
-			Media::ColorProfile::ColorPrimaries *primaries = status.color.GetPrimaries(); 
+			NotNullPtr<Media::ColorProfile::ColorPrimaries> primaries = status.color.GetPrimaries(); 
 			sb.AppendC(UTF8STRC("Src RGB Primary: "));
 			sb.Append(Media::ColorProfile::ColorTypeGetName(primaries->colorType));
 			sb.AppendC(UTF8STRC("<br/>\r\n"));

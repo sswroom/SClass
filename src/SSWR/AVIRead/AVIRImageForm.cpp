@@ -549,7 +549,7 @@ void __stdcall SSWR::AVIRead::AVIRImageForm::OnInfoICCClicked(void *userObj)
 	SSWR::AVIRead::AVIRImageForm *me = (SSWR::AVIRead::AVIRImageForm *)userObj;
 	if (me->currImg)
 	{
-		const UInt8 *iccBuff = me->currImg->info.color->rawICC;
+		const UInt8 *iccBuff = me->currImg->info.color.rawICC;
 		if (iccBuff)
 		{
 			Media::ICCProfile *icc = Media::ICCProfile::Parse(Data::ByteArrayR(iccBuff, ReadMUInt32(iccBuff)));
@@ -578,7 +578,7 @@ void SSWR::AVIRead::AVIRImageForm::UpdateInfo()
 			this->imgList->ToValueString(sb);
 		}
 		this->txtInfo->SetText(sb.ToCString());
-		if (this->currImg->info.color->GetRAWICC())
+		if (this->currImg->info.color.GetRAWICC())
 		{
 			this->btnInfoICC->SetEnabled(true);
 		}

@@ -4,7 +4,7 @@
 #include "Media/CS/TransferFuncLUT.h"
 
 #if _OSINT_SIZE != 16
-Media::CS::TransferFuncLUT::TransferFuncLUT(const Media::LUT *lut) : Media::CS::TransferFunc(lut)
+Media::CS::TransferFuncLUT::TransferFuncLUT(NotNullPtr<const Media::LUT> lut) : Media::CS::TransferFunc(lut)
 {
 	this->srcCnt = lut->GetInputLevel();
 	this->fwdLUT = MemAlloc(Double, 65536);

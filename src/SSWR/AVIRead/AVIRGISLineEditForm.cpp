@@ -172,7 +172,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISLineEditForm::ColorClicked(void *userObj, M
 	if (btn == UI::GUIPictureBox::MBTN_LEFT && me->currLayer)
 	{
 		Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
-		UtilUI::ColorDialog dlg(0, me->ui, me->core->GetColorMgr(), me->core->GetDrawEngine(), UtilUI::ColorDialog::CCT_PHOTO, &color, me->core->GetMonitorMgr());
+		UtilUI::ColorDialog dlg(0, me->ui, me->core->GetColorMgr(), me->core->GetDrawEngine(), UtilUI::ColorDialog::CCT_PHOTO, color, me->core->GetMonitorMgr());
 		dlg.SetColor32(me->currLayer->color);
 		if (dlg.ShowDialog(me) == UI::GUIForm::DR_OK)
 		{

@@ -316,6 +316,7 @@ void SSWR::AVIRead::AVIRMQTTSubscribeForm::UpdateTopicChart()
 	Media::DrawImage *dimg;
 	NotNullPtr<Media::DrawEngine> deng = this->core->GetDrawEngine();
 	Math::Size2D<UOSInt> sz = this->pbTopic->GetSizeP();
+	NotNullPtr<Media::DrawImage> gimg;
 	if (sz.x > 0 && sz.y > 0)
 	{
 		if (this->dispImg == 0 || this->dispImg->GetSize() != sz)
@@ -327,53 +328,55 @@ void SSWR::AVIRead::AVIRMQTTSubscribeForm::UpdateTopicChart()
 			dimg = deng->CreateImage32(sz, Media::AT_NO_ALPHA);
 			this->dispImg = dimg;
 		}
-		if (this->currTopic == 0 || this->currTopic->recvCnt <= 1)
+		if (gimg.Set(this->dispImg))
 		{
-			Media::DrawBrush *b;
-			b = this->dispImg->NewBrushARGB(0xffffffff);
-			this->dispImg->DrawRect(Math::Coord2DDbl(0, 0), sz.ToDouble(), 0, b);
-			this->dispImg->DelBrush(b);
-		}
-		else
-		{
-			if (this->currTopic->recvCnt < 256)
+			if (this->currTopic == 0 || this->currTopic->recvCnt <= 1)
 			{
-				UOSInt recvCnt = this->currTopic->recvCnt;
-				Data::LineChart *chart;
-				NEW_CLASS(chart, Data::LineChart(CSTR_NULL));
-				chart->AddXDataDate(this->currTopic->dateList, recvCnt);
-				chart->AddYData(this->currTopic->topic.Ptr(), this->currTopic->valueList, recvCnt, 0xFFFF0000, Data::LineChart::LS_LINE);
-				chart->Plot(this->dispImg, 0, 0, UOSInt2Double(sz.x), UOSInt2Double(sz.y));
-				DEL_CLASS(chart);
+				Media::DrawBrush *b;
+				b = gimg->NewBrushARGB(0xffffffff);
+				gimg->DrawRect(Math::Coord2DDbl(0, 0), sz.ToDouble(), 0, b);
+				gimg->DelBrush(b);
 			}
 			else
 			{
-				UOSInt recvCnt = this->currTopic->recvCnt;
-				Int64 *dateList = MemAlloc(Int64, 256);
-				Double *valueList = MemAlloc(Double, 256);
-				if (recvCnt & 255)
+				if (this->currTopic->recvCnt < 256)
 				{
-					MemCopyNO(dateList, &this->currTopic->dateList[recvCnt & 255], sizeof(Int64) * (256 - (recvCnt & 255)));
-					MemCopyNO(valueList, &this->currTopic->valueList[recvCnt & 255], sizeof(Double) * (256 - (recvCnt & 255)));
-					MemCopyNO(&dateList[256 - (recvCnt & 255)], this->currTopic->dateList, sizeof(Int64) * (recvCnt & 255));
-					MemCopyNO(&valueList[256 - (recvCnt & 255)], this->currTopic->valueList, sizeof(Double) * (recvCnt & 255));
+					UOSInt recvCnt = this->currTopic->recvCnt;
+					Data::LineChart *chart;
+					NEW_CLASS(chart, Data::LineChart(CSTR_NULL));
+					chart->AddXDataDate(this->currTopic->dateList, recvCnt);
+					chart->AddYData(this->currTopic->topic.Ptr(), this->currTopic->valueList, recvCnt, 0xFFFF0000, Data::LineChart::LS_LINE);
+					chart->Plot(gimg, 0, 0, UOSInt2Double(sz.x), UOSInt2Double(sz.y));
+					DEL_CLASS(chart);
 				}
 				else
 				{
-					MemCopyNO(dateList, this->currTopic->dateList, sizeof(Int64) * 256);
-					MemCopyNO(valueList, this->currTopic->valueList, sizeof(Double) * 256);
+					UOSInt recvCnt = this->currTopic->recvCnt;
+					Int64 *dateList = MemAlloc(Int64, 256);
+					Double *valueList = MemAlloc(Double, 256);
+					if (recvCnt & 255)
+					{
+						MemCopyNO(dateList, &this->currTopic->dateList[recvCnt & 255], sizeof(Int64) * (256 - (recvCnt & 255)));
+						MemCopyNO(valueList, &this->currTopic->valueList[recvCnt & 255], sizeof(Double) * (256 - (recvCnt & 255)));
+						MemCopyNO(&dateList[256 - (recvCnt & 255)], this->currTopic->dateList, sizeof(Int64) * (recvCnt & 255));
+						MemCopyNO(&valueList[256 - (recvCnt & 255)], this->currTopic->valueList, sizeof(Double) * (recvCnt & 255));
+					}
+					else
+					{
+						MemCopyNO(dateList, this->currTopic->dateList, sizeof(Int64) * 256);
+						MemCopyNO(valueList, this->currTopic->valueList, sizeof(Double) * 256);
+					}
+					
+					Data::LineChart *chart;
+					NEW_CLASS(chart, Data::LineChart(CSTR_NULL));
+					chart->AddXDataDate(this->currTopic->dateList, 256);
+					chart->AddYData(this->currTopic->topic.Ptr(), this->currTopic->valueList, 256, 0xFFFF0000, Data::LineChart::LS_LINE);
+					chart->Plot(gimg, 0, 0, UOSInt2Double(sz.x), UOSInt2Double(sz.y));
+					DEL_CLASS(chart);
+					MemFree(dateList);
+					MemFree(valueList);
 				}
-				
-				Data::LineChart *chart;
-				NEW_CLASS(chart, Data::LineChart(CSTR_NULL));
-				chart->AddXDataDate(this->currTopic->dateList, 256);
-				chart->AddYData(this->currTopic->topic.Ptr(), this->currTopic->valueList, 256, 0xFFFF0000, Data::LineChart::LS_LINE);
-				chart->Plot(this->dispImg, 0, 0, UOSInt2Double(sz.x), UOSInt2Double(sz.y));
-				DEL_CLASS(chart);
-				MemFree(dateList);
-				MemFree(valueList);
 			}
-			
 		}
 		
 		this->pbTopic->SetImageDImg(this->dispImg);

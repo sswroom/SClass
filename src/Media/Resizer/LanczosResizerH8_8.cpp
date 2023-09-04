@@ -1174,7 +1174,7 @@ Media::StaticImage *Media::Resizer::LanczosResizerH8_8::ProcessToNewPartial(cons
 		targetSize.y = (UOSInt)Double2OSInt(srcBR.y - srcTL.y);//srcImage->info.height;
 	}
 	CalOutputSize(&srcImage->info, targetSize, &destInfo, rar);
-	NEW_CLASS(img, Media::StaticImage(&destInfo));
+	NEW_CLASS(img, Media::StaticImage(destInfo));
 	if (srcImage->exif)
 	{
 		img->exif = srcImage->exif->Clone();

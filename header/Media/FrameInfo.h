@@ -111,7 +111,7 @@ namespace Media
 		Double vdpi;
 		FrameType ftype;
 		AlphaType atype;
-		ColorProfile *color;
+		ColorProfile color;
 		RotateType rotateType;
 
 		Media::ColorProfile::YUVType yuvType;

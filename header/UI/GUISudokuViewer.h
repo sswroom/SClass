@@ -23,7 +23,7 @@ namespace UI
 
 		virtual Bool OnMouseDown(Math::Coord2D<OSInt> scnPos, MouseButton btn);
 		virtual Bool OnKeyDown(UI::GUIControl::GUIKey key);
-		virtual void OnDraw(Media::DrawImage *img);
+		virtual void OnDraw(NotNullPtr<Media::DrawImage> img);
 
 		void HandleNumberInput(NumberInputEvent hdlr, void *userObj);
 

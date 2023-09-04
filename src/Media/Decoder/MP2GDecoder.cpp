@@ -395,7 +395,7 @@ Bool Media::Decoder::MP2GDecoder::GetVideoInfo(Media::FrameInfo *info, UInt32 *f
 	if (succ)
 	{
 		info->fourcc = *(UInt32*)"MPG2";
-		if (info->color->GetRTranParam()->GetTranType() == Media::CS::TRANT_VUNKNOWN)
+		if (info->color.GetRTranParam()->GetTranType() == Media::CS::TRANT_VUNKNOWN)
 		{
 			Media::CS::TransferType ttype;
 			if (info->dispSize.y > 576)
@@ -406,9 +406,9 @@ Bool Media::Decoder::MP2GDecoder::GetVideoInfo(Media::FrameInfo *info, UInt32 *f
 			{
 				ttype = Media::CS::TRANT_sRGB;
 			}
-			info->color->GetRTranParam()->Set(ttype, 2.2);
-			info->color->GetGTranParam()->Set(ttype, 2.2);
-			info->color->GetBTranParam()->Set(ttype, 2.2);
+			info->color.GetRTranParam()->Set(ttype, 2.2);
+			info->color.GetGTranParam()->Set(ttype, 2.2);
+			info->color.GetBTranParam()->Set(ttype, 2.2);
 		}
 	}
 	info->par2 = this->par;

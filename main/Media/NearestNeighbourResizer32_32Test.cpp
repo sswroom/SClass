@@ -42,7 +42,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	resizer->SetTargetSize(Math::Size2D<UOSInt>(dWidth, dHeight));
 	resizer->SetResizeAspectRatio(Media::IImgResizer::RAR_IGNOREAR);
 
-	simg = (Media::StaticImage*)imgGen.GenerateImage(&srgb, Math::Size2D<UOSInt>(sWidth, sHeight));
+	simg = (Media::StaticImage*)imgGen.GenerateImage(srgb, Math::Size2D<UOSInt>(sWidth, sHeight));
 	t0 = clk.GetTimeDiff();
 	clk.Start();
 	simg->To32bpp();

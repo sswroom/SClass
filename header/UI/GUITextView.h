@@ -69,7 +69,7 @@ namespace UI
 		virtual void EventMouseUp(OSInt scnX, OSInt scnY, MouseButton btn) = 0;
 		virtual void EventMouseMove(OSInt scnX, OSInt scnY) = 0;
 		virtual void EventTimerTick() = 0;
-		virtual void DrawImage(Media::DrawImage *dimg) = 0;
+		virtual void DrawImage(NotNullPtr<Media::DrawImage> dimg) = 0;
 		virtual void UpdateCaretPos() = 0;
 
 		void OnMouseDown(OSInt scnX, OSInt scnY, MouseButton btn);

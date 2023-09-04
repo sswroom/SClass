@@ -1426,7 +1426,7 @@ void UtilUI::ColorDialog::UpdateColor()
 	DEL_CLASS(srcBTran);
 }
 
-UtilUI::ColorDialog::ColorDialog(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, Media::ColorManager *colorMgr, NotNullPtr<Media::DrawEngine> eng, ColorCorrType colorCorr, Media::ColorProfile *colorProfile, Media::MonitorMgr *monMgr) : UI::GUIForm(parent, 756, 640, ui)
+UtilUI::ColorDialog::ColorDialog(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, Media::ColorManager *colorMgr, NotNullPtr<Media::DrawEngine> eng, ColorCorrType colorCorr, NotNullPtr<const Media::ColorProfile> colorProfile, Media::MonitorMgr *monMgr) : UI::GUIForm(parent, 756, 640, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("Color Setting"));
@@ -1578,9 +1578,9 @@ UtilUI::ColorDialog::ColorDialog(UI::GUIClientControl *parent, NotNullPtr<UI::GU
 	color.SetCommonProfile(Media::ColorProfile::CPT_SRGB);
 	Math::Size2D<UOSInt> sz;
 	sz = this->pbMain->GetSizeP();
-	NEW_CLASS(this->mainImg, Media::StaticImage(sz, 0, 32, Media::PF_B8G8R8A8, 0, &color, Media::ColorProfile::YUVT_BT601, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+	NEW_CLASS(this->mainImg, Media::StaticImage(sz, 0, 32, Media::PF_B8G8R8A8, 0, color, Media::ColorProfile::YUVT_BT601, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 	sz = this->pbSub->GetSizeP();
-	NEW_CLASS(this->subImg, Media::StaticImage(sz, 0, 32, Media::PF_B8G8R8A8, 0, &color, Media::ColorProfile::YUVT_BT601, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+	NEW_CLASS(this->subImg, Media::StaticImage(sz, 0, 32, Media::PF_B8G8R8A8, 0, color, Media::ColorProfile::YUVT_BT601, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 
 	this->GenMainImage();
 	this->GenSubImage();
@@ -1705,9 +1705,9 @@ void UtilUI::ColorDialog::OnMonitorChanged()
 		DEL_CLASS(this->mainImg);
 		DEL_CLASS(this->subImg);
 		sz = this->pbMain->GetSizeP();
-		NEW_CLASS(this->mainImg, Media::StaticImage(sz - Math::Coord2D<UOSInt>(2, 2), 0, 32, Media::PF_B8G8R8A8, 0, &color, Media::ColorProfile::YUVT_BT601, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+		NEW_CLASS(this->mainImg, Media::StaticImage(sz - Math::Coord2D<UOSInt>(2, 2), 0, 32, Media::PF_B8G8R8A8, 0, color, Media::ColorProfile::YUVT_BT601, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 		sz = this->pbSub->GetSizeP();
-		NEW_CLASS(this->subImg, Media::StaticImage(sz - Math::Coord2D<UOSInt>(2, 2), 0, 32, Media::PF_B8G8R8A8, 0, &color, Media::ColorProfile::YUVT_BT601, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+		NEW_CLASS(this->subImg, Media::StaticImage(sz - Math::Coord2D<UOSInt>(2, 2), 0, 32, Media::PF_B8G8R8A8, 0, color, Media::ColorProfile::YUVT_BT601, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 
 		this->GenMainImage();
 		this->GenSubImage();

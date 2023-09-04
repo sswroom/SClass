@@ -24,7 +24,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISFontForm::OnColorClicked(void *userObj, Mat
 	if (btn == UI::GUIControl::MBTN_LEFT)
 	{
 		Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
-		UtilUI::ColorDialog dlg(0, me->ui, me->core->GetColorMgr(), me->core->GetDrawEngine(), UtilUI::ColorDialog::CCT_PHOTO, &color, me->core->GetMonitorMgr());
+		UtilUI::ColorDialog dlg(0, me->ui, me->core->GetColorMgr(), me->core->GetDrawEngine(), UtilUI::ColorDialog::CCT_PHOTO, color, me->core->GetMonitorMgr());
 		dlg.SetColor32(me->fontColor);
 		if (dlg.ShowDialog(me) == UI::GUIForm::DR_OK)
 		{
@@ -63,13 +63,16 @@ void SSWR::AVIRead::AVIRGISFontForm::UpdateFontPreview()
 {
 	SDEL_CLASS(this->previewImage);
 	Math::Size2D<UOSInt> sz = this->pbPreview->GetSizeP();
-	Media::DrawImage *dimg = this->eng->CreateImage32(sz, Media::AT_NO_ALPHA);
-	dimg->SetHDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
-	dimg->SetVDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
-	this->core->GenFontPreview(dimg, this->eng, this->fontName->ToCString(), this->fontSizePt, this->fontColor, this->colorConv);
-	this->previewImage = dimg->ToStaticImage();
-	this->eng->DeleteImage(dimg);
-	this->pbPreview->SetImage(this->previewImage);
+	NotNullPtr<Media::DrawImage> dimg;
+	if (dimg.Set(this->eng->CreateImage32(sz, Media::AT_NO_ALPHA)))
+	{
+		dimg->SetHDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
+		dimg->SetVDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
+		this->core->GenFontPreview(dimg, this->eng, this->fontName->ToCString(), this->fontSizePt, this->fontColor, this->colorConv);
+		this->previewImage = dimg->ToStaticImage();
+		this->eng->DeleteImage(dimg.Ptr());
+		this->pbPreview->SetImage(this->previewImage);
+	}
 }
 
 SSWR::AVIRead::AVIRGISFontForm::AVIRGISFontForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<Media::DrawEngine> eng, Text::String *fontName, Double fontSizePt, UInt32 fontColor) : UI::GUIForm(parent, 480, 306, ui)
@@ -81,7 +84,7 @@ SSWR::AVIRead::AVIRGISFontForm::AVIRGISFontForm(UI::GUIClientControl *parent, No
 	this->colorSess->AddHandler(this);
 	Media::ColorProfile srcProfile(Media::ColorProfile::CPT_SRGB);
 	Media::ColorProfile destProfile(Media::ColorProfile::CPT_PDISPLAY);
-	NEW_CLASS(this->colorConv, Media::ColorConv(&srcProfile, &destProfile, this->colorSess));
+	NEW_CLASS(this->colorConv, Media::ColorConv(srcProfile, destProfile, this->colorSess));
 	if (fontName)
 	{
 		this->fontName = fontName->Clone();

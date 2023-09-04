@@ -117,7 +117,7 @@ namespace Media
 		virtual UOSInt GetHeight() const;
 		virtual Math::Size2D<UOSInt> GetSize() const;
 		virtual UInt32 GetBitCount() const;
-		virtual ColorProfile *GetColorProfile() const;
+		virtual NotNullPtr<const ColorProfile> GetColorProfile() const;
 		virtual void SetColorProfile(const ColorProfile *color);
 		virtual Media::AlphaType GetAlphaType() const;
 		virtual void SetAlphaType(Media::AlphaType atype);

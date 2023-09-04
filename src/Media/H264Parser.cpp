@@ -175,25 +175,25 @@ Bool Media::H264Parser::ParseVUIParameters(IO::BitReaderMSB *reader, Media::Fram
 			{
 			default:
 			case 2:
-				info->color->GetPrimaries()->SetColorType(Media::ColorProfile::CT_VUNKNOWN);
+				info->color.GetPrimaries()->SetColorType(Media::ColorProfile::CT_VUNKNOWN);
 				break;
 			case 1:
-				info->color->GetPrimaries()->SetColorType(Media::ColorProfile::CT_SRGB);
+				info->color.GetPrimaries()->SetColorType(Media::ColorProfile::CT_SRGB);
 				break;
 			case 4:
-				info->color->GetPrimaries()->SetColorType(Media::ColorProfile::CT_BT470M);
+				info->color.GetPrimaries()->SetColorType(Media::ColorProfile::CT_BT470M);
 				break;
 			case 5:
-				info->color->GetPrimaries()->SetColorType(Media::ColorProfile::CT_BT470BG);
+				info->color.GetPrimaries()->SetColorType(Media::ColorProfile::CT_BT470BG);
 				break;
 			case 6:
-				info->color->GetPrimaries()->SetColorType(Media::ColorProfile::CT_SMPTE170M);
+				info->color.GetPrimaries()->SetColorType(Media::ColorProfile::CT_SMPTE170M);
 				break;
 			case 7:
-				info->color->GetPrimaries()->SetColorType(Media::ColorProfile::CT_SMPTE240M);
+				info->color.GetPrimaries()->SetColorType(Media::ColorProfile::CT_SMPTE240M);
 				break;
 			case 8:
-				info->color->GetPrimaries()->SetColorType(Media::ColorProfile::CT_GENERIC_FILM);
+				info->color.GetPrimaries()->SetColorType(Media::ColorProfile::CT_GENERIC_FILM);
 				break;
 			}
 			Bool skip = false;
@@ -244,9 +244,9 @@ Bool Media::H264Parser::ParseVUIParameters(IO::BitReaderMSB *reader, Media::Fram
 			}
 			if (!skip)
 			{
-				info->color->GetRTranParam()->Set(tranType, tranGamma);
-				info->color->GetGTranParam()->Set(tranType, tranGamma);
-				info->color->GetBTranParam()->Set(tranType, tranGamma);
+				info->color.GetRTranParam()->Set(tranType, tranGamma);
+				info->color.GetGTranParam()->Set(tranType, tranGamma);
+				info->color.GetBTranParam()->Set(tranType, tranGamma);
 			}
 		}
 	}

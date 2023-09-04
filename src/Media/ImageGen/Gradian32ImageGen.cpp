@@ -17,7 +17,7 @@ Text::CString Media::ImageGen::Gradian32ImageGen::GetName()
 	return CSTR("Gradian Test 32-bit");
 }
 
-Media::Image *Media::ImageGen::Gradian32ImageGen::GenerateImage(Media::ColorProfile *colorProfile, Math::Size2D<UOSInt> size)
+Media::Image *Media::ImageGen::Gradian32ImageGen::GenerateImage(NotNullPtr<const Media::ColorProfile> colorProfile, Math::Size2D<UOSInt> size)
 {
 	Media::StaticImage *outImage;
 	UInt8 *imgPtr;

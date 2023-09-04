@@ -813,7 +813,7 @@ Double UI::GUIControl::GetDDPI()
 	return this->ddpi;
 }
 
-Media::DrawFont *UI::GUIControl::CreateDrawFont(Media::DrawImage *img)
+Media::DrawFont *UI::GUIControl::CreateDrawFont(NotNullPtr<Media::DrawImage> img)
 {
 	PangoFontDescription *f = (PangoFontDescription *)this->GetFont();
 	if (f == 0)

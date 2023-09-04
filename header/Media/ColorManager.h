@@ -61,7 +61,7 @@ namespace Media
 		void SetCGamma(Double newVal);
 		void SetMonProfileType(Media::ColorProfile::CommonProfileType newVal);
 		Bool SetMonProfileFile(NotNullPtr<Text::String> fileName);
-		void SetMonProfile(Media::ColorProfile *color);
+		void SetMonProfile(NotNullPtr<const Media::ColorProfile> color);
 		Text::String *GetMonProfileFile();
 		void SetMonLuminance(Double newVal);
 		Bool Get10BitColor();
@@ -99,8 +99,8 @@ namespace Media
 		Bool SaveDef();
 		void SetDefVProfile(Media::ColorProfile::CommonProfileType newVal);
 		void SetDefPProfile(Media::ColorProfile::CommonProfileType newVal);
-		Media::ColorProfile *GetDefVProfile();
-		Media::ColorProfile *GetDefPProfile();
+		NotNullPtr<Media::ColorProfile> GetDefVProfile();
+		NotNullPtr<Media::ColorProfile> GetDefPProfile();
 		Media::ColorProfile::CommonProfileType GetDefVProfileType();
 		Media::ColorProfile::CommonProfileType GetDefPProfileType();
 		void SetYUVType(Media::ColorProfile::YUVType newVal);
@@ -129,8 +129,8 @@ namespace Media
 		virtual void RemoveHandler(Media::IColorHandler *hdlr);
 		const Media::IColorHandler::YUVPARAM *GetYUVParam();
 		virtual const Media::IColorHandler::RGBPARAM2 *GetRGBParam();
-		virtual Media::ColorProfile *GetDefVProfile();
-		virtual Media::ColorProfile *GetDefPProfile();
+		virtual NotNullPtr<Media::ColorProfile> GetDefVProfile();
+		virtual NotNullPtr<Media::ColorProfile> GetDefPProfile();
 		Media::ColorProfile::YUVType GetDefYUVType();
 		Bool Get10BitColor();
 

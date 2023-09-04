@@ -65,7 +65,7 @@ IO::ParsedObject *Parser::FileParser::PCXParser::ParseFileHdr(NotNullPtr<IO::Str
 	bplp = bpl * ncp;
 //	return 0;
 
-	NEW_CLASS(outImg, Media::StaticImage(Math::Size2D<UOSInt>(imgWidth, imgHeight), 0, bpp, Media::PixelFormatGetDef(0, bpp), 0, 0, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+	NEW_CLASS(outImg, Media::StaticImage(Math::Size2D<UOSInt>(imgWidth, imgHeight), 0, bpp, Media::PixelFormatGetDef(0, bpp), 0, Media::ColorProfile(), Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 	if (outImg)
 	{
 		UInt8 *pBits = (UInt8*)outImg->data;

@@ -13,7 +13,7 @@ namespace Media
 		UInt8 *rgbTable;
 
 	public:
-		ColorConv(const Media::ColorProfile *srcColor, const Media::ColorProfile *destColor, Media::ColorManagerSess *colorSess);
+		ColorConv(NotNullPtr<const Media::ColorProfile> srcColor, NotNullPtr<const Media::ColorProfile> destColor, Media::ColorManagerSess *colorSess);
 		~ColorConv();
 
 		void RGBParamChanged(const Media::IColorHandler::RGBPARAM2 *rgbParam);

@@ -83,7 +83,7 @@ Bool Map::TileMapGenerator::GenerateDBFile(Int32 x, Int32 y, UInt32 scale, Map::
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	Map::MapConfig2TGen::DrawParam params;
-	Media::DrawImage *dimg2;
+	NotNullPtr<Media::DrawImage> dimg2;
 	Bool isLayerEmpty;
 	sptr = GenFileName(sbuff, x, y, scale, CSTR(".db"));
 
@@ -110,16 +110,22 @@ Bool Map::TileMapGenerator::GenerateDBFile(Int32 x, Int32 y, UInt32 scale, Map::
 	params.labelType = 0;
 	params.dbStream = 0;
 
-	dimg2 = geng->CreateImage32(Math::Size2D<UOSInt>(16, 16), Media::AT_NO_ALPHA);
-	dimg2->SetHDPI(96.0 * UOSInt2Double(this->osSize));
-	dimg2->SetVDPI(96.0 * UOSInt2Double(this->osSize));
-	mcfg->DrawMap(dimg2, &view, &isLayerEmpty, mapSch, resizer, CSTRP(sbuff, sptr), &params);
-	mutUsage.BeginUse();
-	this->dbGenList.RemoveAt((UOSInt)this->dbGenList.SortedIndexOf(id));
-	this->dbEvt.Set();
-	mutUsage.EndUse();
-	geng->DeleteImage(dimg2);
-	return true;
+	if (dimg2.Set(geng->CreateImage32(Math::Size2D<UOSInt>(16, 16), Media::AT_NO_ALPHA)))
+	{
+		dimg2->SetHDPI(96.0 * UOSInt2Double(this->osSize));
+		dimg2->SetVDPI(96.0 * UOSInt2Double(this->osSize));
+		mcfg->DrawMap(dimg2, &view, &isLayerEmpty, mapSch, resizer, CSTRP(sbuff, sptr), &params);
+		mutUsage.BeginUse();
+		this->dbGenList.RemoveAt((UOSInt)this->dbGenList.SortedIndexOf(id));
+		this->dbEvt.Set();
+		mutUsage.EndUse();
+		geng->DeleteImage(dimg2.Ptr());
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }
 
 Map::TileMapGenerator::TileMapGenerator(Map::MapConfig2TGen *mcfg, NotNullPtr<Media::DrawEngine> geng, const UTF8Char *tileDir, UOSInt osSize)
@@ -178,8 +184,8 @@ Bool Map::TileMapGenerator::GenerateTile(Int64 tileId, UInt32 scale, Map::MapSch
 	}
 	mstm.SeekFromBeginning(0);
 	
-	Media::DrawImage *dimg;
-	Media::DrawImage *dimg2;
+	NotNullPtr<Media::DrawImage> dimg;
+	NotNullPtr<Media::DrawImage> dimg2;
 	Bool isLayerEmpty;
 	Map::MapConfig2TGen::DrawParam params;
 	params.tileX = x;
@@ -190,32 +196,40 @@ Bool Map::TileMapGenerator::GenerateTile(Int64 tileId, UInt32 scale, Map::MapSch
 	Map::ScaledMapView view(Math::Size2DDbl(this->imgSize, this->imgSize), Math::Coord2DDbl(0, 0), scale, false);
 	InitMapView(&view, x, y, scale);
 
-	dimg = this->geng->CreateImage32(Math::Size2D<UOSInt>(this->imgSize, this->imgSize), Media::AT_NO_ALPHA);
-	if (this->osSize == 1)
+	if (dimg.Set(this->geng->CreateImage32(Math::Size2D<UOSInt>(this->imgSize, this->imgSize), Media::AT_NO_ALPHA)))
 	{
-		dimg->SetHDPI(96);
-		dimg->SetVDPI(96);
-		mcfg->DrawMap(dimg, &view, &isLayerEmpty, mapSch, resizer, CSTR_NULL, &params);
+		if (this->osSize == 1)
+		{
+			dimg->SetHDPI(96);
+			dimg->SetVDPI(96);
+			mcfg->DrawMap(dimg, &view, &isLayerEmpty, mapSch, resizer, CSTR_NULL, &params);
+		}
+		else
+		{
+			if (dimg2.Set(this->geng->CreateImage32(Math::Size2D<UOSInt>((this->imgSize * this->osSize), (this->imgSize * this->osSize)), Media::AT_NO_ALPHA)))
+			{
+				dimg2->SetHDPI(96.0 * UOSInt2Double(this->osSize));
+				dimg2->SetVDPI(96.0 * UOSInt2Double(this->osSize));
+				mcfg->DrawMap(dimg2, &view, &isLayerEmpty, mapSch, resizer, CSTR_NULL, &params);
+				
+				Bool revOrder;
+				UInt8 *imgPtr = dimg2->GetImgBits(&revOrder);
+				resizer->Resize(imgPtr, (Int32)(this->imgSize * 4 * this->osSize), (Int32)(this->imgSize * this->osSize), (Int32)(this->imgSize * this->osSize), 0, 0, dimg->GetImgBits(&revOrder), this->imgSize * 4, this->imgSize, this->imgSize);
+				geng->DeleteImage(dimg2.Ptr());
+			}
+		}
+
+		{
+			IO::FileStream dfs(CSTRP(sbuff2, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+			dimg->SavePng(dfs);
+			geng->DeleteImage(dimg.Ptr());
+		}
+		return true;
 	}
 	else
 	{
-		dimg2 = this->geng->CreateImage32(Math::Size2D<UOSInt>((this->imgSize * this->osSize), (this->imgSize * this->osSize)), Media::AT_NO_ALPHA);
-		dimg2->SetHDPI(96.0 * UOSInt2Double(this->osSize));
-		dimg2->SetVDPI(96.0 * UOSInt2Double(this->osSize));
-		mcfg->DrawMap(dimg2, &view, &isLayerEmpty, mapSch, resizer, CSTR_NULL, &params);
-		
-		Bool revOrder;
-		UInt8 *imgPtr = dimg2->GetImgBits(&revOrder);
-		resizer->Resize(imgPtr, (Int32)(this->imgSize * 4 * this->osSize), (Int32)(this->imgSize * this->osSize), (Int32)(this->imgSize * this->osSize), 0, 0, dimg->GetImgBits(&revOrder), this->imgSize * 4, this->imgSize, this->imgSize);
-		geng->DeleteImage(dimg2);
+		return false;
 	}
-
-	{
-		IO::FileStream dfs(CSTRP(sbuff2, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-		dimg->SavePng(dfs);
-		geng->DeleteImage(dimg);
-	}
-	return true;
 }
 
 Bool Map::TileMapGenerator::GenerateTileArea(Double lat1, Double lon1, Double lat2, Double lon2, UInt32 scale, Map::MapScheduler *mapSch)

@@ -62,40 +62,43 @@ void __stdcall SSWR::AVIRead::AVIRCOVID19Form::OnNewCasesSizeChanged(void *userO
 		return;
 	NotNullPtr<Media::DrawEngine> deng = me->core->GetDrawEngine();
 	Math::Size2D<UOSInt> sz = me->pbNewCases->GetSizeP();
-	Media::DrawImage *dimg = deng->CreateImage32(sz, Media::AT_NO_ALPHA);
-	SSWR::AVIRead::AVIRCOVID19Form::DailyRecord *record;
-	UOSInt i;
-	UOSInt j;
-	Int64 lastCount = 0;
-	Int32 *counts;
-	Int64 *dates;
-	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	NotNullPtr<Media::DrawImage> dimg;
+	if (dimg.Set(deng->CreateImage32(sz, Media::AT_NO_ALPHA)))
 	{
-		sptr = country->name->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("New Cases in ")));
-		Data::LineChart chart(CSTRP(sbuff, sptr));
-		chart.SetFontHeightPt(9.0);
-		chart.SetDateFormat(CSTR("yyyy-MM-dd"));
-		i = 0;
-		j = country->records->GetCount();
-		counts = MemAlloc(Int32, j);
-		dates = MemAlloc(Int64, j);
-		while (i < j)
+		SSWR::AVIRead::AVIRCOVID19Form::DailyRecord *record;
+		UOSInt i;
+		UOSInt j;
+		Int64 lastCount = 0;
+		Int32 *counts;
+		Int64 *dates;
+		UTF8Char sbuff[256];
+		UTF8Char *sptr;
 		{
-			record = country->records->GetItem(i);
-			counts[i] = (Int32)(record->totalCases - lastCount);
-			lastCount = record->totalCases;
-			dates[i] = record->timeTicks;
-			i++;
+			sptr = country->name->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("New Cases in ")));
+			Data::LineChart chart(CSTRP(sbuff, sptr));
+			chart.SetFontHeightPt(9.0);
+			chart.SetDateFormat(CSTR("yyyy-MM-dd"));
+			i = 0;
+			j = country->records->GetCount();
+			counts = MemAlloc(Int32, j);
+			dates = MemAlloc(Int64, j);
+			while (i < j)
+			{
+				record = country->records->GetItem(i);
+				counts[i] = (Int32)(record->totalCases - lastCount);
+				lastCount = record->totalCases;
+				dates[i] = record->timeTicks;
+				i++;
+			}
+			chart.AddXDataDate(dates, j);
+			chart.AddYData(CSTR("New Cases"), counts, j, 0xffff0000, Data::LineChart::LS_LINE);
+			chart.Plot(dimg, 0, 0, UOSInt2Double(sz.x), UOSInt2Double(sz.y));
+			MemFree(counts);
+			MemFree(dates);
 		}
-		chart.AddXDataDate(dates, j);
-		chart.AddYData(CSTR("New Cases"), counts, j, 0xffff0000, Data::LineChart::LS_LINE);
-		chart.Plot(dimg, 0, 0, UOSInt2Double(sz.x), UOSInt2Double(sz.y));
-		MemFree(counts);
-		MemFree(dates);
+		me->pbNewCases->SetImageDImg(dimg.Ptr());
+		deng->DeleteImage(dimg.Ptr());
 	}
-	me->pbNewCases->SetImageDImg(dimg);
-	deng->DeleteImage(dimg);
 }
 
 void SSWR::AVIRead::AVIRCOVID19Form::ClearRecords()

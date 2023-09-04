@@ -1004,86 +1004,86 @@ Bool Media::Decoder::FFMPEGDecoder::GetVideoInfo(Media::FrameInfo *info, UInt32 
 	case AVCOL_TRC_UNSPECIFIED:
 	case AVCOL_TRC_RESERVED:
 	default:
-		info->color->rtransfer.Set(Media::CS::TRANT_VUNKNOWN, 2.2);
-		info->color->gtransfer.Set(Media::CS::TRANT_VUNKNOWN, 2.2);
-		info->color->btransfer.Set(Media::CS::TRANT_VUNKNOWN, 2.2);
+		info->color.rtransfer.Set(Media::CS::TRANT_VUNKNOWN, 2.2);
+		info->color.gtransfer.Set(Media::CS::TRANT_VUNKNOWN, 2.2);
+		info->color.btransfer.Set(Media::CS::TRANT_VUNKNOWN, 2.2);
 		break;
 	case AVCOL_TRC_BT709:
-		info->color->rtransfer.Set(Media::CS::TRANT_BT709, 2.2);
-		info->color->gtransfer.Set(Media::CS::TRANT_BT709, 2.2);
-		info->color->btransfer.Set(Media::CS::TRANT_BT709, 2.2);
+		info->color.rtransfer.Set(Media::CS::TRANT_BT709, 2.2);
+		info->color.gtransfer.Set(Media::CS::TRANT_BT709, 2.2);
+		info->color.btransfer.Set(Media::CS::TRANT_BT709, 2.2);
 		break;
 	case AVCOL_TRC_GAMMA22:
-		info->color->rtransfer.Set(Media::CS::TRANT_GAMMA, 2.2);
-		info->color->gtransfer.Set(Media::CS::TRANT_GAMMA, 2.2);
-		info->color->btransfer.Set(Media::CS::TRANT_GAMMA, 2.2);
+		info->color.rtransfer.Set(Media::CS::TRANT_GAMMA, 2.2);
+		info->color.gtransfer.Set(Media::CS::TRANT_GAMMA, 2.2);
+		info->color.btransfer.Set(Media::CS::TRANT_GAMMA, 2.2);
 		break;
 	case AVCOL_TRC_GAMMA28:
-		info->color->rtransfer.Set(Media::CS::TRANT_GAMMA, 2.8);
-		info->color->gtransfer.Set(Media::CS::TRANT_GAMMA, 2.8);
-		info->color->btransfer.Set(Media::CS::TRANT_GAMMA, 2.8);
+		info->color.rtransfer.Set(Media::CS::TRANT_GAMMA, 2.8);
+		info->color.gtransfer.Set(Media::CS::TRANT_GAMMA, 2.8);
+		info->color.btransfer.Set(Media::CS::TRANT_GAMMA, 2.8);
 		break;
 	case AVCOL_TRC_SMPTE170M:
-		info->color->rtransfer.Set(Media::CS::TRANT_BT1361, 2.2);
-		info->color->gtransfer.Set(Media::CS::TRANT_BT1361, 2.2);
-		info->color->btransfer.Set(Media::CS::TRANT_BT1361, 2.2);
+		info->color.rtransfer.Set(Media::CS::TRANT_BT1361, 2.2);
+		info->color.gtransfer.Set(Media::CS::TRANT_BT1361, 2.2);
+		info->color.btransfer.Set(Media::CS::TRANT_BT1361, 2.2);
 		break;
 	case AVCOL_TRC_SMPTE240M:
-		info->color->rtransfer.Set(Media::CS::TRANT_SMPTE240, 2.2);
-		info->color->gtransfer.Set(Media::CS::TRANT_SMPTE240, 2.2);
-		info->color->btransfer.Set(Media::CS::TRANT_SMPTE240, 2.2);
+		info->color.rtransfer.Set(Media::CS::TRANT_SMPTE240, 2.2);
+		info->color.gtransfer.Set(Media::CS::TRANT_SMPTE240, 2.2);
+		info->color.btransfer.Set(Media::CS::TRANT_SMPTE240, 2.2);
 		break;
 	case AVCOL_TRC_LINEAR:
-		info->color->rtransfer.Set(Media::CS::TRANT_LINEAR, 2.2);
-		info->color->gtransfer.Set(Media::CS::TRANT_LINEAR, 2.2);
-		info->color->btransfer.Set(Media::CS::TRANT_LINEAR, 2.2);
+		info->color.rtransfer.Set(Media::CS::TRANT_LINEAR, 2.2);
+		info->color.gtransfer.Set(Media::CS::TRANT_LINEAR, 2.2);
+		info->color.btransfer.Set(Media::CS::TRANT_LINEAR, 2.2);
 		break;
 	case AVCOL_TRC_LOG:
-		info->color->rtransfer.Set(Media::CS::TRANT_LOG100, 2.2);
-		info->color->gtransfer.Set(Media::CS::TRANT_LOG100, 2.2);
-		info->color->btransfer.Set(Media::CS::TRANT_LOG100, 2.2);
+		info->color.rtransfer.Set(Media::CS::TRANT_LOG100, 2.2);
+		info->color.gtransfer.Set(Media::CS::TRANT_LOG100, 2.2);
+		info->color.btransfer.Set(Media::CS::TRANT_LOG100, 2.2);
 		break;
 	case AVCOL_TRC_LOG_SQRT:
-		info->color->rtransfer.Set(Media::CS::TRANT_LOGSQRT10, 2.2);
-		info->color->gtransfer.Set(Media::CS::TRANT_LOGSQRT10, 2.2);
-		info->color->btransfer.Set(Media::CS::TRANT_LOGSQRT10, 2.2);
+		info->color.rtransfer.Set(Media::CS::TRANT_LOGSQRT10, 2.2);
+		info->color.gtransfer.Set(Media::CS::TRANT_LOGSQRT10, 2.2);
+		info->color.btransfer.Set(Media::CS::TRANT_LOGSQRT10, 2.2);
 		break;
 	case AVCOL_TRC_BT1361_ECG:
-		info->color->rtransfer.Set(Media::CS::TRANT_BT1361, 2.2);
-		info->color->gtransfer.Set(Media::CS::TRANT_BT1361, 2.2);
-		info->color->btransfer.Set(Media::CS::TRANT_BT1361, 2.2);
+		info->color.rtransfer.Set(Media::CS::TRANT_BT1361, 2.2);
+		info->color.gtransfer.Set(Media::CS::TRANT_BT1361, 2.2);
+		info->color.btransfer.Set(Media::CS::TRANT_BT1361, 2.2);
 		break;
 	case AVCOL_TRC_IEC61966_2_4:
 	case AVCOL_TRC_IEC61966_2_1:
-		info->color->rtransfer.Set(Media::CS::TRANT_sRGB, 2.2);
-		info->color->gtransfer.Set(Media::CS::TRANT_sRGB, 2.2);
-		info->color->btransfer.Set(Media::CS::TRANT_sRGB, 2.2);
+		info->color.rtransfer.Set(Media::CS::TRANT_sRGB, 2.2);
+		info->color.gtransfer.Set(Media::CS::TRANT_sRGB, 2.2);
+		info->color.btransfer.Set(Media::CS::TRANT_sRGB, 2.2);
 		break;
 	case AVCOL_TRC_BT2020_10:
 	case AVCOL_TRC_BT2020_12:
-		info->color->rtransfer.Set(Media::CS::TRANT_BT709, 2.2);
-		info->color->gtransfer.Set(Media::CS::TRANT_BT709, 2.2);
-		info->color->btransfer.Set(Media::CS::TRANT_BT709, 2.2);
+		info->color.rtransfer.Set(Media::CS::TRANT_BT709, 2.2);
+		info->color.gtransfer.Set(Media::CS::TRANT_BT709, 2.2);
+		info->color.btransfer.Set(Media::CS::TRANT_BT709, 2.2);
 		break;
 #if VERSION_FROM(56, 0, 0)
 	case AVCOL_TRC_SMPTE2084: //BT2100
-		info->color->rtransfer.Set(Media::CS::TRANT_BT2100, 2.2);
-		info->color->gtransfer.Set(Media::CS::TRANT_BT2100, 2.2);
-		info->color->btransfer.Set(Media::CS::TRANT_BT2100, 2.2);
+		info->color.rtransfer.Set(Media::CS::TRANT_BT2100, 2.2);
+		info->color.gtransfer.Set(Media::CS::TRANT_BT2100, 2.2);
+		info->color.btransfer.Set(Media::CS::TRANT_BT2100, 2.2);
 		break;
 #endif
 #if VERSION_FROM(56, 0, 0)
 	case AVCOL_TRC_ARIB_STD_B67:
-		info->color->rtransfer.Set(Media::CS::TRANT_HLG, 2.2);
-		info->color->gtransfer.Set(Media::CS::TRANT_HLG, 2.2);
-		info->color->btransfer.Set(Media::CS::TRANT_HLG, 2.2);
+		info->color.rtransfer.Set(Media::CS::TRANT_HLG, 2.2);
+		info->color.gtransfer.Set(Media::CS::TRANT_HLG, 2.2);
+		info->color.btransfer.Set(Media::CS::TRANT_HLG, 2.2);
 		break;
 	case AVCOL_TRC_SMPTE428:
 #endif
 	case AVCOL_TRC_NB:
-		info->color->rtransfer.Set(Media::CS::TRANT_VUNKNOWN, 2.2);
-		info->color->gtransfer.Set(Media::CS::TRANT_VUNKNOWN, 2.2);
-		info->color->btransfer.Set(Media::CS::TRANT_VUNKNOWN, 2.2);
+		info->color.rtransfer.Set(Media::CS::TRANT_VUNKNOWN, 2.2);
+		info->color.gtransfer.Set(Media::CS::TRANT_VUNKNOWN, 2.2);
+		info->color.btransfer.Set(Media::CS::TRANT_VUNKNOWN, 2.2);
 		break;
 	}
 	switch (data->colorPrimaries)
@@ -1092,47 +1092,47 @@ Bool Media::Decoder::FFMPEGDecoder::GetVideoInfo(Media::FrameInfo *info, UInt32 
 	case AVCOL_PRI_UNSPECIFIED:
 	case AVCOL_PRI_RESERVED:
 	case AVCOL_PRI_NB:
-		info->color->primaries.SetColorType(Media::ColorProfile::CT_BT709);
+		info->color.primaries.SetColorType(Media::ColorProfile::CT_BT709);
 		break;
 	case AVCOL_PRI_BT709:
-		info->color->primaries.SetColorType(Media::ColorProfile::CT_BT709);
+		info->color.primaries.SetColorType(Media::ColorProfile::CT_BT709);
 		break;
 	case AVCOL_PRI_BT470M:
-		info->color->primaries.SetColorType(Media::ColorProfile::CT_BT470M);
+		info->color.primaries.SetColorType(Media::ColorProfile::CT_BT470M);
 		break;
 	case AVCOL_PRI_BT470BG:
-		info->color->primaries.SetColorType(Media::ColorProfile::CT_BT470BG);
+		info->color.primaries.SetColorType(Media::ColorProfile::CT_BT470BG);
 		break;
 	case AVCOL_PRI_SMPTE170M:
-		info->color->primaries.SetColorType(Media::ColorProfile::CT_SMPTE170M);
+		info->color.primaries.SetColorType(Media::ColorProfile::CT_SMPTE170M);
 		break;
 	case AVCOL_PRI_SMPTE240M:
-		info->color->primaries.SetColorType(Media::ColorProfile::CT_SMPTE240M);
+		info->color.primaries.SetColorType(Media::ColorProfile::CT_SMPTE240M);
 		break;
 	case AVCOL_PRI_FILM:
-		info->color->primaries.SetColorType(Media::ColorProfile::CT_GENERIC_FILM);
+		info->color.primaries.SetColorType(Media::ColorProfile::CT_GENERIC_FILM);
 		break;
 	case AVCOL_PRI_BT2020:
-		info->color->primaries.SetColorType(Media::ColorProfile::CT_BT2020);
+		info->color.primaries.SetColorType(Media::ColorProfile::CT_BT2020);
 		break;
 #if VERSION_FROM(56, 0, 0)
 	case AVCOL_PRI_SMPTE428:
 #endif
-		info->color->primaries.SetColorType(Media::ColorProfile::CT_VUNKNOWN);
+		info->color.primaries.SetColorType(Media::ColorProfile::CT_VUNKNOWN);
 		break;
 #if VERSION_FROM(57, 22, 2)
 	case AVCOL_PRI_SMPTE431:
-		info->color->primaries.SetColorType(Media::ColorProfile::CT_DCI_P3);
+		info->color.primaries.SetColorType(Media::ColorProfile::CT_DCI_P3);
 		break;
 	case AVCOL_PRI_SMPTE432:
-		info->color->primaries.SetColorType(Media::ColorProfile::CT_DCI_P3);
+		info->color.primaries.SetColorType(Media::ColorProfile::CT_DCI_P3);
 		break;
 #endif
 #if VERSION_FROM(56, 0, 0)
 	case AVCOL_PRI_JEDEC_P22:
 #endif
 	default:
-		info->color->primaries.SetColorType(Media::ColorProfile::CT_VUNKNOWN);
+		info->color.primaries.SetColorType(Media::ColorProfile::CT_VUNKNOWN);
 		break;
 	}
 	*maxFrameSize = info->byteSize;

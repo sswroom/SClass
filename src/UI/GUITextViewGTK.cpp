@@ -231,21 +231,22 @@ void UI::GUITextView::UpdateScrollBar()
 	}
 
 	Math::Size2DDbl sz;
-	if (this->drawBuff == 0)
+	NotNullPtr<Media::DrawImage> drawBuff;
+	if (!drawBuff.Set(this->drawBuff))
 	{
 		sz.y = 12;
 	}
 	else
 	{
-		Media::DrawFont *fnt = this->CreateDrawFont(this->drawBuff);
+		Media::DrawFont *fnt = this->CreateDrawFont(drawBuff);
 		if (fnt == 0)
 		{
 			sz.y = 12;
 		}
 		else
 		{
-			sz = this->drawBuff->GetTextSize(fnt, CSTR("Test"));
-			this->drawBuff->DelFont(fnt);
+			sz = drawBuff->GetTextSize(fnt, CSTR("Test"));
+			drawBuff->DelFont(fnt);
 		}
 	}
 	Math::Size2D<UOSInt> usz = this->GetSizeP();
@@ -352,73 +353,82 @@ void UI::GUITextView::SetScrollVRange(UOSInt min, UOSInt max)
 
 UInt32 UI::GUITextView::GetCharCntAtWidth(WChar *str, UOSInt strLen, UOSInt pxWidth)
 {
-	Double pxLeft = UOSInt2Double(pxWidth);
-	UTF8Char sbuff[7];
-	UTF32Char u32c;
-	const UTF8Char *currPtr;
-	const UTF8Char *nextPtr;
-
-	GdkWindow* window = gtk_widget_get_window((GtkWidget*)this->hwnd);  
-	cairo_region_t *region = cairo_region_create();
-	GdkDrawingContext *drawing = gdk_window_begin_draw_frame(window, region);
-	cairo_t *cr = gdk_drawing_context_get_cairo_context(drawing);
-	WChar c;
-	Media::DrawFont *fnt = this->CreateDrawFont(this->drawBuff);
-	c = str[strLen];
-	str[strLen] = 0;
-	const UTF8Char *csptr = Text::StrToUTF8New(str);
-	str[strLen] = c;
-	((Media::GTKDrawFont*)fnt)->Init(cr);
-	cairo_text_extents_t extents;
-
-	currPtr = csptr;
-	while (true)
+	NotNullPtr<Media::DrawImage> drawBuff;
+	if (drawBuff.Set(this->drawBuff))
 	{
-		nextPtr = Text::StrReadChar(currPtr, &u32c);
-		if (u32c == 0)
+		Double pxLeft = UOSInt2Double(pxWidth);
+		UTF8Char sbuff[7];
+		UTF32Char u32c;
+		const UTF8Char *currPtr;
+		const UTF8Char *nextPtr;
+
+		GdkWindow* window = gtk_widget_get_window((GtkWidget*)this->hwnd);  
+		cairo_region_t *region = cairo_region_create();
+		GdkDrawingContext *drawing = gdk_window_begin_draw_frame(window, region);
+		cairo_t *cr = gdk_drawing_context_get_cairo_context(drawing);
+		WChar c;
+		Media::DrawFont *fnt = this->CreateDrawFont(drawBuff);
+		c = str[strLen];
+		str[strLen] = 0;
+		const UTF8Char *csptr = Text::StrToUTF8New(str);
+		str[strLen] = c;
+		((Media::GTKDrawFont*)fnt)->Init(cr);
+		cairo_text_extents_t extents;
+
+		currPtr = csptr;
+		while (true)
 		{
-			break;
+			nextPtr = Text::StrReadChar(currPtr, &u32c);
+			if (u32c == 0)
+			{
+				break;
+			}
+			Text::StrWriteChar(sbuff, u32c)[0] = 0;
+			
+			cairo_text_extents(cr, (const Char*)sbuff, &extents);
+			if (extents.width > pxLeft)
+			{
+				break;
+			}
+			pxLeft -= extents.width;
+			currPtr = nextPtr;
+			if (pxLeft <= 0)
+			{
+				break;
+			}
 		}
-		Text::StrWriteChar(sbuff, u32c)[0] = 0;
-		
-		cairo_text_extents(cr, (const Char*)sbuff, &extents);
-		if (extents.width > pxLeft)
-		{
-			break;
-		}
-		pxLeft -= extents.width;
-		currPtr = nextPtr;
-		if (pxLeft <= 0)
-		{
-			break;
-		}
+		UOSInt ret = Text::StrUTF8_WCharCntC(csptr, (UOSInt)(currPtr - csptr));
+		Text::StrDelNew(csptr);
+		drawBuff->DelFont(fnt);
+		gdk_window_end_draw_frame(window, drawing);
+		cairo_region_destroy(region);
+		return (UInt32)ret;
 	}
-	UOSInt ret = Text::StrUTF8_WCharCntC(csptr, (UOSInt)(currPtr - csptr));
-	Text::StrDelNew(csptr);
-	this->drawBuff->DelFont(fnt);
-	gdk_window_end_draw_frame(window, drawing);
-	cairo_region_destroy(region);
-	return (UInt32)ret;
+	else
+	{
+		return 0;
+	}
 }
 
 void UI::GUITextView::GetDrawSize(WChar *str, UOSInt strLen, UOSInt *width, UOSInt *height)
 {
-	if (this->drawBuff)
+	NotNullPtr<Media::DrawImage> drawBuff;
+	if (drawBuff.Set(this->drawBuff))
 	{
 		WChar c;
 		Math::Size2DDbl sz;
-		Media::DrawFont *fnt = this->CreateDrawFont(this->drawBuff);
+		Media::DrawFont *fnt = this->CreateDrawFont(drawBuff);
 		c = str[strLen];
 		str[strLen] = 0;
 		NotNullPtr<Text::String> s = Text::String::NewNotNull(str);
 		str[strLen] = c;
-		sz = this->drawBuff->GetTextSize(fnt, s->ToCString());
+		sz = drawBuff->GetTextSize(fnt, s->ToCString());
 		s->Release();
 		*width = (UOSInt)Double2OSInt(sz.x);
 		*height = (UOSInt)Double2OSInt(sz.y);
-		this->drawBuff->DelFont(fnt);
+		drawBuff->DelFont(fnt);
 	}
-	else
+/*	else
 	{
 		GdkWindow* window = gtk_widget_get_window((GtkWidget*)this->hwnd);  
 		cairo_region_t *region = cairo_region_create();
@@ -439,7 +449,7 @@ void UI::GUITextView::GetDrawSize(WChar *str, UOSInt strLen, UOSInt *width, UOSI
 		this->drawBuff->DelFont(fnt);
 		gdk_window_end_draw_frame(window, drawing);
 		cairo_region_destroy(region);
-	}
+	}*/
 }
 
 void UI::GUITextView::SetCaretPos(OSInt scnX, OSInt scnY)
@@ -757,12 +767,12 @@ void UI::GUITextView::OnDraw(void *cr)
 		hasHScr = true;
 		drawHeight -= clsData->scrSize;
 	}
-	Media::DrawImage *dimg = ((Media::GTKDrawEngine*)this->deng.Ptr())->CreateImageScn(cr, Math::Coord2D<OSInt>(0, 0), Math::Coord2D<OSInt>((OSInt)drawWidth, (OSInt)drawHeight));
+	NotNullPtr<Media::DrawImage> dimg = ((Media::GTKDrawEngine*)this->deng.Ptr())->CreateImageScn(cr, Math::Coord2D<OSInt>(0, 0), Math::Coord2D<OSInt>((OSInt)drawWidth, (OSInt)drawHeight));
 	this->clsData->scrSize = (UOSInt)Double2OSInt(8.0 * this->GetHDPI() / this->GetDDPI());
 	dimg->SetHDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
 	dimg->SetVDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
 	this->DrawImage(dimg);
-	this->deng->DeleteImage(dimg);
+	this->deng->DeleteImage(dimg.Ptr());
 
 	if (hasVScr)
 	{
@@ -781,7 +791,7 @@ void UI::GUITextView::OnDraw(void *cr)
 		UOSInt range = clsData->scrVMax - clsData->scrVMin - clsData->scrVPage;
 		dimg->DrawRect(Math::Coord2DDbl(0, UOSInt2Double((drawHeight - btnSize) * (clsData->scrVPos - clsData->scrVMin) / range)), Math::Size2DDbl(UOSInt2Double(clsData->scrSize), UOSInt2Double(btnSize)), 0, b);
 		dimg->DelBrush(b);
-		this->deng->DeleteImage(dimg);
+		this->deng->DeleteImage(dimg.Ptr());
 	}
 	if (hasHScr)
 	{
@@ -804,7 +814,7 @@ void UI::GUITextView::OnDraw(void *cr)
 		}
 		dimg->DrawRect(Math::Coord2DDbl(UOSInt2Double((drawWidth - btnSize) * (clsData->scrHPos - clsData->scrHMin) / range), 0), Math::Size2DDbl(UOSInt2Double(btnSize), UOSInt2Double(clsData->scrSize)), 0, b);
 		dimg->DelBrush(b);
-		this->deng->DeleteImage(dimg);
+		this->deng->DeleteImage(dimg.Ptr());
 	}
 }
 

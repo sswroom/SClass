@@ -18,7 +18,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		buff = MemAlloc(UInt8, (UOSInt)flen + 1);
 		fs.Read(Data::ByteArray(buff, (UOSInt)flen));
 		buff[flen] = 0;
-		Text::JSONBase *obj = Text::JSONBase::ParseJSONStr(Text::CString(buff, (UOSInt)flen));
+		Text::JSONBase *obj = Text::JSONBase::ParseJSONStr(Text::CStringNN(buff, (UOSInt)flen));
 		if (obj)
 		{
 			IO::ConsoleWriter console;

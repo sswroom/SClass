@@ -21,7 +21,7 @@ void UI::DObj::ImageDObjHandler::DrawBkg(Media::DrawImage *dimg)
 			Media::StaticImage *simg = this->bmpBkg->ToStaticImage();
 			Media::ColorProfile srgb(Media::ColorProfile::CPT_SRGB);
 			Media::ColorProfile dispProfile(Media::ColorProfile::CPT_PDISPLAY);
-			Media::Resizer::LanczosResizer8_C8 resizer(4, 3, &srgb, &dispProfile, colorSess, Media::AlphaType::AT_NO_ALPHA);
+			Media::Resizer::LanczosResizer8_C8 resizer(4, 3, srgb, dispProfile, colorSess, Media::AlphaType::AT_NO_ALPHA);
 			resizer.SetTargetSize(scnSize);
 			resizer.SetResizeAspectRatio(Media::IImgResizer::RAR_KEEPAR);
 			Media::StaticImage *srimg = resizer.ProcessToNew(simg);
@@ -29,7 +29,11 @@ void UI::DObj::ImageDObjHandler::DrawBkg(Media::DrawImage *dimg)
 			this->bmpBuff = this->deng->ConvImage(srimg);
 			DEL_CLASS(srimg);
 		}
-		dimg->DrawImagePt(this->bmpBuff, Math::Coord2DDbl(0, 0));
+		NotNullPtr<Media::DrawImage> bmpBuff;
+		if (bmpBuff.Set(this->bmpBuff))
+		{
+			dimg->DrawImagePt(bmpBuff, Math::Coord2DDbl(0, 0));
+		}
 	}
 	else
 	{

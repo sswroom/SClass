@@ -205,7 +205,7 @@ Bool Media::V4LVideoCapture::GetVideoInfo(Media::FrameInfo *info, UInt32 *frameR
 	case V4L2_COLORSPACE_JPEG:
 	case V4L2_COLORSPACE_SRGB:
 	default:
-		info->color->SetCommonProfile(Media::ColorProfile::CPT_BT709);
+		info->color.SetCommonProfile(Media::ColorProfile::CPT_BT709);
 		break;
 	}
 	info->yuvType = Media::ColorProfile::YUVT_BT601;
@@ -331,7 +331,7 @@ UOSInt Media::V4LVideoCapture::GetSupportedFormats(VideoFormat *fmtArr, UOSInt m
 				fmtArr[ret].info.vdpi = 72;
 				fmtArr[ret].info.ftype = Media::FT_NON_INTERLACE;
 				fmtArr[ret].info.atype = Media::AT_NO_ALPHA;
-				fmtArr[ret].info.color->SetCommonProfile(Media::ColorProfile::CPT_BT709);
+				fmtArr[ret].info.color.SetCommonProfile(Media::ColorProfile::CPT_BT709);
 				fmtArr[ret].info.yuvType = Media::ColorProfile::YUVT_BT601;
 				fmtArr[ret].info.ycOfst = Media::YCOFST_C_CENTER_LEFT;
 				fmtArr[ret].frameRateNorm = frmival.discrete.denominator;

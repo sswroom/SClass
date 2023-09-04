@@ -16,7 +16,7 @@ UI::GUIPictureList::GUIPictureList(NotNullPtr<UI::GUICore> ui, UI::GUIClientCont
 	this->selectedIndex = INVALID_INDEX;
 
 	Media::ColorProfile rgbColor(Media::ColorProfile::CPT_SRGB);
-	NEW_CLASS(this->resizer, Media::Resizer::LanczosResizer8_C8(4, 3, &rgbColor, &rgbColor, 0, Media::AT_NO_ALPHA));
+	NEW_CLASS(this->resizer, Media::Resizer::LanczosResizer8_C8(4, 3, rgbColor, rgbColor, 0, Media::AT_NO_ALPHA));
 	this->resizer->SetResizeAspectRatio(Media::IImgResizer::RAR_SQUAREPIXEL);
 	this->resizer->SetTargetSize(iconSize);
 }
@@ -27,7 +27,7 @@ UI::GUIPictureList::~GUIPictureList()
 	DEL_CLASS(this->resizer);
 }
 
-void UI::GUIPictureList::OnDraw(Media::DrawImage *img)
+void UI::GUIPictureList::OnDraw(NotNullPtr<Media::DrawImage> img)
 {
 	UOSInt w = img->GetWidth();
 	UOSInt h = img->GetHeight();
@@ -39,7 +39,7 @@ void UI::GUIPictureList::OnDraw(Media::DrawImage *img)
 	OSInt x;
 	OSInt y;
 	UOSInt iconPerRow;
-	Media::DrawImage *gimg;
+	NotNullPtr<Media::DrawImage> gimg;
 	this->ClearBackground(img);
 
 	if (w <= this->iconSize.x + ICONPADDING)
@@ -57,12 +57,14 @@ void UI::GUIPictureList::OnDraw(Media::DrawImage *img)
 					img->DrawRect(Math::Coord2DDbl(0, OSInt2Double(ofst)), Math::Size2DDbl(UOSInt2Double(w), UOSInt2Double(this->iconSize.y + ICONPADDING)), 0, b);
 					img->DelBrush(b);
 				}
-				gimg = this->imgList.GetItem(i);
-				x = (OSInt)(w - gimg->GetWidth()) >> 1;
-				y = (OSInt)((this->iconSize.y + ICONPADDING - gimg->GetHeight()) >> 1) + ofst;
-				gimg->SetHDPI(img->GetHDPI());
-				gimg->SetVDPI(img->GetVDPI());
-				img->DrawImagePt(gimg, Math::Coord2DDbl(OSInt2Double(x), OSInt2Double(y)));
+				if (gimg.Set(this->imgList.GetItem(i)))
+				{
+					x = (OSInt)(w - gimg->GetWidth()) >> 1;
+					y = (OSInt)((this->iconSize.y + ICONPADDING - gimg->GetHeight()) >> 1) + ofst;
+					gimg->SetHDPI(img->GetHDPI());
+					gimg->SetVDPI(img->GetVDPI());
+					img->DrawImagePt(gimg, Math::Coord2DDbl(OSInt2Double(x), OSInt2Double(y)));
+				}
 			}
 			ofst += (OSInt)this->iconSize.y + 10;
 			if (ofst > (OSInt)h)
@@ -91,12 +93,14 @@ void UI::GUIPictureList::OnDraw(Media::DrawImage *img)
 						img->DrawRect(Math::Coord2DDbl(UOSInt2Double((this->iconSize.x + ICONPADDING) * k), OSInt2Double(ofst)), this->iconSize.ToDouble() + ICONPADDING, 0, b);
 						img->DelBrush(b);
 					}
-					gimg = this->imgList.GetItem(i + k);
-					x = (OSInt)(((this->iconSize.x + ICONPADDING - gimg->GetWidth()) >> 1) + (this->iconSize.x + ICONPADDING) * k);
-					y = (OSInt)((OSInt)((this->iconSize.y + ICONPADDING - gimg->GetHeight()) >> 1) + ofst);
-					gimg->SetHDPI(img->GetHDPI());
-					gimg->SetVDPI(img->GetVDPI());
-					img->DrawImagePt(gimg, Math::Coord2DDbl(OSInt2Double(x), OSInt2Double(y)));
+					if (gimg.Set(this->imgList.GetItem(i + k)))
+					{
+						x = (OSInt)(((this->iconSize.x + ICONPADDING - gimg->GetWidth()) >> 1) + (this->iconSize.x + ICONPADDING) * k);
+						y = (OSInt)((OSInt)((this->iconSize.y + ICONPADDING - gimg->GetHeight()) >> 1) + ofst);
+						gimg->SetHDPI(img->GetHDPI());
+						gimg->SetVDPI(img->GetVDPI());
+						img->DrawImagePt(gimg, Math::Coord2DDbl(OSInt2Double(x), OSInt2Double(y)));
+					}
 					k++;
 					if (i + k >= j)
 						break;

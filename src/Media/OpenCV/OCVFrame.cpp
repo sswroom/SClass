@@ -97,7 +97,7 @@ Media::StaticImage *Media::OpenCV::OCVFrame::CreateStaticImage()
 	Media::ColorProfile sRGB(Media::ColorProfile::CPT_SRGB);
 	Media::StaticImage *simg;
 	Math::Size2D<UOSInt> size = this->GetSize();
-	NEW_CLASS(simg, Media::StaticImage(size, 0, 8, Media::PF_PAL_W8, size.CalcArea(), &sRGB, Media::ColorProfile::YUVT_BT601, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+	NEW_CLASS(simg, Media::StaticImage(size, 0, 8, Media::PF_PAL_W8, size.CalcArea(), sRGB, Media::ColorProfile::YUVT_BT601, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 	simg->InitGrayPal();
 	this->GetImageData(simg->data, 0, 0, size.x, size.y, simg->GetDataBpl(), false, Media::RotateType::None);
 	cv::imshow("Clear", *(cv::Mat *)this->frame);
@@ -148,7 +148,7 @@ Media::OpenCV::OCVFrame *Media::OpenCV::OCVFrame::BilateralFilter(Int32 d, Doubl
 
 Media::OpenCV::OCVFrame *Media::OpenCV::OCVFrame::CreateYFrame(UInt8 **imgData, UOSInt dataSize, UInt32 fourcc, Math::Size2D<UOSInt> dispSize, UOSInt storeWidth, UOSInt storeBPP, Media::PixelFormat pf)
 {
-	Media::CS::CSConverter *converter = Media::CS::CSConverter::NewConverter(fourcc, storeBPP, pf, 0, *(UInt32*)"Y800", 8, Media::PF_UNKNOWN, 0, Media::ColorProfile::YUVT_UNKNOWN, 0);
+	Media::CS::CSConverter *converter = Media::CS::CSConverter::NewConverter(fourcc, storeBPP, pf, Media::ColorProfile(), *(UInt32*)"Y800", 8, Media::PF_UNKNOWN, Media::ColorProfile(), Media::ColorProfile::YUVT_UNKNOWN, 0);
 	if (converter)
 	{
 		cv::Mat *fr;

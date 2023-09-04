@@ -26,7 +26,7 @@ namespace Media
 	{
 	public:
 		virtual Bool BeginPrint(IPrintDocument *doc) = 0;
-		virtual Bool PrintPage(Media::DrawImage *printPage) = 0; //return has more pages 
+		virtual Bool PrintPage(NotNullPtr<Media::DrawImage> printPage) = 0; //return has more pages 
 		virtual Bool EndPrint(IPrintDocument *doc) = 0;
 	};
 }

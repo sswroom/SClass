@@ -52,7 +52,7 @@ namespace Media
 UInt32 __stdcall Media::CUPSPrintDocument::PrintThread(void *userObj)
 {
 	Media::CUPSPrintDocument *me = (Media::CUPSPrintDocument*)userObj;
-	Media::DrawImage *img;
+	NotNullPtr<Media::DrawImage> img;
 	Bool hasMorePage;
 
 	UTF8Char fileName[512];
@@ -103,7 +103,7 @@ UInt32 __stdcall Media::CUPSPrintDocument::PrintThread(void *userObj)
 		img->SetHDPI(72.0);
 		img->SetVDPI(72.0);
 		hasMorePage = me->hdlr->PrintPage(img);
-		me->eng->DeleteImage(img);
+		me->eng->DeleteImage(img.Ptr());
 
 		cairo_show_page(cr);
 		if (!hasMorePage)

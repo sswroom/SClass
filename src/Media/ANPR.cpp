@@ -98,7 +98,7 @@ Media::StaticImage *Media::ANPR::CreatePlainImage(UInt8 *sptr, Math::Size2D<UOSI
 		imgSize.y = 90;
 	}
 	Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
-	return Media::LinearRectRemapper::RemapW8(sptr, sSize, (OSInt)sbpl, imgSize, quad, &color, Media::ColorProfile::YUVT_SMPTE170M, Media::YCOFST_C_CENTER_LEFT);
+	return Media::LinearRectRemapper::RemapW8(sptr, sSize, (OSInt)sbpl, imgSize, quad, color, Media::ColorProfile::YUVT_SMPTE170M, Media::YCOFST_C_CENTER_LEFT);
 }
 
 Media::ANPR::ANPR() : ocr(Media::OCREngine::Language::English)

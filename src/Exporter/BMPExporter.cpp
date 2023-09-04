@@ -93,7 +93,7 @@ Bool Exporter::BMPExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 	UOSInt palSize = 0;
 	if (img->info.storeBPP <= 8)
 		palSize = (UOSInt)4 << img->info.storeBPP;
-	const UInt8 *rawICC = img->info.color->GetRAWICC();
+	const UInt8 *rawICC = img->info.color.GetRAWICC();
 	UOSInt iccSize = 0;
 	if (rawICC)
 	{
@@ -119,7 +119,7 @@ Bool Exporter::BMPExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 	}
 	else
 	{
-		Media::ColorProfile::ColorType ct = img->info.color->GetPrimaries()->colorType;
+		Media::ColorProfile::ColorType ct = img->info.color.GetPrimaries()->colorType;
 		if (ct == Media::ColorProfile::CT_PUNKNOWN || ct == Media::ColorProfile::CT_VUNKNOWN)
 		{
 			if (img->info.pf == Media::PF_LE_R5G6B5 || img->info.pf == Media::PF_LE_A2B10G10R10)
@@ -140,7 +140,7 @@ Bool Exporter::BMPExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 				WriteInt32(&buff[118], 0);
 			}
 		}
-		else if (ct == Media::ColorProfile::CT_SRGB && img->info.color->rtransfer.GetTranType() == Media::CS::TRANT_sRGB)
+		else if (ct == Media::ColorProfile::CT_SRGB && img->info.color.rtransfer.GetTranType() == Media::CS::TRANT_sRGB)
 		{
 			hdrSize = 124;
 			WriteInt32(&buff[70], ReadInt32((const UInt8*)"BGRs")); //bV5CSType = LCS_sRGB
@@ -164,7 +164,7 @@ Bool Exporter::BMPExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 		else
 		{
 			
-			Media::ColorProfile::ColorPrimaries *primaries = img->info.color->GetPrimaries();
+			NotNullPtr<Media::ColorProfile::ColorPrimaries> primaries = img->info.color.GetPrimaries();
 			Math::Vector3 xyzVec;
 			hdrSize = 124;
 			WriteInt32(&buff[70], 0); //bV5CSType = LCS_CALIBRATED_RGB
@@ -189,9 +189,9 @@ Bool Exporter::BMPExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 			WriteInt32(&buff[102], Double2Int32(xyzVec.val[1] * 0x40000000));
 			WriteInt32(&buff[106], Double2Int32(xyzVec.val[2] * 0x40000000));
 
-			WriteInt32(&buff[110], Double2Int32(img->info.color->rtransfer.GetGamma() * 65536));
-			WriteInt32(&buff[114], Double2Int32(img->info.color->gtransfer.GetGamma() * 65536));
-			WriteInt32(&buff[118], Double2Int32(img->info.color->btransfer.GetGamma() * 65536));
+			WriteInt32(&buff[110], Double2Int32(img->info.color.rtransfer.GetGamma() * 65536));
+			WriteInt32(&buff[114], Double2Int32(img->info.color.gtransfer.GetGamma() * 65536));
+			WriteInt32(&buff[118], Double2Int32(img->info.color.btransfer.GetGamma() * 65536));
 
 			WriteInt32(&buff[122], 8); //LCS_GM_ABS_COLORIMETRIC
 			WriteInt32(&buff[126], 0);

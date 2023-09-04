@@ -94,7 +94,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISPropForm::OnFillClicked(void *userObj, Math
 	if (btn == UI::GUIPictureBox::MBTN_LEFT)
 	{
 		Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
-		UtilUI::ColorDialog dlg(0, me->ui, me->core->GetColorMgr(), me->core->GetDrawEngine(), UtilUI::ColorDialog::CCT_PHOTO, &color, me->core->GetMonitorMgr());
+		UtilUI::ColorDialog dlg(0, me->ui, me->core->GetColorMgr(), me->core->GetDrawEngine(), UtilUI::ColorDialog::CCT_PHOTO, color, me->core->GetMonitorMgr());
 		dlg.ShowAlpha();
 		dlg.SetColor32(me->fillStyle);
 		if (dlg.ShowDialog(me) == UI::GUIForm::DR_OK)
@@ -133,13 +133,16 @@ void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnLineModifyClicked(void *userObj
 			DEL_CLASS(me->imgLine);
 		}
 		sz = me->pbLineStyle->GetSizeP();
-		Media::DrawImage *dimg = me->eng->CreateImage32(sz, Media::AT_NO_ALPHA);
-		dimg->SetHDPI(me->GetHDPI() / me->GetDDPI() * 96.0);
-		dimg->SetVDPI(me->GetHDPI() / me->GetDDPI() * 96.0);
-		me->core->GenLinePreview(dimg, me->eng, me->lineThick, me->lineColor, me->colorConv);
-		me->imgLine = dimg->ToStaticImage();
-		me->pbLineStyle->SetImage(me->imgLine);
-		me->eng->DeleteImage(dimg);
+		NotNullPtr<Media::DrawImage> dimg;
+		if (dimg.Set(me->eng->CreateImage32(sz, Media::AT_NO_ALPHA)))
+		{
+			dimg->SetHDPI(me->GetHDPI() / me->GetDDPI() * 96.0);
+			dimg->SetVDPI(me->GetHDPI() / me->GetDDPI() * 96.0);
+			me->core->GenLinePreview(dimg, me->eng, me->lineThick, me->lineColor, me->colorConv);
+			me->imgLine = dimg->ToStaticImage();
+			me->pbLineStyle->SetImage(me->imgLine);
+			me->eng->DeleteImage(dimg.Ptr());
+		}
 	}
 }
 
@@ -158,13 +161,16 @@ void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnLineStyleClicked(void *userObj)
 			DEL_CLASS(me->imgLine);
 		}
 		sz = me->pbLineStyle->GetSizeP();
-		Media::DrawImage *dimg = me->eng->CreateImage32(sz, Media::AT_NO_ALPHA);
-		dimg->SetHDPI(me->GetHDPI() / me->GetDDPI() * 96.0);
-		dimg->SetVDPI(me->GetHDPI() / me->GetDDPI() * 96.0);
-		me->core->GenLineStylePreview(dimg, me->eng, me->env, me->lineStyle, me->colorConv);
-		me->imgLine = dimg->ToStaticImage();
-		me->pbLineStyle->SetImage(me->imgLine);
-		me->eng->DeleteImage(dimg);
+		NotNullPtr<Media::DrawImage> dimg;
+		if (dimg.Set(me->eng->CreateImage32(sz, Media::AT_NO_ALPHA)))
+		{
+			dimg->SetHDPI(me->GetHDPI() / me->GetDDPI() * 96.0);
+			dimg->SetVDPI(me->GetHDPI() / me->GetDDPI() * 96.0);
+			me->core->GenLineStylePreview(dimg, me->eng, me->env, me->lineStyle, me->colorConv);
+			me->imgLine = dimg->ToStaticImage();
+			me->pbLineStyle->SetImage(me->imgLine);
+			me->eng->DeleteImage(dimg.Ptr());
+		}
 	}
 }
 
@@ -212,13 +218,16 @@ void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnFontModifyClicked(void *userObj
 			DEL_CLASS(me->imgFont);
 		}
 		sz = me->pbFontStyle->GetSizeP();
-		Media::DrawImage *dimg = me->eng->CreateImage32(sz, Media::AT_NO_ALPHA);
-		dimg->SetHDPI(me->GetHDPI() / me->GetDDPI() * 96.0);
-		dimg->SetVDPI(me->GetHDPI() / me->GetDDPI() * 96.0);
-		me->core->GenFontPreview(dimg, me->eng, me->fontName->ToCString(), me->fontSizePt, me->fontColor, me->colorConv);
-		me->imgFont = dimg->ToStaticImage();
-		me->pbFontStyle->SetImage(me->imgFont);
-		me->eng->DeleteImage(dimg);
+		NotNullPtr<Media::DrawImage> dimg;
+		if (dimg.Set(me->eng->CreateImage32(sz, Media::AT_NO_ALPHA)))
+		{
+			dimg->SetHDPI(me->GetHDPI() / me->GetDDPI() * 96.0);
+			dimg->SetVDPI(me->GetHDPI() / me->GetDDPI() * 96.0);
+			me->core->GenFontPreview(dimg, me->eng, me->fontName->ToCString(), me->fontSizePt, me->fontColor, me->colorConv);
+			me->imgFont = dimg->ToStaticImage();
+			me->pbFontStyle->SetImage(me->imgFont);
+			me->eng->DeleteImage(dimg.Ptr());
+		}
 	}
 }
 
@@ -237,13 +246,16 @@ void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnFontStyleClicked(void *userObj)
 			DEL_CLASS(me->imgFont);
 		}
 		sz = me->pbFontStyle->GetSizeP();
-		Media::DrawImage *dimg = me->eng->CreateImage32(sz, Media::AT_NO_ALPHA);
-		dimg->SetHDPI(me->GetHDPI() / me->GetDDPI() * 96.0);
-		dimg->SetVDPI(me->GetHDPI() / me->GetDDPI() * 96.0);
-		me->core->GenFontStylePreview(dimg, me->eng, me->env, me->fontStyle, me->colorConv);
-		me->imgFont = dimg->ToStaticImage();
-		me->pbFontStyle->SetImage(me->imgFont);
-		me->eng->DeleteImage(dimg);
+		NotNullPtr<Media::DrawImage> dimg;
+		if (dimg.Set(me->eng->CreateImage32(sz, Media::AT_NO_ALPHA)))
+		{
+			dimg->SetHDPI(me->GetHDPI() / me->GetDDPI() * 96.0);
+			dimg->SetVDPI(me->GetHDPI() / me->GetDDPI() * 96.0);
+			me->core->GenFontStylePreview(dimg, me->eng, me->env, me->fontStyle, me->colorConv);
+			me->imgFont = dimg->ToStaticImage();
+			me->pbFontStyle->SetImage(me->imgFont);
+			me->eng->DeleteImage(dimg.Ptr());
+		}
 	}
 }
 
@@ -259,7 +271,7 @@ SSWR::AVIRead::AVIRGISPropForm::AVIRGISPropForm(UI::GUIClientControl *parent, No
 	this->colorSess = this->core->GetColorMgr()->CreateSess(this->GetHMonitor());
 	Media::ColorProfile srcProfile(Media::ColorProfile::CPT_SRGB);
 	Media::ColorProfile destProfile(Media::ColorProfile::CPT_PDISPLAY);
-	NEW_CLASS(this->colorConv, Media::ColorConv(&srcProfile, &destProfile, this->colorSess));
+	NEW_CLASS(this->colorConv, Media::ColorConv(srcProfile, destProfile, this->colorSess));
 	this->colorSess->AddHandler(this);
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
@@ -375,42 +387,46 @@ SSWR::AVIRead::AVIRGISPropForm::AVIRGISPropForm(UI::GUIClientControl *parent, No
 		sptr = Text::StrInt32(sbuff, setting.priority);
 		this->txtPriority->SetText(CSTRP(sbuff, sptr));
 
-		Media::DrawImage *dimg;
+		NotNullPtr<Media::DrawImage> dimg;
 		Math::Size2D<UOSInt> sz = this->pbLineStyle->GetSizeP();
 		this->lineType = setting.lineType;
 		this->lineStyle = setting.lineStyle;
 		this->lineThick = setting.lineThick;
 		this->lineColor = setting.lineColor;
-		dimg = this->eng->CreateImage32(sz, Media::AT_NO_ALPHA);
-		dimg->SetHDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
-		dimg->SetVDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
-		if (this->lineType == 0)
+		if (dimg.Set(this->eng->CreateImage32(sz, Media::AT_NO_ALPHA)))
 		{
-			this->core->GenLineStylePreview(dimg, this->eng, this->env, this->lineStyle, this->colorConv);
+			dimg->SetHDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
+			dimg->SetVDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
+			if (this->lineType == 0)
+			{
+				this->core->GenLineStylePreview(dimg, this->eng, this->env, this->lineStyle, this->colorConv);
+			}
+			else
+			{
+				this->core->GenLinePreview(dimg, this->eng, this->lineThick, this->lineColor, this->colorConv);
+			}
+			this->imgLine = dimg->ToStaticImage();
+			this->pbLineStyle->SetImage(this->imgLine);
+			this->eng->DeleteImage(dimg.Ptr());
 		}
-		else
-		{
-			this->core->GenLinePreview(dimg, this->eng, this->lineThick, this->lineColor, this->colorConv);
-		}
-		this->imgLine = dimg->ToStaticImage();
-		this->pbLineStyle->SetImage(this->imgLine);
-		this->eng->DeleteImage(dimg);
 
 		sz = this->pbFontStyle->GetSizeP();
-		dimg = this->eng->CreateImage32(sz, Media::AT_NO_ALPHA);
-		dimg->SetHDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
-		dimg->SetVDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
-		if (setting.fontType == Map::MapEnv::FontType::GlobalStyle)
+		if (dimg.Set(this->eng->CreateImage32(sz, Media::AT_NO_ALPHA)))
 		{
-			this->core->GenFontStylePreview(dimg, this->eng, this->env, setting.fontStyle, this->colorConv);
+			dimg->SetHDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
+			dimg->SetVDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
+			if (setting.fontType == Map::MapEnv::FontType::GlobalStyle)
+			{
+				this->core->GenFontStylePreview(dimg, this->eng, this->env, setting.fontStyle, this->colorConv);
+			}
+			else if (setting.fontType == Map::MapEnv::FontType::LayerStyle)
+			{
+				this->core->GenFontPreview(dimg, this->eng, setting.fontName->ToCString(), setting.fontSizePt, setting.fontColor, this->colorConv);
+			}
+			this->imgFont = dimg->ToStaticImage();
+			this->pbFontStyle->SetImage(this->imgFont);
+			this->eng->DeleteImage(dimg.Ptr());
 		}
-		else if (setting.fontType == Map::MapEnv::FontType::LayerStyle)
-		{
-			this->core->GenFontPreview(dimg, this->eng, setting.fontName->ToCString(), setting.fontSizePt, setting.fontColor, this->colorConv);
-		}
-		this->imgFont = dimg->ToStaticImage();
-		this->pbFontStyle->SetImage(this->imgFont);
-		this->eng->DeleteImage(dimg);
 
 		this->pbFillStyle->SetBGColor(this->colorConv->ConvRGB8(setting.fillStyle));
 		this->fillStyle = setting.fillStyle;
@@ -543,38 +559,43 @@ void SSWR::AVIRead::AVIRGISPropForm::RGBParamChanged(const Media::IColorHandler:
 		DEL_CLASS(this->imgLine);
 	}
 	sz = this->pbLineStyle->GetSizeP();
-	Media::DrawImage *dimg = this->eng->CreateImage32(sz, Media::AT_NO_ALPHA);
-	dimg->SetHDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
-	dimg->SetVDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
-	if (this->lineType == 0)
+	NotNullPtr<Media::DrawImage> dimg;
+	if (dimg.Set(this->eng->CreateImage32(sz, Media::AT_NO_ALPHA)))
 	{
-		this->core->GenLineStylePreview(dimg, this->eng, this->env, this->lineStyle, this->colorConv);
+		dimg->SetHDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
+		dimg->SetVDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
+		if (this->lineType == 0)
+		{
+			this->core->GenLineStylePreview(dimg, this->eng, this->env, this->lineStyle, this->colorConv);
+		}
+		else
+		{
+			this->core->GenLinePreview(dimg, this->eng, this->lineThick, this->lineColor, this->colorConv);
+		}
+		this->imgLine = dimg->ToStaticImage();
+		this->pbLineStyle->SetImage(this->imgLine);
+		this->eng->DeleteImage(dimg.Ptr());
 	}
-	else
-	{
-		this->core->GenLinePreview(dimg, this->eng, this->lineThick, this->lineColor, this->colorConv);
-	}
-	this->imgLine = dimg->ToStaticImage();
-	this->pbLineStyle->SetImage(this->imgLine);
-	this->eng->DeleteImage(dimg);
 
 	if (this->imgFont)
 	{
 		DEL_CLASS(this->imgFont);
 	}
 	sz = this->pbFontStyle->GetSizeP();
-	dimg = this->eng->CreateImage32(sz, Media::AT_NO_ALPHA);
-	dimg->SetHDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
-	dimg->SetVDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
-	if (this->fontType == Map::MapEnv::FontType::GlobalStyle)
+	if (dimg.Set(this->eng->CreateImage32(sz, Media::AT_NO_ALPHA)))
 	{
-		this->core->GenFontStylePreview(dimg, this->eng, this->env, this->fontStyle, this->colorConv);
+		dimg->SetHDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
+		dimg->SetVDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
+		if (this->fontType == Map::MapEnv::FontType::GlobalStyle)
+		{
+			this->core->GenFontStylePreview(dimg, this->eng, this->env, this->fontStyle, this->colorConv);
+		}
+		else if (this->fontType == Map::MapEnv::FontType::LayerStyle)
+		{
+			this->core->GenFontPreview(dimg, this->eng, this->fontName->ToCString(), this->fontSizePt, this->fontColor, this->colorConv);
+		}
+		this->imgFont = dimg->ToStaticImage();
+		this->pbFontStyle->SetImage(this->imgFont);
+		this->eng->DeleteImage(dimg.Ptr());
 	}
-	else if (this->fontType == Map::MapEnv::FontType::LayerStyle)
-	{
-		this->core->GenFontPreview(dimg, this->eng, this->fontName->ToCString(), this->fontSizePt, this->fontColor, this->colorConv);
-	}
-	this->imgFont = dimg->ToStaticImage();
-	this->pbFontStyle->SetImage(this->imgFont);
-	this->eng->DeleteImage(dimg);
 }

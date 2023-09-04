@@ -276,7 +276,7 @@ UI::GUIPictureBox::GUIPictureBox(NotNullPtr<UI::GUICore> ui, UI::GUIClientContro
 	this->clsData = data;
 
 	Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
-	NEW_CLASS(this->resizer, Media::Resizer::LanczosResizer8_C8(4, 3, &color, &color, 0, Media::AT_NO_ALPHA));
+	NEW_CLASS(this->resizer, Media::Resizer::LanczosResizer8_C8(4, 3, color, color, 0, Media::AT_NO_ALPHA));
 	this->resizer->SetResizeAspectRatio(Media::IImgResizer::RAR_SQUAREPIXEL);
 	this->resizer->SetTargetSize(Math::Size2D<UOSInt>(200, 200));
 	data->gtkImage = gtk_image_new_from_pixbuf(0);

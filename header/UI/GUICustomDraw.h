@@ -51,7 +51,7 @@ namespace UI
 		virtual Bool OnKeyDown(UI::GUIControl::GUIKey key); //true = handled
 
 		virtual void OnTimerTick();
-		virtual void OnDraw(Media::DrawImage *img);
+		virtual void OnDraw(NotNullPtr<Media::DrawImage> img);
 	};
 }
 #endif

@@ -71,7 +71,7 @@ namespace Media
 		virtual DrawImage *LoadImage(Text::CStringNN fileName) = 0;
 		virtual DrawImage *LoadImageStream(NotNullPtr<IO::SeekableStream> stm) = 0;
 		virtual DrawImage *ConvImage(Media::Image *img) = 0;
-		virtual DrawImage *CloneImage(DrawImage *img) = 0;
+		virtual DrawImage *CloneImage(NotNullPtr<DrawImage> img) = 0;
 		virtual Bool DeleteImage(DrawImage *img) = 0;
 	};
 
@@ -82,8 +82,8 @@ namespace Media
 		virtual UOSInt GetHeight() const = 0;
 		virtual Math::Size2D<UOSInt> GetSize() const = 0;
 		virtual UInt32 GetBitCount() const = 0;
-		virtual ColorProfile *GetColorProfile() const = 0;
-		virtual void SetColorProfile(const ColorProfile *color) = 0;
+		virtual NotNullPtr<const ColorProfile> GetColorProfile() const = 0;
+		virtual void SetColorProfile(NotNullPtr<const ColorProfile> color) = 0;
 		virtual Media::AlphaType GetAlphaType() const = 0;
 		virtual void SetAlphaType(Media::AlphaType atype) = 0;
 		virtual Double GetHDPI() const = 0;
@@ -113,7 +113,7 @@ namespace Media
 		virtual Bool DrawStringB(Math::Coord2DDbl tl, Text::CString str, DrawFont *f, DrawBrush *b, UOSInt buffSize) = 0;
 		virtual Bool DrawStringRotB(Math::Coord2DDbl center, NotNullPtr<Text::String> str, DrawFont *f, DrawBrush *b, Double angleDegreeACW, UOSInt buffSize) = 0;
 		virtual Bool DrawStringRotB(Math::Coord2DDbl center, Text::CString str, DrawFont *f, DrawBrush *b, Double angleDegreeACW, UOSInt buffSize) = 0;
-		virtual Bool DrawImagePt(DrawImage *img, Math::Coord2DDbl tl) = 0;
+		virtual Bool DrawImagePt(NotNullPtr<DrawImage> img, Math::Coord2DDbl tl) = 0;
 		virtual Bool DrawImagePt2(Media::StaticImage *img, Math::Coord2DDbl tl) = 0;
 		virtual Bool DrawImagePt3(DrawImage *img, Math::Coord2DDbl destTL, Math::Coord2DDbl srcTL, Math::Size2DDbl srcSize) = 0;
 

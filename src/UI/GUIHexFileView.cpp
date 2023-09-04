@@ -168,7 +168,7 @@ void UI::GUIHexFileView::EventTimerTick()
 	}
 }
 
-void UI::GUIHexFileView::DrawImage(Media::DrawImage *dimg)
+void UI::GUIHexFileView::DrawImage(NotNullPtr<Media::DrawImage> dimg)
 {
 	Media::DrawBrush *b = dimg->NewBrushARGB(this->bgColor);
 	dimg->DrawRect(Math::Coord2DDbl(0, 0), dimg->GetSize().ToDouble(), 0, b);

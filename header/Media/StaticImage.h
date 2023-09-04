@@ -25,8 +25,8 @@ namespace Media
 	public:
 		UInt8 *data;
 	
-		StaticImage(Math::Size2D<UOSInt> dispSize, UInt32 fourcc, UInt32 bpp, Media::PixelFormat pf, UOSInt maxSize, const Media::ColorProfile *color, Media::ColorProfile::YUVType yuvType, Media::AlphaType atype, Media::YCOffset ycOfst);
-		StaticImage(const Media::FrameInfo *imgInfo);
+		StaticImage(Math::Size2D<UOSInt> dispSize, UInt32 fourcc, UInt32 bpp, Media::PixelFormat pf, UOSInt maxSize, NotNullPtr<const Media::ColorProfile> color, Media::ColorProfile::YUVType yuvType, Media::AlphaType atype, Media::YCOffset ycOfst);
+		StaticImage(NotNullPtr<const Media::FrameInfo> imgInfo);
 		virtual ~StaticImage();
 
 		virtual Media::Image *Clone() const;

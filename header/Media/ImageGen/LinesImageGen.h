@@ -13,7 +13,7 @@ namespace Media
 			virtual ~LinesImageGen();
 
 			virtual Text::CString GetName();
-			virtual Media::Image *GenerateImage(Media::ColorProfile *colorProfile, Math::Size2D<UOSInt> size);
+			virtual Media::Image *GenerateImage(NotNullPtr<const Media::ColorProfile> colorProfile, Math::Size2D<UOSInt> size);
 		};
 	}
 }

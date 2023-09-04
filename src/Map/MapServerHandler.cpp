@@ -313,7 +313,7 @@ Bool __stdcall Map::MapServerHandler::CesiumDataFunc(NotNullPtr<Net::WebServer::
 
 	UOSInt buffSize;
 	UInt8 *buff = mstm.GetBuff(&buffSize);
-	Text::JSONBase *json = Text::JSONBase::ParseJSONStr(Text::CString(buff, buffSize));
+	Text::JSONBase *json = Text::JSONBase::ParseJSONStr(Text::CStringNN(buff, buffSize));
 	if (json == 0)
 	{
 		resp->ResponseError(req, Net::WebStatus::SC_NOT_FOUND);

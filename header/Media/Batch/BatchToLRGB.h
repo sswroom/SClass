@@ -21,7 +21,7 @@ namespace Media
 			Media::PixelFormat srcPF;
 
 		public:
-			BatchToLRGB(Media::ColorProfile *srcProfile, Media::ColorProfile *destProfile, Media::Batch::BatchHandler *hdlr);
+			BatchToLRGB(NotNullPtr<const Media::ColorProfile> srcProfile, NotNullPtr<const Media::ColorProfile> destProfile, Media::Batch::BatchHandler *hdlr);
 			virtual ~BatchToLRGB();
 			
 			void SetHandler(Media::Batch::BatchHandler *hdlr);

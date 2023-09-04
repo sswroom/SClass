@@ -245,10 +245,11 @@ void UI::GUIMapControl::OnTimerTick()
 	}
 }
 
-void UI::GUIMapControl::OnDraw(Media::DrawImage *img)
+void UI::GUIMapControl::OnDraw(NotNullPtr<Media::DrawImage> img)
 {
 	Math::Coord2DDbl tl;
-	if (this->bgImg == 0)
+	NotNullPtr<Media::DrawImage> bgImg;
+	if (!bgImg.Set(this->bgImg))
 	{
 		return;
 	}
@@ -276,27 +277,34 @@ void UI::GUIMapControl::OnDraw(Media::DrawImage *img)
 		Sync::MutexUsage mutUsage(this->drawMut);
 		if (this->drawHdlr)
 		{
-			Media::DrawImage *tmpImg = this->eng->CloneImage(this->bgImg);
-			this->drawHdlr(this->drawHdlrObj, tmpImg, 0, 0);
-			srcImg = tmpImg->ToStaticImage();
-			this->eng->DeleteImage(tmpImg);
+			NotNullPtr<Media::DrawImage> tmpImg;
+			if (tmpImg.Set(this->eng->CloneImage(bgImg)))
+			{
+				this->drawHdlr(this->drawHdlrObj, tmpImg, 0, 0);
+				srcImg = tmpImg->ToStaticImage();
+				this->eng->DeleteImage(tmpImg.Ptr());
+			}
+			else
+			{
+				srcImg = bgImg->ToStaticImage();
+			}
 		}
 		else
 		{
-			srcImg = this->bgImg->ToStaticImage();
+			srcImg = bgImg->ToStaticImage();
 		}
 		
 		if (this->gZoomCurrDist > this->gZoomDist)
 		{
 			tl = Math::Coord2DDbl(0, 0);
 			sz = this->currSize;
-			NEW_CLASS(drawImg, Media::StaticImage(this->currSize, 0, 32, Media::PF_B8G8R8A8, 0, 0, Media::ColorProfile::YUVT_BT601, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+			NEW_CLASS(drawImg, Media::StaticImage(this->currSize, 0, 32, Media::PF_B8G8R8A8, 0, Media::ColorProfile(), Media::ColorProfile::YUVT_BT601, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 			Double rate = (Double)this->gZoomDist / (Double)this->gZoomCurrDist;
 			Math::Size2DDbl srcSize = this->currSize.ToDouble() * rate;
 			Math::Coord2DDbl srcPos = this->gZoomPos.ToDouble() - this->gZoomCurrPos.ToDouble() * rate;
 			drawImg->info.hdpi = this->view->GetHDPI() / this->view->GetDDPI() * 96.0;
 			drawImg->info.vdpi = this->view->GetHDPI() / this->view->GetDDPI() * 96.0;
-			drawImg->info.color->Set(&this->colorSess->GetRGBParam()->monProfile);
+			drawImg->info.color.Set(this->colorSess->GetRGBParam()->monProfile);
 
 			if (srcPos.x < 0)
 			{
@@ -328,10 +336,10 @@ void UI::GUIMapControl::OnDraw(Media::DrawImage *img)
 			sz.x = (UOSInt)Double2OSInt(UOSInt2Double(this->currSize.x) * rate);
 			sz.y = (UOSInt)Double2OSInt(UOSInt2Double(this->currSize.y) * rate);
 			tl = this->gZoomCurrPos.ToDouble() - this->gZoomPos.ToDouble() * rate;
-			NEW_CLASS(drawImg, Media::StaticImage(this->currSize, 0, 32, Media::PF_B8G8R8A8, 0, 0, Media::ColorProfile::YUVT_BT601, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+			NEW_CLASS(drawImg, Media::StaticImage(this->currSize, 0, 32, Media::PF_B8G8R8A8, 0, Media::ColorProfile(), Media::ColorProfile::YUVT_BT601, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 			drawImg->info.hdpi = this->view->GetHDPI() / this->view->GetDDPI() * 96.0;
 			drawImg->info.vdpi = this->view->GetHDPI() / this->view->GetDDPI() * 96.0;
-			drawImg->info.color->Set(&this->colorSess->GetRGBParam()->monProfile);
+			drawImg->info.color.Set(this->colorSess->GetRGBParam()->monProfile);
 			resizer.Resize(srcImg->data, (OSInt)srcImg->info.storeSize.x * 4, UOSInt2Double(this->currSize.x), UOSInt2Double(this->currSize.y), 0, 0, drawImg->data, (OSInt)drawImg->info.storeSize.x * 4, sz.x, sz.y);
 		}
 		mutUsage.EndUse();
@@ -384,22 +392,25 @@ void UI::GUIMapControl::OnDraw(Media::DrawImage *img)
 		Sync::MutexUsage mutUsage(this->drawMut);
 		if (this->drawHdlr)
 		{
-			Media::DrawImage *drawImg = this->eng->CloneImage(this->bgImg);
-			this->drawHdlr(this->drawHdlrObj, drawImg, 0, 0);
-			this->DrawScnObjects(drawImg, Math::Coord2DDbl(0, 0));
-			img->DrawImagePt(drawImg, tl);
-			this->eng->DeleteImage(drawImg);
+			NotNullPtr<Media::DrawImage> drawImg;
+			if (drawImg.Set(this->eng->CloneImage(bgImg)))
+			{
+				this->drawHdlr(this->drawHdlrObj, drawImg, 0, 0);
+				this->DrawScnObjects(drawImg, Math::Coord2DDbl(0, 0));
+				img->DrawImagePt(drawImg, tl);
+				this->eng->DeleteImage(drawImg.Ptr());
+			}
 		}
 		else
 		{
-			img->DrawImagePt(this->bgImg, tl);
+			img->DrawImagePt(bgImg, tl);
 			this->DrawScnObjects(img, tl);
 		}
 		mutUsage.EndUse();
 	}
 }
 
-void UI::GUIMapControl::DrawScnObjects(Media::DrawImage *img, Math::Coord2DDbl ofst)
+void UI::GUIMapControl::DrawScnObjects(NotNullPtr<Media::DrawImage> img, Math::Coord2DDbl ofst)
 {
 	Double hdpi = this->view->GetHDPI();
 	Double ddpi = this->view->GetDDPI();
@@ -755,7 +766,7 @@ UI::GUIMapControl::GUIMapControl(NotNullPtr<GUICore> ui, UI::GUIClientControl *p
 	this->showMarker = false;
 	this->pauseUpdate = false;
 	Media::ColorProfile color(Media::ColorProfile::CPT_PDISPLAY);
-	NEW_CLASS(this->renderer, Map::DrawMapRenderer(this->eng, mapEnv, &color, this->colorSess, Map::DrawMapRenderer::DT_PIXELDRAW));
+	NEW_CLASS(this->renderer, Map::DrawMapRenderer(this->eng, mapEnv, color, this->colorSess, Map::DrawMapRenderer::DT_PIXELDRAW));
 	this->releaseRenderer = true;
 
 	this->view = mapEnv->CreateMapView(Math::Size2DDbl(640, 480));
@@ -812,7 +823,7 @@ void UI::GUIMapControl::OnSizeChanged(Bool updateScn)
 		this->bgImg = this->eng->CreateImage32(this->currSize, Media::AT_NO_ALPHA);
 		this->bgImg->SetHDPI(this->view->GetHDPI() / this->view->GetDDPI() * 96.0);
 		this->bgImg->SetVDPI(this->view->GetHDPI() / this->view->GetDDPI() * 96.0);
-		this->bgImg->SetColorProfile(&this->colorSess->GetRGBParam()->monProfile);
+		this->bgImg->SetColorProfile(this->colorSess->GetRGBParam()->monProfile);
 	}
 	mutUsage.EndUse();
 	this->UpdateMap();
@@ -834,7 +845,7 @@ void UI::GUIMapControl::RGBParamChanged(const Media::IColorHandler::RGBPARAM2 *r
 	this->SetBGColor(this->bgColor);
 	if (this->bgImg)
 	{
-		this->bgImg->SetColorProfile(&rgbParam->monProfile);
+		this->bgImg->SetColorProfile(rgbParam->monProfile);
 	}
 }
 
@@ -899,17 +910,18 @@ void UI::GUIMapControl::SetRenderer(Map::DrawMapRenderer *renderer)
 void UI::GUIMapControl::UpdateMap()
 {
 	Sync::MutexUsage mutUsage(this->drawMut);
-	if (this->bgImg && this->renderer)
+	NotNullPtr<Media::DrawImage> bgImg;
+	if (bgImg.Set(this->bgImg) && this->renderer)
 	{
 		Double t;
 		UOSInt i;
 		UInt32 imgDurMS;
 		Math::Coord2DDbl center = this->view->GetCenter();
 		Manage::HiResClock clk;
-		Media::DrawBrush *b = this->bgImg->NewBrushARGB(this->bgDispColor);
-		this->bgImg->DrawRect(Math::Coord2DDbl(0, 0), this->bgImg->GetSize().ToDouble(), 0, b);
-		this->bgImg->DelBrush(b);
-		this->renderer->DrawMap(this->bgImg, this->view, &imgDurMS);
+		Media::DrawBrush *b = bgImg->NewBrushARGB(this->bgDispColor);
+		bgImg->DrawRect(Math::Coord2DDbl(0, 0), bgImg->GetSize().ToDouble(), 0, b);
+		bgImg->DelBrush(b);
+		this->renderer->DrawMap(bgImg, this->view, &imgDurMS);
 		t = clk.GetTimeDiff();
 		if (imgDurMS != 0)
 		{

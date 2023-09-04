@@ -7,7 +7,7 @@
 
 #define YVADJ 0.25
 
-Media::CS::CSYV12_LRGBC::CSYV12_LRGBC(const Media::ColorProfile *srcProfile, const Media::ColorProfile *destProfile, Media::ColorProfile::YUVType yuvType, Media::ColorManagerSess *colorSess) : Media::CS::CSYUV420_LRGBC(srcProfile, destProfile, yuvType, colorSess)
+Media::CS::CSYV12_LRGBC::CSYV12_LRGBC(NotNullPtr<const Media::ColorProfile> srcProfile, NotNullPtr<const Media::ColorProfile> destProfile, Media::ColorProfile::YUVType yuvType, Media::ColorManagerSess *colorSess) : Media::CS::CSYUV420_LRGBC(srcProfile, destProfile, yuvType, colorSess)
 {
 }
 

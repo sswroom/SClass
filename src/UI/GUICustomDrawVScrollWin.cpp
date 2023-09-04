@@ -156,17 +156,17 @@ void UI::GUICustomDrawVScroll::Deinit(void *hInst)
 	UnregisterClassW(CLASSNAME, (HINSTANCE)hInst);
 }
 
-void UI::GUICustomDrawVScroll::ClearBackground(Media::DrawImage *img)
+void UI::GUICustomDrawVScroll::ClearBackground(NotNullPtr<Media::DrawImage> img)
 {
 	RECT rc;
 	GetClientRect((HWND)this->hwnd, &rc);
 	if (this->hbrBackground)
 	{
-		FillRect((HDC)((Media::GDIImage*)img)->hdcBmp, &rc, (HBRUSH)this->hbrBackground);
+		FillRect((HDC)((Media::GDIImage*)img.Ptr())->hdcBmp, &rc, (HBRUSH)this->hbrBackground);
 	}
 	else
 	{
-		FillRect((HDC)((Media::GDIImage*)img)->hdcBmp, &rc, (HBRUSH)(COLOR_WINDOW));
+		FillRect((HDC)((Media::GDIImage*)img.Ptr())->hdcBmp, &rc, (HBRUSH)(COLOR_WINDOW));
 	}
 }
 

@@ -170,7 +170,7 @@ void SSWR::AVIRead::AVIRImageControl::InitDir()
 		Media::ColorProfile srcProfile(Media::ColorProfile::CPT_SRGB);
 		Media::ColorProfile destProfile(Media::ColorProfile::CPT_SRGB);
 		
-		Media::Resizer::LanczosResizer8_C8 resizer(4, 3, &srcProfile, &destProfile, this->colorSess, Media::AT_NO_ALPHA);
+		Media::Resizer::LanczosResizer8_C8 resizer(4, 3, srcProfile, destProfile, this->colorSess, Media::AT_NO_ALPHA);
 		Exporter::GUIPNGExporter exporter;
 		resizer.SetTargetSize(Math::Size2D<UOSInt>(this->previewSize, this->previewSize));
 		parsers = this->core->GetParserList();
@@ -507,7 +507,7 @@ SSWR::AVIRead::AVIRImageControl::AVIRImageControl(NotNullPtr<UI::GUICore> ui, UI
 	this->keyObj = 0;
 	Media::ColorProfile srcColor(Media::ColorProfile::CPT_SRGB);
 	Media::ColorProfile destColor(Media::ColorProfile::CPT_PDISPLAY);
-	NEW_CLASS(this->dispResizer, Media::Resizer::LanczosResizer8_C8(3, 3, &srcColor, &destColor, colorSess, Media::AT_NO_ALPHA));
+	NEW_CLASS(this->dispResizer, Media::Resizer::LanczosResizer8_C8(3, 3, srcColor, destColor, colorSess, Media::AT_NO_ALPHA));
 	this->imgMapUpdated = true;
 	this->imgUpdated = false;
 	this->previewSize = 160;
@@ -621,7 +621,7 @@ void SSWR::AVIRead::AVIRImageControl::SetDPI(Double hdpi, Double ddpi)
 	mutUsage.EndUse();
 }
 
-void SSWR::AVIRead::AVIRImageControl::OnDraw(Media::DrawImage *dimg)
+void SSWR::AVIRead::AVIRImageControl::OnDraw(NotNullPtr<Media::DrawImage> dimg)
 {
 	Media::DrawBrush *b;
 	Media::DrawFont *f;
@@ -687,11 +687,12 @@ void SSWR::AVIRead::AVIRImageControl::OnDraw(Media::DrawImage *dimg)
 			}
 			dimg->DrawRect(Math::Coord2DDbl(0, OSInt2Double((OSInt)(i * itemTH - scrPos))), Math::Size2DDbl(UOSInt2Double(scnW), itemBH), 0, barr[status->setting.flags & 3]);
 			dimg->DrawRect(Math::Coord2DDbl(0, OSInt2Double((OSInt)(i * itemTH - scrPos + itemBH))), Math::Size2DDbl(UOSInt2Double(scnW), itemTH - itemBH), 0, barr[4]);
-			if (status->previewImg2)
+			NotNullPtr<Media::DrawImage> previewImg2;
+			if (previewImg2.Set(status->previewImg2))
 			{
-				status->previewImg2->SetHDPI(dimg->GetHDPI());
-				status->previewImg2->SetVDPI(dimg->GetVDPI());
-				dimg->DrawImagePt(status->previewImg2, Math::Coord2DDbl(UOSInt2Double((scnW - status->previewImg2->GetWidth()) >> 1), OSInt2Double((OSInt)(i * itemTH - scrPos + ((itemH - status->previewImg2->GetHeight()) >> 1)))));
+				previewImg2->SetHDPI(dimg->GetHDPI());
+				previewImg2->SetVDPI(dimg->GetVDPI());
+				dimg->DrawImagePt(previewImg2, Math::Coord2DDbl(UOSInt2Double((scnW - previewImg2->GetWidth()) >> 1), OSInt2Double((OSInt)(i * itemTH - scrPos + ((itemH - previewImg2->GetHeight()) >> 1)))));
 			}
 			if (status->fileName.leng > 0)
 			{

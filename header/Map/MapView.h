@@ -42,7 +42,7 @@ namespace Map
 		Math::Size2DDbl GetScnSize() const;
 		void SetVAngle(Double angleRad);
 
-		void SetDestImage(Media::DrawImage *img);
+		void SetDestImage(NotNullPtr<Media::DrawImage> img);
 		void ToPointCnt(Int32 *parts, Int32 nParts, Int32 nPoints) const;
 		void SetViewBounds(Math::RectAreaDbl bounds);
 	};

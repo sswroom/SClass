@@ -282,15 +282,15 @@ void UI::GUIPictureBoxDD::CreateResizer()
 	Double refLuminance = 0;
 	if (this->currImage)
 	{
-		refLuminance = Media::CS::TransferFunc::GetRefLuminance(&this->currImage->info.color->rtransfer);
+		refLuminance = Media::CS::TransferFunc::GetRefLuminance(this->currImage->info.color.rtransfer);
 	}
 	if (this->curr10Bit)
 	{
-		NEW_CLASS(this->resizer, Media::Resizer::LanczosResizerLR_C32(4, 3, &destColor, this->colorSess, Media::AT_NO_ALPHA, refLuminance, Media::PF_LE_A2B10G10R10));
+		NEW_CLASS(this->resizer, Media::Resizer::LanczosResizerLR_C32(4, 3, destColor, this->colorSess, Media::AT_NO_ALPHA, refLuminance, Media::PF_LE_A2B10G10R10));
 	}
 	else
 	{
-		NEW_CLASS(this->resizer, Media::Resizer::LanczosResizerLR_C32(4, 3, &destColor, this->colorSess, Media::AT_NO_ALPHA, refLuminance, this->GetPixelFormat()));
+		NEW_CLASS(this->resizer, Media::Resizer::LanczosResizerLR_C32(4, 3, destColor, this->colorSess, Media::AT_NO_ALPHA, refLuminance, this->GetPixelFormat()));
 	}
 }
 
@@ -504,7 +504,7 @@ void UI::GUIPictureBoxDD::SetImage(Media::Image *currImage, Bool sameImg)
 			this->UpdateZoomRange();
 		}
 		Media::ColorProfile color(Media::ColorProfile::CPT_PDISPLAY);
-		this->csconv = Media::CS::CSConverter::NewConverter(this->currImage->info.fourcc, this->currImage->info.storeBPP, this->currImage->info.pf, this->currImage->info.color, *(UInt32*)"LRGB", 64, Media::PF_UNKNOWN, &color, this->currImage->info.yuvType, this->colorSess);
+		this->csconv = Media::CS::CSConverter::NewConverter(this->currImage->info.fourcc, this->currImage->info.storeBPP, this->currImage->info.pf, this->currImage->info.color, *(UInt32*)"LRGB", 64, Media::PF_UNKNOWN, color, this->currImage->info.yuvType, this->colorSess);
 		if (this->csconv)
 		{
 			if (this->currImage->pal)
@@ -1047,14 +1047,14 @@ Media::StaticImage *UI::GUIPictureBoxDD::CreatePreviewImage(Media::StaticImage *
 	this->GetImageViewSize(&prevSize, image->info.dispSize);
 
 	UInt8 *prevImgData = MemAllocA(UInt8, image->info.dispSize.CalcArea() * 8);
-	Media::ColorProfile color(image->info.color);
+	Media::ColorProfile color(NotNullPtr<const Media::ColorProfile>(image->info.color));
 	color.GetRTranParam()->Set(Media::CS::TRANT_LINEAR, 1.0);
 	color.GetGTranParam()->Set(Media::CS::TRANT_LINEAR, 1.0);
 	color.GetBTranParam()->Set(Media::CS::TRANT_LINEAR, 1.0);
-	Media::CS::CSConverter *csConv = Media::CS::CSConverter::NewConverter(image->info.fourcc, image->info.storeBPP, image->info.pf, image->info.color, *(UInt32*)"LRGB", 64, Media::PF_UNKNOWN, &color, Media::ColorProfile::YUVT_UNKNOWN, this->colorSess);
+	Media::CS::CSConverter *csConv = Media::CS::CSConverter::NewConverter(image->info.fourcc, image->info.storeBPP, image->info.pf, image->info.color, *(UInt32*)"LRGB", 64, Media::PF_UNKNOWN, color, Media::ColorProfile::YUVT_UNKNOWN, this->colorSess);
 	Media::Resizer::LanczosResizerLR_C32 *resizer;
 	Media::PixelFormat pf = Media::PF_B8G8R8A8;
-	NEW_CLASS(resizer, Media::Resizer::LanczosResizerLR_C32(4, 4, image->info.color, this->colorSess, Media::AT_NO_ALPHA, Media::CS::TransferFunc::GetRefLuminance(&image->info.color->rtransfer), pf));
+	NEW_CLASS(resizer, Media::Resizer::LanczosResizerLR_C32(4, 4, image->info.color, this->colorSess, Media::AT_NO_ALPHA, Media::CS::TransferFunc::GetRefLuminance(image->info.color.rtransfer), pf));
 	csConv->ConvertV2(&image->data, prevImgData, image->info.dispSize.x, image->info.dispSize.y, image->info.storeSize.x, image->info.storeSize.y, (OSInt)image->info.dispSize.x * 8, Media::FT_NON_INTERLACE, Media::YCOFST_C_TOP_LEFT);
 
 	NEW_CLASS(outImage, Media::StaticImage(image->info.dispSize, 0, 32, pf, 0, image->info.color, Media::ColorProfile::YUVT_UNKNOWN, image->info.atype, image->info.ycOfst));

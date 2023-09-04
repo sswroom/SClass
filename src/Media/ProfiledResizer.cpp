@@ -27,10 +27,10 @@ Media::ProfiledResizer::ProfiledResizer(Parser::ParserList *parsers, Media::Colo
 	Media::ColorProfile srcProfile(Media::ColorProfile::CPT_SRGB);
 	Media::ColorProfile destProfile(Media::ColorProfile::CPT_SRGB);
 	NEW_CLASS(watermarker, Media::Batch::BatchWatermarker(deng, 0));
-	NEW_CLASS(resizer, Media::Resizer::LanczosResizerLR_C32(14, 14, &destProfile, colorSess, Media::AT_NO_ALPHA, 0.0, Media::PF_B8G8R8A8));
+	NEW_CLASS(resizer, Media::Resizer::LanczosResizerLR_C32(14, 14, destProfile, colorSess, Media::AT_NO_ALPHA, 0.0, Media::PF_B8G8R8A8));
 	NEW_CLASS(bresizer, Media::Batch::BatchResizer(resizer, watermarker));
 	NEW_CLASS(limiter, Media::Batch::BatchLimiter(bresizer));
-	NEW_CLASS(conv, Media::Batch::BatchToLRGB(&srcProfile, &destProfile, limiter));
+	NEW_CLASS(conv, Media::Batch::BatchToLRGB(srcProfile, destProfile, limiter));
 	NEW_CLASS(loader, Media::Batch::BatchLoader(parsers, conv));
 }
 

@@ -64,24 +64,26 @@ void UI::DObj::DownButtonDObj::DrawObject(Media::DrawImage *dimg)
 {
 	Math::Coord2D<OSInt> tl = this->GetCurrPos();
 	this->dispTL = tl;
-	if (this->bmpUnclick && this->bmpClicked)
+	NotNullPtr<Media::DrawImage> bmpUnclick;
+	NotNullPtr<Media::DrawImage> bmpClicked;
+	if (bmpUnclick.Set(this->bmpUnclick) && bmpClicked.Set(this->bmpClicked))
 	{
 		if (this->isMouseDown)
 		{
-			dimg->DrawImagePt(this->bmpClicked, tl.ToDouble());
+			dimg->DrawImagePt(bmpClicked, tl.ToDouble());
 		}
 		else
 		{
-			dimg->DrawImagePt(this->bmpUnclick, tl.ToDouble());
+			dimg->DrawImagePt(bmpUnclick, tl.ToDouble());
 		}
 	}
-	else if (this->bmpUnclick)
+	else if (bmpUnclick.Set(this->bmpUnclick))
 	{
-		dimg->DrawImagePt(this->bmpUnclick, tl.ToDouble());
+		dimg->DrawImagePt(bmpUnclick, tl.ToDouble());
 	}
-	else if (this->bmpClicked)
+	else if (bmpClicked.Set(this->bmpClicked))
 	{
-		dimg->DrawImagePt(this->bmpClicked, tl.ToDouble());
+		dimg->DrawImagePt(bmpClicked, tl.ToDouble());
 	}
 	this->updated = false;
 }

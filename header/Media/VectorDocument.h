@@ -31,7 +31,7 @@ namespace Media
 		VectorDocument(UInt32 srid, Text::CString name, NotNullPtr<Media::DrawEngine> refEng);
 		virtual ~VectorDocument();
 
-		Media::VectorGraph *AddGraph(Double width, Double height, Math::Unit::Distance::DistanceUnit unit);
+		NotNullPtr<Media::VectorGraph> AddGraph(Double width, Double height, Math::Unit::Distance::DistanceUnit unit);
 		void SetDocName(Text::CString docName);
 		Text::String *GetDocName() const;
 		void SetCreateTime(Int64 createTimeTicks);
@@ -53,7 +53,7 @@ namespace Media
 		virtual Media::VectorGraph *GetItem(UOSInt Index) const;
 
 		virtual Bool BeginPrint(IPrintDocument *doc);
-		virtual Bool PrintPage(Media::DrawImage *printPage); //return has more pages 
+		virtual Bool PrintPage(NotNullPtr<Media::DrawImage> printPage); //return has more pages 
 		virtual Bool EndPrint(IPrintDocument *doc);
 
 		virtual IO::ParserType GetParserType() const;

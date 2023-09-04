@@ -1544,68 +1544,65 @@ Bool Exporter::PNGExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 	crc.GetValue(&hdr[29]);
 	stm->Write(hdr, 33);
 
-	if (img->info.color)
+	const UInt8 *iccBuff = img->info.color.GetRAWICC();
+	if (iccBuff)
 	{
-		const UInt8 *iccBuff = img->info.color->GetRAWICC();
-		if (iccBuff)
-		{
-			UInt32 iccSize = ReadMUInt32(iccBuff);
-			tmpBuff = MemAlloc(UInt8, iccSize + 35 + 11);
-			*(Int32*)&tmpBuff[4] = *(Int32*)"iCCP";
-			Text::StrConcatC((UTF8Char*)&tmpBuff[8], UTF8STRC("Photoshop ICC profile"));
-			tmpBuff[30] = 0;
+		UInt32 iccSize = ReadMUInt32(iccBuff);
+		tmpBuff = MemAlloc(UInt8, iccSize + 35 + 11);
+		*(Int32*)&tmpBuff[4] = *(Int32*)"iCCP";
+		Text::StrConcatC((UTF8Char*)&tmpBuff[8], UTF8STRC("Photoshop ICC profile"));
+		tmpBuff[30] = 0;
 
-			i = Data::Compress::Inflate::Compress(iccBuff, iccSize, &tmpBuff[31], true, Data::Compress::Inflate::CompressionLevel::BestCompression);
-			if (i > 0)
-			{
-				WriteMInt32(&tmpBuff[0], 23 + (Int32)i);
-				crc.Clear();
-				crc.Calc(&tmpBuff[4], 27 + i);
-				crc.GetValue(&tmpBuff[31 + i]);
-				stm->Write(tmpBuff, 35 + i);
-			}
-			MemFree(tmpBuff);
-		}
-		else
+		i = Data::Compress::Inflate::Compress(iccBuff, iccSize, &tmpBuff[31], true, Data::Compress::Inflate::CompressionLevel::BestCompression);
+		if (i > 0)
 		{
-			if (img->info.color->rtransfer.GetTranType() == Media::CS::TRANT_GAMMA)
-			{
-				WriteMInt32(&hdr[0], 4);
-				*(Int32*)&hdr[4] = *(Int32*)"gAMA";
-				WriteMInt32(&hdr[8], Double2Int32(100000.0 / img->info.color->rtransfer.GetGamma()));
-				crc.Clear();
-				crc.Calc(&hdr[4], 8);
-				crc.GetValue(&hdr[12]);
-				stm->Write(hdr, 16);
-			}
-			else if (img->info.color->rtransfer.GetTranType() == Media::CS::TRANT_sRGB)
-			{
-				WriteMInt32(&hdr[0], 1);
-				*(Int32*)&hdr[4] = *(Int32*)"sRGB";
-				hdr[8] = 0;
-				crc.Clear();
-				crc.Calc(&hdr[4], 5);
-				crc.GetValue(&hdr[9]);
-				stm->Write(hdr, 13);
-			}
-			
-			if (img->info.color->primaries.colorType != Media::ColorProfile::CT_VUNKNOWN && img->info.color->primaries.colorType != Media::ColorProfile::CT_PUNKNOWN)
-			{
-				WriteMInt32(&hdr[0], 32);
-				*(Int32*)&hdr[4] = *(Int32*)"cHRM";
-				WriteMInt32(&hdr[8], Double2Int32(100000.0 * img->info.color->primaries.wx));
-				WriteMInt32(&hdr[12], Double2Int32(100000.0 * img->info.color->primaries.wy));
-				WriteMInt32(&hdr[16], Double2Int32(100000.0 * img->info.color->primaries.rx));
-				WriteMInt32(&hdr[20], Double2Int32(100000.0 * img->info.color->primaries.ry));
-				WriteMInt32(&hdr[24], Double2Int32(100000.0 * img->info.color->primaries.gx));
-				WriteMInt32(&hdr[28], Double2Int32(100000.0 * img->info.color->primaries.gy));
-				WriteMInt32(&hdr[32], Double2Int32(100000.0 * img->info.color->primaries.bx));
-				WriteMInt32(&hdr[36], Double2Int32(100000.0 * img->info.color->primaries.by));
-				crc.Clear();
-				crc.Calc(&hdr[4], 36);
-				crc.GetValue(&hdr[40]);
-				stm->Write(hdr, 44);
-			}
+			WriteMInt32(&tmpBuff[0], 23 + (Int32)i);
+			crc.Clear();
+			crc.Calc(&tmpBuff[4], 27 + i);
+			crc.GetValue(&tmpBuff[31 + i]);
+			stm->Write(tmpBuff, 35 + i);
+		}
+		MemFree(tmpBuff);
+	}
+	else
+	{
+		if (img->info.color.rtransfer.GetTranType() == Media::CS::TRANT_GAMMA)
+		{
+			WriteMInt32(&hdr[0], 4);
+			*(Int32*)&hdr[4] = *(Int32*)"gAMA";
+			WriteMInt32(&hdr[8], Double2Int32(100000.0 / img->info.color.rtransfer.GetGamma()));
+			crc.Clear();
+			crc.Calc(&hdr[4], 8);
+			crc.GetValue(&hdr[12]);
+			stm->Write(hdr, 16);
+		}
+		else if (img->info.color.rtransfer.GetTranType() == Media::CS::TRANT_sRGB)
+		{
+			WriteMInt32(&hdr[0], 1);
+			*(Int32*)&hdr[4] = *(Int32*)"sRGB";
+			hdr[8] = 0;
+			crc.Clear();
+			crc.Calc(&hdr[4], 5);
+			crc.GetValue(&hdr[9]);
+			stm->Write(hdr, 13);
+		}
+		
+		if (img->info.color.primaries.colorType != Media::ColorProfile::CT_VUNKNOWN && img->info.color.primaries.colorType != Media::ColorProfile::CT_PUNKNOWN)
+		{
+			WriteMInt32(&hdr[0], 32);
+			*(Int32*)&hdr[4] = *(Int32*)"cHRM";
+			WriteMInt32(&hdr[8], Double2Int32(100000.0 * img->info.color.primaries.wx));
+			WriteMInt32(&hdr[12], Double2Int32(100000.0 * img->info.color.primaries.wy));
+			WriteMInt32(&hdr[16], Double2Int32(100000.0 * img->info.color.primaries.rx));
+			WriteMInt32(&hdr[20], Double2Int32(100000.0 * img->info.color.primaries.ry));
+			WriteMInt32(&hdr[24], Double2Int32(100000.0 * img->info.color.primaries.gx));
+			WriteMInt32(&hdr[28], Double2Int32(100000.0 * img->info.color.primaries.gy));
+			WriteMInt32(&hdr[32], Double2Int32(100000.0 * img->info.color.primaries.bx));
+			WriteMInt32(&hdr[36], Double2Int32(100000.0 * img->info.color.primaries.by));
+			crc.Clear();
+			crc.Calc(&hdr[4], 36);
+			crc.GetValue(&hdr[40]);
+			stm->Write(hdr, 44);
 		}
 	}
 

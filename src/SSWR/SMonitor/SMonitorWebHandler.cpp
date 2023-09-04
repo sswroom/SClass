@@ -1025,206 +1025,51 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(SSWR::SMo
 	}
 
 	NotNullPtr<Media::DrawEngine> deng = me->core->GetDrawEngine();
-	Media::DrawImage *dimg = deng->CreateImage32(Math::Size2D<UOSInt>(640, 120), Media::AT_NO_ALPHA);
-	Media::DrawFont *f;
-	Media::DrawBrush *b;
-	UOSInt readingIndex = (UOSInt)-1;
-	Int32 readingTypeD;
-	Data::LineChart *chart;
-	j = dev->nReading;
-	i = 0;
-	while (i < j)
+	NotNullPtr<Media::DrawImage> dimg;
+	if (dimg.Set(deng->CreateImage32(Math::Size2D<UOSInt>(640, 120), Media::AT_NO_ALPHA)))
 	{
-		if (ReadInt16(&dev->readings[i].status[0]) == sensorId && ReadInt16(&dev->readings[i].status[4]) == readingId)
+		Media::DrawFont *f;
+		Media::DrawBrush *b;
+		UOSInt readingIndex = (UOSInt)-1;
+		Int32 readingTypeD;
+		Data::LineChart *chart;
+		j = dev->nReading;
+		i = 0;
+		while (i < j)
 		{
-			if (readingType == ReadInt16(&dev->readings[i].status[6]))
+			if (ReadInt16(&dev->readings[i].status[0]) == sensorId && ReadInt16(&dev->readings[i].status[4]) == readingId)
 			{
-				readingIndex = i;
-				readingTypeD = ReadInt16(&dev->readings[i].status[6]);
-				break;
-			}
-			else if (readingType == SSWR::SMonitor::SAnalogSensor::RT_AHUMIDITY && ReadInt16(&dev->readings[i].status[6]) == SSWR::SMonitor::SAnalogSensor::RT_RHUMIDITY)
-			{
-				readingIndex = i;
-				readingTypeD = ReadInt16(&dev->readings[i].status[6]);
-				break;
-			}
-		}
-		i++;
-	}
-	if (readingIndex == (UOSInt)-1)
-	{
-		f = dimg->NewFontPx(CSTR("Arial"), 12, Media::DrawEngine::DFS_ANTIALIAS, 0);
-		b = dimg->NewBrushARGB(0xffffffff);
-		dimg->DrawRect(Math::Coord2DDbl(0, 0), dimg->GetSize().ToDouble(), 0, b);
-		dimg->DelBrush(b);
-		b = dimg->NewBrushARGB(0xff000000);
-		dimg->DrawString(Math::Coord2DDbl(0, 0), CSTR("Sensor not found"), f, b);
-		dimg->DelBrush(b);
-		dimg->DelFont(f);
-	}
-	else
-	{
-		Data::ArrayListInt64 dateList;
-		Data::ArrayListDbl valList;
-		SSWR::SMonitor::ISMonitorCore::DevRecord2 *rec;
-		if (readingType == SSWR::SMonitor::SAnalogSensor::RT_AHUMIDITY && readingTypeD == SSWR::SMonitor::SAnalogSensor::RT_RHUMIDITY)
-		{
-			UOSInt treadingIndex = (UOSInt)-1;
-			Double tempDeg;
-			Double rh;
-			Bool hasTemp;
-			Bool hasRH;
-			i = 0;
-			j = dev->nReading;
-			while (i < j)
-			{
-				if (ReadInt16(&dev->readings[i].status[0]) == sensorId && ReadInt16(&dev->readings[i].status[6]) == SSWR::SMonitor::SAnalogSensor::RT_TEMPERATURE)
+				if (readingType == ReadInt16(&dev->readings[i].status[6]))
 				{
-					treadingIndex = i;
+					readingIndex = i;
+					readingTypeD = ReadInt16(&dev->readings[i].status[6]);
 					break;
 				}
-				i++;
-			}
-
-			i = 0;
-			j = dev->todayRecs.GetCount();
-			while (i < j)
-			{
-				rec = dev->todayRecs.GetItem(i);
-				hasTemp = false;
-				hasRH = false;
-				if (rec->nreading > readingIndex && ReadInt16(&rec->readings[readingIndex].status[0]) == sensorId && ReadInt16(&rec->readings[readingIndex].status[4]) == readingId)
+				else if (readingType == SSWR::SMonitor::SAnalogSensor::RT_AHUMIDITY && ReadInt16(&dev->readings[i].status[6]) == SSWR::SMonitor::SAnalogSensor::RT_RHUMIDITY)
 				{
-					if (ReadInt16(&rec->readings[readingIndex].status[6]) == readingTypeD)
-					{
-						hasRH = true;
-						rh = rec->readings[readingIndex].reading;
-					}
-				}
-				else
-				{
-					k = rec->nreading;
-					while (k-- > 0)
-					{
-						if (ReadInt16(&rec->readings[k].status[0]) == sensorId && ReadInt16(&rec->readings[k].status[4]) == readingId && ReadInt16(&rec->readings[k].status[6]) == readingTypeD)
-						{
-							hasRH = true;
-							rh = rec->readings[k].reading;
-							break;
-						}
-					}
-				}
-
-				if (treadingIndex != (UOSInt)-1 && rec->nreading > treadingIndex && ReadInt16(&rec->readings[treadingIndex].status[0]) == sensorId && ReadInt16(&rec->readings[treadingIndex].status[6]) == SSWR::SMonitor::SAnalogSensor::RT_TEMPERATURE)
-				{
-					hasTemp = true;
-					tempDeg = rec->readings[treadingIndex].reading;
-				}
-				else
-				{
-					k = rec->nreading;
-					while (k-- > 0)
-					{
-						if (ReadInt16(&rec->readings[k].status[0]) == sensorId && ReadInt16(&rec->readings[k].status[6]) == SSWR::SMonitor::SAnalogSensor::RT_TEMPERATURE)
-						{
-							hasTemp = true;
-							tempDeg = rec->readings[k].reading;
-							break;
-						}
-					}
-				}
-
-				if (hasTemp && hasRH)
-				{
-					dateList.Add(rec->recTime);
-					valList.Add(Math::Unit::Pressure::WaterVapourPressure(Math::Unit::Pressure::PU_PASCAL, Math::Unit::Temperature::TU_CELSIUS, tempDeg, rh));
-				}
-				i++;
-			}
-		}
-		else
-		{
-			i = 0;
-			j = dev->todayRecs.GetCount();
-			while (i < j)
-			{
-				rec = dev->todayRecs.GetItem(i);
-				if (rec->nreading > readingIndex && ReadInt16(&rec->readings[readingIndex].status[0]) == sensorId && ReadInt16(&rec->readings[readingIndex].status[4]) == readingId)
-				{
-					if (ReadInt16(&rec->readings[readingIndex].status[6]) == readingType)
-					{
-						dateList.Add(rec->recTime);
-						valList.Add(rec->readings[readingIndex].reading);
-					}
-				}
-				else
-				{
-					k = rec->nreading;
-					while (k-- > 0)
-					{
-						if (ReadInt16(&rec->readings[k].status[0]) == sensorId && ReadInt16(&rec->readings[k].status[4]) == readingId)
-						{
-							if (ReadInt16(&rec->readings[k].status[6]) == readingType)
-							{
-								dateList.Add(rec->recTime);
-								valList.Add(rec->readings[k].reading);
-							}
-							break;
-						}
-					}
-				}
-				i++;
-			}
-		}
-
-		Text::StringBuilderUTF8 sb;
-		if (dev->readingNames[readingIndex])
-		{
-			sb.AppendSlow(dev->readingNames[readingIndex]);
-		}
-		else
-		{
-			sb.AppendC(UTF8STRC("Sensor "));
-			sb.AppendI32(ReadInt16(dev->readings[readingIndex].status));
-			if (ReadInt16(&dev->readings[readingIndex].status[6]) != SSWR::SMonitor::SAnalogSensor::RT_UNKNOWN)
-			{
-				sb.AppendC(UTF8STRC(" "));
-				sb.Append(SSWR::SMonitor::SAnalogSensor::GetReadingTypeName((SSWR::SMonitor::SAnalogSensor::ReadingType)ReadInt16(&dev->readings[readingIndex].status[6])));
-			}
-		}
-		Double currVal;
-		if (readingType == SSWR::SMonitor::SAnalogSensor::RT_AHUMIDITY && readingTypeD == SSWR::SMonitor::SAnalogSensor::RT_RHUMIDITY)
-		{
-			currVal = 0;
-			i = 0;
-			j = dev->nReading;
-			while (i < j)
-			{
-				if (ReadInt16(&dev->readings[i].status[0]) == sensorId && ReadInt16(&dev->readings[i].status[6]) == SSWR::SMonitor::SAnalogSensor::RT_TEMPERATURE)
-				{
-					currVal = Math::Unit::Pressure::WaterVapourPressure(Math::Unit::Pressure::PU_PASCAL, Math::Unit::Temperature::TU_CELSIUS, dev->readings[i].reading, dev->readings[readingIndex].reading);
+					readingIndex = i;
+					readingTypeD = ReadInt16(&dev->readings[i].status[6]);
 					break;
 				}
-				i++;
 			}
+			i++;
+		}
+		if (readingIndex == (UOSInt)-1)
+		{
+			f = dimg->NewFontPx(CSTR("Arial"), 12, Media::DrawEngine::DFS_ANTIALIAS, 0);
+			b = dimg->NewBrushARGB(0xffffffff);
+			dimg->DrawRect(Math::Coord2DDbl(0, 0), dimg->GetSize().ToDouble(), 0, b);
+			dimg->DelBrush(b);
+			b = dimg->NewBrushARGB(0xff000000);
+			dimg->DrawString(Math::Coord2DDbl(0, 0), CSTR("Sensor not found"), f, b);
+			dimg->DelBrush(b);
+			dimg->DelFont(f);
 		}
 		else
 		{
-			currVal = dev->readings[readingIndex].reading;
-		}
-		sb.AppendC(UTF8STRC(" ("));
-		sb.AppendDouble(currVal);
-		sb.AppendC(UTF8STRC(")"));
-		if (dateList.GetCount() >= 2)
-		{
-			Int64 maxTime;
-			Int64 thisTime;
-			Double yesterdayVal = 0;
-			Int64 yesterdayMaxTime = 0;
-			Data::ArrayListInt64 dateList2;
-			Data::ArrayListDbl valList2;
-			maxTime = dateList.GetItem(dateList.GetCount() - 1);
+			Data::ArrayListInt64 dateList;
+			Data::ArrayListDbl valList;
+			SSWR::SMonitor::ISMonitorCore::DevRecord2 *rec;
 			if (readingType == SSWR::SMonitor::SAnalogSensor::RT_AHUMIDITY && readingTypeD == SSWR::SMonitor::SAnalogSensor::RT_RHUMIDITY)
 			{
 				UOSInt treadingIndex = (UOSInt)-1;
@@ -1245,10 +1090,10 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(SSWR::SMo
 				}
 
 				i = 0;
-				j = dev->yesterdayRecs.GetCount();
+				j = dev->todayRecs.GetCount();
 				while (i < j)
 				{
-					rec = dev->yesterdayRecs.GetItem(i);
+					rec = dev->todayRecs.GetItem(i);
 					hasTemp = false;
 					hasRH = false;
 					if (rec->nreading > readingIndex && ReadInt16(&rec->readings[readingIndex].status[0]) == sensorId && ReadInt16(&rec->readings[readingIndex].status[4]) == readingId)
@@ -1264,13 +1109,10 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(SSWR::SMo
 						k = rec->nreading;
 						while (k-- > 0)
 						{
-							if (ReadInt16(&rec->readings[k].status[0]) == sensorId && ReadInt16(&rec->readings[k].status[4]) == readingId)
+							if (ReadInt16(&rec->readings[k].status[0]) == sensorId && ReadInt16(&rec->readings[k].status[4]) == readingId && ReadInt16(&rec->readings[k].status[6]) == readingTypeD)
 							{
-								if (ReadInt16(&rec->readings[k].status[6]) == readingTypeD)
-								{
-									hasRH = true;
-									rh = rec->readings[readingIndex].reading;
-								}
+								hasRH = true;
+								rh = rec->readings[k].reading;
 								break;
 							}
 						}
@@ -1297,57 +1139,25 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(SSWR::SMo
 
 					if (hasTemp && hasRH)
 					{
-						thisTime = rec->recTime + 86400000LL;
-						if (thisTime <= maxTime)
-						{
-							Double pres = Math::Unit::Pressure::WaterVapourPressure(Math::Unit::Pressure::PU_PASCAL, Math::Unit::Temperature::TU_CELSIUS, tempDeg, rh);
-							dateList2.Add(thisTime);
-							valList2.Add(pres);
-							if (thisTime > yesterdayMaxTime)
-							{
-								yesterdayMaxTime = thisTime;
-								yesterdayVal = pres;
-							}
-						}
+						dateList.Add(rec->recTime);
+						valList.Add(Math::Unit::Pressure::WaterVapourPressure(Math::Unit::Pressure::PU_PASCAL, Math::Unit::Temperature::TU_CELSIUS, tempDeg, rh));
 					}
 					i++;
-				}
-
-				if (yesterdayMaxTime != 0)
-				{
-					if (yesterdayVal < currVal)
-					{
-						sb.AppendC(UTF8STRC(" +"));
-					}
-					else
-					{
-						sb.AppendC(UTF8STRC(" "));
-					}
-					sb.AppendDouble(currVal - yesterdayVal);
 				}
 			}
 			else
 			{
 				i = 0;
-				j = dev->yesterdayRecs.GetCount();
+				j = dev->todayRecs.GetCount();
 				while (i < j)
 				{
-					rec = dev->yesterdayRecs.GetItem(i);
+					rec = dev->todayRecs.GetItem(i);
 					if (rec->nreading > readingIndex && ReadInt16(&rec->readings[readingIndex].status[0]) == sensorId && ReadInt16(&rec->readings[readingIndex].status[4]) == readingId)
 					{
 						if (ReadInt16(&rec->readings[readingIndex].status[6]) == readingType)
 						{
-							thisTime = rec->recTime + 86400000LL;
-							if (thisTime <= maxTime)
-							{
-								dateList2.Add(thisTime);
-								valList2.Add(rec->readings[readingIndex].reading);
-								if (thisTime > yesterdayMaxTime)
-								{
-									yesterdayMaxTime = thisTime;
-									yesterdayVal = rec->readings[readingIndex].reading;
-								}
-							}
+							dateList.Add(rec->recTime);
+							valList.Add(rec->readings[readingIndex].reading);
 						}
 					}
 					else
@@ -1359,17 +1169,8 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(SSWR::SMo
 							{
 								if (ReadInt16(&rec->readings[k].status[6]) == readingType)
 								{
-									thisTime = rec->recTime + 86400000LL;
-									if (thisTime <= maxTime)
-									{
-										dateList2.Add(thisTime);
-										valList2.Add(rec->readings[k].reading);
-										if (thisTime > yesterdayMaxTime)
-										{
-											yesterdayMaxTime = thisTime;
-											yesterdayVal = rec->readings[k].reading;
-										}
-									}
+									dateList.Add(rec->recTime);
+									valList.Add(rec->readings[k].reading);
 								}
 								break;
 							}
@@ -1377,81 +1178,287 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(SSWR::SMo
 					}
 					i++;
 				}
+			}
 
-				if (yesterdayMaxTime != 0)
+			Text::StringBuilderUTF8 sb;
+			if (dev->readingNames[readingIndex])
+			{
+				sb.AppendSlow(dev->readingNames[readingIndex]);
+			}
+			else
+			{
+				sb.AppendC(UTF8STRC("Sensor "));
+				sb.AppendI32(ReadInt16(dev->readings[readingIndex].status));
+				if (ReadInt16(&dev->readings[readingIndex].status[6]) != SSWR::SMonitor::SAnalogSensor::RT_UNKNOWN)
 				{
-					if (yesterdayVal < dev->readings[readingIndex].reading)
-					{
-						sb.AppendC(UTF8STRC(" +"));
-					}
-					else
-					{
-						sb.AppendC(UTF8STRC(" "));
-					}
-					sb.AppendDouble(dev->readings[readingIndex].reading - yesterdayVal);
+					sb.AppendC(UTF8STRC(" "));
+					sb.Append(SSWR::SMonitor::SAnalogSensor::GetReadingTypeName((SSWR::SMonitor::SAnalogSensor::ReadingType)ReadInt16(&dev->readings[readingIndex].status[6])));
 				}
 			}
-
-			NEW_CLASS(chart, Data::LineChart(sb.ToCString()));
-			if (dateList2.GetCount() >= 2)
+			Double currVal;
+			if (readingType == SSWR::SMonitor::SAnalogSensor::RT_AHUMIDITY && readingTypeD == SSWR::SMonitor::SAnalogSensor::RT_RHUMIDITY)
 			{
-				chart->AddXDataDate(dateList2.Ptr(), dateList2.GetCount());
-				chart->AddYData(CSTR("Yesterday"), valList2.Ptr(), valList2.GetCount(), 0xffcccccc, Data::LineChart::LS_LINE);
+				currVal = 0;
+				i = 0;
+				j = dev->nReading;
+				while (i < j)
+				{
+					if (ReadInt16(&dev->readings[i].status[0]) == sensorId && ReadInt16(&dev->readings[i].status[6]) == SSWR::SMonitor::SAnalogSensor::RT_TEMPERATURE)
+					{
+						currVal = Math::Unit::Pressure::WaterVapourPressure(Math::Unit::Pressure::PU_PASCAL, Math::Unit::Temperature::TU_CELSIUS, dev->readings[i].reading, dev->readings[readingIndex].reading);
+						break;
+					}
+					i++;
+				}
 			}
-			chart->AddXDataDate(dateList.Ptr(), dateList.GetCount());
-			chart->AddYData(CSTR("Reading"), valList.Ptr(), valList.GetCount(), 0xffff0000, Data::LineChart::LS_LINE);
+			else
+			{
+				currVal = dev->readings[readingIndex].reading;
+			}
+			sb.AppendC(UTF8STRC(" ("));
+			sb.AppendDouble(currVal);
+			sb.AppendC(UTF8STRC(")"));
+			if (dateList.GetCount() >= 2)
+			{
+				Int64 maxTime;
+				Int64 thisTime;
+				Double yesterdayVal = 0;
+				Int64 yesterdayMaxTime = 0;
+				Data::ArrayListInt64 dateList2;
+				Data::ArrayListDbl valList2;
+				maxTime = dateList.GetItem(dateList.GetCount() - 1);
+				if (readingType == SSWR::SMonitor::SAnalogSensor::RT_AHUMIDITY && readingTypeD == SSWR::SMonitor::SAnalogSensor::RT_RHUMIDITY)
+				{
+					UOSInt treadingIndex = (UOSInt)-1;
+					Double tempDeg;
+					Double rh;
+					Bool hasTemp;
+					Bool hasRH;
+					i = 0;
+					j = dev->nReading;
+					while (i < j)
+					{
+						if (ReadInt16(&dev->readings[i].status[0]) == sensorId && ReadInt16(&dev->readings[i].status[6]) == SSWR::SMonitor::SAnalogSensor::RT_TEMPERATURE)
+						{
+							treadingIndex = i;
+							break;
+						}
+						i++;
+					}
 
-			chart->SetDateFormat(CSTR(""));
-			chart->SetFontHeightPt(10);
-			chart->SetTimeZoneQHR(32);
-			chart->SetTimeFormat(CSTR("HH:mm"));
-			chart->Plot(dimg, 0, 0, UOSInt2Double(dimg->GetWidth()), UOSInt2Double(dimg->GetHeight()));
-			DEL_CLASS(chart);
+					i = 0;
+					j = dev->yesterdayRecs.GetCount();
+					while (i < j)
+					{
+						rec = dev->yesterdayRecs.GetItem(i);
+						hasTemp = false;
+						hasRH = false;
+						if (rec->nreading > readingIndex && ReadInt16(&rec->readings[readingIndex].status[0]) == sensorId && ReadInt16(&rec->readings[readingIndex].status[4]) == readingId)
+						{
+							if (ReadInt16(&rec->readings[readingIndex].status[6]) == readingTypeD)
+							{
+								hasRH = true;
+								rh = rec->readings[readingIndex].reading;
+							}
+						}
+						else
+						{
+							k = rec->nreading;
+							while (k-- > 0)
+							{
+								if (ReadInt16(&rec->readings[k].status[0]) == sensorId && ReadInt16(&rec->readings[k].status[4]) == readingId)
+								{
+									if (ReadInt16(&rec->readings[k].status[6]) == readingTypeD)
+									{
+										hasRH = true;
+										rh = rec->readings[readingIndex].reading;
+									}
+									break;
+								}
+							}
+						}
+
+						if (treadingIndex != (UOSInt)-1 && rec->nreading > treadingIndex && ReadInt16(&rec->readings[treadingIndex].status[0]) == sensorId && ReadInt16(&rec->readings[treadingIndex].status[6]) == SSWR::SMonitor::SAnalogSensor::RT_TEMPERATURE)
+						{
+							hasTemp = true;
+							tempDeg = rec->readings[treadingIndex].reading;
+						}
+						else
+						{
+							k = rec->nreading;
+							while (k-- > 0)
+							{
+								if (ReadInt16(&rec->readings[k].status[0]) == sensorId && ReadInt16(&rec->readings[k].status[6]) == SSWR::SMonitor::SAnalogSensor::RT_TEMPERATURE)
+								{
+									hasTemp = true;
+									tempDeg = rec->readings[k].reading;
+									break;
+								}
+							}
+						}
+
+						if (hasTemp && hasRH)
+						{
+							thisTime = rec->recTime + 86400000LL;
+							if (thisTime <= maxTime)
+							{
+								Double pres = Math::Unit::Pressure::WaterVapourPressure(Math::Unit::Pressure::PU_PASCAL, Math::Unit::Temperature::TU_CELSIUS, tempDeg, rh);
+								dateList2.Add(thisTime);
+								valList2.Add(pres);
+								if (thisTime > yesterdayMaxTime)
+								{
+									yesterdayMaxTime = thisTime;
+									yesterdayVal = pres;
+								}
+							}
+						}
+						i++;
+					}
+
+					if (yesterdayMaxTime != 0)
+					{
+						if (yesterdayVal < currVal)
+						{
+							sb.AppendC(UTF8STRC(" +"));
+						}
+						else
+						{
+							sb.AppendC(UTF8STRC(" "));
+						}
+						sb.AppendDouble(currVal - yesterdayVal);
+					}
+				}
+				else
+				{
+					i = 0;
+					j = dev->yesterdayRecs.GetCount();
+					while (i < j)
+					{
+						rec = dev->yesterdayRecs.GetItem(i);
+						if (rec->nreading > readingIndex && ReadInt16(&rec->readings[readingIndex].status[0]) == sensorId && ReadInt16(&rec->readings[readingIndex].status[4]) == readingId)
+						{
+							if (ReadInt16(&rec->readings[readingIndex].status[6]) == readingType)
+							{
+								thisTime = rec->recTime + 86400000LL;
+								if (thisTime <= maxTime)
+								{
+									dateList2.Add(thisTime);
+									valList2.Add(rec->readings[readingIndex].reading);
+									if (thisTime > yesterdayMaxTime)
+									{
+										yesterdayMaxTime = thisTime;
+										yesterdayVal = rec->readings[readingIndex].reading;
+									}
+								}
+							}
+						}
+						else
+						{
+							k = rec->nreading;
+							while (k-- > 0)
+							{
+								if (ReadInt16(&rec->readings[k].status[0]) == sensorId && ReadInt16(&rec->readings[k].status[4]) == readingId)
+								{
+									if (ReadInt16(&rec->readings[k].status[6]) == readingType)
+									{
+										thisTime = rec->recTime + 86400000LL;
+										if (thisTime <= maxTime)
+										{
+											dateList2.Add(thisTime);
+											valList2.Add(rec->readings[k].reading);
+											if (thisTime > yesterdayMaxTime)
+											{
+												yesterdayMaxTime = thisTime;
+												yesterdayVal = rec->readings[k].reading;
+											}
+										}
+									}
+									break;
+								}
+							}
+						}
+						i++;
+					}
+
+					if (yesterdayMaxTime != 0)
+					{
+						if (yesterdayVal < dev->readings[readingIndex].reading)
+						{
+							sb.AppendC(UTF8STRC(" +"));
+						}
+						else
+						{
+							sb.AppendC(UTF8STRC(" "));
+						}
+						sb.AppendDouble(dev->readings[readingIndex].reading - yesterdayVal);
+					}
+				}
+
+				NEW_CLASS(chart, Data::LineChart(sb.ToCString()));
+				if (dateList2.GetCount() >= 2)
+				{
+					chart->AddXDataDate(dateList2.Ptr(), dateList2.GetCount());
+					chart->AddYData(CSTR("Yesterday"), valList2.Ptr(), valList2.GetCount(), 0xffcccccc, Data::LineChart::LS_LINE);
+				}
+				chart->AddXDataDate(dateList.Ptr(), dateList.GetCount());
+				chart->AddYData(CSTR("Reading"), valList.Ptr(), valList.GetCount(), 0xffff0000, Data::LineChart::LS_LINE);
+
+				chart->SetDateFormat(CSTR(""));
+				chart->SetFontHeightPt(10);
+				chart->SetTimeZoneQHR(32);
+				chart->SetTimeFormat(CSTR("HH:mm"));
+				chart->Plot(dimg, 0, 0, UOSInt2Double(dimg->GetWidth()), UOSInt2Double(dimg->GetHeight()));
+				DEL_CLASS(chart);
+			}
+			else
+			{
+				f = dimg->NewFontPx(CSTR("Arial"), 12, Media::DrawEngine::DFS_ANTIALIAS, 0);
+				b = dimg->NewBrushARGB(0xffffffff);
+				dimg->DrawRect(Math::Coord2DDbl(0, 0), dimg->GetSize().ToDouble(), 0, b);
+				dimg->DelBrush(b);
+				b = dimg->NewBrushARGB(0xff000000);
+				dimg->DrawString(Math::Coord2DDbl(0, 0), sb.ToCString(), f, b);
+				dimg->DrawString(Math::Coord2DDbl(0, 12), CSTR("Data not enough"), f, b);
+				dimg->DelBrush(b);
+				dimg->DelFont(f);
+			}
 		}
-		else
+		mutUsage.EndUse();
+		
+		Exporter::GUIPNGExporter *exporter;
+		Media::ImageList *imgList;
+
+		NEW_CLASS(imgList, Media::ImageList(CSTR("temp.png")));
+		imgList->AddImage(dimg->ToStaticImage(), 0);
+		deng->DeleteImage(dimg.Ptr());
+
+		NotNullPtr<IO::MemoryStream> nnmstm;
+		NEW_CLASSNN(nnmstm, IO::MemoryStream());
+		NEW_CLASS(exporter, Exporter::GUIPNGExporter());
+		exporter->ExportFile(nnmstm, CSTR("temp.png"), imgList, 0);
+		DEL_CLASS(exporter);
+		DEL_CLASS(imgList);
+
+		buff = nnmstm->GetBuff(&buffSize);
+		resp->AddDefHeaders(req);
+		resp->AddContentType(CSTR("image/png"));
+		resp->AddContentLength(buffSize);
+		resp->AddHeader(CSTR("Cache-Control"), CSTR("no-cache"));
+		resp->Write(buff, buffSize);
+
+		mutUsage.ReplaceMutex(dev->mut, true);
+		mstm = dev->imgCaches.Put((sensorId << 16) + (readingId << 8) + (readingType), nnmstm.Ptr());
+		mutUsage.EndUse();
+		if (mstm)
 		{
-			f = dimg->NewFontPx(CSTR("Arial"), 12, Media::DrawEngine::DFS_ANTIALIAS, 0);
-			b = dimg->NewBrushARGB(0xffffffff);
-			dimg->DrawRect(Math::Coord2DDbl(0, 0), dimg->GetSize().ToDouble(), 0, b);
-			dimg->DelBrush(b);
-			b = dimg->NewBrushARGB(0xff000000);
-			dimg->DrawString(Math::Coord2DDbl(0, 0), sb.ToCString(), f, b);
-			dimg->DrawString(Math::Coord2DDbl(0, 12), CSTR("Data not enough"), f, b);
-			dimg->DelBrush(b);
-			dimg->DelFont(f);
+			DEL_CLASS(mstm);
 		}
+		return true;
 	}
-	mutUsage.EndUse();
-	
-	Exporter::GUIPNGExporter *exporter;
-	Media::ImageList *imgList;
-
-	NEW_CLASS(imgList, Media::ImageList(CSTR("temp.png")));
-	imgList->AddImage(dimg->ToStaticImage(), 0);
-	deng->DeleteImage(dimg);
-
-	NotNullPtr<IO::MemoryStream> nnmstm;
-	NEW_CLASSNN(nnmstm, IO::MemoryStream());
-	NEW_CLASS(exporter, Exporter::GUIPNGExporter());
-	exporter->ExportFile(nnmstm, CSTR("temp.png"), imgList, 0);
-	DEL_CLASS(exporter);
-	DEL_CLASS(imgList);
-
-	buff = nnmstm->GetBuff(&buffSize);
-	resp->AddDefHeaders(req);
-	resp->AddContentType(CSTR("image/png"));
-	resp->AddContentLength(buffSize);
-	resp->AddHeader(CSTR("Cache-Control"), CSTR("no-cache"));
-	resp->Write(buff, buffSize);
-
-	mutUsage.ReplaceMutex(dev->mut, true);
-	mstm = dev->imgCaches.Put((sensorId << 16) + (readingId << 8) + (readingType), nnmstm.Ptr());
-	mutUsage.EndUse();
-	if (mstm)
+	else
 	{
-		DEL_CLASS(mstm);
+		return resp->ResponseError(req, Net::WebStatus::SC_INTERNAL_SERVER_ERROR);
 	}
-	return true;
 }
 
 Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataReq(SSWR::SMonitor::SMonitorWebHandler *me, NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp)
@@ -1649,146 +1656,153 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataImgReq(SSWR::SM
 	UOSInt buffSize;
 
 	NotNullPtr<Media::DrawEngine> deng = me->core->GetDrawEngine();
-	Media::DrawImage *dimg = deng->CreateImage32(Math::Size2D<UOSInt>(640, 120), Media::AT_NO_ALPHA);
-	Media::DrawFont *f;
-	Media::DrawBrush *b;
-	UOSInt readingIndex = (UOSInt)-1;
-	Int32 readingType = 0;
-	Data::LineChart *chart;
-	Sync::RWMutexUsage mutUsage(dev->mut, false);
-	i = dev->nReading;
-	while (i-- > 0)
+	NotNullPtr<Media::DrawImage> dimg;
+	if (dimg.Set(deng->CreateImage32(Math::Size2D<UOSInt>(640, 120), Media::AT_NO_ALPHA)))
 	{
-		if (ReadInt16(&dev->readings[i].status[0]) == sensorId && ReadInt16(&dev->readings[i].status[4]) == readingId)
-		{
-			readingIndex = i;
-			readingType = ReadInt16(&dev->readings[i].status[6]);
-			break;
-		}
-	}
-	mutUsage.EndUse();
-	if (readingIndex == (UOSInt)-1)
-	{
-		f = dimg->NewFontPx(CSTR("Arial"), 12, Media::DrawEngine::DFS_ANTIALIAS, 0);
-		b = dimg->NewBrushARGB(0xffffffff);
-		dimg->DrawRect(Math::Coord2DDbl(0, 0), dimg->GetSize().ToDouble(), 0, b);
-		dimg->DelBrush(b);
-		b = dimg->NewBrushARGB(0xff000000);
-		dimg->DrawString(Math::Coord2DDbl(0, 0), CSTR("Sensor not found"), f, b);
-		dimg->DelBrush(b);
-		dimg->DelFont(f);
-	}
-	else
-	{
-		UTF8Char sbuff[64];
-		UTF8Char *sptr;
-		Data::ArrayListInt64 dateList;
-		Data::ArrayListDbl valList;
-		SSWR::SMonitor::ISMonitorCore::DevRecord2 *rec;
-		me->core->DeviceQueryRec(cliId, startTime, startTime + 86400000, &recList);
-		i = 0;
-		j = recList.GetCount();
-		while (i < j)
-		{
-			rec = recList.GetItem(i);
-			if (rec->nreading > readingIndex && ReadInt16(&rec->readings[readingIndex].status[0]) == sensorId && ReadInt16(&rec->readings[readingIndex].status[4]) == readingId)
-			{
-				if (ReadInt16(&rec->readings[readingIndex].status[6]) == readingType)
-				{
-					dateList.Add(rec->recTime);
-					valList.Add(rec->readings[readingIndex].reading);
-				}
-			}
-			else
-			{
-				k = rec->nreading;
-				while (k-- > 0)
-				{
-					if (ReadInt16(&rec->readings[k].status[0]) == sensorId && ReadInt16(&rec->readings[k].status[4]) == readingId)
-					{
-						if (ReadInt16(&rec->readings[k].status[6]) == readingType)
-						{
-							dateList.Add(rec->recTime);
-							valList.Add(rec->readings[k].reading);
-						}
-						break;
-					}
-				}
-			}
-			MemFree(rec);
-			i++;
-		}
-
-		Text::StringBuilderUTF8 sb;
+		Media::DrawFont *f;
+		Media::DrawBrush *b;
+		UOSInt readingIndex = (UOSInt)-1;
+		Int32 readingType = 0;
+		Data::LineChart *chart;
 		Sync::RWMutexUsage mutUsage(dev->mut, false);
-		if (dev->readingNames[readingIndex])
+		i = dev->nReading;
+		while (i-- > 0)
 		{
-			sb.AppendSlow(dev->readingNames[readingIndex]);
-		}
-		else
-		{
-			sb.AppendC(UTF8STRC("Sensor "));
-			sb.AppendI32(ReadInt16(dev->readings[readingIndex].status));
-			if (ReadInt16(&dev->readings[readingIndex].status[6]) != SSWR::SMonitor::SAnalogSensor::RT_UNKNOWN)
+			if (ReadInt16(&dev->readings[i].status[0]) == sensorId && ReadInt16(&dev->readings[i].status[4]) == readingId)
 			{
-				sb.AppendC(UTF8STRC(" "));
-				sb.Append(SSWR::SMonitor::SAnalogSensor::GetReadingTypeName((SSWR::SMonitor::SAnalogSensor::ReadingType)ReadInt16(&dev->readings[readingIndex].status[6])));
+				readingIndex = i;
+				readingType = ReadInt16(&dev->readings[i].status[6]);
+				break;
 			}
 		}
 		mutUsage.EndUse();
-		Data::DateTime dt;
-		dt.SetTicks(startTime);
-		dt.ToLocalTime();
-		sptr = dt.ToString(sbuff, "yyyy-MM-dd");
-		sb.AppendC(UTF8STRC(" "));
-		sb.AppendP(sbuff, sptr);
-
-		if (dateList.GetCount() >= 2)
-		{
-			NEW_CLASS(chart, Data::LineChart(sb.ToCString()));
-			chart->AddXDataDate(dateList.Ptr(), dateList.GetCount());
-			chart->AddYData(CSTR("Reading"), valList.Ptr(), valList.GetCount(), 0xffff0000, Data::LineChart::LS_LINE);
-			chart->SetDateFormat(CSTR(""));
-			chart->SetFontHeightPt(10);
-			chart->SetTimeZoneQHR(32);
-			chart->SetTimeFormat(CSTR("HH:mm"));
-			chart->Plot(dimg, 0, 0, UOSInt2Double(dimg->GetWidth()), UOSInt2Double(dimg->GetHeight()));
-			DEL_CLASS(chart);
-		}
-		else
+		if (readingIndex == (UOSInt)-1)
 		{
 			f = dimg->NewFontPx(CSTR("Arial"), 12, Media::DrawEngine::DFS_ANTIALIAS, 0);
 			b = dimg->NewBrushARGB(0xffffffff);
 			dimg->DrawRect(Math::Coord2DDbl(0, 0), dimg->GetSize().ToDouble(), 0, b);
 			dimg->DelBrush(b);
 			b = dimg->NewBrushARGB(0xff000000);
-			dimg->DrawString(Math::Coord2DDbl(0, 0), sb.ToCString(), f, b);
-			dimg->DrawString(Math::Coord2DDbl(0, 12), CSTR("Data not enough"), f, b);
+			dimg->DrawString(Math::Coord2DDbl(0, 0), CSTR("Sensor not found"), f, b);
 			dimg->DelBrush(b);
 			dimg->DelFont(f);
 		}
+		else
+		{
+			UTF8Char sbuff[64];
+			UTF8Char *sptr;
+			Data::ArrayListInt64 dateList;
+			Data::ArrayListDbl valList;
+			SSWR::SMonitor::ISMonitorCore::DevRecord2 *rec;
+			me->core->DeviceQueryRec(cliId, startTime, startTime + 86400000, &recList);
+			i = 0;
+			j = recList.GetCount();
+			while (i < j)
+			{
+				rec = recList.GetItem(i);
+				if (rec->nreading > readingIndex && ReadInt16(&rec->readings[readingIndex].status[0]) == sensorId && ReadInt16(&rec->readings[readingIndex].status[4]) == readingId)
+				{
+					if (ReadInt16(&rec->readings[readingIndex].status[6]) == readingType)
+					{
+						dateList.Add(rec->recTime);
+						valList.Add(rec->readings[readingIndex].reading);
+					}
+				}
+				else
+				{
+					k = rec->nreading;
+					while (k-- > 0)
+					{
+						if (ReadInt16(&rec->readings[k].status[0]) == sensorId && ReadInt16(&rec->readings[k].status[4]) == readingId)
+						{
+							if (ReadInt16(&rec->readings[k].status[6]) == readingType)
+							{
+								dateList.Add(rec->recTime);
+								valList.Add(rec->readings[k].reading);
+							}
+							break;
+						}
+					}
+				}
+				MemFree(rec);
+				i++;
+			}
+
+			Text::StringBuilderUTF8 sb;
+			Sync::RWMutexUsage mutUsage(dev->mut, false);
+			if (dev->readingNames[readingIndex])
+			{
+				sb.AppendSlow(dev->readingNames[readingIndex]);
+			}
+			else
+			{
+				sb.AppendC(UTF8STRC("Sensor "));
+				sb.AppendI32(ReadInt16(dev->readings[readingIndex].status));
+				if (ReadInt16(&dev->readings[readingIndex].status[6]) != SSWR::SMonitor::SAnalogSensor::RT_UNKNOWN)
+				{
+					sb.AppendC(UTF8STRC(" "));
+					sb.Append(SSWR::SMonitor::SAnalogSensor::GetReadingTypeName((SSWR::SMonitor::SAnalogSensor::ReadingType)ReadInt16(&dev->readings[readingIndex].status[6])));
+				}
+			}
+			mutUsage.EndUse();
+			Data::DateTime dt;
+			dt.SetTicks(startTime);
+			dt.ToLocalTime();
+			sptr = dt.ToString(sbuff, "yyyy-MM-dd");
+			sb.AppendC(UTF8STRC(" "));
+			sb.AppendP(sbuff, sptr);
+
+			if (dateList.GetCount() >= 2)
+			{
+				NEW_CLASS(chart, Data::LineChart(sb.ToCString()));
+				chart->AddXDataDate(dateList.Ptr(), dateList.GetCount());
+				chart->AddYData(CSTR("Reading"), valList.Ptr(), valList.GetCount(), 0xffff0000, Data::LineChart::LS_LINE);
+				chart->SetDateFormat(CSTR(""));
+				chart->SetFontHeightPt(10);
+				chart->SetTimeZoneQHR(32);
+				chart->SetTimeFormat(CSTR("HH:mm"));
+				chart->Plot(dimg, 0, 0, UOSInt2Double(dimg->GetWidth()), UOSInt2Double(dimg->GetHeight()));
+				DEL_CLASS(chart);
+			}
+			else
+			{
+				f = dimg->NewFontPx(CSTR("Arial"), 12, Media::DrawEngine::DFS_ANTIALIAS, 0);
+				b = dimg->NewBrushARGB(0xffffffff);
+				dimg->DrawRect(Math::Coord2DDbl(0, 0), dimg->GetSize().ToDouble(), 0, b);
+				dimg->DelBrush(b);
+				b = dimg->NewBrushARGB(0xff000000);
+				dimg->DrawString(Math::Coord2DDbl(0, 0), sb.ToCString(), f, b);
+				dimg->DrawString(Math::Coord2DDbl(0, 12), CSTR("Data not enough"), f, b);
+				dimg->DelBrush(b);
+				dimg->DelFont(f);
+			}
+		}
+		
+		Exporter::GUIPNGExporter *exporter;
+		Media::ImageList *imgList;
+
+		NEW_CLASS(imgList, Media::ImageList(CSTR("temp.png")));
+		imgList->AddImage(dimg->ToStaticImage(), 0);
+		deng->DeleteImage(dimg.Ptr());
+
+		IO::MemoryStream mstm;
+		NEW_CLASS(exporter, Exporter::GUIPNGExporter());
+		exporter->ExportFile(mstm, CSTR("temp.png"), imgList, 0);
+		DEL_CLASS(exporter);
+		DEL_CLASS(imgList);
+
+		buff = mstm.GetBuff(&buffSize);
+		resp->AddDefHeaders(req);
+		resp->AddContentType(CSTR("image/png"));
+		resp->AddContentLength(buffSize);
+		resp->AddHeader(CSTR("Cache-Control"), CSTR("no-cache"));
+		resp->Write(buff, buffSize);
+		return true;
 	}
-	
-	Exporter::GUIPNGExporter *exporter;
-	Media::ImageList *imgList;
-
-	NEW_CLASS(imgList, Media::ImageList(CSTR("temp.png")));
-	imgList->AddImage(dimg->ToStaticImage(), 0);
-	deng->DeleteImage(dimg);
-
-	IO::MemoryStream mstm;
-	NEW_CLASS(exporter, Exporter::GUIPNGExporter());
-	exporter->ExportFile(mstm, CSTR("temp.png"), imgList, 0);
-	DEL_CLASS(exporter);
-	DEL_CLASS(imgList);
-
-	buff = mstm.GetBuff(&buffSize);
-	resp->AddDefHeaders(req);
-	resp->AddContentType(CSTR("image/png"));
-	resp->AddContentLength(buffSize);
-	resp->AddHeader(CSTR("Cache-Control"), CSTR("no-cache"));
-	resp->Write(buff, buffSize);
-	return true;
+	else
+	{
+		return resp->ResponseError(req, Net::WebStatus::SC_INTERNAL_SERVER_ERROR);
+	}
 }
 
 Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserPasswordReq(SSWR::SMonitor::SMonitorWebHandler *me, NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp)

@@ -176,7 +176,7 @@ Bool Text::Doc::TextDocument::BeginPrint(Media::IPrintDocument *doc)
 	return true;
 }
 
-Bool Text::Doc::TextDocument::PrintPage(Media::DrawImage *printPage)
+Bool Text::Doc::TextDocument::PrintPage(NotNullPtr<Media::DrawImage> printPage)
 {
 	/////////////////////////
 	return false;

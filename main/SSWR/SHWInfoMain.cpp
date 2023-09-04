@@ -62,7 +62,7 @@ public:
 		return true;
 	}
 
-	virtual Bool PrintPage(Media::DrawImage *printPage) //return has more pages
+	virtual Bool PrintPage(NotNullPtr<Media::DrawImage> printPage) //return has more pages
 	{
 		UOSInt w = printPage->GetWidth();
 		UOSInt h = printPage->GetHeight();

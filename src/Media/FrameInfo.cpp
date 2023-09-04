@@ -5,22 +5,18 @@
 
 Media::FrameInfo::FrameInfo()
 {
-	this->InitFrameInfo();
 }
 
 Media::FrameInfo::~FrameInfo()
 {
-	this->DeinitFrameInfo();
 }
 
 void Media::FrameInfo::InitFrameInfo()
 {
-	NEW_CLASS(this->color, Media::ColorProfile());
 }
 
 void Media::FrameInfo::DeinitFrameInfo()
 {
-	SDEL_CLASS(this->color);
 }
 
 void Media::FrameInfo::Clear()
@@ -54,7 +50,7 @@ void Media::FrameInfo::Set(const FrameInfo *info)
 	this->vdpi = info->vdpi;
 	this->ftype = info->ftype;
 	this->atype = info->atype;
-	this->color->Set(info->color);
+	this->color.Set(info->color);
 	this->rotateType = info->rotateType;
 	this->yuvType = info->yuvType;
 	this->ycOfst = info->ycOfst;
@@ -113,7 +109,7 @@ void Media::FrameInfo::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
 	sb->Append(Media::YCOffsetGetName(this->ycOfst));
 	sb->AppendC(UTF8STRC("\r\n"));
 	sb->AppendC(UTF8STRC("\r\nColor Profile:\r\n"));
-	this->color->ToString(sb);
+	this->color.ToString(sb);
 }
 
 Text::CString Media::FrameTypeGetName(FrameType frameType)

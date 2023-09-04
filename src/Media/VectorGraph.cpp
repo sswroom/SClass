@@ -63,7 +63,7 @@ UOSInt Media::VectorGraph::VectorPenStyle::GetIndex()
 	return this->index;
 }
 
-Media::DrawPen *Media::VectorGraph::VectorPenStyle::CreateDrawPen(Double oriDPI, Media::DrawImage *dimg)
+Media::DrawPen *Media::VectorGraph::VectorPenStyle::CreateDrawPen(Double oriDPI, NotNullPtr<Media::DrawImage> dimg)
 {
 	Double thick = this->thick * dimg->GetHDPI() / oriDPI;
 	return dimg->NewPenARGB(this->color, thick, this->pattern, this->nPattern);
@@ -121,7 +121,7 @@ UInt32 Media::VectorGraph::VectorFontStyle::GetCodePage()
 	return this->codePage;
 }
 
-Media::DrawFont *Media::VectorGraph::VectorFontStyle::CreateDrawFont(Double oriDPI, Media::DrawImage *dimg)
+Media::DrawFont *Media::VectorGraph::VectorFontStyle::CreateDrawFont(Double oriDPI, NotNullPtr<Media::DrawImage> dimg)
 {
 	return dimg->NewFontPt(this->name->ToCString(), this->heightPt, this->fontStyle, this->codePage);
 }
@@ -148,25 +148,17 @@ UOSInt Media::VectorGraph::VectorBrushStyle::GetIndex()
 	return this->index;
 }
 
-Media::DrawBrush *Media::VectorGraph::VectorBrushStyle::CreateDrawBrush(Double oriDPI, Media::DrawImage *dimg)
+Media::DrawBrush *Media::VectorGraph::VectorBrushStyle::CreateDrawBrush(Double oriDPI, NotNullPtr<Media::DrawImage> dimg)
 {
 	return dimg->NewBrushARGB(this->color);
 }
 
-Media::VectorGraph::VectorGraph(UInt32 srid, Double width, Double height, Math::Unit::Distance::DistanceUnit unit, NotNullPtr<Media::DrawEngine> refEng, Media::ColorProfile *colorProfile)
+Media::VectorGraph::VectorGraph(UInt32 srid, Double width, Double height, Math::Unit::Distance::DistanceUnit unit, NotNullPtr<Media::DrawEngine> refEng, NotNullPtr<const Media::ColorProfile> colorProfile) : colorProfile(colorProfile)
 {
 	this->size = Math::Size2DDbl(width, height);
 	this->unit = unit;
 	this->align = Media::DrawEngine::DRAW_POS_TOPLEFT;
 	this->refEng = refEng;
-	if (colorProfile)
-	{
-		NEW_CLASS(this->colorProfile, Media::ColorProfile(colorProfile));
-	}
-	else
-	{
-		NEW_CLASS(this->colorProfile, Media::ColorProfile(Media::ColorProfile::CPT_SRGB));
-	}
 	NEW_CLASS(this->penStyles, Data::ArrayList<Media::VectorGraph::VectorPenStyle*>());
 	NEW_CLASS(this->fontStyles, Data::ArrayList<Media::VectorGraph::VectorFontStyle*>());
 	NEW_CLASS(this->brushStyles, Data::ArrayList<VectorBrushStyle*>());
@@ -215,7 +207,6 @@ Media::VectorGraph::~VectorGraph()
 		DEL_CLASS(vec);
 	}
 	DEL_CLASS(this->items);
-	DEL_CLASS(this->colorProfile);
 }
 
 Math::Size2DDbl Media::VectorGraph::GetSizeDbl() const
@@ -243,14 +234,14 @@ UInt32 Media::VectorGraph::GetBitCount() const
 	return 32;
 }
 
-Media::ColorProfile *Media::VectorGraph::GetColorProfile() const
+NotNullPtr<const Media::ColorProfile> Media::VectorGraph::GetColorProfile() const
 {
 	return this->colorProfile;
 }
 
-void Media::VectorGraph::SetColorProfile(const Media::ColorProfile *color)
+void Media::VectorGraph::SetColorProfile(NotNullPtr<const Media::ColorProfile> color)
 {
-	this->colorProfile->Set(color);
+	this->colorProfile.Set(color);
 }
 
 Media::AlphaType Media::VectorGraph::GetAlphaType() const
@@ -508,7 +499,7 @@ Bool Media::VectorGraph::DrawStringRotB(Math::Coord2DDbl center, Text::CString s
 	return true;
 }
 
-Bool Media::VectorGraph::DrawImagePt(DrawImage *img, Math::Coord2DDbl tl)
+Bool Media::VectorGraph::DrawImagePt(NotNullPtr<DrawImage> img, Math::Coord2DDbl tl)
 {
 	VectorStyles *style;
 	Media::SharedImage *simg;
@@ -746,7 +737,7 @@ Double Media::VectorGraph::GetVisibleHeightMM() const
 	return Math::Unit::Distance::Convert(this->unit, Math::Unit::Distance::DU_MILLIMETER, this->size.y);
 }
 
-void Media::VectorGraph::DrawTo(Media::DrawImage *dimg, UInt32 *imgDurMS)
+void Media::VectorGraph::DrawTo(NotNullPtr<Media::DrawImage> dimg, UInt32 *imgDurMS)
 {
 	UInt32 imgTimeMS = 0;
 	Double scale = (UOSInt2Double(dimg->GetWidth()) / this->size.x + UOSInt2Double(dimg->GetHeight()) / this->size.y) * 0.5;

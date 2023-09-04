@@ -81,10 +81,11 @@ Bool UI::DObj::OverlayDObj::DoEvents()
 
 void UI::DObj::OverlayDObj::DrawObject(Media::DrawImage *dimg)
 {
-	if (this->bmp)
+	NotNullPtr<Media::DrawImage> bmp;
+	if (bmp.Set(this->bmp))
 	{
 		Math::Coord2DDbl tl = GetCurrPos().ToDouble();
-		dimg->DrawImagePt(this->bmp, tl);
+		dimg->DrawImagePt(bmp, tl);
 	}
 	else if (this->imgList)
 	{

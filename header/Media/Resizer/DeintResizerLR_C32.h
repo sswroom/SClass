@@ -29,7 +29,7 @@ namespace Media
 			void DestoryVertO();
 			void DestoryVertE();
 		public:
-			DeintResizerLR_C32(UOSInt hnTap, UOSInt vnTap, const Media::ColorProfile *destColor, Media::ColorManagerSess *colorSess, Media::AlphaType srcAlphaType, Double srcRefLuminance, Media::PixelFormat pf);
+			DeintResizerLR_C32(UOSInt hnTap, UOSInt vnTap, NotNullPtr<const Media::ColorProfile> destColor, Media::ColorManagerSess *colorSess, Media::AlphaType srcAlphaType, Double srcRefLuminance, Media::PixelFormat pf);
 			virtual ~DeintResizerLR_C32();
 
 			virtual void DeintResize(Media::IDeintResizer::DeintType dType, UInt8 *src, UOSInt sbpl, Double swidth, Double sheight, UInt8 *dest, UOSInt dbpl, UOSInt dwidth, UOSInt dheight, Bool upsideDown);

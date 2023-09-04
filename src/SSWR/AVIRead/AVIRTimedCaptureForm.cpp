@@ -188,7 +188,7 @@ void __stdcall SSWR::AVIRead::AVIRTimedCaptureForm::OnStartClicked(void *userObj
 			me->frameCnt = 0;
 			me->saveCnt = 0;
 			Media::ColorProfile dProfile(Media::ColorProfile::CPT_SRGB);
-			me->csConv = Media::CS::CSConverter::NewConverter(cfmt->fourcc, cfmt->bpp, me->videoInfo.pf, me->videoInfo.color, 0, 32, Media::PF_B8G8R8A8, &dProfile, Media::ColorProfile::YUVT_UNKNOWN, 0);
+			me->csConv = Media::CS::CSConverter::NewConverter(cfmt->fourcc, cfmt->bpp, me->videoInfo.pf, me->videoInfo.color, 0, 32, Media::PF_B8G8R8A8, dProfile, Media::ColorProfile::YUVT_UNKNOWN, 0);
 			if (me->csConv == 0)
 			{
 				DEL_CLASS(me->timedImageList);
@@ -242,7 +242,7 @@ void __stdcall SSWR::AVIRead::AVIRTimedCaptureForm::OnVideoFrame(UInt32 frameTim
 		Media::ColorProfile sRGB(Media::ColorProfile::CPT_SRGB);
 		dt.SetCurrTimeUTC();
 
-		NEW_CLASS(simg, Media::StaticImage(me->videoInfo.dispSize, 0, 32, Media::PF_B8G8R8A8, me->videoInfo.dispSize.x * me->videoInfo.dispSize.y << 2, &sRGB, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+		NEW_CLASS(simg, Media::StaticImage(me->videoInfo.dispSize, 0, 32, Media::PF_B8G8R8A8, me->videoInfo.dispSize.x * me->videoInfo.dispSize.y << 2, sRGB, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 		me->csConv->ConvertV2(imgData, simg->data, me->videoInfo.dispSize.x, me->videoInfo.dispSize.y, me->videoInfo.storeSize.x, me->videoInfo.storeSize.y, (OSInt)simg->GetDataBpl(), frameType, ycOfst);
 		NEW_CLASS(imgList, Media::ImageList(CSTR("Temp")));
 		imgList->AddImage(simg, 0);

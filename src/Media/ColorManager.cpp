@@ -563,7 +563,7 @@ Bool Media::MonitorColorManager::SetMonProfileFile(NotNullPtr<Text::String> file
 	}
 }
 
-void Media::MonitorColorManager::SetMonProfile(Media::ColorProfile *color)
+void Media::MonitorColorManager::SetMonProfile(NotNullPtr<const Media::ColorProfile> color)
 {
 	this->rgb.monProfileType = Media::ColorProfile::CPT_CUSTOM;
 	this->rgb.monProfile.Set(color);
@@ -631,7 +631,7 @@ Bool Media::MonitorColorManager::SetFromProfileFile(NotNullPtr<Text::String> fil
 				if (profile->GetColorPrimaries(cp.GetPrimaries()) && profile->GetRedTransferParam(cp.GetRTranParam()) && profile->GetGreenTransferParam(cp.GetGTranParam()) && profile->GetBlueTransferParam(cp.GetBTranParam()))
 				{
 					succ = true;
-					this->rgb.monProfile.Set(&cp);
+					this->rgb.monProfile.Set(cp);
 					this->rgb.monProfile.SetRAWICC(fileBuff.GetPtr());
 				}
 				DEL_CLASS(profile);
@@ -839,14 +839,14 @@ void Media::ColorManager::SetDefPProfile(Media::ColorProfile::CommonProfileType 
 	}
 }
 
-Media::ColorProfile *Media::ColorManager::GetDefVProfile()
+NotNullPtr<Media::ColorProfile> Media::ColorManager::GetDefVProfile()
 {
-	return &this->defVProfile;
+	return this->defVProfile;
 }
 
-Media::ColorProfile *Media::ColorManager::GetDefPProfile()
+NotNullPtr<Media::ColorProfile> Media::ColorManager::GetDefPProfile()
 {
-	return &this->defPProfile;
+	return this->defPProfile;
 }
 
 Media::ColorProfile::CommonProfileType Media::ColorManager::GetDefVProfileType()
@@ -960,12 +960,12 @@ const Media::IColorHandler::RGBPARAM2 *Media::ColorManagerSess::GetRGBParam()
 	return this->monColor->GetRGBParam();
 }
 
-Media::ColorProfile *Media::ColorManagerSess::GetDefVProfile()
+NotNullPtr<Media::ColorProfile> Media::ColorManagerSess::GetDefVProfile()
 {
 	return this->colorMgr->GetDefVProfile();
 }
 
-Media::ColorProfile *Media::ColorManagerSess::GetDefPProfile()
+NotNullPtr<Media::ColorProfile> Media::ColorManagerSess::GetDefPProfile()
 {
 	return this->colorMgr->GetDefPProfile();
 }

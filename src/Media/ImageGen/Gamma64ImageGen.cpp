@@ -18,7 +18,7 @@ Text::CString Media::ImageGen::Gamma64ImageGen::GetName()
 	return CSTR("Gamma Test 64-bit");
 }
 
-Media::Image *Media::ImageGen::Gamma64ImageGen::GenerateImage(Media::ColorProfile *colorProfile, Math::Size2D<UOSInt> size)
+Media::Image *Media::ImageGen::Gamma64ImageGen::GenerateImage(NotNullPtr<const Media::ColorProfile> colorProfile, Math::Size2D<UOSInt> size)
 {
 	Media::StaticImage *outImage;
 	UInt16 *imgPtr;
@@ -28,9 +28,9 @@ Media::Image *Media::ImageGen::Gamma64ImageGen::GenerateImage(Media::ColorProfil
 	UOSInt bpl = size.x << 4;
 	if (size.x < 2 || size.y < 2)
 		return 0;
-	Media::CS::TransferFunc *rfunc = Media::CS::TransferFunc::CreateFunc(colorProfile->GetRTranParam());
-	Media::CS::TransferFunc *gfunc = Media::CS::TransferFunc::CreateFunc(colorProfile->GetGTranParam());
-	Media::CS::TransferFunc *bfunc = Media::CS::TransferFunc::CreateFunc(colorProfile->GetBTranParam());
+	Media::CS::TransferFunc *rfunc = Media::CS::TransferFunc::CreateFunc(colorProfile->GetRTranParamRead());
+	Media::CS::TransferFunc *gfunc = Media::CS::TransferFunc::CreateFunc(colorProfile->GetGTranParamRead());
+	Media::CS::TransferFunc *bfunc = Media::CS::TransferFunc::CreateFunc(colorProfile->GetBTranParamRead());
 	NEW_CLASS(outImage, Media::StaticImage(size, 0, 64, Media::PF_LE_B16G16R16A16, 0, colorProfile, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 	imgPtr = (UInt16*)outImage->data;
 	i = size.x >> 1;

@@ -20,7 +20,7 @@ Media::Image::Image(Math::Size2D<UOSInt> dispSize)
 	this->info.par2 = 1;
 	this->info.hdpi = 96;
 	this->info.vdpi = 96;
-	this->info.color->SetCommonProfile(Media::ColorProfile::CPT_PUNKNOWN);
+	this->info.color.SetCommonProfile(Media::ColorProfile::CPT_PUNKNOWN);
 	this->info.atype = Media::AT_ALPHA;
 	this->info.yuvType = Media::ColorProfile::YUVT_UNKNOWN;
 	this->info.rotateType = Media::RotateType::None;
@@ -29,7 +29,7 @@ Media::Image::Image(Math::Size2D<UOSInt> dispSize)
 	this->pal = 0;
 }
 
-Media::Image::Image(Math::Size2D<UOSInt> dispSize, Math::Size2D<UOSInt> storeSize, UInt32 fourcc, UInt32 bpp, Media::PixelFormat pf, UOSInt maxSize, const Media::ColorProfile *color, Media::ColorProfile::YUVType yuvType, Media::AlphaType atype, Media::YCOffset ycOfst)
+Media::Image::Image(Math::Size2D<UOSInt> dispSize, Math::Size2D<UOSInt> storeSize, UInt32 fourcc, UInt32 bpp, Media::PixelFormat pf, UOSInt maxSize, NotNullPtr<const Media::ColorProfile> color, Media::ColorProfile::YUVType yuvType, Media::AlphaType atype, Media::YCOffset ycOfst)
 {
 	this->exif = 0;
 	this->hasHotSpot = false;
@@ -44,14 +44,7 @@ Media::Image::Image(Math::Size2D<UOSInt> dispSize, Math::Size2D<UOSInt> storeSiz
 	this->info.par2 = 1;
 	this->info.hdpi = 96;
 	this->info.vdpi = 96;
-	if (color == 0)
-	{
-		this->info.color->SetCommonProfile(Media::ColorProfile::CPT_PUNKNOWN);
-	}
-	else
-	{
-		this->info.color->Set(color);
-	}
+	this->info.color.Set(color);
 	this->info.atype = atype;
 	this->info.yuvType = yuvType;
 	this->info.ycOfst = ycOfst;
@@ -269,7 +262,7 @@ OSInt Media::Image::GetHotSpotY() const
 Media::StaticImage *Media::Image::CreateStaticImage() const
 {
 	Media::StaticImage *outImg;
-	NEW_CLASS(outImg, Media::StaticImage(&this->info));
+	NEW_CLASS(outImg, Media::StaticImage(this->info));
 	if (this->exif)
 	{
 		outImg->exif = this->exif->Clone();
@@ -299,7 +292,7 @@ Media::StaticImage *Media::Image::CreateSubImage(Math::RectArea<OSInt> area) con
 	frameInfo.storeSize = frameInfo.dispSize;
 	frameInfo.byteSize = frameInfo.storeSize.CalcArea() * (frameInfo.storeBPP >> 3);
 	Media::StaticImage *outImg;
-	NEW_CLASS(outImg, Media::StaticImage(&frameInfo));
+	NEW_CLASS(outImg, Media::StaticImage(frameInfo));
 	if (this->exif)
 	{
 		outImg->exif = this->exif->Clone();

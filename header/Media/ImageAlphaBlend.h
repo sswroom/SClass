@@ -16,9 +16,9 @@ namespace Media
 	public:
 		virtual ~ImageAlphaBlend();
 
-		void SetSourceProfile(const Media::ColorProfile *sProfile);
-		void SetDestProfile(const Media::ColorProfile *dProfile);
-		void SetOutputProfile(const Media::ColorProfile *oProfile);
+		void SetSourceProfile(NotNullPtr<const Media::ColorProfile> sProfile);
+		void SetDestProfile(NotNullPtr<const Media::ColorProfile> dProfile);
+		void SetOutputProfile(NotNullPtr<const Media::ColorProfile> oProfile);
 
 //		static void Add(UInt8 *dest, OSInt dbpl, UInt8 *src, OSInt sbpl, OSInt width, OSInt height);
 //		static void Subtract(UInt8 *dest, OSInt dbpl, UInt8 *src, OSInt sbpl, OSInt width, OSInt height);

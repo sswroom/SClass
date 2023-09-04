@@ -442,7 +442,7 @@ Media::IMediaSource *Parser::FileParser::QTParser::ParseStblAtom(NotNullPtr<IO::
 		frInfo.vdpi = 96;
 		frInfo.ftype = Media::FT_NON_INTERLACE;
 		frInfo.atype = Media::AT_NO_ALPHA;
-		frInfo.color->SetCommonProfile(Media::ColorProfile::CPT_VUNKNOWN);
+		frInfo.color.SetCommonProfile(Media::ColorProfile::CPT_VUNKNOWN);
 		frInfo.yuvType = Media::ColorProfile::YUVT_UNKNOWN;
 		frInfo.ycOfst = Media::YCOFST_C_CENTER_LEFT;
 		frInfo.rotateType = Media::RotateType::None;
@@ -657,9 +657,9 @@ Media::IMediaSource *Parser::FileParser::QTParser::ParseStblAtom(NotNullPtr<IO::
 							}
 							if (ttype != Media::CS::TRANT_VUNKNOWN)
 							{
-								frInfo.color->GetRTranParam()->Set(ttype, 2.2);
-								frInfo.color->GetGTranParam()->Set(ttype, 2.2);
-								frInfo.color->GetBTranParam()->Set(ttype, 2.2);
+								frInfo.color.GetRTranParam()->Set(ttype, 2.2);
+								frInfo.color.GetGTranParam()->Set(ttype, 2.2);
+								frInfo.color.GetBTranParam()->Set(ttype, 2.2);
 							}
 
 							switch (ReadMUInt16(&buff[atomOfst + 16])) //YUV Matrix
@@ -677,13 +677,13 @@ Media::IMediaSource *Parser::FileParser::QTParser::ParseStblAtom(NotNullPtr<IO::
 							switch (ReadMUInt16(&buff[atomOfst + 12])) //Color Primaries
 							{
 							case 1:
-								frInfo.color->GetPrimaries()->SetColorType(Media::ColorProfile::CT_SRGB);
+								frInfo.color.GetPrimaries()->SetColorType(Media::ColorProfile::CT_SRGB);
 								break;
 							case 5:
-								frInfo.color->GetPrimaries()->SetColorType(Media::ColorProfile::CT_BT470BG);
+								frInfo.color.GetPrimaries()->SetColorType(Media::ColorProfile::CT_BT470BG);
 								break;
 							case 6:
-								frInfo.color->GetPrimaries()->SetColorType(Media::ColorProfile::CT_SMPTE240M);
+								frInfo.color.GetPrimaries()->SetColorType(Media::ColorProfile::CT_SMPTE240M);
 								break;
 							}
 						}

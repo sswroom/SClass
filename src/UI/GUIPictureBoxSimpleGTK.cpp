@@ -260,9 +260,10 @@ void UI::GUIPictureBoxSimple::SetImageDImg(Media::DrawImage *img)
 		this->eng->DeleteImage(this->prevImageD);
 		this->prevImageD = 0;
 	}
-	if (img)
+	NotNullPtr<Media::DrawImage> imgnn;
+	if (imgnn.Set(img))
 	{
-		this->prevImageD = this->eng->CloneImage(img);
+		this->prevImageD = this->eng->CloneImage(imgnn);
 		if (this->prevImageD == 0)
 		{
 		}

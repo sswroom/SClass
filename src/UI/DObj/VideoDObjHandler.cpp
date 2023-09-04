@@ -37,10 +37,11 @@ void UI::DObj::VideoDObjHandler::DrawBkg(Media::DrawImage *dimg)
 
 void UI::DObj::VideoDObjHandler::DrawVideo(Media::DrawImage *dimg)
 {
-	if (this->frameImg)
+	NotNullPtr<Media::DrawImage> frameImg;
+	if (frameImg.Set(this->frameImg))
 	{
 		Sync::MutexUsage mutUsage(this->frameMut);
-		dimg->DrawImagePt(this->frameImg, this->videoTL.ToDouble());
+		dimg->DrawImagePt(frameImg, this->videoTL.ToDouble());
 	}
 }
 

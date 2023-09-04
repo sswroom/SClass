@@ -153,7 +153,7 @@ void Media::RGBColorFilter::SetGammaCorr(Double *gammaParam, UOSInt gammaCnt)
 	}
 }
 
-void Media::RGBColorFilter::SetParameter(Double brightness, Double contrast, Double gamma, Media::ColorProfile *color, UInt32 bpp, Media::PixelFormat pf, UInt32 hdrLev)
+void Media::RGBColorFilter::SetParameter(Double brightness, Double contrast, Double gamma, NotNullPtr<const Media::ColorProfile> color, UInt32 bpp, Media::PixelFormat pf, UInt32 hdrLev)
 {
 	this->brightness = brightness;
 	this->contrast = contrast;
@@ -169,9 +169,9 @@ void Media::RGBColorFilter::SetParameter(Double brightness, Double contrast, Dou
 	}
 
 	UOSInt i;
-	Media::CS::TransferFunc *rtFunc = Media::CS::TransferFunc::CreateFunc(color->GetRTranParam());
-	Media::CS::TransferFunc *gtFunc = Media::CS::TransferFunc::CreateFunc(color->GetGTranParam());
-	Media::CS::TransferFunc *btFunc = Media::CS::TransferFunc::CreateFunc(color->GetBTranParam());
+	Media::CS::TransferFunc *rtFunc = Media::CS::TransferFunc::CreateFunc(color->GetRTranParamRead());
+	Media::CS::TransferFunc *gtFunc = Media::CS::TransferFunc::CreateFunc(color->GetGTranParamRead());
+	Media::CS::TransferFunc *btFunc = Media::CS::TransferFunc::CreateFunc(color->GetBTranParamRead());
 	if (bpp == 24 || bpp == 32)
 	{
 		Int16 *srcLUT;

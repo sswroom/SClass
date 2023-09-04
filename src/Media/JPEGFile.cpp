@@ -461,7 +461,7 @@ Bool Media::JPEGFile::ParseJPEGHeaders(NotNullPtr<IO::StreamData> fd, Media::EXI
 
 void Media::JPEGFile::WriteJPGBuffer(NotNullPtr<IO::Stream> stm, const UInt8 *jpgBuff, UOSInt buffSize, Media::Image *oriImg)
 {
-	if (oriImg != 0 && (oriImg->exif != 0 || oriImg->info.color->GetRAWICC() != 0) && jpgBuff[0] == 0xff && jpgBuff[1] == 0xd8)
+	if (oriImg != 0 && (oriImg->exif != 0 || oriImg->info.color.GetRAWICC() != 0) && jpgBuff[0] == 0xff && jpgBuff[1] == 0xd8)
 	{
 		UOSInt i;
 		UOSInt j;
@@ -480,7 +480,7 @@ void Media::JPEGFile::WriteJPGBuffer(NotNullPtr<IO::Stream> stm, const UInt8 *jp
 			}
 			if (jpgBuff[i + 1] == 0xdb)
 			{
-				const UInt8 *iccBuff = oriImg->info.color->GetRAWICC();
+				const UInt8 *iccBuff = oriImg->info.color.GetRAWICC();
 				if (iccBuff)
 				{
 					UOSInt iccLeng = ReadMUInt32(iccBuff);

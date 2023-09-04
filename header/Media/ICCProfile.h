@@ -46,12 +46,12 @@ namespace Media
 		Media::LUT *CreateRLUT() const;
 		Media::LUT *CreateGLUT() const;
 		Media::LUT *CreateBLUT() const;
-		Bool GetRedTransferParam(Media::CS::TransferParam *param) const;
-		Bool GetGreenTransferParam(Media::CS::TransferParam *param) const;
-		Bool GetBlueTransferParam(Media::CS::TransferParam *param) const;
-		Bool GetColorPrimaries(Media::ColorProfile::ColorPrimaries *color) const;
+		Bool GetRedTransferParam(NotNullPtr<Media::CS::TransferParam> param) const;
+		Bool GetGreenTransferParam(NotNullPtr<Media::CS::TransferParam> param) const;
+		Bool GetBlueTransferParam(NotNullPtr<Media::CS::TransferParam> param) const;
+		Bool GetColorPrimaries(NotNullPtr<Media::ColorProfile::ColorPrimaries> color) const;
 
-		Bool SetToColorProfile(Media::ColorProfile *colorProfile);
+		Bool SetToColorProfile(NotNullPtr<Media::ColorProfile> colorProfile);
 		void ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const;
 
 		static ICCProfile *Parse(Data::ByteArrayR buff);

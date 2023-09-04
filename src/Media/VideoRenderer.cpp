@@ -108,14 +108,14 @@ void Media::VideoRenderer::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, Vid
 		{
 			fcc = *(UInt32*)"YV12";
 		}
-		Media::CS::CSConverter *csconv = Media::CS::CSConverter::NewConverter(fcc, info->storeBPP, info->pf, info->color, 0, 32, Media::PF_B8G8R8A8, &color, yuvType, this->colorSess);
+		Media::CS::CSConverter *csconv = Media::CS::CSConverter::NewConverter(fcc, info->storeBPP, info->pf, info->color, 0, 32, Media::PF_B8G8R8A8, color, yuvType, this->colorSess);
 		if (csconv)
 		{
 			UTF8Char sbuff[512];
 			UTF8Char *sptr;
 			UOSInt i;
 			Media::StaticImage *simg;
-			NEW_CLASS(simg, Media::StaticImage(info->dispSize, 0, 32, Media::PF_B8G8R8A8, 0, &color, yuvType, Media::AT_NO_ALPHA, vbuff->ycOfst));
+			NEW_CLASS(simg, Media::StaticImage(info->dispSize, 0, 32, Media::PF_B8G8R8A8, 0, color, yuvType, Media::AT_NO_ALPHA, vbuff->ycOfst));
 			csconv->ConvertV2(&vbuff->srcBuff, simg->data, info->dispSize.x, info->dispSize.y, info->storeSize.x, info->storeSize.y, (OSInt)simg->GetDataBpl(), vbuff->frameType, vbuff->ycOfst);
 			ImageUtil_ImageFillAlpha32(simg->data, info->dispSize.x, info->dispSize.y, simg->GetDataBpl(), 0xff);
 			sptr = this->video->GetSourceName(sbuff);
@@ -700,15 +700,15 @@ Media::IImgResizer *Media::VideoRenderer::CreateResizer(Media::ColorManagerSess 
 	Media::ColorProfile destColor(Media::ColorProfile::CPT_VDISPLAY);
 	if (bitDepth == 16)
 	{
-		NEW_CLASS(resizer, Media::Resizer::LanczosResizerLR_C16(4, 3, &destColor, colorSess, Media::AT_NO_ALPHA, srcRefLuminance));
+		NEW_CLASS(resizer, Media::Resizer::LanczosResizerLR_C16(4, 3, destColor, colorSess, Media::AT_NO_ALPHA, srcRefLuminance));
 	}
 	else if (this->curr10Bit)
 	{
-		NEW_CLASS(resizer, Media::Resizer::LanczosResizerLR_C32(4, 3, &destColor, colorSess, Media::AT_NO_ALPHA, srcRefLuminance, Media::PF_LE_A2B10G10R10));
+		NEW_CLASS(resizer, Media::Resizer::LanczosResizerLR_C32(4, 3, destColor, colorSess, Media::AT_NO_ALPHA, srcRefLuminance, Media::PF_LE_A2B10G10R10));
 	}
 	else
 	{
-		NEW_CLASS(resizer, Media::Resizer::LanczosResizerLR_C32(4, 3, &destColor, colorSess, Media::AT_NO_ALPHA, srcRefLuminance, this->outputPf));
+		NEW_CLASS(resizer, Media::Resizer::LanczosResizerLR_C32(4, 3, destColor, colorSess, Media::AT_NO_ALPHA, srcRefLuminance, this->outputPf));
 	}
 	return resizer;
 }
@@ -751,11 +751,11 @@ void Media::VideoRenderer::CreateCSConv(ThreadStat *tstat, Media::FrameInfo *inf
 	{
 		if (tstat->cs10Bit)
 		{
-			tstat->csconv = Media::CS::CSConverter::NewConverter(fcc, info->storeBPP, info->pf, info->color, 0, 32, Media::PF_LE_A2B10G10R10, &color, yuvType, this->colorSess);
+			tstat->csconv = Media::CS::CSConverter::NewConverter(fcc, info->storeBPP, info->pf, info->color, 0, 32, Media::PF_LE_A2B10G10R10, color, yuvType, this->colorSess);
 		}
 		else
 		{
-			tstat->csconv = Media::CS::CSConverter::NewConverter(fcc, info->storeBPP, info->pf, info->color, 0, 32, Media::PF_B8G8R8A8, &color, yuvType, this->colorSess);
+			tstat->csconv = Media::CS::CSConverter::NewConverter(fcc, info->storeBPP, info->pf, info->color, 0, 32, Media::PF_B8G8R8A8, color, yuvType, this->colorSess);
 		}
 	}
 	else
@@ -763,7 +763,7 @@ void Media::VideoRenderer::CreateCSConv(ThreadStat *tstat, Media::FrameInfo *inf
 		color.GetRTranParam()->Set(Media::CS::TRANT_LINEAR, 1.0);
 		color.GetGTranParam()->Set(Media::CS::TRANT_LINEAR, 1.0);
 		color.GetBTranParam()->Set(Media::CS::TRANT_LINEAR, 1.0);
-		tstat->csconv = Media::CS::CSConverter::NewConverter(fcc, info->storeBPP, info->pf, info->color, *(UInt32*)"LRGB", 64, Media::PF_UNKNOWN, &color, yuvType, this->colorSess);
+		tstat->csconv = Media::CS::CSConverter::NewConverter(fcc, info->storeBPP, info->pf, info->color, *(UInt32*)"LRGB", 64, Media::PF_UNKNOWN, color, yuvType, this->colorSess);
 		if (info->dispSize.CalcArea() > tstat->lrSize)
 		{
 			tstat->lrSize = info->dispSize.CalcArea();
@@ -784,19 +784,19 @@ void Media::VideoRenderer::CreateThreadResizer(ThreadStat *tstat)
 
 	if (this->outputBpp == 16)
 	{
-		NEW_CLASS(tstat->resizer, Media::Resizer::LanczosResizerLR_C16(4, 3, &destColor, colorSess, Media::AT_NO_ALPHA, tstat->resizerSrcRefLuminance));
+		NEW_CLASS(tstat->resizer, Media::Resizer::LanczosResizerLR_C16(4, 3, destColor, colorSess, Media::AT_NO_ALPHA, tstat->resizerSrcRefLuminance));
 		tstat->procType = 0;
 		tstat->resizerBitDepth = 16;
 	}
 	else if (this->curr10Bit)
 	{
-		NEW_CLASS(tstat->dresizer, Media::Resizer::DeintResizerLR_C32(0, 0, &destColor, colorSess, Media::AT_NO_ALPHA, tstat->resizerSrcRefLuminance, Media::PF_LE_A2B10G10R10));
+		NEW_CLASS(tstat->dresizer, Media::Resizer::DeintResizerLR_C32(0, 0, destColor, colorSess, Media::AT_NO_ALPHA, tstat->resizerSrcRefLuminance, Media::PF_LE_A2B10G10R10));
 		tstat->procType = 1;
 		tstat->resizerBitDepth = 32;
 	}
 	else
 	{
-		NEW_CLASS(tstat->dresizer, Media::Resizer::DeintResizerLR_C32(0, 0, &destColor, colorSess, Media::AT_NO_ALPHA, tstat->resizerSrcRefLuminance, this->outputPf));
+		NEW_CLASS(tstat->dresizer, Media::Resizer::DeintResizerLR_C32(0, 0, destColor, colorSess, Media::AT_NO_ALPHA, tstat->resizerSrcRefLuminance, this->outputPf));
 		tstat->procType = 1;
 		tstat->resizerBitDepth = 32;
 	}
@@ -1987,7 +1987,7 @@ void Media::VideoRenderer::SetVideo(Media::IVideoSource *video)
 			this->buffs[i].srcBuff = MemAllocA64(UInt8, frameSize);
 		}
 
-		this->currSrcRefLuminance = Media::CS::TransferFunc::GetRefLuminance(&info.color->rtransfer);
+		this->currSrcRefLuminance = Media::CS::TransferFunc::GetRefLuminance(info.color.rtransfer);
 		this->srcColor.Set(info.color);
 		this->srcYUVType = info.yuvType;
 		i = this->threadCnt;
@@ -2107,9 +2107,9 @@ void Media::VideoRenderer::SetSrcRGBType(Media::CS::TransferType rgbType)
 {
 	UOSInt i;
 	this->VideoBeginLoad();
-	this->videoInfo.color->GetRTranParam()->Set(rgbType, 2.2);
-	this->videoInfo.color->GetGTranParam()->Set(rgbType, 2.2);
-	this->videoInfo.color->GetBTranParam()->Set(rgbType, 2.2);
+	this->videoInfo.color.GetRTranParam()->Set(rgbType, 2.2);
+	this->videoInfo.color.GetGTranParam()->Set(rgbType, 2.2);
+	this->videoInfo.color.GetBTranParam()->Set(rgbType, 2.2);
 	this->srcColor.GetRTranParam()->Set(rgbType, 2.2);
 	this->srcColor.GetGTranParam()->Set(rgbType, 2.2);
 	this->srcColor.GetBTranParam()->Set(rgbType, 2.2);
@@ -2121,13 +2121,13 @@ void Media::VideoRenderer::SetSrcRGBType(Media::CS::TransferType rgbType)
 	this->VideoEndLoad();
 }
 
-void Media::VideoRenderer::SetSrcRGBTransfer(const Media::CS::TransferParam *transf)
+void Media::VideoRenderer::SetSrcRGBTransfer(NotNullPtr<const Media::CS::TransferParam> transf)
 {
 	UOSInt i;
 	this->VideoBeginLoad();
-	this->videoInfo.color->GetRTranParam()->Set(transf);
-	this->videoInfo.color->GetGTranParam()->Set(transf);
-	this->videoInfo.color->GetBTranParam()->Set(transf);
+	this->videoInfo.color.GetRTranParam()->Set(transf);
+	this->videoInfo.color.GetGTranParam()->Set(transf);
+	this->videoInfo.color.GetBTranParam()->Set(transf);
 	this->srcColor.GetRTranParam()->Set(transf);
 	this->srcColor.GetGTranParam()->Set(transf);
 	this->srcColor.GetBTranParam()->Set(transf);
@@ -2145,11 +2145,11 @@ void Media::VideoRenderer::SetSrcPrimaries(Media::ColorProfile::ColorType colorT
 	this->VideoBeginLoad();
 	if (colorType == Media::ColorProfile::CT_VUNKNOWN)
 	{
-		this->videoInfo.color->GetPrimaries()->Set(this->srcColor.GetPrimaries());
+		this->videoInfo.color.GetPrimaries()->Set(this->srcColor.GetPrimaries());
 	}
 	else
 	{
-		this->videoInfo.color->GetPrimaries()->SetColorType(colorType);
+		this->videoInfo.color.GetPrimaries()->SetColorType(colorType);
 	}
 	i = this->threadCnt;
 	while (i-- > 0)
@@ -2159,11 +2159,11 @@ void Media::VideoRenderer::SetSrcPrimaries(Media::ColorProfile::ColorType colorT
 	this->VideoEndLoad();
 }
 
-void Media::VideoRenderer::SetSrcPrimaries(const Media::ColorProfile::ColorPrimaries *primaries)
+void Media::VideoRenderer::SetSrcPrimaries(NotNullPtr<const Media::ColorProfile::ColorPrimaries> primaries)
 {
 	UOSInt i;
 	this->VideoBeginLoad();
-	this->videoInfo.color->GetPrimaries()->Set(primaries);
+	this->videoInfo.color.GetPrimaries()->Set(primaries);
 	i = this->threadCnt;
 	while (i-- > 0)
 	{
@@ -2176,8 +2176,8 @@ void Media::VideoRenderer::SetSrcWP(Media::ColorProfile::WhitePointType wpType)
 {
 	UOSInt i;
 	this->VideoBeginLoad();
-	this->videoInfo.color->GetPrimaries()->SetWhiteType(wpType);
-	this->videoInfo.color->GetPrimaries()->colorType = Media::ColorProfile::CT_CUSTOM;
+	this->videoInfo.color.GetPrimaries()->SetWhiteType(wpType);
+	this->videoInfo.color.GetPrimaries()->colorType = Media::ColorProfile::CT_CUSTOM;
 	i = this->threadCnt;
 	while (i-- > 0)
 	{
@@ -2190,8 +2190,8 @@ void Media::VideoRenderer::SetSrcWPTemp(Double colorTemp)
 {
 	UOSInt i;
 	this->VideoBeginLoad();
-	this->videoInfo.color->GetPrimaries()->SetWhiteTemp(colorTemp);
-	this->videoInfo.color->GetPrimaries()->colorType = Media::ColorProfile::CT_CUSTOM;
+	this->videoInfo.color.GetPrimaries()->SetWhiteTemp(colorTemp);
+	this->videoInfo.color.GetPrimaries()->colorType = Media::ColorProfile::CT_CUSTOM;
 	i = this->threadCnt;
 	while (i-- > 0)
 	{

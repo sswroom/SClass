@@ -119,19 +119,20 @@ void Map::MapScheduler::DrawVector(Math::Geometry::Vector2D *vec)
 
 void Map::MapScheduler::DrawPoint(Math::Geometry::Point *pt)
 {
-	if (this->ico)
+	NotNullPtr<Media::DrawImage> ico;
+	if (ico.Set(this->ico))
 	{
 		Math::RectAreaDbl *objPtr = &this->objBounds[*this->objCnt];
 		Math::Coord2DDbl pts;
 		Double imgW;
 		Double imgH;
-		Double scale = this->img->GetHDPI() / this->ico->GetHDPI();
+		Double scale = this->img->GetHDPI() / ico->GetHDPI();
 		Double scnW = this->map->GetScnWidth();
 		Double scnH = this->map->GetScnHeight();
 		Double spotX = this->icoSpotX * scale;
 		Double spotY = this->icoSpotY * scale;
-		imgW = UOSInt2Double(this->ico->GetWidth()) * scale;
-		imgH = UOSInt2Double(this->ico->GetHeight()) * scale;
+		imgW = UOSInt2Double(ico->GetWidth()) * scale;
+		imgH = UOSInt2Double(ico->GetHeight()) * scale;
 		pts = this->map->MapXYToScnXY(pt->GetCenter());
 		*this->isLayerEmpty = false;
 		if (*this->objCnt >= this->maxCnt)
@@ -145,7 +146,7 @@ void Map::MapScheduler::DrawPoint(Math::Geometry::Point *pt)
 		objPtr->br.y = objPtr->tl.y + imgH;
 		if (objPtr->tl.x < scnW && objPtr->tl.y < scnH && objPtr->br.x >= 0 && objPtr->br.y >= 0)
 		{
-			this->img->DrawImagePt(this->ico, objPtr->tl);
+			this->img->DrawImagePt(ico, objPtr->tl);
 			objPtr += 1;
 			++*(this->objCnt);
 		}
@@ -304,10 +305,10 @@ Map::MapScheduler::~MapScheduler()
 	}
 }
 
-void Map::MapScheduler::SetMapView(Map::MapView *map, Media::DrawImage *img)
+void Map::MapScheduler::SetMapView(Map::MapView *map, NotNullPtr<Media::DrawImage> img)
 {
 	this->map = map;
-	this->img = img;
+	this->img = img.Ptr();
 }
 
 void Map::MapScheduler::SetDrawType(Map::MapDrawLayer *lyr, Media::DrawPen *p, Media::DrawBrush *b, Media::DrawImage *ico, Double icoSpotX, Double icoSpotY, Bool *isLayerEmpty)

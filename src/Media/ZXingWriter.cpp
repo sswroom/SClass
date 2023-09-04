@@ -22,7 +22,7 @@ Media::StaticImage *Media::ZXingWriter::GenQRCode(Text::CString content, Math::S
 #endif
 	ZXing::BitMatrix bitMatrix = writer.encode(s, (int)outputSize.x, (int) outputSize.y);
 	Media::StaticImage *simg;
-	NEW_CLASS(simg, Media::StaticImage(outputSize, 0, 1, Media::PixelFormat::PF_PAL_W1, 0, 0, Media::ColorProfile::YUVT_BT601, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+	NEW_CLASS(simg, Media::StaticImage(outputSize, 0, 1, Media::PixelFormat::PF_PAL_W1, 0, Media::ColorProfile(), Media::ColorProfile::YUVT_BT601, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 	WriteUInt32(&simg->pal[0], 0xFF000000);
 	WriteUInt32(&simg->pal[4], 0xFFFFFFFF);
 	UInt8 *imgPtr = simg->data;

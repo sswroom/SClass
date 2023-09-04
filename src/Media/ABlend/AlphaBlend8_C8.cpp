@@ -110,25 +110,25 @@ void Media::ABlend::AlphaBlend8_C8::UpdateLUT()
 		while (i-- > 0)
 		{
 			lut = this->lutList->GetItem(i);
-			if (lut->sProfile.Equals(&this->sProfile) && lut->dProfile.Equals(&this->dProfile) && lut->oProfile.Equals(&this->oProfile))
+			if (lut->sProfile.Equals(this->sProfile) && lut->dProfile.Equals(this->dProfile) && lut->oProfile.Equals(this->oProfile))
 			{
 				this->rgbTable = lut->rgbTable;
 				return;
 			}
 		}
 		NEW_CLASS(lut, LUTInfo());
-		lut->sProfile.Set(&this->sProfile);
-		lut->dProfile.Set(&this->dProfile);
-		lut->oProfile.Set(&this->oProfile);
+		lut->sProfile.Set(this->sProfile);
+		lut->dProfile.Set(this->dProfile);
+		lut->oProfile.Set(this->oProfile);
 		lut->rgbTable = MemAlloc(UInt8, 262144 + 8192 + 8192);
 		this->lutList->Add(lut);
 		this->rgbTable = lut->rgbTable;
 	}
 
 	Media::RGBLUTGen lutGen(this->colorSess);
-	lutGen.GenLRGB_BGRA8(this->rgbTable, &this->oProfile, 14, Media::CS::TransferFunc::GetRefLuminance(&this->sProfile.rtransfer));
-	lutGen.GenRGBA8_LRGBC((Int64*)&this->rgbTable[262144], &this->sProfile, &this->oProfile.primaries, 14);
-	lutGen.GenRGBA8_LRGBC((Int64*)&this->rgbTable[262144 + 8192], &this->dProfile, &this->oProfile.primaries, 14);
+	lutGen.GenLRGB_BGRA8(this->rgbTable, this->oProfile, 14, Media::CS::TransferFunc::GetRefLuminance(this->sProfile.rtransfer));
+	lutGen.GenRGBA8_LRGBC((Int64*)&this->rgbTable[262144], this->sProfile, this->oProfile.primaries, 14);
+	lutGen.GenRGBA8_LRGBC((Int64*)&this->rgbTable[262144 + 8192], this->dProfile, this->oProfile.primaries, 14);
 }
 
 UInt32 __stdcall Media::ABlend::AlphaBlend8_C8::ProcessThread(void *userObj)

@@ -7,13 +7,13 @@
 #include "Media/RGBLUTGen.h"
 #include "Media/CS/TransferFunc.h"
 
-Media::ColorConv::ColorConv(const Media::ColorProfile *srcColor, const Media::ColorProfile *destColor, Media::ColorManagerSess *colorSess) : srcColor(srcColor), destColor(destColor)
+Media::ColorConv::ColorConv(NotNullPtr<const Media::ColorProfile> srcColor, NotNullPtr<const Media::ColorProfile> destColor, Media::ColorManagerSess *colorSess) : srcColor(srcColor), destColor(destColor)
 {
 	this->colorSess = colorSess;
 	this->rgbTable = MemAlloc(UInt8, 256 * 4 * 8 + 262144);
 	Media::RGBLUTGen rgbGen(this->colorSess);
-	rgbGen.GenRGBA8_LRGBC((Int64*)this->rgbTable, &this->srcColor, this->destColor.GetPrimaries(), 14);
-	rgbGen.GenLRGB_BGRA8(this->rgbTable + 8192, &this->destColor, 14, Media::CS::TransferFunc::GetRefLuminance(&this->srcColor.rtransfer));
+	rgbGen.GenRGBA8_LRGBC((Int64*)this->rgbTable, this->srcColor, this->destColor.GetPrimaries(), 14);
+	rgbGen.GenLRGB_BGRA8(this->rgbTable + 8192, this->destColor, 14, Media::CS::TransferFunc::GetRefLuminance(this->srcColor.rtransfer));
 }
 
 Media::ColorConv::~ColorConv()
@@ -24,8 +24,8 @@ Media::ColorConv::~ColorConv()
 void Media::ColorConv::RGBParamChanged(const Media::IColorHandler::RGBPARAM2 *rgbParam)
 {
 	Media::RGBLUTGen rgbGen(this->colorSess);
-	rgbGen.GenRGBA8_LRGBC((Int64*)this->rgbTable, &this->srcColor, this->destColor.GetPrimaries(), 14);
-	rgbGen.GenLRGB_BGRA8(this->rgbTable + 8192, &this->destColor, 14, Media::CS::TransferFunc::GetRefLuminance(&this->srcColor.rtransfer));
+	rgbGen.GenRGBA8_LRGBC((Int64*)this->rgbTable, this->srcColor, this->destColor.GetPrimaries(), 14);
+	rgbGen.GenLRGB_BGRA8(this->rgbTable + 8192, this->destColor, 14, Media::CS::TransferFunc::GetRefLuminance(this->srcColor.rtransfer));
 }
 
 UInt32 Media::ColorConv::ConvRGB8(UInt32 c)
@@ -106,9 +106,9 @@ UInt32 Media::ColorConv::ConvARGB(Media::ColorProfile *srcColor, Media::ColorPro
 {
 	UInt8 buff[4];
 	const Media::IColorHandler::RGBPARAM2 *rgbParam;
-	Media::CS::TransferParam *rTran;
-	Media::CS::TransferParam *gTran;
-	Media::CS::TransferParam *bTran;
+	NotNullPtr<Media::CS::TransferParam> rTran;
+	NotNullPtr<Media::CS::TransferParam> gTran;
+	NotNullPtr<Media::CS::TransferParam> bTran;
 	Double rGammaVal;
 	Double gGammaVal;
 	Double bGammaVal;
@@ -127,55 +127,55 @@ UInt32 Media::ColorConv::ConvARGB(Media::ColorProfile *srcColor, Media::ColorPro
 	{
 		if (colorSess == 0)
 		{
-			NEW_CLASS(rTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
-			NEW_CLASS(gTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
-			NEW_CLASS(bTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
+			NEW_CLASSNN(rTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
+			NEW_CLASSNN(gTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
+			NEW_CLASSNN(bTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
 		}
 		else
 		{
 			rgbParam = colorSess->GetRGBParam();
-			NEW_CLASS(rTran, Media::CS::TransferParam(rgbParam->monProfile.GetRTranParamRead()));
-			NEW_CLASS(gTran, Media::CS::TransferParam(rgbParam->monProfile.GetGTranParamRead()));
-			NEW_CLASS(bTran, Media::CS::TransferParam(rgbParam->monProfile.GetBTranParamRead()));
+			NEW_CLASSNN(rTran, Media::CS::TransferParam(rgbParam->monProfile.GetRTranParamRead()));
+			NEW_CLASSNN(gTran, Media::CS::TransferParam(rgbParam->monProfile.GetGTranParamRead()));
+			NEW_CLASSNN(bTran, Media::CS::TransferParam(rgbParam->monProfile.GetBTranParamRead()));
 		}
 	}
 	else if (srcColor->GetRTranParam()->GetTranType() == Media::CS::TRANT_VUNKNOWN)
 	{
 		if (colorSess == 0)
 		{
-			NEW_CLASS(rTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
-			NEW_CLASS(gTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
-			NEW_CLASS(bTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
+			NEW_CLASSNN(rTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
+			NEW_CLASSNN(gTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
+			NEW_CLASSNN(bTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
 		}
 		else
 		{
-			Media::ColorProfile *defProfile = colorSess->GetDefVProfile();
-			NEW_CLASS(rTran, Media::CS::TransferParam(defProfile->GetRTranParam()));
-			NEW_CLASS(gTran, Media::CS::TransferParam(defProfile->GetGTranParam()));
-			NEW_CLASS(bTran, Media::CS::TransferParam(defProfile->GetBTranParam()));
+			NotNullPtr<Media::ColorProfile> defProfile = colorSess->GetDefVProfile();
+			NEW_CLASSNN(rTran, Media::CS::TransferParam(defProfile->GetRTranParamRead()));
+			NEW_CLASSNN(gTran, Media::CS::TransferParam(defProfile->GetGTranParamRead()));
+			NEW_CLASSNN(bTran, Media::CS::TransferParam(defProfile->GetBTranParamRead()));
 		}
 	}
 	else if (srcColor->GetRTranParam()->GetTranType() == Media::CS::TRANT_PUNKNOWN)
 	{
 		if (colorSess == 0)
 		{
-			NEW_CLASS(rTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
-			NEW_CLASS(gTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
-			NEW_CLASS(bTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
+			NEW_CLASSNN(rTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
+			NEW_CLASSNN(gTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
+			NEW_CLASSNN(bTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
 		}
 		else
 		{
-			Media::ColorProfile *defProfile = colorSess->GetDefPProfile();
-			NEW_CLASS(rTran, Media::CS::TransferParam(defProfile->GetRTranParam()));
-			NEW_CLASS(gTran, Media::CS::TransferParam(defProfile->GetGTranParam()));
-			NEW_CLASS(bTran, Media::CS::TransferParam(defProfile->GetBTranParam()));
+			NotNullPtr<Media::ColorProfile> defProfile = colorSess->GetDefPProfile();
+			NEW_CLASSNN(rTran, Media::CS::TransferParam(defProfile->GetRTranParamRead()));
+			NEW_CLASSNN(gTran, Media::CS::TransferParam(defProfile->GetGTranParamRead()));
+			NEW_CLASSNN(bTran, Media::CS::TransferParam(defProfile->GetBTranParamRead()));
 		}
 	}
 	else
 	{
-		NEW_CLASS(rTran, Media::CS::TransferParam(srcColor->GetRTranParam()));
-		NEW_CLASS(gTran, Media::CS::TransferParam(srcColor->GetGTranParam()));
-		NEW_CLASS(bTran, Media::CS::TransferParam(srcColor->GetBTranParam()));
+		NEW_CLASSNN(rTran, Media::CS::TransferParam(srcColor->GetRTranParamRead()));
+		NEW_CLASSNN(gTran, Media::CS::TransferParam(srcColor->GetGTranParamRead()));
+		NEW_CLASSNN(bTran, Media::CS::TransferParam(srcColor->GetBTranParamRead()));
 	}
 	Media::CS::TransferFunc *srFunc = Media::CS::TransferFunc::CreateFunc(rTran);
 	Media::CS::TransferFunc *sgFunc = Media::CS::TransferFunc::CreateFunc(gTran);
@@ -307,10 +307,10 @@ UInt32 Media::ColorConv::ConvARGB(Media::ColorProfile *srcColor, Media::ColorPro
 			}
 			else
 			{
-				Media::ColorProfile *defProfile = colorSess->GetDefVProfile();
-				rTran->Set(defProfile->GetRTranParam());
-				gTran->Set(defProfile->GetGTranParam());
-				bTran->Set(defProfile->GetBTranParam());
+				NotNullPtr<Media::ColorProfile> defProfile = colorSess->GetDefVProfile();
+				rTran->Set(defProfile->GetRTranParamRead());
+				gTran->Set(defProfile->GetGTranParamRead());
+				bTran->Set(defProfile->GetBTranParamRead());
 			}
 		}
 		else if (destColor->GetRTranParam()->GetTranType() == Media::CS::TRANT_PUNKNOWN)
@@ -323,7 +323,7 @@ UInt32 Media::ColorConv::ConvARGB(Media::ColorProfile *srcColor, Media::ColorPro
 			}
 			else
 			{
-				Media::ColorProfile *defProfile = colorSess->GetDefPProfile();
+				NotNullPtr<Media::ColorProfile> defProfile = colorSess->GetDefPProfile();
 				rTran->Set(defProfile->GetRTranParam());
 				gTran->Set(defProfile->GetGTranParam());
 				bTran->Set(defProfile->GetBTranParam());
@@ -372,8 +372,8 @@ UInt32 Media::ColorConv::ConvARGB(Media::ColorProfile *srcColor, Media::ColorPro
 	DEL_CLASS(drFunc);
 	DEL_CLASS(dgFunc);
 	DEL_CLASS(dbFunc);
-	DEL_CLASS(rTran);
-	DEL_CLASS(gTran);
-	DEL_CLASS(bTran);
+	rTran.Delete();
+	gTran.Delete();
+	bTran.Delete();
 	return *(UInt32*)buff;
 }

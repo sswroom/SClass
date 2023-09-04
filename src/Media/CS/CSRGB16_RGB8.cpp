@@ -29,8 +29,8 @@ void Media::CS::CSRGB16_RGB8::UpdateRGBTable()
 	{
 		this->rgbTable = MemAlloc(UInt8, 65536 * 3);
 	}
-	Media::ColorProfile *srcProfile;
-	Media::ColorProfile *destProfile;
+	NotNullPtr<Media::ColorProfile> srcProfile;
+	NotNullPtr<Media::ColorProfile> destProfile;
 	if (this->srcProfile.GetRTranParam()->GetTranType() == Media::CS::TRANT_VUNKNOWN)
 	{
 		srcProfile = this->colorSess->GetDefVProfile();
@@ -41,11 +41,11 @@ void Media::CS::CSRGB16_RGB8::UpdateRGBTable()
 	}
 	else if (this->srcProfile.GetRTranParam()->GetTranType() == Media::CS::TRANT_VDISPLAY || this->srcProfile.GetRTranParam()->GetTranType() == Media::CS::TRANT_PDISPLAY)
 	{
-		srcProfile = &this->rgbParam.monProfile;
+		srcProfile = this->rgbParam.monProfile;
 	}
 	else
 	{
-		srcProfile = &this->srcProfile;
+		srcProfile = this->srcProfile;
 	}
 	if (this->destProfile.GetRTranParam()->GetTranType() == Media::CS::TRANT_VDISPLAY)
 	{
@@ -62,7 +62,7 @@ void Media::CS::CSRGB16_RGB8::UpdateRGBTable()
 		rMul = this->rgbParam.MonRBrightness * tMul;
 		gMul = this->rgbParam.MonGBrightness * tMul;
 		bMul = this->rgbParam.MonBBrightness * tMul;
-		destProfile = &this->rgbParam.monProfile;
+		destProfile = this->rgbParam.monProfile;
 	}
 	else if (this->destProfile.GetRTranParam()->GetTranType() == Media::CS::TRANT_PDISPLAY)
 	{
@@ -79,7 +79,7 @@ void Media::CS::CSRGB16_RGB8::UpdateRGBTable()
 		rMul = this->rgbParam.MonRBrightness * tMul;
 		gMul = this->rgbParam.MonGBrightness * tMul;
 		bMul = this->rgbParam.MonBBrightness * tMul;
-		destProfile = &this->rgbParam.monProfile;
+		destProfile = this->rgbParam.monProfile;
 	}
 	else
 	{
@@ -103,7 +103,7 @@ void Media::CS::CSRGB16_RGB8::UpdateRGBTable()
 		}
 		else
 		{
-			destProfile = &this->destProfile;
+			destProfile = this->destProfile;
 		}
 	}
 	Media::CS::TransferFunc *irFunc = Media::CS::TransferFunc::CreateFunc(srcProfile->GetRTranParam());
@@ -151,7 +151,7 @@ void Media::CS::CSRGB16_RGB8::UpdateRGBTable()
 	DEL_CLASS(fbFunc);
 }
 
-Media::CS::CSRGB16_RGB8::CSRGB16_RGB8(UOSInt srcNBits, Media::PixelFormat srcPF, UOSInt destNBits, Media::PixelFormat destPF, Bool invert, const Media::ColorProfile *srcProfile, const Media::ColorProfile *destProfile, Media::ColorManagerSess *colorSess) : Media::CS::CSConverter(colorSess), srcProfile(srcProfile), destProfile(destProfile)
+Media::CS::CSRGB16_RGB8::CSRGB16_RGB8(UOSInt srcNBits, Media::PixelFormat srcPF, UOSInt destNBits, Media::PixelFormat destPF, Bool invert, NotNullPtr<const Media::ColorProfile> srcProfile, NotNullPtr<const Media::ColorProfile> destProfile, Media::ColorManagerSess *colorSess) : Media::CS::CSConverter(colorSess), srcProfile(srcProfile), destProfile(destProfile)
 {
 	this->srcNBits = srcNBits;
 	this->srcPF = srcPF;

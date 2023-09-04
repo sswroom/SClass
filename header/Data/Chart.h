@@ -60,7 +60,7 @@ namespace Data
 		virtual Text::String *GetYName(UOSInt index) const = 0;
 		virtual DataType GetYType(UOSInt index) const = 0;
 
-		virtual void Plot(Media::DrawImage *img, Double x, Double y, Double width, Double height) const = 0;
+		virtual void Plot(NotNullPtr<Media::DrawImage> img, Double x, Double y, Double width, Double height) const = 0;
 		virtual UOSInt GetLegendCount() const = 0;
 		virtual UTF8Char *GetLegend(UTF8Char *sbuff, UInt32 *color, UOSInt index) const = 0;
 

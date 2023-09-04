@@ -8,7 +8,7 @@ void __stdcall SSWR::AVIRead::AVIRLineSelector::OnResized(void *userObj)
 	me->UpdateLineStyles();
 }
 
-void SSWR::AVIRead::AVIRLineSelector::OnDraw(Media::DrawImage *img)
+void SSWR::AVIRead::AVIRLineSelector::OnDraw(NotNullPtr<Media::DrawImage> img)
 {
 	UOSInt defVal = this->env->GetDefLineStyle();
 	UOSInt currPos = this->GetVScrollPos();
@@ -26,18 +26,27 @@ void SSWR::AVIRead::AVIRLineSelector::OnDraw(Media::DrawImage *img)
 	UInt32 itemL = (UInt32)Double2Int32(5 * hdpi / ddpi);
 	UInt32 itemW = (UInt32)Double2Int32(120 * hdpi / ddpi);
 	NotNullPtr<Media::DrawEngine> deng = this->core->GetDrawEngine();
-	Media::DrawImage *tmpBmp;
+	NotNullPtr<Media::DrawImage> tmpBmp;
 	if (w >= itemW)
 	{
-		tmpBmp = deng->CreateImage32(Math::Size2D<UOSInt>((UInt32)Double2Int32(110 * hdpi / ddpi), itemH), Media::AT_NO_ALPHA);
+		if (!tmpBmp.Set(deng->CreateImage32(Math::Size2D<UOSInt>((UInt32)Double2Int32(110 * hdpi / ddpi), itemH), Media::AT_NO_ALPHA)))
+		{
+			return;
+		}
 	}
 	else if (w >= 10)
 	{
-		tmpBmp = deng->CreateImage32(Math::Size2D<UOSInt>(w - 10, itemH), Media::AT_NO_ALPHA);
+		if (!tmpBmp.Set(deng->CreateImage32(Math::Size2D<UOSInt>(w - 10, itemH), Media::AT_NO_ALPHA)))
+		{
+			return;
+		}
 	}
 	else
 	{
-		tmpBmp = deng->CreateImage32(Math::Size2D<UOSInt>(w, itemH), Media::AT_NO_ALPHA);
+		if (!tmpBmp.Set(deng->CreateImage32(Math::Size2D<UOSInt>(w, itemH), Media::AT_NO_ALPHA)))
+		{
+			return;
+		}
 	}
 	tmpBmp->SetHDPI(hdpi / ddpi * 96.0);
 	tmpBmp->SetVDPI(hdpi / ddpi * 96.0);
@@ -93,7 +102,7 @@ void SSWR::AVIRead::AVIRLineSelector::OnDraw(Media::DrawImage *img)
 	}
 	img->DelBrush(bWhite);
 	img->DelBrush(bBlack);
-	deng->DeleteImage(tmpBmp);
+	deng->DeleteImage(tmpBmp.Ptr());
 }
 
 void SSWR::AVIRead::AVIRLineSelector::OnMouseDown(OSInt scrollY, Math::Coord2D<OSInt> pos, UI::GUIClientControl::MouseButton btn, KeyButton keys)
@@ -132,7 +141,7 @@ SSWR::AVIRead::AVIRLineSelector::AVIRLineSelector(NotNullPtr<UI::GUICore> ui, UI
 	this->mnuLayers = 0;
 	Media::ColorProfile srcProfile(Media::ColorProfile::CPT_SRGB);
 	Media::ColorProfile destProfile(Media::ColorProfile::CPT_PDISPLAY);
-	NEW_CLASS(this->colorConv, Media::ColorConv(&srcProfile, &destProfile, this->colorSess));
+	NEW_CLASS(this->colorConv, Media::ColorConv(srcProfile, destProfile, this->colorSess));
 	if (this->colorSess)
 	{
 		this->colorSess->AddHandler(this);

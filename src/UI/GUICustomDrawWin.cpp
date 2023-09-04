@@ -316,6 +316,6 @@ void UI::GUICustomDraw::OnTimerTick()
 {
 }
 
-void UI::GUICustomDraw::OnDraw(Media::DrawImage *img)
+void UI::GUICustomDraw::OnDraw(NotNullPtr<Media::DrawImage> img)
 {
 }

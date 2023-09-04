@@ -126,7 +126,7 @@ void SSWR::AVIRead::AVIRICCInfoForm::SetICCProfile(Media::ICCProfile *icc, Text:
 		Media::ColorProfile color;
 		Text::StringBuilderUTF8 sb;
 		icc->ToString(sb);
-		if (icc->GetColorPrimaries(&color.primaries))
+		if (icc->GetColorPrimaries(color.primaries))
 		{
 			sb.AppendC(UTF8STRC("\r\n"));
 			sb.AppendC(UTF8STRC("Primaries:\r\n"));

@@ -13,13 +13,16 @@ void __stdcall SSWR::AVIRead::AVIRChartForm::OnSizeChanged(void *userObj)
 	Math::Size2D<UOSInt> sz = me->pbMain->GetSizeP();
 	if (sz.x == 0 || sz.y == 0)
 		return;
-	Media::DrawImage *gimg = me->core->GetDrawEngine()->CreateImage32(sz, Media::AT_NO_ALPHA);
-	Double dpi = me->core->GetMonitorHDPI(me->GetHMonitor());
-	gimg->SetHDPI(dpi);
-	gimg->SetVDPI(dpi);
-	me->chart->Plot(gimg, 0, 0, UOSInt2Double(sz.x), UOSInt2Double(sz.y));
-	me->pbMain->SetImageDImg(gimg);
-	me->core->GetDrawEngine()->DeleteImage(gimg);
+	NotNullPtr<Media::DrawImage> gimg;
+	if (gimg.Set(me->core->GetDrawEngine()->CreateImage32(sz, Media::AT_NO_ALPHA)))
+	{
+		Double dpi = me->core->GetMonitorHDPI(me->GetHMonitor());
+		gimg->SetHDPI(dpi);
+		gimg->SetVDPI(dpi);
+		me->chart->Plot(gimg, 0, 0, UOSInt2Double(sz.x), UOSInt2Double(sz.y));
+		me->pbMain->SetImageDImg(gimg.Ptr());
+		me->core->GetDrawEngine()->DeleteImage(gimg.Ptr());
+	}
 }
 
 SSWR::AVIRead::AVIRChartForm::AVIRChartForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Data::Chart *chart) : UI::GUIForm(parent, 1024, 768, ui)

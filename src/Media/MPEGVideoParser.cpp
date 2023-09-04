@@ -97,11 +97,11 @@ Bool Media::MPEGVideoParser::GetFrameInfo(UInt8 *frame, UOSInt frameSize, Media:
 	frameInfo->rotateType = Media::RotateType::None;
 	if (pal)
 	{
-		frameInfo->color->SetCommonProfile(Media::ColorProfile::CPT_PAL);
+		frameInfo->color.SetCommonProfile(Media::ColorProfile::CPT_PAL);
 	}
 	else
 	{
-		frameInfo->color->SetCommonProfile(Media::ColorProfile::CPT_NTSC);
+		frameInfo->color.SetCommonProfile(Media::ColorProfile::CPT_NTSC);
 	}
 	frameInfo->yuvType = Media::ColorProfile::YUVT_BT601;
 	frameInfo->ycOfst = Media::YCOFST_C_CENTER_CENTER;
@@ -116,7 +116,7 @@ Bool Media::MPEGVideoParser::GetFrameInfo(UInt8 *frame, UOSInt frameSize, Media:
 		{
 			mpg2 = true;
 			//MPEG-2: BT709
-			frameInfo->color->SetCommonProfile(Media::ColorProfile::CPT_BT709);
+			frameInfo->color.SetCommonProfile(Media::ColorProfile::CPT_BT709);
 //			frameInfo->yuvType = Media::ColorProfile::YUVT_BT709;
 			frameInfo->yuvType = Media::ColorProfile::YUVT_UNKNOWN;
 			frameInfo->ycOfst = Media::YCOFST_C_CENTER_LEFT;
@@ -166,22 +166,22 @@ Bool Media::MPEGVideoParser::GetFrameInfo(UInt8 *frame, UOSInt frameSize, Media:
 				{
 				default:
 				case 1: //BT.709
-					frameInfo->color->GetPrimaries()->SetColorType(Media::ColorProfile::CT_BT709);
+					frameInfo->color.GetPrimaries()->SetColorType(Media::ColorProfile::CT_BT709);
 					break;
 				case 2:
-					frameInfo->color->GetPrimaries()->SetColorType(Media::ColorProfile::CT_VUNKNOWN);
+					frameInfo->color.GetPrimaries()->SetColorType(Media::ColorProfile::CT_VUNKNOWN);
 					break;
 				case 4: //ITU-R BT.470-2 System M
-					frameInfo->color->GetPrimaries()->SetColorType(Media::ColorProfile::CT_BT470M);
+					frameInfo->color.GetPrimaries()->SetColorType(Media::ColorProfile::CT_BT470M);
 					break;
 				case 5: //ITU-R BT.470-2 System B, G
-					frameInfo->color->GetPrimaries()->SetColorType(Media::ColorProfile::CT_BT470BG);
+					frameInfo->color.GetPrimaries()->SetColorType(Media::ColorProfile::CT_BT470BG);
 					break;
 				case 6: //SMPTE 170M
-					frameInfo->color->GetPrimaries()->SetColorType(Media::ColorProfile::CT_SMPTE170M);
+					frameInfo->color.GetPrimaries()->SetColorType(Media::ColorProfile::CT_SMPTE170M);
 					break;
 				case 7: //SMPTE 240M (1987)
-					frameInfo->color->GetPrimaries()->SetColorType(Media::ColorProfile::CT_SMPTE240M);
+					frameInfo->color.GetPrimaries()->SetColorType(Media::ColorProfile::CT_SMPTE240M);
 					break;
 				}
 				Media::CS::TransferType tranType;
@@ -214,9 +214,9 @@ Bool Media::MPEGVideoParser::GetFrameInfo(UInt8 *frame, UOSInt frameSize, Media:
 					tranGamma = 1.0;
 					break;
 				}
-				frameInfo->color->GetRTranParam()->Set(tranType, tranGamma);
-				frameInfo->color->GetGTranParam()->Set(tranType, tranGamma);
-				frameInfo->color->GetBTranParam()->Set(tranType, tranGamma);
+				frameInfo->color.GetRTranParam()->Set(tranType, tranGamma);
+				frameInfo->color.GetGTranParam()->Set(tranType, tranGamma);
+				frameInfo->color.GetBTranParam()->Set(tranType, tranGamma);
 
 				frameInfo->dispSize.x = (UInt32)((frame[ofst + 8] << 6) | (frame[ofst + 9] >> 2));
 				frameInfo->dispSize.y = (UInt32)(((frame[ofst + 9] & 1) << 13) | (frame[ofst + 10] << 5) | (frame[ofst + 11] >> 3));

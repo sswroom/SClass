@@ -8,7 +8,7 @@
 
 #define YVADJ 0.25
 
-Media::CS::CSYUV420P8_RGB32C::CSYUV420P8_RGB32C(const Media::ColorProfile *srcProfile, const Media::ColorProfile *destProfile, Media::ColorProfile::YUVType yuvType, Media::ColorManagerSess *colorSess, Media::PixelFormat destPF) : Media::CS::CSYUV420_RGB32C(srcProfile, destProfile, yuvType, colorSess, destPF)
+Media::CS::CSYUV420P8_RGB32C::CSYUV420P8_RGB32C(NotNullPtr<const Media::ColorProfile> srcProfile, NotNullPtr<const Media::ColorProfile> destProfile, Media::ColorProfile::YUVType yuvType, Media::ColorManagerSess *colorSess, Media::PixelFormat destPF) : Media::CS::CSYUV420_RGB32C(srcProfile, destProfile, yuvType, colorSess, destPF)
 {
 }
 

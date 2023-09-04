@@ -154,15 +154,15 @@ Bool SSWR::AVIRead::AVIRConsoleMediaPlayerForm::OpenICC(Text::CStringNN iccFile)
 			if (icc)
 			{
 				Media::CS::TransferParam param;
-				if (icc->GetRedTransferParam(&param))
+				if (icc->GetRedTransferParam(param))
 				{
-					this->player->GetVideoRenderer()->SetSrcRGBTransfer(&param);
+					this->player->GetVideoRenderer()->SetSrcRGBTransfer(param);
 					changed = true;
 				}
 				Media::ColorProfile::ColorPrimaries primaries;
-				if (icc->GetColorPrimaries(&primaries))
+				if (icc->GetColorPrimaries(primaries))
 				{
-					this->player->GetVideoRenderer()->SetSrcPrimaries(&primaries);
+					this->player->GetVideoRenderer()->SetSrcPrimaries(primaries);
 					changed = true;
 				}
 				DEL_CLASS(icc);

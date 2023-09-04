@@ -23,9 +23,9 @@ OSInt __stdcall UI::GUIRealtimeLineChart::RLCWndProc(void *hWnd, UInt32 msg, UIn
 			cairo_t *cr = (cairo_t*)lParam;
 			UInt32 w = (UInt32)gtk_widget_get_allocated_width((GtkWidget*)me->hwnd);
 			UInt32 h = (UInt32)gtk_widget_get_allocated_height((GtkWidget*)me->hwnd);
-			Media::DrawImage *scn = ((Media::GTKDrawEngine*)me->eng.Ptr())->CreateImageScn(cr, Math::Coord2D<OSInt>(0, 0), Math::Coord2D<OSInt>((OSInt)w, (OSInt)h));
+			NotNullPtr<Media::DrawImage> scn = ((Media::GTKDrawEngine*)me->eng.Ptr())->CreateImageScn(cr, Math::Coord2D<OSInt>(0, 0), Math::Coord2D<OSInt>((OSInt)w, (OSInt)h));
 			me->OnPaint(scn);
-			me->eng->DeleteImage(scn);
+			me->eng->DeleteImage(scn.Ptr());
 		}
 		break;
 	case 1:
@@ -53,9 +53,9 @@ Int32 GUIRealtimeLineChart_OnTick(void *userObj)
 	return 1;
 }
 
-void UI::GUIRealtimeLineChart::OnPaint(Media::DrawImage *dimg)
+void UI::GUIRealtimeLineChart::OnPaint(NotNullPtr<Media::DrawImage> dimg)
 {
-	Media::DrawImage *img;
+	NotNullPtr<Media::DrawImage> img;
 	Media::DrawPen *p;
 	Media::DrawBrush *b;
 	Media::DrawFont *f;
@@ -73,87 +73,89 @@ void UI::GUIRealtimeLineChart::OnPaint(Media::DrawImage *dimg)
 	Double thisY;
 
 	this->valueChanged = false;
-	img = this->eng->CreateImage32(dimg->GetSize(), Media::AT_NO_ALPHA);
-	b = img->NewBrushARGB(this->bgColor);
-	img->DrawRect(Math::Coord2DDbl(0, 0), img->GetSize().ToDouble(), 0, b);
-	img->DelBrush(b);
-
-	Sync::MutexUsage mutUsage(this->chartMut);
-	if (this->chartMaxChg)
+	if (img.Set(this->eng->CreateImage32(dimg->GetSize(), Media::AT_NO_ALPHA)))
 	{
-		this->chartMaxChg = false;
-		this->chartMax = this->chartMin = this->chartVal[0];
-		i = 1;
-		j = this->lineCnt * this->sampleCnt;
-		while (i < j)
-		{
-			if (this->chartVal[i] > this->chartMax)
-				this->chartMax = this->chartVal[i];
-			if (this->chartVal[i] < this->chartMin)
-				this->chartMin = this->chartVal[i];
-			i++;
-		}
-		if (this->chartMin == this->chartMax)
-			this->chartMax = this->chartMin + 1.0;
-	}
+		b = img->NewBrushARGB(this->bgColor);
+		img->DrawRect(Math::Coord2DDbl(0, 0), img->GetSize().ToDouble(), 0, b);
+		img->DelBrush(b);
 
-	Double pw = 1 * this->hdpi / this->ddpi;
-	if (pw < 1)
-		pw = 1;
-	f = img->NewFontPt(CSTR("Arial"), 9.0, Media::DrawEngine::DFS_ANTIALIAS, 0);
-	p = img->NewPenARGB(this->fontColor, Double2Int32(pw), 0, 0);
-	b = img->NewBrushARGB(this->fontColor);
-	sptr = Text::StrDoubleFmt(sbuff, this->chartMax, "0.##");
-	if (this->unit)
-		sptr =Text::StrConcat(sptr, this->unit);
-	sz = img->GetTextSize(f, CSTRP(sbuff, sptr));
-	strWidth = sz.x;
-	img->DrawString(Math::Coord2DDbl(0, 1), CSTRP(sbuff, sptr), f, b);
-	sptr = Text::StrDoubleFmt(sbuff, this->chartMin, "0.##");
-	if (this->unit)
-		sptr =Text::StrConcat(sptr, this->unit);
-	sz = img->GetTextSize(f, CSTRP(sbuff, sptr));
-	if (sz.x > strWidth)
+		Sync::MutexUsage mutUsage(this->chartMut);
+		if (this->chartMaxChg)
+		{
+			this->chartMaxChg = false;
+			this->chartMax = this->chartMin = this->chartVal[0];
+			i = 1;
+			j = this->lineCnt * this->sampleCnt;
+			while (i < j)
+			{
+				if (this->chartVal[i] > this->chartMax)
+					this->chartMax = this->chartVal[i];
+				if (this->chartVal[i] < this->chartMin)
+					this->chartMin = this->chartVal[i];
+				i++;
+			}
+			if (this->chartMin == this->chartMax)
+				this->chartMax = this->chartMin + 1.0;
+		}
+
+		Double pw = 1 * this->hdpi / this->ddpi;
+		if (pw < 1)
+			pw = 1;
+		f = img->NewFontPt(CSTR("Arial"), 9.0, Media::DrawEngine::DFS_ANTIALIAS, 0);
+		p = img->NewPenARGB(this->fontColor, Double2Int32(pw), 0, 0);
+		b = img->NewBrushARGB(this->fontColor);
+		sptr = Text::StrDoubleFmt(sbuff, this->chartMax, "0.##");
+		if (this->unit)
+			sptr =Text::StrConcat(sptr, this->unit);
+		sz = img->GetTextSize(f, CSTRP(sbuff, sptr));
 		strWidth = sz.x;
-	img->DrawString(Math::Coord2DDbl(0, UOSInt2Double(dimg->GetHeight()) - sz.y), CSTRP(sbuff, sptr), f, b);
-	img->DrawLine(strWidth, 0, strWidth, UOSInt2Double(dimg->GetHeight()), p);
-	img->DelBrush(b);
-	img->DelPen(p);
-	img->DelFont(f);
-
-	j = this->lineCnt * this->sampleCnt;
-	k = this->lineCnt;
-	while (k-- > 0)
-	{
-		lastX = -1;
-		lastY = -1;
-		p = img->NewPenARGB(this->lineColor[k], Double2Int32(pw), 0, 0);
-		i = k + this->chartOfst * this->lineCnt;
-		l = 0;
-		while (l < this->sampleCnt)
-		{
-			thisX = UOSInt2Double(l) * (UOSInt2Double(dimg->GetWidth()) - strWidth - 1) / UOSInt2Double(this->sampleCnt);
-			thisY = UOSInt2Double(dimg->GetHeight()) - 1 - ((this->chartVal[i] - this->chartMin) * (UOSInt2Double(dimg->GetHeight()) - 1) / (this->chartMax - this->chartMin));
-			if (lastX > 0)
-			{
-				img->DrawLine(lastX + strWidth + 1, lastY, thisX + strWidth + 1, thisY, p);
-			}
-			lastX = thisX;
-			lastY = thisY;
-			i += this->lineCnt;
-			if (i >= j)
-			{
-				i -= j;
-			}
-			l++;
-		}
+		img->DrawString(Math::Coord2DDbl(0, 1), CSTRP(sbuff, sptr), f, b);
+		sptr = Text::StrDoubleFmt(sbuff, this->chartMin, "0.##");
+		if (this->unit)
+			sptr =Text::StrConcat(sptr, this->unit);
+		sz = img->GetTextSize(f, CSTRP(sbuff, sptr));
+		if (sz.x > strWidth)
+			strWidth = sz.x;
+		img->DrawString(Math::Coord2DDbl(0, UOSInt2Double(dimg->GetHeight()) - sz.y), CSTRP(sbuff, sptr), f, b);
+		img->DrawLine(strWidth, 0, strWidth, UOSInt2Double(dimg->GetHeight()), p);
+		img->DelBrush(b);
 		img->DelPen(p);
+		img->DelFont(f);
+
+		j = this->lineCnt * this->sampleCnt;
+		k = this->lineCnt;
+		while (k-- > 0)
+		{
+			lastX = -1;
+			lastY = -1;
+			p = img->NewPenARGB(this->lineColor[k], Double2Int32(pw), 0, 0);
+			i = k + this->chartOfst * this->lineCnt;
+			l = 0;
+			while (l < this->sampleCnt)
+			{
+				thisX = UOSInt2Double(l) * (UOSInt2Double(dimg->GetWidth()) - strWidth - 1) / UOSInt2Double(this->sampleCnt);
+				thisY = UOSInt2Double(dimg->GetHeight()) - 1 - ((this->chartVal[i] - this->chartMin) * (UOSInt2Double(dimg->GetHeight()) - 1) / (this->chartMax - this->chartMin));
+				if (lastX > 0)
+				{
+					img->DrawLine(lastX + strWidth + 1, lastY, thisX + strWidth + 1, thisY, p);
+				}
+				lastX = thisX;
+				lastY = thisY;
+				i += this->lineCnt;
+				if (i >= j)
+				{
+					i -= j;
+				}
+				l++;
+			}
+			img->DelPen(p);
+		}
+		mutUsage.EndUse();
+
+		dimg->DrawImagePt(img, Math::Coord2DDbl(0, 0));
+
+		this->eng->DeleteImage(img.Ptr());
 	}
-	mutUsage.EndUse();
-
-	dimg->DrawImagePt(img, Math::Coord2DDbl(0, 0));
-
-	this->eng->DeleteImage(img);
 }
 
 UI::GUIRealtimeLineChart::GUIRealtimeLineChart(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, NotNullPtr<Media::DrawEngine> eng, UOSInt lineCnt, UOSInt sampleCnt, UInt32 updateInterval) : UI::GUIControl(ui, parent)

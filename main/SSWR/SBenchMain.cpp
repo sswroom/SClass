@@ -1563,7 +1563,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		NEW_CLASS(imgGen, Media::ImageGen::RingsImageGen());
 
 		clk->Start();
-		srcImg = (Media::StaticImage*)imgGen->GenerateImage(&color, Math::Size2D<UOSInt>(imgWidth, imgHeight));
+		srcImg = (Media::StaticImage*)imgGen->GenerateImage(color, Math::Size2D<UOSInt>(imgWidth, imgHeight));
 		t = clk->GetTimeDiff();
 		DEL_CLASS(imgGen);
 		if (srcImg == 0)
@@ -1609,7 +1609,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			tmpBuff = MemAllocA(UInt8, imgWidth * imgHeight * 8);
 
 			clk->Start();
-			NEW_CLASS(newImg, Media::StaticImage(Math::Size2D<UOSInt>(imgWidth >> 1, imgHeight >> 1), 0, 64, Media::PF_LE_B16G16R16A16, 0, &color, Media::ColorProfile::YUVT_BT709, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+			NEW_CLASS(newImg, Media::StaticImage(Math::Size2D<UOSInt>(imgWidth >> 1, imgHeight >> 1), 0, 64, Media::PF_LE_B16G16R16A16, 0, color, Media::ColorProfile::YUVT_BT709, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 			t = clk->GetTimeDiff();
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Create Image: t = "));
@@ -1687,7 +1687,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 			clk->Start();
-			NEW_CLASS(newImg, Media::StaticImage(Math::Size2D<UOSInt>(imgWidth >> 1, imgHeight >> 1), 0, 32, Media::PF_B8G8R8A8, 0, &color, Media::ColorProfile::YUVT_BT709, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+			NEW_CLASS(newImg, Media::StaticImage(Math::Size2D<UOSInt>(imgWidth >> 1, imgHeight >> 1), 0, 32, Media::PF_B8G8R8A8, 0, color, Media::ColorProfile::YUVT_BT709, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 			t = clk->GetTimeDiff();
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Create Image: t = "));
@@ -1705,7 +1705,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 
 			console->WriteLineC(UTF8STRC("Resizer: LanczosResizer (16->8) H4V3 taps, no alpha"));
 			writer->WriteLineC(UTF8STRC("Resizer: LanczosResizer (16->8) H4V3 taps, no alpha"));
-			NEW_CLASS(resizer, Media::Resizer::LanczosResizer16_C8(4, 3, &color, &color, 0, Media::AT_NO_ALPHA));
+			NEW_CLASS(resizer, Media::Resizer::LanczosResizer16_C8(4, 3, color, color, 0, Media::AT_NO_ALPHA));
 			console->WriteLineC(UTF8STRC("Initialized"));
 
 			clk->Start();
@@ -1745,7 +1745,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 
 			console->WriteLineC(UTF8STRC("Resizer: LanczosResizer (16->8) H4V3 taps, alpha"));
 			writer->WriteLineC(UTF8STRC("Resizer: LanczosResizer (16->8) H4V3 taps, alpha"));
-			NEW_CLASS(resizer, Media::Resizer::LanczosResizer16_C8(4, 3, &color, &color, 0, Media::AT_ALPHA));
+			NEW_CLASS(resizer, Media::Resizer::LanczosResizer16_C8(4, 3, color, color, 0, Media::AT_ALPHA));
 			console->WriteLineC(UTF8STRC("Initialized"));
 
 			clk->Start();
@@ -1822,7 +1822,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 
 			console->WriteLineC(UTF8STRC("CSConv: CSRGB16_LRGBC"));
 			writer->WriteLineC(UTF8STRC("CSConv: CSRGB16_LRGBC"));
-			NEW_CLASS(csconv, Media::CS::CSRGB16_LRGBC(64, Media::PF_LE_B16G16R16A16, false, &color, &color, 0));
+			NEW_CLASS(csconv, Media::CS::CSRGB16_LRGBC(64, Media::PF_LE_B16G16R16A16, false, color, color, 0));
 			console->WriteLineC(UTF8STRC("Initialized"));
 
 			clk->Start();
@@ -1872,7 +1872,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 
 			console->WriteLineC(UTF8STRC("Resizer: LanczosResizer (LR->32) H4V3 taps, alpha"));
 			writer->WriteLineC(UTF8STRC("Resizer: LanczosResizer (LR->32) H4V3 taps, alpha"));
-			NEW_CLASS(resizer, Media::Resizer::LanczosResizerLR_C32(4, 3, &color, 0, Media::AT_ALPHA, 300, Media::PF_B8G8R8A8));
+			NEW_CLASS(resizer, Media::Resizer::LanczosResizerLR_C32(4, 3, color, 0, Media::AT_ALPHA, 300, Media::PF_B8G8R8A8));
 			console->WriteLineC(UTF8STRC("Initialized"));
 
 			clk->Start();
@@ -1913,7 +1913,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 
 			console->WriteLineC(UTF8STRC("Resizer: LanczosResizer (LR->32) H4V3 taps, no alpha"));
 			writer->WriteLineC(UTF8STRC("Resizer: LanczosResizer (LR->32) H4V3 taps, no alpha"));
-			NEW_CLASS(resizer, Media::Resizer::LanczosResizerLR_C32(4, 3, &color, 0, Media::AT_NO_ALPHA, 300, Media::PF_B8G8R8A8));
+			NEW_CLASS(resizer, Media::Resizer::LanczosResizerLR_C32(4, 3, color, 0, Media::AT_NO_ALPHA, 300, Media::PF_B8G8R8A8));
 			console->WriteLineC(UTF8STRC("Initialized"));
 
 			clk->Start();
@@ -1979,7 +1979,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 
 			console->WriteLineC(UTF8STRC("Resizer: LanczosResizer (8->8) H4V3 taps, no alpha"));
 			writer->WriteLineC(UTF8STRC("Resizer: LanczosResizer (8->8) H4V3 taps, no alpha"));
-			NEW_CLASS(resizer, Media::Resizer::LanczosResizer8_C8(4, 3, &color, &color, 0, Media::AT_NO_ALPHA));
+			NEW_CLASS(resizer, Media::Resizer::LanczosResizer8_C8(4, 3, color, color, 0, Media::AT_NO_ALPHA));
 			console->WriteLineC(UTF8STRC("Initialized"));
 
 			clk->Start();
@@ -2020,7 +2020,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 
 			console->WriteLineC(UTF8STRC("Resizer: LanczosResizer (8->8) H4V3 taps, alpha"));
 			writer->WriteLineC(UTF8STRC("Resizer: LanczosResizer (8->8) H4V3 taps, alpha"));
-			NEW_CLASS(resizer, Media::Resizer::LanczosResizer8_C8(4, 3, &color, &color, 0, Media::AT_ALPHA));
+			NEW_CLASS(resizer, Media::Resizer::LanczosResizer8_C8(4, 3, color, color, 0, Media::AT_ALPHA));
 			console->WriteLineC(UTF8STRC("Initialized"));
 
 			clk->Start();

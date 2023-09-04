@@ -109,7 +109,7 @@ namespace Media
 				this->MonRBrightness = param->MonRBrightness;
 				this->MonGBrightness = param->MonGBrightness;
 				this->MonBBrightness = param->MonBBrightness;
-				this->monProfile.Set(&param->monProfile);
+				this->monProfile.Set(param->monProfile);
 				this->monProfileType = param->monProfileType;
 				this->monLuminance = param->monLuminance;
 			}

@@ -21,7 +21,7 @@ void __stdcall SSWR::AVIRead::AVIRImageColorForm::OnColorChg(void *userObj, UOSI
 	sptr = Text::StrConcatC(Text::StrDouble(sbuff, gvalue), UTF8STRC("%"));
 	me->lblGammaV->SetText(CSTRP(sbuff, sptr));
 
-	Media::ColorProfile *color;
+	NotNullPtr<Media::ColorProfile> color;
 	color = me->srcImg->info.color;
 	if (color->GetRTranParam()->GetTranType() == Media::CS::TRANT_VUNKNOWN)
 	{
@@ -42,7 +42,7 @@ void __stdcall SSWR::AVIRead::AVIRImageColorForm::OnColorChg(void *userObj, UOSI
 void __stdcall SSWR::AVIRead::AVIRImageColorForm::OnOKClick(void *userObj)
 {
 	SSWR::AVIRead::AVIRImageColorForm *me = (SSWR::AVIRead::AVIRImageColorForm*)userObj;
-	Media::ColorProfile *color;
+	NotNullPtr<Media::ColorProfile> color;
 	color = me->srcImg->info.color;
 	if (color->GetRTranParam()->GetTranType() == Media::CS::TRANT_VUNKNOWN)
 	{

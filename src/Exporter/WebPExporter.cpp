@@ -144,7 +144,7 @@ Bool Exporter::WebPExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text
 		data.bytes = vp8;
 		data.size = vp8len;
 		WebPMuxSetImage(mux, &data, 0);
-		const UInt8 *icc = img->info.color->GetRAWICC();
+		const UInt8 *icc = img->info.color.GetRAWICC();
 		if (icc)
 		{
 			data.bytes = icc;

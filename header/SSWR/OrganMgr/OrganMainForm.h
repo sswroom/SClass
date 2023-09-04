@@ -202,7 +202,7 @@ namespace SSWR
 			static void __stdcall OnMapScaleScroll(void *userObj, UOSInt newVal);
 			static void __stdcall OnTileUpdated(void *userObj);
 			static void __stdcall OnMapMouseMove(void *userObj, Math::Coord2D<OSInt> scnPos);
-			static void __stdcall OnMapDraw(void *userObj, Media::DrawImage *dimg, OSInt xOfst, OSInt yOfst);
+			static void __stdcall OnMapDraw(void *userObj, NotNullPtr<Media::DrawImage> dimg, OSInt xOfst, OSInt yOfst);
 
 			static OSInt __stdcall GroupCompare(OrganGroupItem *group1, OrganGroupItem *group2);
 

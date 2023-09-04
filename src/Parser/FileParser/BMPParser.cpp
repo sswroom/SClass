@@ -390,7 +390,7 @@ IO::ParsedObject *Parser::FileParser::BMPParser::ParseFileHdr(NotNullPtr<IO::Str
 	}
 	if (imgWidth > 0 && imgHeight > 0 && bpp != 0 && imgWidth <= 32768 && imgHeight <= 32768 && headerValid)
 	{
-		NEW_CLASS(outImg, Media::StaticImage(Math::Size2D<UOSInt>(imgWidth, uimgHeight), 0, bpp, pf, 0, 0, Media::ColorProfile::YUVT_UNKNOWN, atype, Media::YCOFST_C_CENTER_LEFT));
+		NEW_CLASS(outImg, Media::StaticImage(Math::Size2D<UOSInt>(imgWidth, uimgHeight), 0, bpp, pf, 0, Media::ColorProfile(), Media::ColorProfile::YUVT_UNKNOWN, atype, Media::YCOFST_C_CENTER_LEFT));
 		outImg->info.hdpi = hdpi;
 		outImg->info.vdpi = vdpi;
 		outImg->info.par2 = hdpi / vdpi;
@@ -407,11 +407,11 @@ IO::ParsedObject *Parser::FileParser::BMPParser::ParseFileHdr(NotNullPtr<IO::Str
 					Media::ICCProfile *icc = Media::ICCProfile::Parse(iccBuff.WithSize(iccSize));
 					if (icc)
 					{
-						icc->GetRedTransferParam(outImg->info.color->GetRTranParam());
-						icc->GetGreenTransferParam(outImg->info.color->GetGTranParam());
-						icc->GetBlueTransferParam(outImg->info.color->GetBTranParam());
-						icc->GetColorPrimaries(outImg->info.color->GetPrimaries());
-						outImg->info.color->SetRAWICC(iccBuff.Ptr());
+						icc->GetRedTransferParam(outImg->info.color.GetRTranParam());
+						icc->GetGreenTransferParam(outImg->info.color.GetGTranParam());
+						icc->GetBlueTransferParam(outImg->info.color.GetBTranParam());
+						icc->GetColorPrimaries(outImg->info.color.GetPrimaries());
+						outImg->info.color.SetRAWICC(iccBuff.Ptr());
 						DEL_CLASS(icc);
 					}
 				}
@@ -419,7 +419,7 @@ IO::ParsedObject *Parser::FileParser::BMPParser::ParseFileHdr(NotNullPtr<IO::Str
 		}
 		else if (headerSize >= 108 && ReadInt32(&hdr[70]) == ReadInt32((const UInt8*)"BGRs"))
 		{
-			outImg->info.color->SetCommonProfile(Media::ColorProfile::CPT_SRGB);
+			outImg->info.color.SetCommonProfile(Media::ColorProfile::CPT_SRGB);
 		}
 		else if (headerSize >= 108 && ReadInt32(&hdr[70]) == 0)
 		{
@@ -456,27 +456,27 @@ IO::ParsedObject *Parser::FileParser::BMPParser::ParseFileHdr(NotNullPtr<IO::Str
 				xyzVec.val[1] = ry / (Double)0x40000000;
 				xyzVec.val[2] = rz / (Double)0x40000000;
 				Media::ColorProfile::ColorPrimaries::XYZToxyY(&xyzVec, &xyYVec);
-				outImg->info.color->primaries.rx = xyYVec.val[0];
-				outImg->info.color->primaries.ry = xyYVec.val[1];
+				outImg->info.color.primaries.rx = xyYVec.val[0];
+				outImg->info.color.primaries.ry = xyYVec.val[1];
 
 				xyzVec.val[0] = gx / (Double)0x40000000;
 				xyzVec.val[1] = gy / (Double)0x40000000;
 				xyzVec.val[2] = gz / (Double)0x40000000;
 				Media::ColorProfile::ColorPrimaries::XYZToxyY(&xyzVec, &xyYVec);
-				outImg->info.color->primaries.gx = xyYVec.val[0];
-				outImg->info.color->primaries.gy = xyYVec.val[1];
+				outImg->info.color.primaries.gx = xyYVec.val[0];
+				outImg->info.color.primaries.gy = xyYVec.val[1];
 
 				xyzVec.val[0] = bx / (Double)0x40000000;
 				xyzVec.val[1] = by / (Double)0x40000000;
 				xyzVec.val[2] = bz / (Double)0x40000000;
 				Media::ColorProfile::ColorPrimaries::XYZToxyY(&xyzVec, &xyYVec);
-				outImg->info.color->primaries.bx = xyYVec.val[0];
-				outImg->info.color->primaries.by = xyYVec.val[1];
-				outImg->info.color->primaries.colorType = Media::ColorProfile::CT_CUSTOM;
+				outImg->info.color.primaries.bx = xyYVec.val[0];
+				outImg->info.color.primaries.by = xyYVec.val[1];
+				outImg->info.color.primaries.colorType = Media::ColorProfile::CT_CUSTOM;
 
-				outImg->info.color->rtransfer.Set(Media::CS::TRANT_GAMMA, rg / 65536.0);
-				outImg->info.color->gtransfer.Set(Media::CS::TRANT_GAMMA, gg / 65536.0);
-				outImg->info.color->btransfer.Set(Media::CS::TRANT_GAMMA, bg / 65536.0);
+				outImg->info.color.rtransfer.Set(Media::CS::TRANT_GAMMA, rg / 65536.0);
+				outImg->info.color.gtransfer.Set(Media::CS::TRANT_GAMMA, gg / 65536.0);
+				outImg->info.color.btransfer.Set(Media::CS::TRANT_GAMMA, bg / 65536.0);
 			}
 		}
 	}

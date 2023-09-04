@@ -42,10 +42,10 @@ Media::DrawImage *Media::GTKDrawEngine::CreateImage32(Math::Size2D<UOSInt> size,
 	return dimg;
 }
 
-Media::DrawImage *Media::GTKDrawEngine::CreateImageScn(void *cr, Math::Coord2D<OSInt> tl, Math::Coord2D<OSInt> br)
+NotNullPtr<Media::DrawImage> Media::GTKDrawEngine::CreateImageScn(void *cr, Math::Coord2D<OSInt> tl, Math::Coord2D<OSInt> br)
 {
-	Media::GTKDrawImage *dimg;
-	NEW_CLASS(dimg, Media::GTKDrawImage(this, 0, cr, tl, Math::Size2D<UOSInt>((UOSInt)(br.x - tl.x), (UOSInt)(br.y - tl.y)), 32, Media::AT_NO_ALPHA));
+	NotNullPtr<Media::GTKDrawImage> dimg;
+	NEW_CLASSNN(dimg, Media::GTKDrawImage(this, 0, cr, tl, Math::Size2D<UOSInt>((UOSInt)(br.x - tl.x), (UOSInt)(br.y - tl.y)), 32, Media::AT_NO_ALPHA));
 	return dimg;
 }
 
@@ -101,7 +101,7 @@ Media::DrawImage *Media::GTKDrawEngine::ConvImage(Media::Image *img)
 		return 0;
 	gimg->SetHDPI(img->info.hdpi);
 	gimg->SetVDPI(img->info.vdpi);
-	gimg->info.color->Set(img->info.color);
+	gimg->info.color.Set(img->info.color);
 	if (img->GetImageType() == Media::Image::ImageType::Static)
 	{
 		Media::StaticImage *simg = (Media::StaticImage*)img;
@@ -148,9 +148,9 @@ Media::DrawImage *Media::GTKDrawEngine::ConvImage(Media::Image *img)
 	return gimg;
 }
 
-Media::DrawImage *Media::GTKDrawEngine::CloneImage(DrawImage *img)
+Media::DrawImage *Media::GTKDrawEngine::CloneImage(NotNullPtr<DrawImage> img)
 {
-	Media::GTKDrawImage *dimg = (Media::GTKDrawImage*)img;
+	Media::GTKDrawImage *dimg = (Media::GTKDrawImage*)img.Ptr();
 	Math::Size2D<UOSInt> size = dimg->GetSize();
 	Media::AlphaType atype = dimg->GetAlphaType();
 	Media::GTKDrawImage *newImg = 0;
@@ -160,7 +160,7 @@ Media::DrawImage *Media::GTKDrawEngine::CloneImage(DrawImage *img)
 		UInt8 *dptr;
 		newImg = (GTKDrawImage*)this->CreateImage32(size, atype);
 		dptr = newImg->GetImgBits(&upsideDown);
-		((Media::GTKDrawImage*)img)->CopyBits(0, 0, dptr, newImg->GetDataBpl(), size.x, size.y, upsideDown);
+		((Media::GTKDrawImage*)img.Ptr())->CopyBits(0, 0, dptr, newImg->GetDataBpl(), size.x, size.y, upsideDown);
 		newImg->SetHDPI(img->GetHDPI());
 		newImg->SetVDPI(img->GetVDPI());
 	}
@@ -305,7 +305,7 @@ UInt32 Media::GTKDrawBrush::GetOriColor()
 	return this->oriColor;
 }
 
-Media::GTKDrawImage::GTKDrawImage(GTKDrawEngine *eng, void *surface, void *cr, Math::Coord2D<OSInt> tl, Math::Size2D<UOSInt> size, UInt32 bitCount, Media::AlphaType atype) : Media::Image(size, Math::Size2D<UOSInt>(0, 0), 0, bitCount, Media::PixelFormatGetDef(0, bitCount), 0, 0, Media::ColorProfile::YUVT_BT601, atype, Media::YCOFST_C_CENTER_LEFT)
+Media::GTKDrawImage::GTKDrawImage(GTKDrawEngine *eng, void *surface, void *cr, Math::Coord2D<OSInt> tl, Math::Size2D<UOSInt> size, UInt32 bitCount, Media::AlphaType atype) : Media::Image(size, Math::Size2D<UOSInt>(0, 0), 0, bitCount, Media::PixelFormatGetDef(0, bitCount), 0, ColorProfile(), Media::ColorProfile::YUVT_BT601, atype, Media::YCOFST_C_CENTER_LEFT)
 {
 	this->eng = eng;
 	this->surface = surface;
@@ -344,14 +344,14 @@ UInt32 Media::GTKDrawImage::GetBitCount() const
 	return this->info.storeBPP;
 }
 
-Media::ColorProfile *Media::GTKDrawImage::GetColorProfile() const
+NotNullPtr<const Media::ColorProfile> Media::GTKDrawImage::GetColorProfile() const
 {
 	return this->info.color;
 }
 
-void Media::GTKDrawImage::SetColorProfile(const ColorProfile *color)
+void Media::GTKDrawImage::SetColorProfile(NotNullPtr<const ColorProfile> color)
 {
-	this->info.color->Set(color);
+	this->info.color.Set(color);
 }
 
 Media::AlphaType Media::GTKDrawImage::GetAlphaType() const
@@ -667,7 +667,7 @@ Bool Media::GTKDrawImage::DrawStringB(Math::Coord2DDbl tl, Text::CString str, Dr
 	GTKDrawBrush *brush = (GTKDrawBrush*)b;
 
 	UInt32 sz[2];
-	Media::GTKDrawImage *gimg;
+	NotNullPtr<Media::GTKDrawImage> gimg;
 	OSInt swidth;
 	OSInt sheight;
 	OSInt sx;
@@ -693,8 +693,7 @@ Bool Media::GTKDrawImage::DrawStringB(Math::Coord2DDbl tl, Text::CString str, Dr
 	{
 		swidth = (OSInt)(sz[0] + (buffSize << 1));
 		sheight = (OSInt)(sz[1] + (buffSize << 1));
-		gimg = (Media::GTKDrawImage*)eng->CreateImage32(Math::Size2D<UOSInt>((UOSInt)swidth, (UOSInt)sheight), Media::AT_ALPHA);
-		if (gimg == 0)
+		if (!gimg.Set((Media::GTKDrawImage*)eng->CreateImage32(Math::Size2D<UOSInt>((UOSInt)swidth, (UOSInt)sheight), Media::AT_ALPHA)))
 		{
 			return false;
 		}
@@ -791,7 +790,7 @@ Bool Media::GTKDrawImage::DrawStringB(Math::Coord2DDbl tl, Text::CString str, Dr
 				}
 			}
 		}
-		eng->DeleteImage(gimg);
+		eng->DeleteImage(gimg.Ptr());
 	}
 
 	return true;
@@ -808,9 +807,9 @@ Bool Media::GTKDrawImage::DrawStringRotB(Math::Coord2DDbl center, Text::CString 
 	return false;
 }
 
-Bool Media::GTKDrawImage::DrawImagePt(DrawImage *img, Math::Coord2DDbl tl)
+Bool Media::GTKDrawImage::DrawImagePt(NotNullPtr<DrawImage> img, Math::Coord2DDbl tl)
 {
-	Media::GTKDrawImage *gimg = (GTKDrawImage*)img;
+	Media::GTKDrawImage *gimg = (GTKDrawImage*)img.Ptr();
 	if (gimg->surface == 0)
 	{
 		return false;
@@ -902,13 +901,13 @@ Bool Media::GTKDrawImage::DrawImagePt2(Media::StaticImage *img, Math::Coord2DDbl
 {
 	if (this->surface == 0)
 	{
-		Media::DrawImage *dimg = this->eng->ConvImage(img);
-		if (dimg == 0)
+		NotNullPtr<Media::DrawImage> dimg;
+		if (!dimg.Set(this->eng->ConvImage(img)))
 		{
 			return false;
 		}
 		this->DrawImagePt(dimg, tl);
-		this->eng->DeleteImage(dimg);
+		this->eng->DeleteImage(dimg.Ptr());
 		return true;
 	}
 	img->To32bpp();
@@ -1173,7 +1172,7 @@ Media::StaticImage *Media::GTKDrawImage::ToStaticImage() const
 		srcData = cairo_image_surface_get_data((cairo_surface_t*)this->surface);
 		if (srcData == 0)
 			return 0;
-		NEW_CLASS(simg, Media::StaticImage(&this->info));
+		NEW_CLASS(simg, Media::StaticImage(this->info));
 		MemCopyNO(simg->data, srcData, this->info.storeSize.CalcArea() * 4);
 		return simg;
 	}

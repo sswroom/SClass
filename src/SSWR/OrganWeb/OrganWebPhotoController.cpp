@@ -186,16 +186,16 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhoto(NotNullPtr<Net::WebS
 				simg = imgList->GetImage(0, 0)->CreateStaticImage();
 				DEL_CLASS(imgList);
 				Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
-				NEW_CLASS(lrimg, Media::StaticImage(simg->info.dispSize, *(UInt32*)"LRGB", 64, Media::PF_UNKNOWN, 0, &color, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+				NEW_CLASS(lrimg, Media::StaticImage(simg->info.dispSize, *(UInt32*)"LRGB", 64, Media::PF_UNKNOWN, 0, color, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 				Sync::MutexUsage mutUsage(this->csconvMut);
-				if (this->csconv == 0 || this->csconvFCC != simg->info.fourcc || this->csconvBpp != simg->info.storeBPP || this->csconvPF != simg->info.pf || !simg->info.color->Equals(&this->csconvColor))
+				if (this->csconv == 0 || this->csconvFCC != simg->info.fourcc || this->csconvBpp != simg->info.storeBPP || this->csconvPF != simg->info.pf || !simg->info.color.Equals(this->csconvColor))
 				{
 					SDEL_CLASS(this->csconv);
 					this->csconvFCC = simg->info.fourcc;
 					this->csconvBpp = simg->info.storeBPP;
 					this->csconvPF = simg->info.pf;
 					this->csconvColor.Set(simg->info.color);
-					this->csconv = Media::CS::CSConverter::NewConverter(this->csconvFCC, this->csconvBpp, this->csconvPF, &this->csconvColor, *(UInt32*)"LRGB", 64, Media::PF_UNKNOWN, &color, Media::ColorProfile::YUVT_UNKNOWN, this->env->GetColorSess());
+					this->csconv = Media::CS::CSConverter::NewConverter(this->csconvFCC, this->csconvBpp, this->csconvPF, this->csconvColor, *(UInt32*)"LRGB", 64, Media::PF_UNKNOWN, color, Media::ColorProfile::YUVT_UNKNOWN, this->env->GetColorSess());
 				}
 				if (this->csconv)
 				{
@@ -226,7 +226,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhoto(NotNullPtr<Net::WebS
 				{
 					UInt8 *buff;
 					UOSInt buffSize;
-					dimg->info.color->SetRAWICC(Media::ICCProfile::GetSRGBICCData());
+					dimg->info.color.SetRAWICC(Media::ICCProfile::GetSRGBICCData());
 					if (rotateType == 1)
 					{
 						dimg->RotateImage(Media::StaticImage::RotateType::CW90);
@@ -442,17 +442,17 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoId(NotNullPtr<Net::We
 			simg = imgList->GetImage(0, 0)->CreateStaticImage();
 			DEL_CLASS(imgList);
 			Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
-			NEW_CLASS(lrimg, Media::StaticImage(simg->info.dispSize, *(UInt32*)"LRGB", 64, Media::PF_UNKNOWN, 0, &color, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+			NEW_CLASS(lrimg, Media::StaticImage(simg->info.dispSize, *(UInt32*)"LRGB", 64, Media::PF_UNKNOWN, 0, color, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 			{
 				Sync::MutexUsage mutUsage(this->csconvMut);
-				if (this->csconv == 0 || this->csconvFCC != simg->info.fourcc || this->csconvBpp != simg->info.storeBPP || this->csconvPF != simg->info.pf || !simg->info.color->Equals(&this->csconvColor))
+				if (this->csconv == 0 || this->csconvFCC != simg->info.fourcc || this->csconvBpp != simg->info.storeBPP || this->csconvPF != simg->info.pf || !simg->info.color.Equals(this->csconvColor))
 				{
 					SDEL_CLASS(this->csconv);
 					this->csconvFCC = simg->info.fourcc;
 					this->csconvBpp = simg->info.storeBPP;
 					this->csconvPF = simg->info.pf;
 					this->csconvColor.Set(simg->info.color);
-					this->csconv = Media::CS::CSConverter::NewConverter(this->csconvFCC, this->csconvBpp, this->csconvPF, &this->csconvColor, *(UInt32*)"LRGB", 64, Media::PF_UNKNOWN, &color, Media::ColorProfile::YUVT_UNKNOWN, this->env->GetColorSess());
+					this->csconv = Media::CS::CSConverter::NewConverter(this->csconvFCC, this->csconvBpp, this->csconvPF, this->csconvColor, *(UInt32*)"LRGB", 64, Media::PF_UNKNOWN, color, Media::ColorProfile::YUVT_UNKNOWN, this->env->GetColorSess());
 				}
 				if (this->csconv)
 				{
@@ -518,7 +518,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoId(NotNullPtr<Net::We
 			{
 				UInt8 *buff;
 				UOSInt buffSize;
-				dimg->info.color->SetRAWICC(Media::ICCProfile::GetSRGBICCData());
+				dimg->info.color.SetRAWICC(Media::ICCProfile::GetSRGBICCData());
 
 				if (rotateType == 1)
 				{
@@ -544,7 +544,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoId(NotNullPtr<Net::We
 						Math::Size2DDbl sz;
 						UInt32 iWidth;
 						UInt32 iHeight;
-						Media::DrawImage *gimg2;
+						NotNullPtr<Media::DrawImage> gimg2;
 						Media::DrawBrush *b = gimg->NewBrushARGB(0xffffffff);
 						Media::DrawFont *f;
 						while (true)
@@ -562,20 +562,22 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoId(NotNullPtr<Net::We
 								yRand = Double2Int32(UOSInt2Double(dimg->info.dispSize.y) - sz.y);
 								iWidth = (UInt32)Double2Int32(sz.x);
 								iHeight = (UInt32)Double2Int32(sz.y);
-								gimg2 = this->env->GetDrawEngine()->CreateImage32(Math::Size2D<UOSInt>(iWidth, iHeight), Media::AT_NO_ALPHA);
-								gimg2->DrawString(Math::Coord2DDbl(0, 0), user->watermark->ToCString(), f, b);
-								gimg2->SetAlphaType(Media::AT_ALPHA);
+								if (gimg2.Set(this->env->GetDrawEngine()->CreateImage32(Math::Size2D<UOSInt>(iWidth, iHeight), Media::AT_NO_ALPHA)))
 								{
-									Bool revOrder;
-									UInt8 *bits = gimg2->GetImgBits(&revOrder);
-									UInt32 col = (this->random.NextInt30() & 0xffffff) | 0x5f808080;
-									if (bits)
+									gimg2->DrawString(Math::Coord2DDbl(0, 0), user->watermark->ToCString(), f, b);
+									gimg2->SetAlphaType(Media::AT_ALPHA);
 									{
-										ImageUtil_ColorReplace32(bits, iWidth, iHeight, col);
+										Bool revOrder;
+										UInt8 *bits = gimg2->GetImgBits(&revOrder);
+										UInt32 col = (this->random.NextInt30() & 0xffffff) | 0x5f808080;
+										if (bits)
+										{
+											ImageUtil_ColorReplace32(bits, iWidth, iHeight, col);
+										}
 									}
+									gimg->DrawImagePt(gimg2, Math::Coord2DDbl(this->random.NextDouble() * xRand, this->random.NextDouble() * yRand));
+									this->env->GetDrawEngine()->DeleteImage(gimg2.Ptr());
 								}
-								gimg->DrawImagePt(gimg2, Math::Coord2DDbl(this->random.NextDouble() * xRand, this->random.NextDouble() * yRand));
-								this->env->GetDrawEngine()->DeleteImage(gimg2);
 								gimg->DelFont(f);
 								break;
 
@@ -725,17 +727,17 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoWId(NotNullPtr<Net::W
 				simg = imgList->GetImage(0, 0)->CreateStaticImage();
 				DEL_CLASS(imgList);
 				Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
-				NEW_CLASS(lrimg, Media::StaticImage(simg->info.dispSize, *(UInt32*)"LRGB", 64, Media::PF_UNKNOWN, 0, &color, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+				NEW_CLASS(lrimg, Media::StaticImage(simg->info.dispSize, *(UInt32*)"LRGB", 64, Media::PF_UNKNOWN, 0, color, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 				{
 					Sync::MutexUsage mutUsage(this->csconvMut);
-					if (this->csconv == 0 || this->csconvFCC != simg->info.fourcc || this->csconvBpp != simg->info.storeBPP || this->csconvPF != simg->info.pf || !simg->info.color->Equals(&this->csconvColor))
+					if (this->csconv == 0 || this->csconvFCC != simg->info.fourcc || this->csconvBpp != simg->info.storeBPP || this->csconvPF != simg->info.pf || !simg->info.color.Equals(this->csconvColor))
 					{
 						SDEL_CLASS(this->csconv);
 						this->csconvFCC = simg->info.fourcc;
 						this->csconvBpp = simg->info.storeBPP;
 						this->csconvPF = simg->info.pf;
 						this->csconvColor.Set(simg->info.color);
-						this->csconv = Media::CS::CSConverter::NewConverter(this->csconvFCC, this->csconvBpp, this->csconvPF, &this->csconvColor, *(UInt32*)"LRGB", 64, Media::PF_UNKNOWN, &color, Media::ColorProfile::YUVT_UNKNOWN, this->env->GetColorSess());
+						this->csconv = Media::CS::CSConverter::NewConverter(this->csconvFCC, this->csconvBpp, this->csconvPF, this->csconvColor, *(UInt32*)"LRGB", 64, Media::PF_UNKNOWN, color, Media::ColorProfile::YUVT_UNKNOWN, this->env->GetColorSess());
 					}
 					if (this->csconv)
 					{
@@ -801,7 +803,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoWId(NotNullPtr<Net::W
 				{
 					UInt8 *buff;
 					UOSInt buffSize;
-					dimg->info.color->SetRAWICC(Media::ICCProfile::GetSRGBICCData());
+					dimg->info.color.SetRAWICC(Media::ICCProfile::GetSRGBICCData());
 
 					if (rotateType == 1)
 					{
@@ -868,7 +870,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoWId(NotNullPtr<Net::W
 SSWR::OrganWeb::OrganWebPhotoController::OrganWebPhotoController(Net::WebServer::MemoryWebSessionManager *sessMgr, OrganWebEnv *env, UInt32 scnSize) : OrganWebController(sessMgr, env, scnSize), csconvColor(Media::ColorProfile::CPT_SRGB)
 {
 	Media::ColorProfile destProfile(Media::ColorProfile::CPT_SRGB);
-	NEW_CLASS(this->resizerLR, Media::Resizer::LanczosResizerLR_C32(3, 3, &destProfile, this->env->GetColorSess(), Media::AT_NO_ALPHA, 0, Media::PF_B8G8R8A8));
+	NEW_CLASS(this->resizerLR, Media::Resizer::LanczosResizerLR_C32(3, 3, destProfile, this->env->GetColorSess(), Media::AT_NO_ALPHA, 0, Media::PF_B8G8R8A8));
 	this->csconv = 0;
 	this->csconvFCC = 0;
 	this->csconvBpp = 0;

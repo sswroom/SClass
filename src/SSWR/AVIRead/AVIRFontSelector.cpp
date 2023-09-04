@@ -10,7 +10,7 @@ void __stdcall SSWR::AVIRead::AVIRFontSelector::OnResized(void *userObj)
 	me->UpdateFontStyles();
 }
 
-void SSWR::AVIRead::AVIRFontSelector::OnDraw(Media::DrawImage *img)
+void SSWR::AVIRead::AVIRFontSelector::OnDraw(NotNullPtr<Media::DrawImage> img)
 {
 	UOSInt defVal = this->env->GetDefFontStyle();
 	UOSInt currPos = (UOSInt)this->GetVScrollPos();
@@ -27,18 +27,21 @@ void SSWR::AVIRead::AVIRFontSelector::OnDraw(Media::DrawImage *img)
 	w = img->GetWidth();
 	h = img->GetHeight();
 	NotNullPtr<Media::DrawEngine> deng = this->core->GetDrawEngine();
-	Media::DrawImage *tmpBmp;
+	NotNullPtr<Media::DrawImage> tmpBmp;
 	if (UOSInt2Double(w) >= (138 * hdpi / ddpi))
 	{
-		tmpBmp = deng->CreateImage32(Math::Size2D<UOSInt>((UInt32)Double2Int32(128 * hdpi / ddpi), itemH), Media::AT_NO_ALPHA);
+		if (!tmpBmp.Set(deng->CreateImage32(Math::Size2D<UOSInt>((UInt32)Double2Int32(128 * hdpi / ddpi), itemH), Media::AT_NO_ALPHA)))
+			return;
 	}
 	else if (w >= 10)
 	{
-		tmpBmp = deng->CreateImage32(Math::Size2D<UOSInt>(w - 10, itemH), Media::AT_NO_ALPHA);
+		if (!tmpBmp.Set(deng->CreateImage32(Math::Size2D<UOSInt>(w - 10, itemH), Media::AT_NO_ALPHA)))
+			return;
 	}
 	else
 	{
-		tmpBmp = deng->CreateImage32(Math::Size2D<UOSInt>(w, itemH), Media::AT_NO_ALPHA);
+		if (!tmpBmp.Set(deng->CreateImage32(Math::Size2D<UOSInt>(w, itemH), Media::AT_NO_ALPHA)))
+			return;
 	}
 	tmpBmp->SetHDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
 	tmpBmp->SetVDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
@@ -89,7 +92,7 @@ void SSWR::AVIRead::AVIRFontSelector::OnDraw(Media::DrawImage *img)
 	}
 	img->DelBrush(bWhite);
 	img->DelBrush(bBlack);
-	deng->DeleteImage(tmpBmp);
+	deng->DeleteImage(tmpBmp.Ptr());
 }
 
 void SSWR::AVIRead::AVIRFontSelector::OnMouseDown(OSInt scrollY, Math::Coord2D<OSInt> pos, UI::GUIClientControl::MouseButton btn, KeyButton keys)
@@ -326,7 +329,7 @@ SSWR::AVIRead::AVIRFontSelector::AVIRFontSelector(NotNullPtr<UI::GUICore> ui, UI
 	this->mnuLayers = 0;
 	Media::ColorProfile srcProfile(Media::ColorProfile::CPT_SRGB);
 	Media::ColorProfile destProfile(Media::ColorProfile::CPT_PDISPLAY);
-	NEW_CLASS(this->colorConv, Media::ColorConv(&srcProfile, &destProfile, this->colorSess));
+	NEW_CLASS(this->colorConv, Media::ColorConv(srcProfile, destProfile, this->colorSess));
 	if (this->colorSess)
 	{
 		this->colorSess->AddHandler(this);

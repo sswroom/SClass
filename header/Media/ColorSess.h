@@ -11,8 +11,8 @@ namespace Media
 		virtual void RemoveHandler(Media::IColorHandler *hdlr) = 0;
 //		const Media::IColorHandler::YUVPARAM *GetYUVParam();
 		virtual const Media::IColorHandler::RGBPARAM2 *GetRGBParam() = 0;
-		virtual Media::ColorProfile *GetDefVProfile() = 0;
-		virtual Media::ColorProfile *GetDefPProfile() = 0;
+		virtual NotNullPtr<Media::ColorProfile> GetDefVProfile() = 0;
+		virtual NotNullPtr<Media::ColorProfile> GetDefPProfile() = 0;
 //		Media::ColorProfile::YUVType GetDefYUVType();
 //		Bool Get10BitColor();
 

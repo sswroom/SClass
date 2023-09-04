@@ -25,7 +25,7 @@ namespace Math
 		void Set(Matrix3 *matrix);
 		void Multiply(Matrix3 *matrix);
 		void MyMultiply(Matrix3 *matrix);
-		void Multiply(Double x, Double y, Double z, Double *outX, Double *outY, Double *outZ);
+		void Multiply(Double x, Double y, Double z, OutParam<Double> outX, OutParam<Double> outY, OutParam<Double> outZ);
 		void Multiply(Vector3 *srcVec, Vector3 *outVec);
 		void SetIdentity();
 	};

@@ -54,12 +54,12 @@ Media::VectorDocument::~VectorDocument()
 	SDEL_TEXT(this->producer);
 }
 
-Media::VectorGraph *Media::VectorDocument::AddGraph(Double width, Double height, Math::Unit::Distance::DistanceUnit unit)
+NotNullPtr<Media::VectorGraph> Media::VectorDocument::AddGraph(Double width, Double height, Math::Unit::Distance::DistanceUnit unit)
 {
-	Media::VectorGraph *graph;
+	NotNullPtr<Media::VectorGraph> graph;
 	Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
-	NEW_CLASS(graph, Media::VectorGraph(this->srid, width, height, unit, this->refEng, &color));
-	this->items->Add(graph);
+	NEW_CLASSNN(graph, Media::VectorGraph(this->srid, width, height, unit, this->refEng, color));
+	this->items->Add(graph.Ptr());
 	return graph;
 }
 
@@ -204,7 +204,7 @@ Bool Media::VectorDocument::BeginPrint(IPrintDocument *doc)
 	return true;
 }
 
-Bool Media::VectorDocument::PrintPage(Media::DrawImage *printPage)
+Bool Media::VectorDocument::PrintPage(NotNullPtr<Media::DrawImage> printPage)
 {
 	Media::VectorGraph *graph;
 	Double width;

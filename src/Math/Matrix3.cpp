@@ -113,11 +113,11 @@ void Math::Matrix3::MyMultiply(Matrix3 *matrix)
 	this->vec[2].val[2] = tmpVec[0].val[2] * matrix->vec[2].val[0] + tmpVec[1].val[2] * matrix->vec[2].val[1] + tmpVec[2].val[2] * matrix->vec[2].val[2];
 }
 
-void Math::Matrix3::Multiply(Double x, Double y, Double z, Double *outX, Double *outY, Double *outZ)
+void Math::Matrix3::Multiply(Double x, Double y, Double z, OutParam<Double> outX, OutParam<Double> outY, OutParam<Double> outZ)
 {
-	*outX = x * this->vec[0].val[0] + y * this->vec[0].val[1] + z * this->vec[0].val[2];
-	*outY = x * this->vec[1].val[0] + y * this->vec[1].val[1] + z * this->vec[1].val[2];
-	*outZ = x * this->vec[2].val[0] + y * this->vec[2].val[1] + z * this->vec[2].val[2];
+	outX.Set(x * this->vec[0].val[0] + y * this->vec[0].val[1] + z * this->vec[0].val[2]);
+	outY.Set(x * this->vec[1].val[0] + y * this->vec[1].val[1] + z * this->vec[1].val[2]);
+	outZ.Set(x * this->vec[2].val[0] + y * this->vec[2].val[1] + z * this->vec[2].val[2]);
 }
 
 void Math::Matrix3::Multiply(Vector3 *srcVec, Vector3 *outVec)

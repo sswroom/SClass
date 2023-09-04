@@ -311,7 +311,7 @@ namespace UI
 		Double GetHDPI();
 		Double GetDDPI();
 
-		Media::DrawFont *CreateDrawFont(Media::DrawImage *img);
+		Media::DrawFont *CreateDrawFont(NotNullPtr<Media::DrawImage> img);
 		static UInt32 GUIKey2OSKey(GUIKey guiKey);
 		static GUIKey OSKey2GUIKey(UInt32 osKey);
 		static Text::CString GUIKeyGetName(GUIKey guiKey);

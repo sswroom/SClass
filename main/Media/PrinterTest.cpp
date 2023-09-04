@@ -24,7 +24,7 @@ public:
 		return true;
 	}
 
-	virtual Bool PrintPage(Media::DrawImage *printPage)
+	virtual Bool PrintPage(NotNullPtr<Media::DrawImage> printPage)
 	{
 		Media::DrawFont *font = printPage->NewFontPt(CSTR("Arial"), 12, Media::DrawEngine::DFS_NORMAL, 0);
 		Media::DrawBrush *brush = printPage->NewBrushARGB(0xff000000);

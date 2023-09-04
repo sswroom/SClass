@@ -24,7 +24,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISLineForm::OnColorDown(void *userObj, Math::
 	if (btn == UI::GUIControl::MBTN_LEFT)
 	{
 		Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
-		UtilUI::ColorDialog dlg(0, me->ui, me->core->GetColorMgr(), me->core->GetDrawEngine(), UtilUI::ColorDialog::CCT_PHOTO, &color, me->core->GetMonitorMgr());
+		UtilUI::ColorDialog dlg(0, me->ui, me->core->GetColorMgr(), me->core->GetDrawEngine(), UtilUI::ColorDialog::CCT_PHOTO, color, me->core->GetMonitorMgr());
 		dlg.SetColor32(me->lineColor);
 		if (dlg.ShowDialog(me) == UI::GUIForm::DR_OK)
 		{
@@ -52,16 +52,18 @@ void __stdcall SSWR::AVIRead::AVIRGISLineForm::OnCancelClicked(void *userObj)
 void SSWR::AVIRead::AVIRGISLineForm::UpdatePreview()
 {
 	Math::Size2D<UOSInt> sz;
-	Media::DrawImage *dimg;
+	NotNullPtr<Media::DrawImage> dimg;
 	sz = this->pbPreview->GetSizeP();
-	dimg = this->eng->CreateImage32(sz, Media::AT_NO_ALPHA);
-	dimg->SetHDPI(this->GetHDPI());
-	dimg->SetVDPI(this->GetHDPI());
-	this->core->GenLinePreview(dimg, this->eng, this->lineThick, this->lineColor, this->colorConv);
-	SDEL_CLASS(this->prevImg);
-	this->prevImg = dimg->ToStaticImage();
-	this->eng->DeleteImage(dimg);
-	this->pbPreview->SetImage(this->prevImg);
+	if (dimg.Set(this->eng->CreateImage32(sz, Media::AT_NO_ALPHA)))
+	{
+		dimg->SetHDPI(this->GetHDPI());
+		dimg->SetVDPI(this->GetHDPI());
+		this->core->GenLinePreview(dimg, this->eng, this->lineThick, this->lineColor, this->colorConv);
+		SDEL_CLASS(this->prevImg);
+		this->prevImg = dimg->ToStaticImage();
+		this->eng->DeleteImage(dimg.Ptr());
+		this->pbPreview->SetImage(this->prevImg);
+	}
 }
 
 SSWR::AVIRead::AVIRGISLineForm::AVIRGISLineForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<Media::DrawEngine> eng, UOSInt lineThick, UInt32 lineColor) : UI::GUIForm(parent, 462, 334, ui)
@@ -77,7 +79,7 @@ SSWR::AVIRead::AVIRGISLineForm::AVIRGISLineForm(UI::GUIClientControl *parent, No
 	this->colorSess->AddHandler(this);
 	Media::ColorProfile srcColor(Media::ColorProfile::CPT_SRGB);
 	Media::ColorProfile destColor(Media::ColorProfile::CPT_PDISPLAY);
-	NEW_CLASS(this->colorConv, Media::ColorConv(&srcColor, &destColor, this->colorSess));
+	NEW_CLASS(this->colorConv, Media::ColorConv(srcColor, destColor, this->colorSess));
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->SetText(CSTR("Line Modify"));

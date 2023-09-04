@@ -72,14 +72,14 @@ Media::StaticImage *HEIFParser_DecodeImage(heif_image_handle *imgHdlr)
 		{
 			heif_decode_image(imgHdlr, &img, heif_colorspace_RGB, heif_chroma_interleaved_RGBA, options);
 			data = heif_image_get_plane_readonly(img, heif_channel_interleaved, &stride);
-			NEW_CLASS(simg, Media::StaticImage(Math::Size2D<UOSInt>((UOSInt)width, (UOSInt)height), 0, 32, Media::PF_R8G8B8A8, (UOSInt)width * (UOSInt)height * 4, &color, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+			NEW_CLASS(simg, Media::StaticImage(Math::Size2D<UOSInt>((UOSInt)width, (UOSInt)height), 0, 32, Media::PF_R8G8B8A8, (UOSInt)width * (UOSInt)height * 4, color, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 			ImageCopy_ImgCopyR(data, simg->data, (UOSInt)width * 4, (UOSInt)height, (UOSInt)stride, simg->GetDataBpl(), false);
 		}
 		else
 		{
 			heif_decode_image(imgHdlr, &img, heif_colorspace_RGB, heif_chroma_interleaved_RGB, options);
 			data = heif_image_get_plane_readonly(img, heif_channel_interleaved, &stride);
-			NEW_CLASS(simg, Media::StaticImage(Math::Size2D<UOSInt>((UOSInt)width, (UOSInt)height), 0, 24, Media::PF_R8G8B8, (UOSInt)width * (UOSInt)height * 3, &color, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+			NEW_CLASS(simg, Media::StaticImage(Math::Size2D<UOSInt>((UOSInt)width, (UOSInt)height), 0, 24, Media::PF_R8G8B8, (UOSInt)width * (UOSInt)height * 3, color, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 			ImageCopy_ImgCopyR(data, simg->data, (UOSInt)width * 3, (UOSInt)height, (UOSInt)stride, simg->GetDataBpl(), false);
 		}
 	}
@@ -90,7 +90,7 @@ Media::StaticImage *HEIFParser_DecodeImage(heif_image_handle *imgHdlr)
 		{
 			heif_decode_image(imgHdlr, &img, heif_colorspace_RGB, heif_chroma_interleaved_RRGGBBAA_LE, options);
 			data = heif_image_get_plane_readonly(img, heif_channel_interleaved, &stride);
-			NEW_CLASS(simg, Media::StaticImage(Math::Size2D<UOSInt>((UOSInt)width, (UOSInt)height), 0, 64, Media::PF_LE_B16G16R16A16, (UOSInt)width * (UOSInt)height * 8, &color, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+			NEW_CLASS(simg, Media::StaticImage(Math::Size2D<UOSInt>((UOSInt)width, (UOSInt)height), 0, 64, Media::PF_LE_B16G16R16A16, (UOSInt)width * (UOSInt)height * 8, color, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 			ImageCopy_ImgCopyR(data, simg->data, (UOSInt)width * 8, (UOSInt)height, (UOSInt)stride, simg->GetDataBpl(), false);
 			ImageUtil_SwapRGB(simg->data, (UOSInt)width * (UOSInt)height, 64);
 		}
@@ -98,7 +98,7 @@ Media::StaticImage *HEIFParser_DecodeImage(heif_image_handle *imgHdlr)
 		{
 			heif_decode_image(imgHdlr, &img, heif_colorspace_RGB, heif_chroma_interleaved_RRGGBB_LE, options);
 			data = heif_image_get_plane_readonly(img, heif_channel_interleaved, &stride);
-			NEW_CLASS(simg, Media::StaticImage(Math::Size2D<UOSInt>((UOSInt)width, (UOSInt)height), 0, 48, Media::PF_R8G8B8, (UOSInt)width * (UOSInt)height * 6, &color, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+			NEW_CLASS(simg, Media::StaticImage(Math::Size2D<UOSInt>((UOSInt)width, (UOSInt)height), 0, 48, Media::PF_R8G8B8, (UOSInt)width * (UOSInt)height * 6, color, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 			ImageCopy_ImgCopyR(data, simg->data, (UOSInt)width * 6, (UOSInt)height, (UOSInt)stride, simg->GetDataBpl(), false);
 			ImageUtil_SwapRGB(simg->data, (UOSInt)width * (UOSInt)height, 48);
 		}
@@ -120,135 +120,135 @@ Media::StaticImage *HEIFParser_DecodeImage(heif_image_handle *imgHdlr)
 				switch (cp->color_primaries)
 				{
 				case heif_color_primaries_ITU_R_BT_709_5:
-					simg->info.color->primaries.SetColorType(Media::ColorProfile::CT_BT709);
+					simg->info.color.primaries.SetColorType(Media::ColorProfile::CT_BT709);
 					break;
 				case heif_color_primaries_ITU_R_BT_470_6_System_M:
-					simg->info.color->primaries.SetColorType(Media::ColorProfile::CT_BT470M);
+					simg->info.color.primaries.SetColorType(Media::ColorProfile::CT_BT470M);
 					break;
 				case heif_color_primaries_ITU_R_BT_470_6_System_B_G:
-					simg->info.color->primaries.SetColorType(Media::ColorProfile::CT_BT470BG);
+					simg->info.color.primaries.SetColorType(Media::ColorProfile::CT_BT470BG);
 					break;
 				case heif_color_primaries_ITU_R_BT_601_6:
-					simg->info.color->primaries.SetColorType(Media::ColorProfile::CT_BT470BG);
+					simg->info.color.primaries.SetColorType(Media::ColorProfile::CT_BT470BG);
 					break;
 				case heif_color_primaries_SMPTE_240M:
-					simg->info.color->primaries.SetColorType(Media::ColorProfile::CT_SMPTE240M);
+					simg->info.color.primaries.SetColorType(Media::ColorProfile::CT_SMPTE240M);
 					break;
 #if LIBHEIF_HAVE_VERSION(1, 8, 0)
 				case heif_color_primaries_generic_film:
-					simg->info.color->primaries.SetColorType(Media::ColorProfile::CT_GENERIC_FILM);
+					simg->info.color.primaries.SetColorType(Media::ColorProfile::CT_GENERIC_FILM);
 					break;
 				case heif_color_primaries_ITU_R_BT_2020_2_and_2100_0:
-					simg->info.color->primaries.SetColorType(Media::ColorProfile::CT_BT2020);
+					simg->info.color.primaries.SetColorType(Media::ColorProfile::CT_BT2020);
 					break;
 				case heif_color_primaries_SMPTE_ST_428_1:
-					simg->info.color->primaries.SetColorType(Media::ColorProfile::CT_SMPTE428);
+					simg->info.color.primaries.SetColorType(Media::ColorProfile::CT_SMPTE428);
 					break;
 				case heif_color_primaries_SMPTE_RP_431_2:
-					simg->info.color->primaries.SetColorType(Media::ColorProfile::CT_SMPTE_RP431_2);
+					simg->info.color.primaries.SetColorType(Media::ColorProfile::CT_SMPTE_RP431_2);
 					break;
 				case heif_color_primaries_SMPTE_EG_432_1:
-					simg->info.color->primaries.SetColorType(Media::ColorProfile::CT_SMPTE_EG432_1);
+					simg->info.color.primaries.SetColorType(Media::ColorProfile::CT_SMPTE_EG432_1);
 					break;
 				case heif_color_primaries_EBU_Tech_3213_E:
-					simg->info.color->primaries.SetColorType(Media::ColorProfile::CT_EBU3213);
+					simg->info.color.primaries.SetColorType(Media::ColorProfile::CT_EBU3213);
 					break;
 #endif
 				case heif_color_primaries_unspecified:
 				default:
-					simg->info.color->primaries.SetColorType(Media::ColorProfile::CT_PUNKNOWN);
+					simg->info.color.primaries.SetColorType(Media::ColorProfile::CT_PUNKNOWN);
 					break;
 				}
 
 				switch (cp->transfer_characteristics)
 				{
 				case heif_transfer_characteristic_ITU_R_BT_709_5:
-					simg->info.color->rtransfer.Set(Media::CS::TRANT_BT709, 2.2);
-					simg->info.color->gtransfer.Set(Media::CS::TRANT_BT709, 2.2);
-					simg->info.color->btransfer.Set(Media::CS::TRANT_BT709, 2.2);
+					simg->info.color.rtransfer.Set(Media::CS::TRANT_BT709, 2.2);
+					simg->info.color.gtransfer.Set(Media::CS::TRANT_BT709, 2.2);
+					simg->info.color.btransfer.Set(Media::CS::TRANT_BT709, 2.2);
 					break;
 				case heif_transfer_characteristic_unspecified:
-					simg->info.color->rtransfer.Set(Media::CS::TRANT_PUNKNOWN, 2.2);
-					simg->info.color->gtransfer.Set(Media::CS::TRANT_PUNKNOWN, 2.2);
-					simg->info.color->btransfer.Set(Media::CS::TRANT_PUNKNOWN, 2.2);
+					simg->info.color.rtransfer.Set(Media::CS::TRANT_PUNKNOWN, 2.2);
+					simg->info.color.gtransfer.Set(Media::CS::TRANT_PUNKNOWN, 2.2);
+					simg->info.color.btransfer.Set(Media::CS::TRANT_PUNKNOWN, 2.2);
 					break;
 				case heif_transfer_characteristic_ITU_R_BT_470_6_System_M:
-					simg->info.color->rtransfer.Set(Media::CS::TRANT_GAMMA, 2.2);
-					simg->info.color->gtransfer.Set(Media::CS::TRANT_GAMMA, 2.2);
-					simg->info.color->btransfer.Set(Media::CS::TRANT_GAMMA, 2.2);
+					simg->info.color.rtransfer.Set(Media::CS::TRANT_GAMMA, 2.2);
+					simg->info.color.gtransfer.Set(Media::CS::TRANT_GAMMA, 2.2);
+					simg->info.color.btransfer.Set(Media::CS::TRANT_GAMMA, 2.2);
 					break;
 				case heif_transfer_characteristic_ITU_R_BT_470_6_System_B_G:
-					simg->info.color->rtransfer.Set(Media::CS::TRANT_GAMMA, 2.8);
-					simg->info.color->gtransfer.Set(Media::CS::TRANT_GAMMA, 2.8);
-					simg->info.color->btransfer.Set(Media::CS::TRANT_GAMMA, 2.8);
+					simg->info.color.rtransfer.Set(Media::CS::TRANT_GAMMA, 2.8);
+					simg->info.color.gtransfer.Set(Media::CS::TRANT_GAMMA, 2.8);
+					simg->info.color.btransfer.Set(Media::CS::TRANT_GAMMA, 2.8);
 					break;
 				case heif_transfer_characteristic_ITU_R_BT_601_6:
-					simg->info.color->rtransfer.Set(Media::CS::TRANT_BT709, 2.2);
-					simg->info.color->gtransfer.Set(Media::CS::TRANT_BT709, 2.2);
-					simg->info.color->btransfer.Set(Media::CS::TRANT_BT709, 2.2);
+					simg->info.color.rtransfer.Set(Media::CS::TRANT_BT709, 2.2);
+					simg->info.color.gtransfer.Set(Media::CS::TRANT_BT709, 2.2);
+					simg->info.color.btransfer.Set(Media::CS::TRANT_BT709, 2.2);
 					break;
 				case heif_transfer_characteristic_SMPTE_240M:
-					simg->info.color->rtransfer.Set(Media::CS::TRANT_SMPTE240, 2.2);
-					simg->info.color->gtransfer.Set(Media::CS::TRANT_SMPTE240, 2.2);
-					simg->info.color->btransfer.Set(Media::CS::TRANT_SMPTE240, 2.2);
+					simg->info.color.rtransfer.Set(Media::CS::TRANT_SMPTE240, 2.2);
+					simg->info.color.gtransfer.Set(Media::CS::TRANT_SMPTE240, 2.2);
+					simg->info.color.btransfer.Set(Media::CS::TRANT_SMPTE240, 2.2);
 					break;
 				case heif_transfer_characteristic_linear:
-					simg->info.color->rtransfer.Set(Media::CS::TRANT_LINEAR, 1.0);
-					simg->info.color->gtransfer.Set(Media::CS::TRANT_LINEAR, 1.0);
-					simg->info.color->btransfer.Set(Media::CS::TRANT_LINEAR, 1.0);
+					simg->info.color.rtransfer.Set(Media::CS::TRANT_LINEAR, 1.0);
+					simg->info.color.gtransfer.Set(Media::CS::TRANT_LINEAR, 1.0);
+					simg->info.color.btransfer.Set(Media::CS::TRANT_LINEAR, 1.0);
 					break;
 #if LIBHEIF_HAVE_VERSION(1, 8, 0)
 				case heif_transfer_characteristic_logarithmic_100:
-					simg->info.color->rtransfer.Set(Media::CS::TRANT_LOG100, 2.2);
-					simg->info.color->gtransfer.Set(Media::CS::TRANT_LOG100, 2.2);
-					simg->info.color->btransfer.Set(Media::CS::TRANT_LOG100, 2.2);
+					simg->info.color.rtransfer.Set(Media::CS::TRANT_LOG100, 2.2);
+					simg->info.color.gtransfer.Set(Media::CS::TRANT_LOG100, 2.2);
+					simg->info.color.btransfer.Set(Media::CS::TRANT_LOG100, 2.2);
 					break;
 				case heif_transfer_characteristic_logarithmic_100_sqrt10:
-					simg->info.color->rtransfer.Set(Media::CS::TRANT_LOGSQRT10, 2.2);
-					simg->info.color->gtransfer.Set(Media::CS::TRANT_LOGSQRT10, 2.2);
-					simg->info.color->btransfer.Set(Media::CS::TRANT_LOGSQRT10, 2.2);
+					simg->info.color.rtransfer.Set(Media::CS::TRANT_LOGSQRT10, 2.2);
+					simg->info.color.gtransfer.Set(Media::CS::TRANT_LOGSQRT10, 2.2);
+					simg->info.color.btransfer.Set(Media::CS::TRANT_LOGSQRT10, 2.2);
 					break;
 #endif
 				case heif_transfer_characteristic_IEC_61966_2_4:
-					simg->info.color->rtransfer.Set(Media::CS::TRANT_BT709, 2.2);
-					simg->info.color->gtransfer.Set(Media::CS::TRANT_BT709, 2.2);
-					simg->info.color->btransfer.Set(Media::CS::TRANT_BT709, 2.2);
+					simg->info.color.rtransfer.Set(Media::CS::TRANT_BT709, 2.2);
+					simg->info.color.gtransfer.Set(Media::CS::TRANT_BT709, 2.2);
+					simg->info.color.btransfer.Set(Media::CS::TRANT_BT709, 2.2);
 					break;
 				case heif_transfer_characteristic_ITU_R_BT_1361:
-					simg->info.color->rtransfer.Set(Media::CS::TRANT_BT1361, 2.2);
-					simg->info.color->gtransfer.Set(Media::CS::TRANT_BT1361, 2.2);
-					simg->info.color->btransfer.Set(Media::CS::TRANT_BT1361, 2.2);
+					simg->info.color.rtransfer.Set(Media::CS::TRANT_BT1361, 2.2);
+					simg->info.color.gtransfer.Set(Media::CS::TRANT_BT1361, 2.2);
+					simg->info.color.btransfer.Set(Media::CS::TRANT_BT1361, 2.2);
 					break;
 				case heif_transfer_characteristic_IEC_61966_2_1:
-					simg->info.color->rtransfer.Set(Media::CS::TRANT_sRGB, 2.2);
-					simg->info.color->gtransfer.Set(Media::CS::TRANT_sRGB, 2.2);
-					simg->info.color->btransfer.Set(Media::CS::TRANT_sRGB, 2.2);
+					simg->info.color.rtransfer.Set(Media::CS::TRANT_sRGB, 2.2);
+					simg->info.color.gtransfer.Set(Media::CS::TRANT_sRGB, 2.2);
+					simg->info.color.btransfer.Set(Media::CS::TRANT_sRGB, 2.2);
 					break;
 #if LIBHEIF_HAVE_VERSION(1, 8, 0)
 				case heif_transfer_characteristic_ITU_R_BT_2020_2_10bit:
-					simg->info.color->rtransfer.Set(Media::CS::TRANT_BT709, 2.2);
-					simg->info.color->gtransfer.Set(Media::CS::TRANT_BT709, 2.2);
-					simg->info.color->btransfer.Set(Media::CS::TRANT_BT709, 2.2);
+					simg->info.color.rtransfer.Set(Media::CS::TRANT_BT709, 2.2);
+					simg->info.color.gtransfer.Set(Media::CS::TRANT_BT709, 2.2);
+					simg->info.color.btransfer.Set(Media::CS::TRANT_BT709, 2.2);
 					break;
 				case heif_transfer_characteristic_ITU_R_BT_2020_2_12bit:
-					simg->info.color->rtransfer.Set(Media::CS::TRANT_BT709, 2.2);
-					simg->info.color->gtransfer.Set(Media::CS::TRANT_BT709, 2.2);
-					simg->info.color->btransfer.Set(Media::CS::TRANT_BT709, 2.2);
+					simg->info.color.rtransfer.Set(Media::CS::TRANT_BT709, 2.2);
+					simg->info.color.gtransfer.Set(Media::CS::TRANT_BT709, 2.2);
+					simg->info.color.btransfer.Set(Media::CS::TRANT_BT709, 2.2);
 					break;
 				case heif_transfer_characteristic_ITU_R_BT_2100_0_PQ:
-					simg->info.color->rtransfer.Set(Media::CS::TRANT_BT2100, 2.2);
-					simg->info.color->gtransfer.Set(Media::CS::TRANT_BT2100, 2.2);
-					simg->info.color->btransfer.Set(Media::CS::TRANT_BT2100, 2.2);
+					simg->info.color.rtransfer.Set(Media::CS::TRANT_BT2100, 2.2);
+					simg->info.color.gtransfer.Set(Media::CS::TRANT_BT2100, 2.2);
+					simg->info.color.btransfer.Set(Media::CS::TRANT_BT2100, 2.2);
 					break;
 				case heif_transfer_characteristic_SMPTE_ST_428_1:
-					simg->info.color->rtransfer.Set(Media::CS::TRANT_SMPTE428, 2.2);
-					simg->info.color->gtransfer.Set(Media::CS::TRANT_SMPTE428, 2.2);
-					simg->info.color->btransfer.Set(Media::CS::TRANT_SMPTE428, 2.2);
+					simg->info.color.rtransfer.Set(Media::CS::TRANT_SMPTE428, 2.2);
+					simg->info.color.gtransfer.Set(Media::CS::TRANT_SMPTE428, 2.2);
+					simg->info.color.btransfer.Set(Media::CS::TRANT_SMPTE428, 2.2);
 					break;
 				case heif_transfer_characteristic_ITU_R_BT_2100_0_HLG:
-					simg->info.color->rtransfer.Set(Media::CS::TRANT_HLG, 2.2);
-					simg->info.color->gtransfer.Set(Media::CS::TRANT_HLG, 2.2);
-					simg->info.color->btransfer.Set(Media::CS::TRANT_HLG, 2.2);
+					simg->info.color.rtransfer.Set(Media::CS::TRANT_HLG, 2.2);
+					simg->info.color.gtransfer.Set(Media::CS::TRANT_HLG, 2.2);
+					simg->info.color.btransfer.Set(Media::CS::TRANT_HLG, 2.2);
 					break;
 #endif
 				}
@@ -314,7 +314,7 @@ Media::StaticImage *HEIFParser_DecodeImage(heif_image_handle *imgHdlr)
 				if (icc)
 				{
 					icc->SetToColorProfile(simg->info.color);
-					simg->info.color->SetRAWICC(buff.Ptr());
+					simg->info.color.SetRAWICC(buff.Ptr());
 					DEL_CLASS(icc);
 				}
 			}

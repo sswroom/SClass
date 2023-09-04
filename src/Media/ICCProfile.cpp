@@ -444,7 +444,7 @@ Media::LUT *Media::ICCProfile::CreateBLUT() const
 	return 0;
 }
 
-Bool Media::ICCProfile::GetRedTransferParam(Media::CS::TransferParam *param) const
+Bool Media::ICCProfile::GetRedTransferParam(NotNullPtr<Media::CS::TransferParam> param) const
 {
 	Int32 cnt = ReadMInt32(&this->iccBuff[128]);
 	Int32 i = 0;
@@ -530,7 +530,7 @@ Bool Media::ICCProfile::GetRedTransferParam(Media::CS::TransferParam *param) con
 	return false;
 }
 
-Bool Media::ICCProfile::GetGreenTransferParam(Media::CS::TransferParam *param) const
+Bool Media::ICCProfile::GetGreenTransferParam(NotNullPtr<Media::CS::TransferParam> param) const
 {
 	Int32 cnt = ReadMInt32(&this->iccBuff[128]);
 	Int32 i = 0;
@@ -616,7 +616,7 @@ Bool Media::ICCProfile::GetGreenTransferParam(Media::CS::TransferParam *param) c
 	return false;
 }
 
-Bool Media::ICCProfile::GetBlueTransferParam(Media::CS::TransferParam *param) const
+Bool Media::ICCProfile::GetBlueTransferParam(NotNullPtr<Media::CS::TransferParam> param) const
 {
 	Int32 cnt = ReadMInt32(&this->iccBuff[128]);
 	Int32 i = 0;
@@ -702,7 +702,7 @@ Bool Media::ICCProfile::GetBlueTransferParam(Media::CS::TransferParam *param) co
 	return false;
 }
 
-Bool Media::ICCProfile::GetColorPrimaries(Media::ColorProfile::ColorPrimaries *color) const
+Bool Media::ICCProfile::GetColorPrimaries(NotNullPtr<Media::ColorProfile::ColorPrimaries> color) const
 {
 	Int32 cnt = ReadMInt32(&this->iccBuff[128]);
 	Int32 i = 0;
@@ -832,7 +832,7 @@ Bool Media::ICCProfile::GetColorPrimaries(Media::ColorProfile::ColorPrimaries *c
 	}
 }
 
-Bool Media::ICCProfile::SetToColorProfile(Media::ColorProfile *colorProfile)
+Bool Media::ICCProfile::SetToColorProfile(NotNullPtr<Media::ColorProfile> colorProfile)
 {
 	if (this->GetRedTransferParam(colorProfile->GetRTranParam()) &&
 		this->GetGreenTransferParam(colorProfile->GetGTranParam()) &&
@@ -1671,7 +1671,7 @@ Media::CS::TransferType Media::ICCProfile::FindTransferType(UOSInt colorCount, U
 	while (i-- > 0)
 	{
 		Media::CS::TransferParam param(trans[i], 2.2);
-		funcs[i] = Media::CS::TransferFunc::CreateFunc(&param);
+		funcs[i] = Media::CS::TransferFunc::CreateFunc(param);
 		diffSqrSum[i] = 0;
 	}
 

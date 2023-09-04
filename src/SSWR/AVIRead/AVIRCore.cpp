@@ -401,7 +401,7 @@ Media::IAudioRenderer *SSWR::AVIRead::AVIRCore::BindAudio(Media::IAudioSource *a
 	return this->audDevice.BindAudio(audSrc);
 }
 
-Bool SSWR::AVIRead::AVIRCore::GenLinePreview(Media::DrawImage *img, NotNullPtr<Media::DrawEngine> eng, UOSInt lineThick, UInt32 lineColor, Media::ColorConv *colorConv)
+Bool SSWR::AVIRead::AVIRCore::GenLinePreview(NotNullPtr<Media::DrawImage> img, NotNullPtr<Media::DrawEngine> eng, UOSInt lineThick, UInt32 lineColor, Media::ColorConv *colorConv)
 {
 	Media::DrawPen *p;
 	Media::DrawBrush *b;
@@ -416,7 +416,7 @@ Bool SSWR::AVIRead::AVIRCore::GenLinePreview(Media::DrawImage *img, NotNullPtr<M
 	return true;
 }
 
-Bool SSWR::AVIRead::AVIRCore::GenLineStylePreview(Media::DrawImage *img, NotNullPtr<Media::DrawEngine> eng, Map::MapEnv *env, UOSInt lineStyle, Media::ColorConv *colorConv)
+Bool SSWR::AVIRead::AVIRCore::GenLineStylePreview(NotNullPtr<Media::DrawImage> img, NotNullPtr<Media::DrawEngine> eng, Map::MapEnv *env, UOSInt lineStyle, Media::ColorConv *colorConv)
 {
 	Math::Size2D<UOSInt> size = img->GetSize();
 	Double dpi = img->GetHDPI();
@@ -454,7 +454,7 @@ Bool SSWR::AVIRead::AVIRCore::GenLineStylePreview(Media::DrawImage *img, NotNull
 	return true;
 }
 
-Bool SSWR::AVIRead::AVIRCore::GenFontStylePreview(Media::DrawImage *img, NotNullPtr<Media::DrawEngine> eng, Map::MapEnv *env, UOSInt fontStyle, Media::ColorConv *colorConv)
+Bool SSWR::AVIRead::AVIRCore::GenFontStylePreview(NotNullPtr<Media::DrawImage> img, NotNullPtr<Media::DrawEngine> eng, Map::MapEnv *env, UOSInt fontStyle, Media::ColorConv *colorConv)
 {
 	Math::Size2D<UOSInt> size = img->GetSize();
 	Double dpi = img->GetHDPI();
@@ -514,7 +514,7 @@ Bool SSWR::AVIRead::AVIRCore::GenFontStylePreview(Media::DrawImage *img, NotNull
 	return true;
 }
 
-Bool SSWR::AVIRead::AVIRCore::GenFontPreview(Media::DrawImage *img, NotNullPtr<Media::DrawEngine> eng, Text::CString fontName, Double fontSizePt, UInt32 fontColor, Media::ColorConv *colorConv)
+Bool SSWR::AVIRead::AVIRCore::GenFontPreview(NotNullPtr<Media::DrawImage> img, NotNullPtr<Media::DrawEngine> eng, Text::CString fontName, Double fontSizePt, UInt32 fontColor, Media::ColorConv *colorConv)
 {
 	if (fontName.leng == 0)
 	{

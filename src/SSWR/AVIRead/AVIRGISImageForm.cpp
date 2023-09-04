@@ -89,7 +89,7 @@ SSWR::AVIRead::AVIRGISImageForm::AVIRGISImageForm(UI::GUIClientControl *parent, 
 	this->imgIndex = imgIndex;
 	this->env = env;
 	Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
-	NEW_CLASS(resizer, Media::Resizer::LanczosResizer8_C8(4, 3, &color, &color, 0, Media::AT_NO_ALPHA));
+	NEW_CLASS(resizer, Media::Resizer::LanczosResizer8_C8(4, 3, color, color, 0, Media::AT_NO_ALPHA));
 	this->parsers = core->GetParserList();
 	this->UpdateImages();
 	this->plIcons->SetSelectedIndex(imgIndex);

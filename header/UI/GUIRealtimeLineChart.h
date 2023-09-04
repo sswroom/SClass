@@ -31,7 +31,7 @@ namespace UI
 	public:
 		static OSInt __stdcall RLCWndProc(void *hWnd, UInt32 msg, UInt32 wParam, OSInt lParam);
 	private:
-		void OnPaint(Media::DrawImage *dimg);
+		void OnPaint(NotNullPtr<Media::DrawImage> dimg);
 		void Init(void *hInst);
 		void Deinit(void *hInst);
 	public:

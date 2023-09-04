@@ -62,7 +62,7 @@ namespace Text
 			virtual DocSection *GetItem(UOSInt Index) const;
 
 			virtual Bool BeginPrint(Media::IPrintDocument *doc);
-			virtual Bool PrintPage(Media::DrawImage *printPage); 
+			virtual Bool PrintPage(NotNullPtr<Media::DrawImage> printPage); 
 			virtual Bool EndPrint(Media::IPrintDocument *doc);
 		};
 	}

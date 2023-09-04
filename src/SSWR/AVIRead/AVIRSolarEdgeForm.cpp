@@ -321,31 +321,34 @@ void SSWR::AVIRead::AVIRSolarEdgeForm::UpdateSiteEnergyGraph()
 	Math::Size2D<UOSInt> size = this->pbSiteEnergy->GetSizeP();
 	if (this->siteEnergyList.GetCount() > 0 && size.x > 0 && size.y > 0)
 	{
-		Media::DrawImage *dimg = deng->CreateImage32(size, Media::AlphaType::AT_NO_ALPHA);
-		dimg->SetHDPI(this->GetHDPI() * 96.0 / this->GetDDPI());
-		dimg->SetVDPI(this->GetHDPI() * 96.0 / this->GetDDPI());
-		Data::LineChart chart(CSTR("Site Energy"));
-		chart.SetFontHeightPt(9.0);
-		UOSInt i = 0;
-		UOSInt j = this->siteEnergyList.GetCount();
-		Data::Timestamp *tsList = MemAlloc(Data::Timestamp, j);
-		Double *valList = MemAlloc(Double, j);
-		while (i < j)
+		NotNullPtr<Media::DrawImage> dimg;
+		if (dimg.Set(deng->CreateImage32(size, Media::AlphaType::AT_NO_ALPHA)))
 		{
-			tsList[i] = this->siteEnergyList.GetItem(i).ts;
-			valList[i] = this->siteEnergyList.GetItem(i).value;
-			i++;
+			dimg->SetHDPI(this->GetHDPI() * 96.0 / this->GetDDPI());
+			dimg->SetVDPI(this->GetHDPI() * 96.0 / this->GetDDPI());
+			Data::LineChart chart(CSTR("Site Energy"));
+			chart.SetFontHeightPt(9.0);
+			UOSInt i = 0;
+			UOSInt j = this->siteEnergyList.GetCount();
+			Data::Timestamp *tsList = MemAlloc(Data::Timestamp, j);
+			Double *valList = MemAlloc(Double, j);
+			while (i < j)
+			{
+				tsList[i] = this->siteEnergyList.GetItem(i).ts;
+				valList[i] = this->siteEnergyList.GetItem(i).value;
+				i++;
+			}
+			chart.AddXData(tsList, j);
+			chart.AddYData(CSTR("Wh"), valList, j, 0xffff0000, Data::LineChart::LS_LINE);
+			chart.Plot(dimg, 0, 0, UOSInt2Double(size.x), UOSInt2Double(size.y));
+			MemFree(tsList);
+			MemFree(valList);
+			Media::StaticImage *simg = dimg->ToStaticImage();
+			this->pbSiteEnergy->SetImage(simg);
+			SDEL_CLASS(this->imgSiteEnergy);
+			this->imgSiteEnergy = simg;
+			deng->DeleteImage(dimg.Ptr());
 		}
-		chart.AddXData(tsList, j);
-		chart.AddYData(CSTR("Wh"), valList, j, 0xffff0000, Data::LineChart::LS_LINE);
-		chart.Plot(dimg, 0, 0, UOSInt2Double(size.x), UOSInt2Double(size.y));
-		MemFree(tsList);
-		MemFree(valList);
-		Media::StaticImage *simg = dimg->ToStaticImage();
-		this->pbSiteEnergy->SetImage(simg);
-		SDEL_CLASS(this->imgSiteEnergy);
-		this->imgSiteEnergy = simg;
-		deng->DeleteImage(dimg);
 	}
 }
 
@@ -355,31 +358,34 @@ void SSWR::AVIRead::AVIRSolarEdgeForm::UpdateSitePowerGraph()
 	Math::Size2D<UOSInt> size = this->pbSitePower->GetSizeP();
 	if (this->sitePowerList.GetCount() > 0 && size.x > 0 && size.y > 0)
 	{
-		Media::DrawImage *dimg = deng->CreateImage32(size, Media::AlphaType::AT_NO_ALPHA);
-		dimg->SetHDPI(this->GetHDPI() * 96.0 / this->GetDDPI());
-		dimg->SetVDPI(this->GetHDPI() * 96.0 / this->GetDDPI());
-		Data::LineChart chart(CSTR("Site Power"));
-		chart.SetFontHeightPt(9.0);
-		UOSInt i = 0;
-		UOSInt j = this->sitePowerList.GetCount();
-		Data::Timestamp *tsList = MemAlloc(Data::Timestamp, j);
-		Double *valList = MemAlloc(Double, j);
-		while (i < j)
+		NotNullPtr<Media::DrawImage> dimg;
+		if (dimg.Set(deng->CreateImage32(size, Media::AlphaType::AT_NO_ALPHA)))
 		{
-			tsList[i] = this->sitePowerList.GetItem(i).ts;
-			valList[i] = this->sitePowerList.GetItem(i).value;
-			i++;
+			dimg->SetHDPI(this->GetHDPI() * 96.0 / this->GetDDPI());
+			dimg->SetVDPI(this->GetHDPI() * 96.0 / this->GetDDPI());
+			Data::LineChart chart(CSTR("Site Power"));
+			chart.SetFontHeightPt(9.0);
+			UOSInt i = 0;
+			UOSInt j = this->sitePowerList.GetCount();
+			Data::Timestamp *tsList = MemAlloc(Data::Timestamp, j);
+			Double *valList = MemAlloc(Double, j);
+			while (i < j)
+			{
+				tsList[i] = this->sitePowerList.GetItem(i).ts;
+				valList[i] = this->sitePowerList.GetItem(i).value;
+				i++;
+			}
+			chart.AddXData(tsList, j);
+			chart.AddYData(CSTR("W"), valList, j, 0xffff0000, Data::LineChart::LS_LINE);
+			chart.Plot(dimg, 0, 0, UOSInt2Double(size.x), UOSInt2Double(size.y));
+			MemFree(tsList);
+			MemFree(valList);
+			Media::StaticImage *simg = dimg->ToStaticImage();
+			this->pbSitePower->SetImage(simg);
+			SDEL_CLASS(this->imgSitePower);
+			this->imgSitePower = simg;
+			deng->DeleteImage(dimg.Ptr());
 		}
-		chart.AddXData(tsList, j);
-		chart.AddYData(CSTR("W"), valList, j, 0xffff0000, Data::LineChart::LS_LINE);
-		chart.Plot(dimg, 0, 0, UOSInt2Double(size.x), UOSInt2Double(size.y));
-		MemFree(tsList);
-		MemFree(valList);
-		Media::StaticImage *simg = dimg->ToStaticImage();
-		this->pbSitePower->SetImage(simg);
-		SDEL_CLASS(this->imgSitePower);
-		this->imgSitePower = simg;
-		deng->DeleteImage(dimg);
 	}
 }
 

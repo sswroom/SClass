@@ -329,7 +329,7 @@ void UI::GUIVideoBoxDDLQ::CreateCSConv(ThreadStat *tstat, Media::FrameInfo *info
 		fcc = *(UInt32*)"YV12";
 	}
 	Media::ColorProfile color(Media::ColorProfile::CPT_VDISPLAY);
-	tstat->csconv = Media::CS::CSConverter::NewConverter(fcc, info->storeBPP, info->pf, info->color, 0, 32, Media::PF_B8G8R8A8, &color, yuvType, this->colorSess);
+	tstat->csconv = Media::CS::CSConverter::NewConverter(fcc, info->storeBPP, info->pf, info->color, 0, 32, Media::PF_B8G8R8A8, color, yuvType, this->colorSess);
 	if (info->dispSize.CalcArea() > tstat->lrSize)
 	{
 		tstat->lrSize = info->dispSize.CalcArea();

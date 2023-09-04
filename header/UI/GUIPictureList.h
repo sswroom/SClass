@@ -25,7 +25,7 @@ namespace UI
 		GUIPictureList(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent, NotNullPtr<Media::DrawEngine> eng, Bool hasBorder, Math::Size2D<UOSInt> iconSize);
 		virtual ~GUIPictureList();
 
-		virtual void OnDraw(Media::DrawImage *img);
+		virtual void OnDraw(NotNullPtr<Media::DrawImage> img);
 		virtual void OnMouseDown(OSInt scrollY, Math::Coord2D<OSInt> pos, UI::GUIClientControl::MouseButton btn, KeyButton keys);
 
 		UOSInt IndexFromPoint(Math::Coord2D<OSInt> pos);

@@ -27,7 +27,7 @@ namespace Media
 			virtual Double GetThick();
 			Bool IsSame(UInt32 color, Double thick, UInt8 *pattern, UOSInt nPattern);
 			UOSInt GetIndex();
-			Media::DrawPen *CreateDrawPen(Double oriDPI, Media::DrawImage *dimg);
+			Media::DrawPen *CreateDrawPen(Double oriDPI, NotNullPtr<Media::DrawImage> dimg);
 		};
 
 		class VectorFontStyle : public Media::DrawFont
@@ -49,7 +49,7 @@ namespace Media
 			NotNullPtr<Text::String> GetName() const;
 			Media::DrawEngine::DrawFontStyle GetStyle();
 			UInt32 GetCodePage();
-			Media::DrawFont *CreateDrawFont(Double oriDPI, Media::DrawImage *dimg);
+			Media::DrawFont *CreateDrawFont(Double oriDPI, NotNullPtr<Media::DrawImage> dimg);
 		};
 
 		class VectorBrushStyle : public Media::DrawBrush
@@ -64,7 +64,7 @@ namespace Media
 
 			Bool IsSame(UInt32 color);
 			UOSInt GetIndex();
-			Media::DrawBrush *CreateDrawBrush(Double oriDPI, Media::DrawImage *dimg);
+			Media::DrawBrush *CreateDrawBrush(Double oriDPI, NotNullPtr<Media::DrawImage> dimg);
 		};
 
 		typedef struct
@@ -76,7 +76,7 @@ namespace Media
 
 	private:
 		NotNullPtr<Media::DrawEngine> refEng;
-		Media::ColorProfile *colorProfile;
+		Media::ColorProfile colorProfile;
 		UInt32 srid;
 		Math::Size2DDbl size;
 		Math::Unit::Distance::DistanceUnit unit;
@@ -89,7 +89,7 @@ namespace Media
 		Media::DrawEngine::DrawPos align;
 		
 	public:
-		VectorGraph(UInt32 srid, Double visibleWidth, Double visibleHeight, Math::Unit::Distance::DistanceUnit unit, NotNullPtr<Media::DrawEngine> refEng, Media::ColorProfile *colorProfile);
+		VectorGraph(UInt32 srid, Double visibleWidth, Double visibleHeight, Math::Unit::Distance::DistanceUnit unit, NotNullPtr<Media::DrawEngine> refEng, NotNullPtr<const Media::ColorProfile> colorProfile);
 		virtual ~VectorGraph();
 
 		Math::Size2DDbl GetSizeDbl() const;
@@ -97,8 +97,8 @@ namespace Media
 		virtual UOSInt GetHeight() const;
 		virtual Math::Size2D<UOSInt> GetSize() const;
 		virtual UInt32 GetBitCount() const;
-		virtual ColorProfile *GetColorProfile() const;
-		virtual void SetColorProfile(const ColorProfile *color);
+		virtual NotNullPtr<const ColorProfile> GetColorProfile() const;
+		virtual void SetColorProfile(NotNullPtr<const ColorProfile> color);
 		virtual Media::AlphaType GetAlphaType() const;
 		virtual void SetAlphaType(Media::AlphaType atype);
 		virtual Double GetHDPI() const;
@@ -128,7 +128,7 @@ namespace Media
 		virtual Bool DrawStringB(Math::Coord2DDbl tl, Text::CString str, DrawFont *f, DrawBrush *p, UOSInt buffSize);
 		virtual Bool DrawStringRotB(Math::Coord2DDbl center, NotNullPtr<Text::String> str, DrawFont *f, DrawBrush *p, Double angleDegree, UOSInt buffSize);
 		virtual Bool DrawStringRotB(Math::Coord2DDbl center, Text::CString str, DrawFont *f, DrawBrush *p, Double angleDegree, UOSInt buffSize);
-		virtual Bool DrawImagePt(DrawImage *img, Math::Coord2DDbl tl);
+		virtual Bool DrawImagePt(NotNullPtr<DrawImage> img, Math::Coord2DDbl tl);
 		virtual Bool DrawImagePt2(Media::StaticImage *img, Math::Coord2DDbl tl);
 		virtual Bool DrawImagePt3(DrawImage *img, Math::Coord2DDbl destTL, Math::Coord2DDbl srcTL, Math::Size2DDbl srcSize); /////////////////////////////
 
@@ -154,7 +154,7 @@ namespace Media
 
 		Double GetVisibleWidthMM() const;
 		Double GetVisibleHeightMM() const;
-		void DrawTo(Media::DrawImage *dimg, UInt32 *imgDurMS);
+		void DrawTo(NotNullPtr<Media::DrawImage> dimg, UInt32 *imgDurMS);
 	};
 }
 #endif

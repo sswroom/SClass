@@ -362,8 +362,8 @@ void Media::Resizer::LanczosResizer16_C8::UpdateRGBTable()
 		this->rgbTable = MemAlloc(UInt8, 65536 * 4 + 65536 * 4 * 8);
 	}
 	Media::RGBLUTGen lutGen(this->colorSess);
-	lutGen.GenLRGB_BGRA8(this->rgbTable, &this->destProfile, 14, Media::CS::TransferFunc::GetRefLuminance(&this->srcProfile.rtransfer));
-	lutGen.GenRGB16_LRGBC((Int64*)&this->rgbTable[262144], &this->srcProfile, this->destProfile.GetPrimaries(), 14);
+	lutGen.GenLRGB_BGRA8(this->rgbTable, this->destProfile, 14, Media::CS::TransferFunc::GetRefLuminance(this->srcProfile.rtransfer));
+	lutGen.GenRGB16_LRGBC((Int64*)&this->rgbTable[262144], this->srcProfile, this->destProfile.GetPrimaries(), 14);
 }
 
 void __stdcall Media::Resizer::LanczosResizer16_C8::DoTask(void *obj)
@@ -449,7 +449,7 @@ void Media::Resizer::LanczosResizer16_C8::DestoryVert()
 	vsStep = 0;
 }
 
-Media::Resizer::LanczosResizer16_C8::LanczosResizer16_C8(UOSInt hnTap, UOSInt vnTap, const Media::ColorProfile *srcProfile, const Media::ColorProfile *destProfile, Media::ColorManagerSess *colorSess, Media::AlphaType srcAlphaType) : Media::IImgResizer(srcAlphaType), srcProfile(srcProfile), destProfile(destProfile)
+Media::Resizer::LanczosResizer16_C8::LanczosResizer16_C8(UOSInt hnTap, UOSInt vnTap, NotNullPtr<const Media::ColorProfile> srcProfile, NotNullPtr<const Media::ColorProfile> destProfile, Media::ColorManagerSess *colorSess, Media::AlphaType srcAlphaType) : Media::IImgResizer(srcAlphaType), srcProfile(srcProfile), destProfile(destProfile)
 {
 	this->nThread = Sync::ThreadUtil::GetThreadCnt();
 	if (this->nThread > 6)
@@ -766,7 +766,7 @@ void Media::Resizer::LanczosResizer16_C8::RGBParamChanged(const Media::IColorHan
 	this->rgbChanged = true;
 }
 
-void Media::Resizer::LanczosResizer16_C8::SetSrcProfile(const Media::ColorProfile *srcProfile)
+void Media::Resizer::LanczosResizer16_C8::SetSrcProfile(NotNullPtr<const Media::ColorProfile> srcProfile)
 {
 	if (!this->srcProfile.Equals(srcProfile))
 	{
@@ -775,7 +775,7 @@ void Media::Resizer::LanczosResizer16_C8::SetSrcProfile(const Media::ColorProfil
 	}
 }
 
-void Media::Resizer::LanczosResizer16_C8::SetDestProfile(const Media::ColorProfile *destProfile)
+void Media::Resizer::LanczosResizer16_C8::SetDestProfile(NotNullPtr<const Media::ColorProfile> destProfile)
 {
 	if (!this->destProfile.Equals(destProfile))
 	{
@@ -829,13 +829,13 @@ Media::StaticImage *Media::Resizer::LanczosResizer16_C8::ProcessToNewPartial(con
 	this->SetSrcAlphaType(srcImage->info.atype);
 	if (this->destProfile.GetRTranParam()->GetTranType() != Media::CS::TRANT_VUNKNOWN && this->destProfile.GetRTranParam()->GetTranType() != Media::CS::TRANT_PUNKNOWN)
 	{
-		destInfo.color->GetRTranParam()->Set(this->destProfile.GetRTranParam());
-		destInfo.color->GetGTranParam()->Set(this->destProfile.GetGTranParam());
-		destInfo.color->GetBTranParam()->Set(this->destProfile.GetBTranParam());
+		destInfo.color.GetRTranParam()->Set(this->destProfile.GetRTranParam());
+		destInfo.color.GetGTranParam()->Set(this->destProfile.GetGTranParam());
+		destInfo.color.GetBTranParam()->Set(this->destProfile.GetBTranParam());
 	}
-	destInfo.color->GetPrimaries()->Set(this->destProfile.GetPrimaries());
+	destInfo.color.GetPrimaries()->Set(this->destProfile.GetPrimaries());
 	destInfo.atype = this->GetDestAlphaType();
-	NEW_CLASS(newImage, Media::StaticImage(&destInfo));
+	NEW_CLASS(newImage, Media::StaticImage(destInfo));
 	Int32 tlx = (Int32)srcTL.x;
 	Int32 tly = (Int32)srcTL.y;
 	Resize(((Media::StaticImage*)srcImage)->data + (tlx << 2) + tly * (OSInt)srcImage->GetDataBpl(), (OSInt)srcImage->GetDataBpl(), srcBR.x - srcTL.x, srcBR.y - srcTL.y, srcTL.x - tlx, srcTL.y - tly, newImage->data, (OSInt)newImage->GetDataBpl(), newImage->info.dispSize.x, newImage->info.dispSize.y);

@@ -948,7 +948,7 @@ Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 Media::VectorDocument *Text::ReportBuilder::CreateVDoc(Int32 id, NotNullPtr<Media::DrawEngine> deng)
 {
 	Media::VectorDocument *doc;
-	Media::VectorGraph *g;
+	NotNullPtr<Media::VectorGraph> g;
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 	Media::PaperSize paperSize(Media::PaperSize::PT_A4);
@@ -1412,13 +1412,14 @@ Media::VectorDocument *Text::ReportBuilder::CreateVDoc(Int32 id, NotNullPtr<Medi
 						if (icon->fileName)
 						{
 							iconSt = iconStatus.Get(icon->fileName);
-							if (iconSt && iconSt->dimg)
+							NotNullPtr<Media::DrawImage> dimg;
+							if (iconSt && dimg.Set(iconSt->dimg))
 							{
-								Double w = fontHeightMM * UOSInt2Double(iconSt->dimg->GetWidth()) / UOSInt2Double(iconSt->dimg->GetHeight());
-								Double dpi = UOSInt2Double(iconSt->dimg->GetHeight()) / Math::Unit::Distance::Convert(Math::Unit::Distance::DU_MILLIMETER, Math::Unit::Distance::DU_INCH, fontHeightMM);
-								iconSt->dimg->SetHDPI(dpi);
-								iconSt->dimg->SetVDPI(dpi);
-								g->DrawImagePt(iconSt->dimg, Math::Coord2DDbl(colCurrX[icon->col], currY));
+								Double w = fontHeightMM * UOSInt2Double(dimg->GetWidth()) / UOSInt2Double(dimg->GetHeight());
+								Double dpi = UOSInt2Double(dimg->GetHeight()) / Math::Unit::Distance::Convert(Math::Unit::Distance::DU_MILLIMETER, Math::Unit::Distance::DU_INCH, fontHeightMM);
+								dimg->SetHDPI(dpi);
+								dimg->SetVDPI(dpi);
+								g->DrawImagePt(dimg, Math::Coord2DDbl(colCurrX[icon->col], currY));
 								colCurrX[icon->col] += w;
 							}
 						}

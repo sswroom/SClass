@@ -15,7 +15,7 @@ namespace Media
 			Double *fwdLUT;
 
 		public:
-			TransferFuncLUT(const Media::LUT *lut);
+			TransferFuncLUT(NotNullPtr<const Media::LUT> lut);
 			virtual ~TransferFuncLUT();
 
 			virtual Double ForwardTransfer(Double linearVal);

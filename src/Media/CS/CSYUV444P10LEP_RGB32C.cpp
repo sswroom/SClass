@@ -16,7 +16,7 @@ void Media::CS::CSYUV444P10LEP_RGB32C::SetupRGB13_LR()
 	Double thisV;
 	UInt16 v[4];
 
-	Media::ColorProfile *srcProfile;
+	NotNullPtr<Media::ColorProfile> srcProfile;
 	if (this->srcProfile.GetRTranParam()->GetTranType() == Media::CS::TRANT_PUNKNOWN)
 	{
 		srcProfile = this->colorSess->GetDefPProfile();
@@ -35,7 +35,7 @@ void Media::CS::CSYUV444P10LEP_RGB32C::SetupRGB13_LR()
 	}
 	else
 	{
-		srcProfile = &this->srcProfile;
+		srcProfile = this->srcProfile;
 	}
 
 	Media::CS::TransferFunc *rtFunc = Media::CS::TransferFunc::CreateFunc(srcProfile->GetRTranParam());
@@ -159,11 +159,11 @@ void Media::CS::CSYUV444P10LEP_RGB32C::SetupRGB13_LR()
 	Media::RGBLUTGen lutGen(this->colorSess);
 	if (this->destPF == Media::PF_LE_A2B10G10R10)
 	{
-		lutGen.GenLARGB_A2B10G10R10((UInt8*)&this->rgbGammaCorr[196608], &this->destProfile, 14, Media::CS::TransferFunc::GetRefLuminance(&this->srcProfile.rtransfer));
+		lutGen.GenLARGB_A2B10G10R10((UInt8*)&this->rgbGammaCorr[196608], this->destProfile, 14, Media::CS::TransferFunc::GetRefLuminance(this->srcProfile.rtransfer));
 	}
 	else
 	{
-		lutGen.GenLARGB_B8G8R8A8((UInt8*)&this->rgbGammaCorr[196608], &this->destProfile, 14, Media::CS::TransferFunc::GetRefLuminance(&this->srcProfile.rtransfer));
+		lutGen.GenLARGB_B8G8R8A8((UInt8*)&this->rgbGammaCorr[196608], this->destProfile, 14, Media::CS::TransferFunc::GetRefLuminance(this->srcProfile.rtransfer));
 	}
 }
 
@@ -346,7 +346,7 @@ void Media::CS::CSYUV444P10LEP_RGB32C::WaitForWorker(Int32 jobStatus)
 	}
 }
 
-Media::CS::CSYUV444P10LEP_RGB32C::CSYUV444P10LEP_RGB32C(const Media::ColorProfile *srcProfile, const Media::ColorProfile *destProfile, Media::ColorProfile::YUVType yuvType, Media::ColorManagerSess *colorSess, Media::PixelFormat destPF) : Media::CS::CSConverter(colorSess), srcProfile(srcProfile), destProfile(destProfile)
+Media::CS::CSYUV444P10LEP_RGB32C::CSYUV444P10LEP_RGB32C(NotNullPtr<const Media::ColorProfile> srcProfile, NotNullPtr<const Media::ColorProfile> destProfile, Media::ColorProfile::YUVType yuvType, Media::ColorManagerSess *colorSess, Media::PixelFormat destPF) : Media::CS::CSConverter(colorSess), srcProfile(srcProfile), destProfile(destProfile)
 {
 	UOSInt i;
 	this->yuvType = yuvType;

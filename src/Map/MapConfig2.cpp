@@ -63,7 +63,7 @@ Bool Map::MapConfig2::IsDoorNum(const UTF8Char *txt)
 	return true;
 }
 
-void Map::MapConfig2::DrawChars(Media::DrawImage *img, Text::CString str1, Math::Coord2DDbl scnPos, Double scaleW, Double scaleH, Data::ArrayList<MapFontStyle*> *fontStyle, Bool isAlign)
+void Map::MapConfig2::DrawChars(NotNullPtr<Media::DrawImage> img, Text::CString str1, Math::Coord2DDbl scnPos, Double scaleW, Double scaleH, Data::ArrayList<MapFontStyle*> *fontStyle, Bool isAlign)
 {
 	UTF8Char sbuff[256];
 	str1.ConcatTo(sbuff);
@@ -398,7 +398,7 @@ void Map::MapConfig2::DrawChars(Media::DrawImage *img, Text::CString str1, Math:
 	}
 }
 
-void Map::MapConfig2::DrawCharsLA(Media::DrawImage *img, Text::CString str1, Math::Coord2DDbl *mapPts, Math::Coord2D<Int32> *scnPts, UOSInt nPoints, UInt32 thisPt, Double scaleN, Double scaleD, Data::ArrayList<MapFontStyle*> *fontStyle, Math::RectAreaDbl *realBounds)
+void Map::MapConfig2::DrawCharsLA(NotNullPtr<Media::DrawImage> img, Text::CString str1, Math::Coord2DDbl *mapPts, Math::Coord2D<Int32> *scnPts, UOSInt nPoints, UInt32 thisPt, Double scaleN, Double scaleD, Data::ArrayList<MapFontStyle*> *fontStyle, Math::RectAreaDbl *realBounds)
 {
 	UTF8Char sbuff[256];
 	str1.ConcatTo(sbuff);
@@ -959,7 +959,7 @@ void Map::MapConfig2::DrawCharsLA(Media::DrawImage *img, Text::CString str1, Mat
 	realBounds->br = max;
 }
 
-void Map::MapConfig2::DrawCharsLAo(Media::DrawImage *img, Text::CString str1, Double *mapPts, Math::Coord2D<Int32> *scnPts, UOSInt nPoints, UInt32 thisPt, Double scaleN, Double scaleD, Data::ArrayList<MapFontStyle*> *fontStyle)
+void Map::MapConfig2::DrawCharsLAo(NotNullPtr<Media::DrawImage> img, Text::CString str1, Double *mapPts, Math::Coord2D<Int32> *scnPts, UOSInt nPoints, UInt32 thisPt, Double scaleN, Double scaleD, Data::ArrayList<MapFontStyle*> *fontStyle)
 {
 	UTF8Char sbuff[256];
 	str1.ConcatTo(sbuff);
@@ -1570,7 +1570,7 @@ void Map::MapConfig2::DrawCharsLAo(Media::DrawImage *img, Text::CString str1, Do
 	}
 }
 
-void Map::MapConfig2::DrawCharsL(Media::DrawImage *img, Text::CString str1, Math::Coord2DDbl *mapPts, Math::Coord2D<Int32> *scnPts, UOSInt nPoints, UInt32 thisPt, Double scaleN, Double scaleD, Data::ArrayList<MapFontStyle*> *fontStyle, Math::RectAreaDbl *realBounds)
+void Map::MapConfig2::DrawCharsL(NotNullPtr<Media::DrawImage> img, Text::CString str1, Math::Coord2DDbl *mapPts, Math::Coord2D<Int32> *scnPts, UOSInt nPoints, UInt32 thisPt, Double scaleN, Double scaleD, Data::ArrayList<MapFontStyle*> *fontStyle, Math::RectAreaDbl *realBounds)
 {
 	UTF8Char sbuff[256];
 	str1.ConcatTo(sbuff);
@@ -2114,7 +2114,7 @@ void Map::MapConfig2::DrawCharsL(Media::DrawImage *img, Text::CString str1, Math
 	realBounds->br = max;
 }
 
-void Map::MapConfig2::GetCharsSize(Media::DrawImage *img, Math::Coord2DDbl *size, Text::CString label, Data::ArrayList<MapFontStyle*> *fontStyle, Double scaleW, Double scaleH)
+void Map::MapConfig2::GetCharsSize(NotNullPtr<Media::DrawImage> img, OutParam<Math::Coord2DDbl> size, Text::CString label, Data::ArrayList<MapFontStyle*> *fontStyle, Double scaleW, Double scaleH)
 {
 	Double xSizeAdd = 0;
 	Double ySizeAdd = 0;
@@ -2176,9 +2176,7 @@ void Map::MapConfig2::GetCharsSize(Media::DrawImage *img, Math::Coord2DDbl *size
 
 	if (scaleH == 0)
 	{
-		size->x = szTmp.x + xSizeAdd;
-		size->y = szTmp.y + ySizeAdd;
-
+		size.Set(Math::Coord2DDbl(szTmp.x + xSizeAdd, szTmp.y + ySizeAdd));
 		return;
 	}
 
@@ -2225,8 +2223,7 @@ void Map::MapConfig2::GetCharsSize(Media::DrawImage *img, Math::Coord2DDbl *size
 	if (pt[6] < minX) minX = pt[6];
 	if (pt[7] > maxY) maxY = pt[7];
 	if (pt[7] < minY) minY = pt[7];
-	size->x = maxX - minX;
-	size->y = maxY - minY;
+	size.Set(Math::Coord2DDbl(maxX - minX, maxY - minY));
 }
 
 UInt32 Map::MapConfig2::ToColor(const UTF8Char *str)
@@ -2260,7 +2257,7 @@ Map::MapDrawLayer *Map::MapConfig2::GetDrawLayer(Text::CString name, Data::Array
 	return cip;
 }
 
-void Map::MapConfig2::DrawPoints(Media::DrawImage *img, MapLayerStyle *lyrs, Map::MapView *view, Bool *isLayerEmpty, Map::MapScheduler *sch, NotNullPtr<Media::DrawEngine> eng, Media::IImgResizer *resizer, Math::RectAreaDbl *objBounds, UOSInt *objCnt, UOSInt maxObjCnt)
+void Map::MapConfig2::DrawPoints(NotNullPtr<Media::DrawImage> img, MapLayerStyle *lyrs, Map::MapView *view, Bool *isLayerEmpty, Map::MapScheduler *sch, NotNullPtr<Media::DrawEngine> eng, Media::IImgResizer *resizer, Math::RectAreaDbl *objBounds, UOSInt *objCnt, UOSInt maxObjCnt)
 {
 	Math::Geometry::Vector2D *vec;
 	UOSInt imgW;
@@ -2345,7 +2342,7 @@ void Map::MapConfig2::DrawPoints(Media::DrawImage *img, MapLayerStyle *lyrs, Map
 	}
 }
 
-void Map::MapConfig2::DrawString(Media::DrawImage *img, MapLayerStyle *lyrs, Map::MapView *view, Data::ArrayList<MapFontStyle*> **fonts, MapLabels2 *labels, UInt32 maxLabels, UInt32 *labelCnt, Bool *isLayerEmpty)
+void Map::MapConfig2::DrawString(NotNullPtr<Media::DrawImage> img, MapLayerStyle *lyrs, Map::MapView *view, Data::ArrayList<MapFontStyle*> **fonts, MapLabels2 *labels, UInt32 maxLabels, UInt32 *labelCnt, Bool *isLayerEmpty)
 {
 	Map::NameArray *arr;
 	UOSInt i;
@@ -3175,7 +3172,7 @@ Bool Map::MapConfig2::LabelOverlapped(Math::RectAreaDbl *points, UOSInt nPoints,
 	return false;
 }
 
-void Map::MapConfig2::DrawLabels(Media::DrawImage *img, MapLabels2 *labels, UInt32 maxLabel, UInt32 *labelCnt, Map::MapView *view, Data::ArrayList<MapFontStyle*> **fonts, NotNullPtr<Media::DrawEngine> drawEng, Math::RectAreaDbl *objBounds, UOSInt *objCnt)
+void Map::MapConfig2::DrawLabels(NotNullPtr<Media::DrawImage> img, MapLabels2 *labels, UInt32 maxLabel, UInt32 *labelCnt, Map::MapView *view, Data::ArrayList<MapFontStyle*> **fonts, NotNullPtr<Media::DrawEngine> drawEng, Math::RectAreaDbl *objBounds, UOSInt *objCnt)
 {
 	UInt32 i;
 	UOSInt j;
@@ -3231,7 +3228,7 @@ void Map::MapConfig2::DrawLabels(Media::DrawImage *img, MapLabels2 *labels, UInt
 		//	labels[i].shapeType = 0;
 			if (labels[i].shapeType == 1)
 			{
-				GetCharsSize(img, &szThis, labels[i].label->ToCString(), fonts[labels[i].fontStyle], 0, 0);//labels[i].scaleW, labels[i].scaleH);
+				GetCharsSize(img, szThis, labels[i].label->ToCString(), fonts[labels[i].fontStyle], 0, 0);//labels[i].scaleW, labels[i].scaleH);
 				Math::Coord2DDbl scnD = view->MapXYToScnXY(labels[i].pos / labels[i].mapRate);
 				scnPt = scnD;
 
@@ -3534,7 +3531,7 @@ void Map::MapConfig2::DrawLabels(Media::DrawImage *img, MapLabels2 *labels, UInt
 					labels[i].scaleW = 0;
 					labels[i].scaleH = 0;
 				}
-				GetCharsSize(img, &szThis, labels[i].label->ToCString(), fonts[labels[i].fontStyle], labels[i].scaleW, labels[i].scaleH);
+				GetCharsSize(img, szThis, labels[i].label->ToCString(), fonts[labels[i].fontStyle], labels[i].scaleW, labels[i].scaleH);
 				if (OSInt2Double(diff.x) < szThis.x && OSInt2Double(diff.y) < szThis.y)
 				{
 					rect.tl = scnPt - (szThis * 0.5);
@@ -3664,7 +3661,7 @@ void Map::MapConfig2::DrawLabels(Media::DrawImage *img, MapLabels2 *labels, UInt
 								labels[i].scaleW = 0;
 								labels[i].scaleH = 0;
 							}
-							GetCharsSize(img, &szThis, labels[i].label->ToCString(), fonts[labels[i].fontStyle], labels[i].scaleW, labels[i].scaleH);
+							GetCharsSize(img, szThis, labels[i].label->ToCString(), fonts[labels[i].fontStyle], labels[i].scaleW, labels[i].scaleH);
 						}
 					}
 
@@ -3727,7 +3724,7 @@ void Map::MapConfig2::DrawLabels(Media::DrawImage *img, MapLabels2 *labels, UInt
 			}
 			else if (labels[i].shapeType == 5)
 			{
-				GetCharsSize(img, &szThis, labels[i].label->ToCString(), fonts[labels[i].fontStyle], 0, 0);//labels[i].scaleW, labels[i].scaleH);
+				GetCharsSize(img, szThis, labels[i].label->ToCString(), fonts[labels[i].fontStyle], 0, 0);//labels[i].scaleW, labels[i].scaleH);
 				Math::Coord2DDbl scnD = view->MapXYToScnXY(labels[i].pos / labels[i].mapRate);
 				scnPt = scnD;
 
@@ -4227,7 +4224,7 @@ Bool Map::MapConfig2::IsError()
 	return this->drawList == 0;
 }
 
-Media::DrawPen *Map::MapConfig2::CreatePen(Media::DrawImage *img, UInt32 lineStyle, UOSInt lineLayer)
+Media::DrawPen *Map::MapConfig2::CreatePen(NotNullPtr<Media::DrawImage> img, UInt32 lineStyle, UOSInt lineLayer)
 {
 	if (lineStyle >= this->nLine)
 	{
@@ -4288,7 +4285,7 @@ Media::DrawPen *Map::MapConfig2::CreatePen(Media::DrawImage *img, UInt32 lineSty
 	return 0;
 }
 
-UTF8Char *Map::MapConfig2::DrawMap(Media::DrawImage *img, Map::MapView *view, Bool *isLayerEmpty, Map::MapScheduler *mapSch, Media::IImgResizer *resizer, UTF8Char *slowLayer, Double *slowTime)
+UTF8Char *Map::MapConfig2::DrawMap(NotNullPtr<Media::DrawImage> img, Map::MapView *view, Bool *isLayerEmpty, Map::MapScheduler *mapSch, Media::IImgResizer *resizer, UTF8Char *slowLayer, Double *slowTime)
 {
 	//Manage::HiResClock clk;
 	UTF8Char *retPtr = 0;

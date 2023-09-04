@@ -111,7 +111,9 @@ void UI::DObj::ButtonDObj::DrawObject(Media::DrawImage *dimg)
 
 	Math::Coord2D<OSInt> tl = this->GetCurrPos();
 	this->dispTL = tl;
-	if (this->bmpUnclick && this->bmpClicked)
+	NotNullPtr<Media::DrawImage> bmpUnclick;
+	NotNullPtr<Media::DrawImage> bmpClicked;
+	if (bmpUnclick.Set(this->bmpUnclick) && bmpClicked.Set(this->bmpClicked))
 	{
 		if (this->bmpUnclick->GetWidth() == this->bmpClicked->GetWidth() && this->bmpUnclick->GetHeight() == this->bmpClicked->GetHeight())
 		{
@@ -146,135 +148,138 @@ void UI::DObj::ButtonDObj::DrawObject(Media::DrawImage *dimg)
 			}
 			Media::DrawImage *bmpS1 = this->bmpUnclick;
 			Media::DrawImage *bmpS2 = this->bmpClicked;
-			Media::DrawImage *bmpTmp = this->deng->CreateImage32(bmpS1->GetSize(), Media::AT_NO_ALPHA);
-			bmpTmp->SetAlphaType(bmpS1->GetAlphaType());
-#if defined(HAS_ASM32)
-			UInt8 *ptrS1 = (UInt8*)bmpS1->bmpBits;
-			UInt8 *ptrS2 = (UInt8*)bmpS2->bmpBits;
-			UInt8 *ptrD = (UInt8*)bmpTmp->bmpBits;
-//			OSInt bpl = bmpS1->GetWidth() * 4;
-//			OSInt w = bmpS1->GetWidth();
-//			OSInt h = bmpS1->GetHeight();
-			OSInt pxCnt = bmpS1->GetWidth() * bmpS1->GetHeight();
-			OSInt a1 = Double2Int32(this->alpha * 32767);
-			OSInt a2 = Double2Int32((1 - this->alpha) * 32767);
-			if ((((OSInt)ptrD) & 15) != 0 || (pxCnt & 3) != 0)
+			NotNullPtr<Media::DrawImage> bmpTmp;
+			if (bmpTmp.Set(this->deng->CreateImage32(bmpS1->GetSize(), Media::AT_NO_ALPHA)))
 			{
-				_asm
+				bmpTmp->SetAlphaType(bmpS1->GetAlphaType());
+	#if defined(HAS_ASM32)
+				UInt8 *ptrS1 = (UInt8*)bmpS1->bmpBits;
+				UInt8 *ptrS2 = (UInt8*)bmpS2->bmpBits;
+				UInt8 *ptrD = (UInt8*)bmpTmp->bmpBits;
+	//			OSInt bpl = bmpS1->GetWidth() * 4;
+	//			OSInt w = bmpS1->GetWidth();
+	//			OSInt h = bmpS1->GetHeight();
+				OSInt pxCnt = bmpS1->GetWidth() * bmpS1->GetHeight();
+				OSInt a1 = Double2Int32(this->alpha * 32767);
+				OSInt a2 = Double2Int32((1 - this->alpha) * 32767);
+				if ((((OSInt)ptrD) & 15) != 0 || (pxCnt & 3) != 0)
 				{
-					mov esi,ptrS1
-					mov edi,ptrD
-					mov ebx,ptrS2
-					mov eax,a1
-					mov edx,a2
-					movd xmm0,eax
-					movd xmm1,edx
-					punpcklwd xmm0,xmm1
-					punpckldq xmm0,xmm0
-					punpcklqdq xmm0,xmm0
-					pxor xmm1,xmm1
-					mov ecx,pxCnt
-					align 16
-bdolop1:
-					movd xmm2,[esi]
-					movd xmm3,[ebx]
-					punpcklbw xmm2,xmm3
-					punpcklbw xmm2,xmm1
-					pmaddwd xmm2,xmm0
-					psrld xmm2,15
-					packssdw xmm2,xmm1
-					packuswb xmm2,xmm1
-					movd [edi],xmm2
-					lea esi,[esi+4]
-					lea edi,[edi+4]
-					lea ebx,[ebx+4]
-					dec ecx
-					jnz bdolop1
+					_asm
+					{
+						mov esi,ptrS1
+						mov edi,ptrD
+						mov ebx,ptrS2
+						mov eax,a1
+						mov edx,a2
+						movd xmm0,eax
+						movd xmm1,edx
+						punpcklwd xmm0,xmm1
+						punpckldq xmm0,xmm0
+						punpcklqdq xmm0,xmm0
+						pxor xmm1,xmm1
+						mov ecx,pxCnt
+						align 16
+	bdolop1:
+						movd xmm2,[esi]
+						movd xmm3,[ebx]
+						punpcklbw xmm2,xmm3
+						punpcklbw xmm2,xmm1
+						pmaddwd xmm2,xmm0
+						psrld xmm2,15
+						packssdw xmm2,xmm1
+						packuswb xmm2,xmm1
+						movd [edi],xmm2
+						lea esi,[esi+4]
+						lea edi,[edi+4]
+						lea ebx,[ebx+4]
+						dec ecx
+						jnz bdolop1
+					}
 				}
-			}
-			else
-			{
-				_asm
+				else
 				{
-					mov esi,ptrS1
-					mov edi,ptrD
-					mov ebx,ptrS2
-					mov eax,a1
-					mov edx,a2
-					movd xmm0,eax
-					movd xmm1,edx
-					punpcklwd xmm0,xmm1
-					punpckldq xmm0,xmm0
-					punpcklqdq xmm0,xmm0
-					pxor xmm1,xmm1
-					mov ecx,pxCnt
-					shr ecx,2
-					align 16
-bdolop2:
-					movdqu xmm2,[esi]
-					movdqu xmm3,[ebx]
-					movdqa xmm4,xmm2
-					punpcklbw xmm2,xmm3
-					punpckhbw xmm4,xmm3
-					movdqa xmm5,xmm2
-					punpcklbw xmm2,xmm1
-					punpckhbw xmm5,xmm1
-					pmaddwd xmm2,xmm0
-					pmaddwd xmm5,xmm0
-					psrld xmm2,15
-					psrld xmm5,15
-					packssdw xmm2,xmm5
-					movdqa xmm3,xmm4
-					punpcklbw xmm3,xmm1
-					punpckhbw xmm4,xmm1
-					pmaddwd xmm3,xmm0
-					pmaddwd xmm4,xmm0
-					psrld xmm3,15
-					psrld xmm4,15
-					packssdw xmm3,xmm4
-					packuswb xmm2,xmm3
-					movntdq [edi],xmm2
-					lea esi,[esi+16]
-					lea edi,[edi+16]
-					lea ebx,[ebx+16]
-					dec ecx
-					jnz bdolop2
+					_asm
+					{
+						mov esi,ptrS1
+						mov edi,ptrD
+						mov ebx,ptrS2
+						mov eax,a1
+						mov edx,a2
+						movd xmm0,eax
+						movd xmm1,edx
+						punpcklwd xmm0,xmm1
+						punpckldq xmm0,xmm0
+						punpcklqdq xmm0,xmm0
+						pxor xmm1,xmm1
+						mov ecx,pxCnt
+						shr ecx,2
+						align 16
+	bdolop2:
+						movdqu xmm2,[esi]
+						movdqu xmm3,[ebx]
+						movdqa xmm4,xmm2
+						punpcklbw xmm2,xmm3
+						punpckhbw xmm4,xmm3
+						movdqa xmm5,xmm2
+						punpcklbw xmm2,xmm1
+						punpckhbw xmm5,xmm1
+						pmaddwd xmm2,xmm0
+						pmaddwd xmm5,xmm0
+						psrld xmm2,15
+						psrld xmm5,15
+						packssdw xmm2,xmm5
+						movdqa xmm3,xmm4
+						punpcklbw xmm3,xmm1
+						punpckhbw xmm4,xmm1
+						pmaddwd xmm3,xmm0
+						pmaddwd xmm4,xmm0
+						psrld xmm3,15
+						psrld xmm4,15
+						packssdw xmm3,xmm4
+						packuswb xmm2,xmm3
+						movntdq [edi],xmm2
+						lea esi,[esi+16]
+						lea edi,[edi+16]
+						lea ebx,[ebx+16]
+						dec ecx
+						jnz bdolop2
+					}
 				}
-			}
-#else
-			Bool revOrder;
-			UInt8 *ptrS1 = (UInt8*)bmpS1->GetImgBits(&revOrder);
-			UInt8 *ptrS2 = (UInt8*)bmpS2->GetImgBits(&revOrder);
-			UInt8 *ptrD = (UInt8*)bmpTmp->GetImgBits(&revOrder);
-			UOSInt lineBytes = bmpS1->GetWidth() * 4;
-			UOSInt i;
-			UOSInt j = bmpS1->GetHeight();
-			Double a1 = this->alpha;
-			Double a2 = 1 - this->alpha; 
-			while (j-- > 0)
-			{
-				i = lineBytes;
-				while (i-- > 0)
+	#else
+				Bool revOrder;
+				UInt8 *ptrS1 = (UInt8*)bmpS1->GetImgBits(&revOrder);
+				UInt8 *ptrS2 = (UInt8*)bmpS2->GetImgBits(&revOrder);
+				UInt8 *ptrD = (UInt8*)bmpTmp->GetImgBits(&revOrder);
+				UOSInt lineBytes = bmpS1->GetWidth() * 4;
+				UOSInt i;
+				UOSInt j = bmpS1->GetHeight();
+				Double a1 = this->alpha;
+				Double a2 = 1 - this->alpha; 
+				while (j-- > 0)
 				{
-					*ptrD++ = (UInt8)Double2Int32(a1 * (*ptrS1++) + a2 * (*ptrS2++));
+					i = lineBytes;
+					while (i-- > 0)
+					{
+						*ptrD++ = (UInt8)Double2Int32(a1 * (*ptrS1++) + a2 * (*ptrS2++));
+					}
 				}
+	#endif
+				dimg->DrawImagePt(bmpTmp, tl.ToDouble());
+				this->deng->DeleteImage(bmpTmp.Ptr());
 			}
-#endif
-			dimg->DrawImagePt(bmpTmp, tl.ToDouble());
-			this->deng->DeleteImage(bmpTmp);
 		}
 		else
 		{
-			dimg->DrawImagePt(this->bmpUnclick, tl.ToDouble());
+			dimg->DrawImagePt(bmpUnclick, tl.ToDouble());
 		}
 	}
-	else if (this->bmpUnclick)
+	else if (bmpUnclick.Set(this->bmpUnclick))
 	{
-		dimg->DrawImagePt(this->bmpUnclick, tl.ToDouble());
+		dimg->DrawImagePt(bmpUnclick, tl.ToDouble());
 	}
-	else if (this->bmpClicked)
+	else if (bmpClicked.Set(this->bmpClicked))
 	{
-		dimg->DrawImagePt(this->bmpClicked, tl.ToDouble());
+		dimg->DrawImagePt(bmpClicked, tl.ToDouble());
 	}
 }
 

@@ -17,11 +17,11 @@ namespace Media
 		virtual ~GTKDrawEngine();
 
 		virtual DrawImage *CreateImage32(Math::Size2D<UOSInt> size, Media::AlphaType atype);
-		DrawImage *CreateImageScn(void *cr, Math::Coord2D<OSInt> tl, Math::Coord2D<OSInt> br);
+		NotNullPtr<DrawImage> CreateImageScn(void *cr, Math::Coord2D<OSInt> tl, Math::Coord2D<OSInt> br);
 		virtual DrawImage *LoadImage(Text::CStringNN fileName);
 		virtual DrawImage *LoadImageStream(NotNullPtr<IO::SeekableStream> stm);
 		virtual DrawImage *ConvImage(Media::Image *img);
-		virtual DrawImage *CloneImage(DrawImage *img);
+		virtual DrawImage *CloneImage(NotNullPtr<DrawImage> img);
 		virtual Bool DeleteImage(DrawImage *img);
 	};
 
@@ -97,8 +97,8 @@ namespace Media
 		virtual UOSInt GetHeight() const;
 		virtual Math::Size2D<UOSInt> GetSize() const;
 		virtual UInt32 GetBitCount() const;
-		virtual ColorProfile *GetColorProfile() const;
-		virtual void SetColorProfile(const ColorProfile *color);
+		virtual NotNullPtr<const ColorProfile> GetColorProfile() const;
+		virtual void SetColorProfile(NotNullPtr<const ColorProfile> color);
 		virtual Media::AlphaType GetAlphaType() const;
 		virtual void SetAlphaType(Media::AlphaType atype);
 		virtual Double GetHDPI() const;
@@ -128,7 +128,7 @@ namespace Media
 		virtual Bool DrawStringB(Math::Coord2DDbl tl, Text::CString str, DrawFont *f, DrawBrush *p, UOSInt buffSize);
 		virtual Bool DrawStringRotB(Math::Coord2DDbl center, NotNullPtr<Text::String> str, DrawFont *f, DrawBrush *p, Double angleDegree, UOSInt buffSize);
 		virtual Bool DrawStringRotB(Math::Coord2DDbl center, Text::CString str, DrawFont *f, DrawBrush *p, Double angleDegree, UOSInt buffSize);
-		virtual Bool DrawImagePt(DrawImage *img, Math::Coord2DDbl tl); ////////////////////////////////////
+		virtual Bool DrawImagePt(NotNullPtr<DrawImage> img, Math::Coord2DDbl tl); ////////////////////////////////////
 		virtual Bool DrawImagePt2(Media::StaticImage *img, Math::Coord2DDbl tl); ////////////////////////////////////
 		virtual Bool DrawImagePt3(DrawImage *img, Math::Coord2DDbl destTL, Math::Coord2DDbl srcTL, Math::Size2DDbl srcSize); ////////////////////////////////////
 

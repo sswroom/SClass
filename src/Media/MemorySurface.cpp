@@ -19,7 +19,15 @@ Media::MemorySurface::MemorySurface(Math::Size2D<UOSInt> size, UOSInt bitPerPixe
 	this->info.par2 = 1.0;
 	this->info.hdpi = dpi;
 	this->info.vdpi = dpi;
-	this->info.color->Set(color);
+	NotNullPtr<const Media::ColorProfile> colornn;
+	if (colornn.Set(color))
+	{
+		this->info.color.Set(colornn);
+	}
+	else
+	{
+		this->info.color.SetCommonProfile(Media::ColorProfile::CPT_VUNKNOWN);
+	}
 	this->info.rotateType = Media::RotateType::None;
 }
 
@@ -36,7 +44,7 @@ Bool Media::MemorySurface::IsError() const
 Media::Image *Media::MemorySurface::Clone() const
 {
 	Media::MemorySurface *surface;
-	NEW_CLASS(surface, Media::MemorySurface(this->info.dispSize, this->info.storeBPP, this->info.color, this->info.hdpi));
+	NEW_CLASS(surface, Media::MemorySurface(this->info.dispSize, this->info.storeBPP, &this->info.color, this->info.hdpi));
 	return surface;
 }
 

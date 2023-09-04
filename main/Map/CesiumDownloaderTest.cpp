@@ -99,7 +99,7 @@ private:
 		mstm->Write((const UInt8*)"", 1);
 		UOSInt i;
 		const UInt8 *buff = mstm->GetBuff(&i);
-		Text::JSONBase *json = Text::JSONBase::ParseJSONStr(Text::CString(buff, i - 1));
+		Text::JSONBase *json = Text::JSONBase::ParseJSONStr(Text::CStringNN(buff, i - 1));
 		if (json)
 		{
 			ParseJSONObj(stat, url, json->GetValue(CSTR("root")), tmpSb);

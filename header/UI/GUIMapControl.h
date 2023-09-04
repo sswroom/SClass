@@ -16,7 +16,7 @@ namespace UI
 		typedef void (__stdcall *MapUpdatedHandler)(void *userObj, Math::Coord2DDbl center, Double drawTime);
 		typedef void (__stdcall *ScaleChangedHandler)(void *userObj, Double newScale);
 		typedef void (__stdcall *MouseMoveHandler)(void *userObj, Math::Coord2D<OSInt> scnPos);
-		typedef void (__stdcall *DrawHandler)(void *userObj, Media::DrawImage *dimg, OSInt xOfst, OSInt yOfst);
+		typedef void (__stdcall *DrawHandler)(void *userObj, NotNullPtr<Media::DrawImage> dimg, OSInt xOfst, OSInt yOfst);
 	private:
 		Media::DrawImage *bgImg;
 		Media::ColorManagerSess *colorSess;
@@ -77,8 +77,8 @@ namespace UI
 		virtual void OnJSAxis(OSInt axis1, OSInt axis2, OSInt axis3, OSInt axis4);
 
 		virtual void OnTimerTick();
-		virtual void OnDraw(Media::DrawImage *img);
-		void DrawScnObjects(Media::DrawImage *img, Math::Coord2DDbl ofst);
+		virtual void OnDraw(NotNullPtr<Media::DrawImage> img);
+		void DrawScnObjects(NotNullPtr<Media::DrawImage> img, Math::Coord2DDbl ofst);
 		void ReleaseSelVecList();
 	public:
 		/*

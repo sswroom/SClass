@@ -30,7 +30,7 @@ namespace UI
 		void Deinit(void *hInst);
 	
 	protected:
-		void ClearBackground(Media::DrawImage *img);
+		void ClearBackground(NotNullPtr<Media::DrawImage> img);
 
 	public:
 		GUICustomDrawVScroll(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, NotNullPtr<Media::DrawEngine> deng);
@@ -40,7 +40,7 @@ namespace UI
 		virtual OSInt OnNotify(UInt32 code, void *lParam);
 		virtual void OnSizeChanged(Bool updateScn);
 
-		virtual void OnDraw(Media::DrawImage *img) = 0;
+		virtual void OnDraw(NotNullPtr<Media::DrawImage> img) = 0;
 		virtual void OnMouseDown(OSInt scrollY, Math::Coord2D<OSInt> pos, UI::GUIClientControl::MouseButton btn, KeyButton keys);
 		virtual void OnKeyDown(UInt32 keyCode);
 

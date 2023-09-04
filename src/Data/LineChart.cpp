@@ -524,7 +524,7 @@ Data::Chart::DataType Data::LineChart::GetYType(UOSInt index) const
 	return data->dataType;
 }
 
-void Data::LineChart::Plot(Media::DrawImage *img, Double x, Double y, Double width, Double height) const
+void Data::LineChart::Plot(NotNullPtr<Media::DrawImage> img, Double x, Double y, Double width, Double height) const
 {
 	if (height == 0 || width == 0)
 		return;

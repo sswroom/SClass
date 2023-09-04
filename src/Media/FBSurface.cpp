@@ -82,7 +82,15 @@ Media::FBSurface::FBSurface(MonitorHandle *hMon, const Media::ColorProfile *colo
 	this->info.hdpi = dpi;
 	this->info.vdpi = dpi;
 	this->info.rotateType = rotateType;
-	this->info.color->Set(color);
+	NotNullPtr<const Media::ColorProfile> colornn;
+	if (colornn.Set(color))
+	{
+		this->info.color.Set(colornn);
+	}
+	else
+	{
+		this->info.color.SetCommonProfile(Media::ColorProfile::CPT_VDISPLAY);
+	}
 
 	if (this->info.rotateType == Media::RotateType::CW_90 || this->info.rotateType == Media::RotateType::CW_270 || this->info.rotateType == Media::RotateType::HFLIP_CW_90 || this->info.rotateType == Media::RotateType::HFLIP_CW_270)
 	{
@@ -114,7 +122,7 @@ Bool Media::FBSurface::IsError() const
 Media::Image *Media::FBSurface::Clone() const
 {
 	Media::FBSurface *surface;
-	NEW_CLASS(surface, Media::FBSurface(this->clsData->hMon, this->info.color, this->info.hdpi, this->info.rotateType));
+	NEW_CLASS(surface, Media::FBSurface(this->clsData->hMon, &this->info.color, this->info.hdpi, this->info.rotateType));
 	return surface;
 }
 

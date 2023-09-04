@@ -1875,7 +1875,7 @@ UInt8 *PNGParser_ParsePixelsAW32(UInt8 *srcData, UInt8 *destBuff, UOSInt bpl, UO
 	return srcData;
 }
 
-void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, UInt8 *dataBuff, Media::FrameInfo *info, Media::ImageList *imgList, UInt32 imgDelay, UInt32 imgX, UInt32 imgY, UInt32 imgW, UInt32 imgH, UInt8 interlaceMeth, UInt8 *palette)
+void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, UInt8 *dataBuff, NotNullPtr<Media::FrameInfo> info, Media::ImageList *imgList, UInt32 imgDelay, UInt32 imgX, UInt32 imgY, UInt32 imgW, UInt32 imgH, UInt8 interlaceMeth, UInt8 *palette)
 {
 	Media::StaticImage *simg;
 	switch (colorType)
@@ -2733,11 +2733,11 @@ IO::ParsedObject *Parser::FileParser::PNGParser::ParseFileHdr(NotNullPtr<IO::Str
 						Media::ICCProfile *icc = Media::ICCProfile::Parse(iccBuff);
 						if (icc)
 						{
-							icc->GetColorPrimaries(&info.color->primaries);
-							icc->GetRedTransferParam(&info.color->rtransfer);
-							icc->GetGreenTransferParam(&info.color->gtransfer);
-							icc->GetBlueTransferParam(&info.color->btransfer);
-							info.color->SetRAWICC(iccBuff.Ptr());
+							icc->GetColorPrimaries(info.color.primaries);
+							icc->GetRedTransferParam(info.color.rtransfer);
+							icc->GetGreenTransferParam(info.color.gtransfer);
+							icc->GetBlueTransferParam(info.color.btransfer);
+							info.color.SetRAWICC(iccBuff.Ptr());
 							DEL_CLASS(icc);
 
 							iccpFound = true;
@@ -2750,7 +2750,7 @@ IO::ParsedObject *Parser::FileParser::PNGParser::ParseFileHdr(NotNullPtr<IO::Str
 		{
 			if (!iccpFound)
 			{
-				info.color->SetCommonProfile(Media::ColorProfile::CPT_SRGB);
+				info.color.SetCommonProfile(Media::ColorProfile::CPT_SRGB);
 				srgbFound = true;
 			}
 		}
@@ -2765,9 +2765,9 @@ IO::ParsedObject *Parser::FileParser::PNGParser::ParseFileHdr(NotNullPtr<IO::Str
 					if (g != 0)
 					{
 						g = 100000 / g;
-						info.color->rtransfer.Set(Media::CS::TRANT_GAMMA, g);
-						info.color->gtransfer.Set(Media::CS::TRANT_GAMMA, g);
-						info.color->btransfer.Set(Media::CS::TRANT_GAMMA, g);
+						info.color.rtransfer.Set(Media::CS::TRANT_GAMMA, g);
+						info.color.gtransfer.Set(Media::CS::TRANT_GAMMA, g);
+						info.color.btransfer.Set(Media::CS::TRANT_GAMMA, g);
 					}
 				}
 			}
@@ -2779,18 +2779,18 @@ IO::ParsedObject *Parser::FileParser::PNGParser::ParseFileHdr(NotNullPtr<IO::Str
 				Data::ByteBuffer chunkData(size);
 				if (fd->GetRealData(ofst + 8, size, chunkData) == size)
 				{
-					info.color->primaries.SetColorType(Media::ColorProfile::CT_CUSTOM);
-					info.color->primaries.wx = ReadMInt32(&chunkData[0]) / 100000.0;
-					info.color->primaries.wy = ReadMInt32(&chunkData[4]) / 100000.0;
-					info.color->primaries.rx = ReadMInt32(&chunkData[8]) / 100000.0;
-					info.color->primaries.ry = ReadMInt32(&chunkData[12]) / 100000.0;
-					info.color->primaries.gx = ReadMInt32(&chunkData[16]) / 100000.0;
-					info.color->primaries.gy = ReadMInt32(&chunkData[20]) / 100000.0;
-					info.color->primaries.bx = ReadMInt32(&chunkData[24]) / 100000.0;
-					info.color->primaries.by = ReadMInt32(&chunkData[28]) / 100000.0;
-					if (info.color->primaries.rx == info.color->primaries.gx && info.color->primaries.ry == info.color->primaries.gy)
+					info.color.primaries.SetColorType(Media::ColorProfile::CT_CUSTOM);
+					info.color.primaries.wx = ReadMInt32(&chunkData[0]) / 100000.0;
+					info.color.primaries.wy = ReadMInt32(&chunkData[4]) / 100000.0;
+					info.color.primaries.rx = ReadMInt32(&chunkData[8]) / 100000.0;
+					info.color.primaries.ry = ReadMInt32(&chunkData[12]) / 100000.0;
+					info.color.primaries.gx = ReadMInt32(&chunkData[16]) / 100000.0;
+					info.color.primaries.gy = ReadMInt32(&chunkData[20]) / 100000.0;
+					info.color.primaries.bx = ReadMInt32(&chunkData[24]) / 100000.0;
+					info.color.primaries.by = ReadMInt32(&chunkData[28]) / 100000.0;
+					if (info.color.primaries.rx == info.color.primaries.gx && info.color.primaries.ry == info.color.primaries.gy)
 					{
-						info.color->primaries.SetColorType(Media::ColorProfile::CT_SRGB);
+						info.color.primaries.SetColorType(Media::ColorProfile::CT_SRGB);
 					}
 				}
 			}
@@ -2805,7 +2805,7 @@ IO::ParsedObject *Parser::FileParser::PNGParser::ParseFileHdr(NotNullPtr<IO::Str
 					UInt8 *dataBuff = mstm->GetBuff(&dataSize);
 					if (dataSize == imgSize || imgSize != 0)
 					{
-						ParseImage(bitDepth, colorType, dataBuff, &info, imgList, imgDelay, imgX, imgY, imgW, imgH, interlaceMeth, palette);
+						ParseImage(bitDepth, colorType, dataBuff, info, imgList, imgDelay, imgX, imgY, imgW, imgH, interlaceMeth, palette);
 					}
 					DEL_CLASS(wcstm);
 					wcstm = 0;
@@ -2919,7 +2919,7 @@ IO::ParsedObject *Parser::FileParser::PNGParser::ParseFileHdr(NotNullPtr<IO::Str
 				UInt8 *dataBuff = mstm->GetBuff(&dataSize);
 				if (dataSize == imgSize || imgSize != 0)
 				{
-					ParseImage(bitDepth, colorType, dataBuff, &info, imgList, imgDelay, imgX, imgY, imgW, imgH, interlaceMeth, palette);
+					ParseImage(bitDepth, colorType, dataBuff, info, imgList, imgDelay, imgX, imgY, imgW, imgH, interlaceMeth, palette);
 				}
 				DEL_CLASS(wcstm);
 				wcstm = 0;
@@ -2938,7 +2938,7 @@ IO::ParsedObject *Parser::FileParser::PNGParser::ParseFileHdr(NotNullPtr<IO::Str
 		UInt8 *dataBuff = mstm->GetBuff(&dataSize);
 		if (dataSize == imgSize || imgSize != 0)
 		{
-			ParseImage(bitDepth, colorType, dataBuff, &info, imgList, imgDelay, imgX, imgY, imgW, imgH, interlaceMeth, palette);
+			ParseImage(bitDepth, colorType, dataBuff, info, imgList, imgDelay, imgX, imgY, imgW, imgH, interlaceMeth, palette);
 		}
 		DEL_CLASS(wcstm);
 		wcstm = 0;

@@ -145,13 +145,13 @@ namespace Media
 			ColorPrimaries();
 			~ColorPrimaries();
 
-			void Set(const ColorPrimaries *primaries);
+			void Set(NotNullPtr<const ColorPrimaries> primaries);
 			void SetColorType(ColorType colorType);
 			void GetWhitexy(Double *x, Double *y) const;
 			void GetConvMatrix(Math::Matrix3 *matrix) const;
 			void SetConvMatrix(Math::Matrix3 *matrix);
 
-			Bool Equals(const ColorPrimaries *primaries) const;
+			Bool Equals(NotNullPtr<const ColorPrimaries> primaries) const;
 
 			static void GetWhitePointXY(WhitePointType wpType, Double *x, Double *y);
 			static void GetWhitePointXY(Double colorTemp, Double *x, Double *y);
@@ -171,25 +171,25 @@ namespace Media
 
 	public:
 		ColorProfile();
-		ColorProfile(const ColorProfile *profile);
+		ColorProfile(NotNullPtr<const ColorProfile> profile);
 		ColorProfile(CommonProfileType cpt);
-		ColorProfile(const ColorProfile&) = delete;
+		ColorProfile(const ColorProfile&);
 		~ColorProfile();
 
-		void Set(const ColorProfile *profile);
+		void Set(NotNullPtr<const ColorProfile> profile);
 		void SetCommonProfile(CommonProfileType cpt);
-		void RGB32ToXYZ(Int32 rgb, Double *X, Double *Y, Double *Z) const;
+		void RGB32ToXYZ(Int32 rgb, OutParam<Double> X, OutParam<Double> Y, OutParam<Double> Z) const;
 		Int32 XYZToRGB32(Double a, Double X, Double Y, Double Z) const;
-		static void XYZWPTransform(WhitePointType srcWP, Double srcX, Double srcY, Double srcZ, WhitePointType destWP, Double *outX, Double *outY, Double *outZ);
-		Bool Equals(const ColorProfile *profile) const;
-		Media::CS::TransferParam *GetRTranParam();
-		Media::CS::TransferParam *GetGTranParam();
-		Media::CS::TransferParam *GetBTranParam();
-		const Media::CS::TransferParam *GetRTranParamRead() const;
-		const Media::CS::TransferParam *GetGTranParamRead() const;
-		const Media::CS::TransferParam *GetBTranParamRead() const;
-		Media::ColorProfile::ColorPrimaries *GetPrimaries();
-		const Media::ColorProfile::ColorPrimaries *GetPrimariesRead() const;
+		static void XYZWPTransform(WhitePointType srcWP, Double srcX, Double srcY, Double srcZ, WhitePointType destWP, OutParam<Double> outX, OutParam<Double> outY, OutParam<Double> outZ);
+		Bool Equals(NotNullPtr<const ColorProfile> profile) const;
+		NotNullPtr<Media::CS::TransferParam> GetRTranParam();
+		NotNullPtr<Media::CS::TransferParam> GetGTranParam();
+		NotNullPtr<Media::CS::TransferParam> GetBTranParam();
+		NotNullPtr<const Media::CS::TransferParam> GetRTranParamRead() const;
+		NotNullPtr<const Media::CS::TransferParam> GetGTranParamRead() const;
+		NotNullPtr<const Media::CS::TransferParam> GetBTranParamRead() const;
+		NotNullPtr<Media::ColorProfile::ColorPrimaries> GetPrimaries();
+		NotNullPtr<const Media::ColorProfile::ColorPrimaries> GetPrimariesRead() const;
 		void ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const;
 
 		void SetRAWICC(const UInt8 *iccData);

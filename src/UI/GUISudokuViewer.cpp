@@ -118,7 +118,7 @@ Bool UI::GUISudokuViewer::OnKeyDown(UI::GUIControl::GUIKey key)
 	return false;
 }
 
-void UI::GUISudokuViewer::OnDraw(Media::DrawImage *img)
+void UI::GUISudokuViewer::OnDraw(NotNullPtr<Media::DrawImage> img)
 {
 	Math::Size2D<UOSInt> sz;
 	UOSInt size;
