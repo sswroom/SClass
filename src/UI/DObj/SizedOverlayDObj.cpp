@@ -79,7 +79,7 @@ Bool UI::DObj::SizedOverlayDObj::DoEvents()
 	return false;
 }
 
-void UI::DObj::SizedOverlayDObj::DrawObject(Media::DrawImage *dimg)
+void UI::DObj::SizedOverlayDObj::DrawObject(NotNullPtr<Media::DrawImage> dimg)
 {
 	Sync::MutexUsage imgMutUsage(this->imgMut);
 	if (this->imgList)

@@ -1579,6 +1579,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnMapMouseMove(void *userObj, Math
 	OrganMainForm *me = (OrganMainForm*)userObj;
 	Bool updated = false;
 	Math::Coord2D<OSInt> dispPos;
+	NotNullPtr<Media::DrawImage> img;
 	if (me->mapCurrFile)
 	{
 		dispPos = me->mcMap->MapXY2ScnXY(Math::Coord2DDbl(me->mapCurrFile->lon, me->mapCurrFile->lat));
@@ -1586,9 +1587,9 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnMapMouseMove(void *userObj, Math
 		{
 			return;
 		}
-		if (me->mapCurrImage)
+		if (img.Set(me->mapCurrImage))
 		{
-			me->env->GetDrawEngine()->DeleteImage(me->mapCurrImage);
+			me->env->GetDrawEngine()->DeleteImage(img);
 		}
 		me->mapCurrImage = 0;
 		me->mapCurrFile = 0;
@@ -2822,6 +2823,7 @@ SSWR::OrganMgr::OrganMainForm::~OrganMainForm()
 	OrganGroupItem *item;
 	OrganGroup *grp;
 	OrganImageItem *img;
+	NotNullPtr<Media::DrawImage> dimg;
 	this->ClearChildren();
 
 	SDEL_CLASS(this->lastBmp);
@@ -2848,9 +2850,9 @@ SSWR::OrganMgr::OrganMainForm::~OrganMainForm()
 	this->ClearPicks();
 
 	DEL_CLASS(this->mapResizer);
-	if (this->mapCurrImage)
+	if (dimg.Set(this->mapCurrImage))
 	{
-		this->env->GetDrawEngine()->DeleteImage(this->mapCurrImage);
+		this->env->GetDrawEngine()->DeleteImage(dimg);
 		this->mapCurrImage = 0;
 	}
 	DEL_CLASS(this->mapRenderer);

@@ -33,7 +33,7 @@ void SSWR::AVIRead::AVIRGISLineEditForm::UpdatePreview()
 
 	Media::DrawPen *p;
 	Media::DrawBrush *b;
-	b = this->prevImage->NewBrushARGB(Media::ColorConv::ConvARGB(&srcProfile, &destProfile, this->colorSess, 0xffc0c0c0));
+	b = this->prevImage->NewBrushARGB(Media::ColorConv::ConvARGB(srcProfile, destProfile, this->colorSess, 0xffc0c0c0));
 	this->prevImage->DrawRect(Math::Coord2DDbl(0, 0), Math::Size2DDbl(UOSInt2Double(w), UOSInt2Double(h)), 0, b);
 	this->prevImage->DelBrush(b);
 
@@ -51,7 +51,7 @@ void SSWR::AVIRead::AVIRGISLineEditForm::UpdatePreview()
 		{
 			t = 1;
 		}
-		p = this->prevImage->NewPenARGB(Media::ColorConv::ConvARGB(&srcProfile, &destProfile, this->colorSess, lyr->color), t, lyr->pattern, lyr->nPattern);
+		p = this->prevImage->NewPenARGB(Media::ColorConv::ConvARGB(srcProfile, destProfile, this->colorSess, lyr->color), t, lyr->pattern, lyr->nPattern);
 		this->prevImage->DrawLine(0, UOSInt2Double(h >> 1), UOSInt2Double(w), UOSInt2Double(h >> 1), p);
 		this->prevImage->DelPen(p);
 		i++;
@@ -107,7 +107,7 @@ void __stdcall SSWR::AVIRead::AVIRGISLineEditForm::LayerSelChanged(void *userObj
 		UTF8Char sbuff[256];
 		UTF8Char *sptr;
 		me->currLayer = me->lineLayers->GetItem(i);
-		me->pbColor->SetBGColor(Media::ColorConv::ConvARGB(&srcProfile, &destProfile, me->colorSess, me->currLayer->color | 0xff000000));
+		me->pbColor->SetBGColor(Media::ColorConv::ConvARGB(srcProfile, destProfile, me->colorSess, me->currLayer->color | 0xff000000));
 		me->pbColor->Redraw();
 		me->hsbAlpha->SetPos((me->currLayer->color >> 24) & 255);
 		sptr = Text::StrUOSInt(sbuff, me->currLayer->thick);
@@ -180,7 +180,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISLineEditForm::ColorClicked(void *userObj, M
 			Media::ColorProfile destProfile(Media::ColorProfile::CPT_PDISPLAY);
 
 			me->currLayer->color = dlg.GetColor32();
-			me->pbColor->SetBGColor(Media::ColorConv::ConvARGB(&srcProfile, &destProfile, me->colorSess, me->currLayer->color | 0xff000000));
+			me->pbColor->SetBGColor(Media::ColorConv::ConvARGB(srcProfile, destProfile, me->colorSess, me->currLayer->color | 0xff000000));
 			me->pbColor->Redraw();
 			me->UpdatePreview();
 		}
@@ -417,7 +417,11 @@ SSWR::AVIRead::AVIRGISLineEditForm::~AVIRGISLineEditForm()
 		FreeLayer(this->lineLayers->GetItem(i));
 	}
 	DEL_CLASS(this->lineLayers);
-	this->eng->DeleteImage(this->prevImage);
+	NotNullPtr<Media::DrawImage> img;
+	if (img.Set(this->prevImage))
+	{
+		this->eng->DeleteImage(img);
+	}
 	if (this->prevsImage)
 	{
 		DEL_CLASS(this->prevsImage);
@@ -434,15 +438,20 @@ void SSWR::AVIRead::AVIRGISLineEditForm::OnMonitorChanged()
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	Math::Size2D<UOSInt> sz = this->pbPreview->GetSizeP();
-	this->eng->DeleteImage(this->prevImage);
+	NotNullPtr<Media::DrawImage> img;
+	if (img.Set(this->prevImage))
+	{
+		this->eng->DeleteImage(img);
+	}
 	this->prevImage = this->eng->CreateImage32(sz, Media::AT_NO_ALPHA);
+
 	this->prevImage->SetHDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
 	if (this->currLayer)
 	{
 		Media::ColorProfile srcProfile(Media::ColorProfile::CPT_SRGB);
 		Media::ColorProfile destProfile(Media::ColorProfile::CPT_PDISPLAY);
 
-		this->pbColor->SetBGColor(Media::ColorConv::ConvARGB(&srcProfile, &destProfile, this->colorSess, this->currLayer->color | 0xff000000));
+		this->pbColor->SetBGColor(Media::ColorConv::ConvARGB(srcProfile, destProfile, this->colorSess, this->currLayer->color | 0xff000000));
 		this->pbColor->Redraw();
 		this->UpdatePreview();
 	}
@@ -459,7 +468,7 @@ void SSWR::AVIRead::AVIRGISLineEditForm::RGBParamChanged(const Media::IColorHand
 		Media::ColorProfile srcProfile(Media::ColorProfile::CPT_SRGB);
 		Media::ColorProfile destProfile(Media::ColorProfile::CPT_PDISPLAY);
 
-		this->pbColor->SetBGColor(Media::ColorConv::ConvARGB(&srcProfile, &destProfile, this->colorSess, this->currLayer->color | 0xff000000));
+		this->pbColor->SetBGColor(Media::ColorConv::ConvARGB(srcProfile, destProfile, this->colorSess, this->currLayer->color | 0xff000000));
 		this->pbColor->Redraw();
 		this->UpdatePreview();
 	}

@@ -5,7 +5,7 @@
 #include "Media/EDID.h"
 #include "Text/MyString.h"
 
-Bool Media::EDID::Parse(const UInt8 *edidBuff, Media::EDID::EDIDInfo *info)
+Bool Media::EDID::Parse(const UInt8 *edidBuff, NotNullPtr<Media::EDID::EDIDInfo> info)
 {
 	if (edidBuff[0] != 0 || edidBuff[1] != 0xff || edidBuff[2] != 0xff || edidBuff[3] != 0xff ||edidBuff[4] != 0xff || edidBuff[5] != 0xff || edidBuff[6] != 0xff || edidBuff[7] != 0)
 	{
@@ -53,14 +53,14 @@ Bool Media::EDID::Parse(const UInt8 *edidBuff, Media::EDID::EDIDInfo *info)
 	info->dispPhysicalH_mm = (UInt32)edidBuff[0x16] * 10;
 	info->gamma = (edidBuff[0x17] + 100) * 0.01;
 
-	info->rx = OSInt2Double((((OSInt)edidBuff[0x1b]) << 2) | (edidBuff[0x19] >> 6))/ 1024.0;
-	info->ry = OSInt2Double((((OSInt)edidBuff[0x1c]) << 2) | ((edidBuff[0x19] >> 4) & 3))/ 1024.0;
-	info->gx = OSInt2Double((((OSInt)edidBuff[0x1d]) << 2) | ((edidBuff[0x19] >> 2) & 3))/ 1024.0;
-	info->gy = OSInt2Double((((OSInt)edidBuff[0x1e]) << 2) | (edidBuff[0x19] & 3))/ 1024.0;
-	info->bx = OSInt2Double((((OSInt)edidBuff[0x1f]) << 2) | (edidBuff[0x1a] >> 6))/ 1024.0;
-	info->by = OSInt2Double((((OSInt)edidBuff[0x20]) << 2) | ((edidBuff[0x1a] >> 4) & 3))/ 1024.0;
-	info->wx = OSInt2Double((((OSInt)edidBuff[0x21]) << 2) | ((edidBuff[0x1a] >> 2) & 3))/ 1024.0;
-	info->wy = OSInt2Double((((OSInt)edidBuff[0x22]) << 2) | (edidBuff[0x1a] & 3))/ 1024.0;
+	info->r.x = OSInt2Double((((OSInt)edidBuff[0x1b]) << 2) | (edidBuff[0x19] >> 6))/ 1024.0;
+	info->r.y = OSInt2Double((((OSInt)edidBuff[0x1c]) << 2) | ((edidBuff[0x19] >> 4) & 3))/ 1024.0;
+	info->g.x = OSInt2Double((((OSInt)edidBuff[0x1d]) << 2) | ((edidBuff[0x19] >> 2) & 3))/ 1024.0;
+	info->g.y = OSInt2Double((((OSInt)edidBuff[0x1e]) << 2) | (edidBuff[0x19] & 3))/ 1024.0;
+	info->b.x = OSInt2Double((((OSInt)edidBuff[0x1f]) << 2) | (edidBuff[0x1a] >> 6))/ 1024.0;
+	info->b.y = OSInt2Double((((OSInt)edidBuff[0x20]) << 2) | ((edidBuff[0x1a] >> 4) & 3))/ 1024.0;
+	info->w.x = OSInt2Double((((OSInt)edidBuff[0x21]) << 2) | ((edidBuff[0x1a] >> 2) & 3))/ 1024.0;
+	info->w.y = OSInt2Double((((OSInt)edidBuff[0x22]) << 2) | (edidBuff[0x1a] & 3))/ 1024.0;
 	info->monitorName[0] = 0;
 	info->monitorSN[0] = 0;
 	info->monitorOther[0] = 0;
@@ -71,7 +71,7 @@ Bool Media::EDID::Parse(const UInt8 *edidBuff, Media::EDID::EDIDInfo *info)
 	return true;
 }
 
-void Media::EDID::ParseDescriptor(EDIDInfo *info, const UInt8 *descriptor)
+void Media::EDID::ParseDescriptor(NotNullPtr<EDIDInfo> info, const UInt8 *descriptor)
 {
 	OSInt i;
 	UTF8Char *sptr;
@@ -135,19 +135,15 @@ void Media::EDID::ParseDescriptor(EDIDInfo *info, const UInt8 *descriptor)
 	}
 }
 
-Bool Media::EDID::SetColorProfile(EDIDInfo *info, Media::ColorProfile *cp)
+Bool Media::EDID::SetColorProfile(NotNullPtr<EDIDInfo> info, NotNullPtr<Media::ColorProfile> cp)
 {
-	if (info->wx != 0 || info->wy != 0)
+	if (info->w.x != 0 || info->w.y != 0)
 	{
 		cp->primaries.colorType = Media::ColorProfile::CT_CUSTOM;
-		cp->primaries.wx = info->wx;
-		cp->primaries.wy = info->wy;
-		cp->primaries.rx = info->rx;
-		cp->primaries.ry = info->ry;
-		cp->primaries.gx = info->gx;
-		cp->primaries.gy = info->gy;
-		cp->primaries.bx = info->bx;
-		cp->primaries.by = info->by;
+		cp->primaries.w = info->w;
+		cp->primaries.r = info->r;
+		cp->primaries.g = info->g;
+		cp->primaries.b = info->b;
 		if (info->gamma >= 3.5)
 		{
 			cp->rtransfer.Set(Media::CS::TRANT_sRGB, 2.2);

@@ -167,9 +167,9 @@ Media::DrawImage *Media::GTKDrawEngine::CloneImage(NotNullPtr<DrawImage> img)
 	return newImg;
 }
 
-Bool Media::GTKDrawEngine::DeleteImage(DrawImage *img)
+Bool Media::GTKDrawEngine::DeleteImage(NotNullPtr<DrawImage> img)
 {
-	Media::GTKDrawImage *dimg = (Media::GTKDrawImage*)img;
+	Media::GTKDrawImage *dimg = (Media::GTKDrawImage*)img.Ptr();
 	DEL_CLASS(dimg);
 	return true;
 }
@@ -790,7 +790,7 @@ Bool Media::GTKDrawImage::DrawStringB(Math::Coord2DDbl tl, Text::CString str, Dr
 				}
 			}
 		}
-		eng->DeleteImage(gimg.Ptr());
+		eng->DeleteImage(gimg);
 	}
 
 	return true;
@@ -907,7 +907,7 @@ Bool Media::GTKDrawImage::DrawImagePt2(Media::StaticImage *img, Math::Coord2DDbl
 			return false;
 		}
 		this->DrawImagePt(dimg, tl);
-		this->eng->DeleteImage(dimg.Ptr());
+		this->eng->DeleteImage(dimg);
 		return true;
 	}
 	img->To32bpp();

@@ -535,79 +535,86 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoId(NotNullPtr<Net::We
 
 				if (user && user->watermark->leng > 0)
 				{
-					Media::DrawImage *gimg = this->env->GetDrawEngine()->ConvImage(dimg);
-					if ((cacheDir && imgWidth == GetPreviewSize() && imgHeight == GetPreviewSize()) || user != reqUser)
+					NotNullPtr<Media::DrawImage> gimg;
+					if (gimg.Set(this->env->GetDrawEngine()->ConvImage(dimg)))
 					{
-						Int32 xRand;
-						Int32 yRand;
-						UInt32 fontSizePx = imgWidth / 12;
-						Math::Size2DDbl sz;
-						UInt32 iWidth;
-						UInt32 iHeight;
-						NotNullPtr<Media::DrawImage> gimg2;
-						Media::DrawBrush *b = gimg->NewBrushARGB(0xffffffff);
-						Media::DrawFont *f;
-						while (true)
+						if ((cacheDir && imgWidth == GetPreviewSize() && imgHeight == GetPreviewSize()) || user != reqUser)
 						{
-							f = gimg->NewFontPx(CSTR("Arial"), fontSizePx, Media::DrawEngine::DFS_NORMAL, 0);
-							sz = gimg->GetTextSize(f, user->watermark->ToCString());
-							if (!sz.HasArea())
+							Int32 xRand;
+							Int32 yRand;
+							UInt32 fontSizePx = imgWidth / 12;
+							Math::Size2DDbl sz;
+							UInt32 iWidth;
+							UInt32 iHeight;
+							NotNullPtr<Media::DrawImage> gimg2;
+							Media::DrawBrush *b = gimg->NewBrushARGB(0xffffffff);
+							Media::DrawFont *f;
+							while (true)
 							{
-								gimg->DelFont(f);
-								break;
-							}
-							if (sz.x <= UOSInt2Double(dimg->info.dispSize.x) && sz.y <= UOSInt2Double(dimg->info.dispSize.y))
-							{
-								xRand = Double2Int32(UOSInt2Double(dimg->info.dispSize.x) - sz.x);
-								yRand = Double2Int32(UOSInt2Double(dimg->info.dispSize.y) - sz.y);
-								iWidth = (UInt32)Double2Int32(sz.x);
-								iHeight = (UInt32)Double2Int32(sz.y);
-								if (gimg2.Set(this->env->GetDrawEngine()->CreateImage32(Math::Size2D<UOSInt>(iWidth, iHeight), Media::AT_NO_ALPHA)))
+								f = gimg->NewFontPx(CSTR("Arial"), fontSizePx, Media::DrawEngine::DFS_NORMAL, 0);
+								sz = gimg->GetTextSize(f, user->watermark->ToCString());
+								if (!sz.HasArea())
 								{
-									gimg2->DrawString(Math::Coord2DDbl(0, 0), user->watermark->ToCString(), f, b);
-									gimg2->SetAlphaType(Media::AT_ALPHA);
-									{
-										Bool revOrder;
-										UInt8 *bits = gimg2->GetImgBits(&revOrder);
-										UInt32 col = (this->random.NextInt30() & 0xffffff) | 0x5f808080;
-										if (bits)
-										{
-											ImageUtil_ColorReplace32(bits, iWidth, iHeight, col);
-										}
-									}
-									gimg->DrawImagePt(gimg2, Math::Coord2DDbl(this->random.NextDouble() * xRand, this->random.NextDouble() * yRand));
-									this->env->GetDrawEngine()->DeleteImage(gimg2.Ptr());
+									gimg->DelFont(f);
+									break;
 								}
-								gimg->DelFont(f);
-								break;
+								if (sz.x <= UOSInt2Double(dimg->info.dispSize.x) && sz.y <= UOSInt2Double(dimg->info.dispSize.y))
+								{
+									xRand = Double2Int32(UOSInt2Double(dimg->info.dispSize.x) - sz.x);
+									yRand = Double2Int32(UOSInt2Double(dimg->info.dispSize.y) - sz.y);
+									iWidth = (UInt32)Double2Int32(sz.x);
+									iHeight = (UInt32)Double2Int32(sz.y);
+									if (gimg2.Set(this->env->GetDrawEngine()->CreateImage32(Math::Size2D<UOSInt>(iWidth, iHeight), Media::AT_NO_ALPHA)))
+									{
+										gimg2->DrawString(Math::Coord2DDbl(0, 0), user->watermark->ToCString(), f, b);
+										gimg2->SetAlphaType(Media::AT_ALPHA);
+										{
+											Bool revOrder;
+											UInt8 *bits = gimg2->GetImgBits(&revOrder);
+											UInt32 col = (this->random.NextInt30() & 0xffffff) | 0x5f808080;
+											if (bits)
+											{
+												ImageUtil_ColorReplace32(bits, iWidth, iHeight, col);
+											}
+										}
+										gimg->DrawImagePt(gimg2, Math::Coord2DDbl(this->random.NextDouble() * xRand, this->random.NextDouble() * yRand));
+										this->env->GetDrawEngine()->DeleteImage(gimg2);
+									}
+									gimg->DelFont(f);
+									break;
 
+								}
+								else
+								{
+									gimg->DelFont(f);
+									fontSizePx--;
+								}
 							}
-							else
-							{
-								gimg->DelFont(f);
-								fontSizePx--;
-							}
+							gimg->DelBrush(b);
 						}
-						gimg->DelBrush(b);
-					}
 
-					IO::MemoryStream mstm;
-					gimg->SaveJPG(mstm);
-					ResponseMstm(req, resp, &mstm, CSTR("image/jpeg"));
+						IO::MemoryStream mstm;
+						gimg->SaveJPG(mstm);
+						ResponseMstm(req, resp, &mstm, CSTR("image/jpeg"));
 
-					if (cacheDir && imgWidth == GetPreviewSize() && imgHeight == GetPreviewSize())
-					{
-						IO::FileStream fs({sbuff2, (UOSInt)(sptr2 - sbuff2)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-						buff = mstm.GetBuff(&buffSize);
-						fs.Write(buff, buffSize);
-						if (userFile->prevUpdated)
+						if (cacheDir && imgWidth == GetPreviewSize() && imgHeight == GetPreviewSize())
 						{
-							this->env->UserFilePrevUpdated(mutUsage, userFile);
+							IO::FileStream fs({sbuff2, (UOSInt)(sptr2 - sbuff2)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+							buff = mstm.GetBuff(&buffSize);
+							fs.Write(buff, buffSize);
+							if (userFile->prevUpdated)
+							{
+								this->env->UserFilePrevUpdated(mutUsage, userFile);
+							}
 						}
-					}
 
-					DEL_CLASS(dimg);
-					this->env->GetDrawEngine()->DeleteImage(gimg);
+						DEL_CLASS(dimg);
+						this->env->GetDrawEngine()->DeleteImage(gimg);
+					}
+					else
+					{
+						resp->ResponseError(req, Net::WebStatus::SC_INTERNAL_SERVER_ERROR);
+					}
 				}
 				else
 				{

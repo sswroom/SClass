@@ -34,7 +34,7 @@ gboolean GUICustomDraw_OnDraw(GtkWidget *widget, cairo_t *cr, gpointer data)
 	dimg->SetHDPI(me->GetHDPI() / me->GetDDPI() * 96.0);
 	dimg->SetVDPI(me->GetHDPI() / me->GetDDPI() * 96.0);
 	me->OnDraw(dimg);
-	me->eng->DeleteImage(dimg.Ptr());
+	me->eng->DeleteImage(dimg);
 	return true;
 }
 

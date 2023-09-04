@@ -200,9 +200,10 @@ UI::GUIPictureBoxSimple::GUIPictureBoxSimple(NotNullPtr<UI::GUICore> ui, UI::GUI
 
 UI::GUIPictureBoxSimple::~GUIPictureBoxSimple()
 {
-	if (this->prevImageD)
+	NotNullPtr<Media::DrawImage> img;
+	if (img.Set(this->prevImageD))
 	{
-		this->eng->DeleteImage(this->prevImageD);
+		this->eng->DeleteImage(img);
 		this->prevImageD = 0;
 	}
 	if (this->clsData->pixbuf)
@@ -255,12 +256,12 @@ void UI::GUIPictureBoxSimple::SetImage(Media::StaticImage *currImage)
 void UI::GUIPictureBoxSimple::SetImageDImg(Media::DrawImage *img)
 {
 	this->currImage = 0;
-	if (this->prevImageD)
+	NotNullPtr<Media::DrawImage> imgnn;
+	if (imgnn.Set(this->prevImageD))
 	{
-		this->eng->DeleteImage(this->prevImageD);
+		this->eng->DeleteImage(imgnn);
 		this->prevImageD = 0;
 	}
-	NotNullPtr<Media::DrawImage> imgnn;
 	if (imgnn.Set(img))
 	{
 		this->prevImageD = this->eng->CloneImage(imgnn);

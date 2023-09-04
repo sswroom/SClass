@@ -102,7 +102,7 @@ UInt32 Media::ColorConv::ConvRGB8(UInt32 c)
 #endif
 }
 
-UInt32 Media::ColorConv::ConvARGB(Media::ColorProfile *srcColor, Media::ColorProfile *destColor, Media::ColorManagerSess *colorSess, UInt32 c)
+UInt32 Media::ColorConv::ConvARGB(NotNullPtr<const Media::ColorProfile> srcColor, NotNullPtr<const Media::ColorProfile> destColor, Media::ColorManagerSess *colorSess, UInt32 c)
 {
 	UInt8 buff[4];
 	const Media::IColorHandler::RGBPARAM2 *rgbParam;
@@ -123,7 +123,7 @@ UInt32 Media::ColorConv::ConvARGB(Media::ColorProfile *srcColor, Media::ColorPro
 	Double gMul;
 	Double bMul;
 
-	if (srcColor->GetRTranParam()->GetTranType() == Media::CS::TRANT_VDISPLAY || srcColor->GetRTranParam()->GetTranType() == Media::CS::TRANT_PDISPLAY)
+	if (srcColor->GetRTranParamRead()->GetTranType() == Media::CS::TRANT_VDISPLAY || srcColor->GetRTranParamRead()->GetTranType() == Media::CS::TRANT_PDISPLAY)
 	{
 		if (colorSess == 0)
 		{
@@ -139,7 +139,7 @@ UInt32 Media::ColorConv::ConvARGB(Media::ColorProfile *srcColor, Media::ColorPro
 			NEW_CLASSNN(bTran, Media::CS::TransferParam(rgbParam->monProfile.GetBTranParamRead()));
 		}
 	}
-	else if (srcColor->GetRTranParam()->GetTranType() == Media::CS::TRANT_VUNKNOWN)
+	else if (srcColor->GetRTranParamRead()->GetTranType() == Media::CS::TRANT_VUNKNOWN)
 	{
 		if (colorSess == 0)
 		{
@@ -155,7 +155,7 @@ UInt32 Media::ColorConv::ConvARGB(Media::ColorProfile *srcColor, Media::ColorPro
 			NEW_CLASSNN(bTran, Media::CS::TransferParam(defProfile->GetBTranParamRead()));
 		}
 	}
-	else if (srcColor->GetRTranParam()->GetTranType() == Media::CS::TRANT_PUNKNOWN)
+	else if (srcColor->GetRTranParamRead()->GetTranType() == Media::CS::TRANT_PUNKNOWN)
 	{
 		if (colorSess == 0)
 		{
@@ -188,47 +188,45 @@ UInt32 Media::ColorConv::ConvARGB(Media::ColorProfile *srcColor, Media::ColorPro
 	Math::Matrix3 mat5;
 	Math::Vector3 vec1;
 	Math::Vector3 vec2;
-	Math::Vector3 vec3;
-	srcColor->GetPrimaries()->GetConvMatrix(&mat1);
-	if (destColor->GetPrimaries()->colorType == Media::ColorProfile::CT_DISPLAY)
+	srcColor->GetPrimariesRead()->GetConvMatrix(mat1);
+	if (destColor->GetPrimariesRead()->colorType == Media::ColorProfile::CT_DISPLAY)
 	{
 		if (colorSess)
 		{
 			rgbParam = colorSess->GetRGBParam();
-			rgbParam->monProfile.GetPrimariesRead()->GetConvMatrix(&mat5);
-			vec2.Set(rgbParam->monProfile.GetPrimariesRead()->wx, rgbParam->monProfile.GetPrimariesRead()->wy, 1.0);
+			rgbParam->monProfile.GetPrimariesRead()->GetConvMatrix(mat5);
+			vec2.Set(rgbParam->monProfile.GetPrimariesRead()->w, 1.0);
 		}
 		else
 		{
-			Media::ColorProfile::ColorPrimaries::GetWhitePointXYZ(Media::ColorProfile::WPT_D65, &vec2);
+			vec2 = Media::ColorProfile::ColorPrimaries::GetWhitePointXYZ(Media::ColorProfile::WPT_D65);
 		}
 	}
 	else
 	{
-		destColor->GetPrimaries()->GetConvMatrix(&mat5);
-		vec2.Set(destColor->GetPrimaries()->wx, destColor->GetPrimaries()->wy, 1.0);
+		destColor->GetPrimariesRead()->GetConvMatrix(mat5);
+		vec2.Set(destColor->GetPrimariesRead()->w, 1.0);
 	}
 	mat5.Inverse();
 
-	Media::ColorProfile::ColorPrimaries::GetMatrixBradford(&mat2);
-	mat3.Set(&mat2);
+	Media::ColorProfile::ColorPrimaries::GetMatrixBradford(mat2);
+	mat3.Set(mat2);
 	mat4.SetIdentity();
-	vec1.Set(srcColor->GetPrimaries()->wx, srcColor->GetPrimaries()->wy, 1.0);
-	Media::ColorProfile::ColorPrimaries::xyYToXYZ(&vec2, &vec3);
-	Media::ColorProfile::ColorPrimaries::xyYToXYZ(&vec1, &vec2);
-	mat2.Multiply(&vec2, &vec1);
-	mat2.Multiply(&vec3, &vec2);
+	vec2 = Media::ColorProfile::ColorPrimaries::xyYToXYZ(vec2);
+	vec1 = Media::ColorProfile::ColorPrimaries::xyYToXYZ(Math::Vector3(srcColor->GetPrimariesRead()->w, 1.0));
+	vec1 = mat2.Multiply(vec1);
+	vec2 = mat2.Multiply(vec2);
 	mat2.Inverse();
 	mat4.vec[0].val[0] = vec2.val[0] / vec1.val[0];
 	mat4.vec[1].val[1] = vec2.val[1] / vec1.val[1];
 	mat4.vec[2].val[2] = vec2.val[2] / vec1.val[2];
-	mat2.Multiply(&mat4);
-	mat2.Multiply(&mat3);
-	mat1.MyMultiply(&mat2);
+	mat2.Multiply(mat4);
+	mat2.Multiply(mat3);
+	mat1.MyMultiply(mat2);
 
-	mat1.MyMultiply(&mat5);
+	mat1.MyMultiply(mat5);
 
-	if (destColor->GetRTranParam()->GetTranType() == Media::CS::TRANT_VDISPLAY && colorSess != 0)
+	if (destColor->GetRTranParamRead()->GetTranType() == Media::CS::TRANT_VDISPLAY && colorSess != 0)
 	{
 		const Media::IColorHandler::RGBPARAM2 *rgbParam = colorSess->GetRGBParam();
 
@@ -249,7 +247,7 @@ UInt32 Media::ColorConv::ConvARGB(Media::ColorProfile *srcColor, Media::ColorPro
 		gTran->Set(rgbParam->monProfile.GetGTranParamRead());
 		bTran->Set(rgbParam->monProfile.GetBTranParamRead());
 	}
-	else if (destColor->GetRTranParam()->GetTranType() == Media::CS::TRANT_PDISPLAY && colorSess != 0)
+	else if (destColor->GetRTranParamRead()->GetTranType() == Media::CS::TRANT_PDISPLAY && colorSess != 0)
 	{
 		const Media::IColorHandler::RGBPARAM2 *rgbParam = colorSess->GetRGBParam();
 
@@ -285,19 +283,19 @@ UInt32 Media::ColorConv::ConvARGB(Media::ColorProfile *srcColor, Media::ColorPro
 		rMul = 1.0;
 		gMul = 1.0;
 		bMul = 1.0;
-		if (destColor->GetRTranParam()->GetTranType() == Media::CS::TRANT_VDISPLAY)
+		if (destColor->GetRTranParamRead()->GetTranType() == Media::CS::TRANT_VDISPLAY)
 		{
 			rTran->Set(Media::CS::TRANT_sRGB, 2.2);
 			gTran->Set(Media::CS::TRANT_sRGB, 2.2);
 			bTran->Set(Media::CS::TRANT_sRGB, 2.2);
 		}
-		else if (destColor->GetRTranParam()->GetTranType() == Media::CS::TRANT_PDISPLAY)
+		else if (destColor->GetRTranParamRead()->GetTranType() == Media::CS::TRANT_PDISPLAY)
 		{
 			rTran->Set(Media::CS::TRANT_sRGB, 2.2);
 			gTran->Set(Media::CS::TRANT_sRGB, 2.2);
 			bTran->Set(Media::CS::TRANT_sRGB, 2.2);
 		}
-		else if (destColor->GetRTranParam()->GetTranType() == Media::CS::TRANT_VUNKNOWN)
+		else if (destColor->GetRTranParamRead()->GetTranType() == Media::CS::TRANT_VUNKNOWN)
 		{
 			if (colorSess == 0)
 			{
@@ -313,7 +311,7 @@ UInt32 Media::ColorConv::ConvARGB(Media::ColorProfile *srcColor, Media::ColorPro
 				bTran->Set(defProfile->GetBTranParamRead());
 			}
 		}
-		else if (destColor->GetRTranParam()->GetTranType() == Media::CS::TRANT_PUNKNOWN)
+		else if (destColor->GetRTranParamRead()->GetTranType() == Media::CS::TRANT_PUNKNOWN)
 		{
 			if (colorSess == 0)
 			{
@@ -331,9 +329,9 @@ UInt32 Media::ColorConv::ConvARGB(Media::ColorProfile *srcColor, Media::ColorPro
 		}
 		else
 		{
-			rTran->Set(destColor->GetRTranParam());
-			gTran->Set(destColor->GetGTranParam());
-			bTran->Set(destColor->GetBTranParam());
+			rTran->Set(destColor->GetRTranParamRead());
+			gTran->Set(destColor->GetGTranParamRead());
+			bTran->Set(destColor->GetBTranParamRead());
 		}
 	}
 
@@ -342,7 +340,7 @@ UInt32 Media::ColorConv::ConvARGB(Media::ColorProfile *srcColor, Media::ColorPro
 	Media::CS::TransferFunc *dbFunc = Media::CS::TransferFunc::CreateFunc(bTran);
 	*(UInt32*)buff = c;
 	vec1.Set(srFunc->InverseTransfer(buff[2] / 255.0), sgFunc->InverseTransfer(buff[1] / 255.0), sbFunc->InverseTransfer(buff[0] / 255.0));
-	mat1.Multiply(&vec1, &vec2);
+	vec2 = mat1.Multiply(vec1);
 
 	Double rv = (rBright - 1.0 + Math_Pow(drFunc->ForwardTransfer(vec2.val[0] * rMul), rGammaVal) * rContr) * 255.0;
 	Double gv = (gBright - 1.0 + Math_Pow(dgFunc->ForwardTransfer(vec2.val[1] * gMul), gGammaVal) * gContr) * 255.0;

@@ -15,9 +15,9 @@ void __stdcall SSWR::AVIRead::AVIRColorCustomForm::OnRXDownClicked(void *userObj
 	UTF8Char *sptr;
 	const Media::IColorHandler::RGBPARAM2 *rgbParam = me->monColor->GetRGBParam();
 	Media::ColorProfile color(rgbParam->monProfile);
-	color.GetPrimaries()->rx -= 0.001;
+	color.GetPrimaries()->r.x -= 0.001;
 	me->monColor->SetMonProfile(color);
-	sptr = Text::StrDouble(sbuff, color.GetPrimaries()->rx);
+	sptr = Text::StrDouble(sbuff, color.GetPrimaries()->r.x);
 	me->txtRX->SetText(CSTRP(sbuff, sptr));
 }
 
@@ -28,9 +28,9 @@ void __stdcall SSWR::AVIRead::AVIRColorCustomForm::OnRXUpClicked(void *userObj)
 	UTF8Char *sptr;
 	const Media::IColorHandler::RGBPARAM2 *rgbParam = me->monColor->GetRGBParam();
 	Media::ColorProfile color(rgbParam->monProfile);
-	color.GetPrimaries()->rx += 0.001;
+	color.GetPrimaries()->r.x += 0.001;
 	me->monColor->SetMonProfile(color);
-	sptr = Text::StrDouble(sbuff, color.GetPrimaries()->rx);
+	sptr = Text::StrDouble(sbuff, color.GetPrimaries()->r.x);
 	me->txtRX->SetText(CSTRP(sbuff, sptr));
 }
 
@@ -41,9 +41,9 @@ void __stdcall SSWR::AVIRead::AVIRColorCustomForm::OnRYDownClicked(void *userObj
 	UTF8Char *sptr;
 	const Media::IColorHandler::RGBPARAM2 *rgbParam = me->monColor->GetRGBParam();
 	Media::ColorProfile color(rgbParam->monProfile);
-	color.GetPrimaries()->ry -= 0.001;
+	color.GetPrimaries()->r.y -= 0.001;
 	me->monColor->SetMonProfile(color);
-	sptr = Text::StrDouble(sbuff, color.GetPrimaries()->ry);
+	sptr = Text::StrDouble(sbuff, color.GetPrimaries()->r.y);
 	me->txtRY->SetText(CSTRP(sbuff, sptr));
 }
 
@@ -54,9 +54,9 @@ void __stdcall SSWR::AVIRead::AVIRColorCustomForm::OnRYUpClicked(void *userObj)
 	UTF8Char *sptr;
 	const Media::IColorHandler::RGBPARAM2 *rgbParam = me->monColor->GetRGBParam();
 	Media::ColorProfile color(rgbParam->monProfile);
-	color.GetPrimaries()->ry += 0.001;
+	color.GetPrimaries()->r.y += 0.001;
 	me->monColor->SetMonProfile(color);
-	sptr = Text::StrDouble(sbuff, color.GetPrimaries()->ry);
+	sptr = Text::StrDouble(sbuff, color.GetPrimaries()->r.y);
 	me->txtRY->SetText(CSTRP(sbuff, sptr));
 }
 
@@ -67,9 +67,9 @@ void __stdcall SSWR::AVIRead::AVIRColorCustomForm::OnGXDownClicked(void *userObj
 	UTF8Char *sptr;
 	const Media::IColorHandler::RGBPARAM2 *rgbParam = me->monColor->GetRGBParam();
 	Media::ColorProfile color(rgbParam->monProfile);
-	color.GetPrimaries()->gx -= 0.001;
+	color.GetPrimaries()->g.x -= 0.001;
 	me->monColor->SetMonProfile(color);
-	sptr = Text::StrDouble(sbuff, color.GetPrimaries()->gx);
+	sptr = Text::StrDouble(sbuff, color.GetPrimaries()->g.x);
 	me->txtGX->SetText(CSTRP(sbuff, sptr));
 }
 
@@ -80,9 +80,9 @@ void __stdcall SSWR::AVIRead::AVIRColorCustomForm::OnGXUpClicked(void *userObj)
 	UTF8Char *sptr;
 	const Media::IColorHandler::RGBPARAM2 *rgbParam = me->monColor->GetRGBParam();
 	Media::ColorProfile color(rgbParam->monProfile);
-	color.GetPrimaries()->gx += 0.001;
+	color.GetPrimaries()->g.x += 0.001;
 	me->monColor->SetMonProfile(color);
-	sptr = Text::StrDouble(sbuff, color.GetPrimaries()->gx);
+	sptr = Text::StrDouble(sbuff, color.GetPrimaries()->g.x);
 	me->txtGX->SetText(CSTRP(sbuff, sptr));
 }
 
@@ -93,9 +93,9 @@ void __stdcall SSWR::AVIRead::AVIRColorCustomForm::OnGYDownClicked(void *userObj
 	UTF8Char *sptr;
 	const Media::IColorHandler::RGBPARAM2 *rgbParam = me->monColor->GetRGBParam();
 	Media::ColorProfile color(rgbParam->monProfile);
-	color.GetPrimaries()->gy -= 0.001;
+	color.GetPrimaries()->g.y -= 0.001;
 	me->monColor->SetMonProfile(color);
-	sptr = Text::StrDouble(sbuff, color.GetPrimaries()->gy);
+	sptr = Text::StrDouble(sbuff, color.GetPrimaries()->g.y);
 	me->txtGY->SetText(CSTRP(sbuff, sptr));
 }
 
@@ -106,9 +106,9 @@ void __stdcall SSWR::AVIRead::AVIRColorCustomForm::OnGYUpClicked(void *userObj)
 	UTF8Char *sptr;
 	const Media::IColorHandler::RGBPARAM2 *rgbParam = me->monColor->GetRGBParam();
 	Media::ColorProfile color(rgbParam->monProfile);
-	color.GetPrimaries()->gy += 0.001;
+	color.GetPrimaries()->g.y += 0.001;
 	me->monColor->SetMonProfile(color);
-	sptr = Text::StrDouble(sbuff, color.GetPrimaries()->gy);
+	sptr = Text::StrDouble(sbuff, color.GetPrimaries()->g.y);
 	me->txtGY->SetText(CSTRP(sbuff, sptr));
 }
 
@@ -119,9 +119,9 @@ void __stdcall SSWR::AVIRead::AVIRColorCustomForm::OnBXDownClicked(void *userObj
 	UTF8Char *sptr;
 	const Media::IColorHandler::RGBPARAM2 *rgbParam = me->monColor->GetRGBParam();
 	Media::ColorProfile color(rgbParam->monProfile);
-	color.GetPrimaries()->bx -= 0.001;
+	color.GetPrimaries()->b.x -= 0.001;
 	me->monColor->SetMonProfile(color);
-	sptr = Text::StrDouble(sbuff, color.GetPrimaries()->bx);
+	sptr = Text::StrDouble(sbuff, color.GetPrimaries()->b.x);
 	me->txtBX->SetText(CSTRP(sbuff, sptr));
 }
 
@@ -132,9 +132,9 @@ void __stdcall SSWR::AVIRead::AVIRColorCustomForm::OnBXUpClicked(void *userObj)
 	UTF8Char *sptr;
 	const Media::IColorHandler::RGBPARAM2 *rgbParam = me->monColor->GetRGBParam();
 	Media::ColorProfile color(rgbParam->monProfile);
-	color.GetPrimaries()->bx += 0.001;
+	color.GetPrimaries()->b.x += 0.001;
 	me->monColor->SetMonProfile(color);
-	sptr = Text::StrDouble(sbuff, color.GetPrimaries()->bx);
+	sptr = Text::StrDouble(sbuff, color.GetPrimaries()->b.x);
 	me->txtBX->SetText(CSTRP(sbuff, sptr));
 }
 
@@ -145,9 +145,9 @@ void __stdcall SSWR::AVIRead::AVIRColorCustomForm::OnBYDownClicked(void *userObj
 	UTF8Char *sptr;
 	const Media::IColorHandler::RGBPARAM2 *rgbParam = me->monColor->GetRGBParam();
 	Media::ColorProfile color(rgbParam->monProfile);
-	color.GetPrimaries()->by -= 0.001;
+	color.GetPrimaries()->b.y -= 0.001;
 	me->monColor->SetMonProfile(color);
-	sptr = Text::StrDouble(sbuff, color.GetPrimaries()->by);
+	sptr = Text::StrDouble(sbuff, color.GetPrimaries()->b.y);
 	me->txtBY->SetText(CSTRP(sbuff, sptr));
 }
 
@@ -158,9 +158,9 @@ void __stdcall SSWR::AVIRead::AVIRColorCustomForm::OnBYUpClicked(void *userObj)
 	UTF8Char *sptr;
 	const Media::IColorHandler::RGBPARAM2 *rgbParam = me->monColor->GetRGBParam();
 	Media::ColorProfile color(rgbParam->monProfile);
-	color.GetPrimaries()->by += 0.001;
+	color.GetPrimaries()->b.y += 0.001;
 	me->monColor->SetMonProfile(color);
-	sptr = Text::StrDouble(sbuff, color.GetPrimaries()->by);
+	sptr = Text::StrDouble(sbuff, color.GetPrimaries()->b.y);
 	me->txtBY->SetText(CSTRP(sbuff, sptr));
 }
 
@@ -171,9 +171,9 @@ void __stdcall SSWR::AVIRead::AVIRColorCustomForm::OnWXDownClicked(void *userObj
 	UTF8Char *sptr;
 	const Media::IColorHandler::RGBPARAM2 *rgbParam = me->monColor->GetRGBParam();
 	Media::ColorProfile color(rgbParam->monProfile);
-	color.GetPrimaries()->wx -= 0.001;
+	color.GetPrimaries()->w.x -= 0.001;
 	me->monColor->SetMonProfile(color);
-	sptr = Text::StrDouble(sbuff, color.GetPrimaries()->wx);
+	sptr = Text::StrDouble(sbuff, color.GetPrimaries()->w.x);
 	me->txtWX->SetText(CSTRP(sbuff, sptr));
 }
 
@@ -184,9 +184,9 @@ void __stdcall SSWR::AVIRead::AVIRColorCustomForm::OnWXUpClicked(void *userObj)
 	UTF8Char *sptr;
 	const Media::IColorHandler::RGBPARAM2 *rgbParam = me->monColor->GetRGBParam();
 	Media::ColorProfile color(rgbParam->monProfile);
-	color.GetPrimaries()->wx += 0.001;
+	color.GetPrimaries()->w.x += 0.001;
 	me->monColor->SetMonProfile(color);
-	sptr = Text::StrDouble(sbuff, color.GetPrimaries()->wx);
+	sptr = Text::StrDouble(sbuff, color.GetPrimaries()->w.x);
 	me->txtWX->SetText(CSTRP(sbuff, sptr));
 }
 
@@ -197,9 +197,9 @@ void __stdcall SSWR::AVIRead::AVIRColorCustomForm::OnWYDownClicked(void *userObj
 	UTF8Char *sptr;
 	const Media::IColorHandler::RGBPARAM2 *rgbParam = me->monColor->GetRGBParam();
 	Media::ColorProfile color(rgbParam->monProfile);
-	color.GetPrimaries()->wy -= 0.001;
+	color.GetPrimaries()->w.y -= 0.001;
 	me->monColor->SetMonProfile(color);
-	sptr = Text::StrDouble(sbuff, color.GetPrimaries()->wy);
+	sptr = Text::StrDouble(sbuff, color.GetPrimaries()->w.y);
 	me->txtWY->SetText(CSTRP(sbuff, sptr));
 }
 
@@ -210,9 +210,9 @@ void __stdcall SSWR::AVIRead::AVIRColorCustomForm::OnWYUpClicked(void *userObj)
 	UTF8Char *sptr;
 	const Media::IColorHandler::RGBPARAM2 *rgbParam = me->monColor->GetRGBParam();
 	Media::ColorProfile color(rgbParam->monProfile);
-	color.GetPrimaries()->wy += 0.001;
+	color.GetPrimaries()->w.y += 0.001;
 	me->monColor->SetMonProfile(color);
-	sptr = Text::StrDouble(sbuff, color.GetPrimaries()->wy);
+	sptr = Text::StrDouble(sbuff, color.GetPrimaries()->w.y);
 	me->txtWY->SetText(CSTRP(sbuff, sptr));
 }
 
@@ -326,21 +326,21 @@ SSWR::AVIRead::AVIRColorCustomForm::AVIRColorCustomForm(UI::GUIClientControl *pa
 	this->btnClose->HandleButtonClick(OnCloseClicked, this);
 
 	const Media::IColorHandler::RGBPARAM2 *rgbParam = this->monColor->GetRGBParam();
-	sptr = Text::StrDouble(sbuff, rgbParam->monProfile.GetPrimariesRead()->rx);
+	sptr = Text::StrDouble(sbuff, rgbParam->monProfile.GetPrimariesRead()->r.x);
 	this->txtRX->SetText(CSTRP(sbuff, sptr));
-	sptr = Text::StrDouble(sbuff, rgbParam->monProfile.GetPrimariesRead()->ry);
+	sptr = Text::StrDouble(sbuff, rgbParam->monProfile.GetPrimariesRead()->r.y);
 	this->txtRY->SetText(CSTRP(sbuff, sptr));
-	sptr = Text::StrDouble(sbuff, rgbParam->monProfile.GetPrimariesRead()->gx);
+	sptr = Text::StrDouble(sbuff, rgbParam->monProfile.GetPrimariesRead()->g.x);
 	this->txtGX->SetText(CSTRP(sbuff, sptr));
-	sptr = Text::StrDouble(sbuff, rgbParam->monProfile.GetPrimariesRead()->gy);
+	sptr = Text::StrDouble(sbuff, rgbParam->monProfile.GetPrimariesRead()->g.y);
 	this->txtGY->SetText(CSTRP(sbuff, sptr));
-	sptr = Text::StrDouble(sbuff, rgbParam->monProfile.GetPrimariesRead()->bx);
+	sptr = Text::StrDouble(sbuff, rgbParam->monProfile.GetPrimariesRead()->b.x);
 	this->txtBX->SetText(CSTRP(sbuff, sptr));
-	sptr = Text::StrDouble(sbuff, rgbParam->monProfile.GetPrimariesRead()->by);
+	sptr = Text::StrDouble(sbuff, rgbParam->monProfile.GetPrimariesRead()->b.y);
 	this->txtBY->SetText(CSTRP(sbuff, sptr));
-	sptr = Text::StrDouble(sbuff, rgbParam->monProfile.GetPrimariesRead()->wx);
+	sptr = Text::StrDouble(sbuff, rgbParam->monProfile.GetPrimariesRead()->w.x);
 	this->txtWX->SetText(CSTRP(sbuff, sptr));
-	sptr = Text::StrDouble(sbuff, rgbParam->monProfile.GetPrimariesRead()->wy);
+	sptr = Text::StrDouble(sbuff, rgbParam->monProfile.GetPrimariesRead()->w.y);
 	this->txtWY->SetText(CSTRP(sbuff, sptr));
 	Media::ColorProfile color(rgbParam->monProfile);
 	color.GetPrimaries()->colorType = Media::ColorProfile::CT_CUSTOM;

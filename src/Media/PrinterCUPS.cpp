@@ -103,7 +103,7 @@ UInt32 __stdcall Media::CUPSPrintDocument::PrintThread(void *userObj)
 		img->SetHDPI(72.0);
 		img->SetVDPI(72.0);
 		hasMorePage = me->hdlr->PrintPage(img);
-		me->eng->DeleteImage(img.Ptr());
+		me->eng->DeleteImage(img);
 
 		cairo_show_page(cr);
 		if (!hasMorePage)

@@ -350,6 +350,7 @@ void SSWR::AVIRead::AVIRImageControl::EndFolder()
 	UTF8Char *sptr2;
 	IO::Path::FindFileSession *sess;
 	IO::Path::PathType pt;
+	NotNullPtr<Media::DrawImage> img;
 	UOSInt i;
 	SSWR::AVIRead::AVIRImageControl::ImageStatus *status;
 	NotNullPtr<const Data::ArrayList<SSWR::AVIRead::AVIRImageControl::ImageStatus*>> imgList;
@@ -383,13 +384,13 @@ void SSWR::AVIRead::AVIRImageControl::EndFolder()
 		status = imgList->GetItem(i);
 		status->filePath->Release();
 		status->cacheFile->Release();
-		if (status->previewImg)
+		if (img.Set(status->previewImg))
 		{
-			this->deng->DeleteImage(status->previewImg);
+			this->deng->DeleteImage(img);
 		}
-		if (status->previewImg2)
+		if (img.Set(status->previewImg2))
 		{
-			this->deng->DeleteImage(status->previewImg2);
+			this->deng->DeleteImage(img);
 		}
 		MemFree(status);
 	}
@@ -574,14 +575,15 @@ void SSWR::AVIRead::AVIRImageControl::RGBParamChanged(const Media::IColorHandler
 	UOSInt i;
 
 	Sync::MutexUsage mutUsage(this->imgMut);
+	NotNullPtr<Media::DrawImage> img;
 	imgList = this->imgMap.GetValues();
 	i = imgList->GetCount();
 	while (i-- > 0)
 	{
 		status = imgList->GetItem(i);
-		if (status->previewImg2)
+		if (img.Set(status->previewImg2))
 		{
-			this->deng->DeleteImage(status->previewImg2);
+			this->deng->DeleteImage(img);
 			status->previewImg2 = 0;
 		}
 	}
@@ -593,6 +595,7 @@ void SSWR::AVIRead::AVIRImageControl::SetDPI(Double hdpi, Double ddpi)
 	NotNullPtr<const Data::ArrayList<SSWR::AVIRead::AVIRImageControl::ImageStatus *>> imgList;
 	SSWR::AVIRead::AVIRImageControl::ImageStatus *status;
 	UOSInt i;
+	NotNullPtr<Media::DrawImage> img;
 
 	this->hdpi = hdpi;
 	this->ddpi = ddpi;
@@ -612,9 +615,9 @@ void SSWR::AVIRead::AVIRImageControl::SetDPI(Double hdpi, Double ddpi)
 	while (i-- > 0)
 	{
 		status = imgList->GetItem(i);
-		if (status->previewImg2)
+		if (img.Set(status->previewImg2))
 		{
-			this->deng->DeleteImage(status->previewImg2);
+			this->deng->DeleteImage(img);
 			status->previewImg2 = 0;
 		}
 	}
@@ -626,6 +629,7 @@ void SSWR::AVIRead::AVIRImageControl::OnDraw(NotNullPtr<Media::DrawImage> dimg)
 	Media::DrawBrush *b;
 	Media::DrawFont *f;
 	Media::DrawBrush *barr[5];
+	NotNullPtr<Media::DrawImage> img;
 	NotNullPtr<const Data::ArrayList<SSWR::AVIRead::AVIRImageControl::ImageStatus*>> imgList;
 	SSWR::AVIRead::AVIRImageControl::ImageStatus *status;
 	UOSInt i;
@@ -719,14 +723,14 @@ void SSWR::AVIRead::AVIRImageControl::OnDraw(NotNullPtr<Media::DrawImage> dimg)
 		status = imgList->GetItem(i);
 		if ((status->setting.flags & 8) == 0)
 		{
-			if (status->previewImg != 0)
+			if (img.Set(status->previewImg))
 			{
-				this->deng->DeleteImage(status->previewImg);
+				this->deng->DeleteImage(img);
 				status->previewImg = 0;
 			}
-			if (status->previewImg2 != 0)
+			if (img.Set(status->previewImg2))
 			{
-				this->deng->DeleteImage(status->previewImg2);
+				this->deng->DeleteImage(img);
 				status->previewImg2 = 0;
 			}
 		}

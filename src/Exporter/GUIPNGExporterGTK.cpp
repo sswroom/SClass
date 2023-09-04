@@ -132,14 +132,14 @@ Bool Exporter::GUIPNGExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Te
 						NotNullPtr<const Media::ColorProfile::ColorPrimaries> prim = srcImg->info.color.GetPrimariesRead();
 						WriteMUInt32(&tmpBuff[0], 32);
 						WriteInt32(&tmpBuff[4], ReadInt32("cHRM"));
-						WriteMInt32(&tmpBuff[8], Double2Int32(prim->wx * 100000));
-						WriteMInt32(&tmpBuff[12], Double2Int32(prim->wy * 100000));
-						WriteMInt32(&tmpBuff[16], Double2Int32(prim->rx * 100000));
-						WriteMInt32(&tmpBuff[20], Double2Int32(prim->ry * 100000));
-						WriteMInt32(&tmpBuff[24], Double2Int32(prim->gx * 100000));
-						WriteMInt32(&tmpBuff[28], Double2Int32(prim->gy * 100000));
-						WriteMInt32(&tmpBuff[32], Double2Int32(prim->bx * 100000));
-						WriteMInt32(&tmpBuff[36], Double2Int32(prim->by * 100000));
+						WriteMInt32(&tmpBuff[8], Double2Int32(prim->w.x * 100000));
+						WriteMInt32(&tmpBuff[12], Double2Int32(prim->w.y * 100000));
+						WriteMInt32(&tmpBuff[16], Double2Int32(prim->r.x * 100000));
+						WriteMInt32(&tmpBuff[20], Double2Int32(prim->r.y * 100000));
+						WriteMInt32(&tmpBuff[24], Double2Int32(prim->g.x * 100000));
+						WriteMInt32(&tmpBuff[28], Double2Int32(prim->g.y * 100000));
+						WriteMInt32(&tmpBuff[32], Double2Int32(prim->b.x * 100000));
+						WriteMInt32(&tmpBuff[36], Double2Int32(prim->b.y * 100000));
 						WriteMUInt32(&tmpBuff[40], crc.CalcDirect(&tmpBuff[4], 36));
 						stm->Write(tmpBuff, 44);
 					}

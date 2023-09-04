@@ -61,7 +61,7 @@ void SSWR::AVIRead::AVIRGISLineForm::UpdatePreview()
 		this->core->GenLinePreview(dimg, this->eng, this->lineThick, this->lineColor, this->colorConv);
 		SDEL_CLASS(this->prevImg);
 		this->prevImg = dimg->ToStaticImage();
-		this->eng->DeleteImage(dimg.Ptr());
+		this->eng->DeleteImage(dimg);
 		this->pbPreview->SetImage(this->prevImg);
 	}
 }

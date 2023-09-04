@@ -279,9 +279,9 @@ Int32 Media::ICCProfile::GetRenderingIntent() const
 	return ReadMInt32(&this->iccBuff[64]);
 }
 
-void Media::ICCProfile::GetPCSIlluminant(CIEXYZ *xyz) const
+Media::ICCProfile::CIEXYZ Media::ICCProfile::GetPCSIlluminant() const
 {
-	ReadXYZNumber(&this->iccBuff[68], xyz);
+	return ReadXYZNumber(&this->iccBuff[68]);
 }
 
 Int32 Media::ICCProfile::GetProfileCreator() const
@@ -729,7 +729,7 @@ Bool Media::ICCProfile::GetColorPrimaries(NotNullPtr<Media::ColorProfile::ColorP
 			tagType = ReadMInt32(&this->iccBuff[tagOfst]);
 			if (tagType == 0x58595A20)
 			{
-				ReadXYZNumber(&this->iccBuff[tagOfst + 8], &rxyz);
+				rxyz = ReadXYZNumber(&this->iccBuff[tagOfst + 8]);
 				foundR = true;
 			}
 			else
@@ -744,7 +744,7 @@ Bool Media::ICCProfile::GetColorPrimaries(NotNullPtr<Media::ColorProfile::ColorP
 			tagType = ReadMInt32(&this->iccBuff[tagOfst]);
 			if (tagType == 0x58595A20)
 			{
-				ReadXYZNumber(&this->iccBuff[tagOfst + 8], &gxyz);
+				gxyz = ReadXYZNumber(&this->iccBuff[tagOfst + 8]);
 				foundG = true;
 			}
 			else
@@ -759,7 +759,7 @@ Bool Media::ICCProfile::GetColorPrimaries(NotNullPtr<Media::ColorProfile::ColorP
 			tagType = ReadMInt32(&this->iccBuff[tagOfst]);
 			if (tagType == 0x58595A20)
 			{
-				ReadXYZNumber(&this->iccBuff[tagOfst + 8], &bxyz);
+				bxyz = ReadXYZNumber(&this->iccBuff[tagOfst + 8]);
 				foundB = true;
 			}
 			else
@@ -774,7 +774,7 @@ Bool Media::ICCProfile::GetColorPrimaries(NotNullPtr<Media::ColorProfile::ColorP
 			tagType = ReadMInt32(&this->iccBuff[tagOfst]);
 			if (tagType == 0x58595A20)
 			{
-				ReadXYZNumber(&this->iccBuff[tagOfst + 8], &wxyz);
+				wxyz = ReadXYZNumber(&this->iccBuff[tagOfst + 8]);
 				foundW = true;
 			}
 			else
@@ -791,38 +791,25 @@ Bool Media::ICCProfile::GetColorPrimaries(NotNullPtr<Media::ColorProfile::ColorP
 		Math::Matrix3 mat3;
 		Math::Vector3 vec1;
 		Math::Vector3 vec2;
-		Math::Vector3 vec3;
 
-		Media::ColorProfile::ColorPrimaries::GetMatrixBradford(&mat);
-		mat2.Set(&mat);
+		Media::ColorProfile::ColorPrimaries::GetMatrixBradford(mat);
+		mat2.Set(mat);
 		mat3.SetIdentity();
 
-		Media::ColorProfile::ColorPrimaries::GetWhitePointXYZ(Media::ColorProfile::WPT_D50, &vec3);
-		mat.Multiply(&vec3, &vec1);
-		mat.Multiply(&wxyz, &vec2);
+		vec1 = mat.Multiply(Media::ColorProfile::ColorPrimaries::GetWhitePointXYZ(Media::ColorProfile::WPT_D50));
+		vec2 = mat.Multiply(wxyz);
 		mat.Inverse();
 		mat3.vec[0].val[0] = vec2.val[0] / vec1.val[0];
 		mat3.vec[1].val[1] = vec2.val[1] / vec1.val[1];
 		mat3.vec[2].val[2] = vec2.val[2] / vec1.val[2];
-		mat.Multiply(&mat3);
-		mat.Multiply(&mat2);
+		mat.Multiply(mat3);
+		mat.Multiply(mat2);
 
 		color->colorType = Media::ColorProfile::CT_CUSTOM;
-		mat.Multiply(&rxyz, &vec1);
-		Media::ColorProfile::ColorPrimaries::XYZToxyY(&vec1, &vec2);
-		color->rx = vec2.val[0];
-		color->ry = vec2.val[1];
-		mat.Multiply(&gxyz, &vec1);
-		Media::ColorProfile::ColorPrimaries::XYZToxyY(&vec1, &vec2);
-		color->gx = vec2.val[0];
-		color->gy = vec2.val[1];
-		mat.Multiply(&bxyz, &vec1);
-		Media::ColorProfile::ColorPrimaries::XYZToxyY(&vec1, &vec2);
-		color->bx = vec2.val[0];
-		color->by = vec2.val[1];
-		Media::ColorProfile::ColorPrimaries::XYZToxyY(&wxyz, &vec2);
-		color->wx = vec2.val[0];
-		color->wy = vec2.val[1];
+		color->r = Media::ColorProfile::ColorPrimaries::XYZToxyY(mat.Multiply(rxyz)).GetXY();
+		color->g = Media::ColorProfile::ColorPrimaries::XYZToxyY(mat.Multiply(gxyz)).GetXY();
+		color->b = Media::ColorProfile::ColorPrimaries::XYZToxyY(mat.Multiply(bxyz)).GetXY();
+		color->w = Media::ColorProfile::ColorPrimaries::XYZToxyY(wxyz).GetXY();
 		return true;
 	}
 	else
@@ -851,7 +838,6 @@ void Media::ICCProfile::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
 	UInt8 minorVer;
 	UInt8 bugFixVer;
 	Data::DateTime dt;
-	CIEXYZ xyz;
 	Int32 val;
 
 	sb->AppendC(UTF8STRC("Preferred CMM Type = "));
@@ -905,9 +891,8 @@ void Media::ICCProfile::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
 	sb->AppendC(UTF8STRC("\r\nDevice model = "));
 	sb->Append(GetNameDeviceModel(this->GetDeviceModel()));
 
-	this->GetPCSIlluminant(&xyz);
 	sb->AppendC(UTF8STRC("\r\nPCS illuminant = "));
-	GetDispCIEXYZ(sb, &xyz);
+	GetDispCIEXYZ(sb, this->GetPCSIlluminant());
 
 	sb->AppendC(UTF8STRC("\r\nProfile creator = "));
 	sb->Append(GetNameDeviceManufacturer(this->GetProfileCreator()));
@@ -1027,11 +1012,9 @@ void Media::ICCProfile::ReadDateTimeNumber(const UInt8 *buff, NotNullPtr<Data::D
 	dt->SetValue(ReadMUInt16(&buff[0]), (UInt8)ReadMUInt16(&buff[2]), (UInt8)ReadMUInt16(&buff[4]), (UInt8)ReadMUInt16(&buff[6]), (UInt8)ReadMUInt16(&buff[8]), (UInt8)ReadMUInt16(&buff[10]), 0);
 }
 
-void Media::ICCProfile::ReadXYZNumber(const UInt8 *buff, CIEXYZ *xyz)
+Media::ICCProfile::CIEXYZ Media::ICCProfile::ReadXYZNumber(const UInt8 *buff)
 {
-	xyz->val[0] = ReadS15Fixed16Number(&buff[0]);
-	xyz->val[1] = ReadS15Fixed16Number(&buff[4]);
-	xyz->val[2] = ReadS15Fixed16Number(&buff[8]);
+	return CIEXYZ(ReadS15Fixed16Number(&buff[0]), ReadS15Fixed16Number(&buff[4]), ReadS15Fixed16Number(&buff[8]));
 }
 
 Double Media::ICCProfile::ReadS15Fixed16Number(const UInt8 *buff)
@@ -1382,22 +1365,22 @@ Text::CString Media::ICCProfile::GetNameStandardIlluminent(Int32 val)
 	}
 }
 
-void Media::ICCProfile::GetDispCIEXYZ(NotNullPtr<Text::StringBuilderUTF8> sb, CIEXYZ *xyz)
+void Media::ICCProfile::GetDispCIEXYZ(NotNullPtr<Text::StringBuilderUTF8> sb, const CIEXYZ &xyz)
 {
 	sb->AppendC(UTF8STRC("X = "));
-	Text::SBAppendF64(sb, xyz->val[0]);
+	Text::SBAppendF64(sb, xyz.val[0]);
 	sb->AppendC(UTF8STRC(", Y = "));
-	Text::SBAppendF64(sb, xyz->val[1]);
+	Text::SBAppendF64(sb, xyz.val[1]);
 	sb->AppendC(UTF8STRC(", Z = "));
-	Text::SBAppendF64(sb, xyz->val[2]);
+	Text::SBAppendF64(sb, xyz.val[2]);
 
-	Double sum = xyz->val[0] + xyz->val[1] + xyz->val[2];
+	Double sum = xyz.val[0] + xyz.val[1] + xyz.val[2];
 	if (sum != 0)
 	{
 		sb->AppendC(UTF8STRC(", x = "));
-		Text::SBAppendF64(sb, xyz->val[0] / sum);
+		Text::SBAppendF64(sb, xyz.val[0] / sum);
 		sb->AppendC(UTF8STRC(", y = "));
-		Text::SBAppendF64(sb, xyz->val[1] / sum);
+		Text::SBAppendF64(sb, xyz.val[1] / sum);
 	}
 }
 
@@ -1406,7 +1389,6 @@ void Media::ICCProfile::GetDispTagType(NotNullPtr<Text::StringBuilderUTF8> sb, U
 	Int32 typ = ReadMInt32(buff);
 	Int32 nCh;
 	Int32 val;
-	CIEXYZ xyz;
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
 	Media::CS::TransferType tt;
@@ -1456,20 +1438,17 @@ void Media::ICCProfile::GetDispTagType(NotNullPtr<Text::StringBuilderUTF8> sb, U
 		{
 			if (nCh)
 				sb->AppendC(UTF8STRC("  "));
-			ReadXYZNumber(&buff[val], &xyz);
-			GetDispCIEXYZ(sb, &xyz);
+			GetDispCIEXYZ(sb, ReadXYZNumber(&buff[val]));
 			val += 12;
 			nCh++;
 		}
 		break;
 	case 0x76696577: //viewingConditionsTag
 		sb->AppendC(UTF8STRC("Illuminant: {"));
-		ReadXYZNumber(&buff[8], &xyz);
-		GetDispCIEXYZ(sb, &xyz);
+		GetDispCIEXYZ(sb, ReadXYZNumber(&buff[8]));
 
 		sb->AppendC(UTF8STRC("}, Surround: {"));
-		ReadXYZNumber(&buff[20], &xyz);
-		GetDispCIEXYZ(sb, &xyz);
+		GetDispCIEXYZ(sb, ReadXYZNumber(&buff[20]));
 		sb->AppendC(UTF8STRC("}, Illuminant type = "));
 		sb->AppendI32(ReadMInt32(&buff[32]));
 		break;
@@ -1477,8 +1456,7 @@ void Media::ICCProfile::GetDispTagType(NotNullPtr<Text::StringBuilderUTF8> sb, U
 		sb->AppendC(UTF8STRC("Standard observer = "));
 		sb->Append(GetNameStandardObserver(ReadMInt32(&buff[8])));
 		sb->AppendC(UTF8STRC(", Measurement backing: {"));
-		ReadXYZNumber(&buff[12], &xyz);
-		GetDispCIEXYZ(sb, &xyz);
+		GetDispCIEXYZ(sb, ReadXYZNumber(&buff[12]));
 		sb->AppendC(UTF8STRC("}, Measurement geometry = "));
 		sb->AppendI32(ReadMInt32(&buff[24]));
 		sb->AppendC(UTF8STRC(", Measurement flare = "));
@@ -1732,10 +1710,8 @@ const UInt8 *Media::ICCProfile::GetSRGBICCData()
 
 void Media::ICCProfile::FrameAddXYZNumber(IO::FileAnalyse::FrameDetailHandler *frame, UOSInt ofst, Text::CString fieldName, const UInt8 *xyzBuff)
 {
-	Media::ICCProfile::CIEXYZ xyz;
-	ReadXYZNumber(xyzBuff, &xyz);
 	Text::StringBuilderUTF8 sb;
-	GetDispCIEXYZ(sb, &xyz);
+	GetDispCIEXYZ(sb, ReadXYZNumber(xyzBuff));
 	frame->AddField(ofst, 12, fieldName, sb.ToCString());
 }
 
@@ -1745,7 +1721,6 @@ void Media::ICCProfile::FrameDispTagType(IO::FileAnalyse::FrameDetailHandler *fr
 	UInt32 typ = ReadMUInt32(buff);
 	Int32 nCh;
 	Int32 val;
-	CIEXYZ xyz;
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
 	Media::CS::TransferType tt;
@@ -1803,8 +1778,7 @@ void Media::ICCProfile::FrameDispTagType(IO::FileAnalyse::FrameDetailHandler *fr
 			{
 				if (nCh)
 					sb.AppendC(UTF8STRC("  "));
-				ReadXYZNumber(&buff[val], &xyz);
-				GetDispCIEXYZ(sb, &xyz);
+				GetDispCIEXYZ(sb, ReadXYZNumber(&buff[val]));
 				val += 12;
 				nCh++;
 			}
@@ -1815,12 +1789,10 @@ void Media::ICCProfile::FrameDispTagType(IO::FileAnalyse::FrameDetailHandler *fr
 		{
 			Text::StringBuilderUTF8 sb;
 			sb.AppendC(UTF8STRC("Illuminant: {"));
-			ReadXYZNumber(&buff[8], &xyz);
-			GetDispCIEXYZ(sb, &xyz);
+			GetDispCIEXYZ(sb, ReadXYZNumber(&buff[8]));
 
 			sb.AppendC(UTF8STRC("}, Surround: {"));
-			ReadXYZNumber(&buff[20], &xyz);
-			GetDispCIEXYZ(sb, &xyz);
+			GetDispCIEXYZ(sb, ReadXYZNumber(&buff[20]));
 			sb.AppendC(UTF8STRC("}, Illuminant type = "));
 			sb.AppendI32(ReadMInt32(&buff[32]));
 			frame->AddField(ofst + 8, leng - 8, fieldName, sb.ToCString());
@@ -1832,8 +1804,7 @@ void Media::ICCProfile::FrameDispTagType(IO::FileAnalyse::FrameDetailHandler *fr
 			sb.AppendC(UTF8STRC("Standard observer = "));
 			sb.Append(GetNameStandardObserver(ReadMInt32(&buff[8])));
 			sb.AppendC(UTF8STRC(", Measurement backing: {"));
-			ReadXYZNumber(&buff[12], &xyz);
-			GetDispCIEXYZ(sb, &xyz);
+			GetDispCIEXYZ(sb, ReadXYZNumber(&buff[12]));
 			sb.AppendC(UTF8STRC("}, Measurement geometry = "));
 			sb.AppendI32(ReadMInt32(&buff[24]));
 			sb.AppendC(UTF8STRC(", Measurement flare = "));

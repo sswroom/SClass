@@ -26,7 +26,8 @@ void __stdcall SSWR::AVIRead::AVIRAudioViewerForm::OnSizeChanged(void *userObj)
 
 void SSWR::AVIRead::AVIRAudioViewerForm::UpdateImages()
 {
-	Media::DrawImage *gimg;
+	NotNullPtr<Media::DrawImage> gimg;
+	NotNullPtr<Media::DrawImage> img;
 	Math::Size2D<UOSInt> sz = this->pbsSample->GetSizeP();
 	if (sz.x <= 0 || sz.y <= 0)
 		return;
@@ -34,21 +35,23 @@ void SSWR::AVIRead::AVIRAudioViewerForm::UpdateImages()
 	{
 		Media::DrawBrush *b;
 		Media::DrawFont *f;
-		gimg = this->eng->CreateImage32(sz, Media::AT_NO_ALPHA);
-		b = gimg->NewBrushARGB(0xff000000);
-		gimg->DrawRect(Math::Coord2DDbl(0, 0), sz.ToDouble(), 0, b);
-		gimg->DelBrush(b);
-		b = gimg->NewBrushARGB(0xffffffff);
-		f = gimg->NewFontPt(CSTR("Arial"), 10, Media::DrawEngine::DFS_ANTIALIAS, 0);
-		gimg->DrawString(Math::Coord2DDbl(0, 0), CSTR("Format not supported"), f, b);
-		gimg->DelFont(f);
-		gimg->DelBrush(b);
-		this->pbsSample->SetImageDImg(gimg);
-		if (this->sampleImg)
+		if (gimg.Set(this->eng->CreateImage32(sz, Media::AT_NO_ALPHA)))
 		{
-			this->eng->DeleteImage(this->sampleImg);
+			b = gimg->NewBrushARGB(0xff000000);
+			gimg->DrawRect(Math::Coord2DDbl(0, 0), sz.ToDouble(), 0, b);
+			gimg->DelBrush(b);
+			b = gimg->NewBrushARGB(0xffffffff);
+			f = gimg->NewFontPt(CSTR("Arial"), 10, Media::DrawEngine::DFS_ANTIALIAS, 0);
+			gimg->DrawString(Math::Coord2DDbl(0, 0), CSTR("Format not supported"), f, b);
+			gimg->DelFont(f);
+			gimg->DelBrush(b);
+			this->pbsSample->SetImageDImg(gimg.Ptr());
+			if (img.Set(this->sampleImg))
+			{
+				this->eng->DeleteImage(img);
+			}
+			this->sampleImg = gimg.Ptr();
 		}
-		this->sampleImg = gimg;
 	}
 	else
 	{
@@ -62,68 +65,70 @@ void SSWR::AVIRead::AVIRAudioViewerForm::UpdateImages()
 		UOSInt lastY;
 		UOSInt thisY;
 		UOSInt align = this->format->align;
-		gimg = this->eng->CreateImage32(sz, Media::AT_NO_ALPHA);
-
-		Data::ByteBuffer buff(this->format->align * sz.x);
-		i = this->audSrc->ReadSample(currSample, sz.x, buff);
-		
-		b = gimg->NewBrushARGB(0xff000000);
-		gimg->DrawRect(Math::Coord2DDbl(0, 0), sz.ToDouble(), 0, b);
-		gimg->DelBrush(b);
-
-		channelH = sz.y / this->format->nChannels / 2;
-		if (channelH > 0)
+		if (gimg.Set(this->eng->CreateImage32(sz, Media::AT_NO_ALPHA)))
 		{
-			p = gimg->NewPenARGB(0xffffffff, 1, 0, 0);
-			if (this->format->bitpersample == 16)
+			Data::ByteBuffer buff(this->format->align * sz.x);
+			i = this->audSrc->ReadSample(currSample, sz.x, buff);
+			
+			b = gimg->NewBrushARGB(0xff000000);
+			gimg->DrawRect(Math::Coord2DDbl(0, 0), sz.ToDouble(), 0, b);
+			gimg->DelBrush(b);
+
+			channelH = sz.y / this->format->nChannels / 2;
+			if (channelH > 0)
 			{
-				if (i != sz.x)
+				p = gimg->NewPenARGB(0xffffffff, 1, 0, 0);
+				if (this->format->bitpersample == 16)
 				{
-					i = i * align;
-					j = sz.x * align;
-					while (i < j)
+					if (i != sz.x)
 					{
-						*(Int16*)&buff[i] = 0;
-						i += 2;
+						i = i * align;
+						j = sz.x * align;
+						while (i < j)
+						{
+							*(Int16*)&buff[i] = 0;
+							i += 2;
+						}
+					}
+					currCh = this->format->nChannels;
+					while (currCh-- > 0)
+					{
+						currY = sz.y * currCh / this->format->nChannels;
+						lastY = currY + channelH;
+						i = 0;
+						j = 2 * currCh;
+						while (i < sz.x)
+						{
+							thisY = currY + channelH + ((ReadUInt16(&buff[j]) * channelH) >> 15);
+							gimg->DrawLine(UOSInt2Double(i - 1), UOSInt2Double(lastY), UOSInt2Double(i), UOSInt2Double(thisY), p);
+							
+							lastY = thisY;
+							i++;
+							j += align;
+						}
 					}
 				}
-				currCh = this->format->nChannels;
-				while (currCh-- > 0)
+				else if (this->format->bitpersample == 8)
 				{
-					currY = sz.y * currCh / this->format->nChannels;
-					lastY = currY + channelH;
-					i = 0;
-					j = 2 * currCh;
-					while (i < sz.x)
-					{
-						thisY = currY + channelH + ((ReadUInt16(&buff[j]) * channelH) >> 15);
-						gimg->DrawLine(UOSInt2Double(i - 1), UOSInt2Double(lastY), UOSInt2Double(i), UOSInt2Double(thisY), p);
-						
-						lastY = thisY;
-						i++;
-						j += align;
-					}
 				}
+				gimg->DelPen(p);
 			}
-			else if (this->format->bitpersample == 8)
-			{
-			}
-			gimg->DelPen(p);
-		}
 
-		this->pbsSample->SetImageDImg(gimg);
-		if (this->sampleImg)
-		{
-			this->eng->DeleteImage(this->sampleImg);
+			this->pbsSample->SetImageDImg(gimg.Ptr());
+			if (img.Set(this->sampleImg))
+			{
+				this->eng->DeleteImage(img);
+			}
+			this->sampleImg = gimg.Ptr();
 		}
-		this->sampleImg = gimg;
 	}
 	this->UpdateFreqImage();
 }
 
 void SSWR::AVIRead::AVIRAudioViewerForm::UpdateFreqImage()
 {
-	Media::DrawImage *gimg;
+	NotNullPtr<Media::DrawImage> gimg;
+	NotNullPtr<Media::DrawImage> img;
 	Math::Size2D<UOSInt> sz = this->pbsFreq->GetSizeP();
 	if (sz.x <= 0 || sz.y <= 0)
 		return;
@@ -131,21 +136,23 @@ void SSWR::AVIRead::AVIRAudioViewerForm::UpdateFreqImage()
 	{
 		Media::DrawBrush *b;
 		Media::DrawFont *f;
-		gimg = this->eng->CreateImage32(sz, Media::AT_NO_ALPHA);
-		b = gimg->NewBrushARGB(0xff000000);
-		gimg->DrawRect(Math::Coord2DDbl(0, 0), sz.ToDouble(), 0, b);
-		gimg->DelBrush(b);
-		b = gimg->NewBrushARGB(0xffffffff);
-		f = gimg->NewFontPt(CSTR("Arial"), 10, Media::DrawEngine::DFS_ANTIALIAS, 0);
-		gimg->DrawString(Math::Coord2DDbl(0, 0), CSTR("Format not supported"), f, b);
-		gimg->DelFont(f);
-		gimg->DelBrush(b);
-		this->pbsSample->SetImageDImg(gimg);
-		if (this->fftImg)
+		if (gimg.Set(this->eng->CreateImage32(sz, Media::AT_NO_ALPHA)))
 		{
-			this->eng->DeleteImage(this->fftImg);
+			b = gimg->NewBrushARGB(0xff000000);
+			gimg->DrawRect(Math::Coord2DDbl(0, 0), sz.ToDouble(), 0, b);
+			gimg->DelBrush(b);
+			b = gimg->NewBrushARGB(0xffffffff);
+			f = gimg->NewFontPt(CSTR("Arial"), 10, Media::DrawEngine::DFS_ANTIALIAS, 0);
+			gimg->DrawString(Math::Coord2DDbl(0, 0), CSTR("Format not supported"), f, b);
+			gimg->DelFont(f);
+			gimg->DelBrush(b);
+			this->pbsSample->SetImageDImg(gimg.Ptr());
+			if (img.Set(this->fftImg))
+			{
+				this->eng->DeleteImage(img);
+			}
+			this->fftImg = gimg.Ptr();
 		}
-		this->fftImg = gimg;
 	}
 	else
 	{
@@ -158,70 +165,72 @@ void SSWR::AVIRead::AVIRAudioViewerForm::UpdateFreqImage()
 		Double thisX;
 		Double thisY;
 //		OSInt align = this->format->align;
-		gimg = this->eng->CreateImage32(sz, Media::AT_NO_ALPHA);
-
-		Data::ByteBuffer buff(this->format->align * (FFTSAMPLE + FFTAVG - 1));
-		i = this->audSrc->ReadSample(currSample - FFTSAMPLE + 1, FFTSAMPLE + FFTAVG - 1, buff);
-		
-		b = gimg->NewBrushARGB(0xff000000);
-		gimg->DrawRect(Math::Coord2DDbl(0, 0), sz.ToDouble(), 0, b);
-		gimg->DelBrush(b);
-
-		Double *freqData;
-		freqData = MemAlloc(Double, FFTSAMPLE);
-		i = 0;
-		while (i < this->format->nChannels)
+		if (gimg.Set(this->eng->CreateImage32(sz, Media::AT_NO_ALPHA)))
 		{
-			Math::FFT::ForwardBits(buff.Ptr() + i * (UOSInt)(this->format->bitpersample >> 3), freqData, FFTSAMPLE, FFTAVG, this->format->bitpersample, this->format->nChannels, Math::FFT::WT_BLACKMANN_HARRIS, 1.0);
 
-			if (i == 0)
-			{
-				p = gimg->NewPenARGB(0xffff0000, 1, 0, 0);
-			}
-			else if (i == 1)
-			{
-				p = gimg->NewPenARGB(0xff0000ff, 1, 0, 0);
-			}
-			else if (i == 2)
-			{
-				p = gimg->NewPenARGB(0xff00ff00, 1, 0, 0);
-			}
-			else
-			{
-				Data::RandomOS rand;
-				p = gimg->NewPenARGB((UInt32)rand.NextInt30() | 0xff000000, 1, 0, 0);
-			}
+			Data::ByteBuffer buff(this->format->align * (FFTSAMPLE + FFTAVG - 1));
+			i = this->audSrc->ReadSample(currSample - FFTSAMPLE + 1, FFTSAMPLE + FFTAVG - 1, buff);
+			
+			b = gimg->NewBrushARGB(0xff000000);
+			gimg->DrawRect(Math::Coord2DDbl(0, 0), sz.ToDouble(), 0, b);
+			gimg->DelBrush(b);
 
-			Double rVal;
-			lastX = -1;
-			lastY = -1;
-			j = 0;
-			while (j < (FFTSAMPLE / 2))
+			Double *freqData;
+			freqData = MemAlloc(Double, FFTSAMPLE);
+			i = 0;
+			while (i < this->format->nChannels)
 			{
-				rVal = freqData[j];
+				Math::FFT::ForwardBits(buff.Ptr() + i * (UOSInt)(this->format->bitpersample >> 3), freqData, FFTSAMPLE, FFTAVG, this->format->bitpersample, this->format->nChannels, Math::FFT::WT_BLACKMANN_HARRIS, 1.0);
 
-				thisX = UOSInt2Double(j * sz.x) / (Double)(FFTSAMPLE / 2 - 1);
-				thisY = -Math_Log10(rVal / (FFTSAMPLE * 0.5)) * UOSInt2Double(sz.y) / 7.0;
-				if (lastX >= 0)
+				if (i == 0)
 				{
-					gimg->DrawLine(lastX, lastY, thisX, thisY, p);
+					p = gimg->NewPenARGB(0xffff0000, 1, 0, 0);
 				}
-				lastX = thisX;
-				lastY = thisY;
-				j++;
+				else if (i == 1)
+				{
+					p = gimg->NewPenARGB(0xff0000ff, 1, 0, 0);
+				}
+				else if (i == 2)
+				{
+					p = gimg->NewPenARGB(0xff00ff00, 1, 0, 0);
+				}
+				else
+				{
+					Data::RandomOS rand;
+					p = gimg->NewPenARGB((UInt32)rand.NextInt30() | 0xff000000, 1, 0, 0);
+				}
+
+				Double rVal;
+				lastX = -1;
+				lastY = -1;
+				j = 0;
+				while (j < (FFTSAMPLE / 2))
+				{
+					rVal = freqData[j];
+
+					thisX = UOSInt2Double(j * sz.x) / (Double)(FFTSAMPLE / 2 - 1);
+					thisY = -Math_Log10(rVal / (FFTSAMPLE * 0.5)) * UOSInt2Double(sz.y) / 7.0;
+					if (lastX >= 0)
+					{
+						gimg->DrawLine(lastX, lastY, thisX, thisY, p);
+					}
+					lastX = thisX;
+					lastY = thisY;
+					j++;
+				}
+
+				gimg->DelPen(p);
+				i++;
 			}
+			MemFree(freqData);
 
-			gimg->DelPen(p);
-			i++;
+			this->pbsFreq->SetImageDImg(gimg.Ptr());
+			if (img.Set(this->fftImg))
+			{
+				this->eng->DeleteImage(img);
+			}
+			this->fftImg = gimg.Ptr();
 		}
-		MemFree(freqData);
-
-		this->pbsFreq->SetImageDImg(gimg);
-		if (this->fftImg)
-		{
-			this->eng->DeleteImage(this->fftImg);
-		}
-		this->fftImg = gimg;
 	}
 }
 
@@ -273,13 +282,14 @@ SSWR::AVIRead::AVIRAudioViewerForm::AVIRAudioViewerForm(UI::GUIClientControl *pa
 
 SSWR::AVIRead::AVIRAudioViewerForm::~AVIRAudioViewerForm()
 {
-	if (this->sampleImg)
+	NotNullPtr<Media::DrawImage> img;
+	if (img.Set(this->sampleImg))
 	{
-		this->eng->DeleteImage(this->sampleImg);
+		this->eng->DeleteImage(img);
 	}
-	if (this->fftImg)
+	if (img.Set(this->fftImg))
 	{
-		this->eng->DeleteImage(this->fftImg);
+		this->eng->DeleteImage(img);
 	}
 	DEL_CLASS(this->format);
 }

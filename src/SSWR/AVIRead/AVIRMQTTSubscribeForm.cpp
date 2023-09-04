@@ -321,9 +321,9 @@ void SSWR::AVIRead::AVIRMQTTSubscribeForm::UpdateTopicChart()
 	{
 		if (this->dispImg == 0 || this->dispImg->GetSize() != sz)
 		{
-			if (this->dispImg)
+			if (gimg.Set(this->dispImg))
 			{
-				deng->DeleteImage(this->dispImg);
+				deng->DeleteImage(gimg);
 			}
 			dimg = deng->CreateImage32(sz, Media::AT_NO_ALPHA);
 			this->dispImg = dimg;
@@ -490,6 +490,7 @@ SSWR::AVIRead::AVIRMQTTSubscribeForm::~AVIRMQTTSubscribeForm()
 	UOSInt i;
 	TopicStatus *topicSt;
 	NotNullPtr<const Data::ArrayList<TopicStatus*>> topicList;
+	NotNullPtr<Media::DrawImage> img;
 	topicList = this->topicMap.GetValues();
 	i = topicList->GetCount();
 	while (i-- > 0)
@@ -501,9 +502,9 @@ SSWR::AVIRead::AVIRMQTTSubscribeForm::~AVIRMQTTSubscribeForm()
 	}
 	this->log.RemoveLogHandler(this->logger);
 	DEL_CLASS(this->logger);
-	if (this->dispImg)
+	if (img.Set(this->dispImg))
 	{
-		this->core->GetDrawEngine()->DeleteImage(this->dispImg);
+		this->core->GetDrawEngine()->DeleteImage(img);
 		this->dispImg = 0;
 	}
 }

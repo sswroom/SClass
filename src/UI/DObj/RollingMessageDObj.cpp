@@ -9,9 +9,10 @@
 
 void UI::DObj::RollingMessageDObj::FreeMessage(MessageInfo *msg)
 {
-	if (msg->img)
+	NotNullPtr<Media::DrawImage> img;
+	if (img.Set(msg->img))
 	{
-		this->deng->DeleteImage(msg->img);
+		this->deng->DeleteImage(img);
 	}
 	msg->message->Release();
 	MemFree(msg);
@@ -66,7 +67,7 @@ Bool UI::DObj::RollingMessageDObj::DoEvents()
 	return false;
 }
 
-void UI::DObj::RollingMessageDObj::DrawObject(Media::DrawImage *dimg)
+void UI::DObj::RollingMessageDObj::DrawObject(NotNullPtr<Media::DrawImage> dimg)
 {
 	Sync::MutexUsage mutUsage(this->msgMut);
 	Math::Coord2DDbl scnPos = this->GetCurrPos().ToDouble();
@@ -281,14 +282,15 @@ void UI::DObj::RollingMessageDObj::RemoveMessage(UInt32 msgId)
 void UI::DObj::RollingMessageDObj::SetSize(Math::Size2D<UOSInt> size)
 {
 	Sync::MutexUsage mutUsage(this->msgMut);
-	if (this->lastMessage && this->lastMessage->img)
+	NotNullPtr<Media::DrawImage> img;
+	if (this->lastMessage && img.Set(this->lastMessage->img))
 	{
-		this->deng->DeleteImage(this->lastMessage->img);
+		this->deng->DeleteImage(img);
 		this->lastMessage->img = 0;
 	}
-	if (this->thisMessage && this->thisMessage->img)
+	if (this->thisMessage && img.Set(this->thisMessage->img))
 	{
-		this->deng->DeleteImage(this->thisMessage->img);
+		this->deng->DeleteImage(img);
 		this->thisMessage->img = 0;
 	}
 	MessageInfo *msg;
@@ -296,9 +298,9 @@ void UI::DObj::RollingMessageDObj::SetSize(Math::Size2D<UOSInt> size)
 	while (i-- > 0)
 	{
 		msg = this->msgMap.GetItem(i);
-		if (msg->img)
+		if (img.Set(msg->img))
 		{
-			this->deng->DeleteImage(msg->img);
+			this->deng->DeleteImage(img);
 			msg->img = 0;
 		}
 	}

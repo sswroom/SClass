@@ -31,14 +31,15 @@ UI::DObj::DownButtonDObj::DownButtonDObj(NotNullPtr<Media::DrawEngine> deng, Tex
 
 UI::DObj::DownButtonDObj::~DownButtonDObj()
 {
-	if (this->bmpUnclick)
+	NotNullPtr<Media::DrawImage> img;
+	if (img.Set(this->bmpUnclick))
 	{
-		this->deng->DeleteImage(this->bmpUnclick);
+		this->deng->DeleteImage(img);
 		this->bmpUnclick = 0;
 	}
-	if (this->bmpClicked)
+	if (img.Set(this->bmpClicked))
 	{
-		this->deng->DeleteImage(this->bmpClicked);
+		this->deng->DeleteImage(img);
 		this->bmpClicked = 0;
 	}
 }
@@ -60,7 +61,7 @@ Bool UI::DObj::DownButtonDObj::DoEvents()
 	return false;
 }
 
-void UI::DObj::DownButtonDObj::DrawObject(Media::DrawImage *dimg)
+void UI::DObj::DownButtonDObj::DrawObject(NotNullPtr<Media::DrawImage> dimg)
 {
 	Math::Coord2D<OSInt> tl = this->GetCurrPos();
 	this->dispTL = tl;

@@ -1430,7 +1430,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(SSWR::SMo
 
 		NEW_CLASS(imgList, Media::ImageList(CSTR("temp.png")));
 		imgList->AddImage(dimg->ToStaticImage(), 0);
-		deng->DeleteImage(dimg.Ptr());
+		deng->DeleteImage(dimg);
 
 		NotNullPtr<IO::MemoryStream> nnmstm;
 		NEW_CLASSNN(nnmstm, IO::MemoryStream());
@@ -1783,7 +1783,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataImgReq(SSWR::SM
 
 		NEW_CLASS(imgList, Media::ImageList(CSTR("temp.png")));
 		imgList->AddImage(dimg->ToStaticImage(), 0);
-		deng->DeleteImage(dimg.Ptr());
+		deng->DeleteImage(dimg);
 
 		IO::MemoryStream mstm;
 		NEW_CLASS(exporter, Exporter::GUIPNGExporter());

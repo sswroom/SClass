@@ -25,7 +25,7 @@ OSInt __stdcall UI::GUIRealtimeLineChart::RLCWndProc(void *hWnd, UInt32 msg, UIn
 			UInt32 h = (UInt32)gtk_widget_get_allocated_height((GtkWidget*)me->hwnd);
 			NotNullPtr<Media::DrawImage> scn = ((Media::GTKDrawEngine*)me->eng.Ptr())->CreateImageScn(cr, Math::Coord2D<OSInt>(0, 0), Math::Coord2D<OSInt>((OSInt)w, (OSInt)h));
 			me->OnPaint(scn);
-			me->eng->DeleteImage(scn.Ptr());
+			me->eng->DeleteImage(scn);
 		}
 		break;
 	case 1:
@@ -154,7 +154,7 @@ void UI::GUIRealtimeLineChart::OnPaint(NotNullPtr<Media::DrawImage> dimg)
 
 		dimg->DrawImagePt(img, Math::Coord2DDbl(0, 0));
 
-		this->eng->DeleteImage(img.Ptr());
+		this->eng->DeleteImage(img);
 	}
 }
 

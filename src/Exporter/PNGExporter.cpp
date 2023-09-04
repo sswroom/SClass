@@ -1591,14 +1591,14 @@ Bool Exporter::PNGExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 		{
 			WriteMInt32(&hdr[0], 32);
 			*(Int32*)&hdr[4] = *(Int32*)"cHRM";
-			WriteMInt32(&hdr[8], Double2Int32(100000.0 * img->info.color.primaries.wx));
-			WriteMInt32(&hdr[12], Double2Int32(100000.0 * img->info.color.primaries.wy));
-			WriteMInt32(&hdr[16], Double2Int32(100000.0 * img->info.color.primaries.rx));
-			WriteMInt32(&hdr[20], Double2Int32(100000.0 * img->info.color.primaries.ry));
-			WriteMInt32(&hdr[24], Double2Int32(100000.0 * img->info.color.primaries.gx));
-			WriteMInt32(&hdr[28], Double2Int32(100000.0 * img->info.color.primaries.gy));
-			WriteMInt32(&hdr[32], Double2Int32(100000.0 * img->info.color.primaries.bx));
-			WriteMInt32(&hdr[36], Double2Int32(100000.0 * img->info.color.primaries.by));
+			WriteMInt32(&hdr[8], Double2Int32(100000.0 * img->info.color.primaries.w.x));
+			WriteMInt32(&hdr[12], Double2Int32(100000.0 * img->info.color.primaries.w.y));
+			WriteMInt32(&hdr[16], Double2Int32(100000.0 * img->info.color.primaries.r.x));
+			WriteMInt32(&hdr[20], Double2Int32(100000.0 * img->info.color.primaries.r.y));
+			WriteMInt32(&hdr[24], Double2Int32(100000.0 * img->info.color.primaries.g.x));
+			WriteMInt32(&hdr[28], Double2Int32(100000.0 * img->info.color.primaries.g.y));
+			WriteMInt32(&hdr[32], Double2Int32(100000.0 * img->info.color.primaries.b.x));
+			WriteMInt32(&hdr[36], Double2Int32(100000.0 * img->info.color.primaries.b.y));
 			crc.Clear();
 			crc.Calc(&hdr[4], 36);
 			crc.GetValue(&hdr[40]);

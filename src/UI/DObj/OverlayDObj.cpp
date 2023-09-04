@@ -36,12 +36,13 @@ UI::DObj::OverlayDObj::OverlayDObj(NotNullPtr<Media::DrawEngine> deng, Text::CSt
 
 UI::DObj::OverlayDObj::~OverlayDObj()
 {
+	NotNullPtr<Media::DrawImage> img;
 	if (this->noRelease)
 	{
 	}
-	else if (this->bmp)
+	else if (img.Set(this->bmp))
 	{
-		this->deng->DeleteImage(this->bmp);
+		this->deng->DeleteImage(img);
 		this->bmp = 0;
 	}
 	else if (this->imgList)
@@ -79,7 +80,7 @@ Bool UI::DObj::OverlayDObj::DoEvents()
 	return false;
 }
 
-void UI::DObj::OverlayDObj::DrawObject(Media::DrawImage *dimg)
+void UI::DObj::OverlayDObj::DrawObject(NotNullPtr<Media::DrawImage> dimg)
 {
 	NotNullPtr<Media::DrawImage> bmp;
 	if (bmp.Set(this->bmp))

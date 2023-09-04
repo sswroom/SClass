@@ -22,7 +22,7 @@ namespace Media
 		virtual DrawImage *LoadImageStream(NotNullPtr<IO::SeekableStream> stm);
 		virtual DrawImage *ConvImage(Media::Image *img);
 		virtual DrawImage *CloneImage(NotNullPtr<DrawImage> img);
-		virtual Bool DeleteImage(DrawImage *img);
+		virtual Bool DeleteImage(NotNullPtr<DrawImage> img);
 	};
 
 	class GTKDrawFont : public DrawFont

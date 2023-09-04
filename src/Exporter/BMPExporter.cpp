@@ -168,23 +168,23 @@ Bool Exporter::BMPExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 			Math::Vector3 xyzVec;
 			hdrSize = 124;
 			WriteInt32(&buff[70], 0); //bV5CSType = LCS_CALIBRATED_RGB
-			xyzVec.val[0] = primaries->rx;
-			xyzVec.val[1] = primaries->ry;
-			xyzVec.val[2] = 1.0 - primaries->rx - primaries->ry;
+			xyzVec.val[0] = primaries->r.x;
+			xyzVec.val[1] = primaries->r.y;
+			xyzVec.val[2] = 1.0 - primaries->r.x - primaries->r.y;
 			WriteInt32(&buff[74], Double2Int32(xyzVec.val[0] * 0x40000000));
 			WriteInt32(&buff[78], Double2Int32(xyzVec.val[1] * 0x40000000));
 			WriteInt32(&buff[82], Double2Int32(xyzVec.val[2] * 0x40000000));
 
-			xyzVec.val[0] = primaries->gx;
-			xyzVec.val[1] = primaries->gy;
-			xyzVec.val[2] = 1.0 - primaries->gx - primaries->gy;
+			xyzVec.val[0] = primaries->g.x;
+			xyzVec.val[1] = primaries->g.y;
+			xyzVec.val[2] = 1.0 - primaries->g.x - primaries->g.y;
 			WriteInt32(&buff[86], Double2Int32(xyzVec.val[0] * 0x40000000));
 			WriteInt32(&buff[90], Double2Int32(xyzVec.val[1] * 0x40000000));
 			WriteInt32(&buff[94], Double2Int32(xyzVec.val[2] * 0x40000000));
 
-			xyzVec.val[0] = primaries->bx;
-			xyzVec.val[1] = primaries->by;
-			xyzVec.val[2] = 1.0 - primaries->bx - primaries->by;
+			xyzVec.val[0] = primaries->b.x;
+			xyzVec.val[1] = primaries->b.y;
+			xyzVec.val[2] = 1.0 - primaries->b.x - primaries->b.y;
 			WriteInt32(&buff[98], Double2Int32(xyzVec.val[0] * 0x40000000));
 			WriteInt32(&buff[102], Double2Int32(xyzVec.val[1] * 0x40000000));
 			WriteInt32(&buff[106], Double2Int32(xyzVec.val[2] * 0x40000000));

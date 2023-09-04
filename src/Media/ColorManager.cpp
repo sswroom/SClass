@@ -161,21 +161,21 @@ Bool Media::MonitorColorManager::Load()
 			this->rgb.monProfile.GetBTranParam()->Set((Media::CS::TransferType)tmpVal, 2.2);
 		}
 		if (reg->GetValueI32(L"MonRX", &tmpVal))
-			this->rgb.monProfile.GetPrimaries()->rx = tmpVal * 0.000000001;
+			this->rgb.monProfile.GetPrimaries()->r.x = tmpVal * 0.000000001;
 		if (reg->GetValueI32(L"MonRY", &tmpVal))
-			this->rgb.monProfile.GetPrimaries()->ry = tmpVal * 0.000000001;
+			this->rgb.monProfile.GetPrimaries()->r.y = tmpVal * 0.000000001;
 		if (reg->GetValueI32(L"MonGX", &tmpVal))
-			this->rgb.monProfile.GetPrimaries()->gx = tmpVal * 0.000000001;
+			this->rgb.monProfile.GetPrimaries()->g.x = tmpVal * 0.000000001;
 		if (reg->GetValueI32(L"MonGY", &tmpVal))
-			this->rgb.monProfile.GetPrimaries()->gy = tmpVal * 0.000000001;
+			this->rgb.monProfile.GetPrimaries()->g.y = tmpVal * 0.000000001;
 		if (reg->GetValueI32(L"MonBX", &tmpVal))
-			this->rgb.monProfile.GetPrimaries()->bx = tmpVal * 0.000000001;
+			this->rgb.monProfile.GetPrimaries()->b.x = tmpVal * 0.000000001;
 		if (reg->GetValueI32(L"MonBY", &tmpVal))
-			this->rgb.monProfile.GetPrimaries()->by = tmpVal * 0.000000001;
+			this->rgb.monProfile.GetPrimaries()->b.y = tmpVal * 0.000000001;
 		if (reg->GetValueI32(L"MonWX", &tmpVal))
-			this->rgb.monProfile.GetPrimaries()->wx = tmpVal * 0.000000001;
+			this->rgb.monProfile.GetPrimaries()->w.x = tmpVal * 0.000000001;
 		if (reg->GetValueI32(L"MonWY", &tmpVal))
-			this->rgb.monProfile.GetPrimaries()->wy = tmpVal * 0.000000001;
+			this->rgb.monProfile.GetPrimaries()->w.y = tmpVal * 0.000000001;
 
 		if (reg->GetValueI32(L"MonLuminance", &tmpVal))
 			this->rgb.monLuminance = tmpVal * 0.1;
@@ -281,14 +281,14 @@ Bool Media::MonitorColorManager::Save()
 		reg->SetValue(L"MonBBright", Double2Int32(this->rgb.MonBBrightness * 1000.0));
 
 		reg->SetValue(L"MonTransfer", (Int32)this->rgb.monProfile.GetRTranParam()->GetTranType());
-		reg->SetValue(L"MonRX", Double2Int32(this->rgb.monProfile.GetPrimaries()->rx * 1000000000.0));
-		reg->SetValue(L"MonRY", Double2Int32(this->rgb.monProfile.GetPrimaries()->ry * 1000000000.0));
-		reg->SetValue(L"MonGX", Double2Int32(this->rgb.monProfile.GetPrimaries()->gx * 1000000000.0));
-		reg->SetValue(L"MonGY", Double2Int32(this->rgb.monProfile.GetPrimaries()->gy * 1000000000.0));
-		reg->SetValue(L"MonBX", Double2Int32(this->rgb.monProfile.GetPrimaries()->bx * 1000000000.0));
-		reg->SetValue(L"MonBY", Double2Int32(this->rgb.monProfile.GetPrimaries()->by * 1000000000.0));
-		reg->SetValue(L"MonWX", Double2Int32(this->rgb.monProfile.GetPrimaries()->wx * 1000000000.0));
-		reg->SetValue(L"MonWY", Double2Int32(this->rgb.monProfile.GetPrimaries()->wy * 1000000000.0));
+		reg->SetValue(L"MonRX", Double2Int32(this->rgb.monProfile.GetPrimaries()->r.x * 1000000000.0));
+		reg->SetValue(L"MonRY", Double2Int32(this->rgb.monProfile.GetPrimaries()->r.y * 1000000000.0));
+		reg->SetValue(L"MonGX", Double2Int32(this->rgb.monProfile.GetPrimaries()->g.x * 1000000000.0));
+		reg->SetValue(L"MonGY", Double2Int32(this->rgb.monProfile.GetPrimaries()->g.y * 1000000000.0));
+		reg->SetValue(L"MonBX", Double2Int32(this->rgb.monProfile.GetPrimaries()->b.x * 1000000000.0));
+		reg->SetValue(L"MonBY", Double2Int32(this->rgb.monProfile.GetPrimaries()->b.y * 1000000000.0));
+		reg->SetValue(L"MonWX", Double2Int32(this->rgb.monProfile.GetPrimaries()->w.x * 1000000000.0));
+		reg->SetValue(L"MonWY", Double2Int32(this->rgb.monProfile.GetPrimaries()->w.y * 1000000000.0));
 
 		reg->SetValue(L"MonProfileType", (Int32)this->rgb.monProfileType);
 		if (this->monProfileFile)
@@ -703,9 +703,9 @@ void Media::MonitorColorManager::SetEDIDProfile()
 		if (edid)
 		{
 			Media::EDID::EDIDInfo info;
-			if (Media::EDID::Parse(edid, &info))
+			if (Media::EDID::Parse(edid, info))
 			{
-				if (Media::EDID::SetColorProfile(&info, &this->rgb.monProfile))
+				if (Media::EDID::SetColorProfile(info, this->rgb.monProfile))
 				{
 					succ = true;
 				}

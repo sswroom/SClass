@@ -3,22 +3,6 @@
 #include "Math/Math.h"
 #include "Math/Matrix3.h"
 
-Double Math::Vector3::operator*(const Math::Vector3 &val)
-{
-	return this->val[0] * val.val[0] + this->val[1] * val.val[1] + this->val[2] * val.val[2];
-}
-
-void Math::Vector3::Set(Double val1, Double val2, Double val3)
-{
-	this->val[0] = val1;
-	this->val[1] = val2;
-	this->val[2] = val3;
-}
-
-Math::Matrix3::Matrix3()
-{
-}
-
 Math::Matrix3::Matrix3(Double *val)
 {
 	this->vec[0].val[0] = val[0];
@@ -72,14 +56,14 @@ void Math::Matrix3::Transposition()
 }
 
 
-void Math::Matrix3::Set(Matrix3 *matrix)
+void Math::Matrix3::Set(NotNullPtr<const Matrix3> matrix)
 {
 	this->vec[0] = matrix->vec[0];
 	this->vec[1] = matrix->vec[1];
 	this->vec[2] = matrix->vec[2];
 }
 
-void Math::Matrix3::Multiply(Matrix3 *matrix)
+void Math::Matrix3::Multiply(NotNullPtr<const Matrix3> matrix)
 {
 	Vector3 tmpVec[3];
 	tmpVec[0] = this->vec[0];
@@ -96,7 +80,7 @@ void Math::Matrix3::Multiply(Matrix3 *matrix)
 	this->vec[2].val[2] = tmpVec[2].val[0] * matrix->vec[0].val[2] + tmpVec[2].val[1] * matrix->vec[1].val[2] + tmpVec[2].val[2] * matrix->vec[2].val[2];
 }
 
-void Math::Matrix3::MyMultiply(Matrix3 *matrix)
+void Math::Matrix3::MyMultiply(NotNullPtr<const Matrix3> matrix)
 {
 	Vector3 tmpVec[3];
 	tmpVec[0] = this->vec[0];
@@ -120,11 +104,9 @@ void Math::Matrix3::Multiply(Double x, Double y, Double z, OutParam<Double> outX
 	outZ.Set(x * this->vec[2].val[0] + y * this->vec[2].val[1] + z * this->vec[2].val[2]);
 }
 
-void Math::Matrix3::Multiply(Vector3 *srcVec, Vector3 *outVec)
+Math::Vector3 Math::Matrix3::Multiply(const Vector3 &srcVec) const
 {
-	outVec->val[0] = this->vec[0] * *srcVec;
-	outVec->val[1] = this->vec[1] * *srcVec;
-	outVec->val[2] = this->vec[2] * *srcVec;
+	return Math::Vector3(this->vec[0] * srcVec, this->vec[1] * srcVec, this->vec[2] * srcVec);
 }
 
 void Math::Matrix3::SetIdentity()

@@ -27,8 +27,8 @@ namespace UI
 			static void __stdcall OnVideoFrame(void *userObj, UInt8 *frameBuff, Int32 frameTime, UInt32 frameW, UInt32 frameH);
 			static void __stdcall OnTimerTick(void *userObj);
 		protected:
-			virtual void DrawBkg(Media::DrawImage *dimg);
-			void DrawVideo(Media::DrawImage *dimg);
+			virtual void DrawBkg(NotNullPtr<Media::DrawImage> dimg);
+			void DrawVideo(NotNullPtr<Media::DrawImage> dimg);
 		public:
 			DShowVideoDObjHandler(UI::GUIForm *ownerFrm, NotNullPtr<Media::DrawEngine> deng, Text::CStringNN imageFileName, Math::Coord2D<OSInt> videoPos, Math::Size2D<UOSInt> videoSize, Text::CString videoFileName);
 			virtual ~DShowVideoDObjHandler();

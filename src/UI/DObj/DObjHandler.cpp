@@ -60,7 +60,7 @@ void UI::DObj::DObjHandler::AddObject(DirectObject *obj)
 	this->shown = false;
 }
 
-Bool UI::DObj::DObjHandler::Check(Media::DrawImage *dimg)
+Bool UI::DObj::DObjHandler::Check(NotNullPtr<Media::DrawImage> dimg)
 {
 	Bool isChanged = !this->shown;
 	UOSInt i;
@@ -93,7 +93,7 @@ Bool UI::DObj::DObjHandler::Check(Media::DrawImage *dimg)
 	return isChanged;
 }
 
-void UI::DObj::DObjHandler::DrawAll(Media::DrawImage *dimg)
+void UI::DObj::DObjHandler::DrawAll(NotNullPtr<Media::DrawImage> dimg)
 {
 	this->shown = true;
 	Sync::MutexUsage updMutUsage(this->updMut);

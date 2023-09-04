@@ -181,8 +181,8 @@ UOSInt UI::GUIPictureList::GetCount()
 
 void UI::GUIPictureList::RemoveAt(UOSInt index)
 {
-	Media::DrawImage *img = this->imgList.RemoveAt(index);
-	if (img)
+	NotNullPtr<Media::DrawImage> img;
+	if (img.Set(this->imgList.RemoveAt(index)))
 	{
 		this->deng->DeleteImage(img);
 	}
@@ -193,8 +193,9 @@ void UI::GUIPictureList::Clear()
 	UOSInt i = this->imgList.GetCount();
 	while (i-- > 0)
 	{
-		Media::DrawImage *img = this->imgList.RemoveAt(i);
-		this->deng->DeleteImage(img);
+		NotNullPtr<Media::DrawImage> img;
+		if(img.Set(this->imgList.RemoveAt(i)))
+			this->deng->DeleteImage(img);
 	}
 }
 

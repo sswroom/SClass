@@ -2780,15 +2780,15 @@ IO::ParsedObject *Parser::FileParser::PNGParser::ParseFileHdr(NotNullPtr<IO::Str
 				if (fd->GetRealData(ofst + 8, size, chunkData) == size)
 				{
 					info.color.primaries.SetColorType(Media::ColorProfile::CT_CUSTOM);
-					info.color.primaries.wx = ReadMInt32(&chunkData[0]) / 100000.0;
-					info.color.primaries.wy = ReadMInt32(&chunkData[4]) / 100000.0;
-					info.color.primaries.rx = ReadMInt32(&chunkData[8]) / 100000.0;
-					info.color.primaries.ry = ReadMInt32(&chunkData[12]) / 100000.0;
-					info.color.primaries.gx = ReadMInt32(&chunkData[16]) / 100000.0;
-					info.color.primaries.gy = ReadMInt32(&chunkData[20]) / 100000.0;
-					info.color.primaries.bx = ReadMInt32(&chunkData[24]) / 100000.0;
-					info.color.primaries.by = ReadMInt32(&chunkData[28]) / 100000.0;
-					if (info.color.primaries.rx == info.color.primaries.gx && info.color.primaries.ry == info.color.primaries.gy)
+					info.color.primaries.w.x = ReadMInt32(&chunkData[0]) / 100000.0;
+					info.color.primaries.w.y = ReadMInt32(&chunkData[4]) / 100000.0;
+					info.color.primaries.r.x = ReadMInt32(&chunkData[8]) / 100000.0;
+					info.color.primaries.r.y = ReadMInt32(&chunkData[12]) / 100000.0;
+					info.color.primaries.g.x = ReadMInt32(&chunkData[16]) / 100000.0;
+					info.color.primaries.g.y = ReadMInt32(&chunkData[20]) / 100000.0;
+					info.color.primaries.b.x = ReadMInt32(&chunkData[24]) / 100000.0;
+					info.color.primaries.b.y = ReadMInt32(&chunkData[28]) / 100000.0;
+					if (info.color.primaries.r.x == info.color.primaries.g.x && info.color.primaries.r.y == info.color.primaries.g.y)
 					{
 						info.color.primaries.SetColorType(Media::ColorProfile::CT_SRGB);
 					}

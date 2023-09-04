@@ -1479,13 +1479,14 @@ Media::VectorDocument *Text::ReportBuilder::CreateVDoc(Int32 id, NotNullPtr<Medi
 	MemFree(colSize);
 	MemFree(colCurrX);
 
+	NotNullPtr<Media::DrawImage> img;
 	i = iconStatus.GetCount();
 	while (i-- > 0)
 	{
 		iconSt = iconStatus.GetItem(i);
-		if (iconSt->dimg)
+		if (img.Set(iconSt->dimg))
 		{
-			deng->DeleteImage(iconSt->dimg);
+			deng->DeleteImage(img);
 		}
 		MemFree(iconSt);
 	}

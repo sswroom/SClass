@@ -33,7 +33,7 @@ namespace UI
 			OSInt lastMsgOfst;
 
 		protected:
-			virtual Media::DrawImage *GenerateImage(NotNullPtr<Media::DrawEngine> deng, NotNullPtr<Text::String> message, Math::Size2D<UOSInt> drawSize, Media::DrawImage *scnImg) = 0;
+			virtual Media::DrawImage *GenerateImage(NotNullPtr<Media::DrawEngine> deng, NotNullPtr<Text::String> message, Math::Size2D<UOSInt> drawSize, NotNullPtr<Media::DrawImage> scnImg) = 0;
 		private:
 			void FreeMessage(MessageInfo *msg);
 		public:
@@ -42,7 +42,7 @@ namespace UI
 
 			virtual Bool IsChanged();
 			virtual Bool DoEvents();
-			virtual void DrawObject(Media::DrawImage *dimg);
+			virtual void DrawObject(NotNullPtr<Media::DrawImage> dimg);
 
 			virtual Bool IsObject(Math::Coord2D<OSInt> scnPos);
 			virtual void OnMouseDown();

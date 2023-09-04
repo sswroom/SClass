@@ -317,38 +317,41 @@ void SSWR::AVIRead::AVIRChineseForm::UpdateChar(UInt32 charCode)
 void SSWR::AVIRead::AVIRChineseForm::UpdateImg()
 {
 	Math::Size2D<UOSInt> newSize = this->pbChar->GetSizeP();
-
-	if (this->charImg == 0)
+	NotNullPtr<Media::DrawImage> dimg;
+	if (!dimg.Set(this->charImg))
 	{
 		this->charImg = this->deng->CreateImage32(newSize, Media::AT_NO_ALPHA);
 	}
 	else if (this->charImg->GetWidth() != newSize.x || this->charImg->GetHeight() != newSize.y)
 	{
 		this->pbChar->SetImageDImg(0);
-		this->deng->DeleteImage(this->charImg);
+		this->deng->DeleteImage(dimg);
 		this->charImg = this->deng->CreateImage32(newSize, Media::AT_NO_ALPHA);
 	}
-	UTF8Char sbuff[7];
-	Media::DrawBrush *b;
-	Media::DrawFont *f;
-	b = this->charImg->NewBrushARGB(0xffffffff);
-	this->charImg->DrawRect(Math::Coord2DDbl(0, 0), newSize.ToDouble(), 0, b);
-	this->charImg->DelBrush(b);
-	if (this->currChar != 0)
+	if (this->charImg)
 	{
-		UOSInt len;
-		Math::Size2DDbl sz;
-		b = this->charImg->NewBrushARGB(0xff000000);
-		f = this->charImg->NewFontPx(this->currFont->ToCString(), UOSInt2Double(newSize.y), Media::DrawEngine::DFS_NORMAL, 950);
-		len = (UOSInt)(Text::StrWriteChar(sbuff, (UTF32Char)this->currChar) - sbuff);
-		sbuff[len] = 0;
-		
-		sz = this->charImg->GetTextSize(f, {sbuff, len});
-		this->charImg->DrawString((newSize.ToDouble() - sz) * 0.5, {sbuff, len}, f, b);
-		this->charImg->DelFont(f);
+		UTF8Char sbuff[7];
+		Media::DrawBrush *b;
+		Media::DrawFont *f;
+		b = this->charImg->NewBrushARGB(0xffffffff);
+		this->charImg->DrawRect(Math::Coord2DDbl(0, 0), newSize.ToDouble(), 0, b);
 		this->charImg->DelBrush(b);
+		if (this->currChar != 0)
+		{
+			UOSInt len;
+			Math::Size2DDbl sz;
+			b = this->charImg->NewBrushARGB(0xff000000);
+			f = this->charImg->NewFontPx(this->currFont->ToCString(), UOSInt2Double(newSize.y), Media::DrawEngine::DFS_NORMAL, 950);
+			len = (UOSInt)(Text::StrWriteChar(sbuff, (UTF32Char)this->currChar) - sbuff);
+			sbuff[len] = 0;
+			
+			sz = this->charImg->GetTextSize(f, {sbuff, len});
+			this->charImg->DrawString((newSize.ToDouble() - sz) * 0.5, {sbuff, len}, f, b);
+			this->charImg->DelFont(f);
+			this->charImg->DelBrush(b);
+		}
+		this->pbChar->SetImageDImg(this->charImg);
 	}
-	this->pbChar->SetImageDImg(this->charImg);
 }
 
 void SSWR::AVIRead::AVIRChineseForm::UpdateRelation()
@@ -484,9 +487,10 @@ SSWR::AVIRead::AVIRChineseForm::AVIRChineseForm(UI::GUIClientControl *parent, No
 
 SSWR::AVIRead::AVIRChineseForm::~AVIRChineseForm()
 {
-	if (this->charImg)
+	NotNullPtr<Media::DrawImage> img;
+	if (img.Set(this->charImg))
 	{
-		this->deng->DeleteImage(this->charImg);
+		this->deng->DeleteImage(img);
 		this->charImg = 0;
 	}
 	this->currFont->Release();

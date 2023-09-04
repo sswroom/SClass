@@ -35,11 +35,14 @@ UI::DObj::TextDObj::TextDObj(NotNullPtr<Media::DrawEngine> deng, Text::CString t
 
 	if (this->txt)
 	{
-		Media::DrawImage *dimg = this->deng->CreateImage32(this->size, Media::AT_NO_ALPHA);
-		Media::DrawFont *f = dimg->NewFontPx(this->fontName->ToCString(), this->fontSize, (Media::DrawEngine::DrawFontStyle)(fontStyle | Media::DrawEngine::DFS_ANTIALIAS), codePage);
-		Media::DrawImageTool::SplitString(dimg, this->txt->ToCString(), &this->lines, f, OSInt2Double(this->size.x));
-		dimg->DelFont(f);
-		this->deng->DeleteImage(dimg);
+		NotNullPtr<Media::DrawImage> dimg;
+		if (dimg.Set(this->deng->CreateImage32(this->size, Media::AT_NO_ALPHA)))
+		{
+			Media::DrawFont *f = dimg->NewFontPx(this->fontName->ToCString(), this->fontSize, (Media::DrawEngine::DrawFontStyle)(fontStyle | Media::DrawEngine::DFS_ANTIALIAS), codePage);
+			Media::DrawImageTool::SplitString(dimg, this->txt->ToCString(), &this->lines, f, OSInt2Double(this->size.x));
+			dimg->DelFont(f);
+			this->deng->DeleteImage(dimg);
+		}
 	}
 }
 
@@ -65,7 +68,7 @@ Bool UI::DObj::TextDObj::DoEvents()
 	return false;
 }
 
-void UI::DObj::TextDObj::DrawObject(Media::DrawImage *dimg)
+void UI::DObj::TextDObj::DrawObject(NotNullPtr<Media::DrawImage> dimg)
 {
 	this->pageChg = false;
 	Math::Size2DDbl sz;

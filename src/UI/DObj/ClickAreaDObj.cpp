@@ -24,7 +24,7 @@ Bool UI::DObj::ClickAreaDObj::DoEvents()
 	return false;
 }
 
-void UI::DObj::ClickAreaDObj::DrawObject(Media::DrawImage *dimg)
+void UI::DObj::ClickAreaDObj::DrawObject(NotNullPtr<Media::DrawImage> dimg)
 {
 }
 

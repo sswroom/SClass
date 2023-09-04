@@ -1761,6 +1761,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 		UserFileInfo *userFile;
 		Bool valid = false;
 		Media::DrawImage *graphImg = 0;
+		NotNullPtr<Media::DrawImage> img;
 		{
 			IO::FileStream fs(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoBuffer);
 			if (fs.IsError())
@@ -1954,37 +1955,38 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 						sptr = Text::StrConcatC(sptr, UTF8STRC("_"));
 						sptr = Text::StrHexVal32(sptr, crcVal);
 						sptr = Text::StrConcatC(sptr, UTF8STRC(".png"));
+						if (img.Set(graphImg))
 						{
 							IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer);
-							graphImg->SavePng(fs);
+							img->SavePng(fs);
+							this->drawEng->DeleteImage(img);
 						}
-						this->drawEng->DeleteImage(graphImg);
 
 						return FS_SUCCESS;
 					}
 					else
 					{
-						if (graphImg)
+						if (img.Set(graphImg))
 						{
-							this->drawEng->DeleteImage(graphImg);
+							this->drawEng->DeleteImage(img);
 						}
 						return FS_ERROR;
 					}
 				}
 				else
 				{
-					if (graphImg)
+					if (img.Set(graphImg))
 					{
-						this->drawEng->DeleteImage(graphImg);
+						this->drawEng->DeleteImage(img);
 					}
 					return FS_ERROR;
 				}
 			}
 			else
 			{
-				if (graphImg)
+				if (img.Set(graphImg))
 				{
-					this->drawEng->DeleteImage(graphImg);
+					this->drawEng->DeleteImage(img);
 				}
 				return FS_ERROR;
 			}

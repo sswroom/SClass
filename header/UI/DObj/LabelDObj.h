@@ -26,7 +26,7 @@ namespace UI
 
 			virtual Bool IsChanged();
 			virtual Bool DoEvents();
-			virtual void DrawObject(Media::DrawImage *dimg);
+			virtual void DrawObject(NotNullPtr<Media::DrawImage> dimg);
 
 			virtual Bool IsObject(Math::Coord2D<OSInt> scnPos);
 			virtual void OnMouseDown();

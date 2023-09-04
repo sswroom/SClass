@@ -578,7 +578,8 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnLevelTimerTick(void *userOb
 			Double lastY;
 			Double thisX;
 			Double thisY;
-			Media::DrawImage *img;
+			NotNullPtr<Media::DrawImage> img;
+			NotNullPtr<Media::DrawImage> dimg;
 			Media::DrawBrush *b;
 			Media::DrawPen *p;
 			me->audioRipper->GetSamples(me->sampleBuff);
@@ -586,9 +587,8 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnLevelTimerTick(void *userOb
 			if (sz.x <= 0 || sz.y <= 0)
 			{
 			}
-			else
+			else if (img.Set(me->eng->CreateImage32(sz, Media::AT_NO_ALPHA)))
 			{
-				img = me->eng->CreateImage32(sz, Media::AT_NO_ALPHA);
 				b = img->NewBrushARGB(0xffffffff);
 				img->DrawRect(Math::Coord2DDbl(0, 0), sz.ToDouble(), 0, b);
 				img->DelBrush(b);
@@ -679,21 +679,20 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnLevelTimerTick(void *userOb
 						i++;
 					}
 				}
-				me->pbsSample->SetImageDImg(img);
-				if (me->sampleImg)
+				me->pbsSample->SetImageDImg(img.Ptr());
+				if (dimg.Set(me->sampleImg))
 				{
-					me->eng->DeleteImage(me->sampleImg);
+					me->eng->DeleteImage(dimg);
 				}
-				me->sampleImg = img;
+				me->sampleImg = img.Ptr();
 			}
 
 			sz = me->pbsFFT->GetSizeP();
 			if (sz.x <= 0 || sz.y <= 0)
 			{
 			}
-			else
+			else if (img.Set(me->eng->CreateImage32(sz, Media::AT_NO_ALPHA)))
 			{
-				img = me->eng->CreateImage32(sz, Media::AT_NO_ALPHA);
 				b = img->NewBrushARGB(0xffffffff);
 				img->DrawRect(Math::Coord2DDbl(0, 0), sz.ToDouble(), 0, b);
 				img->DelBrush(b);
@@ -764,12 +763,12 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnLevelTimerTick(void *userOb
 				}
 				MemFree(data);
 
-				me->pbsFFT->SetImageDImg(img);
-				if (me->fftImg)
+				me->pbsFFT->SetImageDImg(img.Ptr());
+				if (dimg.Set(me->fftImg))
 				{
-					me->eng->DeleteImage(me->fftImg);
+					me->eng->DeleteImage(dimg);
 				}
-				me->fftImg = img;
+				me->fftImg = img.Ptr();
 			}
 		}
 	}
@@ -1238,14 +1237,15 @@ SSWR::AVIRead::AVIRAudioFilterForm::AVIRAudioFilterForm(UI::GUIClientControl *pa
 SSWR::AVIRead::AVIRAudioFilterForm::~AVIRAudioFilterForm()
 {
 	this->StopAudio();
-	if (this->sampleImg)
+	NotNullPtr<Media::DrawImage> img;
+	if (img.Set(this->sampleImg))
 	{
-		this->eng->DeleteImage(this->sampleImg);
+		this->eng->DeleteImage(img);
 		this->sampleImg = 0;
 	}
-	if (this->fftImg)
+	if (img.Set(this->fftImg))
 	{
-		this->eng->DeleteImage(this->fftImg);
+		this->eng->DeleteImage(img);
 		this->fftImg = 0;
 	}
 }

@@ -119,7 +119,7 @@ Bool Map::TileMapGenerator::GenerateDBFile(Int32 x, Int32 y, UInt32 scale, Map::
 		this->dbGenList.RemoveAt((UOSInt)this->dbGenList.SortedIndexOf(id));
 		this->dbEvt.Set();
 		mutUsage.EndUse();
-		geng->DeleteImage(dimg2.Ptr());
+		geng->DeleteImage(dimg2);
 		return true;
 	}
 	else
@@ -215,14 +215,14 @@ Bool Map::TileMapGenerator::GenerateTile(Int64 tileId, UInt32 scale, Map::MapSch
 				Bool revOrder;
 				UInt8 *imgPtr = dimg2->GetImgBits(&revOrder);
 				resizer->Resize(imgPtr, (Int32)(this->imgSize * 4 * this->osSize), (Int32)(this->imgSize * this->osSize), (Int32)(this->imgSize * this->osSize), 0, 0, dimg->GetImgBits(&revOrder), this->imgSize * 4, this->imgSize, this->imgSize);
-				geng->DeleteImage(dimg2.Ptr());
+				geng->DeleteImage(dimg2);
 			}
 		}
 
 		{
 			IO::FileStream dfs(CSTRP(sbuff2, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 			dimg->SavePng(dfs);
-			geng->DeleteImage(dimg.Ptr());
+			geng->DeleteImage(dimg);
 		}
 		return true;
 	}

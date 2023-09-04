@@ -458,9 +458,9 @@ void SSWR::AVIRead::AVIRMQTTExplorerForm::UpdateTopicChart()
 	{
 		if (this->dispImg == 0 || this->dispImg->GetWidth() != sz.x || this->dispImg->GetHeight() != sz.y)
 		{
-			if (this->dispImg)
+			if (gimg.Set(this->dispImg))
 			{
-				deng->DeleteImage(this->dispImg);
+				deng->DeleteImage(gimg);
 			}
 			dimg = deng->CreateImage32(sz, Media::AT_NO_ALPHA);
 			this->dispImg = dimg;
@@ -652,9 +652,10 @@ SSWR::AVIRead::AVIRMQTTExplorerForm::~AVIRMQTTExplorerForm()
 	SDEL_CLASS(this->cliCert);
 	SDEL_CLASS(this->cliKey);
 	SDEL_CLASS(this->logger);
-	if (this->dispImg)
+	NotNullPtr<Media::DrawImage> img;
+	if (img.Set(this->dispImg))
 	{
-		this->core->GetDrawEngine()->DeleteImage(this->dispImg);
+		this->core->GetDrawEngine()->DeleteImage(img);
 		this->dispImg = 0;
 	}
 	SDEL_CLASS(this->ssl);

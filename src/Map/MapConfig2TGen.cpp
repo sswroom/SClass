@@ -2484,9 +2484,10 @@ void Map::MapConfig2TGen::DrawPoints(NotNullPtr<Media::DrawImage> img, MapLayerS
 #ifndef NOSCH
 	sch->WaitForFinish();
 #endif
-	if (img->GetHDPI() != 96)
+	NotNullPtr<Media::DrawImage> tmpImg;
+	if (img->GetHDPI() != 96 && tmpImg.Set(dimg))
 	{
-		eng->DeleteImage(dimg);
+		eng->DeleteImage(tmpImg);
 	}
 	DEL_CLASS(arri);
 }
@@ -4557,7 +4558,8 @@ Map::MapConfig2TGen::MapConfig2TGen(Text::CStringNN fileName, NotNullPtr<Media::
 					{
 						currLayer->img = this->drawEng->LoadImage(strs[4].ToCString());
 					}
-					if (currLayer->img == 0)
+					NotNullPtr<Media::DrawImage> img;
+					if (!img.Set(currLayer->img))
 					{
 						MemFree(currLayer);
 					}
@@ -4567,7 +4569,7 @@ Map::MapConfig2TGen::MapConfig2TGen(Text::CStringNN fileName, NotNullPtr<Media::
 						currLayer->lyr = GetDrawLayer(CSTRP(layerName, layerNameEnd), layerList, errWriter);
 						if (currLayer->lyr == 0)
 						{
-							this->drawEng->DeleteImage(currLayer->img);
+							this->drawEng->DeleteImage(img);
 							MemFree(currLayer);
 						}
 						else
@@ -4624,6 +4626,7 @@ Map::MapConfig2TGen::~MapConfig2TGen()
 	Map::MapLineStyle *currLine;
 	Map::MapFontStyle *currFont;
 	Map::MapLayerStyle *currLyr;
+	NotNullPtr<Media::DrawImage> img;
 
 	if (this->lines)
 	{
@@ -4674,9 +4677,9 @@ Map::MapConfig2TGen::~MapConfig2TGen()
 		while (i-- > 0)
 		{
 			currLyr = (Map::MapLayerStyle*)this->drawList->GetItem(i);
-			if (currLyr->img && currLyr->drawType == 10)
+			if (img.Set(currLyr->img) && currLyr->drawType == 10)
 			{
-				this->drawEng->DeleteImage(currLyr->img);
+				this->drawEng->DeleteImage(img);
 			}
 			MemFree(currLyr);
 		}

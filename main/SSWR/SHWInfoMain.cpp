@@ -353,7 +353,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			if (edid)
 			{
 				Media::EDID::EDIDInfo edidInfo;
-				if (Media::EDID::Parse(edid, &edidInfo))
+				if (Media::EDID::Parse(edid, edidInfo))
 				{
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("Monitor "));
@@ -403,33 +403,33 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("Monitor White: x = "));
-					sb.AppendDouble(edidInfo.wx);
+					sb.AppendDouble(edidInfo.w.x);
 					sb.AppendC(UTF8STRC(", y = "));
-					sb.AppendDouble(edidInfo.wy);
+					sb.AppendDouble(edidInfo.w.y);
 					console->WriteLineC(sb.ToString(), sb.GetLength());
 					writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("Monitor Red x = "));
-					sb.AppendDouble(edidInfo.rx);
+					sb.AppendDouble(edidInfo.r.x);
 					sb.AppendC(UTF8STRC(", y = "));
-					sb.AppendDouble(edidInfo.ry);
+					sb.AppendDouble(edidInfo.r.y);
 					console->WriteLineC(sb.ToString(), sb.GetLength());
 					writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("Monitor Green: x = "));
-					sb.AppendDouble(edidInfo.gx);
+					sb.AppendDouble(edidInfo.g.x);
 					sb.AppendC(UTF8STRC(", y = "));
-					sb.AppendDouble(edidInfo.gy);
+					sb.AppendDouble(edidInfo.g.y);
 					console->WriteLineC(sb.ToString(), sb.GetLength());
 					writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("Monitor Blue: x = "));
-					sb.AppendDouble(edidInfo.bx);
+					sb.AppendDouble(edidInfo.b.x);
 					sb.AppendC(UTF8STRC(", y = "));
-					sb.AppendDouble(edidInfo.by);
+					sb.AppendDouble(edidInfo.b.y);
 					console->WriteLineC(sb.ToString(), sb.GetLength());
 					writer->WriteLineC(sb.ToString(), sb.GetLength());
 				}

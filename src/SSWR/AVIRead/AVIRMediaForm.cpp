@@ -620,10 +620,10 @@ void SSWR::AVIRead::AVIRMediaForm::EventMenuClicked(UInt16 cmdId)
 			Manage::HiResClock clk;
 			Double t;
 			clk.Start();
-			Media::DrawImage *img = Media::FrequencyGraph::CreateGraph(this->core->GetDrawEngine(), audio, 2048, 2048, Math::FFTCalc::WT_BLACKMANN_HARRIS, 12.0);
-			t = clk.GetTimeDiff();
-			if (img)
+			NotNullPtr<Media::DrawImage> img;
+			if (img.Set(Media::FrequencyGraph::CreateGraph(this->core->GetDrawEngine(), audio, 2048, 2048, Math::FFTCalc::WT_BLACKMANN_HARRIS, 12.0)))
 			{
+				t = clk.GetTimeDiff();
 				Text::StringBuilderUTF8 sb;
 				sb.AppendC(UTF8STRC("t="));
 				sb.AppendDouble(t);

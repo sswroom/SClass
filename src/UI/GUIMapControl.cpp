@@ -282,7 +282,7 @@ void UI::GUIMapControl::OnDraw(NotNullPtr<Media::DrawImage> img)
 			{
 				this->drawHdlr(this->drawHdlrObj, tmpImg, 0, 0);
 				srcImg = tmpImg->ToStaticImage();
-				this->eng->DeleteImage(tmpImg.Ptr());
+				this->eng->DeleteImage(tmpImg);
 			}
 			else
 			{
@@ -398,7 +398,7 @@ void UI::GUIMapControl::OnDraw(NotNullPtr<Media::DrawImage> img)
 				this->drawHdlr(this->drawHdlrObj, drawImg, 0, 0);
 				this->DrawScnObjects(drawImg, Math::Coord2DDbl(0, 0));
 				img->DrawImagePt(drawImg, tl);
-				this->eng->DeleteImage(drawImg.Ptr());
+				this->eng->DeleteImage(drawImg);
 			}
 		}
 		else
@@ -787,9 +787,10 @@ UI::GUIMapControl::~GUIMapControl()
 	{
 		this->mapEnv->RemoveUpdatedHandler(ImageUpdated, this);
 	}
-	if (this->bgImg)
+	NotNullPtr<Media::DrawImage> img;
+	if (img.Set(this->bgImg))
 	{
-		this->eng->DeleteImage(this->bgImg);
+		this->eng->DeleteImage(img);
 	}
 	this->ReleaseSelVecList();
 	if (this->renderer)
@@ -813,9 +814,10 @@ void UI::GUIMapControl::OnSizeChanged(Bool updateScn)
 	Sync::MutexUsage mutUsage(this->drawMut);
 	this->currSize = this->GetSizeP();
 	this->view->UpdateSize(this->currSize.ToDouble());
-	if (this->bgImg)
+	NotNullPtr<Media::DrawImage> img;
+	if (img.Set(this->bgImg))
 	{
-		this->eng->DeleteImage(this->bgImg);
+		this->eng->DeleteImage(img);
 		this->bgImg = 0;
 	}
 	if (this->currSize.x > 0 && this->currSize.y > 0)
@@ -880,7 +882,7 @@ void UI::GUIMapControl::SetBGColor(UInt32 bgColor)
 	this->bgColor = bgColor;
 	Media::ColorProfile srcProfile(Media::ColorProfile::CPT_SRGB);
 	Media::ColorProfile destProfile(Media::ColorProfile::CPT_PDISPLAY);
-	this->bgDispColor = Media::ColorConv::ConvARGB(&srcProfile, &destProfile, this->colorSess, this->bgColor);
+	this->bgDispColor = Media::ColorConv::ConvARGB(srcProfile, destProfile, this->colorSess, this->bgColor);
 	if (!this->pauseUpdate)
 	{
 		this->UpdateMap();

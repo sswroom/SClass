@@ -29,8 +29,8 @@ namespace UI
 			static void __stdcall OnTimerTick(void *userObj);
 			static void __stdcall OnPBEnd(void *userObj);
 		protected:
-			virtual void DrawBkg(Media::DrawImage *dimg);
-			void DrawVideo(Media::DrawImage *dimg);
+			virtual void DrawBkg(NotNullPtr<Media::DrawImage> dimg);
+			void DrawVideo(NotNullPtr<Media::DrawImage> dimg);
 
 			virtual void LockUpdateSize(NotNullPtr<Sync::MutexUsage> mutUsage);
 			virtual void DrawFromSurface(Media::MonitorSurface *surface, Math::Coord2D<OSInt> destTL, Math::Size2D<UOSInt> buffSize, Bool clearScn);

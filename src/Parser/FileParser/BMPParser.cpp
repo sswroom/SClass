@@ -451,27 +451,20 @@ IO::ParsedObject *Parser::FileParser::BMPParser::ParseFileHdr(NotNullPtr<IO::Str
 			if (valid)
 			{
 				Math::Vector3 xyzVec;
-				Math::Vector3 xyYVec;
 				xyzVec.val[0] = rx / (Double)0x40000000;
 				xyzVec.val[1] = ry / (Double)0x40000000;
 				xyzVec.val[2] = rz / (Double)0x40000000;
-				Media::ColorProfile::ColorPrimaries::XYZToxyY(&xyzVec, &xyYVec);
-				outImg->info.color.primaries.rx = xyYVec.val[0];
-				outImg->info.color.primaries.ry = xyYVec.val[1];
+				outImg->info.color.primaries.r = Media::ColorProfile::ColorPrimaries::XYZToxyY(xyzVec).GetXY();
 
 				xyzVec.val[0] = gx / (Double)0x40000000;
 				xyzVec.val[1] = gy / (Double)0x40000000;
 				xyzVec.val[2] = gz / (Double)0x40000000;
-				Media::ColorProfile::ColorPrimaries::XYZToxyY(&xyzVec, &xyYVec);
-				outImg->info.color.primaries.gx = xyYVec.val[0];
-				outImg->info.color.primaries.gy = xyYVec.val[1];
+				outImg->info.color.primaries.g = Media::ColorProfile::ColorPrimaries::XYZToxyY(xyzVec).GetXY();
 
 				xyzVec.val[0] = bx / (Double)0x40000000;
 				xyzVec.val[1] = by / (Double)0x40000000;
 				xyzVec.val[2] = bz / (Double)0x40000000;
-				Media::ColorProfile::ColorPrimaries::XYZToxyY(&xyzVec, &xyYVec);
-				outImg->info.color.primaries.bx = xyYVec.val[0];
-				outImg->info.color.primaries.by = xyYVec.val[1];
+				outImg->info.color.primaries.b = Media::ColorProfile::ColorPrimaries::XYZToxyY(xyzVec).GetXY();
 				outImg->info.color.primaries.colorType = Media::ColorProfile::CT_CUSTOM;
 
 				outImg->info.color.rtransfer.Set(Media::CS::TRANT_GAMMA, rg / 65536.0);

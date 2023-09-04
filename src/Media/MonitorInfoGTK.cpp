@@ -78,7 +78,7 @@ Media::MonitorInfo::MonitorInfo(MonitorHandle *hMonitor)
 	if (edid)
 	{
 		Media::EDID::EDIDInfo info;
-		if (Media::EDID::Parse(edid, &info))
+		if (Media::EDID::Parse(edid, info))
 		{
 			this->name = Text::String::NewNotNullSlow(info.monitorName);
 			sptr = Text::StrHexVal16(Text::StrConcat(sbuff, info.vendorName), info.productCode);

@@ -26,18 +26,14 @@ namespace Media
 			UTF8Char monitorSN[14];
 			UTF8Char monitorOther[14];
 			Double gamma;
-			Double rx;
-			Double ry;
-			Double gx;
-			Double gy;
-			Double bx;
-			Double by;
-			Double wx;
-			Double wy;
+			Math::Double2D r;
+			Math::Double2D g;
+			Math::Double2D b;
+			Math::Double2D w;
 		} EDIDInfo;
-		static Bool Parse(const UInt8 *edidBuff, EDIDInfo *info);
-		static void ParseDescriptor(EDIDInfo *info, const UInt8 *descriptor);
-		static Bool SetColorProfile(EDIDInfo *info, Media::ColorProfile *cp);
+		static Bool Parse(const UInt8 *edidBuff, NotNullPtr<EDIDInfo> info);
+		static void ParseDescriptor(NotNullPtr<EDIDInfo> info, const UInt8 *descriptor);
+		static Bool SetColorProfile(NotNullPtr<EDIDInfo> info, NotNullPtr<Media::ColorProfile> cp);
 	};
 }
 #endif

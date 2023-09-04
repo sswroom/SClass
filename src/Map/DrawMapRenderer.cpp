@@ -1708,6 +1708,7 @@ void Map::DrawMapRenderer::DrawShapesPoint(Map::DrawMapRenderer::DrawEnv *denv, 
 			return;
 		}
 		Media::DrawImage *dimg;
+		NotNullPtr<Media::DrawImage> gimg;
 		if (this->drawType == Map::DrawMapRenderer::DT_PIXELDRAW)
 		{
 			UInt32 newW = (UInt32)Double2Int32(UOSInt2Double(img->info.dispSize.x) * denv->img->GetHDPI() / img->info.hdpi);
@@ -1737,24 +1738,26 @@ void Map::DrawMapRenderer::DrawShapesPoint(Map::DrawMapRenderer::DrawEnv *denv, 
 		{
 			dimg = this->eng->ConvImage(img);
 		}
-
-		this->mapSch.SetDrawType(layer, 0, 0, dimg, spotX, spotY, &denv->isLayerEmpty);
-		this->mapSch.SetDrawObjs(denv->objBounds, &denv->objCnt, maxLabel);
-		session = layer->BeginGetObject();
-
-		i = arri.GetCount();
-		while (i-- > 0)
+		if (gimg.Set(dimg))
 		{
-			if ((vec = layer->GetNewVectorById(session, arri.GetItem(i))) != 0)
-			{
-				vec->ConvCSys(lyrCSys, envCSys);
-				this->mapSch.Draw(vec);
-			}
-		}
+			this->mapSch.SetDrawType(layer, 0, 0, dimg, spotX, spotY, &denv->isLayerEmpty);
+			this->mapSch.SetDrawObjs(denv->objBounds, &denv->objCnt, maxLabel);
+			session = layer->BeginGetObject();
 
-		layer->EndGetObject(session);
-		this->mapSch.WaitForFinish();
-		this->eng->DeleteImage(dimg);
+			i = arri.GetCount();
+			while (i-- > 0)
+			{
+				if ((vec = layer->GetNewVectorById(session, arri.GetItem(i))) != 0)
+				{
+					vec->ConvCSys(lyrCSys, envCSys);
+					this->mapSch.Draw(vec);
+				}
+			}
+
+			layer->EndGetObject(session);
+			this->mapSch.WaitForFinish();
+			this->eng->DeleteImage(gimg);
+		}
 	}
 	else
 	{
@@ -1765,6 +1768,7 @@ void Map::DrawMapRenderer::DrawShapesPoint(Map::DrawMapRenderer::DrawEnv *denv, 
 		}
 
 		Media::DrawImage *dimg;
+		NotNullPtr<Media::DrawImage> gimg;
 		if (this->drawType == Map::DrawMapRenderer::DT_PIXELDRAW)
 		{
 			UInt32 newW = (UInt32)Double2Int32(UOSInt2Double(img->info.dispSize.x) * denv->img->GetHDPI() / img->info.hdpi);
@@ -1794,23 +1798,25 @@ void Map::DrawMapRenderer::DrawShapesPoint(Map::DrawMapRenderer::DrawEnv *denv, 
 		{
 			dimg = this->eng->ConvImage(img);
 		}
-
-		this->mapSch.SetDrawType(layer, 0, 0, dimg, spotX, spotY, &denv->isLayerEmpty);
-		this->mapSch.SetDrawObjs(denv->objBounds, &denv->objCnt, maxLabel);
-		session = layer->BeginGetObject();
-
-		i = arri.GetCount();
-		while (i-- > 0)
+		if (gimg.Set(dimg))
 		{
-			if ((vec = layer->GetNewVectorById(session, arri.GetItem(i))) != 0)
-			{
-				this->mapSch.Draw(vec);
-			}
-		}
+			this->mapSch.SetDrawType(layer, 0, 0, dimg, spotX, spotY, &denv->isLayerEmpty);
+			this->mapSch.SetDrawObjs(denv->objBounds, &denv->objCnt, maxLabel);
+			session = layer->BeginGetObject();
 
-		layer->EndGetObject(session);
-		this->mapSch.WaitForFinish();
-		this->eng->DeleteImage(dimg);
+			i = arri.GetCount();
+			while (i-- > 0)
+			{
+				if ((vec = layer->GetNewVectorById(session, arri.GetItem(i))) != 0)
+				{
+					this->mapSch.Draw(vec);
+				}
+			}
+
+			layer->EndGetObject(session);
+			this->mapSch.WaitForFinish();
+			this->eng->DeleteImage(gimg);
+		}
 	}
 }
 
@@ -2235,7 +2241,7 @@ void Map::DrawMapRenderer::DrawImageObject(DrawEnv *denv, Media::StaticImage *im
 						dimg->SetHDPI(denv->img->GetHDPI());
 						dimg->SetVDPI(denv->img->GetVDPI());
 						denv->img->DrawImagePt(dimg, scnTL);
-						this->eng->DeleteImage(dimg.Ptr());
+						this->eng->DeleteImage(dimg);
 					}
 					DEL_CLASS(newImg);
 				}

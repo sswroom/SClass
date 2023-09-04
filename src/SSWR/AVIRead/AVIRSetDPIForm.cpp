@@ -89,7 +89,7 @@ void SSWR::AVIRead::AVIRSetDPIForm::UpdatePreview()
 	UTF8Char *sptr;
 	Math::Size2DDbl sz;
 	NotNullPtr<Media::DrawEngine> eng;
-	Media::DrawImage *gimg;
+	NotNullPtr<Media::DrawImage> gimg;
 	Media::DrawBrush *b;
 	Media::DrawFont *f;
 	Media::DrawPen *p;
@@ -101,42 +101,44 @@ void SSWR::AVIRead::AVIRSetDPIForm::UpdatePreview()
 	{
 		Double ddpi = this->core->GetMonitorDDPI(this->GetHMonitor());
 		v = this->hsbDPI->GetPos();
-		gimg = eng->CreateImage32(usz, Media::AT_NO_ALPHA);
-		b = gimg->NewBrushARGB(0xffffffff);
-		gimg->DrawRect(Math::Coord2DDbl(0, 0), usz.ToDouble(), 0, b);
-		gimg->DelBrush(b);
-
-		f = gimg->NewFontPx(CSTR("Arial"), 12 * UOSInt2Double(v) * 0.1 / ddpi, Media::DrawEngine::DFS_ANTIALIAS, 0);
-		p = gimg->NewPenARGB(0xff000000, 1, 0, 0);
-		b = gimg->NewBrushARGB(0xff000000);
-		currV = 0;
-		sz = gimg->GetTextSize(f, CSTR("0"));
-		initX = sz.x * 0.5;
-		lastX = initX - 20.0;
-		while (true)
+		if (gimg.Set(eng->CreateImage32(usz, Media::AT_NO_ALPHA)))
 		{
-			currX = Math::Unit::Distance::Convert(Math::Unit::Distance::DU_CENTIMETER, Math::Unit::Distance::DU_INCH, currV) * UOSInt2Double(v) * 0.1 + initX;
-			if (currX > UOSInt2Double(usz.x))
-				break;
+			b = gimg->NewBrushARGB(0xffffffff);
+			gimg->DrawRect(Math::Coord2DDbl(0, 0), usz.ToDouble(), 0, b);
+			gimg->DelBrush(b);
 
-			if (currX >= lastX + 20)
+			f = gimg->NewFontPx(CSTR("Arial"), 12 * UOSInt2Double(v) * 0.1 / ddpi, Media::DrawEngine::DFS_ANTIALIAS, 0);
+			p = gimg->NewPenARGB(0xff000000, 1, 0, 0);
+			b = gimg->NewBrushARGB(0xff000000);
+			currV = 0;
+			sz = gimg->GetTextSize(f, CSTR("0"));
+			initX = sz.x * 0.5;
+			lastX = initX - 20.0;
+			while (true)
 			{
-				sptr = Text::StrInt32(sbuff, currV);
-				sz = gimg->GetTextSize(f, CSTRP(sbuff, sptr));
-				gimg->DrawLine(currX, 0, currX, UOSInt2Double(usz.y) - sz.y, p);
-				gimg->DrawString(Math::Coord2DDbl(currX - sz.x * 0.5, UOSInt2Double(usz.y) - sz.y), CSTRP(sbuff, sptr), f, b);
-				lastX = currX;
+				currX = Math::Unit::Distance::Convert(Math::Unit::Distance::DU_CENTIMETER, Math::Unit::Distance::DU_INCH, currV) * UOSInt2Double(v) * 0.1 + initX;
+				if (currX > UOSInt2Double(usz.x))
+					break;
+
+				if (currX >= lastX + 20)
+				{
+					sptr = Text::StrInt32(sbuff, currV);
+					sz = gimg->GetTextSize(f, CSTRP(sbuff, sptr));
+					gimg->DrawLine(currX, 0, currX, UOSInt2Double(usz.y) - sz.y, p);
+					gimg->DrawString(Math::Coord2DDbl(currX - sz.x * 0.5, UOSInt2Double(usz.y) - sz.y), CSTRP(sbuff, sptr), f, b);
+					lastX = currX;
+				}
+				currV++;
 			}
-			currV++;
+
+			this->pimg = gimg->ToStaticImage();
+
+			gimg->DelFont(f);
+			gimg->DelPen(p);
+			gimg->DelBrush(b);
+			eng->DeleteImage(gimg);
+			this->pbPreview->SetImage(this->pimg);
 		}
-
-		this->pimg = gimg->ToStaticImage();
-
-		gimg->DelFont(f);
-		gimg->DelPen(p);
-		gimg->DelBrush(b);
-		eng->DeleteImage(gimg);
-		this->pbPreview->SetImage(this->pimg);
 	}	
 }
 

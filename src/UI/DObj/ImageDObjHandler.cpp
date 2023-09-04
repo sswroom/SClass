@@ -3,16 +3,18 @@
 #include "UI/DObj/DirectObject.h"
 #include "UI/DObj/ImageDObjHandler.h"
 
-void UI::DObj::ImageDObjHandler::DrawBkg(Media::DrawImage *dimg)
+void UI::DObj::ImageDObjHandler::DrawBkg(NotNullPtr<Media::DrawImage> dimg)
 {
-	if (this->bmpBkg)
+	NotNullPtr<Media::DrawImage> bmpBkg;
+	if (bmpBkg.Set(this->bmpBkg))
 	{
+		NotNullPtr<Media::DrawImage> bmpBuff;
 		Math::Size2D<UOSInt> scnSize = dimg->GetSize();
-		if (this->bmpBuff != 0)
+		if (bmpBuff.Set(this->bmpBuff))
 		{
-			if (this->bmpBuff->GetWidth() != scnSize.x && this->bmpBuff->GetHeight() != scnSize.y)
+			if (bmpBuff->GetWidth() != scnSize.x && bmpBuff->GetHeight() != scnSize.y)
 			{
-				this->deng->DeleteImage(this->bmpBuff);
+				this->deng->DeleteImage(bmpBuff);
 				this->bmpBuff = 0;
 			}
 		}
@@ -29,7 +31,6 @@ void UI::DObj::ImageDObjHandler::DrawBkg(Media::DrawImage *dimg)
 			this->bmpBuff = this->deng->ConvImage(srimg);
 			DEL_CLASS(srimg);
 		}
-		NotNullPtr<Media::DrawImage> bmpBuff;
 		if (bmpBuff.Set(this->bmpBuff))
 		{
 			dimg->DrawImagePt(bmpBuff, Math::Coord2DDbl(0, 0));
@@ -52,14 +53,15 @@ UI::DObj::ImageDObjHandler::ImageDObjHandler(NotNullPtr<Media::DrawEngine> deng,
 
 UI::DObj::ImageDObjHandler::~ImageDObjHandler()
 {
-	if (this->bmpBkg != 0)
+	NotNullPtr<Media::DrawImage> img;
+	if (img.Set(this->bmpBkg))
 	{
-		this->deng->DeleteImage(this->bmpBkg);
+		this->deng->DeleteImage(img);
 		this->bmpBkg = 0;
 	}
-	if (this->bmpBuff != 0)
+	if (img.Set(this->bmpBuff))
 	{
-		this->deng->DeleteImage(this->bmpBuff);
+		this->deng->DeleteImage(img);
 		this->bmpBuff = 0;
 	}
 }

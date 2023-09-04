@@ -44,7 +44,7 @@ Bool UI::DObj::LabelDObj::DoEvents()
 	return false;
 }
 
-void UI::DObj::LabelDObj::DrawObject(Media::DrawImage *dimg)
+void UI::DObj::LabelDObj::DrawObject(NotNullPtr<Media::DrawImage> dimg)
 {
 	this->txtChg = false;
 	Sync::MutexUsage mutUsage(this->txtMut);

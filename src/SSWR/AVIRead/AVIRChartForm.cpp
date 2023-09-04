@@ -21,7 +21,7 @@ void __stdcall SSWR::AVIRead::AVIRChartForm::OnSizeChanged(void *userObj)
 		gimg->SetVDPI(dpi);
 		me->chart->Plot(gimg, 0, 0, UOSInt2Double(sz.x), UOSInt2Double(sz.y));
 		me->pbMain->SetImageDImg(gimg.Ptr());
-		me->core->GetDrawEngine()->DeleteImage(gimg.Ptr());
+		me->core->GetDrawEngine()->DeleteImage(gimg);
 	}
 }
 

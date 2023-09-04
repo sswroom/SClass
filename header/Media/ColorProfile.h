@@ -1,5 +1,6 @@
 #ifndef _SM_MEDIA_COLORPROFILE
 #define _SM_MEDIA_COLORPROFILE
+#include "Math/Double2D.h"
 #include "Math/Matrix3.h"
 #include "Media/CS/TransferParam.h"
 #include "Text/CString.h"
@@ -122,21 +123,17 @@ namespace Media
 
 			void SetFromxyY(Double x, Double y, Double Y);
 			void SetFromXYZ(Double X, Double Y, Double Z);
-			void Getxy(Double *x, Double *y);
+			Math::Double2D Getxy();
 		};
 
 		class ColorPrimaries
 		{
 		public:
 			Media::ColorProfile::ColorType colorType;
-			Double rx;
-			Double ry;
-			Double gx;
-			Double gy;
-			Double bx;
-			Double by;
-			Double wx;
-			Double wy;
+			Math::Double2D r;
+			Math::Double2D g;
+			Math::Double2D b;
+			Math::Double2D w;
 
 		public:
 			void SetWhiteType(WhitePointType wpType);
@@ -147,20 +144,20 @@ namespace Media
 
 			void Set(NotNullPtr<const ColorPrimaries> primaries);
 			void SetColorType(ColorType colorType);
-			void GetWhitexy(Double *x, Double *y) const;
-			void GetConvMatrix(Math::Matrix3 *matrix) const;
-			void SetConvMatrix(Math::Matrix3 *matrix);
+			Math::Double2D GetWhitexy() const;
+			void GetConvMatrix(NotNullPtr<Math::Matrix3> matrix) const;
+			void SetConvMatrix(NotNullPtr<const Math::Matrix3> matrix);
 
 			Bool Equals(NotNullPtr<const ColorPrimaries> primaries) const;
 
-			static void GetWhitePointXY(WhitePointType wpType, Double *x, Double *y);
-			static void GetWhitePointXY(Double colorTemp, Double *x, Double *y);
-			static void GetWhitePointXYZ(WhitePointType wpType, Math::Vector3 *vec);
-			static void GetMatrixBradford(Math::Matrix3 *mat);
-			static void GetMatrixVonKries(Math::Matrix3 *mat);
-			static void xyYToXYZ(Math::Vector3 *xyY, Math::Vector3 *XYZ);
-			static void XYZToxyY(Math::Vector3 *XYZ, Math::Vector3 *xyY);
-			static void GetAdaptationMatrix(Math::Matrix3 *mat, WhitePointType srcWP, WhitePointType destWP);
+			static Math::Double2D GetWhitePointXY(WhitePointType wpType);
+			static Math::Double2D GetWhitePointXY(Double colorTemp);
+			static Math::Vector3 GetWhitePointXYZ(WhitePointType wpType);
+			static void GetMatrixBradford(NotNullPtr<Math::Matrix3> mat);
+			static void GetMatrixVonKries(NotNullPtr<Math::Matrix3> mat);
+			static Math::Vector3 xyYToXYZ(const Math::Vector3 &xyY);
+			static Math::Vector3 XYZToxyY(const Math::Vector3 &XYZ);
+			static void GetAdaptationMatrix(NotNullPtr<Math::Matrix3> mat, WhitePointType srcWP, WhitePointType destWP);
 		};
 
 		Media::CS::TransferParam rtransfer;

@@ -142,13 +142,14 @@ void __stdcall UI::GUIDObjArea::DisplayThread(NotNullPtr<Sync::Thread> thread)
 void __stdcall UI::GUIDObjArea::ProcessThread(NotNullPtr<Sync::Thread> thread)
 {
 	UI::GUIDObjArea *me = (UI::GUIDObjArea*)thread->GetUserObj();
+	NotNullPtr<Media::DrawImage> img;
 	me->mainEvt.Set();
 	while (!thread->IsStopping())
 	{
 		Sync::MutexUsage mutUsage(me->dobjMut);
-		if (!me->drawUpdated && me->dobjHdlr && me->currDrawImg)
+		if (!me->drawUpdated && me->dobjHdlr && img.Set(me->currDrawImg))
 		{
-			Bool changed = me->dobjHdlr->Check(me->currDrawImg);
+			Bool changed = me->dobjHdlr->Check(img);
 			mutUsage.EndUse();
 			if (changed)
 			{
@@ -202,9 +203,10 @@ UI::GUIDObjArea::~GUIDObjArea()
 	{
 		DEL_CLASS(this->dobjHdlr);
 	}
-	if (this->currDrawImg)
+	NotNullPtr<Media::DrawImage> img;
+	if (img.Set(this->currDrawImg))
 	{
-		this->deng->DeleteImage(this->currDrawImg);
+		this->deng->DeleteImage(img);
 		this->currDrawImg = 0;
 	}
 }
@@ -236,9 +238,10 @@ OSInt UI::GUIDObjArea::OnNotify(UInt32 code, void *lParam)
 void UI::GUIDObjArea::OnSurfaceCreated()
 {
 	Sync::MutexUsage mutUsage(this->dobjMut);
-	if (this->currDrawImg)
+	NotNullPtr<Media::DrawImage> img;
+	if (img.Set(this->currDrawImg))
 	{
-		this->deng->DeleteImage(this->currDrawImg);
+		this->deng->DeleteImage(img);
 		this->currDrawImg = 0;
 	}
 	this->currDrawImg = this->deng->CreateImage32(this->dispSize, Media::AT_NO_ALPHA);

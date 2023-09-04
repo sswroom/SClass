@@ -57,30 +57,31 @@ void __stdcall SSWR::AVIRead::AVIRElectronicScaleForm::OnTimerTick(void *userObj
 		Math::Size2D<UOSInt> usz = me->pbsDisplay->GetSizeP();
 		if (usz.x > 0 && usz.y > 0)
 		{
-			if (me->dimg == 0)
+			NotNullPtr<Media::DrawImage> img;
+			if (!img.Set(me->dimg))
 			{
 				me->dimg = me->eng->CreateImage32(usz, Media::AT_NO_ALPHA);
 			}
-			else if (me->dimg->GetWidth() != usz.x || me->dimg->GetHeight() != usz.y)
+			else if (img->GetWidth() != usz.x || img->GetHeight() != usz.y)
 			{
-				me->eng->DeleteImage(me->dimg);
+				me->eng->DeleteImage(img);
 				me->dimg = me->eng->CreateImage32(usz, Media::AT_NO_ALPHA);
 			}
 
-			if (me->dimg)
+			if (img.Set(me->dimg))
 			{
 				Media::DrawBrush *b;
 				Media::DrawFont *f;
-				b = me->dimg->NewBrushARGB(0xffffffff);
-				me->dimg->DrawRect(Math::Coord2DDbl(0, 0), usz.ToDouble(), 0, b);
-				me->dimg->DelBrush(b);
+				b = img->NewBrushARGB(0xffffffff);
+				img->DrawRect(Math::Coord2DDbl(0, 0), usz.ToDouble(), 0, b);
+				img->DelBrush(b);
 
 				Double fontHeight;
 				Math::Size2DDbl sz;
 				fontHeight = UOSInt2Double(usz.x) / UOSInt2Double(strSize);
-				f = me->dimg->NewFontPx(CSTR("Arial"), fontHeight, Media::DrawEngine::DFS_NORMAL, 0);
-				sz = me->dimg->GetTextSize(f, {sbuff, strSize});
-				me->dimg->DelFont(f);
+				f = img->NewFontPx(CSTR("Arial"), fontHeight, Media::DrawEngine::DFS_NORMAL, 0);
+				sz = img->GetTextSize(f, {sbuff, strSize});
+				img->DelFont(f);
 				if (UOSInt2Double(usz.x) * sz.y > UOSInt2Double(usz.y) * sz.x) //w / sz[0] > h / sz[1]
 				{
 					fontHeight = fontHeight * UOSInt2Double(usz.y) / sz.y;
@@ -89,14 +90,14 @@ void __stdcall SSWR::AVIRead::AVIRElectronicScaleForm::OnTimerTick(void *userObj
 				{
 					fontHeight = fontHeight * UOSInt2Double(usz.x) / sz.x;
 				}
-				f = me->dimg->NewFontPx(CSTR("Arial"), fontHeight, Media::DrawEngine::DFS_NORMAL, 0);
-				b = me->dimg->NewBrushARGB(0xff000000);
-				sz = me->dimg->GetTextSize(f, {sbuff, strSize});
-				me->dimg->DrawString((usz.ToDouble() - sz) * 0.5, {sbuff, strSize}, f, b);
-				me->dimg->DelFont(f);
-				me->dimg->DelBrush(b);
+				f = img->NewFontPx(CSTR("Arial"), fontHeight, Media::DrawEngine::DFS_NORMAL, 0);
+				b = img->NewBrushARGB(0xff000000);
+				sz = img->GetTextSize(f, {sbuff, strSize});
+				img->DrawString((usz.ToDouble() - sz) * 0.5, {sbuff, strSize}, f, b);
+				img->DelFont(f);
+				img->DelBrush(b);
 
-				me->pbsDisplay->SetImageDImg(me->dimg);
+				me->pbsDisplay->SetImageDImg(img.Ptr());
 			}
 		}
 	}
@@ -254,9 +255,10 @@ SSWR::AVIRead::AVIRElectronicScaleForm::AVIRElectronicScaleForm(UI::GUIClientCon
 SSWR::AVIRead::AVIRElectronicScaleForm::~AVIRElectronicScaleForm()
 {
 	StopStream();
-	if (this->dimg)
+	NotNullPtr<Media::DrawImage> img;
+	if (img.Set(this->dimg))
 	{
-		this->eng->DeleteImage(this->dimg);
+		this->eng->DeleteImage(img);
 		this->dimg = 0;
 	}
 }

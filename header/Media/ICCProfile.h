@@ -16,6 +16,10 @@ namespace Media
 	public:
 		struct CIEXYZ : public Math::Vector3
 		{
+			CIEXYZ() = default;
+			CIEXYZ(Double x, Double y, Double z) : Math::Vector3(x, y, z)
+			{
+			}
 		};
 	private:
 		static const UInt8 srgbICC[];
@@ -39,7 +43,7 @@ namespace Media
 		Int32 GetDeviceAttrib() const;
 		Int32 GetDeviceAttrib2() const;
 		Int32 GetRenderingIntent() const;
-		void GetPCSIlluminant(CIEXYZ *xyz) const;
+		CIEXYZ GetPCSIlluminant() const;
 		Int32 GetProfileCreator() const;
 		Int32 GetTagCount() const;
 
@@ -58,7 +62,7 @@ namespace Media
 		static Bool ParseFrame(IO::FileAnalyse::FrameDetailHandler *frame, UOSInt ofst, const UInt8 *buff, UOSInt buffSize);
 
 		static void ReadDateTimeNumber(const UInt8 *buff, NotNullPtr<Data::DateTime> dt);
-		static void ReadXYZNumber(const UInt8 *buff, CIEXYZ *xyz);
+		static CIEXYZ ReadXYZNumber(const UInt8 *buff);
 		static Double ReadS15Fixed16Number(const UInt8 *buff);
 		static Double ReadU16Fixed16Number(const UInt8 *buff);
 		static Double ReadU8Fixed8Number(const UInt8 *buff);
@@ -73,7 +77,7 @@ namespace Media
 		static Text::CString GetNameStandardObserver(Int32 val);
 		static Text::CString GetNameStandardIlluminent(Int32 val);
 
-		static void GetDispCIEXYZ(NotNullPtr<Text::StringBuilderUTF8> sb, CIEXYZ *xyz);
+		static void GetDispCIEXYZ(NotNullPtr<Text::StringBuilderUTF8> sb, const CIEXYZ &xyz);
 		static void GetDispTagType(NotNullPtr<Text::StringBuilderUTF8> sb, UInt8 *buff, UInt32 leng);
 
 		static Media::CS::TransferType FindTransferType(UOSInt colorCount, UInt16 *curveColors, Double *gamma);

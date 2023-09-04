@@ -97,7 +97,7 @@ void __stdcall SSWR::AVIRead::AVIRCOVID19Form::OnNewCasesSizeChanged(void *userO
 			MemFree(dates);
 		}
 		me->pbNewCases->SetImageDImg(dimg.Ptr());
-		deng->DeleteImage(dimg.Ptr());
+		deng->DeleteImage(dimg);
 	}
 }
 

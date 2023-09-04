@@ -23,7 +23,7 @@ namespace UI
 			NotNullPtr<Media::DrawEngine> deng;
 
 		protected:
-			virtual void DrawBkg(Media::DrawImage *dimg) = 0;
+			virtual void DrawBkg(NotNullPtr<Media::DrawImage> dimg) = 0;
 			virtual void OnObjectClear();
 		public:
 			DObjHandler(NotNullPtr<Media::DrawEngine> deng);
@@ -32,8 +32,8 @@ namespace UI
 			void SetColorSess(Media::ColorManagerSess *colorSess);
 			void ClearObjects();
 			void AddObject(DirectObject *obj);
-			Bool Check(Media::DrawImage *dimg);
-			void DrawAll(Media::DrawImage *dimg);
+			Bool Check(NotNullPtr<Media::DrawImage> dimg);
+			void DrawAll(NotNullPtr<Media::DrawImage> dimg);
 			void BeginUpdate();
 			void EndUpdate();
 

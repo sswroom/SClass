@@ -75,7 +75,7 @@ Double Media::MonitorMgr::GetMonitorHDPI(MonitorHandle *hMonitor)
 			if (edid)
 			{
 				Media::EDID::EDIDInfo info;
-				if (Media::EDID::Parse(edid, &info))
+				if (Media::EDID::Parse(edid, info))
 				{
 					if (info.dispPhysicalW_mm != 0)
 					{

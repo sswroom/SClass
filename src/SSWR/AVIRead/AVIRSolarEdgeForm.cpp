@@ -347,7 +347,7 @@ void SSWR::AVIRead::AVIRSolarEdgeForm::UpdateSiteEnergyGraph()
 			this->pbSiteEnergy->SetImage(simg);
 			SDEL_CLASS(this->imgSiteEnergy);
 			this->imgSiteEnergy = simg;
-			deng->DeleteImage(dimg.Ptr());
+			deng->DeleteImage(dimg);
 		}
 	}
 }
@@ -384,7 +384,7 @@ void SSWR::AVIRead::AVIRSolarEdgeForm::UpdateSitePowerGraph()
 			this->pbSitePower->SetImage(simg);
 			SDEL_CLASS(this->imgSitePower);
 			this->imgSitePower = simg;
-			deng->DeleteImage(dimg.Ptr());
+			deng->DeleteImage(dimg);
 		}
 	}
 }

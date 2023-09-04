@@ -203,9 +203,10 @@ void __stdcall UI::GUITextView::OnResize(void *userObj)
 {
 	UI::GUITextView *me = (UI::GUITextView*)userObj;
 	Math::Size2D<UOSInt> scnSize;
-	if (me->drawBuff)
+	NotNullPtr<Media::DrawImage> img;
+	if (img.Set(me->drawBuff))
 	{
-		me->deng->DeleteImage(me->drawBuff);
+		me->deng->DeleteImage(img);
 	}
 	scnSize = me->GetSizeP();
 	if ((me->clsData->scrVMax - me->clsData->scrVMin) > me->clsData->scrVPage)
@@ -217,10 +218,13 @@ void __stdcall UI::GUITextView::OnResize(void *userObj)
 		scnSize.x -= me->clsData->scrSize;
 	}
 	me->drawBuff = me->deng->CreateImage32(scnSize, Media::AT_NO_ALPHA);
-	me->drawBuff->SetHDPI(me->GetHDPI());
-	me->drawBuff->SetVDPI(me->GetHDPI());
-	me->UpdateScrollBar();
-	me->Redraw();
+	if (img.Set(me->drawBuff))
+	{
+		me->drawBuff->SetHDPI(me->GetHDPI());
+		me->drawBuff->SetVDPI(me->GetHDPI());
+		me->UpdateScrollBar();
+		me->Redraw();
+	}
 }
 
 void UI::GUITextView::UpdateScrollBar()
@@ -510,9 +514,10 @@ UI::GUITextView::GUITextView(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *p
 UI::GUITextView::~GUITextView()
 {
 	g_source_remove(this->clsData->timerId);
-	if (this->drawBuff)
+	NotNullPtr<Media::DrawImage> img;
+	if (img.Set(this->drawBuff))
 	{
-		this->deng->DeleteImage(this->drawBuff);
+		this->deng->DeleteImage(img);
 	}
 	MemFree(this->clsData);
 }
@@ -772,7 +777,7 @@ void UI::GUITextView::OnDraw(void *cr)
 	dimg->SetHDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
 	dimg->SetVDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
 	this->DrawImage(dimg);
-	this->deng->DeleteImage(dimg.Ptr());
+	this->deng->DeleteImage(dimg);
 
 	if (hasVScr)
 	{
@@ -791,7 +796,7 @@ void UI::GUITextView::OnDraw(void *cr)
 		UOSInt range = clsData->scrVMax - clsData->scrVMin - clsData->scrVPage;
 		dimg->DrawRect(Math::Coord2DDbl(0, UOSInt2Double((drawHeight - btnSize) * (clsData->scrVPos - clsData->scrVMin) / range)), Math::Size2DDbl(UOSInt2Double(clsData->scrSize), UOSInt2Double(btnSize)), 0, b);
 		dimg->DelBrush(b);
-		this->deng->DeleteImage(dimg.Ptr());
+		this->deng->DeleteImage(dimg);
 	}
 	if (hasHScr)
 	{
@@ -814,7 +819,7 @@ void UI::GUITextView::OnDraw(void *cr)
 		}
 		dimg->DrawRect(Math::Coord2DDbl(UOSInt2Double((drawWidth - btnSize) * (clsData->scrHPos - clsData->scrHMin) / range), 0), Math::Size2DDbl(UOSInt2Double(btnSize), UOSInt2Double(clsData->scrSize)), 0, b);
 		dimg->DelBrush(b);
-		this->deng->DeleteImage(dimg.Ptr());
+		this->deng->DeleteImage(dimg);
 	}
 }
 

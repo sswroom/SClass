@@ -11,15 +11,18 @@ void GenerateAngle(NotNullPtr<Media::DrawEngine> deng, UOSInt angleDegree)
 	UTF8Char *sptr;
 	sptr = Text::StrUOSInt(sbuff, angleDegree);
 	sptr = Text::StrConcatC(sptr, UTF8STRC(".png"));
-	Media::DrawImage *dimg = deng->CreateImage32(Math::Size2D<UOSInt>(160, 160), Media::AlphaType::AT_NO_ALPHA);
-	Media::DrawFont *f = dimg->NewFontPt(CSTR("Arial"), 9, Media::DrawEngine::DFS_NORMAL, 0);
-	Media::DrawBrush *b = dimg->NewBrushARGB(0xffffffff);
-	dimg->DrawStringRot(Math::Coord2DDbl(80, 80), CSTRP(sbuff, sptr), f, b, UOSInt2Double(angleDegree));
-	dimg->DelBrush(b);
-	dimg->DelFont(f);
-	IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-	dimg->SavePng(fs);
-	deng->DeleteImage(dimg);
+	NotNullPtr<Media::DrawImage> dimg;
+	if (dimg.Set(deng->CreateImage32(Math::Size2D<UOSInt>(160, 160), Media::AlphaType::AT_NO_ALPHA)))
+	{
+		Media::DrawFont *f = dimg->NewFontPt(CSTR("Arial"), 9, Media::DrawEngine::DFS_NORMAL, 0);
+		Media::DrawBrush *b = dimg->NewBrushARGB(0xffffffff);
+		dimg->DrawStringRot(Math::Coord2DDbl(80, 80), CSTRP(sbuff, sptr), f, b, UOSInt2Double(angleDegree));
+		dimg->DelBrush(b);
+		dimg->DelFont(f);
+		IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+		dimg->SavePng(fs);
+		deng->DeleteImage(dimg);
+	}
 }
 
 Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)

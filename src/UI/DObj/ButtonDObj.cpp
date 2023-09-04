@@ -44,14 +44,15 @@ UI::DObj::ButtonDObj::ButtonDObj(NotNullPtr<Media::DrawEngine> deng, Text::CStri
 
 UI::DObj::ButtonDObj::~ButtonDObj()
 {
-	if (this->bmpUnclick)
+	NotNullPtr<Media::DrawImage> img;
+	if (img.Set(this->bmpUnclick))
 	{
-		this->deng->DeleteImage(this->bmpUnclick);
+		this->deng->DeleteImage(img);
 		this->bmpUnclick = 0;
 	}
-	if (this->bmpClicked)
+	if (img.Set(this->bmpClicked))
 	{
-		this->deng->DeleteImage(this->bmpClicked);
+		this->deng->DeleteImage(img);
 		this->bmpClicked = 0;
 	}
 	DEL_CLASS(this->rnd);
@@ -104,7 +105,7 @@ Bool UI::DObj::ButtonDObj::DoEvents()
 	return false;
 }
 
-void UI::DObj::ButtonDObj::DrawObject(Media::DrawImage *dimg)
+void UI::DObj::ButtonDObj::DrawObject(NotNullPtr<Media::DrawImage> dimg)
 {
 	if (!this->isVisible)
 		return;
@@ -265,7 +266,7 @@ void UI::DObj::ButtonDObj::DrawObject(Media::DrawImage *dimg)
 				}
 	#endif
 				dimg->DrawImagePt(bmpTmp, tl.ToDouble());
-				this->deng->DeleteImage(bmpTmp.Ptr());
+				this->deng->DeleteImage(bmpTmp);
 			}
 		}
 		else

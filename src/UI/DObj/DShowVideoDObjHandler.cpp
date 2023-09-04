@@ -54,21 +54,23 @@ void __stdcall UI::DObj::DShowVideoDObjHandler::OnTimerTick(void *userObj)
 	}*/
 }
 
-void UI::DObj::DShowVideoDObjHandler::DrawBkg(Media::DrawImage *dimg)
+void UI::DObj::DShowVideoDObjHandler::DrawBkg(NotNullPtr<Media::DrawImage> dimg)
 {
-	if (this->bmpBkg)
+	NotNullPtr<Media::DrawImage> img;
+	if (img.Set(this->bmpBkg))
 	{
-		dimg->DrawImagePt(this->bmpBkg, Math::Coord2DDbl(0, 0));
+		dimg->DrawImagePt(img, Math::Coord2DDbl(0, 0));
 	}
 	this->DrawVideo(dimg);
 }
 
-void UI::DObj::DShowVideoDObjHandler::DrawVideo(Media::DrawImage *dimg)
+void UI::DObj::DShowVideoDObjHandler::DrawVideo(NotNullPtr<Media::DrawImage> dimg)
 {
-	if (this->frameImg)
+	NotNullPtr<Media::DrawImage> img;
+	if (img.Set(this->frameImg))
 	{
 		Sync::MutexUsage mutUsage(this->frameMut);
-		dimg->DrawImagePt(this->frameImg, this->videoTL.ToDouble());
+		dimg->DrawImagePt(img, this->videoTL.ToDouble());
 	}
 }
 
@@ -99,6 +101,8 @@ UI::DObj::DShowVideoDObjHandler::~DShowVideoDObjHandler()
 //	SDEL_CLASS(this->graph);
 //	DEL_CLASS(this->dshowMgr);
 	DEL_CLASS(this->resizer);
-	this->deng->DeleteImage(this->frameImg);
+	NotNullPtr<Media::DrawImage> img;
+	if (img.Set(this->frameImg))
+		this->deng->DeleteImage(img);
 	this->videoFileName->Release();
 }

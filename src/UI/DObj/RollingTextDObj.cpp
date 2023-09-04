@@ -7,185 +7,193 @@
 
 void UI::DObj::RollingTextDObj::UpdateBGImg()
 {
-	if (this->dimg)
+	NotNullPtr<Media::DrawImage> img;
+	if (img.Set(this->dimg))
 	{
-		this->deng->DeleteImage(this->dimg);
+		this->deng->DeleteImage(img);
 		this->dimg = 0;
 	}
 
 	if (this->txt)
 	{
-		Media::DrawImage *dimg = this->deng->CreateImage32(this->size, Media::AT_NO_ALPHA);
-		Media::DrawFont *f = dimg->NewFontPx(this->fontName->ToCString(), this->fontSize, Media::DrawEngine::DFS_ANTIALIAS, this->codePage);
+		NotNullPtr<Media::DrawImage> dimg;
+		Media::DrawFont *f;
 		Media::DrawBrush *b;
 		Data::ArrayListNN<Text::String> lines;
 		NotNullPtr<Text::String> s;
 		Double currY;
+		if (dimg.Set(this->deng->CreateImage32(this->size, Media::AT_NO_ALPHA)))
+		{
+			f = dimg->NewFontPx(this->fontName->ToCString(), this->fontSize, Media::DrawEngine::DFS_ANTIALIAS, this->codePage);
 
-		Media::DrawImageTool::SplitString(dimg, this->txt->ToCString(), &lines, f, OSInt2Double(this->size.x));
-		dimg->DelFont(f);
-		this->deng->DeleteImage(dimg);
+			Media::DrawImageTool::SplitString(dimg, this->txt->ToCString(), &lines, f, OSInt2Double(this->size.x));
+			dimg->DelFont(f);
+			this->deng->DeleteImage(dimg);
+		}
 
 		this->dimg = this->deng->CreateImage32(Math::Size2D<UOSInt>(this->size.x, (UInt32)Double2Int32(this->lineHeight * UOSInt2Double(lines.GetCount()))), Media::AT_NO_ALPHA);
-		f = this->dimg->NewFontPx(this->fontName->ToCString(), this->fontSize, Media::DrawEngine::DFS_ANTIALIAS, this->codePage);
-		b = this->dimg->NewBrushARGB(0xffffffff);
-		currY = 0;
-		Data::ArrayIterator<NotNullPtr<Text::String>> it = lines.Iterator();
-		while (it.HasNext())
+		if (dimg.Set(this->dimg))
 		{
-			s = it.Next();
-			this->dimg->DrawString(Math::Coord2DDbl(0, currY), s, f, b);
-			s->Release();
-			currY += this->lineHeight;
+			f = this->dimg->NewFontPx(this->fontName->ToCString(), this->fontSize, Media::DrawEngine::DFS_ANTIALIAS, this->codePage);
+			b = this->dimg->NewBrushARGB(0xffffffff);
+			currY = 0;
+			Data::ArrayIterator<NotNullPtr<Text::String>> it = lines.Iterator();
+			while (it.HasNext())
+			{
+				s = it.Next();
+				this->dimg->DrawString(Math::Coord2DDbl(0, currY), s, f, b);
+				s->Release();
+				currY += this->lineHeight;
+			}
+			this->dimg->DelBrush(b);
+			this->dimg->DelFont(f);
+
+			Bool revOrder;
+			UInt8 *bmpPtr = this->dimg->GetImgBits(&revOrder);
+			ImageUtil_ColorReplace32A2(bmpPtr, this->dimg->GetWidth(), this->dimg->GetHeight(), this->fontColor);
+			this->dimg->GetImgBitsEnd(true);
+			this->dimg->SetAlphaType(Media::AT_ALPHA);
+	/*
+			UInt8 *imgPtr = (UInt8*)((Media::GDIImage*)this->dimg)->bmpBits;
+			Int32 c = this->fontColor;
+			OSInt w = this->dimg->GetWidth();
+			OSInt h = this->dimg->GetHeight();
+			OSInt pxCnt;
+			pxCnt = w * h;
+	#if defined(HAS_ASM32)
+			_asm
+			{
+				mov esi,imgPtr
+				pxor xmm1,xmm1
+
+				mov ecx,pxCnt
+				movd xmm2,c
+				punpcklbw xmm2,xmm1
+				align 16
+	ubgilop2a:
+				mov eax,dword ptr [esi]
+				test eax,eax
+				jz ubgilop2b
+				movd xmm0,eax
+				punpcklwd xmm0,xmm0
+				punpcklbw xmm0,xmm0
+				psrlw xmm0,1
+				movdqa xmm3,xmm0
+				pmullw xmm0,xmm2
+				pmulhw xmm3,xmm2
+				punpcklwd xmm0,xmm3
+				psrld xmm0,15
+				packssdw xmm0,xmm1
+				packuswb xmm0,xmm1
+				movd [esi],xmm0
+
+				align 16
+	ubgilop2b:
+				lea esi,[esi+4]
+				dec ecx
+				jnz ubgilop2a
+			}
+	#elif defined(HAS_ASM64)
+			_asm
+			{
+				mov rsi,imgPtr
+				pxor xmm1,xmm1
+
+				mov rcx,pxCnt
+				movd xmm2,c
+				punpcklbw xmm2,xmm1
+				align 16
+	ubgilop2a:
+				mov eax,dword ptr [rsi]
+				test eax,eax
+				jz ubgilop2b
+				movd xmm0,eax
+				punpcklwd xmm0,xmm0
+				punpcklbw xmm0,xmm0
+				psrlw xmm0,1
+				movdqa xmm3,xmm0
+				pmullw xmm0,xmm2
+				pmulhw xmm3,xmm2
+				punpcklwd xmm0,xmm3
+				psrld xmm0,15
+				packssdw xmm0,xmm1
+				packuswb xmm0,xmm1
+				movd [rsi],xmm0
+
+				align 16
+	ubgilop2b:
+				lea rsi,[rsi+4]
+				dec rcx
+				jnz ubgilop2a
+			}
+	#elif defined(HAS_GCCASM64)
+			asm(
+			"	mov imgPtr,%rsi\n"
+			"	pxor %xmm1,%xmm1\n"
+
+			"	mov pxCnt,%rcx\n"
+			"	movd c,%xmm2\n"
+			"	punpcklbw %xmm1,%xmm2\n"
+			"	.balign 16\n"
+			"ubgilop2a:\n"
+			"	movl (%rsi),%eax\n"
+			"	test %eax,%eax\n"
+			"	jz ubgilop2b\n"
+			"	movd %eax,%xmm0\n"
+			"	punpcklwd %xmm0,%xmm0\n"
+			"	punpcklbw %xmm0,%xmm0\n"
+			"	psrlw $1,%xmm0\n"
+			"	movdqa %xmm0,%xmm3\n"
+			"	pmullw %xmm2,%xmm0\n"
+			"	pmulhw %xmm2,%xmm3\n"
+			"	punpcklwd %xmm3,%xmm0\n"
+			"	psrld $15,%xmm0\n"
+			"	packssdw %xmm1,%xmm0\n"
+			"	packuswb %xmm1,%xmm0\n"
+			"	movd %xmm0,(%rsi)\n"
+
+			"	.balign 16\n"
+			"ubgilop2b:\n"
+			"	lea 4(%rsi),%rsi\n"
+			"	dec %rcx\n"
+			"	jnz ubgilop2a\n"
+			);
+	#else
+			_asm
+			{
+				mov esi,imgPtr
+				pxor xmm1,xmm1
+
+				mov ecx,pxCnt
+				movd xmm2,c
+				punpcklbw xmm2,xmm1
+				align 16
+	ubgilop2a:
+				mov eax,dword ptr [esi]
+				test eax,eax
+				jz ubgilop2b
+				movd xmm0,eax
+				punpcklwd xmm0,xmm0
+				punpcklbw xmm0,xmm0
+				psrlw xmm0,1
+				movdqa xmm3,xmm0
+				pmullw xmm0,xmm2
+				pmulhw xmm3,xmm2
+				punpcklwd xmm0,xmm3
+				psrld xmm0,15
+				packssdw xmm0,xmm1
+				packuswb xmm0,xmm1
+				movd [esi],xmm0
+
+				align 16
+	ubgilop2b:
+				lea esi,[esi+4]
+				dec ecx
+				jnz ubgilop2a
+			}
+	#endif
+			*/
 		}
-		this->dimg->DelBrush(b);
-		this->dimg->DelFont(f);
-
-		Bool revOrder;
-		UInt8 *bmpPtr = this->dimg->GetImgBits(&revOrder);
-		ImageUtil_ColorReplace32A2(bmpPtr, this->dimg->GetWidth(), this->dimg->GetHeight(), this->fontColor);
-		this->dimg->GetImgBitsEnd(true);
-		this->dimg->SetAlphaType(Media::AT_ALPHA);
-/*
-		UInt8 *imgPtr = (UInt8*)((Media::GDIImage*)this->dimg)->bmpBits;
-		Int32 c = this->fontColor;
-		OSInt w = this->dimg->GetWidth();
-		OSInt h = this->dimg->GetHeight();
-		OSInt pxCnt;
-		pxCnt = w * h;
-#if defined(HAS_ASM32)
-		_asm
-		{
-			mov esi,imgPtr
-			pxor xmm1,xmm1
-
-			mov ecx,pxCnt
-			movd xmm2,c
-			punpcklbw xmm2,xmm1
-			align 16
-ubgilop2a:
-			mov eax,dword ptr [esi]
-			test eax,eax
-			jz ubgilop2b
-			movd xmm0,eax
-			punpcklwd xmm0,xmm0
-			punpcklbw xmm0,xmm0
-			psrlw xmm0,1
-			movdqa xmm3,xmm0
-			pmullw xmm0,xmm2
-			pmulhw xmm3,xmm2
-			punpcklwd xmm0,xmm3
-			psrld xmm0,15
-			packssdw xmm0,xmm1
-			packuswb xmm0,xmm1
-			movd [esi],xmm0
-
-			align 16
-ubgilop2b:
-			lea esi,[esi+4]
-			dec ecx
-			jnz ubgilop2a
-		}
-#elif defined(HAS_ASM64)
-		_asm
-		{
-			mov rsi,imgPtr
-			pxor xmm1,xmm1
-
-			mov rcx,pxCnt
-			movd xmm2,c
-			punpcklbw xmm2,xmm1
-			align 16
-ubgilop2a:
-			mov eax,dword ptr [rsi]
-			test eax,eax
-			jz ubgilop2b
-			movd xmm0,eax
-			punpcklwd xmm0,xmm0
-			punpcklbw xmm0,xmm0
-			psrlw xmm0,1
-			movdqa xmm3,xmm0
-			pmullw xmm0,xmm2
-			pmulhw xmm3,xmm2
-			punpcklwd xmm0,xmm3
-			psrld xmm0,15
-			packssdw xmm0,xmm1
-			packuswb xmm0,xmm1
-			movd [rsi],xmm0
-
-			align 16
-ubgilop2b:
-			lea rsi,[rsi+4]
-			dec rcx
-			jnz ubgilop2a
-		}
-#elif defined(HAS_GCCASM64)
-		asm(
-		"	mov imgPtr,%rsi\n"
-		"	pxor %xmm1,%xmm1\n"
-
-		"	mov pxCnt,%rcx\n"
-		"	movd c,%xmm2\n"
-		"	punpcklbw %xmm1,%xmm2\n"
-		"	.balign 16\n"
-		"ubgilop2a:\n"
-		"	movl (%rsi),%eax\n"
-		"	test %eax,%eax\n"
-		"	jz ubgilop2b\n"
-		"	movd %eax,%xmm0\n"
-		"	punpcklwd %xmm0,%xmm0\n"
-		"	punpcklbw %xmm0,%xmm0\n"
-		"	psrlw $1,%xmm0\n"
-		"	movdqa %xmm0,%xmm3\n"
-		"	pmullw %xmm2,%xmm0\n"
-		"	pmulhw %xmm2,%xmm3\n"
-		"	punpcklwd %xmm3,%xmm0\n"
-		"	psrld $15,%xmm0\n"
-		"	packssdw %xmm1,%xmm0\n"
-		"	packuswb %xmm1,%xmm0\n"
-		"	movd %xmm0,(%rsi)\n"
-
-		"	.balign 16\n"
-		"ubgilop2b:\n"
-		"	lea 4(%rsi),%rsi\n"
-		"	dec %rcx\n"
-		"	jnz ubgilop2a\n"
-		);
-#else
-		_asm
-		{
-			mov esi,imgPtr
-			pxor xmm1,xmm1
-
-			mov ecx,pxCnt
-			movd xmm2,c
-			punpcklbw xmm2,xmm1
-			align 16
-ubgilop2a:
-			mov eax,dword ptr [esi]
-			test eax,eax
-			jz ubgilop2b
-			movd xmm0,eax
-			punpcklwd xmm0,xmm0
-			punpcklbw xmm0,xmm0
-			psrlw xmm0,1
-			movdqa xmm3,xmm0
-			pmullw xmm0,xmm2
-			pmulhw xmm3,xmm2
-			punpcklwd xmm0,xmm3
-			psrld xmm0,15
-			packssdw xmm0,xmm1
-			packuswb xmm0,xmm1
-			movd [esi],xmm0
-
-			align 16
-ubgilop2b:
-			lea esi,[esi+4]
-			dec ecx
-			jnz ubgilop2a
-		}
-#endif
-		*/
 	}
 }
 
@@ -226,9 +234,10 @@ UI::DObj::RollingTextDObj::~RollingTextDObj()
 	SDEL_STRING(this->txt);
 	this->fontName->Release();
 
-	if (this->dimg)
+	NotNullPtr<Media::DrawImage> img;
+	if (img.Set(this->dimg))
 	{
-		this->deng->DeleteImage(this->dimg);
+		this->deng->DeleteImage(img);
 		this->dimg = 0;
 	}
 }
@@ -261,17 +270,18 @@ Bool UI::DObj::RollingTextDObj::DoEvents()
 	return false;
 }
 
-void UI::DObj::RollingTextDObj::DrawObject(Media::DrawImage *dimg)
+void UI::DObj::RollingTextDObj::DrawObject(NotNullPtr<Media::DrawImage> dimg)
 {
 	Math::Coord2D<OSInt> tl = this->GetCurrPos();
-	if (this->dimg == 0)
+	NotNullPtr<Media::DrawImage> img;
+	if (!img.Set(this->dimg))
 	{
 		return;
 	}
-	UOSInt h = this->dimg->GetHeight();
+	UOSInt h = img->GetHeight();
 	if (h <= this->size.y)
 	{
-		dimg->DrawImagePt(this->dimg, tl.ToDouble());
+		dimg->DrawImagePt(img, tl.ToDouble());
 	}
 	else
 	{
@@ -288,12 +298,12 @@ void UI::DObj::RollingTextDObj::DrawObject(Media::DrawImage *dimg)
 
 		if ((h - (UOSInt)currPos) >= this->size.y)
 		{
-			dimg->DrawImagePt3(this->dimg, tl.ToDouble(), Math::Coord2DDbl(0, OSInt2Double(currPos)), this->size.ToDouble());
+			dimg->DrawImagePt3(img.Ptr(), tl.ToDouble(), Math::Coord2DDbl(0, OSInt2Double(currPos)), this->size.ToDouble());
 		}
 		else
 		{
-			dimg->DrawImagePt3(this->dimg, tl.ToDouble(), Math::Coord2DDbl(0, OSInt2Double(currPos)), Math::Size2DDbl(OSInt2Double(this->size.x), OSInt2Double((OSInt)h - currPos)));
-			dimg->DrawImagePt3(this->dimg, Math::Coord2DDbl(OSInt2Double(tl.x), OSInt2Double(tl.y + (OSInt)h - currPos)), Math::Coord2DDbl(0, 0), Math::Size2DDbl(UOSInt2Double(this->size.x), OSInt2Double(this->size.y - h + (UOSInt)currPos)));
+			dimg->DrawImagePt3(img.Ptr(), tl.ToDouble(), Math::Coord2DDbl(0, OSInt2Double(currPos)), Math::Size2DDbl(OSInt2Double(this->size.x), OSInt2Double((OSInt)h - currPos)));
+			dimg->DrawImagePt3(img.Ptr(), Math::Coord2DDbl(OSInt2Double(tl.x), OSInt2Double(tl.y + (OSInt)h - currPos)), Math::Coord2DDbl(0, 0), Math::Size2DDbl(UOSInt2Double(this->size.x), OSInt2Double(this->size.y - h + (UOSInt)currPos)));
 		}
 	}
 }

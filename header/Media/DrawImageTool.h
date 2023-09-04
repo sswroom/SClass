@@ -8,7 +8,7 @@ namespace Media
 	class DrawImageTool
 	{
 	public:
-		static void SplitString(Media::DrawImage *dimg, Text::CString txt, Data::ArrayListNN<Text::String> *outStr, Media::DrawFont *f, Double width);
+		static void SplitString(NotNullPtr<Media::DrawImage> dimg, Text::CString txt, Data::ArrayListNN<Text::String> *outStr, Media::DrawFont *f, Double width);
 	};
 }
 #endif

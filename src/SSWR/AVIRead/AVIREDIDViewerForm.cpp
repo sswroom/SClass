@@ -17,7 +17,7 @@ void SSWR::AVIRead::AVIREDIDViewerForm::UpdateEDIDDisp()
 	if (this->edid)
 	{
 		Media::EDID::EDIDInfo info;
-		if (Media::EDID::Parse(this->edid, &info))
+		if (Media::EDID::Parse(this->edid, info))
 		{
 			Text::StringBuilderUTF8 sb;
 			sb.AppendC(UTF8STRC("Vendor Name: "));
@@ -67,21 +67,21 @@ void SSWR::AVIRead::AVIREDIDViewerForm::UpdateEDIDDisp()
 			sb.AppendC(UTF8STRC("\r\nGamma: "));
 			sb.AppendDouble(info.gamma);
 			sb.AppendC(UTF8STRC("\r\nRed: "));
-			sb.AppendDouble(info.rx);
+			sb.AppendDouble(info.r.x);
 			sb.AppendC(UTF8STRC(", "));
-			sb.AppendDouble(info.ry);
+			sb.AppendDouble(info.r.y);
 			sb.AppendC(UTF8STRC("\r\nGreen: "));
-			sb.AppendDouble(info.gx);
+			sb.AppendDouble(info.g.x);
 			sb.AppendC(UTF8STRC(", "));
-			sb.AppendDouble(info.gy);
+			sb.AppendDouble(info.g.y);
 			sb.AppendC(UTF8STRC("\r\nBlue: "));
-			sb.AppendDouble(info.bx);
+			sb.AppendDouble(info.b.x);
 			sb.AppendC(UTF8STRC(", "));
-			sb.AppendDouble(info.by);
+			sb.AppendDouble(info.b.y);
 			sb.AppendC(UTF8STRC("\r\nWhite: "));
-			sb.AppendDouble(info.wx);
+			sb.AppendDouble(info.w.x);
 			sb.AppendC(UTF8STRC(", "));
-			sb.AppendDouble(info.wy);
+			sb.AppendDouble(info.w.y);
 			this->txtEDID->SetText(sb.ToCString());
 		}
 		else
@@ -106,7 +106,7 @@ void __stdcall SSWR::AVIRead::AVIREDIDViewerForm::OnSaveClicked(void *userObj)
 	UTF8Char *sptr;
 	Media::EDID::EDIDInfo info;
 
-	if (Media::EDID::Parse(me->edid, &info))
+	if (Media::EDID::Parse(me->edid, info))
 	{
 		sptr = Text::StrConcat(sbuff, info.vendorName);
 		*sptr++ = '_';

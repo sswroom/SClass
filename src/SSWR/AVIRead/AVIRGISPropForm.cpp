@@ -141,7 +141,7 @@ void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnLineModifyClicked(void *userObj
 			me->core->GenLinePreview(dimg, me->eng, me->lineThick, me->lineColor, me->colorConv);
 			me->imgLine = dimg->ToStaticImage();
 			me->pbLineStyle->SetImage(me->imgLine);
-			me->eng->DeleteImage(dimg.Ptr());
+			me->eng->DeleteImage(dimg);
 		}
 	}
 }
@@ -169,7 +169,7 @@ void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnLineStyleClicked(void *userObj)
 			me->core->GenLineStylePreview(dimg, me->eng, me->env, me->lineStyle, me->colorConv);
 			me->imgLine = dimg->ToStaticImage();
 			me->pbLineStyle->SetImage(me->imgLine);
-			me->eng->DeleteImage(dimg.Ptr());
+			me->eng->DeleteImage(dimg);
 		}
 	}
 }
@@ -226,7 +226,7 @@ void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnFontModifyClicked(void *userObj
 			me->core->GenFontPreview(dimg, me->eng, me->fontName->ToCString(), me->fontSizePt, me->fontColor, me->colorConv);
 			me->imgFont = dimg->ToStaticImage();
 			me->pbFontStyle->SetImage(me->imgFont);
-			me->eng->DeleteImage(dimg.Ptr());
+			me->eng->DeleteImage(dimg);
 		}
 	}
 }
@@ -254,7 +254,7 @@ void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnFontStyleClicked(void *userObj)
 			me->core->GenFontStylePreview(dimg, me->eng, me->env, me->fontStyle, me->colorConv);
 			me->imgFont = dimg->ToStaticImage();
 			me->pbFontStyle->SetImage(me->imgFont);
-			me->eng->DeleteImage(dimg.Ptr());
+			me->eng->DeleteImage(dimg);
 		}
 	}
 }
@@ -407,7 +407,7 @@ SSWR::AVIRead::AVIRGISPropForm::AVIRGISPropForm(UI::GUIClientControl *parent, No
 			}
 			this->imgLine = dimg->ToStaticImage();
 			this->pbLineStyle->SetImage(this->imgLine);
-			this->eng->DeleteImage(dimg.Ptr());
+			this->eng->DeleteImage(dimg);
 		}
 
 		sz = this->pbFontStyle->GetSizeP();
@@ -425,7 +425,7 @@ SSWR::AVIRead::AVIRGISPropForm::AVIRGISPropForm(UI::GUIClientControl *parent, No
 			}
 			this->imgFont = dimg->ToStaticImage();
 			this->pbFontStyle->SetImage(this->imgFont);
-			this->eng->DeleteImage(dimg.Ptr());
+			this->eng->DeleteImage(dimg);
 		}
 
 		this->pbFillStyle->SetBGColor(this->colorConv->ConvRGB8(setting.fillStyle));
@@ -574,7 +574,7 @@ void SSWR::AVIRead::AVIRGISPropForm::RGBParamChanged(const Media::IColorHandler:
 		}
 		this->imgLine = dimg->ToStaticImage();
 		this->pbLineStyle->SetImage(this->imgLine);
-		this->eng->DeleteImage(dimg.Ptr());
+		this->eng->DeleteImage(dimg);
 	}
 
 	if (this->imgFont)
@@ -596,6 +596,6 @@ void SSWR::AVIRead::AVIRGISPropForm::RGBParamChanged(const Media::IColorHandler:
 		}
 		this->imgFont = dimg->ToStaticImage();
 		this->pbFontStyle->SetImage(this->imgFont);
-		this->eng->DeleteImage(dimg.Ptr());
+		this->eng->DeleteImage(dimg);
 	}
 }

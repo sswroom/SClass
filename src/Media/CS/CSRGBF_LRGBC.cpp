@@ -48,36 +48,35 @@ void Media::CS::CSRGBF_LRGBC::UpdateRGBTable()
 	Math::Vector3 vec1;
 	Math::Vector3 vec2;
 	Math::Vector3 vec3;
-	this->srcProfile.GetPrimaries()->GetConvMatrix(&mat1);
+	this->srcProfile.GetPrimaries()->GetConvMatrix(mat1);
 	if (this->destProfile.GetPrimaries()->colorType == Media::ColorProfile::CT_DISPLAY)
 	{
-		this->rgbParam.monProfile.GetPrimaries()->GetConvMatrix(&mat5);
-		vec2.Set(this->rgbParam.monProfile.GetPrimaries()->wx, this->rgbParam.monProfile.GetPrimaries()->wy, 1.0);
+		this->rgbParam.monProfile.GetPrimaries()->GetConvMatrix(mat5);
+		vec2.Set(this->rgbParam.monProfile.GetPrimaries()->w, 1.0);
 	}
 	else
 	{
-		this->destProfile.GetPrimaries()->GetConvMatrix(&mat5);
-		vec2.Set(this->destProfile.GetPrimaries()->wx, this->destProfile.GetPrimaries()->wy, 1.0);
+		this->destProfile.GetPrimaries()->GetConvMatrix(mat5);
+		vec2.Set(this->destProfile.GetPrimaries()->w, 1.0);
 	}
 	mat5.Inverse();
 
-	Media::ColorProfile::ColorPrimaries::GetMatrixBradford(&mat2);
-	mat3.Set(&mat2);
+	Media::ColorProfile::ColorPrimaries::GetMatrixBradford(mat2);
+	mat3.Set(mat2);
 	mat4.SetIdentity();
-	vec1.Set(this->srcProfile.GetPrimaries()->wx, this->srcProfile.GetPrimaries()->wy, 1.0);
-	Media::ColorProfile::ColorPrimaries::xyYToXYZ(&vec2, &vec3);
-	Media::ColorProfile::ColorPrimaries::xyYToXYZ(&vec1, &vec2);
-	mat2.Multiply(&vec2, &vec1);
-	mat2.Multiply(&vec3, &vec2);
+	vec2 = Media::ColorProfile::ColorPrimaries::xyYToXYZ(vec2);
+	vec1 = Media::ColorProfile::ColorPrimaries::xyYToXYZ(Math::Vector3(this->srcProfile.GetPrimaries()->w, 1.0));
+	vec1 = mat2.Multiply(vec1);
+	vec2 = mat2.Multiply(vec2);
 	mat2.Inverse();
 	mat4.vec[0].val[0] = vec2.val[0] / vec1.val[0];
 	mat4.vec[1].val[1] = vec2.val[1] / vec1.val[1];
 	mat4.vec[2].val[2] = vec2.val[2] / vec1.val[2];
-	mat2.Multiply(&mat4);
-	mat2.Multiply(&mat3);
-	mat1.MyMultiply(&mat2);
+	mat2.Multiply(mat4);
+	mat2.Multiply(mat3);
+	mat1.MyMultiply(mat2);
 
-	mat1.MyMultiply(&mat5);
+	mat1.MyMultiply(mat5);
 
 	Int64 *rgbGammaCorr = (Int64*)this->rgbTable;
 	i = 65536;

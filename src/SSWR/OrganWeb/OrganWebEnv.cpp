@@ -2410,6 +2410,7 @@ Int32 SSWR::OrganWeb::OrganWebEnv::UserfileAdd(NotNullPtr<Sync::RWMutexUsage> mu
 	else if (fileType == 3)
 	{
 		Crypto::Hash::CRC32R crc;
+		NotNullPtr<Media::DrawImage> img;
 		UInt32 crcVal;
 		IO::ParsedObject *pobj;
 		IO::ParserType t;
@@ -2605,33 +2606,34 @@ Int32 SSWR::OrganWeb::OrganWebEnv::UserfileAdd(NotNullPtr<Sync::RWMutexUsage> mu
 							IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer);
 							graphImg->SavePng(fs);
 						}
-						this->eng->DeleteImage(graphImg);
+						if (img.Set(graphImg))
+							this->eng->DeleteImage(img);
 
 						return userFile->id;
 					}
 					else
 					{
-						if (graphImg)
+						if (img.Set(graphImg))
 						{
-							this->eng->DeleteImage(graphImg);
+							this->eng->DeleteImage(img);
 						}
 						return 0;
 					}
 				}
 				else
 				{
-					if (graphImg)
+					if (img.Set(graphImg))
 					{
-						this->eng->DeleteImage(graphImg);
+						this->eng->DeleteImage(img);
 					}
 					return 0;
 				}
 			}
 			else
 			{
-				if (graphImg)
+				if (img.Set(graphImg))
 				{
-					this->eng->DeleteImage(graphImg);
+					this->eng->DeleteImage(img);
 				}
 				return 0;
 			}

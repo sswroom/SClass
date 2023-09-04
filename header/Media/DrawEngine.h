@@ -72,7 +72,7 @@ namespace Media
 		virtual DrawImage *LoadImageStream(NotNullPtr<IO::SeekableStream> stm) = 0;
 		virtual DrawImage *ConvImage(Media::Image *img) = 0;
 		virtual DrawImage *CloneImage(NotNullPtr<DrawImage> img) = 0;
-		virtual Bool DeleteImage(DrawImage *img) = 0;
+		virtual Bool DeleteImage(NotNullPtr<DrawImage> img) = 0;
 	};
 
 	class DrawImage

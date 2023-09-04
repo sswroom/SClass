@@ -31,14 +31,15 @@ UI::DObj::DynamicOverlayDObj::DynamicOverlayDObj(NotNullPtr<Media::DrawEngine> d
 
 UI::DObj::DynamicOverlayDObj::~DynamicOverlayDObj()
 {
-	if (this->bmp1)
+	NotNullPtr<Media::DrawImage> img;
+	if (img.Set(this->bmp1))
 	{
-		this->deng->DeleteImage(this->bmp1);
+		this->deng->DeleteImage(img);
 		this->bmp1 = 0;
 	}
-	if (this->bmp2)
+	if (img.Set(this->bmp2))
 	{
-		this->deng->DeleteImage(this->bmp2);
+		this->deng->DeleteImage(img);
 		this->bmp2 = 0;
 	}
 }
@@ -63,9 +64,11 @@ Bool UI::DObj::DynamicOverlayDObj::DoEvents()
 void UI::DObj::DynamicOverlayDObj::DrawObject(Media::DrawImage *dimg)
 {
 	Math::Coord2DDbl tl = this->GetCurrPos().ToDouble();
-	if (this->bmp1 && this->bmp2)
+	NotNullPtr<Media::DrawImage> bmp1;
+	NotNullPtr<Media::DrawImage> bmp2;
+	if (bmp1.Set(this->bmp1) && bmp2.Set(this->bmp2))
 	{
-		if (this->bmp1->GetWidth() == this->bmp2->GetWidth() && this->bmp1->GetHeight() == this->bmp2->GetHeight())
+		if (bmp1->GetWidth() == bmp2->GetWidth() && bmp1->GetHeight() == bmp2->GetHeight())
 		{
 			this->a += (this->rnd->NextDouble() - 0.5) * 0.016;
 			this->alpha += this->a;
@@ -79,43 +82,44 @@ void UI::DObj::DynamicOverlayDObj::DrawObject(Media::DrawImage *dimg)
 				this->alpha = 0;
 				this->a = 0;
 			}
-			Media::DrawImage *bmpS1 = this->bmp1;
-			Media::DrawImage *bmpS2 = this->bmp2;
-			Media::DrawImage *bmpTmp = this->deng->CreateImage32(bmpS1->GetSize(), Media::AT_NO_ALPHA);
-			bmpTmp->SetAlphaType(bmpS1->GetAlphaType());
-			Bool revOrder;
-			UInt8 *ptrS1 = bmpS1->GetImgBits(&revOrder);
-			UInt8 *ptrS2 = bmpS2->GetImgBits(&revOrder);
-			UInt8 *ptrD = bmpTmp->GetImgBits(&revOrder);
-			UOSInt lineBytes = bmpS1->GetWidth() * 4;
-			UOSInt i;
-			UOSInt j = bmpS1->GetHeight();
-			Double a1 = this->alpha;
-			Double a2 = 1 - this->alpha; 
-			while (j-- > 0)
+			NotNullPtr<Media::DrawImage> bmpTmp;
+			if (bmpTmp.Set(this->deng->CreateImage32(bmp1->GetSize(), Media::AT_NO_ALPHA)))
 			{
-				i = lineBytes;
-				while (i-- > 0)
+				bmpTmp->SetAlphaType(bmp1->GetAlphaType());
+				Bool revOrder;
+				UInt8 *ptrS1 = bmp1->GetImgBits(&revOrder);
+				UInt8 *ptrS2 = bmp2->GetImgBits(&revOrder);
+				UInt8 *ptrD = bmpTmp->GetImgBits(&revOrder);
+				UOSInt lineBytes = bmp1->GetWidth() * 4;
+				UOSInt i;
+				UOSInt j = bmp1->GetHeight();
+				Double a1 = this->alpha;
+				Double a2 = 1 - this->alpha; 
+				while (j-- > 0)
 				{
-					*ptrD++ = (UInt8)Double2Int32(a1 * (*ptrS1++) + a2 * (*ptrS2++));
+					i = lineBytes;
+					while (i-- > 0)
+					{
+						*ptrD++ = (UInt8)Double2Int32(a1 * (*ptrS1++) + a2 * (*ptrS2++));
+					}
 				}
-			}
 
-			dimg->DrawImagePt(bmpTmp, tl);
-			this->deng->DeleteImage(bmpTmp);
+				dimg->DrawImagePt(bmpTmp, tl);
+				this->deng->DeleteImage(bmpTmp);
+			}
 		}
 		else
 		{
-			dimg->DrawImagePt(this->bmp1, tl);
+			dimg->DrawImagePt(bmp1, tl);
 		}
 	}
-	else if (this->bmp1)
+	else if (bmp1.Set(this->bmp1))
 	{
-		dimg->DrawImagePt(this->bmp1, tl);
+		dimg->DrawImagePt(bmp1, tl);
 	}
-	else if (this->bmp2)
+	else if (bmp2.Set(this->bmp2))
 	{
-		dimg->DrawImagePt(this->bmp2, tl);
+		dimg->DrawImagePt(bmp2, tl);
 	}
 }
 

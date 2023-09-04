@@ -109,47 +109,49 @@ void SSWR::AVIRead::AVIRGISFontEditForm::UpdateFontPreview()
 	UTF8Char *sptr;
 	Math::Size2DDbl sz;
 	Math::Size2D<UOSInt> usz;
-	Media::DrawImage *dimg;
+	NotNullPtr<Media::DrawImage> dimg;
 	Media::DrawFont *f;
 	Media::DrawBrush *b;
 	usz = this->pbFontPreview->GetSizeP();
-	dimg = this->eng->CreateImage32(usz, Media::AT_NO_ALPHA);
-	dimg->SetHDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
-	dimg->SetVDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
-
-	if ((sptr = this->env->GetFontStyleName(this->fontStyle, sbuff)) == 0 || sbuff[0] == 0)
+	if (dimg.Set(this->eng->CreateImage32(usz, Media::AT_NO_ALPHA)))
 	{
-		sptr = Text::StrInt32(Text::StrConcatC(sbuff, UTF8STRC("Style ")), (Int32)this->fontStyle);
-	}
+		dimg->SetHDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
+		dimg->SetVDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
 
-	b = dimg->NewBrushARGB(this->colorConv->ConvRGB8(0xffc0c0c0));
-	dimg->DrawRect(Math::Coord2DDbl(0, 0), usz.ToDouble(), 0, b);
-	dimg->DelBrush(b);
-
-	if (this->currFontName)
-	{
-		f = dimg->NewFontPt(this->currFontName->ToCString(), this->currFontSizePt, this->isBold?((Media::DrawEngine::DrawFontStyle)(Media::DrawEngine::DFS_BOLD | Media::DrawEngine::DFS_ANTIALIAS)):Media::DrawEngine::DFS_ANTIALIAS, this->core->GetCurrCodePage());
-		sz = dimg->GetTextSize(f, CSTRP(sbuff, sptr));
-		if (this->currBuffSize > 0)
+		if ((sptr = this->env->GetFontStyleName(this->fontStyle, sbuff)) == 0 || sbuff[0] == 0)
 		{
-			b = dimg->NewBrushARGB(this->colorConv->ConvRGB8(this->currBuffColor));
-			dimg->DrawStringB((usz.ToDouble() - sz) * 0.5, CSTRP(sbuff, sptr), f, b, (UOSInt)Double2Int32(UOSInt2Double(this->currBuffSize) * this->GetHDPI() / this->GetDDPI()));
-			dimg->DelBrush(b);
+			sptr = Text::StrInt32(Text::StrConcatC(sbuff, UTF8STRC("Style ")), (Int32)this->fontStyle);
 		}
-		b = dimg->NewBrushARGB(this->colorConv->ConvRGB8(this->currColor));
-		dimg->DrawString((usz.ToDouble() - sz) * 0.5, CSTRP(sbuff, sptr), f, b);
-		dimg->DelBrush(b);
-		dimg->DelFont(f);
-	}
 
-	if (this->previewImage)
-	{
-		DEL_CLASS(this->previewImage);
+		b = dimg->NewBrushARGB(this->colorConv->ConvRGB8(0xffc0c0c0));
+		dimg->DrawRect(Math::Coord2DDbl(0, 0), usz.ToDouble(), 0, b);
+		dimg->DelBrush(b);
+
+		if (this->currFontName)
+		{
+			f = dimg->NewFontPt(this->currFontName->ToCString(), this->currFontSizePt, this->isBold?((Media::DrawEngine::DrawFontStyle)(Media::DrawEngine::DFS_BOLD | Media::DrawEngine::DFS_ANTIALIAS)):Media::DrawEngine::DFS_ANTIALIAS, this->core->GetCurrCodePage());
+			sz = dimg->GetTextSize(f, CSTRP(sbuff, sptr));
+			if (this->currBuffSize > 0)
+			{
+				b = dimg->NewBrushARGB(this->colorConv->ConvRGB8(this->currBuffColor));
+				dimg->DrawStringB((usz.ToDouble() - sz) * 0.5, CSTRP(sbuff, sptr), f, b, (UOSInt)Double2Int32(UOSInt2Double(this->currBuffSize) * this->GetHDPI() / this->GetDDPI()));
+				dimg->DelBrush(b);
+			}
+			b = dimg->NewBrushARGB(this->colorConv->ConvRGB8(this->currColor));
+			dimg->DrawString((usz.ToDouble() - sz) * 0.5, CSTRP(sbuff, sptr), f, b);
+			dimg->DelBrush(b);
+			dimg->DelFont(f);
+		}
+
+		if (this->previewImage)
+		{
+			DEL_CLASS(this->previewImage);
+		}
+		this->previewImage = dimg->ToStaticImage();
+		this->eng->DeleteImage(dimg);
+		this->pbFontPreview->SetImage(this->previewImage);
+		this->pbFontPreview->SetNoBGColor(true);
 	}
-	this->previewImage = dimg->ToStaticImage();
-	this->eng->DeleteImage(dimg);
-	this->pbFontPreview->SetImage(this->previewImage);
-	this->pbFontPreview->SetNoBGColor(true);
 }
 
 void SSWR::AVIRead::AVIRGISFontEditForm::UpdateDisplay()

@@ -92,7 +92,7 @@ void SSWR::AVIRead::AVIRFontSelector::OnDraw(NotNullPtr<Media::DrawImage> img)
 	}
 	img->DelBrush(bWhite);
 	img->DelBrush(bBlack);
-	deng->DeleteImage(tmpBmp.Ptr());
+	deng->DeleteImage(tmpBmp);
 }
 
 void SSWR::AVIRead::AVIRFontSelector::OnMouseDown(OSInt scrollY, Math::Coord2D<OSInt> pos, UI::GUIClientControl::MouseButton btn, KeyButton keys)
